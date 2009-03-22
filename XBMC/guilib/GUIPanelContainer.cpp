@@ -31,11 +31,7 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
 {
   ControlType = GUICONTAINER_PANEL;
   m_type = VIEW_TYPE_ICON;
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  m_spinControl = NULL;
-  m_largePanel = NULL;
   m_itemsPerRow = 1;
-//#endif
 }
 
 CGUIPanelContainer::~CGUIPanelContainer(void)
@@ -410,34 +406,6 @@ int CGUIPanelContainer::CorrectOffset(int offset, int cursor) const
 {
   return offset * m_itemsPerRow + cursor;
 }
-
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
-                         const CTextureInfo& imageNoFocus, const CTextureInfo& imageFocus,
-                         float itemWidth, float itemHeight,
-                         float textureWidth, float textureHeight,
-                         float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, const CAspectRatio &thumbAspect,
-                         const CLabelInfo& labelInfo, bool hideLabels,
-                         CGUIControl *pSpin, CGUIControl *pPanel)
-: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200)
-{
-  CGUIListItemLayout layout;
-  layout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, false, imageNoFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);
-  m_layouts.push_back(layout);
-  CGUIListItemLayout focusedLayout;
-  focusedLayout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, true, imageFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);
-  m_focusedLayouts.push_back(focusedLayout);
-  m_height -= 5;
-  m_itemsPerPage = (int)(m_height / itemHeight);
-  if (m_itemsPerPage < 1) m_itemsPerPage = 1;
-  m_itemsPerRow = (int)(m_width / itemWidth);
-  if (m_itemsPerRow < 1) m_itemsPerRow = 1;
-  m_height = m_itemsPerPage * itemHeight;
-  m_spinControl = pSpin;
-  m_largePanel = pPanel;
-  ControlType = GUICONTAINER_PANEL;
-}
-//#endif
 
 bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
 {

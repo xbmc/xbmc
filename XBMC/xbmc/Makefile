@@ -1,4 +1,4 @@
-INCLUDES=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem
+INCLUDES+=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem
 
 INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -Ilib/libUPnP/Platinum/Source/Core \
@@ -162,7 +162,6 @@ SRCS=Application.cpp \
      Autorun.cpp \
      Util.cpp \
      GUIWindowSlideShow.cpp \
-     settings/VideoSettings.cpp \
      XBApplicationEx.cpp \
      xbmc.cpp \
      GUIDialogFavourites.cpp \
@@ -200,7 +199,6 @@ SRCS=Application.cpp \
      Zeroconf.cpp \
      PowerManager.cpp
 
-OBJS=$(SRCS:.cpp=.o)
 LIB=xbmc.a
 
 include ../Makefile.include

@@ -234,6 +234,7 @@ AC_CHECK_LIB([pcre],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],,
   AC_CHECK_LIB([lzo],       [main],, AC_MSG_ERROR(ERROR: Could not find either liblzo or liblzo2 - one of these must be present))
   )
+AC_CHECK_LIB([cdio],        [main],, AC_MSG_ERROR($missing_library))
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([z],         [main],, AC_MSG_ERROR($missing_library))
@@ -582,6 +583,12 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/lib/libUPnP/Makefile]
                 [xbmc/linux/Makefile]
                 [xbmc/screensavers/Makefile]
+                [xbmc/screensavers/rsxs-0.9/xbmc/Makefile]
+                [xbmc/visualizations/XBMCProjectM/Makefile]
+                [xbmc/visualizations/Goom/Makefile]
+                [xbmc/visualizations/OpenGLSpectrum/Makefile]
+                [xbmc/visualizations/WaveForm/Makefile]
+                [xbmc/visualizations/iTunes/Makefile]
                 [tools/Linux/xbmc.sh]
                 [tools/XBMCTex/Makefile]
 )
@@ -611,7 +618,8 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
       --without-cxx \
       --enable-shared \
       --without-pymalloc \
-      OPT="-Wno-deprecated-declarations" \
+      LDFLAGS="-L/opt/local/lib" \
+      OPT="-Wno-deprecated-declarations -I/opt/local/include" \
       MACOSX_DEPLOYMENT_TARGET=10.4 &&
     sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && 
     sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
@@ -895,7 +903,11 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
 ])
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
-  rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  if test "$host_vendor" = "apple" ; then
+    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="-fno-common" -D CMAKE_CXX_FLAGS:STRING="-fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  else
+    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  fi
 ])
 
 XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
@@ -921,6 +933,9 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
     ./configure \
       CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
       CXXFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      LDFLAGS="-L/opt/local/lib" \
+      LIBS="-lz" \
+      --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib \
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \
@@ -930,7 +945,7 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
       --disable-helios \
       --disable-hyperspace \
       --disable-lattice \
-       --disable-skyrocket
+      --disable-skyrocket
   else
     ./configure \
       CFLAGS="-fPIC" \ 
@@ -948,14 +963,6 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
   fi
 ])
 
-XB_CONFIG_MODULE([xbmc/lib/libcdio/libcdio], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
-  else
-    ./configure
-  fi
-])
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"

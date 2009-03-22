@@ -8,5 +8,5 @@ SRCS=	DVDOverlayCodecCC.cpp \
 
 LIB=	Overlay.a
 
-include ../../Makefile.include
+include ../../../../../Makefile.include
 

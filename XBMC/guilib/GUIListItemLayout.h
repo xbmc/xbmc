@@ -42,9 +42,8 @@ public:
   void ResetAnimation(ANIMATION_TYPE animType);
   void SetInvalid() { m_invalidated = true; };
 
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+//#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
   void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, int nofocusCondition, int focusCondition);
-  void CreateThumbnailPanelLayouts(float width, float height, bool focused, const CTextureInfo &image, float texWidth, float texHeight, float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, const CAspectRatio &thumbAspect, const CLabelInfo &labelInfo, bool hideLabel);
 //#endif
 
   void SelectItemFromPoint(const CPoint &point);

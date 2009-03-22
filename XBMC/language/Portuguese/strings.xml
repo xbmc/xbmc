@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 09/21/2008-->
+<!--Date of translation: 03/18/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 15555-->
+<!--Based on english strings version 18666-->
 <strings>
   <string id="0">Programas</string>
   <string id="1">Imagens</string>
@@ -43,7 +43,7 @@
   <string id="105">Ordenar por: Tamanho</string>
   <string id="106">Não</string>
   <string id="107">Sim</string>
-  <string id="108">Apresentação de Slides</string>
+  <string id="108">Slideshow</string>
   <string id="109">Criar Miniaturas</string>
   <string id="110">Criar Miniaturas</string>
   <string id="111">Atalhos</string>
@@ -64,7 +64,7 @@
   <string id="126">Estado</string>
   <string id="127">Objectos</string>
   <string id="128">Geral</string>
-  <string id="129">Apresentação de Slides</string>
+  <string id="129">Slideshow</string>
   <string id="130">Informação do Sistema</string>
   <string id="131">Ecrã</string>
   <string id="132">Álbuns</string>
@@ -158,6 +158,7 @@
   <string id="222">Cancelar</string>
   <string id="224">Velocidade</string>
   <string id="225">Tempo de Transição</string>
+  <string id="226">Padrões de Teste</string>
   <string id="227">Procurar Informação de CDs de Áudio numa FreeDB</string>
   <string id="228">Lista de Reprodução Aleatória ao Carregar</string>
   <string id="229">Tempo de Spindown do HD</string>
@@ -462,6 +463,7 @@
   <string id="545">Dispositivo de Saída de Áudio</string>
   <string id="546">Dispositivo de Passagem</string>
   <string id="547">Artista sem Biografia</string>
+  <string id="548">Downmix áudio multicanal para estéreo</string>
   <string id="550">Ordenar por: %s</string>
   <string id="551">Nome</string>
   <string id="552">Data</string>
@@ -475,7 +477,7 @@
   <string id="560">ID</string>
   <string id="561">Ficheiro</string>
   <string id="562">Ano</string>
-  <string id="563">Classificação</string>
+  <string id="563">Nota</string>
   <string id="564">Tipo</string>
   <string id="565">Utilização</string>
   <string id="566">Álbum Artista</string>
@@ -485,6 +487,7 @@
   <string id="570">Data de Adição</string>
   <string id="571">Padrão</string>
   <string id="572">Estúdio</string>
+  <string id="573">Caminho</string>
   <string id="580">Sentido de Ordenação</string>
   <string id="581">Método de Ordenação</string>
   <string id="582">Modo de Visualização</string>
@@ -515,7 +518,7 @@
   <string id="609">CDDARipPath não está definido no XboxMediaCenter.xml</string>
   <string id="610">Gravar Faixa de Áudio</string>
   <string id="611">Insira número</string>
-  <string id="620">Gravação de CD de Áudio</string>
+  <string id="620">Gravação de CD</string>
   <string id="621">Codificação</string>
   <string id="622">Qualidade</string>
   <string id="623">Bit Rate</string>
@@ -554,6 +557,8 @@
   <string id="659">Comentário:</string>
   <string id="660">Amplificação de volume</string>
   <string id="661">Escolha a pasta de exportação</string>
+  <string id="662">O ficheiro já não se encontra disponível.</string>
+  <string id="663">Deseja removê-lo da livraria?</string>
   <string id="700">A Limpar a Biblioteca</string>
   <string id="701">A Apagar Músicas antigas da Biblioteca</string>
   <string id="702">Já Procurou anteriormente neste caminho</string>
@@ -628,6 +633,21 @@
   <string id="772">Hardware de Áudio</string>
   <string id="773">Procurando</string>
   <string id="774">Pasta de Apresentações</string>
+  <string id="775">Interface de Rede</string>
+  <string id="776">Nome da Rede sem Fios (ESSID)</string>
+  <string id="777">Palavra Passe da Rede sem Fios</string>
+  <string id="778">Segurança da Rede sem Fios</string>
+  <string id="779">Guardar e aplicar configurações da Rede sem Fios</string>
+  <string id="780">Sem encriptação</string>
+  <string id="781">WEP</string>
+  <string id="782">WPA</string>
+  <string id="783">WPA2</string>
+  <string id="784">A aplicar configurações de rede. Por favor aguarde.</string>
+  <string id="785">Interface de rede reiniciada com sucesso.</string>
+  <string id="786">Interface de rede não iniciou com sucesso.</string>
+  <string id="787">Interface desligada</string>
+  <string id="788">Interface de rede desligada com sucesso.</string>
+  <string id="789">Nome da Rede sem Fios (ESSID)</string>
   <string id="790">Eventos Remotos</string>
   <string id="791">Ligar Eventos Remotos</string>
   <string id="792">Porta para Eventos Remotos</string>
@@ -684,6 +704,9 @@
   <string id="1043">Plugins de Programas</string>
   <string id="1044">Definir Miniatura para Plugin</string>
   <string id="1045">Definições do Plugin</string>
+  <string id="1046">Pontos de Acesso</string>
+  <string id="1047">Outros...</string>
+  <string id="1048">Nome de utilizador do servidor Web</string>
   <string id="1200">Cliente SMB</string>
   <string id="1202">Grupo de Trabalho</string>
   <string id="1203">Utilizador por omissão</string>
@@ -747,6 +770,7 @@
   <string id="1414">Tempestade</string>
   <string id="1415">Aguaceiro</string>
   <string id="1416">Nevoeiro</string>
+  <string id="1417">Grãos</string>
   <string id="2050">Duração</string>
   <string id="4501">Tipo de LCD</string>
   <string id="10000">Menu Principal</string>
@@ -823,7 +847,7 @@
   <string id="12004">Scripts/Informação</string>
   <string id="12005">Vídeo em Ecrã Completo</string>
   <string id="12006">Visualização para Áudio</string>
-  <string id="12007">Imagens/Apresentação de Slides</string>
+  <string id="12007">Imagens/Slideshow</string>
   <string id="12008">Diálogo de Fila de Ficheiros</string>
   <string id="12009">Reconstruindo o Índice ...</string>
   <string id="12010">Voltar à Janela da Música</string>
@@ -840,6 +864,7 @@
   <string id="12021">Iniciar do Princípio</string>
   <string id="12022">Continuar da última posição</string>
   <string id="12023">A validar Instrutores existentes ...</string>
+  <string id="12024">Gerar miniaturas automáticamente para vídeos sem capa</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -918,11 +943,40 @@
   <string id="13009">Sair</string>
   <string id="13010">Hibernar</string>
   <string id="13011">Suspender</string>
+  <string id="13012">Sair</string>
+  <string id="13013">Reiniciar</string>
+  <string id="13014">Minimizar</string>
+  <string id="13020">Estará outra sessão activa, talvez em ssh?</string>
+  <string id="13021">Disco rígido amovível montado</string>
+  <string id="13022">Remoção insegura de dispositivo </string>
+  <string id="13023">Dispositivo removido com sucesso</string>
   <string id="13100">Filtro 'Flicker'</string>
+  <string id="13101">Deixar o dispositivo escolher (requer reiniciar)</string>
   <string id="13105">Sincronização Branca Vertical</string>
   <string id="13106">Desligado</string>
   <string id="13107">Ligado durante a Reprodução de Vídeo</string>
   <string id="13108">Sempre Ligado</string>
+  <string id="13109">Testar resolução</string>
+  <string id="13110">Guardar resolução?</string>
+  <string id="13111">Quer manter esta resolução?</string>
+  <string id="13112">Upscaling por software de alta qualidade</string>
+  <string id="13113">Desligado</string>
+  <string id="13114">Ligado para conteúdos SD</string>
+  <string id="13115">Sempre ligado</string>
+  <string id="13116">Método de upscaling</string>
+  <string id="13117">Bicubic</string>
+  <string id="13118">Lanczos</string>
+  <string id="13119">Sinc</string>
+  <string id="13130">Branqueamento de ecrâ</string>
+  <string id="13131">Desligado</string>
+  <string id="13132">Ecrâs brancos</string>
+  <string id="13140">Ligações activas detectadas</string>
+  <string id="13141">Se continuar, pode não conseguir continuar a controlar o XBMC.</string>
+  <string id="13142">Tem a certeza que quer parar o servidor de eventos?</string>
+  <string id="13144">Mudar modo do comando Apple?</string>
+  <string id="13145">Se neste momento está a usar o comando remoto da Aplple</string>
+  <string id="13146">para controlar o XBMC, mudar esta configuração pode impedir</string>
+  <string id="13147">o seu uso daqui para a frente. Quer continuar?</string>
   <string id="13150">Chave do HDD:</string>
   <string id="13151">Temperatura HDD:</string>
   <string id="13152">Modelo DVD:</string>
@@ -1009,7 +1063,7 @@
   <string id="13315">Regenerar Miniaturas</string>
   <string id="13316">Miniaturas Recursivas</string>
   <string id="13317">Ver Apresentação</string>
-  <string id="13318">Apresentação recursiva</string>
+  <string id="13318">Apresentação Recursiva</string>
   <string id="13319">Aleatório</string>
   <string id="13320">Estéreo</string>
   <string id="13321">Só Esquerda</string>
@@ -1087,13 +1141,19 @@ para esta visualização</string>
   <string id="13405">Pegar Miniatura</string>
   <string id="13406">Informação da Imagem</string>
   <string id="13407">%s Predefinições</string>
-  <string id="13408">(Classificação do IMDB)</string>
+  <string id="13408">(Nota do IMDB)</string>
   <string id="13409">As Melhores 250</string>
   <string id="13410">Ligar a Last.FM</string>
   <string id="13411">Velocidade mínima da ventoinha</string>
   <string id="13412">Os feeds RSS contêm texto da direita para a esquerda</string>
   <string id="13413">A descarregar</string>
   <string id="13414">Esconder artistas que apenas aparecem em compilações</string>
+  <string id="13415">Método de renderização</string>
+  <string id="13416">Auto detectar</string>
+  <string id="13417">Shaders Básicos (ARB)</string>
+  <string id="13418">Shaders Avançados (GLSL)</string>
+  <string id="13419">Software</string>
+  <string id="13420">Ejectar</string>
   <string id="13600">Controlo remoto da Apple</string>
   <string id="13601">Modo</string>
   <string id="13602">Sempre a Executar</string>
@@ -1103,7 +1163,6 @@ para esta visualização</string>
   <string id="13612">Controlo Remoto Universal</string>
   <string id="13620">Driver do 'Remote Buddy' Instalado</string>
   <string id="13621">Não foi possível instalar o Controlo Remoto da Apple</string>
-  <string id="13622">Por favor ver o FAQ do 'Remote Buddy' para desinstalar.</string>
   <string id="14000">Agregar</string>
   <string id="14001">Desagregar</string>
   <string id="14003">Transferindo ficheiro de Lista de Reprodução...</string>
@@ -1121,7 +1180,7 @@ para esta visualização</string>
   <string id="14015">Nenhum ficheiro e pelo menos uma Miniatura</string>
   <string id="14016">Pelo menos um ficheiro e Miniatura</string>
   <string id="14017">Percentagem de Miniaturas</string>
-  <string id="14018">Opções de Visualização</string>
+  <string id="14018">Opções Visuais</string>
   <string id="14019">Alterar Código de Área 1</string>
   <string id="14020">Alterar Código de Área 2</string>
   <string id="14021">Alterar Código de Área 3</string>
@@ -1138,7 +1197,7 @@ para esta visualização</string>
   <string id="14034">Cache DVD - DVDRom</string>
   <string id="14035">- Rede Local</string>
   <string id="14036">Servidores</string>
-  <string id="14037">Aspecto e Comportamento</string>
+  <string id="14037">Aspecto</string>
   <string id="14038">Configuração de rede alterada</string>
   <string id="14039">XBMC necessita reiniciar para alterar a sua</string>
   <string id="14040">configuração de rede. Deseja reiniciar agora?</string>
@@ -1180,6 +1239,8 @@ para esta visualização</string>
   <string id="14076">Adicionar aos Favoritos</string>
   <string id="14077">Remover dos Favoritos</string>
   <string id="14078">Cores da Skin</string>
+  <string id="14079">País do Fuso Horário</string>
+  <string id="14080">Fuso Horário</string>
   <string id="15000">XLink Kai</string>
   <string id="15001">O serviço não esta ligado.</string>
   <string id="15002">Tento ligar de novo?</string>
@@ -1376,6 +1437,17 @@ para esta visualização</string>
   <string id="16204">A operação de mover falhou pelo menos num ficheiro</string>
   <string id="16205">Apagar falhou</string>
   <string id="16206">A operação de apagar falhou pelo menos num ficheiro</string>
+  <string id="16300">Método de escalonamento de vídeo</string>
+  <string id="16301">Nearest neighbour</string>
+  <string id="16302">Bilinear</string>
+  <string id="16303">Bicubic</string>
+  <string id="16304">Lanczos2</string>
+  <string id="16305">Lanczos3</string>
+  <string id="16306">Sinc8</string>
+  <string id="16307">Bicubic (software)</string>
+  <string id="16308">Lanczos (software)</string>
+  <string id="16309">Sinc (software)</string>
+  <string id="17500">Temporizador do ecrâ acabou</string>
   <string id="20000">Pasta de Gravação de CDDA</string>
   <string id="20001">Utilizar reprodutor DVD externo</string>
   <string id="20002">Reprodutor DVD Externo</string>
@@ -1428,7 +1500,7 @@ para esta visualização</string>
   <string id="20057">Remover Miniatura</string>
   <string id="20058">Adicionar Perfil ...</string>
   <string id="20059">Perguntando informação para todos os Álbuns</string>
-  <string id="20060">Informação de Media</string>
+  <string id="20060">Informação do Conteúdo</string>
   <string id="20061">Separado</string>
   <string id="20062">Partilhas com definições por defeito</string>
   <string id="20063">Partilhas com definições por defeito (modo só leitura)</string>
@@ -1439,7 +1511,7 @@ para esta visualização</string>
   <string id="20068">Bloquear Perfil</string>
   <string id="20069">Não consigo criar a pasta</string>
   <string id="20070">Pasta de Perfis</string>
-  <string id="20071">Iniciar com fontes de media recentes</string>
+  <string id="20071">Iniciar com fontes de conteúdo recentes</string>
   <string id="20072">Verifique se a pasta escolhida pode ser escrita</string>
   <string id="20073">e que o novo nome para a pasta é válido</string>
   <string id="20074">Avaliação MPAA:</string>
@@ -1462,7 +1534,7 @@ para esta visualização</string>
   <string id="20091">Código de Bloqueio</string>
   <string id="20092">Carregar Perfil</string>
   <string id="20093">Nome do Perfil</string>
-  <string id="20094">Fontes de Media</string>
+  <string id="20094">Fontes de Conteúdo</string>
   <string id="20095">Introduza código de bloqueio de perfil</string>
   <string id="20096">Ecrã de Login</string>
   <string id="20097">Procurando informação do álbum</string>
@@ -1474,7 +1546,7 @@ para esta visualização</string>
   <string id="20103">Gravar alterações no perfil?</string>
   <string id="20104">Configurações antigas encontradas.</string>
   <string id="20105">Deseja usá-las?</string>
-  <string id="20106">Fontes de media velhos encontrados.</string>
+  <string id="20106">Fontes velhas de conteúdo encontradas.</string>
   <string id="20107">Separado (bloqueado)</string>
   <string id="20108">Raiz</string>
   <string id="20109">Ampliação da Skin</string>
@@ -1701,6 +1773,14 @@ para esta visualização</string>
   <string id="20422">Sempre</string>
   <string id="20423">Tem Trailer</string>
   <string id="20424">Falso</string>
+  <string id="20425">Fanart slideshow</string>
+  <string id="20426">Exportar para ficheiro único ou separar</string>
+  <string id="20427">ficheiros por entrada?</string>
+  <string id="20428">Ficheiro único</string>
+  <string id="20429">Separar</string>
+  <string id="20430">Exportar miniaturas e fanart?</string>
+  <string id="20431">Escrever por cima de ficheiros antigos?</string>
+  <string id="20432">Excluir caminho da actualização das livrarias</string>
   <string id="21330">Mostrar ficheiros e pastas escondidas</string>
   <string id="21331">Cliente TuxBox</string>
   <string id="21332">AVISO: Dispositivo TuxBox alvo esta em modo Gravação!</string>
@@ -1712,17 +1792,17 @@ para esta visualização</string>
   <string id="21356">Música UPnP</string>
   <string id="21357">Vídeo  UPnP</string>
   <string id="21358">Imagens UPnP</string>
-  <string id="21359">Adicionar Partilha de Media</string>
+  <string id="21359">Adicionar Partilha de Conteúdo</string>
   <string id="21360">Activar Servidor UPnP</string>
   <string id="21361">Gerir Partilhas de Música UPnP</string>
   <string id="21362">Gerir Partilhas de Vídeo UPnP</string>
   <string id="21363">Gerir Partilhas de Imagens UPnP</string>
-  <string id="21364">Editar Partilha de Media</string>
-  <string id="21365">Remover Partilha de Media</string>
+  <string id="21364">Editar Partilha de Conteúdo</string>
+  <string id="21365">Remover Partilha de Conteúdo</string>
   <string id="21366">Pasta de Legendas Personalizada</string>
   <string id="21367">Filme e Pasta de Legendas Alternativas</string>
   <string id="21369">Rato Ligado</string>
-  <string id="21370">Reproduzir sons de navegação enquanto é reproduzido Media</string>
+  <string id="21370">Reproduzir sons de navegação durante reprodução de conteúdos</string>
   <string id="21371">Miniatura</string>
   <string id="21372">Forçar Região de Leitor de DVD</string>
   <string id="21373">Hardware de Vídeo</string>
@@ -1764,6 +1844,11 @@ para esta visualização</string>
   <string id="21409">antes</string>
   <string id="21410">na última</string>
   <string id="21411">não na última</string>
+  <string id="21412">Scrapers</string>
+  <string id="21413">Scraper pré-definido para filmes</string>
+  <string id="21414">Scraper pré-definido para séries</string>
+  <string id="21415">Scraper pré-definido para videoclips</string>
+  <string id="21416">Ligar "fallback" baseado na linguagem</string>
   <string id="21420">Valor a combinar</string>
   <string id="21421">Regra para Lista de Reprodução Inteligente</string>
   <string id="21422">Combinar Músicas onde</string>
@@ -1784,6 +1869,7 @@ para esta visualização</string>
   <string id="21437">Nova Lista de Reprodução Inteligente ...</string>
   <string id="21438">Drive %c</string>
   <string id="21439">Definir regras para modo Modo de Festa</string>
+  <string id="21440">Directoria Home</string>
   <string id="21441">Contagem de Assistidos</string>
   <string id="21442">Título do Episódio</string>
   <string id="21800">Nome do Ficheiro</string>
@@ -1874,6 +1960,26 @@ para esta visualização</string>
   <string id="22011">Temperatura do CPU:</string>
   <string id="22012">Memória Total</string>
   <string id="22013">Dados do Perfil</string>
+  <string id="22014">Usar desvanecer se pausado durante a reprodução</string>
+  <string id="22015">Todas as gravações</string>
+  <string id="22016">Por título</string>
+  <string id="22017">Por grupo</string>
+  <string id="22018">Canais ao vivo</string>
+  <string id="22019">Gravações por título</string>
+  <string id="22020">Guia</string>
+  <string id="22030">Fonte</string>
+  <string id="22031">- Tamanho</string>
+  <string id="22032">- Cores</string>
+  <string id="22033">- Charset</string>
+  <string id="22034">Exportar títulos de karaoke em HTML</string>
+  <string id="22035">Exportar títulos de karaoke em CVS</string>
+  <string id="22036">Importar títulos de karaoke...</string>
+  <string id="22037">Pop-Up automático do selector de músicas</string>
+  <string id="22038">Exportar títulos de karaoke...</string>
+  <string id="22040">branco/verde</string>
+  <string id="22041">branco/vermelho</string>
+  <string id="22042">branco/azul</string>
+  <string id="22043">preto/branco</string>
   <string id="29800">Biblioteca</string>
   <string id="29801">Teclado QWERTY</string>
   <string id="29999">Aplicar a configuração do Filtro 'Fliker' aos Jogos</string>

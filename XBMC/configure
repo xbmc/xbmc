@@ -730,7 +730,6 @@ enable_pulse
 enable_faac
 enable_dvdcss
 enable_mid
-enable_avahi
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1381,7 +1380,6 @@ Optional Features:
   --enable-faac           enable FAAC support (default is yes)
   --enable-dvdcss         enable DVDCSS support (default is yes)
   --enable-mid            enable MID support (default is no)
-  --enable-avahi          enable Avahi support (default is yes)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1995,8 +1993,6 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
-avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi support disabled. =="
-avahi_disabled="== Avahi support manually disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -2158,14 +2154,6 @@ if test "${enable_mid+set}" = set; then
   enableval=$enable_mid; use_mid=$enableval
 else
   use_mid=no
-fi
-
-
-# Check whether --enable-avahi was given.
-if test "${enable_avahi+set}" = set; then
-  enableval=$enable_avahi; use_avahi=$enableval
-else
-  use_avahi=yes
 fi
 
 
@@ -6195,6 +6183,79 @@ fi
 
 fi
 
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lcdio" >&5
+$as_echo_n "checking for main in -lcdio... " >&6; }
+if test "${ac_cv_lib_cdio_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcdio  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_cdio_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_cdio_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_cdio_main" >&5
+$as_echo "$ac_cv_lib_cdio_main" >&6; }
+if test "x$ac_cv_lib_cdio_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBCDIO 1
+_ACEOF
+
+  LIBS="-lcdio $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
 
@@ -7664,154 +7725,6 @@ fi
   else
     { $as_echo "$as_me:$LINENO: result: $faac_disabled" >&5
 $as_echo "$faac_disabled" >&6; }
-  fi
-fi
-
-# avahi
-if test "$host_vendor" = "apple" ; then
-  use_avahi="no"
-  { $as_echo "$as_me:$LINENO: result: $avahi_disabled" >&5
-$as_echo "$avahi_disabled" >&6; }
-else
-  if test "$use_avahi" = "yes"; then
-    { $as_echo "$as_me:$LINENO: checking for main in -lavahi-common" >&5
-$as_echo_n "checking for main in -lavahi-common... " >&6; }
-if test "${ac_cv_lib_avahi_common_main+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lavahi-common  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 $as_test_x conftest$ac_exeext
-       }; then
-  ac_cv_lib_avahi_common_main=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_avahi_common_main=no
-fi
-
-rm -rf conftest.dSYM
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_avahi_common_main" >&5
-$as_echo "$ac_cv_lib_avahi_common_main" >&6; }
-if test "x$ac_cv_lib_avahi_common_main" = x""yes; then
-  LIBS=" -lavahi-common $LIBS";
-else
-  use_avahi=no;{ $as_echo "$as_me:$LINENO: result: $avahi_not_found" >&5
-$as_echo "$avahi_not_found" >&6; }
-fi
-
-	if test "$use_avahi" = "yes"; then
-		#either both libs or none
-    	{ $as_echo "$as_me:$LINENO: checking for main in -lavahi-client" >&5
-$as_echo_n "checking for main in -lavahi-client... " >&6; }
-if test "${ac_cv_lib_avahi_client_main+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lavahi-client  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 $as_test_x conftest$ac_exeext
-       }; then
-  ac_cv_lib_avahi_client_main=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_avahi_client_main=no
-fi
-
-rm -rf conftest.dSYM
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_avahi_client_main" >&5
-$as_echo "$ac_cv_lib_avahi_client_main" >&6; }
-if test "x$ac_cv_lib_avahi_client_main" = x""yes; then
-  LIBS=" -lavahi-client $LIBS";INCLUDES="$INCLUDES -DHAS_AVAHI"
-else
-  use_avahi=no;{ $as_echo "$as_me:$LINENO: result: $avahi_not_found" >&5
-$as_echo "$avahi_not_found" >&6; }
-fi
-
-	fi
-  else
-    { $as_echo "$as_me:$LINENO: result: $avahi_disabled" >&5
-$as_echo "$avahi_disabled" >&6; }
   fi
 fi
 
@@ -15081,12 +14994,6 @@ $as_echo "$as_me: $dvdcss_disabled" >&6;}
   DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
 fi
 
-if test "$use_avahi" = "yes"; then
-  final_message="$final_message\n  Avahi:\tYes"
-else
-  final_message="$final_message\n  Avahi:\tNo"
-fi
-
 if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
 elif test -x "/usr/bin/svnversion" ; then
@@ -15100,7 +15007,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include guilib/common/Makefile xbmc/DllPaths_generated.h xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/linux/Makefile xbmc/screensavers/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.include guilib/common/Makefile xbmc/DllPaths_generated.h xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/linux/Makefile xbmc/screensavers/Makefile xbmc/screensavers/rsxs-0.9/xbmc/Makefile xbmc/visualizations/XBMCProjectM/Makefile xbmc/visualizations/Goom/Makefile xbmc/visualizations/OpenGLSpectrum/Makefile xbmc/visualizations/WaveForm/Makefile xbmc/visualizations/iTunes/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
 
 
 
@@ -15158,9 +15065,6 @@ $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't
    { (exit 1); exit 1; }; }
     fi;
 fi
-
-
-
 
 
 
@@ -15835,6 +15739,12 @@ do
     "xbmc/lib/libUPnP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libUPnP/Makefile" ;;
     "xbmc/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/linux/Makefile" ;;
     "xbmc/screensavers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/screensavers/Makefile" ;;
+    "xbmc/screensavers/rsxs-0.9/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/screensavers/rsxs-0.9/xbmc/Makefile" ;;
+    "xbmc/visualizations/XBMCProjectM/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/visualizations/XBMCProjectM/Makefile" ;;
+    "xbmc/visualizations/Goom/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/visualizations/Goom/Makefile" ;;
+    "xbmc/visualizations/OpenGLSpectrum/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/visualizations/OpenGLSpectrum/Makefile" ;;
+    "xbmc/visualizations/WaveForm/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/visualizations/WaveForm/Makefile" ;;
+    "xbmc/visualizations/iTunes/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/visualizations/iTunes/Makefile" ;;
     "tools/Linux/xbmc.sh") CONFIG_FILES="$CONFIG_FILES tools/Linux/xbmc.sh" ;;
     "tools/XBMCTex/Makefile") CONFIG_FILES="$CONFIG_FILES tools/XBMCTex/Makefile" ;;
 
@@ -16465,7 +16375,8 @@ if [ -d xbmc/lib/libPython/Python ]; then
       --without-cxx \
       --enable-shared \
       --without-pymalloc \
-      OPT="-Wno-deprecated-declarations" \
+      LDFLAGS="-L/opt/local/lib" \
+      OPT="-Wno-deprecated-declarations -I/opt/local/include" \
       MACOSX_DEPLOYMENT_TARGET=10.4 &&
     sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
     sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
@@ -16970,7 +16881,11 @@ fi;
 if [ -d xbmc/visualizations/XBMCProjectM/libprojectM ]; then
   pushd xbmc/visualizations/XBMCProjectM/libprojectM
 
-  rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  if test "$host_vendor" = "apple" ; then
+    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="-fno-common" -D CMAKE_CXX_FLAGS:STRING="-fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  else
+    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  fi
 
   if [ $? -ne 0 ]; then
     popd
@@ -17028,6 +16943,9 @@ if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
     ./configure \
       CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
       CXXFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      LDFLAGS="-L/opt/local/lib" \
+      LIBS="-lz" \
+      --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib \
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \
@@ -17037,7 +16955,7 @@ if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
       --disable-helios \
       --disable-hyperspace \
       --disable-lattice \
-       --disable-skyrocket
+      --disable-skyrocket
   else
     ./configure \
       CFLAGS="-fPIC" \
@@ -17065,31 +16983,6 @@ $as_echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configu
 else
   { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&2;}
-   { (exit 1); exit 1; }; }
-fi;
-
-
-if [ -d xbmc/lib/libcdio/libcdio ]; then
-  pushd xbmc/lib/libcdio/libcdio
-
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
-  else
-    ./configure
-  fi
-
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libcdio/libcdio failed to configure" >&5
-$as_echo "$as_me: error: Submodule xbmc/lib/libcdio/libcdio failed to configure" >&2;}
-   { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libcdio/libcdio doesn't exist" >&5
-$as_echo "$as_me: error: Submodule xbmc/lib/libcdio/libcdio doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
 fi;
 

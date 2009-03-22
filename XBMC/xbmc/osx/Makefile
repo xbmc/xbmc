@@ -3,9 +3,9 @@ INCLUDES=-I. -I.. -I../../guilib -I../linux -I../utils -I../FileSystem -I../lib/
 .SUFFIXES : .m .mm
 
 SRCS = \
-	XBMCMain.m \
+	SDLMain.m \
 	XBMCHelper.m \
-	CocoaUtils.m \
+	CocoaInterface.mm \
 	ZeroconfOSX.mm \
 	CPortAudio.cpp \
 	OSXGNUReplacements.c \

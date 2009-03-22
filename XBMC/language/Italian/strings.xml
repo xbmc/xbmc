@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: succo-->
 <!--Email: succo69@libero.it-->
-<!--Date of translation: 02/24/2009-->
+<!--Date of translation: 03/15/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 18029-->
+<!--Based on english strings version 18548-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -56,10 +56,10 @@
   <string id="119">Nuova cartella</string>
   <string id="120">Confermare copia del file</string>
   <string id="121">Confermare spostamento file</string>
-  <string id="122">Confermare eliminazione file? Questo cancellerà il file e non potrà essere annullato</string>
+  <string id="122">Confermare eliminazione file?</string>
   <string id="123">Copio questi files?</string>
   <string id="124">Muovo questi files?</string>
-  <string id="125">Elimino questi files? Questo cancellerà i file e non potrà essere annullato</string>
+  <string id="125">Elimino questi file? La cancellazione non potrà essere annullata!</string>
   <string id="126">Stato</string>
   <string id="127">Oggetti</string>
   <string id="128">Generale</string>
@@ -575,6 +575,8 @@
   </string>
   <string id="660">Amplificazione volume</string>
   <string id="661">Selez. cartella esportazione</string>
+  <string id="662">Questo file non è più disponibile.</string>
+  <string id="663">Vuoi rimuoverlo dall'archivio?</string>
   <string id="700">Riorganizza l'archivio</string>
   <string id="701">Eliminazione vecchie canzoni dall'archivio</string>
   <string id="702">Questo percorso è già stato esaminato in precedenza.</string>
@@ -730,6 +732,7 @@
   <string id="1045">Impostazioni plugin</string>
   <string id="1046">Access point</string>
   <string id="1047">Altro...</string>
+  <string id="1048">Username web server</string>
   <string id="1200">SMB client</string>
   <string id="1202">Workgroup</string>
   <string id="1203">Default username</string>
@@ -793,6 +796,7 @@
   <string id="1414">Temporale</string>
   <string id="1415">Acquerugiola</string>
   <string id="1416">Nebbie</string>
+  <string id="1417">Grani</string>
   <string id="2050">Durata:</string>
   <string id="4501">Tipo LCD</string>
   <string id="10000">Home</string>
@@ -958,6 +962,7 @@
   <string id="13020">C'è un'altra sessione attiva, forse via SSH?</string>
   <string id="13021">Hard disk rimuovibile montato</string>
   <string id="13022">Rimozione insicura</string>
+  <string id="13023">Rimozione periferica effettuata</string>
   <string id="13100">Filtro sfarfallio</string>
   <string id="13101">Fai scegliere al driver (riavvio necessario)</string>
   <string id="13105">Vertical blank sync</string>
@@ -1161,6 +1166,7 @@ per questo effetto grafico</string>
   <string id="13417">Sfumatura di base (ARB)</string>
   <string id="13418">Sfumatura avanzata (GLSL)</string>
   <string id="13419">Software</string>
+  <string id="13420">Espelli</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Modo</string>
   <string id="13602">Sempre attivo</string>

@@ -9,6 +9,13 @@ BIN_DIRS=	\
 	xbmc/cores/DllLoader/exports \
 	xbmc/cores/DllLoader/exports/util \
 	xbmc/cores/dvdplayer \
+	xbmc/cores/dvdplayer/DVDCodecs \
+	xbmc/cores/dvdplayer/DVDCodecs/Audio \
+	xbmc/cores/dvdplayer/DVDCodecs/Overlay \
+	xbmc/cores/dvdplayer/DVDCodecs/Video \
+	xbmc/cores/dvdplayer/DVDDemuxers/ \
+	xbmc/cores/dvdplayer/DVDInputStreams/ \
+	xbmc/cores/dvdplayer/DVDSubtitles/ \
 	xbmc/cores/paplayer \
 	xbmc/cores/AudioRenderers \
 	xbmc/cores/VideoRenderers \
@@ -17,6 +24,7 @@ BIN_DIRS=	\
 	xbmc/FileSystem \
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
+	xbmc/karaoke \
 	xbmc/lib/libcmyth \
 	xbmc/lib/libhts \
 	xbmc/lib/libGoAhead \
@@ -29,12 +37,12 @@ BIN_DIRS=	\
 	xbmc/lib/libUPnP \
 	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
-	xbmc/lib/libcdio/libcdio \
 	xbmc/lib/sqLite \
 	xbmc/lib/UnrarXLib \
 	xbmc/visualizations \
 	xbmc/screensavers \
 	xbmc/utils \
+	xbmc/settings \
 	xbmc/linux \
 	xbmc/xbox \
 	xbmc/osx
@@ -103,7 +111,7 @@ all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Te
 
 include Makefile.include
 
-.PHONY : guilib xbmc filesystem musicdatabase videodatabase cores paplayer dllloader exports osx xbox linux visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip externalplayer libkaraoke
+.PHONY : guilib xbmc filesystem cores paplayer dllloader exports osx xbox linux visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip externalplayer libkaraoke settings
 
 $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
@@ -119,9 +127,7 @@ externalplayer:
 	$(MAKE) -C xbmc/cores/ExternalPlayer
 filesystem: 
 	$(MAKE) -C xbmc/FileSystem
-musicdatabase: 
 	$(MAKE) -C xbmc/FileSystem/MusicDatabaseDirectory
-videodatabase: 
 	$(MAKE) -C xbmc/FileSystem/VideoDatabaseDirectory
 cores: 
 	$(MAKE) -C xbmc/cores
@@ -133,6 +139,7 @@ dllloader: exports
 	$(MAKE) -C xbmc/cores/DllLoader
 exports:
 	$(MAKE) -C xbmc/cores/DllLoader/exports
+	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
 	$(MAKE) -C xbmc/cores/DllLoader/exports/util
 osx: 
 ifeq ($(findstring osx,$(ARCH)), osx)
@@ -174,8 +181,17 @@ libgoahead:
 	$(MAKE) -C xbmc/lib/libGoAhead
 libupnp: 
 	$(MAKE) -C xbmc/lib/libUPnP
+settings:
+	$(MAKE) -C xbmc/settings
 dvdplayer:
 	$(MAKE) -C xbmc/cores/dvdplayer
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Audio
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Overlay
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDDemuxers
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDInputStreams
+	$(MAKE) -C xbmc/cores/dvdplayer/DVDSubtitles
 	$(MAKE) -C xbmc/cores/VideoRenderers 
 	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders 
 dvdpcodecs: dllloader
@@ -209,8 +225,6 @@ libshout:
 	$(MAKE) -C xbmc/lib/libshout
 libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
-libcdio:
-	$(MAKE) -C xbmc/lib/libcdio/libcdio
 papcodecs: dllloader linux dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
@@ -243,66 +257,66 @@ libs: libhdhomerun libid3tag imagelib libexif python
 externals: codecs libs python visualizations screensavers
 more_libs: librtmp libxbms librtv libxdaap libshout libgoahead
 
-compile: guilib xbmc filesystem musicdatabase videodatabase cores audiorenderers cdrip \
+compile: guilib xbmc filesystem cores audiorenderers cdrip \
 	paplayer dllloader exports osx xbox linux utils common tinyxml sqllite \
 	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
 	librtmp libxbms librtv libxdaap libshout screensaver-interface \
-	visualization-interface libcdio externalplayer libkaraoke libhts
+	visualization-interface externalplayer libkaraoke libhts settings 
 
 # platform independend objects
 OBJSXBMC=	\
-	guilib/*.o \
-	guilib/common/*.o \
-	guilib/tinyXML/*.o \
-	xbmc/*.o \
-	xbmc/cdrip/*.o \
-	xbmc/cores/*.o \
-	xbmc/cores/DllLoader/*.o \
-	xbmc/cores/DllLoader/exports/*.o \
-	xbmc/cores/DllLoader/exports/util/*.o \
+	guilib/guilib.a \
+	guilib/common/gui_common.a \
+	guilib/tinyXML/tinyxml.a \
+	xbmc/xbmc.a \
+	xbmc/cdrip/cdrip.a \
+	xbmc/cores/cores.a \
+	xbmc/cores/DllLoader/dllloader.a \
+	xbmc/cores/DllLoader/exports/exports.a \
+	xbmc/cores/DllLoader/exports/util/exports_utils.a \
 	xbmc/cores/dvdplayer/DVDPlayer.a \
-	xbmc/cores/paplayer/*.o \
-	xbmc/cores/AudioRenderers/*.o \
-	xbmc/cores/VideoRenderers/*.o \
-	xbmc/cores/VideoRenderers/VideoShaders/*.o \
-	xbmc/cores/ExternalPlayer/*.o \
-	xbmc/FileSystem/*.o \
-	xbmc/FileSystem/MusicDatabaseDirectory/*.o \
-	xbmc/FileSystem/VideoDatabaseDirectory/*.o \
-	xbmc/karaoke/*.o \
-	xbmc/lib/libcdio/libcdio/lib/cdio++/*.o \
-	xbmc/lib/libcdio/libcdio/lib/cdda_interface/*.o \
-	xbmc/lib/libcdio/libcdio/lib/driver/*.o \
-	xbmc/lib/libcdio/libcdio/lib/iso9660/*.o \
-	xbmc/lib/libcdio/libcdio/lib/paranoia/*.o \
-	xbmc/lib/libcdio/libcdio/lib/udf/*.o \
-	xbmc/lib/libcmyth/*.o \
-	xbmc/lib/libhts/*.o \
-	xbmc/lib/libPython/*.o \
-	xbmc/lib/libPython/xbmcmodule/*.o \
-	xbmc/lib/libRTMP/*.o \
-	xbmc/lib/libscrobbler/*.o \
+	xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a \
+	xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a \
+	xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a \
+	xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a \
+	xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
+	xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
+	xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a \
+	xbmc/cores/paplayer/paplayer.a \
+	xbmc/cores/AudioRenderers/audiorenderers.a \
+	xbmc/cores/VideoRenderers/VideoRenderer.a \
+	xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a \
+	xbmc/cores/ExternalPlayer/ExternalPlayer.a \
+	xbmc/FileSystem/filesystem.a \
+	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
+	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
+	xbmc/karaoke/karaoke.a \
+	xbmc/lib/libcmyth/libcmyth.a \
+	xbmc/lib/libhts/libhts.a \
+	xbmc/lib/libPython/python.a \
+	xbmc/lib/libPython/xbmcmodule/xbmcmodule.a \
+	xbmc/lib/libRTMP/librtmp.a \
+	xbmc/lib/libscrobbler/scrobbler.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
-	xbmc/lib/sqLite/*.o \
-	xbmc/lib/UnrarXLib/*.o \
-	xbmc/linux/*.o \
-	xbmc/screensavers/*.o \
-	xbmc/settings/*.o \
-	xbmc/utils/*.o \
-	xbmc/visualizations/*.o \
-	xbmc/xbox/*.o
+	xbmc/lib/sqLite/sqllite.a \
+	xbmc/lib/UnrarXLib/UnrarXLib.a \
+	xbmc/linux/linux.a \
+	xbmc/screensavers/screensaver.a \
+	xbmc/settings/settings.a \
+	xbmc/utils/utils.a \
+	xbmc/visualizations/visualization.a \
+	xbmc/xbox/xbox.a
 
 # platform dependend objects
 ifeq ($(findstring osx,$(ARCH)), osx)
 OBJSXBMC += \
-	xbmc/osx/*.o \
+	xbmc/osx/osx.a \
 	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
-	xbmc/lib/libSDL-OSX/libSDLmain-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a \
 	system/players/dvdplayer/avutil-49-@ARCH@.a \
@@ -332,7 +346,11 @@ endif
 $(wildcard $(OBJSXBMC)) :| compile
 
 xbmc.bin: $(wildcard $(OBJSXBMC)) | compile
+ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
+else
+	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin -Wl,--whole-archive $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) $(LDFLAGS) -rdynamic
+endif
 
 xbmc-xrandr: xbmc-xrandr.c
 ifeq ($(findstring osx,$(ARCH)), osx)

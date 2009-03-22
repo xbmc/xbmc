@@ -69,46 +69,46 @@ void CGUIAudioManager::Initialize(int iDevice)
 
 void CGUIAudioManager::DeInitialize(int iDevice)
 {
-  CSingleLock lock(m_cs);
-
   if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
 
-  if (m_actionSound)
-  {
-    //  Wait for finish when an action sound is playing
+  CSingleLock lock(m_cs);
+  if (m_actionSound) //  Wait for finish when an action sound is playing
     while(m_actionSound->IsPlaying()) {}
 
+  Stop();
+#ifdef HAS_SDL_AUDIO
+  Mix_CloseAudio();
+#endif
+
+}
+void CGUIAudioManager::Stop()
+{
+  CSingleLock lock(m_cs);
+  if (m_actionSound)
+  {
     delete m_actionSound;
     m_actionSound=NULL;
   }
 
-  windowSoundsMap::iterator it=m_windowSounds.begin();
-  while (it!=m_windowSounds.end())
+  for (windowSoundsMap::iterator it=m_windowSounds.begin();it!=m_windowSounds.end();it++)
   {
     CGUISound* sound=it->second;
     if (sound->IsPlaying())
       sound->Stop();
 
     delete sound;
-    m_windowSounds.erase(it++);
   }
   m_windowSounds.clear();
 
-  pythonSoundsMap::iterator it1=m_pythonSounds.begin();
-  while (it1!=m_pythonSounds.end())
+  for (pythonSoundsMap::iterator it1=m_pythonSounds.begin();it1!=m_pythonSounds.end();it1++)
   {
     CGUISound* sound=it1->second;
     if (sound->IsPlaying())
       sound->Stop();
 
     delete sound;
-    m_pythonSounds.erase(it1++);
   }
   m_pythonSounds.clear();
-
-#ifdef HAS_SDL_AUDIO
-  Mix_CloseAudio();
-#endif
 }
 
 // \brief Clear any unused audio buffers

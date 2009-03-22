@@ -5,40 +5,23 @@
 //  Created by Elan Feingold on 1/5/2008.
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
+#import <unistd.h>
+#import <fcntl.h>
+#import <stdio.h>
+
 #import <Cocoa/Cocoa.h>
+#import <CoreFoundation/CoreFoundation.h>
 #import <OpenGL/OpenGL.h>
-#if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
 #import <OpenGL/gl.h>
-#endif
-#include <CoreFoundation/CoreFoundation.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
 
-#include <mach/mach_port.h>
-#include <mach/mach_interface.h>
-#include <mach/mach_init.h>
-
-#include <IOKit/pwr_mgt/IOPMLib.h>
-#include <IOKit/IOKitLib.h>
-#include <Carbon/Carbon.h>
-
-#include "CocoaUtils.h"
-#import "XBMCMain.h" 
+#import "CocoaUtils.h"
 
 #define MAX_DISPLAYS 32
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
-void Cocoa_Initialize(void* pApplication)
-{
-  // Intialize the Apple remote code.
-  [[XBMCMain sharedInstance] setApplication: pApplication];
-
-  // Initialize.
-  int i;
-  for (i=0; i<MAX_DISPLAYS; i++)
-    blankingWindows[i] = 0;
-}
+// Display Blanking
+void Cocoa_GL_UnblankOtherDisplays(int screen);
+void Cocoa_GL_BlankOtherDisplays(int screen);
 
 void* InitializeAutoReleasePool()
 {
@@ -70,8 +53,6 @@ void Cocoa_GL_SwapBuffers(void* theContext)
 {
   [ (NSOpenGLContext*)theContext flushBuffer ];
 }
-
-#define MAX_DISPLAYS 32
 
 int Cocoa_GetNumDisplays()
 {
@@ -248,14 +229,19 @@ void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
 
 void Cocoa_GL_BlankOtherDisplays(int screen)
 {
+  int i;
   int numDisplays = [[NSScreen screens] count];
   
-  int i = 0;
-
+  // zero out blankingWindows for debugging
+  for (i=0; i<MAX_DISPLAYS; i++)
+  {
+    blankingWindows[i] = 0;
+  }
+  
   // Blank.
   for (i=0; i<numDisplays; i++)
   {
-    if (i != screen && blankingWindows[i] == 0)
+    if (i != screen)
     {
       // Get the size.
       NSScreen* pScreen = [[NSScreen screens] objectAtIndex:i];
@@ -480,7 +466,12 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       
       // Unblank.
       if (blankOtherDisplays)
+      {
+        lastScreen = [[lastView window] screen];
+        screen_index = Cocoa_GetDisplayIndex( Cocoa_GetDisplayIDFromScreen(lastScreen) );
+
         Cocoa_GL_UnblankOtherDisplays(screen_index);
+      }
     }
     
     // obtain windowed pixel format
@@ -621,6 +612,7 @@ void* Cocoa_GL_ReplaceSDLWindowContext()
 
 int Cocoa_IdleDisplays()
 {
+#if !defined(__POWERPC__)
   // http://lists.apple.com/archives/Cocoa-dev/2007/Nov/msg00267.html
   // This is an unsupported system call that kernel panics on PPC boxes
   io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
@@ -628,6 +620,9 @@ int Cocoa_IdleDisplays()
   int err = IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue);
   IOObjectRelease(r);
   return err;
+#else
+  return 0;
+#endif
 }
 
 /* 10.5 only
@@ -710,6 +705,7 @@ int Cocoa_TouchDVDOpenMediaFile(const char *strDVDFile)
   return(0);
 }
 */
+
 /*
 @interface MyView : NSOpenGLView
 {

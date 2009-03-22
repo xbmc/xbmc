@@ -36,6 +36,7 @@ Source/MACLib/Old/AntiPredictorNormal.o \
 Source/MACDll/MACDll.o
 
 CFLAGS +=-ISource/Shared -DPIC -fPIC -ISource/MACLib -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM -D_LINUX
+CXXFLAGS +=-ISource/Shared -DPIC -fPIC -ISource/MACLib -pedantic -D__GNUC_IA32__ -DBUILD_CROSS_PLATFORM -D_LINUX
 
 ARCH=@ARCH@
 
@@ -43,15 +44,19 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 	CFLAGS+=-UHAVE_WCSCASECMP
 	CFLAGS+=-w
+	CXXFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	CXXFLAGS+=-UHAVE_WCSCASECMP
+	CXXFLAGS+=-w
 else
 	CFLAGS+=-DHAVE_WCSCASECMP
+	CXXFLAGS+=-DHAVE_WCSCASECMP
 endif
 
 SYSDIR=../../../../system/players/paplayer/
 SO=MACDll-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
+SLIB=$(SYSDIR)/$(SO)
 
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	gcc -bundle -flat_namespace -undefined suppress -shared \
 		-isysroot /Developer/SDKs/MacOSX10.4u.sdk \
