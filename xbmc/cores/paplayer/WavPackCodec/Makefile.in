@@ -2,6 +2,9 @@ ARCH=@ARCH@
 
 CFLAGS +=-D_LINUX -fPIC -DPACK -DUNPACK -DSEEKING -DTAGS -DVER3 -DUSE_FSTREAMS
 OBJS=bits.o extra1.o extra2.o float.o md5.o metadata.o pack.o unpack.o unpack3.o utils.o words.o wputils.o
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o -L/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/ -lgcc
+endif
 
 SLIB=../../../../system/players/paplayer/wavpack-@ARCH@.so
 
