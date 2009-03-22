@@ -5,7 +5,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
     CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 endif
 ifeq ($(ARCH), powerpc-osx)
-	BUNDLE1_O=-lbundle1.o
+	BUNDLE1_O=-lbundle1.o -L/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/ -lgcc
 endif
 
 

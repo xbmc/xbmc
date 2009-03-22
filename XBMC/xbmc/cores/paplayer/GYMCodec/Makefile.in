@@ -3,6 +3,9 @@ ARCH=@ARCH@
 CFLAGS+=-D_LINUX -fPIC -I../../../linux -I../../../ -I../../../../guilib/
 CXXFLAGS+=-D_LINUX -fPIC -I../../../linux -I../../../ -I../../../../guilib/
 OBJS=gym_play.o psg.o XBMCGYM.o ym2612.o
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o -L/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/ -lgcc
+endif
 
 SLIB=../../../../system/players/paplayer/gensapu-@ARCH@.so
 
