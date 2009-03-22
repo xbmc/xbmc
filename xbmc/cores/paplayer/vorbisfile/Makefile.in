@@ -2,8 +2,8 @@ ARCH=@ARCH@
 DIRS=ogg libvorbis
 SYSDIR=../../../../system/players/paplayer
 SO=vorbisfile-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
-LIBS=libvorbis/lib/.libs/libvorbis.a ogg/src/.libs/libogg.a
+SLIB=$(SYSDIR)/$(SO)
+SLIBS=libvorbis/lib/.libs/libvorbis.a ogg/src/.libs/libogg.a
 
 ifeq ($(ARCH), powerpc-osx)
 	BUNDLE1_O=-lbundle1.o
@@ -12,7 +12,7 @@ endif
 
 .PHONY: compile
 
-$(LIB): $(LIBS)
+$(SLIB): $(SLIBS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		libvorbis/lib/.libs/vorbisfile.o \
@@ -27,7 +27,7 @@ else
 		../../DllLoader/exports/wrapper.o
 endif
 
-$(LIBS): compile
+$(SLIBS): compile
 
 libvorbis/lib/.libs/libvorbis.a:
 	$(MAKE) -C libvorbis
@@ -35,11 +35,4 @@ libvorbis/lib/.libs/libvorbis.a:
 ogg/src/.libs/libogg.a:
 	$(MAKE) -C ogg
 
-clean:
-	for d in $(DIRS); do $(MAKE) -C $$d clean; done
-	rm -f $(LIB)
-
-distclean:
-	for d in $(DIRS); do $(MAKE) -C $$d distclean; done
-	rm -f $(LIB)
-
+include ../../../../Makefile.include

@@ -1,5 +1,8 @@
+ARCH=@ARCH@
 INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils
-CFLAGS=-fPIC
+CXXFLAGS=-fPIC
+
+.PHONY: compile
 
 OUTDIR=../../../../screensavers
 RSXS=..
@@ -19,44 +22,41 @@ EUPHORIA-DEP=$(RSXS)/src/euphoria/rs-euphoria
 
 CLEAN_FILES=$(SOLARWINDS-OUT) $(PLASMA-OUT) $(EUPHORIA-OUT)
 
-include ../../../../Makefile.include
-
 all: $(SOLARWINDS-OUT) $(PLASMA-OUT) $(EUPHORIA-OUT);
 
 $(SOLARWINDS-OUT): $(SOLARWINDS-DEP)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared \
+	$(CXX) $(CXXFLAGS) -bundle -flat_namespace -undefined suppress -shared \
 		-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		-o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS)
 else
-	$(CXX) $(CFLAGS) -shared -o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS) -lXmu
+	$(CXX) $(CXXFLAGS) -shared -o $(SOLARWINDS-OUT) $(RSXS)/src/solarwinds/*.o $(RSXS-OBJS) -lXmu
 endif
 
 $(PLASMA-OUT): $(PLASMA-DEP)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared \
+	$(CXX) $(CXXFLAGS) -bundle -flat_namespace -undefined suppress -shared \
 		-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		-o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS)
 else
-	$(CXX) $(CFLAGS) -shared -o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS) -lXmu
+	$(CXX) $(CXXFLAGS) -shared -o $(PLASMA-OUT)     $(RSXS)/src/plasma/*.o     $(RSXS-OBJS) -lXmu
 endif
 
 $(EUPHORIA-OUT): $(EUPHORIA-DEP)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared \
+	$(CXX) $(CXXFLAGS) -bundle -flat_namespace -undefined suppress -shared \
 		-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 		-o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o   $(RSXS-OBJS)
 else
-	$(CXX) $(CFLAGS) -shared -o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o   $(RSXS-OBJS) -lXmu
+	$(CXX) $(CXXFLAGS) -shared -o $(EUPHORIA-OUT)   $(RSXS)/src/euphoria/*.o   $(RSXS-OBJS) -lXmu
 endif
 
-$(SOLARWINDS-DEP) : $(RSXS);
-$(PLASMA-DEP)     : $(RSXS);
-$(EUPHORIA-DEP)   : $(RSXS);
+$(SOLARWINDS-DEP) : $(RSXS)
+$(PLASMA-DEP)     : $(RSXS)
+$(EUPHORIA-DEP)   : $(RSXS)
 
-$(RSXS):
+$(RSXS): compile
 	$(MAKE) -C $(RSXS)
 
-.PHONY: $(RSXS);
-.DEFAULT_GOAL:=all
+include ../../../../Makefile.include
 

@@ -1,8 +1,6 @@
 INCLUDES=-I. -I../../../ -I../../../linux -I../../../../guilib
 
-SRCS=emu_dummy.cpp emu_dx8.cpp emu_kernel32.cpp exports_kernel32.cpp emu_msvcrt.cpp exports_msvcrt.cpp exports_python_linux.cpp
-
-OBJS=wrapper.o wrapper.def
+SRCS=emu_dummy.cpp emu_dx8.cpp emu_kernel32.cpp exports_kernel32.cpp emu_msvcrt.cpp exports_msvcrt.cpp exports_python_linux.cpp wrapper.c
 
 LIB=exports.a
 

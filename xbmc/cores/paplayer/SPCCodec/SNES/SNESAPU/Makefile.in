@@ -13,9 +13,9 @@ endif
 
 SYSDIR=../../../../../../system/players/paplayer/
 SO=SNESAPU-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
+SLIB=$(SYSDIR)/$(SO)
 
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CC) -bundle -undefined dynamic_lookup  \
 		-isysroot /Developer/SDKs/MacOSX10.4u.sdk \

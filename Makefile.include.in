@@ -7,7 +7,7 @@ abs_top_srcdir=@abs_top_srcdir@
 prefix=@prefix@
 CXX=@CXX@
 CC=@CC@
-CXXFLAGS+=$(CFLAGS) @CXXFLAGS@
+CXXFLAGS+=@CXXFLAGS@
 CXXFLAGS+=@DEBUG_FLAGS@
 CFLAGS+=@CFLAGS@
 CFLAGS+=@DEBUG_FLAGS@
@@ -100,13 +100,14 @@ OBJS+=$(filter %.o,$(SRCS:.m=.o))
 
 .PHONY : lib pch clean distclean distclean_evil
 
-lib: $(OBJS)
+$(LIB): $(OBJS)
+	$(AR) cru $(LIB) $(OBJS)
 
 pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) pch ); done
 
 clean: 
-	$(RM) $(OBJS) *.o $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d clean); fi ); done
 
 distclean_evil:
@@ -119,6 +120,6 @@ distclean_evil:
 	@echo "Done."
 
 distclean:
-	$(RM) $(OBJS) *.o $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d distclean || $(MAKE) -C $$d clean); fi ); done
 
