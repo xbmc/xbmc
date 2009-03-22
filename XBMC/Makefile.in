@@ -37,7 +37,6 @@ BIN_DIRS=	\
 	xbmc/lib/libUPnP \
 	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
-	xbmc/lib/libcdio/libcdio \
 	xbmc/lib/sqLite \
 	xbmc/lib/UnrarXLib \
 	xbmc/visualizations \
@@ -226,8 +225,6 @@ libshout:
 	$(MAKE) -C xbmc/lib/libshout
 libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
-libcdio:
-	$(MAKE) -C xbmc/lib/libcdio/libcdio
 papcodecs: dllloader linux dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
@@ -264,7 +261,7 @@ compile: guilib xbmc filesystem cores audiorenderers cdrip \
 	paplayer dllloader exports osx xbox linux utils common tinyxml sqllite \
 	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
 	librtmp libxbms librtv libxdaap libshout screensaver-interface \
-	visualization-interface libcdio externalplayer libkaraoke libhts settings
+	visualization-interface externalplayer libkaraoke libhts settings 
 
 # platform independend objects
 OBJSXBMC=	\
@@ -294,12 +291,6 @@ OBJSXBMC=	\
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
 	xbmc/karaoke/karaoke.a \
-	xbmc/lib/libcdio/libcdio/lib/cdio++/*.o \
-	xbmc/lib/libcdio/libcdio/lib/cdda_interface/*.o \
-	xbmc/lib/libcdio/libcdio/lib/driver/*.o \
-	xbmc/lib/libcdio/libcdio/lib/iso9660/*.o \
-	xbmc/lib/libcdio/libcdio/lib/paranoia/*.o \
-	xbmc/lib/libcdio/libcdio/lib/udf/*.o \
 	xbmc/lib/libcmyth/libcmyth.a \
 	xbmc/lib/libhts/libhts.a \
 	xbmc/lib/libPython/python.a \

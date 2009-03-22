@@ -226,6 +226,7 @@ AC_CHECK_LIB([pcre],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],,
   AC_CHECK_LIB([lzo],       [main],, AC_MSG_ERROR(ERROR: Could not find either liblzo or liblzo2 - one of these must be present))
   )
+AC_CHECK_LIB([cdio],        [main],, AC_MSG_ERROR($missing_library))
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([z],         [main],, AC_MSG_ERROR($missing_library))
@@ -920,14 +921,6 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
   fi
 ])
 
-XB_CONFIG_MODULE([xbmc/lib/libcdio/libcdio], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
-  else
-    ./configure
-  fi
-])
 AC_OUTPUT
 
 final_message="$final_message\n  prefix:\t$prefix\n$dashes"
