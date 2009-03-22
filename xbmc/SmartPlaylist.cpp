@@ -250,6 +250,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_WRITER);
     fields.push_back(FIELD_AIRDATE);
     fields.push_back(FIELD_PLAYCOUNT);
+    fields.push_back(FIELD_LASTPLAYED);
     if (!sortOrders)
       fields.push_back(FIELD_GENRE);
     fields.push_back(FIELD_YEAR); // premiered
@@ -272,6 +273,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_TIME);
     fields.push_back(FIELD_WRITER);
     fields.push_back(FIELD_PLAYCOUNT);
+    fields.push_back(FIELD_LASTPLAYED);
     fields.push_back(FIELD_GENRE);
     fields.push_back(FIELD_YEAR); // premiered
     fields.push_back(FIELD_DIRECTOR);
@@ -295,6 +297,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_FILENAME);
     fields.push_back(FIELD_PATH);
     fields.push_back(FIELD_PLAYCOUNT);
+    fields.push_back(FIELD_LASTPLAYED);
     fields.push_back(FIELD_TIME);
     fields.push_back(FIELD_DIRECTOR);
     fields.push_back(FIELD_STUDIO);
@@ -420,6 +423,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       query = "idmovie" + negate + " in (select idmovie from studiolinkmovie join studio on studio.idstudio=studiolinkmovie.idstudio where studio.strStudio" + parameter + ")";
     else if (m_field == FIELD_HASTRAILER)
       query = negate + GetDatabaseField(m_field, strType) + "!= ''";
+    else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+      query = "lastPlayed is NULL or lastPlayed" + parameter;
   }
   else if (strType == "musicvideos")
   {
@@ -431,6 +436,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       query = "idmvideo" + negate + " in (select idmvideo from studiolinkmusicvideo join studio on studio.idstudio=studiolinkmusicvideo.idstudio where studio.strStudio" + parameter + ")";
     else if (m_field == FIELD_DIRECTOR)
       query = "idmvideo" + negate + " in (select idmvideo from directorlinkmusicvideo join actors on actors.idactor=directorlinkmusicvideo.iddirector where actors.strActor" + parameter + ")";
+    else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+      query = "lastPlayed is NULL or lastPlayed" + parameter;
   }
   else if (strType == "tvshows")
   {
@@ -451,6 +458,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       query = "idepisode" + negate + " in (select idepisode from actorlinkepisode join actors on actors.idactor=actorlinkepisode.idactor where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_WRITER)
       query = "idepisode" + negate + " in (select idepisode from writerlinkepisode join actors on actors.idactor=writerlinkepisode.idwriter where actors.strActor" + parameter + ")";
+    else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
+      query = "lastPlayed is NULL or lastPlayed" + parameter;
   }
   if (m_field == FIELD_PLAYLIST)
   { // playlist field - grab our playlist and add to our where clause
@@ -538,7 +547,8 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_RATING) result.Format("c%02d", VIDEODB_ID_RATING);
     else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_RUNTIME);
     else if (field == FIELD_WRITER) result.Format("c%02d", VIDEODB_ID_CREDITS);   // join required
-    else if (field == FIELD_PLAYCOUNT) result.Format("c%02d", VIDEODB_ID_PLAYCOUNT);
+    else if (field == FIELD_PLAYCOUNT) "playCount";
+    else if (field == FIELD_LASTPLAYED) "lastPlayed";
     else if (field == FIELD_GENRE) result.Format("c%02d", VIDEODB_ID_GENRE);    // join required
     else if (field == FIELD_YEAR) result.Format("c%02d", VIDEODB_ID_YEAR);
     else if (field == FIELD_DIRECTOR) result.Format("c%02d", VIDEODB_ID_DIRECTOR); // join required
@@ -563,7 +573,8 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_ARTIST) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_ARTIST);  // join required;
     else if (field == FIELD_FILENAME) result = "strFilename";
     else if (field == FIELD_PATH) result = "strPath";
-    else if (field == FIELD_PLAYCOUNT) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
+    else if (field == FIELD_PLAYCOUNT) "playCount";
+    else if (field == FIELD_LASTPLAYED) "lastPlayed";
     else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_RUNTIME);
     else if (field == FIELD_DIRECTOR) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_DIRECTOR);   // join required
     else if (field == FIELD_STUDIO) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_STUDIOS);     // join required
@@ -602,7 +613,8 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_EPISODE_RUNTIME);
     else if (field == FIELD_WRITER) result.Format("c%02d", VIDEODB_ID_EPISODE_CREDITS);   // join required
     else if (field == FIELD_AIRDATE) result.Format("c%02d", VIDEODB_ID_EPISODE_AIRED);
-    else if (field == FIELD_PLAYCOUNT) result.Format("c%02d", VIDEODB_ID_EPISODE_PLAYCOUNT);
+    else if (field == FIELD_PLAYCOUNT) "playCount";
+    else if (field == FIELD_LASTPLAYED) "lastPlayed";
     else if (field == FIELD_GENRE) result = "cant_order_by_genre";    // join required
     else if (field == FIELD_YEAR) result = "premiered";
     else if (field == FIELD_DIRECTOR) result.Format("c%02d", VIDEODB_ID_EPISODE_DIRECTOR); // join required
