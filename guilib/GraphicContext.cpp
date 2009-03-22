@@ -27,6 +27,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBVideoConfig.h"
+#include "GUIAudioManager.h"
 #ifdef HAS_XBOX_D3D
  #include "xgraphics.h"
  #define D3D_CLEAR_STENCIL D3DCLEAR_STENCIL

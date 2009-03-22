@@ -40,7 +40,6 @@ protected:
   virtual bool Update(const CStdString& strDirectory);
   virtual bool OnPlayMedia(int iItem);
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
-  virtual void OnWindowLoaded();
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 

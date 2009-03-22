@@ -291,8 +291,6 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         CGUIMessage message(GUI_MSG_FOCUSED, GetParentID(), GetID());
         if (m_parentControl)
           m_parentControl->OnMessage(message);
-        else
-        SendWindowMessage(message);
       }
       return true;
       break;
@@ -557,7 +555,7 @@ void CGUIControl::ResetAnimations()
     m_animations[i].ResetAnimation();
 }
 
-void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
+bool CGUIControl::CheckAnimation(ANIMATION_TYPE animType)
 {
   // rule out the animations we shouldn't perform
   if (!IsVisible() || !HasRendered()) 
@@ -565,7 +563,7 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
     if (animType == ANIM_TYPE_WINDOW_CLOSE)
     { // could be animating a (delayed) window open anim, so reset it
       ResetAnimation(ANIM_TYPE_WINDOW_OPEN);
-      return;
+      return false;
     }
   }
   if (!IsVisible())
@@ -574,11 +572,18 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
     {
       // update states to force it hidden
       UpdateStates(animType, ANIM_PROCESS_NORMAL, ANIM_STATE_APPLIED);
-      return;
+      return false;
     }
     if (animType == ANIM_TYPE_WINDOW_OPEN)
-      return;
+      return false;
   }
+  return true;
+}
+
+void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
+{
+  if (!CheckAnimation(animType))
+    return;
   CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType, false);
   CAnimation *forwardAnim = GetAnimation(animType);
   // we first check whether the reverse animation is in progress (and reverse it)
@@ -605,10 +610,11 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
 {
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
-    if (m_animations[i].GetType() == type)
+    CAnimation &anim = m_animations[i];
+    if (anim.GetType() == type)
     {
-      if (!checkConditions || !m_animations[i].GetCondition() || g_infoManager.GetBool(m_animations[i].GetCondition()))
-        return &m_animations[i];
+      if (!checkConditions || !anim.GetCondition() || g_infoManager.GetBool(anim.GetCondition()))
+        return &anim;
     }
   }
   return NULL;

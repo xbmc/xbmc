@@ -54,7 +54,7 @@ using namespace MUSICDATABASEDIRECTORY;
 using namespace MEDIA_DETECT;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        12
+#define MUSIC_DATABASE_VERSION        13
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -97,7 +97,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create thumb table");
     m_pDS->exec("CREATE TABLE thumb (idThumb integer primary key, strThumb text)\n");
     CLog::Log(LOGINFO, "create artistnfo table");
-    m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strDied text, strDisbanded text, strYearsActive text, strImage text)\n");
+    m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strDied text, strDisbanded text, strYearsActive text, strImage text, strFanart text)\n");
     CLog::Log(LOGINFO, "create content table");
     m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, strContent text, strSettings text)\n");
     CLog::Log(LOGINFO, "create discography table");
@@ -810,7 +810,11 @@ CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThu
   artist.strInstruments = pDS->fv(artist_strInstruments).get_asString();
 
   if (needThumb)
+  {
+    artist.fanart.m_xml = pDS->fv(artist_strFanart).get_asString();
+    artist.fanart.Unpack();
     artist.thumbURL.ParseString(pDS->fv(artist_strImage).get_asString());
+  }
 
   return artist;
 }
@@ -1735,7 +1739,7 @@ long CMusicDatabase::SetArtistInfo(long idArtist, const CArtist& artist)
     m_pDS->exec(strSQL.c_str());
 
     // insert the artistinfo
-    strSQL=FormatSQL("insert into artistinfo (idArtistInfo,idArtist,strBorn,strFormed,strGenres,strMoods,strStyles,strInstruments,strBiography,strDied,strDisbanded,strYearsActive,strImage) values(NULL,%i,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
+    strSQL=FormatSQL("insert into artistinfo (idArtistInfo,idArtist,strBorn,strFormed,strGenres,strMoods,strStyles,strInstruments,strBiography,strDied,strDisbanded,strYearsActive,strImage,strFanart) values(NULL,%i,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
                   idArtist, artist.strBorn.c_str(),
                   artist.strFormed.c_str(),
                   artist.strGenre.c_str(),
@@ -1746,7 +1750,8 @@ long CMusicDatabase::SetArtistInfo(long idArtist, const CArtist& artist)
                   artist.strDied.c_str(),
                   artist.strDisbanded.c_str(),
                   artist.strYearsActive.c_str(),
-                  artist.thumbURL.m_xml.c_str());
+                  artist.thumbURL.m_xml.c_str(),
+                  artist.fanart.m_xml.c_str());
     m_pDS->exec(strSQL.c_str());
     long idArtistInfo = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
     for (unsigned int i=0;i<artist.discography.size();++i)
@@ -3139,8 +3144,11 @@ bool CMusicDatabase::UpdateOldVersion(int version)
         }
       }
     }
-
-    return true;
+    if (version < 13)
+    {
+      // add fanart info
+      m_pDS->exec("alter table artistinfo add strFanart text");
+    }
   }
   catch (...)
   {
@@ -3331,12 +3339,12 @@ bool CMusicDatabase::GetAlbumThumb(long idAlbum, CStdString& strThumb)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL=FormatSQL("select strThumb from thumb join album on album.idThumb = thumb.idThumb where album.idAlbum=%u", idAlbum);
-    m_pDS->query(strSQL.c_str());
-    if (m_pDS->eof())
+    m_pDS2->query(strSQL.c_str());
+    if (m_pDS2->eof())
       return false;
 
-    strThumb = m_pDS->fv("strThumb").get_asString();
-    m_pDS->close();
+    strThumb = m_pDS2->fv("strThumb").get_asString();
+    m_pDS2->close();
     return true;
   }
   catch (...)
@@ -4119,14 +4127,17 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
     sql = "select * from artistinfo "
           "join artist on artist.idartist=artistinfo.idArtist";
 
-    m_pDS2->query(sql.c_str());
+    // needed due to getartistpath
+    auto_ptr<dbiplus::Dataset> pDS;
+    pDS.reset(m_pDB->CreateDataset());
+    pDS->query(sql.c_str());
 
-    total = m_pDS2->num_rows();
+    total = pDS->num_rows();
     current = 0;
 
-    while (!m_pDS2->eof())
+    while (!pDS->eof())
     {
-      CArtist artist = GetArtistFromDataset(m_pDS2.get());
+      CArtist artist = GetArtistFromDataset(pDS.get());
       CStdString strSQL=FormatSQL("select * from discography where idArtist=%i",artist.idArtist);
       m_pDS->query(strSQL.c_str());
       while (!m_pDS->eof())
@@ -4168,10 +4179,10 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           return;
         }
       }
-      m_pDS2->next();
+      pDS->next();
       current++;
     }
-    m_pDS2->close();
+    pDS->close();
 
     if (progress)
       progress->Close();

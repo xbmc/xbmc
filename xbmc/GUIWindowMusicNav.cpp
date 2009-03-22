@@ -26,10 +26,6 @@
 #include "PlayListM3U.h"
 #include "PlayListPlayer.h"
 #include "GUIPassword.h"
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "GUILabelControl.h"
-#include "GUIFontManager.h"
-#endif
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogContentSettings.h"
 #include "Picture.h"
@@ -488,20 +484,6 @@ void CGUIWindowMusicNav::PlayItem(int iItem)
 
 void CGUIWindowMusicNav::OnWindowLoaded()
 {
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList && !GetControl(CONTROL_LABELEMPTY))
-  {
-    CLabelInfo info;
-    info.align = XBFONT_CENTER_X | XBFONT_CENTER_Y;
-    info.font = g_fontManager.GetFont("font13");
-    info.textColor = 0xffffffff;
-    CGUILabelControl *pLabel = new CGUILabelControl(GetID(),CONTROL_LABELEMPTY,pList->GetXPosition(),pList->GetYPosition(),pList->GetWidth(),pList->GetHeight(),info,false,false);
-    pLabel->SetAnimations(pList->GetAnimations());
-    Add(pLabel);
-  }
-#endif
-
   const CGUIControl *control = GetControl(CONTROL_SEARCH);
   m_searchWithEdit = (control && control->GetControlType() == CGUIControl::GUICONTROL_EDIT);
 

@@ -329,9 +329,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         return false;
       }
       else if(iformat->name)
-        CLog::Log(LOGERROR, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
+        CLog::Log(LOGDEBUG, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
       else
-        CLog::Log(LOGERROR, "%s - probing detected unnamed format", __FUNCTION__);
+        CLog::Log(LOGDEBUG, "%s - probing detected unnamed format", __FUNCTION__);
     }
 
 

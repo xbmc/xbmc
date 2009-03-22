@@ -160,7 +160,7 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
   }
 }
 
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+//#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
 void CGUIListItemLayout::CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, int nofocusCondition, int focusCondition)
 {
   m_width = width;
@@ -184,38 +184,6 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   m_group.AddControl(label);
   x = labelInfo2.offsetX ? labelInfo2.offsetX : m_width - 16;
   label = new CGUIListLabel(0, 0, x, labelInfo2.offsetY, x - iconWidth - 20, height, labelInfo2, CGUIInfoLabel("$INFO[ListItem.Label2]"), false, CScrollInfo::defaultSpeed);
-  m_group.AddControl(label);
-}
-
-void CGUIListItemLayout::CreateThumbnailPanelLayouts(float width, float height, bool focused, const CTextureInfo &image, float texWidth, float texHeight, float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, const CAspectRatio &thumbAspect, const CLabelInfo &labelInfo, bool hideLabels)
-{
-  m_width = width;
-  m_height = height;
-  m_focused = focused;
-  float centeredPosX = (m_width - texWidth)*0.5f;
-  CGUIImage *tex = new CGUIImage(0, 0, centeredPosX, 0, texWidth, texHeight, image);
-  m_group.AddControl(tex);
-  // thumbnail
-  float xOff = 0;
-  float yOff = 0;
-  if (thumbAlign != 0)
-  {
-    xOff += (texWidth - thumbWidth) * 0.5f;
-    yOff += (texHeight - thumbHeight) * 0.5f;
-    //if thumbPosX or thumbPosX != 0 the thumb will be bumped off-center
-  }
-  CGUIImage *thumb = new CGUIImage(0, 0, thumbPosX + centeredPosX + xOff, thumbPosY + yOff, thumbWidth, thumbHeight, CTextureInfo(""));
-  thumb->SetInfo(CGUIInfoLabel("$INFO[ListItem.Icon]"));
-  thumb->SetAspectRatio(thumbAspect);
-  m_group.AddControl(thumb);
-  // overlay
-  CGUIImage *overlay = new CGUIImage(0, 0, thumbPosX + centeredPosX + xOff + thumbWidth - 32, thumbPosY + yOff + thumbHeight - 32, 32, 32, CTextureInfo(""));
-  overlay->SetInfo(CGUIInfoLabel("$INFO[ListItem.Overlay]"));
-  overlay->SetAspectRatio(thumbAspect);
-  m_group.AddControl(overlay);
-  // label
-  if (hideLabels) return;
-  CGUIListLabel *label = new CGUIListLabel(0, 0, width*0.5f, texHeight, width, height, labelInfo, CGUIInfoLabel("$INFO[ListItem.Label]"), false, CScrollInfo::defaultSpeed);
   m_group.AddControl(label);
 }
 //#endif

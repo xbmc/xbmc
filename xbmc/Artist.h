@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "utils/ScraperUrl.h"
+#include "utils/Fanart.h"
 
 class CArtist
 {
@@ -68,6 +69,7 @@ public:
   CStdString strDisbanded;
   CStdString strYearsActive;
   CScraperUrl thumbURL;
+  CFanart fanart;
   std::vector<std::pair<CStdString,CStdString> > discography;
 };
 

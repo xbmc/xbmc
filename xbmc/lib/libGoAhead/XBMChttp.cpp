@@ -2049,7 +2049,7 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
     
   else
   {
-    dwButtonCode=(DWORD) atoi(paras[0]);
+    dwButtonCode=(DWORD) strtol(paras[0], NULL, 0);
     if (numParas>1) {
       bLeftTrigger=(BYTE) atoi(paras[1]) ;
       if (numParas>2) {
@@ -2068,9 +2068,9 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
       }
     }
     CKey tempKey(dwButtonCode, bLeftTrigger, bRightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
-	tempKey.SetFromHttpApi(true);
+    tempKey.SetFromHttpApi(true);
     key = tempKey;
-	lastKey = key;
+    lastKey = key;
     return SetResponse(openTag+"OK");
   }
 }

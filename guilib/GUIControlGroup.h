@@ -35,6 +35,7 @@
 class CGUIControlGroup : public CGUIControl
 {
 public:
+  CGUIControlGroup();
   CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
   CGUIControlGroup(const CGUIControlGroup &from);
   virtual ~CGUIControlGroup(void);
@@ -43,6 +44,7 @@ public:
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool SendControlMessage(CGUIMessage& message);
   virtual bool HasFocus() const;
   virtual void PreAllocResources();
   virtual void AllocResources();
@@ -69,7 +71,7 @@ public:
   int GetFocusedControlID() const;
   CGUIControl *GetFocusedControl() const;
   const CGUIControl *GetControl(int id) const;
-  CGUIControl *GetFirstFocusableControl(int id);
+  virtual CGUIControl *GetFirstFocusableControl(int id);
   void GetContainers(std::vector<CGUIControl *> &containers) const;
 
   virtual void AddControl(CGUIControl *control, int position = -1);
