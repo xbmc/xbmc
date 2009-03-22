@@ -2,8 +2,10 @@ ARCH=@ARCH@
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS +=-D_LINUX -fPIC -DPIC -O3 -DXBMC
+	CXXFLAGS +=-D_LINUX -fPIC -DPIC -O3 -DXBMC
 else
 	CFLAGS +=-D_LINUX -fPIC -DPIC -O3 -fno-stack-protector -DXBMC
+	CXXFLAGS +=-D_LINUX -fPIC -DPIC -O3 -fno-stack-protector -DXBMC
 endif
 
 CODING_OBJS=src/coding/acm_decoder.o \
@@ -196,7 +198,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+	$(CXX) -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 
 endif
 
