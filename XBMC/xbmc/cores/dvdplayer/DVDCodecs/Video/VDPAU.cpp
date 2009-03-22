@@ -693,7 +693,6 @@ enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
                                                      const PixelFormat * fmt)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  CExclusiveLock        lock(g_renderManager.GetSection());
   CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CVDPAU*               vdp = ctx->GetContextVDPAU();
   //pSingleton->CheckRecover();
@@ -708,7 +707,6 @@ enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
 int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  CExclusiveLock        lock(g_renderManager.GetSection());
   CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
   CVDPAU*               vdp        = ctx->GetContextVDPAU();
   struct pictureAge*    pA         = &vdp->picAge;
@@ -781,7 +779,6 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 void CVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  CExclusiveLock lock(g_renderManager.GetSection());
   vdpau_render_state * render;
   int i;
 
@@ -800,7 +797,6 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
                                            int y, int type, int height)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  CExclusiveLock        lock(g_renderManager.GetSection());
   CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)s->opaque;
   CVDPAU*               vdp = ctx->GetContextVDPAU();
 
@@ -821,6 +817,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   || vdp->vdpauConfigured == false
   || vdp->max_references < max_refs)
   {
+    CExclusiveLock lock(g_renderManager.GetSection());
     vdp->FiniVDPAUOutput();
     vdp->ConfigVDPAU(s, max_refs);
   }
