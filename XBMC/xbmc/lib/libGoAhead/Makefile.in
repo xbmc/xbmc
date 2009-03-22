@@ -7,10 +7,6 @@
 # $Id: Makefile,v 1.2 2002/11/01 16:20:19 mmitchell Exp $
 #
 
-include ../../../Makefile.include
-
-all:	compile 
-
 NAME	= webs
 
 # User Management switch
@@ -51,36 +47,23 @@ LIB=libGoAhead-@ARCH@.a
 # IFMODLIB = /usr/lib/libm.a
 
 # Dependencies
-OBJS = 	src/asp.o src/balloc.o src/base64.o src/cgi.o src/default.o  \
+GOOBJS = 	src/asp.o src/balloc.o src/base64.o src/default.o  \
 	src/ejlex.o src/ejparse.o src/form.o \
 	src/h.o src/handler.o src/mime.o src/misc.o src/page.o  \
 	src/ringq.o src/rom.o \
 	src/sock.o src/sockGen.o $(SSLPATCHFILE) \
 	src/security.o src/sym.o src/uemf.o src/url.o src/value.o \
-	src/md5c.o src/um.o src/websda.o src/emfdb.o \
+	src/um.o src/websda.o src/emfdb.o \
 	src/webrom.o src/webs.o src/websuemf.o \
 	src/spy.o src/umui.o SpyceModule.o WebServer.o \
-	XBMCConfiguration.o XBMChttp.o XBMCweb.o
+	XBMCConfiguration.o XBMChttp.o XBMCweb.o #src/md5.o src/cgi.o 
 
+SRCS=$(GOOBJS:.o=.c)
 CFLAGS	+= -DWEBS -DUEMF -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)-DDEV -D__NO_CGI_BIN
 OTHERS	= -DB_STATS -DB_FILL -DDEBUG
 DEBUG	= -g -Wall
 INCLUDES += -I. -I../../ -I../../linux -I../../../guilib -I../../utils 
-LDFLAGS	= $(SSLLIB) $(IFMODLIB)
+LDFLAGS	+= $(SSLLIB) $(IFMODLIB)
 
-lib: $(LIB)
+include ../../../Makefile.include
 
-#
-#	Build archive of objects
-#
-$(LIB): $(OBJS)
-	$(AR) $(ARFLAGS) $(LIB) $?
-
-#
-#	Primary link
-#
-$(NAME): Makefile $(ARCH)
-	$(CC) -o $(NAME) \
-#		$(DEBUG) \
-		$(CFLAGS) $(IFLAGS) \
-		main.o $(ARCH) $(LDFLAGS) 

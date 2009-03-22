@@ -1,6 +1,6 @@
 INCLUDES=-I. -I.. -I../ffmpeg -I../../ -I../../linux -I../../utils -I../../../guilib
 
-CFLAGS+=-DHAS_VIDEO_PLAYBACK -D__STDC_FORMAT_MACROS
+CXXFLAGS+=-DHAS_VIDEO_PLAYBACK -D__STDC_FORMAT_MACROS
 
 SRCS=	DVDAudio.cpp \
 	DVDClock.cpp \
@@ -18,21 +18,9 @@ SRCS=	DVDAudio.cpp \
 	DVDStreamInfo.cpp \
 	DVDFileInfo.cpp \
 
-LIBS=	DVDDemuxers/DVDDemuxers.a \
-	DVDInputStreams/DVDInputStreams.a \
-	DVDSubtitles/DVDSubtitles.a \
-	DVDCodecs/DVDCodecs.a \
-
-#DIRS=	$(dir $(LIBS))
-
-DIRS=	DVDDemuxers \
-	DVDInputStreams \
-	DVDSubtitles \
-	DVDCodecs \
-
 LIB=	DVDPlayer.a
 
-include Makefile.include
+include ../../../Makefile.include
 
 
 

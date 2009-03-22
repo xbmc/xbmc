@@ -8,18 +8,16 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 endif
 OBJS=src/cpu/nes6502/dis6502.o src/sndhrdw/fds_snd.o src/sndhrdw/fmopl.o src/log.o src/memguard.o src/sndhrdw/mmc5_snd.o src/cpu/nes6502/nes6502.o src/sndhrdw/nes_apu.o NoseFartDLL.o src/machine/nsf.o src/sndhrdw/vrc7_snd.o src/sndhrdw/vrcvisnd.o
 
-LIB=../../../../system/players/paplayer/nosefart-@ARCH@.so
+SLIB=../../../../system/players/paplayer/nosefart-@ARCH@.so
 
-include ../../../../Makefile.include
-
-lib: $(LIB)
-
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ $(OBJS) $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
 	gcc -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
-
 endif
+
+include ../../../../Makefile.include
+

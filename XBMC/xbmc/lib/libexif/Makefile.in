@@ -5,9 +5,9 @@ CFLAGS +=-D_LINUX -D_DLL -fPIC -O2
 
 SYSDIR=../../../system
 SO=libexif-$(ARCH).so
-LIB=../../../system/$(SO)
+SLIB=../../../system/$(SO)
 
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	gcc $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC -o $@ $(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
