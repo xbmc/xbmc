@@ -96,7 +96,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_iSwapTime = 0;
   m_iSwapRate = 0;
   m_bVsyncInit = false;
-
 #ifdef __APPLE__
   m_glContext = 0;
 #endif
@@ -116,6 +115,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_glContext = 0;
   m_glPBuffer = 0;
   m_glPixmap = 0;
+  m_glPixmapTexture = 0;
+  m_Pixmap = 0;
 
   GLXFBConfig *fbConfigs = 0;
   bool mapWindow = false;
@@ -191,7 +192,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 
   if (pixmap)
   {
-    MakePixmap();
+    MakePixmap(width,height);
     return;
   }
 
@@ -226,6 +227,10 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 
   // obtain the xvisual from the first compatible framebuffer
   vInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
+  if (!vInfo) {
+    CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
+    return;
+  }
 
   // if no window is specified, create a window because a GL context needs to be
   // associated to a window
@@ -515,10 +520,143 @@ bool CSurface::MakePBuffer()
   return status;
 }
 
-bool CSurface::MakePixmap()
+bool CSurface::MakePixmap(int width, int height)
 {
-// FIXME: this needs to be implemented
-  return false;
+  int num=0;
+  GLXFBConfig *fbConfigs=NULL;
+  int fbConfigIndex = 0;
+  XVisualInfo *visInfo=NULL;
+
+  bool status = false;
+  int singleVisAttributes[] = {
+    GLX_RENDER_TYPE, GLX_RGBA_BIT,
+    GLX_RED_SIZE, m_iRedSize,
+    GLX_GREEN_SIZE, m_iGreenSize,
+    GLX_BLUE_SIZE, m_iBlueSize,
+    GLX_ALPHA_SIZE, m_iAlphaSize,
+    GLX_DEPTH_SIZE, 8,
+    GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
+    GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
+    GLX_X_RENDERABLE, True, // Added by Rob
+    None
+  };
+
+  int doubleVisAttributes[] = {
+    GLX_RENDER_TYPE, GLX_RGBA_BIT,
+    GLX_RED_SIZE, m_iRedSize,
+    GLX_GREEN_SIZE, m_iGreenSize,
+    GLX_BLUE_SIZE, m_iBlueSize,
+    GLX_ALPHA_SIZE, m_iAlphaSize,
+    GLX_DEPTH_SIZE, 8,
+    GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
+    GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
+    GLX_DOUBLEBUFFER, True,
+    GLX_Y_INVERTED_EXT, True,
+    GLX_X_RENDERABLE, True, // Added by Rob
+    None
+  };
+
+  int pixmapAttribs[] = {
+    GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
+    GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
+    None
+  };
+
+  if (m_bDoublebuffer)
+    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
+  else
+    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
+
+  // Get our window attribs.
+  XWindowAttributes wndattribs;
+  XGetWindowAttributes(s_dpy, DefaultRootWindow(s_dpy), &wndattribs); // returns a status but I don't know what success is
+
+  CLog::Log(LOGDEBUG, "Found %d fbconfigs.", num);
+  fbConfigIndex = 0;
+
+  if (fbConfigs==NULL) 
+  {
+    CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
+    XFree(fbConfigs);
+    return status;
+  }
+  CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
+  m_Pixmap = XCreatePixmap(s_dpy,
+                           DefaultRootWindow(s_dpy),
+                           width,
+                           height,
+                           wndattribs.depth);
+  if (!m_Pixmap)
+  {
+    CLog::Log(LOGERROR, "GLX Error: MakePixmap: Unable to create XPixmap");
+    XFree(fbConfigs);
+    return status;
+  }
+  m_glPixmap = glXCreatePixmap(s_dpy, fbConfigs[fbConfigIndex], m_Pixmap, pixmapAttribs);
+
+  if (m_glPixmap)
+  {
+    CLog::Log(LOGINFO, "GLX: Created Pixmap context");
+    visInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[fbConfigIndex]);
+    if (!visInfo)
+    {
+      CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
+      return false;
+    }
+    if (m_pShared)
+    {
+      CLog::Log(LOGINFO, "GLX: Creating shared Pixmap context");
+      m_glContext = glXCreateContext(s_dpy, visInfo, m_pShared->GetContext(), True);
+    } 
+    else
+    {
+      CLog::Log(LOGINFO, "GLX: Creating unshared Pixmap context");
+      m_glContext = glXCreateContext(s_dpy, visInfo, NULL, True);
+    }
+    XFree(visInfo);
+    if (glXMakeCurrent(s_dpy, m_glPixmap, m_glContext))
+    {
+      CLog::Log(LOGINFO, "GL: Initialised Pixmap");
+      if (!b_glewInit)
+      {
+        if (glewInit()!=GLEW_OK)
+          CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+        else 
+        {
+          b_glewInit = true;
+          if (s_glVendor.length()==0)
+          {
+            s_glVendor = (const char*)glGetString(GL_VENDOR);
+            CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+          }
+        }
+      }
+
+      GLenum glErr;
+      if (!m_glPixmapTexture)
+      {
+        glGenTextures (1, &m_glPixmapTexture);
+        glErr = glGetError();
+        if ((glErr == GL_INVALID_VALUE) | (glErr == GL_INVALID_OPERATION))
+        {
+          CLog::Log(LOGINFO, "glGenTextures returned an error!");
+          status = false;
+        }
+      }
+    } 
+    else
+    {
+      CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
+      status = false;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "GLX Error: Could not create Pixmap");
+    status = false;
+  }
+  XFree(fbConfigs);
+  return status;
 }
 #endif
 
@@ -534,6 +672,18 @@ CSurface::~CSurface()
   {
     CLog::Log(LOGINFO, "GLX: Destroying PBuffer");
     glXDestroyPbuffer(s_dpy, m_glPBuffer);
+  }
+  if (m_glPixmap)
+  {
+    CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
+    glXDestroyGLXPixmap(s_dpy, m_glPixmap);
+    m_glPixmap = NULL;
+  }
+  if (m_Pixmap)
+  {
+    CLog::Log(LOGINFO, "GLX: Destroying XPixmap");
+    XFreePixmap(s_dpy, m_Pixmap);
+    m_Pixmap = NULL;
   }
   if (m_glWindow && !IsShared())
   {
@@ -919,9 +1069,11 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
 #ifdef HAS_GLX
   if (m_parentWindow)
   {
+    XLockDisplay(s_dpy);
     XResizeWindow(s_dpy, m_parentWindow, newWidth, newHeight);
     XResizeWindow(s_dpy, m_glWindow, newWidth, newHeight);
     glXWaitX();
+    XUnlockDisplay(s_dpy);
   }
 #endif
 #ifdef __APPLE__

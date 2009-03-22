@@ -83,6 +83,12 @@ AC_ARG_ENABLE([gl],
             [use_gl=$enableval],
             [use_gl=yes])
 
+AC_ARG_ENABLE([vdpau],
+            [AS_HELP_STRING([--enable-vdpau],
+               [enable VDPAU decoding (default is yes)])],
+            [use_vdpau=$enableval],
+            [use_vdpau=yes])
+
 AC_ARG_ENABLE([profiling],
             [AS_HELP_STRING([--enable-profiling],
                [enable gprof profiling (default is no)])],
@@ -206,6 +212,7 @@ else
   AC_CHECK_LIB([SDL_gfx], [main])
 fi
 
+
 # platform independent libraries
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
@@ -234,6 +241,7 @@ if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([portaudio], [main],, AC_MSG_ERROR($missing_library))
 else
+  AC_CHECK_LIB([vdpau],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
@@ -425,6 +433,13 @@ if test "$use_gl" = "yes"; then
 else
   final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
   SDL_DEFINES="-DHAS_SDL_2D"
+fi
+
+if test "$use_vdpau" = "yes"; then
+  final_message="$final_message\n  VDPAU:\tYes"
+  LIBS="-lvdpau $LIBS"
+else
+  final_message="$final_message\n  VDPAU:\tNo"
 fi
 
 if test "$use_joystick" = "yes"; then
@@ -696,6 +711,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-postproc \
       --enable-gpl \
       --enable-swscale \
+      `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
       --enable-protocol=http \
       --enable-pthreads
   fi

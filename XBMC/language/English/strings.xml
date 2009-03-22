@@ -1184,6 +1184,7 @@
   <string id="13417">Basic shaders (ARB)</string>
   <string id="13418">Advanced shaders (GLSL)</string>
   <string id="13419">Software</string>
+  <string id="13421">VDPAU</string>
   <string id="13420">Eject</string>
 
   <string id="13600">Apple Remote</string>
@@ -1495,6 +1496,11 @@
   <string id="16308">Lanczos (software)</string>  
   <string id="16309">Sinc (software)</string>
 
+  <string id="16310">(VDPAU)Temporal</string>
+  <string id="16311">(VDPAU)Temporal/Spatial</string>
+  <string id="16312">(VDPAU)Noise Reduction</string>
+  <string id="16313">(VDPAU)Sharpness</string>
+  <string id="16314">Inverse Telecine</string>
   <string id="17500">Display sleep timeout</string> 
 
   <string id="20000">CDDA rip folder</string>
