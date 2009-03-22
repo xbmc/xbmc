@@ -41,7 +41,6 @@ namespace Surface { class CSurface; }
 #define NUM_VIDEO_SURFACES_VC1             3  // (same as MPEG-2)
 #define NUM_VIDEO_SURFACES_NON_ACCEL_YUV   1  //  surfaces for YV12 etc. 
 #define NUM_VIDEO_SURFACES_NON_ACCEL_RGB   0 // surfaces for RGB or YUV4:4:4
-#define PALETTE_SIZE 256
 
 class CVDPAU
 {
