@@ -9,7 +9,7 @@ SLIB=../../../visualisations/Waveform.vis
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	@export MACOSX_DEPLOYMENT_TARGET=10.4
-	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $@ $(OBJS) \
+	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $(SLIB) $(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
 	$(CXX) $(CFLAGS) -shared -g -o $(SLIB) $(OBJS)
