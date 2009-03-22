@@ -37,7 +37,7 @@ faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
 avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi support disabled. =="
-avahi_disabled="== Avahi support manually disabled. =="
+avahi_disabled="== Avahi support disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -136,9 +136,9 @@ AC_ARG_ENABLE([mid],
             
 AC_ARG_ENABLE([avahi],
             [AS_HELP_STRING([--enable-avahi],
-               [enable Avahi support (default is yes)])],
+               [enable Avahi support (default is no)])],
             [use_avahi=$enableval],
-            [use_avahi=yes])
+            [use_avahi=no])
 
 # PCRE is a requirement
 use_pcre="yes"
