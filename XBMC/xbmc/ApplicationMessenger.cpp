@@ -38,6 +38,7 @@
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "GUIDialog.h"
 
 #include "PowerManager.h"
 

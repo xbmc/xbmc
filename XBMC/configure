@@ -15012,7 +15012,6 @@ cat >>conftest.$ac_ext <<_ACEOF
 # endif
 #endif
 
-#include <limits.h>
 #include <stdlib.h>
 
 #ifdef HAVE_UNISTD_H
@@ -15161,15 +15160,12 @@ main ()
      isn't worth using anyway.  */
   alarm (60);
 
-  for (;;)
-    {
-      t = (time_t_max << 1) + 1;
-      if (t <= time_t_max)
-	break;
-      time_t_max = t;
-    }
-  time_t_min = - ((time_t) ~ (time_t) 0 == (time_t) -1) - time_t_max;
-
+  for (time_t_max = 1; 0 < time_t_max; time_t_max *= 2)
+    continue;
+  time_t_max--;
+  if ((time_t) -1 < 0)
+    for (time_t_min = -1; (time_t) (time_t_min * 2) < 0; time_t_min *= 2)
+      continue;
   delta = time_t_max / 997; /* a suitable prime number */
   for (i = 0; i < N_STRINGS; i++)
     {
@@ -15184,12 +15180,10 @@ main ()
 	     && mktime_test ((time_t) (60 * 60 * 24))))
 	return 1;
 
-      for (j = 1; ; j <<= 1)
+      for (j = 1; 0 < j; j *= 2)
 	if (! bigtime_test (j))
 	  return 1;
-	else if (INT_MAX / 2 < j)
-	  break;
-      if (! bigtime_test (INT_MAX))
+      if (! bigtime_test (j - 1))
 	return 1;
     }
   return ! (irix_6_4_bug () && spring_forward_gap () && year_2050_test ());
@@ -18802,7 +18796,8 @@ if [ 0 != "1" ]; then
       --without-cxx \
       --enable-shared \
       --without-pymalloc \
-      OPT="-Wno-deprecated-declarations" \
+      LDFLAGS="-L/opt/local/lib" \
+      OPT="-Wno-deprecated-declarations -I/opt/local/include" \
       MACOSX_DEPLOYMENT_TARGET=10.4 &&
     sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
     sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
@@ -19418,7 +19413,11 @@ if [ 0 != "1" ]; then
     if [ -d xbmc/visualizations/XBMCProjectM/libprojectM ]; then
         pushd xbmc/visualizations/XBMCProjectM/libprojectM
 
-  rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  if test "$host_vendor" = "apple" ; then
+    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="-fno-common" -D CMAKE_CXX_FLAGS:STRING="-fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  else
+    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  fi
 
         if [ $? -ne 0 ]; then
             popd
@@ -19486,6 +19485,9 @@ if [ 0 != "1" ]; then
     ./configure \
       CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
       CXXFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      LDFLAGS="-L/opt/local/lib" \
+      LIBS="-lz" \
+      --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib \
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \
@@ -19495,7 +19497,7 @@ if [ 0 != "1" ]; then
       --disable-helios \
       --disable-hyperspace \
       --disable-lattice \
-       --disable-skyrocket
+      --disable-skyrocket
   else
     ./configure \
       CFLAGS="-fPIC" \

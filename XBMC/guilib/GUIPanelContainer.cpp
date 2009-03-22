@@ -31,6 +31,7 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
 {
   ControlType = GUICONTAINER_PANEL;
   m_type = VIEW_TYPE_ICON;
+  m_itemsPerRow = 1;
 }
 
 CGUIPanelContainer::~CGUIPanelContainer(void)

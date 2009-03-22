@@ -2438,7 +2438,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       {
         g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
         g_settings.LoadProfile(i);
-        g_application.StartEventServer(); // event server could be needed in some situations
+        g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
+        break;
       }
     }
   }

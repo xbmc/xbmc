@@ -177,7 +177,6 @@ protected:
   // control state saving on window close
   virtual void SaveControlStates();
   virtual void RestoreControlStates();
-  void AddControlGroup(int id);
 
   // methods for updating controls and sending messages
   void OnEditChanged(int id, CStdString &text);
@@ -197,9 +196,6 @@ protected:
   void ChangeButtonToEdit(int id, bool singleLabel = false);
 //#endif
 
-  std::vector<CGUIControl*> m_vecControls;
-  typedef std::vector<CGUIControl*>::iterator ivecControls;
-  typedef std::vector<CGUIControl*>::const_iterator ciControls;
   DWORD m_dwIDRange;
   bool m_bRelativeCoords;
   OVERLAY_STATE m_overlayState;

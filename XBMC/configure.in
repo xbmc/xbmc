@@ -928,7 +928,8 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
       --without-cxx \
       --enable-shared \
       --without-pymalloc \
-      OPT="-Wno-deprecated-declarations" \
+      LDFLAGS="-L/opt/local/lib" \
+      OPT="-Wno-deprecated-declarations -I/opt/local/include" \
       MACOSX_DEPLOYMENT_TARGET=10.4 &&
     sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && 
     sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
@@ -1208,7 +1209,11 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
-  rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  if test "$host_vendor" = "apple" ; then
+    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="-fno-common" -D CMAKE_CXX_FLAGS:STRING="-fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  else
+    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+  fi
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
@@ -1234,6 +1239,9 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
     ./configure \
       CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
       CXXFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      LDFLAGS="-L/opt/local/lib" \
+      LIBS="-lz" \
+      --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib \
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \
@@ -1243,7 +1251,7 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
       --disable-helios \
       --disable-hyperspace \
       --disable-lattice \
-       --disable-skyrocket
+      --disable-skyrocket
   else
     ./configure \
       CFLAGS="-fPIC" \ 

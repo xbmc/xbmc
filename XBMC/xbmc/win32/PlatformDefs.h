@@ -55,6 +55,12 @@ typedef long    __off_t;
 #define RMASK 0x0000ff00
 #define GMASK 0x00ff0000
 #define BMASK 0xff000000
+
+// so we can use endian neutral PIX_FMT_ARGB in place of 
+// little endian PIX_FMT_RGB32 when setting up ffmpeg 
+#ifndef WORDS_BIGENDIAN
+#define WORDS_BIGENDIAN 1
+#endif
 #else
 #define PIXEL_ASHIFT 24
 #define PIXEL_RSHIFT 16
@@ -65,6 +71,10 @@ typedef long    __off_t;
 #define GMASK 0x0000ff00
 #define BMASK 0x000000ff
 #endif
+#endif
+
+#ifndef va_copy
+#define va_copy(dst, src) ((dst) = (src))
 #endif
 
 #endif // _WIN32
