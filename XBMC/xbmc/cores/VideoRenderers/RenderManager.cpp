@@ -500,6 +500,9 @@ void CXBoxRenderManager::Recover()
 #ifdef HAVE_LIBVDPAU
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
   if (g_VDPAU)
+  {
+    glFlush(); // attempt to have gpu done with pixmap
     g_VDPAU->CheckRecover(true);
+  }
 #endif
 }

@@ -92,7 +92,6 @@ void CVDPAU::CheckRecover(bool force)
   {
     CLog::Log(LOGNOTICE,"Attempting recovery");
 
-    glFlush(); // attempt to have gpu done with pixmap
     VDPAUSwitching = true;
     FiniVDPAUOutput();
     FiniVDPAUProcs();
