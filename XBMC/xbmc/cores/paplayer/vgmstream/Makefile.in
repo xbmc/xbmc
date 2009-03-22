@@ -198,7 +198,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-	$(CXX) -fPIC -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS) `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 
 endif
 
