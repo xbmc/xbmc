@@ -33,13 +33,14 @@ void CJoystick::Initialize(HWND hWnd)
   // any open ones? if so, close them.
   if (m_Joysticks.size()>0)
   {
-    vector<SDL_Joystick*>::iterator iter = m_Joysticks.begin();
-    while (iter != m_Joysticks.end())
+    for(size_t idJoy = 0; idJoy < m_Joysticks.size(); idJoy++)
     {
-      SDL_JoystickClose(*iter);
-      iter++;
+      // any joysticks unplugged?
+      if(SDL_JoystickOpened(idJoy))
+        SDL_JoystickClose(m_Joysticks[idJoy]);
     }
     m_Joysticks.clear();
+    m_JoyId = -1;
   }
 
   // any joysticks connected?
