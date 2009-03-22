@@ -836,7 +836,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   if (m_renderMethod & RENDER_SW)
   {
     struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
-                                                             im->width, im->height, PIX_FMT_ARGB,
+                                                             im->width, im->height, PIX_FMT_BGRA,
                                                              SWS_FAST_BILINEAR, NULL, NULL, NULL);
     uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2] };
     int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
