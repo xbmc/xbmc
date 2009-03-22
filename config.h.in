@@ -193,6 +193,12 @@
 /* Define to 1 if you have the `sqlite3' library (-lsqlite3). */
 #undef HAVE_LIBSQLITE3
 
+/* Define to 1 if you have the `tre' library (-ltre). */
+#undef HAVE_LIBTRE
+
+/* Define to 1 if you have the `vdpau' library (-lvdpau). */
+#undef HAVE_LIBVDPAU
+
 /* Define to 1 if you have the `vorbis' library (-lvorbis). */
 #undef HAVE_LIBVORBIS
 

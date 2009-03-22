@@ -127,6 +127,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   if (nVideoStream != -1)
   {
     CDVDStreamInfo hint(*pStream, true);
+    hint.software = true;
     CDVDVideoCodec *pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
     if (pVideoCodec)
     {
@@ -294,3 +295,4 @@ void CDVDFileInfo::GetFileMetaData(const CStdString &strPath, CFileItem *pItem)
   delete pInputStream;
   
 }
+
