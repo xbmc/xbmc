@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -35,7 +35,8 @@
 /// apps can parse the published services. e.g. the webserver should be published as
 /// XBMC@$(HOSTNAME) with type "_http._tcp" so that e.g. the XBMC iPhone remote can use
 /// that to display XBMC instances on the local network 
-class CZeroconf{
+class CZeroconf
+{
 public:
   
   //tries to publish this service via zeroconf
