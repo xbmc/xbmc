@@ -39,6 +39,8 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
+vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
+vdpau_disabled="== VDPAU support manually disabled. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -350,7 +352,6 @@ if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([portaudio], [main],, AC_MSG_ERROR($missing_library))
 else
-  AC_CHECK_LIB([vdpau],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
@@ -408,6 +409,19 @@ else
       use_xrandr="no";AC_MSG_RESULT($xrandr_not_found))
   else
     AC_MSG_RESULT($xrandr_disabled)
+  fi
+fi
+
+# VDPAU
+if test "$host_vendor" = "apple" ; then
+  use_vdpau="no"
+  AC_MSG_NOTICE($vdpau_disabled)
+else
+  if test "$use_vdpau" = "yes"; then
+    AC_CHECK_LIB([vdpau], [main],,
+      use_vdpau=no;AC_MSG_RESULT($vdpau_not_found))
+  else
+    AC_MSG_NOTICE($vdpau_disabled)
   fi
 fi
 
@@ -702,7 +716,6 @@ fi
 
 if test "$use_vdpau" = "yes"; then
   final_message="$final_message\n  VDPAU:\tYes"
-  LIBS="-lvdpau $LIBS"
 else
   final_message="$final_message\n  VDPAU:\tNo"
 fi
