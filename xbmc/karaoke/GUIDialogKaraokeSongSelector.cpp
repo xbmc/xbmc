@@ -222,5 +222,6 @@ void CGUIDialogKaraokeSongSelectorLarge::DoModal(int iWindowID, const CStdString
   m_songSelected = false;
   m_selectedNumber = 0;
 
+  OnButtonNumeric( 0, false );
   CGUIDialog::DoModal( iWindowID, param );
 }
