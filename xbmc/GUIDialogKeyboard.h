@@ -73,6 +73,7 @@ private:
 
   void Character(WCHAR wch);
   void Backspace();
+  void SendSearchMessage();
 
   CStdStringW m_strEdit;
   bool m_bIsConfirmed;
