@@ -35,16 +35,18 @@ public:
     return GetAmount(m_AxisId);
   }
   bool GetButton (int& id, bool consider_repeat=true);
-  bool GetAxis (int &id) { if (!IsAxisActive()) return false; id=m_AxisId; return true; }
+  bool GetAxis (int &id);
   std::string GetJoystick() { return (m_JoyId>-1)?m_JoystickNames[m_JoyId]:""; }
   int GetAxisWithMaxAmount();
   void SetSafeRange(int val) { m_SafeRange=(val>32767)?32767:val; }
-
+  void SetAxisPad(std::string joyname, int axis);
+  
 private:
   void SetAxisActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_AXIS):(m_ActiveFlags&(~JACTIVE_AXIS)); }
   void SetButtonActive(bool active=true) { m_ActiveFlags = active?(m_ActiveFlags|JACTIVE_BUTTON):(m_ActiveFlags&(~JACTIVE_BUTTON)); }
   bool IsButtonActive() { return (m_ActiveFlags & JACTIVE_BUTTON) == JACTIVE_BUTTON; }
   bool IsAxisActive() { return (m_ActiveFlags & JACTIVE_AXIS) == JACTIVE_AXIS; }
+  bool Repeat(int &id, bool axis);
 
   int m_Amount[MAX_AXES];
   int m_DefaultAmount[MAX_AXES];
@@ -53,10 +55,14 @@ private:
   int m_JoyId;
   int m_NumAxes;
   int m_SafeRange; // dead zone
-  Uint32 m_pressTicks;
+  
+  Uint32 m_pressTicksButton;
+  Uint32 m_pressTicksAxis;
+
   WORD m_ActiveFlags;
   std::vector<SDL_Joystick*> m_Joysticks;
   std::vector<std::string> m_JoystickNames;
+  std::vector<std::vector<bool> > m_JoyPadAxis;   // Joystick/axisId which used DPad
 };
 
 extern CJoystick g_Joystick;
