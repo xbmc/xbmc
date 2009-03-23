@@ -41,6 +41,10 @@
 #include "linux/HalManager.h"
 #endif
 
+#ifdef _WIN32PC
+#include "WIN32Util.h"
+#endif
+
 using namespace std;
 using namespace MEDIA_DETECT;
 
@@ -357,7 +361,8 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
   case CONTEXT_BUTTON_EJECT_DISC:
 #ifdef _WIN32PC
-    if( item->m_strPath[0] ) CIoSupport::EjectTray( true, item->m_strPath[0] ); // TODO: detect tray state
+    if( item->m_strPath[0] )
+      CWIN32Util::ToggleTray(item->m_strPath[0]);
 #else
     CIoSupport::ToggleTray();
 #endif

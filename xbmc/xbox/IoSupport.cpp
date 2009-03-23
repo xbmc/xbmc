@@ -351,6 +351,8 @@ HRESULT CIoSupport::CloseTray()
       close(fd);
     }
   }
+#elif defined(_WIN32PC)
+  EjectTray(false);
 #endif
   return S_OK;
 }
