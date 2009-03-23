@@ -9,6 +9,7 @@ SRCS = \
 	CPortAudio.cpp \
 	CocoaPowerSyscall.cpp \
 	OSXGNUReplacements.c \
+	ZeroconfOSX.mm \
 	
 LIB=osx.a
 
