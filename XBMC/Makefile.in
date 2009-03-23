@@ -350,7 +350,7 @@ $(wildcard $(OBJSXBMC)) :| compile
 
 xbmc.bin: $(wildcard $(OBJSXBMC)) | compile
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
+	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 else
 	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin -Wl,--whole-archive $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) $(LDFLAGS) -rdynamic
 endif

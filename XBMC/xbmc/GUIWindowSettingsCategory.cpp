@@ -800,6 +800,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13417), RENDER_METHOD_ARB);
       pControl->AddLabel(g_localizeStrings.Get(13418), RENDER_METHOD_GLSL);
       pControl->AddLabel(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE);
+      pControl->AddLabel(g_localizeStrings.Get(13421), RENDER_METHOD_VDPAU);
 #endif
       pControl->SetValue(pSettingInt->GetData());
     }

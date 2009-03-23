@@ -1,6 +1,9 @@
 ARCH=@ARCH@
 
 CFLAGS+=-D_LINUX -fPIC -O2 -DHAVE_GETTIMEOFDAY -I. -Itimidity -Ilibarc -Iutils
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o -L/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/ -lgcc
+endif
 
 OBJS= \
 	timidity/aq.o \
@@ -45,10 +48,10 @@ OBJS= \
 	utils/timer.o \
 	utils/getopt.o \
 	timidity_codec.o
+
 SLIB=../../../../system/players/paplayer/timidity-@ARCH@.so
 
 $(SLIB): $(OBJS) exports.def
-
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -undefined dynamic_lookup -o $@ $(OBJS) $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@

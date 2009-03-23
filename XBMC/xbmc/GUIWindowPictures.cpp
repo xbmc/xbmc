@@ -535,8 +535,6 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     if ( m_vecItems->IsVirtualDirectoryRoot() && item)
     {
-      // get the usual shares
-      CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item.get());
       CGUIDialogContextMenu::GetContextButtons("pictures", item, buttons);
     }
     else

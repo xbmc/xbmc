@@ -448,8 +448,6 @@ void CHalManager::ParseDevice(const char *udi)
   if (category == NULL)
     return;
 
-  printf("%s\n", category);
-
   if (strcmp(category, "volume") == 0)
   {
     CStorageDevice dev(udi);

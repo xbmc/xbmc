@@ -26,6 +26,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "DVDCodecs/Video/DVDVideoPPFFmpeg.h"
+#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "../../Util.h"
@@ -199,6 +200,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   m_stalled = false;
   m_started = false;
+  m_codecname = m_pVideoCodec->GetName();
 
   m_messageQueue.Init();
 
@@ -681,6 +683,9 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   // remove any overlays that are out of time
   m_pOverlayContainer->CleanUp(min(pts, pts - m_iSubtitleDelay));
 
+  if(pSource->iFlags & DVP_FLAG_NONIMAGE)
+    return;
+
   // rendering spu overlay types directly on video memory costs a lot of processing power.
   // thus we allocate a temp picture, copy the original to it (needed because the same picture can be used more than once).
   // then do all the rendering on that temp picture and finaly copy it to video memory.
@@ -957,9 +962,9 @@ std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
   s << "vq:" << std::setw(3) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
-  s << ", ";
-  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%, ";
-  s << "bitrate: " << std::setprecision(4) << (double)GetVideoBitrate() / (1024.0*1024.0) << " MBit/s";
+  s << ", dc: " << m_codecname;
+  s << ", cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
+  s << ", bitrate: " << std::setprecision(4) << (double)GetVideoBitrate() / (1024.0*1024.0) << " MBit/s";
   return s.str();
 }
 

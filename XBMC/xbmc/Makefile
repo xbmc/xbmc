@@ -201,6 +201,7 @@ SRCS=Application.cpp \
      GUIViewStatePictures.cpp \
      GUIDialogFullScreenInfo.cpp \
      PowerManager.cpp \
+     Zeroconf.cpp \
 
 LIB=xbmc.a
 

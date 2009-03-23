@@ -2296,3 +2296,4 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
       tag.m_strRuntime.Format("%d",resource->m_Duration);
     return NPT_SUCCESS;
 }
+

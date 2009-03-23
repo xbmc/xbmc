@@ -1846,7 +1846,7 @@ extern "C"
   int dll_filbuf(FILE *fp)
   {
     if (fp == NULL)
-      return NULL;
+      return 0;
 
     if(IS_STD_STREAM(fp))
       return 0;
@@ -1870,7 +1870,7 @@ extern "C"
   int dll_flsbuf(int data, FILE *fp)
   {
     if (fp == NULL)
-      return NULL;
+      return 0;
 
     if(IS_STDERR_STREAM(fp) || IS_STDOUT_STREAM(fp))
     {

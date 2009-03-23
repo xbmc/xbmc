@@ -26,6 +26,8 @@
 #include "cores/ffmpeg/DllAvFormat.h"
 #include "cores/ffmpeg/DllSwScale.h"
 
+class CVDPAU;
+
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
 public:
@@ -37,11 +39,13 @@ public:
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
-  virtual const char* GetName() { return "FFmpeg"; };
+  virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
 
+#ifdef HAVE_LIBVDPAU
+  CVDPAU* GetContextVDPAU();
+#endif
+  
 protected:
-  friend int my_get_buffer(struct AVCodecContext *, AVFrame *);
-  friend void my_release_buffer(struct AVCodecContext *, AVFrame *);
 
   void GetVideoAspect(AVCodecContext* CodecContext, unsigned int& iWidth, unsigned int& iHeight);
 
@@ -59,5 +63,6 @@ protected:
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
+  std::string m_name;
 };
 

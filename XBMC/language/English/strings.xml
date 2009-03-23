@@ -1189,6 +1189,7 @@
   <string id="13417">Basic shaders (ARB)</string>
   <string id="13418">Advanced shaders (GLSL)</string>
   <string id="13419">Software</string>
+  <string id="13421">VDPAU</string>
   <string id="13420">Eject</string>
 
   <string id="13600">Apple Remote</string>
@@ -1500,6 +1501,11 @@
   <string id="16308">Lanczos (software)</string>  
   <string id="16309">Sinc (software)</string>
 
+  <string id="16310">(VDPAU)Temporal</string>
+  <string id="16311">(VDPAU)Temporal/Spatial</string>
+  <string id="16312">(VDPAU)Noise Reduction</string>
+  <string id="16313">(VDPAU)Sharpness</string>
+  <string id="16314">Inverse Telecine</string>
   <string id="17500">Display sleep timeout</string> 
 
 	<string id="17998">%i hours</string>
@@ -2202,6 +2208,7 @@
   <string id="22036">Import karaoke titles...</string>
   <string id="22037">Auto popup song selector</string>
   <string id="22038">Export karaoke titles...</string>
+  <string id="22039">Enter song number</string>
   <string id="22040">white/green</string>
   <string id="22041">white/red</string>
   <string id="22042">white/blue</string>

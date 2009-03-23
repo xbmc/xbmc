@@ -833,6 +833,8 @@
 		E46464470E7DF12B003CB291 /* NptPosixNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464460E7DF12B003CB291 /* NptPosixNetwork.cpp */; };
 		E46465170E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465150E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp */; };
 		E46465180E7E4D20003CB291 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465160E7E4D20003CB291 /* NptPosixFile.cpp */; };
+		E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
+		E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */; };
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
@@ -3559,6 +3561,10 @@
 		E46464460E7DF12B003CB291 /* NptPosixNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixNetwork.cpp; sourceTree = "<group>"; };
 		E46465150E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixDynamicLibraries.cpp; sourceTree = "<group>"; };
 		E46465160E7E4D20003CB291 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
+		E46F7C280F77217400C25D29 /* Zeroconf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Zeroconf.cpp; sourceTree = "<group>"; };
+		E46F7C290F77217400C25D29 /* Zeroconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zeroconf.h; sourceTree = "<group>"; };
+		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
+		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZeroconfOSX.mm; sourceTree = "<group>"; };
 		E4DF6CD80EFF85EB00C28243 /* CHANGELOG.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.txt; sourceTree = "<group>"; };
 		E4DF6CD90EFF85EB00C28243 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E4DF6CDA0EFF85EB00C28243 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
@@ -3933,6 +3939,8 @@
 				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
 				F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */,
 				F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */,
+				E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */,
+				E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -4580,6 +4588,8 @@
 				E38E1ED10D25F9FD00618676 /* xbmc.cpp */,
 				E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */,
 				E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */,
+				E46F7C280F77217400C25D29 /* Zeroconf.cpp */,
+				E46F7C290F77217400C25D29 /* Zeroconf.h */,
 			);
 			path = xbmc;
 			sourceTree = "<group>";
@@ -7793,6 +7803,8 @@
 				F5EA02270F6DA9A5005C2EC5 /* PowerManager.cpp in Sources */,
 				F5EA04800F72F188005C2EC5 /* SDLMain.m in Sources */,
 				F5EA05C20F733812005C2EC5 /* CocoaInterface.mm in Sources */,
+				E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */,
+				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

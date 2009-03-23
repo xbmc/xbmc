@@ -63,6 +63,7 @@ void CJoystick::Initialize(HWND hWnd)
 #endif
 
       m_Joysticks.push_back(joy);
+      m_JoyPadAxis.push_back(vector<bool>(SDL_JoystickNumAxes(joy),false));
       if (joy)
       {
         CalibrateAxis(joy);
@@ -138,7 +139,7 @@ void CJoystick::Update()
         break;
       }
     }
-
+    
     // get axis states
     m_NumAxes = numax;
     for (int a = 0 ; a<numax ; a++)
@@ -158,16 +159,29 @@ void CJoystick::Update()
         }
       }
     }
-    m_AxisId = GetAxisWithMaxAmount();
+    axisId = GetAxisWithMaxAmount();
+    
+    if(axisId==0)
+    {
+      m_pressTicksAxis = 0;
+      SetAxisActive(false);
+      m_AxisId = 0;
+    }
+    else
+    {
+      if(axisId!=m_AxisId && m_JoyPadAxis[m_JoyId][axisId])
+	      m_pressTicksAxis = SDL_GetTicks();
+      m_AxisId = axisId;
+    }
   }
-
+  
   if (buttonId==-1)
   {
     if (m_ButtonId!=0)
     {
       CLog::Log(LOGDEBUG, "Joystick %d button %d Up", m_JoyId, m_ButtonId);
     }
-    m_pressTicks = 0;
+    m_pressTicksButton = 0;
     SetButtonActive(false);
     m_ButtonId = 0;
   }
@@ -177,11 +191,18 @@ void CJoystick::Update()
     {
       CLog::Log(LOGDEBUG, "Joystick %d button %d Down", m_JoyId, buttonId);
       m_ButtonId = buttonId;
-      m_pressTicks = SDL_GetTicks();
+      m_pressTicksButton = SDL_GetTicks();
     }
     SetButtonActive();
   }
 
+}
+
+void CJoystick::SetAxisPad(string joyname, int axis)
+{
+  for(size_t idJoyNames = 0; idJoyNames < m_JoystickNames.size(); idJoyNames++)
+    if(joyname.compare(m_JoystickNames[idJoyNames].c_str())==0)
+  m_JoyPadAxis[idJoyNames][abs(axis)-1] = true;
 }
 
 void CJoystick::Update(SDL_Event& joyEvent)
@@ -197,7 +218,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
   case SDL_JOYBUTTONDOWN:
     m_JoyId = joyId = joyEvent.jbutton.which;
     m_ButtonId = buttonId = joyEvent.jbutton.button + 1;
-    m_pressTicks = SDL_GetTicks();
+    m_pressTicksButton = SDL_GetTicks();
     SetButtonActive();
     CLog::Log(LOGDEBUG, "Joystick %d button %d Down", joyId, buttonId);
     break;
@@ -233,7 +254,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
     break;
 
   case SDL_JOYBUTTONUP:
-    m_pressTicks = 0;
+    m_pressTicksButton = 0;
     SetButtonActive(false);
     CLog::Log(LOGDEBUG, "Joystick %d button %d Up", joyEvent.jbutton.which, m_ButtonId);
 
@@ -242,6 +263,16 @@ void CJoystick::Update(SDL_Event& joyEvent)
     break;
   }
 }
+
+bool CJoystick::GetAxis (int &id)
+{
+  if (!IsAxisActive())
+    return false;
+  
+  id=m_AxisId;
+  return (Repeat(id,true));
+}
+
 
 bool CJoystick::GetButton(int &id, bool consider_repeat)
 {
@@ -253,32 +284,61 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
     return true;
   }
 
-  static Uint32 lastPressTicks = 0;
-  static Uint32 lastTicks = 0;
+  return (Repeat(id,false));
+}
+
+bool CJoystick::Repeat(int &id, bool axis)
+{
+  static Uint32 lastPressTicksAnalog = 0;
+  static Uint32 lastPressTicksDigital = 0;
+  static Uint32 lastTicksAnalog = 0;
+  static Uint32 lastTicksDigital = 0;
+  
   static Uint32 nowTicks = 0;
 
-  if ((m_ButtonId>=0) && m_pressTicks)
+  Uint32 pressTicks;
+  Uint32* lastPressTicks;
+  Uint32* lastTicks;
+
+  int event;
+  if(axis)
+  {
+    event = m_AxisId;
+    pressTicks = m_pressTicksAxis;
+    lastPressTicks = &lastPressTicksAnalog;
+    lastTicks = &lastTicksAnalog;
+  }
+  else
+  {
+    event = m_ButtonId;
+    pressTicks = m_pressTicksButton;
+    lastPressTicks = &lastPressTicksDigital;
+    lastTicks = &lastTicksDigital;
+  }
+
+  if ((event!=0) && pressTicks )
   {
     // return the id if it's the first press
-    if (lastPressTicks!=m_pressTicks)
+    if (*lastPressTicks!=pressTicks)
     {
-      lastPressTicks = m_pressTicks;
-      id = m_ButtonId;
+      *lastPressTicks = pressTicks;
+      id = event;
       return true;
     }
     nowTicks = SDL_GetTicks();
-    if ((nowTicks-m_pressTicks)<500) // 500ms delay before we repeat
+    if ((nowTicks-pressTicks)<500) // 500ms delay before we repeat
     {
       return false;
     }
-    if ((nowTicks-lastTicks)<100) // 100ms delay before successive repeats
+    if ((nowTicks- *lastTicks)<100) // 100ms delay before successive repeats
     {
       return false;
     }
-    lastTicks = nowTicks;
+    *lastTicks = nowTicks;
   }
-  id = m_ButtonId;
+  id = event;
   return true;
+
 }
 
 int CJoystick::GetAxisWithMaxAmount()

@@ -110,7 +110,7 @@ uintptr_t get_win_function_address(const char* strDllName, const char* strFuncti
       return pGNSI;
   }
 #endif
-  return NULL;
+  return 0;
 }
 
 #ifdef _cplusplus

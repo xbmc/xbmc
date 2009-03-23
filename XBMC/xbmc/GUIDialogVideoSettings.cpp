@@ -32,6 +32,10 @@
 #include "GUIDialogYesNo.h"
 #include "Settings.h"
 
+#ifdef HAVE_LIBVDPAU
+#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
+#endif
+
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml")
 {
@@ -61,14 +65,17 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTINGS_FORCE_INDEX        17
 #define VIDEO_SETTINGS_SCALINGMETHOD      18
 
+#define VIDEO_SETTING_VDPAU_NOISE         19
+#define VIDEO_SETTING_VDPAU_SHARPNESS     20
+
 void CGUIDialogVideoSettings::CreateSettings()
 {
   // clear out any old settings
   m_settings.clear();
   // create our settings
   {
-    const int entries[] = { 16018, 16019, 20131, 20130, 20129, 16022, 16021, 16020};
-    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 8, entries);
+    const int entries[] = { 16018, 16019, 20131, 20130, 20129, 16022, 16021, 16020, 16310, 16314};
+    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 9, entries);
   }
   {
     const int entries[] = { 16301, 16302, 16303, 16304, 16305, 16306, 16307, 16308, 16309 };
@@ -88,7 +95,13 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 100);
   if (g_renderManager.SupportsGamma())
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
-
+#ifdef HAVE_LIBVDPAU
+  CSharedLock lock(g_renderManager.GetSection());
+  if (g_VDPAU) {
+    AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &g_stSettings.m_currentVideoSettings.m_NoiseReduction, 0.0f, 0.01f, 1.0f);
+    AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &g_stSettings.m_currentVideoSettings.m_Sharpness, -1.0f, 0.02f, 1.0f);
+  }
+#endif
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
