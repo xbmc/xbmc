@@ -96,6 +96,7 @@
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
+#include "Zeroconf.h"
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
@@ -118,9 +119,7 @@
 #ifdef HAS_DBUS_SERVER
 #include "utils/DbusServer.h"
 #endif
-#ifdef HAS_ZEROCONF
-#include "Zeroconf.h"
-#endif
+
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -1489,8 +1488,8 @@ void CApplication::StartWebServer()
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
 
       // publish web frontend and API services
-      PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
-      PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
     }
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
@@ -1509,8 +1508,8 @@ void CApplication::StopWebServer()
     m_pWebServer = NULL;
     CSectionLoader::Unload("LIBHTTP");
     CLog::Log(LOGNOTICE, "Webserver: Stopped...");
-    DepublishService("servers.webserver");
-    DepublishService("servers.webapi");
+    CZeroconf::GetInstance()->RemoveService("servers.webserver");
+    CZeroconf::GetInstance()->RemoveService("servers.webapi");
   }
 #endif
 }
@@ -1829,21 +1828,6 @@ void CApplication::StopServices()
 
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
-}
-
-void CApplication::PublishService(const std::string& id, const std::string& type, const std::string& name, unsigned int port)
-{
-#ifdef HAS_ZEROCONF
-  CZeroconf::GetInstance()->PublishService(id, type, name, port);
-#endif
-}
-
-void CApplication::DepublishService(const std::string& id)
-{
-#ifdef HAS_ZEROCONF
-  // remove service
-  CZeroconf::GetInstance()->RemoveService("servers.webserver");
-#endif
 }
 
 void CApplication::DelayLoadSkin()
