@@ -7669,7 +7669,8 @@ if test "$host_vendor" = "apple" ; then
 $as_echo "$faac_disabled" >&6; }
 else
   if test "$use_faac" = "yes"; then
-    { $as_echo "$as_me:$LINENO: checking for main in -lfaac" >&5
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lfaac" >&5
 $as_echo_n "checking for main in -lfaac... " >&6; }
 if test "${ac_cv_lib_faac_main+set}" = set; then
   $as_echo_n "(cached) " >&6
@@ -7729,7 +7730,12 @@ fi
 { $as_echo "$as_me:$LINENO: result: $ac_cv_lib_faac_main" >&5
 $as_echo "$ac_cv_lib_faac_main" >&6; }
 if test "x$ac_cv_lib_faac_main" = x""yes; then
-  LIBS=" -lfaac $LIBS"
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBFAAC 1
+_ACEOF
+
+  LIBS="-lfaac $LIBS"
+
 else
   use_faac=no;{ $as_echo "$as_me:$LINENO: result: $faac_not_found" >&5
 $as_echo "$faac_not_found" >&6; }
