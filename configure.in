@@ -282,8 +282,7 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_RESULT($faac_disabled)
 else
   if test "$use_faac" = "yes"; then
-    AC_CHECK_LIB([faac], [main],
-      LIBS=" -lfaac $LIBS",
+    AC_CHECK_LIB([faac], [main],,
       use_faac=no;AC_MSG_RESULT($faac_not_found))
   else
     AC_MSG_RESULT($faac_disabled)
