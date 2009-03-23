@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 03/15/2009-->
+<!--Date of translation: 03/23/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 18548-->
+<!--Based on english strings version 18841-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -205,7 +205,7 @@
   <string id="268">Ταξιν.: Τίτλος</string>
   <string id="269">Ταξιν.: Καλλιτέχνης</string>
   <string id="270">Ταξιν.: Άλμπουμ</string>
-  <string id="271">Κορυφαία 100</string>
+  <string id="271">100 κορυφαία</string>
   <string id="272">Η επάνω αριστερή προσαρμογή του ορατού πλαισίου</string>
   <string id="273">Η κάτω δεξιά προσαρμογή του ορατού πλαισίου</string>
   <string id="274">Θέση υποτίτλων</string>
@@ -937,6 +937,8 @@
   <string id="13021">Προσάρτηση αναιρούμενου δίσκου</string>
   <string id="13022">Επισφαλής αφαίρεση συσκευής</string>
   <string id="13023">Η συσκευή αφαιρέθηκε επιτυχώς</string>
+  <string id="13024">Συνδέθηκε χειριστήριο</string>
+  <string id="13025">Αποσυνδέθηκε χειριστήριο</string>
   <string id="13100">Φίλτρο Flicker</string>
   <string id="13101">Αφήστε τον οδηγό να επιλέξει (απαιτεί επανεκκίνηση)</string>
   <string id="13105">Κατακόρυφος χρονισμός</string>
@@ -1129,7 +1131,7 @@
   <string id="13406">Πληροφορίες εικόνας</string>
   <string id="13407">%s προκαθορισμένα</string>
   <string id="13408">(Αξιολόγηση χρήστη IMDb)</string>
-  <string id="13409">Κορυφαία 250</string>
+  <string id="13409">250 κορυφαία </string>
   <string id="13410">Συντονισμός στο Last.FM</string>
   <string id="13411">Ελάχιστη ταχύτητα ανεμιστήρα</string>
   <string id="13412">- Ροές τίτλων ειδήσεων με κατοπτρική γραφή</string>
@@ -1141,6 +1143,7 @@
   <string id="13418">Εξειδικευμένη (GLSL)</string>
   <string id="13419">Λογισμικό</string>
   <string id="13420">Εξαγωγή</string>
+  <string id="13421">VDPAU</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Κατάσταση</string>
   <string id="13602">Να εκτελείται πάντα</string>
@@ -1269,9 +1272,9 @@
   <string id="15259">Κορυφαία κομμάτια για την ετικέτα %name%</string>
   <string id="15260">Ακρόαση της ετικέτας %name% στο Last.FM radio</string>
   <string id="15261">Παρόμοιοι καλλιτέχνες όπως ο %name%</string>
-  <string id="15262">Κορυφαίο %name% άλμπουμ</string>
-  <string id="15263">Κορυφαία %name% κομμάτια</string>
-  <string id="15264">Κορυφαία %name% ετικέτες</string>
+  <string id="15262">%name% κορυφαία άλμπουμ</string>
+  <string id="15263">%name% κορυφαία κομμάτια</string>
+  <string id="15264">%name% κορυφαίες ετικέτες</string>
   <string id="15265">Οι μεγαλύτεροι θαυμαστές του %name%</string>
   <string id="15266">Ακρόαση θαυμαστών του %name% στο Last.FM radio</string>
   <string id="15267">Ακρόαση παρόμοιων καλλιτεχνών με τον %name% στο Last.FM radio</string>
@@ -1372,6 +1375,11 @@
   <string id="16307">Δικυβική (με λογισμικό)</string>
   <string id="16308">Lanczos (με λογισμικό)</string>
   <string id="16309">Sinc (με λογισμικό)</string>
+  <string id="16310">(VDPAU) Χρονική</string>
+  <string id="16311">(VDPAU) Χρονική/Χωρική</string>
+  <string id="16312">(VDPAU) Μείωση θορύβου</string>
+  <string id="16313">(VDPAU) Οξύτητα</string>
+  <string id="16314">Αντίστροφη Telecine</string>
   <string id="17500">Προβολή λήξης χρόνου αναστόλης</string>
   <string id="20000">Φάκελο εξαγωγής CDDA</string>
   <string id="20001">Χρήση εξωτερικού αναπαραγωγέα DVD</string>
@@ -1456,8 +1464,8 @@
   <string id="20094">Πηγές πολυμέσων</string>
   <string id="20095">Εισάγετε κωδικό κλειδώματος προφίλ</string>
   <string id="20096">Οθόνη σύνδεσης</string>
-  <string id="20097">Λήψη Πληροφοριών άλμπουμ</string>
-  <string id="20098">Λαμβάνει Πληροφορίες για το άλμπουμ</string>
+  <string id="20097">Λήψη πληροφοριών άλμπουμ</string>
+  <string id="20098">Λαμβάνει πληροφορίες για το άλμπουμ</string>
   <string id="20099">Αδυναμία αντιγραφής του CD ή του κομματιού κατά την αναπαραγωγή δίσκου</string>
   <string id="20100">Κεντρικό κλείδωμα και επιλογές</string>
   <string id="20101">Ενεργοποίηση γενικής διαχείριση πάντα με κωδικό</string>
@@ -1522,7 +1530,7 @@
   <string id="20161">Συνολικά</string>
   <string id="20162">Χρησιμοποιημένα</string>
   <string id="20163">από τα</string>
-  <string id="20164">Δεν υποστηρίζεται το κλείδωμα</string>
+  <string id="20164">Δεν υποστηρίζει κλείδωμα</string>
   <string id="20165">Ξεκλείδωτοs</string>
   <string id="20166">Κλειδωμένοs</string>
   <string id="20167">Παγωμένοs</string>
@@ -1674,8 +1682,8 @@
   <string id="20410">Διαφημιστικό</string>
   <string id="20411">Ισοπέδωση</string>
   <string id="20412">Ισοπέδωση τηλεοπτικών σειρών</string>
-  <string id="20413">Λήψη FanArt</string>
-  <string id="20414">Προβολή FanArt στις συλλογές βίντεο και μουσικής</string>
+  <string id="20413">Λήψη Fanart</string>
+  <string id="20414">Προβολή Fanart στις συλλογές βίντεο και μουσικής</string>
   <string id="20415">Έλεγχος για νέα περιεχόμενα</string>
   <string id="20416">Πρώτη ανάρτηση</string>
   <string id="20417">Σεναριογράφος</string>
@@ -1798,7 +1806,7 @@
   <string id="21821">Περιγραφή</string>
   <string id="21822">Κατασκευαστής κάμερας</string>
   <string id="21823">Μοντέλο κάμερας</string>
-  <string id="21824">Πληροφορίες EXIF</string>
+  <string id="21824">ΣχόλιαEXIF</string>
   <string id="21825">Έκδοση υλικού</string>
   <string id="21826">Διάφραγμα</string>
   <string id="21827">Εστιακή απόσταση</string>
@@ -1873,7 +1881,7 @@
   <string id="22011">Θερμοκρασία CPU:</string>
   <string id="22012">Συνολική μνήμη</string>
   <string id="22013">Δεδομένα προφίλ</string>
-  <string id="22014">Χρήση 'Αμυδρού φωτός' κατά την παύση της αναπαραγωγής βίντεο</string>
+  <string id="22014">Χρήση 'Αμυδρού φωτός' κατά τη παύση της αναπαραγωγής βίντεο</string>
   <string id="22015">Όλες οι εγγραφές</string>
   <string id="22016">Aνά τίτλο</string>
   <string id="22017">Ανά ομάδα</string>
@@ -1889,6 +1897,7 @@
   <string id="22036">Εισαγωγή τίτλων karaoke... </string>
   <string id="22037">Αυτόματος επιλογέας τραγουδιών</string>
   <string id="22038">Εξαγωγή τίτλων karaoke...</string>
+  <string id="22039">Εισαγωγή αριθμού τραγουδιού</string>
   <string id="22040">άσπρο/πράσινο</string>
   <string id="22041">άσπρο/κόκκινο</string>
   <string id="22042">άσπρο/μπλε</string>
