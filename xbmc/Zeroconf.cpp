@@ -21,7 +21,6 @@
  
 #include "../guilib/system.h" //HAS_ZEROCONF define
 
-#ifdef HAS_ZEROCONF
 #include "stdafx.h"
 
 #include "Zeroconf.h"
@@ -34,6 +33,22 @@
 //on osx use the native implementation
 #include "osx/ZeroconfOSX.h"
 #endif
+#endif
+
+
+#ifndef HAS_ZEROCONF
+//dummy implementation used if no zeroconf is present
+//should be optimized away
+class CZeroconfDummy : public CZeroconf
+{
+  virtual bool doPublishService(const std::string&, const std::string&, const std::string&, unsigned int)
+  {
+    return false;
+  }
+  virtual bool doRemoveService(const std::string& fcr_ident){return false;}
+  virtual bool doHasService(const std::string& fcr_ident){return false;}
+  virtual void doStop(){}
+};
 #endif
 
 CZeroconf::CZeroconf()
@@ -83,10 +98,14 @@ CZeroconf*  CZeroconf::GetInstance()
 {
   if(GetrInternalRef() == 0)
   {
+#ifndef HAS_ZEROCONF
+    GetrInternalRef() = new CZeroconfDummy;
+#else
 #ifdef __APPLE__
     GetrInternalRef() = new CZeroconfOSX;
 #elif defined(_LINUX)
     GetrInternalRef() = new CZeroconfAvahi;
+#endif
 #endif
   }
   return GetrInternalRef();
@@ -98,4 +117,3 @@ void CZeroconf::ReleaseInstance()
   GetrInternalRef() = 0;
 }
 
-#endif //HAS_ZEROCONF

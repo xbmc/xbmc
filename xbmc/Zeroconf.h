@@ -43,7 +43,7 @@ public:
   //fcr_identifier can be used to stop this service later
   //fcr_type is the zeroconf service type to publish (e.g. _http._tcp for webserver)
   //fcr_name is the name of the service to publish. The hostname is currently automatically appended
-  //         and used for name collisions. e.g. XBMC would get published as XBMC@Martn or, after collision XBMC@Martn-2
+  //         and used for name collisions. e.g. XBMC would get published as fcr_name@Martn or, after collision fcr_name@Martn-2
   //f_port port of the service to publish
   bool PublishService(const std::string& fcr_identifier,
                       const std::string& fcr_type,
@@ -62,6 +62,8 @@ public:
   
   // class methods
   // access to singleton; singleton gets created on call if not existent
+  // if zeroconf is disabled (!HAS_ZEROCONF), this will return a dummy implementation that 
+  // just does nothings, otherwise the platform specific one
   static CZeroconf* GetInstance();
   // release the singleton; (save to call multiple times)
   static void   ReleaseInstance();
