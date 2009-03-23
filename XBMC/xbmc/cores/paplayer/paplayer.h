@@ -26,10 +26,7 @@
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
 #include "cores/AudioRenderers/IAudioRenderer.h"
-#ifdef __APPLE__
-#include <portaudio.h>
-#include "../../utils/PCMAmplifier.h"
-#elif defined(HAS_ALSA)
+#ifdef HAS_ALSA
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <alsa/asoundlib.h>
 #include "../../utils/PCMAmplifier.h"
@@ -171,12 +168,6 @@ private:
 
 #ifdef HAS_XBOX_AUDIO
   IDirectSoundStream *m_pStream[2];
-#elif defined(__APPLE__)
-  PaStream*         m_pStream[2];
-  CPCMAmplifier     m_amp[2];
-  int               m_channelCount[2];
-  int               m_sampleRate[2];
-  int               m_bitsPerSample[2];
 #else
   IAudioRenderer*   m_pAudioDecoder[2];
   float             m_latency[2];
