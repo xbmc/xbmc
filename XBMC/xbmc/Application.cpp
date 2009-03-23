@@ -118,6 +118,9 @@
 #ifdef HAS_DBUS_SERVER
 #include "utils/DbusServer.h"
 #endif
+#ifdef HAS_ZEROCONF
+#include "Zeroconf.h"
+#endif
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -1487,6 +1490,9 @@ void CApplication::StartWebServer()
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
   }
+#ifdef HAS_ZEROCONF
+  CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC", atoi(g_guiSettings.GetString("servers.webserverport")));
+#endif
 #endif
 }
 
@@ -1502,6 +1508,9 @@ void CApplication::StopWebServer()
     CSectionLoader::Unload("LIBHTTP");
     CLog::Log(LOGNOTICE, "Webserver: Stopped...");
   }
+#ifdef HAS_ZEROCONF
+  CZeroconf::GetInstance()->RemoveService("servers.webserver");
+#endif
 #endif
 }
 
