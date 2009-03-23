@@ -384,8 +384,13 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bBinary, bool bOver
     CURL url(strFileName);
 
     m_pFile = CFileFactory::CreateLoader(url);
-    if (m_pFile)
-      return m_pFile->OpenForWrite(url, bBinary, bOverWrite);
+    if (m_pFile && m_pFile->OpenForWrite(url, bBinary, bOverWrite))
+    {
+      // add this file to our directory cache (if it's stored)
+      g_directoryCache.AddFile(strFileName);
+      return true;
+    }
+    return false;
   }
 #ifndef _LINUX
   catch (const win32_exception &e)
