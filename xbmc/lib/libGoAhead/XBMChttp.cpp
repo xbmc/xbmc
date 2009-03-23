@@ -482,15 +482,10 @@ void CXbmcHttp::AddItemToPlayList(const CFileItemPtr &pItem, int playList, int s
     if (pItem->IsParentFolder()) return;
     CStdString strDirectory=pItem->m_strPath;
     CFileItemList items;
-    IDirectory *pDirectory = CFactoryDirectory::Create(strDirectory);
-    if (!pDirectory)
-      return;
-    if (mask!="")
-      pDirectory->SetMask(mask);
-    pDirectory->GetDirectory(strDirectory, items);
+    CDirectory::GetDirectory(pItem->m_strPath, items, mask);
     items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
     for (int i=0; i < items.Size(); ++i)
-	  if (!(CFileItem*)items[i]->m_bIsFolder || recursive)
+      if (!(CFileItem*)items[i]->m_bIsFolder || recursive)
         AddItemToPlayList(items[i], playList, sortMethod, mask, recursive);
   }
   else
