@@ -56,6 +56,10 @@
 
 using namespace std;
 
+#ifdef HAVE_LIBVDPAU
+#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
+#endif
+
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
   CSingleLock lock(m_section);
@@ -763,7 +767,7 @@ void CDVDPlayer::Process()
     double startpts = DVD_NOPTS_VALUE;
     if(m_pDemuxer)
     {
-      if (m_pDemuxer->SeekTime(m_PlayerOptions.starttime * 1000, false, &startpts))
+      if (m_pDemuxer->SeekTime(lrint(m_PlayerOptions.starttime * 1000), false, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting demuxer from: %f", __FUNCTION__, m_PlayerOptions.starttime);
       else
         CLog::Log(LOGDEBUG, "%s - failed to start demuxing from %f", __FUNCTION__,  m_PlayerOptions.starttime);
@@ -771,7 +775,7 @@ void CDVDPlayer::Process()
 
     if(m_pSubtitleDemuxer)
     {
-      if(m_pSubtitleDemuxer->SeekTime(m_PlayerOptions.starttime * 1000, false, &startpts))
+      if(m_pSubtitleDemuxer->SeekTime(lrint(m_PlayerOptions.starttime * 1000), false, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %f", __FUNCTION__, m_PlayerOptions.starttime);
       else
         CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", __FUNCTION__, m_PlayerOptions.starttime);
@@ -844,6 +848,18 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
+
+#ifdef HAVE_LIBVDPAU
+    { CSharedLock lock(g_renderManager.GetSection());
+      if (g_VDPAU && g_VDPAU->VDPAURecovered)
+      {
+        CLog::Log(LOGDEBUG, "CDVDPlayer::Process - caught preemption");
+        // we just try to seek to first keyframe before current time
+        m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
+        g_VDPAU->VDPAURecovered = false;
+      }
+    }
+#endif
 
     // present the cache dialog until playback actually started
     if (m_pDlgCache)
@@ -2052,14 +2068,14 @@ __int64 CDVDPlayer::GetTime()
     if(offset >  1000) offset =  1000;
     if(offset < -1000) offset = -1000;
   }
-  return m_State.time + DVD_TIME_TO_MSEC(offset);
+  return llrint(m_State.time + DVD_TIME_TO_MSEC(offset));
 }
 
 // return length in msec
 __int64 CDVDPlayer::GetTotalTimeInMsec()
 {
   CSingleLock lock(m_StateSection);
-  return m_State.time_total;
+  return llrint(m_State.time_total);
 }
 
 // return length in seconds.. this should be changed to return in milleseconds throughout xbmc
@@ -2944,7 +2960,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 
   if (m_Edl.HaveCutpoints())
   {
-    m_State.time =  m_Edl.RemoveCutTime(m_State.time);
+    m_State.time =  m_Edl.RemoveCutTime(llrint(m_State.time));
     m_State.time -= m_Edl.TotalCutTime();
   }
 

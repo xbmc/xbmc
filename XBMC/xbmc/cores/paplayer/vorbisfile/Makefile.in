@@ -2,8 +2,8 @@ ARCH=@ARCH@
 DIRS=ogg libvorbis
 SYSDIR=../../../../system/players/paplayer
 SO=vorbisfile-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
-LIBS=libvorbis/lib/.libs/libvorbis.a ogg/src/.libs/libogg.a
+SLIB=$(SYSDIR)/$(SO)
+SLIBS=libvorbis/lib/.libs/libvorbis.a ogg/src/.libs/libogg.a
 ifneq (@USE_EXTERNAL_LIBVORBIS@,1)
   VORBIS_LINK_OPTS+=-l:libvorbis/lib/.libs/libvorbisfile.a -l:libvorbis/lib/.libs/libvorbis.a
 else
@@ -22,7 +22,7 @@ endif
 
 .PHONY: compile
 
-$(LIB): $(LIBS)
+$(SLIB): $(SLIBS)
 ifneq (,$(findstring 1,@USE_EXTERNAL_LIBVORBIS@ @USE_EXTERNAL_LIBOGG@))
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
@@ -38,7 +38,7 @@ else
 endif
 endif
 
-$(LIBS): compile
+$(SLIBS): compile
 
 libvorbis/lib/.libs/libvorbis.a:
 ifneq (@USE_EXTERNAL_LIBVORBIS@,1)
@@ -50,11 +50,4 @@ ifneq (@USE_EXTERNAL_LIBOGG@,1)
 	$(MAKE) -C ogg
 endif
 
-clean:
-	for d in $(DIRS); do $(MAKE) -C $$d clean; done
-	rm -f $(LIB)
-
-distclean:
-	for d in $(DIRS); do $(MAKE) -C $$d distclean; done
-	rm -f $(LIB)
-
+include ../../../../Makefile.include

@@ -736,6 +736,7 @@ enable_option_checking
 enable_debug
 enable_optimizations
 enable_gl
+enable_vdpau
 enable_profiling
 enable_joystick
 enable_xrandr
@@ -1398,6 +1399,7 @@ Optional Features:
   --enable-debug          enable debugging information (default is yes)
   --enable-optimizations  enable optimization (default is yes)
   --enable-gl             enable OpenGL rendering (default is yes)
+  --enable-vdpau          enable VDPAU decoding (default is yes)
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
   --enable-xrandr         enable XRandR support (default is yes)
@@ -2145,6 +2147,14 @@ if test "${enable_gl+set}" = set; then
   enableval=$enable_gl; use_gl=$enableval
 else
   use_gl=yes
+fi
+
+
+# Check whether --enable-vdpau was given.
+if test "${enable_vdpau+set}" = set; then
+  enableval=$enable_vdpau; use_vdpau=$enableval
+else
+  use_vdpau=yes
 fi
 
 
@@ -4939,6 +4949,7 @@ fi
 
 fi
 
+
 # platform independent libraries
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -6769,6 +6780,79 @@ fi
 
 fi
 
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lcdio" >&5
+$as_echo_n "checking for main in -lcdio... " >&6; }
+if test "${ac_cv_lib_cdio_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lcdio  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_cdio_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_cdio_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_cdio_main" >&5
+$as_echo "$ac_cv_lib_cdio_main" >&6; }
+if test "x$ac_cv_lib_cdio_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBCDIO 1
+_ACEOF
+
+  LIBS="-lcdio $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
 
@@ -7064,6 +7148,79 @@ $as_echo "$as_me: error: $missing_library" >&2;}
 fi
 
 else
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lvdpau" >&5
+$as_echo_n "checking for main in -lvdpau... " >&6; }
+if test "${ac_cv_lib_vdpau_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lvdpau  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_vdpau_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_vdpau_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_vdpau_main" >&5
+$as_echo "$ac_cv_lib_vdpau_main" >&6; }
+if test "x$ac_cv_lib_vdpau_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBVDPAU 1
+_ACEOF
+
+  LIBS="-lvdpau $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
 
 { $as_echo "$as_me:$LINENO: checking for main in -lSDL" >&5
 $as_echo_n "checking for main in -lSDL... " >&6; }
@@ -17284,6 +17441,13 @@ else
   SDL_DEFINES="-DHAS_SDL_2D"
 fi
 
+if test "$use_vdpau" = "yes"; then
+  final_message="$final_message\n  VDPAU:\tYes"
+  LIBS="-lvdpau $LIBS"
+else
+  final_message="$final_message\n  VDPAU:\tNo"
+fi
+
 if test "$use_joystick" = "yes"; then
   final_message="$final_message\n  Joystick:\tYes"
   SDL_DEFINES="$SDL_DEFINES -DHAS_SDL_JOYSTICK"
@@ -17451,16 +17615,13 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile xbmc/screensavers/rsxs-0.9/xbmc/Makefile xbmc/visualizations/XBMCProjectM/Makefile xbmc/visualizations/Goom/Makefile xbmc/visualizations/OpenGLSpectrum/Makefile xbmc/visualizations/WaveForm/Makefile xbmc/visualizations/iTunes/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
 
 
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip
 # running the script, anything else if not.
-
-
-
 
 
 
@@ -18171,6 +18332,12 @@ do
     "xbmc/DllPaths_generated.h") CONFIG_FILES="$CONFIG_FILES xbmc/DllPaths_generated.h" ;;
     "xbmc/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/linux/Makefile" ;;
     "xbmc/screensavers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/screensavers/Makefile" ;;
+    "xbmc/screensavers/rsxs-0.9/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/screensavers/rsxs-0.9/xbmc/Makefile" ;;
+    "xbmc/visualizations/XBMCProjectM/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/visualizations/XBMCProjectM/Makefile" ;;
+    "xbmc/visualizations/Goom/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/visualizations/Goom/Makefile" ;;
+    "xbmc/visualizations/OpenGLSpectrum/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/visualizations/OpenGLSpectrum/Makefile" ;;
+    "xbmc/visualizations/WaveForm/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/visualizations/WaveForm/Makefile" ;;
+    "xbmc/visualizations/iTunes/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/visualizations/iTunes/Makefile" ;;
     "tools/Linux/xbmc.sh") CONFIG_FILES="$CONFIG_FILES tools/Linux/xbmc.sh" ;;
     "tools/XBMCTex/Makefile") CONFIG_FILES="$CONFIG_FILES tools/XBMCTex/Makefile" ;;
 
@@ -19024,6 +19191,7 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       --enable-postproc \
       --enable-gpl \
       --enable-swscale \
+      `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
       --enable-protocol=http \
       --enable-pthreads
   fi
@@ -19536,36 +19704,6 @@ $as_echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&
 else
     { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/screensavers/rsxs-0.9/." >&5
 $as_echo "$as_me: Skipping configuration of submodule xbmc/screensavers/rsxs-0.9/." >&6;}
-fi
-
-
-if [ 0 != "1" ]; then
-    if [ -d xbmc/lib/libcdio/libcdio ]; then
-        pushd xbmc/lib/libcdio/libcdio
-
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
-  else
-    ./configure
-  fi
-
-        if [ $? -ne 0 ]; then
-            popd
-            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libcdio/libcdio failed to configure" >&5
-$as_echo "$as_me: error: Submodule xbmc/lib/libcdio/libcdio failed to configure" >&2;}
-   { (exit 1); exit 1; }; }
-        else
-            popd
-        fi
-    else
-        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libcdio/libcdio doesn't exist" >&5
-$as_echo "$as_me: error: Submodule xbmc/lib/libcdio/libcdio doesn't exist" >&2;}
-   { (exit 1); exit 1; }; }
-    fi
-else
-    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/lib/libcdio/libcdio." >&5
-$as_echo "$as_me: Skipping configuration of submodule xbmc/lib/libcdio/libcdio." >&6;}
 fi
 
 

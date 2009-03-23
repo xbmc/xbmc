@@ -1,13 +1,11 @@
-include ../../../../Makefile.include
+ARCH=@ARCH@
 
 OBJS = MADCodec/MadMp3Decoder.o
 CFLAGS += -D_LINUX -fPIC -O3
 
-LIB=../../../../system/players/paplayer/MADCodec-@ARCH@.so
+SLIB=../../../../system/players/paplayer/MADCodec-@ARCH@.so
 
-lib: $(LIB)
-
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		MADCodec/MadMp3Decoder.o \
@@ -16,8 +14,11 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	chmod +x $@
 else
 ifneq (@USE_EXTERNAL_LIBMAD@,1)
-	gcc -shared -o $@  MADCodec/MadMp3Decoder.o ../../dvdplayer/Codecs/libmad/.libs/libmad.a `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
+	$(CC) -shared -o $@  MADCodec/MadMp3Decoder.o ../../dvdplayer/Codecs/libmad/.libs/libmad.a `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
 else
-	gcc -shared -o $@  MADCodec/MadMp3Decoder.o -lmad `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
+	$(CC) -shared -o $@  MADCodec/MadMp3Decoder.o -lmad `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
 endif
 endif
+
+include ../../../../Makefile.include
+

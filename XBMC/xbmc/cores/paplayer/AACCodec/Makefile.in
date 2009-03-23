@@ -1,15 +1,12 @@
+ARCH=@ARCH@
 OBJS += AACCodec.o utils.o
 CFLAGS +=-D_LINUX -fPIC -Ialac_decoder -I../../dvdplayer/Codecs/libfaad2/libfaad -I../../dvdplayer/Codecs/libfaad2/common/mp4ff -I../../dvdplayer/Codecs/libfaad2/include -O2
 
 DIRS=alac_decoder
 
-LIB=../../../../system/players/paplayer/AACCodec-@ARCH@.so
+SLIB=../../../../system/players/paplayer/AACCodec-$(ARCH).so
 
-include ../../../../Makefile.include
-
-lib: $(LIB)
-
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	make -C alac_decoder
 	$(CC) -shared -bundle -flat_namespace -undefined suppress \
@@ -34,3 +31,5 @@ else
 		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 endif
 endif
+
+include ../../../../Makefile.include

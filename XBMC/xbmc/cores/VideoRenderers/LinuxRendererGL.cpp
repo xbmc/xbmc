@@ -34,6 +34,19 @@
 #include "../../../guilib/Surface.h"
 #include "../../../guilib/FrameBufferObject.h"
 
+#ifdef HAVE_LIBVDPAU
+#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
+#endif
+
+#ifdef HAS_SDL_OPENGL
+#include <GL/glew.h>
+#endif
+#ifdef HAS_GLX
+#include <GL/glx.h>
+PFNGLXBINDTEXIMAGEEXTPROC    glXBindTexImageEXT    = NULL;
+PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT = NULL;
+#endif
+
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 
 #ifdef HAS_SDL_OPENGL
@@ -84,6 +97,13 @@ CLinuxRendererGL::CLinuxRendererGL()
 
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
+
+#ifdef HAS_GLX
+  if (!glXBindTexImageEXT)
+    glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
+  if (!glXReleaseTexImageEXT)
+    glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
+#endif
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -112,7 +132,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
     free(m_pOSDABuffer);
     m_pOSDABuffer = NULL;
   }
-  
   for (int i=0; i<3; i++)
   {
     if (m_imScaled.plane[i])
@@ -578,8 +597,11 @@ bool CLinuxRendererGL::ValidateRenderTarget()
   {
     if (!glewIsSupported("GL_ARB_texture_non_power_of_two") && glewIsSupported("GL_ARB_texture_rectangle"))
     {
+      CLog::Log(LOGNOTICE,"Using GL_TEXTURE_RECTANGLE_ARB");
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
     }
+    else
+      CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
 
      // create the yuv textures    
     LoadShaders();
@@ -790,7 +812,14 @@ void CLinuxRendererGL::LoadTextures(int source)
 {
   YV12Image* im = &m_image[source];
   YUVFIELDS& fields = m_YUVTexture[source];
-
+#ifdef HAVE_LIBVDPAU
+  if ((m_renderMethod & RENDER_VDPAU) && g_VDPAU)
+  {
+    g_VDPAU->CheckRecover();
+    SetEvent(m_eventTexturesDone[source]);
+    return;
+  }
+#endif
   if (!(im->flags&IMAGE_FLAG_READY))
   {
     SetEvent(m_eventTexturesDone[source]);
@@ -810,7 +839,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   if (m_renderMethod & RENDER_SW)
   {
     struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
-                                                             im->width, im->height, PIX_FMT_ARGB,
+                                                             im->width, im->height, PIX_FMT_BGRA,
                                                              SWS_FAST_BILINEAR, NULL, NULL, NULL);
     uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2] };
     int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2] };
@@ -1107,6 +1136,11 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRendererGL::FlipPage(int source)
 {
+#ifdef HAVE_LIBVDPAU
+  if (g_VDPAU)
+    g_VDPAU->Present();
+#endif
+
   if( source >= 0 && source < m_NumYV12Buffers )
     m_iYV12RenderBuffer = source;
   else
@@ -1280,6 +1314,14 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
   bool err = false;
 
+#ifdef HAVE_LIBVDPAU
+  if (g_VDPAU)
+  {
+    CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
+    m_renderMethod = RENDER_VDPAU;
+  }
+  else 
+#endif //HAVE_LIBVDPAU
   /*
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
@@ -1505,6 +1547,12 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   {
     RenderSinglePass(flags, renderBuffer);
   }
+#ifdef HAVE_LIBVDPAU
+  else if (m_renderMethod & RENDER_VDPAU)
+  {
+    RenderVDPAU(flags, renderBuffer);
+  }
+#endif
   else
   {
     RenderSoftware(flags, renderBuffer);
@@ -2037,6 +2085,67 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   VerifyGLState();
 }
 
+void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
+{
+#ifdef HAVE_LIBVDPAU
+  if (!g_VDPAU || !g_VDPAU->m_Surface)
+  {
+    CLog::Log(LOGERROR,"(VDPAU) m_Surface is NULL");
+    return;
+  }
+
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+    g_graphicsContext.ClipToViewWindow();
+
+  glEnable(m_textureTarget);
+
+  glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex());
+  glXBindTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
+                    , g_VDPAU->m_Surface->GetGLPixmap()
+                    , GLX_FRONT_LEFT_EXT, NULL);
+  VerifyGLState();
+
+  glActiveTextureARB(GL_TEXTURE0);
+
+  // Try some clamping or wrapping
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL | GL_REPLACE);
+
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  VerifyGLState();
+
+  glBegin(GL_QUADS);
+  if (m_textureTarget==GL_TEXTURE_2D)
+  {
+    glTexCoord2f(0.0, 0.0);  glVertex2d((float)rd.left, (float)rd.top);
+    glTexCoord2f(1.0, 0.0);  glVertex2d((float)rd.right, (float)rd.top);
+    glTexCoord2f(1.0, 1.0);  glVertex2d((float)rd.right, (float)rd.bottom);
+    glTexCoord2f(0.0, 1.0);  glVertex2d((float)rd.left, (float)rd.bottom);
+  }
+  else
+  {
+    glTexCoord2f((float)rs.left,  (float)rs.top);    glVertex4f((float)rd.left,  (float)rd.top,    0, 1.0f);
+    glTexCoord2f((float)rs.right, (float)rs.top);    glVertex4f((float)rd.right, (float)rd.top,    0, 1.0f);
+    glTexCoord2f((float)rs.right, (float)rs.bottom); glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+    glTexCoord2f((float)rs.left,  (float)rs.bottom); glVertex4f((float)rd.left,  (float)rd.bottom, 0, 1.0f);
+  }
+  glEnd();
+  VerifyGLState();
+
+  glXReleaseTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
+                       , g_VDPAU->m_Surface->GetGLPixmap()
+                       , GLX_FRONT_LEFT_EXT);
+  VerifyGLState();
+  glBindTexture (m_textureTarget, 0);
+  glDisable(m_textureTarget);
+#endif
+}
+
+
 void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
 {
   int field = FIELD_FULL;
@@ -2219,6 +2328,15 @@ void CLinuxRendererGL::ClearYV12Texture(int index)
 
 bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 {
+/*
+#ifdef HAVE_LIBVDPAU
+  if (m_renderMethod & RENDER_VDPAU)
+  {
+    SetEvent(m_eventTexturesDone[index]);
+    return true;
+  }
+#endif
+*/
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
   

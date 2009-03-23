@@ -2,12 +2,7 @@ CFLAGS += -D_LINUX
 
 LIB=libxbms-@ARCH@.a
 
-OBJS := ccbuffer.o ccutil.o ccxclient.o ccxclientconnxbox.o ccxdiscover.o ccxencode.o ccxmltrans.o
-
-lib: $(LIB)
-
-$(LIB): $(OBJS)
-	$(AR) $(ARFLAGS) $@ $(OBJS)
+SRCS=ccbuffer.c ccutil.c ccxclient.c ccxclientconnxbox.c ccxdiscover.c ccxencode.c ccxmltrans.c
 
 include ../../../Makefile.include
 

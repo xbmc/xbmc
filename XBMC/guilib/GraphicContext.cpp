@@ -30,6 +30,7 @@
 #include "TextureManager.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
+#include "cores/VideoRenderers/RenderManager.h"
 #include "GUIAudioManager.h"
 
 #define D3D_CLEAR_STENCIL 0x0l
@@ -48,6 +49,11 @@ using namespace Surface;
 #ifdef HAS_XRANDR
 #include "XRandR.h"
 #endif
+
+#ifdef HAVE_LIBVDPAU
+#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
+#endif
+
 
 using namespace std;
 
@@ -699,6 +705,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
       mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
       g_audioManager.Stop();
       g_xrandr.SetMode(out, mode);
+      g_renderManager.Recover();
       SDL_ShowCursor(SDL_ENABLE);
 #endif
 
@@ -1564,6 +1571,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
     g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
+    g_renderManager.Recover();
   }
   else
   {
@@ -1586,6 +1594,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #endif
     g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
+    g_renderManager.Recover();
   }
 
   m_bFullScreenRoot = fs;

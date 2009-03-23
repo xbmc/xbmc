@@ -1,5 +1,5 @@
 INCLUDES=-I. -I.. -I../../../ -I../../ffmpeg -I../../../linux -I../../../../guilib
-CFLAGS+=-D__STDC_CONSTANT_MACROS \
+CXXFLAGS+=-D__STDC_CONSTANT_MACROS \
         -DENABLE_DVDPLAYER_HTSP \
 
 SRCS=	DVDDemux.cpp \
@@ -12,5 +12,5 @@ SRCS=	DVDDemux.cpp \
 
 LIB=	DVDDemuxers.a
 
-include ../Makefile.include
+include ../../../../Makefile.include
 

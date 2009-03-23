@@ -126,7 +126,7 @@ $(SYSDIR)/libdts-$(ARCH).so:  $(WRAPPER_OSX) libdts/libdts/libdts.a
 	$(CC) -bundle -flat_namespace -undefined suppress \
 		-o $@ libdts/libdts/bitstream.o \
 		libdts/libdts/downmix.o \
-		libdts/libdts/parse.o $(BUNDLE1_O)
+		libdts/libdts/parse.o
 	$(WRAPPER_OSX) $@;mv output.so $@
 	chmod +x $@
 

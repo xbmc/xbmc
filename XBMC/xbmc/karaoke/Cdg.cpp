@@ -39,8 +39,8 @@ using namespace XFILE;
 
 CCdg::CCdg()
 {
-  m_hOffset = NULL;
-  m_vOffset = NULL;
+  m_hOffset = 0;
+  m_vOffset = 0;
   m_BgroundColor = 0xFF;
   m_BorderColor = 0xFF;
   memset( (void *) &m_SubCode, 0, sizeof(SubCode));

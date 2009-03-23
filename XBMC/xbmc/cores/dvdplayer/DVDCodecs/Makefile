@@ -5,13 +5,5 @@ SRCS=	DVDCodecUtils.cpp \
 
 LIB=	DVDCodecs.a
 
-LIBS=	Audio/Audio.a \
-	Video/Video.a \
-	Overlay/Overlay.a \
-
-DIRS=   Audio \
-	Video \
-	Overlay \
-
-include ../Makefile.include
+include ../../../../Makefile.include
 

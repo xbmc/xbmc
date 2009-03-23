@@ -141,6 +141,9 @@
 /* Define to 1 if you have the `bz2' library (-lbz2). */
 #undef HAVE_LIBBZ2
 
+/* Define to 1 if you have the `cdio' library (-lcdio). */
+#undef HAVE_LIBCDIO
+
 /* Define to 1 if you have the `curl' library (-lcurl). */
 #undef HAVE_LIBCURL
 
@@ -266,6 +269,9 @@
 
 /* Define to 1 if you have the <libswscale/swscale.h> header file. */
 #undef HAVE_LIBSWSCALE_SWSCALE_H
+
+/* Define to 1 if you have the `vdpau' library (-lvdpau). */
+#undef HAVE_LIBVDPAU
 
 /* Define to 1 if you have the `vorbis' library (-lvorbis). */
 #undef HAVE_LIBVORBIS
