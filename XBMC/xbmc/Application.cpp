@@ -1461,9 +1461,10 @@ void CApplication::StartWebServer()
 #ifdef HAS_WEB_SERVER
   if (g_guiSettings.GetBool("servers.webserver") && m_network.IsAvailable())
   {
+    int webPort = atoi(g_guiSettings.GetString("servers.webserverport"));
     CLog::Log(LOGNOTICE, "Webserver: Starting...");
 #ifdef _LINUX
-    if (atoi(g_guiSettings.GetString("servers.webserverport")) < 1024 && geteuid() != 0)
+    if (webPort < 1024 && geteuid() != 0)
     {
         CLog::Log(LOGERROR, "Cannot start Web Server as port is smaller than 1024 and user is not root");
         return;
@@ -1474,30 +1475,24 @@ void CApplication::StartWebServer()
     if (m_network.GetFirstConnectedInterface())
     {
        m_pWebServer = new CWebServer();
-       m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), atoi(g_guiSettings.GetString("servers.webserverport")), "special://xbmc/web", false);
+       m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort, "special://xbmc/web", false);
     }
 #else
     m_pWebServer = new CWebServer();
-    m_pWebServer->Start(m_network.m_networkinfo.ip, atoi(g_guiSettings.GetString("servers.webserverport")), "special://xbmc/web", false);
+    m_pWebServer->Start(m_network.m_networkinfo.ip, webPort, "special://xbmc/web", false);
 #endif
     if (m_pWebServer) 
     {
       m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
+
+      // publish web frontend and API services
+      PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
+      PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
     }
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
   }
-#ifdef HAS_ZEROCONF
-  // publish web frontend service
-  // TODO: move PublishService() to a function
-  CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC",
-                                           atoi(g_guiSettings.GetString("servers.webserverport")));
-
-  // publish web API service
-  CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC Web API",
-                                           atoi(g_guiSettings.GetString("servers.webserverport")));
-#endif
 #endif
 }
 
@@ -1512,11 +1507,9 @@ void CApplication::StopWebServer()
     m_pWebServer = NULL;
     CSectionLoader::Unload("LIBHTTP");
     CLog::Log(LOGNOTICE, "Webserver: Stopped...");
+    DepublishService("servers.webserver");
+    DepublishService("servers.webapi");
   }
-#ifdef HAS_ZEROCONF
-  CZeroconf::GetInstance()->RemoveService("servers.webserver");
-  CZeroconf::GetInstance()->RemoveService("servers.webapi");
-#endif
 #endif
 }
 
@@ -1676,9 +1669,6 @@ bool CApplication::StopEventServer(bool promptuser)
     CLog::Log(LOGNOTICE, "ES: Stopping event server");
   }
   CEventServer::GetInstance()->StopServer();
-#ifdef HAS_ZEROCONF
-  CZeroconf::GetInstance()->RemoveService("servers.eventserver");
-#endif
   return true;
 #endif
 }
@@ -1837,6 +1827,21 @@ void CApplication::StopServices()
 
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
+}
+
+void CApplication::PublishService(const std::string& id, const std::string& type, const std::string& name, unsigned int port)
+{
+#ifdef HAS_ZEROCONF
+  CZeroconf::GetInstance()->PublishService(id, type, name, port);
+#endif
+}
+
+void CApplication::DepublishService(const std::string& id)
+{
+#ifdef HAS_ZEROCONF
+  // remove service
+  CZeroconf::GetInstance()->RemoveService("servers.webserver");
+#endif
 }
 
 void CApplication::DelayLoadSkin()

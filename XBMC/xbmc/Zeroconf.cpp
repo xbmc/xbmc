@@ -83,13 +83,11 @@ CZeroconf*  CZeroconf::GetInstance()
 {
   if(GetrInternalRef() == 0)
   {
-#ifdef _LINUX
 #ifdef __APPLE__
     GetrInternalRef() = new CZeroconfOSX;
-#else
+#elif defined(_LINUX)
     GetrInternalRef() = new CZeroconfAvahi;
 #endif
-#endif  
   }
   return GetrInternalRef();
 }
