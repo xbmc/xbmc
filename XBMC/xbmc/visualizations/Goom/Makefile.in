@@ -8,8 +8,8 @@ DIRS=goom2k4-0
 $(SLIB): $(OBJS) goom2k4-0/src/.libs/libgoom2.a
 ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) -fPIC -bundle -shared -undefined suppress -flat_namespace \
-		goom2k4-0/src/.libs/libgoom2.a $(CXXFLAGS) -o $(SLIB) $(OBJS) \
-		../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+		goom2k4-0/src/.libs/libgoom2.a $(CXXFLAGS) -o $(SLIB) $(OBJS)
+	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
 	$(CXX) -fPIC goom2k4-0/src/*.o -shared $(CXXFLAGS) -o $(SLIB) $(OBJS) \
 		`cat ../../cores/DllLoader/exports/wrapper.def` \
