@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -36,11 +36,12 @@
 #endif
 #endif
 
-CZeroconf::CZeroconf(){
-  
+CZeroconf::CZeroconf()
+{
 }
 
-CZeroconf::~CZeroconf(){
+CZeroconf::~CZeroconf()
+{
 }
 
 bool CZeroconf::PublishService(const std::string& fcr_identifier,
@@ -51,31 +52,37 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
   return doPublishService(fcr_identifier, fcr_type, fcr_name, f_port);
 }
 
-bool CZeroconf::RemoveService(const std::string& fcr_identifier){
+bool CZeroconf::RemoveService(const std::string& fcr_identifier)
+{
   return doRemoveService(fcr_identifier);
 }
 
-bool CZeroconf::HasService(const std::string& fcr_identifier){
+bool CZeroconf::HasService(const std::string& fcr_identifier)
+{
   return doHasService(fcr_identifier);
 }
 
 
-void CZeroconf::Stop(){
+void CZeroconf::Stop()
+{
   doStop();
 }
 
 //
 // below is singleton handling stuff
 // 
-CZeroconf*& CZeroconf::GetrInternalRef(){
+CZeroconf*& CZeroconf::GetrInternalRef()
+{
   //use pseudo-meyer singleton to be able to do manual intantiation
   //and to not get bitten by static initialization order effects
   static CZeroconf* slp_instance = 0;
   return slp_instance;
 }
 
-CZeroconf*  CZeroconf::GetInstance(){
-  if(GetrInternalRef() == 0){
+CZeroconf*  CZeroconf::GetInstance()
+{
+  if(GetrInternalRef() == 0)
+  {
 #ifdef _LINUX
 #ifdef __APPLE__
     GetrInternalRef() = new CZeroconfOSX;
@@ -85,11 +92,12 @@ CZeroconf*  CZeroconf::GetInstance(){
 #endif  
   }
   return GetrInternalRef();
-  
-};
+}
 
-void CZeroconf::ReleaseInstance(){
+void CZeroconf::ReleaseInstance()
+{
   delete GetrInternalRef();
   GetrInternalRef() = 0;
-};
+}
+
 #endif //HAS_ZEROCONF
