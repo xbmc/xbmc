@@ -32,6 +32,7 @@
 #include "Util.h"
 #include "ButtonTranslator.h"
 #include "SingleLock.h"
+#include "Zeroconf.h"
 #include <map>
 #include <queue>
 
@@ -199,6 +200,12 @@ void CEventServer::Run()
     CLog::Log(LOGERROR, "ES: Could not listen on port %d", m_iPort);
     return;
   }
+
+  // publish service
+  CZeroconf::GetInstance()->PublishService("servers.eventserver",
+                                           "_xbmc-events._udp",
+                                           "XBMC Event Server",
+                                           m_iPort);
 
   // add our socket to the 'select' listener
   listener.AddSocket(m_pSocket);

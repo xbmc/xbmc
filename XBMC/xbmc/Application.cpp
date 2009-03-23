@@ -1489,7 +1489,14 @@ void CApplication::StartWebServer()
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
   }
 #ifdef HAS_ZEROCONF
-    CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC", atoi(g_guiSettings.GetString("servers.webserverport")));
+  // publish web frontend service
+  // TODO: move PublishService() to a function
+  CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC",
+                                           atoi(g_guiSettings.GetString("servers.webserverport")));
+
+  // publish web API service
+  CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC Web API",
+                                           atoi(g_guiSettings.GetString("servers.webserverport")));
 #endif
 #endif
 }
@@ -1508,6 +1515,7 @@ void CApplication::StopWebServer()
   }
 #ifdef HAS_ZEROCONF
   CZeroconf::GetInstance()->RemoveService("servers.webserver");
+  CZeroconf::GetInstance()->RemoveService("servers.webapi");
 #endif
 #endif
 }
@@ -1668,6 +1676,9 @@ bool CApplication::StopEventServer(bool promptuser)
     CLog::Log(LOGNOTICE, "ES: Stopping event server");
   }
   CEventServer::GetInstance()->StopServer();
+#ifdef HAS_ZEROCONF
+  CZeroconf::GetInstance()->RemoveService("servers.eventserver");
+#endif
   return true;
 #endif
 }
