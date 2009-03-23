@@ -289,24 +289,18 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   try
   {
-    if (m_pDlgCache)
-      m_pDlgCache->Close();
-
-    CStdString strHeader;
-    if (file.IsInternetStream())
-      strHeader = g_localizeStrings.Get(10214);
-
-    if(file.IsInternetStream())
-      m_pDlgCache = new CDlgCache(0, strHeader, file.GetLabel());
-    else if(!file.IsDVDFile(false, true) && !file.IsDVDImage() && !file.IsDVD())
-      m_pDlgCache = new CDlgCache(3000, strHeader, file.GetLabel());
-
     CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", file.m_strPath.c_str());
 
     // if playing a file close it first
     // this has to be changed so we won't have to close it.
     if(ThreadHandle())
       CloseFile();
+
+    // dialog must be opened in this thread
+    if (m_item.IsInternetStream())
+      m_pDlgCache = new CDlgCache(0   , g_localizeStrings.Get(10214), m_item.GetLabel());
+    else
+      m_pDlgCache = new CDlgCache(3000, ""                          , m_item.GetLabel());
 
     m_bAbortRequest = false;
     m_seeking = false;
@@ -326,16 +320,8 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     // Playback might have been stopped due to some error
     if (m_bStop || m_bAbortRequest) 
-    {
-      if (m_pDlgCache)
-      {
-        m_pDlgCache->Close();
-        m_pDlgCache = NULL;
-      }
       return false;
-    }
 
-   
     return true;
   }
   catch(...)
@@ -738,7 +724,7 @@ void CDVDPlayer::Process()
 {
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
- 
+
   if (!OpenInputStream())
   {
     m_bAbortRequest = true;
@@ -858,6 +844,24 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
+
+    // present the cache dialog until playback actually started
+    if (m_pDlgCache)
+    {
+      if (m_pDlgCache->IsCanceled())
+        return;
+
+      if (m_caching)
+      {
+        m_pDlgCache->ShowProgressBar(true);
+        m_pDlgCache->SetPercentage(GetCacheLevel());
+      }
+      else
+      {
+        m_pDlgCache->Close();
+        m_pDlgCache = NULL;
+      }
+    }
 
     // if the queues are full, no need to read more
     if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0)
@@ -990,35 +994,6 @@ void CDVDPlayer::Process()
 
     // process the packet
     ProcessPacket(pStream, pPacket);
-
-    // present the cache dialog until playback actually started
-    if (m_pDlgCache)
-    {
-      if (m_pDlgCache->IsCanceled())
-      {
-        m_bAbortRequest = true;
-        break;
-      }
-
-      if (m_caching)
-      {
-        m_pDlgCache->ShowProgressBar(true);
-        m_pDlgCache->SetPercentage(GetCacheLevel());
-      }
-      else if (GetTime() > 500) // movie started to play
-      {
-        m_pDlgCache->Close();
-        m_pDlgCache = NULL;
-      }
-    }
-
-  }
-
-  // playback ended, make sure anything buffered is displayed
-  if (m_pDlgCache)
-  {
-    m_pDlgCache->Close();
-    m_pDlgCache = NULL;
   }
 }
 
@@ -1471,7 +1446,13 @@ void CDVDPlayer::OnExit()
   g_dvdPerformanceCounter.DisableMainPerformance();
 
   if (m_pDlgCache)
-    m_pDlgCache->SetMessage(g_localizeStrings.Get(10212));
+  {
+    if(m_pDlgCache->IsCanceled())
+      m_bAbortRequest = true;
+
+    m_pDlgCache->Close();
+    m_pDlgCache = NULL;
+  }
 
   try
   {
@@ -1535,11 +1516,6 @@ void CDVDPlayer::OnExit()
   }
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   SetEvent(m_hReadyEvent);
-  if (m_pDlgCache)
-  {
-    m_pDlgCache->Close();
-    m_pDlgCache = NULL;
-  }
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
@@ -1785,12 +1761,6 @@ void CDVDPlayer::SetCaching(bool enabled)
     m_dvdPlayerAudio.SetSpeed(m_playSpeed);
     m_dvdPlayerVideo.SetSpeed(m_playSpeed);
     m_caching = false;
-
-    if (m_pDlgCache)
-    {
-      m_pDlgCache->Close();
-      m_pDlgCache = NULL;
-    }
   }
 }
 

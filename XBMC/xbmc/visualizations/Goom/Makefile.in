@@ -1,0 +1,22 @@
+ARCH=@ARCH@
+INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations -Igoom2k4-0/src
+OBJS=Main.o
+SLIB=../../../visualisations/Goom.vis
+CXXFLAGS=-g -O3 -fPIC
+DIRS=goom2k4-0
+
+$(SLIB): $(OBJS) goom2k4-0/src/.libs/libgoom2.a
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) -fPIC -bundle -shared -undefined suppress -flat_namespace \
+		goom2k4-0/src/.libs/libgoom2.a $(CXXFLAGS) -o $(SLIB) $(OBJS) \
+		../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+else
+	$(CXX) -fPIC goom2k4-0/src/*.o -shared $(CXXFLAGS) -o $(SLIB) $(OBJS) \
+		`cat ../../cores/DllLoader/exports/wrapper.def` \
+		../../cores/DllLoader/exports/wrapper.o
+endif
+
+goom2k4-0/src/.libs/libgoom2.a:
+	$(MAKE) -C goom2k4-0
+
+include ../../../Makefile.include

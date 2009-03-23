@@ -1,4 +1,4 @@
-INCLUDES=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem
+INCLUDES+=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem
 
 INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -Ilib/libUPnP/Platinum/Source/Core \
@@ -166,7 +166,6 @@ SRCS=Application.cpp \
      Autorun.cpp \
      Util.cpp \
      GUIWindowSlideShow.cpp \
-     settings/VideoSettings.cpp \
      settings/AddonSettings.cpp \
      XBApplicationEx.cpp \
      xbmc.cpp \
@@ -203,7 +202,6 @@ SRCS=Application.cpp \
      GUIDialogFullScreenInfo.cpp \
      PowerManager.cpp \
 
-OBJS=$(SRCS:.cpp=.o)
 LIB=xbmc.a
 
 include ../Makefile.include

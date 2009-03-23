@@ -315,12 +315,17 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
   }
 #elif defined(_LINUX)
   char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+  std::cout << "Device: " << dvdDevice << std::endl;
   if (strlen(dvdDevice) != 0)
   {
+    std::cout << "Opened\n";
     int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
-    if (fd)
+    if (fd >= 0)
     {
-      ioctl(fd, CDROMEJECT, 0);
+      if (ioctl(fd, CDROMEJECT, 0) == 0)
+        std::cout << "Worked\n";
+      else
+        std::cout << "Didn't work\n";
       close(fd);
     }
   }
@@ -340,7 +345,7 @@ HRESULT CIoSupport::CloseTray()
   if (strlen(dvdDevice) != 0)
   {
     int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
-    if (fd)
+    if (fd >= 0)
     {
       ioctl(fd, CDROMCLOSETRAY, 0);
       close(fd);

@@ -6,5 +6,5 @@ SRCS=	DVDVideoCodecFFmpeg.cpp \
 
 LIB=Video.a
 
-include ../../Makefile.include
+include ../../../../../Makefile.include
 

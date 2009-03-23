@@ -3,19 +3,19 @@ ARCH=@ARCH@
 DIRS=libid3tag
 SYSDIR=../../../system
 SO=libid3tag-@ARCH@.so
-LIB=$(SYSDIR)/$(SO)
+SLIB=$(SYSDIR)/$(SO)
 CLEAN_FILES=libid3tag/compat.c libid3tag/frametype.c
 
 .PHONY: compile
 
 ifeq ($(findstring osx,$(ARCH)), osx)
-$(LIB): libid3tag/.libs/libid3tag.dylib
+$(SLIB): libid3tag/.libs/libid3tag.dylib
 	gcc $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC \
 		-o $@ libid3tag/.libs/*.o
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-$(LIB): libid3tag/.libs/libid3tag.so
+$(SLIB): libid3tag/.libs/libid3tag.so
 	$(CXX) -shared -fPIC -O3 -o $@ libid3tag/.libs/*.o \
 		`cat ../../cores/DllLoader/exports/wrapper.def` \
 		../../cores/DllLoader/exports/wrapper.o

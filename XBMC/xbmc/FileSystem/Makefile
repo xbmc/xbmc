@@ -1,5 +1,5 @@
 INCLUDES=-I. -I../ -I../linux -I../../guilib -I../lib/UnrarXLib -I../utils -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
-CFLAGS+= -D__STDC_FORMAT_MACROS
+CXXFLAGS+= -D__STDC_FORMAT_MACROS
 
 SRCS=ASAPFileDirectory.cpp \
      CacheMemBuffer.cpp \
