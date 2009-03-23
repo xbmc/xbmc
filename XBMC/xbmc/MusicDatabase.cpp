@@ -1047,6 +1047,24 @@ bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
   return false;
 }
 
+bool CMusicDatabase::ArbitraryExec(const CStdString& strExec)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    CStdString strSQL = FormatSQL(strExec);
+    m_pDS->exec(strSQL.c_str());
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs)
 {
   try

@@ -87,6 +87,7 @@ public:
   int xbmcChooseAlbum(int numParas, CStdString paras[]);
   int xbmcQueryMusicDataBase(int numParas, CStdString paras[]);
   int xbmcQueryVideoDataBase(int numParas, CStdString paras[]);
+  int xbmcExecMusicDataBase(int numParas, CStdString paras[]);
   int xbmcExecVideoDataBase(int numParas, CStdString paras[]);
   int xbmcDownloadInternetFile(int numParas, CStdString paras[]);
   int xbmcSetKey(int numParas, CStdString paras[]);
