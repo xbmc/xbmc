@@ -988,6 +988,28 @@ int CXbmcHttp::xbmcExecVideoDataBase(int numParas, CStdString paras[])
   return true;
 }
 
+int CXbmcHttp::xbmcExecMusicDataBase(int numParas, CStdString paras[])
+{
+  if (numParas==0)
+    return SetResponse(openTag+"Error:Missing Parameter");
+  else
+  {
+    CMusicDatabase musicdatabase;
+    if (musicdatabase.Open())
+    {
+      CStdString result;
+      if (musicdatabase.ArbitraryExec(paras[0]))
+        return SetResponse(openTag+"SQL Exec Done");
+      else
+        return SetResponse(openTag+"Error:SQL Exec Failed");
+      musicdatabase.Close();
+    }
+    else
+      return SetResponse(openTag+"Error:Could not open database");
+  }
+  return true;
+}
+
 int CXbmcHttp::xbmcAddToPlayListFromDB(int numParas, CStdString paras[])
 {
   if (numParas == 0)
@@ -3172,6 +3194,7 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "setresponseformat")        retVal = xbmcSetResponseFormat(numParas, paras);
       else if (command == "querymusicdatabase")       retVal = xbmcQueryMusicDataBase(numParas, paras);
       else if (command == "queryvideodatabase")       retVal = xbmcQueryVideoDataBase(numParas, paras);
+      else if (command == "execmusicdatabase")        retVal = xbmcExecMusicDataBase(numParas, paras);
       else if (command == "execvideodatabase")        retVal = xbmcExecVideoDataBase(numParas, paras);
       else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk(numParas, paras);
       else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
