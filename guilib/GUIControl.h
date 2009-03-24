@@ -135,7 +135,7 @@ public:
   virtual void UnfocusFromPoint(const CPoint &point);
 
   virtual bool OnMessage(CGUIMessage& message);
-  DWORD GetID(void) const;
+  virtual DWORD GetID(void) const;
   void SetID(DWORD dwID) { m_dwControlID = dwID; };
   virtual bool HasID(DWORD dwID) const;
   virtual bool HasVisibleID(DWORD dwID) const;
