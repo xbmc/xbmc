@@ -79,7 +79,6 @@
 		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
 		83AEF5AA0F7773E3002E08DE /* paplayer_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */; };
 		83C98B8A0F759368005759EE /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98B890F759368005759EE /* CoreAudioRenderer.cpp */; };
-		83C98B920F759402005759EE /* WaveFileRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98B910F759402005759EE /* WaveFileRenderer.cpp */; };
 		83C98F990F770B1F005759EE /* SliceQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98F980F770B1F005759EE /* SliceQueue.cpp */; };
 		8800B9120E5C9D4E005F98A4 /* libcdio-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8800B9110E5C9D4E005F98A4 /* libcdio-x86-osx.a */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
@@ -1845,8 +1844,6 @@
 		83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = paplayer_linux.cpp; sourceTree = "<group>"; };
 		83C98B880F759368005759EE /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRenderer.h; path = AudioRenderers/CoreAudioRenderer.h; sourceTree = "<group>"; };
 		83C98B890F759368005759EE /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
-		83C98B900F759402005759EE /* WaveFileRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveFileRenderer.h; path = AudioRenderers/WaveFileRenderer.h; sourceTree = "<group>"; };
-		83C98B910F759402005759EE /* WaveFileRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WaveFileRenderer.cpp; path = AudioRenderers/WaveFileRenderer.cpp; sourceTree = "<group>"; };
 		83C98F980F770B1F005759EE /* SliceQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SliceQueue.cpp; path = AudioRenderers/SliceQueue.cpp; sourceTree = "<group>"; };
 		83C98F9A0F770BA7005759EE /* SliceQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliceQueue.h; path = AudioRenderers/SliceQueue.h; sourceTree = "<group>"; };
 		8800B9110E5C9D4E005F98A4 /* libcdio-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libcdio-x86-osx.a"; path = "xbmc/lib/libcdio/libcdio-x86-osx.a"; sourceTree = "<group>"; };
@@ -6764,8 +6761,6 @@
 			children = (
 				83C98F9A0F770BA7005759EE /* SliceQueue.h */,
 				83C98F980F770B1F005759EE /* SliceQueue.cpp */,
-				83C98B900F759402005759EE /* WaveFileRenderer.h */,
-				83C98B910F759402005759EE /* WaveFileRenderer.cpp */,
 				83C98B880F759368005759EE /* CoreAudioRenderer.h */,
 				83C98B890F759368005759EE /* CoreAudioRenderer.cpp */,
 				F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */,
@@ -7817,7 +7812,6 @@
 				F5EA04800F72F188005C2EC5 /* SDLMain.m in Sources */,
 				F5EA05C20F733812005C2EC5 /* CocoaInterface.mm in Sources */,
 				83C98B8A0F759368005759EE /* CoreAudioRenderer.cpp in Sources */,
-				83C98B920F759402005759EE /* WaveFileRenderer.cpp in Sources */,
 				83C98F990F770B1F005759EE /* SliceQueue.cpp in Sources */,
 				83AEF5AA0F7773E3002E08DE /* paplayer_linux.cpp in Sources */,
 				E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */,
