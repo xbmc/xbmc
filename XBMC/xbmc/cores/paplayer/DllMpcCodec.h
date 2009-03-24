@@ -21,13 +21,20 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBMPCDEC)
+  #include <mpcdec/config_types.h>
+  #include <mpcdec/reader.h>
+  #include <mpcdec/streaminfo.h>
+#else
+  #include "MPCCodec/include/mpcdec/config_types.h"
+  #include "MPCCodec/include/mpcdec/reader.h"
+  #include "MPCCodec/include/mpcdec/streaminfo.h"
+#endif
+#include "MPCCodec/src/xbmc_interface.h"
 #include "DynamicDll.h"
-
-#include "MPCCodec/include/mpcdec/config_win32.h"
-#include "MPCCodec/include/mpcdec/reader.h"
-#include "MPCCodec/include/mpcdec/streaminfo.h"
-
-struct mpc_decoder;
 
 // stuff from dll we need
 #define FRAMELEN 1152
@@ -41,6 +48,30 @@ public:
     virtual int Read(mpc_decoder *decoder, float *buffer, int size)=0;
     virtual int Seek(mpc_decoder *decoder, double timeinseconds)=0;
 };
+
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+
+class DllMPCCodec : public DllDynamic, DllMPCCodecInterface
+{
+public:
+    virtual ~DllMPCCodec() {};
+    virtual bool Open(mpc_decoder **decoder, mpc_reader *reader,
+        mpc_streaminfo *info, double *timeinseconds)
+        { return ::Open(decoder, reader, info, timeinseconds); }
+    virtual void Close(mpc_decoder *decoder)
+        { return ::Close(decoder); }
+    virtual int Read(mpc_decoder *decoder, float *buffer, int size)
+        { return ::Read(decoder, buffer, size); }
+    virtual int Seek(mpc_decoder *decoder, double timeinseconds)
+        { return ::Seek(decoder, timeinseconds); }
+
+    // DLL faking.
+    virtual bool ResolveExports() { return true; }
+    virtual bool Load() { return true; }
+    virtual void Unload() {}
+};
+
+#else
 
 class DllMPCCodec : public DllDynamic, DllMPCCodecInterface
 {
@@ -56,3 +87,5 @@ class DllMPCCodec : public DllDynamic, DllMPCCodecInterface
     RESOLVE_METHOD(Seek)
   END_METHOD_RESOLVE()
 };
+
+#endif

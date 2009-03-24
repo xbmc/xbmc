@@ -7,6 +7,7 @@ ARCH=@ARCH@
 SYSDIR=../../../../../system/players/paplayer
 SO=libmpcdec-$(ARCH).so
 SLIB=$(SYSDIR)/$(SO)
+STATICLIB=libmpcdec-$(ARCH).a
 
 .PHONY: compile
 
@@ -18,16 +19,23 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
+ifneq (@USE_EXTERNAL_LIBMPCDEC@,1)
 	$(CC) -shared -o $@ -Wl,--whole-archive ../src/.libs/libmpcdec.a \
 		-Wl,--no-whole-archive ../src/xbmc_interface.o \
 		`cat ../../../DllLoader/exports/wrapper.def` \
 		../../../DllLoader/exports/wrapper.o
-
+else
+	$(CC) -shared -o $@ -lmpcdec ../src/xbmc_interface.o \
+		`cat ../../../DllLoader/exports/wrapper.def` \
+		../../../DllLoader/exports/wrapper.o
+    # Make a static lib to link to at the end
+	$(AR) rcs $(STATICLIB) ../src/xbmc_interface.o
+endif
 endif
 
 include ../../../../../Makefile.include
 
 ../src/.libs/libmpcdec.a: compile
+ifneq (@USE_EXTERNAL_LIBMAD@,1)
 	$(MAKE) -C ..
-
-
+endif

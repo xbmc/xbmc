@@ -347,6 +347,11 @@ ifeq ($(ARCH), powerpc-osx)
 	OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
 endif
 
+# If using external libmpcdec
+ifeq (@USE_EXTERNAL_LIBMPCDEC@,1)
+	OBJSXBMC += xbmc/cores/paplayer/MPCCodec/xbmc/libmpcdec-@ARCH@.a
+endif
+
 $(wildcard $(OBJSXBMC)) :| compile
 
 xbmc.bin: $(wildcard $(OBJSXBMC)) | compile

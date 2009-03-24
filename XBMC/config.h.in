@@ -210,6 +210,9 @@
 /* Define to 1 if you have the `mp4ff' library (-lmp4ff). */
 #undef HAVE_LIBMP4FF
 
+/* Define to 1 if you have the `mpcdec' library (-lmpcdec). */
+#undef HAVE_LIBMPCDEC
+
 /* Define to 1 if you have the `mpeg2' library (-lmpeg2). */
 #undef HAVE_LIBMPEG2
 
@@ -593,6 +596,9 @@
 
 /* Whether to use external libmad library. */
 #undef USE_EXTERNAL_LIBMAD
+
+/* Whether to use external libmpcdec library. */
+#undef USE_EXTERNAL_LIBMPCDEC
 
 /* Whether to use external libmpeg2 library. */
 #undef USE_EXTERNAL_LIBMPEG2

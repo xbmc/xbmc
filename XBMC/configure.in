@@ -65,6 +65,8 @@ external_libvorbis_enabled="== Use of external libvorbis enabled. =="
 external_libvorbis_disabled="== Use of external libvorbis disabled. =="
 external_libogg_enabled="== Use of external libogg enabled. =="
 external_libogg_disabled="== Use of external libogg disabled. =="
+external_libmpcdec_enabled="== Use of external libmpcdec enabled. =="
+external_libmpcdec_disabled="== Use of external libmpcdec disabled. =="
 
 # Internal static library message strings
 static_libraries_enabled="== Use of all supported internal static libraries enabled. =="
@@ -238,6 +240,12 @@ AC_ARG_ENABLE([external-libogg],
                [enable use of external libogg library (default is no)])],
             [use_external_libogg=$enableval],
             [use_external_libogg=no])
+
+AC_ARG_ENABLE([external-libmpcdec],
+            [AS_HELP_STRING([--enable-external-libmpcdec],
+               [enable use of external libmpcdec library (default is no)])],
+            [use_external_libmpcdec=$enableval],
+            [use_external_libmpcdec=no])
 
 ### Internal static libraries options
 AC_ARG_ENABLE([static-libraries],
@@ -585,6 +593,18 @@ else
   USE_EXTERNAL_LIBOGG=0
 fi
 
+# External libmpcdec
+if test "$use_external_libraries" = "yes" || test "$use_external_libmpcdec" = "yes"; then
+  AC_CHECK_LIB([mpcdec],          [main],, AC_MSG_ERROR($missing_library))
+
+  AC_MSG_NOTICE($external_libmpcdec_enabled)
+  USE_EXTERNAL_LIBMPCDEC=1
+  AC_DEFINE([USE_EXTERNAL_LIBMPCDEC], [1], [Whether to use external libmpcdec library.])
+else
+  AC_MSG_NOTICE($external_libmpcdec_disabled)
+  USE_EXTERNAL_LIBMPCDEC=0
+fi
+
 ### Internal static libraries checks
 if test "$use_static_libraries" = "yes"; then
   AC_MSG_NOTICE($static_libraries_enabled)
@@ -883,6 +903,11 @@ else
   else
     final_message="$final_message\n  External libogg:\tNo"
   fi
+  if test "$use_external_libmpcdec" = "yes"; then
+    final_message="$final_message\n  External libmpcdec:\tYes"
+  else
+    final_message="$final_message\n  External libmpcdec:\tNo"
+  fi
 fi
 
 ### Internal static libraries messages
@@ -913,6 +938,7 @@ AC_SUBST(USE_EXTERNAL_LIBMPEG2)
 AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBVORBIS)
 AC_SUBST(USE_EXTERNAL_LIBOGG)
+AC_SUBST(USE_EXTERNAL_LIBMPCDEC)
 AC_SUBST(INTERNAL_LIBS)
 AC_SUBST(USE_STATIC_LIBRARIES)
 AC_SUBST(USE_STATIC_LIBDVDNAV)
@@ -1026,7 +1052,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/MPCCodec], [
   else
     ./configure
   fi
-], [0])
+], [$USE_EXTERNAL_LIBMPCDEC])
 
 XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
   if test "$host_vendor" = "apple" ; then
