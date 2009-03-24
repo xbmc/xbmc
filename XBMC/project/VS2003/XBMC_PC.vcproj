@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7,10"
+	Version="7.10"
 	Name="XBMC_PC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -135,7 +135,7 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;../../xbmc/Filesystem;../../xbmc/cores/dvdplayer;../../xbmc/Win32;../../xbmc/cores;../../xbmc/;../../xbmc/utils;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/lib/libRTMP;../../xbmc/lib/boost;..\..\xbmc\lib\libPython\Python\PC;&quot;../../xbmc/lib/libSDL-WIN32/include&quot;"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;HAS_ZEROCONF"
 				MinimalRebuild="TRUE"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="0"
@@ -198,7 +198,7 @@
 				OmitFramePointers="TRUE"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;../../xbmc/Filesystem;../../xbmc/cores/dvdplayer;../../xbmc/Win32;../../xbmc/cores;../../xbmc/;../../xbmc/utils;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/lib/libRTMP;../../xbmc/lib/boost;..\..\xbmc\lib\libPython\Python\PC;&quot;../../xbmc/lib/libSDL-WIN32/include&quot;"
-				PreprocessorDefinitions="_MSVC;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX"
+				PreprocessorDefinitions="_MSVC;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;HAS_ZEROCONF"
 				StringPooling="FALSE"
 				MinimalRebuild="FALSE"
 				ExceptionHandling="FALSE"
@@ -272,11 +272,11 @@
 				RelativePath="..\..\xbmc\win32\resource.h">
 			</File>
 			<File
-                                RelativePath="..\..\xbmc\win32\Win32PowerSyscall.cpp">
- 	                </File>
- 	                <File
- 	                        RelativePath="..\..\xbmc\win32\Win32PowerSyscall.h">
- 	                </File>
+				RelativePath="..\..\xbmc\win32\Win32PowerSyscall.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\Win32PowerSyscall.h">
+			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\WIN32Util.cpp">
 			</File>
@@ -2099,13 +2099,13 @@
 				<File
 					RelativePath="..\..\xbmc\Picture.cpp">
 				</File>
-                                <File
-                                        RelativePath="..\..\xbmc\PowerManager.cpp">
-                                </File>
-                                <File
-                                        RelativePath="..\..\xbmc\PowerManager.h">
-                                </File>
-                                <File
+				<File
+					RelativePath="..\..\xbmc\PowerManager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PowerManager.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Profile.cpp">
 				</File>
 				<File
@@ -2215,6 +2215,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Zeroconf.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Zeroconf.h">
 				</File>
 				<Filter
 					Name="Karaoke">
