@@ -85,6 +85,8 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
       CStdStringW strHostW;
       g_charsetConverter.utf8ToW(strHost,strHostW);
       lpnr->lpRemoteName = (LPWSTR)strHostW.c_str();
+      lpnr->dwScope = RESOURCE_GLOBALNET;
+      lpnr->dwType = RESOURCETYPE_ANY;
       m_bHost = true;
       ret = EnumerateFunc(lpnr, items);
       GlobalFree((HGLOBAL) lpnr);
@@ -212,7 +214,6 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
   DWORD dwResult, dwResultEnum;
   HANDLE hEnum;
   DWORD cbBuffer = 16384;     // 16K is a good size
-  DWORD cEntries = -1;        // enumerate all possible entries
   LPNETRESOURCEW lpnrLocal;    // pointer to enumerated structures
   DWORD i;
   //
@@ -254,6 +255,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
 
   do 
   {
+    DWORD cEntries = -1;        // enumerate all possible entries
     //
     // Initialize the buffer.
     //
@@ -364,6 +366,7 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   CStdString strPath;
   memset(&nr,0,sizeof(nr));
   nr.dwType = RESOURCETYPE_ANY;
+  nr.dwScope = RESOURCE_GLOBALNET;
   nr.lpRemoteName = (char*)strUNC.c_str();
 
   // in general we shouldn't need the password manager as we won't disconnect from shares yet
@@ -388,9 +391,11 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   while(dwRet != NO_ERROR)
   {
     strPath = URLEncode(urlIn);
-    dwRet = WNetAddConnection2(&nr,(LPCTSTR)urlIn.GetPassWord().c_str(), (LPCTSTR)urlIn.GetUserNameA().c_str(), NULL);
+    LPCTSTR pUser = urlIn.GetUserNameA().empty() ? NULL : (LPCTSTR)urlIn.GetUserNameA().c_str();
+    LPCTSTR pPass = urlIn.GetPassWord().empty() ? NULL : (LPCTSTR)urlIn.GetPassWord().c_str();
+    dwRet = WNetAddConnection2(&nr, pPass, pUser, CONNECT_TEMPORARY);
     CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserNameA().c_str(), urlIn.GetPassWord().c_str());
-    if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD)
+    if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD || dwRet == ERROR_LOGON_FAILURE)
     {
       CLog::Log(LOGERROR,"Couldn't connect to %s, access denied", strUNC.c_str());
       if (m_allowPrompting)
@@ -405,6 +410,17 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
       }
       else
         break;
+    }
+    else if(dwRet == ERROR_SESSION_CREDENTIAL_CONFLICT)
+    {
+      DWORD dwRet2=-1;
+      CStdString strRN = nr.lpRemoteName;
+      do
+      {
+        dwRet2 = WNetCancelConnection2((LPCSTR)strRN.c_str(), 0, false);
+        strRN.erase(strRN.find_last_of("\\"),CStdString::npos);
+      } 
+      while(dwRet2 == ERROR_NOT_CONNECTED && !strRN.Equals("\\\\"));
     }
     else if(dwRet != NO_ERROR)
     {
