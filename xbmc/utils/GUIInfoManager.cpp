@@ -1208,15 +1208,15 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       int iMemPercentUsed = 100 - iMemPercentFree;
 
       if (info == SYSTEM_FREE_MEMORY)
-        strLabel.Format("%iMB", stat.dwAvailPhys /MB);
+        strLabel.Format("%luMB", stat.dwAvailPhys/MB);
       else if (info == SYSTEM_FREE_MEMORY_PERCENT)
         strLabel.Format("%i%%", iMemPercentFree);
       else if (info == SYSTEM_USED_MEMORY)
-        strLabel.Format("%iMB", (stat.dwTotalPhys - stat.dwAvailPhys)/MB);
+        strLabel.Format("%luMB", (stat.dwTotalPhys - stat.dwAvailPhys)/MB);
       else if (info == SYSTEM_USED_MEMORY_PERCENT)
         strLabel.Format("%i%%", iMemPercentUsed);
       else if (info == SYSTEM_TOTAL_MEMORY)
-        strLabel.Format("%iMB", stat.dwTotalPhys/MB);
+        strLabel.Format("%luMB", stat.dwTotalPhys/MB);
     }
     break;
   case SYSTEM_SCREEN_MODE:

@@ -183,7 +183,7 @@ void CLog::DebugLogMemory()
   CStdString strData;
 
   GlobalMemoryStatus(&stat);
-  strData.Format("%i bytes free\n", stat.dwAvailPhys);
+  strData.Format("%lu bytes free\n", stat.dwAvailPhys);
   OutputDebugString(strData.c_str());
 }
 
