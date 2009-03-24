@@ -443,11 +443,11 @@ extern "C"
     if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
     {
       dll_fclose(stream);
-      return dll_fopen(path, mode);
+      return dll_fopen(_P(path).c_str(), mode);
     }
     else if (!IS_STD_STREAM(stream))
     {
-      return freopen(_P(path), mode, stream);
+      return freopen(_P(path).c_str(), mode, stream);
     }
     
     // error
@@ -904,7 +904,7 @@ extern "C"
     else if (strchr(mode, 'w'))
       iMode |= _O_WRONLY  | O_CREAT;
       
-    int fd = dll_open(filename, iMode);
+    int fd = dll_open(_P(filename).c_str(), iMode);
     if (fd >= 0)
     {
       file = g_emuFileWrapper.GetStreamByDescriptor(fd);;
@@ -1598,11 +1598,7 @@ extern "C"
     if (!dir) return -1;
 
 #ifndef _LINUX
-    CStdString newDir(dir);
-    if (strstr(newDir.c_str(), "://") == NULL)
-      newDir.Replace("/", "\\");
-    newDir.Replace("\\\\", "\\");
-    return mkdir(_P(newDir).c_str());
+    return mkdir(_P(dir).c_str());
 #else
     return mkdir(_P(dir).c_str(), 0755);
 #endif
