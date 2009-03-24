@@ -44,7 +44,7 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T;HAS_ZEROCONF"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
@@ -135,7 +135,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T;HAS_ZEROCONF"
 				StringPooling="false"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
@@ -3067,6 +3067,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Zeroconf.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Zeroconf.h"
 					>
 				</File>
 			</Filter>
