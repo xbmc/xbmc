@@ -126,7 +126,7 @@ void CXBoxRenderManager::WaitPresentTime(double presenttime)
   double now = GetPresentTime();
   while(now + 0.001 < presenttime)
   {
-    Sleep(1);
+    Sleep(1); //this will be replaced with waiting for a vsync
     now = GetPresentTime();
   }
 }
@@ -342,10 +342,6 @@ void CXBoxRenderManager::Present()
 {
   CSharedLock lock(m_sharedSection);
 
-  /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo())
-    WaitPresentTime(m_presenttime);
-
   if (!m_pRenderer)
   {
     CLog::Log(LOGERROR, "%s called without valid Renderer object", __FUNCTION__);
@@ -391,6 +387,10 @@ void CXBoxRenderManager::Present()
     PresentBlend();
   else
     PresentSingle();
+  
+  /* wait for this present to be valid */
+  if(g_graphicsContext.IsFullScreenVideo())
+    WaitPresentTime(m_presenttime);
 }
 
 /* simple present method */
