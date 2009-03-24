@@ -523,6 +523,42 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   return bRet? S_OK : S_FALSE;
 }
 
+HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
+{
+  char cDL = cDriveLetter;
+  if( !cDL )
+  {
+    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    cDL = dvdDevice[4];
+  }
+  
+  CStdString strVolFormat; 
+  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+
+  if(GetDriveStatus(strVolFormat) != 1)
+    return ToggleTray(cDL);
+  else 
+    return S_OK;
+}
+
+HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
+{
+  char cDL = cDriveLetter;
+  if( !cDL )
+  {
+    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    cDL = dvdDevice[4];
+  }
+  
+  CStdString strVolFormat; 
+  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+
+  if(GetDriveStatus(strVolFormat) == 1)
+    return ToggleTray(cDL);
+  else 
+    return S_OK;
+}
+
 extern "C"
 {
   FILE *fopen_utf8(const char *_Filename, const char *_Mode)
