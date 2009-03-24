@@ -29,8 +29,6 @@ class CVideoReferenceClock : public CThread
   public:
     void GetTime(LARGE_INTEGER *ptime);
     CVideoReferenceClock();
-    //void SetSpeed(double WantedSpeed);
-    //double GetSpeed();
     unsigned int VblankCount;
     
   protected:
@@ -39,7 +37,9 @@ class CVideoReferenceClock : public CThread
     LARGE_INTEGER Frequency;
     bool UseVblank;
 #ifdef HAS_GLX
-    Surface::Display* Dpy;
+    bool SetupGLX();
+    void RunGLX();
+    int (*p_glXGetVideoSyncSGI)(unsigned int*);
 #endif
 };
 
