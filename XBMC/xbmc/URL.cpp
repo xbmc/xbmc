@@ -646,7 +646,7 @@ bool CURL::IsFileOnly(const CStdString &url)
 bool CURL::IsFullPath(const CStdString &url)
 {
   if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
-  if (url.Find("://") >= 0) return true;                 //   foo://bar.ext
+  if (url.Find("://") >= 0) return true;            //   foo://bar.ext
   if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
   return false;
 }
@@ -654,15 +654,33 @@ bool CURL::IsFullPath(const CStdString &url)
 CStdString CURL::ValidatePath(const CStdString &path)
 {
   CStdString result = path;
-#ifdef _WIN32
-  // check the path for incorrect slashes
-  if (CUtil::IsDOSPath(path))
-    result.Replace('/', '\\');
-  else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
+
+  // Fixup for url:/foo (-> url://foo)
+  if (result.Find(":/") > 1 && result.Find("://") < 0)
+    result.Replace(":/", "://");
+  
+  // Fixup for url:\foo (-> url://foo)
+  if (result.Find(":\\") > 1 && result.Find(":\\\\") < 0)
+    result.Replace(":\\", "://");
+  
+  // Check the url for incorrect slashes
+  if (result.Find("://") > 1)
     result.Replace('\\', '/');
+  else
+    // Fixup for double back slashes
+    result.Replace("//", "/");
+    
+  // Fixup for double forward slashes
+  result.Replace("\\\\", "\\");
+
+#ifdef _WIN32
+  // Check the path for incorrect slashes
+  if (CUtil::IsDOSPath(result))
+    result.Replace('/', '\\');
 #endif
 #ifdef _LINUX
   result.Replace('\\', '/');
 #endif
+  
   return result;
 }
