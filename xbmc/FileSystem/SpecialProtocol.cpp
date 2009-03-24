@@ -72,10 +72,12 @@ bool CSpecialProtocol::ComparePath(const CStdString &path1, const CStdString &pa
 
 CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
 {
-  // check for a special:// protocol
+  // First make the path "valid"
   CStdString validPath = CURL::ValidatePath(path);
+  
+  // check for a special:// protocol
   if (validPath.Left(10) != "special://")
-    return path;  // nothing to translate
+    return validPath;  // no special://-path to translate
 
   // have a translateable path
   CStdString translatedPath;
@@ -123,13 +125,8 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
     return TranslatePath(translatedPath);
   }
 
-  // fix up the slash direction on win32 & xbox
-#ifdef _WIN32
-  if(CUtil::IsDOSPath(translatedPath))
-    translatedPath.Replace("/","\\");
-#endif
-
-  return translatedPath;
+  // Validate the final path, just in case
+  return CURL::ValidatePath(translatedPath);
 }
 
 CStdString CSpecialProtocol::TranslatePathConvertCase(const CStdString& path)
