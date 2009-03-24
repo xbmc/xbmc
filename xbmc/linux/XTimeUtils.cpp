@@ -162,8 +162,8 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
 
   time_t t = mktime(&sysTime);
 
-  ULARGE_INTEGER result;
-  result.QuadPart = (unsigned long long) t * 10000000 + (unsigned long long) lpSystemTime->wMilliseconds * 10000;
+  LARGE_INTEGER result;
+  result.QuadPart = (long long) t * 10000000 + (long long) lpSystemTime->wMilliseconds * 10000;
   result.QuadPart += WIN32_TIME_OFFSET;
 
   lpFileTime->dwLowDateTime = result.u.LowPart;
@@ -192,7 +192,7 @@ LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2)
 
 BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTime)
 {
-  ULARGE_INTEGER fileTime;
+  LARGE_INTEGER fileTime;
   fileTime.u.LowPart = lpFileTime->dwLowDateTime;
   fileTime.u.HighPart = lpFileTime->dwHighDateTime;
 
