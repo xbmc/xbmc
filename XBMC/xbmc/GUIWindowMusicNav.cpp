@@ -967,8 +967,9 @@ void CGUIWindowMusicNav::OnSearchUpdate()
 
 void CGUIWindowMusicNav::Render()
 {
+  static const int search_timeout = 2000;
   // update our searching
-  if (m_searchTimer.IsRunning() && m_searchTimer.GetElapsedMilliseconds() > 1000)
+  if (m_searchTimer.IsRunning() && m_searchTimer.GetElapsedMilliseconds() > search_timeout)
   {
     OnSearchUpdate();
     m_searchTimer.Stop();
