@@ -386,7 +386,9 @@ void CGUISettings::Initialize()
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   AddBool(7, "audiooutput.downmixmultichannel", 548, true);
 #endif
-
+  AddInt(9, "audiooutput.synctype", 13500, SYNC_RESAMPLE, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddFloat(10, "audiooutput.maxadjust", 13504, 5.0, 0.0, 0.1, 10.0);
+  
   AddCategory(4, "masterlock", 12360);
   AddString(1, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddSeparator(2, "masterlock.sep1");
