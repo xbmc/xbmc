@@ -18,13 +18,20 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+#include <iostream> //for debugging, please remove
 #include "VideoReferenceClock.h"
+
+using namespace std;
 
 CVideoReferenceClock::CVideoReferenceClock()
 {
   QueryPerformanceFrequency(&Frequency);
   UseVblank = false;
+}
+
+void CVideoReferenceClock::OnStartup()
+{
+  //doesn't do anything yet
 }
 
 void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)

@@ -22,6 +22,7 @@
  
 #include "stdafx.h"
 #include "Thread.h"
+#include "Surface.h"
  
 class CVideoReferenceClock : public CThread
 {
@@ -33,10 +34,13 @@ class CVideoReferenceClock : public CThread
     unsigned int VblankCount;
     
   protected:
-    //void OnStartup();
+    void OnStartup();
     LARGE_INTEGER CurrTime;
     LARGE_INTEGER Frequency;
     bool UseVblank;
+#ifdef HAS_GLX
+    Surface::Display* Dpy;
+#endif
 };
 
 extern CVideoReferenceClock g_VideoReferenceClock;

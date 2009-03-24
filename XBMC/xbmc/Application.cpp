@@ -31,6 +31,7 @@
 #include "VideoDatabase.h"
 #include "Autorun.h"
 #include "ActionManager.h"
+#include "VideoReferenceClock.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #else
@@ -905,6 +906,8 @@ HRESULT CApplication::Create(HWND hWnd)
   time(&seconds);
   srand((unsigned int)seconds);
 
+  g_VideoReferenceClock.Create();
+  
   return CXBApplicationEx::Create(hWnd);
 }
 
