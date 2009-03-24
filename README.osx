@@ -3,7 +3,7 @@ TOC
 2. Getting the source code
 3. Install required libs
   3.1. Install Xcode
-  3.2. Install MacPorts
+  3.2. Install MacPorts 1.7
 4. How to compile and run
 	4.1 Using XCode
 	4.2 Using Command line
@@ -13,10 +13,13 @@ TOC
 -----------------------------------------------------------------------------
 
 This is a platform port of XBMC for the Apple OSX operating system. Both 10.5
-and 10.4 Intel platforms are supported. The current build system is Xcode 2.5
-or Xcode 3.1.2 There are two ways to build XBMC for Mac. 1) command-line or
-2) Xcode. Generally, Xcode is the easiest as it presents the build system
-in a GUI environment.
+and 10.4 Intel development platforms are supported. The current build system
+is Xcode 2.5 or Xcode 3.1.2 There are two ways to build XBMC for Mac. 
+1) command-line or
+2) Xcode. 
+
+Generally, Xcode is the easiest as it presents the build system in a GUI environment.
+The command-line build is still under development.
 
 XBMC for Mac is composed of a main binary with numerous dynamic libraries and
 codecs that support a multitude of music and video formats.
@@ -38,14 +41,17 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 Install latest Xcode. You can download it from Apple's site after registration at
 (http://developer.apple.com/tools/download). You also need to install the 10.4
-sdk.
+sdk. If using Xcode 3.x, you MUST use Xcode 3.1.2 so update your existing version
+if you are running a previous Xcode 3.x version. Xcode 3.x only runs on 10.5.
 
 
 -----------------------------------------------------------------------------
-3.1 Install MacPorts
+3.1 Install MacPorts 1.7
 -----------------------------------------------------------------------------
 
-If necessary, you can remove a previous install of MacPorts, enter the following from a terminal
+These build instructions depend on MacPorts 1.7. If you have another version 
+of MacPorts installed, it's best to remove it and install the 1.7 version.
+To remove a previous install of MacPorts, enter the following from a terminal
 windows:
 
  $ sudo rm -rf \
@@ -61,46 +67,73 @@ windows:
     /Library/Tcl/darwinports1.0 \
     /Library/Tcl/macports1.0
 
+Install MacPorts 1.7 (http://www.macports.org/). Then change it's behavior
+to always build universal against 10.4sdk. If you don't care about running 
+the build binary under OSX 10.4 or the AppleTV, then just install the port
+packages without the +universal flag.
 
-Install MacPorts (http://www.macports.org/). then install the following
-packages from the Terminal window:
+ 1)
+   $ sudo nano /opt/local/etc/macports/macports.conf
+   a) change "universal_target	10.5" to "universal_target	10.4"
+ 
+   b) change "universal_sysroot	/Developer/SDKs/MacOSX10.5.sdk" to
+     "universal_sysroot	/Developer/SDKs/MacOSX10.4u.sdk"
+   
+   c) change "universal_archs         ppc i386" 
+     to reflect the arch you are building by removing the unused arch.
 
- $ sudo port install lzo
- $ sudo port install glew
- $ sudo port install pcre
- $ sudo port install yasm
- $ sudo port install bzip2
- $ sudo port install boost
- $ sudo port install libogg
- $ sudo port install libmad
- $ sudo port install libvorbis
- $ sudo port install mysql5
- $ sudo port install fribidi
- $ sudo port install libiconv
- $ sudo port install freetype
- $ sudo port install readline
- $ sudo port install portaudio
- $ sudo port install fontconfig
- $ sudo port install cmake
- $ sudo port install libsdl $ sudo port install libsdl_mixer $ sudo port install libsdl_image $ sudo port install samba3
+ 2) These are needed to build openssl (used by samba3 and mysql5) against 10.4sdk
+   $ sudo ln -s /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/dylib1.o /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/dylib1.10.5.o
+   $ sudo ln -s /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.o /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.10.5.o
+ 
+ 3) This one is a pain, there's no real way to make it simple because mysql5
+ thinks we are cross-compiling and the port package script does not :)
+ 
+   $ sudo nano /opt/local/var/macports/sources/rsync.macports.org/release/ports/databases/mysql5/Portfile
+ 
+   scroll down to the post-destroot section and comment out the following
+   three lines like below;
+   
+    # Symlink mysql binaries into bin directory, with ${major_version} appended to the name
+    #foreach f [glob -tails -directory ${destroot}${bindir} my*] {
+    #    ln -sf ${bindir}/${f} ${destroot}${prefix}/bin/${f}${major_version}
+    #}
 
 
-Fix the mysql package default install locations with this sym link:
+Then install the following port packages (order is very important):
+
+ $ sudo port install pcre +universal
+ $ sudo port install expat +universal
+ $ sudo port install libiconv +universal
+ $ sudo port install libtool yasm cmake gmake pkgconfig
+ 
+ $ sudo port install lzo +universal
+ $ sudo port install bzip2 +universal
+ $ sudo port install fontconfig +universal
+ $ sudo port install boost +universal
+ 
+ $ sudo port install jpeg +universal
+ $ sudo port install tiff +universal
+ $ sudo port install libpng +universal
+ $ sudo port install libogg +universal
+ $ sudo port install libvorbis +universal
+ $ sudo port install libmad +universal
+ $ sudo port install fribidi +universal
+ 
+ $ sudo port install glew +universal
+ $ sudo port install libcdio +universal
+ $ sudo port install portaudio +universal
+ $ sudo port install openssl +universal
+ $ sudo port install samba3 +universal
+ $ sudo port install mysql5 +universal
+ 
+ $ sudo port install libsdl +universal
+ $ sudo port install libsdl_mixer +universal
+ $ sudo port install libsdl_image +universal
+
+Finally, fix the mysql package default install location with this symlink:
 
  $ sudo ln -s /opt/local/include/mysql5/mysql/ /opt/local/include/mysql
-
-Important Note:
-In MacPorts, building +universal on 10.5 won't let you run it on 10.4. You need
-to take the extra step of setting the sysroot to be the 10.4u SDK. Edit 
-"/opt/local/etc/macports/macports.conf" and change the universal_sysroot line
-(or add a new one if it's not present) to:
-
-universal_sysroot /Developer/SDKs/MacOSX10.4u.sdk
-
-Also some MacPort packages marked 'universal_variant no' will need the CFLAGS,
-CXXFLAGS, and LDFLAGS changed with the addition of:
-
--isysroot /Developer/SDKs/MacOSX10.4u.sdk
 
 -----------------------------------------------------------------------------
 4. How to compile
@@ -123,7 +156,7 @@ the majority of the codecs and libs:
  
 The configure operation will default to building "debug". To build "release"
 codecs and libraries for Xcode, do the configure step with "--disable-debug"
-but remember that Xcode willneed to be also built "Release":
+but remember that Xcode will need to be also built "Release":
 
  $ ./configure --disable-debug
 
@@ -170,6 +203,7 @@ You can specify "Release" instead of "Debug" as a configuration.
 4.2 Using Terminal (command-line) (this is a work in progress and might fail)
 -----------------------------------------------------------------------------
  $ cd $HOME/XBMC
+ $ export XBMC_HOME=`pwd`
  $ make externals more_libs
  $ make xbmc
  $ ./xbmc.bin
