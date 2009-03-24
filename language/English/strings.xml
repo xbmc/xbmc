@@ -990,6 +990,8 @@
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
 
+  <string id="13120">Strict Pixmap-Texture Binding (requires restart)</string>
+  
   <string id="13130">Display blanking</string>
   <string id="13131">Disabled</string>
   <string id="13132">Blank displays</string>

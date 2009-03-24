@@ -204,6 +204,8 @@ protected:
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
+  bool m_StrictBinding;
+  bool m_PixmapBound;
 
   // Software upscaling.
   int m_upscalingWidth;

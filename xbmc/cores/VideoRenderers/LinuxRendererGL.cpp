@@ -101,6 +101,10 @@ CLinuxRendererGL::CLinuxRendererGL()
   if (!glXReleaseTexImageEXT)
     glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 #endif
+#ifdef HAVE_LIBVDPAU
+  m_StrictBinding = g_guiSettings.GetBool("videoplayer.strictbinding");
+  m_PixmapBound = false;
+#endif
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -1457,8 +1461,17 @@ void CLinuxRendererGL::UnInit()
 // called from GUI thread after playback has finished to release GL resources
 void CLinuxRendererGL::OnClose()
 {
+#ifdef HAVE_LIBVDPAU
+  if (!m_StrictBinding && m_PixmapBound)
+  {
+    if (g_VDPAU)
+      glXReleaseTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
+                           , g_VDPAU->m_Surface->GetGLPixmap()
+                           , GLX_FRONT_LEFT_EXT);
+    m_PixmapBound = false;
+  }
+#endif
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
-
   // YV12 textures, subtitle and osd stuff
   for (int i = 0; i < NUM_BUFFERS; ++i)
   {
@@ -2092,10 +2105,14 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   glEnable(m_textureTarget);
 
   glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex());
-  glXBindTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
-                    , g_VDPAU->m_Surface->GetGLPixmap()
-                    , GLX_FRONT_LEFT_EXT, NULL);
-  VerifyGLState();
+  if ( (m_StrictBinding) || (!m_PixmapBound) )
+  {
+    glXBindTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
+                      , g_VDPAU->m_Surface->GetGLPixmap()
+                      , GLX_FRONT_LEFT_EXT, NULL);
+    VerifyGLState();
+    m_PixmapBound = true;
+  }
 
   glActiveTextureARB(GL_TEXTURE0);
 
@@ -2128,10 +2145,13 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   glEnd();
   VerifyGLState();
 
-  glXReleaseTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
-                       , g_VDPAU->m_Surface->GetGLPixmap()
-                       , GLX_FRONT_LEFT_EXT);
-  VerifyGLState();
+  if (m_StrictBinding)
+  {
+    glXReleaseTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
+                         , g_VDPAU->m_Surface->GetGLPixmap()
+                         , GLX_FRONT_LEFT_EXT);
+    VerifyGLState();
+  }
   glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
 #endif
