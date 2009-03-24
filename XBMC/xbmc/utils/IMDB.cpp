@@ -318,7 +318,6 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
-  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())
@@ -340,7 +339,6 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
     }
     xurl = xurl->NextSiblingElement("url");
   }
-  TiXmlBase::SetCondenseWhiteSpace(true);
 
   return ret;
 }
@@ -366,7 +364,6 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
 
 bool CIMDB::LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload /* = true */)
 {
-  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
 
   movieDetails.Reset();
