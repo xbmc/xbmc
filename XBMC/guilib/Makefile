@@ -72,6 +72,7 @@ SRCS=ActionManager.cpp \
      GUITextLayout.cpp \
      GUIMultiSelectText.cpp \
      GUIInfoColor.cpp \
+     VideoReferenceClock.cpp \
 
 LIB=guilib.a
 
