@@ -2,6 +2,7 @@ ARCH=@ARCH@
 
 OBJS = MADCodec/MadMp3Decoder.o
 CFLAGS += -D_LINUX -fPIC -O3
+CXXFLAGS += -D_LINUX -fPIC -O3
 
 SLIB=../../../../system/players/paplayer/MADCodec-@ARCH@.so
 
@@ -14,9 +15,9 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	chmod +x $@
 else
 ifneq (@USE_EXTERNAL_LIBMAD@,1)
-	$(CC) -shared -o $@  MADCodec/MadMp3Decoder.o ../../dvdplayer/Codecs/libmad/.libs/libmad.a `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
+	$(CXX) $(CXXFLAGS) -shared -o $@  MADCodec/MadMp3Decoder.o ../../dvdplayer/Codecs/libmad/.libs/libmad.a `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
 else
-	$(CC) -shared -o $@  MADCodec/MadMp3Decoder.o -lmad `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
+	$(CXX) $(CXXFLAGS) -shared -o $@  MADCodec/MadMp3Decoder.o -lmad `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
 endif
 endif
 

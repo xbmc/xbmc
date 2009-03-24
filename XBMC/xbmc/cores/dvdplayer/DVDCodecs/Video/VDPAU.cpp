@@ -953,6 +953,8 @@ void CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
   }
+  if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH)
+    CheckRecover(true);
 }
 
 #endif

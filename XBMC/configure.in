@@ -39,6 +39,8 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
+avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi support disabled. =="
+avahi_disabled="== Avahi support disabled. =="
 vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
 vdpau_disabled="== VDPAU support manually disabled. =="
 
@@ -118,7 +120,7 @@ AC_ARG_ENABLE([gl],
 
 AC_ARG_ENABLE([vdpau],
             [AS_HELP_STRING([--enable-vdpau],
-               [enable VDPAU decoding (default is yes)])],
+               [enable VDPAU decoding (default is no)])],
             [use_vdpau=$enableval],
             [use_vdpau=yes])
 
@@ -170,6 +172,11 @@ AC_ARG_ENABLE([mid],
                [enable MID support (default is no)])],
             [use_mid=$enableval],
             [use_mid=no])
+AC_ARG_ENABLE([avahi],
+             [AS_HELP_STRING([--enable-avahi],
+                [enable Avahi support (default is no)])],
+             [use_avahi=$enableval],
+             [use_avahi=no])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -391,13 +398,33 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_RESULT($faac_disabled)
 else
   if test "$use_faac" = "yes"; then
-    AC_CHECK_LIB([faac], [main],
-      LIBS=" -lfaac $LIBS",
+    AC_CHECK_LIB([faac], [main],,
       use_faac=no;AC_MSG_RESULT($faac_not_found))
   else
     AC_MSG_RESULT($faac_disabled)
   fi
 fi
+
+# avahi
+if test "$host_vendor" = "apple" ; then
+  use_avahi="no"
+  AC_MSG_RESULT($avahi_disabled)
+else
+  if test "$use_avahi" = "yes"; then
+    AC_CHECK_LIB([avahi-common], [main], 
+      LIBS=" -lavahi-common $LIBS";,
+      use_avahi=no;AC_MSG_RESULT($avahi_not_found))
+	if test "$use_avahi" = "yes"; then
+		#either both libs or none
+    	AC_CHECK_LIB([avahi-client], [main], 
+	      LIBS=" -lavahi-client $LIBS";INCLUDES="$INCLUDES -DHAS_AVAHI",
+	      use_avahi=no;AC_MSG_RESULT($avahi_not_found))
+	fi
+    else
+     AC_MSG_RESULT($avahi_disabled)
+   fi
+fi
+ 
 
 # XRandR
 if test "$host_vendor" = "apple" ; then
@@ -793,6 +820,11 @@ else
   BUILD_DVDCSS=0
   SKIP_CONFIG_DVDCSS=1
   DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
+fi
+if test "$use_avahi" = "yes"; then
+  final_message="$final_message\n  Avahi:\tYes"
+else
+  final_message="$final_message\n  Avahi:\tNo"
 fi
 
 if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then 

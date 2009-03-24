@@ -159,6 +159,24 @@ void CDirectoryCache::ClearSubPaths(const CStdString& strPath)
   }
 }
 
+void CDirectoryCache::AddFile(const CStdString& strFile)
+{
+  CSingleLock lock (m_cs);
+
+  CStdString strPath;
+  CUtil::GetDirectory(strFile, strPath);
+  CUtil::RemoveSlashAtEnd(strPath);
+
+  ciCache i = m_cache.find(strPath);
+  if (i != m_cache.end())
+  {
+    CDir *dir = i->second;
+    CFileItemPtr item(new CFileItem(strFile, false));
+    dir->m_Items->Add(item);
+    dir->SetLastAccess(m_accessCounter);
+  }
+}
+
 bool CDirectoryCache::FileExists(const CStdString& strFile, bool& bInCache)
 {
   CSingleLock lock (m_cs);

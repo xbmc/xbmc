@@ -159,6 +159,9 @@
 /* Define to 1 if you have the `enca' library (-lenca). */
 #undef HAVE_LIBENCA
 
+/* Define to 1 if you have the `faac' library (-lfaac). */
+#undef HAVE_LIBFAAC
+
 /* Define to 1 if you have the `faad' library (-lfaad). */
 #undef HAVE_LIBFAAD
 

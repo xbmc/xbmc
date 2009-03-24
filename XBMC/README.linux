@@ -119,6 +119,7 @@ These configure options exist:
   --disable-gl             disable OpenGL rendering and instead use 2D SDL (default is enabled). This is not recommended.
   --enable-profiling       enable gprof profiling (default is disabled)
   --disable-joystick       disable SDL joystick support (default is enabled)
+  --enable-avahi          enable avahi support for publishing xbmc services (default is disabled)
   --prefix=/path           install XBMC to /path rather than default (/usr/local)
   --help                   shows all options, useful fallback if this README becomes outdated
 
