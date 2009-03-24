@@ -1,63 +1,61 @@
 <scraper name="Excalibur" content="movies" thumb="excalibur.jpg" language="en">
-<NfoUrl dest="3">
-<RegExp input="$$1" output="&lt;url&gt;http://www.excaliburfilms.com/AdultDVD/\1.htm&lt;/url&gt;" dest="3">
-<expression noclean="1">excaliburfilms.com/AdultDVD/([^.]*)</expression>
-</RegExp>
-</NfoUrl>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.excaliburfilms.com/AdultDVD/\1.htm&lt;/url&gt;" dest="3">
+			<expression noclean="1">excaliburfilms.com/AdultDVD/([^.]*)</expression>
+		</RegExp>
+	</NfoUrl>
 
-<CreateSearchUrl dest="3">
-<RegExp input="$$1" output="&lt;url&gt;http://search.excaliburfilms.com/SmartSearch_result.cfm?title_in=\1&lt;/url&gt;" dest="3">
-<expression noclean="1"></expression>
-</RegExp>
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://search.excaliburfilms.com/excals.htm?searchString=%25\1%25&amp;amp;Search=AdultDVDMovies&amp;amp;SearchFor=Title.x&lt;/url&gt;" dest="3">
+			<expression noclean="1"></expression>
+		</RegExp>
+	</CreateSearchUrl>
 
-</CreateSearchUrl>
+	<GetSearchResults dest="6">
+		<RegExp output="\1" dest="3">
+			<expression noclean="1">Your Exact Title Search Results:&lt;(.*)&gt;Your Similar Title Search Results:&lt;</expression>
+		</RegExp>
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&l t;/results&gt;" dest="6">
+			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.excaliburfilms.com/AdultDVD/\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression trim="1" repeat="yes">&lt;a href=&quot;http://www.ExcaliburFilms.com/AdultDVD/([^&quot;]*)&quot;.*?&lt;font class=&quot;searchTitle12&quot;&gt;([^&lt;]*)&lt;/font&gt;&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSearchResults>
 
-<GetSearchResults dest="6">
-<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="6">
-<RegExp input="$$1" output="\1" dest="4">
-<expression>&lt;a href=&quot;([^/]*).htm&quot;&gt;</expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;/1&lt;/title&gt;&lt;url&gt;http://www.excaliburfilms.com/AdultDVD/$$4.htm&lt;/url&gt;&lt;/entity&gt;" dest="5">
-<expression clear="yes">Buy ([^D]*),</expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.excaliburfilms.com/AdultDVD/\1.htm&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-<expression repeat="yes">&lt;a href=&quot;http://www\.excaliburfilms\.com/AdultDVD/([^.]*)\.htm&quot; class=&quot;searchTitle12&quot;&gt;&lt;font class=&quot;searchTitle12&quot;&gt;([^&lt;]*)</expression>
-</RegExp>
-<expression noclean="1"></expression>
-</RegExp>
-
-</GetSearchResults>
-
-<GetDetails dest="3">
-<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-<RegExp input="$$1" output="&lt;thumb&gt;http://images.excaliburfilms.com/DVD/reviews/imagesCH3WY/largemoviepic/\1&lt;/thumb&gt;" dest="5">
-<expression>imagesCH3WY/([^&quot;]*)</expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
-<expression>Buy ([^D]*) </expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;thumb&gt;http://images.excaliburfilms.com/pornlist/starpicsCH3WY/\1.jpg&lt;/thumb&gt;&lt;/actor&gt;" dest="5+">
-<expression repeat="yes">&lt;a href=&quot;/pornlist/starpgs/([^\.]*)[^&gt;]*&gt;([^&lt;]*)</expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
-<expression>href=&apos;/DVD/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;BR&gt;</expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
-<expression>/excal/release[^&gt;]*&gt;[0-9]*/[0-9]*/([^&lt;]*)</expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;runtime&gt;\1 mins&lt;/runtime&gt;" dest="5+">
-<expression>Time: &lt;/font&gt;&lt;[^&gt;]*&gt;([0-9]*)</expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-<expression>Description:&lt;/font&gt;&lt;/a&gt;[^&gt;]*&gt;([^&lt;]*)</expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
-<expression>href=&apos;/dvd/adultstudios/[^&gt;]*&gt;([^&lt;]*)</expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
-<expression>&gt;Director: &lt;/font&gt;[^&gt;]*&gt;([^&lt;]*)</expression>
-</RegExp>
-<expression noclean="1"></expression>
-</RegExp>
-</GetDetails>
-</scraper> 
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;thumbs&gt;&lt;thumb&gt;http://images.excaliburfilms.com/DVD/reviews/imagesBB020609/largemoviepic/\1&lt;/thumb&gt;" dest="5+">
+				<expression>imagesBB020609/([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;http://images.excaliburfilms.com/DVD/reviews/imagesBB020609/largemoviepic/\1-b.jpg&lt;/thumb&gt;&lt;/thumbs&gt;" dest="5+">
+				<expression>imagesBB020609/([^\.]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression>Rent ([^D]*) </expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\3&lt;/name&gt;&lt;thumb&gt;http://images.excaliburfilms.com/pornlist/starpicsAA020309/\2.jpg&lt;/thumb&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href=&quot;/pornlist/(.*?)/([^\.]*)[^&gt;]*&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression>href=&apos;/DVD/[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;BR&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>/excal/release[^&gt;]*&gt;[0-9]*/[0-9]*/([^&lt;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;runtime&gt;\1 mins&lt;/runtime&gt;" dest="5+">
+				<expression>Time: &lt;/font&gt;&lt;[^&gt;]*&gt;([0-9]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression>Description:&lt;/font&gt;&lt;/a&gt;[^&gt;]*&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+				<expression>href=&apos;/dvd/adultstudios/[^&gt;]*&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<expression>&gt;Director: &lt;/font&gt;[^&gt;]*&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+</scraper>
