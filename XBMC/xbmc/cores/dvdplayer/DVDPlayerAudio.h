@@ -22,6 +22,7 @@
 #pragma once
 #include "../../utils/Thread.h"
 
+#include <samplerate.h>
 #include "DVDAudio.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
@@ -41,6 +42,15 @@ enum CodecID;
 #define DECODE_FLAG_ERROR   4
 #define DECODE_FLAG_ABORT   8
 #define DECODE_FLAG_TIMEOUT 16
+
+#define MAXCONVSAMPLES 100000
+#define RINGSIZE 1000000
+
+#define PROPORTIONAL 20.0
+#define PROPREF 0.01
+#define PROPDIVMIN 2.0
+#define PROPDIVMAX 40.0
+#define INTEGRAL 200.0
 
 typedef struct stDVDAudioFrame
 {
@@ -80,6 +90,35 @@ public:
   void   Add(__int64 bytes, double pts);
   double Get(__int64 bytes, bool consume);
   void   Flush();
+};
+
+class CDVDPlayerResampler
+{
+  public:
+    CDVDPlayerResampler();
+    ~CDVDPlayerResampler();
+  
+    void Add(DVDAudioFrame audioframe, double pts);
+    bool Retreive(DVDAudioFrame audioframe, double &pts);
+    void SetRatio(double ratio);
+    void Flush();
+  
+  private:
+  
+    int NrChannels;
+    SRC_STATE* Converter;
+    SRC_DATA ConverterData;
+  
+    float* RingBuffer;  //ringbuffer for the audiosamples
+    int RingBufferPos;  //where we are in the ringbuffer
+    int RingBufferFill; //how many unread samples there are in the ringbuffer, starting at RingBufferPos
+    double* PtsRingBuffer;  //ringbuffer for the pts value, each sample gets its own pts
+  
+    void CheckResampleBuffers(int channels);
+    
+    //this makes sure value is bewteen min and max
+    template <typename A, typename B, typename C>
+        inline A Clamp(A value, B min, C max){ return value < max ? (value > min ? value : min) : max; }
 };
 
 class CDVDPlayerAudio : public CThread
@@ -170,5 +209,20 @@ protected:
   bool    m_stalled;
   bool    m_started;
   CRITICAL_SECTION m_critCodecSection;
+  
+  void   ResetErrorCounters();
+  
+  int    PCMSynctype; //sync type for pcm
+  int    AC3DTSSynctype; //sync type for ac3/dts passthrough
+  double CurrError; //current average error
+  double AverageError; //place to store errors
+  int    ErrorCount; //amount of error stored
+  int    SkipDupCount; //whether to skip, duplicate or play normal
+  bool   PrevSkipped; //if the previous frame was skipped, don't skip the current one
+  double MeasureTime; //timestamp when the last average error was measured
+  double Integral;
+  bool   SyncClock; //if we have to sync the clock
+
+  CDVDPlayerResampler Resampler;
 };
 
