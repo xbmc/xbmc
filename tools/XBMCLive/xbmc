@@ -44,6 +44,10 @@ case "$1" in
 		RUNX="$(grep "splash" /proc/cmdline)"
 		if [ "$RUNX" == "" ]; then
 		        echo "Not starting X."
+
+			if [ -f rm /home/xbmc/.xsession ]; then
+				rm /home/xbmc/.xsession
+			fi
 		else
 			NOMOUNT="$( echo $XBMC_PARAMS | grep "nodiskmount" )"
 			if [ "$NOMOUNT" = "" ]; then
