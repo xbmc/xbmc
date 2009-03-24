@@ -126,7 +126,7 @@ void CXBoxRenderManager::WaitPresentTime(double presenttime)
   double now = GetPresentTime();
   while(now + 0.001 < presenttime)
   {
-    Sleep((int)((presenttime - now) * 1000.0));
+    Sleep(1);
     now = GetPresentTime();
   }
 }
