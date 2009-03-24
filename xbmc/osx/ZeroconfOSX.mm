@@ -37,7 +37,6 @@
 
 - (bool) publishService:(NSString*) identifier withType:(NSString*) service_type withName:(NSString*) name withPort:(unsigned int) port;
 - (bool) removeService:(NSString*) identifier;
-- (bool) hasService:(NSString*) identifier;
 
 //stops all services
 - (void) stop;
@@ -115,11 +114,6 @@
     [service stop];
     return service;
   }
-}
-
-- (bool) hasService:(NSString*) identifier
-{
-  return ([services objectForKey:identifier] != nil);
 }
 
 -(void) stop
@@ -202,11 +196,6 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
 bool CZeroconfOSX::doRemoveService(const std::string& fcr_ident)
 {
   return [mp_data->impl removeService:[NSString stringWithCString:fcr_ident.c_str()]];
-}
-
-bool CZeroconfOSX::doHasService(const std::string& fcr_ident)
-{
-  return [mp_data->impl hasService:[NSString stringWithCString:fcr_ident.c_str()]];
 }
 
 void CZeroconfOSX::doStop()

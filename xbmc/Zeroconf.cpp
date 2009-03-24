@@ -43,13 +43,15 @@ class CZeroconfDummy : public CZeroconf
     return false;
   }
   virtual bool doRemoveService(const std::string& fcr_ident){return false;}
-  virtual bool doHasService(const std::string& fcr_ident){return false;}
   virtual void doStop(){}
 };
 #endif
 
-CZeroconf::CZeroconf()
+CZeroconf::CZeroconf():m_started(false)
 {
+//  if(g_guiSettings.GetBool("servers.zeroconf")){
+    Start();
+//  }
 }
 
 CZeroconf::~CZeroconf()
@@ -61,23 +63,49 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
                                const std::string& fcr_name,
                                unsigned int f_port)
 {
-  return doPublishService(fcr_identifier, fcr_type, fcr_name, f_port);
+  CZeroconf::PublishInfo info = {fcr_type, fcr_name, f_port};
+  std::pair<tServiceMap::const_iterator, bool> ret = m_service_map.insert(std::make_pair(fcr_identifier, info));
+  if(!ret.second) //identifier exists
+    return false;
+  if(m_started)
+    return doPublishService(fcr_identifier, fcr_type, fcr_name, f_port);
+  //not yet started, so its just queued
+  return true;
 }
 
 bool CZeroconf::RemoveService(const std::string& fcr_identifier)
 {
-  return doRemoveService(fcr_identifier);
+  tServiceMap::iterator it = m_service_map.find(fcr_identifier);
+  if(it == m_service_map.end())
+    return false;
+  m_service_map.erase(it);
+  if(m_started)
+    return doRemoveService(fcr_identifier);
+  else 
+    return true;
 }
 
 bool CZeroconf::HasService(const std::string& fcr_identifier)
 {
-  return doHasService(fcr_identifier);
+  return (m_service_map.find(fcr_identifier) != m_service_map.end());
 }
 
+void CZeroconf::Start()
+{
+  if(m_started)
+    return;
+  m_started = true;
+  for(tServiceMap::const_iterator it = m_service_map.begin(); it != m_service_map.end(); ++it){
+    doPublishService(it->first, it->second.type, it->second.name, it->second.port);
+  }
+}
 
 void CZeroconf::Stop()
 {
+  if(!m_started)
+    return;
   doStop();
+  m_started = false;
 }
 
 //

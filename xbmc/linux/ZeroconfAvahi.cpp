@@ -179,11 +179,6 @@ bool CZeroconfAvahi::doRemoveService(const std::string& fcr_ident)
   return true;
 }
 
-bool CZeroconfAvahi::doHasService(const std::string& fcr_ident)
-{
-  return (m_services.find(fcr_ident) != m_services.end());
-}
-
 void CZeroconfAvahi::doStop()
 {
   for(tServiceMap::const_iterator it = m_services.begin(); it != m_services.end(); ++it)

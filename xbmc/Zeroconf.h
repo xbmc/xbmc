@@ -22,6 +22,7 @@
  */
  
 #include <string>
+#include <map>
 
 /// this class provides support for zeroconf
 /// while the different zeroconf implementations have asynchronous APIs
@@ -30,11 +31,6 @@
 /// free to add it. The main purpose currently is to provide an easy
 /// way to publish services in the different StartXXX/StopXXX methods
 /// in CApplication
-///
-/// One thing to think about is where to "standardize" the names, so that other
-/// apps can parse the published services. e.g. the webserver should be published as
-/// XBMC@$(HOSTNAME) with type "_http._tcp" so that e.g. the XBMC iPhone remote can use
-/// that to display XBMC instances on the local network 
 class CZeroconf
 {
 public:
@@ -45,6 +41,7 @@ public:
   //fcr_name is the name of the service to publish. The hostname is currently automatically appended
   //         and used for name collisions. e.g. XBMC would get published as fcr_name@Martn or, after collision fcr_name@Martn-2
   //f_port port of the service to publish
+  // returns false if fcr_identifier was already present
   bool PublishService(const std::string& fcr_identifier,
                       const std::string& fcr_type,
                       const std::string& fcr_name,
@@ -54,10 +51,16 @@ public:
   ///returns false if fcr_identifier does not exist
   bool RemoveService(const std::string& fcr_identifier);
   
-  ///returns true if this service is published/exists
+  ///returns true if fcr_identifier exists
   bool HasService(const std::string& fcr_identifier);
   
-  // unpublishs all services
+  //starts publishing
+  //services that were added with PublishService(...) while Zeroconf wasn't
+  //started, get published now.
+  void Start();
+  
+  // unpublishs all services (but keeps them stored in this class)
+  // a call to Start() will republish them
   void Stop();
   
   // class methods
@@ -72,16 +75,15 @@ public:
   
 protected:
   //methods to implement for concrete implementations
+  //publishs this service
   virtual bool doPublishService(const std::string& fcr_identifier,
                                 const std::string& fcr_type,
                                 const std::string& fcr_name,
                                 unsigned int f_port) = 0;
-  
+  //removes the service if published
   virtual bool doRemoveService(const std::string& fcr_ident) = 0;
-  
-  //doHas is ugly ...
-  virtual bool doHasService(const std::string& fcr_ident) = 0;
-  
+
+  //removes all services (short hand for "for i in m_service_map doRemoveService(i)")
   virtual void doStop() = 0;
   
 protected:
@@ -91,6 +93,15 @@ protected:
   virtual ~CZeroconf();    
   
 private:
+  struct PublishInfo{
+    std::string type;
+    std::string name;
+    unsigned int port; 
+  };
+  typedef std::map<std::string, PublishInfo> tServiceMap;
+  tServiceMap m_service_map;
+  bool m_started;
+  
   //internal access to singleton instance holder (aka meyer singleton)
   static CZeroconf*& GetrInternalRef();
 };

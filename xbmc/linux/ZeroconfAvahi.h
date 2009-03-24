@@ -49,9 +49,6 @@ protected:
 
   virtual bool doRemoveService(const std::string& fcr_ident);
 
-  //doHas is ugly ...
-  virtual bool doHasService(const std::string& fcr_ident);
-
   virtual void doStop();
 
 private:
