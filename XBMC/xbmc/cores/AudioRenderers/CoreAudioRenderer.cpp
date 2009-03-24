@@ -22,8 +22,11 @@
 
 #include "stdafx.h"
 #include "CoreAudioRenderer.h"
+#include <Atomics.h>
 
-#define LOG_STREAM_DESC(msg, sd) CLog::Log(LOGDEBUG, "%s - SampleRate: %u, BitDepth: %u, Channels: %u",msg, (Uint32) sd.mSampleRate, sd.mBitsPerChannel, sd.mChannelsPerFrame)
+
+
+#define LOG_STREAM_DESC(msg, sd) CLog::Log(LOGDEBUG, "%s - SampleRate: %u, BitDepth: %u, Channels: %u",msg, (UInt32) sd.mSampleRate, sd.mBitsPerChannel, sd.mChannelsPerFrame)
 
 //***********************************************************************************************
 // Contruction/Destruction
@@ -35,7 +38,8 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_OutputUnit(NULL),
   m_TotalBytesIn(0),
   m_TotalBytesOut(0),
-  m_AvgBytesPerSec(0)
+  m_AvgBytesPerSec(0),
+  m_CacheLock(0)
 {
   
 }
@@ -56,7 +60,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
   OSStatus ret;
   
   // Obtain a list of all available audio devices
-    AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
+  AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
   UInt32 deviceCount = size / sizeof(AudioDeviceID);
   AudioDeviceID* pDevices = new AudioDeviceID[deviceCount];
   ret = AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, pDevices);
@@ -108,7 +112,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
     return false; 
   }  
   
-// ** Anytime after this we need to close the component if we fail
+  // ** Any time after this we need to close the component if we fail
   
   // Hook the Ouput AudioUnit to the selected device
   ret = AudioUnitSetProperty(m_OutputUnit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &outputDevice, sizeof(AudioDeviceID));
@@ -118,54 +122,14 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
     // TODO: Cleanup
     return false; 
   }
+
+  // Now we split based on the output type (PCM/SPDIF)
+  InitializePCM(iChannels, uiSamplesPerSec, uiBitsPerSample);
   
-  // TODO: Register for notification of device disconnects
-  // TODO: Register for notification of property changes
   
-  // Setup the callback function that the head AudioUnit will use to request data	
-  AURenderCallbackStruct callbackInfo;
-	callbackInfo.inputProc = CCoreAudioRenderer::RenderCallback; // Function to be called each time the AudioUnit needs data
-	callbackInfo.inputProcRefCon = this; // Pointer to be returned in the callback proc
-	ret = AudioUnitSetProperty (m_OutputUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &callbackInfo, sizeof(AURenderCallbackStruct));
-  if (ret)
-  { 
-    CLog::Log(LOGERROR, "CoreAudioRenderer::Initialize: Unable to set callback property. ErrCode = 0x%08x",ret);
-    // TODO: Cleanup
-    return false; 
-  }  
+  // The individual InitializeXXX calls will configure the device
   
-  // Set the quality of the output converter (Higher quality conversion requires more CPU
-  UInt32 convQuality = kRenderQuality_Max; // We want the best
-  ret = AudioUnitSetProperty(m_OutputUnit, kAudioUnitProperty_RenderQuality, kAudioUnitScope_Global , 0, &convQuality, sizeof(Uint32));
   
-  // Set the input stream format for the AudioUnit (this is what is being sent to us)
-  m_InputDesc.mFormatID = kAudioFormatLinearPCM;			      //	Data encoding format
-  m_InputDesc.mFormatFlags = kAudioFormatFlagsNativeEndian
-                            | kLinearPCMFormatFlagIsPacked  // Samples occupy all bits (not left or right aligned)
-                            | kAudioFormatFlagIsSignedInteger;
-  m_InputDesc.mChannelsPerFrame = iChannels;                // Number of interleaved audiochannels
-  m_InputDesc.mSampleRate = (Float64)uiSamplesPerSec;       //	the sample rate of the audio stream
-  m_InputDesc.mBitsPerChannel = uiBitsPerSample;            // Number of bits per sample, per channel
-  m_InputDesc.mBytesPerFrame = (uiBitsPerSample>>3) * iChannels; // Size of a frame == 1 sample per channel		
-  m_InputDesc.mFramesPerPacket = 1;                         // The smallest amount of indivisible data. Always 1 for uncompressed audio 	
-  m_InputDesc.mBytesPerPacket = m_InputDesc.mBytesPerFrame * m_InputDesc.mFramesPerPacket; 
-  ret = AudioUnitSetProperty (m_OutputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &m_InputDesc, sizeof(AudioStreamBasicDescription));
-  if (ret)
-  { 
-    CLog::Log(LOGERROR, "CoreAudioRenderer::Initialize: Unable to set Format Conversion AudioUnit input format. ErrCode = 0x%08x", ret);
-    // TODO: Cleanup
-    return false; 
-  }
-  
-  // Configure the maximum number of frames that the AudioUnit will ask to process at one time. The reliability of this is questionable.
-  UInt32 bufferFrames = GetAUPropUInt32(m_OutputUnit, kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Input) * 2; // This will return the configured buffer size of the associated output device
-  ret = AudioUnitSetProperty (m_OutputUnit, kAudioUnitProperty_MaximumFramesPerSlice , kAudioUnitScope_Global, 0, &bufferFrames, sizeof(UInt32));
-  if (ret)
-  { 
-    CLog::Log(LOGERROR, "CoreAudioRenderer::Initialize: Unable to set Format Conversion AudioUnit slice size. ErrCode = 0x%08x", ret);
-    // TODO: Cleanup
-    return false; 
-  }
   
   // Initialize the Output AudioUnit
   ret = AudioUnitInitialize(m_OutputUnit);
@@ -177,8 +141,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
   }  
 
   // Finish configuring the renderer
-  m_AvgBytesPerSec = m_InputDesc.mSampleRate * m_InputDesc.mBytesPerFrame;  // 1 sample per channel per frame
-  m_ChunkLen = bufferFrames * m_InputDesc.mBytesPerFrame;                   // This is the minimum amount of data that we will accept from a client
+  m_AvgBytesPerSec = m_InputDesc.mSampleRate * m_InputDesc.mBytesPerFrame;      // 1 sample per channel per frame
   m_MaxCacheLen = m_AvgBytesPerSec * 4;                                         // Set the max cache size to 1 second of data. TODO: Make this more intelligent
 
   m_Pause = true; // We will resume playback once we have some data.
@@ -307,6 +270,9 @@ DWORD CCoreAudioRenderer::GetSpace()
 
 DWORD CCoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
 {
+  // Lock the cache
+  CAtomicLock lock(m_CacheLock);
+  
   // Require at least one 'chunk'. This allows us at least some measure of control over efficiency
   if (len < m_ChunkLen ||  m_Cache.GetTotalBytes() >= m_MaxCacheLen) // No room at the inn
     return 0;
@@ -352,9 +318,14 @@ void CCoreAudioRenderer::WaitCompletion()
 OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
   // TODO; !!THIS IS NOT THREAD SAFE!! FIX ME!!
+  
+  // Lock the cache
+  // Lock the cache
+  CAtomicLock lock(m_CacheLock);
+  
   // TODO: Replace statics with performance counter class
   static UInt32 lastUpdateTime = 0;
-  static Uint64 lastTotalBytes = 0;
+  static UInt64 lastTotalBytes = 0;
   
   if (lastUpdateTime == 0)
     lastUpdateTime = timeGetTime();
@@ -362,7 +333,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   if (lastTotalBytes == 0)
     lastTotalBytes = m_TotalBytesOut;
   
-  Uint32 bytesRequested = m_InputDesc.mBytesPerFrame * inNumberFrames;
+  UInt32 bytesRequested = m_InputDesc.mBytesPerFrame * inNumberFrames;
   if (bytesRequested > ioData->mBuffers[0].mDataByteSize)
   {
     CLog::Log(LOGERROR, "Supplied buffer is too small(%u) to accept requested sample data(%u). Truncating data", ioData->mBuffers[0].mDataByteSize, bytesRequested);
@@ -387,15 +358,15 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
     // Calculate stats and perform a sanity check
     m_TotalBytesOut += bytesRequested;    
     size_t cacheLen = m_Cache.GetTotalBytes();
-    Uint32 cacheCalc = m_TotalBytesIn - m_TotalBytesOut;
+    UInt32 cacheCalc = m_TotalBytesIn - m_TotalBytesOut;
     if (cacheCalc != cacheLen)
       CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Cache length mismatch. We seem to have lost some data. Calc = %u, Act = %u.",cacheCalc, cacheLen);
 
-    Uint32 time = timeGetTime();
-    Uint32 deltaTime = time - lastUpdateTime;
+    UInt32 time = timeGetTime();
+    UInt32 deltaTime = time - lastUpdateTime; 
     if (deltaTime > 1000)// Spit out some summary information every 10 seconds
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioRenderer: Summary - Sent %u bytes in %u ms. %0.2f frames / sec. Cache Len = %u.",(Uint32)(m_TotalBytesOut - lastTotalBytes), deltaTime, 1000*((float)(m_TotalBytesOut - lastTotalBytes) / (float)m_InputDesc.mBytesPerFrame)/(float)deltaTime, cacheLen);
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer: Summary - Sent %u bytes in %u ms. %0.2f frames / sec. Cache Len = %u.",(UInt32)(m_TotalBytesOut - lastTotalBytes), deltaTime, 1000*((float)(m_TotalBytesOut - lastTotalBytes) / (float)m_InputDesc.mBytesPerFrame)/(float)deltaTime, cacheLen);
       lastUpdateTime = time;
       lastTotalBytes = m_TotalBytesOut;
     }
@@ -409,6 +380,155 @@ OSStatus CCoreAudioRenderer::RenderCallback(void *inRefCon, AudioUnitRenderActio
 {
   return ((CCoreAudioRenderer*)inRefCon)->OnRender(ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData);
 }
+
+bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample)
+{
+  if (!m_OutputUnit) // Someone should have created our component before calling
+    return false;
+  
+  // Re-used vars
+  OSStatus ret;
+  
+  
+  // TODO: Register for notification of device disconnects
+  // TODO: Register for notification of property changes
+  
+  // Setup the callback function that the head AudioUnit will use to request data	
+  AURenderCallbackStruct callbackInfo;
+	callbackInfo.inputProc = CCoreAudioRenderer::RenderCallback; // Function to be called each time the AudioUnit needs data
+	callbackInfo.inputProcRefCon = this; // Pointer to be returned in the callback proc
+	ret = AudioUnitSetProperty (m_OutputUnit, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &callbackInfo, sizeof(AURenderCallbackStruct));
+  if (ret)
+  { 
+    CLog::Log(LOGERROR, "CoreAudioRenderer::Initialize: Unable to set callback property. ErrCode = 0x%08x",ret);
+    // TODO: Cleanup
+    return false; 
+  }  
+  
+  // Set the quality of the output converter (Higher quality conversion requires more CPU
+  UInt32 convQuality = kRenderQuality_Max; // We want the best
+  ret = AudioUnitSetProperty(m_OutputUnit, kAudioUnitProperty_RenderQuality, kAudioUnitScope_Global , 0, &convQuality, sizeof(UInt32));
+  
+  // Set the input stream format for the AudioUnit (this is what is being sent to us)
+  m_InputDesc.mFormatID = kAudioFormatLinearPCM;			      //	Data encoding format
+  m_InputDesc.mFormatFlags = kAudioFormatFlagsNativeEndian
+  | kLinearPCMFormatFlagIsPacked  // Samples occupy all bits (not left or right aligned)
+  | kAudioFormatFlagIsSignedInteger;
+  m_InputDesc.mChannelsPerFrame = channels;                // Number of interleaved audiochannels
+  m_InputDesc.mSampleRate = (Float64)samplesPerSecond;       //	the sample rate of the audio stream
+  m_InputDesc.mBitsPerChannel = bitsPerSample;            // Number of bits per sample, per channel
+  m_InputDesc.mBytesPerFrame = (bitsPerSample>>3) * channels; // Size of a frame == 1 sample per channel		
+  m_InputDesc.mFramesPerPacket = 1;                         // The smallest amount of indivisible data. Always 1 for uncompressed audio 	
+  m_InputDesc.mBytesPerPacket = m_InputDesc.mBytesPerFrame * m_InputDesc.mFramesPerPacket; 
+  ret = AudioUnitSetProperty (m_OutputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &m_InputDesc, sizeof(AudioStreamBasicDescription));
+  if (ret)
+  { 
+    CLog::Log(LOGERROR, "CoreAudioRenderer::Initialize: Unable to set Format Conversion AudioUnit input format. ErrCode = 0x%08x", ret);
+    // TODO: Cleanup
+    return false; 
+  }
+  
+  // Configure the maximum number of frames that the AudioUnit will ask to process at one time. The reliability of this is questionable.
+  UInt32 bufferFrames = GetAUPropUInt32(m_OutputUnit, kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Input) * 2; // This will return the configured buffer size of the associated output device
+  ret = AudioUnitSetProperty (m_OutputUnit, kAudioUnitProperty_MaximumFramesPerSlice , kAudioUnitScope_Global, 0, &bufferFrames, sizeof(UInt32));
+  if (ret)
+  { 
+    CLog::Log(LOGERROR, "CoreAudioRenderer::Initialize: Unable to set Format Conversion AudioUnit slice size. ErrCode = 0x%08x", ret);
+    // TODO: Cleanup
+    return false; 
+  }  
+  m_ChunkLen = bufferFrames * m_InputDesc.mBytesPerFrame;                   // This is the minimum amount of data that we will accept from a client
+  return true;
+}
+
+bool CCoreAudioRenderer::InitializeEncoded(UInt32 channels)
+{
+  if (!m_OutputUnit)  // OUt Output Audio Unit should have been created by now
+    return false;
+  
+  // Reused variables
+  UInt32 propertySize = 0;
+  Boolean writable = false;
+  OSStatus ret = noErr;
+  
+  // Fetch deviceId from Audio Unit
+  AudioDeviceID outputDevice;
+  propertySize = sizeof(AudioDeviceID);
+  ret = AudioUnitGetProperty(m_OutputUnit, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &outputDevice, &propertySize);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CoreAudioRenderer::InitializeEncoded: Unable to retrieve output device id. ErrCode = 0x%08x", ret);
+    // TODO: Cleanup
+    return false; 
+  }
+  
+  // Fetch a list of the streams defined by the output device
+  propertySize = 0;
+  ret = AudioUnitGetPropertyInfo(m_OutputUnit, kAudioDevicePropertyStreamFormatSupported, kAudioUnitScope_Input, 0, &propertySize, &writable);
+  UInt32 streamCount = propertySize / sizeof(AudioStreamID);
+  AudioStreamID* pStreamList = new AudioStreamID[streamCount];
+  ret = AudioUnitGetProperty(m_OutputUnit, kAudioDevicePropertyStreamFormatSupported, kAudioUnitScope_Input, 0, pStreamList, &propertySize);
+
+  for (UInt32 stream = 0; stream < streamCount; stream++)
+  {
+    // Probe the stream
+    
+    // Stream direction (Input/Output)
+    propertySize = sizeof(UInt32);
+    UInt32 streamDir = 0;
+    ret = AudioStreamGetProperty(pStreamList[stream], 0, kAudioStreamPropertyDirection, &propertySize, &streamDir);
+    
+    // Terminal (connector) Type
+    propertySize = sizeof(UInt32);
+    UInt32 terminalType = 0;
+    ret = AudioStreamGetProperty(pStreamList[stream], 0, kAudioStreamPropertyTerminalType, &propertySize, &terminalType);
+    
+    // Available Virtual (IOProc) formats
+    
+    // Available Physical Formats
+    ret = AudioStreamGetPropertyInfo(pStreamList[stream], 0, kAudioStreamPropertyAvailablePhysicalFormats, &propertySize, &writable);
+    UInt32 formatCount = propertySize / sizeof(AudioStreamBasicDescription);
+    AudioStreamBasicDescription* pFormatList = new AudioStreamBasicDescription[formatCount];
+    ret = AudioStreamGetProperty(pStreamList[stream], 0, kAudioStreamPropertyAvailablePhysicalFormats, &propertySize, pFormatList);
+    
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Found %s stream - id: 0x%04X, Terminal Type: %u", streamDir ? "Input" : "Output", pStreamList[stream], terminalType);
+    for (UInt32 format = 0; format < formatCount; format++)
+    {
+      CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded:     Physical Format[%u] - ", format, pFormatList[stream].mFormatID);
+    }
+    
+    
+    delete[] pFormatList;
+  }
+  
+  delete[] pStreamList;
+  
+  // Print stream information
+  
+  // Select the right stream
+  
+  // Build Stream Descripion for out encoded stream
+  m_InputDesc.mFormatID = kAudioFormat60958AC3;			          // Packaged AC3/DTS (IEC 60958)
+  m_InputDesc.mFormatFlags = kAudioFormatFlagsNativeEndian    
+                           | kLinearPCMFormatFlagIsPacked     // Samples occupy all bits (not left or right aligned)
+                           | kAudioFormatFlagIsSignedInteger  // Defined by specification
+                           | kAudioFormatFlagIsNonMixable;    // Data cannot be mixed by sound card or OS
+  m_InputDesc.mChannelsPerFrame = 2;                          // Number of interleaved audiochannels
+  m_InputDesc.mSampleRate = 48000.0f;                         // Defined by specification
+  m_InputDesc.mBitsPerChannel = 16;                           // Defined by specification
+  m_InputDesc.mBytesPerFrame = 4;                             // Size of a frame == 1 sample per channel		
+  m_InputDesc.mFramesPerPacket = 1;                           // The smallest amount of indivisible data.
+  m_InputDesc.mBytesPerPacket = m_InputDesc.mBytesPerFrame * m_InputDesc.mFramesPerPacket; 
+
+  
+  // Disable mixing at the device level?
+
+  // If all else was successful, hog the output device
+
+  
+  return true;
+}
+
 #endif
 
 

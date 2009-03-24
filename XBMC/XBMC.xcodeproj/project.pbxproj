@@ -77,6 +77,8 @@
 		81F064100E9B5FE400C203A6 /* libxbms-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81F0640F0E9B5FE400C203A6 /* libxbms-x86-osx.a */; };
 		81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064110E9B608800C203A6 /* FileXBMSP.cpp */; };
 		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
+		83540ADD0F7985DF0044C398 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83540ADC0F7985DF0044C398 /* Atomics.cpp */; };
+		83540ADE0F7985DF0044C398 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83540ADC0F7985DF0044C398 /* Atomics.cpp */; };
 		83AEF5AA0F7773E3002E08DE /* paplayer_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */; };
 		83C98B8A0F759368005759EE /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98B890F759368005759EE /* CoreAudioRenderer.cpp */; };
 		83C98F990F770B1F005759EE /* SliceQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98F980F770B1F005759EE /* SliceQueue.cpp */; };
@@ -821,7 +823,7 @@
 		E3B53E7C0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3B53E7A0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp */; };
 		E3BBB7990D7EA78A00CAAFD3 /* CMythSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */; };
 		E3BBB7A20D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */; };
-		E3D547960D723EFD00F36320 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
+		E3D547960D723EFD00F36320 /* libsmbclient.dylib.0 in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib.0 */; };
 		E3D87AEB0D3182F4000CF031 /* XCriticalSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */; };
 		E3DAAF8C0D6E1B0500F17647 /* FileSmb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8A0D6E1B0500F17647 /* FileSmb.cpp */; };
 		E3DAAF8D0D6E1B0500F17647 /* SMBDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3DAAF8B0D6E1B0500F17647 /* SMBDirectory.cpp */; };
@@ -1710,7 +1712,7 @@
 		F5A1CBB50F6B06CF00A96ABD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF3230D380E1E00DB5CD5 /* Carbon.framework */; };
 		F5A1CBB60F6B06CF00A96ABD /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
 		F5A1CBB70F6B06CF00A96ABD /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */; };
-		F5A1CBB90F6B06CF00A96ABD /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
+		F5A1CBB90F6B06CF00A96ABD /* libsmbclient.dylib.0 in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib.0 */; };
 		F5A1CBBA0F6B06CF00A96ABD /* libpcre.0.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */; };
 		F5A1CBBB0F6B06CF00A96ABD /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6580DE013C4003396A7 /* DiskArbitration.framework */; };
 		F5A1CBBC0F6B06CF00A96ABD /* libfontconfig.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */; };
@@ -1841,6 +1843,8 @@
 		81F064120E9B608800C203A6 /* FileXBMSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileXBMSP.h; sourceTree = "<group>"; };
 		81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMSDirectory.cpp; sourceTree = "<group>"; };
 		81F064250E9BB99800C203A6 /* XBMSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMSDirectory.h; sourceTree = "<group>"; };
+		83540ADB0F7985DF0044C398 /* Atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomics.h; sourceTree = "<group>"; };
+		83540ADC0F7985DF0044C398 /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
 		83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = paplayer_linux.cpp; sourceTree = "<group>"; };
 		83C98B880F759368005759EE /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRenderer.h; path = AudioRenderers/CoreAudioRenderer.h; sourceTree = "<group>"; };
 		83C98B890F759368005759EE /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
@@ -3550,7 +3554,7 @@
 		E3B53E7B0D97B08100021A96 /* DVDSubtitleParserMicroDVD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMicroDVD.h; sourceTree = "<group>"; };
 		E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythSession.cpp; sourceTree = "<group>"; };
 		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = /opt/local/lib/libpcre.0.0.1.dylib; sourceTree = "<absolute>"; };
-		E3D547950D723EFD00F36320 /* libsmbclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib; path = /opt/local/lib/samba3/libsmbclient.dylib; sourceTree = "<absolute>"; };
+		E3D547950D723EFD00F36320 /* libsmbclient.dylib.0 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib.0; path = /opt/local/lib/samba3/libsmbclient.dylib.0; sourceTree = "<absolute>"; };
 		E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XCriticalSection.cpp; sourceTree = "<group>"; };
 		E3D87AEA0D3182F4000CF031 /* XCriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCriticalSection.h; sourceTree = "<group>"; };
 		E3DAAF8A0D6E1B0500F17647 /* FileSmb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSmb.cpp; sourceTree = "<group>"; };
@@ -3733,7 +3737,7 @@
 				E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */,
 				E33979930D62FC46004ECDDA /* libsqlite3.0.dylib in Frameworks */,
 				810CA01C0D68A6E20095F5DD /* libshout-x86-osx.a in Frameworks */,
-				E3D547960D723EFD00F36320 /* libsmbclient.dylib in Frameworks */,
+				E3D547960D723EFD00F36320 /* libsmbclient.dylib.0 in Frameworks */,
 				E3BBB7A20D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib in Frameworks */,
 				88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */,
 				88ECB6E70DE07BA6003396A7 /* libfontconfig.1.dylib in Frameworks */,
@@ -3780,7 +3784,7 @@
 				F5A1CBB50F6B06CF00A96ABD /* Carbon.framework in Frameworks */,
 				F5A1CBB60F6B06CF00A96ABD /* libvorbis.dylib in Frameworks */,
 				F5A1CBB70F6B06CF00A96ABD /* libsqlite3.0.dylib in Frameworks */,
-				F5A1CBB90F6B06CF00A96ABD /* libsmbclient.dylib in Frameworks */,
+				F5A1CBB90F6B06CF00A96ABD /* libsmbclient.dylib.0 in Frameworks */,
 				F5A1CBBA0F6B06CF00A96ABD /* libpcre.0.0.1.dylib in Frameworks */,
 				F5A1CBBB0F6B06CF00A96ABD /* DiskArbitration.framework in Frameworks */,
 				F5A1CBBC0F6B06CF00A96ABD /* libfontconfig.1.dylib in Frameworks */,
@@ -6632,6 +6636,8 @@
 				E38E1E8F0D25F9FD00618676 /* Win32Exception.cpp */,
 				E38E1E900D25F9FD00618676 /* Win32Exception.h */,
 				E38E1E920D25F9FD00618676 /* WindowsShortcut.h */,
+				83540ADB0F7985DF0044C398 /* Atomics.h */,
+				83540ADC0F7985DF0044C398 /* Atomics.cpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -6749,7 +6755,7 @@
 				F57E213E0E3C3AB200700C9D /* libiconv.dylib */,
 				E38E24230D26317D00618676 /* libfreetype.dylib */,
 				F54C512F0F1C65D100D46E3C /* libportaudio.dylib */,
-				E3D547950D723EFD00F36320 /* libsmbclient.dylib */,
+				E3D547950D723EFD00F36320 /* libsmbclient.dylib.0 */,
 				88ECB6EB0DE07C56003396A7 /* libmysqlclient.15.dylib */,
 				88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */,
 			);
@@ -7816,6 +7822,7 @@
 				83AEF5AA0F7773E3002E08DE /* paplayer_linux.cpp in Sources */,
 				E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */,
 				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */,
+				83540ADD0F7985DF0044C398 /* Atomics.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8636,6 +8643,7 @@
 				F5EA02220F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp in Sources */,
 				F5EA04290F72EB88005C2EC5 /* SDLMain.m in Sources */,
 				F5EA05C10F733812005C2EC5 /* CocoaInterface.mm in Sources */,
+				83540ADE0F7985DF0044C398 /* Atomics.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,13 +19,8 @@
  *
  */
 
-
 #ifndef __COREAUDIO_RENDERER_H__
 #define __COREAUDIO_RENDERER_H__
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
 
 #include "IAudioRenderer.h"
 #include <CoreServices/CoreServices.h>
@@ -69,7 +64,9 @@ class CCoreAudioRenderer : public IAudioRenderer
   private:
     static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
     OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
-        
+    
+    bool InitializeEncoded(UInt32 channels);
+    bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample);
     bool m_Pause;
    
     DWORD m_ChunkLen;
@@ -82,6 +79,8 @@ class CCoreAudioRenderer : public IAudioRenderer
     size_t m_AvgBytesPerSec;
     UInt64 m_TotalBytesIn;
     UInt64 m_TotalBytesOut;
+    
+    UInt32 m_CacheLock;
     
     // Helpers
     UInt32 GetAUPropUInt32(AudioUnit au, AudioUnitPropertyID propId, AudioUnitScope scope)
