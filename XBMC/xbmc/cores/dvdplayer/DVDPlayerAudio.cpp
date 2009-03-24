@@ -682,8 +682,12 @@ void CDVDPlayerAudio::Process()
       m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);
       if(m_speed == DVD_PLAYSPEED_NORMAL)
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+error, error);
-      ResetErrorCounters();
-      SyncClock = false;
+      
+      if (SyncClock)
+      {
+        ResetErrorCounters();
+        SyncClock = false;
+      }
     }
     
     //only add to average when not skipping and if we added a packet to the audio renderer
