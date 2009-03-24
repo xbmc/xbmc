@@ -32,6 +32,8 @@
 #endif
 #endif
 
+#include "CriticalSection.h"
+#include "SingleLock.h"
 
 #ifndef HAS_ZEROCONF
 //dummy implementation used if no zeroconf is present
@@ -47,11 +49,18 @@ class CZeroconfDummy : public CZeroconf
 };
 #endif
 
+CCriticalSection* CZeroconf::smp_crit_sec = new CCriticalSection();  
+
+
 CZeroconf::CZeroconf():m_started(false)
 {
-//  if(g_guiSettings.GetBool("servers.zeroconf")){
+#ifdef HAS_ZEROCONF
+  //entry in guisetting only present if HAS_ZEROCONF is set
+  if(g_guiSettings.GetBool("servers.zeroconf"))
+  {
     Start();
-//  }
+  }
+#endif
 }
 
 CZeroconf::~CZeroconf()
@@ -63,6 +72,7 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
                                const std::string& fcr_name,
                                unsigned int f_port)
 {
+  CSingleLock lock(*smp_crit_sec);
   CZeroconf::PublishInfo info = {fcr_type, fcr_name, f_port};
   std::pair<tServiceMap::const_iterator, bool> ret = m_service_map.insert(std::make_pair(fcr_identifier, info));
   if(!ret.second) //identifier exists
@@ -75,6 +85,7 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
 
 bool CZeroconf::RemoveService(const std::string& fcr_identifier)
 {
+  CSingleLock lock(*smp_crit_sec);
   tServiceMap::iterator it = m_service_map.find(fcr_identifier);
   if(it == m_service_map.end())
     return false;
@@ -85,13 +96,14 @@ bool CZeroconf::RemoveService(const std::string& fcr_identifier)
     return true;
 }
 
-bool CZeroconf::HasService(const std::string& fcr_identifier)
+bool CZeroconf::HasService(const std::string& fcr_identifier) const
 {
   return (m_service_map.find(fcr_identifier) != m_service_map.end());
 }
 
 void CZeroconf::Start()
 {
+  CSingleLock lock(*smp_crit_sec);
   if(m_started)
     return;
   m_started = true;
@@ -102,15 +114,13 @@ void CZeroconf::Start()
 
 void CZeroconf::Stop()
 {
+  CSingleLock lock(*smp_crit_sec);
   if(!m_started)
     return;
   doStop();
   m_started = false;
 }
 
-//
-// below is singleton handling stuff
-// 
 CZeroconf*& CZeroconf::GetrInternalRef()
 {
   //use pseudo-meyer singleton to be able to do manual intantiation
@@ -123,21 +133,27 @@ CZeroconf*  CZeroconf::GetInstance()
 {
   if(GetrInternalRef() == 0)
   {
+    //use double checked locking
+    CSingleLock lock(*smp_crit_sec);
+    if(GetrInternalRef() == 0)
+    {
 #ifndef HAS_ZEROCONF
-    GetrInternalRef() = new CZeroconfDummy;
+      GetrInternalRef() = new CZeroconfDummy;
 #else
 #ifdef __APPLE__
-    GetrInternalRef() = new CZeroconfOSX;
+      GetrInternalRef() = new CZeroconfOSX;
 #elif defined(_LINUX)
-    GetrInternalRef() = new CZeroconfAvahi;
+      GetrInternalRef() = new CZeroconfAvahi;
 #endif
 #endif
+    }
   }
   return GetrInternalRef();
 }
 
 void CZeroconf::ReleaseInstance()
 {
+  CSingleLock lock(*smp_crit_sec);
   delete GetrInternalRef();
   GetrInternalRef() = 0;
 }

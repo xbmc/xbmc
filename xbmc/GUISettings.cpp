@@ -541,6 +541,11 @@ void CGUISettings::Initialize()
 #endif
 #endif
 
+  // zeroconf publishing
+#ifdef HAS_ZEROCONF
+  AddBool(10, "servers.zeroconf", 1260, false);
+#endif
+
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
