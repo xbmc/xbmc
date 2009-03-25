@@ -105,14 +105,14 @@ class CDVDPlayerResampler
   
   private:
   
-    int NrChannels;
-    SRC_STATE* Converter;
-    SRC_DATA ConverterData;
+    int m_NrChannels;
+    SRC_STATE* m_Converter;
+    SRC_DATA m_ConverterData;
   
-    float* RingBuffer;  //ringbuffer for the audiosamples
-    int RingBufferPos;  //where we are in the ringbuffer
-    int RingBufferFill; //how many unread samples there are in the ringbuffer, starting at RingBufferPos
-    double* PtsRingBuffer;  //ringbuffer for the pts value, each sample gets its own pts
+    float*  m_RingBuffer;  //ringbuffer for the audiosamples
+    int     m_RingBufferPos;  //where we are in the ringbuffer
+    int     m_RingBufferFill; //how many unread samples there are in the ringbuffer, starting at RingBufferPos
+    double *m_PtsRingBuffer;  //ringbuffer for the pts value, each sample gets its own pts
   
     void CheckResampleBuffers(int channels);
     
@@ -212,16 +212,16 @@ protected:
   
   void   ResetErrorCounters();
   
-  int    PCMSynctype; //sync type for pcm
-  int    AC3DTSSynctype; //sync type for ac3/dts passthrough
-  double CurrError; //current average error
-  double AverageError; //place to store errors
-  int    ErrorCount; //amount of error stored
-  int    SkipDupCount; //whether to skip, duplicate or play normal
-  bool   PrevSkipped; //if the previous frame was skipped, don't skip the current one
-  double MeasureTime; //timestamp when the last average error was measured
-  double Integral;
-  bool   SyncClock; //if we have to sync the clock
+  int    m_PCMSynctype; //sync type for pcm
+  int    m_AC3DTSSynctype; //sync type for ac3/dts passthrough
+  double m_CurrError; //current average error
+  double m_AverageError; //place to store errors
+  int    m_ErrorCount; //amount of error stored
+  int    m_SkipDupCount; //whether to skip, duplicate or play normal
+  bool   m_PrevSkipped; //if the previous frame was skipped, don't skip the current one
+  double m_MeasureTime; //timestamp when the last average error was measured
+  double m_Integral;
+  bool   m_SyncClock; //if we have to sync the clock
 
   CDVDPlayerResampler Resampler;
 };

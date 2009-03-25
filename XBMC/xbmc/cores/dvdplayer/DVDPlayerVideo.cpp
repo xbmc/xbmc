@@ -207,9 +207,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   int SyncType = g_guiSettings.GetInt("audiooutput.synctype");
   if (SyncType == SYNC_RESAMPLE)
-    MaxSpeedAdjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
+    m_MaxSpeedAdjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
   else
-    MaxSpeedAdjust = 0.0;
+    m_MaxSpeedAdjust = 0.0;
   
   g_VideoReferenceClock.SetSpeed(1.0);  
   
@@ -940,20 +940,23 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   ProcessOverlays(pPicture, &image, pts);
   
-  double Fps = 1.0 / (iFrameDuration / DVD_TIME_BASE);
-  double FrameWeight = (double)MathUtils::round_int(maxfps) / (double)MathUtils::round_int(Fps);
-  
-  if (MaxSpeedAdjust != 0.0)
+  int RefreshRate = g_VideoReferenceClock.GetRefreshRate();
+  if (RefreshRate > 0)
   {
-    if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + MaxSpeedAdjust / 100.0 &&
-        FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - MaxSpeedAdjust / 100.0)
+    double Fps = 1.0 / (iFrameDuration / DVD_TIME_BASE);
+    double FrameWeight = (double)RefreshRate / (double)MathUtils::round_int(Fps);
+    
+    if (m_MaxSpeedAdjust != 0.0)
     {
-      FrameWeight = MathUtils::round_int(FrameWeight);
-      double Speed = maxfps / (Fps * FrameWeight);
+      if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + m_MaxSpeedAdjust / 100.0 &&
+          FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - m_MaxSpeedAdjust / 100.0)
+      {
+        FrameWeight = MathUtils::round_int(FrameWeight);
+      }
+      double Speed = (double)RefreshRate / (Fps * FrameWeight);
       g_VideoReferenceClock.SetSpeed(Speed);
     }
   }
-  
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
   g_renderManager.ReleaseImage(index);
