@@ -29,7 +29,6 @@ class CVideoReferenceClock : public CThread
   public:
     void GetTime(LARGE_INTEGER *ptime);
     CVideoReferenceClock();
-    unsigned int VblankCount;
     void SetSpeed(double Speed);
     double GetSpeed();
     
