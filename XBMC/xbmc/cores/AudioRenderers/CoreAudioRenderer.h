@@ -80,7 +80,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     UInt64 m_TotalBytesIn;
     UInt64 m_TotalBytesOut;
     
-    UInt32 m_CacheLock;
+    long m_CacheLock;
     
     // Helpers
     UInt32 GetAUPropUInt32(AudioUnit au, AudioUnitPropertyID propId, AudioUnitScope scope)

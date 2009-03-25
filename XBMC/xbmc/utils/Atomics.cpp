@@ -1,36 +1,22 @@
 /*
- *  Atomics.cpp
- *  XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
  *
- *  Created by Chris Lance on 3/24/09.
- *  Copyright 2009 __MyCompanyName__. All rights reserved.
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
  *
  */
 
 #include "Atomics.h"
-
-int cas(void* pAddr,long expectedVal, long swapVal)
-{
-  int ret_val = 0;
-  
-  __asm
-  {
-    // Load parameters
-    mov eax, expectedVal ;
-    mov ebx, pAddr ;
-    mov ecx, swapVal ;
-    
-    // Do Swap
-    lock cmpxchg [ebx], ecx ;
-    
-    // Get Result
-    jz success ;
-    mov ret_val,0 ;
-    jmp end ;
-  success:
-    mov ret_val,1 ;
-  end:
-  }
-  
-  return ret_val;
-}
