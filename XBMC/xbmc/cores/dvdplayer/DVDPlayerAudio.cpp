@@ -625,7 +625,7 @@ void CDVDPlayerAudio::Process()
         {
           //if the error is bigger than 1 second, reset the m_Integral
           if (fabs(m_CurrError) < DVD_TIME_BASE)
-            m_Integral += m_CurrError / DVD_TIME_BASE / m_Integral;
+            m_Integral += m_CurrError / DVD_TIME_BASE / INTEGRAL;
           else
             m_Integral = 0.0;
           
@@ -664,8 +664,6 @@ void CDVDPlayerAudio::Process()
         
         m_SkipDupCount = 0;
       }
-      //m_dvdAudio.AddPackets(audioframe);
-      //PacketAdded = true;
     }
 
     // store the delay for this pts value so we can calculate the current playing
