@@ -82,6 +82,17 @@ int CFileSpecialProtocol::Stat(const CURL& url, struct __stat64* buffer)
   return m_file.Stat(strFileName, buffer);
 }
 
+bool CFileSpecialProtocol::Rename(const CURL& url, const CURL& urlnew)
+{
+  CStdString strPath,strPath2;
+  url.GetURL(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
+  urlnew.GetURL(strPath2);
+  CStdString strFileName2=CSpecialProtocol::TranslatePath(strPath2);
+
+  return m_file.Rename(strFileName,strFileName2);
+}
+
 int CFileSpecialProtocol::Stat(struct __stat64* buffer)
 {
   return m_file.Stat(buffer);
