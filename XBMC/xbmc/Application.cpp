@@ -3255,9 +3255,39 @@ bool CApplication::ProcessGamepad(float frameTime)
     CAction action;
     bool fullrange;
     string jname = g_Joystick.GetJoystick();
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, false, action.wID, action.strAction, fullrange))
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_BUTTON, action.wID, action.strAction, fullrange))
     {
       action.fAmount1 = 1.0f;
+      action.fRepeat = 0.0f;
+      g_audioManager.PlayActionSound(action);
+      g_Joystick.Reset();
+      g_Mouse.SetInactive();
+      return OnAction(action);
+    }
+    else
+    {
+      g_Joystick.Reset();
+    }
+  }
+  if (g_Joystick.GetHat(bid))
+  {
+    // reset Idle Timer
+    m_idleTimer.StartZero();
+
+    ResetScreenSaver();
+    if (ResetScreenSaverWindow())
+    {
+      g_Joystick.Reset(true);
+      return true;
+    }
+
+    CAction action;
+    bool fullrange;
+    string jname = g_Joystick.GetJoystick();
+    bid = bid|(g_Joystick.getHatState()<<16);	// hat flag
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
+    {
+      action.fAmount1 = g_Joystick.getHatState();
       action.fRepeat = 0.0f;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
@@ -3280,7 +3310,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     {
       bid = -bid;
     }
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction, fullrange))
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.wID, action.strAction, fullrange))
     {
       ResetScreenSaver();
       if (ResetScreenSaverWindow())
