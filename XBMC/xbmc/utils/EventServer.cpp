@@ -116,7 +116,7 @@ void CEventServer::StartServer()
 void CEventServer::StopServer()
 {
   m_bStop = true;
-  g_application.DepublishService("servers.eventserver");
+  CZeroconf::GetInstance()->RemoveService("servers.eventserver");
   if (m_pThread)
   {
     m_pThread->WaitForThreadExit(2000);
@@ -203,7 +203,7 @@ void CEventServer::Run()
   }
 
   // publish service
-  g_application.PublishService("servers.eventserver",
+  CZeroconf::GetInstance()->PublishService("servers.eventserver",
                                "_xbmc-events._udp",
                                "XBMC Event Server",
                                m_iPort);

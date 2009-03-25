@@ -165,7 +165,6 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
 {
   HANDLE hDevice;               // handle to the drive to be examined
   int iResult;                  // results flag
-  DWORD junk;                   // discard results
   ULONG ulChanges=0;
   DWORD dwBytesReturned;
   T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
@@ -495,6 +494,69 @@ void CWIN32Util::ExtendDllPath()
   else
     CLog::Log(LOGDEBUG,"Can't set system env PATH to %S",strEnvW.c_str());
 
+}
+
+HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
+{
+  BOOL bRet= FALSE;
+  char cDL = cDriveLetter;
+  if( !cDL )
+  {
+    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    cDL = dvdDevice[4];
+  }
+  
+  CStdString strVolFormat; 
+  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+  HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                             NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  CStdString strRootFormat; 
+  strRootFormat.Format( _T("%c:\\"), cDL);
+  if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) && 
+      ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
+  {
+    DWORD dwDummy;
+    bRet= DeviceIoControl( hDrive, ( (GetDriveStatus(strVolFormat) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA), 
+                                    NULL, 0, NULL, 0, &dwDummy, NULL);
+    CloseHandle( hDrive );
+  }
+  return bRet? S_OK : S_FALSE;
+}
+
+HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
+{
+  char cDL = cDriveLetter;
+  if( !cDL )
+  {
+    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    cDL = dvdDevice[4];
+  }
+  
+  CStdString strVolFormat; 
+  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+
+  if(GetDriveStatus(strVolFormat) != 1)
+    return ToggleTray(cDL);
+  else 
+    return S_OK;
+}
+
+HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
+{
+  char cDL = cDriveLetter;
+  if( !cDL )
+  {
+    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    cDL = dvdDevice[4];
+  }
+  
+  CStdString strVolFormat; 
+  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+
+  if(GetDriveStatus(strVolFormat) == 1)
+    return ToggleTray(cDL);
+  else 
+    return S_OK;
 }
 
 extern "C"

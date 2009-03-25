@@ -82,8 +82,7 @@ public:
   virtual void RenderNoPresent();
   virtual HRESULT Create(HWND hWnd);
   virtual HRESULT Cleanup();
-  void PublishService(const std::string& id, const std::string& type, const std::string& name, unsigned int port);
-  void DepublishService(const std::string& id);
+
   void StartServices();
   void StopServices();
   void StartWebServer();

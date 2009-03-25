@@ -1432,7 +1432,7 @@ void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, VECMOVIES& m
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie=GetDetailsForEpisode(m_pDS);
-      movie.m_strTitle += " ("+m_pDS->fv(VIDEODB_DETAILS_PATH+1).get_asString()+")";
+      movie.m_strTitle += " ("+m_pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString()+")";
       movies.push_back(movie);
       m_pDS->next();
     }
@@ -2549,9 +2549,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
 
   GetDetailsFromDB(pDS, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets, details);
   details.m_iDbId = lTvShowId;
-  details.m_strPath = pDS->fv(VIDEODB_MAX_COLUMNS + 1).get_asString();
-  details.m_iEpisode = m_pDS->fv(VIDEODB_MAX_COLUMNS + 2).get_asInteger();
-  details.m_playCount = m_pDS->fv(VIDEODB_MAX_COLUMNS + 3).get_asInteger(); // number watched
+  details.m_strPath = pDS->fv(VIDEODB_DETAILS_TVSHOW_PATH).get_asString();
+  details.m_iEpisode = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_EPISODES).get_asInteger();
+  details.m_playCount = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInteger();
   details.m_strShowTitle = details.m_strTitle;
 
   movieTime += timeGetTime() - time; time = timeGetTime();
@@ -2591,7 +2591,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   GetCommonDetails(pDS, details);
   movieTime += timeGetTime() - time; time = timeGetTime();
 
-  details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_PATH+1).get_asString();
+  details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
 
   if (needsCast)
   {

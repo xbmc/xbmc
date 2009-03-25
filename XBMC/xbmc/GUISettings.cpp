@@ -441,7 +441,9 @@ void CGUISettings::Initialize()
 #ifdef HAS_MPLAYER
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif
-
+#ifdef HAVE_LIBVDPAU
+  AddBool(0, "videoplayer.strictbinding", 13120, false);
+#endif
 #ifdef HAS_SDL
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
@@ -537,6 +539,11 @@ void CGUISettings::Initialize()
   AddString(8,"servers.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(9,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
 #endif
+#endif
+
+  // zeroconf publishing
+#ifdef HAS_ZEROCONF
+  AddBool(10, "servers.zeroconf", 1260, false);
 #endif
 
   AddCategory(6, "smb", 1200);

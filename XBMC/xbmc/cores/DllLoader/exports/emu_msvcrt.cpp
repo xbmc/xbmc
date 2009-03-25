@@ -447,7 +447,7 @@ extern "C"
     }
     else if (!IS_STD_STREAM(stream))
     {
-      return freopen(_P(path), mode, stream);
+      return freopen(_P(path).c_str(), mode, stream);
     }
     
     // error
@@ -1598,11 +1598,7 @@ extern "C"
     if (!dir) return -1;
 
 #ifndef _LINUX
-    CStdString newDir(dir);
-    if (strstr(newDir.c_str(), "://") == NULL)
-      newDir.Replace("/", "\\");
-    newDir.Replace("\\\\", "\\");
-    return mkdir(_P(newDir).c_str());
+    return mkdir(_P(dir).c_str());
 #else
     return mkdir(_P(dir).c_str(), 0755);
 #endif

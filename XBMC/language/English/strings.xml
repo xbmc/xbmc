@@ -760,6 +760,8 @@
   <string id="1255">Send FTP user and password</string>
   <string id="1256">Ping interval</string>
   <string id="1257">Would you like to connect to the auto-detected system?</string>
+  
+  <string id="1260">Zeroconf publishing</string>
 
   <string id="1396">Drifting</string>
   <string id="1397">and</string>
@@ -990,6 +992,8 @@
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
 
+  <string id="13120">Strict Pixmap-Texture Binding (requires restart)</string>
+  
   <string id="13130">Display blanking</string>
   <string id="13131">Disabled</string>
   <string id="13132">Blank displays</string>
