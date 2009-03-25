@@ -67,10 +67,13 @@ windows:
     /Library/Tcl/darwinports1.0 \
     /Library/Tcl/macports1.0
 
-Install MacPorts 1.7 (http://www.macports.org/). Then change it's behavior
-to always build universal against 10.4sdk. If you don't care about running 
-the build binary under OSX 10.4 or the AppleTV, then just install the port
-packages without the +universal flag.
+Install MacPorts 1.7 (http://www.macports.org/). If you are going to run
+under the same OSX version as you build under, just install the required port 
+packages without the extra flags. No modifications of MacPorts is required.
+
+If you want to build a cross-compiled version that can run under 
+10.5/10.4/AppleTV, then change MacPorts's behavior to always build universal
+against 10.4sdk using the following instructions. 
 
  1)
    $ sudo nano /opt/local/etc/macports/macports.conf
@@ -86,8 +89,18 @@ packages without the +universal flag.
    $ sudo ln -s /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/dylib1.o /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/dylib1.10.5.o
    $ sudo ln -s /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.o /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.10.5.o
  
- 3) This one is a pain, there's no real way to make it simple because mysql5
- thinks we are cross-compiling and the port package script does not :)
+ 3) samba3 does not have a +universal variant so we force it to build
+libsmbclient in a compatible manner
+
+   $ sudo nano /opt/local/var/macports/sources/rsync.macports.org/release/ports/net/samba/Portfile
+
+   add the following before "configure.cflags-append "-fno-common";
+
+   configure.ldflags-append "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk"
+
+   change "--enable-cups" to "--disable-cups".
+
+ 4) mysql5 thinks we are cross-compiling and appends the cross-compile name to bin/my** apps.
  
    $ sudo nano /opt/local/var/macports/sources/rsync.macports.org/release/ports/databases/mysql5/Portfile
  
@@ -114,6 +127,7 @@ Then install the following port packages (order is very important):
  
  $ sudo port install jpeg +universal
  $ sudo port install tiff +universal
+ $ sudo port install smpeg +universal
  $ sudo port install libpng +universal
  $ sudo port install libogg +universal
  $ sudo port install libvorbis +universal
@@ -124,10 +138,10 @@ Then install the following port packages (order is very important):
  $ sudo port install libcdio +universal
  $ sudo port install portaudio +universal
  $ sudo port install openssl +universal
- $ sudo port install samba3 +universal
+ $ sudo port install samba3 macosx_deployment_target=10.4
  $ sudo port install mysql5 +universal
  
- $ sudo port install libsdl +universal
+ $ sudo port install libsdl +no_x11 +universal
  $ sudo port install libsdl_mixer +universal
  $ sudo port install libsdl_image +universal
 
