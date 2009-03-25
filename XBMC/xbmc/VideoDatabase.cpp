@@ -4527,7 +4527,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
         if (bStacked)
         {
           pItem->GetVideoInfoTag()->m_playCount = (pItem->GetVideoInfoTag()->m_iEpisode == pItem->GetPropertyInt("watchedepisodes")) ? 1 : 0;
-          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode == 0));
+          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
           if (!strFanArt.IsEmpty())
             pItem->SetProperty("fanart_image", strFanArt);
         }
@@ -4536,6 +4536,9 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
       }
     }
     break;
+    // We currently don't stack episodes (No call here in GetEpisodesByWhere()), but this code is left
+    // so that if we eventually want to stack during scan we can utilize it.
+    /*
     case VIDEODB_CONTENT_EPISODES:
     {
       // sort by ShowTitle, Episode, Filename
@@ -4591,11 +4594,10 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
                 // increment playcount
                 iPlayCount += jTag->m_playCount;
 
-                /* episodes dont have fanart yet
-                // check for fanart if not already set
-                if (strFanArt.IsEmpty())
-                  strFanArt = jItem->GetProperty("fanart_image");
-                */
+                // episodes dont have fanart yet
+                //if (strFanArt.IsEmpty())
+                //  strFanArt = jItem->GetProperty("fanart_image");
+
                 paths.push_back(jFileNameAndPath);
               }
             }
@@ -4618,16 +4620,15 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
           pItem->GetVideoInfoTag()->m_playCount = iPlayCount;
           pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
 
-          /* episodes dont have fanart yet
-          if (!strFanArt.IsEmpty())
-            pItem->SetProperty("fanart_image", strFanArt);
-          */
+          // episodes dont have fanart yet
+          //if (!strFanArt.IsEmpty())
+          //  pItem->SetProperty("fanart_image", strFanArt);
         }
         // increment i to j which is the next item
         i = j;
       }
     }
-    break;
+    break;*/
 
     // stack other types later
     default:
@@ -4730,12 +4731,6 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
 
     CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
               timeGetTime() - time);
-    if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
-    {
-      CStdString order(where);
-      bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
-      Stack(items, VIDEODB_CONTENT_EPISODES, maintainOrder);
-    }
 
     // cleanup
     m_pDS->close();
