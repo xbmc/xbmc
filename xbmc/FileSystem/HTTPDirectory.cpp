@@ -79,6 +79,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
         CFileItemPtr pItem(new CFileItem(strName));
         pItem->m_strPath = strBasePath + strLink;
+        pItem->SetProperty("IsHTTPDirectory", true);
 
         if(CUtil::HasSlashAtEnd(pItem->m_strPath))
           pItem->m_bIsFolder = true;
