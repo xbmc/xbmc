@@ -12,11 +12,8 @@
 	</CreateSearchUrl>
 
 	<GetSearchResults dest="6">
-		<RegExp output="\1" dest="3">
-			<expression noclean="1">Your Exact Title Search Results:&lt;(.*)&gt;Your Similar Title Search Results:&lt;</expression>
-		</RegExp>
-		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&l t;/results&gt;" dest="6">
-			<RegExp input="$$3" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.excaliburfilms.com/AdultDVD/\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="6">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.excaliburfilms.com/AdultDVD/\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
 				<expression trim="1" repeat="yes">&lt;a href=&quot;http://www.ExcaliburFilms.com/AdultDVD/([^&quot;]*)&quot;.*?&lt;font class=&quot;searchTitle12&quot;&gt;([^&lt;]*)&lt;/font&gt;&lt;/a&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
