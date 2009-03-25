@@ -655,31 +655,53 @@ CStdString CURL::ValidatePath(const CStdString &path)
 {
   CStdString result = path;
 
-  // Fixup for url:/foo (-> url://foo)
-  if (result.Find(":/") > 1 && result.Find("://") < 0)
-    result.Replace(":/", "://");
+#ifdef _WIN32
+  // Fixup for url:/foo (-> url://foo) but only replace the first occurance
+  int pos = result.Find(":/");
+  if (pos != string::npos && pos > 1 && (pos + 2 >= result.GetLength() || result[pos + 2] != '/'))
+    result.Insert(pos + 2, '/');
   
+  // Fixup for double back slashes but don't touch the :// of URLs
+  for (int x=1; x<result.GetLength()-1; x++)
+  {
+    if (result[x]=='/' && result[x+1]=='/' && result[x-1]!=':')
+      result.Delete(x);
+  }   
+    
   // Fixup for url:\foo (-> url://foo)
   if (result.Find(":\\") > 1 && result.Find(":\\\\") < 0)
     result.Replace(":\\", "://");
-  
-  // Check the url for incorrect slashes
-  if (result.Find("://") > 1)
-    result.Replace('\\', '/');
-  else
-    // Fixup for double back slashes
-    result.Replace("//", "/");
-    
-  // Fixup for double forward slashes
-  result.Replace("\\\\", "\\");
 
-#ifdef _WIN32
+  // Fixup for double forward slashes (but ignore \\ of unc-paths)
+  for (int x=2; x<result.GetLength()-1; x++)
+  {
+    if (result[x]=='\\' && result[x+1]=='\\')
+      result.Delete(x);  
+  } 
+    
   // Check the path for incorrect slashes
   if (CUtil::IsDOSPath(result))
     result.Replace('/', '\\');
-#endif
-#ifdef _LINUX
+
+  // Check urls for incorrect slashes
+  if (result.Find("://") > 1)
+    result.Replace('\\', '/');
+#else
+  // Fixup for url:/foo (-> url://foo) but only replace the first occurance
+  int pos = result.Find(":/");
+  if (pos != string::npos && pos > 1 && (pos + 2 >= result.GetLength() || result[pos + 2] != '/'))
+    result.Insert(pos + 2, '/');
+  
+  // FIXME?, this is EVIL: We assume Linux filenames don't have \ in them
+  // but in fact they can!
   result.Replace('\\', '/');
+  
+  // Fixup for double back slashes but don't touch the :// of URLs
+  for (int x=1; x<result.GetLength()-1; x++)
+  {
+    if (result[x]=='/' && result[x+1]=='/' && result[x-1]!=':')
+      result.Delete(x);
+  }   
 #endif
   
   return result;
