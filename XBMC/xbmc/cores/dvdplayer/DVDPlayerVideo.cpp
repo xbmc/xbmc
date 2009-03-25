@@ -211,6 +211,8 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   else
     MaxSpeedAdjust = 0.0;
   
+  g_VideoReferenceClock.SetSpeed(1.0);  
+  
   CLog::Log(LOGNOTICE, "Creating video thread");
   Create();
 
@@ -244,6 +246,8 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
     CDVDCodecUtils::FreePicture(m_pTempOverlayPicture);
     m_pTempOverlayPicture = NULL;
   }
+  
+  g_VideoReferenceClock.SetSpeed(1.0);
 }
 
 void CDVDPlayerVideo::OnStartup()
