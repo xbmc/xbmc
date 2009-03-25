@@ -47,6 +47,8 @@ void CVideoReferenceClock::OnStartup()
 #endif
 }
 
+char NvSettingsCmd[] = "nvidia-settings -nt -q RefreshRate";
+
 #ifdef HAS_GLX
 bool CVideoReferenceClock::SetupGLX()
 {
@@ -119,7 +121,31 @@ bool CVideoReferenceClock::SetupGLX()
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: RandR not supported, falling back to QueryPerformanceCounter");
     return false;
-  }  
+  }
+  
+  float fRefreshRate;
+  UseNvSettings = false;
+  NvSettings = popen(NvSettingsCmd, "r");
+  if (NvSettings)
+  {
+    if (fscanf(NvSettings, "%f", &fRefreshRate) == 1)
+    {
+      if (fRefreshRate > 0.0)
+      {
+        UseNvSettings = true;
+      }
+    }
+    pclose(NvSettings);
+  }
+  
+  if (UseNvSettings)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using %s for refreshrate detection", NvSettingsCmd);
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
+  }
   
   PrevRefreshRate = -1;
   LastRefreshTime.QuadPart = 0;
@@ -182,16 +208,29 @@ bool CVideoReferenceClock::UpdateRefreshrate()
   if (CurrTime.QuadPart - LastRefreshTime.QuadPart > SystemFrequency.QuadPart)
   {
 #ifdef HAS_GLX
-    XRRScreenConfiguration *CurrInfo;
-    CurrInfo = XRRGetScreenInfo(Dpy, RootWindow(Dpy, Screen));
-    RefreshRate = XRRConfigCurrentRate(CurrInfo);
-    XRRFreeScreenConfigInfo(CurrInfo);
     LastRefreshTime = CurrTime;
     
-    if (RefreshRate != PrevRefreshRate)
+    XRRScreenConfiguration *CurrInfo;
+    CurrInfo = XRRGetScreenInfo(Dpy, RootWindow(Dpy, Screen));
+    int RRRefreshRate = XRRConfigCurrentRate(CurrInfo);
+    XRRFreeScreenConfigInfo(CurrInfo);
+    
+    if (RRRefreshRate != PrevRefreshRate)
     {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", RefreshRate);
-      PrevRefreshRate = RefreshRate;
+      PrevRefreshRate = RRRefreshRate;
+      if (UseNvSettings)
+      {
+        float fRefreshRate;
+        NvSettings = popen(NvSettingsCmd, "r");
+        fscanf(NvSettings, "%f", &fRefreshRate);
+        pclose(NvSettings);
+        RefreshRate = MathUtils::round_int(fRefreshRate);
+      }
+      else
+      {
+        RefreshRate = RRRefreshRate;
+      }
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)RefreshRate);
     }
     
     return true;

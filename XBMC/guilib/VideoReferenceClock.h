@@ -50,6 +50,8 @@ class CVideoReferenceClock : public CThread
     bool SetupGLX();
     void RunGLX();
     int (*p_glXGetVideoSyncSGI)(unsigned int*);
+    FILE* NvSettings;
+    bool UseNvSettings;
 #endif
 };
 
