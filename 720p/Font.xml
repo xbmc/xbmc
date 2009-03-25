@@ -64,7 +64,7 @@
 
     <font>
       <name>DefaultFont</name>
-      <filename>MyriadPro-Bold.otf</filename>
+      <filename>MyriadPro.otf</filename>
       <size>16</size>
     </font>
 
@@ -168,7 +168,7 @@
     <font>
       <name>MediumTitleCapsFont</name>
       <filename>MyriadPro-Bold.otf</filename>
-      <size>21</size>
+      <size>17</size>
     </font>
 
     <font>
