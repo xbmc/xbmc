@@ -24,7 +24,10 @@
 #include "../xbmc/Util.h"
 
 #ifdef HAS_GLX
+
 #include <X11/extensions/Xrandr.h>
+#define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate"
+
 #endif
 
 using namespace std;
@@ -32,22 +35,20 @@ using namespace Surface;
 
 CVideoReferenceClock::CVideoReferenceClock()
 {
-  QueryPerformanceFrequency(&SystemFrequency);
-  AdjustedFrequency = SystemFrequency;
-  UseVblank = false;
+  QueryPerformanceFrequency(&m_SystemFrequency);
+  m_AdjustedFrequency = m_SystemFrequency;
+  m_UseVblank = false;
 }
 
 void CVideoReferenceClock::OnStartup()
 {
-  QueryPerformanceCounter(&CurrTime);
+  QueryPerformanceCounter(&m_CurrTime);
   
 #ifdef HAS_GLX
-  UseVblank = SetupGLX();
-  if (UseVblank) RunGLX();
+  m_UseVblank = SetupGLX();
+  if (m_UseVblank) RunGLX();
 #endif
 }
-
-char NvSettingsCmd[] = "nvidia-settings -nt -q RefreshRate";
 
 #ifdef HAS_GLX
 bool CVideoReferenceClock::SetupGLX()
@@ -67,56 +68,56 @@ bool CVideoReferenceClock::SetupGLX()
   };
   GLXFBConfig *fbConfigs = 0;
   XVisualInfo *vInfo = NULL;
-  Visual *Visual;
-  GLXContext Context;
-  Pixmap Pxmp;
-  GLXPixmap GLXPxmp;
+  Visual      *Visual;
+  GLXContext   Context;
+  Pixmap       Pxmp;
+  GLXPixmap    GLXPxmp;
   
-  Dpy = XOpenDisplay(NULL);
-  if (!Dpy)
+  m_Dpy = XOpenDisplay(NULL);
+  if (!m_Dpy)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to open display, falling back to QueryPerformanceCounter");
     return false;
   }
   
-  fbConfigs = glXChooseFBConfig(Dpy, DefaultScreen(Dpy), singleVisAttributes, &Num);
+  fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), singleVisAttributes, &Num);
   if (!fbConfigs)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseFBConfig returned NULL, falling back to QueryPerformanceCounter");
     return false;
   }
   
-  vInfo = glXGetVisualFromFBConfig(Dpy, fbConfigs[0]);
+  vInfo = glXGetVisualFromFBConfig(m_Dpy, fbConfigs[0]);
   if (!vInfo)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVisualFromFBConfig returned NULL, falling back to QueryPerformanceCounter");
     return false;
   } 
   
-  Screen = DefaultScreen(Dpy);
-  Visual = DefaultVisual(Dpy, Screen);
-  Depth  = DefaultDepth(Dpy, Screen); 
+  m_Screen = DefaultScreen(m_Dpy);
+  Visual = DefaultVisual(m_Dpy, m_Screen);
+  Depth = DefaultDepth(m_Dpy, m_Screen); 
 
-  Pxmp = XCreatePixmap(Dpy, RootWindow(Dpy, Screen), 100, 100, Depth);
-  GLXPxmp = glXCreatePixmap(Dpy, fbConfigs[0], Pxmp, NULL);
-  Context = glXCreateNewContext(Dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, true);
-  glXMakeCurrent(Dpy, GLXPxmp, Context);
+  Pxmp = XCreatePixmap(m_Dpy, RootWindow(m_Dpy, m_Screen), 100, 100, Depth);
+  GLXPxmp = glXCreatePixmap(m_Dpy, fbConfigs[0], Pxmp, NULL);
+  Context = glXCreateNewContext(m_Dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, true);
+  glXMakeCurrent(m_Dpy, GLXPxmp, Context);
   
-  p_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
-  if (!p_glXGetVideoSyncSGI)
+  m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
+  if (!m_glXGetVideoSyncSGI)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI not found, falling back to QueryPerformanceCounter");
     return false;
   }
   
-  ReturnV = p_glXGetVideoSyncSGI(&VblankCount);
+  ReturnV = m_glXGetVideoSyncSGI(&VblankCount);
   if (ReturnV)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI returned %i, falling back to QueryPerformanceCounter", ReturnV);
     return false;
   }
   
-  XRRSizes(Dpy, Screen, &ReturnV);
+  XRRSizes(m_Dpy, m_Screen, &ReturnV);
   if (ReturnV == 0)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: RandR not supported, falling back to QueryPerformanceCounter");
@@ -124,31 +125,31 @@ bool CVideoReferenceClock::SetupGLX()
   }
   
   float fRefreshRate;
-  UseNvSettings = false;
-  NvSettings = popen(NvSettingsCmd, "r");
+  m_UseNvSettings = false;
+  FILE* NvSettings = popen(NVSETTINGSCMD, "r");
   if (NvSettings)
   {
     if (fscanf(NvSettings, "%f", &fRefreshRate) == 1)
     {
       if (fRefreshRate > 0.0)
       {
-        UseNvSettings = true;
+        m_UseNvSettings = true;
       }
     }
     pclose(NvSettings);
   }
   
-  if (UseNvSettings)
+  if (m_UseNvSettings)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using %s for refreshrate detection", NvSettingsCmd);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using %s for refreshrate detection", NVSETTINGSCMD);
   }
   else
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
   }
   
-  PrevRefreshRate = -1;
-  LastRefreshTime.QuadPart = 0;
+  m_PrevRefreshRate = -1;
+  m_LastRefreshTime.QuadPart = 0;
   UpdateRefreshrate();
   
   return true;
@@ -159,16 +160,16 @@ void CVideoReferenceClock::RunGLX()
   unsigned int PrevVblankCount;
   unsigned int VblankCount;
 
-  p_glXGetVideoSyncSGI(&PrevVblankCount);
+  m_glXGetVideoSyncSGI(&PrevVblankCount);
   UpdateRefreshrate();
   
   while(1)
   {
-    p_glXGetVideoSyncSGI(&VblankCount); //TODO: check if this has reset
+    m_glXGetVideoSyncSGI(&VblankCount); //TODO: check if this has reset
     
     if (VblankCount - PrevVblankCount > 0)
     {
-      CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * AdjustedFrequency.QuadPart / RefreshRate;
+      m_CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * m_AdjustedFrequency.QuadPart / m_RefreshRate;
       PrevVblankCount = VblankCount;
       if (!UpdateRefreshrate()) Sleep(1);
     }
@@ -183,9 +184,9 @@ void CVideoReferenceClock::RunGLX()
 
 void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
 {
-  if (UseVblank)
+  if (m_UseVblank)
   {
-    *ptime = CurrTime;
+    *ptime = m_CurrTime;
   }
   else
   {
@@ -195,42 +196,42 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
 
 void CVideoReferenceClock::SetSpeed(double Speed)
 {
-  AdjustedFrequency.QuadPart = (__int64)((double)SystemFrequency.QuadPart * Speed);
+  m_AdjustedFrequency.QuadPart = (__int64)((double)m_SystemFrequency.QuadPart * Speed);
 }
 
 double CVideoReferenceClock::GetSpeed()
 {
-  return (double)AdjustedFrequency.QuadPart / (double)SystemFrequency.QuadPart;
+  return (double)m_AdjustedFrequency.QuadPart / (double)m_SystemFrequency.QuadPart;
 }
 
 bool CVideoReferenceClock::UpdateRefreshrate()
 {
-  if (CurrTime.QuadPart - LastRefreshTime.QuadPart > SystemFrequency.QuadPart)
+  if (m_CurrTime.QuadPart - m_LastRefreshTime.QuadPart > m_SystemFrequency.QuadPart)
   {
 #ifdef HAS_GLX
-    LastRefreshTime = CurrTime;
+    m_LastRefreshTime = m_CurrTime;
     
     XRRScreenConfiguration *CurrInfo;
-    CurrInfo = XRRGetScreenInfo(Dpy, RootWindow(Dpy, Screen));
+    CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_Screen));
     int RRRefreshRate = XRRConfigCurrentRate(CurrInfo);
     XRRFreeScreenConfigInfo(CurrInfo);
     
-    if (RRRefreshRate != PrevRefreshRate)
+    if (RRRefreshRate != m_PrevRefreshRate)
     {
-      PrevRefreshRate = RRRefreshRate;
-      if (UseNvSettings)
+      m_PrevRefreshRate = RRRefreshRate;
+      if (m_UseNvSettings)
       {
         float fRefreshRate;
-        NvSettings = popen(NvSettingsCmd, "r");
+        FILE* NvSettings = popen(NVSETTINGSCMD, "r");
         fscanf(NvSettings, "%f", &fRefreshRate);
         pclose(NvSettings);
-        RefreshRate = MathUtils::round_int(fRefreshRate);
+        m_RefreshRate = MathUtils::round_int(fRefreshRate);
       }
       else
       {
-        RefreshRate = RRRefreshRate;
+        m_RefreshRate = RRRefreshRate;
       }
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)RefreshRate);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
     }
     
     return true;
@@ -244,9 +245,9 @@ bool CVideoReferenceClock::UpdateRefreshrate()
 
 int CVideoReferenceClock::GetRefreshRate()
 {
-  if (UseVblank)
+  if (m_UseVblank)
   {
-    return RefreshRate;
+    return m_RefreshRate;
   }
   else
   {

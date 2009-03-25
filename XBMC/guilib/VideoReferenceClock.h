@@ -23,35 +23,38 @@
 #include "stdafx.h"
 #include "Thread.h"
 #include "Surface.h"
- 
+
 class CVideoReferenceClock : public CThread
 {
   public:
-    void GetTime(LARGE_INTEGER *ptime);
     CVideoReferenceClock();
-    void SetSpeed(double Speed);
+    
+    void   GetTime(LARGE_INTEGER *ptime);
+    void   SetSpeed(double Speed);
     double GetSpeed();
-    int GetRefreshRate();
+    int    GetRefreshRate();
     
   protected:
     void OnStartup();
-    LARGE_INTEGER CurrTime;
-    LARGE_INTEGER LastRefreshTime;
-    LARGE_INTEGER SystemFrequency;
-    LARGE_INTEGER AdjustedFrequency;
-    bool UseVblank;
-    __int64 RefreshRate;
-    int PrevRefreshRate;
     bool UpdateRefreshrate();
     
+    LARGE_INTEGER m_CurrTime;
+    LARGE_INTEGER m_LastRefreshTime;
+    LARGE_INTEGER m_SystemFrequency;
+    LARGE_INTEGER m_AdjustedFrequency;
+    
+    bool    m_UseVblank;
+    __int64 m_RefreshRate;
+    int     m_PrevRefreshRate;
+    
 #ifdef HAS_GLX
-    Surface::Display* Dpy;
-    int Screen;
     bool SetupGLX();
     void RunGLX();
-    int (*p_glXGetVideoSyncSGI)(unsigned int*);
-    FILE* NvSettings;
-    bool UseNvSettings;
+    int  (*m_glXGetVideoSyncSGI)(unsigned int*);
+    
+    Surface::Display* m_Dpy;
+    int               m_Screen;
+    bool              m_UseNvSettings;
 #endif
 };
 
