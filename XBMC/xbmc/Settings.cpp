@@ -255,7 +255,6 @@ void CSettings::Initialize()
   g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_sambastatfiles = true;
 
-  g_advancedSettings.m_bHTTPDirectoryLocalMode = false;
   g_advancedSettings.m_bHTTPDirectoryStatFilesize = false;
 
   g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
@@ -1283,10 +1282,7 @@ void CSettings::LoadAdvancedSettings()
 
   pElement = pRootElement->FirstChildElement("httpdirectory");
   if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "localmode", g_advancedSettings.m_bHTTPDirectoryLocalMode);
     XMLUtils::GetBoolean(pElement, "statfilesize", g_advancedSettings.m_bHTTPDirectoryStatFilesize);
-  }
 
   if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
