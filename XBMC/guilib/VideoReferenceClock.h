@@ -31,14 +31,22 @@ class CVideoReferenceClock : public CThread
     CVideoReferenceClock();
     void SetSpeed(double Speed);
     double GetSpeed();
+    int GetRefreshRate();
     
   protected:
     void OnStartup();
     LARGE_INTEGER CurrTime;
+    LARGE_INTEGER LastRefreshTime;
     LARGE_INTEGER SystemFrequency;
     LARGE_INTEGER AdjustedFrequency;
     bool UseVblank;
+    __int64 RefreshRate;
+    int PrevRefreshRate;
+    bool UpdateRefreshrate();
+    
 #ifdef HAS_GLX
+    Surface::Display* Dpy;
+    int Screen;
     bool SetupGLX();
     void RunGLX();
     int (*p_glXGetVideoSyncSGI)(unsigned int*);

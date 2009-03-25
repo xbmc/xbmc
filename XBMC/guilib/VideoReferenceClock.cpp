@@ -23,6 +23,10 @@
 #include "../xbmc/cores/VideoRenderers/RenderManager.h"
 #include "../xbmc/Util.h"
 
+#ifdef HAS_GLX
+#include <X11/extensions/Xrandr.h>
+#endif
+
 using namespace std;
 using namespace Surface;
 
@@ -46,7 +50,7 @@ void CVideoReferenceClock::OnStartup()
 #ifdef HAS_GLX
 bool CVideoReferenceClock::SetupGLX()
 {
-  int Num = 0, ReturnV, Screen, Depth;
+  int Num = 0, ReturnV, Depth;
   unsigned int VblankCount;
   int singleVisAttributes[] =
   {
@@ -62,7 +66,6 @@ bool CVideoReferenceClock::SetupGLX()
   GLXFBConfig *fbConfigs = 0;
   XVisualInfo *vInfo = NULL;
   Visual *Visual;
-  Display* Dpy;
   GLXContext Context;
   Pixmap Pxmp;
   GLXPixmap GLXPxmp;
@@ -111,6 +114,17 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
   
+  XRRSizes(Dpy, Screen, &ReturnV);
+  if (ReturnV == 0)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: RandR not supported, falling back to QueryPerformanceCounter");
+    return false;
+  }  
+  
+  PrevRefreshRate = -1;
+  LastRefreshTime.QuadPart = 0;
+  UpdateRefreshrate();
+  
   return true;
 }
 
@@ -118,23 +132,24 @@ void CVideoReferenceClock::RunGLX()
 {
   unsigned int PrevVblankCount;
   unsigned int VblankCount;
-  __int64 RefreshRate;
 
   p_glXGetVideoSyncSGI(&PrevVblankCount);
+  UpdateRefreshrate();
   
   while(1)
   {
-    p_glXGetVideoSyncSGI(&VblankCount);
+    p_glXGetVideoSyncSGI(&VblankCount); //TODO: check if this has reset
     
     if (VblankCount - PrevVblankCount > 0)
     {
-      RefreshRate = MathUtils::round_int(g_renderManager.GetMaximumFPS());
-      if (RefreshRate <= 0) RefreshRate = 60;
-      
       CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * AdjustedFrequency.QuadPart / RefreshRate;
       PrevVblankCount = VblankCount;
-    }    
-    Sleep(1);
+      if (!UpdateRefreshrate()) Sleep(1);
+    }
+    else
+    {
+      Sleep(1);
+    }
   }
 }
 
@@ -160,6 +175,44 @@ void CVideoReferenceClock::SetSpeed(double Speed)
 double CVideoReferenceClock::GetSpeed()
 {
   return (double)AdjustedFrequency.QuadPart / (double)SystemFrequency.QuadPart;
+}
+
+bool CVideoReferenceClock::UpdateRefreshrate()
+{
+  if (CurrTime.QuadPart - LastRefreshTime.QuadPart > SystemFrequency.QuadPart)
+  {
+#ifdef HAS_GLX
+    XRRScreenConfiguration *CurrInfo;
+    CurrInfo = XRRGetScreenInfo(Dpy, RootWindow(Dpy, Screen));
+    RefreshRate = XRRConfigCurrentRate(CurrInfo);
+    XRRFreeScreenConfigInfo(CurrInfo);
+    LastRefreshTime = CurrTime;
+    
+    if (RefreshRate != PrevRefreshRate)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", RefreshRate);
+      PrevRefreshRate = RefreshRate;
+    }
+    
+    return true;
+#endif
+  }
+  else
+  {
+    return false;
+  }
+}
+
+int CVideoReferenceClock::GetRefreshRate()
+{
+  if (UseVblank)
+  {
+    return RefreshRate;
+  }
+  else
+  {
+    return -1;
+  }
 }
 
 CVideoReferenceClock g_VideoReferenceClock;
