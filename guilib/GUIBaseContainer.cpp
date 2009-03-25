@@ -22,6 +22,7 @@
 #include "include.h"
 #include "GUIBaseContainer.h"
 #include "GUIControlFactory.h"
+#include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
@@ -708,9 +709,10 @@ void CGUIBaseContainer::UpdateScrollByLetter()
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CGUIListItemPtr item = m_items[i];
-    if (currentMatch != item->GetSortLabel().Left(1))
+    CStdString nextLetter = g_charsetConverter.utf8Left(item->GetSortLabel(),1);
+    if (currentMatch != nextLetter)
     {
-      currentMatch = item->GetSortLabel().Left(1);
+      currentMatch = nextLetter;
       m_letterOffsets.push_back(make_pair((int)i, currentMatch));
     }
   }
