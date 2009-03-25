@@ -30,11 +30,14 @@ class CVideoReferenceClock : public CThread
     void GetTime(LARGE_INTEGER *ptime);
     CVideoReferenceClock();
     unsigned int VblankCount;
+    void SetSpeed(double Speed);
+    double GetSpeed();
     
   protected:
     void OnStartup();
     LARGE_INTEGER CurrTime;
-    LARGE_INTEGER Frequency;
+    LARGE_INTEGER SystemFrequency;
+    LARGE_INTEGER AdjustedFrequency;
     bool UseVblank;
 #ifdef HAS_GLX
     bool SetupGLX();

@@ -28,7 +28,8 @@ using namespace Surface;
 
 CVideoReferenceClock::CVideoReferenceClock()
 {
-  QueryPerformanceFrequency(&Frequency);
+  QueryPerformanceFrequency(&SystemFrequency);
+  AdjustedFrequency = SystemFrequency;
   UseVblank = false;
 }
 
@@ -117,7 +118,7 @@ void CVideoReferenceClock::RunGLX()
 {
   unsigned int PrevVblankCount;
   unsigned int VblankCount;
-  __int64 fps;
+  __int64 RefreshRate;
 
   p_glXGetVideoSyncSGI(&PrevVblankCount);
   
@@ -127,10 +128,10 @@ void CVideoReferenceClock::RunGLX()
     
     if (VblankCount - PrevVblankCount > 0)
     {
-      fps = MathUtils::round_int(g_renderManager.GetMaximumFPS());
-      if (fps <= 0) fps = 60;
+      RefreshRate = MathUtils::round_int(g_renderManager.GetMaximumFPS());
+      if (RefreshRate <= 0) RefreshRate = 60;
       
-      CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * Frequency.QuadPart / fps;
+      CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * AdjustedFrequency.QuadPart / RefreshRate;
       PrevVblankCount = VblankCount;
     }    
     Sleep(1);
@@ -149,6 +150,16 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   {
     QueryPerformanceCounter(ptime);
   }
+}
+
+void CVideoReferenceClock::SetSpeed(double Speed)
+{
+  AdjustedFrequency.QuadPart = (__int64)((double)SystemFrequency.QuadPart * Speed);
+}
+
+double CVideoReferenceClock::GetSpeed()
+{
+  return (double)AdjustedFrequency.QuadPart / (double)SystemFrequency.QuadPart;
 }
 
 CVideoReferenceClock g_VideoReferenceClock;

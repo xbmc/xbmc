@@ -26,6 +26,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDPerformanceCounter.h"
 #include "Settings.h"
+#include "VideoReferenceClock.h"
 #include <sstream>
 #include <iomanip>
 
@@ -626,7 +627,7 @@ void CDVDPlayerAudio::Process()
           
           //for making pretty graphs
           static int count = 0;
-          cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Integral << "\n";
+          cerr << count++ << " " << CurrError / DVD_TIME_BASE << " " << Integral << " " << g_VideoReferenceClock.GetSpeed() << "\n";
         }
         
         double Proportional, ProportionalDiv;
@@ -644,7 +645,7 @@ void CDVDPlayerAudio::Process()
           Proportional = 0.0;
         }
         
-        Resampler.SetRatio(1.0 + Proportional + Integral);
+        Resampler.SetRatio(1.0 / g_VideoReferenceClock.GetSpeed() + Proportional + Integral);
         
         //add to the resampler
         Resampler.Add(audioframe, audioframe.pts);
