@@ -196,7 +196,7 @@
 #include "GUIDialogFullScreenInfo.h"
 #include "cores/dlgcache.h"
 
-#ifdef HAS_PERFORMACE_SAMPLE
+#ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #else
 #define MEASURE_FUNCTION
