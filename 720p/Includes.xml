@@ -1585,7 +1585,7 @@
     <info>System.Time(hh:mm xx)</info>
     <textcolor>Highlighted</textcolor>
     <include>ClockText</include>
-    <visible>Skin.HasSetting(ShowAMPMInClock)</visible>
+   	<visible>true</visible>
   </include>
 
   <include name="ClockFGText">
