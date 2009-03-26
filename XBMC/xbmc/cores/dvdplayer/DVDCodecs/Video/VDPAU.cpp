@@ -595,7 +595,6 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
   CLog::Log(LOGNOTICE, "screenWidth:%i widWidth:%i",g_graphicsContext.GetWidth(),vid_width);
-  // FIXME: Are higher profiles able to decode all lower profile streams?
   ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type, max_references);
 
   if(avctx->pix_fmt == PIX_FMT_VDPAU_H264)
@@ -835,6 +834,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   vdpau_render_state * render = (vdpau_render_state*)pFrame->data[2];
   VdpVideoMixerPictureStructure structure;
   VdpStatus vdp_st;
+  VdpTime time;
 
   CheckFeatures();
   if (!vdpauConfigured)
@@ -882,37 +882,43 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRect.x1 = outWidth;
     outRect.y1 = outHeight;
   }
-
-  vdp_st = vdp_video_mixer_render(videoMixer,
-                                              VDP_INVALID_HANDLE,
-                                              0,
-                                              structure,
-                                              2,
-                                              past,
-                                              current,
-                                              1,
-                                              &(future),
-                                              NULL,
-                                              outputSurface,
-                                              &(outRect),
-                                              &(outRectVid),
-                                              0,
-                                              NULL);
+  //CLog::Log(LOGNOTICE,"surfaceNum %i",surfaceNum);
+  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
   CheckStatus(vdp_st, __LINE__);
+  vdp_st = vdp_video_mixer_render(videoMixer,
+                                  VDP_INVALID_HANDLE,
+                                  0,
+                                  structure,
+                                  2,
+                                  past,
+                                  current,
+                                  1,
+                                  &(future),
+                                  NULL,
+                                  outputSurface,
+                                  &(outRect),
+                                  &(outRectVid),
+                                  0,
+                                  NULL);
+  CheckStatus(vdp_st, __LINE__);
+  surfaceNum++;
+  if (surfaceNum > 3) surfaceNum = 0;
 }
 
 void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+  //CLog::Log(LOGNOTICE,"presentSurfaceNum %i",presentSurfaceNum);
   VdpStatus vdp_st;
+  presentSurface = outputSurfaces[presentSurfaceNum];
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
                                           0,
                                           0,
                                           0);
   CheckStatus(vdp_st, __LINE__);
-  surfaceNum++;
-  if (surfaceNum > 1) surfaceNum = 0;
+  presentSurfaceNum++;
+  if (presentSurfaceNum > 3) presentSurfaceNum = 0;
 }
 
 void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
