@@ -110,7 +110,7 @@ void CPlayListWPL::Save(const CStdString& strFileName) const
   if (!m_vecItems.size()) return ;
   CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
-  if (!file.OpenForWrite(strPlaylist, true, true))
+  if (!file.OpenForWrite(strPlaylist, true))
   {
     CLog::Log(LOGERROR, "Could not save WPL playlist: [%s]", strPlaylist.c_str());
     return ;

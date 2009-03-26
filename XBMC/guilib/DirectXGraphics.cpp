@@ -121,7 +121,7 @@ HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fi
   {
 #endif
     XFILE::CFile file;
-    if (file.OpenForWrite(fileName, true, true))
+    if (file.OpenForWrite(fileName, true))
     {
       // create a 24bit BMP header
       BMPHEAD bh;

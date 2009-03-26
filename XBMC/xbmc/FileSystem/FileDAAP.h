@@ -70,7 +70,7 @@ public:
   virtual ~CFileDAAP();
   virtual __int64 GetPosition();
   virtual __int64 GetLength();
-  virtual bool Open(const CURL& url, bool bBinary = true);
+  virtual bool Open(const CURL& url);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
@@ -99,4 +99,5 @@ protected:
 }
 
 #endif // !defined(AFX_FILEDAAP_H___INCLUDED_)
+
 

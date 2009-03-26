@@ -1076,7 +1076,7 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 bool TiXmlDocument::SaveFile( const char *filename ) const
 {
 	XFILE::CFile file;
-	if (file.OpenForWrite(filename, true, true))
+	if (file.OpenForWrite(filename, true))
 	{
 		TiXmlPrinter printer;
 		Accept(&printer);
