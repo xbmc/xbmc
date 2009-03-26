@@ -191,6 +191,11 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   }
 }
 
+void CVideoReferenceClock::GetFrequency(LARGE_INTEGER *pfreq)
+{
+  *pfreq = m_SystemFrequency;
+}
+
 void CVideoReferenceClock::SetSpeed(double Speed)
 {
   if (m_UseVblank)

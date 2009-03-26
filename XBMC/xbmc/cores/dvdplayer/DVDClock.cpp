@@ -36,7 +36,8 @@ LARGE_INTEGER CDVDClock::m_systemFrequency;
 CDVDClock::CDVDClock()
 {
   if(!m_systemFrequency.QuadPart)
-    QueryPerformanceFrequency(&m_systemFrequency);
+    //QueryPerformanceFrequency(&m_systemFrequency);
+    g_VideoReferenceClock.GetFrequency(&m_systemFrequency);
 
   if(!m_systemOffset.QuadPart)
     //QueryPerformanceCounter(&m_systemOffset);
@@ -58,7 +59,8 @@ double CDVDClock::GetAbsoluteClock()
   CSingleLock lock(section);
 
   if(!m_systemFrequency.QuadPart)
-    QueryPerformanceFrequency(&m_systemFrequency);
+    //QueryPerformanceFrequency(&m_systemFrequency);
+    g_VideoReferenceClock.GetFrequency(&m_systemFrequency);
 
   if(!m_systemOffset.QuadPart)
     //QueryPerformanceCounter(&m_systemOffset);
