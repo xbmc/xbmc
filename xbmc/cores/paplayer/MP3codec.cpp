@@ -134,7 +134,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   int result = -1;
   __int64 length = 0;
 
-  if (!m_file.Open(strFile, true, READ_CACHED))
+  if (!m_file.Open(strFile, READ_CACHED))
   {
     CLog::Log(LOGERROR, "MP3Codec: Unable to open file %s", strFile.c_str());
     goto error;

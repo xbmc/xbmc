@@ -41,7 +41,7 @@ namespace XFILE
     public:
       CFileCurl();
       virtual ~CFileCurl();
-      virtual bool Open(const CURL& url, bool bBinary = true);
+      virtual bool Open(const CURL& url);
       virtual bool Exists(const CURL& url);
       virtual __int64  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
       virtual __int64 GetPosition();
@@ -159,5 +159,6 @@ namespace XFILE
       MAPHTTPHEADERS m_requestheaders;
   };
 }
+
 
 

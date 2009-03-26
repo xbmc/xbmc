@@ -40,7 +40,7 @@ class CCMythFile
 public:
   CCMythFile();
   virtual ~CCMythFile();
-  virtual bool          Open(const CURL& url, bool binary = true);
+  virtual bool          Open(const CURL& url);
   virtual __int64       Seek(__int64 pos, int whence=SEEK_SET);
   virtual __int64       GetPosition();
   virtual __int64       GetLength();
@@ -102,4 +102,5 @@ protected:
 };
 
 }
+
 

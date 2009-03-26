@@ -133,7 +133,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
     UpdateProgress(dlgProgress, strLine1, strLine2, iProgressPercent, false);
 
     http.SetTimeout(iWaitTimer);
-    if(http.Open(url, false))
+    if(http.Open(url))
     {
       //We are connected!
       iTryConnect = 4;

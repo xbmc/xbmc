@@ -75,7 +75,7 @@ IFile *CFileCache::GetFileImp() {
   return m_source.GetImplemenation();
 }
 
-bool CFileCache::Open(const CURL& url, bool bBinary)
+bool CFileCache::Open(const CURL& url)
 {
   Close();
 
@@ -98,7 +98,7 @@ bool CFileCache::Open(const CURL& url, bool bBinary)
   }
 
   // opening the source file.
-  if(!m_source.Open(m_sourcePath, true, READ_NO_CACHE | READ_TRUNCATED)) {
+  if(!m_source.Open(m_sourcePath, READ_NO_CACHE | READ_TRUNCATED)) {
     CLog::Log(LOGERROR,"%s - failed to open source <%s>", __FUNCTION__, m_sourcePath.c_str());
     Close();
     return false;

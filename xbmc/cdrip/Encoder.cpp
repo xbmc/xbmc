@@ -62,7 +62,7 @@ bool CEncoder::FileCreate(const char* filename)
 
   m_file = new XFILE::CFile;
   if (m_file)
-    return m_file->OpenForWrite(filename, true, true);
+    return m_file->OpenForWrite(filename, true);
   return false;
 }
 

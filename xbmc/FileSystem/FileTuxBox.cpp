@@ -43,7 +43,7 @@ __int64 CFileTuxBox::GetLength()
   return 0;
 }
 
-bool CFileTuxBox::Open(const CURL& url, bool bBinary)
+bool CFileTuxBox::Open(const CURL& url)
 {
   return true;
 }
@@ -61,4 +61,5 @@ __int64 CFileTuxBox::Seek(__int64 iFilePosition, int iWhence)
 void CFileTuxBox::Close()
 {
 }
+
 
