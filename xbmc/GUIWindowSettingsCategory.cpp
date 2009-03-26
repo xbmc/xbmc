@@ -1774,7 +1774,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CZeroconf::GetInstance()->Stop();
     if(g_guiSettings.GetBool("servers.zeroconf"))
       CZeroconf::GetInstance()->Start();
-#endif HAS_ZEROCONF
+#endif
   }
   else if (strSetting.Equals("network.ipaddress"))
   {
