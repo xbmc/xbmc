@@ -407,9 +407,9 @@ extern "C"
     // currently always overwrites
     bool bResult;
     if (bWrite)
-      bResult = pFile->OpenForWrite(_P(str), bBinary, bOverwrite);
+      bResult = pFile->OpenForWrite(str, bOverwrite);
     else
-      bResult = pFile->Open(_P(str), bBinary);
+      bResult = pFile->Open(str);
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
@@ -431,7 +431,7 @@ extern "C"
     if (g_emuFileWrapper.StreamIsEmulatedFile(stream))
     {
       dll_fclose(stream);
-      return dll_fopen(_P(path).c_str(), mode);
+      return dll_fopen(path, mode);
     }
     else if (!IS_STD_STREAM(stream))
     {
@@ -795,7 +795,7 @@ extern "C"
     else if (strchr(mode, 'w'))
       iMode |= _O_WRONLY  | O_CREAT;
       
-    int fd = dll_open(_P(filename).c_str(), iMode);
+    int fd = dll_open(filename, iMode);
     if (fd >= 0)
     {
       file = g_emuFileWrapper.GetStreamByDescriptor(fd);;
@@ -1613,3 +1613,5 @@ extern "C"
     return 0;
   }
 }
+
+

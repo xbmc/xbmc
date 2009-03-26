@@ -120,9 +120,6 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
   settings = pDialog->m_settings;
   settings.Save();
 
-  // Unload temporary language strings
-  DIRECTORY::CPluginDirectory::ClearPluginStrings();
-
   return;
 }
 

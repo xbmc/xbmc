@@ -547,8 +547,8 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_RATING) result.Format("c%02d", VIDEODB_ID_RATING);
     else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_RUNTIME);
     else if (field == FIELD_WRITER) result.Format("c%02d", VIDEODB_ID_CREDITS);   // join required
-    else if (field == FIELD_PLAYCOUNT) "playCount";
-    else if (field == FIELD_LASTPLAYED) "lastPlayed";
+    else if (field == FIELD_PLAYCOUNT) result = "playCount";
+    else if (field == FIELD_LASTPLAYED) result = "lastPlayed";
     else if (field == FIELD_GENRE) result.Format("c%02d", VIDEODB_ID_GENRE);    // join required
     else if (field == FIELD_YEAR) result.Format("c%02d", VIDEODB_ID_YEAR);
     else if (field == FIELD_DIRECTOR) result.Format("c%02d", VIDEODB_ID_DIRECTOR); // join required
@@ -557,8 +557,8 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_TOP250) result.Format("c%02d", VIDEODB_ID_TOP250);
     else if (field == FIELD_STUDIO) result.Format("c%02d", VIDEODB_ID_STUDIOS);   // join required
     else if (field == FIELD_HASTRAILER) result.Format("c%02d", VIDEODB_ID_TRAILER);
-    else if (field == FIELD_FILENAME) return "strFilename";
-    else if (field == FIELD_PATH) return "strPath";
+    else if (field == FIELD_FILENAME) result = "strFilename";
+    else if (field == FIELD_PATH) result = "strPath";
     else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
     return result;
@@ -573,8 +573,8 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_ARTIST) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_ARTIST);  // join required;
     else if (field == FIELD_FILENAME) result = "strFilename";
     else if (field == FIELD_PATH) result = "strPath";
-    else if (field == FIELD_PLAYCOUNT) "playCount";
-    else if (field == FIELD_LASTPLAYED) "lastPlayed";
+    else if (field == FIELD_PLAYCOUNT) result = "playCount";
+    else if (field == FIELD_LASTPLAYED) result = "lastPlayed";
     else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_RUNTIME);
     else if (field == FIELD_DIRECTOR) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_DIRECTOR);   // join required
     else if (field == FIELD_STUDIO) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_STUDIOS);     // join required
@@ -613,16 +613,16 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_TIME) result.Format("c%02d", VIDEODB_ID_EPISODE_RUNTIME);
     else if (field == FIELD_WRITER) result.Format("c%02d", VIDEODB_ID_EPISODE_CREDITS);   // join required
     else if (field == FIELD_AIRDATE) result.Format("c%02d", VIDEODB_ID_EPISODE_AIRED);
-    else if (field == FIELD_PLAYCOUNT) "playCount";
-    else if (field == FIELD_LASTPLAYED) "lastPlayed";
+    else if (field == FIELD_PLAYCOUNT) result = "playCount";
+    else if (field == FIELD_LASTPLAYED) result = "lastPlayed";
     else if (field == FIELD_GENRE) result = "cant_order_by_genre";    // join required
     else if (field == FIELD_YEAR) result = "premiered";
     else if (field == FIELD_DIRECTOR) result.Format("c%02d", VIDEODB_ID_EPISODE_DIRECTOR); // join required
     else if (field == FIELD_ACTOR) result = "cant_order_by_actor";    // join required
     else if (field == FIELD_EPISODE) result.Format("c%02d", VIDEODB_ID_EPISODE_EPISODE);
     else if (field == FIELD_SEASON) result.Format("c%02d", VIDEODB_ID_EPISODE_SEASON);
-    else if (field == FIELD_FILENAME) return "strFilename";
-    else if (field == FIELD_PATH) return "strPath";
+    else if (field == FIELD_FILENAME) result = "strFilename";
+    else if (field == FIELD_PATH) result = "strPath";
     else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
     return result;

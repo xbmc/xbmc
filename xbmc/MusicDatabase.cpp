@@ -1050,6 +1050,24 @@ bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
   return false;
 }
 
+bool CMusicDatabase::ArbitraryExec(const CStdString& strExec)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    CStdString strSQL = FormatSQL(strExec);
+    m_pDS->exec(strSQL.c_str());
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs)
 {
   try
@@ -2590,38 +2608,39 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
                           "select exartistalbum.idArtist from exartistalbum "; // All extra artists linked to an album
       if (albumArtistsOnly)
         strSQL +=         "join album on album.idAlbum = exartistalbum.idAlbum " // if we're hiding compilation artists,
-                          "where album.strExtraArtists != ''";                      // then exclude those where that have no extra artists
+                          "where album.strExtraArtists != ''";                   // then exclude those that have no extra artists
       strSQL +=           ")"
                         ") ";
     }
     else
     { // same statements as above, but limit to the specified genre
       // in this case we show the whole lot always - there is no limitation to just album artists
-      strSQL+=FormatSQL("("
-                        "select song.idArtist from song " // All primary artists linked to primary genres
-                        "where song.idGenre=%ld"
-                        ") "
-                      "or idArtist IN "
-                        "("
-                        "select song.idArtist from song " // All primary artists linked to extra genres
-                          "join exgenresong on song.idSong=exgenresong.idSong "
-                        "where exgenresong.idGenre=%ld"
-                        ")"
-                      "or idArtist IN "
-                        "("
-                        "select exartistsong.idArtist from exartistsong " // All extra artists linked to extra genres
-                          "join song on exartistsong.idSong=song.idSong "
-                          "join exgenresong on song.idSong=exgenresong.idSong "
-                        "where exgenresong.idGenre=%ld"
-                        ") "
-                      "or idArtist IN "
-                        "("
-                        "select exartistsong.idArtist from exartistsong " // All extra artists linked to primary genres
-                          "join song on exartistsong.idSong=song.idSong "
-                        "where song.idGenre=%ld"
-                        ") "
-                      "or idArtist IN "
-                      , idGenre, idGenre, idGenre, idGenre);
+      if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
+        strSQL+=FormatSQL("("
+                          "select song.idArtist from song " // All primary artists linked to primary genres
+                          "where song.idGenre=%ld"
+                          ") "
+                        "or idArtist IN "
+                          "("
+                          "select song.idArtist from song " // All primary artists linked to extra genres
+                            "join exgenresong on song.idSong=exgenresong.idSong "
+                          "where exgenresong.idGenre=%ld"
+                          ")"
+                        "or idArtist IN "
+                          "("
+                          "select exartistsong.idArtist from exartistsong " // All extra artists linked to extra genres
+                            "join song on exartistsong.idSong=song.idSong "
+                            "join exgenresong on song.idSong=exgenresong.idSong "
+                          "where exgenresong.idGenre=%ld"
+                          ") "
+                        "or idArtist IN "
+                          "("
+                          "select exartistsong.idArtist from exartistsong " // All extra artists linked to primary genres
+                            "join song on exartistsong.idSong=song.idSong "
+                          "where song.idGenre=%ld"
+                          ") "
+                        "or idArtist IN "
+                        , idGenre, idGenre, idGenre, idGenre);
       // and add any artists linked to an album (may be different from above due to album artist tag)
       strSQL += FormatSQL("("
                           "select album.idArtist from album " // All primary album artists linked to primary genres

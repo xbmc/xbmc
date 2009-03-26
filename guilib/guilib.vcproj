@@ -632,6 +632,22 @@
 			</File>
 			<File
 				RelativePath=".\include.h">
+				<FileConfiguration
+					Name="Release|Xbox">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="update_svn_rev.bat"
+						AdditionalDependencies="..\.svn\entries"
+						Outputs="..\xbmc\xbox\svn_rev.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_LTCG|Xbox">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="update_svn_rev.bat"
+						AdditionalDependencies="..\.svn\entries"
+						Outputs="..\xbmc\xbox\svn_rev.h"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\IWindowManagerCallback.h">

@@ -95,8 +95,8 @@ void CGUIWrappingListContainer::Render()
   g_graphicsContext.RestoreClipRegion();
 
   if (m_pageControl)
-  { // tell our pagecontrol (scrollbar or whatever) to update
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset, 0));
+  { // tell our pagecontrol (scrollbar or whatever) to update (offset it by our cursor position)
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset, m_cursor));
     SendWindowMessage(msg);
   }
   CGUIBaseContainer::Render();
@@ -151,6 +151,13 @@ bool CGUIWrappingListContainer::OnMessage(CGUIMessage& message)
     {
       SelectItem(message.GetParam1());
       return true;
+    }
+    else if (message.GetMessage() == GUI_MSG_PAGE_CHANGE)
+    {
+      if (message.GetSenderId() == m_pageControl && IsVisible())
+      { // offset by our cursor position
+        message.SetParam1(message.GetParam1() - m_cursor);
+      }
     }
   }
   return CGUIBaseContainer::OnMessage(message);
@@ -294,3 +301,11 @@ int CGUIWrappingListContainer::GetCurrentPage() const
   return offset / m_itemsPerPage + 1;
 }
 
+void CGUIWrappingListContainer::SetPageControlRange()
+{
+  if (m_pageControl)
+  {
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_items.size() + m_itemsPerPage - 1);
+    SendWindowMessage(msg);
+  }
+}

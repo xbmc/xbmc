@@ -53,6 +53,7 @@ namespace DIRECTORY
     void ClearDirectory(const CStdString& strPath);
     void ClearSubPaths(const CStdString& strPath);
     void Clear();
+    void AddFile(const CStdString& strFile);
     bool FileExists(const CStdString& strPath, bool& bInCache);
     void InitThumbCache();
     void ClearThumbCache();

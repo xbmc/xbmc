@@ -5579,6 +5579,13 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   return CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), thumb);
 }
 
+CStdString CUtil::GetDefaultFolderThumb(const CStdString &folderThumb)
+{
+  if (g_TextureManager.HasTexture(folderThumb))
+    return folderThumb;
+  return "defaultFolderBig.png";
+}
+
 void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
 {
   CStdString strPath;
