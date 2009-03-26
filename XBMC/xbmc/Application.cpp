@@ -194,6 +194,7 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
+#include "cores/dlgcache.h"
 
 #ifdef HAS_PERFORMACE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -3952,24 +3953,16 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
   }
   else if (item.IsPlayList() || item.IsInternetStream())
   {
-    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    if (item.IsInternetStream() && dlgProgress)
-    {
-       dlgProgress->ShowProgressBar(false);
-       dlgProgress->SetHeading(260);
-       dlgProgress->SetLine(0, 14003);
-       dlgProgress->SetLine(1, "");
-       dlgProgress->SetLine(2, "");
-       dlgProgress->StartModal();
-    }
+    CDlgCache* dlgCache = new CDlgCache(5000, g_localizeStrings.Get(10214), item.GetLabel());
 
     //is or could be a playlist
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
     bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.m_strPath));
-    if (item.IsInternetStream() && dlgProgress)
+
+    if (dlgCache)
     {
-       dlgProgress->Close();
-       if (dlgProgress->IsCanceled())
+       dlgCache->Close();
+       if (dlgCache->IsCanceled())
           return true;
     }
 
