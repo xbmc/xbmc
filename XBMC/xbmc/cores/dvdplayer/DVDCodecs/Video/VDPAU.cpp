@@ -51,7 +51,7 @@ const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Des
 
 CVDPAU::CVDPAU(int width, int height)
 {
-  surfaceNum = 0;
+  surfaceNum = presentSurfaceNum = 0;
   picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
   CSingleLock lock(g_graphicsContext);
@@ -61,7 +61,7 @@ CVDPAU::CVDPAU(int width, int height)
   vdp_device = NULL;
   InitVDPAUProcs();
   recover = VDPAURecovered = false;
-  outputSurface = 0;
+  outputSurface = presentSurface = 0;
 
   tmpBrightness = 0;
   tmpContrast = 0;
@@ -655,7 +655,7 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
                                        &outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
   }
-  surfaceNum = 0;
+  surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
 
   InitVDPAUOutput();
