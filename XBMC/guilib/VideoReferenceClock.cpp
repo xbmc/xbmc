@@ -196,12 +196,16 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
 
 void CVideoReferenceClock::SetSpeed(double Speed)
 {
-  m_AdjustedFrequency.QuadPart = (__int64)((double)m_SystemFrequency.QuadPart * Speed);
+  if (m_UseVblank)
+    m_AdjustedFrequency.QuadPart = (__int64)((double)m_SystemFrequency.QuadPart * Speed);
 }
 
 double CVideoReferenceClock::GetSpeed()
 {
-  return (double)m_AdjustedFrequency.QuadPart / (double)m_SystemFrequency.QuadPart;
+  if (m_UseVblank)
+    return (double)m_AdjustedFrequency.QuadPart / (double)m_SystemFrequency.QuadPart;
+  else
+    return 1.0;
 }
 
 bool CVideoReferenceClock::UpdateRefreshrate()
