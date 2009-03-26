@@ -22,11 +22,16 @@
 #import "ZeroconfOSX.h"
 
 #import <string>
-
 #import <Cocoa/Cocoa.h>
 #import <netinet/in.h>
 #import <sys/socket.h>
 
+//hack around problem with xbmc's typedef int BOOL
+// and obj-c's typedef unsigned char BOOL
+#define BOOL XBMC_BOOL 
+#import <PlatformDefs.h>
+#undef BOOL
+#import <utils/log.h>
 
 @interface ZeroconfOSXImpl : NSObject
 {
@@ -57,11 +62,10 @@
 
 -(id) init
 {
-  if( (self = [super init]) )
+  if( self = [super init] )
   {
-    NSLog(@" ZeroconfOSX created");
+    services = [[NSMutableDictionary alloc] init];
   }
-  services = [[NSMutableDictionary alloc] init];
   return self;
 }
 
@@ -74,12 +78,12 @@
 
 - (bool) publishService:(NSString*) identifier withType:(NSString*) service_type withName:(NSString*) name withPort:(unsigned int) port
 {
-  NSLog(@" ZeroconfOSX::publishService %@ withType %@ withName %@ withPort %i", identifier, service_type, name, port);
-
+  CLog::Log(LOGDEBUG, "CZeroconfOSX::doPublishService identifier: %s type: %s name:%s port:%i", [identifier cString], 
+            [service_type cString], [name cString], port);
   //check if we already have that identifier
   if([services objectForKey:identifier])
   {
-    NSLog(@" ZeroconfOSX::publishService: Error, identifier already exists!");
+    CLog::Log(LOGERROR, "CZeroconfOSX::publishService: Error, identifier already exists!");
     return false;
   }
 
@@ -97,7 +101,7 @@
   }
   else
   {
-    NSLog(@"An error occurred initializing the NSNetService object.");
+    CLog::Log(LOGERROR, "CZeroconfOSX::publishService: An error occurred initializing the NSNetService object.");
     return false;
   }
 }
@@ -118,7 +122,6 @@
 
 -(void) stop
 {
-  NSLog(@" ZeroconfOSX::stop");
   NSEnumerator* enumerator = [services objectEnumerator];
   NSNetService* service;
   while ((service = [enumerator nextObject]))
@@ -157,8 +160,8 @@
 // Error handling code
 - (void)handleError:(NSNumber *)error withService:(NSNetService *)service
 {
-  NSLog(@"CZeroconfOSX::handleError An error occurred with service %@.%@.%@, error code = %@",
-        [service name], [service type], [service domain], error);
+  CLog::Log(LOGERROR, "CZeroconfOSX::handleError An error occurred with service %s.%s.%s, error code = %i",
+            [[service name] cString], [[service type] cString], [[service domain] cString], error);
   // Handle error here
 }
 
