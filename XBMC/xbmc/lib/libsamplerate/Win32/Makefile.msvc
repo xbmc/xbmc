@@ -1,0 +1,150 @@
+
+# Set the value of $(MSVCDir) for your installation.
+
+# MSVCDir="C:\Progra~1\Micros~1\VC98"
+# CFLAGS=/nologo /MD /W1 /GX /O2 /I "$(MSVCDir)\Include" /I . /I "Win32" /I "src" /D "WIN32" /D "_USRDLL" /YX /FD
+# PROG_LINK_FLAGS=/nologo /incremental:no /libpath:"$(MSVCDir)\Lib" /pdb:"libsamplerate-0.pdb" /machine:I386 /exetype:dynamic
+
+MSVCDir="C:\Progra~1\Micros~1.Net\Vc7"
+CFLAGS=/nologo /MD /W1 /GX /O2 /I "$(MSVCDir)\Include" /I "$(MSVCDir)\PlatformSDK\Include" /I . /I "Win32" /I "src" /D "WIN32" /D "_USRDLL" /YX /FD
+PROG_LINK_FLAGS=/nologo /incremental:no /libpath:"$(MSVCDir)\Lib" /libpath:"$(MSVCDir)\PlatformSDK\Lib" /pdb:"libsamplerate-0.pdb" /machine:I386 /exetype:dynamic
+
+CPP=cl.exe
+LINK32=link.exe
+DLL_LINK_FLAGS=/nologo /dll /incremental:no /libpath:"$(MSVCDir)\Lib" /pdb:"libsamplerate-0.pdb" /implib:".\libsamplerate-0.lib" /machine:I386 /out:"libsamplerate-0.dll"
+
+#====================================================================
+# Targets
+
+ALL : libsndfile-1.lib libsamplerate-0.dll \
+	".\examples\sndfile-resample.exe" \
+	".\examples\varispeed-play.exe"
+
+CLEAN :
+    -@erase "src\*.obj"
+    -@erase "tests\*.exe"
+
+#====================================================================
+
+LINK32_OBJS= \
+	".\src\samplerate.obj" \
+	".\src\src_linear.obj" \
+	".\src\src_zoh.obj" \
+	".\src\src_sinc.obj"
+
+libsamplerate-0.dll : $(LINK32_OBJS) ".\Win32\libsamplerate-0.def"
+    $(LINK32) $(DLL_LINK_FLAGS) /def:".\Win32\libsamplerate-0.def" $(LINK32_OBJS)
+
+".\examples\sndfile-resample.exe" : ".\examples\sndfile-resample.c"
+    $(CPP) $(CFLAGS) /Fo".\examples\sndfile-resample.obj" /c ".\examples\sndfile-resample.c"
+    $(LINK32) $(PROG_LINK_FLAGS) /out:".\examples\sndfile-resample.exe" ".\examples\sndfile-resample.obj" libsamplerate-0.lib libsndfile-1.lib
+
+".\examples\varispeed-play.exe" : ".\examples\varispeed-play.c" ".\examples\audio_out.obj"
+    $(CPP) $(CFLAGS) /Fo".\examples\varispeed-play.obj" /c ".\examples\varispeed-play.c"
+    $(LINK32) $(PROG_LINK_FLAGS) /out:".\examples\varispeed-play.exe" ".\examples\varispeed-play.obj" ".\examples\audio_out.obj" libsamplerate-0.lib libsndfile-1.lib winmm.lib
+
+".\examples\audio_out.obj" : ".\examples\audio_out.c"
+    $(CPP) $(CFLAGS) /Fo".\examples\audio_out.obj" /c ".\examples\audio_out.c"
+
+TEST_PROGS= \
+    ".\tests\misc_test.exe" \
+    ".\tests\termination_test.exe" \
+    ".\tests\simple_test.exe" \
+    ".\tests\reset_test.exe" \
+    ".\tests\multi_channel_test.exe" \
+    ".\tests\snr_bw_test.exe" \
+	".\tests\throughput_test.exe"
+
+CHECK: $(TEST_PROGS)
+     ".\tests\misc_test.exe"
+     ".\tests\termination_test.exe"
+     ".\tests\simple_test.exe"
+     ".\tests\reset_test.exe"
+     ".\tests\multi_channel_test.exe"
+     ".\tests\snr_bw_test.exe"
+	 ".\tests\throughput_test.exe"
+    -@echo ----------------------------------------------------------------------
+    -@echo libsamplerate passed all tests
+    -@echo ----------------------------------------------------------------------
+
+#====================================================================
+# C files in src.
+
+".\src\samplerate.obj" : ".\src\samplerate.c"
+    $(CPP) $(CFLAGS) /Fo".\src\samplerate.obj" /c ".\src\samplerate.c"
+
+".\src\src_linear.obj" : ".\src\src_linear.c"
+    $(CPP) $(CFLAGS) /Fo".\src\src_linear.obj" /c ".\src\src_linear.c"
+
+".\src\src_zoh.obj" : ".\src\src_zoh.c"
+    $(CPP) $(CFLAGS) /Fo".\src\src_zoh.obj" /c ".\src\src_zoh.c"
+
+".\src\src_sinc.obj" : ".\src\src_sinc.c"
+    $(CPP) $(CFLAGS) /Fo".\src\src_sinc.obj" /c ".\src\src_sinc.c"
+
+#====================================================================
+# Object files for test programs.
+
+".\tests\util.obj" : ".\tests\util.c"
+    $(CPP) $(CFLAGS) /Fo".\tests\util.obj" /c ".\tests\util.c"
+
+".\tests\calc_snr.obj" : ".\tests\calc_snr.c"
+    $(CPP) $(CFLAGS) /Fo".\tests\calc_snr.obj" /c ".\tests\calc_snr.c"
+
+".\tests\dft_cmp.obj" : ".\tests\dft_cmp.c"
+    $(CPP) $(CFLAGS) /Fo".\tests\dft_cmp.obj" /c ".\tests\dft_cmp.c"
+
+#====================================================================
+# Test programs.
+
+".\tests\misc_test.exe" : ".\tests\misc_test.c" ".\tests\util.obj"
+    $(CPP) $(CFLAGS) /Fo".\tests\misc_test.obj" /c ".\tests\misc_test.c"
+    $(LINK32) $(PROG_LINK_FLAGS) /out:".\tests\misc_test.exe" ".\tests\misc_test.obj" ".\tests\util.obj" libsamplerate-0.lib
+
+".\tests\termination_test.exe" : ".\tests\termination_test.c" ".\tests\util.obj"
+    $(CPP) $(CFLAGS) /Fo".\tests\termination_test.obj" /c ".\tests\termination_test.c"
+    $(LINK32) $(PROG_LINK_FLAGS) /out:".\tests\termination_test.exe" ".\tests\termination_test.obj" ".\tests\util.obj" libsamplerate-0.lib
+
+".\tests\streaming_test.exe" : ".\tests\streaming_test.c" ".\tests\util.obj"
+    $(CPP) $(CFLAGS) /Fo".\tests\streaming_test.obj" /c ".\tests\streaming_test.c"
+    $(LINK32) $(PROG_LINK_FLAGS) /out:".\tests\streaming_test.exe" ".\tests\streaming_test.obj" ".\tests\util.obj" libsamplerate-0.lib
+
+".\tests\simple_test.exe" : ".\tests\simple_test.c" ".\tests\util.obj"
+    $(CPP) $(CFLAGS) /Fo".\tests\simple_test.obj" /c ".\tests\simple_test.c"
+    $(LINK32) $(PROG_LINK_FLAGS) /out:".\tests\simple_test.exe" ".\tests\simple_test.obj" ".\tests\util.obj" libsamplerate-0.lib
+
+".\tests\reset_test.exe" : ".\tests\reset_test.c" ".\tests\util.obj"
+    $(CPP) $(CFLAGS) /Fo".\tests\reset_test.obj" /c ".\tests\reset_test.c"
+    $(LINK32) $(PROG_LINK_FLAGS) /out:".\tests\reset_test.exe" ".\tests\reset_test.obj" ".\tests\util.obj" libsamplerate-0.lib
+
+".\tests\multi_channel_test.exe" : ".\tests\multi_channel_test.c" ".\tests\util.obj" ".\tests\calc_snr.obj"
+    $(CPP) $(CFLAGS) /Fo".\tests\multi_channel_test.obj" /c ".\tests\multi_channel_test.c"
+    $(LINK32) $(PROG_LINK_FLAGS) /out:".\tests\multi_channel_test.exe" ".\tests\multi_channel_test.obj" ".\tests\util.obj" ".\tests\calc_snr.obj" libsamplerate-0.lib
+
+".\tests\snr_bw_test.exe" : ".\tests\snr_bw_test.c" ".\tests\util.obj"
+    $(CPP) $(CFLAGS) /Fo".\tests\snr_bw_test.obj" /c ".\tests\snr_bw_test.c"
+    $(LINK32) $(PROG_LINK_FLAGS) /out:".\tests\snr_bw_test.exe" ".\tests\snr_bw_test.obj" ".\tests\util.obj" libsamplerate-0.lib
+
+".\tests\throughput_test.exe" : ".\tests\throughput_test.c" ".\tests\util.obj"
+    $(CPP) $(CFLAGS) /Fo".\tests\throughput_test.obj" /c ".\tests\throughput_test.c"
+    $(LINK32) $(PROG_LINK_FLAGS) /out:".\tests\throughput_test.exe" ".\tests\throughput_test.obj" ".\tests\util.obj" libsamplerate-0.lib
+
+#====================================================================
+# Bit of extra trickery.
+
+sndfile.h libsndfile-1.dll libsndfile-1.def :
+	-@echo *---------------------------------------------------------------
+	-@echo * You need to get the pre-built Win32 binaries for libsndfile
+	-@echo * from : http://www.mega-nerd.com/libsndfile
+	-@echo * The prebuilt binaries will be in a ZIP file which contains
+	-@echo * the files :
+	-@echo * sndfile.h libsndfile-1.dll libsndfile-1.def
+	-@echo * which need to be copied to this directory.
+	-@echo *---------------------------------------------------------------
+	-@exit 1
+
+libsndfile-1.lib : libsndfile-1.dll libsndfile-1.def
+	lib /machine:i386 /def:libsndfile-1.def
+
+# End of Makefile
+#====================================================================

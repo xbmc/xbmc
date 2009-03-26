@@ -267,6 +267,7 @@ using namespace DBUSSERVER;
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
   #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidid.lib")
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcred.lib")
+  #pragma comment (lib,"../../xbmc/lib/libsamplerate/libsamplerate_win32d.lib")
  #else
   #ifdef HAS_FILESYSTEM
     #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMS.lib")
@@ -280,6 +281,7 @@ using namespace DBUSSERVER;
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
+  #pragma comment (lib,"../../xbmc/lib/libsamplerate/libsamplerate_win32.lib")
  #endif
 #endif
 
