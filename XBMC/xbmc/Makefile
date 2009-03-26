@@ -197,6 +197,7 @@ SRCS=Application.cpp \
      GUIDialogFullScreenInfo.cpp \
      PowerManager.cpp \
      Zeroconf.cpp \
+     VideoReferenceClock.cpp \
 
 LIB=xbmc.a
 
