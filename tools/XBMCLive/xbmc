@@ -4,7 +4,7 @@
 . /lib/lsb/init-functions
 
 get_opt() {
-    echo "$@" | cut -d "=" -f 2
+	echo "$@" | cut -d "=" -f 2
 }
 
 CMDLINE=$(cat /proc/cmdline)
@@ -12,40 +12,55 @@ CMDLINE=$(cat /proc/cmdline)
 #Process command line options
 XBMC_PARAMS=""
 for i in ${CMDLINE}; do
-    case "${i}" in
+	case "${i}" in
 	xbmc\=*)
 		XBMC_PARAMS=$(get_opt $i)
 		;;
 	boot\=*)
 		SRCMEDIA=$(echo "$i" | cut -d "=" -f 2)
 		;;
-    esac
+	esac
 done
 
 XBMC_BOOTTORAM="$( echo $XBMC_PARAMS | grep "boottoram" )"
 
 if [ "$XBMC_BOOTTORAM" != "" ]; then
-        eject /dev/scd0 &> /dev/null
+	eject /dev/scd0 &> /dev/null
 	eject /dev/scd1 &> /dev/null
 	eject /dev/scd2 &> /dev/null
 fi
 
 case "$1" in
-  start)
+start)
 	log_action_begin_msg "Configuring system and starting XBMC"
 	INSTALL="$( echo $XBMC_PARAMS | grep "install" )"
 	if [ "$INSTALL" != "" ]; then
-                # if usplash is runing, make sure to stop it now, yes "start" kills it.
-                if pidof usplash > /dev/null; then
-                        DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
-                fi
-	        su -c "/usr/bin/installXBMC.py" -l 
+		# if usplash is runing, make sure to stop it now, yes "start" kills it.
+		if pidof usplash > /dev/null; then
+			DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
+		fi
+		su -c "/usr/bin/installXBMC.py" -l 
 	else
+		# Generates valid xorg.conf for proprietary drivers if missing
+		if [ ! -f /etc/X11/xorg.conf ]; then
+			NVIDIA="$( echo $XBMC_PARAMS | grep "nvidia" )"
+			if [ "$NVIDIA" = "" ]; then
+				AMD="$( echo $XBMC_PARAMS | grep "amd" )"
+				if [ "$AMD" != "" ]; then
+					# run aticonfig
+					aticonfig --initial --sync-vsync=on --input=/etc/X11/xorg.conf
+				fi
+			else
+				# run nvidia-xconfig
+				nvidia-xconfig -s --no-logo
+			fi
+		fi
+
 		RUNX="$(grep "splash" /proc/cmdline)"
 		if [ "$RUNX" == "" ]; then
 		        echo "Not starting X."
 
-			if [ -f rm /home/xbmc/.xsession ]; then
+			if [ -f /home/xbmc/.xsession ]; then
 				rm /home/xbmc/.xsession
 			fi
 		else
@@ -95,7 +110,7 @@ case "$1" in
 	fi
 	log_action_end_msg 0
 	;;
-  stop)
+stop)
 	killall Xorg xbmc
 	;;
 
