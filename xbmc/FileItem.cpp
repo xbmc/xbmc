@@ -2086,7 +2086,7 @@ bool CFileItemList::Save()
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]",m_strPath.c_str());
 
   CFile file;
-  if (file.OpenForWrite(GetDiscCacheFile(), true, true)) // overwrite always
+  if (file.OpenForWrite(GetDiscCacheFile(), true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << *this;
@@ -2902,4 +2902,5 @@ CStdString CFileItem::FindTrailer() const
 
   return strTrailer;
 }
+
 

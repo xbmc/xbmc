@@ -42,7 +42,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   CStdString strName, strLink;
   CStdString strBasePath = url.GetFileName();
 
-  if(!http.Open(url, false))
+  if(!http.Open(url))
   {
     CLog::Log(LOGERROR, "%s - Unable to get http directory", __FUNCTION__);
     return false;
@@ -90,7 +90,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         if (!pItem->m_bIsFolder && g_advancedSettings.m_bHTTPDirectoryStatFilesize)
         {
           CFileCurl file;
-          file.Open(url, false);
+          file.Open(url);
           pItem->m_dwSize= file.GetLength();
           file.Close();
         }

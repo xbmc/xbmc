@@ -68,7 +68,7 @@ bool CDVDInputStreamStack::Open(const char* path, const std::string& content)
   {
     TFile file(new CFile());
 
-    if (!file->Open(items[index]->m_strPath, true, READ_TRUNCATED))
+    if (!file->Open(items[index]->m_strPath, READ_TRUNCATED))
     {
       CLog::Log(LOGERROR, "CDVDInputStreamStack::Open - failed to open stack part '%s' - skipping", items[index]->m_strPath.c_str());
       continue;
@@ -174,4 +174,5 @@ __int64 CDVDInputStreamStack::GetLength()
 {
   return m_length;
 }
+
 

@@ -44,8 +44,8 @@ public:
   virtual ~CFileRTV();
   virtual __int64 GetPosition();
   virtual __int64 GetLength();
-  virtual bool Open(const CURL& url, bool bBinary = true);
-  bool Open(const char* strHostName, const char* strFileName, int iport, bool bBinary);
+  virtual bool Open(const CURL& url);
+  bool Open(const char* strHostName, const char* strFileName, int iport);
   virtual bool Exists(const CURL& url) { return true;};
   virtual int Stat(const CURL& url, struct __stat64* buffer) { errno = ENOENT; return -1; };
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);

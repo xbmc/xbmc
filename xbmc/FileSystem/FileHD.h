@@ -40,7 +40,7 @@ public:
   virtual ~CFileHD();
   virtual __int64 GetPosition();
   virtual __int64 GetLength();
-  virtual bool Open(const CURL& url, bool bBinary = true);
+  virtual bool Open(const CURL& url);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
   virtual int Stat(struct __stat64* buffer);
@@ -50,7 +50,7 @@ public:
   virtual void Close();
   virtual void Flush();
 
-  virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
+  virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
 
   virtual bool Delete(const CURL& url);
   virtual bool Rename(const CURL& url, const CURL& urlnew);

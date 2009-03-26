@@ -215,7 +215,7 @@ unsigned __int32 AACCodec::AACOpenCallback(const char *pName, const char *mode, 
   if (!codec)
     return 0;
 
-  return codec->m_file.Open(pName, true, READ_CACHED);
+  return codec->m_file.Open(pName, READ_CACHED);
 }
 
 void AACCodec::AACCloseCallback(void *userData)

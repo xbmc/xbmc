@@ -44,7 +44,7 @@ namespace XFILE
     virtual void StopThread();
 
     // IFIle methods
-    virtual bool          Open(const CURL& url, bool bBinary = true);
+    virtual bool          Open(const CURL& url);
     virtual bool          Attach(IFile *pFile);
     virtual void          Close();
     virtual bool          Exists(const CURL& url);

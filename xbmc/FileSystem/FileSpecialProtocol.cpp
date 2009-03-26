@@ -37,7 +37,7 @@ CFileSpecialProtocol::~CFileSpecialProtocol(void)
   Close();
 }
 
-bool CFileSpecialProtocol::Open(const CURL& url, bool bBinary /*=true*/)
+bool CFileSpecialProtocol::Open(const CURL& url)
 {
   CStdString strPath;
   url.GetURL(strPath);
@@ -46,13 +46,13 @@ bool CFileSpecialProtocol::Open(const CURL& url, bool bBinary /*=true*/)
   return m_file.Open(strFileName);
 }
 
-bool CFileSpecialProtocol::OpenForWrite(const CURL& url, bool bBinary /*=true*/, bool bOverWrite /*=false */)
+bool CFileSpecialProtocol::OpenForWrite(const CURL& url, bool bOverWrite /*=false */)
 {
   CStdString strPath;
   url.GetURL(strPath);
   CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
 
-  return m_file.OpenForWrite(strFileName,bBinary,bOverWrite);
+  return m_file.OpenForWrite(strFileName,bOverWrite);
 }
 
 bool CFileSpecialProtocol::Delete(const CURL& url)
@@ -127,5 +127,6 @@ __int64 CFileSpecialProtocol::GetLength()
 {
   return m_file.GetLength();
 }
+
 
 

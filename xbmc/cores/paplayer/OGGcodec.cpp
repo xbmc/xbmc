@@ -71,7 +71,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   }
 
   //  Open the file to play
-  if (!m_file.Open(strFile,true, READ_CACHED))
+  if (!m_file.Open(strFile, READ_CACHED))
   {
     CLog::Log(LOGERROR, "OGGCodec: Can't open %s", strFile1.c_str());
     return false;
