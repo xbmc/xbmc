@@ -35,12 +35,10 @@
 #include "utils/CriticalSection.h"
 namespace Surface { class CSurface; }
 
-#define NUM_OUTPUT_SURFACES                2
-#define NUM_VIDEO_SURFACES_MPEG2           3  // (1 frame being decoded, 2 reference)
+#define NUM_OUTPUT_SURFACES                4
+#define NUM_VIDEO_SURFACES_MPEG2           10  // (1 frame being decoded, 2 reference)
 #define NUM_VIDEO_SURFACES_H264            32 // (1 frame being decoded, up to 16 references) 
-#define NUM_VIDEO_SURFACES_VC1             3  // (same as MPEG-2)
-#define NUM_VIDEO_SURFACES_NON_ACCEL_YUV   1  //  surfaces for YV12 etc. 
-#define NUM_VIDEO_SURFACES_NON_ACCEL_RGB   0 // surfaces for RGB or YUV4:4:4
+#define NUM_VIDEO_SURFACES_VC1             10  // (same as MPEG-2)
 
 class CVDPAU
 {
@@ -161,6 +159,7 @@ public:
 
   VdpOutputSurface  outputSurfaces[NUM_OUTPUT_SURFACES];
   VdpOutputSurface  outputSurface;
+  VdpOutputSurface  presentSurface;
 
   VdpDecoder    decoder;
   VdpVideoMixer videoMixer;
@@ -168,6 +167,7 @@ public:
   VdpRect       outRectVid;
 
   int      surfaceNum;
+  int      presentSurfaceNum;
   uint32_t vid_width, vid_height;
   uint32_t max_references;
   Display* m_Display;
