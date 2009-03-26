@@ -34,11 +34,13 @@ distribution.
 #define USE_XBMC_FILESYSTEM
 
 #ifdef USE_XBMC_FILESYSTEM
+bool TiXmlBase::condenseWhiteSpace = false;
 #include "FileSystem/File.h"
 using namespace XFILE;
+#else
+bool TiXmlBase::condenseWhiteSpace = true;
 #endif
 
-bool TiXmlBase::condenseWhiteSpace = true;
 
 
 void TiXmlBase::EncodeString( const TIXML_STRING& str, TIXML_STRING* outString )

@@ -429,22 +429,18 @@ bool CGUIControlGroup::HasVisibleID(DWORD dwID) const
 
 const CGUIControl* CGUIControlGroup::GetControl(int iControl) const
 {
-  const CGUIControl* pPotential=NULL;
-  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
+  CGUIControl *pPotential = NULL;
+  LookupMap::const_iterator first = m_lookup.find(iControl);
+  if (first != m_lookup.end())
   {
-    const CGUIControl* pControl = *it;
-    if (pControl->IsGroup())
+    LookupMap::const_iterator last = m_lookup.upper_bound(iControl);
+    for (LookupMap::const_iterator i = first; i != last; i++)
     {
-      CGUIControlGroup *group = (CGUIControlGroup *)pControl;
-      const CGUIControl *control = group->GetControl(iControl);
-      if (control) pControl = control;
-    }
-    if ((int) pControl->GetID() == iControl) 
-    {
-      if (pControl->IsVisible())
-        return pControl;
+      CGUIControl *control = i->second;
+      if (control->IsVisible())
+        return control;
       else if (!pPotential)
-        pPotential = pControl;
+        pPotential = control;
     }
   }
   return pPotential;
@@ -503,6 +499,55 @@ void CGUIControlGroup::AddControl(CGUIControl *control, int position /* = -1*/)
     position = (int)m_children.size();
   m_children.insert(m_children.begin() + position, control);
   control->SetParentControl(this);
+  AddLookup(control);
+}
+
+void CGUIControlGroup::AddLookup(CGUIControl *control)
+{
+  if (control->IsGroup())
+  { // first add all the subitems of this group (if they exist)
+    const LookupMap map = ((CGUIControlGroup *)control)->GetLookup();
+    for (LookupMap::const_iterator i = map.begin(); i != map.end(); i++)
+      m_lookup.insert(m_lookup.upper_bound(i->first), make_pair(i->first, i->second));
+  }
+  if (control->GetID())
+    m_lookup.insert(m_lookup.upper_bound(control->GetID()), make_pair(control->GetID(), control));
+  // ensure that our size is what it should be
+  if (m_parentControl)
+    ((CGUIControlGroup *)m_parentControl)->AddLookup(control);
+}
+
+void CGUIControlGroup::RemoveLookup(CGUIControl *control)
+{
+  if (control->IsGroup())
+  { // remove the group's lookup
+    const LookupMap &map = ((CGUIControlGroup *)control)->GetLookup();
+    for (LookupMap::const_iterator i = map.begin(); i != map.end(); i++)
+    { // remove this control
+      for (LookupMap::iterator it = m_lookup.begin(); it != m_lookup.end(); it++)
+      {
+        if (i->second == it->second)
+        {
+          m_lookup.erase(it);
+          break;
+        }
+      }
+    }
+  }
+  // remove the actual control
+  if (control->GetID())
+  {
+    for (LookupMap::iterator it = m_lookup.begin(); it != m_lookup.end(); it++)
+    {
+      if (control == it->second)
+      {
+        m_lookup.erase(it);
+        break;
+      }
+    }
+  }
+  if (m_parentControl)
+    ((CGUIControlGroup *)m_parentControl)->RemoveLookup(control);
 }
 
 bool CGUIControlGroup::InsertControl(CGUIControl *control, const CGUIControl *insertPoint)
@@ -541,6 +586,7 @@ bool CGUIControlGroup::RemoveControl(const CGUIControl *control)
     if (control == child)
     {
       m_children.erase(it);
+      RemoveLookup(child);
       return true;
     }
   }
@@ -549,12 +595,20 @@ bool CGUIControlGroup::RemoveControl(const CGUIControl *control)
 
 void CGUIControlGroup::ClearAll()
 {
-  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  // first remove from the lookup table
+  if (m_parentControl)
+  {
+    for (iControls it = m_children.begin(); it != m_children.end(); it++)
+      ((CGUIControlGroup *)m_parentControl)->RemoveLookup(*it);
+  }
+  // and delete all our children
+  for (iControls it = m_children.begin(); it != m_children.end(); it++)
   {
     CGUIControl *control = *it;
     delete control;
   }
   m_children.clear();
+  m_lookup.clear();
 }
 
 void CGUIControlGroup::GetContainers(vector<CGUIControl *> &containers) const

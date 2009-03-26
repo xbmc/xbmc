@@ -23,7 +23,16 @@
 #include "BackgroundInfoLoader.h"
 
 
-class CVideoThumbLoader : public CBackgroundInfoLoader
+class CThumbLoader : public CBackgroundInfoLoader
+{
+public:
+  CThumbLoader();
+  virtual ~CThumbLoader();
+
+  bool LoadRemoteThumb(CFileItem *pItem);
+};
+
+class CVideoThumbLoader : public CThumbLoader
 {
 public:
   CVideoThumbLoader();
@@ -31,7 +40,7 @@ public:
   virtual bool LoadItem(CFileItem* pItem);
 };
 
-class CProgramThumbLoader : public CBackgroundInfoLoader
+class CProgramThumbLoader : public CThumbLoader
 {
 public:
   CProgramThumbLoader();
@@ -39,7 +48,7 @@ public:
   virtual bool LoadItem(CFileItem* pItem);
 };
 
-class CMusicThumbLoader : public CBackgroundInfoLoader
+class CMusicThumbLoader : public CThumbLoader
 {
 public:
   CMusicThumbLoader();

@@ -46,6 +46,13 @@ typedef unsigned __int64  uint64_t;
 #endif
 #endif
 
+#ifndef va_copy 
+#define va_copy(dst, src) ((dst) = (src)) 
+#endif
+
+#define lrint(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
+#define llrint(x) ((x) >= 0 ? ((__int64)((x) + 0.5)) : ((__int64)((x) - 0.5)))
+
 #endif // _WIN32
 
 #endif //__PLATFORM_DEFS_H__

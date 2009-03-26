@@ -35,6 +35,7 @@ public:
   virtual int Stat(struct __stat64* buffer);
   virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
   virtual bool Delete(const CURL& url);
+  virtual bool Rename(const CURL& url, const CURL& urlnew);
 
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
   virtual int Write(const void* lpBuf, __int64 uiBufSize);

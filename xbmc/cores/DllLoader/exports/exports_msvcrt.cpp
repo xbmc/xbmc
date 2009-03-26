@@ -24,6 +24,10 @@
 #include "../DllLoader.h"
 //#include "emu_msvcrt.h"
 
+#ifndef _WIN32 
+#include <math.h> 
+#endif
+ 
 #ifndef __GNUC__
 #pragma warning (disable:4391)
 #pragma warning (disable:4392)

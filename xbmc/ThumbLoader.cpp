@@ -31,6 +31,35 @@
 
 using namespace XFILE;
 
+CThumbLoader::CThumbLoader()
+{
+}
+
+CThumbLoader::~CThumbLoader()
+{
+}
+
+bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
+{
+  // look for remote thumbs
+  CStdString thumb(pItem->GetThumbnailImage());
+  if (!g_TextureManager.CanLoad(thumb))
+  {
+    CStdString cachedThumb(pItem->GetCachedVideoThumb());
+    if (CFile::Exists(cachedThumb))
+      pItem->SetThumbnailImage(cachedThumb);
+    else
+    {
+      CPicture pic;
+      if(pic.DoCreateThumbnail(thumb, cachedThumb))
+        pItem->SetThumbnailImage(cachedThumb);
+      else
+        pItem->SetThumbnailImage("");
+    }
+  }
+  return pItem->HasThumbnail();
+}
+
 CVideoThumbLoader::CVideoThumbLoader()
 {  
 }
@@ -62,24 +91,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   if (!pItem->HasThumbnail())
     pItem->SetUserVideoThumb();
   else
-  {
-    // look for remote thumbs
-    CStdString thumb(pItem->GetThumbnailImage());
-    if (!g_TextureManager.CanLoad(thumb))
-    {      
-      CStdString cachedThumb(pItem->GetCachedVideoThumb());
-      if(CFile::Exists(cachedThumb))
-          pItem->SetThumbnailImage(cachedThumb);
-      else
-      {
-        CPicture pic;
-        if(pic.DoCreateThumbnail(thumb, cachedThumb))
-          pItem->SetThumbnailImage(cachedThumb);
-        else
-          pItem->SetThumbnailImage("");
-      }
-    }  
-  }
+    LoadRemoteThumb(pItem);
 
   if (!pItem->HasProperty("fanart_image"))
   {
@@ -103,6 +115,8 @@ bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
   if (pItem->m_bIsShareOrDrive) return true;
   if (!pItem->HasThumbnail())
     pItem->SetUserProgramThumb();
+  else
+    LoadRemoteThumb(pItem);
   return true;
 }
 
@@ -120,24 +134,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   if (!pItem->HasThumbnail())
     pItem->SetUserMusicThumb();
   else
-  {
-    // look for remote thumbs
-    CStdString thumb(pItem->GetThumbnailImage());
-    if (!g_TextureManager.CanLoad(thumb))
-    {
-      CStdString cachedThumb(pItem->GetCachedVideoThumb());
-      if(CFile::Exists(cachedThumb))
-        pItem->SetThumbnailImage(cachedThumb);
-      else
-      {
-        CPicture pic;
-        if(pic.DoCreateThumbnail(thumb, cachedThumb))
-          pItem->SetThumbnailImage(cachedThumb);
-        else
-          pItem->SetThumbnailImage("");
-      }
-    }  
-  }
+    LoadRemoteThumb(pItem);
   return true;
 }
 
