@@ -230,7 +230,6 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
   TiXmlElement *pRootElement = root;
   TiXmlNode *pNode = NULL;
   TiXmlNode *pIt = NULL;
-  TiXmlNode *pIta = NULL;
   items.m_idepth = 1;
 
   if (!pRootElement)

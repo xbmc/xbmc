@@ -75,9 +75,6 @@ typedef unsigned __int64 uint64_t;
 #define close closesocket
 #define sock_getlasterror WSAGetLastError()
 #define sock_getlasterror_socktimeout (WSAGetLastError() == WSAETIMEDOUT)
-#ifndef __MINGW__
-#define va_copy(x, y) x = y
-#endif
 #define atoll _atoi64
 #define strdup _strdup
 #define strcasecmp _stricmp

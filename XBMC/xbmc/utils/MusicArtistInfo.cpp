@@ -118,7 +118,6 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
-  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())
@@ -140,7 +139,6 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
     }
     xurl = xurl->NextSiblingElement("url");
   }
-  TiXmlBase::SetCondenseWhiteSpace(true);
 
   return ret;
 }

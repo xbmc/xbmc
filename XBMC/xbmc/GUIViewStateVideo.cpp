@@ -373,7 +373,7 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
   CMediaSource share;
   share.strName=g_localizeStrings.Get(136); // Playlists
   share.strPath = "special://videoplaylists/";
-  share.m_strThumbnailImage="defaultFolderBig.png";
+  share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultVideoPlaylists.png");
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 
@@ -382,6 +382,7 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
   {
     share.strName = g_localizeStrings.Get(1037);
     share.strPath = "plugin://video/";
+    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultVideoPlugins.png");
     m_sources.push_back(share);
   }
 
