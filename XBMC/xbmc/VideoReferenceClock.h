@@ -22,7 +22,11 @@
  
 #include "stdafx.h"
 #include "Thread.h"
-#include "Surface.h"
+
+#ifdef HAS_GLX
+  #include <X11/X.h>
+  #include <X11/Xlib.h>
+#endif
 
 class CVideoReferenceClock : public CThread
 {
@@ -52,9 +56,9 @@ class CVideoReferenceClock : public CThread
     void RunGLX();
     int  (*m_glXGetVideoSyncSGI)(unsigned int*);
     
-    Surface::Display* m_Dpy;
-    int               m_Screen;
-    bool              m_UseNvSettings;
+    Display* m_Dpy;
+    int      m_Screen;
+    bool     m_UseNvSettings;
 #endif
 };
 

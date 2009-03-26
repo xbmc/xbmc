@@ -20,18 +20,15 @@
  */
 #include <iostream> //for debugging, please remove
 #include "VideoReferenceClock.h"
-#include "../xbmc/cores/VideoRenderers/RenderManager.h"
-#include "../xbmc/Util.h"
+#include "Util.h"
 
 #ifdef HAS_GLX
-
-#include <X11/extensions/Xrandr.h>
-#define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate"
-
+  #include <X11/extensions/Xrandr.h>
+  #include <GL/glx.h>
+  #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate"
 #endif
 
 using namespace std;
-using namespace Surface;
 
 CVideoReferenceClock::CVideoReferenceClock()
 {
