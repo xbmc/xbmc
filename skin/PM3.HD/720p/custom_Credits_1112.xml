@@ -1,0 +1,266 @@
+<window id="1112" type="dialog">
+	<defaultcontrol>61</defaultcontrol>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>200</posx>
+		<posy>1</posy>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>880</width>
+			<height>720</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>880</width>
+			<height>720</height>
+			<texture border="40">DialogFront.png</texture>
+		</control>
+		<control type="label">
+			<description>Item Title value</description>
+			<posx>40</posx>
+			<posy>45</posy>
+			<width>800</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>dialogheader</textcolor>
+			<label>$LOCALIZE[482]</label>
+			<font>font18</font>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>84</posy>
+			<width>800</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="scrollbar" id="61">
+			<posx>815</posx>
+			<posy>100</posy>
+			<width>20</width>
+			<height>540</height>
+			<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
+			<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>scrollbar_nib.png</textureslidernib>
+			<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+			<onleft>61</onleft>
+			<onright>61</onright>
+			<ondown>61</ondown>
+			<onup>61</onup>
+			<showonepage>true</showonepage>
+			<orientation>vertical</orientation>
+		</control>
+		<control type="textbox" id="5">
+			<description>textarea</description>
+			<posx>50</posx>
+			<posy>100</posy>
+			<width>760</width>
+			<height>540</height>
+			<font>font13</font>
+			<align>center</align>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<pagecontrol>61</pagecontrol>
+			<autoscroll time="1000" delay="5000" repeat="5000">true</autoscroll>
+			<label>
+[COLOR=green][B]Project Founders[/B][/COLOR]
+
+Frodo [COLOR=grey2](yamp, xbmc)[/COLOR]
+RUNTiME [COLOR=grey2](xbplayer)[/COLOR]
+d7o3g4q [COLOR=grey2](xbmp)[/COLOR]
+[I]We wish you well with your future projects[/I]
+
+
+[COLOR=green][B]Project Managers[/B][/COLOR]
+
+Gamester17
+Pike
+
+
+[COLOR=green][B]Developers[/B][/COLOR]
+
+Jmarshall [COLOR=grey2]- Jedi-Master[/COLOR]
+Spiff [COLOR=grey2]- Will chop your head off!, think twice before you speak[/COLOR]
+elupus [COLOR=grey2]- XBMC video player (DVDPlayer) god[/COLOR]
+nad [COLOR=grey2]- XBMC HTTP API Mastermind[/COLOR]
+MrC [COLOR=grey2]- XBMC Visualisation/Screensaver Mastermind[/COLOR]
+c0diq [COLOR=grey2]- UPnP (Universial Plug And Play) Mastermind[/COLOR]
+D4rk [COLOR=grey2]- XBMC Linux and Mac port specialist[/COLOR]
+malloc [COLOR=grey2]- XBMC Linux and Mac port specialist[/COLOR]
+davilla [COLOR=grey2]- Mac OS X, Apple TV, and XBMC Live[/COLOR]
+MaestroDD [COLOR=grey2]- Mac OS X, and Apple TV[/COLOR]
+l.capriotti [COLOR=grey2]- XBMC for Linux - LiveUSB Distro[/COLOR]
+monkeyman 67156 [COLOR=grey2]- XBMC Linux port specialist[/COLOR]
+Topfs2 [COLOR=grey2]- XBMC Linux port specialist[/COLOR]
+wattazoum [COLOR=grey2]- XBMC for Linux packaging specialist[/COLOR]
+AlTheKiller [COLOR=grey2]- XBMC Linux port specialist[/COLOR]
+WiSo [COLOR=grey2]- XBMC for Windows port specialist[/COLOR]
+Chadoe [COLOR=grey2]- XBMC for Windows port specialist[/COLOR]
+Kraqh3d
+C-Quel
+tut-ankh-amon 
+VDRfan[COLOR=grey2] - XBMC Linux port specialist[/COLOR]
+Alcoheca
+oldnemesis
+ceros 
+Tslayer
+TechnoJuce
+Jezz_X [COLOR=grey2]- Skin Maintainer[/COLOR]
+
+
+[COLOR=green][B]Wiki - Trac maintainers[/B][/COLOR]
+
+sho
+
+
+[COLOR=green][B]Python Scripters[/B][/COLOR]
+
+Nuka1195 [COLOR=grey2]- Python Script coder[/COLOR]
+Voinage [COLOR=grey2]- Python Plugin coder[/COLOR]
+rwparris2 [COLOR=grey2]- Python Plugin coder[/COLOR]
+
+
+[COLOR=green][B]Testers[/B][/COLOR]
+
+Donno
+ModHack
+Nuka1195
+TheUni
+
+
+[COLOR=green][B]Visualisations[/B][/COLOR]
+
+Dinomight
+MrC
+mynci
+nmrs
+questor (a.k.a. fused)
+
+
+[COLOR=green][B]Screensavers[/B][/COLOR]
+
+Asteron
+Jme
+Siw
+Sylfan
+
+
+[COLOR=green][B]Stream Servers, Clients[/B][/COLOR]
+
+c0diq
+puh-puh
+[XC]D-Ice
+
+
+[COLOR=green][B]Retired - Inactive  Team Members[/B][/COLOR]
+
+Butcher
+Chokemaniac
+Forza
+Guybrush
+Hullebulle (a.k.a. Nuendo)
+monkeyhappy
+Obstler
+Poing
+Shadow_Mx
+xAD (a.k.a. xantal)
+yuvalt
+[XC]D-Ice
+vulkanr
+AreaScout
+Agathorn
+Rudd
+SmokeHead
+Chief
+Bobbin007
+GeminiServer [COLOR=grey2]- Low-level Hardware Guru[/COLOR]
+Darkie
+Ysbox
+Guybrush
+Kreet
+monkeyhappy
+elan (a.k.a. leafmuncher)
+LiquidIce629
+
+
+[COLOR=green][B]Code Credits[/B][/COLOR]
+
+Adplug
+BiosChecker
+CxImage
+D.U.M.B.
+dosfs
+Drempels
+FFmpeg
+FileZilla (FTP-Server)
+FreeType (freetype.org)
+FriBiDi
+G-Force
+GensAPU
+GoAhead (Web-Server)
+in_cube
+liba52
+libCDIO
+libcurl
+libdaap
+libdca/libdts (VideoLan.org)
+libdvdcss
+libdvdnav/dvdread
+libfaad2 (AudioCoding.com)
+libid3tag
+libLame
+libmad
+libmpcdec
+libmpeg2
+libOggVorbis
+libSpeex
+libvorbis
+LZO
+Matroska
+MikMod
+Milkdrop
+ProjectM
+MPlayer
+MXM
+NoseFart
+Platinum (UPnP-client)
+Python
+Samba/libsmb (SMB/CIFS-client)
+Sidplay2
+SNESAPU
+SQLite
+St-Sound Library
+UnRAR (rarlab.com)
+xiph
+Xored Trainer Engine
+XviD
+
+
+[COLOR=green][B]TEAM THANKS:[/B][/COLOR]
+
+Team-XBMC would like to send
+a special thanks out to:
+Xbox-Scene.com
+Dankula (for the manual labour)
+Bizzeh (wiki and forums setup)
+MrC (great visualizations)
+freakware.com (some SmartXx v3)
+Modchip makers for LCD code
+modplug (credits music)
+
+
+
+
+
+
+</label>
+		</control>
+	</controls>
+</window>
