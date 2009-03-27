@@ -2891,6 +2891,11 @@ bool CApplication::OnAction(CAction &action)
 
     if (action.wID == ACTION_VOLUME_UP)
     {
+      if (g_stSettings.m_bMute)
+      {
+        Mute();
+        return true;
+      }
       volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
     }
     else
