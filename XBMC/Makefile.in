@@ -249,7 +249,9 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/vorbisfile
+ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
+endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0

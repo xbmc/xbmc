@@ -642,6 +642,7 @@ ac_subst_vars='LTLIBOBJS
 USE_STATIC_LIBDVDNAV
 USE_STATIC_LIBRARIES
 INTERNAL_LIBS
+USE_EXTERNAL_LIBWAVPACK
 USE_EXTERNAL_LIBFLAC
 USE_EXTERNAL_LIBMPCDEC
 USE_EXTERNAL_LIBOGG
@@ -760,6 +761,7 @@ enable_external_libvorbis
 enable_external_libogg
 enable_external_libmpcdec
 enable_external_libflac
+enable_external_libwavpack
 enable_static_libraries
 enable_static_libdvdnav
 '
@@ -1451,6 +1453,9 @@ Optional Features:
   --enable-external-libflac
                           enable use of external libflac library (default is
                           no)
+  --enable-external-libwavpack
+                          enable use of external libwavpack library (default
+                          is no)
   --enable-static-libraries
                           enable use of all supported internal static
                           libraries (default is no)
@@ -2105,6 +2110,8 @@ external_libmpcdec_enabled="== Use of external libmpcdec enabled. =="
 external_libmpcdec_disabled="== Use of external libmpcdec disabled. =="
 external_libflac_enabled="== Use of external libflac enabled. =="
 external_libflac_disabled="== Use of external libflac disabled. =="
+external_libwavpack_enabled="== Use of external libwavpack enabled. =="
+external_libwavpack_disabled="== Use of external libwavpack disabled. =="
 
 # Internal static library message strings
 static_libraries_enabled="== Use of all supported internal static libraries enabled. =="
@@ -2384,6 +2391,14 @@ if test "${enable_external_libflac+set}" = set; then
   enableval=$enable_external_libflac; use_external_libflac=$enableval
 else
   use_external_libflac=no
+fi
+
+
+# Check whether --enable-external-libwavpack was given.
+if test "${enable_external_libwavpack+set}" = set; then
+  enableval=$enable_external_libwavpack; use_external_libwavpack=$enableval
+else
+  use_external_libwavpack=no
 fi
 
 
@@ -10685,6 +10700,96 @@ $as_echo "$as_me: $external_libflac_disabled" >&6;}
   USE_EXTERNAL_LIBFLAC=0
 fi
 
+# External libwavpack
+if test "$use_external_libraries" = "yes" || test "$use_external_libwavpack" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lwavpack" >&5
+$as_echo_n "checking for main in -lwavpack... " >&6; }
+if test "${ac_cv_lib_wavpack_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lwavpack  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_wavpack_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_wavpack_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_wavpack_main" >&5
+$as_echo "$ac_cv_lib_wavpack_main" >&6; }
+if test "x$ac_cv_lib_wavpack_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBWAVPACK 1
+_ACEOF
+
+  LIBS="-lwavpack $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  { $as_echo "$as_me:$LINENO: $external_libwavpack_enabled" >&5
+$as_echo "$as_me: $external_libwavpack_enabled" >&6;}
+  USE_EXTERNAL_LIBWAVPACK=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBWAVPACK 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libwavpack_disabled" >&5
+$as_echo "$as_me: $external_libwavpack_disabled" >&6;}
+  USE_EXTERNAL_LIBWAVPACK=0
+fi
+
 ### Internal static libraries checks
 if test "$use_static_libraries" = "yes"; then
   { $as_echo "$as_me:$LINENO: $static_libraries_enabled" >&5
@@ -17986,6 +18091,11 @@ else
   else
     final_message="$final_message\n  External libflac:\tNo"
   fi
+  if test "$use_external_libwavpack" = "yes"; then
+    final_message="$final_message\n  External libwavpack:\tYes"
+  else
+    final_message="$final_message\n  External libwavpack:\tNo"
+  fi
 fi
 
 ### Internal static libraries messages
@@ -17998,6 +18108,7 @@ else
     final_message="$final_message\n  Static libdvdnav:\tNo"
   fi
 fi
+
 
 
 

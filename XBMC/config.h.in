@@ -291,6 +291,9 @@
 /* Define to 1 if you have the `vorbisfile' library (-lvorbisfile). */
 #undef HAVE_LIBVORBISFILE
 
+/* Define to 1 if you have the `wavpack' library (-lwavpack). */
+#undef HAVE_LIBWAVPACK
+
 /* Define to 1 if you have the `Xinerama' library (-lXinerama). */
 #undef HAVE_LIBXINERAMA
 
@@ -617,6 +620,9 @@
 
 /* Whether to use external libvorbis library. */
 #undef USE_EXTERNAL_LIBVORBIS
+
+/* Whether to use external libwavpack library. */
+#undef USE_EXTERNAL_LIBWAVPACK
 
 /* Whether to use internal libdvdnav static library. */
 #undef USE_STATIC_LIBDVDNAV

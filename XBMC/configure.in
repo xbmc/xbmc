@@ -69,6 +69,8 @@ external_libmpcdec_enabled="== Use of external libmpcdec enabled. =="
 external_libmpcdec_disabled="== Use of external libmpcdec disabled. =="
 external_libflac_enabled="== Use of external libflac enabled. =="
 external_libflac_disabled="== Use of external libflac disabled. =="
+external_libwavpack_enabled="== Use of external libwavpack enabled. =="
+external_libwavpack_disabled="== Use of external libwavpack disabled. =="
 
 # Internal static library message strings
 static_libraries_enabled="== Use of all supported internal static libraries enabled. =="
@@ -254,6 +256,12 @@ AC_ARG_ENABLE([external-libflac],
                [enable use of external libflac library (default is no)])],
             [use_external_libflac=$enableval],
             [use_external_libflac=no])
+
+AC_ARG_ENABLE([external-libwavpack],
+            [AS_HELP_STRING([--enable-external-libwavpack],
+               [enable use of external libwavpack library (default is no)])],
+            [use_external_libwavpack=$enableval],
+            [use_external_libwavpack=no])
 
 ### Internal static libraries options
 AC_ARG_ENABLE([static-libraries],
@@ -625,6 +633,18 @@ else
   USE_EXTERNAL_LIBFLAC=0
 fi
 
+# External libwavpack
+if test "$use_external_libraries" = "yes" || test "$use_external_libwavpack" = "yes"; then
+  AC_CHECK_LIB([wavpack],          [main],, AC_MSG_ERROR($missing_library))
+
+  AC_MSG_NOTICE($external_libwavpack_enabled)
+  USE_EXTERNAL_LIBWAVPACK=1
+  AC_DEFINE([USE_EXTERNAL_LIBWAVPACK], [1], [Whether to use external libwavpack library.])
+else
+  AC_MSG_NOTICE($external_libwavpack_disabled)
+  USE_EXTERNAL_LIBWAVPACK=0
+fi
+
 ### Internal static libraries checks
 if test "$use_static_libraries" = "yes"; then
   AC_MSG_NOTICE($static_libraries_enabled)
@@ -933,6 +953,11 @@ else
   else
     final_message="$final_message\n  External libflac:\tNo"
   fi
+  if test "$use_external_libwavpack" = "yes"; then
+    final_message="$final_message\n  External libwavpack:\tYes"
+  else
+    final_message="$final_message\n  External libwavpack:\tNo"
+  fi
 fi
 
 ### Internal static libraries messages
@@ -965,6 +990,7 @@ AC_SUBST(USE_EXTERNAL_LIBVORBIS)
 AC_SUBST(USE_EXTERNAL_LIBOGG)
 AC_SUBST(USE_EXTERNAL_LIBMPCDEC)
 AC_SUBST(USE_EXTERNAL_LIBFLAC)
+AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(INTERNAL_LIBS)
 AC_SUBST(USE_STATIC_LIBRARIES)
 AC_SUBST(USE_STATIC_LIBDVDNAV)
