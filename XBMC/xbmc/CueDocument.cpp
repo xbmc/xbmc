@@ -170,12 +170,12 @@ bool CCueDocument::Parse(const CStdString &strFile)
 
   // reset track counter to 0, and fill in the last tracks end time
   m_iTrack = 0;
-  if (m_iTotalTracks > 0)
+  if (m_iTotalTracks >= 0)
     m_Track[m_iTotalTracks].iEndTime = 0;
   else
     OutputDebugString("No INDEX 01 tags in CUE file!\n");
   m_file.Close();
-  if (m_iTotalTracks > 0)
+  if (m_iTotalTracks >= 0)
   {
     m_iTotalTracks++;
   }
