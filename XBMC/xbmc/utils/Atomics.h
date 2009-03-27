@@ -44,7 +44,30 @@ static inline long cas(volatile long *pAddr, long expectedVal, long swapVal)
   return prev;
 }
 
-#elif defined(_LINUX) && !defined(__APPLE__)  // Linux
+#elif defined(WIN32)
+
+static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
+{
+  long prev;
+  
+  asm volatile
+  {
+    // Load parameters
+    mov eax, expectedVal ;
+    mov ebx, pAddr ;
+    mov ecx, swapVal ;
+    
+    // Do Swap
+    lock cmpxchg [ebx], ecx ;
+    
+    // Store the return value
+    mov prev, eax;
+  }
+  
+  return prev;
+}
+
+#else // Linux / OSX (GCC)
 
 static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
 {
@@ -57,29 +80,6 @@ static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
                         : "memory" );
   return prev;
   
-}
-
-#else // Win32 / OSX
-
-static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
-{
-  long prev;
-  
-  __asm
-  {
-    // Load parameters
-    mov eax, expectedVal ;
-    mov ebx, pAddr ;
-    mov ecx, swapVal ;
-    
-    // Do Swap
-    lock cmpxchg [ebx], ecx ;
-
-    // Store the return value
-    mov prev, eax;
-  }
-  
-  return prev;
 }
 
 #endif
