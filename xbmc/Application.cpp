@@ -3290,7 +3290,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     CAction action;
     bool fullrange;
     string jname = g_Joystick.GetJoystick();
-    bid = bid|(g_Joystick.getHatState()<<16);	// hat flag
+    bid = bid|(g_Joystick.getHatState()<<16);  // hat flag
     if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
     {
       action.fAmount1 = g_Joystick.getHatState();
