@@ -602,6 +602,9 @@ HRESULT CApplication::Create(HWND hWnd)
     g_stSettings.m_logFolder = "special://masterprofile/";
   }
 
+  //start the video reference clock
+  g_VideoReferenceClock.Create();  
+ 
 #ifdef HAS_XRANDR
   g_xrandr.LoadCustomModeLinesToAllOutputs();
 #endif
@@ -909,8 +912,6 @@ HRESULT CApplication::Create(HWND hWnd)
   time(&seconds);
   srand((unsigned int)seconds);
 
-  g_VideoReferenceClock.Create();
-  
   return CXBApplicationEx::Create(hWnd);
 }
 
