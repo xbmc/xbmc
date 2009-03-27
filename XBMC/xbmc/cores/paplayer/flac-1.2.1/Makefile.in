@@ -291,11 +291,16 @@ $(XBMC_LIB): src/libFLAC/.libs/libFLAC.a
 	chmod +x $@
 
 else
+ifneq (@USE_EXTERNAL_LIBFLAC@,1)
 $(XBMC_LIB): src/libFLAC/.libs/libFLAC.a
 	gcc -shared -fpic -o $@ -rdynamic \
 	-Wl,--whole-archive src/libFLAC/.libs/libFLAC.a -Wl,--no-whole-archive \
 	`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
-
+else
+$(XBMC_LIB):
+	gcc -shared -fpic -o $@ -rdynamic -lFLAC \
+	`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+endif
 endif
 
 .SUFFIXES:

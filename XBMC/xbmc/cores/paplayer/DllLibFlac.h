@@ -21,8 +21,15 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBFLAC)
+  #include <FLAC/stream_decoder.h>
+#else
+  #include "flac-1.2.1/include/FLAC/stream_decoder.h"
+#endif
 #include "DynamicDll.h"
-#include "flac-1.2.1/include/FLAC/stream_decoder.h"
 
 class DllLibFlacInterface
 {
@@ -68,6 +75,91 @@ public:
     virtual FLAC__bool FLAC__stream_decoder_skip_single_frame(FLAC__StreamDecoder *decoder)=0;
     virtual FLAC__bool FLAC__stream_decoder_seek_absolute(FLAC__StreamDecoder *decoder, FLAC__uint64 sample)=0;
 };
+
+#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBFLAC)
+
+class DllLibFlac : public DllDynamic, DllLibFlacInterface
+{
+public:
+    virtual ~DllLibFlac() {};
+    virtual FLAC__StreamDecoder *FLAC__stream_decoder_new()
+        { return ::FLAC__stream_decoder_new(); }
+    virtual void   FLAC__stream_decoder_delete(FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_delete(decoder); }
+    virtual FLAC__StreamDecoderInitStatus FLAC__stream_decoder_init_stream(
+        FLAC__StreamDecoder *decoder,
+        FLAC__StreamDecoderReadCallback read_callback,
+        FLAC__StreamDecoderSeekCallback seek_callback,
+        FLAC__StreamDecoderTellCallback tell_callback,
+        FLAC__StreamDecoderLengthCallback length_callback,
+        FLAC__StreamDecoderEofCallback eof_callback,
+        FLAC__StreamDecoderWriteCallback write_callback,
+        FLAC__StreamDecoderMetadataCallback metadata_callback,
+        FLAC__StreamDecoderErrorCallback error_callback,
+        void *client_data
+    )
+        { return ::FLAC__stream_decoder_init_stream(decoder, read_callback,
+            seek_callback, tell_callback, length_callback, eof_callback,
+            write_callback, metadata_callback, error_callback, client_data);
+        }
+    virtual FLAC__bool FLAC__stream_decoder_set_md5_checking(FLAC__StreamDecoder *decoder, FLAC__bool value)
+        { return ::FLAC__stream_decoder_set_md5_checking(decoder, value); }
+    virtual FLAC__bool FLAC__stream_decoder_set_metadata_respond(FLAC__StreamDecoder *decoder, FLAC__MetadataType type)
+        { return ::FLAC__stream_decoder_set_metadata_respond(decoder, type); }
+    virtual FLAC__bool FLAC__stream_decoder_set_metadata_respond_application(FLAC__StreamDecoder *decoder, const FLAC__byte id[4])
+        { return ::FLAC__stream_decoder_set_metadata_respond_application(decoder, id); }
+    virtual FLAC__bool FLAC__stream_decoder_set_metadata_respond_all(FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_set_metadata_respond_all(decoder); }
+    virtual FLAC__bool FLAC__stream_decoder_set_metadata_ignore(FLAC__StreamDecoder *decoder, FLAC__MetadataType type)
+        { return ::FLAC__stream_decoder_set_metadata_ignore(decoder, type); }
+    virtual FLAC__bool FLAC__stream_decoder_set_metadata_ignore_application(FLAC__StreamDecoder *decoder, const FLAC__byte id[4])
+        { return ::FLAC__stream_decoder_set_metadata_ignore_application(decoder, id); }
+    virtual FLAC__bool FLAC__stream_decoder_set_metadata_ignore_all(FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_set_metadata_ignore_all(decoder); }
+    virtual FLAC__StreamDecoderState FLAC__stream_decoder_get_state(const FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_get_state(decoder); }
+    virtual const char *FLAC__stream_decoder_get_resolved_state_string(const FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_get_resolved_state_string(decoder); }
+    virtual FLAC__bool FLAC__stream_decoder_get_md5_checking(const FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_get_md5_checking(decoder); }
+    virtual FLAC__uint64 FLAC__stream_decoder_get_total_samples(const FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_get_total_samples(decoder); }
+    virtual unsigned FLAC__stream_decoder_get_channels(const FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_get_channels(decoder); }
+    virtual FLAC__ChannelAssignment FLAC__stream_decoder_get_channel_assignment(const FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_get_channel_assignment(decoder); }
+    virtual unsigned FLAC__stream_decoder_get_bits_per_sample(const FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_get_bits_per_sample(decoder); }
+    virtual unsigned FLAC__stream_decoder_get_sample_rate(const FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_get_sample_rate(decoder); }
+    virtual unsigned FLAC__stream_decoder_get_blocksize(const FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_get_blocksize(decoder); }
+    virtual FLAC__bool FLAC__stream_decoder_get_decode_position(const FLAC__StreamDecoder *decoder, FLAC__uint64 *position)
+        { return ::FLAC__stream_decoder_get_decode_position(decoder, position); }
+    virtual FLAC__bool FLAC__stream_decoder_finish(FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_finish(decoder); }
+    virtual FLAC__bool FLAC__stream_decoder_flush(FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_flush(decoder); }
+    virtual FLAC__bool FLAC__stream_decoder_reset(FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_reset(decoder); }
+    virtual FLAC_API FLAC__bool FLAC__stream_decoder_process_single(FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_process_single(decoder); }
+    virtual FLAC__bool FLAC__stream_decoder_process_until_end_of_metadata(FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_process_until_end_of_metadata(decoder); }
+    virtual FLAC__bool FLAC__stream_decoder_process_until_end_of_stream(FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_process_until_end_of_stream(decoder); }
+    virtual FLAC__bool FLAC__stream_decoder_skip_single_frame(FLAC__StreamDecoder *decoder)
+        { return ::FLAC__stream_decoder_skip_single_frame(decoder); }
+    virtual FLAC__bool FLAC__stream_decoder_seek_absolute(FLAC__StreamDecoder *decoder, FLAC__uint64 sample)
+        { return ::FLAC__stream_decoder_seek_absolute(decoder, sample); }
+
+    // DLL faking.
+    virtual bool ResolveExports() { return true; }
+    virtual bool Load() { return true; }
+    virtual void Unload() {}
+};
+
+#else
 
 class DllLibFlac : public DllDynamic, DllLibFlacInterface
 {
@@ -142,3 +234,5 @@ class DllLibFlac : public DllDynamic, DllLibFlacInterface
     RESOLVE_METHOD(FLAC__stream_decoder_seek_absolute)
   END_METHOD_RESOLVE()
 };
+
+#endif

@@ -168,6 +168,9 @@
 /* Whether NeAACDecInitDRM function exists in libfaad library. */
 #undef HAVE_LIBFAAD_NEAACDECINITDRM
 
+/* Define to 1 if you have the `FLAC' library (-lFLAC). */
+#undef HAVE_LIBFLAC
+
 /* Define to 1 if you have the `fontconfig' library (-lfontconfig). */
 #undef HAVE_LIBFONTCONFIG
 
@@ -593,6 +596,9 @@
 
 /* Whether to use external libfaad library. */
 #undef USE_EXTERNAL_LIBFAAD
+
+/* Whether to use external libflac library. */
+#undef USE_EXTERNAL_LIBFLAC
 
 /* Whether to use external libmad library. */
 #undef USE_EXTERNAL_LIBMAD
