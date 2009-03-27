@@ -130,6 +130,7 @@ void CXBoxRenderManager::WaitPresentTime(double presenttime)
     now = GetPresentTime();
   }
 }
+
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   /* all frames before this should be rendered */
@@ -341,6 +342,10 @@ bool CXBoxRenderManager::SupportsGamma()
 void CXBoxRenderManager::Present()
 {
   CSharedLock lock(m_sharedSection);
+  
+  /* wait for this present to be valid */
+  if(g_graphicsContext.IsFullScreenVideo())
+    WaitPresentTime(m_presenttime);
 
   if (!m_pRenderer)
   {
@@ -387,10 +392,6 @@ void CXBoxRenderManager::Present()
     PresentBlend();
   else
     PresentSingle();
-  
-  /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo())
-    WaitPresentTime(m_presenttime);
 }
 
 /* simple present method */
