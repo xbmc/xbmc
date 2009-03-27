@@ -170,13 +170,13 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
   byte DataBuf[16];  //Buffer for holding data to/from drive.
 
-  hDevice = CreateFile(strPath.c_str(),  // drive
-                    GENERIC_READ | GENERIC_WRITE,  // no access to the drive
-                    FILE_SHARE_READ | FILE_SHARE_WRITE,  // share mode
-                    NULL,             // default security attributes
-                    OPEN_EXISTING,    // disposition
-                    FILE_ATTRIBUTE_READONLY,                // file attributes
-                    NULL);            // do not copy file attributes
+  hDevice = CreateFile( strPath.c_str(),  // drive
+                        GENERIC_READ | GENERIC_WRITE, 
+                        FILE_SHARE_READ | FILE_SHARE_WRITE,  // share mode
+                        NULL,             // default security attributes
+                        OPEN_EXISTING,    // disposition
+                        FILE_ATTRIBUTE_READONLY,                // file attributes
+                        NULL);            // do not copy file attributes
 
   if (hDevice == INVALID_HANDLE_VALUE) // cannot open the drive
   {
@@ -195,7 +195,7 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   sptd_sb.sptd.DataBuffer=(PVOID)&(DataBuf);
   sptd_sb.sptd.SenseInfoOffset=sizeof(SCSI_PASS_THROUGH_DIRECT);
 
-  sptd_sb.sptd.Cdb[0]=0x4a;  //Code for Test Unit Ready CDB6 command
+  sptd_sb.sptd.Cdb[0]=0x4a;
   sptd_sb.sptd.Cdb[1]=1;
   sptd_sb.sptd.Cdb[2]=0;
   sptd_sb.sptd.Cdb[3]=0;
@@ -222,6 +222,8 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
                             &dwBytesReturned,
                             NULL);
 
+  CloseHandle(hDevice);
+
   if(iResult)
   {
 
@@ -230,13 +232,9 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
     else if(DataBuf[5] == 1) // tray open
       return 1;
     else
-      iResult = 2; // tray closed, media present
+      return 2; // tray closed, media present
   }
-
-  CloseHandle(hDevice);
-
-  return iResult;
-
+  return -1;
 }
 
 CStdString CWIN32Util::GetLocalPath(const CStdString &strPath)
