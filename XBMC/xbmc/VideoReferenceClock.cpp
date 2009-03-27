@@ -257,14 +257,16 @@ bool CVideoReferenceClock::SetupD3D()
 
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i, falling back to QueryPerformanceCounter", ReturnV);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i, falling back to QueryPerformanceCounter",
+              ReturnV & 0xFFFF);
     return false;
   }
 
   ReturnV = m_D3dDev->GetDeviceCaps(&DevCaps);
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDeviceCaps returned %i, falling back to QueryPerformanceCounter", ReturnV);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDeviceCaps returned %i, falling back to QueryPerformanceCounter",
+              ReturnV & 0xFFFF);
     return false;
   }
 
@@ -277,14 +279,16 @@ bool CVideoReferenceClock::SetupD3D()
   ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i, falling back to QueryPerformanceCounter", ReturnV);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i, falling back to QueryPerformanceCounter",
+              ReturnV & 0xFFFF);
     return false;
   }
 
   ReturnV = m_D3dDev->GetDisplayMode(0, &DisplayMode);
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDisplayMode returned %i, falling back to QueryPerformanceCounter", ReturnV);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDisplayMode returned %i, falling back to QueryPerformanceCounter",
+              ReturnV & 0xFFFF);
     return false;
   }
 
