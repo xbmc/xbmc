@@ -1775,6 +1775,26 @@ void CApplication::StopUPnPServer()
 #endif
 }
 
+void CApplication::StartZeroconf()
+{
+#ifdef HAS_ZEROCONF
+  //entry in guisetting only present if HAS_ZEROCONF is set
+  if(g_guiSettings.GetBool("servers.zeroconf"))
+  {
+    CLog::Log(LOGNOTICE, "starting zeroconf publishing");
+    CZeroconf::GetInstance()->Start();
+  }
+#endif
+}
+
+void CApplication::StopZeroconf()
+{
+#ifdef HAS_ZEROCONF
+  CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
+  CZeroconf::GetInstance()->Stop();
+#endif
+}
+
 void CApplication::DimLCDOnPlayback(bool dim)
 {
 #ifdef HAS_LCD

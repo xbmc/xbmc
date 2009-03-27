@@ -55,13 +55,6 @@ CZeroconf* CZeroconf::smp_instance = 0;
 
 CZeroconf::CZeroconf():m_started(false),mp_crit_sec(new CCriticalSection)
 {
-#ifdef HAS_ZEROCONF
-  //entry in guisetting only present if HAS_ZEROCONF is set
-  if(g_guiSettings.GetBool("servers.zeroconf"))
-  {
-    Start();
-  }
-#endif
 }
 
 CZeroconf::~CZeroconf()

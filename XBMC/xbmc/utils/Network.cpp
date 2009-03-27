@@ -24,7 +24,6 @@
 #include "../Application.h"
 #include "../lib/libscrobbler/scrobbler.h"
 #include "RssReader.h"
-#include "Zeroconf.h"
 
 using namespace std;
 
@@ -131,7 +130,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StartDbusServer();
 #endif
 #ifdef HAS_ZEROCONF
-      CZeroconf::GetInstance()->Start();
+      g_application.StartZeroconf();
 #endif
       CScrobbler::GetInstance()->Init();
       g_rssManager.Start();
@@ -159,7 +158,7 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopDbusServer();
 #endif
 #ifdef HAS_ZEROCONF
-      CZeroconf::GetInstance()->Stop();
+      g_application.StopZeroconf();
 #endif      
       CScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.
