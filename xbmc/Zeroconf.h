@@ -103,11 +103,13 @@ private:
     unsigned int port; 
   };
   
+  //protects data
+  CCriticalSection* mp_crit_sec;  
   typedef std::map<std::string, PublishInfo> tServiceMap;
   tServiceMap m_service_map;
   bool m_started;
 
-  static CZeroconf*& GetrInternalRef();
-  //protects the data/singleton creation
-  static CCriticalSection* smp_crit_sec;
+  //protects singleton creation/destruction
+  static long sm_singleton_guard;
+  static CZeroconf* smp_instance;
 };
