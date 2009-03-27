@@ -244,14 +244,6 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bLabelPreformated=item.m_bLabelPreformated;
   FreeMemory();
   m_strPath = item.m_strPath;
-#ifdef DEBUG
-  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))  // should root paths be "/" ?
-  {
-#ifndef __APPLE__
-    ASSERT(CUtil::HasSlashAtEnd(m_strPath));
-#endif
-  }
-#endif
   m_bIsParentFolder = item.m_bIsParentFolder;
   m_iDriveType = item.m_iDriveType;
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
