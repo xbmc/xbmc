@@ -342,11 +342,13 @@ bool CXBoxRenderManager::SupportsGamma()
 void CXBoxRenderManager::Present()
 {
   CSharedLock lock(m_sharedSection);
-  
-  /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo())
-    WaitPresentTime(m_presenttime);
 
+#ifdef HAVE_LIBVDPAU
+  /* wait for this present to be valid */
+  if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
+    WaitPresentTime(m_presenttime);
+#endif
+    
   if (!m_pRenderer)
   {
     CLog::Log(LOGERROR, "%s called without valid Renderer object", __FUNCTION__);
@@ -392,6 +394,17 @@ void CXBoxRenderManager::Present()
     PresentBlend();
   else
     PresentSingle();
+
+  /* wait for this present to be valid */
+  if(g_graphicsContext.IsFullScreenVideo())
+  {
+#ifdef HAVE_LIBVDPAU
+    if (!g_VDPAU)
+#endif
+    {
+      WaitPresentTime(m_presenttime);
+    }
+  }
 }
 
 /* simple present method */
