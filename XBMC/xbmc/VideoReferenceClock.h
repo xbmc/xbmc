@@ -26,6 +26,11 @@
 #ifdef HAS_GLX
   #include <X11/X.h>
   #include <X11/Xlib.h>
+#elif defined(_WIN32)
+  namespace D3dClock
+  {
+    #include <d3d9.h>
+  }
 #endif
 
 class CVideoReferenceClock : public CThread
@@ -60,6 +65,16 @@ class CVideoReferenceClock : public CThread
     Display* m_Dpy;
     int      m_Screen;
     bool     m_UseNvSettings;
+#elif defined(_WIN32)
+    bool CreateHiddenWindow();
+    bool SetupD3D();
+    void RunD3D();
+
+    D3dClock::LPDIRECT3D9       m_D3d;
+    D3dClock::LPDIRECT3DDEVICE9 m_D3dDev;
+
+    HWND       m_Hwnd;
+    WNDCLASSEX m_WinCl;
 #endif
 };
 

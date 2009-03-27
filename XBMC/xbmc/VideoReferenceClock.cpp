@@ -18,6 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "stdafx.h"
 #include <iostream> //for debugging, please remove
 #include "VideoReferenceClock.h"
 #include "Util.h"
@@ -44,8 +45,13 @@ void CVideoReferenceClock::OnStartup()
 #ifdef HAS_GLX
   m_UseVblank = SetupGLX();
   if (m_UseVblank) RunGLX();
+#elif defined(_WIN32)
+  m_UseVblank = SetupD3D();
+  if (m_UseVblank) RunD3D();
 #endif
 }
+
+//TODO: check if unused mem can be freed
 
 #ifdef HAS_GLX
 bool CVideoReferenceClock::SetupGLX()
@@ -176,6 +182,157 @@ void CVideoReferenceClock::RunGLX()
     }
   }
 }
+#elif defined(_WIN32)
+
+#define CLASSNAME "videoreferenceclock"
+
+void CVideoReferenceClock::RunD3D()
+{
+  D3dClock::D3DRASTER_STATUS RasterStatus;
+  LARGE_INTEGER              CurrVBlankTime;
+  LARGE_INTEGER              LastVBlankTime;
+
+  unsigned int    LastLine;
+  int             NrVBlanks;
+  double          VBlankTime;
+
+  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+
+  m_D3dDev->GetRasterStatus(0, &RasterStatus);
+
+  if (RasterStatus.InVBlank) LastLine = 0;
+  else LastLine = RasterStatus.ScanLine;
+
+  QueryPerformanceCounter(&LastVBlankTime);
+
+  while(1)
+  {
+    m_D3dDev->GetRasterStatus(0, &RasterStatus);
+
+    if (RasterStatus.InVBlank || (RasterStatus.ScanLine < LastLine))
+    {
+      QueryPerformanceCounter(&CurrVBlankTime);
+      VBlankTime = (double)(CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart) / (double)m_SystemFrequency.QuadPart;
+      NrVBlanks = MathUtils::round_int(VBlankTime / (1.0 / (double)m_RefreshRate));
+
+      m_CurrTime.QuadPart += (__int64)NrVBlanks * m_SystemFrequency.QuadPart / m_RefreshRate;
+
+      LastVBlankTime = CurrVBlankTime;
+      UpdateRefreshrate();
+    }
+    if (RasterStatus.InVBlank) LastLine = 0;
+    else LastLine = RasterStatus.ScanLine;
+
+    Sleep(1);
+  }
+}
+
+bool CVideoReferenceClock::SetupD3D()
+{
+  D3dClock::D3DPRESENT_PARAMETERS D3dPP;
+  D3dClock::D3DCAPS9              DevCaps;
+  D3dClock::D3DRASTER_STATUS      RasterStatus;
+  D3dClock::D3DDISPLAYMODE        DisplayMode;
+
+  int ReturnV;
+
+  if (!CreateHiddenWindow())
+    return false;
+
+  m_D3d = D3dClock::Direct3DCreate9(D3D_SDK_VERSION);
+
+  if (!m_D3d)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Direct3DCreate9 failed, falling back to QueryPerformanceCounter");
+    return false;
+  }
+
+  ZeroMemory(&D3dPP, sizeof(D3dPP));
+  D3dPP.Windowed = TRUE;
+  D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_DISCARD;
+  D3dPP.hDeviceWindow = m_Hwnd;
+
+  ReturnV = m_D3d->CreateDevice(D3DADAPTER_DEFAULT, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
+                                D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
+
+  if (ReturnV != D3D_OK)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i, falling back to QueryPerformanceCounter", ReturnV);
+    return false;
+  }
+
+  ReturnV = m_D3dDev->GetDeviceCaps(&DevCaps);
+  if (ReturnV != D3D_OK)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDeviceCaps returned %i, falling back to QueryPerformanceCounter", ReturnV);
+    return false;
+  }
+
+  if (DevCaps.Caps != D3DCAPS_READ_SCANLINE)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Hardware does not support GetRasterStatus, falling back to QueryPerformanceCounter");
+    return false;
+  }
+
+  ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
+  if (ReturnV != D3D_OK)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i, falling back to QueryPerformanceCounter", ReturnV);
+    return false;
+  }
+
+  ReturnV = m_D3dDev->GetDisplayMode(0, &DisplayMode);
+  if (ReturnV != D3D_OK)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDisplayMode returned %i, falling back to QueryPerformanceCounter", ReturnV);
+    return false;
+  }
+
+  m_PrevRefreshRate = -1;
+  m_LastRefreshTime.QuadPart = 0;
+  UpdateRefreshrate();
+
+  return true;
+}
+
+LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+  return DefWindowProc (hwnd, message, wParam, lParam);
+}
+
+bool CVideoReferenceClock::CreateHiddenWindow()
+{
+  m_WinCl.hInstance = GetModuleHandle(NULL);
+  m_WinCl.lpszClassName = CLASSNAME;
+  m_WinCl.lpfnWndProc = WindowProcedure;
+  m_WinCl.style = CS_DBLCLKS;          
+  m_WinCl.cbSize = sizeof(WNDCLASSEX);
+  m_WinCl.hIcon = NULL;
+  m_WinCl.hIconSm = NULL;
+  m_WinCl.hCursor = LoadCursor(NULL, IDC_ARROW);
+  m_WinCl.lpszMenuName = NULL;
+  m_WinCl.cbClsExtra = 0;
+  m_WinCl.cbWndExtra = 0;
+  m_WinCl.hbrBackground = (HBRUSH)COLOR_BACKGROUND;
+
+  if (!RegisterClassEx (&m_WinCl))
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to register window class, falling back to QueryPerformanceCounter");
+    return false;
+  }
+
+  m_Hwnd = CreateWindowEx(WS_EX_LEFT|WS_EX_LTRREADING|WS_EX_WINDOWEDGE, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
+                          WS_OVERLAPPED|WS_MINIMIZEBOX|WS_SYSMENU|WS_CLIPSIBLINGS|WS_CAPTION, CW_USEDEFAULT, CW_USEDEFAULT,
+                          400, 430, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
+
+  if (!m_Hwnd)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateWindowEx failed, falling back to QueryPerformanceCounter");
+    return false;
+  }
+
+  return true;
+}
 
 #endif
 
@@ -239,9 +396,20 @@ bool CVideoReferenceClock::UpdateRefreshrate()
       }
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
     }
-    
-    return true;
+#elif defined(_WIN32)
+    D3dClock::D3DDISPLAYMODE DisplayMode;
+    m_D3dDev->GetDisplayMode(0, &DisplayMode);
+    m_RefreshRate = DisplayMode.RefreshRate;
+
+    if (m_RefreshRate == 0) m_RefreshRate = 60;
+
+    if (m_RefreshRate != m_PrevRefreshRate)
+    {
+      m_PrevRefreshRate = m_RefreshRate;
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
+    }
 #endif
+    return true;
   }
   else
   {
