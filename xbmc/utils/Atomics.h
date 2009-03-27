@@ -44,7 +44,7 @@ static inline long cas(volatile long *pAddr, long expectedVal, long swapVal)
   return prev;
 }
 
-#elseif #defined LINUX // Linux
+#elif defined(_LINUX) && !defined(__APPLE__)  // Linux
 
 static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
 {
