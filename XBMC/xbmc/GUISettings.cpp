@@ -510,14 +510,13 @@ void CGUISettings::Initialize()
   AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
   AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
-  AddSeparator(6, "smb.sep1");
-  AddBool(7,   "smb.showhidden", 21330, false);
+
 
   AddCategory(6, "upnp", 20110);
   AddBool(1,    "upnp.client", 20111, false);
   AddBool(2, "upnp.renderer", 21881, false);
   AddSeparator(3,"upnp.sep1");
-  AddBool(4, "upnp.server", 21360, false);  
+  AddBool(4, "upnp.server", 21360, false);
   AddString(5, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
   AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
   AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
@@ -583,6 +582,8 @@ void CGUISettings::Initialize()
   AddSeparator(6, "filelists.sep1");
   AddBool(7, "filelists.allowfiledeletion", 14071, false);
   AddBool(8, "filelists.disableaddsourcebuttons", 21382,  false);
+  AddSeparator(9, "filelists.sep2");
+  AddBool(10, "filelists.showhidden", 21330, false);
 
   AddCategory(7, "screensaver", 360);
   AddString(1, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
@@ -768,8 +769,8 @@ int CGUISettings::GetInt(const char *strSetting) const
     return ((CSettingInt *)(*it).second)->GetData();
   }
   // Assert here and write debug output
+  CLog::Log(LOGERROR,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   //ASSERT(false);
-  CLog::Log(LOGDEBUG,"Error: Requested setting (%s) was not found.  It must be case-sensitive", strSetting);
   return 0;
 }
 
