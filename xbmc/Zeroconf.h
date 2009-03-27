@@ -70,7 +70,6 @@ public:
   // access to singleton; singleton gets created on call if not existent
   // if zeroconf is disabled (!HAS_ZEROCONF), this will return a dummy implementation that 
   // just does nothings, otherwise the platform specific one
-  // Start() is called in construction if servers.zeroconf is enabled in guisettings
   static CZeroconf* GetInstance();
   // release the singleton; (save to call multiple times)
   static void   ReleaseInstance();
