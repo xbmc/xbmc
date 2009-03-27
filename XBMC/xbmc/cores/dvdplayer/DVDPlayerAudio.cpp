@@ -630,8 +630,8 @@ void CDVDPlayerAudio::Process()
             m_Integral = 0.0;
           
           //for making pretty graphs
-          static int count = 0;
-          cerr << count++ << " " << m_CurrError / DVD_TIME_BASE << " " << m_Integral << " " << g_VideoReferenceClock.GetSpeed() << "\n";
+          //static int count = 0;
+          //cerr << count++ << " " << m_CurrError / DVD_TIME_BASE << " " << m_Integral << " " << g_VideoReferenceClock.GetSpeed() << "\n";
         }
         
         double Proportional, ProportionalDiv;
