@@ -407,9 +407,6 @@ extern "C"
     else strcpy(str, szFileName);
 
     CFile* pFile = new CFile();
-    bool bBinary = false;
-    if (iMode & O_BINARY)
-      bBinary = true;
     bool bWrite = false;
     if ((iMode & O_RDWR) || (iMode & O_WRONLY))
       bWrite = true;
@@ -419,9 +416,9 @@ extern "C"
     // currently always overwrites
     bool bResult;
     if (bWrite)
-      bResult = pFile->OpenForWrite(str, bBinary, bOverwrite);
+      bResult = pFile->OpenForWrite(str, bOverwrite);
     else
-      bResult = pFile->Open(str, bBinary);
+      bResult = pFile->Open(str);
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
@@ -892,9 +889,7 @@ extern "C"
       return fopen(filename, mode);
     }
 #endif
-    int iMode = O_TEXT;
-    if (strchr(mode, 'b') )
-      iMode = O_BINARY;
+    int iMode = O_BINARY;
     if (strstr(mode, "r+"))
       iMode |= O_RDWR;
     else if (strchr(mode, 'r'))
@@ -1898,4 +1893,5 @@ extern "C"
   }
 #endif
 }
+
 

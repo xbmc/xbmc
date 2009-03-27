@@ -759,6 +759,9 @@ void CGUIDialogKeyboard::OnIPAddress()
     utf8String = utf8String.Left(start) + ip + utf8String.Mid(start + length);
     g_charsetConverter.utf8ToW(utf8String, m_strEdit);
     UpdateLabel();
+    CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+    if (pEdit)
+      pEdit->SetCursorPos(m_strEdit.size());
   }
 }
 

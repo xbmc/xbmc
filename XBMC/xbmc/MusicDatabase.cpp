@@ -4396,7 +4396,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     // Write the document
     XFILE::CFile file;
 
-    if ( !file.OpenForWrite( outFile, false, true ) )
+    if ( !file.OpenForWrite( outFile, true ) )
       return;
 
     CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);

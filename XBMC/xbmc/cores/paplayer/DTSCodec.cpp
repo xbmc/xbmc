@@ -281,7 +281,7 @@ void DTSCodec::PrepairBuffers()
 bool DTSCodec::InitFile(const CStdString &strFile, unsigned int filecache)
 {
   //  Open the file to play
-  return m_file.Open(strFile, true, READ_CACHED);
+  return m_file.Open(strFile, READ_CACHED);
 }
 
 bool DTSCodec::CalculateTotalTime()
@@ -551,4 +551,5 @@ void DTSCodec::SetDefault()
 }
 
 #endif
+
 

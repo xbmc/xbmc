@@ -38,7 +38,7 @@ CMultiPathFile::~CMultiPathFile(void)
   Close();
 }
 
-bool CMultiPathFile::Open(const CURL& url, bool bBinary /*=true*/)
+bool CMultiPathFile::Open(const CURL& url)
 {
   // grab the filename off the url
   CStdString strURL, path, fileName;
@@ -52,7 +52,7 @@ bool CMultiPathFile::Open(const CURL& url, bool bBinary /*=true*/)
   {
     CStdString filePath = vecPaths[i];
     filePath = CUtil::AddFileToFolder(filePath, fileName);
-    if (m_file.Open(filePath, bBinary))
+    if (m_file.Open(filePath))
       return true;
   }
   return false;
