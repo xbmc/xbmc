@@ -28,7 +28,8 @@ else
 	$(CC) -shared -o $@ -lmpcdec ../src/xbmc_interface.o \
 		`cat ../../../DllLoader/exports/wrapper.def` \
 		../../../DllLoader/exports/wrapper.o
-    # Make a static lib to link to at the end
+# TODO: Having xbmc_interface here and linking at the end seems more like a
+# hack. There has to be a better way to do this.
 	$(AR) rcs $(STATICLIB) ../src/xbmc_interface.o
 endif
 endif
