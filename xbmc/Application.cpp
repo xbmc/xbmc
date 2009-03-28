@@ -3628,7 +3628,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    // wKeyID = -wKeyID;
 
    // Translate using regular joystick translator.
-   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis, action.wID, action.strAction, fullRange))
+   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, action.wID, action.strAction, fullRange))
    {
      action.fRepeat = 0.0f;
      g_audioManager.PlayActionSound(action);
