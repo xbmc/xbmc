@@ -440,14 +440,15 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
+      Resampler.Flush();
+      ResetErrorCounters();
+      m_SyncClock = true;
+
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
 
       if (m_speed == DVD_PLAYSPEED_PAUSE)
       {
         m_ptsOutput.Flush();
-        Resampler.Flush();
-        ResetErrorCounters();
-        m_SyncClock = true;
         m_dvdAudio.Pause();
       }
       else 
