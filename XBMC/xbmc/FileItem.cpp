@@ -42,6 +42,7 @@
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
 #include "VideoInfoTag.h"
+#include "utils/SingleLock.h"
 #include "MusicInfoTag.h"
 #include "PictureInfoTag.h"
 #include "Artist.h"
@@ -542,6 +543,13 @@ bool CFileItem::IsPicture() const
   return false;
 }
 
+bool CFileItem::IsLyrics() const
+{
+  CStdString strExtension;
+  CUtil::GetExtension(m_strPath, strExtension);
+  return (strExtension.CompareNoCase(".cdg") == 0 || strExtension.CompareNoCase(".lrc") == 0);
+}
+
 bool CFileItem::IsCUESheet() const
 {
   CStdString strExtension;
@@ -566,10 +574,7 @@ bool CFileItem::IsInternetStream() const
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
 
-  if (strProtocol.size() == 0)
-    return false;
-
-  if ((strProtocol == "http" || strProtocol == "https" ) && g_advancedSettings.m_bHTTPDirectoryLocalMode)
+  if (strProtocol.size() == 0 || HasProperty("IsHTTPDirectory"))
     return false;
 
   // there's nothing to stop internet streams from being stacked
@@ -773,6 +778,16 @@ bool CFileItem::IsMythTV() const
   return CUtil::IsMythTV(m_strPath);
 }
 
+bool CFileItem::IsVTP() const
+{
+  return CUtil::IsVTP(m_strPath);
+}
+
+bool CFileItem::IsTV() const
+{
+  return CUtil::IsTV(m_strPath);
+}
+
 bool CFileItem::IsHD() const
 {
   return CUtil::IsHD(m_strPath);
@@ -972,6 +987,8 @@ void CFileItem::RemoveExtension()
 
 void CFileItem::CleanString()
 {
+  if (IsTV())
+    return;
   CStdString strLabel = GetLabel();
   CUtil::CleanString(strLabel, m_bIsFolder);
   SetLabel(strLabel);
@@ -1149,6 +1166,8 @@ const CFileItemPtr CFileItemList::operator[] (const CStdString& strPath) const
 
 void CFileItemList::SetFastLookup(bool fastLookup)
 {
+  CSingleLock lock(m_lock);
+
   if (fastLookup && !m_fastLookup)
   { // generate the map
     m_map.clear();
@@ -1166,6 +1185,8 @@ void CFileItemList::SetFastLookup(bool fastLookup)
 
 bool CFileItemList::Contains(const CStdString& fileName) const
 {
+  CSingleLock lock(m_lock);
+
   // checks case insensitive
   CStdString checkPath(fileName); checkPath.ToLower();
   if (m_fastLookup)
@@ -1182,6 +1203,8 @@ bool CFileItemList::Contains(const CStdString& fileName) const
 
 void CFileItemList::Clear()
 {
+  CSingleLock lock(m_lock);
+
   ClearItems();
   m_sortMethod=SORT_METHOD_NONE;
   m_sortOrder=SORT_ORDER_NONE;
@@ -1193,6 +1216,7 @@ void CFileItemList::Clear()
 
 void CFileItemList::ClearItems()
 {
+  CSingleLock lock(m_lock);
   // make sure we free the memory of the items (these are GUIControls which may have allocated resources)
   FreeMemory();
   for (unsigned int i = 0; i < m_items.size(); i++)
@@ -1206,6 +1230,8 @@ void CFileItemList::ClearItems()
 
 void CFileItemList::Add(const CFileItemPtr &pItem)
 {
+  CSingleLock lock(m_lock);
+
   m_items.push_back(pItem);
   if (m_fastLookup)
   {
@@ -1216,6 +1242,8 @@ void CFileItemList::Add(const CFileItemPtr &pItem)
 
 void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
 {
+  CSingleLock lock(m_lock);
+
   if (itemPosition >= 0)
   {
     m_items.insert(m_items.begin()+itemPosition, pItem);
@@ -1233,6 +1261,8 @@ void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
 
 void CFileItemList::Remove(CFileItem* pItem)
 {
+  CSingleLock lock(m_lock);
+
   for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); ++it)
   {
     if (pItem == it->get())
@@ -1250,6 +1280,8 @@ void CFileItemList::Remove(CFileItem* pItem)
 
 void CFileItemList::Remove(int iItem)
 {
+  CSingleLock lock(m_lock);
+
   if (iItem >= 0 && iItem < (int)Size())
   {
     CFileItemPtr pItem = *(m_items.begin() + iItem);
@@ -1264,12 +1296,15 @@ void CFileItemList::Remove(int iItem)
 
 void CFileItemList::Append(const CFileItemList& itemlist)
 {
+  CSingleLock lock(m_lock);
+
   for (int i = 0; i < itemlist.Size(); ++i)
     Add(itemlist[i]);
 }
 
 void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
 {
+  CSingleLock lock(m_lock);
   if (!append)
     Clear();
   Append(itemlist);
@@ -1283,6 +1318,8 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
 
 CFileItemPtr CFileItemList::Get(int iItem)
 {
+  CSingleLock lock(m_lock);
+
   if (iItem > -1)
     return m_items[iItem];
 
@@ -1291,6 +1328,8 @@ CFileItemPtr CFileItemList::Get(int iItem)
 
 const CFileItemPtr CFileItemList::Get(int iItem) const
 {
+  CSingleLock lock(m_lock);
+
   if (iItem > -1)
     return m_items[iItem];
 
@@ -1299,6 +1338,8 @@ const CFileItemPtr CFileItemList::Get(int iItem) const
 
 CFileItemPtr CFileItemList::Get(const CStdString& strPath)
 {
+  CSingleLock lock(m_lock);
+
   CStdString pathToCheck(strPath); pathToCheck.ToLower();
   if (m_fastLookup)
   {
@@ -1321,6 +1362,8 @@ CFileItemPtr CFileItemList::Get(const CStdString& strPath)
 
 const CFileItemPtr CFileItemList::Get(const CStdString& strPath) const
 {
+  CSingleLock lock(m_lock);
+
   CStdString pathToCheck(strPath); pathToCheck.ToLower();
   if (m_fastLookup)
   {
@@ -1343,21 +1386,25 @@ const CFileItemPtr CFileItemList::Get(const CStdString& strPath) const
 
 int CFileItemList::Size() const
 {
+  CSingleLock lock(m_lock);
   return (int)m_items.size();
 }
 
 bool CFileItemList::IsEmpty() const
 {
+  CSingleLock lock(m_lock);
   return (m_items.size() <= 0);
 }
 
 void CFileItemList::Reserve(int iCount)
 {
+  CSingleLock lock(m_lock);
   m_items.reserve(iCount);
 }
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
+  CSingleLock lock(m_lock);
   DWORD dwStart = GetTickCount();
   std::sort(m_items.begin(), m_items.end(), func);
   DWORD dwElapsed = GetTickCount() - dwStart;
@@ -1366,6 +1413,7 @@ void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 
 void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
 {
+  CSingleLock lock(m_lock);
   std::for_each(m_items.begin(), m_items.end(), func);
 }
 
@@ -1474,11 +1522,13 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
 
 void CFileItemList::Randomize()
 {
+  CSingleLock lock(m_lock);
   random_shuffle(m_items.begin(), m_items.end());
 }
 
 void CFileItemList::Serialize(CArchive& ar)
 {
+  CSingleLock lock(m_lock);
   if (ar.IsStoring())
   {
     CFileItem::Serialize(ar);
@@ -1580,6 +1630,7 @@ void CFileItemList::Serialize(CArchive& ar)
 
 void CFileItemList::FillInDefaultIcons()
 {
+  CSingleLock lock(m_lock);
   for (int i = 0; i < (int)m_items.size(); ++i)
   {
     CFileItemPtr pItem = m_items[i];
@@ -1589,6 +1640,7 @@ void CFileItemList::FillInDefaultIcons()
 
 void CFileItemList::SetMusicThumbs()
 {
+  CSingleLock lock(m_lock);
   //cache thumbnails directory
   g_directoryCache.InitMusicThumbCache();
 
@@ -1603,6 +1655,7 @@ void CFileItemList::SetMusicThumbs()
 
 int CFileItemList::GetFolderCount() const
 {
+  CSingleLock lock(m_lock);
   int nFolderCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -1616,6 +1669,8 @@ int CFileItemList::GetFolderCount() const
 
 int CFileItemList::GetObjectCount() const
 {
+  CSingleLock lock(m_lock);
+
   int numObjects = (int)m_items.size();
   if (numObjects && m_items[0]->IsParentFolder())
     numObjects--;
@@ -1625,6 +1680,7 @@ int CFileItemList::GetObjectCount() const
 
 int CFileItemList::GetFileCount() const
 {
+  CSingleLock lock(m_lock);
   int nFileCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -1638,6 +1694,7 @@ int CFileItemList::GetFileCount() const
 
 int CFileItemList::GetSelectedCount() const
 {
+  CSingleLock lock(m_lock);
   int count = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -1651,6 +1708,7 @@ int CFileItemList::GetSelectedCount() const
 
 void CFileItemList::FilterCueItems()
 {
+  CSingleLock lock(m_lock);
   // Handle .CUE sheet files...
   VECSONGS itemstoadd;
   CStdStringArray itemstodelete;
@@ -1789,14 +1847,17 @@ void CFileItemList::FilterCueItems()
 // Remove the extensions from the filenames
 void CFileItemList::RemoveExtensions()
 {
+  CSingleLock lock(m_lock);
   for (int i = 0; i < Size(); ++i)
     m_items[i]->RemoveExtension();
 }
 
 void CFileItemList::Stack()
 {
+  CSingleLock lock(m_lock);
+
   // not allowed here
-  if (IsVirtualDirectoryRoot() || IsTuxBox())
+  if (IsVirtualDirectoryRoot() || IsTV())
     return;
 
   // items needs to be sorted for stuff below to work properly
@@ -2074,6 +2135,7 @@ bool CFileItemList::AlwaysCache() const
 
 void CFileItemList::SetCachedVideoThumbs()
 {
+  CSingleLock lock(m_lock);
   // TODO: Investigate caching time to see if it speeds things up
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
@@ -2084,6 +2146,7 @@ void CFileItemList::SetCachedVideoThumbs()
 
 void CFileItemList::SetCachedProgramThumbs()
 {
+  CSingleLock lock(m_lock);
   // TODO: Investigate caching time to see if it speeds things up
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
@@ -2094,6 +2157,7 @@ void CFileItemList::SetCachedProgramThumbs()
 
 void CFileItemList::SetCachedMusicThumbs()
 {
+  CSingleLock lock(m_lock);
   // TODO: Investigate caching time to see if it speeds things up
   for (unsigned int i = 0; i < m_items.size(); ++i)
   {
@@ -2307,7 +2371,7 @@ CStdString CFileItem::GetTBNFile() const
 
 CStdString CFileItem::GetUserVideoThumb() const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder())
+  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsVTP())
     return "";
 
   if (IsTuxBox())
@@ -2445,7 +2509,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   }
 
   // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsPlugin())
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
     return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..
@@ -2882,7 +2946,7 @@ CStdString CFileItem::FindTrailer() const
   }
 
   // no local trailer available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsPlugin())
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
     return strTrailer;
 
   CStdString strDir;

@@ -222,14 +222,13 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
   if (iSong < 0) iSong = 0;
   if (iSong >= playlist.size()) iSong = playlist.size() - 1;
 
-
   // check if the item itself is a playlist, and can be expanded
   // only allow a few levels, this could end up in a loop
   // if they refer to each other in a loop
   for(int i=0;i<5;i++)
   {
-    if(!playlist.Expand(iSong))
-      break;
+     if(!playlist.Expand(iSong))
+        break;
   }
 
   int iPreviousSong = m_iCurrentSong;
@@ -544,7 +543,7 @@ void CPlayListPlayer::ReShuffle(int iPlaylist, int iPosition)
       (g_application.IsPlayingVideo() && iPlaylist == PLAYLIST_VIDEO)
       )
     {
-	    g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle(m_iCurrentSong + 2);
+      g_playlistPlayer.GetPlaylist(iPlaylist).Shuffle(m_iCurrentSong + 2);
     }
   }
   // otherwise, shuffle from the passed position
@@ -562,8 +561,8 @@ void CPlayListPlayer::Add(int iPlaylist, CPlayList& playlist)
   CPlayList& list = GetPlaylist(iPlaylist);
   int iSize = list.size();
   list.Add(playlist);
-	if (list.IsShuffled())
-		ReShuffle(iPlaylist, iSize);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
 }
 
 void CPlayListPlayer::Add(int iPlaylist, const CFileItemPtr &pItem)
@@ -573,8 +572,8 @@ void CPlayListPlayer::Add(int iPlaylist, const CFileItemPtr &pItem)
   CPlayList& list = GetPlaylist(iPlaylist);
   int iSize = list.size();
   list.Add(pItem);
-	if (list.IsShuffled())
-		ReShuffle(iPlaylist, iSize);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
 }
 
 void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
@@ -584,8 +583,8 @@ void CPlayListPlayer::Add(int iPlaylist, CFileItemList& items)
   CPlayList& list = GetPlaylist(iPlaylist);
   int iSize = list.size();
   list.Add(items);
-	if (list.IsShuffled())
-		ReShuffle(iPlaylist, iSize);
+  if (list.IsShuffled())
+    ReShuffle(iPlaylist, iSize);
 }
 
 void CPlayListPlayer::Clear()

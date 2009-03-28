@@ -22,7 +22,7 @@
  *
  */
 
-#define SVN_REV   "UNKNOWN"
-#define SVN_DATE  "UNKNOWN"
+#define SVN_REV   "18953"
+#define SVN_DATE  "2009/03/26 21:03:56"
 
 #endif

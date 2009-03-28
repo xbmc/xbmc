@@ -1885,6 +1885,16 @@ bool CUtil::IsMythTV(const CStdString& strFile)
   return strFile.Left(5).Equals("myth:");
 }
 
+bool CUtil::IsVTP(const CStdString& strFile)
+{
+  return strFile.Left(4).Equals("vtp:");
+}
+
+bool CUtil::IsTV(const CStdString& strFile)
+{
+  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile);
+}
+
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
 {
   if (strFileOrFolder.IsEmpty())
