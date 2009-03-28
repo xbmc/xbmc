@@ -104,6 +104,8 @@ public:
   void RefreshEventServer();
   void StartDbusServer();
   bool StopDbusServer();
+  void StartZeroconf();
+  void StopZeroconf();
   void DimLCDOnPlayback(bool dim);
   DWORD GetThreadId() const { return m_threadID; };
   void Stop();

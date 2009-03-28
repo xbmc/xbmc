@@ -945,24 +945,6 @@ CProfile* CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  if (m_bPlatformDirectories)
-  {
-    CStdString logDir = "/var/tmp/";
-    if (getenv("USER"))
-    {
-      logDir += getenv("USER");
-      logDir += "-";
-    }
-    g_stSettings.m_logFolder = logDir;
-  }
-
-  CStdString xbmcDir;
-  xbmcDir.Format("/tmp/xbmc-%s", userName.c_str());
-
-  // special://temp/ common for both
-  CSpecialProtocol::SetTempPath(xbmcDir);
-  CDirectory::Create("special://temp/");
-
   CStdString strHomePath;
   CUtil::GetHomePath(strHomePath);
   setenv("XBMC_HOME", strHomePath.c_str(), 0);
@@ -974,7 +956,14 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
+    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp"); 
+    CSpecialProtocol::SetTempPath(strTempPath);
+
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
+
     CDirectory::Create("special://home/");
+    CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
@@ -1005,6 +994,13 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp"); 
+    CSpecialProtocol::SetTempPath(strTempPath);
+    CDirectory::Create("special://temp/");
+
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1776,6 +1772,26 @@ void CApplication::StopUPnPServer()
     CLog::Log(LOGNOTICE, "stopping upnp server");
     CUPnP::GetInstance()->StopServer();
   }
+#endif
+}
+
+void CApplication::StartZeroconf()
+{
+#ifdef HAS_ZEROCONF
+  //entry in guisetting only present if HAS_ZEROCONF is set
+  if(g_guiSettings.GetBool("servers.zeroconf"))
+  {
+    CLog::Log(LOGNOTICE, "starting zeroconf publishing");
+    CZeroconf::GetInstance()->Start();
+  }
+#endif
+}
+
+void CApplication::StopZeroconf()
+{
+#ifdef HAS_ZEROCONF
+  CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
+  CZeroconf::GetInstance()->Stop();
 #endif
 }
 
@@ -2888,14 +2904,13 @@ bool CApplication::OnAction(CAction &action)
       speed *= action.fRepeat;
     else
       speed /= 50; //50 fps
-
+    if (g_stSettings.m_bMute)
+    {
+      Mute();
+      return true;
+    }
     if (action.wID == ACTION_VOLUME_UP)
     {
-      if (g_stSettings.m_bMute)
-      {
-        Mute();
-        return true;
-      }
       volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
     }
     else
