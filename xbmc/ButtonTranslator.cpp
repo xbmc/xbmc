@@ -215,7 +215,7 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
 }
 #endif
 
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#if defined(HAS_SDL_JOYSTICK) && defined(HAS_EVENT_SERVER)
 void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
 {
   string joyname = "_xbmc_"; // default global map name
