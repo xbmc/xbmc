@@ -166,7 +166,7 @@ void CVideoReferenceClock::RunGLX()
   m_glXGetVideoSyncSGI(&PrevVblankCount);
   UpdateRefreshrate();
   
-  while(1)
+  while(!m_bStop)
   {
     m_glXGetVideoSyncSGI(&VblankCount); //TODO: check if this has reset
     
@@ -205,7 +205,7 @@ void CVideoReferenceClock::RunD3D()
 
   QueryPerformanceCounter(&LastVBlankTime);
 
-  while(1)
+  while(!m_bStop)
   {
     m_D3dDev->GetRasterStatus(0, &RasterStatus);
 

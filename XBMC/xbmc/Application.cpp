@@ -3800,6 +3800,8 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     m_gWindowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
+    g_VideoReferenceClock.StopThread();
+    
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
 
