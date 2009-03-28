@@ -151,11 +151,13 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
 /// efficient retrieval of data.
 int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
-  if (strCondition.IsEmpty()) return 0;
+  // trim whitespace, and convert to lowercase
   CStdString strTest = strCondition;
   strTest.ToLower();
-  strTest.TrimLeft(" ");
-  strTest.TrimRight(" ");
+  strTest.TrimLeft(" \t\r\n");
+  strTest.TrimRight(" \t\r\n");
+  if (strTest.IsEmpty()) return 0;
+
   bool bNegate = strTest[0] == '!';
   int ret = 0;
 

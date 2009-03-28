@@ -2891,6 +2891,11 @@ bool CApplication::OnAction(CAction &action)
 
     if (action.wID == ACTION_VOLUME_UP)
     {
+      if (g_stSettings.m_bMute)
+      {
+        Mute();
+        return true;
+      }
       volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
     }
     else
@@ -3285,7 +3290,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     CAction action;
     bool fullrange;
     string jname = g_Joystick.GetJoystick();
-    bid = bid|(g_Joystick.getHatState()<<16);	// hat flag
+    bid = bid|(g_Joystick.getHatState()<<16);  // hat flag
     if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
     {
       action.fAmount1 = g_Joystick.getHatState();
