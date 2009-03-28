@@ -22,7 +22,9 @@
  *
  */
 
+#if !defined(_DEBUG)
 #include "svn_rev.h" //generated file
+#endif
 #include "PlatformDefs.h"
 
 #endif

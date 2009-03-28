@@ -112,5 +112,5 @@
 #include "../xbmc/xbox/PlatformInclude.h"
 
 #ifndef SVN_REV
-//#define SVN_REV "Unknown"
+#define SVN_REV "Unknown"
 #endif
