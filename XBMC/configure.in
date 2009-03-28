@@ -887,8 +887,17 @@ else
   final_message="$final_message\n  Avahi:\tNo"
 fi
 
-if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then 
+if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
+elif test "$host_vendor" = "apple"; then
+  AC_CHECK_PROG(HAVE_SVNVERSION,svnversion,"yes","no",)
+  if test "$HAVE_SVNVERSION" = "no" ; then
+    AC_MSG_WARN([svnversion not found. No SVN_REV in builds!])
+    echo "#define SVN_REV" > svn_revision.h
+  else
+	SVN_REVISION=$(svnversion -n .)
+	echo "#define SVN_REV \"$SVN_REVISION\"" > svn_revision.h
+  fi
 elif test -x "/usr/bin/svnversion" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
 fi

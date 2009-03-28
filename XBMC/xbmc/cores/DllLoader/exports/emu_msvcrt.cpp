@@ -416,9 +416,9 @@ extern "C"
     // currently always overwrites
     bool bResult;
     if (bWrite)
-      bResult = pFile->OpenForWrite(str, bOverwrite);
+      bResult = pFile->OpenForWrite(_P(str), bOverwrite);
     else
-      bResult = pFile->Open(str);
+      bResult = pFile->Open(_P(str));
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
