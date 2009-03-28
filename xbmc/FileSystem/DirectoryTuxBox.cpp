@@ -115,7 +115,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   }
   //Open
   CFileCurl http;
-  int iTryConnect =0;
+  int iTryConnect = 0;
   int iWaitTimer = 20;
   bool result = false;
 
@@ -125,7 +125,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   iProgressPercent=iProgressPercent+5;
   UpdateProgress(dlgProgress, strLine1, "", iProgressPercent, false);
 
-  while (iTryConnect <= 1 && !dlgProgress->IsCanceled())
+  while (iTryConnect < 4 && !dlgProgress->IsCanceled())
   {
     //Update Progressbar
     iProgressPercent=iProgressPercent+5;
@@ -240,14 +240,17 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       CLog::Log(LOGERROR, "%s - Unable to get XML structure! Try count:%i, Wait Timer:%is",__FUNCTION__, iTryConnect, iWaitTimer);
       iTryConnect++;
       if (iTryConnect == 2) //try enigma2 instead of enigma1, best entrypoint here i thought
-      {
+      {	
         enigma2 = true;
         GetRootAndChildStringEnigma2(strBQRequest, strXMLRootString, strXMLChildString);
         url.SetOptions("");
         url.SetFileName(strBQRequest);
-        iTryConnect = 0;
+//        iTryConnect = 0;
+        iWaitTimer = 20;
       }
-      iWaitTimer = iWaitTimer+10;
+      else
+        iWaitTimer = iWaitTimer+10;
+       
       result = false;
       http.Close(); // Close old connections
     }

@@ -61,7 +61,7 @@ bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
 }
 
 CVideoThumbLoader::CVideoThumbLoader()
-{  
+{
 }
 
 CVideoThumbLoader::~CVideoThumbLoader()

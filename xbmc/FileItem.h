@@ -31,6 +31,7 @@
 #include "SortFileItem.h"
 #include "utils/LabelFormatter.h"
 #include "GUIPassword.h"
+#include "utils/CriticalSection.h"
 
 #include <vector>
 #include "boost/shared_ptr.hpp"
@@ -50,7 +51,7 @@ class CGenre;
 class CURL;
 
 /* special startoffset used to indicate that we wish to resume */
-#define STARTOFFSET_RESUME (-1) 
+#define STARTOFFSET_RESUME (-1)
 
 class CMediaSource;
 
@@ -83,6 +84,7 @@ public:
   bool Exists() const;
   bool IsVideo() const;
   bool IsPicture() const;
+  bool IsLyrics() const;
   bool IsAudio() const;
   bool IsCUESheet() const;
   bool IsShoutCast() const;
@@ -127,6 +129,8 @@ public:
   bool IsRemovable() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;
+  bool IsVTP() const;
+  bool IsTV() const;
 
   void RemoveExtension();
   void CleanString();
@@ -154,9 +158,9 @@ public:
   {
     return m_videoInfoTag != NULL;
   }
-  
+
   CVideoInfoTag* GetVideoInfoTag();
-  
+
   inline const CVideoInfoTag* GetVideoInfoTag() const
   {
     return m_videoInfoTag;
@@ -219,11 +223,11 @@ public:
 
   virtual bool LoadMusicTag();
 
-  /* returns the content type of this item if known. will lookup for http streams */  
-  const CStdString& GetContentType() const; 
+  /* returns the content type of this item if known. will lookup for http streams */
+  const CStdString& GetContentType() const;
 
   /* sets the contenttype if known beforehand */
-  void              SetContentType(const CStdString& content) { m_contenttype = content; } ;  
+  void              SetContentType(const CStdString& content) { m_contenttype = content; } ;
 
   /* general extra info about the contents of the item, not for display */
   void SetExtraInfo(const CStdString& info) { m_extrainfo = info; };
@@ -392,4 +396,6 @@ private:
   CStdString m_content;
 
   std::vector<SORT_METHOD_DETAILS> m_sortDetails;
+
+  CCriticalSection m_lock;
 };
