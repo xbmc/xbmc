@@ -215,7 +215,7 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
 }
 #endif
 
-#if defined(HAS_SDL_JOYSTICK) && defined(HAS_EVENT_SERVER)
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
 void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
 {
   string joyname = "_xbmc_"; // default global map name
@@ -361,6 +361,7 @@ bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevi
 
   fullrange = false;
 
+#ifdef HAS_SDL_JOYSTICK
   if (inputType == JACTIVE_AXIS)
   {
     jmap = &m_joystickAxisMap;
@@ -378,7 +379,7 @@ bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevi
     CLog::Log(LOGERROR, "Error reading joystick input type");
     return false;
   }
-
+#endif
   it = jmap->find(szDevice);
   if (it==jmap->end())
     return false;
