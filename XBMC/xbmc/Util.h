@@ -220,6 +220,7 @@ public:
   static bool IsZIP(const CStdString& strFile);
   static bool IsInZIP(const CStdString& strFile);
   static bool IsInArchive(const CStdString& strFile);
+  static bool IsSpecial(const CStdString& strFile); 
   static bool IsCDDA(const CStdString& strFile);
   static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
