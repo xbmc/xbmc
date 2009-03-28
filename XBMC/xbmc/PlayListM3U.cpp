@@ -140,7 +140,7 @@ void CPlayListM3U::Save(const CStdString& strFileName) const
   if (!m_vecItems.size()) return ;
   CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
-  if (!file.OpenForWrite(strPlaylist,false,true))
+  if (!file.OpenForWrite(strPlaylist,true))
   {
     CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());
     return ;

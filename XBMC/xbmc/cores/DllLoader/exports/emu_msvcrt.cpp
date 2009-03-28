@@ -407,9 +407,6 @@ extern "C"
     else strcpy(str, szFileName);
 
     CFile* pFile = new CFile();
-    bool bBinary = false;
-    if (iMode & O_BINARY)
-      bBinary = true;
     bool bWrite = false;
     if ((iMode & O_RDWR) || (iMode & O_WRONLY))
       bWrite = true;
@@ -419,9 +416,9 @@ extern "C"
     // currently always overwrites
     bool bResult;
     if (bWrite)
-      bResult = pFile->OpenForWrite(str, bBinary, bOverwrite);
+      bResult = pFile->OpenForWrite(_P(str), bOverwrite);
     else
-      bResult = pFile->Open(str, bBinary);
+      bResult = pFile->Open(_P(str));
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
@@ -447,7 +444,7 @@ extern "C"
     }
     else if (!IS_STD_STREAM(stream))
     {
-      return freopen(_P(path), mode, stream);
+      return freopen(_P(path).c_str(), mode, stream);
     }
     
     // error
@@ -892,9 +889,7 @@ extern "C"
       return fopen(filename, mode);
     }
 #endif
-    int iMode = O_TEXT;
-    if (strchr(mode, 'b') )
-      iMode = O_BINARY;
+    int iMode = O_BINARY;
     if (strstr(mode, "r+"))
       iMode |= O_RDWR;
     else if (strchr(mode, 'r'))
@@ -1598,11 +1593,7 @@ extern "C"
     if (!dir) return -1;
 
 #ifndef _LINUX
-    CStdString newDir(dir);
-    if (strstr(newDir.c_str(), "://") == NULL)
-      newDir.Replace("/", "\\");
-    newDir.Replace("\\\\", "\\");
-    return mkdir(_P(newDir).c_str());
+    return mkdir(_P(dir).c_str());
 #else
     return mkdir(_P(dir).c_str(), 0755);
 #endif
@@ -1902,4 +1893,5 @@ extern "C"
   }
 #endif
 }
+
 

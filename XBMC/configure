@@ -689,6 +689,7 @@ HAVE_NASM
 ALLOCA
 LIBOBJS
 POW_LIB
+HAVE_SVNVERSION
 INCLUDES
 DEBUG_FLAGS
 SDL_DEFINES
@@ -14906,6 +14907,53 @@ fi
 
 if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
+elif test "$host_vendor" = "apple"; then
+  # Extract the first word of "svnversion", so it can be a program name with args.
+set dummy svnversion; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_prog_HAVE_SVNVERSION+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$HAVE_SVNVERSION"; then
+  ac_cv_prog_HAVE_SVNVERSION="$HAVE_SVNVERSION" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_HAVE_SVNVERSION=""yes""
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_HAVE_SVNVERSION" && ac_cv_prog_HAVE_SVNVERSION=""no""
+fi
+fi
+HAVE_SVNVERSION=$ac_cv_prog_HAVE_SVNVERSION
+if test -n "$HAVE_SVNVERSION"; then
+  { echo "$as_me:$LINENO: result: $HAVE_SVNVERSION" >&5
+echo "${ECHO_T}$HAVE_SVNVERSION" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+  if test "$HAVE_SVNVERSION" = "no" ; then
+    { echo "$as_me:$LINENO: WARNING: svnversion not found. No SVN_REV in builds!" >&5
+echo "$as_me: WARNING: svnversion not found. No SVN_REV in builds!" >&2;}
+    echo "#define SVN_REV" > svn_revision.h
+  else
+	SVN_REVISION=$(svnversion -n .)
+	echo "#define SVN_REV \"$SVN_REVISION\"" > svn_revision.h
+  fi
 elif test -x "/usr/bin/svnversion" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
 fi
@@ -15749,6 +15797,7 @@ HAVE_NASM!$HAVE_NASM$ac_delim
 ALLOCA!$ALLOCA$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 POW_LIB!$POW_LIB$ac_delim
+HAVE_SVNVERSION!$HAVE_SVNVERSION$ac_delim
 INCLUDES!$INCLUDES$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
@@ -15756,7 +15805,7 @@ BUILD_DVDCSS!$BUILD_DVDCSS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 78; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 79; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

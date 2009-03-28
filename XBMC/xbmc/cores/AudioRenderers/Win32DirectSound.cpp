@@ -53,7 +53,8 @@ CWin32DirectSound::CWin32DirectSound() :
   m_dwChunkSize(0),
   m_dwBufferLen(0),
   m_PreCacheSize(0),
-  m_LastCacheCheck(0)
+  m_LastCacheCheck(0),
+  m_pChannelMap(NULL)
 {
 }
 
@@ -155,6 +156,9 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
     }
   }
   CLog::Log(LOGDEBUG, __FUNCTION__": secondary buffer created");
+
+  // Set up channel mapping
+  m_pChannelMap = GetChannelMap(iChannels, strAudioCodec);
 
   m_pBuffer->Stop();
   
@@ -294,11 +298,14 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
     }
 
     // Write data into the buffer
-    memcpy(start, data, size);
+    MapDataIntoBuffer(data, size, (unsigned char*)start);
+
+    //memcpy(start, data, size);
     m_BufferOffset += size;
     if (startWrap) // Write-region wraps to beginning of buffer
     {
-      memcpy(startWrap, data + size, sizeWrap);
+      MapDataIntoBuffer(data + size, sizeWrap, (unsigned char*)startWrap);
+      // memcpy(startWrap, data + size, sizeWrap);
       m_BufferOffset = sizeWrap;
     }
     
@@ -462,10 +469,68 @@ void CWin32DirectSound::WaitCompletion()
   m_pBuffer->Stop();
 }
 
+void CWin32DirectSound::MapDataIntoBuffer(unsigned char* pData, DWORD len, unsigned char* pOut)
+{
+  // TODO: Add support for 8, 24, and 32-bit audio
+  if (m_pChannelMap && !m_Passthrough && m_uiBitsPerSample == 16)
+  {
+    short* pOutFrame = (short*)pOut;
+    for (short* pInFrame = (short*)pData;
+      pInFrame < (short*)pData + (len / sizeof(short)); 
+      pInFrame += m_uiChannels, pOutFrame += m_uiChannels)
+    {
+      // Remap a single frame
+      for (unsigned int chan = 0; chan < m_uiChannels; chan++)
+        pOutFrame[m_pChannelMap[chan]] = pInFrame[chan]; // Copy sample into correct position in the output buffer
+    }
+  }
+  else
+  {
+    memcpy(pOut, pData, len);
+  }
+}
+
+// Channel maps
+// Our output order is FL, FR, C, LFE, SL, SR,
+const unsigned char ac3_51_Map[] = {0,1,4,5,2,3};    // Sent as FL, FR, SL, SR, C, LFE
+const unsigned char ac3_50_Map[] = {0,1,4,2,3};      // Sent as FL, FR, SL, SR, C
+const unsigned char aac_51_Map[] = {4,0,1,2,3,5};    // Sent as C, FL, FR, SL, SR, LFE
+const unsigned char aac_50_Map[] = {4,0,1,2,3};      // Sent as C, FL, FR, SL, SR
+const unsigned char vorbis_51_Map[] = {0,4,1,2,3,5}; // Sent as FL, C, FR, SL, SR, LFE
+const unsigned char vorbis_50_Map[] = {0,4,1,2,3};   // Sent as FL, C, FR, SL, SR
+
+// TODO: This could be a lot more efficient
+unsigned char* CWin32DirectSound::GetChannelMap(unsigned int channels, const char* strAudioCodec)
+{
+  if (!strcmp(strAudioCodec, "AC3") || !strcmp(strAudioCodec, "DTS"))
+  {
+    if (channels == 6)
+      return (unsigned char*)ac3_51_Map;
+    else if (channels == 5)
+      return (unsigned char*)ac3_50_Map;
+  }
+  else if (!strcmp(strAudioCodec, "AAC"))
+  {
+    if (channels == 6)
+      return (unsigned char*)aac_51_Map;
+    else if (channels == 5)
+      return (unsigned char*)aac_50_Map;
+  }
+  else if (!strcmp(strAudioCodec, "Vorbis"))
+  {
+    if (channels == 6)
+      return (unsigned char*)vorbis_51_Map;
+    else if (channels == 5)
+      return (unsigned char*)vorbis_50_Map;
+  }
+
+  return NULL; // We don't know how to map this, so just leave it alone
+}
+
 //***********************************************************************************************
 void CWin32DirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
-    return ;
+  return;
 }
 
 //***********************************************************************************************

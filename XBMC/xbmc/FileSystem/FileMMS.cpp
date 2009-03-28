@@ -624,7 +624,7 @@ __int64 CFileMMS::GetLength()
   return 0;
 }
 
-bool CFileMMS::Open(const CURL& url, bool bBinary)
+bool CFileMMS::Open(const CURL& url)
 {
   CStdString filename = url.GetFileName();
   CUtil::UrlDecode(filename);
@@ -682,4 +682,5 @@ CStdString CFileMMS::GetContent()
   //return "audio/x-ms-wma";
   return "";
 }
+
 

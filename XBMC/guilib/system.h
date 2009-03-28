@@ -197,6 +197,10 @@
 #endif
 #endif
 
+#ifdef __APPLE__
+#include "../svn_revision.h"
+#endif
+
 #ifndef SVN_REV
 #define SVN_REV "Unknown"
 #endif

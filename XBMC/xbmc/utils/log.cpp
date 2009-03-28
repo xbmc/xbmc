@@ -183,7 +183,11 @@ void CLog::DebugLogMemory()
   CStdString strData;
 
   GlobalMemoryStatus(&stat);
+#ifdef __APPLE__
+  strData.Format("%ju bytes free\n", stat.dwAvailPhys);
+#else
   strData.Format("%lu bytes free\n", stat.dwAvailPhys);
+#endif
   OutputDebugString(strData.c_str());
 }
 

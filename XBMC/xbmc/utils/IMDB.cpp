@@ -519,7 +519,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
   // unthreaded
   bool success = InternalFindMovie(strMovie, movieList);
   // sort our movie list by fuzzy match
-//  std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);
+  std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);
   return success;
 }
 

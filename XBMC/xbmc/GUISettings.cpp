@@ -268,7 +268,7 @@ void CGUISettings::Initialize()
   AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
   AddSeparator(11, "musicplayer.sep3");
-  AddString(12, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddString(0, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicfiles", 744);
   AddBool(1, "musicfiles.usetags", 258, true);
@@ -354,7 +354,7 @@ void CGUISettings::Initialize()
   AddBool(6, "autorun.music", 245, true);
   AddBool(7, "autorun.pictures", 246, true);
 
-  AddCategory(4, "cache", 439);
+  AddCategory(0, "cache", 439);
   AddInt(1, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
   AddSeparator(2, "cache.sep1");
   AddInt(3, "cachevideo.dvdrom", 14026, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
@@ -443,7 +443,9 @@ void CGUISettings::Initialize()
 #ifdef HAS_MPLAYER
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif
-
+#ifdef HAVE_LIBVDPAU
+  AddBool(0, "videoplayer.strictbinding", 13120, false);
+#endif
 #ifdef HAS_SDL
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
@@ -451,7 +453,7 @@ void CGUISettings::Initialize()
 #endif
 
   AddSeparator(10, "videoplayer.sep2");
-  AddString(11, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddString(0, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(12, "videoplayer.sep3");
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
@@ -539,6 +541,11 @@ void CGUISettings::Initialize()
   AddString(8,"servers.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(9,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
 #endif
+#endif
+
+  // zeroconf publishing
+#ifdef HAS_ZEROCONF
+  AddBool(10, "servers.zeroconf", 1260, false);
 #endif
 
   AddCategory(6, "smb", 1200);

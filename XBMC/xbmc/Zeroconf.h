@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 
+class CCriticalSection;
 /// this class provides support for zeroconf
 /// while the different zeroconf implementations have asynchronous APIs
 /// this class hides it and provides only few ways to interact
@@ -31,6 +32,8 @@
 /// free to add it. The main purpose currently is to provide an easy
 /// way to publish services in the different StartXXX/StopXXX methods
 /// in CApplication
+/// TODO: Make me safe for use in static initialization. CritSec is a static member :/
+///       use e.g. loki's singleton implementation to make do it properly
 class CZeroconf
 {
 public:
@@ -52,7 +55,7 @@ public:
   bool RemoveService(const std::string& fcr_identifier);
   
   ///returns true if fcr_identifier exists
-  bool HasService(const std::string& fcr_identifier);
+  bool HasService(const std::string& fcr_identifier) const;
   
   //starts publishing
   //services that were added with PublishService(...) while Zeroconf wasn't
@@ -98,10 +101,14 @@ private:
     std::string name;
     unsigned int port; 
   };
+  
+  //protects data
+  CCriticalSection* mp_crit_sec;  
   typedef std::map<std::string, PublishInfo> tServiceMap;
   tServiceMap m_service_map;
   bool m_started;
-  
-  //internal access to singleton instance holder (aka meyer singleton)
-  static CZeroconf*& GetrInternalRef();
+
+  //protects singleton creation/destruction
+  static long sm_singleton_guard;
+  static CZeroconf* smp_instance;
 };
