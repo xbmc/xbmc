@@ -90,11 +90,14 @@
 #define __RingBuffer_h
 #include "utils/CriticalSection.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "utils/log.h"
+#ifdef _LINUX
+#include "PlatformInclude.h"
+#endif
 
 class CRingBuffer
 {
@@ -225,17 +228,22 @@ public:
 
   ///////////////////////////////////////////////////////////////////
   // Method: Append
-  // Purpose: Appends the content of the provided RingBuffer 
-  // Parameters: [in] buf - the buffer to append 
+  // Purpose: Appends the content of the provided RingBuffer
+  // Parameters: [in] buf - the buffer to append
   // Return Value: TRUE if successful. otherwise FALSE
   //
   BOOL Append(const CRingBuffer &buf)
   {
+    ::EnterCriticalSection(&m_critSection);
+
     if (m_pBuf == NULL)
       Create(buf.GetMaxReadSize() + 1);
 
     if (buf.GetMaxReadSize() > GetMaxWriteSize())
+    {
+      ::LeaveCriticalSection(&m_critSection );
       return FALSE;
+    }
 
     int iReadPtr = buf.m_iReadPtr;
     if (iReadPtr < buf.m_iWritePtr)
@@ -246,6 +254,8 @@ public:
       if (buf.m_iWritePtr > 0)
         WriteBinary(&buf.m_pBuf[0], buf.m_iWritePtr);
     }
+
+    ::LeaveCriticalSection(&m_critSection);
     return TRUE;
   }
 
@@ -283,7 +293,7 @@ public:
       }
       bResult = TRUE;
     }
-    else 
+    else
     {
       CLog::Log(LOGWARNING,"%s, buffer underflow! max size: %d. trying to read: %d", __FUNCTION__, GetMaxReadSize(), nBufLen);
     }
@@ -293,8 +303,8 @@ public:
 
   ///////////////////////////////////////////////////////////////////
   // Method: Copy
-  // Purpose: Copies the content of the provided RingBuffer 
-  // Parameters: [in] buf - the buffer to append 
+  // Purpose: Copies the content of the provided RingBuffer
+  // Parameters: [in] buf - the buffer to append
   // Return Value: TRUE if successful. otherwise FALSE
   //
   BOOL Copy(const CRingBuffer &buf)
@@ -339,7 +349,7 @@ public:
     ::EnterCriticalSection(&m_critSection );
     if ( m_pBuf )
     {
-      // not all the buffer is for our use. 1 bytes has to be kept as EOF marker. 
+      // not all the buffer is for our use. 1 bytes has to be kept as EOF marker.
       // otherwise we cant tell if (m_iReadPtr == m_iWritePtr) is full or empty
       if ( m_iWritePtr < m_iReadPtr )
         iBytes = m_iReadPtr - m_iWritePtr - 1;
@@ -384,7 +394,7 @@ public:
         }
         bResult = TRUE;
       }
-      else 
+      else
       {
         CLog::Log(LOGWARNING,"%s, buffer overflow! max size: %d. trying to write: %d", __FUNCTION__, GetMaxWriteSize(), nBufLen);
       }
@@ -427,7 +437,7 @@ public:
         }
         bResult = TRUE;
       }
-      else 
+      else
       {
         CLog::Log(LOGWARNING,"%s, buffer underflow! max size: %d. trying to read: %d", __FUNCTION__, GetMaxReadSize(), nBufLen);
       }
