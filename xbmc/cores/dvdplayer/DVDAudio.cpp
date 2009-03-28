@@ -80,10 +80,14 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 
   if(codec == CODEC_ID_AAC)
     codecstring = "AAC";
-  else if(codec == CODEC_ID_VORBIS)
+  else if (codec == CODEC_ID_VORBIS)
     codecstring = "Vorbis";
-  else if(codec == CODEC_ID_AC3 || codec == CODEC_ID_DTS)
-    codecstring = ""; // TODO, fix ac3 and dts decoder to output standard windows mapping
+  else if (codec == CODEC_ID_AC3)
+    codecstring = "AC3";
+  else if (codec == CODEC_ID_DTS)
+    codecstring = "DTS";
+  else if (codec == CODEC_ID_EAC3)
+    codecstring = "EAC3";
   else
     codecstring = "PCM";
 

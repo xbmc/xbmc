@@ -50,7 +50,7 @@ static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
 {
   long prev;
   
-  __asm __volatile
+  __asm
   {
     // Load parameters
     mov eax, expectedVal ;
