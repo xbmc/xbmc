@@ -1,37 +1,7 @@
-Icon/Images Usage:
-
-FOOOD's icons
-	big THANKS to FOOOD for your icons, and if you like them (you will) go to
-	http://www.foood.net/ for more awesome icon action.
-
-	(in case the curious george inside you has made you wonder what 
-	icons we used, look for the harddrive and cd envelope icons).
-
-	------------------------------
-	Hi Shaun,<itz->
-
-	Yea, you can use my icons as long as you put a credit to me
-	along & link to my site in there for using my icons/images in it.
-	Cheers,
-
-	Jono
-	FOOOD's Icons
-	------------------------------
-
-
-WEATHER ICONS
-	These weather images are (c) 2003 by Stardock Corporation.  All rights reserved.
-	Permission:Stardock gives you permission to distribute these images and or icons
-	freely as long as this permission document is included. 
-
-
-NETWORK ICON - KDE icon, under the GPL it's free to use especially in XBMC which is open source.
-
 ---------------------------------------------------------------------------
 
-
 NOTE! The LGPL below is copyrighted by the Free Software Foundation, but 
-the instance of code that it refers to (the kde libraries) are copyrighted 
+the instance of code that it refers to (XBMC) is copyrighted 
 by the authors who actually wrote it.
 				   
 ---------------------------------------------------------------------------
