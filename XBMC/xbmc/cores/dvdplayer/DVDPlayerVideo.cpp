@@ -887,16 +887,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
 #ifdef HAS_VIDEO_PLAYBACK
   
-  float maxfps;
-#ifndef HAS_SDL
-  maxfps = g_renderManager.GetMaximumFPS();
-#else
-  if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS || g_videoConfig.GetVSyncMode() == VSYNC_VIDEO) 
-    maxfps = g_VideoReferenceClock.GetRefreshRate();
-  else
-    maxfps = 1000.0f;
-#endif
-    
+  float maxfps = g_renderManager.GetMaximumFPS();
   if( m_speed != DVD_PLAYSPEED_NORMAL && m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps)
   {
     // calculate frame dropping pattern to render at this speed
@@ -920,7 +911,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     m_droptime = 0.0f;
     m_dropbase = 0.0f;
   }
-
+  
   // set fieldsync if picture is interlaced
   EFIELDSYNC mDisplayField = FS_NONE;
   if( pPicture->iFlags & DVP_FLAG_INTERLACED )

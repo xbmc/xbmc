@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "RenderManager.h"
 #include "utils/CriticalSection.h"
+#include "VideoReferenceClock.h"
 
 #ifndef HAS_SDL
 #include "PixelShaderRenderer.h"
@@ -296,7 +297,7 @@ float CXBoxRenderManager::GetMaximumFPS()
   float fps;
 
   if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS || g_videoConfig.GetVSyncMode() == VSYNC_VIDEO) 
-    fps = g_graphicsContext.GetFPS();
+    fps = g_VideoReferenceClock.GetRefreshRate();
   else
     fps = 1000.0f;
 
