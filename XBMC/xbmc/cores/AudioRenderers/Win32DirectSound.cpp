@@ -494,6 +494,8 @@ void CWin32DirectSound::MapDataIntoBuffer(unsigned char* pData, DWORD len, unsig
 // Our output order is FL, FR, C, LFE, SL, SR,
 const unsigned char ac3_51_Map[] = {0,1,4,5,2,3};    // Sent as FL, FR, SL, SR, C, LFE
 const unsigned char ac3_50_Map[] = {0,1,4,2,3};      // Sent as FL, FR, SL, SR, C
+const unsigned char eac3_51_Map[] = {0,4,1,2,3,5};   // Sent as FL, C, FR, SL, SR, LFE
+const unsigned char eac3_50_Map[] = {0,4,1,2,3};     // Sent as FL, C, FR, SL, SR, LFE
 const unsigned char aac_51_Map[] = {4,0,1,2,3,5};    // Sent as C, FL, FR, SL, SR, LFE
 const unsigned char aac_50_Map[] = {4,0,1,2,3};      // Sent as C, FL, FR, SL, SR
 const unsigned char vorbis_51_Map[] = {0,4,1,2,3,5}; // Sent as FL, C, FR, SL, SR, LFE
@@ -523,7 +525,13 @@ unsigned char* CWin32DirectSound::GetChannelMap(unsigned int channels, const cha
     else if (channels == 5)
       return (unsigned char*)vorbis_50_Map;
   }
-
+  else if (!strcmp(strAudioCodec, "EAC3"))
+  {
+    if (channels == 6)
+      return (unsigned char*)eac3_51_Map;
+    else if (channels == 5)
+      return (unsigned char*)eac3_50_Map;
+  }
   return NULL; // We don't know how to map this, so just leave it alone
 }
 
