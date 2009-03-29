@@ -482,7 +482,7 @@ VdpStatus CVDPAU::FiniVDPAUProcs()
 {
   VdpStatus vdp_st;
   if (!vdp_device) return VDP_STATUS_OK;
-  
+
   vdp_st = vdp_device_destroy(vdp_device);
   CheckStatus(vdp_st, __LINE__);
 
@@ -529,6 +529,14 @@ VdpStatus CVDPAU::FiniVDPAUOutput()
   CheckStatus(vdp_st, __LINE__);
 
   vdp_st = vdp_presentation_queue_target_destroy(vdp_flip_target);
+  CheckStatus(vdp_st, __LINE__);
+
+  for (int i = 0; i < NUM_OUTPUT_SURFACES; i++) {
+    vdp_st = vdp_output_surface_destroy(outputSurfaces[i]);
+    CheckStatus(vdp_st, __LINE__);
+  }
+
+  vdp_st = vdp_video_mixer_destroy(videoMixer);
   CheckStatus(vdp_st, __LINE__);
 
   for(int i = 0; i < m_videoSurfaces.size(); i++)
@@ -647,7 +655,7 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   CheckStatus(vdp_st, __LINE__);
 
   // Creation of outputSurfaces
-  for (i = 0; i < NUM_OUTPUT_SURFACES; i++) {
+  for (int i = 0; i < NUM_OUTPUT_SURFACES; i++) {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
                                        vid_width,
@@ -692,7 +700,6 @@ enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CVDPAU*               vdp = ctx->GetContextVDPAU();
   //pSingleton->CheckRecover();
   avctx->get_buffer      = FFGetBuffer;
   avctx->release_buffer  = FFReleaseBuffer;
