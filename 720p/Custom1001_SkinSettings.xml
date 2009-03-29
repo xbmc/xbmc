@@ -126,15 +126,15 @@
           <onclick>Skin.ToggleSetting(HideNoThumbIcon)</onclick>
           <selected>Skin.HasSetting(HideNoThumbIcon)</selected>
         </control>
-
+        -->
         <control type="radiobutton" id="210">
           <description>Hide Thumbs in List View (All)</description>
-          <label>$LOCALIZE[31680] ($LOCALIZE[593])</label>
+          <label>$LOCALIZE[31680]</label>
           <onclick>Skin.ToggleSetting(HideListViewIcons)</onclick>
           <selected>Skin.HasSetting(HideListViewIcons)</selected>
           <include>GeneralSkinOption</include>
         </control>
-
+        <!--
         <control type="radiobutton" id="215">
           <description>Hide Watched/Unwatched icons</description>
           <include>GeneralSkinOption</include>
