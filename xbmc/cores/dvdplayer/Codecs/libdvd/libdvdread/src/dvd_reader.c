@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2001-2004 Billy Biggs <vektor@dumbterm.net>,
- *                         Håkan Hjort <d95hjort@dtek.chalmers.se>,
- *                         Björn Englund <d4bjorn@dtek.chalmers.se>
+ *                         HÃ‚kan Hjort <d95hjort@dtek.chalmers.se>,
+ *                         BjË†rn Englund <d4bjorn@dtek.chalmers.se>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@
 #include <unistd.h>
 #include <limits.h>
 #include <dirent.h>
+
+#define WITH_CACHE
 
 /* misc win32 helpers */
 #ifdef WIN32
@@ -103,6 +105,10 @@ struct dvd_file_s {
     uint32_t lb_start;
     uint32_t seek_pos;
 
+#ifdef WITH_CACHE
+    char cache[DVD_VIDEO_LB_LEN];
+    uint32_t lb_cache;
+#endif
     /* Information required for a directory path drive. */
     size_t title_sizes[ TITLES_MAX ];
     dvd_input_t title_devs[ TITLES_MAX ];
@@ -363,14 +369,14 @@ dvd_reader_t *DVDOpen( const char *ppath )
     ret = stat( path, &fileinfo );
 
     if( ret < 0 ) {
-
+#if 0
         /* maybe "host:port" url? try opening it with acCeSS library */
         if( strchr(path,':') ) {
 			ret_val = DVDOpenImageFile( path, have_css );
 			free(path);
 	        return ret_val;
         }
-
+#endif
 	/* If we can't stat the file, give up */
 	fprintf( stderr, "libdvdread: Can't stat %s\n", path );
 	perror("");
@@ -585,6 +591,10 @@ static dvd_file_t *DVDOpenFileUDF( dvd_reader_t *dvd, char *filename )
     memset( dvd_file->title_devs, 0, sizeof( dvd_file->title_devs ) );
     dvd_file->filesize = len / DVD_VIDEO_LB_LEN;
 
+#ifdef WITH_CACHE
+    dvd_file->lb_cache = -1;
+#endif
+
     return dvd_file;
 }
 
@@ -596,6 +606,18 @@ static dvd_file_t *DVDOpenFileUDF( dvd_reader_t *dvd, char *filename )
  */
 static int findDirFile( const char *path, const char *file, char *filename )
 {
+#if defined(_XBMC)
+	struct stat fileinfo;
+
+	// no emulated opendir function in xbmc, so we'll
+	// check if the file exists by stat'ing it ...
+	sprintf(filename, "%s%s%s", path,
+                     ( ( path[ strlen( path ) - 1 ] == '/' ) ? "" : "/" ),
+                     file );
+
+	if (stat(filename, &fileinfo) == 0) return 0;
+	
+#else
     DIR *dir;
     struct dirent *ent;
 
@@ -613,6 +635,7 @@ static int findDirFile( const char *path, const char *file, char *filename )
     }
 
     closedir( dir );
+#endif // _XBMC
     return -1;
 }
 
@@ -691,6 +714,9 @@ static dvd_file_t *DVDOpenFilePath( dvd_reader_t *dvd, char *filename )
     dvd_file->title_devs[ 0 ] = dev;
     dvd_file->filesize = dvd_file->title_sizes[ 0 ];
 
+#ifdef WITH_CACHE
+    dvd_file->lb_cache = -1;
+#endif
     return dvd_file;
 }
 
@@ -718,6 +744,9 @@ static dvd_file_t *DVDOpenVOBUDF( dvd_reader_t *dvd, int title, int menu )
     memset( dvd_file->title_devs, 0, sizeof( dvd_file->title_devs ) );
     dvd_file->filesize = len / DVD_VIDEO_LB_LEN;
 
+#ifdef WITH_CACHE
+    dvd_file->lb_cache = -1;
+#endif
     /* Calculate the complete file size for every file in the VOBS */
     if( !menu ) {
         int cur;
@@ -760,6 +789,10 @@ static dvd_file_t *DVDOpenVOBPath( dvd_reader_t *dvd, int title, int menu )
     memset( dvd_file->title_sizes, 0, sizeof( dvd_file->title_sizes ) );
     memset( dvd_file->title_devs, 0, sizeof( dvd_file->title_devs ) );
     dvd_file->filesize = 0;
+
+#ifdef WITH_CACHE
+    dvd_file->lb_cache = -1;
+#endif
 
     if( menu ) {
         dvd_input_t dev;
@@ -999,6 +1032,100 @@ static int DVDReadBlocksPath( dvd_file_t *dvd_file, unsigned int offset,
     return ret + ret2;
 }
 
+#ifdef WITH_CACHE
+
+/* returns true aslong as the sector isn't all zeros */
+inline int DVDCheckSector(unsigned char *data, int offset)
+{
+  int i = 0;
+  int32_t *p = (int32_t*)data + (DVD_VIDEO_LB_LEN>>2)*offset;
+  for(;i<(DVD_VIDEO_LB_LEN<<2);i++) {
+    if(*(p+i) != 0)
+      break;
+  }
+  return (i!=(DVD_VIDEO_LB_LEN>>2));
+}
+
+int DVDReadBlocksCached( dvd_file_t *dvd_file, int offset, 
+		       size_t block_count, unsigned char *data, int encrypted )
+{
+    int ret=0;
+    /* Check arguments. */
+    if( dvd_file == NULL || offset < 0 || data == NULL )
+      return -1;
+
+    if(encrypted & DVDINPUT_READ_DECRYPT) {
+      /* Hack, and it will still fail for multiple opens in a threaded app ! */
+      if( dvd_file->dvd->css_title != dvd_file->css_title ) {
+        dvd_file->dvd->css_title = dvd_file->css_title;
+        if( dvd_file->dvd->isImageFile ) {
+	  dvdinput_title( dvd_file->dvd->dev, (int)dvd_file->lb_start );
+        } 
+        /* Here each vobu has it's own dvdcss handle, so no need to update 
+        else {
+	  dvdinput_title( dvd_file->title_devs[ 0 ], (int)dvd_file->lb_start );
+        }*/
+      }
+    }
+
+    /* check if first sector is in cache */
+    int cachehit = 0;
+    if( offset == dvd_file->lb_cache ) {
+      memcpy( data, dvd_file->cache, DVD_VIDEO_LB_LEN );
+      block_count--;
+      offset++;
+      data+=DVD_VIDEO_LB_LEN;
+      cachehit = 1;
+    }
+
+
+    if( block_count > 0 )
+    {
+      if( dvd_file->dvd->isImageFile )
+	        ret = DVDReadBlocksUDF( dvd_file, (uint32_t)offset, 
+				            block_count, data, encrypted );
+      else
+	        ret = DVDReadBlocksPath( dvd_file, (unsigned int)offset, 
+				            block_count, data, encrypted );      
+
+      if(ret<0)
+        return ret;
+
+      /* here is a hack for drive wich don't handle layerchange properly */
+      /* they start returning zero data while laser is shifting position */
+      /* normally just doing a reread will get the correct data */
+      if( dvd_file->dvd->isImageFile )
+      {
+        /* check sectors from the back */
+        int count = ret; /* previous call could have returned fewer than requested */
+        int i = count-1;
+        for(;i>=0;i--)
+          if(!DVDCheckSector(data, i)) break;
+
+        if(i>=0) {
+          fprintf( stderr, "libdvdread: potential layer change. %d zero sectors detected starting at %d!\n", i+1, offset);
+
+          /* reread the invalid sectors */
+          count = DVDReadBlocksUDF( dvd_file, (uint32_t)offset+i,
+				            count-i, data+DVD_VIDEO_LB_LEN*i, encrypted );
+
+          if(count<0)
+            return count;
+        }
+      }
+
+    }
+    
+    if(ret>0)
+    { /* store last sector read into cache */
+      dvd_file->lb_cache = offset+ret-1;
+      memcpy( dvd_file->cache, data+(DVD_VIDEO_LB_LEN*(ret-1)), DVD_VIDEO_LB_LEN );
+    }
+    
+    return (ssize_t)(ret+cachehit);
+}
+#endif
+
 /* This is broken reading more than 2Gb at a time is ssize_t is 32-bit. */
 ssize_t DVDReadBlocks( dvd_file_t *dvd_file, int offset,
 		       size_t block_count, unsigned char *data )
@@ -1007,6 +1134,10 @@ ssize_t DVDReadBlocks( dvd_file_t *dvd_file, int offset,
     /* Check arguments. */
     if( dvd_file == NULL || offset < 0 || data == NULL )
       return -1;
+
+#ifdef WITH_CACHE
+    return (ssize_t)DVDReadBlocksCached( dvd_file, offset, block_count, data, DVDINPUT_READ_DECRYPT );
+#endif
 
     /* Hack, and it will still fail for multiple opens in a threaded app ! */
     if( dvd_file->dvd->css_title != dvd_file->css_title ) {
@@ -1090,6 +1221,10 @@ ssize_t DVDReadBytes( dvd_file_t *dvd_file, void *data, size_t byte_size )
         return 0;
     }
 
+#ifdef WITH_CACHE
+	ret = DVDReadBlocksCached( dvd_file, (uint32_t) seek_sector, 
+				(size_t) numsec, secbuf, DVDINPUT_NOFLAGS );
+#else
     if( dvd_file->dvd->isImageFile ) {
 	ret = DVDReadBlocksUDF( dvd_file, (uint32_t) seek_sector,
 				(size_t) numsec, secbuf, DVDINPUT_NOFLAGS );
@@ -1097,6 +1232,7 @@ ssize_t DVDReadBytes( dvd_file_t *dvd_file, void *data, size_t byte_size )
 	ret = DVDReadBlocksPath( dvd_file, seek_sector,
 				 (size_t) numsec, secbuf, DVDINPUT_NOFLAGS );
     }
+#endif
 
     if( ret != (int) numsec ) {
         free( secbuf_base );

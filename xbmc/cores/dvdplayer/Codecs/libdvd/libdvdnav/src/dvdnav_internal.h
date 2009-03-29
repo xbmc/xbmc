@@ -28,6 +28,14 @@
 #include "config.h"
 #endif
 
+/* Uncomment for VM command tracing */
+/* #define TRACE */
+
+#include "decoder.h"
+#include "dvdnav.h"
+#include "vm.h"
+#include "vmcmd.h"
+
 #ifdef WIN32
 
 /* pthread_mutex_* wrapper for win32 */
@@ -177,6 +185,18 @@ struct dvdnav_s {
 
 /* converts a dvd_time_t to PTS ticks */
 int64_t dvdnav_convert_time(dvd_time_t *time);
+
+/*
+ * Get current playback state
+ */
+dvdnav_status_t dvdnav_get_state(dvdnav_t *this, dvd_state_t *save_state);
+
+/*
+ * Resume playback state
+ */
+dvdnav_status_t dvdnav_set_state(dvdnav_t *this, dvd_state_t *save_state);
+
+
 
 /** USEFUL MACROS **/
 

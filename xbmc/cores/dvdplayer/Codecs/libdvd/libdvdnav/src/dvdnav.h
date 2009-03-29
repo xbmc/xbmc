@@ -676,6 +676,42 @@ int8_t dvdnav_is_domain_vtsm(dvdnav_t *self);
  */
 int8_t dvdnav_is_domain_vts(dvdnav_t *self);
 
+////////// RATDVD stuff ///////////////
+
+/*
+ * Get the number of audio streams.
+ */
+int32_t dvdnav_get_audio_stream_count(dvdnav_t * self);
+
+/*
+ * Get the number of subpicture streams.
+ */
+int32_t dvdnav_get_subpicture_stream_count(dvdnav_t * self);
+
+/*
+ * Get attributes of the current audio stream.
+ */
+dvdnav_status_t dvdnav_get_audio_info(dvdnav_t * self, int32_t streamid, audio_attr_t* audio_attributes);
+
+/*
+ * Get attributes of the current subpicture stream.
+ */
+dvdnav_status_t dvdnav_get_stitle_info(dvdnav_t * self, int32_t streamid, subp_attr_t* stitle_attributes);
+
+/*
+ * Get information about the current video stream
+ */
+dvdnav_status_t dvdnav_get_video_info(dvdnav_t * self, video_attr_t* video_attributes);
+
+/*
+ * Select the audio stream to be played
+ */
+dvdnav_status_t dvdnav_audio_change(dvdnav_t *self, int32_t audio);
+
+/*
+ * Select the spu stream to be displayed
+ */
+dvdnav_status_t dvdnav_subpicture_change(dvdnav_t *self, int32_t subpicture);
 
 #ifdef __cplusplus
 }

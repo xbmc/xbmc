@@ -157,12 +157,12 @@ int vm_get_subp_stream(vm_t *vm, int subpN, int mode);
 int vm_get_audio_active_stream(vm_t *vm);
 int vm_get_subp_active_stream(vm_t *vm, int mode);
 void vm_get_angle_info(vm_t *vm, int *current, int *num_avail);
-#if 0
+// _XBMC #if 0
 /* currently unused */
 void vm_get_audio_info(vm_t *vm, int *current, int *num_avail);
 void vm_get_subp_info(vm_t *vm, int *current, int *num_avail);
 void vm_get_video_res(vm_t *vm, int *width, int *height);
-#endif
+// _XBMC #endif
 int  vm_get_video_aspect(vm_t *vm);
 int  vm_get_video_scale_permission(vm_t *vm);
 video_attr_t vm_get_video_attr(vm_t *vm);
@@ -170,6 +170,9 @@ audio_attr_t vm_get_audio_attr(vm_t *vm, int streamN);
 subp_attr_t  vm_get_subp_attr(vm_t *vm, int streamN);
 ifo_handle_t *vm_get_title_ifo(vm_t *vm, uint32_t title);
 void vm_ifo_close(ifo_handle_t *ifo);
+
+int vm_get_state(vm_t *vm, dvd_state_t *save_state);
+int vm_set_state(vm_t *vm, dvd_state_t *save_state);
 
 /* Uncomment for VM command tracing */
 /* #define TRACE */
