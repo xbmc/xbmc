@@ -2260,7 +2260,7 @@ void CUtil::GetFatXQualifiedPath(CStdString& strFileNameAndPath)
     strFileNameAndPath += sep+strToken;
   }
   
-  if (!(strFileName.IsEmpty()))
+  if (!strFileName.IsEmpty())
   {
     CUtil::RemoveIllegalChars(strFileName);
     
@@ -2317,7 +2317,7 @@ bool CUtil::ShortenFileName(CStdString& strFileNameAndPath)
     strFile += strExtension;
 
     CStdString strNewFile = strPath;
-    if (!CUtil::HasSlashAtEnd(strPath))
+    if (!CUtil::HasSlashAtEnd(strNewFile) && !strNewFile.IsEmpty())
       strNewFile += "\\";
 
     strNewFile += strFile;
