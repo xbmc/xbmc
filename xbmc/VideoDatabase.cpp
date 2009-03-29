@@ -4118,7 +4118,11 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
           // only if the number of videos watched is equal to the total number (i.e. every video watched)
           pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(2).get_asInteger() == m_pDS->fv(1).get_asInteger()) ? 1 : 0;
         }
-        items.Add(pItem);
+
+        // take care of dupes ..
+        if (!items.Contains(pItem->m_strPath))
+          items.Add(pItem);
+
         m_pDS->next();
       }
       m_pDS->close();
