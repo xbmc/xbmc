@@ -47,7 +47,7 @@
 			<posy>0</posy>
 			<width>280</width>
 			<height>44</height>
-			<texture>Button_Side_NoFocus.png</texture>
+			<texture border="32,0,0,0">Button_Side_NoFocus.png</texture>
 			<visible>!ControlGroup(9005).HasFocus</visible>
 		</control>
 		<control type="image">
@@ -56,7 +56,7 @@
 			<posy>0</posy>
 			<width>280</width>
 			<height>44</height>
-			<texture>Button_Side_Focus.png</texture>
+			<texture border="32,0,0,0">Button_Side_Focus.png</texture>
 			<visible>ControlGroup(9005).HasFocus</visible>
 			<animation effect="fade" start="100" end="70" time="900" pulse="true" condition="ControlGroup(9005).HasFocus">conditional</animation>
 		</control>
@@ -185,7 +185,7 @@
 				<posy>0</posy>
 				<width>280</width>
 				<height>44</height>
-				<texture>Button_Side_NoFocus.png</texture>
+				<texture border="32,0,0,0">Button_Side_NoFocus.png</texture>
 				<visible>!Control.HasFocus(607) + !Control.HasFocus(608)</visible>
 			</control>
 			<control type="image">
@@ -194,7 +194,7 @@
 				<posy>0</posy>
 				<width>280</width>
 				<height>44</height>
-				<texture>Button_Side_Focus.png</texture>
+				<texture border="32,0,0,0">Button_Side_Focus.png</texture>
 				<visible>Control.HasFocus(607) | Control.HasFocus(608)</visible>
 				<animation effect="fade" start="100" end="70" time="900" pulse="true" condition="Control.HasFocus(607) | Control.HasFocus(608)">conditional</animation>
 			</control>
