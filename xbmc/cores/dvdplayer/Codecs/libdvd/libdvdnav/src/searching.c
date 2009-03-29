@@ -100,6 +100,7 @@ static dvdnav_status_t dvdnav_scan_admap(dvdnav_t *this, int32_t domain, uint32_
   return DVDNAV_STATUS_ERR;
 }
 
+/* ssd/xbmc very different source code here.
 /* FIXME: right now, this function does not use the time tables but interpolates
    only the cell times */
 dvdnav_status_t dvdnav_time_search(dvdnav_t *this,
@@ -202,6 +203,7 @@ dvdnav_status_t dvdnav_sector_search(dvdnav_t *this,
 
   result = dvdnav_get_position(this, &target, &length);
   if(!result) {
+    printerr("Cannot get current position");
     return DVDNAV_STATUS_ERR;
   }
 
@@ -623,4 +625,63 @@ fail:
   if(!retval && tmp)
     free(tmp);
   return retval;
+}
+
+dvdnav_status_t dvdnav_get_state(dvdnav_t *this, dvd_state_t *save_state)
+{
+  if(!this || !this->vm) return DVDNAV_STATUS_ERR;
+
+  pthread_mutex_lock(&this->vm_lock);
+  
+  if( !vm_get_state(this->vm, save_state) )
+  {
+    printerr("Failed to get vm state.");
+    pthread_mutex_unlock(&this->vm_lock);
+    return DVDNAV_STATUS_ERR;
+  }
+  
+  pthread_mutex_unlock(&this->vm_lock);
+  return DVDNAV_STATUS_OK;
+}
+
+dvdnav_status_t dvdnav_set_state(dvdnav_t *this, dvd_state_t *save_state)
+{
+  if(!this || !this->vm)
+  {
+    printerr("Passed a NULL pointer.");
+    return DVDNAV_STATUS_ERR;
+  }
+
+  if(!this->started) {
+    printerr("Virtual DVD machine not started.");
+    return DVDNAV_STATUS_ERR;
+  }
+
+  pthread_mutex_lock(&this->vm_lock);
+
+  /* reset the dvdnav state */
+  memset(&this->pci,0,sizeof(this->pci));
+  memset(&this->dsi,0,sizeof(this->dsi));
+  this->last_cmd_nav_lbn = SRI_END_OF_CELL;
+
+  /* Set initial values of flags */  
+  this->position_current.still = 0;
+  this->skip_still = 0;
+  this->sync_wait = 0;
+  this->sync_wait_skip = 0;
+  this->spu_clut_changed = 0;
+
+
+  /* set the state. this will also start the vm on that state */
+  /* means the next read block should be comming from that new */
+  /* state */
+  if( !vm_set_state(this->vm, save_state) )
+  {
+    printerr("Failed to set vm state.");
+    pthread_mutex_unlock(&this->vm_lock);
+    return DVDNAV_STATUS_ERR;
+  } 
+
+  pthread_mutex_unlock(&this->vm_lock);
+  return DVDNAV_STATUS_OK;
 }

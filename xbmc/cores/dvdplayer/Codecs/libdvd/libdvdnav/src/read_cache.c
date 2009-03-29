@@ -342,7 +342,7 @@ dvdnav_status_t dvdnav_free_cache_block(dvdnav_t *self, unsigned char *buf) {
   pthread_mutex_lock(&cache->lock);
   for (i = 0; i < READ_CACHE_CHUNKS; i++) {
     if (cache->chunk[i].cache_buffer && buf >= cache->chunk[i].cache_buffer &&
-        buf < cache->chunk[i].cache_buffer + cache->chunk[i].cache_malloc_size * DVD_VIDEO_LB_LEN) {
+        buf < cache->chunk[i].cache_buffer + cache->chunk[i].cache_malloc_size * DVD_VIDEO_LB_LEN && cache->chunk[i].usage_count > 0) {
       cache->chunk[i].usage_count--;
     }
   }

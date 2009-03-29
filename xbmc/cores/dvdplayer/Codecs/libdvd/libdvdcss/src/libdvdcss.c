@@ -195,6 +195,10 @@ LIBDVDCSS_EXPORT dvdcss_t dvdcss_open ( char *psz_target )
     dvdcss->b_debug = 0;
     dvdcss->b_errors = 0;
 
+#ifdef WITH_CACHE
+    dvdcss->buffer_size = 0;
+#endif
+
     /*
      *  Find verbosity from DVDCSS_VERBOSE environment variable
      */
@@ -363,6 +367,8 @@ LIBDVDCSS_EXPORT dvdcss_t dvdcss_open ( char *psz_target )
             dvdcss->b_scrambled = i_ret;
         }
     }
+    /* if wo don't have b_ioctls, we don't have a disk key, make sure area is nulled */
+    memset( dvdcss->css.p_disc_key, 0, KEY_SIZE );
 
     /* If disc is CSS protected and the ioctls work, authenticate the drive */
     if( dvdcss->b_scrambled && dvdcss->b_ioctls )
@@ -512,8 +518,26 @@ LIBDVDCSS_EXPORT dvdcss_t dvdcss_open ( char *psz_target )
             goto nocache;
         }
 
+#ifdef _XBOX
+        //due to xbox file system having a limited length on folders/files, 
+        //make separate folder for disk name first
+        if(psz_title[0] == '\0')
+          strcat(psz_title, "NONAME");
+
+        i += sprintf( dvdcss->psz_cachefile + i, "/%s", psz_title);
+        
+        i_ret = mkdir( dvdcss->psz_cachefile, 0777 );
+        if( i_ret < 0 && errno != EEXIST )
+        {
+            print_error( dvdcss, "failed creating cache titledirectory" );
+            dvdcss->psz_cachefile[0] = '\0';
+            goto nocache;
+        }
+        i += sprintf( dvdcss->psz_cachefile + i, "/%s%s", psz_serial, psz_key );
+#else
         i += sprintf( dvdcss->psz_cachefile + i, "/%s-%s%s", psz_title,
                       psz_serial, psz_key );
+#endif
 #if !defined( WIN32 ) || defined( SYS_CYGWIN )
         i_ret = mkdir( dvdcss->psz_cachefile, 0755 );
 #else
