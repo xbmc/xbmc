@@ -315,6 +315,7 @@ void CFileCurl::Close()
   m_state->Disconnect();
 
   m_url.Empty();
+  m_referer.Empty();
 
   /* cleanup */
   if( m_curlAliasList )
@@ -389,7 +390,9 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   // setup Referer header if needed
   if (!m_referer.IsEmpty())
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
-
+  else
+    g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
+    
   // setup any requested authentication
   if( m_ftpauth.length() > 0 )
   {
