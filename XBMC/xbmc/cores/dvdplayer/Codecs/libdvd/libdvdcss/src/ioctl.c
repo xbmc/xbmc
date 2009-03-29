@@ -373,6 +373,37 @@ int ioctl_ReadDiscKey( int i_fd, int *pi_agid, uint8_t *p_key )
 
     memcpy( p_key, dvdbs.discKeyStructures, DVD_DISCKEY_SIZE );
 
+#elif defined( _XBOX )
+    // the next piece of code will read the disc key on the xbox for all drives (samsung included)
+    // but for some reason it takes 15 - 20 seconds longer to load a dvd if mplayer has the dvd key
+    // so we let this part fail and will only use the modified ioctl_ReadTitleKey code.
+    // don't get this delay, and i'm surprised it worked as the ReadTitleKey function didn't work.
+
+    DWORD dwBytesRead;
+	DVD_READ_STRUCTURE st;
+    char buffer[DVD_DISCKEY_SIZE];
+    
+    memset( &buffer, 0, sizeof( buffer ) );
+	memset( &st, 0, sizeof( st ) );
+
+    st.BlockByteOffset.QuadPart = 0;
+    st.SessionId = *pi_agid;
+    st.Format = DvdDiskKeyDescriptor;
+
+    i_ret = DeviceIoControl((HANDLE) i_fd, IOCTL_DVD_READ_STRUCTURE, &st,
+				sizeof(st), buffer, DVD_DISCKEY_SIZE, &dwBytesRead, NULL ) ? 0 : -1;
+
+	if (i_ret < 0)	// didn't work
+	{
+		printf("Failed to read disc key\n");
+		return i_ret;
+	}
+    
+	// copy the returned key into our key buffer
+	int i;
+    for (i = 0; i < DVD_DISCKEY_SIZE; i++)
+		p_key[i] = buffer[i+4];
+
 #elif defined( WIN32 )
     if( WIN2K ) /* NT/2k/XP */
     {
@@ -541,6 +572,25 @@ int ioctl_ReadTitleKey( int i_fd, int *pi_agid, int i_pos, uint8_t *p_key )
 
     memcpy( p_key, dvdbs.titleKeyValue, DVD_KEY_SIZE );
 
+#elif defined( _XBOX ) && 0 //Faulty wrong key returned, original for WIN32 works thou so use it instead
+    DWORD dwBytesRead;
+    DVD_READ_STRUCTURE st;
+    char buffer[2048+4];
+
+    memset( &buffer, 0, sizeof( buffer ) );
+		
+    st.BlockByteOffset.QuadPart = (LONGLONG) i_pos * 2048 /*DVDCSS_BLOCK_SIZE*/;
+    st.SessionId = *pi_agid;
+    st.Format = DvdDiskKeyDescriptor;
+		
+    i_ret = DeviceIoControl((HANDLE) i_fd, IOCTL_DVD_READ_STRUCTURE, &st, sizeof(st), buffer, 2048+4, &dwBytesRead, NULL ) ? 0 : -1;
+    if( i_ret < 0 )
+    {
+      return i_ret;
+    }
+
+    memcpy( p_key, &(buffer[4]), 2048);
+
 #elif defined( WIN32 )
     if( WIN2K ) /* NT/2k/XP */
     {
@@ -693,8 +743,13 @@ int ioctl_ReportAgid( int i_fd, int *pi_agid )
         ULONG id;
         DWORD tmp;
 
+#if defined( _XBOX)
+        i_ret = DeviceIoControl( (HANDLE) i_fd, IOCTL_DVD_START_SESSION,
+						NULL, 0, &id, sizeof(id), &tmp, NULL ) ? 0 : -1;
+#else
         i_ret = DeviceIoControl( (HANDLE) i_fd, IOCTL_DVD_START_SESSION,
                         &tmp, 4, &id, sizeof( id ), &tmp, NULL ) ? 0 : -1;
+#endif
 
         *pi_agid = id;
     }
@@ -1336,8 +1391,13 @@ int ioctl_SendChallenge( int i_fd, int *pi_agid, uint8_t *p_challenge )
 
         memcpy( key->KeyData, p_challenge, DVD_CHALLENGE_SIZE );
 
+#if defined(_XBOX)
+        i_ret = DeviceIoControl( (HANDLE) i_fd, IOCTL_DVD_SEND_KEY, key,
+                 key->KeyLength, NULL, 0, &tmp, NULL ) ? 0 : -1;
+#else
         i_ret = DeviceIoControl( (HANDLE) i_fd, IOCTL_DVD_SEND_KEY, key,
                  key->KeyLength, key, key->KeyLength, &tmp, NULL ) ? 0 : -1;
+#endif
     }
     else
     {

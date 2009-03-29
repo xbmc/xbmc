@@ -321,7 +321,11 @@ typedef struct SCSI_PASS_THROUGH_DIRECT
 typedef DWORD (CALLBACK *GETASPI32SUPPORTINFO)(VOID);
 typedef DWORD (CALLBACK *SENDASPI32COMMAND)(LPVOID);
 
+#if defined(_XBOX) || defined(WIN32)
+#define WIN2K	1
+#else
 #define WIN2K               ( GetVersion() < 0x80000000 )
+#endif	// _XBOX
 #define ASPI_HAID           0
 #define ASPI_TARGET         0
 #define DTYPE_CDROM         0x05

@@ -23,6 +23,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
  *****************************************************************************/
 
+/*
+	Modifications for XBMC are all contained within _XBOX (real xbox hardware) or WITH_CACHE
+*/
+
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
@@ -296,11 +300,20 @@ int _dvdcss_open ( dvdcss_t dvdcss )
 
 #if defined( WIN32 )
     dvdcss->b_file = 1;
+#if defined( _XBOX )
+	// If we've passed over the device string make sure we don't try
+	// to use file based handling (libc) - we want Win2k routines ...
+	if (!stricmp(psz_device, "\\Device\\Cdrom0"))
+		dvdcss->b_file = 0;
+	else
+		dvdcss->b_file = stricmp(psz_device, "D:");
+#else
     /* If device is "X:" or "X:\", we are not actually opening a file. */
     if (psz_device[0] && psz_device[1] == ':' &&
        (!psz_device[2] || (psz_device[2] == '\\' && !psz_device[3])))
         dvdcss->b_file = 0;
 
+#endif	// _XBOX
     /* Initialize readv temporary buffer */
     dvdcss->p_readv_buffer   = NULL;
     dvdcss->i_readv_buf_size = 0;
@@ -366,12 +379,14 @@ int _dvdcss_close ( dvdcss_t dvdcss )
     }
     else /* ASPI */
     {
+#if !defined(_XBOX)
         struct w32_aspidev *fd = (struct w32_aspidev *) dvdcss->i_fd;
 
         /* Unload aspi and free w32_aspidev structure */
         FreeLibrary( (HMODULE) fd->hASPI );
         free( (void*) dvdcss->i_fd );
     }
+#endif	// !_XBOX
 
     /* Free readv temporary buffer */
     if( dvdcss->p_readv_buffer )
@@ -424,9 +439,14 @@ static int libc_open ( dvdcss_t dvdcss, char const *psz_device )
 #if defined( WIN32 )
 static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
 {
+#ifdef _XBOX
+    char psz_dvd[70];
+    strcpy(psz_dvd, "cdrom0:");
+#else
     char psz_dvd[7];
     _snprintf( psz_dvd, 7, "\\\\.\\%c:", psz_device[0] );
 
+#endif
     /* To work around an M$ bug in IOCTL_DVD_READ_STRUCTURE, we need read
      * _and_ write access to the device (so we can make SCSI Pass Through
      * Requests). Unfortunately this is only allowed if you have
@@ -435,17 +455,24 @@ static int win2k_open ( dvdcss_t dvdcss, char const *psz_device )
      * won't send back the right result).
      * (See Microsoft Q241374: Read and Write Access Required for SCSI
      * Pass Through Requests) */
+
+#ifdef WITH_CACHE
+    DWORD flags = FILE_FLAG_NO_BUFFERING; /* we handle buffering ourself */
+#else
+    DWORD flags = FILE_FLAG_RANDOM_ACCESS;
+#endif //!_XBOX
+
     dvdcss->i_fd = (int)
                 CreateFile( psz_dvd, GENERIC_READ | GENERIC_WRITE,
                             FILE_SHARE_READ | FILE_SHARE_WRITE,
                             NULL, OPEN_EXISTING,
-                            FILE_FLAG_RANDOM_ACCESS, NULL );
+                            flags, NULL );
 
     if( (HANDLE) dvdcss->i_fd == INVALID_HANDLE_VALUE )
         dvdcss->i_fd = (int)
                     CreateFile( psz_dvd, GENERIC_READ, FILE_SHARE_READ,
                                 NULL, OPEN_EXISTING,
-                                FILE_FLAG_RANDOM_ACCESS, NULL );
+                                flags, NULL );
 
     if( (HANDLE) dvdcss->i_fd == INVALID_HANDLE_VALUE )
     {
@@ -610,6 +637,9 @@ static int libc_seek( dvdcss_t dvdcss, int i_blocks )
 static int win2k_seek( dvdcss_t dvdcss, int i_blocks )
 {
     LARGE_INTEGER li_seek;
+#ifdef WITH_CACHE
+    int iBytesToSkip;
+#endif
 
 #ifndef INVALID_SET_FILE_POINTER
 #   define INVALID_SET_FILE_POINTER ((DWORD)-1)
@@ -620,6 +650,28 @@ static int win2k_seek( dvdcss_t dvdcss, int i_blocks )
         /* We are already in position */
         return i_blocks;
     }
+
+#ifdef WITH_CACHE
+
+    // if our buffer contains the position which we want to seek too, we can
+    // just decrease dwCacheBufferSize
+    iBytesToSkip = (i_blocks - dvdcss->i_pos) * DVDCSS_BLOCK_SIZE;
+    if (iBytesToSkip > 0 && iBytesToSkip < dvdcss->buffer_size)
+    {
+      dvdcss->buffer_size -= iBytesToSkip;
+      dvdcss->i_pos = i_blocks;
+      return dvdcss->i_pos;
+    }
+    else if (iBytesToSkip < 0 && (DISC_CACHE_SIZE - dvdcss->buffer_size) >= -iBytesToSkip)
+    {
+      // we want to seek backwards, and we have enough old data in our buffer
+      dvdcss->buffer_size -= iBytesToSkip; // since iBytesToSkip is negative, dwCacheBufferSize will get bigger
+      dvdcss->i_pos = i_blocks;
+      return dvdcss->i_pos;
+    }
+    else dvdcss->buffer_size = 0;
+    
+#endif
 
     li_seek.QuadPart = (LONGLONG)i_blocks * DVDCSS_BLOCK_SIZE;
 
@@ -710,6 +762,66 @@ static int win2k_read ( dvdcss_t dvdcss, void *p_buffer, int i_blocks )
 {
     int i_bytes;
 
+#ifdef WITH_CACHE
+
+  if (dvdcss->buffer_size < i_blocks * DVDCSS_BLOCK_SIZE)
+  {
+    // we don't have enough data in our buffer
+    int iRemaining = i_blocks * DVDCSS_BLOCK_SIZE;
+    int iCopied = 0;
+    // copy data we already have and read again into the cache
+	if (dvdcss->buffer_size > 0) memcpy(p_buffer, dvdcss->buffer + (DISC_CACHE_SIZE - dvdcss->buffer_size), dvdcss->buffer_size);
+    iCopied = dvdcss->buffer_size;
+    iRemaining -= dvdcss->buffer_size;
+    (BYTE*)p_buffer += iCopied;
+    dvdcss->buffer_size = 0;
+    
+    // if remaining size is bigger >= DISC_CACHE_SIZE, don't cache it. Just read
+    if (iRemaining >= DISC_CACHE_SIZE)
+    {
+      if (!ReadFile((HANDLE)dvdcss->i_fd, p_buffer, iRemaining, (LPDWORD)&i_bytes, NULL))
+      {
+        dvdcss->i_pos = -1;
+        return -1;
+      }
+      dvdcss->i_pos += (i_bytes + iCopied) / DVDCSS_BLOCK_SIZE;
+      return (i_bytes + iCopied) / DVDCSS_BLOCK_SIZE;
+    }
+    else
+    {
+      // read a chunk into the cache and copy the needed bytes into p_buffer
+      if (!ReadFile((HANDLE)dvdcss->i_fd, dvdcss->buffer, DISC_CACHE_SIZE, &dvdcss->buffer_size, NULL))
+      {
+         // read error, maybe we tried to read to much. Try again but now without cache
+        if (!ReadFile((HANDLE)dvdcss->i_fd, p_buffer, iRemaining, (LPDWORD)&i_bytes, NULL))
+        {
+          dvdcss->i_pos = -1;
+          return -1;
+        }
+        dvdcss->i_pos += (i_bytes + iCopied) / DVDCSS_BLOCK_SIZE;
+        return (i_bytes + iCopied) / DVDCSS_BLOCK_SIZE;
+      }
+      // copy bytes into the buffer
+      memcpy(p_buffer, dvdcss->buffer, iRemaining);
+      dvdcss->buffer_size -= iRemaining;
+      dvdcss->i_pos += (iRemaining + iCopied) / DVDCSS_BLOCK_SIZE;
+      return (iRemaining + iCopied) / DVDCSS_BLOCK_SIZE;
+    } 
+  }
+  else
+  {
+    // we have enough data in our cache, just copy it
+    memcpy(p_buffer, dvdcss->buffer + (DISC_CACHE_SIZE - dvdcss->buffer_size), i_blocks * DVDCSS_BLOCK_SIZE);
+    dvdcss->buffer_size -= i_blocks * DVDCSS_BLOCK_SIZE;
+    dvdcss->i_pos += i_blocks;
+    return i_blocks;
+  }
+
+  dvdcss->i_pos = -1;
+  return -1;
+  
+#else // WITH_CACHE
+
     if( !ReadFile( (HANDLE) dvdcss->i_fd, p_buffer,
               i_blocks * DVDCSS_BLOCK_SIZE,
               (LPDWORD)&i_bytes, NULL ) )
@@ -720,6 +832,7 @@ static int win2k_read ( dvdcss_t dvdcss, void *p_buffer, int i_blocks )
 
     dvdcss->i_pos += i_bytes / DVDCSS_BLOCK_SIZE;
     return i_bytes / DVDCSS_BLOCK_SIZE;
+#endif // WITH_CACHE
 }
 
 static int aspi_read ( dvdcss_t dvdcss, void *p_buffer, int i_blocks )
