@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <scraper name="filmweb.pl" content="movies" thumb="filmweb.jpg" language="pl">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
@@ -80,11 +80,11 @@
 				<expression>o-filmie-header&quot;[^&lt;]+[^ ]+(&gt;[^[0-9A-Z]+)([^&lt;]+[a-z])</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
-				<expression noclean="1">gatunek([^\n]*)</expression>
+				<expression noclean="1">gatunek[^=]*[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<RegExp input="$$6" output=" / \1" dest="7">
-					<expression repeat="yes">&lt;a href[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+					<expression repeat="yes">([^,]+)</expression>
 				</RegExp>
 				<expression> / (.*)</expression>
 			</RegExp>
@@ -128,58 +128,50 @@
 		</RegExp>
 	</GetDetails>
 	<FilmwebToWikipedia clearbuffers="no" dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$9" output="&lt;id&gt;$$9&lt;/id&gt;" dest="2+">
-				<expression></expression>
+		<RegExp input="$$2" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="10">
+				<expression>id=$$9&lt;/a&gt; linkuje z [^&gt;]+&gt;([^&lt;]+)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;WikipediaToIMDB&quot;&gt;http://pl.wikipedia.org\1&lt;/url&gt;" dest="2+">
-				<expression>id=$$9&lt;/a&gt; linkuje z &lt;a href=&quot;([^&quot;]*)</expression>
+			<RegExp input="$$11" output="&lt;url function=&quot;WikipediaToIMDB&quot;&gt;http://pl.wikipedia.org/wiki/\1&lt;/url&gt;" dest="2+">
+				<RegExp input="$$10" output="_\1" dest="11">
+					<expression repeat="yes">([^ ]+)</expression>
+				</RegExp>
+				<expression>_(.*)</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</FilmwebToWikipedia>
 	<WikipediaToIMDB dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;IMDBDetails&quot;&gt;http://akas.imdb.com/title/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression clear="yes" noclean="1">/title/([t0-9]*)</expression>
-		</RegExp>
-	</WikipediaToIMDB>
-	<IMDBDetails dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="2+">
-				<expression trim="1" noclean="1">&lt;title&gt;([^&lt;|^(]*)</expression>
+<!--			<RegExp input="$$1" output="&lt;mpaa&gt;IMDb.id = \1&lt;/mpaa&gt;" dest="2+">-->
+<!--				<expression>/title/([t0-9]*)</expression>-->
+<!--			</RegExp>-->
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="2+">
+				<expression>/title/([t0-9]*)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="2+">
-				<expression>MPAA&lt;/a&gt;:&lt;/h5&gt;(.[^&lt;]*)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;certification&gt;\1 \3&lt;/certification&gt;" dest="2+">
-				<expression repeat="yes">&lt;a href=&quot;/List\?certificates=[^&quot;]*&quot;&gt;([^&lt;]*)&lt;/a&gt;[^&lt;]*(&lt;i&gt;([^&lt;]*)&lt;/i&gt;)?</expression>
-			</RegExp>
-                        <RegExp input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="2+">
-        	        	<expression>/title/([t0-9]*)/faq</expression>
-                        </RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
-	</IMDBDetails>
-        <GetTMDBId dest="5">
-                <RegExp conditional="fanart" input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
-                        <expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-                </RegExp>
-        </GetTMDBId>
-        <GetTMDBFanart dest="5">
-                <RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.jpg&quot;&gt;/\1/\2.jpg&lt;/thumb&gt;" dest="2">
-                                <expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]*)/([^\.]+).jpg&lt;/backdrop&gt;</expression>
-                        </RegExp>
-                        <expression noclean="1">(.+)</expression>
-                </RegExp>
-        </GetTMDBFanart>
+	</WikipediaToIMDB>
+	<GetTMDBId dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
+		</RegExp>
+	</GetTMDBId>
+	<GetTMDBFanart dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.jpg&quot;&gt;/\1/\2.jpg&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]*)/([^\.]+).jpg&lt;/backdrop&gt;</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+	</GetTMDBFanart>
 	<Opisy dest="5">
 		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;&lt;plot&gt;\1&lt;/plot&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1\n" dest="9">
 				<expression>distributors.description.0\][^\[]*justify&quot;&gt;(.[^=]*)&lt;/p&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="9+">
-				<expression>opisy-header[^\[]*justify&quot;&gt;[^[0-9A-ZŻŹĆŃĄŚŁĘ]+([^&quot;]*)&lt;/p&gt;&lt;/li&gt;</expression>
+				<expression>opisy-header[^\[]*justify&quot;&gt;([^&quot;]*)&lt;/p&gt;&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$9" output="\1" dest="8">
 				<expression>([^&lt;]+)</expression>
@@ -187,7 +179,7 @@
 			<RegExp input="$$9" output=" \1" dest="8+">
 				<expression repeat="yes">&gt;([^&lt;]+)</expression>
 			</RegExp>         
-			<expression trim="1">([^~]+[0-9a-ząężźćśńł\]\.])</expression>
+			<expression trim="1">[^[0-9A-ZŻŹĆŃĄŚŁĘ]+([^~]+[0-9a-ząężźćśńł\]\.])</expression>
 		</RegExp>
 	</Opisy>
 	<Plakaty dest="5">

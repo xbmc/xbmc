@@ -42,7 +42,7 @@ bool CFatXFileSystem::Open(const CStdString &file)
 bool CFatXFileSystem::OpenForWrite(const CStdString &file, bool overWrite)
 {
   CURL url(GetLocal(file));
-  return m_file.OpenForWrite(url, true, overWrite);
+  return m_file.OpenForWrite(url, overWrite);
 }
 
 void CFatXFileSystem::Close()

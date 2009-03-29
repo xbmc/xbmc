@@ -53,7 +53,7 @@ void CFileReader::OnClearEvent()
 bool CFileReader::Open(const CStdString &strFile, bool autoBuffer, bool preBuffer)
 {
   Close();
-  if (!m_file.Open(strFile, true, READ_TRUNCATED))
+  if (!m_file.Open(strFile, READ_TRUNCATED))
     return false;
 
   if (!(m_chunk_size = m_file.GetChunkSize()))

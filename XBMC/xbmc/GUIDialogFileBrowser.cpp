@@ -184,7 +184,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
 
           CUtil::AddFileToFolder(strPath,"1",strTest);
           CFile file;
-          if (file.OpenForWrite(strTest,true,true))
+          if (file.OpenForWrite(strTest,true))
           {
             file.Close();
             CFile::Delete(strTest);
@@ -939,4 +939,5 @@ CGUIControl *CGUIDialogFileBrowser::GetFirstFocusableControl(int id)
     id = m_viewControl.GetCurrentControl();
   return CGUIWindow::GetFirstFocusableControl(id);
 }
+
 

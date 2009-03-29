@@ -67,7 +67,7 @@ CFileXBMSP::~CFileXBMSP()
 }
 
 //*********************************************************************************************
-bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
+bool CFileXBMSP::Open(const CURL& urlUtf8)
 {
   CStdString strURL;
   urlUtf8.GetURL(strURL);
@@ -221,14 +221,14 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
 bool CFileXBMSP::Exists(const CURL& url)
 {
   bool exist(true);
-  exist = CFileXBMSP::Open(url, true);
+  exist = CFileXBMSP::Open(url);
   Close();
   return exist;
 }
 
 int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
 {
-  if (Open(url, true))
+  if (Open(url))
   {
     buffer->st_size = this->m_fileSize;
     buffer->st_mode = _S_IFREG;
@@ -397,4 +397,5 @@ __int64 CFileXBMSP::GetPosition()
 }
 
 }
+
 

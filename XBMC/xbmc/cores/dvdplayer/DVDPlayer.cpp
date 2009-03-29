@@ -38,6 +38,7 @@
 #include "utils/GUIInfoManager.h"
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
+#include "../../FileSystem/File.h"
 #include "Settings.h"
 #include "FileItem.h"
 
@@ -2860,23 +2861,21 @@ bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
     m_SelectionStreams.Update(NULL, &v);
     return true;
   }
-  else if(ext == ".sub")
+  if(ext == ".sub")
   {
-    return false;
+    CStdString strReplace;
+    CUtil::ReplaceExtension(filename,".idx",strReplace);
+    if (XFILE::CFile::Exists(strReplace))
+      return false;
   }
-  else
-  {
-    SelectionStream s;
-    s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
-    s.type     = STREAM_SUBTITLE;
-    s.id       = 0;
-    s.filename = filename;
-    s.name     = CUtil::GetFileName(filename);
-    m_SelectionStreams.Update(s);
-    return true;
-  }
-  
-  return 0;
+  SelectionStream s;
+  s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
+  s.type     = STREAM_SUBTITLE;
+  s.id       = 0;
+  s.filename = filename;
+  s.name     = CUtil::GetFileName(filename);
+  m_SelectionStreams.Update(s);
+  return true;
 }
 
 void CDVDPlayer::UpdatePlayState(double timeout)

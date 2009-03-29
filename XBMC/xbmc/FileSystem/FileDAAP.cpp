@@ -152,7 +152,7 @@ CFileDAAP::~CFileDAAP()
 
 
 //*********************************************************************************************
-bool CFileDAAP::Open(const CURL& url, bool bBinary)
+bool CFileDAAP::Open(const CURL& url)
 {
   CSingleLock lock(g_DaapClient);
 
@@ -191,7 +191,7 @@ bool CFileDAAP::Open(const CURL& url, bool bBinary)
 
   m_bOpened = true;
 
-  return m_curl.Open(m_url, bBinary);
+  return m_curl.Open(m_url);
 }
 
 

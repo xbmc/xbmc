@@ -62,26 +62,26 @@ namespace XFILE
 	public:
 		CFileRar();
     CFileRar(bool bSeekable); // used for caching files
-		virtual ~CFileRar();
-		virtual __int64			  GetPosition();
-		virtual __int64			  GetLength();
-		virtual bool					Open(const CURL& url, bool bBinary=true);
-		virtual bool					Exists(const CURL& url);
-		virtual int						Stat(const CURL& url, struct __stat64* buffer);
-		virtual unsigned int	Read(void* lpBuf, __int64 uiBufSize);
-		virtual int						Write(const void* lpBuf, __int64 uiBufSize);
-		virtual __int64			  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
-    virtual void					Close();
-		virtual void          Flush();
+    virtual ~CFileRar();
+    virtual __int64        GetPosition();
+    virtual __int64        GetLength();
+    virtual bool          Open(const CURL& url);
+    virtual bool          Exists(const CURL& url);
+    virtual int            Stat(const CURL& url, struct __stat64* buffer);
+    virtual unsigned int  Read(void* lpBuf, __int64 uiBufSize);
+    virtual int            Write(const void* lpBuf, __int64 uiBufSize);
+    virtual __int64        Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
+    virtual void          Close();
+    virtual void          Flush();
 
-		virtual bool					OpenForWrite(const CURL& url, bool bBinary=true);
-		unsigned int					Write(void *lpBuf, __int64 uiBufSize);
-		
-	protected:
-		CStdString	m_strCacheDir;
-		CStdString	m_strRarPath;
-		CStdString m_strPassword;
-		CStdString m_strPathInRar;
+    virtual bool          OpenForWrite(const CURL& url);
+    unsigned int          Write(void *lpBuf, __int64 uiBufSize);
+
+  protected:
+    CStdString  m_strCacheDir;
+    CStdString  m_strRarPath;
+    CStdString m_strPassword;
+    CStdString m_strPathInRar;
     CStdString m_strUrl;
 		BYTE m_bRarOptions;
 		BYTE m_bFileOptions;
