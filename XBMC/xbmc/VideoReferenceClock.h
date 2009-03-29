@@ -60,7 +60,7 @@ class CVideoReferenceClock : public CThread
 #ifdef HAS_GLX
     bool SetupGLX();
     void RunGLX();
-    int  (*m_glXGetVideoSyncSGI)(unsigned int*);
+    int  (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
     
     Display* m_Dpy;
     int      m_Screen;

@@ -41,7 +41,7 @@ CVideoReferenceClock::CVideoReferenceClock()
 void CVideoReferenceClock::OnStartup()
 {
   QueryPerformanceCounter(&m_CurrTime);
-  
+
 #ifdef HAS_GLX
   m_UseVblank = SetupGLX();
   if (m_UseVblank) RunGLX();
@@ -79,21 +79,21 @@ bool CVideoReferenceClock::SetupGLX()
   m_Dpy = XOpenDisplay(NULL);
   if (!m_Dpy)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to open display, falling back to QueryPerformanceCounter");
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: Unable to open display, falling back to QueryPerformanceCounter");
     return false;
   }
   
   fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), singleVisAttributes, &Num);
   if (!fbConfigs)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseFBConfig returned NULL, falling back to QueryPerformanceCounter");
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: glXChooseFBConfig returned NULL, falling back to QueryPerformanceCounter");
     return false;
   }
   
   vInfo = glXGetVisualFromFBConfig(m_Dpy, fbConfigs[0]);
   if (!vInfo)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVisualFromFBConfig returned NULL, falling back to QueryPerformanceCounter");
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: glXGetVisualFromFBConfig returned NULL, falling back to QueryPerformanceCounter");
     return false;
   } 
   
@@ -106,24 +106,24 @@ bool CVideoReferenceClock::SetupGLX()
   Context = glXCreateNewContext(m_Dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, true);
   glXMakeCurrent(m_Dpy, GLXPxmp, Context);
   
-  m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
-  if (!m_glXGetVideoSyncSGI)
+  m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
+  if (!m_glXWaitVideoSyncSGI)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI not found, falling back to QueryPerformanceCounter");
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: glXWaitVideoSyncSGI not found, falling back to QueryPerformanceCounter");
     return false;
   }
   
-  ReturnV = m_glXGetVideoSyncSGI(&VblankCount);
+  ReturnV = m_glXWaitVideoSyncSGI(2, 0, &VblankCount);
   if (ReturnV)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI returned %i, falling back to QueryPerformanceCounter", ReturnV);
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i, falling back to QueryPerformanceCounter", ReturnV);
     return false;
   }
   
   XRRSizes(m_Dpy, m_Screen, &ReturnV);
   if (ReturnV == 0)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: RandR not supported, falling back to QueryPerformanceCounter");
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: RandR not supported, falling back to QueryPerformanceCounter");
     return false;
   }
   
@@ -144,11 +144,11 @@ bool CVideoReferenceClock::SetupGLX()
   
   if (m_UseNvSettings)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using %s for refreshrate detection", NVSETTINGSCMD);
+    CLog::Log(LOGINFO, "CVideoReferenceClock: Using %s for refreshrate detection", NVSETTINGSCMD);
   }
   else
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
+    CLog::Log(LOGINFO, "CVideoReferenceClock: Using RandR for refreshrate detection");
   }
   
   m_PrevRefreshRate = -1;
@@ -162,24 +162,16 @@ void CVideoReferenceClock::RunGLX()
 {
   unsigned int PrevVblankCount;
   unsigned int VblankCount;
-
-  m_glXGetVideoSyncSGI(&PrevVblankCount);
+  
+  m_glXWaitVideoSyncSGI(2, 0, &PrevVblankCount);
   UpdateRefreshrate();
   
   while(!m_bStop)
   {
-    m_glXGetVideoSyncSGI(&VblankCount); //TODO: check if this has reset
-    
-    if (VblankCount - PrevVblankCount > 0)
-    {
-      m_CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * m_AdjustedFrequency.QuadPart / m_RefreshRate;
-      PrevVblankCount = VblankCount;
-      if (!UpdateRefreshrate()) Sleep(1);
-    }
-    else
-    {
-      Sleep(1);
-    }
+    m_glXWaitVideoSyncSGI(2, ((PrevVblankCount % 2) + 1) % 2, &VblankCount);
+    m_CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * m_AdjustedFrequency.QuadPart / m_RefreshRate;
+    PrevVblankCount = VblankCount;
+    UpdateRefreshrate();
   }
 }
 #elif defined(_WIN32)
@@ -243,7 +235,7 @@ bool CVideoReferenceClock::SetupD3D()
 
   if (!m_D3d)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Direct3DCreate9 failed, falling back to QueryPerformanceCounter");
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: Direct3DCreate9 failed, falling back to QueryPerformanceCounter");
     return false;
   }
 
@@ -257,7 +249,7 @@ bool CVideoReferenceClock::SetupD3D()
 
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i, falling back to QueryPerformanceCounter",
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: CreateDevice returned %i, falling back to QueryPerformanceCounter",
               ReturnV & 0xFFFF);
     return false;
   }
@@ -265,21 +257,21 @@ bool CVideoReferenceClock::SetupD3D()
   ReturnV = m_D3dDev->GetDeviceCaps(&DevCaps);
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDeviceCaps returned %i, falling back to QueryPerformanceCounter",
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: GetDeviceCaps returned %i, falling back to QueryPerformanceCounter",
               ReturnV & 0xFFFF);
     return false;
   }
 
   if (DevCaps.Caps != D3DCAPS_READ_SCANLINE)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Hardware does not support GetRasterStatus, falling back to QueryPerformanceCounter");
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: Hardware does not support GetRasterStatus, falling back to QueryPerformanceCounter");
     return false;
   }
 
   ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i, falling back to QueryPerformanceCounter",
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: GetRasterStatus returned %i, falling back to QueryPerformanceCounter",
               ReturnV & 0xFFFF);
     return false;
   }
@@ -287,7 +279,7 @@ bool CVideoReferenceClock::SetupD3D()
   ReturnV = m_D3dDev->GetDisplayMode(0, &DisplayMode);
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDisplayMode returned %i, falling back to QueryPerformanceCounter",
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: GetDisplayMode returned %i, falling back to QueryPerformanceCounter",
               ReturnV & 0xFFFF);
     return false;
   }
@@ -321,7 +313,7 @@ bool CVideoReferenceClock::CreateHiddenWindow()
 
   if (!RegisterClassEx (&m_WinCl))
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to register window class, falling back to QueryPerformanceCounter");
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: Unable to register window class, falling back to QueryPerformanceCounter");
     return false;
   }
 
@@ -331,7 +323,7 @@ bool CVideoReferenceClock::CreateHiddenWindow()
 
   if (!m_Hwnd)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateWindowEx failed, falling back to QueryPerformanceCounter");
+    CLog::Log(LOGWARNING, "CVideoReferenceClock: CreateWindowEx failed, falling back to QueryPerformanceCounter");
     return false;
   }
 
@@ -398,7 +390,7 @@ bool CVideoReferenceClock::UpdateRefreshrate()
       {
         m_RefreshRate = RRRefreshRate;
       }
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
+      CLog::Log(LOGINFO, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
     }
 #elif defined(_WIN32)
     D3dClock::D3DDISPLAYMODE DisplayMode;
@@ -410,7 +402,7 @@ bool CVideoReferenceClock::UpdateRefreshrate()
     if (m_RefreshRate != m_PrevRefreshRate)
     {
       m_PrevRefreshRate = m_RefreshRate;
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
+      CLog::Log(LOGINFO, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
     }
 #endif
     return true;
