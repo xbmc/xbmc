@@ -46,7 +46,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     url.SetFileName(path);
   }
 
-  if (!reader.Open(url, false))
+  if (!reader.Open(url))
     return false;
 
 

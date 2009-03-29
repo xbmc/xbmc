@@ -85,7 +85,7 @@ XBPyThread::~XBPyThread()
 {
 // Don't call StopThread for now as it hangs XBMC at shutdown:
 //  StopThread();
-  CLog::Log(LOGDEBUG,"python thread destructed");
+  CLog::Log(LOGDEBUG,"python thread %d destructed", this->id);
   if (source) delete []source;
   if (argv)
   {

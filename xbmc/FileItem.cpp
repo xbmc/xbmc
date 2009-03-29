@@ -244,10 +244,6 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bLabelPreformated=item.m_bLabelPreformated;
   FreeMemory();
   m_strPath = item.m_strPath;
-#ifdef DEBUG
-  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))  // should root paths be "/" ?
-    ASSERT(CUtil::HasSlashAtEnd(m_strPath));
-#endif
   m_bIsParentFolder = item.m_bIsParentFolder;
   m_iDriveType = item.m_iDriveType;
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
@@ -2083,7 +2079,7 @@ bool CFileItemList::Save()
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]",m_strPath.c_str());
 
   CFile file;
-  if (file.OpenForWrite(GetDiscCacheFile(), true, true)) // overwrite always
+  if (file.OpenForWrite(GetDiscCacheFile(), true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << *this;
@@ -2972,4 +2968,5 @@ CStdString CFileItem::FindTrailer() const
 
   return strTrailer;
 }
+
 

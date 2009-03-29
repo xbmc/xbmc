@@ -184,7 +184,7 @@ __int64 CFileShoutcast::GetLength()
 }
 
 
-bool CFileShoutcast::Open(const CURL& url, bool bBinary)
+bool CFileShoutcast::Open(const CURL& url)
 {
   m_dwLastTime = timeGetTime();
   int ret;

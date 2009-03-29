@@ -254,10 +254,8 @@ __int64 CFileSMB::GetLength()
   return m_fileSize;
 }
 
-bool CFileSMB::Open(const CURL& url, bool bBinary)
+bool CFileSMB::Open(const CURL& url)
 {
-  m_bBinary = bBinary;
-
   Close();
 
   // we can't open files like smb://file.f or smb://server/file.f
@@ -556,9 +554,8 @@ bool CFileSMB::Rename(const CURL& url, const CURL& urlnew)
   return (result == 0);
 }
 
-bool CFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
+bool CFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
 {
-  m_bBinary = bBinary;
   m_fileSize = 0;
 
   Close();

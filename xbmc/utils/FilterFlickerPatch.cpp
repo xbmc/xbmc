@@ -127,7 +127,7 @@ bool CGFFPatch::FFPatch(CStdString m_FFPatchFilePath, CStdString &strNEW_FFPatch
       CFile file;
       CStdString strNewFFPFile;
       strNewFFPFile.Format("%s_ffp.xbe",m_FFPatchFilePath.Left(m_FFPatchFilePath.GetLength()-4));
-      if(file.OpenForWrite(strNewFFPFile.c_str(),true,true))
+      if(file.OpenForWrite(strNewFFPFile.c_str(),true))
       {
         file.Write(&pbuffer[0],size);
         file.Close();

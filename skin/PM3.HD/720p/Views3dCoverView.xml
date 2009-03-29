@@ -1338,6 +1338,33 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+				<visible>!Container.Content(Albums)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>545</posy>
+				<width>1200</width>
+				<height>35</height>
+				<font>font18</font>
+				<textcolor>white</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label>
+				<visible>Container.Content(Albums)</visible>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>580</posy>
+				<width>1200</width>
+				<height>35</height>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label2]</label>
+				<visible>Container.Content(Albums)</visible>
 			</control>
 			<control type="scrollbar" id="61">
 				<posx>90</posx>

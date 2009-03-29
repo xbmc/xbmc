@@ -99,7 +99,7 @@ namespace XFILE
       virtual __int64       GetPosition()                                     { return 0; }
       virtual __int64       GetLength()                                       { return 0; }
       
-      virtual bool          Open(const CURL& url, bool bBinary);
+      virtual bool          Open(const CURL& url);
 	    virtual void          Close();
       virtual unsigned int  Read(void* lpBuf, __int64 uiBufSize);
     private:

@@ -254,7 +254,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
     CStdString strCachePath;
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
     XFILE::CFile file;
-    if (file.OpenForWrite(strCachePath,true,true))
+    if (file.OpenForWrite(strCachePath,true))
       file.Write(strHTML.data(),strHTML.size());
     file.Close();
   }

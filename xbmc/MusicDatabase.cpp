@@ -2671,7 +2671,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     // remove the null string
     strSQL += " and artist.strArtist != \"\"";
     // and the various artist entry if applicable
-    if (!albumArtistsOnly || idGenre > -1)
+    if (!albumArtistsOnly)
     {
       CStdString strVariousArtists = g_localizeStrings.Get(340);
       long lVariousArtistsId = AddArtist(strVariousArtists);
@@ -4399,7 +4399,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     // Write the document
     XFILE::CFile file;
 
-    if ( !file.OpenForWrite( outFile, false, true ) )
+    if ( !file.OpenForWrite( outFile, true ) )
       return;
 
     CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);

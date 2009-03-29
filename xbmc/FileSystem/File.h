@@ -65,8 +65,8 @@ public:
   CFile();
   virtual ~CFile();
 
-  bool Open(const CStdString& strFileName, bool bBinary = true, unsigned int flags = 0);
-  bool OpenForWrite(const CStdString& strFileName, bool bBinary = true, bool bOverWrite = false);  
+  bool Open(const CStdString& strFileName, unsigned int flags = 0);
+  bool OpenForWrite(const CStdString& strFileName, bool bOverWrite = false);
   unsigned int Read(void* lpBuf, __int64 uiBufSize);
   bool ReadString(char *szLine, int iLineLength);
   int Write(const void* lpBuf, __int64 uiBufSize);

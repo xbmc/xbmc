@@ -359,7 +359,7 @@ bool CHTTP::Download(const string &strURL, const string &strFileName, LPDWORD pd
     return false;
 
   XFILE::CFile file;
-  if (!file.OpenForWrite(strFileName, true, true))
+  if (!file.OpenForWrite(strFileName, true))
   {
     CLog::Log(LOGERROR, "Unable to open file %s: %lu", strFileName.c_str(), GetLastError());
     return false;

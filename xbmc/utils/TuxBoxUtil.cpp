@@ -448,7 +448,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
     
   //Send ZAP Command
   CFileCurl http;
-  if(http.Open(strZapUrl+strPostUrl, false))
+  if(http.Open(strZapUrl+strPostUrl))
   {
     //DEBUG LOG
     CLog::Log(LOGDEBUG, "%s - Zapped to: %s (%s)", __FUNCTION__,strZapName.c_str(),strZapUrl.c_str());
@@ -637,7 +637,7 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
   //Open 
   CFileCurl http;
   http.SetTimeout(20);
-  if(http.Open(url, false)) 
+  if(http.Open(url)) 
   {
     CStdString strTmp;
     int size_read = 0;  

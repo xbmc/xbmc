@@ -42,7 +42,7 @@ CFileMemUnit::~CFileMemUnit()
   Close();
 }
 //*********************************************************************************************
-bool CFileMemUnit::Open(const CURL& url, bool bBinary)
+bool CFileMemUnit::Open(const CURL& url)
 {
   Close();
 
@@ -52,7 +52,7 @@ bool CFileMemUnit::Open(const CURL& url, bool bBinary)
   return m_fileSystem->Open(GetPath(url));
 }
 
-bool CFileMemUnit::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
+bool CFileMemUnit::OpenForWrite(const CURL& url, bool bOverWrite)
 {
   Close();
 
@@ -119,7 +119,7 @@ __int64 CFileMemUnit::GetPosition()
 
 bool CFileMemUnit::Exists(const CURL& url)
 {
-  if (Open(url, true))
+  if (Open(url))
   {
     Close();
     return true;
@@ -129,7 +129,7 @@ bool CFileMemUnit::Exists(const CURL& url)
 
 int CFileMemUnit::Stat(const CURL& url, struct __stat64* buffer)
 {
-  if (Open(url, true))
+  if (Open(url))
   {
     Close();
     return 0;

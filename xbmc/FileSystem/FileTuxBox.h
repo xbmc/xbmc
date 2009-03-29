@@ -31,7 +31,7 @@ namespace XFILE
       virtual ~CFileTuxBox();
       virtual __int64 GetPosition();
       virtual __int64 GetLength();
-      virtual bool Open(const CURL& url, bool bBinary = true);
+      virtual bool Open(const CURL& url);
       virtual void Close();
       virtual bool Exists(const CURL& url) { return true;};
       virtual int Stat(const CURL& url, struct __stat64* buffer) { errno = ENOENT; return -1; };
@@ -40,5 +40,6 @@ namespace XFILE
     protected:
   };
 }
+
 
 

@@ -126,7 +126,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
   CFile file;
   CAsyncFileCallback* helper = NULL;
 
-  if (file.Open(strFileName, true, READ_TRUNCATED))
+  if (file.Open(strFileName, READ_TRUNCATED))
   {
     if (file.GetLength() <= 0)
     {
@@ -156,7 +156,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     }
     if (CFile::Exists(strDest))
       CFile::Delete(strDest);
-    if (!newFile.OpenForWrite(strDest, true, true))  // overwrite always
+    if (!newFile.OpenForWrite(strDest, true))  // overwrite always
     {
       file.Close();
       return false;
@@ -262,7 +262,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 }
 
 //*********************************************************************************************
-bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags)
+bool CFile::Open(const CStdString& strFileName, unsigned int flags)
 {
   m_flags = flags;
   try
@@ -278,14 +278,14 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
     if (m_flags & READ_CACHED)
     {
       m_pFile = new CFileCache();
-      return m_pFile->Open(url, bBinary);
+      return m_pFile->Open(url);
     }
 
     m_pFile = CFileFactory::CreateLoader(url);
     if (!m_pFile)
       return false;
 
-    if (!m_pFile->Open(url, bBinary))
+    if (!m_pFile->Open(url))
     {
       SAFE_DELETE(m_pFile);
       return false;
@@ -339,14 +339,14 @@ IFile* CFile::Detach() {
 }
 
 
-bool CFile::OpenForWrite(const CStdString& strFileName, bool bBinary, bool bOverWrite)
+bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 {
   try 
   {
     CURL url(strFileName);
 
     m_pFile = CFileFactory::CreateLoader(url);
-    if (m_pFile && m_pFile->OpenForWrite(url, bBinary, bOverWrite))
+    if (m_pFile && m_pFile->OpenForWrite(url, bOverWrite))
     {
       // add this file to our directory cache (if it's stored)
       g_directoryCache.AddFile(strFileName);
@@ -903,7 +903,7 @@ bool CFileStream::Open(const CURL& filename)
   Close();
 
   m_file = CFileFactory::CreateLoader(filename);
-  if(m_file && m_file->Open(filename, true))
+  if(m_file && m_file->Open(filename))
   {
     m_buffer.Attach(m_file);
     return true;

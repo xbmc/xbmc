@@ -55,7 +55,7 @@ bool CDVDInputStreamTV::Open(const char* strFile, const std::string& content)
 
   CURL url(strFile);
   // open file in binary mode
-  if (!m_pFile->Open(url, true))
+  if (!m_pFile->Open(url))
   {
     delete m_pFile;
     m_pFile = NULL;
@@ -175,5 +175,6 @@ bool CDVDInputStreamTV::Record(bool bOnOff)
     return m_pRecordable->Record(bOnOff);
   return false;
 }
+
 
 

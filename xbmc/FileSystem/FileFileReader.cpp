@@ -40,7 +40,7 @@ CFileFileReader::~CFileFileReader()
 }
 
 //*********************************************************************************************
-bool CFileFileReader::Open(const CURL& url, bool bBinary)
+bool CFileFileReader::Open(const CURL& url)
 {
   CStdString strURL;
   url.GetURL(strURL);
@@ -68,7 +68,7 @@ int CFileFileReader::Stat(const CURL& url, struct __stat64* buffer)
 
 
 //*********************************************************************************************
-bool CFileFileReader::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
+bool CFileFileReader::OpenForWrite(const CURL& url, bool bOverWrite)
 {
   return false;
 }
@@ -108,4 +108,5 @@ __int64 CFileFileReader::GetPosition()
 {
   return m_reader.GetPosition();
 }
+
 
