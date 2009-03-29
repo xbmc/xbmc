@@ -1,0 +1,2171 @@
+------------------------------------------------------------------------
+r217 | sam | 2008-08-29 18:57:52 +0000 (Fri, 29 Aug 2008) | 2 lines
+Changed paths:
+   M /trunk/src/Makefile.am
+
+  * src/Makefile.am: bump the library minor version since we ship an extra
+    symbole (dvdcss_is_scrambled).
+------------------------------------------------------------------------
+r216 | sam | 2008-08-29 18:57:51 +0000 (Fri, 29 Aug 2008) | 1 line
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/src/Makefile.am
+   A /trunk/src/libdvdcss.pc.in
+
+  * Ship a .pc file with the library.
+------------------------------------------------------------------------
+r215 | sam | 2008-08-29 18:57:48 +0000 (Fri, 29 Aug 2008) | 1 line
+Changed paths:
+   M /trunk/libdvdcss.spec
+   M /trunk/src/common.h
+   M /trunk/src/css.c
+   M /trunk/src/device.h
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/error.c
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+   M /trunk/test/csstest.c
+
+  * Update copyeight information here and there.
+------------------------------------------------------------------------
+r214 | sam | 2008-08-29 18:57:45 +0000 (Fri, 29 Aug 2008) | 3 lines
+Changed paths:
+   A /trunk/.gitignore
+   M /trunk/bootstrap
+   M /trunk/configure.ac
+
+  * bootstrap: update bootstrapping script.
+  * configure.ac: hide autotools files in .auto/.
+  * .gitignore: add an ignore file for git-svn users.
+------------------------------------------------------------------------
+r213 | sam | 2008-08-29 18:57:42 +0000 (Fri, 29 Aug 2008) | 2 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+  * libdvdcss.c: ignore failure to get the disc key in case we have a
+    chance to decrypt anyway afterwards. Patch courtesy of Diego Biurrun.
+------------------------------------------------------------------------
+r212 | sam | 2008-07-13 12:52:22 +0000 (Sun, 13 Jul 2008) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+   M /trunk/src/csstables.h
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/ioctl.c
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+
+  * Convert all source code to UTF-8, or Doxygen will fail to generate proper
+    LaTeX documents.
+------------------------------------------------------------------------
+r211 | sam | 2008-07-13 12:52:19 +0000 (Sun, 13 Jul 2008) | 1 line
+Changed paths:
+   M /trunk/doc/doxygen.cfg.in
+
+  * Update outdated Doxygen configuration file using doxygen -u.
+------------------------------------------------------------------------
+r210 | massiot | 2008-07-12 12:19:57 +0000 (Sat, 12 Jul 2008) | 5 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/libdvdcss.c
+
+ * src/libdvdcss.c: initialize p_disc_key in the case when DVD is encrypted
+   but no ioctl is available ;
+ * src/css.c: initialize p_disc_key in the case when key decryption fails.
+Patch by Kirill Belokurov.
+
+------------------------------------------------------------------------
+r209 | massiot | 2008-07-11 17:23:25 +0000 (Fri, 11 Jul 2008) | 3 lines
+Changed paths:
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/libdvdcss.c
+
+ * src/libdvdcss.c: add dvdcss_is_scrambled() function, patch courtesy of
+   Olivier Rolland.
+
+------------------------------------------------------------------------
+r208 | robux4 | 2008-01-07 16:48:35 +0000 (Mon, 07 Jan 2008) | 1 line
+Changed paths:
+   M /trunk/src/dvdcss/dvdcss.h
+
+nicer comment, patch by Diego Biurrun
+------------------------------------------------------------------------
+r207 | robux4 | 2007-09-17 12:10:20 +0000 (Mon, 17 Sep 2007) | 1 line
+Changed paths:
+   M /trunk/src/bsdi_dvd.h
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/ioctl.h
+
+(from Diego Biurrun) Identifiers starting with two underscores or an underscore and capital letters are reserved for the system in C.
+------------------------------------------------------------------------
+r206 | robux4 | 2007-09-17 12:07:41 +0000 (Mon, 17 Sep 2007) | 4 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+(from Diego Biurrun) This patch removes the following warning when compiling MPlayer:
+
+libdvdcss.c:145: warning: redundant redeclaration of 'dvdcss_interface_2'
+dvdcss/dvdcss.h:70: warning: previous declaration of 'dvdcss_interface_2' was here
+------------------------------------------------------------------------
+r205 | robux4 | 2007-07-29 10:14:53 +0000 (Sun, 29 Jul 2007) | 7 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+Pathc from iive (via Diego Biurrun)
+Date: Sat Jul  7 01:22:51 2007
+
+Fix crash on some DVDs
+sprintf(tmp,"%.02x",(char)0xef); would print "ffffffef" instead of "ef",
+in this case this leads to local array buffer overflow and hard to trace stack corruption.
+The quick, easy & dirty solution is to use (unsigned char) or (uint8_t)
+------------------------------------------------------------------------
+r204 | xtophe | 2007-07-15 22:23:39 +0000 (Sun, 15 Jul 2007) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+support automake 1.10
+
+------------------------------------------------------------------------
+r203 | robux4 | 2006-11-07 16:27:40 +0000 (Tue, 07 Nov 2006) | 2 lines
+Changed paths:
+   M /trunk/src/common.h
+   M /trunk/src/device.c
+
+fix cygwin compilation regarding the lseek change
+(patch by Diego Biurrun)
+------------------------------------------------------------------------
+r202 | robux4 | 2006-11-01 14:31:51 +0000 (Wed, 01 Nov 2006) | 2 lines
+Changed paths:
+   M /trunk/src/common.h
+
+fix compilation on MINGW (patch by Diego Biurrun)
+(lseek vs lseek64 typo)
+------------------------------------------------------------------------
+r201 | sam | 2006-09-19 23:03:53 +0000 (Tue, 19 Sep 2006) | 2 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+  * Fixed spelling in documentation. Also testing buildbot.
+
+------------------------------------------------------------------------
+r200 | sam | 2006-09-19 22:28:06 +0000 (Tue, 19 Sep 2006) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/libdvdcss.c
+
+  * Fix warnings due to signed / unsigned pointer targets.
+
+------------------------------------------------------------------------
+r199 | sam | 2006-09-19 22:27:46 +0000 (Tue, 19 Sep 2006) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+  * Update bootstrap script.
+
+------------------------------------------------------------------------
+r198 | robux4 | 2006-09-13 13:12:23 +0000 (Wed, 13 Sep 2006) | 4 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+fallback to USERPROFILE environment variable for caching CSS keys when
+HOME is not set (for MinGW builds running outside of MinGW).
+patch from MPlayer via Diego Biurrun (diego at biurrun dot de)
+
+------------------------------------------------------------------------
+r197 | robux4 | 2006-09-13 13:11:25 +0000 (Wed, 13 Sep 2006) | 2 lines
+Changed paths:
+   M /trunk/src/device.c
+
+now accepts X:\ as a device name, as well as X:
+patch from MPlayer via Diego Biurrun (diego at biurrun dot de)
+------------------------------------------------------------------------
+r196 | sam | 2006-03-30 14:31:12 +0000 (Thu, 30 Mar 2006) | 2 lines
+Changed paths:
+   M /trunk/configure.ac
+
+  * Oops, forgot to commit configure.ac when removing the debian/ directory.
+
+------------------------------------------------------------------------
+r195 | sam | 2006-03-30 14:30:43 +0000 (Thu, 30 Mar 2006) | 3 lines
+Changed paths:
+   M /trunk/Makefile.am
+   D /trunk/debian
+
+  * Removed the debian/ directory. Debian packaging is now handled
+    separately, in the pkg-multimedia repository.
+
+------------------------------------------------------------------------
+r194 | sam | 2006-01-26 20:48:06 +0000 (Thu, 26 Jan 2006) | 3 lines
+Changed paths:
+   M /trunk/src/device.c
+
+  * src/device.c: reduced code duplication and fixed a pointer/integer
+    confusion in the OS X drive detection.
+
+------------------------------------------------------------------------
+r193 | sam | 2005-11-09 22:12:32 +0000 (Wed, 09 Nov 2005) | 3 lines
+Changed paths:
+   M /trunk/src/common.h
+
+  * src/common.h: do not override lseek on Cygwin, only on mingw32. Cygwin
+    provides its own 64-bit offset lseek. Patch courtesy of the MPlayer team.
+
+------------------------------------------------------------------------
+r192 | sam | 2005-10-26 16:58:08 +0000 (Wed, 26 Oct 2005) | 2 lines
+Changed paths:
+   M /trunk/debian/control
+
+  * debian/control: build-depend on tetex-extra (needed by doxygen).
+
+------------------------------------------------------------------------
+r191 | robux4 | 2005-09-04 08:49:23 +0000 (Sun, 04 Sep 2005) | 1 line
+Changed paths:
+   M /trunk/src/dvdcss/dvdcss.h
+
+* libdvdcss: more fixes for DLL building
+------------------------------------------------------------------------
+r190 | robux4 | 2005-09-04 08:31:58 +0000 (Sun, 04 Sep 2005) | 1 line
+Changed paths:
+   M /trunk/msvc/config.h
+
+* libdvdcss: the current version is 1.2.9
+------------------------------------------------------------------------
+r189 | robux4 | 2005-09-04 08:31:26 +0000 (Sun, 04 Sep 2005) | 1 line
+Changed paths:
+   M /trunk/src/device.c
+
+* libdvdcss: MSVC7 compilation fixes (shouldn't break mingw32)
+------------------------------------------------------------------------
+r188 | robux4 | 2005-09-04 08:25:26 +0000 (Sun, 04 Sep 2005) | 1 line
+Changed paths:
+   M /trunk/src/common.h
+   M /trunk/src/ioctl.h
+   M /trunk/src/libdvdcss.h
+
+* libdvdcss: MSVC7 compilation fixes (shouldn't break mingw32)
+------------------------------------------------------------------------
+r187 | robux4 | 2005-09-04 07:54:41 +0000 (Sun, 04 Sep 2005) | 1 line
+Changed paths:
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/libdvdcss.c
+
+* libdvdcss: oops mismatch #ifdef
+------------------------------------------------------------------------
+r186 | robux4 | 2005-09-04 07:43:15 +0000 (Sun, 04 Sep 2005) | 1 line
+Changed paths:
+   M /trunk/AUTHORS
+   M /trunk/COPYING
+   M /trunk/ChangeLog
+   M /trunk/INSTALL
+   M /trunk/Makefile.am
+   M /trunk/NEWS
+   M /trunk/README
+   M /trunk/debian/Makefile.am
+   M /trunk/doc/Makefile.am
+   M /trunk/doc/doxygen.cfg.in
+   M /trunk/doc/footer.html
+   M /trunk/doc/header.html
+   M /trunk/msvc/config.h
+   M /trunk/msvc/csstest.dsp
+   M /trunk/msvc/libdvdcss.dsp
+   M /trunk/msvc/workspace.dsw
+   M /trunk/src/Makefile.am
+   M /trunk/src/bsdi_dvd.h
+   M /trunk/src/bsdi_ioctl.c
+   M /trunk/src/common.h
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+   M /trunk/src/csstables.h
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/dvdcss/Makefile.am
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/error.c
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+   M /trunk/test/Makefile.am
+   M /trunk/test/csstest.c
+   M /trunk/test/dvd_region.c
+
+* libdvdcss: set EOL style in SVN
+------------------------------------------------------------------------
+r185 | robux4 | 2005-09-04 07:39:37 +0000 (Sun, 04 Sep 2005) | 1 line
+Changed paths:
+   M /trunk/src/dvdcss/dvdcss.h
+
+* libdvdcss: better DLL/library difference
+------------------------------------------------------------------------
+r184 | robux4 | 2005-09-04 07:36:01 +0000 (Sun, 04 Sep 2005) | 1 line
+Changed paths:
+   M /trunk/src/dvdcss/dvdcss.h
+
+* libdvdcss: allow building DLL exports
+------------------------------------------------------------------------
+r183 | sam | 2005-09-03 13:17:55 +0000 (Sat, 03 Sep 2005) | 4 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/doc
+   M /trunk/test
+
+  * configure.ac: patch from Diego Pettenò to let the user disable the
+    documentation build.
+  * test doc: added missing svn:ignore entries.
+
+------------------------------------------------------------------------
+r182 | massiot | 2005-09-01 17:12:42 +0000 (Thu, 01 Sep 2005) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+ * Revert [181] since it breaks on some OS X versions.
+
+------------------------------------------------------------------------
+r181 | massiot | 2005-09-01 12:40:25 +0000 (Thu, 01 Sep 2005) | 3 lines
+Changed paths:
+   M /trunk/bootstrap
+
+ * bootstrap: Use libtoolize instead of glibtoolize when it is available
+   because libtool under OS X sucks.
+
+------------------------------------------------------------------------
+r180 | massiot | 2005-08-31 19:07:00 +0000 (Wed, 31 Aug 2005) | 2 lines
+Changed paths:
+   M /trunk/src/device.c
+
+ * src/device.c: Under Windows remove the trailing backslash.
+
+------------------------------------------------------------------------
+r179 | sam | 2005-08-30 10:20:18 +0000 (Tue, 30 Aug 2005) | 2 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/src/Makefile.am
+
+  * configure.ac: forward -framework options to the linker.
+
+------------------------------------------------------------------------
+r178 | massiot | 2005-08-30 09:48:19 +0000 (Tue, 30 Aug 2005) | 2 lines
+Changed paths:
+   M /trunk/src/device.c
+
+ * src/device.c: Fixed compilation under Darwin.
+
+------------------------------------------------------------------------
+r177 | sam | 2005-08-29 22:25:20 +0000 (Mon, 29 Aug 2005) | 2 lines
+Changed paths:
+   M /trunk/src/device.c
+
+  * src/device.c: tried to port the device autodetection to OS X.
+
+------------------------------------------------------------------------
+r176 | sam | 2005-08-29 22:02:55 +0000 (Mon, 29 Aug 2005) | 3 lines
+Changed paths:
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/libdvdcss.c
+
+  * src/device.c: if the target is the empty string, attempt to autodetect
+    the DVD drive instead of giving up.
+
+------------------------------------------------------------------------
+r175 | sam | 2005-08-23 16:15:38 +0000 (Tue, 23 Aug 2005) | 3 lines
+Changed paths:
+   M /trunk/doc/Makefile.am
+   D /trunk/doc/doxygen.cfg
+   A /trunk/doc/doxygen.cfg.in (from /trunk/doc/doxygen.cfg:174)
+
+  * doc/Makefile.am: fixed build in a separate directory. Patch courtesy
+    of Bernard Leak with a few additions.
+
+------------------------------------------------------------------------
+r173 | sam | 2005-07-11 12:32:57 +0000 (Mon, 11 Jul 2005) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+
+  * Updated ChangeLog.
+
+------------------------------------------------------------------------
+r172 | sam | 2005-07-11 12:31:58 +0000 (Mon, 11 Jul 2005) | 2 lines
+Changed paths:
+   M /trunk/src/Makefile.am
+
+  * src/Makefile.am: bumped libtool version information.
+
+------------------------------------------------------------------------
+r171 | sam | 2005-07-11 12:25:18 +0000 (Mon, 11 Jul 2005) | 2 lines
+Changed paths:
+   M /trunk/debian/changelog
+   M /trunk/debian/control
+
+  * debian/*: updated Debian packaging information.
+
+------------------------------------------------------------------------
+r170 | sam | 2005-07-11 12:23:07 +0000 (Mon, 11 Jul 2005) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+
+  * src/css.c: grmbl, compile fix.
+
+------------------------------------------------------------------------
+r169 | massiot | 2005-07-11 12:15:10 +0000 (Mon, 11 Jul 2005) | 2 lines
+Changed paths:
+   M /trunk/NEWS
+   M /trunk/configure.ac
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+
+ * Bumped up version number to 1.2.9.
+
+------------------------------------------------------------------------
+r168 | sam | 2005-07-11 12:10:43 +0000 (Mon, 11 Jul 2005) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+
+  * src/css.c: reworked my verbosity patch to fix a compilation issue.
+
+------------------------------------------------------------------------
+r167 | sam | 2005-07-11 11:58:58 +0000 (Mon, 11 Jul 2005) | 3 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+
+  * src/ioctl.c: under Solaris, use libsmedia for ioctls when available. Code
+    reworked from a patch courtesy of the MPlayer team.
+
+------------------------------------------------------------------------
+r166 | sam | 2005-07-11 11:41:15 +0000 (Mon, 11 Jul 2005) | 3 lines
+Changed paths:
+   M /trunk/src/bsdi_ioctl.c
+
+  * src/bsdi_ioctl.c: use memset instead of bzero. Patch courtesy of the
+    MPlayer team.
+
+------------------------------------------------------------------------
+r165 | sam | 2005-07-11 11:32:33 +0000 (Mon, 11 Jul 2005) | 3 lines
+Changed paths:
+   M /trunk/src/device.c
+   M /trunk/src/ioctl.h
+
+  * src/device.c src/ioctl.h: cosmetic fix that uses real Win32 types for
+    dynamically loaded functions and gets rid of lvalue casts.
+
+------------------------------------------------------------------------
+r164 | sam | 2005-07-11 11:25:47 +0000 (Mon, 11 Jul 2005) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+
+  * src/css.c: be slightly more verbose in which keys we manipulate.
+
+------------------------------------------------------------------------
+r163 | sam | 2005-07-11 11:22:33 +0000 (Mon, 11 Jul 2005) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+  * bootstrap: allow to bootstrap with aclocal/automake version 1.9.
+
+------------------------------------------------------------------------
+r162 | gbazin | 2004-09-02 12:17:13 +0000 (Thu, 02 Sep 2004) | 1 line
+Changed paths:
+   M /trunk/src/common.h
+
+* src/common.h: use lseeki64 for file seeking on win32 (works above the 2.1G boundary).
+------------------------------------------------------------------------
+r161 | sam | 2004-08-13 13:53:27 +0000 (Fri, 13 Aug 2004) | 4 lines
+Changed paths:
+   M /trunk/src/css.c
+
+  * src/css.c:
+    + Save the cached key as ASCII in hexadecimal form.
+    + Overwrite cached files if the data was invalid.
+
+------------------------------------------------------------------------
+r160 | sam | 2004-08-13 13:40:44 +0000 (Fri, 13 Aug 2004) | 4 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+  * src/libdvdcss.c: 
+    + Recreate the cache dir information on each launch, in case the
+      information it contains ever changes.
+
+------------------------------------------------------------------------
+r159 | sam | 2004-08-11 23:26:35 +0000 (Wed, 11 Aug 2004) | 2 lines
+Changed paths:
+   M /trunk
+   M /trunk/Makefile.am
+   D /trunk/autotools
+   M /trunk/bootstrap
+   M /trunk/configure.ac
+
+  * Don't put autotools/ under revision control.
+
+------------------------------------------------------------------------
+r158 | sam | 2004-08-11 23:24:54 +0000 (Wed, 11 Aug 2004) | 2 lines
+Changed paths:
+   D /trunk/autotools/Makefile.am
+
+  * Don't put autotools/ under revision control.
+
+------------------------------------------------------------------------
+r157 | sam | 2004-08-11 23:04:39 +0000 (Wed, 11 Aug 2004) | 2 lines
+Changed paths:
+   M /trunk/libdvdcss.spec
+
+  * libdvdcss.spec: updated Red Hat rules for RH9.
+
+------------------------------------------------------------------------
+r156 | sam | 2004-08-11 22:59:42 +0000 (Wed, 11 Aug 2004) | 4 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+  * src/libdvdcss.c:
+    + Support for cache directory tags, as proposed on
+      http://www.brynosaurus.com/cachedir/spec.html .
+
+------------------------------------------------------------------------
+r155 | sam | 2004-08-11 22:15:30 +0000 (Wed, 11 Aug 2004) | 6 lines
+Changed paths:
+   M /trunk/AUTHORS
+   M /trunk/src/libdvdcss.c
+
+  * src/libdvdcss.c:
+    + Append the disc key to the cache directory name to avoid issues with
+      identical discs which have different encryption keys, thanks to Sven
+      Heithecker.
+    + Use - instead of # as a separator in the cache filename.
+
+------------------------------------------------------------------------
+r154 | sam | 2004-07-05 09:17:20 +0000 (Mon, 05 Jul 2004) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+  * bootstrap: fixed a syntax error.
+
+------------------------------------------------------------------------
+r153 | sam | 2004-07-05 09:15:35 +0000 (Mon, 05 Jul 2004) | 4 lines
+Changed paths:
+   M /trunk/bootstrap
+
+  * bootstrap:
+    + Run libtoolize before aclocal.
+    + Support automake 1.8.
+
+------------------------------------------------------------------------
+r152 | sam | 2004-02-24 15:47:00 +0000 (Tue, 24 Feb 2004) | 2 lines
+Changed paths:
+   M /trunk
+   D /trunk/.cvsignore
+   M /trunk/NEWS
+   M /trunk/README
+   M /trunk/autotools
+   D /trunk/autotools/.cvsignore
+   M /trunk/bootstrap
+   M /trunk/debian
+   D /trunk/debian/.cvsignore
+   M /trunk/doc
+   D /trunk/doc/.cvsignore
+   M /trunk/doc/footer.html
+   M /trunk/doc/header.html
+   M /trunk/msvc
+   D /trunk/msvc/.cvsignore
+   M /trunk/src
+   D /trunk/src/.cvsignore
+   M /trunk/src/bsdi_dvd.h
+   M /trunk/src/common.h
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+   M /trunk/src/csstables.h
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/dvdcss
+   D /trunk/src/dvdcss/.cvsignore
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/error.c
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+   M /trunk/test
+   D /trunk/test/.cvsignore
+
+  * Added proper SVN keywords to files and directories (for $Id and ignores).
+
+------------------------------------------------------------------------
+r141 | sam | 2003-12-11 15:13:40 +0000 (Thu, 11 Dec 2003) | 3 lines
+Changed paths:
+   M /trunk/doc/.cvsignore
+   M /trunk/doc/doxygen.cfg
+
+  * doc/doxygen.cfg: Updated doxygen configuration.
+  * doc/.cvsignore: Ignore stamp files.
+
+------------------------------------------------------------------------
+r140 | sam | 2003-12-11 15:12:42 +0000 (Thu, 11 Dec 2003) | 5 lines
+Changed paths:
+   M /trunk/src/device.c
+
+  * src/device.c:
+    + Store the off_t values for seek and read in a temporary variable to
+      work around a strange gentoo gcc behaviour as seen here:
+      http://www.via.ecp.fr/via/ml/libdvdcss-devel/200312/msg00000.html
+
+------------------------------------------------------------------------
+r139 | sam | 2003-11-26 20:16:38 +0000 (Wed, 26 Nov 2003) | 2 lines
+Changed paths:
+   M /trunk/libdvdcss.spec
+
+  * libdvdcss.spec: Fixed a syntax error (#1488).
+
+------------------------------------------------------------------------
+r138 | sam | 2003-11-06 10:12:38 +0000 (Thu, 06 Nov 2003) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+  * bootstrap: remove autom4te.cache before running autoconf
+
+------------------------------------------------------------------------
+r137 | sam | 2003-09-15 17:12:46 +0000 (Mon, 15 Sep 2003) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/libdvdcss.c
+
+  * libdvdcss.c: Added more debug messages.
+
+------------------------------------------------------------------------
+r136 | sam | 2003-09-09 13:17:24 +0000 (Tue, 09 Sep 2003) | 2 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/src/css.c
+   M /trunk/src/device.c
+
+  * src/css.c, src/device.c: more meaningful error messages.
+
+------------------------------------------------------------------------
+r135 | sam | 2003-09-09 12:32:40 +0000 (Tue, 09 Sep 2003) | 4 lines
+Changed paths:
+   M /trunk/.cvsignore
+   M /trunk/Makefile.am
+   M /trunk/NEWS
+   M /trunk/README
+   M /trunk/configure.ac
+   M /trunk/debian/Makefile.am
+   M /trunk/debian/changelog
+   A /trunk/debian/compat
+   M /trunk/debian/control
+   M /trunk/debian/rules
+   M /trunk/doc/Makefile.am
+   M /trunk/doc/footer.html
+   M /trunk/doc/header.html
+   M /trunk/test/csstest.c
+
+  * configure.ac: check for doxygen and latex to build documentation.
+  * doc/Makefile.am: conditionally build documentation.
+  * debian/*: use debian/compat instead of DH_COMPAT.
+
+------------------------------------------------------------------------
+r134 | sam | 2003-09-09 12:05:44 +0000 (Tue, 09 Sep 2003) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+  * bootstrap: code clean-up.
+
+------------------------------------------------------------------------
+r133 | sam | 2003-09-09 10:03:48 +0000 (Tue, 09 Sep 2003) | 3 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/device.c
+   M /trunk/src/error.c
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+
+  * Changed _dvdcss_error and _dvdcss_debug to print_error and print_debug
+    because they aren't libdvdcss functions.
+
+------------------------------------------------------------------------
+r132 | gbazin | 2003-07-29 19:49:13 +0000 (Tue, 29 Jul 2003) | 3 lines
+Changed paths:
+   M /trunk/NEWS
+
+
+* NEWS: forgot to update this one for the release.
+
+------------------------------------------------------------------------
+r131 | gbazin | 2003-07-29 19:03:02 +0000 (Tue, 29 Jul 2003) | 3 lines
+Changed paths:
+   M /trunk/libdvdcss.spec
+
+
+* libdvdcss.spec: fixed typo.
+
+------------------------------------------------------------------------
+r130 | gbazin | 2003-07-28 23:41:52 +0000 (Mon, 28 Jul 2003) | 3 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/configure.ac
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+
+
+* ALL: bumped version number to 1.2.8
+
+------------------------------------------------------------------------
+r129 | sam | 2003-07-16 21:40:01 +0000 (Wed, 16 Jul 2003) | 7 lines
+Changed paths:
+   M /trunk/src/css.c
+
+  * src/css.c:
+    + Workaround in CrackTitleKey for strange discs that report read errors
+      seemingly at random. Testcase was on Linux 2.4.20, with a region 2 RPC2
+      drive, and the region 1 copy of "Chasing Amy".
+    + Used macros instead of numerals where appropriate.
+    + Fixed spelling here and there.
+
+------------------------------------------------------------------------
+r128 | gbazin | 2003-07-08 18:00:54 +0000 (Tue, 08 Jul 2003) | 3 lines
+Changed paths:
+   M /trunk/src/device.c
+
+
+* src/device.c: grmblgrmbl!! Fixed a bug that prevented encrypted dvds from working under win32.
+
+------------------------------------------------------------------------
+r127 | massiot | 2003-06-22 20:59:45 +0000 (Sun, 22 Jun 2003) | 2 lines
+Changed paths:
+   M /trunk/src/Makefile.am
+
+* Updated library version.
+
+------------------------------------------------------------------------
+r126 | sam | 2003-06-18 17:23:55 +0000 (Wed, 18 Jun 2003) | 2 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+  * ./src/libdvdcss.c: if DVDCSS_VERBOSE is greater than 2, do as if it was 2.
+
+------------------------------------------------------------------------
+r125 | sam | 2003-06-13 00:41:35 +0000 (Fri, 13 Jun 2003) | 12 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/NEWS
+   M /trunk/configure.ac
+   M /trunk/debian/changelog
+   M /trunk/debian/control
+   M /trunk/debian/rules
+   M /trunk/libdvdcss.spec
+
+  * Everything is ready for a 1.2.7 release.
+
+  * debian/control:
+    + Set policy to 3.5.10.
+    + Removed the leading "a" in the package description.
+    + Set the source section to libs.
+    + Set the -dev package section to libdevel.
+    + Changed the debhelper build dependency to (>=3.0).
+  * debian/rules:
+    + Added magic to avoid autotools timestamp skews on autobuilders (as if
+      libdvdcss was ever going to hit the Debian autobuilders anyway).
+
+------------------------------------------------------------------------
+r124 | sam | 2003-06-12 23:22:34 +0000 (Thu, 12 Jun 2003) | 6 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+  * ./src/libdvdcss.c: if DVDCSS_CACHE is not set, we force a default value.
+     - under Win32: C:\Documents and Settings\$USER\Application Data\dvdcss\
+     - under Unix and everything else: ${HOME}/.dvdcss/
+     - the special value DVDCSS_CACHE=off disables caching.
+  * ./src/libdvdcss.c: updated doxygen documentation accordingly.
+
+------------------------------------------------------------------------
+r123 | sam | 2003-06-12 23:15:18 +0000 (Thu, 12 Jun 2003) | 3 lines
+Changed paths:
+   M /trunk/Makefile.am
+   M /trunk/configure.ac
+
+  * ./Makefile.am: put autotools/ in DIST_SUBDIRS instead of SUBDIRS.
+  * ./configure.ac: forgot to generate autotools/Makefile.
+
+------------------------------------------------------------------------
+r122 | sam | 2003-06-10 22:50:31 +0000 (Tue, 10 Jun 2003) | 4 lines
+Changed paths:
+   M /trunk/Makefile.am
+   A /trunk/autotools
+   A /trunk/autotools/.cvsignore
+   A /trunk/autotools/Makefile.am
+   M /trunk/bootstrap
+   M /trunk/configure.ac
+
+  * ./configure.ac: make use of the autotools/ directory.
+  * ./bootstrap: libfool is a tool. Worked around its blatant ignorance of
+    the AC_CONFIG_AUX_DIR directive.
+
+------------------------------------------------------------------------
+r121 | sam | 2003-05-27 17:12:33 +0000 (Tue, 27 May 2003) | 4 lines
+Changed paths:
+   M /trunk/debian/changelog
+   M /trunk/debian/control
+
+  * ./debian/control: removed libc6-dev from libdvdcss2-dev's dependencies
+    because it is part of build-essential and it isn't even called libc6-dev
+    on all architectures.
+
+------------------------------------------------------------------------
+r120 | sam | 2003-05-16 22:12:48 +0000 (Fri, 16 May 2003) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+
+  * ./src/css.c: typos in comments.
+
+------------------------------------------------------------------------
+r119 | gbazin | 2003-04-11 10:00:29 +0000 (Fri, 11 Apr 2003) | 3 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/src/common.h
+
+
+* configure.ac, src/common.h: fixes for the cygwin build using the mno-cygwin flag.
+
+------------------------------------------------------------------------
+r118 | yves | 2003-04-06 20:36:07 +0000 (Sun, 06 Apr 2003) | 2 lines
+Changed paths:
+   M /trunk/libdvdcss.spec
+
+better RH part thx Kipp Cannon <kipp@sgl.crestech.ca>
+
+------------------------------------------------------------------------
+r117 | gbazin | 2003-03-27 18:57:12 +0000 (Thu, 27 Mar 2003) | 3 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+
+* src/libdvdcss.c: CSS key cache collisions patch, courtesy of Michael Roitzsch.
+
+------------------------------------------------------------------------
+r116 | gbazin | 2003-03-22 16:37:37 +0000 (Sat, 22 Mar 2003) | 3 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+
+* src/libdvdcss.c: fix for NetBSD's mkdir that doesn't like trailing "/" on its argument. (courtesy of Christopher Richards)
+
+------------------------------------------------------------------------
+r115 | sam | 2003-03-10 18:01:40 +0000 (Mon, 10 Mar 2003) | 3 lines
+Changed paths:
+   M /trunk/debian/changelog
+   M /trunk/src/Makefile.am
+
+  * ./debian/changelog: updated Debian changelog.
+  * ./src/Makefile.am: bumped version information.
+
+------------------------------------------------------------------------
+r114 | alexis | 2003-03-10 17:41:31 +0000 (Mon, 10 Mar 2003) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/libdvdcss.spec
+
+- preparing the 1.2.6 release...
+
+------------------------------------------------------------------------
+r113 | massiot | 2003-03-09 23:50:42 +0000 (Sun, 09 Mar 2003) | 2 lines
+Changed paths:
+   M /trunk/NEWS
+   M /trunk/configure.ac
+
+Bumped up to 1.2.6.
+
+------------------------------------------------------------------------
+r112 | gbazin | 2003-03-09 23:34:18 +0000 (Sun, 09 Mar 2003) | 3 lines
+Changed paths:
+   M /trunk/src/common.h
+   M /trunk/src/error.c
+
+
+* src/common.h, src/error.c: fixed the PATH_MAX breakage on win32.
+
+------------------------------------------------------------------------
+r111 | massiot | 2003-02-04 11:54:36 +0000 (Tue, 04 Feb 2003) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/device.c
+   M /trunk/src/error.c
+
+Fixed compilation problems with PATH_MAX.
+
+------------------------------------------------------------------------
+r110 | massiot | 2003-01-29 22:59:35 +0000 (Wed, 29 Jan 2003) | 2 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/src/libdvdcss.c
+
+Fixed MAX_PATH on Darwin.
+
+------------------------------------------------------------------------
+r109 | yves | 2003-01-28 07:58:22 +0000 (Tue, 28 Jan 2003) | 3 lines
+Changed paths:
+   M /trunk/libdvdcss.spec
+
+- release number is 1. do not forget to update it too, aka sam sux.
+- fix a redhat "macro".
+
+------------------------------------------------------------------------
+r108 | sam | 2003-01-28 01:17:02 +0000 (Tue, 28 Jan 2003) | 6 lines
+Changed paths:
+   M /trunk/ChangeLog
+   A /trunk/NEWS
+   M /trunk/configure.ac
+   M /trunk/debian/changelog
+   M /trunk/debian/rules
+   M /trunk/doc/doxygen.cfg
+   M /trunk/libdvdcss.spec
+   M /trunk/src/Makefile.am
+   M /trunk/test/Makefile.am
+
+  * updated ChangeLog.
+  * updated version numbers and timestamps everywhere.
+  * created NEWS file.
+  * ./configure.ac: BSD/OS compilation fix when a local copy of libdvd is
+    found on the system, thanks to Steven M. Schultz.
+
+------------------------------------------------------------------------
+r107 | sam | 2003-01-28 00:41:10 +0000 (Tue, 28 Jan 2003) | 3 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+   M /trunk/test/csstest.c
+
+  * ./test/csstest.c: we align our read buffer in case of raw device access.
+  * ./src/libdvdcss.c: updated documentation about raw devices.
+
+------------------------------------------------------------------------
+r106 | sam | 2003-01-27 16:57:19 +0000 (Mon, 27 Jan 2003) | 2 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+  * ./src/libdvdcss.c: disabled key cache when reading VOBs.
+
+------------------------------------------------------------------------
+r105 | sam | 2003-01-16 22:58:29 +0000 (Thu, 16 Jan 2003) | 2 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+
+  * ./src/ioctl.c, ./src/ioctl.h: removed minor gcc-isms.
+
+------------------------------------------------------------------------
+r104 | yves | 2003-01-16 14:45:14 +0000 (Thu, 16 Jan 2003) | 3 lines
+Changed paths:
+   M /trunk/libdvdcss.spec
+
+* macros to fix build on redhat system. put %define redhat80 to 1.
+* few fixes.
+
+------------------------------------------------------------------------
+r103 | sam | 2002-12-19 16:50:50 +0000 (Thu, 19 Dec 2002) | 4 lines
+Changed paths:
+   M /trunk/src/device.c
+
+  * ./src/device.c: seek() calls don't do anything if we're already at the
+    right position.
+  * ./src/device.c: we now handle partial reads.
+
+------------------------------------------------------------------------
+r102 | sam | 2002-12-19 15:44:30 +0000 (Thu, 19 Dec 2002) | 2 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/src/css.c
+   M /trunk/src/libdvdcss.c
+
+  * ./configure.ac: added warning flags whenever possible.
+
+------------------------------------------------------------------------
+r101 | sam | 2002-12-19 15:36:04 +0000 (Thu, 19 Dec 2002) | 3 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/src/device.c
+   M /trunk/src/libdvdcss.h
+
+  * ./src/device.c: dvdcss->i_pos now gets updated on each seek and each
+    read. Partial reads are not handled yet, but it's a step.
+
+------------------------------------------------------------------------
+r100 | sam | 2002-12-19 15:29:53 +0000 (Thu, 19 Dec 2002) | 3 lines
+Changed paths:
+   M /trunk/src/bsdi_dvd.h
+   M /trunk/src/bsdi_ioctl.c
+
+  * ./src/bsdi_ioctl.c, ./src/bsdi_dvd.h: updated the bsdi libdvd with
+    Steven M. Schultz's latest changes.
+
+------------------------------------------------------------------------
+r99 | sam | 2002-12-19 12:37:30 +0000 (Thu, 19 Dec 2002) | 2 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/msvc/config.h
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+
+  * Ported the library build to Cygwin.
+
+------------------------------------------------------------------------
+r98 | sam | 2002-12-11 13:12:10 +0000 (Wed, 11 Dec 2002) | 2 lines
+Changed paths:
+   M /trunk/src/bsdi_dvd.h
+   M /trunk/src/bsdi_ioctl.c
+   M /trunk/src/device.c
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/libdvdcss.c
+
+  * minor coding style fixes.
+
+------------------------------------------------------------------------
+r97 | sam | 2002-12-10 10:43:25 +0000 (Tue, 10 Dec 2002) | 2 lines
+Changed paths:
+   M /trunk/msvc/csstest.dsp
+   M /trunk/msvc/libdvdcss.dsp
+   M /trunk/msvc/workspace.dsw
+
+  * ./msvc/*: grmbl, for some reason the project files were empty.
+
+------------------------------------------------------------------------
+r96 | sam | 2002-12-10 10:38:12 +0000 (Tue, 10 Dec 2002) | 2 lines
+Changed paths:
+   M /trunk/configure.ac
+   A /trunk/msvc
+   A /trunk/msvc/.cvsignore
+   A /trunk/msvc/config.h
+   A /trunk/msvc/csstest.dsp
+   A /trunk/msvc/libdvdcss.dsp
+   A /trunk/msvc/workspace.dsw
+   M /trunk/src/device.c
+   M /trunk/src/libdvdcss.c
+   M /trunk/test/csstest.c
+
+  * ./msvc/*: MS VC++ project files.
+
+------------------------------------------------------------------------
+r95 | babal | 2002-12-06 00:16:57 +0000 (Fri, 06 Dec 2002) | 3 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/device.c
+   M /trunk/src/error.c
+   M /trunk/src/libdvdcss.c
+
+- Early versions of Mingw32 (at least until 1.2) do not include
+  <limits.h> automatically, so PATH_MAX was undefined.
+
+------------------------------------------------------------------------
+r94 | sam | 2002-12-05 10:24:42 +0000 (Thu, 05 Dec 2002) | 4 lines
+Changed paths:
+   M /trunk/configure.ac
+   M /trunk/src/common.h
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+   M /trunk/src/csstables.h
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/error.c
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+
+  * ./src/libdvdcss.c: fixed Win32 mkdir() call.
+  * ALL: removed trailing spaces in files.
+  * ALL: moved everything to C99 integer types.
+
+------------------------------------------------------------------------
+r93 | sam | 2002-12-02 12:58:23 +0000 (Mon, 02 Dec 2002) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+  * ./bootstrap: we also look for glibtoolize (Closes: #37).
+
+------------------------------------------------------------------------
+r92 | jlj | 2002-12-02 07:38:21 +0000 (Mon, 02 Dec 2002) | 2 lines
+Changed paths:
+   M /trunk/src/device.h
+
+  ./src/device.h: Applied FreeBSD compile fix from Steven M. Schultz.
+
+------------------------------------------------------------------------
+r91 | jlj | 2002-11-25 18:44:31 +0000 (Mon, 25 Nov 2002) | 3 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+   M /trunk/test/dvd_region.c
+
+  * ./src/ioctl.[ch]: Implemented ioctl_SendRPC.
+  * ./test/dvd_region.c: enabled set_region.
+
+------------------------------------------------------------------------
+r90 | sam | 2002-11-24 17:34:23 +0000 (Sun, 24 Nov 2002) | 3 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/device.c
+   M /trunk/src/error.c
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+
+  * ./src/css.c, ./src/libdvdcss.c: applied a patch from the MPlayer folks
+    to cache title keys on disk.
+
+------------------------------------------------------------------------
+r89 | sam | 2002-11-21 12:13:20 +0000 (Thu, 21 Nov 2002) | 3 lines
+Changed paths:
+   M /trunk/debian/control
+
+  * ./debian/control: set the package sections to libs and devel instead of
+    graphics.
+
+------------------------------------------------------------------------
+r88 | alexis | 2002-11-17 23:46:44 +0000 (Sun, 17 Nov 2002) | 6 lines
+Changed paths:
+   M /trunk/libdvdcss.spec
+
+Changes in order to support RedHat and RPM 4.1 (courtesy of Ryurick
+Hristev and Kenton Groombridge).
+
+I have already uploaded new RPM packages on the FTP site (1.2.4-2) and
+updated the download page. Please test and give feedback.
+
+------------------------------------------------------------------------
+r87 | jlj | 2002-11-15 18:39:08 +0000 (Fri, 15 Nov 2002) | 2 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+
+  * ./src/ioctl.[ch]: ReportRPC win32 changes. Needs testing.
+
+------------------------------------------------------------------------
+r86 | gbazin | 2002-11-14 15:12:34 +0000 (Thu, 14 Nov 2002) | 3 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+
+
+* updated the changelogs for the 1.2.4 release.
+
+------------------------------------------------------------------------
+r85 | sam | 2002-11-14 12:41:47 +0000 (Thu, 14 Nov 2002) | 6 lines
+Changed paths:
+   M /trunk/bootstrap
+   M /trunk/configure.ac
+   M /trunk/libdvdcss.spec
+
+  * ./configure.ac: explicitly set AC_CONFIG_AUX_DIR(.) so that people who
+    do bootstrap without paying attention to error messages don't screw up
+    packages :-)
+  * ./libdvdcss.spec: removed bootstrap from the build phase.
+  * ./bootstrap: we accept automake 1.7.
+
+------------------------------------------------------------------------
+r84 | gbazin | 2002-11-14 12:38:57 +0000 (Thu, 14 Nov 2002) | 9 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/ioctl.c
+
+
+* src/css.c src/ioctl.c, src/libdvdcss.c: changed the work-around to detect
+   if the dvd is encrypted on Win2K in non-administrator mode.
+   Because we cannot use an ioctl to get the copyright status of the DVD,
+   we try to get the disc key and if this succeed, we assume the DVD is
+   encrypted, otherwise we assume it to be unencrypted.
+   I hope this logic is not too much flawed... at least it seems to be working
+   with the few DVDs I've got.
+
+------------------------------------------------------------------------
+r83 | jlj | 2002-11-14 01:32:37 +0000 (Thu, 14 Nov 2002) | 2 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+
+  * ./src/ioctl.c: Broke OpenBSD port with my previous commit. Fixed.
+
+------------------------------------------------------------------------
+r82 | alexis | 2002-11-13 23:43:01 +0000 (Wed, 13 Nov 2002) | 3 lines
+Changed paths:
+   M /trunk/libdvdcss.spec
+
+
+Added ./bootstrap for the build target
+
+------------------------------------------------------------------------
+r81 | gbazin | 2002-11-13 23:08:11 +0000 (Wed, 13 Nov 2002) | 3 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+
+
+* update changelogs.
+
+------------------------------------------------------------------------
+r80 | jlj | 2002-11-13 22:45:05 +0000 (Wed, 13 Nov 2002) | 3 lines
+Changed paths:
+   M /trunk/AUTHORS
+   M /trunk/src/ioctl.c
+
+  * ./src/ioctl.c: cosmetic fixes.
+  * ./AUTHORS: updated my entry.
+
+------------------------------------------------------------------------
+r79 | alexis | 2002-11-13 22:24:41 +0000 (Wed, 13 Nov 2002) | 3 lines
+Changed paths:
+   M /trunk/configure.ac
+
+
+Update version number to 1.2.4
+
+------------------------------------------------------------------------
+r78 | alexis | 2002-11-13 22:14:28 +0000 (Wed, 13 Nov 2002) | 2 lines
+Changed paths:
+   M /trunk/libdvdcss.spec
+
+Update for 1.2.4 release.
+
+------------------------------------------------------------------------
+r77 | sam | 2002-11-13 22:11:38 +0000 (Wed, 13 Nov 2002) | 3 lines
+Changed paths:
+   M /trunk/debian/changelog
+
+  Updated Debian changelog (though there are no changes in this version
+  apart from Win32, so what's the point of building new packages :p)
+
+------------------------------------------------------------------------
+r76 | gbazin | 2002-11-13 21:23:08 +0000 (Wed, 13 Nov 2002) | 3 lines
+Changed paths:
+   M /trunk/ChangeLog
+
+
+* ChangeLog: updated changelog.
+
+------------------------------------------------------------------------
+r75 | gbazin | 2002-10-29 18:51:37 +0000 (Tue, 29 Oct 2002) | 4 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+
+
+* src/ioctl.c: fixed typo that prevented unencrypted DVDs to work in
+   non-administrator mode.
+
+------------------------------------------------------------------------
+r74 | gbazin | 2002-10-19 09:53:33 +0000 (Sat, 19 Oct 2002) | 4 lines
+Changed paths:
+   M /trunk/src/device.c
+   M /trunk/src/ioctl.h
+
+
+* src/device.c, src/ioctl.h: on win9x, when using ASPI, make sure the drive
+   we are trying to open is actually a cdrom/dvdrom drive.
+
+------------------------------------------------------------------------
+r73 | sam | 2002-10-18 18:48:59 +0000 (Fri, 18 Oct 2002) | 5 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+
+  * ./src/device.c: split the open, read and seek functions so that we can
+    use function pointers instead of doing the if(WIN2K) test.
+  * ./src/device.c: if the target is not a drive name such as F:, we open
+    it with the standard libc functions, even under Win32.
+
+------------------------------------------------------------------------
+r72 | massiot | 2002-10-12 23:02:49 +0000 (Sat, 12 Oct 2002) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+
+Updated changelog and release tag.
+
+------------------------------------------------------------------------
+r71 | gbazin | 2002-10-12 12:41:24 +0000 (Sat, 12 Oct 2002) | 4 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+
+
+* src/ioctl.c, src/ioctl.h: fix in ioctl_ReadCopyright to try to work around
+   the buggy IOCTL_DVD_READ_STRUCTURE on WinNT/2k/XP.
+
+------------------------------------------------------------------------
+r70 | sam | 2002-10-11 10:09:56 +0000 (Fri, 11 Oct 2002) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+
+  * Updated changelog and package files.
+
+------------------------------------------------------------------------
+r69 | sam | 2002-10-11 10:03:48 +0000 (Fri, 11 Oct 2002) | 6 lines
+Changed paths:
+   M /trunk/.cvsignore
+   M /trunk/Makefile.am
+   D /trunk/NEWS
+   M /trunk/bootstrap
+   A /trunk/configure.ac
+   D /trunk/configure.in
+   M /trunk/src/.cvsignore
+   M /trunk/src/Makefile.am
+   D /trunk/src/config.h.in
+
+  * ./configure.ac, ./bootstrap: used libdvbpsi's bootstrap, moved config.h
+    to ., renamed configure.in into configure.ac, removed useless files that
+    are autogenerated.
+  * ./src/Makefile.am: instead of using -no-undefined "only under BeOS" we
+    use it "never with MSVC".
+
+------------------------------------------------------------------------
+r68 | massiot | 2002-10-10 22:29:31 +0000 (Thu, 10 Oct 2002) | 2 lines
+Changed paths:
+   M /trunk/bootstrap
+
+Exit cleanly in case of error.
+
+------------------------------------------------------------------------
+r67 | massiot | 2002-10-10 21:40:41 +0000 (Thu, 10 Oct 2002) | 4 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/configure.in
+   M /trunk/src/config.h.in
+   M /trunk/src/css.c
+
+* Bumped up version number to 1.2.3 (soleil !).
+* Updated Changelog.
+* Merged in hh's patch for broken DVD drives/kernel/whatever.
+
+------------------------------------------------------------------------
+r66 | gbazin | 2002-10-10 12:44:28 +0000 (Thu, 10 Oct 2002) | 7 lines
+Changed paths:
+   M /trunk/AUTHORS
+   M /trunk/src/css.c
+   M /trunk/src/device.c
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+
+
+* src/css.c, src/device.c, src/ioctl.[ch]: We don't need to be in administrator mode
+anymore to authenticate the drive on Windows NT/2k/XP. As a result any user can now
+play a DVD on these OSs :)
+* src/ioctl.c: fixed ioctl_ReadTitleKey which wasn't working on Windows NT/2k/XP.
+Because of this bug, the disc and key methods for key decryption where not working.
+
+------------------------------------------------------------------------
+r65 | sam | 2002-10-07 16:37:15 +0000 (Mon, 07 Oct 2002) | 5 lines
+Changed paths:
+   M /trunk/configure.in
+   M /trunk/src/Makefile.am
+   M /trunk/src/config.h.in
+
+  * ./src/Makefile.am: -no-undefined is now only used under BeOS because it
+    causes the Win32 compilation to fail.
+  * ./configure.in, src/Makefile.am: used AM_CONDITIONAL to conditionally
+    build the BSDi stuff.
+
+------------------------------------------------------------------------
+r64 | sam | 2002-08-10 21:27:42 +0000 (Sat, 10 Aug 2002) | 2 lines
+Changed paths:
+   M /trunk/src/Makefile.am
+
+  * Bumped the revision number... thanks H�kan :-)
+
+------------------------------------------------------------------------
+r63 | sam | 2002-08-10 21:19:55 +0000 (Sat, 10 Aug 2002) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+
+  * ./src/css.c: removed useless debug messages on H�kan's advice.
+
+------------------------------------------------------------------------
+r62 | sam | 2002-08-10 20:21:54 +0000 (Sat, 10 Aug 2002) | 2 lines
+Changed paths:
+   M /trunk/AUTHORS
+   M /trunk/ChangeLog
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+   M /trunk/src/libdvdcss.c
+
+  * Updated release-related files.
+
+------------------------------------------------------------------------
+r61 | sam | 2002-08-10 17:42:09 +0000 (Sat, 10 Aug 2002) | 3 lines
+Changed paths:
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+
+  * ./src/ioctl.c: fixed ReportRPC for Win32.
+  * ./src/device.h: removed unneeded exported symbols.
+
+------------------------------------------------------------------------
+r60 | sam | 2002-08-10 14:27:26 +0000 (Sat, 10 Aug 2002) | 4 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+   M /trunk/src/device.c
+   M /trunk/src/device.h
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/error.c
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+   M /trunk/test/csstest.c
+
+  * ./src/dvdcss/dvdcss.h: marked deprecated stuff.
+  * ./test/csstest.c: more documentation.
+      see http://www.videolan.org/libdvdcss/doc/
+
+------------------------------------------------------------------------
+r59 | sam | 2002-08-10 12:56:04 +0000 (Sat, 10 Aug 2002) | 3 lines
+Changed paths:
+   M /trunk/.cvsignore
+   M /trunk/Makefile.am
+   D /trunk/Makefile.in
+   D /trunk/aclocal.m4
+   D /trunk/config.guess
+   D /trunk/config.sub
+   D /trunk/configure
+   M /trunk/configure.in
+   M /trunk/debian/.cvsignore
+   D /trunk/debian/Makefile.in
+   A /trunk/doc
+   A /trunk/doc/.cvsignore
+   A /trunk/doc/Makefile.am
+   A /trunk/doc/doxygen.cfg
+   A /trunk/doc/footer.html
+   A /trunk/doc/header.html
+   D /trunk/install-sh
+   D /trunk/ltmain.sh
+   D /trunk/missing
+   D /trunk/mkinstalldirs
+   M /trunk/src/.cvsignore
+   D /trunk/src/Makefile.in
+   M /trunk/src/dvdcss/.cvsignore
+   D /trunk/src/dvdcss/Makefile.in
+   M /trunk/src/libdvdcss.c
+   M /trunk/test/.cvsignore
+   D /trunk/test/Makefile.in
+
+  * ALL: removed autotools files.
+  * ./doc/*: added doxygen files.
+
+------------------------------------------------------------------------
+r58 | sam | 2002-08-10 12:21:28 +0000 (Sat, 10 Aug 2002) | 2 lines
+Changed paths:
+   M /trunk/src/dvdcss/dvdcss.h
+   M /trunk/src/libdvdcss.c
+
+  * ./src/libdvdcss.c, ./src/dvdcss/dvdcss.h: documented the API.
+
+------------------------------------------------------------------------
+r57 | sam | 2002-08-09 22:03:34 +0000 (Fri, 09 Aug 2002) | 4 lines
+Changed paths:
+   M /trunk/src/css.c
+
+  * ./src/css.c: in case of a region mismatch and when the drive needs to
+    be reset, we read the first sector of the disc instead of closing and
+    reopening it.
+
+------------------------------------------------------------------------
+r56 | sam | 2002-08-09 14:19:46 +0000 (Fri, 09 Aug 2002) | 3 lines
+Changed paths:
+   M /trunk/src/Makefile.am
+   M /trunk/src/Makefile.in
+
+  * ./src/Makefile.am: tell libtool that libdvdcss does not have undefined
+    symbols. Fix for BeOS courtesy of Andrew Bachmann.
+
+------------------------------------------------------------------------
+r55 | sam | 2002-08-09 14:10:43 +0000 (Fri, 09 Aug 2002) | 23 lines
+Changed paths:
+   M /trunk/Makefile.in
+   M /trunk/aclocal.m4
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/debian/Makefile.in
+   M /trunk/src/Makefile.am
+   M /trunk/src/Makefile.in
+   M /trunk/src/bsdi_ioctl.c
+   M /trunk/src/common.h
+   M /trunk/src/config.h.in
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+   A /trunk/src/device.c
+   A /trunk/src/device.h
+   M /trunk/src/dvdcss/Makefile.in
+   A /trunk/src/error.c
+   M /trunk/src/libdvdcss.c
+   M /trunk/src/libdvdcss.h
+   M /trunk/test/Makefile.in
+   M /trunk/test/csstest.c
+
+  * ./src/css.c: when the ReadTitleKey ioctl failed, reopen the device before
+    falling back to the title method.
+
+   Note: on my drive, this fixes the "ioctl_ReadTitleKey failed" error
+         many users have been reporting. Please test!
+
+   Note 2: I could not find any other way to reset the drive after a failed
+           ReadTitleKey ioctl than closing and opening the device again. If
+           I don't do that, read() fails with an Input/output error after a
+           while (but not immediately).
+
+  * ALL: libdvdcss builds with -ansi -pedantic. Yeah I like that :-)
+  * ./src/css.c: renamed a few functions so that they make more sense, added
+    debug messages here and there, fixed typos and speling.
+  * ./src/error.c: moved _dvdcss_error and _dvdcss_debug here.
+  * ./src/device.c: moved device reading functions from libdvdcss.c to here.
+  * ./src/device.c: errors from dvdcss_read are now properly handled; partial
+    reads still aren't though.
+  * ./src/libdvdcss.c: default verbosity is now 0, a library should not be
+    intrusive by default.
+  * ./test/csstest.c: additional error check.
+  * ./configure.in: removed the crap boolean_t detection.
+
+------------------------------------------------------------------------
+r54 | massiot | 2002-07-23 11:43:58 +0000 (Tue, 23 Jul 2002) | 2 lines
+Changed paths:
+   M /trunk/README
+
+Default method is now "key" :p.
+
+------------------------------------------------------------------------
+r53 | sam | 2002-07-16 22:47:40 +0000 (Tue, 16 Jul 2002) | 4 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/Makefile.in
+   M /trunk/aclocal.m4
+   M /trunk/config.guess
+   M /trunk/config.sub
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/debian/Makefile.in
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+   M /trunk/ltmain.sh
+   M /trunk/src/Makefile.in
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+   M /trunk/src/dvdcss/Makefile.in
+   M /trunk/src/libdvdcss.c
+   M /trunk/test/Makefile.am
+   M /trunk/test/Makefile.in
+
+  * ./test/Makefile.am: disabled dvd_region.
+  * ./src/css.c: speling fixes.
+  * ALL: re-ran bootstrap with more recent autotools.
+
+------------------------------------------------------------------------
+r52 | hjort | 2002-07-14 11:44:57 +0000 (Sun, 14 Jul 2002) | 3 lines
+Changed paths:
+   A /trunk/test/dvd_region.c
+
+New utility for querying (and eventualy setting) the region of a DVD drive
+using the ioctl wrappers in libdvdcss.
+
+------------------------------------------------------------------------
+r51 | hjort | 2002-07-12 23:28:42 +0000 (Fri, 12 Jul 2002) | 3 lines
+Changed paths:
+   M /trunk/configure.in
+   M /trunk/src/bsdi_ioctl.c
+
+Include config.h before testing defines in the BSDi ioctl code.  Add a bug
+fix from the author.  Remove the now unused parts from configure.in.
+
+------------------------------------------------------------------------
+r50 | hjort | 2002-07-12 21:06:41 +0000 (Fri, 12 Jul 2002) | 3 lines
+Changed paths:
+   M /trunk/src/Makefile.am
+   M /trunk/src/bsdi_ioctl.c
+   M /trunk/test/Makefile.am
+
+Fix so that the bsdi_*.[hc] files make it into the dist tar-ball.
+Correct the include path for the programs in test/.
+
+------------------------------------------------------------------------
+r49 | hjort | 2002-07-01 13:40:33 +0000 (Mon, 01 Jul 2002) | 3 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+Typo fix and fix the linked list code to not drop the list when instering
+at the head, from Adam Jones.
+
+------------------------------------------------------------------------
+r48 | hjort | 2002-07-01 10:36:37 +0000 (Mon, 01 Jul 2002) | 2 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+
+Patch for OS/2 from Alex Strelnikov.
+
+------------------------------------------------------------------------
+r47 | hjort | 2002-07-01 09:59:09 +0000 (Mon, 01 Jul 2002) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+
+Typo fix from Adam Jones.
+
+------------------------------------------------------------------------
+r46 | hjort | 2002-07-01 09:02:25 +0000 (Mon, 01 Jul 2002) | 2 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+
+Getting ReportRPC for WIN32 a bit closer to working.
+
+------------------------------------------------------------------------
+r45 | sam | 2002-06-04 07:10:07 +0000 (Tue, 04 Jun 2002) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/src/ioctl.c
+
+  * ./src/ioctl.c: implemented ioctl_ReportKey1 for HP-UX.
+
+------------------------------------------------------------------------
+r44 | sam | 2002-06-04 07:02:57 +0000 (Tue, 04 Jun 2002) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/src/libdvdcss.c
+
+  * ./src/libdvdcss.c: Win32 compilation fix.
+
+------------------------------------------------------------------------
+r43 | sam | 2002-06-02 16:18:45 +0000 (Sun, 02 Jun 2002) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+
+  * ALL: changed version number to 1.2.1.
+
+------------------------------------------------------------------------
+r42 | sam | 2002-06-02 16:14:48 +0000 (Sun, 02 Jun 2002) | 2 lines
+Changed paths:
+   M /trunk/AUTHORS
+   M /trunk/ChangeLog
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+
+  * ./src/ioctl.c, ./src/ioctl.h: QNX port, courtesy of Pascal Levesque.
+
+------------------------------------------------------------------------
+r41 | sam | 2002-06-02 16:05:34 +0000 (Sun, 02 Jun 2002) | 2 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/src/css.c
+
+  * ./src/css.c: applied H�kan's fix for the failure on region mismatch.
+
+------------------------------------------------------------------------
+r40 | sam | 2002-06-02 15:54:10 +0000 (Sun, 02 Jun 2002) | 3 lines
+Changed paths:
+   M /trunk/.cvsignore
+   M /trunk/ChangeLog
+   M /trunk/aclocal.m4
+   M /trunk/configure
+   M /trunk/libdvdcss.spec
+   M /trunk/ltmain.sh
+   M /trunk/src/libdvdcss.c
+
+  * ALL: switched to libtool 1.4.2a.
+  * ./src/libdvdcss.c: fixed an uninitialized variable.
+
+------------------------------------------------------------------------
+r39 | sam | 2002-05-26 14:22:23 +0000 (Sun, 26 May 2002) | 2 lines
+Changed paths:
+   M /trunk/src/dvdcss/dvdcss.h
+
+  * ./src/dvdcss/dvdcss.h: C++ compliant public header.
+
+------------------------------------------------------------------------
+r38 | sam | 2002-05-20 17:58:20 +0000 (Mon, 20 May 2002) | 4 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+   D /trunk/libtool
+
+  * Everything should be ready for 1.2.0.
+  * Updated ChangeLog.
+  * Removed libtool. It seems to be created automatically anyway.
+
+------------------------------------------------------------------------
+r37 | hjort | 2002-05-16 20:40:54 +0000 (Thu, 16 May 2002) | 4 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+New function _dvdcss_use_ioctls.  Avoid using the ioctl calls when
+they have no chans or working, this in turn avoids a spurious warning
+when they fail.
+
+------------------------------------------------------------------------
+r36 | hjort | 2002-05-16 20:12:04 +0000 (Thu, 16 May 2002) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+
+Update error message.
+
+------------------------------------------------------------------------
+r35 | hjort | 2002-05-16 12:10:29 +0000 (Thu, 16 May 2002) | 2 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+Default to 'key', rather than 'title', method.
+
+------------------------------------------------------------------------
+r34 | sam | 2002-05-15 20:27:04 +0000 (Wed, 15 May 2002) | 2 lines
+Changed paths:
+   M /trunk/libdvdcss.spec
+
+  * ./libdvdcss.spec: enhancements by Mandrakesoft.
+
+------------------------------------------------------------------------
+r33 | hjort | 2002-05-13 21:22:22 +0000 (Mon, 13 May 2002) | 3 lines
+Changed paths:
+   M /trunk/src/libdvdcss.c
+
+Correct serious bug in dvdcss_read for titles with all zero key (a unencrypted
+title on a CSS protected disc).
+
+------------------------------------------------------------------------
+r32 | jlj | 2002-05-05 22:21:51 +0000 (Sun, 05 May 2002) | 3 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+
+  * ./src/ioctl.[ch]: Darwin changes: Cleaned up the code, fixed
+    ReadTitleKey, and implemented ReportRPC.
+
+------------------------------------------------------------------------
+r31 | gbazin | 2002-04-26 20:47:08 +0000 (Fri, 26 Apr 2002) | 4 lines
+Changed paths:
+   M /trunk/INSTALL
+
+
+
+* updated win32 compilation instructions.
+
+------------------------------------------------------------------------
+r30 | sam | 2002-04-06 01:27:43 +0000 (Sat, 06 Apr 2002) | 3 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+
+
+  * libdvdcss-1.1.1 release.
+
+------------------------------------------------------------------------
+r29 | sam | 2002-04-06 01:11:05 +0000 (Sat, 06 Apr 2002) | 3 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/src/ioctl.c
+
+
+  * ./src/ioctl.c: OpenBSD compile fix. Thanks to ex0dus on #videolan.
+
+------------------------------------------------------------------------
+r28 | gbazin | 2002-04-05 00:26:25 +0000 (Fri, 05 Apr 2002) | 5 lines
+Changed paths:
+   M /trunk/INSTALL
+   M /trunk/src/css.c
+
+
+
+* updated INSTALL doc for the win32 build.
+* added small win32 specific error message that was also in the vlc tree.
+
+------------------------------------------------------------------------
+r27 | gbazin | 2002-04-04 23:44:20 +0000 (Thu, 04 Apr 2002) | 10 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+   M /trunk/src/libdvdcss.c
+
+
+
+* added two patches that have been forgot from the vlc tree.
+
+ 1- Under NT/2K/XP try to open the dvd device in read only mode if we don't
+    have right access. With only read access we can't use ioctls but if the
+    disc has already been authenticated, then we can decrypt it with the
+    TITLE method.
+ 2- Small compilation fix for msvc.
+
+------------------------------------------------------------------------
+r26 | sam | 2002-04-04 14:21:25 +0000 (Thu, 04 Apr 2002) | 3 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/src/libdvdcss.h
+
+
+  * ./src/libdvdcss.h: IRIX compile fix by Michael Pruett <michael@68k.org>.
+
+------------------------------------------------------------------------
+r25 | sam | 2002-04-04 01:26:54 +0000 (Thu, 04 Apr 2002) | 4 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/src/config.h.in
+   M /trunk/src/ioctl.c
+
+
+  * ./configure.in: BeOS bug fix. I'm so lame.
+  * ./src/ioctl.c: refuse to build if DVD ioctls weren't found.
+
+------------------------------------------------------------------------
+r24 | sam | 2002-04-03 23:34:30 +0000 (Wed, 03 Apr 2002) | 3 lines
+Changed paths:
+   M /trunk/test/.cvsignore
+
+
+  * Forgot to change test/.cvsignore ...
+
+------------------------------------------------------------------------
+r23 | sam | 2002-04-03 23:33:57 +0000 (Wed, 03 Apr 2002) | 6 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/test/Makefile.am
+   M /trunk/test/Makefile.in
+   A /trunk/test/csstest.c
+   D /trunk/test/test.c
+
+
+  * ./test/csstest.c: renamed test.c to csstest.c.
+
+   I hereby declare libdvdcss 1.1.0 ready to ship; it was successfully tested
+  on Linux, FreeBSD, MacOS X and BeOS, and compiles on Solaris.
+
+------------------------------------------------------------------------
+r22 | jlj | 2002-04-03 23:02:20 +0000 (Wed, 03 Apr 2002) | 3 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+
+
+  * ./src/ioctl.c: Fixed a Darwin typo I recently introduced.
+
+------------------------------------------------------------------------
+r21 | sam | 2002-04-03 22:31:42 +0000 (Wed, 03 Apr 2002) | 3 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/Makefile.in
+   M /trunk/configure
+   M /trunk/debian/Makefile.in
+   M /trunk/src/Makefile.in
+   M /trunk/src/dvdcss/Makefile.in
+   M /trunk/test/Makefile.in
+
+
+  * Run ./bootstrap.
+
+------------------------------------------------------------------------
+r20 | jlj | 2002-04-03 22:17:00 +0000 (Wed, 03 Apr 2002) | 3 lines
+Changed paths:
+   M /trunk/configure.in
+
+
+  * ./configure.in: Darwin compile fix (added -no-cpp-precomp)
+
+------------------------------------------------------------------------
+r19 | sam | 2002-04-03 21:31:52 +0000 (Wed, 03 Apr 2002) | 5 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/configure
+   M /trunk/debian/changelog
+   M /trunk/libdvdcss.spec
+   M /trunk/missing
+
+
+  * ./ChangeLog: everything should be ready for the 1.1.0 release.
+  * ./libdvdcss.spec: updated specfile for RPM generation.
+  * ./missing: commited libtool's latest version of this file.
+
+------------------------------------------------------------------------
+r18 | jlj | 2002-04-03 21:25:13 +0000 (Wed, 03 Apr 2002) | 3 lines
+Changed paths:
+   M /trunk/configure.in
+   M /trunk/src/config.h.in
+   M /trunk/src/ioctl.c
+
+
+  * Fixed a Darwin define problem.
+
+------------------------------------------------------------------------
+r17 | sam | 2002-04-03 15:19:22 +0000 (Wed, 03 Apr 2002) | 5 lines
+Changed paths:
+   M /trunk/ChangeLog
+   M /trunk/Makefile.am
+   M /trunk/config.guess
+   M /trunk/config.sub
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/src/Makefile.am
+   M /trunk/src/Makefile.in
+   M /trunk/src/css.c
+   A /trunk/src/dvdcss
+   A /trunk/src/dvdcss/.cvsignore
+   A /trunk/src/dvdcss/Makefile.am
+   A /trunk/src/dvdcss/Makefile.in
+   A /trunk/src/dvdcss/dvdcss.h
+   D /trunk/src/dvdcss.h
+   M /trunk/src/libdvdcss.c
+   M /trunk/test/Makefile.am
+   M /trunk/test/Makefile.in
+   M /trunk/test/test.c
+
+
+  * ./src/dvdcss/dvdcss.h: moved dvdcss.h in a subdirectory so that we can
+    include <dvdcss/dvdcss.h> without having to make install.
+  * ./test/test.c: removed #ifdef DVDCSS_DIST.
+
+------------------------------------------------------------------------
+r16 | sam | 2002-04-03 06:12:50 +0000 (Wed, 03 Apr 2002) | 9 lines
+Changed paths:
+   M /trunk/AUTHORS
+   M /trunk/ChangeLog
+   M /trunk/Makefile.am
+   M /trunk/Makefile.in
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/debian/.cvsignore
+   A /trunk/debian/Makefile.am
+   A /trunk/debian/Makefile.in
+   M /trunk/debian/changelog
+   M /trunk/debian/rules
+   M /trunk/libtool
+   M /trunk/src/Makefile.am
+   M /trunk/src/Makefile.in
+   M /trunk/src/config.h.in
+   M /trunk/src/css.c
+   M /trunk/src/dvdcss.h
+   M /trunk/src/libdvdcss.c
+   M /trunk/test/Makefile.in
+   M /trunk/test/test.c
+
+
+  * ./ChangeLog: updated changelog.
+  * ./Makefile.am: added the debian dir to the targets.
+  * ./configure.in: switched to a more conventional versioning scheme.
+  * ./src/css.c: removed a useless #ifdef.
+  * ./src/dvdcss.h: added a versioned symbol to the API.
+  * ./src/Makefile.am: use <dvdcss/dvdcss.h> instead of <videolan/dvdcss.h>.
+  * ./test/test.c: test program is now up to date.
+
+------------------------------------------------------------------------
+r15 | hjort | 2002-03-09 17:57:53 +0000 (Sat, 09 Mar 2002) | 7 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+   M /trunk/src/libdvdcss.c
+
+Split the code into more functions. The disc and title decryption /
+cracking code is now each in it's own function.  Also moved the code that
+looks for a weak block in the VOB to crack the title key from out from
+the loop that reads them.  Added another crack method, it's disabled for
+now though.  Lowered some limits on the current 'weak' test.  Added more
+comments.
+
+------------------------------------------------------------------------
+r14 | hjort | 2002-03-09 17:35:49 +0000 (Sat, 09 Mar 2002) | 3 lines
+Changed paths:
+   M /trunk/configure.in
+
+Add -D_FILE_OFFSET_BITS=64 to the compile line to make off_t / lseek and
+other file access functions used in dvdcss be 64bit.
+
+------------------------------------------------------------------------
+r13 | hjort | 2002-03-09 17:24:28 +0000 (Sat, 09 Mar 2002) | 2 lines
+Changed paths:
+   M /trunk/test/test.c
+
+Tell libdvdcss to get the key for the block before we decrypt it.
+
+------------------------------------------------------------------------
+r12 | hjort | 2002-03-09 17:23:05 +0000 (Sat, 09 Mar 2002) | 2 lines
+Changed paths:
+   M /trunk/test/Makefile.am
+
+Don't link to libdl.
+
+------------------------------------------------------------------------
+r11 | sam | 2002-03-09 17:16:44 +0000 (Sat, 09 Mar 2002) | 3 lines
+Changed paths:
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/test/test.c
+
+
+  * Fixed compilation of test/test.c.
+
+------------------------------------------------------------------------
+r10 | sam | 2002-03-06 00:06:17 +0000 (Wed, 06 Mar 2002) | 3 lines
+Changed paths:
+   M /trunk/test/.cvsignore
+   A /trunk/test/test.c
+
+
+  * Updated misc control files and added the sample program.
+
+------------------------------------------------------------------------
+r9 | sam | 2002-03-06 00:04:41 +0000 (Wed, 06 Mar 2002) | 2 lines
+Changed paths:
+   M /trunk/Makefile.am
+   M /trunk/Makefile.in
+   M /trunk/aclocal.m4
+   M /trunk/config.guess
+   M /trunk/config.sub
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/debian/changelog
+   D /trunk/debian/libdvdcss2.shlibs
+   M /trunk/libtool
+   M /trunk/src/Makefile.am
+   M /trunk/src/Makefile.in
+   M /trunk/src/config.h.in
+   M /trunk/test/Makefile.am
+   M /trunk/test/Makefile.in
+
+*** empty log message ***
+
+------------------------------------------------------------------------
+r8 | hjort | 2002-02-25 18:21:57 +0000 (Mon, 25 Feb 2002) | 2 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+
+Cleanup some formating, indentation and types and add a small comment.
+
+------------------------------------------------------------------------
+r7 | hjort | 2002-02-03 14:54:53 +0000 (Sun, 03 Feb 2002) | 2 lines
+Changed paths:
+   M /trunk/src/ioctl.c
+   M /trunk/src/ioctl.h
+
+Add the WIN32 fix to GetTitleKey from the vlc/extra branch.
+
+------------------------------------------------------------------------
+r6 | hjort | 2002-02-03 14:53:10 +0000 (Sun, 03 Feb 2002) | 2 lines
+Changed paths:
+   M /trunk/configure.in
+
+Do check for the unistd.h header file.
+
+------------------------------------------------------------------------
+r5 | hjort | 2002-01-20 17:04:54 +0000 (Sun, 20 Jan 2002) | 7 lines
+Changed paths:
+   M /trunk/src/css.c
+   M /trunk/src/css.h
+
+Make CSSAuth more rubust, should now also work with drives that are not 100%
+compliant to the SFF-8090 standard.  AGID invalidation should now work,
+allowing us to recover from hung / failed authentications.  Corrected
+CSSGetASF, it does not take an AGID argument.  Move several data structures
+from the dvdcss handle to local variables in CSSAuth.  Remove CSSAuth as a
+externaly visible function in css.c.
+
+------------------------------------------------------------------------
+r4 | sam | 2001-12-22 00:52:46 +0000 (Sat, 22 Dec 2001) | 3 lines
+Changed paths:
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/libtool
+   A /trunk/src/.cvsignore
+   M /trunk/src/config.h.in
+   M /trunk/src/libdvdcss.c
+
+
+  * Win32 compilation fix.
+
+------------------------------------------------------------------------
+r3 | sam | 2001-12-22 00:26:17 +0000 (Sat, 22 Dec 2001) | 3 lines
+Changed paths:
+   M /trunk/configure
+   M /trunk/configure.in
+   M /trunk/src/config.h.in
+
+
+  * Attempt at fixing the Solaris port.
+
+------------------------------------------------------------------------
+r2 | sam | 2001-12-22 00:10:31 +0000 (Sat, 22 Dec 2001) | 3 lines
+Changed paths:
+   M /trunk/.cvsignore
+   A /trunk/Makefile.in
+   M /trunk/configure
+   M /trunk/configure.in
+   A /trunk/src/Makefile.in
+   M /trunk/test/.cvsignore
+   A /trunk/test/Makefile.in
+
+
+  * Forgot Makefile.in files.
+
+------------------------------------------------------------------------
+r1 | sam | 2001-12-22 00:08:13 +0000 (Sat, 22 Dec 2001) | 3 lines
+Changed paths:
+   A /trunk
+   A /trunk/.cvsignore
+   A /trunk/AUTHORS
+   A /trunk/COPYING
+   A /trunk/ChangeLog
+   A /trunk/INSTALL
+   A /trunk/Makefile.am
+   A /trunk/NEWS
+   A /trunk/README
+   A /trunk/aclocal.m4
+   A /trunk/bootstrap
+   A /trunk/config.guess
+   A /trunk/config.sub
+   A /trunk/configure
+   A /trunk/configure.in
+   A /trunk/debian
+   A /trunk/debian/.cvsignore
+   A /trunk/debian/changelog
+   A /trunk/debian/control
+   A /trunk/debian/libdvdcss2-dev.dirs
+   A /trunk/debian/libdvdcss2.copyright
+   A /trunk/debian/libdvdcss2.dirs
+   A /trunk/debian/libdvdcss2.shlibs
+   A /trunk/debian/rules
+   A /trunk/install-sh
+   A /trunk/libdvdcss.spec
+   A /trunk/libtool
+   A /trunk/ltmain.sh
+   A /trunk/missing
+   A /trunk/mkinstalldirs
+   A /trunk/src
+   A /trunk/src/Makefile.am
+   A /trunk/src/bsdi_dvd.h
+   A /trunk/src/bsdi_ioctl.c
+   A /trunk/src/common.h
+   A /trunk/src/config.h.in
+   A /trunk/src/css.c
+   A /trunk/src/css.h
+   A /trunk/src/csstables.h
+   A /trunk/src/dvdcss.h
+   A /trunk/src/ioctl.c
+   A /trunk/src/ioctl.h
+   A /trunk/src/libdvdcss.c
+   A /trunk/src/libdvdcss.h
+   A /trunk/test
+   A /trunk/test/.cvsignore
+   A /trunk/test/Makefile.am
+
+
+  * Initial commit. Hope it'll work.
+
+------------------------------------------------------------------------
