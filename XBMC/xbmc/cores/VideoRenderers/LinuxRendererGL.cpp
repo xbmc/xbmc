@@ -1461,6 +1461,9 @@ void CLinuxRendererGL::UnInit()
 // called from GUI thread after playback has finished to release GL resources
 void CLinuxRendererGL::OnClose()
 {
+#ifdef HAVE_LIBVDPAU
+  m_PixmapBound = false;
+#endif
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   // YV12 textures, subtitle and osd stuff
   for (int i = 0; i < NUM_BUFFERS; ++i)
