@@ -13,7 +13,7 @@
 	<GetAlbumSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;artist&gt;\2&lt;/artist&gt;&lt;title&gt;\3&lt;/title&gt;&lt;url&gt;http://www.discogs.com\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes">&lt;a href=&quot;(/release[^&quot;]*)&quot;.*?&gt;(.*?) - (.*?)&lt;/a&gt;</expression>
+				<expression repeat="yes">\n&lt;a href=&quot;([^&quot;]*/release/[^&quot;]*)&quot;.*?&gt;(.*?) - (.*?)&lt;/a&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>		

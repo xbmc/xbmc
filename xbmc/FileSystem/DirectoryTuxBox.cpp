@@ -110,7 +110,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   while (iTryConnect < 4)
   {
     http.SetTimeout(iWaitTimer);
-    if(http.Open(url, false))
+    if(http.Open(url))
     {
       //We are connected!
       iTryConnect = 4;

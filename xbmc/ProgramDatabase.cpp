@@ -522,7 +522,11 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     FILETIME time;
     item->m_dateTime=CDateTime::GetCurrentDateTime();
     item->m_dateTime.GetAsTimeStamp(time);
-    unsigned __int64 lastAccessed = ((ULARGE_INTEGER*)&time)->QuadPart;
+
+    ULARGE_INTEGER lastAccessed;
+    lastAccessed.u.LowPart = time.dwLowDateTime; 
+    lastAccessed.u.HighPart = time.dwHighDateTime;
+
     CStdString strPath, strParent;
     CUtil::GetDirectory(item->m_strPath,strPath);
     // special case - programs in root of sources
@@ -539,7 +543,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
       iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
     if (titleID == 0)
       titleID = (unsigned int) -1;
-    CStdString strSQL=FormatSQL("insert into files (idFile, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion, iSize) values(NULL, '%s', %u, '%s', %i, %I64u, %i, %I64u)", item->m_strPath.c_str(), titleID, item->GetLabel().c_str(), 0, lastAccessed, iRegion, iSize);
+    CStdString strSQL=FormatSQL("insert into files (idFile, strFileName, titleId, xbedescription, iTimesPlayed, lastAccessed, iRegion, iSize) values(NULL, '%s', %u, '%s', %i, %I64u, %i, %I64u)", item->m_strPath.c_str(), titleID, item->GetLabel().c_str(), 0, lastAccessed.QuadPart, iRegion, iSize);
     m_pDS->exec(strSQL.c_str());
     item->m_dwSize = iSize;
   }

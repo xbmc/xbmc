@@ -115,7 +115,7 @@ HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName)
   if (S_OK == pSurface->LockRect(&lr, NULL, 0))
   {
     XFILE::CFile file;
-    if (file.OpenForWrite(fileName, true, true))
+    if (file.OpenForWrite(fileName, true))
     {
       // create a 24bit BMP header
       BMPHEAD bh;

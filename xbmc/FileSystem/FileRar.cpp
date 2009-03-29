@@ -148,7 +148,7 @@ CFileRar::~CFileRar()
   }
 }
 //*********************************************************************************************
-bool CFileRar::Open(const CURL& url, bool bBinary)
+bool CFileRar::Open(const CURL& url)
 {
   CStdString strFile; 
   url.GetURL(strFile);
@@ -208,8 +208,8 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
         CLog::Log(LOGERROR,"filerar::open failed to cache file %s",m_strPathInRar.c_str());
         return false;
       }
-      
-      if (!m_File.Open( strPathInCache, bBinary)) 
+
+      if (!m_File.Open( strPathInCache ))
       {
         CLog::Log(LOGERROR,"filerar::open failed to open file in cache: %s",strPathInCache.c_str());
         return false;
@@ -236,7 +236,7 @@ bool CFileRar::Exists(const CURL& url)
 //*********************************************************************************************
 int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
 {
-  if (Open(url, true))
+  if (Open(url))
   {
     buffer->st_size = GetLength();
     buffer->st_mode = _S_IFREG;
@@ -260,7 +260,7 @@ int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
 
 
 //*********************************************************************************************
-bool CFileRar::OpenForWrite(const CURL& url, bool bBinary)
+bool CFileRar::OpenForWrite(const CURL& url)
 {
   return false;
 }
@@ -687,4 +687,5 @@ bool CFileRar::OpenInArchive()
   
   return true;
 }
+
 

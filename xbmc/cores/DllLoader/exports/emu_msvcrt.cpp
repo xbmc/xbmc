@@ -395,9 +395,6 @@ extern "C"
     else strcpy(str, szFileName);
 
     CFile* pFile = new CFile();
-    bool bBinary = false;
-    if (iMode & O_BINARY)
-      bBinary = true;
     bool bWrite = false;
     if ((iMode & O_RDWR) || (iMode & O_WRONLY))
       bWrite = true;
@@ -407,9 +404,16 @@ extern "C"
     // currently always overwrites
     bool bResult;
     if (bWrite)
-      bResult = pFile->OpenForWrite(_P(str), bOverwrite);
+      // We need to validate the path here as some calls for ie. the libdvdnav
+      // & python DLLs have malformed slashes on Win32 & Xbox
+      // (-> F:\foo/fighter/libdvdnav.dll)
+      bResult = pFile->OpenForWrite(CURL::ValidatePath(str), bOverwrite);
     else
-      bResult = pFile->Open(_P(str));
+      // We need to validate the path here as some calls for ie. the libdvdnav
+      // & python DLLs have malformed slashes on Win32 & Xbox
+      // (-> F:\foo/fighter/libdvdnav.dll)
+      bResult = pFile->Open(CURL::ValidatePath(str));
+    
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
@@ -435,6 +439,7 @@ extern "C"
     }
     else if (!IS_STD_STREAM(stream))
     {
+      // Translate the path & make sure the slashes are correct
       return freopen(_P(path).c_str(), mode, stream);
     }
     
@@ -575,7 +580,6 @@ extern "C"
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data)
   {
     char str[XBMC_MAX_PATH];
-    char* p;
 
     CURL url(file);
     if (url.IsLocal())
@@ -589,11 +593,8 @@ extern "C"
       }
       else strcpy(str, file);
 
-      // convert '/' to '\\'
-      p = str;
-      while (p = strchr(p, '/')) *p = '\\';
-
-      return _findfirst(_P(str), data);
+      // Translate the path & make sure the slashes are correct
+      return _findfirst(_P(CURL::ValidatePath(str)), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -783,9 +784,7 @@ extern "C"
   {
     FILE* file = NULL;
     
-    int iMode = O_TEXT;
-    if (strchr(mode, 'b') )
-      iMode = O_BINARY;
+    int iMode = O_BINARY;
     if (strstr(mode, "r+"))
       iMode |= O_RDWR;
     else if (strchr(mode, 'r'))
@@ -1444,7 +1443,8 @@ extern "C"
   int dll_mkdir(const char* dir)
   {
     if (!dir) return -1;
-    return mkdir(_P(dir).c_str());
+    // Translate the path & make sure the slashes are correct
+    return mkdir(_P(CURL::ValidatePath(dir)).c_str());
   }
 
   char* dll_getcwd(char *buffer, int maxlen)

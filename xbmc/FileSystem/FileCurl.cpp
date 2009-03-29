@@ -371,7 +371,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYHOST, 0);
 
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_URL, m_url.c_str());
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TRANSFERTEXT, m_binary ? FALSE : TRUE);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TRANSFERTEXT, FALSE);
 
   // setup POST data if it exists
   if (!m_postdata.IsEmpty())
@@ -649,7 +649,7 @@ bool CFileCurl::Download(const CStdString& strURL, const CStdString& strFileName
     return false;
           
   XFILE::CFile file;
-  if (!file.OpenForWrite(strFileName, true, true))
+  if (!file.OpenForWrite(strFileName, true))
   {
     CLog::Log(LOGERROR, "Unable to open file %s: %u",
     strFileName.c_str(), GetLastError());
@@ -697,7 +697,7 @@ void CFileCurl::Reset()
 }
     
 
-bool CFileCurl::Open(const CURL& url, bool bBinary)
+bool CFileCurl::Open(const CURL& url)
 {
   if (!g_network.IsAvailable())
     return false;
@@ -706,7 +706,6 @@ bool CFileCurl::Open(const CURL& url, bool bBinary)
   ParseAndCorrectUrl(url2);
 
   url2.GetURL(m_url);
-  m_binary = bBinary;
 
   CLog::Log(LOGDEBUG, "FileCurl::Open(%p) %s", (void*)this, m_url.c_str());  
 

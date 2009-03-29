@@ -285,7 +285,7 @@ bool CCMythFile::SetupFile(const CURL& url)
   return true;
 }
 
-bool CCMythFile::Open(const CURL& url, bool binary)
+bool CCMythFile::Open(const CURL& url)
 {
   Close();
 
@@ -644,4 +644,5 @@ bool CCMythFile::Record(bool bOnOff)
   }
   return false;
 }
+
 

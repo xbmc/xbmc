@@ -36,7 +36,7 @@ CFileSndtrk::~CFileSndtrk()
 {
 }
 //*********************************************************************************************
-bool CFileSndtrk::Open(const CURL& url, bool bBinary)
+bool CFileSndtrk::Open(const CURL& url)
 {
   m_hFile.attach( CreateFile(url.GetFileName(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
   if ( !m_hFile.isValid() ) return false;

@@ -189,7 +189,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   // opening as text for now
   //http.SetContentEncoding("deflate");
 
-  if( !http.Open(url, false) ) 
+  if( !http.Open(url) )
   {
     CLog::Log(LOGERROR, "%s - Unable to get shoutcast dir", __FUNCTION__);
     if (dlgProgress) dlgProgress->Close();

@@ -39,11 +39,11 @@ namespace XFILE
 	class CFileCurl : public IFile  
 	{
     public:
-	    CFileCurl();
-	    virtual ~CFileCurl();
-	    virtual bool Open(const CURL& url, bool bBinary = true);
-	    virtual bool Exists(const CURL& url);
-	    virtual __int64	Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
+      CFileCurl();
+      virtual ~CFileCurl();
+      virtual bool Open(const CURL& url);
+      virtual bool Exists(const CURL& url);
+      virtual __int64  Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
       virtual __int64 GetPosition();
 	    virtual __int64	GetLength();
       virtual int	Stat(const CURL& url, struct __stat64* buffer);
@@ -153,5 +153,6 @@ namespace XFILE
       MAPHTTPHEADERS m_requestheaders;
   };
 }
+
 
 

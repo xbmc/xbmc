@@ -45,8 +45,8 @@ public:
   IFile();
   virtual ~IFile();
 
-  virtual bool Open(const CURL& url, bool bBinary = true) = 0;
-  virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false) { return false; };
+  virtual bool Open(const CURL& url) = 0;
+  virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false) { return false; };
   virtual bool Exists(const CURL& url) = 0;
   virtual int Stat(const CURL& url, struct __stat64* buffer) = 0;
   virtual int Stat(struct __stat64* buffer)
@@ -121,3 +121,5 @@ public:
 }
 
 #endif // !defined(AFX_IFILE_H__7EE73AC7_36BC_4822_93FF_44F3B0C766F6__INCLUDED_)
+
+

@@ -360,7 +360,7 @@ bool CEdl::CacheEdl()
   m_strCachedEdl=CACHED_EDL_FILENAME;
   m_bCached=false;
   CFile cacheFile;
-  if (cacheFile.OpenForWrite(m_strCachedEdl, true, true))
+  if (cacheFile.OpenForWrite(m_strCachedEdl, true))
   {
     CStdString write;
     for(int i = 0; i < (int)m_vecCutlist.size(); i++ )

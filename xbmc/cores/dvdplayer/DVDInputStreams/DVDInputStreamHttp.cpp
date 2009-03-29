@@ -70,7 +70,7 @@ bool CDVDInputStreamHttp::Open(const char* strFile, const std::string& content)
   m_eof = false;
 
   // open file in binary mode
-  if (!m_pFile->Open(CURL(filename), true))
+  if (!m_pFile->Open(CURL(filename)))
   {
     delete m_pFile;
     m_pFile = NULL;
