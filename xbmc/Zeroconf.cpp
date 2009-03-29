@@ -53,7 +53,7 @@ class CZeroconfDummy : public CZeroconf
 long CZeroconf::sm_singleton_guard = 0;
 CZeroconf* CZeroconf::smp_instance = 0;
 
-CZeroconf::CZeroconf():m_started(false),mp_crit_sec(new CCriticalSection)
+CZeroconf::CZeroconf():mp_crit_sec(new CCriticalSection),m_started(false)
 {
 }
 
