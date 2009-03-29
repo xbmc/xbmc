@@ -1548,6 +1548,7 @@
             <label> $LOCALIZE[31007] </label>
             <label2> $LOCALIZE[31017] </label2>
             <onclick>XBMC.ActivateWindow(ShutdownMenu)</onclick>
+            <visible>!Skin.HasSetting(HidePower)</visible>
           </item>
           <item id="13">
             <description>Help Menu</description>
@@ -1582,12 +1583,14 @@
             <label> $LOCALIZE[31111] </label>
             <label2> $LOCALIZE[31011] </label2>
             <onclick>XBMC.ActivateWindow(MyVideoLibrary,movietitles,return)</onclick>
+            <visible>!Skin.HasSetting(HideMovies)</visible>
           </item>
           <item id="8">
             <description>My TV Shows Button</description>
             <label> $LOCALIZE[31008] </label>
             <label2> $LOCALIZE[31011] </label2>
             <onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowtitles,return)</onclick>
+            <visible>!Skin.HasSetting(HideTVShows)</visible>
           </item>
           <item id="2">
             <description>My Music Button</description>
