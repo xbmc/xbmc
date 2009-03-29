@@ -171,6 +171,7 @@ void CVideoReferenceClock::RunGLX()
     m_glXWaitVideoSyncSGI(2, ((PrevVblankCount % 2) + 1) % 2, &VblankCount);
     m_CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * m_AdjustedFrequency.QuadPart / m_RefreshRate;
     PrevVblankCount = VblankCount;
+    
     UpdateRefreshrate();
   }
 }
