@@ -36,6 +36,8 @@
 #ifndef __APPLE__
 #include <mntent.h>
 #include <linux/cdrom.h>
+#else
+#include <IOKit/storage/IODVDMediaBSDClient.h>
 #endif
 #endif
 #include <fcntl.h>
@@ -1794,6 +1796,9 @@ extern "C"
 
 #ifndef __APPLE__
     if(request == DVD_READ_STRUCT || request == DVD_AUTH)
+#else
+    if(request == DKIOCDVDSENDKEY || request == DKIOCDVDREPORTKEY || request == DKIOCDVDREADSTRUCTURE)
+#endif
     {
       void *p1 = va_arg(va, void*);
       int ret = pFile->IoControl(request, p1);
@@ -1806,9 +1811,6 @@ extern "C"
       CLog::Log(LOGWARNING, "%s - Unknown request type %ld", __FUNCTION__, request);
       return -1;
     }
-#else
-  return -1;
-#endif
   }
 #endif
 
