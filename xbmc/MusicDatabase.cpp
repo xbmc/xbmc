@@ -2668,7 +2668,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     // remove the null string
     strSQL += " and artist.strArtist != \"\"";
     // and the various artist entry if applicable
-    if (!albumArtistsOnly || idGenre > -1)
+    if (!albumArtistsOnly)
     {
       CStdString strVariousArtists = g_localizeStrings.Get(340);
       long lVariousArtistsId = AddArtist(strVariousArtists);
