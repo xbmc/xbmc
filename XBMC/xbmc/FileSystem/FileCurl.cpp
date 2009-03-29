@@ -751,6 +751,9 @@ bool CFileCurl::Open(const CURL& url)
     }
   }
 
+  if(m_state->m_httpheader.GetValue("Transfer-Encoding").Equals("chunked"))
+    m_state->m_fileSize = 0;
+
   m_seekable = false;
   if(m_state->m_fileSize > 0)
   {
