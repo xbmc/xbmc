@@ -415,15 +415,13 @@ extern "C"
       bOverwrite = true;
     // currently always overwrites
     bool bResult;
+
+    // We need to validate the path here as some calls from ie. libdvdnav
+    // or the python DLLs have malformed slashes on Win32 & Xbox
+    // (-> E:\test\VIDEO_TS/VIDEO_TS.BUP))
     if (bWrite)
-      // We need to validate the path here as some calls for ie. the libdvdnav
-      // & python DLLs have malformed slashes on Win32 & Xbox
-      // (-> F:\foo/fighter/libdvdnav.dll)
       bResult = pFile->OpenForWrite(CURL::ValidatePath(str), bOverwrite);
     else
-      // We need to validate the path here as some calls for ie. the libdvdnav
-      // & python DLLs have malformed slashes on Win32 & Xbox
-      // (-> F:\foo/fighter/libdvdnav.dll)
       bResult = pFile->Open(CURL::ValidatePath(str));
     
     if (bResult)
@@ -451,7 +449,7 @@ extern "C"
     }
     else if (!IS_STD_STREAM(stream))
     {
-      // Translate the path & make sure the slashes are correct
+      // Translate the path
       return freopen(_P(path).c_str(), mode, stream);
     }
     
@@ -687,7 +685,7 @@ extern "C"
       }
       else strcpy(str, file);
 
-      // Translate the path & make sure the slashes are correct
+      // Make sure the slashes are correct & translate the path
       return _findfirst(_P(CURL::ValidatePath(str)), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
@@ -1597,10 +1595,10 @@ extern "C"
     if (!dir) return -1;
 
 #ifndef _LINUX
-    // Translate the path & make sure the slashes are correct
+    // Make sure the slashes are correct & translate the path
     return mkdir(_P(CURL::ValidatePath(dir)).c_str());
 #else
-    // Translate the path & make sure the slashes are correct
+    // Make sure the slashes are correct & translate the path 
     return mkdir(_P(CURL::ValidatePath(dir)).c_str(), 0755);
 #endif
   }
