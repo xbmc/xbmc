@@ -26,6 +26,7 @@
 #ifdef HAS_GLX
   #include <X11/X.h>
   #include <X11/Xlib.h>
+  #include <GL/glx.h>
 #elif defined(_WIN32)
   namespace D3dClock
   {

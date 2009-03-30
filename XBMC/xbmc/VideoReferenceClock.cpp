@@ -25,7 +25,6 @@
 
 #ifdef HAS_GLX
   #include <X11/extensions/Xrandr.h>
-  #include <GL/glx.h>
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate"
 #endif
 
@@ -95,13 +94,13 @@ bool CVideoReferenceClock::SetupGLX()
   {
     CLog::Log(LOGWARNING, "CVideoReferenceClock: glXGetVisualFromFBConfig returned NULL, falling back to QueryPerformanceCounter");
     return false;
-  } 
+  }
   
   m_Screen = DefaultScreen(m_Dpy);
   Visual = DefaultVisual(m_Dpy, m_Screen);
   Depth = DefaultDepth(m_Dpy, m_Screen); 
 
-  Pxmp = XCreatePixmap(m_Dpy, RootWindow(m_Dpy, m_Screen), 100, 100, Depth);
+  Pxmp = XCreatePixmap(m_Dpy, RootWindow(m_Dpy, m_Screen), 64, 64, Depth);
   GLXPxmp = glXCreatePixmap(m_Dpy, fbConfigs[0], Pxmp, NULL);
   Context = glXCreateNewContext(m_Dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, true);
   glXMakeCurrent(m_Dpy, GLXPxmp, Context);
@@ -171,7 +170,6 @@ void CVideoReferenceClock::RunGLX()
     m_glXWaitVideoSyncSGI(2, ((PrevVblankCount % 2) + 1) % 2, &VblankCount);
     m_CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * m_AdjustedFrequency.QuadPart / m_RefreshRate;
     PrevVblankCount = VblankCount;
-    
     UpdateRefreshrate();
   }
 }
