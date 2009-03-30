@@ -394,7 +394,7 @@ bool CVideoReferenceClock::UpdateRefreshrate()
     }
 #elif defined(_WIN32)
     D3dClock::D3DDISPLAYMODE DisplayMode;
-    m_D3dDev->GetDisplayMode(0, &DisplayMode);
+    m_D3d->GetAdapterDisplayMode(0, &DisplayMode);
     m_RefreshRate = DisplayMode.RefreshRate;
 
     if (m_RefreshRate == 0) m_RefreshRate = 60;
