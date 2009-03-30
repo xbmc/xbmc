@@ -768,11 +768,6 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(true, true, true);
   }
 #endif
-
-  // Configure deadzone for SDL and EventServer
-#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-  m_joystickDeadzone = (int)(g_advancedSettings.m_controllerDeadzone * 32767.0f);
-#endif
   
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
