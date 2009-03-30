@@ -36,6 +36,17 @@ CLog::Log(LOGERROR, " (VDPAU) Error: (%d) at %s:%d\n", vdp_st, __FILE__, __LINE_
 
 CVDPAU*          g_VDPAU;
 
+static const VdpOutputSurfaceRenderBlendState osd_blend =
+    {
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_STATE_VERSION,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ZERO,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ONE,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ONE,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ZERO,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_EQUATION_ADD,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_EQUATION_ADD
+    };
+
 CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
 {"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
@@ -601,6 +612,14 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   vid_width = avctx->width;
   vid_height = avctx->height;
 
+/*  VdpColor background;
+  background.red   = (float)0.0f;
+  background.green = (float)0x87 / 255.0f;
+  background.blue  = (float)0.0f;
+  background.alpha = 1.0f;
+  vdp_st = vdp_presentation_queue_set_background_color(vdp_flip_queue,&background);
+*/
+
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
   CLog::Log(LOGNOTICE, "screenWidth:%i widWidth:%i",g_graphicsContext.GetWidth(),vid_width);
   ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type, max_references);
@@ -740,7 +759,8 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     VdpChromaType     chroma;
     uint32_t          refs;
     ReadFormatOf(avctx->pix_fmt, profile, chroma, refs);
-
+    int width = avctx->width;
+    int height = avctx->height;
     render = (vdpau_render_state*)calloc(sizeof(vdpau_render_state), 1);
     vdp_st = vdp->vdp_video_surface_create(vdp->vdp_device,
                                            chroma,
@@ -748,6 +768,19 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
                                            avctx->height,
                                            &render->surface);
     vdp->CheckStatus(vdp_st, __LINE__);
+    unsigned char *tmp = new unsigned char[(width * height * 3)>>1];
+    if (tmp)
+    {
+      bzero(tmp, width * height);
+      memset(tmp + (width * height), 127, (width * height)>>1);
+      uint32_t pitches[3] = {width, width, width>>1};
+      void* const planes[3] = {tmp, tmp + (width * height), tmp + (width * height)};
+      vdp->vdp_video_surface_put_bits_y_cb_cr(render->surface,
+                                              VDP_YCBCR_FORMAT_YV12,
+                                              planes,
+                                              pitches);
+      delete [] tmp;
+    }
     vdp->m_videoSurfaces.push_back(render);
   }
 
@@ -828,10 +861,10 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   }
 
   vdp_st = vdp->vdp_decoder_render(vdp->decoder,
-                                          render->surface,
-                                          (VdpPictureInfo const *)&(render->info),
-                                          render->bitstream_buffers_used,
-                                          render->bitstream_buffers);
+                                   render->surface,
+                                   (VdpPictureInfo const *)&(render->info),
+                                   render->bitstream_buffers_used,
+                                   render->bitstream_buffers);
   vdp->CheckStatus(vdp_st, __LINE__);
 }
 
@@ -969,5 +1002,7 @@ void CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
   if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH)
     CheckRecover(true);
 }
+
+
 
 #endif
