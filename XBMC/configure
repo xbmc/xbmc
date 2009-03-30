@@ -18225,6 +18225,10 @@ ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer
 
 
 
+
+
+
+
 # In place for testing platform builds of new libdvdcss
 
 
@@ -19871,6 +19875,43 @@ $as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codec
 fi
 
 
+if [ 0 != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libdvdnav ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libdvdnav
+
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="$DVDNAV_CFLAGS -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --enable-static \
+      --disable-shared \
+      --with-pic
+  else
+    ./configure \
+      --enable-static \
+      --disable-shared \
+      --with-pic \
+      CFLAGS="$DVDNAV_CFLAGS"
+  fi
+
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav failed to configure" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav doesn't exist" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvdnav." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvdnav." >&6;}
+fi
+
+
 if [ $SKIP_CONFIG_DVDCSS != "1" ]; then
     if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ]; then
         pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
@@ -19917,14 +19958,16 @@ if [ 0 != "1" ]; then
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
-    ln -s `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread/
+    cd `pwd`/../includes/dvdread/ &&
+    ln -sf ../../libdvdread/src/*.h ./
   else
     ./configure2 \
       --extra-cflags="$DVDREAD_EXTRA_CFLAGS" \
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
-    ln -s `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread/
+    cd `pwd`/../includes/dvdread/ &&
+    ln -sf ../../libdvdread/src/*.h ./
   fi
 
 

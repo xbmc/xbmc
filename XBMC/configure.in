@@ -1243,6 +1243,22 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libDVDCSS], [
      fi
 ], [$SKIP_CONFIG_DVDCSS])
 
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvdnav], [
+  if test "$host_vendor" = "apple" ; then
+    CFLAGS="$DVDNAV_CFLAGS -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --enable-static \
+      --disable-shared \
+      --with-pic
+  else
+    ./configure \
+      --enable-static \
+      --disable-shared \
+      --with-pic \
+      CFLAGS="$DVDNAV_CFLAGS"
+  fi
+], [0])
+
 # In place for testing platform builds of new libdvdcss
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
   if test "$host_vendor" = "apple" ; then
@@ -1267,14 +1283,16 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
-    ln -sf `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread/
+    cd `pwd`/../includes/dvdread/ &&
+    ln -sf ../../libdvdread/src/*.h ./
   else
     ./configure2 \
       --extra-cflags="$DVDREAD_EXTRA_CFLAGS" \
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
-    ln -sf `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread/
+    cd `pwd`/../includes/dvdread/ &&
+    ln -sf ../../libdvdread/src/*.h ./
   fi
 
 ], [0])
