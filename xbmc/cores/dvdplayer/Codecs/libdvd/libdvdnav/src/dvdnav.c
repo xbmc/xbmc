@@ -1164,7 +1164,7 @@ user_ops_t dvdnav_get_restrictions(dvdnav_t* this) {
   union {
     user_ops_t ops_struct;
     uint32_t   ops_int;
-  } ops;
+  } ops, tmp;
 
   ops.ops_int = 0;
 
@@ -1177,11 +1177,14 @@ user_ops_t dvdnav_get_restrictions(dvdnav_t* this) {
     return ops.ops_struct;
   }
 
-  pthread_mutex_lock(&this->vm_lock);
-  ops.ops_int |= *(uint32_t*)&this->pci.pci_gi.vobu_uop_ctl;
+  pthread_mutex_lock(&this->vm_lock); 
+  tmp.ops_struct = this->pci.pci_gi.vobu_uop_ctl; 
+  ops.ops_int |= tmp.ops_int; 
 
-  if(this->vm && this->vm->state.pgc)
-    ops.ops_int |= *(uint32_t*)&this->vm->state.pgc->prohibited_ops;
+  if(this->vm && this->vm->state.pgc) { 
+    tmp.ops_struct = this->vm->state.pgc->prohibited_ops; 
+    ops.ops_int |= tmp.ops_int; 
+  }
   pthread_mutex_unlock(&this->vm_lock);
 
   return ops.ops_struct;
