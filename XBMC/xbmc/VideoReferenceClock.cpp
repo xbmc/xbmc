@@ -24,6 +24,7 @@
 #include "Util.h"
 
 #ifdef HAS_GLX
+  #include <GL/glx.h>
   #include <X11/extensions/Xrandr.h>
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate"
 #endif
