@@ -296,6 +296,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 #endif
     m_bAbortRequest = false;
     m_seeking = false;
+    
     SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
 
     m_State.Clear();
@@ -788,11 +789,9 @@ void CDVDPlayer::Process()
   if (m_pDlgCache)
     m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
 
-#if 0 // disable this untill our queues are time based
   if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
   && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
     SetCaching(true);
-#endif
 
   while (!m_bAbortRequest)
   {
@@ -930,7 +929,7 @@ void CDVDPlayer::Process()
       m_CurrentVideo.inited    = false;
       m_CurrentSubtitle.inited = false;
 
-      // if we are caching, start playing it agian
+      // if we are caching, start playing it again
       if (m_caching && !m_bAbortRequest)
         SetCaching(false);
 
@@ -1866,14 +1865,14 @@ void CDVDPlayer::ToggleFrameDrop()
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
-  strAudioInfo.Format("D( %s ), P( %s )", m_State.demux_audio.c_str()
+  strAudioInfo.Format("%s, %s", m_State.demux_audio.c_str()
                                         , m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
   CSingleLock lock(m_StateSection);
-  strVideoInfo.Format("D( %s ), P( %s )", m_State.demux_video.c_str()
+  strVideoInfo.Format("%s, %s", m_State.demux_video.c_str()
                                         , m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
@@ -1894,7 +1893,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
     cEdlStatus = m_Edl.GetEdlStatus();
 
-    strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%. edl: %c source bitrate: %4.2f MBit/s", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus, (double)GetSourceBitrate() / (1024.0*1024.0));
+    strGeneralInfo.Format("ad:%6.3f a/v:%6.3f dropped:%d cpu:%i%% edl:%c src br:%4.2fmb/s", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus, (double)GetSourceBitrate() / (1024.0*1024.0));
   }
 }
 
