@@ -1279,7 +1279,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
   if test "$host_vendor" = "apple" ; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --extra-cflags="--extra-cflags="$DVDREAD_EXTRA_CFLAGS" -D__DARWIN__ -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      --extra-cflags="$DVDREAD_EXTRA_CFLAGS" -D__DARWIN__ -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
