@@ -48,7 +48,7 @@
   <include name="DialogTextColors">
     <textcolor>Unfocused</textcolor>
     <focusedcolor>Focused</focusedcolor>
-    <disabledcolor>Disabled</disabledcolor>
+    <disabledcolor>ff505050</disabledcolor>
     <selectedcolor>Selected</selectedcolor>
   </include>
 
