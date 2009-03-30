@@ -25,6 +25,7 @@
 #include "IAudioRenderer.h"
 #include <CoreServices/CoreServices.h>
 #include <AudioUnit/AudioUnit.h>
+#include <osx/CoreAudio.h>
 
 #include "SliceQueue.h"
 
@@ -65,24 +66,31 @@ class CCoreAudioRenderer : public IAudioRenderer
     static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
     OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
     
-    bool InitializeEncoded(UInt32 channels);
-    bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample);
-    bool m_Pause;
-   
-    DWORD m_ChunkLen;
-    CSliceQueue m_Cache;
-    size_t m_MaxCacheLen;
+    static OSStatus PassthroughRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData);
     
-    AudioStreamBasicDescription m_InputDesc;
-    AudioUnit m_OutputUnit;
+    bool InitializeEncoded(AudioDeviceID outputDevice);
+    bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample);
+    
+    bool m_Pause;
+    bool m_Initialized; // Prevent multiple init/deinit
+   
+    LONG m_CurrentVolume; // Coutesy of the jerk that made GetCurrentVolume a const...
+    DWORD m_ChunkLen; // Minimum amount of data accepted by AddPackets
+    CSliceQueue m_Cache;
+    size_t m_MaxCacheLen; // Maximum number of bytes cached by the renderer.
+        
+    CCoreAudioUnit m_AudioUnit;
+    CCoreAudioDevice m_AudioDevice;
+    CCoreAudioStream m_OutputStream;
     
     size_t m_AvgBytesPerSec;
+    size_t m_BytesPerFrame;
     UInt64 m_TotalBytesIn;
     UInt64 m_TotalBytesOut;
     
-    long m_CacheLock;
+    long m_CacheLock; // Used to manage concurrent access to the cache
     
-    // Helpers
+    // Helper Methods
     UInt32 GetAUPropUInt32(AudioUnit au, AudioUnitPropertyID propId, AudioUnitScope scope)
     {
       UInt32 val = 0, propSize = sizeof(val);
@@ -91,6 +99,34 @@ class CCoreAudioRenderer : public IAudioRenderer
         return val;
       else
         return 0;
+    }
+    
+    void StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str)
+    {
+      char fourCC[5];
+      UInt32ToFourCC(fourCC, desc.mFormatID);
+      
+      switch (desc.mFormatID)
+      {
+        case kAudioFormatLinearPCM:
+          str.Format("[%4.4s] %s%u Channel %u-bit %s (%uHz)", 
+                     fourCC,
+                     (desc.mFormatFlags & kAudioFormatFlagIsNonMixable) ? "" : "Mixable ",
+                     desc.mChannelsPerFrame,
+                     desc.mBitsPerChannel,
+                     (desc.mFormatFlags & kAudioFormatFlagIsFloat) ? "Floating Point" : "Signed Integer",
+                     (UInt32)desc.mSampleRate);
+          break;
+        case kAudioFormatAC3:
+          str.Format("[%s] AC-3/DTS", fourCC);
+          break;
+        case kAudioFormat60958AC3:
+          str.Format("[%s] AC-3/DTS for S/PDIF", fourCC);
+          break;
+        default:
+          str.Format("[%s]", fourCC);
+          break;
+      }
     }
   };
 
