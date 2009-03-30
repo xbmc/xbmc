@@ -127,7 +127,6 @@ Then install the following port packages (order is very important):
  
  $ sudo port install jpeg +universal
  $ sudo port install tiff +universal
- $ sudo port install smpeg +universal
  $ sudo port install libpng +universal
  $ sudo port install libogg +universal
  $ sudo port install libvorbis +universal
@@ -142,6 +141,7 @@ Then install the following port packages (order is very important):
  $ sudo port install mysql5 +universal
  
  $ sudo port install libsdl +no_x11 +universal
+ $ sudo port install smpeg +universal
  $ sudo port install libsdl_mixer +universal
  $ sudo port install libsdl_image +universal
 
