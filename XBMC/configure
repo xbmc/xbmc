@@ -18013,6 +18013,7 @@ $as_echo "$as_me: $dvdcss_enabled" >&6;}
   SKIP_CONFIG_DVDCSS=0
   DVDNAV_CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
   DVDREAD_CFLAGS="-D_XBMC -DHAVE_DVDCSS_DVDCSS_H"
+  DVDREAD_EXTRA_CFLAGS="$DVDREAD_CFLAGS -fPIC -DPIC"
 else
   { $as_echo "$as_me:$LINENO: $dvdcss_disabled" >&5
 $as_echo "$as_me: $dvdcss_disabled" >&6;}
@@ -18021,6 +18022,7 @@ $as_echo "$as_me: $dvdcss_disabled" >&6;}
   SKIP_CONFIG_DVDCSS=1
   DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
   DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
+  DVDREAD_EXTRA_CFLAGS="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src"
 fi
 if test "$use_avahi" = "yes"; then
   final_message="$final_message\n  Avahi:\tYes"
@@ -19911,18 +19913,18 @@ if [ 0 != "1" ]; then
 
   if test "$host_vendor" = "apple" ; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --extra-cflags="$DVDREAD_CFLAGS -D__DARWIN__ -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../libdvdcss/src" \
+      --extra-cflags="--extra-cflags="$DVDREAD_EXTRA_CFLAGS" -D__DARWIN__ -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
-    cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
+    ln -s `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread/
   else
     ./configure2 \
-      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
+      --extra-cflags="$DVDREAD_EXTRA_CFLAGS" \
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
-    cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
+    ln -s `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread/
   fi
 
 
