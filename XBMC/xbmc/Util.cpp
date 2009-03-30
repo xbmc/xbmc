@@ -765,7 +765,7 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 
 bool CUtil::IsRemote(const CStdString& strFile)
 {
-  if (IsMemCard(strFile) || IsCDDA(strFile) || IsISO9660(strFile) || strFile.Left(7) == "plugin:")
+  if (IsMemCard(strFile) || IsCDDA(strFile) || IsISO9660(strFile) || IsPlugin(strFile))
     return false;
 
   if (IsSpecial(strFile))
@@ -968,32 +968,37 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
 
 bool CUtil::IsSpecial(const CStdString& strFile)
 {
-  return strFile.Left(10).Equals("special://");
+  return strFile.Left(8).Equals("special:");
+}
+
+bool CUtil::IsPlugin(const CStdString& strFile)
+{
+  return strFile.Left(7).Equals("plugin:");
 }
 
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
-  return strFile.Left(7).Equals("cdda://");
+  return strFile.Left(5).Equals("cdda:");
 }
 
 bool CUtil::IsISO9660(const CStdString& strFile)
 {
-  return strFile.Left(10).Equals("iso9660://");
+  return strFile.Left(8).Equals("iso9660:");
 }
 
 bool CUtil::IsSmb(const CStdString& strFile)
 {
-  return strFile.Left(6).Equals("smb://");
+  return strFile.Left(4).Equals("smb:");
 }
 
 bool CUtil::IsDAAP(const CStdString& strFile)
 {
-  return strFile.Left(7).Equals("daap://");
+  return strFile.Left(5).Equals("daap:");
 }
 
 bool CUtil::IsUPnP(const CStdString& strFile)
 {
-  return strFile.Left(7).Equals("upnp://");
+  return strFile.Left(5).Equals("upnp:");
 }
 
 bool CUtil::IsMemCard(const CStdString& strFile)
@@ -1003,17 +1008,17 @@ bool CUtil::IsMemCard(const CStdString& strFile)
 
 bool CUtil::IsTuxBox(const CStdString& strFile)
 {
-  return strFile.Left(9).Equals("tuxbox://");
+  return strFile.Left(7).Equals("tuxbox:");
 }
 
 bool CUtil::IsMythTV(const CStdString& strFile)
 {
-  return strFile.Left(7).Equals("myth://");
+  return strFile.Left(5).Equals("myth:");
 }
 
 bool CUtil::IsVTP(const CStdString& strFile)
 {
-  return strFile.Left(6).Equals("vtp://");
+  return strFile.Left(4).Equals("vtp:");
 }
 
 bool CUtil::IsTV(const CStdString& strFile)

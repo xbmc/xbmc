@@ -18012,6 +18012,7 @@ $as_echo "$as_me: $dvdcss_enabled" >&6;}
   BUILD_DVDCSS=1
   SKIP_CONFIG_DVDCSS=0
   DVDNAV_CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
+  DVDREAD_CFLAGS="-D_XBMC -DHAVE_DVDCSS_DVDCSS_H"
 else
   { $as_echo "$as_me:$LINENO: $dvdcss_disabled" >&5
 $as_echo "$as_me: $dvdcss_disabled" >&6;}
@@ -18019,6 +18020,7 @@ $as_echo "$as_me: $dvdcss_disabled" >&6;}
   BUILD_DVDCSS=0
   SKIP_CONFIG_DVDCSS=1
   DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
+  DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
 fi
 if test "$use_avahi" = "yes"; then
   final_message="$final_message\n  Avahi:\tYes"
@@ -18180,7 +18182,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile xbmc/screensavers/rsxs-0.9/xbmc/Makefile xbmc/visualizations/XBMCProjectM/Makefile xbmc/visualizations/Goom/Makefile xbmc/visualizations/OpenGLSpectrum/Makefile xbmc/visualizations/WaveForm/Makefile xbmc/visualizations/iTunes/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/Codecs/libdvd/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile xbmc/screensavers/rsxs-0.9/xbmc/Makefile xbmc/visualizations/XBMCProjectM/Makefile xbmc/visualizations/Goom/Makefile xbmc/visualizations/OpenGLSpectrum/Makefile xbmc/visualizations/WaveForm/Makefile xbmc/visualizations/iTunes/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile"
 
 
 # Function to run the configure scripts in our submodules
@@ -18221,6 +18223,17 @@ ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer
 
 
 
+# In place for testing platform builds of new libdvdcss
+
+
+
+
+# In place for testing platform builds of new libdvdread
+
+
+
+
+# In place for testing platform builds of new libdvdnav
 
 
 
@@ -18863,11 +18876,12 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "Makefile.include") CONFIG_FILES="$CONFIG_FILES Makefile.include" ;;
     "xbmc/cores/dvdplayer/Codecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/Makefile" ;;
+    "xbmc/cores/dvdplayer/Codecs/libdvd/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/libdvd/Makefile" ;;
+    "xbmc/cores/AudioRenderers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/AudioRenderers/Makefile" ;;
     "xbmc/cores/paplayer/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/Makefile" ;;
     "xbmc/cores/paplayer/MACDll/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MACDll/Makefile" ;;
     "xbmc/cores/paplayer/timidity/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/timidity/Makefile" ;;
     "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
-    "xbmc/cores/AudioRenderers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/AudioRenderers/Makefile" ;;
     "xbmc/cores/paplayer/AC3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AC3Codec/Makefile" ;;
     "xbmc/cores/paplayer/ADPCMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ADPCMCodec/Makefile" ;;
     "xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile" ;;
@@ -19855,40 +19869,118 @@ $as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codec
 fi
 
 
-if [ 0 != "1" ]; then
-    if [ -d xbmc/cores/dvdplayer/Codecs/libdvdnav ]; then
-        pushd xbmc/cores/dvdplayer/Codecs/libdvdnav
+if [ $SKIP_CONFIG_DVDCSS != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
 
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="$DVDNAV_CFLAGS -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      --disable-doc \
       --enable-static \
-      --disable-shared \
       --with-pic
   else
     ./configure \
+      --disable-doc \
       --enable-static \
-      --disable-shared \
-      --with-pic \
-      CFLAGS="$DVDNAV_CFLAGS"
+      --with-pic
   fi
 
         if [ $? -ne 0 ]; then
             popd
-            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav failed to configure" >&5
-$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav failed to configure" >&2;}
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss failed to configure" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss failed to configure" >&2;}
    { (exit 1); exit 1; }; }
         else
             popd
         fi
     else
-        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav doesn't exist" >&5
-$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvdnav doesn't exist" >&2;}
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss doesn't exist" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
     fi
 else
-    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvdnav." >&5
-$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvdnav." >&6;}
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss." >&6;}
+fi
+
+
+if [ 0 != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
+
+  if test "$host_vendor" = "apple" ; then
+    ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --extra-cflags="$DVDREAD_CFLAGS -D__DARWIN__ -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../libdvdcss/src" \
+      --enable-static \
+      --disable-shared &&
+    make dvdread-config &&
+    cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
+  else
+    ./configure2 \
+      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
+      --enable-static \
+      --disable-shared &&
+    make dvdread-config &&
+    cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
+  fi
+
+
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread failed to configure" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread doesn't exist" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread." >&6;}
+fi
+
+
+if [ 0 != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
+
+  if test "$host_vendor" = "apple" ; then
+    ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../includes" \
+      --extra-ldflags="-L`pwd`/../libdvdread/obj" \
+      --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
+      --enable-static \
+      --disable-shared
+  else
+    ./configure2 \
+      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../includes" \
+      --extra-ldflags="-L`pwd`/../libdvdread/obj" \
+      --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
+      --enable-static \
+      --disable-shared
+  fi
+
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav failed to configure" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav doesn't exist" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav." >&6;}
 fi
 
 
