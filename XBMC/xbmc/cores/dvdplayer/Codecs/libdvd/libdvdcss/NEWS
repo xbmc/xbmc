@@ -1,0 +1,112 @@
+$Id$
+
+Changes between 1.2.9 and 1.2.10:
+---------------------------------
+
+  * DVD drive autodetection.
+  * new dvdcss_is_scrambled() function.
+  * various failure recovery improvements.
+  * accept "X:\" as a device name, as well as "X:".
+  * various bug fixes.
+
+Changes between 1.2.8 and 1.2.9:
+--------------------------------
+
+  * more robust key caching
+  * support for cache directory tags
+  * improved seeking on win32
+  * support for Solaris libsmedia library
+
+Changes between 1.2.7 and 1.2.8:
+--------------------------------
+
+  * win32 fix for encrypted DVDs.
+  * workaround for strange discs that report read errors seemingly at random.
+
+Changes between 1.2.6 and 1.2.7:
+--------------------------------
+
+  * activated key caching by default.
+  * fix for collisions between cached keys.
+  * packaging improvements for Debian.
+  * packaging improvements for RPM-based distributions.
+
+Changes between 1.2.5 and 1.2.6:
+--------------------------------
+
+  * compilation fix for most UNIXes
+
+Changes between 1.2.4 and 1.2.5:
+--------------------------------
+
+  * key cache support
+  * improved robustness in case of read errors
+  * now builds under Cygwin
+  * now builds under Microsoft Visual C++
+
+Changes between 1.2.3 and 1.2.4:
+--------------------------------
+
+  * administrator rights are no longer required under Windows NT/2000/XP 
+
+Changes between 1.2.2 and 1.2.3:
+--------------------------------
+
+  * many Windows bugfixes
+  * workaround for drives which prevent key decryption
+
+Changes between 1.2.1 and 1.2.2:
+--------------------------------
+
+  * fix for the "ioctl_ReadTitleKey failed" bug on RPC2 drives
+  * better error checking
+  * improved documentation
+  * OS/2 port
+
+Changes between 1.2.0 and 1.2.1:
+--------------------------------
+
+  * fix for discs with a mismatched region
+  * QNX port
+
+Changes between 1.1.1 and 1.2.0:
+--------------------------------
+
+  * fix for a crash when an unencrypted sector is found on a scrambled disc
+  * stability enhancements
+
+Changes between 1.1.0 and 1.1.1:
+--------------------------------
+
+  * compilation fixes for BeOS, IRIX, OpenBSD
+
+Changes between 1.0.0 and 1.1.0:
+--------------------------------
+
+  * merged all patches from the Ogle group
+  * lots of bugfixes
+  * HP-UX port
+  * better error recovery
+  * third descrambling implementation
+
+Changes between 0.0.3 and 1.0.0:
+--------------------------------
+
+  * stable API
+  * OpenBSD port
+  * NetBSD port
+  * Mac OS X port
+
+Changes between 0.0.2 and 0.0.3:
+--------------------------------
+
+  * fix to access the whole device under Win32
+  * BSD/OS port
+  * Solaris port
+
+Changes between 0.0.1 and 0.0.2:
+--------------------------------
+
+  * internal key cache mechanism
+  * stability fixes
+

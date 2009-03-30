@@ -946,7 +946,11 @@ void CGUIWindowVideoInfo::PlayTrailer()
 
   // Close the dialog.
   Close(true);
-  g_application.getApplicationMessenger().PlayFile(item);
+
+  if (item.IsPlayList())
+    g_application.getApplicationMessenger().MediaPlay(item);
+  else
+    g_application.getApplicationMessenger().PlayFile(item);
 }
 
 void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString &strLabel)

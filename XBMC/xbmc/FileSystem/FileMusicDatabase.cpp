@@ -38,7 +38,7 @@ CFileMusicDatabase::~CFileMusicDatabase(void)
   Close();
 }
 
-bool CFileMusicDatabase::Open(const CURL& url, bool bBinary /*=true*/)
+bool CFileMusicDatabase::Open(const CURL& url)
 {
   CMusicDatabase musicDatabase;
   if (!musicDatabase.Open())

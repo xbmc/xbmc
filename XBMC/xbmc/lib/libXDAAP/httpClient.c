@@ -565,12 +565,12 @@ HTTP_GetResult *HTTP_Client_Get(HTTP_Connection *connection,
     char *databuffer = NULL;
     int torecv;
     int ret;
-    char *headerbuffer;
+    char *headerbuffer = NULL;
 
     char *contentFromHeaders;
     int contentLenFromHeaders;
-    HTTP_Header *headersList = NULL;
 
+    HTTP_Header *headersList = NULL;
     HTTP_GetResult *result = NULL;
 
     int httpStatusCode;

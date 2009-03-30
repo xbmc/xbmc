@@ -57,7 +57,7 @@ bool CDVDInputStreamFile::Open(const char* strFile, const std::string& content)
     flags |= READ_CACHED;
 
   // open file in binary mode
-  if (!m_pFile->Open(strFile, true, flags))
+  if (!m_pFile->Open(strFile, flags))
   {
     delete m_pFile;
     m_pFile = NULL;
@@ -122,4 +122,5 @@ BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const
 
   return m_pFile->GetBitstreamStats();
 }
+
 

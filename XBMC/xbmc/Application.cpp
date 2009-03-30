@@ -98,6 +98,7 @@
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
+#include "Zeroconf.h"
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
@@ -120,9 +121,7 @@
 #ifdef HAS_DBUS_SERVER
 #include "utils/DbusServer.h"
 #endif
-#ifdef HAS_ZEROCONF
-#include "Zeroconf.h"
-#endif
+
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -199,8 +198,9 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
+#include "cores/dlgcache.h"
 
-#ifdef HAS_PERFORMACE_SAMPLE
+#ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #else
 #define MEASURE_FUNCTION
@@ -571,7 +571,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #if defined(_LINUX) && !defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
 #elif defined(__APPLE__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
 #elif defined(_WIN32)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (SVN:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, SVN_REV, _MSC_VER);
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
@@ -772,7 +772,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(true, true, true);
   }
 #endif
-
+  
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
 
@@ -949,24 +949,6 @@ CProfile* CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  if (m_bPlatformDirectories)
-  {
-    CStdString logDir = "/var/tmp/";
-    if (getenv("USER"))
-    {
-      logDir += getenv("USER");
-      logDir += "-";
-    }
-    g_stSettings.m_logFolder = logDir;
-  }
-
-  CStdString xbmcDir;
-  xbmcDir.Format("/tmp/xbmc-%s", userName.c_str());
-
-  // special://temp/ common for both
-  CSpecialProtocol::SetTempPath(xbmcDir);
-  CDirectory::Create("special://temp/");
-
   CStdString strHomePath;
   CUtil::GetHomePath(strHomePath);
   setenv("XBMC_HOME", strHomePath.c_str(), 0);
@@ -978,7 +960,14 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
+    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp"); 
+    CSpecialProtocol::SetTempPath(strTempPath);
+
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
+
     CDirectory::Create("special://home/");
+    CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
@@ -1009,6 +998,13 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp"); 
+    CSpecialProtocol::SetTempPath(strTempPath);
+    CDirectory::Create("special://temp/");
+
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1502,8 +1498,8 @@ void CApplication::StartWebServer()
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
 
       // publish web frontend and API services
-      PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
-      PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
     }
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
@@ -1522,8 +1518,8 @@ void CApplication::StopWebServer()
     m_pWebServer = NULL;
     CSectionLoader::Unload("LIBHTTP");
     CLog::Log(LOGNOTICE, "Webserver: Stopped...");
-    DepublishService("servers.webserver");
-    DepublishService("servers.webapi");
+    CZeroconf::GetInstance()->RemoveService("servers.webserver");
+    CZeroconf::GetInstance()->RemoveService("servers.webapi");
   }
 #endif
 }
@@ -1792,6 +1788,26 @@ void CApplication::StopUPnPServer()
 #endif
 }
 
+void CApplication::StartZeroconf()
+{
+#ifdef HAS_ZEROCONF
+  //entry in guisetting only present if HAS_ZEROCONF is set
+  if(g_guiSettings.GetBool("servers.zeroconf"))
+  {
+    CLog::Log(LOGNOTICE, "starting zeroconf publishing");
+    CZeroconf::GetInstance()->Start();
+  }
+#endif
+}
+
+void CApplication::StopZeroconf()
+{
+#ifdef HAS_ZEROCONF
+  CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
+  CZeroconf::GetInstance()->Stop();
+#endif
+}
+
 void CApplication::StartPVRManager()
 {
   if (g_guiSettings.GetBool("pvr.enabled"))
@@ -1857,21 +1873,6 @@ void CApplication::StopServices()
 
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
-}
-
-void CApplication::PublishService(const std::string& id, const std::string& type, const std::string& name, unsigned int port)
-{
-#ifdef HAS_ZEROCONF
-  CZeroconf::GetInstance()->PublishService(id, type, name, port);
-#endif
-}
-
-void CApplication::DepublishService(const std::string& id)
-{
-#ifdef HAS_ZEROCONF
-  // remove service
-  CZeroconf::GetInstance()->RemoveService("servers.webserver");
-#endif
 }
 
 void CApplication::DelayLoadSkin()
@@ -2931,7 +2932,11 @@ bool CApplication::OnAction(CAction &action)
       speed *= action.fRepeat;
     else
       speed /= 50; //50 fps
-
+    if (g_stSettings.m_bMute)
+    {
+      Mute();
+      return true;
+    }
     if (action.wID == ACTION_VOLUME_UP)
     {
       volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
@@ -3299,9 +3304,39 @@ bool CApplication::ProcessGamepad(float frameTime)
     CAction action;
     bool fullrange;
     string jname = g_Joystick.GetJoystick();
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, false, action.wID, action.strAction, fullrange))
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_BUTTON, action.wID, action.strAction, fullrange))
     {
       action.fAmount1 = 1.0f;
+      action.fRepeat = 0.0f;
+      g_audioManager.PlayActionSound(action);
+      g_Joystick.Reset();
+      g_Mouse.SetInactive();
+      return OnAction(action);
+    }
+    else
+    {
+      g_Joystick.Reset();
+    }
+  }
+  if (g_Joystick.GetHat(bid))
+  {
+    // reset Idle Timer
+    m_idleTimer.StartZero();
+
+    ResetScreenSaver();
+    if (ResetScreenSaverWindow())
+    {
+      g_Joystick.Reset(true);
+      return true;
+    }
+
+    CAction action;
+    bool fullrange;
+    string jname = g_Joystick.GetJoystick();
+    bid = bid|(g_Joystick.getHatState()<<16);  // hat flag
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
+    {
+      action.fAmount1 = g_Joystick.getHatState();
       action.fRepeat = 0.0f;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
@@ -3324,7 +3359,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     {
       bid = -bid;
     }
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction, fullrange))
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.wID, action.strAction, fullrange))
     {
       ResetScreenSaver();
       if (ResetScreenSaverWindow())
@@ -3586,7 +3621,7 @@ bool CApplication::ProcessEventServer(float frameTime)
 
 bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount)
 {
-#ifdef HAS_EVENT_SERVER
+#if defined(HAS_EVENT_SERVER) && defined(HAS_SDL_JOYSTICK)
   m_idleTimer.StartZero();
 
    // Make sure to reset screen saver, mouse.
@@ -3621,7 +3656,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    // wKeyID = -wKeyID;
 
    // Translate using regular joystick translator.
-   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis, action.wID, action.strAction, fullRange))
+   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, action.wID, action.strAction, fullRange))
    {
      action.fRepeat = 0.0f;
      g_audioManager.PlayActionSound(action);
@@ -3969,24 +4004,16 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
   }
   else if (item.IsPlayList() || item.IsInternetStream())
   {
-    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    if (item.IsInternetStream() && dlgProgress)
-    {
-       dlgProgress->ShowProgressBar(false);
-       dlgProgress->SetHeading(260);
-       dlgProgress->SetLine(0, 14003);
-       dlgProgress->SetLine(1, "");
-       dlgProgress->SetLine(2, "");
-       dlgProgress->StartModal();
-    }
+    CDlgCache* dlgCache = new CDlgCache(5000, g_localizeStrings.Get(10214), item.GetLabel());
 
     //is or could be a playlist
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
     bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.m_strPath));
-    if (item.IsInternetStream() && dlgProgress)
+
+    if (dlgCache)
     {
-       dlgProgress->Close();
-       if (dlgProgress->IsCanceled())
+       dlgCache->Close();
+       if (dlgCache->IsCanceled())
           return true;
     }
 

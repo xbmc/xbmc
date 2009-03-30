@@ -53,6 +53,7 @@ SRCS=Addon.cpp \
      ArabicShaping.cpp \
      AsyncFileCopy.cpp \
      DbusServer.cpp \
+     Atomics.cpp \
      EPG.cpp \
      TVChannel.cpp \
      TVEPGInfoTag.cpp

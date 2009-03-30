@@ -72,64 +72,71 @@ bool CSpecialProtocol::ComparePath(const CStdString &path1, const CStdString &pa
 
 CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
 {
-  // check for a special:// protocol
-  CStdString validPath = CURL::ValidatePath(path);
-  if (validPath.Left(10) != "special://")
-    return path;  // nothing to translate
+  CURL url(path);
+  
+  // check for special-protocol, if not, return
+  if (!url.GetProtocol().Equals("special"))
+    return path;
 
-  // have a translateable path
+  CStdString FullFileName = url.GetFileName();
+ 
   CStdString translatedPath;
-
-  // add a slash at end to ensure we have a full path that we can compare (note all the comparisons end with a slash)
-  CStdString specialPath(validPath);
-  CUtil::AddSlashAtEnd(specialPath);
-
-  if (specialPath.Left(20).Equals("special://subtitles/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), validPath.Mid(20), translatedPath);
-  else if (specialPath.Left(19).Equals("special://userdata/"))
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), validPath.Mid(19), translatedPath);
-  else if (specialPath.Left(19).Equals("special://database/"))
-    CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), validPath.Mid(19), translatedPath);
-  else if (specialPath.Left(21).Equals("special://thumbnails/"))
-    CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), validPath.Mid(21), translatedPath);
-  else if (specialPath.Left(21).Equals("special://recordings/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath",false), validPath.Mid(21), translatedPath);
-  else if (specialPath.Left(22).Equals("special://screenshots/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath",false), validPath.Mid(22), translatedPath);
-  else if (specialPath.Left(25).Equals("special://musicplaylists/"))
-    CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), validPath.Mid(25), translatedPath);
-  else if (specialPath.Left(25).Equals("special://videoplaylists/"))
-    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), validPath.Mid(25), translatedPath);
-  else if (specialPath.Left(17).Equals("special://cdrips/"))
-    CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), validPath.Mid(17), translatedPath);
+  CStdString FileName;
+  CStdString RootDir;
+  
+  // Split up into the special://root and the rest of the filename
+  int pos = FullFileName.Find('/');
+  if (pos != string::npos && pos > 1)
+  {
+    RootDir = FullFileName.Left(pos);
+    
+    if (pos < FullFileName.GetLength())
+      FileName = FullFileName.Mid(pos + 1);
+  }
+  else
+    RootDir = FullFileName;
+  
+  if (RootDir.Equals("subtitles"))
+    CUtil::AddFileToFolder(g_guiSettings.GetString("subtitles.custompath"), FileName, translatedPath);
+  else if (RootDir.Equals("userdata"))
+    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), FileName, translatedPath);
+  else if (RootDir.Equals("database"))
+    CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), FileName, translatedPath);
+  else if (RootDir.Equals("thumbnails"))
+    CUtil::AddFileToFolder(g_settings.GetThumbnailsFolder(), FileName, translatedPath);
+  else if (RootDir.Equals("recordings"))
+    CUtil::AddFileToFolder(g_guiSettings.GetString("mymusic.recordingpath", false), FileName, translatedPath);
+  else if (RootDir.Equals("screenshots"))
+    CUtil::AddFileToFolder(g_guiSettings.GetString("pictures.screenshotpath", false), FileName, translatedPath);
+  else if (RootDir.Equals("musicplaylists"))
+    CUtil::AddFileToFolder(CUtil::MusicPlaylistsLocation(), FileName, translatedPath);
+  else if (RootDir.Equals("videoplaylists"))
+    CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), FileName, translatedPath);
+  else if (RootDir.Equals("cdrips"))
+    CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), FileName, translatedPath);
 
   // from here on, we have our "real" special paths
-  else if (specialPath.Left(15).Equals("special://xbmc/"))
-    CUtil::AddFileToFolder(GetPath("xbmc"), validPath.Mid(15), translatedPath);
-  else if (specialPath.Left(15).Equals("special://home/"))
-    CUtil::AddFileToFolder(GetPath("home"), validPath.Mid(15), translatedPath);
-  else if (specialPath.Left(15).Equals("special://temp/"))
-    CUtil::AddFileToFolder(GetPath("temp"), validPath.Mid(15), translatedPath);
-  else if (specialPath.Left(18).Equals("special://profile/"))
-    CUtil::AddFileToFolder(GetPath("profile"), validPath.Mid(18), translatedPath);
-  else if (specialPath.Left(24).Equals("special://masterprofile/"))
-    CUtil::AddFileToFolder(GetPath("masterprofile"), validPath.Mid(24), translatedPath);
+  else if (RootDir.Equals("xbmc"))
+    CUtil::AddFileToFolder(GetPath("xbmc"), FileName, translatedPath);
+  else if (RootDir.Equals("home"))
+    CUtil::AddFileToFolder(GetPath("home"), FileName, translatedPath);
+  else if (RootDir.Equals("temp"))
+    CUtil::AddFileToFolder(GetPath("temp"), FileName, translatedPath);
+  else if (RootDir.Equals("profile"))
+    CUtil::AddFileToFolder(GetPath("profile"), FileName, translatedPath);
+  else if (RootDir.Equals("masterprofile"))
+    CUtil::AddFileToFolder(GetPath("masterprofile"), FileName, translatedPath);
   else
     translatedPath = ""; // invalid path to translate
 
   // check if we need to recurse in
-  if (translatedPath.Left(10).Equals("special://"))
+  if (CUtil::IsSpecial(translatedPath))
   { // we need to recurse in, as there may be multiple translations required
     return TranslatePath(translatedPath);
   }
 
-  // fix up the slash direction on win32 & xbox
-#ifdef _WIN32
-  if(CUtil::IsDOSPath(translatedPath))
-    translatedPath.Replace("/","\\");
-#endif
-
-  return translatedPath;
+  // Validate the final path, just in case
+  return CURL::ValidatePath(translatedPath);
 }
 
 CStdString CSpecialProtocol::TranslatePathConvertCase(const CStdString& path)

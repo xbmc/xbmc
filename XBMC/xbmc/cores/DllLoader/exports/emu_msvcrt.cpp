@@ -36,6 +36,8 @@
 #ifndef __APPLE__
 #include <mntent.h>
 #include <linux/cdrom.h>
+#else
+#include <IOKit/storage/IODVDMediaBSDClient.h>
 #endif
 #endif
 #include <fcntl.h>
@@ -407,9 +409,6 @@ extern "C"
     else strcpy(str, szFileName);
 
     CFile* pFile = new CFile();
-    bool bBinary = false;
-    if (iMode & O_BINARY)
-      bBinary = true;
     bool bWrite = false;
     if ((iMode & O_RDWR) || (iMode & O_WRONLY))
       bWrite = true;
@@ -418,10 +417,15 @@ extern "C"
       bOverwrite = true;
     // currently always overwrites
     bool bResult;
+
+    // We need to validate the path here as some calls from ie. libdvdnav
+    // or the python DLLs have malformed slashes on Win32 & Xbox
+    // (-> E:\test\VIDEO_TS/VIDEO_TS.BUP))
     if (bWrite)
-      bResult = pFile->OpenForWrite(str, bBinary, bOverwrite);
+      bResult = pFile->OpenForWrite(CURL::ValidatePath(str), bOverwrite);
     else
-      bResult = pFile->Open(str, bBinary);
+      bResult = pFile->Open(CURL::ValidatePath(str));
+    
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
@@ -447,7 +451,8 @@ extern "C"
     }
     else if (!IS_STD_STREAM(stream))
     {
-      return freopen(_P(path), mode, stream);
+      // Translate the path
+      return freopen(_P(path).c_str(), mode, stream);
     }
     
     // error
@@ -669,7 +674,6 @@ extern "C"
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data)
   {
     char str[XBMC_MAX_PATH];
-    char* p;
 
     CURL url(file);
     if (url.IsLocal())
@@ -683,11 +687,8 @@ extern "C"
       }
       else strcpy(str, file);
 
-      // convert '/' to '\\'
-      p = str;
-      while (p = strchr(p, '/')) *p = '\\';
-
-      return _findfirst(_P(str), data);
+      // Make sure the slashes are correct & translate the path
+      return _findfirst(_P(CURL::ValidatePath(str)), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -892,9 +893,7 @@ extern "C"
       return fopen(filename, mode);
     }
 #endif
-    int iMode = O_TEXT;
-    if (strchr(mode, 'b') )
-      iMode = O_BINARY;
+    int iMode = O_BINARY;
     if (strstr(mode, "r+"))
       iMode |= O_RDWR;
     else if (strchr(mode, 'r'))
@@ -1598,13 +1597,11 @@ extern "C"
     if (!dir) return -1;
 
 #ifndef _LINUX
-    CStdString newDir(dir);
-    if (strstr(newDir.c_str(), "://") == NULL)
-      newDir.Replace("/", "\\");
-    newDir.Replace("\\\\", "\\");
-    return mkdir(_P(newDir).c_str());
+    // Make sure the slashes are correct & translate the path
+    return mkdir(_P(CURL::ValidatePath(dir)).c_str());
 #else
-    return mkdir(_P(dir).c_str(), 0755);
+    // Make sure the slashes are correct & translate the path 
+    return mkdir(_P(CURL::ValidatePath(dir)).c_str(), 0755);
 #endif
   }
 
@@ -1799,6 +1796,9 @@ extern "C"
 
 #ifndef __APPLE__
     if(request == DVD_READ_STRUCT || request == DVD_AUTH)
+#else
+    if(request == DKIOCDVDSENDKEY || request == DKIOCDVDREPORTKEY || request == DKIOCDVDREADSTRUCTURE)
+#endif
     {
       void *p1 = va_arg(va, void*);
       int ret = pFile->IoControl(request, p1);
@@ -1811,9 +1811,6 @@ extern "C"
       CLog::Log(LOGWARNING, "%s - Unknown request type %ld", __FUNCTION__, request);
       return -1;
     }
-#else
-  return -1;
-#endif
   }
 #endif
 
@@ -1902,4 +1899,5 @@ extern "C"
   }
 #endif
 }
+
 

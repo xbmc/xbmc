@@ -60,4 +60,8 @@
   // AppleScript
   //
   void Cocoa_DoAppleScript(const char* scriptSource);
+  
+  // Devices
+  //
+  void Cocoa_MountPoint2DeviceName(char* path);
 #endif

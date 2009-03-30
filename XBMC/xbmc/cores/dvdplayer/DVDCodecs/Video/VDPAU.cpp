@@ -36,6 +36,17 @@ CLog::Log(LOGERROR, " (VDPAU) Error: (%d) at %s:%d\n", vdp_st, __FILE__, __LINE_
 
 CVDPAU*          g_VDPAU;
 
+static const VdpOutputSurfaceRenderBlendState osd_blend =
+    {
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_STATE_VERSION,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ZERO,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ONE,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ONE,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ZERO,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_EQUATION_ADD,
+        VDP_OUTPUT_SURFACE_RENDER_BLEND_EQUATION_ADD
+    };
+
 CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
 {"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
@@ -51,7 +62,7 @@ const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Des
 
 CVDPAU::CVDPAU(int width, int height)
 {
-  surfaceNum = 0;
+  surfaceNum = presentSurfaceNum = 0;
   picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
   CSingleLock lock(g_graphicsContext);
@@ -61,7 +72,7 @@ CVDPAU::CVDPAU(int width, int height)
   vdp_device = NULL;
   InitVDPAUProcs();
   recover = VDPAURecovered = false;
-  outputSurface = 0;
+  outputSurface = presentSurface = 0;
 
   tmpBrightness = 0;
   tmpContrast = 0;
@@ -482,7 +493,7 @@ VdpStatus CVDPAU::FiniVDPAUProcs()
 {
   VdpStatus vdp_st;
   if (!vdp_device) return VDP_STATUS_OK;
-  
+
   vdp_st = vdp_device_destroy(vdp_device);
   CheckStatus(vdp_st, __LINE__);
 
@@ -531,7 +542,15 @@ VdpStatus CVDPAU::FiniVDPAUOutput()
   vdp_st = vdp_presentation_queue_target_destroy(vdp_flip_target);
   CheckStatus(vdp_st, __LINE__);
 
-  for(int i = 0; i < m_videoSurfaces.size(); i++)
+  for (int i = 0; i < NUM_OUTPUT_SURFACES; i++) {
+    vdp_st = vdp_output_surface_destroy(outputSurfaces[i]);
+    CheckStatus(vdp_st, __LINE__);
+  }
+
+  vdp_st = vdp_video_mixer_destroy(videoMixer);
+  CheckStatus(vdp_st, __LINE__);
+
+  for(unsigned int i = 0; i < m_videoSurfaces.size(); i++)
   {
     vdp_st = vdp_video_surface_destroy(m_videoSurfaces[i]->surface);
     CheckStatus(vdp_st, __LINE__);
@@ -587,15 +606,21 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   if (vdpauConfigured || !avctx) return 1;
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
-  int i;
   VdpDecoderProfile vdp_decoder_profile;
   VdpChromaType vdp_chroma_type;
   vid_width = avctx->width;
   vid_height = avctx->height;
 
+/*  VdpColor background;
+  background.red   = (float)0.0f;
+  background.green = (float)0x87 / 255.0f;
+  background.blue  = (float)0.0f;
+  background.alpha = 1.0f;
+  vdp_st = vdp_presentation_queue_set_background_color(vdp_flip_queue,&background);
+*/
+
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
   CLog::Log(LOGNOTICE, "screenWidth:%i widWidth:%i",g_graphicsContext.GetWidth(),vid_width);
-  // FIXME: Are higher profiles able to decode all lower profile streams?
   ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type, max_references);
 
   if(avctx->pix_fmt == PIX_FMT_VDPAU_H264)
@@ -648,7 +673,7 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   CheckStatus(vdp_st, __LINE__);
 
   // Creation of outputSurfaces
-  for (i = 0; i < NUM_OUTPUT_SURFACES; i++) {
+  for (int i = 0; i < NUM_OUTPUT_SURFACES; i++) {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
                                        vid_width,
@@ -656,7 +681,7 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
                                        &outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
   }
-  surfaceNum = 0;
+  surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
 
   InitVDPAUOutput();
@@ -672,7 +697,7 @@ void CVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der L
   CLog::Log(LOGNOTICE,"VDPAU Decoder capabilities:");
   CLog::Log(LOGNOTICE,"name          level macbs width height");
   CLog::Log(LOGNOTICE,"------------------------------------");
-  for(int x=0; x<decoder_profile_count; ++x)
+  for(unsigned int x=0; x<decoder_profile_count; ++x)
   {
     VdpBool is_supported = false;
     uint32_t max_level, max_macroblocks, max_width, max_height;
@@ -686,14 +711,10 @@ void CVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der L
   }
 }
 
-
-
 enum PixelFormat CVDPAU::FFGetFormat(struct AVCodecContext * avctx,
                                                      const PixelFormat * fmt)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)avctx->opaque;
-  CVDPAU*               vdp = ctx->GetContextVDPAU();
   //pSingleton->CheckRecover();
   avctx->get_buffer      = FFGetBuffer;
   avctx->release_buffer  = FFReleaseBuffer;
@@ -716,7 +737,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   vdp->CheckRecover();
 
   // find unused surface
-  for(int i = 0; i < vdp->m_videoSurfaces.size(); i++)
+  for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); i++)
   {
     if(!(vdp->m_videoSurfaces[i]->state & FF_VDPAU_STATE_USED_FOR_REFERENCE))
     {
@@ -734,7 +755,8 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     VdpChromaType     chroma;
     uint32_t          refs;
     ReadFormatOf(avctx->pix_fmt, profile, chroma, refs);
-
+    int width = avctx->width;
+    int height = avctx->height;
     render = (vdpau_render_state*)calloc(sizeof(vdpau_render_state), 1);
     vdp_st = vdp->vdp_video_surface_create(vdp->vdp_device,
                                            chroma,
@@ -742,6 +764,19 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
                                            avctx->height,
                                            &render->surface);
     vdp->CheckStatus(vdp_st, __LINE__);
+    unsigned char *tmp = new unsigned char[(width * height * 3)>>1];
+    if (tmp)
+    {
+      bzero(tmp, width * height);
+      memset(tmp + (width * height), 127, (width * height)>>1);
+      uint32_t pitches[3] = {width, width, width>>1};
+      void* const planes[3] = {tmp, tmp + (width * height), tmp + (width * height)};
+      vdp->vdp_video_surface_put_bits_y_cb_cr(render->surface,
+                                              VDP_YCBCR_FORMAT_YV12,
+                                              planes,
+                                              pitches);
+      delete [] tmp;
+    }
     vdp->m_videoSurfaces.push_back(render);
   }
 
@@ -822,10 +857,10 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   }
 
   vdp_st = vdp->vdp_decoder_render(vdp->decoder,
-                                          render->surface,
-                                          (VdpPictureInfo const *)&(render->info),
-                                          render->bitstream_buffers_used,
-                                          render->bitstream_buffers);
+                                   render->surface,
+                                   (VdpPictureInfo const *)&(render->info),
+                                   render->bitstream_buffers_used,
+                                   render->bitstream_buffers);
   vdp->CheckStatus(vdp_st, __LINE__);
 }
 
@@ -835,6 +870,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   vdpau_render_state * render = (vdpau_render_state*)pFrame->data[2];
   VdpVideoMixerPictureStructure structure;
   VdpStatus vdp_st;
+  VdpTime time;
 
   CheckFeatures();
   if (!vdpauConfigured)
@@ -859,8 +895,8 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   current = future;
   future = render->surface;
 
-  if (( outRect.x1 != outWidth ) ||
-      ( outRect.y1 != outHeight ))
+  if (( (long)outRect.x1 != outWidth ) ||
+      ( (long)outRect.y1 != outHeight ))
   {
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;
@@ -868,11 +904,11 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.y1 = vid_height;
 
     CSingleLock lock(g_graphicsContext);
-    if(g_graphicsContext.GetViewWindow().right < vid_width)
+    if(g_graphicsContext.GetViewWindow().right < (long)vid_width)
       outWidth = vid_width;
     else
       outWidth = g_graphicsContext.GetViewWindow().right;
-    if(g_graphicsContext.GetViewWindow().bottom < vid_height)
+    if(g_graphicsContext.GetViewWindow().bottom < (long)vid_height)
       outHeight = vid_height;
     else
       outHeight = g_graphicsContext.GetViewWindow().bottom;
@@ -882,37 +918,43 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRect.x1 = outWidth;
     outRect.y1 = outHeight;
   }
-
-  vdp_st = vdp_video_mixer_render(videoMixer,
-                                              VDP_INVALID_HANDLE,
-                                              0,
-                                              structure,
-                                              2,
-                                              past,
-                                              current,
-                                              1,
-                                              &(future),
-                                              NULL,
-                                              outputSurface,
-                                              &(outRect),
-                                              &(outRectVid),
-                                              0,
-                                              NULL);
+  //CLog::Log(LOGNOTICE,"surfaceNum %i",surfaceNum);
+  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
   CheckStatus(vdp_st, __LINE__);
+  vdp_st = vdp_video_mixer_render(videoMixer,
+                                  VDP_INVALID_HANDLE,
+                                  0,
+                                  structure,
+                                  2,
+                                  past,
+                                  current,
+                                  1,
+                                  &(future),
+                                  NULL,
+                                  outputSurface,
+                                  &(outRect),
+                                  &(outRectVid),
+                                  0,
+                                  NULL);
+  CheckStatus(vdp_st, __LINE__);
+  surfaceNum++;
+  if (surfaceNum > 3) surfaceNum = 0;
 }
 
 void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+  //CLog::Log(LOGNOTICE,"presentSurfaceNum %i",presentSurfaceNum);
   VdpStatus vdp_st;
+  presentSurface = outputSurfaces[presentSurfaceNum];
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
                                           outputSurface,
                                           0,
                                           0,
                                           0);
   CheckStatus(vdp_st, __LINE__);
-  surfaceNum++;
-  if (surfaceNum > 1) surfaceNum = 0;
+  presentSurfaceNum++;
+  if (presentSurfaceNum > 3) presentSurfaceNum = 0;
 }
 
 void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
@@ -956,5 +998,7 @@ void CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
   if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH)
     CheckRecover(true);
 }
+
+
 
 #endif

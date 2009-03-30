@@ -689,6 +689,7 @@ HAVE_NASM
 ALLOCA
 LIBOBJS
 POW_LIB
+HAVE_SVNVERSION
 INCLUDES
 DEBUG_FLAGS
 SDL_DEFINES
@@ -1284,7 +1285,7 @@ Optional Features:
   --enable-debug          enable debugging information (default is yes)
   --enable-optimizations  enable optimization (default is yes)
   --enable-gl             enable OpenGL rendering (default is yes)
-  --enable-vdpau          enable VDPAU decoding (default is yes)
+  --enable-vdpau          enable VDPAU decoding (default is no)
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
   --enable-xrandr         enable XRandR support (default is yes)
@@ -12242,7 +12243,6 @@ cat >>conftest.$ac_ext <<_ACEOF
 # endif
 #endif
 
-#include <limits.h>
 #include <stdlib.h>
 
 #ifdef HAVE_UNISTD_H
@@ -12391,15 +12391,12 @@ main ()
      isn't worth using anyway.  */
   alarm (60);
 
-  for (;;)
-    {
-      t = (time_t_max << 1) + 1;
-      if (t <= time_t_max)
-	break;
-      time_t_max = t;
-    }
-  time_t_min = - ((time_t) ~ (time_t) 0 == (time_t) -1) - time_t_max;
-
+  for (time_t_max = 1; 0 < time_t_max; time_t_max *= 2)
+    continue;
+  time_t_max--;
+  if ((time_t) -1 < 0)
+    for (time_t_min = -1; (time_t) (time_t_min * 2) < 0; time_t_min *= 2)
+      continue;
   delta = time_t_max / 997; /* a suitable prime number */
   for (i = 0; i < N_STRINGS; i++)
     {
@@ -12414,12 +12411,10 @@ main ()
 	     && mktime_test ((time_t) (60 * 60 * 24))))
 	return 1;
 
-      for (j = 1; ; j <<= 1)
+      for (j = 1; 0 < j; j *= 2)
 	if (! bigtime_test (j))
 	  return 1;
-	else if (INT_MAX / 2 < j)
-	  break;
-      if (! bigtime_test (INT_MAX))
+      if (! bigtime_test (j - 1))
 	return 1;
     }
   return ! (irix_6_4_bug () && spring_forward_gap () && year_2050_test ());
@@ -14698,6 +14693,53 @@ fi
 
 if test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$SVN_REV\"'"
+elif test "$host_vendor" = "apple"; then
+  # Extract the first word of "svnversion", so it can be a program name with args.
+set dummy svnversion; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_prog_HAVE_SVNVERSION+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test -n "$HAVE_SVNVERSION"; then
+  ac_cv_prog_HAVE_SVNVERSION="$HAVE_SVNVERSION" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_HAVE_SVNVERSION=""yes""
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_HAVE_SVNVERSION" && ac_cv_prog_HAVE_SVNVERSION=""no""
+fi
+fi
+HAVE_SVNVERSION=$ac_cv_prog_HAVE_SVNVERSION
+if test -n "$HAVE_SVNVERSION"; then
+  { echo "$as_me:$LINENO: result: $HAVE_SVNVERSION" >&5
+echo "${ECHO_T}$HAVE_SVNVERSION" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+  if test "$HAVE_SVNVERSION" = "no" ; then
+    { echo "$as_me:$LINENO: WARNING: svnversion not found. No SVN_REV in builds!" >&5
+echo "$as_me: WARNING: svnversion not found. No SVN_REV in builds!" >&2;}
+    echo "#define SVN_REV" > svn_revision.h
+  else
+	SVN_REVISION=$(svnversion -n .)
+	echo "#define SVN_REV \"$SVN_REVISION\"" > svn_revision.h
+  fi
 elif test -x "/usr/bin/svnversion" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
 fi
@@ -15541,6 +15583,7 @@ HAVE_NASM!$HAVE_NASM$ac_delim
 ALLOCA!$ALLOCA$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 POW_LIB!$POW_LIB$ac_delim
+HAVE_SVNVERSION!$HAVE_SVNVERSION$ac_delim
 INCLUDES!$INCLUDES$ac_delim
 DEBUG_FLAGS!$DEBUG_FLAGS$ac_delim
 SDL_DEFINES!$SDL_DEFINES$ac_delim
@@ -15548,7 +15591,7 @@ BUILD_DVDCSS!$BUILD_DVDCSS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 78; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 79; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -16120,7 +16163,6 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
     ./configure \
       --extra-cflags="-w -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
       --enable-static \
-      --disable-altivec \
       --disable-vhook \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \

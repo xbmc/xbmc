@@ -64,7 +64,7 @@ CStdString CWINFileSMB::GetLocal(const CURL &url)
 }
 
 //*********************************************************************************************
-bool CWINFileSMB::Open(const CURL& url, bool bBinary)
+bool CWINFileSMB::Open(const CURL& url)
 {
   CStdString strFile = GetLocal(url);
 

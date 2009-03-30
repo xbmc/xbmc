@@ -48,6 +48,9 @@ public:
   static int GetDesktopColorDepth();
   static CStdString GetProfilePath();
   static void ExtendDllPath();
+  static HRESULT ToggleTray(const char cDriveLetter='\0');
+  static HRESULT EjectTray(const char cDriveLetter='\0');
+  static HRESULT CloseTray(const char cDriveLetter='\0');
 
 private:
   static DWORD dwDriveMask;
