@@ -242,9 +242,9 @@ void CGUIWindowWeather::Refresh()
 
 void CGUIWindowWeather::SetProperties()
 {
-  CStdString fanartcode;
   // Current weather
   SetProperty("Location", g_weatherManager.GetLocation(m_iCurWeather));
+  SetProperty("LocationIndex", int(m_iCurWeather + 1));
   CStdString strSetting;
   strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
   SetProperty("AreaCode", g_weatherManager.GetAreaCode(g_guiSettings.GetString(strSetting)));
@@ -257,7 +257,8 @@ void CGUIWindowWeather::SetProperties()
   SetProperty("Current.Wind", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_WIND));
   SetProperty("Current.DewPoint", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_DEWP));
   SetProperty("Current.Humidity", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_HUMI));
-  fanartcode = CUtil::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
+  // we use the icons code number for fanart as it's the safest way
+  CStdString fanartcode = CUtil::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
   CUtil::RemoveExtension(fanartcode);
   SetProperty("Current.FanartCode", fanartcode);
 
