@@ -1,5 +1,5 @@
 
-#include "stdafx.h" 
+#include "stdafx.h"
 /*
  * XBMC Media Center
  * Copyright (c) 2002 Frodo
@@ -45,7 +45,7 @@ bool CFileFileReader::Open(const CURL& url)
   CStdString strURL;
   url.GetURL(strURL);
   strURL = strURL.Mid(13);
-  return m_reader.Open(strURL,false,true);
+  return m_reader.Open(strURL,READ_CACHED);
 }
 
 bool CFileFileReader::Exists(const CURL& url)
@@ -53,7 +53,7 @@ bool CFileFileReader::Exists(const CURL& url)
   CStdString strURL;
   url.GetURL(strURL);
   strURL = strURL.Mid(13);
-  
+
   return CFile::Exists(strURL);
 }
 
@@ -62,7 +62,7 @@ int CFileFileReader::Stat(const CURL& url, struct __stat64* buffer)
   CStdString strURL;
   url.GetURL(strURL);
   strURL = strURL.Mid(13);
-  
+
   return CFile::Stat(strURL,buffer);
 }
 

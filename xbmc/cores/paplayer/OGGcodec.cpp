@@ -46,12 +46,10 @@ OGGCodec::~OGGCodec()
 
 bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
 {
-  m_file.Initialize(filecache);
-
   CStdString strFile=strFile1;
   if (!m_dll.Load())
     return false;
-  
+
   m_CurrentStream=0;
 
   CStdString strExtension;
@@ -73,16 +71,22 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   }
 
   //  Open the file to play
-  if (!m_file.Open(strFile))
+  if (!m_file.Open(strFile, READ_CACHED))
   {
     CLog::Log(LOGERROR, "OGGCodec: Can't open %s", strFile1.c_str());
     return false;
   }
 
+  // libvorbis requires that a non-seekable stream would always return -1 from seek actions.
+  // so for network streams - twick the seek method to a static one that always return -1.
+  bool bIsStream = false;
+  if (strFile.Left(5).ToLower() == "shout" || strFile.Left(4).ToLower() == "http")
+    bIsStream = true;
+
   //  setup ogg i/o callbacks
   ov_callbacks oggIOCallbacks;
   oggIOCallbacks.read_func=ReadCallback;
-  oggIOCallbacks.seek_func=SeekCallback;
+  oggIOCallbacks.seek_func=bIsStream?NoSeekCallback:SeekCallback;
   oggIOCallbacks.tell_func=TellCallback;
   oggIOCallbacks.close_func=CloseCallback;
 
@@ -118,7 +122,7 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   m_TotalTime = (__int64)m_dll.ov_time_total(&m_VorbisFile, m_CurrentStream)*1000;
   m_Bitrate = pInfo->bitrate_nominal;
   if (m_Bitrate == 0)
-	  m_Bitrate = (int)(m_file.GetLength()*8 / (m_TotalTime / 1000));
+    m_Bitrate = (int)(m_file.GetLength()*8 / (m_TotalTime / 1000));
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
   {
@@ -241,6 +245,11 @@ int OGGCodec::SeekCallback(void *datasource, ogg_int64_t offset, int whence)
     return 0;
 
   return (int)pCodec->m_file.Seek(offset, whence);
+}
+
+int OGGCodec::NoSeekCallback(void *datasource, ogg_int64_t offset, int whence)
+{
+  return -1;
 }
 
 int OGGCodec::CloseCallback(void *datasource)

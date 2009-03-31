@@ -20,9 +20,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "CachingCodec.h"
-#include "FileReader.h"
 #include "DllAACCodec.h"
 
 class AACCodec : public CachingCodec
@@ -45,7 +44,7 @@ private:
 
   AACHandle m_Handle;
   BYTE*     m_Buffer;
-  int       m_BufferSize; 
+  int       m_BufferSize;
   int       m_BufferPos;
 
   // Our dll

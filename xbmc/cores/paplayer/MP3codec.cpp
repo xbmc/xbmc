@@ -27,6 +27,9 @@ using namespace MUSIC_INFO;
 
 #define DECODER_DELAY 529 // decoder delay in samples
 
+#define XMIN(a,b) (a)<(b)?(a):(b)
+#define DEFAULT_CHUNK_SIZE 16384
+
 #define DECODING_ERROR    -1
 #define DECODING_SUCCESS   0
 #define DECODING_CALLAGAIN 1
@@ -47,7 +50,7 @@ MP3Codec::MP3Codec()
   m_lastByteOffset = 0;
   m_InputBufferSize = 64*1024;         // 64k is a reasonable amount, considering that we actual are
                                        // using a background reader thread now that caches in advance.
-  m_InputBuffer = new BYTE[m_InputBufferSize];  
+  m_InputBuffer = new BYTE[m_InputBufferSize];
   m_InputBufferPos = 0;
 
   memset(&m_Formatdata,0,sizeof(m_Formatdata));
@@ -90,8 +93,6 @@ void MP3Codec::OnFileReaderClearEvent()
 
 bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_file.Initialize(filecache);
-
   if (!m_dll.IsLoaded())
     m_dll.Load();
 
@@ -128,18 +129,17 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     mp3info.GetSeekInfo(m_seekInfo);
     mp3info.GetReplayGain(m_replayGain);
   }
-  
+
   int id3v2Size = 0;
   int result = -1;
   __int64 length = 0;
 
-  // Always use caching
-  if (!m_file.Open(strFile, true, true))
+  if (!m_file.Open(strFile, READ_CACHED))
   {
     CLog::Log(LOGERROR, "MP3Codec: Unable to open file %s", strFile.c_str());
     goto error;
   }
-  
+
   length = m_file.GetLength();
   if (!bIsInternetStream)
   {
@@ -168,7 +168,7 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
       goto error;
     }
   }
-  
+
   m_eof = false;
   while ((result != DECODING_SUCCESS) && !m_eof && (m_OutputBufferPos < 1152*8)) // eof can be set from outside (when stopping playback)
   {
@@ -181,7 +181,6 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
     if (bIsInternetStream) m_Bitrate = m_Formatdata[4];
   } ;
 
-  m_file.OnClear = MakeDelegate(this, &MP3Codec::OnFileReaderClearEvent);
   return true;
 
 error:
@@ -196,8 +195,8 @@ error:
 
 void MP3Codec::DeInit()
 {
-  m_file.OnClear.clear();
   m_file.Close();
+  m_eof = true;
 }
 
 void MP3Codec::FlushDecoder()
@@ -211,7 +210,6 @@ void MP3Codec::FlushDecoder()
 
 __int64 MP3Codec::Seek(__int64 iSeekTime)
 {
-  if (!m_file.CanSeek()) return -1;
   // calculate our offset to seek to in the file
   m_lastByteOffset = m_seekInfo.GetByteOffset(0.001f * iSeekTime);
   m_file.Seek(m_lastByteOffset, SEEK_SET);
@@ -229,8 +227,12 @@ int MP3Codec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
 int MP3Codec::Read(int size, bool init)
 {
   // First read in any extra info we need from our MP3
-  int inputBufferToRead = std::min(m_file.GetChunkSize(), m_InputBufferSize - m_InputBufferPos);
-  if ( inputBufferToRead && !m_CallAgainWithSameBuffer && !m_eof ) 
+  int nChunkSize = m_file.GetChunkSize();
+  if (nChunkSize == 0)
+    nChunkSize = DEFAULT_CHUNK_SIZE;
+
+  int inputBufferToRead = XMIN(nChunkSize, (int)(m_InputBufferSize - m_InputBufferPos));
+  if ( inputBufferToRead && !m_CallAgainWithSameBuffer && !m_eof )
   {
     if (m_file.GetLength() > 0)
     {
@@ -253,7 +255,7 @@ int MP3Codec::Read(int size, bool init)
   if ( m_InputBufferPos || m_CallAgainWithSameBuffer || (m_eof && m_Decoding) )
   {
     int result;
-      
+
     m_Decoding = true;
 
     if ( size )
@@ -262,7 +264,7 @@ int MP3Codec::Read(int size, bool init)
       int outputsize = m_OutputBufferSize - m_OutputBufferPos;
       //MAD needs padding at the end of the stream to decode the last frame, this doesn't hurt winamps in_mp3.dll
       int madguard = 0;
-      if (m_eof) 
+      if (m_eof)
       {
         madguard = 8;
         if (m_InputBufferPos + madguard > m_InputBufferSize)
@@ -293,7 +295,7 @@ int MP3Codec::Read(int size, bool init)
 
       // Now decode data into the vacant frame buffer.
       result = m_pDecoder->decode( m_InputBuffer, m_InputBufferPos + madguard, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&m_Formatdata);
-      if ( result != DECODING_ERROR) 
+      if ( result != DECODING_ERROR)
       {
         if (init)
         {
@@ -331,7 +333,7 @@ int MP3Codec::Read(int size, bool init)
         // Do we still have data in the buffer to decode?
         if ( result == DECODING_CALLAGAIN )
           m_CallAgainWithSameBuffer = true;
-        else 
+        else
         { // There are no more complete frames in the input buffer
           m_InputBufferPos = 0;
           // Check for the end of file (as we need to remove data from the end of the track)
@@ -399,5 +401,5 @@ bool MP3Codec::SkipNext()
 
 bool MP3Codec::CanSeek()
 {
-  return m_file.CanSeek();
+  return true;
 }

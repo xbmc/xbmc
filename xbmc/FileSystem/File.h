@@ -42,7 +42,7 @@ class IFileCallback
 {
 public:
   virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) = 0;
-  virtual ~IFileCallback() {}; 
+  virtual ~IFileCallback() {};
 };
 
 /* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
@@ -52,12 +52,13 @@ public:
 #define READ_BUFFERED  0x02
 
 /* use cache to access this file */
-#define READ_CACHED	   0x04
+#define READ_CACHED     0x04
 
 /* open without caching. regardless to file type. */
 #define READ_NO_CACHE  0x08
 
 class CFileStreamBuffer;
+class ICacheInterface;
 
 class CFile
 {
@@ -106,7 +107,7 @@ class CFileStreamBuffer
 public:
   ~CFileStreamBuffer();
   CFileStreamBuffer(int backsize = 0);
-  
+
   void Attach(IFile *file);
   void Detach();
 

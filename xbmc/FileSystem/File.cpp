@@ -107,7 +107,7 @@ CFile::~CFile()
   if (m_pFile)
     SAFE_DELETE(m_pFile);
   if (m_pBuffer)
-    SAFE_DELETE(m_pBuffer);  
+    SAFE_DELETE(m_pBuffer);
 }
 
 //*********************************************************************************************
@@ -188,13 +188,13 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     {
       g_application.ResetScreenSaver();
       unsigned int iBytesToRead = iBufferSize;
-      
+
       /* make sure we don't try to read more than filesize*/
       if (iBytesToRead > llFileSize) iBytesToRead = llFileSize;
 
       iRead = file.Read(buffer.get(), iBytesToRead);
       if (iRead == 0) break;
-      else if (iRead < 0) 
+      else if (iRead < 0)
       {
         CLog::Log(LOGERROR, "%s - Failed read from file %s", __FUNCTION__, strFileName.c_str());
         break;
@@ -205,7 +205,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       while(iWrite < iRead)
       {
         int iWrite2 = newFile.Write(buffer.get()+iWrite, iRead-iWrite);
-        if(iWrite2 <=0)          
+        if(iWrite2 <=0)
           break;
         iWrite+=iWrite2;
       }
@@ -215,7 +215,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
         CLog::Log(LOGERROR, "%s - Failed write to file %s", __FUNCTION__, strDest.c_str());
         break;
       }
-      
+
       llFileSize -= iRead;
       llPos += iRead;
 
@@ -236,7 +236,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
         }
         else if( pCallback )
         {
-          if (!pCallback->OnFileCallback(pContext, ipercent, averageSpeed)) 
+          if (!pCallback->OnFileCallback(pContext, ipercent, averageSpeed))
             break;
         }
 
@@ -247,12 +247,12 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     /* close both files */
     newFile.Close();
     file.Close();
-    
+
     delete helper;
 
     /* verify that we managed to completed the file */
     if (llPos != llFileSizeOrg)
-    {      
+    {
       CFile::Delete(strDest);
       return false;
     }
@@ -273,6 +273,11 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
       if (bPathInCache)
         return false;
     }
+
+    CFileItem fileItem;
+    fileItem.m_strPath = strFileName;
+    if ( (flags & READ_NO_CACHE) == 0 && fileItem.IsInternetStream() && !fileItem.IsPicture())
+      m_flags |= READ_CACHED;
 
     CURL url(strFileName);
     if (m_flags & READ_CACHED)
@@ -311,7 +316,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error opening %s", __FUNCTION__, strFileName.c_str());    
+  CLog::Log(LOGERROR, "%s - Error opening %s", __FUNCTION__, strFileName.c_str());
   return false;
 }
 
@@ -341,7 +346,7 @@ IFile* CFile::Detach() {
 
 bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 {
-  try 
+  try
   {
     CURL url(strFileName);
 
@@ -360,7 +365,7 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception opening %s", __FUNCTION__, strFileName.c_str());    
+    CLog::Log(LOGERROR, "%s - Unhandled exception opening %s", __FUNCTION__, strFileName.c_str());
   }
   CLog::Log(LOGERROR, "%s - Error opening %s", __FUNCTION__, strFileName.c_str());
   return false;
@@ -391,9 +396,9 @@ bool CFile::Exists(const CStdString& strFileName)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strFileName.c_str());    
+  CLog::Log(LOGERROR, "%s - Error checking for %s", __FUNCTION__, strFileName.c_str());
   return false;
 }
 
@@ -413,13 +418,13 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 
     return pFile->Stat(url, buffer);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
   CLog::Log(LOGERROR, "%s - Error statting %s", __FUNCTION__, strFileName.c_str());
   return -1;
@@ -427,7 +432,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 
 unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
 {
-  if (!m_pFile) 
+  if (!m_pFile)
     return 0;
 
   if(m_pBuffer)
@@ -460,7 +465,7 @@ unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
       return nBytes;
     }
     else
-    {        
+    {
       unsigned int done = 0;
       while((uiBufSize-done) > 0)
       {
@@ -481,7 +486,7 @@ unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
   return 0;
 }
@@ -497,13 +502,13 @@ void CFile::Close()
     if (m_pFile)
       SAFE_DELETE(m_pFile);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
   return;
 }
@@ -514,13 +519,13 @@ void CFile::Flush()
   {
     if (m_pFile) m_pFile->Flush();
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
   return;
 }
@@ -559,13 +564,13 @@ __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
     else
       return m_pFile->Seek(iFilePosition, iWhence);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
   return -1;
 }
@@ -578,13 +583,13 @@ __int64 CFile::GetLength()
     if (m_pFile) return m_pFile->GetLength();
     return 0;
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
   return 0;
 }
@@ -600,15 +605,15 @@ __int64 CFile::GetPosition()
 
   try
   {
-    return m_pFile->GetPosition();    
+    return m_pFile->GetPosition();
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
   return -1;
 }
@@ -624,7 +629,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   {
     typedef CFileStreamBuffer::traits_type traits;
     CFileStreamBuffer::int_type aByte = m_pBuffer->sgetc();
-    
+
     if(aByte == traits::eof())
       return false;
 
@@ -657,7 +662,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
     // if we have no space for terminating character we failed
     if(iLineLength==0)
       return false;
-    
+
     *szLine = 0;
 
     return true;
@@ -673,7 +678,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
   return false;
 }
@@ -684,7 +689,7 @@ int CFile::Write(const void* lpBuf, __int64 uiBufSize)
   {
     return m_pFile->Write(lpBuf, uiBufSize);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
@@ -707,17 +712,17 @@ bool CFile::Delete(const CStdString& strFileName)
     if(pFile->Delete(url))
       return true;
   }
-  catch (const access_violation &e) 
+  catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
   CLog::Log(LOGERROR, "%s - Error deleting file %s", __FUNCTION__, strFileName.c_str());
   return false;
@@ -736,15 +741,15 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
     if(pFile->Rename(url, urlnew))
       return true;
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception ", __FUNCTION__);    
+    CLog::Log(LOGERROR, "%s - Unhandled exception ", __FUNCTION__);
   }
-  CLog::Log(LOGERROR, "%s - Error renaming file %s", __FUNCTION__, strFileName.c_str());    
+  CLog::Log(LOGERROR, "%s - Error renaming file %s", __FUNCTION__, strFileName.c_str());
   return false;
 }
 
@@ -793,11 +798,11 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
 
   if(!m_file)
     return traits_type::eof();
-  
-  int backsize = 0;
+
+  size_t backsize = 0;
   if(m_backsize)
   {
-    backsize = min((ptrdiff_t)m_backsize, egptr()-eback());
+    backsize = (size_t)min<ptrdiff_t>((ptrdiff_t)m_backsize, egptr()-eback());
     memmove(m_buffer, egptr()-backsize, backsize);
   }
 
@@ -806,10 +811,10 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
   {
     size = m_file->Read(m_buffer+backsize, m_frontsize);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
-  }  
+  }
 
   if(size == 0)
     return traits_type::eof();
@@ -819,10 +824,10 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
 }
 
 CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
-  off_type offset, 
-  ios_base::seekdir way, 
+  off_type offset,
+  ios_base::seekdir way,
   ios_base::openmode mode)
-{  
+{
   // calculate relative offset
   off_type offset2;
   if(way == ios_base::cur)
@@ -860,7 +865,7 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
     else
       position = m_file->Seek(offset, SEEK_SET);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
     return streampos(-1);
@@ -873,7 +878,7 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
 }
 
 CFileStreamBuffer::pos_type CFileStreamBuffer::seekpos(
-  pos_type pos, 
+  pos_type pos,
   ios_base::openmode mode)
 {
   return seekoff(pos, ios_base::beg, mode);
@@ -885,7 +890,7 @@ streamsize CFileStreamBuffer::showmanyc()
   return egptr() - gptr();
 }
 
-CFileStream::CFileStream(int backsize /*= 0*/) : 
+CFileStream::CFileStream(int backsize /*= 0*/) :
     istream(&m_buffer),
     m_buffer(backsize),
     m_file(NULL)
@@ -928,6 +933,6 @@ void CFileStream::Close()
 }
 
 bool CFileStream::Open(const CStdString& filename)
-{ 
+{
   return Open(CURL(filename));
 }

@@ -22,7 +22,6 @@
  */
 
 #include "CachingCodec.h"
-#include "FileReader.h"
 #include "DllLibFlac.h"
 
 class FLACCodec : public CachingCodec

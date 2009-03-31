@@ -25,20 +25,20 @@
 // Callbacks for file reading
 int Shn_Callback_Read(ShnPlayStream * stream, void * buffer, int bytes, int * bytes_read)
 {
-	ShnPlayFileStream *filestream = (ShnPlayFileStream *)stream;
+  ShnPlayFileStream *filestream = (ShnPlayFileStream *)stream;
   if (!filestream || !buffer || !filestream->file) return 0;
 //  CLog::Log(LOGERROR, "Reading from SHN dll - stream @ %x, - file @ %x", (int)stream, filestream->file);
   int amountread = (int)filestream->file->Read(buffer, bytes);
   if (bytes_read)
     *bytes_read = amountread;
-	if (amountread == bytes || filestream->file->GetPosition() == filestream->file->GetLength())
-		return 1;
-	return 0;
+  if (amountread == bytes || filestream->file->GetPosition() == filestream->file->GetLength())
+    return 1;
+  return 0;
 }
 
 int Shn_Callback_Seek(ShnPlayStream * stream, int position)
 {
-	ShnPlayFileStream *filestream = (ShnPlayFileStream *)stream;
+  ShnPlayFileStream *filestream = (ShnPlayFileStream *)stream;
   if (!filestream || !filestream->file) return 0;
 
   __int64 seek = (int)filestream->file->Seek(position, SEEK_SET);
@@ -54,19 +54,19 @@ int Shn_Callback_CanSeek(ShnPlayStream * stream)
 
 int Shn_Callback_GetLength(ShnPlayStream * stream)
 {
-	ShnPlayFileStream *filestream = (ShnPlayFileStream *)stream;
+  ShnPlayFileStream *filestream = (ShnPlayFileStream *)stream;
   if (!filestream || !filestream->file) return 0;
   return (int)filestream->file->GetLength();
 }
 
 int Shn_Callback_GetPosition(ShnPlayStream * stream)
 {
-	ShnPlayFileStream *filestream = (ShnPlayFileStream *)stream;
+  ShnPlayFileStream *filestream = (ShnPlayFileStream *)stream;
   if (!filestream || !filestream->file) return 0;
   int position = (int)filestream->file->GetPosition();
-	if (position >= 0)
-		return position;
-	return -1;
+  if (position >= 0)
+    return position;
+  return -1;
 }
 
 // SHNCodec class
@@ -90,12 +90,10 @@ SHNCodec::~SHNCodec()
 
 bool SHNCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_file.Initialize(filecache);
-
   if (!m_dll.Load())
     return false;
 
-  if (!m_file.Open(strFile))
+  if (!m_file.Open(strFile, READ_CACHED))
     return false;
 
   // setup our callbacks
@@ -112,20 +110,20 @@ bool SHNCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
 
-	ShnPlayInfo info;
-	if (m_dll.GetInfo(m_handle, &info))
-	{
-		m_Channels = info.channels;
-		m_SampleRate = info.sample_rate;
-		m_BitsPerSample = info.bits_per_sample;
+  ShnPlayInfo info;
+  if (m_dll.GetInfo(m_handle, &info))
+  {
+    m_Channels = info.channels;
+    m_SampleRate = info.sample_rate;
+    m_BitsPerSample = info.bits_per_sample;
     m_TotalTime = (__int64)info.sample_count * 1000 / info.sample_rate;
-	  m_Bitrate = (int)(m_file.GetLength() * 8 / (m_TotalTime / 1000));
-	}
-	else
-	{
+    m_Bitrate = (int)(m_file.GetLength() * 8 / (m_TotalTime / 1000));
+  }
+  else
+  {
     CLog::Log(LOGERROR,"SHNCodec: No stream info found in file %s (%s)", strFile.c_str(), m_dll.ErrorMessage(m_handle));
     return false;
-	}
+  }
   return true;
 }
 

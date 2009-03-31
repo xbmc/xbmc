@@ -25,13 +25,13 @@
 #ifdef HAS_WMA_CODEC
 
 #include "ICodec.h"
-#include "FileReader.h"
+#include "FileSystem/File.h"
 
 #include "DllWMA.h"
 
 struct WMAInfo
 {
-  CFileReader fileReader;
+  XFILE::CFile fileReader;
   char buffer[65536];
   DWORD iStartOfBuffer;
 };
@@ -48,10 +48,10 @@ public:
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
-  
+
 private:
   __int64 m_iDataPos;
-  
+
   DllWMA m_dll;
   void*  m_hnd;
 };

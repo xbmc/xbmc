@@ -23,13 +23,11 @@
 
 #include "DynamicDll.h"
 #include "shn/shnplay.h"
-
-// forward
-class CFileReader;
+#include "FileSystem/File.h"
 
 struct ShnPlayFileStream {
-	ShnPlayStream vtbl;
-	CFileReader *file;
+  ShnPlayStream vtbl;
+  XFILE::CFile *file;
 };
 
 typedef struct ShnPlayFileStream ShnPlayFileStream;
