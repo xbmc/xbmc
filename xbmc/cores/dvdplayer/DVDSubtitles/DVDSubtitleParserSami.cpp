@@ -62,7 +62,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
       if (reg.RegFind(line) > -1)
       {
         char* endFrame   = reg.GetReplaceString("\\1");
-      
+
         CDVDOverlayText* pOverlay = new CDVDOverlayText();
         pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
 
@@ -80,7 +80,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
         // add a new text element to our container
         pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
         reuse = true;
-      
+
         m_collection.Add(pOverlay);
       }
       free(startFrame);
