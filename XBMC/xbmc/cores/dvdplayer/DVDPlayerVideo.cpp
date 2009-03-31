@@ -211,7 +211,8 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   else
     m_MaxSpeedAdjust = 0.0;
   
-  g_VideoReferenceClock.SetSpeed(1.0);  
+  g_VideoReferenceClock.SetSpeed(1.0);
+  m_GenPts = -1;
   
   CLog::Log(LOGNOTICE, "Creating video thread");
   Create();
@@ -824,6 +825,13 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   //User set delay
   pts += m_iVideoDelay;
 
+  //workaround for broken timestamps
+  m_GenPts += pPicture->iDuration;
+  if (fabs(pts - m_GenPts) < pPicture->iDuration / 2.0)
+    pts = m_GenPts;
+  else
+    m_GenPts = pts;
+  
   // calculate the time we need to delay this picture before displaying
   double iSleepTime, iClockSleep, iFrameSleep, iCurrentClock, iFrameDuration;
   

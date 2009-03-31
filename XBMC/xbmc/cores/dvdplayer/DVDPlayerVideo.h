@@ -169,6 +169,7 @@ protected:
   
   CRITICAL_SECTION m_critCodecSection;
   
-  float m_MaxSpeedAdjust;
+  float  m_MaxSpeedAdjust;
+  double m_GenPts;
 };
 
