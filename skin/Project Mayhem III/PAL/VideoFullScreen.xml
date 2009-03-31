@@ -12,27 +12,30 @@
 		</control>
 		<control type="label" id="10">
 			<description>row 1 label</description>
-			<posx>50</posx>
+			<posx>20</posx>
 			<posy>50</posy>
+			<width>680</width>
 			<label>-</label>
 			<align>left</align>
-			<font>font12</font>
+			<font>font10</font>
 		</control>
 		<control type="label" id="11">
 			<description>row 2 label</description>
-			<posx>50</posx>
+			<posx>20</posx>
 			<posy>75</posy>
+			<width>680</width>
 			<label>-</label>
 			<align>left</align>
-			<font>font12</font>
+			<font>font10</font>
 		</control>
 		<control type="label" id="12">
 			<description>row 3 label</description>
-			<posx>50</posx>
+			<posx>20</posx>
 			<posy>100</posy>
+			<width>680</width>
 			<label>-</label>
 			<align>left</align>
-			<font>font12</font>
+			<font>font10</font>
 		</control>
 		
 		<!-- buffering dialog -->
