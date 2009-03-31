@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,6 +19,9 @@
  *
  */
 
+#pragma once
+#include "ICodec.h"
+#include "FileSystem/File.h"
 #include "CachingCodec.h"
 #include "ADPCMCodec.h"
 
@@ -40,3 +41,4 @@ private:
   long m_iDataStart;
   long m_iDataLen;
 };
+

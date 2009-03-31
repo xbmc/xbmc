@@ -22,14 +22,15 @@
  */
 
 #include "ICodec.h"
-#include "FileReader.h"
+#include "../../FileSystem/File.h"
+#include "../../FileSystem/CacheStrategy.h"
 
 class CachingCodec : public ICodec
 {
 public:
   virtual ~CachingCodec() {}
-  virtual int GetCacheLevel(){ return m_file.GetCacheLevel(); };
+  virtual int GetCacheLevel(){ if(m_file.GetCache()) return m_file.GetCache()->GetCacheLevel(); return -1; }
 
 protected:
-  CFileReader m_file;
+  XFILE::CFile m_file;
 };

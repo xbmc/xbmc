@@ -27,7 +27,7 @@
 #include "RingBuffer.h"
 
 /**
-	@author Team XBMC
+  @author Team XBMC
 */
 namespace XFILE {
 
