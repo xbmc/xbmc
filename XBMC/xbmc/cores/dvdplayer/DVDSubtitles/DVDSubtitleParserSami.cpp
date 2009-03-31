@@ -47,9 +47,9 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   char line[1024];
   char text[1024];
 
-  CRegExp reg;
+  CRegExp reg(true);
   if (!reg.RegComp("<SYNC START=([0-9]+)>"))
-    assert(0);
+    return false;
 
   bool reuse=false;
   while (reuse || m_pStream->ReadLine(line, sizeof(line)))
