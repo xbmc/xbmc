@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,6 +19,9 @@
  *
  */
 
+#pragma once
+#include "ICodec.h"
+#include "FileSystem/File.h"
 #include "DllLibshnplay.h"
 #include "CachingCodec.h"
 
@@ -41,3 +42,4 @@ private:
   ShnPlay *m_handle;
   DllLibShnPlay m_dll;
 };
+

@@ -37,7 +37,7 @@ FLACCodec::FLACCodec()
   m_pFlacDecoder=NULL;
 
   m_pBuffer=NULL;
-  m_BufferSize=0; 
+  m_BufferSize=0;
   m_MaxFrameSize=0;
 
 }
@@ -49,12 +49,10 @@ FLACCodec::~FLACCodec()
 
 bool FLACCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_file.Initialize(filecache);
-
   if (!m_dll.Load())
     return false;
 
-  if (!m_file.Open(strFile))
+  if (!m_file.Open(strFile, READ_CACHED))
     return false;
 
   m_pFlacDecoder=m_dll.FLAC__stream_decoder_new();
@@ -135,7 +133,7 @@ __int64 FLACCodec::Seek(__int64 iSeekTime)
   // overrun unless we reset m_BufferSize first).
   m_BufferSize=0;
   m_dll.FLAC__stream_decoder_seek_absolute(m_pFlacDecoder,
-		(__int64)(iSeekTime*m_SampleRate)/1000); 	
+                                           (__int64)(iSeekTime*m_SampleRate)/1000);
   return iSeekTime;
 }
 
@@ -150,7 +148,7 @@ int FLACCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   if (!eof)
   {
     //  fill our buffer 4 decoded frame (the buffer could hold 5)
-    while(m_BufferSize < m_MaxFrameSize*4 && 
+    while(m_BufferSize < m_MaxFrameSize*4 &&
           m_dll.FLAC__stream_decoder_get_state(m_pFlacDecoder)!=FLAC__STREAM_DECODER_END_OF_STREAM)
     {
       if (!m_dll.FLAC__stream_decoder_process_single(m_pFlacDecoder))

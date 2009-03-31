@@ -22,7 +22,6 @@
  */
 
 #include "CachingCodec.h"
-#include "FileReader.h"
 #include "DllMpcCodec.h"
 
 class MPCCodec : public CachingCodec

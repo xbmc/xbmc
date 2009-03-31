@@ -22,23 +22,25 @@
 #include "stdafx.h"
 #include "MPCcodec.h"
 
+using namespace XFILE;
 // Callbacks for file reading
-mpc_int32_t Mpc_Callback_Read(void *data, void * buffer, int bytes)
+mpc_int32_t Mpc_Callback_Read(void *data, void * buffer, mpc_int32_t bytes)
 {
-	CFileReader *file = (CFileReader *)data;
+  CFile *file = (CFile *)data;
   if (!file || !buffer) return 0;
   return (mpc_int32_t)file->Read(buffer, bytes);
 }
 
-mpc_bool_t Mpc_Callback_Seek(void *data, int position)
+mpc_bool_t Mpc_Callback_Seek(void *data, mpc_int32_t position)
 {
-	CFileReader *file = (CFileReader *)data;
+  CFile *file = (CFile *)data;
   if (!file) return 0;
 
   int seek = (int)file->Seek(position, SEEK_SET);
   if (seek >= 0)
     return 1;
-  CLog::Log(LOGERROR, "MPCCodec:Seek callback.  Seeking to position %lu failed.", position);
+  CLog::Log(LOGERROR, "MPCCodec:Seek callback.  Seeking to position %u failed.",
+            position);
   return 0;
 }
 
@@ -49,19 +51,19 @@ mpc_bool_t Mpc_Callback_CanSeek(void *data)
 
 mpc_int32_t Mpc_Callback_GetLength(void *data)
 {
-  CFileReader *file = (CFileReader *)data;
+  CFile *file = (CFile *)data;
   if (!file) return 0;
   return (int)file->GetLength();
 }
 
 mpc_int32_t Mpc_Callback_GetPosition(void *data)
 {
-  CFileReader *file = (CFileReader *)data;
+  CFile *file = (CFile *)data;
   if (!file) return 0;
   int position = (int)file->GetPosition();
-	if (position >= 0)
-		return position;
-	return -1;
+  if (position >= 0)
+    return position;
+  return -1;
 }
 
 MPCCodec::MPCCodec()
@@ -84,12 +86,10 @@ MPCCodec::~MPCCodec()
 
 bool MPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  m_file.Initialize(filecache);
-
   if (!m_dll.Load())
     return false;
 
-  if (!m_file.Open(strFile))
+  if (!m_file.Open(strFile,READ_CACHED))
     return false;
 
   // setup our callbacks
@@ -107,41 +107,41 @@ bool MPCCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   m_TotalTime = (__int64)(timeinseconds * 1000.0 + 0.5);
   m_BitsPerSample = 16;
-	m_Channels = 2;
+  m_Channels = 2;
   m_SampleRate = (int)info.sample_freq;
 
   m_Bitrate = info.bitrate;
   if (m_Bitrate == 0)
   {
-	  m_Bitrate = (int)info.average_bitrate;
+    m_Bitrate = (int)info.average_bitrate;
   }
   if (m_Bitrate == 0)
   {
-	  m_Bitrate = (int)((info.total_file_length * 8) / (m_TotalTime / 1000));
+    m_Bitrate = (int)((info.total_file_length * 8) / (m_TotalTime / 1000));
   }
 
   // Replay gain
   if (info.gain_title || info.peak_title)
   {
-		m_replayGain.iTrackGain = info.gain_title;
+    m_replayGain.iTrackGain = info.gain_title;
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_INFO;
-		if (info.peak_title)
+    if (info.peak_title)
     {
       m_replayGain.fTrackPeak = info.peak_title / 32768.0f;
       m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_TRACK_PEAK;
     }
-	}
+  }
 
-	if (info.gain_album || info.gain_album)
+  if (info.gain_album || info.gain_album)
   {
-		m_replayGain.iAlbumGain = info.gain_album;
+    m_replayGain.iAlbumGain = info.gain_album;
     m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_INFO;
-		if (info.gain_album)
+    if (info.gain_album)
     {
       m_replayGain.fAlbumPeak = info.gain_album / 32768.0f;
       m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
     }
-	}
+  }
 
   return true;
 }

@@ -19,8 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "IFile.h"
-#include "cores/paplayer/filereader.h"
+#include "File.h"
 
 namespace XFILE
 {
@@ -38,10 +37,10 @@ public:
   virtual int Write(const void* lpBuf, __int64 uiBufSize);
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
-  
+
   virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
   protected:
-  CFileReader m_reader;
+  CFile m_reader;
 };
 
 }

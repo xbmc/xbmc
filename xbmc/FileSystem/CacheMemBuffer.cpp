@@ -29,6 +29,8 @@
 
 using namespace XFILE;
 
+#define SEEK_CHECK_RET(x) if (!(x)) return -1;
+
 CacheMemBuffer::CacheMemBuffer()
  : CCacheStrategy()
 {
@@ -48,7 +50,7 @@ CacheMemBuffer::~CacheMemBuffer()
   m_forwardBuffer.Destroy();
 }
 
-int CacheMemBuffer::Open() 
+int CacheMemBuffer::Open()
 {
   m_nStartPosition = 0;
   m_buffer.Clear();
@@ -57,15 +59,15 @@ int CacheMemBuffer::Open()
   return CACHE_RC_OK;
 }
 
-int CacheMemBuffer::Close() 
-{  
+int CacheMemBuffer::Close()
+{
   m_buffer.Clear();
   m_HistoryBuffer.Clear();
   m_forwardBuffer.Clear();
   return CACHE_RC_OK;
 }
 
-int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize) 
+int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
 {
   CSingleLock lock(m_sync);
   unsigned int nToWrite = m_buffer.GetMaxWriteSize() ;
@@ -75,9 +77,9 @@ int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
   if (nToWrite == 0 || m_forwardBuffer.GetMaxReadSize() > 0)
     return 0;
 
-  if (nToWrite > iSize) 
+  if (nToWrite > iSize)
     nToWrite = iSize;
- 
+
   if (!m_buffer.WriteBinary(pBuffer, nToWrite))
   {
     CLog::Log(LOGWARNING,"%s, failed to write %d bytes to buffer. max buffer size: %d", __FUNCTION__, nToWrite, m_buffer.GetMaxWriteSize());
@@ -87,7 +89,7 @@ int CacheMemBuffer::WriteToCache(const char *pBuffer, size_t iSize)
   return nToWrite;
 }
 
-int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize) 
+int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
 {
   CSingleLock lock(m_sync);
   if ( m_buffer.GetMaxReadSize() == 0 ) {
@@ -126,6 +128,9 @@ int CacheMemBuffer::ReadFromCache(char *pBuffer, size_t iMaxSize)
 
 __int64 CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
 {
+  if (iMillis == 0 || IsEndOfInput())
+    return m_buffer.GetMaxReadSize();
+
   DWORD dwTime = GetTickCount() + iMillis;
   while (!IsEndOfInput() && (unsigned int) m_buffer.GetMaxReadSize() < iMinAvail && GetTickCount() < dwTime )
     Sleep(50); // may miss the deadline. shouldn't be a problem.
@@ -133,7 +138,7 @@ __int64 CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int iMillis
   return m_buffer.GetMaxReadSize();
 }
 
-__int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence) 
+__int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
 {
   if (iWhence != SEEK_SET)
   {
@@ -145,8 +150,8 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   CSingleLock lock(m_sync);
 
   // if seek is a bit over what we have, try to wait a few seconds for the data to be available.
-  // we try to avoid a (heavy) seek on the source 
-  if (iFilePosition > m_nStartPosition + m_buffer.GetMaxReadSize() && 
+  // we try to avoid a (heavy) seek on the source
+  if (iFilePosition > m_nStartPosition + m_buffer.GetMaxReadSize() &&
       iFilePosition < m_nStartPosition + m_buffer.GetMaxReadSize() + 100000)
   {
     int nRequired = (int)(iFilePosition - (m_nStartPosition + m_buffer.GetMaxReadSize()));
@@ -177,26 +182,26 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   {
     CRingBuffer saveHist, saveUnRead;
     __int64 nToSkip = iFilePosition - iHistoryStart;
-    ASSERT(m_HistoryBuffer.ReadBinary(saveHist, (int)nToSkip));
+    SEEK_CHECK_RET(m_HistoryBuffer.ReadBinary(saveHist, (int)nToSkip));
 
-    ASSERT(saveUnRead.Copy(m_buffer));
+    SEEK_CHECK_RET(saveUnRead.Copy(m_buffer));
 
-    ASSERT(m_buffer.Copy(m_HistoryBuffer));
+    SEEK_CHECK_RET(m_buffer.Copy(m_HistoryBuffer));
     int nSpace = m_buffer.GetMaxWriteSize();
     int nToCopy = saveUnRead.GetMaxReadSize();
 
     if (nToCopy < nSpace)
       nSpace = nToCopy;
 
-    ASSERT(saveUnRead.ReadBinary(m_buffer, nSpace));
+    SEEK_CHECK_RET(saveUnRead.ReadBinary(m_buffer, nSpace));
     nToCopy -= nSpace;
     if (nToCopy > 0)
       m_forwardBuffer.Copy(saveUnRead);
 
-    ASSERT(m_HistoryBuffer.Copy(saveHist));
+    SEEK_CHECK_RET(m_HistoryBuffer.Copy(saveHist));
     m_HistoryBuffer.Clear();
 
-    m_nStartPosition = iFilePosition; 
+    m_nStartPosition = iFilePosition;
     return m_nStartPosition;
   }
 
@@ -204,11 +209,11 @@ __int64 CacheMemBuffer::Seek(__int64 iFilePosition, int iWhence)
   return CACHE_RC_ERROR;
 }
 
-void CacheMemBuffer::Reset(__int64 iSourcePosition) 
+void CacheMemBuffer::Reset(__int64 iSourcePosition)
 {
   CSingleLock lock(m_sync);
   m_nStartPosition = iSourcePosition;
-  m_buffer.Clear(); 
+  m_buffer.Clear();
   m_HistoryBuffer.Clear();
   m_forwardBuffer.Clear();
 }

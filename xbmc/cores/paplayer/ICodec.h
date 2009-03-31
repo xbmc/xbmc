@@ -23,6 +23,7 @@
 
 #include "ReplayGain.h"
 #include "StdString.h"
+#include "FileSystem/File.h"
 
 #define READ_EOF      -1
 #define READ_SUCCESS   0
@@ -90,6 +91,7 @@ public:
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}
 
+  virtual bool IsCaching()    const    {return false;}
   virtual int GetCacheLevel() const    {return -1;}
 
   // true if we can retrieve normalized float data immediately
@@ -102,4 +104,6 @@ public:
   int m_Bitrate;
   CStdString m_CodecName;
   CReplayGain m_replayGain;
+  XFILE::CFile m_file;
 };
+
