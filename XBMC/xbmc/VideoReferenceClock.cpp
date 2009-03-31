@@ -37,6 +37,11 @@ CVideoReferenceClock::CVideoReferenceClock()
   m_AdjustedFrequency = m_SystemFrequency;
   m_PrevAdjustedFrequency = m_SystemFrequency;
   m_UseVblank = false;
+
+#ifdef HAS_SDL
+  m_VblankCond = SDL_CreateCond();
+  m_VblankMutex = SDL_CreateMutex();
+#endif  
 }
 
 void CVideoReferenceClock::OnStartup()
@@ -172,6 +177,7 @@ void CVideoReferenceClock::RunGLX()
     m_glXWaitVideoSyncSGI(2, ((PrevVblankCount % 2) + 1) % 2, &VblankCount);
     m_CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * m_AdjustedFrequency.QuadPart / m_RefreshRate;
     PrevVblankCount = VblankCount;
+    SendVblankSignal();
     UpdateRefreshrate();
   }
 }
@@ -209,8 +215,9 @@ void CVideoReferenceClock::RunD3D()
       NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
       m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
-
+      SendVblankSignal();
       LastVBlankTime = CurrVBlankTime;
+      
       UpdateRefreshrate();
     }
     if (RasterStatus.InVBlank) LastLine = 0;
@@ -431,6 +438,31 @@ int CVideoReferenceClock::GetRefreshRate()
   {
     return -1;
   }
+}
+
+void CVideoReferenceClock::Wait()
+{
+#ifdef HAS_SDL
+  if (m_UseVblank)
+  {
+    SDL_mutexP(m_VblankMutex);
+    SDL_CondWait(m_VblankCond, m_VblankMutex);
+    SDL_mutexV(m_VblankMutex);
+  }
+  else
+  {
+    Sleep(1);
+  }
+#else
+  Sleep(1);
+#endif
+}
+
+void CVideoReferenceClock::SendVblankSignal()
+{
+#ifdef HAS_SDL
+  SDL_CondSignal(m_VblankCond);
+#endif
 }
 
 CVideoReferenceClock g_VideoReferenceClock;

@@ -127,7 +127,7 @@ void CXBoxRenderManager::WaitPresentTime(double presenttime)
   double now = GetPresentTime();
   while(now + 0.001 < presenttime)
   {
-    Sleep(1); //this will be replaced with waiting for a vsync
+    g_VideoReferenceClock.Wait();
     now = GetPresentTime();
   }
 }
@@ -349,8 +349,8 @@ void CXBoxRenderManager::Present()
 
 #ifdef HAVE_LIBVDPAU
   /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
-    WaitPresentTime(m_presenttime);
+  /*if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
+    WaitPresentTime(m_presenttime);*/
 #endif
     
   if (!m_pRenderer)
@@ -403,7 +403,7 @@ void CXBoxRenderManager::Present()
   if(g_graphicsContext.IsFullScreenVideo())
   {
 #ifdef HAVE_LIBVDPAU
-    if (!g_VDPAU)
+    //if (!g_VDPAU)
 #endif
     {
       WaitPresentTime(m_presenttime);

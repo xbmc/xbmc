@@ -43,6 +43,7 @@ class CVideoReferenceClock : public CThread
     void   SetSpeed(double Speed);
     double GetSpeed();
     int    GetRefreshRate();
+    void   Wait();
     
   protected:
     void OnStartup();
@@ -57,6 +58,12 @@ class CVideoReferenceClock : public CThread
     bool    m_UseVblank;
     __int64 m_RefreshRate;
     int     m_PrevRefreshRate;
+
+#ifdef HAS_SDL
+    SDL_cond*  m_VblankCond;
+    SDL_mutex* m_VblankMutex;
+#endif
+    void SendVblankSignal();
     
 #ifdef HAS_GLX
     bool SetupGLX();
