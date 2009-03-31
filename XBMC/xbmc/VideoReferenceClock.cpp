@@ -35,6 +35,7 @@ CVideoReferenceClock::CVideoReferenceClock()
 {
   QueryPerformanceFrequency(&m_SystemFrequency);
   m_AdjustedFrequency = m_SystemFrequency;
+  m_PrevAdjustedFrequency = m_SystemFrequency;
   m_UseVblank = false;
 }
 
@@ -205,9 +206,9 @@ void CVideoReferenceClock::RunD3D()
     {
       QueryPerformanceCounter(&CurrVBlankTime);
       VBlankTime = (double)(CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart) / (double)m_SystemFrequency.QuadPart;
-      NrVBlanks = MathUtils::round_int(VBlankTime / (1.0 / (double)m_RefreshRate));
+      NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
-      m_CurrTime.QuadPart += (__int64)NrVBlanks * m_SystemFrequency.QuadPart / m_RefreshRate;
+      m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
 
       LastVBlankTime = CurrVBlankTime;
       UpdateRefreshrate();
@@ -352,7 +353,14 @@ void CVideoReferenceClock::GetFrequency(LARGE_INTEGER *pfreq)
 void CVideoReferenceClock::SetSpeed(double Speed)
 {
   if (m_UseVblank)
+  {
     m_AdjustedFrequency.QuadPart = (__int64)((double)m_SystemFrequency.QuadPart * Speed);
+    if (m_AdjustedFrequency.QuadPart != m_PrevAdjustedFrequency.QuadPart)
+    {
+      CLog::Log(LOGINFO, "CVideoReferenceClock: Clock speed %f%%", GetSpeed() * 100);
+      m_PrevAdjustedFrequency = m_AdjustedFrequency;
+    }
+  }
 }
 
 double CVideoReferenceClock::GetSpeed()
