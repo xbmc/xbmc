@@ -23,6 +23,7 @@ LIBS= libdvdnav-$(ARCH).so
 # Allows us to optionally build xbmc with DVDCSS support
 ifeq (@BUILD_DVDCSS@,1)
   DIRS += libdvdcss
+  LIBS += libdvdcss-$(ARCH).so
   DVDCSS_A = libdvdcss/src/.libs/libdvdcss.a
   DVDCSS_O = libdvdcss/src/.libs/*.o
   DVDNAV_PREREQ = libdvdcss
@@ -35,12 +36,22 @@ libdvd: $(addprefix $(SYSDIR)/, $(LIBS));
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 
+$(SYSDIR)/libdvdcss-$(ARCH).so:  $(WRAPPER_OSX) libdvdcss/src/.libs/libdvdcss.a
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		libdvdcss/src/*.o $(BUNDLE1_O)
+	$(WRAPPER_OSX) $@;mv output.so $@
+
 $(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER_OSX) $(DVDCSS_A) libdvdread/obj/libdvdread.a libdvdnav/obj/libdvdnav.a
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		$(DVDCSS_O) libdvdread/obj/*.o libdvdnav/obj/*.o $(BUNDLE1_O)
 	$(WRAPPER_OSX) $@;mv output.so $@
 
 else
+
+$(SYSDIR)/libdvdcss-$(ARCH).so: $(WRAPPER) libdvdcss/src/.libs/libdvdcss.a
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ \
+		libdvdcss/src/*.o \
+		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER) $(DVDCSS_A) libdvdread/obj/libdvdread.a libdvdnav/obj/libdvdnav.a
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ $(DVDCSS_O) libdvdread/obj/*.o libdvdnav/obj/*.o \

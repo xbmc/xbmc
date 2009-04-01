@@ -55,6 +55,7 @@ XBMCTEX_DIRS= \
 
 DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
+	xbmc/cores/dvdplayer/Codecs/libdvd \
 	xbmc/lib/libass/xbmc \
 
 PAPCODECS_DIRS= \
@@ -196,6 +197,7 @@ dvdplayer:
 	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders 
 dvdpcodecs: dllloader
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
+	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libdvd
 	$(MAKE) -C xbmc/lib/libass/xbmc
 cdrip:
 	$(MAKE) -C xbmc/cdrip
