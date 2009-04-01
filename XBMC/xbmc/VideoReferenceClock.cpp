@@ -251,6 +251,7 @@ void CVideoReferenceClock::RunD3D()
   unsigned int    LastLine;
   int             NrVBlanks;
   double          VBlankTime;
+  int             ReturnV;
 
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 
@@ -260,10 +261,16 @@ void CVideoReferenceClock::RunD3D()
   else LastLine = RasterStatus.ScanLine;
 
   QueryPerformanceCounter(&LastVBlankTime);
-  //TODO: check if GetRasterStatus failed
+
   while(!m_bStop)
   {
-    m_D3dDev->GetRasterStatus(0, &RasterStatus);
+    ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
+
+    if (ReturnV != D3D_OK)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i", ReturnV & 0xFFFF);
+      return;
+    }
 
     if (RasterStatus.InVBlank || (RasterStatus.ScanLine < LastLine))
     {
@@ -314,12 +321,12 @@ bool CVideoReferenceClock::SetupD3D()
   D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_DISCARD;
   D3dPP.hDeviceWindow = m_Hwnd;
   D3dPP.BackBufferWidth = 64;
-  D3dPP.BackBufferheight = 64;
-  D3dPP.BackBufferFormat = D3DFMT_UNKNOWN;
+  D3dPP.BackBufferHeight = 64;
+  D3dPP.BackBufferFormat = D3dClock::D3DFMT_UNKNOWN;
   D3dPP.BackBufferCount = 1;
-  D3dPP.MultiSampleType = D3DMULTISAMPLE_NONE;
+  D3dPP.MultiSampleType = D3dClock::D3DMULTISAMPLE_NONE;
   D3dPP.MultiSampleQuality = 0;
-  D3dPP.SwapEffect = D3DSWAPEFFECT_FLIP;
+  D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_FLIP;
   D3dPP.EnableAutoDepthStencil = FALSE;
   D3dPP.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
