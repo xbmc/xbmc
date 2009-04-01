@@ -93,7 +93,7 @@ void CSMB::Init()
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
     m_context->callbacks.auth_fn = xb_smbc_auth;
     m_context->options.one_share_per_server = true;
-    m_context->options.browse_max_lmb_count = 0;
+//    m_context->options.browse_max_lmb_count = 0;
 
     /* set connection timeout. since samba always tries two ports, divide this by two the correct value */
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;    
