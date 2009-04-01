@@ -7,6 +7,7 @@ TOC
 4. How to compile and run
 	4.1 Using XCode
 	4.2 Using Command line
+5. Packaging
 
 -----------------------------------------------------------------------------
 1. Introduction
@@ -14,9 +15,9 @@ TOC
 
 This is a platform port of XBMC for the Apple OSX operating system. Both 10.5
 and 10.4 Intel development platforms are supported. The current build system
-is Xcode 2.5 or Xcode 3.1.2 There are two ways to build XBMC for Mac. 
+is Xcode 2.5 or Xcode 3.1.2 There are two ways to build XBMC for Mac.
 1) command-line or
-2) Xcode. 
+2) Xcode.
 
 Generally, Xcode is the easiest as it presents the build system in a GUI environment.
 The command-line build is still under development.
@@ -25,7 +26,7 @@ XBMC for Mac is composed of a main binary with numerous dynamic libraries and
 codecs that support a multitude of music and video formats.
 
 NOTE TO NEW OS X USERS: All lines that are prefixed with the '$' character are
-commands that need to be typed into a Terminal window. Note that the '$' 
+commands that need to be typed into a Terminal window. Note that the '$'
 character itself should NOT be typed as part of the command.
 
 
@@ -49,7 +50,7 @@ if you are running a previous Xcode 3.x version. Xcode 3.x only runs on 10.5.
 3.1 Install MacPorts 1.7
 -----------------------------------------------------------------------------
 
-These build instructions depend on MacPorts 1.7. If you have another version 
+These build instructions depend on MacPorts 1.7. If you have another version
 of MacPorts installed, it's best to remove it and install the 1.7 version.
 To remove a previous install of MacPorts, enter the following from a terminal
 windows:
@@ -68,27 +69,27 @@ windows:
     /Library/Tcl/macports1.0
 
 Install MacPorts 1.7 (http://www.macports.org/). If you are going to run
-under the same OSX version as you build under, just install the required port 
+under the same OSX version as you build under, just install the required port
 packages without the extra flags. No modifications of MacPorts is required.
 
-If you want to build a cross-compiled version that can run under 
+If you want to build a cross-compiled version that can run under
 10.5/10.4/AppleTV, then change MacPorts's behavior to always build universal
-against 10.4sdk using the following instructions. 
+against 10.4sdk using the following instructions.
 
  1)
    $ sudo nano /opt/local/etc/macports/macports.conf
    a) change "universal_target	10.5" to "universal_target	10.4"
- 
+
    b) change "universal_sysroot	/Developer/SDKs/MacOSX10.5.sdk" to
      "universal_sysroot	/Developer/SDKs/MacOSX10.4u.sdk"
-   
-   c) change "universal_archs         ppc i386" 
+
+   c) change "universal_archs         ppc i386"
      to reflect the arch you are building by removing the unused arch.
 
  2) These are needed to build openssl (used by samba3 and mysql5) against 10.4sdk
    $ sudo ln -s /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/dylib1.o /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/dylib1.10.5.o
    $ sudo ln -s /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.o /Developer/SDKs/MacOSX10.4u.sdk/usr/lib/crt1.10.5.o
- 
+
  3) samba3 does not have a +universal variant so we force it to build
 libsmbclient in a compatible manner
 
@@ -101,12 +102,12 @@ libsmbclient in a compatible manner
    change "--enable-cups" to "--disable-cups".
 
  4) mysql5 thinks we are cross-compiling and appends the cross-compile name to bin/my** apps.
- 
+
    $ sudo nano /opt/local/var/macports/sources/rsync.macports.org/release/ports/databases/mysql5/Portfile
- 
+
    scroll down to the post-destroot section and comment out the following
    three lines like below;
-   
+
     # Symlink mysql binaries into bin directory, with ${major_version} appended to the name
     #foreach f [glob -tails -directory ${destroot}${bindir} my*] {
     #    ln -sf ${bindir}/${f} ${destroot}${prefix}/bin/${f}${major_version}
@@ -119,29 +120,29 @@ Then install the following port packages (order is very important):
  $ sudo port install expat +universal
  $ sudo port install libiconv +universal
  $ sudo port install libtool yasm cmake gmake pkgconfig
- 
+
  $ sudo port install lzo +universal
  $ sudo port install bzip2 +universal
  $ sudo port install fontconfig +universal
  $ sudo port install boost +universal
- 
+
  $ sudo port install jpeg +universal
  $ sudo port install tiff +universal
- $ sudo port install smpeg +universal
  $ sudo port install libpng +universal
  $ sudo port install libogg +universal
  $ sudo port install libvorbis +universal
  $ sudo port install libmad +universal
  $ sudo port install fribidi +universal
- 
+
  $ sudo port install glew +universal
  $ sudo port install libcdio +universal
  $ sudo port install portaudio +universal
  $ sudo port install openssl +universal
  $ sudo port install samba3 macosx_deployment_target=10.4
  $ sudo port install mysql5 +universal
- 
+
  $ sudo port install libsdl +no_x11 +universal
+ $ sudo port install smpeg +universal
  $ sudo port install libsdl_mixer +universal
  $ sudo port install libsdl_image +universal
 
@@ -152,7 +153,7 @@ Finally, fix the mysql package default install location with this symlink:
 -----------------------------------------------------------------------------
 4. How to compile
 -----------------------------------------------------------------------------
-Both Xcode and Terminal compilation require that build environment be setup 
+Both Xcode and Terminal compilation require that build environment be setup
 first. This is a simple step and involves the following:
 
  $ cd $HOME/XBMC
@@ -163,11 +164,11 @@ first. This is a simple step and involves the following:
 
 The configure operation will setup the build environment for codecs and
 internal libraries that are used by XBMC. This step is required for both Xcode
-and command-line building. The "make clean" ensures that there areno stale 
-binaries from svn that might cause problems The last step will pre-build 
+and command-line building. The "make clean" ensures that there areno stale
+binaries from svn that might cause problems The last step will pre-build
 the majority of the codecs and libs:
 
- 
+
 The configure operation will default to building "debug". To build "release"
 codecs and libraries for Xcode, do the configure step with "--disable-debug"
 but remember that Xcode will need to be also built "Release":
@@ -183,7 +184,7 @@ the XBMC_HOME environment variable set to know where that directory is located.
 To set XBMC_HOME environment variable:
 
 Menu -> Project -> Edit Active Executable "XBMC", click "Arguments" tab and
-add "XBMC_HOME" as an enviroment variable. Set the value to the path to the 
+add "XBMC_HOME" as an enviroment variable. Set the value to the path to the
 XBMC root folder. For example, "/Users/bigdog/Documents/XBMC"
 
 There are two build targets "XBMC" and "XBMC.app" with debug and release
@@ -196,7 +197,7 @@ in "Build Results". There are a large number of static and dynamic libaries
 that will need to be built. Once these are built, subsequent builds will be
 faster.
 
-After the build, you can ether run XBMC for Mac from Xcode or run it from 
+After the build, you can ether run XBMC for Mac from Xcode or run it from
 the command-line. If you run it from the command-line, make sure your set
 the XBMC_HOME environment variable (export XBMC_HOME=$HOME/XBMC). Then, to
 run the debug version:
@@ -205,7 +206,7 @@ $ ./build/Debug/XBMC
 
 Or the release version:
 
-$ ./build/Release/XBMC 
+$ ./build/Release/XBMC
 
 You can also build via Xcode from the command-line using the following:
 
@@ -222,3 +223,43 @@ You can specify "Release" instead of "Debug" as a configuration.
  $ make xbmc
  $ ./xbmc.bin
 
+-----------------------------------------------------------------------------
+5. Packaging
+-----------------------------------------------------------------------------
+This section describes how to package XBMC in a disk image for
+distribution.
+
+  1. Create 2 directories "extras/user" and "extras/system" in the root of
+  the source tree.
+
+    1.1. "extras/user" - anything found in this directory will be
+    copied to the user's XBMC directory (~/Library/Application
+    Support/XBMC) on first run. Examples:
+
+        extras/user/scripts/XBMC Lyrics
+        extras/user/plugins/music/iTunes
+
+    1.2. "extras/system" - anything found in this directory will be
+    copied to the XBMC application bundle at build time
+    (XBMC.app/Contents/Resources/XBMC/). Examples:
+
+        extras/system/skin/MediaStream
+        extras/system/skin/My Skin
+
+
+  2. After performing step 1, build XBMC.app from XCode so that the
+  application bundle is correctly updated.
+
+  3. Go to tools/PackageMaker and run dmgmaker.pl as follows:
+
+      $ cd tools/PackageMaker
+      $ ./dmgmaker.pl ../../build/Release/XBMC.app
+
+  4. If dmgmaker.pl completed successfully, a disk image will be
+  present in the "dist" subdirectory:
+
+      $ ls dist
+      XBMC.dmg
+
+Remember to unmount/eject XBMC.dmg before attempting to recreate it,
+otherwise dmgmaker.pl will fail.
