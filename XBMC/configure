@@ -16341,6 +16341,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread ]; then
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
+    mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   else
     ./configure2 \
@@ -16348,6 +16349,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread ]; then
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
+    mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   fi
 
