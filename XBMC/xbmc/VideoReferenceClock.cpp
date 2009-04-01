@@ -99,12 +99,14 @@ bool CVideoReferenceClock::SetupGLX()
     GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
     None
   };
-  GLXFBConfig *fbConfigs = 0;
+  GLXFBConfig *fbConfigs = NULL;
   XVisualInfo *vInfo = NULL;
-  Visual      *Visual;
+  Visual      *Visual = NULL;
   GLXContext   Context;
   Pixmap       Pxmp;
   GLXPixmap    GLXPxmp;
+  
+  m_Dpy = NULL;
   
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
   
@@ -501,7 +503,7 @@ void CVideoReferenceClock::Wait()
   if (m_UseVblank)
   {
     SDL_mutexP(m_VblankMutex);
-    SDL_CondWait(m_VblankCond, m_VblankMutex);
+    SDL_CondWaitTimeout(m_VblankCond, m_VblankMutex, 100);
     SDL_mutexV(m_VblankMutex);
   }
   else
