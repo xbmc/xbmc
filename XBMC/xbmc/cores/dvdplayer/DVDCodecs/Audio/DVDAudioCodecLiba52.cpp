@@ -188,6 +188,8 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
     m_iOutputChannels = 2;
     m_iOutputMapping = 0x21;
     m_iOutputFlags = A52_STEREO;
+    if (m_iSourceChannels > 2)
+      m_Gain = g_advancedSettings.m_ac3Gain; // Hack for downmix attenuation
   }
 
   /* adjust level should always be set, to keep samples in proper range */
@@ -297,6 +299,8 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
   sample_t bias = 384;
   int     flags = m_iOutputFlags;
 
+  level *= m_Gain;
+
   m_dll.a52_frame(m_pState, frame, &flags, &level, bias);
 
   //m_dll.a52_dynrng(m_pState, NULL, NULL);
@@ -331,6 +335,7 @@ void CDVDAudioCodecLiba52::SetDefault()
   m_iOutputFlags = 0;
   m_decodedSize = 0;
   m_inputSize = 0;
+  m_Gain = 1.0f;
 }
 
 void CDVDAudioCodecLiba52::Reset()
