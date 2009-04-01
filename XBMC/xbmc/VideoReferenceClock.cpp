@@ -313,6 +313,15 @@ bool CVideoReferenceClock::SetupD3D()
   D3dPP.Windowed = TRUE;
   D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_DISCARD;
   D3dPP.hDeviceWindow = m_Hwnd;
+  D3dPP.BackBufferWidth = 64;
+  D3dPP.BackBufferheight = 64;
+  D3dPP.BackBufferFormat = D3DFMT_UNKNOWN;
+  D3dPP.BackBufferCount = 1;
+  D3dPP.MultiSampleType = D3DMULTISAMPLE_NONE;
+  D3dPP.MultiSampleQuality = 0;
+  D3dPP.SwapEffect = D3DSWAPEFFECT_FLIP;
+  D3dPP.EnableAutoDepthStencil = FALSE;
+  D3dPP.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
   ReturnV = m_D3d->CreateDevice(D3DADAPTER_DEFAULT, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
