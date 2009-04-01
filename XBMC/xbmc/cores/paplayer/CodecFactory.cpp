@@ -83,7 +83,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new AC3Codec();
 #endif
   else if (strFileType.Equals("m4a") || strFileType.Equals("aac"))
-    return new AACCodec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("wv"))
     return new WAVPackCodec();
   else if (ModuleCodec::IsSupportedFormat(strFileType))

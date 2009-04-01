@@ -772,7 +772,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(true, true, true);
   }
 #endif
-
+  
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
 
@@ -3600,7 +3600,7 @@ bool CApplication::ProcessEventServer(float frameTime)
 
 bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount)
 {
-#ifdef HAS_EVENT_SERVER
+#if defined(HAS_EVENT_SERVER) && defined(HAS_SDL_JOYSTICK)
   m_idleTimer.StartZero();
 
    // Make sure to reset screen saver, mouse.

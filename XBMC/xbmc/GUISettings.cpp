@@ -596,8 +596,8 @@ void CGUISettings::Initialize()
   AddBool(9,"lookandfeel.soundsduringplayback",21370,false);
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
-  AddBool(11, "lookandfeel.rssfeedsrtl",13412,  false);
-  AddBool(12, "lookandfeel.enablemouse", 21369, true);
+  AddBool(12, "lookandfeel.rssfeedsrtl",13412,  false);
+  AddBool(13, "lookandfeel.enablemouse", 21369, true);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);

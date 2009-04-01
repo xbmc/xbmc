@@ -22,6 +22,8 @@
 #ifndef __ATOMICS_H__
 #define __ATOMICS_H__
 
+#include <queue>
+
 // 32-bit atomic compare-and-swap
 // Returns previous value of *pAddr
 #ifdef __ppc__ // PowerPC
@@ -50,7 +52,7 @@ static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
 {
   long prev;
   
-  __asm __volatile
+  __asm
   {
     // Load parameters
     mov eax, expectedVal ;
@@ -97,6 +99,54 @@ public:
   }
 private:
   long& m_Lock;
+};
+
+template <class T>
+class CSafeQueue
+{
+public:
+  CSafeQueue(size_t maxItems = 0) : m_Lock(0), m_MaxItems(maxItems) {}
+  bool Push(const T& elem)
+  {
+    CAtomicLock(m_Lock);
+    if (m_Queue.size() >= m_MaxItems)
+      return false;
+
+    m_Queue.Push(elem);
+    return true;
+  }
+
+  void Pop()
+  {
+    CAtomicLock(m_Lock); 
+    m_Queue.pop();
+  }
+
+  void Clear() 
+  {
+    CAtomicLock(m_Lock); 
+    while (!m_Queue.empty())
+      m_Queue.pop();
+  }
+
+  bool SetMaxItems(size_t maxItems)
+  {
+    CAtomicLock(m_Lock);
+    if (maxItems < m_MaxItems)
+      if (maxItems < m_Queue.size())
+        return false;
+    m_MaxItems = maxItems;
+    return true;
+  }
+  size_t GetMaxItems() {CAtomicLock(m_Lock); return m_MaxItems;}
+  T& Head() {CAtomicLock(m_Lock); return m_Queue.front();}
+  T& Tail() {CAtomicLock(m_Lock); return m_Queue.back();}
+  bool Empty() {CAtomicLock(m_Lock); return m_Queue.empty();}
+  size_t Count() {CAtomicLock(m_Lock); return m_Queue.size();}
+protected:
+  long m_Lock;
+  std::queue<T> m_Queue;
+  size_t m_MaxItems;
 };
 
 #endif // __ATOMICS_H__

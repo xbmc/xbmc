@@ -550,11 +550,13 @@ if test "$use_dvdcss" = "yes"; then
   final_message="$final_message\n  DVDCSS:\tYes"
   BUILD_DVDCSS=1
   DVDNAV_CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
+  DVDREAD_CFLAGS="-D_XBMC -DHAVE_DVDCSS_DVDCSS_H"
 else
   AC_MSG_NOTICE($dvdcss_disabled)
   final_message="$final_message\n  DVDCSS:\tNo"
   BUILD_DVDCSS=0
   DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
+  DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
 fi
 if test "$use_avahi" = "yes"; then
   final_message="$final_message\n  Avahi:\tYes"
@@ -588,6 +590,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [guilib/common/Makefile]
                 [xbmc/DllPaths_generated.h]
                 [xbmc/cores/dvdplayer/Codecs/Makefile]
+                [xbmc/cores/dvdplayer/Codecs/libdvd/Makefile]
                 [xbmc/cores/AudioRenderers/Makefile]
                 [xbmc/cores/paplayer/Makefile]
                 [xbmc/cores/paplayer/AACCodec/Makefile]
@@ -817,7 +820,6 @@ if [[ $BUILD_DVDCSS == 1 ]]; then
     AC_MSG_ERROR([[Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist]])
     fi;
 fi
-
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvdnav], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="$DVDNAV_CFLAGS -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -831,6 +833,58 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvdnav], [
       --disable-shared \
       --with-pic \
       CFLAGS="$DVDNAV_CFLAGS"
+  fi
+])
+# In place for testing platform builds of new libdvdcss
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
+  if test "$host_vendor" = "apple" ; then
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      --disable-doc \
+      --enable-static \
+      --with-pic
+  else
+    ./configure \
+      --disable-doc \
+      --enable-static \
+      --with-pic
+  fi
+])
+# In place for testing platform builds of new libdvdread
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
+  if test "$host_vendor" = "apple" ; then
+    ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --extra-cflags="$DVDREAD_CFLAGS -D__DARWIN__ -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../libdvdcss/src" \
+      --enable-static \
+      --disable-shared &&
+    make dvdread-config &&
+    cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
+  else
+    ./configure2 \
+      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
+      --enable-static \
+      --disable-shared &&
+    make dvdread-config &&
+    cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
+  fi
+
+])
+# In place for testing platform builds of new libdvdnav
+XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav], [
+  if test "$host_vendor" = "apple" ; then
+    ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
+      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../includes" \
+      --extra-ldflags="-L`pwd`/../libdvdread/obj" \
+      --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
+      --enable-static \
+      --disable-shared
+  else
+    ./configure2 \
+      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../includes" \
+      --extra-ldflags="-L`pwd`/../libdvdread/obj" \
+      --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
+      --enable-static \
+      --disable-shared
   fi
 ])
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [

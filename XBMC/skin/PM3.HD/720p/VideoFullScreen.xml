@@ -37,17 +37,5 @@
 			<font>font11</font>
 			<include>VisibleFadeEffect</include>
 		</control>
-		
-		<!-- buffering dialog -->
-		<control type="label" id="24">
-			<description>buffering label</description>
-			<posx>0</posx>
-			<posy>520</posy>
-			<label>15107</label>
-			<width>1280</width>
-			<align>center</align>
-			<font>font12</font>
-			<textcolor>white</textcolor>
-		</control>
 	</controls>
 </window>

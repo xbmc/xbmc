@@ -48,7 +48,7 @@ start)
 				AMD="$( echo $XBMC_PARAMS | grep "amd" )"
 				if [ "$AMD" != "" ]; then
 					# run aticonfig
-					aticonfig --initial --sync-vsync=on --input=/etc/X11/xorg.conf
+					aticonfig --initial --sync-vsync=on -f
 				fi
 			else
 				# run nvidia-xconfig
@@ -77,13 +77,6 @@ start)
 
 					# Relies on init scripts to mount boot device on a specified directory
 					BOOTMEDIAMOUNTPOINT=`mount | grep bootMedia | cut -f 3 -d " "`
-
-					touch $BOOTMEDIAMOUNTPOINT/xbmc.log
-					# chmod 666 /mnt/xbmc.log
-					if [ -f /var/tmp/xbmc-xbmc.log ]; then
-						rm /var/tmp/xbmc-xbmc.log
-					fi
-					ln -s $BOOTMEDIAMOUNTPOINT/xbmc.log /var/tmp/xbmc-xbmc.log
 
 					if [ ! -d $BOOTMEDIAMOUNTPOINT/dotXBMC ]; then
 						mkdir $BOOTMEDIAMOUNTPOINT/dotXBMC
