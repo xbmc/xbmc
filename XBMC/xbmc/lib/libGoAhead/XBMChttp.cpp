@@ -3187,10 +3187,11 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "getguidescription")        retVal = xbmcGetGUIDescription();
       else if (command == "setautogetpicturethumbs")  retVal = xbmcAutoGetPictureThumbs(numParas, paras);
       else if (command == "setresponseformat")        retVal = xbmcSetResponseFormat(numParas, paras);
-      else if (command == "querymusicdatabase")       retVal = xbmcQueryMusicDataBase(numParas, paras);
-      else if (command == "queryvideodatabase")       retVal = xbmcQueryVideoDataBase(numParas, paras);
-      else if (command == "execmusicdatabase")        retVal = xbmcExecMusicDataBase(numParas, paras);
-      else if (command == "execvideodatabase")        retVal = xbmcExecVideoDataBase(numParas, paras);
+// FIXME: Database queries such as "querymusicdatabase(%s%s%s%s)" crash in sqlite, worse is probably possible.
+//      else if (command == "querymusicdatabase")       retVal = xbmcQueryMusicDataBase(numParas, paras);
+//      else if (command == "queryvideodatabase")       retVal = xbmcQueryVideoDataBase(numParas, paras);
+//      else if (command == "execmusicdatabase")        retVal = xbmcExecMusicDataBase(numParas, paras);
+//      else if (command == "execvideodatabase")        retVal = xbmcExecVideoDataBase(numParas, paras);
       else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk(numParas, paras);
       else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
       else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
