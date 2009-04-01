@@ -71,9 +71,13 @@ void CVideoReferenceClock::OnStartup()
     }
     else if (!SetupSuccess && !PrevSetupSuccess)
     {
+      Lock();
       m_UseVblank = false;
       QueryPerformanceCounter(&Now);
       m_ClockOffset.QuadPart = Now.QuadPart - m_CurrTime.QuadPart;
+      SendVblankSignal();
+      Unlock();
+      
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed twice in a row, falling back to QueryPerformanceCounter");
       break;
     }
@@ -215,8 +219,10 @@ void CVideoReferenceClock::RunGLX()
           
     if (VblankCount > PrevVblankCount)
     {
+      Lock();
       m_CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * m_AdjustedFrequency.QuadPart / m_RefreshRate;
       SendVblankSignal();
+      Unlock();
       QueryPerformanceCounter(&LastVBlankTime);
       UpdateRefreshrate();
     }
@@ -265,8 +271,11 @@ void CVideoReferenceClock::RunD3D()
       VBlankTime = (double)(CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart) / (double)m_SystemFrequency.QuadPart;
       NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
+      Lock();
       m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
       SendVblankSignal();
+      Unlock();
+      
       LastVBlankTime = CurrVBlankTime;
       
       UpdateRefreshrate();
@@ -502,9 +511,9 @@ void CVideoReferenceClock::Wait()
 #ifdef HAS_SDL
   if (m_UseVblank)
   {
-    SDL_mutexP(m_VblankMutex);
+    Lock();
     SDL_CondWaitTimeout(m_VblankCond, m_VblankMutex, 100);
-    SDL_mutexV(m_VblankMutex);
+    Unlock();
   }
   else
   {
@@ -519,6 +528,20 @@ void CVideoReferenceClock::SendVblankSignal()
 {
 #ifdef HAS_SDL
   SDL_CondSignal(m_VblankCond);
+#endif
+}
+
+void CVideoReferenceClock::Lock()
+{
+#ifdef HAS_SDL
+  SDL_mutexP(m_VblankMutex);
+#endif
+}
+
+void CVideoReferenceClock::Unlock()
+{
+#ifdef HAS_SDL
+  SDL_mutexV(m_VblankMutex);
 #endif
 }
 

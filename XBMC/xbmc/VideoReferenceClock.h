@@ -65,6 +65,8 @@ class CVideoReferenceClock : public CThread
     SDL_mutex* m_VblankMutex;
 #endif
     void SendVblankSignal();
+    void Lock();
+    void Unlock();
     
 #ifdef HAS_GLX
     bool SetupGLX();
