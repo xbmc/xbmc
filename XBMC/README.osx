@@ -92,7 +92,7 @@ against 10.4sdk using the following instructions.
  3) samba3 does not have a +universal variant so we force it to build
 libsmbclient in a compatible manner
 
-   $ sudo nano /opt/local/var/macports/sources/rsync.macports.org/release/ports/net/samba/Portfile
+   $ sudo nano /opt/local/var/macports/sources/rsync.macports.org/release/ports/net/samba3/Portfile
 
    add the following before "configure.cflags-append "-fno-common";
 
