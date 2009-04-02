@@ -102,10 +102,12 @@ class CDVDPlayerResampler
     bool Retreive(DVDAudioFrame audioframe, double &pts);
     void SetRatio(double ratio);
     void Flush();
+    void SetQuality(int Quality);
   
   private:
   
     int m_NrChannels;
+    int m_Quality;
     SRC_STATE* m_Converter;
     SRC_DATA m_ConverterData;
   

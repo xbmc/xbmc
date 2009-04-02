@@ -186,6 +186,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_SyncClock = true;
 
   g_VideoReferenceClock.SetSpeed(1.0);
+  Resampler.SetQuality(g_guiSettings.GetInt("audiooutput.resamplequality"));
   
   CLog::Log(LOGNOTICE, "Creating audio thread");
   Create();
@@ -776,6 +777,7 @@ CDVDPlayerResampler::CDVDPlayerResampler()
   m_RingBufferFill = 0;
   m_RingBuffer = NULL;
   m_PtsRingBuffer = NULL;
+  m_Quality = SRC_LINEAR;
 }
   
 CDVDPlayerResampler::~CDVDPlayerResampler()
@@ -896,7 +898,7 @@ void CDVDPlayerResampler::CheckResampleBuffers(int channels)
     if (m_RingBuffer) delete m_RingBuffer;
     if (m_PtsRingBuffer) delete m_PtsRingBuffer;
 
-    m_Converter = src_new(SRC_LINEAR, m_NrChannels, &error);
+    m_Converter = src_new(m_Quality, m_NrChannels, &error);
     m_ConverterData.data_in = new float[MAXCONVSAMPLES * m_NrChannels];
     m_ConverterData.data_out = new float[MAXCONVSAMPLES * m_NrChannels * 3];
     m_ConverterData.output_frames = MAXCONVSAMPLES * 3;
@@ -917,4 +919,10 @@ void CDVDPlayerResampler::Flush()
 {
   m_RingBufferPos = 0;
   m_RingBufferFill = 0;
+}
+
+void CDVDPlayerResampler::SetQuality(int Quality)
+{
+  int QualityLookup[] = {SRC_LINEAR, SRC_SINC_FASTEST, SRC_SINC_MEDIUM_QUALITY, SRC_SINC_BEST_QUALITY};
+  m_Quality = QualityLookup[Clamp(Quality, 0, 3)];
 }
