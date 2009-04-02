@@ -64,6 +64,7 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_addNetworkShareEnabled = false;
   m_singleList = false;
   m_thumbLoader.SetObserver(this);
+  m_flipEnabled = false;
 }
 
 CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
