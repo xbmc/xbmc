@@ -160,6 +160,12 @@
 #define SYNC_SKIPDUP 1
 #define SYNC_RESAMPLE 2
 
+//resampler quality
+#define RESAMPLE_LOW 0
+#define RESAMPLE_MID 1
+#define RESAMPLE_HIGH 2
+#define RESAMPLE_REALLYHIGH 3
+
 enum PowerState
 {
   POWERSTATE_QUIT      = 0,

@@ -1196,6 +1196,11 @@
   <string id="13502">Skip/Duplicate</string>
   <string id="13503">Resample</string>
   <string id="13504">Maximum speed adjust percentage</string>
+  <string id="13505">Resample quality</string>
+  <string id="13506">Low</string>
+  <string id="13507">Medium</string>
+  <string id="13508">High</string>
+  <string id="13509">Really high</string>
 
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>

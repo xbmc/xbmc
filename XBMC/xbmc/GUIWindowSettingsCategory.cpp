@@ -868,7 +868,17 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13502), SYNC_SKIPDUP);
       pControl->AddLabel(g_localizeStrings.Get(13503), SYNC_RESAMPLE);
       pControl->SetValue(pSettingInt->GetData());
-    }      
+    }
+    else if (strSetting.Equals("audiooutput.resamplequality"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13506), RESAMPLE_LOW);
+      pControl->AddLabel(g_localizeStrings.Get(13507), RESAMPLE_MID);
+      pControl->AddLabel(g_localizeStrings.Get(13508), RESAMPLE_HIGH);
+      pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
+      pControl->SetValue(pSettingInt->GetData());
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -1371,6 +1381,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
     else if (strSetting.Equals("audiooutput.maxadjust"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.synctype") == SYNC_RESAMPLE);
+    }      
+    else if (strSetting.Equals("audiooutput.resamplequality"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.synctype") == SYNC_RESAMPLE);
