@@ -385,8 +385,8 @@ int _dvdcss_close ( dvdcss_t dvdcss )
         /* Unload aspi and free w32_aspidev structure */
         FreeLibrary( (HMODULE) fd->hASPI );
         free( (void*) dvdcss->i_fd );
-    }
 #endif	// !_XBOX
+    }
 
     /* Free readv temporary buffer */
     if( dvdcss->p_readv_buffer )
