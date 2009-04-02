@@ -526,7 +526,7 @@ LIBDVDCSS_EXPORT dvdcss_t dvdcss_open ( char *psz_target )
 
         i += sprintf( dvdcss->psz_cachefile + i, "/%s", psz_title);
         
-        i_ret = mkdir( dvdcss->psz_cachefile, 0777 );
+        i_ret = mkdir( dvdcss->psz_cachefile );
         if( i_ret < 0 && errno != EEXIST )
         {
             print_error( dvdcss, "failed creating cache titledirectory" );
