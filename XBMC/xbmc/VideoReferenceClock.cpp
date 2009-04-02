@@ -254,7 +254,7 @@ void CVideoReferenceClock::RunGLX()
   LARGE_INTEGER LastVBlankTime;
   int           ReturnV;
   
-  m_glXGetVideoSyncSGI(&VblankCount);
+  m_glXGetVideoSyncSGI(&PrevVblankCount);
   QueryPerformanceCounter(&LastVBlankTime);
   UpdateRefreshrate();
   
