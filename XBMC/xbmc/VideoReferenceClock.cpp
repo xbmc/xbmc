@@ -267,8 +267,8 @@ void CVideoReferenceClock::RunGLX()
       if (CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart > m_SystemFrequency.QuadPart)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI didn't update for 1 second");
-        CleanupGLX();
-        return;
+        glXMakeCurrent(m_Dpy, None, NULL);
+        glXMakeCurrent(m_Dpy, m_GLXPxmp, m_Context);
       }
     }
     PrevVblankCount = VblankCount;
