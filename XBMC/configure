@@ -1959,7 +1959,7 @@ fi
 if test "${enable_vdpau+set}" = set; then
   enableval=$enable_vdpau; use_vdpau=$enableval
 else
-  use_vdpau=yes
+  use_vdpau=no
 fi
 
 
