@@ -26,6 +26,7 @@
 #ifdef HAS_GLX
   #include <X11/X.h>
   #include <X11/Xlib.h>
+  #include <GL/glx.h>
 #elif defined(_WIN32)
   namespace D3dClock
   {
@@ -71,9 +72,16 @@ class CVideoReferenceClock : public CThread
 #ifdef HAS_GLX
     bool SetupGLX();
     void RunGLX();
+    void CleanupGLX();
     int  (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
     
-    Display* m_Dpy;
+    Display*     m_Dpy;
+    GLXFBConfig *m_fbConfigs;
+    XVisualInfo *m_vInfo;
+    Pixmap       m_Pxmp;
+    GLXPixmap    m_GLXPxmp;
+    GLXContext   m_Context;
+            
     int      m_Screen;
     bool     m_UseNvSettings;
 #elif defined(_WIN32)

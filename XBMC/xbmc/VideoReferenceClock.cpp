@@ -24,7 +24,6 @@
 #include "Util.h"
 
 #ifdef HAS_GLX
-  #include <GL/glx.h>
   #include <X11/extensions/Xrandr.h>
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate"
 #endif
@@ -103,14 +102,13 @@ bool CVideoReferenceClock::SetupGLX()
     GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
     None
   };
-  GLXFBConfig *fbConfigs = NULL;
-  XVisualInfo *vInfo = NULL;
-  Visual      *Visual = NULL;
-  GLXContext   Context;
-  Pixmap       Pxmp;
-  GLXPixmap    GLXPxmp;
+  Visual *Visual;
   
   m_Dpy = NULL;
+  m_fbConfigs = NULL;
+  m_vInfo = NULL;
+  m_Context = NULL;
+  m_Pxmp = NULL;  
   
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
   
@@ -118,20 +116,23 @@ bool CVideoReferenceClock::SetupGLX()
   if (!m_Dpy)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to open display");
+    CleanupGLX();
     return false;
   }
   
-  fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), singleVisAttributes, &Num);
-  if (!fbConfigs)
+  m_fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), singleVisAttributes, &Num);
+  if (!m_fbConfigs)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseFBConfig returned NULL");
+    CleanupGLX();
     return false;
   }
   
-  vInfo = glXGetVisualFromFBConfig(m_Dpy, fbConfigs[0]);
-  if (!vInfo)
+  m_vInfo = glXGetVisualFromFBConfig(m_Dpy, m_fbConfigs[0]);
+  if (!m_vInfo)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVisualFromFBConfig returned NULL");
+    CleanupGLX();
     return false;
   }
   
@@ -139,15 +140,16 @@ bool CVideoReferenceClock::SetupGLX()
   Visual = DefaultVisual(m_Dpy, m_Screen);
   Depth = DefaultDepth(m_Dpy, m_Screen); 
 
-  Pxmp = XCreatePixmap(m_Dpy, RootWindow(m_Dpy, m_Screen), 64, 64, Depth);
-  GLXPxmp = glXCreatePixmap(m_Dpy, fbConfigs[0], Pxmp, NULL);
-  Context = glXCreateNewContext(m_Dpy, fbConfigs[0], GLX_RGBA_TYPE, NULL, true);
-  glXMakeCurrent(m_Dpy, GLXPxmp, Context);
+  m_Pxmp = XCreatePixmap(m_Dpy, RootWindow(m_Dpy, m_Screen), 64, 64, Depth);
+  m_GLXPxmp = glXCreatePixmap(m_Dpy, m_fbConfigs[0], m_Pxmp, NULL);
+  m_Context = glXCreateNewContext(m_Dpy, m_fbConfigs[0], GLX_RGBA_TYPE, NULL, true);
+  glXMakeCurrent(m_Dpy, m_GLXPxmp, m_Context);
   
   m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
   if (!m_glXWaitVideoSyncSGI)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI not found");
+    CleanupGLX();
     return false;
   }
   
@@ -155,6 +157,7 @@ bool CVideoReferenceClock::SetupGLX()
   if (ReturnV)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
+    CleanupGLX();
     return false;
   }
   
@@ -162,6 +165,7 @@ bool CVideoReferenceClock::SetupGLX()
   if (ReturnV == 0)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: RandR not supported");
+    CleanupGLX();
     return false;
   }
   
@@ -196,6 +200,36 @@ bool CVideoReferenceClock::SetupGLX()
   return true;
 }
 
+void CVideoReferenceClock::CleanupGLX()
+{
+  if (m_fbConfigs)
+  {
+    XFree(m_fbConfigs);
+    m_fbConfigs = NULL;
+  }
+  if (m_vInfo)
+  {
+    XFree(m_vInfo);
+    m_vInfo = NULL;
+  }
+  if (m_Context)
+  {
+    glXDestroyContext(m_Dpy, m_Context);
+    m_Context = NULL;
+  }
+  if (m_Pxmp)
+  {
+    XFreePixmap(m_Dpy, m_Pxmp);
+    m_Pxmp = NULL;
+    m_GLXPxmp = NULL;
+  }
+  if (m_Dpy)
+  {
+    XCloseDisplay(m_Dpy);
+    m_Dpy = NULL;
+  }
+}
+
 void CVideoReferenceClock::RunGLX()
 {
   unsigned int  PrevVblankCount;
@@ -214,6 +248,7 @@ void CVideoReferenceClock::RunGLX()
     if(ReturnV)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
+      CleanupGLX();
       return;
     }
           
@@ -232,6 +267,7 @@ void CVideoReferenceClock::RunGLX()
       if (CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart > m_SystemFrequency.QuadPart)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI didn't update for 1 second");
+        CleanupGLX();
         return;
       }
     }
