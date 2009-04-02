@@ -448,6 +448,7 @@ void CGUISettings::Initialize()
 #endif
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
+  AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
 #ifdef HAS_SDL
   AddSeparator(7, "videoplayer.sep1.5");
