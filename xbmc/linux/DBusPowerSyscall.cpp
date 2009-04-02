@@ -140,8 +140,9 @@ bool CDBusPowerSyscall::QueryCapability(const char *capability)
     dbus_bool_t b;
     dbus_message_get_args(reply, &error, DBUS_TYPE_BOOLEAN, &b);
 
-    dbus_message_unref (reply);
+    dbus_message_unref(reply);
     dbus_message_unref(msg);
+    dbus_error_free(&error);
     msg = NULL;
     return b;
   }
