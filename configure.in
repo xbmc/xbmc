@@ -91,7 +91,7 @@ AC_ARG_ENABLE([vdpau],
             [AS_HELP_STRING([--enable-vdpau],
                [enable VDPAU decoding (default is no)])],
             [use_vdpau=$enableval],
-            [use_vdpau=yes])
+            [use_vdpau=no])
 
 AC_ARG_ENABLE([profiling],
             [AS_HELP_STRING([--enable-profiling],
