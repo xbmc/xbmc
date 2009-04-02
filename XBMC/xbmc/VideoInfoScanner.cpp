@@ -206,7 +206,7 @@ namespace VIDEO
       bSkip = true;
 
     CStdString hash, dbHash;
-    if (m_info.strContent.Equals("movies"))
+    if (m_info.strContent.Equals("movies") && !settings.noupdate)
     {
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MOVIE_INFO);
@@ -238,7 +238,7 @@ namespace VIDEO
         bSkip = true;
       }
     }
-    else if (m_info.strContent.Equals("tvshows"))
+    else if (m_info.strContent.Equals("tvshows") && !settings.noupdate)
     {
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_TVSHOW_INFO);
@@ -266,7 +266,7 @@ namespace VIDEO
         CUtil::GetParentPath(item->m_strPath,items.m_strPath);
       }
     }
-    else if (m_info.strContent.Equals("musicvideos"))
+    else if (m_info.strContent.Equals("musicvideos") && !settings.noupdate)
     {
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MUSICVIDEO_INFO);
