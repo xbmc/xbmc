@@ -52,7 +52,7 @@ start)
 				fi
 			else
 				# run nvidia-xconfig
-				nvidia-xconfig -s --no-logo
+				nvidia-xconfig -s --no-logo --force-generate
 			fi
 		fi
 
