@@ -161,6 +161,22 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
   
+  m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
+  if (!m_glXWaitVideoSyncSGI)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI not found");
+    CleanupGLX();
+    return false;
+  }
+  
+  ReturnV = m_glXGetVideoSyncSGI(&VblankCount);
+  if (ReturnV)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI returned %i", ReturnV);
+    CleanupGLX();
+    return false;
+  }
+  
   XRRSizes(m_Dpy, m_Screen, &ReturnV);
   if (ReturnV == 0)
   {
@@ -238,7 +254,7 @@ void CVideoReferenceClock::RunGLX()
   LARGE_INTEGER LastVBlankTime;
   int           ReturnV;
   
-  m_glXWaitVideoSyncSGI(2, 0, &PrevVblankCount);
+  m_glXGetVideoSyncSGI(&VblankCount);
   QueryPerformanceCounter(&LastVBlankTime);
   UpdateRefreshrate();
   
@@ -251,7 +267,7 @@ void CVideoReferenceClock::RunGLX()
       CleanupGLX();
       return;
     }
-          
+    
     if (VblankCount > PrevVblankCount)
     {
       Lock();
@@ -259,17 +275,32 @@ void CVideoReferenceClock::RunGLX()
       SendVblankSignal();
       Unlock();
       QueryPerformanceCounter(&LastVBlankTime);
+      
       UpdateRefreshrate();
     }
     else
     {
+      m_glXGetVideoSyncSGI(&VblankCount);
       QueryPerformanceCounter(&CurrVBlankTime);
+      
       if (CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart > m_SystemFrequency.QuadPart)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI didn't update for 1 second");
+        CleanupGLX();
+        return;
+      }
+      else if (VblankCount <= PrevVblankCount)
+      {
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
+        
+        Lock();
+        m_CurrTime.QuadPart += m_AdjustedFrequency.QuadPart / m_RefreshRate;
+        SendVblankSignal();
+        Unlock();
+        
         glXMakeCurrent(m_Dpy, None, NULL);
         glXMakeCurrent(m_Dpy, m_GLXPxmp, m_Context);
-      }
+      }        
     }
     PrevVblankCount = VblankCount;
   }

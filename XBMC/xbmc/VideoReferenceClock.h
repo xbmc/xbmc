@@ -74,6 +74,7 @@ class CVideoReferenceClock : public CThread
     void RunGLX();
     void CleanupGLX();
     int  (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
+    int  (*m_glXGetVideoSyncSGI)(unsigned int*);
     
     Display*     m_Dpy;
     GLXFBConfig *m_fbConfigs;
