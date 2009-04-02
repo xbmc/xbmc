@@ -1039,6 +1039,11 @@ bool CSurface::MakeCurrent()
 
 void CSurface::RefreshCurrentContext()
 {
+#ifdef HAS_GLX
+  ReleaseContext();
+  MakeCurrent();
+#endif
+
 #ifdef __APPLE__
   m_glContext = Cocoa_GL_GetCurrentContext();
 #endif
