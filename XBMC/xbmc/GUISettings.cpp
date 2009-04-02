@@ -432,7 +432,12 @@ void CGUISettings::Initialize()
 #ifndef HAS_SDL
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
 #else
+#ifdef HAVE_LIBVDPAU
   AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_VDPAU, SPIN_CONTROL_TEXT);
+#else
+  AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_SOFTWARE, SPIN_CONTROL_TEXT);
+#endif
+
 #endif
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
