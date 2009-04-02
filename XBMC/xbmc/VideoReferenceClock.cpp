@@ -516,12 +516,14 @@ bool CVideoReferenceClock::UpdateRefreshrate()
         fscanf(NvSettings, "%f", &fRefreshRate);
         pclose(NvSettings);
         m_RefreshRate = MathUtils::round_int(fRefreshRate);
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate by nvidia-settings: %f hertz, rounding to %i hertz",
+                             fRefreshRate, (int)m_RefreshRate);
       }
       else
       {
         m_RefreshRate = RRRefreshRate;
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
       }
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
       Changed = true;
     }
 #elif defined(_WIN32)
