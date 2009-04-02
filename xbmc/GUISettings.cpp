@@ -548,7 +548,7 @@ void CGUISettings::Initialize()
 
   // zeroconf publishing
 #ifdef HAS_ZEROCONF
-  AddBool(10, "servers.zeroconf", 1260, false);
+  AddBool(10, "servers.zeroconf", 1260, true);
 #endif
 
   AddCategory(6, "smb", 1200);
