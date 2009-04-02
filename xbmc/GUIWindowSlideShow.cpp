@@ -544,13 +544,14 @@ void CGUIWindowSlideShow::RenderErrorMessage()
   if (!m_bErrorMessage)
     return ;
 
-  CGUILabelControl *pLabel = (CGUILabelControl *)GetControl(LABEL_ROW1);
-  if (pLabel == NULL) {
+  const CGUIControl *control = GetControl(LABEL_ROW1);
+  if (NULL == control || control->GetControlType() != CGUIControl::GUICONTROL_LABEL)
+  {
      CLog::Log(LOGERROR,"CGUIWindowSlideShow::RenderErrorMessage - cant get label control!");
      return;
   }
 
-  CGUIFont *pFont = pLabel->GetLabelInfo().font;
+  CGUIFont *pFont = ((CGUILabelControl *)control)->GetLabelInfo().font;
   CGUITextLayout::DrawText(pFont, 0.5f*g_graphicsContext.GetWidth(), 0.5f*g_graphicsContext.GetHeight(), 0xffffffff, 0, g_localizeStrings.Get(747), XBFONT_CENTER_X | XBFONT_CENTER_Y);
 }
 
