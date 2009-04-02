@@ -98,10 +98,10 @@
 			
 			<!--Plot-->
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression noclean="1">&quot;text critic topBorder&quot;&gt;([^&lt;]*)&lt;/div</expression>
+				<expression trim="1">&quot;text critic topBorder&quot;&gt;([^&lt;]*)&lt;/div</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression noclean="1">&quot;text critic topBorder&quot;&gt;.*&lt;br /&gt;&lt;br /&gt;([^&lt;]*)&lt;/div</expression>
+				<expression trim="1">&quot;text critic topBorder&quot;&gt;.*?&lt;br /&gt;&lt;br /&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 
 			<!--Actors -->
