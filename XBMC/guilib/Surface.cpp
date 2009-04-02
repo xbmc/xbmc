@@ -987,24 +987,24 @@ void CSurface::Flip()
 bool CSurface::MakeCurrent()
 {
 #ifdef HAS_GLX
+  GLXDrawable drawable = None;
   if (m_glWindow)
+    drawable = m_glWindow;
+  else if(m_glPBuffer)
+    drawable = m_glPBuffer;
+  else
+    return false;
+
+  //attempt up to 10 times
+  int i = 0;
+  while (i<=10 && !glXMakeCurrent(s_dpy, drawable, m_glContext))
   {
-    //attempt up to 10 times
-    int i = 0;
-    while (i<=10 && !glXMakeCurrent(s_dpy, m_glWindow, m_glContext))
-    {
-      Sleep(5);
-      i++;
-    }
-    if (i==10)
-      return false;
-    return true;
-    //return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    Sleep(5);
+    i++;
   }
-  else if (m_glPBuffer)
-  {
-    return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
-  }
+  if (i==10)
+    return false;
+  return true;
 #endif
 
 #ifdef __APPLE__
