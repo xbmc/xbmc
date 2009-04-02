@@ -290,9 +290,6 @@ CStdString g_LoadErrorStr;
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem)
 {
-#ifdef HAS_GLX
-  XInitThreads();
-#endif
   m_iPlaySpeed = 1;
 #ifdef HAS_WEB_SERVER
   m_pWebServer = NULL;
