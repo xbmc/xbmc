@@ -145,7 +145,7 @@ AC_ARG_ENABLE([avahi],
              [AS_HELP_STRING([--enable-avahi],
                 [enable Avahi support (default is no)])],
              [use_avahi=$enableval],
-             [use_avahi=no])
+             [use_avahi=yes])
 
 # PCRE is a requirement
 use_pcre="yes"
