@@ -782,11 +782,7 @@ CDVDPlayerResampler::CDVDPlayerResampler()
   
 CDVDPlayerResampler::~CDVDPlayerResampler()
 {
-  if (m_Converter) src_delete(m_Converter);
-  if (m_ConverterData.data_in) delete m_ConverterData.data_in;
-  if (m_ConverterData.data_out) delete m_ConverterData.data_out;
-  if (m_RingBuffer) delete m_RingBuffer;
-  if (m_PtsRingBuffer) delete m_PtsRingBuffer;
+  Clean();
 }
 
 void CDVDPlayerResampler::Add(DVDAudioFrame audioframe, double pts)
@@ -891,13 +887,9 @@ void CDVDPlayerResampler::CheckResampleBuffers(int channels)
   int error;
   if (channels != m_NrChannels)
   {
+    Clean();
+    
     m_NrChannels = channels;
-    if (m_Converter) src_delete(m_Converter);    
-    if (m_ConverterData.data_in) delete m_ConverterData.data_in;
-    if (m_ConverterData.data_out) delete m_ConverterData.data_out;
-    if (m_RingBuffer) delete m_RingBuffer;
-    if (m_PtsRingBuffer) delete m_PtsRingBuffer;
-
     m_Converter = src_new(m_Quality, m_NrChannels, &error);
     m_ConverterData.data_in = new float[MAXCONVSAMPLES * m_NrChannels];
     m_ConverterData.data_out = new float[MAXCONVSAMPLES * m_NrChannels * 3];
@@ -925,4 +917,25 @@ void CDVDPlayerResampler::SetQuality(int Quality)
 {
   int QualityLookup[] = {SRC_LINEAR, SRC_SINC_FASTEST, SRC_SINC_MEDIUM_QUALITY, SRC_SINC_BEST_QUALITY};
   m_Quality = QualityLookup[Clamp(Quality, 0, 3)];
+  Clean();
+}
+
+void CDVDPlayerResampler::Clean()
+{
+  if (m_Converter) src_delete(m_Converter);
+  if (m_ConverterData.data_in) delete m_ConverterData.data_in;
+  if (m_ConverterData.data_out) delete m_ConverterData.data_out;
+  if (m_RingBuffer) delete m_RingBuffer;
+  if (m_PtsRingBuffer) delete m_PtsRingBuffer;
+  
+  m_NrChannels = -1;
+  m_Converter = NULL;
+  m_ConverterData.data_in = NULL;
+  m_ConverterData.data_out = NULL;
+  m_ConverterData.end_of_input = 0;
+  m_ConverterData.src_ratio = 1.0;
+  m_RingBufferPos = 0;
+  m_RingBufferFill = 0;
+  m_RingBuffer = NULL;
+  m_PtsRingBuffer = NULL;
 }

@@ -103,6 +103,7 @@ class CDVDPlayerResampler
     void SetRatio(double ratio);
     void Flush();
     void SetQuality(int Quality);
+    void Clean();
   
   private:
   
