@@ -21,6 +21,7 @@
 #define _SCROBBLER_H
 
 #include <vector>
+#include "Thread.h"
 
 namespace MUSIC_INFO
 {
@@ -87,7 +88,7 @@ typedef struct SubmissionJournalEntry_s {
   @author   Russ Garrett (russ-scrobbler@garrett.co.uk)
 */
 
-class CScrobbler 
+class CScrobbler : public CThread
 {
 private:
   /**
@@ -102,6 +103,9 @@ private:
     @see      setUsername()
   */
   CScrobbler();
+  virtual void Process();
+  virtual void OnStartup();
+  virtual void OnExit();
 
 public:
   virtual ~CScrobbler();
@@ -219,14 +223,6 @@ private:
   void HandleHandshake(char *handshake);
   void HandleSubmit(char *data);
 
-  void WorkerThread();
-
-#ifdef _WIN32
-  static DWORD WINAPI threadProc(void *param) { static_cast<CScrobbler*>(param)->WorkerThread(); return 1; }
-#else
-  static int threadProc(void *param) { static_cast<CScrobbler*>(param)->WorkerThread(); return 1; }
-#endif
-
   CStdString GetTempFileName();
   CStdString GetJournalFileName();
 
@@ -246,7 +242,6 @@ private:
   bool m_bSubmitInProgress;
 
   bool m_bCloseThread;
-  HANDLE m_hWorkerThread;
   HANDLE m_hWorkerEvent;
 
   int m_iSongNum;
