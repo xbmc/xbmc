@@ -166,6 +166,11 @@ public:
   VdpRect       outRect;
   VdpRect       outRectVid;
 
+  void*    dl_handle;
+  VdpStatus (*dl_vdp_device_create_x11)(Display* display, int screen, VdpDevice* device, VdpGetProcAddress **get_proc_address);
+  VdpStatus (*dl_vdp_get_proc_address)(VdpDevice device, VdpFuncId function_id, void** function_pointer);
+  VdpStatus (*dl_vdp_preemption_callback_register)(VdpDevice device, VdpPreemptionCallback callback, void* context);
+
   int      surfaceNum;
   int      presentSurfaceNum;
   uint32_t vid_width, vid_height;
