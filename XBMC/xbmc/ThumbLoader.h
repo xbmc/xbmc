@@ -37,7 +37,6 @@ public:
   CVideoThumbLoader();
   virtual ~CVideoThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
-  bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget);
 
 protected:
   virtual void OnLoaderStart() ;
