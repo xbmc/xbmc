@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT("xbmc", 8.10, bugs@xbmc.org)
+AC_INIT("xbmc", 9.04, bugs@xbmc.org)
 AC_CONFIG_HEADER([config.h])
 
 # Ensure config.guess and config.sub exist and is executable
