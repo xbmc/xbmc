@@ -284,8 +284,15 @@ public:
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
   static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
   static bool CreateDirectoryEx(const CStdString& strPath);
-  static CStdString MakeLegalFileName(const CStdString &strFile);
-  static CStdString MakeLegalPath(const CStdString &strPath);
+
+#ifdef _WIN32PC
+  static CStdString MakeLegalFileName(const CStdString &strFile, bool bWin32Compat=true);
+  static CStdString MakeLegalPath(const CStdString &strPath, bool bWin32Compat=true);
+#else
+  static CStdString MakeLegalFileName(const CStdString &strFile, bool bWin32Compat=false);
+  static CStdString MakeLegalPath(const CStdString &strPath, bool bWin32Compat=false);
+#endif
+  
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 
