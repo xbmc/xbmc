@@ -653,7 +653,7 @@ HRESULT CApplication::Create(HWND hWnd)
   SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
 #else
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
+  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon32x32.png")), NULL);
 #endif
 #endif
 
