@@ -134,19 +134,29 @@ bool CDBusPowerSyscall::QueryCapability(const char *capability)
 
     DBusMessage *reply;
     reply = dbus_connection_send_with_reply_and_block(connection, msg, -1, &error);
-    if (dbus_error_is_set(&error))
+    if (reply == NULL)
+    {
+      if (dbus_error_is_set(&error))
+        dbus_error_free(&error);
+      
+      dbus_message_unref(msg);
       return false;
+    }
 
-    dbus_bool_t b;
+    dbus_bool_t b = false;
     dbus_message_get_args(reply, &error, DBUS_TYPE_BOOLEAN, &b);
+    
+    if (dbus_error_is_set(&error))
+      dbus_error_free(&error);
 
     dbus_message_unref(reply);
     dbus_message_unref(msg);
-    dbus_error_free(&error);
     msg = NULL;
     return b;
   }
 
+  if (dbus_error_is_set(&error))
+    dbus_error_free(&error);
   return false;
 }
 #endif
