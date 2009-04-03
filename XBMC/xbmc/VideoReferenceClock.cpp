@@ -543,9 +543,18 @@ bool CVideoReferenceClock::UpdateRefreshrate()
       if (m_UseNvSettings)
       {
         float fRefreshRate;
+        char Buff[256];
+        
         FILE* NvSettings = popen(NVSETTINGSCMD, "r");
-        fscanf(NvSettings, "%f", &fRefreshRate);
+        fscanf(NvSettings, "%255s", Buff);
         pclose(NvSettings);
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Output of %s: %s", NVSETTINGSCMD, Buff);
+        
+        for (int i = 0; i < 255; i++)
+          if ((Buff[i] < '0' || Buff[i] > '9') && Buff[i] != '.')
+            Buff[i] = ' ';
+        
+        sscanf(Buff, "%f", &fRefreshRate);
         m_RefreshRate = MathUtils::round_int(fRefreshRate);
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate by nvidia-settings: %f hertz, rounding to %i hertz",
                              fRefreshRate, (int)m_RefreshRate);
