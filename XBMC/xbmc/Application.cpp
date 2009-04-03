@@ -1021,9 +1021,13 @@ CProfile* CApplication::InitDirectoriesOSX()
 {
 #ifdef __APPLE__
   CProfile* profile = NULL;
-
+  CStdString temp_path;
+  
+  
   // special://temp/ common for both
-  CSpecialProtocol::SetTempPath("/tmp/xbmc");
+  temp_path = "/tmp/xbmc-";
+  temp_path = temp_path + getenv("USER");
+  CSpecialProtocol::SetTempPath(temp_path);
   CDirectory::Create("special://temp/");
 
   CStdString userHome;
