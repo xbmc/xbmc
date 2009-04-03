@@ -41,7 +41,7 @@ CVideoReferenceClock::CVideoReferenceClock()
 #ifdef HAS_SDL
   m_VblankCond = SDL_CreateCond();
   m_VblankMutex = SDL_CreateMutex();
-#endif  
+#endif
 }
 
 void CVideoReferenceClock::OnStartup()
@@ -544,15 +544,22 @@ bool CVideoReferenceClock::UpdateRefreshrate()
       {
         float fRefreshRate;
         char Buff[256];
+        struct lconv *Locale = localeconv();
         
         FILE* NvSettings = popen(NVSETTINGSCMD, "r");
         fscanf(NvSettings, "%255s", Buff);
         pclose(NvSettings);
+        Buff[255] = 0;
+        
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: Output of %s: %s", NVSETTINGSCMD, Buff);
         
         for (int i = 0; i < 256 && Buff[i]; i++)
-          if ((Buff[i] < '0' || Buff[i] > '9') && Buff[i] != '.')
+        {
+          if (Buff[i] == '.') Buff[i] = *Locale->decimal_point;
+          
+          if ((Buff[i] < '0' || Buff[i] > '9') && Buff[i] != *Locale->decimal_point)
             Buff[i] = ' ';
+        }
         
         sscanf(Buff, "%f", &fRefreshRate);
         m_RefreshRate = MathUtils::round_int(fRefreshRate);
