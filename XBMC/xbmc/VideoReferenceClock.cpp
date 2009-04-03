@@ -550,7 +550,7 @@ bool CVideoReferenceClock::UpdateRefreshrate()
         pclose(NvSettings);
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: Output of %s: %s", NVSETTINGSCMD, Buff);
         
-        for (int i = 0; i < 255; i++)
+        for (int i = 0; i < 256 && Buff[i]; i++)
           if ((Buff[i] < '0' || Buff[i] > '9') && Buff[i] != '.')
             Buff[i] = ' ';
         
