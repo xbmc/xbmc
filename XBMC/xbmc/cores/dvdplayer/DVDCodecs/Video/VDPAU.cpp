@@ -246,7 +246,12 @@ void CVDPAU::InitVDPAUProcs()
 
   dl_vdp_device_create_x11 = (VdpStatus (*)(Display*, int, VdpDevice*, VdpStatus (**)(VdpDevice, VdpFuncId, void**)))dlsym(dl_handle, (const char*)"vdp_device_create_x11");
   error = dlerror();
-  CLog::Log(LOGNOTICE,"Error: %s",error);
+  if (error)
+  {
+    CLog::Log(LOGERROR,"(VDPAU) - %s in %s",error,__FUNCTION__);
+    vdp_device = NULL;
+    return;
+  }
 
   int mScreen = DefaultScreen(m_Display);
   VdpStatus vdp_st;
@@ -258,6 +263,7 @@ void CVDPAU::InitVDPAUProcs()
                                  &vdp_get_proc_address);
   CHECK_ST
   if (vdp_st) {
+    CLog::Log(LOGERROR,"(VDPAU) - Unable to create X11 device in %s",__FUNCTION__);
     vdp_device = NULL;
     return;
   }
