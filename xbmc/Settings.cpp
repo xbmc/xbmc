@@ -144,7 +144,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_DisableModChipDetection = true;
 
   g_advancedSettings.m_audioHeadRoom = 0;
-  g_advancedSettings.m_ac3Gain = 4.0f;
+  g_advancedSettings.m_ac3Gain = 12.0f;
 
   g_advancedSettings.m_karaokeSyncDelayCDG = 0.0f;
   g_advancedSettings.m_karaokeSyncDelayLRC = 0.0f;
