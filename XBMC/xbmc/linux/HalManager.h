@@ -87,7 +87,11 @@ public:
     if (Label.size() > 0)
       share->strName = Label;
     else
-      share->strName = CUtil::GetFileName(MountPoint);
+    {
+      share->strName = MountPoint;
+      CUtil::RemoveSlashAtEnd(share->strName);
+      share->strName = CUtil::GetFileName(share->strName);
+    }
 
     share->m_ignore = true;
     if (HotPlugged)
