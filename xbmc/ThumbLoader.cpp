@@ -20,16 +20,21 @@
  */
 
 #include "stdafx.h"
+#include "FileSystem/StackDirectory.h"
 #include "ThumbLoader.h"
 #include "Util.h"
 #include "URL.h"
 #include "Picture.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "Settings.h"
 #include "TextureManager.h"
 #include "VideoInfoTag.h"
 
+#include "cores/dvdplayer/DVDFileInfo.h"
+
 using namespace XFILE;
+using namespace DIRECTORY;
 
 CThumbLoader::CThumbLoader()
 {
@@ -69,6 +74,31 @@ CVideoThumbLoader::~CVideoThumbLoader()
   StopThread();
 }
 
+void CVideoThumbLoader::OnLoaderStart()
+{
+}
+
+void CVideoThumbLoader::OnLoaderFinish()
+{
+}
+
+bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString &strTarget)
+{
+  if (!g_guiSettings.GetBool("myvideos.autothumb"))
+    return false;
+
+  if (CUtil::IsTV(strPath)
+  ||  CUtil::IsUPnP(strPath)
+  ||  CUtil::IsDAAP(strPath))
+    return false;
+
+  if (CUtil::IsRemote(strPath) && !CUtil::IsOnLAN(strPath))
+    return false;
+
+  CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, strPath.c_str());
+  return CDVDFileInfo::ExtractThumb(strPath, strTarget);
+}
+
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive) return true;
@@ -89,7 +119,36 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   CStdString cachedThumb(pItem->GetCachedVideoThumb());
 
   if (!pItem->HasThumbnail())
+  {
     pItem->SetUserVideoThumb();
+    if (!CFile::Exists(cachedThumb))
+    {
+      CStdString strPath, strFileName;
+      CUtil::Split(cachedThumb, strPath, strFileName);
+
+      // create unique thumb for auto generated thumbs
+      cachedThumb = strPath + "auto-" + strFileName;
+      if (pItem->IsVideo() && !pItem->IsInternetStream() && !pItem->IsPlayList() && !CFile::Exists(cachedThumb))
+      {
+        if (pItem->IsStack())
+        {
+          CStackDirectory stack;
+          CVideoThumbLoader::ExtractThumb(stack.GetFirstStackedFile(pItem->m_strPath), cachedThumb);
+        }
+        else
+        {
+          CVideoThumbLoader::ExtractThumb(pItem->m_strPath, cachedThumb);
+        }
+      }
+
+      if (CFile::Exists(cachedThumb))
+      {
+        pItem->SetProperty("HasAutoThumb", "1");
+        pItem->SetProperty("AutoThumbImage", cachedThumb);
+        pItem->SetThumbnailImage(cachedThumb);
+      }
+    }
+  }
   else
     LoadRemoteThumb(pItem);
 
@@ -98,7 +157,11 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     pItem->CacheFanart();
     if (CFile::Exists(pItem->GetCachedFanart()))
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
-  }                          
+  }
+
+//  if (pItem->IsVideo() && !pItem->IsInternetStream())
+//    CDVDPlayer::GetFileMetaData(pItem->m_strPath, pItem);
+
   return true;
 }
 

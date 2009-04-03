@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <scraper name="Filmstarts" content="movies" thumb="filmstarts.jpg" language="de">
 	<GetSettings dest="3">
                 <RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
@@ -28,7 +29,7 @@
 	
 	<!--HIER SUCHE -->
 	<CreateSearchUrl dest="3">
-		<RegExp input="$$1" output="&lt;url spoof=&quot;http://www.filmstarts.de/finde.html&quot; post=&quot;true&quot;&gt;http://www.filmstarts.de/finde.html?t=film&amp;amp;anfrage=\1&amp;amp;x=0&amp;amp;y=0&amp;&lt;/url&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.filmstarts.de/finde.html?t=film&amp;amp;anfrage=\1&amp;amp;x=0&amp;amp;y=0&amp;&lt;/url&gt;" dest="3">
 			<expression noclean="1"></expression>
 		</RegExp>	
 	</CreateSearchUrl>
@@ -43,7 +44,7 @@
 	</GetSearchResults>
 
 	<GetDetails dest="3">
-		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="3">
 
 			<!--Title -->
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
@@ -97,10 +98,10 @@
 			
 			<!--Plot-->
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression noclean="1">&quot;text critic topBorder&quot;&gt;([^&lt;]*)&lt;/div</expression>
+				<expression trim="1">&quot;text critic topBorder&quot;&gt;([^&lt;]*)&lt;/div</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression noclean="1">&quot;text critic topBorder&quot;&gt;.*&lt;br /&gt;&lt;br /&gt;([^&lt;]*)&lt;/div</expression>
+				<expression trim="1">&quot;text critic topBorder&quot;&gt;.*?&lt;br /&gt;&lt;br /&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 
 			<!--Actors -->

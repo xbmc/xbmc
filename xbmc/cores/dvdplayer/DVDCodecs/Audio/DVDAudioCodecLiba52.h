@@ -24,6 +24,12 @@
 #include "DVDAudioCodec.h"
 #include "DllLiba52.h"
 
+#ifdef _LINUX
+#define XBMC_ALIGN_INT __attribute__ ((aligned (4)))
+#else
+#define XBMC_ALIGN_INT
+#endif
+
 class CDVDAudioCodecLiba52 : public CDVDAudioCodec
 {
 public:
@@ -36,7 +42,7 @@ public:
   virtual void Reset();
   virtual int GetChannels()      { return m_iOutputChannels; }
   virtual int GetSampleRate()    { return m_iSourceSampleRate; }
-  virtual int GetBufferSize() { return m_inputSize; }
+  virtual int GetBufferSize()    { return m_inputSize; }
   virtual int GetBitsPerSample() { return 16; }
   virtual const char* GetName() { return "liba52"; }
 
@@ -62,10 +68,12 @@ protected:
 
   DllLiba52 m_dll;
 
-  BYTE m_decodedData[131072]; // could be a bit to big
+  float m_Gain;
+
+  BYTE m_decodedData[131072] XBMC_ALIGN_INT; // could be a bit to big
   int  m_decodedSize;
 
-  BYTE m_inputBuffer[4096];
+  BYTE m_inputBuffer[4096] XBMC_ALIGN_INT;
   int  m_inputSize;
 };
 

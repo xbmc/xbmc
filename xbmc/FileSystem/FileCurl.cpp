@@ -310,7 +310,8 @@ void CFileCurl::Close()
   m_state->Disconnect();
 
   m_url.Empty();
-  
+  m_referer.Empty();
+
   /* cleanup */
   if( m_curlAliasList )
     g_curlInterface.slist_free_all(m_curlAliasList);
@@ -363,8 +364,8 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_FAILONERROR, 1);
 
   // enable support for icecast / shoutcast streams
-  m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK"); 
-  g_curlInterface.easy_setopt(h, CURLOPT_HTTP200ALIASES, m_curlAliasList); 
+  m_curlAliasList = g_curlInterface.slist_append(m_curlAliasList, "ICY 200 OK");
+  g_curlInterface.easy_setopt(h, CURLOPT_HTTP200ALIASES, m_curlAliasList);
 
   // never verify peer, we don't have any certificates to do this
   g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYPEER, 0);
@@ -379,11 +380,13 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_POST, 1 );
     g_curlInterface.easy_setopt(h, CURLOPT_POSTFIELDSIZE, m_postdata.length());
     g_curlInterface.easy_setopt(h, CURLOPT_POSTFIELDS, m_postdata.c_str());
-  }   
+  }
 
   // setup Referer header if needed
   if (!m_referer.IsEmpty())
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
+  else
+    g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
     
   // setup any requested authentication
   if( m_ftpauth.length() > 0 )
@@ -424,7 +427,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   if (m_proxy.length() > 0)
   {
     g_curlInterface.easy_setopt(h, CURLOPT_PROXY, m_proxy.c_str());
-    if (m_proxyuserpass.length() > 0)    
+    if (m_proxyuserpass.length() > 0)
       g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, m_proxyuserpass.c_str());
       
   }
@@ -449,7 +452,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
 
 void CFileCurl::SetRequestHeaders(CReadState* state)
 {
-  if(m_curlHeaderList) 
+  if(m_curlHeaderList)
   {
     g_curlInterface.slist_free_all(m_curlHeaderList);
     m_curlHeaderList = NULL;
@@ -737,6 +740,9 @@ bool CFileCurl::Open(const CURL& url)
     }
   }
 
+  if(m_state->m_httpheader.GetValue("Transfer-Encoding").Equals("chunked"))
+    m_state->m_fileSize = 0;
+
   m_seekable = false;
   if(m_state->m_fileSize > 0)
   {
@@ -766,7 +772,9 @@ bool CFileCurl::CReadState::ReadString(char *szLine, int iLineLength)
   /* check if we finished prematurely */
   if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
   {
-    CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
+    if (m_fileSize != 0)
+      CLog::Log(LOGWARNING, "%s - Transfer ended before entire file was retrieved pos %"PRId64", size %"PRId64, __FUNCTION__, m_filePos, m_fileSize);
+      
     return false;
   }
 
@@ -877,7 +885,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   {
     CLog::Log(LOGWARNING, "%s - Stat called on open file", __FUNCTION__);
     buffer->st_size = GetLength();
-		buffer->st_mode = _S_IFREG;
+    buffer->st_mode = _S_IFREG;
     return 0;
   }
 
@@ -926,14 +934,16 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   }
 
   double length;
-  if(CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length) || length < 0)
-    length = 0.0;
-    
-  if( url.GetProtocol() == "ftp" && length < 0.0 )
+  if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &length) || length < 0.0)
   {
-    g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-    errno = ENOENT;
-    return -1;
+    if (url.GetProtocol() == "ftp")
+    {
+      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+      errno = ENOENT;
+      return -1;
+    }
+    else
+      length = 0.0;
   }
 
   SetCorrectHeaders(m_state);
@@ -941,7 +951,13 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   if(buffer)
   {
     char content[255];
-    if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
+    if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
+    { 
+      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL); 
+      errno = ENOENT;
+      return -1;
+    }
+    else
     {
       buffer->st_size = (__int64)length;
       if(strstr(content, "text/html")) //consider html files directories
@@ -950,6 +966,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
         buffer->st_mode = _S_IFREG;      
     }
   }
+
   g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
 	return 0;
 }
@@ -1190,16 +1207,16 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
 
 bool CFileCurl::GetContent(const CURL &url, CStdString &content, CStdString useragent)
 {
-  CFileCurl file;
-  if (!useragent.IsEmpty())
-    file.SetUserAgent(useragent);
+   CFileCurl file;
+   if (!useragent.IsEmpty())
+     file.SetUserAgent(useragent);
 
-  if( file.Stat(url, NULL) == 0 )
-  {
-    content = file.GetContent();
-    return true;
-  }
-   
-  content = "";
-  return false;
+   if( file.Stat(url, NULL) == 0 )
+   {
+     content = file.GetContent();
+     return true;
+   }
+
+   content = "";
+   return false;
 }
