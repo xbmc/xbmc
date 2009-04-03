@@ -21,6 +21,7 @@
  *
  */
 
+#include <set>
 #include "GUIWindow.h"
 #include "utils/Thread.h"
 #include "SlideShowPicture.h"
@@ -84,7 +85,8 @@ public:
   int CurrentSlide() const;
   void Shuffle();
 private:
-  void AddItems(const CStdString &strPath, bool bRecursive);
+  typedef std::set<CStdString> path_set;  // set to track which paths we're adding
+  void AddItems(const CStdString &strPath, path_set *recursivePaths);
   void RenderPause();
   void RenderErrorMessage();
   void Rotate();
