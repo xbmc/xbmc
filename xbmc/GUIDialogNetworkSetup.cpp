@@ -260,46 +260,44 @@ void CGUIDialogNetworkSetup::UpdateButtons()
 
 CStdString CGUIDialogNetworkSetup::ConstructPath() const
 {
-  CStdString path;
+  CURL url;
   if (m_protocol == NET_PROTOCOL_SMB)
-    path = "smb://";
+    url.SetProtocol("smb");
   else if (m_protocol == NET_PROTOCOL_XBMSP)
-    path = "xbms://";
+    url.SetProtocol("xbms");
   else if (m_protocol == NET_PROTOCOL_FTP)
-    path = "ftp://";
+    url.SetProtocol("ftp");
   else if (m_protocol == NET_PROTOCOL_HTTP)
-    path = "http://";
+    url.SetProtocol("http");
   else if (m_protocol == NET_PROTOCOL_HTTPS)
-    path = "https://";
+    url.SetProtocol("https");
   else if (m_protocol == NET_PROTOCOL_DAAP)
-    path = "daap://";
+    url.SetProtocol("daap");
   else if (m_protocol == NET_PROTOCOL_UPNP)
-    path = "upnp://";
+    url.SetProtocol("upnp");
   else if (m_protocol == NET_PROTOCOL_TUXBOX)
-    path = "tuxbox://";
+    url.SetProtocol("tuxbox");
   if (!m_username.IsEmpty() && !m_server.IsEmpty())
   {
-    path += m_username;
+    url.SetUserName(m_username);
     if (!m_password.IsEmpty())
-    {
-      path += ":";
-      path += m_password;
-    }
-    path += "@";
+      url.SetPassword(m_password);
+    url.SetHostName(m_server);
   }
-  path += m_server;
-  if ((m_protocol == NET_PROTOCOL_FTP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
-   || (m_protocol == NET_PROTOCOL_HTTP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
-   || (m_protocol == NET_PROTOCOL_HTTPS && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
-   || (m_protocol == NET_PROTOCOL_XBMSP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
-   || (m_protocol == NET_PROTOCOL_DAAP && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0 && !m_server.IsEmpty())
-   || (m_protocol == NET_PROTOCOL_TUXBOX && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0))
+  if (((m_protocol == NET_PROTOCOL_FTP) ||
+       (m_protocol == NET_PROTOCOL_HTTP) || 
+       (m_protocol == NET_PROTOCOL_HTTPS) ||
+       (m_protocol == NET_PROTOCOL_XBMSP && !m_server.IsEmpty()) ||
+       (m_protocol == NET_PROTOCOL_DAAP && !m_server.IsEmpty()) ||
+       (m_protocol == NET_PROTOCOL_TUXBOX))
+      && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
   {
-    path += ":";
-    path += m_port;
+    url.SetPort(atoi(m_port));
   }
   if (!m_path.IsEmpty())
-    CUtil::AddFileToFolder(path, m_path, path);
+    url.SetFileName(m_path);
+  CStdString path;
+  url.GetURL(path);
   CUtil::AddSlashAtEnd(path);
   return path;
 }
