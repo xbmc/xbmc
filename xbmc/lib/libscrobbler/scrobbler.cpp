@@ -75,8 +75,8 @@ CScrobbler::~CScrobbler()
 {
   m_bCloseThread = true;
   SetEvent(m_hWorkerEvent);
+  WaitForThreadExit(INFINITE);
   CloseHandle(m_hWorkerEvent);
-  StopThread();
   Sleep(0);
 }
 
