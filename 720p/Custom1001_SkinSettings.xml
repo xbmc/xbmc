@@ -200,15 +200,23 @@
           <include>GeneralSkinOption</include>
         </control>
 
-        <control type="togglebutton" id="281">
-          <description>Path to Lyrics Script</description>
-  				<label>$LOCALIZE[20141] $LOCALIZE[31046]</label>
-  				<altlabel>$LOCALIZE[31659] $LOCALIZE[31046]</altlabel>
-  				<onclick>Skin.SetFile(LyricsScriptPath)</onclick>
-  				<altclick>Skin.Reset(LyricsScriptPath)</altclick>
-  				<usealttexture>Skin.String(LyricsScriptPath)</usealttexture>
+        <control type="radiobutton" id="324">
+          <description>Hide Pictures description</description>
+  				<label>$LOCALIZE[31697]</label>
+          <onclick>Skin.ToggleSetting(HideDescriptionInSlideshow)</onclick>
+          <selected>Skin.HasSetting(HideDescriptionInSlideshow)</selected>
           <include>GeneralSkinOption</include>
         </control>
+
+				<control type="togglebutton" id="281">
+					<description>Path to Lyrics Script</description>
+					<label>$LOCALIZE[20141] $LOCALIZE[31046]</label>
+   				<altlabel>$LOCALIZE[31659] $LOCALIZE[31046]</altlabel>
+   				<onclick>Skin.SetFile(LyricsScriptPath)</onclick>
+   				<altclick>Skin.Reset(LyricsScriptPath)</altclick>
+   				<usealttexture>Skin.String(LyricsScriptPath)</usealttexture>
+					<include>GeneralSkinOption</include>
+				</control>
 
         <!--
         <control type="radiobutton" id="245">
