@@ -43,8 +43,8 @@ CPictureThumbLoader::~CPictureThumbLoader()
 
 bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 {
-  if (pItem->m_bIsShareOrDrive) return true;
   pItem->SetCachedPictureThumb();
+  if (pItem->m_bIsShareOrDrive) return true;
 
   if(pItem->HasThumbnail())
   {
