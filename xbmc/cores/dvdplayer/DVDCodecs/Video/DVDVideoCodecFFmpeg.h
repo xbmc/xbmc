@@ -48,15 +48,13 @@ protected:
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
 
-  AVFrame* m_pConvertFrame;
+  AVPicture* m_pConvertFrame;
 
   int m_iPictureWidth;
   int m_iPictureHeight;
 
   int m_iScreenWidth;
   int m_iScreenHeight;
-
-  double m_pts;
 
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;

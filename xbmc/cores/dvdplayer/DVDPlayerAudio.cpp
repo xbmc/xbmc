@@ -312,7 +312,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
         // increase audioclock to after the packet
         m_audioClock += audioframe.duration;
-        datatimeout = (unsigned int)(audioframe.duration*2.0);
+        datatimeout = (unsigned int)(DVD_TIME_TO_MSEC(audioframe.duration * 2.0));
       }
 
       // if demux source want's us to not display this, continue

@@ -328,18 +328,24 @@ extern "C"
     if (len > 1 && relPath[1] == ':')
     {
       if (absPath == NULL) absPath = dll_strdup(relPath);
-      else strcpy(absPath, relPath);
+      else
+      {
+        strncpy(absPath, relPath, maxLength);
+        if (maxLength != 0)
+          absPath[maxLength-1] = '\0';
+      }
       return absPath;
     }
     if (!strncmp(relPath, "\\Device\\Cdrom0", 14))
     {
       // needed?
       if (absPath == NULL) absPath = strdup(relPath);
-      else strcpy(absPath, relPath);
-      /*
-       if(absPath == NULL) absPath = malloc(strlen(relPath) - 12); // \\Device\\Cdrom0 needs 12 bytes less then D:
-      strcpy(absPath, "D:");
-      strcat(absPath, relPath + 14);*/ 
+      else
+      {
+        strncpy(absPath, relPath, maxLength);
+        if (maxLength != 0)
+          absPath[maxLength-1] = '\0';
+      }
       return absPath;
     }
 
@@ -384,15 +390,24 @@ extern "C"
   int dll_open(const char* szFileName, int iMode)
   {
     char str[XBMC_MAX_PATH];
-
+    int size = sizeof(str);
     // move to CFile classes
     if (strncmp(szFileName, "\\Device\\Cdrom0", 14) == 0)
     {
       // replace "\\Device\\Cdrom0" with "D:"
-      strcpy(str, "D:");
-      strcat(str, szFileName + 14);
+      strncpy(str, "D:", size);
+      if (size)
+      {
+        str[size-1] = '\0';
+        strncat(str, szFileName + 14, size - strlen(str));
+      }
     }
-    else strcpy(str, szFileName);
+    else
+    {
+      strncpy(str, szFileName, size);
+      if (size)
+        str[size-1] = '\0';
+    }
 
     CFile* pFile = new CFile();
     bool bWrite = false;
@@ -403,15 +418,13 @@ extern "C"
       bOverwrite = true;
     // currently always overwrites
     bool bResult;
+
+    // We need to validate the path here as some calls from ie. libdvdnav
+    // or the python DLLs have malformed slashes on Win32 & Xbox
+    // (-> E:\test\VIDEO_TS/VIDEO_TS.BUP))
     if (bWrite)
-      // We need to validate the path here as some calls for ie. the libdvdnav
-      // & python DLLs have malformed slashes on Win32 & Xbox
-      // (-> F:\foo/fighter/libdvdnav.dll)
       bResult = pFile->OpenForWrite(CURL::ValidatePath(str), bOverwrite);
     else
-      // We need to validate the path here as some calls for ie. the libdvdnav
-      // & python DLLs have malformed slashes on Win32 & Xbox
-      // (-> F:\foo/fighter/libdvdnav.dll)
       bResult = pFile->Open(CURL::ValidatePath(str));
     
     if (bResult)
@@ -439,7 +452,7 @@ extern "C"
     }
     else if (!IS_STD_STREAM(stream))
     {
-      // Translate the path & make sure the slashes are correct
+      // Translate the path
       return freopen(_P(path).c_str(), mode, stream);
     }
     
@@ -580,7 +593,7 @@ extern "C"
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data)
   {
     char str[XBMC_MAX_PATH];
-
+    int size = sizeof(str);
     CURL url(file);
     if (url.IsLocal())
     {
@@ -588,12 +601,21 @@ extern "C"
       if (strncmp(file, "\\Device\\Cdrom0", 14) == 0)
       {
         // replace "\\Device\\Cdrom0" with "D:"
-        strcpy(str, "D:");
-        strcat(str, file + 14);
+        strncpy(str, "D:", size);
+        if (size)
+        {
+          str[size - 1] = '\0';
+          strncat(str, file + 14, size - strlen(str));
+        }
       }
-      else strcpy(str, file);
+      else
+      {
+        strncpy(str, file, size);
+        if (size)
+          str[size - 1] = '\0';
+      }
 
-      // Translate the path & make sure the slashes are correct
+      // Make sure the slashes are correct & translate the path
       return _findfirst(_P(CURL::ValidatePath(str)), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
@@ -629,7 +651,10 @@ extern "C"
     vecDirsOpen[iDirSlot].Directory->GetDirectory(strURL+fName,vecDirsOpen[iDirSlot].items);
     if (vecDirsOpen[iDirSlot].items.Size())
     {
-      strcpy(data->name,vecDirsOpen[iDirSlot].items[0]->GetLabel().c_str());
+      int size = sizeof(data->name);
+      strncpy(data->name,vecDirsOpen[iDirSlot].items[0]->GetLabel().c_str(), size);
+      if (size)
+        data->name[size - 1] = '\0';
       data->size = static_cast<_fsize_t>(vecDirsOpen[iDirSlot].items[0]->m_dwSize);
       data->time_write = iDirSlot; // save for later lookups
       data->time_access = 0;
@@ -652,7 +677,10 @@ extern "C"
     int iItem=data->time_access;
     if (iItem+1 < vecDirsOpen[data->time_write].items.Size()) // we have a winner!
     {
-      strcpy(data->name,vecDirsOpen[data->time_write].items[iItem+1]->GetLabel().c_str());
+      int size = sizeof(data->name);
+      strncpy(data->name,vecDirsOpen[data->time_write].items[iItem+1]->GetLabel().c_str(), size);
+      if (size)
+        data->name[size - 1] = '\0';
       data->size = static_cast<_fsize_t>(vecDirsOpen[data->time_write].items[iItem+1]->m_dwSize);
       data->time_access++;
       return 0;
@@ -1443,7 +1471,7 @@ extern "C"
   int dll_mkdir(const char* dir)
   {
     if (!dir) return -1;
-    // Translate the path & make sure the slashes are correct
+    // Make sure the slashes are correct & translate the path
     return mkdir(_P(CURL::ValidatePath(dir)).c_str());
   }
 
@@ -1464,14 +1492,20 @@ extern "C"
       if (value_start != NULL)
       {
         char var[64];
-        char *value = (char*)malloc(strlen(envstring) + 1);
+        int size = strlen(envstring) + 1;
+        char *value = (char*)malloc(size);
+        
+        if (!value)
+          return -1;
         value[0] = 0;
         
         memcpy(var, envstring, value_start - envstring);
         var[value_start - envstring] = 0;
         strupr(var);
         
-        strcpy(value, value_start + 1);
+        strncpy(value, value_start + 1, size);
+        if (size)
+          value[size - 1] = '\0';
 
         EnterCriticalSection(&dll_cs_environ);
         
@@ -1498,11 +1532,16 @@ extern "C"
         if (free_position != NULL)
         {
           // free position, copy value
-          *free_position = (char*)malloc(strlen(var) + strlen(value) + 2); // for '=' and 0 termination
-          strcpy(*free_position, var);
-          strcat(*free_position, "=");
-          strcat(*free_position, value);
-          added = true;
+          size = strlen(var) + strlen(value) + 2;
+          *free_position = (char*)malloc(size); // for '=' and 0 termination
+          if ((*free_position))
+          {
+            strncpy(*free_position, var, size);
+            (*free_position)[size - 1] = '\0';
+            strncat(*free_position, "=", size - strlen(*free_position));
+            strncat(*free_position, value, size - strlen(*free_position));
+            added = true;
+          }
         }
         
         LeaveCriticalSection(&dll_cs_environ);

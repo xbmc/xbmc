@@ -30,23 +30,6 @@
 
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
 
-static int my_get_buffer(struct AVCodecContext *c, AVFrame *pic){
-    int ret= ((CDVDVideoCodecFFmpeg*)c->opaque)->m_dllAvCodec.avcodec_default_get_buffer(c, pic);
-    double *pts= (double*)malloc(sizeof(double));
-    *pts= ((CDVDVideoCodecFFmpeg*)c->opaque)->m_pts;
-    pic->opaque= pts;
-    return ret;
-}
-
-static void my_release_buffer(struct AVCodecContext *c, AVFrame *pic){
-    if(pic) 
-    {
-      free(pic->opaque);
-      pic->opaque = NULL;
-    }
-    ((CDVDVideoCodecFFmpeg*)c->opaque)->m_dllAvCodec.avcodec_default_release_buffer(c, pic);
-}
-
 
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
@@ -83,9 +66,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   m_pCodecContext->opaque = (void*)this;
-  m_pCodecContext->get_buffer = my_get_buffer;
-  m_pCodecContext->release_buffer = my_release_buffer;
-
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
@@ -147,10 +127,9 @@ void CDVDVideoCodecFFmpeg::Dispose()
   m_pFrame = NULL;
 
   if (m_pConvertFrame)
+
   {
-    delete[] m_pConvertFrame->data[0];
-    if(m_pConvertFrame->opaque)
-      free(m_pConvertFrame->opaque);
+    m_dllAvCodec.avpicture_free(m_pConvertFrame);
     m_dllAvUtil.av_free(m_pConvertFrame);
   }
   m_pConvertFrame = NULL;
@@ -188,6 +167,26 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
   }
 }
 
+union pts_union
+{
+  double  pts_d;
+  int64_t pts_i;
+};
+
+static int64_t pts_dtoi(double pts)
+{
+  pts_union u;
+  u.pts_d = pts;
+  return u.pts_i;
+}
+
+static double pts_itod(int64_t pts)
+{
+  pts_union u;
+  u.pts_i = pts;
+  return u.pts_d;
+}
+
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 {
   int iGotPicture = 0, len = 0;
@@ -195,10 +194,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!m_pCodecContext) 
     return VC_ERROR;
 
-  // store pts, it will be used to set
-  // the pts of pictures decoded
-  m_pts = pts;
-
+  m_pCodecContext->reordered_opaque = pts_dtoi(pts);
   try
   {
     len = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &iGotPicture, pData, iSize);
@@ -235,17 +231,17 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     if (!m_pConvertFrame)
     {
       // Allocate an AVFrame structure
-      m_pConvertFrame =  m_dllAvCodec.avcodec_alloc_frame();
-
-      // Determine required buffer size and allocate buffer
-      int numBytes =  m_dllAvCodec.avpicture_get_size(PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
-      BYTE* buffer = new BYTE[numBytes];
-
-      // Assign appropriate parts of buffer to image planes in pFrameRGB
-      m_dllAvCodec.avpicture_fill((AVPicture *)m_pConvertFrame, buffer, PIX_FMT_YUV420P, m_pCodecContext->width, m_pCodecContext->height);
-
-      m_pConvertFrame->opaque= malloc(sizeof(double));
-      *(double*)m_pConvertFrame->opaque = DVD_NOPTS_VALUE;
+      m_pConvertFrame = (AVPicture*)m_dllAvUtil.av_mallocz(sizeof(AVPicture));
+      // Due to a bug in swsscale we need to allocate one extra line of data
+      if(m_dllAvCodec.avpicture_alloc( m_pConvertFrame
+                                     , PIX_FMT_YUV420P
+                                     , m_pCodecContext->width
+                                     , m_pCodecContext->height+1) < 0)
+      {
+        m_dllAvUtil.av_free(m_pConvertFrame);
+        m_pConvertFrame = NULL;
+        return VC_ERROR;
+      }
     }
 
     // convert the picture
@@ -253,32 +249,22 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 			m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height, 
 			PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
-    uint8_t *src[] = { m_pFrame->data[0], m_pFrame->data[1], m_pFrame->data[2] };
-    int     srcStride[] = { m_pFrame->linesize[0], m_pFrame->linesize[1], m_pFrame->linesize[2] };
-    uint8_t *dst[] = { m_pConvertFrame->data[0], m_pConvertFrame->data[1], m_pConvertFrame->data[2] };
-    int     dstStride[] = { m_pConvertFrame->linesize[0], m_pConvertFrame->linesize[1], m_pConvertFrame->linesize[2] };
-    m_dllSwScale.sws_scale(context, src, srcStride, 0, m_pCodecContext->height, dst, dstStride);
+    m_dllSwScale.sws_scale(context
+                          , m_pFrame->data
+                          , m_pFrame->linesize
+                          , 0 
+                          , m_pCodecContext->height
+                          , m_pConvertFrame->data
+                          , m_pConvertFrame->linesize);
 
     m_dllSwScale.sws_freeContext(context); 
-
-    m_pConvertFrame->coded_picture_number = m_pFrame->coded_picture_number;
-    m_pConvertFrame->interlaced_frame = m_pFrame->interlaced_frame;
-    m_pConvertFrame->repeat_pict = m_pFrame->repeat_pict;
-    m_pConvertFrame->top_field_first = m_pFrame->top_field_first;
-    if(m_pConvertFrame->opaque)
-    {
-      if(m_pFrame->opaque)
-        *(double*)m_pConvertFrame->opaque = *(double*)m_pFrame->opaque;
-      else
-        *(double*)m_pConvertFrame->opaque = DVD_NOPTS_VALUE;
-    }
   }
   else
   {
     // no need to convert, just free any existing convert buffers
     if (m_pConvertFrame)
     {
-      delete[] m_pConvertFrame->data[0];
+      m_dllAvCodec.avpicture_free(m_pConvertFrame);
       m_dllAvUtil.av_free(m_pConvertFrame);
       m_pConvertFrame = NULL;
     }
@@ -299,7 +285,6 @@ void CDVDVideoCodecFFmpeg::Reset()
     m_dllAvUtil.av_free(m_pConvertFrame);
     m_pConvertFrame = NULL;
   }
-  m_pts = DVD_NOPTS_VALUE;
 
   } catch (win32_exception e) {
     e.writelog(__FUNCTION__);
@@ -315,23 +300,35 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
   // if we have a converted frame, use that
-  AVFrame *frame = m_pConvertFrame ? m_pConvertFrame : m_pFrame;
+  AVFrame *frame = m_pFrame;
 
   if (!frame)
     return false;
-  
-  for (int i = 0; i < 4; i++) pDvdVideoPicture->data[i] = frame->data[i];
-  for (int i = 0; i < 4; i++) pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
+
+  if(m_pConvertFrame)
+  {
+    for (int i = 0; i < 4; i++)
+      pDvdVideoPicture->data[i]      = m_pConvertFrame->data[i];
+    for (int i = 0; i < 4; i++)
+      pDvdVideoPicture->iLineSize[i] = m_pConvertFrame->linesize[i];
+  }
+  else
+  {
+    for (int i = 0; i < 4; i++)
+      pDvdVideoPicture->data[i]      = frame->data[i];
+    for (int i = 0; i < 4; i++)
+      pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
+  }
   pDvdVideoPicture->iRepeatPicture = frame->repeat_pict;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
   pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
-  pDvdVideoPicture->iFlags |= frame->data[0] ? 0 : DVP_FLAG_DROPPED;
+  pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED;
   if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
     pDvdVideoPicture->color_range = 1;
 
-  if(frame->opaque)
-    pDvdVideoPicture->pts = *(double*)frame->opaque;
+  if(frame->reordered_opaque)
+    pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
   else
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 

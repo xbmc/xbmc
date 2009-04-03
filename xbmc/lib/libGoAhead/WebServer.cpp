@@ -72,7 +72,10 @@ CWebServer::CWebServer()
     m_pXbmcHttp = new CXbmcHttp();
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
-  strcpy(m_szUserName,"xbmc");
+  int end = sizeof(m_szUserName);
+  strncpy(m_szUserName,"xbmc",end);
+  if (end)
+    m_szUserName[end-1] = '\0';
 
   m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
@@ -120,10 +123,15 @@ bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web, 
   m_bFinished = false;
   ResetEvent(m_hEvent);
 
-  strcpy(m_szLocalAddress, szLocalAddress);
-  strcpy(m_szRootWeb, _P(web));
+  int end = sizeof(m_szLocalAddress);
+  strncpy(m_szLocalAddress, szLocalAddress, end);
+  if (end)
+    m_szLocalAddress[end - 1] = '\0';
+  end = sizeof(m_szRootWeb);
+  strncpy(m_szRootWeb, _P(web), end);
+  if (end)
+    m_szRootWeb[end - 1] = '\0';
   m_port = port;
-
   Create(false, THREAD_MINSTACKSIZE);
   if (m_ThreadHandle == NULL) return false;  
 
@@ -337,7 +345,13 @@ void CWebServer::SetPassword(const char* strPassword)
   dbZero(did);
 
   // save password in member var for later usage by GetPassword()
-  if (strPassword) strcpy(m_szPassword, strPassword);
+  if (strPassword)
+  {
+    int end = sizeof(m_szPassword);
+    strncpy(m_szPassword, strPassword, end);
+    if (end)
+      m_szPassword[end - 1] = '\0';
+  }
 
   // if password !NULL and greater then 0, enable user access
   if (strPassword && strlen(strPassword) > 0)
@@ -367,7 +381,10 @@ void CWebServer::SetUserName(const char* strUserName)
   if (strUserName && strlen(strUserName) > 0)
   {  
     // save username in member var for later usage by GetPassword()
-    strcpy(m_szUserName, strUserName);
+    int end = sizeof(m_szUserName);
+    strncpy(m_szUserName, strUserName, end);
+    if (end)
+      m_szUserName[end - 1] = '\0';
     if (m_szPassword && m_szPassword[0] != '\0')
       SetPassword(m_szPassword);
   }
@@ -421,8 +438,11 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
                     };
 
 	// check if one of the above files exist, if one does then redirect to it.
-	strcpy(dir, websGetDefaultDir());
-	strcat(dir, path);
+  int size = sizeof(dir);
+	strncpy(dir, websGetDefaultDir(), size);
+  if (size)
+    dir[size-1] = '\0';
+	strncat(dir, path, size - strlen(dir));
 	for(u_int pos = 0; pos < strlen(dir); pos++)
 		if (dir[pos] == '/') dir[pos] = '\\';
 	
@@ -431,17 +451,23 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 	{
     int i = 0;
 		char buf[1024];
+    size = sizeof(buf);
 		while (files[i][0])
 		{
-			strcpy(buf, dir);
-			if (buf[strlen(buf)-1] != '\\') strcat(buf, "\\");
-			strcat(buf, files[i]);
+			strncpy(buf, dir, size);
+      if (size)
+        buf[size-1] = '\0';
+			if (buf[strlen(buf)-1] != '\\')
+        strncat(buf, "\\", size - strlen(buf));
+			strncat(buf, files[i], size - strlen(buf));
 
 			if (!access(buf, 0))
 			{
-				strcpy(buf, path);
-				if (path[strlen(path)-1] != '/') strcat(buf, "/");
-				strcat(buf, files[i]);
+				strncpy(buf, path, size);
+        if (size)
+          buf[size-1] = '\0';
+				if (path[strlen(path)-1] != '/') strncat(buf, "/", size - strlen(buf));
+				strncat(buf, files[i], size - strlen(buf));
 				websRedirect(wp, buf);
 				return 1;
 			}
@@ -458,7 +484,7 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 		WIN32_FIND_DATA FindFileData;
 		HANDLE hFind;
 		vector<string> vecFiles;
-		strcat(dir, "\\*");
+		strncat(dir, "\\*", sizeof(dir) - strlen(dir));
 		hFind=FindFirstFile(dir, &FindFileData);
 	
 		do
