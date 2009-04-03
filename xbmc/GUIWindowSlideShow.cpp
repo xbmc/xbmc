@@ -28,7 +28,7 @@
 #include "TextureManager.h"
 #include "GUILabelControl.h"
 #include "utils/GUIInfoManager.h"
-#include "FileSystem/FactoryDirectory.h"
+#include "FileSystem/Directory.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
@@ -775,7 +775,13 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
   {
     // reset the slideshow
     Reset();
-    AddItems(strPath, bRecursive);
+    if (bRecursive)
+    {
+      path_set recursivePaths;
+      AddItems(strPath, &recursivePaths);
+    }
+    else
+      AddItems(strPath, NULL);
     // ok, now run the slideshow
   }
 
@@ -793,27 +799,33 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
     m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
-void CGUIWindowSlideShow::AddItems(const CStdString &strPath, bool bRecursive)
+void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursivePaths)
 {
-  // read the directory in
-  IDirectory *pDir = CFactoryDirectory::Create(strPath);
-  if (!pDir) return;
+  // check whether we've already added this path
+  if (recursivePaths)
+  {
+    CStdString path(strPath);
+    CUtil::RemoveSlashAtEnd(path);
+    if (recursivePaths->find(path) != recursivePaths->end())
+      return;
+    recursivePaths->insert(path);
+  }
+
+  // fetch directory and sort accordingly
   CFileItemList items;
-  pDir->SetMask(g_stSettings.m_pictureExtensions);
-  bool bResult = pDir->GetDirectory(strPath, items);
-  delete pDir;
-  if (!bResult) return;
-  // now sort it as necessary
+  if (!CDirectory::GetDirectory(strPath, items, g_stSettings.m_pictureExtensions))
+    return;
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
+
   // need to go into all subdirs
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items[i];
-    if (item->m_bIsFolder && bRecursive)
+    if (item->m_bIsFolder && recursivePaths)
     {
-      AddItems(item->m_strPath, bRecursive);
+      AddItems(item->m_strPath, recursivePaths);
     }
-    else
+    else if (!CUtil::IsRAR(item->m_strPath) && !CUtil::IsZIP(item->m_strPath))
     { // add to the slideshow
       Add(item.get());
     }
