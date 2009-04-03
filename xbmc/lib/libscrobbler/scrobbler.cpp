@@ -65,22 +65,18 @@ CScrobbler::CScrobbler()
   m_bSubmitInProgress = false;
   m_bReadyToSubmit=false;
   m_iSongNum=0;
-  DWORD threadid; // Needed for Win9x
   m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
   if (!m_hWorkerEvent)
     throw EOutOfMemory();
-  m_hWorkerThread = CreateThread(NULL, 0, threadProc, (LPVOID)this, 0, &threadid);
-  if (!m_hWorkerThread)
-    throw EOutOfMemory();
+  Create();
 }
 
 CScrobbler::~CScrobbler()
 {
   m_bCloseThread = true;
   SetEvent(m_hWorkerEvent);
-  WaitForSingleObject(m_hWorkerThread, INFINITE);
   CloseHandle(m_hWorkerEvent);
-  CloseHandle(m_hWorkerThread);
+  StopThread();
   Sleep(0);
 }
 
@@ -641,7 +637,17 @@ void CScrobbler::StatusUpdate(const CStdString& strText)
   g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
 }
 
-void CScrobbler::WorkerThread()
+void CScrobbler::OnStartup()
+{
+  CLog::Log(LOGDEBUG, "Audioscrobbler worker thread starting");
+}
+
+void CScrobbler::OnExit()
+{
+  CLog::Log(LOGDEBUG, "Audioscrobbler worker thread stopping");
+}
+
+void CScrobbler::Process()
 {
   while (1) 
   {
