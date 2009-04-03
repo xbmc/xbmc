@@ -469,8 +469,28 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (strThumb == "thumb://None")
         strThumb = "";
 
-      g_settings.UpdateSource(type,share->strName,"thumbnail",strThumb);
-      g_settings.SaveSources();
+      if (!share->m_ignore)
+      {
+        g_settings.UpdateSource(type,share->strName,"thumbnail",strThumb);
+        g_settings.SaveSources();
+      }
+      else if (!strThumb.IsEmpty())
+      { // this is icky as we have to cache using a bunch of different criteria
+        CStdString cachedThumb;
+        if (type == "music")
+        {
+          cachedThumb = item->m_strPath;
+          CUtil::RemoveSlashAtEnd(cachedThumb);
+          cachedThumb = CUtil::GetCachedMusicThumb(cachedThumb);
+        }
+        else if (type == "video")
+          cachedThumb = item->GetCachedVideoThumb();
+        else if (type == "pictures")
+          cachedThumb = item->GetCachedPictureThumb();
+        else  // assume "programs"
+          cachedThumb = item->GetCachedProgramThumb();
+        XFILE::CFile::Cache(strThumb, cachedThumb);
+      }
 
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       m_gWindowManager.SendThreadMessage(msg);

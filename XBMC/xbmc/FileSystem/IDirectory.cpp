@@ -54,19 +54,18 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
   if (!strExtension.size()) return false;
 
   strExtension.ToLower();
-
-  // ignore all non dvd related ifo files.
-  if (strExtension.Equals(".ifo"))
-  {
-    CStdString fileName = CUtil::GetFileName(strFile);
-    if (fileName.Equals("video_ts.ifo")) return true;
-    if (fileName.length() == 12 && fileName.Left(4).Equals("vts_") && fileName.Right(6).Equals("_0.ifo")) return true;
-    return false;
-  }
-  
   strExtension += '|'; // ensures that we have a | at the end of it
   if ((size_t)m_strFileMask.Find(strExtension) != CStdString::npos)
+  { // it's allowed, but we should also ignore all non dvd related ifo files.
+    if (strExtension.Equals(".ifo|"))
+    {
+      CStdString fileName = CUtil::GetFileName(strFile);
+      if (fileName.Equals("video_ts.ifo")) return true;
+      if (fileName.length() == 12 && fileName.Left(4).Equals("vts_") && fileName.Right(6).Equals("_0.ifo")) return true;
+      return false;
+    }
     return true;
+  }
   return false;
 }
 
