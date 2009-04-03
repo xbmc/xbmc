@@ -86,7 +86,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   }
 
   // init encoder
-  CStdString strFile2=CUtil::MakeLegalFileName(strFile);
+  CStdString strFile2=CUtil::MakeLegalPath(strFile);
   if (!m_pEncoder->Init(strFile2.c_str(), 2, 44100, 16))
   {
     m_cdReader.DeInit();
