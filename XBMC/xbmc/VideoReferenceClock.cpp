@@ -93,8 +93,6 @@ void CVideoReferenceClock::OnStartup()
   }
 }
 
-//TODO: fix the incontinence
-
 #ifdef HAS_GLX
 bool CVideoReferenceClock::SetupGLX()
 {
