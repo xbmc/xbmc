@@ -51,6 +51,7 @@ void CVideoReferenceClock::OnStartup()
   LARGE_INTEGER Now;
   
   QueryPerformanceCounter(&m_CurrTime);
+  m_CurrTime.QuadPart -= m_ClockOffset.QuadPart;
 
   while(!m_bStop)
   {
@@ -315,10 +316,11 @@ void CVideoReferenceClock::RunD3D()
   LARGE_INTEGER              CurrVBlankTime;
   LARGE_INTEGER              LastVBlankTime;
 
-  unsigned int    LastLine;
-  int             NrVBlanks;
-  double          VBlankTime;
-  int             ReturnV;
+  unsigned int LastLine;
+  int          NrVBlanks;
+  double       VBlankTime;
+  int          ReturnV;
+  int          SleepCount = 0;
 
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 
@@ -351,13 +353,26 @@ void CVideoReferenceClock::RunD3D()
       Unlock();
       
       LastVBlankTime = CurrVBlankTime;
+      SleepCount = 0;
       
-      UpdateRefreshrate();
+      if (UpdateRefreshrate())
+      {
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Displaymode changed");
+        CleanupD3D();
+        return;
+      }
     }
     if (RasterStatus.InVBlank) LastLine = 0;
     else LastLine = RasterStatus.ScanLine;
 
     Sleep(1);
+    SleepCount++;
+    if (SleepCount >= 1000)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus is not responding");
+      CleanupD3D();
+      return;
+    }
   }
 }
 
@@ -370,16 +385,25 @@ bool CVideoReferenceClock::SetupD3D()
 
   int ReturnV;
 
+  m_D3d = NULL;
+  m_D3dDev = NULL;
+  m_Hwnd = NULL;
+  m_HasWinCl = false;
+
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up Direct3d");
   
   if (!CreateHiddenWindow())
+  {
+    CleanupD3D();
     return false;
+  }
 
   m_D3d = D3dClock::Direct3DCreate9(D3D_SDK_VERSION);
 
   if (!m_D3d)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Direct3DCreate9 failed");
+    CleanupD3D();
     return false;
   }
 
@@ -404,6 +428,7 @@ bool CVideoReferenceClock::SetupD3D()
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i",
               ReturnV & 0xFFFF);
+    CleanupD3D();
     return false;
   }
 
@@ -412,12 +437,14 @@ bool CVideoReferenceClock::SetupD3D()
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDeviceCaps returned %i",
               ReturnV & 0xFFFF);
+    CleanupD3D();
     return false;
   }
 
   if (DevCaps.Caps != D3DCAPS_READ_SCANLINE)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Hardware does not support GetRasterStatus");
+    CleanupD3D();
     return false;
   }
 
@@ -426,6 +453,7 @@ bool CVideoReferenceClock::SetupD3D()
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i",
               ReturnV & 0xFFFF);
+    CleanupD3D();
     return false;
   }
 
@@ -434,14 +462,42 @@ bool CVideoReferenceClock::SetupD3D()
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDisplayMode returned %i",
               ReturnV & 0xFFFF);
+    CleanupD3D();
     return false;
   }
 
   m_PrevRefreshRate = -1;
   m_LastRefreshTime.QuadPart = 0;
+  m_Width = 0;
+  m_Height = 0;
   UpdateRefreshrate();
 
   return true;
+}
+
+void CVideoReferenceClock::CleanupD3D()
+{
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up Direct3d");
+  if (m_D3dDev)
+  {
+    m_D3dDev->Release();
+    m_D3dDev = NULL;
+  }
+  if (m_D3d)
+  {
+    m_D3d->Release();
+    m_D3d = NULL;
+  }
+  if (m_Hwnd)
+  {
+    DestroyWindow(m_Hwnd);
+    m_Hwnd = NULL;
+  }
+  if (m_HasWinCl)
+  {
+    UnregisterClass(CLASSNAME, GetModuleHandle(NULL));
+    m_HasWinCl = false;
+  }
 }
 
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -469,7 +525,8 @@ bool CVideoReferenceClock::CreateHiddenWindow()
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to register window class");
     return false;
   }
-
+  m_HasWinCl = true;
+  
   m_Hwnd = CreateWindowEx(WS_EX_LEFT|WS_EX_LTRREADING|WS_EX_WINDOWEDGE, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
                           WS_OVERLAPPED|WS_MINIMIZEBOX|WS_SYSMENU|WS_CLIPSIBLINGS|WS_CAPTION, CW_USEDEFAULT, CW_USEDEFAULT,
                           400, 430, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
@@ -586,6 +643,12 @@ bool CVideoReferenceClock::UpdateRefreshrate()
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
       Changed = true;
     }
+    if (m_Width != DisplayMode.Width || m_Height != DisplayMode.Height)
+    {
+      Changed = true;
+    }
+    m_Width = DisplayMode.Width;
+    m_Height = DisplayMode.Height;
 #endif
     return Changed;
   }

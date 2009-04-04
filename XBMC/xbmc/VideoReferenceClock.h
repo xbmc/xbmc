@@ -89,12 +89,16 @@ class CVideoReferenceClock : public CThread
     bool CreateHiddenWindow();
     bool SetupD3D();
     void RunD3D();
+    void CleanupD3D();
 
     D3dClock::LPDIRECT3D9       m_D3d;
     D3dClock::LPDIRECT3DDEVICE9 m_D3dDev;
 
-    HWND       m_Hwnd;
-    WNDCLASSEX m_WinCl;
+    HWND         m_Hwnd;
+    WNDCLASSEX   m_WinCl;
+    bool         m_HasWinCl;
+    unsigned int m_Width;
+    unsigned int m_Height;
 #endif
 };
 
