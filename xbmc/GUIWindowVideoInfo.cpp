@@ -663,7 +663,9 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   CFileItem item(*pItem);
   *item.GetVideoInfoTag() = movieDetails;
   SetMovie(&item);
-  Refresh();
+  // refresh our window entirely
+  Close();
+  DoModal();
 }
 
 void CGUIWindowVideoInfo::ClearCastList()
