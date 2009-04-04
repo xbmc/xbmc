@@ -159,7 +159,9 @@ rem	CONFIG START
   xcopy ..\..\sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy "..\..\web\Project Mayhem III" BUILD_WIN32\Xbmc\web /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   
-  IF EXIST config.ini FOR /F "tokens=* DELIMS=" %%a IN ('FINDSTR/R "=" config.ini') DO SET %%a
+  SET skinpath=%CD%\Add_skins
+  SET scriptpath=%CD%\Add_scripts
+  SET pluginpath=%CD%\Add_plugins
   
   IF EXIST error.log del error.log > NUL
   call buildskins.bat %skinpath%
