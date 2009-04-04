@@ -417,7 +417,6 @@ void AppleRemote::LaunchApp()
         {
           for (int n=strlen(real_path)-1; real_path[n] != '/'; n--)
             real_path[n] = '\0';
-            
           real_path[strlen(real_path)-1] = '\0';
         }
         
@@ -430,13 +429,14 @@ void AppleRemote::LaunchApp()
         // backup one "/"
         for (int n=strlen(real_path)-1; real_path[n] != '/'; n--)
           real_path[n] = '\0';
+        real_path[strlen(real_path)-1] = '\0';
       
         // build a run binary command
         strCmd = "XBMC_HOME=";
         strCmd += real_path;
         strCmd += " ";
         strCmd += real_path;
-        strCmd += "XBMC.bin &";
+        strCmd += "/XBMC.bin &";
       }
       LOG("xbmc open command: [%s]\n", strCmd.c_str());
       system(strCmd.c_str());
