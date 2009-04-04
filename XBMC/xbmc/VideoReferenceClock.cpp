@@ -83,6 +83,14 @@ void CVideoReferenceClock::OnStartup()
     }
     PrevSetupSuccess = SetupSuccess;
   }
+  if (SetupSuccess)
+  {
+#ifdef HAS_GLX
+    CleanupGLX();
+#elif defined(_WIN32)
+    CleanupD3D();
+#endif
+  }
 }
 
 //TODO: fix the incontinence
