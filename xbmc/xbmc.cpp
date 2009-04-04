@@ -111,7 +111,18 @@ int main(int argc, char* argv[])
   // if we're on a Mac or if XBMC_PLATFORM_MODE is set, enable platform
   // specific directories.
 #ifdef __APPLE__
-  system("XBMC.app/Contents/Resources/XBMC/tools/preflight");
+  if(getenv("XBMC_HOME")) 
+  {
+    std::string preflight;
+
+    preflight = getenv("XBMC_HOME");
+    preflight += "/tools/preflight";
+    system(preflight.c_str());
+  }
+  else
+  {
+    system("XBMC.app/Contents/Resources/XBMC/tools/preflight");
+  }
 #endif
 
   g_application.Create(NULL);
