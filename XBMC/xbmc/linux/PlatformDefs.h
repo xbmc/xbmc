@@ -63,6 +63,15 @@
 #define RMASK 0x0000ff00
 #define GMASK 0x00ff0000
 #define BMASK 0xff000000
+<<<<<<< HEAD:xbmc/linux/PlatformDefs.h
+=======
+
+// so we can use endian neutral PIX_FMT_BGRA in place of 
+// little endian PIX_FMT_RGB32 when setting up ffmpeg 
+#ifndef WORDS_BIGENDIAN
+#define WORDS_BIGENDIAN 1
+#endif
+>>>>>>> svn/linuxport:xbmc/linux/PlatformDefs.h
 #else
 #define PIXEL_ASHIFT 24
 #define PIXEL_RSHIFT 16

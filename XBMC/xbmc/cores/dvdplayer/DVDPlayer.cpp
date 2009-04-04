@@ -41,6 +41,7 @@
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
 #include "../../FileSystem/cdioSupport.h"
+#include "../../FileSystem/File.h"
 #include "../../Picture.h"
 #include "../ffmpeg/DllSwScale.h"
 #ifdef HAS_VIDEO_PLAYBACK
@@ -55,6 +56,10 @@
 #include "FileItem.h"
 
 using namespace std;
+
+#ifdef HAVE_LIBVDPAU
+#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
+#endif
 
 void CSelectionStreams::Clear(StreamType type, StreamSource source)
 {
@@ -289,24 +294,18 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
   try
   {
-    if (m_pDlgCache)
-      m_pDlgCache->Close();
-
-    CStdString strHeader;
-    if (file.IsInternetStream())
-      strHeader = g_localizeStrings.Get(10214);
-
-    if(file.IsInternetStream())
-      m_pDlgCache = new CDlgCache(0, strHeader, file.GetLabel());
-    else if(!file.IsDVDFile(false, true) && !file.IsDVDImage() && !file.IsDVD())
-      m_pDlgCache = new CDlgCache(3000, strHeader, file.GetLabel());
-
     CLog::Log(LOGNOTICE, "DVDPlayer: Opening: %s", file.m_strPath.c_str());
 
     // if playing a file close it first
     // this has to be changed so we won't have to close it.
     if(ThreadHandle())
       CloseFile();
+
+    // dialog must be opened in this thread
+    if (m_item.IsInternetStream())
+      m_pDlgCache = new CDlgCache(0   , g_localizeStrings.Get(10214), m_item.GetLabel());
+    else
+      m_pDlgCache = new CDlgCache(3000, ""                          , m_item.GetLabel());
 
     m_bAbortRequest = false;
     m_seeking = false;
@@ -326,16 +325,8 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     // Playback might have been stopped due to some error
     if (m_bStop || m_bAbortRequest) 
-    {
-      if (m_pDlgCache)
-      {
-        m_pDlgCache->Close();
-        m_pDlgCache = NULL;
-      }
       return false;
-    }
 
-   
     return true;
   }
   catch(...)
@@ -738,7 +729,7 @@ void CDVDPlayer::Process()
 {
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
- 
+
   if (!OpenInputStream())
   {
     m_bAbortRequest = true;
@@ -777,7 +768,7 @@ void CDVDPlayer::Process()
     double startpts = DVD_NOPTS_VALUE;
     if(m_pDemuxer)
     {
-      if (m_pDemuxer->SeekTime(m_PlayerOptions.starttime * 1000, false, &startpts))
+      if (m_pDemuxer->SeekTime(lrint(m_PlayerOptions.starttime * 1000), false, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting demuxer from: %f", __FUNCTION__, m_PlayerOptions.starttime);
       else
         CLog::Log(LOGDEBUG, "%s - failed to start demuxing from %f", __FUNCTION__,  m_PlayerOptions.starttime);
@@ -785,7 +776,7 @@ void CDVDPlayer::Process()
 
     if(m_pSubtitleDemuxer)
     {
-      if(m_pSubtitleDemuxer->SeekTime(m_PlayerOptions.starttime * 1000, false, &startpts))
+      if(m_pSubtitleDemuxer->SeekTime(lrint(m_PlayerOptions.starttime * 1000), false, &startpts))
         CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %f", __FUNCTION__, m_PlayerOptions.starttime);
       else
         CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", __FUNCTION__, m_PlayerOptions.starttime);
@@ -858,6 +849,36 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
+
+#ifdef HAVE_LIBVDPAU
+    { CSharedLock lock(g_renderManager.GetSection());
+      if (g_VDPAU && g_VDPAU->VDPAURecovered)
+      {
+        CLog::Log(LOGDEBUG, "CDVDPlayer::Process - caught preemption");
+        // we just try to seek to first keyframe before current time
+        m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
+        g_VDPAU->VDPAURecovered = false;
+      }
+    }
+#endif
+
+    // present the cache dialog until playback actually started
+    if (m_pDlgCache)
+    {
+      if (m_pDlgCache->IsCanceled())
+        return;
+
+      if (m_caching)
+      {
+        m_pDlgCache->ShowProgressBar(true);
+        m_pDlgCache->SetPercentage(GetCacheLevel());
+      }
+      else
+      {
+        m_pDlgCache->Close();
+        m_pDlgCache = NULL;
+      }
+    }
 
     // if the queues are full, no need to read more
     if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0)
@@ -990,35 +1011,6 @@ void CDVDPlayer::Process()
 
     // process the packet
     ProcessPacket(pStream, pPacket);
-
-    // present the cache dialog until playback actually started
-    if (m_pDlgCache)
-    {
-      if (m_pDlgCache->IsCanceled())
-      {
-        m_bAbortRequest = true;
-        break;
-      }
-
-      if (m_caching)
-      {
-        m_pDlgCache->ShowProgressBar(true);
-        m_pDlgCache->SetPercentage(GetCacheLevel());
-      }
-      else if (GetTime() > 500) // movie started to play
-      {
-        m_pDlgCache->Close();
-        m_pDlgCache = NULL;
-      }
-    }
-
-  }
-
-  // playback ended, make sure anything buffered is displayed
-  if (m_pDlgCache)
-  {
-    m_pDlgCache->Close();
-    m_pDlgCache = NULL;
   }
 }
 
@@ -1471,7 +1463,13 @@ void CDVDPlayer::OnExit()
   g_dvdPerformanceCounter.DisableMainPerformance();
 
   if (m_pDlgCache)
-    m_pDlgCache->SetMessage(g_localizeStrings.Get(10212));
+  {
+    if(m_pDlgCache->IsCanceled())
+      m_bAbortRequest = true;
+
+    m_pDlgCache->Close();
+    m_pDlgCache = NULL;
+  }
 
   try
   {
@@ -1535,11 +1533,6 @@ void CDVDPlayer::OnExit()
   }
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   SetEvent(m_hReadyEvent);
-  if (m_pDlgCache)
-  {
-    m_pDlgCache->Close();
-    m_pDlgCache = NULL;
-  }
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
@@ -1785,12 +1778,6 @@ void CDVDPlayer::SetCaching(bool enabled)
     m_dvdPlayerAudio.SetSpeed(m_playSpeed);
     m_dvdPlayerVideo.SetSpeed(m_playSpeed);
     m_caching = false;
-
-    if (m_pDlgCache)
-    {
-      m_pDlgCache->Close();
-      m_pDlgCache = NULL;
-    }
   }
 }
 
@@ -2082,14 +2069,14 @@ __int64 CDVDPlayer::GetTime()
     if(offset >  1000) offset =  1000;
     if(offset < -1000) offset = -1000;
   }
-  return m_State.time + DVD_TIME_TO_MSEC(offset);
+  return llrint(m_State.time + DVD_TIME_TO_MSEC(offset));
 }
 
 // return length in msec
 __int64 CDVDPlayer::GetTotalTimeInMsec()
 {
   CSingleLock lock(m_StateSection);
-  return m_State.time_total;
+  return llrint(m_State.time_total);
 }
 
 // return length in seconds.. this should be changed to return in milleseconds throughout xbmc
@@ -2901,23 +2888,21 @@ bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
     m_SelectionStreams.Update(NULL, &v);
     return true;
   }
-  else if(ext == ".sub")
+  if(ext == ".sub")
   {
-    return false;
+    CStdString strReplace;
+    CUtil::ReplaceExtension(filename,".idx",strReplace);
+    if (XFILE::CFile::Exists(strReplace))
+      return false;
   }
-  else
-  {
-    SelectionStream s;
-    s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
-    s.type     = STREAM_SUBTITLE;
-    s.id       = 0;
-    s.filename = filename;
-    s.name     = CUtil::GetFileName(filename);
-    m_SelectionStreams.Update(s);
-    return true;
-  }
-  
-  return 0;
+  SelectionStream s;
+  s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
+  s.type     = STREAM_SUBTITLE;
+  s.id       = 0;
+  s.filename = filename;
+  s.name     = CUtil::GetFileName(filename);
+  m_SelectionStreams.Update(s);
+  return true;
 }
 
 void CDVDPlayer::UpdatePlayState(double timeout)
@@ -2974,7 +2959,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 
   if (m_Edl.HaveCutpoints())
   {
-    m_State.time =  m_Edl.RemoveCutTime(m_State.time);
+    m_State.time =  m_Edl.RemoveCutTime(llrint(m_State.time));
     m_State.time -= m_Edl.TotalCutTime();
   }
 

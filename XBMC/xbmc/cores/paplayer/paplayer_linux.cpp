@@ -323,7 +323,7 @@ void PAPlayer::FreeStream(int stream)
 
 void PAPlayer::DrainStream(int stream)
 {
-  if(m_bStopPlaying)
+  if(m_bStopPlaying || m_pAudioDecoder[1 - stream])
   {
     m_pAudioDecoder[stream]->Stop();
     return;

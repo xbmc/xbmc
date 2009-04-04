@@ -21,6 +21,7 @@ liblinux_a_SOURCES	=	ConvUtils.cpp \
 				XCriticalSection.cpp \
 				XLCDproc.cpp \
 				HalManager.cpp \
-				DBusPowerSyscall.cpp
+				DBusPowerSyscall.cpp \
+				ZeroconfAvahi.cpp
 
 # vim: ts=8:sw=8:noexpandtab

@@ -908,7 +908,7 @@ bool CGUIWindowVideoBase::OnClick(int iItem)
 {
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
-  if (!pItem->m_bIsFolder && !pItem->Exists())
+  if (!pItem->m_bIsFolder && (unsigned)pItem->m_strPath.Find("playlist://") == CStdString::npos && !pItem->Exists())
   {
     if (!CGUIWindowVideoNav::DeleteItem(pItem.get(),true))
       return true;
@@ -954,7 +954,7 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
       { // prompt user whether they wish to resume
         vector<CStdString> choices;
         CStdString resumeString, time;
-        StringUtils::SecondsToTimeString(bookmark.timeInSeconds, time);
+        StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds), time);
         resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
         choices.push_back(resumeString);
         choices.push_back(g_localizeStrings.Get(12021)); // start from the beginning

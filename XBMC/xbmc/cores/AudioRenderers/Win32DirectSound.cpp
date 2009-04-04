@@ -53,7 +53,12 @@ CWin32DirectSound::CWin32DirectSound() :
   m_dwChunkSize(0),
   m_dwBufferLen(0),
   m_PreCacheSize(0),
+<<<<<<< HEAD:xbmc/cores/AudioRenderers/Win32DirectSound.cpp
   m_LastCacheCheck(0)
+=======
+  m_LastCacheCheck(0),
+  m_pChannelMap(NULL)
+>>>>>>> svn/linuxport:xbmc/cores/AudioRenderers/Win32DirectSound.cpp
 {
 }
 
@@ -106,6 +111,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   wfxex.Format.nBlockAlign       = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
   wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
   wfxex.dwChannelMask            = dsound_channel_mask[iChannels - 1];
+<<<<<<< HEAD:xbmc/cores/AudioRenderers/Win32DirectSound.cpp
 
   m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
 
@@ -113,6 +119,15 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   m_dwChunkSize = wfxex.Format.nBlockAlign * 3096;
   m_dwBufferLen = m_dwChunkSize * 16;
 
+=======
+
+  m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
+
+  // unsure if these are the right values
+  m_dwChunkSize = wfxex.Format.nBlockAlign * 3096;
+  m_dwBufferLen = m_dwChunkSize * 16;
+
+>>>>>>> svn/linuxport:xbmc/cores/AudioRenderers/Win32DirectSound.cpp
   CLog::Log(LOGDEBUG, __FUNCTION__": Packet Size = %d. Avg Bytes Per Second = %d.", m_dwChunkSize, m_AvgBytesPerSec);
 
   // fill in the secondary sound buffer descriptor
@@ -156,6 +171,12 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   }
   CLog::Log(LOGDEBUG, __FUNCTION__": secondary buffer created");
 
+<<<<<<< HEAD:xbmc/cores/AudioRenderers/Win32DirectSound.cpp
+=======
+  // Set up channel mapping
+  m_pChannelMap = GetChannelMap(iChannels, strAudioCodec);
+
+>>>>>>> svn/linuxport:xbmc/cores/AudioRenderers/Win32DirectSound.cpp
   m_pBuffer->Stop();
   
   if (DSERR_CONTROLUNAVAIL == m_pBuffer->SetVolume(g_stSettings.m_nVolumeLevel))
@@ -294,11 +315,22 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
     }
 
     // Write data into the buffer
+<<<<<<< HEAD:xbmc/cores/AudioRenderers/Win32DirectSound.cpp
     memcpy(start, data, size);
     m_BufferOffset += size;
     if (startWrap) // Write-region wraps to beginning of buffer
     {
       memcpy(startWrap, data + size, sizeWrap);
+=======
+    MapDataIntoBuffer(data, size, (unsigned char*)start);
+
+    //memcpy(start, data, size);
+    m_BufferOffset += size;
+    if (startWrap) // Write-region wraps to beginning of buffer
+    {
+      MapDataIntoBuffer(data + size, sizeWrap, (unsigned char*)startWrap);
+      // memcpy(startWrap, data + size, sizeWrap);
+>>>>>>> svn/linuxport:xbmc/cores/AudioRenderers/Win32DirectSound.cpp
       m_BufferOffset = sizeWrap;
     }
     
@@ -462,10 +494,79 @@ void CWin32DirectSound::WaitCompletion()
   m_pBuffer->Stop();
 }
 
+<<<<<<< HEAD:xbmc/cores/AudioRenderers/Win32DirectSound.cpp
+=======
+void CWin32DirectSound::MapDataIntoBuffer(unsigned char* pData, DWORD len, unsigned char* pOut)
+{
+  // TODO: Add support for 8, 24, and 32-bit audio
+  if (m_pChannelMap && !m_Passthrough && m_uiBitsPerSample == 16)
+  {
+    short* pOutFrame = (short*)pOut;
+    for (short* pInFrame = (short*)pData;
+      pInFrame < (short*)pData + (len / sizeof(short)); 
+      pInFrame += m_uiChannels, pOutFrame += m_uiChannels)
+    {
+      // Remap a single frame
+      for (unsigned int chan = 0; chan < m_uiChannels; chan++)
+        pOutFrame[m_pChannelMap[chan]] = pInFrame[chan]; // Copy sample into correct position in the output buffer
+    }
+  }
+  else
+  {
+    memcpy(pOut, pData, len);
+  }
+}
+
+// Channel maps
+// Our output order is FL, FR, C, LFE, SL, SR,
+const unsigned char ac3_51_Map[] = {0,1,4,5,2,3};    // Sent as FL, FR, SL, SR, C, LFE
+const unsigned char ac3_50_Map[] = {0,1,4,2,3};      // Sent as FL, FR, SL, SR, C
+const unsigned char eac3_51_Map[] = {0,4,1,2,3,5};   // Sent as FL, C, FR, SL, SR, LFE
+const unsigned char eac3_50_Map[] = {0,4,1,2,3};     // Sent as FL, C, FR, SL, SR, LFE
+const unsigned char aac_51_Map[] = {4,0,1,2,3,5};    // Sent as C, FL, FR, SL, SR, LFE
+const unsigned char aac_50_Map[] = {4,0,1,2,3};      // Sent as C, FL, FR, SL, SR
+const unsigned char vorbis_51_Map[] = {0,4,1,2,3,5}; // Sent as FL, C, FR, SL, SR, LFE
+const unsigned char vorbis_50_Map[] = {0,4,1,2,3};   // Sent as FL, C, FR, SL, SR
+
+// TODO: This could be a lot more efficient
+unsigned char* CWin32DirectSound::GetChannelMap(unsigned int channels, const char* strAudioCodec)
+{
+  if (!strcmp(strAudioCodec, "AC3") || !strcmp(strAudioCodec, "DTS"))
+  {
+    if (channels == 6)
+      return (unsigned char*)ac3_51_Map;
+    else if (channels == 5)
+      return (unsigned char*)ac3_50_Map;
+  }
+  else if (!strcmp(strAudioCodec, "AAC"))
+  {
+    if (channels == 6)
+      return (unsigned char*)aac_51_Map;
+    else if (channels == 5)
+      return (unsigned char*)aac_50_Map;
+  }
+  else if (!strcmp(strAudioCodec, "Vorbis"))
+  {
+    if (channels == 6)
+      return (unsigned char*)vorbis_51_Map;
+    else if (channels == 5)
+      return (unsigned char*)vorbis_50_Map;
+  }
+  else if (!strcmp(strAudioCodec, "EAC3"))
+  {
+    if (channels == 6)
+      return (unsigned char*)eac3_51_Map;
+    else if (channels == 5)
+      return (unsigned char*)eac3_50_Map;
+  }
+  return NULL; // We don't know how to map this, so just leave it alone
+}
+
+>>>>>>> svn/linuxport:xbmc/cores/AudioRenderers/Win32DirectSound.cpp
 //***********************************************************************************************
 void CWin32DirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
-    return ;
+  return;
 }
 
 //***********************************************************************************************

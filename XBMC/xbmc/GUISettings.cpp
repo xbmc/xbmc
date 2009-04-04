@@ -268,7 +268,7 @@ void CGUISettings::Initialize()
   AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
   AddSeparator(11, "musicplayer.sep3");
-  AddString(12, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddString(0, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicfiles", 744);
   AddBool(1, "musicfiles.usetags", 258, true);
@@ -354,7 +354,7 @@ void CGUISettings::Initialize()
   AddBool(6, "autorun.music", 245, true);
   AddBool(7, "autorun.pictures", 246, true);
 
-  AddCategory(4, "cache", 439);
+  AddCategory(0, "cache", 439);
   AddInt(1, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
   AddSeparator(2, "cache.sep1");
   AddInt(3, "cachevideo.dvdrom", 14026, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
@@ -432,7 +432,12 @@ void CGUISettings::Initialize()
 #ifndef HAS_SDL
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
 #else
+#ifdef HAVE_LIBVDPAU
+  AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_VDPAU, SPIN_CONTROL_TEXT);
+#else
   AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_SOFTWARE, SPIN_CONTROL_TEXT);
+#endif
+
 #endif
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
@@ -441,7 +446,10 @@ void CGUISettings::Initialize()
 #ifdef HAS_MPLAYER
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif
-
+#ifdef HAVE_LIBVDPAU
+  AddBool(0, "videoplayer.strictbinding", 13120, false);
+  AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
+#endif
 #ifdef HAS_SDL
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
@@ -449,7 +457,7 @@ void CGUISettings::Initialize()
 #endif
 
   AddSeparator(10, "videoplayer.sep2");
-  AddString(11, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddString(0, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(12, "videoplayer.sep3");
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
@@ -539,6 +547,11 @@ void CGUISettings::Initialize()
 #endif
 #endif
 
+  // zeroconf publishing
+#ifdef HAS_ZEROCONF
+  AddBool(10, "servers.zeroconf", 1260, true);
+#endif
+
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
@@ -587,8 +600,8 @@ void CGUISettings::Initialize()
   AddBool(9,"lookandfeel.soundsduringplayback",21370,false);
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
-  AddBool(11, "lookandfeel.rssfeedsrtl",13412,  false);
-  AddBool(12, "lookandfeel.enablemouse", 21369, true);
+  AddBool(12, "lookandfeel.rssfeedsrtl",13412,  false);
+  AddBool(13, "lookandfeel.enablemouse", 21369, true);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);

@@ -43,7 +43,7 @@ CFileCDDA::~CFileCDDA(void)
   Close();
 }
 
-bool CFileCDDA::Open(const CURL& url, bool bBinary /*=true*/)
+bool CFileCDDA::Open(const CURL& url)
 {
   if (!CDetectDVDMedia::IsDiscInDrive() || !IsValidFile(url))
     return false;

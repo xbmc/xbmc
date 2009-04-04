@@ -29,6 +29,7 @@
 #include "Application.h"
 #include <shlobj.h>
 #include "SpecialProtocol.h"
+#include "my_ntddscsi.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -164,35 +165,76 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
 {
   HANDLE hDevice;               // handle to the drive to be examined
   int iResult;                  // results flag
-  DWORD junk;                   // discard results
   ULONG ulChanges=0;
+  DWORD dwBytesReturned;
+  T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
+  byte DataBuf[16];  //Buffer for holding data to/from drive.
 
-  hDevice = CreateFile(strPath.c_str(),  // drive
-                    0,                // no access to the drive
-                    FILE_SHARE_READ,  // share mode
-                    NULL,             // default security attributes
-                    OPEN_EXISTING,    // disposition
-                    FILE_ATTRIBUTE_READONLY,                // file attributes
-                    NULL);            // do not copy file attributes
+  hDevice = CreateFile( strPath.c_str(),  // drive
+                        GENERIC_READ | GENERIC_WRITE, 
+                        FILE_SHARE_READ | FILE_SHARE_WRITE,  // share mode
+                        NULL,             // default security attributes
+                        OPEN_EXISTING,    // disposition
+                        FILE_ATTRIBUTE_READONLY,                // file attributes
+                        NULL);            // do not copy file attributes
 
   if (hDevice == INVALID_HANDLE_VALUE) // cannot open the drive
   {
     return -1;
   }
-  iResult = DeviceIoControl(
-                    (HANDLE) hDevice,            // handle to device
-                    IOCTL_STORAGE_CHECK_VERIFY2,  // dwIoControlCode
-                    NULL,                        // lpInBuffer
-                    0,                           // nInBufferSize
-                    &ulChanges,                  // lpOutBuffer
-                    sizeof(ULONG),               // nOutBufferSize
-                    &junk ,                      // number of bytes returned
-                    NULL );                      // OVERLAPPED structure
+
+  sptd_sb.sptd.Length=sizeof(SCSI_PASS_THROUGH_DIRECT);
+  sptd_sb.sptd.PathId=0; 
+  sptd_sb.sptd.TargetId=0;
+  sptd_sb.sptd.Lun=0;
+  sptd_sb.sptd.CdbLength=10;
+  sptd_sb.sptd.SenseInfoLength=MAX_SENSE_LEN;
+  sptd_sb.sptd.DataIn=SCSI_IOCTL_DATA_IN;
+  sptd_sb.sptd.DataTransferLength=8;
+  sptd_sb.sptd.TimeOutValue=108000;
+  sptd_sb.sptd.DataBuffer=(PVOID)&(DataBuf);
+  sptd_sb.sptd.SenseInfoOffset=sizeof(SCSI_PASS_THROUGH_DIRECT);
+
+  sptd_sb.sptd.Cdb[0]=0x4a;
+  sptd_sb.sptd.Cdb[1]=1;
+  sptd_sb.sptd.Cdb[2]=0;
+  sptd_sb.sptd.Cdb[3]=0;
+  sptd_sb.sptd.Cdb[4]=0x10;
+  sptd_sb.sptd.Cdb[5]=0;
+  sptd_sb.sptd.Cdb[6]=0;
+  sptd_sb.sptd.Cdb[7]=0;
+  sptd_sb.sptd.Cdb[8]=8;
+  sptd_sb.sptd.Cdb[9]=0;
+  sptd_sb.sptd.Cdb[10]=0;
+  sptd_sb.sptd.Cdb[11]=0;
+  sptd_sb.sptd.Cdb[12]=0;
+  sptd_sb.sptd.Cdb[13]=0;
+  sptd_sb.sptd.Cdb[14]=0;
+  sptd_sb.sptd.Cdb[15]=0;
+
+  ZeroMemory(sptd_sb.SenseBuf, MAX_SENSE_LEN);
+
+  //Send the command to drive
+  iResult = DeviceIoControl((HANDLE) hDevice,
+                            IOCTL_SCSI_PASS_THROUGH_DIRECT,
+                            (PVOID)&sptd_sb, (DWORD)sizeof(sptd_sb),
+                            (PVOID)&sptd_sb, (DWORD)sizeof(sptd_sb),
+                            &dwBytesReturned,
+                            NULL);
 
   CloseHandle(hDevice);
 
-  return iResult;
+  if(iResult)
+  {
 
+    if(DataBuf[5] == 0) // tray close
+      return 0;
+    else if(DataBuf[5] == 1) // tray open
+      return 1;
+    else
+      return 2; // tray closed, media present
+  }
+  return -1;
 }
 
 CStdString CWIN32Util::GetLocalPath(const CStdString &strPath)
@@ -450,6 +492,69 @@ void CWIN32Util::ExtendDllPath()
   else
     CLog::Log(LOGDEBUG,"Can't set system env PATH to %S",strEnvW.c_str());
 
+}
+
+HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
+{
+  BOOL bRet= FALSE;
+  char cDL = cDriveLetter;
+  if( !cDL )
+  {
+    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    cDL = dvdDevice[4];
+  }
+  
+  CStdString strVolFormat; 
+  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+  HANDLE hDrive= CreateFile( strVolFormat.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 
+                             NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+  CStdString strRootFormat; 
+  strRootFormat.Format( _T("%c:\\"), cDL);
+  if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) && 
+      ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
+  {
+    DWORD dwDummy;
+    bRet= DeviceIoControl( hDrive, ( (GetDriveStatus(strVolFormat) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA), 
+                                    NULL, 0, NULL, 0, &dwDummy, NULL);
+    CloseHandle( hDrive );
+  }
+  return bRet? S_OK : S_FALSE;
+}
+
+HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
+{
+  char cDL = cDriveLetter;
+  if( !cDL )
+  {
+    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    cDL = dvdDevice[4];
+  }
+  
+  CStdString strVolFormat; 
+  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+
+  if(GetDriveStatus(strVolFormat) != 1)
+    return ToggleTray(cDL);
+  else 
+    return S_OK;
+}
+
+HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
+{
+  char cDL = cDriveLetter;
+  if( !cDL )
+  {
+    char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    cDL = dvdDevice[4];
+  }
+  
+  CStdString strVolFormat; 
+  strVolFormat.Format( _T("\\\\.\\%c:" ), cDL);
+
+  if(GetDriveStatus(strVolFormat) == 1)
+    return ToggleTray(cDL);
+  else 
+    return S_OK;
 }
 
 extern "C"

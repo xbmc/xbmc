@@ -19,6 +19,10 @@
  *
  */
 #import <unistd.h>
+<<<<<<< HEAD:xbmc/osx/CocoaInterface.mm
+=======
+#import <sys/mount.h>
+>>>>>>> svn/linuxport:xbmc/osx/CocoaInterface.mm
 
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
@@ -689,6 +693,38 @@ void Cocoa_DoAppleScript(const char* scriptSource)
   [scriptObject release];
 }
                    
+<<<<<<< HEAD:xbmc/osx/CocoaInterface.mm
+=======
+void Cocoa_MountPoint2DeviceName(char* path)
+{
+  // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
+  // path will get realloc'ed and replaced IF this is a physical DVD.
+  char* strDVDDevice;
+  strDVDDevice = strdup(path);
+  if (strncasecmp(strDVDDevice + strlen(strDVDDevice) - 8, "VIDEO_TS", 8) == 0)
+  {
+    struct statfs *mntbufp;
+    int i, mounts;
+    
+    strDVDDevice[strlen(strDVDDevice) - 9] = '\0';
+
+    // find a match for /Volumes/<disk name>
+    mounts = getmntinfo(&mntbufp, MNT_WAIT);  // NOT THREAD SAFE!
+    for (i = 0; i < mounts; i++)
+    {
+      if( !strcasecmp(mntbufp[i].f_mntonname, strDVDDevice) )
+      {
+        // Replace "/dev/" with "/dev/r"
+        path = (char*)realloc(path, strlen(mntbufp[i].f_mntfromname) + 2 );
+        strcpy( path, "/dev/r" );
+        strcat( path, mntbufp[i].f_mntfromname + strlen( "/dev/" ) );
+        break;
+      }
+    }
+    free(strDVDDevice);
+  }
+}
+>>>>>>> svn/linuxport:xbmc/osx/CocoaInterface.mm
 
 /*
 int Cocoa_TouchDVDOpenMediaFile(const char *strDVDFile)

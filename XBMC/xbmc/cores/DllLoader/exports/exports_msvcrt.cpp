@@ -34,6 +34,9 @@
 #include <string.h>
 #endif
 #endif
+#ifndef _WIN32
+#include <math.h>
+#endif
 
 #ifndef __GNUC__
 #pragma warning (disable:4391)

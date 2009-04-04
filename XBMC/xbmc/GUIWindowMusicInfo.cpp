@@ -34,6 +34,8 @@
 #include "FileItem.h"
 #include "VideoInfoTag.h"
 #include "MediaManager.h"
+#include "FileSystem/Directory.h"
+#include "utils/AsyncFileCopy.h"
 
 using namespace XFILE;
 
@@ -511,7 +513,8 @@ void CGUIWindowMusicInfo::OnGetThumb()
   items.Add(item);
 
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(1030), result))
+  bool flip=false;
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(1030), result, &flip))
     return;   // user cancelled
 
   if (result == "thumb://Current")
@@ -595,6 +598,29 @@ void CGUIWindowMusicInfo::OnGetFanart()
     itemLocal->SetLabel(g_localizeStrings.Get(20017));
     items.Add(itemLocal);
   }
+  
+  // Grab the thumbnails from the web
+  CStdString strPath;
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
+  CUtil::WipeDir(strPath);
+  DIRECTORY::CDirectory::Create(strPath);
+  for (unsigned int i = 0; i < m_artist.fanart.GetNumFanarts(); i++)
+  {
+    CStdString strItemPath;
+    strItemPath.Format("fanart://Remote%i",i);
+    CFileItemPtr item(new CFileItem(strItemPath, false));
+    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+    item->SetIconImage("defaultPicture.png");
+    item->GetVideoInfoTag()->m_fanart = m_artist.fanart;
+    item->SetProperty("fanart_number", (int)i);
+    item->SetLabel(g_localizeStrings.Get(415));
+    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
+
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(item->GetCachedPictureThumb()))
+      CFile::Delete(item->GetCachedPictureThumb());
+    items.Add(item);
+  }
 
   CStdString result;
   VECSOURCES sources(g_settings.m_musicSources);
@@ -614,8 +640,20 @@ void CGUIWindowMusicInfo::OnGetFanart()
   if (CFile::Exists(cachedThumb))
     CFile::Delete(cachedThumb);
 
-  if (!result.Equals("thumb://None") && CFile::Exists(result))
+  if (!result.Equals("fanart://None"))
   { // local file
+    if (result.Left(15)  == "fanart://Remote")
+    {
+      int iFanart = atoi(result.Mid(15).c_str());
+      m_artist.fanart.SetPrimaryFanart(iFanart);
+      // download the fullres fanart image
+      CStdString tempFile = "special://temp/fanart_download.jpg";
+      CAsyncFileCopy downloader;
+      if (!downloader.Copy(m_artist.fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413)))
+        return;
+      result = tempFile;
+    }
+
     CPicture pic;
     if (flip)
       pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);

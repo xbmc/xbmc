@@ -108,31 +108,28 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     CStdString strPathUpper = pItem->m_strPath;
     strPathUpper.ToUpper();
 
-    CStdString strIcon=share.m_strThumbnailImage;
-    if (share.m_strThumbnailImage.IsEmpty())
+    CStdString strIcon;
+    // We have the real DVD-ROM, set icon on disktype
+    if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD && share.m_strThumbnailImage.IsEmpty())
     {
-      // We have the real DVD-ROM, set icon on disktype
-      if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
-      {
-        CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
-        // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
-        CStdString strThumb = "special://temp/dvdicon.tbn";
-        if (XFILE::CFile::Exists(strThumb))
-          pItem->SetThumbnailImage(strThumb);
-      }
-      else if (strPathUpper.Left(11) == "SOUNDTRACK:")
-        strIcon = "defaultHardDisk.png";
-      else if (pItem->IsRemote())
-        strIcon = "defaultNetwork.png";
-      else if (pItem->IsISO9660())
-        strIcon = "defaultDVDRom.png";
-      else if (pItem->IsDVD())
-        strIcon = "defaultDVDRom.png";
-      else if (pItem->IsCDDA())
-        strIcon = "defaultCDDA.png";
-      else
-        strIcon = "defaultHardDisk.png";
+      CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
+      // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
+      CStdString strThumb = "special://temp/dvdicon.tbn";
+      if (XFILE::CFile::Exists(strThumb))
+        pItem->SetThumbnailImage(strThumb);
     }
+    else if (strPathUpper.Left(11) == "SOUNDTRACK:")
+      strIcon = "defaultHardDisk.png";
+    else if (pItem->IsRemote())
+      strIcon = "defaultNetwork.png";
+    else if (pItem->IsISO9660())
+      strIcon = "defaultDVDRom.png";
+    else if (pItem->IsDVD())
+      strIcon = "defaultDVDRom.png";
+    else if (pItem->IsCDDA())
+      strIcon = "defaultCDDA.png";
+    else
+      strIcon = "defaultHardDisk.png";
 
     pItem->SetIconImage(strIcon);
     if (share.m_iHasLock == 2 && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)

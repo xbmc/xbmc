@@ -55,6 +55,15 @@ typedef long    __off_t;
 #define RMASK 0x0000ff00
 #define GMASK 0x00ff0000
 #define BMASK 0xff000000
+<<<<<<< HEAD:xbmc/win32/PlatformDefs.h
+=======
+
+// so we can use endian neutral PIX_FMT_BGRA in place of 
+// little endian PIX_FMT_RGB32 when setting up ffmpeg 
+#ifndef WORDS_BIGENDIAN
+#define WORDS_BIGENDIAN 1
+#endif
+>>>>>>> svn/linuxport:xbmc/win32/PlatformDefs.h
 #else
 #define PIXEL_ASHIFT 24
 #define PIXEL_RSHIFT 16
@@ -64,8 +73,19 @@ typedef long    __off_t;
 #define RMASK 0x00ff0000
 #define GMASK 0x0000ff00
 #define BMASK 0x000000ff
+<<<<<<< HEAD:xbmc/win32/PlatformDefs.h
+#endif
+=======
 #endif
 #endif
+
+#ifndef va_copy
+#define va_copy(dst, src) ((dst) = (src))
+>>>>>>> svn/linuxport:xbmc/win32/PlatformDefs.h
+#endif
+
+#define lrint(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
+#define llrint(x) ((x) >= 0 ? ((__int64)((x) + 0.5)) : ((__int64)((x) - 0.5)))
 
 #endif // _WIN32
 

@@ -151,11 +151,13 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
 /// efficient retrieval of data.
 int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
-  if (strCondition.IsEmpty()) return 0;
+  // trim whitespace, and convert to lowercase
   CStdString strTest = strCondition;
   strTest.ToLower();
-  strTest.TrimLeft(" ");
-  strTest.TrimRight(" ");
+  strTest.TrimLeft(" \t\r\n");
+  strTest.TrimRight(" \t\r\n");
+  if (strTest.IsEmpty()) return 0;
+
   bool bNegate = strTest[0] == '!';
   int ret = 0;
 
@@ -1208,15 +1210,15 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       int iMemPercentUsed = 100 - iMemPercentFree;
 
       if (info == SYSTEM_FREE_MEMORY)
-        strLabel.Format("%iMB", stat.dwAvailPhys /MB);
+        strLabel.Format("%luMB", (ULONG)(stat.dwAvailPhys/MB));
       else if (info == SYSTEM_FREE_MEMORY_PERCENT)
         strLabel.Format("%i%%", iMemPercentFree);
       else if (info == SYSTEM_USED_MEMORY)
-        strLabel.Format("%iMB", (stat.dwTotalPhys - stat.dwAvailPhys)/MB);
+        strLabel.Format("%luMB", (ULONG)((stat.dwTotalPhys - stat.dwAvailPhys)/MB));
       else if (info == SYSTEM_USED_MEMORY_PERCENT)
         strLabel.Format("%i%%", iMemPercentUsed);
       else if (info == SYSTEM_TOTAL_MEMORY)
-        strLabel.Format("%iMB", stat.dwTotalPhys/MB);
+        strLabel.Format("%luMB", (ULONG)(stat.dwTotalPhys/MB));
     }
     break;
   case SYSTEM_SCREEN_MODE:
@@ -1997,7 +1999,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
     case SYSTEM_ALARM_LESS_OR_EQUAL:
     {
-      int time = g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]);
+      int time = lrint(g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]));
       int timeCompare = atoi(m_stringParameters[info.GetData2()]);
       if (time > 0)
         bReturn = timeCompare >= time;

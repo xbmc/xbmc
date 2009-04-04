@@ -3,14 +3,13 @@ ARCH=@ARCH@
 CFLAGS+=-D_LINUX -fPIC -I../../../linux -I../../../ -I../../../../guilib/
 CXXFLAGS+=-D_LINUX -fPIC -I../../../linux -I../../../ -I../../../../guilib/
 OBJS=gym_play.o psg.o XBMCGYM.o ym2612.o
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o -L/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/ -lgcc
+endif
 
-LIB=../../../../system/players/paplayer/gensapu-@ARCH@.so
+SLIB=../../../../system/players/paplayer/gensapu-@ARCH@.so
 
-include ../../../../Makefile.include
-
-lib: $(LIB)
-
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ *.o $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
@@ -19,3 +18,6 @@ else
 	g++ -shared -o $@ *.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 
 endif
+
+include ../../../../Makefile.include
+

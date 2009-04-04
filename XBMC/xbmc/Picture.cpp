@@ -216,11 +216,11 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
     bool linear = false;
     CTexture baseTexture = g_TextureManager.GetTexture(srcFile);
 #ifndef HAS_SDL
-    LPDIRECT3DPALETTE8 palette = baseTexture->m_palette;
-    LPDIRECT3DTEXTURE8 texture = baseTexture->m_textures[0];
+    LPDIRECT3DPALETTE8 palette = baseTexture.m_palette;
+    LPDIRECT3DTEXTURE8 texture = baseTexture.m_textures[0];
 #elif defined(HAS_SDL_2D)
     SDL_Palette* palette = NULL;
-    SDL_Surface* texture = baseTexture->m_textures[0];
+    SDL_Surface* texture = baseTexture.m_textures[0];
 #elif defined(HAS_SDL_OPENGL)
 #ifdef __GNUC__
 // TODO: fix this code to support OpenGL

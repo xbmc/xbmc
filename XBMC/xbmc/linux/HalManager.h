@@ -87,7 +87,11 @@ public:
     if (Label.size() > 0)
       share->strName = Label;
     else
-      share->strName = CUtil::GetFileName(MountPoint);
+    {
+      share->strName = MountPoint;
+      CUtil::RemoveSlashAtEnd(share->strName);
+      share->strName = CUtil::GetFileName(share->strName);
+    }
 
     share->m_ignore = true;
     if (HotPlugged)
@@ -135,6 +139,8 @@ private:
   static std::vector<CStorageDevice> DeviceFromDriveUdi(const char *udi);
   static CCriticalSection m_lock;
 
+  bool m_bMultipleJoysticksSupport;
+  
   //Callbacks HAL
   static void DeviceRemoved(LibHalContext *ctx, const char *udi);
   static void DeviceNewCapability(LibHalContext *ctx, const char *udi, const char *capability);
@@ -145,6 +151,9 @@ private:
 
   //Remembered Devices
   std::vector<CStorageDevice> m_Volumes;
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+  std::vector<CHalDevice> m_Joysticks;
+#endif
 };
 
 extern CHalManager g_HalManager;

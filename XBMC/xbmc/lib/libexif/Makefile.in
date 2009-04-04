@@ -2,17 +2,18 @@ ARCH=@ARCH@
 
 OBJS +=libexif.o ExifParse.o IptcParse.o JpegParse.o
 CFLAGS +=-D_LINUX -D_DLL -fPIC -O2
+CXXFLAGS +=-D_LINUX -D_DLL -fPIC -O2
 
 SYSDIR=../../../system
 SO=libexif-$(ARCH).so
-LIB=../../../system/$(SO)
+SLIB=../../../system/$(SO)
 
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	gcc $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC -o $@ $(OBJS)
+	$(CXX) $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC -o $@ $(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
-	$(CC) -shared -o $@ $(OBJS) \
+	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS) \
 		`cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
 endif
 

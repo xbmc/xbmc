@@ -200,6 +200,7 @@ libxbmc_a_SOURCES 	=	APEv2Tag.cpp \
 				XBApplicationEx.cpp \
 				XBAudioConfig.cpp \
 				XBVideoConfig.cpp \
-				xbmc.cpp
+				xbmc.cpp \
+				Zeroconf.cpp
 
 # vim: ts=8:sw=8:noexpandtab

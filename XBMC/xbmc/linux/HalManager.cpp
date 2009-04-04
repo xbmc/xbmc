@@ -29,6 +29,12 @@
 #include "../Util.h"
 #include "../../guilib/LocalizeStrings.h"
 
+#ifdef HAS_SDL_JOYSTICK
+#include <SDL/SDL.h>
+#include <SDL/SDL_version.h>
+#include "../../guilib/common/SDLJoystick.h"
+#endif
+
 //#define HAL_HANDLEMOUNT
 
 bool CHalManager::NewMessage;
@@ -123,6 +129,8 @@ CHalManager::CHalManager()
   m_Notifications = false;
   m_Context = NULL;
   m_DBusSystemConnection = NULL;
+  const SDL_version *sdl_version = SDL_Linked_Version();
+  m_bMultipleJoysticksSupport = (sdl_version->major >= 1 && sdl_version->minor >= 3)?true:false;
 }
 
 // Shutdown the connection and free the context
@@ -440,7 +448,7 @@ void CHalManager::ParseDevice(const char *udi)
   if (category == NULL)
     return;
 
-  else if (strcmp(category, "volume") == 0)
+  if (strcmp(category, "volume") == 0)
   {
     CStorageDevice dev(udi);
     if (!DeviceFromVolumeUdi(udi, &dev))
@@ -540,6 +548,47 @@ void CHalManager::ParseDevice(const char *udi)
     }
     CLinuxFileSystem::AddDevice(dev);
   }
+#if defined(HAS_SDL_JOYSTICK)
+  // Scan input devices
+  else if (strcmp(category, "input") == 0)
+  {
+    DBusError dbusError;
+    dbus_error_init(&dbusError);
+    
+    char **capability;
+    capability =libhal_device_get_property_strlist (m_Context, udi, "info.capabilities", &dbusError);
+    for(char **ptr = capability; *ptr != NULL;ptr++)
+    {
+      // Reload joysticks
+      if(strcmp(*ptr, "input.joystick") == 0)
+      {
+        CHalDevice dev = CHalDevice(udi);
+        dev.FriendlyName = libhal_device_get_property_string(m_Context, udi, "info.product", &m_Error);
+        m_Joysticks.push_back(dev);
+        
+        if(m_Joysticks.size() < 2 || m_bMultipleJoysticksSupport)
+        {
+          // Restart SDL joystick subsystem
+          SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+          if (SDL_WasInit(SDL_INIT_JOYSTICK) !=  0)
+          {
+            CLog::Log(LOGERROR, "HAL: Stop joystick subsystem failed");
+            break;
+          }
+          if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0)
+          {
+            CLog::Log(LOGERROR, "HAL: Restart joystick subsystem failed : %s",SDL_GetError());
+            break;
+          }
+          
+          g_Joystick.Initialize(NULL);
+          g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13024), dev.FriendlyName.c_str());
+        }
+      }
+    }
+    libhal_free_string_array(capability);
+  }
+#endif
 /*
   else if (strcmp(category, "camera") == 0)
   { // PTP-Devices }
@@ -576,6 +625,34 @@ bool CHalManager::RemoveDevice(const char *udi)
       return true;
     }
   }
+#if defined(HAS_SDL_JOYSTICK)
+  for(uint i = 0; i < m_Joysticks.size(); i++)
+  {
+    if (strcmp(m_Joysticks[i].UDI.c_str(), udi) == 0)
+    {
+      if(m_Joysticks.size() < 3 || m_bMultipleJoysticksSupport)
+      {
+        // Restart SDL joystick subsystem
+        SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
+        if (SDL_WasInit(SDL_INIT_JOYSTICK) !=  0)
+        {
+          CLog::Log(LOGERROR, "HAL: Stop joystick subsystem failed");
+          return false;
+        }
+        if(SDL_InitSubSystem(SDL_INIT_JOYSTICK) != 0)
+        {
+          CLog::Log(LOGERROR, "HAL: Restart joystick subsystem failed : %s",SDL_GetError());
+          return false;
+        }
+      
+        g_Joystick.Initialize(NULL);
+        g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13025), m_Joysticks[i].FriendlyName.c_str());
+      }
+      m_Joysticks.erase(m_Joysticks.begin() + i);
+      return true;
+    }
+  }
+#endif
   return false;
 }
 

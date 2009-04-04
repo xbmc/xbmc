@@ -2,7 +2,11 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@-->
+<<<<<<< HEAD:language/Korean/strings.xml
 <!--Date of translation: 03/16/2009-->
+=======
+<!--Date of translation: 03/23/2009-->
+>>>>>>> svn/linuxport:language/Korean/strings.xml
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -106,7 +110,7 @@
   <string id="170">새로 고침 비율 조정</string>
   <string id="172">제작일</string>
   <string id="175">분위기</string>
-  <string id="176">스타일</string>
+  <string id="176">형식</string>
   <string id="179">노래</string>
   <string id="180">상영시간</string>
   <string id="181">앨범 선택</string>
@@ -147,7 +151,7 @@
   <string id="222">취소</string>
   <string id="224">속도</string>
   <string id="225">전환 시간</string>
-  <string id="226">패턴 검사...</string>
+  <string id="226">유형 검사...</string>
   <string id="227">인터넷에서 오디오 CD 검색</string>
   <string id="228">읽어올때 재생목록 섞기</string>
   <string id="229">하드디스크 끄기 시간</string>
@@ -407,7 +411,7 @@
   <string id="505">파일에서 미디어 정보 읽는중...</string>
   <string id="507">정렬: 사용량</string>
   <string id="510">시각화 사용</string>
-  <string id="511">비디오 모드 변경기능 사용</string>
+  <string id="511">비디오 모드 변경 사용</string>
   <string id="512">시작 윈도우</string>
   <string id="513">홈 윈도우</string>
   <string id="514">수동 설정</string>
@@ -571,7 +575,11 @@
   <string id="733">웹 서버 비밀번호</string>
   <string id="734">암호 없음</string>
   <string id="735">- 문자셋</string>
+<<<<<<< HEAD:language/Korean/strings.xml
   <string id="736">- 스타일</string>
+=======
+  <string id="736">- 형식</string>
+>>>>>>> svn/linuxport:language/Korean/strings.xml
   <string id="737">- 색깔</string>
   <string id="738">보통</string>
   <string id="739">굵게</string>
@@ -898,6 +906,11 @@
   <string id="13021">장착된 이동식 하드드라이브</string>
   <string id="13022">장치 제거 안전하지 않음</string>
   <string id="13023">성공적으로 장치 제거됨</string>
+<<<<<<< HEAD:language/Korean/strings.xml
+=======
+  <string id="13024">조이스틱 연결됨</string>
+  <string id="13025">조이스틱 연결해제됨</string>
+>>>>>>> svn/linuxport:language/Korean/strings.xml
   <string id="13100">깜박임 필터</string>
   <string id="13101">드라이버 선택 가능 (재시작 필요)</string>
   <string id="13105">수직동기</string>
@@ -1037,7 +1050,7 @@
   <string id="13342">주황</string>
   <string id="13343">빨강</string>
   <string id="13344">순환</string>
-  <string id="13345">재생시 LED 끔</string>
+  <string id="13345">재생시 LED 끄기</string>
   <string id="13346">영화 정보</string>
   <string id="13347">항목 추가</string>
   <string id="13348">IMDb 찾기...</string>
@@ -1102,6 +1115,10 @@
   <string id="13418">고급 셰이더 (GLSL)</string>
   <string id="13419">소프트웨어</string>
   <string id="13420">꺼내기</string>
+<<<<<<< HEAD:language/Korean/strings.xml
+=======
+  <string id="13421">VDPAU</string>
+>>>>>>> svn/linuxport:language/Korean/strings.xml
   <string id="13600">애플 리모트</string>
   <string id="13601">모드</string>
   <string id="13602">항상 실행</string>
@@ -1249,8 +1266,8 @@
   <string id="15278">%name% 의 선호 트랙 Last.fm 라디오 듣기</string>
   <string id="15279">last.fm 에서 목록을 검색중...</string>
   <string id="15280">last.fm 에서 목록을 검색할수 없음...</string>
-  <string id="15281">검색할 관련 아티스트 이름을 입력하세요</string>
-  <string id="15282">검색할 유사 태그 이름을 입력하세요</string>
+  <string id="15281">찾을 관련 아티스트 이름을 입력하세요</string>
+  <string id="15282">찾을 유사 태그 이름을 입력하세요</string>
   <string id="15283">%name% 의 최근 들은 트랙</string>
   <string id="15284">Last.fm 라디오의 추천 %name% 듣기</string>
   <string id="15285">%name% 의 인기 태그</string>
@@ -1333,6 +1350,11 @@
   <string id="16307">바이큐빅 (소프트웨어)</string>
   <string id="16308">랑초스 (소프트웨어)</string>
   <string id="16309">Sinc (소프트웨어)</string>
+  <string id="16310">(VDPAU)시간적</string>
+  <string id="16311">(VDPAU)시간적/공간적</string>
+  <string id="16312">(VDPAU)잡음 제거</string>
+  <string id="16313">(VDPAU)선명도</string>
+  <string id="16314">역 텔레시네</string>
   <string id="17500">화면 종료 시간제한</string>
   <string id="20000">CDDA 추출 폴더</string>
   <string id="20001">외부 DVD 플레이어 사용</string>
@@ -1502,7 +1524,7 @@
   <string id="20182">스페이스</string>
   <string id="20183">스킨 새로 고침</string>
   <string id="20184">EXIF 정보를 이용해 회전</string>
-  <string id="20185">TV 쇼에서 포스터 보기 스타일 사용</string>
+  <string id="20185">TV 쇼에서 포스터 보기 형식 사용</string>
   <string id="20186">기다려 주세요</string>
   <string id="20187">EEPROM 백업</string>
   <string id="20188">BIOS 백업</string>
@@ -1529,7 +1551,7 @@
   <string id="20310">재생시 LCD 흐리게</string>
   <string id="20311">알수없음 또는 온보드(보호됨)</string>
   <string id="20312">일시정지시 LCD 흐리게</string>
-  <string id="20313">일시정지시 LED 활성화</string>
+  <string id="20313">일시정지시 LED 켜기</string>
   <string id="20314">비디오 - 라이브러리</string>
   <string id="20315">게임 세이브</string>
   <string id="20316">정렬: 아이디</string>

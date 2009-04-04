@@ -3,13 +3,9 @@ OBJS=uXboxAdpcmDecoder.o ADPCMDll.o
 CFLAGS +=-D_LINUX -fPIC -O2
 CXXFLAGS += -D_LINUX -fPIC -O2
 
-LIB=../../../../system/players/paplayer/adpcm-@ARCH@.so
+SLIB=../../../../system/players/paplayer/adpcm-@ARCH@.so
 
-include ../../../../Makefile.include
-
-lib: $(LIB)
-
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	ld -bundle -flat_namespace -undefined suppress -o $@ *.o $(BUNDLE1_O)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
@@ -17,3 +13,6 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 else
 	$(CC) -shared -o $@ *.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 endif
+
+include ../../../../Makefile.include
+

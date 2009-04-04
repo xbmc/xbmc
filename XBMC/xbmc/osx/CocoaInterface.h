@@ -60,4 +60,11 @@
   // AppleScript
   //
   void Cocoa_DoAppleScript(const char* scriptSource);
+<<<<<<< HEAD:xbmc/osx/CocoaInterface.h
+=======
+  
+  // Devices
+  //
+  void Cocoa_MountPoint2DeviceName(char* path);
+>>>>>>> svn/linuxport:xbmc/osx/CocoaInterface.h
 #endif

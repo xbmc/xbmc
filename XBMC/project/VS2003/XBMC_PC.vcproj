@@ -272,11 +272,11 @@
 				RelativePath="..\..\xbmc\win32\resource.h">
 			</File>
 			<File
-                                RelativePath="..\..\xbmc\win32\Win32PowerSyscall.cpp">
- 	                </File>
- 	                <File
- 	                        RelativePath="..\..\xbmc\win32\Win32PowerSyscall.h">
- 	                </File>
+				RelativePath="..\..\xbmc\win32\Win32PowerSyscall.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\Win32PowerSyscall.h">
+			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\WIN32Util.cpp">
 			</File>
@@ -2099,13 +2099,13 @@
 				<File
 					RelativePath="..\..\xbmc\Picture.cpp">
 				</File>
-                                <File
-                                        RelativePath="..\..\xbmc\PowerManager.cpp">
-                                </File>
-                                <File
-                                        RelativePath="..\..\xbmc\PowerManager.h">
-                                </File>
-                                <File
+				<File
+					RelativePath="..\..\xbmc\PowerManager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PowerManager.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Profile.cpp">
 				</File>
 				<File
@@ -2215,6 +2215,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Zeroconf.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Zeroconf.h">
 				</File>
 				<Filter
 					Name="Karaoke">

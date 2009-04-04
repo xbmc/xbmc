@@ -3,7 +3,7 @@ ARCH=@ARCH@
 SHELL=/bin/bash
 SYSDIR=../../../../system/python
 SO=python24-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
+SLIB=$(SYSDIR)/$(SO)
 ZIP=$(SYSDIR)/python24.zip  ##Should probably add arch here too
 DIRS=../Python
 WRAPPER=../../../cores/DllLoader/exports/wrapper.o
@@ -46,9 +46,9 @@ PYO=$(addsuffix o, $(PY))
 .PHONY: compile
 
 ifeq ($(findstring osx,$(ARCH)), osx)
-all: $(LIB)
+all: $(SLIB)
 
-$(LIB): $(PYWRAP) ../Python/libpython2.4.a $(PYO) ../../../../tools/Mach5/wrapper.rb
+$(SLIB): $(PYWRAP) ../Python/libpython2.4.a $(PYO) ../../../../tools/Mach5/wrapper.rb
 	rm -rf $(SYSDIR)/Lib
 	rsync -a --exclude '.svn' -t ../Python/build/$(PYLIBDIR)/*.so $(SYSDIR)/Lib
 	rsync -a --exclude '.svn' -t ../Python/Lib/*.{py,pyo} $(SYSDIR)/Lib
@@ -73,10 +73,10 @@ $(PYWRAP): $(PYWRAP:.o=.c)
 	 $(CC) -fPIC -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
 
 else
-all: $(LIB)
+all: $(SLIB)
 	$(MAKE) $(ZIP)
 
-$(LIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.a
+$(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.a
 	$(CC) -shared -o $@ -Wl,--whole-archive ../Python/libpython2.4.a \
 		-Wl,--no-whole-archive `cat wrapper_python.def` wrapper_python.o \
 		`cat ../../../cores/DllLoader/exports/wrapper.def` \
@@ -117,14 +117,14 @@ endif
 
 clean:
 	for d in $(DIRS); do make -C $$d clean; done
-	rm -f $(LIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
+	rm -f $(SLIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	rm -rf $(SYSDIR)/Lib
 endif
 
 distclean:
 	for d in $(DIRS); do make -C $$d distclean; done
-	rm -f $(LIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
+	rm -f $(SLIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	rm -rf $(SYSDIR)/Lib
 endif

@@ -50,6 +50,8 @@ CVideoSettings::CVideoSettings()
   m_Brightness = 50;
   m_Contrast = 50;
   m_Gamma = 20;
+  m_Sharpness = 0;
+  m_NoiseReduction = 0;
   m_VolumeAmplification = 0;
   m_AudioDelay = 0.0f;
   m_OutputToAllSpeakers = false;

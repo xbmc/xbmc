@@ -139,6 +139,7 @@ public:
     bool m_DisableModChipDetection;
 
     int m_audioHeadRoom;
+    float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
 
     float m_videoSubsDelayRange;
@@ -221,7 +222,6 @@ public:
     CStdString m_sambadoscodepage;
     bool m_sambastatfiles;
 
-    bool m_bHTTPDirectoryLocalMode;
     bool m_bHTTPDirectoryStatFilesize;
 
     CStdString m_musicThumbs;

@@ -183,7 +183,11 @@ void CLog::DebugLogMemory()
   CStdString strData;
 
   GlobalMemoryStatus(&stat);
-  strData.Format("%i bytes free\n", stat.dwAvailPhys);
+#ifdef __APPLE__
+  strData.Format("%ju bytes free\n", stat.dwAvailPhys);
+#else
+  strData.Format("%lu bytes free\n", stat.dwAvailPhys);
+#endif
   OutputDebugString(strData.c_str());
 }
 
@@ -233,7 +237,8 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
                   matrix[ixx*4+3]);                                     \
       }                                                                 \
   }
-
+  if (g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
+    return;
   GLenum err = glGetError();
   if (err==GL_NO_ERROR)
     return;

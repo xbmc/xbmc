@@ -165,6 +165,8 @@ int CDVDAudioCodecFFmpeg::GetBitsPerSample()
       return 16;
     case SAMPLE_FMT_S32:
       return 32;
+    default:
+      return 0;
     }
   }
   return 0;

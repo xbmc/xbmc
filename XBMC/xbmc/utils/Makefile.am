@@ -1,9 +1,10 @@
 CPPFLAGS	+=	-I$(top_srcdir)/xbmc -I$(top_srcdir)/xbmc/linux 
-CPPFLAGS	+=	-I$(top_srcdir)/guilib
+CPPFLAGS	+=	-I$(top_srcdir)/guilib @HAL_CFLAGS@
 
 noinst_LIBRARIES	=	libutil.a
 libutil_a_SOURCES	=	AlarmClock.cpp \
 				Archive.cpp \
+				Atomics.cpp \
 				CharsetConverter.cpp \
 				CriticalSection.cpp \
 				DelayController.cpp \

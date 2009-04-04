@@ -164,8 +164,8 @@ void CGUIMultiImage::Render()
             m_images[m_currentImage]->SetAlpha(255);
             m_images[nextImage]->SetAlpha((unsigned char)(255*fadeAmount));
           }
+          renderNext = true;
         }
-        renderNext = true;
       }
     }
     m_images[m_currentImage]->SetDiffuseColor(m_diffuseColor);

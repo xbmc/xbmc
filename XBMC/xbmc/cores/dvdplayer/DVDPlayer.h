@@ -277,7 +277,7 @@ protected:
   struct SSpeedState
   {
     double lastpts;  // holds last display pts during ff/rw operations
-    double lasttime; 
+    double lasttime;
   } m_SpeedState;
 
   int m_errorCount;

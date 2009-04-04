@@ -244,14 +244,6 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bLabelPreformated=item.m_bLabelPreformated;
   FreeMemory();
   m_strPath = item.m_strPath;
-#ifdef DEBUG
-  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))  // should root paths be "/" ?
-  {
-#ifndef __APPLE__
-    ASSERT(CUtil::HasSlashAtEnd(m_strPath));
-#endif
-  }
-#endif
   m_bIsParentFolder = item.m_bIsParentFolder;
   m_iDriveType = item.m_iDriveType;
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
@@ -434,7 +426,7 @@ void CFileItem::Serialize(CArchive& ar)
 }
 bool CFileItem::Exists() const
 {
-  if (m_strPath.IsEmpty() || m_strPath.Equals("add") || IsParentFolder() || IsVirtualDirectoryRoot())
+  if (m_strPath.IsEmpty() || m_strPath.Equals("add") || IsParentFolder() || IsVirtualDirectoryRoot() || IsPlugin())
     return true;
 
   if (IsVideoDb() && HasVideoInfoTag())
@@ -578,10 +570,7 @@ bool CFileItem::IsInternetStream() const
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
 
-  if (strProtocol.size() == 0)
-    return false;
-
-  if ((strProtocol == "http" || strProtocol == "https" ) && g_advancedSettings.m_bHTTPDirectoryLocalMode)
+  if (strProtocol.size() == 0 || HasProperty("IsHTTPDirectory"))
     return false;
 
   // there's nothing to stop internet streams from being stacked
@@ -2089,7 +2078,7 @@ bool CFileItemList::Save()
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]",m_strPath.c_str());
 
   CFile file;
-  if (file.OpenForWrite(GetDiscCacheFile(), true, true)) // overwrite always
+  if (file.OpenForWrite(GetDiscCacheFile(), true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << *this;
@@ -2905,4 +2894,5 @@ CStdString CFileItem::FindTrailer() const
 
   return strTrailer;
 }
+
 

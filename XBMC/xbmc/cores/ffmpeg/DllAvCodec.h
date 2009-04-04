@@ -49,6 +49,7 @@ public:
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic)=0;
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic)=0;
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count)=0;
+  virtual AVCodec *av_codec_next(AVCodec *c)=0;
 };
 
 #ifdef __APPLE__
@@ -99,6 +100,7 @@ public:
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic) { return ::avcodec_default_get_buffer(s, pic); }
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic) { ::avcodec_default_release_buffer(s, pic); }
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count) { return ::avcodec_thread_init(s, thread_count); }
+  virtual AVCodec *av_codec_next(AVCodec *c) { return ::av_codec_next(c); }
   
   // DLL faking.
   virtual bool ResolveExports() { return true; }
@@ -146,6 +148,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD2(int, avcodec_default_get_buffer, (AVCodecContext *p1, AVFrame *p2))
   DEFINE_METHOD2(void, avcodec_default_release_buffer, (AVCodecContext *p1, AVFrame *p2))
   DEFINE_METHOD2(int, avcodec_thread_init, (AVCodecContext *p1, int p2))
+  DEFINE_METHOD1(AVCodec*, av_codec_next, (AVCodec *p1))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
     RESOLVE_METHOD_RENAME(avcodec_open,avcodec_open_dont_call)
@@ -170,6 +173,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_default_get_buffer)
     RESOLVE_METHOD(avcodec_default_release_buffer)
     RESOLVE_METHOD(avcodec_thread_init)
+    RESOLVE_METHOD(av_codec_next)
   END_METHOD_RESOLVE()
 public:
     static CCriticalSection m_critSection;
