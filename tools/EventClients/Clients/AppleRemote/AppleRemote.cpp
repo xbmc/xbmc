@@ -410,7 +410,8 @@ void AppleRemote::LaunchApp()
     {
       std::string strCmd;
       
-      if ( strstr(real_path, "XBMC.app") ) {
+      if ( strstr(real_path, "XBMC.app") )
+      {
         // Move backwards out to the application.
         for (int x=0; x<4; x++)
         {
@@ -423,7 +424,9 @@ void AppleRemote::LaunchApp()
         // build a finder open command
         strCmd = "open ";
         strCmd += real_path;
-      } else {
+      }
+      else
+      {
         // backup one "/"
         for (int n=strlen(real_path)-1; real_path[n] != '/'; n--)
           real_path[n] = '\0';
