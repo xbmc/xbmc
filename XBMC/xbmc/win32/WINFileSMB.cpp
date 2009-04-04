@@ -116,7 +116,7 @@ int CWINFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 
 
 //*********************************************************************************************
-bool CWINFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
+bool CWINFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
 {
   CStdString strPath = GetLocal(url);
 
