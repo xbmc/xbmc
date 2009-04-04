@@ -10,8 +10,8 @@
         </GetSettings>
 
 	<NfoUrl dest="3">
-		<RegExp input="$$1" output="&lt;url&gt;http://www.filmstarts.de/finde.html?t=film&amp;anfrage=\1&lt;url&gt;"  dest="3">
-			<expression noclean="1">filmstarts.de/browse/movie_detail.pfm?code=([0-9]*)</expression>
+		<RegExp input="$$1" output="&lt;url&gt;http://www.filmstarts.de/kritiken/\2&lt;/url&gt;"  dest="3">
+			<expression clear="yes" noclean="1">(filmstarts.de/kritiken/)([-.%a-z0-9A-Z]+)</expression>
 		</RegExp>	
 		<RegExp input="$$1" output="&lt;url function=&quot;GetByIMDBId&quot;&gt;http://www.imdb.com/title/tt\2/externalreviews&lt;/url&gt;" dest="3+">
 			<expression>(imdb.com/)Title\?([0-9]+)</expression>
