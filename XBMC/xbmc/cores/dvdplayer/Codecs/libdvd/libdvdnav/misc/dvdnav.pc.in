@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libdvdnav
+Description: DVD Navigation library
+Version: @VERSION@
+
+Requires.private: dvdread >= 4.1.2
+Cflags: -I${includedir} @THREAD_CFLAGS@
+Libs: -L${libdir} -ldvdnav @THREAD_LIBS@

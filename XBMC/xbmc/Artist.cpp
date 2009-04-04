@@ -128,6 +128,14 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained)
     }
     node = node->NextSibling("album");
   }
+  
+  // fanart
+  const TiXmlElement *fanart2 = artist->FirstChildElement("fanart");
+  if (fanart2)
+  {
+    fanart.m_xml << *fanart2;
+    fanart.Unpack();
+  }
 
   return true;
 }
@@ -167,6 +175,12 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& str
   XMLUtils::SetString(artist,   "disbanded", strDisbanded);
   XMLUtils::SetString(artist,      "thumbs", thumbURL.m_xml);
   XMLUtils::SetString(artist,        "path", strPath);
+  if (fanart.m_xml.size())
+  {
+    TiXmlDocument doc;
+    doc.Parse(fanart.m_xml);
+    artist->InsertEndChild(*doc.RootElement());
+  }
 
   // albums
   for (vector< pair<CStdString,CStdString> >::const_iterator it = discography.begin(); it != discography.end(); ++it)

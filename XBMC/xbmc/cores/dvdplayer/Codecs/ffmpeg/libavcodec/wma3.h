@@ -35,6 +35,7 @@
 #define MAX_CHANNELS    8                                    //< max number of handled channels
 #define MAX_SUBFRAMES  32                                    //< max number of subframes per channel
 #define MAX_BANDS      29                                    //< max number of scale factor bands
+#define MAX_FRAMESIZE  16384                                 //< maximum compressed frame size
 
 /* size of block defines taken from wma.h */
 #define BLOCK_MIN_BITS  7                                    //< log2 of min block size
@@ -88,6 +89,8 @@ typedef struct WMA3DecodeContext {
     /** generic decoder variables */
     AVCodecContext*  avctx;                         //< codec context for av_log
     DSPContext       dsp;                           //< accelerated dsp functions
+    uint8_t          frame_data[MAX_FRAMESIZE +
+                      FF_INPUT_BUFFER_PADDING_SIZE];//< compressed frame data
     MDCTContext      mdct_ctx[BLOCK_NB_SIZES];      //< MDCT context per block size
     DECLARE_ALIGNED_16(float, tmp[BLOCK_MAX_SIZE]); //< imdct output buffer
     float*           windows[BLOCK_NB_SIZES];       //< window per block size
@@ -122,7 +125,6 @@ typedef struct WMA3DecodeContext {
     /** packet decode state */
     uint8_t          packet_sequence_number;        //< current packet number
     int              prev_packet_bit_size;          //< saved number of bits
-    uint8_t*         prev_packet_data;              //< prev frame data
     uint8_t          bit5;                          //< padding bit? (CBR files)
     uint8_t          bit6;                          //< unknown
     uint8_t          packet_loss;                   //< set in case of bitstream error
@@ -130,12 +132,11 @@ typedef struct WMA3DecodeContext {
 
     /** frame decode state */
     unsigned int     frame_num;                     //< current frame number
-    GetBitContext*   getbit;                        //< bitstream reader context
+    GetBitContext    getbit;                        //< bitstream reader context
     int              buf_bit_size;                  //< buffer size in bits
     int16_t*         samples;                       //< current samplebuffer pointer
     int16_t*         samples_end;                   //< maximum samplebuffer pointer
     uint8_t          drc_gain;                      //< gain for the DRC tool
-    uint8_t          no_tiling;                     //< frames contain subframes
     int              skip_frame;                    //< skip output step
     int              parsed_all_subframes;          //< all subframes decoded?
 

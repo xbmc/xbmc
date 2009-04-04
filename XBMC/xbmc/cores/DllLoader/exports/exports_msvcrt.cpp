@@ -34,7 +34,7 @@
 #include <string.h>
 #endif
 #endif
-#ifndef WIN32
+#ifndef _WIN32
 #include <math.h>
 #endif
 

@@ -54,6 +54,7 @@ protected:
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size() - m_extraItems; };
   virtual int GetCurrentPage() const;
+  virtual void SetPageControlRange();
 
   void ResetExtraItems();
   unsigned int m_extraItems;

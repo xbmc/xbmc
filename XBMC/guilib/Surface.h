@@ -53,6 +53,8 @@ enum ONTOP {
 #endif
 
 #ifdef HAS_GLX
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <GL/glx.h>
 /*
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
@@ -99,9 +101,13 @@ public:
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
   GLXPbuffer GetPBuffer() {return m_glPBuffer;}
-  GLXPixmap GetPixmap() {return m_glPixmap;}
+  Pixmap GetXPixmap() {return m_Pixmap;}
+  GLXPixmap GetGLPixmap() {return m_glPixmap;}
   bool MakePBuffer();
-  bool MakePixmap();
+  bool MakePixmap(int width, int height);
+  Display* GetDisplay() {return s_dpy;}
+  GLuint GetGLPixmapTex() {return m_glPixmapTexture;}
+  
 #endif
 
   static std::string& GetGLVendor() { return s_glVendor; }
@@ -133,7 +139,9 @@ public:
   GLXWindow  m_glWindow;
   Window  m_parentWindow;
   GLXPixmap  m_glPixmap;
+  Pixmap  m_Pixmap;
   GLXPbuffer  m_glPBuffer;
+  GLuint   m_glPixmapTexture;
   static Display* s_dpy;
 #endif
 #ifdef __APPLE__

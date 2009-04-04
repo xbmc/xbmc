@@ -765,10 +765,10 @@ bool CUtil::HasSlashAtEnd(const CStdString& strFile)
 
 bool CUtil::IsRemote(const CStdString& strFile)
 {
-  if (IsMemCard(strFile) || IsCDDA(strFile) || IsISO9660(strFile) || strFile.Left(7) == "plugin:")
+  if (IsMemCard(strFile) || IsCDDA(strFile) || IsISO9660(strFile) || IsPlugin(strFile))
     return false;
 
-  if (strFile.Left(8) == "special:")
+  if (IsSpecial(strFile))
     return IsRemote(CSpecialProtocol::TranslatePath(strFile));
 
   if(IsStack(strFile))
@@ -838,7 +838,7 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
     return CUtil::IsOnLAN(CMultiPathDirectory::GetFirstPath(strPath));
   if(IsStack(strPath))
     return CUtil::IsOnLAN(CStackDirectory::GetFirstStackedFile(strPath));
-  if(strPath.Left(8) == "special:")
+  if(IsSpecial(strPath))
     return CUtil::IsOnLAN(CSpecialProtocol::TranslatePath(strPath));
   if(IsDAAP(strPath))
     return true;
@@ -966,6 +966,16 @@ bool CUtil::IsZIP(const CStdString& strFile) // also checks for comic books!
   return false;
 }
 
+bool CUtil::IsSpecial(const CStdString& strFile)
+{
+  return strFile.Left(8).Equals("special:");
+}
+
+bool CUtil::IsPlugin(const CStdString& strFile)
+{
+  return strFile.Left(7).Equals("plugin:");
+}
+
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");
@@ -995,6 +1005,7 @@ bool CUtil::IsMemCard(const CStdString& strFile)
 {
   return strFile.Left(3).Equals("mem");
 }
+
 bool CUtil::IsTuxBox(const CStdString& strFile)
 {
   return strFile.Left(7).Equals("tuxbox:");
@@ -2209,7 +2220,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   return true;
 }
 
-CStdString CUtil::MakeLegalFileName(const CStdString &strFile)
+CStdString CUtil::MakeLegalFileName(const CStdString &strFile, bool bWin32Compat)
 {
   CStdString result = strFile;
 
@@ -2217,28 +2228,28 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile)
   result.Replace('\\', '_');
   result.Replace('?', '_');
 
-#ifdef _WIN32PC
-  // just filter out some illegal characters on windows
-  result.Replace(':', '_');
-  result.Replace('*', '_');
-  result.Replace('?', '_');
-  result.Replace('\"', '_');
-  result.Replace('<', '_');
-  result.Replace('>', '_');
-  result.Replace('|', '_');
-#endif
-
+  if (bWin32Compat) 
+  {
+    // just filter out some illegal characters on windows
+    result.Replace(':', '_');
+    result.Replace('*', '_');
+    result.Replace('?', '_');
+    result.Replace('\"', '_');
+    result.Replace('<', '_');
+    result.Replace('>', '_');
+    result.Replace('|', '_');
+  }
   return result;
 }
 
 // same as MakeLegalFileName, but we assume that we're passed a complete path,
 // and just legalize the filename
-CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile)
+CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, bool bWin32Compat)
 {
   CStdString strPath;
   GetDirectory(strPathAndFile,strPath);
   CStdString strFileName = GetFileName(strPathAndFile);
-  return strPath + MakeLegalFileName(strFileName);
+  return strPath + MakeLegalFileName(strFileName, bWin32Compat);
 }
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)
@@ -4392,6 +4403,13 @@ CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
   CStdString thumb;
   thumb.Format("%c/%s.tbn", hex[0], hex.c_str());
   return CUtil::AddFileToFolder(g_settings.GetMusicThumbFolder(), thumb);
+}
+
+CStdString CUtil::GetDefaultFolderThumb(const CStdString &folderThumb)
+{
+  if (g_TextureManager.HasTexture(folderThumb))
+    return folderThumb;
+  return "defaultFolderBig.png";
 }
 
 void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)

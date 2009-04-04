@@ -84,6 +84,8 @@ void CXRandR::Query(bool force)
   {
     XOutput xoutput;
     xoutput.name = output->Attribute("name");
+    xoutput.name.TrimLeft(" \n\r\t");
+    xoutput.name.TrimRight(" \n\r\t");
     xoutput.isConnected = (strcasecmp(output->Attribute("connected"), "true") == 0);
     xoutput.w = (output->Attribute("w") != NULL ? atoi(output->Attribute("w")) : 0);
     xoutput.h = (output->Attribute("h") != NULL ? atoi(output->Attribute("h")) : 0);
@@ -299,15 +301,20 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
 
   char cmd[255];
   CStdString name;
+  CStdString strModeLine;
 
   for (TiXmlElement* modeline = pRootElement->FirstChildElement("modeline"); modeline; modeline = modeline->NextSiblingElement("modeline"))
   {
     name = modeline->Attribute("label");
-
+    name.TrimLeft(" \n\t\r");
+    name.TrimRight(" \n\t\r");
+    strModeLine = modeline->FirstChild()->Value();
+    strModeLine.TrimLeft(" \n\t\r");
+    strModeLine.TrimRight(" \n\t\r");
     if (getenv("XBMC_HOME"))
     {
       snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --newmode \"%s\" %s > /dev/null 2>&1", getenv("XBMC_HOME"),
-               name.c_str(), modeline->FirstChild()->Value());
+               name.c_str(), strModeLine.c_str());
       system(cmd);
     }
 

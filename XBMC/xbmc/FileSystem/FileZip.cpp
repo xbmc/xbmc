@@ -53,7 +53,7 @@ CFileZip::~CFileZip()
   Close();
 }
 
-bool CFileZip::Open(const CURL&url, bool bBinary)
+bool CFileZip::Open(const CURL&url)
 {
   CStdString strPath;
   CStdString strOpts  = url.GetOptions();
@@ -80,10 +80,10 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
     if (!CFile::Exists("special://temp/" + CUtil::GetFileName(strPath)))
       CFile::Cache(strPath + "?cache=no", "special://temp/" + CUtil::GetFileName(strPath));
     m_bCached = true;
-    return mFile.Open("special://temp/" + CUtil::GetFileName(strPath), bBinary);
+    return mFile.Open("special://temp/" + CUtil::GetFileName(strPath));
   }
 
-  if (!mFile.Open(url.GetHostName(),true)) // this is the zip-file, always open binary
+  if (!mFile.Open(url.GetHostName())) // this is the zip-file, always open binary
   {
     CLog::Log(LOGERROR,"FileZip: unable to open zip file %s!",url.GetHostName().c_str());
     return false;
@@ -513,4 +513,5 @@ int CFileZip::UnpackFromMemory(string& strDest, const string& strInput, bool isG
 
   return iResult;
 }
+
 

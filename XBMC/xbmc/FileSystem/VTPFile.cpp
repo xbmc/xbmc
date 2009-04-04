@@ -35,7 +35,7 @@ void CVTPFile::Close()
   m_socket  = INVALID_SOCKET;
 }
 
-bool CVTPFile::Open(const CURL& url2, bool binary)
+bool CVTPFile::Open(const CURL& url2)
 {
   Close();
   CURL url(url2);

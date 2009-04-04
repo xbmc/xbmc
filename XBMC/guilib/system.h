@@ -86,6 +86,19 @@
 #undef HAS_CCXSTREAM
 #endif
 
+//zeroconf
+//on osx enabled by default
+//linux only if avahi is present
+#ifdef _LINUX
+#ifdef __APPLE__
+#define HAS_ZEROCONF
+#else 
+#ifdef HAS_AVAHI
+#define HAS_ZEROCONF
+#endif
+#endif
+#endif
+
 #ifdef _LINUX
 #ifndef __APPLE__
 #define HAS_LCD
@@ -182,6 +195,10 @@
 
 #include "../xbmc/win32/PlatformInclude.h"
 #endif
+#endif
+
+#ifdef __APPLE__
+#include "../svn_revision.h"
 #endif
 
 #ifndef SVN_REV

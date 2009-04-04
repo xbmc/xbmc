@@ -266,23 +266,31 @@ void CGUITextLayout::ParseText(const CStdStringW &text, DWORD defaultStyle, vect
     // check for each type
     if (text.Mid(pos,2) == L"B]")
     { // bold - finish the current text block and assign the bold state
-      newStyle = FONT_STYLE_BOLD;
       pos += 2;
+      if ((on && text.Find(L"[/B]",pos) >= 0) ||          // check for a matching end point
+         (!on && (currentStyle & FONT_STYLE_BOLD)))       // or matching start point
+        newStyle = FONT_STYLE_BOLD;
     }
     else if (text.Mid(pos,2) == L"I]")
     { // italics
-      newStyle = FONT_STYLE_ITALICS;
       pos += 2;
+      if ((on && text.Find(L"[/I]",pos) >= 0) ||          // check for a matching end point
+         (!on && (currentStyle & FONT_STYLE_ITALICS)))    // or matching start point
+        newStyle = FONT_STYLE_ITALICS;
     }
     else if (text.Mid(pos,10) == L"UPPERCASE]")
     {
-      newStyle = FONT_STYLE_UPPERCASE;
       pos += 10;
+      if ((on && text.Find(L"[/UPPERCASE]",pos) >= 0) ||  // check for a matching end point
+         (!on && (currentStyle & FONT_STYLE_UPPERCASE)))  // or matching start point
+        newStyle = FONT_STYLE_UPPERCASE;
     }
     else if (text.Mid(pos,10) == L"LOWERCASE]")
     {
-      newStyle = FONT_STYLE_LOWERCASE;
       pos += 10;
+      if ((on && text.Find(L"[/LOWERCASE]",pos) >= 0) ||  // check for a matching end point
+         (!on && (currentStyle & FONT_STYLE_LOWERCASE)))  // or matching start point
+        newStyle = FONT_STYLE_LOWERCASE;
     }
     else if (text.Mid(pos,3) == L"CR]" && on)
     {
@@ -292,16 +300,15 @@ void CGUITextLayout::ParseText(const CStdStringW &text, DWORD defaultStyle, vect
     else if (text.Mid(pos,5) == L"COLOR")
     { // color
       size_t finish = text.Find(L']', pos + 5);
-      if (on && finish != CStdString::npos)
+      if (on && finish != CStdString::npos && text.Find(L"[/COLOR]",finish) != CStdString::npos)
       { // create new color
         newColor = colors.size();
         colors.push_back(g_colorManager.GetColor(text.Mid(pos + 5, finish - pos - 5)));
         colorStack.push(newColor);
       }
-      else if (!on && finish == pos + 5)
+      else if (!on && finish == pos + 5 && colorStack.size() > 1)
       { // revert to previous color
-        if (colorStack.size() > 1)
-          colorStack.pop();
+        colorStack.pop();
         newColor = colorStack.top();
       }
       pos = finish + 1;

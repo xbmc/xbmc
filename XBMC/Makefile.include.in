@@ -1,5 +1,5 @@
 AR=ar
-ARFLAGS=rus
+ARFLAGS=crus
 RM=rm -f
 SHELL=/bin/bash
 ARCH=@ARCH@
@@ -101,7 +101,7 @@ OBJS+=$(filter %.o,$(SRCS:.m=.o))
 .PHONY : lib pch clean distclean distclean_evil
 
 $(LIB): $(OBJS)
-	$(AR) cru $(LIB) $(OBJS)
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
 
 pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) pch ); done

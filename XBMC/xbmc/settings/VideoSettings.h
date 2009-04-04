@@ -41,7 +41,8 @@ enum EINTERLACEMETHOD
   VS_INTERLACEMETHOD_RENDER_BOB_INVERTED=5,
   VS_INTERLACEMETHOD_RENDER_BOB=6,
 
-  VS_INTERLACEMETHOD_DEINTERLACE=7
+  VS_INTERLACEMETHOD_DEINTERLACE=7,
+  VS_INTERLACEMETHOD_INVERSE_TELECINE=8,
 };
 
 enum ESCALINGMETHOD
@@ -87,6 +88,8 @@ public:
   int m_Brightness;
   int m_Contrast;
   int m_Gamma;
+  float m_NoiseReduction;
+  float m_Sharpness;
   float m_AudioDelay;
   int m_ResumeTime;
   bool m_Crop;

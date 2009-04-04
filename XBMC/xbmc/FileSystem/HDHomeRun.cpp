@@ -162,11 +162,8 @@ CFileHomeRun::~CFileHomeRun()
   Close();
 }
 
-bool CFileHomeRun::Open(const CURL &url, bool bBinary)
+bool CFileHomeRun::Open(const CURL &url)
 {
-  if(!bBinary)
-    return false;
-
   if(!m_dll.IsLoaded())
     return false;
 

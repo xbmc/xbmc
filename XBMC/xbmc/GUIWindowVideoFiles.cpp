@@ -697,7 +697,6 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     item = m_vecItems->Get(itemNumber);
   if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
     if (CGUIDialogContextMenu::OnContextButton("video", item, button))
     {
       if (button == CONTEXT_BUTTON_REMOVE_SOURCE)

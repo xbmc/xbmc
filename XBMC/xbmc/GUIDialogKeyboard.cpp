@@ -100,20 +100,18 @@ void CGUIDialogKeyboard::OnInitWindow()
 
 bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
+  bool handled(true);
   if (action.wID == ACTION_BACKSPACE)
   {
     Backspace();
-    return true;
   }
   else if (action.wID == ACTION_ENTER)
   {
     OnOK();
-    return true;
   }
   else if (action.wID == ACTION_CURSOR_LEFT)
   {
     MoveCursor( -1);
-    return true;
   }
   else if (action.wID == ACTION_CURSOR_RIGHT)
   {
@@ -123,22 +121,18 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     }
     else
       MoveCursor(1);
-    return true;
   }
   else if (action.wID == ACTION_SHIFT)
   {
     OnShift();
-    return true;
   }
   else if (action.wID == ACTION_SYMBOLS)
   {
     OnSymbols();
-    return true;
   }
   else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
   {
     OnRemoteNumberClick(action.wID);
-    return true;
   }
   else if (action.wID >= (WORD)KEY_VKEY && action.wID < (WORD)KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
@@ -191,7 +185,6 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     else if (b == 0x08) Backspace();    // backspace
     else if (b == 0x1B) Close();        // escape
     else if (b == 0x20) Character(b);   // space
-    return true;
   }
   else if (action.wID >= KEY_ASCII)
   { // input from the keyboard
@@ -219,9 +212,15 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       Character(action.unicode);
       break;
     }
-    return true;
   }
-  return CGUIDialog::OnAction(action);
+  else // unhandled by us - let's see if the baseclass wants it
+    handled = CGUIDialog::OnAction(action);
+
+  if (handled && m_filtering == FILTERING_SEARCH)
+  { // we did _something_, so make sure our search message filter is reset
+    SendSearchMessage();
+  }
+  return handled;
 }
 
 bool CGUIDialogKeyboard::OnMessage(CGUIMessage& message)
@@ -352,13 +351,22 @@ void CGUIDialogKeyboard::UpdateLabel() // FIXME seems to be called twice for one
       message.SetStringParam(utf8Edit);
       g_graphicsContext.SendMessage(message);
     }
+
     if (m_filtering == FILTERING_SEARCH)
-    { // send our search message
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_SEARCH_UPDATE);
-      message.SetStringParam(utf8Edit);
-      g_graphicsContext.SendMessage(message);
-    }
+      SendSearchMessage();
   }
+}
+
+void CGUIDialogKeyboard::SendSearchMessage()
+{
+  CStdString utf8Edit;
+  g_charsetConverter.wToUTF8(m_strEdit, utf8Edit);
+  // send our search message (only the active window needs it)
+  CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_SEARCH_UPDATE);
+  message.SetStringParam(utf8Edit);
+  CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  if (window)
+    window->OnMessage(message);
 }
 
 void CGUIDialogKeyboard::Backspace()
@@ -751,6 +759,9 @@ void CGUIDialogKeyboard::OnIPAddress()
     utf8String = utf8String.Left(start) + ip + utf8String.Mid(start + length);
     g_charsetConverter.utf8ToW(utf8String, m_strEdit);
     UpdateLabel();
+    CGUILabelControl* pEdit = ((CGUILabelControl*)GetControl(CTL_LABEL_EDIT));
+    if (pEdit)
+      pEdit->SetCursorPos(m_strEdit.size());
   }
 }
 

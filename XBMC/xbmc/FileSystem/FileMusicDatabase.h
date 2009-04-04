@@ -29,7 +29,7 @@ class CFileMusicDatabase : public IFile
 public:
   CFileMusicDatabase(void);
   virtual ~CFileMusicDatabase(void);
-  virtual bool Open(const CURL& url, bool bBinary = true);
+  virtual bool Open(const CURL& url);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
 

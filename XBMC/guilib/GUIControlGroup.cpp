@@ -510,7 +510,8 @@ void CGUIControlGroup::AddLookup(CGUIControl *control)
     for (LookupMap::const_iterator i = map.begin(); i != map.end(); i++)
       m_lookup.insert(m_lookup.upper_bound(i->first), make_pair(i->first, i->second));
   }
-  m_lookup.insert(m_lookup.upper_bound(control->GetID()), make_pair(control->GetID(), control));
+  if (control->GetID())
+    m_lookup.insert(m_lookup.upper_bound(control->GetID()), make_pair(control->GetID(), control));
   // ensure that our size is what it should be
   if (m_parentControl)
     ((CGUIControlGroup *)m_parentControl)->AddLookup(control);
@@ -520,7 +521,7 @@ void CGUIControlGroup::RemoveLookup(CGUIControl *control)
 {
   if (control->IsGroup())
   { // remove the group's lookup
-    const LookupMap map = ((CGUIControlGroup *)control)->GetLookup();
+    const LookupMap &map = ((CGUIControlGroup *)control)->GetLookup();
     for (LookupMap::const_iterator i = map.begin(); i != map.end(); i++)
     { // remove this control
       for (LookupMap::iterator it = m_lookup.begin(); it != m_lookup.end(); it++)
@@ -534,12 +535,15 @@ void CGUIControlGroup::RemoveLookup(CGUIControl *control)
     }
   }
   // remove the actual control
-  for (LookupMap::iterator it = m_lookup.begin(); it != m_lookup.end(); it++)
+  if (control->GetID())
   {
-    if (control == it->second)
+    for (LookupMap::iterator it = m_lookup.begin(); it != m_lookup.end(); it++)
     {
-      m_lookup.erase(it);
-      break;
+      if (control == it->second)
+      {
+        m_lookup.erase(it);
+        break;
+      }
     }
   }
   if (m_parentControl)

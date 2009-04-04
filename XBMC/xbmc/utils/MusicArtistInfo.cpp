@@ -69,88 +69,8 @@ const CScraperUrl& CMusicArtistInfo::GetArtistURL() const
 
 bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
 {
-  if (!bChained)
-    m_artist.Reset();
-
-  XMLUtils::GetString(artist,"title",m_artist.strArtist);
-  const TiXmlNode* node = artist->FirstChild("genre");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      CStdString strTemp = node->FirstChild()->Value();
-      if (m_artist.strGenre.IsEmpty())
-        m_artist.strGenre = strTemp;
-      else
-        m_artist.strGenre += g_advancedSettings.m_musicItemSeparator+strTemp;
-    }
-    node = node->NextSibling("genre");
-  }
-  node = artist->FirstChild("style");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      CStdString strTemp = node->FirstChild()->Value();
-      if (m_artist.strStyles.IsEmpty())
-        m_artist.strStyles = strTemp;
-      else
-        m_artist.strStyles += g_advancedSettings.m_musicItemSeparator+strTemp;
-    }
-    node = node->NextSibling("style");
-  }
-  node = artist->FirstChild("mood");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      CStdString strTemp = node->FirstChild()->Value();
-      if (m_artist.strMoods.IsEmpty())
-        m_artist.strMoods = strTemp;
-      else
-        m_artist.strMoods += g_advancedSettings.m_musicItemSeparator+strTemp;
-    }
-    node = node->NextSibling("mood");
-  }
-
-  XMLUtils::GetString(artist,"born",m_artist.strBorn);
-  XMLUtils::GetString(artist,"instruments",m_artist.strInstruments);
-  XMLUtils::GetString(artist,"biography",m_artist.strBiography);
-
-  const TiXmlElement* thumbElement = artist->FirstChildElement("thumbs");
-  if (!thumbElement || !m_artist.thumbURL.ParseElement(thumbElement) || m_artist.thumbURL.m_url.size() == 0)
-  {
-    if (artist->FirstChildElement("thumb") && !artist->FirstChildElement("thumb")->FirstChildElement())
-    {
-      if (artist->FirstChildElement("thumb")->FirstChild() && strncmp(artist->FirstChildElement("thumb")->FirstChild()->Value(),"<thumb>",7) == 0)
-      {
-        CStdString strValue = artist->FirstChildElement("thumb")->FirstChild()->Value();
-        TiXmlDocument doc;
-        doc.Parse(strValue.c_str());
-        if (doc.FirstChildElement("thumbs"))
-          m_artist.thumbURL.ParseElement(doc.FirstChildElement("thumbs"));
-        else
-          m_artist.thumbURL.ParseElement(doc.FirstChildElement("thumb"));
-      }
-      else
-        m_artist.thumbURL.ParseElement(artist->FirstChildElement("thumb"));
-    }
-  }
-  node = artist->FirstChild("album");
-  while (node)
-  {
-    const TiXmlNode* title = node->FirstChild("title");
-    if (title && title->FirstChild())
-    {
-      CStdString strTitle = title->FirstChild()->Value();
-      CStdString strYear;
-      const TiXmlNode* year = node->FirstChild("year");
-      if (year && year->FirstChild())
-        strYear = year->FirstChild()->Value();
-      m_artist.discography.push_back(make_pair(strTitle,strYear));
-    }
-    node = node->NextSibling("album");
-  }
+  if (!m_artist.Load(artist,bChained))
+    return false;
 
   SetLoaded(true);
 
@@ -184,6 +104,8 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
   for (unsigned int i=0;i<strHTML.size();++i)
     parser.m_param[i] = strHTML[i];
 
+  parser.m_param[strHTML.size()] = m_strSearch;
+
   CStdString strXML = parser.Parse(strFunction);
   if (strXML.IsEmpty())
   {
@@ -197,7 +119,6 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
-  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())
@@ -205,7 +126,7 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
     CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
     return false;
   }
-
+  
   bool ret = Parse(doc.RootElement(),bChained);
   TiXmlElement* pRoot = doc.RootElement();
   TiXmlElement* xurl = pRoot->FirstChildElement("url");
@@ -219,7 +140,6 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
     }
     xurl = xurl->NextSiblingElement("url");
   }
-  TiXmlBase::SetCondenseWhiteSpace(true);
 
   return ret;
 }

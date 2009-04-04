@@ -82,6 +82,7 @@ public:
   virtual void RenderNoPresent();
   virtual HRESULT Create(HWND hWnd);
   virtual HRESULT Cleanup();
+
   void StartServices();
   void StopServices();
   void StartWebServer();
@@ -103,6 +104,8 @@ public:
   void RefreshEventServer();
   void StartDbusServer();
   bool StopDbusServer();
+  void StartZeroconf();
+  void StopZeroconf();
   void DimLCDOnPlayback(bool dim);
   DWORD GetThreadId() const { return m_threadID; };
   void Stop();

@@ -55,7 +55,7 @@ using namespace MUSICDATABASEDIRECTORY;
 using namespace MEDIA_DETECT;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        12
+#define MUSIC_DATABASE_VERSION        13
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
@@ -98,7 +98,7 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create thumb table");
     m_pDS->exec("CREATE TABLE thumb (idThumb integer primary key, strThumb text)\n");
     CLog::Log(LOGINFO, "create artistnfo table");
-    m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strDied text, strDisbanded text, strYearsActive text, strImage text)\n");
+    m_pDS->exec("CREATE TABLE artistinfo ( idArtistInfo integer primary key, idArtist integer, strBorn text, strFormed text, strGenres text, strMoods text, strStyles text, strInstruments text, strBiography text, strDied text, strDisbanded text, strYearsActive text, strImage text, strFanart text)\n");
     CLog::Log(LOGINFO, "create content table");
     m_pDS->exec("CREATE TABLE content (strPath text, strScraperPath text, strContent text, strSettings text)\n");
     CLog::Log(LOGINFO, "create discography table");
@@ -807,7 +807,11 @@ CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThu
   artist.strInstruments = pDS->fv(artist_strInstruments).get_asString();
 
   if (needThumb)
+  {
+    artist.fanart.m_xml = pDS->fv(artist_strFanart).get_asString();
+    artist.fanart.Unpack();
     artist.thumbURL.ParseString(pDS->fv(artist_strImage).get_asString());
+  }
 
   return artist;
 }
@@ -1003,7 +1007,7 @@ bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
     strResult = "";
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    CStdString strSQL=FormatSQL(strQuery);
+    CStdString strSQL=strQuery;
     if (!m_pDS->query(strSQL.c_str()))
     {
       strResult = m_pDB->getErrorMsg();
@@ -1040,6 +1044,24 @@ bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
 
   }
 
+  return false;
+}
+
+bool CMusicDatabase::ArbitraryExec(const CStdString& strExec)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    CStdString strSQL = strExec;
+    m_pDS->exec(strSQL.c_str());
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
   return false;
 }
 
@@ -1732,7 +1754,7 @@ long CMusicDatabase::SetArtistInfo(long idArtist, const CArtist& artist)
     m_pDS->exec(strSQL.c_str());
 
     // insert the artistinfo
-    strSQL=FormatSQL("insert into artistinfo (idArtistInfo,idArtist,strBorn,strFormed,strGenres,strMoods,strStyles,strInstruments,strBiography,strDied,strDisbanded,strYearsActive,strImage) values(NULL,%i,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
+    strSQL=FormatSQL("insert into artistinfo (idArtistInfo,idArtist,strBorn,strFormed,strGenres,strMoods,strStyles,strInstruments,strBiography,strDied,strDisbanded,strYearsActive,strImage,strFanart) values(NULL,%i,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
                   idArtist, artist.strBorn.c_str(),
                   artist.strFormed.c_str(),
                   artist.strGenre.c_str(),
@@ -1743,7 +1765,8 @@ long CMusicDatabase::SetArtistInfo(long idArtist, const CArtist& artist)
                   artist.strDied.c_str(),
                   artist.strDisbanded.c_str(),
                   artist.strYearsActive.c_str(),
-                  artist.thumbURL.m_xml.c_str());
+                  artist.thumbURL.m_xml.c_str(),
+                  artist.fanart.m_xml.c_str());
     m_pDS->exec(strSQL.c_str());
     long idArtistInfo = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
     for (unsigned int i=0;i<artist.discography.size();++i)
@@ -2582,38 +2605,39 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
                           "select exartistalbum.idArtist from exartistalbum "; // All extra artists linked to an album
       if (albumArtistsOnly)
         strSQL +=         "join album on album.idAlbum = exartistalbum.idAlbum " // if we're hiding compilation artists,
-                          "where album.strExtraArtists != ''";                      // then exclude those where that have no extra artists
+                          "where album.strExtraArtists != ''";                   // then exclude those that have no extra artists
       strSQL +=           ")"
                         ") ";
     }
     else
     { // same statements as above, but limit to the specified genre
       // in this case we show the whole lot always - there is no limitation to just album artists
-      strSQL+=FormatSQL("("
-                        "select song.idArtist from song " // All primary artists linked to primary genres
-                        "where song.idGenre=%ld"
-                        ") "
-                      "or idArtist IN "
-                        "("
-                        "select song.idArtist from song " // All primary artists linked to extra genres
-                          "join exgenresong on song.idSong=exgenresong.idSong "
-                        "where exgenresong.idGenre=%ld"
-                        ")"
-                      "or idArtist IN "
-                        "("
-                        "select exartistsong.idArtist from exartistsong " // All extra artists linked to extra genres
-                          "join song on exartistsong.idSong=song.idSong "
-                          "join exgenresong on song.idSong=exgenresong.idSong "
-                        "where exgenresong.idGenre=%ld"
-                        ") "
-                      "or idArtist IN "
-                        "("
-                        "select exartistsong.idArtist from exartistsong " // All extra artists linked to primary genres
-                          "join song on exartistsong.idSong=song.idSong "
-                        "where song.idGenre=%ld"
-                        ") "
-                      "or idArtist IN "
-                      , idGenre, idGenre, idGenre, idGenre);
+      if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
+        strSQL+=FormatSQL("("
+                          "select song.idArtist from song " // All primary artists linked to primary genres
+                          "where song.idGenre=%ld"
+                          ") "
+                        "or idArtist IN "
+                          "("
+                          "select song.idArtist from song " // All primary artists linked to extra genres
+                            "join exgenresong on song.idSong=exgenresong.idSong "
+                          "where exgenresong.idGenre=%ld"
+                          ")"
+                        "or idArtist IN "
+                          "("
+                          "select exartistsong.idArtist from exartistsong " // All extra artists linked to extra genres
+                            "join song on exartistsong.idSong=song.idSong "
+                            "join exgenresong on song.idSong=exgenresong.idSong "
+                          "where exgenresong.idGenre=%ld"
+                          ") "
+                        "or idArtist IN "
+                          "("
+                          "select exartistsong.idArtist from exartistsong " // All extra artists linked to primary genres
+                            "join song on exartistsong.idSong=song.idSong "
+                          "where song.idGenre=%ld"
+                          ") "
+                        "or idArtist IN "
+                        , idGenre, idGenre, idGenre, idGenre);
       // and add any artists linked to an album (may be different from above due to album artist tag)
       strSQL += FormatSQL("("
                           "select album.idArtist from album " // All primary album artists linked to primary genres
@@ -2644,7 +2668,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     // remove the null string
     strSQL += " and artist.strArtist != \"\"";
     // and the various artist entry if applicable
-    if (!albumArtistsOnly || idGenre > -1)
+    if (!albumArtistsOnly)
     {
       CStdString strVariousArtists = g_localizeStrings.Get(340);
       long lVariousArtistsId = AddArtist(strVariousArtists);
@@ -3136,8 +3160,11 @@ bool CMusicDatabase::UpdateOldVersion(int version)
         }
       }
     }
-
-    return true;
+    if (version < 13)
+    {
+      // add fanart info
+      m_pDS->exec("alter table artistinfo add strFanart text");
+    }
   }
   catch (...)
   {
@@ -4369,7 +4396,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     // Write the document
     XFILE::CFile file;
 
-    if ( !file.OpenForWrite( outFile, false, true ) )
+    if ( !file.OpenForWrite( outFile, true ) )
       return;
 
     CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);

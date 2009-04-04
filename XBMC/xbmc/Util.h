@@ -220,6 +220,8 @@ public:
   static bool IsZIP(const CStdString& strFile);
   static bool IsInZIP(const CStdString& strFile);
   static bool IsInArchive(const CStdString& strFile);
+  static bool IsSpecial(const CStdString& strFile);
+  static bool IsPlugin(const CStdString& strFile); 
   static bool IsCDDA(const CStdString& strFile);
   static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
@@ -282,8 +284,15 @@ public:
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
   static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
   static bool CreateDirectoryEx(const CStdString& strPath);
-  static CStdString MakeLegalFileName(const CStdString &strFile);
-  static CStdString MakeLegalPath(const CStdString &strPath);
+
+#ifdef _WIN32PC
+  static CStdString MakeLegalFileName(const CStdString &strFile, bool bWin32Compat=true);
+  static CStdString MakeLegalPath(const CStdString &strPath, bool bWin32Compat=true);
+#else
+  static CStdString MakeLegalFileName(const CStdString &strFile, bool bWin32Compat=false);
+  static CStdString MakeLegalPath(const CStdString &strPath, bool bWin32Compat=false);
+#endif
+  
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 
@@ -318,6 +327,7 @@ public:
 
   static CStdString GetCachedMusicThumb(const CStdString &path);
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
+  static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
   static void ClearFileItemCache();
 
 #ifdef _LINUX

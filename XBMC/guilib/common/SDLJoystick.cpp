@@ -17,10 +17,12 @@ CJoystick::CJoystick()
   m_AxisId = 0;
   m_JoyId = 0;
   m_ButtonId = 0;
+  m_HatId = 0;
   m_ActiveFlags = JACTIVE_NONE;
   for (int i = 0 ; i<MAX_AXES ; i++)
   {
     m_Amount[i] = 0;
+    m_HatState[i] = SDL_HAT_CENTERED;
   }
   SetSafeRange(2000);
 }
@@ -63,6 +65,7 @@ void CJoystick::Initialize(HWND hWnd)
 #endif
 
       m_Joysticks.push_back(joy);
+      m_JoyPadAxis.push_back(vector<bool>(SDL_JoystickNumAxes(joy),false));
       if (joy)
       {
         CalibrateAxis(joy);
@@ -111,6 +114,7 @@ void CJoystick::Update()
 {
   int buttonId = -1;
   int axisId = -1;
+  int hatId = -1;
   int numj = m_Joysticks.size();
   if (numj<=0)
     return;
@@ -124,8 +128,10 @@ void CJoystick::Update()
     SDL_Joystick *joy = m_Joysticks[j];
     int numb = SDL_JoystickNumButtons(joy);
     int numax = SDL_JoystickNumAxes(joy);
+    int numhat = SDL_JoystickNumHats(joy);
     numax = (numax>MAX_AXES)?MAX_AXES:numax;
     int axisval;
+    Uint8 hatval;
 
     // get button states first, they take priority over axis
     for (int b = 0 ; b<numb ; b++)
@@ -138,7 +144,18 @@ void CJoystick::Update()
         break;
       }
     }
-
+    for(int h = 0; h<numhat ; h++)
+    {
+      hatval = SDL_JoystickGetHat(joy, h);
+      if(hatval!=SDL_HAT_CENTERED)
+      {
+        m_JoyId = j;
+        hatId = h+1;
+        m_HatState[hatId] = hatval;
+        j = numj-1;
+        break;
+      }
+    }
     // get axis states
     m_NumAxes = numax;
     for (int a = 0 ; a<numax ; a++)
@@ -158,16 +175,29 @@ void CJoystick::Update()
         }
       }
     }
-    m_AxisId = GetAxisWithMaxAmount();
+    axisId = GetAxisWithMaxAmount();
+    
+    if(axisId==0)
+    {
+      m_pressTicksAxis = 0;
+      SetAxisActive(false);
+      m_AxisId = 0;
+    }
+    else
+    {
+      if(axisId!=m_AxisId && m_JoyPadAxis[m_JoyId][axisId])
+	      m_pressTicksAxis = SDL_GetTicks();
+      m_AxisId = axisId;
+    }
   }
-
+  
   if (buttonId==-1)
   {
     if (m_ButtonId!=0)
     {
       CLog::Log(LOGDEBUG, "Joystick %d button %d Up", m_JoyId, m_ButtonId);
     }
-    m_pressTicks = 0;
+    m_pressTicksButton = 0;
     SetButtonActive(false);
     m_ButtonId = 0;
   }
@@ -177,11 +207,35 @@ void CJoystick::Update()
     {
       CLog::Log(LOGDEBUG, "Joystick %d button %d Down", m_JoyId, buttonId);
       m_ButtonId = buttonId;
-      m_pressTicks = SDL_GetTicks();
+      m_pressTicksButton = SDL_GetTicks();
     }
     SetButtonActive();
   }
+  if(hatId==-1)
+  {
+    if(m_HatId!=0)
+      CLog::Log(LOGDEBUG, "Joystick %d hat %u Centered", m_JoyId, hatId);
+    m_pressTicksHat = 0;
+    SetHatActive(false);
+    m_HatId = 0;
+  }
+  else
+  {
+    if(hatId!=m_HatId)
+    {
+      CLog::Log(LOGDEBUG, "Joystick %d hat %u Down", m_JoyId, hatId);
+      m_HatId = hatId;
+      m_pressTicksHat = SDL_GetTicks();
+    }
+    SetHatActive();
+  }
+}
 
+void CJoystick::SetAxisPad(string joyname, int axis)
+{
+  for(size_t idJoyNames = 0; idJoyNames < m_JoystickNames.size(); idJoyNames++)
+    if(joyname.compare(m_JoystickNames[idJoyNames].c_str())==0)
+  m_JoyPadAxis[idJoyNames][abs(axis)-1] = true;
 }
 
 void CJoystick::Update(SDL_Event& joyEvent)
@@ -197,7 +251,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
   case SDL_JOYBUTTONDOWN:
     m_JoyId = joyId = joyEvent.jbutton.which;
     m_ButtonId = buttonId = joyEvent.jbutton.button + 1;
-    m_pressTicks = SDL_GetTicks();
+    m_pressTicksButton = SDL_GetTicks();
     SetButtonActive();
     CLog::Log(LOGDEBUG, "Joystick %d button %d Down", joyId, buttonId);
     break;
@@ -233,7 +287,7 @@ void CJoystick::Update(SDL_Event& joyEvent)
     break;
 
   case SDL_JOYBUTTONUP:
-    m_pressTicks = 0;
+    m_pressTicksButton = 0;
     SetButtonActive(false);
     CLog::Log(LOGDEBUG, "Joystick %d button %d Up", joyEvent.jbutton.which, m_ButtonId);
 
@@ -242,6 +296,16 @@ void CJoystick::Update(SDL_Event& joyEvent)
     break;
   }
 }
+
+bool CJoystick::GetAxis (int &id)
+{
+  if (!IsAxisActive())
+    return false;
+  
+  id=m_AxisId;
+  return (Repeat(id,true));
+}
+
 
 bool CJoystick::GetButton(int &id, bool consider_repeat)
 {
@@ -253,21 +317,88 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
     return true;
   }
 
+  return (Repeat(id,false));
+}
+
+bool CJoystick::Repeat(int &id, bool axis)
+{
+  static Uint32 lastPressTicksAnalog = 0;
+  static Uint32 lastPressTicksDigital = 0;
+  static Uint32 lastTicksAnalog = 0;
+  static Uint32 lastTicksDigital = 0;
+  
+  static Uint32 nowTicks = 0;
+
+  Uint32 pressTicks;
+  Uint32* lastPressTicks;
+  Uint32* lastTicks;
+
+  int event;
+  if(axis)
+  {
+    event = m_AxisId;
+    pressTicks = m_pressTicksAxis;
+    lastPressTicks = &lastPressTicksAnalog;
+    lastTicks = &lastTicksAnalog;
+  }
+  else
+  {
+    event = m_ButtonId;
+    pressTicks = m_pressTicksButton;
+    lastPressTicks = &lastPressTicksDigital;
+    lastTicks = &lastTicksDigital;
+  }
+
+  if ((event!=0) && pressTicks )
+  {
+    // return the id if it's the first press
+    if (*lastPressTicks!=pressTicks)
+    {
+      *lastPressTicks = pressTicks;
+      id = event;
+      return true;
+    }
+    nowTicks = SDL_GetTicks();
+    if ((nowTicks-pressTicks)<500) // 500ms delay before we repeat
+    {
+      return false;
+    }
+    if ((nowTicks- *lastTicks)<100) // 100ms delay before successive repeats
+    {
+      return false;
+    }
+    *lastTicks = nowTicks;
+  }
+  id = event;
+  return true;
+
+}
+
+bool CJoystick::GetHat(int &id, bool consider_repeat)
+{
+  if (!IsHatActive())
+    return false;
+  if (!consider_repeat)
+  {
+    id = m_HatId;
+    return true;
+  }
+
   static Uint32 lastPressTicks = 0;
   static Uint32 lastTicks = 0;
   static Uint32 nowTicks = 0;
 
-  if ((m_ButtonId>=0) && m_pressTicks)
+  if ((m_HatId>=0) && m_pressTicksHat)
   {
     // return the id if it's the first press
-    if (lastPressTicks!=m_pressTicks)
+    if (lastPressTicks!=m_pressTicksHat)
     {
-      lastPressTicks = m_pressTicks;
-      id = m_ButtonId;
+      lastPressTicks = m_pressTicksHat;
+      id = m_HatId;
       return true;
     }
     nowTicks = SDL_GetTicks();
-    if ((nowTicks-m_pressTicks)<500) // 500ms delay before we repeat
+    if ((nowTicks-m_pressTicksHat)<500) // 500ms delay before we repeat
     {
       return false;
     }
@@ -277,9 +408,10 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
     }
     lastTicks = nowTicks;
   }
-  id = m_ButtonId;
+  id = m_HatId;
   return true;
 }
+
 
 int CJoystick::GetAxisWithMaxAmount()
 {

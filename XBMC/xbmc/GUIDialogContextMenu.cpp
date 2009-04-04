@@ -37,8 +37,14 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
+#include "Picture.h"
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
+#endif
+
+#ifdef _WIN32PC
+#include "WIN32Util.h"
 #endif
 
 using namespace std;
@@ -293,8 +299,6 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
         buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
 
       buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
-      if (share->m_strThumbnailImage != "")
-        buttons.Add(CONTEXT_BUTTON_REMOVE_THUMB, 20057);
     }
     if (!GetDefaultShareNameByType(type).IsEmpty())
       buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
@@ -357,7 +361,8 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
   case CONTEXT_BUTTON_EJECT_DISC:
 #ifdef _WIN32PC
-    if( item->m_strPath[0] ) CIoSupport::EjectTray( true, item->m_strPath[0] ); // TODO: detect tray state
+    if( item->m_strPath[0] )
+      CWIN32Util::ToggleTray(item->m_strPath[0]);
 #else
     CIoSupport::ToggleTray();
 #endif
@@ -437,31 +442,78 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       else if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
+      // setup our thumb list
+      CFileItemList items;
+
+      // add the current thumb, if available
+      if (!share->m_strThumbnailImage.IsEmpty())
+      {
+        CFileItemPtr current(new CFileItem("thumb://Current", false));
+        current->SetThumbnailImage(share->m_strThumbnailImage);
+        current->SetLabel(g_localizeStrings.Get(20016));
+        items.Add(current);
+      }
+      else if (item->HasThumbnail())
+      { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
+        CFileItemPtr current(new CFileItem("thumb://Current", false));
+        current->SetThumbnailImage(item->GetThumbnailImage());
+        current->SetLabel(g_localizeStrings.Get(20016));
+        items.Add(current);
+      }
+      // see if there's a local thumb for this item
+      CStdString folderThumb = item->GetFolderThumb();
+      if (XFILE::CFile::Exists(folderThumb))
+      { // cache it
+        CPicture pic;
+        if (pic.DoCreateThumbnail(folderThumb, item->GetCachedProgramThumb()))
+        {
+          CFileItemPtr local(new CFileItem("thumb://Local", false));
+          local->SetThumbnailImage(item->GetCachedProgramThumb());
+          local->SetLabel(g_localizeStrings.Get(20017));
+          items.Add(local);
+        }
+      }
+      // and add a "no thumb" entry as well
+      CFileItemPtr nothumb(new CFileItem("thumb://None", false));
+      nothumb->SetIconImage(item->GetIconImage());
+      nothumb->SetLabel(g_localizeStrings.Get(20018));
+      items.Add(nothumb);
+
       CStdString strThumb;
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares);
+      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
+        return false;
 
-      if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
+      if (strThumb == "thumb://Current")
+        return true;
+
+      if (strThumb == "thumb://None")
+        strThumb = "";
+
+      if (!share->m_ignore)
       {
         g_settings.UpdateSource(type,share->strName,"thumbnail",strThumb);
         g_settings.SaveSources();
-
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-        m_gWindowManager.SendThreadMessage(msg);
-        return true;
+      }
+      else if (!strThumb.IsEmpty())
+      { // this is icky as we have to cache using a bunch of different criteria
+        CStdString cachedThumb;
+        if (type == "music")
+        {
+          cachedThumb = item->m_strPath;
+          CUtil::RemoveSlashAtEnd(cachedThumb);
+          cachedThumb = CUtil::GetCachedMusicThumb(cachedThumb);
+        }
+        else if (type == "video")
+          cachedThumb = item->GetCachedVideoThumb();
+        else if (type == "pictures")
+          cachedThumb = item->GetCachedPictureThumb();
+        else  // assume "programs"
+          cachedThumb = item->GetCachedProgramThumb();
+        XFILE::CFile::Cache(strThumb, cachedThumb);
       }
 
-      return false;
-    }
-  case CONTEXT_BUTTON_REMOVE_THUMB:
-    {
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
-        return false;
-      else if (!g_passwordManager.IsMasterLockUnlocked(true))
-        return false;
-
-      g_settings.UpdateSource(type,share->strName,"thumbnail","");
-      g_settings.SaveSources();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       m_gWindowManager.SendThreadMessage(msg);
       return true;

@@ -524,7 +524,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   CMediaSource share;
   share.strName=g_localizeStrings.Get(136); // Playlists
   share.strPath = "special://musicplaylists/";
-  share.m_strThumbnailImage="defaultFolderBig.png";
+  share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicPlaylists.png");
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 
@@ -533,7 +533,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   // Search share
   share.strName=g_localizeStrings.Get(137); // Search
   share.strPath = "musicsearch://";
-  share.m_strThumbnailImage="defaultFolderBig.png";
+  share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicSearch.png");
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 
@@ -544,7 +544,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   {
     share.strName = g_localizeStrings.Get(20389);
     share.strPath = "videodb://3/";
-    share.m_strThumbnailImage = "defaultFolderBig.png";
+    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicVideos.png");
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }
@@ -554,6 +554,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   {
     share.strName = g_localizeStrings.Get(1038);
     share.strPath = "plugin://music/";
+    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicPlugins.png");
     share.m_ignore = true;
     m_sources.push_back(share);
   }

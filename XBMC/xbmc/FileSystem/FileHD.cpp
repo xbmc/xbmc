@@ -75,7 +75,7 @@ CStdString CFileHD::GetLocal(const CURL &url)
 }
 
 //*********************************************************************************************
-bool CFileHD::Open(const CURL& url, bool bBinary)
+bool CFileHD::Open(const CURL& url)
 {
   CStdString strFile = GetLocal(url);
 
@@ -136,7 +136,7 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 
 
 //*********************************************************************************************
-bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
+bool CFileHD::OpenForWrite(const CURL& url, bool bOverWrite)
 {
   // make sure it's a legal FATX filename (we are writing to the harddisk)
   CStdString strPath = GetLocal(url);

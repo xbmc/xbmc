@@ -171,8 +171,21 @@
 
       <!-- hold play  --> <button id="7">Fullscreen</button>
       <!-- hold menu  --> <button id="8">ContextMenu</button>
+      
+      <!-- old buttons (ATV <2.2) -->
       <!-- hold left  --> <button id="9">BigStepBack</button>
       <!-- hold right --> <button id="10">BigStepForward</button>
+      
+      <!-- Learned remote buttons (ATV >2.3) -->
+      <!-- Play --> <button id="70">Play</button>
+      <!-- Pause --> <button id="71">Pause</button>
+      <!-- Stop --> <button id="72">Stop</button>
+      <!-- Previous --> <button id="73">SkipPrevious</button>
+      <!-- Next --> <button id="74">SkipNext</button>
+      <!-- Rewind --> <button id="75">Rewind</button>
+      <!-- Forward --> <button id="76">FastForward</button>
+      <!-- Return --> <button id="77">OSD</button>
+      <!-- Enter --> <button id="78">ShowVideoMenu</button>
     </joystick>
 
     <keyboard>

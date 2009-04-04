@@ -152,6 +152,7 @@ protected:
 
   bool m_stalled;
   bool m_started;
+  std::string m_codecname;
 
   /* autosync decides on how much of clock we should use when deciding sleep time */
   /* the value is the same as 63% timeconstant, ie that the step response of */

@@ -43,7 +43,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 24
+#define VIDEO_DATABASE_VERSION 25
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 #define RECENTLY_ADDED_LIMIT  25
@@ -95,7 +95,7 @@ bool CVideoDatabase::CreateTables()
                 "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
                 "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer,"
                 "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
-                "CropRight integer, CropTop integer, CropBottom integer)\n");
+                "CropRight integer, CropTop integer, CropBottom integer, Sharpness float, NoiseReduction float)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_settings ON settings ( idFile )\n");
 
     CLog::Log(LOGINFO, "create stacktimes table");
@@ -1432,7 +1432,7 @@ void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, VECMOVIES& m
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie=GetDetailsForEpisode(m_pDS);
-      movie.m_strTitle += " ("+m_pDS->fv(VIDEODB_DETAILS_PATH+1).get_asString()+")";
+      movie.m_strTitle += " ("+m_pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString()+")";
       movies.push_back(movie);
       m_pDS->next();
     }
@@ -2549,9 +2549,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
 
   GetDetailsFromDB(pDS, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets, details);
   details.m_iDbId = lTvShowId;
-  details.m_strPath = pDS->fv(VIDEODB_MAX_COLUMNS + 1).get_asString();
-  details.m_iEpisode = m_pDS->fv(VIDEODB_MAX_COLUMNS + 2).get_asInteger();
-  details.m_playCount = m_pDS->fv(VIDEODB_MAX_COLUMNS + 3).get_asInteger(); // number watched
+  details.m_strPath = pDS->fv(VIDEODB_DETAILS_TVSHOW_PATH).get_asString();
+  details.m_iEpisode = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_EPISODES).get_asInteger();
+  details.m_playCount = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInteger();
   details.m_strShowTitle = details.m_strTitle;
 
   movieTime += timeGetTime() - time; time = timeGetTime();
@@ -2591,7 +2591,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   GetCommonDetails(pDS, details);
   movieTime += timeGetTime() - time; time = timeGetTime();
 
-  details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_PATH+1).get_asString();
+  details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
 
   if (needsCast)
   {
@@ -2670,6 +2670,8 @@ bool CVideoDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CVid
       settings.m_Brightness = m_pDS->fv("Brightness").get_asInteger();
       settings.m_Contrast = m_pDS->fv("Contrast").get_asInteger();
       settings.m_CustomPixelRatio = m_pDS->fv("PixelRatio").get_asFloat();
+      settings.m_NoiseReduction = m_pDS->fv("NoiseReduction").get_asFloat();
+      settings.m_Sharpness = m_pDS->fv("Sharpness").get_asFloat();
       settings.m_CustomZoomAmount = m_pDS->fv("ZoomAmount").get_asFloat();
       settings.m_Gamma = m_pDS->fv("Gamma").get_asInteger();
       settings.m_NonInterleaved = m_pDS->fv("Interleaved").get_asBool();
@@ -2722,11 +2724,11 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
       // update the item
       strSQL=FormatSQL("update settings set Interleaved=%i,NoCache=%i,Deinterlace=%i,FilmGrain=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
                        "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%i,Contrast=%i,Gamma=%i,"
-                       "VolumeAmplification=%f,AudioDelay=%f,OutputToAllSpeakers=%i,",
+                       "VolumeAmplification=%f,AudioDelay=%f,OutputToAllSpeakers=%i,Sharpness=%f,NoiseReduction=%f,",
                        setting.m_NonInterleaved, setting.m_NoCache, setting.m_InterlaceMethod, setting.m_FilmGrain, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
                        setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
-                       setting.m_OutputToAllSpeakers);
+                       setting.m_OutputToAllSpeakers,setting.m_Sharpness,setting.m_NoiseReduction);
       CStdString strSQL2;
       strSQL2=FormatSQL("ResumeTime=%i,Crop=%i,CropLeft=%i,CropRight=%i,CropTop=%i,CropBottom=%i where idFile=%i\n", setting.m_ResumeTime, setting.m_Crop, setting.m_CropLeft, setting.m_CropRight, setting.m_CropTop, setting.m_CropBottom, lFileId);
       strSQL += strSQL2;
@@ -2738,14 +2740,14 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
       m_pDS->close();
       strSQL=FormatSQL("insert into settings ( idFile,Interleaved,NoCache,Deinterlace,FilmGrain,ViewMode,ZoomAmount,PixelRatio,"
                        "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
-                       "VolumeAmplification,AudioDelay,OutputToAllSpeakers,ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom)"
-                       " values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,",
+                       "VolumeAmplification,AudioDelay,OutputToAllSpeakers,ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom,Sharpness,NoiseReduction)"
+                       " values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,%f,%f,",
                        lFileId, setting.m_NonInterleaved, setting.m_NoCache, setting.m_InterlaceMethod, setting.m_FilmGrain, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
-                       setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay);
+                       setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay, setting.m_Sharpness, setting.m_NoiseReduction);
       CStdString strSQL2;
       strSQL2=FormatSQL("%i,%i,%i,%i,%i,%i,%i)\n", setting.m_OutputToAllSpeakers, setting.m_ResumeTime, setting.m_Crop, setting.m_CropLeft, setting.m_CropRight,
-                    setting.m_CropTop, setting.m_CropBottom);
+                    setting.m_CropTop, setting.m_CropBottom, setting.m_Sharpness, setting.m_NoiseReduction);
       strSQL += strSQL2;
       m_pDS->exec(strSQL.c_str());
     }
@@ -3311,6 +3313,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       sql = FormatSQL("update musicvideo set c%02d=NULL", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
       m_pDS->exec(sql.c_str());
     }
+    if (iVersion < 25)
+    {
+      m_pDS->exec("alter table settings add Sharpness float");
+      m_pDS->exec("alter table settings add NoiseReduction float");
+    }
   }
   catch (...)
   {
@@ -3372,8 +3379,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 
 void CVideoDatabase::MarkAsWatched(const CFileItem &item)
 {
-  // first grab the type of video and it's id
-  VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
+  // first grab the video's id
   CStdString path = item.m_strPath;
   if (item.IsVideoDb())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
@@ -4112,7 +4118,11 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
           // only if the number of videos watched is equal to the total number (i.e. every video watched)
           pItem->GetVideoInfoTag()->m_playCount = (m_pDS->fv(2).get_asInteger() == m_pDS->fv(1).get_asInteger()) ? 1 : 0;
         }
-        items.Add(pItem);
+
+        // take care of dupes ..
+        if (!items.Contains(pItem->m_strPath))
+          items.Add(pItem);
+
         m_pDS->next();
       }
       m_pDS->close();
@@ -4521,7 +4531,7 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
         if (bStacked)
         {
           pItem->GetVideoInfoTag()->m_playCount = (pItem->GetVideoInfoTag()->m_iEpisode == pItem->GetPropertyInt("watchedepisodes")) ? 1 : 0;
-          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode == 0));
+          pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
           if (!strFanArt.IsEmpty())
             pItem->SetProperty("fanart_image", strFanArt);
         }
@@ -4530,6 +4540,9 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
       }
     }
     break;
+    // We currently don't stack episodes (No call here in GetEpisodesByWhere()), but this code is left
+    // so that if we eventually want to stack during scan we can utilize it.
+    /*
     case VIDEODB_CONTENT_EPISODES:
     {
       // sort by ShowTitle, Episode, Filename
@@ -4585,11 +4598,10 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
                 // increment playcount
                 iPlayCount += jTag->m_playCount;
 
-                /* episodes dont have fanart yet
-                // check for fanart if not already set
-                if (strFanArt.IsEmpty())
-                  strFanArt = jItem->GetProperty("fanart_image");
-                */
+                // episodes dont have fanart yet
+                //if (strFanArt.IsEmpty())
+                //  strFanArt = jItem->GetProperty("fanart_image");
+
                 paths.push_back(jFileNameAndPath);
               }
             }
@@ -4612,16 +4624,15 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
           pItem->GetVideoInfoTag()->m_playCount = iPlayCount;
           pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
 
-          /* episodes dont have fanart yet
-          if (!strFanArt.IsEmpty())
-            pItem->SetProperty("fanart_image", strFanArt);
-          */
+          // episodes dont have fanart yet
+          //if (!strFanArt.IsEmpty())
+          //  pItem->SetProperty("fanart_image", strFanArt);
         }
         // increment i to j which is the next item
         i = j;
       }
     }
-    break;
+    break;*/
 
     // stack other types later
     default:
@@ -4724,12 +4735,6 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
 
     CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
               timeGetTime() - time);
-    if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
-    {
-      CStdString order(where);
-      bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
-      Stack(items, VIDEODB_CONTENT_EPISODES, maintainOrder);
-    }
 
     // cleanup
     m_pDS->close();
@@ -6695,7 +6700,7 @@ bool CVideoDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
     strResult = "";
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    CStdString strSQL=FormatSQL(strQuery);
+    CStdString strSQL=strQuery;
     if (!m_pDS->query(strSQL.c_str()))
     {
       strResult = m_pDB->getErrorMsg();
@@ -6739,7 +6744,7 @@ bool CVideoDatabase::ArbitraryExec(const CStdString& strExec)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    CStdString strSQL = FormatSQL(strExec);
+    CStdString strSQL = strExec;
     m_pDS->exec(strSQL.c_str());
     m_pDS->close();
     return true;

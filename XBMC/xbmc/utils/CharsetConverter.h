@@ -78,6 +78,7 @@ public:
   void unknownToUTF8(CStdStringA &sourceDest);
   void unknownToUTF8(const CStdStringA &source, CStdStringA &dest);
 
+  CStdString utf8Left(const CStdStringA &source, int num_chars);
 private:
   CStdString EMPTY;
 };

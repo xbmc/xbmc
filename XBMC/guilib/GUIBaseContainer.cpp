@@ -22,6 +22,7 @@
 #include "include.h"
 #include "GUIBaseContainer.h"
 #include "GUIControlFactory.h"
+#include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
@@ -214,21 +215,13 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         CGUIListItemPtr item = message.GetItem();
         m_items.push_back(item);
         UpdateScrollByLetter();
-        if (m_pageControl)
-        {
-          CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-          SendWindowMessage(msg);
-        }
+        SetPageControlRange();
         return true;
       }
       else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
       {
         Reset();
-        if (m_pageControl)
-        {
-          CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-          SendWindowMessage(msg);
-        }
+        SetPageControlRange();
         return true;
       }
     }
@@ -639,6 +632,11 @@ void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
   }
   // and recalculate the layout
   CalculateLayout();
+  SetPageControlRange();
+}
+
+void CGUIBaseContainer::SetPageControlRange()
+{
   if (m_pageControl)
   {
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
@@ -711,9 +709,10 @@ void CGUIBaseContainer::UpdateScrollByLetter()
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CGUIListItemPtr item = m_items[i];
-    if (currentMatch != item->GetSortLabel().Left(1))
+    CStdString nextLetter = g_charsetConverter.utf8Left(item->GetSortLabel(),1);
+    if (currentMatch != nextLetter)
     {
-      currentMatch = item->GetSortLabel().Left(1);
+      currentMatch = nextLetter;
       m_letterOffsets.push_back(make_pair((int)i, currentMatch));
     }
   }
