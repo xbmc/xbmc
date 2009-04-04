@@ -256,6 +256,8 @@ public:
   bool m_restartLCD;
 
 protected:
+  void RenderScreenSaver();
+
   friend class CApplicationMessenger;
   // screensaver
   bool m_bScreenSave;

@@ -135,4 +135,42 @@ void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const
   glVertex3f(x[3], y[3], z[3]);
 }
 
+void CGUITexture::DrawQuad(const CRect &rect, DWORD color)
+{
+  glDisable(GL_TEXTURE_2D);
+  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_BLEND);          // Turn Blending On
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+  // diffuse coloring
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
+  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+  VerifyGLState();
+
+//  glEnable(GL_TEXTURE_2D);
+  
+  glBegin(GL_QUADS);
+
+  GLubyte a = (GLubyte)(color >> 24);
+  GLubyte r = (GLubyte)((color >> 16) & 0xff);
+  GLubyte g = (GLubyte)((color >> 8) & 0xff);
+  GLubyte b = (GLubyte)(color & 0xff);
+
+  glColor4ub(r, g, b, a);
+  glTexCoord2f(0.0f, 0.0f);
+  glVertex3f(rect.x1, rect.y1, 0);
+  glTexCoord2f(1.0f, 0.0f);
+  glVertex3f(rect.x2, rect.y1, 0);
+  glTexCoord2f(1.0f, 1.0f);
+  glVertex3f(rect.x2, rect.y2, 0);
+  glTexCoord2f(0.0f, 1.0f);
+  glVertex3f(rect.x1, rect.y2, 0);
+
+  glEnd();
+}
+
 #endif
