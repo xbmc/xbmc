@@ -227,6 +227,8 @@ bool CVideoReferenceClock::SetupGLX()
 
 void CVideoReferenceClock::CleanupGLX()
 {
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
+  
   if (m_fbConfigs)
   {
     XFree(m_fbConfigs);
