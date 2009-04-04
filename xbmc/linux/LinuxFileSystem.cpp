@@ -141,14 +141,14 @@ void CLinuxFileSystem::GetDrives(int *DeviceType, int len, VECSOURCES &shares)
           char* fs    = reMount.GetReplaceString("\\2");
 #ifdef __APPLE__
           // Ignore the stuff that doesn't make sense.
-        if (strcmp(fs, "devfs") == 0 || strcmp(fs, "fdesc") == 0 || strcmp(fs, "autofs") == 0 || strcmp(fs, "dev") == 0 || strcmp(fs, "mnt") == 0)
-          continue;
-
-        // Skip this for now, until we can figure out the name of the root volume.
-        if (strcmp(mount, "/") == 0)
-          continue;
-
-        result.push_back(mount);
+        if (strcmp(fs, "devfs") != 0 || strcmp(fs, "fdesc") != 0 || strcmp(fs, "autofs") != 0 || strcmp(fs, "dev") != 0 || strcmp(fs, "mnt") != 0)
+        {
+          // Skip this for now, until we can figure out the name of the root volume.
+          if (strcmp(mount, "/") != 0)
+          {
+            result.push_back(mount);
+          }
+        }
 #else
           // Ignore root
           if (strcmp(mount, "/") == 0)
