@@ -336,7 +336,7 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($vdpau_disabled)
 else
   if test "$use_vdpau" = "yes"; then
-    AC_CHECK_LIB([vdpau], [main],,
+    AC_CHECK_HEADER([vdpau/vdpau.h],,
       use_vdpau=no;AC_MSG_RESULT($vdpau_not_found))
   else
     AC_MSG_NOTICE($vdpau_disabled)
