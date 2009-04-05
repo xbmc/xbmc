@@ -716,6 +716,7 @@
   <string id="1255">Skicka FTP användare och lösenord</string>
   <string id="1256">Pingintervall (sek)</string>
   <string id="1257">Vill du ansluta till det autodetekterade systemet?</string>
+  <string id="1260">Zeroconf publisering</string>
   <string id="1396">Blåsigt</string>
   <string id="1397">och</string>
   <string id="1398">Nollgradigt</string>
@@ -912,6 +913,7 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Strikt Pixmap-Texture Bindning (kräver omstart)</string>
   <string id="13130">Skärmrensning</string>
   <string id="13131">Inaktivera</string>
   <string id="13132">Rensa skärmar</string>
