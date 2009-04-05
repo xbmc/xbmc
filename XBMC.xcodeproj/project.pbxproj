@@ -7003,7 +7003,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tcp \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$SRCROOT/$TARGET_NAME.bin\"\nfi\n";
+			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tcp \"$TARGET_BUILD_DIR/XBMC\" \"$SRCROOT/XBMC.bin\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		F5F89C3B0F88064700FF6D9D /* ShellScript */ = {
@@ -7017,7 +7017,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tcp \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$SRCROOT/$TARGET_NAME.bin\"\nfi\n";
+			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tcp \"$TARGET_BUILD_DIR/XBMC\" \"$SRCROOT/XBMC.bin\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
