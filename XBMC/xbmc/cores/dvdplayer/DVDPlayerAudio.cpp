@@ -186,7 +186,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_SyncClock = true;
 
   g_VideoReferenceClock.SetSpeed(1.0);
-  Resampler.SetQuality(g_guiSettings.GetInt("audiooutput.resamplequality"));
+  m_Resampler.SetQuality(g_guiSettings.GetInt("audiooutput.resamplequality"));
   
   CLog::Log(LOGNOTICE, "Creating audio thread");
   Create();
@@ -410,7 +410,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       m_dvdAudio.Flush();
       m_ptsOutput.Flush();
       m_ptsInput.Flush();
-      Resampler.Flush();
+      m_Resampler.Flush();
       ResetErrorCounters();
       m_SyncClock = true;
 
@@ -441,7 +441,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
-      Resampler.Flush();
+      m_Resampler.Flush();
       ResetErrorCounters();
       m_SyncClock = true;
 
@@ -651,14 +651,14 @@ void CDVDPlayerAudio::Process()
           Proportional = 0.0;
         }
         
-        Resampler.SetRatio(1.0 / g_VideoReferenceClock.GetSpeed() + Proportional + m_Integral);
+        m_Resampler.SetRatio(1.0 / g_VideoReferenceClock.GetSpeed() + Proportional + m_Integral);
         
         //add to the resampler
-        Resampler.Add(audioframe, audioframe.pts);
+        m_Resampler.Add(audioframe, audioframe.pts);
         
         //give any packets from the resampler to the audiorenderer
         PacketAdded = false;
-        while(Resampler.Retreive(audioframe, audioframe.pts))
+        while(m_Resampler.Retreive(audioframe, audioframe.pts))
         {
           PacketAdded = true; //we have added a packet to the audiorenderer
           m_dvdAudio.AddPackets(audioframe);

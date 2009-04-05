@@ -226,6 +226,6 @@ protected:
   double m_Integral;
   bool   m_SyncClock; //if we have to sync the clock
 
-  CDVDPlayerResampler Resampler;
+  CDVDPlayerResampler m_Resampler;
 };
 
