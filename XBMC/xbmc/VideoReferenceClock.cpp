@@ -44,6 +44,14 @@ CVideoReferenceClock::CVideoReferenceClock()
 #endif
 }
 
+CVideoReferenceClock::~CVideoReferenceClock()
+{
+#ifdef HAS_SDL
+  SDL_DestroyCond(m_VblankCond);
+  SDL_DestroyMutex(m_VblankMutex);
+#endif
+}
+
 void CVideoReferenceClock::OnStartup()
 {
   bool PrevSetupSuccess = true;
