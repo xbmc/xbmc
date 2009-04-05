@@ -162,6 +162,8 @@ rem	CONFIG START
   SET skinpath=%CD%\Add_skins
   SET scriptpath=%CD%\Add_scripts
   SET pluginpath=%CD%\Add_plugins
+  rem override skin/script/pluginpaths from config.ini if there's a config.ini
+  IF EXIST config.ini FOR /F "tokens=* DELIMS=" %%a IN ('FINDSTR/R "=" config.ini') DO SET %%a
   
   IF EXIST error.log del error.log > NUL
   call buildskins.bat %skinpath%
