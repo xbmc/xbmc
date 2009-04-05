@@ -195,8 +195,13 @@ rem	CONFIG START
   FOR /F "tokens=2* delims=	" %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
   IF NOT EXIST "%NSISExePath%" (
     rem try with space delim instead of tab
-	FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+    FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
   )
+  IF NOT EXIST "%NSISExePath%" (
+    rem extra check for x64
+    SET NSISExePath=%ProgramFiles(x86)%\NSIS
+  )
+
   SET NSISExe=%NSISExePath%\makensis.exe
   "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dxbmc_root="%CD%\BUILD_WIN32" /Dxbmc_revision="%XBMC_REV%" "XBMC for Windows.nsi"
   IF NOT EXIST "%XBMC_SETUPFILE%" (
