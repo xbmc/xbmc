@@ -259,7 +259,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   // if album name is set, then we use this as the directory to place the new file in.
   if (pItem->GetMusicInfoTag()->GetAlbum().size() > 0)
   {
-    strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str(), ripPath.IsSmb() ? true : false);
+    strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str(), ripPath.IsSmb() ? LEGAL_WIN32_COMPAT : LEGAL_NONE);
     CUtil::AddDirectorySeperator(strDirectory);
   }
 
@@ -324,7 +324,7 @@ bool CCDDARipper::RipCD()
   CStdString strAlbumDir;
   if (vecItems[0]->GetMusicInfoTag()->GetAlbum().size() > 0)
   {
-    strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->GetMusicInfoTag()->GetAlbum().c_str(), ripPath.IsSmb() ? true : false );
+    strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->GetMusicInfoTag()->GetAlbum().c_str(), ripPath.IsSmb() ? LEGAL_WIN32_COMPAT : LEGAL_NONE);
   }
 
     // No legal fatx directory name or no album in tag
