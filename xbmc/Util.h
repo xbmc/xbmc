@@ -88,7 +88,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #if defined(__powerpc__)
+    #if defined(__powerpc__) || defined(__ppc__)
         i = floor(x + round_to_nearest);
     #else
         __asm__ __volatile__ (
@@ -108,7 +108,7 @@ namespace MathUtils
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
 
-    #ifndef __powerpc__
+    #if !defined(__powerpc__) && !defined(__ppc__)
         const float round_towards_p_i = -0.5f;
     #endif
     int i;
@@ -123,7 +123,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #ifdef __powerpc__
+    #if defined(__powerpc__) || defined(__ppc__)
         return (int)ceil(x);
     #else
         __asm__ __volatile__ (
@@ -143,7 +143,7 @@ namespace MathUtils
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
 
-    #ifndef __powerpc__
+    #if !defined(__powerpc__) && !defined(__ppc__)
         const float round_towards_m_i = -0.5f;
     #endif
     int i;
@@ -159,7 +159,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #ifdef __powerpc__
+    #if defined(__powerpc__) || defined(__ppc__)
         return (int)x;
     #else
         __asm__ __volatile__ (
