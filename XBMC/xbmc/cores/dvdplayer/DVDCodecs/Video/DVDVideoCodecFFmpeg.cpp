@@ -74,9 +74,6 @@ CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   AVCodec* pCodec;
-#ifdef HAVE_LIBVDPAU
-  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-#endif
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load()) return false;
 
@@ -87,6 +84,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   pCodec = NULL;
 
 #ifdef HAVE_LIBVDPAU
+  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
   if(requestedMethod == RENDER_METHOD_VDPAU
   && !hints.software)
   {
