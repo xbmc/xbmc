@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Translator: Mika Pirinen -->
-<!--Date of translation: 3/2/2009 -->
-	<!--Finnish strings based on English strings version 17058  -->
+  <!-- Translator: Mika Pirinen -->
+  <!-- Date of translation: 7/3/2009 -->
+  <!-- Finnish strings based on English strings version 17058 -->
 <strings>
   <string id="31000">Ääni vaimennettu</string>
   <string id="31001"></string>
@@ -69,26 +69,26 @@
   <string id="31060">Tämä tiedosto on pinottu, valitse osa jonka haluat toistaa.</string>
   
   <!-- Skin Settings labels -->
-  <string id="31100">Taustan asetukset</string>
+  <string id="31100">Tausta-asetukset</string>
   <string id="31101">Päävalikon asetukset</string>
   <string id="31102">Taustat</string>
   <string id="31103">Näytä "Tauko" kuvaesityksessä</string>
   <string id="31104">Sammutusvalikko - Käytä valmiustilan sijaan horrostilaa</string>
   <string id="31105">Näytä median nimet taustahaussa</string>
-  <string id="31106">Muita  asetuksia</string>
+  <string id="31106">Yleiset asetukset</string>
   <string id="31107">Poista pyyhkäisyviivat taustasta</string>
   <string id="31108">Poista pyyhkäisyviivat taustasta videon toiston aikana</string>
-  <string id="31109">Päävalikon taustat</string>
+  <string id="31109">Taustakuvien asetukset</string>
   <string id="31110">painikkeen omat taustat käytössä</string>
   <string id="31111">Näytä musiikin tiedot käytettäessä Lyrics-skriptiä</string>
   <string id="31112">Näytä median nimet "Leveät kuvakkeet"-näkymässä</string>
 
   <!-- Script Settings labels -->
-  <string id="31200">Omat skripti asetukset</string>
+  <string id="31200">Skripti asetukset</string>
   <string id="31201"></string>
   <string id="31202"></string>
-  <string id="31203">Aseta painikkeen teksti</string>
-  <string id="31204">Skriptin sijainti</string>
+  <string id="31203">Painikkeen teksti</string>
+  <string id="31204">Polku</string>
   <string id="31205"></string>
   <string id="31206"></string>
   <string id="31207"></string>

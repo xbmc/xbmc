@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 03/23/2009-->
+<!--Date of translation: 03/25/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 18841-->
+<!--Based on english strings version 18906-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -745,6 +745,7 @@
   <string id="1255">Αποστολή ονόματος και κωδικού πρόσβασης χρήστη (FTP) </string>
   <string id="1256">Διάστημα μεταλλικού θορύβου</string>
   <string id="1257">Να συνδεθείτε στο συστήμα που εντοπίστηκε;</string>
+  <string id="1260">Έκδοση Zeroconf</string>
   <string id="1396">Μετακινούμενη</string>
   <string id="1397">και</string>
   <string id="1398">Παγωνιά</string>
@@ -956,6 +957,7 @@
   <string id="13117">Δικυβική</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Strict Pixmap-Texture Binding (απαιτεί επανεκκίνηση)</string>
   <string id="13130">Display Blanking</string>
   <string id="13131">Ανενεργή</string>
   <string id="13132">Blank displays</string>
