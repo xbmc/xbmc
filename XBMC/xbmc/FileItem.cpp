@@ -118,7 +118,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   }
   *GetVideoInfoTag() = movie;
   FillInDefaultIcon();
-  SetVideoThumb();
+  SetCachedVideoThumb();
   SetInvalid();
 }
 
