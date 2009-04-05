@@ -880,7 +880,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   m_FlipTimeStamp += iFrameDuration;
 
   // ask decoder to drop frames next round, as we are very late
-  if( iClockSleep < -DVD_MSEC_TO_TIME(100) )
+  //if( iClockSleep < -DVD_MSEC_TO_TIME(100) )
+  if( iClockSleep < iFrameDuration * -0.5)
     result |= EOS_VERYLATE;
 
   if( m_speed < 0 )
