@@ -36,7 +36,7 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
-		8DD76F7E0486A8DE00D96B5E /* XBMCHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMCHelper; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DD76F7E0486A8DE00D96B5E /* OSXRemote */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OSXRemote; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = xbmchelper_main.mm; sourceTree = "<group>"; };
 		E4E62F350F83DB760066AF9D /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E4E62F360F83DB760066AF9D /* XBMCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCHelper.m; sourceTree = "<group>"; };
@@ -117,7 +117,7 @@
 		19C28FBDFE9D53C911CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8DD76F7E0486A8DE00D96B5E /* XBMCHelper */,
+				8DD76F7E0486A8DE00D96B5E /* OSXRemote */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -153,9 +153,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8DD76F740486A8DE00D96B5E /* XBMCHelper */ = {
+		8DD76F740486A8DE00D96B5E /* OSXRemote */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMCHelper" */;
+			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "OSXRemote" */;
 			buildPhases = (
 				8DD76F760486A8DE00D96B5E /* Sources */,
 				8DD76F780486A8DE00D96B5E /* Frameworks */,
@@ -165,10 +165,10 @@
 			);
 			dependencies = (
 			);
-			name = XBMCHelper;
+			name = OSXRemote;
 			productInstallPath = "$(HOME)/bin";
 			productName = XBMCHelper;
-			productReference = 8DD76F7E0486A8DE00D96B5E /* XBMCHelper */;
+			productReference = 8DD76F7E0486A8DE00D96B5E /* OSXRemote */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -183,7 +183,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8DD76F740486A8DE00D96B5E /* XBMCHelper */,
+				8DD76F740486A8DE00D96B5E /* OSXRemote */,
 			);
 		};
 /* End PBXProject section */
@@ -220,7 +220,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = XBMCHelper;
+				PRODUCT_NAME = OSXRemote;
 				SDKROOT = macosx10.4;
 				STRIP_STYLE = debugging;
 			};
@@ -233,7 +233,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = XBMCHelper;
+				PRODUCT_NAME = OSXRemote;
 				SDKROOT = macosx10.4;
 				STRIP_STYLE = debugging;
 			};
@@ -268,7 +268,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMCHelper" */ = {
+		1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "OSXRemote" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB924808733DCA0010E9CD /* Debug */,
