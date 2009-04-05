@@ -22,13 +22,15 @@
 #include "stdafx.h"
 #include "SliceQueue.h"
 
+// TODO: 
 
 // CSliceQueue
 //////////////////////////////////////////////////////////////////////////////////////
 CSliceQueue::CSliceQueue() :
   m_TotalBytes(0),
   m_pPartialSlice(NULL),
-  m_RemainderSize(0)
+  m_RemainderSize(0),
+  m_QueueLock(0)
 {
 
 }
@@ -42,6 +44,7 @@ void CSliceQueue::Push(audio_slice* pSlice)
 {
   if (pSlice)
   {
+    CAtomicLock lock(m_QueueLock);
     m_Slices.push(pSlice);
     m_TotalBytes += pSlice->header.data_len;
   }
@@ -53,6 +56,7 @@ audio_slice* CSliceQueue::Pop()
   if (!m_Slices.empty())
   {
     pSlice = m_Slices.front();
+    CAtomicLock lock(m_QueueLock);
     m_Slices.pop();
     m_TotalBytes -= pSlice->header.data_len;
   }
@@ -156,6 +160,8 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
   size_t remainder = 0;
   audio_slice* pNext = NULL;
   
+  unsigned int profileTime[2];  
+  
   // See if we can fill the request out of our partial slice (if there is one)
   if (m_RemainderSize >= bufLen)
   {
@@ -186,6 +192,7 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
     } while (bytesUsed < bufLen);
   }
 
+  profileTime[0] = timeGetTime();
   // Clean up the previous partial slice
   if (!m_RemainderSize && m_pPartialSlice)
   {
@@ -200,6 +207,11 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
     m_RemainderSize = remainder;
   }
 
+  profileTime[1] = timeGetTime();
+  unsigned int profileDelta = profileTime[1] - profileTime[0];
+  if (profileDelta > 1)
+    CLog::Log(LOGDEBUG, "CoreAudio: Profile time = %u.", profileDelta);     
+  
   return bufLen;
 }
 

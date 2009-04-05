@@ -87,9 +87,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     size_t m_BytesPerFrame;
     UInt64 m_TotalBytesIn;
     UInt64 m_TotalBytesOut;
-    
-    long m_CacheLock; // Used to manage concurrent access to the cache
-    
+        
     // Helper Methods
     UInt32 GetAUPropUInt32(AudioUnit au, AudioUnitPropertyID propId, AudioUnitScope scope)
     {

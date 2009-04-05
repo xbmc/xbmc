@@ -256,7 +256,7 @@ void CCoreAudioStream::Close()
     SetVirtualFormat(&m_OriginalVirtualFormat);
   
   m_OriginalVirtualFormat.mFormatID = 0;
-  CLog::Log(LOGERROR, "CCoreAudioStream::Close: Closed stream 0x%04x.", m_StreamId);
+  CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Closed stream 0x%04x.", m_StreamId);
   m_StreamId = 0;
 }
 

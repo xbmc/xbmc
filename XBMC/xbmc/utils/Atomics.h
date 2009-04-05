@@ -77,7 +77,16 @@ class CAtomicLock
 public:
   CAtomicLock(long& lock) : m_Lock(lock)
   {
+#if defined( PROFILE_ATOMIC )
+    unsigned int spinCount = 0;
+    while (cas(&m_Lock, 0, 1) != 0)
+      spinCount++; // Lock
+    
+    if (spinCount > MAX_SPIN)
+      CLog::Log(LOGDEBUG, "PROFILE_ATOMIC: Spinning. Spin count: %u.", spinCount);
+#else    
     while (cas(&m_Lock, 0, 1) != 0); // Lock
+#endif
   }
   ~CAtomicLock()
   {

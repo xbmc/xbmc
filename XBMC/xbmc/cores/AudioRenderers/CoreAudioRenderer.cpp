@@ -20,6 +20,9 @@
  *
  */
 
+#define PROFILE_ATOMIC
+#define MAX_SPIN 1000
+
 #include "stdafx.h"
 #include "CoreAudioRenderer.h"
 #include <Atomics.h>
@@ -37,7 +40,6 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_TotalBytesIn(0),
   m_TotalBytesOut(0),
   m_AvgBytesPerSec(0),
-  m_CacheLock(0),
   m_CurrentVolume(0),
   m_Initialized(false)
 {
@@ -217,22 +219,18 @@ DWORD CCoreAudioRenderer::GetSpace()
 }
 
 DWORD CCoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
-{
-  // Lock the cache
-  CAtomicLock lock(m_CacheLock);
-  
+{  
   // Require at least one 'chunk'. This allows us at least some measure of control over efficiency
   if (len < m_ChunkLen ||  m_Cache.GetTotalBytes() >= m_MaxCacheLen) // No room at the inn
     return 0;
 
-  size_t bytesUsed = len;
-  DWORD cacheSpace = GetSpace();
-  
-  if (bytesUsed > cacheSpace)
+  DWORD cacheSpace = GetSpace();  
+  if (len > cacheSpace)
     return 0; // Wait until we can accept all of it
   
+  size_t bytesUsed = len;
   m_Cache.AddData(data, bytesUsed);
-        
+  
   // Update tracking varss
   m_TotalBytesIn += bytesUsed;
   
@@ -264,16 +262,15 @@ void CCoreAudioRenderer::WaitCompletion()
 // Private Methods
 //***********************************************************************************************
 OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
-{
-  // Lock the cache
-  CAtomicLock lock(m_CacheLock);
-  
+{  
   // TODO: Replace statics with performance counter class
   static UInt32 lastUpdateTime = 0;
   static UInt64 lastTotalBytes = 0;
-  
+    
+  UInt32 time = timeGetTime();
+
   if (lastUpdateTime == 0)
-    lastUpdateTime = timeGetTime();
+    lastUpdateTime = time;
   
   if (lastTotalBytes == 0)
     lastTotalBytes = m_TotalBytesOut;
@@ -287,7 +284,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   }
   
   if (bytesRequested / m_BytesPerFrame != inNumberFrames)
-    CLog::Log(LOGDEBUG, "Bufeer is larger than frames requested");
+    CLog::Log(LOGDEBUG, "Buffer is larger than frames requested");
     
   if (m_Cache.GetTotalBytes() < bytesRequested) // Not enough data to satisfy the request
   {
@@ -299,7 +296,6 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   {
     // Fetch the requested amount of data from our cache
     m_Cache.GetData(ioData->mBuffers[0].mData, bytesRequested);
-    
     // Calculate stats and perform a sanity check
     m_TotalBytesOut += bytesRequested;    
     size_t cacheLen = m_Cache.GetTotalBytes();
@@ -307,15 +303,21 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
     if (cacheCalc != cacheLen)
       CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Cache length mismatch. We seem to have lost some data. Calc = %u, Act = %u.",cacheCalc, cacheLen);
 
-    UInt32 time = timeGetTime();
     UInt32 deltaTime = time - lastUpdateTime; 
-    if (deltaTime > 1000)// Spit out some summary information every 10 seconds
+    if (deltaTime > 1000) // Check our sanity once a second
     {
-      CLog::Log(LOGDEBUG, "CCoreAudioRenderer: Summary - Sent %u bytes in %u ms. %0.2f frames / sec. Cache Len = %u.",(UInt32)(m_TotalBytesOut - lastTotalBytes), deltaTime, 1000*((float)(m_TotalBytesOut - lastTotalBytes) / (float)m_BytesPerFrame)/(float)deltaTime, cacheLen);
+      UInt32 outgoingBitrate = (m_TotalBytesOut - lastTotalBytes) / ((float)deltaTime/1000.0f);
+      if (outgoingBitrate < 0.99 * m_AvgBytesPerSec && m_TotalBytesOut > m_AvgBytesPerSec * 2) // Check if CoreAudio is behind (ignore the first 2 seconds)
+        CLog::Log(LOGWARNING, "CCoreAudioRenderer::OnRender: Outgoing bitrate is lagging. Target: %u, Actual: %u. deltaTime was %u", m_AvgBytesPerSec, outgoingBitrate, deltaTime);
+      //CLog::Log(LOGDEBUG, "CCoreAudioRenderer: Summary - Sent %u bytes in %u ms. %0.2f frames / sec. Cache Len = %u.",(UInt32)(m_TotalBytesOut - lastTotalBytes), deltaTime, 1000*((float)(m_TotalBytesOut - lastTotalBytes) / (float)m_BytesPerFrame)/(float)deltaTime, cacheLen);
       lastUpdateTime = time;
       lastTotalBytes = m_TotalBytesOut;
     }
   }
+  UInt32 execTime = timeGetTime() - time;
+  if (execTime > 1)
+    CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Exec time = %u.", execTime);  
+  
   
   return noErr;
 }

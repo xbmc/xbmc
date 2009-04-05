@@ -22,6 +22,9 @@
 
 #ifndef __SLICE_QUEUE_H__
 #define __SLICE_QUEUE_H__
+
+#include <utils/Atomics.h>
+
 struct audio_slice
 {
   // TODO: Determine any other appropriate information to pass along with the slice
@@ -54,7 +57,7 @@ public:
       if (pSlice->header.id != m_LastFreedId + 1)
         CLog::Log(LOGDEBUG,"Freed slices out of order");
       m_LastFreedId = pSlice->header.id;
-      delete[] pSlice->get_data();
+      //delete pSlice;
       //CLog::Log(LOGDEBUG,"Freeing slice %u. %u bytes", (Uint32)pSlice->header.id, pSlice->header.data_len);    
     }
   }
@@ -81,6 +84,7 @@ protected:
   size_t m_TotalBytes;
   audio_slice* m_pPartialSlice;
   size_t m_RemainderSize;
+  long m_QueueLock;
 };
 
 #endif //__SLICE_QUEUE_H__
