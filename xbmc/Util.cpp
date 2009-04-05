@@ -2220,7 +2220,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   return true;
 }
 
-CStdString CUtil::MakeLegalFileName(const CStdString &strFile, bool bWin32Compat)
+CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
 {
   CStdString result = strFile;
 
@@ -2228,7 +2228,7 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, bool bWin32Compat
   result.Replace('\\', '_');
   result.Replace('?', '_');
 
-  if (bWin32Compat) 
+  if (LegalType == LEGAL_WIN32_COMPAT) 
   {
     // just filter out some illegal characters on windows
     result.Replace(':', '_');
@@ -2244,12 +2244,12 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, bool bWin32Compat
 
 // same as MakeLegalFileName, but we assume that we're passed a complete path,
 // and just legalize the filename
-CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, bool bWin32Compat)
+CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
 {
   CStdString strPath;
   GetDirectory(strPathAndFile,strPath);
   CStdString strFileName = GetFileName(strPathAndFile);
-  return strPath + MakeLegalFileName(strFileName, bWin32Compat);
+  return strPath + MakeLegalFileName(strFileName, LegalType);
 }
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)
