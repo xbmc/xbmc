@@ -350,7 +350,7 @@ void XBMCClientWrapperImpl::populateMultiRemoteModeMap(){
   //the example of harmony as a multi-remote uses a few key device-id's paired with the normal buttons
   static int device_ids[] = {150, 151, 152, 153, 154, 155, 157, 158, 159, 160};
   int offset = 0;
-  for(int* device_id = device_ids; device_id != device_ids + sizeof(device_ids); ++device_id, offset += 10)
+  for(int* device_id = device_ids; device_id != device_ids + sizeof(device_ids)/sizeof(*device_ids); ++device_id, offset += 10)
   {
     // keymaps for mult-apple-remote, including the device-key sent after remote-switch
     // we just add them here with unique button numbers and do the real mapping in keymap.xml
