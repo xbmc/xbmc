@@ -1285,7 +1285,7 @@ Optional Features:
   --enable-debug          enable debugging information (default is yes)
   --enable-optimizations  enable optimization (default is yes)
   --enable-gl             enable OpenGL rendering (default is yes)
-  --enable-vdpau          enable VDPAU decoding (default is no)
+  --enable-vdpau          enable VDPAU decoding (default is yes)
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
   --enable-xrandr         enable XRandR support (default is yes)
@@ -1959,7 +1959,7 @@ fi
 if test "${enable_vdpau+set}" = set; then
   enableval=$enable_vdpau; use_vdpau=$enableval
 else
-  use_vdpau=no
+  use_vdpau=yes
 fi
 
 

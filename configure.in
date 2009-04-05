@@ -89,9 +89,9 @@ AC_ARG_ENABLE([gl],
 
 AC_ARG_ENABLE([vdpau],
             [AS_HELP_STRING([--enable-vdpau],
-               [enable VDPAU decoding (default is no)])],
+               [enable VDPAU decoding (default is yes)])],
             [use_vdpau=$enableval],
-            [use_vdpau=no])
+            [use_vdpau=yes])
 
 AC_ARG_ENABLE([profiling],
             [AS_HELP_STRING([--enable-profiling],
