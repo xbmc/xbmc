@@ -3667,7 +3667,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    }
    else
    {
-     CLog::Log(LOGDEBUG, "ERROR mapping joystick action");
+     CLog::Log(LOGDEBUG, "ERROR mapping joystick action. Joystick: %s %i",joystickName.c_str(), wKeyID);
    }
 #endif
 
