@@ -32,12 +32,12 @@
 typedef unsigned (WINAPI *PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 
 #define MS_VC_EXCEPTION 0x406d1388
-typedef struct tagTHREADNAME_INFO 
-{ 
-  DWORD dwType; // must be 0x1000 
-  LPCSTR szName; // pointer to name (in same addr space) 
-  DWORD dwThreadID; // thread ID (-1 caller thread) 
-  DWORD dwFlags; // reserved for future use, most be zero 
+typedef struct tagTHREADNAME_INFO
+{
+  DWORD dwType; // must be 0x1000
+  LPCSTR szName; // pointer to name (in same addr space)
+  DWORD dwThreadID; // thread ID (-1 caller thread)
+  DWORD dwFlags; // reserved for future use, most be zero
 } THREADNAME_INFO;
 
 CThread::CThread()
@@ -56,7 +56,7 @@ CThread::CThread()
 }
 
 CThread::CThread(IRunnable* pRunnable)
-{  
+{
   m_bStop = false;
 
   m_bAutoDelete = false;
@@ -77,14 +77,22 @@ CThread::~CThread()
     CloseHandle(m_ThreadHandle);
   }
   m_ThreadHandle = NULL;
+
+  if (m_StopEvent)
+    CloseHandle(m_StopEvent);
 }
 
 
 DWORD WINAPI CThread::staticThread(LPVOID* data)
 {
-  //DBG"thread start");
-
   CThread* pThread = (CThread*)(data);
+  if (!pThread) {
+    CLog::Log(LOGERROR,"%s, sanity failed. thread is NULL.",__FUNCTION__);
+    return 1;
+  }
+
+//  CLog::Log(LOGDEBUG,"thread start, auto delete: %d",pThread->IsAutoDelete());
+
   /* install win32 exception translator */
   win32_exception::install_handler();
 
@@ -92,6 +100,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     pThread->OnStartup();
   }
+  
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
@@ -117,38 +126,41 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     pThread->Process();
   }
-  catch (const access_violation &e) 
+  
+  catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread process, attemping cleanup in OnExit", __FUNCTION__); 
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread process, attemping cleanup in OnExit", __FUNCTION__);
   }
 
   try
   {
     pThread->OnExit();
   }
-  catch (const access_violation &e) 
+  
+  catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
   }
-  catch (const win32_exception &e) 
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread exit", __FUNCTION__); 
+    CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread exit", __FUNCTION__);
   }
 
   if ( pThread->IsAutoDelete() )
   {
+//    CLog::Log(LOGDEBUG,"%s, deleting thread object", __FUNCTION__);
     delete pThread;
     pThread = NULL;
   }
@@ -168,7 +180,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   m_bAutoDelete = bAutoDelete;
   m_bStop = false;
   ::ResetEvent(m_StopEvent);
- 
+
   m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, &m_ThreadId);
 
 }
@@ -222,18 +234,19 @@ bool CThread::SetPriority(const int iPriority)
 
 void CThread::SetName( LPCTSTR szThreadName )
 {
-  THREADNAME_INFO info; 
-  info.dwType = 0x1000; 
-  info.szName = szThreadName; 
+  THREADNAME_INFO info;
+  info.dwType = 0x1000;
+  info.szName = szThreadName;
   info.dwThreadID = m_ThreadId;
-  info.dwFlags = 0; 
-  try 
-  { 
-    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info); 
-  } 
+  info.dwFlags = 0;
+  
+  try
+  {
+    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info);
+  }
   catch(...)
-  { 
-  }  
+  {
+  }
 }
 
 bool CThread::WaitForThreadExit(DWORD dwMilliseconds)
@@ -266,7 +279,7 @@ HANDLE CThread::ThreadHandle()
 void CThread::Process()
 {
   if(m_pRunnable)
-    m_pRunnable->Run(); 
+    m_pRunnable->Run();
 }
 
 float CThread::GetRelativeUsage()
@@ -280,7 +293,6 @@ float CThread::GetRelativeUsage()
   FILETIME CreationTime, ExitTime, UserTime, KernelTime;
   if( GetThreadTimes( m_ThreadHandle, &CreationTime, &ExitTime, &KernelTime, &UserTime ) )
   {
-
     unsigned __int64 iUsage = 0;
     iUsage += (((unsigned __int64)UserTime.dwHighDateTime) << 32) + ((unsigned __int64)UserTime.dwLowDateTime);
     iUsage += (((unsigned __int64)KernelTime.dwHighDateTime) << 32) + ((unsigned __int64)KernelTime.dwLowDateTime);
@@ -291,7 +303,7 @@ float CThread::GetRelativeUsage()
 
     return m_fLastUsage;
   }
-  return 0.0f; 
+  return 0.0f;
 }
 
 DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
@@ -313,7 +325,7 @@ DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
     return ::WaitForSingleObject(hHandle, dwMilliseconds);
 }
 
-DWORD CThread::WaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds)
+DWORD CThread::WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds)
 {
   // for now not implemented
   return ::WaitForMultipleObjects(nCount, lpHandles, bWaitAll, dwMilliseconds);
