@@ -620,7 +620,7 @@ bool CVideoReferenceClock::UpdateRefreshrate()
         
         for (int i = 0; i < 256 && Buff[i]; i++)
         {
-          if (Buff[i] == '.') Buff[i] = *Locale->decimal_point;
+          if (Buff[i] == '.' || Buff[i] == ',') Buff[i] = *Locale->decimal_point;
           
           if ((Buff[i] < '0' || Buff[i] > '9') && Buff[i] != *Locale->decimal_point)
             Buff[i] = ' ';
