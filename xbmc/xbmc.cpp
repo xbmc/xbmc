@@ -116,12 +116,12 @@ int main(int argc, char* argv[])
     std::string preflight;
 
     preflight = getenv("XBMC_HOME");
-    preflight += "/tools/preflight";
+    preflight += "/tools/osx/preflight";
     system(preflight.c_str());
   }
   else
   {
-    system("XBMC.app/Contents/Resources/XBMC/tools/preflight");
+    system("XBMC.app/Contents/Resources/XBMC/tools/osx/preflight");
   }
 #endif
 
