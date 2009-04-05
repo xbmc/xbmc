@@ -39,19 +39,21 @@
 #include "FileItem.h"
 #include "GUIDialog.h"
 
+
+
+
+
+CApplicationMessenger g_applicationMessenger;
+
 using namespace std;
 
 extern HWND g_hWnd;
 
-CApplicationMessenger g_applicationMessenger;
-
-
-CApplicationMessenger::~CApplicationMessenger() 
-{ 
-  Cleanup(); 
+CApplicationMessenger::~CApplicationMessenger()
+{
+  Cleanup();
 }
 
- 
 void CApplicationMessenger::Cleanup()
 {
   while (m_vecMessages.size() > 0)
@@ -98,7 +100,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   if (msg->dwMessage == TMSG_DIALOG_DOMODAL ||
       msg->dwMessage == TMSG_WRITE_SCRIPT_OUTPUT)
     m_vecWindowMessages.push(msg);
-  else 
+  else
     m_vecMessages.push(msg);
   lock.Leave();
 
@@ -357,14 +359,14 @@ case TMSG_POWERDOWN:
         CFileItemList items;
         CStdString strPath = pMsg->strParam;
         if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER &&
- 	    g_guiSettings.GetString("screensaver.mode").Equals("Fanart Slideshow"))
- 	{
+            g_guiSettings.GetString("screensaver.mode").Equals("Fanart Slideshow"))
+        {
           CUtil::GetRecursiveListing(g_settings.GetVideoFanartFolder(), items, ".tbn");
           CUtil::GetRecursiveListing(g_settings.GetMusicFanartFolder(), items, ".tbn");
- 	}
- 	else
+        }
+        else
           CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
-        
+
         if (items.Size() > 0)
         {
           for (int i=0;i<items.Size();++i)
@@ -438,7 +440,7 @@ case TMSG_POWERDOWN:
       }
     }
     break;
-    
+
     case TMSG_EXECUTE_SCRIPT:
       g_pythonParser.evalFile(pMsg->strParam.c_str());
       break;
@@ -506,9 +508,9 @@ void CApplicationMessenger::ProcessWindowMessages()
     ProcessMessage(pMsg);
     if (pMsg->hWaitEvent)
       SetEvent(pMsg->hWaitEvent);
-      delete pMsg;
+    delete pMsg;
 
-      lock.Enter();
+    lock.Enter();
   }
 }
 
@@ -692,7 +694,9 @@ void CApplicationMessenger::NetworkMessage(DWORD dwMessage, DWORD dwParam)
 
 void CApplicationMessenger::SwitchToFullscreen()
 {
+  /* FIXME: ideally this call should return upon a successfull switch but currently
+     is causing deadlocks between the dvdplayer destructor and the rendermanager
+  */
   ThreadMessage tMsg = {TMSG_SWITCHTOFULLSCREEN};
-  SendMessage(tMsg, true);
+  SendMessage(tMsg, false);
 }
-
