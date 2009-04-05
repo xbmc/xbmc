@@ -267,12 +267,9 @@ void CVideoReferenceClock::RunGLX()
 {
   unsigned int  PrevVblankCount;
   unsigned int  VblankCount;
-  LARGE_INTEGER CurrVBlankTime;
-  LARGE_INTEGER LastVBlankTime;
   int           ReturnV;
   
   m_glXGetVideoSyncSGI(&PrevVblankCount);
-  QueryPerformanceCounter(&LastVBlankTime);
   UpdateRefreshrate();
   
   while(!m_bStop)
@@ -291,22 +288,13 @@ void CVideoReferenceClock::RunGLX()
       m_CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * m_AdjustedFrequency.QuadPart / m_RefreshRate;
       SendVblankSignal();
       Unlock();
-      QueryPerformanceCounter(&LastVBlankTime);
       
       UpdateRefreshrate();
     }
     else
     {
       m_glXGetVideoSyncSGI(&VblankCount);
-      QueryPerformanceCounter(&CurrVBlankTime);
-      
-      if (CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart > m_SystemFrequency.QuadPart)
-      {
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI didn't update for 1 second");
-        CleanupGLX();
-        return;
-      }
-      else if (VblankCount <= PrevVblankCount)
+      if (VblankCount <= PrevVblankCount)
       {
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
         
