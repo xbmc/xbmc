@@ -3,6 +3,6 @@
   <!-- RSS feeds. To have multiple feeds, just add a feed to the set. You can also have multiple sets. 	!-->
   <!-- To use different sets in your skin, each must be called from skin with a unique id.             	!-->
   <set id="1">
-    <feed updateinterval="30">http://feeds.feedburner.com/xbmc</feed>
+    <feed updateinterval="30">http://xbmc.org/blog/xbmcrss.php</feed>
   </set>
 </rssfeeds>
