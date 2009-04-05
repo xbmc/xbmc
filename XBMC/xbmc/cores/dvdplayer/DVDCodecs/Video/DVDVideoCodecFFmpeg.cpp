@@ -87,8 +87,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   pCodec = NULL;
 
 #ifdef HAVE_LIBVDPAU
-  if( ( requestedMethod == RENDER_METHOD_AUTO 
-     || requestedMethod == RENDER_METHOD_VDPAU )
+  if(requestedMethod == RENDER_METHOD_VDPAU
   && !hints.software)
   {
     while((pCodec = m_dllAvCodec.av_codec_next(pCodec)))
