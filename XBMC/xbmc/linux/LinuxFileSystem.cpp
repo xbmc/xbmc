@@ -139,27 +139,19 @@ void CLinuxFileSystem::GetDrives(int *DeviceType, int len, VECSOURCES &shares)
         {
           char* mount = reMount.GetReplaceString("\\1");
           char* fs    = reMount.GetReplaceString("\\2");
-#ifdef __APPLE__
-          // Ignore the stuff that doesn't make sense.
-        if (strcmp(fs, "devfs") == 0 || strcmp(fs, "fdesc") == 0 || strcmp(fs, "autofs") == 0 || strcmp(fs, "dev") == 0 || strcmp(fs, "mnt") == 0)
-          continue;
 
-        // Skip this for now, until we can figure out the name of the root volume.
-        if (strcmp(mount, "/") == 0)
-          continue;
-
-        result.push_back(mount);
-#else
           // Ignore root
           if (strcmp(mount, "/") == 0)
             continue;
-          // Here we choose wich filesystems are approved
+            
+          // Here we choose which filesystems are approved
           if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0
               || strcmp(fs, "ext2") == 0 || strcmp(fs, "ext3") == 0
               || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0
-              || strcmp(fs, "ntfs-3g") == 0 || strcmp(fs, "iso9660") == 0)
+              || strcmp(fs, "ntfs-3g") == 0 || strcmp(fs, "iso9660") == 0
+              || strcmp(fs, "fusefs") == 0 || strcmp(fs, "hfs") == 0)
             result.push_back(mount);
-#endif
+
           free(fs);
           free(mount);
         }

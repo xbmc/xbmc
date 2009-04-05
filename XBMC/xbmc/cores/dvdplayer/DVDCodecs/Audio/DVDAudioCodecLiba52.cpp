@@ -189,7 +189,7 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
     m_iOutputMapping = 0x21;
     m_iOutputFlags = A52_STEREO;
     if (m_iSourceChannels > 2)
-      m_Gain = g_advancedSettings.m_ac3Gain; // Hack for downmix attenuation
+      m_Gain = pow(2.0f, g_advancedSettings.m_ac3Gain/6.0f); // Hack for downmix attenuation
   }
 
   /* adjust level should always be set, to keep samples in proper range */

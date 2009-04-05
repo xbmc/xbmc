@@ -86,7 +86,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   }
 
   // init encoder
-  CStdString strFile2=CUtil::MakeLegalFileName(strFile);
+  CStdString strFile2=CUtil::MakeLegalPath(strFile);
   if (!m_pEncoder->Init(strFile2.c_str(), 2, 44100, 16))
   {
     m_cdReader.DeInit();
@@ -259,7 +259,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   // if album name is set, then we use this as the directory to place the new file in.
   if (pItem->GetMusicInfoTag()->GetAlbum().size() > 0)
   {
-    strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str());
+    strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str(), ripPath.IsSmb() ? LEGAL_WIN32_COMPAT : LEGAL_NONE);
     CUtil::AddDirectorySeperator(strDirectory);
   }
 
@@ -324,7 +324,7 @@ bool CCDDARipper::RipCD()
   CStdString strAlbumDir;
   if (vecItems[0]->GetMusicInfoTag()->GetAlbum().size() > 0)
   {
-    strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->GetMusicInfoTag()->GetAlbum().c_str());
+    strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->GetMusicInfoTag()->GetAlbum().c_str(), ripPath.IsSmb() ? LEGAL_WIN32_COMPAT : LEGAL_NONE);
   }
 
     // No legal fatx directory name or no album in tag

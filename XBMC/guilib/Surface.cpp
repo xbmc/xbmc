@@ -986,59 +986,54 @@ void CSurface::Flip()
 
 bool CSurface::MakeCurrent()
 {
+  if (m_pShared)
+    return m_pShared->MakeCurrent();
+
+  if (!m_glContext)
+    return false;
+
 #ifdef HAS_GLX
+  GLXDrawable drawable = None;
   if (m_glWindow)
+    drawable = m_glWindow;
+  else if(m_glPBuffer)
+    drawable = m_glPBuffer;
+  else
+    return false;
+
+  //attempt up to 10 times
+  int i = 0;
+  while (i<=10 && !glXMakeCurrent(s_dpy, drawable, m_glContext))
   {
-    //attempt up to 10 times
-    int i = 0;
-    while (i<=10 && !glXMakeCurrent(s_dpy, m_glWindow, m_glContext))
-    {
-      Sleep(5);
-      i++;
-    }
-    if (i==10)
-      return false;
-    return true;
-    //return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    Sleep(5);
+    i++;
   }
-  else if (m_glPBuffer)
-  {
-    return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
-  }
+  if (i==10)
+    return false;
+  return true;
 #endif
 
 #ifdef __APPLE__
-  //if (m_glContext)
-  if (m_pShared)
-  {
-    // Use the shared context, because ours might not be up to date (e.g. if
-    // a transition from windowed to full-screen took place).
-    //
-    m_pShared->MakeCurrent();
-  }
-  else if (m_glContext)
-  {
-    Cocoa_GL_MakeCurrentContext(m_glContext);
-    return true;
-  }
+  Cocoa_GL_MakeCurrentContext(m_glContext);
+  return true;
 #endif
 
 #ifdef _WIN32
-  if (IsShared())
-    return m_pShared->MakeCurrent();
-  if (m_glContext)
-  {
-    if(wglGetCurrentContext() == m_glContext)
-      return true;
-    else
-      return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
-    }
+  if(wglGetCurrentContext() == m_glContext)
+    return true;
+  else
+    return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
 #endif
   return false;
 }
 
 void CSurface::RefreshCurrentContext()
 {
+#ifdef HAS_GLX
+  ReleaseContext();
+  MakeCurrent();
+#endif
+
 #ifdef __APPLE__
   m_glContext = Cocoa_GL_GetCurrentContext();
 #endif

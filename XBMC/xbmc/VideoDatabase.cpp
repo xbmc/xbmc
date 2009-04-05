@@ -2741,7 +2741,7 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
       strSQL=FormatSQL("insert into settings ( idFile,Interleaved,NoCache,Deinterlace,FilmGrain,ViewMode,ZoomAmount,PixelRatio,"
                        "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
                        "VolumeAmplification,AudioDelay,OutputToAllSpeakers,ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom,Sharpness,NoiseReduction)"
-                       " values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,%f,%f",
+                       " values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,%f,%f,",
                        lFileId, setting.m_NonInterleaved, setting.m_NoCache, setting.m_InterlaceMethod, setting.m_FilmGrain, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
                        setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay, setting.m_Sharpness, setting.m_NoiseReduction);
@@ -6700,7 +6700,7 @@ bool CVideoDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
     strResult = "";
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    CStdString strSQL=FormatSQL(strQuery);
+    CStdString strSQL=strQuery;
     if (!m_pDS->query(strSQL.c_str()))
     {
       strResult = m_pDB->getErrorMsg();
@@ -6744,7 +6744,7 @@ bool CVideoDatabase::ArbitraryExec(const CStdString& strExec)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    CStdString strSQL = FormatSQL(strExec);
+    CStdString strSQL = strExec;
     m_pDS->exec(strSQL.c_str());
     m_pDS->close();
     return true;
