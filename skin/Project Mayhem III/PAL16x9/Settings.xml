@@ -60,6 +60,31 @@
 				<onright>6</onright>
 				<onup>11</onup>
 				<ondown>13</ondown>
+				<visible>system.platform.xbox</visible>
+			</control>
+			<control type="button" id="13">
+				<description>skin Settings</description>
+				<posx>0</posx>
+				<posy>37</posy>
+				<label>20077</label>
+				<onclick>ActivateWindow(56)</onclick>
+				<onleft>8</onleft>
+				<onright>6</onright>
+				<onup>112</onup>
+				<ondown>14</ondown>
+				<visible>!system.platform.xbox</visible>
+			</control>
+			<control type="button" id="14">
+				<description>reload skin</description>
+				<posx>0</posx>
+				<posy>74</posy>
+				<label>20183</label>
+				<onclick>XBMC.ReloadSkin()</onclick>
+				<onleft>8</onleft>
+				<onright>6</onright>
+				<onup>13</onup>
+				<ondown>20</ondown>
+				<visible>!system.platform.xbox</visible>
 			</control>
 			<control type="button" id="13">
 				<description>skin Settings</description>
@@ -71,6 +96,7 @@
 				<onright>6</onright>
 				<onup>112</onup>
 				<ondown>14</ondown>
+				<visible>system.platform.xbox</visible>
 			</control>
 			<control type="button" id="14">
 				<description>reload skin</description>
@@ -82,6 +108,7 @@
 				<onright>6</onright>
 				<onup>13</onup>
 				<ondown>20</ondown>
+				<visible>system.platform.xbox</visible>
 			</control>
 			<control type="group">
 				<description>LastFM Love Hate Stuff</description>

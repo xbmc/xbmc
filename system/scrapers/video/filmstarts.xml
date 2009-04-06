@@ -10,8 +10,8 @@
         </GetSettings>
 
 	<NfoUrl dest="3">
-		<RegExp input="$$1" output="&lt;url&gt;http://www.filmstarts.de/finde.html?t=film&amp;anfrage=\1&lt;url&gt;"  dest="3">
-			<expression noclean="1">filmstarts.de/browse/movie_detail.pfm?code=([0-9]*)</expression>
+		<RegExp input="$$1" output="&lt;url&gt;http://www.filmstarts.de/kritiken/\2.html&lt;/url&gt;"  dest="3">
+			<expression clear="yes" noclean="1">(filmstarts.de/kritiken/)(.*).html</expression>
 		</RegExp>	
 		<RegExp input="$$1" output="&lt;url function=&quot;GetByIMDBId&quot;&gt;http://www.imdb.com/title/tt\2/externalreviews&lt;/url&gt;" dest="3+">
 			<expression>(imdb.com/)Title\?([0-9]+)</expression>
@@ -23,7 +23,7 @@
 
         <GetByIMDBId dest="3">
                 <RegExp input="$$1" output="&lt;url&gt;http://www.filmstarts.de/kritiken/\1&lt;/url&gt;" dest="3+">
-                        <expression noclean="1">&lt;a href=&quot;http://www.filmstarts.de/kritiken/([-.%a-z0-9A-Z]+)&quot;</expression>
+                        <expression noclean="1">&lt;a href=&quot;http://www.filmstarts.de/kritiken/([^&quot;]*)&quot;</expression>
                 </RegExp>
         </GetByIMDBId>
 	
@@ -36,8 +36,8 @@
 
 	<GetSearchResults dest="3">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.filmstarts.de/kritiken/\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5">
-				<expression repeat="yes">&lt;li&gt;&lt;a href=&quot;/kritiken/([-.%a-z0-9A-Z]+)&quot;&gt;.*?&lt;span class=&quot;t&quot;&gt;([\xC0-\xFF0-9a-zA-Z .-]+)&lt;/span&gt;</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.filmstarts.de/kritiken/\1&lt;/url&gt;;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes">&lt;li&gt;&lt;a href=&quot;/kritiken/([^&quot;]*)&quot;&gt;.*?&lt;span class=&quot;t&quot;&gt;([^&lt;]*)&lt;/span&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
