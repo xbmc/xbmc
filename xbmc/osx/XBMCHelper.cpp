@@ -28,6 +28,7 @@
 #include <fstream>
 #include <string>
 #include <Carbon/Carbon.h>
+#include <mach-o/dyld.h>
 
 
 using namespace std;
@@ -59,16 +60,21 @@ XBMCHelper::XBMCHelper()
 {
   CStdString homePath;
   CUtil::GetHomePath(homePath);
+  m_homepath = homePath;
 
   // Compute the helper filename.
-  m_helperFile = homePath + "/XBMCHelper";
-
+  m_helperFile = m_homepath + "/tools/osx/";
+  m_helperFile += XBMC_HELPER_PROGRAM;
+  
   // Compute the local (pristine) launch agent filename.
-  m_launchAgentLocalFile = homePath + "/" XBMC_LAUNCH_PLIST;
+  m_launchAgentLocalFile = m_homepath + "/tools/osx/";
+  m_launchAgentLocalFile += XBMC_LAUNCH_PLIST;
 
   // Compute the install path for the launch agent.
+  // not to be confused with app home, this is user home
   m_launchAgentInstallFile = getenv("HOME");
-  m_launchAgentInstallFile += "/Library/LaunchAgents/" XBMC_LAUNCH_PLIST;
+  m_launchAgentInstallFile += "/Library/LaunchAgents/";
+  m_launchAgentInstallFile += XBMC_LAUNCH_PLIST;
 
   // Compute the configuration file name.
   m_configFile = getenv("HOME");
@@ -82,7 +88,8 @@ void XBMCHelper::Start()
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   if (pid == -1)
   {
-    string cmd = "\"" + m_helperFile + "\" &";
+    // use -x to read configure file
+    string cmd = "\"" + m_helperFile + "-x\" &";
     system(cmd.c_str());
   }
 }
@@ -131,10 +138,30 @@ void XBMCHelper::Configure()
       strConfig = "--universal ";
 
     char strDelay[64];
-    sprintf(strDelay, "--timeout %d", m_sequenceDelay);
+    sprintf(strDelay, "--timeout %d ", m_sequenceDelay);
     strConfig += strDelay;
 
+    // Find out where we're running from.
+    char real_path[2*MAXPATHLEN];
+    char given_path[2*MAXPATHLEN];
+    uint32_t path_size = 2*MAXPATHLEN;
+
+    if (_NSGetExecutablePath(given_path, &path_size) == 0)
+    {
+      if (realpath(given_path, real_path) != NULL)
+      {
+        strConfig += "--appPath \"";
+        strConfig += real_path;
+        strConfig += "\" ";
+
+        strConfig += "--appHome \"";
+        strConfig += m_homepath;
+        strConfig += "\" ";
+      }
+    }
+
     // Write the new configuration.
+    strConfig + "\n";
     WriteFile(m_configFile.c_str(), strConfig);
 
     // If process is running, kill -HUP to have it reload settings.
