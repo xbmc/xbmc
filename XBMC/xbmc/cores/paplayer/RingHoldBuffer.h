@@ -177,7 +177,7 @@ public:
       // sanity check the save size
       if (iSaveSize <= 1) iSaveSize = 1;
       if (iSaveSize >= m_nBufSize/2) iSaveSize = m_nBufSize/2;
-      m_nBehindSize = iSaveSize; 
+      m_nBehindSize = iSaveSize;
       ::LeaveCriticalSection(&m_critSection );
     }
     catch (...)
