@@ -1031,11 +1031,8 @@ CProfile* CApplication::InitDirectoriesOSX()
   CDirectory::Create("special://temp/");
 
   CStdString userHome;
-  if (getenv("HOME"))
-  {
-    userHome = getenv("HOME");
-  }
-  else
+  userHome = getenv("HOME");
+  if (userHome.IsEmpty() )
   {
     userHome = "/root";
   }
