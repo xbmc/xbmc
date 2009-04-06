@@ -2556,6 +2556,15 @@ CStdString CFileItem::GetCachedFanart() const
       return "";
     if (!GetVideoInfoTag()->m_strArtist.IsEmpty())
       return GetCachedThumb(GetVideoInfoTag()->m_strArtist,g_settings.GetMusicFanartFolder());
+    if (!m_bIsFolder && !GetVideoInfoTag()->m_strShowTitle.IsEmpty())
+    {
+      CVideoDatabase database;
+      database.Open();
+      int iShowId = database.GetTvShowId(GetVideoInfoTag()->m_strPath);
+      CStdString showPath;
+      database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
+      return GetCachedThumb(showPath,g_settings.GetVideoFanartFolder()); 
+    }
     return GetCachedThumb(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());
   }
   if (HasMusicInfoTag())
