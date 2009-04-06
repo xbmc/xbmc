@@ -201,8 +201,6 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
   int iState = 0;
   if (!m_pHandle) return VC_ERROR;
 
-  try {
-
   if (pData && iSize)
   {
     //buffer more data
@@ -255,7 +253,7 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
     case STATE_PICTURE:
       {
         m_dll.mpeg2_skip(m_pHandle, 0);
-        if(m_hurry>1 && m_pInfo->current_picture)
+        if(m_hurry>0 && m_pInfo->current_picture)
         {
           if((m_pInfo->current_picture->flags&PIC_MASK_CODING_TYPE) == PIC_FLAG_CODING_TYPE_B)
             m_dll.mpeg2_skip(m_pHandle, 1);
@@ -438,17 +436,14 @@ int CDVDVideoCodecLibMpeg2::Decode(BYTE* pData, int iSize, double pts)
   if (iState == STATE_BUFFER) 
     return VC_BUFFER;
 
-  } catch (win32_exception e) {
-    e.writelog(__FUNCTION__);
-  }
+  CLog::Log(LOGDEBUG,"CDVDVideoCodecLibMpeg2::Decode error");
 
-  CLog::DebugLog("CDVDVideoCodecLibMpeg2::Decode error");
   return VC_ERROR;
 }
 
 void CDVDVideoCodecLibMpeg2::Reset()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__"()");
+  CLog::Log(LOGDEBUG, "(%s)", __FUNCTION__);
 
   /* we can't do a full reset here as then libmpeg2 doesn't search for all *
    * start codes, but doesn't have enough state information to continue    *
