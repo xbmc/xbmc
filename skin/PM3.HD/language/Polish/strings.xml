@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: smuto-->
 <!--Email: smuto.promyk@gmail.com-->
-<!--Date of translation: 09/18/2008-->
+<!--Date of translation: 03/25/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Wyciszone</string>
@@ -26,8 +26,7 @@
   </string>
   <string id="31010">OBRAZ[CR]FANART[CR]NIEDOSTĘPNY</string>
   <string id="31011">MINIATURKA[CR]ODCINKA[CR]NIEDOSTĘPNA</string>
-  <string id="31012">
-  </string>
+  <string id="31012">MINIATURKA[CR]ODCINKA[CR]NIEDOSTĘPNA</string>
   <string id="31013">
   </string>
   <string id="31014">
@@ -57,7 +56,7 @@
   <string id="31029">Lista DVD</string>
   <string id="31030">Fanart</string>
   <string id="31031">Pełna lista</string>
-  <string id="31032">-</string>
+  <string id="31032">Plakaty</string>
   <string id="31033">Przezrocze</string>
   <string id="31034">Banner</string>
   <string id="31040">Wybierz nowy lub zmień aktualny[CR]obraz Fanart tego filmu[CR][CR]Kliknij, aby pobrać</string>
@@ -68,8 +67,7 @@
   <string id="31045">COFNIJ</string>
   <string id="31046">Witamy w XBMC - wybierz użytkownika</string>
   <string id="31047">Udane logowanie</string>
-  <string id="31048">
-  </string>
+  <string id="31048">Wybierz nowy lub zmień aktualny[CR]obraz Fanart tego artysty[CR][CR]Kliknij, aby pobrać</string>
   <string id="31050">
   </string>
   <string id="31051">
@@ -88,8 +86,7 @@
   <string id="31101">Opcje ekranu głównego</string>
   <string id="31102">Tła</string>
   <string id="31103">Wyświetlaj "Pauza" podczas pokazu slajdów</string>
-  <string id="31104">
-  </string>
+  <string id="31104">Użyj "Hibernacji" zamiast "Stanu wstrzymania"</string>
   <string id="31105">Wyświetlaj tytuły podczas skanowania w tle</string>
   <string id="31106">Różnego rodzaju opcje</string>
   <string id="31107">Nie nakładaj na tło efektu "paskowy obraz"</string>
@@ -97,6 +94,7 @@
   <string id="31109">Tła ekranu głównego</string>
   <string id="31110">przycisk - Ustaw własne tło</string>
   <string id="31111">Zawsze pokazuj info o muzyce podczas wyświetlania tekstów utworu</string>
+  <string id="31112">Wyświetlaj tytuł w widoku "Baner"</string>
   <string id="31200">Skrypty uruchamiane z poziomu skóry</string>
   <string id="31201">
   </string>
@@ -112,4 +110,5 @@
   </string>
   <string id="31208">Przycisk do tekstu utworu w OSD</string>
   <string id="31209">Dodatkowy przycisk szybkiego dostępu w zakładce </string>
+  <string id="31300">Pokaż obsadę</string>
 </strings>

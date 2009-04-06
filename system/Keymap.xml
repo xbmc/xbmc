@@ -171,8 +171,21 @@
 
       <!-- hold play  --> <button id="7">Fullscreen</button>
       <!-- hold menu  --> <button id="8">ContextMenu</button>
+      
+      <!-- old buttons (ATV <2.2) -->
       <!-- hold left  --> <button id="9">BigStepBack</button>
       <!-- hold right --> <button id="10">BigStepForward</button>
+      
+      <!-- Learned remote buttons (ATV >2.3) -->
+      <!-- Play --> <button id="70">Play</button>
+      <!-- Pause --> <button id="71">Pause</button>
+      <!-- Stop --> <button id="72">Stop</button>
+      <!-- Previous --> <button id="73">SkipPrevious</button>
+      <!-- Next --> <button id="74">SkipNext</button>
+      <!-- Rewind --> <button id="75">Rewind</button>
+      <!-- Forward --> <button id="76">FastForward</button>
+      <!-- Return --> <button id="77">OSD</button>
+      <!-- Enter --> <button id="78">ShowVideoMenu</button>
     </joystick>
 
     <keyboard>
@@ -214,8 +227,25 @@
       <eight>Number8</eight>
       <nine>Number9</nine>
       <backslash>ToggleFullScreen</backslash>
+      <browser_home>XBMC.ActivateWindow(Home)</browser_home>
+      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <browser_refresh></browser_refresh>
+      <browser_search></browser_search>
+      <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
+      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
+      <play_pause>Pause</play_pause>
+      <stop>Stop</stop>
+      <volume_up>VolumeUp</volume_up>
+      <volume_mute>Mute</volume_mute>
+      <volume_down>VolumeDown</volume_down>
+      <next_track>SkipNext</next_track>
+      <prev_track>SkipPrevious</prev_track>
+      <launch_mail></launch_mail>
+      <key id="61620"></key> <!-- same as above, launch_mail, but using button code (based on vkey id) -->
       <home>FirstPage</home>
       <end>LastPage</end>
+      <key id="65446">ParentDir</key>
+      <key id="65459">Play</key>
     </keyboard>
   </global>
 
@@ -336,6 +366,7 @@
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
+      <backspace>Playlist</backspace> <!-- Close playlist -->
     </keyboard>
   </MyMusicPlaylist>
 
@@ -514,7 +545,8 @@
       <r>Rewind</r>
       <period>StepForward</period>
       <comma>StepBack</comma>
-      <backspace>SmallStepBack</backspace>
+      <backspace>Fullscreen</backspace>
+      <quote>SmallStepBack</quote>
       <opensquarebracket>BigStepForward</opensquarebracket>
       <closesquarebracket>BigStepBack</closesquarebracket>
       <return>OSD</return>
@@ -588,6 +620,7 @@
     </gamepad>
 
     <keyboard>
+      <escape>Close</escape>
       <m>close</m>
     </keyboard>
 
@@ -738,6 +771,7 @@
     </remote>
 
     <keyboard>
+      <escape>Close</escape>
       <f>FastForward</f>
       <r>Rewind</r>
       <period>SkipNext</period>
@@ -784,6 +818,7 @@
     </joystick>
 
     <keyboard>
+      <escape>Close</escape>
       <f>FastForward</f>
       <r>Rewind</r>
       <period>SkipNext</period>
@@ -830,6 +865,7 @@
     </joystick>
 
     <keyboard>
+      <escape>Close</escape>
       <f>FastForward</f>
       <r>Rewind</r>
       <period>SkipNext</period>
@@ -935,6 +971,7 @@
       <plus>ZoomIn</plus>
       <minus>ZoomOut</minus>
       <r>Rotate</r>
+      <backspace>PreviousMenu</backspace>
     </keyboard>
   </SlideShow>
 
@@ -1039,6 +1076,7 @@
     </remote>
 
     <keyboard>
+      <backspace>Close</backspace>
       <escape>Close</escape>
     </keyboard>
   </SelectDialog>
@@ -1078,7 +1116,7 @@
     </remote>
 
     <keyboard>
-      <backspace>HideSubMenu</backspace>
+      <backspace>Close</backspace>
       <escape>Close</escape>
       <m>Close</m>
       <i>Info</i>
@@ -1182,7 +1220,7 @@
     </remote>
 
     <keyboard>
-      <backspace>HideSubMenu</backspace>
+      <backspace>Close</backspace>
       <escape>Close</escape>
       <i>Info</i>
       <o>CodecInfo</o>
@@ -1227,7 +1265,7 @@
     </remote>
 
     <keyboard>
-      <backspace>HideSubMenu</backspace>
+      <backspace>Close</backspace>
       <escape>Close</escape>
       <i>Info</i>
       <o>CodecInfo</o>
@@ -1272,7 +1310,7 @@
     </remote>
 
     <keyboard>
-      <backspace>HideSubMenu</backspace>
+      <backspace>Close</backspace>
       <escape>Close</escape>
     </keyboard>
   </VideoBookmarks>
@@ -1391,6 +1429,7 @@
     </remote>
 
     <keyboard>
+      <backspace>Playlist</backspace> <!-- Close playlist -->
       <space>Playlist</space> <!-- Close playlist -->
       <delete>Delete</delete>
       <u>MoveItemUp</u>
@@ -1478,7 +1517,9 @@
     </joystick>
 
     <keyboard>
+      <c>Close</c>
       <menu>Close</menu>
+      <backspace>Close</backspace>
     </keyboard>
   </ContextMenu>
 
@@ -1490,6 +1531,10 @@
     <joystick name="AppleRemote">
       <button id="6">Close</button>
     </joystick>
+
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
   </FileStackingDialog>
 
 
@@ -1603,7 +1648,11 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
-    
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+      <key id="65446">PreviousMenu</key>
+    </keyboard>
   </Weather>
 
   <Settings>
@@ -1620,6 +1669,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </Settings>
 
   <MyPicturesSettings>
@@ -1636,6 +1689,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </MyPicturesSettings>
 
   <MyProgramsSettings>
@@ -1652,6 +1709,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </MyProgramsSettings>
 
   <MyWeatherSettings>
@@ -1668,6 +1729,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </MyWeatherSettings>
 
   <MyMusicSettings>
@@ -1684,6 +1749,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </MyMusicSettings>
 
   <SystemSettings>
@@ -1700,6 +1769,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </SystemSettings>
 
   <MyVideosSettings>
@@ -1716,6 +1789,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </MyVideosSettings>
 
   <NetworkSettings>
@@ -1732,6 +1809,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </NetworkSettings>
 
   <AppearanceSettings>
@@ -1748,6 +1829,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </AppearanceSettings>
 
   <Profiles>
@@ -1764,6 +1849,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </Profiles>
 
   <systeminfo>
@@ -1780,6 +1869,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </systeminfo>
 
   <shutdownmenu>
@@ -1796,6 +1889,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </shutdownmenu>
 
   <submenu>
@@ -1812,6 +1909,10 @@
     <remote>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </submenu>
 
   <MusicInformation>
@@ -1836,6 +1937,11 @@
     <remote>
       <back>Close</back>
     </remote>
+
+    <keyboard>
+      <backspace>Close</backspace>
+      <key id="65446">Close</key>
+    </keyboard>
   </MusicInformation>
 
   <MovieInformation>
@@ -1860,6 +1966,11 @@
     <remote>
       <back>Close</back>
     </remote>
+
+    <keyboard>
+      <backspace>Close</backspace>
+      <key id="65446">Close</key>
+    </keyboard>
   </MovieInformation>
 
   <LockSettings>
@@ -1881,6 +1992,11 @@
       <menu>Close</menu>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <escape>Close</escape>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </LockSettings>
 
   <ProfileSettings>
@@ -1902,6 +2018,11 @@
       <menu>Close</menu>
       <back>PreviousMenu</back>
     </remote>
+
+    <keyboard>
+      <escape>Close</escape>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
   </ProfileSettings>
 
   <PictureInfo>
@@ -1934,6 +2055,7 @@
       <period>NextPicture</period>
       <comma>PreviousPicture</comma>
       <i>Close</i>
+      <backspace>Close</backspace>
       <space>Pause</space>
     </keyboard>
   </PictureInfo>
