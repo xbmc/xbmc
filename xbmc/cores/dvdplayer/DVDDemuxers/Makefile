@@ -13,4 +13,5 @@ SRCS=	DVDDemux.cpp \
 LIB=	DVDDemuxers.a
 
 include ../../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
