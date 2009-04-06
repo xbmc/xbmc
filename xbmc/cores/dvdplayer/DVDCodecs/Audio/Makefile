@@ -13,4 +13,5 @@ SRCS=	DVDAudioCodecFFmpeg.cpp \
 LIB=Audio.a
 
 include ../../../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
