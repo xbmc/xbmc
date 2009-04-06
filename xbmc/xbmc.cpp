@@ -34,6 +34,9 @@
 #ifdef _LINUX
 #include <sys/resource.h>
 #endif
+#ifdef __APPLE__
+#include "Util.h"
+#endif
 
 
 CApplication g_application;
@@ -111,18 +114,11 @@ int main(int argc, char* argv[])
   // if we're on a Mac or if XBMC_PLATFORM_MODE is set, enable platform
   // specific directories.
 #ifdef __APPLE__
-  if(getenv("XBMC_HOME")) 
-  {
-    std::string preflight;
-
-    preflight = getenv("XBMC_HOME");
-    preflight += "/tools/osx/preflight";
-    system(preflight.c_str());
-  }
-  else
-  {
-    system("XBMC.app/Contents/Resources/XBMC/tools/osx/preflight");
-  }
+  CStdString preflight;
+  
+  CUtil::GetHomePath(preflight);
+  preflight += "/tools/osx/preflight";
+  system(preflight.c_str());
 #endif
 
   g_application.Create(NULL);
