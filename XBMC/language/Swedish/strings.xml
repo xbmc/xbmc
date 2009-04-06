@@ -146,7 +146,7 @@
   <string id="224">Hastighet</string>
   <string id="225">Tid för övergång</string>
   <string id="226">Testmönster...</string>
-  <string id="227">Slå upp CD på freedb</string>
+  <string id="227">Slå upp CD på Internet</string>
   <string id="228">Blanda spellistor när de laddas</string>
   <string id="229">Tid innan sänkt HD-hastighet</string>
   <string id="230">Videofilter</string>
@@ -329,10 +329,10 @@
   <string id="417">Vy: Stora ikoner</string>
   <string id="418">Aktivera bibliotek</string>
   <string id="422">Radera albuminfo</string>
-  <string id="423">Radera CDDB-info</string>
+  <string id="423">Radera CD information</string>
   <string id="424">Välj</string>
-  <string id="425">Ingen albuminfo hittad.</string>
-  <string id="426">Ingen CDDB-info hittad.</string>
+  <string id="425">Ingen albuminfo hittad</string>
+  <string id="426">Ingen CD information hittad</string>
   <string id="427">Skiva</string>
   <string id="428">Sätt i korrekt CD/DVD</string>
   <string id="429">Var god sätt i följande CD/DVD</string>
@@ -345,7 +345,7 @@
   <string id="439">Buffert</string>
   <string id="440">Hårddisk</string>
   <string id="441">UDF</string>
-  <string id="442">LAN</string>
+  <string id="442">Lokalt nätverk</string>
   <string id="443">Internet</string>
   <string id="444">Grafik</string>
   <string id="445">Ljud</string>
@@ -396,7 +396,7 @@
   <string id="496">Kalibrering</string>
   <string id="497">Göm filändelse för media</string>
   <string id="498">Sort: Typ</string>
-  <string id="499">Kunde inte kontakta www.allmusic.com</string>
+  <string id="499">Kunde inte kontakta informationsserver</string>
   <string id="500">Nedladdning av albuminfo misslyckades</string>
   <string id="501">Letar efter albumnamn...</string>
   <string id="502">Öppen</string>
@@ -435,7 +435,7 @@
   <string id="538">Stora ikoner</string>
   <string id="539">Bred</string>
   <string id="540">Stor bred</string>
-  <string id="541">Album ikoner</string>
+  <string id="541">Albumikoner</string>
   <string id="542">DVD ikoner</string>
   <string id="543">DVD</string>
   <string id="544">Mediainfo</string>
@@ -716,6 +716,7 @@
   <string id="1255">Skicka FTP användare och lösenord</string>
   <string id="1256">Pingintervall (sek)</string>
   <string id="1257">Vill du ansluta till det autodetekterade systemet?</string>
+  <string id="1260">Zeroconf publisering</string>
   <string id="1396">Blåsigt</string>
   <string id="1397">och</string>
   <string id="1398">Nollgradigt</string>
@@ -855,7 +856,7 @@
   <string id="12367">Huvudkoden är ogiltig!</string>
   <string id="12368">Var god ange korrekt huvudkod!</string>
   <string id="12373">Inställningar &amp; Filhanterare</string>
-  <string id="12376">Använd som standard för alla Filmer</string>
+  <string id="12376">Använd som standard för alla filmer</string>
   <string id="12377">Detta kommer att ta bort alla tidigare sparade värden</string>
   <string id="12378">Visa varje bild för</string>
   <string id="12379">Använd Pan och Zoom effekter</string>
@@ -912,6 +913,7 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Strikt Pixmap-Texture Bindning (kräver omstart)</string>
   <string id="13130">Skärmrensning</string>
   <string id="13131">Inaktivera</string>
   <string id="13132">Rensa skärmar</string>
@@ -946,7 +948,7 @@
   <string id="13171">Omedelbart</string>
   <string id="13172">Efter %i sek</string>
   <string id="13173">HDD installationsdatum:</string>
-  <string id="13174">HDD Strömcykelräkning:</string>
+  <string id="13174">HDD strömcykelräkning:</string>
   <string id="13200">Profiler</string>
   <string id="13201">Radera profil '%s'?</string>
   <string id="13204">Senast laddade profil:</string>
@@ -988,12 +990,12 @@
   <string id="13295">Internet:</string>
   <string id="13296">Ansluten</string>
   <string id="13297">Inte uppkopplad. Kontrollera nätverksinställningar.</string>
-  <string id="13298">XBLIVE nyckel:</string>
+  <string id="13298">Xbox Live nyckel:</string>
   <string id="13299">Måltemperatur</string>
   <string id="13300">Fläktfart</string>
   <string id="13301">Automatisk temp. kontroll</string>
   <string id="13302">Styr fläkthastighet</string>
-  <string id="13303">Skaltypsnitt</string>
+  <string id="13303">- Typsnitt</string>
   <string id="13304">Vänd textriktning</string>
   <string id="13305">Aktivera RSS-nyheter</string>
   <string id="13306">Göm föremål i övermappen</string>
@@ -1178,7 +1180,7 @@
   <string id="14075">Använd sommartid</string>
   <string id="14076">Lägg till i favoriter</string>
   <string id="14077">Ta bort från favoriter</string>
-  <string id="14078">Skalfärger</string>
+  <string id="14078">- Färger</string>
   <string id="14079">Tidzonsland</string>
   <string id="14080">Tidzon</string>
   <string id="15015">Ta bort</string>
@@ -1195,7 +1197,7 @@
   <string id="15107">Buffrar...</string>
   <string id="15108">Navigeringsljud</string>
   <string id="15109">Skalets egna</string>
-  <string id="15111">Skaltema</string>
+  <string id="15111">- Tema</string>
   <string id="15112">Standardtema</string>
   <string id="15200">Last.fm</string>
   <string id="15201">Skicka låtinfo till Last.fm</string>
@@ -1271,7 +1273,7 @@
   <string id="15311">Sökväg:</string>
   <string id="16000">Allmänt</string>
   <string id="16001">Konfigurera ljudhårdvara...</string>
-  <string id="16002">CDDB sökning</string>
+  <string id="16002">Internetsökning</string>
   <string id="16003">Spelare</string>
   <string id="16004">Spela media från skiva</string>
   <string id="16008">Lägg till ny titel</string>
@@ -1684,7 +1686,7 @@
   <string id="21383">Aktivera skrollhandtag</string>
   <string id="21384">Gör visad-filter ett val i filmbibliotek</string>
   <string id="21385">Öppna</string>
-  <string id="21386">Ljudnivåshantering</string>
+  <string id="21386">Ljudnivåhantering</string>
   <string id="21387">Snabb</string>
   <string id="21388">Tyst</string>
   <string id="21389">Aktivera egen bakgrund</string>
@@ -1693,9 +1695,9 @@
   <string id="21392">Låg strömförbrukning</string>
   <string id="21393">Hög standby</string>
   <string id="21394">Låg standby</string>
-  <string id="21395">Kan inte buffra filer större än 4gb</string>
+  <string id="21395">Kan inte buffra filer större än 4GB</string>
   <string id="21396">Kapitel</string>
-  <string id="21397">Högkvalitets Pixel Shader V2</string>
+  <string id="21397">Högkvalitets pixel shader v2</string>
   <string id="21398">Aktivera spellista vid start</string>
   <string id="21399">Använd elastiska animeringar</string>
   <string id="21400">innehåller</string>
@@ -1746,7 +1748,7 @@
   <string id="21805">Upplösning</string>
   <string id="21806">Kommentar</string>
   <string id="21807">Färg/SV</string>
-  <string id="21808">Jpeg behandling</string>
+  <string id="21808">JPEG behandling</string>
   <string id="21820">Datum/tid</string>
   <string id="21821">Beskrivning</string>
   <string id="21822">Kameramärke</string>
@@ -1802,7 +1804,7 @@
   <string id="21888">Diskografi</string>
   <string id="21889">Söker artist</string>
   <string id="21890">Välj artist</string>
-  <string id="21891">Artist information</string>
+  <string id="21891">Artistinformation</string>
   <string id="21892">Instrument</string>
   <string id="21893">Född</string>
   <string id="21894">Bildat</string>
@@ -1822,8 +1824,8 @@
   <string id="22007">OpenGL tillverkare:</string>
   <string id="22008">OpenGL renderare:</string>
   <string id="22009">OpenGL version:</string>
-  <string id="22010">GPU Temperatur:</string>
-  <string id="22011">CPU Temperatur:</string>
+  <string id="22010">GPU temperatur:</string>
+  <string id="22011">CPU temperatur:</string>
   <string id="22012">Totalt minne</string>
   <string id="22013">Profildata</string>
   <string id="22014">Använd dimma om videouppspelningen är pausad</string>
@@ -1833,10 +1835,10 @@
   <string id="22018">Aktuella kanaler</string>
   <string id="22019">Inspelningar efter titel</string>
   <string id="22020">Guide</string>
-  <string id="22030">Texttypsnitt</string>
-  <string id="22031">Textstorlek</string>
-  <string id="22032">Textfärg</string>
-  <string id="22033">MIDI/KAR standard teckenuppsättning</string>
+  <string id="22030">Typsnitt</string>
+  <string id="22031">- Storlek</string>
+  <string id="22032">- Färg</string>
+  <string id="22033">- Teckenuppsättning</string>
   <string id="22034">Exportera karaoke titlar som HTML</string>
   <string id="22035">Exportera karaoke titlar som CSV</string>
   <string id="22036">Importera karaoke titlar...</string>

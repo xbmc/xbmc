@@ -7,7 +7,7 @@
 			<posx>-10</posx>
 			<posy>40</posy>
 			<width>740</width>
-			<height>90</height>
+			<height>110</height>
 			<texture>osd_menu_bg.png</texture>
 		</control>
 		<control type="label" id="10">

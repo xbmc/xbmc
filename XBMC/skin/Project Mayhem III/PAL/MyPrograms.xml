@@ -106,7 +106,7 @@
 				<onleft>50</onleft>
 				<onright>50</onright>
 				<onup>3</onup>
-				<ondown>99</ondown>
+				<ondown>20</ondown>
 				<visible>System.Platform.Xbox</visible>
 			</control>
 			<control type="group">
@@ -158,7 +158,7 @@
 					<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
 					<onleft>50</onleft>
 					<onright>21</onright>
-					<onup>99</onup>
+					<onup>98</onup>
 					<ondown>2</ondown>
 				</control>
 				<control type="button" id="21">
@@ -175,7 +175,7 @@
 					<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
 					<onleft>20</onleft>
 					<onright>50</onright>
-					<onup>99</onup>
+					<onup>98</onup>
 					<ondown>2</ondown>
 				</control>
 			</control>
