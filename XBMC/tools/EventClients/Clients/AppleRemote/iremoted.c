@@ -74,18 +74,19 @@ using namespace std;
 void ParseOptions(int argc, char** argv);
 void ReadConfig();
 
-static struct option
-long_options[] = {
-    { "help",       no_argument,       0, 'h' },
-	{ "server",     required_argument, 0, 's' },
-	{ "universal",  no_argument,       0, 'u' },
-	{ "timeout",    required_argument, 0, 't' },
-	{ "verbose",    no_argument,       0, 'v' },
-    { "externalConfig", no_argument,   0, 'x' },
-    { 0, 0, 0, 0 },
+static struct option long_options[] = {
+  { "help",       no_argument,       0, 'h' },
+  { "server",     required_argument, 0, 's' },
+  { "universal",  no_argument,       0, 'u' },
+  { "timeout",    required_argument, 0, 't' },
+  { "verbose",    no_argument,       0, 'v' },
+  { "externalConfig", no_argument,   0, 'x' },
+  { "appPath",    required_argument, 0, 'a' },
+  { "appHome",    required_argument, 0, 'z' },
+  { 0, 0, 0, 0 },
 };
 
-static const char *options = "hvt:us:";
+static const char *options = "hsutvxaz";
 
 IOHIDElementCookie buttonNextID = 0;
 IOHIDElementCookie buttonPreviousID = 0;
@@ -117,6 +118,8 @@ usage(void)
     printf("  -s, --server <addr>  send events to the specified IP.\n");
     printf("  -u, --universal      runs in Universal Remote mode.\n");
     printf("  -t, --timeout <ms>   timeout length for sequences (default: 500ms).\n");
+    printf("  -a, --appPath        path to XBMC.app (MenuPress launch support).\n");
+    printf("  -z, --appHome        path to XBMC.app/Content/Resources/XBMX \n");
     printf("  -v, --verbose        prints lots of debugging information.\n");
 }
 
@@ -444,38 +447,44 @@ void ReadConfig()
 
 void ParseOptions(int argc, char** argv)
 {
-    int c, option_index = 0;
+  int c, option_index = 0;
 	bool readExternal = false;
 	
-    while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1) 
+  while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1) 
 	{
-        switch (c) {
-        case 'h':
-            usage();
-            exit(0);
-            break;
-        case 'v':
-			g_appleRemote.SetVerbose(true);
-            break;
-		case 's':
-			g_appleRemote.SetServerAddress(optarg);
-			break;
-		case 'u':
-			g_appleRemote.SetRemoteMode(REMOTE_UNIVERSAL);
-			break;
-		case 't':
-			if (optarg)
-				g_appleRemote.SetMaxClickTimeout( atof(optarg) * 0.001 );
-			break;
-		case 'x':
-			readExternal = true;
-			break;
-        default:
-            usage();
-            exit(1);
-            break;
-        }
+    switch (c) {
+    case 'h':
+      usage();
+      exit(0);
+      break;
+    case 'v':
+      g_appleRemote.SetVerbose(true);
+      break;
+    case 's':
+      g_appleRemote.SetServerAddress(optarg);
+      break;
+    case 'u':
+      g_appleRemote.SetRemoteMode(REMOTE_UNIVERSAL);
+      break;
+    case 't':
+      if (optarg)
+        g_appleRemote.SetMaxClickTimeout( atof(optarg) * 0.001 );
+      break;
+    case 'a':
+      g_appleRemote.SetAppPath(optarg);
+      break;
+    case 'z':
+      g_appleRemote.SetAppHome(optarg);
+      break;
+    case 'x':
+      readExternal = true;
+      break;
+    default:
+      usage();
+      exit(1);
+      break;
     }
+  }
 	
 	if (readExternal == true)
 		ReadConfig();	

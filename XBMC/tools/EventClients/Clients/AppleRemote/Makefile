@@ -7,12 +7,13 @@ LDFLAGS+=-framework IOKit -framework Carbon -framework ForceFeedback
 
 OBJS = iremoted.o AppleRemote.o
 
-TARGET = ../../../../XBMCHelper
+TARGET = ../../../osx/XBMCHelper
 CLEAN_FILES=$(TARGET)
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
+	@cp org.xbmc.helper.plist ../../../osx/org.xbmc.helper.plist
 	g++ $(LDFLAGS) $(OBJS) -o $(TARGET)
 
 .cpp.o:
@@ -22,4 +23,4 @@ $(TARGET): $(OBJS)
 	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
 
 clean:
-	$(RM) -rf *.o ../../../../XBMCHelper
+	$(RM) -rf *.o ../../../osx/XBMCHelper
