@@ -4761,9 +4761,14 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
     where = FormatSQL("where c%02d='%i'",VIDEODB_ID_MUSICVIDEO_YEAR,idYear);
   else if (idArtist != -1)
     where = FormatSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideoview.idmvideo join actors on actors.idActor=artistlinkmusicvideo.idartist where actors.idActor=%u",idArtist);
-  else if (idAlbum != -1)
-    where = FormatSQL("where c%02d=(select c%02d from musicvideo where idMVideo=%u)",VIDEODB_ID_MUSICVIDEO_ALBUM,VIDEODB_ID_MUSICVIDEO_ALBUM,idAlbum);
-
+  if (idAlbum != -1)
+   {
+    CStdString str2 = FormatSQL(" musicvideoview.c%02d=(select c%02d from musicvideo where idMVideo=%u)",VIDEODB_ID_MUSICVIDEO_ALBUM,VIDEODB_ID_MUSICVIDEO_ALBUM,idAlbum);
+    if (where.IsEmpty())
+      where.Format(" %s%s","where",str2.c_str());
+    else
+      where.Format(" %s %s%s",where.Mid(0).c_str(),"and",str2.c_str());
+  }
   bool bResult = GetMusicVideosByWhere(strBaseDir, where, items);
   if (bResult && idArtist > -1 && items.Size())
   {
