@@ -91,6 +91,7 @@ class CVideoReferenceClock : public CThread
     bool SetupD3D();
     void RunD3D();
     void CleanupD3D();
+    void HandleWindowMessages();
 
     D3dClock::LPDIRECT3D9       m_D3d;
     D3dClock::LPDIRECT3DDEVICE9 m_D3dDev;

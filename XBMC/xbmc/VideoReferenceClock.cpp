@@ -365,6 +365,7 @@ void CVideoReferenceClock::RunD3D()
         CleanupD3D();
         return;
       }
+      HandleWindowMessages();
     }
     if (RasterStatus.InVBlank) LastLine = 0;
     else LastLine = RasterStatus.ScanLine;
@@ -541,10 +542,25 @@ bool CVideoReferenceClock::CreateHiddenWindow()
     return false;
   }
 
+  ShowWindow(m_Hwnd, SW_HIDE);
+  UpdateWindow(m_Hwnd);
+  HandleWindowMessages();
+
   return true;
 }
 
-#endif
+void CVideoReferenceClock::HandleWindowMessages()
+{
+  MSG Message;
+
+  while(PeekMessage(&Message, m_Hwnd, 0, 0, PM_REMOVE))
+  {
+    TranslateMessage(&Message); 
+    DispatchMessage(&Message);
+  }
+}
+
+#endif /*_WIN32*/
 
 void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
 {
