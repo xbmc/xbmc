@@ -283,6 +283,13 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
 {
   DWORD total = len;
 
+#if defined(_DEBUG) // Watch for junk (unitialized) data
+  short* pSamples = (short*)data;
+  // Find 5 low samples in a row that == 0xCDCD
+  if (pSamples[0] == -12851 && pSamples[1] == -12851 && pSamples[2] == -12851 && pSamples[3] == -12851 && pSamples[4] == -12851)
+    CLog::Log(LOGDEBUG, "CWin32DirectSound::AddPackets: Uninitialized data passed to renderer. POP!");
+#endif
+
   while (len >= m_dwChunkSize && GetSpace() >= m_dwChunkSize) // We want to write at least one chunk at a time
   {
     LPVOID start = NULL, startWrap = NULL;
@@ -299,13 +306,10 @@ DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
 
     // Write data into the buffer
     MapDataIntoBuffer(data, size, (unsigned char*)start);
-
-    //memcpy(start, data, size);
     m_BufferOffset += size;
     if (startWrap) // Write-region wraps to beginning of buffer
     {
       MapDataIntoBuffer(data + size, sizeWrap, (unsigned char*)startWrap);
-      // memcpy(startWrap, data + size, sizeWrap);
       m_BufferOffset = sizeWrap;
     }
     
@@ -436,7 +440,7 @@ void CWin32DirectSound::WaitCompletion()
   // The drain should complete in the time occupied by the cache
   timeout  = (DWORD)(1000 * GetDelay());
   timeout += timeGetTime();
-  silence  = new BYTE[m_dwChunkSize];
+  silence  = (unsigned char*)calloc(1,m_dwChunkSize); // Initialize 'silence' to zero...
 
   while(AddPackets(silence, m_dwChunkSize) == 0)
   {
@@ -449,7 +453,7 @@ void CWin32DirectSound::WaitCompletion()
       break;
     }
   }
-  delete[] silence;
+  free(silence);
 
   while(m_CacheLen)
   {
