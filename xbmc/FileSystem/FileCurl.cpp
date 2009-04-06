@@ -311,7 +311,6 @@ void CFileCurl::SetBufferSize(unsigned int size)
 void CFileCurl::Close()
 {
   CLog::Log(LOGDEBUG, "FileCurl::Close(%p) %s", (void*)this, m_url.c_str());
-  m_opened = false;
   m_state->Disconnect();
 
   m_url.Empty();
@@ -325,6 +324,7 @@ void CFileCurl::Close()
 
   m_curlAliasList = NULL;
   m_curlHeaderList = NULL;
+  m_opened = false;
 }
 
 void CFileCurl::SetCommonOptions(CReadState* state)
@@ -647,6 +647,8 @@ bool CFileCurl::ReadData(CStdString& strHTML)
     strHTML.append(buffer, size_read);
     data_size += size_read;
   }
+  if (m_state->m_cancelled)
+    return false;
   return true;
 }
 
@@ -698,12 +700,13 @@ bool CFileCurl::IsInternet(bool checkDNS /* = true */)
 void CFileCurl::Cancel()
 {
   m_state->m_cancelled = true;
+  while (m_opened)
+    Sleep(1);
 }
 
 void CFileCurl::Reset()
 {
   m_state->m_cancelled = false;
-  Close();
 }
 
 
