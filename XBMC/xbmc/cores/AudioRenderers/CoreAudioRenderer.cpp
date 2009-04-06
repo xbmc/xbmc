@@ -266,15 +266,16 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   // TODO: Replace statics with performance counter class
   static UInt32 lastUpdateTime = 0;
   static UInt64 lastTotalBytes = 0;
-    
+  
+  UInt32 profileTime[3] = {0};
   UInt32 time = timeGetTime();
+  profileTime[0] = time;
 
   if (lastUpdateTime == 0)
     lastUpdateTime = time;
   
   if (lastTotalBytes == 0)
     lastTotalBytes = m_TotalBytesOut;
-  
   UInt32 bytesRequested = m_BytesPerFrame * inNumberFrames;
   if (bytesRequested > ioData->mBuffers[0].mDataByteSize)
   {
@@ -288,12 +289,14 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
     
   if (m_Cache.GetTotalBytes() < bytesRequested) // Not enough data to satisfy the request
   {
+    profileTime[1] = timeGetTime();
     Pause(); // Stop further requests until we have more data.  The AddPackets method will resume playback
     ioData->mBuffers[0].mDataByteSize = 0; // Is this the proper way to signal an underrun to the output?
     CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Buffer underrun.");
   }
   else
   {
+    profileTime[1] = timeGetTime();
     // Fetch the requested amount of data from our cache
     m_Cache.GetData(ioData->mBuffers[0].mData, bytesRequested);
     // Calculate stats and perform a sanity check
@@ -302,7 +305,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
     UInt32 cacheCalc = m_TotalBytesIn - m_TotalBytesOut;
     if (cacheCalc != cacheLen)
       CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Cache length mismatch. We seem to have lost some data. Calc = %u, Act = %u.",cacheCalc, cacheLen);
-
+    profileTime[2] = timeGetTime();
     UInt32 deltaTime = time - lastUpdateTime; 
     if (deltaTime > 1000) // Check our sanity once a second
     {
@@ -314,10 +317,11 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
       lastTotalBytes = m_TotalBytesOut;
     }
   }
-  UInt32 execTime = timeGetTime() - time;
-  if (execTime > 1)
-    CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Exec time = %u.", execTime);  
-  
+  unsigned int t[2];
+  t[0] = profileTime[1] - profileTime[0];
+  t[1] = profileTime[2] - profileTime[2];
+  if (t[0] > 1 || t[1] > 1)
+    CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Profile times %u %u.", t[0], t[1]);  
   
   return noErr;
 }

@@ -22,6 +22,9 @@
 #include "stdafx.h"
 #include "SliceQueue.h"
 
+malloc_zone_t* g_CoreAudioPrivateZone = NULL;
+long g_CoreAudioAllocatorCount = 0;
+
 // TODO: 
 
 // CSliceQueue
@@ -32,19 +35,20 @@ CSliceQueue::CSliceQueue() :
   m_RemainderSize(0),
   m_QueueLock(0)
 {
-
+  m_pAllocator = new CSliceAllocator();
 }
 
 CSliceQueue::~CSliceQueue()
 {
   Clear();
+  delete m_pAllocator;
 }
 
 void CSliceQueue::Push(audio_slice* pSlice) 
 {
   if (pSlice)
   {
-    CAtomicLock lock(m_QueueLock);
+    CAtomicSpinLock lock(m_QueueLock);
     m_Slices.push(pSlice);
     m_TotalBytes += pSlice->header.data_len;
   }
@@ -56,7 +60,7 @@ audio_slice* CSliceQueue::Pop()
   if (!m_Slices.empty())
   {
     pSlice = m_Slices.front();
-    CAtomicLock lock(m_QueueLock);
+    CAtomicSpinLock lock(m_QueueLock);
     m_Slices.pop();
     m_TotalBytes -= pSlice->header.data_len;
   }
@@ -86,7 +90,7 @@ audio_slice* CSliceQueue::GetSlice(size_t alignSize, size_t maxSize)
   }
   
   sliceSize -= sliceSize % alignSize; // Make sure we are properly aligned.
-  audio_slice* pOutSlice = m_Allocator.NewSlice(sliceSize); // Create a new slice
+  audio_slice* pOutSlice = m_pAllocator->NewSlice(sliceSize); // Create a new slice
   
   // See if we can fill the new slice out of our partial slice (if there is one)
   if (m_RemainderSize >= sliceSize)
@@ -114,7 +118,7 @@ audio_slice* CSliceQueue::GetSlice(size_t alignSize, size_t maxSize)
       memcpy(pOutSlice->get_data() + bytesUsed, pNext->get_data(), nextLen - remainder);
       bytesUsed += nextLen; // Increment output size (remainder will be captured separately)
       if (!remainder)
-        m_Allocator.FreeSlice(pNext); // Free the copied slice
+        m_pAllocator->FreeSlice(pNext); // Free the copied slice
     } while (bytesUsed < sliceSize);
   }
   
@@ -140,7 +144,7 @@ size_t CSliceQueue::AddData(void* pBuf, size_t bufLen)
   if (pBuf && bufLen)
   {
   
-    audio_slice* pSlice = m_Allocator.NewSlice(bufLen);
+    audio_slice* pSlice = m_pAllocator->NewSlice(bufLen);
     if (pSlice)
     {
       memcpy(pSlice->get_data(), pBuf, bufLen);
@@ -160,16 +164,21 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
   size_t remainder = 0;
   audio_slice* pNext = NULL;
   
-  unsigned int profileTime[2];  
+  unsigned int profileTime[5] = {0};  
+  unsigned int loopCount = 0;
   
+  profileTime[0] = timeGetTime();
   // See if we can fill the request out of our partial slice (if there is one)
   if (m_RemainderSize >= bufLen)
   {
     memcpy(pBuf, m_pPartialSlice->get_data() + m_pPartialSlice->header.data_len - m_RemainderSize , bufLen);
     m_RemainderSize -= bufLen;
+    
+    profileTime[1] = profileTime[2] = profileTime[3] = timeGetTime();
   }
   else // Pull what we can from the partial slice and get the rest from complete slices
   {
+    profileTime[1] = timeGetTime();
     // Take what we can from the partial slice (if there is one)
     if (m_RemainderSize)
     {
@@ -178,9 +187,11 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
       m_RemainderSize = 0;
     }
 
+    profileTime[2] = timeGetTime();
     // Pull slices from the fifo until we have enough data
     do // TODO: The efficiency of this loop can be improved (a lot I imagine)
     {
+      unsigned int microProfile = timeGetTime();
       pNext = Pop();
       size_t nextLen = pNext->header.data_len;
       if (bytesUsed + nextLen > bufLen) // Check for a partial slice
@@ -188,15 +199,19 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
       memcpy((BYTE*)pBuf + bytesUsed, pNext->get_data(), nextLen - remainder);
       bytesUsed += nextLen; // Increment output size (remainder will be captured separately)
       if (!remainder)
-        m_Allocator.FreeSlice(pNext); // Free the copied slice
-    } while (bytesUsed < bufLen);
+        m_pAllocator->FreeSlice(pNext); // Free the copied slice
+      unsigned int microDelta = timeGetTime() - microProfile;
+      if (microDelta > 1)
+        CLog::Log(LOGDEBUG, "CoreAudio: Microtime = %u.", microDelta);
+      loopCount++;
+    } while (bytesUsed < bufLen);    
+    profileTime[3] = timeGetTime(); 
   }
 
-  profileTime[0] = timeGetTime();
   // Clean up the previous partial slice
   if (!m_RemainderSize && m_pPartialSlice)
   {
-    m_Allocator.FreeSlice(m_pPartialSlice);
+    m_pAllocator->FreeSlice(m_pPartialSlice);
     m_pPartialSlice = NULL;
   }
 
@@ -206,21 +221,24 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
     m_pPartialSlice = pNext;
     m_RemainderSize = remainder;
   }
+  profileTime[4] = timeGetTime();
 
-  profileTime[1] = timeGetTime();
-  unsigned int profileDelta = profileTime[1] - profileTime[0];
-  if (profileDelta > 1)
-    CLog::Log(LOGDEBUG, "CoreAudio: Profile time = %u.", profileDelta);     
-  
+  unsigned int t[4];
+  t[0] = profileTime[1] - profileTime[0];
+  t[1] = profileTime[2] - profileTime[1];
+  t[2] = profileTime[3] - profileTime[2];
+  t[3] = profileTime[4] - profileTime[3];
+  if (t[0] > 1 || t[1] > 1 || t[2] > 1 || t[3] > 1)
+    CLog::Log(LOGDEBUG, "CoreAudio: Profile times = %u %u %u %u. Loop Count = %u", t[0], t[1], t[2], t[3], loopCount);
   return bufLen;
 }
 
 void CSliceQueue::Clear()
 {
   while (!m_Slices.empty())
-     m_Allocator.FreeSlice(Pop());
+     m_pAllocator->FreeSlice(Pop());
 
-  m_Allocator.FreeSlice(m_pPartialSlice);
+  m_pAllocator->FreeSlice(m_pPartialSlice);
   m_pPartialSlice = NULL;
   m_RemainderSize = 0;
 }

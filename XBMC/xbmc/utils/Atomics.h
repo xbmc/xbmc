@@ -69,7 +69,7 @@ static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
   return prev;
 }
 
-#else // Linux / OSX (GCC)
+#else // Linux / OSX86 (GCC)
 
 static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
 {
@@ -84,16 +84,40 @@ static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
   
 }
 
+static inline long AtomicIncrement32(volatile long* pAddr)
+{
+  register long reg __asm__ ("eax") = 1;
+  __asm__ __volatile__ (
+                        "lock xaddl %0, %1 \n"
+                        "incl %%eax"
+                        : "+r" (reg)
+                        : "m" (*pAddr)
+                        : "memory" );
+  return reg;
+}
+
+static inline long AtomicDecrement32(volatile long* pAddr)
+{
+  register long reg __asm__ ("eax") = -1;
+  __asm__ __volatile__ (
+                        "lock xaddl %0, %1 \n"
+                        "decl %%eax"
+                        : "+r" (reg)
+                        : "m" (*pAddr)
+                        : "memory" );
+  return reg;
+}
+
 #endif
 
-class CAtomicLock
+class CAtomicSpinLock
 {
 public:
-  CAtomicLock(long& lock) : m_Lock(lock)
+  CAtomicSpinLock(long& lock) : m_Lock(lock)
   {
     while (cas(&m_Lock, 0, 1) != 0); // Lock
   }
-  ~CAtomicLock()
+  ~CAtomicSpinLock()
   {
     m_Lock = 0; // Unlock
   }
@@ -108,7 +132,7 @@ public:
   CSafeQueue(size_t maxItems = 0) : m_Lock(0), m_MaxItems(maxItems) {}
   bool Push(const T& elem)
   {
-    CAtomicLock(m_Lock);
+    CAtomicSpinLock(m_Lock);
     if (m_Queue.size() >= m_MaxItems)
       return false;
 
@@ -118,36 +142,38 @@ public:
 
   void Pop()
   {
-    CAtomicLock(m_Lock); 
+    CAtomicSpinLock(m_Lock); 
     m_Queue.pop();
   }
 
   void Clear() 
   {
-    CAtomicLock(m_Lock); 
+    CAtomicSpinLock(m_Lock); 
     while (!m_Queue.empty())
       m_Queue.pop();
   }
 
   bool SetMaxItems(size_t maxItems)
   {
-    CAtomicLock(m_Lock);
+    CAtomicSpinLock(m_Lock);
     if (maxItems < m_MaxItems)
       if (maxItems < m_Queue.size())
         return false;
     m_MaxItems = maxItems;
     return true;
   }
-  size_t GetMaxItems() {CAtomicLock(m_Lock); return m_MaxItems;}
-  T& Head() {CAtomicLock(m_Lock); return m_Queue.front();}
-  T& Tail() {CAtomicLock(m_Lock); return m_Queue.back();}
-  bool Empty() {CAtomicLock(m_Lock); return m_Queue.empty();}
-  size_t Count() {CAtomicLock(m_Lock); return m_Queue.size();}
+  size_t GetMaxItems() {CAtomicSpinLock(m_Lock); return m_MaxItems;}
+  T& Head() {CAtomicSpinLock(m_Lock); return m_Queue.front();}
+  T& Tail() {CAtomicSpinLock(m_Lock); return m_Queue.back();}
+  bool Empty() {CAtomicSpinLock(m_Lock); return m_Queue.empty();}
+  size_t Count() {CAtomicSpinLock(m_Lock); return m_Queue.size();}
 protected:
   long m_Lock;
   std::queue<T> m_Queue;
   size_t m_MaxItems;
 };
+
+
 
 #endif // __ATOMICS_H__
 
