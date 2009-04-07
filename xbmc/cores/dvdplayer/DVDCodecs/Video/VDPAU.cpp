@@ -930,7 +930,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   }
   //CLog::Log(LOGNOTICE,"surfaceNum %i",surfaceNum);
 //  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
-  CheckStatus(vdp_st, __LINE__);
+//  CheckStatus(vdp_st, __LINE__);
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
                                   0,
