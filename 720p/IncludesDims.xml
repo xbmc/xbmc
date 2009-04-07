@@ -520,7 +520,7 @@
   <include name="SettingsCentreBladeBGDims">
     <posx>210</posx>
     <posy>0</posy>
-    <width>588</width>
+    <width>620</width>
     <height>720</height>
   </include>
 

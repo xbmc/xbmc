@@ -847,7 +847,18 @@
 
   <include name="HomeSubMenuBlade">
     <include>HomeSubMenuBladeDims</include>
-    <include>HomeBladeSubTexture</include>
+    <include>HomeBladeSubTexture</include> <!-- This is it -->
+  </include>
+
+  <include name="HomeSubMenuBackgroundSettings">
+    <control type="image">
+      <description>Submenu Background Image</description>
+      <posx>44</posx>
+      <posy>-331</posy>
+			<width>221</width>
+      <include>HomeSubMenuBlade</include>
+      <animation effect="fade" time="300" condition="Window.Next(0)">WindowClose</animation>
+    </control>
   </include>
 
   <include name="HomeSubMenuBackground">
@@ -4494,7 +4505,8 @@
 
     <control type="group">
       <posy>-20</posy>
-      <include>HomeSubMenuBackground</include>
+      <include>HomeSubMenuBackgroundSettings</include>
+			<posx>35</posx>
     </control>
 
     <include>HomeSubMenuIcon</include>
