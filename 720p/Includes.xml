@@ -1087,15 +1087,15 @@
   
             <control type="image">
               <include>BackgroundLeftImage</include>
-              <texture>HomeBGTVShowsLeft.png</texture>
+              <texture>HomeBGTVShowsLeft.jpg</texture>
             </control>
             <control type="image">
               <include>BackgroundMidImage</include>
-              <texture>HomeBGTVShowsMid.png</texture>
+              <texture>HomeBGTVShowsMid.jpg</texture>
             </control>
             <control type="image">
               <include>BackgroundRightImage</include>
-              <texture>HomeBGTVShowsRight.png</texture>
+              <texture>HomeBGTVShowsRight.jpg</texture>
             </control>
           </control>
   
@@ -1131,15 +1131,15 @@
   
 	          <control type="image">
 	            <include>BackgroundLeftImage</include>
-	            <texture>HomeBGMusicLeft.png</texture>
+	            <texture>HomeBGMusicLeft.jpg</texture>
 	          </control>
 	          <control type="image">
 	            <include>BackgroundMidImage</include>
-	            <texture>HomeBGMusicMid.png</texture>
+	            <texture>HomeBGMusicMid.jpg</texture>
 	          </control>
 	          <control type="image">
 	            <include>BackgroundRightImage</include>
-	            <texture>HomeBGMusicRight.png</texture>
+	            <texture>HomeBGMusicRight.jpg</texture>
 	          </control>
 	        </control>
   
@@ -1175,15 +1175,15 @@
   
 	          <control type="image">
 	            <include>BackgroundLeftImage</include>
-	            <texture>HomeBGPicturesLeft.png</texture>
+	            <texture>HomeBGPicturesLeft.jpg</texture>
 	          </control>
 	          <control type="image">
 	            <include>BackgroundMidImage</include>
-	            <texture>HomeBGPicturesMid.png</texture>
+	            <texture>HomeBGPicturesMid.jpg</texture>
 	          </control>
 	          <control type="image">
 	            <include>BackgroundRightImage</include>
-	            <texture>HomeBGPicturesRight.png</texture>
+	            <texture>HomeBGPicturesRight.jpg</texture>
 	          </control>
 	        </control>
   
@@ -1215,15 +1215,15 @@
   
           <control type="image">
             <include>BackgroundLeftImage</include>
-            <texture>HomeBGWeatherLeft.png</texture>
+            <texture>HomeBGWeatherLeft.jpg</texture>
           </control>
           <control type="image">
             <include>BackgroundMidImage</include>
-            <texture>HomeBGWeatherMid.png</texture>
+            <texture>HomeBGWeatherMid.jpg</texture>
           </control>
           <control type="image">
             <include>BackgroundRightImage</include>
-            <texture>HomeBGWeatherRight.png</texture>
+            <texture>HomeBGWeatherRight.jpg</texture>
           </control>
         </control>
   
@@ -1243,15 +1243,15 @@
   
 	          <control type="image">
 	            <include>BackgroundLeftImage</include>
-	            <texture>HomeBGProgramsLeft.png</texture>
+	            <texture>HomeBGProgramsLeft.jpg</texture>
 	          </control>
 	          <control type="image">
 	            <include>BackgroundMidImage</include>
-	            <texture>HomeBGProgramsMid.png</texture>
+	            <texture>HomeBGProgramsMid.jpg</texture>
 	          </control>
 	          <control type="image">
 	            <include>BackgroundRightImage</include>
-	            <texture>HomeBGProgramsRight.png</texture>
+	            <texture>HomeBGProgramsRight.jpg</texture>
 	          </control>
 	        </control>
   
@@ -1283,15 +1283,15 @@
   
           <control type="image">
             <include>BackgroundLeftImage</include>
-            <texture>HomeBGSystemLeft.png</texture>
+            <texture>HomeBGSystemLeft.jpg</texture>
           </control>
           <control type="image">
             <include>BackgroundMidImage</include>
-            <texture>HomeBGSystemMid.png</texture>
+            <texture>HomeBGSystemMid.jpg</texture>
           </control>
           <control type="image">
             <include>BackgroundRightImage</include>
-            <texture>HomeBGSystemRight.png</texture>
+            <texture>HomeBGSystemRight.jpg</texture>
           </control>
         </control>
   
@@ -1307,15 +1307,15 @@
   
           <control type="image">
             <include>BackgroundLeftImage</include>
-            <texture>HomeBGPowerLeft.png</texture>
+            <texture>HomeBGPowerLeft.jpg</texture>
           </control>
           <control type="image">
             <include>BackgroundMidImage</include>
-            <texture>HomeBGPowerMid.png</texture>
+            <texture>HomeBGPowerMid.jpg</texture>
           </control>
           <control type="image">
             <include>BackgroundRightImage</include>
-            <texture>HomeBGPowerRight.png</texture>
+            <texture>HomeBGPowerRight.jpg</texture>
           </control>
         </control>
   
