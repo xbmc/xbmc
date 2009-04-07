@@ -2961,8 +2961,8 @@ void CDVDPlayer::UpdatePlayState(double timeout)
 
   if (m_Edl.HaveCutpoints())
   {
-    m_State.time =  m_Edl.RemoveCutTime(llrint(m_State.time));
-    m_State.time -= m_Edl.TotalCutTime();
+    m_State.time        = m_Edl.RemoveCutTime(llrint(m_State.time));
+    m_State.time_total -= m_Edl.TotalCutTime();
   }
 
   if (m_CurrentAudio.id >= 0 && m_pDemuxer)
