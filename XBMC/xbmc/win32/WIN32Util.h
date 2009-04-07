@@ -43,7 +43,6 @@ public:
   static bool PowerManagement(PowerState State);
   static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
   static std::vector<CStdString> GetDiskUsage();
-  static void MaximizeWindow(bool bRemoveBorder);
   static CStdString GetResInfoString();
   static int GetDesktopColorDepth();
   static CStdString GetProfilePath();
