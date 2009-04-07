@@ -29,12 +29,12 @@
 
           <control type="image">
             <include>BackgroundMidImage</include>
-            <texture>HomeBGPowerMid.png</texture>
+            <texture>HomeBGPowerMid.jpg</texture>
             <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
           </control>
           <control type="image">
             <include>BackgroundRightImage</include>
-            <texture>HomeBGPowerRight.png</texture>
+            <texture>HomeBGPowerRight.jpg</texture>
           </control>
         </control>
 
@@ -54,12 +54,12 @@
 
           <control type="image">
             <include>BackgroundMidImage</include>
-            <texture>HomeBGSystemMid.png</texture>
+            <texture>HomeBGSystemMid.jpg</texture>
             <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
           </control>
           <control type="image">
             <include>BackgroundRightImage</include>
-            <texture>HomeBGSystemRight.png</texture>
+            <texture>HomeBGSystemRight.jpg</texture>
           </control>
         </control>
 
@@ -80,12 +80,12 @@
 
           <control type="image">
             <include>BackgroundMidImage</include>
-            <texture>HomeBGWeatherMid.png</texture>
+            <texture>HomeBGWeatherMid.jpg</texture>
             <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
           </control>
           <control type="image">
             <include>BackgroundRightImage</include>
-            <texture>HomeBGWeatherRight.png</texture>
+            <texture>HomeBGWeatherRight.jpg</texture>
           </control>
         </control>
 
@@ -215,12 +215,12 @@
 
           <control type="image">
             <include>BackgroundMidImage</include>
-            <texture>HomeBGTVShowsMid.png</texture>
+            <texture>HomeBGTVShowsMid.jpg</texture>
             <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
           </control>
           <control type="image">
             <include>BackgroundRightImage</include>
-            <texture>HomeBGTVShowsRight.png</texture>
+            <texture>HomeBGTVShowsRight.jpg</texture>
           </control>
         </control>
 
@@ -240,12 +240,12 @@
 
           <control type="image">
             <include>BackgroundMidImage</include>
-            <texture>HomeBGMusicMid.png</texture>
+            <texture>HomeBGMusicMid.jpg</texture>
             <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
           </control>
           <control type="image">
             <include>BackgroundRightImage</include>
-            <texture>HomeBGMusicRight.png</texture>
+            <texture>HomeBGMusicRight.jpg</texture>
           </control>
         </control>
 
@@ -265,12 +265,12 @@
 
           <control type="image">
             <include>BackgroundMidImage</include>
-            <texture>HomeBGPicturesMid.png</texture>
+            <texture>HomeBGPicturesMid.jpg</texture>
             <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
           </control>
           <control type="image">
             <include>BackgroundRightImage</include>
-            <texture>HomeBGPicturesRight.png</texture>
+            <texture>HomeBGPicturesRight.jpg</texture>
           </control>
         </control>
 
@@ -290,12 +290,12 @@
 
           <control type="image">
             <include>BackgroundMidImage</include>
-            <texture>HomeBGProgramsMid.png</texture>
+            <texture>HomeBGProgramsMid.jpg</texture>
             <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
           </control>
           <control type="image">
             <include>BackgroundRightImage</include>
-            <texture>HomeBGProgramsRight.png</texture>
+            <texture>HomeBGProgramsRight.jpg</texture>
           </control>
         </control>
 
@@ -1047,7 +1047,7 @@
 
           <control type="image">
             <include>BackgroundLeftImage</include>
-            <texture>HomeBGPowerLeftLow.png</texture>
+            <texture>HomeBGPowerLeftLow.jpg</texture>
           </control>
 
           <control type="group">
@@ -1055,11 +1055,11 @@
 
             <control type="image">
               <include>BackgroundMidImage</include>
-              <texture>HomeBGPowerMidLow.png</texture>
+              <texture>HomeBGPowerMidLow.jpg</texture>
             </control>
             <control type="image">
               <include>BackgroundMidRightImage</include>
-              <texture>HomeBGPowerMidRightLow.png</texture>
+              <texture>HomeBGPowerMidRightLow.jpg</texture>
             </control>
           </control>
         </control>
@@ -1075,7 +1075,7 @@
 
 					<control type="image">
             <include>BackgroundLeftImage</include>
-            <texture>HomeBGSystemLeftLow.png</texture>
+            <texture>HomeBGSystemLeftLow.jpg</texture>
           </control>
 
           <control type="group">
@@ -1083,11 +1083,11 @@
 
             <control type="image">
               <include>BackgroundMidImage</include>
-              <texture>HomeBGSystemMidLow.png</texture>
+              <texture>HomeBGSystemMidLow.jpg</texture>
             </control>
             <control type="image">
               <include>BackgroundMidRightImage</include>
-              <texture>HomeBGSystemMidRightLow.png</texture>
+              <texture>HomeBGSystemMidRightLow.jpg</texture>
             </control>
           </control>
         </control>
@@ -1104,7 +1104,7 @@
 
           <control type="image">
             <include>BackgroundLeftImage</include>
-            <texture>HomeBGWeatherLeftLow.png</texture>
+            <texture>HomeBGWeatherLeftLow.jpg</texture>
           </control>
 
           <control type="group">
@@ -1112,11 +1112,11 @@
 
             <control type="image">
               <include>BackgroundMidImage</include>
-              <texture>HomeBGWeatherMidLow.png</texture>
+              <texture>HomeBGWeatherMidLow.jpg</texture>
             </control>
             <control type="image">
               <include>BackgroundMidRightImage</include>
-              <texture>HomeBGWeatherMidRightLow.png</texture>
+              <texture>HomeBGWeatherMidRightLow.jpg</texture>
             </control>
           </control>
         </control>
@@ -1272,7 +1272,7 @@
 
           <control type="image">
             <include>BackgroundLeftImage</include>
-            <texture>HomeBGTVShowsLeftLow.png</texture>
+            <texture>HomeBGTVShowsLeftLow.jpg</texture>
           </control>
 
           <control type="group">
@@ -1280,11 +1280,11 @@
 
             <control type="image">
               <include>BackgroundMidImage</include>
-              <texture>HomeBGTVShowsMidLow.png</texture>
+              <texture>HomeBGTVShowsMidLow.jpg</texture>
             </control>
             <control type="image">
               <include>BackgroundMidRightImage</include>
-              <texture>HomeBGTVShowsMidRightLow.png</texture>
+              <texture>HomeBGTVShowsMidRightLow.jpg</texture>
             </control>
           </control>
         </control>
@@ -1300,7 +1300,7 @@
 
           <control type="image">
             <include>BackgroundLeftImage</include>
-            <texture>HomeBGMusicLeftLow.png</texture>
+            <texture>HomeBGMusicLeftLow.jpg</texture>
           </control>
 
           <control type="group">
@@ -1308,11 +1308,11 @@
 
             <control type="image">
               <include>BackgroundMidImage</include>
-              <texture>HomeBGMusicMidLow.png</texture>
+              <texture>HomeBGMusicMidLow.jpg</texture>
             </control>
             <control type="image">
               <include>BackgroundMidRightImage</include>
-              <texture>HomeBGMusicMidRightLow.png</texture>
+              <texture>HomeBGMusicMidRightLow.jpg</texture>
             </control>
           </control>
         </control>
@@ -1328,7 +1328,7 @@
 
           <control type="image">
             <include>BackgroundLeftImage</include>
-            <texture>HomeBGPicturesLeftLow.png</texture>
+            <texture>HomeBGPicturesLeftLow.jpg</texture>
           </control>
 
           <control type="group">
@@ -1336,11 +1336,11 @@
 
             <control type="image">
               <include>BackgroundMidImage</include>
-              <texture>HomeBGPicturesMidLow.png</texture>
+              <texture>HomeBGPicturesMidLow.jpg</texture>
             </control>
             <control type="image">
               <include>BackgroundMidRightImage</include>
-              <texture>HomeBGPicturesMidRightLow.png</texture>
+              <texture>HomeBGPicturesMidRightLow.jpg</texture>
             </control>
           </control>
         </control>
@@ -1356,7 +1356,7 @@
 
           <control type="image">
             <include>BackgroundLeftImage</include>
-            <texture>HomeBGProgramsLeftLow.png</texture>
+            <texture>HomeBGProgramsLeftLow.jpg</texture>
           </control>
 
           <control type="group">
@@ -1364,11 +1364,11 @@
 
             <control type="image">
               <include>BackgroundMidImage</include>
-              <texture>HomeBGProgramsMidLow.png</texture>
+              <texture>HomeBGProgramsMidLow.jpg</texture>
             </control>
             <control type="image">
               <include>BackgroundMidRightImage</include>
-              <texture>HomeBGProgramsMidRightLow.png</texture>
+              <texture>HomeBGProgramsMidRightLow.jpg</texture>
             </control>
           </control>
         </control>
