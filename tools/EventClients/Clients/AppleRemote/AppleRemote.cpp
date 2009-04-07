@@ -530,7 +530,8 @@ bool AppleRemote::IsProgramRunning(const char* strProgram, int ignorePid)
 		kinfo_proc *proc = NULL;
 		proc = &mylist[k];
 
-		if (strcmp(proc->kp_proc.p_comm, strProgram) == 0)
+    // Process names are at most sixteen characters long.
+		if (strncmp(proc->kp_proc.p_comm, strProgram, 16) == 0)
 		{
 			if (ignorePid == 0 || ignorePid != proc->kp_proc.p_pid)
 				ret = true;
