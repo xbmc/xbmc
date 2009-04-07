@@ -101,6 +101,7 @@ class CVideoReferenceClock : public CThread
     bool         m_HasWinCl;
     unsigned int m_Width;
     unsigned int m_Height;
+    unsigned int m_Adapter;
 #endif
 };
 

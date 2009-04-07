@@ -395,7 +395,17 @@ bool CVideoReferenceClock::SetupD3D()
   m_Hwnd = NULL;
   m_HasWinCl = false;
 
-  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up Direct3d");
+  m_Adapter = 0;
+  if (getenv("SDL_FULLSCREEN_HEAD"))
+  {
+    unsigned int Adapter;
+    if (sscanf(getenv("SDL_FULLSCREEN_HEAD"), "%u", &Adapter) == 1)
+    {
+      m_Adapter = Adapter - 1;
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up Direct3d on adapter %i", m_Adapter);
   
   if (!CreateHiddenWindow())
   {
@@ -426,15 +436,25 @@ bool CVideoReferenceClock::SetupD3D()
   D3dPP.EnableAutoDepthStencil = FALSE;
   D3dPP.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
-  ReturnV = m_D3d->CreateDevice(D3DADAPTER_DEFAULT, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
+  ReturnV = m_D3d->CreateDevice(m_Adapter, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
 
-  if (ReturnV != D3D_OK)
+  if (ReturnV != D3D_OK && ReturnV != D3DERR_DEVICELOST)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i",
-              ReturnV & 0xFFFF);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i", ReturnV & 0xFFFF);
     CleanupD3D();
     return false;
+  }
+  else if (ReturnV == D3DERR_DEVICELOST)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned D3DERR_DEVICELOST, resetting device");
+    ReturnV = m_D3dDev->Reset(&D3dPP);
+    if (ReturnV != D3D_OK)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Reset returned %i", ReturnV & 0xFFFF);
+      CleanupD3D();
+      return false;
+    }
   }
 
   ReturnV = m_D3dDev->GetDeviceCaps(&DevCaps);
@@ -462,10 +482,10 @@ bool CVideoReferenceClock::SetupD3D()
     return false;
   }
 
-  ReturnV = m_D3dDev->GetDisplayMode(0, &DisplayMode);
+  ReturnV = m_D3d->GetAdapterDisplayMode(m_Adapter, &DisplayMode);
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDisplayMode returned %i",
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetAdapterDisplayMode returned %i",
               ReturnV & 0xFFFF);
     CleanupD3D();
     return false;
@@ -652,7 +672,7 @@ bool CVideoReferenceClock::UpdateRefreshrate()
     }
 #elif defined(_WIN32)
     D3dClock::D3DDISPLAYMODE DisplayMode;
-    m_D3d->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &DisplayMode);
+    m_D3d->GetAdapterDisplayMode(m_Adapter, &DisplayMode);
     m_RefreshRate = DisplayMode.RefreshRate;
 
     if (m_RefreshRate == 0) m_RefreshRate = 60;
