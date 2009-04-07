@@ -458,12 +458,6 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
   return result;
 }
 
-void CWIN32Util::MaximizeWindow(bool bRemoveBorder)
-{
-  /*int w=0,h=0;
-  g_videoConfig.GetDesktopResolution(&w,&h);*/
-}
-
 CStdString CWIN32Util::GetResInfoString()
 {
   CStdString strRes;
