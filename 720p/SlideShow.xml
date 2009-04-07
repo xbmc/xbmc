@@ -16,7 +16,7 @@
 
     <control type="group">
       <include>VideoOSDSlide</include>
-			<visible>!IsEmpty(ListItem.Property(description))</visible>
+			<visible>Slideshow.ShowDescription</visible>
 			<!--<animation effect="slide" start="0,0" end="0,300" tween="circle" easing="out" time="1000" delay="6000" 
 	         reversible="true" condition="![Container.OnNext | Container.OnPrevious]">Conditional</animation>-->
       
