@@ -324,6 +324,8 @@ bool CWIN32Util::PowerManagement(PowerState State)
   tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
   // Get the shutdown privilege for this process.
   AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0);
+  CloseHandle(hToken);
+
   if (GetLastError() != ERROR_SUCCESS)
   {
     return false;
