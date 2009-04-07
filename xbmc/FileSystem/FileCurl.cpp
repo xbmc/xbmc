@@ -713,6 +713,8 @@ void CFileCurl::Reset()
 bool CFileCurl::Open(const CURL& url)
 {
 
+  m_opened = true;
+  
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
@@ -727,8 +729,6 @@ bool CFileCurl::Open(const CURL& url)
   // setup common curl options
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
-
-  m_opened = true;
 
   long response = m_state->Connect(m_bufferSize);
   if( response < 0 )
