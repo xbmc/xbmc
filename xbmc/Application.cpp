@@ -210,7 +210,6 @@
 #endif
 #ifdef _WIN32
 #include <shlobj.h>
-#include <win32/MockXboxSymbols.h>
 #include "win32util.h"
 #endif
 #ifdef HAS_XRANDR
