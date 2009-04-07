@@ -19,29 +19,17 @@
  *
  */
 
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#include <assert.h>
-#include <errno.h>
-#include <signal.h>
-#include <iostream>
 #include <fstream>
-#include <string>
 #include <Carbon/Carbon.h>
 #include <mach-o/dyld.h>
 
-
-using namespace std;
-
 #include "XBMCHelper.h"
-
 #include "PlatformDefs.h"
+#include "Util.h"
+
 #include "log.h"
 #include "system.h"
 #include "Settings.h"
-#include "Util.h"
-#include "XFileUtils.h"
-#include "utils/SystemInfo.h"
 
 XBMCHelper g_xbmcHelper;
 
@@ -90,8 +78,7 @@ void XBMCHelper::Start()
   if (pid == -1)
   {
     // use -x to have XBMCHelper read its configure file
-    string cmd = "\"" + m_helperFile + "\" -x &";
-    //string cmd = "\"" + m_helperFile + ".sh\" -x &";
+    std::string cmd = "\"" + m_helperFile + "\" -xm &";
     system(cmd.c_str());
   }
 }
@@ -194,16 +181,16 @@ void XBMCHelper::Configure()
 void XBMCHelper::Install()
 {
   // Make sure directory exists.
-  string strDir = getenv("HOME");
+  std::string strDir = getenv("HOME");
   strDir += "/Library/LaunchAgents";
   CreateDirectory(strDir.c_str(), NULL);
 
   // Load template.
-  string plistData = ReadFile(m_launchAgentLocalFile.c_str());
+  std::string plistData = ReadFile(m_launchAgentLocalFile.c_str());
 
   if (plistData != "") 
   {
-      string launchd_args;
+      std::string launchd_args;
 
       // Replace PATH with path to app.
       int start = plistData.find("${PATH}");
@@ -211,7 +198,7 @@ void XBMCHelper::Install()
 
       // Replace ARG1 with a single argument, additional args 
       // will need ARG2, ARG3 added to plist.
-      launchd_args = " -x";
+      launchd_args = " -xm";
       start = plistData.find("${ARG1}");
       plistData.replace(start, 7, launchd_args.c_str(), launchd_args.length());
 
@@ -222,7 +209,7 @@ void XBMCHelper::Install()
       int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
       if (pid == -1)
       {
-          string cmd = "/bin/launchctl load ";
+          std::string cmd = "/bin/launchctl load ";
           cmd += m_launchAgentInstallFile;
           system(cmd.c_str());
       }
@@ -233,7 +220,7 @@ void XBMCHelper::Install()
 void XBMCHelper::Uninstall()
 {
   // Call the unloader.
-  string cmd = "/bin/launchctl unload ";
+  std::string cmd = "/bin/launchctl unload ";
   cmd += m_launchAgentInstallFile;
   system(cmd.c_str());
 
@@ -310,15 +297,15 @@ bool XBMCHelper::IsSofaControlRunning()
 std::string XBMCHelper::ReadFile(const char* fileName)
 {
   std::string ret = "";
-  ifstream is;
+  std::ifstream is;
   
   is.open(fileName);
   if( is.good() )
   {
     // Get length of file:
-    is.seekg (0, ios::end);
+    is.seekg(0, std::ios::end);
     int length = is.tellg();
-    is.seekg (0, ios::beg);
+    is.seekg(0, std::ios::beg);
 
     // Allocate memory:
     char* buffer = new char [length+1];
@@ -337,7 +324,7 @@ std::string XBMCHelper::ReadFile(const char* fileName)
 /////////////////////////////////////////////////////////////////////////////
 void XBMCHelper::WriteFile(const char* fileName, const std::string& data)
 {
-  ofstream out(fileName);
+  std::ofstream out(fileName);
   if (!out)
   {
     CLog::Log(LOGERROR, "XBMCHelper: Unable to open file '%s'", fileName);
@@ -345,7 +332,7 @@ void XBMCHelper::WriteFile(const char* fileName, const std::string& data)
   else
   {
     // Write new configuration.
-    out << data << endl;
+    out << data << std::endl;
     out.flush();
     out.close();
   }
