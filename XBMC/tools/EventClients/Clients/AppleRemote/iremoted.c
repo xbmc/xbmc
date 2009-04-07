@@ -78,6 +78,7 @@ static struct option long_options[] = {
   { "help",       no_argument,       0, 'h' },
   { "server",     required_argument, 0, 's' },
   { "universal",  no_argument,       0, 'u' },
+  { "multiremote",no_argument,       0, 'm' },
   { "timeout",    required_argument, 0, 't' },
   { "verbose",    no_argument,       0, 'v' },
   { "externalConfig", no_argument,   0, 'x' },
@@ -86,7 +87,7 @@ static struct option long_options[] = {
   { 0, 0, 0, 0 },
 };
 
-static const char *options = "hsutvxaz";
+static const char *options = "hsumtvxaz";
 
 IOHIDElementCookie buttonNextID = 0;
 IOHIDElementCookie buttonPreviousID = 0;
@@ -465,6 +466,8 @@ void ParseOptions(int argc, char** argv)
       break;
     case 'u':
       g_appleRemote.SetRemoteMode(REMOTE_UNIVERSAL);
+      break;
+    case 'm':
       break;
     case 't':
       if (optarg)
