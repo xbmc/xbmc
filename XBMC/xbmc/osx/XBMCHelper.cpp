@@ -58,6 +58,7 @@ XBMCHelper::XBMCHelper()
   , m_sequenceDelay(0)
   , m_errorStarting(false)
 {
+  // Compute the XBMC_HOME path.
   CStdString homePath;
   CUtil::GetHomePath(homePath);
   m_homepath = homePath;
@@ -88,8 +89,9 @@ void XBMCHelper::Start()
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   if (pid == -1)
   {
-    // use -x to read configure file
-    string cmd = "\"" + m_helperFile + "-x\" &";
+    // use -x to have XBMCHelper read its configure file
+    string cmd = "\"" + m_helperFile + "\" -x &";
+    //string cmd = "\"" + m_helperFile + ".sh\" -x &";
     system(cmd.c_str());
   }
 }
@@ -201,14 +203,22 @@ void XBMCHelper::Install()
 
   if (plistData != "") 
   {
-      // Replace it in the file.
+      string launchd_args;
+
+      // Replace PATH with path to app.
       int start = plistData.find("${PATH}");
       plistData.replace(start, 7, m_helperFile.c_str(), m_helperFile.length());
+
+      // Replace ARG1 with a single argument, additional args 
+      // will need ARG2, ARG3 added to plist.
+      launchd_args = " -x";
+      start = plistData.find("${ARG1}");
+      plistData.replace(start, 7, launchd_args.c_str(), launchd_args.length());
 
       // Install it.
       WriteFile(m_launchAgentInstallFile.c_str(), plistData);
 
-      // Load it.
+      // Load it if not running already.
       int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
       if (pid == -1)
       {
@@ -354,9 +364,9 @@ int XBMCHelper::GetProcessPid(const char* strProgram)
     kinfo_proc *proc = NULL;
     proc = &mylist[k];
 
-    if (strcmp(proc->kp_proc.p_comm, strProgram) == 0)
+    // Process names are at most sixteen characters long.
+    if (strncmp(proc->kp_proc.p_comm, strProgram, 16) == 0)
     {
-      //if (ignorePid == 0 || ignorePid != proc->kp_proc.p_pid)
       ret = proc->kp_proc.p_pid;
     }
   }
@@ -377,11 +387,11 @@ typedef struct kinfo_proc kinfo_proc;
 //
 static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
 {
+  // example from http://developer.apple.com/qa/qa2001/qa1123.html
   int err;
   kinfo_proc * result;
   bool done;
-  static const int name[] =
-  { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
+  static const int name[] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
 
   // Declaring name as const requires us to cast it when passing it to
   // sysctl because the prototype doesn't include the const modifier.
@@ -433,8 +443,11 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
 
       if (err == -1)
         err = errno;
-      else if (err == 0)
+        
+      if (err == 0)
+      {
         done = true;
+      }
       else if (err == ENOMEM)
       {
         assert(result != NULL);
