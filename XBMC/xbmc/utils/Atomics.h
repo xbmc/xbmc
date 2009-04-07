@@ -115,7 +115,16 @@ class CAtomicSpinLock
 public:
   CAtomicSpinLock(long& lock) : m_Lock(lock)
   {
+#if defined (DEBUG)
+    unsigned int spinCount = 0;
+    while (cas(&m_Lock, 0, 1) != 0)
+      spinCount++;
+    
+    if (spinCount > 10000)
+      CLog::Log(LOGDEBUG, "CAtomicSpinLock: Spinning: spinCount = %u", spinCount);
+#else
     while (cas(&m_Lock, 0, 1) != 0); // Lock
+#endif
   }
   ~CAtomicSpinLock()
   {

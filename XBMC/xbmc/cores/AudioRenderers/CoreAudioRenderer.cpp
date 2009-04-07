@@ -41,7 +41,9 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_TotalBytesOut(0),
   m_AvgBytesPerSec(0),
   m_CurrentVolume(0),
-  m_Initialized(false)
+  m_Initialized(false),
+  m_Passthrough(false),
+  m_Magic(2039)
 {
   
 }
@@ -101,6 +103,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
   // Finish configuring the renderer
   m_MaxCacheLen = m_AvgBytesPerSec;     // Set the max cache size to 1 second of data. TODO: Make this more intelligent
   m_Pause = true;                       // We will resume playback once we have some data.
+  m_Passthrough = bPassthrough;
   
   // Generate some log entries
   AudioStreamBasicDescription inputDesc_end, outputDesc_end;
@@ -126,6 +129,9 @@ HRESULT CCoreAudioRenderer::Deinitialize()
   m_MaxCacheLen = 0;
   m_AvgBytesPerSec = 0;
   
+  if (m_Passthrough)
+    AudioDeviceRemoveIOProc(m_AudioDevice.GetId(), PassthroughRenderCallback);
+    
   m_AudioUnit.Close();
   m_AudioDevice.Close();
   m_OutputStream.Close();
@@ -143,7 +149,11 @@ HRESULT CCoreAudioRenderer::Pause()
 {
   if (!m_Pause)
   {
-    m_AudioUnit.Stop();
+    CLog::Log(LOGINFO, "CoreAudioRenderer::Pause: Pausing Playback.");
+    if (m_Passthrough)
+      m_AudioDevice.Stop();
+    else
+      m_AudioUnit.Stop();
     m_Pause = true;
   }
   
@@ -155,7 +165,10 @@ HRESULT CCoreAudioRenderer::Resume()
   if (m_Pause)
   {
     CLog::Log(LOGINFO, "CoreAudioRenderer::Resume: Resuming Playback.");
-    m_AudioUnit.Start();
+    if (m_Passthrough)
+      m_AudioDevice.Start(PassthroughRenderCallback);
+    else
+      m_AudioUnit.Start();
     m_Pause = false;
   }
 
@@ -164,7 +177,10 @@ HRESULT CCoreAudioRenderer::Resume()
 
 HRESULT CCoreAudioRenderer::Stop()
 {
-  m_AudioUnit.Stop();
+  if (m_Passthrough)
+    m_AudioDevice.Stop();
+  else
+    m_AudioUnit.Stop();
 
   m_Pause = true;
   m_TotalBytesIn = 0;
@@ -335,7 +351,10 @@ OSStatus CCoreAudioRenderer::RenderCallback(void *inRefCon, AudioUnitRenderActio
 // Static Callback from AudioDevice
 OSStatus CCoreAudioRenderer::PassthroughRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData)
 {
-  return ((CCoreAudioRenderer*)inClientData)->OnRender(NULL, inInputTime, 0, 1536, outOutputData);
+  CCoreAudioRenderer* pThis = (CCoreAudioRenderer*)inClientData;
+  if (pThis->m_Magic != 2039)
+    CLog::Log(LOGDEBUG, "Crap!");
+  return pThis->OnRender(NULL, inInputTime, 0, outOutputData->mBuffers[0].mDataByteSize / pThis->m_BytesPerFrame, outOutputData);
 }
 
 
@@ -404,10 +423,8 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
     while (!virtualFormats.empty())
     {
       AudioStreamRangedDescription& desc = virtualFormats.front();
-      
       if (desc.mFormat.mFormatID == kAudioFormat60958AC3 && desc.mFormat.mSampleRate == 48000)
         outputFormat = desc.mFormat; // Select this format
-
       StreamDescriptionToString(desc.mFormat, formatString);
       CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded:     Virtual Format - %s", formatString.c_str());
       
@@ -429,16 +446,26 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
 
   if (!m_OutputStream.GetId()) // No suitable stream was found
     return false;
-  
-  // Try to disable mixing. If we cannot, it may not be a problem
-  m_AudioDevice.SetMixingSupport(false);
 
-  //AudioDeviceAddIOProc(outputDevice, PassthroughRenderCallback, this);
+  CCoreAudioHardware hw;
+//  hw.SetAutoHogMode(false);
+  
+  // TODO: Auto hogging sets this for us. Figure out how/when to turn it off or use it
+  // It appears that leaving this set will aslo restore the previous stream format when the
+  // Application exits.
   
   // If all else was successful, hog the output device
   // TODO: Is failure here critical?
-  if (!m_AudioDevice.SetHogStatus(true))
-    return false;
+  if (!hw.GetAutoHogMode())
+    if (!m_AudioDevice.SetHogStatus(true))
+      return false;
+  
+  // Try to disable mixing. If we cannot, it may not be a problem
+  m_AudioDevice.SetMixingSupport(false);
+  
+  AudioDeviceAddIOProc(outputDevice, PassthroughRenderCallback, this);  
+  
+  m_AvgBytesPerSec = 192000;
   
   return true;
 }

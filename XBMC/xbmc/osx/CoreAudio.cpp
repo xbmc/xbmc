@@ -92,13 +92,35 @@ AudioDeviceID CCoreAudioHardware::GetDefaultOutputDevice()
   return deviceId;
 }
 
+bool CCoreAudioHardware::GetAutoHogMode()
+{
+  UInt32 val = 0;
+  UInt32 size = sizeof(val);
+  OSStatus ret = AudioHardwareGetProperty(kAudioHardwarePropertyHogModeIsAllowed, &size, &val);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioHardware::GetAutoHogMode: Unable to get auto 'hog' mode.");
+    return false;
+  }
+  return (val == 1);
+}
+
+void CCoreAudioHardware::SetAutoHogMode(bool enable)
+{
+  UInt32 val = enable ? 1 : 0;
+  OSStatus ret = AudioHardwareSetProperty(kAudioHardwarePropertyHogModeIsAllowed, sizeof(val), &val);
+  if (ret)
+    CLog::Log(LOGERROR, "CCoreAudioHardware::SetAutoHogMode: Unable to set auto 'hog' mode.");
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioDevice
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoreAudioDevice::CCoreAudioDevice()  : 
   m_DeviceId(0),
   m_Hog(-1),
-  m_MixerRestore(-1)
+  m_MixerRestore(-1),
+  m_IoProc(NULL)
 {
   
 }
@@ -120,6 +142,7 @@ void CCoreAudioDevice::Close()
   if (!m_DeviceId)
     return;
   
+  Stop();
   SetHogStatus(false);
   if (m_MixerRestore > -1) // We changed the mixer status
     SetMixingSupport((m_MixerRestore ? true : false));
@@ -127,7 +150,30 @@ void CCoreAudioDevice::Close()
 
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::Close: Closed device 0x%04x", m_DeviceId);
   m_DeviceId = 0;
+  m_IoProc = NULL;
   
+}
+
+void CCoreAudioDevice::Start(AudioDeviceIOProc ioProc)
+{
+  if (!m_DeviceId || m_IoProc) // Only one IOProc at a time
+    return;
+  
+  OSStatus ret = AudioDeviceStart(m_DeviceId, ioProc);
+  if (ret)
+    CLog::Log(LOGERROR, "CCoreAudioDevice::Start: Unable to start device. Error = 0x%08x (%4.4s)", ret, (char*)&ret);
+  m_IoProc = ioProc;
+}
+
+void CCoreAudioDevice::Stop()
+{
+  if (!m_DeviceId)
+    return;
+  
+  OSStatus ret = AudioDeviceStop(m_DeviceId, m_IoProc);
+  if (ret)
+    CLog::Log(LOGERROR, "CCoreAudioDevice::Stop: Unable to stop device. Error = 0x%08x (%4.4s)", ret, (char*)&ret);
+  m_IoProc = NULL;
 }
 
 bool CCoreAudioDevice::GetStreams(AudioStreamIdList* pList)
@@ -168,6 +214,7 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
         CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to set 'hog' status. Error = 0x%08x (%4.4s)", ret, (char*)&ret);
         return false;
       }
+      CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Successfully set 'hog' status on device 0x%04x", m_DeviceId);
     }
   }
   else
@@ -242,7 +289,7 @@ CCoreAudioStream::~CCoreAudioStream()
 bool CCoreAudioStream::Open(AudioStreamID streamId)
 {
   m_StreamId = streamId;
-  CLog::Log(LOGERROR, "CCoreAudioStream::Open: Opened stream 0x%04x.", m_StreamId);
+  CLog::Log(LOGDEBUG, "CCoreAudioStream::Open: Opened stream 0x%04x.", m_StreamId);
   return true;
 }
 
@@ -253,7 +300,10 @@ void CCoreAudioStream::Close()
   
   // Revert any format changes we made
   if (m_OriginalVirtualFormat.mFormatID && m_StreamId)
+  {
+    CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Restoring original virtual format for stream 0x%04x.", m_StreamId);
     SetVirtualFormat(&m_OriginalVirtualFormat);
+  }
   
   m_OriginalVirtualFormat.mFormatID = 0;
   CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Closed stream 0x%04x.", m_StreamId);

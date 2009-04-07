@@ -46,6 +46,8 @@ class CCoreAudioHardware
 public:
   AudioDeviceID FindAudioDevice(CStdString deviceName);
   AudioDeviceID GetDefaultOutputDevice();
+  bool GetAutoHogMode();
+  void SetAutoHogMode(bool enable);
 };
 
 // kAudioDevicePropertyDeviceIsRunning, kAudioDevicePropertyDeviceIsRunningSomewhere, kAudioDevicePropertyHogMode, kAudioDevicePropertyLatency, 
@@ -66,6 +68,9 @@ public:
   bool Open(AudioDeviceID deviceId);
   void Close();
   
+  void Start(AudioDeviceIOProc ioProc);
+  void Stop();
+  
   AudioDeviceID GetId() {return m_DeviceId;}
   bool GetStreams(AudioStreamIdList* pList);
   bool SetHogStatus(bool hog);
@@ -77,6 +82,7 @@ protected:
   AudioDeviceID m_DeviceId;
   pid_t m_Hog;
   int m_MixerRestore;
+  AudioDeviceIOProc m_IoProc;
   
 };
 

@@ -83,10 +83,13 @@ class CCoreAudioRenderer : public IAudioRenderer
     CCoreAudioDevice m_AudioDevice;
     CCoreAudioStream m_OutputStream;
     
+    bool m_Passthrough;
     size_t m_AvgBytesPerSec;
     size_t m_BytesPerFrame;
     UInt64 m_TotalBytesIn;
     UInt64 m_TotalBytesOut;
+    
+    int m_Magic;
         
     // Helper Methods
     UInt32 GetAUPropUInt32(AudioUnit au, AudioUnitPropertyID propId, AudioUnitScope scope)
