@@ -1593,14 +1593,14 @@
   </include>
 
   <include name="ClockBGText">
-    <info>System.Time(hh:mm xx)</info>
+    <info>System.Time(short)</info>
     <textcolor>Highlighted</textcolor>
     <include>ClockText</include>
    	<visible>true</visible>
   </include>
 
   <include name="ClockFGText">
-    <info>System.Time(hh:mm)</info>
+    <info>System.Time(short_no_meridian)</info>
     <include>ClockText</include>
   </include>
 
