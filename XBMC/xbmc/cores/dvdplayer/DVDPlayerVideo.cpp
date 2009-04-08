@@ -813,14 +813,21 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     m_output.color_range = pPicture->color_range;
   }
   
+  double maxfps  = 60.0;
+  bool   limited = false;
+  int    result  = 0;
+
 #ifdef HAS_VIDEO_PLAYBACK
   if (!g_renderManager.IsStarted()) {
     CLog::Log(LOGERROR, "%s - renderer not started", __FUNCTION__);
     return EOS_ABORT;
   }
+  maxfps = g_renderManager.GetMaximumFPS();
 #endif
-
-  int result = 0;
+  
+  // check if our output will limit speed
+  if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
+    limited = true;
 
   //User set delay
   pts += m_iVideoDelay;
@@ -880,8 +887,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   m_FlipTimeStamp += iFrameDuration;
 
   // ask decoder to drop frames next round, as we are very late
-  //if( iClockSleep < -DVD_MSEC_TO_TIME(100) )
-  if( iClockSleep < iFrameDuration * -0.5)
+  if( limited == false  && iClockSleep < -DVD_MSEC_TO_TIME(100)
+  ||  limited == true   && iClockSleep < -iFrameDuration*0.5 )
     result |= EOS_VERYLATE;
 
   if( m_speed < 0 )
@@ -896,8 +903,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
 #ifdef HAS_VIDEO_PLAYBACK
   
-  float maxfps = g_renderManager.GetMaximumFPS();
-  if( m_speed != DVD_PLAYSPEED_NORMAL && m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps)
+  if( m_speed != DVD_PLAYSPEED_NORMAL && limited )
   {
     // calculate frame dropping pattern to render at this speed
     // we do that by deciding if this or next frame is closest
