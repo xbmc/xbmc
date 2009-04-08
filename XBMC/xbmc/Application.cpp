@@ -31,7 +31,6 @@
 #include "VideoDatabase.h"
 #include "Autorun.h"
 #include "ActionManager.h"
-#include "VideoReferenceClock.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #else
@@ -922,9 +921,6 @@ HRESULT CApplication::Create(HWND hWnd)
   time(&seconds);
   srand((unsigned int)seconds);
 
-   //start the video reference clock
-  g_VideoReferenceClock.Create();  
-  
   return CXBApplicationEx::Create(hWnd);
 }
 
@@ -3840,8 +3836,6 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     m_gWindowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
-    g_VideoReferenceClock.StopThread();
-    
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
 

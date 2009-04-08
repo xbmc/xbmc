@@ -211,7 +211,12 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   else
     m_MaxSpeedAdjust = 0.0;
   
-  g_VideoReferenceClock.SetSpeed(1.0);
+  if (g_guiSettings.GetBool("videoplayer.usedisplayasclock"))
+  {
+    g_VideoReferenceClock.Create();
+    g_VideoReferenceClock.SetSpeed(1.0);
+  }
+  
   m_GenPts = -1;
   
   CLog::Log(LOGNOTICE, "Creating video thread");
@@ -249,6 +254,7 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
   }
   
   g_VideoReferenceClock.SetSpeed(1.0);
+  g_VideoReferenceClock.StopThread();
 }
 
 void CDVDPlayerVideo::OnStartup()

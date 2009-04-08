@@ -185,7 +185,6 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   ResetErrorCounters();
   m_SyncClock = true;
 
-  g_VideoReferenceClock.SetSpeed(1.0);
   m_Resampler.SetQuality(g_guiSettings.GetInt("audiooutput.resamplequality"));
   
   CLog::Log(LOGNOTICE, "Creating audio thread");
@@ -230,8 +229,6 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 
   // flush any remaining pts values
   m_ptsOutput.Flush();
-  
-  g_VideoReferenceClock.SetSpeed(1.0);
 }
 
 bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*/, unsigned int size /* = 0*/)
