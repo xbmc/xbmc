@@ -123,7 +123,8 @@ bool CVideoReferenceClock::SetupGLX()
   m_fbConfigs = NULL;
   m_vInfo = NULL;
   m_Context = NULL;
-  m_Pxmp = NULL;  
+  m_Pxmp = NULL;
+  m_GLXPxmp = NULL;
   
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
   
@@ -156,7 +157,7 @@ bool CVideoReferenceClock::SetupGLX()
   Depth = DefaultDepth(m_Dpy, m_Screen); 
 
   m_Pxmp = XCreatePixmap(m_Dpy, RootWindow(m_Dpy, m_Screen), 64, 64, Depth);
-  m_GLXPxmp = glXCreatePixmap(m_Dpy, m_fbConfigs[0], m_Pxmp, NULL);
+  m_GLXPxmp = glXCreateGLXPixmap(m_Dpy, m_vInfo, m_Pxmp);
   m_Context = glXCreateNewContext(m_Dpy, m_fbConfigs[0], GLX_RGBA_TYPE, NULL, true);
   glXMakeCurrent(m_Dpy, m_GLXPxmp, m_Context);
   
@@ -250,11 +251,15 @@ void CVideoReferenceClock::CleanupGLX()
     glXDestroyContext(m_Dpy, m_Context);
     m_Context = NULL;
   }
+  if (m_GLXPxmp)
+  {
+    glXDestroyGLXPixmap(m_Dpy, m_GLXPxmp);
+    m_GLXPxmp = NULL;
+  }
   if (m_Pxmp)
   {
     XFreePixmap(m_Dpy, m_Pxmp);
     m_Pxmp = NULL;
-    m_GLXPxmp = NULL;
   }
   if (m_Dpy)
   {
