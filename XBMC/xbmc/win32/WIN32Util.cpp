@@ -40,8 +40,6 @@ using namespace MEDIA_DETECT;
 
 DWORD CWIN32Util::dwDriveMask = 0;
 
-
-
 CWIN32Util::CWIN32Util(void)
 {
 }
@@ -170,15 +168,42 @@ int CWIN32Util::GetDriveStatus(const CStdString &strPath)
   T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
   byte DataBuf[16];  //Buffer for holding data to/from drive.
 
-  hDevice = CreateFile( strPath.c_str(),  // drive
-                        GENERIC_READ | GENERIC_WRITE, 
-                        FILE_SHARE_READ | FILE_SHARE_WRITE,  // share mode
-                        NULL,             // default security attributes
-                        OPEN_EXISTING,    // disposition
-                        FILE_ATTRIBUTE_READONLY,                // file attributes
-                        NULL);            // do not copy file attributes
+  hDevice = CreateFile( strPath.c_str(),                  // drive
+                        0,                                // no access to the drive
+                        FILE_SHARE_READ,                  // share mode
+                        NULL,                             // default security attributes
+                        OPEN_EXISTING,                    // disposition
+                        FILE_ATTRIBUTE_READONLY,          // file attributes
+                        NULL);
 
-  if (hDevice == INVALID_HANDLE_VALUE) // cannot open the drive
+  if (hDevice == INVALID_HANDLE_VALUE)                    // cannot open the drive
+  {
+    return -1;
+  }
+
+  iResult = DeviceIoControl((HANDLE) hDevice,             // handle to device
+                             IOCTL_STORAGE_CHECK_VERIFY2, // dwIoControlCode
+                             NULL,                        // lpInBuffer
+                             0,                           // nInBufferSize
+                             &ulChanges,                  // lpOutBuffer
+                             sizeof(ULONG),               // nOutBufferSize
+                             &dwBytesReturned ,           // number of bytes returned
+                             NULL );                      // OVERLAPPED structure
+
+  CloseHandle(hDevice);
+
+  if(iResult == 1)
+    return 2;
+
+  hDevice = CreateFile( strPath.c_str(),
+                        GENERIC_READ | GENERIC_WRITE, 
+                        FILE_SHARE_READ | FILE_SHARE_WRITE,
+                        NULL,
+                        OPEN_EXISTING,
+                        FILE_ATTRIBUTE_READONLY,
+                        NULL);
+
+  if (hDevice == INVALID_HANDLE_VALUE)
   {
     return -1;
   }
@@ -297,6 +322,8 @@ bool CWIN32Util::PowerManagement(PowerState State)
   tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
   // Get the shutdown privilege for this process.
   AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, (PTOKEN_PRIVILEGES)NULL, 0);
+  CloseHandle(hToken);
+
   if (GetLastError() != ERROR_SUCCESS)
   {
     return false;
@@ -429,12 +456,6 @@ std::vector<CStdString> CWIN32Util::GetDiskUsage()
   return result;
 }
 
-void CWIN32Util::MaximizeWindow(bool bRemoveBorder)
-{
-  /*int w=0,h=0;
-  g_videoConfig.GetDesktopResolution(&w,&h);*/
-}
-
 CStdString CWIN32Util::GetResInfoString()
 {
   CStdString strRes;
@@ -555,6 +576,35 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
     return ToggleTray(cDL);
   else 
     return S_OK;
+}
+
+void CWIN32Util::SystemParams::GetDefaults( SysParam *SSysParam )
+{
+  SystemParametersInfo(SPI_GETSCREENSAVEACTIVE, 0, &SSysParam->bScrSaver, 0 );
+}
+void CWIN32Util::SystemParams::SetDefaults( SysParam *SSysParam  )
+{
+  SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, SSysParam->bScrSaver, NULL, 0 );
+  SetThreadExecutionState( ES_CONTINUOUS );
+}
+void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
+{
+  SysParam sSysParam;
+
+  if( SSysParam )
+  {
+    sSysParam= *SSysParam;
+    SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, sSysParam.bScrSaver, NULL, 0 );
+  }
+  else  // Set custom default parameters
+  {
+    sSysParam.bScrSaver= false;       // bScrSaver is not really needed, since dwEsFlags will also reset screensaver timer
+    sSysParam.dwEsFlags= ES_CONTINUOUS        | 
+                         ES_SYSTEM_REQUIRED   |
+                         ES_AWAYMODE_REQUIRED;
+  }
+  SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, sSysParam.bScrSaver, NULL, 0 );
+  SetThreadExecutionState( sSysParam.dwEsFlags );
 }
 
 extern "C"

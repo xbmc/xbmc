@@ -211,7 +211,6 @@
 #endif
 #ifdef _WIN32
 #include <shlobj.h>
-#include <win32/MockXboxSymbols.h>
 #include "win32util.h"
 #endif
 #ifdef HAS_XRANDR
@@ -335,6 +334,9 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_restartLirc = false;
   m_restartLCD = false;
   m_lastActionCode = 0;
+#ifdef _WIN32PC
+  m_SSysParam = new CWIN32Util::SystemParams::SysParam;
+#endif
 }
 
 CApplication::~CApplication(void)
@@ -351,6 +353,11 @@ CApplication::~CApplication(void)
 
   if (m_frameCond)
     SDL_DestroyCond(m_frameCond);
+
+#ifdef _WIN32PC
+  if( m_SSysParam ) 
+    delete m_SSysParam;
+#endif
 }
 
 // text out routine for below
@@ -523,6 +530,11 @@ HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
+  
+#ifdef _WIN32PC
+  CWIN32Util::SystemParams::GetDefaults( m_SSysParam );
+  CWIN32Util::SystemParams::SetCustomParams();
+#endif  
 
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
@@ -1038,11 +1050,8 @@ CProfile* CApplication::InitDirectoriesOSX()
   CDirectory::Create("special://temp/");
 
   CStdString userHome;
-  if (getenv("HOME"))
-  {
-    userHome = getenv("HOME");
-  }
-  else
+  userHome = getenv("HOME");
+  if (userHome.IsEmpty() )
   {
     userHome = "/root";
   }
@@ -3901,6 +3910,10 @@ void CApplication::Stop()
 
       m_pXbmcHttp->shuttingDown = true;
     }
+#endif
+
+#ifdef _WIN32PC
+    CWIN32Util::SystemParams::SetDefaults( m_SSysParam );
 #endif
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");

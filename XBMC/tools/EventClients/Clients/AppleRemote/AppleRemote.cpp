@@ -22,7 +22,6 @@
 #include <sys/sysctl.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <mach-o/dyld.h>
 
 #include "AppleRemote.h"
 #include "../../lib/c++/xbmcclient.h"
@@ -128,9 +127,10 @@ AppleRemote::AppleRemote() :m_bVerbose(false),
 							m_remoteMode(REMOTE_NORMAL),
 							m_dMaxClickDuration(DEFAULT_MAX_CLICK_DURATION), 
 							m_socket(-1),
-                            m_timer(NULL) 
+							m_timer(NULL)
 {
 	m_serverAddress = "localhost";
+	m_appPath ="";
 }
 
 AppleRemote::~AppleRemote()
@@ -390,58 +390,21 @@ bool AppleRemote::SendCommand(const std::string &key)
 
 void AppleRemote::LaunchApp()
 {
-  // there are two possible locations of XBMCHelper
-  // a) embedded inside the app ( XBMC.app/Contents/Resources/XBMC/XBMCHelper )
-  // b) the main level of the dev tree ( XBMC/XBMCHelper )
-  // To launch XBMC, we need to know which and if b) to setup XBMC_HOME
-	LOG("Trying to start XBMC.\n");
-
-	int      result = -1;
-	char     given_path[2*MAXPATHLEN];
-	uint32_t path_size = 2*MAXPATHLEN;
-
-  // returns path to XBMCHelper
-	result = _NSGetExecutablePath(given_path, &path_size);
-	if (result == 0)
-	{
-    char real_path[2*MAXPATHLEN];
+  // the path to xbmc.app is passed as an arg, 
+  // use this to launch from a menu press
+  LOG("Trying to start XBMC: [%s]\n", m_appPath.c_str());
+  if (!m_appPath.empty())
+  {
+    std::string strCmd;
     
-    if (realpath(given_path, real_path) != NULL)
-    {
-      std::string strCmd;
-      
-      if ( strstr(real_path, "XBMC.app") )
-      {
-        // Move backwards out to the application.
-        for (int x=0; x<4; x++)
-        {
-          for (int n=strlen(real_path)-1; real_path[n] != '/'; n--)
-            real_path[n] = '\0';
-          real_path[strlen(real_path)-1] = '\0';
-        }
-        
-        // build a finder open command
-        strCmd = "open ";
-        strCmd += real_path;
-      }
-      else
-      {
-        // backup one "/"
-        for (int n=strlen(real_path)-1; real_path[n] != '/'; n--)
-          real_path[n] = '\0';
-        real_path[strlen(real_path)-1] = '\0';
-      
-        // build a run binary command
-        strCmd = "XBMC_HOME=";
-        strCmd += real_path;
-        strCmd += " ";
-        strCmd += real_path;
-        strCmd += "/XBMC.bin &";
-      }
-      LOG("xbmc open command: [%s]\n", strCmd.c_str());
-      system(strCmd.c_str());
-    }
-	}
+    // build a finder open command
+    strCmd = "XBMC_HOME=";
+    strCmd += m_appHome;
+    strCmd += " ";
+    strCmd += m_appPath;
+    LOG("xbmc open command: [%s]\n", strCmd.c_str());
+    system(strCmd.c_str());
+  }
 }
 
 void AppleRemote::SendPacket(CPacketBUTTON &packet)
@@ -535,6 +498,16 @@ void AppleRemote::SetServerAddress(const std::string &strAddress)
 	m_serverAddress = strAddress;
 }
 
+void AppleRemote::SetAppPath(const std::string &strAddress)
+{
+	m_appPath = strAddress;
+}
+
+void AppleRemote::SetAppHome(const std::string &strAddress)
+{
+	m_appHome = strAddress;
+}
+
 const std::string &AppleRemote::GetServerAddress()
 {
 	return m_serverAddress;
@@ -557,7 +530,8 @@ bool AppleRemote::IsProgramRunning(const char* strProgram, int ignorePid)
 		kinfo_proc *proc = NULL;
 		proc = &mylist[k];
 
-		if (strcmp(proc->kp_proc.p_comm, strProgram) == 0)
+    // Process names are at most sixteen characters long.
+		if (strncmp(proc->kp_proc.p_comm, strProgram, 16) == 0)
 		{
 			if (ignorePid == 0 || ignorePid != proc->kp_proc.p_pid)
 				ret = true;

@@ -14,10 +14,15 @@
 @interface XBMCHelper : NSObject {
   AppleRemote* mp_remote_control;
   XBMCClientWrapper* mp_wrapper;
+  NSString* mp_app_path;
+  NSString* mp_home_path;
   bool m_verbose;
 }
 
 - (void) enableVerboseMode:(bool) f_really;
+
+- (void) setApplicationPath:(NSString*) fp_app_path;
+- (void) setApplicationHome:(NSString*) fp_home_path;  
 
 - (void) connectToServer:(NSString*) fp_server withMode:(eRemoteMode) f_mode;
 - (void) setUniversalModeTimeout:(double) f_timeout;

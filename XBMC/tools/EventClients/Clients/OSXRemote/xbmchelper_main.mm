@@ -14,9 +14,11 @@ XBMCHelper* g_xbmchelper;
 eRemoteMode g_mode = DEFAULT_MODE;
 std::string g_server_address="localhost";
 bool g_universal_mode = false;
+std::string g_app_path = "";
+std::string g_app_home = "";
 
 //
-const char* PROGNAME="XBMCHelper";
+const char* PROGNAME="OSXRemote";
 const char* PROGVERS="0.1";
 
 void ParseOptions(int argc, char** argv);
@@ -30,9 +32,11 @@ static struct option long_options[] = {
 { "timeout",    required_argument, 0, 't' },
 { "verbose",    no_argument,       0, 'v' },
 { "externalConfig", no_argument,   0, 'x' },
+{ "appPath", required_argument,   0, 'a' },
+{ "appHome",    required_argument, 0, 'z' }, 
 { 0, 0, 0, 0 },
 };
-static const char *options = "hvt:ums:";
+static const char *options = "hvt:ums:a:z:";
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -45,7 +49,9 @@ void usage(void)
   printf("  -s, --server <addr>  send events to the specified IP.\n");
   printf("  -u, --universal      runs in Universal Remote mode.\n");
   printf("  -t, --timeout <ms>   timeout length for sequences (default: 500ms).\n");
-  printf("  -m, --multiremote    runs in Multi-Remote mode (adds remote identifier as offset to buttons)\n");
+  printf("  -m, --multiremote    runs in Multi-Remote mode (adds remote identifier as additional idenfier to buttons)\n");
+  printf("  -a, --appPath        path to XBMC.app (MenuPress launch support).\n");
+  printf("  -z, --appHome        path to XBMC.app/Content/Resources/XBMX \n");
   printf("  -v, --verbose        prints lots of debugging information.\n");
 }
 
@@ -98,6 +104,9 @@ void ParseOptions(int argc, char** argv)
 	bool readExternal = false;
   g_universal_mode = false;
   g_server_address = "localhost";
+  g_mode = DEFAULT_MODE;
+  g_app_path = "";
+  g_app_home = "";
   
   while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1) 
 	{
@@ -119,11 +128,16 @@ void ParseOptions(int argc, char** argv)
         g_mode = MULTIREMOTE_MODE;
         break;        
       case 't':
-        if (optarg)
-          [g_xbmchelper setUniversalModeTimeout:atof(optarg) * 0.001];
+        [g_xbmchelper setUniversalModeTimeout:atof(optarg) * 0.001];
         break;
       case 'x':
         readExternal = true;
+        break;
+      case 'a':
+        g_app_path = optarg;
+        break;
+      case 'z':
+        g_app_home = optarg;
         break;
       default:
         usage();
@@ -159,6 +173,12 @@ int main (int argc,  char * argv[]) {
 	signal(SIGTERM, Reconfigure);
 
   ParseOptions(argc,argv);
+  
+  //set apppath to startup when pressing Menu
+  [g_xbmchelper setApplicationPath:[NSString stringWithCString:g_app_path.c_str()]];
+
+  //set apppath to startup when pressing Menu
+  [g_xbmchelper setApplicationHome:[NSString stringWithCString:g_app_home.c_str()]];  
   
   //connect to specified server
   [g_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] withMode:g_mode];

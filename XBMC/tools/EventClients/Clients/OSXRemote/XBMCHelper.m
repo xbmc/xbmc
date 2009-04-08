@@ -36,7 +36,30 @@
   PRINT_SIGNATURE();
   [mp_remote_control release];
   [mp_wrapper release];
+  [mp_app_path release];
+  [mp_home_path release];
   [super dealloc];
+}
+
+//----------------------------------------------------------------------------
+- (void) checkAndLaunchApp
+{
+  if(!mp_app_path || ![mp_app_path length]){
+    ELOG(@"No executable set. Nothing to launch");
+    return;
+  }
+  
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  if(![fileManager fileExistsAtPath:mp_app_path isDirectory:NULL]){
+    ELOG(@"Path does not exist: %@. Cannot launch executable", mp_app_path);
+    return;
+  }
+  if(mp_home_path && [mp_home_path length)
+     setenv("XBMC_HOME", [mp_home_path cString], 1);
+  //launch or activate xbmc
+  if(![[NSWorkspace sharedWorkspace] launchApplication:mp_app_path]){
+    ELOG(@"Error launching %@", mp_app_path);
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -85,7 +108,10 @@
         [mp_wrapper handleEvent:ATV_BUTTON_DOWN_RELEASE];
       break;      
     case kRemoteButtonMenu:
-      if(pressedDown) [mp_wrapper handleEvent:ATV_BUTTON_MENU];
+      if(pressedDown){
+        [self checkAndLaunchApp]; //launch mp_app_path if it's not running
+        [mp_wrapper handleEvent:ATV_BUTTON_MENU];
+      }
       break;
     case kRemoteButtonMenu_Hold:
       if(pressedDown) [mp_wrapper handleEvent:ATV_BUTTON_MENU_H];
@@ -123,6 +149,21 @@
   [mp_wrapper enableVerboseMode:f_really];
 }
 
+//----------------------------------------------------------------------------
+- (void) setApplicationPath:(NSString*) fp_app_path{
+  if (mp_app_path != fp_app_path) {
+    [mp_app_path release]; 
+    mp_app_path = [fp_app_path copy];
+  }
+}
+
+//----------------------------------------------------------------------------
+- (void) setApplicationHome:(NSString*) fp_home_path{
+  if (mp_home_path != fp_home_path) {
+    [mp_home_path release]; 
+    mp_home_path = [fp_home_path copy];
+  }
+}
  //   NSString* pressed;
 //    NSString* buttonName;
 //    if (pressedDown) pressed = @"(pressed)"; else pressed = @"(released)";
