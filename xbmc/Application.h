@@ -52,6 +52,9 @@ class CFileItemList;
 #ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
 #endif
+#ifdef _WIN32PC
+  #include "WIN32Util.h"
+#endif
 
 class CWebServer;
 class CXBFileZilla;
@@ -359,6 +362,9 @@ protected:
 
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
+#endif
+#ifdef _WIN32PC
+  CWIN32Util::SystemParams::SysParam *m_SSysParam;
 #endif
 };
 
