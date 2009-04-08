@@ -30,6 +30,20 @@
 
 #define LOG_STREAM_DESC(msg, sd) CLog::Log(LOGDEBUG, "%s - SampleRate: %u, BitDepth: %u, Channels: %u",msg, (UInt32) sd.mSampleRate, sd.mBitsPerChannel, sd.mChannelsPerFrame)
 
+short g_SampleBuffer[10000] = {0};
+static const float short_to_float_mult = 1.0f / 32768.f;
+void ShortToFloat(short* pIn, float* pOut, size_t count)
+{
+  while (count--)
+  {
+    float samp = *pIn * short_to_float_mult;
+    *pOut = samp;
+//    *pOut = (float)*pIn;
+    pIn++;
+    pOut++;
+  }
+}
+
 //***********************************************************************************************
 // Contruction/Destruction
 //***********************************************************************************************
@@ -43,6 +57,7 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_CurrentVolume(0),
   m_Initialized(false),
   m_Passthrough(false),
+  m_PassthroughSpoof(false),
   m_Magic(2039)
 {
   
@@ -101,7 +116,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
    return false;
 
   // Finish configuring the renderer
-  m_MaxCacheLen = m_AvgBytesPerSec;     // Set the max cache size to 1 second of data. TODO: Make this more intelligent
+  m_MaxCacheLen = m_AvgBytesPerSec / 4;     // Set the max cache size to 1 second of data. TODO: Make this more intelligent
   m_Pause = true;                       // We will resume playback once we have some data.
   m_Passthrough = bPassthrough;
   
@@ -109,7 +124,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
   AudioStreamBasicDescription inputDesc_end, outputDesc_end;
   m_AudioUnit.GetInputFormat(&inputDesc_end);
   m_AudioUnit.GetOutputFormat(&outputDesc_end);
-  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %u.", m_ChunkLen, m_MaxCacheLen);
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %u (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
   LOG_STREAM_DESC("CoreAudioRenderer::Initialize: Input Stream Format", inputDesc_end);
   LOG_STREAM_DESC("CoreAudioRenderer::Initialize: Output Stream Format", outputDesc_end);  
   CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");
@@ -166,7 +181,7 @@ HRESULT CCoreAudioRenderer::Resume()
   {
     CLog::Log(LOGINFO, "CoreAudioRenderer::Resume: Resuming Playback.");
     if (m_Passthrough)
-      m_AudioDevice.Start(PassthroughRenderCallback);
+      m_AudioDevice.Start();
     else
       m_AudioUnit.Start();
     m_Pause = false;
@@ -314,7 +329,15 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   {
     profileTime[1] = timeGetTime();
     // Fetch the requested amount of data from our cache
-    m_Cache.GetData(ioData->mBuffers[0].mData, bytesRequested);
+    if (m_PassthroughSpoof) // Have to convert the data
+    {
+      bytesRequested /= 2; // 16 to 32 bit (this will double when we output)
+      m_Cache.GetData(g_SampleBuffer, bytesRequested); // Retrieve data from queue (16-bit Signed Integer)
+      ShortToFloat(g_SampleBuffer, (float*)ioData->mBuffers[0].mData, inNumberFrames); // Convert to 32-bit IEEE Float
+    }
+    else
+      m_Cache.GetData(ioData->mBuffers[0].mData, bytesRequested);
+    
     // Calculate stats and perform a sanity check
     m_TotalBytesOut += bytesRequested;    
     size_t cacheLen = m_Cache.GetTotalBytes();
@@ -353,7 +376,10 @@ OSStatus CCoreAudioRenderer::PassthroughRenderCallback(AudioDeviceID inDevice, c
 {
   CCoreAudioRenderer* pThis = (CCoreAudioRenderer*)inClientData;
   if (pThis->m_Magic != 2039)
-    CLog::Log(LOGDEBUG, "Crap!");
+  {
+    CLog::Log(LOGDEBUG, "CCoreAudioRenderer::PassthroughRenderCallback: Received invalid 'this' pointer in callback. Ignoring caller.");
+    return noErr;
+  }
   return pThis->OnRender(NULL, inInputTime, 0, outOutputData->mBuffers[0].mDataByteSize / pThis->m_BytesPerFrame, outOutputData);
 }
 
@@ -396,7 +422,12 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
 {
   CStdString formatString;
   UInt32 framesPerSlice = 0;
-    
+  AudioStreamBasicDescription outputFormat = {0};
+  AudioStreamID outputStream = 0;
+      
+  // Try this here and see what happens
+   m_AudioDevice.SetHogStatus(true);
+  
   // Fetch a list of the streams defined by the output device
   AudioStreamIdList streams;
   m_AudioDevice.GetStreams(&streams);
@@ -414,8 +445,6 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
     
     // TODO: How do we determine if this is the right stream to use?
     
-    AudioStreamBasicDescription outputFormat = {0};
-    
     // Available Virtual (IOProc) formats
     // TODO: Deal with sample rate ranges
     StreamFormatList virtualFormats;
@@ -423,50 +452,103 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
     while (!virtualFormats.empty())
     {
       AudioStreamRangedDescription& desc = virtualFormats.front();
-      if (desc.mFormat.mFormatID == kAudioFormat60958AC3 && desc.mFormat.mSampleRate == 48000)
-        outputFormat = desc.mFormat; // Select this format
       StreamDescriptionToString(desc.mFormat, formatString);
       CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded:     Virtual Format - %s", formatString.c_str());
       
       virtualFormats.pop_front(); // We're done with it (copied if necessary)
     }
     
-    if (outputFormat.mFormatID) // Found one
+    // Probe physical formats
+    StreamFormatList physicalFormats;
+    stream.GetAvailablePhysicalFormats(&physicalFormats);
+    while (!physicalFormats.empty())
     {
-      m_OutputStream.Open(stream.GetId()); // This is the one we will keep
-      m_OutputStream.SetVirtualFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
-      
-      m_ChunkLen = outputFormat.mBytesPerPacket; // 1 Chunk == 1 Packet
-      framesPerSlice = outputFormat.mFramesPerPacket; // 1 Slice == 1 Packet == 1 Chunk
-      m_AvgBytesPerSec = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3) * outputFormat.mSampleRate; // TODO: Is this correct?
-      m_BytesPerFrame = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3); // Should always be 4
+      AudioStreamRangedDescription& desc = physicalFormats.front();
+//      if (desc.mFormat.mFormatID == kAudioFormat60958AC3 && desc.mFormat.mSampleRate == 48000)
+//        outputFormat = desc.mFormat; // Select this format
+      StreamDescriptionToString(desc.mFormat, formatString);
+      CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded:     Physical Format - %s", formatString.c_str());
+      physicalFormats.pop_front();
+    }    
+    
+    if (outputFormat.mFormatID)
+    {
+      m_PassthroughSpoof = false;
+      outputStream = stream.GetId();
       break; // We found a suitable stream/format combination
     }
   }
 
-  if (!m_OutputStream.GetId()) // No suitable stream was found
-    return false;
+  if (!outputFormat.mFormatID) // No suitable stream/format was found. Try plan B.
+  {
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: No suitable IEC61937 stream/format found. Attempting to spoof PCM.");
+    m_AudioDevice.GetStreams(&streams);
+    while (!streams.empty())
+    {
+      // Try to spoof the device and ride on 48KHz, 16-bit PCM.
+      // Go back and look for a suitable physical formats
+      // TODO: Move format search to a class method
+      CCoreAudioStream stream;
+      stream.Open(streams.front());
+      streams.pop_front(); // We copied it, now we are done with it
 
-  CCoreAudioHardware hw;
-//  hw.SetAutoHogMode(false);
+      StreamFormatList physicalFormats;
+      stream.GetAvailablePhysicalFormats(&physicalFormats);
+      while (!physicalFormats.empty())
+      {
+        AudioStreamRangedDescription& desc = physicalFormats.front();
+        if (desc.mFormat.mFormatID == kAudioFormatLinearPCM && desc.mFormat.mSampleRate == 48000 && desc.mFormat.mBitsPerChannel == 16 && desc.mFormat.mChannelsPerFrame == 2)  // TODO: Ensure 2-channel
+        {
+          outputFormat = desc.mFormat; // Select this format
+          break;
+        }
+        physicalFormats.pop_front(); // We're done with it (copied if necessary)
+      }
+      if (outputFormat.mFormatID)
+      {
+        m_PassthroughSpoof = true;
+        outputStream = stream.GetId();
+        break; // We found a suitable stream/format combination
+      }
+    }
+  }
   
+  if (outputFormat.mFormatID) // Found one
+  {    
+    m_OutputStream.Open(outputStream); // This is the one we will keep
+    m_OutputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
+    
+    m_ChunkLen = 6144; // outputFormat.mBytesPerPacket; // 1 Chunk == 1 Packet
+    framesPerSlice = outputFormat.mFramesPerPacket; // 1 Slice == 1 Packet == 1 Chunk
+    m_AvgBytesPerSec = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3) * outputFormat.mSampleRate; // TODO: Is this correct?
+    m_BytesPerFrame = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3); // Should always be 4
+    StreamDescriptionToString(outputFormat, formatString);
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Selected stream - id: 0x%04X, format: %s (%u Bytes/sec.)", outputStream, formatString.c_str(), m_AvgBytesPerSec);
+  }
+  else // Give up. We are out of options
+  if (!outputFormat.mFormatID) 
+  {
+    CLog::Log(LOGERROR, "CoreAudioRenderer::InitializeEncoded: Unable to identify suitable output stream/format.");
+    return false;
+  }    
+
   // TODO: Auto hogging sets this for us. Figure out how/when to turn it off or use it
   // It appears that leaving this set will aslo restore the previous stream format when the
   // Application exits.
+  // From the SDK docs: "If the AudioDevice is in a non-mixable mode, the HAL will automatically take hog mode on behalf of the first process to start an IOProc."
   
-  // If all else was successful, hog the output device
-  // TODO: Is failure here critical?
-  if (!hw.GetAutoHogMode())
-    if (!m_AudioDevice.SetHogStatus(true))
-      return false;
-  
-  // Try to disable mixing. If we cannot, it may not be a problem
-  m_AudioDevice.SetMixingSupport(false);
-  
-  AudioDeviceAddIOProc(outputDevice, PassthroughRenderCallback, this);  
-  
-  m_AvgBytesPerSec = 192000;
-  
+  // We may need to do this sooner to enable mix-disable (i.e. before setting the stream format)
+  CCoreAudioHardware hw;
+  bool autoHog = hw.GetAutoHogMode();
+  CLog::Log(LOGDEBUG, " CoreAudioRenderer::InitializeEncoded: Auto 'hog' mode is set to '%s'.", autoHog ? "On" : "Off");
+  if (!autoHog || m_PassthroughSpoof)
+  {
+//    m_AudioDevice.SetHogStatus(true);  
+    // Try to disable mixing. If we cannot, it may not be a problem
+    m_AudioDevice.SetMixingSupport(false);
+  }
+  m_AudioDevice.AddIOProc(PassthroughRenderCallback, this);  
+    
   return true;
 }
                                 

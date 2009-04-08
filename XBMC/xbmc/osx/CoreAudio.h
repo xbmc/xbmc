@@ -34,12 +34,11 @@ class CCoreAudioUnit;
 
 typedef std::list<CCoreAudioDevice> CoreAudioDeviceList;
 
+// Not yet implemented
 // kAudioHardwarePropertyDevices                     
-// kAudioHardwarePropertyDefaultInputDevice          
-// kAudioHardwarePropertyDefaultOutputDevice         
+// kAudioHardwarePropertyDefaultInputDevice              
 // kAudioHardwarePropertyDefaultSystemOutputDevice   
-// kAudioHardwarePropertyDeviceForUID                
-// kAudioHardwarePropertyHogModeIsAllowed            
+// kAudioHardwarePropertyDeviceForUID                          
 
 class CCoreAudioHardware
 {
@@ -50,6 +49,7 @@ public:
   void SetAutoHogMode(bool enable);
 };
 
+// Not yet implemented
 // kAudioDevicePropertyDeviceIsRunning, kAudioDevicePropertyDeviceIsRunningSomewhere, kAudioDevicePropertyHogMode, kAudioDevicePropertyLatency, 
 // kAudioDevicePropertyBufferFrameSize, kAudioDevicePropertyBufferFrameSizeRange, kAudioDevicePropertyUsesVariableBufferFrameSizes,
 // kAudioDevicePropertyStreams, kAudioDevicePropertySafetyOffset, kAudioDevicePropertyIOCycleUsage, kAudioDevicePropertyStreamConfiguration
@@ -68,10 +68,14 @@ public:
   bool Open(AudioDeviceID deviceId);
   void Close();
   
-  void Start(AudioDeviceIOProc ioProc);
+  void Start();
   void Stop();
+  bool AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData);
+  void RemoveIOProc();
   
   AudioDeviceID GetId() {return m_DeviceId;}
+  bool GetName(CStdString& name);
+  UInt32 GetTotalOutputChannels();
   bool GetStreams(AudioStreamIdList* pList);
   bool SetHogStatus(bool hog);
   bool GetHogStatus();
@@ -107,7 +111,7 @@ public:
   bool SetPhysicalFormat(AudioStreamBasicDescription* pDesc);
   bool GetAvailableVirtualFormats(StreamFormatList* pList);
   bool GetAvailablePhysicalFormats(StreamFormatList* pList);
-  
+
 protected:
   AudioStreamID m_StreamId;
   AudioStreamBasicDescription m_OriginalVirtualFormat;  
@@ -143,6 +147,6 @@ class CCoreAudioUnit
   };
 
   // Helper Function
-void UInt32ToFourCC(char* fourCC, Uint32 val); // fourCC must be at least 5 BYTES wide
+  char* UInt32ToFourCC(UInt32* val);
 
 #endif // __COREAUDIO_H__

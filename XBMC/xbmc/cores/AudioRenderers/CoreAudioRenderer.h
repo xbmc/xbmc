@@ -84,6 +84,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     CCoreAudioStream m_OutputStream;
     
     bool m_Passthrough;
+    bool m_PassthroughSpoof;
     size_t m_AvgBytesPerSec;
     size_t m_BytesPerFrame;
     UInt64 m_TotalBytesIn;
@@ -104,8 +105,8 @@ class CCoreAudioRenderer : public IAudioRenderer
     
     void StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str)
     {
-      char fourCC[5];
-      UInt32ToFourCC(fourCC, desc.mFormatID);
+      UInt32 formatId = desc.mFormatID;
+      char* fourCC = UInt32ToFourCC(&formatId);
       
       switch (desc.mFormatID)
       {
