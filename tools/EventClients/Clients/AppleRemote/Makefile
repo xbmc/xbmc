@@ -13,7 +13,6 @@ CLEAN_FILES=$(TARGET)
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	@cp org.xbmc.helper.plist ../../../osx/org.xbmc.helper.plist
 	g++ $(LDFLAGS) $(OBJS) -o $(TARGET)
 
 .cpp.o:
