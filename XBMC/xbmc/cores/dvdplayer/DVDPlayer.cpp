@@ -1536,15 +1536,15 @@ void CDVDPlayer::OnExit()
   // set event to inform openfile something went wrong in case openfile is still waiting for this event
   SetEvent(m_hReadyEvent);
 
+  m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
   if(m_PlayerOptions.identify == false)
   {
-    if (m_bStop)
+    if (m_bAbortRequest)
       m_callback.OnPlayBackStopped();
     else
       m_callback.OnPlayBackEnded();
   }
-  m_bStop = true;
 }
 
 void CDVDPlayer::HandleMessages()
