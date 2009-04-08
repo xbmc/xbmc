@@ -79,13 +79,6 @@ void CVideoReferenceClock::OnStartup()
     }
     else if (!SetupSuccess && !PrevSetupSuccess)
     {
-      Lock();
-      m_UseVblank = false;
-      QueryPerformanceCounter(&Now);
-      m_ClockOffset.QuadPart = Now.QuadPart - m_CurrTime.QuadPart;
-      SendVblankSignal();
-      Unlock();
-      
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed twice in a row, falling back to QueryPerformanceCounter");
       break;
     }
@@ -99,7 +92,13 @@ void CVideoReferenceClock::OnStartup()
     CleanupD3D();
 #endif
   }
+  
+  Lock();
   m_UseVblank = false;
+  QueryPerformanceCounter(&Now);
+  m_ClockOffset.QuadPart = Now.QuadPart - m_CurrTime.QuadPart;
+  SendVblankSignal();
+  Unlock();
 }
 
 #ifdef HAS_GLX
