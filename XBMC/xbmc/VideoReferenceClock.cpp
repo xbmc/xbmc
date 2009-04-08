@@ -99,6 +99,7 @@ void CVideoReferenceClock::OnStartup()
     CleanupD3D();
 #endif
   }
+  m_UseVblank = false;
 }
 
 #ifdef HAS_GLX
