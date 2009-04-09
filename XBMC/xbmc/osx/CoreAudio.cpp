@@ -177,7 +177,6 @@ void CCoreAudioDevice::Stop()
   OSStatus ret = AudioDeviceStop(m_DeviceId, m_IoProc);
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioDevice::Stop: Unable to stop device. Error = 0x%08x (%4.4s).", ret, CONVERT_OSSTATUS(ret));
-  m_IoProc = NULL;
 }
 
 bool CCoreAudioDevice::AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData)
@@ -188,10 +187,11 @@ bool CCoreAudioDevice::AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData)
   OSStatus ret = AudioDeviceAddIOProc(m_DeviceId, ioProc, pCallbackData);  
   if (ret)
   {
-    CLog::Log(LOGERROR, "CCoreAudioDevice::Stop: Unable to stop device. Error = 0x%08x (%4.4s).", ret, CONVERT_OSSTATUS(ret));
+    CLog::Log(LOGERROR, "CCoreAudioDevice::Stop: Unable to add IOProc. Error = 0x%08x (%4.4s).", ret, CONVERT_OSSTATUS(ret));
     return false;
   }
   m_IoProc = ioProc;
+  CLog::Log(LOGDEBUG, "CCoreAudioDevice::AddIOProc: IOProc set for device 0x%04x", m_DeviceId);
   return true;
 }
 
@@ -200,9 +200,12 @@ void CCoreAudioDevice::RemoveIOProc()
   if (!m_DeviceId || !m_IoProc)
     return;
   
+  Stop();
   OSStatus ret = AudioDeviceRemoveIOProc(m_DeviceId, m_IoProc);  
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioDevice::RemoveIOProc: Unable to remove IOProc. Error = 0x%08x (%4.4s).", ret, CONVERT_OSSTATUS(ret));
+  else
+    CLog::Log(LOGDEBUG, "CCoreAudioDevice::AddIOProc: IOProc removed for device 0x%04x", m_DeviceId);
   m_IoProc = NULL; // Clear the reference no matter what
 }
 
@@ -339,6 +342,82 @@ bool CCoreAudioDevice::GetMixingSupport()
   return (val > 0);
 }
 
+bool CCoreAudioDevice::GetPreferredChannelLayout(CoreAudioChannelList* pChannelMap)
+{
+  if (!pChannelMap || !m_DeviceId)
+    return false;
+  
+  UInt32 propertySize = 0;
+  Boolean writable = false;
+  OSStatus ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false, kAudioDevicePropertyPreferredChannelLayout, &propertySize, &writable);
+  if (ret)
+    return false;
+  UInt32 channels = propertySize / sizeof(SInt32);
+  SInt32* pMap = new SInt32[channels];
+  ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyPreferredChannelLayout, &propertySize, pMap);
+  if (!ret)
+    for (UInt32 i = 0; i < channels; i++)
+      pChannelMap->push_back(pMap[i]);;
+  delete[] pMap;
+  return (!ret);  
+}
+
+bool CCoreAudioDevice::GetDataSources(CoreAudioDataSourceList* pList)
+{
+  if (!pList || !m_DeviceId)
+    return false;
+  
+  UInt32 propertySize = 0;
+  Boolean writable = false;
+  OSStatus ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false, kAudioDevicePropertyDataSources, &propertySize, &writable);
+  if (ret)
+    return false;
+  UInt32 sources = propertySize / sizeof(UInt32);
+  UInt32* pSources = new UInt32[sources];
+  ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyDataSources, &propertySize, pSources);
+  if (!ret)
+    for (UInt32 i = 0; i < sources; i++)
+      pList->push_back(pSources[i]);;
+  delete[] pSources;
+  return (!ret);    
+}
+
+Float64 CCoreAudioDevice::GetNominalSampleRate()
+{
+  if (!m_DeviceId)
+    return 0.0f;
+  
+  Float64 sampleRate = 0.0f;
+  UInt32 size = sizeof(Float64);
+  OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyNominalSampleRate, &size, &sampleRate);
+  if (ret)
+  { 
+    CLog::Log(LOGERROR, "CCoreAudioUnit::GetNominalSampleRate: Unable to retrieve current device sample rate. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+    return 0.0f;
+  }
+  return sampleRate;
+}
+
+bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
+{
+  if (!m_DeviceId || sampleRate == 0.0f)
+    return false;
+  
+  Float64 currentRate = GetNominalSampleRate();
+  if (currentRate == sampleRate)
+    return true; //No need to change
+  
+  UInt32 size = sizeof(Float64);
+  OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyNominalSampleRate, size, &sampleRate);
+  if (ret)
+  { 
+    CLog::Log(LOGERROR, "CCoreAudioUnit::SetNominalSampleRate: Unable to set current device sample rate to %0.0f. Error = 0x%08x (%4.4s)", (float)sampleRate, ret, CONVERT_OSSTATUS(ret));
+    return false;
+  }
+  CLog::Log(LOGDEBUG,  "CCoreAudioUnit::SetNominalSampleRate: Changed device sample rate to %0.0f.", (float)sampleRate);
+  return true;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioStream
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -346,6 +425,7 @@ CCoreAudioStream::CCoreAudioStream() :
 m_StreamId(0)
 {
   m_OriginalVirtualFormat.mFormatID = 0;
+  m_OriginalPhysicalFormat.mFormatID = 0;
 }
 
 CCoreAudioStream::~CCoreAudioStream()
@@ -360,6 +440,7 @@ bool CCoreAudioStream::Open(AudioStreamID streamId)
   return true;
 }
 
+// TODO: Should it even be possible to change both the physical and virtual formats, since the devices do it themselves?
 void CCoreAudioStream::Close()
 {
   if (!m_StreamId)
@@ -371,7 +452,13 @@ void CCoreAudioStream::Close()
     CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Restoring original virtual format for stream 0x%04x.", m_StreamId);
     SetVirtualFormat(&m_OriginalVirtualFormat);
   }
+  if (m_OriginalPhysicalFormat.mFormatID && m_StreamId)
+  {
+    CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Restoring original physical format for stream 0x%04x.", m_StreamId);
+    SetPhysicalFormat(&m_OriginalPhysicalFormat);
+  }
   
+  m_OriginalPhysicalFormat.mFormatID = 0;
   m_OriginalVirtualFormat.mFormatID = 0;
   CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Closed stream 0x%04x.", m_StreamId);
   m_StreamId = 0;
@@ -460,6 +547,14 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
 {
   if (!pDesc || !m_StreamId)
     return false;
+  if (!m_OriginalPhysicalFormat.mFormatID)
+  {
+    if (!GetPhysicalFormat(&m_OriginalPhysicalFormat)) // Store the original format (as we found it) so that it can be restored later
+    {
+      CLog::Log(LOGERROR, "CCoreAudioStream::SetPhysicalFormat: Unable to retrieve current physical format for stream 0x%04x.", m_StreamId);
+      return false;
+    }
+  }  
   OSStatus ret = AudioStreamSetProperty(m_StreamId, NULL, 0, kAudioStreamPropertyPhysicalFormat, sizeof(AudioStreamBasicDescription), pDesc);
   if (ret)
   {
@@ -694,6 +789,43 @@ bool CCoreAudioUnit::SetMaxFramesPerSlice(UInt32 maxFrames)
 }
 
 // TODO: These are not true AudioUnit methods. Move to OutputDeviceAU class
+// TODO: The channel map setter/getter are inefficient
+bool CCoreAudioUnit::GetInputChannelMap(CoreAudioChannelList* pChannelMap)
+{
+  if (!m_Component)
+    return false;
+  
+  UInt32 size = 0;
+  Boolean writable = false;
+  AudioUnitGetPropertyInfo(m_Component, kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, &size, &writable);
+  UInt32 channels = size/sizeof(SInt32);
+  SInt32* pMap = new SInt32[channels];
+  OSStatus ret = AudioUnitGetProperty(m_Component, kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, pMap, &size);
+  if (ret)
+    CLog::Log(LOGERROR, "CCoreAudioUnit::GetInputChannelMap: Unable to retrieve AudioUnit input channel map. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+  else
+    for (UInt32 i = 0; i < channels; i++)
+      pChannelMap->push_back(pMap[i]);  
+  delete[] pMap;
+  return (!ret);
+}
+
+bool CCoreAudioUnit::SetInputChannelMap(CoreAudioChannelList* pChannelMap)
+{
+  if (!m_Component || !pChannelMap)
+    return false;
+  UInt32 channels = pChannelMap->size();
+  UInt32 size = sizeof(SInt32) * channels;
+  SInt32* pMap = new SInt32[channels];
+  for (UInt32 i = 0; i < channels; i++)
+    pMap[i] = (*pChannelMap)[i];
+  OSStatus ret = AudioUnitGetProperty(m_Component, kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, pMap, &size);
+  if (ret)
+    CLog::Log(LOGERROR, "CCoreAudioUnit::GetBufferFrameSize: Unable to get current device's buffer size. ErrCode = Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+  delete[] pMap;
+  return (!ret);
+}
+
 void CCoreAudioUnit::Start()
 {
   // TODO: Check component status

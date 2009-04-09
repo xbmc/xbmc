@@ -70,7 +70,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     
     bool InitializeEncoded(AudioDeviceID outputDevice);
     bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample);
-    
+    bool SpoofPCM();
     bool m_Pause;
     bool m_Initialized; // Prevent multiple init/deinit
    
@@ -103,7 +103,7 @@ class CCoreAudioRenderer : public IAudioRenderer
         return 0;
     }
     
-    void StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str)
+    const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str)
     {
       UInt32 formatId = desc.mFormatID;
       char* fourCC = UInt32ToFourCC(&formatId);
@@ -129,6 +129,7 @@ class CCoreAudioRenderer : public IAudioRenderer
           str.Format("[%s]", fourCC);
           break;
       }
+      return str.c_str();
     }
   };
 

@@ -25,6 +25,7 @@
 #include <CoreServices/CoreServices.h>
 #include <AudioUnit/AudioUnit.h>
 #include <list>
+#include <vector>
 
 // Forward declarations
 class CCoreAudioHardware;
@@ -58,6 +59,8 @@ public:
 // kAudioDevicePropertyTransportType
 
 typedef std::list<AudioStreamID> AudioStreamIdList;
+typedef std::vector<SInt32> CoreAudioChannelList;
+typedef std::list<UInt32> CoreAudioDataSourceList;
 
 class CCoreAudioDevice
 {
@@ -81,7 +84,10 @@ public:
   bool GetHogStatus();
   bool SetMixingSupport(bool mix);
   bool GetMixingSupport();
-  
+  bool GetPreferredChannelLayout(CoreAudioChannelList* pChannelMap);
+  bool GetDataSources(CoreAudioDataSourceList* pList);
+  Float64 GetNominalSampleRate();
+  bool SetNominalSampleRate(Float64 sampleRate);
 protected:
   AudioDeviceID m_DeviceId;
   pid_t m_Hog;
@@ -115,6 +121,7 @@ public:
 protected:
   AudioStreamID m_StreamId;
   AudioStreamBasicDescription m_OriginalVirtualFormat;  
+  AudioStreamBasicDescription m_OriginalPhysicalFormat;  
 };
 
 class CCoreAudioUnit
@@ -134,7 +141,9 @@ class CCoreAudioUnit
     bool GetInputFormat(AudioStreamBasicDescription* pDesc);
     bool GetOutputFormat(AudioStreamBasicDescription* pDesc);    
     bool SetInputFormat(AudioStreamBasicDescription* pDesc);
-    bool SetOutputFormat(AudioStreamBasicDescription* pDesc);    
+    bool SetOutputFormat(AudioStreamBasicDescription* pDesc);
+    bool GetInputChannelMap(CoreAudioChannelList* pChannelMap);
+    bool SetInputChannelMap(CoreAudioChannelList* pChannelMap);
     
     void Start();
     void Stop();
