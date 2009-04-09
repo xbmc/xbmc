@@ -790,11 +790,11 @@ void CDVDPlayer::Process()
   UpdateApplication(0);
   UpdatePlayState(0);
 
-  // we are done initializing now, set the readyevent
-  SetEvent(m_hReadyEvent);
-
   if(m_PlayerOptions.identify == false)
     m_callback.OnPlayBackStarted();
+
+  // we are done initializing now, set the readyevent
+  SetEvent(m_hReadyEvent);
 
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
@@ -1478,7 +1478,6 @@ void CDVDPlayer::OnExit()
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
 
     // set event to inform openfile something went wrong in case openfile is still waiting for this event
-    SetEvent(m_hReadyEvent);
     SetCaching(false);
 
     // close each stream
@@ -1533,8 +1532,6 @@ void CDVDPlayer::OnExit()
     m_pInputStream = NULL;
     m_pDemuxer = NULL;   
   }
-  // set event to inform openfile something went wrong in case openfile is still waiting for this event
-  SetEvent(m_hReadyEvent);
 
   m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
@@ -1545,6 +1542,9 @@ void CDVDPlayer::OnExit()
     else
       m_callback.OnPlayBackEnded();
   }
+
+  // set event to inform openfile something went wrong in case openfile is still waiting for this event
+  SetEvent(m_hReadyEvent);
 }
 
 void CDVDPlayer::HandleMessages()
