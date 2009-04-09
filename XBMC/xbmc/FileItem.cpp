@@ -2346,20 +2346,19 @@ CStdString CFileItem::GetTBNFile() const
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
 
-  if (m_bIsFolder && !IsFileFolder())
-  {
-    CURL url(strFile);
+  CURL url(strFile);
+  strFile = url.GetFileName();
 
-    // Don't try to get "foldername".tbn for empty filenames
-    if (!url.GetFileName().IsEmpty())
-    {
-      CUtil::RemoveSlashAtEnd(strFile);
-      thumbFile = strFile + ".tbn";
-    }
-  }
+  if (m_bIsFolder && !IsFileFolder())
+    CUtil::RemoveSlashAtEnd(strFile);
+
+  if(strFile.IsEmpty())
+    thumbFile = "";
   else
   {
     CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+    url.SetFileName(thumbFile);
+    url.GetURL(thumbFile);
   }
   return thumbFile;
 }
