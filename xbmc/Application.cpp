@@ -3982,6 +3982,10 @@ void CApplication::Stop()
     }
 #endif
 
+#ifdef HAS_HAL
+    g_HalManager.Stop();
+#endif
+
     CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
