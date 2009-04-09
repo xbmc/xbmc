@@ -4371,6 +4371,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
 void CApplication::OnPlayBackEnded()
 {
+  if(m_bPlaybackStarting)
+    return;
+
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -4386,13 +4389,14 @@ void CApplication::OnPlayBackEnded()
   CLog::Log(LOGDEBUG, "Playback has finished");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
-
-  if(!m_bPlaybackStarting)
-    m_gWindowManager.SendThreadMessage(msg);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnPlayBackStarted()
 {
+  if(m_bPlaybackStarting)
+    return;
+
 #ifdef HAS_PYTHON
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
@@ -4408,9 +4412,7 @@ void CApplication::OnPlayBackStarted()
   CLog::Log(LOGDEBUG, "Playback has started");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
-
-  if(!m_bPlaybackStarting)
-    m_gWindowManager.SendThreadMessage(msg);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnQueueNextItem()
@@ -4434,6 +4436,9 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
+  if(m_bPlaybackStarting)
+    return;
+
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -4449,8 +4454,7 @@ void CApplication::OnPlayBackStopped()
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
-  if(!m_bPlaybackStarting)
-    m_gWindowManager.SendThreadMessage(msg);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 bool CApplication::IsPlaying() const
