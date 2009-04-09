@@ -4408,7 +4408,9 @@ void CApplication::OnPlayBackStarted()
   CLog::Log(LOGDEBUG, "Playback has started");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
-  m_gWindowManager.SendThreadMessage(msg);
+
+  if(!m_bPlaybackStarting)
+    m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnQueueNextItem()
