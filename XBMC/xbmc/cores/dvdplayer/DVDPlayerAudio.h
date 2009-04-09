@@ -214,9 +214,9 @@ protected:
   CRITICAL_SECTION m_critCodecSection;
   
   void   ResetErrorCounters();
+  bool   OutputAudioframe(DVDAudioFrame &audioframe, bool newerror);
   
-  int    m_PCMSynctype; //sync type for pcm
-  int    m_AC3DTSSynctype; //sync type for ac3/dts passthrough
+  int    m_SyncType; //audio sync type
   double m_CurrError; //current average error
   double m_AverageError; //place to store errors
   int    m_ErrorCount; //amount of error stored
