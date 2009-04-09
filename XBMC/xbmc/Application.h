@@ -212,7 +212,6 @@ public:
   DWORD m_dwSkinTime;
   bool m_bIsPaused;
   bool m_bPlaybackStarting;
-  std::queue<CGUIMessage> m_vPlaybackStarting;
 
   CKaraokeLyricsManager* m_pKaraokeMgr;
 
