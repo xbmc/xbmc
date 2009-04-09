@@ -731,7 +731,7 @@ bool CFileCurl::Open(const CURL& url)
   SetRequestHeaders(m_state);
 
   long response = m_state->Connect(m_bufferSize);
-  if( response < 0 )
+  if( response < 0 || response >= 400)
     return false;
 
   SetCorrectHeaders(m_state);
