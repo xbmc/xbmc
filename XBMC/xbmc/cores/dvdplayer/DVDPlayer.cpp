@@ -841,7 +841,7 @@ void CDVDPlayer::Process()
       UpdatePlayState(0);
     }
 
-    // handle eventual seeks due tp playspeed
+    // handle eventual seeks due to playspeed
     HandlePlaySpeed();
 
     // update player state
@@ -959,7 +959,7 @@ void CDVDPlayer::Process()
       m_CurrentVideo.inited    = false;
       m_CurrentSubtitle.inited = false;
 
-      // if we are caching, start playing it agian
+      // if we are caching, start playing it again
       if (m_caching && !m_bAbortRequest)
         SetCaching(false);
 
@@ -1014,11 +1014,21 @@ void CDVDPlayer::Process()
     // process the packet
     ProcessPacket(pStream, pPacket);
   }
+
+  // If we got here, playback ended normally (no error) so do our callback
+  if(m_PlayerOptions.identify == false)
+  {
+    // Only call our "Stopped-callback" when we really stopped:
+    if (m_bStop && m_bAbortRequest)
+      m_callback.OnPlayBackStopped();
+    else
+      m_callback.OnPlayBackEnded();
+  }
 }
 
 void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-    /* process packet if it belongs to selected stream. for dvd's down't allow automatic opening of streams*/
+    /* process packet if it belongs to selected stream. for dvd's don't allow automatic opening of streams*/
     LockStreams();
 
     try
@@ -1537,14 +1547,6 @@ void CDVDPlayer::OnExit()
   SetEvent(m_hReadyEvent);
 
   m_bStop = true;
-  // if we didn't stop playing, advance to the next item in xbmc's playlist
-  if(m_PlayerOptions.identify == false)
-  {
-    if (m_bAbortRequest)
-      m_callback.OnPlayBackStopped();
-    else
-      m_callback.OnPlayBackEnded();
-  }
 }
 
 void CDVDPlayer::HandleMessages()
