@@ -184,14 +184,12 @@ double CSysInfo::GetCPUFrequency()
 
 CStdString CSysInfo::GetMACAddress()
 {
-  CStdString strMacAddress;
-
 #if defined(HAS_LINUX_NETWORK)
   CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
   if (iface)
-    strMacAddress.Format("%s: %s", g_localizeStrings.Get(149), iface->GetMacAddress());
+    return iface->GetMacAddress();
 #endif
-  return strMacAddress;
+  return "";
 }
 
 CStdString CSysInfo::GetVideoEncoder()
@@ -211,7 +209,7 @@ CStdString CSysInfo::GetKernelVersion()
   if (uname(&un)==0)
   {
     CStdString strKernel;
-    strKernel.Format("%s %s %s %s %s",g_localizeStrings.Get(13283), un.sysname, un.release, un.version, un.machine);
+    strKernel.Format("%s %s %s %s", un.sysname, un.release, un.version, un.machine);
     return strKernel;
   }
 
@@ -280,7 +278,7 @@ CStdString CSysInfo::GetCPUFreqInfo()
 {
   CStdString strCPUFreq;
   double CPUFreq = GetCPUFrequency();
-  strCPUFreq.Format("%s %4.2fMHz", g_localizeStrings.Get(13284), CPUFreq);
+  strCPUFreq.Format("%4.2fMHz", CPUFreq);
   return strCPUFreq;
 }
 
@@ -304,7 +302,6 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
     case SYSTEM_TOTAL_SPACE:
     case SYSTEM_FREE_SPACE_PERCENT:
     case SYSTEM_USED_SPACE_PERCENT:
-      strDrive = g_localizeStrings.Get(20161);
       bRet = g_sysinfo.GetDiskSpace("",total, totalFree, totalUsed, percentFree, percentused);
       break;
     case LCD_FREE_SPACE_C:
@@ -408,7 +405,10 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
       case SYSTEM_FREE_SPACE_X:
       case SYSTEM_FREE_SPACE_Y:
       case SYSTEM_FREE_SPACE_Z:
-        strRet.Format("%s: %i MB %s", strDrive, totalFree, g_localizeStrings.Get(160));
+        if (strDrive.IsEmpty())
+          strRet.Format("%i MB %s", totalFree, g_localizeStrings.Get(160));
+        else
+          strRet.Format("%s: %i MB %s", strDrive, totalFree, g_localizeStrings.Get(160));
         break;
       case SYSTEM_USED_SPACE:
       case SYSTEM_USED_SPACE_C:
@@ -418,28 +418,40 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
       case SYSTEM_USED_SPACE_X:
       case SYSTEM_USED_SPACE_Y:
       case SYSTEM_USED_SPACE_Z:
-        strRet.Format("%s: %i MB %s", strDrive, totalUsed, g_localizeStrings.Get(20162));
+        if (strDrive.IsEmpty())
+          strRet.Format("%i MB %s", totalUsed, g_localizeStrings.Get(20162));
+        else
+          strRet.Format("%s: %i MB %s", strDrive, totalUsed, g_localizeStrings.Get(20162));
         break;
       case SYSTEM_TOTAL_SPACE:
       case SYSTEM_TOTAL_SPACE_C:
       case SYSTEM_TOTAL_SPACE_E:
       case SYSTEM_TOTAL_SPACE_F:
       case SYSTEM_TOTAL_SPACE_G:
-        strRet.Format("%s: %i MB %s", strDrive, total, g_localizeStrings.Get(20161));
+        if (strDrive.IsEmpty())
+          strRet.Format("%i MB %s", total, g_localizeStrings.Get(20161));
+        else
+          strRet.Format("%s: %i MB %s", strDrive, total, g_localizeStrings.Get(20161));
         break;
       case SYSTEM_FREE_SPACE_PERCENT:
       case SYSTEM_FREE_SPACE_PERCENT_C:
       case SYSTEM_FREE_SPACE_PERCENT_E:
       case SYSTEM_FREE_SPACE_PERCENT_F:
       case SYSTEM_FREE_SPACE_PERCENT_G:
-        strRet.Format("%s: %i%% %s", strDrive, percentFree, g_localizeStrings.Get(160));
+        if (strDrive.IsEmpty())
+          strRet.Format("%i MB %s", percentFree, g_localizeStrings.Get(160));
+        else
+          strRet.Format("%s: %i MB %s", strDrive, percentFree, g_localizeStrings.Get(160));
         break;
       case SYSTEM_USED_SPACE_PERCENT:
       case SYSTEM_USED_SPACE_PERCENT_C:
       case SYSTEM_USED_SPACE_PERCENT_E:
       case SYSTEM_USED_SPACE_PERCENT_F:
       case SYSTEM_USED_SPACE_PERCENT_G:
-        strRet.Format("%s: %i%% %s", strDrive, percentused, g_localizeStrings.Get(20162));
+        if (strDrive.IsEmpty())
+          strRet.Format("%i MB %s", percentused, g_localizeStrings.Get(20162));
+        else
+          strRet.Format("%s: %i MB %s", strDrive, percentused, g_localizeStrings.Get(20162));
         break;
       }
     }
@@ -448,6 +460,8 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
   {
     if (shortText)
       strRet = "N/A";
+    else if (strDrive.IsEmpty())
+      strRet = g_localizeStrings.Get(161);
     else
       strRet.Format("%s: %s", strDrive, g_localizeStrings.Get(161));
   }
@@ -474,42 +488,36 @@ bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &
 CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
 {
   CStdString strSystemUptime;
-  CStdString strLabel;
   int iInputMinutes, iMinutes,iHours,iDays;
 
   if(bTotalUptime)
   {
     //Total Uptime
-    strLabel = g_localizeStrings.Get(12394);
     iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
   }
   else
   {
     //Current UpTime
-    strLabel = g_localizeStrings.Get(12390);
     iInputMinutes = (int)(timeGetTime() / 60000);
   }
 
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   if (iDays > 0)
   {
-    strSystemUptime.Format("%s: %i %s, %i %s, %i %s",
-      strLabel,
+    strSystemUptime.Format("%i %s, %i %s, %i %s",
       iDays,g_localizeStrings.Get(12393),
       iHours,g_localizeStrings.Get(12392),
       iMinutes, g_localizeStrings.Get(12391));
   }
   else if (iDays == 0 && iHours >= 1 )
   {
-    strSystemUptime.Format("%s: %i %s, %i %s",
-      strLabel,
+    strSystemUptime.Format("%i %s, %i %s",
       iHours,g_localizeStrings.Get(12392),
       iMinutes, g_localizeStrings.Get(12391));
   }
   else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
   {
-    strSystemUptime.Format("%s: %i %s",
-      strLabel,
+    strSystemUptime.Format("%i %s",
       iMinutes, g_localizeStrings.Get(12391));
   }
   return strSystemUptime;
@@ -519,15 +527,13 @@ CStdString CSysInfo::GetInternetState()
 {
   // Internet connection state!
   XFILE::CFileCurl http;
-  CStdString strInetCon;
   m_bInternetState = http.IsInternet();
   if (m_bInternetState)
-    strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13296));
+    return g_localizeStrings.Get(13296);
   else if (http.IsInternet(false))
-    strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13274));
+    return g_localizeStrings.Get(13274);
   else // NOT Connected to the Internet!
-    strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13297));
-  return strInetCon;
+    return g_localizeStrings.Get(13297);
 }
 
 #if defined(_LINUX) && !defined(__APPLE__)
