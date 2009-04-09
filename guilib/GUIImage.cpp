@@ -98,6 +98,7 @@ void CGUIImage::Render()
   
   if (!IsVisible()) return;
 
+  m_texture.SetDiffuseColor(m_diffuseColor);
   m_texture.Render();
 
   CGUIControl::Render();
