@@ -465,7 +465,7 @@
 				<width>255</width>
 				<posx>250</posx>
 				<posy>27</posy>
-				<info>Network.IPAddress</info>
+				<label>$LOCALIZE[150]: $INFO[Network.IPAddress]</label>
 				<align>right</align>
 				<font>special13</font>
 			</control>
@@ -474,7 +474,7 @@
 				<width>255</width>
 				<posx>250</posx>
 				<posy>57</posy>
-				<label>$INFO[System.CPUTemperature]</label>
+				<label>$LOCALIZE[22011] $INFO[System.CPUTemperature]</label>
 				<align>right</align>
 				<font>font10</font>
 			</control>
@@ -483,7 +483,7 @@
 				<width>255</width>
 				<posx>250</posx>
 				<posy>77</posy>
-				<label>$INFO[System.GPUTemperature]</label>
+				<label>$LOCALIZE[22010] $INFO[System.GPUTemperature]</label>
 				<align>right</align>
 				<font>font10</font>
 			</control>
