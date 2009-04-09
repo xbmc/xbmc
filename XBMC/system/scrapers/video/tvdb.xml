@@ -82,6 +82,9 @@
 			<RegExp input="$$5" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="4">
 				<expression noclean="1">&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
 			</RegExp>
+			<RegExp input="$$2" output="&lt;id&gt;\1&lt;/id&gt;" dest="4+">
+				<expression/>
+			</RegExp>
 			<RegExp input="$$5" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4+">
 				<expression>&lt;FirstAired&gt;([^&lt;]*)&lt;/FirstAired&gt;</expression>
 			</RegExp>
