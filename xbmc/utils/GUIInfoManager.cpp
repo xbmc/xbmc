@@ -3176,7 +3176,7 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
 #if defined(__APPLE__) || defined(_WIN32)
       text.Format("%d%%", g_cpuInfo.getUsedPercentage());
 #else
-      text.Format("%s", g_cpuinfo.GetCoresUsageString());
+      text.Format("%s", g_cpuInfo.GetCoresUsageString());
 #endif
       break;
   }
