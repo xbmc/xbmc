@@ -1626,14 +1626,11 @@ bool CUtil::IsDOSPath(const CStdString &path)
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  strResult = strFolder;
-  // remove the stack:// as it screws up the logic below
-  // FIXME: this appears to be plain wrong.
-  if (IsStack(strFolder))
-    strResult = strResult.Mid(8);
+  CURL url(strFolder);
+  strResult = url.GetFileName();
 
   // Add a slash to the end of the path if necessary
-  bool unixPath = !IsDOSPath(strResult);
+  bool unixPath = !IsDOSPath(strFolder);
   if (!CUtil::HasSlashAtEnd(strResult))
   {
     if (unixPath)
@@ -1653,9 +1650,8 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   else
     strResult.Replace('/', '\\');
 
-  // re-add the stack:// protocol
-  if (IsStack(strFolder))
-    strResult = "stack://" + strResult;
+  url.SetFileName(strResult);
+  url.GetURL(strResult);
 }
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
