@@ -1631,7 +1631,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
 
   // Add a slash to the end of the path if necessary
   bool unixPath = !IsDOSPath(strFolder);
-  if (!CUtil::HasSlashAtEnd(strResult))
+  if (!CUtil::HasSlashAtEnd(strResult) && !strResult.IsEmpty())
   {
     if (unixPath)
       strResult += '/';
