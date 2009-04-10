@@ -1,0 +1,116 @@
+<window id="50">
+  
+  <animation effect="fade" start="0" end="100" time="1200" reversible="true">WindowOpen</animation>
+  <animation effect="fade" start="100" end="0" time="1200" reversible="true">WindowClose</animation>
+
+  <controls>
+    <control type="image" id="0">
+      <posx>813</posx>
+      <posy>244</posy>
+      <width>264</width>
+      <height>264</height>
+      <info>MusicPlayer.Offset(1).Cover</info>
+      <aspectratio>stretch</aspectratio>
+      <texture diffuse="NowPlayingSmallCoverDiffuse.png"/>
+    </control>
+    <control type="image" id="0">
+      <posx>813</posx>
+      <posy>508</posy>
+      <width>264</width>
+      <height>264</height>
+      <info>MusicPlayer.Offset(1).Cover</info>
+      <aspectratio>stretch</aspectratio>
+      <texture flipy="true" diffuse="NowPlayingSmallReflectionDiffuse.png"/>
+    </control>
+
+    <control type="image" id="0">
+      <posx>587</posx>
+      <posy>204</posy>
+      <width>330</width>
+      <height>330</height>
+      <info>MusicPlayer.Cover</info>
+      <aspectratio>stretch</aspectratio>
+      <texture diffuse="NowPlayingCoverDiffuse.png"/>
+    </control>
+    <control type="image" id="0">
+      <posx>587</posx>
+      <posy>534</posy>
+      <width>330</width>
+      <height>330</height>
+      <info>MusicPlayer.Cover</info>
+      <aspectratio>stretch</aspectratio>
+      <texture flipy="true" diffuse="NowPlayingReflectionDiffuse.png"/>
+    </control>
+
+    <control type="label" id="0">
+      <posx>560</posx>
+      <posy>236</posy>
+      <width>500</width>
+      <height>50</height>
+      <font>XLargeDefaultFont</font>
+      <label>$INFO[MusicPlayer.Artist]</label>
+      <align>right</align>
+    </control>
+
+    <control type="label" id="0">
+      <posx>560</posx>
+      <posy>285</posy>
+      <width>500</width>
+      <height>50</height>
+      <font>LargeDefaultFont</font>
+      <label>$INFO[MusicPlayer.Title]</label>
+      <align>right</align>
+    </control>
+
+    <control type="label" id="0">
+      <posx>560</posx>
+      <posy>324</posy>
+      <width>500</width>
+      <height>50</height>
+      <font>MediumDefaultFont</font>
+      <label>$INFO[MusicPlayer.Album]</label>
+      <align>right</align>
+    </control>
+    
+    <control type="progress" id="20">
+      <description>progress control</description>
+      <posx>189</posx>
+      <posy>393</posy>
+      <aligny>center</aligny>
+      <width>372</width>
+      <info>Player.Progress</info>
+    </control>
+    
+    <control type="label" id="0">
+      <posx>560</posx>
+      <posy>448</posy>
+      <width>500</width>
+      <height>50</height>
+      <font>MediumDefaultFont</font>
+      <label>Next Track</label>
+      <align>right</align>
+    </control>
+    
+    <control type="label" id="0">
+      <posx>560</posx>
+      <posy>480</posy>
+      <width>500</width>
+      <height>50</height>
+      <font>MediumDefaultFont</font>
+      <label>$INFO[MusicPlayer.Offset(1).Artist]</label>
+      <align>right</align>
+    </control>
+    
+    <control type="label" id="0">
+      <posx>560</posx>
+      <posy>499</posy>
+      <width>500</width>
+      <height>50</height>
+      <font>MediumDefaultFont</font>
+      <label>$INFO[MusicPlayer.Offset(1).Title]</label>
+      <align>right</align>
+    </control>
+
+  </controls>
+
+</window>
