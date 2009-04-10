@@ -89,19 +89,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     size_t m_BytesPerFrame;
     UInt64 m_TotalBytesIn;
     UInt64 m_TotalBytesOut;
-    
-    int m_Magic;
-        
-    // Helper Methods
-    UInt32 GetAUPropUInt32(AudioUnit au, AudioUnitPropertyID propId, AudioUnitScope scope)
-    {
-      UInt32 val = 0, propSize = sizeof(val);
-      OSStatus ret = AudioUnitGetProperty(au, propId, scope, 0, &val, &propSize);
-      if (ret == noErr)
-        return val;
-      else
-        return 0;
-    }
+    UInt32 m_OutputBufferIndex;
     
     const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str)
     {
