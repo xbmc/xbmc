@@ -83,7 +83,8 @@ enum RecSearchType
   kManualSearch
 };
 
-enum RecStatus {
+enum RecStatus
+{
   rsDeleted = -5,
   rsStopped = -4,
   rsRecorded = -3,
@@ -103,20 +104,23 @@ enum RecStatus {
   rsTunerBusy = 12
 };
 
-enum CommFlagStatus {
+enum CommFlagStatus
+{
   COMM_FLAG_NOT_FLAGGED = 0,
   COMM_FLAG_DONE        = 1,
   COMM_FLAG_PROCESSING  = 2,
   COMM_FLAG_COMMFREE    = 3
 };
 
-enum TranscodingStatus {
+enum TranscodingStatus
+{
   TRANSCODING_NOT_TRANSCODED = 0,
   TRANSCODING_COMPLETE       = 1,
   TRANSCODING_RUNNING        = 2
 };
 
-enum AvailableStatus {
+enum AvailableStatus
+{
   asAvailable = 0,
   asNotYetAvailable,
   asPendingDelete,
@@ -125,7 +129,8 @@ enum AvailableStatus {
   asDeleted
 };
 
-enum AudioProps_t {
+enum AudioProps_t
+{
   AUD_UNKNOWN       = 0x00,
   AUD_STEREO        = 0x01,
   AUD_MONO          = 0x02,
@@ -135,14 +140,16 @@ enum AudioProps_t {
   AUD_VISUALIMPAIR  = 0x20
 }; typedef std::vector< AudioProps_t > AudioProps;
 
-enum VideoProps_t {
+enum VideoProps_t
+{
   VID_UNKNOWN       = 0x00,
   VID_HDTV          = 0x01,
   VID_WIDESCREEN    = 0x02,
   VID_AVC           = 0x04
 }; typedef std::vector< VideoProps_t > VideoProps;
 
-enum SubtitleTypes_t {
+enum SubtitleTypes_t
+{
   SUB_UNKNOWN       = 0x00,
   SUB_HARDHEAR      = 0x01,
   SUB_NORMAL        = 0x02,
@@ -155,6 +162,7 @@ class CTVEPGInfoTag : public CVideoInfoTag
 public:
   CTVEPGInfoTag(long uniqueBroadcastID);
   CTVEPGInfoTag() { Reset(); };
+
   void Reset();
   const long GetDbID() const { return m_uniqueBroadcastID; };
 
