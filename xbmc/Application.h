@@ -182,7 +182,6 @@ public:
   DWORD m_dwSkinTime;
   bool m_bIsPaused;
   bool m_bPlaybackStarting;
-  std::queue<CGUIMessage> m_vPlaybackStarting;
 
   CCdgParser* m_pCdgParser;
 
@@ -207,7 +206,7 @@ protected:
   CStopWatch m_slowTimer;
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
-  
+
   DWORD      m_lastActionCode;
   CStopWatch m_lastActionTimer;
   

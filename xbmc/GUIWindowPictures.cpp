@@ -390,8 +390,8 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
 
   pSlideShow->Select(strPicture); 
 
-  if (startSlideShow) 
-    pSlideShow->StartSlideShow(); 
+  if (startSlideShow)
+    pSlideShow->StartSlideShow(false);
 
   m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 

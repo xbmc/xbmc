@@ -306,7 +306,6 @@ void CFileCurl::SetBufferSize(unsigned int size)
 void CFileCurl::Close()
 {
   CLog::Log(LOGDEBUG, "FileCurl::Close(%p) %s", (void*)this, m_url.c_str());
-  m_opened = false;
   m_state->Disconnect();
 
   m_url.Empty();
@@ -320,6 +319,7 @@ void CFileCurl::Close()
   
   m_curlAliasList = NULL;
   m_curlHeaderList = NULL;
+  m_opened = false;
 }
 
 void CFileCurl::SetCommonOptions(CReadState* state)
@@ -640,6 +640,8 @@ bool CFileCurl::ReadData(CStdString& strHTML)
     strHTML.append(buffer, size_read);
     data_size += size_read;
   }
+  if (m_state->m_cancelled)
+    return false;
   return true;
 }
 
@@ -691,12 +693,13 @@ bool CFileCurl::IsInternet(bool checkDNS /* = true */)
 void CFileCurl::Cancel()
 {
   m_state->m_cancelled = true;
+  while (m_opened)
+    Sleep(1);
 }
 
 void CFileCurl::Reset()
 {
   m_state->m_cancelled = false;
-  Close();
 }
     
 
@@ -705,6 +708,8 @@ bool CFileCurl::Open(const CURL& url)
   if (!g_network.IsAvailable())
     return false;
 
+  m_opened = true;
+  
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
@@ -720,10 +725,8 @@ bool CFileCurl::Open(const CURL& url)
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
 
-  m_opened = true;
-
   long response = m_state->Connect(m_bufferSize);
-  if( response < 0 )
+  if( response < 0 || response >= 400)
     return false;
   
   SetCorrectHeaders(m_state);
@@ -902,6 +905,12 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
+
+  if(url2.GetProtocol() == "ftp")
+  {
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
+  }
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 

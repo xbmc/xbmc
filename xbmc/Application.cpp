@@ -3949,7 +3949,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
 
   // tell system we are starting a file
-  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = true;
 
   // We should restart the player, unless the previous and next tracks are using
@@ -4000,25 +3999,31 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
       g_audioManager.Enable(false);
   }
-
-  if(!bResult || !IsPlaying())
-  {
-    // since we didn't manage to get playback started, send any queued up messages
-    while(m_vPlaybackStarting.size())
-    {
-      m_gWindowManager.SendMessage(m_vPlaybackStarting.front());
-      m_vPlaybackStarting.pop();
-    }
-  }
-
-  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = false;
+  if(bResult)
+  {
+    // we must have started, otherwise player might send this later
+    if(IsPlaying())
+      OnPlayBackStarted();
+  }
+  else
+  {
+    // we send this if it isn't playlistplayer that is doing this
+    int next = g_playlistPlayer.GetNextSong();
+    int size = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size();
+    if(next < 0 
+    || next >= size)
+      OnPlayBackStopped();
+  }
 
   return bResult;
 }
 
 void CApplication::OnPlayBackEnded()
 {
+  if(m_bPlaybackStarting)
+    return;
+
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackEnded();
@@ -4029,15 +4034,14 @@ void CApplication::OnPlayBackEnded()
   CLog::Log(LOGDEBUG, "Playback has finished");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
-
-  if(m_bPlaybackStarting)
-    m_vPlaybackStarting.push(msg);
-  else
-    m_gWindowManager.SendThreadMessage(msg);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnPlayBackStarted()
 {
+  if(m_bPlaybackStarting)
+    return;
+
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted();
@@ -4070,6 +4074,9 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
+  if(m_bPlaybackStarting)
+    return;
+
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStopped();
@@ -4081,10 +4088,7 @@ void CApplication::OnPlayBackStopped()
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
-  if(m_bPlaybackStarting)
-    m_vPlaybackStarting.push(msg);
-  else
-    m_gWindowManager.SendThreadMessage(msg);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 bool CApplication::IsPlaying() const
