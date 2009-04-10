@@ -3480,6 +3480,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   // and ends with a trailing slash so as not to match a substring
   CURL urlDest(strPath);
   CStdString strDest;
+  urlDest.SetOptions("");
   urlDest.GetURLWithoutUserDetails(strDest);
   ForceForwardSlashes(strDest);
   if (!HasSlashAtEnd(strDest))
@@ -3517,6 +3518,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       // and ends with a trailing slash so as not to match a substring
       CURL urlShare(vecPaths[j]);
       CStdString strShare;
+      urlShare.SetOptions("");
       urlShare.GetURLWithoutUserDetails(strShare);
       ForceForwardSlashes(strShare);
       if (!HasSlashAtEnd(strShare))
