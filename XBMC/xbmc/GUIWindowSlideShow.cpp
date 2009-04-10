@@ -150,6 +150,7 @@ void CGUIWindowSlideShow::Reset()
   m_bPause = false;
   m_bErrorMessage = false;
   m_bReloadImage = false;
+  m_bScreensaver = false;
   m_Image[0].UnLoad();
 
   m_iRotate = 0;

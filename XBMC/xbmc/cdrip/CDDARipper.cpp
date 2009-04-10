@@ -28,7 +28,7 @@
 #include "EncoderVorbis.h"
 #include "FileSystem/CDDADirectory.h"
 #include "DetectDVDType.h"
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "utils/LabelFormatter.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
@@ -86,9 +86,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   }
 
   // init encoder
-  CStdString strFile2=strFile;
-  if (CUtil::IsHD(strFile))
-    CUtil::GetFatXQualifiedPath(strFile2);
+  CStdString strFile2=CUtil::MakeLegalPath(strFile, CUtil::IsHD(strFile) ? LEGAL_FATX : LEGAL_WIN32_COMPAT);
   if (!m_pEncoder->Init(strFile2.c_str(), 2, 44100, 16))
   {
     m_cdReader.DeInit();
@@ -182,7 +180,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   {
     pDlgProgress->ProgressKeys();
     bCancelled = pDlgProgress->IsCanceled();
-    if (!bCancelled && iPercent > (iOldPercent + 2)) // update each 2%, it's a bit faster then every 1%
+    if (!bCancelled && iPercent > iOldPercent) // update each 2%, it's a bit faster then every 1%
     {
       // update dialog
       iOldPercent = iPercent;
@@ -231,8 +229,15 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   CStdString strDirectory = g_guiSettings.GetString("cddaripper.path");
   if (!CUtil::HasSlashAtEnd(strDirectory)) CUtil::AddDirectorySeperator(strDirectory);
   CFileItem ripPath(strDirectory, true);
-  bool bIsFATX = !ripPath.IsSmb();
 
+  int LegalType = LEGAL_NONE;
+  if (ripPath.IsSmb())
+    LegalType=LEGAL_WIN32_COMPAT;
+#ifdef _XBOX
+  if (ripPath.IsHD())
+    LegalType=LEGAL_FATX;
+#endif
+  
   if (pItem->m_strPath.Find(".cdda") < 0) return false;
   if (strDirectory.size() < 3)
   {
@@ -247,7 +252,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   // if album name is set, then we use this as the directory to place the new file in.
   if (pItem->GetMusicInfoTag()->GetAlbum().size() > 0)
   {
-    strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str(), bIsFATX);
+    strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str(), LegalType);
     CUtil::AddDirectorySeperator(strDirectory);
   }
 
@@ -255,7 +260,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   CUtil::CreateDirectoryEx(strDirectory);
 
   CStdString strFile;
-  CUtil::AddFileToFolder(strDirectory, GetTrackName(pItem, bIsFATX), strFile);
+  CUtil::AddFileToFolder(strDirectory, GetTrackName(pItem, LegalType), strFile);
 
   return Rip(pItem->m_strPath, strFile.c_str(), *pItem->GetMusicInfoTag());
 }
@@ -312,7 +317,14 @@ bool CCDDARipper::RipCD()
   CStdString strAlbumDir;
   if (vecItems[0]->GetMusicInfoTag()->GetAlbum().size() > 0)
   {
-    strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->GetMusicInfoTag()->GetAlbum().c_str(), bIsFATX);
+    int LegalType=LEGAL_NONE;
+    if (ripPath.IsSmb())
+      LegalType=LEGAL_WIN32_COMPAT;
+#ifdef _XBOX
+    if (ripPath.IsHD())
+      LegalType=LEGAL_FATX;
+#endif
+    strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->GetMusicInfoTag()->GetAlbum().c_str(), LegalType);
   }
 
     // No legal fatx directory name or no album in tag
@@ -382,7 +394,7 @@ const char* CCDDARipper::GetExtension(int iEncoder)
   return ".mp3";
 }
 
-CStdString CCDDARipper::GetTrackName(CFileItem *item, bool isFatX)
+CStdString CCDDARipper::GetTrackName(CFileItem *item, int LegalType)
 {
   // get track number from "cdda://local/01.cdda"
   int trackNumber = atoi(item->m_strPath.substr(13, item->m_strPath.size() - 13 - 5).c_str());
@@ -400,6 +412,6 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item, bool isFatX)
   track += GetExtension(g_guiSettings.GetInt("cddaripper.encoder"));
 
   // make sure the filename is legal
-  track = CUtil::MakeLegalFileName(track, isFatX);
+  track = CUtil::MakeLegalFileName(track, LegalType);
   return track;
 }

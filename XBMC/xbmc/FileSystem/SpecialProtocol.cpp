@@ -126,8 +126,6 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
     CUtil::AddFileToFolder(GetPath("profile"), FileName, translatedPath);
   else if (RootDir.Equals("masterprofile"))
     CUtil::AddFileToFolder(GetPath("masterprofile"), FileName, translatedPath);
-  else 
-    translatedPath = ""; // invalid path to translate
 
   // check if we need to recurse in
   if (CUtil::IsSpecial(translatedPath))
