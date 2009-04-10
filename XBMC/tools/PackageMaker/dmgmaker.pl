@@ -24,8 +24,8 @@ sub make_dmg {
 	if (!$size || $size!~/\d+/);
     print "Calculated size \"$size\" MB\n";
 
-    # add 2 megs just in case
-    $size = $size + 6;
+    # add 20 megs just in case, empty space gets compressed away
+    $size = $size + 20;
 
     # thanks to http://dev.simon-cozens.org/songbee/browser/release-manager-tools/build-dmg.sh
     `rm -fr dist`;

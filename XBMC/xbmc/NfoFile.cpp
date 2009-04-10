@@ -220,6 +220,8 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
     return E_FAIL;
   }
 
+  m_strScraper = CUtil::GetFileName(strScraperPath);
+
   if (strURL.IsEmpty())
   {
     m_parser.m_param[0] = m_doc;
@@ -243,10 +245,7 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
     DoScrape(m_parser);
 
     if (m_strImDbUrl.size() > 0)
-    {
-      m_strScraper = CUtil::GetFileName(strScraperPath);
       return S_OK;
-    }
     else
       return E_FAIL;
   }
@@ -256,8 +255,6 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
     CStdString strEpGuide = m_parser.Parse("EpisodeGuideUrl"); // allow corrections?
     if (strEpGuide.IsEmpty())
       return E_FAIL;
-
-    m_strScraper = CUtil::GetFileName(strScraperPath);
     return S_OK;
   }
 }

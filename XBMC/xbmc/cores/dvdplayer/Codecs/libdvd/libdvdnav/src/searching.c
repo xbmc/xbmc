@@ -100,7 +100,7 @@ static dvdnav_status_t dvdnav_scan_admap(dvdnav_t *this, int32_t domain, uint32_
   return DVDNAV_STATUS_ERR;
 }
 
-/* ssd/xbmc very different source code here.
+/* ssd/xbmc very different source code here.*/
 /* FIXME: right now, this function does not use the time tables but interpolates
    only the cell times */
 dvdnav_status_t dvdnav_time_search(dvdnav_t *this,

@@ -54,14 +54,14 @@ void CHalManager::DeviceNewCapability(LibHalContext *ctx, const char *udi, const
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) gained capability %s", udi, capability);
-  g_HalManager.ParseDevice(udi);
+  g_HalManager.UpdateDevice(udi);
 }
 
 void CHalManager::DeviceLostCapability(LibHalContext *ctx, const char *udi, const char *capability)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) lost capability %s", udi, capability);
-  g_HalManager.ParseDevice(udi);
+  g_HalManager.UpdateDevice(udi);
 }
 
 /* HAL Property modified callback. If a device is mounted. This is called. */
@@ -69,7 +69,7 @@ void CHalManager::DevicePropertyModified(LibHalContext *ctx, const char *udi, co
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Property %s modified", udi, key);
-  g_HalManager.ParseDevice(udi);
+  g_HalManager.UpdateDevice(udi);
 }
 
 void CHalManager::DeviceCondition(LibHalContext *ctx, const char *udi, const char *condition_name, const char *condition_details)
@@ -81,7 +81,7 @@ void CHalManager::DeviceCondition(LibHalContext *ctx, const char *udi, const cha
     return;
   }
   NewMessage = true;
-  g_HalManager.ParseDevice(udi);
+  g_HalManager.UpdateDevice(udi);
 }
 
 /* HAL Device added. This is before mount. And here is the place to mount the volume in the future */
@@ -89,7 +89,7 @@ void CHalManager::DeviceAdded(LibHalContext *ctx, const char *udi)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Added", udi);
-  g_HalManager.ParseDevice(udi);
+  g_HalManager.AddDevice(udi);
 }
 
 CHalManager g_HalManager;
@@ -110,7 +110,7 @@ void CHalManager::GenerateGDL()
 
   for (i = 0; GDL[i]; i++)
   {
-    ParseDevice(GDL[i]);
+    AddDevice(GDL[i]);
   }
   CLog::Log(LOGINFO, "HAL: Generated global device list, found %i", i);
 
@@ -133,12 +133,10 @@ CHalManager::CHalManager()
   m_bMultipleJoysticksSupport = (sdl_version->major >= 1 && sdl_version->minor >= 3)?true:false;
 }
 
-// Shutdown the connection and free the context
-CHalManager::~CHalManager()
+void CHalManager::Stop()
 {
   if (g_advancedSettings.m_useHalMount)
-  {
-// Unmount all media XBMC have mounted
+  { // Unmount all media XBMC have mounted
     for (unsigned int i = 0; i < m_Volumes.size(); i++)
     {
       if (m_Volumes[i].MountedByXBMC && m_Volumes[i].Mounted)
@@ -148,6 +146,8 @@ CHalManager::~CHalManager()
       }
     }
   }
+
+  m_Volumes.clear();
 
   if (m_Context != NULL)
     libhal_ctx_shutdown(m_Context, NULL);
@@ -439,8 +439,7 @@ int CHalManager::StorageTypeFromString(const char *DeviceString)
   return -1;
 }
 
-/* Parse newly found device and add it to our remembered devices */
-void CHalManager::ParseDevice(const char *udi)
+void CHalManager::UpdateDevice(const char *udi)
 {
   CSingleLock lock(m_lock);
   char *category;
@@ -453,100 +452,107 @@ void CHalManager::ParseDevice(const char *udi)
     CStorageDevice dev(udi);
     if (!DeviceFromVolumeUdi(udi, &dev))
       return;
-    if (g_advancedSettings.m_useHalMount)
-    {
-/* Here it can be checked if the device isn't mounted and then mount */
-//TODO Have mountpoints be other than in /media/*
-      if (!dev.Mounted && (dev.HotPlugged || dev.Type == 2) && dev.Approved)
-      {
-        char **capability;
-        capability =libhal_device_get_property_strlist (m_Context, udi, "info.capabilities", NULL);
-
-        bool Mountable = false;
-        if (dev.Type == 2 && (strcmp(capability[0], "volume.disc") == 0 && strcmp(capability[1], "volume") == 0)) // CD/DVD
-          Mountable = true;
-        else if ((strcmp(capability[0], "volume") == 0 && strcmp(capability[1], "block") == 0)) // HDD
-          Mountable = true;
-
-        if (Mountable)
-        {
-          CLog::Log(LOGNOTICE, "HAL: Trying to mount %s", dev.FriendlyName.c_str());
-          CStdString MountPoint;
-          CStdString TestPath;
-          if (dev.Label.size() > 0)
-          {
-            MountPoint = dev.Label.c_str();
-            TestPath.Format("/media/%s", MountPoint.c_str());
-            struct stat St;
-            if (stat("/media", &St) != 0)
-              return; //If /media doesn't exist something is wrong.
-            while(stat (TestPath.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
-            {
-              CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
-              MountPoint.append("_");
-              TestPath.Format("/media/%s", MountPoint.c_str());
-            }
-          }
-          else
-          {
-            MountPoint = StorageTypeToString(dev.Type);
-            TestPath.Format("/media/%s", MountPoint.c_str());
-            int Nbr = 0;
-            struct stat St;
-            if (stat("/media", &St) != 0)
-              return; //If /media doesn't exist something is wrong.
-            while(stat (TestPath.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
-            {
-              CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
-              Nbr++;
-              MountPoint.Format("%s%i", StorageTypeToString(dev.Type), Nbr);
-              TestPath.Format("/media/%s", MountPoint.c_str());
-            }
-          }
-          Mount(dev, MountPoint);
-          // Reload some needed things.
-          if (!DeviceFromVolumeUdi(udi, &dev))
-            return;
-
-          if (dev.Mounted)
-          {
-            dev.MountedByXBMC = true;
-            CLog::Log(LOGINFO, "HAL: mounted %s on %s", dev.FriendlyName.c_str(), dev.MountPoint.c_str());
-            if (m_Notifications)
-              g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), dev.FriendlyName.c_str());
-          }
-        }
-        libhal_free_string_array(capability);
-      }
-    }
-    int update = -1;
     for (unsigned int i = 0; i < m_Volumes.size(); i++)
     {
       if (strcmp(m_Volumes[i].UDI.c_str(), udi) == 0)
       {
-        update = i;
+        CLog::Log(LOGDEBUG, "HAL: Update - %s | %s", CHalManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
+        if (g_advancedSettings.m_useHalMount)  // If the device was mounted by XBMC before it's still mounted by XBMC.
+            dev.MountedByXBMC = m_Volumes[i].MountedByXBMC;
+        if (!dev.Mounted && m_Volumes[i].Mounted)
+          g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), dev.FriendlyName.c_str());
+        m_Volumes[i] = dev;
+        CLinuxFileSystem::AddDevice(dev);
         break;
       }
     }
-    if (update == -1)
+  }
+
+  libhal_free_string(category);
+}
+void CHalManager::HandleNewVolume(CStorageDevice *dev)
+{
+  if (g_advancedSettings.m_useHalMount)
+  {
+/* Here it can be checked if the device isn't mounted and then mount */
+//TODO Have mountpoints be other than in /media/*
+    if (!dev->Mounted && (dev->HotPlugged || dev->Type == 2) && dev->Approved)
+    {
+      char **capability;
+      capability =libhal_device_get_property_strlist (m_Context, dev->UDI.c_str(), "info.capabilities", NULL);
+
+      bool Mountable = false;
+      if (dev->Type == 2 && (strcmp(capability[0], "volume.disc") == 0 && strcmp(capability[1], "volume") == 0)) // CD/DVD
+        Mountable = true;
+      else if ((strcmp(capability[0], "volume") == 0 && strcmp(capability[1], "block") == 0)) // HDD
+        Mountable = true;
+
+      if (Mountable)
+      {
+        CLog::Log(LOGNOTICE, "HAL: Trying to mount %s", dev->FriendlyName.c_str());
+        CStdString MountPoint;
+        CStdString TestPath;
+        if (dev->Label.size() > 0)
+        {
+          MountPoint = dev->Label.c_str();
+          TestPath.Format("/media/%s", MountPoint.c_str());
+          struct stat St;
+          if (stat("/media", &St) != 0)
+            return; //If /media doesn't exist something is wrong.
+          while(stat (TestPath.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
+          {
+            CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
+            MountPoint.append("_");
+            TestPath.Format("/media/%s", MountPoint.c_str());
+          }
+        }
+        else
+        {
+          MountPoint = StorageTypeToString(dev->Type);
+          TestPath.Format("/media/%s", MountPoint.c_str());
+          int Nbr = 0;
+          struct stat St;
+          if (stat("/media", &St) != 0)
+            return; //If /media doesn't exist something is wrong.
+          while(stat (TestPath.c_str(), &St) == 0 && S_ISDIR (St.st_mode))
+          {
+            CLog::Log(LOGDEBUG, "HAL: Proposed Mountpoint already existed");
+            Nbr++;
+            MountPoint.Format("%s%i", StorageTypeToString(dev->Type), Nbr);
+            TestPath.Format("/media/%s", MountPoint.c_str());
+          }
+        }
+        if (Mount(dev, MountPoint))
+        {
+          CLog::Log(LOGINFO, "HAL: mounted %s on %s", dev->FriendlyName.c_str(), dev->MountPoint.c_str());
+          if (m_Notifications)
+            g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), dev->FriendlyName.c_str());
+        }
+      }
+      libhal_free_string_array(capability);
+    }
+  }
+}
+
+/* Parse newly found device and add it to our remembered devices */
+void CHalManager::AddDevice(const char *udi)
+{
+  CSingleLock lock(m_lock);
+  char *category;
+  category = libhal_device_get_property_string(m_Context, udi, "info.category", NULL);
+  if (category == NULL)
+    return;
+
+  if (strcmp(category, "volume") == 0)
+  {
+    CStorageDevice dev(udi);
+    if (DeviceFromVolumeUdi(udi, &dev))
     {
       CLog::Log(LOGDEBUG, "HAL: Added - %s | %s", CHalManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
+      HandleNewVolume(&dev);
       m_Volumes.push_back(dev);
+      CLinuxFileSystem::AddDevice(dev);
     }
-    else
-    {
-      CLog::Log(LOGDEBUG, "HAL: Update - %s | %s", CHalManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
-      if (g_advancedSettings.m_useHalMount)
-      {
-// If the device was mounted by XBMC before and it is still mounted then it mounted by XBMC still.
-        if (dev.Mounted == m_Volumes[update].Mounted)
-          dev.MountedByXBMC = m_Volumes[update].MountedByXBMC;
-      }
-      if (!dev.Mounted && m_Volumes[update].Mounted)
-        g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), dev.FriendlyName.c_str());
-      m_Volumes[update] = dev;
-    }
-    CLinuxFileSystem::AddDevice(dev);
   }
 #if defined(HAS_SDL_JOYSTICK)
   // Scan input devices
@@ -602,6 +608,7 @@ void CHalManager::ParseDevice(const char *udi)
 
   libhal_free_string(category);
 }
+
 /* Here we should iterate through our remembered devices if any of them are removed */
 bool CHalManager::RemoveDevice(const char *udi)
 {
@@ -702,6 +709,9 @@ bool CHalManager::UnMount(CStorageDevice volume)
       msg = NULL;
     }
 
+    volume.MountPoint = "";
+    volume.Mounted    = false;
+    CLinuxFileSystem::RemoveDevice(volume.UUID.c_str());
     dbus_connection_unref(connection);
     connection = NULL;
     return true;
@@ -713,9 +723,9 @@ bool CHalManager::UnMount(CStorageDevice volume)
   }
 }
 
-bool CHalManager::Mount(CStorageDevice volume, CStdString mountpath)
+bool CHalManager::Mount(CStorageDevice *volume, CStdString mountpath)
 {
-  CLog::Log(LOGNOTICE, "HAL: Mounting %s (%s) at %s", volume.UDI.c_str(), volume.toString().c_str(), mountpath.c_str());
+  CLog::Log(LOGNOTICE, "HAL: Mounting %s (%s) at %s", volume->UDI.c_str(), volume->toString().c_str(), mountpath.c_str());
   DBusMessage* msg;
   DBusMessageIter args;
   DBusError error;
@@ -724,7 +734,7 @@ bool CHalManager::Mount(CStorageDevice volume, CStdString mountpath)
   const char *s;
   if (connection)
   {
-    msg = dbus_message_new_method_call("org.freedesktop.Hal", volume.UDI.c_str(), "org.freedesktop.Hal.Device.Volume", "Mount");
+    msg = dbus_message_new_method_call("org.freedesktop.Hal", volume->UDI.c_str(), "org.freedesktop.Hal.Device.Volume", "Mount");
     dbus_message_iter_init_append(msg, &args);
     s = mountpath.c_str();
     if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &s))
@@ -757,6 +767,9 @@ bool CHalManager::Mount(CStorageDevice volume, CStdString mountpath)
       msg = NULL;
     }
 
+    volume->Mounted = true;
+    volume->MountedByXBMC = true;
+    volume->MountPoint = mountpath;
     dbus_connection_unref(connection);
     connection = NULL;
     return true;

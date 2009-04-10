@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT("xbmc", 8.10, bugs@xbmc.org)
+AC_INIT("xbmc", 9.04, bugs@xbmc.org)
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([#pragma once])
 
@@ -126,7 +126,7 @@ AC_ARG_ENABLE([gl],
 
 AC_ARG_ENABLE([vdpau],
             [AS_HELP_STRING([--enable-vdpau],
-               [enable VDPAU decoding (default is no)])],
+               [enable VDPAU decoding (default is yes)])],
             [use_vdpau=$enableval],
             [use_vdpau=yes])
 
@@ -182,7 +182,7 @@ AC_ARG_ENABLE([avahi],
              [AS_HELP_STRING([--enable-avahi],
                 [enable Avahi support (default is no)])],
              [use_avahi=$enableval],
-             [use_avahi=no])
+             [use_avahi=yes])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -469,7 +469,7 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($vdpau_disabled)
 else
   if test "$use_vdpau" = "yes"; then
-    AC_CHECK_LIB([vdpau], [main],,
+    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the `vdpau' library (-lvdpau).]),
       use_vdpau=no;AC_MSG_RESULT($vdpau_not_found))
   else
     AC_MSG_NOTICE($vdpau_disabled)
@@ -1283,16 +1283,16 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
-    cd `pwd`/../includes/dvdread/ &&
-    ln -sf ../../libdvdread/src/*.h ./
+    mkdir -p `pwd`/../includes/dvdread
+    cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   else
     ./configure2 \
       --extra-cflags="$DVDREAD_EXTRA_CFLAGS" \
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
-    cd `pwd`/../includes/dvdread/ &&
-    ln -sf ../../libdvdread/src/*.h ./
+    mkdir -p `pwd`/../includes/dvdread
+    cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   fi
 
 ], [0])

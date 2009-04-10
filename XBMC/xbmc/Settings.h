@@ -139,6 +139,7 @@ public:
     bool m_DisableModChipDetection;
 
     int m_audioHeadRoom;
+    float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
 
     float m_videoSubsDelayRange;

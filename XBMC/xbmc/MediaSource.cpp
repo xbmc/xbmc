@@ -31,7 +31,11 @@ using namespace DIRECTORY;
 
 bool CMediaSource::isWritable() const
 {
+#ifdef _WIN32PC
+  if(CUtil::IsDOSPath(strPath) && !CUtil::IsDVD(strPath))
+#else
   if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))
+#endif
     return true; // local disk
   if (strPath.size() > 4)
   {

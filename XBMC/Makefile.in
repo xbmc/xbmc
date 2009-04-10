@@ -54,7 +54,8 @@ XBMCTEX_DIRS= \
 	tools/XBMCTex
 
 DVDPCODECS_DIRS= \
-	xbmc/cores/dvdplayer/Codecs
+	xbmc/cores/dvdplayer/Codecs \
+        xbmc/cores/dvdplayer/Codecs/libdvd
 ifneq (@USE_EXTERNAL_LIBASS@,1)
   DVDPCODECS_DIRS+=xbmc/lib/libass/xbmc
 endif
@@ -198,6 +199,7 @@ dvdplayer:
 	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders 
 dvdpcodecs: dllloader
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
+	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libdvd
 ifneq (@USE_EXTERNAL_LIBASS@,1)
 	$(MAKE) -C xbmc/lib/libass/xbmc
 endif

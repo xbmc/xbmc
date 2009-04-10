@@ -19,28 +19,17 @@
  *
  */
 
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#include <assert.h>
-#include <errno.h>
-#include <signal.h>
-#include <iostream>
 #include <fstream>
-#include <string>
 #include <Carbon/Carbon.h>
-
-
-using namespace std;
+#include <mach-o/dyld.h>
 
 #include "XBMCHelper.h"
-
 #include "PlatformDefs.h"
+#include "Util.h"
+
 #include "log.h"
 #include "system.h"
 #include "Settings.h"
-#include "Util.h"
-#include "XFileUtils.h"
-#include "utils/SystemInfo.h"
 
 XBMCHelper g_xbmcHelper;
 
@@ -57,18 +46,24 @@ XBMCHelper::XBMCHelper()
   , m_sequenceDelay(0)
   , m_errorStarting(false)
 {
+  // Compute the XBMC_HOME path.
   CStdString homePath;
   CUtil::GetHomePath(homePath);
+  m_homepath = homePath;
 
   // Compute the helper filename.
-  m_helperFile = homePath + "/XBMCHelper";
-
+  m_helperFile = m_homepath + "/tools/osx/";
+  m_helperFile += XBMC_HELPER_PROGRAM;
+  
   // Compute the local (pristine) launch agent filename.
-  m_launchAgentLocalFile = homePath + "/" XBMC_LAUNCH_PLIST;
+  m_launchAgentLocalFile = m_homepath + "/tools/osx/";
+  m_launchAgentLocalFile += XBMC_LAUNCH_PLIST;
 
   // Compute the install path for the launch agent.
+  // not to be confused with app home, this is user home
   m_launchAgentInstallFile = getenv("HOME");
-  m_launchAgentInstallFile += "/Library/LaunchAgents/" XBMC_LAUNCH_PLIST;
+  m_launchAgentInstallFile += "/Library/LaunchAgents/";
+  m_launchAgentInstallFile += XBMC_LAUNCH_PLIST;
 
   // Compute the configuration file name.
   m_configFile = getenv("HOME");
@@ -82,7 +77,8 @@ void XBMCHelper::Start()
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   if (pid == -1)
   {
-    string cmd = "\"" + m_helperFile + "\" &";
+    // use -x to have XBMCHelper read its configure file
+    std::string cmd = "\"" + m_helperFile + "\" -xm &";
     system(cmd.c_str());
   }
 }
@@ -131,10 +127,30 @@ void XBMCHelper::Configure()
       strConfig = "--universal ";
 
     char strDelay[64];
-    sprintf(strDelay, "--timeout %d", m_sequenceDelay);
+    sprintf(strDelay, "--timeout %d ", m_sequenceDelay);
     strConfig += strDelay;
 
+    // Find out where we're running from.
+    char real_path[2*MAXPATHLEN];
+    char given_path[2*MAXPATHLEN];
+    uint32_t path_size = 2*MAXPATHLEN;
+
+    if (_NSGetExecutablePath(given_path, &path_size) == 0)
+    {
+      if (realpath(given_path, real_path) != NULL)
+      {
+        strConfig += "--appPath \"";
+        strConfig += real_path;
+        strConfig += "\" ";
+
+        strConfig += "--appHome \"";
+        strConfig += m_homepath;
+        strConfig += "\" ";
+      }
+    }
+
     // Write the new configuration.
+    strConfig + "\n";
     WriteFile(m_configFile.c_str(), strConfig);
 
     // If process is running, kill -HUP to have it reload settings.
@@ -165,27 +181,35 @@ void XBMCHelper::Configure()
 void XBMCHelper::Install()
 {
   // Make sure directory exists.
-  string strDir = getenv("HOME");
+  std::string strDir = getenv("HOME");
   strDir += "/Library/LaunchAgents";
   CreateDirectory(strDir.c_str(), NULL);
 
   // Load template.
-  string plistData = ReadFile(m_launchAgentLocalFile.c_str());
+  std::string plistData = ReadFile(m_launchAgentLocalFile.c_str());
 
   if (plistData != "") 
   {
-      // Replace it in the file.
+      std::string launchd_args;
+
+      // Replace PATH with path to app.
       int start = plistData.find("${PATH}");
       plistData.replace(start, 7, m_helperFile.c_str(), m_helperFile.length());
+
+      // Replace ARG1 with a single argument, additional args 
+      // will need ARG2, ARG3 added to plist.
+      launchd_args = " -xm";
+      start = plistData.find("${ARG1}");
+      plistData.replace(start, 7, launchd_args.c_str(), launchd_args.length());
 
       // Install it.
       WriteFile(m_launchAgentInstallFile.c_str(), plistData);
 
-      // Load it.
+      // Load it if not running already.
       int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
       if (pid == -1)
       {
-          string cmd = "/bin/launchctl load ";
+          std::string cmd = "/bin/launchctl load ";
           cmd += m_launchAgentInstallFile;
           system(cmd.c_str());
       }
@@ -196,7 +220,7 @@ void XBMCHelper::Install()
 void XBMCHelper::Uninstall()
 {
   // Call the unloader.
-  string cmd = "/bin/launchctl unload ";
+  std::string cmd = "/bin/launchctl unload ";
   cmd += m_launchAgentInstallFile;
   system(cmd.c_str());
 
@@ -273,15 +297,15 @@ bool XBMCHelper::IsSofaControlRunning()
 std::string XBMCHelper::ReadFile(const char* fileName)
 {
   std::string ret = "";
-  ifstream is;
+  std::ifstream is;
   
   is.open(fileName);
   if( is.good() )
   {
     // Get length of file:
-    is.seekg (0, ios::end);
+    is.seekg(0, std::ios::end);
     int length = is.tellg();
-    is.seekg (0, ios::beg);
+    is.seekg(0, std::ios::beg);
 
     // Allocate memory:
     char* buffer = new char [length+1];
@@ -300,7 +324,7 @@ std::string XBMCHelper::ReadFile(const char* fileName)
 /////////////////////////////////////////////////////////////////////////////
 void XBMCHelper::WriteFile(const char* fileName, const std::string& data)
 {
-  ofstream out(fileName);
+  std::ofstream out(fileName);
   if (!out)
   {
     CLog::Log(LOGERROR, "XBMCHelper: Unable to open file '%s'", fileName);
@@ -308,7 +332,7 @@ void XBMCHelper::WriteFile(const char* fileName, const std::string& data)
   else
   {
     // Write new configuration.
-    out << data << endl;
+    out << data << std::endl;
     out.flush();
     out.close();
   }
@@ -327,9 +351,9 @@ int XBMCHelper::GetProcessPid(const char* strProgram)
     kinfo_proc *proc = NULL;
     proc = &mylist[k];
 
-    if (strcmp(proc->kp_proc.p_comm, strProgram) == 0)
+    // Process names are at most sixteen characters long.
+    if (strncmp(proc->kp_proc.p_comm, strProgram, 16) == 0)
     {
-      //if (ignorePid == 0 || ignorePid != proc->kp_proc.p_pid)
       ret = proc->kp_proc.p_pid;
     }
   }
@@ -350,11 +374,11 @@ typedef struct kinfo_proc kinfo_proc;
 //
 static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
 {
+  // example from http://developer.apple.com/qa/qa2001/qa1123.html
   int err;
   kinfo_proc * result;
   bool done;
-  static const int name[] =
-  { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
+  static const int name[] = { CTL_KERN, KERN_PROC, KERN_PROC_ALL, 0 };
 
   // Declaring name as const requires us to cast it when passing it to
   // sysctl because the prototype doesn't include the const modifier.
@@ -406,8 +430,11 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
 
       if (err == -1)
         err = errno;
-      else if (err == 0)
+        
+      if (err == 0)
+      {
         done = true;
+      }
       else if (err == ENOMEM)
       {
         assert(result != NULL);

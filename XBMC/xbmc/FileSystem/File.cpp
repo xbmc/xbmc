@@ -846,8 +846,8 @@ void CFileStreamBuffer::Detach()
 {
   setg(0,0,0);
   setp(0,0);
-  if(m_buffer)
-    SAFE_DELETE(m_buffer);
+  delete[] m_buffer;
+  m_buffer = NULL;
 }
 
 CFileStreamBuffer::int_type CFileStreamBuffer::underflow()

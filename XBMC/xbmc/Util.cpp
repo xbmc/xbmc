@@ -1626,15 +1626,12 @@ bool CUtil::IsDOSPath(const CStdString &path)
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  strResult = strFolder;
-  // remove the stack:// as it screws up the logic below
-  // FIXME: this appears to be plain wrong.
-  if (IsStack(strFolder))
-    strResult = strResult.Mid(8);
+  CURL url(strFolder);
+  strResult = url.GetFileName();
 
   // Add a slash to the end of the path if necessary
-  bool unixPath = !IsDOSPath(strResult);
-  if (!CUtil::HasSlashAtEnd(strResult))
+  bool unixPath = !IsDOSPath(strFolder);
+  if (!CUtil::HasSlashAtEnd(strResult) && !strResult.IsEmpty())
   {
     if (unixPath)
       strResult += '/';
@@ -1653,9 +1650,8 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   else
     strResult.Replace('/', '\\');
 
-  // re-add the stack:// protocol
-  if (IsStack(strFolder))
-    strResult = "stack://" + strResult;
+  url.SetFileName(strResult);
+  url.GetURL(strResult);
 }
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
@@ -2220,7 +2216,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   return true;
 }
 
-CStdString CUtil::MakeLegalFileName(const CStdString &strFile)
+CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
 {
   CStdString result = strFile;
 
@@ -2228,28 +2224,28 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile)
   result.Replace('\\', '_');
   result.Replace('?', '_');
 
-#ifdef _WIN32PC
-  // just filter out some illegal characters on windows
-  result.Replace(':', '_');
-  result.Replace('*', '_');
-  result.Replace('?', '_');
-  result.Replace('\"', '_');
-  result.Replace('<', '_');
-  result.Replace('>', '_');
-  result.Replace('|', '_');
-#endif
-
+  if (LegalType == LEGAL_WIN32_COMPAT) 
+  {
+    // just filter out some illegal characters on windows
+    result.Replace(':', '_');
+    result.Replace('*', '_');
+    result.Replace('?', '_');
+    result.Replace('\"', '_');
+    result.Replace('<', '_');
+    result.Replace('>', '_');
+    result.Replace('|', '_');
+  }
   return result;
 }
 
 // same as MakeLegalFileName, but we assume that we're passed a complete path,
 // and just legalize the filename
-CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile)
+CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
 {
   CStdString strPath;
   GetDirectory(strPathAndFile,strPath);
   CStdString strFileName = GetFileName(strPathAndFile);
-  return strPath + MakeLegalFileName(strFileName);
+  return strPath + MakeLegalFileName(strFileName, LegalType);
 }
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)
@@ -3484,6 +3480,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   // and ends with a trailing slash so as not to match a substring
   CURL urlDest(strPath);
   CStdString strDest;
+  urlDest.SetOptions("");
   urlDest.GetURLWithoutUserDetails(strDest);
   ForceForwardSlashes(strDest);
   if (!HasSlashAtEnd(strDest))
@@ -3521,6 +3518,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       // and ends with a trailing slash so as not to match a substring
       CURL urlShare(vecPaths[j]);
       CStdString strShare;
+      urlShare.SetOptions("");
       urlShare.GetURLWithoutUserDetails(strShare);
       ForceForwardSlashes(strShare);
       if (!HasSlashAtEnd(strShare))

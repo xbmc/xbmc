@@ -2741,7 +2741,7 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
       strSQL=FormatSQL("insert into settings ( idFile,Interleaved,NoCache,Deinterlace,FilmGrain,ViewMode,ZoomAmount,PixelRatio,"
                        "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
                        "VolumeAmplification,AudioDelay,OutputToAllSpeakers,ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom,Sharpness,NoiseReduction)"
-                       " values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,%f,%f",
+                       " values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,%f,%f,",
                        lFileId, setting.m_NonInterleaved, setting.m_NoCache, setting.m_InterlaceMethod, setting.m_FilmGrain, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
                        setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay, setting.m_Sharpness, setting.m_NoiseReduction);
@@ -4761,9 +4761,14 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
     where = FormatSQL("where c%02d='%i'",VIDEODB_ID_MUSICVIDEO_YEAR,idYear);
   else if (idArtist != -1)
     where = FormatSQL("join artistlinkmusicvideo on artistlinkmusicvideo.idmvideo=musicvideoview.idmvideo join actors on actors.idActor=artistlinkmusicvideo.idartist where actors.idActor=%u",idArtist);
-  else if (idAlbum != -1)
-    where = FormatSQL("where c%02d=(select c%02d from musicvideo where idMVideo=%u)",VIDEODB_ID_MUSICVIDEO_ALBUM,VIDEODB_ID_MUSICVIDEO_ALBUM,idAlbum);
-
+  if (idAlbum != -1)
+   {
+    CStdString str2 = FormatSQL(" musicvideoview.c%02d=(select c%02d from musicvideo where idMVideo=%u)",VIDEODB_ID_MUSICVIDEO_ALBUM,VIDEODB_ID_MUSICVIDEO_ALBUM,idAlbum);
+    if (where.IsEmpty())
+      where.Format(" %s%s","where",str2.c_str());
+    else
+      where.Format(" %s %s%s",where.Mid(0).c_str(),"and",str2.c_str());
+  }
   bool bResult = GetMusicVideosByWhere(strBaseDir, where, items);
   if (bResult && idArtist > -1 && items.Size())
   {
@@ -6700,7 +6705,7 @@ bool CVideoDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
     strResult = "";
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    CStdString strSQL=FormatSQL(strQuery);
+    CStdString strSQL=strQuery;
     if (!m_pDS->query(strSQL.c_str()))
     {
       strResult = m_pDB->getErrorMsg();
@@ -6744,7 +6749,7 @@ bool CVideoDatabase::ArbitraryExec(const CStdString& strExec)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    CStdString strSQL = FormatSQL(strExec);
+    CStdString strSQL = strExec;
     m_pDS->exec(strSQL.c_str());
     m_pDS->close();
     return true;

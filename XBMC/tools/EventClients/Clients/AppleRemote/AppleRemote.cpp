@@ -22,7 +22,6 @@
 #include <sys/sysctl.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <mach-o/dyld.h>
 
 #include "AppleRemote.h"
 #include "../../lib/c++/xbmcclient.h"
@@ -35,6 +34,7 @@
 
 enum {
     IR_Select,
+    IR_SelectHold,
     IR_Right,
     IR_Left,
     IR_Up,
@@ -55,6 +55,7 @@ enum {
 static std::string key_cookiesATV1X[] =
 { 
     "8_",   //SelectHold = "18_"
+    "18_",
     "9_",
     "10_",
     "12_",
@@ -68,6 +69,7 @@ static std::string key_cookiesATV1X[] =
 static std::string key_cookiesATV20X[] =
 { 
     "8_",   //SelectHold = "18_"
+    "18_",
     "9_",
     "10_",
     "12_",
@@ -81,6 +83,7 @@ static std::string key_cookiesATV20X[] =
 static std::string key_cookiesATV21[] =
 { 
     "9_",   //SelectHold = "19_"
+    "19_",
     "10_",
     "11_",
     "13_",
@@ -94,6 +97,7 @@ static std::string key_cookiesATV21[] =
 static std::string key_cookies10_4[] =
 { 
     "8_",   //SelectHold = "18_"
+    "18_",
     "9_",
     "10_",
     "12_",
@@ -107,7 +111,8 @@ static std::string key_cookies10_4[] =
 // magic HID key cookies for 10.5
 static std::string key_cookies10_5[] =
 { 
-    "21_",
+    "21_",  //SelectHold = "35_"
+    "35_",
     "22_",
     "23_",
     "29_",
@@ -122,9 +127,10 @@ AppleRemote::AppleRemote() :m_bVerbose(false),
 							m_remoteMode(REMOTE_NORMAL),
 							m_dMaxClickDuration(DEFAULT_MAX_CLICK_DURATION), 
 							m_socket(-1),
-                            m_timer(NULL) 
+							m_timer(NULL)
 {
 	m_serverAddress = "localhost";
+	m_appPath ="";
 }
 
 AppleRemote::~AppleRemote()
@@ -245,21 +251,8 @@ void AppleRemote::Initialize()
     }
     m_launch_xbmc_button = key[IR_MenuHold];
     
-/*
-    RegisterCommand(key[IR_Select],    new CPacketBUTTON("A", "XG", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-    RegisterCommand(key[IR_Right],     new CPacketBUTTON("Right", "R1", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
-    RegisterCommand(key[IR_Left],      new CPacketBUTTON("Left",  "R1", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
-    RegisterCommand(key[IR_Up],        new CPacketBUTTON("Up", "R1", BTN_DOWN));
-    RegisterCommand(key[IR_Down],      new CPacketBUTTON("Down", "R1", BTN_DOWN));
-    RegisterCommand(key[IR_RightHold], new CPacketBUTTON("Right", "R1", BTN_DOWN));
-    RegisterCommand(key[IR_LeftHold],  new CPacketBUTTON("Left", "R1", BTN_DOWN));
-    RegisterCommand(key[IR_Menu],      new CPacketBUTTON("Menu", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-
-    // Menu Hold will be used both for sending "Back" and for starting universal remote combinations (if universal mode is on)
-    RegisterCommand(key[IR_MenuHold],  new CPacketBUTTON("Back", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
-*/
-
     RegisterCommand(key[IR_Select],    new CPacketBUTTON(5, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(key[IR_SelectHold],new CPacketBUTTON(7, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
     RegisterCommand(key[IR_Right],     new CPacketBUTTON(4, "JS0:AppleRemote", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
     RegisterCommand(key[IR_Left],      new CPacketBUTTON(3, "JS0:AppleRemote", BTN_DOWN  | BTN_NO_REPEAT | BTN_QUEUE));
     RegisterCommand(key[IR_Up],        new CPacketBUTTON(1, "JS0:AppleRemote", BTN_DOWN));
@@ -397,37 +390,21 @@ bool AppleRemote::SendCommand(const std::string &key)
 
 void AppleRemote::LaunchApp()
 {
-	LOG("Trying to start XBMC.\n");
-
-	int      result = -1;
-	char     given_path[2*MAXPATHLEN];
-	uint32_t path_size = 2*MAXPATHLEN;
-
-	result = _NSGetExecutablePath(given_path, &path_size);
-	if (result == 0)
-	{
-		char real_path[2*MAXPATHLEN];
-		if (realpath(given_path, real_path) != NULL)
-		{
-			// Move backwards out to the application.
-			for (int x=0; x<4; x++)
-			{
-				for (int n=strlen(real_path)-1; real_path[n] != '/'; n--)
-					real_path[n] = '\0';
-					
-				real_path[strlen(real_path)-1] = '\0';
-			}
-			
-			std::string strCmd = "open ";
-			strCmd += real_path;
-			strCmd += std::string("/Resources/XBMC/") + APPLICATION_NAME;
-			strCmd += "&";
-
-			// Start it in the background.
-			LOG("Got path: [%s]\n", real_path);
-			system(strCmd.c_str());
-		}
-	}
+  // the path to xbmc.app is passed as an arg, 
+  // use this to launch from a menu press
+  LOG("Trying to start XBMC: [%s]\n", m_appPath.c_str());
+  if (!m_appPath.empty())
+  {
+    std::string strCmd;
+    
+    // build a finder open command
+    strCmd = "XBMC_HOME=";
+    strCmd += m_appHome;
+    strCmd += " ";
+    strCmd += m_appPath;
+    LOG("xbmc open command: [%s]\n", strCmd.c_str());
+    system(strCmd.c_str());
+  }
 }
 
 void AppleRemote::SendPacket(CPacketBUTTON &packet)
@@ -521,6 +498,16 @@ void AppleRemote::SetServerAddress(const std::string &strAddress)
 	m_serverAddress = strAddress;
 }
 
+void AppleRemote::SetAppPath(const std::string &strAddress)
+{
+	m_appPath = strAddress;
+}
+
+void AppleRemote::SetAppHome(const std::string &strAddress)
+{
+	m_appHome = strAddress;
+}
+
 const std::string &AppleRemote::GetServerAddress()
 {
 	return m_serverAddress;
@@ -543,7 +530,8 @@ bool AppleRemote::IsProgramRunning(const char* strProgram, int ignorePid)
 		kinfo_proc *proc = NULL;
 		proc = &mylist[k];
 
-		if (strcmp(proc->kp_proc.p_comm, strProgram) == 0)
+    // Process names are at most sixteen characters long.
+		if (strncmp(proc->kp_proc.p_comm, strProgram, 16) == 0)
 		{
 			if (ignorePid == 0 || ignorePid != proc->kp_proc.p_pid)
 				ret = true;

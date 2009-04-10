@@ -206,7 +206,7 @@ namespace VIDEO
       bSkip = true;
 
     CStdString hash, dbHash;
-    if (m_info.strContent.Equals("movies"))
+    if (m_info.strContent.Equals("movies") && !settings.noupdate)
     {
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MOVIE_INFO);
@@ -238,7 +238,7 @@ namespace VIDEO
         bSkip = true;
       }
     }
-    else if (m_info.strContent.Equals("tvshows"))
+    else if (m_info.strContent.Equals("tvshows") && !settings.noupdate)
     {
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_TVSHOW_INFO);
@@ -266,7 +266,7 @@ namespace VIDEO
         CUtil::GetParentPath(item->m_strPath,items.m_strPath);
       }
     }
-    else if (m_info.strContent.Equals("musicvideos"))
+    else if (m_info.strContent.Equals("musicvideos") && !settings.noupdate)
     {
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MUSICVIDEO_INFO);
@@ -596,7 +596,6 @@ namespace VIDEO
                 CStackDirectory dir;
                 strPath = dir.GetStackedTitlePath(pItem->m_strPath);
               }
-              m_pObserver->OnSetTitle(CUtil::GetFileName(strPath));
             }
             pURL = &scrUrl;
           }
@@ -618,7 +617,7 @@ namespace VIDEO
             }
             if (iMoviesFound > 0)
             {
-              if (m_pObserver)
+              if (m_pObserver && !url.strTitle.IsEmpty())
                 m_pObserver->OnSetTitle(url.strTitle);
               CUtil::ClearCache();
               long lResult=1;
@@ -1193,6 +1192,10 @@ namespace VIDEO
     {
       if (combined)
         m_nfoReader.GetDetails(movieDetails);
+
+      if (m_pObserver && url.strTitle.IsEmpty())
+        m_pObserver->OnSetTitle(movieDetails.m_strTitle);
+
       return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames);
     }
     return -1;

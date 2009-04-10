@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #ifdef HAVE_LIBVDPAU
+#include <dlfcn.h>
 #include "VDPAU.h"
 #include "Surface.h"
 using namespace Surface;
@@ -35,17 +36,6 @@ if (vdp_st != VDP_STATUS_OK) \
 CLog::Log(LOGERROR, " (VDPAU) Error: (%d) at %s:%d\n", vdp_st, __FILE__, __LINE__);
 
 CVDPAU*          g_VDPAU;
-
-static const VdpOutputSurfaceRenderBlendState osd_blend =
-    {
-        VDP_OUTPUT_SURFACE_RENDER_BLEND_STATE_VERSION,
-        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ZERO,
-        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ONE,
-        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ONE,
-        VDP_OUTPUT_SURFACE_RENDER_BLEND_FACTOR_ZERO,
-        VDP_OUTPUT_SURFACE_RENDER_BLEND_EQUATION_ADD,
-        VDP_OUTPUT_SURFACE_RENDER_BLEND_EQUATION_ADD
-    };
 
 CVDPAU::Desc decoder_profiles[] = {
 {"MPEG1",        VDP_DECODER_PROFILE_MPEG1},
@@ -62,6 +52,10 @@ const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Des
 
 CVDPAU::CVDPAU(int width, int height)
 {
+  vdp_device = NULL;
+  dl_handle=NULL;
+  dl_handle=dlopen("libvdpau.so.1", RTLD_LAZY);
+  if (!dl_handle) return;
   surfaceNum = presentSurfaceNum = 0;
   picAge.b_age = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
@@ -69,7 +63,6 @@ CVDPAU::CVDPAU(int width, int height)
   m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
   m_Surface->MakePixmap(width,height);
   m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
-  vdp_device = NULL;
   InitVDPAUProcs();
   recover = VDPAURecovered = false;
   outputSurface = presentSurface = 0;
@@ -94,6 +87,11 @@ CVDPAU::~CVDPAU()
     CLog::Log(LOGNOTICE,"Deleting m_Surface in CVDPAU");
     delete m_Surface;
     m_Surface = NULL;
+  }
+  if (dl_handle)
+  {
+    dlclose(dl_handle);
+    dl_handle = NULL;
   }
 }
 
@@ -244,16 +242,28 @@ void CVDPAU::SetDeinterlacing()
 
 void CVDPAU::InitVDPAUProcs()
 {
+  char* error;
+
+  dl_vdp_device_create_x11 = (VdpStatus (*)(Display*, int, VdpDevice*, VdpStatus (**)(VdpDevice, VdpFuncId, void**)))dlsym(dl_handle, (const char*)"vdp_device_create_x11");
+  error = dlerror();
+  if (error)
+  {
+    CLog::Log(LOGERROR,"(VDPAU) - %s in %s",error,__FUNCTION__);
+    vdp_device = NULL;
+    return;
+  }
+
   int mScreen = DefaultScreen(m_Display);
   VdpStatus vdp_st;
 
   // Create Device
-  vdp_st = vdp_device_create_x11(m_Display, //x_display,
+  vdp_st = dl_vdp_device_create_x11(m_Display, //x_display,
                                  mScreen, //x_screen,
                                  &vdp_device,
                                  &vdp_get_proc_address);
   CHECK_ST
   if (vdp_st) {
+    CLog::Log(LOGERROR,"(VDPAU) - Unable to create X11 device in %s",__FUNCTION__);
     vdp_device = NULL;
     return;
   }
@@ -919,8 +929,8 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRect.y1 = outHeight;
   }
   //CLog::Log(LOGNOTICE,"surfaceNum %i",surfaceNum);
-  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
-  CheckStatus(vdp_st, __LINE__);
+//  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
+//  CheckStatus(vdp_st, __LINE__);
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
                                   0,

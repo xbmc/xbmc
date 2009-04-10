@@ -125,6 +125,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
       if (ze.header != ZIP_CENTRAL_HEADER)
       {
         CLog::Log(LOGDEBUG,"ZipManager: broken file %s!",strFile.c_str());
+        mFile.Close();
         return false;
       }
       else // no handling of zip central header, we are done

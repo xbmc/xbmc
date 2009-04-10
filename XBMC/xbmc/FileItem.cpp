@@ -118,7 +118,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   }
   *GetVideoInfoTag() = movie;
   FillInDefaultIcon();
-  SetVideoThumb();
+  SetCachedVideoThumb();
   SetInvalid();
 }
 
@@ -426,7 +426,7 @@ void CFileItem::Serialize(CArchive& ar)
 }
 bool CFileItem::Exists() const
 {
-  if (m_strPath.IsEmpty() || m_strPath.Equals("add") || IsParentFolder() || IsVirtualDirectoryRoot() || IsPlugin())
+  if (m_strPath.IsEmpty() || m_strPath.Equals("add") || IsInternetStream() || IsParentFolder() || IsVirtualDirectoryRoot() || IsPlugin())
     return true;
 
   if (IsVideoDb() && HasVideoInfoTag())
@@ -2346,20 +2346,19 @@ CStdString CFileItem::GetTBNFile() const
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
 
-  if (m_bIsFolder && !IsFileFolder())
-  {
-    CURL url(strFile);
+  CURL url(strFile);
+  strFile = url.GetFileName();
 
-    // Don't try to get "foldername".tbn for empty filenames
-    if (!url.GetFileName().IsEmpty())
-    {
-      CUtil::RemoveSlashAtEnd(strFile);
-      thumbFile = strFile + ".tbn";
-    }
-  }
+  if (m_bIsFolder && !IsFileFolder())
+    CUtil::RemoveSlashAtEnd(strFile);
+
+  if(strFile.IsEmpty())
+    thumbFile = "";
   else
   {
     CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+    url.SetFileName(thumbFile);
+    url.GetURL(thumbFile);
   }
   return thumbFile;
 }
@@ -2504,7 +2503,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   }
 
   // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin() || CUtil::IsFTP(strFile))
     return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..
@@ -2556,6 +2555,15 @@ CStdString CFileItem::GetCachedFanart() const
       return "";
     if (!GetVideoInfoTag()->m_strArtist.IsEmpty())
       return GetCachedThumb(GetVideoInfoTag()->m_strArtist,g_settings.GetMusicFanartFolder());
+    if (!m_bIsFolder && !GetVideoInfoTag()->m_strShowTitle.IsEmpty())
+    {
+      CVideoDatabase database;
+      database.Open();
+      int iShowId = database.GetTvShowId(GetVideoInfoTag()->m_strPath);
+      CStdString showPath;
+      database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
+      return GetCachedThumb(showPath,g_settings.GetVideoFanartFolder()); 
+    }
     return GetCachedThumb(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());
   }
   if (HasMusicInfoTag())

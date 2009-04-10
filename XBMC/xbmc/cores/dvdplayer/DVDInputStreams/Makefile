@@ -19,4 +19,5 @@ SRCS=	DVDFactoryInputStream.cpp \
 LIB=	DVDInputStreams.a
 
 include ../../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
