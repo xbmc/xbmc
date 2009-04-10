@@ -280,7 +280,6 @@ protected:
   CStopWatch m_slowTimer;
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
-  CStopWatch m_displaySleepTimer;
 
   DWORD      m_lastActionCode;
   CStopWatch m_lastActionTimer;
