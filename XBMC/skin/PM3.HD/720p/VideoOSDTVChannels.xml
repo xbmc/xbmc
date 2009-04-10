@@ -1,4 +1,4 @@
-<window id="604">
+<window id="606">
 	<defaultcontrol always="true">11</defaultcontrol>
 	<coordinates>
 		<system>1</system>
@@ -44,7 +44,7 @@
 			<height>25</height>
 			<label>-</label>
 			<font>-</font>
-			<onclick>Dialog.Close(125)</onclick>
+			<onclick>Dialog.Close(606)</onclick>
 			<texturefocus>close-windowFO.png</texturefocus>
 			<texturenofocus>close-window.png</texturenofocus>
 			<onleft>5</onleft>

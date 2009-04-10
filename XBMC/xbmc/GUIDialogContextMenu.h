@@ -100,6 +100,14 @@ enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_PLUGIN_SETTINGS,
                       CONTEXT_BUTTON_LASTFM_UNLOVE_ITEM,
                       CONTEXT_BUTTON_LASTFM_UNBAN_ITEM,
+                      CONTEXT_BUTTON_HIDE,
+                      CONTEXT_BUTTON_SHOW_HIDDEN,
+                      CONTEXT_BUTTON_ADD,
+                      CONTEXT_BUTTON_ACTIVATE,
+                      CONTEXT_BUTTON_START_RECORD,
+                      CONTEXT_BUTTON_STOP_RECORD,
+                      CONTEXT_BUTTON_GROUP_MANAGER,
+					  CONTEXT_BUTTON_CHANNEL_MANAGER,
                       CONTEXT_BUTTON_USER1,
                       CONTEXT_BUTTON_USER2,
                       CONTEXT_BUTTON_USER3,
@@ -147,9 +155,9 @@ public:
   static int ShowAndGetChoice(const std::vector<CStdString> &choices, const CPoint &point);
 
   static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
-protected:
   float GetWidth();
   float GetHeight();
+protected:
   virtual void OnInitWindow();
   static CStdString GetDefaultShareNameByType(const CStdString &strType);
   static void SetDefault(const CStdString &strType, const CStdString &strDefault);

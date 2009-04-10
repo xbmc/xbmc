@@ -771,10 +771,22 @@
 				<height>8</height>
 				<info>Player.Progress</info>
 			</control>
-			<control type="label" id="1">
+			<control type="label">
+				<posx>230</posx>
+				<posy>140</posy>
+				<width>500</width>
+				<height>25</height>
+				<label>$LOCALIZE[18132]: $INFO[VideoPlayer.Group]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font11</font>
+				<textcolor>grey2</textcolor>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
 				<posx>1250</posx>
 				<posy>140</posy>
-				<width>995</width>
+				<width>500</width>
 				<height>25</height>
 				<label>$LOCALIZE[18102]: $INFO[VideoPlayer.Next]</label>
 				<align>right</align>

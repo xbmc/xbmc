@@ -426,7 +426,7 @@ wirklich aus der Datenbank entfernen?</string>
   <string id="510">Visualisierung verwenden</string>
   <string id="511">Video-Modus auf Basis der Spiele-Region wechseln</string>
   <string id="512">Start Fenster</string>
-  <string id="513">Standard</string>
+  <string id="513">Hauptfenster</string>
   <string id="514">Manuell einstellen</string>
   <string id="515">Genre</string>
   <string id="516">Archive mit einer Datei als Ordner anzeigen</string>
@@ -1397,8 +1397,10 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="16300">Video Skalierungs Methode</string>
   <string id="16301">Nächste Nachbar</string>
   <string id="17500">Bildschirm Sleep Timeout</string>
-	
-	<string id="17998">%i Stunden</string>
+
+
+  <string id="17997">%i MByte</string>
+  <string id="17998">%i Stunden</string>
   <string id="17999">%i Tage</string>
 
   <!-- strings 18000 thru 18999 used for tv interface -->
@@ -1426,6 +1428,8 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18021">Vorlauf zum Timer-Beginn</string>
   <string id="18022">Nachlauf am Timer-Ende</string>
   <string id="18023">Wiedergabe</string>
+  <string id="18024">Infobox für Videolänge verbergen</string>
+
   <string id="18048">Kanaleinstellungen bearbeiten</string>
   <string id="18049">Neuer Kanal</string>
   <string id="18050">Programm</string>
@@ -1465,7 +1469,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18084">Fr</string>
   <string id="18085">Sa</string>
   <string id="18086">So</string>
-  <string id="18087">Erster Tag:</string>
+  <string id="18087">ab</string>
   <string id="18088">Nächste Aufnahme</string>
   <string id="18089">Jetzige Aufnahme</string>
   <string id="18090">Warnung</string>
@@ -1484,6 +1488,9 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18103">Zeitleiste</string>
   <string id="18104">Kanal verschlüsselt</string>
   <string id="18105">Kanal nicht verfügbar</string>
+  <string id="18106">VDR-Streamdev ist nicht kompatibel!</string>
+  <string id="18107">Aktiviere zeitverseztes Fernsehen</string>
+  <string id="18108">Zwischenspeicher Größe</string>
   <string id="18109">Zum Kanal schalten</string>
   <string id="18110">Film/Drama</string>
   <string id="18111">Aktuelles/Nachrichten</string>
@@ -1496,8 +1503,29 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18118">Freizeit/Hobbies</string>
   <string id="18119">Andere/Unbekannt</string>
   <string id="18120">Wissenschaft</string>
+  <string id="18121">Social/Political/Economics</string>
+  <string id="18122">Special</string>
+  <string id="18123">Ordner für zeitversetzte Aufnahme</string>
+  <string id="18124">Zeitverseztes Fernsehen aktviert</string>
+  <string id="18125">Aber kein Zwischenspeicher-Ordner festgelegt!</string>
+  <string id="18126">Gruppenverwaltung</string>
+  <string id="18127">Ungruppiert</string>
+  <string id="18128">Keine Gruppen</string>
+  <string id="18129">Gruppen</string>
+  <string id="18130">Neuer Gruppenname</string>
+  <string id="18131">Alle Kanäle</string>
+  <string id="18132">Gruppe</string>
+  <string id="18133">XBMC synchronisiert TV-Daten mit Backend-Server</string>
+  <string id="18134">Kanal blockiert</string>
+  <string id="18135">Keine Gruppen definiert</string>
+  <string id="18136">Bitte erstellen Sie zuerst eine</string>
+
+  <string id="18150">Jetzt</string>
+  <string id="18151">Versteckt</string>
+
   <string id="18161">Kanallogo festlegen</string>
   <string id="18162">Timer zeichnet auf - trotzdem löschen?</string>
+
   <string id="18190">Nächster Timer am</string>
   <string id="18191">um</string>
   <string id="18192">Aufnahme</string>
@@ -1515,6 +1543,20 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18204">Kanäle:</string>
   <string id="18205">Aufnahmen:</string>
   <string id="18206">Timers:</string>
+  <string id="18207">Bitte geben Sie den Timer Namen ein</string>
+
+  <string id="18300">Mo-__-__-__-__-__-__</string>
+  <string id="18301">__-Di-__-__-__-__-__</string>
+  <string id="18302">__-__-Mi-__-__-__-__</string>
+  <string id="18303">__-__-__-Do-__-__-__</string>
+  <string id="18304">__-__-__-__-Fr-__-__</string>
+  <string id="18305">__-__-__-__-__-Sa-__</string>
+  <string id="18306">__-__-__-__-__-__-So</string>
+  <string id="18307">Mo-Di-Mi-Do-Fr-__-__</string>
+  <string id="18308">Mo-Di-Mi-Do-Fr-Sa-__</string>
+  <string id="18309">Mo-Di-Mi-Do-Fr-Sa-So</string>
+  <string id="18310">__-__-__-__-__-Sa-So</string>
+
   <string id="18399">Aufnahme umbenennen?</string>
   <string id="18400">Timer umbenennen?</string>
   <string id="18401">Aktiv:</string>
@@ -1526,10 +1568,12 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18407">Lebensdauer (Tage):</string>
   <string id="18408">Erster Tag:</string>
   <string id="18409">Radio:</string>
+
   <string id="18414">Aufnahme abbrechen</string>
   <string id="18415">Timer löschen</string>
   <string id="18416">Timer hinzufügen</string>
   <string id="18417">Nicht automatisch umschalten</string>
+
   <string id="18800">Timers nicht synchron!</string>
   <string id="18801">Server Fehler!</string>
   <string id="18802">Konnte Timer nicht löschen!</string>
@@ -1544,7 +1588,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18811">Konnte Aufnahme nicht löschen!</string>
   <string id="18812">Kein Ordner für Logos definiert!</string>
   <string id="18813">Bitte aktualisieren sie ihre Einstellungen.</string>
-	
+
   <string id="20000">Ordner für CD-Kopien</string>
   <string id="20001">Externen DVD-Player verwenden</string>
   <string id="20002">Externer DVD-Player</string>
@@ -1615,7 +1659,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20079">Animationen aktivieren</string>
   <string id="20080">RSS während der Musikwiedergabe deaktivieren</string>
   <string id="20081">Eigene Lesezeichen aktivieren</string>
-  <string id="20082">XLink-Kai Benachrichtigungen anzeigen</string>
+  <string id="20082">Programme im Hauptmenü anzeigen</string>
   <string id="20083">Musik-Informationen anzeigen</string>
   <string id="20084">Wetter-Informationen anzeigen</string>
   <string id="20085">System-Informationen anzeigen</string>

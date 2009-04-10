@@ -35,8 +35,10 @@
 #include "GUITextLayout.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogFullScreenInfo.h"
+#include "GUIDialogNumeric.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "PVRManager.h"
 
 #include <stdio.h>
 
@@ -193,23 +195,83 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     break;
 
   case ACTION_STEP_BACK:
+    {
+      CFileItem item(g_application.CurrentFileItem());
+      if (item.HasTVChannelInfoTag())
+      {
+        int current_group = CPVRManager::GetInstance()->GetPlayingGroup();
+        current_group = CPVRManager::GetInstance()->GetPrevGroupID(current_group);
+        CPVRManager::GetInstance()->SetPlayingGroup(current_group);
+
+        CAction action;
+        action.wID = ACTION_CHANNEL_SWITCH;
+        action.fAmount1 = CPVRManager::GetInstance()->GetFirstChannelForGroupID(current_group);
+        OnAction(action);
+      }
+      else
+      {
     Seek(false, false);
     return true;
+      }
+    }
     break;
 
   case ACTION_STEP_FORWARD:
+    {
+      CFileItem item(g_application.CurrentFileItem());
+      if (item.HasTVChannelInfoTag())
+      {
+        int current_group = CPVRManager::GetInstance()->GetPlayingGroup();
+        current_group = CPVRManager::GetInstance()->GetNextGroupID(current_group);
+        CPVRManager::GetInstance()->SetPlayingGroup(current_group);
+
+        CAction action;
+        action.wID = ACTION_CHANNEL_SWITCH;
+        action.fAmount1 = CPVRManager::GetInstance()->GetFirstChannelForGroupID(current_group);
+        OnAction(action);
+      }
+      else
+      {
     Seek(true, false);
     return true;
+      }
+    }
     break;
 
   case ACTION_BIG_STEP_BACK:
+    {
+      CFileItem item(g_application.CurrentFileItem());
+      if (item.HasTVChannelInfoTag())
+      {
+        CAction action;
+        action.wID = ACTION_PREV_ITEM;
+        OnAction(action);
+        return true;
+      }
+      else
+      {
     Seek(false, true);
     return true;
+      }
+    }
     break;
 
   case ACTION_BIG_STEP_FORWARD:
+    {
+      CFileItem item(g_application.CurrentFileItem());
+      if (item.HasTVChannelInfoTag())
+      {
+        CAction action;
+        action.wID = ACTION_NEXT_ITEM;
+        OnAction(action);
+        return true;
+      }
+      else
+      {
     Seek(true, true);
     return true;
+      }
+    }
     break;
 
   case ACTION_NEXT_SCENE:
@@ -244,6 +306,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog)
       {
+        CFileItem item(g_application.CurrentFileItem());
         pDialog->DoModal();
         return true;
       }
@@ -316,8 +379,25 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case REMOTE_7:
   case REMOTE_8:
   case REMOTE_9:
+    {
+      CFileItem item(g_application.CurrentFileItem());
+      if (item.HasTVChannelInfoTag())
+      {
+        CStdString strChannel;
+        strChannel.Format("%i", action.wID - REMOTE_0);
+        if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(18109)))
+        {
+          CAction action;
+          action.wID = ACTION_CHANNEL_SWITCH;
+          action.fAmount1 = atoi(strChannel.c_str());
+          OnAction(action);
+        }
+      }
+      else {
     ChangetheTimeCode(action.wID);
+      }
     return true;
+    }
     break;
 
   case ACTION_ASPECT_RATIO:
@@ -504,9 +584,13 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - pause video
+    CFileItem item(g_application.CurrentFileItem());
+    if (!item.HasTVChannelInfoTag() || g_guiSettings.GetBool("pvrrecord.timeshift"))
+	{
     CAction action;
     action.wID = ACTION_PAUSE;
     return g_application.OnAction(action);
+  }
   }
   if (g_Mouse.HasMoved())
   { // movement - toggle the OSD

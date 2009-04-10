@@ -43,6 +43,9 @@
 #include "utils/TuxBoxUtil.h"
 #include "VideoInfoTag.h"
 #include "utils/TVEPGInfoTag.h"
+#include "utils/TVChannelInfoTag.h"
+#include "utils/TVRecordInfoTag.h"
+#include "utils/TVTimerInfoTag.h"
 #include "utils/SingleLock.h"
 #include "MusicInfoTag.h"
 #include "PictureInfoTag.h"
@@ -62,7 +65,10 @@ CFileItem::CFileItem(const CSong& song)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(song.strTitle);
@@ -77,7 +83,10 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(album.strAlbum);
@@ -105,7 +114,10 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(movie.m_strTitle);
@@ -130,12 +142,79 @@ CFileItem::CFileItem(const CTVEPGInfoTag& programme)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
+  m_strPath = programme.m_strFileNameAndPath;
   m_bIsFolder = false;
-  *GetEPGInfoTag() = programme;
+  *GetTVEPGInfoTag() = programme;
   SetLabel(programme.m_strTitle);
+  m_strLabel2 = programme.m_strExtra;
+  SetThumbnailImage(programme.m_IconPath);
+  //FillInDefaultIcon();
+  //SetVideoThumb();
+  SetInvalid();
+}
+
+CFileItem::CFileItem(const CTVChannelInfoTag& channel)
+{
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+  m_strPath = channel.m_strFileNameAndPath;
+  m_bIsFolder = false;
+  *GetTVChannelInfoTag() = channel;
+  SetLabel(channel.m_strChannel);
+  m_strLabel2 = channel.m_strTitle;
+  SetThumbnailImage(channel.m_IconPath);
+  //FillInDefaultIcon();
+  //SetVideoThumb();
+  SetInvalid();
+}
+
+CFileItem::CFileItem(const CTVRecordingInfoTag& record)
+{
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_tvepgInfoTag   = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+  m_strPath = record.m_strFileNameAndPath;
+  m_bIsFolder = false;
+  *GetTVRecordingInfoTag() = record;
+  SetLabel(record.m_strTitle);
+  m_strLabel2 = record.m_Summary;
+  //FillInDefaultIcon();
+  //SetVideoThumb();
+  SetInvalid();
+}
+
+CFileItem::CFileItem(const CTVTimerInfoTag& timer)
+{
+  m_musicInfoTag = NULL;
+  m_videoInfoTag = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
+  m_pictureInfoTag = NULL;
+  Reset();
+  m_strPath = timer.m_strFileNameAndPath;
+  m_bIsFolder = false;
+  *GetTVTimerInfoTag() = timer;
+  SetLabel(timer.m_strTitle);
+  m_strLabel2 = timer.m_Summary;
   //FillInDefaultIcon();
   //SetVideoThumb();
   SetInvalid();
@@ -145,6 +224,10 @@ CFileItem::CFileItem(const CArtist& artist)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(artist.strArtist);
@@ -158,7 +241,10 @@ CFileItem::CFileItem(const CGenre& genre)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(genre.strGenre);
@@ -172,7 +258,10 @@ CFileItem::CFileItem(const CFileItem& item): CGUIListItem()
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   *this = item;
 }
@@ -181,7 +270,10 @@ CFileItem::CFileItem(const CGUIListItem& item)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   // not particularly pretty, but it gets around the issue of Reset() defaulting
@@ -193,7 +285,10 @@ CFileItem::CFileItem(void)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
 }
@@ -203,7 +298,10 @@ CFileItem::CFileItem(const CStdString& strLabel)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(strLabel);
@@ -213,7 +311,10 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   m_strPath = strPath;
@@ -232,7 +333,10 @@ CFileItem::CFileItem(const CMediaSource& share)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
   m_bIsFolder = true;
@@ -256,12 +360,18 @@ CFileItem::~CFileItem(void)
 {
   delete m_musicInfoTag;
   delete m_videoInfoTag;
-  delete m_epgInfoTag;
+  delete m_tvepgInfoTag;
+  delete m_tvchannelInfoTag;
+  delete m_tvrecordingInfoTag;
+  delete m_tvtimerInfoTag;
   delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
-  m_epgInfoTag   = NULL;
+  m_tvepgInfoTag = NULL;
+  m_tvchannelInfoTag = NULL;
+  m_tvrecordingInfoTag = NULL;
+  m_tvtimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
 }
 
@@ -301,18 +411,60 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
     m_videoInfoTag = NULL;
   }
 
-  if (item.HasEPGInfoTag())
+  if (item.HasTVEPGInfoTag())
   {
-    m_epgInfoTag = GetEPGInfoTag();
-    if (m_epgInfoTag)
-      *m_epgInfoTag = *item.m_epgInfoTag;
+    m_tvepgInfoTag = GetTVEPGInfoTag();
+    if (m_tvepgInfoTag)
+      *m_tvepgInfoTag = *item.m_tvepgInfoTag;
   }
   else
   {
-    if (m_epgInfoTag)
-      delete m_epgInfoTag;
+    if (m_tvepgInfoTag)
+      delete m_tvepgInfoTag;
 
-    m_epgInfoTag = NULL;
+    m_tvepgInfoTag = NULL;
+  }
+
+  if (item.HasTVChannelInfoTag())
+  {
+    m_tvchannelInfoTag = GetTVChannelInfoTag();
+    if (m_tvchannelInfoTag)
+      *m_tvchannelInfoTag = *item.m_tvchannelInfoTag;
+  }
+  else
+  {
+    if (m_tvchannelInfoTag)
+      delete m_tvchannelInfoTag;
+
+    m_tvchannelInfoTag = NULL;
+  }
+
+  if (item.HasTVRecordingInfoTag())
+  {
+    m_tvrecordingInfoTag = GetTVRecordingInfoTag();
+    if (m_tvrecordingInfoTag)
+      *m_tvrecordingInfoTag = *item.m_tvrecordingInfoTag;
+  }
+  else
+  {
+    if (m_tvrecordingInfoTag)
+      delete m_tvrecordingInfoTag;
+
+    m_tvrecordingInfoTag = NULL;
+  }
+
+  if (item.HasTVTimerInfoTag())
+  {
+    m_tvtimerInfoTag = GetTVTimerInfoTag();
+    if (m_tvtimerInfoTag)
+      *m_tvtimerInfoTag = *item.m_tvtimerInfoTag;
+  }
+  else
+  {
+    if (m_tvtimerInfoTag)
+      delete m_tvtimerInfoTag;
+
+    m_tvtimerInfoTag = NULL;
   }
 
   if (item.HasPictureInfoTag())
@@ -374,8 +526,15 @@ void CFileItem::Reset()
   m_musicInfoTag=NULL;
   delete m_videoInfoTag;
   m_videoInfoTag=NULL;
-  delete m_epgInfoTag;
-  m_epgInfoTag=NULL;
+  delete m_tvepgInfoTag;
+  m_tvepgInfoTag=NULL;
+  delete m_tvchannelInfoTag;
+  m_tvchannelInfoTag=NULL;
+  delete m_tvrecordingInfoTag;
+  m_tvrecordingInfoTag=NULL;
+  delete m_tvtimerInfoTag;
+  m_tvtimerInfoTag=NULL;
+  delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
   SetInvalid();
@@ -526,6 +685,30 @@ bool CFileItem::IsVideo() const
   if (g_stSettings.m_videoExtensions.Find(extension) != -1)
     return true;
 
+  return false;
+}
+
+bool CFileItem::IsTVEPG() const
+{
+  if (HasTVEPGInfoTag()) return true; /// is this enough?
+  return false;
+}
+
+bool CFileItem::IsTVChannel() const
+{
+  if (HasTVChannelInfoTag()) return true; /// is this enough?
+  return false;
+}
+
+bool CFileItem::IsTVRecording() const
+{
+  if (HasTVRecordingInfoTag()) return true; /// is this enough?
+  return false;
+}
+
+bool CFileItem::IsTVTimer() const
+{
+  if (HasTVTimerInfoTag()) return true; /// is this enough?
   return false;
 }
 
@@ -844,12 +1027,6 @@ bool CFileItem::IsVideoDb() const
   return false;
 }
 
-bool CFileItem::IsPVR() const
-{
-  if (HasEPGInfoTag()) return true; /// is this enough?
-  return false;
-}
-
 bool CFileItem::IsVirtualDirectoryRoot() const
 {
   return (m_bIsFolder && m_strPath.IsEmpty());
@@ -1049,6 +1226,12 @@ void CFileItem::SetLabel(const CStdString &strLabel)
   }
   CGUIListItem::SetLabel(strLabel);
 }
+
+void CFileItem::SetLabel2(const CStdString &strLabel)
+{
+  m_strLabel2 = strLabel;
+}
+
 
 void CFileItem::SetFileSizeLabel()
 {
@@ -2877,12 +3060,36 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
   return m_videoInfoTag;
 }
 
-CTVEPGInfoTag* CFileItem::GetEPGInfoTag()
+CTVEPGInfoTag* CFileItem::GetTVEPGInfoTag()
 {
-  if (!m_epgInfoTag)
-    m_epgInfoTag = new CTVEPGInfoTag;
+  if (!m_tvepgInfoTag)
+    m_tvepgInfoTag = new CTVEPGInfoTag;
 
-  return m_epgInfoTag;
+  return m_tvepgInfoTag;
+}
+
+CTVChannelInfoTag* CFileItem::GetTVChannelInfoTag()
+{
+  if (!m_tvchannelInfoTag)
+    m_tvchannelInfoTag = new CTVChannelInfoTag;
+
+  return m_tvchannelInfoTag;
+}
+
+CTVRecordingInfoTag* CFileItem::GetTVRecordingInfoTag()
+{
+  if (!m_tvrecordingInfoTag)
+    m_tvrecordingInfoTag = new CTVRecordingInfoTag;
+
+  return m_tvrecordingInfoTag;
+}
+
+CTVTimerInfoTag* CFileItem::GetTVTimerInfoTag()
+{
+  if (!m_tvtimerInfoTag)
+    m_tvtimerInfoTag = new CTVTimerInfoTag;
+
+  return m_tvtimerInfoTag;
 }
 
 CPictureInfoTag* CFileItem::GetPictureInfoTag()

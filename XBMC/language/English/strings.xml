@@ -819,7 +819,6 @@
   <string id="10025"></string>
   <string id="10028">Videos/Playlist</string>
   <string id="10034">Settings - Profiles</string>
-  <string id="10040">TV Guide</string>
 
   <string id="10100">Yes/No dialog</string>
   <string id="10101">Progress dialog</string>
@@ -842,7 +841,7 @@
   <string id="10509">Network gaming</string>
   <string id="10510">Extensions</string>
   <string id="10511">System info</string>
-  <string id="10512">TV Guide</string>
+  <string id="10512"></string>
   <string id="10513"></string>
   <string id="10514"></string>
   <string id="10515"></string>
@@ -855,10 +854,6 @@
   <string id="10522">Now Playing - Videos</string>
   <string id="10523">Album info</string>
   <string id="10524">Movie info</string>
-
-  <string id="10600">EPG ProgInfo</string>
-  <string id="10610">Programme Details</string>
-  <string id="10611">Channel</string>
 
   <string id="12000">Select dialog</string>
   <string id="12001">Music/Info</string>
@@ -1512,7 +1507,9 @@
   <string id="16314">Inverse Telecine</string>
   <string id="17500">Display sleep timeout</string> 
 
-	<string id="17998">%i hours</string>
+
+  <string id="17997">%i MByte</string>
+  <string id="17998">%i hours</string>
   <string id="17999">%i days</string>
 
   <!-- strings 18000 thru 18999 used for tv interface -->
@@ -1585,7 +1582,7 @@
   <string id="18084">Fr</string>
   <string id="18085">Sa</string>
   <string id="18086">Su</string>
-  <string id="18087">First Day:</string>
+  <string id="18087">from</string>
   <string id="18088">Next Recording</string>
   <string id="18089">Now Recording</string>
   <string id="18090">Warning</string>
@@ -1618,8 +1615,24 @@
   <string id="18120">Science</string>
   <string id="18121">Social/Political/Economics</string>
   <string id="18122">Special</string>
+  <string id="18126">Group Managment</string>
+  <string id="18127">No Groups</string>
+  <string id="18128">Grouped</string>
+  <string id="18129">Groups</string>
+  <string id="18130">New Groupname</string>
+  <string id="18131">All Channels</string>
+  <string id="18132">Group</string>
+  <string id="18133">XBMC synchronize TV-Data with Backend-Server</string>
+  <string id="18134">Channel blocked</string>
+  <string id="18135">No Groups defined</string>
+  <string id="18136">Please create first one</string>
+
+  <string id="18150">Now</string>
+  <string id="18151">Hidden</string>
+
   <string id="18161">Set Channel Icon</string>
   <string id="18162">Timer still recording - really delete?</string>
+
   <string id="18190">Next timer on</string>
   <string id="18191">at</string>
   <string id="18192">Recording</string>
@@ -1637,6 +1650,20 @@
   <string id="18204">Channels:</string>
   <string id="18205">Recordings:</string>
   <string id="18206">Timers:</string>
+  <string id="18207">Enter the Timer Name</string>
+
+  <string id="18300">Mo-__-__-__-__-__-__</string>
+  <string id="18301">__-Tu-__-__-__-__-__</string>
+  <string id="18302">__-__-We-__-__-__-__</string>
+  <string id="18303">__-__-__-Th-__-__-__</string>
+  <string id="18304">__-__-__-__-Fr-__-__</string>
+  <string id="18305">__-__-__-__-__-Sa-__</string>
+  <string id="18306">__-__-__-__-__-__-Su</string>
+  <string id="18307">Mo-Tu-We-Th-Fr-__-__</string>
+  <string id="18308">Mo-Tu-We-Th-Fr-Sa-__</string>
+  <string id="18309">Mo-Tu-We-Th-Fr-Sa-Su</string>
+  <string id="18310">__-__-__-__-__-Sa-Su</string>
+
   <string id="18399">Rename recording?</string>
   <string id="18400">Rename timer?</string>
   <string id="18401">Active:</string>
@@ -1648,10 +1675,12 @@
   <string id="18407">Lifetime (days):</string>
   <string id="18408">First day:</string>
   <string id="18409">Radio:</string>
+
   <string id="18414">Stop Recording</string>
   <string id="18415">Delete Timer</string>
   <string id="18416">Add Timer</string>
   <string id="18417">No automatic Switch</string>
+
   <string id="18800">Timers not in sync!</string>
   <string id="18801">Server error!</string>
   <string id="18802">Couldn't delete timer!</string>
@@ -1667,8 +1696,7 @@
   <string id="18812">No Icon Folder defined!</string>
   <string id="18813">Please adjust settings.</string>
   <string id="18814">Timer already set for this event</string>
-	
-	
+
   <string id="20000">CDDA rip folder</string>
   <string id="20001">Use external DVD player</string>
   <string id="20002">External DVD player</string>

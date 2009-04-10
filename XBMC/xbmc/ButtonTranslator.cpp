@@ -844,7 +844,11 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videofiles")) wWindowID = WINDOW_VIDEO_FILES;
   else if (strWindow.Equals("videolibrary")) wWindowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("videoplaylist")) wWindowID = WINDOW_VIDEO_PLAYLIST;
-  else if (strWindow.Equals("tv")) wWindowID = WINDOW_EPG;
+  else if (strWindow.Equals("tv")) wWindowID = WINDOW_TV;
+  else if (strWindow.Equals("tvosdchannels")) wWindowID = WINDOW_DIALOG_TV_OSD_CHANNELS;
+  else if (strWindow.Equals("tvosdguide")) wWindowID = WINDOW_DIALOG_TV_OSD_GUIDE;
+  else if (strWindow.Equals("tvosdteletext")) wWindowID = WINDOW_DIALOG_TV_OSD_TELETEXT;
+  else if (strWindow.Equals("tvosddirector")) wWindowID = WINDOW_DIALOG_TV_OSD_DIRECTOR;
   else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("guicalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
   else if (strWindow.Equals("screencalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;

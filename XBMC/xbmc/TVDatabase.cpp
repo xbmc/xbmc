@@ -20,10 +20,10 @@
  */
 #include "stdafx.h"
 #include "TVDatabase.h"
-#include "utils/EPG.h"
 #include "utils/GUIInfoManager.h"
 
 using namespace std;
+
 using namespace dbiplus;
 
 #define TV_DATABASE_VERSION 3
@@ -32,9 +32,9 @@ using namespace dbiplus;
 
 CTVDatabase::CTVDatabase(void)
 {
-  m_preV2version = TV_DATABASE_OLD_VERSION;
-  m_version = TV_DATABASE_VERSION;
-  m_strDatabaseFile = TV_DATABASE_NAME;
+  m_preV2version      = TV_DATABASE_OLD_VERSION;
+  m_version           = TV_DATABASE_VERSION;
+  m_strDatabaseFile   = TV_DATABASE_NAME;
 }
 
 CTVDatabase::~CTVDatabase(void)
@@ -48,27 +48,39 @@ bool CTVDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "TV: Creating tables");
-    CLog::Log(LOGINFO, "TV: Creating Clients table");
-    m_pDS->exec("CREATE TABLE Clients (idClient integer primary key, Plugin text, Name text)\n");
 
-    CLog::Log(LOGINFO, "TV: Creating Bouquets table");
-    m_pDS->exec("CREATE TABLE Bouquets (idBouquet integer primary key, idClient integer, Name text)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX ix_bouquetlinkClient ON Bouquets (idBouquet, idClient)\n");
+    CLog::Log(LOGINFO, "TV: Creating Clients table");
+    m_pDS->exec("CREATE TABLE Clients (idClient integer primary key, Name text)\n");
+
+    CLog::Log(LOGINFO, "TV: Creating Last Channel table");
+    m_pDS->exec("CREATE TABLE LastChannel (idClient integer, idChannel integer primary key, Number integer, Name text)\n");
 
     CLog::Log(LOGINFO, "TV: Creating Channels table");
-    m_pDS->exec("CREATE TABLE Channels (idClient integer, idBouquet integer, idChannel integer primary key, CallSign text, Name text, "
-                "XBMCNumber integer, ClientNumber integer, PlayCount integer, IconPath text, Encrypted bool, HasSettings boolean)\n");
+    m_pDS->exec("CREATE TABLE Channels (idClient integer, idChannel integer primary key, Name text, "
+                "ClientNumber integer, XBMCNumber integer, IconPath text, GroupID integer,"
+                "encrypted bool, radio bool, hide bool, strFileNameAndPath text)\n");
 
-    CLog::Log(LOGINFO, "TV: Creating Programmes table");
-    m_pDS->exec("CREATE TABLE Programmes (idProgramme integer primary key, idCategory integer, Title text, PlayCount integer, HasSettings boolean)\n");
+    CLog::Log(LOGINFO, "TV: Creating GuideData table");
+    m_pDS->exec("CREATE TABLE GuideData (idClient integer, idBouquet integer, idChannel integer, strChannel text, "
+                "idProgramme integer, strTitle text, strOriginalTitle text, strPlotOutline text, "
+                "strPlot text, strGenre text, StartTime datetime, EndTime datetime, strExtra text, "
+                "strFileNameAndPath text, commFree bool, isRecording bool, "
+                "GenreType integer, GenreSubType integer, firstAired datetime, "
+                "repeat bool, AutoSwitch integer, idUniqueBroadcast integer primary key)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idx_UniqueBroadcast on GuideData(idProgramme, idChannel, idBouquet, StartTime desc)\n"); /// pointless?
 
     CLog::Log(LOGINFO, "TV: Creating ChannelSettings table");
-    m_pDS->exec("CREATE TABLE ChannelSettings ( idClient integer, idChannel integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer, "
-      "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer, "
-      "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer, "
-      "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer, "
-      "CropRight integer, CropTop integer, CropBottom integer)\n");
+    m_pDS->exec("CREATE TABLE ChannelSettings ( idClient integer, idChannel integer primary key, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain integer, "
+                "ViewMode integer, ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer, "
+                "SubtitleDelay float, SubtitlesOn bool, Brightness integer, Contrast integer, Gamma integer, "
+                "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer, "
+                "CropRight integer, CropTop integer, CropBottom integer)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_ChannelSettings ON ChannelSettings (idChannel)\n");
+
+    CLog::Log(LOGINFO, "TV: Creating Groups table");
+    m_pDS->exec("CREATE TABLE Groups (idGroup integer primary key, idClient integer, Name text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_grouplinkClient ON Groups (idGroup, idClient)\n");
+
   }
   catch (...)
   {
@@ -82,25 +94,105 @@ bool CTVDatabase::CreateTables()
 bool CTVDatabase::CommitTransaction()
 {
   if (CDatabase::CommitTransaction())
-  { // number of items in the db has likely changed, so reset the infomanager cache
+  {
+    // number of items in the db has likely changed, so reset the infomanager cache
     g_infoManager.ResetPersistentCache(); /// what is this
     return true;
   }
+
   return false;
 }
 
-long CTVDatabase::AddClient(const CStdString &plugin, const CStdString &client)
+int CTVDatabase::GetLastChannel(DWORD clientID)
 {
-	try
+  try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
-    
+
+    CStdString SQL=FormatSQL("select * from LastChannel WHERE LastChannel.idClient = '%u'", clientID);
+
+    m_pDS->query(SQL.c_str());
+
+    if (m_pDS->num_rows() > 0)
+    {
+      int channelId = m_pDS->fv("idChannel").get_asInteger();
+
+      m_pDS->close();
+      return channelId;
+    }
+    else
+    {
+      m_pDS->close();
+      return -1;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+
+  return -1;
+}
+
+bool CTVDatabase::UpdateLastChannel(DWORD clientID, unsigned int channelID, CStdString m_strChannel)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (channelID < 0)   // no match found, update required
+    {
+      return false;
+    }
+
+    CStdString SQL;
+
+    SQL=FormatSQL("select * from LastChannel WHERE LastChannel.idChannel = '%u' AND LastChannel.idClient = '%u'", channelID, clientID);
+    m_pDS->query(SQL.c_str());
+
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      // update the item
+      CStdString SQL=FormatSQL("update LastChannel set idClient=%i,Number=%i,Name='%s' where idChannel=%i",
+                               clientID, channelID, m_strChannel.c_str(), channelID);
+
+      m_pDS->exec(SQL.c_str());
+      return true;
+    }
+    else   // add the items
+    {
+      m_pDS->close();
+      SQL=FormatSQL("insert into LastChannel ( idClient,idChannel,Number,Name)"
+                    " values ('%i','%i','%i','%s')\n",
+                    clientID, channelID, channelID, m_strChannel.c_str());
+      m_pDS->exec(SQL.c_str());
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, channelID);
+    return false;
+  }
+}
+
+long CTVDatabase::AddClient(const CStdString &client)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
     long clientId;
+
     clientId = GetClientId(client);
+
     if (clientId < 0)
     {
-      CStdString SQL=FormatSQL("insert into Clients (idClient, Plugin, Name) values (NULL, '%s', '%s')", plugin.c_str(), client.c_str());
+      CStdString SQL=FormatSQL("insert into Clients (idClient, Name) values (NULL, '%s')\n", client.c_str());
       m_pDS->exec(SQL.c_str());
       clientId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
     }
@@ -111,132 +203,258 @@ long CTVDatabase::AddClient(const CStdString &plugin, const CStdString &client)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, client.c_str());
   }
+
   return -1;
 }
 
-long CTVDatabase::AddBouquet(const long &idClient, const CStdString &bouquet)
+long CTVDatabase::AddEPG(DWORD clientID, const CTVEPGInfoTag &info)
 {
-	try
-  {
-    if (bouquet == "") return -1;
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-    
-    long bouquetId;
-    bouquetId = GetBouquetId(bouquet);
-    if (bouquetId < 0)
-    {
-      CStdString SQL=FormatSQL("insert into Bouquets (idClient, idBouquet, Name) values ('%i', NULL, '%s')", idClient, bouquet.c_str());
-      m_pDS->exec(SQL.c_str());
-      bouquetId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-    }
-
-    return bouquetId;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, bouquet.c_str());
-  }
-  return -1;
-}
-
-long CTVDatabase::AddChannel(const long &idClient, const long &idBouquet, const CStdString &Callsign, 
-                             const CStdString &Name, const int &Number, const CStdString &iconPath)
-{
-	try
-  {
-    if (idBouquet < 0 || idClient < 0) return -1;
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-
-    long channelId;
-    channelId = GetChannelId(Name);
-    if (channelId < 0)
-    {
-      CStdString SQL=FormatSQL("insert into Channels (idClient, idBouquet, idChannel, CallSign, Name, Number, PlayCount, IconPath, HasSettings) "
-                               "values ('%i', '%i', NULL, '%s', '%s', '%i', NULL, '%s', NULL)", idClient, idBouquet, Callsign.c_str(), 
-                               Name.c_str(), Number, iconPath.c_str());
-      m_pDS->exec(SQL.c_str());
-      channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-    }
-
-    return channelId;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, Callsign.c_str());
-  }
-  return -1;
-}
-
-long CTVDatabase::AddProgramme(const CStdString &Title, const long &idCategory)
-{
-	try
-  {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-
-    long programmeId;
-    programmeId = GetProgrammeId(Title);
-    if (programmeId < 0)
-    {
-      CStdString SQL=FormatSQL("insert into Programmes (idProgramme, Title, idCategory, PlayCount, HasSettings) "
-                               "values (NULL, '%s', '%u', NULL, NULL)", Title.c_str(), idCategory);
-      m_pDS->exec(SQL.c_str());
-      programmeId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-    }
-
-    return programmeId;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, Title.c_str());
-  }
-  return -1;
-}
-
-long CTVDatabase::AddCategory(const CStdString &category)
-{
-	try
-  {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-    
-    long categoryId;
-    categoryId = GetCategoryId(category);
-    if (categoryId < 0)
-    {
-      CStdString SQL=FormatSQL("insert into categories (idCategory, Name) values (NULL, '%s')", category.c_str());
-      m_pDS->exec(SQL.c_str());
-      categoryId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-    }
-
-    return categoryId;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, category.c_str());
-  }
-  return -1;
-}
-
-CDateTime CTVDatabase::GetDataEnd(DWORD clientID)
-{
-  CDateTime lastProgramme;
   try
   {
+    if (clientID < 0) return -1;
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    long epgId = info.m_idEPG;
+
+    if (epgId < 0)
+    {
+      CStdString SQL1=FormatSQL("insert into GuideData (idClient, idBouquet, idChannel, strChannel, "
+                                "strTitle, strOriginalTitle, strPlotOutline, "
+                                "strPlot, strGenre, StartTime, EndTime, strExtra, "
+                                "strFileNameAndPath, commFree, "
+                                "isRecording, GenreType, GenreSubType, firstAired, "
+                                "repeat, AutoSwitch, idUniqueBroadcast) ");
+
+      CStdString SQL2=FormatSQL("values ('%u', '%u', '%u', '%s', '%s', '%s', '%s', '%s', "
+                                "'%s', '%s', '%s', '%s', '%s', '%u', '%u', '%u', "
+                                "'%u', '%u', '%u', '%u', NULL)",
+                                clientID, info.m_bouquetNum, info.m_idChannel, info.m_strChannel.c_str(),
+                                info.m_strTitle.c_str(), info.m_strOriginalTitle.c_str(), info.m_strPlotOutline.c_str(),
+                                info.m_strPlot.c_str(), info.m_strGenre.c_str(), info.m_startTime.GetAsDBDateTime().c_str(),
+                                info.m_endTime.GetAsDBDateTime().c_str(), info.m_strExtra.c_str(), info.m_strFileNameAndPath.c_str(),
+                                info.m_commFree, info.m_isRecording, info.m_GenreType, info.m_GenreSubType, info.m_firstAired.GetAsDBDateTime().c_str(),
+                                info.m_repeat, info.m_bAutoSwitch);
+
+      SQL1 += SQL2;
+      m_pDS->exec(SQL1.c_str());
+      epgId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    }
+
+    return epgId;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, info.m_strChannel.c_str());
+  }
+
+  return -1;
+}
+
+bool CTVDatabase::UpdateEPG(DWORD clientID, const CTVEPGInfoTag &info)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    long channelId = info.m_idChannel;
+
+    if (channelId < 0)   // no match found, update required
+    {
+      return false;
+    }
+
+    CStdString SQL;
+
+    SQL=FormatSQL("select * from GuideData WHERE GuideData.idChannel = '%u' AND GuideData.idClient = '%u' AND GuideData.StartTime = '%s' AND GuideData.EndTime = '%s'", channelId, clientID, info.m_startTime.GetAsDBDateTime().c_str(), info.m_endTime.GetAsDBDateTime().c_str());
+    m_pDS->query(SQL.c_str());
+
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      // update the item
+      CStdString SQL1=FormatSQL("update GuideData set idClient=%i,idBouquet=%i,strChannel='%s',"
+                                "strTitle='%s',strOriginalTitle='%s',strPlotOutline='%s',"
+                                "strPlot='%s',strGenre='%s',StartTime='%s',EndTime='%s',strExtra='%s',",
+                                clientID, info.m_bouquetNum, info.m_strChannel.c_str(),
+                                info.m_strTitle.c_str(), info.m_strOriginalTitle.c_str(), info.m_strPlotOutline.c_str(),
+                                info.m_strPlot.c_str(), info.m_strGenre.c_str(), info.m_startTime.GetAsDBDateTime().c_str(),
+                                info.m_endTime.GetAsDBDateTime().c_str(), info.m_strExtra.c_str());
+
+      CStdString SQL2=FormatSQL("strFileNameAndPath='%s',commFree=%i,idChannel=%i,"
+                                "isRecording=%i,GenreType=%i,GenreSubType=%i,firstAired=%i,"
+                                "repeat=%i,AutoSwitch=%i where StartTime='%s'",
+                                info.m_strFileNameAndPath.c_str(), info.m_commFree, info.m_idChannel,
+                                info.m_isRecording, info.m_GenreType, info.m_GenreSubType,
+                                info.m_firstAired.GetAsDBDateTime().c_str(),
+                                info.m_repeat, info.m_bAutoSwitch, info.m_startTime.GetAsDBDateTime().c_str());
+
+      SQL1 += SQL2;
+
+      m_pDS->exec(SQL1.c_str());
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, info.m_strChannel.c_str());
+    return false;
+  }
+}
+
+bool CTVDatabase::UpdateEPGRecordingState(DWORD clientID, unsigned int channelID, const CDateTime &start, const CDateTime &end, bool OnOff)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    long channelId = channelID;
+
+    if (channelId < 0)   // no match found, update required
+    {
+      return false;
+    }
+
+    CStdString SQL;
+
+    SQL=FormatSQL("select * from GuideData WHERE GuideData.idChannel = '%u' AND GuideData.idClient = '%u' AND GuideData.StartTime < '%s' AND GuideData.EndTime > '%s'", channelId, clientID, start.GetAsDBDateTime().c_str(), end.GetAsDBDateTime().c_str());
+    m_pDS->query(SQL.c_str());
+
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      // update the item
+      CStdString SQL1=FormatSQL("update GuideData set isRecording=%i where StartTime='%s'",
+                                OnOff, start.GetAsDBDateTime().c_str());
+
+      m_pDS->exec(SQL1.c_str());
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, channelID);
+    return false;
+  }
+}
+
+bool CTVDatabase::RemoveEPGEntries(DWORD clientID, unsigned int channelID, const CDateTime &start, const CDateTime &end)
+{
+  try
+  {
+    CStdString strSQL;
+
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (channelID < 0)   // no match found, update required
+    {
+      return false;
+    }
+
+    if (start == NULL)
+    {
+      strSQL=FormatSQL("delete from GuideData WHERE GuideData.idChannel = '%u' "
+                                "AND GuideData.idClient = '%u'", channelID, clientID);
+    }
+    else
+    {
+      strSQL=FormatSQL("delete from GuideData WHERE GuideData.idChannel = '%u' "
+                                "AND GuideData.idClient = '%u' AND GuideData.StartTime < '%s' "
+                                "AND GuideData.EndTime > '%s'", channelID, clientID,
+                                start.GetAsDBDateTime().c_str(), end.GetAsDBDateTime().c_str());
+    }
+    m_pDS->exec(strSQL.c_str());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (ID=%i) failed", __FUNCTION__, channelID);
+    return false;
+  }
+}
+
+bool CTVDatabase::GetEPGForChannel(DWORD clientID, unsigned int channelID, EPG_DATA &epg, const CDateTime &start, const CDateTime &end)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString SQL=FormatSQL("select * from GuideData WHERE GuideData.idClient = '%u' "
+                             "AND GuideData.idChannel = '%u' AND GuideData.EndTime > '%s' "
+                             "AND GuideData.StartTime < '%s' ORDER BY GuideData.StartTime;",
+                             clientID, channelID, start.GetAsDBDateTime().c_str(), end.GetAsDBDateTime().c_str());
+
+    m_pDS->query(SQL.c_str());
+
+    while (!m_pDS->eof())
+    {
+      TVEPGData broadcast;
+
+      broadcast.m_strTitle            = m_pDS->fv("strTitle").get_asString();
+      broadcast.m_strPlotOutline      = m_pDS->fv("strPlotOutline").get_asString();
+      broadcast.m_strPlot             = m_pDS->fv("strPlot").get_asString();
+      broadcast.m_GenreType           = m_pDS->fv("GenreType").get_asInteger();
+      broadcast.m_GenreSubType        = m_pDS->fv("GenreSubType").get_asInteger();
+      broadcast.m_strGenre            = m_pDS->fv("strGenre").get_asString();
+      broadcast.m_startTime.SetFromDBDateTime(m_pDS->fv("StartTime").get_asString());
+      broadcast.m_endTime.SetFromDBDateTime(m_pDS->fv("EndTime").get_asString());
+      broadcast.m_duration            = broadcast.m_endTime - broadcast.m_startTime;
+
+      epg.push_back(broadcast);
+
+      m_pDS->next();
+    }
+
+    m_pDS->close();
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return false;
+  }
+
+  return false;
+}
+
+CDateTime CTVDatabase::GetEPGDataStart(DWORD clientID, unsigned int channelID)
+{
+  CDateTime lastProgramme;
+
+  try
+  {
+    CStdString SQL;
+
     if (NULL == m_pDB.get()) return lastProgramme;
     if (NULL == m_pDS.get()) return lastProgramme;
 
-    CStdString SQL=FormatSQL("SELECT GuideData.EndTime FROM GuideData "
-                             "WHERE GuideData.idClient = '%u' "
-                             "ORDER BY Guidedata.EndTime DESC;", clientID);
-    m_pDS->query( SQL.c_str() );
+    if (channelID != -1)
+    {
+      SQL=FormatSQL("SELECT GuideData.StartTime FROM GuideData "
+                    "WHERE GuideData.idClient = '%u' AND GuideData.idChannel = '%u' "
+                    "ORDER BY Guidedata.StartTime DESC;", clientID, channelID);
+    }
+    else
+    {
+      SQL=FormatSQL("SELECT GuideData.StartTime FROM GuideData "
+                    "WHERE GuideData.idClient = '%u' "
+                    "ORDER BY Guidedata.StartTime DESC;", clientID);
+    }
+
+    m_pDS->query(SQL.c_str());
+
     if (!m_pDS->eof())
     {
-      lastProgramme.SetFromDBDateTime(m_pDS->fv("EndTime").get_asString());
+      lastProgramme.SetFromDBDateTime(m_pDS->fv("StartTime").get_asString());
     }
+
     m_pDS->close();
+
     if (!lastProgramme.IsValid())
       return CDateTime::GetCurrentDateTime();
     else
@@ -249,197 +467,199 @@ CDateTime CTVDatabase::GetDataEnd(DWORD clientID)
   }
 }
 
-/// \brief GetChannelSettings() obtains any saved video settings for the current channel.
-/// \retval Returns true if the settings exist, false otherwise. */
-bool CTVDatabase::GetChannelSettings(const CStdString &channel, CVideoSettings &settings)
+CDateTime CTVDatabase::GetEPGDataEnd(DWORD clientID, unsigned int channelID)
 {
+  CDateTime lastProgramme;
+
   try
   {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    CStdString SQL;
 
-    // obtain the ChannelID (if it exists)
-    long channelId = GetChannelId(channel);
-    if (channelId < 0)
-      return false;
+    if (NULL == m_pDB.get()) return lastProgramme;
+    if (NULL == m_pDS.get()) return lastProgramme;
 
-
-    CStdString SQL=FormatSQL("select * from ChannelSettings where idChannel like '%u'", channelId);
-    m_pDS->query( SQL.c_str() );
-    if (m_pDS->num_rows() > 0)
-    { // get the channel settings info
-      settings.m_AudioDelay = m_pDS->fv("AudioDelay").get_asFloat();
-      settings.m_AudioStream = m_pDS->fv("AudioStream").get_asInteger();
-      settings.m_Brightness = m_pDS->fv("Brightness").get_asInteger();
-      settings.m_Contrast = m_pDS->fv("Contrast").get_asInteger();
-      settings.m_CustomPixelRatio = m_pDS->fv("PixelRatio").get_asFloat();
-      settings.m_CustomZoomAmount = m_pDS->fv("ZoomAmount").get_asFloat();
-      settings.m_Gamma = m_pDS->fv("Gamma").get_asInteger();
-      settings.m_NonInterleaved = m_pDS->fv("Interleaved").get_asBool();
-      settings.m_NoCache = m_pDS->fv("NoCache").get_asBool();
-      settings.m_SubtitleDelay = m_pDS->fv("SubtitleDelay").get_asFloat();
-      settings.m_SubtitleOn = m_pDS->fv("SubtitlesOn").get_asBool();
-      settings.m_SubtitleStream = m_pDS->fv("SubtitleStream").get_asInteger();
-      settings.m_ViewMode = m_pDS->fv("ViewMode").get_asInteger();
-      settings.m_ResumeTime = m_pDS->fv("ResumeTime").get_asInteger();
-      settings.m_Crop = m_pDS->fv("Crop").get_asBool();
-      settings.m_CropLeft = m_pDS->fv("CropLeft").get_asInteger();
-      settings.m_CropRight = m_pDS->fv("CropRight").get_asInteger();
-      settings.m_CropTop = m_pDS->fv("CropTop").get_asInteger();
-      settings.m_CropBottom = m_pDS->fv("CropBottom").get_asInteger();
-      settings.m_InterlaceMethod = (EINTERLACEMETHOD)m_pDS->fv("Deinterlace").get_asInteger();
-      settings.m_VolumeAmplification = m_pDS->fv("VolumeAmplification").get_asFloat();
-      settings.m_OutputToAllSpeakers = m_pDS->fv("OutputToAllSpeakers").get_asBool();
-      settings.m_SubtitleCached = false;
-      m_pDS->close();
-      return true;
+    if (channelID != -1)
+    {
+      SQL=FormatSQL("SELECT GuideData.EndTime FROM GuideData "
+                    "WHERE GuideData.idClient = '%u' AND GuideData.idChannel = '%u' "
+                    "ORDER BY Guidedata.EndTime DESC;", clientID, channelID);
     }
     else
     {
-      m_pDS->close();
-      return false;
+      SQL=FormatSQL("SELECT GuideData.EndTime FROM GuideData "
+                    "WHERE GuideData.idClient = '%u' "
+                    "ORDER BY Guidedata.EndTime DESC;", clientID);
     }
+
+    m_pDS->query(SQL.c_str());
+
+    if (!m_pDS->eof())
+    {
+      lastProgramme.SetFromDBDateTime(m_pDS->fv("EndTime").get_asString());
+    }
+
+    m_pDS->close();
+
+    if (!lastProgramme.IsValid())
+      return CDateTime::GetCurrentDateTime();
+    else
+      return lastProgramme;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return lastProgramme;
   }
-  return false;
 }
 
-/// \brief Sets the settings for a particular video file
-bool CTVDatabase::SetChannelSettings(const CStdString& channel, const CVideoSettings &setting)
+long CTVDatabase::AddChannel(DWORD clientID, const CTVChannelInfoTag &info)
+{
+  try
+  {
+    if (clientID < 0) return -1;
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    long channelId = info.m_iIdChannel;
+
+    if (channelId < 0)
+    {
+      CStdString SQL = FormatSQL("insert into Channels (idClient, idChannel, Name, ClientNumber, XBMCNumber, "
+                                 "GroupID, IconPath, encrypted, radio, hide, strFileNameAndPath) "
+                                 "values ('%i', NULL, '%s', '%i', '%i', '%i', '%s', '%i', '%i', '%i', '%s')\n",
+                                 clientID, info.m_strChannel.c_str(), info.m_iClientNum, info.m_iChannelNum, info.m_iGroupID,
+                                 info.m_IconPath.c_str(), info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
+
+      m_pDS->exec(SQL.c_str());
+      channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    }
+
+    return channelId;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, info.m_strChannel.c_str());
+  }
+
+  return -1;
+}
+
+bool CTVDatabase::RemoveAllChannels(DWORD clientID)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    long channelId = GetChannelId(channel);
-    
-    if (channelId < 0)
-    { // no match found, update required
-      return false;
-    }
+    CStdString strSQL=FormatSQL("delete from Channels WHERE Channels.idClient = '%u'", clientID);
 
-    CStdString SQL;
-    SQL.Format("select * from ChannelSettings where idChannel=%i", channelId);
-    m_pDS->query( SQL.c_str() );
-    if (m_pDS->num_rows() > 0)
-    {
-      m_pDS->close();
-      // update the item
-      SQL=FormatSQL("update ChannelSettings set Interleaved=%i,NoCache=%i,Deinterlace=%i,FilmGrain=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
-                       "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%i,Contrast=%i,Gamma=%i,"
-                       "VolumeAmplification=%f,AudioDelay=%f,OutputToAllSpeakers=%i,",
-                       setting.m_NonInterleaved, setting.m_NoCache, setting.m_InterlaceMethod, setting.m_FilmGrain, setting.m_ViewMode, 
-                       setting.m_CustomZoomAmount, setting.m_CustomPixelRatio, setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, 
-                       setting.m_SubtitleOn, setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
-                       setting.m_OutputToAllSpeakers);
-      CStdString SQL2;
-      SQL2=FormatSQL("ResumeTime=%i,Crop=%i,CropLeft=%i,CropRight=%i,CropTop=%i,CropBottom=%i where idFile=%i\n", setting.m_ResumeTime, 
-                        setting.m_Crop, setting.m_CropLeft, setting.m_CropRight, setting.m_CropTop, setting.m_CropBottom, channelId);
-      SQL += SQL2;
-      m_pDS->exec(SQL.c_str());
-      return true;
-    }
-    else 
-    { // add the items
-      m_pDS->close();
-      SQL=FormatSQL("insert into ChannelSettings ( idChannel,Interleaved,NoCache,Deinterlace,FilmGrain,ViewMode,ZoomAmount,PixelRatio,"
-                       "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
-                       "VolumeAmplification,AudioDelay,OutputToAllSpeakers,ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom)"
-                       " values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,",
-                       channelId, setting.m_NonInterleaved, setting.m_NoCache, setting.m_InterlaceMethod, setting.m_FilmGrain, setting.m_ViewMode, 
-                       setting.m_CustomZoomAmount, setting.m_CustomPixelRatio, setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, 
-                       setting.m_SubtitleOn, setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay);
-      CStdString SQL2;
-      SQL2=FormatSQL("%i,%i,%i,%i,%i,%i,%i)\n", setting.m_OutputToAllSpeakers, setting.m_ResumeTime, setting.m_Crop, setting.m_CropLeft, setting.m_CropRight,
-                    setting.m_CropTop, setting.m_CropBottom);
-      SQL += SQL2;
-      m_pDS->exec(SQL.c_str());
-      return true;
-    }
+    m_pDS->exec(strSQL.c_str());
+
+    return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, channel.c_str());
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
     return false;
   }
 }
 
-void CTVDatabase::NewChannel(DWORD clientID, CStdString bouquet, CStdString chanName, CStdString callsign, int chanNum, CStdString iconPath)
-{
-  long idBouquet = AddBouquet(clientID, bouquet);
-  AddChannel(clientID, idBouquet, callsign, chanName, chanNum, iconPath);
-}
-
-void CTVDatabase::GetChannelList(DWORD clientID, VECCHANNELS &channels)
-{
-  channels.clear();
-  try
-  {
-    if (NULL == m_pDB.get()) return;
-    if (NULL == m_pDS.get()) return;
-
-    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.idClient=%u", clientID);
-    m_pDS->query( SQL.c_str() );
-
-    while (!m_pDS->eof())
-    {
-      int num = m_pDS->fv("Channels.Number").get_asInteger();
-      long idBouquet = m_pDS->fv("Channels.idBouquet").get_asLong();
-      long idChannel = m_pDS->fv("Channels.idChannel").get_asLong();
-      CStdString name = m_pDS->fv("Channels.Name").get_asString();
-      CStdString callsign = m_pDS->fv("Channels.Callsign").get_asString();
-      CStdString iconPath = m_pDS->fv("Channels.IconPath").get_asString();
-  
-      //CTVChannel* channel = new CTVChannel(clientID, idBouquet, idChannel, num, name, callsign, iconPath);
-      //channels.push_back(channel);
-
-      m_pDS->next();
-    }
-    m_pDS->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-  }
-}
-
-int CTVDatabase::GetNumChannels(DWORD clientID)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return 0;
-    if (NULL == m_pDS.get()) return 0;
-
-    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.idClient=%u", clientID);
-    m_pDS->query( SQL.c_str() );
-    int num = m_pDS->num_rows();
-    m_pDS->close();
-    return num;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-    return 0;
-  }
-}
-
-
-bool CTVDatabase::HasChannel(DWORD clientID, const CStdString &name)
+bool CTVDatabase::RemoveChannel(DWORD clientID, const CTVChannelInfoTag &info)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.Name = '%s' AND Channels.idClient = '%u'", name.c_str(), clientID);
-    m_pDS->query( SQL.c_str() );
-    int num = 0; 
+    long channelId = info.m_iIdChannel;
+
+    if (channelId < 0)   // no match found, update required
+    {
+      return false;
+    }
+
+    CStdString strSQL=FormatSQL("delete from Channels WHERE Channels.idChannel = '%u' AND Channels.idClient = '%u'", channelId, clientID);
+
+    m_pDS->exec(strSQL.c_str());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, info.m_strChannel.c_str());
+    return false;
+  }
+}
+
+long CTVDatabase::UpdateChannel(DWORD clientID, const CTVChannelInfoTag &info)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    long channelId = info.m_iIdChannel;
+
+    if (channelId < 0)   // no match found, update required
+    {
+      return false;
+    }
+
+    CStdString SQL;
+
+    SQL=FormatSQL("select * from Channels WHERE Channels.idChannel = '%u' AND Channels.idClient = '%u'", channelId, clientID);
+    m_pDS->query(SQL.c_str());
+
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      // update the item
+      CStdString SQL = FormatSQL("update Channels set idClient=%i,Name='%s', idChannel=%i, ClientNumber=%i, XBMCNumber=%i,GroupID=%i,"
+                                 "IconPath='%s',encrypted=%i,radio=%i,hide=%i,strFileNameAndPath='%s' where idChannel=%i",
+                                 clientID, info.m_strChannel.c_str(), channelId, info.m_iClientNum, info.m_iChannelNum, info.m_iGroupID,
+                                 info.m_IconPath.c_str(), info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str(),
+                                 channelId);
+
+      m_pDS->exec(SQL.c_str());
+      return channelId;
+    }
+    else   // add the items
+    {
+      m_pDS->close();
+      CStdString SQL = FormatSQL("insert into Channels (idClient, idChannel, Name, ClientNumber, XBMCNumber, "
+                                 "GroupID, IconPath, encrypted, radio, hide, strFileNameAndPath) "
+                                 "values ('%i', NULL, '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%s')\n",
+                                 clientID, info.m_strChannel.c_str(), info.m_iClientNum, info.m_iChannelNum, info.m_iGroupID,
+                                 info.m_IconPath.c_str(), info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
+
+      m_pDS->exec(SQL.c_str());
+      channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      return channelId;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, info.m_strChannel.c_str());
+    return false;
+  }
+}
+
+bool CTVDatabase::HasChannel(DWORD clientID, const CTVChannelInfoTag &info)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.Name = '%s' AND Channels.ClientNumber = '%i' AND Channels.idClient = '%u'", info.m_strChannel.c_str(), info.m_iClientNum, clientID);
+
+    m_pDS->query(SQL.c_str());
+
+    int num = 0;
+
     num = m_pDS->num_rows();
+
     m_pDS->close();
+
     if (num != 0)
       return true;
     else
@@ -452,236 +672,325 @@ bool CTVDatabase::HasChannel(DWORD clientID, const CStdString &name)
   }
 }
 
-void CTVDatabase::AddChannelData(CFileItemList &channel)
+int CTVDatabase::GetNumChannels(DWORD clientID)
 {
   try
   {
-    if (NULL == m_pDB.get()) return;
-    if (NULL == m_pDS.get()) return;
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
 
-    long channelId = GetChannelId(channel.Get(0)->GetEPGInfoTag()->m_strChannel);
-    long bouquetId = GetBouquetId(channel.Get(0)->GetEPGInfoTag()->m_strBouquet);
-    long clientId  = 0; /*channel.Get(0)->GetEPGInfoTag()->GetSourceID();*/
+    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.idClient=%u", clientID);
 
-    DWORD tick = timeGetTime();
-    BeginTransaction();
-    int numItems = channel.Size();
-    for (int i = 0; i < numItems; i++)
-    {
-      CFileItemPtr item = channel.Get(i);
-      long categoryId = AddCategory(item->GetEPGInfoTag()->m_strGenre);
-      long programmeId = AddProgramme(item->GetEPGInfoTag()->m_strTitle, categoryId);
+    m_pDS->query(SQL.c_str());
 
-      CStdString outline, description, episodeID, seriesID;
-      CDateTime  start, end;
+    int num = m_pDS->num_rows();
 
-      outline = item->GetEPGInfoTag()->m_strPlotOutline;
-      description = item->GetEPGInfoTag()->m_strPlot;
-      episodeID = item->GetEPGInfoTag()->m_episodeID;
-      seriesID = item->GetEPGInfoTag()->m_seriesID;
-      start = item->GetEPGInfoTag()->m_startTime;
-      end = item->GetEPGInfoTag()->m_endTime;
+    m_pDS->close();
 
-      CStdString SQL=FormatSQL("insert into GuideData (idClient, idBouquet, idChannel, idProgramme, idCategory, "
-        "Subtitle, Description, EpisodeID, SeriesID, StartTime, EndTime, idUniqueBroadcast) "
-        "values ('%u', '%u', '%u', '%u', '%u', '%s', '%s', '%s', '%s', '%s', '%s', NULL)",
-        clientId, bouquetId, channelId, programmeId, categoryId, outline.c_str(), description.c_str(), episodeID.c_str(), 
-        seriesID.c_str(), start.GetAsDBDateTime().c_str(), end.GetAsDBDateTime().c_str());
-      
-      m_pDS->exec(SQL.c_str());
-    }
-    CommitTransaction();
-    CLog::Log(LOGDEBUG, "%s - %u items in %ums", __FUNCTION__, numItems, timeGetTime()-tick);
+    return num;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return 0;
   }
 }
 
-bool CTVDatabase::GetProgrammesByChannelName(const CStdString &channel, CFileItemList &matches, const CDateTime &start, const CDateTime &end)
+int CTVDatabase::GetNumHiddenChannels(DWORD clientID)
 {
   try
   {
-    /*DWORD time = timeGetTime();*/
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+
+    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.idClient=%u AND Channels.hide=%u", clientID, true);
+
+    m_pDS->query(SQL.c_str());
+
+    int num = m_pDS->num_rows();
+
+    m_pDS->close();
+
+    return num;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return 0;
+  }
+}
+
+bool CTVDatabase::GetChannelList(DWORD clientID, VECCHANNELS* results, bool radio)
+{
+  results->erase(results->begin(), results->end());
+
+  try
+  {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    long channelId = GetChannelId(channel);
-    if (channelId < 0 )
-      return false;
+    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.idClient=%u AND Channels.radio=%u ORDER BY Channels.XBMCNumber", clientID, radio);
 
-    CDateTime     gridStart;
-    CDateTime     gridEnd;
-    CDateTimeSpan offset;
+    m_pDS->query(SQL.c_str());
 
-    gridStart = start;
-    gridEnd = end;
-
-    CStdString SQL=FormatSQL("SELECT Bouquets.Name, Channels.Name, Channels.Number, Categories.Name, Programmes.Title, "
-      "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID, GuideData.idUniqueBroadcast FROM GuideData "
-      "JOIN Bouquets ON Bouquets.idBouquet=GuideData.idBouquet "
-      "JOIN Programmes ON Programmes.idProgramme=GuideData.idProgramme "
-      "JOIN Channels ON Channels.idChannel=GuideData.idChannel "
-      "JOIN Categories ON Categories.idCategory=GuideData.idCategory "
-      "WHERE GuideData.idChannel = '%u' AND GuideData.EndTime > '%s' AND GuideData.StartTime < '%s' "
-      "ORDER BY GuideData.StartTime;", channelId, gridStart.GetAsDBDateTime().c_str(), gridEnd.GetAsDBDateTime().c_str());    
-    
-    //run query
-    /*CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, SQL.c_str());*/
-    if (!m_pDS->query(SQL.c_str())) return false;
-    int iRowsFound = m_pDS->num_rows();
-    if (iRowsFound == 0)
-    {
-      m_pDS->close();
-      return false; /// Don't currently want channels without any guide data
-    }
-
-    //CLog::Log(LOGDEBUG,"Time for (initial) SQL query = %ldms", timeGetTime() - time);
-    
-    /*time = timeGetTime();*/
-    // get data from returned rows
     while (!m_pDS->eof())
     {
-      CTVEPGInfoTag programme = GetUniqueBroadcast(m_pDS);
-      CFileItemPtr pItem(new CFileItem(programme));
-      FillProperties(pItem.get());
-      matches.Add(pItem);
+      CTVChannelInfoTag broadcast;
+
+      broadcast.m_iIdChannel          = m_pDS->fv("idChannel").get_asInteger();
+      broadcast.m_IconPath            = m_pDS->fv("IconPath").get_asString();
+      broadcast.m_iChannelNum         = m_pDS->fv("XBMCNumber").get_asInteger();
+      broadcast.m_iClientNum          = m_pDS->fv("ClientNumber").get_asInteger();
+      broadcast.m_strChannel          = m_pDS->fv("Name").get_asString();
+      broadcast.m_strFileNameAndPath  = m_pDS->fv("strFileNameAndPath").get_asString();
+      broadcast.m_encrypted           = m_pDS->fv("encrypted").get_asBool();
+      broadcast.m_radio               = m_pDS->fv("radio").get_asBool();
+      broadcast.m_hide                = m_pDS->fv("hide").get_asBool();
+      broadcast.m_iGroupID            = m_pDS->fv("GroupID").get_asInteger();
+      broadcast.m_strStatus           = "livetv";
+
+      results->push_back(broadcast);
       m_pDS->next();
     }
-    //CLog::Log(LOGDEBUG,"Time to retrieve programmes from dataset = %ldms", timeGetTime() - time);
 
-    // cleanup
     m_pDS->close();
+
     return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, channel.c_str());
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    return false;
   }
+
   return false;
 }
 
-bool CTVDatabase::GetProgrammesByEpisodeID(const CStdString& episodeID, CFileItemList* items, bool noHistory)
+bool CTVDatabase::GetChannelSettings(DWORD clientID, unsigned int channelID, CVideoSettings &settings)
 {
-  /* Finds unique broadcasts with matching EpisodeIDs. Default behaviour is to return all programs with end times later than now */
-  /* setting noHistory to false returns all matching items */
-  if (episodeID.empty())
-    return false;
   try
   {
-    /*DWORD time = timeGetTime();*/
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
+    if (channelID < 0) return false;
 
-    CDateTime from;
+    CStdString SQL=FormatSQL("select * from ChannelSettings where idChannel like '%u'", channelID);
 
-    if (!noHistory)
+    m_pDS->query(SQL.c_str());
+
+    if (m_pDS->num_rows() > 0)
     {
-      from = CDateTime::GetCurrentDateTime();
+      // get the channel settings info
+      settings.m_AudioDelay           = m_pDS->fv("AudioDelay").get_asFloat();
+      settings.m_AudioStream          = m_pDS->fv("AudioStream").get_asInteger();
+      settings.m_Brightness           = m_pDS->fv("Brightness").get_asInteger();
+      settings.m_Contrast             = m_pDS->fv("Contrast").get_asInteger();
+      settings.m_CustomPixelRatio     = m_pDS->fv("PixelRatio").get_asFloat();
+      settings.m_CustomZoomAmount     = m_pDS->fv("ZoomAmount").get_asFloat();
+      settings.m_Gamma                = m_pDS->fv("Gamma").get_asInteger();
+      settings.m_NonInterleaved       = m_pDS->fv("Interleaved").get_asBool();
+      settings.m_NoCache              = m_pDS->fv("NoCache").get_asBool();
+      settings.m_SubtitleDelay        = m_pDS->fv("SubtitleDelay").get_asFloat();
+      settings.m_SubtitleOn           = m_pDS->fv("SubtitlesOn").get_asBool();
+      settings.m_SubtitleStream       = m_pDS->fv("SubtitleStream").get_asInteger();
+      settings.m_ViewMode             = m_pDS->fv("ViewMode").get_asInteger();
+      settings.m_ResumeTime           = m_pDS->fv("ResumeTime").get_asInteger();
+      settings.m_Crop                 = m_pDS->fv("Crop").get_asBool();
+      settings.m_CropLeft             = m_pDS->fv("CropLeft").get_asInteger();
+      settings.m_CropRight            = m_pDS->fv("CropRight").get_asInteger();
+      settings.m_CropTop              = m_pDS->fv("CropTop").get_asInteger();
+      settings.m_CropBottom           = m_pDS->fv("CropBottom").get_asInteger();
+      settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("Deinterlace").get_asInteger();
+      settings.m_VolumeAmplification  = m_pDS->fv("VolumeAmplification").get_asFloat();
+      settings.m_OutputToAllSpeakers  = m_pDS->fv("OutputToAllSpeakers").get_asBool();
+      settings.m_SubtitleCached       = false;
+      m_pDS->close();
+      return true;
     }
     else
     {
-      from.SetFromDBDate("1970-01-01");
-    }
-   
-
-    CStdString SQL= FormatSQL("SELECT Bouquets.Name, Channels.Name, Channels.Number, Categories.Name, Programmes.Title, "
-                              "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID, GuideData.idUniqueBroadcast FROM GuideData "
-                              "JOIN Bouquets ON Bouquets.idBouquet=GuideData.idBouquet "
-                              "JOIN Programmes ON Programmes.idProgramme=GuideData.idProgramme "
-                              "JOIN Channels ON Channels.idChannel=GuideData.idChannel "
-                              "JOIN Categories ON Categories.idCategory=GuideData.idCategory "
-                              "WHERE GuideData.EpisodeID = '%s' AND GuideData.EndTime > '%s' "
-                              "ORDER BY GuideData.StartTime;", episodeID.c_str(), from.GetAsDBDateTime().c_str()); 
-
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, SQL.c_str());
-    //run query
-    m_pDS->query( SQL.c_str() );
-
-    int rowsFound = m_pDS->num_rows();
-    if (rowsFound == 0)
-    {
       m_pDS->close();
       return false;
     }
-
-    items->Reserve(rowsFound + items->Size()); // because items could already be populated
-    while (!m_pDS->eof())
-    {
-      CTVEPGInfoTag progInfo = GetUniqueBroadcast(m_pDS);
-      CFileItemPtr item(new CFileItem(progInfo));
-      FillProperties(item.get());
-      items->Add(item);
-      m_pDS->next();
-    }
-
-    /*CLog::Log(LOGDEBUG,"Time for SQL query = %ldms", timeGetTime() - time);*/
-
-    m_pDS->close();
-
-    return true;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-    return false;
   }
 
+  return false;
 }
 
-bool CTVDatabase::GetProgrammesBySubtitle(const CStdString& subtitle, CFileItemList* items, bool noHistory)
+bool CTVDatabase::SetChannelSettings(DWORD clientID, unsigned int channelID, const CVideoSettings &settings)
 {
-  /* Finds unique broadcasts with matching SubTitles. Default behaviour is to return all programs with end times later than now */
-  /* setting noHistory to false returns all available matched */
-  if (subtitle.empty())
-    return false;
   try
   {
-    /*DWORD time = timeGetTime();*/
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CDateTime from;
-
-    if (noHistory)
+    if (channelID < 0)
     {
-      CDateTimeSpan hour;
-      from = CDateTime::GetCurrentDateTime();
-    }
-
-
-    CStdString SQL= FormatSQL("SELECT Bouquets.Name, Channels.Name, Channels.Number, Categories.Name, Programmes.Title, "
-      "GuideData.Subtitle, GuideData.Description, GuideData.StartTime, GuideData.EndTime, GuideData.EpisodeID, GuideData.SeriesID, GuideData.idUniqueBroadcast FROM GuideData "
-      "JOIN Bouquets ON Bouquets.idBouquet=GuideData.idBouquet "
-      "JOIN Programmes ON Programmes.idProgramme=GuideData.idProgramme "
-      "JOIN Channels ON Channels.idChannel=GuideData.idChannel "
-      "JOIN Categories ON Categories.idCategory=GuideData.idCategory "
-      "WHERE GuideData.SubTitle = '%s' AND GuideData.EndTime > '%s' AND GuideData.EpisodeID = '' "
-      "ORDER BY GuideData.StartTime;", subtitle.c_str(), from.GetAsDBDateTime().c_str()); 
-
-    /*CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, SQL.c_str());*/
-    //run query
-    m_pDS->query( SQL.c_str() );
-
-    int rowsFound = m_pDS->num_rows();
-    if (rowsFound == 0)
-    {
-      m_pDS->close();
+      // no match found, update required
       return false;
     }
 
-    items->Reserve(rowsFound + items->Size()); // because items could already be populated
-    while (!m_pDS->eof())
+    CStdString SQL;
+
+    SQL.Format("select * from ChannelSettings where idChannel=%i", channelID);
+    m_pDS->query(SQL.c_str());
+
+    if (m_pDS->num_rows() > 0)
     {
-      CTVEPGInfoTag progInfo = GetUniqueBroadcast(m_pDS);
-      CFileItemPtr item(new CFileItem(progInfo));
-      FillProperties(item.get());
-      items->Add(item);
-      m_pDS->next();
+      m_pDS->close();
+      // update the item
+      SQL=FormatSQL("update ChannelSettings set Interleaved=%i,NoCache=%i,Deinterlace=%i,FilmGrain=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
+                    "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%i,Contrast=%i,Gamma=%i,"
+                    "VolumeAmplification=%f,AudioDelay=%f,OutputToAllSpeakers=%i,",
+                    settings.m_NonInterleaved, settings.m_NoCache, settings.m_InterlaceMethod, settings.m_FilmGrain, settings.m_ViewMode,
+                    settings.m_CustomZoomAmount, settings.m_CustomPixelRatio, settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay,
+                    settings.m_SubtitleOn, settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay,
+                    settings.m_OutputToAllSpeakers);
+      CStdString SQL2;
+      SQL2=FormatSQL("ResumeTime=%i,Crop=%i,CropLeft=%i,CropRight=%i,CropTop=%i,CropBottom=%i where idChannel=%i\n", settings.m_ResumeTime,
+                     settings.m_Crop, settings.m_CropLeft, settings.m_CropRight, settings.m_CropTop, settings.m_CropBottom, channelID);
+      SQL += SQL2;
+      m_pDS->exec(SQL.c_str());
+      return true;
+    }
+    else
+    {
+      // add the items
+      m_pDS->close();
+      SQL=FormatSQL("insert into ChannelSettings ( idChannel,Interleaved,NoCache,Deinterlace,FilmGrain,ViewMode,ZoomAmount,PixelRatio,"
+                    "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
+                    "VolumeAmplification,AudioDelay,OutputToAllSpeakers,ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom)"
+                    " values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,",
+                    channelID, settings.m_NonInterleaved, settings.m_NoCache, settings.m_InterlaceMethod, settings.m_FilmGrain, settings.m_ViewMode,
+                    settings.m_CustomZoomAmount, settings.m_CustomPixelRatio, settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay,
+                    settings.m_SubtitleOn, settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay);
+      CStdString SQL2;
+      SQL2=FormatSQL("%i,%i,%i,%i,%i,%i,%i)\n", settings.m_OutputToAllSpeakers, settings.m_ResumeTime, settings.m_Crop, settings.m_CropLeft, settings.m_CropRight,
+                     settings.m_CropTop, settings.m_CropBottom);
+      SQL += SQL2;
+      m_pDS->exec(SQL.c_str());
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (ID=%i) failed", __FUNCTION__, channelID);
+    return false;
+  }
+}
+
+long CTVDatabase::AddGroup(DWORD clientID, const CStdString &groupname)
+{
+  try
+  {
+    if (groupname == "") return -1;
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    long groupId;
+    groupId = GetGroupId(groupname);
+    if (groupId < 0)
+    {
+      CStdString SQL=FormatSQL("insert into Groups (idClient, idGroup, Name) values ('%i', NULL, '%s')", clientID, groupname.c_str());
+      m_pDS->exec(SQL.c_str());
+      groupId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
     }
 
-    /*CLog::Log(LOGDEBUG,"Time for SQL query = %ldms", timeGetTime() - time);*/
+    return groupId;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, groupname.c_str());
+  }
+  return -1;
+}
+
+bool CTVDatabase::DeleteGroup(DWORD clientID, unsigned int groupID)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (groupID < 0)   // no match found, update required
+    {
+      return false;
+    }
+
+    CStdString strSQL=FormatSQL("delete from Groups WHERE Groups.idGroup = '%u' AND Groups.idClient = '%u'", groupID, clientID);
+
+    m_pDS->exec(strSQL.c_str());
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, groupID);
+    return false;
+  }
+}
+
+bool CTVDatabase::RenameGroup(DWORD clientID, unsigned int GroupId, const CStdString &newname)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    if (GroupId < 0)   // no match found, update required
+    {
+      return false;
+    }
+
+    CStdString SQL;
+
+    SQL=FormatSQL("select * from Groups WHERE Groups.idGroup = '%u' AND Groups.idClient = '%u'", GroupId, clientID);
+    m_pDS->query(SQL.c_str());
+
+    if (m_pDS->num_rows() > 0)
+    {
+      m_pDS->close();
+      // update the item
+      CStdString SQL = FormatSQL("update Groups set idClient=%i,Name='%s' where idGroup=%i",
+                                 clientID, newname.c_str(), GroupId);
+      m_pDS->exec(SQL.c_str());
+      return true;
+    }
+    return false;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, GroupId);
+    return false;
+  }
+}
+
+bool CTVDatabase::GetGroupList(DWORD clientID, CHANNELGROUPS_DATA* results)
+{
+  results->erase(results->begin(), results->end());
+
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString SQL=FormatSQL("select * from Groups WHERE Groups.idClient=%u ORDER BY Groups.Name", clientID);
+
+    m_pDS->query(SQL.c_str());
+
+    while (!m_pDS->eof())
+    {
+      TVGroupData data;
+
+      data.m_ID     = m_pDS->fv("idGroup").get_asLong();
+      data.m_Title  = m_pDS->fv("Name").get_asString();
+
+      results->push_back(data);
+      m_pDS->next();
+    }
 
     m_pDS->close();
 
@@ -693,197 +1002,60 @@ bool CTVDatabase::GetProgrammesBySubtitle(const CStdString& subtitle, CFileItemL
     return false;
   }
 
-}
-
-void CTVDatabase::GetProgrammesByName(const CStdString& progName, CFileItemList& items, bool noHistory)
-{
-
+  return false;
 }
 
 long CTVDatabase::GetClientId(const CStdString& client)
 {
-	CStdString SQL;
+  CStdString SQL;
+
   try
   {
     long clientId=-1;
+
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
-    
-    SQL=FormatSQL("select idClient from Clients where Callsign like '%s'", client.c_str());
+
+    SQL=FormatSQL("select idClient from Clients where Name like '%s'", client.c_str());
+
     m_pDS->query(SQL.c_str());
+
     if (!m_pDS->eof())
       clientId = m_pDS->fv("Clients.idClient").get_asLong();
 
     m_pDS->close();
+
     return clientId;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s unable to get ClientId (%s)", __FUNCTION__, SQL.c_str());
   }
+
   return -1;
 }
 
-long CTVDatabase::GetBouquetId(const CStdString& bouquet)
+long CTVDatabase::GetGroupId(const CStdString &groupname)
 {
-	CStdString SQL;
+  CStdString SQL;
+
   try
   {
-    long lBouquetId=-1;
-    if (NULL == m_pDB.get()) return lBouquetId;
-    if (NULL == m_pDS.get()) return lBouquetId;
-    
-    SQL=FormatSQL("select idBouquet from Bouquets where Name like '%s'", bouquet.c_str());
+    long lGroupId=-1;
+    if (NULL == m_pDB.get()) return lGroupId;
+    if (NULL == m_pDS.get()) return lGroupId;
+
+    SQL=FormatSQL("select idGroup from Groups where Name like '%s'", groupname.c_str());
     m_pDS->query(SQL.c_str());
     if (!m_pDS->eof())
-      lBouquetId = m_pDS->fv("Bouquets.idBouquet").get_asLong();
+      lGroupId = m_pDS->fv("Groups.idGroup").get_asLong();
 
     m_pDS->close();
-    return lBouquetId;
+    return lGroupId;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s unable to get BouquetId (%s)", __FUNCTION__, SQL.c_str());
+    CLog::Log(LOGERROR, "%s unable to get GroupId (%s)", __FUNCTION__, SQL.c_str());
   }
   return -1;
-}
-
-long CTVDatabase::GetChannelId(const CStdString& channel)
-{
-	CStdString SQL;
-  try
-  {
-    long channelId=-1;
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-    
-    SQL=FormatSQL("select idChannel from Channels where Name like '%s'", channel.c_str());
-    m_pDS->query(SQL.c_str());
-    if (!m_pDS->eof())
-      channelId = m_pDS->fv("Channels.idChannel").get_asLong();
-
-    m_pDS->close();
-    return channelId;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s unable to get ChannelId (%s)", __FUNCTION__, SQL.c_str());
-  }
-  return -1;
-}
-
-long CTVDatabase::GetProgrammeId(const CStdString& programme)
-{
-	CStdString SQL;
-  try
-  {
-    long programmeId=-1;
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-    
-    SQL=FormatSQL("select idProgramme from Programmes where Title like '%s'", programme.c_str());
-    m_pDS->query(SQL.c_str());
-    if (!m_pDS->eof())
-      programmeId = m_pDS->fv("Programmes.idProgramme").get_asLong();
-
-    m_pDS->close();
-    return programmeId;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s unable to get ProgrammeId (%s)", __FUNCTION__, SQL.c_str());
-  }
-  return -1;
-}
-
-long CTVDatabase::GetCategoryId(const CStdString& category)
-{
-	CStdString SQL;
-  try
-  {
-    long categoryId=-1;
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-    
-    SQL=FormatSQL("select idCategory from categories where Name like '%s'", category.c_str());
-    m_pDS->query(SQL.c_str());
-    if (!m_pDS->eof())
-      categoryId = m_pDS->fv("categories.idCategory").get_asLong();
-
-    m_pDS->close();
-    return categoryId;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s unable to get CategoryId (%s)", __FUNCTION__, SQL.c_str());
-  }
-  return -1;
-}
-
-CTVEPGInfoTag CTVDatabase::GetUniqueBroadcast(auto_ptr<Dataset> &pDS)
-{
-  // Dataset columns:
-  // 0:  Bouquets.Name
-  // 1:  Channels.Name
-  // 2:  Channels.Number
-  // 3:  Categories.Name
-  // 4:  Programmes.Title
-  // 5:  GuideData.Subtitle
-  // 6:  GuideData.Description
-  // 7:  GuideData.StartTime
-  // 8:  GuideData.EndTime
-  // 9:  GuideData.EpisodeID
-  //10:  GuideData.SeriesID
-  //11:  GuideData.UniqueBroadcastID
-
-  CTVEPGInfoTag details(m_pDS->fv(11).get_asLong());
-
-  details.m_strBouquet = m_pDS->fv(0).get_asString();
-  details.m_strChannel = m_pDS->fv(1).get_asString();
-  details.m_channelNum = m_pDS->fv(2).get_asInteger();
-  details.m_strGenre   = m_pDS->fv(3).get_asString();
-  details.m_strTitle   = m_pDS->fv(4).get_asString();
-  details.m_strPlotOutline = m_pDS->fv(5).get_asString();
-  details.m_strPlot    = m_pDS->fv(6).get_asString();
-  details.m_startTime.SetFromDBDateTime(m_pDS->fv(7).get_asString());
-  details.m_endTime.SetFromDBDateTime(m_pDS->fv(8).get_asString());
-  if (details.m_startTime.IsValid() && details.m_endTime.IsValid())
-  {
-    details.m_duration = details.m_endTime - details.m_startTime;
-  }
-  details.m_episodeID = m_pDS->fv(9).get_asString();
-  details.m_seriesID  = m_pDS->fv(10).get_asString();
-
-  return details;
-}
-
-void CTVDatabase::FillProperties(CFileItem* programme)
-{
-  /* Fills the properties map with properties needed for skins */
-  programme->SetProperty("uniqueID", (int)programme->GetEPGInfoTag()->GetDbID());
-  programme->SetProperty("Bouquet", programme->GetEPGInfoTag()->m_strBouquet);
-  programme->SetProperty("Channel", programme->GetEPGInfoTag()->m_strChannel);
-  programme->SetProperty("Genre", programme->GetEPGInfoTag()->m_strGenre);
-  programme->SetProperty("Title", programme->GetEPGInfoTag()->m_strTitle);
-  programme->SetProperty("PlotOutline", programme->GetEPGInfoTag()->m_strPlotOutline);
-  programme->SetProperty("Plot", programme->GetEPGInfoTag()->m_strPlot);
-  programme->SetProperty("ChannelNum", programme->GetEPGInfoTag()->m_channelNum);
-  /// temp: get a short datetime
-  CDateTime startTime = programme->GetEPGInfoTag()->m_startTime;
-  SYSTEMTIME dateTime;
-  startTime.GetAsSystemTime(dateTime);
-  CStdString day;
-  switch (dateTime.wDayOfWeek)
-  {
-  case 1 : day = g_localizeStrings.Get(11); break;
-  case 2 : day = g_localizeStrings.Get(12); break;
-  case 3 : day = g_localizeStrings.Get(13); break;
-  case 4 : day = g_localizeStrings.Get(14); break;
-  case 5 : day = g_localizeStrings.Get(15); break;
-  case 6 : day = g_localizeStrings.Get(16); break;
-  default: day = g_localizeStrings.Get(17); break;
-  }
-  CStdString shortTime;
-  shortTime = startTime.GetAsLocalizedTime("HH:mm", false);
-  programme->SetProperty("LocaleDateTime", shortTime + " " + day);
 }

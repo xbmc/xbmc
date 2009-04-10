@@ -22,12 +22,10 @@
 
 #include "Database.h"
 #include "DateTime.h"
+#include "FileItem.h"
 #include "settings/VideoSettings.h"
 #include "utils/TVEPGInfoTag.h"
-#include "utils/EPG.h"
-#include "FileItem.h"
-
-class CGUIDialogProgress;
+#include "utils/TVChannelInfoTag.h"
 
 class CTVDatabase : public CDatabase
 {
@@ -37,57 +35,40 @@ public:
 
   virtual bool CommitTransaction();
 
-  // Clients
-  /*bool GetSavedClients(PVR)*/
+  long AddClient(const CStdString &client);
+  int GetLastChannel(DWORD clientID);
+  bool UpdateLastChannel(DWORD clientID, unsigned int channelID, CStdString m_strChannel);
 
-  // epg
-  bool FillEPG(const CStdString &client, const CStdString &bouquet, const CStdString &channame, const CStdString &callsign, const int &channum, const CStdString &progTitle, 
-               const CStdString &progSubtitle, const CStdString &progDescription, const CStdString &episode, const CStdString &series, 
-               const CDateTime &progStartTime, const CDateTime &progEndTime, const CStdString &category);
+  /* Database EPG handling */
+  long AddEPG(DWORD clientID, const CTVEPGInfoTag &info);
+  bool UpdateEPG(DWORD clientID, const CTVEPGInfoTag &info);
+  bool UpdateEPGRecordingState(DWORD clientID, unsigned int channelID, const CDateTime &start, const CDateTime &end, bool OnOff);
+  bool RemoveEPGEntries(DWORD clientID, unsigned int channelID, const CDateTime &start, const CDateTime &end);
+  bool GetEPGForChannel(DWORD clientID, unsigned int channelID, EPG_DATA &epg, const CDateTime &start, const CDateTime &end);
+  CDateTime GetEPGDataStart(DWORD clientID, unsigned int channelID);
+  CDateTime GetEPGDataEnd(DWORD clientID, unsigned int channelID);
 
-  void GetChannelList(DWORD clientID, VECCHANNELS &channels);
+  /* Database Channel handling */
+  long AddChannel(DWORD clientID, const CTVChannelInfoTag &info);
+  bool RemoveAllChannels(DWORD clientID);
+  bool RemoveChannel(DWORD clientID, const CTVChannelInfoTag &info);
+  long UpdateChannel(DWORD clientID, const CTVChannelInfoTag &info);
   int  GetNumChannels(DWORD clientID);
+  int  GetNumHiddenChannels(DWORD clientID);
+  bool HasChannel(DWORD clientID, const CTVChannelInfoTag &info);
+  bool GetChannelList(DWORD clientID, VECCHANNELS* results, bool radio);
+  bool GetChannelSettings(DWORD clientID, unsigned int channelID, CVideoSettings &settings);
+  bool SetChannelSettings(DWORD clientID, unsigned int channelID, const CVideoSettings &settings);
 
-  bool HasChannel(DWORD clientID, const CStdString &name);
-
-  void AddChannelData(CFileItemList &channel);
-
-
-
-  bool GetProgrammesByChannelName(const CStdString &channel, CFileItemList &shows, const CDateTime &start, const CDateTime &end);
-  bool GetProgrammesByEpisodeID(const CStdString& episodeID, CFileItemList* items, bool noHistory /* == true */);
-  void GetProgrammesByName(const CStdString& progName, CFileItemList& items, bool noHistory /* == true */);
-  bool GetProgrammesBySubtitle(const CStdString& subtitle, CFileItemList* items, bool noHistory /* == true */);
-
-  // per-channel video settings
-  bool GetChannelSettings(const CStdString &channel, CVideoSettings &settings);
-  bool SetChannelSettings(const CStdString &channel, const CVideoSettings &settings);
-  
-  CDateTime GetDataEnd(DWORD clientID);
-
-  void EraseChannelSettings();
-
-  // helper to add new channels from pvrmanager
-  void NewChannel(DWORD clientID, CStdString bouquet, CStdString chanName, 
-                  CStdString callsign, int chanNum, CStdString iconPath);
+  /* Database Channel Group handling */
+  long AddGroup(DWORD clientID, const CStdString &groupname);
+  bool DeleteGroup(DWORD clientID, unsigned int groupID);
+  bool RenameGroup(DWORD clientID, unsigned int GroupId, const CStdString &newname);
+  bool GetGroupList(DWORD clientID, CHANNELGROUPS_DATA* results);
 
 protected:
-  CTVEPGInfoTag GetUniqueBroadcast(std::auto_ptr<dbiplus::Dataset> &pDS);
-  void FillProperties(CFileItem* programme);
-
-  long AddClient(const CStdString &plugin, const CStdString &client);
-  long AddBouquet(const long &clientId, const CStdString &bouquet);
-  long AddChannel(const long &clientId, const long &idBouquet, const CStdString &Callsign, const CStdString &Name, const int &Number, const CStdString &iconPath);
-  long AddProgramme(const CStdString &Title, const long &categoryId);
-  long AddCategory(const CStdString &category);
-
   long GetClientId(const CStdString &client);
-  long GetBouquetId(const CStdString &bouquet);
-  long GetChannelId(const CStdString &channel);
-  long GetCategoryId(const CStdString &category);
-  long GetProgrammeId(const CStdString &programme);
-
-  CStdString m_progInfoSelectStatement;
+  long GetGroupId(const CStdString &groupname);
 
 private:
   virtual bool CreateTables();

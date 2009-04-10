@@ -776,10 +776,16 @@ void CDateTime::GetAsSystemTime(SYSTEMTIME& time) const
 
 void CDateTime::GetAsTime(time_t& time) const
 {
+#ifdef _WIN32
+  LONGLONG ll;    
+  ll = ((LONGLONG)m_time.dwHighDateTime << 32) + m_time.dwLowDateTime;    
+  time=(time_t)((ll - 116444736000000000) / 10000000);
+#else
   ULARGE_INTEGER filetime;
   ToULargeInt(filetime);
 
   time=(time_t)(filetime.QuadPart-0x19DB1DED53E8000LL)/10000000UL;
+#endif
 }
 
 void CDateTime::GetAsTm(tm& time) const
@@ -820,7 +826,8 @@ CStdString CDateTime::GetAsDBDateTime() const
   GetAsSystemTime(st);
 
   CStdString date;
-  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMilliseconds, st.wSecond);
+  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
 
   return date;
 }

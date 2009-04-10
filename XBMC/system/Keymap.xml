@@ -39,9 +39,16 @@
 <keymap>
   <global>
     <remote>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
+      <zero>number0</zero>
+      <one>number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
       <play>Play</play>
       <pause>Pause</pause>
       <stop>Stop</stop>
@@ -70,7 +77,7 @@
       <myvideo>XBMC.ActivateWindow(MyVideos)</myvideo>
       <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
-      <mytv>XBMC.ActivateWindow(Home)</mytv>
+      <mytv>XBMC.ActivateWindow(MyTV)</mytv>
     </remote>
 
     <gamepad>
@@ -1425,6 +1432,132 @@
   </MyVideoPlaylist>
 
 
+  <TVOSDChannels>
+    <gamepad>
+      <X></X>
+      <Y>AspectRatio</Y>
+      <B>Close</B>
+      <back>Close</back>
+      <start>Close</start>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <button id="4"></button>
+      <button id="5">AspectRatio</button>
+      <button id="2">Close</button>
+      <button id="17">Close</button>
+      <button id="19">Close</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
+    <remote>
+      <back>Close</back>
+      <menu>Close</menu>
+      <start>Close</start>
+    </remote>
+
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </TVOSDChannels>
+
+
+  <TVOSDGuide>
+    <gamepad>
+      <X></X>
+      <Y>AspectRatio</Y>
+      <B>Close</B>
+      <back>Close</back>
+      <start>Close</start>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <button id="4"></button>
+      <button id="5">AspectRatio</button>
+      <button id="2">Close</button>
+      <button id="17">Close</button>
+      <button id="19">Close</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
+    <remote>
+      <back>Close</back>
+      <menu>Close</menu>
+      <start>Close</start>
+    </remote>
+
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </TVOSDGuide>
+
+
+  <TVOSDTeletext>
+    <gamepad>
+      <X></X>
+      <Y>AspectRatio</Y>
+      <B>Close</B>
+      <back>Close</back>
+      <start>Close</start>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <button id="4"></button>
+      <button id="5">AspectRatio</button>
+      <button id="2">Close</button>
+      <button id="17">Close</button>
+      <button id="19">Close</button>
+    </joystick>
+
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+
+    <remote>
+      <back>Close</back>
+      <menu>Close</menu>
+      <start>Close</start>
+    </remote>
+
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </TVOSDTeletext>
+
+  
   <VirtualKeyboard>
     <gamepad>
       <start>Enter</start>
