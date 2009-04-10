@@ -80,11 +80,10 @@ class CVideoReferenceClock : public CThread
     Display*     m_Dpy;
     GLXFBConfig *m_fbConfigs;
     XVisualInfo *m_vInfo;
-    Pixmap       m_Pxmp;
-    GLXPixmap    m_GLXPxmp;
+    Window       m_Window;
+    GLXWindow    m_GLXWindow;
     GLXContext   m_Context;
             
-    int      m_Screen;
     bool     m_UseNvSettings;
 #elif defined(_WIN32)
     bool CreateHiddenWindow();

@@ -104,27 +104,35 @@ void CVideoReferenceClock::OnStartup()
 #ifdef HAS_GLX
 bool CVideoReferenceClock::SetupGLX()
 {
-  int Num = 0, ReturnV, Depth;
-  unsigned int VblankCount;
-  int singleVisAttributes[] =
-  {
-    GLX_RENDER_TYPE, GLX_RGBA_BIT,
-    GLX_RED_SIZE, 8,
-    GLX_GREEN_SIZE, 8,
-    GLX_BLUE_SIZE, 8,
-    GLX_ALPHA_SIZE, 8,
-    GLX_DEPTH_SIZE, 8,
-    GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
+  int singleBufferAttributess[] = {
+    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+    GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+    GLX_RED_SIZE,      1,
+    GLX_GREEN_SIZE,    1,
+    GLX_BLUE_SIZE,     1,
     None
   };
-  Visual *Visual;
-  
+
+  int doubleBufferAttributes[] = {
+    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+    GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+    GLX_DOUBLEBUFFER,  True,
+    GLX_RED_SIZE,      1,
+    GLX_GREEN_SIZE,    1,
+    GLX_BLUE_SIZE,     1,
+    None
+  };
+
+  int Num = 0, ReturnV, Depth, SwaMask;
+  unsigned int VblankCount;
+  XSetWindowAttributes Swa;
+
   m_Dpy = NULL;
   m_fbConfigs = NULL;
   m_vInfo = NULL;
   m_Context = NULL;
-  m_Pxmp = NULL;
-  m_GLXPxmp = NULL;
+  m_Window = NULL;
+  m_GLXWindow = NULL;
   
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
   
@@ -136,7 +144,9 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
   
-  m_fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), singleVisAttributes, &Num);
+  m_fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), doubleBufferAttributes, &Num);
+  if (!m_fbConfigs) m_fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), singleBufferAttributess, &Num);
+  
   if (!m_fbConfigs)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseFBConfig returned NULL");
@@ -152,14 +162,17 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
   
-  m_Screen = DefaultScreen(m_Dpy);
-  Visual = DefaultVisual(m_Dpy, m_Screen);
-  Depth = DefaultDepth(m_Dpy, m_Screen); 
+  Swa.border_pixel = 0;
+  Swa.event_mask = StructureNotifyMask;
+  Swa.colormap = XCreateColormap(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), m_vInfo->visual, AllocNone );
+  SwaMask = CWBorderPixel | CWColormap | CWEventMask;
 
-  m_Pxmp = XCreatePixmap(m_Dpy, RootWindow(m_Dpy, m_Screen), 64, 64, Depth);
-  m_GLXPxmp = glXCreateGLXPixmap(m_Dpy, m_vInfo, m_Pxmp);
-  m_Context = glXCreateNewContext(m_Dpy, m_fbConfigs[0], GLX_RGBA_TYPE, NULL, true);
-  glXMakeCurrent(m_Dpy, m_GLXPxmp, m_Context);
+  m_Window = XCreateWindow(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), 0, 0, 256, 256, 0,
+                           m_vInfo->depth, InputOutput, m_vInfo->visual, SwaMask, &Swa);
+  
+  m_Context = glXCreateNewContext(m_Dpy, m_fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
+  m_GLXWindow = glXCreateWindow(m_Dpy, m_fbConfigs[0], m_Window, NULL );
+  glXMakeCurrent(m_Dpy, m_GLXWindow, m_Context);
   
   m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
   if (!m_glXWaitVideoSyncSGI)
@@ -193,7 +206,7 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
   
-  XRRSizes(m_Dpy, m_Screen, &ReturnV);
+  XRRSizes(m_Dpy, m_vInfo->screen, &ReturnV);
   if (ReturnV == 0)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: RandR not supported");
@@ -251,15 +264,15 @@ void CVideoReferenceClock::CleanupGLX()
     glXDestroyContext(m_Dpy, m_Context);
     m_Context = NULL;
   }
-  if (m_GLXPxmp)
+  if (m_GLXWindow)
   {
-    glXDestroyGLXPixmap(m_Dpy, m_GLXPxmp);
-    m_GLXPxmp = NULL;
+    glXDestroyWindow(m_Dpy, m_GLXWindow);
+    m_GLXWindow = NULL;
   }
-  if (m_Pxmp)
+  if (m_Window)
   {
-    XFreePixmap(m_Dpy, m_Pxmp);
-    m_Pxmp = NULL;
+    XDestroyWindow(m_Dpy, m_Window);
+    m_Window = NULL;
   }
   if (m_Dpy)
   {
@@ -311,7 +324,7 @@ void CVideoReferenceClock::RunGLX()
         
         //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
         glXMakeCurrent(m_Dpy, None, NULL);
-        glXMakeCurrent(m_Dpy, m_GLXPxmp, m_Context);
+        glXMakeCurrent(m_Dpy, m_GLXWindow, m_Context);
       }        
     }
     PrevVblankCount = VblankCount;
@@ -642,7 +655,7 @@ bool CVideoReferenceClock::UpdateRefreshrate()
     m_LastRefreshTime = m_CurrTime;
     
     XRRScreenConfiguration *CurrInfo;
-    CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_Screen));
+    CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
     int RRRefreshRate = XRRConfigCurrentRate(CurrInfo);
     XRRFreeScreenConfigInfo(CurrInfo);
     
