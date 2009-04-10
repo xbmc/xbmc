@@ -324,6 +324,19 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   // TODO: Replace statics with performance counter class
   static UInt32 lastUpdateTime = 0;
   static UInt64 lastTotalBytes = 0;
+  static UInt32 bufferCount = 0;
+  static UInt32 bufferSize[6] = {0};
+  
+  if (bufferCount == 0 && ioData->mNumberBuffers)
+  {
+    bufferCount = ioData->mNumberBuffers;
+    for (UInt32 b = 0; b < bufferCount; b++)
+      bufferSize[b] = ioData->mBuffers[b].mDataByteSize;
+    CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Device has %u buffers. sizes = [%u, %u].", bufferCount, bufferSize[0], bufferSize[1]);
+  }
+  
+  if (!ioData->mNumberBuffers || !ioData->mBuffers[0].mDataByteSize)
+    CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Zero length/number buffer.");
   
   UInt32 profileTime[3] = {0};
   UInt32 time = timeGetTime();
@@ -352,7 +365,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   {
     profileTime[1] = timeGetTime();
     Pause(); // Stop further requests until we have more data.  The AddPackets method will resume playback
-    ioData->mBuffers[0].mDataByteSize = 0; // Is this the proper way to signal an underrun to the output?
+    memset(ioData->mBuffers[0].mData, 0, ioData->mBuffers[0].mDataByteSize);  // Return only silence
     CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Buffer underrun.");
   }
   else
@@ -363,11 +376,12 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
     {
       bytesRequested /= 2; // 16 to 32 bit (this will double when we output)
       m_Cache.GetData(g_SampleBuffer, bytesRequested); // Retrieve data from queue (16-bit Signed Integer)
-      ShortToFloat(g_SampleBuffer, (float*)ioData->mBuffers[0].mData, inNumberFrames); // Convert to 32-bit IEEE Float
+      ShortToFloat(g_SampleBuffer, (float*)ioData->mBuffers[0].mData, inNumberFrames); // Convert to 32-bit IEEE Float (double the effective data 
     }
     else
+    {
       m_Cache.GetData(ioData->mBuffers[0].mData, bytesRequested);
-    
+    }
     // Calculate stats and perform a sanity check
     m_TotalBytesOut += bytesRequested;    
     size_t cacheLen = m_Cache.GetTotalBytes();
@@ -463,8 +477,8 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
     }
     else if (channels == 6)
     {
-      channelMap[0] = 0;
-      channelMap[1] = 1;
+      channelMap[0] = 3;
+      channelMap[1] = 4;
     }
   }
   else if (deviceChannels == 4)
@@ -472,17 +486,17 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
     CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: Current channel map [%d, %d, %d, %d].", currentMap[0], currentMap[1], currentMap[2], currentMap[3]);
     if (channels == 2)
     {
-      channelMap[0] = -1;
+      channelMap[0] = 0;
       channelMap[1] = 1;
       channelMap[2] = 0;
-      channelMap[3] = -1;
+      channelMap[3] = 1;
     }
     else if (channels == 6)
     {
-      channelMap[0] = -1;
+      channelMap[0] = 0;
       channelMap[1] = 1;
-      channelMap[2] = 0;
-      channelMap[3] = -1;
+      channelMap[2] = 2;
+      channelMap[3] = 3;
     }    
   }
   CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: Mapping %u-channel input to %u-channel output.", channels, deviceChannels);
@@ -550,14 +564,13 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
   UInt32 framesPerSlice = 0;
   AudioStreamBasicDescription outputFormat = {0};
   AudioStreamID outputStream = 0;
-      
-  // Try this here and see what happens
-   m_AudioDevice.SetHogStatus(true);
-  
+        
   // Fetch a list of the streams defined by the output device
   AudioStreamIdList streams;
   m_AudioDevice.GetStreams(&streams);
-  while (0)//!streams.empty())
+  
+  // TODO: Remove forced spoofing
+  while (!streams.empty())
   {
     // Get the next stream
     CCoreAudioStream stream;
@@ -604,46 +617,9 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
       break; // We found a suitable stream/format combination
     }
   }
-
-  if (!outputFormat.mFormatID) // No suitable stream/format was found. Try plan B.
-  {
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: No suitable IEC61937 stream/format found. Attempting to spoof PCM.");
-    m_AudioDevice.GetStreams(&streams);
-    while (!streams.empty())
-    {
-      // Try to spoof the device and ride on 48KHz, 16-bit PCM.
-      // Go back and look for a suitable physical formats
-      // TODO: Move format search to a class method
-      CCoreAudioStream stream;
-      stream.Open(streams.front());
-      streams.pop_front(); // We copied it, now we are done with it
-
-      StreamFormatList physicalFormats;
-      stream.GetAvailablePhysicalFormats(&physicalFormats);
-      while (!physicalFormats.empty())
-      {
-        AudioStreamRangedDescription& desc = physicalFormats.front();
-        if (desc.mFormat.mFormatID == kAudioFormatLinearPCM && desc.mFormat.mSampleRate == 48000 && desc.mFormat.mBitsPerChannel == 16 && desc.mFormat.mChannelsPerFrame == 2)  // TODO: Ensure 2-channel
-        {
-          outputFormat = desc.mFormat; // Select this format
-          break;
-        }
-        physicalFormats.pop_front(); // We're done with it (copied if necessary)
-      }
-      if (outputFormat.mFormatID)
-      {
-        m_PassthroughSpoof = true;
-        outputStream = stream.GetId();
-        break; // We found a suitable stream/format combination
-      }
-    }
-  }
   
   if (outputFormat.mFormatID) // Found one
   {    
-    m_OutputStream.Open(outputStream); // This is the one we will keep
-    m_OutputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
-    
     m_ChunkLen = outputFormat.mBytesPerPacket; // 1 Chunk == 1 Packet
     framesPerSlice = outputFormat.mFramesPerPacket; // 1 Slice == 1 Packet == 1 Chunk
     m_AvgBytesPerSec = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3) * outputFormat.mSampleRate; // TODO: Is this correct?
@@ -657,22 +633,29 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
     CLog::Log(LOGERROR, "CoreAudioRenderer::InitializeEncoded: Unable to identify suitable output stream/format.");
     return false;
   }    
-
+  
   // TODO: Auto hogging sets this for us. Figure out how/when to turn it off or use it
   // It appears that leaving this set will aslo restore the previous stream format when the
   // Application exits. If auto hogging is set and we try to set hog mode, we will deadlock
   // From the SDK docs: "If the AudioDevice is in a non-mixable mode, the HAL will automatically take hog mode on behalf of the first process to start an IOProc."
   
+  // Lock down the device.  This MUST be done PRIOR to switching to a non-mixable format, if it is done at all
+  // If it is attempted after the format change, there is a high likelihood of a deadlock 
   // We may need to do this sooner to enable mix-disable (i.e. before setting the stream format)
   CCoreAudioHardware hw;
   bool autoHog = hw.GetAutoHogMode();
   CLog::Log(LOGDEBUG, " CoreAudioRenderer::InitializeEncoded: Auto 'hog' mode is set to '%s'.", autoHog ? "On" : "Off");
-  if (!autoHog || m_PassthroughSpoof)
+  if (!autoHog)
   {
-//    m_AudioDevice.SetHogStatus(true);  
-    // Try to disable mixing. If we cannot, it may not be a problem
-    m_AudioDevice.SetMixingSupport(false);
+    m_AudioDevice.SetHogStatus(true); // Hog the device if it is not set to be done automatically
+    m_AudioDevice.SetMixingSupport(false); // Try to disable mixing. If we cannot, it may not be a problem
   }
+  
+  // Configure the output stream object
+  m_OutputStream.Open(outputStream); // This is the one we will keep
+  m_OutputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
+  
+  // Start 
   m_AudioDevice.AddIOProc(PassthroughRenderCallback, this);  
     
   return true;

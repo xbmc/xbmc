@@ -122,7 +122,8 @@ CCoreAudioDevice::CCoreAudioDevice()  :
   m_DeviceId(0),
   m_Hog(-1),
   m_MixerRestore(-1),
-  m_IoProc(NULL)
+  m_IoProc(NULL),
+  m_SampleRateRestore(0.0f)
 {
   
 }
@@ -152,6 +153,9 @@ void CCoreAudioDevice::Close()
   if (m_MixerRestore > -1) // We changed the mixer status
     SetMixingSupport((m_MixerRestore ? true : false));
   m_MixerRestore = -1;
+  
+  if (m_SampleRateRestore != 0.0f)
+    SetNominalSampleRate(m_SampleRateRestore);
 
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::Close: Closed device 0x%04x", m_DeviceId);
   m_DeviceId = 0;
@@ -239,7 +243,7 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels()
       channels += pList->mBuffers[buffer].mNumberChannels;
   else
     CLog::Log(LOGERROR, "CCoreAudioDevice::GetTotalChannels: Unable to get total device output channels - id: 0x%04x Error = 0x%08x (%4.4s)", m_DeviceId, ret, CONVERT_OSSTATUS(ret));
-
+  CLog::Log(LOGDEBUG, "CCoreAudioDevice::GetTotalChannels: Found %u channels in %u buffers", channels, pList->mNumberBuffers);
   free(pList);
 	return channels;  
 }
@@ -406,7 +410,7 @@ bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
   Float64 currentRate = GetNominalSampleRate();
   if (currentRate == sampleRate)
     return true; //No need to change
-  
+    
   UInt32 size = sizeof(Float64);
   OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyNominalSampleRate, size, &sampleRate);
   if (ret)
@@ -414,7 +418,9 @@ bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
     CLog::Log(LOGERROR, "CCoreAudioUnit::SetNominalSampleRate: Unable to set current device sample rate to %0.0f. Error = 0x%08x (%4.4s)", (float)sampleRate, ret, CONVERT_OSSTATUS(ret));
     return false;
   }
-  CLog::Log(LOGDEBUG,  "CCoreAudioUnit::SetNominalSampleRate: Changed device sample rate to %0.0f.", (float)sampleRate);
+  CLog::Log(LOGDEBUG,  "CCoreAudioUnit::SetNominalSampleRate: Changed device sample rate from %0.0f to %0.0f.", (float)currentRate, (float)sampleRate);
+  if (m_SampleRateRestore == 0.0f)
+    m_SampleRateRestore = currentRate;
   return true;
 }
 

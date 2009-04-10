@@ -93,7 +93,7 @@ protected:
   pid_t m_Hog;
   int m_MixerRestore;
   AudioDeviceIOProc m_IoProc;
-  
+  Float64 m_SampleRateRestore;
 };
 
 typedef std::list<AudioStreamRangedDescription> StreamFormatList;
