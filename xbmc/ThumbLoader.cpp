@@ -95,6 +95,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     {
       pItem->SetProperty("HasAutoThumb",item.GetProperty("HasAutoThumb"));
       pItem->SetProperty("AutoThumbImage",item.GetProperty("AutoThumbImage"));
+      pItem->SetProperty("fanart_image",item.GetProperty("fanart_image"));
       pItem->SetThumbnailImage(item.GetThumbnailImage());
     }
     return bResult;

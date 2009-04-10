@@ -299,7 +299,7 @@ void CGUIWindowManager::RefreshWindow()
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
   pWindow->OnMessage(msg);
   CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID);
-  pWindow->OnMessage(msg);
+  pWindow->OnMessage(msg2);
 }
 
 void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strPath)

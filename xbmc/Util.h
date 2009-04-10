@@ -28,6 +28,11 @@
 typedef void CUSTOM_LAUNCH_DATA;
 #endif
 
+// A list of filesystem types for LegalPath/FileName
+#define LEGAL_NONE            0
+#define LEGAL_WIN32_COMPAT    1
+#define LEGAL_FATX            2
+
 namespace XFILE
 {
   class IFileCallback;
@@ -198,8 +203,15 @@ public:
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
   static void Stat64ToStat(struct _stat *result, struct __stat64 *stat);
   static bool CreateDirectoryEx(const CStdString& strPath);
-  static CStdString MakeLegalFileName(const CStdString &strFile, bool isFATX);
-  static CStdString MakeLegalPath(const CStdString &strPath);
+
+#ifdef _WIN32
+  static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_WIN32_COMPAT);
+  static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_WIN32_COMPAT);
+#else
+  static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_NONE);
+  static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
+#endif
+  
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 

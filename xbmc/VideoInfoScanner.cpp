@@ -1190,7 +1190,7 @@ namespace VIDEO
       if (combined)
         m_nfoReader.GetDetails(movieDetails);
 
-      if (m_pObserver)
+      if (m_pObserver && url.strTitle.IsEmpty())
         m_pObserver->OnSetTitle(movieDetails.m_strTitle);
 
       return AddMovieAndGetThumb(pItem, info.strContent, movieDetails, -1, bUseDirNames);

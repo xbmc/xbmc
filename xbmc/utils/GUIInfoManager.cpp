@@ -3407,7 +3407,11 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
   }
 
   if (!operand.empty())
-    comb.m_postfix.push_back(TranslateSingleString(operand));
+  {
+    int op = TranslateSingleString(operand);
+    if (op)
+      comb.m_postfix.push_back(op);
+  }
 
   // finish up by adding any operators
   while (!save.empty())
