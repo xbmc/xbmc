@@ -900,8 +900,7 @@ int CXbmcHttp::xbmcGetSources(int numParas, CStdString paras[])
       strName.Replace(";", ";;");
       CStdString strPath = share.strPath;
       strPath.Replace(";", ";;");
-      if (!CUtil::HasSlashAtEnd(strPath))
-        CUtil::AddSlashAtEnd(strPath);
+      CUtil::AddSlashAtEnd(strPath);
       CStdString strLine = openTag;
       if (bShowType)
         strLine += strType + ";";
