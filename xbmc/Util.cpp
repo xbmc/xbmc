@@ -1674,9 +1674,17 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
 {
-  // correct check for base url like smb://
-  if (strFolder.Right(3).Equals("://"))
+  if(strFolder.Find("://") >= 0)
+  {
+    CURL url(strFolder);
+    strFolder = url.GetFileName();
+    if(strFolder.IsEmpty())
+      return;
+    AddSlashAtEnd(strFolder);
+    url.SetFileName(strFolder);
+    url.GetURL(strFolder);
     return;
+  }
 
   if (!CUtil::HasSlashAtEnd(strFolder))
   {
@@ -1689,9 +1697,17 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
 
 void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
 {
-  // correct check for base url like smb://
-  if (strFolder.Right(3).Equals("://"))
+  if(strFolder.Find("://") >= 0)
+  {
+    CURL url(strFolder);
+    strFolder = url.GetFileName();
+    if(strFolder.IsEmpty())
+      return;
+    RemoveSlashAtEnd(strFolder);
+    url.SetFileName(strFolder);
+    url.GetURL(strFolder);
     return;
+  }
 
   if (CUtil::HasSlashAtEnd(strFolder))
     strFolder.Delete(strFolder.size() - 1);
