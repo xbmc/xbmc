@@ -62,8 +62,8 @@ static std::string key_cookiesATV1X[] =
     "13_",
     "4_",
     "3_",
-    "5_",
-    "7_"
+    "7_",
+    "5_"
 };
 // magic HID key cookies AppleTV running r2.0x
 static std::string key_cookiesATV20X[] =
@@ -76,8 +76,8 @@ static std::string key_cookiesATV20X[] =
     "13_",
     "4_",
     "3_",
-    "7_",
     "5_",
+    "7_"
 };
 // magic HID key cookies for AppleTV running r2.1
 static std::string key_cookiesATV21[] =
@@ -90,8 +90,8 @@ static std::string key_cookiesATV21[] =
     "14_",
     "5_",
     "4_",
-    "8_",
-    "6_"
+    "6_",
+    "8_"
 };
 // magic HID key cookies for 10.4
 static std::string key_cookies10_4[] =
@@ -104,8 +104,8 @@ static std::string key_cookies10_4[] =
     "13_",
     "4_",
     "3_",
-    "5_",
-    "7_"
+    "7_",
+    "5_"
 };
 
 // magic HID key cookies for 10.5
