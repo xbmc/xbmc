@@ -51,16 +51,16 @@ void CDVDStreamInfo::Clear()
   extrasize = 0;
 
   fpsscale = 0;
-  fpsrate = 0;
-  height = 0;
-  width = 0;
-  aspect = 0.0;
-  vfr = false;
+  fpsrate  = 0;
+  height   = 0;
+  width    = 0;
+  aspect   = 0.0;
+  vfr      = false;
 
-  channels = 0;
+  channels   = 0;
   samplerate = 0;
   blockalign = 0;
-  bitrate = 0;
+  bitrate    = 0;
 
   identifier = 0;
 }
@@ -81,16 +81,16 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
 
   // VIDEO
   if( fpsscale != right.fpsscale
-  ||  fpsrate != right.fpsrate
-  ||  height != right.height
-  ||  width != right.width
-  ||  vfr   != right.vfr) return false;
+  ||  fpsrate  != right.fpsrate
+  ||  height   != right.height
+  ||  width    != right.width
+  ||  vfr      != right.vfr) return false;
 
   // AUDIO
-  if( channels != right.channels
-  ||  samplerate != right.samplerate 
-  ||  blockalign != right.blockalign
-  ||  bitrate != right.bitrate
+  if( channels      != right.channels
+  ||  samplerate    != right.samplerate 
+  ||  blockalign    != right.blockalign
+  ||  bitrate       != right.bitrate
   ||  bitspersample != right.bitspersample ) return false;
 
   // SUBTITLE
@@ -129,16 +129,16 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
 
   // VIDEO
   fpsscale = right.fpsscale;
-  fpsrate = right.fpsrate;
-  height = right.height;
-  width = right.width;
-  aspect = right.aspect;
+  fpsrate  = right.fpsrate;
+  height   = right.height;
+  width    = right.width;
+  aspect   = right.aspect;
 
   // AUDIO
-  channels = right.channels;
-  samplerate = right.samplerate;
-  blockalign = right.blockalign;
-  bitrate = right.bitrate;
+  channels      = right.channels;
+  samplerate    = right.samplerate;
+  blockalign    = right.blockalign;
+  bitrate       = right.bitrate;
   bitspersample = right.bitspersample;
 
   // SUBTITLE
@@ -162,21 +162,21 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   if( right.type == STREAM_AUDIO )
   {
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
-    channels = stream->iChannels;
-    samplerate = stream->iSampleRate;
-    blockalign = stream->iBlockAlign;
-    bitrate = stream->iBitRate;
+    channels      = stream->iChannels;
+    samplerate    = stream->iSampleRate;
+    blockalign    = stream->iBlockAlign;
+    bitrate       = stream->iBitRate;
     bitspersample = stream->iBitsPerSample;
   }
   else if(  right.type == STREAM_VIDEO )
   {
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
-    fpsscale = stream->iFpsScale;
-    fpsrate = stream->iFpsRate;
-    height = stream->iHeight;
-    width = stream->iWidth;
-    aspect = stream->fAspect;
-    vfr = stream->bVFR;
+    fpsscale  = stream->iFpsScale;
+    fpsrate   = stream->iFpsRate;
+    height    = stream->iHeight;
+    width     = stream->iWidth;
+    aspect    = stream->fAspect;
+    vfr       = stream->bVFR;
   }
   else if(  right.type == STREAM_SUBTITLE )
   {
