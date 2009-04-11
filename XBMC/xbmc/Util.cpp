@@ -1676,10 +1676,11 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
   {
     CURL url(strFolder);
     strFolder = url.GetFileName();
-    if(strFolder.IsEmpty())
-      return;
-    AddSlashAtEnd(strFolder);
-    url.SetFileName(strFolder);
+    if(!strFolder.IsEmpty())
+    {
+      AddSlashAtEnd(strFolder);
+      url.SetFileName(strFolder);
+    }
     url.GetURL(strFolder);
     return;
   }
