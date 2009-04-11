@@ -155,6 +155,10 @@ void Reconfigure(int nSignal)
 {
 	if (nSignal == SIGHUP){
 		ReadConfig();
+    //set apppath to startup when pressing Menu
+    [g_xbmchelper setApplicationPath:[NSString stringWithCString:g_app_path.c_str()]];    
+    //set apppath to startup when pressing Menu
+    [g_xbmchelper setApplicationHome:[NSString stringWithCString:g_app_home.c_str()]];
     //connect to specified server
     [g_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] withMode:g_mode];
   }
