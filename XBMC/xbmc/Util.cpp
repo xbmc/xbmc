@@ -1153,10 +1153,8 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
 {
   CStdString strFName = CUtil::GetFileName(strFileName);
   strDescription = strFileName.Left(strFileName.size() - strFName.size());
-  if (CUtil::HasSlashAtEnd(strDescription) )
-  {
-    strDescription = strDescription.Left(strDescription.size() - 1);
-  }
+  CUtil::RemoveSlashAtEnd(strDescription);
+
   int iPos = strDescription.ReverseFind("\\");
   if (iPos < 0)
     iPos = strDescription.ReverseFind("/");
@@ -1709,7 +1707,7 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
     return;
   }
 
-  if (CUtil::HasSlashAtEnd(strFolder))
+  while (CUtil::HasSlashAtEnd(strFolder))
     strFolder.Delete(strFolder.size() - 1);
 }
 
@@ -4313,10 +4311,8 @@ CStdString CUtil::SubstitutePath(const CStdString& strFileName)
     strSearch.Replace(",,",",");
     strReplace.Replace(",,",",");
 
-    if (!CUtil::HasSlashAtEnd(strSearch))
-      CUtil::AddSlashAtEnd(strSearch);
-    if (!CUtil::HasSlashAtEnd(strReplace))
-      CUtil::AddSlashAtEnd(strReplace);
+    CUtil::AddSlashAtEnd(strSearch);
+    CUtil::AddSlashAtEnd(strReplace);
 
     // if left most characters match the search, replace them
     //CLog::Log(LOGDEBUG,"%s testing for path:[%s]", __FUNCTION__, strSearch.c_str());

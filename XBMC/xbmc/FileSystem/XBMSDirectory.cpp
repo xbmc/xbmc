@@ -69,8 +69,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
   CURL url(strPath);
 
   CStdString strRoot = strPath;
-  if (!CUtil::HasSlashAtEnd(strPath) )
-    strRoot += "/";
+  CUtil::AddSlashAtEnd(strPath);
 
   CcXstreamServerConnection conn = 0;
 
