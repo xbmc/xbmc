@@ -88,7 +88,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
 
   // AUDIO
   if( channels      != right.channels
-  ||  samplerate    != right.samplerate 
+  ||  samplerate    != right.samplerate
   ||  blockalign    != right.blockalign
   ||  bitrate       != right.bitrate
   ||  bitspersample != right.bitspersample ) return false;
