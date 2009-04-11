@@ -226,19 +226,5 @@ int CDVDAudioCodecFFmpeg::GetSampleRate()
 
 int CDVDAudioCodecFFmpeg::GetBitsPerSample()
 {
-  if (m_pCodecContext)
-  {
-    switch (m_pCodecContext->sample_fmt)
-    {
-    case SAMPLE_FMT_U8:
-      return 8;
-    case SAMPLE_FMT_S16:
-      return 16;
-    case SAMPLE_FMT_S32:
-      return 32;
-    default:
-      return 0;
-    }
-  }
-  return 0;
+  return 16;
 }
