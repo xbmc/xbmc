@@ -392,13 +392,11 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   // Load language strings
   LoadPluginStrings(url);
 
-  CStdString fileName;
-  CUtil::AddFileToFolder(url.GetFileName(), "default.py", fileName);
-
   // path is special://home/plugins/<path from here>
   CStdString pathToScript = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
-  CUtil::AddFileToFolder(pathToScript, fileName, pathToScript);
+  CUtil::AddFileToFolder(pathToScript, url.GetFileName(), pathToScript);
+  CUtil::AddFileToFolder(pathToScript, "default.py", pathToScript);
 
   // options
   CStdString options = url.GetOptions();
