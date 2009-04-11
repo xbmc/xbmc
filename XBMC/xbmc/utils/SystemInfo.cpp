@@ -57,7 +57,7 @@ void CBackgroundSystemInfoLoader::GetInformation()
     callback->m_xboxversion     = callback->GetXBVerInfo();
     callback->m_avpackinfo      = callback->GetAVPackInfo();
     callback->m_videoencoder    = callback->GetVideoEncoder();
-    callback->m_xboxserial      = callback->GetXBOXSerial(true);
+    callback->m_xboxserial      = callback->GetXBOXSerial();
     callback->m_hddlockkey      = callback->GetHDDKey();
     callback->m_macadress       = callback->GetMACAddress();
     callback->m_videoxberegion  = callback->GetVideoXBERegion();
@@ -175,33 +175,26 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     break;
   // HDD request
   case SYSTEM_HDD_MODEL:
-    m_temp.Format("%s %s",g_localizeStrings.Get(13154), m_HDDModel);
-    if (m_hddRequest) return m_temp;
+    if (m_hddRequest) return m_HDDModel;
     else return CInfoLoader::BusyInfo(dwInfo);
   case SYSTEM_HDD_SERIAL:
-    m_temp.Format("%s %s", g_localizeStrings.Get(13155), m_HDDSerial);
-    if (m_hddRequest) return m_temp;
+    if (m_hddRequest) return m_HDDSerial;
     else return CInfoLoader::BusyInfo(dwInfo);
   case SYSTEM_HDD_FIRMWARE:
-    m_temp.Format("%s %s", g_localizeStrings.Get(13156), m_HDDFirmware);
-    if (m_hddRequest) return m_temp;
+    if (m_hddRequest) return m_HDDFirmware;
     else return CInfoLoader::BusyInfo(dwInfo);
   case SYSTEM_HDD_PASSWORD:
-    m_temp.Format("%s %s", g_localizeStrings.Get(13157), m_HDDpw);
-    if (m_hddRequest) return m_temp;
+    if (m_hddRequest) return m_HDDpw;
     else return CInfoLoader::BusyInfo(dwInfo);
   case SYSTEM_HDD_LOCKSTATE:
-    m_temp.Format("%s %s", g_localizeStrings.Get(13158), m_HDDLockState);
-    if (m_hddRequest) return m_temp;
+    if (m_hddRequest) return m_HDDLockState;
     else return CInfoLoader::BusyInfo(dwInfo);
   // DVD request
   case SYSTEM_DVD_MODEL:
-    m_temp.Format("%s %s", g_localizeStrings.Get(13152), m_DVDModel);
-    if (m_dvdRequest) return m_temp;
+    if (m_dvdRequest) return m_DVDModel;
     else return CInfoLoader::BusyInfo(dwInfo);
   case SYSTEM_DVD_FIRMWARE:
-    m_temp.Format("%s %s", g_localizeStrings.Get(13153), m_DVDFirmware);
-    if (m_dvdRequest) return m_temp;
+    if (m_dvdRequest) return m_DVDFirmware;
     else return CInfoLoader::BusyInfo(dwInfo);
   // All Time request
   case LCD_HDD_TEMPERATURE:
@@ -211,15 +204,7 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
     temp.SetState(CTemperature::invalid);
     if(m_bSmartEnabled && byHddTemp != 0)
       temp = CTemperature::CreateFromCelsius((double)byHddTemp);
-    switch(dwInfo)
-    {
-      case SYSTEM_HDD_TEMPERATURE:
-        m_temp.Format("%s %s", g_localizeStrings.Get(13151), temp.ToString());
-        break;
-      case LCD_HDD_TEMPERATURE:
-        m_temp.Format("%s",temp.ToString());
-        break;
-    }
+    m_temp.Format("%s",temp.ToString());
     return m_temp;
   }
 #endif
@@ -230,7 +215,7 @@ const char *CSysInfo::TranslateInfo(DWORD dwInfo)
      if (!m_systemtotaluptime.IsEmpty()) return m_systemtotaluptime;
     else return CInfoLoader::BusyInfo(dwInfo);
   case SYSTEM_INTERNET_STATE:
-    if (!m_InternetState.IsEmpty())return m_InternetState;
+    if (!m_InternetState.IsEmpty()) return m_InternetState;
     else return g_localizeStrings.Get(503); //Busy text
 
   default:
@@ -812,14 +797,14 @@ bool CSysInfo::GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_Powe
     return false;
 
   FileTimeToSystemTime((FILETIME*)&xri.FirstBootTime, &sys_time);
-  rfi_FirstBootTime.Format("%s %d-%d-%d %d:%02d", g_localizeStrings.Get(13173), 
+  rfi_FirstBootTime.Format("%d-%d-%d %d:%02d", 
     sys_time.wMonth, 
     sys_time.wDay, 
     sys_time.wYear,
     sys_time.wHour,
     sys_time.wMinute);
 
-  rfi_PowerCycleCount.Format("%s %d", g_localizeStrings.Get(13174), xri.PowerCycleCount);
+  rfi_PowerCycleCount.Format("%d", xri.PowerCycleCount);
   return true;
 }
 #endif
@@ -1142,15 +1127,15 @@ CStdString CSysInfo::GetAVPackInfo()
   int cAVPack;
   HalReadSMBusValue(0x20,XKUtils::PIC16L_CMD_AV_PACK,0,(LPBYTE)&cAVPack);
 
-  if (cAVPack == XKUtils::AV_PACK_SCART) return g_localizeStrings.Get(13292)+" "+"SCART";
-  else if (cAVPack == XKUtils::AV_PACK_HDTV) return g_localizeStrings.Get(13292)+" "+"HDTV";
-  else if (cAVPack == XKUtils::AV_PACK_VGA) return g_localizeStrings.Get(13292)+" "+"VGA";
-  else if (cAVPack == XKUtils::AV_PACK_RFU) return g_localizeStrings.Get(13292)+" "+"RFU";
-  else if (cAVPack == XKUtils::AV_PACK_SVideo) return g_localizeStrings.Get(13292)+" "+"S-Video";
-  else if (cAVPack == XKUtils::AV_PACK_Undefined) return g_localizeStrings.Get(13292)+" "+"Undefined";
-  else if (cAVPack == XKUtils::AV_PACK_Standard) return g_localizeStrings.Get(13292)+" "+"Standard RGB";
-  else if (cAVPack == XKUtils::AV_PACK_Missing) return g_localizeStrings.Get(13292)+" "+"Missing or Unknown";
-  else return g_localizeStrings.Get(13292)+" "+"Unknown";
+  if (cAVPack == XKUtils::AV_PACK_SCART) return "SCART";
+  else if (cAVPack == XKUtils::AV_PACK_HDTV) return "HDTV";
+  else if (cAVPack == XKUtils::AV_PACK_VGA) return "VGA";
+  else if (cAVPack == XKUtils::AV_PACK_RFU) return "RFU";
+  else if (cAVPack == XKUtils::AV_PACK_SVideo) return "S-Video";
+  else if (cAVPack == XKUtils::AV_PACK_Undefined) return "Undefined";
+  else if (cAVPack == XKUtils::AV_PACK_Standard) return "Standard RGB";
+  else if (cAVPack == XKUtils::AV_PACK_Missing) return "Missing or Unknown";
+  else return "Unknown";
 }
 
 CStdString CSysInfo::GetVideoEncoder()
@@ -1159,22 +1144,22 @@ CStdString CSysInfo::GetVideoEncoder()
   if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_CONNEXANT,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
   { 
     CLog::Log(LOGDEBUG, "Video Encoder: CONNEXANT");  
-    return g_localizeStrings.Get(13286)+" "+"CONNEXANT"; 
+    return "CONNEXANT"; 
   }
   if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_FOCUS,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
   { 
     CLog::Log(LOGDEBUG, "Video Encoder: FOCUS");
-    return g_localizeStrings.Get(13286)+" "+"FOCUS";   
+    return "FOCUS";   
   }
   if (HalReadSMBusValue(XKUtils::SMBDEV_VIDEO_ENCODER_XCALIBUR,XKUtils::VIDEO_ENCODER_CMD_DETECT,0,(LPBYTE)&iTemp)==0)
   { 
     CLog::Log(LOGDEBUG, "Video Encoder: XCALIBUR");   
-    return g_localizeStrings.Get(13286)+" "+ "XCALIBUR";
+    return "XCALIBUR";
   }
   else 
   {  
     CLog::Log(LOGDEBUG, "Video Encoder: UNKNOWN");  
-    return g_localizeStrings.Get(13286)+" "+"UNKNOWN"; 
+    return "UNKNOWN"; 
   }
 }
 
@@ -1236,25 +1221,23 @@ CStdString CSysInfo::GetKernelVersion()
   CLog::Log(LOGDEBUG, "- XBOX Kernel Qfe= %i", XboxKrnlVersion->Qfe);
   CLog::Log(LOGDEBUG, "- XBOX Kernel Drive FG result= %i", ikrnl);
   CStdString strKernel;
-  strKernel.Format("%s %u.%u.%u.%u",g_localizeStrings.Get(13283),XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
+  strKernel.Format("%u.%u.%u.%u", XboxKrnlVersion->VersionMajor,XboxKrnlVersion->VersionMinor,XboxKrnlVersion->Build,XboxKrnlVersion->Qfe);
   return strKernel;
 }
 CStdString CSysInfo::GetCPUFreqInfo()
 {
   CStdString strCPUFreq;
   double CPUFreq = GetCPUFrequency();
-  strCPUFreq.Format("%s %4.2fMHz", g_localizeStrings.Get(13284), CPUFreq);
+  strCPUFreq.Format("%4.2fMHz", CPUFreq);
   return strCPUFreq;
 }
 CStdString CSysInfo::GetXBVerInfo()
 {
-  CStdString strXBoxVer;
   CStdString strXBOXVersion;
   if (GetXBOXVersionDetected(strXBOXVersion))
-    strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), strXBOXVersion);
+    return strXBOXVersion;
   else 
-    strXBoxVer.Format("%s %s", g_localizeStrings.Get(13288), g_localizeStrings.Get(13205)); // "Unknown"
-  return strXBoxVer;
+    return g_localizeStrings.Get(13205); // "Unknown"
 }
 
 CStdString CSysInfo::GetUnits(int iFrontPort)
@@ -1316,7 +1299,7 @@ CStdString CSysInfo::GetUnits(int iFrontPort)
   CStdString strReturn;
   if (iFrontPort==4) iFrontPort = 3;
   if (iFrontPort==8) iFrontPort = 4;
-  strReturn.Format("%s %i: %s%s%s%s%s%s%s%s%s%s%s%s%s",g_localizeStrings.Get(13169),iFrontPort, 
+  strReturn.Format("%s%s%s%s%s%s%s%s%s%s%s%s%s", 
     bPad ? g_localizeStrings.Get(13163):"", bPad && bKeyb ? ", ":"", bPad && bMem ? ", ":"", bPad && (bHeadSet || bMic) ? ", ":"",
     bKeyb ? g_localizeStrings.Get(13164):"", bKeyb && bMouse ? ", ":"",
     bMouse ? g_localizeStrings.Get(13165):"",bMouse && (bHeadSet || bMic) ? ", ":"",
@@ -1335,26 +1318,23 @@ CStdString CSysInfo::GetMACAddress()
   m_XKEEPROM->GetMACAddressString((LPSTR)&macaddress, ':');
 
   CStdString strMacAddress;
-  strMacAddress.Format("%s: %s", g_localizeStrings.Get(149), macaddress);
+  strMacAddress.Format("%s", macaddress);
   return strMacAddress;
 }
 
-CStdString CSysInfo::GetXBOXSerial(bool bLabel)
+CStdString CSysInfo::GetXBOXSerial()
 {
   CHAR serial[SERIALNUMBER_SIZE + 1] = "";
   m_XKEEPROM->GetSerialNumberString(serial);
 
   CStdString strXBOXSerial;
-  if (!bLabel)
-    strXBOXSerial.Format("%s", serial);
-  else 
-    strXBOXSerial.Format("%s %s",g_localizeStrings.Get(13289), serial);
-  return strXBOXSerial;
+  strXBOXSerial.Format("%s", serial);
+  return strXBOXSerial;  
 }
 
 CStdString CSysInfo::GetXBProduceInfo()
 {
-  CStdString serial = GetXBOXSerial(false);
+  CStdString serial = GetXBOXSerial();
   // Print XBOX Production Place and Date
   char *info = (char *) serial.c_str();
   char *country;
@@ -1379,8 +1359,7 @@ CStdString CSysInfo::GetXBProduceInfo()
   
   CLog::Log(LOGDEBUG, "- XBOX production info: Country: %s, LineNumber: %c, Week %c%c, Year 200%c", country, info[0x00], info[0x08], info[0x09],info[0x07]);
   CStdString strXBProDate;
-  strXBProDate.Format("%s %s, %s 200%c, %s: %c%c %s: %c",
-    g_localizeStrings.Get(13290), 
+  strXBProDate.Format("%s, %s 200%c, %s: %c%c %s: %c",
     country, 
     g_localizeStrings.Get(201),
     info[0x07],
@@ -1430,7 +1409,7 @@ CStdString CSysInfo::GetVideoXBERegion()
   }
 
   CStdString strVideoXBERegion;
-  strVideoXBERegion.Format("%s %s, %s", g_localizeStrings.Get(13293), VideoStdString, XBEString);
+  strVideoXBERegion.Format("%s, %s", VideoStdString, XBEString);
   return strVideoXBERegion;
 }
 
@@ -1440,7 +1419,7 @@ CStdString CSysInfo::GetDVDZone()
   DVD_ZONE dvdVal;
   dvdVal = m_XKEEPROM->GetDVDRegionVal();
   CStdString strdvdzone;
-  strdvdzone.Format("%s %d",g_localizeStrings.Get(13294), dvdVal);
+  strdvdzone.Format("%d", dvdVal);
   return strdvdzone;
 }
 
@@ -1451,7 +1430,7 @@ CStdString CSysInfo::GetXBLiveKey()
   m_XKEEPROM->GetOnlineKeyString(livekey);
 
   CStdString strXBLiveKey;
-  strXBLiveKey.Format("%s %s",g_localizeStrings.Get(13298), livekey);
+  strXBLiveKey.Format("%s", livekey);
   return strXBLiveKey;
 }
 
@@ -1462,7 +1441,7 @@ CStdString CSysInfo::GetHDDKey()
   m_XKEEPROM->GetHDDKeyString((LPSTR)&hdkey);
 
   CStdString strhddlockey;
-  strhddlockey.Format("%s %s",g_localizeStrings.Get(13150), hdkey);
+  strhddlockey.Format("%s", hdkey);
   return strhddlockey;
 }
 
@@ -1496,15 +1475,13 @@ CStdString CSysInfo::GetModChipInfo()
 CStdString CSysInfo::GetBIOSInfo()
 {
   //Format bios informations
-  CStdString strBiosName;
   CStdString cBIOSName;
   if(CheckBios(cBIOSName))
-    strBiosName.Format("%s %s", g_localizeStrings.Get(13285),cBIOSName);
+    return cBIOSName;
   else
-    strBiosName.Format("%s %s", g_localizeStrings.Get(13285),"File: BiosIDs.ini Not Found!");
-
-  return strBiosName;
+    return "File: BiosIDs.ini Not Found!";
 }
+
 CStdString CSysInfo::GetTrayState()
 {
   // Set DVD Drive State! [TrayOpen, NotReady....]
@@ -1551,7 +1528,6 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
     case SYSTEM_TOTAL_SPACE:
     case SYSTEM_FREE_SPACE_PERCENT:
     case SYSTEM_USED_SPACE_PERCENT:
-      strDrive = g_localizeStrings.Get(20161);
       bRet = g_sysinfo.GetDiskSpace("",total, totalFree, totalUsed, percentFree, percentused);
       break;
     case LCD_FREE_SPACE_C:
@@ -1655,7 +1631,10 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
       case SYSTEM_FREE_SPACE_X:
       case SYSTEM_FREE_SPACE_Y:
       case SYSTEM_FREE_SPACE_Z:
-        strRet.Format("%s: %i MB %s", strDrive, totalFree, g_localizeStrings.Get(160));
+        if (strDrive.IsEmpty())
+          strRet.Format("%i MB %s", totalFree, g_localizeStrings.Get(160));
+        else
+          strRet.Format("%s: %i MB %s", strDrive, totalFree, g_localizeStrings.Get(160));
         break;
       case SYSTEM_USED_SPACE:
       case SYSTEM_USED_SPACE_C:
@@ -1665,28 +1644,40 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
       case SYSTEM_USED_SPACE_X:
       case SYSTEM_USED_SPACE_Y:
       case SYSTEM_USED_SPACE_Z:
-        strRet.Format("%s: %i MB %s", strDrive, totalUsed, g_localizeStrings.Get(20162));
+        if (strDrive.IsEmpty())
+          strRet.Format("%i MB %s", totalUsed, g_localizeStrings.Get(20162));
+        else
+          strRet.Format("%s: %i MB %s", strDrive, totalUsed, g_localizeStrings.Get(20162));
         break;
       case SYSTEM_TOTAL_SPACE:
       case SYSTEM_TOTAL_SPACE_C:
       case SYSTEM_TOTAL_SPACE_E:
       case SYSTEM_TOTAL_SPACE_F:
       case SYSTEM_TOTAL_SPACE_G:
-        strRet.Format("%s: %i MB %s", strDrive, total, g_localizeStrings.Get(20161));
+        if (strDrive.IsEmpty())
+          strRet.Format("%i MB %s", total, g_localizeStrings.Get(20161));
+        else
+          strRet.Format("%s: %i MB %s", strDrive, total, g_localizeStrings.Get(20161));
         break;
       case SYSTEM_FREE_SPACE_PERCENT:
       case SYSTEM_FREE_SPACE_PERCENT_C:
       case SYSTEM_FREE_SPACE_PERCENT_E:
       case SYSTEM_FREE_SPACE_PERCENT_F:
       case SYSTEM_FREE_SPACE_PERCENT_G:
-        strRet.Format("%s: %i%% %s", strDrive, percentFree, g_localizeStrings.Get(160));
+        if (strDrive.IsEmpty())
+          strRet.Format("%i MB %s", percentFree, g_localizeStrings.Get(160));
+        else
+          strRet.Format("%s: %i MB %s", strDrive, percentFree, g_localizeStrings.Get(160));
         break;
       case SYSTEM_USED_SPACE_PERCENT:
       case SYSTEM_USED_SPACE_PERCENT_C:
       case SYSTEM_USED_SPACE_PERCENT_E:
       case SYSTEM_USED_SPACE_PERCENT_F:
       case SYSTEM_USED_SPACE_PERCENT_G:
-        strRet.Format("%s: %i%% %s", strDrive, percentused, g_localizeStrings.Get(20162));
+        if (strDrive.IsEmpty())
+          strRet.Format("%i MB %s", percentused, g_localizeStrings.Get(20162));
+        else
+          strRet.Format("%s: %i MB %s", strDrive, percentused, g_localizeStrings.Get(20162));
         break;
       }
     }
@@ -1695,6 +1686,8 @@ CStdString CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
   {
     if (shortText)
       strRet = "N/A";
+    else if (strDrive.IsEmpty())
+      strRet = g_localizeStrings.Get(161);
     else
       strRet.Format("%s: %s", strDrive, g_localizeStrings.Get(161));
   }
@@ -1721,42 +1714,36 @@ bool CSysInfo::SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &
 CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
 {
   CStdString strSystemUptime;
-  CStdString strLabel;
   int iInputMinutes, iMinutes,iHours,iDays;
   
   if(bTotalUptime)
   {
     //Total Uptime
-    strLabel = g_localizeStrings.Get(12394);
     iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
   }
   else
   {
     //Current UpTime
-    strLabel = g_localizeStrings.Get(12390);
     iInputMinutes = (int)(timeGetTime() / 60000);
   }
 
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
   if (iDays > 0) 
   {
-    strSystemUptime.Format("%s: %i %s, %i %s, %i %s",
-      strLabel,
+    strSystemUptime.Format("%i %s, %i %s, %i %s",
       iDays,g_localizeStrings.Get(12393),
       iHours,g_localizeStrings.Get(12392),
       iMinutes, g_localizeStrings.Get(12391));
   }
   else if (iDays == 0 && iHours >= 1 )
   {
-    strSystemUptime.Format("%s: %i %s, %i %s",
-      strLabel, 
+    strSystemUptime.Format("%i %s, %i %s",
       iHours,g_localizeStrings.Get(12392),
       iMinutes, g_localizeStrings.Get(12391));
   }
   else if (iDays == 0 && iHours == 0 &&  iMinutes >= 0)
   {
-    strSystemUptime.Format("%s: %i %s",
-      strLabel, 
+    strSystemUptime.Format("%i %s",
       iMinutes, g_localizeStrings.Get(12391));
   }
   return strSystemUptime;
@@ -1766,15 +1753,13 @@ CStdString CSysInfo::GetInternetState()
 {
   // Internet connection state!
   XFILE::CFileCurl http;
-  CStdString strInetCon;
   m_bInternetState = http.IsInternet();
   if (m_bInternetState)
-    strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13296));
+    return g_localizeStrings.Get(13296);
   else if (http.IsInternet(false))
-    strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13274));
+    return g_localizeStrings.Get(13274);
   else // NOT Connected to the Internet!
-    strInetCon.Format("%s %s",g_localizeStrings.Get(13295), g_localizeStrings.Get(13297));
-  return strInetCon;
+    return g_localizeStrings.Get(13297);
 }
 
 #if defined(_LINUX) && !defined(__APPLE__)

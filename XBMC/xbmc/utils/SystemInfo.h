@@ -83,7 +83,7 @@ class CSysInfo : public CInfoLoader
     CStdString GetXBVerInfo();
     CStdString GetUnits(int iFrontPort);
     CStdString GetMACAddress();
-    CStdString GetXBOXSerial(bool bLabel);
+    CStdString GetXBOXSerial();
     CStdString GetXBProduceInfo();
     CStdString GetVideoXBERegion();
     CStdString GetDVDZone();
