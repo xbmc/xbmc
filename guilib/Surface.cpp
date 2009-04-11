@@ -989,8 +989,10 @@ bool CSurface::MakeCurrent()
   if (m_pShared)
     return m_pShared->MakeCurrent();
 
+#ifdef HAS_SDL_OPENGL
   if (!m_glContext)
     return false;
+#endif
 
 #ifdef HAS_GLX
   GLXDrawable drawable = None;
