@@ -1160,17 +1160,18 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
     // apply auto-crop filter - only luminance needed, and we run vertically down 'n'
     // runs down the image.
     int min_detect = 8;                                // reasonable amount (what mplayer uses)
-    int detect = (min_detect + 16)*m_iSourceWidth;     // luminance should have minimum 16
+    int detect = (min_detect + 16)*m_iSourceWidth/4;     // luminance should have minimum 16
     D3DLOCKED_RECT lr;
     m_YUVTexture[0][FIELD_FULL][PLANE_Y]->LockRect(0, &lr, NULL, 0);
     int total;
+    int teletext_lines = 10;
     // Crop top
-    BYTE *s = (BYTE *)lr.pBits;
+    BYTE *s = (BYTE *)lr.pBits + lr.Pitch*teletext_lines;
     g_stSettings.m_currentVideoSettings.m_CropTop = m_iSourceHeight/2;
-    for (unsigned int y = 0; y < m_iSourceHeight/2; y++)
+    for (unsigned int y = teletext_lines; y < m_iSourceHeight/2; y++)
     {
       total = 0;
-      for (unsigned int x = 0; x < m_iSourceWidth; x++)
+      for (unsigned int x = (unsigned int)(m_iSourceWidth*0.375); x < (unsigned int)(m_iSourceWidth*0.625); x++)
         total += s[x];
       s += lr.Pitch;
       if (total > detect)
@@ -1185,7 +1186,7 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
     for (unsigned int y = (int)m_iSourceHeight; y > m_iSourceHeight/2; y--)
     {
       total = 0;
-      for (unsigned int x = 0; x < m_iSourceWidth; x++)
+      for (unsigned int x = (unsigned int)(m_iSourceWidth*0.375); x < (unsigned int)(m_iSourceWidth*0.625); x++)
         total += s[x];
       s -= lr.Pitch;
       if (total > detect)
@@ -1200,7 +1201,7 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
     for (unsigned int x = 0; x < m_iSourceWidth/2; x++)
     {
       total = 0;
-      for (unsigned int y = 0; y < m_iSourceHeight; y++)
+      for (unsigned int y = (unsigned int)(m_iSourceHeight*0.375); y < (unsigned int)(m_iSourceHeight*0.625); y++)
         total += s[y * lr.Pitch];
       s++;
       if (total > detect)
@@ -1215,7 +1216,7 @@ void CXBoxRenderer::AutoCrop(bool bCrop)
     for (unsigned int x = (int)m_iSourceWidth-1; x > m_iSourceWidth/2; x--)
     {
       total = 0;
-      for (unsigned int y = 0; y < m_iSourceHeight; y++)
+      for (unsigned int y = (unsigned int)(m_iSourceHeight*0.375); y < (unsigned int)(m_iSourceHeight*0.625); y++)
         total += s[y * lr.Pitch];
       s--;
       if (total > detect)
