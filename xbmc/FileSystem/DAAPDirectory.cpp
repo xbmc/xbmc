@@ -65,7 +65,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   CURL url(strPath);
 
   CStdString strRoot = strPath;
-  if (!CUtil::HasSlashAtEnd(strPath)) strRoot += "/";
+  CUtil::AddSlashAtEnd(strRoot);
 
   CStdString host = url.GetHostName();
   if (url.HasPort())
@@ -415,8 +415,7 @@ int CDAAPDirectory::GetCurrLevel(CStdString strPath)
   else
     strJustPath = strPath;
 
-  if (CUtil::HasSlashAtEnd(strJustPath))
-    strJustPath = strJustPath.Left(strJustPath.size() - 1);
+  CUtil::RemoveSlashAtEnd(strJustPath);
 
   intLevel = -1;
   intSPos = strPath.length();
