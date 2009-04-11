@@ -12,7 +12,7 @@
 		</control>
 		<control type="label" id="10">
 			<description>row 1 label</description>
-			<posx>40</posx>
+			<posx>30</posx>
 			<posy>50</posy>
 			<width>680</width>
 			<label>-</label>
@@ -21,7 +21,7 @@
 		</control>
 		<control type="label" id="11">
 			<description>row 2 label</description>
-			<posx>40</posx>
+			<posx>30</posx>
 			<posy>75</posy>
 			<width>680</width>
 			<label>-</label>
@@ -30,7 +30,7 @@
 		</control>
 		<control type="label" id="12">
 			<description>row 3 label</description>
-			<posx>40</posx>
+			<posx>30</posx>
 			<posy>100</posy>
 			<width>680</width>
 			<label>-</label>

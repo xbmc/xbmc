@@ -117,41 +117,41 @@
 		</control>
 		<control type="group">
 			<include>contentpanelslide</include>
-			<control type="button">
-				<posx>680</posx>
-				<posy>100</posy>
-				<include>scrollbar_width</include>
-				<height>20</height>
-				<onclick>PageUp(90)</onclick>
-				<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
-				<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
-				<visible>Control.IsVisible(90)</visible>
-			</control>
-			<control type="button">
-				<posx>680</posx>
-				<posy>500</posy>
-				<include>scrollbar_width</include>
-				<height>20</height>
-				<onclick>PageDown(90)</onclick>
-				<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
-				<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
-				<visible>Control.IsVisible(90)</visible>
-			</control>
-			<control type="scrollbar" id="90">
-				<posx>680</posx>
-				<posy>120</posy>
-				<include>scrollbar_width</include>
-				<height>380</height>
-				<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
-				<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
-				<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
-				<textureslidernib>-</textureslidernib>
-				<textureslidernibfocus>-</textureslidernibfocus>
-				<onleft>5</onleft>
-				<onright>3</onright>
-				<showonepage>false</showonepage>
-				<orientation>vertical</orientation>
-			</control>
+		<control type="button">
+			<posx>680</posx>
+			<posy>100</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageUp(90)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>Control.IsVisible(90)</visible>
+		</control>
+		<control type="button">
+			<posx>680</posx>
+			<posy>500</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageDown(90)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<visible>Control.IsVisible(90)</visible>
+		</control>
+		<control type="scrollbar" id="90">
+			<posx>680</posx>
+			<posy>120</posy>
+			<include>scrollbar_width</include>
+			<height>380</height>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
+			<onleft>5</onleft>
+			<onright>3</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+		</control>
 		</control>
 		<include>windowswitchtransition</include>
 	</controls>

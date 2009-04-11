@@ -40,6 +40,7 @@ private:
   #define CONTROL_BT_VIDEO		97
   #define CONTROL_BT_HARDWARE	98
   unsigned int iControl;
-  void	SetLabelDummy();
+  void SetLabelDummy();
+  void SetControlLabel(int id, const char *format, int label, int info);
 };
 

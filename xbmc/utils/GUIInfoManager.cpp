@@ -1157,10 +1157,10 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
-    strLabel.Format("%s %ix%i %s %02.2f Hz.",g_localizeStrings.Get(13287),
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
+    strLabel.Format("%ix%i %s %02.2f Hz.",
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
     return strLabel;
     break;
 #ifdef HAS_XBOX_HARDWARE
@@ -1397,62 +1397,47 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 #endif
   case NETWORK_IP_ADDRESS:
     {
-      CStdString ip;
-      ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), g_network.m_networkinfo.ip);
-      return ip;
+      return g_network.m_networkinfo.ip;
     }
     break;
   case NETWORK_SUBNET_ADDRESS:
     {
-      CStdString subnet;
-      subnet.Format("%s: %s", g_localizeStrings.Get(13159), g_network.m_networkinfo.subnet);
-      return subnet;
+      return g_network.m_networkinfo.subnet;
     }
     break;
   case NETWORK_GATEWAY_ADDRESS:
     {
-      CStdString gateway;
-      gateway.Format("%s: %s", g_localizeStrings.Get(13160), g_network.m_networkinfo.gateway);
-      return gateway;
+      return g_network.m_networkinfo.gateway;
     }
     break;
   case NETWORK_DNS1_ADDRESS:
     {
-      CStdString dns;
-      dns.Format("%s: %s", g_localizeStrings.Get(13161), g_network.m_networkinfo.DNS1);
-      return dns;
+      return g_network.m_networkinfo.DNS1;
     }
     break;
   case NETWORK_DNS2_ADDRESS:
     {
-      CStdString dns;
-      dns.Format("%s: %s", g_localizeStrings.Get(20307), g_network.m_networkinfo.DNS2);
-      return dns;
+      return g_network.m_networkinfo.DNS2;
     }
     break;
   case NETWORK_DHCP_ADDRESS:
     {
-      CStdString dhcpserver;
-      dhcpserver.Format("%s: %s", g_localizeStrings.Get(20308), g_network.m_networkinfo.dhcpserver);
-      return dhcpserver;
+      return g_network.m_networkinfo.dhcpserver;
     }
     break;
   case NETWORK_IS_DHCP:
     {
-      CStdString dhcp;
       if(g_network.m_networkinfo.DHCP)
-        dhcp.Format("%s %s", g_localizeStrings.Get(146), g_localizeStrings.Get(148)); // is dhcp ip
+        return g_localizeStrings.Get(148); // is dhcp ip
       else
-        dhcp.Format("%s %s", g_localizeStrings.Get(146), g_localizeStrings.Get(147)); // is fixed ip
-     return dhcp;
+        return g_localizeStrings.Get(147); // is fixed ip
     }
     break;
 #ifdef HAS_XBOX_HARDWARE
   case NETWORK_LINK_STATE:
     {
       DWORD dwnetstatus = XNetGetEthernetLinkStatus();
-      CStdString linkStatus = g_localizeStrings.Get(151);
-      linkStatus += " ";
+      CStdString linkStatus;
       if (dwnetstatus & XNET_ETHERNET_LINK_ACTIVE)
       {
         if (dwnetstatus & XNET_ETHERNET_LINK_100MBPS)
@@ -3221,26 +3206,20 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
   CStdString text;
   switch(info)
   {
-    case SYSTEM_CPU_TEMPERATURE:
-      text.Format("%s %s", g_localizeStrings.Get(140).c_str(), m_cpuTemp.ToString());
-      break;
-    case SYSTEM_GPU_TEMPERATURE:
-      text.Format("%s %s", g_localizeStrings.Get(141).c_str(), m_gpuTemp.ToString());
-      break;
-    case SYSTEM_FAN_SPEED:
-      text.Format("%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
-      break;
     case LCD_CPU_TEMPERATURE:
+    case SYSTEM_CPU_TEMPERATURE:
       return m_cpuTemp.ToString();
       break;
     case LCD_GPU_TEMPERATURE:
+    case SYSTEM_GPU_TEMPERATURE:
       return m_gpuTemp.ToString();
       break;
     case LCD_FAN_SPEED:
+    case SYSTEM_FAN_SPEED:
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
-      text.Format("%s %2.0f%%", g_localizeStrings.Get(13271).c_str(), (1.0f - g_application.m_idleThread.GetRelativeUsage())*100);
+      text.Format("%s %2.0f%%", (1.0f - g_application.m_idleThread.GetRelativeUsage())*100);
       break;
   }
   return text;
