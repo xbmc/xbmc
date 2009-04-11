@@ -292,12 +292,13 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
         }
         pItem->SetProperty("watchedepisodes", watched);
         pItem->SetProperty("unwatchedepisodes", unwatched);
-        pItem->GetVideoInfoTag()->m_playCount = (unwatched == 0) ? 1 : 0;
         if (items.Size() && items[0]->GetVideoInfoTag())
         {
           *pItem->GetVideoInfoTag() = *items[0]->GetVideoInfoTag();
           pItem->GetVideoInfoTag()->m_iSeason = -1;
         }
+        pItem->GetVideoInfoTag()->m_iEpisode = watched + unwatched;
+        pItem->GetVideoInfoTag()->m_playCount = (unwatched == 0) ? 1 : 0;
         if (XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
           pItem->SetThumbnailImage(pItem->GetCachedSeasonThumb());
       }
