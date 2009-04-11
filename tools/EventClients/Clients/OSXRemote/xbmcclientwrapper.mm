@@ -147,7 +147,7 @@ void XBMCClientWrapperImpl::restartTimer(){
 }
 
 XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address): 
-m_mode(f_mode), m_address(fcr_address), m_timer(0), m_sequence_timeout(0.5), m_device_id(150), m_verbose_mode(false){
+m_mode(f_mode), m_address(fcr_address), m_timer(0), m_sequence_timeout(0.5), m_device_id(150), m_verbose_mode(true){
 	PRINT_SIGNATURE();
 	
   if(m_mode == UNIVERSAL_MODE){
@@ -205,8 +205,8 @@ void XBMCClientWrapperImpl::sendButton(eATVClientEvent f_event){
   assert(lp_packet);
   CAddress addr(m_address.c_str());
 // TODO: add GetButtonCode to CPacketButton?
-//  if(m_verbose_mode)
-//   NSLog(@"XBMCClientWrapperImpl::sendButton sending button %i", lp_packet->GetButtonCode());
+  if(m_verbose_mode)
+   NSLog(@"XBMCClientWrapperImpl::sendButton sending button %i", lp_packet->GetButtonCode());
   lp_packet->Send(m_socket, addr);  
 }
 
