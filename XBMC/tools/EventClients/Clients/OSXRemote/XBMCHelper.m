@@ -54,7 +54,7 @@
     ELOG(@"Path does not exist: %@. Cannot launch executable", mp_app_path);
     return;
   }
-  if(mp_home_path && [mp_home_path length)
+  if(mp_home_path && [mp_home_path length])
      setenv("XBMC_HOME", [mp_home_path cString], 1);
   //launch or activate xbmc
   if(![[NSWorkspace sharedWorkspace] launchApplication:mp_app_path]){
