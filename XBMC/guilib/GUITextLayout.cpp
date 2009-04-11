@@ -206,6 +206,63 @@ void CGUITextLayout::SetText(const CStdStringW &text, float maxWidth)
     WrapText(parsedText, maxWidth);
   else
     LineBreakText(parsedText, m_lines);
+
+  BidiTransform(m_lines);
+}
+
+// BidiTransform is used to handle RTL text flipping in the string
+void CGUITextLayout::BidiTransform(vector<CGUIString> &lines)
+{
+  for (unsigned int i=0; i<lines.size(); i++)
+  {
+    CGUIString &line = lines[i];
+
+    // reserve enough space in the flipped text
+    vector<DWORD> flippedText; 
+    flippedText.reserve(line.m_text.size());
+
+    DWORD sectionStyle = 0xffff0000; // impossible to achieve
+    CStdStringW sectionText;
+    for (vector<DWORD>::iterator it = line.m_text.begin(); it != line.m_text.end(); ++it)
+    { 
+      DWORD style = *it & 0xffff0000;
+      if (style != sectionStyle) 
+      {
+        if (!sectionText.IsEmpty())
+        { // style has changed, bidi flip text 
+          CStdStringW sectionFlipped = BidiFlip(sectionText);
+          for (unsigned int j = 0; j < sectionFlipped.size(); j++)
+            flippedText.push_back(sectionStyle | sectionFlipped[j]);
+        }
+        sectionStyle = style;
+        sectionText.clear();
+      }
+      sectionText.push_back(*it & 0xffff);
+    }
+
+    // handle the last section
+    if (!sectionText.IsEmpty())
+    {
+      CStdStringW sectionFlipped = BidiFlip(sectionText);
+      for (unsigned int j = 0; j < sectionFlipped.size(); j++)
+        flippedText.push_back(sectionStyle | sectionFlipped[j]);
+    }
+
+    // replace the original line with the proccessed one
+    lines[i] = CGUIString(flippedText.begin(), flippedText.end(), line.m_carriageReturn);
+  }
+}
+
+CStdStringW CGUITextLayout::BidiFlip(const CStdStringW &text)
+{
+  CStdStringA utf8text;
+  CStdStringW visualText;
+
+  // convert to utf8, and back to utf16 with bidi flipping
+  g_charsetConverter.wToUTF8(text, utf8text);
+  g_charsetConverter.utf8ToW(utf8text, visualText, true);
+
+  return visualText;
 }
 
 void CGUITextLayout::Filter(CStdString &text)
@@ -541,13 +598,15 @@ void CGUITextLayout::utf8ToW(const CStdString &utf8, CStdStringW &utf16)
   for (unsigned int i = 0; i < multiLines.size(); i++)
   {
     CStdStringW line;
-    g_charsetConverter.utf8ToW(multiLines[i], line);
+    // no need to bidiflip here - it's done in BidiTransform above
+    g_charsetConverter.utf8ToW(multiLines[i], line, false);
     utf16 += line;
     if (i < multiLines.size() - 1)
       utf16.push_back(L'\n');
   }
 #else
-  g_charsetConverter.utf8ToW(utf8, utf16);
+  // no need to bidiflip here - it's done in BidiTransform above
+  g_charsetConverter.utf8ToW(utf8, utf16, false);
 #endif
 }
 
@@ -563,4 +622,5 @@ void CGUITextLayout::Reset()
   m_lines.clear();
   m_lastText.Empty();
 }
+
 
