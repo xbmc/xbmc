@@ -73,10 +73,10 @@ XBMCHelper::XBMCHelper()
 /////////////////////////////////////////////////////////////////////////////
 void XBMCHelper::Start()
 {
-  printf("Asking helper to start.\n");
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   if (pid == -1)
   {
+    printf("Asking helper to start.\n");
     // use -x to have XBMCHelper read its configure file
     std::string cmd = "\"" + m_helperFile + "\" -xm &";
     system(cmd.c_str());
@@ -86,12 +86,14 @@ void XBMCHelper::Start()
 /////////////////////////////////////////////////////////////////////////////
 void XBMCHelper::Stop()
 {
-  printf("Asked to stop\n");
 
   // Kill the process.
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   if (pid != -1)
+  {
+    printf("Asked to stop\n");
     kill(pid, SIGKILL);
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////
