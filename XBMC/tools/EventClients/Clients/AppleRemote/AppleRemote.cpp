@@ -119,8 +119,8 @@ static std::string key_cookies10_5[] =
     "30_",
     "4_",
     "3_",
-    "18_",
-    "20_"
+    "20_",
+    "18_"
 };
 
 AppleRemote::AppleRemote() :m_bVerbose(false), 
@@ -130,7 +130,8 @@ AppleRemote::AppleRemote() :m_bVerbose(false),
 							m_timer(NULL)
 {
 	m_serverAddress = "localhost";
-	m_appPath ="";
+	m_appPath = "";
+	m_appHome = "";
 }
 
 AppleRemote::~AppleRemote()
@@ -260,11 +261,10 @@ void AppleRemote::Initialize()
     RegisterCommand(key[IR_RightHold], new CPacketBUTTON(4, "JS0:AppleRemote", BTN_DOWN));
     RegisterCommand(key[IR_LeftHold],  new CPacketBUTTON(3, "JS0:AppleRemote", BTN_DOWN));
 
-    // looks like this is what triggers when menu is held down (?)
-    RegisterCommand(key[IR_Menu],      new CPacketBUTTON(8, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(key[IR_Menu],      new CPacketBUTTON(6, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
 
     // Menu Hold will be used both for sending "Back" and for starting universal remote combinations (if universal mode is on)
-    RegisterCommand(key[IR_MenuHold],  new CPacketBUTTON(6, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
+    RegisterCommand(key[IR_MenuHold],  new CPacketBUTTON(8, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
 
     // Universal commmands:
     RegisterCommand(key[IR_MenuHold] + key[IR_Down], new CPacketBUTTON("Back", "R1", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE));
@@ -402,6 +402,7 @@ void AppleRemote::LaunchApp()
     strCmd += m_appHome;
     strCmd += " ";
     strCmd += m_appPath;
+    strCmd += " &";
     LOG("xbmc open command: [%s]\n", strCmd.c_str());
     system(strCmd.c_str());
   }
@@ -530,11 +531,15 @@ bool AppleRemote::IsProgramRunning(const char* strProgram, int ignorePid)
 		kinfo_proc *proc = NULL;
 		proc = &mylist[k];
 
-    // Process names are at most sixteen characters long.
+    	//LOG("proc->kp_proc.p_comm: %s\n", proc->kp_proc.p_comm);
+    	// Process names are at most sixteen characters long.
 		if (strncmp(proc->kp_proc.p_comm, strProgram, 16) == 0)
 		{
 			if (ignorePid == 0 || ignorePid != proc->kp_proc.p_pid)
+      		{
+        		//LOG("found: %s\n", proc->kp_proc.p_comm);
 				ret = true;
+      		}
 		}
 	}
 	free(mylist);

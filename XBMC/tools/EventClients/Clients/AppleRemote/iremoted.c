@@ -400,10 +400,12 @@ setupAndRun(void)
 
 void Reconfigure(int nSignal)
 {
-	if (nSignal == SIGHUP)
+	if (nSignal == SIGHUP) {
+    	//fprintf(stderr, "Reconfigure\n");
 		ReadConfig();
-	else
+	} else {
 		exit(0);
+  	}
 }
 
 void ReadConfig()
