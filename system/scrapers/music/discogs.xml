@@ -74,17 +74,28 @@
 		</RegExp>
 	</GetImages>
 	<CreateArtistSearchUrl dest="3">
-		<RegExp input="$$1" output="http://www.discogs.com/search?type=all&amp;q=\1&amp;btn=Search" dest="3">
-			<expression/>
+		<RegExp input="$$2" output="http://www.discogs.com/search?type=artists&amp;q=&quot;\1&quot;&amp;btn=Search" dest="3">
+			<RegExp input="$$2" output="\1,%20The" dest="2">
+				<RegExp input="$$1" output="\1" dest="2">
+					<expression noclean="1"/>
+				</RegExp>
+				<expression noclean="1" clear="no" repeat="no" trim="1">[Tt]he%20(.+)</expression>
+			</RegExp>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateArtistSearchUrl>
 	<GetArtistSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.discogs.com\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes">&lt;a class=&quot;rollover_link&quot; href=&quot;(/artist[^&quot;]*)&quot;&gt;&lt;span style=&quot;font-size:11pt;&quot;&gt;&lt;em&gt;([^&lt;]*)&lt;</expression>
+			<!-- exact match -->
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 \3&lt;/title&gt;&lt;url&gt;http://www.discogs.com\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<!-- artist name variation -->
+				<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.discogs.com\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+					<expression repeat="yes" clear="yes">&lt;a class=&quot;rollover_link&quot; href=&quot;(/artist[^&quot;]*anv=[^&quot;]*)&quot;&gt;(.+?)&lt;p/&gt;</expression>
+				</RegExp>
+				<expression repeat="yes" clear="no" trim="2,3">&lt;a class=&quot;rollover_link&quot; href=&quot;(/artist[^&quot;]*)&quot;&gt;&lt;span style=&quot;.+?;&quot;&gt;&lt;em&gt;(.+?)[(]artist[)](.*?)&lt;p/&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
-		</RegExp>		
+		</RegExp>
 	</GetArtistSearchResults>
 	<GetArtistDetails dest="3" clearbuffers="no">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
