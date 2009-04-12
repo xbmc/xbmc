@@ -171,7 +171,7 @@ bool CVideoReferenceClock::SetupGLX()
                            m_vInfo->depth, InputOutput, m_vInfo->visual, SwaMask, &Swa);
   
   m_Context = glXCreateNewContext(m_Dpy, m_fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
-  m_GLXWindow = glXCreateWindow(m_Dpy, m_fbConfigs[0], m_Window, NULL);
+  m_GLXWindow = glXCreateWindow(m_Dpy, m_fbConfigs[0], m_Window, NULL );
   glXMakeCurrent(m_Dpy, m_GLXWindow, m_Context);
   
   m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
@@ -286,20 +286,13 @@ void CVideoReferenceClock::RunGLX()
   unsigned int  PrevVblankCount;
   unsigned int  VblankCount;
   int           ReturnV;
-  int           NrVBlanks;
-  double        VBlankTime;
-  LARGE_INTEGER CurrVBlankTime;
-  LARGE_INTEGER LastVBlankTime;
   
-  QueryPerformanceCounter(&LastVBlankTime);
   m_glXGetVideoSyncSGI(&PrevVblankCount);
   UpdateRefreshrate();
   
   while(!m_bStop)
   {
     ReturnV = m_glXWaitVideoSyncSGI(2, ((PrevVblankCount % 2) + 1) % 2, &VblankCount);
-    QueryPerformanceCounter(&CurrVBlankTime);
-    
     if(ReturnV)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
@@ -307,19 +300,17 @@ void CVideoReferenceClock::RunGLX()
       return;
     }
     
-    VBlankTime = (double)(CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart) / (double)m_SystemFrequency.QuadPart;
-    NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
-    LastVBlankTime = CurrVBlankTime;
-    
-    Lock();
-    //update the clock depending on how many vblanks have happened
-    m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
-    SendVblankSignal();
-    Unlock();
+    if (VblankCount > PrevVblankCount)
+    {
+      Lock();
+      //update the clock depending on how many vblanks have happened
+      m_CurrTime.QuadPart += (__int64)(VblankCount - PrevVblankCount) * m_AdjustedFrequency.QuadPart / m_RefreshRate;
+      SendVblankSignal();
+      Unlock();
       
-    UpdateRefreshrate();
-    
-    if (VblankCount <= PrevVblankCount)
+      UpdateRefreshrate();
+    }
+    else
     {
       m_glXGetVideoSyncSGI(&VblankCount);
       if (VblankCount <= PrevVblankCount)
