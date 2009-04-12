@@ -1046,7 +1046,7 @@ bool CUtil::IsVTP(const CStdString& strFile)
 
 bool CUtil::IsTV(const CStdString& strFile)
 {
-  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile);
+  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile);
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)

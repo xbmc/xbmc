@@ -2365,21 +2365,21 @@ CStdString CFileItem::GetTBNFile() const
 
 CStdString CFileItem::GetUserVideoThumb() const
 {
-  if (m_strPath.IsEmpty() 
-  || m_bIsShareOrDrive
-  || IsInternetStream()
-  || CUtil::IsUPnP(m_strPath)
-  || IsParentFolder()
-  || IsVTP()
-  || CUtil::IsHDHomeRun(m_strPath))
-    return "";
-
   if (IsTuxBox())
   {
     if (!m_bIsFolder)
       return g_tuxbox.GetPicon(GetLabel());
     else return "";
   }
+
+  if (m_strPath.IsEmpty() 
+  || m_bIsShareOrDrive
+  || IsInternetStream()
+  || CUtil::IsUPnP(m_strPath)
+  || IsParentFolder()
+  || IsTV())
+    return "";
+
 
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
@@ -2513,8 +2513,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsUPnP(strFile)
   || IsTV() 
   || IsPlugin() 
-  || CUtil::IsFTP(strFile)
-  || CUtil::IsHDHomeRun(strFile))
+  || CUtil::IsFTP(strFile))
     return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..
