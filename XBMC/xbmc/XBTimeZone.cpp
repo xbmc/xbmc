@@ -619,6 +619,16 @@ extern const MINI_TZI g_TimeZoneInfo[] = {
       0,
     },
     {
+      "GMT+08 AWDT", 
+      -480, 
+      "AWST", 
+      { 3, 4, 0, 2 }, 
+      0, 
+      "AWDT", 
+      { 10, 5, 0, 2 }, 
+      -60, 
+    }, 
+    {
       "GMT+08 TST",
       -480,
       "TST",
