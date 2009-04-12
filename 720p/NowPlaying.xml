@@ -23,7 +23,7 @@
         <description>Next cover</description>
         <posx>226</posx>
         <posy>40</posy>
-        <visible>MusicPlayer.HasNext</visible>
+        <visible>MusicPlayer.HasDifferentCoverNext</visible>
         
         <control type="image" id="0">
           <width>264</width>
