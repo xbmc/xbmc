@@ -27,7 +27,7 @@ using namespace std;
 
 #ifdef _XBOX
 #define ITEMS_PER_THREAD 10
-#define MAX_THREAD_COUNT 2
+#define MAX_THREAD_COUNT 1
 #else
 #define ITEMS_PER_THREAD 5
 #define MAX_THREAD_COUNT 5
