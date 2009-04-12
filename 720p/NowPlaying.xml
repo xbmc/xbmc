@@ -12,40 +12,91 @@
       <texture>NowPlayingBG.png</texture>  
     </control>
     
-    <control type="group" id="1">
-      <description>Album covers</description>
-      <posx>587</posx>
-      <posy>204</posy>
-
+    <!-- Second cover -->
+    <control type="group">
+      <visible>MusicPlayer.HasNext</visible>
       <control type="group">
-        <posx>226</posx>
-        <posy>40</posy>
+        <posx>813</posx>
+        <posy>244</posy>
+        <visible>MusicPlayer.HasDifferentCoverNext</visible>
+        <animation effect="slide" start="-80,0" time="500" tween="cubic" easing="inout">Visible</animation>
+        <animation effect="slide" end="-80,0" time="500" tween="cubic" easing="inout">Hidden</animation>
         <include>NowPlayingNextCover</include>
       </control>
-      <include>NowPlayingCurrentCover</include>
     </control>
-
-
+    
+    <!-- Double cover view -->
     <control type="group">
-      <description>Info</description>
-      <posx>60</posx>
-      <posy>220</posy>
+      <visible>MusicPlayer.HasDifferentCoverNext</visible>
+      <animation effect="slide" end="80,0" time="500" tween="cubic" easing="inout">Hidden</animation>
+      <animation effect="fade" start="0" end="100" delay="500" time="0">Visible</animation>
+      <control type="group" id="1">
+        <description>Album covers</description>
+        <posx>587</posx>
+        <posy>204</posy>
+  
+
+        <include>NowPlayingCurrentCover</include>
+      </control>
+      <control type="group">
+        <description>Info</description>
+        <posx>60</posx>
+        <posy>220</posy>
+        
+        <include>NowPlayingCurrentInfo</include>
+        
+        <control type="progress" id="20">
+          <description>Progress control</description>
+          <posx>129</posx>
+          <posy>162</posy>
+          <aligny>center</aligny>
+          <width>372</width>
+          <info>Player.Progress</info>
+          <visible>Player.HasAudio</visible>
+        </control>
+        
+        <control type="group">
+          <posy>219</posy>
+          <include>NowPlayingNextInfo</include>
+        </control>
+      </control>
+    </control>
+    
+    <!-- Single cover view -->
+    <control type="group">
+      <posx>80</posx>
+      <visible>!MusicPlayer.HasDifferentCoverNext</visible>
+      <animation effect="slide" end="-80,0" time="500" tween="cubic" easing="inout">Hidden</animation>
+      <animation effect="fade" start="0" end="100" delay="500" time="0">Visible</animation>
       
-      <include>NowPlayingCurrentInfo</include>
-      
-      <control type="progress" id="20">
-        <description>Progress control</description>
-        <posx>129</posx>
-        <posy>162</posy>
-        <aligny>center</aligny>
-        <width>372</width>
-        <info>Player.Progress</info>
-        <visible>Player.HasAudio</visible>
+      <control type="group" id="1">
+        <description>Album covers</description>
+        <posx>587</posx>
+        <posy>204</posy>
+        <include>NowPlayingCurrentCover</include>
       </control>
       
       <control type="group">
-        <posy>219</posy>
-        <include>NowPlayingNextInfo</include>
+        <description>Info</description>
+        <posx>60</posx>
+        <posy>220</posy>
+        
+        <include>NowPlayingCurrentInfo</include>
+        
+        <control type="progress" id="20">
+          <description>Progress control</description>
+          <posx>129</posx>
+          <posy>162</posy>
+          <aligny>center</aligny>
+          <width>372</width>
+          <info>Player.Progress</info>
+          <visible>Player.HasAudio</visible>
+        </control>
+        
+        <control type="group">
+          <posy>219</posy>
+          <include>NowPlayingNextInfo</include>
+        </control>
       </control>
     </control>
 
