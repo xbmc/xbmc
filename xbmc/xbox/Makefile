@@ -1,4 +1,5 @@
 INCLUDES=-I. -I../ -I../linux -I../../guilib
+INCLUDES+=-I../lib/libcdio/libcdio/include
 
 SRCS=IoSupport.cpp XKGeneral.cpp
 
