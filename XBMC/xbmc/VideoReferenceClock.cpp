@@ -293,6 +293,7 @@ void CVideoReferenceClock::RunGLX()
   while(!m_bStop)
   {
     ReturnV = m_glXWaitVideoSyncSGI(2, ((PrevVblankCount % 2) + 1) % 2, &VblankCount);
+    m_glXGetVideoSyncSGI(&VblankCount);
     if(ReturnV)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
@@ -312,20 +313,16 @@ void CVideoReferenceClock::RunGLX()
     }
     else
     {
-      m_glXGetVideoSyncSGI(&VblankCount);
-      if (VblankCount <= PrevVblankCount)
-      {
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
-        
-        Lock();
-        m_CurrTime.QuadPart += m_AdjustedFrequency.QuadPart / m_RefreshRate;
-        SendVblankSignal();
-        Unlock();
-        
-        //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
-        glXMakeCurrent(m_Dpy, None, NULL);
-        glXMakeCurrent(m_Dpy, m_GLXWindow, m_Context);
-      }        
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
+      
+      Lock();
+      m_CurrTime.QuadPart += m_AdjustedFrequency.QuadPart / m_RefreshRate;
+      SendVblankSignal();
+      Unlock();
+      
+      //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
+      glXMakeCurrent(m_Dpy, None, NULL);
+      glXMakeCurrent(m_Dpy, m_GLXWindow, m_Context);
     }
     PrevVblankCount = VblankCount;
   }
