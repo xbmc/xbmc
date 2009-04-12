@@ -3,6 +3,31 @@
 
 <!-- Default fonts -->
     <font>
+      <name>NPArtistFont</name>
+      <filename>HelveticaNeue.dfont</filename>
+			<variant>Bold</variant>
+      <size>48</size>
+    </font>
+    <font>
+      <name>NPTitleFont</name>
+      <filename>HelveticaNeue.dfont</filename>
+			<variant>Bold</variant>
+      <size>32</size>
+    </font>
+    <font>
+      <name>NPAlbumFont</name>
+      <filename>HelveticaNeue.dfont</filename>
+			<variant>Regular</variant>
+      <size>32</size>
+    </font>
+    <font>
+      <name>NPNextFont</name>
+      <filename>HelveticaNeue.dfont</filename>
+			<variant>Regular</variant>
+      <size>20</size>
+    </font>
+
+    <font>
       <name>XLargeDefaultFont</name>
       <filename>HelveticaNeue.dfont</filename>
 			<variant>Condensed Bold</variant>
