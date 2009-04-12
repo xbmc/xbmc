@@ -27,11 +27,12 @@
 #include "FileSmb.h"
 #include "GUIPassword.h"
 #include "SMBDirectory.h"
-#include "lib/libsmb/xbLibSmb.h"
 #include "Util.h"
 #include "xbox/Network.h"
 #include "utils/Win32Exception.h"
+#include "lib/libsmb/xbLibSmb.h"
 #include "Settings.h"
+
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -47,8 +48,15 @@ void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
   return ;
 }
 
+smbc_get_cached_srv_fn orig_cache;
+
+SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const char* workgroup, const char* username)
+{
+  return orig_cache(c, server, share, workgroup, username);
+}
+
 CSMB::CSMB()
-{  
+{
   m_context = NULL;
 }
 
@@ -56,6 +64,7 @@ CSMB::~CSMB()
 {
   Deinit();
 }
+
 void CSMB::Deinit()
 {
   CSingleLock lock(*this);
@@ -82,7 +91,7 @@ void CSMB::Init()
   if (!m_context)
   {
     set_xbox_interface(g_network.m_networkinfo.ip, g_network.m_networkinfo.subnet);
-    // set log function
+    // set the log function
     set_log_callback(xb_smbc_log);
 
     // set workgroup for samba, after smbc_init it can be freed();
@@ -92,11 +101,13 @@ void CSMB::Init()
     m_context = smbc_new_context();
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
     m_context->callbacks.auth_fn = xb_smbc_auth;
+    orig_cache = m_context->callbacks.get_cached_srv_fn;
+    m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
     m_context->options.one_share_per_server = true;
-//    m_context->options.browse_max_lmb_count = 0;
+    m_context->options.browse_max_lmb_count = 0;
 
     /* set connection timeout. since samba always tries two ports, divide this by two the correct value */
-    m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;    
+    m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
 
     // initialize samba and do some hacking into the settings
     if (smbc_init_context(m_context))
@@ -110,9 +121,9 @@ void CSMB::Init()
         lp_do_parameter( -1, "wins server", g_guiSettings.GetString("smb.winsserver").c_str());
         lp_do_parameter( -1, "name resolve order", "bcast wins host");
       }
-      else 
+      else
         lp_do_parameter( -1, "name resolve order", "bcast host");
-            
+
       if (g_advancedSettings.m_sambadoscodepage.length() > 0)
         lp_do_parameter( -1, "dos charset", g_advancedSettings.m_sambadoscodepage.c_str());
       else
@@ -185,7 +196,7 @@ CStdString CSMB::URLEncode(const CURL &url)
     flat += "@";
   }
 
-  flat += URLEncode(url.GetHostName());  
+  flat += URLEncode(url.GetHostName());
 
   /* okey sadly since a slash is an invalid name we have to tokenize */
   std::vector<CStdString> parts;
@@ -203,7 +214,7 @@ CStdString CSMB::URLEncode(const CURL &url)
 }
 
 CStdString CSMB::URLEncode(const CStdString &value)
-{  
+{
   int buffer_len = value.length()*3+1;
   char* buffer = (char*)malloc(buffer_len);
 
@@ -267,8 +278,6 @@ bool CFileSMB::Open(const CURL& url)
   }
   m_url = url;
 
-  CSingleLock lock(smb);
-
   // opening a file to another computer share will create a new session
   // when opening smb://server xbms will try to find folder.jpg in all shares
   // listed, which will create lot's of open sessions.
@@ -281,25 +290,27 @@ bool CFileSMB::Open(const CURL& url)
   {
     // write error to logfile
     int nt_error = smb.ConvertUnixToNT(errno);
-    CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
-              strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
-    return false;
-  }
-  __int64 ret = smbc_lseek(m_fd, 0, SEEK_END);
-
-  if ( ret < 0 )
-  {
-    smbc_close(m_fd);
-    m_fd = -1;    
+    CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
     return false;
   }
 
-  m_fileSize = ret;
-  ret = smbc_lseek(m_fd, 0, SEEK_SET);
+  CSingleLock lock(smb);
+
+  struct __stat64 tmpBuffer = {0};
+  if (smbc_stat(strFileName, &tmpBuffer) < 0)
+  {
+    smbc_close(m_fd);
+    m_fd = -1;
+    return false;
+  }
+
+  m_fileSize = tmpBuffer.st_size;
+
+  __int64 ret = smbc_lseek(m_fd, 0, SEEK_SET);
   if ( ret < 0 )
   {
     smbc_close(m_fd);
-    m_fd = -1;    
+    m_fd = -1;
     return false;
   }
   // We've successfully opened the file!
@@ -335,7 +346,7 @@ int CFileSMB::OpenFile(CStdString& strAuth)
 int CFileSMB::OpenFile(const CURL &url, CStdString& strAuth)
 {
   int fd = -1;
-
+  smb.Init();
   /* original auth name */
   strAuth = smb.URLEncode(url);
 
@@ -349,7 +360,7 @@ int CFileSMB::OpenFile(const CURL &url, CStdString& strAuth)
   if (fd < 0 && smb.ConvertUnixToNT(errno) == NT_STATUS_ACCESS_DENIED)
   {
     CURL urlshare(url);
-    
+
     /* just replace the filename with the sharename */
     urlshare.SetFileName(url.GetShareName());
 
@@ -385,7 +396,7 @@ bool CFileSMB::Exists(const CURL& url)
   if (url.GetFileName().Find('/') < 0 ||
       url.GetFileName().at(0) == '.' ||
       url.GetFileName().Find("/.") >= 0) return false;
-
+  smb.Init();
   CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
@@ -413,7 +424,7 @@ int CFileSMB::Stat(struct __stat64* buffer)
   int iResult = smbc_fstat(m_fd, &tmpBuffer);
 
   buffer->st_dev = tmpBuffer.st_dev;
-  buffer->st_ino = tmpBuffer.st_ino;  
+  buffer->st_ino = tmpBuffer.st_ino;
   buffer->st_mode = tmpBuffer.st_mode;
   buffer->st_nlink = tmpBuffer.st_nlink;
   buffer->st_uid = tmpBuffer.st_uid;
@@ -429,10 +440,12 @@ int CFileSMB::Stat(struct __stat64* buffer)
 
 int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
+  smb.Init();
   CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
   CSingleLock lock(smb);
+
 #ifndef _LINUX
   struct __stat64 tmpBuffer = {0};
 #else
@@ -441,7 +454,7 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
   int iResult = smbc_stat(strFileName, &tmpBuffer);
 
   buffer->st_dev = tmpBuffer.st_dev;
-  buffer->st_ino = tmpBuffer.st_ino;  
+  buffer->st_ino = tmpBuffer.st_ino;
   buffer->st_mode = tmpBuffer.st_mode;
   buffer->st_nlink = tmpBuffer.st_nlink;
   buffer->st_uid = tmpBuffer.st_uid;
@@ -458,7 +471,7 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 {
   if (m_fd == -1) return 0;
-  CSingleLock lock(smb);
+  CSingleLock lock(smb); // Init not called since it has to be "inited" by now
 
   /* work around stupid bug in samba */
   /* some samba servers has a bug in it where the */
@@ -487,11 +500,11 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
   if(iWhence == SEEK_POSSIBLE)
     return 1;
 
-  CSingleLock lock(smb);
+  CSingleLock lock(smb); // Init not called since it has to be "inited" by now
 
   INT64 pos = smbc_lseek(m_fd, iFilePosition, iWhence);
   
-  CLog::Log(LOGDEBUG, "%s - iFilePosition=%"PRId64", pos=%"PRId64, __FUNCTION__, iFilePosition, pos);
+//  CLog::Log(LOGDEBUG, "%s - iFilePosition=%"PRId64", pos=%"PRId64, __FUNCTION__, iFilePosition, pos);
 
   if ( pos < 0 )
   {
@@ -519,6 +532,7 @@ int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
   DWORD dwNumberOfBytesWritten = 0;
 
   // lpBuf can be safely casted to void* since xmbc_write will only read from it.
+  smb.Init();
   CSingleLock lock(smb);
   dwNumberOfBytesWritten = smbc_write(m_fd, (void*)lpBuf, (DWORD)uiBufSize);
 
@@ -527,10 +541,11 @@ int CFileSMB::Write(const void* lpBuf, __int64 uiBufSize)
 
 bool CFileSMB::Delete(const CURL& url)
 {
+  smb.Init();
   CStdString strFile = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(url));
 
   CSingleLock lock(smb);
-  smb.Init();
+
   int result = smbc_unlink(strFile.c_str());
 
   if(result != 0)
@@ -541,11 +556,12 @@ bool CFileSMB::Delete(const CURL& url)
 
 bool CFileSMB::Rename(const CURL& url, const CURL& urlnew)
 {
+  smb.Init();
   CStdString strFile = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(url));
   CStdString strFileNew = g_passwordManager.GetSMBAuthFilename(smb.URLEncode(urlnew));
 
   CSingleLock lock(smb);
-  smb.Init();
+
   int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
 
   if(result != 0)
@@ -559,7 +575,7 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
   m_fileSize = 0;
 
   Close();
-
+  smb.Init();
   // we can't open files like smb://file.f or smb://server/file.f
   // if a file matches the if below return false, it can't exist on a samba share.
   if (!IsValidFile(url.GetFileName())) return false;
@@ -583,8 +599,7 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
   {
     // write error to logfile
     int nt_error = map_nt_error_from_unix(errno);
-    CLog::Log(LOGERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'",
-              strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
+    CLog::Log(LOGERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
     return false;
   }
 
@@ -594,7 +609,7 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
 
 bool CFileSMB::IsValidFile(const CStdString& strFileName)
 {
-  if (strFileName.Find('/') == CStdString::npos || /* doesn't have sharename */
+  if (strFileName.Find('/') == -1 || /* doesn't have sharename */
       strFileName.Right(2) == "/." || /* not current folder */
       strFileName.Right(3) == "/..")  /* not parent folder */
       return false;

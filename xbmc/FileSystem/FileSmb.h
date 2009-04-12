@@ -97,7 +97,7 @@ public:
 
 protected:
   CURL m_url;
-  bool IsValidFile(const CStdString& strFileName);  
+  bool IsValidFile(const CStdString& strFileName);
   __int64 m_fileSize;
   int m_fd;
 };
