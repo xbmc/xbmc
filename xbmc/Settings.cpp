@@ -153,7 +153,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_musicPercentSeekBackwardBig = -10;
   g_advancedSettings.m_musicResample = 48000;
 
-  g_advancedSettings.m_cacheMemBufferSize = 2;
+  g_advancedSettings.m_cacheMemBufferSize = 256;
       
   g_advancedSettings.m_slideshowPanAmount = 2.5f;
   g_advancedSettings.m_slideshowZoomAmount = 5.0f;
@@ -1284,7 +1284,7 @@ void CSettings::LoadAdvancedSettings()
 
   XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
 
-  GetInteger(pRootElement, "cachemembufsize", g_advancedSettings.m_cacheMemBufferSize, 128, 0, 8192);
+  GetInteger(pRootElement, "cachemembufsize", g_advancedSettings.m_cacheMemBufferSize, 256, 0, 8192);
   
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
