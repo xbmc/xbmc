@@ -256,6 +256,12 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
 
 void CScrobbler::DoHandshake()
 {
+  if (m_strUserName.IsEmpty() || m_strPassword.IsEmpty() || 
+      (!g_guiSettings.GetBool("lastfm.enable") && 
+       !g_guiSettings.GetBool("lastfm.recordtoprofile")) ||
+      !g_guiSettings.GetBool("network.enableinternet"))
+    return;
+
   m_bReadyToSubmit = false;
   time_t now;
   time (&now);

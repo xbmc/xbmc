@@ -82,7 +82,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       pItem->m_strPath = path + name;
       pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
       if (pItem->m_bIsFolder)
-        if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += "/";
+        CUtil::AddSlashAtEnd(pItem->m_strPath);
 
       /* qualify the url with host and all */
       url.SetFileName(pItem->m_strPath);

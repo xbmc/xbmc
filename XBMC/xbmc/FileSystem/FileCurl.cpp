@@ -731,7 +731,7 @@ bool CFileCurl::Open(const CURL& url)
   SetRequestHeaders(m_state);
 
   long response = m_state->Connect(m_bufferSize);
-  if( response < 0 )
+  if( response < 0 || response >= 400)
     return false;
 
   SetCorrectHeaders(m_state);
@@ -919,6 +919,12 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
+
+  if(url2.GetProtocol() == "ftp")
+  {
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
+  }
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
 

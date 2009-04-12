@@ -153,6 +153,7 @@ void CGUIWindowSlideShow::Reset()
   m_bPause = false;
   m_bErrorMessage = false;
   m_bReloadImage = false;
+  m_bScreensaver = false;
   m_Image[0].UnLoad();
 
   m_iRotate = 0;
@@ -160,6 +161,7 @@ void CGUIWindowSlideShow::Reset()
   m_iCurrentSlide = 0;
   m_iNextSlide = 1;
   m_iCurrentPic = 0;
+  CSingleLock lock(m_slideSection);
   m_slides->Clear();
   m_Resolution = INVALID;
 }
@@ -703,6 +705,16 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, SDL_Surface* pTe
   if (pTexture)
   {
     // set the pic's texture + size etc.
+    CSingleLock lock(m_slideSection);
+    if (iSlideNumber >= m_slides->Size())
+    { // throw this away - we must have cleared the slideshow while we were still loading
+#ifndef HAS_SDL
+      pTexture->Release();
+#else
+      SDL_FreeSurface(pTexture);
+#endif
+      return;
+    }
     CLog::Log(LOGDEBUG, "Finished background loading %s", m_slides->Get(iSlideNumber)->m_strPath.c_str());
     if (m_bReloadImage)
     {

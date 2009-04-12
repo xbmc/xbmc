@@ -212,7 +212,6 @@ public:
   DWORD m_dwSkinTime;
   bool m_bIsPaused;
   bool m_bPlaybackStarting;
-  std::queue<CGUIMessage> m_vPlaybackStarting;
 
   CKaraokeLyricsManager* m_pKaraokeMgr;
 
@@ -281,7 +280,6 @@ protected:
   CStopWatch m_slowTimer;
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
-  CStopWatch m_displaySleepTimer;
 
   DWORD      m_lastActionCode;
   CStopWatch m_lastActionTimer;

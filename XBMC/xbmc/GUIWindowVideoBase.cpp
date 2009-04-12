@@ -809,8 +809,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       if (items[i]->m_bIsFolder)
       {
         CStdString strPath = items[i]->m_strPath;
-        if (CUtil::HasSlashAtEnd(strPath))
-          strPath.erase(strPath.size()-1);
+        CUtil::RemoveSlashAtEnd(strPath);
         strPath.ToLower();
         if (strPath.size() > 6)
         {

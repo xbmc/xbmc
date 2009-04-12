@@ -761,7 +761,13 @@ void CGUIWindowSettingsCategory::CreateSettings()
       else if (pSettingInt->GetData() == POWERSTATE_QUIT || pSettingInt->GetData() == POWERSTATE_MINIMIZE)
         pSettingInt->SetData(POWERSTATE_SHUTDOWN);
       pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
+#ifndef __APPLE__
       pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
+#else
+      // under OSX, change any previous hibernate setting to suspend 
+      if (pSettingInt->GetData() == POWERSTATE_HIBERNATE)
+        pSettingInt->SetData(POWERSTATE_SUSPEND);
+#endif
       pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
       pControl->SetValue(pSettingInt->GetData());
     }

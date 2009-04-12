@@ -2346,35 +2346,40 @@ CStdString CFileItem::GetTBNFile() const
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
 
-  if (m_bIsFolder && !IsFileFolder())
-  {
-    CURL url(strFile);
+  CURL url(strFile);
+  strFile = url.GetFileName();
 
-    // Don't try to get "foldername".tbn for empty filenames
-    if (!url.GetFileName().IsEmpty())
-    {
-      CUtil::RemoveSlashAtEnd(strFile);
-      thumbFile = strFile + ".tbn";
-    }
-  }
+  if (m_bIsFolder && !IsFileFolder())
+    CUtil::RemoveSlashAtEnd(strFile);
+
+  if(strFile.IsEmpty())
+    thumbFile = "";
   else
   {
     CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+    url.SetFileName(thumbFile);
+    url.GetURL(thumbFile);
   }
   return thumbFile;
 }
 
 CStdString CFileItem::GetUserVideoThumb() const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsVTP())
-    return "";
-
   if (IsTuxBox())
   {
     if (!m_bIsFolder)
       return g_tuxbox.GetPicon(GetLabel());
     else return "";
   }
+
+  if (m_strPath.IsEmpty() 
+  || m_bIsShareOrDrive
+  || IsInternetStream()
+  || CUtil::IsUPnP(m_strPath)
+  || IsParentFolder()
+  || IsTV())
+    return "";
+
 
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
@@ -2504,7 +2509,11 @@ CStdString CFileItem::CacheFanart(bool probe) const
   }
 
   // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
+  if (IsInternetStream()
+  || CUtil::IsUPnP(strFile)
+  || IsTV() 
+  || IsPlugin() 
+  || CUtil::IsFTP(strFile))
     return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..

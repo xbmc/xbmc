@@ -141,19 +141,18 @@ CUtil::~CUtil(void)
 /* returns filename extension including period of filename */
 const CStdString CUtil::GetExtension(const CStdString& strFileName)
 {
+  if(strFileName.Find("://") >= 0)
+  {
+    CURL url(strFileName);
+    return CUtil::GetExtension(url.GetFileName());
+  }
+
   int period = strFileName.find_last_of('.');
   if(period >= 0)
   {
     if( strFileName.find_first_of('/', period+1) != string::npos ) return "";
     if( strFileName.find_first_of('\\', period+1) != string::npos ) return "";
-
-    /* url options could be at the end of a url */
-    const int options = strFileName.find_first_of('?', period+1);
-
-    if(options >= 0)
-      return strFileName.substr(period, options-period);
-    else
-      return strFileName.substr(period);
+    return strFileName.substr(period);
   }
   else
     return "";
@@ -168,6 +167,12 @@ void CUtil::GetExtension(const CStdString& strFile, CStdString& strExtension)
 /* handles both / and \, and options in urls*/
 const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
 {
+  if(strFileNameAndPath.Find("://") >= 0)
+  {
+    CURL url(strFileNameAndPath);
+    return CUtil::GetFileName(url.GetFileName());
+  }
+
   /* find any slashes */
   const int slash1 = strFileNameAndPath.find_last_of('/');
   const int slash2 = strFileNameAndPath.find_last_of('\\');
@@ -179,12 +184,7 @@ const CStdString CUtil::GetFileName(const CStdString& strFileNameAndPath)
   else
     slash = slash1;
 
-  /* check if there is any options in the url */
-  const int options = strFileNameAndPath.find_first_of('?', slash+1);
-  if(options < 0)
-    return strFileNameAndPath.substr(slash+1);
-  else
-    return strFileNameAndPath.substr(slash+1, options-(slash+1));
+  return strFileNameAndPath.substr(slash+1);
 }
 
 CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder /* = false */)
@@ -364,6 +364,16 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 
 void CUtil::RemoveExtension(CStdString& strFileName)
 {
+  if(strFileName.Find("://") >= 0)
+  {
+    CURL url(strFileName);
+    strFileName = url.GetFileName();
+    RemoveExtension(strFileName);
+    url.SetFileName(strFileName);
+    url.GetURL(strFileName);
+    return;
+  }
+
   int iPos = strFileName.ReverseFind(".");
   // Extension found
   if (iPos > 0)
@@ -735,9 +745,17 @@ void CUtil::GetHomePath(CStdString& strPath)
   }
 }
 
-/* WARNING, this function can easily fail on full urls, since they might have options at the end */
 void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile)
 {
+  if(strFile.Find("://") >= 0)
+  {
+    CURL url(strFile);
+    ReplaceExtension(url.GetFileName(), strNewExtension, strChangedFile);
+    url.SetFileName(strChangedFile);
+    url.GetURL(strChangedFile);
+    return;
+  }
+
   CStdString strExtension;
   GetExtension(strFile, strExtension);
   if ( strExtension.size() )
@@ -1016,6 +1034,11 @@ bool CUtil::IsMythTV(const CStdString& strFile)
   return strFile.Left(5).Equals("myth:");
 }
 
+bool CUtil::IsHDHomeRun(const CStdString& strFile)
+{
+  return strFile.Left(10).Equals("hdhomerun:");
+}
+
 bool CUtil::IsVTP(const CStdString& strFile)
 {
   return strFile.Left(4).Equals("vtp:");
@@ -1023,7 +1046,7 @@ bool CUtil::IsVTP(const CStdString& strFile)
 
 bool CUtil::IsTV(const CStdString& strFile)
 {
-  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile);
+  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile);
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -1135,10 +1158,8 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
 {
   CStdString strFName = CUtil::GetFileName(strFileName);
   strDescription = strFileName.Left(strFileName.size() - strFName.size());
-  if (CUtil::HasSlashAtEnd(strDescription) )
-  {
-    strDescription = strDescription.Left(strDescription.size() - 1);
-  }
+  CUtil::RemoveSlashAtEnd(strDescription);
+
   int iPos = strDescription.ReverseFind("\\");
   if (iPos < 0)
     iPos = strDescription.ReverseFind("/");
@@ -1626,15 +1647,12 @@ bool CUtil::IsDOSPath(const CStdString &path)
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  strResult = strFolder;
-  // remove the stack:// as it screws up the logic below
-  // FIXME: this appears to be plain wrong.
-  if (IsStack(strFolder))
-    strResult = strResult.Mid(8);
+  CURL url(strFolder);
+  strResult = url.GetFileName();
 
   // Add a slash to the end of the path if necessary
-  bool unixPath = !IsDOSPath(strResult);
-  if (!CUtil::HasSlashAtEnd(strResult))
+  bool unixPath = !IsDOSPath(strFolder);
+  if (!CUtil::HasSlashAtEnd(strResult) && !strResult.IsEmpty())
   {
     if (unixPath)
       strResult += '/';
@@ -1653,16 +1671,24 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   else
     strResult.Replace('/', '\\');
 
-  // re-add the stack:// protocol
-  if (IsStack(strFolder))
-    strResult = "stack://" + strResult;
+  url.SetFileName(strResult);
+  url.GetURL(strResult);
 }
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
 {
-  // correct check for base url like smb://
-  if (strFolder.Right(3).Equals("://"))
+  if(strFolder.Find("://") >= 0)
+  {
+    CURL url(strFolder);
+    strFolder = url.GetFileName();
+    if(!strFolder.IsEmpty())
+    {
+      AddSlashAtEnd(strFolder);
+      url.SetFileName(strFolder);
+    }
+    url.GetURL(strFolder);
     return;
+  }
 
   if (!CUtil::HasSlashAtEnd(strFolder))
   {
@@ -1675,11 +1701,20 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
 
 void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
 {
-  // correct check for base url like smb://
-  if (strFolder.Right(3).Equals("://"))
+  if(strFolder.Find("://") >= 0)
+  {
+    CURL url(strFolder);
+    strFolder = url.GetFileName();
+    if (!strFolder.IsEmpty())
+    {
+      RemoveSlashAtEnd(strFolder);
+      url.SetFileName(strFolder);
+    }
+    url.GetURL(strFolder);
     return;
+  }
 
-  if (CUtil::HasSlashAtEnd(strFolder))
+  while (CUtil::HasSlashAtEnd(strFolder))
     strFolder.Delete(strFolder.size() - 1);
 }
 
@@ -3484,6 +3519,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   // and ends with a trailing slash so as not to match a substring
   CURL urlDest(strPath);
   CStdString strDest;
+  urlDest.SetOptions("");
   urlDest.GetURLWithoutUserDetails(strDest);
   ForceForwardSlashes(strDest);
   if (!HasSlashAtEnd(strDest))
@@ -3521,6 +3557,7 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       // and ends with a trailing slash so as not to match a substring
       CURL urlShare(vecPaths[j]);
       CStdString strShare;
+      urlShare.SetOptions("");
       urlShare.GetURLWithoutUserDetails(strShare);
       ForceForwardSlashes(strShare);
       if (!HasSlashAtEnd(strShare))
@@ -4281,10 +4318,8 @@ CStdString CUtil::SubstitutePath(const CStdString& strFileName)
     strSearch.Replace(",,",",");
     strReplace.Replace(",,",",");
 
-    if (!CUtil::HasSlashAtEnd(strSearch))
-      CUtil::AddSlashAtEnd(strSearch);
-    if (!CUtil::HasSlashAtEnd(strReplace))
-      CUtil::AddSlashAtEnd(strReplace);
+    CUtil::AddSlashAtEnd(strSearch);
+    CUtil::AddSlashAtEnd(strReplace);
 
     // if left most characters match the search, replace them
     //CLog::Log(LOGDEBUG,"%s testing for path:[%s]", __FUNCTION__, strSearch.c_str());

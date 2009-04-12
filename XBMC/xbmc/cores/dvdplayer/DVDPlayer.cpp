@@ -790,11 +790,11 @@ void CDVDPlayer::Process()
   UpdateApplication(0);
   UpdatePlayState(0);
 
-  // we are done initializing now, set the readyevent
-  SetEvent(m_hReadyEvent);
-
   if(m_PlayerOptions.identify == false)
     m_callback.OnPlayBackStarted();
+
+  // we are done initializing now, set the readyevent
+  SetEvent(m_hReadyEvent);
 
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
@@ -841,7 +841,7 @@ void CDVDPlayer::Process()
       UpdatePlayState(0);
     }
 
-    // handle eventual seeks due tp playspeed
+    // handle eventual seeks due to playspeed
     HandlePlaySpeed();
 
     // update player state
@@ -959,7 +959,7 @@ void CDVDPlayer::Process()
       m_CurrentVideo.inited    = false;
       m_CurrentSubtitle.inited = false;
 
-      // if we are caching, start playing it agian
+      // if we are caching, start playing it again
       if (m_caching && !m_bAbortRequest)
         SetCaching(false);
 
@@ -1018,7 +1018,7 @@ void CDVDPlayer::Process()
 
 void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-    /* process packet if it belongs to selected stream. for dvd's down't allow automatic opening of streams*/
+    /* process packet if it belongs to selected stream. for dvd's don't allow automatic opening of streams*/
     LockStreams();
 
     try
@@ -1478,7 +1478,6 @@ void CDVDPlayer::OnExit()
     CLog::Log(LOGNOTICE, "CDVDPlayer::OnExit()");
 
     // set event to inform openfile something went wrong in case openfile is still waiting for this event
-    SetEvent(m_hReadyEvent);
     SetCaching(false);
 
     // close each stream
@@ -1533,18 +1532,19 @@ void CDVDPlayer::OnExit()
     m_pInputStream = NULL;
     m_pDemuxer = NULL;   
   }
-  // set event to inform openfile something went wrong in case openfile is still waiting for this event
-  SetEvent(m_hReadyEvent);
 
+  m_bStop = true;
   // if we didn't stop playing, advance to the next item in xbmc's playlist
   if(m_PlayerOptions.identify == false)
   {
-    if (m_bStop)
+    if (m_bAbortRequest)
       m_callback.OnPlayBackStopped();
     else
       m_callback.OnPlayBackEnded();
   }
-  m_bStop = true;
+
+  // set event to inform openfile something went wrong in case openfile is still waiting for this event
+  SetEvent(m_hReadyEvent);
 }
 
 void CDVDPlayer::HandleMessages()
