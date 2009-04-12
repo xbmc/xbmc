@@ -6,7 +6,7 @@
       <name>NPArtistFont</name>
       <filename>HelveticaNeue.dfont</filename>
 			<variant>Bold</variant>
-      <size>48</size>
+      <size>44</size>
     </font>
     <font>
       <name>NPTitleFont</name>

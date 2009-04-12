@@ -1,0 +1,134 @@
+<includes>
+  <include name="NowPlayingCurrentCover">
+    <control type="group">
+      <description>Current cover</description>
+      <visible>Player.HasAudio</visible>
+      <control type="image" id="0">
+        <posy>332</posy>
+        <width>330</width>
+        <height>330</height>
+        <info>MusicPlayer.Cover</info>
+        <aspectratio>stretch</aspectratio>
+        <texture flipy="true" diffuse="NowPlayingReflectionDiffuse.png"/>
+      </control>
+      <control type="image">
+        <posx>-2</posx>
+        <posy>-1</posy>
+        <width>341</width>
+        <height>341</height>
+        <aspectratio>stretch</aspectratio>
+        <texture>NowPlayingCoverDropShadow.png</texture>
+      </control>
+      <control type="image" id="0">
+        <width>330</width>
+        <height>330</height>
+        <info>MusicPlayer.Cover</info>
+        <aspectratio>stretch</aspectratio>
+        <texture diffuse="NowPlayingCoverDiffuse.png"/>
+      </control>
+    </control>
+  </include>
+  
+  <include name="NowPlayingNextCover">
+    <control type="group">
+      <description>Next cover</description>
+      <visible>MusicPlayer.HasDifferentCoverNext</visible>
+      
+      <control type="image" id="0">
+        <width>264</width>
+        <height>264</height>
+        <info>MusicPlayer.Offset(1).Cover</info>
+        <aspectratio>stretch</aspectratio>
+        <texture diffuse="NowPlayingSmallCoverDiffuse.png"/>
+      </control>
+      <control type="image" id="0">
+        <posy>264</posy>
+        <width>264</width>
+        <height>264</height>
+        <info>MusicPlayer.Offset(1).Cover</info>
+        <aspectratio>stretch</aspectratio>
+        <texture flipy="true" diffuse="NowPlayingSmallReflectionDiffuse.png"/>
+      </control>
+      <control type="image" id="0">
+        <posx>41</posx>
+        <width>176</width>
+        <height>264</height>
+        <aspectratio>stretch</aspectratio>
+        <texture>NowPlayingCoverShadow.png</texture>
+      </control>
+    </control>
+  </include>
+  
+  <include name="NowPlayingCurrentInfo">
+    <control type="group">
+      <description>Current track info</description>
+      <visible>Player.HasAudio</visible>
+      
+      <control type="label" id="0">
+        <posx>500</posx>
+        <width>500</width>
+        <font>NPArtistFont</font>
+        <textcolor>Dark</textcolor>
+        <label>$INFO[MusicPlayer.Artist]</label>
+        <align>right</align>
+      </control>
+  
+      <control type="label" id="0">
+        <posx>500</posx>
+        <posy>50</posy>
+        <width>500</width>
+        <font>NPTitleFont</font>
+        <textcolor>Medium</textcolor>
+        <label>$INFO[MusicPlayer.Title]</label>
+        <align>right</align>
+      </control>
+  
+      <control type="label" id="0">
+        <posx>500</posx>
+        <posy>88</posy>
+        <width>500</width>
+        <font>NPAlbumFont</font>
+        <textcolor>Light</textcolor>
+        <label>$INFO[MusicPlayer.Album]</label>
+        <align>right</align>
+      </control>
+    </control>
+  </include>
+
+  <include name="NowPlayingNextInfo">
+    <control type="group">
+      <description>Next track info</description>
+      <visible>MusicPlayer.HasNext</visible>
+      
+      <control type="label" id="0">
+        <posx>500</posx>
+        <width>500</width>
+        <font>NPNextFont</font>
+        <textcolor>Dark</textcolor>
+        <label>Next Track</label>
+        <align>right</align>
+      </control>
+      
+      <control type="label" id="0">
+        <posx>500</posx>
+        <posy>32</posy>
+        <width>500</width>
+        <font>NPNextFont</font>
+        <textcolor>Medium</textcolor>
+        <label>$INFO[MusicPlayer.Offset(1).Artist]</label>
+        <align>right</align>
+      </control>
+      
+      <control type="label" id="0">
+        <posx>500</posx>
+        <posy>53</posy>
+        <width>500</width>
+        <font>NPNextFont</font>
+        <textcolor>Light</textcolor>
+        <label>$INFO[MusicPlayer.Offset(1).Title]</label>
+        <align>right</align>
+      </control>
+    </control>
+  </include>
+
+</includes>
