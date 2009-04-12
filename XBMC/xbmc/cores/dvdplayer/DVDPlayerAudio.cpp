@@ -649,9 +649,14 @@ bool CDVDPlayerAudio::OutputAudioframe(DVDAudioFrame &audioframe, bool newerror)
     {
       //if the error is bigger than 1 second, reset the integral
       if (fabs(m_CurrError) < DVD_TIME_BASE)
-        m_Integral += m_CurrError / DVD_TIME_BASE / INTEGRAL;
+      {
+        if (fabs(m_CurrError) > DVD_MSEC_TO_TIME(5))
+          m_Integral += m_CurrError / DVD_TIME_BASE / INTEGRAL;
+      }
       else
+      {
         m_Integral = 0.0;
+      }
     }
         
     double Proportional = 0.0, ProportionalDiv;
