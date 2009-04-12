@@ -71,7 +71,7 @@
 				<height>36</height>
 				<texture border="3">black-back2.png</texture>
 			</control>
-			<control type="togglebutton" id="600">
+			<control type="button" id="600">
 				<posx>0</posx>
 				<posy>2</posy>
 				<width>32</width>
