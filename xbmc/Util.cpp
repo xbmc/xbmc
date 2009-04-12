@@ -1700,10 +1700,11 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
   {
     CURL url(strFolder);
     strFolder = url.GetFileName();
-    if(strFolder.IsEmpty())
-      return;
-    RemoveSlashAtEnd(strFolder);
-    url.SetFileName(strFolder);
+    if (!strFolder.IsEmpty())
+    {
+      RemoveSlashAtEnd(strFolder);
+      url.SetFileName(strFolder);
+    }
     url.GetURL(strFolder);
     return;
   }
