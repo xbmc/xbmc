@@ -89,7 +89,8 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
 
   if (CUtil::IsTV(strPath)
   ||  CUtil::IsUPnP(strPath)
-  ||  CUtil::IsDAAP(strPath))
+  ||  CUtil::IsDAAP(strPath)
+  ||  CUtil::IsHDHomeRun(strPath))
     return false;
 
   if (CUtil::IsRemote(strPath) && !CUtil::IsOnLAN(strPath))

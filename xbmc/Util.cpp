@@ -1034,6 +1034,11 @@ bool CUtil::IsMythTV(const CStdString& strFile)
   return strFile.Left(5).Equals("myth:");
 }
 
+bool CUtil::IsHDHomeRun(const CStdString& strFile)
+{
+  return strFile.Left(10).Equals("hdhomerun:");
+}
+
 bool CUtil::IsVTP(const CStdString& strFile)
 {
   return strFile.Left(4).Equals("vtp:");
