@@ -2,7 +2,7 @@
   <include name="NowPlayingCurrentCover">
     <control type="group">
       <description>Current cover</description>
-      <visible>Player.HasAudio</visible>
+      <visible>Player.HasMusicPlaylist</visible>
       <control type="image" id="0">
         <posy>332</posy>
         <width>330</width>
@@ -62,7 +62,7 @@
   <include name="NowPlayingCurrentInfo">
     <control type="group">
       <description>Current track info</description>
-      <visible>Player.HasAudio</visible>
+      <visible>Player.HasMusicPlaylist</visible>
       
       <control type="label" id="0">
         <posx>500</posx>

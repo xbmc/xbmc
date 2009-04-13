@@ -52,7 +52,7 @@
           <aligny>center</aligny>
           <width>372</width>
           <info>Player.Progress</info>
-          <visible>Player.HasAudio</visible>
+          <visible>Player.HasMusicPlaylist</visible>
         </control>
         
         <control type="group">
@@ -90,7 +90,7 @@
           <aligny>center</aligny>
           <width>372</width>
           <info>Player.Progress</info>
-          <visible>Player.HasAudio</visible>
+          <visible>Player.HasMusicPlaylist</visible>
         </control>
         
         <control type="group">
