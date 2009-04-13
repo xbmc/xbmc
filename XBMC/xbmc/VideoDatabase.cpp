@@ -6581,6 +6581,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
 {
   CGUIDialogProgress *progress=NULL;
+  CVideoInfoScanner scanner;
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -6618,7 +6619,6 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       movie = movie->NextSiblingElement();
     }
 
-    BeginTransaction();
     movie = root->FirstChildElement();
     while (movie)
     {
@@ -6626,13 +6626,15 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
       if (strnicmp(movie->Value(), "movie", 5) == 0)
       {
         info.Load(movie);
-        SetDetailsForMovie(info.m_strFileNameAndPath, info);
+        CFileItem item(info);
+        scanner.AddMovieAndGetThumb(&item,"movies",info,-1,false);
         current++;
       }
       else if (strnicmp(movie->Value(), "musicvideo", 10) == 0)
       {
         info.Load(movie);
-        SetDetailsForMusicVideo(info.m_strFileNameAndPath, info);
+        CFileItem item(info);
+        scanner.AddMovieAndGetThumb(&item,"musicvideos",info,-1,false);
         current++;
       }
       else if (strnicmp(movie->Value(), "tvshow", 6) == 0)
@@ -6642,7 +6644,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         info.Load(movie);
         CUtil::AddSlashAtEnd(info.m_strPath);
         DeleteTvShow(info.m_strPath);
-        long showID = SetDetailsForTvShow(info.m_strPath, info);
+        CFileItem item(info);
+        long showID = scanner.AddMovieAndGetThumb(&item,"tvshows",info,-1,false);
         current++;
         // now load the episodes
         TiXmlElement *episode = movie->FirstChildElement("episodedetails");
@@ -6651,8 +6654,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
           // no need to delete the episode info, due to the above deletion
           CVideoInfoTag info;
           info.Load(episode);
-          long lEpisodeId = AddEpisode(showID,info.m_strFileNameAndPath); // do this here due to multi episode files
-          SetDetailsForEpisode(info.m_strFileNameAndPath, info, showID, lEpisodeId);
+          CFileItem item(info);
+          scanner.AddMovieAndGetThumb(&item,"tvshows",info,showID,false);
           episode = episode->NextSiblingElement("episodedetails");
         }
       }
@@ -6687,7 +6690,6 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
         }
       }
     }
-    CommitTransaction();
   }
   catch (...)
   {
