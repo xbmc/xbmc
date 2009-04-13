@@ -73,6 +73,7 @@
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
 #include "Surface.h"
+#include "PowerManager.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
@@ -1469,6 +1470,37 @@ HRESULT CApplication::Initialize()
 #ifdef __APPLE__
   g_xbmcHelper.CaptureAllInput();
 #endif
+
+  int defaultShutdown = g_guiSettings.GetInt("system.shutdownstate");
+
+  switch (defaultShutdown)
+  {
+    case POWERSTATE_QUIT:
+    case POWERSTATE_MINIMIZE:
+      if (IsStandAlone())
+        defaultShutdown = POWERSTATE_SHUTDOWN;
+    break;
+    case POWERSTATE_HIBERNATE:
+      if (!g_powerManager.CanHibernate())
+      {
+        if (g_powerManager.CanSuspend())
+          defaultShutdown = POWERSTATE_SUSPEND;
+        else
+          defaultShutdown = g_powerManager.CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
+      }
+    break;
+    case POWERSTATE_SUSPEND:
+      if (!g_powerManager.CanSuspend())
+      {
+        if (g_powerManager.CanHibernate())
+          defaultShutdown = POWERSTATE_HIBERNATE;
+        else
+          defaultShutdown = g_powerManager.CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
+      }
+    break;
+  }
+
+  g_guiSettings.SetInt("system.shutdownstate", defaultShutdown);
 
   CLog::Log(LOGNOTICE, "initialize done");
 
