@@ -1033,37 +1033,47 @@ CProfile* CApplication::InitDirectoriesOSX()
 {
 #ifdef __APPLE__
   CProfile* profile = NULL;
-  CStdString temp_path;
-  
-  
-  // special://temp/ common for both
-  temp_path = "/tmp/xbmc-";
-  temp_path = temp_path + getenv("USER");
-  CSpecialProtocol::SetTempPath(temp_path);
-  CDirectory::Create("special://temp/");
+
+  CStdString userName;
+  if (getenv("USER"))
+    userName = getenv("USER");
+  else
+    userName = "root";
 
   CStdString userHome;
-  userHome = getenv("HOME");
-  if (userHome.IsEmpty() )
-  {
+  if (getenv("HOME"))
+    userHome = getenv("HOME");
+  else
     userHome = "/root";
-  }
+
+  CStdString strHomePath;
+  CUtil::GetHomePath(strHomePath);
+  setenv("XBMC_HOME", strHomePath.c_str(), 0);
 
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
-    CStdString logDir = userHome + "/Library/Logs/";
-    g_stSettings.m_logFolder = logDir;
-
-    // //Library/Application\ Support/XBMC/
-    CStdString install_path;
-    CUtil::GetHomePath(install_path);
-    setenv("XBMC_HOME", install_path.c_str(), 0);
-    CSpecialProtocol::SetXBMCPath(install_path);
+    // map our special drives
+    CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
 
+#ifdef __APPLE__
+    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/");
+    CDirectory::Create(strTempPath);
+#endif
+
+    strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp");
+    CSpecialProtocol::SetTempPath(strTempPath);
+
+#ifdef __APPLE__
+    strTempPath = userHome + "/Library/Logs";
+#endif
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
+
     CDirectory::Create("special://home/");
+    CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
@@ -1076,31 +1086,36 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/plugins/programs");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
-
-    CStdString str = install_path + "/scripts";
-    symlink( str.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
+#ifdef __APPLE__
+    strTempPath = strHomePath + "/scripts";
+#else
+    strTempPath = INSTALL_PATH "/scripts";
+#endif
+    symlink( strTempPath.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
 
     CDirectory::Create("special://masterprofile/");
 
     // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml"); // Eventual FIXME.
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    // this is wrong, CopyUserDataIfNeeded pulls from special://xbmc/userdata, Lircmap.xml is in special://xbmc/system
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
-    CStdString strHomePath;
-    CUtil::GetHomePath(strHomePath);
-    setenv("XBMC_HOME", strHomePath.c_str(), 0);
-
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
     CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp"); 
+    CSpecialProtocol::SetTempPath(strTempPath);
+    CDirectory::Create("special://temp/");
+
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
   }
 
   g_settings.m_vecProfiles.clear();
