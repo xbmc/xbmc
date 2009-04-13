@@ -15,21 +15,23 @@
     <!-- Second cover -->
     <control type="group">
       <visible>MusicPlayer.HasNext</visible>
+      <animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+      <animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
       <control type="group">
         <posx>813</posx>
         <posy>244</posy>
-        <visible>MusicPlayer.HasDifferentCoverNext</visible>
-        <animation effect="slide" start="-80,0" time="500" tween="cubic" easing="inout">Visible</animation>
-        <animation effect="slide" end="-80,0" time="500" tween="cubic" easing="inout">Hidden</animation>
+        <visible>MusicPlayer.HasNewCoverNext</visible>
+        <animation effect="slide" start="-80,0" time="1000" tween="cubic" easing="inout">Visible</animation>
+        <animation effect="slide" end="-80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
         <include>NowPlayingNextCover</include>
       </control>
     </control>
     
     <!-- Double cover view -->
     <control type="group">
-      <visible>MusicPlayer.HasDifferentCoverNext</visible>
-      <animation effect="slide" end="80,0" time="500" tween="cubic" easing="inout">Hidden</animation>
-      <animation effect="fade" start="0" end="100" delay="500" time="0">Visible</animation>
+      <visible>MusicPlayer.HasNewCoverNext</visible>
+      <animation effect="slide" end="80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
+      <animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
       <control type="group" id="1">
         <description>Album covers</description>
         <posx>587</posx>
@@ -65,9 +67,9 @@
     <!-- Single cover view -->
     <control type="group">
       <posx>80</posx>
-      <visible>!MusicPlayer.HasDifferentCoverNext</visible>
-      <animation effect="slide" end="-80,0" time="500" tween="cubic" easing="inout">Hidden</animation>
-      <animation effect="fade" start="0" end="100" delay="500" time="0">Visible</animation>
+      <visible>!MusicPlayer.HasNewCoverNext</visible>
+      <animation effect="slide" end="-80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
+      <animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
       
       <control type="group" id="1">
         <description>Album covers</description>
@@ -95,6 +97,9 @@
         
         <control type="group">
           <posy>219</posy>
+          <animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+          <animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+          <visible>MusicPlayer.HasNext</visible>
           <include>NowPlayingNextInfo</include>
         </control>
       </control>

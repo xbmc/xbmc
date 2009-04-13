@@ -32,12 +32,10 @@
   <include name="NowPlayingNextCover">
     <control type="group">
       <description>Next cover</description>
-      <visible>MusicPlayer.HasDifferentCoverNext</visible>
-      
       <control type="image" id="0">
         <width>264</width>
         <height>264</height>
-        <info>MusicPlayer.Offset(1).Cover</info>
+        <info>MusicPlayer.NextNewCover</info>
         <aspectratio>stretch</aspectratio>
         <texture diffuse="NowPlayingSmallCoverDiffuse.png"/>
       </control>
@@ -45,7 +43,7 @@
         <posy>264</posy>
         <width>264</width>
         <height>264</height>
-        <info>MusicPlayer.Offset(1).Cover</info>
+        <info>MusicPlayer.NextNewCover</info>
         <aspectratio>stretch</aspectratio>
         <texture flipy="true" diffuse="NowPlayingSmallReflectionDiffuse.png"/>
       </control>
@@ -55,6 +53,7 @@
         <height>264</height>
         <aspectratio>stretch</aspectratio>
         <texture>NowPlayingCoverShadow.png</texture>
+        <visible>MusicPlayer.HasNext</visible>
       </control>
     </control>
   </include>
@@ -98,7 +97,6 @@
   <include name="NowPlayingNextInfo">
     <control type="group">
       <description>Next track info</description>
-      <visible>MusicPlayer.HasNext</visible>
       
       <control type="label" id="0">
         <posx>500</posx>
