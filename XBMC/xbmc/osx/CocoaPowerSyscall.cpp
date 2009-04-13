@@ -70,7 +70,7 @@ bool CCocoaPowerSyscall::CanSuspend()
 
 bool CCocoaPowerSyscall::CanHibernate()
 {
-  return(IOPMSleepEnabled());
+  return false;
 }
 
 bool CCocoaPowerSyscall::CanReboot()

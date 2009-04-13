@@ -84,6 +84,7 @@
 #include "FileSystem/SpecialProtocol.h"
 
 #include "Zeroconf.h"
+#include "PowerManager.h"
 
 #ifdef _WIN32PC
 #include "WIN32Util.h"
@@ -758,17 +759,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(13009), POWERSTATE_QUIT);
         pControl->AddLabel(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE);
       }
-      else if (pSettingInt->GetData() == POWERSTATE_QUIT || pSettingInt->GetData() == POWERSTATE_MINIMIZE)
-        pSettingInt->SetData(POWERSTATE_SHUTDOWN);
+
       pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
-#ifndef __APPLE__
-      pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
-#else
-      // under OSX, change any previous hibernate setting to suspend 
-      if (pSettingInt->GetData() == POWERSTATE_HIBERNATE)
-        pSettingInt->SetData(POWERSTATE_SUSPEND);
-#endif
-      pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
+
+      if (g_powerManager.CanHibernate())
+        pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
+
+      if (g_powerManager.CanSuspend())
+        pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
+
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("system.ledcolour"))
