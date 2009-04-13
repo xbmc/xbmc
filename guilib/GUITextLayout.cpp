@@ -169,7 +169,7 @@ void CGUITextLayout::RenderOutline(float x, float y, DWORD color, DWORD outlineC
   m_font->End();
 }
 
-bool CGUITextLayout::Update(const CStdString &text, float maxWidth)
+bool CGUITextLayout::Update(const CStdString &text, float maxWidth, bool forceLTRReadingOrder /*= false*/)
 {
   if (text == m_lastText)
     return false;
@@ -179,14 +179,14 @@ bool CGUITextLayout::Update(const CStdString &text, float maxWidth)
   utf8ToW(text, utf16);
 
   // update
-  SetText(utf16, maxWidth);
+  SetText(utf16, maxWidth, forceLTRReadingOrder);
 
   // and set our parameters to indicate no further update is required
   m_lastText = text;
   return true;
 }
 
-void CGUITextLayout::SetText(const CStdStringW &text, float maxWidth)
+void CGUITextLayout::SetText(const CStdStringW &text, float maxWidth, bool forceLTRReadingOrder /*= false*/)
 {
   vector<DWORD> parsedText;
 
@@ -207,11 +207,11 @@ void CGUITextLayout::SetText(const CStdStringW &text, float maxWidth)
   else
     LineBreakText(parsedText, m_lines);
 
-  BidiTransform(m_lines);
+  BidiTransform(m_lines, forceLTRReadingOrder);
 }
 
 // BidiTransform is used to handle RTL text flipping in the string
-void CGUITextLayout::BidiTransform(vector<CGUIString> &lines)
+void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadingOrder)
 {
   for (unsigned int i=0; i<lines.size(); i++)
   {
@@ -230,7 +230,7 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines)
       {
         if (!sectionText.IsEmpty())
         { // style has changed, bidi flip text 
-          CStdStringW sectionFlipped = BidiFlip(sectionText);
+          CStdStringW sectionFlipped = BidiFlip(sectionText, forceLTRReadingOrder);
           for (unsigned int j = 0; j < sectionFlipped.size(); j++)
             flippedText.push_back(sectionStyle | sectionFlipped[j]);
         }
@@ -243,7 +243,7 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines)
     // handle the last section
     if (!sectionText.IsEmpty())
     {
-      CStdStringW sectionFlipped = BidiFlip(sectionText);
+      CStdStringW sectionFlipped = BidiFlip(sectionText, forceLTRReadingOrder);
       for (unsigned int j = 0; j < sectionFlipped.size(); j++)
         flippedText.push_back(sectionStyle | sectionFlipped[j]);
     }
@@ -253,14 +253,14 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines)
   }
 }
 
-CStdStringW CGUITextLayout::BidiFlip(const CStdStringW &text)
+CStdStringW CGUITextLayout::BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder)
 {
   CStdStringA utf8text;
   CStdStringW visualText;
 
   // convert to utf8, and back to utf16 with bidi flipping
   g_charsetConverter.wToUTF8(text, utf8text);
-  g_charsetConverter.utf8ToW(utf8text, visualText, true);
+  g_charsetConverter.utf8ToW(utf8text, visualText, true, forceLTRReadingOrder);
 
   return visualText;
 }
