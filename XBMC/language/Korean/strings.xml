@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@-->
-<!--Date of translation: 04/03/2009-->
+<!--Date of translation: 04/13/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -193,8 +193,8 @@
   <string id="269">정렬: 아티스트</string>
   <string id="270">정렬: 앨범</string>
   <string id="271">인기 100</string>
-  <string id="272">상단-왼쪽 오버스캔 조정</string>
-  <string id="273">하단-오른쪽 오버스캔 조정</string>
+  <string id="272">상단-왼쪽 오버스캔 보정</string>
+  <string id="273">하단-오른쪽 오버스캔 보정</string>
   <string id="274">자막 위치</string>
   <string id="275">픽셀 비율 조정</string>
   <string id="276">오버스캔을 변경하려면 화살표를 조정하세요</string>
@@ -232,7 +232,7 @@
   <string id="314">준비중...</string>
   <string id="315">데이터베이스 오류</string>
   <string id="316">노래 찾는중...</string>
-  <string id="317">데이터베이스 정리 성공</string>
+  <string id="317">정상적으로 데이터베이스 정리됨</string>
   <string id="318">노래 정리중...</string>
   <string id="319">노래 정리 오류</string>
   <string id="320">아티스트 정리중...</string>
@@ -245,13 +245,13 @@
   <string id="327">앨범 정리 오류</string>
   <string id="328">변경 사항 쓰는중...</string>
   <string id="329">변경 사항 쓰기 오류</string>
-  <string id="330">몇 분이 소요됩니다...</string>
+  <string id="330">시간이 좀 걸립니다...</string>
   <string id="331">데이터베이스 압축중...</string>
   <string id="332">데이터베이스 압축 오류</string>
   <string id="333">라이브러리를 정리 하시겠습니까?</string>
   <string id="334">라이브러리 정리...</string>
   <string id="335">시작</string>
-  <string id="336">프레임 비율조정</string>
+  <string id="336">프레임 비율 변환</string>
   <string id="337">오디오 출력</string>
   <string id="338">아날로그</string>
   <string id="339">디지털</string>
@@ -268,7 +268,7 @@
   <string id="354">매트릭스 트레일</string>
   <string id="355">화면보호기 대기 시간제한</string>
   <string id="356">화면보호기 모드</string>
-  <string id="357">종료 대기 시간제한</string>
+  <string id="357">대기 타이머</string>
   <string id="358">모든 앨범</string>
   <string id="359">최근 추가된 앨범</string>
   <string id="360">화면보호기</string>
@@ -392,11 +392,11 @@
   <string id="489">다음 항목 자동 재생</string>
   <string id="491">- 큰 아이콘 사용</string>
   <string id="492">자막 크기변경</string>
-  <string id="493">고급 옵션(전문가만!)</string>
+  <string id="493">고급 옵션 (전문가만!)</string>
   <string id="494">전체 오디오 헤드룸</string>
   <string id="495">비디오를 GUI 해상도로 올림</string>
   <string id="496">조정</string>
-  <string id="497">미디어 확장자 숨기기</string>
+  <string id="497">미디어 확장자 숨김</string>
   <string id="498">정렬: 형식</string>
   <string id="499">온라인 검색 서비스에 연결할수 없음</string>
   <string id="500">앨범 정보 다운로드 실패</string>
@@ -443,7 +443,7 @@
   <string id="544">미디어 정보</string>
   <string id="545">오디오 출력 장치</string>
   <string id="546">패스스루 출력 장치</string>
-  <string id="547">이 아티스트 약력 없음</string>
+  <string id="547">아티스트 약력 없음</string>
   <string id="548">다채널 오디오를 스테레오로 다운믹스</string>
   <string id="550">정렬: %s</string>
   <string id="551">이름</string>
@@ -540,7 +540,7 @@
   <string id="663">라이브러리에서 제거 하시겠습니까?</string>
   <string id="700">라이브러리 정리</string>
   <string id="701">라이브러리에서 오래된 노래 제거</string>
-  <string id="702">이 경로는 이미 검색되었음</string>
+  <string id="702">이 경로는 이미 검색 되었습니다</string>
   <string id="705">네트워크</string>
   <string id="706">HTTP 프록시 호스트</string>
   <string id="707">HTTP 프록시 포트</string>
@@ -580,7 +580,7 @@
   <string id="742">하양</string>
   <string id="743">노랑</string>
   <string id="744">파일</string>
-  <string id="745">지금 보기에서 검색된 정보가 없습니다</string>
+  <string id="745">지금 보기에서 검색된 정보가 없음</string>
   <string id="746">라이브러리 모드를 꺼 주세요</string>
   <string id="747">이미지 읽기 오류</string>
   <string id="748">경로 수정</string>
@@ -617,10 +617,10 @@
   <string id="782">WPA</string>
   <string id="783">WPA2</string>
   <string id="784">네트워크 인터페이스 설정을 적용중. 기다려 주세요.</string>
-  <string id="785">네트워크 인터페이스가 성공적으로 재시작 됨.</string>
-  <string id="786">네트워크 인터페이스가 성공적으로 시작되지 않음.</string>
-  <string id="787">인터페이스 사용안함</string>
-  <string id="788">네트워그 인터페이스 사용안함 성공</string>
+  <string id="785">정상적으로 네트워크 인터페이스 재시작 됨.</string>
+  <string id="786">정상적으로 네트워크 인터페이스 시작되지 않음.</string>
+  <string id="787">인터페이스 중지됨</string>
+  <string id="788">정상적으로 네트워크 인터페이스 중지됨.</string>
   <string id="789">무선 네트워크 이름 (ESSID)</string>
   <string id="790">이벤트 서버</string>
   <string id="791">이벤트 서버 사용</string>
@@ -710,7 +710,7 @@
   <string id="1235">프로그램 &amp; 사진 &amp; 비디오</string>
   <string id="1245">FTP 사용자명</string>
   <string id="1246">FTP 비밀번호</string>
-  <string id="1247">비밀번호가 성공적으로 설정되었음</string>
+  <string id="1247">정상적으로 비밀번호 설정됨</string>
   <string id="1250">자동-감지</string>
   <string id="1251">시스템 자동-감지</string>
   <string id="1252">닉네임</string>
@@ -850,12 +850,12 @@
   <string id="12344">입력된 비밀번호가 일치하지 않음.</string>
   <string id="12345">접근 불가</string>
   <string id="12346">비밀번호 재입력 횟수제한을 초과.</string>
-  <string id="12347">시스템이 종료됩니다.</string>
+  <string id="12347">지금 시스템이 종료됩니다.</string>
   <string id="12348">항목 잠김</string>
   <string id="12353">잠금 재활성화</string>
   <string id="12356">잠금 변경</string>
   <string id="12357">소스 잠금</string>
-  <string id="12358">비밀번호가 비어있습니다. 다시 시도해 주세요.</string>
+  <string id="12358">비밀번호가 비었습니다. 다시 시도해 주세요.</string>
   <string id="12360">마스터 잠금</string>
   <string id="12362">마스터 잠금 시도 횟수 초과시 시스템 종료</string>
   <string id="12367">마스터 코드가 정확하지 않습니다!</string>
@@ -883,22 +883,22 @@
   <string id="13000">시스템</string>
   <string id="13001">하드 디스크 끄기</string>
   <string id="13002">비디오만</string>
-  <string id="13003">- 지연:</string>
+  <string id="13003">- 지연</string>
   <string id="13004">- 최소 파일 상영시간:</string>
   <string id="13005">종료</string>
   <string id="13006">대시보드</string>
   <string id="13007">사용자 지정 대쉬보드 경로 사용</string>
-  <string id="13008">기본 종료 모드</string>
+  <string id="13008">대기 타이머 기능</string>
   <string id="13009">종료</string>
   <string id="13010">최대절전</string>
-  <string id="13011">대기모드</string>
+  <string id="13011">대기</string>
   <string id="13012">종료</string>
   <string id="13013">재시작</string>
   <string id="13014">최소화</string>
   <string id="13020">혹시 ssh 를 통해 다른 세션이 활성화되어 있습니까?</string>
   <string id="13021">장착된 이동식 하드드라이브</string>
   <string id="13022">장치 제거 안전하지 않음</string>
-  <string id="13023">성공적으로 장치 제거됨</string>
+  <string id="13023">정상적으로 장치 제거됨</string>
   <string id="13024">조이스틱 연결됨</string>
   <string id="13025">조이스틱 연결해제됨</string>
   <string id="13100">깜박임 필터</string>
@@ -917,7 +917,7 @@
   <string id="13116">업스케일링 방식</string>
   <string id="13117">바이큐빅</string>
   <string id="13118">랑초스</string>
-  <string id="13119">사인</string>
+  <string id="13119">싱크</string>
   <string id="13120">스트릭트 픽스맵-텍스처 바인딩 (재시작 필요)</string>
   <string id="13130">화면 여백화</string>
   <string id="13131">사용안함</string>
@@ -1003,7 +1003,7 @@
   <string id="13303">- 글꼴</string>
   <string id="13304">역방향 문자열의 뒤집기 사용</string>
   <string id="13305">RSS 피드 사용</string>
-  <string id="13306">상위 폴더 항목 숨기기</string>
+  <string id="13306">상위 폴더 항목 숨김</string>
   <string id="13307">트랙 이름 템플릿</string>
   <string id="13308">XBMC만 재시작하는 대신에</string>
   <string id="13309">시스템을 재시작하기를 원하십니까?</string>
@@ -1087,7 +1087,7 @@
   <string id="13399">정렬시 토큰 무시</string>
   <string id="13400">앨범트랙 크로스페이드</string>
   <string id="13401">%s 찾기</string>
-  <string id="13402">트랙 위치 보임</string>
+  <string id="13402">트랙 위치 보기</string>
   <string id="13403">기본값 지우기</string>
   <string id="13404">재시작</string>
   <string id="13405">미리보기 가져오기</string>
@@ -1105,7 +1105,7 @@
   <string id="13417">기본 셰이더 (ARB)</string>
   <string id="13418">고급 셰이더 (GLSL)</string>
   <string id="13419">소프트웨어</string>
-  <string id="13420">꺼내기</string>
+  <string id="13420">안전하게 제거</string>
   <string id="13421">VDPAU</string>
   <string id="13600">애플 리모트</string>
   <string id="13601">모드</string>
@@ -1334,10 +1334,10 @@
   <string id="16303">바이큐빅</string>
   <string id="16304">랑초스2</string>
   <string id="16305">랑초스3</string>
-  <string id="16306">Sinc8</string>
+  <string id="16306">싱크8</string>
   <string id="16307">바이큐빅 (소프트웨어)</string>
   <string id="16308">랑초스 (소프트웨어)</string>
-  <string id="16309">Sinc (소프트웨어)</string>
+  <string id="16309">싱크 (소프트웨어)</string>
   <string id="16310">(VDPAU)시간적</string>
   <string id="16311">(VDPAU)시간적/공간적</string>
   <string id="16312">(VDPAU)잡음 제거</string>
@@ -1380,7 +1380,7 @@
   <string id="20048">새로운 설정으로 시작</string>
   <string id="20049">사용가능 최적</string>
   <string id="20050">16x9 와 4x3 자동-변경</string>
-  <string id="20051">연결재생 파일을 단일파일로 취급</string>
+  <string id="20051">연결재생 파일을 단일 파일로 취급</string>
   <string id="20052">경고</string>
   <string id="20053">마스터 모드 나감</string>
   <string id="20054">마스터 모드 들어감</string>
@@ -1410,7 +1410,7 @@
   <string id="20079">애니메이션 사용</string>
   <string id="20080">음악재생중 RSS 사용안함</string>
   <string id="20081">바로가기 버튼 사용</string>
-  <string id="20082">메인메뉴에 프로그램 보기</string>
+  <string id="20082">메인메뉴에 프로그램 보이기</string>
   <string id="20083">음악 정보 보기</string>
   <string id="20084">날씨 정보 보기</string>
   <string id="20085">시스템 정보 보기</string>
@@ -1551,8 +1551,8 @@
   <string id="20322">게임 세이브로 가기</string>
   <string id="20323">게임 세이브</string>
   <string id="20324">부분 재생...</string>
-  <string id="20325">조정치 초기화</string>
-  <string id="20326">기본값으로 %s 조정치를</string>
+  <string id="20325">조정값 초기화</string>
+  <string id="20326">기본값으로 %s 조정값를</string>
   <string id="20327">초기화하게 됩니다.</string>
   <string id="20328">대상 찾기</string>
   <string id="20330">검색에 폴더 이름 사용</string>
@@ -1592,10 +1592,10 @@
   <string id="20364">TV 쇼</string>
   <string id="20365">에피소드 줄거리</string>
   <string id="20366">* 모든 시즌</string>
-  <string id="20367">시청한것 감추기</string>
+  <string id="20367">시청한것 숨김</string>
   <string id="20368">제품 코드</string>
-  <string id="20369">미시청 항목의 줄거리 감추기</string>
-  <string id="20370">* 스포일러 방지위해 감춤 *</string>
+  <string id="20369">미시청 항목의 줄거리 숨김</string>
+  <string id="20370">* 스포일러 방지위해 숨김 *</string>
   <string id="20371">시즌 미리보기 설정</string>
   <string id="20372">시즌 이미지</string>
   <string id="20373">시즌</string>
@@ -1637,7 +1637,7 @@
   <string id="20411">병합</string>
   <string id="20412">TV 쇼 병합</string>
   <string id="20413">팬아트 가져옴</string>
-  <string id="20414">비디오와 음악 라이브러리에서 팬아트 보기</string>
+  <string id="20414">비디오 및 음악 라이브러리에 팬아트 보이기</string>
   <string id="20415">새 컨텐츠 검색</string>
   <string id="20416">초연</string>
   <string id="20417">각본</string>
@@ -1659,7 +1659,7 @@
   <string id="21330">숨김 파일 및 디렉터리 보기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-상태!</string>
-  <string id="21333">스트림 중지될 것임!</string>
+  <string id="21333">스트림이 중지됩니다!</string>
   <string id="21334">채널 완전삭제: %s 실패!</string>
   <string id="21335">스트림을 시작 하시겠습니까?</string>
   <string id="21336">연결: %s</string>
