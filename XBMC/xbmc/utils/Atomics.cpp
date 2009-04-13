@@ -21,4 +21,3 @@
 
 #include "stdafx.h"
 #include "Atomics.h"
-

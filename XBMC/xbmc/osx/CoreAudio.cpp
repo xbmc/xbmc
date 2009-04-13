@@ -22,8 +22,10 @@
 
 #include "stdafx.h"
 #include "CoreAudio.h"
+#include <PlatformDefs.h>
+#include <Log.h>
 
-char* UInt32ToFourCC(UInt32* pVal) // NOT NULL TREMINATED! Modifies input value.
+char* UInt32ToFourCC(UInt32* pVal) // NOT NULL TERMINATED! Modifies input value.
 {
   UInt32 inVal = *pVal;
   char* pIn = (char*)&inVal;
@@ -34,6 +36,7 @@ char* UInt32ToFourCC(UInt32* pVal) // NOT NULL TREMINATED! Modifies input value.
   fourCC[0] = pIn[3];
   return fourCC;
 }
+
 #define CONVERT_OSSTATUS(x) UInt32ToFourCC((UInt32*)&ret)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioHardware
@@ -92,6 +95,35 @@ AudioDeviceID CCoreAudioHardware::GetDefaultOutputDevice()
     return 0;
   }
   return deviceId;
+}
+
+UInt32 GetOutputDevices(CoreAudioDeviceList* pList)
+{
+  if (!pList)
+    return 0;
+  
+  // Obtain a list of all available audio devices
+  UInt32 found = 0;
+  UInt32 size = 0;
+  AudioHardwareGetPropertyInfo(kAudioHardwarePropertyDevices, &size, NULL);
+  UInt32 deviceCount = size / sizeof(AudioDeviceID);
+  AudioDeviceID* pDevices = new AudioDeviceID[deviceCount];
+  OSStatus ret = AudioHardwareGetProperty(kAudioHardwarePropertyDevices, &size, pDevices);
+  if (ret)
+    CLog::Log(LOGERROR, "CCoreAudioHardware::GetOutputDevices: Unable to retrieve the list of available devices. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+  else
+  {
+    for (UInt32 dev = 0; dev < deviceCount; dev++)
+    {
+      CCoreAudioDevice device(pDevices[dev]);
+      if (device.GetTotalOutputChannels() == 0)
+        continue;
+      found++;
+      pList->push_back(pDevices[dev]);
+    }
+  }
+  delete[] pDevices;
+  return found;
 }
 
 bool CCoreAudioHardware::GetAutoHogMode()
@@ -213,10 +245,10 @@ void CCoreAudioDevice::RemoveIOProc()
   m_IoProc = NULL; // Clear the reference no matter what
 }
 
-bool CCoreAudioDevice::GetName(CStdString& name)
+const char* CCoreAudioDevice::GetName(CStdString& name)
 {
   if (!m_DeviceId)
-    return false;
+    return NULL;
 
   UInt32 size = 0;
   AudioDeviceGetPropertyInfo(m_DeviceId,0, false, kAudioDevicePropertyDeviceName, &size, NULL); // TODO: Change to kAudioObjectPropertyName
@@ -224,9 +256,9 @@ bool CCoreAudioDevice::GetName(CStdString& name)
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to get device name - id: 0x%04x Error = 0x%08x (%4.4s)", m_DeviceId, ret, CONVERT_OSSTATUS(ret));
-    return false;
+    return NULL;
   }
-  return true;
+  return name.c_str();
 }
 
 UInt32 CCoreAudioDevice::GetTotalOutputChannels()

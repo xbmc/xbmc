@@ -77,10 +77,16 @@
 		81F064100E9B5FE400C203A6 /* libxbms-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81F0640F0E9B5FE400C203A6 /* libxbms-x86-osx.a */; };
 		81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064110E9B608800C203A6 /* FileXBMSP.cpp */; };
 		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
+		831F61020F9272DC0051DBCA /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F61010F9272DC0051DBCA /* LockFree.cpp */; };
+		831F61030F9272DC0051DBCA /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F61010F9272DC0051DBCA /* LockFree.cpp */; };
+		831F63330F92F72C0051DBCA /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F63310F92F72C0051DBCA /* CPortAudio.cpp */; };
+		831F63340F92F72C0051DBCA /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F63310F92F72C0051DBCA /* CPortAudio.cpp */; };
 		83540ADD0F7985DF0044C398 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83540ADC0F7985DF0044C398 /* Atomics.cpp */; };
 		83540ADE0F7985DF0044C398 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83540ADC0F7985DF0044C398 /* Atomics.cpp */; };
 		839270550F7F3DAF00406D11 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839270540F7F3DAF00406D11 /* CoreAudio.cpp */; };
 		839270560F7F3DAF00406D11 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839270540F7F3DAF00406D11 /* CoreAudio.cpp */; };
+		839F15DC0F8ED66000EFB4C5 /* CoreAudioOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839F15DB0F8ED66000EFB4C5 /* CoreAudioOutput.cpp */; };
+		839F15DD0F8ED66000EFB4C5 /* CoreAudioOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839F15DB0F8ED66000EFB4C5 /* CoreAudioOutput.cpp */; };
 		83AEF5AA0F7773E3002E08DE /* paplayer_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */; };
 		83C98B8A0F759368005759EE /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98B890F759368005759EE /* CoreAudioRenderer.cpp */; };
 		83C98F990F770B1F005759EE /* SliceQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98F980F770B1F005759EE /* SliceQueue.cpp */; };
@@ -284,7 +290,6 @@
 		E38E1FAD0D25F9FD00618676 /* DVDSubtitleLineCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15910D25F9FA00618676 /* DVDSubtitleLineCollection.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
 		E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
 		E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FB20D25F9FD00618676 /* PortaudioDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E159D0D25F9FA00618676 /* PortaudioDirectSound.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
 		E38E1FBE0D25F9FD00618676 /* AACcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D50D25F9FA00618676 /* AACcodec.cpp */; };
 		E38E1FBF0D25F9FD00618676 /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
 		E38E1FC00D25F9FD00618676 /* AC3Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D90D25F9FA00618676 /* AC3Codec.cpp */; };
@@ -638,7 +643,6 @@
 		E38E22630D25F9FE00618676 /* unicode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D520D25F9FC00618676 /* unicode.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		E38E22680D25F9FE00618676 /* volume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D5E0D25F9FC00618676 /* volume.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		E38E226D0D25F9FE00618676 /* ConvUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */; };
-		E38E226E0D25F9FE00618676 /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */; };
 		E38E22700D25F9FE00618676 /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */; };
 		E38E22710D25F9FE00618676 /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */; };
 		E38E22730D25F9FE00618676 /* NetworkLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D760D25F9FD00618676 /* NetworkLinux.cpp */; };
@@ -1047,7 +1051,6 @@
 		F5A1C9120F6B06CF00A96ABD /* DVDSubtitleLineCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15910D25F9FA00618676 /* DVDSubtitleLineCollection.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
 		F5A1C9130F6B06CF00A96ABD /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
 		F5A1C9140F6B06CF00A96ABD /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9150F6B06CF00A96ABD /* PortaudioDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E159D0D25F9FA00618676 /* PortaudioDirectSound.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
 		F5A1C9160F6B06CF00A96ABD /* AACcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D50D25F9FA00618676 /* AACcodec.cpp */; };
 		F5A1C9170F6B06CF00A96ABD /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
 		F5A1C9180F6B06CF00A96ABD /* AC3Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D90D25F9FA00618676 /* AC3Codec.cpp */; };
@@ -1401,7 +1404,6 @@
 		F5A1CA740F6B06CF00A96ABD /* unicode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D520D25F9FC00618676 /* unicode.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		F5A1CA750F6B06CF00A96ABD /* volume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D5E0D25F9FC00618676 /* volume.cpp */; settings = {COMPILER_FLAGS = "-DSILENT"; }; };
 		F5A1CA760F6B06CF00A96ABD /* ConvUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */; };
-		F5A1CA770F6B06CF00A96ABD /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */; };
 		F5A1CA790F6B06CF00A96ABD /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */; };
 		F5A1CA7A0F6B06CF00A96ABD /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */; };
 		F5A1CA7B0F6B06CF00A96ABD /* NetworkLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D760D25F9FD00618676 /* NetworkLinux.cpp */; };
@@ -1845,10 +1847,16 @@
 		81F064120E9B608800C203A6 /* FileXBMSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileXBMSP.h; sourceTree = "<group>"; };
 		81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMSDirectory.cpp; sourceTree = "<group>"; };
 		81F064250E9BB99800C203A6 /* XBMSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMSDirectory.h; sourceTree = "<group>"; };
+		831F61000F9272DC0051DBCA /* LockFree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockFree.h; sourceTree = "<group>"; };
+		831F61010F9272DC0051DBCA /* LockFree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LockFree.cpp; sourceTree = "<group>"; };
+		831F63310F92F72C0051DBCA /* CPortAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPortAudio.cpp; sourceTree = "<group>"; };
+		831F63320F92F72C0051DBCA /* CPortAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPortAudio.h; sourceTree = "<group>"; };
 		83540ADB0F7985DF0044C398 /* Atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomics.h; sourceTree = "<group>"; };
 		83540ADC0F7985DF0044C398 /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
 		839270530F7F3DAF00406D11 /* CoreAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudio.h; sourceTree = "<group>"; };
 		839270540F7F3DAF00406D11 /* CoreAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudio.cpp; sourceTree = "<group>"; };
+		839F15DA0F8ED66000EFB4C5 /* CoreAudioOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioOutput.h; sourceTree = "<group>"; };
+		839F15DB0F8ED66000EFB4C5 /* CoreAudioOutput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioOutput.cpp; sourceTree = "<group>"; };
 		83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = paplayer_linux.cpp; sourceTree = "<group>"; };
 		83C98B880F759368005759EE /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRenderer.h; path = AudioRenderers/CoreAudioRenderer.h; sourceTree = "<group>"; };
 		83C98B890F759368005759EE /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
@@ -2319,8 +2327,6 @@
 		E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleStream.cpp; sourceTree = "<group>"; };
 		E38E15970D25F9FA00618676 /* DVDSubtitleStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleStream.h; sourceTree = "<group>"; };
 		E38E159A0D25F9FA00618676 /* IDVDPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDVDPlayer.h; sourceTree = "<group>"; };
-		E38E159D0D25F9FA00618676 /* PortaudioDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PortaudioDirectSound.cpp; path = AudioRenderers/PortaudioDirectSound.cpp; sourceTree = "<group>"; };
-		E38E159E0D25F9FA00618676 /* PortaudioDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PortaudioDirectSound.h; path = AudioRenderers/PortaudioDirectSound.h; sourceTree = "<group>"; };
 		E38E15A50D25F9FA00618676 /* DllAvCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAvCodec.h; sourceTree = "<group>"; };
 		E38E15A60D25F9FA00618676 /* DllAvFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAvFormat.h; sourceTree = "<group>"; };
 		E38E15A70D25F9FA00618676 /* DllPostProc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllPostProc.h; sourceTree = "<group>"; };
@@ -3230,8 +3236,6 @@
 		E38E1D670D25F9FD00618676 /* zlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zlib.h; sourceTree = "<group>"; };
 		E38E1D6A0D25F9FD00618676 /* ConvUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConvUtils.cpp; sourceTree = "<group>"; };
 		E38E1D6B0D25F9FD00618676 /* ConvUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvUtils.h; sourceTree = "<group>"; };
-		E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPortAudio.cpp; sourceTree = "<group>"; };
-		E38E1D6D0D25F9FD00618676 /* CPortAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPortAudio.h; sourceTree = "<group>"; };
 		E38E1D700D25F9FD00618676 /* LinuxResourceCounter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxResourceCounter.cpp; sourceTree = "<group>"; };
 		E38E1D710D25F9FD00618676 /* LinuxResourceCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinuxResourceCounter.h; sourceTree = "<group>"; };
 		E38E1D720D25F9FD00618676 /* LinuxTimezone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxTimezone.cpp; sourceTree = "<group>"; };
@@ -3940,10 +3944,10 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
+				831F63310F92F72C0051DBCA /* CPortAudio.cpp */,
+				831F63320F92F72C0051DBCA /* CPortAudio.h */,
 				F5EA04E80F72F9CA005C2EC5 /* SDLMain.h */,
 				F5EA04280F72EB88005C2EC5 /* SDLMain.m */,
-				E38E1D6D0D25F9FD00618676 /* CPortAudio.h */,
-				E38E1D6C0D25F9FD00618676 /* CPortAudio.cpp */,
 				F5EA05C30F73381A005C2EC5 /* CocoaInterface.h */,
 				F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */,
 				F5EA02210F6DA85C005C2EC5 /* CocoaPowerSyscall.h */,
@@ -3956,6 +3960,8 @@
 				E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */,
 				839270530F7F3DAF00406D11 /* CoreAudio.h */,
 				839270540F7F3DAF00406D11 /* CoreAudio.cpp */,
+				839F15DA0F8ED66000EFB4C5 /* CoreAudioOutput.h */,
+				839F15DB0F8ED66000EFB4C5 /* CoreAudioOutput.cpp */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -6644,6 +6650,8 @@
 				E38E1E920D25F9FD00618676 /* WindowsShortcut.h */,
 				83540ADB0F7985DF0044C398 /* Atomics.h */,
 				83540ADC0F7985DF0044C398 /* Atomics.cpp */,
+				831F61000F9272DC0051DBCA /* LockFree.h */,
+				831F61010F9272DC0051DBCA /* LockFree.cpp */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -6781,8 +6789,6 @@
 				F5A00B250EFDE44100CD59F3 /* NullDirectSound.h */,
 				E38E14F90D25F9F900618676 /* ALSADirectSound.cpp */,
 				E38E14FA0D25F9F900618676 /* ALSADirectSound.h */,
-				E38E159D0D25F9FA00618676 /* PortaudioDirectSound.cpp */,
-				E38E159E0D25F9FA00618676 /* PortaudioDirectSound.h */,
 			);
 			name = AudioRenderers;
 			sourceTree = "<group>";
@@ -7171,7 +7177,6 @@
 				E38E1FAD0D25F9FD00618676 /* DVDSubtitleLineCollection.cpp in Sources */,
 				E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */,
 				E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */,
-				E38E1FB20D25F9FD00618676 /* PortaudioDirectSound.cpp in Sources */,
 				E38E1FBE0D25F9FD00618676 /* AACcodec.cpp in Sources */,
 				E38E1FBF0D25F9FD00618676 /* AC3CDDACodec.cpp in Sources */,
 				E38E1FC00D25F9FD00618676 /* AC3Codec.cpp in Sources */,
@@ -7525,7 +7530,6 @@
 				E38E22630D25F9FE00618676 /* unicode.cpp in Sources */,
 				E38E22680D25F9FE00618676 /* volume.cpp in Sources */,
 				E38E226D0D25F9FE00618676 /* ConvUtils.cpp in Sources */,
-				E38E226E0D25F9FE00618676 /* CPortAudio.cpp in Sources */,
 				E38E22700D25F9FE00618676 /* LinuxResourceCounter.cpp in Sources */,
 				E38E22710D25F9FE00618676 /* LinuxTimezone.cpp in Sources */,
 				E38E22730D25F9FE00618676 /* NetworkLinux.cpp in Sources */,
@@ -7830,6 +7834,9 @@
 				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */,
 				83540ADD0F7985DF0044C398 /* Atomics.cpp in Sources */,
 				839270550F7F3DAF00406D11 /* CoreAudio.cpp in Sources */,
+				839F15DC0F8ED66000EFB4C5 /* CoreAudioOutput.cpp in Sources */,
+				831F61030F9272DC0051DBCA /* LockFree.cpp in Sources */,
+				831F63340F92F72C0051DBCA /* CPortAudio.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7998,7 +8005,6 @@
 				F5A1C9120F6B06CF00A96ABD /* DVDSubtitleLineCollection.cpp in Sources */,
 				F5A1C9130F6B06CF00A96ABD /* DVDSubtitleParserSubrip.cpp in Sources */,
 				F5A1C9140F6B06CF00A96ABD /* DVDSubtitleStream.cpp in Sources */,
-				F5A1C9150F6B06CF00A96ABD /* PortaudioDirectSound.cpp in Sources */,
 				F5A1C9160F6B06CF00A96ABD /* AACcodec.cpp in Sources */,
 				F5A1C9170F6B06CF00A96ABD /* AC3CDDACodec.cpp in Sources */,
 				F5A1C9180F6B06CF00A96ABD /* AC3Codec.cpp in Sources */,
@@ -8352,7 +8358,6 @@
 				F5A1CA740F6B06CF00A96ABD /* unicode.cpp in Sources */,
 				F5A1CA750F6B06CF00A96ABD /* volume.cpp in Sources */,
 				F5A1CA760F6B06CF00A96ABD /* ConvUtils.cpp in Sources */,
-				F5A1CA770F6B06CF00A96ABD /* CPortAudio.cpp in Sources */,
 				F5A1CA790F6B06CF00A96ABD /* LinuxResourceCounter.cpp in Sources */,
 				F5A1CA7A0F6B06CF00A96ABD /* LinuxTimezone.cpp in Sources */,
 				F5A1CA7B0F6B06CF00A96ABD /* NetworkLinux.cpp in Sources */,
@@ -8652,6 +8657,9 @@
 				F5EA05C10F733812005C2EC5 /* CocoaInterface.mm in Sources */,
 				83540ADE0F7985DF0044C398 /* Atomics.cpp in Sources */,
 				839270560F7F3DAF00406D11 /* CoreAudio.cpp in Sources */,
+				839F15DD0F8ED66000EFB4C5 /* CoreAudioOutput.cpp in Sources */,
+				831F61020F9272DC0051DBCA /* LockFree.cpp in Sources */,
+				831F63330F92F72C0051DBCA /* CPortAudio.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

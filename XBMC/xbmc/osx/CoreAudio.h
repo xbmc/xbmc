@@ -22,8 +22,9 @@
 #ifndef __COREAUDIO_H__
 #define __COREAUDIO_H__
 
-#include <CoreServices/CoreServices.h>
 #include <AudioUnit/AudioUnit.h>
+
+#include <StdString.h>
 #include <list>
 #include <vector>
 
@@ -33,7 +34,7 @@ class CCoreAudioDevice;
 class CCoreAudioStream;
 class CCoreAudioUnit;
 
-typedef std::list<CCoreAudioDevice> CoreAudioDeviceList;
+typedef std::list<AudioDeviceID> CoreAudioDeviceList;
 
 // Not yet implemented
 // kAudioHardwarePropertyDevices                     
@@ -41,13 +42,16 @@ typedef std::list<CCoreAudioDevice> CoreAudioDeviceList;
 // kAudioHardwarePropertyDefaultSystemOutputDevice   
 // kAudioHardwarePropertyDeviceForUID                          
 
+// There is only one AudioSystemObject instance system-side.
+// Therefore, all CCoreAudioHardware methods are static
 class CCoreAudioHardware
 {
 public:
-  AudioDeviceID FindAudioDevice(CStdString deviceName);
-  AudioDeviceID GetDefaultOutputDevice();
-  bool GetAutoHogMode();
-  void SetAutoHogMode(bool enable);
+  static AudioDeviceID FindAudioDevice(CStdString deviceName);
+  static AudioDeviceID GetDefaultOutputDevice();
+  static UInt32 GetOutputDevices(CoreAudioDeviceList* pList);
+  static bool GetAutoHogMode();
+  static void SetAutoHogMode(bool enable);
 };
 
 // Not yet implemented
@@ -66,6 +70,7 @@ class CCoreAudioDevice
 {
 public:
   CCoreAudioDevice();
+  CCoreAudioDevice(AudioDeviceID deviceId) {Open(deviceId);}
   virtual ~CCoreAudioDevice();
   
   bool Open(AudioDeviceID deviceId);
@@ -77,7 +82,7 @@ public:
   void RemoveIOProc();
   
   AudioDeviceID GetId() {return m_DeviceId;}
-  bool GetName(CStdString& name);
+  const char* GetName(CStdString& name);
   UInt32 GetTotalOutputChannels();
   bool GetStreams(AudioStreamIdList* pList);
   bool SetHogStatus(bool hog);

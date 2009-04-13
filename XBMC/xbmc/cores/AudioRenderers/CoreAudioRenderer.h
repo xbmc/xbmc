@@ -76,7 +76,7 @@ class CCoreAudioRenderer : public IAudioRenderer
    
     LONG m_CurrentVolume; // Coutesy of the jerk that made GetCurrentVolume a const...
     DWORD m_ChunkLen; // Minimum amount of data accepted by AddPackets
-    CSliceQueue m_Cache;
+    CSliceQueue* m_pCache;
     size_t m_MaxCacheLen; // Maximum number of bytes cached by the renderer.
         
     CCoreAudioUnit m_AudioUnit;

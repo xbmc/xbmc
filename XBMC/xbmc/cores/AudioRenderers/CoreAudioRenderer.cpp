@@ -19,10 +19,11 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+
+#include <stdafx.h>
 #include "CoreAudioRenderer.h"
-#include <Atomics.h>
 #include <Settings.h>
+#include <Atomics.h>
 
 // TODO: Dynamically allocate this
 short g_SampleBuffer[10000] = {0};
@@ -52,7 +53,8 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_Initialized(false),
   m_Passthrough(false),
   m_PassthroughSpoof(false),
-  m_OutputBufferIndex(0)
+  m_OutputBufferIndex(0),
+  m_pCache(NULL)
 {
   
 }
@@ -146,15 +148,16 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
     CStdString formatString;
     m_AudioUnit.GetInputFormat(&inputDesc_end);
     m_AudioUnit.GetOutputFormat(&outputDesc_end);
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %u (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
     CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Input Stream Format %s", StreamDescriptionToString(inputDesc_end, formatString));
     CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Output Stream Format % s", StreamDescriptionToString(outputDesc_end, formatString));    
   }
   
   m_MaxCacheLen = m_AvgBytesPerSec;     // Set the max cache size to 1 second of data. TODO: Make this more intelligent
   m_Pause = true;                       // Suspend rendering. We will start once we have some data.
+  m_pCache = new CSliceQueue(m_MaxCacheLen);
   m_Initialized = true;
   
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %u (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
   CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");  
   return true;
 }
@@ -175,6 +178,8 @@ HRESULT CCoreAudioRenderer::Deinitialize()
   m_AudioUnit.Close();
   m_AudioDevice.Close();
   m_OutputStream.Close();
+  delete m_pCache;
+  m_pCache = NULL;
   m_Initialized = false;
   
   CLog::Log(LOGINFO, "CoreAudioRenderer::Deinitialize: Renderer has been shut down.");
@@ -223,7 +228,7 @@ HRESULT CCoreAudioRenderer::Stop()
   m_Pause = true;
   m_TotalBytesIn = 0;
   m_TotalBytesOut = 0;
-  m_Cache.Clear();
+  m_pCache->Clear();
 
   return S_OK;
 }
@@ -275,20 +280,20 @@ HRESULT CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 DWORD CCoreAudioRenderer::GetSpace()
 {
-  return m_MaxCacheLen - m_Cache.GetTotalBytes(); // This is just an estimate, since the driver is asynchonously pulling data.
+  return m_MaxCacheLen - m_pCache->GetTotalBytes(); // This is just an estimate, since the driver is asynchonously pulling data.
 }
 
 DWORD CCoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
 {  
   // Require at least one 'chunk'. This allows us at least some measure of control over efficiency
-  if (len < m_ChunkLen ||  m_Cache.GetTotalBytes() >= m_MaxCacheLen)
+  if (len < m_ChunkLen ||  m_pCache->GetTotalBytes() >= m_MaxCacheLen)
     return 0;
 
   DWORD cacheSpace = GetSpace();  
   if (len > cacheSpace)
     return 0; // Wait until we can accept all of it
   
-  size_t bytesUsed = m_Cache.AddData(data, len);
+  size_t bytesUsed = m_pCache->AddData(data, len);
   
   // Update tracking variable
   // TODO: Add to performance class/struct
@@ -302,7 +307,7 @@ DWORD CCoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
 FLOAT CCoreAudioRenderer::GetDelay()
 {
   // Calculate the duration of the data in the cache
-  float delay = (float)m_Cache.GetTotalBytes()/(float)m_AvgBytesPerSec;
+  float delay = (float)m_pCache->GetTotalBytes()/(float)m_AvgBytesPerSec;
   // TODO: Obtain hardware/os latency for better accuracy
   return delay;
 }
@@ -354,7 +359,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
     CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Supplied buffer is too small(%u) to accept requested sample data(%u). Truncating data", ioData->mBuffers[0].mDataByteSize, bytesRequested);
   }
     
-  if (m_Cache.GetTotalBytes() < bytesRequested) // Not enough data to satisfy the request
+  if (m_pCache->GetTotalBytes() < bytesRequested) // Not enough data to satisfy the request
   {
     profileTime[1] = timeGetTime();
     Pause(); // Stop further requests until we have more data.  The AddPackets method will resume playback
@@ -367,18 +372,18 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
      if (m_PassthroughSpoof) // Need to convert the data
     {
       bytesRequested /= 2; // 16 to 32 bit (this will double when we output)
-      m_Cache.GetData(g_SampleBuffer, bytesRequested); // Retrieve data from queue (16-bit Signed Integer)
+      m_pCache->GetData(g_SampleBuffer, bytesRequested); // Retrieve data from queue (16-bit Signed Integer)
       ShortToFloat(g_SampleBuffer, (float*)ioData->mBuffers[buf].mData, inNumberFrames); // Convert to 32-bit float (double the effective data size)
     }
     else // Copy data as-is
     {
-      m_Cache.GetData(ioData->mBuffers[buf].mData, bytesRequested);
+      m_pCache->GetData(ioData->mBuffers[buf].mData, bytesRequested);
     }
     
     // Calculate stats and perform a sanity check
     // TODO: Either remove all of this or optimize it
     m_TotalBytesOut += bytesRequested;    
-    size_t cacheLen = m_Cache.GetTotalBytes();
+    size_t cacheLen = m_pCache->GetTotalBytes();
     UInt32 cacheCalc = m_TotalBytesIn - m_TotalBytesOut;
     if (cacheCalc != cacheLen)
       CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Cache length mismatch. We seem to have lost some data. Calc = %u, Act = %u.",cacheCalc, cacheLen);
@@ -436,13 +441,14 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
   // TODO: Handle channel mapping
   
   m_BytesPerFrame = inputFormat.mBytesPerFrame;
-  m_AvgBytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame / 2;      // 1 sample per channel per frame
+  m_AvgBytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame;      // 1 sample per channel per frame
   
   return true;
 }
 
 bool CCoreAudioRenderer::SpoofPCM()
 {
+  // Set the Sample Rate as defined by the spec.
   m_AudioDevice.SetNominalSampleRate(48000.0f);
   
   m_AudioDevice.SetHogStatus(true); // Prevent any other application from using this device.

@@ -24,8 +24,10 @@
 
 #include <queue>
 
+///////////////////////////////////////////////////////////////////////////
 // 32-bit atomic compare-and-swap
 // Returns previous value of *pAddr
+///////////////////////////////////////////////////////////////////////////
 #ifdef __ppc__ // PowerPC
 static inline long cas(volatile long *pAddr, long expectedVal, long swapVal)
 {
@@ -76,7 +78,7 @@ static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
   long prev;
   
   __asm__ __volatile__ (
-                        "lock cmpxchg %1, %2"
+                        "lock/cmpxchg %1, %2"
                         : "=a" (prev)
                         : "r" (swapVal), "m" (*pAddr), "0" (expectedVal)
                         : "memory" );
@@ -84,7 +86,46 @@ static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
   
 }
 
-static inline long AtomicIncrement32(volatile long* pAddr)
+#endif
+
+///////////////////////////////////////////////////////////////////////////
+// 64-bit atomic compare-and-swap
+// Returns previous value of *pAddr
+///////////////////////////////////////////////////////////////////////////
+#ifdef __ppc__ // PowerPC
+
+#elif defined(WIN32)
+
+#else // Linux / OSX86 (GCC)
+
+static inline long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
+{
+  long long prev;
+  
+  __asm__ __volatile__ (
+                        " push %%ebx        \n"  // We have to manually handle ebx, because PIC uses it and the compiler refuses to build anything that touches it
+                        " mov %4, %%ebx     \n"
+                        " lock/cmpxchg8b %3 \n"
+                        " pop %%ebx"
+                        : "=A" (prev)
+                        : "c" ((unsigned long)(swapVal >> 32)), "0" (expectedVal), "m" (*pAddr), "m" (swapVal)
+                        : "memory");
+  return prev;
+}
+
+#endif
+
+///////////////////////////////////////////////////////////////////////////
+// 32-bit atomic increment
+// Returns new value of *pAddr
+///////////////////////////////////////////////////////////////////////////
+#ifdef __ppc__ // PowerPC
+
+#elif defined(WIN32)
+
+#else // Linux / OSX86 (GCC)
+
+static inline long AtomicIncrement(volatile long* pAddr)
 {
   register long reg __asm__ ("eax") = 1;
   __asm__ __volatile__ (
@@ -96,7 +137,19 @@ static inline long AtomicIncrement32(volatile long* pAddr)
   return reg;
 }
 
-static inline long AtomicDecrement32(volatile long* pAddr)
+#endif
+
+///////////////////////////////////////////////////////////////////////////
+// 32-bit atomic decrement
+// Returns new value of *pAddr
+///////////////////////////////////////////////////////////////////////////
+#ifdef __ppc__ // PowerPC
+
+#elif defined(WIN32)
+
+#else // Linux / OSX86 (GCC)
+
+static inline long AtomicDecrement(volatile long* pAddr)
 {
   register long reg __asm__ ("eax") = -1;
   __asm__ __volatile__ (
@@ -110,77 +163,83 @@ static inline long AtomicDecrement32(volatile long* pAddr)
 
 #endif
 
+///////////////////////////////////////////////////////////////////////////
+// Fast spinlock implmentation. No backoff when busy
+///////////////////////////////////////////////////////////////////////////
 class CAtomicSpinLock
-{
-public:
-  CAtomicSpinLock(long& lock) : m_Lock(lock)
   {
+  public:
+    CAtomicSpinLock(long& lock) : m_Lock(lock)
+    {
 #if defined (DEBUG)
-    unsigned int spinCount = 0;
-    while (cas(&m_Lock, 0, 1) != 0)
-      spinCount++;
-    
-    if (spinCount > 10000)
-      CLog::Log(LOGDEBUG, "CAtomicSpinLock: Spinning: spinCount = %u", spinCount);
+      unsigned int spinCount = 0;
+      while (cas(&m_Lock, 0, 1) != 0)
+        spinCount++;
+      
+      if (spinCount > 10000)
+        CLog::Log(LOGDEBUG, "CAtomicSpinLock: Spinning: spinCount = %u", spinCount);
 #else
-    while (cas(&m_Lock, 0, 1) != 0); // Lock
+      while (cas(&m_Lock, 0, 1) != 0); // Lock
 #endif
-  }
-  ~CAtomicSpinLock()
-  {
-    m_Lock = 0; // Unlock
-  }
-private:
-  long& m_Lock;
-};
+    }
+    ~CAtomicSpinLock()
+    {
+      m_Lock = 0; // Unlock
+    }
+  private:
+    long& m_Lock;
+  };
 
+///////////////////////////////////////////////////////////////////////////////////
+// Trivial threadsafe queue implemented using a single lock for synchronization
+//////////////////////////////////////////////////////////////////////////////////
 template <class T>
 class CSafeQueue
-{
-public:
-  CSafeQueue(size_t maxItems = 0) : m_Lock(0), m_MaxItems(maxItems) {}
-  bool Push(const T& elem)
   {
-    CAtomicSpinLock(m_Lock);
-    if (m_Queue.size() >= m_MaxItems)
-      return false;
-
-    m_Queue.Push(elem);
-    return true;
-  }
-
-  void Pop()
-  {
-    CAtomicSpinLock(m_Lock); 
-    m_Queue.pop();
-  }
-
-  void Clear() 
-  {
-    CAtomicSpinLock(m_Lock); 
-    while (!m_Queue.empty())
-      m_Queue.pop();
-  }
-
-  bool SetMaxItems(size_t maxItems)
-  {
-    CAtomicSpinLock(m_Lock);
-    if (maxItems < m_MaxItems)
-      if (maxItems < m_Queue.size())
+  public:
+    CSafeQueue(size_t maxItems = 0) : m_Lock(0), m_MaxItems(maxItems) {}
+    bool Push(const T& elem)
+    {
+      CAtomicSpinLock(m_Lock);
+      if (m_Queue.size() >= m_MaxItems)
         return false;
-    m_MaxItems = maxItems;
-    return true;
-  }
-  size_t GetMaxItems() {CAtomicSpinLock(m_Lock); return m_MaxItems;}
-  T& Head() {CAtomicSpinLock(m_Lock); return m_Queue.front();}
-  T& Tail() {CAtomicSpinLock(m_Lock); return m_Queue.back();}
-  bool Empty() {CAtomicSpinLock(m_Lock); return m_Queue.empty();}
-  size_t Count() {CAtomicSpinLock(m_Lock); return m_Queue.size();}
-protected:
-  long m_Lock;
-  std::queue<T> m_Queue;
-  size_t m_MaxItems;
-};
+      
+      m_Queue.Push(elem);
+      return true;
+    }
+    
+    void Pop()
+    {
+      CAtomicSpinLock(m_Lock); 
+      m_Queue.pop();
+    }
+    
+    void Clear() 
+    {
+      CAtomicSpinLock(m_Lock); 
+      while (!m_Queue.empty())
+        m_Queue.pop();
+    }
+    
+    bool SetMaxItems(size_t maxItems)
+    {
+      CAtomicSpinLock(m_Lock);
+      if (maxItems < m_MaxItems)
+        if (maxItems < m_Queue.size())
+          return false;
+      m_MaxItems = maxItems;
+      return true;
+    }
+    size_t GetMaxItems() {CAtomicSpinLock(m_Lock); return m_MaxItems;}
+    T& Head() {CAtomicSpinLock(m_Lock); return m_Queue.front();}
+    T& Tail() {CAtomicSpinLock(m_Lock); return m_Queue.back();}
+    bool Empty() {CAtomicSpinLock(m_Lock); return m_Queue.empty();}
+    size_t Count() {CAtomicSpinLock(m_Lock); return m_Queue.size();}
+  protected:
+    long m_Lock;
+    std::queue<T> m_Queue;
+    size_t m_MaxItems;
+  };
 
 
 
