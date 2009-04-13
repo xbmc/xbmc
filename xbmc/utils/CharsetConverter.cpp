@@ -396,18 +396,6 @@ void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
   strSourceDest=strDest;
 }
 
-void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest)
-{
-  CSingleLock lock(m_critSection);
-  convert(m_iconvStringCharsetToUtf8,UTF8_DEST_MULTIPLIER,g_langInfo.GetGuiCharSet(),"UTF-8",strSource,strDest);
-}
-
-void CCharsetConverter::stringCharsetToUtf8(CStdStringA& strSourceDest)
-{
-  CStdString strSource=strSourceDest;
-  stringCharsetToUtf8(strSource, strSourceDest);
-}
-
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest)
 {
   iconv_t iconvString;
@@ -459,7 +447,10 @@ void CCharsetConverter::unknownToUTF8(const CStdStringA &source, CStdStringA &de
   if (isValidUtf8(source))
     dest = source;
   else
-    stringCharsetToUtf8(source, dest);
+  {
+    CSingleLock lock(m_critSection);
+    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", source, dest);
+  }
 }
 
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
