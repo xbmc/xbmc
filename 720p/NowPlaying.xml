@@ -36,16 +36,19 @@
         <description>Album covers</description>
         <posx>587</posx>
         <posy>204</posy>
-  
-
         <include>NowPlayingCurrentCover</include>
       </control>
+      
       <control type="group">
         <description>Info</description>
         <posx>60</posx>
         <posy>220</posy>
-        
-        <include>NowPlayingCurrentInfo</include>
+        <control type="group">
+          <visible>Player.HasMusicPlaylist</visible>
+          <animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+          <animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+          <include>NowPlayingCurrentInfo</include>
+        </control>
         
         <control type="progress" id="20">
           <description>Progress control</description>
@@ -54,11 +57,16 @@
           <aligny>center</aligny>
           <width>372</width>
           <info>Player.Progress</info>
+          <animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+          <animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
           <visible>Player.HasMusicPlaylist</visible>
         </control>
         
         <control type="group">
           <posy>219</posy>
+          <animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+          <animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+          <visible>Player.HasMusicPlaylist + MusicPlayer.HasNext</visible>
           <include>NowPlayingNextInfo</include>
         </control>
       </control>
@@ -82,8 +90,12 @@
         <description>Info</description>
         <posx>60</posx>
         <posy>220</posy>
-        
-        <include>NowPlayingCurrentInfo</include>
+        <control type="group">
+          <visible>Player.HasMusicPlaylist</visible>
+          <animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+          <animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
+          <include>NowPlayingCurrentInfo</include>
+        </control>
         
         <control type="progress" id="20">
           <description>Progress control</description>
@@ -92,6 +104,8 @@
           <aligny>center</aligny>
           <width>372</width>
           <info>Player.Progress</info>
+          <animation effect="fade" start="0" end="100" time="1000">Visible</animation>
+          <animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
           <visible>Player.HasMusicPlaylist</visible>
         </control>
         
@@ -99,7 +113,7 @@
           <posy>219</posy>
           <animation effect="fade" start="0" end="100" time="1000">Visible</animation>
           <animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
-          <visible>MusicPlayer.HasNext</visible>
+          <visible>Player.HasMusicPlaylist + MusicPlayer.HasNext</visible>
           <include>NowPlayingNextInfo</include>
         </control>
       </control>

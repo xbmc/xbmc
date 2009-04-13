@@ -61,7 +61,6 @@
   <include name="NowPlayingCurrentInfo">
     <control type="group">
       <description>Current track info</description>
-      <visible>Player.HasMusicPlaylist</visible>
       
       <control type="label" id="0">
         <posx>500</posx>
