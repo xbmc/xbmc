@@ -11,4 +11,9 @@
   <color name="HomeMain2">40FFFFFF</color>
   <color name="HomeSubFocus">FFFFFFFF</color>
   <color name="HomeSubNoFocus">60FFFFFF</color>
+  
+  <color name="Dark">FF10758E</color>
+  <color name="Medium">FF94C6CC</color>
+  <color name="Light">FFCCCCCC</color>
+  
 </colors>

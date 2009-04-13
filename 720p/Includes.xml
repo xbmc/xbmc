@@ -9,6 +9,7 @@
   <include file="ViewsVideo.xml" />
   <include file="ViewsMusic.xml" />
   <include file="ViewsPics.xml" />
+  <include file="PlexIncludes.xml" />
 
   <!-- Dialog Windows -->
   <include name="DialogFade">
