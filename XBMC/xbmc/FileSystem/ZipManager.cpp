@@ -138,7 +138,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     CStdString strName;
     mFile.Read(strName.GetBuffer(ze.flength), ze.flength);
     strName.ReleaseBuffer();
-    g_charsetConverter.stringCharsetToUtf8(strName);
+    g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
     mFile.Seek(ze.elength,SEEK_CUR);
