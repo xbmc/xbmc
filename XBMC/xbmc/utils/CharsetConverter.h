@@ -35,7 +35,7 @@ public:
 
   void clear();
 
-  void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true, bool* bWasFlipped=NULL);
+  void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true, bool forceLTRReadingOrder=false, bool* bWasFlipped=NULL);
 
   void utf16LEtoW(const CStdStringW& utf16String, CStdStringW &wString);
 
