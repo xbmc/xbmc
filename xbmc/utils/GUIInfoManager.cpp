@@ -3219,7 +3219,7 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
-      text.Format("%s %2.0f%%", (1.0f - g_application.m_idleThread.GetRelativeUsage())*100);
+      text.Format("%2.0f%%", (1.0f - g_application.m_idleThread.GetRelativeUsage())*100);
       break;
   }
   return text;
