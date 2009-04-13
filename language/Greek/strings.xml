@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 03/25/2009-->
+<!--Date of translation: 04/13/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 18906-->
+<!--Based on english strings version 19415-->
 <strings>
   <string id="0">Προγράμματα</string>
   <string id="1">Φωτογραφίες</string>
@@ -281,7 +281,7 @@
   <string id="354">Matrix Trails</string>
   <string id="355">Προφύλαξη οθόνης μετά από</string>
   <string id="356">Λειτουργία προφύλαξης οθόνης</string>
-  <string id="357">Απενεργοποίηση μετά από</string>
+  <string id="357">Απενεργοποίηση</string>
   <string id="358">Όλα τα άλμπουμ</string>
   <string id="359">Πρόσφατα άλμπουμ</string>
   <string id="360">Προφύλαξη οθόνης</string>
@@ -304,7 +304,7 @@
   <string id="377">Ασθενής</string>
   <string id="378">Προ μεσημβρίας</string>
   <string id="379">Μετά μεσημβρίας</string>
-  <string id="380">Όμβροι</string>
+  <string id="380">Μπόρες</string>
   <string id="381">Λίγες</string>
   <string id="382">Σποραδικά</string>
   <string id="383">Άνεμος</string>
@@ -313,7 +313,7 @@
   <string id="386">Αίθριος</string>
   <string id="387">Νεφοσκεπής</string>
   <string id="388">τις πρώτες πρωινές ώρες</string>
-  <string id="389">Όμβρος</string>
+  <string id="389">Μπόρα</string>
   <string id="390">Σύντομες ελαφρές χιονοπτώσεις</string>
   <string id="391">Ελχ.</string>
   <string id="392">Μέσ.</string>
@@ -927,7 +927,7 @@
   <string id="13005">Παύση λειτουργίας</string>
   <string id="13006">Εκκινητής</string>
   <string id="13007">Χρήση τροποποιημένου εκκινητή</string>
-  <string id="13008">Κατά τον τερματισμό του XBMC</string>
+  <string id="13008">Λειτουργία απενεργοποίησης</string>
   <string id="13009">Έξοδος</string>
   <string id="13010">Αδρανοποίηση</string>
   <string id="13011">Ύπνωση</string>
@@ -1144,7 +1144,7 @@
   <string id="13417">Στοιχειώδης (ARB)</string>
   <string id="13418">Εξειδικευμένη (GLSL)</string>
   <string id="13419">Λογισμικό</string>
-  <string id="13420">Εξαγωγή</string>
+  <string id="13420">Ασφαλής κατάργηση</string>
   <string id="13421">VDPAU</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Κατάσταση</string>
