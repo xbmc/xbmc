@@ -266,7 +266,7 @@
   <string id="354">Matrix-spår</string>
   <string id="355">Tid innan skärmsläckare startar</string>
   <string id="356">Skärmsläckarläge</string>
-  <string id="357">Tid innan avstängning vid vila</string>
+  <string id="357">Vilotimer</string>
   <string id="358">Alla album</string>
   <string id="359">Senast tillagda album</string>
   <string id="360">Skärmsläckare</string>
@@ -883,7 +883,7 @@
   <string id="13005">Stäng av</string>
   <string id="13006">Menysystem</string>
   <string id="13007">Använd egen menysystem sökväg</string>
-  <string id="13008">Standardinställning för avslut</string>
+  <string id="13008">Funktion för vilotimer</string>
   <string id="13009">Avsluta</string>
   <string id="13010">Viloläge</string>
   <string id="13011">Vänteläge</string>
