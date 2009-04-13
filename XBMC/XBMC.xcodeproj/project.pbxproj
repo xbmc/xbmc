@@ -78,15 +78,13 @@
 		81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064110E9B608800C203A6 /* FileXBMSP.cpp */; };
 		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
 		831F61020F9272DC0051DBCA /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F61010F9272DC0051DBCA /* LockFree.cpp */; };
-		831F61030F9272DC0051DBCA /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F61010F9272DC0051DBCA /* LockFree.cpp */; };
+		831F61030F9272DC0051DBCA /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F61010F9272DC0051DBCA /* LockFree.cpp */; settings = {COMPILER_FLAGS = "-O0"; }; };
 		831F63330F92F72C0051DBCA /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F63310F92F72C0051DBCA /* CPortAudio.cpp */; };
 		831F63340F92F72C0051DBCA /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F63310F92F72C0051DBCA /* CPortAudio.cpp */; };
 		83540ADD0F7985DF0044C398 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83540ADC0F7985DF0044C398 /* Atomics.cpp */; };
 		83540ADE0F7985DF0044C398 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83540ADC0F7985DF0044C398 /* Atomics.cpp */; };
 		839270550F7F3DAF00406D11 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839270540F7F3DAF00406D11 /* CoreAudio.cpp */; };
 		839270560F7F3DAF00406D11 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839270540F7F3DAF00406D11 /* CoreAudio.cpp */; };
-		839F15DC0F8ED66000EFB4C5 /* CoreAudioOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839F15DB0F8ED66000EFB4C5 /* CoreAudioOutput.cpp */; };
-		839F15DD0F8ED66000EFB4C5 /* CoreAudioOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839F15DB0F8ED66000EFB4C5 /* CoreAudioOutput.cpp */; };
 		83AEF5AA0F7773E3002E08DE /* paplayer_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */; };
 		83C98B8A0F759368005759EE /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98B890F759368005759EE /* CoreAudioRenderer.cpp */; };
 		83C98F990F770B1F005759EE /* SliceQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98F980F770B1F005759EE /* SliceQueue.cpp */; };
@@ -1855,8 +1853,6 @@
 		83540ADC0F7985DF0044C398 /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
 		839270530F7F3DAF00406D11 /* CoreAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudio.h; sourceTree = "<group>"; };
 		839270540F7F3DAF00406D11 /* CoreAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudio.cpp; sourceTree = "<group>"; };
-		839F15DA0F8ED66000EFB4C5 /* CoreAudioOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioOutput.h; sourceTree = "<group>"; };
-		839F15DB0F8ED66000EFB4C5 /* CoreAudioOutput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioOutput.cpp; sourceTree = "<group>"; };
 		83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = paplayer_linux.cpp; sourceTree = "<group>"; };
 		83C98B880F759368005759EE /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRenderer.h; path = AudioRenderers/CoreAudioRenderer.h; sourceTree = "<group>"; };
 		83C98B890F759368005759EE /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
@@ -3960,8 +3956,6 @@
 				E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */,
 				839270530F7F3DAF00406D11 /* CoreAudio.h */,
 				839270540F7F3DAF00406D11 /* CoreAudio.cpp */,
-				839F15DA0F8ED66000EFB4C5 /* CoreAudioOutput.h */,
-				839F15DB0F8ED66000EFB4C5 /* CoreAudioOutput.cpp */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -7834,7 +7828,6 @@
 				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */,
 				83540ADD0F7985DF0044C398 /* Atomics.cpp in Sources */,
 				839270550F7F3DAF00406D11 /* CoreAudio.cpp in Sources */,
-				839F15DC0F8ED66000EFB4C5 /* CoreAudioOutput.cpp in Sources */,
 				831F61030F9272DC0051DBCA /* LockFree.cpp in Sources */,
 				831F63340F92F72C0051DBCA /* CPortAudio.cpp in Sources */,
 			);
@@ -8657,7 +8650,6 @@
 				F5EA05C10F733812005C2EC5 /* CocoaInterface.mm in Sources */,
 				83540ADE0F7985DF0044C398 /* Atomics.cpp in Sources */,
 				839270560F7F3DAF00406D11 /* CoreAudio.cpp in Sources */,
-				839F15DD0F8ED66000EFB4C5 /* CoreAudioOutput.cpp in Sources */,
 				831F61020F9272DC0051DBCA /* LockFree.cpp in Sources */,
 				831F63330F92F72C0051DBCA /* CPortAudio.cpp in Sources */,
 			);
@@ -8760,6 +8752,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_AUTO_VECTORIZATION = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_ENABLE_SSE3_EXTENSIONS = NO;
