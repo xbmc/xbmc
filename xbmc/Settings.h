@@ -201,7 +201,8 @@ public:
     bool m_displayRemoteCodes;
     CStdStringArray m_videoCleanRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
-    CStdStringArray m_videoExcludeFromScanRegExps;
+    CStdStringArray m_moviesExcludeFromScanRegExps;
+    CStdStringArray m_tvshowExcludeFromScanRegExps;
     CStdStringArray m_audioExcludeFromListingRegExps;
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
