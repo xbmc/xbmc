@@ -1521,7 +1521,9 @@
 
           <control type="label">
             <description>Star Rating caption</description>
-            <posy>100</posy>
+						<visible>!IsEmpty(ListItem.Rating)</visible>
+						<posx>-50</posx>
+            <posy>115</posy>
             <width>1280</width>
             <height>20</height>
             <font>VideoDetailCapsFont</font>
@@ -1532,7 +1534,7 @@
   
           <control type="image">
             <description>Star Rating</description>
-            <posx>594</posx>
+            <posx>645</posx>
             <posy>120</posy>
             <height>20</height>
             <aspectratio>stretch</aspectratio>
@@ -1548,7 +1550,7 @@
           <align>center</align>
           <font>LargeDefaultCapsFont</font>
           <scroll>true</scroll>
-          <label>$INFO[ListItem.Duration,$LOCALIZE[2050] ]</label>
+          <label>$INFO[ListItem.Duration,$LOCALIZE[2050]  ]</label>
         </control>
       </control>
 

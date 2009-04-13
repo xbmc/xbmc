@@ -27,7 +27,7 @@
         <width>64</width>
         <height>34</height>
         <texture>OMIndicRight.png</texture>
-        <visible>Control.IsVisible(50) | Control.IsVisible(52) | Control.IsVisible(53) | Control.IsVisible(56) | [[Control.IsVisible(54) | Control.IsVisible(57)] + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)]] | [[Control.IsVisible(51) | Control.IsVisible(57)] + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]] | [Control.IsVisible(51) + Window.IsVisible(MyPictures)]</visible>
+        <visible>Control.IsVisible(50) | Control.IsVisible(52) | Control.IsVisible(53) | Control.IsVisible(56) | Control.IsVisible(53) | [[Control.IsVisible(54) | Control.IsVisible(57)] + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary)]] | [[Control.IsVisible(51) | Control.IsVisible(57)] + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]] | [Control.IsVisible(51) + Window.IsVisible(MyPictures)]</visible>
         <include>OptionsMenuFade</include>
       </control>
     </control>
@@ -566,7 +566,16 @@
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
-
+<!--
+        <control type="button" id="959">
+          <description>Grid view button</description>
+          <visible>!Control.IsVisible(59)</visible>
+          <label>$LOCALIZE[31720]</label>
+          <onclick>Container.SetViewMode(59)</onclick>
+          <onclick>SetFocus(50)</onclick>
+          <include>OMButtonItem</include>
+        </control>
+-->
 
 <!-- Setup Options -->
         <control type="label" id="1000">

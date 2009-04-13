@@ -1590,6 +1590,7 @@
     <font>MediumAltDefaultFont</font>
     <align>left</align>
     <aligny>center</aligny>
+		<posx>-1</posx>
   </include>
 
   <include name="ClockBGText">
@@ -1657,7 +1658,7 @@
 
   <include name="MediaCountLabel">
     <posx>12</posx>
-    <posy>5</posy>
+    <posy>3</posy>
     <font>SmallTitleCapsFont</font>
     <textcolor>Unfocused</textcolor>
   </include>
@@ -2066,6 +2067,10 @@
 
   <include name="PanelStreamVisible">
     <visible>Control.IsVisible(52)</visible>
+  </include>
+
+  <include name="GridViewVisible">
+    <visible>Control.IsVisible(59)</visible>
   </include>
 
   <constant name="PanelStreamDetailTextWidth">500</constant>

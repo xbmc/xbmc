@@ -14,6 +14,7 @@
     <include>PanelStream</include>
     <include>Coverflow</include>
     <include>WallStream</include>
+		<include>GridView</include>
     <!-- -->
 
     <control type="group">

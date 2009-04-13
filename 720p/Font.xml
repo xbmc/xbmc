@@ -5,7 +5,7 @@
     <font>
       <name>XLargeDefaultFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>32</size>
     </font>
 
@@ -19,105 +19,106 @@
     <font>
       <name>LargeDefaultFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>24</size>
     </font>
 
     <font>
       <name>LargeDefaultCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>24</size>
     </font>
 
     <font>
       <name>MediumDefaultFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>20</size>
     </font>
 
     <font>
       <name>MediumAltDefaultFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>20</size>
     </font>
 
     <font>
       <name>MediumDefaultCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>20</size>
     </font>
 
     <font>
       <name>MediumSmallDefaultFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>18</size>
     </font>
 
     <font>
       <name>MediumSmallAltDefaultFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>18</size>
     </font>
 
     <font>
       <name>MediumSmallDefaultCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>20</size>
     </font>
 
     <font>
       <name>DefaultFont</name>
-      <filename>LucidaGrande.dfont</filename>
+      <filename>HelveticaNeue.dfont</filename>
 			<variant>Regular</variant>
-      <size>14</size>
+      <size>18</size>
     </font>
 
     <font>
       <name>AltDefaultFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>16</size>
     </font>
 
     <font>
       <name>DefaultCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>16</size>
     </font>
 
     <font>
       <name>SmallDefaultFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>14</size>
     </font>
 
+		<!-- Popup dialog font and 02:12 duration -->
     <font>
       <name>SmallDefaultCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
-      <size>14</size>
+			<variant>Regular</variant>
+      <size>15</size>
     </font>
 
     <font>
       <name>SmallerDefaultFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>12</size>
     </font>
 
     <font>
       <name>SmallerDefaultCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>12</size>
     </font>
 
@@ -164,11 +165,20 @@
       <size>28</size>
     </font>
 
+		<!-- Unselected items on home screen -->
+		<font>
+      <name>HomeScreenUnselectedItems</name>
+      <filename>HelveticaNeue.dfont</filename>
+			<variant>Condensed Bold</variant>
+      <size>25</size>
+    </font>
+    
+		<!-- InfoList titles -->
     <font>
       <name>MediumLargeTitleCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
 			<variant>Condensed Bold</variant>
-      <size>20</size>
+      <size>24</size>
     </font>
 
     <font>
@@ -192,11 +202,20 @@
       <size>21</size>
     </font>
 
+		<!-- Subtitle -->
     <font>
       <name>MediumTitleCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
-		<variant>Condensed Bold</variant>
-      <size>17</size>
+  		<variant>Condensed Bold</variant>
+      <size>22</size>
+    </font>
+
+		<!-- RSS Feeds -->
+    <font>
+      <name>RssFeedFont</name>
+      <filename>HelveticaNeue.dfont</filename>
+  		<variant>Light</variant>
+      <size>20</size>
     </font>
 
     <font>
@@ -223,8 +242,8 @@
     <font>
       <name>SmallTitleCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
-      <size>15</size>
+			<variant>Regular</variant>
+      <size>18</size>
     </font>
 
     <font>
@@ -266,7 +285,7 @@
     <font>
       <name>HomeMenuInfoFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Light</variant>
+			<variant>Regular</variant>
       <size>20</size>
     </font>
 
@@ -274,37 +293,37 @@
     <font>
       <name>HomeSubMenuFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>18</size>
     </font>
 
-<!-- Video Fonts -->
+		<!-- Video Fonts -->
     <font>
       <name>VideoDetailXFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>30</size>
     </font>
 
     <font>
       <name>VideoDetailXCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<variant>Condensed Bold</variant>
+			<variant>Regular</variant>
       <size>30</size>
     </font>
 
-<!-- Keyboard Focus Font -->
+		<!-- Keyboard Focus Font -->
     <font>
       <name>KeyboardFocusFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<style>Condensed Bold</style>
+			<style>Regular</style>
       <size>26</size>
     </font>
 
     <font>
       <name>KeyboardFocusCapsFont</name>
       <filename>HelveticaNeue.dfont</filename>
-			<style>Condensed Bold</style>
+			<style>Regular</style>
       <size>26</size>
     </font>
 
@@ -459,6 +478,12 @@
     </font>
 
     <font>
+      <name>HomeScreenUnselectedItems</name>
+      <filename>Arial.ttf</filename>
+      <size>28</size>
+    </font>
+
+    <font>
       <name>MediumLargeTitleCapsFont</name>
       <filename>Arial.ttf</filename>
       <size>28</size>
@@ -481,6 +506,12 @@
       <filename>Arial.ttf</filename>
       <size>21</size>
     </font>
+
+		<font>
+		  <name>RssFeedFont</name>
+		  <filename>Arial.ttf</filename>
+		  <size>21</size>
+		</font>
 
     <font>
       <name>MediumTitleCapsFont</name>
@@ -732,6 +763,12 @@
 	      <size>28</size>
 	    </font>
 
+			<font>
+			  <name>HomeScreenUnselectedItems</name>
+			  <filename>TitleCaps.ttf</filename>
+			  <size>28</size>
+			</font>
+
 	    <font>
 	      <name>MediumLargeTitleCapsFont</name>
 	      <filename>TitleCaps.ttf</filename>
@@ -755,6 +792,12 @@
 	      <filename>Title.ttf</filename>
 	      <size>21</size>
 	    </font>
+
+			<font>
+			  <name>RssFeedFont</name>
+			  <filename>TitleCaps.ttf</filename>
+			  <size>21</size>
+			</font>
 
 	    <font>
 	      <name>MediumTitleCapsFont</name>

@@ -1521,7 +1521,7 @@
             <info>ListItem.Label</info>
             <align>right</align>
             <aligny>center</aligny>
-            <font>MediumLargeTitleCapsFont</font>
+            <font>HomeScreenUnselectedItems</font>
             <textcolor>HomeMain2</textcolor>
             <shadowcolor>HomeShadow</shadowcolor>
           </control>
@@ -1752,7 +1752,7 @@
         <posx>30</posx>
         <posy>10</posy>
         <width>1210</width>
-        <font>MediumTitleCapsFont</font>
+        <font>RssFeedFont</font>
         <urlset>1</urlset>
         <textcolor>Highlighted</textcolor>
         <headlinecolor>Focused</headlinecolor>
