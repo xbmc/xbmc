@@ -923,7 +923,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13012">Beenden</string>
   <string id="13013">Neustart</string>
   <string id="13014">Minimieren</string>
-  <string id="13020">Ist noch eine weitere Sitzung aktiv (evt. SSH)? </string>
+  <string id="13020">Ist noch eine weitere Sitzung aktiv (evtl. SSH)? </string>
   <string id="13021">Wechselfestplatte wurde angeschlossen</string>
   <string id="13022">Gerät wurde nicht sicher entfernt</string>
   <string id="13023">Gerät wurde erfolgreich entfernt</string>
@@ -1123,7 +1123,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13410">Last.fm einschalten</string>
   <string id="13411">Minimale Lüftergeschwindigkeit</string>
   <string id="13412">- RSS Feeds Inhalte von rechts nach links anzeigen</string>
-  <string id="13413">Downloading</string>
+  <string id="13413">Herunterladen</string>
   <string id="13414">Ausblenden von Interpreten die nur in Zusammenstellungen vorhanden sind</string>
   <string id="13415">Render Methode</string>
   <string id="13416">Auto Erkennung</string>
@@ -1725,8 +1725,8 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20405">Episoden-Lesez. entfernen</string>
   <string id="20406">Episoden-Lesez. setzen</string>
   <string id="20407">Scraper Einstellungen</string>
-  <string id="20408">Downloading Musik Video Information</string>
-  <string id="20409">Downloading TV Serien Information</string>
+  <string id="20408">Musik Video Informationen werden geladen...</string>
+  <string id="20409">TV-Serien Informationen werden geladen...</string>
   <string id="20410">Trailer</string>
   <string id="20411">Reduzieren</string>
   <string id="20412">TV-Serien reduzieren</string>
@@ -1927,7 +1927,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="22009">OpenGL Version: </string>
   <string id="22010">GPU Temperatur:</string>
   <string id="22011">CPU Temperatur:</string>
-  <string id="22012">Gesammter Speicher</string>
+  <string id="22012">Gesamter Speicher</string>
   <string id="22013">Profil Daten</string>
   <string id="22014">Dimmen, wenn die Videowiedergabe pausiert wird</string>
   <string id="22015">Alle Aufnahmen</string>
