@@ -38,9 +38,11 @@ distribution.
 #include <string.h>
 #include <assert.h>
 
-// Help out windows:
+// Help out windows (but don't mess up OSX):
+#ifndef __APPLE__
 #if defined( _DEBUG ) && !defined( DEBUG )
 #define DEBUG
+#endif
 #endif
 
 #define TIXML_USE_STL
