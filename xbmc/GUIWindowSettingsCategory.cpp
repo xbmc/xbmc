@@ -2225,14 +2225,8 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
     else*/
     {
       g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
-      g_network.Deinitialize();
-      g_network.Initialize(g_guiSettings.GetInt("network.assignment"),
-        g_guiSettings.GetString("network.ipaddress").c_str(),
-        g_guiSettings.GetString("network.subnet").c_str(),
-        g_guiSettings.GetString("network.gateway").c_str(),
-        g_guiSettings.GetString("network.dns").c_str());
+      g_network.SetupNetwork();
     }
-
 
     // update our settings variables    
     m_iNetworkAssignment = g_guiSettings.GetInt("network.assignment");

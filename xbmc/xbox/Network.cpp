@@ -36,7 +36,7 @@
 CNetwork g_network;
 
 // Time to wait before we give up on network init
-#define WAIT_TIME 5000
+#define WAIT_TIME 10000
 
 #ifdef _XBOX
 static char* inet_ntoa (struct in_addr in)
@@ -214,7 +214,7 @@ bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const cha
   {
     m_networkinfo.DHCP = true;    
     dashconfig = !TranslateConfig(m_networkinfo, params);
-    CLog::Log(LOGNOTICE, "use DHCP");    
+    CLog::Log(LOGNOTICE, "Network: Using DHCP IP settings");
   }
   else if (iAssignment == NETWORK_STATIC)
   {
@@ -225,12 +225,12 @@ bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const cha
     strcpy(m_networkinfo.DNS1, szNameServer);
 
     dashconfig = !TranslateConfig(m_networkinfo, params);
-    CLog::Log(LOGNOTICE, "use static ip");
+    CLog::Log(LOGNOTICE, "Network: Using static IP settings");
   }
   else
   {
     dashconfig = true;
-    CLog::Log(LOGWARNING, "use dashboard");
+    CLog::Log(LOGNOTICE, "Network: Using dashboard IP settings");
   }
 
   /* configure addresses */  
@@ -338,13 +338,13 @@ DWORD CNetwork::UpdateState()
 
   if( m_lastlink != dwLink || m_laststate != dwState )
   {
-    if( m_networkup )
+    if (m_networkup)
       NetworkDown();
 
     m_lastlink = dwLink;
     m_laststate = dwState;
 
-    if (dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC)
+    if ((dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC) && !(dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || dwState & XNET_GET_XNADDR_PENDING))
       NetworkUp();
     
     LogState();
@@ -371,9 +371,9 @@ bool CNetwork::CheckNetwork(int count)
 
     m_netRetryCounter=0;
     // In case the network failed, try to set it up again
-    if ((dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || !IsInited()) && IsEthernetConnected())
+    if ((dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || !IsInited()) && IsEthernetConnected() && !(dwState & XNET_GET_XNADDR_PENDING))
     {
-      CLog::Log(LOGDEBUG, "%s - Network error. Trying re-setup", __FUNCTION__);
+      CLog::Log(LOGWARNING, "%s - Network error. Trying re-setup", __FUNCTION__);
   
       SetupNetwork();
       return true;
@@ -387,15 +387,15 @@ bool CNetwork::CheckNetwork(int count)
 
 bool CNetwork::SetupNetwork()
 {
-  CLog::Log(LOGDEBUG, "%s - Setting up network...", __FUNCTION__);
-  
   // Deinit first, just in case
   Deinitialize();
   
   // setup network based on our settings
-  // network will start it's init procedure but ethernet must be connected
+  // network will start its init procedure but ethernet must be connected
   if (IsEthernetConnected())
   {
+    CLog::Log(LOGDEBUG, "%s - Setting up network...", __FUNCTION__);
+    
     Initialize(g_guiSettings.GetInt("network.assignment"),
       g_guiSettings.GetString("network.ipaddress").c_str(),
       g_guiSettings.GetString("network.subnet").c_str(),
@@ -405,6 +405,7 @@ bool CNetwork::SetupNetwork()
   }
   
   // Init failed
+  CLog::Log(LOGDEBUG, "%s - Not setting up network as ethernet is not connected!", __FUNCTION__);
   return false;
 }
 
@@ -429,7 +430,8 @@ bool CNetwork::WaitForSetup(DWORD timeout)
   do
   {
     DWORD dwState = UpdateState();
-    if ((dwState & XNET_GET_XNADDR_STATIC || dwState & XNET_GET_XNADDR_DHCP) && IsInited())
+    
+    if (IsInited() && (dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC) && !(dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || dwState & XNET_GET_XNADDR_PENDING))
       return true;
     
     Sleep(100);
@@ -487,7 +489,7 @@ void CNetwork::LogState()
     CLog::Log(LOGINFO, __FUNCTION__" - Link: 100 mbps");
 
   if ( dwLink & XNET_ETHERNET_LINK_10MBPS )
-    CLog::Log(LOGINFO, __FUNCTION__" - Link: 10bmps");
+    CLog::Log(LOGINFO, __FUNCTION__" - Link: 10 mbps");
 
   if ( dwState & XNET_GET_XNADDR_DNS )
     CLog::Log(LOGINFO, __FUNCTION__" - State: dns");
@@ -508,7 +510,7 @@ void CNetwork::LogState()
     CLog::Log(LOGINFO, __FUNCTION__" - State: error");
 
   if ( dwState & XNET_GET_XNADDR_PPPOE )
-    CLog::Log(LOGINFO, __FUNCTION__" - State: ppoe");
+    CLog::Log(LOGINFO, __FUNCTION__" - State: pppoe");
 
   if ( dwState & XNET_GET_XNADDR_STATIC )
     CLog::Log(LOGINFO, __FUNCTION__" - State: static");
