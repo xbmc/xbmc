@@ -49,6 +49,23 @@ CScraperParser::CScraperParser()
   m_SearchStringEncoding = "UTF-8";
 }
 
+CScraperParser::CScraperParser(const CScraperParser& parser)
+{
+  *this = parser;
+}
+
+CScraperParser &CScraperParser::operator=(const CScraperParser &parser)
+{
+  if (this != &parser)
+  { // TODO: This appears non-optimal.
+    //       Perhaps we can just copy the XML object (m_document) rather than re-parsing the XML from disk?
+    //       (or at least check if parser.m_document is non-NULL first)
+    m_document = NULL;
+    Load(parser.m_xmlfile);
+  }
+  return *this;
+}
+
 CScraperParser::~CScraperParser()
 {
   Clear();
@@ -60,7 +77,7 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_name = m_content = NULL;
+  m_name = m_content = m_language = NULL;
   m_settings = NULL;
 }
 
@@ -69,6 +86,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
   Clear();
 
   m_document = new TiXmlDocument(strXMLFile);
+  m_xmlfile = strXMLFile;
 
   if (!m_document)
     return false;
