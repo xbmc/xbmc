@@ -664,7 +664,7 @@
       <include>PanelStreamVisible</include>
       <include>MediaViewFade</include>
 
-      <control type="panel" id="59">
+      <control type="panel" id="52">
         <viewtype label="Panel Stream">panel</viewtype>
         <onup>52</onup>
         <ondown>52</ondown>

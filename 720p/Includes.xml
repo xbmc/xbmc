@@ -2156,9 +2156,11 @@
     <visible>Control.IsVisible(52)</visible>
   </include>
 
+<!--
   <include name="GridViewVisible">
     <visible>Control.IsVisible(59)</visible>
   </include>
+-->
 
   <constant name="PanelStreamDetailTextWidth">500</constant>
 
