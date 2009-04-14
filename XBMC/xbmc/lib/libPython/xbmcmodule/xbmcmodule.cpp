@@ -639,7 +639,7 @@ namespace PYXBMC
   {
     static const char *keywords[] = { "filename", "fatX", NULL };
     PyObject *pObjectText;
-    bool bIsFatX = true;
+    char bIsFatX = true;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
