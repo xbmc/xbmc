@@ -225,10 +225,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
          }
       }
    }
-
-   if (line)
-     free(line);
-
+   free(line);
    fclose(fp);
 #endif
 
@@ -321,10 +318,7 @@ void CNetworkLinux::queryInterfaceList()
      m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
       }
    }
-
-   if (line)
-     free(line);
-
+   free(line);
    fclose(fp);
 #endif
 }
@@ -618,9 +612,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
          else if (tokens[0].Equals("auto") || tokens[0].Equals("iface") || tokens[0].Equals("mapping")) break;
       }
    }
-
-   if (line)
-     free(line);
+   free(line);
 
    // Fallback in case wpa-proto is not set
    if (key != "" && encryptionMode == ENC_NONE)
@@ -697,9 +689,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
         fprintf(fw, "%s", line);
       }
    }
-
-   if (line)
-     free(line);
+   free(line);
 
    if (!dataWritten && assignment != NETWORK_DISABLED)
    {
