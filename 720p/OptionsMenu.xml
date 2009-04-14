@@ -582,9 +582,7 @@
           <description>Setup Options</description>
           <label>$LOCALIZE[31713]</label>
           <include>OMTitleItem</include>
-          <!--
-          <visible>!Window.IsVisible(MyMusicFiles)</visible>
-          -->
+          <visible>!Window.IsVisible(MyPrograms)</visible>
         </control>
 
 <!--
