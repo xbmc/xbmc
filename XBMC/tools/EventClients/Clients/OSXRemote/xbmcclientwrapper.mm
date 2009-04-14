@@ -204,9 +204,8 @@ void XBMCClientWrapperImpl::sendButton(eATVClientEvent f_event){
   }
   assert(lp_packet);
   CAddress addr(m_address.c_str());
-// TODO: add GetButtonCode to CPacketButton?
   if(m_verbose_mode)
-   NSLog(@"XBMCClientWrapperImpl::sendButton sending button %i", lp_packet->GetButtonCode());
+   NSLog(@"XBMCClientWrapperImpl::sendButton sending button %i down:%i up:%i", lp_packet->GetButtonCode(), lp_packet->GetFlags()&BTN_DOWN,lp_packet->GetFlags()&BTN_UP );
   lp_packet->Send(m_socket, addr);  
 }
 
