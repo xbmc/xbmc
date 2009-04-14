@@ -524,7 +524,7 @@ void defaultTraceHandler(int level, char_t *buf)
  * embedded in an ASP page. See web/asp.asp for usage. Set browser to 
  * "localhost/asp.asp" to test.
  */
-int XBMCAspTest(int eid, webs_t wp, int argc, char_t **argv)
+int XbmcAspTest(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t	*name, *address;
 
@@ -538,7 +538,7 @@ int XBMCAspTest(int eid, webs_t wp, int argc, char_t **argv)
 /* Test form for posted data (in-memory CGI). This will be called when the
  * form in web/forms.asp is invoked. Set browser to "localhost/forms.asp" to test.
  */
-void XBMCFormTest(webs_t wp, char_t *path, char_t *query)
+void XbmcFormTest(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*name, *address;
 
