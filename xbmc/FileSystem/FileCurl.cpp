@@ -1089,8 +1089,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
 
         // Reset all the stuff like we would in Disconnect()
         m_buffer.Clear();
-        if (m_overflowBuffer)
-          free(m_overflowBuffer);
+        free(m_overflowBuffer);
         m_overflowBuffer = NULL;
         m_overflowSize = 0;
 
