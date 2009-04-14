@@ -38,7 +38,6 @@
 - (NSDictionary*) cookieToButtonMapping;
 - (IOHIDQueueInterface**) queue;
 - (IOHIDDeviceInterface**) hidDeviceInterface;
-- (void) handleEventWithCookieString: (NSString*) cookieString sumOfValues: (SInt32) sumOfValues; 
 - (void) removeNotifcationObserver;
 - (void) remoteControlAvailable:(NSNotification *)notification;
 
@@ -263,53 +262,6 @@ cleanup:
 	return cookieToButtonMapping;
 }
 
-- (NSString*) validCookieSubstring: (NSString*) cookieString {
-	if (cookieString == nil || [cookieString length] == 0) return nil;
-	NSEnumerator* keyEnum = [[self cookieToButtonMapping] keyEnumerator];
-	NSString* key;
-	while(key = [keyEnum nextObject]) {
-		NSRange range = [cookieString rangeOfString:key];
-		if (range.location == 0) return key; 
-	}
-	return nil;
-}
-
-- (void) handleEventWithCookieString: (NSString*) cookieString sumOfValues: (SInt32) sumOfValues {
-	/*
-	if (previousRemainingCookieString) {
-		cookieString = [previousRemainingCookieString stringByAppendingString: cookieString];
-		NSLog(@"New cookie string is %@", cookieString);
-		[previousRemainingCookieString release], previousRemainingCookieString=nil;							
-	}*/
-	if (cookieString == nil || [cookieString length] == 0) return;
-  //NSLog(@"New cookie string is %@", cookieString);  
-  
-	NSNumber* buttonId = [[self cookieToButtonMapping] objectForKey: cookieString];
-	if (buttonId != nil) {
-		[self sendRemoteButtonEvent: [buttonId intValue] pressedDown: (sumOfValues>0)];
-	} else {
-		// let's see if a number of events are stored in the cookie string. this does
-		// happen when the main thread is too busy to handle all incoming events in time.
-		NSString* subCookieString;
-		NSString* lastSubCookieString=nil;
-		while(subCookieString = [self validCookieSubstring: cookieString]) {
-			cookieString = [cookieString substringFromIndex: [subCookieString length]];
-			lastSubCookieString = subCookieString;
-			if (processesBacklog) [self handleEventWithCookieString: subCookieString sumOfValues:sumOfValues];
-		}
-		if (processesBacklog == NO && lastSubCookieString != nil) {
-			// process the last event of the backlog and assume that the button is not pressed down any longer.
-			// The events in the backlog do not seem to be in order and therefore (in rare cases) the last event might be 
-			// a button pressed down event while in reality the user has released it. 
-			// NSLog(@"processing last event of backlog");
-			[self handleEventWithCookieString: lastSubCookieString sumOfValues:0];
-		}
-		if ([cookieString length] > 0) {
-			NSLog(@"Unknown button for cookiestring %@", cookieString);
-		}		
-	}
-}
-
 - (void) removeNotifcationObserver {
 	[[NSDistributedNotificationCenter defaultCenter] removeObserver:self name:FINISHED_USING_REMOTE_CONTROL_NOTIFICATION object:nil];
 }
@@ -334,8 +286,9 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 	HIDRemoteControlDevice* remote = (HIDRemoteControlDevice*)target;	
 	IOHIDEventStruct event;	
 	AbsoluteTime 	 zeroTime = {0,0};
-	NSMutableString* cookieString = [NSMutableString string];
+	NSMutableString* cookieString = [NSMutableString stringWithCapacity: 10];
 	SInt32			 sumOfValues = 0;
+  NSNumber* lastSubButtonId = nil;
 	while (result == kIOReturnSuccess)
 	{
 		result = (*[remote queue])->getNextEvent([remote queue], &event, zeroTime, 0);		
@@ -347,9 +300,31 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 			sumOfValues+=event.value;
 			[cookieString appendString:[NSString stringWithFormat:@"%d_", event.elementCookie]];
 		}
+    //check if this is a valid button
+    NSNumber* buttonId = [[remote cookieToButtonMapping] objectForKey: cookieString];
+    if (buttonId != nil){
+      if([remote processesBacklog]) {
+        //send the button
+        [remote sendRemoteButtonEvent: [buttonId intValue] pressedDown: (sumOfValues>0)];
+        //reset
+      } else {
+        //store button for later use
+        lastSubButtonId = buttonId;
+      }
+      sumOfValues = 0;
+      cookieString = [NSMutableString stringWithCapacity: 10];
+    }
 	}
-	[remote handleEventWithCookieString: cookieString sumOfValues: sumOfValues];
-	
+  if ([remote processesBacklog] == NO && lastSubButtonId != nil) {
+    // process the last event of the backlog and assume that the button is not pressed down any longer.
+    // The events in the backlog do not seem to be in order and therefore (in rare cases) the last event might be 
+    // a button pressed down event while in reality the user has released it. 
+    // NSLog(@"processing last event of backlog");
+    [remote sendRemoteButtonEvent: [lastSubButtonId intValue] pressedDown: (sumOfValues>0)];
+  }
+  if ([cookieString length] > 0) {
+    NSLog(@"Unknown button for cookiestring %@", cookieString);
+  }  
 	[pool release];
 }
 
