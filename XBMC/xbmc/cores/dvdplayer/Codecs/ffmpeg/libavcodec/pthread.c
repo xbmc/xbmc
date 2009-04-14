@@ -21,6 +21,11 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+#ifdef __gnu_linux__
+#define _GNU_SOURCE
+#endif
+
 #include <pthread.h>
 
 #include "avcodec.h"
@@ -50,7 +55,24 @@ static void* attribute_align_arg worker(void *v)
     int our_job = c->job_count;
     int thread_count = avctx->thread_count;
     int self_id;
-
+    
+#ifdef __gnu_linux__
+    /*thread scheduling workaround*/
+    volatile static int nr_threads = 0;
+    int nr_cpus;
+    cpu_set_t cpuset;
+    pthread_t thread = pthread_self();
+    
+    CPU_ZERO(&cpuset);
+    pthread_getaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+    nr_cpus = CPU_COUNT(&cpuset);
+    
+    CPU_ZERO(&cpuset);
+    CPU_SET(nr_threads++ % nr_cpus, &cpuset);
+    pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+    /*end thread scheduling workaround*/
+#endif
+    
     pthread_mutex_lock(&c->current_job_lock);
     self_id = c->current_job++;
     for (;;){
