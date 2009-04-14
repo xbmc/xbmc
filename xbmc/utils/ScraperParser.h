@@ -52,6 +52,7 @@ public:
   static void ClearCache();
 
 private:
+  bool LoadFromXML();
   void ReplaceBuffers(CStdString& strDest);
   void ParseExpression(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend);
   void ParseNext(TiXmlElement* element);
@@ -61,7 +62,6 @@ private:
 
   TiXmlDocument* m_document;
   TiXmlElement* m_pRootElement;
-  CStdString m_xmlfile;
 
   const char* m_name;
   const char* m_content;
