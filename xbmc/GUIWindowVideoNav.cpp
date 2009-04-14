@@ -1638,3 +1638,21 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
 }
+
+bool CGUIWindowVideoNav::OnClick(int iItem)
+{
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
+  {
+    if (!DeleteItem(item.get(), true))
+      return true;
+
+    // update list
+    m_vecItems->RemoveDiscCache();
+    Update(m_vecItems->m_strPath);
+    m_viewControl.SetSelectedItem(iItem);
+    return true;
+  }
+
+  return CGUIWindowVideoBase::OnClick(iItem);
+}
