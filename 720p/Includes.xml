@@ -1990,6 +1990,27 @@
     </control>
   </include>
 
+  <include name="ListViewItemLayoutWide">
+    <control type="image">
+      <include>MediaItemBGWide</include>
+    </control>
+    <control type="label">
+      <include>MediaItemMainInfoNFWide</include>
+    </control>
+    <control type="image">
+      <include>TVEpisodeItemOverlayWide</include>
+      <include>MediaItemNFFade</include>
+    </control>
+    <control type="label">
+      <visible>!IsEmpty(ListItem.Overlay)</visible>
+      <include>InfoListItemDetailInfoNFWide</include>
+    </control>
+    <control type="label">
+      <visible>IsEmpty(ListItem.Overlay)</visible>
+      <include>MediaItemDetailInfoNFWide</include>
+    </control>
+  </include>
+
   <include name="ListViewFocusedLayout">
     <control type="image">
       <include>MediaItemBG</include>
@@ -2035,6 +2056,51 @@
     </control>
   </include>
 
+  <include name="ListViewFocusedLayoutWide">
+    <control type="image">
+      <include>MediaItemBG</include>
+    </control>
+    <control type="image">
+      <include>MediaItemFocusBGWide</include>
+    </control>
+    <control type="image">
+      <visible>!IsEmpty(ListItem.Label2)</visible>
+      <include>MediaItemDetailBGWide</include>
+    </control>
+    <control type="label">
+      <include>MediaItemMainInfoNFWide</include>
+      <include>MediaListItemFadeOut</include>
+    </control>
+    <control type="label">
+      <visible>!IsEmpty(ListItem.Overlay)</visible>
+      <include>InfoListItemDetailInfoNFWide</include>
+      <include>MediaListItemFadeOut</include>
+    </control>
+    <control type="label">
+      <visible>IsEmpty(ListItem.Overlay)</visible>
+      <include>MediaItemDetailInfoNFWide</include>
+      <include>MediaListItemFadeOut</include>
+    </control>
+    <control type="label">
+      <include>MediaItemMainInfoFOWide</include>
+      <include>MediaListItemFade</include>
+    </control>
+    <control type="image">
+      <include>TVEpisodeItemOverlayWide</include>
+      <include>MediaListItemFade</include>
+    </control>
+    <control type="label">
+      <visible>!IsEmpty(ListItem.Overlay)</visible>
+      <include>InfoListItemDetailInfoFOWide</include>
+      <include>MediaListItemFade</include>
+    </control>
+    <control type="label">
+      <visible>IsEmpty(ListItem.Overlay)</visible>
+      <include>MediaItemDetailInfoFOWide</include>
+      <include>MediaListItemFade</include>
+    </control>
+  </include>
+
   <include name="InfoListVisible">
     <visible>Control.IsVisible(56)</visible>
   </include>
@@ -2056,13 +2122,33 @@
     <label>$INFO[ListItem.Label2]</label>
   </include>
 
+  <include name="InfoListItemDetailInfoWide">
+    <posx>656</posx>
+    <posy>0</posy>
+    <width>104</width>
+    <height>42</height>
+    <align>left</align>
+    <aligny>center</aligny>
+    <label>$INFO[ListItem.Label2]</label>
+  </include>
+
   <include name="InfoListItemDetailInfoNF">
     <include>InfoListItemDetailInfo</include>
     <include>MediaItemDetailFontNF</include>
   </include>
 
+  <include name="InfoListItemDetailInfoNFWide">
+    <include>InfoListItemDetailInfoWide</include>
+    <include>MediaItemDetailFontNF</include>
+  </include>
+
   <include name="InfoListItemDetailInfoFO">
     <include>InfoListItemDetailInfo</include>
+    <include>MediaItemDetailFontFO</include>
+  </include>
+
+  <include name="InfoListItemDetailInfoFOWide">
+    <include>InfoListItemDetailInfoWide</include>
     <include>MediaItemDetailFontFO</include>
   </include>
 
@@ -2680,6 +2766,14 @@
   </include>
 
   <include name="MediaItemBGWide">
+    <posx>0</posx>
+    <posy>-6</posy>
+    <width>879</width>
+    <height>54</height>
+    <texture>MediaItemBG.png</texture>
+  </include>
+
+  <include name="MediaItemBGWide">
     <posx>-70</posx>
     <width>1580</width>
     <include>MediaItemBG</include>
@@ -2712,8 +2806,22 @@
     <label>$INFO[ListItem.Label]</label>
   </include>
 
+  <include name="MediaItemMainInfoWide">
+    <posx>60</posx>
+    <width>556</width>
+    <height>42</height>
+    <align>left</align>
+    <aligny>center</aligny>
+    <label>$INFO[ListItem.Label]</label>
+  </include>
+
   <include name="MediaItemMainInfoNF">
     <include>MediaItemMainInfo</include>
+    <include>MediaItemMainFontNF</include>
+  </include>
+
+  <include name="MediaItemMainInfoNFWide">
+    <include>MediaItemMainInfoWide</include>
     <include>MediaItemMainFontNF</include>
   </include>
 
@@ -2722,10 +2830,24 @@
     <include>MediaItemMainFontFO</include>
   </include>
 
+  <include name="MediaItemMainInfoFOWide">
+    <include>MediaItemMainInfoWide</include>
+    <include>MediaItemMainFontFO</include>
+  </include>
+
   <include name="MediaItemFocusBG">
     <posx>44</posx>
     <posy>0</posy>
     <width>595</width>
+    <height>44</height>
+    <texture aspectratio="stretch" flipx="true">MenuItemFO.png</texture>
+    <include>MediaListItemSlide</include>
+  </include>
+
+  <include name="MediaItemFocusBGWide">
+    <posx>44</posx>
+    <posy>0</posy>
+    <width>795</width>
     <height>44</height>
     <texture aspectratio="stretch" flipx="true">MenuItemFO.png</texture>
     <include>MediaListItemSlide</include>
@@ -2740,8 +2862,24 @@
     <include>MediaListItemSlide</include>
   </include>
 
+  <include name="MediaItemDetailBGWide">
+    <posx>622</posx>
+    <posy>10</posy>
+    <width>214</width>
+    <height>24</height>
+    <texture border="13,0,0,0">MediaItemDetailBG.png</texture>
+    <include>MediaListItemSlide</include>
+  </include>
+
   <include name="MediaItemDetailInfo">
     <include>MediaItemDetailInfoDims</include>
+    <align>left</align>
+    <aligny>center</aligny>
+    <label>$INFO[ListItem.Label2]</label>
+  </include>
+
+  <include name="MediaItemDetailInfoWide">
+    <include>MediaItemDetailInfoDimsWide</include>
     <align>left</align>
     <aligny>center</aligny>
     <label>$INFO[ListItem.Label2]</label>
@@ -2752,8 +2890,18 @@
     <include>MediaItemDetailFontNF</include>
   </include>
 
+  <include name="MediaItemDetailInfoNFWide">
+    <include>MediaItemDetailInfoWide</include>
+    <include>MediaItemDetailFontNF</include>
+  </include>
+
   <include name="MediaItemDetailInfoFO">
     <include>MediaItemDetailInfo</include>
+    <include>MediaItemDetailFontFO</include>
+  </include>
+
+  <include name="MediaItemDetailInfoFOWide">
+    <include>MediaItemDetailInfoWide</include>
     <include>MediaItemDetailFontFO</include>
   </include>
 
@@ -3047,6 +3195,11 @@
 
   <include name="TVEpisodeItemOverlay">
     <include>TVEpisodeItemOverlayDims</include>
+    <info>ListItem.Overlay</info>
+  </include>
+
+  <include name="TVEpisodeItemOverlayWide">
+    <include>TVEpisodeItemOverlayDimsWide</include>
     <info>ListItem.Overlay</info>
   </include>
 

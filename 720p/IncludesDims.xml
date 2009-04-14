@@ -1494,6 +1494,12 @@
     <height>42</height>
   </include>
 
+  <include name="MediaItemDetailInfoDimsWide">
+    <posx>636</posx>
+    <width>124</width>
+    <height>42</height>
+  </include>
+
 <!-- TV Wide -->
   <include name="TVWideIconDims">
     <posx>-6</posx>
@@ -1666,6 +1672,13 @@
 
   <include name="TVEpisodeItemOverlayDims">
     <posx>428</posx>
+    <posy>10</posy>
+    <width>16</width>
+    <height>25</height>
+  </include>
+
+  <include name="TVEpisodeItemOverlayDimsWide">
+    <posx>628</posx>
     <posy>10</posy>
     <width>16</width>
     <height>25</height>

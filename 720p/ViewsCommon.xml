@@ -20,7 +20,7 @@
         <control type="image">
           <posx>-8</posx>
           <posy>-8</posy>
-          <width>636</width>
+          <width>436</width>
           <height>364</height>
           <info>ListItem.Icon</info>
           <aspectratio aligny="bottom">keep</aspectratio>
@@ -29,7 +29,7 @@
         </control>
         <control type="image">
           <posy>348</posy>
-          <width>620</width>
+          <width>420</width>
           <height>348</height>
           <info>ListItem.Icon</info>
           <texture flipy="true" diffuse="DiffuseMirror.png" />
@@ -42,7 +42,7 @@
     <control type="group">
       <include>ListViewVisible</include>
       <include>MediaViewFade</include>
-      <posx>670</posx>
+      <posx>460</posx>
       <posy>80</posy>
 
       <control type="list" id="50">
@@ -51,7 +51,7 @@
         <include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconsListView</include>
         <posx>10</posx>
         <posy>180</posy>
-        <width>640</width>
+        <width>840</width>
         <height>378</height>
         <scrolltime>200</scrolltime>
         <pagecontrol>61</pagecontrol>
@@ -60,14 +60,13 @@
         <onup>50</onup>
         <ondown>50</ondown>
 
-        <itemlayout condition="![Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="640" height="42">
-          <include>ListViewItemLayout</include>
+        <itemlayout condition="![Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="840" height="42">
+          <include>ListViewItemLayoutWide</include>
         </itemlayout>
 
-        <focusedlayout condition="![Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="640" height="42">
-          <include>ListViewFocusedLayout</include>
+        <focusedlayout condition="![Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="840" height="42">
+          <include>ListViewFocusedLayoutWide</include>
         </focusedlayout>
-
 
         <itemlayout condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="1280" height="42">
           <control type="image">
@@ -75,22 +74,22 @@
           </control>
           <control type="label">
             <width>1026</width>
-            <include>MediaItemMainInfoNF</include>
+            <include>MediaItemMainInfoNFWide</include>
           </control>
           <control type="image">
             <posx>1128</posx>
-            <include>TVEpisodeItemOverlay</include>
+            <include>TVEpisodeItemOverlayWide</include>
             <include>MediaItemNFFade</include>
           </control>
           <control type="label">
             <visible>!IsEmpty(ListItem.Overlay)</visible>
             <posx>1154</posx>
-            <include>InfoListItemDetailInfoNF</include>
+            <include>InfoListItemDetailInfoNFWide</include>
           </control>
           <control type="label">
             <visible>IsEmpty(ListItem.Overlay)</visible>
             <posx>1154</posx>
-            <include>MediaItemDetailInfoNF</include>
+            <include>MediaItemDetailInfoNFWide</include>
           </control>
         </itemlayout>
 
@@ -106,45 +105,45 @@
           <control type="image">
             <visible>!IsEmpty(ListItem.Label2)</visible>
             <posx>1122</posx>
-            <include>MediaItemDetailBG</include>
+            <include>MediaItemDetailBGWide</include>
           </control>
           <control type="label">
             <width>1026</width>
-            <include>MediaItemMainInfoNF</include>
+            <include>MediaItemMainInfoNFWide</include>
             <include>MediaListItemFadeOut</include>
           </control>
           <control type="label">
             <visible>!IsEmpty(ListItem.Overlay)</visible>
             <posx>1154</posx>
-            <include>InfoListItemDetailInfoNF</include>
+            <include>InfoListItemDetailInfoNFWide</include>
             <include>MediaListItemFadeOut</include>
           </control>
           <control type="label">
             <visible>IsEmpty(ListItem.Overlay)</visible>
             <posx>1154</posx>
-            <include>MediaItemDetailInfoNF</include>
+            <include>MediaItemDetailInfoNFWide</include>
             <include>MediaListItemFadeOut</include>
           </control>
           <control type="label">
             <width>1026</width>
-            <include>MediaItemMainInfoFO</include>
+            <include>MediaItemMainInfoFOWide</include>
             <include>MediaListItemFade</include>
           </control>
           <control type="image">
             <posx>1128</posx>
-            <include>TVEpisodeItemOverlay</include>
+            <include>TVEpisodeItemOverlayWide</include>
             <include>MediaListItemFade</include>
           </control>
           <control type="label">
             <visible>!IsEmpty(ListItem.Overlay)</visible>
             <posx>1154</posx>
-            <include>InfoListItemDetailInfoFO</include>
+            <include>InfoListItemDetailInfoFOWide</include>
             <include>MediaListItemFade</include>
           </control>
           <control type="label">
             <visible>IsEmpty(ListItem.Overlay)</visible>
             <posx>1154</posx>
-            <include>MediaItemDetailInfoFO</include>
+            <include>MediaItemDetailInfoFOWide</include>
             <include>MediaListItemFade</include>
           </control>
         </focusedlayout>
