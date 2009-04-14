@@ -2369,6 +2369,7 @@ const BUILT_IN commands[] = {
   { "LastFM.Love",                false,  "Add the current playing last.fm radio track to the last.fm loved tracks" },
   { "LastFM.Ban",                 false,  "Ban the current playing last.fm radio track" },
   { "Container.Refresh",          false,  "Refresh current listing" },
+  { "Container.Update",           false,  "Update current listing" },
   { "Container.NextViewMode",     false,  "Move to the next view type (and refresh the listing)" },
   { "Container.PreviousViewMode", false,  "Move to the previous view type (and refresh the listing)" },
   { "Container.SetViewMode",      true,   "Move to the view with the given id" },
@@ -3338,8 +3339,26 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("container.refresh"))
   { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
     //       This shouldn't stop a dialog intercepting it though.
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE);
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
     message.SetStringParam(strParameterCaseIntact);
+    g_graphicsContext.SendMessage(message);
+  }  
+  else if (execute.Equals("container.update"))
+  {
+    bool resetHistory = false;
+    CStdString path = strParameterCaseIntact;
+    if (!strParameterCaseIntact.IsEmpty() && execute.Equals("container.update"))
+    {
+      int pos = parameter.find_last_of(",");
+      if (pos >= 0)
+      {
+        resetHistory = parameter.Mid(pos+1).Equals("replace");
+        if (resetHistory)
+          path = strParameterCaseIntact.Left(pos);
+      }
+    }
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, resetHistory ? 1 : 0);
+    message.SetStringParam(path);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.nextviewmode"))
