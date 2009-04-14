@@ -139,7 +139,6 @@ private:
   void HandleNewVolume(CStorageDevice *dev);
 
   static bool DeviceFromVolumeUdi(const char *udi, CStorageDevice *device);
-  static std::vector<CStorageDevice> DeviceFromDriveUdi(const char *udi);
   static CCriticalSection m_lock;
 
   bool m_bMultipleJoysticksSupport;
