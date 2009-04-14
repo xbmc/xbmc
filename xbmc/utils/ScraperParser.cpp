@@ -51,17 +51,21 @@ CScraperParser::CScraperParser()
 
 CScraperParser::CScraperParser(const CScraperParser& parser)
 {
+  m_document = NULL;
+  m_SearchStringEncoding = "UTF-8";
   *this = parser;
 }
 
 CScraperParser &CScraperParser::operator=(const CScraperParser &parser)
 {
   if (this != &parser)
-  { // TODO: This appears non-optimal.
-    //       Perhaps we can just copy the XML object (m_document) rather than re-parsing the XML from disk?
-    //       (or at least check if parser.m_document is non-NULL first)
-    m_document = NULL;
-    Load(parser.m_xmlfile);
+  {
+    Clear();
+    if (parser.m_document)
+    {
+      m_document = new TiXmlDocument(*parser.m_document);
+      LoadFromXML();
+    }
   }
   return *this;
 }
@@ -86,58 +90,53 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
   Clear();
 
   m_document = new TiXmlDocument(strXMLFile);
-  m_xmlfile = strXMLFile;
 
   if (!m_document)
     return false;
 
   if (m_document->LoadFile())
-  {
-    m_pRootElement = m_document->RootElement();
-    CStdString strValue = m_pRootElement->Value();
-    if (strValue != "scraper")
-    {
-      delete m_document;
-      m_document = NULL;
-      m_pRootElement = NULL;
-      return false;
-    }
+    return LoadFromXML();
 
+  delete m_document;
+  m_document = NULL;
+  return false;
+}
+
+bool CScraperParser::LoadFromXML()
+{
+  if (!m_document)
+    return false;
+
+  m_pRootElement = m_document->RootElement();
+  CStdString strValue = m_pRootElement->Value();
+  if (strValue == "scraper")
+  {
     m_name = m_pRootElement->Attribute("name");
     m_content = m_pRootElement->Attribute("content");
     m_language = m_pRootElement->Attribute("language");
 
-    if (!m_name || !m_content) // FIXME
+    if (m_name && m_content) // FIXME
     {
-      delete m_document;
-      m_document = NULL;
-      m_pRootElement = NULL;
-      return false;
-    }
-    // check for known content
-    if (stricmp(m_content,"tvshows") && stricmp(m_content,"movies") && stricmp(m_content,"musicvideos") && stricmp(m_content,"albums"))
-    {
-      delete m_document;
-      m_document = NULL;
-      m_pRootElement = NULL;
-      return false;
-    }
-
-    TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
-    if (pChildElement)
-    {
-      if (!(m_SearchStringEncoding = pChildElement->Attribute("SearchStringEncoding")))
-        m_SearchStringEncoding = "UTF-8";
+      // check for known content
+      if ((0 == stricmp(m_content,"tvshows")) ||
+          (0 == stricmp(m_content,"movies")) ||
+          (0 == stricmp(m_content,"musicvideos")) ||
+          (0 == stricmp(m_content,"albums")))
+      {
+        TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
+        if (pChildElement)
+        {
+          if (!(m_SearchStringEncoding = pChildElement->Attribute("SearchStringEncoding")))
+            m_SearchStringEncoding = "UTF-8";
+        }
+        return true;
+      }
     }
   }
-  else
-  {
-    delete m_document;
-    m_document = NULL;
-    return false;
-  }
-
-  return true;
+  delete m_document;
+  m_document = NULL;
+  m_pRootElement = NULL;
+  return false;
 }
 
 void CScraperParser::ReplaceBuffers(CStdString& strDest)
