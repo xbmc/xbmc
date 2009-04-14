@@ -67,23 +67,33 @@ private:
   size_t m_BlockSize;
 };
 
+class IStreamFormatConverter
+{
+public:
+  virtual size_t Convert(unsigned char* pIn, size_t inLen, unsigned char* pOut, size_t outLen)  = 0; // Returns bytes in output 
+  virtual float GetOutputFactor() = 0; // Returns bytes output per bytes input 
+};
+
 class CSliceQueue
 {
 public:
   CSliceQueue(size_t sliceSize);
   virtual ~CSliceQueue();
-  void Push(audio_slice* pSlice);
   size_t AddData(void* pBuf, size_t bufLen);
   size_t GetData(void* pBuf, size_t bufLen);
   size_t GetTotalBytes() {return m_TotalBytes + m_RemainderSize;}
   void Clear();
+  void InstallConverter(int location, IStreamFormatConverter* pConverter);
 protected:
+  void Push(audio_slice* pSlice);
   audio_slice* Pop(); // Does not respect remainder, so it must be private
   CAtomicAllocator* m_pAllocator;
   lf_queue m_Queue;
   size_t m_TotalBytes;
   audio_slice* m_pPartialSlice;
   size_t m_RemainderSize;
+  IStreamFormatConverter* m_pInputFormatConverter;
+  IStreamFormatConverter* m_pOutputFormatConverter;
 };
 
 #endif //__SLICE_QUEUE_H__

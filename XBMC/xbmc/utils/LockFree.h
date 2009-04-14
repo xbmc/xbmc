@@ -22,6 +22,8 @@
 #ifndef __LOCK_FREE_H__
 #define __LOCK_FREE_H__
 
+#include "Atomics.h"
+
 #define SPINLOCK_ACQUIRE(l) while(cas(&l, 0, 1))
 #define SPINLOCK_RELEASE(l) l = 0
 

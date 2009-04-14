@@ -37,6 +37,35 @@ char* UInt32ToFourCC(UInt32* pVal) // NOT NULL TERMINATED! Modifies input value.
   return fourCC;
 }
 
+const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str)
+{
+  UInt32 formatId = desc.mFormatID;
+  char* fourCC = UInt32ToFourCC(&formatId);
+  
+  switch (desc.mFormatID)
+  {
+    case kAudioFormatLinearPCM:
+      str.Format("[%4.4s] %s%u Channel %u-bit %s (%uHz)", 
+                 fourCC,
+                 (desc.mFormatFlags & kAudioFormatFlagIsNonMixable) ? "" : "Mixable ",
+                 desc.mChannelsPerFrame,
+                 desc.mBitsPerChannel,
+                 (desc.mFormatFlags & kAudioFormatFlagIsFloat) ? "Floating Point" : "Signed Integer",
+                 (UInt32)desc.mSampleRate);
+      break;
+    case kAudioFormatAC3:
+      str.Format("[%s] AC-3/DTS", fourCC);
+      break;
+    case kAudioFormat60958AC3:
+      str.Format("[%s] AC-3/DTS for S/PDIF", fourCC);
+      break;
+    default:
+      str.Format("[%s]", fourCC);
+      break;
+  }
+  return str.c_str();
+}
+
 #define CONVERT_OSSTATUS(x) UInt32ToFourCC((UInt32*)&ret)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioHardware
@@ -187,8 +216,11 @@ void CCoreAudioDevice::Close()
   m_MixerRestore = -1;
   
   if (m_SampleRateRestore != 0.0f)
+  {
+    CLog::Log(LOGDEBUG,  "CCoreAudioUnit::Close: Restoring original nominal samplerate.");    
     SetNominalSampleRate(m_SampleRateRestore);
-
+  }
+  
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::Close: Closed device 0x%04x", m_DeviceId);
   m_DeviceId = 0;
   m_IoProc = NULL;

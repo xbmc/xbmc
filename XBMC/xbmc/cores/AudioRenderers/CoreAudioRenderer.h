@@ -22,17 +22,38 @@
 #ifndef __COREAUDIO_RENDERER_H__
 #define __COREAUDIO_RENDERER_H__
 
-#include "IAudioRenderer.h"
-#include <CoreServices/CoreServices.h>
-#include <AudioUnit/AudioUnit.h>
 #include <osx/CoreAudio.h>
-
+#include "IAudioRenderer.h"
 #include "SliceQueue.h"
 
-struct core_audio_packet
+class CCoreAudioPerformance
 {
-  Uint32 id;
-  BYTE* data;
+public:
+  CCoreAudioPerformance();
+  ~CCoreAudioPerformance();
+  void Init(UInt32 expectedBytesPerSec, UInt32 watchdogInterval = 1000, UInt32 flags = 0);
+  void ReportData(UInt32 bytesIn, UInt32 bytesOut);
+  void EnableWatchdog(bool enable);
+  void SetPreroll(UInt32 bytes); // Fixed bytes
+  void SetPreroll(float seconds); // Calculated for time (seconds)
+  void Reset();
+  enum
+  {
+    FlagDefault = 0
+  };
+protected:
+  UInt64 m_TotalBytesIn;
+  UInt64 m_TotalBytesOut;
+  UInt32 m_ExpectedBytesPerSec;
+  UInt32 m_ActualBytesPerSec;
+  UInt32 m_Flags;
+  bool m_WatchdogEnable;
+  UInt32 m_WatchdogInterval;  
+  UInt32 m_LastWatchdogCheck;
+  UInt32 m_LastWatchdogBytesIn;
+  UInt32 m_LastWatchdogBytesOut;
+  float m_WatchdogBitrateSensitivity;
+  UInt32 m_WatchdogPreroll;
 };
 
 class CCoreAudioRenderer : public IAudioRenderer
@@ -74,51 +95,28 @@ class CCoreAudioRenderer : public IAudioRenderer
     bool m_Pause;
     bool m_Initialized; // Prevent multiple init/deinit
    
-    LONG m_CurrentVolume; // Coutesy of the jerk that made GetCurrentVolume a const...
+    LONG m_CurrentVolume; // Courtesy of the jerk that made GetCurrentVolume a const...
     DWORD m_ChunkLen; // Minimum amount of data accepted by AddPackets
     CSliceQueue* m_pCache;
-    size_t m_MaxCacheLen; // Maximum number of bytes cached by the renderer.
+    size_t m_MaxCacheLen; // Maximum number of bytes to be cached by the renderer.
         
     CCoreAudioUnit m_AudioUnit;
     CCoreAudioDevice m_AudioDevice;
     CCoreAudioStream m_OutputStream;
+    UInt32 m_OutputBufferIndex;
     
     bool m_Passthrough;
     bool m_PassthroughSpoof;
+    
+    // Stream format
     size_t m_AvgBytesPerSec;
     size_t m_BytesPerFrame;
-    UInt64 m_TotalBytesIn;
-    UInt64 m_TotalBytesOut;
-    UInt32 m_OutputBufferIndex;
     
-    const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str)
-    {
-      UInt32 formatId = desc.mFormatID;
-      char* fourCC = UInt32ToFourCC(&formatId);
-      
-      switch (desc.mFormatID)
-      {
-        case kAudioFormatLinearPCM:
-          str.Format("[%4.4s] %s%u Channel %u-bit %s (%uHz)", 
-                     fourCC,
-                     (desc.mFormatFlags & kAudioFormatFlagIsNonMixable) ? "" : "Mixable ",
-                     desc.mChannelsPerFrame,
-                     desc.mBitsPerChannel,
-                     (desc.mFormatFlags & kAudioFormatFlagIsFloat) ? "Floating Point" : "Signed Integer",
-                     (UInt32)desc.mSampleRate);
-          break;
-        case kAudioFormatAC3:
-          str.Format("[%s] AC-3/DTS", fourCC);
-          break;
-        case kAudioFormat60958AC3:
-          str.Format("[%s] AC-3/DTS for S/PDIF", fourCC);
-          break;
-        default:
-          str.Format("[%s]", fourCC);
-          break;
-      }
-      return str.c_str();
-    }
+    // Performace Monitoring
+    CCoreAudioPerformance m_PerfMon;
+    
+    // Thread synchronization
+    MPEventID m_RunoutEvent;
   };
 
 #endif 

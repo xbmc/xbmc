@@ -20,7 +20,7 @@
  */
 
 #include "LockFree.h"
-#include "Atomics.h"
+#include <stdlib.h>
 
 ///////////////////////////////////////////////////////////////////////////
 // Fast stack implementation
@@ -34,8 +34,6 @@ void lf_stack_init(lf_stack* pStack)
 
 void lf_stack_push(lf_stack* pStack, lf_node* pNode)
 {
-  if (!pNode) // Allow for NULL to pass safely 
-    return;
   atomic_ptr top, newTop;
   do
   {
@@ -68,7 +66,8 @@ lf_node* lf_stack_pop(lf_stack* pStack)
 ///////////////////////////////////////////////////////////////////////////
 // TODO: Implement auto-shrink based on chunk reference counts
 
-// TODO: Read the page size from the OS
+// TODO: Read the page size from the OS or allow caller to specify
+// Maybe have a minimum number of blocks...
 #define MIN_ALLOC 4096
 
 void lf_heap_init(lf_heap* pHeap, long blockSize, long  initialSize /*= 0*/)
@@ -139,6 +138,8 @@ void* lf_heap_alloc(lf_heap* pHeap)
 
 void lf_heap_free(lf_heap* pHeap, void* p)
 {
+  if (!p) // Allow for NULL to pass safely 
+    return;
   lf_stack_push(&pHeap->free_list, (lf_node*)p); // Return the block to the free list
 }
 

@@ -160,7 +160,8 @@ class CCoreAudioUnit
     bool m_Initialized;
   };
 
-  // Helper Function
-  char* UInt32ToFourCC(UInt32* val);
+// Helper Function
+char* UInt32ToFourCC(UInt32* val);
+const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str);
 
 #endif // __COREAUDIO_H__
