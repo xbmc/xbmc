@@ -314,7 +314,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (message.GetStringParam().size())
         {
           m_vecItems->m_strPath = message.GetStringParam();
-          SetHistoryForPath(m_vecItems->m_strPath);
+          if (message.GetParam2()) // param2 is used for resetting the history
+            SetHistoryForPath(m_vecItems->m_strPath);
         }
         Update(m_vecItems->m_strPath);
       }
