@@ -36,7 +36,7 @@ typedef enum _eCookieModifier{
 } eCookieModifier;
 
 /*
-	Base class for HID based remote control devices
+ Base class for HID based remote control devices
  */
 @interface HIDRemoteControlDevice : RemoteControl {
 	IOHIDDeviceInterface** hidDeviceInterface;

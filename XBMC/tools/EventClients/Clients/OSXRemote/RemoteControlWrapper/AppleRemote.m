@@ -37,7 +37,7 @@ const char* AppleRemoteDeviceName = "AppleIRController";
 
 // the WWDC 07 Leopard Build is missing the constant
 #ifndef NSAppKitVersionNumber10_4
-	#define NSAppKitVersionNumber10_4 824
+#define NSAppKitVersionNumber10_4 824
 #endif
 
 @implementation AppleRemote

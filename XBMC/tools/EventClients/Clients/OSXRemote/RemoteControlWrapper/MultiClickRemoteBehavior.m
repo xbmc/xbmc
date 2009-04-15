@@ -133,15 +133,15 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 	if (!delegate)  return;
 	
 	BOOL clickCountingForEvent = ([self clickCountEnabledButtons] & event) == event;
-
+  
 	if ([self simulatesHoldForButtonIdentifier: event remoteControl: remoteControl] && lastClickCountEvent==0) {
 		if (pressedDown) {
 			// wait to see if it is a hold
 			lastHoldEvent = event;
 			lastHoldEventTime = [NSDate timeIntervalSinceReferenceDate];
 			[self performSelector:@selector(sendSimulatedHoldEvent:) 
-					   withObject:[NSNumber numberWithDouble:lastHoldEventTime]
-					   afterDelay:HOLD_RECOGNITION_TIME_INTERVAL];
+                 withObject:[NSNumber numberWithDouble:lastHoldEventTime]
+                 afterDelay:HOLD_RECOGNITION_TIME_INTERVAL];
 			return;
 		} else {
 			if (lastEventSimulatedHold) {
@@ -150,7 +150,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 				event = (event << EVENT_TO_HOLD_EVENT_OFFSET);
 				lastHoldEvent = 0;
 				lastEventSimulatedHold = NO;
-
+        
 				[delegate remoteButton:event pressedDown: pressedDown clickCount:1];
 				return;
 			} else {
@@ -170,8 +170,8 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 					eventNumber= [NSNumber numberWithUnsignedInt:previousEvent];
 					NSTimeInterval diffTime = maxClickTimeDifference-([NSDate timeIntervalSinceReferenceDate]-lastHoldEventTime);
 					[self performSelector: @selector(executeClickCountEvent:) 
-							   withObject: [NSArray arrayWithObjects:eventNumber, timeNumber, nil]
-							   afterDelay: diffTime];							
+                     withObject: [NSArray arrayWithObjects:eventNumber, timeNumber, nil]
+                     afterDelay: diffTime];							
 					// we do not return here because we are still in the press-release event
 					// that will be consumed below
 				} else {
@@ -184,7 +184,7 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 	
 	if (clickCountingForEvent) {
 		if (pressedDown == NO) return;
-
+    
 		NSNumber* eventNumber;
 		NSNumber* timeNumber;
 		@synchronized(self) {
@@ -199,12 +199,12 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
 			eventNumber= [NSNumber numberWithUnsignedInt:event];
 		}
 		[self performSelector: @selector(executeClickCountEvent:) 
-				   withObject: [NSArray arrayWithObjects:eventNumber, timeNumber, nil]
-				   afterDelay: maxClickTimeDifference];
+               withObject: [NSArray arrayWithObjects:eventNumber, timeNumber, nil]
+               afterDelay: maxClickTimeDifference];
 	} else {
 		[delegate remoteButton:event pressedDown: pressedDown clickCount:1];
 	}		
-
+  
 }
 
 @end

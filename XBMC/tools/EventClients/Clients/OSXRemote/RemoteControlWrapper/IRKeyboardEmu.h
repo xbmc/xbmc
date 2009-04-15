@@ -10,7 +10,7 @@
 #import "AppleRemote.h"
 
 @interface IRKeyboardEmu : AppleRemote {
-
+  
 }
 
 @end
