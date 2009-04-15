@@ -104,7 +104,10 @@ void ParseOptions(int argc, char** argv)
 	bool readExternal = false;
   g_universal_mode = false;
   g_server_address = "localhost";
-  g_mode = DEFAULT_MODE;
+//  g_mode = DEFAULT_MODE;
+//fix me after 9.04 
+//for now the default mode is MULTIREMOTE_MODE
+  g_mode = MULTIREMOTE_MODE;
   g_app_path = "";
   g_app_home = "";
   
