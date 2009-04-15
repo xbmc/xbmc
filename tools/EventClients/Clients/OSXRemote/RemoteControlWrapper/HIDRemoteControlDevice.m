@@ -76,7 +76,7 @@
 		cookieToButtonMapping = [[NSMutableDictionary alloc] init];
 		
 		[self setCookieMappingInDictionary: cookieToButtonMapping];
-
+    
 		NSEnumerator* enumerator = [cookieToButtonMapping objectEnumerator];
 		NSNumber* identifier;
 		supportedButtonEvents = 0;
@@ -110,7 +110,7 @@
 - (BOOL) sendsEventForButtonIdentifier: (RemoteControlEventIdentifier) identifier {
 	return (supportedButtonEvents & identifier) == identifier;
 }
-	
+
 - (BOOL) isListeningToRemote {
 	return (hidDeviceInterface != NULL && allCookies != NULL && queue != NULL);	
 }
@@ -172,7 +172,7 @@
 	if ([self initializeCookies]==NO) {
 		goto error;
 	}
-
+  
 	if ([self openDevice]==NO) {
 		goto error;
 	}
@@ -274,8 +274,8 @@ cleanup:
 @end
 
 /*	Callback method for the device queue
-Will be called for any event of any type (cookie) to which we subscribe
-*/
+ Will be called for any event of any type (cookie) to which we subscribe
+ */
 static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, void* sender) {	
 	if (target < 0) {
 		NSLog(@"QueueCallbackFunction called with invalid target!");
@@ -294,7 +294,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 		result = (*[remote queue])->getNextEvent([remote queue], &event, zeroTime, 0);		
 		if ( result != kIOReturnSuccess )
 			continue;
-	
+    
 		//printf("%d %d %d\n", event.elementCookie, event.value, event.longValue);
     if([remote handleCookie:(long)event.elementCookie value:event.value] != DISCARD_COOKIE){
 			sumOfValues+=event.value;
@@ -347,10 +347,10 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 	}
 	
 	ioReturnValue = IOCreatePlugInInterfaceForService(hidDevice,
-													  kIOHIDDeviceUserClientTypeID,
-													  kIOCFPlugInInterfaceID,
-													  &plugInInterface,
-													  &score);
+                                                    kIOHIDDeviceUserClientTypeID,
+                                                    kIOCFPlugInInterfaceID,
+                                                    &plugInInterface,
+                                                    &score);
 	if (ioReturnValue == kIOReturnSuccess)
 	{
 		//Call a method of the intermediate plug-in to create the device interface
@@ -387,9 +387,9 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 		
 		[elements autorelease];		
 		/*
-		cookies = calloc(NUMBER_OF_APPLE_REMOTE_ACTIONS, sizeof(IOHIDElementCookie)); 
-		memset(cookies, 0, sizeof(IOHIDElementCookie) * NUMBER_OF_APPLE_REMOTE_ACTIONS);
-		*/
+     cookies = calloc(NUMBER_OF_APPLE_REMOTE_ACTIONS, sizeof(IOHIDElementCookie)); 
+     memset(cookies, 0, sizeof(IOHIDElementCookie) * NUMBER_OF_APPLE_REMOTE_ACTIONS);
+     */
 		allCookies = [[NSMutableArray alloc] init];
 		
 		NSEnumerator *elementsEnumerator = [elements objectEnumerator];
@@ -410,7 +410,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 			object = [element valueForKey: (NSString*)CFSTR(kIOHIDElementUsagePageKey) ];
 			if (object == nil || ![object isKindOfClass:[NSNumber class]]) continue;			
 			usagePage = [object longValue];
-
+      
 			[allCookies addObject: [NSNumber numberWithInt:(int)cookie]];
 		}
 	} else {
@@ -431,14 +431,14 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 		queue = (*hidDeviceInterface)->allocQueue(hidDeviceInterface);
 		if (queue) {
 			result = (*queue)->create(queue, 0, 12);	//depth: maximum number of elements in queue before oldest elements in queue begin to be lost.
-
+      
 			IOHIDElementCookie cookie;
 			NSEnumerator *allCookiesEnumerator = [allCookies objectEnumerator];
 			
 			while (cookie = (IOHIDElementCookie)[[allCookiesEnumerator nextObject] intValue]) {
 				(*queue)->addElement(queue, cookie, 0);
 			}
-									  
+      
 			// add callback for async events			
 			ioReturnValue = (*queue)->createAsyncEventSource(queue, &eventSource);			
 			if (ioReturnValue == KERN_SUCCESS) {
