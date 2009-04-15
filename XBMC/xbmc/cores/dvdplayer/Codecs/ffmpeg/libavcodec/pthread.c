@@ -48,6 +48,9 @@ typedef struct ThreadContext {
     int done;
 } ThreadContext;
 
+/*thread scheduling workaround*/
+pthread_mutex_t affinity_lock;
+
 static void* attribute_align_arg worker(void *v)
 {
     AVCodecContext *avctx = v;
@@ -58,18 +61,28 @@ static void* attribute_align_arg worker(void *v)
     
 #ifdef __gnu_linux__
     /*thread scheduling workaround*/
-    volatile static int nr_threads = 0;
-    int nr_cpus;
+    static int schedcount = 0;
+    static int nr_cpus = -1;
     cpu_set_t cpuset;
     pthread_t thread = pthread_self();
     
-    CPU_ZERO(&cpuset);
-    pthread_getaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
-    nr_cpus = CPU_COUNT(&cpuset);
+    pthread_mutex_lock(&affinity_lock);
+    if (nr_cpus <= 0)
+    {
+      CPU_ZERO(&cpuset);
+      if (!pthread_getaffinity_np(thread, sizeof(cpu_set_t), &cpuset))
+        nr_cpus = CPU_COUNT(&cpuset);
+    }
     
-    CPU_ZERO(&cpuset);
-    CPU_SET(nr_threads++ % nr_cpus, &cpuset);
-    pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+    if (nr_cpus > 0)
+    {
+      CPU_ZERO(&cpuset);
+      CPU_SET(schedcount, &cpuset);
+      pthread_setaffinity_np(thread, sizeof(cpu_set_t), &cpuset);
+      if ((schedcount += 2) >= nr_cpus)
+        schedcount = (schedcount % 2) ? 0 : 1;
+    }
+    pthread_mutex_unlock(&affinity_lock);
     /*end thread scheduling workaround*/
 #endif
     
@@ -107,6 +120,9 @@ void avcodec_thread_free(AVCodecContext *avctx)
 {
     ThreadContext *c = avctx->thread_opaque;
     int i;
+    
+    /*thread scheduling workaround*/
+    pthread_mutex_destroy(&affinity_lock);
 
     pthread_mutex_lock(&c->current_job_lock);
     c->done = 1;
@@ -177,11 +193,19 @@ int avcodec_thread_init(AVCodecContext *avctx, int thread_count)
     pthread_cond_init(&c->last_job_cond, NULL);
     pthread_mutex_init(&c->current_job_lock, NULL);
     pthread_mutex_lock(&c->current_job_lock);
+    
+    /*thread scheduling workaround*/
+    pthread_mutex_init(&affinity_lock, NULL);
+    
     for (i=0; i<thread_count; i++) {
         if(pthread_create(&c->workers[i], NULL, worker, avctx)) {
            avctx->thread_count = i;
            pthread_mutex_unlock(&c->current_job_lock);
            avcodec_thread_free(avctx);
+           
+           /*thread scheduling workaround*/
+           pthread_mutex_destroy(&affinity_lock);
+           
            return -1;
         }
     }
