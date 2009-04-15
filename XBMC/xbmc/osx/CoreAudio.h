@@ -139,6 +139,7 @@ class CCoreAudioUnit
     void Close();
     bool SetCurrentDevice(AudioDeviceID deviceId);
     bool Initialize();
+    bool IsInitialized() {return m_Initialized;}
     bool SetRenderProc(AURenderCallback callback, void* pClientData);
     UInt32 GetBufferFrameSize();
     bool SetMaxFramesPerSlice(UInt32 maxFrames);

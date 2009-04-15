@@ -70,7 +70,7 @@
 #endif
 #endif
 #ifdef __APPLE__
-#include "CPortAudio.h"
+#include "CoreAudio.h"
 #include "XBMCHelper.h"
 #endif
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
@@ -3723,18 +3723,20 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-  std::vector<PaDeviceInfo* > deviceList = CPortAudio::GetDeviceList();
-  std::vector<PaDeviceInfo* >::const_iterator iter = deviceList.begin();
-
-  for (int i=0; iter != deviceList.end(); i++)
+  CoreAudioDeviceList deviceList;
+  CCoreAudioHardware::GetOutputDevices(&deviceList);
+  
+  CStdString deviceName;
+  
+  for (int i = 0; !deviceList.empty(); i++)
   {
-    PaDeviceInfo* dev = *iter;
-    pControl->AddLabel(dev->name, i);
+    CCoreAudioDevice device(deviceList.front());
+    pControl->AddLabel(device.GetName(deviceName), i);
 
-    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev->name))
+    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
         pControl->SetValue(i);
 
-    ++iter;
+    deviceList.pop_front();
   }
 #elif defined(_WIN32PC)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());

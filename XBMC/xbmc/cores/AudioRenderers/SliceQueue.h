@@ -41,7 +41,8 @@ struct audio_slice
 class CAtomicAllocator
 {
 public:
-  CAtomicAllocator(size_t blockSize)
+  CAtomicAllocator(size_t blockSize) :
+    m_BlockSize(blockSize)
   {
     lf_heap_init(&m_Heap, blockSize);
   }

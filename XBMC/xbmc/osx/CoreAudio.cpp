@@ -126,7 +126,7 @@ AudioDeviceID CCoreAudioHardware::GetDefaultOutputDevice()
   return deviceId;
 }
 
-UInt32 GetOutputDevices(CoreAudioDeviceList* pList)
+UInt32 CCoreAudioHardware::GetOutputDevices(CoreAudioDeviceList* pList)
 {
   if (!pList)
     return 0;
@@ -681,7 +681,9 @@ bool CCoreAudioStream::GetAvailablePhysicalFormats(StreamFormatList* pList)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioUnit
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CCoreAudioUnit::CCoreAudioUnit()
+CCoreAudioUnit::CCoreAudioUnit() :
+  m_Initialized(false),
+  m_Component(NULL)
 {
   
 }

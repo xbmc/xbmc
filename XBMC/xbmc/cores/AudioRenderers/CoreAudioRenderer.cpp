@@ -92,7 +92,7 @@ void CCoreAudioPerformance::ReportData(UInt32 bytesIn, UInt32 bytesOut)
     {
       // Check outgoing bitrate
       if (m_ActualBytesPerSec < m_WatchdogBitrateSensitivity * m_ExpectedBytesPerSec) 
-        CLog::Log(LOGWARNING, "CCoreAudioPerformancer: Outgoing bitrate is lagging. Target: %u, Actual: %u. deltaTime was %u", m_ExpectedBytesPerSec, m_ActualBytesPerSec, deltaTime);
+        CLog::Log(LOGWARNING, "CCoreAudioPerformance: Outgoing bitrate is lagging. Target: %u, Actual: %u. deltaTime was %u", m_ExpectedBytesPerSec, m_ActualBytesPerSec, deltaTime);
     }
     m_LastWatchdogCheck = time;
     m_LastWatchdogBytesIn = m_TotalBytesIn;
@@ -270,14 +270,15 @@ HRESULT CCoreAudioRenderer::Deinitialize()
   if (m_Passthrough)
     m_AudioDevice.RemoveIOProc();
   m_AudioUnit.Close();
-  m_AudioDevice.Close();
   m_OutputStream.Close();
+  m_AudioDevice.Close();
   delete m_pCache;
   m_pCache = NULL;
   m_Initialized = false;
   m_RunoutEvent = NULL;
   
   CLog::Log(LOGINFO, "CoreAudioRenderer::Deinitialize: Renderer has been shut down.");
+  
   return S_OK;
 }
 
@@ -457,7 +458,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   // TODO: May need to remove all logging from this method since it is called from a realtime thread
   if (!m_Initialized)
     CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Callback to de/unitialized renderer.");
-              
+  
   // Make a local copy of the buffer index
   UInt32 buf = m_OutputBufferIndex; // This determines which device stream we send our data to.
   
@@ -468,7 +469,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
     bytesRequested = ioData->mBuffers[buf].mDataByteSize;
     CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Supplied buffer is too small(%u) to accept requested sample data(%u). Truncating data.", ioData->mBuffers[0].mDataByteSize, bytesRequested);
   }
-  
+
   if (m_pCache->GetTotalBytes() < bytesRequested) // Not enough data to satisfy the request
   {
     Pause(); // Stop further requests until we have more data.  The AddPackets method will resume playback
@@ -572,7 +573,7 @@ bool CCoreAudioRenderer::SpoofPCM()
 
 bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
 {
-  // return false; // un-comment to force PCM Spoofing (DD-Wav)
+  return false; // un-comment to force PCM Spoofing (DD-Wav)
   
   CStdString formatString;
   AudioStreamBasicDescription outputFormat = {0};
@@ -637,8 +638,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
   // Lock down the device.  This MUST be done PRIOR to switching to a non-mixable format, if it is done at all
   // If it is attempted after the format change, there is a high likelihood of a deadlock 
   // We may need to do this sooner to enable mix-disable (i.e. before setting the stream format)
-  CCoreAudioHardware hw;
-  bool autoHog = hw.GetAutoHogMode();
+  bool autoHog = CCoreAudioHardware::GetAutoHogMode();
   CLog::Log(LOGDEBUG, " CoreAudioRenderer::InitializeEncoded: Auto 'hog' mode is set to '%s'.", autoHog ? "On" : "Off");
   if (!autoHog) // Try to handle this ourselves
   {
