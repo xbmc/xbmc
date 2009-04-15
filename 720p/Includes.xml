@@ -68,7 +68,7 @@
     <include>DialogButtonNFTexture</include>
     <font>DefaultCapsFont</font>
     <aligny>top</aligny>
-    <textoffsety>3</textoffsety>
+    <textoffsety>6</textoffsety>
     <include>DialogTextColors</include>
   </include>
 
