@@ -79,8 +79,8 @@
 		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
 		831F61020F9272DC0051DBCA /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F61010F9272DC0051DBCA /* LockFree.cpp */; };
 		831F61030F9272DC0051DBCA /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F61010F9272DC0051DBCA /* LockFree.cpp */; settings = {COMPILER_FLAGS = "-O0"; }; };
-		831F63330F92F72C0051DBCA /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F63310F92F72C0051DBCA /* CPortAudio.cpp */; };
-		831F63340F92F72C0051DBCA /* CPortAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 831F63310F92F72C0051DBCA /* CPortAudio.cpp */; };
+		831F66950F93F86F0051DBCA /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831F66940F93F86F0051DBCA /* Carbon.framework */; };
+		831F66960F93F86F0051DBCA /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831F66940F93F86F0051DBCA /* Carbon.framework */; };
 		83540ADD0F7985DF0044C398 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83540ADC0F7985DF0044C398 /* Atomics.cpp */; };
 		83540ADE0F7985DF0044C398 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83540ADC0F7985DF0044C398 /* Atomics.cpp */; };
 		839270550F7F3DAF00406D11 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839270540F7F3DAF00406D11 /* CoreAudio.cpp */; };
@@ -118,7 +118,6 @@
 		E33979960D62FD48004ECDDA /* DVDInputStreamTV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */; };
 		E354EF040D99EDC900B55311 /* controlradiobutton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E354EF030D99EDC900B55311 /* controlradiobutton.cpp */; };
 		E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
-		E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF3230D380E1E00DB5CD5 /* Carbon.framework */; };
 		E36578880D3AA7B40033CC1C /* DVDPlayerCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */; };
 		E36C29DF0DA72429001F0C9D /* Artist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DB0DA72429001F0C9D /* Artist.cpp */; };
 		E36C29E00DA72429001F0C9D /* Album.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29DC0DA72429001F0C9D /* Album.cpp */; };
@@ -1711,7 +1710,6 @@
 		F5A1CBAF0F6B06CF00A96ABD /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25340D26365C00618676 /* ApplicationServices.framework */; };
 		F5A1CBB30F6B06CF00A96ABD /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
 		F5A1CBB40F6B06CF00A96ABD /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
-		F5A1CBB50F6B06CF00A96ABD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF3230D380E1E00DB5CD5 /* Carbon.framework */; };
 		F5A1CBB60F6B06CF00A96ABD /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
 		F5A1CBB70F6B06CF00A96ABD /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */; };
 		F5A1CBB90F6B06CF00A96ABD /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
@@ -1847,8 +1845,7 @@
 		81F064250E9BB99800C203A6 /* XBMSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMSDirectory.h; sourceTree = "<group>"; };
 		831F61000F9272DC0051DBCA /* LockFree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockFree.h; sourceTree = "<group>"; };
 		831F61010F9272DC0051DBCA /* LockFree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LockFree.cpp; sourceTree = "<group>"; };
-		831F63310F92F72C0051DBCA /* CPortAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CPortAudio.cpp; sourceTree = "<group>"; };
-		831F63320F92F72C0051DBCA /* CPortAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPortAudio.h; sourceTree = "<group>"; };
+		831F66940F93F86F0051DBCA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		83540ADB0F7985DF0044C398 /* Atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomics.h; sourceTree = "<group>"; };
 		83540ADC0F7985DF0044C398 /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
 		839270530F7F3DAF00406D11 /* CoreAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudio.h; sourceTree = "<group>"; };
@@ -1914,7 +1911,6 @@
 		E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamTV.h; sourceTree = "<group>"; };
 		E354EF030D99EDC900B55311 /* controlradiobutton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlradiobutton.cpp; sourceTree = "<group>"; };
 		E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
-		E35EF3230D380E1E00DB5CD5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerCodec.cpp; sourceTree = "<group>"; };
 		E36578870D3AA7B40033CC1C /* DVDPlayerCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerCodec.h; sourceTree = "<group>"; };
 		E36C29DB0DA72429001F0C9D /* Artist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Artist.cpp; sourceTree = "<group>"; };
@@ -3737,7 +3733,6 @@
 				E38F12EA0D2A17B30035C331 /* libGoAhead-x86-osx.a in Frameworks */,
 				E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */,
 				E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */,
-				E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */,
 				E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */,
 				E33979930D62FC46004ECDDA /* libsqlite3.0.dylib in Frameworks */,
 				810CA01C0D68A6E20095F5DD /* libshout-x86-osx.a in Frameworks */,
@@ -3762,6 +3757,7 @@
 				F527E8330F293DD70046DBD3 /* libSDL-x86-osx.a in Frameworks */,
 				F527E8370F293F3C0046DBD3 /* libSDL_image-x86-osx.a in Frameworks */,
 				F527E8380F293F420046DBD3 /* libSDL_mixer-x86-osx.a in Frameworks */,
+				831F66960F93F86F0051DBCA /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3785,7 +3781,6 @@
 				F5A1CBAF0F6B06CF00A96ABD /* ApplicationServices.framework in Frameworks */,
 				F5A1CBB30F6B06CF00A96ABD /* IOKit.framework in Frameworks */,
 				F5A1CBB40F6B06CF00A96ABD /* QuickTime.framework in Frameworks */,
-				F5A1CBB50F6B06CF00A96ABD /* Carbon.framework in Frameworks */,
 				F5A1CBB60F6B06CF00A96ABD /* libvorbis.dylib in Frameworks */,
 				F5A1CBB70F6B06CF00A96ABD /* libsqlite3.0.dylib in Frameworks */,
 				F5A1CBB90F6B06CF00A96ABD /* libsmbclient.dylib in Frameworks */,
@@ -3813,6 +3808,7 @@
 				F5A1CC1A0F6B21F800A96ABD /* avformat-52-powerpc-osx.a in Frameworks */,
 				F5A1CC1C0F6B220D00A96ABD /* swscale-0.6.1-powerpc-osx.a in Frameworks */,
 				F5A1CC1E0F6B221400A96ABD /* postproc-51-powerpc-osx.a in Frameworks */,
+				831F66950F93F86F0051DBCA /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3847,8 +3843,8 @@
 				F57E1ED20E36E8FD00700C9D /* internal libs */,
 				F57E21400E3C3AD400700C9D /* libz.dylib */,
 				E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */,
+				831F66940F93F86F0051DBCA /* Carbon.framework */,
 				88ECB6580DE013C4003396A7 /* DiskArbitration.framework */,
-				E35EF3230D380E1E00DB5CD5 /* Carbon.framework */,
 				E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */,
 				E33466A50D2E5103005A65EC /* IOKit.framework */,
 				E38E25330D26365C00618676 /* AppKit.framework */,
@@ -3940,8 +3936,6 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
-				831F63310F92F72C0051DBCA /* CPortAudio.cpp */,
-				831F63320F92F72C0051DBCA /* CPortAudio.h */,
 				F5EA04E80F72F9CA005C2EC5 /* SDLMain.h */,
 				F5EA04280F72EB88005C2EC5 /* SDLMain.m */,
 				F5EA05C30F73381A005C2EC5 /* CocoaInterface.h */,
@@ -7829,7 +7823,6 @@
 				83540ADD0F7985DF0044C398 /* Atomics.cpp in Sources */,
 				839270550F7F3DAF00406D11 /* CoreAudio.cpp in Sources */,
 				831F61030F9272DC0051DBCA /* LockFree.cpp in Sources */,
-				831F63340F92F72C0051DBCA /* CPortAudio.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8651,7 +8644,6 @@
 				83540ADE0F7985DF0044C398 /* Atomics.cpp in Sources */,
 				839270560F7F3DAF00406D11 /* CoreAudio.cpp in Sources */,
 				831F61020F9272DC0051DBCA /* LockFree.cpp in Sources */,
-				831F63330F92F72C0051DBCA /* CPortAudio.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
