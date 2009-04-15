@@ -18,7 +18,7 @@
         <posy>260</posy>
 
         <control type="image">
-          <posx>-8</posx>
+          <posx>-3</posx>
           <posy>-8</posy>
           <width>436</width>
           <height>364</height>
@@ -28,6 +28,7 @@
           <bordersize>8</bordersize>
         </control>
         <control type="image">
+					<posx>5</posx>
           <posy>348</posy>
           <width>420</width>
           <height>348</height>
