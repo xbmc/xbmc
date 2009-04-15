@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  *
  *****************************************************************************/
- 
+
 #import "RemoteControl.h"
 
 // notifaction names that are being used to signal that an application wants to 
@@ -80,13 +80,13 @@ NSString* kTargetApplicationIdentifier = @"TargetBundleIdentifier";
 
 + (void) sendDistributedNotification: (NSString*) notificationName targetBundleIdentifier: (NSString*) targetIdentifier {
 	NSDictionary* userInfo = [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithCString:[self remoteControlDeviceName] encoding:NSASCIIStringEncoding],
-		kRemoteControlDeviceName, [[NSBundle mainBundle] bundleIdentifier], kApplicationIdentifier, 
-		targetIdentifier, kTargetApplicationIdentifier, nil];
+                            kRemoteControlDeviceName, [[NSBundle mainBundle] bundleIdentifier], kApplicationIdentifier, 
+                            targetIdentifier, kTargetApplicationIdentifier, nil];
 	
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName:notificationName
-																   object:nil
-																 userInfo:userInfo
-													   deliverImmediately:YES];	
+                                                                 object:nil
+                                                               userInfo:userInfo
+                                                     deliverImmediately:YES];	
 }
 
 + (void) sendFinishedNotifcationForAppIdentifier: (NSString*) identifier {
