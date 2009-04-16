@@ -20,34 +20,85 @@
 *
 */
 
+#include "TVChannelInfoTag.h"
+#include "PVRManager.h"
+#include "Thread.h"
 #include "DateTime.h"
-#include "TVChannel.h"
+#include <queue>
 
 class IEPGObserver
 {
 public:
   virtual ~IEPGObserver() {}
   virtual void OnChannelUpdated(unsigned channel) = 0;
+
 };
 
-class CEPG
+class CEPG : private CThread
 {
 public:
-  CEPG(DWORD sourceID, CDateTime start, CDateTime end);
-  CEPG(const CEPG& rhs);
+  typedef enum Task
+  {
+    UPDATE_CLIENT_CHANNELS,
+    GET_EPG_FOR_CHANNEL,
+  };
 
-  void AddChannel(DWORD sourceID, CTVChannel channel);
+  class CEPGTask
+  {
+  public:
+    Task m_task;
+    long m_clientID;
+    unsigned int m_channel;
+  };
 
-  CDateTime m_start;
-  CDateTime m_end;
+  ~CEPG();
+  static CEPG* Get();
+  void Attach(IEPGObserver* obs);
+  void Detach(IEPGObserver* obs);
 
-  const VECCHANNELS* GetGrid() { return m_grid; };
+  static void Close();
+
+  void AddChannel(DWORD sourceID, CTVChannelInfoTag channel);
+
+  const VECCHANNELS& GetGrid() { return m_grid; };
   const CDateTime GetStart() { return m_start; };
   const CDateTime GetEnd() { return m_end; };
 
-  bool Save();
-  bool Sort();
+  virtual void Process();
+  virtual void OnStartup();
+  virtual void OnExit();
+
+  void UpdateChannels(); // call UpdateChannelsTask(long clientID) for each client connected
+  void UpdateChannelsTask(long clientID); // update the list of channels for the client specified
+
+  void UpdateEPG(); // update all channels
+  void UpdateEPGTask(unsigned int channelNo);
 
 private:
-  VECCHANNELS* m_grid;
+  void NotifyObs(unsigned int channelNo);
+
+  CPVRManager* m_manager;
+  CEPG(CPVRManager* manager);
+  static CEPG* m_instance;
+
+  static CTVDatabase m_database;
+
+  static CCriticalSection m_clientsSection;
+
+  /* thread related */
+  bool m_isRunning;
+  static CCriticalSection m_tasksSection;
+  static std::queue< CEPGTask > m_tasks;
+
+  /* channel updates */
+  static std::vector< IEPGObserver* > m_observers;
+  static CCriticalSection m_obsSection;
+  static CCriticalSection m_dbSection;
+
+  CDateTime m_start; // start and end of current EPG range
+  CDateTime m_end;
+
+  static CCriticalSection m_epgSection;
+  VECCHANNELS m_grid;
+  static std::map< long, IPVRClient* > m_clients;
 };
