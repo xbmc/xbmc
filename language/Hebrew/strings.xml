@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Psike-->
-<!--Date of translation: 08/17/2008-->
+<!--Date of translation: 04/15/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 14727-->
+<!--Based on english strings version 19319-->
 <strings>
   <string id="0">התוכניות שלי</string>
   <string id="1">התמונות שלי</string>
@@ -46,7 +45,7 @@
   <string id="109">צור צלמיות</string>
   <string id="110">צור תצוגה מקדימה</string>
   <string id="111">קיצורי דרך</string>
-  <string id="112">מופסק</string>
+  <string id="112">מושהה</string>
   <string id="113">הקבצים שלי : מקור</string>
   <string id="114">הקבצים שלי : יעד</string>
   <string id="115">העתק</string>
@@ -69,8 +68,8 @@
   <string id="132">אלבומים</string>
   <string id="133">אמנים</string>
   <string id="134">שירים</string>
-  <string id="135">סגנונות</string>
-  <string id="136">רשימת השמעה</string>
+  <string id="135">ז'אנרים</string>
+  <string id="136">רשימת ניגון</string>
   <string id="137">חפש</string>
   <string id="138">מידע מערכת</string>
   <string id="139">:טמפרטורות</string>
@@ -129,9 +128,9 @@
   <string id="192">נקה</string>
   <string id="193">סרוק</string>
   <string id="194">...מחפש</string>
-  <string id="195">!IMDB לא נמצאו רשומות</string>
+  <string id="195">!לא נימצא מידע</string>
   <string id="196">:בחר סרט</string>
-  <string id="197">IMDB מחפש מידע</string>
+  <string id="197">%s מחפש מידע</string>
   <string id="198">טוען מידע אודות הסרט</string>
   <string id="199">:במאי</string>
   <string id="200">:תסריאטי</string>
@@ -157,8 +156,8 @@
   <string id="222">בטל</string>
   <string id="224">מהירות</string>
   <string id="225">זמני מעבר</string>
-  <string id="226">בודק תבניות...</string>
-  <string id="227">CDDB אפשר</string>
+  <string id="226">בדוק תבניות...</string>
+  <string id="227">חפש מידע על דיסקים באינטרנט</string>
   <string id="228">ערבב רשימת השמעה בעת הטעינה</string>
   <string id="229">זמן סיבוב כונן קשיח (בדקות)</string>
   <string id="230">פילטרים</string>
@@ -202,10 +201,10 @@
   <string id="268">מיין לפי : כותרת</string>
   <string id="269">מיין לפי : אמן</string>
   <string id="270">מיין לפי : אלבום</string>
-  <string id="271">ראשונים 100</string>
+  <string id="271">מאה הגדולים</string>
   <string id="272">פיצוי סריקת יתר משמאל למעלה</string>
   <string id="273">פיצוי סריקת יתר מימין למטה</string>
-  <string id="274">מיקום כתוביות</string>
+  <string id="274">מיקום הכתוביות</string>
   <string id="275">כיוון יחס הפיקסלים</string>
   <string id="276">הזז את החץ לשינוי רמת סריקת היתר</string>
   <string id="277">הזז את המצביע לשינוי מקום הכתוביות</string>
@@ -223,7 +222,7 @@
   <string id="290">  (db) הגברת ווליום</string>
   <string id="291">וידאו</string>
   <string id="292">אודיו</string>
-  <string id="293">כתוביות</string>
+  <string id="293">חפש כתוביות</string>
   <string id="294">צור סימניה</string>
   <string id="296">נקה סימניות</string>
   <string id="297">השהיית קול הנומתו</string>
@@ -271,7 +270,7 @@
   <string id="343">סדר קצב פריימים</string>
   <string id="344">שחקנים</string>
   <string id="345">שנה</string>
-  <string id="350">תוכנוית</string>
+  <string id="350">תוכנות</string>
   <string id="351">כבה</string>
   <string id="352">עמעם</string>
   <string id="353">מסך שחור</string>
@@ -289,7 +288,7 @@
   <string id="365">סדר לפי : שם</string>
   <string id="366">סדר לפי : שנה</string>
   <string id="367">סדר לפי : רייטינג</string>
-  <string id="368">IMDB</string>
+  <string id="368">IMDb</string>
   <string id="369">כותרת</string>
   <string id="370">רעמים</string>
   <string id="371">חלקית</string>
@@ -354,7 +353,7 @@
   <string id="430">DVD# : מיין לפי</string>
   <string id="431">ללא מטמון</string>
   <string id="432">מחק סרט ממסד הנתונים</string>
-  <string id="433">האם אתה בטוח שברצונך למחוק</string>
+  <string id="433">?'%s'  האם אתה בטוח שברצונך למחוק את</string>
   <string id="434">?את הסרט</string>
   <string id="435">רצועה</string>
   <string id="436">:שנה</string>
@@ -457,6 +456,7 @@
   <string id="540">רחב גדול</string>
   <string id="541">צלמיות אלבומים</string>
   <string id="542">צלמיות DVD</string>
+  <string id="543">DVD</string>
   <string id="544">פרטי מדיה</string>
   <string id="547">אין ביוגרפיה לאמןז זה</string>
   <string id="550">מיין לפי: %s</string>
@@ -482,6 +482,7 @@
   <string id="570">תאריך התווספות</string>
   <string id="571">ברירת מחדל</string>
   <string id="572">אולפן</string>
+  <string id="573">נתיב</string>
   <string id="580">כיוון מיון</string>
   <string id="581">שיטת מיון</string>
   <string id="582">מצב תצוגה</string>
@@ -534,7 +535,7 @@
   <string id="642">רמת קדם מגבר - קבצים מוגברים שלא בניגון חוזר</string>
   <string id="643">מנע המהרה של קבצים מוגברים בניגון חוזר</string>
   <string id="644">קצץ פסים שחורים</string>
-  <string id="645">שומר במטמון קובץ גדול. להמשיך?</string>
+  <string id="645">?שומר במטמון קובץ גדול. להמשיך</string>
   <string id="646">הסר כותרת</string>
   <string id="647">יצא ספרית וידאו</string>
   <string id="648">יבא ספרית וידאו</string>
@@ -544,8 +545,13 @@
   <string id="652">שנים</string>
   <string id="653">עדכן ספריה</string>
   <string id="654">הראה מידע Debug</string>
+  <string id="655">חפש קובץ הפעלה</string>
+  <string id="656">חפש רשימת ניגון</string>
+  <string id="657">חפש תיקייה</string>
   <string id="658">פרטי שיר</string>
   <string id="661">בחר תיקיית יצוא</string>
+  <string id="662">קובץ זה לא זמין יותר</string>
+  <string id="663">?האם תרצה להסיר אותו מהספריה</string>
   <string id="700">מנקה מסד נתונים</string>
   <string id="701">מוחק שירים ישנים ממסד הנתונים</string>
   <string id="702">הספריה נסרקה בעבר.</string>
@@ -675,6 +681,8 @@
   <string id="1038">תוספות מוזיקה</string>
   <string id="1039">תוספות תמונות</string>
   <string id="1040">טוען ספריה</string>
+  <string id="1041">פריטים %i קיבל</string>
+  <string id="1042">פריטים %i מתוך %i קיבל</string>
   <string id="1043">תוספות תוכניות</string>
   <string id="1044">הגדר צלמית תוספת</string>
   <string id="1045">הגדרות תוספות</string>
@@ -738,6 +746,9 @@
   <string id="1411">עם</string>
   <string id="1412">סוער</string>
   <string id="1413">טפטוף</string>
+  <string id="1414">סערת רעמים</string>
+  <string id="1415">טפטוף</string>
+  <string id="1416">ערפלי</string>
   <string id="2050">זמן ריצה:</string>
   <string id="4501">LCD סוג</string>
   <string id="10000">דף הבית</string>
@@ -899,6 +910,9 @@
   <string id="13009">אל תעשה דבר</string>
   <string id="13010">מצב שינה</string>
   <string id="13011">השהייה</string>
+  <string id="13012">יציאה</string>
+  <string id="13013">הפעלה מחדש</string>
+  <string id="13014">מזער</string>
   <string id="13100">פילטר הבהובים</string>
   <string id="13106">אל תאפשר</string>
   <string id="13107">אפשר בזמן ניגון וידאו</string>
@@ -907,7 +921,9 @@
   <string id="13110">לשמור רזולוציה?</string>
   <string id="13111">האם תרצה לשמור את הרזולוציה הזו?</string>
   <string id="13113">אל תפאשר</string>
+  <string id="13114">SD מופעל רק לתכני</string>
   <string id="13115">אפשר תמיד</string>
+  <string id="13116">שיטת הגדלה</string>
   <string id="13131">אל תאפשר</string>
   <string id="13150">HDD מפתח:</string>
   <string id="13151">HDD טמפ:</string>
@@ -1071,6 +1087,9 @@
   <string id="13409">250 מובילים</string>
   <string id="13410">התחבר ל LAST.FM</string>
   <string id="13412">RSS מכיל טקסט מימן לשמאל</string>
+  <string id="13413">מוריד</string>
+  <string id="13416">זהה אוטומטית</string>
+  <string id="13419">תוכנתי</string>
   <string id="13600">APPLE שלט</string>
   <string id="13601">מצב</string>
   <string id="13602">תמיד פועל</string>
@@ -1604,7 +1623,7 @@
   <string id="20367">הסתר שנצפו</string>
   <string id="20368">קוד הפקה</string>
   <string id="20369">הסתר עלילה לפריטים שעוד לא נצפו</string>
-  <string id="20370">"הסתר לניעת ספוילרים"</string>
+  <string id="20370">"הסתר למניעת ספוילרים"</string>
   <string id="20371">בחר צלמית עונה</string>
   <string id="20372">תמונת עונה</string>
   <string id="20373">עונה</string>
@@ -1644,6 +1663,12 @@
   <string id="20422">תמיד</string>
   <string id="20423">יש קדימון</string>
   <string id="20424">שקר</string>
+  <string id="20426">?ליצא לקובץ בודד או קבצים ניפרדים</string>
+  <string id="20428">קובץ בודד</string>
+  <string id="20429">ניפרדים</string>
+  <string id="20430">?ליצא צלמיות ורקעים</string>
+  <string id="20431">?לדרוס קבצים קיימים</string>
+  <string id="20432">אל תכלול נתיב זה בעידכוני ספריה</string>
   <string id="21330">הצג קבצים וספריות מוחבאים</string>
   <string id="21331">קלינט TuxBox</string>
   <string id="21332">אזהרה: מכשיר ה TuxBox במטרה נמצא במצב הקלטה</string>
@@ -1709,6 +1734,7 @@
   <string id="21806">הערות</string>
   <string id="21807">צבעוני/שחור-לבן</string>
   <string id="21820">תאריך/שעה</string>
+  <string id="21821">תאור</string>
   <string id="21882">נסה לדלג על הקדמות לפני תרפיט DVD</string>
   <string id="21885">מוריד פרטי אלבום</string>
   <string id="21886">מוריד פרטי אמן</string>
@@ -1722,5 +1748,6 @@
   <string id="21899">חברת הפקה</string>
   <string id="22001">תמיד עדכן ספרייה ברקע</string>
   <string id="22003">אפשר רשימת עריכה</string>
+  <string id="22014">השתמש בעימעום כשמושהה בזמן ניגון וידאו</string>
   <string id="29999">Auto Flicker Filter Patch</string>
 </strings>
