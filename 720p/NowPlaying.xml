@@ -119,6 +119,20 @@
       </control>
     </control>
 
+    <control type="group">
+      <visible>Player.Paused</visible>
+      <animation effect="fade" end="100" time="1000">Visible</animation>
+      <animation effect="fade" end="0" time="500">Hidden</animation>
+      <control type="image">
+        <animation effect="fade" start="30" end="80" time="2000" condition="Player.Paused" pulse="true">Conditional</animation>
+        <texture>OSDPauseNF.png</texture>
+        <width>48</width>
+        <height>48</height>
+        <posx>616</posx>
+        <posy>603</posy>
+      </control>
+    </control>
+
   </controls>
 
 </window>
