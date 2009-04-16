@@ -63,6 +63,11 @@ bool CFileZip::Open(const CURL&url)
   if (!g_ZipManager.GetZipEntry(strPath,mZipItem))
     return false;
 
+  if ((mZipItem.flags & 8) == 8)
+  {
+    CLog::Log(LOGERROR,"FileZip: extended local header, not supported!");
+    return false;
+  }
   if ((mZipItem.flags & 64) == 64)
   {
     CLog::Log(LOGERROR,"FileZip: encrypted file, not supported!");
