@@ -3899,7 +3899,7 @@
   <include name="MusicNowPlaying">
     <control type="group">
       <posy>0</posy>
-      <visible>!Skin.HasSetting(HideNowPlayingMusicInfo) | Window.IsActive(PlayerControls)</visible>
+      <visible>[!Skin.HasSetting(HideNowPlayingMusicInfo) | Window.IsActive(PlayerControls)] + !Window.IsActive(NowPlaying)</visible>
       <include>MusicNowPlayingSlideLeft</include>
       <include>MusicNowPlayingHomeSlideAnim</include>
 
