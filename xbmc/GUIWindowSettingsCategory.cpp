@@ -60,7 +60,9 @@
 #include "GUIWindowPrograms.h"
 #include "MediaManager.h"
 #include "utils/Network.h"
+#ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/WebServer.h"
+#endif
 #include "GUIControlGroupList.h"
 #include "GUIWindowManager.h"
 #ifdef _LINUX
