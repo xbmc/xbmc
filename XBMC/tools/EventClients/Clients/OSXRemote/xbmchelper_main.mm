@@ -104,7 +104,10 @@ void ParseOptions(int argc, char** argv)
 	bool readExternal = false;
   g_universal_mode = false;
   g_server_address = "localhost";
-  g_mode = DEFAULT_MODE;
+//  g_mode = DEFAULT_MODE;
+//fix me after 9.04 
+//for now the default mode is MULTIREMOTE_MODE
+  g_mode = MULTIREMOTE_MODE;
   g_app_path = "";
   g_app_home = "";
   
@@ -169,24 +172,24 @@ void Reconfigure(int nSignal)
 //----------------------------------------------------------------------------
 int main (int argc,  char * argv[]) {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
+  
   g_xbmchelper = [[XBMCHelper alloc] init];  
   
   signal(SIGHUP, Reconfigure);
 	signal(SIGINT, Reconfigure);
 	signal(SIGTERM, Reconfigure);
-
+  
   ParseOptions(argc,argv);
   
   //set apppath to startup when pressing Menu
   [g_xbmchelper setApplicationPath:[NSString stringWithCString:g_app_path.c_str()]];
-
+  
   //set apppath to startup when pressing Menu
   [g_xbmchelper setApplicationHome:[NSString stringWithCString:g_app_home.c_str()]];  
   
   //connect to specified server
   [g_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] withMode:g_mode];
-
+  
   //run event loop in this thread
   RunCurrentEventLoop(kEventDurationForever);
   

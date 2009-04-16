@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  *
  *****************************************************************************/
- 
+
 #import <Cocoa/Cocoa.h>
 
 // notifaction names that are being used to signal that an application wants to 
@@ -71,8 +71,8 @@ typedef enum _RemoteControlEventIdentifier {
 @end
 
 /*
-	Base Interface for Remote Control devices
-*/
+ Base Interface for Remote Control devices
+ */
 @interface RemoteControl : NSObject {
 	id delegate;
 }

@@ -57,8 +57,8 @@ bool CLinuxFileSystem::ApproveDevice(CStorageDevice *device)
   else
     approve = false;
 
-  // Ignore root
-  if (strcmp(device->MountPoint, "/") == 0)
+  // Ignore some mountpoints, unless a weird setup these should never contain anything usefull for an enduser.
+  if (strcmp(device->MountPoint, "/") == 0 || strcmp(device->MountPoint, "/boot/") == 0 || strcmp(device->MountPoint, "/mnt/") == 0 || strcmp(device->MountPoint, "/home/") == 0)
     approve = false;
 
   device->Approved = approve;

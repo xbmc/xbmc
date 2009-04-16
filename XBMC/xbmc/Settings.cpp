@@ -222,7 +222,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   g_advancedSettings.m_videoCleanRegExps.push_back("(\\[.*\\])");
 
-  g_advancedSettings.m_videoExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+  g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+  g_advancedSettings.m_tvshowExcludeFromScanRegExps.push_back("[-\\._ ]sample[-\\._ ]");
 
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
@@ -1198,7 +1199,11 @@ void CSettings::LoadAdvancedSettings()
 
     pVideoExcludes = pElement->FirstChildElement("excludefromscan");
     if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromScanRegExps);
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_moviesExcludeFromScanRegExps);
+
+    pVideoExcludes = pElement->FirstChildElement("excludetvshowsfromscan");
+    if (pVideoExcludes)
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_tvshowExcludeFromScanRegExps);
 
     pVideoExcludes = pElement->FirstChildElement("cleanfilenames");
     if (pVideoExcludes)
@@ -2432,7 +2437,8 @@ void CSettings::Clear()
 //  m_vecIcons.clear();
   m_vecProfiles.clear();
   g_advancedSettings.m_videoCleanRegExps.clear();
-  g_advancedSettings.m_videoExcludeFromScanRegExps.clear();
+  g_advancedSettings.m_moviesExcludeFromScanRegExps.clear();
+  g_advancedSettings.m_tvshowExcludeFromScanRegExps.clear();
   g_advancedSettings.m_videoExcludeFromListingRegExps.clear();
   g_advancedSettings.m_videoStackRegExps.clear();
   g_advancedSettings.m_audioExcludeFromScanRegExps.clear();

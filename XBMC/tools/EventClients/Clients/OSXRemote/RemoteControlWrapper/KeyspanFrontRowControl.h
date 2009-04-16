@@ -30,10 +30,10 @@
 #import "HIDRemoteControlDevice.h"
 
 /*	Interacts with the Keyspan FrontRow Remote Control HID device
-	The class is not thread safe
-*/
+ The class is not thread safe
+ */
 @interface KeyspanFrontRowControl : HIDRemoteControlDevice {
-
+  
 }
 
 @end

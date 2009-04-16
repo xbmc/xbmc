@@ -45,7 +45,7 @@
   <string id="109">Crear miniat.</string>
   <string id="110">Crear miniaturas</string>
   <string id="111">Accesos directos</string>
-  <string id="112">PAUSADO</string>
+  <string id="112">Pausado</string>
   <string id="113"></string>
   <string id="114"></string>
   <string id="115">Copiar</string>
@@ -53,9 +53,9 @@
   <string id="117">Eliminar</string>
   <string id="118">Renombrar</string>
   <string id="119">Nuevo directorio</string>
-  <string id="120">Confirmar copia</string>
-  <string id="121">Confirmar movimiento</string>
-  <string id="122">Confirmar eliminación</string>
+  <string id="120">Confirmar copiar</string>
+  <string id="121">Confirmar mover</string>
+  <string id="122">Confirmar eliminar</string>
   <string id="123">¿Copiar estos ficheros?</string>
   <string id="124">¿Mover estos ficheros?</string>
   <string id="125">¿Eliminar estos ficheros?</string>
@@ -71,7 +71,7 @@
   <string id="135">Géneros</string>
   <string id="136">Listas de reproducción</string>
   <string id="137">Buscar</string>
-  <string id="138">INFORMACIÓN DEL SISTEMA</string>
+  <string id="138">Información del Sistema</string>
   <string id="139">Temperaturas:</string>
   <string id="140">CPU:</string>
   <string id="141">GPU:</string>
@@ -89,7 +89,7 @@
   <string id="153">Full duplex</string>
   <string id="154">Almacenamiento</string>
   <string id="155">Unidad</string>
-  <string id="156">libres</string>
+  <string id="156">Libres</string>
   <string id="157">Vídeo</string>
   <string id="158">Memoria libre</string>
   <string id="159">Sin enlace</string>
@@ -104,14 +104,14 @@
   <string id="168">Activar sincronización horaria desde Internet</string>
   <string id="169">Resolución</string>
   <string id="170">Álbum:</string>
-  <string id="171">Intérprete:</string>
+  <string id="171"></string>
   <string id="172">Fecha de publicación:</string>
-  <string id="173">Valoración:</string>
-  <string id="174">Género:</string>
+  <string id="173"></string>
+  <string id="174"></string>
   <string id="175">Estados de ánimo:</string>
   <string id="176">Estilos:</string>
-  <string id="177">Crítica:</string>
-  <string id="178">Pistas:</string>
+  <string id="177"></string>
+  <string id="178"></string>
   <string id="179">Canción</string>
   <string id="180">Duración</string>
   <string id="181">Seleccionar álbum</string>
@@ -125,19 +125,19 @@
   <string id="189">Obteniendo información de medios</string>
   <string id="190">Guardar</string>
   <string id="191">Aleatorio</string>
-  <string id="192">Borrar</string>
+  <string id="192">Limpiar</string>
   <string id="193">Obtener</string>
   <string id="194">Buscando...</string>
   <string id="195">¡No se encontró información!</string>
   <string id="196">Seleccione película:</string>
   <string id="197">Consultando %s</string>
   <string id="198">Cargando detalles de la película</string>
-  <string id="199">Director:</string>
-  <string id="200">Guión:</string>
-  <string id="201">Año:</string>
+  <string id="199"></string>
+  <string id="200"></string>
+  <string id="201"></string>
   <string id="202">Eslogan:</string>
   <string id="203">Resumen:</string>
-  <string id="204">Valoración:</string>
+  <string id="204"></string>
   <string id="205">Votos:</string>
   <string id="206">Reparto</string>
   <string id="207">Argumento</string>
@@ -401,8 +401,8 @@
   <string id="480">Apariencia</string>
   <string id="481">Opciones de Sonido</string>
   <string id="482">Acerca de XBMC</string>
-  <string id="483">Álbum</string>
-  <string id="484">Intérprete</string>
+  <string id="483"></string>
+  <string id="484"></string>
   <string id="485">Eliminar álbum</string>
   <string id="486">Repetir</string>
   <string id="487">Repetir Uno</string>
@@ -462,8 +462,9 @@
   <string id="545">Dispositivo de salida de sonido</string>
   <string id="546">Dispositivo de salida passthrough</string>
   <string id="547">No hay biografía para este artista</string>
+  <string id="548">Canal de bajada a stereo</string>
 
-  <string id="550">Orden: %s</string>
+  <string id="550">Ordenar por: %s</string>
   <string id="551">Nombre</string>
   <string id="552">Fecha</string>
   <string id="553">Tamaño</string>
@@ -486,6 +487,7 @@
   <string id="570">Fecha de inclusión</string>
   <string id="571">Por defecto</string>
   <string id="572">Estudio</string>
+  <string id="573">Ruta</string>
 
   <string id="580">Dirección de ordenación</string>
   <string id="581">Método de ordenación</string>
@@ -506,12 +508,12 @@
   <string id="596">Repetir: Uno</string>
   <string id="597">Repetir: Todos</string>
 
-  <string id="600">Copiar CD de Audio</string>
+  <string id="600">Ripear CD de Audio</string>
   <string id="601">Media</string>
   <string id="602">Estándar</string>
   <string id="603">Extrema</string>
   <string id="604">Velocidad de bits constante (CBR)</string>
-  <string id="605">Copiando...</string>
+  <string id="605">Ripeando...</string>
   <string id="606">Número de Pista:</string>
   <string id="607">A:</string>
   <string id="608">No se puede copiar CD o Pista</string>
@@ -519,7 +521,7 @@
   <string id="610">Copiar pista de audio</string>
   <string id="611">Introducir número</string>
 
-  <string id="620">Copiar CD Audio</string>
+  <string id="620">Ripear CD</string>
   <string id="621">Codificador</string>
   <string id="622">Calidad</string>
   <string id="623">Velocidad de bits</string>
@@ -558,6 +560,8 @@
   <string id="659">Comentario:</string>
   <string id="660">Amplificación de Volumen</string>
   <string id="661">Escoja el directorio de exportación</string>
+  <string id="662">Éste archivo ya no está disponible</string>
+  <string id="663">¿Le gustaría eliminarlo de la librería?</string>
 
   <string id="700">Limpiar la biblioteca</string>
   <string id="701">Eliminando canciones antiguas de la biblioteca</string>
@@ -623,10 +627,10 @@
   <string id="763">Verde Claro</string>
   <string id="764">Verde amarillento</string>
   <string id="765">Verde azulado</string>
-  <string id="766">Reserved</string>
-  <string id="767">Reserved</string>
-  <string id="768">Reserved</string>
-  <string id="769">Reserved</string>
+  <string id="766">Reservedo</string>
+  <string id="767">Reservedo</string>
+  <string id="768">Reservedo</string>
+  <string id="769">Reservedo</string>
   <string id="770">Error %i: recurso no disponible</string>
   <string id="771">- Auto Limitador Fatx</string>
   <string id="772">Hardware Sonido</string>
@@ -657,14 +661,14 @@
   <string id="796">Retraso continuo de repetición (ms)</string>
   <string id="797">Número máximo de clientes</string>
 
-  <string id="998">XLink Kai</string>
-  <string id="999">Jugar en Línea</string>
+  <string id="998"></string>
+  <string id="999"></string>
   <string id="1000">Vista previa del salvapantallas</string>
   <string id="1001">Imposible conectar</string>
   <string id="1002">XBMC ha sido incapaz de conectar a la dirección de red.</string>
   <string id="1003">Podría ser debido a que la red no esté conectada.</string>
   <string id="1004">¿Desea añadirla de todos modos?</string>
-  <string id="1005">Introduzca el nombre para este recurso compartido</string>
+  <string id="1005"></string>
   <string id="1006">Dirección IP</string>
   <string id="1007">Añadir Dirección de Red</string>
   <string id="1008">Protocolo</string>
@@ -707,6 +711,7 @@
   <string id="1045">Configuración del plugin</string>
   <string id="1046">Puntos de acceso</string>
   <string id="1047">Otro...</string>
+  <string id="1048">Usuario de Servidor Web</string>
 
   <string id="1200">Cliente SMB</string>
   <string id="1202">Grupo de trabajo</string>
@@ -753,6 +758,7 @@
   <string id="1255">Enviar Usuario y Contraseña FTP</string>
   <string id="1256">Intervalo de Ping</string>
   <string id="1257">¿Desea conectar al sistema autodetectado?</string>
+  <string id="1260">Zeroconf publishing</string>
 
   <string id="1396">A la deriva</string>
   <string id="1397">y</string>
@@ -775,7 +781,7 @@
   <string id="1414">T-Storm</string>
   <string id="1415">Llovizna</string>
   <string id="1416">Nublado</string>
-
+   <!-- strings through to 1450 reserved for weather translation -->
   <string id="2050">Duración:</string>
 
   <string id="4501">Tipo de LCD</string>
@@ -880,7 +886,7 @@
   <string id="12318">8</string>
   <string id="12319">9</string>
   <string id="12320">c</string>
-  <string id="12321">ok</string>
+  <string id="12321">Ok</string>
   <string id="12322">*</string>
   <string id="12325">¡Bloqueado! Introduzca código...</string>
   <string id="12326">Introduzca la contraseña</string>
@@ -945,14 +951,26 @@
   <string id="13005">Apagar</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Usar Ruta de Dashboard Personalizada</string>
+  <string id="13008">Modo de apagado por defecto</string> 
+  <string id="13009">Salir</string> 
+  <string id="13010">Hibernar</string>
+  <string id="13011">Suspender</string>
+  <string id="13012">Salir</string>
+  <string id="13013">Reiniciar</string>
+  <string id="13014">Minimizar</string>
+  <string id="13020">Existe otra sesión activa, ¿tal vez ssh?</string>
+  <string id="13021">Disco duro remoto montado</string>
+  <string id="13022">Expulsión de dispositivo no segura</string>
+  <string id="13023">Dispositivo eliminado correctamente</string>
+  <string id="13024">Joystick conectado</string>
+  <string id="13025">Joystick desconectado</string>
   <string id="13100">Filtro antivibración</string>
+  <string id="13101">Permitir al dispositivo elegir (requiere reinicio)</string>
   <string id="13105">Sinc. de refresco vertical</string>
   <string id="13106">Deshabilitado</string>
   <string id="13107">Al reproducir vídeo</string>
   <string id="13108">Siempre habilitado</string>
   <string id="13009">Salir</string> 
-  <string id="13010">Hibernar</string>
-  <string id="13011">Reposo</string>
 
   <string id="13100">Filtro de parpadeo</string>
   <string id="13105">Sinc. de refresco vertical</string>
@@ -973,10 +991,19 @@
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
 
+  <string id="13120">Enlace Pixmap-Textura estricto (requiere reinicio)</string>
   <string id="13130">Mostrar refresco</string>
   <string id="13131">Deshabilitado</string>
   <string id="13132">Pantallas de refresco</string>
 
+  <string id="13140">Conexiones activas detectadas!</string>
+  <string id="13141">Si continúa, puede que pierda el control de XBMC</string>
+  <string id="13142">¿Está seguro de que quiere parar el servidor de eventos??</string>
+
+  <string id="13144">¿Cambiar modo Apple remoto</string>
+  <string id="13145">Si está usando Apple Remote para controlar</string>
+  <string id="13146">XBMC, cambiar éste ajuste puede afectar su capacidad</string>
+  <string id="13147">para continuar controlándolo.¿Desea continuar?</string>
   <string id="13150">Clave del HDD:</string>
   <string id="13151">Temperatura del HDD:</string>
   <string id="13152">Modelo del DVD:</string>
@@ -1151,6 +1178,14 @@
   <string id="13411">Velocidad mínima de ventilador</string>
   <string id="13412">Los feeds RSS contienen texto de derecha a izquierda</string>
   <string id="13413">Descargando</string>
+  <string id="13414">Ocultar artistas que sólo aparecen en compilaciones</string>
+  <string id="13415">Método de renderizado</string>
+  <string id="13416">Auto detectar</string>
+  <string id="13417">Basic shaders (ARB)</string>
+  <string id="13418">Advanced shaders (GLSL)</string>
+  <string id="13419">Software</string>
+  <string id="13421">VDPAU</string>
+  <string id="13420">Expulsar</string>
   
   <string id="13600">Apple Remote</string>
   <string id="13601">Modo</string>
@@ -1161,13 +1196,8 @@
   <string id="13611">Estándar</string>
   <string id="13612">Universal Remote</string>
   
-  <string id="13620">El driver de Remote Buddy está instalado.</string>
-  <string id="13621">No se puede activar el soporte para el Apple Remote.</string>
-  <string id="13622">Por favor, consulte el FAQ de Remote Buddy para desinstalar.</string>
-
-  <string id="13623">Sofa Control está ejecutándose.</string>
-  <string id="13624">Por favor, consulte la documentación de Sofa Control para desinstalar.</string>
-
+  <string id="13620">Error de Apple Remote</string>
+  <string id="13621">No se puede activar el soporte para Apple Remote.</string>
   <string id="14000">Agrupar</string>
   <string id="14001">No Agrupar</string>
   <string id="14003">Descargando fichero de lista de reproducción...</string>
@@ -1247,68 +1277,68 @@
   <string id="14079">País del huso horario</string>
   <string id="14080">Huso horario</string>
 
-  <string id="15000">XLink Kai</string>
-  <string id="15001">El servicio no está conectado.</string>
-  <string id="15002">¿Desea reintentar la conexión?</string>
-  <string id="15003">Introduzca su mensaje</string>
-  <string id="15004">Ha sido invitado para jugar a %s.</string>
-  <string id="15005">Fecha: %s</string>
-  <string id="15006">De: %s</string>
-  <string id="15007">Invitación</string>
-  <string id="15008">Ha sido invitado para entrar en %s.</string>
-  <string id="15009">Desconectado</string>
-  <string id="15010">Amigos</string>
-  <string id="15011">Ver: Amigos</string>
-  <string id="15012">Entrar</string>
-  <string id="15013">Voz</string>
-  <string id="15014">Invitar</string>
+  <string id="15000"></string>
+  <string id="15001"></string>
+  <string id="15002"></string>
+  <string id="15003"></string>
+  <string id="15004"></string>
+  <string id="15005"></string>
+  <string id="15006"></string>
+  <string id="15007"></string>
+  <string id="15008"></string>
+  <string id="15009"></string>
+  <string id="15010"></string>
+  <string id="15011"></string>
+  <string id="15012"></string>
+  <string id="15013"></string>
+  <string id="15014"></string>
   <string id="15015">Eliminar</string>
   <string id="15016">Juegos</string>
-  <string id="15017">Ver: Juegos</string>
-  <string id="15018">Entrar</string>
+  <string id="15017"></string>
+  <string id="15018"></string>
   <string id="15019">Añadir</string>
-  <string id="15020">Servidor</string>
-  <string id="15021">Salas</string>
-  <string id="15022">Ver: Salas</string>
-  <string id="15023">Jugar</string>
-  <string id="15024">Añadir</string>
-  <string id="15025">Servidor</string>
-  <string id="15026">Chat</string>
-  <string id="15027">Ver: Chat</string>
-  <string id="15028">Teclado</string>
-  <string id="15029">Es necesaria una contraseña para entrar en esta sala.</string>
-  <string id="15030">El servicio ha desconectado</string>
-  <string id="15031">Autenticación XLink Kai</string>
-  <string id="15032">Su usuario y/o contraseña han sido rechazados por el</string>
-  <string id="15033">servidor orbital. Por favor, compruebe su configuración.</string>
-  <string id="15034">ha iniciado sesión</string>
-  <string id="15035">ha iniciado una conversación de voz</string>
-  <string id="15036">te ha enviado una invitación</string>
-  <string id="15037">XBMC no puede confirmar que su red sea accesible.</string>
-  <string id="15038">Vd. puede experimentar dificultades entrando en, u hospedando juegos.</string>
-  <string id="15039">Imposible localizar el juego automáticamente.</string>
-  <string id="15040">Inserte el disco del juego en su Xbox o pulse 'A' para cancelar</string>
-  <string id="15041">e inicie el juego manualmente.</string>
-  <string id="15042">Acceso Denegado</string>
-  <string id="15043">%s entra en el chat.</string>
-  <string id="15044">%s abandona el chat.</string>
-  <string id="15045">Introduzca su mensaje personal.</string>
-  <string id="15046">Sala Actual</string>
-  <string id="15047">Introduzca una contraseña para su sala.</string>
-  <string id="15048">Introduzca una descripción para su sala.</string>
-  <string id="15049">Hospedar Juego</string>
-  <string id="15050">Hospedar en sala privada</string>
-  <string id="15051">Máx. Jugadores</string>
+  <string id="15020"></string>
+  <string id="15021"></string>
+  <string id="15022"></string>
+  <string id="15023"></string>
+  <string id="15024"></string>
+  <string id="15025"></string>
+  <string id="15026"></string>
+  <string id="15027"></string>
+  <string id="15028"></string>
+  <string id="15029"></string>
+  <string id="15030"></string>
+  <string id="15031"></string>
+  <string id="15032"></string>
+  <string id="15033"></string>
+  <string id="15034"></string>
+  <string id="15035"></string>
+  <string id="15036"></string>
+  <string id="15037"></string>
+  <string id="15038"></string>
+  <string id="15039"></string>
+  <string id="15040"></string>
+  <string id="15041"></string>
+  <string id="15042"></string>
+  <string id="15043"></string>
+  <string id="15044"></string>
+  <string id="15045"></string>
+  <string id="15046"></string>
+  <string id="15047"></string>
+  <string id="15048"></string>
+  <string id="15049"></string>
+  <string id="15050"></string>
+  <string id="15051"></string>
   <string id="15052">Contraseña</string>
-  <string id="15053">Descripción</string>
-  <string id="15054">Diálogo Invitar</string>
-  <string id="15055">Seleccione juego:</string>
-  <string id="15056">Introduzca mensaje:</string>
-  <string id="15057">Enviar</string>
-  <string id="15058">Hospedar partida</string>
-  <string id="15059">¡Invitacion aceptada!</string>
-  <string id="15060">Mensaje aquí</string>
-  <string id="15061">Ha sido invitado a jugar a %s.</string>
+  <string id="15053"></string>
+  <string id="15054"></string>
+  <string id="15055"></string>
+  <string id="15056"></string>
+  <string id="15057"></string>
+  <string id="15058"></string>
+  <string id="15059"></string>
+  <string id="15060"></string>
+  <string id="15061"></string>
   <string id="15100">Biblioteca</string>
   <string id="15101">Base de datos</string>
   <string id="15102">* Todos Albums</string>
@@ -1465,6 +1495,11 @@
   <string id="16308">Lanczos (software)</string>  
   <string id="16309">Sinc (software)</string>
 
+  <string id="16310">(VDPAU)Temporal</string>
+  <string id="16311">(VDPAU)Temporal/Espacial</string>
+  <string id="16312">(VDPAU)Reducción de Ruído</string>
+  <string id="16313">(VDPAU)Agudeza</string>
+  <string id="16314">Telecine inverso</string>
   <string id="17500">Mostrar cuenta atrás para el reposo</string>
 
   <string id="20000">Directorio de grabación de CDs de audio</string>
@@ -1661,8 +1696,8 @@
   <string id="20251">Mezclando bebidas (vídeos)</string>
   <string id="20252">Llenando vasos (vídeos)</string>
 
-  <string id="20300"></string>
-  <string id="20301"></string>
+  <string id="20300">Directorio Servidor Web (HTTP)</string>
+  <string id="20301">Directorio Servidor Web (HTTPS)</string>
   <string id="20302"></string>
   <string id="20303"></string>
   <string id="20304"></string>
@@ -1787,6 +1822,15 @@
   <string id="20422">siempre</string>
   <string id="20423">tiene trailer</string>
   <string id="20424">Falso</string>
+  <string id="20425">Presentación de fanart</string>
+  <string id="20426">Exportar a un sólo archivo o separar</string>
+  <string id="20427">¿Archivos por entrada?</string>
+  <string id="20428">Un sólo archivo</string>
+  <string id="20429">Separar</string>
+  <string id="20430">¿Exportar miniaturas y fanart?</string>
+  <string id="20431">¿Sobreescribir archivos antiguos?</string>
+  <string id="20432">Excluir ruta de actualizaciones de biblioteca</string> 
+  <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Mostrar ficheros y directorios ocultos</string>
 
@@ -1854,6 +1898,11 @@
   <string id="21409">antes</string>
   <string id="21410">en los últimos</string>
   <string id="21411">no en los últimos</string>
+  <string id="21412">Scrapers</string>
+  <string id="21413">Scraper de película por defecto</string>
+  <string id="21414">Scraper de serie por defecto</string>
+  <string id="21415">Scraper de vídeo musical por defecto</string>
+  <string id="21416">Habilitar vuelta atrás basada en lenguaje de Scraper</string>
 
   <string id="21420">Valor a encontrar</string>
   <string id="21421">Regla de lista de reproducción inteligente</string>
@@ -1971,6 +2020,21 @@
   <string id="22012">Memoria Total</string>
   <string id="22013">Datos de perfil</string>
 
+  <!-- strings 22030 thru 22060 reserved for karaoke -->
+  <string id="22030">Fuente</string>
+  <string id="22031">- Tamaño</string>
+  <string id="22032">- Colores</string>
+  <string id="22033">- Juego de caracteres</string>
+  <string id="22034">Exportar títulos de karaoke como HTML</string>
+  <string id="22035">Exportar títulos de karaoke como CSV</string>
+  <string id="22036">Importar títulos de karaoke...</string>
+  <string id="22037">Mostrar selector de canciones automáticamente</string>
+  <string id="22038">Exportar títulos de karaoke...</string>
+  <string id="22039">Introduzca nombre de canción</string>
+  <string id="22040">Blanco/Verde</string>
+  <string id="22041">Blanco/Rojo</string>
+  <string id="22042">Blanco/Azul</string>
+  <string id="22043">Blanco/Negro</string>
   <string id="29800">Modo biblioteca</string>
   <string id="29801">Teclado QWERTY</string>
 

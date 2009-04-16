@@ -182,7 +182,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
       bIsDirectory = true;
 
     CStdString strLabel=filename;
-    g_charsetConverter.stringCharsetToUtf8(strLabel);
+    g_charsetConverter.unknownToUTF8(strLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
 
     char* pstrSizeStart = strstr(fileinfo, "<SIZE>");
@@ -219,7 +219,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
 
     pItem->m_strPath = strRoot;
     pItem->m_strPath += filename;
-    g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
+    g_charsetConverter.unknownToUTF8(pItem->m_strPath);
     pItem->m_bIsFolder = bIsDirectory;
     if (pItem->m_bIsFolder)
       CUtil::AddSlashAtEnd(pItem->m_strPath);
@@ -277,10 +277,10 @@ static void DiscoveryCallback(const char *addr, const char *port, const char *ve
   strPath += "/";
 
   // Add to items
-  g_charsetConverter.stringCharsetToUtf8(itemName);
+  g_charsetConverter.unknownToUTF8(itemName);
   CFileItemPtr pItem(new CFileItem(itemName));
   pItem->m_strPath = strPath;
-  g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
+  g_charsetConverter.unknownToUTF8(pItem->m_strPath);
   pItem->m_bIsFolder = true;
   pItem->m_bIsShareOrDrive = true;
   pItem->SetIconImage("defaultNetwork.png");

@@ -1660,7 +1660,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
                                                        NPT_HttpRequestContext());
     if (object) {
         // fetch the path to the thumbnail
-        CStdString thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, -1); //TODO: Only audio for now
+        CStdString thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, (DWORD)-1); //TODO: Only audio for now
 
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
         NPT_String ip;

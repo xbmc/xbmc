@@ -62,7 +62,7 @@ namespace PYXBMC
     if (PyString_Check(pObject))
     {
       CStdString utf8String;
-      g_charsetConverter.stringCharsetToUtf8(PyString_AsString(pObject), utf8String);
+      g_charsetConverter.unknownToUTF8(PyString_AsString(pObject), utf8String);
       buf = utf8String;
       return 1;
     }

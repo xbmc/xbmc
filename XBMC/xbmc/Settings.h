@@ -28,7 +28,7 @@
 #define DEFAULT_THUMB_SIZE  256
 #else  // MID
 #define DEFAULT_SKIN        "PM3.HD"
-#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#define DEFAULT_VSYNC       VSYNC_DRIVER
 #define DEFAULT_THUMB_SIZE  512
 #endif // MID
 
@@ -201,7 +201,8 @@ public:
     bool m_displayRemoteCodes;
     CStdStringArray m_videoCleanRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
-    CStdStringArray m_videoExcludeFromScanRegExps;
+    CStdStringArray m_moviesExcludeFromScanRegExps;
+    CStdStringArray m_tvshowExcludeFromScanRegExps;
     CStdStringArray m_audioExcludeFromListingRegExps;
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;

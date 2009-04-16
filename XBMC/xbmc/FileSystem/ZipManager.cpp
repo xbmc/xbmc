@@ -135,10 +135,16 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
         return true;
       }
     }
+    if ((ze.flags & 8) == 8)
+    {
+      CLog::Log(LOGDEBUG,"ZipManager: extended local header, not supported! %s!",strFile.c_str());
+      mFile.Close();
+      return false;
+    }
     CStdString strName;
     mFile.Read(strName.GetBuffer(ze.flength), ze.flength);
     strName.ReleaseBuffer();
-    g_charsetConverter.stringCharsetToUtf8(strName);
+    g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
     mFile.Seek(ze.elength,SEEK_CUR);
