@@ -22,12 +22,6 @@
       <control type="image" id="0">
         <width>330</width>
         <height>330</height>
-        <aspectratio>stretch</aspectratio>
-        <texture diffuse="NowPlayingCoverDiffuse.png">NowPlayingDefaultCover.png</texture>
-      </control>
-      <control type="image" id="0">
-        <width>330</width>
-        <height>330</height>
         <info>MusicPlayer.Cover</info>
         <aspectratio>stretch</aspectratio>
         <texture diffuse="NowPlayingCoverDiffuse.png"/>
@@ -44,12 +38,7 @@
   <include name="NowPlayingNextCover">
     <control type="group">
       <description>Next cover</description>
-      <control type="image" id="0">
-        <width>264</width>
-        <height>264</height>
-        <aspectratio>stretch</aspectratio>
-        <texture diffuse="NowPlayingSmallCoverDiffuse.png">NowPlayingDefaultCover.png</texture>
-      </control>
+      <visible>Player.HasMusicPlaylist</visible>
       <control type="image" id="0">
         <width>264</width>
         <height>264</height>
