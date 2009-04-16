@@ -58,7 +58,7 @@ bool CLinuxFileSystem::ApproveDevice(CStorageDevice *device)
     approve = false;
 
   // Ignore some mountpoints, unless a weird setup these should never contain anything usefull for an enduser.
-  if (strcmp(device->MountPoint, "/") == 0 || strcmp(device->MountPoint, "/boot/") == 0)
+  if (strcmp(device->MountPoint, "/") == 0 || strcmp(device->MountPoint, "/boot/") == 0 || strcmp(device->MountPoint, "/mnt/") == 0)
     approve = false;
 
   device->Approved = approve;
