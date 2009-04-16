@@ -1295,7 +1295,8 @@ Optional Features:
   --enable-faac           enable FAAC support (default is yes)
   --enable-dvdcss         enable DVDCSS support (default is yes)
   --enable-mid            enable MID support (default is no)
-  --enable-avahi          enable Avahi support (default is no)
+  --disable-avahi         disable Avahi support (default is enabled if
+                          libavahi-common and libavahi-client is found)
 
 Some influential environment variables:
   CXX         C++ compiler command
