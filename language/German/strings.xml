@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Bernhard Rode-->
-<!--Email: mail@bernhardrode.de-->
-<!--Date of translation: 04/09/2009-->
+<!--Translator: uwer-->
+<!--Email: uwer@netic.de-->
+<!--Date of translation: 04/14/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 19319-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -83,11 +82,11 @@
   <string id="146">Typ:</string>
   <string id="147">Statisch</string>
   <string id="148">DHCP</string>
-  <string id="149">MAC-Addresse</string>
-  <string id="150">IP-Addresse</string>
+  <string id="149">MAC-Adresse</string>
+  <string id="150">IP-Adresse</string>
   <string id="151">Verbindung:</string>
-  <string id="152">Half Duplex</string>
-  <string id="153">Full Duplex</string>
+  <string id="152">Halbduplex</string>
+  <string id="153">Vollduplex</string>
   <string id="154">Laufwerke:</string>
   <string id="155">Laufwerk</string>
   <string id="156">Frei</string>
@@ -254,10 +253,10 @@
   <string id="326">Alben werden aktualisiert...</string>
   <string id="327">Fehler beim aktualisieren der Alben</string>
   <string id="328">Änderungen werden gespeichert...</string>
-  <string id="329">Fehler beim speichern der Änderungen</string>
+  <string id="329">Fehler beim Speichern der Änderungen</string>
   <string id="330">Bitte haben Sie einen Moment Geduld...</string>
   <string id="331">Datenbank wird komprimiert...</string>
-  <string id="332">Fehler beim komprimieren der Datenbank</string>
+  <string id="332">Fehler beim Komprimieren der Datenbank</string>
   <string id="333">Ihre Datenbank wird nach ungültigen Einträgen
 durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="334">Ungültige Datenbank-Einträge entfernen...</string>
@@ -284,7 +283,7 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="359">Zuletzt hinzugefügte Alben</string>
   <string id="360">Bildschirmschoner</string>
   <string id="361">Rekurs. Diaschau</string>
-  <string id="362">Bildschirm verdunkeln um</string>
+  <string id="362">Bildschirm verdunkeln auf</string>
   <string id="363">Nach Datei</string>
   <string id="364">- Receiver unterstützt AC3</string>
   <string id="365">Nach Namen</string>
@@ -920,6 +919,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13008">Standard Ausschalte- / Energiesparmodus</string>
   <string id="13009">Beenden</string>
   <string id="13010">Ruhezustand</string>
+  <string id="13011">Ruhezustand</string>
   <string id="13012">Beenden</string>
   <string id="13013">Neustart</string>
   <string id="13014">Minimieren</string>
@@ -938,19 +938,20 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13109">Teste Auflösung</string>
   <string id="13110">Speichere Auflösung?</string>
   <string id="13111">Möchten Sie die Auflösung beibehalten?</string>
-  <string id="13112">Hochauflösende Software Hochscalierung</string>
+  <string id="13112">Hochauflösende Software Hochskalierung</string>
   <string id="13113">Deaktiviert</string>
   <string id="13114">Aktivieren des SD Inhalts</string>
   <string id="13115">Immer aktiviert</string>
-  <string id="13116">Hochscalierungs Methode</string>
-  <string id="13117">Bicubic</string>
+  <string id="13116">Hochskalierungs-Methode</string>
+  <string id="13117">Bikubisch</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Striktes binden von Pixmaps auf Texturen (benötigt Neustart)</string>
   <string id="13130">Bildschirm abschalten</string>
   <string id="13131">Deaktiviert</string>
   <string id="13132">leerer Bildschirm</string>
   <string id="13140">Aktive Verbindungen festgestellt!</string>
-  <string id="13141">Beim fortfahren kann das XBMC nicht länger gesteuert werden.</string>
+  <string id="13141">Beim Fortfahren kann das XBMC nicht länger gesteuert werden.</string>
   <string id="13142">Soll der Event Server wirklich gestoppt werden?</string>
   <string id="13144">Wechsel Apple Remote Modus?</string>
   <string id="13145">Wenn aktuell Apple Remote zur Steuerung des XBMC</string>
@@ -1417,10 +1418,19 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="16206">Fehler beim Löschen von mindestens einer Datei.</string>
   <string id="16300">Video Skalierungs Methode</string>
   <string id="16301">Nächste Nachbar</string>
+  <string id="16302">Bilinear</string>
+  <string id="16303">Bicubic</string>
+  <string id="16304">Lanczos2</string>
+  <string id="16305">Lanczos3</string>
+  <string id="16306">Sinc8</string>
+  <string id="16307">Bicubic (Software)</string>
+  <string id="16308">Lanczos (Software)</string>
+  <string id="16309">Sinc (Software)</string>
   <string id="16310">(VDPAU)Zeitlich</string>
   <string id="16311">(VDPAU)Zeitlich/Räumlich</string>
   <string id="16312">(VDPAU)Rauschunterdrückung</string>
   <string id="16313">(VDPAU)Schärfe</string>
+  <string id="16314">Inverse Telecine</string>
   <string id="17500">Bildschirm Sleep Timeout</string>
   <string id="20000">Ordner für CD-Kopien</string>
   <string id="20001">Externen DVD-Player verwenden</string>
