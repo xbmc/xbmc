@@ -31,7 +31,9 @@
 #endif
 #include "infotagvideo.h"
 #include "infotagmusic.h"
+#ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"
+#endif
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
 #include "GUIAudioManager.h"
