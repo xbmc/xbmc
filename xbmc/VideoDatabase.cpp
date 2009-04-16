@@ -2598,14 +2598,28 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
     // create cast string
     CStdString strSQL = FormatSQL("select actors.strActor,actorlinkepisode.strRole,actors.strThumb from actorlinkepisode,actors where actorlinkepisode.idEpisode=%u and actorlinkepisode.idActor = actors.idActor",lEpisodeId);
     m_pDS2->query(strSQL.c_str());
-    while (!m_pDS2->eof())
+    bool showCast=false;
+    while (!m_pDS2->eof() || !showCast)
     {
-      SActorInfo info;
-      info.strName = m_pDS2->fv("actors.strActor").get_asString();
-      info.strRole = m_pDS2->fv("actorlinkepisode.strRole").get_asString();
-      info.thumbUrl.ParseString(m_pDS2->fv("actors.strThumb").get_asString());
-      details.m_cast.push_back(info);
-      m_pDS2->next();
+      if (!m_pDS2->eof())
+      {
+        SActorInfo info;
+        info.strName = m_pDS2->fv("actors.strActor").get_asString();
+        info.strRole = m_pDS2->fv("actorlinkepisode.strRole").get_asString();
+        info.thumbUrl.ParseString(m_pDS2->fv("actors.strThumb").get_asString());
+        details.m_cast.push_back(info);
+        m_pDS2->next();
+      }
+      if (m_pDS2->eof() && !showCast)
+      {
+        showCast = true;
+        long idShow = GetTvShowForEpisode(details.m_iDbId);
+        if (idShow > -1)
+        {
+          strSQL = FormatSQL("select actors.strActor,actorlinktvshow.strRole,actors.strThumb from actorlinktvshow,actors where actorlinktvshow.idShow=%u and actorlinktvshow.idActor = actors.idActor",idShow);
+          m_pDS2->query(strSQL.c_str());
+        }
+      }
     }
     castTime += timeGetTime() - time; time = timeGetTime();
     m_pDS2->close();
@@ -4819,6 +4833,30 @@ bool CVideoDatabase::GetGenreById(long lIdGenre, CStdString& strGenre)
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strGenre.c_str());
+  }
+  return false;
+}
+
+long CVideoDatabase::GetTvShowForEpisode(long idEpisode)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select idshow from tvshowlinkepisode where idEpisode=%u", idEpisode);
+    m_pDS->query( strSQL.c_str() );
+
+    long result=-1;
+    if (!m_pDS->eof())
+      result=m_pDS->fv(0).get_asInteger();
+    m_pDS->close();
+
+    return result;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idEpisode);
   }
   return false;
 }
