@@ -23,7 +23,9 @@
 #include "stdafx.h"
 #include "PluginDirectory.h"
 #include "Util.h"
+#ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
+#endif
 #include "../utils/SingleLock.h"
 #include "PluginSettings.h"
 #include "GUIWindowManager.h"
@@ -116,6 +118,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   // run the script
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
   bool success = false;
+#ifdef HAS_PYTHON
   if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)plugin_argv) >= 0)
   { // wait for our script to finish
     CStdString scriptName = url.GetFileName();
@@ -123,6 +126,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
     success = WaitOnScriptResult(pathToScript, scriptName);
   }
   else
+#endif
     CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
 
   // free our handle
@@ -416,10 +420,12 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   argv[2] = options.c_str();
 
   // run the script
+#ifdef HAS_PYTHON
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, pathToScript.c_str(), argv[0], argv[1], argv[2]);
   if (g_pythonParser.evalFile(pathToScript.c_str(), 3, (const char**)argv) >= 0)
     return true;
   else
+#endif
     CLog::Log(LOGERROR, "Unable to run plugin %s", pathToScript.c_str());
 
   return false;
@@ -505,8 +511,10 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
       break;
     }
     // check our script is still running
+#ifdef HAS_PYTHON
     int id = g_pythonParser.getScriptId(scriptPath.c_str());
     if (id == -1)
+#endif
     { // nope - bail
       CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
       m_success = false;
@@ -549,6 +557,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
         }
         if (m_cancelled && timeGetTime() - startTime > timeToKillScript)
         { // cancel our script
+#ifdef HAS_PYTHON
           int id = g_pythonParser.getScriptId(scriptPath.c_str());
           if (id != -1 && g_pythonParser.isRunning(id))
           {
@@ -556,6 +565,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
             g_pythonParser.stopScript(id);
             break;
           }
+#endif
         }
       }
     }

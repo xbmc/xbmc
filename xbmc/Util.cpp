@@ -88,7 +88,9 @@
 #include "MusicInfoLoader.h"
 #include "XBVideoConfig.h"
 #include "DirectXGraphics.h"
+#ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"
+#endif
 #include "DNSNameCache.h"
 #include "FileSystem/PluginDirectory.h"
 #include "MusicInfoTag.h"
