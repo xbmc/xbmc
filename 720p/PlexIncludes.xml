@@ -91,7 +91,7 @@
         <width>500</width>
         <font>NPTitleFont</font>
         <textcolor>Medium</textcolor>
-        <label>$INFO[MusicPlayer.Title]</label>
+        <label>$INFO[MusicPlayer.Album]</label>
         <align>right</align>
       </control>
   
@@ -101,7 +101,7 @@
         <width>500</width>
         <font>NPAlbumFont</font>
         <textcolor>Light</textcolor>
-        <label>$INFO[MusicPlayer.Album]</label>
+        <label>$INFO[MusicPlayer.Title]</label>
         <align>right</align>
       </control>
     </control>
@@ -115,17 +115,17 @@
         <posx>500</posx>
         <width>500</width>
         <font>NPNextFont</font>
-        <textcolor>Dark</textcolor>
+        <textcolor>Darker</textcolor>
         <label>Next Track</label>
         <align>right</align>
       </control>
       
       <control type="label" id="0">
         <posx>500</posx>
-        <posy>32</posy>
+        <posy>30</posy>
         <width>500</width>
         <font>NPNextFont</font>
-        <textcolor>Medium</textcolor>
+        <textcolor>Dark</textcolor>
         <label>$INFO[MusicPlayer.Offset(1).Artist]</label>
         <align>right</align>
       </control>
