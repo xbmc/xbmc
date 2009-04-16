@@ -26,6 +26,12 @@
         <aspectratio>stretch</aspectratio>
         <texture diffuse="NowPlayingCoverDiffuse.png"/>
       </control>
+      <control type="image" id="0">
+        <width>330</width>
+        <height>330</height>
+        <aspectratio>stretch</aspectratio>
+        <texture>NowPlayingCoverOverlay.png</texture>
+      </control>
     </control>
   </include>
   
@@ -54,6 +60,12 @@
         <aspectratio>stretch</aspectratio>
         <texture>NowPlayingCoverShadow.png</texture>
         <visible>MusicPlayer.HasNext</visible>
+      </control>
+      <control type="image" id="0">
+        <width>264</width>
+        <height>264</height>
+        <aspectratio>stretch</aspectratio>
+        <texture diffuse="NowPlayingSmallCoverDiffuse.png">NowPlayingCoverOverlay.png</texture>
       </control>
     </control>
   </include>
