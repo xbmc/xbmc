@@ -55,7 +55,7 @@
         <texture flipy="true" diffuse="NowPlayingSmallReflectionDiffuse.png"/>
       </control>
       <control type="image" id="0">
-        <posx>41</posx>
+        <posx>104</posx>
         <width>176</width>
         <height>264</height>
         <aspectratio>stretch</aspectratio>
@@ -66,6 +66,7 @@
         <width>264</width>
         <height>264</height>
         <aspectratio>stretch</aspectratio>
+        <visible>MusicPlayer.HasNext</visible>
         <texture diffuse="NowPlayingSmallCoverDiffuse.png">NowPlayingCoverOverlay.png</texture>
       </control>
     </control>
