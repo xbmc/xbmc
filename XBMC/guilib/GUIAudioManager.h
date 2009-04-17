@@ -24,6 +24,10 @@
 #include "IAudioDeviceChangedCallback.h"
 #include "utils/CriticalSection.h"
 
+#ifdef __APPLE__
+  #include "CoreAudio.h"
+#endif
+
 // forward definitions
 class CAction;
 class CGUISound;

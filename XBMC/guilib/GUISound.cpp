@@ -24,26 +24,28 @@
 #include "AudioContext.h"
 #include "Settings.h"
 #include "FileSystem/File.h"
-#ifdef HAS_SDL_AUDIO
-#include <SDL/SDL_mixer.h>
 #include "FileSystem/SpecialProtocol.h"
+#ifdef HAS_SDL_AUDIO
+  #include <SDL/SDL_mixer.h>
 #endif
-#ifndef HAS_SDL_AUDIO
 
-typedef struct
-{
-  char chunk_id[4];
-  long chunksize;
-} WAVE_CHUNK;
-
-typedef struct
-{
-  char riff[4];
-  long filesize;
-  char rifftype[4];
-} WAVE_RIFFHEADER;
+#ifdef HAS_SDL_AUDIO
+  #define GUI_SOUND_CHANNEL 0
+#elif defined (__APPLE__)
+  CCoreAudioMixer g_CoreAudioMixer;
 #else
-#define GUI_SOUND_CHANNEL 0
+  typedef struct
+  {
+    char chunk_id[4];
+    long chunksize;
+  } WAVE_CHUNK;
+
+  typedef struct
+  {
+    char riff[4];
+    long filesize;
+    char rifftype[4];
+  } WAVE_RIFFHEADER;
 #endif
 
 CGUISound::CGUISound()
@@ -51,19 +53,35 @@ CGUISound::CGUISound()
   m_soundBuffer=NULL;
 }
 
+
 CGUISound::~CGUISound()
 {
-#ifndef HAS_SDL_AUDIO
-  FreeBuffer();
-#else
+#ifdef HAS_SDL_AUDIO
   Mix_FreeChunk(m_soundBuffer);
+#elif defined (__APPLE__)
+  delete m_soundBuffer;
+#else
+  FreeBuffer();
 #endif
 }
 
 // \brief Loads a wav file by filename
 bool CGUISound::Load(const CStdString& strFile)
 {
-#ifndef HAS_SDL_AUDIO
+#ifdef HAS_SDL_AUDIO
+  m_soundBuffer = Mix_LoadWAV(_P(strFile));
+  if (!m_soundBuffer)
+    return false;
+  
+  return true;
+#elif defined (__APPLE__)
+  m_soundBuffer = new CCoreAudioSound;
+  if (m_soundBuffer->LoadFile(CSpecialProtocol::TranslatePath(strFile)))
+    return true;
+  delete m_soundBuffer;
+  m_soundBuffer = NULL;
+  return false;
+#else
   LPBYTE pbData=NULL;
   WAVEFORMATEX wfx;
   int size=0;
@@ -78,54 +96,58 @@ bool CGUISound::Load(const CStdString& strFile)
   delete[] pbData;
 
   return bReady;
-#else
-  m_soundBuffer = Mix_LoadWAV(_P(strFile));
-  if (!m_soundBuffer)
-    return false;
-
-  return true;
 #endif
 }
 
 // \brief Starts playback of the sound
 void CGUISound::Play()
-{
+{  
   if (m_soundBuffer)
-#if !defined(HAS_SDL_AUDIO)
-    m_soundBuffer->Play(0, 0, 0);
+  {
+#ifdef HAS_SDL_AUDIO
+  Mix_PlayChannel(GUI_SOUND_CHANNEL, m_soundBuffer, 0);
+#elif defined (__APPLE__)
+    g_CoreAudioMixer.PlaySound(0, *m_soundBuffer);
 #else
-    Mix_PlayChannel(GUI_SOUND_CHANNEL, m_soundBuffer, 0);
+   m_soundBuffer->Play(0, 0, 0);
 #endif
+  }
 }
 
 // \brief returns true if the sound is playing
 bool CGUISound::IsPlaying()
 {
-#ifndef HAS_SDL_AUDIO
+#ifdef HAS_SDL_AUDIO
+  return Mix_Playing(GUI_SOUND_CHANNEL) != 0;
+#elif defined (__APPLE__)
+  // TODO: Implement
+  return false;
+#else
   if (m_soundBuffer)
   {
     DWORD dwStatus;
     m_soundBuffer->GetStatus(&dwStatus);
     return (dwStatus & DSBSTATUS_PLAYING);
   }
-
+  
   return false;
-#else
-  return Mix_Playing(GUI_SOUND_CHANNEL) != 0;
-#endif
+#endif  
 }
+
+
 
 // \brief Stops playback if the sound
 void CGUISound::Stop()
 {
   if (m_soundBuffer)
   {
-#if !defined(HAS_SDL_AUDIO)
-    m_soundBuffer->Stop();
+#ifdef HAS_SDL_AUDIO
+  Mix_HaltChannel(GUI_SOUND_CHANNEL);
+#elif defined (__APPLE__)
+   // TODO: Implement
 #else
-    Mix_HaltChannel(GUI_SOUND_CHANNEL);
+   m_soundBuffer->Stop();
 #endif
-
     while(IsPlaying()) {}
   }
 }
@@ -134,14 +156,18 @@ void CGUISound::Stop()
 void CGUISound::SetVolume(int level)
 {
   if (m_soundBuffer)
-#ifndef HAS_SDL_AUDIO
-    m_soundBuffer->SetVolume(level);
+  {
+#ifdef HAS_SDL_AUDIO
+  Mix_Volume(GUI_SOUND_CHANNEL, level);
+#elif defined (__APPLE__)
+  m_soundBuffer->SetVolume(level);
 #else
-    Mix_Volume(GUI_SOUND_CHANNEL, level);
-#endif
+  m_soundBuffer->SetVolume(level);
+#endif  
+  }
 }
 
-#ifndef HAS_SDL_AUDIO
+#if !defined(HAS_SDL_AUDIO) && !defined(__APPLE__)
 bool CGUISound::CreateBuffer(LPWAVEFORMATEX wfx, int iLength)
 {
   //  Set up DSBUFFERDESC structure

@@ -23,7 +23,7 @@
 #define __COREAUDIO_H__
 
 #include <AudioUnit/AudioUnit.h>
-
+#include <AudioToolbox/AudioToolbox.h>
 #include <StdString.h>
 #include <list>
 #include <vector>
@@ -130,38 +130,75 @@ protected:
 };
 
 class CCoreAudioUnit
-  {
-  public:
-    CCoreAudioUnit();
-    virtual ~CCoreAudioUnit();
-    
-    bool Open(ComponentDescription desc);
-    void Close();
-    bool SetCurrentDevice(AudioDeviceID deviceId);
-    bool Initialize();
-    bool IsInitialized() {return m_Initialized;}
-    bool SetRenderProc(AURenderCallback callback, void* pClientData);
-    UInt32 GetBufferFrameSize();
-    bool SetMaxFramesPerSlice(UInt32 maxFrames);
-    
-    bool GetInputFormat(AudioStreamBasicDescription* pDesc);
-    bool GetOutputFormat(AudioStreamBasicDescription* pDesc);    
-    bool SetInputFormat(AudioStreamBasicDescription* pDesc);
-    bool SetOutputFormat(AudioStreamBasicDescription* pDesc);
-    bool GetInputChannelMap(CoreAudioChannelList* pChannelMap);
-    bool SetInputChannelMap(CoreAudioChannelList* pChannelMap);
-    
-    void Start();
-    void Stop();
-    Float32 GetCurrentVolume();
-    bool SetCurrentVolume(Float32 vol);
-    
-  protected:
-    AudioUnit m_Component;
-    bool m_Initialized;
-  };
+{
+public:
+  CCoreAudioUnit();
+  virtual ~CCoreAudioUnit();
+  
+  bool Open(ComponentDescription desc);
+  void Attach(AudioUnit audioUnit) {m_Component = audioUnit;}
+  AudioUnit GetComponent(){return m_Component;}
+  void Close();
+  bool SetCurrentDevice(AudioDeviceID deviceId);
+  bool Initialize();
+  bool IsInitialized() {return m_Initialized;}
+  bool SetRenderProc(AURenderCallback callback, void* pClientData);
+  UInt32 GetBufferFrameSize();
+  bool SetMaxFramesPerSlice(UInt32 maxFrames);
+  
+  bool GetInputFormat(AudioStreamBasicDescription* pDesc);
+  bool GetOutputFormat(AudioStreamBasicDescription* pDesc);    
+  bool SetInputFormat(AudioStreamBasicDescription* pDesc);
+  bool SetOutputFormat(AudioStreamBasicDescription* pDesc);
+  bool GetInputChannelMap(CoreAudioChannelList* pChannelMap);
+  bool SetInputChannelMap(CoreAudioChannelList* pChannelMap);
+  
+  void Start();
+  void Stop();
+  Float32 GetCurrentVolume();
+  bool SetCurrentVolume(Float32 vol);
+  
+protected:
+  AudioUnit m_Component;
+  bool m_Initialized;
+};
 
-// Helper Function
+class CCoreAudioSound
+{
+public:
+  CCoreAudioSound();
+  ~CCoreAudioSound();
+  bool LoadFile(CStdString fileName);
+  void Unload();
+  void SetVolume(float volume);
+  AudioBufferList* GetBufferList() {return m_pBufferList;}
+  UInt64 GetTotalFrames() {return m_TotalFrames;}
+private:
+  AudioBufferList* m_pBufferList;
+  UInt64 m_TotalFrames;
+};
+
+class CCoreAudioMixer
+{
+public:
+  CCoreAudioMixer();
+  ~CCoreAudioMixer();
+  bool Init();
+  void Deinit();
+  void Start();
+  void Stop();
+  void PlaySound(UInt32 bus, CCoreAudioSound& sound);
+private:
+  static OSStatus OnDevicePropertyChanged(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void* inClientData);
+  AUGraph m_Graph;
+  AudioUnit m_OutputUnit;
+  UInt32 m_MaxInputs;
+  AudioUnit* m_pScheduler;
+  AudioStreamBasicDescription m_ChannelFormat;
+  bool m_Suspended;
+};
+
+// Helper Functions
 char* UInt32ToFourCC(UInt32* val);
 const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str);
 

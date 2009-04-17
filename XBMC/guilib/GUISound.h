@@ -25,6 +25,11 @@
 #include <SDL/SDL_mixer.h>
 #endif
 
+#ifdef __APPLE__
+  #include "CoreAudio.h"
+  extern CCoreAudioMixer g_CoreAudioMixer; // The design of CGUISound forces us to have a globally accessible instance (or pass one around)
+#endif
+
 class CGUISound
 {
 public:
@@ -36,16 +41,19 @@ public:
   void        Stop();
   bool        IsPlaying();
   void        SetVolume(int level);
-
+  
 private:
-#ifndef HAS_SDL_AUDIO
+#ifdef HAS_SDL_AUDIO
+  Mix_Chunk* m_soundBuffer;
+#elif defined(__APPLE__)
+  CCoreAudioSound* m_soundBuffer;
+#else
   bool        LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* ppWavData, int* pDataSize);
   bool        CreateBuffer(LPWAVEFORMATEX wfx, int iLength);
   bool        FillBuffer(LPBYTE pbData, int iLength);
   void        FreeBuffer();
 
   LPDIRECTSOUNDBUFFER m_soundBuffer;
-#else
-  Mix_Chunk* m_soundBuffer;
 #endif
+
 };

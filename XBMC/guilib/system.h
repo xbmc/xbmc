@@ -154,16 +154,19 @@
 #endif
 
 #ifdef HAS_SDL
-#define HAS_SDL_AUDIO
-#define HAS_DVD_SWSCALE
-#ifndef HAS_SDL_2D
-#define HAS_SDL_OPENGL
-#ifdef _LINUX
-#ifndef __APPLE__
-#define HAS_GLX
+  #ifndef __APPLE__
+    #define HAS_SDL_AUDIO
+  #endif
+  #define HAS_DVD_SWSCALE
+  #ifndef HAS_SDL_2D
+    #define HAS_SDL_OPENGL
+    #ifdef _LINUX
+      #ifndef __APPLE__
+        #define HAS_GLX
+    #endif
+  #endif
 #endif
-#endif
-#endif
+
 #ifdef _WIN32
 #define _WIN32PC       // precompiler definition for the windows build
 #define HAS_AC3_CODEC

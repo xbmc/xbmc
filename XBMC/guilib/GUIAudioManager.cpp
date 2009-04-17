@@ -33,6 +33,8 @@
 #include <SDL/SDL_mixer.h>
 #endif
 
+
+
 using namespace std;
 using namespace DIRECTORY;
 
@@ -55,14 +57,17 @@ void CGUIAudioManager::Initialize(int iDevice)
 
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
-#ifndef HAS_SDL_AUDIO
+#ifdef HAS_SDL_AUDIO
+    Mix_CloseAudio();
+    if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
+      CLog::Log(LOGERROR, "Unable to open audio mixer");
+#elif defined(__APPLE__)
+    g_CoreAudioMixer.Init();
+    g_CoreAudioMixer.Start();
+#else
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-#else
-    Mix_CloseAudio();
-    if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
-       CLog::Log(LOGERROR, "Unable to open audio mixer");
 #endif
   }
 }
@@ -76,10 +81,14 @@ void CGUIAudioManager::DeInitialize(int iDevice)
     while(m_actionSound->IsPlaying()) {}
 
   Stop();
+  
 #ifdef HAS_SDL_AUDIO
   Mix_CloseAudio();
+#elif defined(__APPLE__)
+  g_CoreAudioMixer.Stop();
+  g_CoreAudioMixer.Deinit();
 #endif
-
+  
 }
 void CGUIAudioManager::Stop()
 {
@@ -157,6 +166,8 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
   if (!m_bEnabled || g_audioContext.IsPassthroughActive())
     return;
 
+  //g_CAMixer.PlayNote(0, 60);
+  
   CSingleLock lock(m_cs);
 
   actionSoundMap::iterator it=m_actionSoundMap.find(action.wID);

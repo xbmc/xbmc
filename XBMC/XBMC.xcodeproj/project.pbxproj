@@ -851,12 +851,10 @@
 		F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
 		F527E8330F293DD70046DBD3 /* libSDL-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */; };
 		F527E8370F293F3C0046DBD3 /* libSDL_image-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8806941E0DCF67A500836761 /* libSDL_image-x86-osx.a */; };
-		F527E8380F293F420046DBD3 /* libSDL_mixer-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0080D683DEF0095F5DD /* libSDL_mixer-x86-osx.a */; };
 		F5290C220EDF142A001167F0 /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5290C210EDF142A001167F0 /* PlayListURL.cpp */; };
 		F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */; };
 		F5390F7A0F2BB7080081BAE0 /* Cdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D879D10EF4BE53007C68A9 /* Cdg.cpp */; };
 		F54C4BD40F19B79C00D46E3C /* postproc-51-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F54C4BD30F19B79C00D46E3C /* postproc-51-x86-osx.a */; };
-		F54C51300F1C65D100D46E3C /* libportaudio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54C512F0F1C65D100D46E3C /* libportaudio.dylib */; };
 		F54C51D20F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */; };
 		F54C51D50F1E784800D46E3C /* karaokelyricscdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D40F1E784800D46E3C /* karaokelyricscdg.cpp */; };
 		F54C51D80F1E785700D46E3C /* karaokelyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D60F1E785700D46E3C /* karaokelyrics.cpp */; };
@@ -1722,7 +1720,6 @@
 		F5A1CBC00F6B06CF00A96ABD /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F5A1CBC10F6B06CF00A96ABD /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
 		F5A1CBC30F6B06CF00A96ABD /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
-		F5A1CBCA0F6B06CF00A96ABD /* libportaudio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54C512F0F1C65D100D46E3C /* libportaudio.dylib */; };
 		F5A1CC020F6B1FB600A96ABD /* librtv-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC010F6B1FB600A96ABD /* librtv-powerpc-osx.a */; };
 		F5A1CC040F6B1FEF00A96ABD /* libcdio-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC030F6B1FEF00A96ABD /* libcdio-powerpc-osx.a */; };
 		F5A1CC060F6B203100A96ABD /* libxbms-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC050F6B203100A96ABD /* libxbms-powerpc-osx.a */; };
@@ -1832,7 +1829,6 @@
 		810C9FA70D67D1FB0095F5DD /* CMythFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythFile.cpp; sourceTree = "<group>"; };
 		810C9FA80D67D1FB0095F5DD /* CMythFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMythFile.h; sourceTree = "<group>"; };
 		810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL-x86-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL-x86-osx.a"; sourceTree = "<group>"; };
-		810CA0080D683DEF0095F5DD /* libSDL_mixer-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-x86-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_mixer-x86-osx.a"; sourceTree = "<group>"; };
 		815EE62A0E176F75009FBE3C /* AMFObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AMFObject.cpp; path = libRTMP/AMFObject.cpp; sourceTree = "<group>"; };
 		815EE62B0E176F75009FBE3C /* rtmp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rtmp.cpp; path = libRTMP/rtmp.cpp; sourceTree = "<group>"; };
 		815EE62C0E176F75009FBE3C /* rtmppacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rtmppacket.cpp; path = libRTMP/rtmppacket.cpp; sourceTree = "<group>"; };
@@ -3596,7 +3592,6 @@
 		F52910120EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirectoryNodeMusicVideoAlbum.h; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.h; sourceTree = SOURCE_ROOT; };
 		F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryNodeMusicVideoAlbum.cpp; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.cpp; sourceTree = SOURCE_ROOT; };
 		F54C4BD30F19B79C00D46E3C /* postproc-51-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "postproc-51-x86-osx.a"; path = "system/players/dvdplayer/postproc-51-x86-osx.a"; sourceTree = "<group>"; };
-		F54C512F0F1C65D100D46E3C /* libportaudio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libportaudio.dylib; path = ../../../../opt/local/lib/libportaudio.dylib; sourceTree = SOURCE_ROOT; };
 		F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogKaraokeSongSelector.cpp; path = xbmc/karaoke/GUIDialogKaraokeSongSelector.cpp; sourceTree = SOURCE_ROOT; };
 		F54C51D10F1E783200D46E3C /* GUIDialogKaraokeSongSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogKaraokeSongSelector.h; path = xbmc/karaoke/GUIDialogKaraokeSongSelector.h; sourceTree = SOURCE_ROOT; };
 		F54C51D30F1E784800D46E3C /* karaokelyricscdg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyricscdg.h; path = xbmc/karaoke/karaokelyricscdg.h; sourceTree = SOURCE_ROOT; };
@@ -3753,10 +3748,8 @@
 				F583FEA10F019C3D00E181F2 /* swscale-0.6.1-x86-osx.a in Frameworks */,
 				F583FEA30F019C4500E181F2 /* avformat-52-x86-osx.a in Frameworks */,
 				F54C4BD40F19B79C00D46E3C /* postproc-51-x86-osx.a in Frameworks */,
-				F54C51300F1C65D100D46E3C /* libportaudio.dylib in Frameworks */,
 				F527E8330F293DD70046DBD3 /* libSDL-x86-osx.a in Frameworks */,
 				F527E8370F293F3C0046DBD3 /* libSDL_image-x86-osx.a in Frameworks */,
-				F527E8380F293F420046DBD3 /* libSDL_mixer-x86-osx.a in Frameworks */,
 				831F66960F93F86F0051DBCA /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3793,7 +3786,6 @@
 				F5A1CBC00F6B06CF00A96ABD /* libiconv.dylib in Frameworks */,
 				F5A1CBC10F6B06CF00A96ABD /* libz.dylib in Frameworks */,
 				F5A1CBC30F6B06CF00A96ABD /* libmad.0.2.1.dylib in Frameworks */,
-				F5A1CBCA0F6B06CF00A96ABD /* libportaudio.dylib in Frameworks */,
 				F5A1CC020F6B1FB600A96ABD /* librtv-powerpc-osx.a in Frameworks */,
 				F5A1CC040F6B1FEF00A96ABD /* libcdio-powerpc-osx.a in Frameworks */,
 				F5A1CC060F6B203100A96ABD /* libxbms-powerpc-osx.a in Frameworks */,
@@ -6756,7 +6748,6 @@
 				E38E24240D26317D00618676 /* libfribidi.dylib */,
 				F57E213E0E3C3AB200700C9D /* libiconv.dylib */,
 				E38E24230D26317D00618676 /* libfreetype.dylib */,
-				F54C512F0F1C65D100D46E3C /* libportaudio.dylib */,
 				E3D547950D723EFD00F36320 /* libsmbclient.dylib */,
 				88ECB6EB0DE07C56003396A7 /* libmysqlclient.15.dylib */,
 				88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */,
@@ -6813,7 +6804,6 @@
 				E38F12E90D2A17B30035C331 /* libGoAhead-x86-osx.a */,
 				810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */,
 				8806941E0DCF67A500836761 /* libSDL_image-x86-osx.a */,
-				810CA0080D683DEF0095F5DD /* libSDL_mixer-x86-osx.a */,
 				F583FE9C0F019C1E00E181F2 /* avutil-49-x86-osx.a */,
 				F583FE9E0F019C3200E181F2 /* avcodec-52-x86-osx.a */,
 				F583FEA20F019C4500E181F2 /* avformat-52-x86-osx.a */,
