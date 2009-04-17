@@ -77,12 +77,26 @@ bool CKaraokeLyricsTextLRC::Load()
   unsigned int lyric_flags = 0;
   int lyric_time = -1;
   int start_offset = 0;
-  char * p = &lyricData[0];
+  unsigned int offset = 0;
 
   CStdString ext, songfilename = getSongFile();
   CUtil::GetExtension( songfilename, ext );
 
-  for ( unsigned int offset = 0; offset < lyricSize; offset++, p++ )
+  // Skip windoze UTF8 file prefix, if any, and reject UTF16 files
+  if ( lyricSize > 3 )
+  {
+    if ( lyricData[0] == 0xFF && lyricData[1] == 0xFE )
+    {
+      CLog::Log( LOGERROR, "LRC lyric loader: lyrics file is in UTF16 encoding, must be in UTF8" );
+      return false;
+    }
+
+    // UTF8 prefix added by some windoze apps
+    if ( lyricData[0] == 0xEF && lyricData[1] == 0xBB && lyricData[1] == 0xBF )
+      offset = 3;
+  }
+
+  for ( char * p = &lyricData[offset]; offset < lyricSize; offset++, p++ )
   {
     // Skip \r
     if ( *p == 0x0D )
