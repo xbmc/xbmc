@@ -279,7 +279,7 @@
   <string id="354">Matrix trails</string>
   <string id="355">Screensaver idle timeout</string>
   <string id="356">Screensaver mode</string>
-  <string id="357">Idle timer</string>
+  <string id="357">Shutdown function timer</string>
   <string id="358">All albums</string>
   <string id="359">Recently added albums</string>
   <string id="360">Screensaver</string>
@@ -957,7 +957,7 @@
   <string id="13005">Shutdown</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Use custom dashboard path</string>
-  <string id="13008">Idle timer function</string> 
+  <string id="13008">Shutdown function</string> 
   <string id="13009">Quit</string> 
   <string id="13010">Hibernate</string>
   <string id="13011">Suspend</string>
