@@ -8800,8 +8800,8 @@ fi
 
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
-  { { $as_echo "$as_me:$LINENO: error: \"Use of external ffmpeg is currently unsupported.\"" >&5
-$as_echo "$as_me: error: \"Use of external ffmpeg is currently unsupported.\"" >&2;}
+  { { $as_echo "$as_me:$LINENO: error: Use of external ffmpeg is currently unsupported." >&5
+$as_echo "$as_me: error: Use of external ffmpeg is currently unsupported." >&2;}
    { (exit 1); exit 1; }; }
 
 
@@ -10885,7 +10885,11 @@ $as_echo "$as_me: $static_libraries_disabled" >&6;}
 fi
 
 # Static libdvdnav
-if test "$use_static_libraries" = "yes" || test "$use_static_libdvdnav" = "yes"; then
+if test "$use_static_libdvdnav" = "yes"; then
+  { { $as_echo "$as_me:$LINENO: error: Use of static libdvdnav is currently unsupported." >&5
+$as_echo "$as_me: error: Use of static libdvdnav is currently unsupported." >&2;}
+   { (exit 1); exit 1; }; }
+
   { $as_echo "$as_me:$LINENO: $static_libdvdnav_enabled" >&5
 $as_echo "$as_me: $static_libdvdnav_enabled" >&6;}
 
