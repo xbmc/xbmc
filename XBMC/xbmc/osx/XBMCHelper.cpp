@@ -30,6 +30,7 @@
 #include "log.h"
 #include "system.h"
 #include "Settings.h"
+#include "SystemInfo.h"
 
 XBMCHelper g_xbmcHelper;
 
@@ -237,30 +238,10 @@ bool XBMCHelper::IsRunning()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool XBMCHelper::IsAppleTV()
-{
-  char        buffer[512];
-  size_t      len = 512;
-  std::string hw_model = "unknown";
-  
-  if (sysctlbyname("hw.model", &buffer, &len, NULL, 0) == 0)
-    hw_model = buffer;
-  
-  if (hw_model.find("AppleTV") != std::string::npos)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-/////////////////////////////////////////////////////////////////////////////
 void XBMCHelper::CaptureAllInput()
 {
   // Take keyboard focus away from FrontRow and native screen saver
-  if (IsAppleTV())
+  if (g_sysinfo.IsAppleTV())
   {
     ProcessSerialNumber psn = {0, kCurrentProcess};
        
@@ -273,7 +254,7 @@ void XBMCHelper::CaptureAllInput()
 void XBMCHelper::ReleaseAllInput()
 {
   // Give keyboard focus back to FrontRow and native screen saver
-  if (IsAppleTV())
+  if (g_sysinfo.IsAppleTV())
   {
     DisableSecureEventInput();
   }
