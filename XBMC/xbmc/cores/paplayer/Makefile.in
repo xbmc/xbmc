@@ -1,7 +1,8 @@
 ARCH=@ARCH@
 
 INCLUDES=-I. -I../../ -I../../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
-ifneq (@USE_EXTERNAL_LIBRARIES@,1)
+# Disable use of external ffmpeg for now
+ifneq (0,1)
   INCLUDES+=-I../ffmpeg
 endif
 

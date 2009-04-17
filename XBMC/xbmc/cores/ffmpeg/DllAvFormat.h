@@ -15,7 +15,8 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG)
+#if (defined USE_EXTERNAL_FFMPEG)
+  #error "Use of external ffmpeg is currently unsupported."
   #if (defined HAVE_LIBAVFORMAT_AVFORMAT_H)
     #include <libavformat/avformat.h>
   #elif (defined HAVE_FFMPEG_AVFORMAT_H)
@@ -61,7 +62,7 @@ public:
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG) \
+#if (defined USE_EXTERNAL_FFMPEG) \
   || (defined __APPLE__)
 
 extern "C" { void av_read_frame_flush(AVFormatContext *s); }

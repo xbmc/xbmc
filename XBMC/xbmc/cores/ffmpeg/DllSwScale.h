@@ -21,7 +21,8 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG)
+#if (defined USE_EXTERNAL_FFMPEG)
+  #error "Use of external ffmpeg is currently unsupported."
   #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
     #include <libavutil/avutil.h>
   #elif (defined HAVE_FFMPEG_AVUTIL_H)
@@ -62,7 +63,7 @@ public:
    virtual void sws_freeContext(struct SwsContext *context)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG) \
+#if (defined USE_EXTERNAL_FFMPEG) \
   || (defined __APPLE__)
 
 // We call into this library directly.

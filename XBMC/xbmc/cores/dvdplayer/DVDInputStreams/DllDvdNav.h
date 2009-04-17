@@ -101,7 +101,8 @@ public:
   virtual dvdnav_status_t dvdnav_mouse_select(dvdnav_t *self, pci_t *pci, int32_t x, int32_t y)=0;
 };
 
-#if (defined USE_STATIC_LIBRARIES) || (defined USE_STATIC_LIBDVDNAV)
+#if (defined USE_STATIC_LIBDVDNAV)
+#error "Use of static libdvdnav is currently unsupported."
 
 class DllDvdNav : public DllDynamic, DllDvdNavInterface
 {
