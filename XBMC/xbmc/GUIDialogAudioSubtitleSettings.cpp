@@ -334,12 +334,14 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
         double time = g_application.GetTime();
 
         // Playback could end and delete m_pPlayer while dialog is up so make sure it's valid
-        if (g_application.m_pPlayer)
+       	if (g_application.m_pPlayer)
         {
           // get player state, needed for dvd's
           CStdString state = g_application.m_pPlayer->GetPlayerState();
-
-          g_application.m_pPlayer->CloseFile(); // to conserve memory if unraring
+          
+          if (g_application.GetCurrentPlayer() == EPC_MPLAYER)
+              g_application.m_pPlayer->CloseFile(); // to conserve memory if unraring
+              
           if (CFile::Cache(strPath,"special://temp/subtitle"+strExt+".keep"))
           {
             CStdString strPath2;
@@ -380,12 +382,15 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
             g_stSettings.m_currentVideoSettings.m_SubtitleCached = false;
             g_stSettings.m_currentVideoSettings.m_SubtitleOn = true;
 
-            // reopen the file
-            if ( g_application.PlayFile(g_application.CurrentFileItem(), true) && g_application.m_pPlayer )
+            if (g_application.GetCurrentPlayer() == EPC_MPLAYER)
             {
-              // and seek to the position
-              g_application.m_pPlayer->SetPlayerState(state);
-              g_application.SeekTime(time);
+              // reopen the file
+              if ( g_application.PlayFile(g_application.CurrentFileItem(), true) && g_application.m_pPlayer )
+              {
+                // and seek to the position
+                g_application.m_pPlayer->SetPlayerState(state);
+                g_application.SeekTime(time);
+              }
             }
 
             Close();
