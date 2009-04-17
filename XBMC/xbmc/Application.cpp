@@ -523,6 +523,19 @@ static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &fi
   }
 }
 
+void CApplication::Preflight()
+{
+  // run any platform preflight scripts.
+#ifdef __APPLE__
+  CStdString install_path;
+  
+  CUtil::GetHomePath(install_path);
+  setenv("XBMC_HOME", install_path.c_str(), 0);
+  install_path += "/tools/osx/preflight";
+  system(install_path.c_str());
+#endif
+}
+
 HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
