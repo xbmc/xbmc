@@ -809,8 +809,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       if (items[i]->m_bIsFolder)
       {
         CStdString strPath = items[i]->m_strPath;
-        if (CUtil::HasSlashAtEnd(strPath))
-          strPath.erase(strPath.size()-1);
+        CUtil::RemoveSlashAtEnd(strPath);
         strPath.ToLower();
         if (strPath.size() > 6)
         {
@@ -906,25 +905,10 @@ int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 
 bool CGUIWindowVideoBase::OnClick(int iItem)
 {
-  CFileItemPtr pItem = m_vecItems->Get(iItem);
-
-  if (!pItem->m_bIsFolder && (unsigned)pItem->m_strPath.Find("playlist://") == CStdString::npos && !pItem->Exists())
-  {
-    if (!CGUIWindowVideoNav::DeleteItem(pItem.get(),true))
-      return true;
-
-    // update list
-    m_vecItems->RemoveDiscCache();
-    Update(m_vecItems->m_strPath);
-    m_viewControl.SetSelectedItem(iItem);
-  }
+  if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
+    OnResumeItem(iItem);
   else
-  {
-    if (g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_NO)
-      OnResumeItem(iItem);
-    else
-      return CGUIMediaWindow::OnClick(iItem);
-  }
+    return CGUIMediaWindow::OnClick(iItem);
 
   return true;
 }

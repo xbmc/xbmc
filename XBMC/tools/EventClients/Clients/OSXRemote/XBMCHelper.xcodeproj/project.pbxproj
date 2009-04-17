@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E45F2B1C0F95191E007BCC0B /* IRKeyboardEmu.m in Sources */ = {isa = PBXBuildFile; fileRef = E45F2B1B0F95191E007BCC0B /* IRKeyboardEmu.m */; };
 		E4E62F370F83DB760066AF9D /* xbmchelper_main.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */; };
 		E4E62F380F83DB760066AF9D /* XBMCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F360F83DB760066AF9D /* XBMCHelper.m */; };
 		E4E62F4A0F83DB830066AF9D /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F3D0F83DB830066AF9D /* AppleRemote.m */; };
@@ -37,6 +38,8 @@
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* OSXRemote */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OSXRemote; sourceTree = BUILT_PRODUCTS_DIR; };
+		E45F2B1A0F95191E007BCC0B /* IRKeyboardEmu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRKeyboardEmu.h; sourceTree = "<group>"; };
+		E45F2B1B0F95191E007BCC0B /* IRKeyboardEmu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRKeyboardEmu.m; sourceTree = "<group>"; };
 		E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = xbmchelper_main.mm; sourceTree = "<group>"; };
 		E4E62F350F83DB760066AF9D /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E4E62F360F83DB760066AF9D /* XBMCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCHelper.m; sourceTree = "<group>"; };
@@ -146,6 +149,8 @@
 				E4E62F470F83DB830066AF9D /* RemoteControl.m */,
 				E4E62F480F83DB830066AF9D /* RemoteControlContainer.h */,
 				E4E62F490F83DB830066AF9D /* RemoteControlContainer.m */,
+				E45F2B1A0F95191E007BCC0B /* IRKeyboardEmu.h */,
+				E45F2B1B0F95191E007BCC0B /* IRKeyboardEmu.m */,
 			);
 			path = RemoteControlWrapper;
 			sourceTree = "<group>";
@@ -203,6 +208,7 @@
 				E4E62F4F0F83DB830066AF9D /* RemoteControl.m in Sources */,
 				E4E62F500F83DB830066AF9D /* RemoteControlContainer.m in Sources */,
 				E4E62FE80F83FDD90066AF9D /* xbmcclientwrapper.mm in Sources */,
+				E45F2B1C0F95191E007BCC0B /* IRKeyboardEmu.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

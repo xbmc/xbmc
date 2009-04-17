@@ -20,6 +20,7 @@ extern "C" {
 #endif
 
 #if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG)
+  #error "Use of external ffmpeg is currently unsupported."
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
   #elif (defined HAVE_FFMPEG_AVCODEC_H)
@@ -27,6 +28,7 @@ extern "C" {
   #endif
 #else
   #include "avcodec.h"
+  #include "audioconvert.h"
 #endif
 }
 
@@ -60,6 +62,15 @@ public:
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic)=0;
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count)=0;
   virtual AVCodec *av_codec_next(AVCodec *c)=0;
+  virtual int av_get_bits_per_sample_format(enum SampleFormat sample_fmt)=0;
+  virtual AVAudioConvert *av_audio_convert_alloc(enum SampleFormat out_fmt, int out_channels,
+                                                 enum SampleFormat in_fmt , int in_channels,
+                                                 const float *matrix      , int flags)=0;
+  virtual void av_audio_convert_free(AVAudioConvert *ctx)=0;
+  virtual int av_audio_convert(AVAudioConvert *ctx,
+                                     void * const out[6], const int out_stride[6],
+                               const void * const  in[6], const int  in_stride[6], int len)=0;
+
 };
 
 #if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG) \
@@ -112,6 +123,20 @@ public:
   virtual void avcodec_default_release_buffer(AVCodecContext *s, AVFrame *pic) { ::avcodec_default_release_buffer(s, pic); }
   virtual int avcodec_thread_init(AVCodecContext *s, int thread_count) { return ::avcodec_thread_init(s, thread_count); }
   virtual AVCodec *av_codec_next(AVCodec *c) { return ::av_codec_next(c); }
+  virtual int av_get_bits_per_sample_format(enum SampleFormat sample_fmt) 
+          { return ::av_get_bits_per_sample_format(sample_fmt); }
+  virtual AVAudioConvert *av_audio_convert_alloc(enum SampleFormat out_fmt, int out_channels,
+                                                 enum SampleFormat in_fmt , int in_channels,
+                                                 const float *matrix      , int flags) 
+          { return ::av_audio_convert_alloc(out_fmt, out_channels, in_fmt, in_channels, matrix, flags); }
+  virtual void av_audio_convert_free(AVAudioConvert *ctx)
+          { ::av_audio_convert_free(ctx); }
+
+  virtual int av_audio_convert(AVAudioConvert *ctx,
+                                     void * const out[6], const int out_stride[6],
+                               const void * const  in[6], const int  in_stride[6], int len)
+          { return ::av_audio_convert(ctx, out, out_stride, in, in_stride, len); }
+
   
   // DLL faking.
   virtual bool ResolveExports() { return true; }
@@ -160,6 +185,14 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD2(void, avcodec_default_release_buffer, (AVCodecContext *p1, AVFrame *p2))
   DEFINE_METHOD2(int, avcodec_thread_init, (AVCodecContext *p1, int p2))
   DEFINE_METHOD1(AVCodec*, av_codec_next, (AVCodec *p1))
+  DEFINE_METHOD1(int, av_get_bits_per_sample_format, (enum SampleFormat p1))
+  DEFINE_METHOD6(AVAudioConvert*, av_audio_convert_alloc, (enum SampleFormat p1, int p2,
+                                                           enum SampleFormat p3, int p4,
+                                                           const float *p5, int p6))
+  DEFINE_METHOD1(void, av_audio_convert_free, (AVAudioConvert *p1));
+  DEFINE_METHOD6(int,  av_audio_convert,      (AVAudioConvert *p1,
+                                                     void * const p2[6], const int p3[6],
+                                               const void * const p4[6], const int p5[6], int p6))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
     RESOLVE_METHOD_RENAME(avcodec_open,avcodec_open_dont_call)
@@ -185,6 +218,10 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(avcodec_default_release_buffer)
     RESOLVE_METHOD(avcodec_thread_init)
     RESOLVE_METHOD(av_codec_next)
+    RESOLVE_METHOD(av_get_bits_per_sample_format)
+    RESOLVE_METHOD(av_audio_convert_alloc)
+    RESOLVE_METHOD(av_audio_convert_free)
+    RESOLVE_METHOD(av_audio_convert)
   END_METHOD_RESOLVE()
 public:
     static CCriticalSection m_critSection;

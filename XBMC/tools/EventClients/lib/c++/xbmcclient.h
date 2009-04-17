@@ -568,6 +568,7 @@ public:
   }
 
   inline unsigned short GetFlags() { return m_Flags; }
+  inline unsigned short GetButtonCode() { return m_ButtonCode; }
 };
 
 class CPacketPING : public CPacket

@@ -63,7 +63,7 @@
 		hotKeyRemoteEventMapping = [[NSMutableDictionary alloc] init];
 		
 		unsigned int modifiers = cmdKey + shiftKey /*+ optionKey*/ + controlKey;
-				
+    
 		[self mapRemoteButton:kRemoteButtonPlus			defaultKeycode:F1 defaultModifiers:modifiers];
 		[self mapRemoteButton:kRemoteButtonMinus		defaultKeycode:F2 defaultModifiers:modifiers];
 		[self mapRemoteButton:kRemoteButtonPlay			defaultKeycode:F3 defaultModifiers:modifiers];
@@ -117,8 +117,8 @@
 	
 	unsigned int keycode = defaultKeycode;
 	if (keycodeCfg) keycode = [keycodeCfg unsignedIntValue];
-				  
-    [self registerHotKeyCode: keycode  modifiers: modifiers remoteEventIdentifier: remoteButtonIdentifier];
+  
+  [self registerHotKeyCode: keycode  modifiers: modifiers remoteEventIdentifier: remoteButtonIdentifier];
 }	
 
 - (void) setListeningToRemote: (BOOL) value {
@@ -136,15 +136,15 @@
 - (IBAction) startListening: (id) sender {
 	
 	if (eventHandlerRef) return;
-		
+  
 	EventTypeSpec eventSpec[2] = {
 		{ kEventClassKeyboard, kEventHotKeyPressed },
 		{ kEventClassKeyboard, kEventHotKeyReleased }
 	};    
 	
 	InstallEventHandler( GetEventDispatcherTarget(),
-						 (EventHandlerProcPtr)hotKeyEventHandler, 
-						 2, eventSpec, self, &eventHandlerRef);	
+                      (EventHandlerProcPtr)hotKeyEventHandler, 
+                      2, eventSpec, self, &eventHandlerRef);	
 }
 - (IBAction) stopListening: (id) sender {
 	RemoveEventHandler(eventHandlerRef);
@@ -168,7 +168,7 @@
 	OSStatus err;
 	EventHotKeyID hotKeyID;
 	EventHotKeyRef carbonHotKey;
-
+  
 	hotKeyID.signature = 'PTHk';
 	hotKeyID.id = (long)keycode;
 	
@@ -182,29 +182,29 @@
 	return YES;
 }
 /*
-- (void)unregisterHotKey: (PTHotKey*)hotKey
-{
-	OSStatus err;
-	EventHotKeyRef carbonHotKey;
-	NSValue* key;
-	
-	if( [[self allHotKeys] containsObject: hotKey] == NO )
-		return;
-	
-	carbonHotKey = [self _carbonHotKeyForHotKey: hotKey];
-	NSAssert( carbonHotKey != nil, @"" );
-	
-	err = UnregisterEventHotKey( carbonHotKey );
-	//Watch as we ignore 'err':
-	
-	key = [NSValue valueWithPointer: carbonHotKey];
-	[mHotKeys removeObjectForKey: key];
-	
-	[self _updateEventHandler];
-	
-	//See that? Completely ignored
-}
-*/
+ - (void)unregisterHotKey: (PTHotKey*)hotKey
+ {
+ OSStatus err;
+ EventHotKeyRef carbonHotKey;
+ NSValue* key;
+ 
+ if( [[self allHotKeys] containsObject: hotKey] == NO )
+ return;
+ 
+ carbonHotKey = [self _carbonHotKeyForHotKey: hotKey];
+ NSAssert( carbonHotKey != nil, @"" );
+ 
+ err = UnregisterEventHotKey( carbonHotKey );
+ //Watch as we ignore 'err':
+ 
+ key = [NSValue valueWithPointer: carbonHotKey];
+ [mHotKeys removeObjectForKey: key];
+ 
+ [self _updateEventHandler];
+ 
+ //See that? Completely ignored
+ }
+ */
 
 - (RemoteControlEventIdentifier) remoteControlEventIdentifierForID: (unsigned int) id {
 	NSNumber* remoteEventIdentifier = [hotKeyRemoteEventMapping objectForKey:[NSNumber numberWithUnsignedInt: id]];
@@ -222,7 +222,7 @@ static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef in
 	GlobalKeyboardDevice* keyboardDevice = (GlobalKeyboardDevice*) userData;
 	EventHotKeyID hkCom;
 	GetEventParameter(inEvent,kEventParamDirectObject,typeEventHotKeyID,NULL,sizeof(hkCom),NULL,&hkCom);
-
+  
 	RemoteControlEventIdentifier identifier = [keyboardDevice remoteControlEventIdentifierForID:hkCom.id];
 	if (identifier == 0) return noErr;
 	
@@ -231,7 +231,7 @@ static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef in
 		lastEvent = identifier;
 	} else {
 		lastEvent = 0;
-	    pressedDown = NO;
+    pressedDown = NO;
 	}
 	[keyboardDevice sendRemoteButtonEvent: identifier pressedDown: pressedDown];
 	

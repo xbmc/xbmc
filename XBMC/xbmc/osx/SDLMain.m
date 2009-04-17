@@ -296,12 +296,10 @@ static void CustomApplicationMain (int argc, char **argv)
     // Block SIGPIPE
     // SIGPIPE repeatably kills us, turn it off
     {
-        sigset_t set;
-        sigemptyset(&set);
-        sigaddset(&set, SIGPIPE);
-        // pthread_sigmask not implemented yet
-        // pthread_sigmask(SIG_BLOCK, &set, NULL);
-        sigprocmask(SIG_BLOCK, &set, NULL);
+      sigset_t set;
+      sigemptyset(&set);
+      sigaddset(&set, SIGPIPE);
+      sigprocmask(SIG_BLOCK, &set, NULL);
     }
 
     /* Set the working directory to the .app's parent directory */

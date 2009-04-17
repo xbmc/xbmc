@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 12/30/2008-->
+<!--Translator: Sjonnie33-->
+<!--Date of translation: 04/11/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 16699-->
+<!--Based on english strings version 18906-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -46,7 +47,7 @@
   <string id="109">Thumbnail maken</string>
   <string id="110">Thumbnails maken</string>
   <string id="111">Snelkoppelingen</string>
-  <string id="112">GEPAUZEERD</string>
+  <string id="112">Pauze</string>
   <string id="115">Kopiëer</string>
   <string id="116">Verplaats</string>
   <string id="117">Verwijder</string>
@@ -103,7 +104,7 @@
   <string id="168">Tijd synchroniseren via Internet</string>
   <string id="169">Resolutie</string>
   <string id="170">Aanpassen refresh rate</string>
-  <string id="172">Releasedatum:</string>
+  <string id="172">Release datum:</string>
   <string id="175">Tonen:</string>
   <string id="176">Stijlen:</string>
   <string id="179">Tracklist</string>
@@ -443,6 +444,7 @@
   <string id="545">Geluidsuitvoerapparaat</string>
   <string id="546">Doorgifte Geluidsuitvoer Apparaat</string>
   <string id="547">Geen biografie beschikbaar voor artiest</string>
+  <string id="548">Downmix multikanaals audio naar stereo</string>
   <string id="550">Sorteer: %s</string>
   <string id="551">Naam</string>
   <string id="552">Datum</string>
@@ -534,6 +536,8 @@
   <string id="658">Muziekinformatie</string>
   <string id="660">Volumeversterking</string>
   <string id="661">Kies exporteerlocatie</string>
+  <string id="662">Dit bestand is niet langer beschikbaar.</string>
+  <string id="663">Wilt u verwijderen uit de bibliotheek?</string>
   <string id="700">Bibliotheek opschonen</string>
   <string id="701">Oude nummers uit bibiotheek verwijderen</string>
   <string id="702">Deze locatie is al eerder gescant</string>
@@ -580,6 +584,7 @@
   <string id="746">Wissel naar bestandsweergave</string>
   <string id="747">Fout tijdens het laden van de afbeelding</string>
   <string id="748">Snelkoppeling wijzingen</string>
+  <string id="749">Spiegel Afbeelding</string>
   <string id="750">Weet u het zeker?</string>
   <string id="751">Snelkoppeling verwijderen</string>
   <string id="754">Programmalink toevoegen</string>
@@ -672,6 +677,7 @@
   <string id="1045">Plugin-instelingen</string>
   <string id="1046">Draadloze Netwerken</string>
   <string id="1047">Andere...</string>
+  <string id="1048">Web server gebruikersnaam</string>
   <string id="1200">SMB-client</string>
   <string id="1202">Werkgroep</string>
   <string id="1203">Standaard gebruikersnaam</string>
@@ -712,6 +718,7 @@
   <string id="1255">FTP gebruikersnaam en wachtwoord verzenden</string>
   <string id="1256">Ping interval in sec.</string>
   <string id="1257">Verbinding maken met de gevonden Xbox?</string>
+  <string id="1260">Zeroconf publishing</string>
   <string id="1396">Driftsneeuw</string>
   <string id="1397">en</string>
   <string id="1398">Vrieskou</string>
@@ -733,6 +740,7 @@
   <string id="1414">Onweerstormen</string>
   <string id="1415">Motregen</string>
   <string id="1416">Mistig</string>
+  <string id="1417">Korrels</string>
   <string id="2050">Speelduur:</string>
   <string id="4501">LCD-type</string>
   <string id="10000">Home</string>
@@ -888,6 +896,9 @@
   <string id="13020">is er een andere sessie actief, wellicht SSH ?</string>
   <string id="13021">Mount verwisselbare hardeschijf ?</string>
   <string id="13022">Onveilig apparaat verwijderd</string>
+  <string id="13023">Succesvol verwijderd apparaat</string>
+  <string id="13024">Joystick aangesloten</string>
+  <string id="13025">Joystick unplugged</string>
   <string id="13100">flikkerfilter</string>
   <string id="13101">Laat keuze aan driver (herstart vereist)</string>
   <string id="13105">Vertical blank sync</string>
@@ -905,6 +916,7 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Strikte Pixmap-Texture Binding (opnieuw opstarten vereist)</string>
   <string id="13130">Beeldscherm blanking</string>
   <string id="13131">Uitgeschakeld</string>
   <string id="13132">Blank Beeldscherm</string>
@@ -1091,6 +1103,8 @@ voor deze visualisatie</string>
   <string id="13417">Eenvoudige Shaders (ARB)</string>
   <string id="13418">Geavanceerde Shaders (GLSL)</string>
   <string id="13419">Software</string>
+  <string id="13420">Uitwerpen</string>
+  <string id="13421">VDPAU</string>
   <string id="13600">Apple afstandsbediening</string>
   <string id="13601">Mode</string>
   <string id="13602">Altijd draaiend</string>
@@ -1322,6 +1336,11 @@ voor deze visualisatie</string>
   <string id="16307">Bicubic (software)</string>
   <string id="16308">Lanczos (software)</string>
   <string id="16309">Sinc (software)</string>
+  <string id="16310">(VDPAU)Temporal</string>
+  <string id="16311">(VDPAU)Temporal/Spatial</string>
+  <string id="16312">(VDPAU)Noise Reduction</string>
+  <string id="16313">(VDPAU)Sharpness</string>
+  <string id="16314">Inverse telecine</string>
   <string id="17500">Beeldscherm Uitschakel Tijd</string>
   <string id="20000">CD-ripmap</string>
   <string id="20001">Gebruik andere DVD-speler</string>
@@ -1509,6 +1528,8 @@ voor deze visualisatie</string>
   <string id="20250">Feesten maar! (video's)</string>
   <string id="20251">Drankjes mixen (video's)</string>
   <string id="20252">Glazen vullen (video's)</string>
+  <string id="20300">Web server directory (HTTP)</string>
+  <string id="20301">Web server directory (HTTPS)</string>
   <string id="20306">Onbekend. Voeg de MD5 vanuit xbmc.log toe in BiosIDs.ini.</string>
   <string id="20307">Secundaire DNS</string>
   <string id="20308">DHCP-server:</string>
@@ -1632,6 +1653,7 @@ voor deze visualisatie</string>
   <string id="20429">Apart</string>
   <string id="20430">Exporteer thumbs en fanart?</string>
   <string id="20431">Oude bestande overschrijven?</string>
+  <string id="20432">Sluit pad uit van bibliotheek updates</string>
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
   <string id="21331">TuxBox-client</string>
   <string id="21332">WAARSCHUWING: TuxBox-apparaat is aan het opnemen.</string>
@@ -1695,6 +1717,11 @@ voor deze visualisatie</string>
   <string id="21409">voor</string>
   <string id="21410">in laatste</string>
   <string id="21411">niet in laatste</string>
+  <string id="21412">Scrapers</string>
+  <string id="21413">Standaard film scraper</string>
+  <string id="21414">Standaard tv-serie scraper</string>
+  <string id="21415">Standaard muziekvideo scraper</string>
+  <string id="21416">Enable fallback gebaseerd op scraper taal</string>
   <string id="21420">Waarde gekijk aan</string>
   <string id="21421">Intelligente afspeellijst regel</string>
   <string id="21422">Nummers zijn gelijk wanneer</string>
@@ -1813,6 +1840,20 @@ voor deze visualisatie</string>
   <string id="22018">Live Kanalen</string>
   <string id="22019">Opgenames Op Titel</string>
   <string id="22020">Gids</string>
+  <string id="22030">Font</string>
+  <string id="22031">- Grootte</string>
+  <string id="22032">- Kleuren</string>
+  <string id="22033">- Karakterset</string>
+  <string id="22034">Exporteer karaoke titels als HTML</string>
+  <string id="22035">Exporteer karaoke titels als CSV</string>
+  <string id="22036">Importeer karaoke titels</string>
+  <string id="22037">Auto popup song selector</string>
+  <string id="22038">Exporteer karaoke titels...</string>
+  <string id="22039">Voer nummer in</string>
+  <string id="22040">wit/groen</string>
+  <string id="22041">wit/rood</string>
+  <string id="22042">wit/blau</string>
+  <string id="22043">zwart/wit</string>
   <string id="29800">Bibliotheekmodus</string>
   <string id="29801">QWERTY-indeling toetsenbord</string>
   <string id="29999">Flikkerfilter toepassen op spellen</string>

@@ -348,11 +348,6 @@ ifeq ($(ARCH), powerpc64-linux)
 	LIBS += -lpython2.4
 endif
 
-# TODO: XBPythonDLLFuncs.S not implemented on PowerPC
-ifeq ($(ARCH), powerpc-osx)
-	OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
-endif
-
 # If using external libmpcdec
 ifeq (@USE_EXTERNAL_LIBMPCDEC@,1)
 	OBJSXBMC += xbmc/cores/paplayer/MPCCodec/xbmc/libmpcdec-@ARCH@.a

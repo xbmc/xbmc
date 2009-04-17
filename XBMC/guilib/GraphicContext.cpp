@@ -1361,10 +1361,7 @@ CSurface* CGraphicContext::InitializeSurface()
   if (!screenSurface || !screenSurface->IsValid())
   {
     CLog::Log(LOGERROR, "Surface creation error");
-    if (screenSurface)
-    {
-      delete screenSurface;
-    }
+    delete screenSurface;
     Unlock();
     return NULL;
   }

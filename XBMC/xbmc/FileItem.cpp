@@ -1311,6 +1311,30 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_cacheToDisc = itemlist.m_cacheToDisc;
 }
 
+bool CFileItemList::Copy(const CFileItemList& items)
+{
+  // assign all CFileItem parts
+  *(CFileItem*)this = *(CFileItem*)&items;
+
+  // assign the rest of the CFileItemList properties
+  m_replaceListing = items.m_replaceListing;
+  m_content        = items.m_content;
+  m_mapProperties  = items.m_mapProperties;
+  m_cacheToDisc    = items.m_cacheToDisc;
+  m_sortDetails    = items.m_sortDetails;
+  m_sortMethod     = items.m_sortMethod;
+  m_sortOrder      = items.m_sortOrder;
+
+  // make a copy of each item
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr newItem(new CFileItem(*items[i]));
+    Add(newItem);
+  }
+
+  return true;
+}
+
 CFileItemPtr CFileItemList::Get(int iItem)
 {
   CSingleLock lock(m_lock);
@@ -2365,15 +2389,21 @@ CStdString CFileItem::GetTBNFile() const
 
 CStdString CFileItem::GetUserVideoThumb() const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsVTP())
-    return "";
-
   if (IsTuxBox())
   {
     if (!m_bIsFolder)
       return g_tuxbox.GetPicon(GetLabel());
     else return "";
   }
+
+  if (m_strPath.IsEmpty() 
+  || m_bIsShareOrDrive
+  || IsInternetStream()
+  || CUtil::IsUPnP(m_strPath)
+  || IsParentFolder()
+  || IsTV())
+    return "";
+
 
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
@@ -2503,7 +2533,11 @@ CStdString CFileItem::CacheFanart(bool probe) const
   }
 
   // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin() || CUtil::IsFTP(strFile))
+  if (IsInternetStream()
+  || CUtil::IsUPnP(strFile)
+  || IsTV() 
+  || IsPlugin() 
+  || CUtil::IsFTP(strFile))
     return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..
@@ -2902,5 +2936,4 @@ CStdString CFileItem::FindTrailer() const
 
   return strTrailer;
 }
-
 

@@ -1417,7 +1417,8 @@ Optional Features:
   --enable-faac           enable FAAC support (default is yes)
   --enable-dvdcss         enable DVDCSS support (default is yes)
   --enable-mid            enable MID support (default is no)
-  --enable-avahi          enable Avahi support (default is no)
+  --disable-avahi         disable Avahi support (default is enabled if
+                          libavahi-common and libavahi-client is found)
   --enable-external-libraries
                           enable use of all supported external libraries
                           (default is no)
@@ -8798,7 +8799,11 @@ $as_echo "$as_me: $external_libraries_disabled" >&6;}
 fi
 
 # External FFmpeg
-if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"; then
+if test "$use_external_ffmpeg" = "yes"; then
+  { { $as_echo "$as_me:$LINENO: error: \"Use of external ffmpeg is currently unsupported.\"" >&5
+$as_echo "$as_me: error: \"Use of external ffmpeg is currently unsupported.\"" >&2;}
+   { (exit 1); exit 1; }; }
+
 
 { $as_echo "$as_me:$LINENO: checking for main in -lavcodec" >&5
 $as_echo_n "checking for main in -lavcodec... " >&6; }
