@@ -2224,11 +2224,13 @@ void CApplication::RenderNoPresent()
 #endif
     // release the context so the async renderer can draw to it
 #ifdef HAS_SDL_OPENGL
+#ifdef HAS_VIDEO_PLAYBACK
     // Video rendering occuring from main thread for OpenGL
     if (m_bPresentFrame)
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
+#endif
 #else
     //g_graphicsContext.ReleaseCurrentContext();
     g_graphicsContext.Unlock(); // unlock to allow the async renderer to render
