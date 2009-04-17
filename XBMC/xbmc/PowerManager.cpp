@@ -54,6 +54,50 @@ CPowerManager::~CPowerManager()
   delete m_instance;
 }
 
+void CPowerManager::Initialize()
+{
+  int defaultShutdown = g_guiSettings.GetInt("system.shutdownstate");
+
+  switch (defaultShutdown)
+  {
+    case POWERSTATE_QUIT:
+    case POWERSTATE_MINIMIZE:
+      // assume we can shutdown if --standalone is passed
+      if (g_application.IsStandAlone())
+        defaultShutdown = POWERSTATE_SHUTDOWN;
+    break;
+    case POWERSTATE_HIBERNATE:
+      if (!g_powerManager.CanHibernate())
+      {
+        if (g_powerManager.CanSuspend())
+          defaultShutdown = POWERSTATE_SUSPEND;
+        else
+          defaultShutdown = g_powerManager.CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
+      }
+    break;
+    case POWERSTATE_SUSPEND:
+      if (!g_powerManager.CanSuspend())
+      {
+        if (g_powerManager.CanHibernate())
+          defaultShutdown = POWERSTATE_HIBERNATE;
+        else
+          defaultShutdown = g_powerManager.CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
+      }
+    break;
+    case POWERSTATE_SHUTDOWN:
+      if (!g_powerManager.CanPowerdown())
+      {
+        if (g_powerManager.CanSuspend())
+          defaultShutdown = POWERSTATE_SUSPEND;
+        else
+          defaultShutdown = g_powerManager.CanHibernate() ? POWERSTATE_HIBERNATE : POWERSTATE_QUIT;
+      }
+    break;
+  }
+
+  g_guiSettings.SetInt("system.shutdownstate", defaultShutdown);
+}
+  
 bool CPowerManager::Powerdown()
 {
   return CanPowerdown() ? m_instance->Powerdown() : false;
