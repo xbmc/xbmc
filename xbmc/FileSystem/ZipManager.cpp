@@ -25,6 +25,17 @@
 #include "URL.h"
 #include "FileSystem/File.h"
 
+// All values are stored in little-endian byte order in .zip file
+// Use SDL macros to perform byte swapping on big-endian systems
+// This assumes that big-endian systems use SDL
+// Macros do not do anything on little-endian systems
+// SDL_endian.h is already included in PlatformDefs.h
+#ifndef HAS_SDL
+#define SDL_SwapLE16(X) (X)
+#define SDL_SwapLE32(X) (X)
+#endif
+
+
 using namespace XFILE;
 using namespace std;
 
@@ -50,11 +61,12 @@ bool CZipManager::HasMultipleEntries(const CStdString& strPath)
     {
       mFile.Seek(mFile.GetLength()-i,SEEK_SET);
       mFile.Read(buffer,4);
-      if (*((int*)buffer) == 0x06054b50)
+      if (SDL_SwapLE32(*((int*)buffer)) == 0x06054b50)
       {
         mFile.Seek(6,SEEK_CUR);
         short iEntries;
         mFile.Read(&iEntries,2);
+        iEntries = SDL_SwapLE16(iEntries);
         mFile.Close();
         return iEntries > 1;
       }
@@ -153,8 +165,11 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     if (ze.flags & 8)
     {
       mFile.Read(&ze.crc32,4);
+      ze.crc32 = SDL_SwapLE32(ze.crc32);
       mFile.Read(&ze.csize,4);
+      ze.csize = SDL_SwapLE32(ze.csize);
       mFile.Read(&ze.usize,4);
+      ze.usize = SDL_SwapLE32(ze.usize);
     }
     items.push_back(ze);
   }
@@ -232,17 +247,17 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
 
 void CZipManager::readHeader(const char* buffer, SZipEntry& info)
 {
-  memcpy(&info.header,buffer,4);
-  memcpy(&info.version,buffer+4,2);
-  memcpy(&info.flags,buffer+6,2);
-  memcpy(&info.method,buffer+8,2);
-  memcpy(&info.mod_time,buffer+10,2);
-  memcpy(&info.mod_date,buffer+12,2);
-  memcpy(&info.crc32,buffer+14,4);
-  memcpy(&info.csize,buffer+18,4);
-  memcpy(&info.usize,buffer+22,4);
-  memcpy(&info.flength,buffer+26,2);
-  memcpy(&info.elength,buffer+28,2);
+  info.header = SDL_SwapLE32(*(unsigned int*)buffer);
+  info.version = SDL_SwapLE16(*(unsigned short*)(buffer+4));
+  info.flags = SDL_SwapLE16(*(unsigned short*)(buffer+6));
+  info.method = SDL_SwapLE16(*(unsigned short*)(buffer+8));
+  info.mod_time = SDL_SwapLE16(*(unsigned short*)(buffer+10));
+  info.mod_date = SDL_SwapLE16(*(unsigned short*)(buffer+12));
+  info.crc32 = SDL_SwapLE32(*(int*)(buffer+14));
+  info.csize = SDL_SwapLE32(*(unsigned int*)(buffer+18));
+  info.usize = SDL_SwapLE32(*(unsigned int*)(buffer+22));
+  info.flength = SDL_SwapLE16(*(unsigned short*)(buffer+26));
+  info.elength = SDL_SwapLE16(*(unsigned short*)(buffer+28));
 }
 
 void CZipManager::release(const CStdString& strPath)
