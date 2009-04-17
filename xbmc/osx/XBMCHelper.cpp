@@ -79,7 +79,7 @@ void XBMCHelper::Start()
   {
     printf("Asking helper to start.\n");
     // use -x to have XBMCHelper read its configure file
-    std::string cmd = "\"" + m_helperFile + "\" -xm &";
+    std::string cmd = "\"" + m_helperFile + "\" -x &";
     system(cmd.c_str());
   }
 }
@@ -201,7 +201,7 @@ void XBMCHelper::Install()
 
       // Replace ARG1 with a single argument, additional args 
       // will need ARG2, ARG3 added to plist.
-      launchd_args = " -xm";
+      launchd_args = " -x";
       start = plistData.find("${ARG1}");
       plistData.replace(start, 7, launchd_args.c_str(), launchd_args.length());
 
