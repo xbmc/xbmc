@@ -37,7 +37,6 @@ class XBMCHelper
   void Uninstall();
 
   bool IsRunning();
-  bool IsAppleTV();
   void CaptureAllInput();
   void ReleaseAllInput();
 
