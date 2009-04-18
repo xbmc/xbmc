@@ -85,8 +85,6 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
       CStdStringW strHostW;
       g_charsetConverter.utf8ToW(strHost,strHostW);
       lpnr->lpRemoteName = (LPWSTR)strHostW.c_str();
-      lpnr->dwScope = RESOURCE_GLOBALNET;
-      lpnr->dwType = RESOURCETYPE_ANY;
       m_bHost = true;
       ret = EnumerateFunc(lpnr, items);
       GlobalFree((HGLOBAL) lpnr);
@@ -216,6 +214,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
   HANDLE hEnum;
   DWORD cbBuffer = 16384;     // 16K is a good size
   LPNETRESOURCEW lpnrLocal;   // pointer to enumerated structures
+  DWORD cEntries = -1;        // enumerate all possible entries
   DWORD i;
   //
   // Call the WNetOpenEnum function to begin the enumeration.
@@ -256,7 +255,6 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
 
   do 
   {
-    DWORD cEntries = -1;        // enumerate all possible entries
     //
     // Initialize the buffer.
     //
@@ -279,8 +277,8 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
         DWORD dwDisplayType = lpnrLocal[i].dwDisplayType;
         DWORD dwType = lpnrLocal[i].dwType;
 
-        if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) || 
-           (dwDisplayType == RESOURCEDISPLAYTYPE_SHARE)) &&
+        if((((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && (m_bHost == false)) || 
+           ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && m_bHost)) &&
            (dwType != RESOURCETYPE_PRINT))
         {
           CStdString strurl = "smb:";
@@ -311,9 +309,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           pItem->m_strPath = strurl;
           CUtil::AddSlashAtEnd(pItem->m_strPath);
           pItem->m_bIsFolder = true;
-          if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && (m_bHost == false)) ||
-             ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && m_bHost))
-            items.Add(pItem);
+          items.Add(pItem);
         }
 
         // If the NETRESOURCE structure represents a container resource, 
@@ -367,7 +363,6 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
   CStdString strPath;
   memset(&nr,0,sizeof(nr));
   nr.dwType = RESOURCETYPE_ANY;
-  nr.dwScope = RESOURCE_GLOBALNET;
   nr.lpRemoteName = (char*)strUNC.c_str();
 
   // in general we shouldn't need the password manager as we won't disconnect from shares yet
