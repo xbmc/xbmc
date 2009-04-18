@@ -62,8 +62,8 @@ void CGUIAudioManager::Initialize(int iDevice)
     if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
       CLog::Log(LOGERROR, "Unable to open audio mixer");
 #elif defined(__APPLE__)
-    g_CoreAudioMixer.Init();
-    g_CoreAudioMixer.Start();
+    g_CASoundMgr.Initialize(g_guiSettings.GetString("audiooutput.audiodevice"));
+    g_CASoundMgr.Run();
 #else
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
@@ -85,8 +85,7 @@ void CGUIAudioManager::DeInitialize(int iDevice)
 #ifdef HAS_SDL_AUDIO
   Mix_CloseAudio();
 #elif defined(__APPLE__)
-  g_CoreAudioMixer.Stop();
-  g_CoreAudioMixer.Deinit();
+  g_CASoundMgr.Stop();
 #endif
   
 }
@@ -165,8 +164,6 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
   // it's not possible to play gui sounds when passthrough is active
   if (!m_bEnabled || g_audioContext.IsPassthroughActive())
     return;
-
-  //g_CAMixer.PlayNote(0, 60);
   
   CSingleLock lock(m_cs);
 

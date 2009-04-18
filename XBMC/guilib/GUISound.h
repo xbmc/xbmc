@@ -27,7 +27,7 @@
 
 #ifdef __APPLE__
   #include "CoreAudio.h"
-  extern CCoreAudioMixer g_CoreAudioMixer; // The design of CGUISound forces us to have a globally accessible instance (or pass one around)
+  extern CCoreAudioSoundManager g_CASoundMgr; // The design of CGUISound forces us to have a globally accessible instance (or pass one around)
 #endif
 
 class CGUISound

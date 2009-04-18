@@ -178,24 +178,29 @@ private:
   UInt64 m_TotalFrames;
 };
 
-class CCoreAudioMixer
+typedef CCoreAudioSound* CoreAudioSoundRef;
+
+class CCoreAudioSoundManager
 {
 public:
-  CCoreAudioMixer();
-  ~CCoreAudioMixer();
-  bool Init();
-  void Deinit();
-  void Start();
+  CCoreAudioSoundManager();
+  ~CCoreAudioSoundManager();
+  bool Initialize(CStdString deviceName);
+  void Run();
   void Stop();
-  void PlaySound(UInt32 bus, CCoreAudioSound& sound);
-private:
-  static OSStatus OnDevicePropertyChanged(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void* inClientData);
-  AUGraph m_Graph;
-  AudioUnit m_OutputUnit;
-  UInt32 m_MaxInputs;
-  AudioUnit* m_pScheduler;
-  AudioStreamBasicDescription m_ChannelFormat;
-  bool m_Suspended;
+  CoreAudioSoundRef RegisterSound(CStdString fileName);
+  void UnregisterSound(CoreAudioSoundRef soundRef);
+  void PlaySound(CoreAudioSoundRef soundRef);
+protected:
+  // Test vars
+  CCoreAudioSound* m_pCurrentSound;
+  UInt32 m_CurrentOffset;
+  
+  CCoreAudioDevice m_OutputDevice;
+  CCoreAudioUnit m_OutputUnit;
+  AudioStreamBasicDescription m_OutputFormat;
+  static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
+  OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);  
 };
 
 // Helper Functions

@@ -168,12 +168,11 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
   // TODO: If debugging, output information about all devices/streams
   
   // Attempt to find the configured output device
-  CCoreAudioHardware audioHardware;
-  AudioDeviceID outputDevice = audioHardware.FindAudioDevice(g_guiSettings.GetString("audiooutput.audiodevice"));
+  AudioDeviceID outputDevice = CCoreAudioHardware::FindAudioDevice(g_guiSettings.GetString("audiooutput.audiodevice"));
   if (!outputDevice) // Fall back to the default device if no match is found
   {
     CLog::Log(LOGWARNING, "CoreAudioRenderer::Initialize: Unable to locate configured device, falling-back to the system default.");
-    outputDevice = audioHardware.GetDefaultOutputDevice();
+    outputDevice = CCoreAudioHardware::GetDefaultOutputDevice();
     if (!outputDevice) // Not a lot to be done with no device. TODO: Should we just grab the first existing device?
       return false;
   }
@@ -229,7 +228,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
     m_ChunkLen = bufferFrames * m_BytesPerFrame;                       // This is the minimum amount of data that we will accept from a client
 
     // Setup the callback function that the AudioUnit will use to request data	
-    if (!m_AudioUnit.SetRenderProc(CCoreAudioRenderer::RenderCallback, this))
+    if (!m_AudioUnit.SetRenderProc(RenderCallback, this))
       return false;
     
     // Initialize the Output AudioUnit
@@ -508,7 +507,7 @@ OSStatus CCoreAudioRenderer::RenderCallback(void *inRefCon, AudioUnitRenderActio
 }
 
 // Static Callback from AudioDevice
-OSStatus CCoreAudioRenderer::PassthroughRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData)
+OSStatus CCoreAudioRenderer::DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData)
 {
   CCoreAudioRenderer* pThis = (CCoreAudioRenderer*)inClientData;
   return pThis->OnRender(NULL, inInputTime, 0, outOutputData->mBuffers[0].mDataByteSize / pThis->m_BytesPerFrame, outOutputData);
@@ -544,12 +543,12 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
 
 bool CCoreAudioRenderer::SpoofPCM()
 {
-  // Set the Sample Rate as defined by the spec.
-  m_AudioDevice.SetNominalSampleRate(48000.0f);
-  
   m_AudioDevice.SetHogStatus(true); // Prevent any other application from using this device.
   m_AudioDevice.SetMixingSupport(false); // Try to disable mixing support. Effectiveness depends on the device.
   
+  // Set the Sample Rate as defined by the spec.
+  m_AudioDevice.SetNominalSampleRate(48000.0f);
+
   // Set the input stream format for the AudioUnit. We will convert the data to this format before passing it to the AudioUnit.
   AudioStreamBasicDescription inputFormat;
   inputFormat.mFormatID = kAudioFormatLinearPCM;			      //	Data encoding format
@@ -651,7 +650,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
   m_OutputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
   
   // Register for data request callbacks from the driver
-  m_AudioDevice.AddIOProc(PassthroughRenderCallback, this);  
+  m_AudioDevice.AddIOProc(DirectRenderCallback, this);  
     
   return true;
 }

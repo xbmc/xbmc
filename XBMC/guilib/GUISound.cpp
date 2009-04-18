@@ -32,7 +32,7 @@
 #ifdef HAS_SDL_AUDIO
   #define GUI_SOUND_CHANNEL 0
 #elif defined (__APPLE__)
-  CCoreAudioMixer g_CoreAudioMixer;
+  CCoreAudioSoundManager g_CASoundMgr;
 #else
   typedef struct
   {
@@ -107,7 +107,7 @@ void CGUISound::Play()
 #ifdef HAS_SDL_AUDIO
   Mix_PlayChannel(GUI_SOUND_CHANNEL, m_soundBuffer, 0);
 #elif defined (__APPLE__)
-    g_CoreAudioMixer.PlaySound(0, *m_soundBuffer);
+    g_CASoundMgr.PlaySound(m_soundBuffer);
 #else
    m_soundBuffer->Play(0, 0, 0);
 #endif

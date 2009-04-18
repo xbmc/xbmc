@@ -741,19 +741,6 @@ bool CCoreAudioUnit::Initialize()
   return true;
 }
 
-bool CCoreAudioUnit::SetCurrentDevice(AudioDeviceID deviceId)
-{
-  if (!m_Component)
-    return false;
-  
-  OSStatus ret = AudioUnitSetProperty(m_Component, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &deviceId, sizeof(AudioDeviceID));
-  if (ret)
-  { 
-    CLog::Log(LOGERROR, "CCoreAudioUnit::SetCurrentDevice: Unable to set current device. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-    return false; 
-  }  
-  return true;
-}
 
 bool CCoreAudioUnit::GetInputFormat(AudioStreamBasicDescription* pDesc)
 {
@@ -862,6 +849,21 @@ bool CCoreAudioUnit::SetMaxFramesPerSlice(UInt32 maxFrames)
 
 // TODO: These are not true AudioUnit methods. Move to OutputDeviceAU class
 // TODO: The channel map setter/getter are inefficient
+
+bool CCoreAudioUnit::SetCurrentDevice(AudioDeviceID deviceId)
+{
+  if (!m_Component)
+    return false;
+  
+  OSStatus ret = AudioUnitSetProperty(m_Component, kAudioOutputUnitProperty_CurrentDevice, kAudioUnitScope_Global, 0, &deviceId, sizeof(AudioDeviceID));
+  if (ret)
+  { 
+    CLog::Log(LOGERROR, "CCoreAudioUnit::SetCurrentDevice: Unable to set current device. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+    return false; 
+  }  
+  return true;
+}
+
 bool CCoreAudioUnit::GetInputChannelMap(CoreAudioChannelList* pChannelMap)
 {
   if (!m_Component)
@@ -956,32 +958,56 @@ CCoreAudioSound::~CCoreAudioSound()
   Unload();
 }
 
+void WriteInterleavedSinWave(int channels, int samples, AudioBufferList** ppBufferList)
+{
+  AudioBufferList* pBufferList = *ppBufferList = (AudioBufferList*)calloc(1, sizeof(AudioBufferList));
+  pBufferList->mNumberBuffers = 1;
+  short* pBuffer = (short*)malloc(sizeof(short) * samples * channels);
+  pBufferList->mBuffers[0].mNumberChannels = channels;
+  pBufferList->mBuffers[0].mData = pBuffer;
+  pBufferList->mBuffers[0].mDataByteSize = sizeof(short) * samples * channels;
+
+  float pi = 3.1415926535897;
+  float scale = (2.0f * pi) / 100.0f;
+  for (int s = 0; s < samples; s++)
+  {
+    int smp = s % 100;
+    float pos = (float)smp * scale;
+    short val = (short)(sin(pos) * 32767.0f);
+    for (int c = 0; c < channels; c++)
+      pBuffer[s*channels+c] = val;
+  }  
+}
+
+void WriteDeInterleavedSinWave(int channelCount, int samples, AudioBufferList** ppBufferList)
+{
+  AudioBufferList* pBufferList = *ppBufferList = (AudioBufferList*)calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer) * (channelCount - kVariableLengthArray) );
+  pBufferList->mNumberBuffers = channelCount;
+  float* buffers = (float*)malloc(sizeof(float) * samples * channelCount);
+  for(int i = 0; i < channelCount; i++)
+  {
+    pBufferList->mBuffers[i].mNumberChannels = 1;
+    pBufferList->mBuffers[i].mData = buffers + (samples * i);
+    pBufferList->mBuffers[i].mDataByteSize = samples * sizeof(float);
+    
+    float* pSamples = (float*)pBufferList->mBuffers[i].mData;
+    float pi = 3.1415926535897;
+    float scale = (2.0f * pi) / 100.0f;
+    for (int s = 0; s < samples; s++)
+    {
+      int smp = s % 100;
+      float pos = (float)smp * scale;
+      pSamples[s] = sin(pos);      
+    }
+  }
+}
+
 bool CCoreAudioSound::LoadFile(CStdString fileName)
 {
-  // Sin wave test
-//  m_TotalFrames = 1300;
-//  UInt32 channelCount = 2;
-//  m_pBufferList = (AudioBufferList*)calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer) * (channelCount - kVariableLengthArray) );
-//  m_pBufferList->mNumberBuffers = channelCount;
-//  UInt32 framesPerBuffer = (UInt32)m_TotalFrames;
-//  float* buffers = (float*)malloc(sizeof(float) * framesPerBuffer * channelCount);
-//  for(int i = 0; i < channelCount; i++)
-//  {
-//    m_pBufferList->mBuffers[i].mNumberChannels = 1;
-//    m_pBufferList->mBuffers[i].mData = buffers + (framesPerBuffer * i);
-//    m_pBufferList->mBuffers[i].mDataByteSize = framesPerBuffer * sizeof(float);
-//    
-//    float* pSamples = (float*)m_pBufferList->mBuffers[i].mData;
-//    float pi = 3.1415926535897;
-//    float scale = (2.0f * pi) / 100.0f;
-//    for (int s = 0; s < framesPerBuffer; s++)
-//    {
-//      int smp = s % 100;
-//      float pos = (float)smp * scale;
-//      pSamples[s] = sin(pos);
-//    }
-//  }  
-//  return true;
+  //m_TotalFrames = 4000;
+  //WriteInterleavedSinWave(2, m_TotalFrames, &m_pBufferList);
+  //WriteDeInterleavedSinWave(2, m_TotalFrames, &m_pBufferList);
+  //return true;
   
   // Validate the provided file path and open the audio file
   FSRef fileRef;
@@ -1060,231 +1086,149 @@ void CCoreAudioSound::SetVolume(float volume)
   
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CCoreAudioSoundManager
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CCoreAudioSoundManager::CCoreAudioSoundManager()
+{
+  m_pCurrentSound = NULL;
+}
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CCoreAudioMixer
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CCoreAudioMixer::CCoreAudioMixer() :
-  m_Graph(0),
-  m_pScheduler(NULL),
-  m_OutputUnit(0),
-  m_MaxInputs(5),
-  m_Suspended(false)
+CCoreAudioSoundManager::~CCoreAudioSoundManager()
 {
   
 }
 
-CCoreAudioMixer::~CCoreAudioMixer()
+bool CCoreAudioSoundManager::Initialize(CStdString deviceName)
 {
-  Deinit();
-}
-
-bool CCoreAudioMixer::Init()
-{
-  ComponentDescription desc;
-
-  NewAUGraph(&m_Graph); // This is our AudioUnit 'container'
-  
-  // Create the output AudioUnit/Node
-  // TODO: Use the configured device
-  AUNode outputNode;
-  desc.componentManufacturer = kAudioUnitManufacturer_Apple;
-  desc.componentFlags = 0;
-  desc.componentFlagsMask = 0;
-  desc.componentType = kAudioUnitType_Output;
-  desc.componentSubType = kAudioUnitSubType_DefaultOutput;
-  OSStatus ret = AUGraphNewNode(m_Graph, &desc, 0, NULL, &outputNode);
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::Init: Unable to create output node. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-  
-  AudioDeviceID outputDevice = CCoreAudioHardware::GetDefaultOutputDevice();
-  // TODO: Get channel format from mixer/AUHAL
-  // TODO: Add listener to output device, so that we can reinit after 'hog' mode
-  AudioDeviceAddPropertyListener(outputDevice, 0, false, kAudioDevicePropertyHogMode, OnDevicePropertyChanged, this);
-
-  AudioStreamBasicDescription outputFormat;
-  outputFormat.mSampleRate = 44100;;
-  outputFormat.mChannelsPerFrame  = 2;// inputFormat.mChannelsPerFrame;
-  outputFormat.mFormatID = kAudioFormatLinearPCM;
-  outputFormat.mFormatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved; // Format required by scheduled sound player
-  outputFormat.mBitsPerChannel = 8 * sizeof(float);
-  outputFormat.mBytesPerFrame =  sizeof(float);
-  outputFormat.mFramesPerPacket = 1;
-  outputFormat.mBytesPerPacket = outputFormat.mBytesPerFrame * outputFormat.mFramesPerPacket;    
-  
-  // Set up the source-mixing AudioUnit/Node
-  AUNode mixerNode;
-  desc.componentType = kAudioUnitType_Mixer;
-  desc.componentSubType = kAudioUnitSubType_StereoMixer;  
-  ret = AUGraphNewNode(m_Graph, &desc, 0, NULL, &mixerNode);
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::Init: Unable to create mixer node. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-  
-  // TODO: The mixer's output stream format must be set before connecting it to the output unit
-  // After connecting the mixer to the output unit, the channel layout must be explicitly set to match the input scope layout of the output unit.
-  
-  // Hook the mixer to the output
-  ret = AUGraphConnectNodeInput(m_Graph, mixerNode, 0, outputNode, 0);
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::Init: Unable to create connect mixer to output node. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-
-  // Open the graph
-  ret = AUGraphOpen(m_Graph);
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::Init: Unable to open graph. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-  
-  // Fetch a reference to the underlying output AudioUnit (It was not created until AUOpenGraph was called)
-  ret = AUGraphGetNodeInfo(m_Graph, outputNode, 0, 0, 0, &m_OutputUnit);
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::Init: Unable to obtian component reference for output unit. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-  
-  ret = AudioUnitSetProperty(m_OutputUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &outputFormat, sizeof(outputFormat));
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::Init: Unable to set output unit stream format. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-  
-  UInt32 maxFrames = 512;
-  ret = AudioUnitSetProperty(m_OutputUnit, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &maxFrames, sizeof(UInt32));
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::Init: Unable to set output unit stream format. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-  
-  // Fire it up
-  ret = AUGraphInitialize(m_Graph);
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::Init: Unable to initialize graph. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-
-  // Create our input 'buses' and wire them into the mixer
-  m_pScheduler = new AudioUnit[m_MaxInputs];
-  
-  AUNode schedNode;
-  desc.componentType = kAudioUnitType_Generator;
-  desc.componentSubType = kAudioUnitSubType_ScheduledSoundPlayer;
-  for (int i = 0; i < m_MaxInputs; i++)
+  // Attempt to find the configured output device
+  AudioDeviceID outputDevice = CCoreAudioHardware::FindAudioDevice(deviceName);
+  if (!outputDevice) // Fall back to the default device if no match is found
   {
-    ret = AUGraphNewNode(m_Graph, &desc, 0, NULL, &schedNode); // Create the Node
-    ret = AUGraphGetNodeInfo(m_Graph, schedNode, 0, 0, 0, &m_pScheduler[i]); // Fetch the component
-    AudioUnitSetProperty(m_pScheduler[i], kAudioUnitProperty_StreamFormat, kAudioUnitScope_Global, 0, &outputFormat, sizeof(AudioStreamBasicDescription));
-    ret = AUGraphConnectNodeInput(m_Graph, schedNode, 0, mixerNode, i); // Hook it to the mixer
+    CLog::Log(LOGWARNING, "CCoreAudioSoundManager::Initialize: Unable to locate configured device, falling-back to the system default.");
+    outputDevice = CCoreAudioHardware::GetDefaultOutputDevice();
+    if (!outputDevice) // Not a lot to be done with no device.
+      return false;
   }
   
-  ret = AUGraphUpdate(m_Graph, NULL);
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::Init: Unable to update graph. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+  // Attach our output object to the device
+  m_OutputDevice.Open(outputDevice);
   
-  CAShow(m_Graph);
+  // Create the Output AudioUnit Component
+  ComponentDescription outputCompDesc;
+  outputCompDesc.componentType = kAudioUnitType_Output;
+  outputCompDesc.componentSubType = kAudioUnitSubType_HALOutput;
+  outputCompDesc.componentManufacturer = kAudioUnitManufacturer_Apple;
+  outputCompDesc.componentFlags = 0;
+  outputCompDesc.componentFlagsMask = 0;
+  
+  if (!m_OutputUnit.Open(outputCompDesc))
+    return false;
+  
+  // Hook the Ouput AudioUnit to the selected device
+  if (!m_OutputUnit.SetCurrentDevice(outputDevice))
+    return false;
+
+  // Set up output format (32-bit float, 2-channel, non-interleaved)
+  m_OutputFormat.mSampleRate = 44100.0;
+  m_OutputFormat.mChannelsPerFrame  = 2;
+  m_OutputFormat.mFormatID = kAudioFormatLinearPCM;
+  m_OutputFormat.mFormatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
+  m_OutputFormat.mBitsPerChannel = 8 * sizeof(float);
+  m_OutputFormat.mBytesPerFrame =  sizeof(float);
+  m_OutputFormat.mFramesPerPacket = 1;
+  m_OutputFormat.mBytesPerPacket = m_OutputFormat.mBytesPerFrame * m_OutputFormat.mFramesPerPacket;  
+  if (!m_OutputUnit.SetInputFormat(&m_OutputFormat))
+    return false;
+
+  // Configure the maximum number of frames that the AudioUnit will ask to process at one time.
+  // If this is not called, there is no guarantee that the callback will ever be called.
+  UInt32 bufferFrames = m_OutputUnit.GetBufferFrameSize(); // Size of the output buffer, in Frames
+  if (!m_OutputUnit.SetMaxFramesPerSlice(bufferFrames))
+    return false;
+  
+  // Setup the callback function that the AudioUnit will use to request data	
+  if (!m_OutputUnit.SetRenderProc(RenderCallback, this))
+    return false;
+  
+  // Initialize the Output AudioUnit
+  if (!m_OutputUnit.Initialize())
+    return false;  
+  
   return true;
 }
 
-OSStatus CCoreAudioMixer::OnDevicePropertyChanged(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void* inClientData)
+void CCoreAudioSoundManager::Run()
 {
-  CCoreAudioMixer* pThis = (CCoreAudioMixer*)inClientData;
-  UInt32 size = 0;
-  pid_t hogEnabled = 0;
-  switch (inPropertyID)
+  m_OutputUnit.Start();
+}
+
+void CCoreAudioSoundManager::Stop()
+{
+  // TODO: Empty event queue and reset state
+  m_OutputUnit.Stop();
+}
+
+CoreAudioSoundRef CCoreAudioSoundManager::RegisterSound(CStdString fileName)
+{  
+  CCoreAudioSound* pSound = new CCoreAudioSound();
+  if (!pSound->LoadFile(fileName))
   {
-  case kAudioDevicePropertyHogMode:
-    size = sizeof(hogEnabled);
-    AudioDeviceGetProperty(inDevice, inChannel, isInput, inPropertyID, &size, &hogEnabled);
-    if (hogEnabled > -1) // Someone just hogged the device. Stop running for now.
-    {
-      CLog::Log(LOGINFO, "CCoreAudioMixer: Someone has hogged the output device. Preparing to shut down and wait for them to release it");
-      pThis->m_Suspended = true;
-      pThis->Deinit();
-    }
-    else if (pThis->m_Suspended) // The device was released and we were running when it was taken. Start back up.
-    {
-      CLog::Log(LOGINFO, "CCoreAudioMixer: The output device has been released. Reinitializing.");
-      pThis->Init();
-      pThis->Start();
-      pThis->m_Suspended = false;
-    }
-    break;
-  default:
-    break;
+    delete pSound;
+    return NULL;
   }
-  
+  return pSound;
+}
+
+void CCoreAudioSoundManager::UnregisterSound(CoreAudioSoundRef soundRef)
+{
+  delete soundRef;
+}
+
+void CCoreAudioSoundManager::PlaySound(CoreAudioSoundRef soundRef)
+{
+  if (!m_pCurrentSound)
+  {
+    m_OutputUnit.Start();
+    m_pCurrentSound = soundRef;
+    m_CurrentOffset = 0;
+  }
+  // TODO: Add to queue
+}
+
+OSStatus CCoreAudioSoundManager::OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
+{
+  if (m_pCurrentSound)
+  {
+    if (m_CurrentOffset < m_pCurrentSound->GetTotalFrames())
+    {
+      if (m_pCurrentSound->GetTotalFrames() - m_CurrentOffset < inNumberFrames)
+        inNumberFrames = m_pCurrentSound->GetTotalFrames() - m_CurrentOffset;
+      for (int i = 0; i < ioData->mNumberBuffers; i++)
+      {
+        UInt32 frameLen = m_OutputFormat.mBytesPerFrame;
+        unsigned char* pIn = (unsigned char*)m_pCurrentSound->GetBufferList()->mBuffers[i].mData;
+        memcpy(ioData->mBuffers[i].mData, &pIn[m_CurrentOffset * frameLen], inNumberFrames * frameLen); // Copy out the requested number of frames
+      }
+      m_CurrentOffset += inNumberFrames;
+    }
+    else
+    {
+      m_pCurrentSound = NULL;
+      m_CurrentOffset = 0;
+    }
+  }
+  else
+  {
+    ioData->mBuffers[0].mDataByteSize = ioData->mBuffers[0].mDataByteSize = 0;
+  }
   return noErr;
 }
 
-void CCoreAudioMixer::Deinit()
+OSStatus CCoreAudioSoundManager::RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
-  if (!m_Graph)
-    return;
-  Stop();
-  if (!m_Suspended)
-    AudioDeviceRemovePropertyListener(CCoreAudioHardware::GetDefaultOutputDevice(), 0, false, kAudioDevicePropertyHogMode, OnDevicePropertyChanged);
-  AUGraphUninitialize(m_Graph);
-  AUGraphClose(m_Graph);
-  delete[] m_pScheduler;
-  m_pScheduler = NULL;
-  m_Graph = 0;
-}
-
-UInt32 g_LastTime = 0;
-
-static void AudioSliceCompletionProc(void *userData, ScheduledAudioSlice *slice)
-{
-  delete slice;
-}
-
-void CCoreAudioMixer::Start()
-{
-  AUGraphStart(m_Graph);
-
-	// Start playback of each scheduled player unit by setting its start time.
-	AudioTimeStamp timeStamp = {0};
-	timeStamp.mFlags = kAudioTimeStampSampleTimeValid;
-	timeStamp.mSampleTime = -1;		// start now
-  for (int i = 0; i < m_MaxInputs; i++)
-  {
-    OSStatus ret = AudioUnitSetProperty(m_pScheduler[0], kAudioUnitProperty_ScheduleStartTimeStamp, kAudioUnitScope_Global, 0, &timeStamp, sizeof(timeStamp));
-    if (ret)
-      CLog::Log(LOGERROR, "CCoreAudioMixer::Start: Unable to set start time for sound scheduler %u. Error = 0x%08x (%4.4s)", i, ret, CONVERT_OSSTATUS(ret));
-  }
-  m_Suspended = false;
-}
-
-void CCoreAudioMixer::PlaySound(UInt32 bus, CCoreAudioSound& sound)
-{
-  if (!m_Graph || bus >= m_MaxInputs)
-    return;
-  
-  // TODO: Decide if stopping/starting is the best way to handle intermitent discrete sounds. If so, shouldn't we stop when there are no sounds to play?
-  AudioUnitReset(m_pScheduler[bus], kAudioUnitScope_Global, 0);
-
-  AudioTimeStamp currentTime;
-  UInt32 size = sizeof(AudioTimeStamp);
-  AudioUnitGetProperty(m_pScheduler[0], kAudioUnitProperty_CurrentPlayTime, kAudioUnitScope_Global, 0, &currentTime, &size);
-  
-  ScheduledAudioSlice* pSlice = new ScheduledAudioSlice;
-  pSlice->mCompletionProc = AudioSliceCompletionProc;
-  pSlice->mCompletionProcUserData = &sound;;
-  pSlice->mTimeStamp.mSampleTime = 0;//currentTime.mSampleTime + 100; // TODO: There must be a better way to schedule these
-  pSlice->mTimeStamp.mFlags = kAudioTimeStampSampleTimeValid;
-  pSlice->mNumberFrames = sound.GetTotalFrames();
-  pSlice->mFlags = 0;
-  pSlice->mBufferList = sound.GetBufferList();
-
-  // Schedule the slice                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-  OSStatus ret = AudioUnitSetProperty(m_pScheduler[bus], kAudioUnitProperty_ScheduleAudioSlice, kAudioUnitScope_Global, 0, pSlice, sizeof(ScheduledAudioSlice));
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::PlaySound: Unable to schedule sound. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-
-	AudioTimeStamp timeStamp = {0};
-	timeStamp.mFlags = kAudioTimeStampSampleTimeValid;
-	timeStamp.mSampleTime = -1;		// start now
-  ret = AudioUnitSetProperty(m_pScheduler[bus], kAudioUnitProperty_ScheduleStartTimeStamp, kAudioUnitScope_Global, 0, &timeStamp, sizeof(timeStamp));
-  if (ret)
-    CLog::Log(LOGERROR, "CCoreAudioMixer::Start: Unable to set start time for sound scheduler %u. Error = 0x%08x (%4.4s)", bus, ret, CONVERT_OSSTATUS(ret));
-}
-
-void CCoreAudioMixer::Stop()
-{
-  if (m_Graph)
-  {
-    for (int i = 0; i < m_MaxInputs; i++)
-      AudioUnitReset(m_pScheduler[i], kAudioUnitScope_Global, 0);
-    AUGraphStop(m_Graph);
-  }
+  // Hand over to instance memeber
+  return ((CCoreAudioSoundManager*)inRefCon)->OnRender(ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData);
 }
 
 #endif
