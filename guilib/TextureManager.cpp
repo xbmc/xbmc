@@ -231,6 +231,7 @@ CGUITextureManager::CGUITextureManager(void)
   // Hack for SDL library that keeps loading and unloading these
   LoadLibraryEx("zlib1.dll", NULL, 0);
   LoadLibraryEx("libpng12-0.dll", NULL, 0);
+  LoadLibraryEx("jpeg.dll", NULL, 0);
 #endif
 
 }
