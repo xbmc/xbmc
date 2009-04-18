@@ -732,6 +732,20 @@ bool CGUIMediaWindow::OnClick(int iItem)
         return true;
     }
 
+    // check for the partymode playlist items - they may not exist yet
+    if ((pItem->m_strPath == g_settings.GetUserDataItem("PartyMode.xsp")) ||
+        (pItem->m_strPath == g_settings.GetUserDataItem("PartyMode-Video.xsp")))
+    {
+      // party mode playlist item - if it doesn't exist, prompt for user to define it
+      if (!XFILE::CFile::Exists(pItem->m_strPath))
+      {
+        m_vecItems->RemoveDiscCache();
+        if (CGUIDialogSmartPlaylistEditor::EditPlaylist(pItem->m_strPath))
+          Update(m_vecItems->m_strPath);
+        return true;
+      }
+    }
+
     // remove the directory cache if the folder is not normally cached
     CFileItemList items(pItem->m_strPath);
     if (!items.AlwaysCache())
