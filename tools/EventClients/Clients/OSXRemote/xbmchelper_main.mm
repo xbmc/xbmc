@@ -13,9 +13,10 @@ using namespace std;
 XBMCHelper* g_xbmchelper;
 eRemoteMode g_mode = DEFAULT_MODE;
 std::string g_server_address="localhost";
-bool g_universal_mode = false;
 std::string g_app_path = "";
 std::string g_app_home = "";
+double g_universal_timeout = 500;
+bool g_verbose_mode = false;
 
 //
 const char* PROGNAME="OSXRemote";
@@ -36,7 +37,8 @@ static struct option long_options[] = {
 { "appHome",    required_argument, 0, 'z' }, 
 { 0, 0, 0, 0 },
 };
-static const char *options = "hvt:ums:a:z:";
+
+static const char *options = "hs:umt:vxa:z:";
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -102,7 +104,6 @@ void ParseOptions(int argc, char** argv)
   int c, option_index = 0;
   //set the defaults
 	bool readExternal = false;
-  g_universal_mode = false;
   g_server_address = "localhost";
 //  g_mode = DEFAULT_MODE;
 //fix me after 9.04 
@@ -110,6 +111,8 @@ void ParseOptions(int argc, char** argv)
   g_mode = MULTIREMOTE_MODE;
   g_app_path = "";
   g_app_home = "";
+  g_universal_timeout = 500;
+  g_verbose_mode = false;
   
   while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1) 
 	{
@@ -119,7 +122,7 @@ void ParseOptions(int argc, char** argv)
         exit(0);
         break;
       case 'v':
-        [g_xbmchelper enableVerboseMode:true];
+        g_verbose_mode = true;
         break;
       case 's':
         g_server_address = optarg;
@@ -131,7 +134,7 @@ void ParseOptions(int argc, char** argv)
         g_mode = MULTIREMOTE_MODE;
         break;        
       case 't':
-        [g_xbmchelper setUniversalModeTimeout:atof(optarg) * 0.001];
+        g_universal_timeout = atof(optarg) * 0.001;
         break;
       case 'x':
         readExternal = true;
@@ -154,16 +157,24 @@ void ParseOptions(int argc, char** argv)
 }
 
 //----------------------------------------------------------------------------
+void StartHelper(){
+  [g_xbmchelper enableVerboseMode:g_verbose_mode];
+  
+  //set apppath to startup when pressing Menu
+  [g_xbmchelper setApplicationPath:[NSString stringWithCString:g_app_path.c_str()]];    
+  //set apppath to startup when pressing Menu
+  [g_xbmchelper setApplicationHome:[NSString stringWithCString:g_app_home.c_str()]];
+  //connect to specified server
+  [g_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] withMode:g_mode withTimeout: g_universal_timeout];  
+}
+
+//----------------------------------------------------------------------------
 void Reconfigure(int nSignal)
 {
 	if (nSignal == SIGHUP){
 		ReadConfig();
-    //set apppath to startup when pressing Menu
-    [g_xbmchelper setApplicationPath:[NSString stringWithCString:g_app_path.c_str()]];    
-    //set apppath to startup when pressing Menu
-    [g_xbmchelper setApplicationHome:[NSString stringWithCString:g_app_home.c_str()]];
-    //connect to specified server
-    [g_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] withMode:g_mode];
+    
+    StartHelper();
   }
 	else
     exit(0);
@@ -180,15 +191,7 @@ int main (int argc,  char * argv[]) {
 	signal(SIGTERM, Reconfigure);
   
   ParseOptions(argc,argv);
-  
-  //set apppath to startup when pressing Menu
-  [g_xbmchelper setApplicationPath:[NSString stringWithCString:g_app_path.c_str()]];
-  
-  //set apppath to startup when pressing Menu
-  [g_xbmchelper setApplicationHome:[NSString stringWithCString:g_app_home.c_str()]];  
-  
-  //connect to specified server
-  [g_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] withMode:g_mode];
+  StartHelper();
   
   //run event loop in this thread
   RunCurrentEventLoop(kEventDurationForever);
