@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@-->
-<!--Date of translation: 04/13/2009-->
+<!--Date of translation: 04/17/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -872,7 +872,7 @@
   <string id="12384">24시간제</string>
   <string id="12385">일/월</string>
   <string id="12386">월/일</string>
-  <string id="12390">시스템 운용시간</string>
+  <string id="12390">시스템 가동시간</string>
   <string id="12391">분</string>
   <string id="12392">시간</string>
   <string id="12393">일</string>
