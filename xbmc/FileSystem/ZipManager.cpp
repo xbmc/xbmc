@@ -220,7 +220,6 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
 
 
     CUtil::CreateArchivePath(strZipPath, "zip", strArchive, strFilePath);
-    strFilePath.Replace("/","\\");
     if (!CFile::Cache(strZipPath.c_str(),(strPath+strFilePath).c_str()))
       return false;
   }
@@ -239,7 +238,6 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
     CStdString strFilePath(it->name);
-    strFilePath.Replace("/","\\");
     CLog::Log(LOGDEBUG,"delete file: %s",(strPath+strFilePath).c_str());
     CFile::Delete((strPath+strFilePath).c_str());
   }
