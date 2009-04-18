@@ -1,0 +1,37 @@
+<keyboard_layout> 
+
+    <char2char> 
+        <!-- number keys -->
+        <entry inchar="`" outchar="Â§"/> <!-- ½ -->
+        <entry inchar="-" outchar="+"/> <!-- + -->
+        <entry inchar="=" outchar="´"/> <!-- ´ -->
+
+        <!-- number keys with shift -->
+        <entry inchar="@" outchar="&quot;"/> <!-- shift + 2 -->
+        <entry inchar="^" outchar="&amp;"/> <!-- shift + 6 -->
+        <entry inchar="&amp;" outchar="/"/> <!-- shift + 7 -->
+        <entry inchar="*" outchar="("/> <!-- shift + 8 -->
+        <entry inchar="(" outchar=")"/> <!-- shift + 9 -->
+        <entry inchar=")" outchar="="/> <!-- shift + 0 -->
+        <entry inchar="_" outchar="?"/> <!-- shift + + -->
+        <entry inchar="+" outchar="`"/><!-- shift + ` -->
+
+        <!-- only characters -->
+        <entry inchar=";" outchar="Ã¶"/> <!-- ö -->
+        <entry inchar="'" outchar="Ã¤"/> <!-- ä -->
+        <entry inchar="[" outchar="Ã¥"/> <!-- å -->
+        <entry inchar="/" outchar="-"/> <!-- - -->
+        <entry inchar="]" outchar="¨"/> <!-- ¨ -->
+
+        <!-- characters with shift -->
+        <entry inchar=":" outchar="Ã–"/> <!-- shift + Ö -->
+        <entry inchar="&quot;" outchar="Ã„"/> <!-- shift + Ä -->
+        <entry inchar="{" outchar="Ã…"/> <!-- shift + Å -->
+        <entry inchar="<" outchar=";"/> <!-- shift + , -->
+        <entry inchar=">" outchar=":"/> <!-- shift + . --> 
+        <entry inchar="?" outchar="_"/> <!-- shift + - -->
+        <entry inchar="~" outchar="*"/> <!-- shift + ' -->
+        <entry inchar="}" outchar="^"/> <!-- shift + ¨ -->
+    </char2char> 
+
+</keyboard_layout>
