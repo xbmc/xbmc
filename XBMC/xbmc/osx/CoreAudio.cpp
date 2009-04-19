@@ -1160,12 +1160,14 @@ bool CCoreAudioSoundManager::Initialize(CStdString deviceName)
 
 void CCoreAudioSoundManager::Run()
 {
+  AudioDeviceAddPropertyListener(m_OutputDevice.GetId(), 0, false, kAudioDevicePropertyHogMode, PropertyChangeCallback, this);
   m_OutputUnit.Start();
 }
 
 void CCoreAudioSoundManager::Stop()
 {
   // TODO: Empty event queue and reset state
+  AudioDeviceRemovePropertyListener(m_OutputDevice.GetId(), 0, false, kAudioDevicePropertyHogMode, PropertyChangeCallback);
   m_OutputUnit.Stop();
 }
 
@@ -1189,6 +1191,7 @@ void CCoreAudioSoundManager::PlaySound(CoreAudioSoundRef soundRef)
 {
   if (!m_pCurrentSound)
   {
+    m_OutputUnit.Stop();
     m_OutputUnit.Start();
     m_pCurrentSound = soundRef;
     m_CurrentOffset = 0;
@@ -1229,6 +1232,26 @@ OSStatus CCoreAudioSoundManager::RenderCallback(void *inRefCon, AudioUnitRenderA
 {
   // Hand over to instance memeber
   return ((CCoreAudioSoundManager*)inRefCon)->OnRender(ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData);
+}
+
+OSStatus CCoreAudioSoundManager::PropertyChangeCallback(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void* inClientData)
+{
+  pid_t hogPid = -1;
+  UInt32 size = sizeof(hogPid);
+  CCoreAudioSoundManager* pThis = (CCoreAudioSoundManager*)inClientData;
+  AudioDeviceGetProperty(inDevice, inChannel, isInput, inPropertyID, &size, &hogPid);
+  if (hogPid > -1)
+  {
+    CLog::Log(LOGWARNING, "CCoreAudioSoundManager: Someone has hogged the output device. Stopping until it is released.");
+    pThis->m_OutputUnit.Stop();
+  }
+  else
+  {
+    pThis->m_OutputUnit.Stop();
+    CLog::Log(LOGWARNING, "CCoreAudioSoundManager: The output device has been released. Resuming.");
+    pThis->m_OutputUnit.Start();
+  }
+  return noErr;
 }
 
 #endif
