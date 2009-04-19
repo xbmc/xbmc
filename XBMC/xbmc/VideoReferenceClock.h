@@ -45,7 +45,7 @@ class CVideoReferenceClock : public CThread
     void   SetSpeed(double Speed);
     double GetSpeed();
     int    GetRefreshRate();
-    void   Wait();
+    void   Wait(int msecs);
     
   protected:
     void OnStartup();

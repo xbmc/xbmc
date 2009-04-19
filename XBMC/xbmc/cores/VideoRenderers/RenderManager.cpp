@@ -127,7 +127,7 @@ void CXBoxRenderManager::WaitPresentTime(double presenttime)
   double now = GetPresentTime();
   while(now + 0.001 < presenttime)
   {
-    g_VideoReferenceClock.Wait();
+    g_VideoReferenceClock.Wait((int)((presenttime - now) * 1000.0));
     now = GetPresentTime();
   }
 }

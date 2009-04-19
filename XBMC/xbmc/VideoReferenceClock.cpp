@@ -733,23 +733,23 @@ int CVideoReferenceClock::GetRefreshRate()
   }
 }
 
-void CVideoReferenceClock::Wait()
+void CVideoReferenceClock::Wait(int msecs)
 {
   //when using vblank, wait for the vblank signal
-#ifdef HAS_SDL
   if (m_UseVblank)
   {
+#ifdef HAS_SDL
     Lock();
     SDL_CondWaitTimeout(m_VblankCond, m_VblankMutex, 100);
     Unlock();
+#else
+    Sleep(1);
+#endif
   }
   else
   {
-    Sleep(1);
+    Sleep(msecs);
   }
-#else
-  Sleep(1);
-#endif
 }
 
 void CVideoReferenceClock::SendVblankSignal()
