@@ -74,7 +74,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
  
       if (strNameTemp == strLinkTemp)
       {
-        g_charsetConverter.stringCharsetToUtf8(strName);
+        g_charsetConverter.unknownToUTF8(strName);
         CUtil::RemoveSlashAtEnd(strName);
        
         CFileItemPtr pItem(new CFileItem(strName));

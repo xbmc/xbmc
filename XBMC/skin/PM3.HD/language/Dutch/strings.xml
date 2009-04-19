@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: Sjonnie33-->
+<!--Date of translation: 04/12/2009-->
+<!--$Revision$-->
+<strings>
+  <string id="31000">Volume gedempt</string>
+  <string id="31001">
+  </string>
+  <string id="31002">
+  </string>
+  <string id="31003">
+  </string>
+  <string id="31004">
+  </string>
+  <string id="31005">
+  </string>
+  <string id="31006">
+  </string>
+  <string id="31007">
+  </string>
+  <string id="31008">
+  </string>
+  <string id="31009">
+  </string>
+  <string id="31010">FANART[CR]AFBEELDING[CR]NIET[CR]BESCHIKBAAR</string>
+  <string id="31011">AFLEVERING[CR]AFBEELDING[CR]NIET[CR]BESCHIKBAAR</string>
+  <string id="31012">AFLEVERING[CR]AFBEELDING[CR]NIET[CR]BESCHIKBAAR</string>
+  <string id="31013">
+  </string>
+  <string id="31014">
+  </string>
+  <string id="31015">
+  </string>
+  <string id="31016">
+  </string>
+  <string id="31017">
+  </string>
+  <string id="31018">
+  </string>
+  <string id="31019">
+  </string>
+  <string id="31020">Hoofdstuk titel</string>
+  <string id="31021">Video - Bestanden</string>
+  <string id="31022">Muziek - Bestanden</string>
+  <string id="31023">
+  </string>
+  <string id="31024">Pagina</string>
+  <string id="31025">Items</string>
+  <string id="31026">
+  </string>
+  <string id="31027">
+  </string>
+  <string id="31028">DVD thumbs</string>
+  <string id="31029">DVD lijst</string>
+  <string id="31030">Fanart</string>
+  <string id="31031">Volledige lijst</string>
+  <string id="31032">Cover flow</string>
+  <string id="31033">Foto thumbs</string>
+  <string id="31034">Wide icons</string>
+  <string id="31040">Huidige film[CR]Fanart afbeelding[CR][CR]Klik om te veranderen</string>
+  <string id="31041">Huidige TV-serie[CR]Fanart afbeelding[CR][CR]Klik om te veranderen</string>
+  <string id="31042">AFSPELEN</string>
+  <string id="31043">PAUZE</string>
+  <string id="31044">VOORUIT SPOELEN</string>
+  <string id="31045">TERUGSPOELEN</string>
+  <string id="31046">Welkom bij XBMC - Alstublieft Inloggen</string>
+  <string id="31047">Laatst ingelogd</string>
+  <string id="31048">Huidige artist[CR]Fanart afbeelding[CR][CR]Klik om te veranderen</string>
+  <string id="31050">
+  </string>
+  <string id="31051">
+  </string>
+  <string id="31052">
+  </string>
+  <string id="31053">XBMC LYRICS</string>
+  <string id="31054">Kies uw nummer uit de lijst</string>
+  <string id="31055">Open afspeellijst</string>
+  <string id="31056">Bewaar afspeellijst</string>
+  <string id="31057">Sluit afspeellijst</string>
+  <string id="31058">Systeem muziekbestanden</string>
+  <string id="31059">Huidige afspeellijst</string>
+  <string id="31060">Dit bestand bestaat uit meer delen, selecteert u het gedeelte dat u wilt afspelen vanaf.</string>
+  <string id="31100">Achtergrond opties</string>
+  <string id="31101">Beginscherm opties</string>
+  <string id="31102">Achtergronden</string>
+  <string id="31103">Laat "PAUZE" zien in diavoorstelling</string>
+  <string id="31104">Afsluit menu - Gebruik Slaapstand in plaats van Suspend</string>
+  <string id="31105">Laat media titels zien in achtergrond scanner</string>
+  <string id="31106">Diverse opties</string>
+  <string id="31107">Verwijder scan lijnen van de achtergrond</string>
+  <string id="31108">Verwijder scan lijnen van de achtergrond tijdens videoweergave</string>
+  <string id="31109">Beginscherm achtergronden</string>
+  <string id="31110">knop -  Aangepaste achtergronden</string>
+  <string id="31111">Altijd muziek info laten zien tijdens lyrics</string>
+  <string id="31112">Laat media titels zien in "Wide icons" modus</string>
+  <string id="31200">Custom script opties</string>
+  <string id="31201">
+  </string>
+  <string id="31202">
+  </string>
+  <string id="31203">Zet knop label</string>
+  <string id="31204">Script pad</string>
+  <string id="31205">
+  </string>
+  <string id="31206">
+  </string>
+  <string id="31207">
+  </string>
+  <string id="31208">Laat lyrics script knop zien in OSD</string>
+  <string id="31209">Enable quick launch script knop voor -</string>
+  <string id="31300">Laat cast zien</string>
+</strings>

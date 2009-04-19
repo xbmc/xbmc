@@ -51,7 +51,7 @@
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 <!-- TITLE -->	
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
-				<expression trim="1" noclean="1">&lt;title&gt;([^&lt;]*)&lt;</expression>
+				<expression trim="1" noclean="1">&lt;title&gt;(.*?) \- AlloCin</expression>
 			</RegExp>
 <!-- STUDIO -->
 			<RegExp conditional="info" input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">

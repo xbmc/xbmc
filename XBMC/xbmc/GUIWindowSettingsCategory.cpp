@@ -57,7 +57,9 @@
 #include "GUIWindowPrograms.h"
 #include "MediaManager.h"
 #include "xbox/network.h"
+#ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/WebServer.h"
+#endif
 #include "GUIControlGroupList.h"
 #include "XBTimeZone.h"
 #include "VideoDatabase.h"

@@ -178,11 +178,6 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory, SScanSettings settings)
   {
-    CStdStringArray regexps = g_advancedSettings.m_videoExcludeFromScanRegExps;
-
-    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
-      return true;
-
     if (m_bUpdateAll)
     {
       if (m_pObserver)
@@ -328,6 +323,10 @@ namespace VIDEO
       m_pObserver->OnDirectoryScanned(strDirectory);
     CLog::Log(LOGDEBUG, "%s - Finished dir: %s", __FUNCTION__, strDirectory.c_str());
 
+    // exclude folders that match our exclude regexps
+    CStdStringArray regexps = m_info.strContent.Equals("tvshows") ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
+                                                                  : g_advancedSettings.m_moviesExcludeFromScanRegExps;
+
     for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
@@ -343,6 +342,9 @@ namespace VIDEO
         // do not process items which will be scanned by main loop
         std::map<CStdString,VIDEO::SScanSettings>::iterator it = m_pathsToScan.find(strPath);
         if (it != m_pathsToScan.end())
+          continue;
+
+        if (CUtil::ExcludeFileOrFolder(strPath, regexps))
           continue;
 
         SScanSettings settings2;
@@ -392,8 +394,6 @@ namespace VIDEO
       g_infoManager.GetBool(i);
     //m_database.BeginTransaction();
 
-    CStdStringArray regexps = g_advancedSettings.m_videoExcludeFromScanRegExps;
-
     for (int i = 0; i < (int)items.Size(); ++i)
     {
       m_nfoReader.Close();
@@ -428,7 +428,8 @@ namespace VIDEO
       m_IMDB.SetScraperInfo(info2);
 
       // Discard all exclude files defined by regExExclude
-      if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, regexps))
+      if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, info.strContent.Equals("tvshows") ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
+                                                                                         : g_advancedSettings.m_moviesExcludeFromScanRegExps))
         continue;
 
       if (info2.strContent.Equals("movies") || info2.strContent.Equals("musicvideos"))
@@ -779,7 +780,7 @@ namespace VIDEO
 
     // enumerate
     CStdStringArray expression = g_advancedSettings.m_tvshowStackRegExps;
-    CStdStringArray regexps = g_advancedSettings.m_videoExcludeFromScanRegExps;
+    CStdStringArray regexps = g_advancedSettings.m_tvshowExcludeFromScanRegExps;
 
     for (int i=0;i<items.Size();++i)
     {

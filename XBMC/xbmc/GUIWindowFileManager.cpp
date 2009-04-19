@@ -976,7 +976,7 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
   if (CGUIDialogKeyboard::ShowAndGetInput(strNewFolder, g_localizeStrings.Get(16014), false))
   {
     CStdString strNewPath = m_Directory[iList]->m_strPath;
-    if (!CUtil::HasSlashAtEnd(strNewPath) ) CUtil::AddSlashAtEnd(strNewPath);
+    CUtil::AddSlashAtEnd(strNewPath);
     strNewPath += strNewFolder;
     CDirectory::Create(strNewPath);
     Refresh(iList);
@@ -986,7 +986,7 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
     {
       CFileItemPtr pItem=m_vecItems[iList]->Get(i);
       CStdString strPath=pItem->m_strPath;
-      if (CUtil::HasSlashAtEnd(strPath)) CUtil::RemoveSlashAtEnd(strPath);
+      CUtil::RemoveSlashAtEnd(strPath);
       if (strPath==strNewPath)
       {
         CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, i);

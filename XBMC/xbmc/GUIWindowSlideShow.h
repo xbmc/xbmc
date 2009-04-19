@@ -24,6 +24,7 @@
 #include <set>
 #include "GUIWindow.h"
 #include "utils/Thread.h"
+#include "utils/CriticalSection.h"
 #include "SlideShowPicture.h"
 #include "DllImageLib.h"
 
@@ -112,4 +113,5 @@ private:
   bool m_bReloadImage;
   DllImageLib m_ImageLib;
   RESOLUTION m_Resolution;
+  CCriticalSection m_slideSection;
 };

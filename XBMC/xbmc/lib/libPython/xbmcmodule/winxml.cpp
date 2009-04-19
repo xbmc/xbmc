@@ -56,7 +56,7 @@ namespace PYXBMC
     PyObject* pyOXMLname = NULL;
     PyObject* pyOname = NULL;
     PyObject* pyDName = NULL;
-    bool bForceDefaultSkin = false;
+    char bForceDefaultSkin = false;
 
     string strXMLname, strFallbackPath;
     string strDefault = "Default";

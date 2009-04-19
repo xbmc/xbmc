@@ -57,6 +57,7 @@ public:
   int samplerate;
   int bitrate;
   int blockalign;
+  int bitspersample;
 
   // SUBTITLE
   int identifier;
