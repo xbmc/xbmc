@@ -263,3 +263,9 @@ void CGUIProgressControl::UpdateColors()
   m_guiOverlay.SetDiffuseColor(m_diffuseColor);
 }
 
+CStdString CGUIProgressControl::GetDescription() const
+{
+  CStdString percent;
+  percent.Format("%2.f", m_fPercent);
+  return percent;
+}

@@ -49,10 +49,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   newURL = newURL + strURL;
 
   // Remove the last slash
-  if (CUtil::HasSlashAtEnd(newURL))
-  {
-    CUtil::RemoveSlashAtEnd(newURL);
-  }
+  CUtil::RemoveSlashAtEnd(newURL);
 
   CRssFeed feed;
   feed.Init(newURL);

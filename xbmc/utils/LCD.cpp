@@ -198,7 +198,7 @@ CStdString ILCD::GetProgressBar(double tCurrent, double tTotal)
       }
     }
     strProgressBar += "]";
-    g_charsetConverter.stringCharsetToUtf8(strProgressBar);
+    g_charsetConverter.unknownToUTF8(strProgressBar);
     return strProgressBar;
   }
   else return "";

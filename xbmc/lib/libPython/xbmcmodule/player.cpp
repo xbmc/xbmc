@@ -105,7 +105,7 @@ namespace PYXBMC
   {
     PyObject *pObject = NULL;
     PyObject *pObjectListItem = NULL;
-    bool bWindowed = false;
+    char bWindowed = false;
     static const char *keywords[] = { "item", "listitem", "windowed", NULL };
 
     if (!PyArg_ParseTupleAndKeywords(

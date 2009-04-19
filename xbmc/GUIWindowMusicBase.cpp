@@ -1091,8 +1091,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 
     /*
     CStdString strPlayListDirectory = m_vecItems->m_strPath;
-    if (CUtil::HasSlashAtEnd(strPlayListDirectory))
-      strPlayListDirectory.Delete(strPlayListDirectory.size() - 1);
+    CUtil::RemoveSlashAtEnd(strPlayListDirectory);
     */
 
     g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);

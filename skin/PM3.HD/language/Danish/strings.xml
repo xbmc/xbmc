@@ -1,4 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Notepad++ -->
+<!--Translator: Kim Buchwald Christensen-->
+<!--Email: kimbchr@gmail.com-->
+<!--Date of translation: 04/13/2009-->
+<!--$Revision$-->
+<!--Based on english strings version 17639-->
 <strings>
   <string id="31000">Lyden er skruet helt ned</string>
   <string id="31001"></string>
@@ -10,9 +16,9 @@
   <string id="31007"></string>
   <string id="31008"></string>
   <string id="31009"></string>
-  <string id="31010">FAN-KUNST[CR]BILLEDE[CR]IKKE[CR]TILGÆNGELIG</string>
-  <string id="31011">EPISODE[CR]BILLEDE[CR]IKKE[CR]TILGÆNGELIG</string>
-  <string id="31012"></string>
+  <string id="31010">FANKUNST-BILLEDE[CR]IKKE[CR]TILGÆNGELIG</string>
+  <string id="31011">EPISODE-BILLEDE[CR]IKKE[CR]TILGÆNGELIG</string>
+  <string id="31012">EPISODE-BILLEDE[CR]IKKE[CR]TILGÆNGELIG</string>
   <string id="31013"></string>
   <string id="31014"></string>
   <string id="31015"></string>
@@ -22,31 +28,31 @@
   <string id="31019"></string>
 
   <string id="31020">Kapiteltitel</string>
-  <string id="31021">Video - Filer</string>
-  <string id="31022">Musik - Filer</string>
+  <string id="31021">Video - filer</string>
+  <string id="31022">Musik - filer</string>
   <string id="31023"></string>
   <string id="31024">Side</string>
   <string id="31025">Objekter</string>
 
   <string id="31026"></string>
   <string id="31027"></string>
-  <string id="31028">DVD-miniaturer</string>
+  <string id="31028">DVD-ikoner</string>
   <string id="31029">DVD-liste</string>
   <string id="31030">Fan-kunst</string>
   <string id="31031">Fuld liste</string>
-  <string id="31032">-</string>
-  <string id="31033">Billedeminiaturer</string>
+  <string id="31032">Coverflow</string>
+  <string id="31033">Billedeikoner</string>
   <string id="31034">Brede ikoner</string>
 
-  <string id="31040">Nuværende film[CR]Billede til Fan-kunst[CR][CR]Klik for at skifte</string>
-  <string id="31041">Nuværende TV-serie[CR]Billede til fan-kunst[CR][CR]Klik for at skifte</string>
+  <string id="31040">Nuværende film[CR]Billede til Fankunst[CR][CR]Klik for at skifte</string>
+  <string id="31041">Nuværende TV-serie[CR]Billede til fankunst[CR][CR]Klik for at skifte</string>
   <string id="31042">AFSPILLER</string>
   <string id="31043">PAUSE</string>
   <string id="31044">HURTIGT FREMAD</string>
   <string id="31045">SPOL TILBAGE</string>
   <string id="31046">Velkommen til XBMC - log venligst ind</string>
   <string id="31047">Sidst logget ind</string>
-  <string id="31048"></string>
+  <string id="31048">Nuværende kunstner[CR]Billede til fankunst[CR]Klik for at skifte</string>
 
   <string id="31050"></string>
   <string id="31051"></string>
@@ -77,6 +83,7 @@
   <string id="31109">Baggrunde til hjemmevinduet</string>
   <string id="31110">knap - Aktiver egne baggrunde</string>
   <string id="31111">Vis altid musikinfo samtidigt med sangtekster</string>
+  <string id="31112">Vis medietitler i visningen "bred"</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Specielle valgmuligheder til skript</string>

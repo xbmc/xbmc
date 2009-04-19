@@ -140,7 +140,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 
   CStdString strPath = strPathInRar;
   strPath.Replace('/', '\\');
-  //g_charsetConverter.stringCharsetToUtf8(strPath);
+  //g_charsetConverter.unknownToUTF8(strPath);
 
   __int64 iOffset = -1;
   if (iRes != 2)
@@ -162,7 +162,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
         if( pIterator->item.NameW && wcslen(pIterator->item.NameW) > 0)
           g_charsetConverter.wToUTF8(pIterator->item.NameW, strName);
         else
-          g_charsetConverter.stringCharsetToUtf8(pIterator->item.Name, strName);
+          g_charsetConverter.unknownToUTF8(pIterator->item.Name, strName);
         if (strName.Equals(strPath))
         {
           iOffset = pIterator->item.iOffset;
@@ -261,7 +261,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
     if( pIterator->item.NameW && wcslen(pIterator->item.NameW) > 0)
       g_charsetConverter.wToUTF8(pIterator->item.NameW, strName);
     else
-      g_charsetConverter.stringCharsetToUtf8(pIterator->item.Name, strName);
+      g_charsetConverter.unknownToUTF8(pIterator->item.Name, strName);
 
     /* replace back slashes into forward slashes */
     /* this could get us into troubles, file could two different files, one with / and one with \ */

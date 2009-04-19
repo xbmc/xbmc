@@ -322,6 +322,7 @@ public:
 
   void GetFilePathById(long id, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
   bool GetGenreById(long id, CStdString& strGenre);
+  long GetTvShowForEpisode(long idEpisode);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId = -1);
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId = -1);

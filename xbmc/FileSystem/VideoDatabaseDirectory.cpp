@@ -114,8 +114,7 @@ bool CVideoDatabaseDirectory::GetQueryParams(const CStdString& strPath, CQueryPa
 void CVideoDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory)
 {
   CFileItem directory(strDirectory, true);
-  if (CUtil::HasSlashAtEnd(directory.m_strPath))
-    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
+  CUtil::RemoveSlashAtEnd(directory.m_strPath);
 
   Crc32 crc;
   crc.ComputeFromLowerCase(directory.m_strPath);

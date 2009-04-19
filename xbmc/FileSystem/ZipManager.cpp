@@ -131,10 +131,16 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
         return true;
       }
     }
+    if ((ze.flags & 8) == 8)
+    {
+      CLog::Log(LOGDEBUG,"ZipManager: extended local header, not supported! %s!",strFile.c_str());
+      mFile.Close();
+      return false;
+    }
     CStdString strName;
     mFile.Read(strName.GetBuffer(ze.flength), ze.flength);
     strName.ReleaseBuffer();
-    g_charsetConverter.stringCharsetToUtf8(strName);
+    g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
     mFile.Seek(ze.elength,SEEK_CUR);
@@ -195,7 +201,6 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
     
     
     CUtil::CreateArchivePath(strZipPath, "zip", strArchive, strFilePath);
-    strFilePath.Replace("/","\\");
     if (!CFile::Cache(strZipPath.c_str(),(strPath+strFilePath).c_str()))
       return false;
   }
@@ -214,7 +219,6 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
     CStdString strFilePath(it->name);
-    strFilePath.Replace("/","\\");
     CLog::Log(LOGDEBUG,"delete file: %s",(strPath+strFilePath).c_str());
     CFile::Delete((strPath+strFilePath).c_str());
   }

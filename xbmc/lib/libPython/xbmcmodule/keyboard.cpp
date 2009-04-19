@@ -49,7 +49,7 @@ namespace PYXBMC
 
     PyObject *line = NULL;
     PyObject *heading = NULL;
-    bool bHidden = false;
+    char bHidden = false;
     if (!PyArg_ParseTuple(args, "|OOb", &line, &heading, &bHidden)) return NULL;
 
     string utf8Line;
@@ -59,7 +59,7 @@ namespace PYXBMC
 
     self->strDefault = utf8Line;
     self->strHeading = utf8Heading;
-    self->bHidden = bHidden;
+    self->bHidden = (bool)bHidden;
 
     return (PyObject*)self;
   }
@@ -140,9 +140,9 @@ namespace PYXBMC
 
   PyObject* Keyboard_SetHiddenInput(Keyboard *self, PyObject *args)
   {
-    bool bHidden = false;
+    char bHidden = false;
     if (!PyArg_ParseTuple(args, "|b", &bHidden))	return NULL;
-    self->bHidden = bHidden;
+    self->bHidden = (bool)bHidden;
 
     CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
     if(!pKeyboard)

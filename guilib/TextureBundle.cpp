@@ -37,9 +37,9 @@ class CAutoBuffer
 public:
   CAutoBuffer() { p = 0; }
   explicit CAutoBuffer(size_t s) { p = (BYTE*)malloc(s); }
-  ~CAutoBuffer() { if (p) free(p); }
+  ~CAutoBuffer() { free(p); }
 operator BYTE*() { return p; }
-  void Set(BYTE* buf) { if (p) free(p); p = buf; }
+  void Set(BYTE* buf) { free(p); p = buf; }
   bool Resize(size_t s);
 void Release() { p = 0; }
 };
