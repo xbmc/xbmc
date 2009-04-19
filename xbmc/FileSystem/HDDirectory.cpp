@@ -69,7 +69,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
   CAutoPtrFind hFind ( FindFirstFile(strSearchMask.c_str(), &wfd));
   
   // on error, check if path exists at all, this will return true if empty folder
-  if (!hFind.isValid()) 
+  if (!hFind.isValid())
       return Exists(strPath1);
 
   if (hFind.isValid())
@@ -84,11 +84,11 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           if (strDir != "." && strDir != "..")
           {
             CStdString strLabel=wfd.cFileName;
-            g_charsetConverter.stringCharsetToUtf8(strLabel);
+            g_charsetConverter.unknownToUTF8(strLabel);
             CFileItemPtr pItem(new CFileItem(strLabel));
             pItem->m_strPath = strRoot;
             pItem->m_strPath += wfd.cFileName;
-            g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
+            g_charsetConverter.unknownToUTF8(pItem->m_strPath);
             pItem->m_bIsFolder = true;
             CUtil::AddSlashAtEnd(pItem->m_strPath);
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
@@ -100,11 +100,11 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
         else
         {
           CStdString strLabel=wfd.cFileName;
-          g_charsetConverter.stringCharsetToUtf8(strLabel);
+          g_charsetConverter.unknownToUTF8(strLabel);
           CFileItemPtr pItem(new CFileItem(strLabel));
           pItem->m_strPath = strRoot;
           pItem->m_strPath += wfd.cFileName;
-          g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
+          g_charsetConverter.unknownToUTF8(pItem->m_strPath);
 
           pItem->m_bIsFolder = false;
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);

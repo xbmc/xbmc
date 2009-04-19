@@ -295,7 +295,7 @@ void CGUITextureBase::AllocResources()
       m_texture = texture;
     }
   }
-  else
+  else if (!IsAllocated())
   {
     int images = g_TextureManager.Load(m_info.filename);
 
@@ -413,7 +413,7 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
   if (m_isAllocated == LARGE)
     g_largeTextureManager.ReleaseImage(m_info.filename, immediately);
-  else if (m_isAllocated == NORMAL)
+  else if (m_isAllocated == NORMAL && m_texture.size())
     g_TextureManager.ReleaseTexture(m_info.filename);
 
   if (m_diffuse.size())

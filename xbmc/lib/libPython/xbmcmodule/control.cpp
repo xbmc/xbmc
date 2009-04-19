@@ -134,11 +134,11 @@ namespace PYXBMC
 
   PyObject* Control_SetEnabled(Control* self, PyObject* args)
   {
-    bool enabled;
+    char enabled;
     if (!PyArg_ParseTuple(args, "b", &enabled)) return NULL;
 
     PyGUILock();
-    if (self->pGUIControl)   self->pGUIControl->SetEnabled(enabled);
+    if (self->pGUIControl)   self->pGUIControl->SetEnabled((bool)enabled);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -156,13 +156,13 @@ namespace PYXBMC
 
   PyObject* Control_SetVisible(Control* self, PyObject* args)
   {
-    bool visible;
+    char visible;
     if (!PyArg_ParseTuple(args, "b", &visible)) return NULL;
 
     PyGUILock();
     if (self->pGUIControl)
     {
-      self->pGUIControl->SetVisible(visible);
+      self->pGUIControl->SetVisible((bool)visible);
     }
     PyGUIUnlock();
 
@@ -186,7 +186,7 @@ namespace PYXBMC
   PyObject* Control_SetVisibleCondition(Control* self, PyObject* args)
   {
     char *cVisible = NULL;
-    bool bHidden = false;
+    char bHidden = false;
 
     if (!PyArg_ParseTuple(args, "s|b", &cVisible, &bHidden)) return NULL;
 
@@ -194,7 +194,7 @@ namespace PYXBMC
 
     PyGUILock();
     if (self->pGUIControl)
-      self->pGUIControl->SetVisibleCondition(ret, bHidden);
+      self->pGUIControl->SetVisibleCondition(ret, (bool)bHidden);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);

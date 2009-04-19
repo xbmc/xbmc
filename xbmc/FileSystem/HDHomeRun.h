@@ -93,11 +93,11 @@ namespace XFILE
 	    CFileHomeRun();
 	    ~CFileHomeRun();
 
-      virtual bool          Exists(const CURL& url)                           { return false; }
-      virtual __int64	      Seek(__int64 iFilePosition, int iWhence)          { return -1; }
-      virtual int	          Stat(const CURL& url, struct __stat64* buffer)    { return 0; }
-      virtual __int64       GetPosition()                                     { return 0; }
-      virtual __int64       GetLength()                                       { return 0; }
+      virtual bool          Exists(const CURL& url);
+      virtual __int64       Seek(__int64 iFilePosition, int iWhence);
+      virtual int           Stat(const CURL& url, struct __stat64* buffer);
+      virtual __int64       GetPosition();
+      virtual __int64       GetLength();
       
       virtual bool          Open(const CURL& url);
 	    virtual void          Close();

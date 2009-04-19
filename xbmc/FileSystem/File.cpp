@@ -145,13 +145,33 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       CUtil::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {
+#ifndef _LINUX        
         CUtil::Tokenize(strDirectory,tokens,"\\");
-        CStdString strCurrPath = tokens[0]+"\\";
-        for (vector<CStdString>::iterator iter=tokens.begin()+1;iter!=tokens.end();++iter)
+        CStdString strCurrPath;
+        // If the directory has a / at the beginning, don't forget it
+        if (strDirectory[0] == '\\')
+        {
+          strCurrPath += "\\";
+        }
+        for (vector<CStdString>::iterator iter=tokens.begin();iter!=tokens.end();++iter)
         {
           strCurrPath += *iter+"\\";
           CDirectory::Create(strCurrPath);
         }
+#else
+        CUtil::Tokenize(strDirectory,tokens,"/");
+        CStdString strCurrPath;
+        // If the directory has a / at the beginning, don't forget it
+        if (strDirectory[0] == '/')
+        {
+          strCurrPath += "/";
+        }
+        for (vector<CStdString>::iterator iter=tokens.begin();iter!=tokens.end();++iter)
+        {
+          strCurrPath += *iter+"/";
+          CDirectory::Create(strCurrPath);
+        }
+#endif
       }
     }
     if (CFile::Exists(strDest))

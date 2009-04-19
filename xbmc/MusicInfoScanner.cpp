@@ -168,7 +168,7 @@ void CMusicInfoScanner::Process()
         bool bCanceled;
         DownloadAlbumInfo(it->strGenre,it->strArtist,it->strAlbum, bCanceled, albumInfo); // genre field holds path - see fetchalbuminfo()
 
-        if (m_bStop)
+        if (m_bStop || bCanceled)
           break;
       }
     }
@@ -193,14 +193,14 @@ void CMusicInfoScanner::Process()
       }
     }
 
-    m_bRunning = false;
-    if (m_pObserver)
-      m_pObserver->OnFinished();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "MusicInfoScanner: Exception while scanning.");
   }
+  m_bRunning = false;
+  if (m_pObserver)
+    m_pObserver->OnFinished();
 }
 
 void CMusicInfoScanner::Start(const CStdString& strDirectory)
@@ -839,7 +839,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     if (m_bStop)
     {
       scraper.Cancel();
-      break;
+      bCanceled = true;
     }
     Sleep(1);
   }
@@ -952,8 +952,8 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   {
     if (m_bStop)
     {
+      bCanceled = true;
       scraper.Cancel();
-      break;
     }
     Sleep(1);
   }
@@ -1047,10 +1047,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   while (!scraper.Completed())
   {
     if (m_bStop)
-    {
       scraper.Cancel();
-      break;
-    }
     Sleep(1);
   }
 
@@ -1120,10 +1117,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   while (!scraper.Completed())
   {
     if (m_bStop)
-    {
       scraper.Cancel();
-      break;
-    }
     Sleep(1);
   }
 

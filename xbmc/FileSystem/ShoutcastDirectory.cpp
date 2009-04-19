@@ -157,8 +157,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString strRoot = strPath;
-  if (CUtil::HasSlashAtEnd(strRoot) && strRoot != "shout://")
-    strRoot.Delete(strRoot.size() - 1);
+  CUtil::RemoveSlashAtEnd(strRoot);
 
   /* keep backward competability (for users who already have this source defined) */
   if( strRoot.Equals("shout://www.shoutcast.com") || strRoot.Equals("shout://") || strRoot.Equals("shout://classic.shoutcast.com") || 

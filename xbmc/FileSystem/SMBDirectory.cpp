@@ -72,8 +72,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (fd < 0)
     return false;
 
-  if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
-  if (!CUtil::HasSlashAtEnd(strAuth)) strAuth += "/";
+  CUtil::AddSlashAtEnd(strRoot);
+  CUtil::AddSlashAtEnd(strAuth);
 
   struct smbc_dirent* dirEnt;
   CStdString strFile;
@@ -145,7 +145,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           pItem->m_strPath = smb.URLEncode(rooturl);
         }
         pItem->m_strPath += dirEnt->name;
-        if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
+        CUtil::AddSlashAtEnd(pItem->m_strPath);
         pItem->m_bIsFolder = true;
         pItem->m_dateTime=localTime;
         if (hidden)

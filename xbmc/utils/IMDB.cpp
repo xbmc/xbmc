@@ -435,9 +435,8 @@ void CIMDB::GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear)
       free(pYear);
     }
   }
-  // get clean string, and convert to utf8 (if necessary)
+  // get clean string
   CUtil::CleanString(strMovieName,true);
-  g_charsetConverter.unknownToUTF8(strMovieName);
 }
 
 // threaded functions
@@ -483,7 +482,6 @@ void CIMDB::Process()
 bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUIDialogProgress *pProgress /* = NULL */)
 {
   //CLog::Log(LOGDEBUG,"CIMDB::FindMovie(%s)", strMovie.c_str());
-  g_charsetConverter.utf8ToStringCharset(strMovie,m_strMovie); // make sure searches is done using string chars
 
   // load our scraper xml
   if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
@@ -493,6 +491,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
   if (pProgress)
   { // threaded version
     m_state = FIND_MOVIE;
+    m_strMovie = strMovie;
     m_found = false;
     if (ThreadHandle())
       StopThread();
