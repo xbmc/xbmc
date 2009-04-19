@@ -50,6 +50,11 @@ void CSpecialProtocol::SetHomePath(const CStdString &dir)
   SetPath("home", dir);
 }
 
+void CSpecialProtocol::SetUserHomePath(const CStdString &dir)
+{
+  SetPath("userhome", dir);
+}
+
 void CSpecialProtocol::SetMasterProfilePath(const CStdString &dir)
 {
   SetPath("masterprofile", dir);
@@ -76,8 +81,18 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
   
   // check for special-protocol, if not, return
   if (!url.GetProtocol().Equals("special"))
+  {
+#if defined(_LINUX) && defined(_DEBUG)
+    if (path.length() >= 2 && path[1] == ':')
+    {
+      CLog::Log(LOGWARNING, "Trying to access old style dir: %s\n", path.c_str());
+     // printf("Trying to access old style dir: %s\n", path.c_str());
+    }
+#endif
+    
     return path;
-
+  }
+  
   CStdString FullFileName = url.GetFileName();
  
   CStdString translatedPath;
@@ -86,7 +101,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
   
   // Split up into the special://root and the rest of the filename
   int pos = FullFileName.Find('/');
-  if (pos != string::npos && pos > 1)
+  if (pos != -1 && pos > 1)
   {
     RootDir = FullFileName.Left(pos);
     
@@ -120,6 +135,8 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
     CUtil::AddFileToFolder(GetPath("xbmc"), FileName, translatedPath);
   else if (RootDir.Equals("home"))
     CUtil::AddFileToFolder(GetPath("home"), FileName, translatedPath);
+  else if (RootDir.Equals("userhome"))
+    CUtil::AddFileToFolder(GetPath("userhome"), FileName, translatedPath);  
   else if (RootDir.Equals("temp"))
     CUtil::AddFileToFolder(GetPath("temp"), FileName, translatedPath);
   else if (RootDir.Equals("profile"))
@@ -224,6 +241,7 @@ void CSpecialProtocol::LogPaths()
   CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", GetPath("masterprofile").c_str());
   CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetPath("home").c_str());
   CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetPath("temp").c_str());
+  CLog::Log(LOGNOTICE, "special://userhome/ is mapped to: %s", GetPath("userhome").c_str());
 }
 
 // private routines, to ensure we only set/get an appropriate path
