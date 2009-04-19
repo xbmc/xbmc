@@ -909,7 +909,7 @@ void CSurface::Flip()
 #ifdef HAS_GLX
     if (m_iVSyncMode == 3)
     {
-      glXWaitGL();
+      glFinish();
       unsigned int before, after;
       if(_glXGetVideoSyncSGI(&before) != 0)
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
@@ -927,7 +927,7 @@ void CSurface::Flip()
     }
     else if (m_iVSyncMode == 4)
     {
-      glXWaitGL();
+      glFinish();
       unsigned int vCount;
       if(_glXGetVideoSyncSGI(&vCount) == 0)
         _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
