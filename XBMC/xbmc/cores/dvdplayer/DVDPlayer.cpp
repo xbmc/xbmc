@@ -54,6 +54,7 @@
 #endif
 #include "Settings.h"
 #include "FileItem.h"
+#include "VideoReferenceClock.h"
 
 using namespace std;
 
@@ -727,6 +728,12 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
 
 void CDVDPlayer::Process()
 {
+  if (g_guiSettings.GetBool("videoplayer.usedisplayasclock"))
+  {
+    g_VideoReferenceClock.Create();
+    g_VideoReferenceClock.SetSpeed(1.0);
+  }
+
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
 
@@ -1462,6 +1469,9 @@ void CDVDPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
 
 void CDVDPlayer::OnExit()
 {
+  g_VideoReferenceClock.SetSpeed(1.0);
+  g_VideoReferenceClock.StopThread();
+  
   g_dvdPerformanceCounter.DisableMainPerformance();
 
   if (m_pDlgCache)
