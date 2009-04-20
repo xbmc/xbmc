@@ -148,12 +148,6 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(EPC_PAPLAYER);    
   }
 
-  // DVDPlayer on Xbox doesn't support MMS (yet) so use MPlayer
-  if (url.GetProtocol().Equals("mms"))
-  {
-    vecCores.push_back(EPC_MPLAYER);
-  }
-  
   // dvdplayer can play standard rtsp streams, mplayer can't
   if (url.GetProtocol().Equals("rtsp") 
   && !url.GetFileType().Equals("rm") 
