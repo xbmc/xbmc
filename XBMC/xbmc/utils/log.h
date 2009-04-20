@@ -71,7 +71,7 @@ public:
 // and will be optimized out.
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
-#if  defined(_DEBUG) && defined(HAS_SDL_OPENGL)
+#if  defined(_DEBUG) && defined(HAS_SDL_OPENGL) && defined(_VERIFY_GL_STATE)
 #define VerifyGLState() _VerifyGLState(__FILE__, __FUNCTION__, __LINE__)
 #else
 #define VerifyGLState()

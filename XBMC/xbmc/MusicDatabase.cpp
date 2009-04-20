@@ -1007,7 +1007,7 @@ bool CMusicDatabase::GetArbitraryQuery(const CStdString& strQuery, const CStdStr
     strResult = "";
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    CStdString strSQL=FormatSQL(strQuery);
+    CStdString strSQL=strQuery;
     if (!m_pDS->query(strSQL.c_str()))
     {
       strResult = m_pDB->getErrorMsg();
@@ -1053,7 +1053,7 @@ bool CMusicDatabase::ArbitraryExec(const CStdString& strExec)
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    CStdString strSQL = FormatSQL(strExec);
+    CStdString strSQL = strExec;
     m_pDS->exec(strSQL.c_str());
     m_pDS->close();
     return true;
@@ -1966,24 +1966,37 @@ bool CMusicDatabase::CleanupPaths()
     // needs to be done AFTER the songs and albums have been cleaned up.
     // we can happily delete any path that has no reference to a song
     // but we must keep all paths that have been scanned that may contain songs in subpaths
-    CStdString sql = "select strPath from path where idPath in (select idPath from song)";
+
+    // first create a temporary table of song paths
+    m_pDS->exec("CREATE TEMPORARY TABLE songpaths (idPath integer, strPath)\n");
+    m_pDS->exec("INSERT INTO songpaths select idPath,strPath from path where idPath in (select idPath from song)\n");
+
+    // grab all paths that aren't immediately connected with a song
+    CStdString sql = "select * from path where idPath not in (select idPath from song)";
     if (!m_pDS->query(sql.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
       m_pDS->close();
-      m_pDS->exec("delete from path");
       return true;
     }
-    sql = "delete from path where ";
+    // and construct a list to delete
+    CStdString deleteSQL = "delete from path where idPath in (";
     while (!m_pDS->eof())
     {
-      sql += FormatSQL("strPath not like substr('%s',0,length(strPath)) and ", m_pDS->fv("strPath").get_asString().c_str());
+      // anything that isn't a parent path of a song path is to be deleted
+      CStdString sql = FormatSQL("select count(idPath) from songpaths where strPath like '%s%%'", m_pDS->fv("strPath").get_asString().c_str());
+      if (m_pDS2->query(sql.c_str()) && m_pDS2->num_rows() == 1 && m_pDS2->fv(0).get_asLong() == 0)
+        deleteSQL += FormatSQL("%i,", m_pDS->fv("idPath").get_asLong()); // nothing found, so delete
+      m_pDS2->close();
       m_pDS->next();
     }
     m_pDS->close();
-    sql = sql.Left(sql.GetLength() - 4);
-    m_pDS->exec(sql.c_str());
+    deleteSQL.TrimRight(',');
+    deleteSQL += ")";
+    // do the deletion, and drop our temp table
+    m_pDS->exec(deleteSQL.c_str());
+    m_pDS->exec("drop table songpaths");
     return true;
   }
   catch (...)
@@ -2605,38 +2618,39 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
                           "select exartistalbum.idArtist from exartistalbum "; // All extra artists linked to an album
       if (albumArtistsOnly)
         strSQL +=         "join album on album.idAlbum = exartistalbum.idAlbum " // if we're hiding compilation artists,
-                          "where album.strExtraArtists != ''";                      // then exclude those where that have no extra artists
+                          "where album.strExtraArtists != ''";                   // then exclude those that have no extra artists
       strSQL +=           ")"
                         ") ";
     }
     else
     { // same statements as above, but limit to the specified genre
       // in this case we show the whole lot always - there is no limitation to just album artists
-      strSQL+=FormatSQL("("
-                        "select song.idArtist from song " // All primary artists linked to primary genres
-                        "where song.idGenre=%ld"
-                        ") "
-                      "or idArtist IN "
-                        "("
-                        "select song.idArtist from song " // All primary artists linked to extra genres
-                          "join exgenresong on song.idSong=exgenresong.idSong "
-                        "where exgenresong.idGenre=%ld"
-                        ")"
-                      "or idArtist IN "
-                        "("
-                        "select exartistsong.idArtist from exartistsong " // All extra artists linked to extra genres
-                          "join song on exartistsong.idSong=song.idSong "
-                          "join exgenresong on song.idSong=exgenresong.idSong "
-                        "where exgenresong.idGenre=%ld"
-                        ") "
-                      "or idArtist IN "
-                        "("
-                        "select exartistsong.idArtist from exartistsong " // All extra artists linked to primary genres
-                          "join song on exartistsong.idSong=song.idSong "
-                        "where song.idGenre=%ld"
-                        ") "
-                      "or idArtist IN "
-                      , idGenre, idGenre, idGenre, idGenre);
+      if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
+        strSQL+=FormatSQL("("
+                          "select song.idArtist from song " // All primary artists linked to primary genres
+                          "where song.idGenre=%ld"
+                          ") "
+                        "or idArtist IN "
+                          "("
+                          "select song.idArtist from song " // All primary artists linked to extra genres
+                            "join exgenresong on song.idSong=exgenresong.idSong "
+                          "where exgenresong.idGenre=%ld"
+                          ")"
+                        "or idArtist IN "
+                          "("
+                          "select exartistsong.idArtist from exartistsong " // All extra artists linked to extra genres
+                            "join song on exartistsong.idSong=song.idSong "
+                            "join exgenresong on song.idSong=exgenresong.idSong "
+                          "where exgenresong.idGenre=%ld"
+                          ") "
+                        "or idArtist IN "
+                          "("
+                          "select exartistsong.idArtist from exartistsong " // All extra artists linked to primary genres
+                            "join song on exartistsong.idSong=song.idSong "
+                          "where song.idGenre=%ld"
+                          ") "
+                        "or idArtist IN "
+                        , idGenre, idGenre, idGenre, idGenre);
       // and add any artists linked to an album (may be different from above due to album artist tag)
       strSQL += FormatSQL("("
                           "select album.idArtist from album " // All primary album artists linked to primary genres
@@ -2667,7 +2681,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     // remove the null string
     strSQL += " and artist.strArtist != \"\"";
     // and the various artist entry if applicable
-    if (!albumArtistsOnly || idGenre > -1)
+    if (!albumArtistsOnly)
     {
       CStdString strVariousArtists = g_localizeStrings.Get(340);
       long lVariousArtistsId = AddArtist(strVariousArtists);
@@ -3292,7 +3306,7 @@ bool CMusicDatabase::GetAlbumPath(long idAlbum, CStdString& path)
 
     path.Empty();
 
-    CStdString strSQL=FormatSQL("select distinct strPath from song join path on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
+    CStdString strSQL=FormatSQL("select strPath from song join path on song.idPath = path.idPath where song.idAlbum=%ld", idAlbum);
     if (!m_pDS2->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound == 0)
@@ -4395,7 +4409,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     // Write the document
     XFILE::CFile file;
 
-    if ( !file.OpenForWrite( outFile, false, true ) )
+    if ( !file.OpenForWrite( outFile, true ) )
       return;
 
     CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);

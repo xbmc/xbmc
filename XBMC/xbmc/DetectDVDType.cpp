@@ -457,7 +457,6 @@ DWORD CDetectDVDMedia::GetTrayState()
   if (cdio)
   {
     int status = CWIN32Util::GetDriveStatus(m_cdio->GetDeviceFileName());
-    static int laststatus = -1;
 
     switch(status)
     {
@@ -465,22 +464,19 @@ DWORD CDetectDVDMedia::GetTrayState()
       m_dwTrayState = DRIVE_NOT_READY;
       break;
     case 0: // no media
-      m_dwTrayState = DRIVE_CLOSED_NO_MEDIA;
+      m_dwTrayState = TRAY_CLOSED_NO_MEDIA;
       break;
-    case 1: // media accessible
-      m_dwTrayState = DRIVE_CLOSED_MEDIA_PRESENT;
+    case 1: // tray open
+      m_dwTrayState = TRAY_OPEN;      
+      break;
+    case 2: // media accessible
+      m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
       break;
     }
     m_cdio->cdio_destroy(cdio);
-
-    if(laststatus != status)
-    {
-      laststatus = status;
-      return m_dwTrayState;
-    }
-    else
-      return DRIVE_READY;
   }
+  else
+    return DRIVE_NOT_READY;
 
 #endif
 

@@ -423,7 +423,7 @@ wirklich aus der Datenbank entfernen?</string>
   <string id="510">Visualisierung verwenden</string>
   <string id="511">Video-Modus auf Basis der Spiele-Region wechseln</string>
   <string id="512">Start Fenster</string>
-  <string id="513">Standard</string>
+  <string id="513">Hauptfenster</string>
   <string id="514">Manuell einstellen</string>
   <string id="515">Genre</string>
   <string id="516">Archive mit einer Datei als Ordner anzeigen</string>
@@ -1362,7 +1362,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20079">Animationen aktivieren</string>
   <string id="20080">RSS während der Musikwiedergabe deaktivieren</string>
   <string id="20081">Eigene Lesezeichen aktivieren</string>
-  <string id="20082">XLink-Kai Benachrichtigungen anzeigen</string>
+  <string id="20082">Programme im Hauptmenü anzeigen</string>
   <string id="20083">Musik-Informationen anzeigen</string>
   <string id="20084">Wetter-Informationen anzeigen</string>
   <string id="20085">System-Informationen anzeigen</string>

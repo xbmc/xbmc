@@ -86,7 +86,7 @@ public:
   UInt32 GetTotalOutputChannels();
   bool GetStreams(AudioStreamIdList* pList);
   bool SetHogStatus(bool hog);
-  bool GetHogStatus();
+  pid_t GetHogStatus();
   bool SetMixingSupport(bool mix);
   bool GetMixingSupport();
   bool GetPreferredChannelLayout(CoreAudioChannelList* pChannelMap);
@@ -137,6 +137,7 @@ public:
   virtual ~CCoreAudioUnit();
   
   bool Open(ComponentDescription desc);
+  bool Open(OSType type, OSType subType, OSType manufacturer);
   void Attach(AudioUnit audioUnit) {m_Component = audioUnit;}
   AudioUnit GetComponent(){return m_Component;}
   void Close();
@@ -168,5 +169,7 @@ protected:
 // Helper Functions
 char* UInt32ToFourCC(UInt32* val);
 const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdString& str);
+
+#define CONVERT_OSSTATUS(x) UInt32ToFourCC((UInt32*)&ret)
 
 #endif // __COREAUDIO_H__

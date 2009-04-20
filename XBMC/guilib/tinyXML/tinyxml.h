@@ -39,7 +39,7 @@ distribution.
 #include <assert.h>
 
 // Help out windows (but don't mess up OSX):
-#ifndef __APPLE__
+#if defined( _WIN32PC) || defined( _WIN32 ) || defined(WIN32)
 #if defined( _DEBUG ) && !defined( DEBUG )
 #define DEBUG
 #endif

@@ -73,6 +73,7 @@
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
 #include "Surface.h"
+#include "PowerManager.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
@@ -96,6 +97,7 @@
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
+#include "Zeroconf.h"
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
@@ -118,9 +120,7 @@
 #ifdef HAS_DBUS_SERVER
 #include "utils/DbusServer.h"
 #endif
-#ifdef HAS_ZEROCONF
-#include "Zeroconf.h"
-#endif
+
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -195,8 +195,9 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
+#include "cores/dlgcache.h"
 
-#ifdef HAS_PERFORMACE_SAMPLE
+#ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #else
 #define MEASURE_FUNCTION
@@ -210,7 +211,6 @@
 #endif
 #ifdef _WIN32
 #include <shlobj.h>
-#include <win32/MockXboxSymbols.h>
 #include "win32util.h"
 #endif
 #ifdef HAS_XRANDR
@@ -331,6 +331,9 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_restartLirc = false;
   m_restartLCD = false;
   m_lastActionCode = 0;
+#ifdef _WIN32PC
+  m_SSysParam = new CWIN32Util::SystemParams::SysParam;
+#endif
 }
 
 CApplication::~CApplication(void)
@@ -347,6 +350,11 @@ CApplication::~CApplication(void)
 
   if (m_frameCond)
     SDL_DestroyCond(m_frameCond);
+
+#ifdef _WIN32PC
+  if( m_SSysParam ) 
+    delete m_SSysParam;
+#endif
 }
 
 // text out routine for below
@@ -515,11 +523,43 @@ static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &fi
   }
 }
 
+void CApplication::Preflight()
+{
+  // run any platform preflight scripts.
+#ifdef __APPLE__
+  CStdString install_path;
+  
+  CUtil::GetHomePath(install_path);
+  setenv("XBMC_HOME", install_path.c_str(), 0);
+  install_path += "/tools/osx/preflight";
+  system(install_path.c_str());
+#endif
+}
+
 HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
+  
+#ifdef _WIN32PC
+  CWIN32Util::SystemParams::GetDefaults( m_SSysParam );
+  CWIN32Util::SystemParams::SetCustomParams();
+#endif  
 
+  
+  rlimit rlm;
+  getrlimit(RLIMIT_CORE, &rlm);
+  CLog::Log(LOGDEBUG, "Current core limit: %u, max %u",  rlm.rlim_cur, rlm.rlim_cur);
+  rlm.rlim_max = RLIM_INFINITY;
+  rlm.rlim_cur = RLIM_INFINITY;  
+  if (-1 == setrlimit(RLIMIT_CORE, &rlm))
+    CLog::Log(LOGDEBUG, "Unable to set core limit. errno = %u", errno) ;
+  else
+  {
+    getrlimit(RLIMIT_CORE, &rlm);
+    CLog::Log(LOGDEBUG, "Set core limit to: %u, max %u",  rlm.rlim_cur, rlm.rlim_cur);
+  }
+  
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
 #endif
@@ -567,7 +607,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #if defined(_LINUX) && !defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
 #elif defined(__APPLE__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s", __DATE__);
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
 #elif defined(_WIN32)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (SVN:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, SVN_REV, _MSC_VER);
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
@@ -622,7 +662,7 @@ HRESULT CApplication::Create(HWND hWnd)
   atexit(SDL_Quit);
 
   Uint32 sdlFlags = SDL_INIT_VIDEO;
-
+  
 #ifdef HAS_SDL_AUDIO
   sdlFlags |= SDL_INIT_AUDIO;
 #endif
@@ -653,7 +693,7 @@ HRESULT CApplication::Create(HWND hWnd)
   SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
 #else
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
+  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon32x32.png")), NULL);
 #endif
 #endif
 
@@ -768,7 +808,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(true, true, true);
   }
 #endif
-
+  
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
 
@@ -945,24 +985,6 @@ CProfile* CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  if (m_bPlatformDirectories)
-  {
-    CStdString logDir = "/var/tmp/";
-    if (getenv("USER"))
-    {
-      logDir += getenv("USER");
-      logDir += "-";
-    }
-    g_stSettings.m_logFolder = logDir;
-  }
-
-  CStdString xbmcDir;
-  xbmcDir.Format("/tmp/xbmc-%s", userName.c_str());
-
-  // special://temp/ common for both
-  CSpecialProtocol::SetTempPath(xbmcDir);
-  CDirectory::Create("special://temp/");
-
   CStdString strHomePath;
   CUtil::GetHomePath(strHomePath);
   setenv("XBMC_HOME", strHomePath.c_str(), 0);
@@ -974,7 +996,14 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
+    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp"); 
+    CSpecialProtocol::SetTempPath(strTempPath);
+
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
+
     CDirectory::Create("special://home/");
+    CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
@@ -1005,6 +1034,13 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp"); 
+    CSpecialProtocol::SetTempPath(strTempPath);
+    CDirectory::Create("special://temp/");
+
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1026,35 +1062,46 @@ CProfile* CApplication::InitDirectoriesOSX()
 #ifdef __APPLE__
   CProfile* profile = NULL;
 
-  // special://temp/ common for both
-  CSpecialProtocol::SetTempPath("/tmp/xbmc");
-  CDirectory::Create("special://temp/");
+  CStdString userName;
+  if (getenv("USER"))
+    userName = getenv("USER");
+  else
+    userName = "root";
 
   CStdString userHome;
   if (getenv("HOME"))
-  {
     userHome = getenv("HOME");
-  }
   else
-  {
     userHome = "/root";
-  }
+
+  CStdString strHomePath;
+  CUtil::GetHomePath(strHomePath);
+  setenv("XBMC_HOME", strHomePath.c_str(), 0);
 
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
-    CStdString logDir = userHome + "/Library/Logs/";
-    g_stSettings.m_logFolder = logDir;
-
-    // //Library/Application\ Support/XBMC/
-    CStdString install_path;
-    CUtil::GetHomePath(install_path);
-    setenv("XBMC_HOME", install_path.c_str(), 0);
-    CSpecialProtocol::SetXBMCPath(install_path);
+    // map our special drives
+    CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
 
+#ifdef __APPLE__
+    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/");
+    CDirectory::Create(strTempPath);
+#endif
+
+    strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp");
+    CSpecialProtocol::SetTempPath(strTempPath);
+
+#ifdef __APPLE__
+    strTempPath = userHome + "/Library/Logs";
+#endif
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
+
     CDirectory::Create("special://home/");
+    CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
@@ -1067,31 +1114,36 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/plugins/programs");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
-
-    CStdString str = install_path + "/scripts";
-    symlink( str.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
+#ifdef __APPLE__
+    strTempPath = strHomePath + "/scripts";
+#else
+    strTempPath = INSTALL_PATH "/scripts";
+#endif
+    symlink( strTempPath.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
 
     CDirectory::Create("special://masterprofile/");
 
     // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml"); // Eventual FIXME.
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    // this is wrong, CopyUserDataIfNeeded pulls from special://xbmc/userdata, Lircmap.xml is in special://xbmc/system
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
-    CStdString strHomePath;
-    CUtil::GetHomePath(strHomePath);
-    setenv("XBMC_HOME", strHomePath.c_str(), 0);
-
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
     CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp"); 
+    CSpecialProtocol::SetTempPath(strTempPath);
+    CDirectory::Create("special://temp/");
+
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1446,6 +1498,8 @@ HRESULT CApplication::Initialize()
   g_xbmcHelper.CaptureAllInput();
 #endif
 
+  g_powerManager.Initialize();
+
   CLog::Log(LOGNOTICE, "initialize done");
 
   m_bInitializing = false;
@@ -1489,8 +1543,8 @@ void CApplication::StartWebServer()
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
 
       // publish web frontend and API services
-      PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
-      PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
     }
     if (m_pWebServer && m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
@@ -1509,8 +1563,8 @@ void CApplication::StopWebServer()
     m_pWebServer = NULL;
     CSectionLoader::Unload("LIBHTTP");
     CLog::Log(LOGNOTICE, "Webserver: Stopped...");
-    DepublishService("servers.webserver");
-    DepublishService("servers.webapi");
+    CZeroconf::GetInstance()->RemoveService("servers.webserver");
+    CZeroconf::GetInstance()->RemoveService("servers.webapi");
   }
 #endif
 }
@@ -1779,6 +1833,26 @@ void CApplication::StopUPnPServer()
 #endif
 }
 
+void CApplication::StartZeroconf()
+{
+#ifdef HAS_ZEROCONF
+  //entry in guisetting only present if HAS_ZEROCONF is set
+  if(g_guiSettings.GetBool("servers.zeroconf"))
+  {
+    CLog::Log(LOGNOTICE, "starting zeroconf publishing");
+    CZeroconf::GetInstance()->Start();
+  }
+#endif
+}
+
+void CApplication::StopZeroconf()
+{
+#ifdef HAS_ZEROCONF
+  CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
+  CZeroconf::GetInstance()->Stop();
+#endif
+}
+
 void CApplication::DimLCDOnPlayback(bool dim)
 {
 #ifdef HAS_LCD
@@ -1829,21 +1903,6 @@ void CApplication::StopServices()
 
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
-}
-
-void CApplication::PublishService(const std::string& id, const std::string& type, const std::string& name, unsigned int port)
-{
-#ifdef HAS_ZEROCONF
-  CZeroconf::GetInstance()->PublishService(id, type, name, port);
-#endif
-}
-
-void CApplication::DepublishService(const std::string& id)
-{
-#ifdef HAS_ZEROCONF
-  // remove service
-  CZeroconf::GetInstance()->RemoveService("servers.webserver");
-#endif
 }
 
 void CApplication::DelayLoadSkin()
@@ -2179,11 +2238,13 @@ void CApplication::RenderNoPresent()
 #endif
     // release the context so the async renderer can draw to it
 #ifdef HAS_SDL_OPENGL
+#ifdef HAS_VIDEO_PLAYBACK
     // Video rendering occuring from main thread for OpenGL
     if (m_bPresentFrame)
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
+#endif
 #else
     //g_graphicsContext.ReleaseCurrentContext();
     g_graphicsContext.Unlock(); // unlock to allow the async renderer to render
@@ -2300,6 +2361,8 @@ void CApplication::DoRender()
     RenderMemoryStatus();
   }
 
+  RenderScreenSaver();
+
 #ifndef HAS_SDL
   m_pd3dDevice->EndScene();
 #endif
@@ -2310,6 +2373,31 @@ void CApplication::DoRender()
   // fresh for the next process(), or after a windowclose animation (where process()
   // isn't called)
   g_infoManager.ResetCache();
+}
+
+static int screenSaverFadeAmount = 0;
+
+void CApplication::RenderScreenSaver()
+{
+  // special case for dim screensaver
+  if (m_bScreenSave)
+  {
+    float amount = 0.0f;
+    if (m_screenSaverMode == "Dim")
+      amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
+    else if (m_screenSaverMode == "Black")
+      amount = 1.0f; // fully fade
+    if (amount > 0.0f)
+    { // render a black quad at suitable transparency
+      if (screenSaverFadeAmount < 100)
+        screenSaverFadeAmount += 2;  // around a second to fade
+
+      DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
+      CGUITexture::DrawQuad(CRect(0,0,g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight()), color);
+    }
+  }
+  else
+    screenSaverFadeAmount = 0;
 }
 
 bool CApplication::WaitFrame(DWORD timeout)
@@ -2353,7 +2441,7 @@ void CApplication::Render()
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 0;
-    bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black");
+    bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black") && (screenSaverFadeAmount >= 100);
     unsigned int singleFrameTime = 10; // default limit 100 fps
 
 
@@ -2431,7 +2519,7 @@ void CApplication::RenderMemoryStatus()
     GlobalMemoryStatus(&stat);
 #ifdef __APPLE__
     double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
+    info.Format("CoreAudio: FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
               g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
 #elif !defined(_LINUX)
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
@@ -2903,7 +2991,11 @@ bool CApplication::OnAction(CAction &action)
       speed *= action.fRepeat;
     else
       speed /= 50; //50 fps
-
+    if (g_stSettings.m_bMute)
+    {
+      Mute();
+      return true;
+    }
     if (action.wID == ACTION_VOLUME_UP)
     {
       volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
@@ -3271,9 +3363,39 @@ bool CApplication::ProcessGamepad(float frameTime)
     CAction action;
     bool fullrange;
     string jname = g_Joystick.GetJoystick();
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, false, action.wID, action.strAction, fullrange))
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_BUTTON, action.wID, action.strAction, fullrange))
     {
       action.fAmount1 = 1.0f;
+      action.fRepeat = 0.0f;
+      g_audioManager.PlayActionSound(action);
+      g_Joystick.Reset();
+      g_Mouse.SetInactive();
+      return OnAction(action);
+    }
+    else
+    {
+      g_Joystick.Reset();
+    }
+  }
+  if (g_Joystick.GetHat(bid))
+  {
+    // reset Idle Timer
+    m_idleTimer.StartZero();
+
+    ResetScreenSaver();
+    if (ResetScreenSaverWindow())
+    {
+      g_Joystick.Reset(true);
+      return true;
+    }
+
+    CAction action;
+    bool fullrange;
+    string jname = g_Joystick.GetJoystick();
+    bid = bid|(g_Joystick.getHatState()<<16);  // hat flag
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
+    {
+      action.fAmount1 = g_Joystick.getHatState();
       action.fRepeat = 0.0f;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
@@ -3296,7 +3418,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     {
       bid = -bid;
     }
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, true, action.wID, action.strAction, fullrange))
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.wID, action.strAction, fullrange))
     {
       ResetScreenSaver();
       if (ResetScreenSaverWindow())
@@ -3558,7 +3680,7 @@ bool CApplication::ProcessEventServer(float frameTime)
 
 bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount)
 {
-#ifdef HAS_EVENT_SERVER
+#if defined(HAS_EVENT_SERVER) && defined(HAS_SDL_JOYSTICK)
   m_idleTimer.StartZero();
 
    // Make sure to reset screen saver, mouse.
@@ -3593,7 +3715,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    // wKeyID = -wKeyID;
 
    // Translate using regular joystick translator.
-   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis, action.wID, action.strAction, fullRange))
+   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, action.wID, action.strAction, fullRange))
    {
      action.fRepeat = 0.0f;
      g_audioManager.PlayActionSound(action);
@@ -3601,7 +3723,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    }
    else
    {
-     CLog::Log(LOGDEBUG, "ERROR mapping joystick action");
+     CLog::Log(LOGDEBUG, "ERROR mapping joystick action. Joystick: %s %i",joystickName.c_str(), wKeyID);
    }
 #endif
 
@@ -3828,6 +3950,10 @@ void CApplication::Stop()
     }
 #endif
 
+#ifdef _WIN32PC
+    CWIN32Util::SystemParams::SetDefaults( m_SSysParam );
+#endif
+
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
 
@@ -3903,6 +4029,10 @@ void CApplication::Stop()
     }
 #endif
 
+#ifdef HAS_HAL
+    g_HalManager.Stop();
+#endif
+
     CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
@@ -3938,24 +4068,16 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
   }
   else if (item.IsPlayList() || item.IsInternetStream())
   {
-    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    if (item.IsInternetStream() && dlgProgress)
-    {
-       dlgProgress->ShowProgressBar(false);
-       dlgProgress->SetHeading(260);
-       dlgProgress->SetLine(0, 14003);
-       dlgProgress->SetLine(1, "");
-       dlgProgress->SetLine(2, "");
-       dlgProgress->StartModal();
-    }
+    CDlgCache* dlgCache = new CDlgCache(5000, g_localizeStrings.Get(10214), item.GetLabel());
 
     //is or could be a playlist
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
     bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.m_strPath));
-    if (item.IsInternetStream() && dlgProgress)
+
+    if (dlgCache)
     {
-       dlgProgress->Close();
-       if (dlgProgress->IsCanceled())
+       dlgCache->Close();
+       if (dlgCache->IsCanceled())
           return true;
     }
 
@@ -4228,7 +4350,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
 
   // tell system we are starting a file
-  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = true;
 
   // We should restart the player, unless the previous and next tracks are using
@@ -4279,25 +4400,31 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
       g_audioManager.Enable(false);
   }
-
-  if(!bResult || !IsPlaying())
-  {
-    // since we didn't manage to get playback started, send any queued up messages
-    while(m_vPlaybackStarting.size())
-    {
-      m_gWindowManager.SendMessage(m_vPlaybackStarting.front());
-      m_vPlaybackStarting.pop();
-    }
-  }
-
-  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = false;
+  if(bResult)
+  {
+    // we must have started, otherwise player might send this later
+    if(IsPlaying())
+      OnPlayBackStarted();
+  }
+  else
+  {
+    // we send this if it isn't playlistplayer that is doing this
+    int next = g_playlistPlayer.GetNextSong();
+    int size = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size();
+    if(next < 0 
+    || next >= size)
+      OnPlayBackStopped();
+  }
 
   return bResult;
 }
 
 void CApplication::OnPlayBackEnded()
 {
+  if(m_bPlaybackStarting)
+    return;
+
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -4313,15 +4440,14 @@ void CApplication::OnPlayBackEnded()
   CLog::Log(LOGDEBUG, "Playback has finished");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
-
-  if(m_bPlaybackStarting)
-    m_vPlaybackStarting.push(msg);
-  else
-    m_gWindowManager.SendThreadMessage(msg);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnPlayBackStarted()
 {
+  if(m_bPlaybackStarting)
+    return;
+
 #ifdef HAS_PYTHON
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
@@ -4361,6 +4487,9 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
+  if(m_bPlaybackStarting)
+    return;
+
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -4376,10 +4505,7 @@ void CApplication::OnPlayBackStopped()
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
-  if(m_bPlaybackStarting)
-    m_vPlaybackStarting.push(msg);
-  else
-    m_gWindowManager.SendThreadMessage(msg);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 bool CApplication::IsPlaying() const
@@ -4584,63 +4710,18 @@ bool CApplication::ResetScreenSaverWindow()
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
-    float fFadeLevel = 1.0f;
     if (m_screenSaverMode == "Visualisation" || m_screenSaverMode == "Slideshow" || m_screenSaverMode == "Fanart Slideshow")
     {
       // we can just continue as usual from vis mode
       return false;
     }
-    else if (m_screenSaverMode == "Dim")
-    {
-      fFadeLevel = (float)g_guiSettings.GetInt("screensaver.dimlevel") / 100;
-    }
-    else if (m_screenSaverMode == "Black")
-    {
-      fFadeLevel = 0;
-    }
+    else if (m_screenSaverMode == "Dim" || m_screenSaverMode == "Black")
+      return true;
     else if (m_screenSaverMode != "None")
     { // we're in screensaver window
       if (m_gWindowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         m_gWindowManager.PreviousWindow();  // show the previous window
-      return true;
     }
-
-    // Fade to dim or black screensaver is active --> fade in
-#ifndef HAS_SDL
-    D3DGAMMARAMP Ramp;
-    for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
-    {
-      for (int i = 0;i < 256;i++)
-      {
-        Ramp.red[i] = (int)((float)m_OldRamp.red[i] * fade);
-        Ramp.green[i] = (int)((float)m_OldRamp.green[i] * fade);
-        Ramp.blue[i] = (int)((float)m_OldRamp.blue[i] * fade);
-      }
-      Sleep(5);
-      m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
-    }
-    m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
-#else
-
-   if (g_advancedSettings.m_fullScreen == true)
-   {
-     Uint16 RampRed[256];
-     Uint16 RampGreen[256];
-     Uint16 RampBlue[256];
-     for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
-     {
-       for (int i = 0;i < 256;i++)
-       {
-         RampRed[i] = (Uint16)((float)m_OldRampRed[i] * fade);
-         RampGreen[i] = (Uint16)((float)m_OldRampGreen[i] * fade);
-         RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
-       }
-       Sleep(5);
-       SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
-     }
-     SDL_SetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue);
-   }
-#endif
     return true;
   }
   else
@@ -4681,8 +4762,6 @@ void CApplication::CheckScreenSaver()
 // the type of screensaver displayed
 void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 {
-  FLOAT fFadeLevel = 0;
-
   m_bScreenSave = true;
 
   // Get Screensaver Mode
@@ -4707,64 +4786,18 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
     m_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
-    return;
   }
   else if (m_screenSaverMode == "Dim")
-  {
-    fFadeLevel = (FLOAT) g_guiSettings.GetInt("screensaver.dimlevel") / 100; // 0.07f;
-  }
+    return;
   else if (m_screenSaverMode == "Black")
   {
-    fFadeLevel = 0;
+#ifdef __APPLE__
+    // if fading to black, power off display on OSX
+    Cocoa_IdleDisplays();
+#endif
   }
   else if (m_screenSaverMode != "None")
-  {
     m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
-    return ;
-  }
-
-  // Fade to fFadeLevel
-#ifndef HAS_SDL
-  D3DGAMMARAMP Ramp;
-  m_pd3dDevice->GetGammaRamp(&m_OldRamp); // Store the old gamma ramp
-  for (float fade = 1.f; fade >= fFadeLevel; fade -= 0.01f)
-  {
-    for (int i = 0;i < 256;i++)
-    {
-      Ramp.red[i] = (int)((float)m_OldRamp.red[i] * fade);
-      Ramp.green[i] = (int)((float)m_OldRamp.green[i] * fade);
-      Ramp.blue[i] = (int)((float)m_OldRamp.blue[i] * fade);
-    }
-    Sleep(5);
-    m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
-  }
-#else
-  if (g_advancedSettings.m_fullScreen == true)
-  {
-    SDL_GetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue); // Store the old gamma ramp
-    Uint16 RampRed[256];
-    Uint16 RampGreen[256];
-    Uint16 RampBlue[256];
-    for (float fade = 1.f; fade >= fFadeLevel; fade -= 0.01f)
-    {
-      for (int i = 0;i < 256;i++)
-      {
-        RampRed[i] = (Uint16)((float)m_OldRampRed[i] * fade);
-        RampGreen[i] = (Uint16)((float)m_OldRampGreen[i] * fade);
-        RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
-      }
-      Sleep(5);
-      SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
-    }
-#ifdef __APPLE__
-    if (fFadeLevel == 0)
-    {
-      // if fading to black, power off display on OSX
-      Cocoa_IdleDisplays();
-    }
-#endif
-  }
-#endif
 }
 
 void CApplication::CheckShutdown()

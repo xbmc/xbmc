@@ -144,6 +144,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_DisableModChipDetection = true;
 
   g_advancedSettings.m_audioHeadRoom = 0;
+  g_advancedSettings.m_ac3Gain = 12.0f;
+
   g_advancedSettings.m_karaokeSyncDelayCDG = 0.0f;
   g_advancedSettings.m_karaokeSyncDelayLRC = 0.0f;
   g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs = false;
@@ -217,10 +219,11 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "special://temp/";
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   g_advancedSettings.m_videoCleanRegExps.push_back("(\\[.*\\])");
 
-  g_advancedSettings.m_videoExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+  g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
+  g_advancedSettings.m_tvshowExcludeFromScanRegExps.push_back("[-\\._ ]sample[-\\._ ]");
 
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
@@ -255,7 +258,6 @@ void CSettings::Initialize()
   g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_sambastatfiles = true;
 
-  g_advancedSettings.m_bHTTPDirectoryLocalMode = false;
   g_advancedSettings.m_bHTTPDirectoryStatFilesize = false;
 
   g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
@@ -774,8 +776,14 @@ void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString 
     return;
   }
   GetInteger(pNode, "viewmode", viewState.m_viewMode, defaultView, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
-  GetInteger(pNode, "sortmethod", (int&)viewState.m_sortMethod, defaultSort, SORT_METHOD_NONE, SORT_METHOD_MAX);
-  GetInteger(pNode, "sortorder", (int&)viewState.m_sortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+  
+  int sortMethod;
+  GetInteger(pNode, "sortmethod", sortMethod, defaultSort, SORT_METHOD_NONE, SORT_METHOD_MAX);
+  viewState.m_sortMethod = (SORT_METHOD)sortMethod;
+
+  int sortOrder;
+  GetInteger(pNode, "sortorder", sortOrder, SORT_ORDER_ASC, SORT_ORDER_NONE, SORT_ORDER_DESC);
+  viewState.m_sortOrder = (SORT_ORDER)sortOrder;
 }
 
 void CSettings::SetViewState(TiXmlNode *pRootNode, const CStdString &strTagName, const CViewState &viewState) const
@@ -1024,7 +1032,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
   if (pElement)
   {
-    GetInteger(pElement, "interlacemethod", (int &)g_stSettings.m_defaultVideoSettings.m_InterlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_RENDER_BLEND);
+    int interlaceMethod;
+    GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_RENDER_BLEND);
+    g_stSettings.m_defaultVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD)interlaceMethod;
+
     GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 0, 10);
     GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
     GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 0.5f, 2.0f);
@@ -1107,6 +1118,7 @@ void CSettings::LoadAdvancedSettings()
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
+    GetFloat(pElement, "ac3downmixgain", g_advancedSettings.m_ac3Gain, 12.0f, -96.0f, 96.0f);
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
     GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
     XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);
@@ -1187,7 +1199,11 @@ void CSettings::LoadAdvancedSettings()
 
     pVideoExcludes = pElement->FirstChildElement("excludefromscan");
     if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoExcludeFromScanRegExps);
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_moviesExcludeFromScanRegExps);
+
+    pVideoExcludes = pElement->FirstChildElement("excludetvshowsfromscan");
+    if (pVideoExcludes)
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_tvshowExcludeFromScanRegExps);
 
     pVideoExcludes = pElement->FirstChildElement("cleanfilenames");
     if (pVideoExcludes)
@@ -1283,10 +1299,7 @@ void CSettings::LoadAdvancedSettings()
 
   pElement = pRootElement->FirstChildElement("httpdirectory");
   if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "localmode", g_advancedSettings.m_bHTTPDirectoryLocalMode);
     XMLUtils::GetBoolean(pElement, "statfilesize", g_advancedSettings.m_bHTTPDirectoryStatFilesize);
-  }
 
   if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
@@ -1309,7 +1322,7 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "fullscreen", g_advancedSettings.m_startFullScreen);
 #endif
 
-  GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 1, 15);
+  GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 0, INT_MAX);
   GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 0, 5000);
   GetInteger(pRootElement, "playlistretries", g_advancedSettings.m_playlistRetries, -1, 5000);
   GetInteger(pRootElement, "playlisttimeout", g_advancedSettings.m_playlistTimeout, 0, 5000);
@@ -2011,7 +2024,10 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     profile.setProgramsLocked(bHas);
 
     LockType iLockMode=LOCK_MODE_EVERYONE;
-    XMLUtils::GetInt(pProfile,"lockmode",(int&)iLockMode);
+    int lockMode;
+    XMLUtils::GetInt(pProfile,"lockmode",lockMode);
+    iLockMode = (LockType)lockMode;
+
     if (iLockMode > LOCK_MODE_QWERTY || iLockMode < LOCK_MODE_EVERYONE)
       iLockMode = LOCK_MODE_EVERYONE;
     profile.setLockMode(iLockMode);
@@ -2421,7 +2437,8 @@ void CSettings::Clear()
 //  m_vecIcons.clear();
   m_vecProfiles.clear();
   g_advancedSettings.m_videoCleanRegExps.clear();
-  g_advancedSettings.m_videoExcludeFromScanRegExps.clear();
+  g_advancedSettings.m_moviesExcludeFromScanRegExps.clear();
+  g_advancedSettings.m_tvshowExcludeFromScanRegExps.clear();
   g_advancedSettings.m_videoExcludeFromListingRegExps.clear();
   g_advancedSettings.m_videoStackRegExps.clear();
   g_advancedSettings.m_audioExcludeFromScanRegExps.clear();

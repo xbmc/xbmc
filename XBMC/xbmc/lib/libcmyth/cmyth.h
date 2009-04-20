@@ -24,7 +24,11 @@
 #ifndef __CMYTH_H
 #define __CMYTH_H
 
+#ifdef __APPLE__ 
+#include <sys/time.h>
+#else
 #include <time.h>
+#endif
 
 /*
  * -----------------------------------------------------------------

@@ -46,7 +46,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     url.SetFileName(path);
   }
 
-  if (!reader.Open(url, false))
+  if (!reader.Open(url))
     return false;
 
 
@@ -75,14 +75,14 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
       /* this should be conditional if we ever add    */
       /* support for the utf8 extension in ftp client */
-      g_charsetConverter.stringCharsetToUtf8(name);
+      g_charsetConverter.unknownToUTF8(name);
 
       CFileItemPtr pItem(new CFileItem(name));
 
       pItem->m_strPath = path + name;
       pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
       if (pItem->m_bIsFolder)
-        if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += "/";
+        CUtil::AddSlashAtEnd(pItem->m_strPath);
 
       /* qualify the url with host and all */
       url.SetFileName(pItem->m_strPath);

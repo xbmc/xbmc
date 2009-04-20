@@ -26,6 +26,7 @@
 #include "DirectoryCache.h"
 #include "FileCache.h"
 #include "FileItem.h"
+#include "SpecialProtocol.h"
 
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
@@ -129,7 +130,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
   CFile file;
   CAsyncFileCallback* helper = NULL;
 
-  if (file.Open(strFileName, true, READ_TRUNCATED))
+  if (file.Open(strFileName, READ_TRUNCATED))
   {
     if (file.GetLength() <= 0)
     {
@@ -140,26 +141,50 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     }
 
     CFile newFile;
-    if (CUtil::IsHD(strDest)) // create possible missing dirs
+    CStdString strDirectory, strDest2;
+    if (CUtil::IsSpecial(strDest))
+      strDest2 = CSpecialProtocol::TranslatePath(strDest);
+    else
+      strDest2 = strDest;
+    if (CUtil::IsHD(strDest2)) // create possible missing dirs
     {
       vector<CStdString> tokens;
-      CStdString strDirectory;
-      CUtil::GetDirectory(strDest,strDirectory);
+      CUtil::GetDirectory(strDest2,strDirectory);
       CUtil::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {
+#ifndef _LINUX        
         CUtil::Tokenize(strDirectory,tokens,"\\");
-        CStdString strCurrPath = tokens[0]+"\\";
-        for (vector<CStdString>::iterator iter=tokens.begin()+1;iter!=tokens.end();++iter)
+        CStdString strCurrPath;
+        // If the directory has a / at the beginning, don't forget it
+        if (strDirectory[0] == '\\')
+        {
+          strCurrPath += "\\";
+        }
+        for (vector<CStdString>::iterator iter=tokens.begin();iter!=tokens.end();++iter)
         {
           strCurrPath += *iter+"\\";
           CDirectory::Create(strCurrPath);
         }
+#else
+        CUtil::Tokenize(strDirectory,tokens,"/");
+        CStdString strCurrPath;
+        // If the directory has a / at the beginning, don't forget it
+        if (strDirectory[0] == '/')
+        {
+          strCurrPath += "/";
+        }
+        for (vector<CStdString>::iterator iter=tokens.begin();iter!=tokens.end();++iter)
+        {
+          strCurrPath += *iter+"/";
+          CDirectory::Create(strCurrPath);
+        }
+#endif
       }
     }
-    if (CFile::Exists(strDest))
-      CFile::Delete(strDest);
-    if (!newFile.OpenForWrite(strDest, true, true))  // overwrite always
+    if (CFile::Exists(strDest2))
+      CFile::Delete(strDest2);
+    if (!newFile.OpenForWrite(strDest2, true))  // overwrite always
     {
       file.Close();
       return false;
@@ -215,7 +240,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 
       if (iWrite != iRead)
       {
-        CLog::Log(LOGERROR, "%s - Failed write to file %s", __FUNCTION__, strDest.c_str());
+        CLog::Log(LOGERROR, "%s - Failed write to file %s", __FUNCTION__, strDest2.c_str());
         break;
       }
 
@@ -256,7 +281,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     /* verify that we managed to completed the file */
     if (llPos != llFileSizeOrg)
     {
-      CFile::Delete(strDest);
+      CFile::Delete(strDest2);
       return false;
     }
     return true;
@@ -265,7 +290,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 }
 
 //*********************************************************************************************
-bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags)
+bool CFile::Open(const CStdString& strFileName, unsigned int flags)
 {
   m_flags = flags;
   try
@@ -286,7 +311,7 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
     if (m_flags & READ_CACHED)
     {
       m_pFile = new CFileCache();
-      return m_pFile->Open(url, bBinary);
+      return m_pFile->Open(url);
     }
 
     m_pFile = CFileFactory::CreateLoader(url);
@@ -295,7 +320,7 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
 
     try
     {
-      if (!m_pFile->Open(url, bBinary))
+      if (!m_pFile->Open(url))
       {
         SAFE_DELETE(m_pFile);
         return false;
@@ -313,7 +338,7 @@ bool CFile::Open(const CStdString& strFileName, bool bBinary, unsigned int flags
         m_pFile = pRedirectEx->m_pNewFileImp;
         delete pRedirectEx;
 
-        if (!m_pFile->Open(url, bBinary))
+        if (!m_pFile->Open(url))
         {
           SAFE_DELETE(m_pFile);
           return false;
@@ -377,14 +402,14 @@ IFile* CFile::Detach() {
 }
 
 
-bool CFile::OpenForWrite(const CStdString& strFileName, bool bBinary, bool bOverWrite)
+bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
 {
   try
   {
     CURL url(strFileName);
 
     m_pFile = CFileFactory::CreateLoader(url);
-    if (m_pFile && m_pFile->OpenForWrite(url, bBinary, bOverWrite))
+    if (m_pFile && m_pFile->OpenForWrite(url, bOverWrite))
     {
       // add this file to our directory cache (if it's stored)
       g_directoryCache.AddFile(strFileName);
@@ -846,8 +871,8 @@ void CFileStreamBuffer::Detach()
 {
   setg(0,0,0);
   setp(0,0);
-  if(m_buffer)
-    SAFE_DELETE(m_buffer);
+  delete[] m_buffer;
+  m_buffer = NULL;
 }
 
 CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
@@ -975,7 +1000,7 @@ bool CFileStream::Open(const CURL& filename)
   Close();
 
   m_file = CFileFactory::CreateLoader(filename);
-  if(m_file && m_file->Open(filename, true))
+  if(m_file && m_file->Open(filename))
   {
     m_buffer.Attach(m_file);
     return true;

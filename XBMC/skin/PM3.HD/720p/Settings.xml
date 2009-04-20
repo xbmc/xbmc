@@ -316,13 +316,12 @@
 					<visible>true</visible>
 				</control>
 				<control type="button" id="22">
-					<description>Reload Skin button</description>
+					<description>About XBMC button</description>
 					<posx>0</posx>
 					<posy>90</posy>
 					<include>ButtonCommonValues</include>
-					<label>20183</label>
-					<onclick>XBMC.ReloadSkin()</onclick>
-					<onclick>SetFocus(8000)</onclick>
+					<label>482</label>
+					<onclick>ActivateWindow(1112)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
 					<onup>21</onup>

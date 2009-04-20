@@ -186,20 +186,15 @@ long AtomicDecrement(volatile long* pAddr)
 ///////////////////////////////////////////////////////////////////////////
 // Fast spinlock implmentation. No backoff when busy
 ///////////////////////////////////////////////////////////////////////////
-class CAtomicSpinLock
+CAtomicSpinLock::CAtomicSpinLock(long& lock) : m_Lock(lock)
 {
-public:
-  CAtomicSpinLock(long& lock) : m_Lock(lock)
-  {
-    while (cas(&m_Lock, 0, 1) != 0); // Lock
-  }
-  ~CAtomicSpinLock()
-  {
-    m_Lock = 0; // Unlock
-  }
-private:
-  long& m_Lock;
-};
+  while (cas(&m_Lock, 0, 1) != 0); // Lock
+}
+CAtomicSpinLock::~CAtomicSpinLock()
+{
+  m_Lock = 0; // Unlock
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 // Trivial threadsafe queue implemented using a single spinlock for synchronization

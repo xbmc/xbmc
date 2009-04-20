@@ -17,10 +17,12 @@ CJoystick::CJoystick()
   m_AxisId = 0;
   m_JoyId = 0;
   m_ButtonId = 0;
+  m_HatId = 0;
   m_ActiveFlags = JACTIVE_NONE;
   for (int i = 0 ; i<MAX_AXES ; i++)
   {
     m_Amount[i] = 0;
+    m_HatState[i] = SDL_HAT_CENTERED;
   }
   SetSafeRange(2000);
 }
@@ -112,6 +114,7 @@ void CJoystick::Update()
 {
   int buttonId = -1;
   int axisId = -1;
+  int hatId = -1;
   int numj = m_Joysticks.size();
   if (numj<=0)
     return;
@@ -125,8 +128,10 @@ void CJoystick::Update()
     SDL_Joystick *joy = m_Joysticks[j];
     int numb = SDL_JoystickNumButtons(joy);
     int numax = SDL_JoystickNumAxes(joy);
+    int numhat = SDL_JoystickNumHats(joy);
     numax = (numax>MAX_AXES)?MAX_AXES:numax;
     int axisval;
+    Uint8 hatval;
 
     // get button states first, they take priority over axis
     for (int b = 0 ; b<numb ; b++)
@@ -139,7 +144,18 @@ void CJoystick::Update()
         break;
       }
     }
-    
+    for(int h = 0; h<numhat ; h++)
+    {
+      hatval = SDL_JoystickGetHat(joy, h);
+      if(hatval!=SDL_HAT_CENTERED)
+      {
+        m_JoyId = j;
+        hatId = h+1;
+        m_HatState[hatId] = hatval;
+        j = numj-1;
+        break;
+      }
+    }
     // get axis states
     m_NumAxes = numax;
     for (int a = 0 ; a<numax ; a++)
@@ -195,14 +211,33 @@ void CJoystick::Update()
     }
     SetButtonActive();
   }
-
+  if(hatId==-1)
+  {
+    if(m_HatId!=0)
+      CLog::Log(LOGDEBUG, "Joystick %d hat %u Centered", m_JoyId, hatId);
+    m_pressTicksHat = 0;
+    SetHatActive(false);
+    m_HatId = 0;
+  }
+  else
+  {
+    if(hatId!=m_HatId)
+    {
+      CLog::Log(LOGDEBUG, "Joystick %d hat %u Down", m_JoyId, hatId);
+      m_HatId = hatId;
+      m_pressTicksHat = SDL_GetTicks();
+    }
+    SetHatActive();
+  }
 }
 
 void CJoystick::SetAxisPad(string joyname, int axis)
 {
   for(size_t idJoyNames = 0; idJoyNames < m_JoystickNames.size(); idJoyNames++)
+  {
     if(joyname.compare(m_JoystickNames[idJoyNames].c_str())==0)
-  m_JoyPadAxis[idJoyNames][abs(axis)-1] = true;
+      m_JoyPadAxis[idJoyNames][abs(axis)-1] = true;
+  }
 }
 
 void CJoystick::Update(SDL_Event& joyEvent)
@@ -340,6 +375,45 @@ bool CJoystick::Repeat(int &id, bool axis)
   return true;
 
 }
+
+bool CJoystick::GetHat(int &id, bool consider_repeat)
+{
+  if (!IsHatActive())
+    return false;
+  if (!consider_repeat)
+  {
+    id = m_HatId;
+    return true;
+  }
+
+  static Uint32 lastPressTicks = 0;
+  static Uint32 lastTicks = 0;
+  static Uint32 nowTicks = 0;
+
+  if ((m_HatId>=0) && m_pressTicksHat)
+  {
+    // return the id if it's the first press
+    if (lastPressTicks!=m_pressTicksHat)
+    {
+      lastPressTicks = m_pressTicksHat;
+      id = m_HatId;
+      return true;
+    }
+    nowTicks = SDL_GetTicks();
+    if ((nowTicks-m_pressTicksHat)<500) // 500ms delay before we repeat
+    {
+      return false;
+    }
+    if ((nowTicks-lastTicks)<100) // 100ms delay before successive repeats
+    {
+      return false;
+    }
+    lastTicks = nowTicks;
+  }
+  id = m_HatId;
+  return true;
+}
+
 
 int CJoystick::GetAxisWithMaxAmount()
 {

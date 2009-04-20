@@ -117,7 +117,7 @@ bool CCueDocument::Parse(const CStdString &strFile)
         titleNoQuote.TrimLeft();
         if (!titleNoQuote.IsEmpty())
         {
-          g_charsetConverter.stringCharsetToUtf8(titleNoQuote);
+          g_charsetConverter.unknownToUTF8(titleNoQuote);
           m_Track[m_iTotalTracks].strTitle = titleNoQuote;
         }
       }
@@ -170,12 +170,12 @@ bool CCueDocument::Parse(const CStdString &strFile)
 
   // reset track counter to 0, and fill in the last tracks end time
   m_iTrack = 0;
-  if (m_iTotalTracks > 0)
+  if (m_iTotalTracks >= 0)
     m_Track[m_iTotalTracks].iEndTime = 0;
   else
     OutputDebugString("No INDEX 01 tags in CUE file!\n");
   m_file.Close();
-  if (m_iTotalTracks > 0)
+  if (m_iTotalTracks >= 0)
   {
     m_iTotalTracks++;
   }
@@ -266,7 +266,7 @@ bool CCueDocument::ExtractQuoteInfo(const CStdString &line, CStdString &quote)
   int right = line.Find('\"', left + 1);
   if (right < 0) return false;
   quote = line.Mid(left + 1, right - left - 1);
-  g_charsetConverter.stringCharsetToUtf8(quote);
+  g_charsetConverter.unknownToUTF8(quote);
   return true;
 }
 

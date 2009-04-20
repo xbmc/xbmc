@@ -70,7 +70,7 @@ namespace PYXBMC
     int handle = -1;
     PyObject *pURL = NULL;
     PyObject *pItem = NULL;
-    bool bIsFolder = false;
+    char bIsFolder = false;
     int iTotalItems = 0;
     // parse arguments
     if (!PyArg_ParseTupleAndKeywords(
@@ -93,7 +93,7 @@ namespace PYXBMC
     
     ListItem *pListItem = (ListItem *)pItem;
     pListItem->item->m_strPath = url;
-    pListItem->item->m_bIsFolder = bIsFolder;
+    pListItem->item->m_bIsFolder = (bool)bIsFolder;
 
     // call the directory class to add our item
     bool bOk = DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item.get(), iTotalItems);
@@ -143,7 +143,7 @@ namespace PYXBMC
     {
       PyObject *pItem = PyList_GetItem(pItems, item);
       PyObject *pURL = NULL;
-      bool bIsFolder = false;
+      char bIsFolder = false;
       // parse arguments
       if (!PyArg_ParseTuple(
         pItem,
@@ -161,7 +161,7 @@ namespace PYXBMC
 
       ListItem *pListItem = (ListItem *)pItem;
       pListItem->item->m_strPath = url;
-      pListItem->item->m_bIsFolder = bIsFolder;
+      pListItem->item->m_bIsFolder = (bool)bIsFolder;
       items.Add(pListItem->item);
     }
     // call the directory class to add our items
@@ -188,9 +188,9 @@ namespace PYXBMC
   {
     static const char *keywords[] = { "handle", "succeeded", "updateListing", "cacheToDisc", NULL };
     int handle = -1;
-    bool bSucceeded = true;
-    bool bUpdateListing = false;
-    bool bCacheToDisc = true;
+    char bSucceeded = true;
+    char bUpdateListing = false;
+    char bCacheToDisc = true;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,
@@ -207,7 +207,7 @@ namespace PYXBMC
     };
 
     // tell the directory class that we're done
-    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, bSucceeded, bUpdateListing, bCacheToDisc);
+    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, (bool)bSucceeded, (bool)bUpdateListing, (bool)bCacheToDisc);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -230,7 +230,7 @@ namespace PYXBMC
   {
     static const char *keywords[] = { "handle", "succeeded", "listitem", NULL };
     int handle = -1;
-    bool bSucceeded = true;
+    char bSucceeded = true;
     PyObject *pItem = NULL;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
@@ -248,7 +248,7 @@ namespace PYXBMC
 
     ListItem *pListItem = (ListItem *)pItem;
     
-    DIRECTORY::CPluginDirectory::SetResolvedUrl(handle, bSucceeded, pListItem->item.get());
+    DIRECTORY::CPluginDirectory::SetResolvedUrl(handle, (bool)bSucceeded, pListItem->item.get());
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -551,7 +551,7 @@ namespace PYXBMC
   {
     static const char *keywords[] = { "url", "reload", NULL };
     PyObject *pUrl = NULL;
-    bool bReload = true;
+    char bReload = true;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,

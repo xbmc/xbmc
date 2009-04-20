@@ -53,7 +53,7 @@ CFileZip::~CFileZip()
   Close();
 }
 
-bool CFileZip::Open(const CURL&url, bool bBinary)
+bool CFileZip::Open(const CURL&url)
 {
   CStdString strPath;
   CStdString strOpts  = url.GetOptions();
@@ -80,10 +80,10 @@ bool CFileZip::Open(const CURL&url, bool bBinary)
     if (!CFile::Exists("special://temp/" + CUtil::GetFileName(strPath)))
       CFile::Cache(strPath + "?cache=no", "special://temp/" + CUtil::GetFileName(strPath));
     m_bCached = true;
-    return mFile.Open("special://temp/" + CUtil::GetFileName(strPath), bBinary);
+    return mFile.Open("special://temp/" + CUtil::GetFileName(strPath));
   }
 
-  if (!mFile.Open(url.GetHostName(),true)) // this is the zip-file, always open binary
+  if (!mFile.Open(url.GetHostName())) // this is the zip-file, always open binary
   {
     CLog::Log(LOGERROR,"FileZip: unable to open zip file %s!",url.GetHostName().c_str());
     return false;
@@ -469,13 +469,18 @@ int CFileZip::UnpackFromMemory(string& strDest, const string& strInput, bool isG
 {
   unsigned int iPos=0;
   int iResult=0;
-  while( iPos+30 < strInput.size() || isGZ)
+  while( iPos+LHDR_SIZE < strInput.size() || isGZ)
   {
     if (!isGZ)
     {
       CZipManager::readHeader(strInput.data()+iPos,mZipItem);
       if( mZipItem.header != ZIP_LOCAL_HEADER )
         return iResult;
+      if( (mZipItem.flags & 8) == 8 )
+      {
+        CLog::Log(LOGERROR,"FileZip: extended local header, not supported!");
+        return iResult;
+      }
     }
     if (!InitDecompress())
       return iResult;
@@ -492,7 +497,7 @@ int CFileZip::UnpackFromMemory(string& strDest, const string& strInput, bool isG
     else
     {
       m_ZStream.avail_in = mZipItem.csize;
-      m_ZStream.next_in = (Bytef*)strInput.data()+iPos+30+mZipItem.flength+mZipItem.elength;
+      m_ZStream.next_in = (Bytef*)strInput.data()+iPos+LHDR_SIZE+mZipItem.flength+mZipItem.elength;
       // init m_zipitem
       strDest.reserve(mZipItem.usize);
       temp = new char[mZipItem.usize+1];
@@ -506,11 +511,12 @@ int CFileZip::UnpackFromMemory(string& strDest, const string& strInput, bool isG
     }
     Close();
     delete[] temp;
-    iPos += 30+mZipItem.flength+mZipItem.elength+mZipItem.csize;
+    iPos += LHDR_SIZE+mZipItem.flength+mZipItem.elength+mZipItem.csize;
     if (isGZ)
       break;
   }
 
   return iResult;
 }
+
 

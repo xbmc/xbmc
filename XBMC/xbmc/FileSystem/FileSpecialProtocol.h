@@ -29,12 +29,13 @@ class CFileSpecialProtocol : public IFile
 public:
   CFileSpecialProtocol(void);
   virtual ~CFileSpecialProtocol(void);
-  virtual bool Open(const CURL& url, bool bBinary = true);
+  virtual bool Open(const CURL& url);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
   virtual int Stat(struct __stat64* buffer);
-  virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
+  virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
   virtual bool Delete(const CURL& url);
+  virtual bool Rename(const CURL& url, const CURL& urlnew);
 
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
   virtual int Write(const void* lpBuf, __int64 uiBufSize);

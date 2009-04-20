@@ -53,7 +53,7 @@ CDDACodec::~CDDACodec()
 
 bool CDDACodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  if (!m_file.Open(strFile, true, READ_CACHED))
+  if (!m_file.Open(strFile, READ_CACHED))
     return false;
 
   //  Calculate total time of the track

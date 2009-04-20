@@ -80,8 +80,7 @@ bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
 bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction, const CScraperUrl* url)
 {
   // load our scraper xml
-  CScraperParser parser;
-  if (!parser.Load("special://xbmc/system/scrapers/music/" + info.strPath))
+  if (!m_parser.Load("special://xbmc/system/scrapers/music/" + info.strPath))
     return false;
 
   bool bChained=true;
@@ -102,11 +101,11 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
 
   // now grab our details using the scraper
   for (unsigned int i=0;i<strHTML.size();++i)
-    parser.m_param[i] = strHTML[i];
+    m_parser.m_param[i] = strHTML[i];
 
-  parser.m_param[strHTML.size()] = m_strSearch;
+  m_parser.m_param[strHTML.size()] = m_strSearch;
 
-  CStdString strXML = parser.Parse(strFunction);
+  CStdString strXML = m_parser.Parse(strFunction);
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
@@ -119,7 +118,6 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
-  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())
@@ -141,7 +139,6 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
     }
     xurl = xurl->NextSiblingElement("url");
   }
-  TiXmlBase::SetCondenseWhiteSpace(true);
 
   return ret;
 }

@@ -2626,6 +2626,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\Atomics.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Atomics.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\AutoPtrHandle.cpp"
 					>
 				</File>
@@ -3067,6 +3075,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\XBVideoConfig.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Zeroconf.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Zeroconf.h"
 					>
 				</File>
 			</Filter>

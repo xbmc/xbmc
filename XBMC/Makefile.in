@@ -55,6 +55,7 @@ XBMCTEX_DIRS= \
 
 DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
+	xbmc/cores/dvdplayer/Codecs/libdvd \
 	xbmc/lib/libass/xbmc \
 
 PAPCODECS_DIRS= \
@@ -196,6 +197,7 @@ dvdplayer:
 	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders 
 dvdpcodecs: dllloader
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
+	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libdvd
 	$(MAKE) -C xbmc/lib/libass/xbmc
 cdrip:
 	$(MAKE) -C xbmc/cdrip
@@ -336,11 +338,6 @@ ifeq ($(ARCH), powerpc64-linux)
 	# For some reason the XBMC version of libpython gets linker errors - use system version instead
 	#OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
 	LIBS += -lpython2.4
-endif
-
-# TODO: XBPythonDLLFuncs.S not implemented on PowerPC
-ifeq ($(ARCH), powerpc-osx)
-	OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
 endif
 
 $(wildcard $(OBJSXBMC)) :| compile

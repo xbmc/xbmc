@@ -34,11 +34,13 @@ distribution.
 #define USE_XBMC_FILESYSTEM
 
 #ifdef USE_XBMC_FILESYSTEM
+bool TiXmlBase::condenseWhiteSpace = false;
 #include "FileSystem/File.h"
 using namespace XFILE;
+#else
+bool TiXmlBase::condenseWhiteSpace = true;
 #endif
 
-bool TiXmlBase::condenseWhiteSpace = true;
 
 
 void TiXmlBase::EncodeString( const TIXML_STRING& str, TIXML_STRING* outString )
@@ -1074,7 +1076,7 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 bool TiXmlDocument::SaveFile( const char *filename ) const
 {
 	XFILE::CFile file;
-	if (file.OpenForWrite(filename, true, true))
+	if (file.OpenForWrite(filename, true))
 	{
 		TiXmlPrinter printer;
 		Accept(&printer);

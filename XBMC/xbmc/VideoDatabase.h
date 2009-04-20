@@ -58,10 +58,16 @@ namespace VIDEO
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
 #define VIDEODB_MAX_COLUMNS 21 // leave room for the fileid
-#define VIDEODB_DETAILS_FILE       VIDEODB_MAX_COLUMNS + 2
-#define VIDEODB_DETAILS_PATH       VIDEODB_MAX_COLUMNS + 3
-#define VIDEODB_DETAILS_PLAYCOUNT  VIDEODB_MAX_COLUMNS + 4
-#define VIDEODB_DETAILS_LASTPLAYED VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_FILE                 VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_PATH                 VIDEODB_MAX_COLUMNS + 3
+#define VIDEODB_DETAILS_PLAYCOUNT            VIDEODB_MAX_COLUMNS + 4
+#define VIDEODB_DETAILS_LASTPLAYED           VIDEODB_MAX_COLUMNS + 5
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_NAME  VIDEODB_MAX_COLUMNS + 6
+
+#define VIDEODB_DETAILS_TVSHOW_PATH          VIDEODB_MAX_COLUMNS + 1
+#define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES  VIDEODB_MAX_COLUMNS + 2
+#define VIDEODB_DETAILS_TVSHOW_NUM_WATCHED   VIDEODB_MAX_COLUMNS + 3
+
 
 #define VIDEODB_TYPE_STRING 1
 #define VIDEODB_TYPE_INT 2
@@ -148,6 +154,8 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_ORIGINALTITLE = 9,
   VIDEODB_ID_TV_EPISODEGUIDE = 10,
   VIDEODB_ID_TV_FANART = 11,
+  VIDEODB_ID_TV_IDENT = 12,
+  VIDEODB_ID_TV_MPAA = 13,
   VIDEODB_ID_TV_MAX
 } VIDEODB_TV_IDS;
 
@@ -165,6 +173,8 @@ const struct SDbTableOffsets DbTvShowOffsets[] =
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle)},
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strEpisodeGuide)},
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_fanart.m_xml)},
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strIMDBNumber)},
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strMPAARating)}
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -313,6 +323,7 @@ public:
 
   void GetFilePathById(long id, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
   bool GetGenreById(long id, CStdString& strGenre);
+  long GetTvShowForEpisode(long idEpisode);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId = -1);
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId = -1);

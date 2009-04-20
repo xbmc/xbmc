@@ -60,7 +60,9 @@
 #include "GUIWindowPrograms.h"
 #include "MediaManager.h"
 #include "utils/Network.h"
+#ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/WebServer.h"
+#endif
 #include "GUIControlGroupList.h"
 #include "GUIWindowManager.h"
 #ifdef _LINUX
@@ -82,6 +84,9 @@
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
 #include "FileSystem/SpecialProtocol.h"
+
+#include "Zeroconf.h"
+#include "PowerManager.h"
 
 #ifdef _WIN32PC
 #include "WIN32Util.h"
@@ -756,11 +761,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(13009), POWERSTATE_QUIT);
         pControl->AddLabel(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE);
       }
-      else if (pSettingInt->GetData() == POWERSTATE_QUIT || pSettingInt->GetData() == POWERSTATE_MINIMIZE)
-        pSettingInt->SetData(POWERSTATE_SHUTDOWN);
-      pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
-      pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
-      pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
+
+      if (g_powerManager.CanPowerdown())
+        pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
+
+      if (g_powerManager.CanHibernate())
+        pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
+
+      if (g_powerManager.CanSuspend())
+        pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
+
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("system.ledcolour"))
@@ -799,7 +809,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13417), RENDER_METHOD_ARB);
       pControl->AddLabel(g_localizeStrings.Get(13418), RENDER_METHOD_GLSL);
       pControl->AddLabel(g_localizeStrings.Get(13419), RENDER_METHOD_SOFTWARE);
+#ifdef HAVE_LIBVDPAU
       pControl->AddLabel(g_localizeStrings.Get(13421), RENDER_METHOD_VDPAU);
+#endif
 #endif
       pControl->SetValue(pSettingInt->GetData());
     }
@@ -1764,8 +1776,16 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
+  } 
+  else if (strSetting.Equals("servers.zeroconf"))
+  {
+#ifdef HAS_ZEROCONF
+    //ifdef zeroconf here because it's only found in guisettings if defined
+    CZeroconf::GetInstance()->Stop();
+    if(g_guiSettings.GetBool("servers.zeroconf"))
+      CZeroconf::GetInstance()->Start();
+#endif
   }
-
   else if (strSetting.Equals("network.ipaddress"))
   {
     if (g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC)

@@ -66,7 +66,6 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdStri
   return str.c_str();
 }
 
-#define CONVERT_OSSTATUS(x) UInt32ToFourCC((UInt32*)&ret)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioHardware
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,10 +374,16 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
   return true;
 }
 
-bool CCoreAudioDevice::GetHogStatus()
+pid_t CCoreAudioDevice::GetHogStatus()
 {
-  // TODO: Should we confirm with CoreAudio?
-  return (m_Hog > -1);
+  if (!m_DeviceId)
+    return false;
+  
+  pid_t hogPid = -1;
+  UInt32 size = sizeof(hogPid);
+  AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyHogMode, &size, &hogPid);
+
+  return hogPid;
 }
 
 bool CCoreAudioDevice::SetMixingSupport(bool mix)
@@ -718,6 +723,18 @@ bool CCoreAudioUnit::Open(ComponentDescription desc)
   }
   return true;
 }
+
+bool CCoreAudioUnit::Open(OSType type, OSType subType, OSType manufacturer)
+{
+  ComponentDescription desc;
+  desc.componentType = type;
+  desc.componentSubType = subType;
+  desc.componentManufacturer = manufacturer;
+  desc.componentFlags = 0;
+  desc.componentFlagsMask = 0;
+  return Open(desc);
+}
+
 
 void CCoreAudioUnit::Close()
 {

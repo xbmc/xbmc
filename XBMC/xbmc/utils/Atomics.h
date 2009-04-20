@@ -28,5 +28,15 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
 long AtomicIncrement(volatile long* pAddr);
 long AtomicDecrement(volatile long* pAddr);
 
+class CAtomicSpinLock
+{
+public:
+  CAtomicSpinLock(long& lock);
+  ~CAtomicSpinLock();
+private:
+  long& m_Lock;
+};
+
+
 #endif // __ATOMICS_H__
 

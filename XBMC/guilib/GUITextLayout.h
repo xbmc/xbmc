@@ -67,8 +67,8 @@ public:
   void GetTextExtent(float &width, float &height);
   float GetTextWidth();
   float GetTextWidth(const CStdStringW &text) const;
-  bool Update(const CStdString &text, float maxWidth = 0);
-  void SetText(const CStdStringW &text, float maxWidth = 0);
+  bool Update(const CStdString &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
+  void SetText(const CStdStringW &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
 
   unsigned int GetTextLength() const;
   void GetFirstText(std::vector<DWORD> &text) const;
@@ -86,6 +86,8 @@ protected:
   void ParseText(const CStdStringW &text, std::vector<DWORD> &parsedText);
   void LineBreakText(const std::vector<DWORD> &text, std::vector<CGUIString> &lines);
   void WrapText(const std::vector<DWORD> &text, float maxWidth);
+  void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
+  CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
 
   // our text to render
   std::vector<DWORD> m_colors;

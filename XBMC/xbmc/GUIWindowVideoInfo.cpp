@@ -663,7 +663,9 @@ void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
   CFileItem item(*pItem);
   *item.GetVideoInfoTag() = movieDetails;
   SetMovie(&item);
-  Refresh();
+  // refresh our window entirely
+  Close();
+  DoModal();
 }
 
 void CGUIWindowVideoInfo::ClearCastList()
@@ -946,7 +948,11 @@ void CGUIWindowVideoInfo::PlayTrailer()
 
   // Close the dialog.
   Close(true);
-  g_application.getApplicationMessenger().PlayFile(item);
+
+  if (item.IsPlayList())
+    g_application.getApplicationMessenger().MediaPlay(item);
+  else
+    g_application.getApplicationMessenger().PlayFile(item);
 }
 
 void CGUIWindowVideoInfo::SetLabel(int iControl, const CStdString &strLabel)

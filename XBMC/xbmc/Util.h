@@ -34,6 +34,11 @@
 #include "MediaSource.h"
 #include "StringUtils.h"
 
+// A list of filesystem types for LegalPath/FileName
+#define LEGAL_NONE            0
+#define LEGAL_WIN32_COMPAT    1
+#define LEGAL_FATX            2
+
 namespace XFILE
 {
   class IFileCallback;
@@ -83,7 +88,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #if defined(__APPLE__) || defined(__powerpc__)
+    #if defined(__powerpc__) || defined(__ppc__)
         i = floor(x + round_to_nearest);
     #else
         __asm__ __volatile__ (
@@ -103,7 +108,7 @@ namespace MathUtils
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
 
-    #ifndef __APPLE__
+    #if !defined(__powerpc__) && !defined(__ppc__)
         const float round_towards_p_i = -0.5f;
     #endif
     int i;
@@ -118,8 +123,8 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #ifdef __APPLE__
-        i = ceil(x);
+    #if defined(__powerpc__) || defined(__ppc__)
+        return (int)ceil(x);
     #else
         __asm__ __volatile__ (
             "fadd %%st\n\t"
@@ -138,7 +143,7 @@ namespace MathUtils
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
 
-    #ifndef __APPLE__
+    #if !defined(__powerpc__) && !defined(__ppc__)
         const float round_towards_m_i = -0.5f;
     #endif
     int i;
@@ -154,8 +159,8 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #ifdef __APPLE__
-        i = (int)x;
+    #if defined(__powerpc__) || defined(__ppc__)
+        return (int)x;
     #else
         __asm__ __volatile__ (
             "fadd %%st\n\t"
@@ -220,10 +225,13 @@ public:
   static bool IsZIP(const CStdString& strFile);
   static bool IsInZIP(const CStdString& strFile);
   static bool IsInArchive(const CStdString& strFile);
+  static bool IsSpecial(const CStdString& strFile);
+  static bool IsPlugin(const CStdString& strFile); 
   static bool IsCDDA(const CStdString& strFile);
   static bool IsMemCard(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
+  static bool IsHDHomeRun(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
   static bool IsTV(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
@@ -282,8 +290,15 @@ public:
   static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
   static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
   static bool CreateDirectoryEx(const CStdString& strPath);
-  static CStdString MakeLegalFileName(const CStdString &strFile);
-  static CStdString MakeLegalPath(const CStdString &strPath);
+
+#ifdef _WIN32
+  static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_WIN32_COMPAT);
+  static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_WIN32_COMPAT);
+#else
+  static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_NONE);
+  static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
+#endif
+  
   static void AddDirectorySeperator(CStdString& strPath);
   static char GetDirectorySeperator(const CStdString& strFile);
 

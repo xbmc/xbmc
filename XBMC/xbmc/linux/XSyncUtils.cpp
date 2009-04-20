@@ -148,12 +148,40 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
   }
 #else
   struct sysinfo info;
-  sysinfo(&info);
-
+  FILE* fp = NULL;
+  char name[32];
+  unsigned val;
+  if ((fp = fopen("/proc/meminfo", "r")) == NULL)
+    sysinfo(&info);
+  else
+  {
+    memset(&info, 0, sizeof(struct sysinfo));
+    info.mem_unit = 4096;
+    while (fscanf(fp, "%31s %u%*[^\n]\n", name, &val) != EOF)
+    {
+      if (strncmp("MemTotal:", name, 9) == 0)
+        info.totalram = val/4;
+      else if (strncmp("MemFree:", name, 8) == 0)
+        info.freeram = val/4;
+      else if (strncmp("Buffers:", name, 8) == 0)
+        info.bufferram += val/4;
+      else if (strncmp("Cached:", name, 7) == 0)
+        info.bufferram += val/4;
+      else if (strncmp("SwapTotal:", name, 10) == 0)
+        info.totalswap = val/4;
+      else if (strncmp("SwapFree:", name, 9) == 0)
+        info.freeswap = val/4;
+      else if (strncmp("HighTotal:", name, 10) == 0)
+        info.totalhigh = val/4;
+      else if (strncmp("HighFree:", name, 9) == 0)
+        info.freehigh = val/4;
+    }
+    fclose(fp);
+  }
   lpBuffer->dwLength        = sizeof(MEMORYSTATUS);
   lpBuffer->dwAvailPageFile = (info.freeswap * info.mem_unit);
-  lpBuffer->dwAvailPhys     = (info.freeram  * info.mem_unit);
-  lpBuffer->dwAvailVirtual  = (info.freeram  * info.mem_unit);
+  lpBuffer->dwAvailPhys     = ((info.freeram + info.bufferram) * info.mem_unit);
+  lpBuffer->dwAvailVirtual  = ((info.freeram + info.bufferram) * info.mem_unit);
   lpBuffer->dwTotalPhys     = (info.totalram * info.mem_unit);
   lpBuffer->dwTotalVirtual  = (info.totalram * info.mem_unit);
 #endif

@@ -37,7 +37,7 @@ CSAPFile::~CSAPFile()
 {
 }
 
-bool CSAPFile::Open(const CURL& url, bool bBinary)
+bool CSAPFile::Open(const CURL& url)
 {
   CStdString path;
   url.GetURL(path);

@@ -44,14 +44,14 @@ CDirectoryTuxBox::CDirectoryTuxBox(void)
 CDirectoryTuxBox::~CDirectoryTuxBox(void)
 {
 }
+
 bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   // so we know that we have enigma2
   static bool enigma2 = false;
   // Detect and delete slash at end
   CStdString strRoot = strPath;
-  if (CUtil::HasSlashAtEnd(strRoot))
-  strRoot.Delete(strRoot.size() - 1);
+  CUtil::RemoveSlashAtEnd(strRoot);
 
   //Get the request strings
   CStdString strBQRequest;
@@ -59,19 +59,6 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   CStdString strXMLChildString;
   if(!GetRootAndChildString(strRoot, strBQRequest, strXMLRootString, strXMLChildString))
     return false;
-
-  // display progress dialog after 1 seconds
-  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  int iProgressPercent = 0;
-  if (dlgProgress)
-  {
-    dlgProgress->SetHeading(21331);
-    dlgProgress->SetLine(0, 14004);
-    dlgProgress->StartModal();
-    dlgProgress->ShowProgressBar(true);
-    dlgProgress->SetPercentage(iProgressPercent);
-    dlgProgress->Progress();
-  }
 
   //Set url Protocol
   CURL url(strRoot);
@@ -115,32 +102,17 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   }
   //Open
   CFileCurl http;
-  int iTryConnect =0;
+  int iTryConnect = 0;
   int iWaitTimer = 20;
   bool result = false;
 
-  // Update Progress
-  CStdString strLine1, strLine2;
-  strLine1.Format(g_localizeStrings.Get(21336).c_str(), g_localizeStrings.Get(21337).c_str());
-  iProgressPercent=iProgressPercent+5;
-  UpdateProgress(dlgProgress, strLine1, "", iProgressPercent, false);
-
-  while (iTryConnect <= 1 && !dlgProgress->IsCanceled())
+  while (iTryConnect < 4)
   {
-    //Update Progressbar
-    iProgressPercent=iProgressPercent+5;
-    strLine2.Format("Opening %s",url.GetHostName().c_str()); //Connecting to host
-    UpdateProgress(dlgProgress, strLine1, strLine2, iProgressPercent, false);
-
     http.SetTimeout(iWaitTimer);
-    if(http.Open(url, false))
+    if(http.Open(url))
     {
       //We are connected!
       iTryConnect = 4;
-
-      //Update Progressbar
-      iProgressPercent=iProgressPercent+5;
-      UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(21337).c_str(), iProgressPercent, false);
 
       // restore protocol
       url.SetProtocol(protocol);
@@ -153,26 +125,13 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
 
       // read response from server into string buffer
       char buffer[16384];
-      while( ((size_read = http.Read(buffer, sizeof(buffer)-1)) > 0) && !dlgProgress->IsCanceled() )
+      while ((size_read = http.Read(buffer, sizeof(buffer)-1)) > 0)
       {
         buffer[size_read] = 0;
         data += buffer;
         data_size += size_read;
-
-        //Update Progressbar
-        iProgressPercent=iProgressPercent+1;
-        UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(21337).c_str(), iProgressPercent, false);
-
       }
       http.Close();
-      //Update Progressbar
-      if (dlgProgress->IsCanceled())
-      {
-        dlgProgress->Close();
-        return false;
-      }
-      iProgressPercent=iProgressPercent+5;
-      UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);
 
       // parse returned xml
       TiXmlDocument doc;
@@ -183,15 +142,10 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       {
         CLog::Log(LOGERROR, "%s - Unable to parse xml", __FUNCTION__);
         CLog::Log(LOGERROR, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
-        dlgProgress->Close();
         return false;
       }
       if( strXMLRootString.Equals(root->Value()) && bIsBouquet)
       {
-        //Update Progressbar
-        iProgressPercent=iProgressPercent+5;
-        UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);
-
         data.Empty();
         if (enigma2)
           result = g_tuxbox.ParseBouquetsEnigma2(root, items, url, strFilter, strXMLChildString);
@@ -200,10 +154,6 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       }
       else if( strXMLRootString.Equals(root->Value()) && !strFilter.IsEmpty() )
       {
-        //Update Progressbar
-        iProgressPercent=iProgressPercent+5;
-        UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);
-
         data.Empty();
         if (enigma2)
           result = g_tuxbox.ParseChannelsEnigma2(root, items, url, strFilter, strXMLChildString);
@@ -217,48 +167,27 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
         data.Empty();
         result = false;
       }
-
-      //Build Directory
-      for( int i = 0; i <items.Size(); i++ )
-      {
-        CFileItemPtr pItem=items[i];
-        if (!pItem->IsParentFolder())
-        //Update Progressbar
-        iProgressPercent=iProgressPercent+2;
-        UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), iProgressPercent, false);
-      }
-      //Close Progressbar
-      UpdateProgress(dlgProgress, strLine1, g_localizeStrings.Get(14005).c_str(), 100, true);
     }
     else
     {
-      //Update Progressbar
-      strLine2.Format(g_localizeStrings.Get(13329).c_str(), url.GetHostName().c_str());
-      iProgressPercent=iProgressPercent+5;
-      UpdateProgress(dlgProgress, strLine1, strLine2, iProgressPercent, false);
-
       CLog::Log(LOGERROR, "%s - Unable to get XML structure! Try count:%i, Wait Timer:%is",__FUNCTION__, iTryConnect, iWaitTimer);
       iTryConnect++;
       if (iTryConnect == 2) //try enigma2 instead of enigma1, best entrypoint here i thought
-      {
+      {	
         enigma2 = true;
         GetRootAndChildStringEnigma2(strBQRequest, strXMLRootString, strXMLChildString);
         url.SetOptions("");
         url.SetFileName(strBQRequest);
-        iTryConnect = 0;
+//        iTryConnect = 0;
+        iWaitTimer = 20;
       }
-      iWaitTimer = iWaitTimer+10;
+      else
+        iWaitTimer = iWaitTimer+10;
+       
       result = false;
       http.Close(); // Close old connections
     }
-    if (dlgProgress->IsCanceled())
-    {
-      dlgProgress->Close();
-      return false;
-    }
   }
-  //Close Progressbar
-  UpdateProgress(dlgProgress, strLine1, "Closing connection", 100, true);
 
   return result;
 }
@@ -352,25 +281,4 @@ bool CDirectoryTuxBox::GetRootAndChildString(const CStdString strPath, CStdStrin
     return false;
   else
     return true;
-}
-bool CDirectoryTuxBox::UpdateProgress(CGUIDialogProgress* dlgProgress, CStdString strLn1, CStdString strLn2, int iPercent, bool bCLose)
-{
-  if (strLn1.IsEmpty()) strLn1 = "";
-  if (strLn2.IsEmpty()) strLn2 = "";
-
-  if(dlgProgress)
-  {
-    if (bCLose)
-    {
-      dlgProgress->Close();
-      return true;
-    }
-
-    dlgProgress->SetLine(1, strLn1);
-    dlgProgress->SetLine(2, strLn2);
-    dlgProgress->SetPercentage(iPercent);
-    dlgProgress->Progress();
-    return true;
-  }
-  return false;
 }

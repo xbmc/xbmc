@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: Özgür BASKIN (queeup)-->
+<!--Email: ozgur.baskin@gmail.com-->
+<!--Date of translation: 02/04/2009-->
+<!--Turkish strings based on English strings revision 17639-->
+<!--$Revision$-->
+<strings>
+  <string id="31000">Sessiz</string>
+  <string id="31001"></string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">FANART[CR]RESMİ[CR]MEVCUT[CR]DEĞİL</string>
+  <string id="31011">BÖLÜM[CR]RESMİ[CR]MEVCUT[CR]DEĞİL</string>
+  <string id="31012">BÖLÜM[CR]RESMİ[CR]MEVCUT[CR]DEĞİL</string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">Bölüm başlığı</string>
+  <string id="31021">Videolarım - Dosyalar</string>
+  <string id="31022">Müziklerim - Dosyalar</string>
+  <string id="31023"></string>
+  <string id="31024">Sayfa</string>
+  <string id="31025">Nesne</string>
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">DVD kapakları</string>
+  <string id="31029">DVD listesi</string>
+  <string id="31030">Fanart</string>
+  <string id="31031">Tam liste</string>
+  <string id="31032">Kapak akışı</string>
+  <string id="31033">Küçük resimler</string>
+  <string id="31034">Geniş simgeler</string>
+
+  <string id="31040">Geçerli film[CR]Fanart resmi[CR][CR]Değiştirmek için tıklayın</string>
+  <string id="31041">Geçerli TV programı[CR]Fanart resmi[CR][CR]Değiştirmek için tıklayın</string>
+  <string id="31042">OYNATILIYOR</string>
+  <string id="31043">DURAKLATILDI</string>
+  <string id="31044">İLERİ SAR</string>
+  <string id="31045">GERİ SAR</string>
+  <string id="31046">XBMC'ye Hoş geldiniz - Lütfen Giriş Yapın</string>
+  <string id="31047">Son giriş yapan</string>
+  <string id="31048">Geçerli sanatçı[CR]Fanart resmi[CR][CR]Değiştirmek için tıklayın</string>
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">XBMC LYRICS</string>
+  <string id="31054">Listeden şarkınızı seçin</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Çalma listesini aç</string>
+  <string id="31056">Çalma listesini kaydet</string>
+  <string id="31057">Çalma listesini kapat</string>
+  <string id="31058">Sistem müzik dosyaları</string>
+  <string id="31059">Geçerli çalma listesi</string>
+  <string id="31060">Bu dosya istiflendi, oynatmak istediğiniz bölümü seçin.</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100">Arkaplan ayarları</string>
+  <string id="31101">Ana ekran ayarları</string>
+  <string id="31102">Arkaplanlar</string>
+  <string id="31103">Resim slayt gösterisinde "DURAKLATILDI"yı göster</string>
+  <string id="31104">Kapatma menüsü - Suspend yerine Hibernate kullan</string>
+  <string id="31105">Ortam başlıklarını arkaplan tarayıcısında göster</string>
+  <string id="31106">Çeşitli ayarlar</string>
+  <string id="31107">Tarama çizgilerini arkaplandan kaldır</string>
+  <string id="31108">Video oynatılırken tarama çizgilerini arkaplandan kaldır</string>
+  <string id="31109">Ana ekran arkaplanları</string>
+  <string id="31110">düğmesi - Özel arkaplanları etkinleştir</string>
+  <string id="31111">Lyrics esnasında her zaman müzik bilgisini göster</string>
+  <string id="31112">"Geniş simge" görünümünde ortam başlıklarını göster</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">Özel betik ayarları</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Düğme etiketini ayarla</string>
+  <string id="31204">Betik dizini</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207"></string>
+  <string id="31208">Lyrics betik tuşunu OSD'de göster</string>
+  <string id="31209">Hızlı başlat betik tuşunu etkinleştir -</string>
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">Oyuncuları göster</string>
+</strings>

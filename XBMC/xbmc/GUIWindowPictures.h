@@ -49,12 +49,11 @@ protected:
   void OnRegenerateThumbs();
   virtual bool OnPlayMedia(int iItem);
   bool ShowPicture(int iItem, bool startSlideShow);
-  void OnShowPictureRecursive(const CStdString& strPicture, CFileItemList* pVecItems=NULL);
+  void OnShowPictureRecursive(const CStdString& strPath);
   void OnSlideShow(const CStdString& strPicture);
   void OnSlideShow();
   void OnSlideShowRecursive(const CStdString& strPicture);
   void OnSlideShowRecursive();
-  void AddDir(CGUIWindowSlideShow *pSlideShow, const CStdString& strPath);
   virtual void OnItemLoaded(CFileItem* pItem);
   virtual void LoadPlayList(const CStdString& strPlayList);
 

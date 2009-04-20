@@ -47,7 +47,7 @@
 			<posy>0</posy>
 			<width>280</width>
 			<height>44</height>
-			<texture>Button_Side_NoFocus.png</texture>
+			<texture border="32,0,0,0">Button_Side_NoFocus.png</texture>
 			<visible>!ControlGroup(9005).HasFocus</visible>
 		</control>
 		<control type="image">
@@ -56,7 +56,7 @@
 			<posy>0</posy>
 			<width>280</width>
 			<height>44</height>
-			<texture>Button_Side_Focus.png</texture>
+			<texture border="32,0,0,0">Button_Side_Focus.png</texture>
 			<visible>ControlGroup(9005).HasFocus</visible>
 			<animation effect="fade" start="100" end="70" time="900" pulse="true" condition="ControlGroup(9005).HasFocus">conditional</animation>
 		</control>
@@ -71,7 +71,7 @@
 				<height>36</height>
 				<texture border="3">black-back2.png</texture>
 			</control>
-			<control type="togglebutton" id="600">
+			<control type="button" id="600">
 				<posx>0</posx>
 				<posy>2</posy>
 				<width>32</width>
@@ -91,23 +91,9 @@
 				<width>32</width>
 				<height>28</height>
 				<label>-</label>
-				<texturefocus>PlayerControls-RewindFO.png</texturefocus>
-				<texturenofocus>PlayerControls-RewindNF.png</texturenofocus>
-				<onleft>600</onleft>
-				<onright>602</onright>
-				<onup>610</onup>
-				<ondown>607</ondown>
-				<onclick>XBMC.PlayerControl(Rewind)</onclick>
-			</control>
-			<control type="button" id="602">
-				<posx>64</posx>
-				<posy>2</posy>
-				<width>32</width>
-				<height>28</height>
-				<label>-</label>
 				<texturefocus>PlayerControls-StopFO.png</texturefocus>
 				<texturenofocus>PlayerControls-StopNF.png</texturenofocus>
-				<onleft>601</onleft>
+				<onleft>600</onleft>
 				<onright>603</onright>
 				<onup>610</onup>
 				<ondown>607</ondown>
@@ -115,7 +101,7 @@
 				<onclick>XBMC.PlayerControl(Stop)</onclick>
 			</control>
 			<control type="togglebutton" id="603">
-				<posx>96</posx>
+				<posx>64</posx>
 				<posy>2</posy>
 				<width>32</width>
 				<height>28</height>
@@ -125,11 +111,25 @@
 				<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
 				<alttexturefocus>PlayerControls-PlayFO.png</alttexturefocus>
 				<alttexturenofocus>PlayerControls-PlayNF.png</alttexturenofocus>
-				<onleft>602</onleft>
-				<onright>604</onright>
+				<onleft>601</onleft>
+				<onright>602</onright>
 				<onup>610</onup>
 				<ondown>607</ondown>
 				<onclick>XBMC.PlayerControl(Play)</onclick>
+			</control>
+			<control type="button" id="602">
+				<posx>96</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<label>-</label>
+				<texturefocus>PlayerControls-NextFO.png</texturefocus>
+				<texturenofocus>PlayerControls-NextNF.png</texturenofocus>
+				<onleft>603</onleft>
+				<onright>604</onright>
+				<onup>610</onup>
+				<ondown>607</ondown>
+				<onclick>XBMC.PlayerControl(Next)</onclick>
 			</control>
 			<control type="button" id="604">
 				<posx>128</posx>
@@ -137,27 +137,84 @@
 				<width>32</width>
 				<height>28</height>
 				<label>-</label>
-				<texturefocus>PlayerControls-ForwardFO.png</texturefocus>
-				<texturenofocus>PlayerControls-ForwardNF.png</texturenofocus>
-				<onleft>603</onleft>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<onclick>XBMC.PlayerControl(Repeat)</onclick>
+				<onleft>602</onleft>
 				<onright>605</onright>
 				<onup>610</onup>
 				<ondown>607</ondown>
-				<onclick>XBMC.PlayerControl(Forward)</onclick>
 			</control>
-			<control type="button" id="605">
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatNF.png</texture>
+				<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+				<visible>!Control.HasFocus(604)</visible>
+			</control>
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatFO.png</texture>
+				<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+				<visible>Control.HasFocus(604)</visible>
+			</control>
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatOneNF.png</texture>
+				<visible>Playlist.IsRepeatOne</visible>
+				<visible>!Control.HasFocus(604)</visible>
+			</control>
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatOneFO.png</texture>
+				<visible>Playlist.IsRepeatOne</visible>
+				<visible>Control.HasFocus(604)</visible>
+			</control>
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatAllNF.png</texture>
+				<visible>Playlist.IsRepeat</visible>
+				<visible>!Control.HasFocus(604)</visible>
+			</control>
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatAllFO.png</texture>
+				<visible>Playlist.IsRepeat</visible>
+				<visible>Control.HasFocus(604)</visible>
+			</control>
+			<control type="togglebutton" id="605">
 				<posx>160</posx>
 				<posy>2</posy>
 				<width>32</width>
 				<height>28</height>
 				<label>-</label>
-				<texturefocus>PlayerControls-NextFO.png</texturefocus>
-				<texturenofocus>PlayerControls-NextNF.png</texturenofocus>
+				<texturefocus>PlayerControls-RandomFO_2.png</texturefocus>
+				<texturenofocus>PlayerControls-RandomNF_2.png</texturenofocus>
+				<usealttexture>Playlist.IsRandom</usealttexture>
+				<alttexturefocus>PlayerControls-RandomOnFO_2.png</alttexturefocus>
+				<alttexturenofocus>PlayerControls-RandomOnNF_2.png</alttexturenofocus>
+				<onclick>XBMC.PlayerControl(Random)</onclick>
 				<onleft>604</onleft>
 				<onright>606</onright>
 				<onup>610</onup>
 				<ondown>607</ondown>
-				<onclick>XBMC.PlayerControl(Next)</onclick>
 			</control>
 			<control type="button" id="606">
 				<posx>192</posx>
@@ -185,7 +242,7 @@
 				<posy>0</posy>
 				<width>280</width>
 				<height>44</height>
-				<texture>Button_Side_NoFocus.png</texture>
+				<texture border="32,0,0,0">Button_Side_NoFocus.png</texture>
 				<visible>!Control.HasFocus(607) + !Control.HasFocus(608)</visible>
 			</control>
 			<control type="image">
@@ -194,7 +251,7 @@
 				<posy>0</posy>
 				<width>280</width>
 				<height>44</height>
-				<texture>Button_Side_Focus.png</texture>
+				<texture border="32,0,0,0">Button_Side_Focus.png</texture>
 				<visible>Control.HasFocus(607) | Control.HasFocus(608)</visible>
 				<animation effect="fade" start="100" end="70" time="900" pulse="true" condition="Control.HasFocus(607) | Control.HasFocus(608)">conditional</animation>
 			</control>

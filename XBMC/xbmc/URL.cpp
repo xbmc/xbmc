@@ -654,15 +654,38 @@ bool CURL::IsFullPath(const CStdString &url)
 CStdString CURL::ValidatePath(const CStdString &path)
 {
   CStdString result = path;
-#ifdef _WIN32
   // check the path for incorrect slashes
+#ifdef _WIN32
   if (CUtil::IsDOSPath(path))
+  {
     result.Replace('/', '\\');
+    // Fixup for double back slashes (but ignore \\ of unc-paths) 
+    for (int x=1; x<result.GetLength()-1; x++) 
+    { 
+      if (result[x] == '\\' && result[x+1] == '\\') 
+        result.Delete(x);   
+    }    
+  }
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
+  {
     result.Replace('\\', '/');
-#endif
-#ifdef _LINUX
+    // Fixup for double forward slashes(/) but don't touch the :// of URLs
+    // The %3A-exclude is to protect against modifying half-URL-encoded %3A// (= ://)
+    for (int x=1; x<result.GetLength()-1; x++) 
+    { 
+      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':' && !(x>3 && result.Mid(x-3,3)=="%3A")) 
+        result.Delete(x); 
+    }        
+  }
+#else
   result.Replace('\\', '/');
+  // Fixup for double forward slashes(/) but don't touch the :// of URLs 
+  // The %3A-exclude is to protect against modifying half-URL-encoded %3A// (= ://)
+  for (int x=1; x<result.GetLength()-1; x++) 
+  { 
+    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':' && !(x>3 && result.Mid(x-3,3)=="%3A")) 
+      result.Delete(x); 
+  }        
 #endif
   return result;
 }

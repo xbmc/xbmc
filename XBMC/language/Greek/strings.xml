@@ -2,15 +2,15 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 03/23/2009-->
+<!--Date of translation: 04/17/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 18841-->
+<!--Based on english strings version 19506-->
 <strings>
-  <string id="0">Προγράμματα</string>
+  <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
   <string id="2">Μουσική</string>
   <string id="3">Βίντεο</string>
-  <string id="4">Οδηγός Τηλεόρασης</string>
+  <string id="4">Οδηγός τηλεόρασης</string>
   <string id="5">Ρυθμίσεις</string>
   <string id="6">XBMC SVN</string>
   <string id="7">Διαχείριση αρχείων</string>
@@ -274,14 +274,14 @@
   <string id="343">Προσαρμογή δειγματοληψίας</string>
   <string id="344">Ηθοποιοί</string>
   <string id="345">Έτος</string>
-  <string id="350">Προγράμματα</string>
+  <string id="350">Εφαρμογές</string>
   <string id="351">Ανενεργό/ή</string>
   <string id="352">Αμυδρό φως</string>
   <string id="353">Μαύρη οθόνη</string>
   <string id="354">Matrix Trails</string>
   <string id="355">Προφύλαξη οθόνης μετά από</string>
   <string id="356">Λειτουργία προφύλαξης οθόνης</string>
-  <string id="357">Απενεργοποίηση μετά από</string>
+  <string id="357">Χρονοδιακόπτης λειτουργίας τερματισμού</string>
   <string id="358">Όλα τα άλμπουμ</string>
   <string id="359">Πρόσφατα άλμπουμ</string>
   <string id="360">Προφύλαξη οθόνης</string>
@@ -304,7 +304,7 @@
   <string id="377">Ασθενής</string>
   <string id="378">Προ μεσημβρίας</string>
   <string id="379">Μετά μεσημβρίας</string>
-  <string id="380">Όμβροι</string>
+  <string id="380">Μπόρες</string>
   <string id="381">Λίγες</string>
   <string id="382">Σποραδικά</string>
   <string id="383">Άνεμος</string>
@@ -313,7 +313,7 @@
   <string id="386">Αίθριος</string>
   <string id="387">Νεφοσκεπής</string>
   <string id="388">τις πρώτες πρωινές ώρες</string>
-  <string id="389">Όμβρος</string>
+  <string id="389">Μπόρα</string>
   <string id="390">Σύντομες ελαφρές χιονοπτώσεις</string>
   <string id="391">Ελχ.</string>
   <string id="392">Μέσ.</string>
@@ -533,13 +533,13 @@
   <string id="634">Επέκταση 16:9</string>
   <string id="635">Κανονικό μέγεθος</string>
   <string id="636">Προσωπικό</string>
-  <string id="637">Replay gain</string>
-  <string id="638">Replay gain mode</string>
-  <string id="639">Επίπεδο έντασης κομματιού</string>
-  <string id="640">Επίπεδο έντασης άλμπουμ</string>
-  <string id="641">PreAmp Level - Replay gained files</string>
-  <string id="642">PreAmp Level - Non replay gained files</string>
-  <string id="643">Avoid clipping on replay gained files</string>
+  <string id="637">Ενίσχυση ήχου</string>
+  <string id="638">Μέθοδος ενίσχυσης ήχου</string>
+  <string id="639">Σε επίπεδο κομματιού</string>
+  <string id="640">Σε επίπεδο άλμπουμ</string>
+  <string id="641">Ένταση Προενισχυτή - Στα ήδη ενισχυμένα αρχεία</string>
+  <string id="642">Ένταση Προενισχυτή - Στα μη ενισχυμένα αρχεία</string>
+  <string id="643">Αποφυγή μείωσης της έντασης ενίσχυσης</string>
   <string id="644">Κόψιμο των μαύρων μπαρών</string>
   <string id="645">Μεγάλο αρχείο προς αποσυμπίεση. Να συνεχίσει;</string>
   <string id="646">Αφαίρεση από τη συλλογή</string>
@@ -611,9 +611,9 @@
   <string id="751">Απομάκρυνση προέλευσης</string>
   <string id="752">Επεξεργασία διαδρομής κοινόχρηστων</string>
   <string id="753">Επεξεργασία ονόματος κοινοχρήστων</string>
-  <string id="754">Προσθήκη συνδέσμου προγράμματος</string>
-  <string id="755">Επεξεργασία διαδρομής προγράμματος</string>
-  <string id="756">Επεξεργασία ονόματος προγράμματος</string>
+  <string id="754">Προσθήκη συνδέσμου εφαρμογής</string>
+  <string id="755">Επεξεργασία διαδρομής εφαρμογής</string>
+  <string id="756">Επεξεργασία ονόματος εφαρμογής</string>
   <string id="757">Επεξεργασία βάθους διαδρομής</string>
   <string id="758">Απομάκρυνση συνδέσμου προγράμματος</string>
   <string id="759">Προβολή: Μεγάλη λίστα</string>
@@ -698,7 +698,7 @@
   <string id="1040">Φόρτωση φακέλου</string>
   <string id="1041">Ανακτήθηκαν %i αντικείμενα</string>
   <string id="1042">Ανακτήθηκαν %i από %i αντικείμενα</string>
-  <string id="1043">Επεκτάσεις προγράμματος</string>
+  <string id="1043">Επεκτάσεις εφαρμογής</string>
   <string id="1044">Ορισμός πρόσθετου σελιδοδείκτη</string>
   <string id="1045">Ρύθμιση επεκτάσεων</string>
   <string id="1046">Σημεία πρόσβασης</string>
@@ -727,13 +727,13 @@
   <string id="1226">Αρχεία &amp; μουσική &amp; βίντεο</string>
   <string id="1227">Αρχεία &amp; εικόνες &amp; μουσική</string>
   <string id="1228">Αρχεία &amp; εικόνες &amp; βίντεο</string>
-  <string id="1229">Μουσική &amp; προγράμματα</string>
-  <string id="1230">Βίντεο &amp; προγράμματα</string>
-  <string id="1231">Εικόνες &amp; προγράμματα</string>
-  <string id="1232">Μουσική &amp; βίντεο &amp; εικόνες &amp; προγράμματα</string>
-  <string id="1233">Προγράμματα &amp; βίντεο &amp; μουσική</string>
-  <string id="1234">Προγράμματα &amp; εικόνες &amp; μουσική</string>
-  <string id="1235">Προγράμματα &amp; εικόνες &amp; βίντεο</string>
+  <string id="1229">Μουσική &amp; εφαρμογές</string>
+  <string id="1230">Βίντεο &amp; εφαρμογές</string>
+  <string id="1231">Εικόνες &amp; εφαρμογές</string>
+  <string id="1232">Μουσική &amp; βίντεο &amp; εικόνες &amp; εφαρμογές</string>
+  <string id="1233">Εφαρμογές &amp; βίντεο &amp; μουσική</string>
+  <string id="1234">Εφαρμογές &amp; εικόνες &amp; μουσική</string>
+  <string id="1235">Εφαρμογές &amp; εικόνες &amp; βίντεο</string>
   <string id="1245">Όνομα χρήστη FTP</string>
   <string id="1246">Κωδικός πρόσβασης FTP</string>
   <string id="1247">Ο Κωδικός πρόσβασης έχει ορισθεί επιτυχώς</string>
@@ -745,6 +745,7 @@
   <string id="1255">Αποστολή ονόματος και κωδικού πρόσβασης χρήστη (FTP) </string>
   <string id="1256">Διάστημα μεταλλικού θορύβου</string>
   <string id="1257">Να συνδεθείτε στο συστήμα που εντοπίστηκε;</string>
+  <string id="1260">Έκδοση Zeroconf</string>
   <string id="1396">Μετακινούμενη</string>
   <string id="1397">και</string>
   <string id="1398">Παγωνιά</string>
@@ -770,7 +771,7 @@
   <string id="2050">Εκτέλεση</string>
   <string id="4501">Τύπος LCD</string>
   <string id="10000">Αρχική τοποθεσία</string>
-  <string id="10001">Προγράμματα</string>
+  <string id="10001">Εφαρμογές</string>
   <string id="10002">Φωτογραφίες</string>
   <string id="10003">Διαχείριση  αρχείων</string>
   <string id="10004">Ρυθμίσεις</string>
@@ -782,7 +783,7 @@
   <string id="10010">Ρυθμίσεις - Αισθητικά - Βαθμονόμηση γραφικού περιβάλλοντος (GUI)</string>
   <string id="10011">Ρυθμίσεις - Βίντεο - Βαθμονόμιση Οθόνης</string>
   <string id="10012">Ρυθμίσεις - Φωτογραφίες</string>
-  <string id="10013">Ρυθμίσεις - Προγράμματα</string>
+  <string id="10013">Ρυθμίσεις - Εφαρμογές</string>
   <string id="10014">Ρυθμίσεις - Καιρός</string>
   <string id="10015">Ρυθμίσεις - Μουσική</string>
   <string id="10016">Ρυθμίσεις - Σύστημα</string>
@@ -809,7 +810,7 @@
   <string id="10503">Επεξεργαστής λίστας αναπαραγωγής</string>
   <string id="10504">100 κορυφαία τραγούδια</string>
   <string id="10505">100 κορυφαία άλμπουμ</string>
-  <string id="10506">Προγράμματα</string>
+  <string id="10506">Εφαρμογές</string>
   <string id="10507">Ρυθμίσεις</string>
   <string id="10508">Πρόγνωση καιρού</string>
   <string id="10509">Δικτυακό παιχνίδι</string>
@@ -926,7 +927,7 @@
   <string id="13005">Παύση λειτουργίας</string>
   <string id="13006">Εκκινητής</string>
   <string id="13007">Χρήση τροποποιημένου εκκινητή</string>
-  <string id="13008">Κατά τον τερματισμό του XBMC</string>
+  <string id="13008">Λειτουργία τερματισμού</string>
   <string id="13009">Έξοδος</string>
   <string id="13010">Αδρανοποίηση</string>
   <string id="13011">Ύπνωση</string>
@@ -956,6 +957,7 @@
   <string id="13117">Δικυβική</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Strict Pixmap-Texture Binding (απαιτεί επανεκκίνηση)</string>
   <string id="13130">Display Blanking</string>
   <string id="13131">Ανενεργή</string>
   <string id="13132">Blank displays</string>
@@ -1041,14 +1043,14 @@
   <string id="13304">Ενεργοποίηση αμφίδρομης κατεύθυνσης</string>
   <string id="13305">Ενεργοποίηση ροών τίτλων ειδήσεων (RSS)</string>
   <string id="13306">Απόκρυψη περιεχομένων φακέλου</string>
-  <string id="13307">Απόκρυψη αριθμών κομματιού</string>
+  <string id="13307">Πρότυπο ονομασίας κομματιού</string>
   <string id="13308">Επιθυμείτε επανεκκίνηση του συστήματος</string>
   <string id="13309">και όχι μόνο του XBMC;</string>
   <string id="13310">Εφέ μεγέθυνσης</string>
   <string id="13311">Εφέ κίνησης</string>
   <string id="13312">Ελαχιστοποίηση μαύρης μπάρας</string>
   <string id="13313">Επανεκκίνηση</string>
-  <string id="13314">Βαθμιαίο σβήσιμο</string>
+  <string id="13314">Βαθμιαία εξασθένιση</string>
   <string id="13315">Επαναδημιουργία μικρογραφίας</string>
   <string id="13316">Επαναλαμβανόμενη μικρογραφία</string>
   <string id="13317">Προβολή παρουσίασης</string>
@@ -1107,14 +1109,14 @@
   <string id="13384">Μάσκα φωνής - Θύρα 3</string>
   <string id="13385">Μάσκα φωνής - Θύρα 4</string>
   <string id="13386">Αναζήτηση βασισμένη στην χρήση χρόνου</string>
-  <string id="13387">Ονομασία διαδρομής Template Right</string>
+  <string id="13387">Πρότυπο ονομασίας κομματιού (δεξιά πλευρά)</string>
   <string id="13388">Προκαθορισμένα</string>
   <string id="13389">Δεν υπάρχουν διαθέσιμα προκαθορισμένα
 γι' αυτή την απεικόνιση</string>
   <string id="13390">Δεν υπάρχουν διαθέσιμες ρυθμίσεις
 γι' αυτή την απεικόνιση</string>
   <string id="13391">Εξαγωγή/Εισαγωγή</string>
-  <string id="13392">Χρήση απεικόνισης κατά την αναπαραγωγή ήχου</string>
+  <string id="13392">Χρήση απεικονίσεων κατά την αναπαραγωγή ήχου</string>
   <string id="13393">Υπολόγισε το μέγεθος</string>
   <string id="13394">Υπολογισμός μεγέθους φακέλου</string>
   <string id="13395">Ρυθμίσεις βίντεο</string>
@@ -1142,7 +1144,7 @@
   <string id="13417">Στοιχειώδης (ARB)</string>
   <string id="13418">Εξειδικευμένη (GLSL)</string>
   <string id="13419">Λογισμικό</string>
-  <string id="13420">Εξαγωγή</string>
+  <string id="13420">Ασφαλής κατάργηση</string>
   <string id="13421">VDPAU</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Κατάσταση</string>
@@ -1381,7 +1383,7 @@
   <string id="16313">(VDPAU) Οξύτητα</string>
   <string id="16314">Αντίστροφη Telecine</string>
   <string id="17500">Προβολή λήξης χρόνου αναστόλης</string>
-  <string id="20000">Φάκελο εξαγωγής CDDA</string>
+  <string id="20000">Φάκελος εξαγωγής CDDA</string>
   <string id="20001">Χρήση εξωτερικού αναπαραγωγέα DVD</string>
   <string id="20002">Εξωτερικός αναπαραγωγέας DVD</string>
   <string id="20003">Φάκελος εκπαιδευτών</string>
@@ -1408,7 +1410,7 @@
   <string id="20038">Κλείδωμα της μουσικής</string>
   <string id="20039">Κλείδωμα των βίντεο</string>
   <string id="20040">Κλείδωμα των φωτογραφιών</string>
-  <string id="20041">Κλείδωμα των προγραμμάτων και των Scripts</string>
+  <string id="20041">Κλείδωμα των εφαρμογών και των Scripts</string>
   <string id="20042">Κλείδωμα της διαχείρισης αρχείων</string>
   <string id="20043">Κλείδωμα των ρυθμίσεων</string>
   <string id="20044">Νέα έναρξη</string>
@@ -1447,9 +1449,9 @@
   <string id="20077">Ρυθμίσεις κελύφους</string>
   <string id="20078">- δεν έχει οριστεί σύνδεση -</string>
   <string id="20079">Ενεργοποίηση εφέ κίνησης κελύφους</string>
-  <string id="20080">Ανενεργές Ροές Τίτλων Ειδήσεων κατά την ακρόαση τραγουδιών</string>
+  <string id="20080">Ανενεργές οι Ροές Τίτλων Ειδήσεων κατά την ακρόαση τραγουδιών</string>
   <string id="20081">Ενεργοποίηση πλήκτρων συντόμευσης</string>
-  <string id="20082">Εμφάνιση των προγραμμάτων στην αρχική οθόνη</string>
+  <string id="20082">Εμφάνιση των εφαρμογών στην αρχική οθόνη</string>
   <string id="20083">Εμφάνιση πληροφοριών για τη μουσική</string>
   <string id="20084">Εμφάνιση πληροφοριών για τον καιρό</string>
   <string id="20085">Εμφάνιση πληροφοριών για το σύστημα</string>
@@ -1487,7 +1489,7 @@
   <string id="20117">Λάθος κωδικός κλειδώματος.</string>
   <string id="20118">Απαιτεί να ενεργοποιήσετε το κεντρικό κλείδωμα</string>
   <string id="20119">Θέλετε να το ρυθμίσετε τώρα;</string>
-  <string id="20120">Φόρτωση πληροφοριών προγράμματος</string>
+  <string id="20120">Φόρτωση πληροφοριών εφαρμογής</string>
   <string id="20121">Party on!</string>
   <string id="20122">Αληθές</string>
   <string id="20123">Αναμιγνύοντας τα ποτά</string>

@@ -162,11 +162,40 @@ CFileHomeRun::~CFileHomeRun()
   Close();
 }
 
-bool CFileHomeRun::Open(const CURL &url, bool bBinary)
+bool CFileHomeRun::Exists(const CURL& url)
 {
-  if(!bBinary)
-    return false;
+  bool status = true;
+  CStdString path(url.GetFileName());
+  
+  if(CUtil::GetExtension(path).Equals(".tbn")
+    || CUtil::GetExtension(path).Equals(".jpg"))
+      status = false;
+  
+  return(status);
+}
 
+__int64 CFileHomeRun::Seek(__int64 iFilePosition, int iWhence)
+{ 
+  return -1;
+}
+
+int CFileHomeRun::Stat(const CURL& url, struct __stat64* buffer)
+{
+  return 0;
+}
+
+__int64 CFileHomeRun::GetPosition()
+{
+  return 0;
+}
+
+__int64 CFileHomeRun::GetLength()
+{
+  return 0;
+}
+
+bool CFileHomeRun::Open(const CURL &url)
+{
   if(!m_dll.IsLoaded())
     return false;
 

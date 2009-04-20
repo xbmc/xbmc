@@ -765,7 +765,7 @@ bool Xcddb::writeCacheFile( const char* pBuffer, unsigned long discid )
     return false;
 
   XFILE::CFile file;
-  if (file.OpenForWrite(GetCacheFile(discid), true, true))
+  if (file.OpenForWrite(GetCacheFile(discid), true))
   {
     OutputDebugString ( "Current cd saved to local cddb.\n" );
     file.Write( (void*) pBuffer, strlen( pBuffer ) + 1 );
@@ -1060,6 +1060,7 @@ CStdString Xcddb::GetCacheFile(unsigned int disc_id) const
   strFileName.Format("%x.cddb", disc_id);
   return CUtil::AddFileToFolder(cCacheDir, strFileName);
 }
+
 
 
 

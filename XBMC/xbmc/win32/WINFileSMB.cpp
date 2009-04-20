@@ -64,7 +64,7 @@ CStdString CWINFileSMB::GetLocal(const CURL &url)
 }
 
 //*********************************************************************************************
-bool CWINFileSMB::Open(const CURL& url, bool bBinary)
+bool CWINFileSMB::Open(const CURL& url)
 {
   CStdString strFile = GetLocal(url);
 
@@ -87,8 +87,9 @@ bool CWINFileSMB::Open(const CURL& url, bool bBinary)
 bool CWINFileSMB::Exists(const CURL& url)
 {
   struct __stat64 buffer;
+  if(url.GetFileName() == url.GetShareName())
+    return false;
   CStdString strFile = GetLocal(url);
-
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   return (_wstat64(strWFile.c_str(), &buffer)==0);
@@ -116,7 +117,7 @@ int CWINFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 
 
 //*********************************************************************************************
-bool CWINFileSMB::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
+bool CWINFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
 {
   CStdString strPath = GetLocal(url);
 

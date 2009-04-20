@@ -318,7 +318,6 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
-  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())
@@ -340,7 +339,6 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
     }
     xurl = xurl->NextSiblingElement("url");
   }
-  TiXmlBase::SetCondenseWhiteSpace(true);
 
   return ret;
 }
@@ -366,7 +364,6 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
 
 bool CIMDB::LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload /* = true */)
 {
-  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
 
   movieDetails.Reset();
@@ -438,9 +435,8 @@ void CIMDB::GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear)
       free(pYear);
     }
   }
-  // get clean string, and convert to utf8 (if necessary)
+  // get clean string
   CUtil::CleanString(strMovieName,true);
-  g_charsetConverter.unknownToUTF8(strMovieName);
 }
 
 // threaded functions
@@ -486,7 +482,6 @@ void CIMDB::Process()
 bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUIDialogProgress *pProgress /* = NULL */)
 {
   //CLog::Log(LOGDEBUG,"CIMDB::FindMovie(%s)", strMovie.c_str());
-  g_charsetConverter.utf8ToStringCharset(strMovie,m_strMovie); // make sure searches is done using string chars
 
   // load our scraper xml
   if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
@@ -496,6 +491,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
   if (pProgress)
   { // threaded version
     m_state = FIND_MOVIE;
+    m_strMovie = strMovie;
     m_found = false;
     if (ThreadHandle())
       StopThread();
@@ -522,7 +518,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
   // unthreaded
   bool success = InternalFindMovie(strMovie, movieList);
   // sort our movie list by fuzzy match
-//  std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);
+  std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);
   return success;
 }
 
