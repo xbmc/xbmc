@@ -92,7 +92,7 @@ bool CKaraokeLyricsTextLRC::Load()
     }
 
     // UTF8 prefix added by some windoze apps
-    if ( lyricData[0] == 0xEF && lyricData[1] == 0xBB && lyricData[1] == 0xBF )
+    if ( lyricData[0] == 0xEF && lyricData[1] == 0xBB && lyricData[2] == 0xBF )
       offset = 3;
   }
 
