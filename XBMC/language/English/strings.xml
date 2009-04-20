@@ -1201,7 +1201,7 @@
   <string id="13507">Medium</string>
   <string id="13508">High</string>
   <string id="13509">Really high</string>
-  <string id="13510">Use display as clock</string>
+  <string id="13510">Use vblank as clock</string>
 
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>
