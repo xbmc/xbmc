@@ -217,11 +217,20 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
     
-    // Compressed data offset = local header offset + size of local header + filename length + extra field length
-    ze.offset = ze.lhdrOffset + LHDR_SIZE + ze.flength + ze.elength;
+    // Save the current position
+    __int64 savePos = mFile.GetPosition();
     
+    // Go to the local file header to get the extra field length
+    // !! local header extra field length != central file header extra field length !!
+    mFile.Seek(ze.lhdrOffset+28,SEEK_SET);
+    mFile.Read(&(ze.elength),2);
+    ze.elength = SDL_SwapLE16(ze.elength);
+    
+    // Compressed data offset = local header offset + size of local header + filename length + local file header extra field length
+    ze.offset = ze.lhdrOffset + LHDR_SIZE + ze.flength + ze.elength;
+        
     // Jump after central file header extra field and file comment
-    mFile.Seek(ze.elength + ze.clength,SEEK_CUR);
+    mFile.Seek(savePos + ze.eclength + ze.clength,SEEK_SET);
 	  
     items.push_back(ze);
   }
@@ -327,7 +336,7 @@ void CZipManager::readCHeader(const char* buffer, SZipEntry& info)
   info.csize = SDL_SwapLE32(*(unsigned int*)(buffer+20));
   info.usize = SDL_SwapLE32(*(unsigned int*)(buffer+24));
   info.flength = SDL_SwapLE16(*(unsigned short*)(buffer+28));
-  info.elength = SDL_SwapLE16(*(unsigned short*)(buffer+30));
+  info.eclength = SDL_SwapLE16(*(unsigned short*)(buffer+30));
   info.clength = SDL_SwapLE16(*(unsigned short*)(buffer+32));
   // Skip disk number start, internal/external file attributes
   info.lhdrOffset = SDL_SwapLE32(*(unsigned int*)(buffer+42));
