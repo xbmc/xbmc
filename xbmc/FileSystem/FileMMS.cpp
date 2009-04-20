@@ -162,9 +162,9 @@ void CFileMMS::get_answer(int s)
     int len;
 
     len = recv(s, data, MMS_BUF_SIZE, 0);
-    if (!len)
+    if (len == SOCKET_ERROR)
     {
-            CLog::Log(LOGERROR, "MMS: eof reached");
+      CLog::Log(LOGERROR, "MMS: eof reached");
       return;
     }
 
@@ -184,7 +184,7 @@ int CFileMMS::get_data(int s, char *buf, size_t count)
   {
     len = recv(s, &buf[total], count - total, 0);
 
-    if (len <= 0)
+    if (len == SOCKET_ERROR)
     {
       perror("read error:");
       return 0;
@@ -480,7 +480,7 @@ int CFileMMS::streaming_start(char* hostname, int port, char* path)
   sa.sin_family = hp->h_addrtype;
   sa.sin_port = htons(port);
 
-  if ((s = socket(hp->h_addrtype, SOCK_STREAM, 0)) < 0)
+  if ((s = socket(hp->h_addrtype, SOCK_STREAM, 0)) == INVALID_SOCKET)
   {
     CLog::Log(LOGERROR, "MMS: error opening socket: %d", errno);
     return -1;
