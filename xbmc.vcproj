@@ -1615,6 +1615,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\FileLastFM.h">
 				</File>
 				<File
+					RelativePath=".\xbmc\FileSystem\FileMMS.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\FileMMS.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\FileSystem\FileMemUnit.cpp">
 				</File>
 				<File

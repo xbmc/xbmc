@@ -65,13 +65,13 @@ static CCriticalSection            m_critSection;
 
 CCharsetConverter g_charsetConverter;
 
-#define UTF8_DEST_MULTIPLIER	6
+#define UTF8_DEST_MULTIPLIER 6
 
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
-static size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
-		    char* * outbuf, size_t *outbytesleft)
+size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
+                    char* * outbuf, size_t *outbytesleft)
 {
     struct iconv_param_adapter {
         iconv_param_adapter(const char**p) : p(p) {}
@@ -87,7 +87,7 @@ static size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
         const char** p;
     };
 
-    return iconv(cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
+    return iconv((iconv_t)cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
 }
 
 template<class INPUT,class OUTPUT>
@@ -366,10 +366,10 @@ void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wStr
   {
     FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
     logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8, charset, bWasFlipped);
-    convert(m_iconvUtf8toW,sizeof(wchar_t),"UTF-8",WCHAR_CHARSET,strFlipped,wString);
+    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);
   }
   else
-    convert(m_iconvUtf8toW,sizeof(wchar_t),"UTF-8",WCHAR_CHARSET,utf8String,wString);
+    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,utf8String,wString);
 }
 
 void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest)
@@ -382,7 +382,7 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
 void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUtf8ToStringCharset,1,"UTF-8",g_langInfo.GetGuiCharSet(),strSource,strDest);
+  convert(m_iconvUtf8ToStringCharset,1,UTF8_SOURCE,g_langInfo.GetGuiCharSet(),strSource,strDest);
 }
 
 void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
@@ -409,7 +409,7 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
   }
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,UTF8_DEST_MULTIPLIER,"UTF-8",strDestCharset,strSource,strDest);
+  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest);
   iconv_close(iconvString);
 }
 
@@ -417,7 +417,7 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,"UTF-8",strDestCharset,strSource,strDest))
+  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest))
     strDest.Empty();
   iconv_close(iconvString);
 }
@@ -426,7 +426,7 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,"UTF-8",strDestCharset,strSource,strDest))
+  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest))
     strDest.Empty();
   iconv_close(iconvString);
 }
