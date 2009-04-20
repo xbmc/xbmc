@@ -87,8 +87,9 @@ bool CWINFileSMB::Open(const CURL& url)
 bool CWINFileSMB::Exists(const CURL& url)
 {
   struct __stat64 buffer;
+  if(url.GetFileName() == url.GetShareName())
+    return false;
   CStdString strFile = GetLocal(url);
-
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   return (_wstat64(strWFile.c_str(), &buffer)==0);

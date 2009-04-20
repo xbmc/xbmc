@@ -19817,7 +19817,7 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
 
   if test "$host_vendor" = "apple" ; then
     ./configure \
-      --extra-cflags="-w -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
+      --extra-cflags="-w -D_DARWIN_C_SOURCE -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
       --enable-static \
       --disable-vhook \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
@@ -19835,7 +19835,8 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       --enable-swscale \
       --enable-protocol=http \
       --enable-pthreads &&
-    sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak
+    sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak &&
+    sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
 
   else
     ./configure \

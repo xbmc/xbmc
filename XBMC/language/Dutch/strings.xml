@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Sjonnie33-->
-<!--Date of translation: 04/11/2009-->
+<!--Date of translation: 04/19/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 18906-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -268,7 +267,7 @@
   <string id="354">Matrix Sporen</string>
   <string id="355">Schermbeveiliging wachttijd</string>
   <string id="356">Schermbeveiliging type</string>
-  <string id="357">Inactieve XBMC afsluiten na</string>
+  <string id="357">XBMC afsluiten na</string>
   <string id="358">Alle albums</string>
   <string id="359">Recent toegevoegde albums</string>
   <string id="360">Schermbeveiliging</string>
@@ -1103,7 +1102,7 @@ voor deze visualisatie</string>
   <string id="13417">Eenvoudige Shaders (ARB)</string>
   <string id="13418">Geavanceerde Shaders (GLSL)</string>
   <string id="13419">Software</string>
-  <string id="13420">Uitwerpen</string>
+  <string id="13420">Hardware veilig verwijderen</string>
   <string id="13421">VDPAU</string>
   <string id="13600">Apple afstandsbediening</string>
   <string id="13601">Mode</string>
@@ -1721,8 +1720,8 @@ voor deze visualisatie</string>
   <string id="21413">Standaard film scraper</string>
   <string id="21414">Standaard tv-serie scraper</string>
   <string id="21415">Standaard muziekvideo scraper</string>
-  <string id="21416">Enable fallback gebaseerd op scraper taal</string>
-  <string id="21420">Waarde gekijk aan</string>
+  <string id="21416">Fallback gebaseerd op scraper taal</string>
+  <string id="21420">Waarde gelijk aan</string>
   <string id="21421">Intelligente afspeellijst regel</string>
   <string id="21422">Nummers zijn gelijk wanneer</string>
   <string id="21423">Nieuwe regel...</string>

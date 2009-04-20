@@ -523,6 +523,19 @@ static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &fi
   }
 }
 
+void CApplication::Preflight()
+{
+  // run any platform preflight scripts.
+#ifdef __APPLE__
+  CStdString install_path;
+  
+  CUtil::GetHomePath(install_path);
+  setenv("XBMC_HOME", install_path.c_str(), 0);
+  install_path += "/tools/osx/preflight";
+  system(install_path.c_str());
+#endif
+}
+
 HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
@@ -1471,36 +1484,7 @@ HRESULT CApplication::Initialize()
   g_xbmcHelper.CaptureAllInput();
 #endif
 
-  int defaultShutdown = g_guiSettings.GetInt("system.shutdownstate");
-
-  switch (defaultShutdown)
-  {
-    case POWERSTATE_QUIT:
-    case POWERSTATE_MINIMIZE:
-      if (IsStandAlone())
-        defaultShutdown = POWERSTATE_SHUTDOWN;
-    break;
-    case POWERSTATE_HIBERNATE:
-      if (!g_powerManager.CanHibernate())
-      {
-        if (g_powerManager.CanSuspend())
-          defaultShutdown = POWERSTATE_SUSPEND;
-        else
-          defaultShutdown = g_powerManager.CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
-      }
-    break;
-    case POWERSTATE_SUSPEND:
-      if (!g_powerManager.CanSuspend())
-      {
-        if (g_powerManager.CanHibernate())
-          defaultShutdown = POWERSTATE_HIBERNATE;
-        else
-          defaultShutdown = g_powerManager.CanPowerdown() ? POWERSTATE_SHUTDOWN : POWERSTATE_QUIT;
-      }
-    break;
-  }
-
-  g_guiSettings.SetInt("system.shutdownstate", defaultShutdown);
+  g_powerManager.Initialize();
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -2240,11 +2224,13 @@ void CApplication::RenderNoPresent()
 #endif
     // release the context so the async renderer can draw to it
 #ifdef HAS_SDL_OPENGL
+#ifdef HAS_VIDEO_PLAYBACK
     // Video rendering occuring from main thread for OpenGL
     if (m_bPresentFrame)
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
+#endif
 #else
     //g_graphicsContext.ReleaseCurrentContext();
     g_graphicsContext.Unlock(); // unlock to allow the async renderer to render

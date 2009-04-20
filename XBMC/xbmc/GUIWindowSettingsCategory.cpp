@@ -762,7 +762,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE);
       }
 
-      pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
+      if (g_powerManager.CanPowerdown())
+        pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
 
       if (g_powerManager.CanHibernate())
         pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);

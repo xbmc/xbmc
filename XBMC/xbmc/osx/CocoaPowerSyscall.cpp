@@ -18,8 +18,14 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+ 
+// defined in PlatformDefs.h but I don't want to include that here
+typedef unsigned char   BYTE;
 
+#include "Log.h"
+#include "SystemInfo.h"
 #include "CocoaPowerSyscall.h"
+#include "Application.h"
 #ifdef __APPLE__
 #include <sys/reboot.h>
 #include <IOKit/pwr_mgt/IOPMLib.h>
@@ -32,49 +38,85 @@ CCocoaPowerSyscall::CCocoaPowerSyscall()
 
 bool CCocoaPowerSyscall::Powerdown()
 {
-  // The prefered method is via AppleScript
-  //Cocoa_DoAppleScript("tell application \"System Events\" to shut down");
+  CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Powerdown");
+  if (g_sysinfo.IsAppleTV())
+  {
+    // The ATV prefered method is via command-line
+    system("echo frontrow | sudo -S shutdown -h now");
+  }
+  else
+  {
+    // The OSX prefered method is via AppleScript
+    Cocoa_DoAppleScript("tell application \"System Events\" to shut down");
+  }
   return true;
 }
 
 bool CCocoaPowerSyscall::Suspend()
 {
-  // The prefered method is via AppleScript
+  CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Suspend");
+  // The OSX prefered method is via AppleScript
   Cocoa_DoAppleScript("tell application \"System Events\" to sleep");
+
   return true;
 }
 
 bool CCocoaPowerSyscall::Hibernate()
 {
-  // The prefered method is via AppleScript
-  Cocoa_DoAppleScript("tell application \"System Events\" to sleep");
-  return true;
+  CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Hibernate");
+  // just in case hibernate is ever called
+  return Suspend();
 }
 
 bool CCocoaPowerSyscall::Reboot()
 {
-  // The prefered method is via AppleScript
-  //Cocoa_DoAppleScript("tell application \"System Events\" to reboot");
+  CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Reboot");
+  if (g_sysinfo.IsAppleTV())
+  {
+    // The ATV prefered method is via command-line
+    system("echo frontrow | sudo -S reboot");
+  }
+  else
+  {
+    // The OSX prefered method is via AppleScript
+    Cocoa_DoAppleScript("tell application \"System Events\" to reboot");
+  }
   return true;
 }
 
 bool CCocoaPowerSyscall::CanPowerdown()
 {
-  return false;
+  // All Apple products can power down
+  return true;
 }
 
 bool CCocoaPowerSyscall::CanSuspend()
 {
-  return(IOPMSleepEnabled());
+  // Only OSX boxes can suspend, the AppleTV cannot
+  bool result = true;
+  
+  if (g_sysinfo.IsAppleTV())
+  {
+    result = false;
+  }
+  else
+  {
+    result =IOPMSleepEnabled();
+  }
+
+  return(result);
 }
 
 bool CCocoaPowerSyscall::CanHibernate()
 {
+  // Darwin does "sleep" which automatically handles hibernate
+  // so always return false so the GUI does not show hibernate
   return false;
 }
 
 bool CCocoaPowerSyscall::CanReboot()
 {
-  return false;
+  // All Apple products can reboot
+  return true;
 }
 #endif

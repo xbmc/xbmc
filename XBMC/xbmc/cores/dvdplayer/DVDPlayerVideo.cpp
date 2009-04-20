@@ -678,6 +678,7 @@ void CDVDPlayerVideo::Flush()
   m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 }
 
+#ifdef HAS_VIDEO_PLAYBACK
 void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts)
 {
   // remove any overlays that are out of time
@@ -742,9 +743,11 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   if (bHasSpecialOverlay && m_pTempOverlayPicture)
     CDVDCodecUtils::CopyPicture(pDest, m_pTempOverlayPicture);
 }
+#endif
 
 int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 {
+#ifdef HAS_VIDEO_PLAYBACK
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
   if (m_output.width != pPicture->iWidth
    || m_output.height != pPicture->iHeight
@@ -783,14 +786,12 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       m_bAllowFullscreen = false; // only allow on first configure
     }
 
-#ifdef HAS_VIDEO_PLAYBACK
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f",__FUNCTION__,pPicture->iWidth, pPicture->iHeight,m_fFrameRate);
     if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate, flags))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
     }
-#endif
 
     m_output.width = pPicture->iWidth;
     m_output.height = pPicture->iHeight;
@@ -805,13 +806,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   bool   limited = false;
   int    result  = 0;
 
-#ifdef HAS_VIDEO_PLAYBACK
   if (!g_renderManager.IsStarted()) {
     CLog::Log(LOGERROR, "%s - renderer not started", __FUNCTION__);
     return EOS_ABORT;
   }
   maxfps = g_renderManager.GetMaximumFPS();
-#endif
 
   // check if our output will limit speed
   if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
@@ -882,8 +881,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) 
     return result | EOS_DROPPED;
 
-#ifdef HAS_VIDEO_PLAYBACK
-
   if( m_speed != DVD_PLAYSPEED_NORMAL && limited )
   {
     // calculate frame dropping pattern to render at this speed
@@ -941,13 +938,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   g_renderManager.ReleaseImage(index);
   g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
 
+  return result;
 #else
   // no video renderer, let's mark it as dropped
-  result|= EOS_DROPPED;
+  return EOS_DROPPED;
 #endif
-
-  return result;
-
 }
 
 void CDVDPlayerVideo::UpdateMenuPicture()

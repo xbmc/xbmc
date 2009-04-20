@@ -25,6 +25,20 @@
 #include "URL.h"
 #include "FileSystem/File.h"
 
+// All values are stored in little-endian byte order in .zip file
+// Use SDL macros to perform byte swapping on big-endian systems
+// This assumes that big-endian systems use SDL
+// Macros do not do anything on little-endian systems
+// SDL_endian.h is already included in PlatformDefs.h
+#ifndef HAS_SDL
+#define SDL_SwapLE16(X) (X)
+#define SDL_SwapLE32(X) (X)
+#endif
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
 using namespace XFILE;
 using namespace std;
 
@@ -50,11 +64,12 @@ bool CZipManager::HasMultipleEntries(const CStdString& strPath)
     {
       mFile.Seek(mFile.GetLength()-i,SEEK_SET);
       mFile.Read(buffer,4);
-      if (*((int*)buffer) == 0x06054b50)
+      if (SDL_SwapLE32(*((unsigned int*)buffer)) == ZIP_END_CENTRAL_HEADER)
       {
         mFile.Seek(6,SEEK_CUR);
         short iEntries;
         mFile.Read(&iEntries,2);
+        iEntries = SDL_SwapLE16(iEntries);
         mFile.Close();
         return iEntries > 1;
       }
@@ -99,10 +114,9 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   }
 
   SZipEntry ze;
-  char temp[30];
-  mFile.Read(temp,30);
-  readHeader(temp, ze);
-  if( ze.header != ZIP_LOCAL_HEADER )
+  char hdr[4];
+  mFile.Read(hdr,4);
+  if( SDL_SwapLE32(*((unsigned int*)hdr)) != ZIP_LOCAL_HEADER )
   {
     CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
     mFile.Close();
@@ -112,54 +126,109 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   CFile::Stat(strFile,&m_StatData);
   mZipDate.insert(make_pair(strFile,m_StatData.st_mtime));
 
-  // now list'em
-  mFile.Seek(0,SEEK_SET);
-  CStdString strSkip;
-
-  while (mFile.GetPosition() != mFile.GetLength())
+  
+  // Look for end of central directory record
+  // Zipfile comment may be up to 65535 bytes
+  // End of central directory record is 22 bytes (ECDREC_SIZE)
+  // -> need to check the last 65557 bytes
+  __int64 fileSize = mFile.GetLength();
+  // Don't need to look in the last 18 bytes (ECDREC_SIZE-4)
+  // But as we need to do overlapping between blocks (3 bytes),
+  // we start the search at ECDREC_SIZE-1 from the end of file
+  int searchSize = (int) min(65557, fileSize-ECDREC_SIZE+1);
+  int blockSize = (int) min(1024, searchSize);
+  int nbBlock = searchSize / blockSize;
+  int extraBlockSize = searchSize % blockSize;
+  // Signature is on 4 bytes
+  // It could be between 2 blocks, so we need to read 3 extra bytes
+  char *buffer = new char[blockSize+3];
+  bool found = false;
+  
+  // Loop through blocks starting at the end of the file (minus ECDREC_SIZE-1)
+  for (int nb=1; !found && (nb <= nbBlock); nb++)
   {
-    mFile.Read(temp,30);
-    readHeader(temp, ze);
-    if (ze.header != ZIP_LOCAL_HEADER)
+    mFile.Seek(fileSize-ECDREC_SIZE+1-(blockSize*nb),SEEK_SET);
+    mFile.Read(buffer,blockSize+3);
+    for (int i=blockSize-1; !found && (i >= 0); i--)
     {
-      if (ze.header != ZIP_CENTRAL_HEADER)
+      if ( SDL_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
       {
-        CLog::Log(LOGDEBUG,"ZipManager: broken file %s!",strFile.c_str());
-        mFile.Close();
-        return false;
-      }
-      else // no handling of zip central header, we are done
-      {
-        mZipMap.insert(make_pair(strFile,items));
-        mFile.Close();
-        return true;
+        // Set current position to start of end of central directory
+        mFile.Seek(fileSize-ECDREC_SIZE+1-(blockSize*nb)+i,SEEK_SET);
+        found = true;
       }
     }
-    if ((ze.flags & 8) == 8)
+  }
+  
+  // If not found, look in the last block left...
+  if ( !found && (extraBlockSize > 0) )
+  {
+    mFile.Seek(fileSize-ECDREC_SIZE+1-searchSize,SEEK_SET);
+    mFile.Read(buffer,extraBlockSize+3);
+    for (int i=extraBlockSize-1; !found && (i >= 0); i--)
     {
-      CLog::Log(LOGDEBUG,"ZipManager: extended local header, not supported! %s!",strFile.c_str());
+      if ( SDL_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
+      {
+        // Set current position to start of end of central directory
+        mFile.Seek(fileSize-ECDREC_SIZE+1-searchSize+i,SEEK_SET);
+        found = true;
+      }
+    }
+  }
+   
+  delete [] buffer;
+
+  if ( !found )
+  {
+    CLog::Log(LOGDEBUG,"ZipManager: broken file %s!",strFile.c_str());
+    mFile.Close();
+    return false;
+  }
+ 
+  unsigned int cdirOffset, cdirSize;
+  // Get size of the central directory
+  mFile.Seek(12,SEEK_CUR);
+  mFile.Read(&cdirSize,4);
+  cdirSize = SDL_SwapLE32(cdirSize);  
+  // Get Offset of start of central directory with respect to the starting disk number
+  mFile.Read(&cdirOffset,4);
+  cdirOffset = SDL_SwapLE32(cdirOffset);
+
+  // Go to the start of central directory
+  mFile.Seek(cdirOffset,SEEK_SET);
+
+  char temp[CHDR_SIZE];
+  while (mFile.GetPosition() < cdirOffset + cdirSize)
+  {
+    mFile.Read(temp,CHDR_SIZE);
+    readCHeader(temp, ze);
+    if (ze.header != ZIP_CENTRAL_HEADER)
+    {
+      CLog::Log(LOGDEBUG,"ZipManager: broken file %s!",strFile.c_str());
       mFile.Close();
       return false;
     }
+
+    // Get the filename just after the central file header
     CStdString strName;
     mFile.Read(strName.GetBuffer(ze.flength), ze.flength);
     strName.ReleaseBuffer();
     g_charsetConverter.unknownToUTF8(strName);
     ZeroMemory(ze.name, 255);
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
-    mFile.Seek(ze.elength,SEEK_CUR);
-    ze.offset = mFile.GetPosition();
-    mFile.Seek(ze.csize,SEEK_CUR);
-    if (ze.flags & 8)
-    {
-      mFile.Read(&ze.crc32,4);
-      mFile.Read(&ze.csize,4);
-      mFile.Read(&ze.usize,4);
-    }
+    
+    // Compressed data offset = local header offset + size of local header + filename length + extra field length
+    ze.offset = ze.lhdrOffset + LHDR_SIZE + ze.flength + ze.elength;
+    
+    // Jump after central file header extra field and file comment
+    mFile.Seek(ze.elength + ze.clength,SEEK_CUR);
+	  
     items.push_back(ze);
   }
+
+  mZipMap.insert(make_pair(strFile,items));
   mFile.Close();
-  return false; // should never get here with healthy .zips until central header is dealt with
+  return true;
 }
 
 bool CZipManager::GetZipEntry(const CStdString& strPath, SZipEntry& item)
@@ -205,7 +274,6 @@ bool CZipManager::ExtractArchive(const CStdString& strArchive, const CStdString&
 
 
     CUtil::CreateArchivePath(strZipPath, "zip", strArchive, strFilePath);
-    strFilePath.Replace("/","\\");
     if (!CFile::Cache(strZipPath.c_str(),(strPath+strFilePath).c_str()))
       return false;
   }
@@ -224,25 +292,46 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
     if (it->name[strlen(it->name)-1] == '/') // skip dirs
       continue;
     CStdString strFilePath(it->name);
-    strFilePath.Replace("/","\\");
     CLog::Log(LOGDEBUG,"delete file: %s",(strPath+strFilePath).c_str());
     CFile::Delete((strPath+strFilePath).c_str());
   }
 }
 
+// Read local file header
 void CZipManager::readHeader(const char* buffer, SZipEntry& info)
 {
-  memcpy(&info.header,buffer,4);
-  memcpy(&info.version,buffer+4,2);
-  memcpy(&info.flags,buffer+6,2);
-  memcpy(&info.method,buffer+8,2);
-  memcpy(&info.mod_time,buffer+10,2);
-  memcpy(&info.mod_date,buffer+12,2);
-  memcpy(&info.crc32,buffer+14,4);
-  memcpy(&info.csize,buffer+18,4);
-  memcpy(&info.usize,buffer+22,4);
-  memcpy(&info.flength,buffer+26,2);
-  memcpy(&info.elength,buffer+28,2);
+  info.header = SDL_SwapLE32(*(unsigned int*)buffer);
+  info.version = SDL_SwapLE16(*(unsigned short*)(buffer+4));
+  info.flags = SDL_SwapLE16(*(unsigned short*)(buffer+6));
+  info.method = SDL_SwapLE16(*(unsigned short*)(buffer+8));
+  info.mod_time = SDL_SwapLE16(*(unsigned short*)(buffer+10));
+  info.mod_date = SDL_SwapLE16(*(unsigned short*)(buffer+12));
+  info.crc32 = SDL_SwapLE32(*(unsigned int*)(buffer+14));
+  info.csize = SDL_SwapLE32(*(unsigned int*)(buffer+18));
+  info.usize = SDL_SwapLE32(*(unsigned int*)(buffer+22));
+  info.flength = SDL_SwapLE16(*(unsigned short*)(buffer+26));
+  info.elength = SDL_SwapLE16(*(unsigned short*)(buffer+28));
+}
+
+// Read central file header (from central directory)
+void CZipManager::readCHeader(const char* buffer, SZipEntry& info)
+{
+  info.header = SDL_SwapLE32(*(unsigned int*)buffer);
+  // Skip version made by
+  info.version = SDL_SwapLE16(*(unsigned short*)(buffer+6));
+  info.flags = SDL_SwapLE16(*(unsigned short*)(buffer+8));
+  info.method = SDL_SwapLE16(*(unsigned short*)(buffer+10));
+  info.mod_time = SDL_SwapLE16(*(unsigned short*)(buffer+12));
+  info.mod_date = SDL_SwapLE16(*(unsigned short*)(buffer+14));
+  info.crc32 = SDL_SwapLE32(*(unsigned int*)(buffer+16));
+  info.csize = SDL_SwapLE32(*(unsigned int*)(buffer+20));
+  info.usize = SDL_SwapLE32(*(unsigned int*)(buffer+24));
+  info.flength = SDL_SwapLE16(*(unsigned short*)(buffer+28));
+  info.elength = SDL_SwapLE16(*(unsigned short*)(buffer+30));
+  info.clength = SDL_SwapLE16(*(unsigned short*)(buffer+32));
+  // Skip disk number start, internal/external file attributes
+  info.lhdrOffset = SDL_SwapLE32(*(unsigned int*)(buffer+42));
+  
 }
 
 void CZipManager::release(const CStdString& strPath)
