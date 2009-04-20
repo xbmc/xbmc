@@ -132,7 +132,7 @@ bool CKaraokeLyricsTextLRC::Load()
         {
           // Add space after the trailing lyric in lrc
           text += " ";
-          addLyrics( text, lyric_time, lyric_flags );
+          addLyrics( text, lyric_time, lyric_flags | LYRICS_CONVERT_UTF8 );
           state_offset = -1;
           lyric_flags = CKaraokeLyricsText::LYRICS_NEW_LINE;
           state = PARSER_INIT;
@@ -140,7 +140,7 @@ bool CKaraokeLyricsTextLRC::Load()
         else
         {
           // No conversion needed as the file should be in UTF8 already
-          addLyrics( text, lyric_time, lyric_flags );
+          addLyrics( text, lyric_time, lyric_flags | LYRICS_CONVERT_UTF8 );
           lyric_flags = 0;
           state_offset = offset + 1;
           state = PARSER_IN_TIME;

@@ -41,7 +41,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     {
       LYRICS_NEW_LINE = 0x0001,
       LYRICS_NEW_PARAGRAPH = 0x0002,
-
+      LYRICS_CONVERT_UTF8 = 0x0010,
       LYRICS_END = 0xFFFFFFFF
     };
 
