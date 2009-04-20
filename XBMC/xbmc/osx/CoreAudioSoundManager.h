@@ -35,7 +35,7 @@ public:
   bool Initialize(CStdString deviceName);
   void Run();
   void Stop();
-  CoreAudioSoundRef RegisterSound(CStdString fileName);
+  CoreAudioSoundRef RegisterSound(const CStdString& fileName);
   void UnregisterSound(CoreAudioSoundRef soundRef);
   void PlaySound(CoreAudioSoundRef soundRef);
 protected:
@@ -46,7 +46,7 @@ protected:
   AudioStreamBasicDescription m_OutputFormat;
   bool m_RestartOutputUnit;
   
-  core_audio_sound* LoadSoundFromFile(CStdString fileName);
+  core_audio_sound* LoadSoundFromFile(const CStdString& fileName);
   static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
   OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);  
   static OSStatus PropertyChangeCallback(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void* inClientData);

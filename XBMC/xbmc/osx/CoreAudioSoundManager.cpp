@@ -126,13 +126,16 @@ void CCoreAudioSoundManager::Stop()
   CLog::Log(LOGDEBUG, "CCoreAudioSoundManager::Stop: SoundManager has been stopped.");
 }
 
-CoreAudioSoundRef CCoreAudioSoundManager::RegisterSound(CStdString fileName)
+CoreAudioSoundRef CCoreAudioSoundManager::RegisterSound(const CStdString& fileName)
 {  
   return LoadSoundFromFile(fileName);
 }
 
 void CCoreAudioSoundManager::UnregisterSound(CoreAudioSoundRef soundRef)
 {
+  if (!soundRef)
+    return;
+  
   core_audio_sound* pSound = soundRef;
   if (!--pSound->ref_count && !pSound->play_count) // Release the caller's reference and see if the object is free
   {
@@ -143,6 +146,8 @@ void CCoreAudioSoundManager::UnregisterSound(CoreAudioSoundRef soundRef)
 
 void CCoreAudioSoundManager::PlaySound(CoreAudioSoundRef soundRef)
 {
+  if (!soundRef)
+    return false;
   // TODO: Build queue and/or mix parallel sounds. For now just reject if a sound is currently playing.
   core_audio_sound* pSound = soundRef;
   if (!m_pCurrentSound)
@@ -221,7 +226,7 @@ OSStatus CCoreAudioSoundManager::PropertyChangeCallback(AudioDeviceID inDevice, 
   return noErr;
 }
 
-core_audio_sound* CCoreAudioSoundManager::LoadSoundFromFile(CStdString fileName)
+core_audio_sound* CCoreAudioSoundManager::LoadSoundFromFile(const CStdString& fileName)
 {
   FSRef fileRef;
   UInt32 size = 0;
