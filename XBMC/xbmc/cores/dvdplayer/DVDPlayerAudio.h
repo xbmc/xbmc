@@ -22,13 +22,13 @@
 #pragma once
 #include "../../utils/Thread.h"
 
-#include <samplerate.h>
 #include "DVDAudio.h"
 #include "DVDClock.h"
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "BitstreamStats.h"
+#include "DVDPlayerAudioResampler.h"
 
 class CDVDPlayer;
 class CDVDAudioCodec;
@@ -42,15 +42,6 @@ enum CodecID;
 #define DECODE_FLAG_ERROR   4
 #define DECODE_FLAG_ABORT   8
 #define DECODE_FLAG_TIMEOUT 16
-
-#define MAXCONVSAMPLES 100000
-#define RINGSIZE 1000000
-
-#define PROPORTIONAL 20.0
-#define PROPREF 0.01
-#define PROPDIVMIN 2.0
-#define PROPDIVMAX 40.0
-#define INTEGRAL 200.0
 
 typedef struct stDVDAudioFrame
 {
@@ -90,38 +81,6 @@ public:
   void   Add(__int64 bytes, double pts);
   double Get(__int64 bytes, bool consume);
   void   Flush();
-};
-
-class CDVDPlayerResampler
-{
-  public:
-    CDVDPlayerResampler();
-    ~CDVDPlayerResampler();
-  
-    void Add(DVDAudioFrame audioframe, double pts);
-    bool Retreive(DVDAudioFrame audioframe, double &pts);
-    void SetRatio(double ratio);
-    void Flush();
-    void SetQuality(int Quality);
-    void Clean();
-  
-  private:
-  
-    int m_NrChannels;
-    int m_Quality;
-    SRC_STATE* m_Converter;
-    SRC_DATA m_ConverterData;
-  
-    float*  m_RingBuffer;  //ringbuffer for the audiosamples
-    int     m_RingBufferPos;  //where we are in the ringbuffer
-    int     m_RingBufferFill; //how many unread samples there are in the ringbuffer, starting at RingBufferPos
-    double *m_PtsRingBuffer;  //ringbuffer for the pts value, each sample gets its own pts
-  
-    void CheckResampleBuffers(int channels);
-    
-    //this makes sure value is bewteen min and max
-    template <typename A, typename B, typename C>
-        inline A Clamp(A value, B min, C max){ return value < max ? (value > min ? value : min) : max; }
 };
 
 class CDVDPlayerAudio : public CThread
