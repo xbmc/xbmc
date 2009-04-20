@@ -621,12 +621,9 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
 void CPluginDirectory::LoadPluginStrings(const CURL &url)
 {
   // Path where the plugin resides
-  CStdString pathToPlugin = "Q:\\plugins\\";
+  CStdString pathToPlugin = "special://home/plugins/";
   CUtil::AddFileToFolder(pathToPlugin, url.GetHostName(), pathToPlugin);
   CUtil::AddFileToFolder(pathToPlugin, url.GetFileName(), pathToPlugin);
-
-  // Replace the / at end, GetFileName() leaves a / at the end
-  pathToPlugin.Replace("/", "\\");
 
   // Path where the language strings reside
   CStdString pathToLanguageFile = pathToPlugin;

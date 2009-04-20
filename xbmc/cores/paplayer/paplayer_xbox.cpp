@@ -979,15 +979,24 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
     return false;
 
   bool ret = false;
-  // find a free packet and fill it with the decoded data
-  DWORD dwPacket;
-  while (FindFreePacket(stream, &dwPacket))
+
+  int amount = m_resampler[stream].GetInputSamples();
+  if (amount > 0 && amount <= (int)dec.GetDataSize())
+  { // resampler wants more data - let's feed it
+    m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
+    return true;
+  }
+
+  if (m_resampler[stream].GetData(m_packet[stream][0].packet))
   {
-    XMEDIAPACKET xmp;
-    ZeroMemory( &xmp, sizeof( XMEDIAPACKET ) );
-    // have a free packet - grab some data from our resampler to fill it with
-    if (m_resampler[stream].GetData(m_packet[stream][dwPacket].packet))
+    // find a free packet and fill it with the decoded data
+    DWORD dwPacket;
+    while (FindFreePacket(stream, &dwPacket) && m_resampler[stream].GetData(m_packet[stream][dwPacket].packet))
     {
+      // have a free packet - grab some data from our resampler to fill it with
+      XMEDIAPACKET xmp;
+      ZeroMemory( &xmp, sizeof( XMEDIAPACKET ) );
+
       // got some data from our resampler - construct audio packet
       m_packet[stream][dwPacket].length = PACKET_SIZE;
       m_packet[stream][dwPacket].status = XMEDIAPACKET_STATUS_PENDING;
@@ -1007,17 +1016,6 @@ bool PAPlayer::AddPacketsToStream(int stream, CAudioDecoder &dec)
       }
 
       // something done
-      ret = true;
-    }
-    else
-    { // resampler wants more data - let's feed it
-      int amount = m_resampler[stream].GetInputSamples();
-      if (amount <= 0 || amount > (int)dec.GetDataSize())
-      { // doesn't need anything
-        break;
-      }
-      // needs some data - let's feed it
-      m_resampler[stream].PutFloatData((float *)dec.GetData(amount), amount);
       ret = true;
     }
   }

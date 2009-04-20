@@ -58,6 +58,7 @@
 #define HAS_UNDOCUMENTED
 #define HAS_SECTIONS
 #define HAS_CDDA_RIPPER
+#define HAS_PYTHON
 #define HAS_AUDIO
 #define HAS_EVENT_SERVER
 #define SPYCE_SUPPORT
@@ -97,6 +98,7 @@
 #undef HAS_UNDOCUMENTED
 #undef HAS_SECTIONS
 #undef HAS_CDDA_RIPPER
+#define HAS_PYTHON
 #define HAS_AUDIO
 #undef HAS_NEW_KARAOKE
 
