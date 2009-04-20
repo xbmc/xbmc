@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Zippolighter in consultation with the members of the german xbmc forum (www.xbmc.de)-->
-<!--Email: hardrock_zippolighter@hotmail.com-->
-<!--Date of translation: 11/08/2008-->
+<!--Translator: uwer-->
+<!--Email: uwer@netic.de-->
+<!--Date of translation: 04/14/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 15704-->
 <strings>
   <string id="0">Programme</string>
   <string id="1">Bilder</string>
@@ -83,11 +82,11 @@
   <string id="146">Typ:</string>
   <string id="147">Statisch</string>
   <string id="148">DHCP</string>
-  <string id="149">MAC-Addresse</string>
-  <string id="150">IP-Addresse</string>
+  <string id="149">MAC-Adresse</string>
+  <string id="150">IP-Adresse</string>
   <string id="151">Verbindung:</string>
-  <string id="152">Half Duplex</string>
-  <string id="153">Full Duplex</string>
+  <string id="152">Halbduplex</string>
+  <string id="153">Vollduplex</string>
   <string id="154">Laufwerke:</string>
   <string id="155">Laufwerk</string>
   <string id="156">Frei</string>
@@ -254,10 +253,10 @@
   <string id="326">Alben werden aktualisiert...</string>
   <string id="327">Fehler beim aktualisieren der Alben</string>
   <string id="328">Änderungen werden gespeichert...</string>
-  <string id="329">Fehler beim speichern der Änderungen</string>
+  <string id="329">Fehler beim Speichern der Änderungen</string>
   <string id="330">Bitte haben Sie einen Moment Geduld...</string>
   <string id="331">Datenbank wird komprimiert...</string>
-  <string id="332">Fehler beim komprimieren der Datenbank</string>
+  <string id="332">Fehler beim Komprimieren der Datenbank</string>
   <string id="333">Ihre Datenbank wird nach ungültigen Einträgen
 durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="334">Ungültige Datenbank-Einträge entfernen...</string>
@@ -284,7 +283,7 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="359">Zuletzt hinzugefügte Alben</string>
   <string id="360">Bildschirmschoner</string>
   <string id="361">Rekurs. Diaschau</string>
-  <string id="362">Bildschirm verdunkeln um</string>
+  <string id="362">Bildschirm verdunkeln auf</string>
   <string id="363">Nach Datei</string>
   <string id="364">- Receiver unterstützt AC3</string>
   <string id="365">Nach Namen</string>
@@ -354,7 +353,8 @@ durchsucht und aktualisiert. Möchten Sie fortfahren?</string>
   <string id="432">Film aus der Datenbank entfernen</string>
   <string id="433">Möchten Sie den Eintrag '%s'
 wirklich aus der Datenbank entfernen?</string>
-  <string id="434"></string>
+  <string id="434">
+  </string>
   <string id="435">Titel</string>
   <string id="436">Jahr:</string>
   <string id="437">Wechsellaufwerk</string>
@@ -461,6 +461,7 @@ wirklich aus der Datenbank entfernen?</string>
   <string id="545">Audio Ausgabe Gerät</string>
   <string id="546">Durchlaufe Ausgabe Gerät</string>
   <string id="547">Keine Biografie für diesen Interpreten</string>
+  <string id="548">Multikanal Audio zu Stereo downmixen</string>
   <string id="550">Nach: %s</string>
   <string id="551">Name</string>
   <string id="552">Datum</string>
@@ -645,7 +646,9 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="787">Karte deaktiviert</string>
   <string id="788">Netzwerkkarte erfolgreich deaktiviert.</string>
   <string id="789">Wireless Netzwerk Name (ESSID)</string>
+  <string id="790">Eventserver</string>
   <string id="791">Aktiviere Event Server</string>
+  <string id="792">Port</string>
   <string id="793">Event Server Port Bereich</string>
   <string id="794">Erlaube Verbindungen von anderen Computer</string>
   <string id="795">Anfängliches Wiederholungs Delay (ms)</string>
@@ -699,7 +702,9 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="1043">Programm Plugins</string>
   <string id="1044">Setze Plugin Thumb</string>
   <string id="1045">Plugin Einstellungen</string>
+  <string id="1046">Zugangspunkte</string>
   <string id="1047">Andere...</string>
+  <string id="1048">Webserver Benutzername</string>
   <string id="1200">SMB-Client</string>
   <string id="1202">Arbeitsgruppe</string>
   <string id="1203">Standard Benutzername</string>
@@ -740,6 +745,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="1255">FTP-Benutzername und Passwort senden</string>
   <string id="1256">Ping-Intervall</string>
   <string id="1257">Soll eine Verbindung zur XBOX aufgebaut werden?</string>
+  <string id="1260">Zeroconf Veröffentlichung</string>
   <string id="1396">rutschig</string>
   <string id="1397">und</string>
   <string id="1398">frierend</string>
@@ -761,6 +767,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="1414">Gewitter</string>
   <string id="1415">Niesel</string>
   <string id="1416">Neblig</string>
+  <string id="1417">Körnung</string>
   <string id="2050">Spieldauer:</string>
   <string id="4501">LCD-Typ</string>
   <string id="10000">Hauptmenü</string>
@@ -891,7 +898,8 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="12384">24 Stunden Uhr</string>
   <string id="12385">Tag/Monat</string>
   <string id="12386">Monat/Tag</string>
-  <string id="12387"></string>
+  <string id="12387">
+  </string>
   <string id="12390">Betriebszeit</string>
   <string id="12391">Minuten</string>
   <string id="12392">Stunden</string>
@@ -911,6 +919,16 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13008">Standard Ausschalte- / Energiesparmodus</string>
   <string id="13009">Beenden</string>
   <string id="13010">Ruhezustand</string>
+  <string id="13011">Ruhezustand</string>
+  <string id="13012">Beenden</string>
+  <string id="13013">Neustart</string>
+  <string id="13014">Minimieren</string>
+  <string id="13020">Ist noch eine weitere Sitzung aktiv (evtl. SSH)? </string>
+  <string id="13021">Wechselfestplatte wurde angeschlossen</string>
+  <string id="13022">Gerät wurde nicht sicher entfernt</string>
+  <string id="13023">Gerät wurde erfolgreich entfernt</string>
+  <string id="13024">Joystick eingesteckt</string>
+  <string id="13025">Joystick ausgesteckt</string>
   <string id="13100">Flicker Filter</string>
   <string id="13101">Wähle Treiber (Benötigt Restart)</string>
   <string id="13105">Vertical Blank Sync</string>
@@ -920,19 +938,20 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13109">Teste Auflösung</string>
   <string id="13110">Speichere Auflösung?</string>
   <string id="13111">Möchten Sie die Auflösung beibehalten?</string>
-  <string id="13112">Hochauflösende Software Hochscalierung</string>
+  <string id="13112">Hochauflösende Software Hochskalierung</string>
   <string id="13113">Deaktiviert</string>
   <string id="13114">Aktivieren des SD Inhalts</string>
   <string id="13115">Immer aktiviert</string>
-  <string id="13116">Hochscalierungs Methode</string>
-  <string id="13117">Bicubic</string>
+  <string id="13116">Hochskalierungs-Methode</string>
+  <string id="13117">Bikubisch</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Striktes binden von Pixmaps auf Texturen (benötigt Neustart)</string>
   <string id="13130">Bildschirm abschalten</string>
   <string id="13131">Deaktiviert</string>
   <string id="13132">leerer Bildschirm</string>
   <string id="13140">Aktive Verbindungen festgestellt!</string>
-  <string id="13141">Beim fortfahren kann das XBMC nicht länger gesteuert werden.</string>
+  <string id="13141">Beim Fortfahren kann das XBMC nicht länger gesteuert werden.</string>
   <string id="13142">Soll der Event Server wirklich gestoppt werden?</string>
   <string id="13144">Wechsel Apple Remote Modus?</string>
   <string id="13145">Wenn aktuell Apple Remote zur Steuerung des XBMC</string>
@@ -1102,15 +1121,18 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="13407">%s Voreinstellungen</string>
   <string id="13408">(IMDb Benutzer-Bewertung)</string>
   <string id="13409">Top 250:</string>
+  <string id="13410">Last.fm einschalten</string>
   <string id="13411">Minimale Lüftergeschwindigkeit</string>
   <string id="13412">- RSS Feeds Inhalte von rechts nach links anzeigen</string>
-  <string id="13413">Downloading</string>
+  <string id="13413">Herunterladen</string>
   <string id="13414">Ausblenden von Interpreten die nur in Zusammenstellungen vorhanden sind</string>
   <string id="13415">Render Methode</string>
   <string id="13416">Auto Erkennung</string>
   <string id="13417">Basis Shaders (ARB)</string>
   <string id="13418">Erweiterte Shaders (GLSL)</string>
   <string id="13419">Software</string>
+  <string id="13420">Sicher entfernen</string>
+  <string id="13421">VDPAU</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Modus</string>
   <string id="13602">Immer fortlaufend</string>
@@ -1396,6 +1418,19 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="16206">Fehler beim Löschen von mindestens einer Datei.</string>
   <string id="16300">Video Skalierungs Methode</string>
   <string id="16301">Nächste Nachbar</string>
+  <string id="16302">Bilinear</string>
+  <string id="16303">Bicubic</string>
+  <string id="16304">Lanczos2</string>
+  <string id="16305">Lanczos3</string>
+  <string id="16306">Sinc8</string>
+  <string id="16307">Bicubic (Software)</string>
+  <string id="16308">Lanczos (Software)</string>
+  <string id="16309">Sinc (Software)</string>
+  <string id="16310">(VDPAU)Zeitlich</string>
+  <string id="16311">(VDPAU)Zeitlich/Räumlich</string>
+  <string id="16312">(VDPAU)Rauschunterdrückung</string>
+  <string id="16313">(VDPAU)Schärfe</string>
+  <string id="16314">Inverse Telecine</string>
   <string id="17500">Bildschirm Sleep Timeout</string>
   <string id="20000">Ordner für CD-Kopien</string>
   <string id="20001">Externen DVD-Player verwenden</string>
@@ -1569,12 +1604,14 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20182">Leertaste</string>
   <string id="20183">Skin aktualisieren</string>
   <string id="20184">Bilder anhand der EXIF-Informationen drehen</string>
-  <string id="20185"></string>
+  <string id="20185">
+  </string>
   <string id="20186">Bitte warten</string>
   <string id="20187">EEPROM wird gesichert</string>
   <string id="20188">BIOS wird gesichert</string>
   <string id="20189">Aktiviere Auto Scrolling für Handlung &amp; Kritiken</string>
-  <string id="20190"></string>
+  <string id="20190">
+  </string>
   <string id="20191">Aktiviere Fehler Logging</string>
   <string id="20192">Laden der Album Information beim Hinzufügen zur Datenbank</string>
   <string id="20193">Laden der Interpreten Information beim Hinzufügen zur Datenbank</string>
@@ -1589,10 +1626,14 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20252">Titel werden hinzugefügt...</string>
   <string id="20300">Web-Server Verzeichnis (HTTP)</string>
   <string id="20301">Web-Server Verzeichnis (HTTPS)</string>
-  <string id="20302"></string>
-  <string id="20303"></string>
-  <string id="20304"></string>
-  <string id="20305"></string>
+  <string id="20302">
+  </string>
+  <string id="20303">
+  </string>
+  <string id="20304">
+  </string>
+  <string id="20305">
+  </string>
   <string id="20306">Unbekannt. Bitte MD5-Prüfsumme von xbmc.log zu BiosIDs.ini hinzufügen.</string>
   <string id="20307">Sekundärer DNS-Server</string>
   <string id="20308">DHCP-Server</string>
@@ -1694,8 +1735,8 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20405">Episoden-Lesez. entfernen</string>
   <string id="20406">Episoden-Lesez. setzen</string>
   <string id="20407">Scraper Einstellungen</string>
-  <string id="20408">Downloading Musik Video Information</string>
-  <string id="20409">Downloading TV Serien Information</string>
+  <string id="20408">Musik Video Informationen werden geladen...</string>
+  <string id="20409">TV-Serien Informationen werden geladen...</string>
   <string id="20410">Trailer</string>
   <string id="20411">Reduzieren</string>
   <string id="20412">TV-Serien reduzieren</string>
@@ -1711,12 +1752,14 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20422">Immer</string>
   <string id="20423">Trailer vorhanden</string>
   <string id="20424">Falsch</string>
+  <string id="20425">Fanart Slideshow</string>
   <string id="20426">In eine einzelne Datei oder in separate Dateien</string>
   <string id="20427">pro Eintrag exportieren?</string>
   <string id="20428">Einzeln</string>
   <string id="20429">Separat</string>
   <string id="20430">Sollen Bilder und Fanart exportiert werden?</string>
   <string id="20431">Alte Dateien überschreiben?</string>
+  <string id="20432">Pfad von Aktualisierungen der Bibliothek ausschließen</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
@@ -1884,15 +1927,39 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="21900">Geboren/Gegründet</string>
   <string id="22000">Aktualisiere Datenbank beim Start</string>
   <string id="22001">Immer Datenbank im Hintergrund aktualisieren</string>
+  <string id="22002">- DNS Suffix</string>
   <string id="22003">Aktiviere Ändern- und Entscheidungsliste</string>
   <string id="22004">Verzögert um: %2.3fs</string>
   <string id="22005">Beschleunigt um: %2.3fs</string>
   <string id="22006">Untertitel Abstand</string>
   <string id="22007">OpenGL Anbieter:</string>
+  <string id="22008">OpenGL Renderer:</string>
   <string id="22009">OpenGL Version: </string>
   <string id="22010">GPU Temperatur:</string>
   <string id="22011">CPU Temperatur:</string>
+  <string id="22012">Gesamter Speicher</string>
   <string id="22013">Profil Daten</string>
+  <string id="22014">Dimmen, wenn die Videowiedergabe pausiert wird</string>
+  <string id="22015">Alle Aufnahmen</string>
+  <string id="22016">Nach Titel</string>
+  <string id="22017">Nach Interpret</string>
+  <string id="22018">Live Kanäle</string>
+  <string id="22019">Aufnahmen nach Titel</string>
+  <string id="22020">Handbuch</string>
+  <string id="22030">Schriftart</string>
+  <string id="22031">- Größe</string>
+  <string id="22032">- Farben</string>
+  <string id="22033">- Schriftsatz</string>
+  <string id="22034">Karaoke Tiel als HTML exportieren</string>
+  <string id="22035">Karaoke Tiel als CSV exportieren</string>
+  <string id="22036">Karaoke Titel importieren</string>
+  <string id="22037">Titel Auswahl automatisch öffnen</string>
+  <string id="22038">Karaoke Titel exportieren...</string>
+  <string id="22039">Titel Nummer eingeben</string>
+  <string id="22040">weiß/grün</string>
+  <string id="22041">weiß/rot</string>
+  <string id="22042">weiß/blau</string>
+  <string id="22043">schwarz/weiß</string>
   <string id="29800">Datenbank Modus</string>
   <string id="29801">QWERTY Tastatur</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>

@@ -310,69 +310,6 @@ bool CHalManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
   return Created;
 }
 
-// Creates a CStorageDevice for each partition/volume on a Drive.
-std::vector<CStorageDevice> CHalManager::DeviceFromDriveUdi(const char *udi)
-{
-  std::vector<CStorageDevice> Devices;
-  if (g_HalManager.m_Context == NULL)
-    return Devices; //Empty...
-
-  LibHalDrive *tempDrive;
-  LibHalVolume *tempVolume;
-  char **AllVolumes;
-  bool HotPlugged;
-  int  Type;
-  int  n;
-
-  AllVolumes = NULL;
-  tempDrive = libhal_drive_from_udi(g_HalManager.m_Context, udi);
-
-  if (tempDrive)
-  {
-    HotPlugged = (bool)libhal_drive_is_hotpluggable(tempDrive);
-
-    Type = libhal_drive_get_type(tempDrive);
-
-    AllVolumes = libhal_drive_find_all_volumes(g_HalManager.m_Context, tempDrive, &n);
-    if (AllVolumes)
-    {
-      for (n = 0; AllVolumes[n]; n++)
-      {
-        tempVolume = libhal_volume_from_udi(g_HalManager.m_Context, AllVolumes[n]);
-
-        if (tempVolume)
-        {
-          CStorageDevice dev(AllVolumes[n]);
-          char * FriendlyName = libhal_device_get_property_string(g_HalManager.m_Context, AllVolumes[n], "info.product", NULL);
-          dev.FriendlyName    = FriendlyName;
-          libhal_free_string(FriendlyName);
-          char *block = libhal_device_get_property_string(g_HalManager.m_Context, AllVolumes[n], "block.device", NULL);
-          dev.DevID           = block;
-          libhal_free_string(block);
-
-          dev.HotPlugged  = HotPlugged;
-          dev.Type        = Type;
-          dev.Mounted     = (bool)libhal_volume_is_mounted(tempVolume);
-          dev.MountPoint  = libhal_volume_get_mount_point(tempVolume);
-          dev.Label       = libhal_volume_get_label(tempVolume);
-          dev.UUID        = libhal_volume_get_uuid(tempVolume);
-          dev.FileSystem  = libhal_volume_get_fstype(tempVolume);
-          CLinuxFileSystem::ApproveDevice(&dev);
-
-          Devices.push_back(dev);
-          libhal_volume_free(tempVolume);
-        }
-        else
-          CLog::Log(LOGERROR, "HAL: Couldn't get a volume from Drive %s", udi);
-      }
-    }
-    libhal_drive_free(tempDrive);
-  }
-
-  libhal_free_string_array(AllVolumes);
-  return Devices;
-}
-
 // Called from ProcessSlow to trigger the callbacks from DBus
 bool CHalManager::Update()
 {

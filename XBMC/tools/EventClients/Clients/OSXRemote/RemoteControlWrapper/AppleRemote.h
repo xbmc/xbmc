@@ -29,8 +29,8 @@
 #import "HIDRemoteControlDevice.h"
 
 /*	Interacts with the Apple Remote Control HID device
-	The class is not thread safe
-*/
+ The class is not thread safe
+ */
 @interface AppleRemote : HIDRemoteControlDevice {		
   int deviceID;
 }

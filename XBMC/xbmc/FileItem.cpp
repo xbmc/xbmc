@@ -1311,6 +1311,30 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_cacheToDisc = itemlist.m_cacheToDisc;
 }
 
+bool CFileItemList::Copy(const CFileItemList& items)
+{
+  // assign all CFileItem parts
+  *(CFileItem*)this = *(CFileItem*)&items;
+
+  // assign the rest of the CFileItemList properties
+  m_replaceListing = items.m_replaceListing;
+  m_content        = items.m_content;
+  m_mapProperties  = items.m_mapProperties;
+  m_cacheToDisc    = items.m_cacheToDisc;
+  m_sortDetails    = items.m_sortDetails;
+  m_sortMethod     = items.m_sortMethod;
+  m_sortOrder      = items.m_sortOrder;
+
+  // make a copy of each item
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr newItem(new CFileItem(*items[i]));
+    Add(newItem);
+  }
+
+  return true;
+}
+
 CFileItemPtr CFileItemList::Get(int iItem)
 {
   CSingleLock lock(m_lock);

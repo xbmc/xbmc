@@ -152,8 +152,8 @@ namespace PYXBMC
   PyObject* Dialog_Browse(PyObject *self, PyObject *args)
   {
     int browsetype = 0;
-    bool useThumbs = false;
-    bool useFileDirectories = false;
+    char useThumbs = false;
+    char useFileDirectories = false;
     CStdString value;
     PyObject* unicodeLine[3];
     string utf8Line[3];
@@ -173,7 +173,7 @@ namespace PYXBMC
     
     value = cDefault;
     if (browsetype == 1)
-      CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, useThumbs, useFileDirectories);
+      CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, (bool)useThumbs, (bool)useFileDirectories);
     else if (browsetype == 2)
       CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value);
     else

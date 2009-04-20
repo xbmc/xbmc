@@ -18,7 +18,6 @@
     return nil;
   }
   mp_wrapper = nil;
-  
   mp_remote_control = [[[AppleRemote alloc] initWithDelegate: self] retain];
   [mp_remote_control setProcessesBacklog:true];
   if( ! mp_remote_control ){
@@ -55,7 +54,7 @@
     return;
   }
   if(mp_home_path && [mp_home_path length])
-     setenv("XBMC_HOME", [mp_home_path cString], 1);
+    setenv("XBMC_HOME", [mp_home_path cString], 1);
   //launch or activate xbmc
   if(![[NSWorkspace sharedWorkspace] launchApplication:mp_app_path]){
     ELOG(@"Error launching %@", mp_app_path);
@@ -69,7 +68,7 @@
     //do some logging here
     //[self logButton: event press;
   }
- 
+  
   switch(event){
     case kRemoteButtonPlay:
       if(pressedDown) [mp_wrapper handleEvent:ATV_BUTTON_PLAY];
@@ -118,22 +117,17 @@
       break;    
     case kRemoteControl_Switched:
       if(pressedDown) [mp_wrapper switchRemote: [mp_remote_control deviceID]];
-        break;        
+      break;        
     default:
       NSLog(@"Oha, remote button not recognized %i pressed/released %i", event, pressedDown);
   }
 }
 
 //----------------------------------------------------------------------------
-- (void) connectToServer:(NSString*) fp_server withMode:(eRemoteMode) f_mode{
- if(mp_wrapper)
-   [self disconnect];
-  mp_wrapper = [[XBMCClientWrapper alloc] initWithMode:f_mode serverAddress:fp_server];
-  [mp_wrapper enableVerboseMode:m_verbose];
-}
-
-//----------------------------------------------------------------------------
-- (void) setUniversalModeTimeout:(double) f_timeout{
+- (void) connectToServer:(NSString*) fp_server withMode:(eRemoteMode) f_mode withTimeout:(double) f_timeout{
+  if(mp_wrapper)
+    [self disconnect];
+  mp_wrapper = [[XBMCClientWrapper alloc] initWithMode:f_mode serverAddress:fp_server verbose:m_verbose];
   [mp_wrapper setUniversalModeTimeout:f_timeout];
 }
 
@@ -164,7 +158,7 @@
     mp_home_path = [fp_home_path copy];
   }
 }
- //   NSString* pressed;
+//   NSString* pressed;
 //    NSString* buttonName;
 //    if (pressedDown) pressed = @"(pressed)"; else pressed = @"(released)";
 //    

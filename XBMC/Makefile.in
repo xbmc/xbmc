@@ -340,11 +340,6 @@ ifeq ($(ARCH), powerpc64-linux)
 	LIBS += -lpython2.4
 endif
 
-# TODO: XBPythonDLLFuncs.S not implemented on PowerPC
-ifeq ($(ARCH), powerpc-osx)
-	OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
-endif
-
 $(wildcard $(OBJSXBMC)) :| compile
 
 xbmc.bin: $(wildcard $(OBJSXBMC)) | compile

@@ -88,7 +88,9 @@
 #include "MusicInfoLoader.h"
 #include "XBVideoConfig.h"
 #include "DirectXGraphics.h"
+#ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"
+#endif
 #include "DNSNameCache.h"
 #include "FileSystem/PluginDirectory.h"
 #include "MusicInfoTag.h"
@@ -2369,6 +2371,7 @@ const BUILT_IN commands[] = {
   { "LastFM.Love",                false,  "Add the current playing last.fm radio track to the last.fm loved tracks" },
   { "LastFM.Ban",                 false,  "Ban the current playing last.fm radio track" },
   { "Container.Refresh",          false,  "Refresh current listing" },
+  { "Container.Update",           false,  "Update current listing. Send Container.Update(path,replace) to reset the path history" },
   { "Container.NextViewMode",     false,  "Move to the next view type (and refresh the listing)" },
   { "Container.PreviousViewMode", false,  "Move to the previous view type (and refresh the listing)" },
   { "Container.SetViewMode",      true,   "Move to the view with the given id" },
@@ -3338,8 +3341,20 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("container.refresh"))
   { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
     //       This shouldn't stop a dialog intercepting it though.
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE);
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
     message.SetStringParam(strParameterCaseIntact);
+    g_graphicsContext.SendMessage(message);
+  }  
+  else if (execute.Equals("container.update"))
+  {
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+    message.SetStringParam(strParameterCaseIntact);
+    int pos = parameter.find_last_of(",");
+    if (pos >= 0 && parameter.Mid(pos+1).Equals("replace"))
+    {
+      message.SetStringParam(strParameterCaseIntact.Left(pos));
+      message.SetParam2(1); // reset the history
+    }
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.nextviewmode"))
@@ -3349,7 +3364,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("container.previousviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, (DWORD)-1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setviewmode"))
@@ -3364,7 +3379,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("container.previoussortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, (DWORD)-1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setsortmethod"))

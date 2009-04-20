@@ -1,4 +1,4 @@
-#if !defined(_POWERPC) && !defined(_POWERPC64) && !defined(__POWERPC__)
+#if !defined(_POWERPC) && !defined(_POWERPC64)
 
 #ifndef __APPLE__
 #define FUNCTION(name)			\
@@ -6,6 +6,14 @@
 	.type name, @function;		\
 	name:				\
 		jmp *(p_##name)
+#elif defined(__POWERPC__)
+#define FUNCTION(name)				\
+	.globl _##name				@\
+	_##name:				@\
+		addis r11,0,ha16(_p_##name)	@\
+		lwz r12,lo16(_p_##name)(r11)	@\
+		mtctr r12			@\
+		bctr 
 #else
 #define FUNCTION(name)			\
 	.globl _##name;			\

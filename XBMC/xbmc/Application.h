@@ -83,6 +83,7 @@ public:
   virtual void Render();
   virtual void DoRender();
   virtual void RenderNoPresent();
+  virtual void Preflight();
   virtual HRESULT Create(HWND hWnd);
   virtual HRESULT Cleanup();
 

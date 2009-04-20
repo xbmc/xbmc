@@ -75,7 +75,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
       /* this should be conditional if we ever add    */
       /* support for the utf8 extension in ftp client */
-      g_charsetConverter.stringCharsetToUtf8(name);
+      g_charsetConverter.unknownToUTF8(name);
 
       CFileItemPtr pItem(new CFileItem(name));
 

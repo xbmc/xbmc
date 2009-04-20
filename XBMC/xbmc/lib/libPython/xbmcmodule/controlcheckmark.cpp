@@ -269,7 +269,7 @@ namespace PYXBMC
 
   PyObject* ControlCheckMark_SetSelected(ControlCheckMark *self, PyObject *args)
   {
-    bool isSelected = 0;
+    char isSelected = 0;
 
     if (!PyArg_ParseTuple(args, (char*)"b", &isSelected))
       return NULL;
@@ -277,7 +277,7 @@ namespace PYXBMC
     PyGUILock();
     if (self->pGUIControl)
     {
-      ((CGUICheckMarkControl*)self->pGUIControl)->SetSelected(isSelected);
+      ((CGUICheckMarkControl*)self->pGUIControl)->SetSelected((bool)isSelected);
     }
     PyGUIUnlock();
 

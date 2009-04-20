@@ -55,6 +55,7 @@ protected:
   virtual void OnFilterItems();
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual bool OnClick(int iItem);
 
   virtual CStdString GetQuickpathName(const CStdString& strPath) const;
   void FilterItems(CFileItemList &items);

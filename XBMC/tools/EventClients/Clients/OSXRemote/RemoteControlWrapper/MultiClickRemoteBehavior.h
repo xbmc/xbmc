@@ -30,8 +30,8 @@
 #import "RemoteControl.h"
 
 /**
-	A behavior that adds multiclick and hold events on top of a device.
-	Events are generated and send to a delegate
+ A behavior that adds multiclick and hold events on top of a device.
+ Events are generated and send to a delegate
  */
 @interface MultiClickRemoteBehavior : NSObject {
 	id delegate;

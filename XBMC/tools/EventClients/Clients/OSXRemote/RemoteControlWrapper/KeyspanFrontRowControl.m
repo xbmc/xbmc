@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  *
  *****************************************************************************/
- 
+
 #import "KeyspanFrontRowControl.h"
 #import <mach/mach.h>
 #import <mach/mach_error.h>
@@ -42,12 +42,12 @@
 	[_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight]		 forKey:@"11_18_96_10_"];
 	[_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft]		 forKey:@"11_18_97_10_"];
 	/* hold events are not being send by this device
-	[_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight_Hold]	forKey:@"14_6_4_2_"];
-	[_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft_Hold]	forKey:@"14_6_3_2_"];
-	[_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu_Hold]	forKey:@"14_6_14_6_"];
-	[_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]	forKey:@"18_14_6_18_14_6_"];
-	[_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]	forKey:@"19_"];			
-	*/
+   [_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonRight_Hold]	forKey:@"14_6_4_2_"];
+   [_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonLeft_Hold]	forKey:@"14_6_3_2_"];
+   [_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonMenu_Hold]	forKey:@"14_6_14_6_"];
+   [_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteButtonPlay_Sleep]	forKey:@"18_14_6_18_14_6_"];
+   [_cookieToButtonMapping setObject:[NSNumber numberWithInt:kRemoteControl_Switched]	forKey:@"19_"];			
+   */
 }
 
 + (io_object_t) findRemoteDevice {
@@ -63,12 +63,12 @@
 	hidMatchDictionary = IOServiceMatching(kIOHIDDeviceKey);
 	
 	CFNumberRef numberRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &idVendor);
-    CFDictionaryAddValue(hidMatchDictionary, CFSTR(kIOHIDVendorIDKey), numberRef);
-    CFRelease(numberRef);
+  CFDictionaryAddValue(hidMatchDictionary, CFSTR(kIOHIDVendorIDKey), numberRef);
+  CFRelease(numberRef);
 	
-    numberRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &idProduct);
-    CFDictionaryAddValue(hidMatchDictionary, CFSTR(kIOHIDProductIDKey), numberRef);
-    CFRelease(numberRef);	
+  numberRef = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &idProduct);
+  CFDictionaryAddValue(hidMatchDictionary, CFSTR(kIOHIDProductIDKey), numberRef);
+  CFRelease(numberRef);	
 	
 	// Now search I/O Registry for matching devices.
 	ioReturnValue = IOServiceGetMatchingServices(kIOMasterPortDefault, hidMatchDictionary, &hidObjectIterator);
