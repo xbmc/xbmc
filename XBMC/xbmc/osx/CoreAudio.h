@@ -95,6 +95,7 @@ public:
   bool SetNominalSampleRate(Float64 sampleRate);
 protected:
   AudioDeviceID m_DeviceId;
+  bool m_Started;
   pid_t m_Hog;
   int m_MixerRestore;
   AudioDeviceIOProc m_IoProc;
@@ -155,53 +156,13 @@ public:
   
   void Start();
   void Stop();
+  bool IsRunning();
   Float32 GetCurrentVolume();
   bool SetCurrentVolume(Float32 vol);
   
 protected:
   AudioUnit m_Component;
   bool m_Initialized;
-};
-
-class CCoreAudioSound
-{
-public:
-  CCoreAudioSound();
-  ~CCoreAudioSound();
-  bool LoadFile(CStdString fileName);
-  void Unload();
-  void SetVolume(float volume);
-  AudioBufferList* GetBufferList() {return m_pBufferList;}
-  UInt64 GetTotalFrames() {return m_TotalFrames;}
-private:
-  AudioBufferList* m_pBufferList;
-  UInt64 m_TotalFrames;
-};
-
-typedef CCoreAudioSound* CoreAudioSoundRef;
-
-class CCoreAudioSoundManager
-{
-public:
-  CCoreAudioSoundManager();
-  ~CCoreAudioSoundManager();
-  bool Initialize(CStdString deviceName);
-  void Run();
-  void Stop();
-  CoreAudioSoundRef RegisterSound(CStdString fileName);
-  void UnregisterSound(CoreAudioSoundRef soundRef);
-  void PlaySound(CoreAudioSoundRef soundRef);
-protected:
-  // Test vars
-  CCoreAudioSound* m_pCurrentSound;
-  UInt32 m_CurrentOffset;
-  
-  CCoreAudioDevice m_OutputDevice;
-  CCoreAudioUnit m_OutputUnit;
-  AudioStreamBasicDescription m_OutputFormat;
-  static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
-  OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);  
-  static OSStatus PropertyChangeCallback(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void* inClientData);
 };
 
 // Helper Functions

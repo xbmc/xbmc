@@ -59,7 +59,7 @@ CGUISound::~CGUISound()
 #ifdef HAS_SDL_AUDIO
   Mix_FreeChunk(m_soundBuffer);
 #elif defined (__APPLE__)
-  delete m_soundBuffer;
+  g_CASoundMgr.UnregisterSound(m_soundBuffer);
 #else
   FreeBuffer();
 #endif
@@ -75,12 +75,8 @@ bool CGUISound::Load(const CStdString& strFile)
   
   return true;
 #elif defined (__APPLE__)
-  m_soundBuffer = new CCoreAudioSound;
-  if (m_soundBuffer->LoadFile(CSpecialProtocol::TranslatePath(strFile)))
-    return true;
-  delete m_soundBuffer;
-  m_soundBuffer = NULL;
-  return false;
+  m_soundBuffer = g_CASoundMgr.RegisterSound(CSpecialProtocol::TranslatePath(strFile));
+  return (m_soundBuffer != 0);
 #else
   LPBYTE pbData=NULL;
   WAVEFORMATEX wfx;
@@ -134,8 +130,6 @@ bool CGUISound::IsPlaying()
 #endif  
 }
 
-
-
 // \brief Stops playback if the sound
 void CGUISound::Stop()
 {
@@ -160,7 +154,7 @@ void CGUISound::SetVolume(int level)
 #ifdef HAS_SDL_AUDIO
   Mix_Volume(GUI_SOUND_CHANNEL, level);
 #elif defined (__APPLE__)
-  m_soundBuffer->SetVolume(level);
+  // TODO: Implement
 #else
   m_soundBuffer->SetVolume(level);
 #endif  

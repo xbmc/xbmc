@@ -181,6 +181,7 @@ void CCoreAudioHardware::SetAutoHogMode(bool enable)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoreAudioDevice::CCoreAudioDevice()  : 
   m_DeviceId(0),
+  m_Started(false),
   m_Hog(-1),
   m_MixerRestore(-1),
   m_IoProc(NULL),
@@ -229,17 +230,19 @@ void CCoreAudioDevice::Close()
 
 void CCoreAudioDevice::Start()
 {
-  if (!m_DeviceId) 
+  if (!m_DeviceId || m_Started) 
     return;
   
   OSStatus ret = AudioDeviceStart(m_DeviceId, m_IoProc);
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioDevice::Start: Unable to start device. Error = 0x%08x (%4.4s).", ret, CONVERT_OSSTATUS(ret));
+  else
+    m_Started = true;
 }
 
 void CCoreAudioDevice::Stop()
 {
-  if (!m_DeviceId)
+  if (!m_DeviceId || !m_Started)
     return;
   
   OSStatus ret = AudioDeviceStop(m_DeviceId, m_IoProc);
@@ -893,7 +896,7 @@ bool CCoreAudioUnit::SetInputChannelMap(CoreAudioChannelList* pChannelMap)
   SInt32* pMap = new SInt32[channels];
   for (UInt32 i = 0; i < channels; i++)
     pMap[i] = (*pChannelMap)[i];
-  OSStatus ret = AudioUnitGetProperty(m_Component, kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, pMap, &size);
+  OSStatus ret = AudioUnitSetProperty(m_Component, kAudioOutputUnitProperty_ChannelMap, kAudioUnitScope_Input, 0, pMap, size);
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioUnit::GetBufferFrameSize: Unable to get current device's buffer size. ErrCode = Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
   delete[] pMap;
@@ -943,315 +946,15 @@ bool CCoreAudioUnit::SetCurrentVolume(Float32 vol)
   return true;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CCoreAudioSound
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-CCoreAudioSound::CCoreAudioSound() :
-  m_pBufferList(NULL)
+bool CCoreAudioUnit::IsRunning()
 {
-
-}
-
-CCoreAudioSound::~CCoreAudioSound()
-{
-  Unload();
-}
-
-void WriteInterleavedSinWave(int channels, int samples, AudioBufferList** ppBufferList)
-{
-  AudioBufferList* pBufferList = *ppBufferList = (AudioBufferList*)calloc(1, sizeof(AudioBufferList));
-  pBufferList->mNumberBuffers = 1;
-  short* pBuffer = (short*)malloc(sizeof(short) * samples * channels);
-  pBufferList->mBuffers[0].mNumberChannels = channels;
-  pBufferList->mBuffers[0].mData = pBuffer;
-  pBufferList->mBuffers[0].mDataByteSize = sizeof(short) * samples * channels;
-
-  float pi = 3.1415926535897;
-  float scale = (2.0f * pi) / 100.0f;
-  for (int s = 0; s < samples; s++)
-  {
-    int smp = s % 100;
-    float pos = (float)smp * scale;
-    short val = (short)(sin(pos) * 32767.0f);
-    for (int c = 0; c < channels; c++)
-      pBuffer[s*channels+c] = val;
-  }  
-}
-
-void WriteDeInterleavedSinWave(int channelCount, int samples, AudioBufferList** ppBufferList)
-{
-  AudioBufferList* pBufferList = *ppBufferList = (AudioBufferList*)calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer) * (channelCount - kVariableLengthArray) );
-  pBufferList->mNumberBuffers = channelCount;
-  float* buffers = (float*)malloc(sizeof(float) * samples * channelCount);
-  for(int i = 0; i < channelCount; i++)
-  {
-    pBufferList->mBuffers[i].mNumberChannels = 1;
-    pBufferList->mBuffers[i].mData = buffers + (samples * i);
-    pBufferList->mBuffers[i].mDataByteSize = samples * sizeof(float);
-    
-    float* pSamples = (float*)pBufferList->mBuffers[i].mData;
-    float pi = 3.1415926535897;
-    float scale = (2.0f * pi) / 100.0f;
-    for (int s = 0; s < samples; s++)
-    {
-      int smp = s % 100;
-      float pos = (float)smp * scale;
-      pSamples[s] = sin(pos);      
-    }
-  }
-}
-
-bool CCoreAudioSound::LoadFile(CStdString fileName)
-{
-  //m_TotalFrames = 4000;
-  //WriteInterleavedSinWave(2, m_TotalFrames, &m_pBufferList);
-  //WriteDeInterleavedSinWave(2, m_TotalFrames, &m_pBufferList);
-  //return true;
-  
-  // Validate the provided file path and open the audio file
-  FSRef fileRef;
-  UInt32 size = 0;
-  ExtAudioFileRef audioFile;
-  OSStatus ret = FSPathMakeRef((const UInt8*) fileName.c_str(), &fileRef, false);
-  ret = ExtAudioFileOpen(&fileRef, &audioFile);
-  
-  // Retrieve the format of the source file
-  AudioStreamBasicDescription inputFormat;
-  size = sizeof(inputFormat);
-  ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileDataFormat, &size, &inputFormat);
-  
-  // Set up format conversion
-  // Our output stream is fixed at 32-bit native float, deinterlaced x 2-channels.
-  // Fix output sample-rate at 44100, since multiple slices can be scheduled sequesntially 
-  AudioStreamBasicDescription outputFormat;
-  outputFormat.mSampleRate = 44100;
-  outputFormat.mChannelsPerFrame  = 2;
-  outputFormat.mFormatID = kAudioFormatLinearPCM;
-  outputFormat.mFormatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved; // Format required by scheduled sound player
-  outputFormat.mBitsPerChannel = 8 * sizeof(float);
-  outputFormat.mBytesPerFrame =  sizeof(float);
-  outputFormat.mFramesPerPacket = 1;
-  outputFormat.mBytesPerPacket = outputFormat.mBytesPerFrame * outputFormat.mFramesPerPacket;
-  ExtAudioFileSetProperty(audioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(AudioStreamBasicDescription), &outputFormat);
-
-  // Determine file size (in terms of the file's sample-rate, not the output sample-rate)
-  size = sizeof(m_TotalFrames);
-  ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileLengthFrames, &size, &m_TotalFrames);
-  
-  // Calculate the total number of converted frames to be read
-  m_TotalFrames *= (float)outputFormat.mSampleRate / (float)inputFormat.mSampleRate; // TODO: Verify the accuracy of this
-  
-  // Allocate AudioBuffers
-  UInt32 channelCount = outputFormat.mChannelsPerFrame;
-  m_pBufferList = (AudioBufferList*)calloc(1, sizeof(AudioBufferList) + sizeof(AudioBuffer) * (channelCount - kVariableLengthArray));
-  m_pBufferList->mNumberBuffers = channelCount; // One buffer per channel for deinterlaced pcm
-  UInt32 framesPerBuffer = (UInt32)m_TotalFrames;
-  float* buffers = (float*)calloc(1, sizeof(float) * framesPerBuffer * channelCount);
-  for(int i = 0; i < channelCount; i++)
-  {
-    m_pBufferList->mBuffers[i].mNumberChannels = 1; // One channel per buffer for deinterlaced pcm
-    m_pBufferList->mBuffers[i].mData = buffers + (framesPerBuffer * i);
-    m_pBufferList->mBuffers[i].mDataByteSize = framesPerBuffer * sizeof(float);  
-  }
-  
-  // Read the entire file
-  // TODO: Limit the total file length?
-  ExtAudioFileRead(audioFile, &framesPerBuffer, m_pBufferList);
-  if (framesPerBuffer != m_TotalFrames)
-  {
-    CLog::Log(LOGERROR, "Unable to read entire file");
-    m_TotalFrames = framesPerBuffer;
-  }
-  
-  if (inputFormat.mChannelsPerFrame == 1) // Copy Left channel into Right if the source file is Mono
-    memcpy(m_pBufferList->mBuffers[1].mData, m_pBufferList->mBuffers[1].mData, m_pBufferList->mBuffers[1].mDataByteSize);
-  ExtAudioFileDispose(audioFile);
-
-  return true; 
-}
-
-void CCoreAudioSound::Unload()
-{
-  if (m_pBufferList)
-  {
-    free(m_pBufferList->mBuffers[0].mData); // This will free all the buffers, since they were allocated together
-    free(m_pBufferList);
-  }
-  m_pBufferList = NULL;
-}
-
-void CCoreAudioSound::SetVolume(float volume)
-{
-  
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CCoreAudioSoundManager
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CCoreAudioSoundManager::CCoreAudioSoundManager()
-{
-  m_pCurrentSound = NULL;
-}
-
-CCoreAudioSoundManager::~CCoreAudioSoundManager()
-{
-  
-}
-
-bool CCoreAudioSoundManager::Initialize(CStdString deviceName)
-{
-  // Attempt to find the configured output device
-  AudioDeviceID outputDevice = CCoreAudioHardware::FindAudioDevice(deviceName);
-  if (!outputDevice) // Fall back to the default device if no match is found
-  {
-    CLog::Log(LOGWARNING, "CCoreAudioSoundManager::Initialize: Unable to locate configured device, falling-back to the system default.");
-    outputDevice = CCoreAudioHardware::GetDefaultOutputDevice();
-    if (!outputDevice) // Not a lot to be done with no device.
-      return false;
-  }
-  
-  // Attach our output object to the device
-  m_OutputDevice.Open(outputDevice);
-  
-  // Create the Output AudioUnit Component
-  ComponentDescription outputCompDesc;
-  outputCompDesc.componentType = kAudioUnitType_Output;
-  outputCompDesc.componentSubType = kAudioUnitSubType_HALOutput;
-  outputCompDesc.componentManufacturer = kAudioUnitManufacturer_Apple;
-  outputCompDesc.componentFlags = 0;
-  outputCompDesc.componentFlagsMask = 0;
-  
-  if (!m_OutputUnit.Open(outputCompDesc))
+  if (!m_Component)
     return false;
   
-  // Hook the Ouput AudioUnit to the selected device
-  if (!m_OutputUnit.SetCurrentDevice(outputDevice))
-    return false;
-
-  // Set up output format (32-bit float, 2-channel, non-interleaved)
-  m_OutputFormat.mSampleRate = 44100.0;
-  m_OutputFormat.mChannelsPerFrame  = 2;
-  m_OutputFormat.mFormatID = kAudioFormatLinearPCM;
-  m_OutputFormat.mFormatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
-  m_OutputFormat.mBitsPerChannel = 8 * sizeof(float);
-  m_OutputFormat.mBytesPerFrame =  sizeof(float);
-  m_OutputFormat.mFramesPerPacket = 1;
-  m_OutputFormat.mBytesPerPacket = m_OutputFormat.mBytesPerFrame * m_OutputFormat.mFramesPerPacket;  
-  if (!m_OutputUnit.SetInputFormat(&m_OutputFormat))
-    return false;
-
-  // Configure the maximum number of frames that the AudioUnit will ask to process at one time.
-  // If this is not called, there is no guarantee that the callback will ever be called.
-  UInt32 bufferFrames = m_OutputUnit.GetBufferFrameSize(); // Size of the output buffer, in Frames
-  if (!m_OutputUnit.SetMaxFramesPerSlice(bufferFrames))
-    return false;
-  
-  // Setup the callback function that the AudioUnit will use to request data	
-  if (!m_OutputUnit.SetRenderProc(RenderCallback, this))
-    return false;
-  
-  // Initialize the Output AudioUnit
-  if (!m_OutputUnit.Initialize())
-    return false;  
-  
-  return true;
-}
-
-void CCoreAudioSoundManager::Run()
-{
-  AudioDeviceAddPropertyListener(m_OutputDevice.GetId(), 0, false, kAudioDevicePropertyHogMode, PropertyChangeCallback, this);
-  m_OutputUnit.Start();
-}
-
-void CCoreAudioSoundManager::Stop()
-{
-  // TODO: Empty event queue and reset state
-  AudioDeviceRemovePropertyListener(m_OutputDevice.GetId(), 0, false, kAudioDevicePropertyHogMode, PropertyChangeCallback);
-  m_OutputUnit.Stop();
-}
-
-CoreAudioSoundRef CCoreAudioSoundManager::RegisterSound(CStdString fileName)
-{  
-  CCoreAudioSound* pSound = new CCoreAudioSound();
-  if (!pSound->LoadFile(fileName))
-  {
-    delete pSound;
-    return NULL;
-  }
-  return pSound;
-}
-
-void CCoreAudioSoundManager::UnregisterSound(CoreAudioSoundRef soundRef)
-{
-  delete soundRef;
-}
-
-void CCoreAudioSoundManager::PlaySound(CoreAudioSoundRef soundRef)
-{
-  if (!m_pCurrentSound)
-  {
-    m_OutputUnit.Stop();
-    m_OutputUnit.Start();
-    m_pCurrentSound = soundRef;
-    m_CurrentOffset = 0;
-  }
-  // TODO: Add to queue
-}
-
-OSStatus CCoreAudioSoundManager::OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
-{
-  if (m_pCurrentSound)
-  {
-    if (m_CurrentOffset < m_pCurrentSound->GetTotalFrames())
-    {
-      if (m_pCurrentSound->GetTotalFrames() - m_CurrentOffset < inNumberFrames)
-        inNumberFrames = m_pCurrentSound->GetTotalFrames() - m_CurrentOffset;
-      for (int i = 0; i < ioData->mNumberBuffers; i++)
-      {
-        UInt32 frameLen = m_OutputFormat.mBytesPerFrame;
-        unsigned char* pIn = (unsigned char*)m_pCurrentSound->GetBufferList()->mBuffers[i].mData;
-        memcpy(ioData->mBuffers[i].mData, &pIn[m_CurrentOffset * frameLen], inNumberFrames * frameLen); // Copy out the requested number of frames
-      }
-      m_CurrentOffset += inNumberFrames;
-    }
-    else
-    {
-      m_pCurrentSound = NULL;
-      m_CurrentOffset = 0;
-    }
-  }
-  else
-  {
-    ioData->mBuffers[0].mDataByteSize = ioData->mBuffers[0].mDataByteSize = 0;
-  }
-  return noErr;
-}
-
-OSStatus CCoreAudioSoundManager::RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
-{
-  // Hand over to instance memeber
-  return ((CCoreAudioSoundManager*)inRefCon)->OnRender(ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData);
-}
-
-OSStatus CCoreAudioSoundManager::PropertyChangeCallback(AudioDeviceID inDevice, UInt32 inChannel, Boolean isInput, AudioDevicePropertyID inPropertyID, void* inClientData)
-{
-  pid_t hogPid = -1;
-  UInt32 size = sizeof(hogPid);
-  CCoreAudioSoundManager* pThis = (CCoreAudioSoundManager*)inClientData;
-  AudioDeviceGetProperty(inDevice, inChannel, isInput, inPropertyID, &size, &hogPid);
-  if (hogPid > -1)
-  {
-    CLog::Log(LOGWARNING, "CCoreAudioSoundManager: Someone has hogged the output device. Stopping until it is released.");
-    pThis->m_OutputUnit.Stop();
-  }
-  else
-  {
-    pThis->m_OutputUnit.Stop();
-    CLog::Log(LOGWARNING, "CCoreAudioSoundManager: The output device has been released. Resuming.");
-    pThis->m_OutputUnit.Start();
-  }
-  return noErr;
+  UInt32 isRunning = 0;
+  UInt32 size = sizeof(isRunning);
+  AudioUnitGetProperty(m_Component, kAudioOutputUnitProperty_IsRunning, kAudioUnitScope_Global, 0, &isRunning, &size);
+  return (isRunning != 0);
 }
 
 #endif

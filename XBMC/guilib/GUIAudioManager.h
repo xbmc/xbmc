@@ -25,7 +25,7 @@
 #include "utils/CriticalSection.h"
 
 #ifdef __APPLE__
-  #include "CoreAudio.h"
+  #include "CoreAudioSoundManager.h"
 #endif
 
 // forward definitions

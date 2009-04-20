@@ -26,7 +26,7 @@
 #endif
 
 #ifdef __APPLE__
-  #include "CoreAudio.h"
+  #include "CoreAudioSoundManager.h"
   extern CCoreAudioSoundManager g_CASoundMgr; // The design of CGUISound forces us to have a globally accessible instance (or pass one around)
 #endif
 
@@ -46,7 +46,7 @@ private:
 #ifdef HAS_SDL_AUDIO
   Mix_Chunk* m_soundBuffer;
 #elif defined(__APPLE__)
-  CCoreAudioSound* m_soundBuffer;
+  CoreAudioSoundRef m_soundBuffer;
 #else
   bool        LoadWav(const CStdString& strFile, WAVEFORMATEX* wfx, LPBYTE* ppWavData, int* pDataSize);
   bool        CreateBuffer(LPWAVEFORMATEX wfx, int iLength);

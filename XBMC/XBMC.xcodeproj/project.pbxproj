@@ -85,6 +85,8 @@
 		83540ADE0F7985DF0044C398 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83540ADC0F7985DF0044C398 /* Atomics.cpp */; };
 		839270550F7F3DAF00406D11 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839270540F7F3DAF00406D11 /* CoreAudio.cpp */; };
 		839270560F7F3DAF00406D11 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839270540F7F3DAF00406D11 /* CoreAudio.cpp */; };
+		83A758110F9B90F400AF5C5B /* CoreAudioSoundManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A758100F9B90F400AF5C5B /* CoreAudioSoundManager.cpp */; };
+		83A758120F9B90F400AF5C5B /* CoreAudioSoundManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A758100F9B90F400AF5C5B /* CoreAudioSoundManager.cpp */; };
 		83AEF5AA0F7773E3002E08DE /* paplayer_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */; };
 		83C98B8A0F759368005759EE /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98B890F759368005759EE /* CoreAudioRenderer.cpp */; };
 		83C98F990F770B1F005759EE /* SliceQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98F980F770B1F005759EE /* SliceQueue.cpp */; };
@@ -737,7 +739,6 @@
 		E38E22E50D25F9FE00618676 /* MusicInfoScraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E670D25F9FD00618676 /* MusicInfoScraper.cpp */; };
 		E38E22E60D25F9FE00618676 /* Mutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E690D25F9FD00618676 /* Mutex.cpp */; };
 		E38E22E70D25F9FE00618676 /* Network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E6B0D25F9FD00618676 /* Network.cpp */; };
-		E38E22E80D25F9FE00618676 /* PCMAmplifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E6D0D25F9FD00618676 /* PCMAmplifier.cpp */; };
 		E38E22E90D25F9FE00618676 /* PerformanceSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */; };
 		E38E22EA0D25F9FE00618676 /* PerformanceStats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */; };
 		E38E22EB0D25F9FE00618676 /* RegExp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E730D25F9FD00618676 /* RegExp.cpp */; };
@@ -1496,7 +1497,6 @@
 		F5A1CAD70F6B06CF00A96ABD /* MusicInfoScraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E670D25F9FD00618676 /* MusicInfoScraper.cpp */; };
 		F5A1CAD80F6B06CF00A96ABD /* Mutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E690D25F9FD00618676 /* Mutex.cpp */; };
 		F5A1CAD90F6B06CF00A96ABD /* Network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E6B0D25F9FD00618676 /* Network.cpp */; };
-		F5A1CADA0F6B06CF00A96ABD /* PCMAmplifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E6D0D25F9FD00618676 /* PCMAmplifier.cpp */; };
 		F5A1CADB0F6B06CF00A96ABD /* PerformanceSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */; };
 		F5A1CADC0F6B06CF00A96ABD /* PerformanceStats.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */; };
 		F5A1CADD0F6B06CF00A96ABD /* RegExp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E730D25F9FD00618676 /* RegExp.cpp */; };
@@ -1846,6 +1846,8 @@
 		83540ADC0F7985DF0044C398 /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
 		839270530F7F3DAF00406D11 /* CoreAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudio.h; sourceTree = "<group>"; };
 		839270540F7F3DAF00406D11 /* CoreAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudio.cpp; sourceTree = "<group>"; };
+		83A7580F0F9B90F400AF5C5B /* CoreAudioSoundManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioSoundManager.h; sourceTree = "<group>"; };
+		83A758100F9B90F400AF5C5B /* CoreAudioSoundManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioSoundManager.cpp; sourceTree = "<group>"; };
 		83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = paplayer_linux.cpp; sourceTree = "<group>"; };
 		83C98B880F759368005759EE /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRenderer.h; path = AudioRenderers/CoreAudioRenderer.h; sourceTree = "<group>"; };
 		83C98B890F759368005759EE /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
@@ -3425,8 +3427,6 @@
 		E38E1E6A0D25F9FD00618676 /* Mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mutex.h; sourceTree = "<group>"; };
 		E38E1E6B0D25F9FD00618676 /* Network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Network.cpp; sourceTree = "<group>"; };
 		E38E1E6C0D25F9FD00618676 /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
-		E38E1E6D0D25F9FD00618676 /* PCMAmplifier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMAmplifier.cpp; sourceTree = "<group>"; };
-		E38E1E6E0D25F9FD00618676 /* PCMAmplifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMAmplifier.h; sourceTree = "<group>"; };
 		E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerformanceSample.cpp; sourceTree = "<group>"; };
 		E38E1E700D25F9FD00618676 /* PerformanceSample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PerformanceSample.h; sourceTree = "<group>"; };
 		E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerformanceStats.cpp; sourceTree = "<group>"; };
@@ -3942,6 +3942,8 @@
 				E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */,
 				839270530F7F3DAF00406D11 /* CoreAudio.h */,
 				839270540F7F3DAF00406D11 /* CoreAudio.cpp */,
+				83A7580F0F9B90F400AF5C5B /* CoreAudioSoundManager.h */,
+				83A758100F9B90F400AF5C5B /* CoreAudioSoundManager.cpp */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -6594,8 +6596,6 @@
 				E38E1E6A0D25F9FD00618676 /* Mutex.h */,
 				E38E1E6B0D25F9FD00618676 /* Network.cpp */,
 				E38E1E6C0D25F9FD00618676 /* Network.h */,
-				E38E1E6D0D25F9FD00618676 /* PCMAmplifier.cpp */,
-				E38E1E6E0D25F9FD00618676 /* PCMAmplifier.h */,
 				E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */,
 				E38E1E700D25F9FD00618676 /* PerformanceSample.h */,
 				E38E1E710D25F9FD00618676 /* PerformanceStats.cpp */,
@@ -7605,7 +7605,6 @@
 				E38E22E50D25F9FE00618676 /* MusicInfoScraper.cpp in Sources */,
 				E38E22E60D25F9FE00618676 /* Mutex.cpp in Sources */,
 				E38E22E70D25F9FE00618676 /* Network.cpp in Sources */,
-				E38E22E80D25F9FE00618676 /* PCMAmplifier.cpp in Sources */,
 				E38E22E90D25F9FE00618676 /* PerformanceSample.cpp in Sources */,
 				E38E22EA0D25F9FE00618676 /* PerformanceStats.cpp in Sources */,
 				E38E22EB0D25F9FE00618676 /* RegExp.cpp in Sources */,
@@ -7813,6 +7812,7 @@
 				83540ADD0F7985DF0044C398 /* Atomics.cpp in Sources */,
 				839270550F7F3DAF00406D11 /* CoreAudio.cpp in Sources */,
 				831F61030F9272DC0051DBCA /* LockFree.cpp in Sources */,
+				83A758120F9B90F400AF5C5B /* CoreAudioSoundManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8431,7 +8431,6 @@
 				F5A1CAD70F6B06CF00A96ABD /* MusicInfoScraper.cpp in Sources */,
 				F5A1CAD80F6B06CF00A96ABD /* Mutex.cpp in Sources */,
 				F5A1CAD90F6B06CF00A96ABD /* Network.cpp in Sources */,
-				F5A1CADA0F6B06CF00A96ABD /* PCMAmplifier.cpp in Sources */,
 				F5A1CADB0F6B06CF00A96ABD /* PerformanceSample.cpp in Sources */,
 				F5A1CADC0F6B06CF00A96ABD /* PerformanceStats.cpp in Sources */,
 				F5A1CADD0F6B06CF00A96ABD /* RegExp.cpp in Sources */,
@@ -8634,6 +8633,7 @@
 				83540ADE0F7985DF0044C398 /* Atomics.cpp in Sources */,
 				839270560F7F3DAF00406D11 /* CoreAudio.cpp in Sources */,
 				831F61020F9272DC0051DBCA /* LockFree.cpp in Sources */,
+				83A758110F9B90F400AF5C5B /* CoreAudioSoundManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
