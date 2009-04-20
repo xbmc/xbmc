@@ -24,6 +24,7 @@
 #include "URL.h"
 #include "GUISettings.h"
 
+
 class CWIN32Util
 {
 public:
@@ -43,7 +44,6 @@ public:
   static bool PowerManagement(PowerState State);
   static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
   static std::vector<CStdString> GetDiskUsage();
-  static void MaximizeWindow(bool bRemoveBorder);
   static CStdString GetResInfoString();
   static int GetDesktopColorDepth();
   static CStdString GetProfilePath();
@@ -51,8 +51,20 @@ public:
   static HRESULT ToggleTray(const char cDriveLetter='\0');
   static HRESULT EjectTray(const char cDriveLetter='\0');
   static HRESULT CloseTray(const char cDriveLetter='\0');
+  
+  class SystemParams
+  {
+    public:
+      struct SysParam
+      {
+        bool bScrSaver;
+        DWORD dwEsFlags;
+      };
+      static void GetDefaults( SysParam *SSysParam );
+      static void SetDefaults( SysParam *SSysParam );
+      static void SetCustomParams( SysParam *SSysParam = NULL );
+  };
 
 private:
   static DWORD dwDriveMask;
-
 };

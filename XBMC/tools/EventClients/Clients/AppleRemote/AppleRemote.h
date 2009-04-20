@@ -42,6 +42,8 @@ public:
 	
 	void SetMaxClickTimeout(double dTimeout);
 	void SetServerAddress(const std::string &strAddress);
+	void SetAppPath(const std::string &strAddress);
+	void SetAppHome(const std::string &strAddress);
 	void SetRemoteMode(RemoteModes mode);
 	
 	const std::string &GetServerAddress();
@@ -65,6 +67,8 @@ protected:
 	int					m_socket;
 	std::string			m_strCombination;
 	std::string			m_serverAddress;
+	std::string     m_appPath;
+	std::string     m_appHome;
 
 	std::map<std::string, CPacketBUTTON *>	m_mapCommands;
 	std::vector<std::string>				m_universalPrefixes;

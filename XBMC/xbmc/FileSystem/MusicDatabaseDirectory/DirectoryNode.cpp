@@ -69,8 +69,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const CStdString& strPath)
   CURL url(strPath);
 
   CStdString strDirectory=url.GetFileName();
-  if (CUtil::HasSlashAtEnd(strDirectory))
-    strDirectory.Delete(strDirectory.size()-1);
+  CUtil::RemoveSlashAtEnd(strDirectory);
 
   CStdStringArray Path;
   StringUtils::SplitString(strDirectory, "/", Path);

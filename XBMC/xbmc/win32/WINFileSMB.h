@@ -47,7 +47,7 @@ public:
   virtual void Close();
   virtual void Flush();
 
-  virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
+  virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
 
   virtual bool Delete(const CURL& url);
   virtual bool Rename(const CURL& url, const CURL& urlnew);

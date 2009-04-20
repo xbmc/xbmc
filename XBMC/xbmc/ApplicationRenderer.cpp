@@ -327,9 +327,13 @@ void CApplicationRenderer::Disable()
 
 bool CApplicationRenderer::Start()
 {
+#ifdef HAS_SDL
+  return false;
+#else
   if (g_advancedSettings.m_busyDialogDelay <= 0) return false; //delay of 0 is considered disabled.
   Create();
   return true;
+#endif
 }
 
 void CApplicationRenderer::Stop()

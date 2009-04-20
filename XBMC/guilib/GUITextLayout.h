@@ -86,6 +86,8 @@ protected:
   void ParseText(const CStdStringW &text, std::vector<DWORD> &parsedText);
   void LineBreakText(const std::vector<DWORD> &text, std::vector<CGUIString> &lines);
   void WrapText(const std::vector<DWORD> &text, float maxWidth);
+  void BidiTransform(std::vector<CGUIString> &lines);
+  CStdStringW BidiFlip(const CStdStringW &text);
 
   // our text to render
   std::vector<DWORD> m_colors;

@@ -8,7 +8,8 @@ sub get_home {
 }
 
 sub get_extras {
-    return "XBMC.app/Contents/Resources/XBMC/extras/" if get_os() eq "osx";
+    # XBMC_HOME is assumed to be always setup
+    return $ENV{'XBMC_HOME'}."extras/" if get_os() eq "osx";
     return;
 }
 

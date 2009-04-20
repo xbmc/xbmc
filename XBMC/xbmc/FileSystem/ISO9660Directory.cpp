@@ -39,8 +39,7 @@ CISO9660Directory::~CISO9660Directory(void)
 bool CISO9660Directory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString strRoot = strPath;
-  if (!CUtil::HasSlashAtEnd(strPath) )
-    strRoot += "/";
+  CUtil::AddSlashAtEnd(strRoot);
 
   // Scan active disc if not done before
   if (!m_isoReader.IsScanned())

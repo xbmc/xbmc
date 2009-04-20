@@ -34,6 +34,9 @@
 #ifdef _LINUX
 #include <sys/resource.h>
 #endif
+#ifdef __APPLE__
+#include "Util.h"
+#endif
 
 
 CApplication g_application;
@@ -111,7 +114,12 @@ int main(int argc, char* argv[])
   // if we're on a Mac or if XBMC_PLATFORM_MODE is set, enable platform
   // specific directories.
 #ifdef __APPLE__
-  system("XBMC.app/Contents/Resources/XBMC/tools/preflight");
+  CStdString install_path;
+  
+  CUtil::GetHomePath(install_path);
+  setenv("XBMC_HOME", install_path.c_str(), 0);
+  install_path += "/tools/osx/preflight";
+  system(install_path.c_str());
 #endif
 
   g_application.Create(NULL);
