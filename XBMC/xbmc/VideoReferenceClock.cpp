@@ -285,14 +285,16 @@ void CVideoReferenceClock::RunGLX()
 {
   unsigned int  PrevVblankCount;
   unsigned int  VblankCount;
+  unsigned int  VblankWait;
   int           ReturnV;
   
   m_glXGetVideoSyncSGI(&PrevVblankCount);
+  VblankWait = PrevVblankCount;
   UpdateRefreshrate();
   
   while(!m_bStop)
   {
-    ReturnV = m_glXWaitVideoSyncSGI(2, ((PrevVblankCount % 2) + 1) % 2, &VblankCount);
+    ReturnV = m_glXWaitVideoSyncSGI(2, (VblankWait + 1) % 2, &VblankWait);
     m_glXGetVideoSyncSGI(&VblankCount);
     if(ReturnV)
     {
