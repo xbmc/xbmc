@@ -354,7 +354,7 @@ void CGUISettings::Initialize()
   AddBool(6, "autorun.music", 245, true);
   AddBool(7, "autorun.pictures", 246, true);
 
-  AddCategory(0, "cache", 439);
+  //AddCategory(0, "cache", 439); // don't add the category, and the whole lot will be hidden from the UI
   AddInt(1, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
   AddSeparator(2, "cache.sep1");
   AddInt(3, "cachevideo.dvdrom", 14026, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
