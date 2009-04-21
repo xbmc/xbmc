@@ -27,21 +27,22 @@
 // Returns previous value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
 #ifdef __ppc__ // PowerPC
+
 long cas(volatile long *pAddr, long expectedVal, long swapVal)
 {
   unsigned int prev;
   
   __asm__ __volatile__ (
-                        "  loop:   lwarx   %0,0,%2  \n" /* Load the current value of *pAddr,  (%2) into prev (%0) and lock pAddr,  */
-                        "          cmpw    0,%0,%3  \n" /* Verify that the current value (%2) == old value (%3) */
-                        "          bne     exit     \n" /* Bail if the two values are not equal [not as expected] */
+                        "  1:      lwarx   %0,0,%2  \n" /* Load the current value of *pAddr(%2) into prev (%0) and lock pAddr,  */
+                        "          cmpw     0,%0,%3 \n" /* Verify that the current value (%2) == old value (%3) */
+                        "          bne-     2f      \n" /* Bail if the two values are not equal [not as expected] */
                         "          stwcx.  %4,0,%2  \n" /* Attempt to store swapVal (%4) value into *pAddr (%2) [p must still be reserved] */
-                        "          bne-    loop     \n" /* Loop if p was no longer reserved */
+                        "          bne-    1b       \n" /* Loop if p was no longer reserved */
                         "          sync             \n" /* Reconcile multiple processors [if present] */
-                        "  exit:                    \n"
-                        : "=&r" (prev), "=m" (*pAddr)   /* Outputs [prev, *pAddr] */
-                        : "r" (pAddr), "r" (expectedVal), "r" (swapVal), "m" (*pAddr) /* Inputs [pAddr, expectedVal, swapVal, *pAddr] */
-                        : "cc", "memory");             /* Clobbers */
+                        "  2:                       \n"
+                        : "=&r" (prev), "+m" (*pAddr)                   /* Outputs [prev, *pAddr] */
+                        : "r" (pAddr), "r" (expectedVal), "r" (swapVal) /* Inputs [pAddr, expectedVal, swapVal] */
+                        : "cc", "memory");                              /* Clobbers */
   
   return prev;
 }
