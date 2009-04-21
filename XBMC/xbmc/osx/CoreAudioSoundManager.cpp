@@ -24,6 +24,7 @@
 #include "CoreAudioSoundManager.h"
 #include "PlatformDefs.h"
 #include "Log.h"
+#include <time.h>
 
 struct core_audio_sound
 {
@@ -34,8 +35,18 @@ struct core_audio_sound
   AudioBufferList* buffer_list;
 };
 
+typedef clock_t core_audio_timestamp;
+
+struct core_audio_sound_event
+{
+  core_audio_sound* sound;
+  core_audio_timestamp play_time; // Don't play before
+  core_audio_timestamp expire_time; // Stop playing no later than
+  UInt32 offset;
+};
+
 CCoreAudioSoundManager::CCoreAudioSoundManager() :
-  m_pCurrentSound(NULL),
+  m_pCurrentEvent(NULL),
   m_RestartOutputUnit(false)
 {
 
@@ -117,12 +128,7 @@ void CCoreAudioSoundManager::Stop()
   
   m_OutputUnit.Stop();
   AudioDeviceRemovePropertyListener(m_OutputDevice.GetId(), 0, false, kAudioDevicePropertyHogMode, PropertyChangeCallback); // No longer need to know if the device is hogged
-  if (m_pCurrentSound) // Free the currently queued sound
-  {
-    m_pCurrentSound->play_count--;
-    UnregisterSound(m_pCurrentSound);
-    m_pCurrentSound = NULL;
-  }
+  // TODO: Clean up leftover events
   CLog::Log(LOGDEBUG, "CCoreAudioSoundManager::Stop: SoundManager has been stopped.");
 }
 
@@ -137,7 +143,7 @@ void CCoreAudioSoundManager::UnregisterSound(CoreAudioSoundRef soundRef)
     return;
   
   core_audio_sound* pSound = soundRef;
-  if (!--pSound->ref_count && !pSound->play_count) // Release the caller's reference and see if the object is free
+  if (!--pSound->ref_count && !pSound->play_count) // Release the caller's reference and see if the object is ready to be freed
   {
     delete pSound->buffer_list;
     delete pSound;
@@ -147,21 +153,28 @@ void CCoreAudioSoundManager::UnregisterSound(CoreAudioSoundRef soundRef)
 void CCoreAudioSoundManager::PlaySound(CoreAudioSoundRef soundRef)
 {
   if (!soundRef)
-    return false;
-  // TODO: Build queue and/or mix parallel sounds. For now just reject if a sound is currently playing.
-  core_audio_sound* pSound = soundRef;
-  if (!m_pCurrentSound)
-  {
-    if (m_RestartOutputUnit) // This flag is set by the property change notification handler
-    {
-      m_OutputUnit.Stop();
-      m_OutputUnit.Start();
-      m_RestartOutputUnit = false;
-    }
-    pSound->play_count++; // TODO: Tighten up this reference counting bit
-    m_pCurrentSound = pSound;
-    m_CurrentOffset = 0;
+    return;
+  
+  // Restart the output AudioUnit if necessary
+  if (m_RestartOutputUnit) // This flag is set by the property change notification handler to work around an OSX 10.4 quirk/bug.
+  {                        // It will re-init the callback thread for the AudioUnit after hog-mode has been released.
+    m_OutputUnit.Stop();
+    m_OutputUnit.Start();
+    m_RestartOutputUnit = false;
   }
+  
+  // TODO: Build queue and/or mix parallel sounds. For now just boot the currently playing sound and replace it.
+  // TODO: Not thread-safe. Going to cause trouble.
+  
+  // Create a new 'event' object to hold playback info
+  core_audio_sound_event* pEvent = new core_audio_sound_event;
+  pEvent->play_time = 0; // Play now
+  pEvent->expire_time = 0xFFFFFFFF; // Don't expire. Play until done
+  pEvent->sound = soundRef;
+  pEvent->offset = 0; // Start at the beginning
+  
+  pEvent->sound->play_count++;
+  m_pCurrentEvent = pEvent; // TODO: This creates a memory leak if we already had one
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,31 +183,39 @@ void CCoreAudioSoundManager::PlaySound(CoreAudioSoundRef soundRef)
 
 OSStatus CCoreAudioSoundManager::OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
-  if (m_pCurrentSound) // Do we have a sound queued to play?
+  clock_t now = clock();
+  if (m_pCurrentEvent) // Do we have a sound event queued to play?
   {
-    UInt32 framesAvailable = m_pCurrentSound->total_frames - m_CurrentOffset;
-    if (m_CurrentOffset < m_pCurrentSound->total_frames) // Do we have any data left to give
+    core_audio_sound_event* pEvent = m_pCurrentEvent; // Grab reference in case the event gets changed while we work 
+    UInt32 framesAvailable = pEvent->sound->total_frames - pEvent->offset;
+    // TODO: Find a better way to manage time references
+    if ((pEvent->offset < pEvent->sound->total_frames) && (pEvent->expire_time > now)) // Do we have any (unexpired) data left to give.
     {
       if (framesAvailable < inNumberFrames) // Do we have enough data to fill the complete request
         inNumberFrames = framesAvailable; // Truncate request to available data length
       for (int i = 0; i < ioData->mNumberBuffers; i++)
       {
         UInt32 frameLen = m_OutputFormat.mBytesPerFrame;
-        unsigned char* pIn = (unsigned char*)m_pCurrentSound->buffer_list->mBuffers[i].mData;
-        memcpy(ioData->mBuffers[i].mData, &pIn[m_CurrentOffset * frameLen], inNumberFrames * frameLen); // Copy out the requested number of frames
+        unsigned char* pIn = (unsigned char*)pEvent->sound->buffer_list->mBuffers[i].mData;
+        memcpy(ioData->mBuffers[i].mData, &pIn[pEvent->offset * frameLen], inNumberFrames * frameLen); // Copy out the requested number of frames
         ioData->mBuffers[i].mDataByteSize = inNumberFrames * frameLen; // Update to reflect actual date
       }
-      m_CurrentOffset += inNumberFrames; // Update position in current buffer
+      pEvent->offset += inNumberFrames; // Update position in current buffer
     }
-    else // No data left in this buffer. Free it.
+    else // No (unexpired) data left in this buffer. Free it.
     {
       // TODO: reference counting needs work
-      m_pCurrentSound->play_count--; // Allow the sound to be deleted. We are done with it.
-      if (!m_pCurrentSound->play_count && !m_pCurrentSound->ref_count) // Try and help out if all references have been released
-        UnregisterSound(m_pCurrentSound);
-      m_pCurrentSound = NULL;
-      m_CurrentOffset = 0;
+      pEvent->sound->play_count--; // Allow the sound to be deleted. We are done with it.
+      if (!pEvent->sound->play_count && !m_pCurrentEvent->sound->ref_count) // Try and help out if all references have been released
+        UnregisterSound(pEvent->sound);
+      delete pEvent;
+      
+      if (pEvent == m_pCurrentEvent)
+        m_pCurrentEvent = NULL;
+      else
+        delete pEvent;
     }
+    
   }
   else // No current buffer. notify caller and return.
   {

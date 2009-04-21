@@ -25,6 +25,8 @@
 #include "CoreAudio.h"
 
 struct core_audio_sound;
+struct core_audio_sound_event;
+
 typedef core_audio_sound* CoreAudioSoundRef; // Opaque reference for clients
 
 class CCoreAudioSoundManager
@@ -39,8 +41,8 @@ public:
   void UnregisterSound(CoreAudioSoundRef soundRef);
   void PlaySound(CoreAudioSoundRef soundRef);
 protected:
-  core_audio_sound* m_pCurrentSound;
-  UInt32 m_CurrentOffset;
+  core_audio_sound_event* m_pCurrentEvent;
+
   CCoreAudioDevice m_OutputDevice;
   CCoreAudioUnit m_OutputUnit;
   AudioStreamBasicDescription m_OutputFormat;
