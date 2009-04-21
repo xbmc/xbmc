@@ -308,8 +308,18 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   GetVideoAspect(m_pCodecContext, pDvdVideoPicture->iDisplayWidth, pDvdVideoPicture->iDisplayHeight);
 
-  pDvdVideoPicture->iWidth = m_pCodecContext->width;
-  pDvdVideoPicture->iHeight = m_pCodecContext->height;
+  if(m_pCodecContext->coded_width  && m_pCodecContext->coded_width  < m_pCodecContext->width
+                                   && m_pCodecContext->coded_width  > m_pCodecContext->width  - 10)
+    pDvdVideoPicture->iWidth = m_pCodecContext->coded_width;
+  else
+    pDvdVideoPicture->iWidth = m_pCodecContext->width;
+
+  if(m_pCodecContext->coded_height && m_pCodecContext->coded_height < m_pCodecContext->height
+                                   && m_pCodecContext->coded_height > m_pCodecContext->height - 10)
+    pDvdVideoPicture->iHeight = m_pCodecContext->coded_height;
+  else
+    pDvdVideoPicture->iHeight = m_pCodecContext->height;
+
   pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
   // if we have a converted frame, use that

@@ -56,11 +56,6 @@ bool CFileZip::Open(const CURL&url)
   if (!g_ZipManager.GetZipEntry(strPath,mZipItem))
     return false;
   
-  if ((mZipItem.flags & 8) == 8)
-  {
-    CLog::Log(LOGERROR,"FileZip: extended local header, not supported!");
-    return false;
-  }
   if ((mZipItem.flags & 64) == 64)
   {
     CLog::Log(LOGERROR,"FileZip: encrypted file, not supported!");
@@ -496,13 +491,18 @@ int CFileZip::UnpackFromMemory(std::string& strDest, const std::string& strInput
 {
   unsigned int iPos=0;
   int iResult=0;
-  while( iPos+30 < strInput.size() || isGZ)
+  while( iPos+LHDR_SIZE < strInput.size() || isGZ)
   {
     if (!isGZ)
     {
       CZipManager::readHeader(strInput.data()+iPos,mZipItem);
       if( mZipItem.header != ZIP_LOCAL_HEADER ) 
         return iResult;
+      if( (mZipItem.flags & 8) == 8 )
+      {
+        CLog::Log(LOGERROR,"FileZip: extended local header, not supported!");
+        return iResult;
+      }
     }
     if (!InitDecompress())
       return iResult;
@@ -519,7 +519,7 @@ int CFileZip::UnpackFromMemory(std::string& strDest, const std::string& strInput
     else
     {
       m_ZStream.avail_in = mZipItem.csize;
-      m_ZStream.next_in = (Bytef*)strInput.data()+iPos+30+mZipItem.flength+mZipItem.elength;
+      m_ZStream.next_in = (Bytef*)strInput.data()+iPos+LHDR_SIZE+mZipItem.flength+mZipItem.elength;
       // init m_zipitem
       strDest.reserve(mZipItem.usize);
       temp = new char[mZipItem.usize+1];
@@ -533,7 +533,7 @@ int CFileZip::UnpackFromMemory(std::string& strDest, const std::string& strInput
     }
     Close();
     delete[] temp;
-    iPos += 30+mZipItem.flength+mZipItem.elength+mZipItem.csize;
+    iPos += LHDR_SIZE+mZipItem.flength+mZipItem.elength+mZipItem.csize;
     if (isGZ)
       break;
   }
