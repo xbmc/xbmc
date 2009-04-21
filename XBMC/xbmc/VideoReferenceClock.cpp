@@ -55,7 +55,7 @@ CVideoReferenceClock::~CVideoReferenceClock()
 void CVideoReferenceClock::OnStartup()
 {
   bool PrevSetupSuccess = true;
-  bool SetupSuccess;
+  bool SetupSuccess = false;
   LARGE_INTEGER Now;
   
   QueryPerformanceCounter(&m_CurrTime);
@@ -67,6 +67,8 @@ void CVideoReferenceClock::OnStartup()
     SetupSuccess = SetupGLX();
 #elif defined(_WIN32)
     SetupSuccess = SetupD3D();
+#else
+    break;
 #endif
     if (SetupSuccess)
     {
@@ -123,7 +125,7 @@ bool CVideoReferenceClock::SetupGLX()
     None
   };
 
-  int Num = 0, ReturnV, Depth, SwaMask;
+  int Num = 0, ReturnV, SwaMask;
   unsigned int VblankCount;
   XSetWindowAttributes Swa;
 
