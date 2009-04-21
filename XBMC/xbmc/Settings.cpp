@@ -155,6 +155,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_karaokeUseSongSpecificBackground = 0;
 
   g_advancedSettings.m_audioDefaultPlayer = "paplayer";
+  g_advancedSettings.m_audioPlayCountMinimumPercent = 90.0f;
   g_advancedSettings.m_audioHost = "default";
 
   g_advancedSettings.m_videoSubsDelayRange = 10;
@@ -175,6 +176,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoPPFFmpegType = "linblenddeint";
   g_advancedSettings.m_videoDefaultPlayer = "dvdplayer";
   g_advancedSettings.m_videoDefaultDVDPlayer = "dvdplayer";
+  g_advancedSettings.m_videoIgnoreAtStart = 15;
+  g_advancedSettings.m_videoPlayCountMinimumPercent = 90.0f;
 
   g_advancedSettings.m_musicUseTimeSeeking = true;
   g_advancedSettings.m_musicTimeSeekForward = 10;
@@ -201,7 +204,6 @@ void CSettings::Initialize()
   g_advancedSettings.m_lcdScrolldelay = 1;
 
   g_advancedSettings.m_autoDetectPingTime = 30;
-  g_advancedSettings.m_playCountMinimumPercent = 90.0f;
 
   g_advancedSettings.m_songInfoDuration = 10;
   g_advancedSettings.m_busyDialogDelay = 2000;
@@ -1121,6 +1123,8 @@ void CSettings::LoadAdvancedSettings()
     GetFloat(pElement, "ac3downmixgain", g_advancedSettings.m_ac3Gain, 12.0f, -96.0f, 96.0f);
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
     GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
+    GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_audioPlayCountMinimumPercent, 0.0f, 100.0f);
+    
     XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);
     GetInteger(pElement, "timeseekforward", g_advancedSettings.m_musicTimeSeekForward, 0, 6000);
     GetInteger(pElement, "timeseekbackward", g_advancedSettings.m_musicTimeSeekBackward, -6000, 0);
@@ -1174,6 +1178,13 @@ void CSettings::LoadAdvancedSettings()
   {
     GetFloat(pElement, "subsdelayrange", g_advancedSettings.m_videoSubsDelayRange, 10, 600);
     GetFloat(pElement, "audiodelayrange", g_advancedSettings.m_videoAudioDelayRange, 10, 600);
+    GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
+    GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer, "dvdplayer");
+    GetString(pElement, "defaultdvdplayer", g_advancedSettings.m_videoDefaultDVDPlayer, "dvdplayer");
+    XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
+    GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
+    GetInteger(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
+    
     GetInteger(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 1, INT_MAX);
     GetInteger(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 1, 10);
     GetInteger(pElement, "smallstepbackdelay", g_advancedSettings.m_videoSmallStepBackDelay, 100, 5000); //MS
@@ -1188,10 +1199,6 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_videoPercentSeekBackward, -100, 0);
     GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 0, 100);
     GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -100, 0);
-    GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
-    GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer, "dvdplayer");
-    GetString(pElement, "defaultdvdplayer", g_advancedSettings.m_videoDefaultDVDPlayer, "dvdplayer");
-    XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
 
     TiXmlElement* pVideoExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pVideoExcludes)
@@ -1286,8 +1293,6 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "curlclienttimeout", g_advancedSettings.m_curlconnecttimeout, 1, 1000);
     GetInteger(pElement, "curllowspeedtime", g_advancedSettings.m_curllowspeedtime, 1, 1000);
   }
-
-  GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_playCountMinimumPercent, 1.0f, 100.0f);
 
   pElement = pRootElement->FirstChildElement("samba");
   if (pElement)
