@@ -47,8 +47,9 @@ struct SZipEntry {
   unsigned int csize; // compressed size
   unsigned int usize; // uncompressed size
   unsigned short flength; // filename length
-  unsigned short elength; // length of extra field
-  unsigned short clength; // file comment length
+  unsigned short elength; // extra field length (local file header)
+  unsigned short eclength; // extra field length (central file header)
+  unsigned short clength; // file comment length (central file header)
   unsigned int lhdrOffset; // Relative offset of local header
   __int64 offset;         // offset in file to compressed data
   char name[255];
@@ -66,6 +67,7 @@ struct SZipEntry {
     usize = 0;
     flength = 0;
     elength = 0;
+    eclength = 0;
     clength = 0;
     lhdrOffset = 0;
     offset = 0;
@@ -85,6 +87,7 @@ struct SZipEntry {
     memcpy(&usize,&SNewItem.usize,sizeof(unsigned int));
     memcpy(&flength,&SNewItem.flength,sizeof(unsigned short));
     memcpy(&elength,&SNewItem.elength,sizeof(unsigned short));
+    memcpy(&eclength,&SNewItem.eclength,sizeof(unsigned short));
     memcpy(&clength,&SNewItem.clength,sizeof(unsigned short));
     memcpy(&lhdrOffset,&SNewItem.lhdrOffset,sizeof(unsigned int));
     memcpy(&offset,&SNewItem.offset,sizeof(__int64));

@@ -1649,18 +1649,18 @@ bool CUtil::IsDOSPath(const CStdString &path)
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  CURL url(strFolder);
-  strResult = url.GetFileName();
-
-  // Add a slash to the end of the path if necessary
-  bool unixPath = !IsDOSPath(strFolder);
-  if (!CUtil::HasSlashAtEnd(strResult) && !strResult.IsEmpty())
+  if(strFolder.Find("://") >= 0)
   {
-    if (unixPath)
-      strResult += '/';
-    else
-      strResult += '\\';
+    CURL url(strFolder);
+    AddFileToFolder(url.GetFileName(), strFile, strResult);
+    url.SetFileName(strResult);
+    url.GetURL(strResult);
+    return;
   }
+
+  strResult = strFolder;
+  AddSlashAtEnd(strResult);
+
   // Remove any slash at the start of the file
   if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
     strResult += strFile.Mid(1);
@@ -1668,13 +1668,10 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
     strResult += strFile;
 
   // correct any slash directions
-  if (unixPath)
+  if (!IsDOSPath(strFolder))
     strResult.Replace('\\', '/');
   else
     strResult.Replace('/', '\\');
-
-  url.SetFileName(strResult);
-  url.GetURL(strResult);
 }
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
