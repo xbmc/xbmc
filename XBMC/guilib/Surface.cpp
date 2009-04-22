@@ -39,6 +39,9 @@ using namespace Surface;
 #endif
 
 #ifdef HAS_GLX
+PFNGLXBINDTEXIMAGEEXTPROC    glXBindTexImageEXT    = NULL;
+PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT = NULL;
+
 Display* CSurface::s_dpy = 0;
 
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg)
@@ -117,6 +120,12 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_glPixmap = 0;
   m_glPixmapTexture = 0;
   m_Pixmap = 0;
+  m_pixmapBound = false;
+
+  if (!glXBindTexImageEXT)
+    glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
+  if (!glXReleaseTexImageEXT)
+    glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 
   GLXFBConfig *fbConfigs = 0;
   bool mapWindow = false;
@@ -518,6 +527,26 @@ bool CSurface::MakePBuffer()
   }
   XFree(fbConfigs);
   return status;
+}
+
+void CSurface::BindPixmap()
+{
+  if (!m_pixmapBound)
+  {
+    glXBindTexImageEXT(s_dpy, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
+    VerifyGLState();
+    m_pixmapBound = true;
+  }
+}
+
+void CSurface::ReleasePixmap()
+{
+  if (m_pixmapBound)
+  {
+    glXReleaseTexImageEXT(s_dpy, m_glPixmap,GLX_FRONT_LEFT_EXT);
+    VerifyGLState();
+  }
+  m_pixmapBound = false;
 }
 
 bool CSurface::MakePixmap(int width, int height)
