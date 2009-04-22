@@ -63,6 +63,9 @@ CVDPAU::CVDPAU(int width, int height)
   InitVDPAUProcs();
   recover = VDPAURecovered = false;
   totalAvailableOutputSurfaces = outputSurface = presentSurface = 0;
+  vid_width = vid_height = outWidth = outHeight = 0;
+  memset(&outRect, 0, sizeof(VdpRect));
+  memset(&outRectVid, 0, sizeof(VdpRect));
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
@@ -82,6 +85,7 @@ CVDPAU::CVDPAU(int width, int height)
 CVDPAU::~CVDPAU()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
+  m_Surface->ReleasePixmap();
   FiniVDPAUOutput();
   FiniVDPAUProcs();
   if (m_Surface)
@@ -144,7 +148,7 @@ void CVDPAU::CheckFeatures()
 
     int featuresCount = 0;
     VdpVideoMixerFeature features[5];
-   
+
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
     if (interlaced && tmpDeint)
@@ -183,7 +187,7 @@ void CVDPAU::CheckFeatures()
     tmpSharpness = g_stSettings.m_currentVideoSettings.m_Sharpness;
     SetSharpness();
   }
-  
+
   if (interlaced && tmpDeint && tmpDeint != g_stSettings.m_currentVideoSettings.m_InterlaceMethod)
   {
     tmpDeint = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
@@ -194,7 +198,7 @@ void CVDPAU::CheckFeatures()
 void CVDPAU::SetColor()
 {
   VdpStatus vdp_st;
-  
+
   if (tmpBrightness != g_stSettings.m_currentVideoSettings.m_Brightness)
     m_Procamp.brightness = (float)((g_stSettings.m_currentVideoSettings.m_Brightness)-50) / 100;
   if (tmpContrast != g_stSettings.m_currentVideoSettings.m_Contrast)
@@ -590,6 +594,7 @@ VdpStatus CVDPAU::FiniVDPAUOutput()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
   VdpStatus vdp_st = VDP_STATUS_ERROR;
+
   if (!vdp_device) return VDP_STATUS_OK;
   if (!vdpauConfigured) return VDP_STATUS_OK;
 
@@ -927,8 +932,8 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     future = render->surface;
   }
 
-  if (( (long)outRect.x1 != outWidth ) ||
-      ( (long)outRect.y1 != outHeight ))
+  if (( (long)outRectVid.x1 != vid_width ) ||
+      ( (long)outRectVid.y1 != vid_height ))
   {
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;
