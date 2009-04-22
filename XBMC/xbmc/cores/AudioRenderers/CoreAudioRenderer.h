@@ -56,6 +56,31 @@ protected:
   UInt32 m_WatchdogPreroll;
 };
 
+class CCoreAudioSampleConverter
+{
+public:
+  CCoreAudioSampleConverter();
+  ~CCoreAudioSampleConverter();
+  bool Initialize(UInt32 inputFlags, UInt32 inputBitDepth, UInt32 outputFlags, UInt32 outputBitDepth);
+  float GetInputFactor(); // Number of bytes in per byte out
+  float GetOutputFactor(); // Number of bytes out per byte in
+  void* GetInputBuffer(UInt32 minSize);
+  UInt32 Convert(void* pOut, UInt32 outLen); // Returns bytes written to pOut
+protected:
+  enum
+  {
+    Conversion_Unsupported = 0,
+    Conversion_S16_F32 = 1
+  };
+  UInt32 m_InputFormatFlags;
+  UInt32 m_OutputFormatFlags;
+  UInt32 m_InputBitsPerSample;
+  UInt32 m_OutputBitsPerSample;
+  void* m_pInputBuffer;
+  UInt32 m_InputBufferLen;
+  UInt32 m_ConversionSelector;
+};
+
 class CCoreAudioRenderer : public IAudioRenderer
   {
   public:
@@ -84,14 +109,13 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual void UnRegisterAudioCallback() {};
     virtual void RegisterAudioCallback(IAudioCallback* pCallback) {};
   private:
-    static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
     OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
-    
+    static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
     static OSStatus DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData);
-    
     bool InitializeEncoded(AudioDeviceID outputDevice);
     bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample);
-    bool SpoofPCM();
+    bool InitializePCMEncoded();
+
     bool m_Pause;
     bool m_Initialized; // Prevent multiple init/deinit
    
@@ -106,11 +130,12 @@ class CCoreAudioRenderer : public IAudioRenderer
     UInt32 m_OutputBufferIndex;
     
     bool m_Passthrough;
-    bool m_PassthroughSpoof;
+    bool m_EnableVolumeControl;
+    CCoreAudioSampleConverter* m_pConverter;
     
     // Stream format
     size_t m_AvgBytesPerSec;
-    size_t m_BytesPerFrame;
+    size_t m_BytesPerFrame; // Input frame size
     
     // Performace Monitoring
     CCoreAudioPerformance m_PerfMon;

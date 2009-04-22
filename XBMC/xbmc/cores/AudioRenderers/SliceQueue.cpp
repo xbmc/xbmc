@@ -22,6 +22,36 @@
 #include "stdafx.h"
 #include "SliceQueue.h"
 
+/////////////////////////////////////////////////////////////////////////////////
+// CAtomicAllocator: Wrapper class for lf_heap.
+////////////////////////////////////////////////////////////////////////////////
+CAtomicAllocator::CAtomicAllocator(size_t blockSize) :
+  m_BlockSize(blockSize)
+{
+  lf_heap_init(&m_Heap, blockSize);
+}
+
+CAtomicAllocator::~CAtomicAllocator()
+{
+  lf_heap_deinit(&m_Heap);
+}
+
+void* CAtomicAllocator::Alloc()
+{
+  return lf_heap_alloc(&m_Heap);
+}
+
+void CAtomicAllocator::Free(void* p)
+{
+  lf_heap_free(&m_Heap, p);  
+}
+
+size_t CAtomicAllocator::GetBlockSize() 
+{
+  return m_BlockSize;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
 // CSliceQueue
 //////////////////////////////////////////////////////////////////////////////////////
 CSliceQueue::CSliceQueue(size_t sliceSize) :
@@ -29,7 +59,7 @@ CSliceQueue::CSliceQueue(size_t sliceSize) :
   m_pPartialSlice(NULL),
   m_RemainderSize(0)
 {
-  m_pAllocator = new CAtomicAllocator(sliceSize);
+  m_pAllocator = new CAtomicAllocator(sliceSize + offsetof(audio_slice, data));
   lf_queue_init(&m_Queue);
 }
 
@@ -57,6 +87,7 @@ audio_slice* CSliceQueue::Pop()
   return pSlice;
 }
 
+// TODO: Should we add monitoring for the fill-level?
 size_t CSliceQueue::AddData(void* pBuf, size_t bufLen)
 {
   size_t bytesLeft = bufLen;
@@ -65,20 +96,22 @@ size_t CSliceQueue::AddData(void* pBuf, size_t bufLen)
   {
     while (bytesLeft)
     {
-      // TODO: How should we behave here? Can we grow the allocator?
-      audio_slice* pSlice = (audio_slice*)m_pAllocator->Alloc();
+      // TODO: find a way to ensure success...
+      audio_slice* pSlice = (audio_slice*)m_pAllocator->Alloc(); // Allocation should never fail. The heap grows automatically.
       if (!pSlice)
-        break;
-      
-      pSlice->header.data_len = m_pAllocator->GetBlockSize();
-      if (pSlice->header.data_len >= bytesLeft) // plenty of room. move it all out.
+      {
+        CLog::Log(LOGDEBUG, "CSliceQueue::AddData: Failed to allocate new slice");
+        return 0;
+      }
+      pSlice->header.data_len = m_pAllocator->GetBlockSize() - offsetof(audio_slice, data);
+      if (pSlice->header.data_len >= bytesLeft) // plenty of room. move it all in.
       {
         memcpy(pSlice->get_data(), pData, bytesLeft);
         pSlice->header.data_len = bytesLeft; // Adjust the reported size of the container
       }
       else
       {
-        memcpy(pSlice->get_data(), pData, pSlice->header.data_len); // Copy all we can into this slice
+        memcpy(pSlice->get_data(), pData, pSlice->header.data_len); // Copy all we can into this slice. More to come.
       }
       bytesLeft -= pSlice->header.data_len;
       pData += pSlice->header.data_len;
@@ -134,7 +167,7 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
     m_pPartialSlice = NULL;
   }
 
-  // Save off a new partial slice (if there is one)
+  // Save off the new partial slice (if there is one)
   if (remainder)
   {
     m_pPartialSlice = pNext;
@@ -142,6 +175,11 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
   }
 
   return bufLen;
+}
+
+size_t CSliceQueue::GetTotalBytes() 
+{
+  return m_TotalBytes + m_RemainderSize;
 }
 
 void CSliceQueue::Clear()

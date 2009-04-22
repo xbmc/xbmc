@@ -27,52 +27,25 @@
 
 struct audio_slice
 {
-  // TODO: Determine any other appropriate information to pass along with the slice
   struct _tag_header{
-    unsigned __int64 id;
-    unsigned __int64 timestamp;
+    unsigned __int64 timestamp; // Currently not used
     size_t data_len;
   } header;
-  unsigned int data[1]; // Placeholder (TODO: This is hackish)
-
+  unsigned int data[1];
   unsigned char* get_data() {return (unsigned char*)&data;}
 };
 
 class CAtomicAllocator
 {
 public:
-  CAtomicAllocator(size_t blockSize) :
-    m_BlockSize(blockSize)
-  {
-    lf_heap_init(&m_Heap, blockSize);
-  }
-  
-  ~CAtomicAllocator()
-  {
-    lf_heap_deinit(&m_Heap);
-  }
-  
-  void* Alloc()
-  {
-    return lf_heap_alloc(&m_Heap);
-  }
-  
-  void Free(void* p)
-  {
-    lf_heap_free(&m_Heap, p);  
-  }
-  
-  size_t GetBlockSize() {return m_BlockSize;}
+  CAtomicAllocator(size_t blockSize);
+  ~CAtomicAllocator();
+  void* Alloc();
+  void Free(void* p);
+  size_t GetBlockSize();
 private:
   lf_heap m_Heap ;
   size_t m_BlockSize;
-};
-
-class IStreamFormatConverter
-{
-public:
-  virtual size_t Convert(unsigned char* pIn, size_t inLen, unsigned char* pOut, size_t outLen)  = 0; // Returns bytes in output 
-  virtual float GetOutputFactor() = 0; // Returns bytes output per bytes input 
 };
 
 class CSliceQueue
@@ -82,9 +55,8 @@ public:
   virtual ~CSliceQueue();
   size_t AddData(void* pBuf, size_t bufLen);
   size_t GetData(void* pBuf, size_t bufLen);
-  size_t GetTotalBytes() {return m_TotalBytes + m_RemainderSize;}
+  size_t GetTotalBytes();
   void Clear();
-  void InstallConverter(int location, IStreamFormatConverter* pConverter);
 protected:
   void Push(audio_slice* pSlice);
   audio_slice* Pop(); // Does not respect remainder, so it must be private
@@ -93,8 +65,6 @@ protected:
   size_t m_TotalBytes;
   audio_slice* m_pPartialSlice;
   size_t m_RemainderSize;
-  IStreamFormatConverter* m_pInputFormatConverter;
-  IStreamFormatConverter* m_pOutputFormatConverter;
 };
 
 #endif //__SLICE_QUEUE_H__

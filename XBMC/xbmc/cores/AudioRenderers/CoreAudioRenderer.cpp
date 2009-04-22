@@ -20,25 +20,10 @@
  *
  */
 
-#include <stdafx.h>
+#include "stdafx.h"
 #include "CoreAudioRenderer.h"
-#include <Settings.h>
-#include <Atomics.h>
-
-// TODO: Dynamically allocate this
-short g_SampleBuffer[10000] = {0};
-static const float short_to_float_mult = 1.0f / 32768.f;
-void ShortToFloat(short* pIn, float* pOut, size_t count)
-{
-  while (count--)
-  {
-    float samp = *pIn * short_to_float_mult;
-    *pOut = samp;
-    pIn++;
-    pOut++;
-  }
-}
-
+#include "Settings.h"
+#include "Atomics.h"
 
 //***********************************************************************************************
 // Performance Monitoring Helper Class
@@ -128,6 +113,99 @@ void CCoreAudioPerformance::Reset()
 }
 
 //***********************************************************************************************
+// Audio Sample Format Conversion Class (Data Representation only, not sample rate)
+//***********************************************************************************************
+CCoreAudioSampleConverter::CCoreAudioSampleConverter() :
+  m_InputFormatFlags(0),
+  m_OutputFormatFlags(0),
+  m_InputBitsPerSample(0),
+  m_OutputBitsPerSample(0),
+  m_pInputBuffer(NULL),
+  m_InputBufferLen(0),
+  m_ConversionSelector(Conversion_Unsupported)
+{
+  
+}
+
+CCoreAudioSampleConverter::~CCoreAudioSampleConverter()
+{
+  if (m_pInputBuffer)
+    free(m_pInputBuffer);
+}
+
+bool CCoreAudioSampleConverter::Initialize(UInt32 inputFlags, UInt32 inputBitDepth, UInt32 outputFlags, UInt32 outputBitDepth)
+{
+  // TODO: Check for supported format
+  m_InputFormatFlags = inputFlags;
+  m_OutputFormatFlags = outputFlags;
+  m_InputBitsPerSample = inputBitDepth;
+  m_OutputBitsPerSample = outputBitDepth;
+  
+  m_ConversionSelector = Conversion_S16_F32; // Set conversion type
+  return true;
+}
+
+float CCoreAudioSampleConverter::GetInputFactor()
+{
+  if (!m_OutputBitsPerSample) // Avoid a divide-by-zero error
+    return 0.0f;
+  
+  return (float)m_InputBitsPerSample / (float)m_OutputBitsPerSample;
+}
+
+float CCoreAudioSampleConverter::GetOutputFactor()
+{
+  if (!m_InputBitsPerSample) // Avoid a divide-by-zero error
+    return 0.0f;
+  
+  return (float)m_OutputBitsPerSample / (float)m_InputBitsPerSample;
+}
+
+void* CCoreAudioSampleConverter::GetInputBuffer(UInt32 minSize)
+{
+  if (m_InputBufferLen < minSize) // Make sure the buffer is at least as big as requested
+  {
+    if (m_pInputBuffer)
+      free(m_pInputBuffer);
+    m_pInputBuffer = malloc(minSize);
+    m_InputBufferLen = minSize;
+  }
+  return m_pInputBuffer;
+}
+
+// ** Currently only supports 16-bit signed integer to 32-bit float (It's the only one we need),
+// but adding new conversions is straightforward
+UInt32 CCoreAudioSampleConverter::Convert(void* pOut, UInt32 outLen)
+{
+  const float short_to_float_mult = 1.0f / 32768.f; // Conversion constant reduces floating-point ops while converting
+
+  if (!m_pInputBuffer)
+    return 0;
+  
+  if (outLen * GetInputFactor() > m_InputBufferLen)
+    outLen = m_InputBufferLen * GetOutputFactor();
+  
+  switch (m_ConversionSelector)
+  {
+      // TODO: Revisit this for efficiency
+    case Conversion_S16_F32:
+      UInt32 bytesWritten = outLen;
+      short* pShort = (short*)m_pInputBuffer;
+      float* pFloat = (float*)pOut;
+      while (outLen-=sizeof(float)) // One sample at a time...
+      {
+        *pFloat = *pShort * short_to_float_mult;
+        pShort++;
+        pFloat++;
+      }
+      return bytesWritten;
+    case Conversion_Unsupported:
+    default:
+      return 0;
+  }
+}
+
+//***********************************************************************************************
 // Contruction/Destruction
 //***********************************************************************************************
 CCoreAudioRenderer::CCoreAudioRenderer() :
@@ -138,7 +216,8 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_CurrentVolume(0),
   m_Initialized(false),
   m_Passthrough(false),
-  m_PassthroughSpoof(false),
+  m_EnableVolumeControl(true),
+  m_pConverter(NULL),
   m_OutputBufferIndex(0),
   m_pCache(NULL),
   m_RunoutEvent(NULL)
@@ -187,18 +266,11 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
     m_Passthrough = InitializeEncoded(outputDevice);
 
   // If this is a PCM stream, or we failed to handle a passthrough stream natively, 
-  // prepare for standard interleaved PCM data
+  // prepare the standard interleaved PCM interface
   if (!m_Passthrough)
   {
     // Create the Output AudioUnit Component
-    ComponentDescription outputCompDesc;
-    outputCompDesc.componentType = kAudioUnitType_Output;
-    outputCompDesc.componentSubType = kAudioUnitSubType_HALOutput;
-    outputCompDesc.componentManufacturer = kAudioUnitManufacturer_Apple;
-    outputCompDesc.componentFlags = 0;
-    outputCompDesc.componentFlagsMask = 0;
-    
-    if (!m_AudioUnit.Open(outputCompDesc))
+    if (!m_AudioUnit.Open(kAudioUnitType_Output, kAudioUnitSubType_HALOutput, kAudioUnitManufacturer_Apple))
       return false;
 
     // Hook the Ouput AudioUnit to the selected device
@@ -206,12 +278,12 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
       return false;
     
     // If we are here and this is a passthrough stream, native handling failed.
-    // Try to handle it as IEC61937 PCM data (DD-Wav)
+    // Try to handle it as IEC61937 data over straight PCM (DD-Wav)
     bool configured = false;
     if (bPassthrough)
     {
       CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: No suitable AC3 output format found. Attempting DD-Wav.");
-      configured = SpoofPCM();
+      configured = InitializePCMEncoded();
     }
     else // Standard PCM data
       configured = InitializePCM(iChannels, uiSamplesPerSec, uiBitsPerSample);
@@ -246,10 +318,12 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
   
   m_MaxCacheLen = m_AvgBytesPerSec;     // Set the max cache size to 1 second of data. TODO: Make this more intelligent
   m_Pause = true;                       // Suspend rendering. We will start once we have some data.
-  m_pCache = new CSliceQueue(m_MaxCacheLen);
+  m_pCache = new CSliceQueue(m_ChunkLen); // Initialize our incoming data cache
   m_PerfMon.Init(m_AvgBytesPerSec, 1000, CCoreAudioPerformance::FlagDefault); // Set up the performance monitor
   //m_PerfMon.SetPreroll(5.0f); // Disable underrun detection for the first 5 seconds (after start and after resume)
   m_Initialized = true;
+  
+  SetCurrentVolume(g_stSettings.m_nVolumeLevel);
   
   CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %u (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
   CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");  
@@ -269,12 +343,15 @@ HRESULT CCoreAudioRenderer::Deinitialize()
   if (m_Passthrough)
     m_AudioDevice.RemoveIOProc();
   m_AudioUnit.Close();
+  delete m_pConverter;
+  m_pConverter = NULL;
   m_OutputStream.Close();
   m_AudioDevice.Close();
   delete m_pCache;
   m_pCache = NULL;
   m_Initialized = false;
   m_RunoutEvent = NULL;
+  m_EnableVolumeControl = true;
   
   CLog::Log(LOGINFO, "CoreAudioRenderer::Deinitialize: Renderer has been shut down.");
   
@@ -364,7 +441,7 @@ HRESULT CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
 {  
   VERIFY_INIT(E_FAIL);
 
-  if (!m_Passthrough && !m_PassthroughSpoof) // Don't change actual volume for encoded streams
+  if (m_EnableVolumeControl) // Don't change actual volume for encoded streams
   {  
     // Scale the provided value to a range of 0.0 -> 1.0
     Float32 volPct = (Float32)(nVolume + 6000.0f)/6000.0f;
@@ -373,7 +450,7 @@ HRESULT CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
     if (!m_AudioUnit.SetCurrentVolume(volPct))
       return E_FAIL;
   }
-  m_CurrentVolume = nVolume;
+  m_CurrentVolume = nVolume; // Store the volume setpoint. We need this to check for 'mute'
   return S_OK;
 }
 
@@ -391,7 +468,7 @@ DWORD CCoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
   VERIFY_INIT(0);
   
   // Require at least one 'chunk'. This allows us at least some measure of control over efficiency
-  if (len < m_ChunkLen ||  m_pCache->GetTotalBytes() >= m_MaxCacheLen)
+  if (len < m_ChunkLen || m_pCache->GetTotalBytes() >= m_MaxCacheLen)
     return 0;
 
   DWORD cacheSpace = GetSpace();  
@@ -458,21 +535,13 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   if (!m_Initialized)
     CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Callback to de/unitialized renderer.");
   
-  // Make a local copy of the buffer index
-  UInt32 buf = m_OutputBufferIndex; // This determines which device stream we send our data to.
+  UInt32 bytesRequested = m_BytesPerFrame * inNumberFrames; // Data length requested, based on the input data format
   
-  // Check for adequate space in the output buffer
-  UInt32 bytesRequested = m_BytesPerFrame * inNumberFrames;
-  if (bytesRequested > ioData->mBuffers[buf].mDataByteSize)
-  {
-    bytesRequested = ioData->mBuffers[buf].mDataByteSize;
-    CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Supplied buffer is too small(%u) to accept requested sample data(%u). Truncating data.", ioData->mBuffers[0].mDataByteSize, bytesRequested);
-  }
-
+  // Process the request
   if (m_pCache->GetTotalBytes() < bytesRequested) // Not enough data to satisfy the request
   {
     Pause(); // Stop further requests until we have more data.  The AddPackets method will resume playback
-    memset(ioData->mBuffers[buf].mData, 0, ioData->mBuffers[buf].mDataByteSize);  // Return only silence
+    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0; // Let the caller know there is no data...
     if (m_RunoutEvent) // We were waiting for a runout. This is not an error
     {
       MPSetEvent(m_RunoutEvent, 0); // Tell the waiting thread we are done
@@ -483,17 +552,20 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   }
   else // Fetch some data for the caller
   {
-     if (m_PassthroughSpoof) // Need to convert the data
+    if (m_pConverter) // Samples need to be converted before passing along
     {
-      m_pCache->GetData(g_SampleBuffer, bytesRequested); // Retrieve data from queue (16-bit Signed Integer)
-      ShortToFloat(g_SampleBuffer, (float*)ioData->mBuffers[buf].mData, ioData->mBuffers[buf].mNumberChannels * inNumberFrames); // Convert to 32-bit float
+      m_pCache->GetData(m_pConverter->GetInputBuffer(bytesRequested), bytesRequested); // Retrieve data into the coverter's input buffer
+      m_pConverter->Convert(ioData->mBuffers[m_OutputBufferIndex].mData, ioData->mBuffers[m_OutputBufferIndex].mDataByteSize); // Convert data into caller's buffer
     }
     else // Copy data as-is
     {
-      m_pCache->GetData(ioData->mBuffers[buf].mData, bytesRequested);
-    }    
-    if ((m_Passthrough || m_PassthroughSpoof) && m_CurrentVolume == -6000) // Mute for passthrough. Throw away any actual data to keep the stream moving.
-      memset(ioData->mBuffers[buf].mData, 0, ioData->mBuffers[buf].mDataByteSize); // TODO: is there a way to do this without memcpy AND memset...?    
+      m_pCache->GetData(ioData->mBuffers[m_OutputBufferIndex].mData, bytesRequested);
+    }
+    
+    // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
+    if (!m_EnableVolumeControl && m_CurrentVolume == -6000) 
+      ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+    
     // Calculate stats and perform a sanity check
     m_PerfMon.ReportData(0, bytesRequested); // TODO: Should we check the result?
   }
@@ -504,13 +576,6 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
 OSStatus CCoreAudioRenderer::RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
   return ((CCoreAudioRenderer*)inRefCon)->OnRender(ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData);
-}
-
-// Static Callback from AudioDevice
-OSStatus CCoreAudioRenderer::DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData)
-{
-  CCoreAudioRenderer* pThis = (CCoreAudioRenderer*)inClientData;
-  return pThis->OnRender(NULL, inInputTime, 0, outOutputData->mBuffers[0].mDataByteSize / pThis->m_BytesPerFrame, outOutputData);
 }
 
 //***********************************************************************************************
@@ -537,11 +602,12 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
   
   m_BytesPerFrame = inputFormat.mBytesPerFrame;
   m_AvgBytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame;      // 1 sample per channel per frame
+  m_EnableVolumeControl = true;
   
   return true;
 }
 
-bool CCoreAudioRenderer::SpoofPCM()
+bool CCoreAudioRenderer::InitializePCMEncoded()
 {
   m_AudioDevice.SetHogStatus(true); // Prevent any other application from using this device.
   m_AudioDevice.SetMixingSupport(false); // Try to disable mixing support. Effectiveness depends on the device.
@@ -559,19 +625,31 @@ bool CCoreAudioRenderer::SpoofPCM()
   inputFormat.mBytesPerFrame = 8;          // Size of a frame == 1 sample per channel		
   inputFormat.mFramesPerPacket = 1;        // The smallest amount of indivisible data. Always 1 for uncompressed audio 	
   inputFormat.mBytesPerPacket = 8;
+  
   if (!m_AudioUnit.SetInputFormat(&inputFormat))
     return false;
   
+  // Create a converter to handle 'fooling' the AudioUnit into passing our data along unmodified
+  m_pConverter = new CCoreAudioSampleConverter();
+  if (!m_pConverter->Initialize(kAudioFormatFlagIsSignedInteger, 16, kAudioFormatFlagsNativeFloatPacked, 32))
+  {
+    CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCMEncoded: Unable to initialize sample converter.");
+    delete m_pConverter;
+    m_pConverter = NULL;
+    return false;
+  }
+  
   // These are based on the 16-bit data coming from the client
   m_BytesPerFrame = inputFormat.mBytesPerFrame / 2;
-  m_AvgBytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame / 2;      // 1 sample per channel per frame
-  m_PassthroughSpoof = true;
+  m_AvgBytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame / 2;
   
+  m_EnableVolumeControl = false; // Disable output volume control
   return true;  
 }
 
 bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
 {
+  // TODO: Comment out
   return false; // un-comment to force PCM Spoofing (DD-Wav)
   
   CStdString formatString;
@@ -651,7 +729,8 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
   
   // Register for data request callbacks from the driver
   m_AudioDevice.AddIOProc(DirectRenderCallback, this);  
-    
+  
+  m_EnableVolumeControl = false; // Prevent attempts to change the output volume. It is not possible with encoded audio
   return true;
 }
 

@@ -82,6 +82,9 @@ void lf_heap_init(lf_heap* pHeap, long blockSize, long  initialSize /*= 0*/)
     blockSize = sizeof(lf_node);
   pHeap->block_size = blockSize;
   
+  if (initialSize < 10 * blockSize)
+    initialSize = 10 * blockSize; // TODO: This should be more intelligent
+  
   lf_heap_grow(pHeap, initialSize); // Allocate the first chunk
 }
 
@@ -89,7 +92,7 @@ void lf_heap_grow(lf_heap* pHeap, long size /*= 0*/)
 {
   
   long blockSize = pHeap->block_size; // This has already been checked for sanity
-  if (!size || size < MIN_ALLOC - sizeof(lf_heap_chunk)) // Allocate at least one page from the OS
+  if (!size || size < MIN_ALLOC - sizeof(lf_heap_chunk)) // Allocate at least one page from the OS (TODO: Try valloc)
     size = MIN_ALLOC - sizeof(lf_heap_chunk);
   unsigned int blockCount = size / blockSize;
   if (size % blockSize) // maxe sure we have complete blocks
