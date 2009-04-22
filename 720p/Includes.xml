@@ -2170,7 +2170,6 @@
     <include>PanelStreamImageDims</include>
     <!--<texture>amt-blank-poster.png</texture>-->
     <info>ListItem.Icon</info>
-    <bordertexture border="14">ThumbShadow.png</bordertexture>
     <bordersize>8</bordersize>
   </include>
 
@@ -3449,7 +3448,6 @@
 
   <include name="CoverflowThumb">
     <include>CoverflowThumbDims</include>
-    <bordertexture border="14">ThumbShadow2.png</bordertexture>
     <bordersize>8</bordersize>
     <aspectratio aligny="bottom">keep</aspectratio>
   </include>

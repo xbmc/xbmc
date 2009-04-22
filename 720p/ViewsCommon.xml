@@ -24,7 +24,6 @@
           <height>364</height>
           <info>ListItem.Icon</info>
           <aspectratio aligny="bottom">keep</aspectratio>
-          <bordertexture border="14">ThumbShadow2.png</bordertexture>
           <bordersize>8</bordersize>
         </control>
         <control type="image">
@@ -208,7 +207,6 @@
             <texture>amt-blank-poster.png</texture>
             <info>ListItem.Icon</info>
             <aspectratio align="right" aligny="top">keep</aspectratio>
-            <bordertexture border="14">ThumbShadow.png</bordertexture>
             <bordersize>8</bordersize>
           </control>
   <!--

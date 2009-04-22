@@ -239,7 +239,7 @@
     <font>
       <name>RssFeedFont</name>
       <filename>HelveticaNeue.dfont</filename>
-  		<variant>Light</variant>
+  		<variant>Regular</variant>
       <size>20</size>
     </font>
 
