@@ -62,7 +62,7 @@ namespace PYXBMC
 
     self->strDefault = utf8Line;
     self->strHeading = utf8Heading;
-    self->bHidden = (bool)bHidden;
+    self->bHidden = (0 != bHidden);
 
     return (PyObject*)self;
   }
@@ -149,7 +149,7 @@ namespace PYXBMC
   {
     char bHidden = false;
     if (!PyArg_ParseTuple(args, (char*)"|b", &bHidden))	return NULL;
-    self->bHidden = (bool)bHidden;
+    self->bHidden = (0 != bHidden);
 
     CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
     if(!pKeyboard)
