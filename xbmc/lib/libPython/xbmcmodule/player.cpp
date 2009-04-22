@@ -119,7 +119,7 @@ namespace PYXBMC
     }
 
     // set fullscreen or windowed
-    g_stSettings.m_bStartVideoWindowed = (bool)bWindowed;
+    g_stSettings.m_bStartVideoWindowed = (0 != bWindowed);
 
     // force a playercore before playing
     g_application.m_eForcedNextPlayer = self->playerCore;

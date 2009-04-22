@@ -93,7 +93,7 @@ namespace PYXBMC
     
     ListItem *pListItem = (ListItem *)pItem;
     pListItem->item->m_strPath = url;
-    pListItem->item->m_bIsFolder = (bool)bIsFolder;
+    pListItem->item->m_bIsFolder = (0 != bIsFolder);
 
     // call the directory class to add our item
     bool bOk = DIRECTORY::CPluginDirectory::AddItem(handle, pListItem->item.get(), iTotalItems);
@@ -161,7 +161,7 @@ namespace PYXBMC
 
       ListItem *pListItem = (ListItem *)pItem;
       pListItem->item->m_strPath = url;
-      pListItem->item->m_bIsFolder = (bool)bIsFolder;
+      pListItem->item->m_bIsFolder = (0 != bIsFolder);
       items.Add(pListItem->item);
     }
     // call the directory class to add our items
@@ -207,7 +207,7 @@ namespace PYXBMC
     };
 
     // tell the directory class that we're done
-    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, (bool)bSucceeded, (bool)bUpdateListing, (bool)bCacheToDisc);
+    DIRECTORY::CPluginDirectory::EndOfDirectory(handle, 0 != bSucceeded, 0 != bUpdateListing, 0 != bCacheToDisc);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -248,7 +248,7 @@ namespace PYXBMC
 
     ListItem *pListItem = (ListItem *)pItem;
     
-    DIRECTORY::CPluginDirectory::SetResolvedUrl(handle, (bool)bSucceeded, pListItem->item.get());
+    DIRECTORY::CPluginDirectory::SetResolvedUrl(handle, 0 != bSucceeded, pListItem->item.get());
 
     Py_INCREF(Py_None);
     return Py_None;
