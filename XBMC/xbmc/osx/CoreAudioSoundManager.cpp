@@ -163,16 +163,16 @@ void CCoreAudioSoundManager::PlaySound(CoreAudioSoundRef soundRef)
   
   if (!m_pCurrentEvent)
   {
-  // TODO: Build queue and/or mix parallel sounds. For now just boot the currently playing sound and replace it.
-  // TODO: Not thread-safe. Going to cause trouble.
-  
-  // Create a new 'event' object to hold playback info
-  core_audio_sound_event* pEvent = new core_audio_sound_event;
-  pEvent->sound = soundRef;
-  pEvent->offset = 0; // Start at the beginning
-  
-  pEvent->sound->play_count++;
-  m_pCurrentEvent = pEvent; // TODO: This creates a memory leak if we already had one
+    // TODO: Build queue and/or mix parallel sounds. For now just boot the currently playing sound and replace it.
+    // TODO: Not thread-safe. Going to cause trouble.
+    
+    // Create a new 'event' object to hold playback info
+    core_audio_sound_event* pEvent = new core_audio_sound_event;
+    pEvent->sound = soundRef;
+    pEvent->offset = 0; // Start at the beginning
+    
+    pEvent->sound->play_count++;
+    m_pCurrentEvent = pEvent; // TODO: This can create a memory leak if we already had one
   }
 }
 
@@ -198,6 +198,8 @@ OSStatus CCoreAudioSoundManager::OnRender(AudioUnitRenderActionFlags *ioActionFl
         ioData->mBuffers[i].mDataByteSize = inNumberFrames * frameLen; // Update to reflect actual date
       }
       pEvent->offset += inNumberFrames; // Update position in current buffer
+      if (m_pCurrentEvent != pEvent) // This sound has been canceled
+        delete pEvent;
     }
     else // No (unexpired) data left in this buffer. Free it.
     {
@@ -209,7 +211,6 @@ OSStatus CCoreAudioSoundManager::OnRender(AudioUnitRenderActionFlags *ioActionFl
       if (pEvent == m_pCurrentEvent)
         m_pCurrentEvent = NULL;
     }
-    
   }
   else // No current buffer. notify caller and return.
   {
