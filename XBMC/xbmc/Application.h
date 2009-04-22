@@ -132,8 +132,6 @@ public:
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
-  void UpdateVideoFileState();
-  void UpdateAudioFileState();
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -141,11 +139,11 @@ public:
   void RenderFullScreen();
   void DoRenderFullScreen();
   bool NeedRenderFullScreen();
-  bool IsPlaying() const;
+  bool IsPlaying() const ;
   bool IsPaused() const;
-  bool IsPlayingAudio() const;
-  bool IsPlayingVideo() const;
-  bool IsPlayingFullScreenVideo() const;
+  bool IsPlayingAudio() const ;
+  bool IsPlayingVideo() const ;
+  bool IsPlayingFullScreenVideo() const ;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
   bool OnAction(CAction &action);
@@ -299,7 +297,6 @@ protected:
   bool m_bInitializing;
   bool m_playCountUpdated;
   bool m_bPlatformDirectories;
-  int m_updateFileStateCounter;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;

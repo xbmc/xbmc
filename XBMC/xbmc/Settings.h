@@ -141,7 +141,6 @@ public:
     int m_audioHeadRoom;
     float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
-    float m_audioPlayCountMinimumPercent;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -169,13 +168,10 @@ public:
     int m_musicPercentSeekBackwardBig;
     int m_musicResample;
     int m_videoBlackBarColour;
-    int m_videoIgnoreAtStart;
     CStdString m_audioHost;
-    
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
-    float m_videoPlayCountMinimumPercent;
-        
+
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
@@ -190,6 +186,7 @@ public:
     int m_lcdScrolldelay;
 
     int m_autoDetectPingTime;
+    float m_playCountMinimumPercent;
 
     int m_songInfoDuration;
     int m_busyDialogDelay;
