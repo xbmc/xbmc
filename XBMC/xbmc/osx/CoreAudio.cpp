@@ -78,7 +78,13 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(CStdString searchName)
   UInt32 size = 0;
   AudioDeviceID deviceId = 0;
   OSStatus ret;
-  
+ 
+  if (searchName.Equals("Default Output Device"))
+  {
+    AudioDeviceID defaultDevice = GetDefaultOutputDevice();
+    CLog::Log(LOGDEBUG, "CCoreAudioHardware::FindAudioDevice: Returning default device [0x%04x].", defaultDevice);
+    return defaultDevice;  
+  }
   CLog::Log(LOGDEBUG, "CCoreAudioHardware::FindAudioDevice: Searching for device - %s.", searchName.c_str());
   
   // Obtain a list of all available audio devices
@@ -180,6 +186,17 @@ void CCoreAudioHardware::SetAutoHogMode(bool enable)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoreAudioDevice::CCoreAudioDevice()  : 
   m_DeviceId(0),
+  m_Started(false),
+  m_Hog(-1),
+  m_MixerRestore(-1),
+  m_IoProc(NULL),
+  m_SampleRateRestore(0.0f)
+{
+  
+}
+
+CCoreAudioDevice::CCoreAudioDevice(AudioDeviceID deviceId) : 
+  m_DeviceId(deviceId),
   m_Started(false),
   m_Hog(-1),
   m_MixerRestore(-1),
@@ -308,13 +325,12 @@ UInt32 CCoreAudioDevice::GetTotalOutputChannels()
     for(UInt32 buffer = 0; buffer < pList->mNumberBuffers; ++buffer)
       channels += pList->mBuffers[buffer].mNumberChannels;
   else
-    CLog::Log(LOGERROR, "CCoreAudioDevice::GetTotalChannels: Unable to get total device output channels - id: 0x%04x Error = 0x%08x (%4.4s)", m_DeviceId, ret, CONVERT_OSSTATUS(ret));
-  CLog::Log(LOGDEBUG, "CCoreAudioDevice::GetTotalChannels: Found %u channels in %u buffers", channels, pList->mNumberBuffers);
+    CLog::Log(LOGERROR, "CCoreAudioDevice::GetTotalOutputChannels: Unable to get total device output channels - id: 0x%04x Error = 0x%08x (%4.4s)", m_DeviceId, ret, CONVERT_OSSTATUS(ret));
+  CLog::Log(LOGDEBUG, "CCoreAudioDevice::GetTotalOutputChannels: Found %u channels in %u buffers", channels, pList->mNumberBuffers);
   free(pList);
 	return channels;  
 }
 
-                               
 bool CCoreAudioDevice::GetStreams(AudioStreamIdList* pList)
 {
   if (!pList || !m_DeviceId)
@@ -347,7 +363,7 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
     if (m_Hog == -1) // Not already set
     {
       CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Setting 'hog' status on device 0x%04x", m_DeviceId);
-      OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(pid_t), &m_Hog);
+      OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(m_Hog), &m_Hog);
       if (ret)
       {
         CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to set 'hog' status. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
@@ -362,7 +378,7 @@ bool CCoreAudioDevice::SetHogStatus(bool hog)
     {
       CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetHogStatus: Releasing 'hog' status on device 0x%04x", m_DeviceId);
       pid_t hogPid = -1;
-      OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(pid_t), &hogPid);
+      OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertyHogMode, sizeof(hogPid), &hogPid);
       if (ret)
       {
         CLog::Log(LOGERROR, "CCoreAudioDevice::SetHogStatus: Unable to release 'hog' status. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
@@ -395,7 +411,7 @@ bool CCoreAudioDevice::SetMixingSupport(bool mix)
     restore = (GetMixingSupport() ? 1 : 0);
   UInt32 mixEnable = mix ? 1 : 0;
   CLog::Log(LOGDEBUG, "CCoreAudioDevice::SetMixingSupport: %sabling mixing for device 0x%04x",mix ? "En" : "Dis",  m_DeviceId);
-  OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertySupportsMixing, sizeof(UInt32), &mixEnable);
+  OSStatus ret = AudioDeviceSetProperty(m_DeviceId, NULL, 0, false, kAudioDevicePropertySupportsMixing, sizeof(mixEnable), &mixEnable);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioDevice::SetMixingSupport: Unable to set MixingSupport to %s. Error = 0x%08x (%4.4s)", mix ? "'On'" : "'Off'", ret, CONVERT_OSSTATUS(ret));
@@ -410,8 +426,8 @@ bool CCoreAudioDevice::GetMixingSupport()
 {
   if (!m_DeviceId)
     return false;
-  UInt32 size = sizeof(UInt32);
   UInt32 val = 0;
+  UInt32 size = sizeof(val);
   OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertySupportsMixing, &size, &val);
   if (ret)
     return false;

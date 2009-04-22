@@ -3746,18 +3746,23 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
   CoreAudioDeviceList deviceList;
   CCoreAudioHardware::GetOutputDevices(&deviceList);
   
-  CStdString deviceName;
+  if (CCoreAudioHardware::GetDefaultOutputDevice())
+    pControl->AddLabel("Default Output Device", 0); // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
+  int activeDevice = 0;
   
-  for (int i = 0; !deviceList.empty(); i++)
+  CStdString deviceName;
+  for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
   {
     CCoreAudioDevice device(deviceList.front());
     pControl->AddLabel(device.GetName(deviceName), i);
-
+    
     if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
-        pControl->SetValue(i);
+        activeDevice = i; // Tag this one
 
     deviceList.pop_front();
   }
+   pControl->SetValue(activeDevice);
+  
 #elif defined(_WIN32PC)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();

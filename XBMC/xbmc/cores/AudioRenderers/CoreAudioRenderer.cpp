@@ -24,6 +24,7 @@
 #include "CoreAudioRenderer.h"
 #include "Settings.h"
 #include "Atomics.h"
+#include <math.h>
 
 //***********************************************************************************************
 // Performance Monitoring Helper Class
@@ -320,7 +321,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
   m_Pause = true;                       // Suspend rendering. We will start once we have some data.
   m_pCache = new CSliceQueue(m_ChunkLen); // Initialize our incoming data cache
   m_PerfMon.Init(m_AvgBytesPerSec, 1000, CCoreAudioPerformance::FlagDefault); // Set up the performance monitor
-  //m_PerfMon.SetPreroll(5.0f); // Disable underrun detection for the first 5 seconds (after start and after resume)
+  m_PerfMon.SetPreroll(2.0f); // Disable underrun detection for the first 2 seconds (after start and after resume)
   m_Initialized = true;
   
   SetCurrentVolume(g_stSettings.m_nVolumeLevel);
@@ -443,8 +444,10 @@ HRESULT CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
 
   if (m_EnableVolumeControl) // Don't change actual volume for encoded streams
   {  
+    // Convert milliBels to percent
+    Float32 volPct = pow(10.0f, (float)nVolume/2000.0f);
     // Scale the provided value to a range of 0.0 -> 1.0
-    Float32 volPct = (Float32)(nVolume + 6000.0f)/6000.0f;
+    //Float32 volPct = (Float32)(nVolume + 6000.0f)/6000.0f;
     
     // Try to set the volume. If it fails there is not a lot to be done.
     if (!m_AudioUnit.SetCurrentVolume(volPct))
@@ -505,13 +508,14 @@ void CCoreAudioRenderer::WaitCompletion()
   if (!ret)
   {
     // TODO: If we want to be REALLY tight, we could add silence to run-out the hardware/os delay as well (not really necessary)
-    UInt32 delay =  m_pCache->GetTotalBytes()/(m_AvgBytesPerSec/1000); // This is how much time 'should' be in the cache
-    // TODO: Should we add a little padding here to allow for very small differences? Yes, but how much?
+    UInt32 delay =  m_pCache->GetTotalBytes()/(m_AvgBytesPerSec/1000) + 10; // This is how much time 'should' be in the cache
+    // TODO: How should we really determiine the wait time 'padding'?
     ret = MPWaitForEvent(m_RunoutEvent, NULL, kDurationMillisecond * delay); // Wait for the callback thread to process the whole cache, but only wait as long as we expect it to take
     switch (ret)
     {
       case kMPTimeoutErr:
-        CLog::Log(LOGERROR, "CCoreAudioRenderer::WaitCompletion: Timed-out waiting for runout. Remaining data will be truncated.");
+        if (m_pCache->GetTotalBytes()) // Make sure there is still some data left in the cache that didn't get played
+          CLog::Log(LOGERROR, "CCoreAudioRenderer::WaitCompletion: Timed-out waiting for runout. Remaining data will be truncated.");
         break;
       case noErr:
         break;
@@ -542,13 +546,16 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   {
     Pause(); // Stop further requests until we have more data.  The AddPackets method will resume playback
     ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0; // Let the caller know there is no data...
-    if (m_RunoutEvent) // We were waiting for a runout. This is not an error
+    if (m_RunoutEvent) // We were waiting for a runout. This is not an error. drop any remaining data and set the completion flag
     {
+      m_pCache->Clear(); // TODO: Find a clean way to provide the rest of the requested data...      
       MPSetEvent(m_RunoutEvent, 0); // Tell the waiting thread we are done
       CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Runout complete");
     }
     else
+    {
       CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Buffer underrun.");
+    }
   }
   else // Fetch some data for the caller
   {
