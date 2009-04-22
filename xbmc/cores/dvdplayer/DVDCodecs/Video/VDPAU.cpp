@@ -546,6 +546,9 @@ VdpStatus CVDPAU::FiniVDPAUOutput()
   if (!vdp_device) return VDP_STATUS_OK;
   if (!vdpauConfigured) return VDP_STATUS_OK;
 
+  vdp_st = vdp_decoder_destroy(decoder);
+  CheckStatus(vdp_st, __LINE__);
+
   vdp_st = vdp_presentation_queue_destroy(vdp_flip_queue);
   CheckStatus(vdp_st, __LINE__);
 
@@ -774,19 +777,6 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
                                            avctx->height,
                                            &render->surface);
     vdp->CheckStatus(vdp_st, __LINE__);
-    unsigned char *tmp = new unsigned char[(width * height * 3)>>1];
-    if (tmp)
-    {
-      bzero(tmp, width * height);
-      memset(tmp + (width * height), 127, (width * height)>>1);
-      uint32_t pitches[3] = {width, width, width>>1};
-      void* const planes[3] = {tmp, tmp + (width * height), tmp + (width * height)};
-      vdp->vdp_video_surface_put_bits_y_cb_cr(render->surface,
-                                              VDP_YCBCR_FORMAT_YV12,
-                                              planes,
-                                              pitches);
-      delete [] tmp;
-    }
     vdp->m_videoSurfaces.push_back(render);
   }
 
