@@ -183,7 +183,7 @@ void Reconfigure(int nSignal)
 //----------------------------------------------------------------------------
 int main (int argc,  char * argv[]) {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  
+  NSLog(@"%s %s starting up...", PROGNAME, PROGVERS);
   g_xbmchelper = [[XBMCHelper alloc] init];  
   
   signal(SIGHUP, Reconfigure);
