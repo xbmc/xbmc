@@ -731,6 +731,18 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   }
 
   tempItems.Clear();
+  m_database.GetTvShowsByName(strSearch, tempItems);
+
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + g_localizeStrings.Get(20364) + "] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
   m_database.GetMusicVideosByName(strSearch, tempItems);
 
   if (tempItems.Size())
