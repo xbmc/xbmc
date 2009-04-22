@@ -525,7 +525,7 @@
   <include name="SettingsCentreBladeBGDims">
     <posx>210</posx>
     <posy>0</posy>
-    <width>738</width>
+    <width>777</width>
     <height>720</height>
   </include>
 
@@ -667,6 +667,12 @@
     <width>775</width>
     <height>400</height>
   </include>
+
+	<include name="HomeSubMenuBackgroundSettingsDims">
+		<posx>44</posx>
+    <posy>-331</posy>
+		<width>281</width>
+	</include>
 
 <!-- Options Menu -->
 <!-- ============ -->
@@ -1379,6 +1385,12 @@
     <height>42</height>
   </include>
 
+	<include name="MediaItemDetailInfoDimsWide">
+  	<posx>636</posx>
+	  <width>124</width>
+	  <height>42</height>
+	</include>
+
 <!-- TV Wide -->
   <include name="TVWideIconDims">
     <posx>-6</posx>
@@ -1556,6 +1568,13 @@
     <width>21</width>
     <height>25</height>
   </include>
+
+	<include name="TVEpisodeItemOverlayDimsWide">
+  	<posx>628</posx>
+	  <posy>10</posy>
+	  <width>16</width>
+	  <height>25</height>
+	</include>
 
   <include name="TVEpisodeItemDateDims">
     <posx>460</posx>
