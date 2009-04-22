@@ -89,7 +89,17 @@ void CKaraokeLyricsText::addLyrics(const CStdString & text, unsigned int timing,
 {
   Lyric line;
 
-  line.text = text;
+  if ( flags & LYRICS_CONVERT_UTF8 )
+  {
+    // Reset the flag
+    flags &= ~LYRICS_CONVERT_UTF8;
+    g_charsetConverter.unknownToUTF8(text, line.text);
+  }
+  else
+  {
+    line.text = text;
+  }
+
   line.flags = flags;
   line.timing = timing;
 

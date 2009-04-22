@@ -6,15 +6,29 @@
 
 CSDLMouse::CSDLMouse()
 {
+  m_visibleCursor = NULL;
+  m_hiddenCursor = NULL;
 }
 
 CSDLMouse::~CSDLMouse()
 {
+  SDL_SetCursor(m_visibleCursor);
+  if (m_hiddenCursor)
+    SDL_FreeCursor(m_hiddenCursor);
 }
 
 void CSDLMouse::Initialize(void *appData)
 {
-  SDL_ShowCursor(0);
+  // save the current cursor so it can be restored
+  m_visibleCursor = SDL_GetCursor();
+
+  // create a transparent cursor
+  Uint8 data[8];
+  Uint8 mask[8];
+  memset(data, 0, sizeof(data));
+  memset(mask, 0, sizeof(mask));
+  m_hiddenCursor = SDL_CreateCursor(data, mask, 8, 8, 0, 0);
+  SDL_SetCursor(m_hiddenCursor);
 }
 
 bool CSDLMouse::Update(MouseState &state)
@@ -59,7 +73,7 @@ bool CSDLMouse::Update(MouseState &state)
 
 void CSDLMouse::ShowPointer(bool show)
 {
-  SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
+  SDL_SetCursor(show ? m_visibleCursor : m_hiddenCursor);
 }
 
 #endif

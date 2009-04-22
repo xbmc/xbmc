@@ -819,6 +819,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
       CAlbum album;
       nfoReader.GetDetails(album);
       m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, album.songs);
+      GetAlbumArtwork(params.GetAlbumId(), album);
       m_musicDatabase.Close();
       return true;
     }
@@ -974,19 +975,23 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   }
 
   // check thumb stuff
+  GetAlbumArtwork(params.GetAlbumId(), album);
+  m_musicDatabase.Close();
+  return true;
+}
+
+void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
+{
   if (album.thumbURL.m_url.size())
   {
     CStdString thumb;
-    if (!m_musicDatabase.GetAlbumThumb(params.GetAlbumId(),thumb) || thumb.IsEmpty() || !XFILE::CFile::Exists(thumb))
+    if (!m_musicDatabase.GetAlbumThumb(id, thumb) || thumb.IsEmpty() || !XFILE::CFile::Exists(thumb))
     {
       thumb = CUtil::GetCachedAlbumThumb(album.strAlbum,album.strArtist);
       CScraperUrl::DownloadThumbnail(thumb,album.thumbURL.m_url[0]);
-      m_musicDatabase.SaveAlbumThumb(params.GetAlbumId(), thumb);
+      m_musicDatabase.SaveAlbumThumb(id, thumb);
     }
   }
-
-  m_musicDatabase.Close();
-  return true;
 }
 
 bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, CGUIDialogProgress* pDialog)
@@ -1029,6 +1034,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
       CArtist artist;
       nfoReader.GetDetails(artist);
       m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
+      GetArtistArtwork(params.GetArtistId(), strArtist, artist);
       m_musicDatabase.Close();
       return true;
     }
@@ -1131,28 +1137,33 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   }
 
   // check thumb stuff
-  CStdString localThumb;
-  CFileItem item(strArtist);
+  GetArtistArtwork(params.GetArtistId(), strArtist, artist);
+
+  m_musicDatabase.Close();
+  return true;
+}
+
+void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, const CArtist &artist)
+{
+  CStdString artistPath;
+  CFileItem item(artistName);
   CStdString thumb = item.GetCachedArtistThumb();
-  if (m_musicDatabase.GetArtistPath(params.GetArtistId(),localThumb) && !XFILE::CFile::Exists(thumb))
+  if (m_musicDatabase.GetArtistPath(id, artistPath) && !XFILE::CFile::Exists(thumb))
   {
-    CStdString localThumb2 = CUtil::AddFileToFolder(localThumb,"folder.jpg");
-    if (XFILE::CFile::Exists(localThumb2))
+    CStdString localThumb = CUtil::AddFileToFolder(artistPath, "folder.jpg");
+    if (XFILE::CFile::Exists(localThumb))
     {
       CPicture pic;
-      pic.DoCreateThumbnail(localThumb2,thumb);
+      pic.DoCreateThumbnail(localThumb, thumb);
     }
   }
   if (!XFILE::CFile::Exists(thumb) && artist.thumbURL.m_url.size())
     CScraperUrl::DownloadThumbnail(thumb,artist.thumbURL.m_url[0]);
 
   // check fanart
-  CFileItem item2(localThumb,true);
+  CFileItem item2(artistPath, true);
   item.GetMusicInfoTag()->SetArtist(artist.strArtist);
   if (!CFile::Exists(item2.GetCachedFanart()))
     if (!artist.fanart.m_xml.IsEmpty() && artist.fanart.DownloadImage(item2.GetCachedFanart()))
       CLog::Log(LOGERROR, "Failed to download fanart %s to %s", artist.fanart.GetImageURL().c_str(), item2.GetCachedFanart().c_str());
-
-  m_musicDatabase.Close();
-  return true;
 }

@@ -32,6 +32,9 @@
                              Linux: ~/.xbmc/
                              OS X:  ~/Library/Application Support/XBMC/
                              Win32: FIXME: Currently the same as special://home/
+ special://userhome/      - a writable version of the user home directory
+                             Linux, OS X: ~/.xbmc
+                             Win32: home directory of user                             
  special://masterprofile/ - the master users userdata folder - usually special://home/userdata
                              Linux: ~/.xbmc/userdata/
                              OS X:  ~/Library/Application Support/XBMC/UserData/
@@ -53,6 +56,7 @@ public:
   static void SetProfilePath(const CStdString &path);
   static void SetXBMCPath(const CStdString &path);
   static void SetHomePath(const CStdString &path);
+  static void SetUserHomePath(const CStdString &path);
   static void SetMasterProfilePath(const CStdString &path);
   static void SetTempPath(const CStdString &path);
 

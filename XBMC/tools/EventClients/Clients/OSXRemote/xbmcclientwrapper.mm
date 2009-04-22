@@ -100,7 +100,7 @@ class  XBMCClientWrapperImpl{
   bool isStartToken(eATVClientEvent f_event);
   static void timerCallBack (CFRunLoopTimerRef timer, void *info);
 public:
-  XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address = "localhost");
+  XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address = "localhost", bool f_verbose_mode=false);
   ~XBMCClientWrapperImpl();
   void setUniversalModeTimeout(double f_timeout){
     m_sequence_timeout = f_timeout;
@@ -146,8 +146,8 @@ void XBMCClientWrapperImpl::restartTimer(){
 	CFRunLoopAddTimer(CFRunLoopGetCurrent(), m_timer, kCFRunLoopCommonModes);
 }
 
-XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address): 
-m_mode(f_mode), m_address(fcr_address), m_timer(0), m_sequence_timeout(0.5), m_device_id(150), m_verbose_mode(true){
+XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address, bool f_verbose_mode): 
+m_mode(f_mode), m_address(fcr_address), m_timer(0), m_sequence_timeout(0.5), m_device_id(150), m_verbose_mode(f_verbose_mode){
 	PRINT_SIGNATURE();
 	
   if(m_mode == UNIVERSAL_MODE){
@@ -155,7 +155,7 @@ m_mode(f_mode), m_address(fcr_address), m_timer(0), m_sequence_timeout(0.5), m_d
       NSLog(@"XBMCClientWrapperImpl started in universal mode sending to address %s", fcr_address.c_str());
     populateSequenceMap();
   } 
-  if(m_mode == MULTIREMOTE_MODE){
+  else if(m_mode == MULTIREMOTE_MODE){
     populateMultiRemoteModeMap();
     if(m_verbose_mode)
       NSLog(@"XBMCClientWrapperImpl started in multiremote mode sending to address %s", fcr_address.c_str());
@@ -383,13 +383,13 @@ void XBMCClientWrapperImpl::populateMultiRemoteModeMap(){
 
 @implementation XBMCClientWrapper
 - (id) init {
-  return [self initWithMode:DEFAULT_MODE serverAddress:@"localhost"];
+  return [self initWithMode:DEFAULT_MODE serverAddress:@"localhost" verbose: false];
 }
-- (id) initWithMode:(eRemoteMode) f_mode serverAddress:(NSString*) fp_server{
+- (id) initWithMode:(eRemoteMode) f_mode serverAddress:(NSString*) fp_server verbose:(bool) f_verbose{
 	PRINT_SIGNATURE();
 	if( ![super init] )
 		return nil; 
-	mp_impl = new XBMCClientWrapperImpl(f_mode, [fp_server UTF8String]);
+	mp_impl = new XBMCClientWrapperImpl(f_mode, [fp_server UTF8String], f_verbose);
 	return self;
 }
 

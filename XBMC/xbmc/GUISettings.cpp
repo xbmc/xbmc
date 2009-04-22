@@ -451,7 +451,7 @@ void CGUISettings::Initialize()
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif
 #ifdef HAVE_LIBVDPAU
-  AddBool(0, "videoplayer.strictbinding", 13120, false);
+  AddBool(0, "videoplayer.strictbinding", 13120, true);
   AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
 #ifdef HAS_SDL

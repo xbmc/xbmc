@@ -18,7 +18,6 @@
     return nil;
   }
   mp_wrapper = nil;
-  
   mp_remote_control = [[[AppleRemote alloc] initWithDelegate: self] retain];
   [mp_remote_control setProcessesBacklog:true];
   if( ! mp_remote_control ){
@@ -125,15 +124,10 @@
 }
 
 //----------------------------------------------------------------------------
-- (void) connectToServer:(NSString*) fp_server withMode:(eRemoteMode) f_mode{
+- (void) connectToServer:(NSString*) fp_server withMode:(eRemoteMode) f_mode withTimeout:(double) f_timeout{
   if(mp_wrapper)
     [self disconnect];
-  mp_wrapper = [[XBMCClientWrapper alloc] initWithMode:f_mode serverAddress:fp_server];
-  [mp_wrapper enableVerboseMode:m_verbose];
-}
-
-//----------------------------------------------------------------------------
-- (void) setUniversalModeTimeout:(double) f_timeout{
+  mp_wrapper = [[XBMCClientWrapper alloc] initWithMode:f_mode serverAddress:fp_server verbose:m_verbose];
   [mp_wrapper setUniversalModeTimeout:f_timeout];
 }
 
