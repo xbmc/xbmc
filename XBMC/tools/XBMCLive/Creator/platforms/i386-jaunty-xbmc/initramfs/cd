@@ -181,7 +181,9 @@ mountroot ()
     # Make sure the individual ro and rw mounts are accessible from within the root
     # once the union is assumed as /.  This makes it possible to access the
     # component filesystems individually.
-    mkdir "${rootmnt}/.bootMedia" 
+    if [ ! -e "${rootmnt}/.bootMedia" ]; then
+	  mkdir "${rootmnt}/.bootMedia" 
+    fi
     #mkdir "${rootmnt}/.ro1" "${rootmnt}/.ro2" "${rootmnt}/.rw"
 
     mount --bind $BOOTMEDIAMNTPOINT  "${rootmnt}/.bootMedia"
