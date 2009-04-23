@@ -70,7 +70,7 @@ class CVideoReferenceClock : public CThread
     int           m_MissedVBlanks;
     
   protected:
-    void OnStartup();
+    void Process();
     bool UpdateRefreshrate();
     
     void        StartClockGuard();

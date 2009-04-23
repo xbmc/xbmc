@@ -52,7 +52,7 @@ CVideoReferenceClock::~CVideoReferenceClock()
 #endif
 }
 
-void CVideoReferenceClock::OnStartup()
+void CVideoReferenceClock::Process()
 {
   bool PrevSetupSuccess = true;
   bool SetupSuccess = false;
