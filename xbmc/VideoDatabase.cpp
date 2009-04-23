@@ -4842,15 +4842,16 @@ long CVideoDatabase::GetTvShowForEpisode(long idEpisode)
   try
   {
     if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
+    if (NULL == m_pDS2.get()) return false;
 
+    // make sure we use m_pDS2, as this is called in loops using m_pDS
     CStdString strSQL=FormatSQL("select idshow from tvshowlinkepisode where idEpisode=%u", idEpisode);
-    m_pDS->query( strSQL.c_str() );
+    m_pDS2->query( strSQL.c_str() );
 
     long result=-1;
-    if (!m_pDS->eof())
-      result=m_pDS->fv(0).get_asInteger();
-    m_pDS->close();
+    if (!m_pDS2->eof())
+      result=m_pDS2->fv(0).get_asInteger();
+    m_pDS2->close();
 
     return result;
   }
