@@ -82,6 +82,7 @@ bool CVideoDatabase::CreateTables()
   /* advantage of a index that has been created on ( idGenre, idMovie ) */
   /*, hower on on ( idMovie, idGenre ) will be considered for use       */
 
+  BeginTransaction();
   try
   {
     CDatabase::CreateTables();
@@ -300,9 +301,10 @@ bool CVideoDatabase::CreateTables()
   catch (...)
   {
     CLog::Log(LOGERROR, "%s unable to create tables:%i", __FUNCTION__, (int)GetLastError());
+    RollbackTransaction();
     return false;
   }
-
+  CommitTransaction();
   return true;
 }
 
@@ -4857,7 +4859,7 @@ long CVideoDatabase::GetTvShowForEpisode(long idEpisode)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idEpisode);
+    CLog::Log(LOGERROR, "%s (%li) failed", __FUNCTION__, idEpisode);
   }
   return false;
 }
