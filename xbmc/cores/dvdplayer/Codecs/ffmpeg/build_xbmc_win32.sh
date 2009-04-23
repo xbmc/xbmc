@@ -10,7 +10,7 @@ make distclean
 --enable-w32threads \
 --enable-postproc \
 --enable-swscale \
---enable-protocol=http \
+--enable-zlib \
 --disable-static \
 --disable-altivec \
 --disable-vhook \
