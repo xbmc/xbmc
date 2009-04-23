@@ -32,12 +32,6 @@
 #include <string>
 
 #include "sqlitedataset.h"
-#ifndef _LINUX
-#include "sqlite3.h"
-#else
-#include <sqlite3.h>
-#endif
-//#include <unistd.h>
 
 using namespace std;
 
