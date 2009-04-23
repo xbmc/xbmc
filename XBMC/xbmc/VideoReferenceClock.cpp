@@ -746,12 +746,12 @@ void CVideoReferenceClock::Wait(int msecs)
     SDL_CondWaitTimeout(m_VblankCond, m_VblankMutex, 100);
     Unlock();
 #else
-    Sleep(1);
+    ::Sleep(1);
 #endif
   }
   else
   {
-    Sleep(msecs);
+    ::Sleep(msecs);
   }
 }
 
