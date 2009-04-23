@@ -157,6 +157,8 @@ bool CHDDirectory::Create(const char* strPath)
 #endif
 
 #ifndef _LINUX
+  if (strPath1.size() == 3 && strPath1[1] == ':')
+    return Exists(strPath);  // A drive - we can't "create" a drive
   CStdStringW strWPath1;
   g_charsetConverter.utf8ToW(strPath1, strWPath1, false);
   if(::CreateDirectoryW(strWPath1, NULL))
