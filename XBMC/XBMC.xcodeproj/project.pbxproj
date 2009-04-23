@@ -9062,10 +9062,12 @@
 		F5A1CBE30F6B0B4700A96ABD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = ppc;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = XBMC.app;
+				VALID_ARCHS = ppc;
 				ZERO_LINK = NO;
 			};
 			name = Release;
