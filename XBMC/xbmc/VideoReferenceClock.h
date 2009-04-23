@@ -34,6 +34,21 @@
   }
 #endif
 
+//forward declaration
+class CVideoReferenceClock;
+  
+class CClockGuard : public CThread
+{
+  public:
+    CClockGuard();
+    CVideoReferenceClock* m_VideoReferenceClock;
+  
+  private:
+    void Process();
+    
+    LARGE_INTEGER m_SystemFrequency;
+};
+  
 class CVideoReferenceClock : public CThread
 {
   public:
@@ -46,10 +61,20 @@ class CVideoReferenceClock : public CThread
     double GetSpeed();
     int    GetRefreshRate();
     void   Wait(int msecs);
+    void   UpdateClock(int NrVBlanks, bool CheckMissed, bool UpdateVBlankTime);
+    void   SendVblankSignal();
+    void   Lock();
+    void   Unlock();
+
+    LARGE_INTEGER m_VBlankTime;
+    int           m_MissedVBlanks;
     
   protected:
     void OnStartup();
     bool UpdateRefreshrate();
+    
+    void        StartClockGuard();
+    CClockGuard m_ClockGuard;
     
     LARGE_INTEGER m_CurrTime;
     LARGE_INTEGER m_LastRefreshTime;
@@ -66,9 +91,6 @@ class CVideoReferenceClock : public CThread
     SDL_cond*  m_VblankCond;
     SDL_mutex* m_VblankMutex;
 #endif
-    void SendVblankSignal();
-    void Lock();
-    void Unlock();
     
 #ifdef HAS_GLX
     bool SetupGLX();
