@@ -827,7 +827,6 @@ void CClockGuard::Process()
         m_VideoReferenceClock->UpdateClock(1, false, false);
         m_VideoReferenceClock->SendVblankSignal();
         m_VideoReferenceClock->m_VBlankTime.QuadPart += m_SystemFrequency.QuadPart / RefreshRate;
-        static int count = 0;
       }
       
       NextVBlank = m_VideoReferenceClock->m_VBlankTime.QuadPart + m_SystemFrequency.QuadPart / RefreshRate;
