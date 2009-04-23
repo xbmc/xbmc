@@ -830,8 +830,8 @@ void CClockGuard::Process()
     }
     
     NextVBlank = m_VideoReferenceClock->m_VBlankTime.QuadPart + m_SystemFrequency.QuadPart / RefreshRate;
+    NextVBlank += (m_SystemFrequency.QuadPart * (MAXDELAY - 1000) / 1000) / RefreshRate;
     SleepTime = (NextVBlank - Now.QuadPart) * 1000 / m_SystemFrequency.QuadPart;
-    SleepTime += (MAXDELAY - 1000) / RefreshRate;
     
     m_VideoReferenceClock->Unlock();
     
