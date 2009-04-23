@@ -1476,7 +1476,13 @@ extern "C"
       return -1;
     if (!strnicmp(path, "mms://", 6)) // don't stat mms
       return -1;
+      
+#ifndef _LINUX
+    // check for remaining letter drives 
+    if (path[0] != 0 && isalpha(path[0]) && path[1] == ':')
+#else
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
+#endif
     {
       buffer->st_mode = S_IFDIR;
       return 0;
@@ -1535,7 +1541,13 @@ extern "C"
       return -1;
     if (!strnicmp(path, "mms://", 6)) // don't stat mms
       return -1;
+
+#ifndef _LINUX
+    // check for remaining letter drives
+    if (path[0] != 0 && isalpha(path[0]) && path[1] == ':')
+#else
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
+#endif
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
