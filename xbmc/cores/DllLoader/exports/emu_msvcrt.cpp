@@ -1479,7 +1479,7 @@ extern "C"
       
 #ifndef _LINUX
     // check for remaining letter drives 
-    if (path[0] != 0 && isalpha(path[0]) && path[1] == ':')
+    if (path && isalpha(path[0]) && path[1] == ':')
 #else
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
 #endif
@@ -1544,7 +1544,7 @@ extern "C"
 
 #ifndef _LINUX
     // check for remaining letter drives
-    if (path[0] != 0 && isalpha(path[0]) && path[1] == ':')
+    if (path && isalpha(path[0]) && path[1] == ':')
 #else
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
 #endif
