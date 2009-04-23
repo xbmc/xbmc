@@ -816,27 +816,27 @@ void CClockGuard::Process()
   
   while(!m_bStop)
   {
-      m_VideoReferenceClock->Lock();
-      QueryPerformanceCounter(&Now);
-      RefreshRate = m_VideoReferenceClock->GetRefreshRate();
-      
-      DelayTime = Now.QuadPart - m_VideoReferenceClock->m_VBlankTime.QuadPart;
-      if (DelayTime * RefreshRate > m_SystemFrequency.QuadPart * MAXDELAY / 1000)
-      {
-        m_VideoReferenceClock->m_MissedVBlanks++;
-        m_VideoReferenceClock->UpdateClock(1, false, false);
-        m_VideoReferenceClock->SendVblankSignal();
-        m_VideoReferenceClock->m_VBlankTime.QuadPart += m_SystemFrequency.QuadPart / RefreshRate;
-      }
-      
-      NextVBlank = m_VideoReferenceClock->m_VBlankTime.QuadPart + m_SystemFrequency.QuadPart / RefreshRate;
-      SleepTime = (NextVBlank - Now.QuadPart) * 1000 / m_SystemFrequency.QuadPart;
-      SleepTime += (MAXDELAY - 1000) / RefreshRate;
-      
-      m_VideoReferenceClock->Unlock();
-      
-      if (SleepTime > 10) SleepTime = 10;
-      if (SleepTime > 0) ::Sleep(SleepTime);
+    m_VideoReferenceClock->Lock();
+    QueryPerformanceCounter(&Now);
+    RefreshRate = m_VideoReferenceClock->GetRefreshRate();
+    
+    DelayTime = Now.QuadPart - m_VideoReferenceClock->m_VBlankTime.QuadPart;
+    if (DelayTime * RefreshRate > m_SystemFrequency.QuadPart * MAXDELAY / 1000)
+    {
+      m_VideoReferenceClock->m_MissedVBlanks++;
+      m_VideoReferenceClock->UpdateClock(1, false, false);
+      m_VideoReferenceClock->SendVblankSignal();
+      m_VideoReferenceClock->m_VBlankTime.QuadPart += m_SystemFrequency.QuadPart / RefreshRate;
+    }
+    
+    NextVBlank = m_VideoReferenceClock->m_VBlankTime.QuadPart + m_SystemFrequency.QuadPart / RefreshRate;
+    SleepTime = (NextVBlank - Now.QuadPart) * 1000 / m_SystemFrequency.QuadPart;
+    SleepTime += (MAXDELAY - 1000) / RefreshRate;
+    
+    m_VideoReferenceClock->Unlock();
+    
+    if (SleepTime > 100) SleepTime = 100;
+    if (SleepTime > 0) ::Sleep(SleepTime);
   }
 }
 
