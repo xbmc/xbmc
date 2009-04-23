@@ -184,7 +184,7 @@ bool CDatabase::Open()
   }
 
 
-  m_pDS->exec("PRAGMA cache_size=16384\n");
+  m_pDS->exec("PRAGMA cache_size=4096\n");
   m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
   m_pDS->exec("PRAGMA count_changes='OFF'\n");
   m_bOpen = true;
@@ -307,16 +307,16 @@ bool CDatabase::InTransaction()
 
 bool CDatabase::CreateTables()
 {
-    //  all fatx formatted partitions, except the utility drive,
-    //  have a cluster size of 16k. To gain better performance
-    //  when performing write operations to the database, set
-    //  the page size of the database file to 16k.
+    //  Modern file systems have a cluster/block size of 4k.
+    //  To gain better performance when performing write
+    //  operations to the database, set the page size of the
+    //  database file to 4k.
     //  This needs to be done before any table is created.
     CLog::Log(LOGINFO, "Set page size");
-    m_pDS->exec("PRAGMA page_size=16384\n");
+    m_pDS->exec("PRAGMA page_size=4096\n");
     //  Also set the memory cache size to 16k
     CLog::Log(LOGINFO, "Set default cache size");
-    m_pDS->exec("PRAGMA default_cache_size=16384\n");
+    m_pDS->exec("PRAGMA default_cache_size=4096\n");
 
     CLog::Log(LOGINFO, "creating version table");
     m_pDS->exec("CREATE TABLE version (idVersion integer, iCompressCount integer)\n");
