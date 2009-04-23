@@ -72,7 +72,7 @@ public:
 protected:
   void outputTimeoutMessage(const char* message);
   DWORD m_dwLastTime;
-  CStdString m_contenttype;
+  int m_contenttype;
   RIP_MANAGER_OPTIONS m_opt;
 };
 }
