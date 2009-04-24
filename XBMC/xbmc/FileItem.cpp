@@ -2540,6 +2540,15 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsFTP(strFile))
     return "";
 
+
+  // the below code isn't really valid for directories
+  // and would have different behavior for paths with ending
+  // slash or not. so untill someone fixes the code (and
+  // changes it to only look for jpg/png using exists
+  // for subdirectories, it's disabled
+  if(m_bIsFolder)
+    return "";
+
   // we don't have a cached image, so let's see if the user has a local image ..
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
