@@ -244,6 +244,7 @@ bool CVideoReferenceClock::SetupGLX()
   m_LastRefreshTime.QuadPart = 0;
   UpdateRefreshrate();
   
+  m_FailedUpdates = 0;
   StartClockGuard();
   
   return true;
@@ -300,7 +301,7 @@ void CVideoReferenceClock::RunGLX()
   {
     m_glXGetVideoSyncSGI(&VblankCount); 
     ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
-    m_glXGetVideoSyncSGI(&VblankCount); 
+    m_glXGetVideoSyncSGI(&VblankCount);
     if(ReturnV)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
@@ -519,6 +520,7 @@ bool CVideoReferenceClock::SetupD3D()
   m_LastRefreshTime.QuadPart = 0;
   m_Width = 0;
   m_Height = 0;
+  m_FailedUpdates = 0;
   UpdateRefreshrate();
 
   return true;
@@ -614,10 +616,15 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed, bool Upd
     m_MissedVBlanks = 0;
   }
   
-  if (NrVBlanks > 0)
+  if (NrVBlanks > 0 || m_FailedUpdates >= 10)
   {
+    m_FailedUpdates = 0;
     m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
     if (UpdateVBlankTime) QueryPerformanceCounter(&m_VBlankTime);
+  }
+  else if (CheckMissed)
+  {
+    m_FailedUpdates++;
   }
 }
 

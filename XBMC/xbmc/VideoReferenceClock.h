@@ -75,6 +75,7 @@ class CVideoReferenceClock : public CThread
     
     void        StartClockGuard();
     CClockGuard m_ClockGuard;
+    int         m_FailedUpdates;
     
     LARGE_INTEGER m_CurrTime;
     LARGE_INTEGER m_LastRefreshTime;
