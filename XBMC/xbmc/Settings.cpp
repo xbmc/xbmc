@@ -514,7 +514,7 @@ void CSettings::LoadAddons()
 {
   CStdString strXMLFile;
   TiXmlDocument xmlDoc;
-  TiXmlElement *pRootElement;
+  TiXmlElement *pRootElement = NULL;
   strXMLFile = GetAddonsFile();
   CLog::Log(LOGNOTICE, "%s", strXMLFile.c_str());
   if ( xmlDoc.LoadFile( strXMLFile ) )
