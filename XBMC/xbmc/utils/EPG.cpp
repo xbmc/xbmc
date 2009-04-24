@@ -47,6 +47,49 @@ bool CEPGTaskQueue::Add(CEPGTask task)
   return true;
 }
 
+CEPGTask CEPGTaskQueue::Get()
+{
+  CSingleLock lock(m_critSection);
+  CEPGTask top = m_tasks.top();
+  m_tasks.pop();
+  return top;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+/* class CEPGWorker
+*/
+
+CEPGWorker::CEPGWorker(CEPGTaskQueue *queue, const long clientID)
+  : m_queue(queue),
+    m_clientID(clientID)
+{ }
+
+void CEPGWorker::Process()
+{
+  /*CLog::Log(LOGDEBUG, "PVR: Begin Processing %u Tasks", m_tasks.size());*/
+
+  /*while (!m_bStop && m_tasks.size())
+  {
+    CEPGTask task = m_tasks.front();
+    m_tasks.pop();
+    lock.Leave();
+
+    switch (task.m_task) {
+    case CEPGTask::GET_EPG_FOR_CHANNEL:
+      UpdateEPGTask(task.m_channel);
+      CLog::Log(LOGDEBUG, "PVR: client_%u finished epg update for channel %u", task.m_clientID, task.m_channel);
+      break;
+    case CEPGTask::UPDATE_CLIENT_CHANNELS:
+      UpdateChannelsTask(task.m_clientID);
+      CLog::Log(LOGDEBUG, "PVR: client_%u finished channel update", task.m_clientID);
+      break;
+    default:
+      break;
+    }
+    lock.Enter();
+  }*/
+}
+
 //////////////////////////////////////////////////////////////////////////////
 /* class CEPG
  */
@@ -78,6 +121,15 @@ CEPG::CEPG(CPVRManager* manager)
 {
   m_isRunning = false;
   m_manager = manager;
+  CEPGTaskQueue queue(this);
+  CEPGTask t1, t2, t3;
+  t1.m_task = CEPGTask::GET_EPG_FOR_CHANNEL;
+  t2.m_task = CEPGTask::UPDATE_CLIENT_CHANNELS;
+  queue.Add(t1);
+  queue.Add(t2);
+  CEPGTask first = queue.Get();
+  delete queue;
+  int i = 3;
 }
 
 CEPG::~CEPG()
@@ -126,29 +178,7 @@ void CEPG::Close()
 void CEPG::Process()
 {
   CSingleLock lock(m_tasksSection);
-  CLog::Log(LOGDEBUG, "PVR: Begin Processing %u Tasks", m_tasks.size());
-  m_isRunning = true;
-
-  while (!m_bStop && m_tasks.size())
-  {
-    CEPGTask task = m_tasks.front();
-    m_tasks.pop();
-    lock.Leave();
-
-    switch (task.m_task) {
-    case CEPGTask::GET_EPG_FOR_CHANNEL:
-        UpdateEPGTask(task.m_channel);
-        CLog::Log(LOGDEBUG, "PVR: client_%u finished epg update for channel %u", task.m_clientID, task.m_channel);
-        break;
-    case CEPGTask::UPDATE_CLIENT_CHANNELS:
-      UpdateChannelsTask(task.m_clientID);
-      CLog::Log(LOGDEBUG, "PVR: client_%u finished channel update", task.m_clientID);
-      break;
-    default:
-      break;
-    }
-    lock.Enter();
-  }
+  
 
   m_isRunning = false;
   CLog::Log(LOGDEBUG, "PVR: Finished Processing Tasks");

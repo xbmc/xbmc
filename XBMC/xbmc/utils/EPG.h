@@ -41,18 +41,20 @@ class CEPGTask
 {
 public:
   enum Task
-  {
+  { /* arrange tasks in ascending order of importance */
+    // lowest priority
     UPDATE_CLIENT_CHANNELS,
     GET_EPG_FOR_CHANNEL,
+    // highest priority
   } m_task;
   long m_clientID;
   unsigned int m_channel;
-  bool operator<(const CEPGTask& rhs);
+  bool operator<(const CEPGTask &rhs) const;
 };
 
-inline bool CEPGTask::operator<(const CEPGTask& rhs)
+inline bool CEPGTask::operator<(const CEPGTask &rhs) const
 {
-  return (this->m_task < rhs.m_task);
+  return (m_task < rhs.m_task);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -64,22 +66,15 @@ public:
   CEPGTaskQueue(CEPG* producer);
   ~CEPGTaskQueue();
 
-  bool Add(CDateTime time, CEPGTask task);
   bool Add(CEPGTask task);
+  CEPGTask Get();
   
-
 private:
   const CEPG* m_producer;
   static CCriticalSection m_critSection;
 
-  /*bool TaskComp(const CEPGTask& rhs, const CEPGTask& lhs);*/
-  static std::priority_queue< CEPGTask, std::deque< CEPGTask >, std::less< const CEPGTask > > m_tasks;
+  static std::priority_queue< CEPGTask, std::deque< CEPGTask >, std::less< CEPGTask > > m_tasks;
 };
-//
-//inline bool CEPGTaskQueue::TaskComp(const CEPGTask& rhs, const CEPGTask& lhs)
-//{
-//  return rhs.m_task < lhs.m_task;
-//}
 
 //////////////////////////////////////////////////////////////////////////////
 /* class CEPGWorker
@@ -87,16 +82,17 @@ private:
 class CEPGWorker : private CThread
 {
 public:
-  CEPGWorker(const long clientID);
+  CEPGWorker(CEPGTaskQueue *queue, const long clientID);
   ~CEPGWorker();
 
-    virtual void Process();
+  virtual void Process();
   virtual void OnStartup();
   virtual void OnExit();
 
 private:
   // one worker thread per client
   long m_clientID;
+  CEPGTaskQueue *m_queue;
   CEPGTask m_currTask;
 };
 
