@@ -806,7 +806,7 @@ CClockGuard::CClockGuard()
   QueryPerformanceFrequency(&m_SystemFrequency);
 }
 
-#define MAXDELAY 1100
+#define MAXDELAY 1200
 
 void CClockGuard::Process()
 {
