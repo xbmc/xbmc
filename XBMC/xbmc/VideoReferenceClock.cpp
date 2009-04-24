@@ -835,6 +835,7 @@ void CClockGuard::Process()
     DelayTime = Now.QuadPart - m_VideoReferenceClock->m_VBlankTime.QuadPart;
     if (DelayTime * RefreshRate > m_SystemFrequency.QuadPart * MAXDELAY / 1000)
     {
+      static int count = 0; cout << count++ << "\n";
       m_VideoReferenceClock->m_MissedVBlanks++;
       m_VideoReferenceClock->UpdateClock(1, false, false);
       m_VideoReferenceClock->SendVblankSignal();
