@@ -289,6 +289,7 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
   }
 
   g_application.NewFrame();
+  m_presentevent.WaitMSec(1);
 }
 
 float CXBoxRenderManager::GetMaximumFPS()
@@ -349,7 +350,10 @@ void CXBoxRenderManager::Present()
 #ifdef HAVE_LIBVDPAU
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
+  {
+    m_presentevent.Set();
     WaitPresentTime(m_presenttime);
+  }
 #endif
     
   if (!m_pRenderer)
@@ -405,6 +409,7 @@ void CXBoxRenderManager::Present()
     if (!g_VDPAU)
 #endif
     {
+      m_presentevent.Set();
       WaitPresentTime(m_presenttime);
     }
   }

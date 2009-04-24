@@ -31,6 +31,7 @@
 
 #include "utils/SharedSection.h"
 #include "utils/Thread.h"
+#include "utils/Event.h"
 
 class CXBoxRenderManager
 {
@@ -156,6 +157,7 @@ protected:
 
   double     m_presenttime;
   EFIELDSYNC m_presentfield;
+  CEvent     m_presentevent;
 
 };
 
