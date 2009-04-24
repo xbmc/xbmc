@@ -1439,13 +1439,7 @@ extern "C"
     }
 
     struct __stat64 tStat;
-    CStdString strPath(path);
-#ifdef _WIN32PC
-    // win32 can only stat root drives with a slash at the end
-    if(strPath.length() == 2 && strPath[1] ==':')
-      CUtil::AddSlashAtEnd(strPath);
-#endif
-    if (CFile::Stat(strPath, &tStat) == 0)
+    if (CFile::Stat(path, &tStat) == 0)
     {
       CUtil::Stat64ToStat(buffer, &tStat);
       return 0;
@@ -1488,13 +1482,7 @@ extern "C"
       return 0;
     }
 
-    CStdString strPath(path);
-#ifdef _WIN32PC
-    if(strPath.length() == 2 && strPath[1] ==':')
-      CUtil::AddSlashAtEnd(strPath);
-#endif
-
-    return CFile::Stat(strPath, buffer);
+    return CFile::Stat(path, buffer);
   }
 
 
