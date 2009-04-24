@@ -134,111 +134,6 @@ extern "C"
     std::vector<const char *> entry;
   };
 
-  ////////////////////////////////
-  typedef struct
-  {
-  public:
-    int           type;
-    char*         name;
-    int           current;
-    char**        entry;
-    unsigned int  entry_elements;
-  } StructSetting;
-
-  class VisUtils
-  {
-  public:
-
-    static unsigned int VecToStruct(std::vector<VisSetting> &vecSet, StructSetting*** sSet) 
-    {
-      *sSet = NULL;
-      if(vecSet.size() == 0)
-        return 0;
-
-      unsigned int uiElements=0;
-
-      *sSet = (StructSetting**)malloc(vecSet.size()*sizeof(StructSetting*));
-      for(unsigned int i=0;i<vecSet.size();i++)
-      {
-        (*sSet)[i] = NULL;
-        (*sSet)[i] = (StructSetting*)malloc(sizeof(StructSetting));
-        (*sSet)[i]->name = NULL;
-        uiElements++;
-
-        if (vecSet[i].name)
-        {
-          (*sSet)[i]->name = (char*)malloc(strlen(vecSet[i].name)*sizeof(char*)+1);
-          strcpy((*sSet)[i]->name, vecSet[i].name);
-          (*sSet)[i]->type = vecSet[i].type;
-          (*sSet)[i]->current = vecSet[i].current;
-          if(vecSet[i].type == VisSetting::SPIN && vecSet[i].entry.size() > 0)
-          {
-            (*sSet)[i]->entry = (char**)malloc(vecSet[i].entry.size()*sizeof(char**));
-            (*sSet)[i]->entry_elements = 0;
-            for(unsigned int j=0;j<vecSet[i].entry.size();j++)
-            {
-              (*sSet)[i]->entry[j] = NULL;
-              if(strlen(vecSet[i].entry[j]) > 0)
-              {
-                (*sSet)[i]->entry[j] = (char*)malloc(strlen(vecSet[i].entry[j])*sizeof(char*)+1);
-                strcpy((*sSet)[i]->entry[j], vecSet[i].entry[j]);
-                (*sSet)[i]->entry_elements++;
-              }
-            }
-          }
-        }
-      }
-      return uiElements;
-    }
-
-    static void StructToVec(unsigned int iElements, StructSetting*** sSet, std::vector<VisSetting> *vecSet) 
-    {
-      if(iElements == 0)
-        return;
-
-      vecSet->clear();
-      for(unsigned int i=0;i<iElements;i++)
-      {
-        VisSetting vSet((VisSetting::SETTING_TYPE)(*sSet)[i]->type, (*sSet)[i]->name);
-        if((*sSet)[i]->type == VisSetting::SPIN)
-        {
-          for(unsigned int j=0;j<(*sSet)[i]->entry_elements;j++)
-          {
-              vSet.AddEntry((*sSet)[i]->entry[j]);
-          }
-        }
-        vSet.current = (*sSet)[i]->current;
-        vecSet->push_back(vSet);
-      }
-    }
-
-    static void FreeStruct(unsigned int iElements, StructSetting*** sSet)
-    {
-      if(iElements == 0)
-        return;
-
-      for(unsigned int i=0;i<iElements;i++)
-      {
-        if((*sSet)[i]->type == VisSetting::SPIN)
-        {
-          for(unsigned int j=0;j<(*sSet)[i]->entry_elements;j++)
-          {
-            if((*sSet)[i]->entry[j])
-              free((*sSet)[i]->entry[j]);
-          }
-          if((*sSet)[i]->entry)
-            free((*sSet)[i]->entry);
-        }
-        if((*sSet)[i]->name)
-          free((*sSet)[i]->name);
-        if((*sSet)[i])
-          free((*sSet)[i]);
-      }
-      if(*sSet)
-        free(*sSet);
-    }
-  };
-
   struct Visualisation
   {
   public:
@@ -249,9 +144,8 @@ extern "C"
     void (__cdecl* Stop)();
     void (__cdecl* GetInfo)(VIS_INFO *info);
     bool (__cdecl* OnAction)(long flags, void *param);
-    void (__cdecl *FreeSettings)();
-    unsigned int (__cdecl *GetSettings)(StructSetting*** sSet);
-    void (__cdecl *UpdateSetting)(int num, StructSetting*** sSet);
+    void (__cdecl *GetSettings)(std::vector<VisSetting> **vecSettings); 
+    void (__cdecl *UpdateSetting)(int num);
     void (__cdecl *GetPresets)(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   };
 
