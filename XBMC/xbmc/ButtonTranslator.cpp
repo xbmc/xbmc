@@ -894,7 +894,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("selectdialog")) wWindowID = WINDOW_DIALOG_SELECT;
   else if (strWindow.Equals("okdialog")) wWindowID = WINDOW_DIALOG_OK;
   else if (strWindow.Equals("movieinformation")) wWindowID = WINDOW_VIDEO_INFO;
-  else if (strWindow.Equals("epgproginfo")) wWindowID = WINDOW_DIALOG_EPG_INFO;
+  //else if (strWindow.Equals("epgproginfo")) wWindowID = WINDOW_DIALOG_EPG_INFO;
   else if (strWindow.Equals("scriptsdebuginfo")) wWindowID = WINDOW_SCRIPTS_INFO;
   else if (strWindow.Equals("fullscreenvideo")) wWindowID = WINDOW_FULLSCREEN_VIDEO;
   else if (strWindow.Equals("visualisation")) wWindowID = WINDOW_VISUALISATION;

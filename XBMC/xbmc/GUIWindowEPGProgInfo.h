@@ -21,7 +21,7 @@
 *
 */
 
-#include "GUIDialog.h"
+#include "GUIDialogProgress.h"
 #include "GUIListItem.h"
 #include "TVDatabase.h"
 

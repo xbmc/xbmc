@@ -152,10 +152,10 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
           CFileItemList channelslist;
           int ret_channels;
 
-          if (!m_progItem->GetTVEPGInfoTag()->m_isRadio)
-            ret_channels = CPVRManager::GetInstance()->GetTVChannels(&channelslist, -1, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
-          else
-            ret_channels = CPVRManager::GetInstance()->GetRadioChannels(&channelslist, -1, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
+      /*    if (!m_progItem->GetTVEPGInfoTag()->m_isRadio)*/
+     /*       ret_channels = CPVRManager::GetInstance()->GetTVChannels(&channelslist, -1, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));*/
+        /*  else*/
+     /*       ret_channels = CPVRManager::GetInstance()->GetRadioChannels(&channelslist, -1, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));*/
 
           if (ret_channels > 0)
           {
@@ -202,7 +202,7 @@ void CGUIDialogTVEPGProgInfo::Update()
   strTemp = m_progItem->GetTVEPGInfoTag()->m_strGenre; strTemp.Trim();
   SetLabel(CONTROL_PROG_GENRE, strTemp);
 
-  strTemp = CPVRManager::GetInstance()->GetNameForChannel(m_progItem->GetTVEPGInfoTag()->m_channelNum);
+  strTemp = m_progItem->GetTVEPGInfoTag()->m_strChannel;
   strTemp.Trim();
   SetLabel(CONTROL_PROG_CHANNEL, strTemp);
 

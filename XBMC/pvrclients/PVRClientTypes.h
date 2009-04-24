@@ -28,7 +28,7 @@ Common data structures shared between XBMC and PVR clients
 
 #define MIN_XBMC_PVRDLL_API 1
 
-#include "../settings/DllAddonSettings.h"
+#include "../xbmc/settings/DllAddonSettings.h"
 
 #include <vector>
 #include <string.h>
@@ -56,8 +56,10 @@ extern "C"
     PVR_ERROR_SERVER_TIMEOUT       = -4,
     PVR_ERROR_NOT_SYNC             = -5,
     PVR_ERROR_NOT_DELETED          = -6,
-    PVR_ERROR_NOT_SAVED            = -7
-  } PVR_ERROR;
+    PVR_ERROR_NOT_SAVED            = -7,
+    PVR_ERROR_RECORDING_RUNNING    = -8,
+    PVR_ERROR_ALREADY_PRESENT      = -9
+  } PVR_ERROR; 
 
   /**
   * PVR Client Event Codes
@@ -76,11 +78,6 @@ extern "C"
   * Returned on client initialization
   */ 
   typedef struct PVR_SERVERPROPS {
-    const char* Name;
-    const char* DefaultHostname;
-    int   DefaultPort;
-    const char* DefaultUser;
-    const char* DefaultPassword;
     bool SupportChannelLogo;
     bool SupportChannelSettings;
     bool SupportTimeShift;
@@ -98,9 +95,9 @@ extern "C"
   */
   typedef struct PVR_CHANNEL {
     int         uid;
-    const char  *name;
-    const char  *callsign;
-    const char  *iconpath;
+    char        name[64];
+    char        callsign[8];
+    char        iconpath[128];
     int         number;
     int         bouquet;
     bool        encrypted;
@@ -167,9 +164,6 @@ extern "C"
   // Structure to transfer the above functions to XBMC
   struct PVRClient
   {
-    void (__cdecl *FreeSettings)();
-    unsigned int (__cdecl *GetSettings)(DllSettingStruct*** sSet);
-    void (__cdecl *UpdateSetting)(int num, DllSettingStruct*** sSet);
     PVR_ERROR (__cdecl* Create)(PVRCallbacks *callbacks);
     long (__cdecl* GetID)();
     PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);
@@ -182,8 +176,10 @@ extern "C"
     int (__cdecl* GetNumBouquets)();
     PVR_ERROR (__cdecl* GetBouquetInfo)(const unsigned number, PVR_BOUQUET *info);
     int (__cdecl* GetNumChannels)();
-    PVR_ERROR (__cdecl* GetChannelList)(PVR_CHANLIST *channels);
-    PVR_ERROR (__cdecl* GetEPGForChannel)(const unsigned channel, PVR_PROGLIST *epg, time_t start, time_t end);
+    unsigned int (__cdecl* GetChannelList)(PVR_CHANNEL ***channels);
+    //unsigned int (__cdecl* GetNumTimers)();
+    //PVR_ERROR (__cdecl* GetTimers)(PVR_ ***timers);
+    PVR_ERROR (__cdecl* GetEPGForChannel)(const unsigned channel, PVR_PROGLIST **epg, time_t start, time_t end);
     PVR_ERROR (__cdecl* GetEPGNowInfo)(const unsigned channel, PVR_PROGINFO *result);
     PVR_ERROR (__cdecl* GetEPGNextInfo)(const unsigned channel, PVR_PROGINFO *result);
     PVR_ERROR (__cdecl* GetEPGDataEnd)(time_t *end);

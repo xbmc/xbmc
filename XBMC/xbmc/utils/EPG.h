@@ -1,6 +1,6 @@
 #pragma once
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2009 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -24,33 +24,88 @@
 #include "PVRManager.h"
 #include "Thread.h"
 #include "DateTime.h"
-#include <queue>
+
+#include <deque>
 
 class IEPGObserver
 {
 public:
   virtual ~IEPGObserver() {}
   virtual void OnChannelUpdated(unsigned channel) = 0;
-
 };
 
-class CEPG : private CThread
+//////////////////////////////////////////////////////////////////////////////
+/* class CEPGTask
+*/
+class CEPGTask
 {
 public:
-  typedef enum Task
+  enum Task
   {
     UPDATE_CLIENT_CHANNELS,
     GET_EPG_FOR_CHANNEL,
-  };
+  } m_task;
+  long m_clientID;
+  unsigned int m_channel;
+  bool operator<(const CEPGTask& rhs);
+};
 
-  class CEPGTask
-  {
-  public:
-    Task m_task;
-    long m_clientID;
-    unsigned int m_channel;
-  };
+inline bool CEPGTask::operator<(const CEPGTask& rhs)
+{
+  return (this->m_task < rhs.m_task);
+}
 
+//////////////////////////////////////////////////////////////////////////////
+/* class CEPGTaskQueue
+*/
+class CEPGTaskQueue
+{
+public:
+  CEPGTaskQueue(CEPG* producer);
+  ~CEPGTaskQueue();
+
+  bool Add(CDateTime time, CEPGTask task);
+  bool Add(CEPGTask task);
+  
+
+private:
+  const CEPG* m_producer;
+  static CCriticalSection m_critSection;
+
+  /*bool TaskComp(const CEPGTask& rhs, const CEPGTask& lhs);*/
+  static std::priority_queue< CEPGTask, std::deque< CEPGTask >, std::less< const CEPGTask > > m_tasks;
+};
+//
+//inline bool CEPGTaskQueue::TaskComp(const CEPGTask& rhs, const CEPGTask& lhs)
+//{
+//  return rhs.m_task < lhs.m_task;
+//}
+
+//////////////////////////////////////////////////////////////////////////////
+/* class CEPGWorker
+*/
+class CEPGWorker : private CThread
+{
+public:
+  CEPGWorker(const long clientID);
+  ~CEPGWorker();
+
+    virtual void Process();
+  virtual void OnStartup();
+  virtual void OnExit();
+
+private:
+  // one worker thread per client
+  long m_clientID;
+  CEPGTask m_currTask;
+};
+
+//////////////////////////////////////////////////////////////////////////////
+/* class CEPG
+*/
+class CEPG : private CThread
+{
+public:
   ~CEPG();
   static CEPG* Get();
   void Attach(IEPGObserver* obs);

@@ -25,8 +25,33 @@
 
 using namespace XFILE;
 
+//////////////////////////////////////////////////////////////////////////////
+/* class CEPGTaskQueue
+*/
+std::priority_queue< CEPGTask, std::deque< CEPGTask >, std::less< CEPGTask > > CEPGTaskQueue::m_tasks;
+CCriticalSection CEPGTaskQueue::m_critSection;
+
+CEPGTaskQueue::CEPGTaskQueue(CEPG* producer)
+  : m_producer(producer)
+{ }
+
+CEPGTaskQueue::~CEPGTaskQueue()
+{
+  m_producer = NULL;
+}
+
+bool CEPGTaskQueue::Add(CEPGTask task)
+{
+  CSingleLock lock(m_critSection);
+  m_tasks.push(task);
+  return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+/* class CEPG
+ */
 CEPG*                               CEPG::m_instance = NULL;
-std::queue< CEPG::CEPGTask >              CEPG::m_tasks;
+std::queue< CEPGTask >              CEPG::m_tasks;
 std::map< long, IPVRClient* >       CEPG::m_clients;
 std::vector< IEPGObserver* >        CEPG::m_observers;
 CTVDatabase                         CEPG::m_database;
@@ -111,11 +136,11 @@ void CEPG::Process()
     lock.Leave();
 
     switch (task.m_task) {
-    case GET_EPG_FOR_CHANNEL:
+    case CEPGTask::GET_EPG_FOR_CHANNEL:
         UpdateEPGTask(task.m_channel);
         CLog::Log(LOGDEBUG, "PVR: client_%u finished epg update for channel %u", task.m_clientID, task.m_channel);
         break;
-    case UPDATE_CLIENT_CHANNELS:
+    case CEPGTask::UPDATE_CLIENT_CHANNELS:
       UpdateChannelsTask(task.m_clientID);
       CLog::Log(LOGDEBUG, "PVR: client_%u finished channel update", task.m_clientID);
       break;
@@ -144,7 +169,7 @@ void CEPG::UpdateChannels()
       // client is configured by user, but non-functional
       return;
 
-    task.m_task = UPDATE_CLIENT_CHANNELS;
+    task.m_task = CEPGTask::UPDATE_CLIENT_CHANNELS;
 
     CSingleLock taskLock(m_tasksSection);
     m_tasks.push(task);
@@ -282,7 +307,7 @@ void CEPG::UpdateEPG()
     task.m_clientID = (*itr).m_clientID;
     clientsLock.Leave();
 
-    task.m_task = GET_EPG_FOR_CHANNEL;
+    task.m_task = CEPGTask::GET_EPG_FOR_CHANNEL;
     task.m_channel = (*itr).m_iClientNum;
 
     CSingleLock taskLock(m_tasksSection);
@@ -306,7 +331,6 @@ void CEPG::UpdateEPG()
 void CEPG::UpdateEPGTask(unsigned int channelNo)
 {
   CDateTime now = CDateTime::GetCurrentDateTime();
-  int difference_from_GMT;
 
   CSingleLock clientLock(m_clientsSection);
   long clientID = m_grid[channelNo].m_clientID;

@@ -173,7 +173,8 @@ CFileItem::CFileItem(const CTVChannelInfoTag& channel)
   m_bIsFolder = false;
   *GetTVChannelInfoTag() = channel;
   SetLabel(channel.m_strChannel);
-  m_strLabel2 = channel.m_strTitle;
+  //TODO drop this altogether?
+  /*m_strLabel2 = channel.m_strTitle;*/
   SetThumbnailImage(channel.m_IconPath);
   //FillInDefaultIcon();
   //SetVideoThumb();
@@ -2357,7 +2358,7 @@ bool CFileItemList::AlwaysCache() const
     return CMusicDatabaseDirectory::CanCache(m_strPath);
   if (IsVideoDb())
     return CVideoDatabaseDirectory::CanCache(m_strPath);
-  if (IsPVR())
+  if (IsTVEPG())
     return true; // always cache
   return false;
 }

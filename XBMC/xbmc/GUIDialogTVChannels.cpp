@@ -106,18 +106,18 @@ void CGUIDialogTVChannels::Update()
   // empty the list ready for population
   Clear();
 
-  if (CPVRManager::GetInstance()->IsPlayingTV())
+  /*if (CPVRManager::GetInstance()->IsPlayingTV())
   {
-    CPVRManager::GetInstance()->GetTVChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup(), false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
+    CEPG::Get()->GetTVChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup(), false, !g_guiSettings.GetBool("pvr.ftaonly"));
   }
   else if (CPVRManager::GetInstance()->IsPlayingRadio())
   {
-    CPVRManager::GetInstance()->GetRadioChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup(), false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
-  }
+    CPVRManager::GetInstance()->GetRadioChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup(), false, !g_guiSettings.GetBool("pvru.ftaonly"));
+  }*/
 
   m_viewControl.SetItems(*m_vecItems);
 
-  m_viewControl.SetSelectedItem(CPVRManager::GetInstance()->GetCurrentChannel(CPVRManager::GetInstance()->IsPlayingRadio())-1);
+  //m_viewControl.SetSelectedItem(CPVRManager::GetInstance()->GetCurrentChannel(CPVRManager::GetInstance()->IsPlayingRadio())-1);
   g_graphicsContext.Unlock();
 }
 

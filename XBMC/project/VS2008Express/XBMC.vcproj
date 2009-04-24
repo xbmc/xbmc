@@ -68,7 +68,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
 				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib"
-				OutputFile="d:\dev\svn.xbmc\unified-pvr\XBMC\XBMC.exe"
+				OutputFile="d:\dev\svn.xbmc\branches\unified-pvr\XBMC\xbmc.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
@@ -2690,6 +2690,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\DllAddon.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\settings\DllAddonSettings.h"
 					>
 				</File>
@@ -3054,11 +3058,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\TVChannel.cpp"
+					RelativePath="..\..\xbmc\utils\TVChannelInfoTag.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TVChannelInfoTag.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\TVEPGInfoTag.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TVRecordInfoTag.cpp"
 					>
 				</File>
 				<File
@@ -3391,6 +3403,46 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogSubMenu.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVChannels.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVChannels.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVEPGProgInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVEPGProgInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVGroupManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVGroupManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVRecordingInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVRecordingInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVTimerSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVTimerSettings.h"
 					>
 				</File>
 				<File

@@ -199,13 +199,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CFileItem item(g_application.CurrentFileItem());
       if (item.HasTVChannelInfoTag())
       {
-        int current_group = CPVRManager::GetInstance()->GetPlayingGroup();
+        /*int current_group = CEPG::GetInstance()->GetPlayingGroup();
         current_group = CPVRManager::GetInstance()->GetPrevGroupID(current_group);
-        CPVRManager::GetInstance()->SetPlayingGroup(current_group);
+        CPVRManager::GetInstance()->SetPlayingGroup(current_group);*/
 
-        CAction action;
+        /*CAction action;
         action.wID = ACTION_CHANNEL_SWITCH;
-        action.fAmount1 = CPVRManager::GetInstance()->GetFirstChannelForGroupID(current_group);
+        action.fAmount1 = CPVRManager::GetInstance()->GetFirstChannelForGroupID(current_group);*/
         OnAction(action);
       }
       else
@@ -221,14 +221,14 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CFileItem item(g_application.CurrentFileItem());
       if (item.HasTVChannelInfoTag())
       {
-        int current_group = CPVRManager::GetInstance()->GetPlayingGroup();
+        /*int current_group = CPVRManager::GetInstance()->GetPlayingGroup();
         current_group = CPVRManager::GetInstance()->GetNextGroupID(current_group);
         CPVRManager::GetInstance()->SetPlayingGroup(current_group);
 
         CAction action;
         action.wID = ACTION_CHANNEL_SWITCH;
         action.fAmount1 = CPVRManager::GetInstance()->GetFirstChannelForGroupID(current_group);
-        OnAction(action);
+        OnAction(action);*/
       }
       else
       {

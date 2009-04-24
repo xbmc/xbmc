@@ -60,6 +60,7 @@
 #include "GUIDialogOK.h"
 #include "GUIWindowPrograms.h"
 #include "MediaManager.h"
+#include "PVRManager.h"
 #include "utils/Network.h"
 #include "lib/libGoAhead/WebServer.h"
 #include "GUIControlGroupList.h"
@@ -1027,6 +1028,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvr.enabled"));
+      if (strSetting.Equals("pvr.infotime"))
+      {
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvr.infoswitch"));
+
+      }
     }
     else if (!strSetting.Equals("remoteevents.enabled")
              && strSetting.Left(13).Equals("remoteevents."))
@@ -2280,7 +2287,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("pvr.pvrsources"))
   {
     if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PVRDLL, true))
-    { // save the new list
+    { // clients have changed, inform pvrmanager
+      CPVRManager::GetInstance()->LoadClients();
+
+      // save the new list
       g_settings.SaveAddons();
     }
     else

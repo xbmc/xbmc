@@ -25,7 +25,7 @@
 #include "DllPVRClient.h"
 #include "Thread.h"
 
-class CPVRClient : public IPVRClient/*, public CThread*/
+class CPVRClient : public IPVRClient
 {
 public:
   CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll, 
@@ -39,6 +39,7 @@ public:
   void OnClientMessage(PVR_EVENT event);
 
   // IPVRClient //////////////////////////////////////////////////////////////
+  virtual CCriticalSection* GetLock() { return &m_critSection; }
   /* Server */
   virtual long GetID();
   virtual PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
@@ -56,19 +57,31 @@ public:
   virtual int GetNumChannels();
   virtual PVR_ERROR GetChannelList(VECCHANNELS &channels);
   /* EPG */
-  virtual PVR_ERROR GetEPGForChannel(const unsigned int number, PVR_PROGLIST *epg, time_t start = NULL, time_t end = NULL);
+  virtual PVR_ERROR GetEPGForChannel(const unsigned int number, CFileItemList &epg, const CDateTime &start, const CDateTime &end);
   virtual PVR_ERROR GetEPGNowInfo(const unsigned int number, PVR_PROGINFO *result);
   virtual PVR_ERROR GetEPGNextInfo(const unsigned int number, PVR_PROGINFO *result);
   virtual PVR_ERROR GetEPGDataEnd(time_t end);
+  /* Timers */
+  virtual const unsigned int GetNumTimers(void);
+  virtual PVR_ERROR GetTimers(VECTVTIMERS &timers);
+  virtual PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo);
+  virtual PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force = false);
+  virtual PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname);
+  virtual PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo);
 
   
 protected:
-  void ConvertChannels(PVR_CHANLIST in, VECCHANNELS &out);
+  bool ConvertChannels(unsigned int num, PVR_CHANNEL **clientChans, VECCHANNELS &out);
+  void FreeChannelList(unsigned int num, PVR_CHANNEL **clientChans);
   const long m_clientID;
   std::auto_ptr<struct PVRClient> m_pClient;
   std::auto_ptr<DllPVRClient> m_pDll;
   CStdString m_clientName;
   CStdString m_hostName;
+  CStdString m_backendName;
+  CStdString m_backendVersion;
+
+  CCriticalSection m_critSection;
   IPVRClientCallback* m_manager;
 
 private:

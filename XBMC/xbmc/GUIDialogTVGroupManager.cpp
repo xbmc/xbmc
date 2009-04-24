@@ -102,7 +102,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
         {
           if (strDescription != "")
           {
-            CPVRManager::GetInstance()->AddGroup(strDescription);
+        /*    CPVRManager::GetInstance()->AddGroup(strDescription);*/
             Update();
           }
         }
@@ -119,13 +119,13 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
         {
           pDialog->SetHeading(117);
           pDialog->SetLine(0, "");
-          pDialog->SetLine(1, CPVRManager::GetInstance()->GetGroupName(atoi(pItemGroup->m_strPath.c_str())));
+         /* pDialog->SetLine(1, CPVRManager::GetInstance()->GetGroupName(atoi(pItemGroup->m_strPath.c_str())));*/
           pDialog->SetLine(2, "");
           pDialog->DoModal();
 
           if (pDialog->IsConfirmed())
           {
-            CPVRManager::GetInstance()->DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));
+        /*    CPVRManager::GetInstance()->DeleteGroup(atoi(pItemGroup->m_strPath.c_str()));*/
             Update();
           }
         }
@@ -137,7 +137,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
         {
           if (m_CurrentGroupName != "")
           {
-            CPVRManager::GetInstance()->RenameGroup(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()), m_CurrentGroupName);
+            /*CPVRManager::GetInstance()->RenameGroup(atoi(m_channelGroupItems->Get(m_iSelectedGroup)->m_strPath.c_str()), m_CurrentGroupName);*/
           }
           Update();
         }
@@ -157,7 +157,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
           {
             CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
             CFileItemPtr pItemChannel = m_channelLeftItems->Get(m_iSelectedLeft);
-            CPVRManager::GetInstance()->ChannelToGroup(pItemChannel->GetTVChannelInfoTag()->m_iChannelNum, atoi(pItemGroup->m_strPath.c_str()), m_bIsRadio);
+            /*CPVRManager::GetInstance()->ChannelToGroup(pItemChannel->GetTVChannelInfoTag()->m_iChannelNum, atoi(pItemGroup->m_strPath.c_str()), m_bIsRadio);*/
             Update();
           }
           return true;
@@ -173,7 +173,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
           if (m_channelRightItems->GetFileCount() > 0)
           {
             CFileItemPtr pItemChannel = m_channelRightItems->Get(m_iSelectedRight);
-            CPVRManager::GetInstance()->ChannelToGroup(pItemChannel->GetTVChannelInfoTag()->m_iChannelNum, 0, m_bIsRadio);
+            /*CPVRManager::GetInstance()->ChannelToGroup(pItemChannel->GetTVChannelInfoTag()->m_iChannelNum, 0, m_bIsRadio);*/
             Update();
           }
           return true;
@@ -235,14 +235,14 @@ void CGUIDialogTVGroupManager::Update()
   // empty the lists ready for population
   Clear();
 
-  int groups = CPVRManager::GetInstance()->GetGroupList(m_channelGroupItems);
+  int groups = 0; /*CPVRManager::GetInstance()->GetGroupList(m_channelGroupItems);*/
   m_viewControlGroup.SetItems(*m_channelGroupItems);
   m_viewControlGroup.SetSelectedItem(m_iSelectedGroup);
 
-  if (!m_bIsRadio)
-    CPVRManager::GetInstance()->GetTVChannels(m_channelLeftItems, 0, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
-  else
-    CPVRManager::GetInstance()->GetRadioChannels(m_channelLeftItems, 0, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
+  //if (!m_bIsRadio)
+  //  CPVRManager::GetInstance()->GetTVChannels(m_channelLeftItems, 0, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
+  //else
+  //  CPVRManager::GetInstance()->GetRadioChannels(m_channelLeftItems, 0, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
   m_viewControlLeft.SetItems(*m_channelLeftItems);
   m_viewControlLeft.SetSelectedItem(m_iSelectedLeft);
 
@@ -252,10 +252,10 @@ void CGUIDialogTVGroupManager::Update()
     m_CurrentGroupName = pItem->m_strTitle;
     SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_CurrentGroupName);
 
-    if (!m_bIsRadio)
-      CPVRManager::GetInstance()->GetTVChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()), false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
-    else
-      CPVRManager::GetInstance()->GetRadioChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()), false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
+    //if (!m_bIsRadio)
+    //  CPVRManager::GetInstance()->GetTVChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()), false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
+    //else
+    //  CPVRManager::GetInstance()->GetRadioChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()), false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
     m_viewControlRight.SetItems(*m_channelRightItems);
     m_viewControlRight.SetSelectedItem(m_iSelectedRight);
   }

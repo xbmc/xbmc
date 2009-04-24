@@ -71,7 +71,7 @@ void CGUIDialogTVTimerSettings::CreateSettings()
     // For TV
     CFileItemList channelslist_tv;
     SETTINGSTRINGS channelstrings_tv;
-    CPVRManager::GetInstance()->GetTVChannels(&channelslist_tv, -1, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
+    /*CPVRManager::GetInstance()->GetTVChannels(&channelslist_tv, -1, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));*/
 
     channelstrings_tv.push_back("0 dummy");
 
@@ -89,7 +89,7 @@ void CGUIDialogTVTimerSettings::CreateSettings()
 	// For Radio
     CFileItemList channelslist_radio;
     SETTINGSTRINGS channelstrings_radio;
-    CPVRManager::GetInstance()->GetRadioChannels(&channelslist_radio, -1, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));
+    /*CPVRManager::GetInstance()->GetRadioChannels(&channelslist_radio, -1, false, !g_guiSettings.GetBool("pvrmenu.ftaonly"));*/
 
     channelstrings_radio.push_back("0 dummy");
 
@@ -283,13 +283,13 @@ void CGUIDialogTVTimerSettings::OnSettingChanged(unsigned int num)
   {
     EnableSettings(CONTROL_TMR_CHNAME_TV, !tag->m_Radio);
     EnableSettings(CONTROL_TMR_CHNAME_RADIO, tag->m_Radio);
-    tag->m_strChannel = CPVRManager::GetInstance()->GetNameForChannel(tag->m_channelNum, tag->m_Radio);
-    tag->m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(tag->m_channelNum, tag->m_Radio);
+    /*tag->m_strChannel = CPVRManager::GetInstance()->GetNameForChannel(tag->m_channelNum, tag->m_Radio);
+    tag->m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(tag->m_channelNum, tag->m_Radio);*/
   }
   else if (setting.id == CONTROL_TMR_CHNAME_TV || setting.id == CONTROL_TMR_CHNAME_RADIO)
   {
-    tag->m_strChannel = CPVRManager::GetInstance()->GetNameForChannel(tag->m_channelNum, tag->m_Radio);
-    tag->m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(tag->m_channelNum, tag->m_Radio);
+    /*tag->m_strChannel = CPVRManager::GetInstance()->GetNameForChannel(tag->m_channelNum, tag->m_Radio);
+    tag->m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(tag->m_channelNum, tag->m_Radio);*/
   }
   else if (setting.id == CONTROL_TMR_DAY && m_tmp_day > 10)
   {

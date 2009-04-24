@@ -50,7 +50,7 @@
 #define CONTROL_BTN_RECORD              6
 
 CGUIWindowEPGProgInfo::CGUIWindowEPGProgInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_EPG_INFO, "DialogEPGProgInfo.xml")
+    : CGUIDialog(WINDOW_DIALOG_TV_GUIDE_INFO, "DialogEPGProgInfo.xml")
     , m_progItem(new CFileItem)
 {
   m_likeList = new CFileItemList;
@@ -101,52 +101,52 @@ void CGUIWindowEPGProgInfo::SetProgramme(const CFileItem *item)
 {
   *m_progItem = *item;
  
-  // get list of like items
-  ClearLists();
-  m_database.Open();
-  m_database.GetProgrammesByEpisodeID(m_progItem->GetEPGInfoTag()->m_episodeID, m_likeList, true);    // episodeID matches rank higher == appear first in the list
-  /*m_database.GetProgrammesBySubtitle(m_progItem->GetEPGInfoTag()->m_strPlotOutline, m_likeList, true);*/
+  //// get list of like items
+  //ClearLists();
+  //m_database.Open();
+  //m_database.GetProgrammesByEpisodeID(m_progItem->GetTVEPGInfoTag()->m_episodeID, m_likeList, true);    // episodeID matches rank higher == appear first in the list
+  ///*m_database.GetProgrammesBySubtitle(m_progItem->GetTVEPGInfoTag()->m_strPlotOutline, m_likeList, true);*/
 
-  if (!m_likeList->IsEmpty())
-  {
-    /// remove the search item from results
-    for (int i = 0; i < m_likeList->GetFileCount(); i++)
-    {
-      if (m_likeList->Get(i)->GetEPGInfoTag()->GetDbID() == m_progItem->GetEPGInfoTag()->GetDbID())
-      {
-        m_likeList->Remove(i);
-        break; // only one match can ever be found
-      }
-    }
-  }
+  //if (!m_likeList->IsEmpty())
+  //{
+  //  /// remove the search item from results
+  //  for (int i = 0; i < m_likeList->GetFileCount(); i++)
+  //  {
+  //    if (m_likeList->Get(i)->GetTVEPGInfoTag()->GetDbID() == m_progItem->GetTVEPGInfoTag()->GetDbID())
+  //    {
+  //      m_likeList->Remove(i);
+  //      break; // only one match can ever be found
+  //    }
+  //  }
+  //}
 }
 
 void CGUIWindowEPGProgInfo::Update()
 {
   CStdString strTemp;
-  strTemp = m_progItem->GetEPGInfoTag()->m_strTitle; strTemp.Trim();
+  strTemp = m_progItem->GetTVEPGInfoTag()->m_strTitle; strTemp.Trim();
   SetLabel(CONTROL_PROG_TITLE, strTemp);
 
-  strTemp = m_progItem->GetEPGInfoTag()->m_startTime.GetAsLocalizedDate(true); strTemp.Trim();
+  strTemp = m_progItem->GetTVEPGInfoTag()->m_startTime.GetAsLocalizedDate(true); strTemp.Trim();
   SetLabel(CONTROL_PROG_DATE, strTemp);
 
-  strTemp = m_progItem->GetEPGInfoTag()->m_startTime.GetAsLocalizedTime("", false); strTemp.Trim();
+  strTemp = m_progItem->GetTVEPGInfoTag()->m_startTime.GetAsLocalizedTime("", false); strTemp.Trim();
   SetLabel(CONTROL_PROG_STARTTIME, strTemp);
 
-  strTemp = m_progItem->GetEPGInfoTag()->m_duration.GetMinutes(); strTemp.Trim();
+  strTemp = m_progItem->GetTVEPGInfoTag()->m_duration.GetMinutes(); strTemp.Trim();
   SetLabel(CONTROL_PROG_DURATION, strTemp);
 
-  strTemp = m_progItem->GetEPGInfoTag()->m_strGenre; strTemp.Trim();
+  strTemp = m_progItem->GetTVEPGInfoTag()->m_strGenre; strTemp.Trim();
   SetLabel(CONTROL_PROG_GENRE, strTemp);
 
-  strTemp = m_progItem->GetEPGInfoTag()->m_strChannel; strTemp.Trim();
+  strTemp = m_progItem->GetTVEPGInfoTag()->m_strChannel; strTemp.Trim();
   SetLabel(CONTROL_PROG_CHANNEL, strTemp);
 
-  strTemp.Format("%u", m_progItem->GetEPGInfoTag()->m_channelNum);
+  strTemp.Format("%u", m_progItem->GetTVEPGInfoTag()->m_channelNum);
   SetLabel(CONTROL_PROG_CHANNELNUM, strTemp);
 
   // programme subtitle
-  strTemp = m_progItem->GetEPGInfoTag()->m_strPlotOutline; strTemp.Trim();
+  strTemp = m_progItem->GetTVEPGInfoTag()->m_strPlotOutline; strTemp.Trim();
   if (strTemp.IsEmpty())
   {
     SET_CONTROL_HIDDEN(CONTROL_PROG_SUBTITLE);
@@ -158,7 +158,7 @@ void CGUIWindowEPGProgInfo::Update()
   }
 
   // programme description
-  strTemp = m_progItem->GetEPGInfoTag()->m_strPlot; strTemp.Trim();
+  strTemp = m_progItem->GetTVEPGInfoTag()->m_strPlot; strTemp.Trim();
   SetLabel(CONTROL_TEXTAREA, strTemp);
 
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIKELIST, 0, 0, m_likeList);

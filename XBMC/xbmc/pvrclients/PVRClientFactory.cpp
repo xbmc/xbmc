@@ -19,31 +19,22 @@
 *
 */
 #include "stdafx.h"
+#include "Addon.h"
 #include "PVRClientFactory.h"
 #include "DllPVRClient.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 
 using namespace XFILE;
+using namespace ADDON;
 
-CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& strClient, DWORD clientID, IPVRClientCallback *cb)
+CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& path, const CStdString& name, DWORD clientID, IPVRClientCallback *cb)
 {
-  // strip of the path & extension to get the name of the client
-  // like vdr or mythtv
-  CStdString strFileName = strClient;
-  CStdString strName = CUtil::GetFileName(strClient);
+  // add the .pvr extension to the addon's path
+  CStdString strFileName = path;
+  strFileName = strFileName + "default.pvr";
 
-  // if it's a relative path or just a name, convert to absolute path
-  if ( strFileName[1] != ':' && strFileName[0] != '/' )
-  {
-    // first check home
-    strFileName.Format("special://home/pvrclients/%s", strName.c_str() );
-
-    // if not found, use system
-    if ( ! CFile::Exists( strFileName ) )
-      strFileName.Format("special://xbmc/pvrclients/%s", strName.c_str() );
-  }
-  strName = strName.Left(strName.ReverseFind('.'));
+  _T(strFileName);
 
   // load client
   DllPVRClient* pDll = new DllPVRClient;
@@ -58,10 +49,10 @@ CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& strClient, DWORD 
 
   struct PVRClient* pClient = (struct PVRClient*)malloc(sizeof(struct PVRClient));
   ZeroMemory(pClient, sizeof(struct PVRClient));
-  pDll->GetPlugin(pClient);
+  pDll->GetAddon(pClient);
 
   // and pass it to a new instance of CPVRClient() which will handle the client
-  CPVRClient *client(new CPVRClient(clientID, pClient, pDll, strName, cb));
+  CPVRClient *client(new CPVRClient(clientID, pClient, pDll, name, cb));
   client->Init();
 
   return client;

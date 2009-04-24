@@ -46,6 +46,7 @@ public:
   CStdString      m_Summary;              /// Summary string with the time to show inside a GUI list
   /// see PVRManager.cpp for format.
 
+  long            m_clientID;
   int             m_channelNum;           /// Integer value of the channel number
   int             m_clientNum;            /// Integer value of the client number
   CStdString      m_strChannel;           /// String name of the channel

@@ -40,12 +40,12 @@
  *
  * USED SETUP VARIABLES:
  *
- * ------------- Name -------------|---Type--|-default-|--Description-----
- * pvrmanager.instantrecordtime    = Integer = 180     = Length of a instant timer in minutes
- * pvrmanager.defaultpriority      = Integer = 50      = Default Priority
- * pvrmanager.defaultlifetime      = Integer = 99      = Liftime of the timer in days
- * pvrmanager.marginstart          = Integer = 2       = Minutes to start record earlier
- * pvrmanager.marginstop           = Integer = 10      = Minutes to stop record later
+ * ------------- Name ------|---Type--|-default-|--Description-----
+ * pvr.instantrecordtime    = Integer = 180     = Length of a instant timer in minutes
+ * pvr.defaultpriority      = Integer = 50      = Default Priority
+ * pvr.defaultlifetime      = Integer = 99      = Liftime of the timer in days
+ * pvr.marginstart          = Integer = 2       = Minutes to start record earlier
+ * pvr.marginstop           = Integer = 10      = Minutes to stop record later
  *
  *
  * TODO:
@@ -54,6 +54,8 @@
  */
 
 #include "stdafx.h"
+#include "Application.h"
+#include "EPG.h"
 #include "TVTimerInfoTag.h"
 #include "TVEPGInfoTag.h"
 #include "GUISettings.h"
@@ -115,7 +117,7 @@ CTVTimerInfoTag::CTVTimerInfoTag(bool Init)
   m_Index         = -1;
   m_Active        = true;
 
-  if (CPVRManager::GetInstance()->IsPlayingTV())
+  /*if (g_application.->IsPlayingTV())
   {
     m_Radio = false;
     m_channelNum = CPVRManager::GetInstance()->GetCurrentChannel(false);
@@ -132,11 +134,11 @@ CTVTimerInfoTag::CTVTimerInfoTag(bool Init)
     m_Radio = false;
     m_channelNum = 1;
     m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(m_channelNum, false);
-  }
+  }*/
 
   if (m_channelNum == -1) m_channelNum = 1;
 
-  m_strChannel    = CPVRManager::GetInstance()->GetNameForChannel(m_channelNum, m_Radio);
+  m_strChannel    = g_application.CurrentFileItem().GetTVEPGInfoTag()->m_strChannel;
   m_strTitle      = m_strChannel;
 
   /* Calculate start/stop times */
@@ -192,10 +194,10 @@ CTVTimerInfoTag::CTVTimerInfoTag(const CFileItem& item)
   }
 
   /* Get setup variables */
-  int defprio     = g_guiSettings.GetInt("pvrrecord.defaultpriority");
-  int deflifetime = g_guiSettings.GetInt("pvrrecord.defaultlifetime");
-  int marginstart = g_guiSettings.GetInt("pvrrecord.marginstart");
-  int marginstop  = g_guiSettings.GetInt("pvrrecord.marginstop");
+  int defprio     = g_guiSettings.GetInt("pvr.defaultpriority");
+  int deflifetime = g_guiSettings.GetInt("pvr.defaultlifetime");
+  int marginstart = g_guiSettings.GetInt("pvr.marginstart");
+  int marginstop  = g_guiSettings.GetInt("pvr.marginstop");
 
   if (!defprio)
   {
@@ -221,8 +223,8 @@ CTVTimerInfoTag::CTVTimerInfoTag(const CFileItem& item)
   m_Index         = -1;
   m_Active        = true;
   m_channelNum    = tag->m_channelNum;
-  m_clientNum     = CPVRManager::GetInstance()->GetClientChannelNumber(m_channelNum, tag->m_isRadio);
-  m_strChannel    = CPVRManager::GetInstance()->GetNameForChannel(m_channelNum, tag->m_isRadio);
+  m_clientNum     = g_application.CurrentFileItem().GetTVEPGInfoTag()->m_channelNum;
+  m_strChannel    = g_application.CurrentFileItem().GetTVEPGInfoTag()->m_strChannel;
   m_strTitle      = tag->m_strTitle;
 
   if (m_strTitle.IsEmpty())

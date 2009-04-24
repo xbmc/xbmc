@@ -24,17 +24,15 @@
 #include "pvrclients/IPVRClient.h"
 #include "utils/GUIInfoManager.h"
 #include "TVTimerInfoTag.h"
-#include "TVChannel.h"
+#include "TVChannelInfoTag.h"
 #include "TVDatabase.h"
 
 #include <vector>
-
 
 class CPVRManager : public IPVRClientCallback
                   , private CThread 
 {
 public:
-  CPVRManager();
   ~CPVRManager();
 
   void Start();
@@ -46,6 +44,7 @@ public:
   static CPVRManager* GetInstance();
   
   /* Event Handling */
+  bool LoadClients();
   void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
 
   /* Thread handling */
@@ -53,32 +52,34 @@ public:
   virtual void OnStartup();
   virtual void OnExit();
 
+  /* Timer handling */
+  int GetNumTimers();
+  int GetAllTimers(CFileItemList* results);
+  bool AddTimer(const CFileItem &item);
+  bool DeleteTimer(const CFileItem &item, bool force = false);
+  bool RenameTimer(const CFileItem &item, CStdString &newname);
+  bool UpdateTimer(const CFileItem &item);
+  CDateTime NextTimerDate(void);
+
   // info manager
   const char* TranslateInfo(DWORD dwInfo);
-  bool  IsConnected();
   static bool HasTimer()  { return m_hasTimer;  };
   static bool IsRecording()   { return m_isRecording; };
   static bool HasRecordings() { return m_hasRecordings; };
 
-
-  // called from TV Guide window
-  CEPG* GetEPG() { return m_EPG; };
+  static std::map< long, IPVRClient* > Clients() { return m_clients; }
 
 protected:
+  CPVRManager();
+
   void SyncInfo(); // synchronize InfoManager related stuff
 
-  bool LoadClients();
   bool CheckClientConnections();
+  void LostConnection();
 
   CURL GetConnString(long clientID);
   void GetClientProperties(); // call GetClientProperties(long clientID) for each client connected
   void GetClientProperties(long clientID); // request the PVR_SERVERPROPS struct from each client
-
-  void UpdateChannelsList(); // call UpdateChannelsList(long clientID) for each client connected
-  void UpdateChannelsList(long clientID); // update the list of channels for the client specified
-
-  void UpdateChannelData(); // call UpdateChannelData(long clientID) for each client connected
-  void UpdateChannelData(long clientID); // update the guide data for the client specified
 
   void GetTimers(); // call GetTimers(long clientID) for each client connected, active or otherwise
   int  GetTimers(long clientID); // update the list of timers for the client specified, active or otherwise
@@ -92,10 +93,15 @@ protected:
 private:
   static CPVRManager* m_instance;
 
-  std::map< long, IPVRClient* > m_clients; // pointer to each enabled client's interface
+  static std::map< long, IPVRClient* > m_clients; // pointer to each enabled client's interface
   std::map< long, PVR_SERVERPROPS > m_clientProps; // store the properties of each client locally
+  
 
-  CCriticalSection m_critSection;
+  static CCriticalSection m_timersSection;
+  static CCriticalSection m_epgSection;
+  static CCriticalSection m_clientsSection;
+
+  /* threaded tasks */
   bool m_running;
   bool m_bRefreshSettings;
 
@@ -109,7 +115,6 @@ private:
   static bool m_hasTimers;
 
   std::map< long, VECTVTIMERS > m_timers;
-  std::map< long, VECCHANNELS* > m_channels;
 
   CStdString  m_nextRecordingDateTime;
   CStdString  m_nextRecordingClient;

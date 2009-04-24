@@ -29,7 +29,6 @@
 #include "PlayListPlayer.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
-#include "TVDatabase.h"
 #include "Autorun.h"
 #include "ActionManager.h"
 #ifdef HAS_LCD
@@ -146,7 +145,6 @@
 #include "GUIWindowPictures.h"
 #include "GUIWindowScripts.h"
 #include "GUIWindowEPG.h"
-#include "GUIWindowEPGProgInfo.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVisualisation.h"
@@ -198,6 +196,11 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
+#include "GUIDialogTVEPGProgInfo.h"
+#include "GUIDialogTVRecordingInfo.h"
+#include "GUIDialogTVTimerSettings.h"
+#include "GUIDialogTVChannels.h"
+#include "GUIDialogTVGroupManager.h"
 #include "cores/dlgcache.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -1271,9 +1274,14 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowFileManager);      // window id = 3
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
+  m_gWindowManager.Add(new CGUIWindowEPG);                       // window id = 9
+  m_gWindowManager.Add(new CGUIDialogTVEPGProgInfo);            // window id = 600
+  m_gWindowManager.Add(new CGUIDialogTVTimerSettings);          // window id = 602
+  m_gWindowManager.Add(new CGUIDialogTVChannels);               // window id = 603
+  m_gWindowManager.Add(new CGUIDialogTVRecordingInfo);          // window id = 603
+  m_gWindowManager.Add(new CGUIDialogTVGroupManager);           // window id = 603
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
   m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
-  m_gWindowManager.Add(new CGUIWindowEPG);                      // window id = 9
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
@@ -1328,8 +1336,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
   m_gWindowManager.Add(new CGUIWindowMusicNav);               // window id = 502
   m_gWindowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
-
-  m_gWindowManager.Add(new CGUIWindowEPGProgInfo);            // window id = 600
 
   m_gWindowManager.Add(new CGUIDialogSelect);             // window id = 2000
   m_gWindowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
@@ -3739,6 +3745,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
+    m_gWindowManager.Delete(WINDOW_TV);
     m_gWindowManager.Delete(WINDOW_MUSIC_NAV);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
@@ -3746,10 +3753,8 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_VIDEO_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_VIDEO_NAV);
     m_gWindowManager.Delete(WINDOW_FILES);
-    m_gWindowManager.Delete(WINDOW_EPG);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
-    m_gWindowManager.Delete(WINDOW_DIALOG_EPG_INFO);
     m_gWindowManager.Delete(WINDOW_DIALOG_YES_NO);
     m_gWindowManager.Delete(WINDOW_DIALOG_PROGRESS);
     m_gWindowManager.Delete(WINDOW_DIALOG_NUMERIC);
@@ -3786,6 +3791,16 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
     m_gWindowManager.Delete(WINDOW_DIALOG_ADDON_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_PVRCLIENT_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_GUIDE_INFO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_RECORDING_INFO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_TIMER_SETTING);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_GROUP_MANAGER);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_CHANNEL_MANAGER);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_CHANNELS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_GUIDE);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_TELETEXT);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_DIRECTOR);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_LOGIN_SCREEN);
@@ -3851,7 +3866,7 @@ HRESULT CApplication::Cleanup()
     g_buttonTranslator.Clear();
     CScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
-    /*CPVRManager::Stop()*/
+	//StopPVRManager();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
@@ -5810,16 +5825,6 @@ void CApplication::SaveCurrentFileSettings()
       CVideoDatabase dbs;
       dbs.Open();
       dbs.SetVideoSettings(m_itemCurrentFile->m_strPath, g_stSettings.m_currentVideoSettings);
-      dbs.Close();
-    }
-  }
-  else if (m_itemCurrentFile->IsPVR())
-  { ///TV save channel settings
-    if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-    {
-      CTVDatabase dbs;
-      dbs.Open();
-      dbs.SetChannelSettings(m_itemCurrentFile->GetEPGInfoTag()->m_strChannel, g_stSettings.m_currentVideoSettings);
       dbs.Close();
     }
   }

@@ -33,13 +33,16 @@ CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* p
                               , m_pDll(pDll)
                               , m_clientName(strPVRClientName)
                               , m_manager(cb)
-{}
+{
+  InitializeCriticalSection(&m_critSection);
+}
 
 CPVRClient::~CPVRClient()
 {
   // tell the plugin to disconnect and prepare for destruction
   Disconnect();
   /*DeInit();*/
+  DeleteCriticalSection(&m_critSection);
 }
 
 bool CPVRClient::Init()
@@ -61,12 +64,20 @@ long CPVRClient::GetID()
 
 PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
 {
-  // get info from client
-  return m_pClient->GetProperties(props);
+  try 
+  {
+    return m_pClient->GetProperties(props);
+  }
+  catch (std::exception e)
+  {
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception from GetProperties", m_clientName.c_str(), m_hostName.c_str());
+    return PVR_ERROR_UNKOWN;
+  }
 }
 
 PVR_ERROR CPVRClient::Connect()
 {
+  CLog::Log(LOGDEBUG, "PVR: %s - connecting", m_clientName.c_str());
   return m_pClient->Connect();
 }
 
@@ -92,7 +103,7 @@ const std::string CPVRClient::GetBackendVersion()
 
 PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
 {
-  return GetDriveSpace(total, used);
+  return m_pClient->GetDriveSpace(total, used);
 }
 
 int CPVRClient::GetNumBouquets()
@@ -102,7 +113,7 @@ int CPVRClient::GetNumBouquets()
 
 PVR_ERROR CPVRClient::GetBouquetInfo(const unsigned int number, PVR_BOUQUET& info)
 {
-  return PVR_ERROR_NO_ERROR;
+  return PVR_ERROR_NOT_IMPLEMENTED;
 }
 
 int CPVRClient::GetNumChannels()
@@ -112,30 +123,99 @@ int CPVRClient::GetNumChannels()
 
 PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels)
 {
-  PVR_ERROR ret;
-  PVR_CHANLIST clientChans;
-  ret = m_pClient->GetChannelList(&clientChans);
-  if (ret != PVR_ERROR_NO_ERROR)
-    return ret;
+  // all memory allocation takes place in client, 
+  // as we don't know beforehand how many channels exist
+  unsigned int num;
+  PVR_CHANNEL **clientChans = NULL;
 
-  ConvertChannels(clientChans, channels);
+  num = m_pClient->GetChannelList(&clientChans);
+  if (num < 1)
+    return PVR_ERROR_SERVER_ERROR;
+
+  // after client returns, we take ownership over the allocated memory
+  if (!ConvertChannels(num, clientChans, channels))
+    return PVR_ERROR_SERVER_ERROR;
+
   return PVR_ERROR_NO_ERROR;
 }
 
-void CPVRClient::ConvertChannels(PVR_CHANLIST in, VECCHANNELS &out)
+bool CPVRClient::ConvertChannels(unsigned int num, PVR_CHANNEL **clientChans, VECCHANNELS &xbmcChans)
 {
-  out.clear();
+  xbmcChans.clear();
+  PVR_CHANNEL *chan;
 
-  for (int i = 0; i < in.length; i++)
+  for (unsigned i = 0; i < num; i++)
   {
+    // don't trust the client to have correctly initialized memory
+    try 
+    {
+      chan = clientChans[i];
+    }
+    catch (std::exception e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - unitialized PVR_CHANNEL", m_clientName.c_str(), m_hostName.c_str());
+      FreeChannelList(num, clientChans);
+      return false;
+    }
+    if (chan->number < 1 || chan->name == "" || chan->hide == true)
+      continue;
 
+    CTVChannelInfoTag channel;
+    channel.m_clientID   = m_clientID;
+    channel.m_iClientNum = chan->number;
+    channel.m_IconPath   = chan->iconpath;
+    channel.m_strChannel = chan->name;
+    channel.m_radio      = chan->radio;
+    channel.m_encrypted  = chan->encrypted;
+
+    xbmcChans.push_back(channel);
   }
 
+  /*FreeChannelList(num, clientChans);*/
+
+  return true;
 }
 
-PVR_ERROR CPVRClient::GetEPGForChannel(const unsigned int number, PVR_PROGLIST *epg, time_t start, time_t end)
+void CPVRClient::FreeChannelList(unsigned int num, PVR_CHANNEL **clientChans)
 {
-  return m_pClient->GetEPGForChannel(number, epg, start, end);
+  PVR_CHANNEL *chan;
+
+  for (unsigned i = 0; i < num; i++)
+  {
+    // don't trust the client to have correctly initialized memory
+    try 
+    {
+      chan = &(*clientChans)[i];
+    }
+    catch (std::exception e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s: uninitialized PVR_CHANNEL", m_clientName.c_str(), m_hostName.c_str());
+      clientChans = NULL;
+      continue;
+    }
+    free(chan);
+    chan = NULL;
+  }
+}
+
+// EPG ///////////////////////////////////////////////////////////////////////
+PVR_ERROR CPVRClient::GetEPGForChannel(const unsigned int number, CFileItemList &results, const CDateTime &start, const CDateTime &end)
+{
+  time_t start_t, end_t;
+  start.GetAsTime(start_t);
+  end.GetAsTime(end_t);
+
+  // all memory allocation takes place in client
+  PVR_ERROR err;
+  PVR_PROGLIST **epg = NULL;
+
+  err = m_pClient->GetEPGForChannel(number, epg, start_t, end_t);
+  if (err != PVR_ERROR_NO_ERROR)
+    return PVR_ERROR_SERVER_ERROR;
+
+  // after client returns, we take ownership over the allocated memory
+
+  return PVR_ERROR_NO_ERROR;
 }
 
 PVR_ERROR CPVRClient::GetEPGNowInfo(const unsigned int number, PVR_PROGINFO *result)
@@ -149,6 +229,39 @@ PVR_ERROR CPVRClient::GetEPGNextInfo(const unsigned int number, PVR_PROGINFO *re
 }
 
 PVR_ERROR CPVRClient::GetEPGDataEnd(time_t end)
+{
+  return PVR_ERROR_NO_ERROR;
+}
+
+// Timers ////////////////////////////////////////////////////////////////////
+const unsigned int CPVRClient::GetNumTimers()
+{
+  return 0;
+}
+
+PVR_ERROR CPVRClient::GetTimers(VECTVTIMERS &timers)
+{
+  //PVR_ERROR err = 
+  return PVR_ERROR_NO_ERROR;
+
+}
+
+PVR_ERROR CPVRClient::AddTimer(const CTVTimerInfoTag &timerinfo)
+{
+  return PVR_ERROR_NO_ERROR;
+}
+
+PVR_ERROR CPVRClient::RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname)
+{
+  return PVR_ERROR_NO_ERROR;
+}
+
+PVR_ERROR CPVRClient::UpdateTimer(const CTVTimerInfoTag &timerinfo)
+{
+  return PVR_ERROR_NO_ERROR;
+}
+
+PVR_ERROR CPVRClient::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force /* = false */)
 {
   return PVR_ERROR_NO_ERROR;
 }

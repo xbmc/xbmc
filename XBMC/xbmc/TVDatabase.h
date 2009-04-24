@@ -39,15 +39,6 @@ public:
   int GetLastChannel(DWORD clientID);
   bool UpdateLastChannel(DWORD clientID, unsigned int channelID, CStdString m_strChannel);
 
-  /* Database EPG handling */
-  long AddEPG(DWORD clientID, const CTVEPGInfoTag &info);
-  bool UpdateEPG(DWORD clientID, const CTVEPGInfoTag &info);
-  bool UpdateEPGRecordingState(DWORD clientID, unsigned int channelID, const CDateTime &start, const CDateTime &end, bool OnOff);
-  bool RemoveEPGEntries(DWORD clientID, unsigned int channelID, const CDateTime &start, const CDateTime &end);
-  bool GetEPGForChannel(DWORD clientID, unsigned int channelID, EPG_DATA &epg, const CDateTime &start, const CDateTime &end);
-  CDateTime GetEPGDataStart(DWORD clientID, unsigned int channelID);
-  CDateTime GetEPGDataEnd(DWORD clientID, unsigned int channelID);
-
   /* Database Channel handling */
   long AddChannel(DWORD clientID, const CTVChannelInfoTag &info);
   bool RemoveAllChannels(DWORD clientID);
@@ -56,7 +47,7 @@ public:
   int  GetNumChannels(DWORD clientID);
   int  GetNumHiddenChannels(DWORD clientID);
   bool HasChannel(DWORD clientID, const CTVChannelInfoTag &info);
-  bool GetChannelList(DWORD clientID, VECCHANNELS* results, bool radio);
+  bool GetChannelList(DWORD clientID, VECCHANNELS &results, bool radio);
   bool GetChannelSettings(DWORD clientID, unsigned int channelID, CVideoSettings &settings);
   bool SetChannelSettings(DWORD clientID, unsigned int channelID, const CVideoSettings &settings);
 

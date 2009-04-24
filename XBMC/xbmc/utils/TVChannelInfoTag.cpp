@@ -90,32 +90,21 @@ void CTVChannelInfoTag::Reset()
   m_strFileNameAndPath    = "";
   m_strNextTitle          = "";
 
-  m_EPG.clear();
+  m_EPG.Clear();
 
   //CVideoInfoTag::Reset();
 }
 
-bool CTVChannelInfoTag::GetEPGNowInfo(CTVEPGInfoTag *result)
+bool CTVChannelInfoTag::GetEPGNowInfo(CTVEPGInfoTag &result)
 {
   CDateTime now = CDateTime::GetCurrentDateTime();
 
-  for (int i = 0; i < m_EPG.size(); i++)
+  for (int i = 0; i < m_EPG.Size(); i++)
   {
-    if ((m_EPG[i].m_startTime <= now) && (m_EPG[i].m_endTime > now))
+    CTVEPGInfoTag* tag = m_EPG[i]->GetTVEPGInfoTag();
+    if ((tag->m_startTime <= now) && (tag->m_endTime > now))
     {
-      result->m_strChannel        = m_strChannel;
-      result->m_strTitle          = m_EPG[i].m_strTitle;
-      result->m_strPlotOutline    = m_EPG[i].m_strPlotOutline;
-      result->m_strPlot           = m_EPG[i].m_strPlot;
-      result->m_GenreType         = m_EPG[i].m_GenreType;
-      result->m_GenreSubType      = m_EPG[i].m_GenreSubType;
-      result->m_strGenre          = m_EPG[i].m_strGenre;
-      result->m_startTime         = m_EPG[i].m_startTime;
-      result->m_endTime           = m_EPG[i].m_endTime;
-      result->m_duration          = m_EPG[i].m_duration;
-      result->m_channelNum        = m_iChannelNum;
-      result->m_idChannel         = m_iIdChannel;
-      result->m_isRadio           = m_radio;
+      result = *tag;
       break;
     }
   }
@@ -124,33 +113,24 @@ bool CTVChannelInfoTag::GetEPGNowInfo(CTVEPGInfoTag *result)
 }
 
 
-bool CTVChannelInfoTag::GetEPGNextInfo(CTVEPGInfoTag *result)
+bool CTVChannelInfoTag::GetEPGNextInfo(CTVEPGInfoTag &result)
 {
   CDateTime now = CDateTime::GetCurrentDateTime();
 
-  for (int i = 0; i < m_EPG.size(); i++)
+  for (int i = 0; i < m_EPG.Size(); i++)
   {
-    if ((m_EPG[i].m_startTime <= now) && (m_EPG[i].m_endTime > now))
-    {
-      CDateTime next = m_EPG[i].m_endTime;
+    CTVEPGInfoTag* tag = m_EPG[i]->GetTVEPGInfoTag();
 
-      for (int j = 0; j < m_EPG.size(); j++)
+    if ((tag->m_startTime <= now) && (tag->m_endTime > now))
+    {
+      CDateTime next = tag->m_endTime;
+
+      for (int j = 0; j < m_EPG.Size(); j++)
       {
-        if (m_EPG[j].m_startTime >= next)
+        CTVEPGInfoTag* tagNext = m_EPG[j]->GetTVEPGInfoTag();
+        if (tagNext->m_startTime >= next)
         {
-          result->m_strChannel        = m_strChannel;
-          result->m_strTitle          = m_EPG[j].m_strTitle;
-          result->m_strPlotOutline    = m_EPG[j].m_strPlotOutline;
-          result->m_strPlot           = m_EPG[j].m_strPlot;
-          result->m_GenreType         = m_EPG[j].m_GenreType;
-          result->m_GenreSubType      = m_EPG[j].m_GenreSubType;
-          result->m_strGenre          = m_EPG[j].m_strGenre;
-          result->m_startTime         = m_EPG[j].m_startTime;
-          result->m_endTime           = m_EPG[j].m_endTime;
-          result->m_duration          = m_EPG[j].m_duration;
-          result->m_channelNum        = m_iChannelNum;
-          result->m_idChannel         = m_iIdChannel;
-          result->m_isRadio           = m_radio;
+          result = *tagNext;
           break;
         }
       }
@@ -160,28 +140,17 @@ bool CTVChannelInfoTag::GetEPGNextInfo(CTVEPGInfoTag *result)
   return false;
 }
 
-bool CTVChannelInfoTag::GetEPGLastEntry(CTVEPGInfoTag *result)
+bool CTVChannelInfoTag::GetEPGLastEntry(CTVEPGInfoTag &result)
 {
   CDateTime last = CDateTime::GetCurrentDateTime();
 
-  for (int i = m_EPG.size()-1; i >= 0; i--)
+  for (int i = m_EPG.Size()-1; i >= 0; i--)
   {
-    if (m_EPG[i].m_endTime >= last)
+    CTVEPGInfoTag* tag = m_EPG[i]->GetTVEPGInfoTag();
+    if (tag->m_endTime >= last)
     {
-      result->m_strChannel        = m_strChannel;
-      result->m_strTitle          = m_EPG[i].m_strTitle;
-      result->m_strPlotOutline    = m_EPG[i].m_strPlotOutline;
-      result->m_strPlot           = m_EPG[i].m_strPlot;
-      result->m_GenreType         = m_EPG[i].m_GenreType;
-      result->m_GenreSubType      = m_EPG[i].m_GenreSubType;
-      result->m_strGenre          = m_EPG[i].m_strGenre;
-      result->m_startTime         = m_EPG[i].m_startTime;
-      result->m_endTime           = m_EPG[i].m_endTime;
-      result->m_duration          = m_EPG[i].m_duration;
-      result->m_channelNum        = m_iChannelNum;
-      result->m_idChannel         = m_iIdChannel;
-      result->m_isRadio           = m_radio;
-      last = m_EPG[i].m_endTime;
+      result = *tag;
+      last   = tag->m_endTime;
     }
   }
 
@@ -192,12 +161,12 @@ void CTVChannelInfoTag::CleanupEPG()
 {
   CDateTime m_start = CDateTime::GetCurrentDateTime()-CDateTimeSpan(0, g_guiSettings.GetInt("pvrmenu.lingertime") / 60, g_guiSettings.GetInt("pvrmenu.lingertime") % 60, 0);
 
-  for (int i = 0; i < m_EPG.size(); i++)
+  for (int i = 0; i < m_EPG.Size(); i++)
   {
     /* If entry end time is lower as epg data start time remove it from list */
-    if (m_EPG[i].m_endTime <= m_start)
+    if (m_EPG[i]->GetTVEPGInfoTag()->m_endTime <= m_start)
     {
-      m_EPG.erase(m_EPG.begin()+i);
+      m_EPG.Remove(i);
     }
     else
     {

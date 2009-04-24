@@ -3,7 +3,7 @@
 #pragma once
 
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2005-2009 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -25,8 +25,12 @@
 
 #include <vector>
 
-#include "../utils/TVChannel.h"
+#include "../utils/TVChannelInfoTag.h"
+#include "../utils/TVTimerInfoTag.h"
 #include "../../pvrclients/PVRClientTypes.h"
+
+class CPVRManager;
+class CEPG;
 
 /**
 * IPVRClientCallback Class
@@ -59,14 +63,21 @@ public:
   */
   virtual ~IPVRClient(){};
 
+  /**
+  * Return pointer to this client's critical section
+  * \return CCriticalSection*
+  */
+  virtual CCriticalSection* GetLock(void)=0;
+
+
 /***************************************/
 /**_SERVER INTERFACE__________________**/
 
   /**
-  * Get the current client ID registered at object initalization by PVRManager
+  * Get the current client ID registered at object initialization by PVRManager
   * \return long                = Client ID
   */
-  virtual long GetID()=0;
+  virtual long GetID(void)=0;
 
   /**
   * Get the default connection properties
@@ -78,18 +89,18 @@ public:
   * Connect to the PVR backend
   * \return PVR_ERROR            = Error code
   */
-  virtual PVR_ERROR Connect()=0;
+  virtual PVR_ERROR Connect(void)=0;
 
   /**
   * Disconnect from the PVR backend
   */
-  virtual void Disconnect()=0;
+  virtual void Disconnect(void)=0;
 
   /**
   * Check if XBMC is connected to the PVR backend
   * \return bool                 = true = connected, false = disconnected
   */
-  virtual bool IsUp()=0;
+  virtual bool IsUp(void)=0;
 
 /****************************************/
 /**_GENERAL INTERFACE__________________**/
@@ -98,13 +109,13 @@ public:
   * Get a string with the backend name
   * \return std::string          = Backend name
   */
-  virtual const std::string GetBackendName()=0;
+  virtual const std::string GetBackendName(void)=0;
   
   /**
   * Get a string with the backend version
   * \return std::string          = Backend version
   */
-  virtual const std::string GetBackendVersion()=0;
+  virtual const std::string GetBackendVersion(void)=0;
 
   /**
   * Get the used and total diskspace for recordings available on the backend
@@ -121,7 +132,7 @@ public:
   * Get number of bouquets available
   * \return int                  = number of bouquets (-1 if fails)
   */
-  virtual int GetNumBouquets()=0;
+  virtual int GetNumBouquets(void)=0;
 
   /**
   * Get bouquet information
@@ -138,7 +149,7 @@ public:
   * Get number of channels available
   * \return int                  = number of channels (-1 if fails)
   */
-  virtual int GetNumChannels()=0;
+  virtual int GetNumChannels(void)=0;
 
   /**
   * Get all channels
@@ -158,7 +169,7 @@ public:
   * \param time_t end             = end of EPG range
   * \return PVR_ERROR             = Error code
   */
-  virtual PVR_ERROR GetEPGForChannel(const unsigned int number, PVR_PROGLIST *epg, time_t start = NULL, time_t end = NULL)=0;
+  virtual PVR_ERROR GetEPGForChannel(const unsigned int number, CFileItemList &epg, const CDateTime &start, const CDateTime &end)=0;
 
   /**
   * Get 'Now' programme information
@@ -187,47 +198,58 @@ public:
   /****************************************/
   /**_ TIMER INTERFACE __________________**/
 
-  ///**
-  //* Get number of active timers
-  //* \return int                   = number of timers active (-1 if fails)
-  //*/
-  //virtual int GetNumTimers(void)=0;
+  /**
+  * Get number of active timers
+  * \return int                   = number of timers active (-1 if fails)
+  */
+  virtual const unsigned int GetNumTimers(void)=0;
 
-  ///**
-  //* Get a list of any timers that are available, including ones not yet finished
-  //* \param VECTVTIMERS            = results VECTVTIMERS to be populated with list of timers
-  //* \return bool                  = true if any timers found
-  //*/
-  //virtual PVR_ERROR GetAllTimers(VECTVTIMERS *results)=0;
+  /**
+  * Get a list of any timers that are available, including ones not yet finished
+  * \param VECTVTIMERS            = results VECTVTIMERS to be populated with list of timers
+  * \return bool                  = true if any timers found
+  */
+  virtual PVR_ERROR GetTimers(VECTVTIMERS &timers)=0;
 
-  ///**
-  //* Add a timer
-  //* \param CTVTimerInfoTag        = pointer to a timer information with new data
-  //* \return PVR_ERROR              = Error code
-  //*/
-  //virtual PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo)=0;
+  /**
+  * Add a timer
+  * \param CTVTimerInfoTag        = pointer to a timer information with new data
+  * \return PVR_ERROR             = Error code
+  */
+  virtual PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo)=0;
 
-  ///**
-  //* Delete a timer
-  //* \param unsigned int number    = timer number (equal to ID returned by GetAllTimers)
-  //* \return PVR_ERROR              = Error code
-  //*/
-  //virtual PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force = false)=0;
+  /**
+  * Delete a timer
+  * \param unsigned int number    = timer number (equal to ID returned by GetAllTimers)
+  * \return PVR_ERROR             = Error code
+  */
+  virtual PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force = false)=0;
 
-  ///**
-  //* Rename a timer
-  //* \param unsigned int number    = timer number
-  //* \param CStdString newname     = pointer to the new timer name
-  //* \return PVR_ERROR              = Error code
-  //*/
-  //virtual PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname)=0;
+  /**
+  * Rename a timer
+  * \param unsigned int number    = timer number
+  * \param CStdString newname     = pointer to the new timer name
+  * \return PVR_ERROR             = Error code
+  */
+  virtual PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname)=0;
 
-  ///**
-  //* Update a timer
-  //* \param CTVTimerInfoTag        = pointer to a timer information with updated data
-  //* \return PVR_ERROR              = Error code
-  //*/
-  //virtual PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo)=0;
+  /**
+  * Update a timer
+  * \param CTVTimerInfoTag        = pointer to a timer information with updated data
+  * \return PVR_ERROR             = Error code
+  */
+  virtual PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo)=0;
+
+  /****************************************/
+  /**_ EPG INTERNAL __________________**/
+
+  private:
+    friend class CPVRManager;
+    friend class CEPG;
+    CCriticalSection  m_critSection;
+    bool              m_isRunning;
+    CDateTime         m_lastChannelScan;
+    CDateTime         m_lastEPGScan;
 
 };
 

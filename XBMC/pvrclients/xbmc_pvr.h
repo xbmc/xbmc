@@ -25,15 +25,14 @@ using namespace std;
 
 extern "C"
 {
-  // the settings vector
-  static vector<PVRSetting> m_vecSettings;
+  //TODO inherit these functions from xbmc_addon.h
+  bool __declspec(dllexport) HasSettings();
+  __declspec(dllexport) DllSettings* GetSettings();
+
 
   // Functions that your client must implement
   PVR_ERROR Create(PVRCallbacks*);
   PVR_ERROR GetProperties(PVR_SERVERPROPS* pProps);
-  void GetSettings(vector<PVRSetting> **vecSettings);
-  void UpdateSetting(int num);
-  PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
   PVR_ERROR Connect();
   void Disconnect();
   bool IsUp();
@@ -43,18 +42,16 @@ extern "C"
   int GetNumBouquets();
   PVR_ERROR GetBouquetInfo(const unsigned number, PVR_BOUQUET *info);
   int GetNumChannels();
-  PVR_ERROR GetChannelList(PVR_CHANLIST *channels);
-  PVR_ERROR GetEPGForChannel(const unsigned channel, PVR_PROGLIST *epg, time_t start, time_t end);
+  unsigned int GetChannelList(PVR_CHANNEL ***channels);
+  PVR_ERROR GetEPGForChannel(const unsigned channel, PVR_PROGLIST **epg, time_t start, time_t end);
   PVR_ERROR GetEPGNowInfo(const unsigned channel, PVR_PROGINFO *result);
   PVR_ERROR GetEPGNextInfo(const unsigned channel, PVR_PROGINFO *result);
   PVR_ERROR GetEPGDataEnd(time_t *end);
 
   // function to export the above structure to XBMC
-  void __declspec(dllexport) get_plugin(struct PVRClient* pClient)
+  void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
 	  pClient->Create = Create;
-    pClient->GetSettings = GetSettings;
-    pClient->UpdateSetting = UpdateSetting;
     pClient->GetProperties = GetProperties;
     pClient->Connect = Connect;
     pClient->Disconnect = Disconnect;

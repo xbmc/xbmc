@@ -224,8 +224,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (strCategory.Equals("pvr"))
   {
-    if (strTest.Equals("pvr.isconnected")) ret = PVR_IS_CONNECTED;
-    else if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
+    if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
     else if (strTest.Equals("pvr.hastimer")) ret = PVR_HAS_TIMER;
     else if (strTest.Equals("pvr.nowrecordingtitle")) ret = PVR_NOW_RECORDING_TITLE;
     else if (strTest.Equals("pvr.nowrecordingdatetime")) ret = PVR_NOW_RECORDING_DATETIME;
@@ -1745,8 +1744,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = g_settings.bUseLoginScreen;
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
-  else if (condition == PVR_IS_CONNECTED)
-    bReturn = CPVRManager::GetInstance()->IsConnected();
   else if (condition == PVR_IS_RECORDING)
     bReturn = CPVRManager::GetInstance()->IsRecording();
   else if (condition == PVR_HAS_TIMER)

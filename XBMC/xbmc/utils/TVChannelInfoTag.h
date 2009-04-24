@@ -24,8 +24,11 @@
  * for DESCRIPTION see 'TVChannelInfoTag.cpp'
  */
 
-#include "VideoInfoTag.h"
 #include "DateTime.h"
+#include "FileItem.h"
+
+class CTVEPGInfoTag;
+class CFileItemList;
 
 enum chSrcType
 {
@@ -171,26 +174,6 @@ typedef struct
 
 typedef struct
 {
-  unsigned int  m_uniqueID;
-
-  CStdString    m_strTitle;
-  CStdString    m_strPlotOutline;
-  CStdString    m_strPlot;
-
-  CDateTime     m_startTime;
-  CDateTime     m_endTime;
-  CDateTimeSpan m_duration;
-
-  CStdString    m_strGenre;
-  int           m_GenreType;
-  int           m_GenreSubType;
-
-} TVEPGData;
-
-typedef std::vector<TVEPGData> EPG_DATA;
-
-typedef struct
-{
   unsigned long m_ID;
   CStdString    m_Title;
 
@@ -205,10 +188,11 @@ public:
   CTVChannelInfoTag();
   void Reset();
 
-  bool GetEPGNowInfo(CTVEPGInfoTag *result);
-  bool GetEPGNextInfo(CTVEPGInfoTag *result);
-  bool GetEPGLastEntry(CTVEPGInfoTag *result);
+  bool GetEPGNowInfo(CTVEPGInfoTag &result);
+  bool GetEPGNextInfo(CTVEPGInfoTag &result);
+  bool GetEPGLastEntry(CTVEPGInfoTag &result);
   void CleanupEPG();
+  const CFileItemList& GetEPG();
 
   bool operator ==(const CTVChannelInfoTag &right) const;
   bool operator !=(const CTVChannelInfoTag &right) const;
@@ -235,8 +219,13 @@ public:
 
   CStdString          m_strFileNameAndPath;   /// Filename for PVRManager to open and read stream
 
-  EPG_DATA            m_EPG;                  /// EPG Data for Channel
   TVChannelSettings   m_Settings;             /// Channel settings must be received manually
+
+  long                m_clientID;
+
+private:
+  friend class CEPG;
+  CFileItemList       m_EPG;                  /// EPG Data for Channel
 };
 
 typedef std::vector<CTVChannelInfoTag> VECCHANNELS;
