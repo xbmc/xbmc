@@ -861,6 +861,8 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   // set GUI res and force the clear of the screen
+  if (g_guiSettings.GetBool("videoscreen.safefull"))
+    g_guiSettings.m_LookAndFeelResolution = AUTORES;
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
   // initialize our charset converter
@@ -933,6 +935,8 @@ HRESULT CApplication::Create(HWND hWnd)
   time(&seconds);
   srand((unsigned int)seconds);
 
+  if (g_guiSettings.GetBool("videoscreen.safefull"))
+    g_graphicsContext.ToggleFullScreenRoot();
   return CXBApplicationEx::Create(hWnd);
 }
 
