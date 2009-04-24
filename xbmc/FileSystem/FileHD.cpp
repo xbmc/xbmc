@@ -127,6 +127,9 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 
 #ifdef _WIN32PC
   CStdStringW strWFile;
+  // win32 can only stat root drives with a slash at the end
+  if(strFile.length() == 2 && strFile[1] ==':')
+    CUtil::AddSlashAtEnd(strFile);
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   return _wstat64(strWFile.c_str(), buffer);
 #else
