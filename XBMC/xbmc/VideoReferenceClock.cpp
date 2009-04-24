@@ -312,8 +312,10 @@ void CVideoReferenceClock::RunGLX()
     if (VblankCount > PrevVblankCount)
     {
       Lock();
-      UpdateClock((int)(VblankCount - PrevVblankCount), true, true);
-      SendVblankSignal();
+      if (UpdateClock((int)(VblankCount - PrevVblankCount), true, true))
+      {
+        SendVblankSignal();
+      }
       Unlock();
       
       UpdateRefreshrate();
@@ -608,7 +610,7 @@ void CVideoReferenceClock::HandleWindowMessages()
 
 #endif /*_WIN32*/
 
-void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed, bool UpdateVBlankTime)
+bool CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed, bool UpdateVBlankTime)
 {
   if (CheckMissed)
   {
@@ -621,11 +623,14 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed, bool Upd
     m_FailedUpdates = 0;
     m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
     if (UpdateVBlankTime) QueryPerformanceCounter(&m_VBlankTime);
+    return true;
   }
   else if (CheckMissed)
   {
     m_FailedUpdates++;
   }
+  
+  return false;
 }
 
 void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
