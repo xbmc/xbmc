@@ -289,7 +289,6 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
   }
 
   g_application.NewFrame();
-  g_application.WaitFrame(1); // we give the application thread 1ms to present
 }
 
 float CXBoxRenderManager::GetMaximumFPS()
