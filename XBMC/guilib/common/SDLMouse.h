@@ -30,7 +30,8 @@ public:
   virtual bool Update(MouseState &state);
 
 private:
-
+  SDL_Cursor *m_visibleCursor;
+  SDL_Cursor *m_hiddenCursor;
 };
 #endif
 

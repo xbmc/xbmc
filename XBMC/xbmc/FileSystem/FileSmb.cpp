@@ -24,6 +24,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+
+#if defined(HAS_FILESYSTEM_SMB)
 #include "FileSmb.h"
 #include "GUIPassword.h"
 #include "SMBDirectory.h"
@@ -745,3 +747,5 @@ bool CFileSMB::IsValidFile(const CStdString& strFileName)
       return false;
   return true;
 }
+
+#endif

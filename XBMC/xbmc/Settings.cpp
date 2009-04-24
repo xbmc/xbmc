@@ -50,8 +50,9 @@
 #ifdef _WIN32PC
 #include "win32/WIN32Util.h"
 #endif
+#if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
 #include "FileSystem/SMBDirectory.h"
-
+#endif
 
 using namespace std;
 using namespace XFILE;

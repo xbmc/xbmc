@@ -32,6 +32,8 @@
 */
 
 #include "stdafx.h"
+
+#if defined(HAS_FILESYSTEM_SMB)
 #include "SMBDirectory.h"
 #include "Util.h"
 #include "LocalizeStrings.h"
@@ -536,3 +538,4 @@ CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdStr
 #endif
 }
 
+#endif
