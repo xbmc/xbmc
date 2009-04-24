@@ -287,7 +287,8 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
     m_pRenderer->FlipPage(source);
   }
-
+  
+  m_presentevent.Reset();
   g_application.NewFrame();
   m_presentevent.WaitMSec(1);
 }
