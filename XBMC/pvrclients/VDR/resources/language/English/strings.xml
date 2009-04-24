@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>
-    <!-- settings labels -->
-    <string id="30000">VDR Hostname</string>
-    <string id="30001">Streamdev Port</string>
-		<string id="30002">Free-to-air only</string>
-		<string id="30003">Include Radio</string>
-</strings>
