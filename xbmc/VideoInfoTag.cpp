@@ -69,7 +69,7 @@ void CVideoInfoTag::Reset()
   m_iTrack = -1;
   m_fanart.m_xml = "";
   m_strRuntime = "";
-
+  m_lastPlayed = "";
   m_playCount = 0;
 }
 
@@ -115,6 +115,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   }
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetInt(movie, "playcount", m_playCount);
+  XMLUtils::SetString(movie, "lastplayed", m_lastPlayed);
   if (savePathInfo)
   {
     XMLUtils::SetString(movie, "file", m_strFile);
@@ -215,6 +216,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strAlbum;
     ar << m_strArtist;
     ar << m_playCount;
+    ar << m_lastPlayed;
     ar << m_iTop250;
     ar << m_iYear;
     ar << m_iSeason;
@@ -271,6 +273,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strAlbum;
     ar >> m_strArtist;
     ar >> m_playCount;
+    ar >> m_lastPlayed;
     ar >> m_iTop250;
     ar >> m_iYear;
     ar >> m_iSeason;
@@ -316,7 +319,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   if (after > 0)
   {
     m_iSpecialSortSeason = after;
-    m_iSpecialSortEpisode = 2^13; // should be more than any realistic episode number
+    m_iSpecialSortEpisode = 0x1000; // should be more than any realistic episode number
   }
   XMLUtils::GetString(movie, "votes", m_strVotes);
   XMLUtils::GetString(movie, "outline", m_strPlotOutline);
@@ -325,6 +328,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetString(movie, "runtime", m_strRuntime);
   XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::GetInt(movie, "playcount", m_playCount);
+  XMLUtils::GetString(movie, "lastplayed", m_lastPlayed);
   XMLUtils::GetString(movie, "file", m_strFile);
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "id", m_strIMDBNumber);
@@ -390,7 +394,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
     }
     node = node->NextSibling("credits");
   }
-  
+
   node = movie->FirstChild("director");
   while (node)
   {
@@ -487,90 +491,91 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
 
 void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
 {
-  XMLUtils::GetString(movie, "LocalTitle", m_strTitle); 
-  XMLUtils::GetString(movie, "OriginalTitle", m_strOriginalTitle); 
-  XMLUtils::GetInt(movie, "ProductionYear", m_iYear); 
-  int runtime = 0; 
-  XMLUtils::GetInt(movie, "RunningTime", runtime); 
+  XMLUtils::GetString(movie, "LocalTitle", m_strTitle);
+  XMLUtils::GetString(movie, "OriginalTitle", m_strOriginalTitle);
+  XMLUtils::GetInt(movie, "ProductionYear", m_iYear);
+  int runtime = 0;
+  XMLUtils::GetInt(movie, "RunningTime", runtime);
   m_strRuntime.Format("%i:%02d", runtime/60, runtime%60); // convert from minutes to hh:mm
-  XMLUtils::GetString(movie, "TagLine", m_strTagLine); 
-  XMLUtils::GetString(movie, "Description", m_strPlot); 
-  if (m_strTagLine.IsEmpty()) 
-    m_strPlotOutline = m_strPlot; 
+  XMLUtils::GetString(movie, "TagLine", m_strTagLine);
+  XMLUtils::GetString(movie, "Description", m_strPlot);
+  if (m_strTagLine.IsEmpty())
+    m_strPlotOutline = m_strPlot;
 
-  // thumb 
-  CStdString strTemp; 
-  const TiXmlNode *node = movie->FirstChild("Covers"); 
-  while (node) 
-  { 
-    const TiXmlNode *front = node->FirstChild("Front"); 
-    if (front) 
-    { 
-      strTemp = front->FirstChild()->Value(); 
-      if (!strTemp.IsEmpty())
-        m_strPictureURL.ParseString(strTemp); 
-    }
-    node = node->NextSibling("Covers"); 
-  } 
-  // genres 
-  node = movie->FirstChild("Genres"); 
-  const TiXmlNode *genre = node->FirstChildElement("Genre"); 
-  while (genre) 
-  { 
-    if (genre && genre->FirstChild()) 
-    { 
-      strTemp = genre->FirstChild()->Value(); 
-      if (m_strGenre.IsEmpty()) 
-        m_strGenre = strTemp; 
-      else 
-        m_strGenre += g_advancedSettings.m_videoItemSeparator+strTemp; 
-    }
-    genre = genre->NextSiblingElement("Genre"); 
-  } 
-  // studios 
-  node = movie->FirstChild("Studios"); 
-  while (node) 
-  { 
-    const TiXmlNode *studio = node->FirstChild("Studio"); 
-    if (studio && studio->FirstChild()) 
-    { 
-      strTemp = studio->FirstChild()->Value(); 
-      if (m_strStudio.IsEmpty()) 
-        m_strStudio = strTemp; 
-      else 
-        m_strStudio += g_advancedSettings.m_videoItemSeparator+strTemp; 
-    } 
-    node = node->NextSibling("Studios"); 
-  } 
-  // persons 
-  int personType = -1; 
-  node = movie->FirstChild("Persons"); 
-  const TiXmlElement *element = node->FirstChildElement("Person"); 
-  while (element) 
-  { 
-    element->Attribute("Type", &personType); 
-    const TiXmlNode *person = element->FirstChild("Name"); 
-    if (person && person->FirstChild()) 
+  // thumb
+  CStdString strTemp;
+  const TiXmlNode *node = movie->FirstChild("Covers");
+  while (node)
+  {
+    const TiXmlNode *front = node->FirstChild("Front");
+    if (front)
     {
-      if (personType == 1) // actor 
-      { 
-        SActorInfo info; 
-        info.strName = person->FirstChild()->Value(); 
-        const TiXmlNode *roleNode = element->FirstChild("Role"); 
-        if (roleNode && roleNode->FirstChild()) 
-          info.strRole = roleNode->FirstChild()->Value(); 
-        m_cast.push_back(info); 
-      } 
-      else if (personType == 2) // director 
-      { 
-        strTemp = person->FirstChild()->Value(); 
-        if (m_strDirector.IsEmpty()) 
-          m_strDirector = strTemp; 
-        else 
-          m_strDirector += g_advancedSettings.m_videoItemSeparator+strTemp; 
-      } 
+      strTemp = front->FirstChild()->Value();
+      if (!strTemp.IsEmpty())
+        m_strPictureURL.ParseString(strTemp);
     }
-    element = element->NextSiblingElement("Person"); 
-  } 
+    node = node->NextSibling("Covers");
+  }
+  // genres
+  node = movie->FirstChild("Genres");
+  const TiXmlNode *genre = node->FirstChildElement("Genre");
+  while (genre)
+  {
+    if (genre && genre->FirstChild())
+    {
+      strTemp = genre->FirstChild()->Value();
+      if (m_strGenre.IsEmpty())
+        m_strGenre = strTemp;
+      else
+        m_strGenre += g_advancedSettings.m_videoItemSeparator+strTemp;
+    }
+    genre = genre->NextSiblingElement("Genre");
+  }
+  // studios
+  node = movie->FirstChild("Studios");
+  while (node)
+  {
+    const TiXmlNode *studio = node->FirstChild("Studio");
+    if (studio && studio->FirstChild())
+    {
+      strTemp = studio->FirstChild()->Value();
+      if (m_strStudio.IsEmpty())
+        m_strStudio = strTemp;
+      else
+        m_strStudio += g_advancedSettings.m_videoItemSeparator+strTemp;
+    }
+    node = node->NextSibling("Studios");
+  }
+  // persons
+  int personType = -1;
+  node = movie->FirstChild("Persons");
+  const TiXmlElement *element = node->FirstChildElement("Person");
+  while (element)
+  {
+    element->Attribute("Type", &personType);
+    const TiXmlNode *person = element->FirstChild("Name");
+    if (person && person->FirstChild())
+    {
+      if (personType == 1) // actor
+      {
+        SActorInfo info;
+        info.strName = person->FirstChild()->Value();
+        const TiXmlNode *roleNode = element->FirstChild("Role");
+        if (roleNode && roleNode->FirstChild())
+          info.strRole = roleNode->FirstChild()->Value();
+        m_cast.push_back(info);
+      }
+      else if (personType == 2) // director
+      {
+        strTemp = person->FirstChild()->Value();
+        if (m_strDirector.IsEmpty())
+          m_strDirector = strTemp;
+        else
+          m_strDirector += g_advancedSettings.m_videoItemSeparator+strTemp;
+      }
+    }
+    element = element->NextSiblingElement("Person");
+  }
 }
+
 

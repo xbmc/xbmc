@@ -1,17 +1,29 @@
+ARCH=@ARCH@
 OBJS += AACCodec.o utils.o
 CFLAGS +=-D_LINUX -fPIC -Ialac_decoder -I../../dvdplayer/Codecs/libfaad2/libfaad -I../../dvdplayer/Codecs/libfaad2/common/mp4ff -I../../dvdplayer/Codecs/libfaad2/include -O2
 
 DIRS=alac_decoder
 
-LIB=../../../../system/players/paplayer/AACCodec-@ARCH@.so
+SLIB=../../../../system/players/paplayer/AACCodec-$(ARCH).so
+
+$(SLIB): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	make -C alac_decoder
+	$(CC) -shared -bundle -flat_namespace -undefined suppress \
+		-o $@ *.o \
+		alac_decoder/*.o \
+		../../dvdplayer/Codecs/libfaad2/libfaad/.libs/*.o \
+		../../dvdplayer/Codecs/libfaad2/common/mp4ff/.libs/*.o
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+else
+	make -C alac_decoder
+	$(CC) -shared -o $@ *.o \
+		alac_decoder/*.o \
+		../../dvdplayer/Codecs/libfaad2/libfaad/.libs/*.o \
+		../../dvdplayer/Codecs/libfaad2/common/mp4ff/.libs/*.o \
+		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+endif
 
 include ../../../../Makefile.include
 
-lib: $(LIB)
-
-AACCodec-osx.so: compile AACCodec.o utils.o
-	$(CC) -shared -bundle -flat_namespace -undefined suppress -o $@ *.o alac_decoder/*.o libfaad/*.o mp4ff/*.o
-
-$(LIB): $(OBJS)
-	make -C alac_decoder
-	$(CC) -shared -o $@ *.o alac_decoder/*.o ../../dvdplayer/Codecs/libfaad2/libfaad/.libs/*.o ../../dvdplayer/Codecs/libfaad2/common/mp4ff/.libs/*.o `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o

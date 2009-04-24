@@ -52,7 +52,7 @@ private:
   stream_reader m_Callbacks;
 
   BYTE*     m_Buffer;
-  int       m_BufferSize; 
+  int       m_BufferSize;
   int       m_BufferPos;
   BYTE*     m_ReadBuffer;
 

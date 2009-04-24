@@ -28,10 +28,6 @@
 #define CONTROL_SETTINGS_LABEL      2
 #define CONTROL_NONE_AVAILABLE      3
 #define CONTROL_GROUP_LIST          5
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#define CONTROL_AREA                5
-#define CONTROL_GAP                 6
-#endif
 #define CONTROL_DEFAULT_BUTTON      7
 #define CONTROL_DEFAULT_RADIOBUTTON 8
 #define CONTROL_DEFAULT_SPIN        9
@@ -102,25 +98,6 @@ void CGUIDialogVisualisationSettings::SetupPage()
   SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, strSettings);
 
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_GROUP_LIST);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (!group || group->GetControlType() != CGUIControl::GUICONTROL_GROUPLIST)
-  {
-    // our controls for layout...
-    CGUIControl *pArea = (CGUIControl *)GetControl(CONTROL_AREA);
-    const CGUIControl *pGap = GetControl(CONTROL_GAP);
-    if (!pArea || !pGap)
-      return;
-    Remove(pArea);
-    group = new CGUIControlGroupList(GetID(), CONTROL_GROUP_LIST, pArea->GetXPosition(), pArea->GetYPosition(),
-                                     pArea->GetWidth(), pArea->GetHeight(), pGap->GetHeight() - m_pOriginalSettingsButton->GetHeight(),
-                                     0, VERTICAL, false);
-    group->SetNavigation(CONTROL_GROUP_LIST, CONTROL_GROUP_LIST, CONTROL_GROUP_LIST, CONTROL_GROUP_LIST);
-    Insert(group, pGap);
-    pArea->FreeResources();
-    delete pArea;
-    SET_CONTROL_HIDDEN(CONTROL_PAGE);
-  }
-#endif
   if (!group)
     return;
 
@@ -165,7 +142,7 @@ void CGUIDialogVisualisationSettings::OnClick(int iID)
     CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(iID);
     setting.current = pControl->IsSelected() ? 1 : 0;
   }
-  m_pVisualisation->UpdateSetting(settingNum);
+  m_pVisualisation->UpdateSetting(settingNum, &m_pSettings);
   UpdateSettings();
 }
 
@@ -173,11 +150,7 @@ void CGUIDialogVisualisationSettings::FreeControls()
 {
   // just clear our group list
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_GROUP_LIST);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (group && group->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
-#else
   if (group)
-#endif
   {
     group->FreeResources();
     group->ClearAll();

@@ -24,7 +24,9 @@
 #include "PlatformInclude.h"
 #include "LinuxTimezone.h"
 #include "Util.h"
-#include "getdelim.h"
+#ifdef __APPLE__
+#include "OSXGNUReplacements.h"
+#endif
 
 using namespace std;
 
@@ -117,9 +119,7 @@ CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
       sort(m_counties.begin(), m_counties.end(), sortstringbyname());
       fclose(fp);
    }
-
-   if (line)
-     free(line);
+   free(line);
 }
 
 vector<CStdString> CLinuxTimezone::GetCounties()

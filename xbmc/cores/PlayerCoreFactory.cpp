@@ -108,20 +108,24 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 {
   CURL url(item.m_strPath);
 
-  CLog::Log(LOGDEBUG,"CPlayerCoreFactor::GetPlayers(%s)",item.m_strPath.c_str());
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", item.m_strPath.c_str());
 
-  // ugly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuevdo DVArchive)
+  // ugly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuedo DVArchive)
   // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
   // we are often forced to do small reads to fill up the full buffer size wich seems gives garbage back
   if (url.GetProtocol().Equals("rtv"))
+  {
     vecCores.push_back(EPC_MPLAYER); // vecCores.push_back(EPC_DVDPLAYER);
-
+  }
+  
   if (url.GetProtocol().Equals("hdhomerun")
   ||  url.GetProtocol().Equals("myth")
   ||  url.GetProtocol().Equals("cmyth")
   ||  url.GetProtocol().Equals("rtmp"))
+  {
     vecCores.push_back(EPC_DVDPLAYER);
-
+  }
+  
   if (url.GetProtocol().Equals("lastfm") ||
       url.GetProtocol().Equals("shout"))
   {
@@ -137,24 +141,29 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if (url.GetProtocol().Equals("rtsp") 
   && !url.GetFileType().Equals("rm") 
   && !url.GetFileType().Equals("ra"))
+  {
     vecCores.push_back(EPC_DVDPLAYER);
+  }
 
-  // only dvdplayer can handle these normally
-  if (url.GetFileType().Equals("sdp") ||
-      url.GetFileType().Equals("asf"))
-    vecCores.push_back(EPC_DVDPLAYER);
-
-  if ( item.IsInternetStream() )
+  // Special care in case it's an internet stream
+  if (item.IsInternetStream())
   {
     CStdString content = item.GetContentType();
+    CLog::Log(LOGDEBUG, "%s - Item is an internet stream, content-type=%s", __FUNCTION__, content.c_str());
 
     if (content == "video/x-flv"
-     || content == "video/flv")
+    ||  content == "video/flv")
+    {
       vecCores.push_back(EPC_DVDPLAYER);
+    }
     else if (content == "audio/aacp")
+    {
       vecCores.push_back(EPC_DVDPLAYER);
+    }
     else if (content == "application/sdp")
+    {
       vecCores.push_back(EPC_DVDPLAYER);
+    }
     else if (content == "application/octet-stream")
     {
       //unknown contenttype, send mp2 to pap
@@ -163,13 +172,43 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     }
   }
 
-  if (((item.IsDVD()) || item.IsDVDFile() || item.IsDVDImage()))
+  if (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage())
+  {
+    if ( g_advancedSettings.m_videoDefaultDVDPlayer == "externalplayer" )
+    {
+      vecCores.push_back(EPC_EXTPLAYER);
+      vecCores.push_back(EPC_DVDPLAYER);
+    }
+    else
+    {
+      vecCores.push_back(EPC_DVDPLAYER);
+      vecCores.push_back(EPC_EXTPLAYER);
+    }
+  }
+
+  
+  // only dvdplayer can handle these normally
+  if (url.GetFileType().Equals("sdp") 
+  ||  url.GetFileType().Equals("asf"))
   {
     vecCores.push_back(EPC_DVDPLAYER);
   }
 
-  if (item.IsVideo()) // video must override audio
-    vecCores.push_back(EPC_DVDPLAYER);
+  // Set video default player. Check whether it's video first (overrule audio check)
+  // Also push these players in case it is NOT audio either
+  if (item.IsVideo() || !item.IsAudio())
+  {
+    if ( g_advancedSettings.m_videoDefaultPlayer == "externalplayer" )
+    {
+      vecCores.push_back(EPC_EXTPLAYER);
+      vecCores.push_back(EPC_DVDPLAYER);
+    }
+    else
+    {
+      vecCores.push_back(EPC_DVDPLAYER);
+      vecCores.push_back(EPC_EXTPLAYER);
+    }
+  }
 
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
@@ -194,8 +233,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
       {
         vecCores.push_back(EPC_PAPLAYER);
       }
-      else if( ( url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled() )
-        ||  ( url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled() ) ) 
+      else if ((url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled())
+           ||  (url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled())) 
       {
         vecCores.push_back(EPC_DVDPLAYER);
       }
@@ -206,22 +245,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     }
   }
 
-  // Add all normal players last so you can force them, should you want to
-  // Handle default players set via advancedsettings:
-  if( item.IsVideo() )
-  {
-    if ( g_advancedSettings.m_videoDefaultPlayer == "externalplayer" )
-    {
-      vecCores.push_back(EPC_EXTPLAYER);
-      vecCores.push_back(EPC_DVDPLAYER);
-    }
-    else
-    {
-      vecCores.push_back(EPC_DVDPLAYER);
-      vecCores.push_back(EPC_EXTPLAYER);
-    }
-  }
-  
+  // Set audio default player
+  // Pushback all audio players in case we don't know the type
   if( item.IsAudio())
   {
     if ( g_advancedSettings.m_audioDefaultPlayer == "dvdplayer" )
@@ -245,9 +270,9 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   }
 
   // Always pushback DVDplayer as it can do both audio & video
-  vecCores.push_back(EPC_DVDPLAYER);
+//  vecCores.push_back(EPC_DVDPLAYER);
 
-  /* make our list unique, presevering first added players */
+  /* make our list unique, preserving first added players */
   unique(vecCores);
 }
 
@@ -296,7 +321,7 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, fl
 
   // Display menu
   if (posX && posY)
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(posX, posY);
   else
     pMenu->CenterWindow();
   pMenu->DoModal();

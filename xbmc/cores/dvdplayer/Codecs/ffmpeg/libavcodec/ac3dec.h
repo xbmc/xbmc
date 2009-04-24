@@ -20,13 +20,14 @@
  */
 
 /**
- * @file ac3.h
+ * @file libavcodec/ac3.h
  * Common code between the AC-3 and E-AC-3 decoders.
  */
 
 #ifndef AVCODEC_AC3DEC_H
 #define AVCODEC_AC3DEC_H
 
+#include "libavutil/internal.h"
 #include "libavutil/lfg.h"
 #include "ac3.h"
 #include "bitstream.h"

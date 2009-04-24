@@ -20,7 +20,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <strings.h>
 #include "libavutil/avstring.h"
+#include "libavutil/bswap.h"
 #include "libavutil/tree.h"
 #include "nut.h"
 
@@ -205,7 +207,7 @@ static int decode_main_header(NUTContext *nut){
     for(i=0; i<nut->time_base_count; i++){
         GET_V(nut->time_base[i].num, tmp>0 && tmp<(1ULL<<31))
         GET_V(nut->time_base[i].den, tmp>0 && tmp<(1ULL<<31))
-        if(ff_gcd(nut->time_base[i].num, nut->time_base[i].den) != 1){
+        if(av_gcd(nut->time_base[i].num, nut->time_base[i].den) != 1){
             av_log(s, AV_LOG_ERROR, "time base invalid\n");
             return -1;
         }
@@ -394,6 +396,7 @@ static int decode_info_header(NUTContext *nut){
     char name[256], str_value[1024], type_str[256];
     const char *type;
     AVChapter *chapter= NULL;
+    AVStream *st= NULL;
 
     end= get_packetheader(nut, bc, 1, INFO_STARTCODE);
     end += url_ftell(bc);
@@ -409,7 +412,8 @@ static int decode_info_header(NUTContext *nut){
         chapter= ff_new_chapter(s, chapter_id,
                                 nut->time_base[chapter_start % nut->time_base_count],
                                 start, start + chapter_len, NULL);
-    }
+    } else if(stream_id_plus1)
+        st= s->streams[stream_id_plus1 - 1];
 
     for(i=0; i<count; i++){
         get_str(bc, name, sizeof(name));
@@ -439,21 +443,16 @@ static int decode_info_header(NUTContext *nut){
             continue;
         }
 
-        if(chapter_id==0 && !strcmp(type, "UTF-8")){
-            if     (!strcmp(name, "Author"))
-                av_strlcpy(s->author   , str_value, sizeof(s->author));
-            else if(!strcmp(name, "Title"))
-                av_strlcpy(s->title    , str_value, sizeof(s->title));
-            else if(!strcmp(name, "Copyright"))
-                av_strlcpy(s->copyright, str_value, sizeof(s->copyright));
-            else if(!strcmp(name, "Description"))
-                av_strlcpy(s->comment  , str_value, sizeof(s->comment));
-            else if(!strcmp(name, "Disposition"))
+        if(!strcmp(type, "UTF-8")){
+            AVMetadata **metadata = NULL;
+            if(chapter_id==0 && !strcmp(name, "Disposition"))
                 set_disposition_bits(s, str_value, stream_id_plus1 - 1);
-        }
-        if(chapter && !strcmp(type, "UTF-8")){
-            if(!strcmp(name, "Title"))
-                chapter->title= av_strdup(str_value);
+            else if(chapter)          metadata= &chapter->metadata;
+            else if(stream_id_plus1)  metadata= &st->metadata;
+            else                      metadata= &s->metadata;
+            if(metadata && strcasecmp(name,"Uses")
+               && strcasecmp(name,"Depends") && strcasecmp(name,"Replaces"))
+                av_metadata_set(metadata, name, str_value);
         }
     }
 
@@ -905,7 +904,7 @@ static int nut_read_close(AVFormatContext *s)
     return 0;
 }
 
-#ifdef CONFIG_NUT_DEMUXER
+#if CONFIG_NUT_DEMUXER
 AVInputFormat nut_demuxer = {
     "nut",
     NULL_IF_CONFIG_SMALL("NUT format"),

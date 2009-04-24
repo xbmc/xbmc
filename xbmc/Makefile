@@ -1,4 +1,4 @@
-INCLUDES=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem
+INCLUDES+=-I. -Ilinux -Icores -I../guilib -Iutils -IFileSystem
 
 INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -Ilib/libUPnP/Platinum/Source/Core \
@@ -6,6 +6,8 @@ INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/System/Posix \
           -Ilib/libUPnP/Platinum/Source/Devices/MediaConnect \
           -Ilib/libUPnP/Platinum/Source/Devices/MediaRenderer \
+
+INCLUDES+=-Ilib/libcdio/libcdio/include
 
 PCH=stdafx.h
 
@@ -62,6 +64,7 @@ SRCS=Application.cpp \
      MusicInfoTagLoaderFactory.cpp \
      MusicInfoTagLoaderFlac.cpp \
      MusicInfoTagLoaderGYM.cpp \
+     MusicInfoTagLoaderMidi.cpp \
      MusicInfoTagLoaderMod.cpp \
      MusicInfoTagLoaderMP3.cpp \
      MusicInfoTagLoaderMP4.cpp \
@@ -161,9 +164,8 @@ SRCS=Application.cpp \
      Autorun.cpp \
      Util.cpp \
      GUIWindowSlideShow.cpp \
-     settings/VideoSettings.cpp \
      XBApplicationEx.cpp \
-     XboxMediaCenter.cpp \
+     xbmc.cpp \
      GUIDialogFavourites.cpp \
      GUIDialogSongInfo.cpp \
      Favourites.cpp \
@@ -195,10 +197,9 @@ SRCS=Application.cpp \
      GUIViewStatePrograms.cpp \
      GUIViewStatePictures.cpp \
      GUIDialogFullScreenInfo.cpp \
-     Cdg.cpp \
-     CdgParser.cpp \
+     PowerManager.cpp \
+     Zeroconf.cpp \
 
-OBJS=$(SRCS:.cpp=.o)
 LIB=xbmc.a
 
 include ../Makefile.include

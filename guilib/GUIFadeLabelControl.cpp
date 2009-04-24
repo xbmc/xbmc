@@ -63,8 +63,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void)
 {
-  if (m_fadeAnim)
-    delete m_fadeAnim;
+  delete m_fadeAnim;
 }
 
 void CGUIFadeLabelControl::SetInfo(const vector<CGUIInfoLabel> &infoLabels)
@@ -82,6 +81,12 @@ void CGUIFadeLabelControl::DoRender(DWORD currentTime)
 {
   m_renderTime = currentTime;
   CGUIControl::DoRender(currentTime);
+}
+
+void CGUIFadeLabelControl::UpdateColors()
+{
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
 }
 
 void CGUIFadeLabelControl::Render()
@@ -121,7 +126,7 @@ void CGUIFadeLabelControl::Render()
   float posY = m_posY;
   if (m_label.align & XBFONT_CENTER_Y)
     posY += m_height * 0.5f;
-  if (m_infoLabels.size() == 1 && m_shortText) 
+  if (m_infoLabels.size() == 1 && m_shortText)
   { // single label set and no scrolling required - just display
     m_textLayout.Render(m_posX + m_label.offsetX, posY, 0, m_label.textColor, m_label.shadowColor, (m_label.align & ~3), m_width - m_label.offsetX);
     CGUIControl::Render();

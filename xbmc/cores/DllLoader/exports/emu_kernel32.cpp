@@ -30,7 +30,7 @@
 #endif
 
 #include "../dll_tracker.h"
-#include <Util.h>
+#include "FileSystem/SpecialProtocol.h"
 
 #ifdef _LINUX
 #include "../../../linux/PlatformInclude.h"
@@ -84,8 +84,18 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile)
 
 #ifdef _WIN32
 #define CORRECT_SEP_STR(str) \
+  if (strstr(str, "://") == NULL) \
+  { \
     int iSize_##str = strlen(str); \
-    for (int pos = 0; pos < iSize_##str; pos++) if (str[pos] == '/') str[pos] = '\\';
+    for (int pos = 0; pos < iSize_##str; pos++) \
+      if (str[pos] == '/') str[pos] = '\\'; \
+  } \
+  else \
+  { \
+    int iSize_##str = strlen(str); \
+    for (int pos = 0; pos < iSize_##str; pos++) \
+      if (str[pos] == '\\') str[pos] = '/'; \
+  }
 #else
 #define CORRECT_SEP_STR(str)
 #endif
@@ -708,7 +718,7 @@ extern "C" UINT WINAPI dllGetWindowsDirectoryA(LPTSTR lpBuffer, UINT uSize)
 
 extern "C" UINT WINAPI dllGetSystemDirectoryA(LPTSTR lpBuffer, UINT uSize)
 {
-  //char* systemdir = "q:\\mplayer\\codecs";
+  //char* systemdir = "special://xbmc/system/mplayer/codecs";
   //unsigned int len = strlen(systemdir);
   //if (len > uSize) return 0;
   //strcpy(lpBuffer, systemdir);
@@ -728,7 +738,7 @@ extern "C" UINT WINAPI dllGetShortPathName(LPTSTR lpszLongPath, LPTSTR lpszShort
   if (!lpszLongPath) return 0;
   if (strlen(lpszLongPath) == 0)
   {
-    //strcpy(lpszLongPath, "Q:\\mplayer\\codecs\\QuickTime.qts");
+    //strcpy(lpszLongPath, "special://xbmc/system/mplayer/codecs/QuickTime.qts");
   }
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "KERNEL32!GetShortPathNameA('%s',%p,%d)\n", lpszLongPath, lpszShortPath, cchBuffer);
@@ -844,7 +854,7 @@ extern "C" LPVOID WINAPI dllTlsGetValue(DWORD dwTlsIndex)
 
 extern "C" UINT WINAPI dllGetCurrentDirectoryA(UINT c, LPSTR s)
 {
-  char curdir[] = "Q:\\";
+  char curdir[] = "special://xbmc/";
   int result;
   strncpy(s, curdir, c);
   result = 1 + ((c < strlen(curdir)) ? c : strlen(curdir));
@@ -1183,7 +1193,7 @@ extern "C" DWORD WINAPI dllGetTempPathA(DWORD nBufferLength, LPTSTR lpBuffer)
   // If the function succeeds, the return value is the length, in TCHARs, of the string copied to lpBuffer,
   // not including the terminating null character. If the return value is greater than nBufferLength,
   // the return value is the size of the buffer required to hold the path.
-  const char* tempPath = "Z:\\temp\\";
+  const char* tempPath = "special://temp/temp/";
   unsigned int len = strlen(tempPath);
   
   if (nBufferLength > len)

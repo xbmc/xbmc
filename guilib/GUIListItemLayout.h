@@ -22,7 +22,7 @@
  */
 
 #include "GUIListGroup.h"
-#include "GUIImage.h"
+#include "GUITexture.h"
 
 class CGUIListItem;
 class CFileItem;
@@ -42,9 +42,8 @@ public:
   void ResetAnimation(ANIMATION_TYPE animType);
   void SetInvalid() { m_invalidated = true; };
 
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CImage &texture, const CImage &textureFocus, float texHeight, float iconWidth, float iconHeight, int nofocusCondition, int focusCondition);
-  void CreateThumbnailPanelLayouts(float width, float height, bool focused, const CImage &image, float texWidth, float texHeight, float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, const CGUIImage::CAspectRatio &thumbAspect, const CLabelInfo &labelInfo, bool hideLabel);
+//#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
+  void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, int nofocusCondition, int focusCondition);
 //#endif
 
   void SelectItemFromPoint(const CPoint &point);

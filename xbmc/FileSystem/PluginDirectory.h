@@ -41,18 +41,23 @@ public:
   CPluginDirectory(void);
   ~CPluginDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
+  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   static bool RunScriptWithParams(const CStdString& strPath);
   static bool HasPlugins(const CStdString &type);
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
   static void LoadPluginStrings(const CURL &url);
   static void ClearPluginStrings();
+  bool StartScript(const CStdString& strPath);
+  static bool GetPluginResult(const CStdString& strPath, CFileItem &resultItem);
 
   // callbacks from python
   static bool AddItem(int handle, const CFileItem *item, int totalItems);
+  static bool AddItems(int handle, const CFileItemList *items, int totalItems);
   static void EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc);
   static void AddSortMethod(int handle, SORT_METHOD sortMethod);
   static void SetContent(int handle, const CStdString &strContent);
   static void SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue);
+  static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
 
 private:
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
@@ -63,7 +68,8 @@ private:
   static CCriticalSection m_handleLock;
 
   CFileItemList* m_listItems;
-  HANDLE        m_directoryFetched;
+  CFileItem*     m_fileResult;
+  HANDLE         m_fetchComplete;
 
   bool          m_cancelled;    // set to true when we are cancelled
   bool          m_success;      // set by script in EndOfDirectory

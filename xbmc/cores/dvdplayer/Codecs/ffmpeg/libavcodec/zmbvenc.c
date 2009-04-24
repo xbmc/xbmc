@@ -20,13 +20,14 @@
  */
 
 /**
- * @file zmbvenc.c
+ * @file libavcodec/zmbvenc.c
  * Zip Motion Blocks Video encoder
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
 #include <zlib.h>

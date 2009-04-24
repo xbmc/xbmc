@@ -20,7 +20,7 @@
  */
 
 /**
- * @file mm.c
+ * @file libavformat/mm.c
  * American Laser Games MM Format Demuxer
  * by Peter Ross (suxen_drol at hotmail dot com)
  *
@@ -31,6 +31,7 @@
  *  http://wiki.multimedia.cx/index.php?title=American_Laser_Games_MM
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 #define MM_PREAMBLE_SIZE    6
@@ -167,7 +168,7 @@ static int mm_read_packet(AVFormatContext *s,
             return 0;
 
         default :
-            av_log(NULL, AV_LOG_INFO, "mm: unknown chunk type 0x%x\n", type);
+            av_log(s, AV_LOG_INFO, "unknown chunk type 0x%x\n", type);
             url_fseek(pb, length, SEEK_CUR);
         }
     }

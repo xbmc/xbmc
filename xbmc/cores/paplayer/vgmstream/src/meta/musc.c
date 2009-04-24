@@ -1,12 +1,11 @@
 #include "meta.h"
 #include "../util.h"
 
-/* MUSC/MUSX (near all Spyro games and many other using this) */
+/* MUSC (near all Spyro games and many other using this) */
 VGMSTREAM * init_vgmstream_musc(STREAMFILE *streamFile) {
     VGMSTREAM * vgmstream = NULL;
     char filename[260];
     off_t start_offset;
-
 	int musc_version;
     int loop_flag = 0;
 	int channel_count = 2;
@@ -19,7 +18,7 @@ VGMSTREAM * init_vgmstream_musc(STREAMFILE *streamFile) {
 	if (read_32bitBE(0x0,streamFile) != 0x4D555343)   /* MUSC */
 		goto fail;
 
-    loop_flag = 0; /* (read_32bitLE(0x08,streamFile)!=0); */
+    loop_flag = 0;
     channel_count = 2;
     
 	/* build the VGMSTREAM */
@@ -36,7 +35,7 @@ VGMSTREAM * init_vgmstream_musc(STREAMFILE *streamFile) {
 			vgmstream->coding_type = coding_PSX;
 			vgmstream->num_samples = (read_32bitLE(0x14,streamFile))*28/16/channel_count;
 		if (loop_flag) {
-			vgmstream->loop_start_sample = 0; /*(read_32bitLE(0x08,streamFile)-1)*28; */
+			vgmstream->loop_start_sample = 0;
 			vgmstream->loop_end_sample = (read_32bitLE(0x14,streamFile))*28/16/channel_count;
 	}
 	break;
@@ -48,9 +47,7 @@ VGMSTREAM * init_vgmstream_musc(STREAMFILE *streamFile) {
 	vgmstream->layout_type = layout_interleave;
     vgmstream->interleave_block_size = (read_32bitLE(0x18,streamFile))/2;
     vgmstream->meta_type = meta_MUSC;
-    
-	
-	
+
 	/* open the file for reading */
     {
         int i;
@@ -63,7 +60,6 @@ VGMSTREAM * init_vgmstream_musc(STREAMFILE *streamFile) {
             vgmstream->ch[i].channel_start_offset=
                 vgmstream->ch[i].offset=start_offset+
                 vgmstream->interleave_block_size*i;
-
         }
     }
 

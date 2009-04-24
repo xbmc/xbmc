@@ -38,13 +38,17 @@
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "GUIDialog.h"
+
+#include "PowerManager.h"
+
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
 #elif defined _WIN32PC
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
 #elif defined __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #endif
 
 using namespace std;
@@ -102,7 +106,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   if (msg->dwMessage == TMSG_DIALOG_DOMODAL ||
       msg->dwMessage == TMSG_WRITE_SCRIPT_OUTPUT)
     m_vecWindowMessages.push(msg);
-  else 
+  else
     m_vecMessages.push(msg);
   lock.Leave();
 
@@ -170,19 +174,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
 case TMSG_POWERDOWN:
       {
+        g_application.Stop();
+        Sleep(200);
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef HAS_HAL
-        if (CHalManager::PowerManagement(POWERSTATE_SHUTDOWN))
-#elif defined(_WIN32PC)
-        if (CWIN32Util::PowerManagement(POWERSTATE_SHUTDOWN))
-#endif
-        {
-          g_application.Stop();
-          exit(64);
-        }
+        g_powerManager.Powerdown();
+        exit(64);
       }
       break;
 
@@ -192,28 +191,16 @@ case TMSG_POWERDOWN:
         exit(0);
       }
       break;
-    
+
     case TMSG_HIBERNATE:
       {
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_HIBERNATE);
-#elif defined(_WIN32PC)
-        CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
-#elif defined __APPLE__
-        Cocoa_SleepSystem();
-#endif
+        g_powerManager.Hibernate();
       }
       break;
 
     case TMSG_SUSPEND:
       {
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_SUSPEND);
-#elif defined(_WIN32PC)
-        CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
-#elif defined(__APPLE__)
-        Cocoa_SleepSystem();
-#endif
+        g_powerManager.Suspend();
       }
       break;
 
@@ -221,21 +208,12 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX)
-#ifndef HAS_SDL
+#if !defined(_LINUX) && !defined(HAS_SDL)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef _WIN32PC
-        CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
-#endif
-#else
-        // exit the application
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_REBOOT);
-#endif
+        g_powerManager.Reboot();
         exit(66);
-#endif
       }
       break;
 
@@ -243,21 +221,12 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX)
-#ifndef HAS_SDL
+#if !defined(_LINUX) && !defined(HAS_SDL)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-#ifdef _WIN32PC
-        CWIN32Util::PowerManagement(POWERSTATE_REBOOT);
-#endif
-#else
-        // exit the application
-#ifdef HAS_HAL
-        CHalManager::PowerManagement(POWERSTATE_REBOOT);
-#endif
+        g_powerManager.Reboot();
         exit(66);
-#endif
       }
       break;
 
@@ -279,7 +248,7 @@ case TMSG_POWERDOWN:
     case TMSG_MEDIA_PLAY:
       {
         // first check if we were called from the PlayFile() function
-        if (pMsg->lpVoid)
+        if (pMsg->lpVoid && pMsg->dwParam2 == 0)
         {
           CFileItem *item = (CFileItem *)pMsg->lpVoid;
           g_application.PlayFile(*item, pMsg->dwParam1 != 0);
@@ -297,12 +266,23 @@ case TMSG_POWERDOWN:
 
         //g_application.StopPlaying();
         // play file
-        CFileItem item(pMsg->strParam, false);
-        if (item.IsAudio())
-          item.SetMusicThumb();
+        CFileItem item;
+        if(pMsg->lpVoid)
+        {
+          item = *(CFileItem *)pMsg->lpVoid;
+          delete (CFileItem *)pMsg->lpVoid;
+        }
         else
-          item.SetVideoThumb();
-        item.FillInDefaultIcon();
+        {
+          item.m_strPath = pMsg->strParam;
+          item.m_bIsFolder = false;
+          if (item.IsAudio())
+            item.SetMusicThumb();
+          else
+            item.SetVideoThumb();
+          item.FillInDefaultIcon();
+        }
+
         g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO); //Note: this will play playlists always in the temp music playlist (default 2nd parameter), maybe needs some tweaking.
       }
       break;
@@ -369,10 +349,11 @@ case TMSG_POWERDOWN:
 
         CFileItemList items;
         CStdString strPath = pMsg->strParam;
-        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && 
+        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER &&
             g_guiSettings.GetString("screensaver.mode").Equals("Fanart Slideshow"))
-        { 
-          CUtil::GetRecursiveListing(_P("P:\\Thumbnails\\Video\\Fanart"), items, ".tbn");
+        {
+          CUtil::GetRecursiveListing(g_settings.GetVideoFanartFolder(), items, ".tbn");
+          CUtil::GetRecursiveListing(g_settings.GetMusicFanartFolder(), items, ".tbn");
         }
         else
           CUtil::GetRecursiveListing(strPath, items, g_stSettings.m_pictureExtensions);
@@ -381,7 +362,7 @@ case TMSG_POWERDOWN:
         {
           for (int i=0;i<items.Size();++i)
             pSlideShow->Add(items[i].get());
-          pSlideShow->StartSlideShow(); //Start the slideshow!
+          pSlideShow->StartSlideShow(pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER); //Start the slideshow!
         }
         if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && g_guiSettings.GetBool("screensaver.slideshowshuffle"))
           pSlideShow->Shuffle();
@@ -444,15 +425,15 @@ case TMSG_POWERDOWN:
         case 2:
           g_application.getApplicationMessenger().Shutdown();
           break;
-  
+
         case 3:
           g_application.getApplicationMessenger().RebootToDashBoard();
           break;
-  
+
         case 4:
           g_application.getApplicationMessenger().Reset();
           break;
-  
+
         case 5:
           g_application.getApplicationMessenger().RestartApp();
           break;
@@ -460,7 +441,7 @@ case TMSG_POWERDOWN:
 #endif
     }
     break;
-    
+
     case TMSG_EXECUTE_SCRIPT:
 #ifdef HAS_PYTHON
       g_pythonParser.evalFile(pMsg->strParam.c_str());
@@ -605,12 +586,23 @@ void CApplicationMessenger::MediaPlay(string filename)
   SendMessage(tMsg, true);
 }
 
+void CApplicationMessenger::MediaPlay(const CFileItem &item)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
+  CFileItem *pItem = new CFileItem(item);
+  tMsg.lpVoid = (void *)pItem;
+  tMsg.dwParam1 = 0;
+  tMsg.dwParam2 = 1;
+  SendMessage(tMsg, true);
+}
+
 void CApplicationMessenger::PlayFile(const CFileItem &item, bool bRestart /*= false*/)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
   CFileItem *pItem = new CFileItem(item);
   tMsg.lpVoid = (void *)pItem;
   tMsg.dwParam1 = bRestart ? 1 : 0;
+  tMsg.dwParam2 = 0;
   SendMessage(tMsg, false);
 }
 

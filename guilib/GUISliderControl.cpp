@@ -23,12 +23,13 @@
 #include "GUISliderControl.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIFontManager.h"
+#include "GUITextLayout.h"
 
-CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& nibTexture, const CImage& nibTextureFocus, int iType)
+CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_guiBackground(dwParentID, dwControlId, posX, posY, width, height, backGroundTexture)
-    , m_guiMid(dwParentID, dwControlId, posX, posY, width, height, nibTexture)
-    , m_guiMidFocus(dwParentID, dwControlId, posX, posY, width, height, nibTextureFocus)
+    , m_guiBackground(posX, posY, width, height, backGroundTexture)
+    , m_guiMid(posX, posY, width, height, nibTexture)
+    , m_guiMidFocus(posX, posY, width, height, nibTextureFocus)
 {
   m_iType = iType;
   m_iPercent = 0;
@@ -93,14 +94,14 @@ void CGUISliderControl::Render()
       CGUITextLayout::DrawText(g_fontManager.GetFont("font13"), m_posX, m_posY, 0xffffffff, 0, text, 0);
 
     float fScaleX, fScaleY;
-    fScaleY = m_height == 0 ? 1.0f : m_height/(float)m_guiBackground.GetTextureHeight();
-    fScaleX = m_width == 0 ? 1.0f : m_width/(float)m_guiBackground.GetTextureWidth();
+    fScaleY = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
+    fScaleX = m_width == 0 ? 1.0f : m_width / m_guiBackground.GetTextureWidth();
 
     m_guiBackground.SetHeight(m_height);
     m_guiBackground.SetWidth(m_width);
     m_guiBackground.Render();
 
-    float fWidth = (float)(m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
+    float fWidth = (m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
 
     fPos = (float)m_iPercent;
     fPos /= 100.0f;
@@ -112,8 +113,8 @@ void CGUISliderControl::Render()
       if (m_bHasFocus)
       {
         m_guiMidFocus.SetPosition(fPos, m_guiBackground.GetYPosition() );
-        m_guiMidFocus.SetWidth(m_guiMidFocus.GetTextureWidth()*fScaleX);
-        m_guiMidFocus.SetHeight(m_guiMidFocus.GetTextureHeight()*fScaleY);
+        m_guiMidFocus.SetWidth(m_guiMidFocus.GetTextureWidth() * fScaleX);
+        m_guiMidFocus.SetHeight(m_guiMidFocus.GetTextureHeight() * fScaleY);
         m_guiMidFocus.Render();
       }
       else
@@ -406,11 +407,11 @@ CStdString CGUISliderControl::GetDescription() const
   return description;
 }
 
-void CGUISliderControl::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUISliderControl::UpdateColors()
 {
-  CGUIControl::SetColorDiffuse(color);
-  m_guiBackground.SetColorDiffuse(color);
-  m_guiMid.SetColorDiffuse(color);
-  m_guiMidFocus.SetColorDiffuse(color);
+  CGUIControl::UpdateColors();
+  m_guiBackground.SetDiffuseColor(m_diffuseColor);
+  m_guiMid.SetDiffuseColor(m_diffuseColor);
+  m_guiMidFocus.SetDiffuseColor(m_diffuseColor);
 }
 

@@ -26,6 +26,8 @@
 #include "Application.h"
 #include "GUIDialogFileBrowser.h"
 #include "FileSystem/PlaylistFileDirectory.h"
+#include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "PlayListM3U.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
@@ -85,7 +87,6 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
     if (m_playlistThumbLoader.IsLoading())
       m_playlistThumbLoader.StopThread();
     CGUIWindowMusicBase::OnMessage(message);
-    ClearPlaylist();
     return true;
 
   case GUI_MSG_WINDOW_INIT:
@@ -94,8 +95,8 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
         m_vecItems->m_strPath.Empty();
       CGUIWindowMusicBase::OnMessage(message);
 
-      LoadPlaylist(message.GetStringParam());
-      m_strLoadedPlaylist = message.GetStringParam();
+      if (!message.GetStringParam().size() == 0)
+        LoadPlaylist(message.GetStringParam());
 
       return true;
     }
@@ -195,18 +196,14 @@ void CGUIWindowMusicPlaylistEditor::DeleteRemoveableMediaDirectoryCache()
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString searchPath = _P("Z:\\r-*.fi");
-  CAutoPtrFind hFind( FindFirstFile(searchPath.c_str(), &wfd));
+  CStdString searchPath = "special://temp/r-*.fi";
+  CAutoPtrFind hFind( FindFirstFile(_P(searchPath).c_str(), &wfd));
   if (!hFind.isValid())
     return ;
   do
   {
     if ( !(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
-    {
-      CStdString strFile = _P("Z:\\");
-      strFile += wfd.cFileName;
-      DeleteFile(strFile.c_str());
-    }
+      XFILE::CFile::Delete(CStdString("special://temp/") + wfd.cFileName);
   }
   while (FindNextFile(hFind, &wfd));
 }
@@ -391,6 +388,13 @@ void CGUIWindowMusicPlaylistEditor::OnLoadPlaylist()
 
 void CGUIWindowMusicPlaylistEditor::LoadPlaylist(const CStdString &playlist)
 {
+  if (playlist.Equals("newplaylist://"))
+  {
+    ClearPlaylist();
+    m_strLoadedPlaylist.clear();
+    return;
+  }
+
   DIRECTORY::CPlaylistFileDirectory dir;
   CFileItemList items;
   if (dir.GetDirectory(playlist, items))

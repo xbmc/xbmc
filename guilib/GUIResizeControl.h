@@ -1,6 +1,6 @@
 /*!
 \file GUIRESIZEControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIRESIZECONTROL_H
@@ -29,7 +29,8 @@
  *
  */
 
-#include "GUIImage.h"
+#include "GUITexture.h"
+#include "GUIControl.h"
 
 #define DIRECTION_NONE 0
 #define DIRECTION_UP 1
@@ -39,14 +40,14 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIResizeControl : public CGUIControl
 {
 public:
   CGUIResizeControl(DWORD dwParentID, DWORD dwControlId,
                     float posX, float posY, float width, float height,
-                    const CImage& textureFocus, const CImage& textureNoFocus);
+                    const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
 
   virtual ~CGUIResizeControl(void);
   virtual CGUIResizeControl *Clone() const { return new CGUIResizeControl(*this); };
@@ -64,15 +65,15 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   void SetLimits(float x1, float y1, float x2, float y2);
 
 protected:
+  virtual void UpdateColors();
   void SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Resize(float x, float y);
-  CGUIImage m_imgFocus;
-  CGUIImage m_imgNoFocus;
+  CGUITexture m_imgFocus;
+  CGUITexture m_imgNoFocus;
   DWORD m_dwFrameCounter;
   DWORD m_dwLastMoveTime;
   int m_nDirection;

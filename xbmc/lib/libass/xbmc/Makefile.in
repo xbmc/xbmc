@@ -1,21 +1,27 @@
 ARCH=@ARCH@
 SYSDIR=../../../../system/players/dvdplayer
 SO=libass-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
+SLIB=$(SYSDIR)/$(SO)
+DIRS=..
 
 .PHONY: compile
 
-$(LIB): ../libass/.libs/libass.so
+ifeq ($(findstring osx,$(ARCH)), osx)
+$(SLIB): ../libass/.libs/libass.dylib
+	gcc -bundle -flat_namespace -undefined suppress -shared -fPIC \
+	-mmacosx-version-min=10.4 -o $@ ../libass/.libs/*.o
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+
+../libass/.libs/libass.dylib: compile
+	export MACOSX_DEPLOYMENT_TARGET=10.4
+	$(MAKE) -C ..
+else
+$(SLIB): ../libass/.libs/libass.so
 	cp ../libass/.libs/libass.so $@
 
 ../libass/.libs/libass.so: compile
 	CFLAGS="-D_LINUX -D_DLL -fPIC -O2" $(MAKE) -C ..
+endif
 
-clean:
-	$(MAKE) -C .. clean
-	rm -f $(LIB)
-
-distclean:
-	$(MAKE) -C .. distclean
-	rm -f $(LIB)
-
+include ../../../../Makefile.include

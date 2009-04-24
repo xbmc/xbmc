@@ -198,7 +198,7 @@ bool BicubicFilterShader::CreateKernels(int size, float B, float C)
   if ((m_kernelTex1<=0))
   {
     CLog::Log(LOGERROR, "GL: Error creating bicubic kernels, could not create textures");
-    delete img;
+    delete[] img;
     return false;
   }
 
@@ -212,7 +212,7 @@ bool BicubicFilterShader::CreateKernels(int size, float B, float C)
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, size, 1, 0, GL_RGBA, GL_FLOAT, img);
 
   glActiveTexture(GL_TEXTURE0);
-  delete img;
+  delete[] img;
   return true;
 }
 

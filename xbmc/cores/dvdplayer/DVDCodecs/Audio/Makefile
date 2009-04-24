@@ -1,5 +1,5 @@
 INCLUDES=-I. -I../../ -I../../.. -I../../../ffmpeg -I../../../../ -I../../../../linux -I../../../../../guilib
-CFLAGS+=-DHAVE_MMX
+CXXFLAGS+=-DHAVE_MMX
 
 SRCS=	DVDAudioCodecFFmpeg.cpp \
 	DVDAudioCodecLiba52.cpp \
@@ -12,5 +12,6 @@ SRCS=	DVDAudioCodecFFmpeg.cpp \
 
 LIB=Audio.a
 
-include ../../Makefile.include
+include ../../../../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 

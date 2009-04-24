@@ -39,7 +39,22 @@
 #endif
 
 namespace Surface {
+#if defined(_WIN32PC)
+/*!
+ \ingroup graphics
+ \brief
+ */
+enum ONTOP {
+  ONTOP_NEVER = 0,
+  ONTOP_ALWAYS = 1,
+  ONTOP_FULLSCREEN = 2,
+  ONTOP_AUTO = 3 // When fullscreen on Intel GPU
+};
+#endif
+
 #ifdef HAS_GLX
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <GL/glx.h>
 /*
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
@@ -52,7 +67,7 @@ class CSurface
 {
 public:
   CSurface(CSurface* src) {
-    memcpy(this, src, sizeof(CSurface));
+    *this = *src;
     m_pShared = src;
   }
 #ifdef HAS_SDL
@@ -73,16 +88,28 @@ public:
   bool MakeCurrent();
   void ReleaseContext();
   void EnableVSync(bool enable=true);
-  bool ResizeSurface(int newWidth, int newHeight, bool useNewContext=true);
+  bool ResizeSurface(int newWidth, int newHeight);
   void RefreshCurrentContext();
   DWORD GetNextSwap();
+  void NotifyAppFocusChange(bool bGaining);
+#ifdef _WIN32
+  void SetOnTop(ONTOP iOnTop);
+  bool IsOnTop();
+#endif
+
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
   GLXPbuffer GetPBuffer() {return m_glPBuffer;}
-  GLXPixmap GetPixmap() {return m_glPixmap;}
+  Pixmap GetXPixmap() {return m_Pixmap;}
+  GLXPixmap GetGLPixmap() {return m_glPixmap;}
   bool MakePBuffer();
-  bool MakePixmap();
+  bool MakePixmap(int width, int height);
+  Display* GetDisplay() {return s_dpy;}
+  GLuint GetGLPixmapTex() {return m_glPixmapTexture;}
+  void BindPixmap();
+  void ReleasePixmap();
+  bool m_pixmapBound;
 #endif
 
   static std::string& GetGLVendor() { return s_glVendor; }
@@ -114,16 +141,20 @@ public:
   GLXWindow  m_glWindow;
   Window  m_parentWindow;
   GLXPixmap  m_glPixmap;
+  Pixmap  m_Pixmap;
   GLXPbuffer  m_glPBuffer;
+  GLuint   m_glPixmapTexture;
   static Display* s_dpy;
 #endif
 #ifdef __APPLE__
   void* m_glContext;
 #endif
-#ifdef _WIN32 
-  HDC m_glDC; 
-  HGLRC m_glContext; 
-#endif 
+#ifdef _WIN32
+  HDC m_glDC;
+  HGLRC m_glContext;
+  bool m_bCoversScreen;
+  ONTOP m_iOnTop;
+#endif
   static bool b_glewInit;
   static std::string s_glVendor;
   static std::string s_glRenderer;

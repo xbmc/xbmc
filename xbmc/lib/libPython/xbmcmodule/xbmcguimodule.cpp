@@ -22,9 +22,7 @@
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
 #include "lib/libPython/Python/Include/structmember.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "control.h"
 #include "window.h"
 #include "dialog.h"

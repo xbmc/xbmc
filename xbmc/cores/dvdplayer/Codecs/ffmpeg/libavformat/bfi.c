@@ -20,12 +20,13 @@
  */
 
 /**
- * @file bfi.c
+ * @file libavformat/bfi.c
  * @brief Brute Force & Ignorance (.bfi) file demuxer
  * @author Sisir Koppaka ( sisir.koppaka at gmail dot com )
  * @sa http://wiki.multimedia.cx/index.php?title=BFI
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 typedef struct BFIContext {

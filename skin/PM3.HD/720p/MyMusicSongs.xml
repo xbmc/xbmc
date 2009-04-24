@@ -14,7 +14,6 @@
 				<include>CommonListView</include> <!-- view id = 51 -->
 				<include>SongInfoListView</include> <!-- view id = 59 -->
 				<include>ThumbnailView</include> <!-- view id = 53 -->
-				<include>CommonNowPlaying_Controls</include>
 			</control>
 			<include>AllViewCommonPageControls</include>
 			<include>CommonFileCount</include>
@@ -44,7 +43,7 @@
 					<label>-</label>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup>20</onup>
+					<onup>611</onup>
 					<ondown>3</ondown>
 				</control>
 				<control type="button" id="3">
@@ -72,88 +71,34 @@
 					<description>Library button</description>
 					<posx>0</posx>
 					<posy>90</posy>
-					<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
+					<label>$LOCALIZE[29800]</label>
 					<onclick>ReplaceWindow(MusicLibrary)</onclick>
 					<selected>Window.IsVisible(MusicLibrary)</selected>
 					<include>ButtonCommonValues</include>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<onup>3</onup>
-					<ondown>20</ondown>
+					<ondown>610</ondown>
 					<enable>Library.HasContent(Music)</enable>
 					<visible>System.GetBool(musiclibrary.enabled)</visible>
 				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>99</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
 				<control type="group">
-					<description>LastFM Love Hate Stuff</description>
-					<animation effect="slide" start="0,0" end="0,-45" time="0" condition="!Control.IsVisible(99)">conditional</animation>
 					<posx>0</posx>
 					<posy>135</posy>
-					<visible>LastFM.RadioPlaying</visible>
-					<control type="image">
-						<description>Unfocus Background</description>
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>280</width>
-						<height>44</height>
-						<texture>Button_Side_NoFocus.png</texture>
-						<visible>!Control.HasFocus(20) + !Control.HasFocus(21)</visible>
-					</control>
-					<control type="image">
-						<description>Focus Background</description>
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>280</width>
-						<height>44</height>
-						<texture>Button_Side_Focus.png</texture>
-						<visible>Control.HasFocus(20) | Control.HasFocus(21)</visible>
-						<animation effect="fade" start="100" end="70" time="900" pulse="true" condition="Control.HasFocus(20) | Control.HasFocus(21)">conditional</animation>
-					</control>
-					<control type="label">
-						<description>LastFM Label</description>
-						<posx>35</posx>
-						<posy>0</posy>
-						<width>165</width>
-						<height>44</height>
-						<aligny>center</aligny>
-						<label>15200</label>
-					</control>
-					<control type="button" id="20">
-						<description>Love button</description>
-						<posx>200</posx>
-						<posy>7</posy>
-						<height>30</height>
-						<width>30</width>
-						<font>font13</font>
-						<texturefocus>lastfm-love-focus.png</texturefocus>
-						<texturenofocus>lastfm-love-nofocus.png</texturenofocus>
-						<onclick>XBMC.LastFM.Love</onclick>
-						<aspectratio align="right">keep</aspectratio>
-						<pulseonselect>false</pulseonselect>
-						<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
-						<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
-						<onleft>50</onleft>
-						<onright>21</onright>
-						<onup>99</onup>
-						<ondown>2</ondown>
-					</control>
-					<control type="button" id="21">
-						<description>Hate button</description>
-						<posx>235</posx>
-						<posy>7</posy>
-						<height>30</height>
-						<width>30</width>
-						<texturefocus>lastfm-hate-focus.png</texturefocus>
-						<texturenofocus>lastfm-hate-nofocus.png</texturenofocus>
-						<onclick>XBMC.LastFM.Ban</onclick>
-						<aspectratio align="right">keep</aspectratio>
-						<pulseonselect>false</pulseonselect>
-						<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
-						<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
-						<onleft>20</onleft>
-						<onright>50</onright>
-						<onup>99</onup>
-						<ondown>2</ondown>
-					</control>
+					<animation effect="slide" start="0,0" end="0,-45" time="0" condition="!Control.IsVisible(99)">conditional</animation>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
+					<ondown>2</ondown>
+					<visible>false</visible>
 				</control>
 			</control>
 		</control>

@@ -56,7 +56,7 @@ CFileRTV::~CFileRTV()
 }
 
 //*********************************************************************************************
-bool CFileRTV::Open(const char* strHostName, const char* strFileName, int iport, bool bBinary)
+bool CFileRTV::Open(const char* strHostName, const char* strFileName, int iport)
 {
   // Close any existing connection
   if (m_bOpened) Close();
@@ -99,14 +99,14 @@ bool CFileRTV::Open(const char* strHostName, const char* strFileName, int iport,
     return false;
   }
   m_bOpened = true;
-  
+
   CLog::Log(LOGDEBUG, "%s - Opened %s on %s, Size %llu, Position %llu", __FUNCTION__, strHostName, strFileName, m_fileSize, m_filePos);
   return true;
 }
 
-bool CFileRTV::Open(const CURL& url, bool bBinary)
+bool CFileRTV::Open(const CURL& url)
 {
-  return Open(url.GetHostName(), url.GetFileName(), url.GetPort(), bBinary);
+  return Open(url.GetHostName(), url.GetFileName(), url.GetPort());
 }
 
 
@@ -130,7 +130,7 @@ unsigned int CFileRTV::Read(void *lpBuf, __int64 uiBufSize)
     lenread = (size_t)(m_fileSize - m_filePos);
     m_filePos = m_fileSize;
     return lenread;
-  }  
+  }
 
   // Increase the file position by the number of bytes we just read
   m_filePos += lenread;
@@ -183,7 +183,7 @@ __int64 CFileRTV::Seek(__int64 iFilePosition, int iWhence)
   if (m_filePos != newpos)
   {
     m_filePos = newpos;
-    Open(m_hostName, m_fileName, m_iport, true);
+    Open(m_hostName, m_fileName, m_iport);
   }
 
   // OLD CODE

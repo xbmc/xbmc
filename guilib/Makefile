@@ -44,6 +44,9 @@ SRCS=ActionManager.cpp \
      GUISpinControlEx.cpp \
      GUIStandardWindow.cpp \
      GUITextBox.cpp \
+     GUITexture.cpp \
+     GUITextureSDL.cpp \
+     GUITextureGL.cpp \
      GUIToggleButtonControl.cpp \
      GUIVideoControl.cpp \
      GUIVisualisationControl.cpp \
@@ -64,7 +67,6 @@ SRCS=ActionManager.cpp \
      Surface.cpp \
      FrameBufferObject.cpp \
      Shader.cpp \
-     GUILargeImage.cpp \
      GUIListLabel.cpp \
      GUIBorderedImage.cpp \
      GUITextLayout.cpp \

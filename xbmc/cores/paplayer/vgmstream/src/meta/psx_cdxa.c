@@ -60,7 +60,7 @@ VGMSTREAM * init_vgmstream_cdxa(STREAMFILE *streamFile) {
 
 	switch (AUDIO_CODING_GET_FREQ(bCoding)) {
 		case 0: vgmstream->sample_rate = 37800; break;
-		case 1: vgmstream->sample_rate = 19800; break;
+		case 1: vgmstream->sample_rate = 18900; break;
 		default: vgmstream->sample_rate = 0; break;
 	}
 

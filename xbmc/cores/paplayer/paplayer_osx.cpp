@@ -28,9 +28,6 @@
 #include "AudioContext.h"
 #include "../../FileSystem/FileShoutcast.h"
 #include "../../Application.h"
-#ifdef HAS_KARAOKE
-#include "../../CdgParser.h"
-#endif
 #include "FileItem.h"
 #include "Settings.h"
 #include "MusicInfoTag.h"

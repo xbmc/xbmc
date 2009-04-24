@@ -56,6 +56,7 @@
 #include "PlayList.h"
 #include "TuxBoxUtil.h"
 #include "Surface.h"
+#include "PowerManager.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"
@@ -66,6 +67,8 @@
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 
+#define SYSHEATUPDATEINTERVAL 60000
+
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -74,16 +77,17 @@ using namespace MUSIC_INFO;
 
 CGUIInfoManager g_infoManager;
 
-void CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
+CGUIInfoManager::CCombinedValue& CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
 {
   this->m_info = mSrc.m_info;
   this->m_id = mSrc.m_id;
   this->m_postfix = mSrc.m_postfix;
+  return *this;
 }
 
 CGUIInfoManager::CGUIInfoManager(void)
 {
-  m_lastSysHeatInfoTime = 0;
+  m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
   m_lastMusicBitrateTime = 0;
   m_fanSpeed = 0;
   m_AfterSeekTimeout = 0;
@@ -147,11 +151,13 @@ int CGUIInfoManager::TranslateString(const CStdString &strCondition)
 /// efficient retrieval of data.
 int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 {
-  if (strCondition.IsEmpty()) return 0;
+  // trim whitespace, and convert to lowercase
   CStdString strTest = strCondition;
   strTest.ToLower();
-  strTest.TrimLeft(" ");
-  strTest.TrimRight(" ");
+  strTest.TrimLeft(" \t\r\n");
+  strTest.TrimRight(" \t\r\n");
+  if (strTest.IsEmpty()) return 0;
+
   bool bNegate = strTest[0] == '!';
   int ret = 0;
 
@@ -329,6 +335,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.memory(total)")) ret = SYSTEM_TOTAL_MEMORY;
 
     else if (strTest.Equals("system.language")) ret = SYSTEM_LANGUAGE;
+    else if (strTest.Equals("system.temperatureunits")) ret = SYSTEM_TEMPERATURE_UNITS;
     else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
     else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
     else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
@@ -359,6 +366,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(16).Equals("system.hasalarm("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
     else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
+  else if (strTest.Left(24).Equals("system.alarmlessorequal("))
+  {
+    int pos = strTest.Find(",");
+    int skinOffset = ConditionalStringParameter(strTest.Mid(24, pos-24));
+    int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
+    return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ALARM_LESS_OR_EQUAL: SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
+  }
     else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
     else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
@@ -372,6 +386,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(SYSTEM_GET_CORE_USAGE, atoi(strTest.Mid(17,strTest.size()-18)), 0));
     else if (strTest.Left(17).Equals("system.hascoreid("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_CORE_ID : SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
+    else if (strTest.Equals("system.canpowerdown")) ret = SYSTEM_CAN_POWERDOWN;
+    else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
+    else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
+    else if (strTest.Equals("system.canreboot"))    ret = SYSTEM_CAN_REBOOT;
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
@@ -429,21 +447,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
     if (strTest.Equals("network.isdhcp")) ret = NETWORK_IS_DHCP;
     if (strTest.Equals("network.linkstate")) ret = NETWORK_LINK_STATE;
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-    if (strTest.Equals("network.macadress") || strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
-    if (strTest.Equals("network.subetadress") || strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
-    if (strTest.Equals("network.gatewayadress") || strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
-    if (strTest.Equals("network.dns1adress") || strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
-    if (strTest.Equals("network.dns2adress") || strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
-    if (strTest.Equals("network.dhcpadress") || strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
-#else
     if (strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
     if (strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
     if (strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
     if (strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
     if (strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
     if (strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
-#endif
   }
   else if (strCategory.Equals("musicplayer"))
   {
@@ -570,6 +579,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
     else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
     else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
+    else if (info.Equals("foldername")) ret = CONTAINER_FOLDERNAME;
     else if (info.Equals("pluginname")) ret = CONTAINER_PLUGINNAME;
     else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
     else if (info.Equals("onnext")) ret = CONTAINER_ON_NEXT;
@@ -815,6 +825,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("tracknumber")) return LISTITEM_TRACKNUMBER;
   else if (info.Equals("artist")) return LISTITEM_ARTIST;
   else if (info.Equals("album")) return LISTITEM_ALBUM;
+  else if (info.Equals("albumartist")) return LISTITEM_ALBUM_ARTIST;
   else if (info.Equals("year")) return LISTITEM_YEAR;
   else if (info.Equals("genre")) return LISTITEM_GENRE;
   else if (info.Equals("director")) return LISTITEM_DIRECTOR;
@@ -836,6 +847,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("premiered")) return LISTITEM_PREMIERED;
   else if (info.Equals("comment")) return LISTITEM_COMMENT;
   else if (info.Equals("path")) return LISTITEM_PATH;
+  else if (info.Equals("foldername")) return LISTITEM_FOLDERNAME;
   else if (info.Equals("picturepath")) return LISTITEM_PICTURE_PATH;
   else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
   else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
@@ -921,7 +933,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     strLabel = strLabel.Trim();
     break;
   case WEATHER_TEMPERATURE:
-    strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP);
+    strLabel.Format("%s%s", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_TEMP), g_langInfo.GetTempUnitString().c_str());
     break;
   case WEATHER_LOCATION:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_LOCATION);
@@ -1087,20 +1099,26 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
-    strLabel.Format("%s %ix%i %s %02.2f Hz.",g_localizeStrings.Get(13287),
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
+    strLabel.Format("%ix%i %s %02.2f Hz.",
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
     return strLabel;
     break;
 
-  case CONTAINER_FOLDERPATH:
+  case CONTAINER_FOLDERPATH: 
+  case CONTAINER_FOLDERNAME:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
         CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
         url.GetURLWithoutUserDetails(strLabel);
+        if (info==CONTAINER_FOLDERNAME)
+        {
+          CUtil::RemoveSlashAtEnd(strLabel);
+          strLabel=CUtil::GetFileName(strLabel);
+        }
       }
       break;
     }
@@ -1192,15 +1210,15 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       int iMemPercentUsed = 100 - iMemPercentFree;
 
       if (info == SYSTEM_FREE_MEMORY)
-        strLabel.Format("%iMB", stat.dwAvailPhys /MB);
+        strLabel.Format("%luMB", (ULONG)(stat.dwAvailPhys/MB));
       else if (info == SYSTEM_FREE_MEMORY_PERCENT)
         strLabel.Format("%i%%", iMemPercentFree);
       else if (info == SYSTEM_USED_MEMORY)
-        strLabel.Format("%iMB", (stat.dwTotalPhys - stat.dwAvailPhys)/MB);
+        strLabel.Format("%luMB", (ULONG)((stat.dwTotalPhys - stat.dwAvailPhys)/MB));
       else if (info == SYSTEM_USED_MEMORY_PERCENT)
         strLabel.Format("%i%%", iMemPercentUsed);
       else if (info == SYSTEM_TOTAL_MEMORY)
-        strLabel.Format("%iMB", stat.dwTotalPhys/MB);
+        strLabel.Format("%luMB", (ULONG)(stat.dwTotalPhys/MB));
     }
     break;
   case SYSTEM_SCREEN_MODE:
@@ -1246,6 +1264,9 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
   case SYSTEM_LANGUAGE:
     strLabel = g_guiSettings.GetString("locale.language");
+    break;
+  case SYSTEM_TEMPERATURE_UNITS:
+    strLabel = g_langInfo.GetTempUnitString();
     break;
   case SYSTEM_PROGRESS_BAR:
     {
@@ -1299,67 +1320,57 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 #endif
   case NETWORK_IP_ADDRESS:
     {
-      CStdString ip;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
-        ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), iface->GetCurrentIPAddress().c_str());
+        return iface->GetCurrentIPAddress();
 #else
-      ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), g_application.getNetwork().m_networkinfo.ip);
+      return g_application.getNetwork().m_networkinfo.ip;
 #endif
-      return ip;
     }
     break;
   case NETWORK_SUBNET_ADDRESS:
     {
-      CStdString subnet;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
-        subnet.Format("%s: %s", g_localizeStrings.Get(13159), iface->GetCurrentNetmask().c_str());
+        return iface->GetCurrentNetmask();
 #else
-      subnet.Format("%s: %s", g_localizeStrings.Get(13159).c_str(), g_application.getNetwork().m_networkinfo.subnet);
+      return g_application.getNetwork().m_networkinfo.subnet;
 #endif
-      return subnet;
     }
     break;
   case NETWORK_GATEWAY_ADDRESS:
     {
-      CStdString gateway;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
-        gateway.Format("%s: %s", g_localizeStrings.Get(13160), iface->GetCurrentDefaultGateway().c_str());
+        return iface->GetCurrentDefaultGateway();
 #else
-      gateway.Format("%s: %s", g_localizeStrings.Get(13160).c_str(), g_application.getNetwork().m_networkinfo.gateway);
+      return g_application.getNetwork().m_networkinfo.gateway;
 #endif
-      return gateway;
     }
     break;
   case NETWORK_DNS1_ADDRESS:
     {
-      CStdString dns;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
-          dns.Format("%s: %s", g_localizeStrings.Get(13161), nss[0].c_str());
+        return nss[0];
 #else
-      dns.Format("%s: %s", g_localizeStrings.Get(13161).c_str(), g_application.getNetwork().m_networkinfo.DNS1);
+      return g_application.getNetwork().m_networkinfo.DNS1;
 #endif
-      return dns;
     }
     break;
   case NETWORK_DNS2_ADDRESS:
     {
-      CStdString dns;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
-          dns.Format("%s: %s", g_localizeStrings.Get(20307), nss[1].c_str());
+        return nss[1];
 #else
-      dns.Format("%s: %s", g_localizeStrings.Get(20307).c_str(), g_application.getNetwork().m_networkinfo.DNS2);
+      return g_application.getNetwork().m_networkinfo.DNS2;
 #endif
-      return dns;
     }
     break;
   case NETWORK_DHCP_ADDRESS:
@@ -1444,16 +1455,16 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     }
     break;
   case SYSTEM_OPENGL_VENDOR:
-    strLabel.Format("%s %s", g_localizeStrings.Get(22007), Surface::CSurface::GetGLVendor());
+    strLabel = Surface::CSurface::GetGLVendor();
     break;
   case SYSTEM_OPENGL_RENDERER:
-    strLabel.Format("%s %s", g_localizeStrings.Get(22008), Surface::CSurface::GetGLRenderer());
+    strLabel = Surface::CSurface::GetGLRenderer();
     break;
   case SYSTEM_OPENGL_VERSION:
   {
     int major, minor;
     Surface::CSurface::GetGLVersion(major, minor);
-    strLabel.Format("%s %d.%d", g_localizeStrings.Get(22009), major, minor);
+    strLabel.Format("%d.%d", major, minor);
     break;
   }
   }
@@ -1659,6 +1670,15 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
     bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
+  else if (condition == SYSTEM_CAN_POWERDOWN)
+    bReturn = g_powerManager.CanPowerdown();
+  else if (condition == SYSTEM_CAN_SUSPEND)
+    bReturn = g_powerManager.CanSuspend();
+  else if (condition == SYSTEM_CAN_HIBERNATE)
+    bReturn = g_powerManager.CanHibernate();
+  else if (condition == SYSTEM_CAN_REBOOT)
+    bReturn = g_powerManager.CanReboot();
+
   else if (condition == PLAYER_SHOWINFO)
     bReturn = m_playerShowInfo;
   else if (condition == PLAYER_SHOWCODEC)
@@ -1967,6 +1987,16 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
               bReturn = label.Find(compare) > -1;
           }
         break;
+    case SYSTEM_ALARM_LESS_OR_EQUAL:
+    {
+      int time = lrint(g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]));
+      int timeCompare = atoi(m_stringParameters[info.GetData2()]);
+      if (time > 0)
+        bReturn = timeCompare >= time;
+      else
+        bReturn = false;
+    }
+    break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
           CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
@@ -2860,7 +2890,12 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strRatingAndVotes;
         if (m_currentFile->GetVideoInfoTag()->m_fRating > 0.f)
-          strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile->GetVideoInfoTag()->m_fRating, m_currentFile->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        {
+          if (m_currentFile->GetVideoInfoTag()->m_strVotes.IsEmpty())
+            strRatingAndVotes.Format("%2.2f", m_currentFile->GetVideoInfoTag()->m_fRating);
+          else
+            strRatingAndVotes.Format("%2.2f (%s %s)", m_currentFile->GetVideoInfoTag()->m_fRating, m_currentFile->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
+        }
         return strRatingAndVotes;
       }
       break;
@@ -3113,44 +3148,64 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
 {
-  if (timeGetTime() - m_lastSysHeatInfoTime >= 60000)
+  if (timeGetTime() - m_lastSysHeatInfoTime >= SYSHEATUPDATEINTERVAL)
   { // update our variables
     m_lastSysHeatInfoTime = timeGetTime();
 #if defined(_LINUX)
     m_cpuTemp = g_cpuInfo.getTemperature();
+    m_gpuTemp = GetGPUTemperature();
 #endif
   }
 
   CStdString text;
   switch(info)
   {
-    case SYSTEM_CPU_TEMPERATURE:
-      text.Format("%s %s", g_localizeStrings.Get(22011).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"?");
-      break;
-    case SYSTEM_GPU_TEMPERATURE:
-      text.Format("%s %s", g_localizeStrings.Get(22010).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"?");
-      break;
-    case SYSTEM_FAN_SPEED:
-      text.Format("%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
-      break;
     case LCD_CPU_TEMPERATURE:
-      return m_cpuTemp.ToString();
+    case SYSTEM_CPU_TEMPERATURE:
+      return m_cpuTemp.IsValid() ? m_cpuTemp.ToString() : "?";
       break;
     case LCD_GPU_TEMPERATURE:
-      return m_gpuTemp.ToString();
+    case SYSTEM_GPU_TEMPERATURE:
+      return m_gpuTemp.IsValid() ? m_gpuTemp.ToString() : "?";
       break;
     case LCD_FAN_SPEED:
+    case SYSTEM_FAN_SPEED:
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
 #if defined(__APPLE__) || defined(_WIN32)
-      text.Format("%s %d%", g_localizeStrings.Get(13271).c_str(), g_cpuInfo.getUsedPercentage());
+      text.Format("%d%%", g_cpuInfo.getUsedPercentage());
 #else
-      text.Format("%s %s", g_localizeStrings.Get(13271).c_str(), g_cpuInfo.GetCoresUsageString());
+      text.Format("%s", g_cpuInfo.GetCoresUsageString());
 #endif
       break;
   }
   return text;
+}
+
+CTemperature CGUIInfoManager::GetGPUTemperature()
+{
+  CStdString  cmd   = g_advancedSettings.m_gpuTempCmd;
+  int         value = 0,
+              ret   = 0;
+  char        scale = 0;
+  FILE        *p    = NULL;
+  
+  if (cmd.IsEmpty() || !(p = popen(cmd.c_str(), "r")))
+    return CTemperature();
+
+  ret = fscanf(p, "%d %c", &value, &scale);
+  pclose(p);
+
+  if (ret != 2)
+    return CTemperature();
+
+  if (scale == 'C' || scale == 'c')
+    return CTemperature::CreateFromCelsius(value);
+  if (scale == 'F' || scale == 'f')
+    return CTemperature::CreateFromFahrenheit(value);
+  else
+    return CTemperature();
 }
 
 CStdString CGUIInfoManager::GetVersion()
@@ -3314,7 +3369,11 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
   }
 
   if (!operand.empty())
-    comb.m_postfix.push_back(TranslateSingleString(operand));
+  {
+    int op = TranslateSingleString(operand);
+    if (op)
+      comb.m_postfix.push_back(op);
+  }
 
   // finish up by adding any operators
   while (!save.empty())
@@ -3434,6 +3493,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetArtist());
     if (item->HasVideoInfoTag())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strArtist);
+    break;
+  case LISTITEM_ALBUM_ARTIST:
+    if (item->HasMusicInfoTag())
+      return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetAlbumArtist());
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())
@@ -3577,7 +3640,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
   case LISTITEM_ICON:
     {
       CStdString strThumb = item->GetThumbnailImage();
-      if(!strThumb.IsEmpty() && !CURL::IsFileOnly(strThumb) && !CUtil::IsHD(strThumb))
+      if(!strThumb.IsEmpty() && !g_TextureManager.CanLoad(strThumb))
         strThumb = "";
 
       if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
@@ -3591,6 +3654,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     return item->GetOverlayImage();
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
+  case LISTITEM_FOLDERNAME:
   case LISTITEM_PATH:
     {
       CStdString path;
@@ -3602,6 +3666,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
         CUtil::GetDirectory(item->m_strPath, path);
       CURL url(path);
       url.GetURLWithoutUserDetails(path);
+      if (info==CONTAINER_FOLDERNAME)
+      {
+        CUtil::RemoveSlashAtEnd(path);
+        path=CUtil::GetFileName(path);
+      }
       CUtil::UrlDecode(path);
       return path;
     }
@@ -3670,7 +3739,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     break;
   case LISTITEM_SORT_LETTER:
     {
-      CStdString letter = item->GetSortLabel().Left(1);
+      CStdString letter = g_charsetConverter.utf8Left(item->GetSortLabel(), 1);
       letter.ToUpper();
       return letter;
     }

@@ -19,10 +19,11 @@
  *
  */
 #include "stdafx.h"
+#include "XMLUtils.h"
 #include "ScraperSettings.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
-#include "utils/HTTP.h"
+#include "FileSystem/FileCurl.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
 
@@ -72,7 +73,7 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
   vector<CStdString> strHTML;
   if (url)
   {
-    CHTTP http;
+    XFILE::CFileCurl http;
     for (unsigned int i=0;i<url->m_url.size();++i)
     {
       CStdString strCurrHTML;
@@ -94,11 +95,10 @@ bool CScraperSettings::LoadSettingsXML(const CStdString& strScraper, const CStdS
   }
   // abit ugly, but should work. would have been better if parser
   // set the charset of the xml, and we made use of that
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
-    g_charsetConverter.stringCharsetToUtf8(strXML);
+  if (!XMLUtils::HasUTF8Declaration(strXML))
+    g_charsetConverter.unknownToUTF8(strXML);
 
   // ok, now parse the xml file
-  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())

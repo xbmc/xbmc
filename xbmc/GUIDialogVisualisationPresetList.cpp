@@ -48,7 +48,8 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
   {
   case GUI_MSG_CLICKED:
     {
-      if (message.GetSenderId() == CONTROL_LIST && message.GetParam1() == ACTION_SELECT_ITEM)
+      if (message.GetSenderId() == CONTROL_LIST && (message.GetParam1() == ACTION_SELECT_ITEM ||
+                                                    message.GetParam1() == ACTION_MOUSE_LEFT_CLICK))
       {
         //clicked - ask for the preset to be changed to the new one
         CGUIListContainer *pList = (CGUIListContainer *)GetControl(CONTROL_LIST);
@@ -160,6 +161,8 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
   else
   {
     SET_CONTROL_HIDDEN(CONTROL_NONE_AVAILABLE);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_LIST, m_currentPreset);
+    OnMessage(msg);
   }
 }
 

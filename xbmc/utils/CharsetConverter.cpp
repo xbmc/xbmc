@@ -26,15 +26,16 @@
 
 #ifndef _LINUX
 #include "lib/libiconv/iconv.h"
-#include "lib/libfribidi/fribidi.h"
 #else
 #include <iconv.h>
-#include <fribidi/fribidi.h>
-#include <fribidi/fribidi_char_sets.h>
 #endif
 
 #ifdef __APPLE__
+#ifdef __POWERPC__
+  #define WCHAR_CHARSET "UTF-32BE"
+#else
   #define WCHAR_CHARSET "UTF-32LE"
+#endif
   #define UTF8_SOURCE "UTF-8-MAC"
 #elif defined(_XBOX) || defined(WIN32)
   #define WCHAR_CHARSET "UTF-16LE"
@@ -68,13 +69,13 @@ static CCriticalSection            m_critSection;
 
 CCharsetConverter g_charsetConverter;
 
-#define UTF8_DEST_MULTIPLIER	6
+#define UTF8_DEST_MULTIPLIER 6
 
 #define ICONV_PREPARE(iconv) iconv=(iconv_t)-1
 #define ICONV_SAFE_CLOSE(iconv) if (iconv!=(iconv_t)-1) { iconv_close(iconv); iconv=(iconv_t)-1; }
 
-static size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
-		    char* * outbuf, size_t *outbytesleft)
+size_t iconv_const (void* cd, const char** inbuf, size_t *inbytesleft,
+                    char* * outbuf, size_t *outbytesleft)
 {
     struct iconv_param_adapter {
         iconv_param_adapter(const char**p) : p(p) {}
@@ -90,11 +91,11 @@ static size_t iconv_const (iconv_t cd, const char** inbuf, size_t *inbytesleft,
         const char** p;
     };
 
-    return iconv(cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
+    return iconv((iconv_t)cd, iconv_param_adapter(inbuf), inbytesleft, outbuf, outbytesleft);
 }
 
 template<class INPUT,class OUTPUT>
-static void convert(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
+static bool convert_checked(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
 {
   if (type == (iconv_t) - 1)
   {
@@ -112,20 +113,26 @@ static void convert(iconv_t& type, int multiplier, const CStdString& strFromChar
     {
       CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
       strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
+      return false;
     }
 
     if (iconv_const(type, NULL, NULL, &dst, &outBytes) == (size_t)-1)
     {
       CLog::Log(LOGERROR, "%s failed cleanup", __FUNCTION__);
       strDest.ReleaseBuffer();
-      strDest = strSource;
-      return;
+      return false;
     }
 
     strDest.ReleaseBuffer();
   }
+  return true;
+}
+
+template<class INPUT,class OUTPUT>
+static void convert(iconv_t& type, int multiplier, const CStdString& strFromCharset, const CStdString& strToCharset, const INPUT& strSource,  OUTPUT& strDest)
+{
+  if(!convert_checked(type, multiplier, strFromCharset, strToCharset, strSource, strDest))
+    strDest = strSource;
 }
 
 using namespace std;
@@ -354,18 +361,19 @@ void CCharsetConverter::reset(void)
 
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
 // of the string is already made or the string is not displayed in the GUI
-void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/, bool* bWasFlipped/*=NULL*/)
+void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/, bool forceLTRReadingOrder /*=false*/, bool* bWasFlipped/*=NULL*/)
 {
   CStdStringA strFlipped;
 
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
-    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8);
-    convert(m_iconvUtf8toW,sizeof(wchar_t),"UTF-8",WCHAR_CHARSET,strFlipped,wString);
+    FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
+    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8, charset, bWasFlipped);
+    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);
   }
   else
-    convert(m_iconvUtf8toW,sizeof(wchar_t),"UTF-8",WCHAR_CHARSET,utf8String,wString);
+    convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,utf8String,wString);
 }
 
 void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest)
@@ -378,7 +386,7 @@ void CCharsetConverter::subtitleCharsetToW(const CStdStringA& strSource, CStdStr
 void CCharsetConverter::utf8ToStringCharset(const CStdStringA& strSource, CStdStringA& strDest)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUtf8ToStringCharset,1,"UTF-8",g_langInfo.GetGuiCharSet(),strSource,strDest);
+  convert(m_iconvUtf8ToStringCharset,1,UTF8_SOURCE,g_langInfo.GetGuiCharSet(),strSource,strDest);
 }
 
 void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
@@ -386,18 +394,6 @@ void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
   CStdString strDest;
   utf8ToStringCharset(strSourceDest, strDest);
   strSourceDest=strDest;
-}
-
-void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest)
-{
-  CSingleLock lock(m_critSection);
-  convert(m_iconvStringCharsetToUtf8,UTF8_DEST_MULTIPLIER,g_langInfo.GetGuiCharSet(),"UTF-8",strSource,strDest);
-}
-
-void CCharsetConverter::stringCharsetToUtf8(CStdStringA& strSourceDest)
-{
-  CStdString strSource=strSourceDest;
-  stringCharsetToUtf8(strSource, strSourceDest);
 }
 
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest)
@@ -417,7 +413,25 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
   }
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
-  convert(iconvString,UTF8_DEST_MULTIPLIER,"UTF-8",strDestCharset,strSource,strDest);
+  convert(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest);
+  iconv_close(iconvString);
+}
+
+void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int16_t>& strDest)
+{
+  iconv_t iconvString;
+  ICONV_PREPARE(iconvString);
+  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest))
+    strDest.Empty();
+  iconv_close(iconvString);
+}
+
+void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int32_t>& strDest)
+{
+  iconv_t iconvString;
+  ICONV_PREPARE(iconvString);
+  if(!convert_checked(iconvString,UTF8_DEST_MULTIPLIER,UTF8_SOURCE,strDestCharset,strSource,strDest))
+    strDest.Empty();
   iconv_close(iconvString);
 }
 
@@ -433,7 +447,10 @@ void CCharsetConverter::unknownToUTF8(const CStdStringA &source, CStdStringA &de
   if (isValidUtf8(source))
     dest = source;
   else
-    stringCharsetToUtf8(source, dest);
+  {
+    CSingleLock lock(m_critSection);
+    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", source, dest);
+  }
 }
 
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)
@@ -598,4 +615,13 @@ bool CCharsetConverter::isValidUtf8(const CStdString& str)
 void CCharsetConverter::utf8logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest)
 {
   logicalToVisualBiDi(strSource, strDest, FRIBIDI_CHAR_SET_UTF8, FRIBIDI_TYPE_RTL);
+}
+
+CStdStringA CCharsetConverter::utf8Left(const CStdStringA &source, int num_chars)
+{
+  CStdStringA result;
+  CStdStringW wide;
+  utf8ToW(source, wide);
+  wToUTF8(wide.Left(num_chars), result);
+  return result;
 }

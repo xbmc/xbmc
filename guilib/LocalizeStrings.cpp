@@ -22,7 +22,7 @@
 #include "include.h"
 #include "LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
-#include "../xbmc/Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
 
 CLocalizeStrings g_localizeStrings;
@@ -76,7 +76,7 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
 bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error, DWORD offset /* = 0 */)
 {
   TiXmlDocument xmlDoc;
-  if (!xmlDoc.LoadFile(PTH_IC(filename.c_str())))
+  if (!xmlDoc.LoadFile(PTH_IC(filename)))
   {
     CLog::Log(LOGDEBUG, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
     error.Format("Unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
@@ -86,7 +86,7 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
   XMLUtils::GetEncoding(&xmlDoc, encoding);
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || pRootElement->NoChildren() || 
+  if (!pRootElement || pRootElement->NoChildren() ||
        pRootElement->ValueStr()!=CStdString("strings"))
   {
     CLog::Log(LOGERROR, "%s Doesn't contain <strings>", filename.c_str());
@@ -137,9 +137,9 @@ bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& str
   m_strings[20028] = ToUTF8(encoding, "K");
   m_strings[20029] = ToUTF8(encoding, "°C");
   m_strings[20030] = ToUTF8(encoding, "°Ré");
-  m_strings[20031] = ToUTF8(encoding, "°Ra"); 
-  m_strings[20032] = ToUTF8(encoding, "°Rø"); 
-  m_strings[20033] = ToUTF8(encoding, "°De"); 
+  m_strings[20031] = ToUTF8(encoding, "°Ra");
+  m_strings[20032] = ToUTF8(encoding, "°Rø");
+  m_strings[20033] = ToUTF8(encoding, "°De");
   m_strings[20034] = ToUTF8(encoding, "°N");
 
   m_strings[20200] = ToUTF8(encoding, "km/h");
@@ -221,7 +221,7 @@ void CLocalizeStrings::ClearBlock(const CStdString &id)
     CLog::Log(LOGERROR, "%s: Trying to clear non existent block %s", __FUNCTION__, id.c_str());
     return; // doesn't exist
   }
-  
+
   // clear our block
   Clear(it->second, it->second + block_size);
   m_blocks.erase(it);

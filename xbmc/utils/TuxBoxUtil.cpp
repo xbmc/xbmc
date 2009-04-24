@@ -166,10 +166,6 @@ bool CTuxBoxUtil::CreateNewItem(const CFileItem& item, CFileItem& item_new)
 }
 bool CTuxBoxUtil::ParseBouquets(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild)
 {
-  //
-  //strChild.Format("bouquet");
-  //
-
   CStdString strItemName, strItemPath, strOptions, strPort;
   TiXmlElement *pRootElement =root;
   TiXmlNode *pNode = NULL;
@@ -267,10 +263,6 @@ bool CTuxBoxUtil::ParseBouquetsEnigma2(TiXmlElement *root, CFileItemList &items,
 }
 bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &url, CStdString strFilter, CStdString strChild)
 {
-  //
-  //strChild.Format("bouquet");
-  //
-
   CStdString strItemName, strItemPath,strPort;
   TiXmlElement *pRootElement =root;
   TiXmlNode *pNode = NULL;
@@ -333,7 +325,6 @@ bool CTuxBoxUtil::ParseChannels(TiXmlElement *root, CFileItemList &items, CURL &
                     pbItem->m_bIsFolder = false;
                     pbItem->SetLabel(strItemName);
                     pbItem->m_strPath = "tuxbox://"+url.GetUserName()+":"+url.GetPassWord()+"@"+url.GetHostName()+strPort+"/cgi-bin/zapTo?path="+strItemPath+".ts";  
-                    pbItem->SetContentType("video/x-ms-asf");
                     pbItem->SetThumbnailImage(GetPicon(strItemName)); //Set Picon Image
 
                     //DEBUG Log
@@ -457,7 +448,7 @@ bool CTuxBoxUtil::ZapToUrl(CURL url, CStdString strOptions, int ipoint)
     
   //Send ZAP Command
   CFileCurl http;
-  if(http.Open(strZapUrl+strPostUrl, false))
+  if(http.Open(strZapUrl+strPostUrl))
   {
     //DEBUG LOG
     CLog::Log(LOGDEBUG, "%s - Zapped to: %s (%s)", __FUNCTION__,strZapName.c_str(),strZapUrl.c_str());
@@ -590,7 +581,6 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       items.GetVideoInfoTag()->m_strTitle = strTitle; // VIDEOPLAYER_TITLE: current_event_details     (Film beschreibung)
       StringUtils::SecondsToTimeString(iDuration,items.GetVideoInfoTag()->m_strRuntime); //VIDEOPLAYER_DURATION: current_event_duration (laufzeit in sec.)
       
-      //
       items.m_strPath = strStreamURL;
       items.m_iDriveType = url.GetPort(); // Dirty Hack! But i need to hold the Port ;)
       items.SetLabel(items.GetLabel()); // VIDEOPLAYER_DIRECTOR: service_name (Program Name)
@@ -647,7 +637,7 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
   //Open 
   CFileCurl http;
   http.SetTimeout(20);
-  if(http.Open(url, false)) 
+  if(http.Open(url)) 
   {
     CStdString strTmp;
     int size_read = 0;  
@@ -915,13 +905,13 @@ bool CTuxBoxUtil::CurrentServiceData(TiXmlElement *pRootElement)
       if (pIt)
       {
         sCurSrvData.service_name = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, "%s Service Name: %s", __FUNCTION__, pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Service Name: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("reference");
       if (pIt)
       {
         sCurSrvData.service_reference = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, "%s Service Reference: %s", __FUNCTION__, pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Service Reference: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
     }
 
@@ -1172,25 +1162,25 @@ bool CTuxBoxUtil::BoxInfo(TiXmlElement *pRootElement)
       if (pIt)
       {
         sBoxInfo.image_version = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, "%s Image Version: %s", __FUNCTION__, pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Image Version: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("url");
       if (pIt)
       {
         sBoxInfo.image_url = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, "%s Image Url: %s", __FUNCTION__, pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Image Url: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("comment");
       if (pIt)
       {
         sBoxInfo.image_comment = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, "%s Image Comment: %s", __FUNCTION__, pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Image Comment: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
       pIt = pNode->FirstChild("catalog");
       if (pIt)
       {
         sBoxInfo.image_catalog = pIt->FirstChild()->Value();
-        CLog::Log(LOGDEBUG, "%s Image Catalog: %s", __FUNCTION__, pIt->FirstChild()->Value());
+        CLog::Log(LOGDEBUG, "%s - Image Catalog: %s", __FUNCTION__, pIt->FirstChild()->Value());
       }
     }
     pNode = pRootElement->FirstChild("firmware");
@@ -1451,9 +1441,9 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
   {
     CStdString piconXML, piconPath, defaultPng;
     CStdString strName, strPng;
-    piconPath = _P("q:\\userdata\\PictureIcon\\Picon\\");
+    piconPath = "special://xbmc/userdata/PictureIcon/Picon/";
     defaultPng = piconPath+"tuxbox.png";
-    piconXML = _P("q:\\userdata\\PictureIcon\\picon.xml");
+    piconXML = "special://xbmc/userdata/PictureIcon/picon.xml";
     TiXmlDocument piconDoc;
 
     if (!CFile::Exists(piconXML))

@@ -1,6 +1,6 @@
 /*!
 \file GUIButtonControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIBUTTONCONTROL_H
@@ -29,19 +29,19 @@
  *
  */
 
-#include "GUIImage.h"
+#include "GUITexture.h"
 #include "GUILabelControl.h"  // for CInfoPortion
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIButtonControl : public CGUIControl
 {
 public:
   CGUIButtonControl(DWORD dwParentID, DWORD dwControlId,
                     float posX, float posY, float width, float height,
-                    const CImage& textureFocus, const CImage& textureNoFocus,
+                    const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                     const CLabelInfo &label);
 
   virtual ~CGUIButtonControl(void);
@@ -56,7 +56,6 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   virtual void SetLabel(const std::string & aLabel);
   virtual void SetLabel2(const std::string & aLabel2);
   void SetClickActions(const std::vector<CStdString>& clickActions) { m_clickActions = clickActions; };
@@ -79,13 +78,14 @@ public:
   virtual void OnClick();
   bool HasClickActions() { return m_clickActions.size() > 0; };
 
+  virtual void UpdateColors();
 protected:
   void OnFocus();
   void OnUnFocus();
   virtual void RenderText();
 
-  CGUIImage m_imgFocus;
-  CGUIImage m_imgNoFocus;
+  CGUITexture m_imgFocus;
+  CGUITexture m_imgNoFocus;
   DWORD m_dwFocusCounter;
   unsigned char m_alpha;
 

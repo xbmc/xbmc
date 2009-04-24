@@ -1,6 +1,6 @@
 /*!
 \file GUIEditControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIEditControl_H
@@ -33,7 +33,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 
 class CGUIEditControl : public CGUIButtonControl
@@ -51,7 +51,7 @@ public:
                   };
 
   CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
-                  float width, float height, const CImage &textureFocus, const CImage &textureNoFocus,
+                  float width, float height, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus,
                   const CLabelInfo& labelInfo, const std::string &text);
   CGUIEditControl(const CGUIButtonControl &button);
   virtual ~CGUIEditControl(void);

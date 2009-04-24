@@ -24,6 +24,7 @@
 #include "pyutil.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIControlFactory.h"
+#include "GUITexture.h"
 #include "tinyXML/tinyxml.h"
 
 using namespace std;
@@ -133,11 +134,11 @@ namespace PYXBMC
 
   PyObject* Control_SetEnabled(Control* self, PyObject* args)
   {
-    bool enabled;
+    char enabled;
     if (!PyArg_ParseTuple(args, (char*)"b", &enabled)) return NULL;
 
     PyGUILock();
-    if (self->pGUIControl)   self->pGUIControl->SetEnabled(enabled);
+    if (self->pGUIControl)   self->pGUIControl->SetEnabled(0 != enabled);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -155,13 +156,13 @@ namespace PYXBMC
 
   PyObject* Control_SetVisible(Control* self, PyObject* args)
   {
-    bool visible;
+    char visible;
     if (!PyArg_ParseTuple(args, (char*)"b", &visible)) return NULL;
 
     PyGUILock();
     if (self->pGUIControl)
     {
-      self->pGUIControl->SetVisible(visible);
+      self->pGUIControl->SetVisible(0 != visible);
     }
     PyGUIUnlock();
 
@@ -185,7 +186,7 @@ namespace PYXBMC
   PyObject* Control_SetVisibleCondition(Control* self, PyObject* args)
   {
     char *cVisible = NULL;
-    bool bHidden = false;
+    char bHidden = false;
 
     if (!PyArg_ParseTuple(args, (char*)"s|b", &cVisible, &bHidden)) return NULL;
 
@@ -193,7 +194,7 @@ namespace PYXBMC
 
     PyGUILock();
     if (self->pGUIControl)
-      self->pGUIControl->SetVisibleCondition(ret, bHidden);
+      self->pGUIControl->SetVisibleCondition(ret, 0 != bHidden);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -295,7 +296,7 @@ namespace PYXBMC
       }
     }
 
-    //bool ret = xmlDoc.SaveFile("q:\\userdata\\test.txt");
+    //bool ret = xmlDoc.SaveFile("special://profile/test.txt");
 
     const FRECT animRect = { (float)self->dwPosX, (float)self->dwPosY, (float)self->dwWidth, (float)self->dwHeight };
     PyGUILock();

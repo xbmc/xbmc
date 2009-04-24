@@ -1,6 +1,6 @@
 /*
  * MPEG2 transport stream defines
- * Copyright (c) 2003 Fabrice Bellard.
+ * Copyright (c) 2003 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -40,7 +40,9 @@
 #define SDT_TID   0x42
 
 /* descriptor ids */
+#define VBI_SUBT_DESCID             0x56
 #define DVB_SUBT_DESCID             0x59
+#define ATSC_CAPTION_SERVICE_DESCID 0x86
 
 #define STREAM_TYPE_VIDEO_MPEG1     0x01
 #define STREAM_TYPE_VIDEO_MPEG2     0x02
@@ -63,6 +65,7 @@
 #define STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER 0x86
 
 #define STREAM_TYPE_SUBTITLE_DVB    0x100
+#define STREAM_TYPE_SUBTITLE_VBI    0x101
 
 typedef struct MpegTSContext MpegTSContext;
 

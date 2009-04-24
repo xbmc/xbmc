@@ -49,8 +49,16 @@ IF EXIST BUILD_WIN32\Xbmc\scripts (
   FOR /F "tokens=*" %%S IN ('dir /B /AD BUILD_WIN32\Xbmc\scripts') DO (
     ECHO Section "%%S" SecScript!Counter! >> scripts.nsi
     ECHO SectionIn 1 #section is in installtype Full >> scripts.nsi
+    ECHO ${If} $PageProfileState == "0" >> scripts.nsi
+    ECHO SetOverwrite off >> scripts.nsi
+    ECHO CreateDirectory "$APPDATA\XBMC\scripts\%%S" >> scripts.nsi
+    ECHO SetOutPath "$APPDATA\XBMC\scripts\%%S" >> scripts.nsi
+    ECHO File /r "${xbmc_root}\Xbmc\scripts\%%S\*.*" >> scripts.nsi
+    ECHO SetOverwrite on >> scripts.nsi  
+    ECHO ${Else} >> scripts.nsi
     ECHO SetOutPath "$INSTDIR\scripts\%%S" >> scripts.nsi
     ECHO File /r "${xbmc_root}\Xbmc\scripts\%%S\*.*" >> scripts.nsi
+    ECHO ${EndIf} >> scripts.nsi
     ECHO SectionEnd >> scripts.nsi
     SET /A Counter = !Counter! + 1
   )
@@ -70,14 +78,22 @@ IF EXIST BUILD_WIN32\Xbmc\plugins (
       FOR /F "tokens=*" %%S IN ('dir /B /AD BUILD_WIN32\Xbmc\plugins\%%a') DO (
         ECHO Section "%%S" SecPlugins%%a!Counter! >> plugins.nsi
         ECHO SectionIn 1 #section is in installtype Full >> plugins.nsi
+        ECHO ${If} $PageProfileState == "0" >> plugins.nsi
+        ECHO SetOverwrite off >> plugins.nsi
+        ECHO CreateDirectory "$APPDATA\XBMC\plugins\%%a\%%S" >> plugins.nsi
+        ECHO SetOutPath "$APPDATA\XBMC\plugins\%%a\%%S" >> plugins.nsi
+        ECHO File /r "${xbmc_root}\Xbmc\plugins\%%a\%%S\*.*" >> plugins.nsi
+        ECHO SetOverwrite on >> plugins.nsi
+        ECHO ${Else} >> plugins.nsi
         ECHO SetOutPath "$INSTDIR\plugins\%%a\%%S" >> plugins.nsi
         ECHO File /r "${xbmc_root}\Xbmc\plugins\%%a\%%S\*.*" >> plugins.nsi
+        ECHO ${EndIf} >> plugins.nsi
         ECHO SectionEnd >> plugins.nsi
         SET /A Counter = !Counter! + 1
       )
       ECHO SectionGroupEnd >> plugins.nsi
       ENDLOCAL
-	)
+    )
   )
   ECHO SectionGroupEnd >> plugins.nsi
 )

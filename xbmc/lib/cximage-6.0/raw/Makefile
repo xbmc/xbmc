@@ -1,6 +1,6 @@
-CFLAGS+=-fPIC -DXBMC -D_LINUX
+CFLAGS+=-O2 -fPIC -DXBMC -D_LINUX
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 endif
 
@@ -16,5 +16,3 @@ clean:
 	$(RM) $(OBJS) raw.a
 
 distclean: clean
-
-include ../Makefile.include

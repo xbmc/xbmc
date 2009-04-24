@@ -37,12 +37,22 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
+#include "Picture.h"
+#ifdef HAS_HAL
+#include "linux/HalManager.h"
+#endif
+
+#ifdef _WIN32PC
+#include "WIN32Util.h"
+#endif
 
 using namespace std;
 using namespace MEDIA_DETECT;
 
 #define BACKGROUND_IMAGE       999
 #define BACKGROUND_BOTTOM      998
+#define BACKGROUND_TOP         997
 #define BUTTON_TEMPLATE       1000
 #define SPACE_BETWEEN_BUTTONS    2
 
@@ -96,7 +106,7 @@ void CGUIDialogContextMenu::ClearButtons()
     if (pControl)
     {
       // remove the control from our list
-      Remove(pControl);
+      RemoveControl(pControl);
       // kill the button
       pControl->FreeResources();
       delete pControl;
@@ -108,6 +118,20 @@ void CGUIDialogContextMenu::ClearButtons()
 int CGUIDialogContextMenu::AddButton(int iLabel)
 {
   return AddButton(g_localizeStrings.Get(iLabel));
+}
+
+void CGUIDialogContextMenu::OffsetPosition(float offsetX, float offsetY)
+{
+  float newX = m_posX + offsetX - GetWidth() * 0.5f;
+  float newY = m_posY + offsetY - GetHeight() * 0.5f;
+
+  // we currently hack the positioning of the buttons from y position 0, which
+  // forces skinners to place the top image at a negative y value.  Subtracting
+  // this back off the newY position will ensure it's centered vertically correctly
+  const CGUIControl *top = GetControl(BACKGROUND_TOP);
+  if (top)
+    newY -= top->GetYPosition();
+  SetPosition(newX, newY);
 }
 
 void CGUIDialogContextMenu::SetPosition(float posX, float posY)
@@ -136,7 +160,7 @@ int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
   pButton->SetVisible(true);
   pButton->SetNavigation(dwID - 1, dwID + 1, dwID, dwID);
   pButton->SetLabel(strLabel);
-  Add(pButton);
+  AddControl(pButton);
   // and update the size of our menu
   CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
   if (pControl)
@@ -158,11 +182,11 @@ void CGUIDialogContextMenu::DoModal(int iWindowID /*= WINDOW_INVALID */, const C
   if (pControl)
     pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_TEMPLATE + 1, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   // update our default control
-  if (m_dwDefaultFocusControlID <= BUTTON_TEMPLATE || m_dwDefaultFocusControlID > (DWORD)(BUTTON_TEMPLATE + m_iNumButtons))
-    m_dwDefaultFocusControlID = BUTTON_TEMPLATE + 1;
+  if (m_defaultControl <= BUTTON_TEMPLATE || m_defaultControl > (BUTTON_TEMPLATE + m_iNumButtons))
+    m_defaultControl = BUTTON_TEMPLATE + 1;
   // check the default control has focus...
-  while (m_dwDefaultFocusControlID <= (DWORD)(BUTTON_TEMPLATE + m_iNumButtons) && !(GetControl(m_dwDefaultFocusControlID)->CanFocus()))
-    m_dwDefaultFocusControlID++;
+  while (m_defaultControl <= (BUTTON_TEMPLATE + m_iNumButtons) && !(GetControl(m_defaultControl)->CanFocus()))
+    m_defaultControl++;
   CGUIDialog::DoModal();
 }
 
@@ -173,9 +197,18 @@ int CGUIDialogContextMenu::GetButton()
 
 float CGUIDialogContextMenu::GetHeight()
 {
-  CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
-  if (pControl)
-    return pControl->GetHeight();
+  const CGUIControl *backMain = GetControl(BACKGROUND_IMAGE);
+  if (backMain)
+  {
+    float height = backMain->GetHeight();
+    const CGUIControl *backBottom = GetControl(BACKGROUND_BOTTOM);
+    if (backBottom)
+      height += backBottom->GetHeight();
+    const CGUIControl *backTop = GetControl(BACKGROUND_TOP);
+    if (backTop)
+      height += backTop->GetHeight();
+    return height;
+  }
   else
     return CGUIDialog::GetHeight();
 }
@@ -198,14 +231,11 @@ void CGUIDialogContextMenu::EnableButton(int iButton, bool bEnable)
   if (pControl) pControl->SetEnabled(bEnable);
 }
 
-bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileItem *item, float posX, float posY)
+bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileItemPtr item, float posX, float posY)
 {
   // TODO: This should be callable even if we don't have any valid items
   if (!item)
     return false;
-
-  // Get the share object from our file object
-  CMediaSource *share = GetShare(strType, item);
 
   // popup the context menu
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -216,13 +246,13 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
 
     // grab our context menu
     CContextButtons buttons;
-    GetContextButtons(strType, share, buttons);
+    GetContextButtons(strType, item, buttons);
 
     // add the buttons and execute it
     for (CContextButtons::iterator it = buttons.begin(); it != buttons.end(); it++)
       pMenu->AddButton((*it).second);
     // position it correctly
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(posX, posY);
     pMenu->DoModal();
 
     // translate our button press
@@ -231,20 +261,32 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
       btn = buttons[pMenu->GetButton() - 1].first;
 
     if (btn != CONTEXT_BUTTON_CANCELLED)
-      return OnContextButton(strType, share, btn);
+      return OnContextButton(strType, item, btn);
   }
   return false;
 }
 
-void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSource *share, CContextButtons &buttons)
+void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFileItemPtr item, CContextButtons &buttons)
 {
-  if (share && (CUtil::IsDVD(share->strPath) || CUtil::IsCDDA(share->strPath)))
+  // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
+  if (item && item->IsRemovable())
   {
-    // We need to check if there is a detected is inserted!
-    if ( CDetectDVDMedia::IsDiscInDrive() )
-      buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
-    buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
+    if (item->IsDVD() || item->IsCDDA())
+    {
+      // We need to check if there is a detected is inserted!
+      if ( CDetectDVDMedia::IsDiscInDrive() )
+        buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
+      buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
+    }
+    else // Must be HDD
+    {
+      buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420);  // Eject Removable HDD!
+    }
   }
+
+
+  // Next, Add buttons to the ContextMenu that should ONLY be visible for sources and not autosourced items
+  CMediaSource *share = GetShare(type, item.get());
 
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
   {
@@ -257,8 +299,6 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
         buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
 
       buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
-      if (share->m_strThumbnailImage != "")
-        buttons.Add(CONTEXT_BUTTON_REMOVE_THUMB, 20057);
     }
     if (!GetDefaultShareNameByType(type).IsEmpty())
       buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
@@ -285,11 +325,11 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, CMediaSour
         buttons.Add(CONTEXT_BUTTON_CHANGE_LOCK, 12356);
     }
   }
-  if (share && !g_passwordManager.bMasterUser && share->m_iHasLock == 1)
+  if (share && !g_passwordManager.bMasterUser && item->m_iHasLock == 1)
     buttons.Add(CONTEXT_BUTTON_REACTIVATE_LOCK, 12353);
 }
 
-bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource *share, CONTEXT_BUTTON button)
+bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileItemPtr item, CONTEXT_BUTTON button)
 {
   // Add Source doesn't require a valid share
   if (button == CONTEXT_BUTTON_ADD_SOURCE)
@@ -304,9 +344,36 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource
 
     return CGUIDialogMediaSource::ShowAndAddMediaSource(type);
   }
-  // the rest of the operations require a valid share
-  if (!share) return false;
 
+  // buttons that are available on both sources and autosourced items
+  if (!item) return false;
+  switch (button)
+  {
+  case CONTEXT_BUTTON_EJECT_DRIVE:
+#ifdef HAS_HAL
+    return g_HalManager.Eject(item->m_strPath);
+#else
+    return false;
+#endif
+
+  case CONTEXT_BUTTON_PLAY_DISC:
+    return CAutorun::PlayDisc();
+
+  case CONTEXT_BUTTON_EJECT_DISC:
+#ifdef _WIN32PC
+    if( item->m_strPath[0] )
+      CWIN32Util::ToggleTray(item->m_strPath[0]);
+#else
+    CIoSupport::ToggleTray();
+#endif
+    return true;
+  default:
+    break;
+  }
+
+  // the rest of the operations require a valid share
+  CMediaSource *share = GetShare(type, item.get());
+  if (!share) return false;
   switch (button)
   {
   case CONTEXT_BUTTON_EDIT_SOURCE:
@@ -375,49 +442,82 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, CMediaSource
       else if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
 
+      // setup our thumb list
+      CFileItemList items;
+
+      // add the current thumb, if available
+      if (!share->m_strThumbnailImage.IsEmpty())
+      {
+        CFileItemPtr current(new CFileItem("thumb://Current", false));
+        current->SetThumbnailImage(share->m_strThumbnailImage);
+        current->SetLabel(g_localizeStrings.Get(20016));
+        items.Add(current);
+      }
+      else if (item->HasThumbnail())
+      { // already have a thumb that the share doesn't know about - must be a local one, so we mayaswell reuse it.
+        CFileItemPtr current(new CFileItem("thumb://Current", false));
+        current->SetThumbnailImage(item->GetThumbnailImage());
+        current->SetLabel(g_localizeStrings.Get(20016));
+        items.Add(current);
+      }
+      // see if there's a local thumb for this item
+      CStdString folderThumb = item->GetFolderThumb();
+      if (XFILE::CFile::Exists(folderThumb))
+      { // cache it
+        CPicture pic;
+        if (pic.DoCreateThumbnail(folderThumb, item->GetCachedProgramThumb()))
+        {
+          CFileItemPtr local(new CFileItem("thumb://Local", false));
+          local->SetThumbnailImage(item->GetCachedProgramThumb());
+          local->SetLabel(g_localizeStrings.Get(20017));
+          items.Add(local);
+        }
+      }
+      // and add a "no thumb" entry as well
+      CFileItemPtr nothumb(new CFileItem("thumb://None", false));
+      nothumb->SetIconImage(item->GetIconImage());
+      nothumb->SetLabel(g_localizeStrings.Get(20018));
+      items.Add(nothumb);
+
       CStdString strThumb;
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares);
+      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
+        return false;
 
-      if (CGUIDialogFileBrowser::ShowAndGetImage(shares,g_localizeStrings.Get(1030),strThumb))
+      if (strThumb == "thumb://Current")
+        return true;
+
+      if (strThumb == "thumb://None")
+        strThumb = "";
+
+      if (!share->m_ignore)
       {
         g_settings.UpdateSource(type,share->strName,"thumbnail",strThumb);
         g_settings.SaveSources();
-
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-        m_gWindowManager.SendThreadMessage(msg);
-        return true;
+      }
+      else if (!strThumb.IsEmpty())
+      { // this is icky as we have to cache using a bunch of different criteria
+        CStdString cachedThumb;
+        if (type == "music")
+        {
+          cachedThumb = item->m_strPath;
+          CUtil::RemoveSlashAtEnd(cachedThumb);
+          cachedThumb = CUtil::GetCachedMusicThumb(cachedThumb);
+        }
+        else if (type == "video")
+          cachedThumb = item->GetCachedVideoThumb();
+        else if (type == "pictures")
+          cachedThumb = item->GetCachedPictureThumb();
+        else  // assume "programs"
+          cachedThumb = item->GetCachedProgramThumb();
+        XFILE::CFile::Cache(strThumb, cachedThumb);
       }
 
-      return false;
-    }
-  case CONTEXT_BUTTON_REMOVE_THUMB:
-    {
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
-        return false;
-      else if (!g_passwordManager.IsMasterLockUnlocked(true))
-        return false;
-
-      g_settings.UpdateSource(type,share->strName,"thumbnail","");
-      g_settings.SaveSources();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
       m_gWindowManager.SendThreadMessage(msg);
       return true;
     }
-
-  case CONTEXT_BUTTON_PLAY_DISC:
-    return CAutorun::PlayDisc();
-
-  case CONTEXT_BUTTON_EJECT_DISC:
-#ifdef _WIN32PC
-    if( share->strPath[0] ) CIoSupport::EjectTray( true, share->strPath[0] ); // TODO: detect tray state
-#else
-    if (CIoSupport::GetTrayState() == TRAY_OPEN || CIoSupport::GetTrayState() == DRIVE_OPEN)
-      CIoSupport::CloseTray();
-    else
-      CIoSupport::EjectTray();
-#endif
-    return true;
 
   case CONTEXT_BUTTON_ADD_LOCK:
     {
@@ -538,7 +638,7 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
 void CGUIDialogContextMenu::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
-  SetControlVisibility();
+  SetInitialVisibility();
 }
 
 void CGUIDialogContextMenu::OnWindowUnload()
@@ -656,7 +756,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, c
       pMenu->AddButton(choices[i]);
 
     // position it correctly
-    pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(pos.x, pos.y);
     pMenu->DoModal();
 
     if (pMenu->GetButton() > 0)

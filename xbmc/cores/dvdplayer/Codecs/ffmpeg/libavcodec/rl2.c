@@ -21,7 +21,7 @@
 
 /**
  * RL2 Video Decoder
- * @file rl2.c
+ * @file libavcodec/rl2.c
  * @author Sascha Sommer (saschasommer@freenet.de)
  * For more information about the RL2 format, visit:
  *   http://wiki.multimedia.cx/index.php?title=RL2
@@ -32,6 +32,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
 

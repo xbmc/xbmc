@@ -55,7 +55,7 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 
   DWORD progressTime = timeGetTime() + 3000L;   // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
-  
+
   unsigned int iFailures = 0;
   for (unsigned int i = 0; i < vecPaths.size(); ++i)
   {
@@ -87,7 +87,7 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
 
     CFileItemList tempItems;
     CLog::Log(LOGDEBUG,"Getting Directory (%s)", vecPaths[i].c_str());
-    if (CDirectory::GetDirectory(vecPaths[i], tempItems, m_strFileMask, m_useFileDirectories, m_allowPrompting, m_cacheDirectory))
+    if (CDirectory::GetDirectory(vecPaths[i], tempItems, m_strFileMask, m_useFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo))
       items.Append(tempItems);
     else
     {
@@ -202,7 +202,7 @@ void CMultiPathDirectory::AddToMultiPath(CStdString& strMultiPath, const CStdStr
   CStdString strPath1 = strPath;
   CUtil::AddSlashAtEnd(strMultiPath);
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
-  CUtil::URLEncode(strPath1);  
+  CUtil::URLEncode(strPath1);
   strMultiPath += strPath1;
   strMultiPath += "/";
 }

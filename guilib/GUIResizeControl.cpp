@@ -26,10 +26,10 @@
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L
 
-CGUIResizeControl::CGUIResizeControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus)
+CGUIResizeControl::CGUIResizeControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_imgFocus(dwParentID, dwControlId, posX, posY, width, height, textureFocus)
-    , m_imgNoFocus(dwParentID, dwControlId, posX, posY, width, height, textureNoFocus)
+    , m_imgFocus(posX, posY, width, height, textureFocus)
+    , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
 {
   m_dwFrameCounter = 0;
   m_dwLastMoveTime = 0;
@@ -215,11 +215,11 @@ void CGUIResizeControl::SetAlpha(unsigned char alpha)
   m_imgNoFocus.SetAlpha(alpha);
 }
 
-void CGUIResizeControl::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUIResizeControl::UpdateColors()
 {
-  CGUIControl::SetColorDiffuse(color);
-  m_imgFocus.SetColorDiffuse(color);
-  m_imgNoFocus.SetColorDiffuse(color);
+  CGUIControl::UpdateColors();
+  m_imgFocus.SetDiffuseColor(m_diffuseColor);
+  m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
 }
 
 void CGUIResizeControl::SetLimits(float x1, float y1, float x2, float y2)

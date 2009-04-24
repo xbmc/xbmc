@@ -10,7 +10,6 @@
 			<width>128</width>
 			<visible>no</visible>
 			<texture>video-pause.png</texture>
-			<colorkey>0</colorkey>
 		</control>
 		<!-- media infos -->
 		<control type="group" id="1">

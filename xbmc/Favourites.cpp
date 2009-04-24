@@ -31,8 +31,8 @@ bool CFavourites::Load(CFileItemList &items)
 {
   items.Clear();
   CStdString favourites;
-  
-  favourites = _P("Q:\\system\\favourites.xml");
+
+  favourites = "special://xbmc/system/favourites.xml";
   if(XFILE::CFile::Exists(favourites))
     CFavourites::LoadFavourites(favourites, items);
   else
@@ -65,9 +65,9 @@ bool CFavourites::LoadFavourites(CStdString& strPath, CFileItemList& items)
   while (favourite)
   {
     // format:
-    // <favourite name="Cool Video" thumb="q:\userdata\thumbnails\video\04385918.tbn">PlayMedia(c:\videos\cool_video.avi)</favourite>
-    // <favourite name="My Album" thumb="q:\userdata\thumbnails\music\0\04385918.tbn">ActivateWindow(MyMusic,c:\music\my album)</favourite>
-    // <favourite name="Apple Movie Trailers" thumb="q:\userdata\thumbnails\programs\04385918.tbn">RunScript(q:\scripts\apple movie trailers\default.py)</favourite>
+    // <favourite name="Cool Video" thumb="foo.jpg">PlayMedia(c:\videos\cool_video.avi)</favourite>
+    // <favourite name="My Album" thumb="bar.tbn">ActivateWindow(MyMusic,c:\music\my album)</favourite>
+    // <favourite name="Apple Movie Trailers" thumb="path_to_thumb.png">RunScript(special://xbmc/scripts/apple movie trailers/default.py)</favourite>
     const char *name = favourite->Attribute("name");
     const char *thumb = favourite->Attribute("thumb");
     if (name && favourite->FirstChild())

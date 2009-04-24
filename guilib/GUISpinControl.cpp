@@ -28,12 +28,12 @@ using namespace std;
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
 
-CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureUp, const CImage& textureDown, const CImage& textureUpFocus, const CImage& textureDownFocus, const CLabelInfo &labelInfo, int iType)
+CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo &labelInfo, int iType)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_imgspinUp(dwParentID, dwControlId, posX, posY, width, height, textureUp)
-    , m_imgspinDown(dwParentID, dwControlId, posX, posY, width, height, textureDown)
-    , m_imgspinUpFocus(dwParentID, dwControlId, posX, posY, width, height, textureUpFocus)
-    , m_imgspinDownFocus(dwParentID, dwControlId, posX, posY, width, height, textureDownFocus)
+    , m_imgspinUp(posX, posY, width, height, textureUp)
+    , m_imgspinDown(posX, posY, width, height, textureDown)
+    , m_imgspinUpFocus(posX, posY, width, height, textureUpFocus)
+    , m_imgspinDownFocus(posX, posY, width, height, textureDownFocus)
     , m_textLayout(labelInfo.font, false)
 {
   m_bReverse = false;
@@ -60,7 +60,6 @@ CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX
 
 CGUISpinControl::~CGUISpinControl(void)
 {}
-
 
 bool CGUISpinControl::OnAction(const CAction &action)
 {
@@ -440,7 +439,7 @@ void CGUISpinControl::Render()
       m_textLayout.Render(fPosX, fPosY, 0, m_label.focusedColor, m_label.shadowColor, m_label.align, 0);
     else
       m_textLayout.Render(fPosX, fPosY, 0, m_label.textColor, m_label.shadowColor, m_label.align, 0);
- 
+
     // set our hit rectangle for MouseOver events
     if (!(m_label.align & (XBFONT_RIGHT | XBFONT_CENTER_X)))
       m_hitRect.SetRect(fPosX, fPosY, fPosX + fTextWidth, fPosY + fTextHeight);
@@ -477,7 +476,7 @@ void CGUISpinControl::SetValueFromLabel(const CStdString &label)
 }
 
 void CGUISpinControl::SetValue(int iValue)
-{  
+{
   if (m_iType == SPIN_CONTROL_TYPE_TEXT)
   {
     m_iValue = 0;
@@ -913,13 +912,14 @@ void CGUISpinControl::ChangePage(int amount)
   SendWindowMessage(message);
 }
 
-void CGUISpinControl::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUISpinControl::UpdateColors()
 {
-  CGUIControl::SetColorDiffuse(color);
-  m_imgspinDownFocus.SetColorDiffuse(color);
-  m_imgspinDown.SetColorDiffuse(color);
-  m_imgspinUp.SetColorDiffuse(color);
-  m_imgspinUpFocus.SetColorDiffuse(color);
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
+  m_imgspinDownFocus.SetDiffuseColor(m_diffuseColor);
+  m_imgspinDown.SetDiffuseColor(m_diffuseColor);
+  m_imgspinUp.SetDiffuseColor(m_diffuseColor);
+  m_imgspinUpFocus.SetDiffuseColor(m_diffuseColor);
 }
 
 bool CGUISpinControl::IsVisible() const

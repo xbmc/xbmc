@@ -1,8 +1,8 @@
 /*
- * Mersenne Twister Random Algorithm
- * Copyright (c) 2006 Ryan Martell.
- * Based on A C-program for MT19937, with initialization improved 2002/1/26. Coded by
- * Takuji Nishimura and Makoto Matsumoto.
+ * Mersenne Twister PRNG algorithm
+ * Copyright (c) 2006 Ryan Martell
+ * Based on a C program for MT19937, with initialization improved 2002/1/26.
+ * Coded by Takuji Nishimura and Makoto Matsumoto.
  *
  * This file is part of FFmpeg.
  *
@@ -26,20 +26,26 @@
 
 #define AV_RANDOM_N 624
 
+#include "avutil.h"
+#include "common.h"
+
 typedef struct {
     unsigned int mt[AV_RANDOM_N]; ///< the array for the state vector
     int index; ///< Current untempered value we use as the base.
 } AVRandomState;
 
 
-void av_init_random(unsigned int seed, AVRandomState *state); ///< To be inlined, the struct must be visible. So it does not make sense to try and keep it opaque with malloc/free-like calls.
+#if LIBAVUTIL_VERSION_MAJOR < 50
+attribute_deprecated void av_init_random(unsigned int seed, AVRandomState *state);
+#endif
+void av_random_init(AVRandomState *state, unsigned int seed); ///< To be inlined, the struct must be visible. So it does not make sense to try and keep it opaque with malloc/free-like calls.
 void av_random_generate_untempered_numbers(AVRandomState *state); ///< Regenerate the untempered numbers (must be done every 624 iterations, or it will loop).
 
 /**
  * Generates a random number from the interval [0,0xffffffff].
  *
- * Please do NOT use the Mersenne Twister, it is slow. Use the random generator
- * from lfg.c/h or a simple LCG like state= state*1664525+1013904223.
+ * Please do NOT use the Mersenne Twister, it is slow. Use the random number
+ * generator from lfg.c/h or a simple LCG like state = state*1664525+1013904223.
  * If you still choose to use MT, expect that you will have to provide
  * some evidence that it makes a difference for the case where you use it.
  */
@@ -63,7 +69,7 @@ static inline unsigned int av_random(AVRandomState *state)
     return y;
 }
 
-/** Return random in range [0-1] as double. */
+/** Returns a random number in the range [0-1] as double. */
 static inline double av_random_real1(AVRandomState *state)
 {
     /* divided by 2^32-1 */

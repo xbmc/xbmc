@@ -1,6 +1,6 @@
 /*
  * Assorted DPCM codecs
- * Copyright (c) 2003 The ffmpeg Project.
+ * Copyright (c) 2003 The ffmpeg Project
  *
  * This file is part of FFmpeg.
  *
@@ -37,6 +37,7 @@
  * the fourcc 'Axan' in the 'auds' chunk of the AVI header.
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
 typedef struct DPCMContext {
@@ -308,7 +309,7 @@ AVCodec name ## _decoder = {                    \
     .long_name = NULL_IF_CONFIG_SMALL(long_name_), \
 };
 
-DPCM_DECODER(CODEC_ID_INTERPLAY_DPCM, interplay_dpcm, "Interplay DPCM");
-DPCM_DECODER(CODEC_ID_ROQ_DPCM, roq_dpcm, "id RoQ DPCM");
-DPCM_DECODER(CODEC_ID_SOL_DPCM, sol_dpcm, "Sol DPCM");
-DPCM_DECODER(CODEC_ID_XAN_DPCM, xan_dpcm, "Xan DPCM");
+DPCM_DECODER(CODEC_ID_INTERPLAY_DPCM, interplay_dpcm, "DPCM Interplay");
+DPCM_DECODER(CODEC_ID_ROQ_DPCM, roq_dpcm, "DPCM id RoQ");
+DPCM_DECODER(CODEC_ID_SOL_DPCM, sol_dpcm, "DPCM Sol");
+DPCM_DECODER(CODEC_ID_XAN_DPCM, xan_dpcm, "DPCM Xan");

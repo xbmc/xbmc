@@ -27,7 +27,7 @@
 #include "RingBuffer.h"
 
 /**
-	@author Team XBMC
+  @author Team XBMC
 */
 namespace XFILE {
 
@@ -45,7 +45,7 @@ public:
     virtual __int64 WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
 
     virtual __int64 Seek(__int64 iFilePosition, int iWhence) ;
-	virtual void Reset(__int64 iSourcePosition) ;
+    virtual void Reset(__int64 iSourcePosition) ;
 
 protected:
     __int64 m_nStartPosition;

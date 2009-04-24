@@ -25,7 +25,6 @@
 #include "Picture.h"
 #include "utils/IMDB.h"
 #include "utils/GUIInfoManager.h"
-#include "GUIWindowVideoInfo.h"
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "NfoFile.h"
@@ -263,7 +262,7 @@ bool CGUIWindowVideoFiles::GetDirectory(const CStdString &strDirectory, CFileIte
   m_cleaningAvailable = true;
 
 
-  if (m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows"))
+  if ((m_database.GetScraperForPath(strDirectory,info2) && info2.strContent.Equals("tvshows")) || items.IsTuxBox())
   { // dont stack or clean strings in tv dirs
     m_stackingAvailable = false;
     m_cleaningAvailable = false;
@@ -575,13 +574,12 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
     if (m_vecItems->IsVirtualDirectoryRoot())
     {
       // get the usual shares, and anything for all media windows
-      CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
-      CGUIDialogContextMenu::GetContextButtons("video", share, buttons);
+      CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       // add scan button somewhere here
       if (pScanDlg && pScanDlg->IsScanning())
-        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
-      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() &&
+        buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
+      if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() && item->m_strPath != "add" &&
          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -591,7 +589,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
         database.Open();
         SScraperInfo info;
 
-        if (share != 0 && database.GetScraperForPath(share->strPath,info))
+        if (item && database.GetScraperForPath(item->m_strPath,info))
         {
           if (!info.strPath.IsEmpty() && !info.strContent.IsEmpty())
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
@@ -674,14 +672,14 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           }
         }
       }
-      if (m_vecItems->IsPluginFolder() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
+      if (m_vecItems->IsPlugin() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
     }
   }
   else
   {
     if (pScanDlg && pScanDlg->IsScanning())
-      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);	// Stop Scanning
+      buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);  // Stop Scanning
   }
   if(!(item && item->GetPropertyBOOL("pluginreplacecontextitems")))
   {
@@ -699,8 +697,7 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     item = m_vecItems->Get(itemNumber);
   if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("video", item.get());
-    if (CGUIDialogContextMenu::OnContextButton("video", share, button))
+    if (CGUIDialogContextMenu::OnContextButton("video", item, button))
     {
       if (button == CONTEXT_BUTTON_REMOVE_SOURCE)
         OnUnAssignContent(itemNumber);
@@ -723,9 +720,6 @@ bool CGUIWindowVideoFiles::OnContextButton(int itemNumber, CONTEXT_BUTTON button
         m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath, info, settings);
       else
         m_database.GetScraperForPath(item->m_strPath, info, settings);
-      CScraperParser parser;
-      if (parser.Load(_P("q:\\system\\scrapers\\video\\"+info.strPath)))
-        info.strTitle = parser.GetName();
       OnAssignContent(itemNumber,0, info, settings);
       return true;
     }

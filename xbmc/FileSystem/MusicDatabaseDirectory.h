@@ -32,6 +32,7 @@ namespace DIRECTORY
     CMusicDatabaseDirectory(void);
     virtual ~CMusicDatabaseDirectory(void);
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
     virtual bool Exists(const char* strPath);
     static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const CStdString& strPath);
     static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const CStdString& strPath);
@@ -43,5 +44,6 @@ namespace DIRECTORY
     static bool GetLabel(const CStdString& strDirectory, CStdString& strLabel);
     bool ContainsSongs(const CStdString &path);
     static bool CanCache(const CStdString& strPath);
+    static CStdString GetIcon(const CStdString& strDirectory);
   };
 }

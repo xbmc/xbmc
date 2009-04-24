@@ -1,5 +1,5 @@
 
-#include "stdafx.h" 
+#include "stdafx.h"
 /*
  * XBMC Media Center
  * Copyright (c) 2002 Frodo
@@ -75,7 +75,7 @@ CStdString CFileHD::GetLocal(const CURL &url)
 }
 
 //*********************************************************************************************
-bool CFileHD::Open(const CURL& url, bool bBinary)
+bool CFileHD::Open(const CURL& url)
 {
   CStdString strFile = GetLocal(url);
 
@@ -136,7 +136,7 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 
 
 //*********************************************************************************************
-bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
+bool CFileHD::OpenForWrite(const CURL& url, bool bOverWrite)
 {
   // make sure it's a legal FATX filename (we are writing to the harddisk)
   CStdString strPath = GetLocal(url);
@@ -158,7 +158,7 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bBinary, bool bOverWrite)
 #else
   m_hFile.attach(CreateFile(strPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
 #endif
-  if (!m_hFile.isValid()) 
+  if (!m_hFile.isValid())
     return false;
 
   m_i64FilePos = 0;
@@ -185,11 +185,11 @@ int CFileHD::Write(const void *lpBuf, __int64 uiBufSize)
 {
   if (!m_hFile.isValid())
     return 0;
-  
+
   DWORD nBytesWriten;
   if ( WriteFile((HANDLE)m_hFile, (void*) lpBuf, (DWORD)uiBufSize, &nBytesWriten, NULL) )
     return nBytesWriten;
-  
+
   return 0;
 }
 
@@ -289,7 +289,7 @@ void CFileHD::Flush()
 }
 
 int CFileHD::IoControl(int request, void* param)
-{ 
+{
 #ifdef _LINUX
   return ioctl((*m_hFile).fd, request, param);
 #endif

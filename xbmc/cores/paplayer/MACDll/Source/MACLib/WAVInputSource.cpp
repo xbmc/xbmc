@@ -49,7 +49,7 @@ CInputSource * CreateInputSource(const wchar_t * pSourceName, WAVEFORMATEX * pwf
         pExtension--;
 
     // create the proper input source
-    if (wcscasecmp(pExtension, L".wav") == 0)
+    if (wcsicmp(pExtension, L".wav") == 0)
     {
         if (pErrorCode) *pErrorCode = ERROR_SUCCESS;
         return new CWAVInputSource(pSourceName, pwfeSource, pTotalBlocks, pHeaderBytes, pTerminatingBytes, pErrorCode);

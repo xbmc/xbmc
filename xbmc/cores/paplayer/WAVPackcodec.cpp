@@ -47,9 +47,9 @@ bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
   if (!m_dll.Load())
     return false;
-  
+
   //  Open the file to play
-  if (!m_file.Open(strFile, true, READ_CACHED))
+  if (!m_file.Open(strFile, READ_CACHED))
   {
     CLog::Log(LOGERROR, "WAVPackCodec: Can't open %s", strFile.c_str());
     return false;
@@ -76,7 +76,7 @@ bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_SampleRate = m_dll.WavpackGetSampleRate(m_Handle);
   m_Channels = m_dll.WavpackGetReducedChannels(m_Handle);
   m_BitsPerSample = m_dll.WavpackGetBitsPerSample(m_Handle);
-  m_TotalTime = (__int64)(m_dll.WavpackGetNumSamples(m_Handle) * 1000.0 / m_SampleRate); 
+  m_TotalTime = (__int64)(m_dll.WavpackGetNumSamples(m_Handle) * 1000.0 / m_SampleRate);
   m_Bitrate = (int)m_dll.WavpackGetAverageBitrate(m_Handle, TRUE);
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)
@@ -90,7 +90,7 @@ bool WAVPackCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_ReadBuffer = new BYTE[4*576*m_Channels];
 
   //  Get replay gain info
-	char value [32];
+  char value [32];
   if (m_dll.WavpackGetTagItem (m_Handle, "replaygain_track_gain", value, sizeof (value)))
   {
     m_replayGain.iTrackGain = (int)(atof(value) * 100 + 0.5);
@@ -158,12 +158,12 @@ int WAVPackCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     m_BufferPos = 0;
 
     //  Fill our buffer with a chunk of audio data
-	  int tsamples = m_dll.WavpackUnpackSamples(m_Handle, (int32_t*)m_ReadBuffer, 576) * m_Channels;
-	  int tbytes = tsamples * (m_BitsPerSample/8);
+    int tsamples = m_dll.WavpackUnpackSamples(m_Handle, (int32_t*)m_ReadBuffer, 576) * m_Channels;
+    int tbytes = tsamples * (m_BitsPerSample/8);
 
-	  if (!tsamples)
+    if (!tsamples)
       bEof=true;
-	  else
+    else
     {
       FormatSamples(m_Buffer + m_BufferSize, m_BitsPerSample/8, (long *) m_ReadBuffer, tsamples);
       m_BufferSize+=tbytes;

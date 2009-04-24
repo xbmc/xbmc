@@ -66,8 +66,7 @@ namespace DIRECTORY
     CStdString strBuffer;
 
     // the RAR code depends on things having a "/" at the end of the path
-    if (!CUtil::HasSlashAtEnd(strSlashPath))
-      strSlashPath += '/';
+    CUtil::AddSlashAtEnd(strSlashPath);
 
     vector<SZipEntry> entries;
     // turn on fast lookups
@@ -82,11 +81,11 @@ namespace DIRECTORY
       CUtil::Tokenize(strPathInZip,baseTokens,"/");
 
     for (vector<SZipEntry>::iterator ze=entries.begin();ze!=entries.end();++ze)
-    {      
+    {
       CStdString strEntryName(ze->name);
       strEntryName.Replace('\\','/');
       if (strEntryName == strPathInZip) // skip the listed dir
-        continue; 
+        continue;
 
       vector<CStdString> pathTokens;
       CUtil::Tokenize(strEntryName,pathTokens,"/");
@@ -114,11 +113,7 @@ namespace DIRECTORY
       bool bIsFolder = false;
       if (strEntryName[strEntryName.size()-1] != '/') // this is a file
       {
-        if (!IsAllowed(pathTokens[pathTokens.size()-1])) // not allowed
-          continue;
-  
         strBuffer = strSlashPath + strEntryName + strOptions;
-
       }
       else
       { // this is new folder. add if not already added
@@ -129,7 +124,7 @@ namespace DIRECTORY
       }
 
       CFileItemPtr pFileItem(new CFileItem);
-      
+
       if (g_charsetConverter.isValidUtf8(pathTokens[baseTokens.size()]))
         g_charsetConverter.utf8ToStringCharset(pathTokens[baseTokens.size()]);
 

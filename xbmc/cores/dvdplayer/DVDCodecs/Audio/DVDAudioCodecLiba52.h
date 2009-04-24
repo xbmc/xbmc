@@ -68,6 +68,8 @@ protected:
 
   DllLiba52 m_dll;
 
+  float m_Gain;
+
   BYTE m_decodedData[131072] XBMC_ALIGN_INT; // could be a bit to big
   int  m_decodedSize;
 

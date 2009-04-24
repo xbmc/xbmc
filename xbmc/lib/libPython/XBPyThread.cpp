@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,11 +23,11 @@
 #include "stdafx.h"
 #include "Python/Include/Python.h"
 #include "Python/Include/osdefs.h"
-#ifdef _LINUX
 #include "XBPythonDll.h"
-#endif
-#include "Util.h"
-
+#include "FileSystem/SpecialProtocol.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+	 
 #include "XBPyThread.h"
 #include "XBPython.h"
 
@@ -143,10 +143,12 @@ void XBPyThread::Process()
   PyThreadState_Swap(m_threadState);
 
   m_pExecuter->InitializeInterpreter();
+  
+  CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, source);
 
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
-  strcpy(sourcedir, source);
+  strcpy(sourcedir, _P(source));
 
   char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
   *p = PY_PATH_SEP;
@@ -157,12 +159,7 @@ void XBPyThread::Process()
 #ifndef _LINUX
   strcat(path, dll_getenv("PYTHONPATH"));
 #else
-#ifdef __APPLE__
-  strcat(path, _P("Q:\\system\\python\\python24.zip;"));
-  strcat(path, _P("Q:\\system\\python\\lib-osx"));
-#else
   strcat(path, Py_GetPath());
-#endif
 #endif
 
   // set current directory and python's path.
@@ -170,21 +167,38 @@ void XBPyThread::Process()
   {
     PySys_SetArgv(argc, argv);
   }
+
+  CLog::Log(LOGDEBUG, "%s - Setting the Python path to %s", __FUNCTION__, path);
+
   PySys_SetPath(path);
   // Remove the PY_PATH_SEP at the end
   sourcedir[strlen(sourcedir)-1] = 0;
+  
+  CLog::Log(LOGDEBUG, "%s - Entering source directory %s", __FUNCTION__, sourcedir);
+  
   xbp_chdir(sourcedir);
-
+  
   if (type == 'F')
   {
     // run script from file
-    FILE *fp = fopen_utf8(source, "r");
+    FILE *fp = fopen_utf8(_P(source).c_str(), "r");
     if (fp)
     {
-      if (PyRun_SimpleFile(fp, source) == -1)
+      if (PyRun_SimpleFile(fp, _P(source).c_str()) == -1)
       {
         CLog::Log(LOGERROR, "Scriptresult: Error\n");
         if (PyErr_Occurred()) PyErr_Print();
+        
+        CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+        if (pDlgOK)
+        {
+          // TODO: Need to localize this
+          pDlgOK->SetHeading(247); //Scripts
+          pDlgOK->SetLine(0, 257); //ERROR
+          pDlgOK->SetLine(1, "Python script failed:");
+          pDlgOK->SetLine(2, source);
+          pDlgOK->DoModal();
+        }
       }
       else CLog::Log(LOGINFO, "Scriptresult: Succes\n");
       fclose(fp);
@@ -198,6 +212,17 @@ void XBPyThread::Process()
     {
       CLog::Log(LOGERROR, "Scriptresult: Error\n");
       if (PyErr_Occurred()) PyErr_Print();
+     
+      CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (pDlgOK)
+      {
+        // TODO: Need to localize this
+        pDlgOK->SetHeading(247); //Scripts
+        pDlgOK->SetLine(0, 257); //ERROR
+        pDlgOK->SetLine(1, "Python script failed:");
+        pDlgOK->SetLine(2, source);
+        pDlgOK->DoModal();
+      }
     }
     else CLog::Log(LOGINFO, "Scriptresult: Success\n");
   }

@@ -32,6 +32,11 @@ CEncoder::CEncoder()
   m_iInBitsPerSample = 0;
 }
 
+CEncoder::~CEncoder()
+{
+  FileClose();
+}
+
 bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
   if (strFile == NULL) return false;
@@ -53,12 +58,11 @@ bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBi
 
 bool CEncoder::FileCreate(const char* filename)
 {
-  if (m_file)
-    delete m_file;
+  delete m_file;
 
   m_file = new XFILE::CFile;
   if (m_file)
-    return m_file->OpenForWrite(filename, true, true);
+    return m_file->OpenForWrite(filename, true);
   return false;
 }
 
@@ -68,6 +72,7 @@ bool CEncoder::FileClose()
   {
     m_file->Close();
     delete m_file;
+    m_file = NULL;
   }
   return true;
 }

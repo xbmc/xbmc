@@ -23,7 +23,6 @@
 #include "stdafx.h"
 #include "XBMSDirectory.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "URL.h"
 #include "FileItem.h"
 
@@ -70,11 +69,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
   CURL url(strPath);
 
   CStdString strRoot = strPath;
-  if (!CUtil::HasSlashAtEnd(strPath) )
-    strRoot += "/";
-
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPathUtf8);
+  CUtil::AddSlashAtEnd(strPath);
 
   CcXstreamServerConnection conn = 0;
 
@@ -187,7 +182,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
       bIsDirectory = true;
 
     CStdString strLabel=filename;
-    g_charsetConverter.stringCharsetToUtf8(strLabel);
+    g_charsetConverter.unknownToUTF8(strLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
 
     char* pstrSizeStart = strstr(fileinfo, "<SIZE>");
@@ -224,17 +219,12 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
 
     pItem->m_strPath = strRoot;
     pItem->m_strPath += filename;
-    g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
+    g_charsetConverter.unknownToUTF8(pItem->m_strPath);
     pItem->m_bIsFolder = bIsDirectory;
     if (pItem->m_bIsFolder)
       CUtil::AddSlashAtEnd(pItem->m_strPath);
 
-    if ( bIsDirectory || IsAllowed( filename) )
-    {
-      items.Add(pItem);
-    }
-
-    vecCacheItems.Add(pItem);
+    items.Add(pItem);
 
     free(filename);
     free(fileinfo);
@@ -245,8 +235,6 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
   if (conn != 0)
     cc_xstream_client_disconnect(conn);
 
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPathUtf8, vecCacheItems);
   return true;
 }
 
@@ -289,10 +277,10 @@ static void DiscoveryCallback(const char *addr, const char *port, const char *ve
   strPath += "/";
 
   // Add to items
-  g_charsetConverter.stringCharsetToUtf8(itemName);
+  g_charsetConverter.unknownToUTF8(itemName);
   CFileItemPtr pItem(new CFileItem(itemName));
   pItem->m_strPath = strPath;
-  g_charsetConverter.stringCharsetToUtf8(pItem->m_strPath);
+  g_charsetConverter.unknownToUTF8(pItem->m_strPath);
   pItem->m_bIsFolder = true;
   pItem->m_bIsShareOrDrive = true;
   pItem->SetIconImage("defaultNetwork.png");
@@ -304,7 +292,7 @@ bool CXBMSDirectory::Exists(const char* strPath)
   CStdString strPath2(strPath);
   if (GetDirectory(strPath2,items))
     return true;
-  
+
   return false;
 }
 

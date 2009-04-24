@@ -48,10 +48,10 @@ public:
   virtual __int64 Seek(__int64 iSeekTime);
   virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
   virtual bool CanInit();
-  
+
 private:
   __int64 m_iDataPos;
-  
+
   DllWMA m_dll;
   void*  m_hnd;
 };

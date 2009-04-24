@@ -34,7 +34,7 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
   virtual bool OnAction(const CAction &action);
   virtual void Render();
-  virtual DWORD GetID() const { return m_dwWindowId + (DWORD)m_iScreen; };
+  virtual DWORD GetID() const { return CGUIWindow::GetID() + (DWORD)m_iScreen; };
 
   // static function as it's accessed elsewhere
   static void FillInVisualisations(CSetting *pSetting, int iControlID);
@@ -68,7 +68,7 @@ protected:
   void FillInNetworkInterfaces(CSetting *pSetting);
   void NetworkInterfaceChanged(void);
 
-  void FillInMusicScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected);
+  void FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent);
 
   void FillInAudioDevices(CSetting* pSetting);
 

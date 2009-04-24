@@ -1,11 +1,21 @@
-include ../../../../Makefile.include
+ARCH=@ARCH@
 
 OBJS = MADCodec/MadMp3Decoder.o
 CFLAGS += -D_LINUX -fPIC -O3
+CXXFLAGS += -D_LINUX -fPIC -O3
 
-LIB=../../../../system/players/paplayer/MADCodec-@ARCH@.so
+SLIB=../../../../system/players/paplayer/MADCodec-@ARCH@.so
 
-lib: $(LIB)
+$(SLIB): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		MADCodec/MadMp3Decoder.o \
+		../../dvdplayer/Codecs/libmad/.libs/libmad.a $(BUNDLE1_O)
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+else
+	$(CXX) $(CXXFLAGS) -shared -o $@  MADCodec/MadMp3Decoder.o ../../dvdplayer/Codecs/libmad/.libs/libmad.a `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+endif
 
-$(LIB): $(OBJS)
-	gcc -shared -o $@  MADCodec/MadMp3Decoder.o ../../dvdplayer/Codecs/libmad/.libs/libmad.a `cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o -fPIC -O3
+include ../../../../Makefile.include
+

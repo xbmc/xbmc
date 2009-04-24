@@ -40,13 +40,15 @@ CIrssMessage::CIrssMessage(IRSS_MessageType type, uint32_t flags)
 
 CIrssMessage::CIrssMessage(IRSS_MessageType type, uint32_t flags, char* data, int size)
 {
-  CIrssMessage::CIrssMessage(type, flags);
+  m_type = type;
+  m_flags = flags;
   SetDataAsBytes(data, size);
 }
 
 CIrssMessage::CIrssMessage(IRSS_MessageType type, uint32_t flags, const CStdString& data)
 {
-  CIrssMessage::CIrssMessage(type, flags);
+  m_type = type;
+  m_flags = flags;
   SetDataAsString(data);
 }
 
@@ -63,7 +65,7 @@ void CIrssMessage::SetDataAsBytes(char* data, int size)
   }
   else
   {
-    m_data = new char[size];
+    m_data = (char*)malloc(size * sizeof(char));
     memcpy(m_data, data, size);
     m_dataSize = size;
   }
@@ -84,14 +86,10 @@ void CIrssMessage::SetDataAsString(const CStdString& data)
 
 void CIrssMessage::FreeData()
 {
-  if (m_data)
-  {
-    delete[] m_data;
-  }
+  free(m_data);
   m_data = NULL;
   m_dataSize = 0;
 }
-
 
 char* CIrssMessage::ToBytes(int& size)
 {

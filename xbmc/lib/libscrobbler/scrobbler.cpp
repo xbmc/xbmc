@@ -15,7 +15,7 @@
     along with libscrobbler; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  Copyright ï¿½ 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
+  Copyright © 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
 */
 #include "stdafx.h"
 #include "scrobbler.h"
@@ -23,12 +23,12 @@
 #include "utils/md5.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-#include "utils/HTTP.h"
 #include "Util.h"
 #include "Settings.h"
 #include "Application.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "FileSystem/FileCurl.h"
 #include "tinyXML/tinyxml.h"
 #include "XMLUtils.h"
 #include "RegExp.h"
@@ -65,22 +65,18 @@ CScrobbler::CScrobbler()
   m_bSubmitInProgress = false;
   m_bReadyToSubmit=false;
   m_iSongNum=0;
-  DWORD threadid; // Needed for Win9x
   m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
   if (!m_hWorkerEvent)
     throw EOutOfMemory();
-  m_hWorkerThread = CreateThread(NULL, 0, threadProc, (LPVOID)this, 0, &threadid);
-  if (!m_hWorkerThread)
-    throw EOutOfMemory();
+  Create();
 }
 
 CScrobbler::~CScrobbler()
 {
   m_bCloseThread = true;
   SetEvent(m_hWorkerEvent);
-  WaitForSingleObject(m_hWorkerThread, INFINITE);
+  WaitForThreadExit(INFINITE);
   CloseHandle(m_hWorkerEvent);
-  CloseHandle(m_hWorkerThread);
   Sleep(0);
 }
 
@@ -252,7 +248,7 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
   else
   {
     CStdString strMsg;
-    strMsg.Format("Not submitting, caching for %i more seconds. Cache is %i entries.", (int)(m_Interval + m_LastConnect - now), m_iSongNum);
+    strMsg.Format("Not submitting, caching for %i more seconds. Cache is %i entries.", (int)(m_Interval + m_LastConnect - now), m_vecSubmissionJournal.size());
     StatusUpdate(S_NOT_SUBMITTING,strMsg);
     return 2;
   }
@@ -260,6 +256,12 @@ int CScrobbler::AddSong(const CMusicInfoTag& tag)
 
 void CScrobbler::DoHandshake()
 {
+  if (m_strUserName.IsEmpty() || m_strPassword.IsEmpty() || 
+      (!g_guiSettings.GetBool("lastfm.enable") && 
+       !g_guiSettings.GetBool("lastfm.recordtoprofile")) ||
+      !g_guiSettings.GetBool("network.enableinternet"))
+    return;
+
   m_bReadyToSubmit = false;
   time_t now;
   time (&now);
@@ -374,9 +376,11 @@ void CScrobbler::HandleSubmit(char *data)
     }
     
     // Remove successfully submitted songs from journal and clear POST data
-    while (--m_iSongNum)
-      m_vecSubmissionJournal.erase(m_vecSubmissionJournal.begin());
+    std::vector<SubmissionJournalEntry>::iterator it;
+    it = m_vecSubmissionJournal.begin();
+    m_vecSubmissionJournal.erase(it, it + m_iSongNum);
     m_strPostString = "";
+    m_iSongNum = 0;
     SaveJournal();
   }
   else if (stricmp("BADPASS", response) == 0)
@@ -510,7 +514,7 @@ int CScrobbler::LoadJournal()
     }
     m_iSongNum = 0;
     m_strPostString = "";
-    ::DeleteFile(GetTempFileName());
+    CFile::Delete(GetTempFileName());
     CLog::Log(LOGDEBUG, "Audioscrobbler: Added %d entries from old cache file (%s) to journal.", m_vecSubmissionJournal.size(), GetTempFileName().c_str());
   }
 
@@ -639,7 +643,17 @@ void CScrobbler::StatusUpdate(const CStdString& strText)
   g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
 }
 
-void CScrobbler::WorkerThread()
+void CScrobbler::OnStartup()
+{
+  CLog::Log(LOGDEBUG, "Audioscrobbler worker thread starting");
+}
+
+void CScrobbler::OnExit()
+{
+  CLog::Log(LOGDEBUG, "Audioscrobbler worker thread stopping");
+}
+
+void CScrobbler::Process()
 {
   while (1) 
   {
@@ -647,7 +661,7 @@ void CScrobbler::WorkerThread()
     if (m_bCloseThread)
       break;
 
-    CHTTP http;
+    CFileCurl http;
     CStdString strHtml;
     bool bSuccess;
     if (!m_bReadyToSubmit)

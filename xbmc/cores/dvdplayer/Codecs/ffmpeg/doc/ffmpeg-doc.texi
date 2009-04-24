@@ -35,7 +35,7 @@ ffmpeg -f oss -i /dev/dsp -f video4linux2 -i /dev/video0 /tmp/out.mpg
 
 Note that you must activate the right video source and channel before
 launching FFmpeg with any TV viewer such as xawtv
-(@url{http://bytesex.org/xawtv/}) by Gerd Knorr. You also
+(@url{http://linux.bytesex.org/xawtv/}) by Gerd Knorr. You also
 have to set the audio recording levels correctly with a
 standard mixer.
 
@@ -229,7 +229,23 @@ Show help.
 Show version.
 
 @item -formats
-Show available formats, codecs, protocols, ...
+Show available formats, codecs, bitstream filters, protocols, and frame size and frame rate abbreviations.
+
+The fields preceding the format and codec names have the following meanings:
+@table @samp
+@item D
+Decoding available
+@item E
+Encoding available
+@item V/A/S
+Video/audio/subtitle codec
+@item S
+Codec supports slices
+@item D
+Codec supports direct rendering
+@item T
+Codec can handle input truncated at random locations instead of only at frame boundaries
+@end table
 
 @item -f @var{fmt}
 Force format.
@@ -801,10 +817,10 @@ The argument passed to the preset options identifies the preset file
 to use according to the following rules.
 
 First ffmpeg searches for a file named @var{arg}.ffpreset in the
-directories @file{$HOME/.ffmpeg}, @file{/usr/local/share/ffmpeg} and
-@file{/usr/share/ffmpeg} in that order. For example, if the argument
-is @code{libx264-max}, it will search for the file
-@file{libx264-max.ffpreset}.
+directories @file{$HOME/.ffmpeg}, and in the datadir defined at
+configuration time (usually @file{PREFIX/share/ffmpeg}) in that
+order. For example, if the argument is @code{libx264-max}, it will
+search for the file @file{libx264-max.ffpreset}.
 
 If no such file is found, then ffmpeg will search for a file named
 @var{codec_name}-@var{arg}.ffpreset in the above-mentioned
@@ -830,6 +846,9 @@ The following binary operators are available: @code{+}, @code{-},
 The following unary operators are available: @code{+}, @code{-},
 @code{(...)}.
 
+The following statements are available: @code{ld}, @code{st},
+@code{while}.
+
 The following functions are available:
 @table @var
 @item sinh(x)
@@ -838,16 +857,22 @@ The following functions are available:
 @item sin(x)
 @item cos(x)
 @item tan(x)
+@item atan(x)
+@item asin(x)
+@item acos(x)
 @item exp(x)
 @item log(x)
+@item abs(x)
 @item squish(x)
 @item gauss(x)
-@item abs(x)
+@item mod(x, y)
 @item max(x, y)
 @item min(x, y)
-@item gt(x, y)
-@item lt(x, y)
 @item eq(x, y)
+@item gte(x, y)
+@item gt(x, y)
+@item lte(x, y)
+@item lt(x, y)
 @item bits2qp(bits)
 @item qp2bits(qp)
 @end table

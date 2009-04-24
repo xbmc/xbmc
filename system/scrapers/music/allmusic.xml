@@ -105,9 +105,9 @@
 			<expression noclean="1"></expression>
 		</RegExp>		
 	</GetArtistSearchResults>
-	<GetArtistDetails dest="3">
+	<GetArtistDetails dest="3" clearbuffers="no">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="5">
 				<expression noclean="1">&lt;TITLE&gt;allmusic[ (]+ ([^&gt;]*) &gt; Overview</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;born&gt;\1&lt;/born&gt;" dest="5+">
@@ -149,14 +149,17 @@
 			<RegExp input="$$9" output="&lt;instruments&gt;\1&lt;/instruments&gt;" dest="5+">
 				<expression noclean="1" repeat="yes">&lt;li&gt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/li&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="7">
 				<expression noclean="1">&lt;img src=&quot;([^&quot;]*)&quot; id=&quot;Picture&quot;</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="5+">
-				<RegExp input="$$1" output="&lt;thumb&gt;http://image.allmusic.com/00/amg/pic200/dr\1\200/\1\2\3\4/\1\2\3\4\5.jpg&lt;/thumb&gt;" dest="2+">
-					<expression noclean="1" repeat="yes">&quot;([A-Z^])([0-9^])([0-9^])([0-9^])([^&quot;]*)&quot;</expression>
-				</RegExp>
-				<expression noclean="1"></expression>
+			<RegExp input="$$1" output="&lt;thumb&gt;http://image.allmusic.com/00/amg/pic200/dr\1\200/\1\2\3\4/\1\2\3\4\5.jpg&lt;/thumb&gt;" dest="7+">
+				<expression noclean="1" repeat="yes">&quot;([A-Z^])([0-9^])([0-9^])([0-9^])([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$2" output="&lt;url function=&quot;GetThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$2" output="&lt;url function=&quot;GetFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetBiography&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
 				<expression noclean="1">sql=([^&quot;]*)&quot;&gt;Biography</expression>
@@ -176,11 +179,33 @@
 		</RegExp>
 	</GetBiography>
 	<GetDiscography dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\1&lt;/year&gt;&lt;title&gt;\2&lt;/title&gt;&lt;label&gt;\3&lt;/label&gt;&lt;/album&gt;" dest="2+">
-				<expression repeat="yes" clear="yes">([0-9]+)&lt;/td&gt;.*?&quot;&gt;([A-Za-z0-9].*?)&lt;/a&gt;.*?&quot;&gt;([A-Za-z0-9].*?)&lt;/td&gt;</expression>
+		<RegExp input="$$2$$3" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;album&gt;&lt;year&gt;\1&lt;/year&gt;&lt;title&gt;\3&lt;/title&gt;&lt;label&gt;\4&lt;/label&gt;&lt;/album&gt;" dest="2">
+				<expression repeat="yes" clear="yes" noclean="1,3,4">sorted-cell&quot;&gt;([0-9]+)&lt;/td&gt;&lt;td[^&gt;]*&gt;(&lt;a href=[^&gt;]*&gt;&lt;img [^&gt;]*/&gt;&lt;/a&gt;|[^&lt;]*)?&lt;/td&gt;&lt;td[^&gt;]*&gt;&lt;a href=[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;&lt;/td&gt;&lt;td[^&lt;]*&lt;/td&gt;&lt;td[^&gt;]*&gt;([^&lt;]+)&lt;/td&gt;</expression>
+			</RegExp>
+			<RegExp input="$$2" output="\1&amp;amp;\2" dest="3">
+				<expression noclean="1,2" repeat="yes">(.*?)&amp;(.+)</expression>
+			</RegExp>
+			<RegExp input="$$3" output="" dest="2">
+				<expression>(.+)</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDiscography>
+	<GetFanart dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;&lt;fanart url=&quot;http://www.htbackdrops.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;data/thumbnails/\2&quot;&gt;data/media/\2&lt;/thumb&gt;" dest="13">
+				<expression noclean="1" repeat="yes">mode=search(&amp;amp;sessionid=[^&quot;]*)?&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetFanart>
+	<GetThumbs dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;&lt;thumbs&gt;\1$$7&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://www.htbackdrops.com/data/thumbnails/\2&quot;&gt;http://www.htbackdrops.com/data/media/\2&lt;/thumb&gt;" dest="13">
+				<expression noclean="1" repeat="yes">mode=search(&amp;amp;sessionid=[^&quot;]*)?&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetThumbs>
 </scraper>

@@ -20,8 +20,8 @@ extern "C" {
 typedef char char_t;
 typedef struct websRec *webs_t;
 
-int	  aspTest(int eid, webs_t wp, int argc, char_t **argv);
-void  formTest(webs_t wp, char_t *path, char_t *query);
+int	  XbmcAspTest(int eid, webs_t wp, int argc, char_t **argv);
+void  XbmcFormTest(webs_t wp, char_t *path, char_t *query);
 int	  XbmcWebsAspCommand(int eid, webs_t wp, int argc, char_t **argv);
 void  XbmcWebsForm(webs_t wp, char_t *path, char_t *query);
 void  XbmcHttpCommand(webs_t wp, char_t *path, char_t *query);
@@ -62,13 +62,15 @@ public:
 
 	CWebServer();
 	virtual ~CWebServer();
-	bool						Start(const char* szLocalAddress, int port = 80, const char* web = "Q:\\web", bool wait = true);
+  bool						Start(const char* szLocalAddress, int port = 80, const char* web = "special://home/web", bool wait = true);
 	void						Stop();
 
 	DWORD						SuspendThread();
 	DWORD						ResumeThread();
 
+	void						SetUserName(const char* strUserName);
 	void						SetPassword(const char* strPassword);
+	char*           GetUserName();
 	char*           GetPassword();
 
 protected:
@@ -82,6 +84,7 @@ protected:
 	char            m_szLocalAddress[128];		/* local ip address */
 	char            m_szRootWeb[1024];	/* local directory */
 	char            m_szPassword[128];	/* password */
+	char            m_szUserName[128];	/* password */
 	int							m_port;							/* Server port */
 	bool						m_bFinished;				/* Finished flag */
 	bool						m_bStarted;				/* Started flag */

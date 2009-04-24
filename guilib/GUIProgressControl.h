@@ -1,6 +1,6 @@
 /*!
 \file GUIProgressControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIPROGRESSCONTROL_H
@@ -29,20 +29,21 @@
  *
  */
 
-#include "GUIImage.h"
+#include "GUITexture.h"
+#include "GUIControl.h"
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIProgressControl :
       public CGUIControl
 {
 public:
-  CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, 
-                      float width, float height, const CImage& backGroundTexture, 
-                      const CImage& leftTexture, const CImage& midTexture, 
-                      const CImage& rightTexture, const CImage& overlayTexture, 
+  CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
+                      float width, float height, const CTextureInfo& backGroundTexture,
+                      const CTextureInfo& leftTexture, const CTextureInfo& midTexture,
+                      const CTextureInfo& rightTexture, const CTextureInfo& overlayTexture,
                       float min, float max, bool reveal=false);
   virtual ~CGUIProgressControl(void);
   virtual CGUIProgressControl *Clone() const { return new CGUIProgressControl(*this); };
@@ -55,18 +56,19 @@ public:
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   void SetPercentage(float fPercent);
   void SetInfo(int iInfo);
   int GetInfo() const {return m_iInfoCode;};
 
   float GetPercentage() const;
+  CStdString GetDescription() const;
 protected:
-  CGUIImage m_guiBackground;
-  CGUIImage m_guiLeft;
-  CGUIImage m_guiMid;
-  CGUIImage m_guiRight;
-  CGUIImage m_guiOverlay;
+  virtual void UpdateColors();
+  CGUITexture m_guiBackground;
+  CGUITexture m_guiLeft;
+  CGUITexture m_guiMid;
+  CGUITexture m_guiRight;
+  CGUITexture m_guiOverlay;
   float m_RangeMin;
   float m_RangeMax;
   int m_iInfoCode;

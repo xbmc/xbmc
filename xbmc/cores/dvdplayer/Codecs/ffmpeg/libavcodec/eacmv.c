@@ -20,7 +20,7 @@
  */
 
 /**
- * @file eacmv.c
+ * @file libavcodec/eacmv.c
  * Electronic Arts CMV Video Decoder
  * by Peter Ross (suxen_drol at hotmail dot com)
  *
@@ -28,6 +28,7 @@
  * http://wiki.multimedia.cx/index.php?title=Electronic_Arts_CMV
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
 typedef struct CmvContext {
@@ -210,5 +211,5 @@ AVCodec eacmv_decoder = {
     cmv_decode_end,
     cmv_decode_frame,
     CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Electronic Arts CMV Video"),
+    .long_name = NULL_IF_CONFIG_SMALL("Electronic Arts CMV video"),
 };

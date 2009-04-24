@@ -63,6 +63,12 @@ void CGUIListLabel::SetFocus(bool focus)
     SetScrolling(false);
 }
 
+void CGUIListLabel::UpdateColors()
+{
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
+}
+
 void CGUIListLabel::Render()
 {
   if (!m_pushedUpdates)

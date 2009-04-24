@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "GUILabelControl.h"
 #include "GUIFontManager.h"
 #include "control.h"
@@ -55,6 +53,7 @@ namespace PYXBMC
     char *cTextColor = NULL;
     char *cDisabledColor = NULL;
     PyObject* pObjectText;
+    char bHasPath = false;
 
     self = (ControlLabel*)type->tp_alloc(type, 0);
     if (!self) return NULL;
@@ -66,7 +65,6 @@ namespace PYXBMC
     self->dwTextColor = 0xffffffff;
     self->dwDisabledColor = 0x60ffffff;
     self->dwAlign = XBFONT_LEFT;
-    self->bHasPath = false;
     self->iAngle = 0;
 
     if (!PyArg_ParseTupleAndKeywords(
@@ -83,12 +81,13 @@ namespace PYXBMC
       &cTextColor,
       &cDisabledColor,
       &self->dwAlign,
-      &self->bHasPath,
+      &bHasPath,
       &self->iAngle))
     {
         Py_DECREF( self );
         return NULL;
     }
+    self->bHasPath = (0 != bHasPath);
     if (!PyGetUnicodeString(self->strText, pObjectText, 5))
     {
       Py_DECREF( self );

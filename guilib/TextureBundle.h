@@ -39,7 +39,7 @@ class CTextureBundle
 #else
   FILE*  m_hFile;
   time_t m_TimeStamp;
-#endif  
+#endif
   std::map<CStdString, FileHeader_t> m_FileHeaders;
   std::map<CStdString, FileHeader_t>::iterator m_CurFileHeader[2];
   BYTE* m_PreLoadBuffer[2];
@@ -60,6 +60,7 @@ public:
   bool HasFile(const CStdString& Filename);
   void GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures);
   bool PreloadFile(const CStdString& Filename);
+  static CStdString Normalize(const CStdString &name);
 
 #ifndef HAS_SDL
   HRESULT LoadTexture(LPDIRECT3DDEVICE8 pDevice, const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture,
@@ -73,6 +74,6 @@ public:
 
   int LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, SDL_Surface*** ppTextures,
                SDL_Palette** ppPalette, int& nLoops, int** ppDelays);
-#endif               
+#endif
 };
 

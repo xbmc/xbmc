@@ -95,7 +95,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
         lDuration = atoi(strLength.c_str());
         iComma++;
         strInfo = strLine.Right((int)strLine.size() - iComma);
-        g_charsetConverter.stringCharsetToUtf8(strInfo);
+        g_charsetConverter.unknownToUTF8(strInfo);
       }
     }
     else if (strLine != M3U_START_MARKER && strLine.Left(strlen(M3U_ARTIST_MARKER)) != M3U_ARTIST_MARKER && strLine.Left(strlen(M3U_ALBUM_MARKER)) != M3U_ALBUM_MARKER )
@@ -104,7 +104,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 
       if (strFileName.length() > 0)
       {
-        g_charsetConverter.stringCharsetToUtf8(strFileName);
+        g_charsetConverter.unknownToUTF8(strFileName);
 
         // If no info was read from from the extended tag information, use the file name
         if (strInfo.length() == 0)
@@ -138,9 +138,9 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
 void CPlayListM3U::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = CUtil::MakeLegalFileName(strFileName);
+  CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
-  if (!file.OpenForWrite(strPlaylist,false,true))
+  if (!file.OpenForWrite(strPlaylist,true))
   {
     CLog::Log(LOGERROR, "Could not save M3U playlist: [%s]", strPlaylist.c_str());
     return ;

@@ -138,14 +138,14 @@ bool CPlayListPLS::Load(const CStdString &strFile)
         if (CUtil::IsRemote(m_strBasePath) && g_advancedSettings.m_pathSubstitutions.size() > 0)
           strValue = CUtil::SubstitutePath(strValue);
         CUtil::GetQualifiedFilename(m_strBasePath, strValue);
-        g_charsetConverter.stringCharsetToUtf8(strValue);
+        g_charsetConverter.unknownToUTF8(strValue);
         m_vecItems[idx - 1]->m_strPath = strValue;
       }
       else if (strLeft.Left(5) == "title")
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 5);
         Resize(idx);
-        g_charsetConverter.stringCharsetToUtf8(strValue);
+        g_charsetConverter.unknownToUTF8(strValue);
         m_vecItems[idx - 1]->SetLabel(strValue);
       }
       else if (strLeft.Left(6) == "length")
@@ -157,7 +157,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       else if (strLeft == "playlistname")
       {
         m_strPlayListName = strValue;
-        g_charsetConverter.stringCharsetToUtf8(m_strPlayListName);
+        g_charsetConverter.unknownToUTF8(m_strPlayListName);
       }
     }
   }
@@ -183,9 +183,9 @@ bool CPlayListPLS::Load(const CStdString &strFile)
 void CPlayListPLS::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = CUtil::MakeLegalFileName(strFileName);
+  CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
-  if (!file.OpenForWrite(strPlaylist, true, true))
+  if (!file.OpenForWrite(strPlaylist, true))
   {
     CLog::Log(LOGERROR, "Could not save PLS playlist: [%s]", strPlaylist.c_str());
     return;

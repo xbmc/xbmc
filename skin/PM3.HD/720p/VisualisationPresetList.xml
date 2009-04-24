@@ -60,8 +60,9 @@
 			<texture>separator.png</texture>
 		</control>
 		<control type="label" id="4">
+			<description>No Presets at all label</description>
 			<posx>40</posx>
-			<posy>100</posy>
+			<posy>200</posy>
 			<width>720</width>
 			<height>30</height>
 			<label>13389</label>
@@ -74,11 +75,11 @@
 			<posy>85</posy>
 			<width>710</width>
 			<height>440</height>
-			<onleft>2</onleft>
-			<onright>2</onright>
+			<onleft>61</onleft>
+			<onright>61</onright>
 			<onup>2</onup>
 			<ondown>2</ondown>
-			<pagecontrol>-</pagecontrol>
+			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<itemlayout height="40">
 				<control type="image">
@@ -140,6 +141,20 @@
 			<scroll>true</scroll>
 			<textcolor>white</textcolor>
 			<label>($INFO[Container(2).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(2).CurrentPage]/$INFO[Container(2).NumPages])</label>
+			<animation effect="slide" time="0" end="-75,0" condition="Control.IsVisible(61)">Conditional</animation>
+		</control>
+		<control type="spincontrol" id="61">
+			<description>Next page button</description>
+			<posx>690</posx>
+			<posy>538</posy>
+			<subtype>page</subtype>
+			<font>font12b</font>
+			<onleft>2</onleft>
+			<onright>2</onright>
+			<ondown>2</ondown>
+			<onup>2</onup>
+			<textcolor>-</textcolor>
+			<showonepage>false</showonepage>
 		</control>
 	</controls>
 </window>

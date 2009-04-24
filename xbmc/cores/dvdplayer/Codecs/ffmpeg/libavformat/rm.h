@@ -1,6 +1,6 @@
 /*
  * "Real" compatible muxer and demuxer.
- * Copyright (c) 2000, 2001 Fabrice Bellard.
+ * Copyright (c) 2000, 2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -23,6 +23,8 @@
 #define AVFORMAT_RM_H
 
 #include "avformat.h"
+
+extern const char *ff_rm_metadata[4];
 
 typedef struct RMStream RMStream;
 

@@ -12,6 +12,7 @@
 #include "stdafx.h"
 #include "WebServer.h"
 #include "XBMCweb.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #ifdef SPYCE_SUPPORT
 #include "SpyceModule.h"
@@ -72,6 +73,10 @@ CWebServer::CWebServer()
     m_pXbmcHttp = new CXbmcHttp();
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
+  int end = sizeof(m_szUserName);
+  strncpy(m_szUserName,"xbmc",end);
+  if (end)
+    m_szUserName[end-1] = '\0';
 
   m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
@@ -120,10 +125,15 @@ bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web, 
   m_bStarted = false;
   ResetEvent(m_hEvent);
 
-  strcpy(m_szLocalAddress, szLocalAddress);
-  strcpy(m_szRootWeb, web);
+  int end = sizeof(m_szLocalAddress);
+  strncpy(m_szLocalAddress, szLocalAddress, end);
+  if (end)
+    m_szLocalAddress[end - 1] = '\0';
+  end = sizeof(m_szRootWeb);
+  strncpy(m_szRootWeb, _P(web), end);
+  if (end)
+    m_szRootWeb[end - 1] = '\0';
   m_port = port;
-
   Create(false, THREAD_MINSTACKSIZE);
   if (m_ThreadHandle == NULL) return false;  
 
@@ -236,8 +246,8 @@ int CWebServer::initWebs()
 	 *	Now define two test procedures. Replace these with your application
 	 *	relevant ASP script procedures and form functions.
 	 */
-	websAspDefine(T((char*)"aspTest"), aspTest);
-	websFormDefine(T((char*)"formTest"), formTest);
+	websAspDefine(T((char*)"aspTest"), XbmcAspTest);
+	websFormDefine(T((char*)"formTest"), XbmcFormTest);
 	websFormDefine(T((char*)"xbmcForm"), XbmcWebsForm);
 	websFormDefine(T((char*)"xbmcHttp"), XbmcHttpCommand);
 
@@ -327,7 +337,7 @@ void CWebServer::Process()
 }
 
 /*
- * Sets password for user "xbox"
+ * Sets password for user 
  * this is done in group "sys_xbox".
  * Note that when setting the password this function will delete all database info!!
  */
@@ -342,24 +352,49 @@ void CWebServer::SetPassword(const char* strPassword)
   dbZero(did);
 
   // save password in member var for later usage by GetPassword()
-  if (strPassword) strcpy(m_szPassword, strPassword);
-  
+  if (strPassword)
+  {
+    int end = sizeof(m_szPassword);
+    strncpy(m_szPassword, strPassword, end);
+    if (end)
+      m_szPassword[end - 1] = '\0';
+  }
+
   // if password !NULL and greater then 0, enable user access
   if (strPassword && strlen(strPassword) > 0)
   {  
     // create group
     umAddGroup((char*)WEBSERVER_UM_GROUP, PRIV_READ | PRIV_WRITE | PRIV_ADMIN, AM_BASIC, false, false);
-    
+
     // greate user
-    umAddUser((char*)"xbox", (char_t*)strPassword, (char*)WEBSERVER_UM_GROUP, false, false);
-    
+    umAddUser(m_szUserName, m_szPassword, (char*)WEBSERVER_UM_GROUP, false, false);
+
     // create access limit
     umAddAccessLimit((char*)"/", AM_BASIC, 0, (char*)WEBSERVER_UM_GROUP);
   }
-
+  
   // save new information in database
   umCommit((char*)"umconfig.txt");
   umClose();
+}
+
+void CWebServer::SetUserName(const char* strUserName)
+{
+  // wait until the webserver is ready
+  if( WaitForSingleObject(m_hEvent, 5000) != WAIT_OBJECT_0 ) 
+    return;
+
+  // if username !NULL and greater then 0, enable user access
+  if (strUserName && strlen(strUserName) > 0)
+  {  
+    // save username in member var for later usage by GetPassword()
+    int end = sizeof(m_szUserName);
+    strncpy(m_szUserName, strUserName, end);
+    if (end)
+      m_szUserName[end - 1] = '\0';
+    if (m_szPassword && m_szPassword[0] != '\0')
+      SetPassword(m_szPassword);
+  }
 }
 
 char* CWebServer::GetPassword()
@@ -371,11 +406,21 @@ char* CWebServer::GetPassword()
   char* pPass = (char*)"";
   
   umOpen();
-  if (umUserExists((char*)"xbox")) pPass = umGetUserPassword((char*)"xbox");
+  if (umUserExists(m_szUserName)) pPass = umGetUserPassword(m_szUserName);
   
   umClose();
   
   return pPass;
+}
+
+char* CWebServer::GetUserName()
+{
+  // wait until the webserver is ready
+  if( WaitForSingleObject(m_hEvent, 5000) != WAIT_OBJECT_0 ||
+      !m_szUserName || m_szUserName[0] == '\0') 
+    return (char*)"xbmc";
+
+  return m_szUserName;
 }
 
 /******************************************************************************/
@@ -400,8 +445,11 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
                     };
 
 	// check if one of the above files exist, if one does then redirect to it.
-	strcpy(dir, websGetDefaultDir());
-	strcat(dir, path);
+  int size = sizeof(dir);
+	strncpy(dir, websGetDefaultDir(), size);
+  if (size)
+    dir[size-1] = '\0';
+	strncat(dir, path, size - strlen(dir));
 	for(u_int pos = 0; pos < strlen(dir); pos++)
 		if (dir[pos] == '/') dir[pos] = '\\';
 	
@@ -410,17 +458,23 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 	{
     int i = 0;
 		char buf[1024];
+    size = sizeof(buf);
 		while (files[i][0])
 		{
-			strcpy(buf, dir);
-			if (buf[strlen(buf)-1] != '\\') strcat(buf, "\\");
-			strcat(buf, files[i]);
+			strncpy(buf, dir, size);
+      if (size)
+        buf[size-1] = '\0';
+			if (buf[strlen(buf)-1] != '\\')
+        strncat(buf, "\\", size - strlen(buf));
+			strncat(buf, files[i], size - strlen(buf));
 
 			if (!access(buf, 0))
 			{
-				strcpy(buf, path);
-				if (path[strlen(path)-1] != '/') strcat(buf, "/");
-				strcat(buf, files[i]);
+				strncpy(buf, path, size);
+        if (size)
+          buf[size-1] = '\0';
+				if (path[strlen(path)-1] != '/') strncat(buf, "/", size - strlen(buf));
+				strncat(buf, files[i], size - strlen(buf));
 				websRedirect(wp, buf);
 				return 1;
 			}
@@ -437,7 +491,7 @@ static int websHomePageHandler(webs_t wp, char_t *urlPrefix, char_t *webDir,
 		WIN32_FIND_DATA FindFileData;
 		HANDLE hFind;
 		vector<string> vecFiles;
-		strcat(dir, "\\*");
+		strncat(dir, "\\*", sizeof(dir) - strlen(dir));
 		hFind=FindFirstFile(dir, &FindFileData);
 	
 		do
@@ -496,7 +550,7 @@ void defaultTraceHandler(int level, char_t *buf)
  * embedded in an ASP page. See web/asp.asp for usage. Set browser to 
  * "localhost/asp.asp" to test.
  */
-int aspTest(int eid, webs_t wp, int argc, char_t **argv)
+int XbmcAspTest(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t	*name, *address;
 
@@ -510,7 +564,7 @@ int aspTest(int eid, webs_t wp, int argc, char_t **argv)
 /* Test form for posted data (in-memory CGI). This will be called when the
  * form in web/forms.asp is invoked. Set browser to "localhost/forms.asp" to test.
  */
-void formTest(webs_t wp, char_t *path, char_t *query)
+void XbmcFormTest(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*name, *address;
 

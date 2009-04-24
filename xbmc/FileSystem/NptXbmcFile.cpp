@@ -306,9 +306,9 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
 
         // compute mode
         if (mode & NPT_FILE_OPEN_MODE_WRITE) {
-            result = file->OpenForWrite(*url, true, (mode & NPT_FILE_OPEN_MODE_TRUNCATE)?true:false);
+            result = file->OpenForWrite(*url, (mode & NPT_FILE_OPEN_MODE_TRUNCATE)?true:false);
         } else {
-            result = file->Open(*url, true);
+            result = file->Open(*url);
         }
 
         delete url;
@@ -425,4 +425,5 @@ NPT_File::operator=(const NPT_File& file)
     }
     return *this;
 }
+
 

@@ -21,10 +21,10 @@
 
 #include "stdafx.h"
 #include "Fanart.h"
-#include "HTTP.h"
 #include "tinyXML/tinyxml.h"
 #include "Util.h"
 #include "Picture.h"
+#include "FileSystem/FileCurl.h"
 
 #ifdef RESAMPLE_CACHED_IMAGES
 #include "FileSystem/File.h"
@@ -98,7 +98,10 @@ const CStdString CFanart::GetImageURL() const
     return "";
 
   CStdString result;
-  result.Format("%s%s", m_url.c_str(), m_fanart[0].strImage.c_str());
+  if (m_url.IsEmpty())
+    result = m_fanart[0].strImage;
+  else
+    result.Format("%s%s", m_url.c_str(), m_fanart[0].strImage.c_str());
   return result;
 }
 
@@ -132,15 +135,21 @@ bool CFanart::DownloadThumb(unsigned int index, const CStdString &strDestination
   CStdString thumbURL;
   if (!m_fanart[index].strPreview.IsEmpty())
   {
-    thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strPreview);
+    if (m_url.IsEmpty())
+      thumbURL = m_fanart[index].strPreview;
+    else
+      thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strPreview);
 
-    CHTTP http;
+    XFILE::CFileCurl http;
     if (http.Download(thumbURL, strDestination))
       return true;
   }
 
   // try downloading the image instead
-  thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strImage);
+  if (m_url.IsEmpty())
+    thumbURL = m_fanart[index].strImage;
+  else
+    thumbURL = CUtil::AddFileToFolder(m_url, m_fanart[index].strImage);
   return DownloadImage(thumbURL, strDestination);
 }
 
@@ -148,9 +157,9 @@ bool CFanart::DownloadImage(const CStdString &url, const CStdString &destination
 {
   // Ideally we'd just call CPicture::CacheImage() directly, but for some
   // reason curl doesn't seem to like downloading these for us
-  CHTTP http;
+  XFILE::CFileCurl http;
 #ifdef RESAMPLE_CACHED_IMAGES
-  CStdString tempFile = _P("Z:\\fanart_download.jpg");
+  CStdString tempFile = "special://temp/fanart_download.jpg";
   if (http.Download(url, tempFile))
   { 
     CPicture pic;

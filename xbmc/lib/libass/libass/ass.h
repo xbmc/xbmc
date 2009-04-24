@@ -1,22 +1,24 @@
 // -*- c-basic-offset: 8; indent-tabs-mode: t -*-
 // vim:ts=8:sw=8:noet:ai:
 /*
-  Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
-*/
+ * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
+ *
+ * This file is part of libass.
+ *
+ * libass is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * libass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with libass; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 #ifndef LIBASS_ASS_H
 #define LIBASS_ASS_H
@@ -158,6 +160,14 @@ EXPORT void ass_free_style(ass_track_t* track, int sid);
 EXPORT void ass_free_event(ass_track_t* track, int eid);
 
 /**
+ * \brief Parse a chunk of subtitle stream data.
+ * \param track track
+ * \param data string to parse
+ * \param size length of data
+ */
+EXPORT void ass_process_data(ass_track_t* track, char* data, int size);
+
+/**
  * \brief Parse Codec Private section of subtitle stream
  * \param track target track
  * \param data string to parse
@@ -175,7 +185,7 @@ EXPORT void ass_process_codec_private(ass_track_t* track, char *data, int size);
 */
 EXPORT void ass_process_chunk(ass_track_t* track, char *data, int size, long long timecode, long long duration);
 
-char* read_file_recode(char* fname, char* codepage, int* size);
+char* read_file_recode(char* fname, char* codepage, size_t* size);
 
 /**
  * \brief Read subtitles from file.

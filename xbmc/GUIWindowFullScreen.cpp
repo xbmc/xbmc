@@ -405,9 +405,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       // switch resolution
       CSingleLock lock (g_graphicsContext);
       g_graphicsContext.SetFullScreenVideo(true);
-#ifdef HAS_VIDEO_PLAYBACK
-      RESOLUTION res = g_renderManager.GetResolution();
-      g_graphicsContext.SetVideoResolution(res, false, false);
+#if defined(HAS_VIDEO_PLAYBACK) && !defined(__APPLE)
+  	  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+      {
+      	RESOLUTION res = g_renderManager.GetResolution();
+      	g_graphicsContext.SetVideoResolution(res, false, false);
+      }
 #endif
       lock.Leave();
 
@@ -424,14 +427,14 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       {
         CSingleLock lock (m_fontLock);
 
-        CStdString fontPath = _P("Q:\\media\\Fonts\\");
+        CStdString fontPath = "special://xbmc/media/Fonts/";
         fontPath += g_guiSettings.GetString("subtitles.font");
 
         // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.
         // it doesn't preserve aspect, however, so make sure we choose aspect as 1/scalingpixelratio
         g_graphicsContext.SetScalingResolution(PAL_4x3, 0, 0, true);
         float aspect = 1.0f / g_graphicsContext.GetScalingPixelRatio();
-        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", PTH_IC(fontPath), color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, aspect, PAL_4x3);
+        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, aspect, PAL_4x3);
         if (!subFont)
           CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
         else
@@ -456,7 +459,12 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CSingleLock lock (g_graphicsContext);
       CUtil::RestoreBrightnessContrastGamma();
       g_graphicsContext.SetFullScreenVideo(false);
-      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+#if defined(HAS_VIDEO_PLAYBACK) && !defined(__APPLE)
+  	  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
+  	  {
+        g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+      }
+#endif
       lock.Leave();
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -642,9 +650,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
     int iResolution = g_graphicsContext.GetVideoResolution();
     {
       CStdString strStatus;
-      strStatus.Format("%s %ix%i@%.2fHz %s",  
-        g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth, 
-        g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].fRefreshRate, 
+      strStatus.Format("%s %ix%i@%.2fHz %s",
+        g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
+        g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,
         g_settings.m_ResInfo[iResolution].strMode);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);
@@ -738,7 +746,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
-      m_subsLayout->Update(subtitleText, maxWidth * 0.9f);
+      m_subsLayout->Update(subtitleText, maxWidth * 0.9f, true); // true to force LTR reading order (most Hebrew subs are this format)
 
       float textWidth, textHeight;
       m_subsLayout->GetTextExtent(textWidth, textHeight);

@@ -30,7 +30,7 @@
 using namespace std;
 
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
-                                 float width, float height, const CImage &textureFocus, const CImage &textureNoFocus,
+                                 float width, float height, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus,
                                  const CLabelInfo& labelInfo, const std::string &text)
     : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
@@ -104,14 +104,16 @@ bool CGUIEditControl::OnAction(const CAction &action)
   else if (action.wID >= KEY_ASCII)
   {
     // input from the keyboard
-    switch (action.unicode) 
+    switch (action.unicode)
     {
     case '\t':
+      break;
     case 10:
     case 13:
       {
-        // enter - ignore
-        break;
+        // enter - send click message, but otherwise ignore
+        SEND_CLICK_MESSAGE(GetID(), GetParentID(), 1);
+        return true;
       }
     case 27:
       { // escape - fallthrough to default action
@@ -149,7 +151,11 @@ bool CGUIEditControl::OnAction(const CAction &action)
 
 void CGUIEditControl::OnClick()
 {
-  // we received a click - it's not from the keyboard, so pop up the virtual keyboard
+  // we received a click - it's not from the keyboard, so pop up the virtual keyboard, unless
+  // that is where we reside!
+  if (GetParentID() == WINDOW_DIALOG_KEYBOARD)
+    return;
+
   CStdString utf8;
   g_charsetConverter.wToUTF8(m_text2, utf8);
   bool textChanged = false;
@@ -231,7 +237,7 @@ void CGUIEditControl::RecalcLabelPosition()
   { // we render taking up the full width, so make sure our cursor position is
     // within the render window
     if (m_textOffset + afterCursorWidth > maxTextWidth)
-    { 
+    {
       // move the position to the left (outside of the viewport)
       m_textOffset = maxTextWidth - afterCursorWidth;
     }

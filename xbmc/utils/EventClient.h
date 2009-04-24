@@ -65,6 +65,7 @@ namespace EVENTCLIENT
       m_bActive    = false;
       m_bAxis      = false;
       m_iControllerNumber = 0;
+      m_iNextRepeat = 0;
     }
 
     CEventButtonState(unsigned short iKeyCode,

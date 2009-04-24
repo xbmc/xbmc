@@ -22,6 +22,7 @@
 #include "include.h"
 #include "GUIBaseContainer.h"
 #include "GUIControlFactory.h"
+#include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
@@ -82,7 +83,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       }
       if (item != m_lastItem && HasFocus())
       {
-        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);      
+        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
         unsigned int subItem = 1;
         if (m_lastItem && m_lastItem->GetFocusedLayout())
           subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
@@ -125,7 +126,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_MOVE_UP:
     {
       if (!HasFocus()) return false;
-      if (action.holdTime > HOLD_TIME_START && 
+      if (action.holdTime > HOLD_TIME_START &&
         ((m_orientation == VERTICAL && (action.wID == ACTION_MOVE_UP || action.wID == ACTION_MOVE_DOWN)) ||
          (m_orientation == HORIZONTAL && (action.wID == ACTION_MOVE_LEFT || action.wID == ACTION_MOVE_RIGHT))))
       { // action is held down - repeat a number of times
@@ -185,7 +186,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
 
   default:
     if (action.wID)
-    { 
+    {
       return OnClick(action.wID);
     }
   }
@@ -214,21 +215,13 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
         CGUIListItemPtr item = message.GetItem();
         m_items.push_back(item);
         UpdateScrollByLetter();
-        if (m_pageControl)
-        {
-          CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-          SendWindowMessage(msg);
-        }
+        SetPageControlRange();
         return true;
       }
       else if (message.GetMessage() == GUI_MSG_LABEL_RESET)
       {
         Reset();
-        if (m_pageControl)
-        {
-          CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
-          SendWindowMessage(msg);
-        }
+        SetPageControlRange();
         return true;
       }
     }
@@ -639,6 +632,11 @@ void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
   }
   // and recalculate the layout
   CalculateLayout();
+  SetPageControlRange();
+}
+
+void CGUIBaseContainer::SetPageControlRange()
+{
   if (m_pageControl)
   {
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetRows());
@@ -711,9 +709,13 @@ void CGUIBaseContainer::UpdateScrollByLetter()
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CGUIListItemPtr item = m_items[i];
-    if (currentMatch != item->GetSortLabel().Left(1))
+    // The letter offset jumping is only for ASCII characters at present, and
+    // our checks are all done in uppercase
+    CStdString nextLetter = item->GetSortLabel().Left(1);
+    nextLetter.ToUpper();
+    if (currentMatch != nextLetter)
     {
-      currentMatch = item->GetSortLabel().Left(1);
+      currentMatch = nextLetter;
       m_letterOffsets.push_back(make_pair((int)i, currentMatch));
     }
   }
@@ -809,14 +811,14 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
 
   g_SkinInfo.ResolveIncludes(root);
 
-  m_staticContent = true;
+  vector<CGUIListItemPtr> items;
   TiXmlElement *item = root->FirstChildElement("item");
   while (item)
   {
     // format:
-    // <item label="Cool Video" label2="" thumb="q:\userdata\thumbnails\video\04385918.tbn">PlayMedia(c:\videos\cool_video.avi)</item>
-    // <item label="My Album" label2="" thumb="q:\userdata\thumbnails\music\0\04385918.tbn">ActivateWindow(MyMusic,c:\music\my album)</item>
-    // <item label="Apple Movie Trailers" label2="Bob" thumb="q:\userdata\thumbnails\programs\04385918.tbn">RunScript(q:\scripts\apple movie trailers\default.py)</item>
+    // <item label="Cool Video" label2="" thumb="mythumb.png">PlayMedia(c:\videos\cool_video.avi)</item>
+    // <item label="My Album" label2="" thumb="whatever.jpg">ActivateWindow(MyMusic,c:\music\my album)</item>
+    // <item label="Apple Movie Trailers" label2="Bob" thumb="foo.tbn">RunScript(special://xbmc/scripts/apple movie trailers/default.py)</item>
 
     // OR the more verbose, but includes-friendly:
     // <item>
@@ -870,13 +872,19 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         if (id) newItem->m_iprogramCount = atoi(id);
         newItem->m_idepth = 0;  // no visibility condition
       }
-      m_staticItems.push_back(newItem);
+      items.push_back(newItem);
     }
     item = item->NextSiblingElement("item");
   }
-  // and make sure m_items is setup initially as well, so that initial item selection works as expected
+  SetStaticContent(items);
+}
+
+void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
+{
+  m_staticContent = true;
+  m_staticItems.clear();
+  m_staticItems.assign(items.begin(), items.end());
   UpdateVisibility();
-  return;
 }
 
 void CGUIBaseContainer::SetType(VIEW_TYPE type, const CStdString &label)
@@ -1029,5 +1037,3 @@ int CGUIBaseContainer::GetCurrentPage() const
     return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
   return m_offset / m_itemsPerPage + 1;
 }
-
-

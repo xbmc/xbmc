@@ -5,7 +5,7 @@
 //  shared_ptr.hpp
 //
 //  (C) Copyright Greg Colvin and Beman Dawes 1998, 1999.
-//  Copyright (c) 2001-2007 Peter Dimov
+//  Copyright (c) 2001-2008 Peter Dimov
 //
 //  Distributed under the Boost Software License, Version 1.0. (See
 //  accompanying file LICENSE_1_0.txt or copy at
@@ -27,11 +27,24 @@
 #include <boost/throw_exception.hpp>
 #include <boost/detail/shared_count.hpp>
 #include <boost/detail/workaround.hpp>
+#include <boost/detail/sp_convertible.hpp>
+
+#if !defined(BOOST_SP_NO_ATOMIC_ACCESS)
+#include <boost/detail/spinlock_pool.hpp>
+#include <boost/memory_order.hpp>
+#endif
 
 #include <algorithm>            // for std::swap
 #include <functional>           // for std::less
 #include <typeinfo>             // for std::bad_cast
+
+#if !defined(BOOST_NO_IOSTREAM)
+#if !defined(BOOST_NO_IOSFWD)
 #include <iosfwd>               // for std::basic_ostream
+#else
+#include <ostream>
+#endif
+#endif
 
 #ifdef BOOST_MSVC  // moved here to work around VC++ compiler crash
 # pragma warning(push)
@@ -208,7 +221,25 @@ public:
     }
 
     template<class Y>
-    shared_ptr(shared_ptr<Y> const & r): px(r.px), pn(r.pn) // never throws
+    shared_ptr( weak_ptr<Y> const & r, boost::detail::sp_nothrow_tag ): px( 0 ), pn( r.pn, boost::detail::sp_nothrow_tag() ) // never throws
+    {
+        if( !pn.empty() )
+        {
+            px = r.px;
+        }
+    }
+
+    template<class Y>
+#if !defined( BOOST_SP_NO_SP_CONVERTIBLE )
+
+    shared_ptr( shared_ptr<Y> const & r, typename detail::sp_enable_if_convertible<Y,T>::type = detail::sp_empty() )
+
+#else
+
+    shared_ptr( shared_ptr<Y> const & r )
+
+#endif
+    : px( r.px ), pn( r.pn ) // never throws
     {
     }
 
@@ -317,7 +348,16 @@ public:
     }
 
     template<class Y>
-    shared_ptr( shared_ptr<Y> && r ): px( r.px ), pn() // never throws
+#if !defined( BOOST_SP_NO_SP_CONVERTIBLE )
+
+    shared_ptr( shared_ptr<Y> && r, typename detail::sp_enable_if_convertible<Y,T>::type = detail::sp_empty() )
+
+#else
+
+    shared_ptr( shared_ptr<Y> && r )
+
+#endif
+    : px( r.px ), pn() // never throws
     {
         pn.swap( r.pn );
         r.px = 0;
@@ -375,7 +415,7 @@ public:
         BOOST_ASSERT(px != 0);
         return px;
     }
-    
+
     T * get() const // never throws
     {
         return px;
@@ -409,13 +449,13 @@ public:
     ( defined(__SUNPRO_CC) && BOOST_WORKAROUND(__SUNPRO_CC, <= 0x590) )
 
     typedef T * (this_type::*unspecified_bool_type)() const;
-    
+
     operator unspecified_bool_type() const // never throws
     {
         return px == 0? 0: &this_type::get;
     }
 
-#else 
+#else
 
     typedef T * this_type::*unspecified_bool_type;
 
@@ -457,6 +497,11 @@ public:
     void * _internal_get_deleter( detail::sp_typeinfo const & ti ) const
     {
         return pn.get_deleter( ti );
+    }
+
+    bool _internal_equiv( shared_ptr const & r ) const
+    {
+        return px == r.px && pn == r.pn;
     }
 
 // Tasteless as this may seem, making all members public allows member templates
@@ -555,7 +600,9 @@ template<class T> inline T * get_pointer(shared_ptr<T> const & p)
 
 // operator<<
 
-#if defined(__GNUC__) &&  (__GNUC__ < 3)
+#if !defined(BOOST_NO_IOSTREAM)
+
+#if defined(BOOST_NO_TEMPLATED_IOSTREAMS) || ( defined(__GNUC__) &&  (__GNUC__ < 3) )
 
 template<class Y> std::ostream & operator<< (std::ostream & os, shared_ptr<Y> const & p)
 {
@@ -574,7 +621,7 @@ using std::basic_ostream;
 template<class E, class T, class Y> basic_ostream<E, T> & operator<< (basic_ostream<E, T> & os, shared_ptr<Y> const & p)
 # else
 template<class E, class T, class Y> std::basic_ostream<E, T> & operator<< (std::basic_ostream<E, T> & os, shared_ptr<Y> const & p)
-# endif 
+# endif
 {
     os << p.get();
     return os;
@@ -583,6 +630,8 @@ template<class E, class T, class Y> std::basic_ostream<E, T> & operator<< (std::
 #endif // _STLP_NO_IOSTREAMS
 
 #endif // __GNUC__ < 3
+
+#endif // !defined(BOOST_NO_IOSTREAM)
 
 // get_deleter
 
@@ -608,11 +657,90 @@ template<class D, class T> D * get_deleter(shared_ptr<T> const & p)
 
 #endif
 
+// atomic access
+
+#if !defined(BOOST_SP_NO_ATOMIC_ACCESS)
+
+template<class T> inline bool atomic_is_lock_free( shared_ptr<T> const * /*p*/ )
+{
+    return false;
+}
+
+template<class T> shared_ptr<T> atomic_load( shared_ptr<T> const * p )
+{
+    boost::detail::spinlock_pool<2>::scoped_lock lock( p );
+    return *p;
+}
+
+template<class T> inline shared_ptr<T> atomic_load_explicit( shared_ptr<T> const * p, memory_order /*mo*/ )
+{
+    return atomic_load( p );
+}
+
+template<class T> void atomic_store( shared_ptr<T> * p, shared_ptr<T> r )
+{
+    boost::detail::spinlock_pool<2>::scoped_lock lock( p );
+    p->swap( r );
+}
+
+template<class T> inline void atomic_store_explicit( shared_ptr<T> * p, shared_ptr<T> r, memory_order /*mo*/ )
+{
+    atomic_store( p, r ); // std::move( r )
+}
+
+template<class T> shared_ptr<T> atomic_exchange( shared_ptr<T> * p, shared_ptr<T> r )
+{
+    boost::detail::spinlock & sp = boost::detail::spinlock_pool<2>::spinlock_for( p );
+
+    sp.lock();
+    p->swap( r );
+    sp.unlock();
+
+    return r; // return std::move( r )
+}
+
+template<class T> shared_ptr<T> atomic_exchange_explicit( shared_ptr<T> * p, shared_ptr<T> r, memory_order /*mo*/ )
+{
+    return atomic_exchange( p, r ); // std::move( r )
+}
+
+template<class T> bool atomic_compare_exchange( shared_ptr<T> * p, shared_ptr<T> * v, shared_ptr<T> w )
+{
+    boost::detail::spinlock & sp = boost::detail::spinlock_pool<2>::spinlock_for( p );
+
+    sp.lock();
+
+    if( p->_internal_equiv( *v ) )
+    {
+        p->swap( w );
+
+        sp.unlock();
+
+        return true;
+    }
+    else
+    {
+        shared_ptr<T> tmp( *p );
+
+        sp.unlock();
+
+        tmp.swap( *v );
+        return false;
+    }
+}
+
+template<class T> inline bool atomic_compare_exchange_explicit( shared_ptr<T> * p, shared_ptr<T> * v, shared_ptr<T> w, memory_order /*success*/, memory_order /*failure*/ )
+{
+    return atomic_compare_exchange( p, v, w ); // std::move( w )
+}
+
+#endif
+
 } // namespace boost
 
 #ifdef BOOST_MSVC
 # pragma warning(pop)
-#endif    
+#endif
 
 #endif  // #if defined(BOOST_NO_MEMBER_TEMPLATES) && !defined(BOOST_MSVC6_MEMBER_TEMPLATES)
 

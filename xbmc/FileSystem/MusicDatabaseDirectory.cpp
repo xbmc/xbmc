@@ -27,6 +27,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Crc32.h"
+#include "TextureManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -48,7 +49,19 @@ bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
   if (!pNode.get())
     return false;
 
-  return pNode->GetChilds(items);
+  bool bResult = pNode->GetChilds(items);
+  for (int i=0;i<items.Size();++i)
+  {
+    CFileItemPtr item = items[i];
+    if (item->m_bIsFolder && !item->HasThumbnail())
+    {
+      CStdString strImage = GetIcon(item->m_strPath);
+      if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))
+        item->SetThumbnailImage(strImage);
+    }
+  }
+
+  return bResult;
 }
 
 NODE_TYPE CMusicDatabaseDirectory::GetDirectoryChildType(const CStdString& strPath)
@@ -95,22 +108,21 @@ bool CMusicDatabaseDirectory::IsArtistDir(const CStdString& strDirectory)
 bool CMusicDatabaseDirectory::HasAlbumInfo(const CStdString& strDirectory)
 {
   NODE_TYPE node=GetDirectoryType(strDirectory);
-  return (node!=NODE_TYPE_OVERVIEW && node!=NODE_TYPE_TOP100 && 
+  return (node!=NODE_TYPE_OVERVIEW && node!=NODE_TYPE_TOP100 &&
           node!=NODE_TYPE_GENRE && node!=NODE_TYPE_ARTIST && node!=NODE_TYPE_YEAR);
 }
 
 void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory)
 {
   CFileItem directory(strDirectory, true);
-  if (CUtil::HasSlashAtEnd(directory.m_strPath))
-    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
+  CUtil::RemoveSlashAtEnd(directory.m_strPath);
 
   Crc32 crc;
   crc.ComputeFromLowerCase(directory.m_strPath);
 
   CStdString strFileName;
-  strFileName.Format("Z:\\%08x.fi", (unsigned __int32) crc);
-  CFile::Delete(_P(strFileName));
+  strFileName.Format("special://temp/%08x.fi", (unsigned __int32) crc);
+  CFile::Delete(strFileName);
 }
 
 bool CMusicDatabaseDirectory::IsAllItem(const CStdString& strDirectory)
@@ -219,7 +231,7 @@ bool CMusicDatabaseDirectory::ContainsSongs(const CStdString &path)
   MUSICDATABASEDIRECTORY::NODE_TYPE type = GetDirectoryChildType(path);
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS) return true;
-  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS) return true; 
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_COMPILATIONS_SONGS) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_TOP100_SONGS) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG_TOP100) return true;
@@ -244,3 +256,41 @@ bool CMusicDatabaseDirectory::CanCache(const CStdString& strPath)
     return false;
   return pNode->CanCache();
 }
+
+CStdString CMusicDatabaseDirectory::GetIcon(const CStdString &strDirectory)
+{
+  switch (GetDirectoryChildType(strDirectory))
+  {
+  case NODE_TYPE_ARTIST:
+      return "DefaultMusicArtists.png";
+  case NODE_TYPE_GENRE:
+      return "DefaultMusicGenres.png";
+  case NODE_TYPE_TOP100:
+      return "DefaultMusicTop100.png";
+  case NODE_TYPE_ALBUM:
+    return "DefaultMusicAlbums.png";
+  case NODE_TYPE_ALBUM_RECENTLY_ADDED:
+  case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
+    return "DefaultMusicRecentlyAdded.png";
+  case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
+  case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
+    return "DefaultMusicRecentlyPlayed.png";
+  case NODE_TYPE_SONG: // Director
+    return "DefaultMusicSongs.png";
+  case NODE_TYPE_ALBUM_TOP100:
+  case NODE_TYPE_ALBUM_TOP100_SONGS:
+    return "DefaultMusicTop100Albums.png";
+  case NODE_TYPE_SONG_TOP100:
+    return "DefaultMusicTop100Songs.png";
+  case NODE_TYPE_YEAR:
+    return "DefaultMusicYears.png";
+  case NODE_TYPE_ALBUM_COMPILATIONS:
+    return "DefaultMusicCompilations.png";
+  default:
+    CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %s", __FUNCTION__, strDirectory.c_str());
+    break;
+  }
+
+  return "";
+}
+

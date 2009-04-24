@@ -15,37 +15,37 @@ extern "C" void   __crt0_load_environment_file (char *progname) { }
 #if defined(_XBOX) && defined(__XBOX__TEST__)
 void main(int argc, char *argv[])
 {
-	ArchiveList_struct *list, *p;
-	urarlib_list(argv[1], &list, NULL);
+  ArchiveList_struct *list, *p;
+  urarlib_list(argv[1], &list, NULL);
 
-	printf("                   Name     Size  Packed   OS  FileTime    ");
-	printf("CRC-32 Attr Ver Meth\n");
-	printf("     ------------------------------------------------------");
-	printf("--------------------\n");
+  printf("                   Name     Size  Packed   OS  FileTime    ");
+  printf("CRC-32 Attr Ver Meth\n");
+  printf("     ------------------------------------------------------");
+  printf("--------------------\n");
 
-	p = list;
-	while (list)
-	{
-		if (list->item.NameSize < 23)
-			printf("%23s", list->item.Name);
-		else
-			printf("%23s", list->item.Name + (list->item.NameSize - 23));
+  p = list;
+  while (list)
+  {
+    if (list->item.NameSize < 23)
+      printf("%23s", list->item.Name);
+    else
+      printf("%23s", list->item.Name + (list->item.NameSize - 23));
 
-		printf("%9ld",  list->item.UnpSize);
-		printf("%8ld",  list->item.PackSize);
-		printf("%5d",  list->item.HostOS);
-		printf("%10lx", list->item.FileTime);
-		printf("%10lx", list->item.FileCRC);
-		printf("%5ld",  list->item.FileAttr);
-		printf("%4d",  list->item.UnpVer);
-		printf("%5d",  list->item.Method);
-		printf("\n");
+    printf("%9ld",  list->item.UnpSize);
+    printf("%8ld",  list->item.PackSize);
+    printf("%5d",  list->item.HostOS);
+    printf("%10lx", list->item.FileTime);
+    printf("%10lx", list->item.FileCRC);
+    printf("%5ld",  list->item.FileAttr);
+    printf("%4d",  list->item.UnpVer);
+    printf("%5d",  list->item.Method);
+    printf("\n");
 
-		list = list->next;
-	}
-	urarlib_freelist(p);
+    list = list->next;
+  }
+  urarlib_freelist(p);
 
-	int res = urarlib_get(argv[1], argv[2], argv[3], NULL);
+  int res = urarlib_get(argv[1], argv[2], argv[3], NULL);
 }
 #else
 
@@ -172,69 +172,69 @@ int main(int argc, char *argv[])
 \*-------------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------------------*\
-	Extract a RAR file
-	rarfile		  - Name of the RAR file to uncompress
-	targetPath	  - The path to which we want to uncompress
-	fileToExtract - The file inside the archive we want to uncompress,
-					or NULL for all files.
-	libpassword   - Password (for encrypted archives)
+  Extract a RAR file
+  rarfile      - Name of the RAR file to uncompress
+  targetPath    - The path to which we want to uncompress
+  fileToExtract - The file inside the archive we want to uncompress,
+          or NULL for all files.
+  libpassword   - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
 int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword, __int64* iOffset, bool bShowProgress)
 {
-	InitCRC();
-	int bRes = 1;
+  InitCRC();
+  int bRes = 1;
 
-	// Set the arguments for the extract command
+  // Set the arguments for the extract command
   auto_ptr<CommandData> pCmd (new CommandData);
 
   if( pCmd.get() )
-	{
-		strcpy(pCmd->Command, "X");
-		pCmd->AddArcName(rarfile,NULL);
-		strncpy(pCmd->ExtrPath, targetPath, sizeof(pCmd->Command) - 2);
-		pCmd->ExtrPath[sizeof(pCmd->Command) - 2] = '\0';
-		AddEndSlash(pCmd->ExtrPath);
+  {
+    strcpy(pCmd->Command, "X");
+    pCmd->AddArcName(rarfile,NULL);
+    strncpy(pCmd->ExtrPath, targetPath, sizeof(pCmd->Command) - 2);
+    pCmd->ExtrPath[sizeof(pCmd->Command) - 2] = '\0';
+    AddEndSlash(pCmd->ExtrPath);
     pCmd->ParseArg((char*)"-va",NULL);
-		if (fileToExtract)
-		{
+    if (fileToExtract)
+    {
       if (*fileToExtract)
       {
-			  pCmd->FileArgs->AddString(fileToExtract);
-			  // Uncomment this if you want to extract a single file without the full path
-			  strcpy(pCmd->Command, "E");
+        pCmd->FileArgs->AddString(fileToExtract);
+        // Uncomment this if you want to extract a single file without the full path
+        strcpy(pCmd->Command, "E");
       }
-		}
-		else
-		{
-			pCmd->FileArgs->AddString(MASKALL);
-		}
+    }
+    else
+    {
+      pCmd->FileArgs->AddString(MASKALL);
+    }
 
     // Set password for encrypted archives
-		if (libpassword)
+    if (libpassword)
       if (strlen(libpassword)!=0)
-		  {
-			  strncpy(pCmd->Password, libpassword, sizeof(pCmd->Password) - 1);
-			  pCmd->Password[sizeof(pCmd->Password) - 1] = '\0';
-		  }
+      {
+        strncpy(pCmd->Password, libpassword, sizeof(pCmd->Password) - 1);
+        pCmd->Password[sizeof(pCmd->Password) - 1] = '\0';
+      }
 
-		// Opent the archive    
-		auto_ptr<Archive> pArc( new Archive(pCmd.get()) );
+    // Opent the archive    
+    auto_ptr<Archive> pArc( new Archive(pCmd.get()) );
     
     if( pArc.get() )
-		{
-			if (!pArc->WOpen(rarfile,NULL))
-				return 0;
+    {
+      if (!pArc->WOpen(rarfile,NULL))
+        return 0;
 
-			if (pArc->IsOpened() && pArc->IsArchive(true))
-			{
-				auto_ptr<CmdExtract> pExtract( new CmdExtract );
+      if (pArc->IsOpened() && pArc->IsArchive(true))
+      {
+        auto_ptr<CmdExtract> pExtract( new CmdExtract );
         
         if( pExtract.get() )
-				{
+        {
           pExtract->GetDataIO().SetCurrentCommand(*(pCmd->Command));
-					struct FindData FD;
-					if (FindFile::FastFind(rarfile,NULL,&FD))
-						pExtract->GetDataIO().TotalArcSize+=FD.Size;
+          struct FindData FD;
+          if (FindFile::FastFind(rarfile,NULL,&FD))
+            pExtract->GetDataIO().TotalArcSize+=FD.Size;
           pExtract->ExtractArchiveInit(pCmd.get(),*pArc);
 
           if (bShowProgress)
@@ -246,19 +246,19 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           __int64 iOff=0;
           bool bSeeked = false;
           while (1)
-					{
+          {
             iOff = pArc->Tell();
             int Size=pArc->ReadHeader();
           
             if (pArc->GetHeaderType() == ENDARC_HEAD)
               break;
 
-						bool Repeat=false;           
+            bool Repeat=false;           
             if (!pExtract->ExtractCurrentFile(pCmd.get(),*pArc,Size,Repeat))
-						{
+            {
                bRes = FALSE;
-						 	 break;
-						}
+                break;
+            }
             
             if (pExtract->GetDataIO().bQuit) 
             {
@@ -271,11 +271,11 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
               if (*fileToExtract)
               {
                 bool EqualNames=false;
-	              int MatchNumber=pCmd->IsProcessFile(pArc->NewLhd,&EqualNames);
+                int MatchNumber=pCmd->IsProcessFile(pArc->NewLhd,&EqualNames);
                 bool ExactMatch=MatchNumber!=0;
                 if (ExactMatch)
                 {
-					  			if (iOffset)
+                  if (iOffset)
                     *iOffset = iOff;
                   break;
                 }
@@ -295,50 +295,50 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           if (pExtract->GetDataIO().m_pDlgProgress)
             pExtract->GetDataIO().m_pDlgProgress->ShowProgressBar(false);
         }
-			}
-		}
-	}
+      }
+    }
+  }
 
-	File::RemoveCreated();
+  File::RemoveCreated();
   return bRes;
 }
 
 /*-------------------------------------------------------------------------*\
-	List the files in a RAR file
-	rarfile		- Name of the RAR file to uncompress
-	list	    - Output. A list of file data of the files in the archive.
-	              The list should be freed with urarlib_freelist().
-	libpassword - Password (for encrypted archives)
+  List the files in a RAR file
+  rarfile    - Name of the RAR file to uncompress
+  list      - Output. A list of file data of the files in the archive.
+                The list should be freed with urarlib_freelist().
+  libpassword - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
 int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, bool stopattwo)
 {
   if (!ppList)
-		return 0;
-	uint FileCount = 0;
-	InitCRC();
+    return 0;
+  uint FileCount = 0;
+  InitCRC();
 
-	// Set the arguments for the extract command
+  // Set the arguments for the extract command
   auto_ptr<CommandData> pCmd( new CommandData );
 
-	{
-		strcpy(pCmd->Command, "L");
-		pCmd->AddArcName(rarfile, NULL);
-		pCmd->FileArgs->AddString(MASKALL);
+  {
+    strcpy(pCmd->Command, "L");
+    pCmd->AddArcName(rarfile, NULL);
+    pCmd->FileArgs->AddString(MASKALL);
     pCmd->ParseArg((char*)"-va",NULL);
 
-		// Set password for encrypted archives
-		if (libpassword)
-		{
-			strncpy(pCmd->Password, libpassword, sizeof(pCmd->Password) - 1);
-			pCmd->Password[sizeof(pCmd->Password) - 1] = '\0';
-		}
+    // Set password for encrypted archives
+    if (libpassword)
+    {
+      strncpy(pCmd->Password, libpassword, sizeof(pCmd->Password) - 1);
+      pCmd->Password[sizeof(pCmd->Password) - 1] = '\0';
+    }
 
-		// Opent the archive
-		auto_ptr<Archive> pArc( new Archive(pCmd.get()) );
-		if ( pArc.get() )
-		{
-			if (!pArc->WOpen(rarfile,NULL))
-				return 0;
+    // Opent the archive
+    auto_ptr<Archive> pArc( new Archive(pCmd.get()) );
+    if ( pArc.get() )
+    {
+      if (!pArc->WOpen(rarfile,NULL))
+        return 0;
 
       FileCount=0;
       *ppList = NULL;
@@ -404,7 +404,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
                 strcpy(LastName,NextName);
                 NextVolumeName(NextName,(pArc->NewMhd.Flags & MHD_NEWNUMBERING)==0 || pArc->OldFormat);
               }
-         			Archive arc;
+               Archive arc;
               if (arc.WOpen(LastName,NULL))
               {
                 bool bBreak=false;
@@ -426,10 +426,10 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
               }
             }
             if (MergeArchive(*pArc,NULL,false,*pCmd->Command))
-      			{
+            {
               iArchive++;
-			        pArc->Seek(0,SEEK_SET); 
-			      }
+              pArc->Seek(0,SEEK_SET); 
+            }
             else
               break;
           }
@@ -440,10 +440,10 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
           break;
       }
     }
-	}
+  }
 
-	File::RemoveCreated();
-	return FileCount;
+  File::RemoveCreated();
+  return FileCount;
 }
 
 bool urarlib_hasmultiple(const char *rarfile, char *libpassword)
@@ -457,20 +457,20 @@ bool urarlib_hasmultiple(const char *rarfile, char *libpassword)
 }
 
 /*-------------------------------------------------------------------------*\
-	Free the file list returned by urarlib_list()
-	list - The output from urarlib_list()
+  Free the file list returned by urarlib_list()
+  list - The output from urarlib_list()
 \*-------------------------------------------------------------------------*/
 void urarlib_freelist(ArchiveList_struct *list)
 {
-	ArchiveList_struct *p;
-	while (list)
-	{
-		p = list->next;
-		free(list->item.Name);
-		free(list->item.NameW);
-		free(list);
-		list = p;
-	}
+  ArchiveList_struct *p;
+  while (list)
+  {
+    p = list->next;
+    free(list->item.Name);
+    free(list->item.NameW);
+    free(list);
+    list = p;
+  }
 }
 
 

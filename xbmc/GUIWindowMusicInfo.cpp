@@ -34,6 +34,8 @@
 #include "FileItem.h"
 #include "VideoInfoTag.h"
 #include "MediaManager.h"
+#include "FileSystem/Directory.h"
+#include "utils/AsyncFileCopy.h"
 
 using namespace XFILE;
 
@@ -117,7 +119,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_LIST)
       {
         int iAction = message.GetParam1();
-        if (ACTION_SELECT_ITEM == iAction && m_bArtistInfo)
+        if (m_bArtistInfo && (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction))
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
           g_graphicsContext.SendMessage(msg);
@@ -197,6 +199,9 @@ void CGUIWindowMusicInfo::SetArtist(const CArtist& artist, const CStdString &pat
   m_albumItem->SetProperty("died", m_artist.strDied);
   m_albumItem->SetProperty("disbanded", m_artist.strDisbanded);
   m_albumItem->SetProperty("yearsactive", m_artist.strYearsActive);
+  CStdString strFanart = m_albumItem->GetCachedFanart();
+  if (CFile::Exists(strFanart))
+    m_albumItem->SetProperty("fanart_image",strFanart);
   m_albumItem->SetCachedArtistThumb();
   m_hasUpdatedThumb = false;
   m_bArtistInfo = true;
@@ -356,14 +361,13 @@ void CGUIWindowMusicInfo::RefreshThumb()
       thumbImage = m_albumItem->GetCachedArtistThumb();
     else
       thumbImage = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
-  }
 
-  if (!CFile::Exists(thumbImage))
-  {
-    DownloadThumbnail(thumbImage);
-    m_hasUpdatedThumb = true;
+    if (!CFile::Exists(thumbImage))
+    {
+      DownloadThumbnail(thumbImage);
+      m_hasUpdatedThumb = true;
+    }
   }
-
   if (!CFile::Exists(thumbImage) )
     thumbImage.Empty();
 
@@ -482,8 +486,8 @@ void CGUIWindowMusicInfo::OnGetThumb()
     CMusicDatabase database;
     database.Open();
     CStdString strArtistPath;
-    database.GetArtistPath(m_artist.idArtist,strArtistPath);
-    CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
+    if (database.GetArtistPath(m_artist.idArtist,strArtistPath))
+      CUtil::AddFileToFolder(strArtistPath,"folder.jpg",localThumb);
   }
   else
     CStdString localThumb = m_albumItem->GetUserMusicThumb();
@@ -499,7 +503,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
       items.Add(item);
     }
   }
-  
+
   CFileItemPtr item(new CFileItem("thumb://None", false));
   if (m_bArtistInfo)
     item->SetThumbnailImage("defaultArtistBig.png");
@@ -507,9 +511,10 @@ void CGUIWindowMusicInfo::OnGetThumb()
     item->SetThumbnailImage("defaultAlbumCover.png");
   item->SetLabel(g_localizeStrings.Get(20018));
   items.Add(item);
-  
+
   CStdString result;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(1030), result))
+  bool flip=false;
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources, g_localizeStrings.Get(1030), result, &flip))
     return;   // user cancelled
 
   if (result == "thumb://Current")
@@ -570,12 +575,8 @@ void CGUIWindowMusicInfo::OnGetFanart()
   itemNone->SetThumbnailImage("DefaultArtistBig.png");
   itemNone->SetLabel(g_localizeStrings.Get(20018));
   items.Add(itemNone);
-  
-  CMusicDatabase database;
-  database.Open();
-  CStdString strArtistPath;
-  database.GetArtistPath(m_artist.idArtist,strArtistPath);
-  CStdString cachedThumb(itemNone->GetCachedFanart(strArtistPath));
+
+  CStdString cachedThumb(itemNone->GetCachedThumb(m_artist.strArtist,g_settings.GetMusicFanartFolder()));
   if (CFile::Exists(cachedThumb))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
@@ -584,6 +585,10 @@ void CGUIWindowMusicInfo::OnGetFanart()
     items.Add(itemCurrent);
   }
 
+  CMusicDatabase database;
+  database.Open();
+  CStdString strArtistPath;
+  database.GetArtistPath(m_artist.idArtist,strArtistPath);
   CFileItem item(strArtistPath,true);
   CStdString strLocal = item.CacheFanart(true);
   if (!strLocal.IsEmpty())
@@ -593,7 +598,30 @@ void CGUIWindowMusicInfo::OnGetFanart()
     itemLocal->SetLabel(g_localizeStrings.Get(20017));
     items.Add(itemLocal);
   }
- 
+  
+  // Grab the thumbnails from the web
+  CStdString strPath;
+  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
+  CUtil::WipeDir(strPath);
+  DIRECTORY::CDirectory::Create(strPath);
+  for (unsigned int i = 0; i < m_artist.fanart.GetNumFanarts(); i++)
+  {
+    CStdString strItemPath;
+    strItemPath.Format("fanart://Remote%i",i);
+    CFileItemPtr item(new CFileItem(strItemPath, false));
+    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+    item->SetIconImage("defaultPicture.png");
+    item->GetVideoInfoTag()->m_fanart = m_artist.fanart;
+    item->SetProperty("fanart_number", (int)i);
+    item->SetLabel(g_localizeStrings.Get(415));
+    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
+
+    // make sure any previously cached thumb is removed
+    if (CFile::Exists(item->GetCachedPictureThumb()))
+      CFile::Delete(item->GetCachedPictureThumb());
+    items.Add(item);
+  }
+
   CStdString result;
   VECSOURCES sources(g_settings.m_musicSources);
   g_mediaManager.GetLocalDrives(sources);
@@ -604,21 +632,36 @@ void CGUIWindowMusicInfo::OnGetFanart()
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
   if (result.Equals("fanart://Current"))
-   return; 
+   return;
 
   if (result.Equals("fanart://Local"))
     result = strLocal;
- 
+
   if (CFile::Exists(cachedThumb))
     CFile::Delete(cachedThumb);
 
-  if (!result.Equals("thumb://None") && CFile::Exists(result))
+  if (!result.Equals("fanart://None"))
   { // local file
+    if (result.Left(15)  == "fanart://Remote")
+    {
+      int iFanart = atoi(result.Mid(15).c_str());
+      m_artist.fanart.SetPrimaryFanart(iFanart);
+      // download the fullres fanart image
+      CStdString tempFile = "special://temp/fanart_download.jpg";
+      CAsyncFileCopy downloader;
+      if (!downloader.Copy(m_artist.fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413)))
+        return;
+      result = tempFile;
+    }
+
     CPicture pic;
     if (flip)
       pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
     else
       pic.CacheImage(result, cachedThumb);
+
+    m_albumItem->SetProperty("fanart_image",cachedThumb);
+    m_hasUpdatedThumb = true;
   }
 
   // tell our GUI to completely reload all controls (as some of them
@@ -649,7 +692,7 @@ void CGUIWindowMusicInfo::OnSearch(const CFileItem* pItem)
 }
 
 CFileItemPtr CGUIWindowMusicInfo::GetCurrentListItem(int offset)
-{ 
-  return m_albumItem; 
+{
+  return m_albumItem;
 }
 

@@ -22,7 +22,6 @@
 
 #include "stdafx.h"
 #include "ShoutcastDirectory.h"
-#include "DirectoryCache.h"
 #include "Util.h"
 #include "FileCurl.h"
 #include "utils/HttpHeader.h"
@@ -47,13 +46,13 @@ CShoutcastDirectory::~CShoutcastDirectory(void)
 bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, CURL &url)
 {
   TiXmlElement *element = root->FirstChildElement("genre");
-  
+
   if(element == NULL)
   {
     CLog::Log(LOGWARNING, "%s - No genres found", __FUNCTION__);
     return false;
   }
-    
+
   items.m_idepth = 1; /* genre list */
 
   CStdString genre, path;
@@ -73,8 +72,8 @@ bool CShoutcastDirectory::ParseGenres(TiXmlElement *root, CFileItemList &items, 
     pItem->m_bIsFolder = true;
     pItem->SetLabel(genre);
     pItem->GetMusicInfoTag()->SetGenre(genre);
-    pItem->m_strPath = path;  
-    
+    pItem->m_strPath = path;
+
     items.Add(pItem);
 
     element = element->NextSiblingElement("genre");
@@ -91,12 +90,12 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
   items.m_idepth = 2; /* station list */
 
   element = root->FirstChildElement("tunein");
-  if(element == NULL) 
+  if(element == NULL)
   {
     CLog::Log(LOGWARNING, "%s - No tunein base found", __FUNCTION__);
     return false;
   }
-  
+
   path = element->Attribute("base");
   path.TrimLeft("/");
 
@@ -126,7 +125,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 
     CFileItemPtr pItem(new CFileItem);
     pItem->m_bIsFolder = false;
-    
+
     /* we highjack the music tag for this stuff, they will be used by */
     /* viewstates to sort and display proper information */
     pItem->GetMusicInfoTag()->SetArtist(listeners);
@@ -145,7 +144,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
     pItem->SetContentType("audio/x-scpls");
 
     pItem->m_strPath = path;
-    
+
     items.Add(pItem);
 
     stations++;
@@ -158,16 +157,12 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CStdString strRoot = strPath;
-  if (CUtil::HasSlashAtEnd(strRoot) && strRoot != "shout://")
-    strRoot.Delete(strRoot.size() - 1);
+  CUtil::RemoveSlashAtEnd(strRoot);
 
   /* keep backward competability (for users who already have this source defined) */
-  if( strRoot.Equals("shout://www.shoutcast.com") || strRoot.Equals("shout://") || strRoot.Equals("shout://classic.shoutcast.com") || 
+  if( strRoot.Equals("shout://www.shoutcast.com") || strRoot.Equals("shout://") || strRoot.Equals("shout://classic.shoutcast.com") ||
       strRoot.Equals("shout://www.shoutcast.com/sbin/newxml.phtml") )
     strRoot = SHOUTCAST_MASTER_LINK;
-
-  if (g_directoryCache.GetDirectory(strRoot, items))
-    return true;
 
   CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (dlgProgress)
@@ -190,7 +185,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   // opening as text for now
   //http.SetContentEncoding("deflate");
 
-  if( !http.Open(url, false) ) 
+  if( !http.Open(url) )
   {
     CLog::Log(LOGERROR, "%s - Unable to get shoutcast dir", __FUNCTION__);
     if (dlgProgress) dlgProgress->Close();
@@ -201,22 +196,22 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   url.SetProtocol(protocol);
 
   CStdString content = http.GetContent();
-  if( !(content.Equals("text/html") || content.Equals("text/xml") 
-	  || content.Equals("text/html;charset=utf-8") || content.Equals("text/xml;charset=utf-8") ))
+  if( !(content.Equals("text/html") || content.Equals("text/xml")
+    || content.Equals("text/html;charset=utf-8") || content.Equals("text/xml;charset=utf-8") ))
   {
     CLog::Log(LOGERROR, "%s - Invalid content type %s", __FUNCTION__, content.c_str());
     if (dlgProgress) dlgProgress->Close();
     return false;
   }
-  
-  
-  int size_read = 0;  
+
+
+  int size_read = 0;
   int size_total = (int)http.GetLength();
   int data_size = 0;
 
   CStdString data;
   data.reserve(size_total);
-  
+
   /* read response from server into string buffer */
   char buffer[16384];
   while( (size_read = http.Read(buffer, sizeof(buffer)-1)) > 0 )
@@ -262,15 +257,6 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
     CLog::Log(LOGDEBUG, "%s - Sample follows...\n%s", __FUNCTION__, data.c_str());
   }
 
-  CFileItemList vecCacheItems;  
-  g_directoryCache.ClearDirectory(strRoot);
-  for( int i = 0; i <items.Size(); i++ )
-  {
-    CFileItemPtr pItem=items[i];
-    if (!pItem->IsParentFolder())
-      vecCacheItems.Add(pItem);
-  }
-  g_directoryCache.SetDirectory(strRoot, vecCacheItems);
   if (dlgProgress) dlgProgress->Close();
   return result;
 }

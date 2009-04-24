@@ -112,17 +112,14 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
     }
     break;
   case GUI_MSG_SETFOCUS:
-    if (m_hasMultiPath)
+    if (message.GetControlId() == CONTROL_PATH_BROWSE ||
+             message.GetControlId() == CONTROL_PATH_ADD ||
+             message.GetControlId() == CONTROL_PATH_REMOVE)
     {
-      if (message.GetControlId() == CONTROL_PATH_BROWSE ||
-               message.GetControlId() == CONTROL_PATH_ADD ||
-               message.GetControlId() == CONTROL_PATH_REMOVE)
-      {
-        HighlightItem(GetSelectedItem());
-      }
-      else
-        HighlightItem(-1);
+      HighlightItem(GetSelectedItem());
     }
+    else
+      HighlightItem(-1);
     break;
   }
   return CGUIDialog::OnMessage(message);
@@ -424,8 +421,7 @@ void CGUIDialogMediaSource::OnOK()
     if (share.strPath.Left(9).Equals("plugin://"))
     {
       CStdString strPath=share.strPath;
-      strPath.Replace("plugin://","U:\\plugins\\");
-      strPath.Replace("/","\\");
+      strPath.Replace("plugin://","special://home/plugins/");
       CFileItem item(strPath,true);
       item.SetCachedProgramThumb();
       if (!item.HasThumbnail())
@@ -467,31 +463,20 @@ void CGUIDialogMediaSource::UpdateButtons()
   SET_CONTROL_LABEL2(CONTROL_NAME, m_name);
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_NAME, 0, 1022);
 
-  if (m_hasMultiPath)
+  int currentItem = GetSelectedItem();
+  SendMessage(GUI_MSG_LABEL_RESET, CONTROL_PATH);
+  for (int i = 0; i < m_paths->Size(); i++)
   {
-    int currentItem = GetSelectedItem();
-    SendMessage(GUI_MSG_LABEL_RESET, CONTROL_PATH);
-    for (int i = 0; i < m_paths->Size(); i++)
-    {
-      CFileItemPtr item = m_paths->Get(i);
-      CStdString path;
-      CURL url(item->m_strPath);
-      url.GetURLWithoutUserDetails(path);
-      if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
-      item->SetLabel(path);
-      CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, item);
-      OnMessage(msg);
-    }
-    SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_PATH, currentItem);
-  }
-  else
-  {
+    CFileItemPtr item = m_paths->Get(i);
     CStdString path;
-    CURL url(m_paths->Get(0)->m_strPath);
+    CURL url(item->m_strPath);
     url.GetURLWithoutUserDetails(path);
     if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
-    SET_CONTROL_LABEL(CONTROL_PATH, path);
+    item->SetLabel(path);
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, item);
+    OnMessage(msg);
   }
+  SendMessage(GUI_MSG_ITEM_SELECT, CONTROL_PATH, currentItem);
 
   if (m_type.Equals("video"))
   {
@@ -550,28 +535,10 @@ void CGUIDialogMediaSource::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
   ChangeButtonToEdit(CONTROL_NAME, true);  // true for single label
-  // disable the spincontrol
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *control = GetControl(CONTROL_PATH);
-  if (control && control->GetControlType() == CGUIControl::GUICONTAINER_LIST)
-  {
-    CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_PATH + 5000);
-    if (spin)
-      spin->SetVisible(false);
-    m_hasMultiPath = true;
-  }
-  else
-    m_hasMultiPath = false;
-#else
-  m_hasMultiPath = true;
-#endif
 }
 
 int CGUIDialogMediaSource::GetSelectedItem()
 {
-  if (!m_hasMultiPath)
-    return 0;
-
   CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PATH);
   OnMessage(message);
   int value = message.GetParam1();

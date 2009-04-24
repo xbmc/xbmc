@@ -6,7 +6,6 @@
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<include>ContentPanel</include>
-			<include>CommonNowPlaying_Controls</include>
 			<control type="grouplist" id="5">
 				<description>control area</description>
 				<posx>300</posx>

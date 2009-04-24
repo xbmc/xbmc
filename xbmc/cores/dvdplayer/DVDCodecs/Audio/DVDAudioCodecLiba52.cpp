@@ -108,6 +108,17 @@ void CDVDAudioCodecLiba52::Dispose()
 
 void CDVDAudioCodecLiba52::SetupChannels(int flags)
 {
+/* Internal AC3 ordering for different configs
+ * A52_CHANNEL: 1+1 2 Ch1, Ch2
+ * A52_MONO   : 1/0 1 C
+ * A52_STEREO : 2/0 2 L, R
+ * A52_3F     : 3/0 3 L, C, R
+ * A52_2F1R   : 2/1 3 L, R, S
+ * A52_3F1R   : 3/1 4 L, C, R, S
+ * A52_2F2R   : 2/2 4 L, R, SL, SR
+ * A52_3F2R   : 3/2 5 L, C, R, SL, SR
+*/
+
   m_iSourceFlags = flags;
   // setup channel map for how to translate to linear format
   // standard windows format
@@ -121,7 +132,9 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
       case A52_2F1R   : m_iOutputMapping = 0x1f5542; break;
       case A52_2F2R   : m_iOutputMapping = 0x1f5432; break;
       case A52_3F     : m_iOutputMapping = 0x13ff42; break;
+      case A52_3F1R   : m_iOutputMapping = 0x135542; break;
       case A52_3F2R   : m_iOutputMapping = 0x136542; break;
+      default         : m_iOutputMapping = 0x000000; break;
     }
   }
   else
@@ -134,10 +147,15 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
       case A52_2F1R   : m_iOutputMapping =  0x2231; break;
       case A52_2F2R   : m_iOutputMapping =  0x4321; break;
       case A52_3F     : m_iOutputMapping = 0x2ff31; break;
+      case A52_3F1R   : m_iOutputMapping = 0x24431; break;
       case A52_3F2R   : m_iOutputMapping = 0x25431; break;
+      default         : m_iOutputMapping =     0x0; break;
     }
   }
-  
+
+  if(m_iOutputMapping == 0x0)
+    CLog::Log(LOGERROR, "CDVDAudioCodecLiba52::SetupChannels - Invalid channel mapping");
+
   int channels = 0;
   unsigned int m = m_iOutputMapping<<4;
   while(m>>=4) channels++;  
@@ -165,11 +183,13 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
   m_iOutputFlags    = m_iSourceFlags;
 
   // If we can't support multichannel output downmix
-  if (g_advancedSettings.m_analogMultiChannel == false)
+  if (g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
   {
     m_iOutputChannels = 2;
     m_iOutputMapping = 0x21;
     m_iOutputFlags = A52_STEREO;
+    if (m_iSourceChannels > 2)
+      m_Gain = pow(2.0f, g_advancedSettings.m_ac3Gain/6.0f); // Hack for downmix attenuation
   }
 
   /* adjust level should always be set, to keep samples in proper range */
@@ -279,6 +299,8 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
   sample_t bias = 384;
   int     flags = m_iOutputFlags;
 
+  level *= m_Gain;
+
   m_dll.a52_frame(m_pState, frame, &flags, &level, bias);
 
   //m_dll.a52_dynrng(m_pState, NULL, NULL);
@@ -313,6 +335,7 @@ void CDVDAudioCodecLiba52::SetDefault()
   m_iOutputFlags = 0;
   m_decodedSize = 0;
   m_inputSize = 0;
+  m_Gain = 1.0f;
 }
 
 void CDVDAudioCodecLiba52::Reset()

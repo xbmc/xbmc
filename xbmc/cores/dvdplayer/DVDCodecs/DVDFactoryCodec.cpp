@@ -129,6 +129,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
     {
       CDVDCodecOptions dvdOptions;
+
+#ifdef HAVE_LIBVDPAU
+      if (hint.height >= 720) {
+        CLog::Log(LOGNOTICE,"Trying VDPAU-MPEG from FFMPEG");
+        if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
+      }
+#endif
+
       if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, dvdOptions)) ) return pCodec;
     }
   }

@@ -141,7 +141,7 @@ bool CCMythSession::UpdateItem(CFileItem &item, cmyth_proginfo_t info)
 
   CDateTimeSpan span = GetValue(m_dll->proginfo_rec_start(info)) - GetValue(m_dll->proginfo_rec_end(info));
   StringUtils::SecondsToTimeString( span.GetSeconds()
-                                  + span.GetMinutes() * 60 
+                                  + span.GetMinutes() * 60
                                   + span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
 
   tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
@@ -217,8 +217,7 @@ CCMythSession::CCMythSession(const CURL& url)
 CCMythSession::~CCMythSession()
 {
   Disconnect();
-  if(m_dll)
-    delete m_dll;
+  delete m_dll;
 }
 
 bool CCMythSession::CanSupport(const CURL& url)

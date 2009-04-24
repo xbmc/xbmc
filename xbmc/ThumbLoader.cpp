@@ -28,15 +28,45 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Settings.h"
-
+#include "TextureManager.h"
+#include "VideoInfoTag.h"
 
 #include "cores/dvdplayer/DVDFileInfo.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
 
-CVideoThumbLoader::CVideoThumbLoader() 
-{  
+CThumbLoader::CThumbLoader()
+{
+}
+
+CThumbLoader::~CThumbLoader()
+{
+}
+
+bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
+{
+  // look for remote thumbs
+  CStdString thumb(pItem->GetThumbnailImage());
+  if (!g_TextureManager.CanLoad(thumb))
+  {
+    CStdString cachedThumb(pItem->GetCachedVideoThumb());
+    if (CFile::Exists(cachedThumb))
+      pItem->SetThumbnailImage(cachedThumb);
+    else
+    {
+      CPicture pic;
+      if(pic.DoCreateThumbnail(thumb, cachedThumb))
+        pItem->SetThumbnailImage(cachedThumb);
+      else
+        pItem->SetThumbnailImage("");
+    }
+  }
+  return pItem->HasThumbnail();
+}
+
+CVideoThumbLoader::CVideoThumbLoader()
+{
 }
 
 CVideoThumbLoader::~CVideoThumbLoader()
@@ -44,11 +74,11 @@ CVideoThumbLoader::~CVideoThumbLoader()
   StopThread();
 }
 
-void CVideoThumbLoader::OnLoaderStart() 
+void CVideoThumbLoader::OnLoaderStart()
 {
 }
 
-void CVideoThumbLoader::OnLoaderFinish() 
+void CVideoThumbLoader::OnLoaderFinish()
 {
 }
 
@@ -72,6 +102,21 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
 bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 {
   if (pItem->m_bIsShareOrDrive) return true;
+  if (pItem->IsVideoDb() && pItem->HasVideoInfoTag() && !pItem->HasThumbnail())
+  {
+    if (pItem->m_bIsFolder && pItem->GetVideoInfoTag()->m_iSeason > -1)
+      return false;
+    CFileItem item(*pItem->GetVideoInfoTag());
+    bool bResult = LoadItem(&item);
+    if (bResult)
+    {
+      pItem->SetProperty("HasAutoThumb",item.GetProperty("HasAutoThumb"));
+      pItem->SetProperty("AutoThumbImage",item.GetProperty("AutoThumbImage"));
+      pItem->SetProperty("fanart_image",item.GetProperty("fanart_image"));
+      pItem->SetThumbnailImage(item.GetThumbnailImage());
+    }
+    return bResult;
+  }
   CStdString cachedThumb(pItem->GetCachedVideoThumb());
 
   if (!pItem->HasThumbnail())
@@ -81,7 +126,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     {
       CStdString strPath, strFileName;
       CUtil::Split(cachedThumb, strPath, strFileName);
-       
+
       // create unique thumb for auto generated thumbs
       cachedThumb = strPath + "auto-" + strFileName;
       if (pItem->IsVideo() && !pItem->IsInternetStream() && !pItem->IsPlayList() && !CFile::Exists(cachedThumb))
@@ -96,7 +141,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
           CVideoThumbLoader::ExtractThumb(pItem->m_strPath, cachedThumb);
         }
       }
-  
+
       if (CFile::Exists(cachedThumb))
       {
         pItem->SetProperty("HasAutoThumb", "1");
@@ -106,30 +151,14 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     }
   }
   else
-  {
-    // look for remote thumbs
-    CStdString thumb(pItem->GetThumbnailImage());
-    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
-    {      
-      if(CFile::Exists(cachedThumb))
-          pItem->SetThumbnailImage(cachedThumb);
-      else
-      {
-        CPicture pic;
-        if(pic.DoCreateThumbnail(thumb, cachedThumb))
-          pItem->SetThumbnailImage(cachedThumb);
-        else
-          pItem->SetThumbnailImage("");
-      }
-    }  
-  }
+    LoadRemoteThumb(pItem);
 
   if (!pItem->HasProperty("fanart_image"))
   {
     pItem->CacheFanart();
     if (CFile::Exists(pItem->GetCachedFanart()))
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
-  }                          
+  }
 
 //  if (pItem->IsVideo() && !pItem->IsInternetStream())
 //    CDVDPlayer::GetFileMetaData(pItem->m_strPath, pItem);
@@ -150,6 +179,8 @@ bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
   if (pItem->m_bIsShareOrDrive) return true;
   if (!pItem->HasThumbnail())
     pItem->SetUserProgramThumb();
+  else
+    LoadRemoteThumb(pItem);
   return true;
 }
 
@@ -167,24 +198,7 @@ bool CMusicThumbLoader::LoadItem(CFileItem* pItem)
   if (!pItem->HasThumbnail())
     pItem->SetUserMusicThumb();
   else
-  {
-    // look for remote thumbs
-    CStdString thumb(pItem->GetThumbnailImage());
-    if (!CURL::IsFileOnly(thumb) && !CUtil::IsHD(thumb))
-    {
-      CStdString cachedThumb(pItem->GetCachedVideoThumb());
-      if(CFile::Exists(cachedThumb))
-        pItem->SetThumbnailImage(cachedThumb);
-      else
-      {
-        CPicture pic;
-        if(pic.DoCreateThumbnail(thumb, cachedThumb))
-          pItem->SetThumbnailImage(cachedThumb);
-        else
-          pItem->SetThumbnailImage("");
-      }
-    }  
-  }
+    LoadRemoteThumb(pItem);
   return true;
 }
 

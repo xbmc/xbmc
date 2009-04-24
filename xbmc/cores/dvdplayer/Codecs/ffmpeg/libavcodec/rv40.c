@@ -20,7 +20,7 @@
  */
 
 /**
- * @file rv40.c
+ * @file libavcodec/rv40.c
  * RV40 decoder
  */
 
@@ -40,7 +40,7 @@ static VLC ptype_vlc[NUM_PTYPE_VLCS], btype_vlc[NUM_BTYPE_VLCS];
 /**
  * Initialize all tables.
  */
-static av_cold void rv40_init_tables()
+static av_cold void rv40_init_tables(void)
 {
     int i;
 
@@ -654,5 +654,7 @@ AVCodec rv40_decoder = {
     ff_rv34_decode_end,
     ff_rv34_decode_frame,
     CODEC_CAP_DR1 | CODEC_CAP_DELAY,
+    .flush = ff_mpeg_flush,
     .long_name = NULL_IF_CONFIG_SMALL("RealVideo 4.0"),
+    .pix_fmts= ff_pixfmt_list_420,
 };

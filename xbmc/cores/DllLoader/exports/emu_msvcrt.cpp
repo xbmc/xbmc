@@ -36,6 +36,8 @@
 #ifndef __APPLE__
 #include <mntent.h>
 #include <linux/cdrom.h>
+#else
+#include <IOKit/storage/IODVDMediaBSDClient.h>
 #endif
 #endif
 #include <fcntl.h>
@@ -44,6 +46,7 @@
 #include "Util.h"
 #include "FileSystem/IDirectory.h"
 #include "FileSystem/FactoryDirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
@@ -107,7 +110,7 @@ extern "C" void __stdcall init_emu_environ()
   // libdvdcss
   dll_putenv("DVDCSS_METHOD=key");
   dll_putenv("DVDCSS_VERBOSE=3");
-  dll_putenv("DVDCSS_CACHE=T:\\cache");
+  dll_putenv("DVDCSS_CACHE=special://masterprofile/cache");
   
   // python
 #ifdef _XBOX
@@ -121,9 +124,9 @@ extern "C" void __stdcall init_emu_environ()
 #else
   dll_putenv("OS=unknown");
 #endif
-  dll_putenv("PYTHONPATH=Q:\\system\\python\\python24.zlib;Q:\\system\\python\\DLLs;Q:\\system\\python\\Lib;Q:\\system\\python\\spyce");
-  dll_putenv("PYTHONHOME=Q:\\system\\python");
-  dll_putenv("PATH=.;Q:\\;Q:\\system\\python");
+  dll_putenv("PYTHONPATH=special://xbmc/system/python/python24.zlib;special://xbmc/system/python/DLLs;special://xbmc/system/python/Lib;special://xbmc/system/python/spyce");
+  dll_putenv("PYTHONHOME=special://xbmc/system/python");
+  dll_putenv("PATH=.;special://xbmc;special://xbmc/system/python");
   //dll_putenv("PYTHONCASEOK=1");
   //dll_putenv("PYTHONDEBUG=1");
   //dll_putenv("PYTHONVERBOSE=2"); // "1" for normal verbose, "2" for more verbose ?
@@ -132,7 +135,7 @@ extern "C" void __stdcall init_emu_environ()
   //dll_putenv("THREADDEBUG=1");
   //dll_putenv("PYTHONMALLOCSTATS=1");
   //dll_putenv("PYTHONY2K=1");
-  dll_putenv("TEMP=Z:\\temp"); // for python tempdir
+  dll_putenv("TEMP=special://temp/temp"); // for python tempdir
 }
 
 extern "C" void __stdcall update_emu_environ()
@@ -339,18 +342,24 @@ extern "C"
     if (len > 1 && relPath[1] == ':')
     {
       if (absPath == NULL) absPath = dll_strdup(relPath);
-      else strcpy(absPath, relPath);
+      else
+      {
+        strncpy(absPath, relPath, maxLength);
+        if (maxLength != 0)
+          absPath[maxLength-1] = '\0';
+      }
       return absPath;
     }
     if (!strncmp(relPath, "\\Device\\Cdrom0", 14))
     {
       // needed?
       if (absPath == NULL) absPath = strdup(relPath);
-      else strcpy(absPath, relPath);
-      /*
-       if(absPath == NULL) absPath = malloc(strlen(relPath) - 12); // \\Device\\Cdrom0 needs 12 bytes less then D:
-      strcpy(absPath, "D:");
-      strcat(absPath, relPath + 14);*/ 
+      else
+      {
+        strncpy(absPath, relPath, maxLength);
+        if (maxLength != 0)
+          absPath[maxLength-1] = '\0';
+      }
       return absPath;
     }
 
@@ -395,20 +404,26 @@ extern "C"
   int dll_open(const char* szFileName, int iMode)
   {
     char str[XBMC_MAX_PATH];
-
+    int size = sizeof(str);
     // move to CFile classes
     if (strncmp(szFileName, "\\Device\\Cdrom0", 14) == 0)
     {
       // replace "\\Device\\Cdrom0" with "D:"
-      strcpy(str, "D:");
-      strcat(str, szFileName + 14);
+      strncpy(str, "D:", size);
+      if (size)
+      {
+        str[size-1] = '\0';
+        strncat(str, szFileName + 14, size - strlen(str));
+      }
     }
-    else strcpy(str, szFileName);
+    else
+    {
+      strncpy(str, szFileName, size);
+      if (size)
+        str[size-1] = '\0';
+    }
 
     CFile* pFile = new CFile();
-    bool bBinary = false;
-    if (iMode & O_BINARY)
-      bBinary = true;
     bool bWrite = false;
     if ((iMode & O_RDWR) || (iMode & O_WRONLY))
       bWrite = true;
@@ -417,10 +432,15 @@ extern "C"
       bOverwrite = true;
     // currently always overwrites
     bool bResult;
+
+    // We need to validate the path here as some calls from ie. libdvdnav
+    // or the python DLLs have malformed slashes on Win32 & Xbox
+    // (-> E:\test\VIDEO_TS/VIDEO_TS.BUP))
     if (bWrite)
-      bResult = pFile->OpenForWrite(_P(str), bBinary, bOverwrite);
+      bResult = pFile->OpenForWrite(CURL::ValidatePath(str), bOverwrite);
     else
-      bResult = pFile->Open(_P(str), bBinary);
+      bResult = pFile->Open(CURL::ValidatePath(str));
+    
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
@@ -446,7 +466,8 @@ extern "C"
     }
     else if (!IS_STD_STREAM(stream))
     {
-      return freopen(_P(path), mode, stream);
+      // Translate the path
+      return freopen(_P(path).c_str(), mode, stream);
     }
     
     // error
@@ -668,8 +689,7 @@ extern "C"
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data)
   {
     char str[XBMC_MAX_PATH];
-    char* p;
-
+    int size = sizeof(str);
     CURL url(file);
     if (url.IsLocal())
     {
@@ -677,16 +697,22 @@ extern "C"
       if (strncmp(file, "\\Device\\Cdrom0", 14) == 0)
       {
         // replace "\\Device\\Cdrom0" with "D:"
-        strcpy(str, "D:");
-        strcat(str, file + 14);
+        strncpy(str, "D:", size);
+        if (size)
+        {
+          str[size - 1] = '\0';
+          strncat(str, file + 14, size - strlen(str));
+        }
       }
-      else strcpy(str, file);
+      else
+      {
+        strncpy(str, file, size);
+        if (size)
+          str[size - 1] = '\0';
+      }
 
-      // convert '/' to '\\'
-      p = str;
-      while (p = strchr(p, '/')) *p = '\\';
-
-      return _findfirst(_P(str), data);
+      // Make sure the slashes are correct & translate the path
+      return _findfirst(_P(CURL::ValidatePath(str)), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -721,7 +747,10 @@ extern "C"
     vecDirsOpen[iDirSlot].Directory->GetDirectory(strURL+fName,vecDirsOpen[iDirSlot].items);
     if (vecDirsOpen[iDirSlot].items.Size())
     {
-      strcpy(data->name,vecDirsOpen[iDirSlot].items[0]->GetLabel().c_str());
+      int size = sizeof(data->name);
+      strncpy(data->name,vecDirsOpen[iDirSlot].items[0]->GetLabel().c_str(), size);
+      if (size)
+        data->name[size - 1] = '\0';
       data->size = static_cast<_fsize_t>(vecDirsOpen[iDirSlot].items[0]->m_dwSize);
       data->time_write = iDirSlot; // save for later lookups
       data->time_access = 0;
@@ -744,7 +773,10 @@ extern "C"
     int iItem=data->time_access;
     if (iItem+1 < vecDirsOpen[data->time_write].items.Size()) // we have a winner!
     {
-      strcpy(data->name,vecDirsOpen[data->time_write].items[iItem+1]->GetLabel().c_str());
+      int size = sizeof(data->name);
+      strncpy(data->name,vecDirsOpen[data->time_write].items[iItem+1]->GetLabel().c_str(), size);
+      if (size)
+        data->name[size - 1] = '\0';
       data->size = static_cast<_fsize_t>(vecDirsOpen[data->time_write].items[iItem+1]->m_dwSize);
       data->time_access++;
       return 0;
@@ -891,9 +923,7 @@ extern "C"
       return fopen(filename, mode);
     }
 #endif
-    int iMode = O_TEXT;
-    if (strchr(mode, 'b') )
-      iMode = O_BINARY;
+    int iMode = O_BINARY;
     if (strstr(mode, "r+"))
       iMode |= O_RDWR;
     else if (strchr(mode, 'r'))
@@ -1446,7 +1476,13 @@ extern "C"
       return -1;
     if (!strnicmp(path, "mms://", 6)) // don't stat mms
       return -1;
+      
+#ifndef _LINUX
+    // check for remaining letter drives
+    if (path && isalpha(path[0]) && path[1] == ':' && ( strlen(path) == 2 || strlen(path) == 3 ) )
+#else
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
+#endif
     {
       buffer->st_mode = S_IFDIR;
       return 0;
@@ -1505,7 +1541,13 @@ extern "C"
       return -1;
     if (!strnicmp(path, "mms://", 6)) // don't stat mms
       return -1;
+
+#ifndef _LINUX
+    // check for remaining letter drives
+    if (path && isalpha(path[0]) && path[1] == ':' && ( strlen(path) == 2 || strlen(path) == 3 ) )
+#else
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
+#endif
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
@@ -1597,19 +1639,18 @@ extern "C"
     if (!dir) return -1;
 
 #ifndef _LINUX
-    CStdString newDir(dir);
-    newDir.Replace("/", "\\");
-    newDir.Replace("\\\\", "\\");
-    return mkdir(_P(newDir).c_str());
+    // Make sure the slashes are correct & translate the path
+    return mkdir(_P(CURL::ValidatePath(dir)).c_str());
 #else
-    return mkdir(dir, 0755);
+    // Make sure the slashes are correct & translate the path 
+    return mkdir(_P(CURL::ValidatePath(dir)).c_str(), 0755);
 #endif
   }
 
   char* dll_getcwd(char *buffer, int maxlen)
   {
     not_implement("msvcrt.dll fake function dll_getcwd() called\n");
-    return (char*)"Q:";
+    return (char*)"special://xbmc/";
   }
 
   int dll_putenv(const char* envstring)
@@ -1623,14 +1664,20 @@ extern "C"
       if (value_start != NULL)
       {
         char var[64];
-        char *value = (char*)malloc(strlen(envstring) + 1);
+        int size = strlen(envstring) + 1;
+        char *value = (char*)malloc(size);
+        
+        if (!value)
+          return -1;
         value[0] = 0;
         
         memcpy(var, envstring, value_start - envstring);
         var[value_start - envstring] = 0;
         strupr(var);
         
-        strcpy(value, value_start + 1);
+        strncpy(value, value_start + 1, size);
+        if (size)
+          value[size - 1] = '\0';
 
         EnterCriticalSection(&dll_cs_environ);
         
@@ -1657,11 +1704,16 @@ extern "C"
         if (free_position != NULL)
         {
           // free position, copy value
-          *free_position = (char*)malloc(strlen(var) + strlen(value) + 2); // for '=' and 0 termination
-          strcpy(*free_position, var);
-          strcat(*free_position, "=");
-          strcat(*free_position, value);
-          added = true;
+          size = strlen(var) + strlen(value) + 2;
+          *free_position = (char*)malloc(size); // for '=' and 0 termination
+          if ((*free_position))
+          {
+            strncpy(*free_position, var, size);
+            (*free_position)[size - 1] = '\0';
+            strncat(*free_position, "=", size - strlen(*free_position));
+            strncat(*free_position, value, size - strlen(*free_position));
+            added = true;
+          }
         }
         
         LeaveCriticalSection(&dll_cs_environ);
@@ -1686,23 +1738,7 @@ extern "C"
 
   char* dll_getenv(const char* szKey)
   {
-    static char* envstring = NULL;
     char* value = NULL;
-    if (stricmp(szKey, "HTTP_PROXY") == 0) // needed by libmpdemux
-    {
-      // Use a proxy, if the GUI was configured as such
-      if (g_guiSettings.GetBool("network.usehttpproxy"))
-      {
-        CStdString proxy = "http://" + g_guiSettings.GetString("network.httpproxyserver")
-                               + ":" + g_guiSettings.GetString("network.httpproxyport");
-
-        envstring = (char*)realloc(envstring, proxy.length() + 1);
-        if(!envstring)
-          return NULL;
-
-        return strcpy(envstring, proxy.c_str());
-      }
-    }
 
     EnterCriticalSection(&dll_cs_environ);
 
@@ -1719,6 +1755,15 @@ extern "C"
         }
       }
     }
+#ifdef _WIN32PC
+    // if value not found try the windows system env
+    if(value == NULL)
+    {
+      char ctemp[32768];
+      if(GetEnvironmentVariable(szKey,ctemp,32767) != 0)
+        value = ctemp;
+    }
+#endif
     
     LeaveCriticalSection(&dll_cs_environ);
     
@@ -1804,6 +1849,9 @@ extern "C"
 
 #ifndef __APPLE__
     if(request == DVD_READ_STRUCT || request == DVD_AUTH)
+#else
+    if(request == DKIOCDVDSENDKEY || request == DKIOCDVDREPORTKEY || request == DKIOCDVDREADSTRUCTURE)
+#endif
     {
       void *p1 = va_arg(va, void*);
       int ret = pFile->IoControl(request, p1);
@@ -1816,9 +1864,6 @@ extern "C"
       CLog::Log(LOGWARNING, "%s - Unknown request type %ld", __FUNCTION__, request);
       return -1;
     }
-#else
-  return -1;
-#endif
   }
 #endif
 
@@ -1851,7 +1896,7 @@ extern "C"
   int dll_filbuf(FILE *fp)
   {
     if (fp == NULL)
-      return NULL;
+      return 0;
 
     if(IS_STD_STREAM(fp))
       return 0;
@@ -1875,7 +1920,7 @@ extern "C"
   int dll_flsbuf(int data, FILE *fp)
   {
     if (fp == NULL)
-      return NULL;
+      return 0;
 
     if(IS_STDERR_STREAM(fp) || IS_STDOUT_STREAM(fp))
     {
@@ -1907,4 +1952,5 @@ extern "C"
   }
 #endif
 }
+
 

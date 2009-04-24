@@ -1,6 +1,6 @@
 /*!
 \file GUICheckMarkControl.h
-\brief 
+\brief
 */
 
 #ifndef CGUILIB_GUICHECKMARK_CONTROL_H
@@ -29,16 +29,18 @@
  *
  */
 
-#include "GUIImage.h"
+#include "GUITexture.h"
+#include "GUITextLayout.h"
+#include "GUIControl.h"
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUICheckMarkControl: public CGUIControl
 {
 public:
-  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureCheckMark, const CImage& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo);
+  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureCheckMark, const CTextureInfo& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo);
   virtual ~CGUICheckMarkControl(void);
   virtual CGUICheckMarkControl *Clone() const { return new CGUICheckMarkControl(*this); };
 
@@ -49,7 +51,6 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
 
   void SetLabel(const std::string& strLabel);
   const std::string GetLabel() const { return m_strLabel; };
@@ -62,8 +63,9 @@ public:
   void PythonSetDisabledColor(DWORD dwDisabledColor);
 
 protected:
-  CGUIImage m_imgCheckMark;
-  CGUIImage m_imgCheckMarkNoFocus;
+  virtual void UpdateColors();
+  CGUITexture m_imgCheckMark;
+  CGUITexture m_imgCheckMarkNoFocus;
 
   CLabelInfo m_label;
   CGUITextLayout m_textLayout;

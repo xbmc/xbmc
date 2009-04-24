@@ -29,6 +29,12 @@
 #include "../../../FileSystem/cdioSupport.h"
 #include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
+#ifdef ENABLE_DVDPLAYER_HTSP
+#include "DVDInputStreamHTSP.h"
+#endif
+#ifdef ENABLE_DVDINPUTSTREAM_STACK
+#include "DVDInputStreamStack.h"
+#endif
 #include "FileItem.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
@@ -36,9 +42,9 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   CFileItem item(file.c_str(), false);
   if (item.IsDVDFile(false, true) || item.IsDVDImage() ||
 #ifdef _WIN32PC
-    file.compare(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName()+4) == 0 )
+    file.compare(MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4) == 0 )
 #else
-    file.compare(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName()) == 0 )
+    file.compare(MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()) == 0 )
 #endif
   {
     return (new CDVDInputStreamNavigator(pPlayer));
@@ -54,8 +60,16 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
        || file.substr(0, 8) == "gmyth://"
        || file.substr(0, 6) == "vtp://")
     return new CDVDInputStreamTV();
+#ifdef ENABLE_DVDINPUTSTREAM_STACK
+  else if(file.substr(0, 8) == "stack://")
+    return new CDVDInputStreamStack();
+#endif
   else if(file.substr(0, 7) == "rtmp://")
-	return new CDVDInputStreamRTMP();
+    return new CDVDInputStreamRTMP();
+#ifdef ENABLE_DVDPLAYER_HTSP
+  else if(file.substr(0, 7) == "htsp://")
+    return new CDVDInputStreamHTSP();
+#endif
 
   //else if (item.IsShoutCast())
   //  /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */

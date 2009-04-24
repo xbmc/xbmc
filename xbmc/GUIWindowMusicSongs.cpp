@@ -29,6 +29,7 @@
 #include "GUIDialogMusicScan.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -226,7 +227,7 @@ bool CGUIWindowMusicSongs::OnAction(const CAction& action)
 
     return true;
   }
-  
+
   return CGUIWindowMusicBase::OnAction(action);
 }
 
@@ -367,8 +368,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     if (m_vecItems->IsVirtualDirectoryRoot())
     {
       // get the usual music shares, and anything for all media windows
-      CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item.get());
-      CGUIDialogContextMenu::GetContextButtons("music", share, buttons);
+      CGUIDialogContextMenu::GetContextButtons("music", item, buttons);
       // enable Rip CD an audio disc
       if (CDetectDVDMedia::IsDiscInDrive() && item->IsCDDA())
       {
@@ -452,8 +452,7 @@ bool CGUIWindowMusicSongs::OnContextButton(int itemNumber, CONTEXT_BUTTON button
     item = m_vecItems->Get(itemNumber);
   if ( m_vecItems->IsVirtualDirectoryRoot() && item)
   {
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("music", item.get());
-    if (CGUIDialogContextMenu::OnContextButton("music", share, button))
+    if (CGUIDialogContextMenu::OnContextButton("music", item, button))
     {
       Update("");
       return true;
@@ -501,18 +500,14 @@ void CGUIWindowMusicSongs::DeleteDirectoryCache()
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString searchPath = _P("Z:\\*.fi");
-  CAutoPtrFind hFind( FindFirstFile(searchPath.c_str(), &wfd));
+  CStdString searchPath = "special://temp/*.fi";
+  CAutoPtrFind hFind( FindFirstFile(_P(searchPath).c_str(), &wfd));
   if (!hFind.isValid())
     return;
   do
   {
     if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-    {
-      CStdString strFile = _P("Z:\\");
-      strFile += wfd.cFileName;
-      DeleteFile(strFile.c_str());
-    }
+      XFILE::CFile::Delete(CStdString("special://temp/") + wfd.cFileName);
   }
   while (FindNextFile(hFind, &wfd));
 }
@@ -522,18 +517,14 @@ void CGUIWindowMusicSongs::DeleteRemoveableMediaDirectoryCache()
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
-  CStdString searchPath = _P("Z:\\r-*.fi");
-  CAutoPtrFind hFind( FindFirstFile(searchPath.c_str(), &wfd));
+  CStdString searchPath = "special://temp/r-*.fi";
+  CAutoPtrFind hFind( FindFirstFile(_P(searchPath).c_str(), &wfd));
   if (!hFind.isValid())
     return;
   do
   {
     if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-    {
-      CStdString strFile = _P("Z:\\");
-      strFile += wfd.cFileName;
-      DeleteFile(strFile.c_str());
-    }
+      XFILE::CFile::Delete(CStdString("special://temp/") + wfd.cFileName);
   }
   while (FindNextFile(hFind, &wfd));
 }

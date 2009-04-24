@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "DVDSubtitlesLibass.h"
 #include "DVDClock.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 
@@ -40,7 +40,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   }
 
   //Setting the font directory to the temp dir(where mkv fonts are extracted to)
-  string strPath = _P("Z:\\");
+  string strPath = "special://temp/";
 
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating ASS library structure");
   m_library  = m_dll.ass_library_init();
@@ -60,7 +60,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
     return;
 
   //Setting default font to the Arial in \media\fonts (used if FontConfig fails)
-  strPath = _P("Q:\\media\\Fonts\\Arial.ttf");
+  strPath = "special://xbmc/media/Fonts/arial.ttf";
 
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
   m_dll.ass_set_use_margins(m_renderer, 0);
@@ -116,9 +116,7 @@ bool CDVDSubtitlesLibass::ReadFile(const string& strFile)
     return false;
   }
 
-  //Fixing up the pathname.
-  string fileName =  strFile;
-  fileName = _P(fileName);
+  string fileName = strFile;
 #ifdef _LINUX
   fileName = PTH_IC(fileName);
 #endif

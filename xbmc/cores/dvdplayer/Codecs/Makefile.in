@@ -6,39 +6,146 @@ LDFLAGS=-shared -fPIC -rdynamic
 ARCH=@ARCH@
 SYSDIR=../../../../system/players/dvdplayer
 WRAPPER=../../DllLoader/exports/wrapper.o
+WRAPPER_OSX=../../../../tools/Mach5/wrapper.rb
 DIRS=	ffmpeg \
 	libdts \
-	libdvdnav \
 	libfaad2 \
 	libmad \
 	liba52 \
 	libmpeg2 \
 
-LIBS=	avutil-49-$(ARCH).so \
-	avcodec-52-$(ARCH).so \
-	avformat-52-$(ARCH).so \
-	postproc-51-$(ARCH).so \
-	swscale-0.6.1-$(ARCH).so \
+# for clean purposes
+DIRS+=  libdvdnav \
+	libDVDCSS
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+LIBS=	avutil-49-$(ARCH).a \
+	avcodec-52-$(ARCH).a \
+	avformat-52-$(ARCH).a \
+	postproc-51-$(ARCH).a \
+	swscale-0.6.1-$(ARCH).a \
 	libdts-$(ARCH).so \
-	libdvdnav-$(ARCH).so \
 	libfaad-$(ARCH).so \
 	libmad-$(ARCH).so \
 	liba52-$(ARCH).so \
 	libao-$(ARCH).so \
 	libmpeg2-$(ARCH).so \
 
-# Allows us to optionally build xbmc with DVDCSS support
-ifeq (@BUILD_DVDCSS@,1)
-  DIRS += libDVDCSS
-  LIBS += libDVDCSS-$(ARCH).so
-  DVDCSS_LA = libDVDCSS/src/libdvdcss.la
-  DVDCSS_O = libDVDCSS/src/*.o
-  DVDNAV_PREREQ = libDVDCSS
+else
+LIBS=	avutil-49-$(ARCH).so \
+	avcodec-52-$(ARCH).so \
+	avformat-52-$(ARCH).so \
+	postproc-51-$(ARCH).so \
+	swscale-0.6.1-$(ARCH).so \
+	libdts-$(ARCH).so \
+	libfaad-$(ARCH).so \
+	libmad-$(ARCH).so \
+	liba52-$(ARCH).so \
+	libao-$(ARCH).so \
+	libmpeg2-$(ARCH).so \
+
 endif
+
+# Add -lbundle1.o for powerpc-osx
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O = -lbundle1.o
+endif
+
 
 .PHONY: $(DIRS) codecs
 
 codecs: $(addprefix $(SYSDIR)/, $(LIBS));
+
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+
+$(SYSDIR)/avutil-49-$(ARCH).a: ffmpeg/libavutil/libavutil.a
+	ar rus $@ ffmpeg/libavutil/*.o 
+
+ifeq ($(ARCH), x86-osx)
+$(SYSDIR)/avcodec-52-$(ARCH).a: ffmpeg/libavcodec/libavcodec.a
+	libtool -static -o $@ \
+		ffmpeg/libavcodec/*.o \
+		ffmpeg/libavcodec/x86/*.o
+else
+$(SYSDIR)/avcodec-52-$(ARCH).a: ffmpeg/libavcodec/libavcodec.a
+	libtool -static -o $@ \
+		ffmpeg/libavcodec/*.o \
+		ffmpeg/libavcodec/ppc/*.o
+endif
+
+$(SYSDIR)/avformat-52-$(ARCH).a: ffmpeg/libavformat/libavformat.a
+	ar rus $@ ffmpeg/libavformat/*.o
+
+$(SYSDIR)/swscale-0.6.1-$(ARCH).a: ffmpeg/libswscale/libswscale.a
+	ar rus $@ ffmpeg/libswscale/*.o
+
+$(SYSDIR)/postproc-51-$(ARCH).a: ffmpeg/libpostproc/libpostproc.a
+	ar rus $@ ffmpeg/libpostproc/*.o
+
+ffmpeg/libavutil/libavutil.a     : ffmpeg;
+ffmpeg/libavcodec/libavcodec.a   : ffmpeg;
+ffmpeg/libavformat/libavformat.a : ffmpeg;
+ffmpeg/libswscale/libswscale.a   : ffmpeg;
+ffmpeg/libpostproc/libpostproc.a : ffmpeg;
+ffmpeg:
+	$(MAKE) -C $@
+
+$(SYSDIR)/libdts-$(ARCH).so:  $(WRAPPER_OSX) libdts/libdts/libdts.a
+	$(CC) -bundle -flat_namespace -undefined suppress \
+		-o $@ libdts/libdts/bitstream.o \
+		libdts/libdts/downmix.o \
+		libdts/libdts/parse.o
+	$(WRAPPER_OSX) $@;mv output.so $@
+	chmod +x $@
+
+$(SYSDIR)/libfaad-$(ARCH).so:  $(WRAPPER_OSX) libfaad2/libfaad/libfaad.la
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		libfaad2/libfaad/*.o $(BUNDLE1_O)
+	$(WRAPPER_OSX) $@;mv output.so $@
+
+$(SYSDIR)/libmad-$(ARCH).so: $(WRAPPER_OSX) libmad/libmad.la
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		libmad/.libs/*.o $(BUNDLE1_O)
+	$(WRAPPER_OSX) $@;mv output.so $@
+
+$(SYSDIR)/liba52-$(ARCH).so: $(WRAPPER_OSX) liba52/liba52/liba52.la
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		liba52/liba52/*.o $(BUNDLE1_O)
+	$(WRAPPER_OSX) $@;mv output.so $@
+
+$(SYSDIR)/libao-$(ARCH).so: $(WRAPPER_OSX) liba52/libao/libao.a
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		liba52/libao/*.o $(BUNDLE1_O)
+	$(WRAPPER_OSX) $@;mv output.so $@
+
+$(SYSDIR)/libmpeg2-$(ARCH).so: $(WRAPPER_OSX) libmpeg2/libmpeg2/libmpeg2.la
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		libmpeg2/libmpeg2/.libs/*.o $(BUNDLE1_O)
+	$(WRAPPER_OSX) $@;mv output.so $@
+
+libdts/libdts/libdts.a : libdts;
+libdts:
+	$(MAKE) -C $@
+
+libfaad2/libfaad/libfaad.la: libfaad2;
+libfaad2:
+	$(MAKE) -C $@
+
+libmad/libmad.la: libmad;
+libmad:
+	$(MAKE) -C $@
+
+liba52/liba52/liba52.la: liba52
+liba52/libao/libao.a: liba52
+liba52:
+	$(MAKE) -C $@
+
+libmpeg2/libmpeg2/libmpeg2.la: libmpeg2
+libmpeg2:
+	$(MAKE) -C $@
+
+else
 
 $(SYSDIR)/avutil-49-$(ARCH).so: ffmpeg/libavutil/libavutil.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavutil/*.o \
@@ -60,17 +167,18 @@ $(SYSDIR)/postproc-51-$(ARCH).so: $(WRAPPER) ffmpeg/libpostproc/libpostproc.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libpostproc/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
+ffmpeg/libavutil/libavutil.so     : ffmpeg;
+ffmpeg/libavcodec/libavcodec.so   : ffmpeg;
+ffmpeg/libavformat/libavformat.so : ffmpeg;
+ffmpeg/libswscale/libswscale.so   : ffmpeg;
+ffmpeg/libpostproc/libpostproc.so : ffmpeg;
+ffmpeg:
+	$(MAKE) -C $@
+
 $(SYSDIR)/libdts-$(ARCH).so: $(WRAPPER) libdts/libdts/libdts.a
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ libdts/libdts/bitstream.o \
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ \
+		libdts/libdts/bitstream.o \
 		libdts/libdts/downmix.o libdts/libdts/parse.o \
-		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
-
-$(SYSDIR)/libDVDCSS-$(ARCH).so: $(WRAPPER) libDVDCSS/src/libdvdcss.la
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ libDVDCSS/src/*.o \
-		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
-
-$(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER) $(DVDCSS_LA) libdvdnav/src/libdvdnav.la libdvdnav/src/vm/libdvdvm.la libdvdnav/src/dvdread/libdvdread.la
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ $(DVDCSS_O) libdvdnav/src/*.o libdvdnav/src/vm/*.o libdvdnav/src/dvdread/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libfaad-$(ARCH).so: $(WRAPPER) libfaad2/libfaad/libfaad.la
@@ -92,26 +200,8 @@ $(SYSDIR)/libmpeg2-$(ARCH).so: $(WRAPPER) libmpeg2/libmpeg2/libmpeg2.la
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ libmpeg2/libmpeg2/.libs/*.o \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
-ffmpeg/libavutil/libavutil.so     : ffmpeg;
-ffmpeg/libavformat/libavformat.so : ffmpeg;
-ffmpeg/libavcodec/libavcodec.so   : ffmpeg;
-ffmpeg/libswscale/libswscale.so   : ffmpeg;
-ffmpeg/libpostproc/libpostproc.so : ffmpeg;
-ffmpeg:
-	$(MAKE) -C $@
-
 libdts/libdts/libdts.a : libdts;
 libdts:
-	$(MAKE) -C $@
-
-libDVDCSS/src/libdvdcss.la: libDVDCSS;
-libDVDCSS:
-	$(MAKE) -C $@
-
-libdvdnav/src/libdvdnav.la          : libdvdnav;
-libdvdnav/src/vm/libdvdvm.la        : libdvdnav;
-libdvdnav/src/dvdread/libdvdread.la : libdvdnav;
-libdvdnav: $(DVDNAV_PREREQ)
 	$(MAKE) -C $@
 
 libfaad2/libfaad/libfaad.la: libfaad2;
@@ -130,6 +220,8 @@ liba52:
 libmpeg2/libmpeg2/libmpeg2.la: libmpeg2
 libmpeg2:
 	$(MAKE) -C $@
+
+endif
 
 clean:
 	rm -f $(addprefix $(SYSDIR)/, $(LIBS))

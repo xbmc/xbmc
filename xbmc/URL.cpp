@@ -24,10 +24,14 @@
 #include "utils/RegExp.h"
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "FileItem.h"
+#include "FileSystem/StackDirectory.h"
 #ifndef _LINUX
 #include <sys\types.h>
 #include <sys\stat.h>
 #endif
+
+using namespace std;
 
 CStdString URLEncodeInline(const CStdString& strData)
 {
@@ -36,7 +40,7 @@ CStdString URLEncodeInline(const CStdString& strData)
   return buffer;
 }
 
-CURL::CURL(const CStdString& strURL)
+CURL::CURL(const CStdString& strURL1)
 {
   m_strHostName = "";
   m_strDomain = "";
@@ -48,6 +52,9 @@ CURL::CURL(const CStdString& strURL)
   m_strFileType = "";
   m_iPort = 0;
 
+  // start by validating the path
+  CStdString strURL = ValidatePath(strURL1);
+
   // strURL can be one of the following:
   // format 1: protocol://[username:password]@hostname[:port]/directoryandfile
   // format 2: protocol://file
@@ -56,16 +63,16 @@ CURL::CURL(const CStdString& strURL)
   // first need 2 check if this is a protocol or just a normal drive & path
   if (!strURL.size()) return ;
   if (strURL.Equals("?", true)) return;
-#ifndef _LINUX
+
   if (strURL[1] == ':')
   {
     // form is drive:directoryandfile
 
     /* set filename and update extension*/
+
     SetFileName(strURL);
     return ;
   }
-#endif
 
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
@@ -141,10 +148,11 @@ CURL::CURL(const CStdString& strURL)
     m_strProtocol.Equals("stack") ||
     m_strProtocol.Equals("virtualpath") ||
     m_strProtocol.Equals("multipath") ||
-    m_strProtocol.Equals("filereader")
+    m_strProtocol.Equals("filereader") ||
+    m_strProtocol.Equals("special")
     )
   {
-    m_strFileName = strURL.Mid(iPos);
+    SetFileName(strURL.Mid(iPos));
     return;
   }
 
@@ -154,6 +162,8 @@ CURL::CURL(const CStdString& strURL)
   // for protocols supporting options, chop that part off here
   // maybe we should invert this list instead?
   int iEnd = strURL.length();
+  const char* sep = NULL;
+
   if(m_strProtocol.Equals("http")
     || m_strProtocol.Equals("https")
     || m_strProtocol.Equals("shout")
@@ -163,8 +173,15 @@ CURL::CURL(const CStdString& strURL)
     || m_strProtocol.Equals("hdhomerun")
     || m_strProtocol.Equals("rtsp")
     || m_strProtocol.Equals("zip"))
+    sep = "?;#";
+  else if(m_strProtocol.Equals("ftp")
+       || m_strProtocol.Equals("ftps")
+       || m_strProtocol.Equals("ftpx"))
+    sep = "?;";
+
+  if(sep)
   {
-    int iOptions = strURL.find_first_of("?;#", iPos);
+    int iOptions = strURL.find_first_of(sep, iPos);
     if (iOptions >= 0 )
     {
       // we keep the initial char as it can be any of the above
@@ -332,7 +349,7 @@ CURL& CURL::operator= (const CURL& source)
 
 void CURL::SetFileName(const CStdString& strFileName)
 {
-  m_strFileName = _P(strFileName);
+  m_strFileName = strFileName;
 
   int slash = m_strFileName.find_last_of(GetDirectorySeparator());
   int period = m_strFileName.find_last_of('.');
@@ -490,6 +507,24 @@ void CURL::GetURL(CStdString& strURL) const
 
 void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
 {
+  if (m_strProtocol.Equals("stack"))
+  {
+    CFileItemList items;
+    CStdString strURL2;
+    GetURL(strURL2);
+    DIRECTORY::CStackDirectory dir;
+    dir.GetDirectory(strURL2,items);
+    vector<CStdString> newItems;
+    for (int i=0;i<items.Size();++i)
+    {
+      CURL url(items[i]->m_strPath);
+      url.GetURLWithoutUserDetails(items[i]->m_strPath);
+      newItems.push_back(items[i]->m_strPath);
+    }
+    dir.ConstructStackPath(newItems,strURL);
+    return;
+  }
+
   unsigned int sizeneed = m_strProtocol.length()
                         + m_strDomain.length()
                         + m_strHostName.length()
@@ -608,3 +643,49 @@ bool CURL::IsFileOnly(const CStdString &url)
   return url.find_first_of("/\\") == CStdString::npos;
 }
 
+bool CURL::IsFullPath(const CStdString &url)
+{
+  if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
+  if (url.Find("://") >= 0) return true;                 //   foo://bar.ext
+  if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
+  return false;
+}
+
+CStdString CURL::ValidatePath(const CStdString &path)
+{
+  CStdString result = path;
+  // check the path for incorrect slashes
+#ifdef _WIN32
+  if (CUtil::IsDOSPath(path))
+  {
+    result.Replace('/', '\\');
+    // Fixup for double back slashes (but ignore \\ of unc-paths) 
+    for (int x=1; x<result.GetLength()-1; x++) 
+    { 
+      if (result[x] == '\\' && result[x+1] == '\\') 
+        result.Delete(x);   
+    }    
+  }
+  else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
+  {
+    result.Replace('\\', '/');
+    // Fixup for double forward slashes(/) but don't touch the :// of URLs
+    // The %3A-exclude is to protect against modifying half-URL-encoded %3A// (= ://)
+    for (int x=1; x<result.GetLength()-1; x++) 
+    { 
+      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':' && !(x>3 && result.Mid(x-3,3)=="%3A")) 
+        result.Delete(x); 
+    }        
+  }
+#else
+  result.Replace('\\', '/');
+  // Fixup for double forward slashes(/) but don't touch the :// of URLs 
+  // The %3A-exclude is to protect against modifying half-URL-encoded %3A// (= ://)
+  for (int x=1; x<result.GetLength()-1; x++) 
+  { 
+    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':' && !(x>3 && result.Mid(x-3,3)=="%3A")) 
+      result.Delete(x); 
+  }        
+#endif
+  return result;
+}

@@ -52,7 +52,6 @@
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
 #include "GUIPanelContainer.h"
-#include "GUILargeImage.h"
 #include "GUIMultiSelectText.h"
 #include "GUIListLabel.h"
 #include "GUIListGroup.h"
@@ -66,10 +65,6 @@
 #include "Settings.h"
 
 using namespace std;
-
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
 
 CGUIControlFactory::CGUIControlFactory(void)
 {}
@@ -128,6 +123,13 @@ bool CGUIControlFactory::GetFloat(const TiXmlNode* pRootNode, const char* strTag
   return g_SkinInfo.ResolveConstant(pNode->FirstChild()->Value(), value);
 }
 
+bool CGUIControlFactory::GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD &value)
+{
+  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
+  if (!pNode || !pNode->FirstChild()) return false;
+  return g_SkinInfo.ResolveConstant(pNode->FirstChild()->Value(), value);
+}
+
 bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, vector<CStdString>& vecStringValue)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
@@ -147,36 +149,18 @@ bool CGUIControlFactory::GetMultipleString(const TiXmlNode* pRootNode, const cha
   return bFound;
 }
 
-bool CGUIControlFactory::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath)
+bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspect)
 {
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode) return false;
-  strStringPath = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
-  strStringPath.Replace('/', '\\');
-  return true;
-}
-
-bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::CAspectRatio &aspect)
-{
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  bool keepAR;
-  // backward compatibility
-  if (XMLUtils::GetBoolean(pRootNode, "keepaspectratio", keepAR))
-  {
-    aspect.ratio = CGUIImage::CAspectRatio::AR_KEEP;
-    return true;
-  }
-#endif
   CStdString ratio;
   const TiXmlElement *node = pRootNode->FirstChildElement(strTag);
   if (!node || !node->FirstChild())
     return false;
 
   ratio = node->FirstChild()->Value();
-  if (ratio.CompareNoCase("keep") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_KEEP;
-  else if (ratio.CompareNoCase("scale") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_SCALE;
-  else if (ratio.CompareNoCase("center") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_CENTER;
-  else if (ratio.CompareNoCase("stretch") == 0) aspect.ratio = CGUIImage::CAspectRatio::AR_STRETCH;
+  if (ratio.CompareNoCase("keep") == 0) aspect.ratio = CAspectRatio::AR_KEEP;
+  else if (ratio.CompareNoCase("scale") == 0) aspect.ratio = CAspectRatio::AR_SCALE;
+  else if (ratio.CompareNoCase("center") == 0) aspect.ratio = CAspectRatio::AR_CENTER;
+  else if (ratio.CompareNoCase("stretch") == 0) aspect.ratio = CAspectRatio::AR_STRETCH;
 
   const char *attribute = node->Attribute("align");
   if (attribute)
@@ -206,7 +190,15 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
   return true;
 }
 
-bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image)
+bool CGUIControlFactory::GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info)
+{
+  GetTexture(pRootNode, strTag, image);
+  image.filename = "";
+  GetInfoLabel(pRootNode, strTag, info);
+  return true;
+}
+
+bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image)
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode) return false;
@@ -219,12 +211,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   const char *flipY = pNode->Attribute("flipy");
   if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
   image.diffuse = pNode->Attribute("diffuse");
-  CStdString fallback = pNode->Attribute("fallback");
-  CStdString file = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
-  image.diffuse.Replace("/", "\\");
-  file.Replace("/", "\\");
-  fallback.Replace("/", "\\");
-  image.file.SetLabel(file, fallback);
+  image.filename = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
   return true;
 }
 
@@ -375,7 +362,7 @@ bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
   {
     if (node->Attribute("x")) g_SkinInfo.ResolveConstant(node->Attribute("x"), rect.x1);
     if (node->Attribute("y")) g_SkinInfo.ResolveConstant(node->Attribute("y"), rect.y1);
-    if (node->Attribute("w")) 
+    if (node->Attribute("w"))
     {
       g_SkinInfo.ResolveConstant(node->Attribute("w"), rect.x2);
       rect.x2 += rect.x1;
@@ -461,11 +448,11 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
         if (StringUtils::IsNaturalNumber(label))
           label = g_localizeStrings.Get(atoi(label));
         else // we assume the skin xml's aren't encoded as UTF-8
-          g_charsetConverter.stringCharsetToUtf8(label);
+          g_charsetConverter.unknownToUTF8(label);
         if (StringUtils::IsNaturalNumber(fallback))
           fallback = g_localizeStrings.Get(atoi(fallback));
         else
-          g_charsetConverter.stringCharsetToUtf8(fallback);
+          g_charsetConverter.unknownToUTF8(fallback);
         infoLabels.push_back(CGUIInfoLabel(label, fallback));
       }
     }
@@ -498,9 +485,7 @@ CStdString CGUIControlFactory::FilterLabel(const CStdString &label)
   if (StringUtils::IsNaturalNumber(viewLabel))
     viewLabel = g_localizeStrings.Get(atoi(label));
   else
-  { // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
-    g_charsetConverter.stringCharsetToUtf8(viewLabel);
-  }
+    g_charsetConverter.unknownToUTF8(viewLabel);
   // translate the label
   CGUIInfoLabel info(viewLabel, "");
   return info.GetLabel(0);
@@ -514,8 +499,8 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTa
     text.Empty();
   if (StringUtils::IsNaturalNumber(text))
     text = g_localizeStrings.Get(atoi(text.c_str()));
-  else // TODO: UTF-8: What if the xml is encoded as UTF-8 already?
-    g_charsetConverter.stringCharsetToUtf8(text);
+  else
+    g_charsetConverter.unknownToUTF8(text);
   return true;
 }
 
@@ -527,11 +512,6 @@ CStdString CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
     type = szType;
   else  // backward compatibility - not desired
     XMLUtils::GetString(pControlNode, "type", type);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  // check if we are a <controlgroup>
-  if (strcmpi(pControlNode->Value(), "controlgroup") == 0)
-    type = "group";
-#endif
   return type;
 }
 
@@ -576,22 +556,21 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float fInterval = 0.1f;
   bool bReverse = true;
   bool bReveal = false;
-  CImage textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
+  CTextureInfo textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
   float rMin = 0.0f;
   float rMax = 100.0f;
-  CImage textureNib, textureNibFocus, textureBar, textureBarFocus;
-  CImage textureLeftFocus, textureRightFocus;
-  CImage textureUp, textureDown;
-  CImage textureUpFocus, textureDownFocus;
-  CImage texture;
-  CImage borderTexture;
-  CImage textureCheckMark, textureCheckMarkNF;
-  CImage textureFocus, textureNoFocus;
-  CImage textureAltFocus, textureAltNoFocus;
-  CImage textureRadioFocus, textureRadioNoFocus;
-  CImage imageNoFocus, imageFocus;
-  CImage texturePath;
-  DWORD dwColorKey = 0;
+  CTextureInfo textureNib, textureNibFocus, textureBar, textureBarFocus;
+  CTextureInfo textureLeftFocus, textureRightFocus;
+  CTextureInfo textureUp, textureDown;
+  CTextureInfo textureUpFocus, textureDownFocus;
+  CTextureInfo texture, borderTexture;
+  CGUIInfoLabel textureFile;
+  CTextureInfo textureCheckMark, textureCheckMarkNF;
+  CTextureInfo textureFocus, textureNoFocus;
+  CTextureInfo textureAltFocus, textureAltNoFocus;
+  CTextureInfo textureRadioFocus, textureRadioNoFocus;
+  CTextureInfo imageNoFocus, imageFocus;
+  CGUIInfoLabel texturePath;
   FRECT borderSize = { 0, 0, 0, 0};
 
   float controlOffsetX = 0;
@@ -605,7 +584,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   float textureWidth = 80;
   float itemWidthBig = 150;
   float itemHeightBig = 150;
-  DWORD dwDisposition = 0;
 
   float spaceBetweenItems = 2;
   bool bHasPath = false;
@@ -635,10 +613,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   int iAlpha = 0;
   bool bWrapAround = true;
   bool bSmoothScrolling = true;
-  CGUIImage::CAspectRatio aspect;
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (strType == "thumbnailpanel" || insideContainer)  // default for thumbpanel and inside containers is keep
-    aspect.ratio = CGUIImage::CAspectRatio::AR_KEEP;
+  CAspectRatio aspect;
+#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
+  if (insideContainer)  // default for inside containers is keep
+    aspect.ratio = CAspectRatio::AR_KEEP;
 #endif
 
   int iVisibleCondition = 0;
@@ -655,9 +633,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   bool randomized = false;
   bool loop = true;
   bool wrapMultiLine = false;
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  bool thumbPanelHideLabels = false;
-#endif
   ORIENTATION orientation = VERTICAL;
   bool showOnePage = true;
   bool scrollOut = true;
@@ -691,18 +666,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // Read control properties from XML
   //
 
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  // check if we are a <controlgroup>
-  if (strcmpi(pControlNode->Value(), "controlgroup") == 0)
-  {
-    if (pControlNode->Attribute("id", (int*) &id))
-      id += 9000;       // offset at 9000 for old controlgroups
-                        // NOTE: An old control group with no id means that it can't be focused
-                        //       Which isn't too good :(
-                        //       We check for this in OnWindowLoaded()
-  }
-  else
-#endif
   if (!pControlNode->Attribute("id", (int*) &id))
     XMLUtils::GetInt(pControlNode, "id", (int&) id);       // backward compatibility - not desired
   // TODO: Perhaps we should check here whether id is valid for focusable controls
@@ -801,17 +764,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "alttexturenofocus", textureAltNoFocus);
   CStdString strToggleSelect;
   XMLUtils::GetString(pControlNode, "usealttexture", strToggleSelect);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (g_SkinInfo.GetVersion() < 2.1 && strToggleSelect.IsEmpty() && strType == "togglebutton")
-  { // swap them over
-    CImage temp = textureFocus;
-    textureFocus = textureAltFocus;
-    textureAltFocus = temp;
-    temp = textureNoFocus;
-    textureNoFocus = textureAltNoFocus;
-    textureAltNoFocus = temp;
-  }
-#endif
   XMLUtils::GetString(pControlNode, "selected", strToggleSelect);
   iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
 
@@ -851,7 +803,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "texturesliderbarfocus", textureBarFocus);
   GetTexture(pControlNode, "textureslidernib", textureNib);
   GetTexture(pControlNode, "textureslidernibfocus", textureNibFocus);
-  XMLUtils::GetDWORD(pControlNode, "disposition", dwDisposition);
 
   XMLUtils::GetString(pControlNode, "title", strTitle);
   XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
@@ -880,17 +831,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetBoolean(pControlNode, "reverse", bReverse);
   XMLUtils::GetBoolean(pControlNode, "reveal", bReveal);
 
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CStdString hideLabels;
-  if (XMLUtils::GetString(pControlNode, "hidelabels", hideLabels))
-  {
-    if (hideLabels.Equals("all"))
-      thumbPanelHideLabels = true;
-    else
-      thumbPanelHideLabels = false;
-  }
-#endif
-
   GetTexture(pControlNode, "texturebg", textureBackground);
   GetTexture(pControlNode, "lefttexture", textureLeft);
   GetTexture(pControlNode, "midtexture", textureMid);
@@ -898,13 +838,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetTexture(pControlNode, "overlaytexture", textureOverlay);
 
   // the <texture> tag can be overridden by the <info> tag
-  GetTexture(pControlNode, "texture", texture);
-  GetInfoLabel(pControlNode, "texture", texture.file);
+  GetInfoTexture(pControlNode, "texture", texture, textureFile);
 
   GetTexture(pControlNode, "bordertexture", borderTexture);
   GetFloat(pControlNode, "rangemin", rMin);
   GetFloat(pControlNode, "rangemax", rMax);
-  GetColor(pControlNode, "colorkey", dwColorKey);
 
   GetFloat(pControlNode, "itemwidth", itemWidth);
   GetFloat(pControlNode, "itemheight", itemHeight);
@@ -935,7 +873,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   // fade label can have a whole bunch, but most just have one
   vector<CGUIInfoLabel> infoLabels;
   GetInfoLabels(pControlNode, "label", infoLabels);
-  
+
   GetString(pControlNode, "label", strLabel);
   GetString(pControlNode, "altlabel", altLabel);
   GetString(pControlNode, "label2", strLabel2);
@@ -964,12 +902,11 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
 
-  GetTexture(pControlNode, "imagepath", texturePath);
-  if (texturePath.file.IsConstant())
-    GetInfoLabel(pControlNode, "imagepath", texturePath.file);
-  XMLUtils::GetDWORD(pControlNode,"timeperimage", timePerImage);
-  XMLUtils::GetDWORD(pControlNode,"fadetime", fadeTime);
-  XMLUtils::GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
+  GetInfoTexture(pControlNode, "imagepath", texture, texturePath);
+
+  GetDWORD(pControlNode,"timeperimage", timePerImage);
+  GetDWORD(pControlNode,"fadetime", fadeTime);
+  GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
   XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
   XMLUtils::GetBoolean(pControlNode, "loop", loop);
   XMLUtils::GetBoolean(pControlNode, "scrollout", scrollOut);
@@ -1236,35 +1173,35 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   {
     control = new CGUIProgressControl(
       dwParentId, id, posX, posY, width, height,
-      textureBackground, textureLeft, textureMid, textureRight, 
+      textureBackground, textureLeft, textureMid, textureRight,
       textureOverlay, rMin, rMax, bReveal);
     ((CGUIProgressControl *)control)->SetInfo(singleInfo);
   }
-  else if (strType == "image")
+  else if (strType == "image" || strType == "largeimage")
   {
+    if (strType == "largeimage")
+      texture.useLarge = true;
+
     // use a bordered texture if we have <bordersize> or <bordertexture> specified.
-    if (borderTexture.file.IsEmpty() && borderStr.IsEmpty())
+    if (borderTexture.filename.IsEmpty() && borderStr.IsEmpty())
       control = new CGUIImage(
-        dwParentId, id, posX, posY, width, height, texture, dwColorKey);
+        dwParentId, id, posX, posY, width, height, texture);
     else
       control = new CGUIBorderedImage(
-        dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize, dwColorKey);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-    if (insideContainer && texture.file.IsConstant())
-      aspect.ratio = CGUIImage::CAspectRatio::AR_STRETCH;
+        dwParentId, id, posX, posY, width, height, texture, borderTexture, borderSize);
+#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
+    if (insideContainer && textureFile.IsConstant())
+      aspect.ratio = CAspectRatio::AR_STRETCH;
 #endif
+    ((CGUIImage *)control)->SetInfo(textureFile);
     ((CGUIImage *)control)->SetAspectRatio(aspect);
-  }
-  else if (strType == "largeimage")
-  {
-    control = new CGUILargeImage(
-      dwParentId, id, posX, posY, width, height, texture);
-    ((CGUILargeImage *)control)->SetAspectRatio(aspect);
+    ((CGUIImage *)control)->SetCrossFade(fadeTime);
   }
   else if (strType == "multiimage")
   {
     control = new CGUIMultiImage(
-      dwParentId, id, posX, posY, width, height, texturePath, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
+      dwParentId, id, posX, posY, width, height, texture, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
+    ((CGUIMultiImage *)control)->SetInfo(texturePath);
     ((CGUIMultiImage *)control)->SetAspectRatio(aspect.ratio);
   }
   else if (strType == "list")
@@ -1299,47 +1236,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
   }
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  else if (strType == "listcontrol")
-  {
-    // create the spin control
-    CGUISpinControl *pSpin = new CGUISpinControl(dwParentId, id + 5000, posX + spinPosX, posY + spinPosY, spinWidth, spinHeight,
-      textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_PAGE);
-    // spincontrol should be visible when our list is
-    CStdString spinVis;
-    spinVis.Format("control.isvisible(%i)", id);
-    pSpin->SetVisibleCondition(g_infoManager.TranslateString(spinVis), false);
-    pSpin->SetAnimations(animations);
-    pSpin->SetNavigation(id, down, id, right);
-    pSpin->SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
-
-    labelInfo2.align |= XBFONT_RIGHT;
-    if (labelInfo.align & XBFONT_CENTER_Y)
-      labelInfo2.align |= XBFONT_CENTER_Y;
-    CGUIListContainer* pControl = new CGUIListContainer(dwParentId, id, posX, posY, width, height - spinHeight - 5,
-      labelInfo, labelInfo2, textureNoFocus, textureFocus, textureHeight, itemWidth, itemHeight, spaceBetweenItems, pSpin);
-
-    if (id == 53) // big list
-      pControl->SetType(VIEW_TYPE_BIG_LIST, g_localizeStrings.Get(537)); // Big List
-    else
-      pControl->SetType(VIEW_TYPE_LIST, g_localizeStrings.Get(535)); // List
-
-    pControl->SetPageControl(id + 5000);
-    pControl->SetNavigation(up, down, left, id + 5000);
-
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    return pControl;
-  }
-#endif
   else if (strType == "textbox")
   {
     control = new CGUITextBox(
       dwParentId, id, posX, posY, width, height,
-      spinWidth, spinHeight,
-      textureUp, textureDown,
-      textureUpFocus, textureDownFocus,
-      spinInfo, spinPosX, spinPosY,
       labelInfo, scrollTime);
 
     ((CGUITextBox *)control)->SetPageControl(pageControl);
@@ -1347,59 +1247,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       ((CGUITextBox *)control)->SetInfo(infoLabels[0]);
     ((CGUITextBox *)control)->SetAutoScrolling(pControlNode);
   }
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  else if (strType == "thumbnailpanel")
-  {
-    // create the spin control
-    CGUISpinControl *pSpin = NULL;
-    if (!pageControl)
-    {
-      pSpin = new CGUISpinControl(dwParentId, id + 5000, posX + spinPosX, posY + spinPosY, spinWidth, spinHeight,
-        textureUp, textureDown, textureUpFocus, textureDownFocus, spinInfo, SPIN_CONTROL_TYPE_PAGE);
-      // spincontrol should be visible when our list is
-      CStdString spinVis;
-      spinVis.Format("control.isvisible(%i) | control.isvisible(%i)", id, id + 2);
-      pSpin->SetVisibleCondition(g_infoManager.TranslateString(spinVis), false);
-      pSpin->SetAnimations(animations);
-      pSpin->SetNavigation(id, down, id, right);
-      pSpin->SetSpinAlign(XBFONT_CENTER_Y | XBFONT_RIGHT, 0);
-    }
-    labelInfo.align |= XBFONT_CENTER_X;
-
-    // large panel
-    CGUIPanelContainer* pPanel = new CGUIPanelContainer(
-      dwParentId, id + 2, posX, posY, width, height,
-      imageNoFocus, imageFocus,
-      itemWidthBig, itemHeightBig,
-      textureWidthBig, textureHeightBig, 
-      thumbXPosBig, thumbYPosBig, thumbWidthBig, thumbHeightBig, dwThumbAlign, aspect,
-      labelInfo, thumbPanelHideLabels, NULL, NULL);
-
-    pPanel->SetType(VIEW_TYPE_BIG_ICON, g_localizeStrings.Get(538)); // Big Icons
-    pPanel->SetPageControl(pageControl ? pageControl : id + 5000);
-    pPanel->SetNavigation(up == id ? id + 2 : up, down == id ? id + 2 : down, left == id ? id + 2 : left, pageControl ? pageControl : id + 5000);
-
-    pPanel->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pPanel->SetAnimations(animations);
-
-    // small panel
-    CGUIPanelContainer* pControl = new CGUIPanelContainer(
-      dwParentId, id, posX, posY, width, height,
-      imageNoFocus, imageFocus,
-      itemWidth, itemHeight,
-      textureWidth, textureHeight, 
-      thumbXPos, thumbYPos, thumbWidth, thumbHeight, dwThumbAlign, aspect,
-      labelInfo, thumbPanelHideLabels, pSpin, pPanel);
-
-    pControl->SetType(VIEW_TYPE_ICON, g_localizeStrings.Get(536)); // Icons
-    pControl->SetPageControl(pageControl ? pageControl : id + 5000);
-    pControl->SetNavigation(up, down, left, pageControl ? pageControl : id + 5000);
-
-    pControl->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
-    pControl->SetAnimations(animations);
-    return pControl;
-  }
-#endif
   else if (strType == "selectbutton")
   {
     control = new CGUISelectButtonControl(
@@ -1441,7 +1288,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUISpinControlEx *)control)->SetText(strLabel);
     ((CGUISpinControlEx *)control)->SetReverse(bReverse);
   }
-  else if (strType == "visualisation")
+  else if (strType == "visualisation" || strType == "karvisualisation")
   {
     control = new CGUIVisualisationControl(dwParentId, id, posX, posY, width, height);
   }

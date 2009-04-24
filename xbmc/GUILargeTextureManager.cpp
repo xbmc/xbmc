@@ -71,7 +71,11 @@ void CGUILargeTextureManager::Process()
       {
         loadPath = g_TextureManager.GetTexturePath(path);
       }
+#ifdef _XBOX
       texture = pic.Load(loadPath, min(g_graphicsContext.GetWidth(), 1024), min(g_graphicsContext.GetHeight(), 720));
+#else
+      texture = pic.Load(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080));
+#endif
     }
     // and add to our allocated list
     lock.Enter();
@@ -114,11 +118,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-#ifdef HAS_SDL_2D
-SDL_Surface * CGUILargeTextureManager::GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest)
-#else
-CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &width, int &height, int &orientation, bool firstRequest)
-#endif
+CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientation, bool firstRequest)
 {
   // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
@@ -129,8 +129,6 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
     {
       if (firstRequest)
         image->AddRef();
-      width = image->GetWidth();
-      height = image->GetHeight();
       orientation = image->GetOrientation();
       return image->GetTexture();
     }
@@ -140,7 +138,7 @@ CGLTexture * CGUILargeTextureManager::GetImage(const CStdString &path, int &widt
   if (firstRequest)
     QueueImage(path);
 
-  return NULL;
+  return CTexture();
 }
 
 void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediately)
@@ -185,7 +183,7 @@ void CGUILargeTextureManager::QueueImage(const CStdString &path)
   CLargeTexture *image = new CLargeTexture(path);
   m_queued.push_back(image);
   m_listEvent.Set();
-  
+
   if(m_running)
     return;
 

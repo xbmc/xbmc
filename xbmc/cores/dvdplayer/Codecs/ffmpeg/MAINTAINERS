@@ -44,7 +44,7 @@ Miscellaneous Areas
 ===================
 
 documentation                           Mike Melanson, Diego Biurrun
-website                                 Mike Melanson, Diego Biurrun
+website                                 Robert Swain
 build system (configure,Makefiles)      Diego Biurrun, Mans Rullgard
 project server                          Diego Biurrun, Mans Rullgard
 mailinglists                            Michael Niedermayer, Baptiste Coudurier
@@ -94,6 +94,8 @@ Generic Parts:
     faandct.c, faandct.h                Michael Niedermayer
   Golomb coding:
     golomb.c, golomb.h                  Michael Niedermayer
+  LPC:
+    lpc.c, lpc.h                        Justin Ruggles
   motion estimation:
     motion*                             Michael Niedermayer
   rate control:
@@ -103,6 +105,8 @@ Generic Parts:
     simple_idct.c, simple_idct.h        Michael Niedermayer
   postprocessing:
     libpostproc/*                       Michael Niedermayer
+  vdpau:
+    vdpau*                              Carl Eugen Hoyos
 
 Codecs:
   4xm.c                                 Michael Niedermayer
@@ -126,8 +130,9 @@ Codecs:
   dpcm.c                                Mike Melanson
   dxa.c                                 Kostya Shishkov
   dv.c                                  Roman Shaposhnik
+  eacmv*, eaidct*, eat*                 Peter Ross
   ffv1.c                                Michael Niedermayer
-  flac.c                                Alex Beregszaszi
+  flacdec.c                             Alex Beregszaszi, Justin Ruggles
   flacenc.c                             Justin Ruggles
   flashsv*                              Benjamin Larsson
   flicvideo.c                           Mike Melanson
@@ -145,12 +150,14 @@ Codecs:
   kmvc.c                                Kostya Shishkov
   lcl*.c                                Roberto Togni
   libgsm.c                              Michel Bardiaux
+  libopenjpeg.c                         Jaikrishnan Menon
   libx264.c                             Mans Rullgard, Jason Garrett-Glaser
   loco.c                                Kostya Shishkov
   lzo.h, lzo.c                          Reimar Doeffinger
   mdec.c                                Michael Niedermayer
   mimic.c                               Ramiro Polla
   mjpeg.c                               Michael Niedermayer
+  mmvideo.c                             Peter Ross
   mpc*                                  Kostya Shishkov
   mpeg12.c, mpeg12data.h                Michael Niedermayer
   mpegvideo.c, mpegvideo.h              Michael Niedermayer
@@ -162,7 +169,7 @@ Codecs:
   pcx.c                                 Ivo van Poorten
   ptx.c                                 Ivo van Poorten
   qcelp*                                Reynaldo H. Verdejo Pinochet
-  qdm2.c, qdm2data.h                    Roberto Togni
+  qdm2.c, qdm2data.h                    Roberto Togni, Benjamin Larsson
   qdrw.c                                Kostya Shishkov
   qpeg.c                                Kostya Shishkov
   qtrle.c                               Mike Melanson
@@ -204,7 +211,7 @@ Codecs:
   wnv1.c                                Kostya Shishkov
   xan.c                                 Mike Melanson
   xl.c                                  Kostya Shishkov
-  xvmcvideo.c                           Ivan Kalvachev
+  xvmc.c                                Ivan Kalvachev
   zmbv*                                 Kostya Shishkov
 
 
@@ -231,7 +238,7 @@ Generic parts:
 
 Muxers/Demuxers:
   4xm.c                                 Mike Melanson
-  adtsenc.c                             Mans Rullgard
+  adtsenc.c                             Robert Swain
   aiff.c                                Baptiste Coudurier
   ape.c                                 Kostya Shishkov
   avi*                                  Michael Niedermayer
@@ -240,6 +247,7 @@ Muxers/Demuxers:
   dv.c                                  Roman Shaposhnik
   dxa.c                                 Kostya Shishkov
   ffm*                                  Baptiste Coudurier
+  flac*                                 Justin Ruggles
   flic.c                                Mike Melanson
   flvdec.c, flvenc.c                    Michael Niedermayer
   gxf.c                                 Reimar Doeffinger
@@ -249,10 +257,12 @@ Muxers/Demuxers:
   iff.c                                 Jaikrishnan Menon
   ipmovie.c                             Mike Melanson
   img2.c                                Michael Niedermayer
+  iss.c                                 Stefan Gehrer
   libnut.c                              Oded Shimon
   lmlm4.c                               Ivo van Poorten
   matroska.c                            Aurelien Jacobs
   matroskaenc.c                         David Conrad
+  mm.c                                  Peter Ross
   mov.c                                 Michael Niedermayer, Baptiste Coudurier
   movenc.c                              Michael Niedermayer, Baptiste Coudurier
   mpc.c                                 Kostya Shishkov
@@ -271,6 +281,7 @@ Muxers/Demuxers:
   oggparseogm.c                         Mans Rullgard
   psxstr.c                              Mike Melanson
   pva.c                                 Ivo van Poorten
+  r3d.c                                 Baptiste Coudurier
   raw.c                                 Michael Niedermayer
   rl2.c                                 Sascha Sommer
   rm.c                                  Roberto Togni
@@ -313,6 +324,10 @@ GnuPG Fingerprints of maintainers and others who have svn write access
 ======================================================================
 
 Benoit Fouet                  B22A 4F4F 43EF 636B BB66 FCDC 0023 AE1E 2985 49C8
+Diego Biurrun                 8227 1E31 B6D9 4994 7427 E220 9CAE D6CC 4757 FCC5
+Loren Merritt                 ABD9 08F4 C920 3F65 D8BE 35D7 1540 DAA7 060F 56DE
 Michael Niedermayer           9FF2 128B 147E F673 0BAD F133 611E C787 040B 0FAB
+Peter Ross                    A907 E02F A6E5 0CD2 34CD 20D2 6760 79C5 AC40 DD6B
 Reimar Döffinger              C61D 16E5 9E2C D10C 8958 38A4 0899 A2B9 06D4 D9C7
 Reynaldo H. Verdejo Pinochet  6E27 CD34 170C C78E 4D4F 5F40 C18E 077F 3114 452A
+Sascha Sommer                 38A0 F88B 868E 9D3A 97D4 D6A0 E823 706F 1E07 0D3C

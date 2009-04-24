@@ -23,7 +23,7 @@
 
 #include "config.h"
 
-#ifdef HAVE_ALTIVEC_H
+#if HAVE_ALTIVEC_H
 #include <altivec.h>
 #endif
 
@@ -42,7 +42,7 @@
 #define ALT32_CORR   1
 #endif
 
-#ifdef ARCH_X86_64
+#if ARCH_X86_64
 #   define APCK_PTR2 8
 #   define APCK_COEF 16
 #   define APCK_SIZE 24
@@ -51,6 +51,8 @@
 #   define APCK_COEF 8
 #   define APCK_SIZE 16
 #endif
+
+struct SwsContext;
 
 typedef int (*SwsFunc)(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
              int srcSliceH, uint8_t* dst[], int dstStride[]);
@@ -175,7 +177,7 @@ typedef struct SwsContext{
     uint64_t u_temp       __attribute__((aligned(8)));
     uint64_t v_temp       __attribute__((aligned(8)));
 
-#ifdef HAVE_ALTIVEC
+#if HAVE_ALTIVEC
 
   vector signed short   CY;
   vector signed short   CRV;
@@ -189,7 +191,7 @@ typedef struct SwsContext{
 #endif
 
 
-#ifdef ARCH_BFIN
+#if ARCH_BFIN
     uint32_t oy           __attribute__((aligned(4)));
     uint32_t oc           __attribute__((aligned(4)));
     uint32_t zero         __attribute__((aligned(4)));
@@ -203,18 +205,18 @@ typedef struct SwsContext{
     uint32_t gmask        __attribute__((aligned(4)));
 #endif
 
-#ifdef HAVE_VIS
+#if HAVE_VIS
     uint64_t sparc_coeffs[10] __attribute__((aligned(8)));
 #endif
 
 } SwsContext;
 //FIXME check init (where 0)
 
-SwsFunc yuv2rgb_get_func_ptr (SwsContext *c);
-int yuv2rgb_c_init_tables (SwsContext *c, const int inv_table[4], int fullRange, int brightness, int contrast, int saturation);
+SwsFunc sws_yuv2rgb_get_func_ptr (SwsContext *c);
+int sws_yuv2rgb_c_init_tables (SwsContext *c, const int inv_table[4], int fullRange, int brightness, int contrast, int saturation);
 
-void yuv2rgb_altivec_init_tables (SwsContext *c, const int inv_table[4],int brightness,int contrast, int saturation);
-SwsFunc yuv2rgb_init_altivec (SwsContext *c);
+void sws_yuv2rgb_altivec_init_tables (SwsContext *c, const int inv_table[4],int brightness,int contrast, int saturation);
+SwsFunc sws_yuv2rgb_init_altivec (SwsContext *c);
 void altivec_yuv2packedX (SwsContext *c,
                           int16_t *lumFilter, int16_t **lumSrc, int lumFilterSize,
                           int16_t *chrFilter, int16_t **chrSrc, int chrFilterSize,
@@ -271,6 +273,13 @@ const char *sws_format_name(int format);
         || (x)==PIX_FMT_MONOBLACK   \
         || (x)==PIX_FMT_MONOWHITE   \
     )
+#define isALPHA(x)      (           \
+           (x)==PIX_FMT_BGR32       \
+        || (x)==PIX_FMT_BGR32_1     \
+        || (x)==PIX_FMT_RGB32       \
+        || (x)==PIX_FMT_RGB32_1     \
+        || (x)==PIX_FMT_YUVA420P    \
+    )
 
 static inline int fmt_depth(int fmt)
 {
@@ -307,8 +316,8 @@ static inline int fmt_depth(int fmt)
     }
 }
 
-extern const DECLARE_ALIGNED(8, uint64_t, ff_dither4[2]);
-extern const DECLARE_ALIGNED(8, uint64_t, ff_dither8[2]);
+extern const uint64_t ff_dither4[2];
+extern const uint64_t ff_dither8[2];
 
 extern const AVClass sws_context_class;
 

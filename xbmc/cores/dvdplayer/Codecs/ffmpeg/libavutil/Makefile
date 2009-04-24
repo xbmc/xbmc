@@ -15,12 +15,14 @@ HEADERS = adler32.h                                                     \
           mathematics.h                                                 \
           md5.h                                                         \
           mem.h                                                         \
+          pixfmt.h                                                      \
           random.h                                                      \
           rational.h                                                    \
           sha1.h
 
 OBJS = adler32.o                                                        \
        aes.o                                                            \
+       avstring.o                                                       \
        base64.o                                                         \
        crc.o                                                            \
        des.o                                                            \
@@ -37,11 +39,12 @@ OBJS = adler32.o                                                        \
        rational.o                                                       \
        rc4.o                                                            \
        sha1.o                                                           \
-       string.o                                                         \
        tree.o                                                           \
        utils.o                                                          \
 
-TESTS = $(addsuffix -test$(EXESUF), adler32 aes crc des lls md5 pca random sha1 softfloat tree)
+TESTS = $(addsuffix -test$(EXESUF), adler32 aes base64 crc des lls md5 pca random sha1 softfloat tree)
+
+DIRS = arm bfin sh4 x86
 
 include $(SUBDIR)../subdir.mak
 

@@ -1,5 +1,4 @@
 /*
- * Base64.c
  * Copyright (c) 2006 Ryan Martell. (rdm4@martellventures.com)
  *
  * This file is part of FFmpeg.
@@ -20,8 +19,8 @@
  */
 
 /**
-* @file base64.c
- * @brief Base64 Encode/Decode
+ * @file libavutil/base64.c
+ * @brief Base64 encode/decode
  * @author Ryan Martell <rdm4@martellventures.com> (with lots of Michael)
  */
 
@@ -43,7 +42,7 @@ static const uint8_t map2[] =
     0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33
 };
 
-int av_base64_decode(uint8_t * out, const char *in, int out_length)
+int av_base64_decode(uint8_t *out, const char *in, int out_size)
 {
     int i, v;
     uint8_t *dst = out;
@@ -55,7 +54,7 @@ int av_base64_decode(uint8_t * out, const char *in, int out_length)
             return -1;
         v = (v << 6) + map2[index];
         if (i & 3) {
-            if (dst - out < out_length) {
+            if (dst - out < out_size) {
                 *dst++ = v >> (6 - 2 * (i & 3));
             }
         }
@@ -65,26 +64,26 @@ int av_base64_decode(uint8_t * out, const char *in, int out_length)
 }
 
 /*****************************************************************************
-* b64_encode: stolen from VLC's http.c
-* simplified by michael
-* fixed edge cases and made it work from data (vs. strings) by ryan.
+* b64_encode: Stolen from VLC's http.c.
+* Simplified by Michael.
+* Fixed edge cases and made it work from data (vs. strings) by Ryan.
 *****************************************************************************/
 
-char *av_base64_encode(char * buf, int buf_len, const uint8_t * src, int len)
+char *av_base64_encode(char *out, int out_size, const uint8_t *in, int in_size)
 {
     static const char b64[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     char *ret, *dst;
     unsigned i_bits = 0;
     int i_shift = 0;
-    int bytes_remaining = len;
+    int bytes_remaining = in_size;
 
-    if (len >= UINT_MAX / 4 ||
-        buf_len < len * 4 / 3 + 12)
+    if (in_size >= UINT_MAX / 4 ||
+        out_size < (in_size+2) / 3 * 4 + 1)
         return NULL;
-    ret = dst = buf;
+    ret = dst = out;
     while (bytes_remaining) {
-        i_bits = (i_bits << 8) + *src++;
+        i_bits = (i_bits << 8) + *in++;
         bytes_remaining--;
         i_shift += 8;
 
@@ -100,129 +99,65 @@ char *av_base64_encode(char * buf, int buf_len, const uint8_t * src, int len)
     return ret;
 }
 
-// #define TEST_BASE64
+#ifdef TEST
 
-#ifdef TEST_BASE64
-#include "avutil.h"
+#undef printf
 
-int b64test()
+#define MAX_DATA_SIZE    1024
+#define MAX_ENCODED_SIZE 2048
+
+int test_encode_decode(const uint8_t *data, unsigned int data_size, const char *encoded_ref)
 {
-    int numerr = 0;
-    int len;
-    int numtest = 1;
-    uint8_t decode[1000];
-    struct test {
-        void *data;
-        int len;
-        const char *result;
-    } *t, tests[] = {
-        {
-        "", 0, ""}, {
-        "1", 1, "MQ=="}, {
-        "22", 2, "MjI="}, {
-        "333", 3, "MzMz"}, {
-        "4444", 4, "NDQ0NA=="}, {
-        "55555", 5, "NTU1NTU="}, {
-        "abc:def", 7, "YWJjOmRlZg=="}, {
-        NULL}
-    };
-    for (t = tests; t->data; t++) {
-        char *str;
+    char  encoded[MAX_ENCODED_SIZE];
+    uint8_t data2[MAX_DATA_SIZE];
+    int data2_size, max_data2_size = MAX_DATA_SIZE;
 
-        av_log(NULL, AV_LOG_ERROR, "Encoding %s...\n", (char *) t->data);
-        str = av_base64_encode(t->data, t->len);
-        if (str) {
-            av_log(NULL, AV_LOG_ERROR, "Encoded to %s...\n", str);
-            if (strcmp(str, t->result) != 0) {
-                av_log(NULL, AV_LOG_ERROR, "failed test %d: %s != %s\n",
-                       numtest, str, t->result);
-                numerr++;
-            }
-            av_free(str);
-        }
-
-        av_log(NULL, AV_LOG_ERROR, "Done encoding, about to decode...\n");
-        len = av_base64_decode(decode, t->result, sizeof(decode));
-        if (len != t->len) {
-            av_log(NULL, AV_LOG_ERROR, "failed test %d: len %d != %d\n",
-                   numtest, len, t->len);
-            numerr++;
-        } else if (memcmp(decode, t->data, t->len) != 0) {
-            av_log(NULL, AV_LOG_ERROR, "failed test %d: data\n", numtest);
-            numerr++;
-        } else {
-            av_log(NULL, AV_LOG_ERROR, "Decoded to %s\n",
-                   (char *) t->data);
-        }
-        numtest++;
+    if (!av_base64_encode(encoded, MAX_ENCODED_SIZE, data, data_size)) {
+        printf("Failed: cannot encode the input data\n");
+        return 1;
+    }
+    if (encoded_ref && strcmp(encoded, encoded_ref)) {
+        printf("Failed: encoded string differs from reference\n"
+               "Encoded:\n%s\nReference:\n%s\n", encoded, encoded_ref);
+        return 1;
     }
 
-#undef srand
-#undef rand
-
-    {
-        int test_count;
-        srand(123141);          // time(NULL));
-        for (test_count = 0; test_count < 100; test_count++) {
-            int size = rand() % 1024;
-            int ii;
-            uint8_t *data;
-            char *encoded_result;
-
-            av_log(NULL, AV_LOG_ERROR, "Test %d: Size %d bytes...",
-                   test_count, size);
-            data = (uint8_t *) av_malloc(size);
-            for (ii = 0; ii < size; ii++) {
-                data[ii] = rand() % 255;
-            }
-
-            encoded_result = av_base64_encode(data, size);
-            if (encoded_result) {
-                int decode_buffer_size = size + 10;     // try without 10 as well
-                uint8_t *decode_buffer = av_malloc(decode_buffer_size);
-                if (decode_buffer) {
-                    int decoded_size =
-                        av_base64_decode(decode_buffer, encoded_result,
-                                   decode_buffer_size);
-
-                    if (decoded_size != size) {
-                        av_log(NULL, AV_LOG_ERROR,
-                               "Decoded/Encoded size mismatch (%d != %d)\n",
-                               decoded_size, size);
-                    } else {
-                        if (memcmp(decode_buffer, data, decoded_size) == 0) {
-                            av_log(NULL, AV_LOG_ERROR, "Passed!\n");
-                        } else {
-                            av_log(NULL, AV_LOG_ERROR,
-                                   "Failed (Data differs)!\n");
-                        }
-                    }
-                    av_free(decode_buffer);
-                }
-
-                av_free(encoded_result);
-            }
-        }
+    if ((data2_size = av_base64_decode(data2, encoded, max_data2_size)) < 0) {
+        printf("Failed: cannot decode the encoded string\n"
+               "Encoded:\n%s\n", encoded);
+        return 1;
+    }
+    if (memcmp(data2, data, data_size)) {
+        printf("Failed: encoded/decoded data differs from original data\n");
+        return 1;
     }
 
-    // these are invalid strings, that it currently decodes (which it probably shouldn't?)
-    {
-        uint8_t str[32];
-        if (av_base64_decode(str, "M=M=", sizeof(str)) != -1) {
-            av_log(NULL, AV_LOG_ERROR,
-                   "failed test %d: successful decode of `M=M='\n",
-                   numtest++);
-            numerr++;
-        }
-        if (av_base64_decode(str, "MQ===", sizeof(str)) != -1) {
-            av_log(NULL, AV_LOG_ERROR,
-                   "failed test %d: successful decode of `MQ==='\n",
-                   numtest++);
-            numerr++;
-        }
-    }
-
-    return numerr;
+    printf("Passed!\n");
+    return 0;
 }
-#endif
 
+int main(void)
+{
+    int i, error_count = 0;
+    struct test {
+        const uint8_t *data;
+        const char *encoded_ref;
+    } tests[] = {
+        { "",        ""},
+        { "1",       "MQ=="},
+        { "22",      "MjI="},
+        { "333",     "MzMz"},
+        { "4444",    "NDQ0NA=="},
+        { "55555",   "NTU1NTU="},
+        { "666666",  "NjY2NjY2"},
+        { "abc:def", "YWJjOmRlZg=="},
+    };
+
+    printf("Encoding/decoding tests\n");
+    for (i = 0; i < FF_ARRAY_ELEMS(tests); i++)
+        error_count += test_encode_decode(tests[i].data, strlen(tests[i].data), tests[i].encoded_ref);
+
+    return error_count;
+}
+
+#endif

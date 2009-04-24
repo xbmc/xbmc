@@ -64,6 +64,7 @@ CGUIDialogFileBrowser::CGUIDialogFileBrowser()
   m_addNetworkShareEnabled = false;
   m_singleList = false;
   m_thumbLoader.SetObserver(this);
+  m_flipEnabled = false;
 }
 
 CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
@@ -185,7 +186,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
 
           CUtil::AddFileToFolder(strPath,"1",strTest);
           CFile file;
-          if (file.OpenForWrite(strTest,true,true))
+          if (file.OpenForWrite(strTest,true))
           {
             file.Close();
             CFile::Delete(strTest);
@@ -269,7 +270,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
       {
-        if (message.GetStringParam() == m_Directory->m_strPath && IsActive()) 
+        if (message.GetStringParam() == m_Directory->m_strPath && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
           Update(m_Directory->m_strPath);
@@ -358,16 +359,16 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       // directory again
       CStdString strParentPath = m_history.GetParentPath();
       m_history.RemoveParentPath();
-      Update(strParentPath);  
-      return;  
+      Update(strParentPath);
+      return;
     }
   }
-  
+
   // if we're getting the root source listing
   // make sure the path history is clean
   if (strDirectory.IsEmpty())
     m_history.ClearPathHistory();
-    
+
   // some evil stuff don't work with the '/' mask, e.g. shoutcast directory - make sure no files are in there
   if (m_browsingForFolders)
   {
@@ -422,13 +423,13 @@ void CGUIDialogFileBrowser::Update(const CStdString &strDirectory)
       break;
     }
   }
-  
+
   // if we haven't found the selected item, select the first item
   if (!bSelectedFound)
     m_viewControl.SetSelectedItem(0);
 
   m_history.AddPath(m_Directory->m_strPath);
-  
+
   if (m_browsingForImages)
     m_thumbLoader.Load(*m_vecItems);
 }
@@ -542,8 +543,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( CStdString& strPath, int iDriv
       return false;
     }
   }
-  else
-    return true;
+
   return true;
 }
 
@@ -566,13 +566,6 @@ void CGUIDialogFileBrowser::OnWindowLoaded()
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(GetControl(CONTROL_LIST));
   m_viewControl.AddView(GetControl(CONTROL_THUMBS));
-  // set the page spin controls to hidden
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LIST + 5000);
-  if (spin) spin->SetVisible(false);
-  spin = (CGUIControl *)GetControl(CONTROL_THUMBS + 5000);
-  if (spin) spin->SetVisible(false);
-#endif
 }
 
 void CGUIDialogFileBrowser::OnWindowUnload()
@@ -878,7 +871,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
   int btn_Edit = pMenu->AddButton(iEditLabel);
   int btn_Remove = pMenu->AddButton(iRemoveLabel);
 
-  pMenu->SetPosition(posX, posY);
+  pMenu->OffsetPosition(posX, posY);
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
@@ -965,4 +958,5 @@ CGUIControl *CGUIDialogFileBrowser::GetFirstFocusableControl(int id)
     id = m_viewControl.GetCurrentControl();
   return CGUIWindow::GetFirstFocusableControl(id);
 }
+
 

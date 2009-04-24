@@ -22,7 +22,6 @@
 #include "FileDAAP.h"
 #include "DAAPDirectory.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
 
@@ -47,7 +46,7 @@ CDAAPDirectory::CDAAPDirectory(void)
 }
 
 CDAAPDirectory::~CDAAPDirectory(void)
-{  
+{
   //if (m_thisClient) DAAP_Client_Release(m_thisClient);
   free_artists();
 
@@ -66,19 +65,13 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   CURL url(strPath);
 
   CStdString strRoot = strPath;
-  if (!CUtil::HasSlashAtEnd(strPath)) strRoot += "/";
-
-  CFileItemList vecCacheItems;
-  // Clear out any cached entries for this path
-  if (m_cacheDirectory)
-    g_directoryCache.ClearDirectory(strPath);
-
+  CUtil::AddSlashAtEnd(strRoot);
 
   CStdString host = url.GetHostName();
   if (url.HasPort())
     host.Format("%s:%i",url.GetHostName(),url.GetPort());
   m_thisHost = g_DaapClient.GetHost(host);
-  if (!m_thisHost)  
+  if (!m_thisHost)
     return false;
 
   // find out where we are in the folder hierarchy
@@ -92,7 +85,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     //Store the first database
     g_DaapClient.m_iDatabase = m_thisHost->databases[0].id;
 
-	  m_currentSongItems = m_thisHost->dbitems[0].items;
+    m_currentSongItems = m_thisHost->dbitems[0].items;
     m_currentSongItemCount = m_thisHost->dbitems[0].nItems;
 
     // Get the songs from the database if we haven't already
@@ -107,7 +100,7 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       }
     }
 
-    
+
     if (m_currLevel < 0) // root, so show playlists
     {
       for (c = 0; c < m_thisHost->dbplaylists->nPlaylists; c++)
@@ -124,7 +117,6 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         pItem->m_strPath = strRoot + m_thisHost->dbplaylists->playlists[c].itemname + "/";
         pItem->m_bIsFolder = true;
         items.Add(pItem);
-        vecCacheItems.Add(pItem);
       }
     }
     else if (m_currLevel == 0) // playlists, so show albums
@@ -153,14 +145,13 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           CStdString strBuffer;
           artistPTR *cur = m_artisthead;
           while (cur)
-          {            
+          {
             strBuffer = cur->artist;
             CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", strBuffer.c_str());
             CFileItemPtr pItem(new CFileItem(strBuffer));
             pItem->m_strPath = strRoot + cur->artist + "/";
             pItem->m_bIsFolder = true;
             items.Add(pItem);
-            vecCacheItems.Add(pItem);
             cur = cur->next;
           }
         }
@@ -186,26 +177,26 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             }
 
             if (idx > -1)
-            {              
+            {
               CLog::Log(LOGDEBUG, "DAAPDirectory: Adding item %s", m_currentSongItems[idx].itemname);
               CFileItemPtr pItem(new CFileItem(m_currentSongItems[idx].itemname));
 
 
               if( m_thisHost->version_major != 3 )
               {
-                pItem->m_strPath.Format(REQUEST42, 
-                                        m_thisHost->host,  
+                pItem->m_strPath.Format(REQUEST42,
+                                        m_thisHost->host,
                                         g_DaapClient.m_iDatabase,
                                         m_currentSongItems[idx].id,
                                         m_currentSongItems[idx].songformat,
-                                        m_thisHost->sessionid, 
+                                        m_thisHost->sessionid,
                                         m_thisHost->revision_number);
 
               }
               else
               {
-                pItem->m_strPath.Format(REQUEST45, 
-                                        m_thisHost->host,  
+                pItem->m_strPath.Format(REQUEST45,
+                                        m_thisHost->host,
                                         g_DaapClient.m_iDatabase,
                                         m_currentSongItems[idx].id,
                                         m_currentSongItems[idx].songformat,
@@ -228,7 +219,6 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
               pItem->GetMusicInfoTag()->SetLoaded(true);
 
               items.Add(pItem);
-              vecCacheItems.Add(pItem);
             }
           }
         }
@@ -256,7 +246,6 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
           pItem->m_strPath = strRoot + curAlbum->album + "/";
           pItem->m_bIsFolder = true;
           items.Add(pItem);
-          vecCacheItems.Add(pItem);
           curAlbum = curAlbum->next;
         }
       }
@@ -267,8 +256,8 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
       for (c = 0; c < m_currentSongItemCount; c++)
       {
         // mt-daapd will sometimes give us null artist and album names
-	      if (m_currentSongItems[c].songartist && m_currentSongItems[c].songalbum)
-  		  {
+        if (m_currentSongItems[c].songartist && m_currentSongItems[c].songalbum)
+        {
           char *artist = m_currentSongItems[c].songartist;
           char *album = m_currentSongItems[c].songalbum;
           if (!strlen(artist)) artist = (char *)unknownArtistAlbum;
@@ -281,19 +270,19 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
             if( m_thisHost->version_major != 3 )
             {
-              pItem->m_strPath.Format(REQUEST42, 
-                                      m_thisHost->host,  
+              pItem->m_strPath.Format(REQUEST42,
+                                      m_thisHost->host,
                                       g_DaapClient.m_iDatabase,
                                       m_currentSongItems[c].id,
                                       m_currentSongItems[c].songformat,
-                                      m_thisHost->sessionid, 
+                                      m_thisHost->sessionid,
                                       m_thisHost->revision_number);
 
             }
             else
             {
-              pItem->m_strPath.Format(REQUEST45, 
-                                      m_thisHost->host,  
+              pItem->m_strPath.Format(REQUEST45,
+                                      m_thisHost->host,
                                       g_DaapClient.m_iDatabase,
                                       m_currentSongItems[c].id,
                                       m_currentSongItems[c].songformat,
@@ -315,15 +304,12 @@ bool CDAAPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             pItem->GetMusicInfoTag()->SetLoaded(true);
 
             items.Add(pItem);
-            vecCacheItems.Add(pItem);
           }
         }
-	  }
+      }
     }
   }
 
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath, vecCacheItems);
   return true;
 }
 
@@ -429,8 +415,7 @@ int CDAAPDirectory::GetCurrLevel(CStdString strPath)
   else
     strJustPath = strPath;
 
-  if (CUtil::HasSlashAtEnd(strJustPath))
-    strJustPath = strJustPath.Left(strJustPath.size() - 1);
+  CUtil::RemoveSlashAtEnd(strJustPath);
 
   intLevel = -1;
   intSPos = strPath.length();

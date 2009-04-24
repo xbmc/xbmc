@@ -25,7 +25,7 @@
 #include "utils/Thread.h"
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
-#include "cores/AudioRenderers/IDirectSoundRenderer.h"
+#include "cores/AudioRenderers/IAudioRenderer.h"
 #ifdef __APPLE__
 #include <portaudio.h>
 #include "../../utils/PCMAmplifier.h"
@@ -87,7 +87,7 @@ public:
   virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect){}
   virtual void GetVideoAspectRatio(float& fAR) {}
   virtual void ToFFRW(int iSpeed = 0);
-  virtual int GetCacheLevel() const; 
+  virtual int GetCacheLevel() const;
   virtual int GetTotalTime();
   __int64 GetTotalTime64();
   virtual int GetAudioBitrate();
@@ -135,7 +135,7 @@ protected:
   int m_iSpeed;   // current playing speed
 
 private:
-  
+
   bool ProcessPAP();    // does the actual reading and decode from our PAP dll
 
   __int64 m_SeekTime;
@@ -155,11 +155,14 @@ private:
   bool AddPacketsToStream(int stream, CAudioDecoder &dec);
   bool FindFreePacket(int stream, DWORD *pdwPacket );     // Looks for a free packet
   void FreeStream(int stream);
+#if defined(_LINUX) || defined(_WIN32PC)
+  void DrainStream(int stream);
+#endif
   bool CreateStream(int stream, int channels, int samplerate, int bitspersample, CStdString codec = "");
   void FlushStreams();
   void WaitForStream();
   void SetStreamVolume(int stream, long nVolume);
-  
+
   void UpdateCrossFadingTime(const CFileItem& file);
   bool QueueNextFile(const CFileItem &file, bool checkCrossFading);
   void UpdateCacheLevel();
@@ -168,18 +171,18 @@ private:
 
 #ifdef HAS_XBOX_AUDIO
   IDirectSoundStream *m_pStream[2];
-#elif !defined(_LINUX)
-  LPDIRECTSOUNDBUFFER m_pStream[2];
-  DWORD m_nextPacket[2];
 #elif defined(__APPLE__)
   PaStream*         m_pStream[2];
-  CPCMAmplifier 	m_amp[2];
+  CPCMAmplifier     m_amp[2];
   int               m_channelCount[2];
   int               m_sampleRate[2];
   int               m_bitsPerSample[2];
-#elif defined(_LINUX)
-  IDirectSoundRenderer* m_pAudioDecoder[2];
-  std::vector<unsigned char> m_pcmBuffer[2];
+#else
+  IAudioRenderer*   m_pAudioDecoder[2];
+  float             m_latency[2];
+  unsigned char*    m_pcmBuffer[2];
+  int               m_bufferPos[2];
+  unsigned int      m_Chunklen[2];
 #endif
 
   AudioPacket      m_packet[2][PACKET_COUNT];

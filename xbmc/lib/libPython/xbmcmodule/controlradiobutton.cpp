@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "GUIRadioButtonControl.h"
 #include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
@@ -207,7 +205,7 @@ namespace PYXBMC
       "selected",
       NULL};
 
-    bool selected = false;
+    char selected = false;
  
     if (!PyArg_ParseTupleAndKeywords(
       args,
@@ -221,7 +219,7 @@ namespace PYXBMC
 
     PyGUILock();
     if (self->pGUIControl)
-      ((CGUIRadioButtonControl*)self->pGUIControl)->SetSelected(selected);
+      ((CGUIRadioButtonControl*)self->pGUIControl)->SetSelected(0 != selected);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);

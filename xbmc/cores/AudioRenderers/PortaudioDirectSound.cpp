@@ -20,14 +20,9 @@
 */
 #include "CPortAudio.h"
 #include "stdafx.h"
-#include "PortAudioDirectSound.h"
+#include "PortaudioDirectSound.h"
 #include "AudioContext.h"
 #include "Util.h"
-
-void PortAudioDirectSound::DoWork()
-{
-
-}
 
 //////////////////////////////////////////////////////////////////////////////
 //

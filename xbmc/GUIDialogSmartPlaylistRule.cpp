@@ -175,7 +175,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     CStdString path = "special://videoplaylists/";
     if (m_type.Equals("songs") || m_type.Equals("albums"))
       path = "special://musicplaylists/";
-    DIRECTORY::CDirectory::GetDirectory(path, items, ".xsp", false);
+    DIRECTORY::CDirectory::GetDirectory(path, items, ".xsp");
   }
   else
   { // TODO: Add browseability in here.
@@ -343,7 +343,7 @@ bool CGUIDialogSmartPlaylistRule::EditRule(CSmartPlaylistRule &rule, const CStdS
 {
   CGUIDialogSmartPlaylistRule *editor = (CGUIDialogSmartPlaylistRule *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
   if (!editor) return false;
-  
+
   editor->m_rule = rule;
   editor->m_type = type;
   editor->DoModal(m_gWindowManager.GetActiveWindow());

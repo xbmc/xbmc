@@ -4,14 +4,23 @@ DIRS=../../
 OBJS=DumbDLL.o
 SYSDIR=../../../../../../system/players/paplayer
 SO=dumb-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
+SLIB=$(SYSDIR)/$(SO)
 
 .PHONY: compile
 
-$(LIB): $(OBJS) ../../lib/unix/libdumb.a
+$(SLIB): $(OBJS) ../../lib/unix/libdumb.a
+ifeq ($(findstring osx,$(ARCH)), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		$(OBJS) ../../lib/unix/libdumb.a
+	../../../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+
+else
 	$(CXX) -shared -o $@ $(OBJS) -Wl,--whole-archive ../../lib/unix/libdumb.a \
 		-Wl,--no-whole-archive `cat ../../../../DllLoader/exports/wrapper.def` \
 		../../../../DllLoader/exports/wrapper.o
+
+endif
 
 ../../lib/unix/libdumb.a: compile
 	$(MAKE) -C ../..

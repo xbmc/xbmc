@@ -115,9 +115,9 @@ void CPlayListB4S::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
   CStdString strPlaylist = strFileName;
-  strPlaylist = CUtil::MakeLegalFileName(strPlaylist);
+  strPlaylist = CUtil::MakeLegalPath(strPlaylist);
   CFile file;
-  if (!file.OpenForWrite(strPlaylist, true, true))
+  if (!file.OpenForWrite(strPlaylist, true))
   {
     CLog::Log(LOGERROR, "Could not save B4S playlist: [%s]", strPlaylist.c_str());
     return ;

@@ -109,12 +109,6 @@ void CFileMMS::send_command(int s, int command, uint32_t switches, uint32_t extr
 
 void CFileMMS::string_utf16(char *dest, const char *src, int len)
 {
-  CStdString src2, dst;
-  src2.assign(src, len);
-  g_charsetConverter.utf8To("UTF-16LE", src2, dst);
-  strcpy(dest, dst.c_str());
-  dest[dst.length()+1] = 0;
-#if 0
   int i;
   size_t len1, len2;
   const char *ip;
@@ -143,7 +137,6 @@ void CFileMMS::string_utf16(char *dest, const char *src, int len)
     dest[i * 2] = 0;
     dest[i * 2 + 1] = 0;
   }
-#endif
 }
 
 void CFileMMS::get_answer(int s)
@@ -361,15 +354,6 @@ int CFileMMS::get_media_packet(int s, int padding)
   {
         CLog::Log(LOGERROR, "MMS: pre-header read failed");
     return 0;
-  }
-
-  if(g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL)
-  {
-    for (int i = 0; i < 8; i++)
-    {
-          CLog::Log(LOGDEBUG, "MMS: pre_header[%d] = %02x (%d)\n", i,
-                                  pre_header[i], pre_header[i]);
-    }
   }
 
   if (pre_header[4] == 0x04)
@@ -626,6 +610,8 @@ CFileMMS::CFileMMS()
 
 CFileMMS::~CFileMMS()
 {
+  if (url_conv != (iconv_t) (-1))
+    iconv_close(url_conv);
 }
 
 __int64 CFileMMS::GetPosition()
@@ -638,7 +624,7 @@ __int64 CFileMMS::GetLength()
   return 0;
 }
 
-bool CFileMMS::Open(const CURL& url, bool bBinary)
+bool CFileMMS::Open(const CURL& url)
 {
   CStdString filename = url.GetFileName();
   CUtil::UrlDecode(filename);
@@ -696,4 +682,5 @@ CStdString CFileMMS::GetContent()
   //return "audio/x-ms-wma";
   return "";
 }
+
 

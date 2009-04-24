@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\lib\boost"
+				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;XBMC;HAS_SDL;_USE_32BIT_TIME_T"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -112,9 +112,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="3"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\lib\boost"
+				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
 				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;XBMC;HAS_SDL;_USE_32BIT_TIME_T"
 				StringPooling="true"
 				RuntimeLibrary="0"

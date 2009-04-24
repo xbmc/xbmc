@@ -33,6 +33,7 @@
 #endif
 #include "utils/Network.h"
 #include "Application.h"
+#include "FileSystem/SpecialProtocol.h"
 
 using namespace std;
 
@@ -165,6 +166,11 @@ CStdString CSettingString::ToString()
   return m_strData;
 }
 
+CSettingPath::CSettingPath(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
+    : CSettingString(iOrder, strSetting, iLabel, strData, iControlType, bAllowEmpty, iHeadingString)
+{
+}
+
 void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
 {
   vecCategories.clear();
@@ -199,7 +205,7 @@ void CGUISettings::Initialize()
   //AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "pictures.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddSeparator(9,"pictures.sep2");
-  AddString(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddPath(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -235,7 +241,7 @@ void CGUISettings::Initialize()
   //AddBool(4, "musicfiles.repeat", 488, false);
   AddBool(5, "mymusic.clearplaylistsonend",239,false);
   AddSeparator(6, "mymusic.sep2");
-  AddString(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(1, "musiclibrary.enabled", 418, true);
@@ -243,7 +249,7 @@ void CGUISettings::Initialize()
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
-  AddString(6, "musiclibrary.defaultscraper", 20194, "Allmusic", SPIN_CONTROL_TEXT);
+  AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
   AddBool(7, "musiclibrary.updateonstartup", 22000, false);
   AddSeparator(8,"musiclibrary.sep2");
   AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
@@ -262,7 +268,7 @@ void CGUISettings::Initialize()
   AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
   AddSeparator(11, "musicplayer.sep3");
-  AddString(12, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddString(0, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicfiles", 744);
   AddBool(1, "musicfiles.usetags", 258, true);
@@ -286,7 +292,7 @@ void CGUISettings::Initialize()
   AddString(4,"lastfm.password", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
 
   AddCategory(3, "cddaripper", 620);
-  AddString(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddPath(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddString(2, "cddaripper.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
   AddInt(3, "cddaripper.encoder", 621, CDDARIP_ENCODER_LAME, CDDARIP_ENCODER_LAME, 1, CDDARIP_ENCODER_WAV, SPIN_CONTROL_TEXT);
   AddInt(4, "cddaripper.quality", 622, CDDARIP_QUALITY_CBR, CDDARIP_QUALITY_CBR, 1, CDDARIP_QUALITY_EXTREME, SPIN_CONTROL_TEXT);
@@ -295,14 +301,16 @@ void CGUISettings::Initialize()
 #ifdef HAS_KARAOKE
   AddCategory(3, "karaoke", 13327);
   AddBool(1, "karaoke.enabled", 13323, false);
-#ifdef HAS_XVOICE
-  AddBool(2, "karaoke.voiceenabled", 13361, false);
-  AddInt(3, "karaoke.volume", 13376, 100, 0, 1, 100, SPIN_CONTROL_INT, MASK_PERCENT);
-  AddString(4, "karaoke.port0voicemask", 13382, "None", SPIN_CONTROL_TEXT);
-  AddString(5, "karaoke.port1voicemask", 13383, "None", SPIN_CONTROL_TEXT);
-  AddString(6, "karaoke.port2voicemask", 13384, "None", SPIN_CONTROL_TEXT);
-  AddString(7, "karaoke.port3voicemask", 13385, "None", SPIN_CONTROL_TEXT);
-#endif
+  // auto-popup the song selector dialog when the karaoke song was just finished and playlist is empty.
+  AddBool(2, "karaoke.autopopupselector", 22037, false);
+  AddSeparator(3, "karaoke.sep1");
+  AddString(4, "karaoke.font", 22030, "arial.ttf", SPIN_CONTROL_TEXT);
+  AddInt(5, "karaoke.fontheight", 22031, 36, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
+  AddInt(6, "karaoke.fontcolors", 22032, KARAOKE_COLOR_START, KARAOKE_COLOR_START, 1, KARAOKE_COLOR_END, SPIN_CONTROL_TEXT);
+  AddString(7, "karaoke.charset", 22033, "DEFAULT", SPIN_CONTROL_TEXT);
+  AddSeparator(8,"karaoke.sep2");
+  AddString(10, "karaoke.export", 22038, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "karaoke.importcsv", 22036, "", BUTTON_CONTROL_STANDARD);
 #endif
 
   // System settings
@@ -311,12 +319,9 @@ void CGUISettings::Initialize()
   // advanced only configuration
   AddBool(1, "system.debuglogging", 20191, false);
   AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-#ifdef __APPLE__
-  AddInt(3, "system.displaysleeptime", 17500, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
-#endif
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT); 
+    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
   else
     AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 5, SPIN_CONTROL_TEXT);
 
@@ -349,7 +354,7 @@ void CGUISettings::Initialize()
   AddBool(6, "autorun.music", 245, true);
   AddBool(7, "autorun.pictures", 246, true);
 
-  AddCategory(4, "cache", 439);
+  AddCategory(0, "cache", 439);
   AddInt(1, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
   AddSeparator(2, "cache.sep1");
   AddInt(3, "cachevideo.dvdrom", 14026, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
@@ -372,11 +377,14 @@ void CGUISettings::Initialize()
 #ifdef __APPLE__
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
+  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_LINUX)
   AddString(6, "audiooutput.audiodevice", 545, "default", EDIT_CONTROL_INPUT);
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", EDIT_CONTROL_INPUT);
+  AddBool(8, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32PC)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+  AddBool(7, "audiooutput.downmixmultichannel", 548, true);
 #endif
 
   AddCategory(4, "masterlock", 12360);
@@ -424,7 +432,12 @@ void CGUISettings::Initialize()
 #ifndef HAS_SDL
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
 #else
+#ifdef HAVE_LIBVDPAU
+  AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_VDPAU, SPIN_CONTROL_TEXT);
+#else
   AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_SOFTWARE, SPIN_CONTROL_TEXT);
+#endif
+
 #endif
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
@@ -433,7 +446,10 @@ void CGUISettings::Initialize()
 #ifdef HAS_MPLAYER
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif
-
+#ifdef HAVE_LIBVDPAU
+  AddBool(0, "videoplayer.strictbinding", 13120, false);
+  AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
+#endif
 #ifdef HAS_SDL
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
@@ -441,14 +457,14 @@ void CGUISettings::Initialize()
 #endif
 
   AddSeparator(10, "videoplayer.sep2");
-  AddString(11, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
+  AddString(0, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(12, "videoplayer.sep3");
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
   AddBool(17, "videoplayer.editdecision", 22003, false);
 
   AddCategory(5, "subtitles", 287);
-  AddString(1, "subtitles.font", 288, "Arial.ttf", SPIN_CONTROL_TEXT);
+  AddString(1, "subtitles.font", 288, "arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(2, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(3, "subtitles.style", 736, FONT_STYLE_BOLD, FONT_STYLE_NORMAL, 1, FONT_STYLE_BOLD_ITALICS, SPIN_CONTROL_TEXT);
   AddInt(4, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
@@ -456,7 +472,7 @@ void CGUISettings::Initialize()
   AddSeparator(7, "subtitles.sep1");
   AddBool(9, "subtitles.searchrars", 13249, false);
   AddSeparator(10,"subtitles.sep2");
-  AddString(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddPath(11, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 
   // Don't add the category - makes them hidden in the GUI
   //AddCategory(5, "postprocessing", 14041);
@@ -468,6 +484,13 @@ void CGUISettings::Initialize()
   AddInt(7, "postprocessing.horizontaldeblocklevel", 309, 0, 0, 1, 100, SPIN_CONTROL_INT);
   AddBool(8, "postprocessing.autobrightnesscontrastlevels", 310, false);
   AddBool(9, "postprocessing.dering", 311, false);
+
+  AddCategory(5, "scrapers", 21412);
+  AddString(1, "scrapers.moviedefault", 21413, "tmdb.xml", SPIN_CONTROL_TEXT);
+  AddString(2, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
+  AddString(3, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
+  AddSeparator(4,"scrapers.sep2");
+  AddBool(5, "scrapers.langfallback", 21416, true);
 
   // network settings
   AddGroup(6, 705);
@@ -493,7 +516,7 @@ void CGUISettings::Initialize()
 #endif
   }
   AddBool(13, "network.usehttpproxy", 708, false);
-  AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_IP_INPUT);
+  AddString(14, "network.httpproxyserver", 706, "", EDIT_CONTROL_INPUT);
   AddString(15, "network.httpproxyport", 707, "8080", EDIT_CONTROL_NUMBER_INPUT, false, 707);
   AddString(16, "network.httpproxyusername", 709, "", EDIT_CONTROL_INPUT);
   AddString(17, "network.httpproxypassword", 710, "", EDIT_CONTROL_HIDDEN_INPUT,true,733);
@@ -519,15 +542,23 @@ void CGUISettings::Initialize()
 #else
   AddString(7,"servers.webserverport",    730, "80", EDIT_CONTROL_NUMBER_INPUT, false, 730);
 #endif
-  AddString(8,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
+  AddString(8,"servers.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
+  AddString(9,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
 #endif
+#endif
+
+  // zeroconf publishing
+#ifdef HAS_ZEROCONF
+  AddBool(10, "servers.zeroconf", 1260, true);
 #endif
 
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
+#ifndef _WIN32PC
   AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
+#endif
 #ifdef _LINUX
   AddBool  (5, "smb.mountshares", 1208,   false);
 #endif
@@ -569,8 +600,8 @@ void CGUISettings::Initialize()
   AddBool(9,"lookandfeel.soundsduringplayback",21370,false);
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
-  AddBool(11, "lookandfeel.rssfeedsrtl",13412,  false);
-  AddBool(12, "lookandfeel.enablemouse", 21369, true);
+  AddBool(12, "lookandfeel.rssfeedsrtl",13412,  false);
+  AddBool(13, "lookandfeel.enablemouse", 21369, true);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
@@ -625,10 +656,10 @@ void CGUISettings::Initialize()
   AddBool(5, "screensaver.uselock",20140,false);
   AddSeparator(6, "screensaver.sep1");
   AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddString(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddPath(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddBool(9, "screensaver.slideshowshuffle", 13319, false);
 
-  AddString(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+  AddPath(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }
 
 CGUISettings::~CGUISettings(void)
@@ -829,6 +860,13 @@ void CGUISettings::AddString(int iOrder, const char *strSetting, int iLabel, con
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
+void CGUISettings::AddPath(int iOrder, const char *strSetting, int iLabel, const char *strData, int iControlType, bool bAllowEmpty, int iHeadingString)
+{
+  CSettingPath* pSetting = new CSettingPath(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, iControlType, bAllowEmpty, iHeadingString);
+  if (!pSetting) return ;
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+}
+
 const CStdString &CGUISettings::GetString(const char *strSetting, bool bPrompt) const
 {
   ASSERT(settingsMap.size());
@@ -1009,7 +1047,7 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
     const TiXmlNode *pChild = pRootElement->FirstChild(strSplit[0].c_str());
     if (pChild)
     {
-      const TiXmlNode *pGrandChild = pChild->FirstChild(strSplit[1].c_str());
+      const TiXmlElement *pGrandChild = pChild->FirstChildElement(strSplit[1].c_str());
       if (pGrandChild && pGrandChild->FirstChild())
       {
         CStdString strValue = pGrandChild->FirstChild()->Value();
@@ -1017,6 +1055,12 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
         {
           if (strValue != "-")
           { // update our item
+            if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
+            { // check our path
+              int pathVersion = 0;
+              pGrandChild->Attribute("pathversion", &pathVersion);
+              strValue = CSpecialProtocol::ReplaceOldPath(strValue, pathVersion);
+            }
             (*it).second->FromString(strValue);
             if (advanced)
               (*it).second->SetAdvanced();
@@ -1050,6 +1094,8 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
       if (pChild)
       { // successfully added (or found) our group
         TiXmlElement newElement(strSplit[1]);
+        if ((*it).second->GetControlType() == SETTINGS_TYPE_PATH)
+          newElement.SetAttribute("pathversion", CSpecialProtocol::path_version);
         TiXmlNode *pNewNode = pChild->InsertEndChild(newElement);
         if (pNewNode)
         {

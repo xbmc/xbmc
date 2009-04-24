@@ -58,8 +58,7 @@ namespace DIRECTORY
     url.GetURL(strSlashPath);
 
     // the RAR code depends on things having a "\" at the end of the path
-    if (!CUtil::HasSlashAtEnd(strSlashPath))
-      strSlashPath += "/";
+    CUtil::AddSlashAtEnd(strSlashPath);
 
     if (g_RarManager.GetFilesInRar(items,strArchive,true,strPathInArchive))
     {
@@ -68,18 +67,10 @@ namespace DIRECTORY
       {
         if (items[iEntry]->IsParentFolder())
           continue;
-        if ((IsAllowed(items[iEntry]->m_strPath)) || (items[iEntry]->m_bIsFolder))
-        {
-          CUtil::AddFileToFolder(strSlashPath,items[iEntry]->m_strPath+strOptions,items[iEntry]->m_strPath);
-          items[iEntry]->m_iDriveType = 0;
-          //CLog::Log(LOGDEBUG, "RarDirectory::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
-        }
-        else
-        {
-          items.Remove(iEntry);
-          iEntry--; //do not confuse loop
-        }
-      } 
+        CUtil::AddFileToFolder(strSlashPath,items[iEntry]->m_strPath+strOptions,items[iEntry]->m_strPath);
+        items[iEntry]->m_iDriveType = 0;
+        //CLog::Log(LOGDEBUG, "RarDirectory::GetDirectory() retrieved file: %s", items[iEntry]->m_strPath.c_str());
+      }
       return( true);
     }
     else
@@ -94,7 +85,7 @@ namespace DIRECTORY
 
     return false;
   }
-  
+
   bool CRarDirectory::ContainsFiles(const CStdString& strPath)
   {
     CFileItemList items;
@@ -102,10 +93,10 @@ namespace DIRECTORY
     {
       if (items.Size() > 1)
         return true;
-      
+
       return false;
     }
-    
+
     return false;
   }
 }

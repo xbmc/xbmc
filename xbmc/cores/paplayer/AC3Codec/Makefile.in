@@ -1,18 +1,27 @@
+ARCH=@ARCH@
 CFLAGS=-D_LINUX -fPIC -Iinclude -Ivc++
+ifeq ($(findstring osx,$(ARCH)), osx)
+    export MACOSX_DEPLOYMENT_TARGET=10.4
+    CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+endif
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o -L/usr/lib/gcc/powerpc-apple-darwin8/4.0.1/ -lgcc
+endif
+
+
 OBJS=liba52/bit_allocate.o liba52/bitstream.o liba52/downmix.o liba52/imdct.o liba52/parse.o
 SYSDIR=../../../../system/players/paplayer
 SO=ac3codec-@ARCH@.so
-LIB=$(SYSDIR)/$(SO)
+SLIB=$(SYSDIR)/$(SO)
 
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ $(OBJS) $(BUNDLE1_O)
+	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+else
 	gcc -fPIC -shared -o $@ $(OBJS) \
 		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+endif
 
-clean:
-	$(RM) $(LIB) $(OBJS)
-
-%o : %c
-	gcc $(CFLAGS) -O2 -fPIC -c $< -o $@
-
-%o : %cpp
-	g++ $(CFLAGS) -O2 -fPIC -c $< -o $@
+include ../../../../Makefile.include

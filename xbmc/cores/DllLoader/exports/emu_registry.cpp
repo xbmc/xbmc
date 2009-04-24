@@ -39,7 +39,7 @@
 char* regpathname = NULL;
 
 //carry default regisrty.dat path+filename
-static char* localregpathname = "Q:\\system\\players\\mplayer\\codecs\\registry.dat";
+static char* localregpathname = "special://xbmc/system/players/mplayer/codecs/registry.dat";
 
 //will trim away any traling ch
 static void strrtrim(char* s, char ch)
@@ -359,8 +359,8 @@ static void init_registry(void)
   insert_handle((long)HKEY_LOCAL_MACHINE, "HKLM");
   insert_handle((long)HKEY_CURRENT_USER, "HKCU");
 
-  load_registry_xml("Q:\\system\\registry.xml");
-  load_registry_xml("T:\\registry.xml");
+  load_registry_xml("special://xbmc/system/registry.xml");
+  load_registry_xml("special://masterprofile/registry.xml");
 }
 
 /////////////////////////////////////////////////////////////

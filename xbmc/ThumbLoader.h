@@ -23,11 +23,16 @@
 #define THUMBLOADER_H
 #include "BackgroundInfoLoader.h"
 
-#include "cores/ffmpeg/DllAvFormat.h"
-#include "cores/ffmpeg/DllAvCodec.h"
-#include "cores/ffmpeg/DllSwScale.h"
+class CThumbLoader : public CBackgroundInfoLoader
+{
+public:
+  CThumbLoader();
+  virtual ~CThumbLoader();
 
-class CVideoThumbLoader : public CBackgroundInfoLoader
+  bool LoadRemoteThumb(CFileItem *pItem);
+};
+
+class CVideoThumbLoader : public CThumbLoader
 {
 public:
   CVideoThumbLoader();
@@ -38,14 +43,9 @@ public:
 protected:
   virtual void OnLoaderStart() ;
   virtual void OnLoaderFinish() ;
-
-  DllAvFormat m_dllAvFormat;
-  DllAvCodec  m_dllAvCodec;
-  DllAvUtil   m_dllAvUtil;
-  DllSwScale  m_dllSwScale;
 };
 
-class CProgramThumbLoader : public CBackgroundInfoLoader
+class CProgramThumbLoader : public CThumbLoader
 {
 public:
   CProgramThumbLoader();
@@ -53,7 +53,7 @@ public:
   virtual bool LoadItem(CFileItem* pItem);
 };
 
-class CMusicThumbLoader : public CBackgroundInfoLoader
+class CMusicThumbLoader : public CThumbLoader
 {
 public:
   CMusicThumbLoader();

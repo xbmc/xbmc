@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 #define TXD_FILE            0x16
@@ -90,7 +91,7 @@ next_chunk:
 AVInputFormat txd_demuxer =
 {
     "txd",
-    NULL_IF_CONFIG_SMALL("txd format"),
+    NULL_IF_CONFIG_SMALL("Renderware TeXture Dictionary"),
     0,
     txd_probe,
     txd_read_header,

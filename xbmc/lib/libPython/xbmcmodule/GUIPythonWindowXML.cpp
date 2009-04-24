@@ -32,6 +32,7 @@
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "TextureManager.h"
+#include "../XBPython.h"
 
 using namespace std;
 
@@ -172,7 +173,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         // Its done this way for now to allow other controls without a python version like togglebutton to still raise a onAction event
         if (controlClicked) // Will get problems if we the id is not on the window and we try to do GetControlType on it. So check to make sure it exists
         {
-          if ((controlClicked->IsContainer() &&  message.GetParam1() == ACTION_SELECT_ITEM) || !controlClicked->IsContainer())
+          if ((controlClicked->IsContainer() && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) || !controlClicked->IsContainer())
           {
             PyXBMCAction* inf = new PyXBMCAction;
             inf->pObject = NULL;
@@ -181,6 +182,19 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
             inf->controlId = iControl;
             // aquire lock?
             Py_AddPendingCall(Py_XBMC_Event_OnClick, inf);
+            PulseActionEvent();
+          }
+          else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
+          {
+            CAction action;
+            action.wID = ACTION_CONTEXT_MENU;
+
+            PyXBMCAction* inf = new PyXBMCAction;
+            inf->pObject = Action_FromAction(action);
+            inf->pCallbackWindow = pCallbackWindow;
+
+            // aquire lock?
+            Py_AddPendingCall(Py_XBMC_Event_OnAction, inf);
             PulseActionEvent();
           }
         }
@@ -253,7 +267,7 @@ void CGUIPythonWindowXML::ClearList()
 
 void CGUIPythonWindowXML::WaitForActionEvent(DWORD timeout)
 {
-  WaitForSingleObject(m_actionEvent, timeout);
+  g_pythonParser.WaitForEvent(m_actionEvent, timeout);
   ResetEvent(m_actionEvent);
 }
 

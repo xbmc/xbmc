@@ -21,8 +21,10 @@
  *
  */
 
+#include <set>
 #include "GUIWindow.h"
 #include "utils/Thread.h"
+#include "utils/CriticalSection.h"
 #include "SlideShowPicture.h"
 #include "DllImageLib.h"
 
@@ -69,7 +71,7 @@ public:
   const CFileItemList &GetSlideShowContents();
   const CFileItemPtr GetCurrentSlide();
   void RunSlideShow(const CStdString &strPath, bool bRecursive = false, bool bRandom = false, bool bNotRandom = false);
-  void StartSlideShow();
+  void StartSlideShow(bool screensaver=false);
   bool InSlideShow() const;
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
@@ -84,7 +86,8 @@ public:
   int CurrentSlide() const;
   void Shuffle();
 private:
-  void AddItems(const CStdString &strPath, bool bRecursive);
+  typedef std::set<CStdString> path_set;  // set to track which paths we're adding
+  void AddItems(const CStdString &strPath, path_set *recursivePaths);
   void RenderPause();
   void RenderErrorMessage();
   void Rotate();
@@ -98,6 +101,7 @@ private:
   int m_iZoomFactor;
 
   bool m_bSlideShow;
+  bool m_bScreensaver;
   bool m_bPause;
   bool m_bErrorMessage;
 
@@ -113,4 +117,5 @@ private:
   bool m_bReloadImage;
   DllImageLib m_ImageLib;
   RESOLUTION m_Resolution;
+  CCriticalSection m_slideSection;
 };

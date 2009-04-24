@@ -106,7 +106,7 @@ bool CVideoDatabaseDirectory::GetQueryParams(const CStdString& strPath, CQueryPa
 
   if (!pNode.get())
     return false;
-  
+
   CDirectoryNode::GetDatabaseInfo(strPath,params);
   return true;
 }
@@ -114,15 +114,14 @@ bool CVideoDatabaseDirectory::GetQueryParams(const CStdString& strPath, CQueryPa
 void CVideoDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory)
 {
   CFileItem directory(strDirectory, true);
-  if (CUtil::HasSlashAtEnd(directory.m_strPath))
-    directory.m_strPath.Delete(directory.m_strPath.size() - 1);
+  CUtil::RemoveSlashAtEnd(directory.m_strPath);
 
   Crc32 crc;
   crc.ComputeFromLowerCase(directory.m_strPath);
 
   CStdString strFileName;
-  strFileName.Format("Z:\\%08x.fi", (unsigned __int32) crc);
-  CFile::Delete(_P(strFileName));
+  strFileName.Format("special://temp/%08x.fi", (unsigned __int32) crc);
+  CFile::Delete(strFileName);
 }
 
 bool CVideoDatabaseDirectory::IsAllItem(const CStdString& strDirectory)
@@ -158,8 +157,8 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
 
   // get year
   if (params.GetYear() != -1)
-  { 
-    strTemp.Format("%i",params.GetYear());   
+  {
+    strTemp.Format("%i",params.GetYear());
     if (!strLabel.IsEmpty())
       strLabel += " / ";
     strLabel += strTemp;

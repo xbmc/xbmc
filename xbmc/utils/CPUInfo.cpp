@@ -27,9 +27,13 @@
 #ifdef __APPLE__
 #include <sys/types.h>
 #include <sys/sysctl.h>
+#ifdef __ppc__
+#include <mach-o/arch.h>
+#endif
 #endif
 
 #include "log.h"
+#include "Settings.h"
 
 using namespace std;
 
@@ -53,6 +57,8 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
 CCPUInfo::CCPUInfo(void)
 {
   m_fProcStat = m_fProcTemperature = m_fCPUInfo = NULL;
+  m_lastUsedPercentage = 0;
+
 #ifdef __APPLE__
   size_t len = 4;
 
@@ -61,10 +67,17 @@ CCPUInfo::CCPUInfo(void)
       m_cpuCount = 1;
 
   // The model.
+#ifdef __ppc__
+  const NXArchInfo *info = NXGetLocalArchInfo();
+  if (info != NULL)
+    m_cpuModel = info->description;
+#else
+  // NXGetLocalArchInfo is ugly for intel so keep using this method
   char buffer[512];
   len = 512;
   if (sysctlbyname("machdep.cpu.brand_string", &buffer, &len, NULL, 0) == 0)
     m_cpuModel = buffer;
+#endif
 
   // Go through each core.
   for (int i=0; i<m_cpuCount; i++)
@@ -96,12 +109,13 @@ CCPUInfo::CCPUInfo(void)
 
 #else
   m_fProcStat = fopen("/proc/stat", "r");
-  m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THRM/temperature", "r");
+  m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM0/temperature", "r");
   if (m_fProcTemperature == NULL)
-    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR1/temperature", "r");
+    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THRM/temperature", "r");
   if (m_fProcTemperature == NULL)
-    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THM/temperature", "r");
-  m_lastUsedPercentage = 0;
+    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR0/temperature", "r");
+  if (m_fProcTemperature == NULL)
+    m_fProcTemperature = fopen("/proc/acpi/thermal_zone/TZ0/temperature", "r");
 
   m_fCPUInfo = fopen("/proc/cpuinfo", "r");
   m_cpuCount = 0;
@@ -250,21 +264,35 @@ float CCPUInfo::getCPUFrequency()
 
 CTemperature CCPUInfo::getTemperature()
 {
-  int value;
-  char scale;
+  int         value = 0,
+              ret   = 0;
+  char        scale = 0;
+  FILE        *p    = NULL;
+  CStdString  cmd   = g_advancedSettings.m_cpuTempCmd;
 
-  if (m_fProcTemperature == NULL)
+  if (cmd.IsEmpty() && m_fProcTemperature == NULL)
     return CTemperature();
 
-  rewind(m_fProcTemperature);
-  fflush(m_fProcTemperature);
-
-  char buf[256];
-  if (!fgets(buf, sizeof(buf), m_fProcTemperature))
-    return CTemperature();
-
-  int num = sscanf(buf, "temperature: %d %c", &value, &scale);
-  if (num != 2)
+  if (!cmd.IsEmpty()) 
+  {
+    p = popen (cmd.c_str(), "r");
+    if (p)
+    {
+      ret = fscanf(p, "%d %c", &value, &scale);
+      pclose(p);
+    }
+  }
+  else
+  {
+    // procfs is deprecated in the linux kernel, we should move away from
+    // using it for temperature data.  It doesn't seem that sysfs has a 
+    // general enough interface to bother implementing ATM.
+    rewind(m_fProcTemperature);
+    fflush(m_fProcTemperature);
+    ret = fscanf(m_fProcTemperature, "temperature: %d %c", &value, &scale);
+  }
+  
+  if (ret != 2)
     return CTemperature();
 
   if (scale == 'C' || scale == 'c')

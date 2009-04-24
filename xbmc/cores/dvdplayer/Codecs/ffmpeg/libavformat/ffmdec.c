@@ -1,6 +1,6 @@
 /*
  * FFM (ffserver live feed) demuxer
- * Copyright (c) 2001 Fabrice Bellard.
+ * Copyright (c) 2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -19,9 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 #include "ffm.h"
-#ifdef CONFIG_FFSERVER
+#if CONFIG_FFSERVER
 #include <unistd.h>
 
 int64_t ffm_read_write_index(int fd)
@@ -29,11 +30,12 @@ int64_t ffm_read_write_index(int fd)
     uint8_t buf[8];
 
     lseek(fd, 8, SEEK_SET);
-    read(fd, buf, 8);
+    if (read(fd, buf, 8) != 8)
+        return AVERROR(EIO);
     return AV_RB64(buf);
 }
 
-void ffm_write_write_index(int fd, int64_t pos)
+int ffm_write_write_index(int fd, int64_t pos)
 {
     uint8_t buf[8];
     int i;
@@ -41,7 +43,9 @@ void ffm_write_write_index(int fd, int64_t pos)
     for(i=0;i<8;i++)
         buf[i] = (pos >> (56 - i * 8)) & 0xff;
     lseek(fd, 8, SEEK_SET);
-    write(fd, buf, 8);
+    if (write(fd, buf, 8) != 8)
+        return AVERROR(EIO);
+    return 8;
 }
 
 void ffm_set_write_index(AVFormatContext *s, int64_t pos, int64_t file_size)
@@ -357,6 +361,9 @@ static int ffm_read_packet(AVFormatContext *s, AVPacket *pkt)
     int size;
     FFMContext *ffm = s->priv_data;
     int duration;
+
+    if (url_fsize(s->pb) == FFM_PACKET_SIZE)
+        return -1;
 
     switch(ffm->read_state) {
     case READ_HEADER:

@@ -44,11 +44,7 @@
 #include "StdString.h"
 
 /* typedef a 32 bit type */
-#ifdef _WIN32PC
-typedef __int32 UINT4;
-#else
 typedef uint32_t UINT4;
-#endif
 
 /* Data structure for MD5 (Message Digest) computation */
 typedef struct {
@@ -59,17 +55,17 @@ typedef struct {
 
 namespace XBMC
 {
-	class MD5
-	{
-	public:
-		MD5(void);
-		void append(unsigned char *inBuf, unsigned int inLen);
-		void append(const CStdString& str);
-		void getDigest(unsigned char digest[16]);
+  class MD5
+  {
+  public:
+    MD5(void);
+    void append(unsigned char *inBuf, unsigned int inLen);
+    void append(const CStdString& str);
+    void getDigest(unsigned char digest[16]);
 
-	private:
-		MD5_CTX m_ctx;
-	};
+  private:
+    MD5_CTX m_ctx;
+  };
 }
 
 #endif

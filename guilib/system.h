@@ -86,6 +86,19 @@
 #undef HAS_CCXSTREAM
 #endif
 
+//zeroconf
+//on osx enabled by default
+//linux only if avahi is present
+#ifdef _LINUX
+#ifdef __APPLE__
+#define HAS_ZEROCONF
+#else 
+#ifdef HAS_AVAHI
+#define HAS_ZEROCONF
+#endif
+#endif
+#endif
+
 #ifdef _LINUX
 #ifndef __APPLE__
 #define HAS_LCD
@@ -102,6 +115,8 @@
 #define HAS_RAR
 #ifndef __APPLE__
 #define HAS_HAL
+#define HAS_DBUS
+#define HAS_DBUS_SERVER
 #endif
 #define HAS_FILESYSTEM_CDDA
 #define HAS_FILESYSTEM_SMB
@@ -143,11 +158,9 @@
 #define HAS_DVD_SWSCALE
 #ifndef HAS_SDL_2D
 #define HAS_SDL_OPENGL
-#ifdef _LINUX
-#ifndef __APPLE__
+#endif
+#if defined(_LINUX) && !defined(__APPLE__) && defined(HAS_SDL_OPENGL)
 #define HAS_GLX
-#endif
-#endif
 #endif
 #ifdef _WIN32
 #define _WIN32PC       // precompiler definition for the windows build
@@ -180,6 +193,10 @@
 
 #include "../xbmc/win32/PlatformInclude.h"
 #endif
+#endif
+
+#ifdef __APPLE__
+#include "../svn_revision.h"
 #endif
 
 #ifndef SVN_REV

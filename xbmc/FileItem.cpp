@@ -64,11 +64,11 @@ CFileItem::CFileItem(const CSong& song)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(song.strTitle);
-  m_strPath = _P(song.strFileName);
+  m_strPath = song.strFileName;
   GetMusicInfoTag()->SetSong(song);
   m_lStartOffset = song.iStartOffset;
   m_lEndOffset = song.iEndOffset;
-  m_strThumbnailImage = _P(song.strThumb);
+  m_strThumbnailImage = song.strThumb;
 }
 
 CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
@@ -78,7 +78,7 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(album.strAlbum);
-  m_strPath = _P(path);
+  m_strPath = path;
   m_bIsFolder = true;
   m_strLabel2 = album.strArtist;
   CUtil::AddSlashAtEnd(m_strPath);
@@ -107,18 +107,18 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetLabel(movie.m_strTitle);
   if (movie.m_strFileNameAndPath.IsEmpty())
   {
-    m_strPath = _P(movie.m_strPath);
+    m_strPath = movie.m_strPath;
     CUtil::AddSlashAtEnd(m_strPath);
     m_bIsFolder = true;
   }
   else
   {
-    m_strPath = _P(movie.m_strFileNameAndPath);
+    m_strPath = movie.m_strFileNameAndPath;
     m_bIsFolder = false;
   }
   *GetVideoInfoTag() = movie;
   FillInDefaultIcon();
-  SetVideoThumb();
+  SetCachedVideoThumb();
   SetInvalid();
 }
 
@@ -129,7 +129,7 @@ CFileItem::CFileItem(const CArtist& artist)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(artist.strArtist);
-  m_strPath = _P(artist.strArtist);
+  m_strPath = artist.strArtist;
   m_bIsFolder = true;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetArtist(artist.strArtist);
@@ -142,7 +142,7 @@ CFileItem::CFileItem(const CGenre& genre)
   m_pictureInfoTag = NULL;
   Reset();
   SetLabel(genre.strGenre);
-  m_strPath = _P(genre.strGenre);
+  m_strPath = genre.strGenre;
   m_bIsFolder = true;
   CUtil::AddSlashAtEnd(m_strPath);
   GetMusicInfoTag()->SetGenre(genre.strGenre);
@@ -191,7 +191,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_videoInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
-  m_strPath = _P(strPath);
+  m_strPath = strPath;
   m_bIsFolder = bIsFolder;
   // tuxbox urls cannot have a / at end
   if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))
@@ -211,7 +211,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   Reset();
   m_bIsFolder = true;
   m_bIsShareOrDrive = true;
-  m_strPath = _P(share.strPath);
+  m_strPath = share.strPath;
   CUtil::AddSlashAtEnd(m_strPath);
   CStdString label = share.strName;
   if (share.strStatus.size())
@@ -222,18 +222,15 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_iHasLock = share.m_iHasLock;
   m_iBadPwdCount = share.m_iBadPwdCount;
   m_iDriveType = share.m_iDriveType;
-  m_strThumbnailImage = _P(share.m_strThumbnailImage);
+  m_strThumbnailImage = share.m_strThumbnailImage;
   SetLabelPreformated(true);
 }
 
 CFileItem::~CFileItem(void)
 {
-  if (m_musicInfoTag)
-    delete m_musicInfoTag;
-  if (m_videoInfoTag)
-    delete m_videoInfoTag;
-  if (m_pictureInfoTag)
-    delete m_pictureInfoTag;
+  delete m_musicInfoTag;
+  delete m_videoInfoTag;
+  delete m_pictureInfoTag;
 
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -247,14 +244,6 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_bLabelPreformated=item.m_bLabelPreformated;
   FreeMemory();
   m_strPath = item.m_strPath;
-#ifdef DEBUG
-  if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))  // should root paths be "/" ?
-  {
-#ifndef __APPLE__
-    ASSERT(CUtil::HasSlashAtEnd(m_strPath));
-#endif
-  }
-#endif
   m_bIsParentFolder = item.m_bIsParentFolder;
   m_iDriveType = item.m_iDriveType;
   m_bIsShareOrDrive = item.m_bIsShareOrDrive;
@@ -268,9 +257,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
   else
   {
-    if (m_musicInfoTag)
-      delete m_musicInfoTag;
-
+    delete m_musicInfoTag;
     m_musicInfoTag = NULL;
   }
 
@@ -282,9 +269,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
   else
   {
-    if (m_videoInfoTag)
-      delete m_videoInfoTag;
-
+    delete m_videoInfoTag;
     m_videoInfoTag = NULL;
   }
 
@@ -296,9 +281,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
   else
   {
-    if (m_pictureInfoTag)
-      delete m_pictureInfoTag;
-
+    delete m_pictureInfoTag;
     m_pictureInfoTag = NULL;
   }
 
@@ -345,14 +328,11 @@ void CFileItem::Reset()
   m_iHasLock = 0;
   m_bCanQueue=true;
   m_contenttype = "";
-  if (m_musicInfoTag)
-    delete m_musicInfoTag;
+  delete m_musicInfoTag;
   m_musicInfoTag=NULL;
-  if (m_videoInfoTag)
-    delete m_videoInfoTag;
+  delete m_videoInfoTag;
   m_videoInfoTag=NULL;
-  if (m_pictureInfoTag)
-    delete m_pictureInfoTag;
+  delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   m_extrainfo.Empty();
   SetInvalid();
@@ -397,14 +377,14 @@ void CFileItem::Serialize(CArchive& ar)
       ar << 1;
       ar << *m_videoInfoTag;
     }
-    else 
+    else
       ar << 0;
     if (m_pictureInfoTag)
     {
       ar << 1;
       ar << *m_pictureInfoTag;
     }
-    else 
+    else
       ar << 0;
   }
   else
@@ -444,14 +424,40 @@ void CFileItem::Serialize(CArchive& ar)
     SetInvalid();
   }
 }
+bool CFileItem::Exists() const
+{
+  if (m_strPath.IsEmpty() || m_strPath.Equals("add") || IsInternetStream() || IsParentFolder() || IsVirtualDirectoryRoot() || IsPlugin())
+    return true;
+
+  if (IsVideoDb() && HasVideoInfoTag())
+  {
+    CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
+    return dbItem.Exists();
+  }
+
+  CStdString strPath = m_strPath;
+ 
+  if (CUtil::IsMultiPath(strPath))
+    strPath = CMultiPathDirectory::GetFirstPath(strPath);
+ 
+  if (CUtil::IsStack(strPath))
+    strPath = CStackDirectory::GetFirstStackedFile(strPath);
+
+  if (m_bIsFolder)
+    return CDirectory::Exists(strPath);
+  else
+    return CFile::Exists(strPath);
+
+  return false;
+}
 
 bool CFileItem::IsVideo() const
 {
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
-  
-  if (m_strPath.Left(7).Equals("tuxbox:")) 
+
+  if (m_strPath.Left(7).Equals("tuxbox:"))
     return true;
 
   if (m_strPath.Left(10).Equals("hdhomerun:"))
@@ -533,6 +539,13 @@ bool CFileItem::IsPicture() const
   return false;
 }
 
+bool CFileItem::IsLyrics() const
+{
+  CStdString strExtension;
+  CUtil::GetExtension(m_strPath, strExtension);
+  return (strExtension.CompareNoCase(".cdg") == 0 || strExtension.CompareNoCase(".lrc") == 0);
+}
+
 bool CFileItem::IsCUESheet() const
 {
   CStdString strExtension;
@@ -557,7 +570,7 @@ bool CFileItem::IsInternetStream() const
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
 
-  if (strProtocol.size() == 0)
+  if (strProtocol.size() == 0 || HasProperty("IsHTTPDirectory"))
     return false;
 
   // there's nothing to stop internet streams from being stacked
@@ -581,7 +594,7 @@ bool CFileItem::IsFileFolder() const
 {
   return (
     m_bIsFolder && (
-    IsPluginFolder() ||
+    IsPlugin() ||
     IsSmartPlayList() ||
     IsPlayList() ||
     IsZIP() ||
@@ -694,10 +707,16 @@ bool CFileItem::IsStack() const
   return CUtil::IsStack(m_strPath);
 }
 
-bool CFileItem::IsPluginFolder() const
+bool CFileItem::IsPlugin() const
 {
   CURL url(m_strPath);
   return url.GetProtocol().Equals("plugin") && !url.GetFileName().IsEmpty();
+}
+
+bool CFileItem::IsPluginRoot() const
+{
+  CURL url(m_strPath);
+  return url.GetProtocol().Equals("plugin") && url.GetFileName().IsEmpty();
 }
 
 bool CFileItem::IsMultiPath() const
@@ -712,12 +731,12 @@ bool CFileItem::IsCDDA() const
 
 bool CFileItem::IsDVD() const
 {
-  return CUtil::IsDVD(m_strPath);
+  return CUtil::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
 }
 
 bool CFileItem::IsOnDVD() const
 {
-  return CUtil::IsOnDVD(m_strPath);
+  return CUtil::IsOnDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
 }
 
 bool CFileItem::IsOnLAN() const
@@ -795,7 +814,7 @@ bool CFileItem::IsMemoryUnit() const
 
 bool CFileItem::IsRemovable() const
 {
-  return IsOnDVD() || IsCDDA() || IsMemoryUnit();
+  return IsOnDVD() || IsCDDA() || IsMemoryUnit() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
 }
 
 bool CFileItem::IsReadOnly() const
@@ -901,45 +920,26 @@ void CFileItem::FillInDefaultIcon()
 
 CStdString CFileItem::GetCachedArtistThumb() const
 {
-  Crc32 crc;
-  crc.ComputeFromLowerCase("artist" + GetLabel());
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\%08x.tbn", g_settings.GetMusicArtistThumbFolder().c_str(), (unsigned __int32)crc);
-  return _P(cachedThumb);
+  return GetCachedThumb("artist"+GetLabel(),g_settings.GetMusicArtistThumbFolder());
 }
 
 CStdString CFileItem::GetCachedProfileThumb() const
 {
-  Crc32 crc;
-  crc.ComputeFromLowerCase("profile" + m_strPath);
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\Thumbnails\\Profiles\\%08x.tbn", g_settings.GetUserDataFolder().c_str(), (unsigned __int32)crc);
-  return _P(cachedThumb);
+  return GetCachedThumb("profile"+m_strPath,CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"Thumbnails\\Profiles"));
 }
 
 CStdString CFileItem::GetCachedSeasonThumb() const
 {
-  Crc32 crc;
   CStdString seasonPath;
   if (HasVideoInfoTag())
     seasonPath = GetVideoInfoTag()->m_strPath;
-  crc.ComputeFromLowerCase("season" + seasonPath + GetLabel());
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
-  return _P(cachedThumb);
+
+  return GetCachedThumb("season"+seasonPath+GetLabel(),g_settings.GetVideoThumbFolder(),true);
 }
 
 CStdString CFileItem::GetCachedActorThumb() const
 {
-  Crc32 crc;
-  crc.ComputeFromLowerCase("actor" + GetLabel());
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString cachedThumb;
-  cachedThumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0], (unsigned __int32)crc);
-  return cachedThumb;
+  return GetCachedThumb("actor"+GetLabel(),g_settings.GetVideoThumbFolder(),true);
 }
 
 void CFileItem::SetCachedArtistThumb()
@@ -1045,6 +1045,12 @@ const CStdString& CFileItem::GetContentType() const
     {
       CFileCurl::GetContent(GetAsUrl(), m_ref);
 
+      // try to get content type again but with an NSPlayer User-Agent
+      // in order for server to provide correct content-type.  Allows us
+      // to properly detect an MMS stream
+      if (m_ref.Left(11).Equals("video/x-ms-"))
+        CFileCurl::GetContent(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
+
       // make sure there are no options set in content type
       // content type can look like "video/x-ms-asf ; charset=utf8"
       int i = m_ref.Find(';');
@@ -1056,6 +1062,13 @@ const CStdString& CFileItem::GetContentType() const
     // if it's still empty set to an unknown type
     if( m_ref.IsEmpty() )
       m_ref = "application/octet-stream";
+  }
+
+  // change protocol to mms for the following content-type.  Allows us to create proper FileMMS.
+  if( m_contenttype.Left(32).Equals("application/vnd.ms.wms-hdr.asfv1") || m_contenttype.Left(24).Equals("application/x-mms-framed") )
+  {
+    CStdString& m_path = (CStdString&)m_strPath;
+    m_path.Replace("http:", "mms:");
   }
 
   return m_contenttype;
@@ -1296,6 +1309,30 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
   m_content = itemlist.m_content;
   m_mapProperties = itemlist.m_mapProperties;
   m_cacheToDisc = itemlist.m_cacheToDisc;
+}
+
+bool CFileItemList::Copy(const CFileItemList& items)
+{
+  // assign all CFileItem parts
+  *(CFileItem*)this = *(CFileItem*)&items;
+
+  // assign the rest of the CFileItemList properties
+  m_replaceListing = items.m_replaceListing;
+  m_content        = items.m_content;
+  m_mapProperties  = items.m_mapProperties;
+  m_cacheToDisc    = items.m_cacheToDisc;
+  m_sortDetails    = items.m_sortDetails;
+  m_sortMethod     = items.m_sortMethod;
+  m_sortOrder      = items.m_sortOrder;
+
+  // make a copy of each item
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr newItem(new CFileItem(*items[i]));
+    Add(newItem);
+  }
+
+  return true;
 }
 
 CFileItemPtr CFileItemList::Get(int iItem)
@@ -1858,7 +1895,7 @@ void CFileItemList::Stack()
     }
     // combined the folder checks
     if (item->m_bIsFolder)
-    { 
+    {
       // only check known fast sources?
       // xbms included because it supports file existance
       // NOTES:
@@ -1953,7 +1990,7 @@ void CFileItemList::Stack()
     if (item->m_bIsFolder
       || item->IsParentFolder()
       || item->IsNFO()
-      || item->IsPlayList() 
+      || item->IsPlayList()
       || item->IsDVDImage()
       )
     {
@@ -2065,7 +2102,7 @@ bool CFileItemList::Save()
   CLog::Log(LOGDEBUG,"Saving fileitems [%s]",m_strPath.c_str());
 
   CFile file;
-  if (file.OpenForWrite(GetDiscCacheFile(), true, true)) // overwrite always
+  if (file.OpenForWrite(GetDiscCacheFile(), true)) // overwrite always
   {
     CArchive ar(&file, CArchive::store);
     ar << *this;
@@ -2095,14 +2132,14 @@ CStdString CFileItemList::GetDiscCacheFile() const
 
   CStdString cacheFile;
   if (IsCDDA() || IsOnDVD())
-    cacheFile.Format("Z:\\r-%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/r-%08x.fi", (unsigned __int32)crc);
   else if (IsMusicDb())
-    cacheFile.Format("Z:\\mdb-%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/mdb-%08x.fi", (unsigned __int32)crc);
   else if (IsVideoDb())
-    cacheFile.Format("Z:\\vdb-%08x.fi", (unsigned __int32)crc);
+    cacheFile.Format("special://temp/vdb-%08x.fi", (unsigned __int32)crc);
   else
-    cacheFile.Format("Z:\\%08x.fi", (unsigned __int32)crc);
-  return _P(cacheFile);
+    cacheFile.Format("special://temp/%08x.fi", (unsigned __int32)crc);
+  return cacheFile;
 }
 
 bool CFileItemList::AlwaysCache() const
@@ -2150,14 +2187,7 @@ void CFileItemList::SetCachedMusicThumbs()
 
 CStdString CFileItem::GetCachedPictureThumb() const
 {
-  // get the locally cached thumb
-  Crc32 crc;
-  crc.ComputeFromLowerCase(m_strPath);
-  CStdString hex;
-  hex.Format("%08x", (unsigned __int32) crc);
-  CStdString thumb;
-  thumb.Format("%s\\%c\\%s.tbn", g_settings.GetPicturesThumbFolder().c_str(), hex[0], hex.c_str());
-  return _P(thumb);
+  return GetCachedThumb(m_strPath,g_settings.GetPicturesThumbFolder(),true);
 }
 
 void CFileItem::SetCachedMusicThumb()
@@ -2196,8 +2226,7 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
   }
   if (!strAlbum.IsEmpty() && !strArtist.IsEmpty())
   {
-    // try permanent album thumb (Q:\userdata\thumbnails\music)
-    // using "album name + artist name"
+    // try permanent album thumb using "album name + artist name"
     CStdString thumb(CUtil::GetCachedAlbumThumb(strAlbum, strArtist));
     if (CFile::Exists(thumb))
       return thumb;
@@ -2230,7 +2259,7 @@ CStdString CFileItem::GetPreviouslyCachedMusicThumb() const
 
 CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
+  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsMusicDb())
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
@@ -2290,36 +2319,18 @@ void CFileItem::SetCachedPictureThumb()
 
 CStdString CFileItem::GetCachedVideoThumb() const
 {
-  // get the locally cached thumb
-  Crc32 crc;
   if (IsStack())
-  {
-    CStackDirectory dir;
-    crc.ComputeFromLowerCase(dir.GetFirstStackedFile(m_strPath));
-  }
+    return GetCachedThumb(CStackDirectory::GetFirstStackedFile(m_strPath),g_settings.GetVideoThumbFolder(),true);
   else
-    crc.ComputeFromLowerCase(m_strPath);
-
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString thumb;
-  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
-  return _P(thumb);
+    return GetCachedThumb(m_strPath,g_settings.GetVideoThumbFolder(),true);
 }
 
 CStdString CFileItem::GetCachedEpisodeThumb() const
 {
   // get the locally cached thumb
-  Crc32 crc;
   CStdString strCRC;
   strCRC.Format("%sepisode%i",GetVideoInfoTag()->m_strFileNameAndPath.c_str(),GetVideoInfoTag()->m_iEpisode);
-
-  crc.ComputeFromLowerCase(strCRC);
-  CStdString hex;
-  hex.Format("%08x", (__int32)crc);
-  CStdString thumb;
-  thumb.Format("%s\\%c\\%08x.tbn", g_settings.GetVideoThumbFolder().c_str(), hex[0],(unsigned __int32)crc);
-  return _P(thumb);
+  return GetCachedThumb(strCRC,g_settings.GetVideoThumbFolder(),true);
 }
 
 void CFileItem::SetCachedVideoThumb()
@@ -2340,10 +2351,15 @@ CStdString CFileItem::GetTBNFile() const
 
   if (IsStack())
   {
-    CStdString strPath;
+    CStdString strPath, strReturn;
     CUtil::GetParentPath(m_strPath,strPath);
-    CStdString strPath2 = CStackDirectory::GetStackedTitlePath(strFile);
-    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
+    CStdString strTBNFile = item.GetTBNFile();
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strReturn);
+    if (CFile::Exists(strReturn))
+      return strReturn;
+
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)),strFile);
   }
 
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
@@ -2354,24 +2370,40 @@ CStdString CFileItem::GetTBNFile() const
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
 
-  if (m_bIsFolder && !IsFileFolder())
-    CUtil::RemoveSlashAtEnd(thumbFile);
+  CURL url(strFile);
+  strFile = url.GetFileName();
 
-  CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+  if (m_bIsFolder && !IsFileFolder())
+    CUtil::RemoveSlashAtEnd(strFile);
+
+  if(strFile.IsEmpty())
+    thumbFile = "";
+  else
+  {
+    CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+    url.SetFileName(thumbFile);
+    url.GetURL(thumbFile);
+  }
   return thumbFile;
 }
 
 CStdString CFileItem::GetUserVideoThumb() const
 {
-  if (m_strPath.IsEmpty() || m_bIsShareOrDrive || IsInternetStream() || CUtil::IsFTP(m_strPath) || CUtil::IsUPnP(m_strPath) || IsParentFolder() || IsVTP())
-    return "";
-
   if (IsTuxBox())
   {
     if (!m_bIsFolder)
       return g_tuxbox.GetPicon(GetLabel());
     else return "";
   }
+
+  if (m_strPath.IsEmpty() 
+  || m_bIsShareOrDrive
+  || IsInternetStream()
+  || CUtil::IsUPnP(m_strPath)
+  || IsParentFolder()
+  || IsTV())
+    return "";
+
 
   // 1. check <filename>.tbn or <foldername>.tbn
   CStdString fileThumb(GetTBNFile());
@@ -2427,7 +2459,7 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
 
   if (IsMultiPath())
     strFolder = CMultiPathDirectory::GetFirstPath(m_strPath);
-  
+
   CUtil::AddFileToFolder(strFolder, folderJPG, folderThumb);
   return folderThumb;
 }
@@ -2476,7 +2508,8 @@ CStdString CFileItem::CacheFanart(bool probe) const
     if (CFile::Exists(cachedFanart))
       return "";
   }
-  
+
+  CStdString strFile2;
   CStdString strFile = m_strPath;
   if (IsStack())
   {
@@ -2486,6 +2519,10 @@ CStdString CFileItem::CacheFanart(bool probe) const
     CStdString strPath2;
     strPath2 = dir.GetStackedTitlePath(strFile);
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+    CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
+    CStdString strTBNFile = item.GetTBNFile();
+    CUtil::ReplaceExtension(strTBNFile, "-fanart",strTBNFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strFile2);
   }
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
   {
@@ -2494,33 +2531,42 @@ CStdString CFileItem::CacheFanart(bool probe) const
     CUtil::GetParentPath(strPath,strParent);
     CUtil::AddFileToFolder(strParent,CUtil::GetFileName(m_strPath),strFile);
   }
-  
+
   // no local fanart available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
+  if (IsInternetStream()
+  || CUtil::IsUPnP(strFile)
+  || IsTV() 
+  || IsPlugin() 
+  || CUtil::IsFTP(strFile))
     return "";
 
   // we don't have a cached image, so let's see if the user has a local image ..
-  bool bFoundFanart = false;
-  CStdString localFanart;
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
+  if (strDir.IsEmpty()) return "";
+
+  bool bFoundFanart = false;
+  CStdString localFanart;
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-fanart";
-  CStdString strFile2 = CUtil::AddFileToFolder(strDir, "fanart");
+  CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
 
   for (int i = 0; i < items.Size(); i++)
   {
     CStdString strCandidate = items[i]->m_strPath;
     CUtil::RemoveExtension(strCandidate);
-    if (strCandidate == strFile || strCandidate == strFile2)
+    if (strCandidate.CompareNoCase(strFile) == 0 ||
+        strCandidate.CompareNoCase(strFile2) == 0 ||
+        strCandidate.CompareNoCase(strFile3) == 0)
     {
       bFoundFanart = true;
       localFanart = items[i]->m_strPath;
       break;
     }
   }
+
   // no local fanart found
   if(!bFoundFanart)
     return "";
@@ -2541,30 +2587,47 @@ CStdString CFileItem::GetCachedFanart() const
   {
     if (!HasVideoInfoTag())
       return "";
-    return CFileItem::GetCachedFanart(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath);
+    if (!GetVideoInfoTag()->m_strArtist.IsEmpty())
+      return GetCachedThumb(GetVideoInfoTag()->m_strArtist,g_settings.GetMusicFanartFolder());
+    if (!m_bIsFolder && !GetVideoInfoTag()->m_strShowTitle.IsEmpty())
+    {
+      CVideoDatabase database;
+      database.Open();
+      int iShowId = database.GetTvShowId(GetVideoInfoTag()->m_strPath);
+      CStdString showPath;
+      database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
+      return GetCachedThumb(showPath,g_settings.GetVideoFanartFolder()); 
+    }
+    return GetCachedThumb(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());
   }
-  return CFileItem::GetCachedFanart(m_strPath);
+  if (HasMusicInfoTag())
+    return GetCachedThumb(GetMusicInfoTag()->GetArtist(),g_settings.GetMusicFanartFolder());
+
+  return GetCachedThumb(m_strPath,g_settings.GetVideoFanartFolder());
 }
 
-CStdString CFileItem::GetCachedFanart(const CStdString &path)
+CStdString CFileItem::GetCachedThumb(const CStdString &path, const CStdString &path2, bool split)
 {
   // get the locally cached thumb
   Crc32 crc;
   crc.ComputeFromLowerCase(path);
 
   CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetVideoFanartFolder().c_str(),(unsigned __int32)crc);
-  return _P(thumb);
+  if (split)
+  {
+    CStdString hex;
+    hex.Format("%08x", (__int32)crc);
+    thumb.Format("%c\\%08x.tbn", hex[0], (unsigned __int32)crc);
+  }
+  else
+    thumb.Format("%08x.tbn", (unsigned __int32)crc);
+
+  return CUtil::AddFileToFolder(path2, thumb);
 }
 
 CStdString CFileItem::GetCachedProgramThumb() const
 {
-  // get the locally cached thumb
-  Crc32 crc;
-  crc.ComputeFromLowerCase(m_strPath);
-  CStdString thumb;
-  thumb.Format("%s\\%08x.tbn", g_settings.GetProgramsThumbFolder().c_str(), (unsigned __int32)crc);
-  return _P(thumb);
+  return GetCachedThumb(m_strPath,g_settings.GetProgramsThumbFolder());
 }
 
 CStdString CFileItem::GetCachedGameSaveThumb() const
@@ -2823,7 +2886,7 @@ MUSIC_INFO::CMusicInfoTag* CFileItem::GetMusicInfoTag()
 
 CStdString CFileItem::FindTrailer() const
 {
-  CStdString strTrailer;
+  CStdString strFile2, strTrailer;
   CStdString strFile = m_strPath;
   if (IsStack())
   {
@@ -2833,6 +2896,10 @@ CStdString CFileItem::FindTrailer() const
     CStdString strPath2;
     strPath2 = dir.GetStackedTitlePath(strFile);
     CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strPath2),strFile);
+    CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
+    CStdString strTBNFile = item.GetTBNFile();
+    CUtil::ReplaceExtension(strTBNFile, "-trailer",strTBNFile);
+    CUtil::AddFileToFolder(strPath,CUtil::GetFileName(strTBNFile),strFile2);
   }
   if (CUtil::IsInRAR(strFile) || CUtil::IsInZIP(strFile))
   {
@@ -2843,27 +2910,30 @@ CStdString CFileItem::FindTrailer() const
   }
 
   // no local trailer available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPluginFolder())
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
     return strTrailer;
-  
+
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions);
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_videoExtensions, true, false, DIR_CACHE_ALWAYS, false);
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
-  CStdString strFile2 = CUtil::AddFileToFolder(strDir, "movie-trailer");
+  CStdString strFile3 = CUtil::AddFileToFolder(strDir, "movie-trailer");
 
   for (int i = 0; i < items.Size(); i++)
   {
     CStdString strCandidate = items[i]->m_strPath;
     CUtil::RemoveExtension(strCandidate);
-    if (strCandidate == strFile || strCandidate == strFile2)
+    if (strCandidate.CompareNoCase(strFile) == 0 ||
+        strCandidate.CompareNoCase(strFile2) == 0 ||
+        strCandidate.CompareNoCase(strFile3) == 0)
     {
       strTrailer = items[i]->m_strPath;
       break;
     }
   }
+
   return strTrailer;
 }
 

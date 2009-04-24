@@ -18,11 +18,13 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 #include "adx.h"
 
 /**
- * @file adx.c
+ * @file libavcodec/adxenc.c
  * SEGA CRI adx codecs.
  *
  * Reference documents:
@@ -191,5 +193,5 @@ AVCodec adpcm_adx_encoder = {
     adx_encode_close,
     NULL,
     .sample_fmts = (enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
-    .long_name = NULL_IF_CONFIG_SMALL("SEGA CRI ADX"),
+    .long_name = NULL_IF_CONFIG_SMALL("SEGA CRI ADX ADPCM"),
 };

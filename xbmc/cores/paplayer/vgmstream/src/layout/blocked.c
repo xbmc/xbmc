@@ -82,6 +82,30 @@ void render_vgmstream_blocked(sample * buffer, int32_t sample_count, VGMSTREAM *
                 case layout_matx_blocked:
                     matx_block_update(vgmstream->next_block_offset,vgmstream);
                     break;
+                case layout_de2_blocked:
+                    de2_block_update(vgmstream->next_block_offset,vgmstream);
+                    break;
+                case layout_emff_ps2_blocked:
+                    emff_ps2_block_update(vgmstream->next_block_offset,vgmstream);
+                    break;
+                case layout_emff_ngc_blocked:
+                    emff_ngc_block_update(vgmstream->next_block_offset,vgmstream);
+                    break;
+                case layout_gsb_blocked:
+                    gsb_block_update(vgmstream->next_block_offset,vgmstream);
+                    break;
+                case layout_vs_blocked:
+                    vs_block_update(vgmstream->next_block_offset,vgmstream);
+                    break;
+				case layout_xvas_blocked:
+					xvas_block_update(vgmstream->next_block_offset,vgmstream);
+					break;
+				case layout_thp_blocked:
+					thp_block_update(vgmstream->next_block_offset,vgmstream);
+					break;
+				case layout_filp_blocked:
+					filp_block_update(vgmstream->next_block_offset,vgmstream);
+					break;
 				default:
                     break;
             }

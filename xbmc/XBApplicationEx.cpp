@@ -366,7 +366,7 @@ void CXBApplicationEx::ReadInput()
           m_gWindowManager.SendThreadMessage( msg );
         }
         if (event.syswm.msg->wParam == DBT_DEVICEREMOVECOMPLETE)
-        {     
+        {
           CStdString strDrive = CWIN32Util::GetChangedDrive();
           if(strDrive == "")
             break;
@@ -380,8 +380,8 @@ void CXBApplicationEx::ReadInput()
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           m_gWindowManager.SendThreadMessage( msg );
         }
-        if (event.syswm.msg->wParam == PBT_APMRESUMESUSPEND || event.syswm.msg->wParam == PBT_APMRESUMEAUTOMATIC)
-        { 
+        if(event.syswm.msg->msg == WM_POWERBROADCAST && event.syswm.msg->wParam == PBT_APMRESUMESUSPEND)
+        {
           // TODO: reconnect shares/network, etc
           CLog::Log(LOGINFO, "Resuming from suspend" );
           if(g_advancedSettings.m_fullScreen)
@@ -441,6 +441,7 @@ void CXBApplicationEx::ReadInput()
       if (event.active.state & SDL_APPINPUTFOCUS)
       {
         m_AppFocused = event.active.gain != 0;
+        g_graphicsContext.NotifyAppFocusChange(m_AppFocused);
       }
       break;
     case SDL_MOUSEBUTTONDOWN:
@@ -587,7 +588,7 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
 
     case SDLK_h: // CMD-h to hide (but we minimize for now)
     case SDLK_m: // CMD-m to minimize
-      SDL_WM_IconifyWindow();
+      g_application.getApplicationMessenger().Minimize();
       return true;
 
     default:

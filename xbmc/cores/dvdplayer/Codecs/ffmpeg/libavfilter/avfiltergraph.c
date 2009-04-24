@@ -26,10 +26,11 @@
 #include "avfilter.h"
 #include "avfiltergraph.h"
 
-void avfilter_destroy_graph(AVFilterGraph *graph)
+void avfilter_graph_destroy(AVFilterGraph *graph)
 {
     for(; graph->filter_count > 0; graph->filter_count --)
         avfilter_destroy(graph->filters[graph->filter_count - 1]);
+    av_freep(&graph->scale_sws_opts);
     av_freep(&graph->filters);
 }
 
@@ -42,6 +43,36 @@ int avfilter_graph_add_filter(AVFilterGraph *graph, AVFilterContext *filter)
         return -1;
 
     graph->filters[graph->filter_count - 1] = filter;
+
+    return 0;
+}
+
+int avfilter_graph_check_validity(AVFilterGraph *graph, AVClass *log_ctx)
+{
+    AVFilterContext *filt;
+    int i, j;
+
+    for (i=0; i < graph->filter_count; i++) {
+        filt = graph->filters[i];
+
+        for (j = 0; j < filt->input_count; j++) {
+            if (!filt->inputs[j] || !filt->inputs[j]->src) {
+                av_log(log_ctx, AV_LOG_ERROR,
+                       "Input pad \"%s\" for the filter \"%s\" of type \"%s\" not connected to any source\n",
+                       filt->input_pads[j].name, filt->name, filt->filter->name);
+                return -1;
+            }
+        }
+
+        for (j = 0; j < filt->output_count; j++) {
+            if (!filt->outputs[j] || !filt->outputs[j]->dst) {
+                av_log(log_ctx, AV_LOG_ERROR,
+                       "Output pad \"%s\" for the filter \"%s\" of type \"%s\" not connected to any destination\n",
+                       filt->output_pads[j].name, filt->name, filt->filter->name);
+                return -1;
+            }
+        }
+    }
 
     return 0;
 }
@@ -81,13 +112,15 @@ static int query_formats(AVFilterGraph *graph)
                 if(!avfilter_merge_formats(link->in_formats,
                                            link->out_formats)) {
                     AVFilterContext *scale;
+                    char scale_args[256];
                     /* couldn't merge format lists. auto-insert scale filter */
                     snprintf(inst_name, sizeof(inst_name), "auto-inserted scaler %d",
                              scaler_count);
                     scale =
                         avfilter_open(avfilter_get_by_name("scale"),inst_name);
 
-                    if(!scale || scale->filter->init(scale, NULL, NULL) ||
+                    snprintf(scale_args, sizeof(scale_args), "0:0:%s", graph->scale_sws_opts);
+                    if(!scale || scale->filter->init(scale, scale_args, NULL) ||
                                  avfilter_insert_filter(link, scale, 0, 0)) {
                         avfilter_destroy(scale);
                         return -1;

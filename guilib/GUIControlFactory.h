@@ -1,6 +1,6 @@
 /*!
 \file GuiControlFactory.h
-\brief 
+\brief
 */
 
 #ifndef GUI_CONTROL_FACTORY_H
@@ -30,14 +30,15 @@
  */
 
 #include "GUIControl.h"
-#include "GUIImage.h"
 
-class CImage; // forward
+class CTextureInfo; // forward
+class CAspectRatio;
+class CGUIInfoLabel;
 class TiXmlNode;
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIControlFactory
 {
@@ -48,8 +49,10 @@ public:
   CGUIControl* Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode, bool insideContainer = false);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
-  static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CGUIImage::CAspectRatio &aspectRatio);
-  static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CImage &image);
+  static bool GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& value);
+  static bool GetAspectRatio(const TiXmlNode* pRootNode, const char* strTag, CAspectRatio &aspectRatio);
+  static bool GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info);
+  static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image);
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment);
   static bool GetAnimations(const TiXmlNode *control, const FRECT &rect, std::vector<CAnimation> &animation);
@@ -65,7 +68,6 @@ private:
   bool GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, std::vector<CStdString> &actions);
   bool GetCondition(const TiXmlNode *control, const char *tag, int &condition);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition, CGUIInfoBool &allowHiddenFocus);
-  bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringPath);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);
   bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);
   bool GetIntRange(const TiXmlNode* pRootNode, const char* strTag, int& iMinValue, int& iMaxValue, int& iIntervalValue);

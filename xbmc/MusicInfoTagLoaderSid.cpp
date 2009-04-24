@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #include <cstring>
 
@@ -92,8 +93,7 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
     return( false );
   }
 
-  sprintf(temp,"%s\\%s",g_settings.GetDatabaseFolder().c_str(),"stil.txt"); // changeme?
-  ifstream f(temp);
+  ifstream f(_P(CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), "stil.txt")).c_str()); // changeme?
   if( !f.good() ) {
     CLog::Log(LOGINFO,"MusicInfoTagLoaderSid::Load(..) unable to locate stil.txt");
     tag.SetLoaded(false);
@@ -173,19 +173,14 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
 
       tag.SetTitle(szTitle);
       tag.SetArtist(szArtist);
-      if( szTitle )
-        free(szTitle);
-      if( szArtist )
-        free(szArtist);
-      if( szMins )
-        free(szMins);
-      if( szSecs )
-        free(szSecs);
+      free(szTitle);
+      free(szArtist);
+      free(szMins);
+      free(szSecs);
     }
   }
 
-  sprintf(temp,"%s\\%s",g_settings.GetDatabaseFolder().c_str(),"sidlist.csv"); // changeme?
-  ifstream f2(temp);
+  ifstream f2(_P(CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(),"sidlist.csv")).c_str()); // changeme?
   if( !f2.good() ) {
     CLog::Log(LOGINFO,"MusicInfoTagLoaderSid::Load(..) unable to locate sidlist.csv");
     tag.SetLoaded(false);
@@ -231,16 +226,11 @@ bool CMusicInfoTagLoaderSid::Load(const CStdString& strFileName, CMusicInfoTag& 
       SYSTEMTIME dateTime;
       dateTime.wYear = atoi(szYear);
       tag.SetReleaseDate(dateTime);
-      if( szTitle )
-        free(szTitle);
-      if( szArtist )
-        free(szArtist);
-      if( szYear )
-        free(szYear);
-      if( szMins )
-        free(szMins);
-      if( szSecs )
-        free(szSecs);
+      free(szTitle);
+      free(szArtist);
+      free(szYear);
+      free(szMins);
+      free(szSecs);
       f2.close();
       return( true );
     }

@@ -51,7 +51,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
   DWORD progressTime = timeGetTime() + 3000L;   // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
-  
+
   unsigned int iFailures = 0;
   for (int i = 0; i < (int)share.vecPaths.size(); ++i)
   {
@@ -83,7 +83,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
 
     CFileItemList tempItems;
     CLog::Log(LOGDEBUG,"Getting Directory (%s)", share.vecPaths[i].c_str());
-    if (CDirectory::GetDirectory(share.vecPaths[i], tempItems, m_strFileMask, m_useFileDirectories, m_allowPrompting, m_cacheDirectory))
+    if (CDirectory::GetDirectory(share.vecPaths[i], tempItems, m_strFileMask, m_useFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo))
       items.Append(tempItems);
     else
     {

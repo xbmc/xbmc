@@ -5,38 +5,23 @@
 //  Created by Elan Feingold on 1/5/2008.
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
+#import <unistd.h>
+#import <fcntl.h>
+#import <stdio.h>
+
 #import <Cocoa/Cocoa.h>
+#import <CoreFoundation/CoreFoundation.h>
 #import <OpenGL/OpenGL.h>
-#if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
 #import <OpenGL/gl.h>
-#endif
-#include <CoreFoundation/CoreFoundation.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdio.h>
 
-#include <mach/mach_port.h>
-#include <mach/mach_interface.h>
-#include <mach/mach_init.h>
-
-#include <IOKit/pwr_mgt/IOPMLib.h>
-#include <IOKit/IOKitLib.h>
-#include "CocoaUtils.h"
-#import "XBMCMain.h" 
+#import "CocoaUtils.h"
 
 #define MAX_DISPLAYS 32
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
-void Cocoa_Initialize(void* pApplication)
-{
-  // Intialize the Apple remote code.
-  [[XBMCMain sharedInstance] setApplication: pApplication];
-
-  // Initialize.
-  int i;
-  for (i=0; i<MAX_DISPLAYS; i++)
-    blankingWindows[i] = 0;
-}
+// Display Blanking
+void Cocoa_GL_UnblankOtherDisplays(int screen);
+void Cocoa_GL_BlankOtherDisplays(int screen);
 
 void* InitializeAutoReleasePool()
 {
@@ -68,8 +53,6 @@ void Cocoa_GL_SwapBuffers(void* theContext)
 {
   [ (NSOpenGLContext*)theContext flushBuffer ];
 }
-
-#define MAX_DISPLAYS 32
 
 int Cocoa_GetNumDisplays()
 {
@@ -197,12 +180,24 @@ static double getDictDouble(CFDictionaryRef refDict, CFStringRef key)
 
 double Cocoa_GetScreenRefreshRate(int screen_id)
 {
-  // Figure out the refresh rate.
-  CFDictionaryRef mode = CGDisplayCurrentMode((CGDirectDisplayID)Cocoa_GetDisplayID(screen_id));
-  return (mode != NULL) ? getDictDouble(mode, kCGDisplayRefreshRate) : 0.0f;
+  // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
+  CFDictionaryRef mode;
+  double fps = 60.0;
+  
+  mode = CGDisplayCurrentMode((CGDirectDisplayID)Cocoa_GetDisplayID(screen_id));
+  if (mode)
+  {
+    fps = getDictDouble(mode, kCGDisplayRefreshRate);
+    if (fps <= 0.0)
+    {
+      fps = 60.0;
+    }
+  }
+  
+  return(fps);
  }
 
-void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h, void* sdlView)
+void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h)
 {
   if (!theContext)
     return 0;
@@ -224,27 +219,29 @@ void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h, void* sdlView)
     }
   }
 
-  // HACK: resize SDL's view manually so that mouse bounds are correctly
-  // updated.
-
-  if ( sdlView )
-  {
-    [ (NSQuickDrawView*)sdlView setFrameSize:NSMakeSize(w,h) ];
-  }
+  // HACK: resize SDL's view manually so that mouse bounds are correctly updated.
+  // there are two parts to this, the internal SDL (current_video->screen) and
+  // the cocoa view ( handled in Cocoa_GL_SetFullScreen).
+  SDL_SetWidthHeight(w, h);
 
   return context;
 }
 
 void Cocoa_GL_BlankOtherDisplays(int screen)
 {
+  int i;
   int numDisplays = [[NSScreen screens] count];
   
-  int i = 0;
-
+  // zero out blankingWindows for debugging
+  for (i=0; i<MAX_DISPLAYS; i++)
+  {
+    blankingWindows[i] = 0;
+  }
+  
   // Blank.
   for (i=0; i<numDisplays; i++)
   {
-    if (i != screen && blankingWindows[i] == 0)
+    if (i != screen)
     {
       // Get the size.
       NSScreen* pScreen = [[NSScreen screens] objectAtIndex:i];
@@ -291,6 +288,8 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
   static NSScreen* lastScreen = NULL;
   static NSWindow* mainWindow = NULL;
   static NSPoint last_origin;
+  static NSSize view_size;
+  static NSPoint view_origin;
   int screen_index;
 
   // If we're already fullscreen then we must be moving to a different display.
@@ -321,8 +320,13 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     if (gl_FullScreen)
     {
       // hide the window
+      view_size = [lastView frame].size;
+      view_origin = [lastView frame].origin;
       last_origin = [[lastView window] frame].origin;
       [[lastView window] setFrameOrigin:[lastScreen frame].origin];
+      // expand the mouse bounds in SDL view to fullscreen
+      [ lastView setFrameOrigin:NSMakePoint(0.0,0.0)];
+      [ lastView setFrameSize:NSMakeSize(width,height) ];
 
       // This is OpenGL FullScreen Mode
       // obtain fullscreen pixel format
@@ -383,9 +387,14 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       //[mainWindow setLevel:NSNormalWindowLevel];
 
       // ...and the original one beneath it and on the same screen.
+      view_size = [lastView frame].size;
+      view_origin = [lastView frame].origin;
       last_origin = [[lastView window] frame].origin;
-      [[lastView window] setFrameOrigin:[pScreen frame].origin];
       [[lastView window] setLevel:NSNormalWindowLevel];
+      [[lastView window] setFrameOrigin:[pScreen frame].origin];
+      // expand the mouse bounds in SDL view to fullscreen
+      [ lastView setFrameOrigin:NSMakePoint(0.0,0.0)];
+      [ lastView setFrameSize:NSMakeSize(width,height) ];
           
       NSView* blankView = [[NSView alloc] init];
       [mainWindow setContentView:blankView];
@@ -457,7 +466,12 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       
       // Unblank.
       if (blankOtherDisplays)
+      {
+        lastScreen = [[lastView window] screen];
+        screen_index = Cocoa_GetDisplayIndex( Cocoa_GetDisplayIDFromScreen(lastScreen) );
+
         Cocoa_GL_UnblankOtherDisplays(screen_index);
+      }
     }
     
     // obtain windowed pixel format
@@ -478,6 +492,9 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     // Assign view from old context, move back to original screen.
     [newContext setView:lastView];
     [[lastView window] setFrameOrigin:last_origin];
+    // return the mouse bounds in SDL view to prevous size
+    [ lastView setFrameSize:view_size ];
+    [ lastView setFrameOrigin:view_origin ];
     
     // Release the fullscreen context.
     if (lastOwnedContext == context)
@@ -503,20 +520,11 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
 
 void Cocoa_GL_EnableVSync(bool enable)
 {
-  CGLContextObj cglContext;
-  cglContext = CGLGetCurrentContext();
-  if (cglContext)
-  {
-    GLint interval;
-    if (enable)
-      interval = 1;
-    else
-      interval = 0;
-    
-    int cglErr = CGLSetParameter(cglContext, kCGLCPSwapInterval, &interval);
-    if (cglErr != kCGLNoError)
-      printf("ERROR: CGLSetParameter for kCGLCPSwapInterval failed with error %d: %s", cglErr, CGLErrorString(cglErr));
-  }
+  // OpenGL Flush synchronised with vertical retrace                       
+  GLint swapInterval;
+  
+  swapInterval = enable ? 1 : 0;
+  [[NSOpenGLContext currentContext] setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
 }
 
 void* Cocoa_GL_GetWindowPixelFormat()
@@ -602,33 +610,211 @@ void* Cocoa_GL_ReplaceSDLWindowContext()
   return newContext;
 }
 
-int Cocoa_DimDisplayNow()
+int Cocoa_IdleDisplays()
 {
+#if !defined(__POWERPC__)
+  // http://lists.apple.com/archives/Cocoa-dev/2007/Nov/msg00267.html
+  // This is an unsupported system call that kernel panics on PPC boxes
   io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
   if(!r) return 1;
   int err = IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue);
   IOObjectRelease(r);
   return err;
+#else
+  return 0;
+#endif
 }
+
+/* 10.5 only
+void Cocoa_SetSystemSleep(bool enable)
+{
+  // kIOPMAssertionTypeNoIdleSleep prevents idle sleep
+  IOPMAssertionID assertionID;
+  IOReturn success;
+  
+  if (enable) {
+    success= IOPMAssertionCreate(kIOPMAssertionTypeNoDisplaySleep, kIOPMAssertionLevelOn, &assertionID); 
+  } else {
+    success = IOPMAssertionRelease(assertionID);
+  }
+}
+
+void Cocoa_SetDisplaySleep(bool enable)
+{
+  // kIOPMAssertionTypeNoIdleSleep prevents idle sleep
+  IOPMAssertionID assertionID;
+  IOReturn success;
+  
+  if (enable) {
+    success= IOPMAssertionCreate(kIOPMAssertionTypeNoIdleSleep, kIOPMAssertionLevelOn, &assertionID); 
+  } else {
+    success = IOPMAssertionRelease(assertionID);
+  }
+}
+*/
 
 void Cocoa_UpdateSystemActivity()
 {
   UpdateSystemActivity(UsrActivity);   
 }
-                   
-int Cocoa_SleepSystem()
+
+void Cocoa_DisableOSXScreenSaver()
 {
-  io_connect_t root_domain;
-  mach_port_t root_port;
+  // If we don't call this, the screen saver will just stop and then start up again.
+  UpdateSystemActivity(UsrActivity);      
 
-  if (KERN_SUCCESS != IOMasterPort(MACH_PORT_NULL, &root_port))
-    return 1;
-
-  if (0 == (root_domain = IOPMFindPowerManagement(root_port)))    
-    return 2;
-
-  if (kIOReturnSuccess != IOPMSleepSystem(root_domain))
-    return 3;
-
-  return 0;
+  NSDictionary* errorDict;
+  NSAppleEventDescriptor* returnDescriptor = NULL;
+  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
+          @"tell application \"ScreenSaverEngine\" to quit"];
+  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+  [scriptObject release];
 }
+
+void Cocoa_DoAppleScript(const char* scriptSource)
+{
+  NSDictionary* errorDict;
+  NSAppleEventDescriptor* returnDescriptor = NULL;
+  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
+          [NSString stringWithUTF8String:scriptSource]];
+  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+  [scriptObject release];
+}
+                   
+
+/*
+int Cocoa_TouchDVDOpenMediaFile(const char *strDVDFile)
+{
+  //strDVDFile = "/dev/rdisk1";
+  OSStatus result;
+  result = DVDInitialize();
+  if (result == noErr)
+  {
+	FSRef fileRef;
+    Boolean isDirectory;
+    
+    result = FSPathMakeRef((UInt8 *)strDVDFile, &fileRef, &isDirectory);
+    
+    result = DVDOpenMediaFile(&fileRef);
+    if (result == kDVDErrordRegionCodeUninitialized) {
+      //CLog::Log(LOGERROR,"Error on DVD Region Code Uninitialized\n");
+    }
+  }
+  result = DVDDispose();
+  
+  return(0);
+}
+*/
+
+/*
+@interface MyView : NSOpenGLView
+{
+    CVDisplayLinkRef displayLink; //display link for managing rendering thread
+}
+@end
+
+- (void)prepareOpenGL
+{
+    // Synchronize buffer swaps with vertical refresh rate
+    GLint swapInt = 1;
+    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; 
+
+    // Create a display link capable of being used with all active displays
+    CVDisplayLinkCreateWithActiveCGDisplays(&displayLink);
+
+    // Set the renderer output callback function
+    CVDisplayLinkSetOutputCallback(displayLink, &MyViewDisplayLinkCallback, self);
+
+    // Set the display link for the current renderer
+    CGLContextObj cglContext = [[self openGLContext] CGLContextObj];
+    CGLPixelFormatObj cglPixelFormat = [[self pixelFormat] CGLPixelFormatObj];
+    CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(displayLink, cglContext, cglPixelFormat);
+
+    // Activate the display link
+    CVDisplayLinkStart(displayLink);
+}
+
+// This is the renderer output callback function
+static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+{
+    CVReturn result = [(MyView*)displayLinkContext getFrameForTime:outputTime];
+    return result;
+}
+
+- (CVReturn)getFrameForTime:(const CVTimeStamp*)outputTime
+{
+    // Add your drawing codes here
+
+    return kCVReturnSuccess;
+}
+
+- (void)dealloc
+{
+    // Release the display link
+    CVDisplayLinkRelease(displayLink);
+
+    [super dealloc];
+}
+
+//888888888888888888
+
+// Synchronize buffer swaps with vertical refresh rate (NSTimer)
+- (void)prepareOpenGL
+{
+    GLint swapInt = 1;
+    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval];
+}
+
+// Put our timer in -awakeFromNib, so it can start up right from the beginning
+-(void)awakeFromNib
+{
+    renderTimer = [[NSTimer timerWithTimeInterval:0.001   //a 1ms time interval
+                                target:self
+                                selector:@selector(timerFired:)
+                                userInfo:nil
+                                repeats:YES];
+
+    [[NSRunLoop currentRunLoop] addTimer:renderTimer 
+                                forMode:NSDefaultRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer:renderTimer 
+                                forMode:NSEventTrackingRunLoopMode]; //Ensure timer fires during resize
+}
+
+// Timer callback method
+- (void)timerFired:(id)sender
+{
+    // It is good practice in a Cocoa application to allow the system to send the -drawRect:
+    // message when it needs to draw, and not to invoke it directly from the timer. 
+    // All we do here is tell the display it needs a refresh
+    [self setNeedsDisplay:YES];
+}
+*/
+
+/*
+// Sleep
+  NSDictionary* errorDict;
+  NSAppleEventDescriptor* returnDescriptor = NULL;
+  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
+          @"tell application \"Finder\" to sleep"];
+  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+  [scriptObject release];
+               
+    
+//Shut Down
+  NSDictionary* errorDict;
+  NSAppleEventDescriptor* returnDescriptor = NULL;
+  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
+          @"tell application \"Finder\" to shut down"];
+  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
+  [scriptObject release];
+
+\"System Events\"
+\"loginwindow\"
+
+NSAppleScript *playScript;
+playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to shut down"];
+playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to restart"];
+playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to sleep"];
+[playScript executeAndReturnError:nil];
+*/
+

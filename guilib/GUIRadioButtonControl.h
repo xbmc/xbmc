@@ -1,6 +1,6 @@
 /*!
 \file GUIRadioButtonControl.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -30,7 +30,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIRadioButtonControl :
       public CGUIButtonControl
@@ -38,9 +38,9 @@ class CGUIRadioButtonControl :
 public:
   CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId,
                          float posX, float posY, float width, float height,
-                         const CImage& textureFocus, const CImage& textureNoFocus,
+                         const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                          const CLabelInfo& labelInfo,
-                         const CImage& radioFocus, const CImage& radioNoFocus);
+                         const CTextureInfo& radioFocus, const CTextureInfo& radioNoFocus);
 
   virtual ~CGUIRadioButtonControl(void);
   virtual CGUIRadioButtonControl *Clone() const { return new CGUIRadioButtonControl(*this); };
@@ -55,14 +55,14 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   virtual CStdString GetDescription() const;
   void SetRadioDimensions(float posX, float posY, float width, float height);
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
   bool IsSelected() const { return m_bSelected; };
 protected:
-  CGUIImage m_imgRadioFocus;
-  CGUIImage m_imgRadioNoFocus;
+  virtual void UpdateColors();
+  CGUITexture m_imgRadioFocus;
+  CGUITexture m_imgRadioNoFocus;
   float m_radioPosX;
   float m_radioPosY;
   int m_toggleSelect;

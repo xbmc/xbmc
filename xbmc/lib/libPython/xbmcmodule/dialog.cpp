@@ -22,9 +22,7 @@
 #include "stdafx.h"
 #include "dialog.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "Application.h"
 #include "pyutil.h"
 #include "GUIDialogFileBrowser.h"
@@ -149,13 +147,13 @@ namespace PYXBMC
     "\n"
     "example:\n"
     "  - dialog = xbmcgui.Dialog()\n"
-    "  - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, 'T:\\script_data\\XBMC Lyrics')\n");
+    "  - fn = dialog.browse(3, 'XBMC', 'files', '', False, False, 'special://masterprofile/script_data/XBMC Lyrics')\n");
 
   PyObject* Dialog_Browse(PyObject *self, PyObject *args)
   {
     int browsetype = 0;
-    bool useThumbs = false;
-    bool useFileDirectories = false;
+    char useThumbs = false;
+    char useFileDirectories = false;
     CStdString value;
     PyObject* unicodeLine[3];
     string utf8Line[3];
@@ -175,7 +173,7 @@ namespace PYXBMC
     
     value = cDefault;
     if (browsetype == 1)
-      CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, useThumbs, useFileDirectories);
+      CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, 0 != useThumbs, 0 != useFileDirectories);
     else if (browsetype == 2)
       CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value);
     else

@@ -4,7 +4,7 @@
 . /lib/lsb/init-functions
 
 get_opt() {
-    echo "$@" | cut -d "=" -f 2
+	echo "$@" | cut -d "=" -f 2
 }
 
 CMDLINE=$(cat /proc/cmdline)
@@ -12,42 +12,61 @@ CMDLINE=$(cat /proc/cmdline)
 #Process command line options
 XBMC_PARAMS=""
 for i in ${CMDLINE}; do
-    case "${i}" in
+	case "${i}" in
 	xbmc\=*)
 		XBMC_PARAMS=$(get_opt $i)
 		;;
 	boot\=*)
 		SRCMEDIA=$(echo "$i" | cut -d "=" -f 2)
 		;;
-    esac
+	esac
 done
 
 XBMC_BOOTTORAM="$( echo $XBMC_PARAMS | grep "boottoram" )"
 
 if [ "$XBMC_BOOTTORAM" != "" ]; then
-        eject /dev/scd0 &> /dev/null
+	eject /dev/scd0 &> /dev/null
 	eject /dev/scd1 &> /dev/null
 	eject /dev/scd2 &> /dev/null
 fi
 
 case "$1" in
-  start)
+start)
 	log_action_begin_msg "Configuring system and starting XBMC"
 	INSTALL="$( echo $XBMC_PARAMS | grep "install" )"
 	if [ "$INSTALL" != "" ]; then
-                # if usplash is runing, make sure to stop it now, yes "start" kills it.
-                if pidof usplash > /dev/null; then
-                        DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
-                fi
-	        su -c "/usr/bin/installXBMC.sh" -l 
+		# if usplash is runing, make sure to stop it now, yes "start" kills it.
+		if pidof usplash > /dev/null; then
+			DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
+		fi
+		su -c "/usr/bin/installXBMC.py" -l 
 	else
+		# Generates valid xorg.conf for proprietary drivers if missing
+		if [ ! -f /etc/X11/xorg.conf ]; then
+			NVIDIA="$( echo $XBMC_PARAMS | grep "nvidia" )"
+			if [ "$NVIDIA" = "" ]; then
+				AMD="$( echo $XBMC_PARAMS | grep "amd" )"
+				if [ "$AMD" != "" ]; then
+					# run aticonfig
+					aticonfig --initial --sync-vsync=on -f
+				fi
+			else
+				# run nvidia-xconfig
+				nvidia-xconfig -s --no-logo --force-generate
+			fi
+		fi
+
 		RUNX="$(grep "splash" /proc/cmdline)"
 		if [ "$RUNX" == "" ]; then
 		        echo "Not starting X."
+
+			if [ -f /home/xbmc/.xsession ]; then
+				rm /home/xbmc/.xsession
+			fi
 		else
 			NOMOUNT="$( echo $XBMC_PARAMS | grep "nodiskmount" )"
 			if [ "$NOMOUNT" = "" ]; then
-				diskmounter &
+				/usr/bin/diskmounter &
 			fi
 
 			# Redirect XBMC home folder and logfile to usb flash
@@ -56,38 +75,35 @@ case "$1" in
 				if [ "$NOREDIR" = "" ]; then
 					echo "Redirect XBMC home folder and logfile to usb flash..."
 
-					rootDrive=`pmount | grep mnt | cut -d " " -f 1`
-					mount -t vfat -o rw,umask=000 $rootDrive /mnt
+					# Relies on init scripts to mount boot device on a specified directory
+					BOOTMEDIAMOUNTPOINT=`mount | grep bootMedia | cut -f 3 -d " "`
 
-					# TODO change to /var/tmp when related bug closed
-					touch /mnt/xbmc.log
-					chmod 666 /mnt/xbmc.log
-					if [ -f /xbmc.log ]; then
-						rm /xbmc.log
-					fi
-					ln -s /mnt/xbmc.log /xbmc.log
-
-					if [ ! -d /mnt/Userdata ]; then
-						mkdir /mnt/dotXBMC
+					if [ ! -d $BOOTMEDIAMOUNTPOINT/dotXBMC ]; then
+						mkdir $BOOTMEDIAMOUNTPOINT/dotXBMC
 					fi
 
 					if [ ! -L /home/xbmc/.xbmc ]; then
 						mv /home/xbmc/.xbmc /home/xbmc/.xbmc.previous
-						ln -s /mnt/dotXBMC /home/xbmc/.xbmc
+						ln -s $BOOTMEDIAMOUNTPOINT/dotXBMC /home/xbmc/.xbmc
 					fi
 				fi
+			fi
+
+			XBMC_SETVOLUME="$( echo $XBMC_PARAMS | grep "setvolume" )"
+			if [ "$XBMC_SETVOLUME" != "" ]; then
+				/usr/bin/setAlsaVolumes.py
 			fi
 
 			# if usplash is running, make sure to stop it now, yes "start" kills it.
 			if pidof usplash > /dev/null; then
 				DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
 			fi
-			runXBMC.sh &
+			/usr/bin/runXBMC.sh &
 		fi
 	fi
 	log_action_end_msg 0
 	;;
-  stop)
+stop)
 	killall Xorg xbmc
 	;;
 

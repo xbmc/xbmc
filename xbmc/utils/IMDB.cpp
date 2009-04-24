@@ -34,6 +34,7 @@
 #include "NfoFile.h"
 #include "GUIDialogProgress.h"
 #include "Settings.h"
+#include "fstrcmp.h"
 
 using namespace HTML;
 using namespace std;
@@ -50,33 +51,25 @@ CIMDB::CIMDB()
   m_retry = false;
 }
 
-CIMDB::CIMDB(const CStdString& strProxyServer, int iProxyPort)
-    : m_http(strProxyServer, iProxyPort)
-{
-  m_retry = false;
-}
-
 CIMDB::~CIMDB()
 {
 }
 
 bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist, const CStdString& strFunction, CScraperUrl* pUrl)
 {
-  // load our scraper xml
-  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
-    return false;
-
   movielist.clear();
-  CScraperParser::ClearCache();
 
-  CStdString strYear;
   CScraperUrl scrURL;
+
+  CStdString movieTitle = strMovie;
+  CStdString movieYear;
+  GetCleanNameAndYear(movieTitle, movieYear);
 
   if (!pUrl)
   {
     if (m_parser.HasFunction("CreateSearchUrl"))
     {
-      GetURL(strMovie, scrURL, strYear);
+      GetURL(strMovie, movieTitle, movieYear, scrURL);
     }
     else if (m_info.strContent.Equals("musicvideos"))
     {
@@ -114,7 +107,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     return false;
   }
 
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
   // ok, now parse the xml file
@@ -144,8 +137,6 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   if (!movie)
     return false;
 
-  int iYear = atoi(strYear);
-
   while (movie)
   {
     CScraperUrl url;
@@ -153,6 +144,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     TiXmlElement *link = movie->FirstChildElement("url");
     TiXmlNode *year = movie->FirstChild("year");
     TiXmlNode* id = movie->FirstChild("id");
+    TiXmlNode* language = movie->FirstChild("language");
     if (title && title->FirstChild() && link && link->FirstChild())
     {
       url.strTitle = title->FirstChild()->Value();
@@ -163,32 +155,30 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
       }
       if (id && id->FirstChild())
         url.strId = id->FirstChild()->Value();
-      // if source contained a distinct year, only allow those
-      bool allowed(true);
-      if(iYear != 0)
+
+      // calculate the relavance of this hit
+      CStdString compareTitle = url.strTitle;
+      compareTitle.ToLower();
+      CStdString matchTitle = movieTitle;
+      matchTitle.ToLower();
+      // see if we need to add year information
+      CStdString compareYear;
+      if (year && year->FirstChild())
+        compareYear = year->FirstChild()->Value();
+      if (!movieYear.IsEmpty() && !compareYear.IsEmpty())
       {
-        if(year && year->FirstChild())
-        { // sweet scraper provided a year
-          if(iYear != atoi(year->FirstChild()->Value()))
-            allowed = false;
-        }
-        else if(url.strTitle.length() >= 6)
-        { // imdb normally puts year at end of title within ()
-          if(url.strTitle.at(url.strTitle.length()-1) == ')'
-          && url.strTitle.at(url.strTitle.length()-6) == '(')
-          {
-            int iYear2 = atoi(url.strTitle.Right(5).Left(4).c_str());
-
-            // 1920 is a release group name. ignore this particular year as
-            // wrong matches are more likely than people watching stuff from 1920
-            if( iYear2 != 0 && iYear != iYear2 && iYear != 1920)
-              allowed = false;
-          }
-        }
+        matchTitle.AppendFormat(" (%s)", movieYear.c_str());
+        compareTitle.AppendFormat(" (%s)", compareYear.c_str());
       }
-
-      if (allowed)
-        movielist.push_back(url);
+      url.relevance = fstrcmp(matchTitle.c_str(), compareTitle.c_str(), 0);
+      // reconstruct a title for the user
+      CStdString title = url.strTitle;
+      if (!compareYear.IsEmpty())
+        title.AppendFormat(" (%s)", compareYear.c_str());
+      if (language && language->FirstChild())
+        title.AppendFormat(" (%s)", language->FirstChild()->Value());
+      url.strTitle = title;
+      movielist.push_back(url);
     }
     movie = movie->NextSiblingElement();
   }
@@ -196,17 +186,18 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   return true;
 }
 
+bool CIMDB::RelevanceSortFunction(const CScraperUrl &left, const CScraperUrl &right)
+{
+  return left.relevance > right.relevance;
+}
+
 bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details)
 {
-  // load our scraper xml
-  if (!m_parser.Load("Q:\\system\\scrapers\\video\\"+m_info.strPath))
-    return false;
-
   IMDB_EPISODELIST temp;
   for(unsigned int i=0; i < url.m_url.size(); i++)
   {
     CStdString strHTML;
-    if (!CScraperUrl::Get(url.m_url[i],strHTML, m_http) || strHTML.size() == 0)
+    if (!CScraperUrl::Get(url.m_url[i],strHTML,m_http) || strHTML.size() == 0)
     {
       CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
       if (temp.size() > 0 || (i == 0 && url.m_url.size() > 1)) // use what was fetched
@@ -235,7 +226,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
       return false;
     }
 
-    if (strXML.Find("encoding=\"utf-8\"") < 0)
+    if (!XMLUtils::HasUTF8Declaration(strXML))
       g_charsetConverter.unknownToUTF8(strXML);
 
     TiXmlHandle docHandle( &doc );
@@ -295,10 +286,6 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
 
 bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction)
 {
-  // load our scraper xml
-  if (!m_parser.Load("q:\\system\\scrapers\\video\\"+m_info.strPath))
-    return false;
-
   vector<CStdString> strHTML;
 
   for (unsigned int i=0;i<url.m_url.size();++i)
@@ -327,11 +314,10 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
 
   // abit ugly, but should work. would have been better if parser
   // set the charset of the xml, and we made use of that
-  if (strXML.Find("encoding=\"utf-8\"") < 0)
+  if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
     // ok, now parse the xml file
-  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
   doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())
@@ -353,7 +339,6 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
     }
     xurl = xurl->NextSiblingElement("url");
   }
-  TiXmlBase::SetCondenseWhiteSpace(true);
 
   return ret;
 }
@@ -379,7 +364,6 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
 
 bool CIMDB::LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload /* = true */)
 {
-  TiXmlBase::SetCondenseWhiteSpace(false);
   TiXmlDocument doc;
 
   movieDetails.Reset();
@@ -399,15 +383,13 @@ void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
   if (pPtr) *pPtr = 0;
 }
 
-// TODO: Make this user-configurable?
-void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& strYear)
+void CIMDB::GetURL(const CStdString &movieFile, const CStdString &movieName, const CStdString &movieYear, CScraperUrl& scrURL)
 {
-#define SEP " _\\.\\(\\)\\[\\]\\-"
-  bool bOkay=false;
+  bool bOkay = false;
   if (m_info.strContent.Equals("musicvideos"))
   {
     CVideoInfoTag tag;
-    if (ScrapeFilename(strMovie,tag))
+    if (ScrapeFilename(movieFile,tag))
     {
       m_parser.m_param[0] = tag.m_strArtist;
       m_parser.m_param[1] = tag.m_strTitle;
@@ -418,38 +400,43 @@ void CIMDB::GetURL(const CStdString &strMovie, CScraperUrl& scrURL, CStdString& 
   }
   if (!bOkay)
   {
-    CStdString strMovieName = strMovie;
-    strMovieName.ToLower();
+    if (!movieYear.IsEmpty())
+      m_parser.m_param[1] = movieYear;
 
-    CRegExp reYear;
-    reYear.RegComp("(.+[^"SEP"])["SEP"]+(19[0-9][0-9]|20[0-1][0-9])(["SEP"]|$)");
-    if (reYear.RegFind(strMovieName.c_str()) >= 0)
-    {
-      char *pMovie = reYear.GetReplaceString("\\1");
-      char *pYear = reYear.GetReplaceString("\\2");
-
-      if(pMovie)
-      {
-        strMovieName = pMovie;
-        free(pMovie);
-      }
-      if(pYear)
-      {
-        strYear = pYear;
-        m_parser.m_param[1] = strYear;
-        free(pYear);
-      }
-    }
-
-    // get clean string
-    CUtil::CleanString(strMovieName,true);
-
-    // convert to utf8 first (if necessary), then to the encoding requested by the parser
-    g_charsetConverter.unknownToUTF8(strMovieName);
-    g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), strMovieName, m_parser.m_param[0]);
+    // convert to the encoding requested by the parser
+    g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), movieName, m_parser.m_param[0]);
     CUtil::URLEncode(m_parser.m_param[0]);
   }
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
+}
+
+// TODO: Make this user-configurable?
+void CIMDB::GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear)
+{
+#define SEP " _\\.\\(\\)\\[\\]\\-"
+  CRegExp reYear;
+  reYear.RegComp("(.+[^"SEP"])["SEP"]+(19[0-9][0-9]|20[0-1][0-9])(["SEP"]|$)");
+
+  strMovieName.ToLower();
+
+  if (reYear.RegFind(strMovieName.c_str()) >= 0)
+  {
+    char *pMovie = reYear.GetReplaceString("\\1");
+    char *pYear = reYear.GetReplaceString("\\2");
+
+    if(pMovie)
+    {
+      strMovieName = pMovie;
+      free(pMovie);
+    }
+    if(pYear)
+    {
+      strYear = pYear;
+      free(pYear);
+    }
+  }
+  // get clean string
+  CUtil::CleanString(strMovieName,true);
 }
 
 // threaded functions
@@ -495,10 +482,16 @@ void CIMDB::Process()
 bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUIDialogProgress *pProgress /* = NULL */)
 {
   //CLog::Log(LOGDEBUG,"CIMDB::FindMovie(%s)", strMovie.c_str());
-  g_charsetConverter.utf8ToStringCharset(strMovie,m_strMovie); // make sure searches is done using string chars
+
+  // load our scraper xml
+  if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
+    return false;
+  CScraperParser::ClearCache();
+
   if (pProgress)
   { // threaded version
     m_state = FIND_MOVIE;
+    m_strMovie = strMovie;
     m_found = false;
     if (ThreadHandle())
       StopThread();
@@ -521,8 +514,12 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
     CloseThread();
     return true;
   }
-  else  // unthreaded
-    return InternalFindMovie(strMovie, movieList);
+  
+  // unthreaded
+  bool success = InternalFindMovie(strMovie, movieList);
+  // sort our movie list by fuzzy match
+  std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);
+  return success;
 }
 
 bool CIMDB::GetDetails(const CScraperUrl &url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress /* = NULL */)
@@ -530,6 +527,9 @@ bool CIMDB::GetDetails(const CScraperUrl &url, CVideoInfoTag &movieDetails, CGUI
   //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
   m_url = url;
   m_movieDetails = movieDetails;
+  // load our scraper xml
+  if (!m_parser.Load("special://xbmc/system/scrapers/video/"+m_info.strPath))
+    return false;
 
   // fill in the defaults
   movieDetails.Reset();
@@ -596,6 +596,10 @@ bool CIMDB::GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& movieDetail
   //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
   m_url = url;
   m_episode = movieDetails;
+
+  // load our scraper xml
+  if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
+    return false;
 
   // fill in the defaults
   movieDetails.clear();

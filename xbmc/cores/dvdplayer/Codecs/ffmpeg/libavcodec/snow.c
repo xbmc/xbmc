@@ -23,6 +23,7 @@
 #include "snow.h"
 
 #include "rangecoder.h"
+#include "mathops.h"
 
 #include "mpegvideo.h"
 
@@ -4670,7 +4671,7 @@ AVCodec snow_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("Snow"),
 };
 
-#ifdef CONFIG_SNOW_ENCODER
+#if CONFIG_SNOW_ENCODER
 AVCodec snow_encoder = {
     "snow",
     CODEC_TYPE_VIDEO,
@@ -4773,7 +4774,7 @@ int main(void){
                 }
                 error= (int)(sqrt(error)+0.5);
                 errors[level][orientation]= error;
-                if(g) g=ff_gcd(g, error);
+                if(g) g=av_gcd(g, error);
                 else g= error;
             }
         }

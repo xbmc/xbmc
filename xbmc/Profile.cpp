@@ -30,6 +30,13 @@ CProfile::CProfile(void)
   _bCanWrite = true;
   _bSources = true;
   _bCanWriteSources = true;
+  _bLockPrograms = false;
+  _bLockPictures = false;
+  _bLockFiles = false;
+  _bLockVideo = false;
+  _bLockMusic = false;
+  _bLockSettings = false;
+  _iLockMode = LOCK_MODE_UNKNOWN;
 }
 
 CProfile::~CProfile(void)

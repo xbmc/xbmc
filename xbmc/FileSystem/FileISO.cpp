@@ -45,7 +45,7 @@ CFileISO::~CFileISO()
   }
 }
 //*********************************************************************************************
-bool CFileISO::Open(const CURL& url, bool bBinary)
+bool CFileISO::Open(const CURL& url)
 {
   string strFName = "\\";
   strFName += url.GetFileName();
@@ -61,11 +61,6 @@ bool CFileISO::Open(const CURL& url, bool bBinary)
   }
 
   m_bOpened = true;
-  // cache text files...
-  if (!bBinary)
-  {
-    m_cache.Create(10000);
-  }
   return true;
 }
 
@@ -77,7 +72,7 @@ unsigned int CFileISO::Read(void *lpBuf, __int64 uiBufSize)
 
   if (m_cache.Size() > 0)
   {
-    long lTotalBytesRead = 0;    
+    long lTotalBytesRead = 0;
     while (uiBufSize > 0)
     {
       if (m_cache.GetMaxReadSize() )

@@ -18,10 +18,12 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+
+#include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
 /**
- * @file ws-snd.c
+ * @file libavcodec/ws-snd1.c
  * Westwood SNDx codecs.
  *
  * Reference documents about VQA format and its audio codecs

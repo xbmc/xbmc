@@ -29,17 +29,17 @@
 #undef EMMS
 #undef SFENCE
 
-#ifdef HAVE_3DNOW
+#if HAVE_AMD3DNOW
 /* On K6 femms is faster than emms. On K7 femms is directly mapped to emms. */
 #define EMMS     "femms"
 #else
 #define EMMS     "emms"
 #endif
 
-#ifdef HAVE_3DNOW
+#if HAVE_AMD3DNOW
 #define PREFETCH  "prefetch"
 #define PREFETCHW "prefetchw"
-#elif defined (HAVE_MMX2)
+#elif HAVE_MMX2
 #define PREFETCH "prefetchnta"
 #define PREFETCHW "prefetcht0"
 #else
@@ -47,26 +47,26 @@
 #define PREFETCHW " # nop"
 #endif
 
-#ifdef HAVE_MMX2
+#if HAVE_MMX2
 #define SFENCE "sfence"
 #else
 #define SFENCE " # nop"
 #endif
 
-#ifdef HAVE_MMX2
+#if HAVE_MMX2
 #define PAVGB(a,b) "pavgb " #a ", " #b " \n\t"
-#elif defined (HAVE_3DNOW)
+#elif HAVE_AMD3DNOW
 #define PAVGB(a,b) "pavgusb " #a ", " #b " \n\t"
 #endif
 
-#ifdef HAVE_MMX2
+#if HAVE_MMX2
 #define REAL_MOVNTQ(a,b) "movntq " #a ", " #b " \n\t"
 #else
 #define REAL_MOVNTQ(a,b) "movq " #a ", " #b " \n\t"
 #endif
 #define MOVNTQ(a,b)  REAL_MOVNTQ(a,b)
 
-#ifdef HAVE_ALTIVEC
+#if HAVE_ALTIVEC
 #include "swscale_altivec_template.c"
 #endif
 
@@ -206,7 +206,7 @@
        "m" (lumSrc+lumFilterSize), "m" (chrSrc+chrFilterSize)
     : "%eax", "%ebx", "%ecx", "%edx", "%esi"
 */
-#define YSCALEYUV2PACKEDX \
+#define YSCALEYUV2PACKEDX_UV \
     __asm__ volatile(\
     "xor                   %%"REG_a", %%"REG_a"     \n\t"\
     ASMALIGN(4)\
@@ -229,8 +229,9 @@
     "paddw                     %%mm5, %%mm4         \n\t"\
     "test                  %%"REG_S", %%"REG_S"     \n\t"\
     " jnz                         2b                \n\t"\
-\
-    "lea "LUM_MMX_FILTER_OFFSET"(%0), %%"REG_d"     \n\t"\
+
+#define YSCALEYUV2PACKEDX_YA(offset) \
+    "lea                "offset"(%0), %%"REG_d"     \n\t"\
     "mov                 (%%"REG_d"), %%"REG_S"     \n\t"\
     "movq      "VROUNDER_OFFSET"(%0), %%mm1         \n\t"\
     "movq                      %%mm1, %%mm7         \n\t"\
@@ -248,6 +249,10 @@
     "test                  %%"REG_S", %%"REG_S"     \n\t"\
     " jnz                         2b                \n\t"\
 
+#define YSCALEYUV2PACKEDX \
+    YSCALEYUV2PACKEDX_UV \
+    YSCALEYUV2PACKEDX_YA(LUM_MMX_FILTER_OFFSET) \
+
 #define YSCALEYUV2PACKEDX_END                 \
     :: "r" (&c->redDither),                   \
         "m" (dummy), "m" (dummy), "m" (dummy),\
@@ -255,7 +260,7 @@
     : "%"REG_a, "%"REG_d, "%"REG_S            \
     );
 
-#define YSCALEYUV2PACKEDX_ACCURATE \
+#define YSCALEYUV2PACKEDX_ACCURATE_UV \
     __asm__ volatile(\
     "xor %%"REG_a", %%"REG_a"                       \n\t"\
     ASMALIGN(4)\
@@ -304,8 +309,9 @@
     "paddw                     %%mm0, %%mm6         \n\t"\
     "movq                      %%mm4, "U_TEMP"(%0)  \n\t"\
     "movq                      %%mm6, "V_TEMP"(%0)  \n\t"\
-\
-    "lea "LUM_MMX_FILTER_OFFSET"(%0), %%"REG_d"     \n\t"\
+
+#define YSCALEYUV2PACKEDX_ACCURATE_YA(offset) \
+    "lea                "offset"(%0), %%"REG_d"     \n\t"\
     "mov                 (%%"REG_d"), %%"REG_S"     \n\t"\
     "pxor                      %%mm1, %%mm1         \n\t"\
     "pxor                      %%mm5, %%mm5         \n\t"\
@@ -349,6 +355,10 @@
     "movq               "U_TEMP"(%0), %%mm3         \n\t"\
     "movq               "V_TEMP"(%0), %%mm4         \n\t"\
 
+#define YSCALEYUV2PACKEDX_ACCURATE \
+    YSCALEYUV2PACKEDX_ACCURATE_UV \
+    YSCALEYUV2PACKEDX_ACCURATE_YA(LUM_MMX_FILTER_OFFSET)
+
 #define YSCALEYUV2RGBX \
     "psubw  "U_OFFSET"(%0), %%mm3       \n\t" /* (U-128)8*/\
     "psubw  "V_OFFSET"(%0), %%mm4       \n\t" /* (V-128)8*/\
@@ -384,7 +394,6 @@
     "packuswb        %%mm0, %%mm2       \n\t"\
     "packuswb        %%mm6, %%mm5       \n\t"\
     "packuswb        %%mm3, %%mm4       \n\t"\
-    "pxor            %%mm7, %%mm7       \n\t"
 
 #define REAL_YSCALEYUV2PACKED(index, c) \
     "movq "CHR_MMX_FILTER_OFFSET"+8("#c"), %%mm0              \n\t"\
@@ -424,7 +433,7 @@
 
 #define YSCALEYUV2PACKED(index, c)  REAL_YSCALEYUV2PACKED(index, c)
 
-#define REAL_YSCALEYUV2RGB(index, c) \
+#define REAL_YSCALEYUV2RGB_UV(index, c) \
     "xor            "#index", "#index"  \n\t"\
     ASMALIGN(4)\
     "1:                                 \n\t"\
@@ -448,6 +457,8 @@
     "pmulhw "UG_COEFF"("#c"), %%mm3     \n\t"\
     "pmulhw "VG_COEFF"("#c"), %%mm4     \n\t"\
     /* mm2=(U-128)8, mm3=ug, mm4=vg mm5=(V-128)8 */\
+
+#define REAL_YSCALEYUV2RGB_YA(index, c) \
     "movq  (%0, "#index", 2), %%mm0     \n\t" /*buf0[eax]*/\
     "movq  (%1, "#index", 2), %%mm1     \n\t" /*buf1[eax]*/\
     "movq 8(%0, "#index", 2), %%mm6     \n\t" /*buf0[eax]*/\
@@ -460,6 +471,8 @@
     "psraw                $4, %%mm7     \n\t" /* buf0[eax] - buf1[eax] >>4*/\
     "paddw             %%mm0, %%mm1     \n\t" /* buf0[eax]yalpha1 + buf1[eax](1-yalpha1) >>16*/\
     "paddw             %%mm6, %%mm7     \n\t" /* buf0[eax]yalpha1 + buf1[eax](1-yalpha1) >>16*/\
+
+#define REAL_YSCALEYUV2RGB_COEFF(c) \
     "pmulhw "UB_COEFF"("#c"), %%mm2     \n\t"\
     "pmulhw "VR_COEFF"("#c"), %%mm5     \n\t"\
     "psubw  "Y_OFFSET"("#c"), %%mm1     \n\t" /* 8(Y-16)*/\
@@ -487,8 +500,13 @@
     "packuswb          %%mm0, %%mm2     \n\t"\
     "packuswb          %%mm6, %%mm5     \n\t"\
     "packuswb          %%mm3, %%mm4     \n\t"\
-    "pxor              %%mm7, %%mm7     \n\t"
-#define YSCALEYUV2RGB(index, c)  REAL_YSCALEYUV2RGB(index, c)
+
+#define YSCALEYUV2RGB_YA(index, c) REAL_YSCALEYUV2RGB_YA(index, c)
+
+#define YSCALEYUV2RGB(index, c) \
+    REAL_YSCALEYUV2RGB_UV(index, c) \
+    REAL_YSCALEYUV2RGB_YA(index, c) \
+    REAL_YSCALEYUV2RGB_COEFF(c)
 
 #define REAL_YSCALEYUV2PACKED1(index, c) \
     "xor            "#index", "#index"  \n\t"\
@@ -551,7 +569,7 @@
     "packuswb          %%mm0, %%mm2     \n\t"\
     "packuswb          %%mm6, %%mm5     \n\t"\
     "packuswb          %%mm3, %%mm4     \n\t"\
-    "pxor              %%mm7, %%mm7     \n\t"
+
 #define YSCALEYUV2RGB1(index, c)  REAL_YSCALEYUV2RGB1(index, c)
 
 #define REAL_YSCALEYUV2PACKED1b(index, c) \
@@ -623,33 +641,32 @@
     "packuswb          %%mm0, %%mm2     \n\t"\
     "packuswb          %%mm6, %%mm5     \n\t"\
     "packuswb          %%mm3, %%mm4     \n\t"\
-    "pxor              %%mm7, %%mm7     \n\t"
+
 #define YSCALEYUV2RGB1b(index, c)  REAL_YSCALEYUV2RGB1b(index, c)
 
-#define REAL_WRITEBGR32(dst, dstw, index) \
-    /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */\
-    "movq      %%mm2, %%mm1     \n\t" /* B */\
-    "movq      %%mm5, %%mm6     \n\t" /* R */\
-    "punpcklbw %%mm4, %%mm2     \n\t" /* GBGBGBGB 0 */\
-    "punpcklbw %%mm7, %%mm5     \n\t" /* 0R0R0R0R 0 */\
-    "punpckhbw %%mm4, %%mm1     \n\t" /* GBGBGBGB 2 */\
-    "punpckhbw %%mm7, %%mm6     \n\t" /* 0R0R0R0R 2 */\
-    "movq      %%mm2, %%mm0     \n\t" /* GBGBGBGB 0 */\
-    "movq      %%mm1, %%mm3     \n\t" /* GBGBGBGB 2 */\
-    "punpcklwd %%mm5, %%mm0     \n\t" /* 0RGB0RGB 0 */\
-    "punpckhwd %%mm5, %%mm2     \n\t" /* 0RGB0RGB 1 */\
-    "punpcklwd %%mm6, %%mm1     \n\t" /* 0RGB0RGB 2 */\
-    "punpckhwd %%mm6, %%mm3     \n\t" /* 0RGB0RGB 3 */\
+#define REAL_WRITEBGR32(dst, dstw, index, b, g, r, a, q0, q2, q3, t) \
+    "movq       "#b", "#q2"     \n\t" /* B */\
+    "movq       "#r", "#t"      \n\t" /* R */\
+    "punpcklbw  "#g", "#b"      \n\t" /* GBGBGBGB 0 */\
+    "punpcklbw  "#a", "#r"      \n\t" /* ARARARAR 0 */\
+    "punpckhbw  "#g", "#q2"     \n\t" /* GBGBGBGB 2 */\
+    "punpckhbw  "#a", "#t"      \n\t" /* ARARARAR 2 */\
+    "movq       "#b", "#q0"     \n\t" /* GBGBGBGB 0 */\
+    "movq      "#q2", "#q3"     \n\t" /* GBGBGBGB 2 */\
+    "punpcklwd  "#r", "#q0"     \n\t" /* ARGBARGB 0 */\
+    "punpckhwd  "#r", "#b"      \n\t" /* ARGBARGB 1 */\
+    "punpcklwd  "#t", "#q2"     \n\t" /* ARGBARGB 2 */\
+    "punpckhwd  "#t", "#q3"     \n\t" /* ARGBARGB 3 */\
 \
-    MOVNTQ(%%mm0,   (dst, index, 4))\
-    MOVNTQ(%%mm2,  8(dst, index, 4))\
-    MOVNTQ(%%mm1, 16(dst, index, 4))\
-    MOVNTQ(%%mm3, 24(dst, index, 4))\
+    MOVNTQ(   q0,   (dst, index, 4))\
+    MOVNTQ(    b,  8(dst, index, 4))\
+    MOVNTQ(   q2, 16(dst, index, 4))\
+    MOVNTQ(   q3, 24(dst, index, 4))\
 \
     "add      $8, "#index"      \n\t"\
     "cmp "#dstw", "#index"      \n\t"\
     " jb      1b                \n\t"
-#define WRITEBGR32(dst, dstw, index)  REAL_WRITEBGR32(dst, dstw, index)
+#define WRITEBGR32(dst, dstw, index, b, g, r, a, q0, q2, q3, t)  REAL_WRITEBGR32(dst, dstw, index, b, g, r, a, q0, q2, q3, t)
 
 #define REAL_WRITERGB16(dst, dstw, index) \
     "pand "MANGLE(bF8)", %%mm2  \n\t" /* B */\
@@ -865,7 +882,7 @@
     "cmp  "#dstw", "#index"     \n\t"\
     " jb       1b               \n\t"
 
-#ifdef HAVE_MMX2
+#if HAVE_MMX2
 #undef WRITEBGR24
 #define WRITEBGR24(dst, dstw, index)  WRITEBGR24MMX2(dst, dstw, index)
 #else
@@ -895,7 +912,7 @@ static inline void RENAME(yuv2yuvX)(SwsContext *c, int16_t *lumFilter, int16_t *
                                     int16_t *chrFilter, int16_t **chrSrc, int chrFilterSize,
                                     uint8_t *dest, uint8_t *uDest, uint8_t *vDest, long dstW, long chrDstW)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     if(!(c->flags & SWS_BITEXACT)){
         if (c->flags & SWS_ACCURATE_RND){
             if (uDest){
@@ -915,7 +932,7 @@ static inline void RENAME(yuv2yuvX)(SwsContext *c, int16_t *lumFilter, int16_t *
         return;
     }
 #endif
-#ifdef HAVE_ALTIVEC
+#if HAVE_ALTIVEC
 yuv2yuvX_altivec_real(lumFilter, lumSrc, lumFilterSize,
                       chrFilter, chrSrc, chrFilterSize,
                       dest, uDest, vDest, dstW, chrDstW);
@@ -939,7 +956,7 @@ static inline void RENAME(yuv2yuv1)(SwsContext *c, int16_t *lumSrc, int16_t *chr
                                     uint8_t *dest, uint8_t *uDest, uint8_t *vDest, long dstW, long chrDstW)
 {
     int i;
-#ifdef HAVE_MMX
+#if HAVE_MMX
     if(!(c->flags & SWS_BITEXACT)){
         long p= uDest ? 3 : 1;
         uint8_t *src[3]= {lumSrc + dstW, chrSrc + chrDstW, chrSrc + VOFW + chrDstW};
@@ -1006,7 +1023,7 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, int16_t *lumFilter, int16_
                                        int16_t *chrFilter, int16_t **chrSrc, int chrFilterSize,
                                        uint8_t *dest, long dstW, long dstY)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     long dummy=0;
     if(!(c->flags & SWS_BITEXACT)){
         if (c->flags & SWS_ACCURATE_RND){
@@ -1014,13 +1031,15 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, int16_t *lumFilter, int16_
             case PIX_FMT_RGB32:
                 YSCALEYUV2PACKEDX_ACCURATE
                 YSCALEYUV2RGBX
-                WRITEBGR32(%4, %5, %%REGa)
+                "pcmpeqd %%mm7, %%mm7 \n\t"
+                WRITEBGR32(%4, %5, %%REGa, %%mm2, %%mm4, %%mm5, %%mm7, %%mm0, %%mm1, %%mm3, %%mm6)
 
                 YSCALEYUV2PACKEDX_END
                 return;
             case PIX_FMT_BGR24:
                 YSCALEYUV2PACKEDX_ACCURATE
                 YSCALEYUV2RGBX
+                "pxor %%mm7, %%mm7 \n\t"
                 "lea (%%"REG_a", %%"REG_a", 2), %%"REG_c"\n\t" //FIXME optimize
                 "add %4, %%"REG_c"                        \n\t"
                 WRITEBGR24(%%REGc, %5, %%REGa)
@@ -1035,6 +1054,7 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, int16_t *lumFilter, int16_
             case PIX_FMT_RGB555:
                 YSCALEYUV2PACKEDX_ACCURATE
                 YSCALEYUV2RGBX
+                "pxor %%mm7, %%mm7 \n\t"
                 /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */
 #ifdef DITHER1XBPP
                 "paddusb "BLUE_DITHER"(%0), %%mm2\n\t"
@@ -1048,6 +1068,7 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, int16_t *lumFilter, int16_
             case PIX_FMT_RGB565:
                 YSCALEYUV2PACKEDX_ACCURATE
                 YSCALEYUV2RGBX
+                "pxor %%mm7, %%mm7 \n\t"
                 /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */
 #ifdef DITHER1XBPP
                 "paddusb "BLUE_DITHER"(%0), %%mm2\n\t"
@@ -1076,12 +1097,14 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, int16_t *lumFilter, int16_
             case PIX_FMT_RGB32:
                 YSCALEYUV2PACKEDX
                 YSCALEYUV2RGBX
-                WRITEBGR32(%4, %5, %%REGa)
+                "pcmpeqd %%mm7, %%mm7 \n\t"
+                WRITEBGR32(%4, %5, %%REGa, %%mm2, %%mm4, %%mm5, %%mm7, %%mm0, %%mm1, %%mm3, %%mm6)
                 YSCALEYUV2PACKEDX_END
                 return;
             case PIX_FMT_BGR24:
                 YSCALEYUV2PACKEDX
                 YSCALEYUV2RGBX
+                "pxor                    %%mm7, %%mm7       \n\t"
                 "lea (%%"REG_a", %%"REG_a", 2), %%"REG_c"   \n\t" //FIXME optimize
                 "add                        %4, %%"REG_c"   \n\t"
                 WRITEBGR24(%%REGc, %5, %%REGa)
@@ -1095,6 +1118,7 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, int16_t *lumFilter, int16_
             case PIX_FMT_RGB555:
                 YSCALEYUV2PACKEDX
                 YSCALEYUV2RGBX
+                "pxor %%mm7, %%mm7 \n\t"
                 /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */
 #ifdef DITHER1XBPP
                 "paddusb "BLUE_DITHER"(%0), %%mm2  \n\t"
@@ -1108,6 +1132,7 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, int16_t *lumFilter, int16_
             case PIX_FMT_RGB565:
                 YSCALEYUV2PACKEDX
                 YSCALEYUV2RGBX
+                "pxor %%mm7, %%mm7 \n\t"
                 /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */
 #ifdef DITHER1XBPP
                 "paddusb "BLUE_DITHER"(%0), %%mm2  \n\t"
@@ -1133,12 +1158,13 @@ static inline void RENAME(yuv2packedX)(SwsContext *c, int16_t *lumFilter, int16_
         }
     }
 #endif /* HAVE_MMX */
-#ifdef HAVE_ALTIVEC
+#if HAVE_ALTIVEC
     /* The following list of supported dstFormat values should
        match what's found in the body of altivec_yuv2packedX() */
-    if (c->dstFormat==PIX_FMT_ABGR  || c->dstFormat==PIX_FMT_BGRA  ||
+    if (!(c->flags & SWS_BITEXACT) &&
+       (c->dstFormat==PIX_FMT_ABGR  || c->dstFormat==PIX_FMT_BGRA  ||
         c->dstFormat==PIX_FMT_BGR24 || c->dstFormat==PIX_FMT_RGB24 ||
-        c->dstFormat==PIX_FMT_RGBA  || c->dstFormat==PIX_FMT_ARGB)
+        c->dstFormat==PIX_FMT_RGBA  || c->dstFormat==PIX_FMT_ARGB))
             altivec_yuv2packedX (c, lumFilter, lumSrc, lumFilterSize,
                                  chrFilter, chrSrc, chrFilterSize,
                                  dest, dstW, dstY);
@@ -1159,7 +1185,7 @@ static inline void RENAME(yuv2packed2)(SwsContext *c, uint16_t *buf0, uint16_t *
     int uvalpha1=4095-uvalpha;
     int i;
 
-#ifdef HAVE_MMX
+#if HAVE_MMX
     if(!(c->flags & SWS_BITEXACT)){
         switch(c->dstFormat)
         {
@@ -1170,7 +1196,8 @@ static inline void RENAME(yuv2packed2)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB(%%REGBP, %5)
-                WRITEBGR32(%%REGb, 8280(%5), %%REGBP)
+                "pcmpeqd %%mm7, %%mm7                   \n\t"
+                WRITEBGR32(%%REGb, 8280(%5), %%REGBP, %%mm2, %%mm4, %%mm5, %%mm7, %%mm0, %%mm1, %%mm3, %%mm6)
                 "pop %%"REG_BP"                         \n\t"
                 "mov "ESP_OFFSET"(%5), %%"REG_b"        \n\t"
 
@@ -1184,6 +1211,7 @@ static inline void RENAME(yuv2packed2)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB(%%REGBP, %5)
+                "pxor    %%mm7, %%mm7                   \n\t"
                 WRITEBGR24(%%REGb, 8280(%5), %%REGBP)
                 "pop %%"REG_BP"                         \n\t"
                 "mov "ESP_OFFSET"(%5), %%"REG_b"        \n\t"
@@ -1197,6 +1225,7 @@ static inline void RENAME(yuv2packed2)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB(%%REGBP, %5)
+                "pxor    %%mm7, %%mm7                   \n\t"
                 /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */
 #ifdef DITHER1XBPP
                 "paddusb "BLUE_DITHER"(%5), %%mm2      \n\t"
@@ -1218,6 +1247,7 @@ static inline void RENAME(yuv2packed2)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB(%%REGBP, %5)
+                "pxor    %%mm7, %%mm7                   \n\t"
                 /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */
 #ifdef DITHER1XBPP
                 "paddusb "BLUE_DITHER"(%5), %%mm2      \n\t"
@@ -1270,7 +1300,7 @@ static inline void RENAME(yuv2packed1)(SwsContext *c, uint16_t *buf0, uint16_t *
         return;
     }
 
-#ifdef HAVE_MMX
+#if HAVE_MMX
     if(!(flags & SWS_BITEXACT)){
         if (uvalpha < 2048) // note this is not correct (shifts chrominance by 0.5 pixels) but it is a bit faster
         {
@@ -1282,7 +1312,8 @@ static inline void RENAME(yuv2packed1)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB1(%%REGBP, %5)
-                WRITEBGR32(%%REGb, 8280(%5), %%REGBP)
+                "pcmpeqd %%mm7, %%mm7                   \n\t"
+                WRITEBGR32(%%REGb, 8280(%5), %%REGBP, %%mm2, %%mm4, %%mm5, %%mm7, %%mm0, %%mm1, %%mm3, %%mm6)
                 "pop %%"REG_BP"                         \n\t"
                 "mov "ESP_OFFSET"(%5), %%"REG_b"        \n\t"
 
@@ -1296,6 +1327,7 @@ static inline void RENAME(yuv2packed1)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB1(%%REGBP, %5)
+                "pxor    %%mm7, %%mm7                   \n\t"
                 WRITEBGR24(%%REGb, 8280(%5), %%REGBP)
                 "pop %%"REG_BP"                         \n\t"
                 "mov "ESP_OFFSET"(%5), %%"REG_b"        \n\t"
@@ -1310,6 +1342,7 @@ static inline void RENAME(yuv2packed1)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB1(%%REGBP, %5)
+                "pxor    %%mm7, %%mm7                   \n\t"
                 /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */
 #ifdef DITHER1XBPP
                 "paddusb "BLUE_DITHER"(%5), %%mm2      \n\t"
@@ -1330,6 +1363,7 @@ static inline void RENAME(yuv2packed1)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB1(%%REGBP, %5)
+                "pxor    %%mm7, %%mm7                   \n\t"
                 /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */
 #ifdef DITHER1XBPP
                 "paddusb "BLUE_DITHER"(%5), %%mm2      \n\t"
@@ -1371,7 +1405,8 @@ static inline void RENAME(yuv2packed1)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB1b(%%REGBP, %5)
-                WRITEBGR32(%%REGb, 8280(%5), %%REGBP)
+                "pcmpeqd %%mm7, %%mm7                   \n\t"
+                WRITEBGR32(%%REGb, 8280(%5), %%REGBP, %%mm2, %%mm4, %%mm5, %%mm7, %%mm0, %%mm1, %%mm3, %%mm6)
                 "pop %%"REG_BP"                         \n\t"
                 "mov "ESP_OFFSET"(%5), %%"REG_b"        \n\t"
 
@@ -1385,6 +1420,7 @@ static inline void RENAME(yuv2packed1)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB1b(%%REGBP, %5)
+                "pxor    %%mm7, %%mm7                   \n\t"
                 WRITEBGR24(%%REGb, 8280(%5), %%REGBP)
                 "pop %%"REG_BP"                         \n\t"
                 "mov "ESP_OFFSET"(%5), %%"REG_b"        \n\t"
@@ -1399,6 +1435,7 @@ static inline void RENAME(yuv2packed1)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB1b(%%REGBP, %5)
+                "pxor    %%mm7, %%mm7                   \n\t"
                 /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */
 #ifdef DITHER1XBPP
                 "paddusb "BLUE_DITHER"(%5), %%mm2      \n\t"
@@ -1419,6 +1456,7 @@ static inline void RENAME(yuv2packed1)(SwsContext *c, uint16_t *buf0, uint16_t *
                 "mov        %4, %%"REG_b"               \n\t"
                 "push %%"REG_BP"                        \n\t"
                 YSCALEYUV2RGB1b(%%REGBP, %5)
+                "pxor    %%mm7, %%mm7                   \n\t"
                 /* mm2=B, %%mm4=G, %%mm5=R, %%mm7=0 */
 #ifdef DITHER1XBPP
                 "paddusb "BLUE_DITHER"(%5), %%mm2      \n\t"
@@ -1464,7 +1502,7 @@ static inline void RENAME(yuv2packed1)(SwsContext *c, uint16_t *buf0, uint16_t *
 
 static inline void RENAME(yuy2ToY)(uint8_t *dst, uint8_t *src, long width, uint32_t *unused)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     __asm__ volatile(
     "movq "MANGLE(bm01010101)", %%mm2           \n\t"
     "mov                    %0, %%"REG_a"       \n\t"
@@ -1489,7 +1527,7 @@ static inline void RENAME(yuy2ToY)(uint8_t *dst, uint8_t *src, long width, uint3
 
 static inline void RENAME(yuy2ToUV)(uint8_t *dstU, uint8_t *dstV, uint8_t *src1, uint8_t *src2, long width, uint32_t *unused)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     __asm__ volatile(
     "movq "MANGLE(bm01010101)", %%mm4           \n\t"
     "mov                    %0, %%"REG_a"       \n\t"
@@ -1526,7 +1564,7 @@ static inline void RENAME(yuy2ToUV)(uint8_t *dstU, uint8_t *dstV, uint8_t *src1,
  * yuy2ToY/UV)(dst, src+1, ...) would have 100% unaligned accesses. */
 static inline void RENAME(uyvyToY)(uint8_t *dst, uint8_t *src, long width, uint32_t *unused)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     __asm__ volatile(
     "mov                  %0, %%"REG_a"         \n\t"
     "1:                                         \n\t"
@@ -1550,7 +1588,7 @@ static inline void RENAME(uyvyToY)(uint8_t *dst, uint8_t *src, long width, uint3
 
 static inline void RENAME(uyvyToUV)(uint8_t *dstU, uint8_t *dstV, uint8_t *src1, uint8_t *src2, long width, uint32_t *unused)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     __asm__ volatile(
     "movq "MANGLE(bm01010101)", %%mm4           \n\t"
     "mov                    %0, %%"REG_a"       \n\t"
@@ -1604,7 +1642,7 @@ BGR2Y(uint16_t, bgr15ToY, 0, 0, 0, 0x001F, 0x03E0, 0x7C00, RY<<10, GY<<5, BY    
 BGR2Y(uint16_t, rgb16ToY, 0, 0, 0, 0xF800, 0x07E0, 0x001F, RY    , GY<<5, BY<<11, RGB2YUV_SHIFT+8)
 BGR2Y(uint16_t, rgb15ToY, 0, 0, 0, 0x7C00, 0x03E0, 0x001F, RY    , GY<<5, BY<<10, RGB2YUV_SHIFT+7)
 
-#define BGR2UV(type, name, shr, shg, shb, maskr, maskg, maskb, RU, GU, BU, RV, GV, BV, S)\
+#define BGR2UV(type, name, shr, shg, shb, maska, maskr, maskg, maskb, RU, GU, BU, RV, GV, BV, S)\
 static inline void RENAME(name)(uint8_t *dstU, uint8_t *dstV, uint8_t *src, uint8_t *dummy, long width, uint32_t *unused)\
 {\
     int i;\
@@ -1625,9 +1663,10 @@ static inline void RENAME(name ## _half)(uint8_t *dstU, uint8_t *dstV, uint8_t *
     {\
         int pix0= ((type*)src)[2*i+0];\
         int pix1= ((type*)src)[2*i+1];\
-        int g= (pix0&maskg)+(pix1&maskg);\
+        int g= (pix0&(maskg|maska))+(pix1&(maskg|maska));\
         int b= ((pix0+pix1-g)&(maskb|(2*maskb)))>>shb;\
         int r= ((pix0+pix1-g)&(maskr|(2*maskr)))>>shr;\
+        g&= maskg|(2*maskg);\
 \
         g>>=shg;\
 \
@@ -1636,14 +1675,14 @@ static inline void RENAME(name ## _half)(uint8_t *dstU, uint8_t *dstV, uint8_t *
     }\
 }
 
-BGR2UV(uint32_t, bgr32ToUV,16, 0, 0, 0xFF0000, 0xFF00, 0x00FF, RU<< 8, GU   , BU<< 8, RV<< 8, GV   , BV<< 8, RGB2YUV_SHIFT+8)
-BGR2UV(uint32_t, rgb32ToUV, 0, 0,16, 0x00FF, 0xFF00, 0xFF0000, RU<< 8, GU   , BU<< 8, RV<< 8, GV   , BV<< 8, RGB2YUV_SHIFT+8)
-BGR2UV(uint16_t, bgr16ToUV, 0, 0, 0, 0x001F, 0x07E0, 0xF800, RU<<11, GU<<5, BU    , RV<<11, GV<<5, BV    , RGB2YUV_SHIFT+8)
-BGR2UV(uint16_t, bgr15ToUV, 0, 0, 0, 0x001F, 0x03E0, 0x7C00, RU<<10, GU<<5, BU    , RV<<10, GV<<5, BV    , RGB2YUV_SHIFT+7)
-BGR2UV(uint16_t, rgb16ToUV, 0, 0, 0, 0xF800, 0x07E0, 0x001F, RU    , GU<<5, BU<<11, RV    , GV<<5, BV<<11, RGB2YUV_SHIFT+8)
-BGR2UV(uint16_t, rgb15ToUV, 0, 0, 0, 0x7C00, 0x03E0, 0x001F, RU    , GU<<5, BU<<10, RV    , GV<<5, BV<<10, RGB2YUV_SHIFT+7)
+BGR2UV(uint32_t, bgr32ToUV,16, 0, 0, 0xFF000000, 0xFF0000, 0xFF00,   0x00FF, RU<< 8, GU   , BU<< 8, RV<< 8, GV   , BV<< 8, RGB2YUV_SHIFT+8)
+BGR2UV(uint32_t, rgb32ToUV, 0, 0,16, 0xFF000000,   0x00FF, 0xFF00, 0xFF0000, RU<< 8, GU   , BU<< 8, RV<< 8, GV   , BV<< 8, RGB2YUV_SHIFT+8)
+BGR2UV(uint16_t, bgr16ToUV, 0, 0, 0,          0,   0x001F, 0x07E0,   0xF800, RU<<11, GU<<5, BU    , RV<<11, GV<<5, BV    , RGB2YUV_SHIFT+8)
+BGR2UV(uint16_t, bgr15ToUV, 0, 0, 0,          0,   0x001F, 0x03E0,   0x7C00, RU<<10, GU<<5, BU    , RV<<10, GV<<5, BV    , RGB2YUV_SHIFT+7)
+BGR2UV(uint16_t, rgb16ToUV, 0, 0, 0,          0,   0xF800, 0x07E0,   0x001F, RU    , GU<<5, BU<<11, RV    , GV<<5, BV<<11, RGB2YUV_SHIFT+8)
+BGR2UV(uint16_t, rgb15ToUV, 0, 0, 0,          0,   0x7C00, 0x03E0,   0x001F, RU    , GU<<5, BU<<10, RV    , GV<<5, BV<<10, RGB2YUV_SHIFT+7)
 
-#ifdef HAVE_MMX
+#if HAVE_MMX
 static inline void RENAME(bgr24ToY_mmx)(uint8_t *dst, uint8_t *src, long width, int srcFormat)
 {
 
@@ -1758,7 +1797,7 @@ static inline void RENAME(bgr24ToUV_mmx)(uint8_t *dstU, uint8_t *dstV, uint8_t *
 
 static inline void RENAME(bgr24ToY)(uint8_t *dst, uint8_t *src, long width, uint32_t *unused)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     RENAME(bgr24ToY_mmx)(dst, src, width, PIX_FMT_BGR24);
 #else
     int i;
@@ -1775,7 +1814,7 @@ static inline void RENAME(bgr24ToY)(uint8_t *dst, uint8_t *src, long width, uint
 
 static inline void RENAME(bgr24ToUV)(uint8_t *dstU, uint8_t *dstV, uint8_t *src1, uint8_t *src2, long width, uint32_t *unused)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     RENAME(bgr24ToUV_mmx)(dstU, dstV, src1, width, PIX_FMT_BGR24);
 #else
     int i;
@@ -1809,7 +1848,7 @@ static inline void RENAME(bgr24ToUV_half)(uint8_t *dstU, uint8_t *dstV, uint8_t 
 
 static inline void RENAME(rgb24ToY)(uint8_t *dst, uint8_t *src, long width, uint32_t *unused)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     RENAME(bgr24ToY_mmx)(dst, src, width, PIX_FMT_RGB24);
 #else
     int i;
@@ -1826,7 +1865,7 @@ static inline void RENAME(rgb24ToY)(uint8_t *dst, uint8_t *src, long width, uint
 
 static inline void RENAME(rgb24ToUV)(uint8_t *dstU, uint8_t *dstV, uint8_t *src1, uint8_t *src2, long width, uint32_t *unused)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     assert(src1==src2);
     RENAME(bgr24ToUV_mmx)(dstU, dstV, src1, width, PIX_FMT_RGB24);
 #else
@@ -1908,7 +1947,7 @@ static inline void RENAME(monoblack2Y)(uint8_t *dst, uint8_t *src, long width, u
 static inline void RENAME(hScale)(int16_t *dst, int dstW, uint8_t *src, int srcW, int xInc,
                                   int16_t *filter, int16_t *filterPos, long filterSize)
 {
-#ifdef HAVE_MMX
+#if HAVE_MMX
     assert(filterSize % 4 == 0 && filterSize>0);
     if (filterSize==4) // Always true for upscaling, sometimes for down, too.
     {
@@ -2064,7 +2103,7 @@ static inline void RENAME(hScale)(int16_t *dst, int dstW, uint8_t *src, int srcW
         );
     }
 #else
-#ifdef HAVE_ALTIVEC
+#if HAVE_ALTIVEC
     hScale_altivec_real(dst, dstW, src, srcW, xInc, filter, filterPos, filterSize);
 #else
     int i;
@@ -2169,7 +2208,7 @@ static inline void RENAME(hyscale)(SwsContext *c, uint16_t *dst, long dstWidth, 
         src= formatConvBuffer;
     }
 
-#ifdef HAVE_MMX
+#if HAVE_MMX
     // Use the new MMX scaler if the MMX2 one can't be used (it is faster than the x86 ASM one).
     if (!(flags&SWS_FAST_BILINEAR) || (!canMMX2BeUsed))
 #else
@@ -2180,8 +2219,8 @@ static inline void RENAME(hyscale)(SwsContext *c, uint16_t *dst, long dstWidth, 
     }
     else // fast bilinear upscale / crap downscale
     {
-#if defined(ARCH_X86)
-#ifdef HAVE_MMX2
+#if ARCH_X86
+#if HAVE_MMX2
         int i;
 #if defined(PIC)
         uint64_t ebxsave __attribute__((aligned(8)));
@@ -2202,7 +2241,7 @@ static inline void RENAME(hyscale)(SwsContext *c, uint16_t *dst, long dstWidth, 
             PREFETCH"      32(%%"REG_c")            \n\t"
             PREFETCH"      64(%%"REG_c")            \n\t"
 
-#ifdef ARCH_X86_64
+#if ARCH_X86_64
 
 #define FUNNY_Y_CODE \
             "movl            (%%"REG_b"), %%esi     \n\t"\
@@ -2292,7 +2331,7 @@ FUNNY_Y_CODE
         :: "r" (src), "m" (dst), "m" (dstWidth), "m" (xInc_shr16), "m" (xInc_mask)
         : "%"REG_a, "%"REG_d, "%ecx", "%"REG_D, "%esi"
         );
-#ifdef HAVE_MMX2
+#if HAVE_MMX2
         } //if MMX2 can't be used
 #endif
 #else
@@ -2305,7 +2344,7 @@ FUNNY_Y_CODE
             dst[i]= (src[xx]<<7) + (src[xx+1] - src[xx])*xalpha;
             xpos+=xInc;
         }
-#endif /* defined(ARCH_X86) */
+#endif /* ARCH_X86 */
     }
 
     if(c->srcRange != c->dstRange && !(isRGB(c->dstFormat) || isBGR(c->dstFormat))){
@@ -2441,7 +2480,7 @@ inline static void RENAME(hcscale)(SwsContext *c, uint16_t *dst, long dstWidth, 
         src2= formatConvBuffer+VOFW;
     }
 
-#ifdef HAVE_MMX
+#if HAVE_MMX
     // Use the new MMX scaler if the MMX2 one can't be used (it is faster than the x86 ASM one).
     if (!(flags&SWS_FAST_BILINEAR) || (!canMMX2BeUsed))
 #else
@@ -2453,8 +2492,8 @@ inline static void RENAME(hcscale)(SwsContext *c, uint16_t *dst, long dstWidth, 
     }
     else // fast bilinear upscale / crap downscale
     {
-#if defined(ARCH_X86)
-#ifdef HAVE_MMX2
+#if ARCH_X86
+#if HAVE_MMX2
         int i;
 #if defined(PIC)
         uint64_t ebxsave __attribute__((aligned(8)));
@@ -2475,7 +2514,7 @@ inline static void RENAME(hcscale)(SwsContext *c, uint16_t *dst, long dstWidth, 
             PREFETCH" 32(%%"REG_c")             \n\t"
             PREFETCH" 64(%%"REG_c")             \n\t"
 
-#ifdef ARCH_X86_64
+#if ARCH_X86_64
 
 #define FUNNY_UV_CODE \
             "movl       (%%"REG_b"), %%esi      \n\t"\
@@ -2573,7 +2612,7 @@ FUNNY_UV_CODE
 
 /* GCC 3.3 makes MPlayer crash on IA-32 machines when using "g" operand here,
    which is needed to support GCC 4.0. */
-#if defined(ARCH_X86_64) && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4))
+#if ARCH_X86_64 && ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4))
             :: "m" (src1), "m" (dst), "g" ((long)dstWidth), "m" (xInc_shr16), "m" (xInc_mask),
 #else
             :: "m" (src1), "m" (dst), "m" ((long)dstWidth), "m" (xInc_shr16), "m" (xInc_mask),
@@ -2581,7 +2620,7 @@ FUNNY_UV_CODE
             "r" (src2)
             : "%"REG_a, "%"REG_d, "%ecx", "%"REG_D, "%esi"
             );
-#ifdef HAVE_MMX2
+#if HAVE_MMX2
         } //if MMX2 can't be used
 #endif
 #else
@@ -2599,7 +2638,7 @@ FUNNY_UV_CODE
             */
             xpos+=xInc;
         }
-#endif /* defined(ARCH_X86) */
+#endif /* ARCH_X86 */
     }
     if(c->srcRange != c->dstRange && !(isRGB(c->dstFormat) || isBGR(c->dstFormat))){
         int i;
@@ -2821,7 +2860,7 @@ static int RENAME(swScale)(SwsContext *c, uint8_t* src[], int srcStride[], int s
             break; //we can't output a dstY line so let's try with the next slice
         }
 
-#ifdef HAVE_MMX
+#if HAVE_MMX
         c->blueDither= ff_dither8[dstY&1];
         if (c->dstFormat == PIX_FMT_RGB555 || c->dstFormat == PIX_FMT_BGR555)
             c->greenDither= ff_dither8[dstY&1];
@@ -2833,7 +2872,7 @@ static int RENAME(swScale)(SwsContext *c, uint8_t* src[], int srcStride[], int s
         {
             int16_t **lumSrcPtr= lumPixBuf + lumBufIndex + firstLumSrcY - lastInLumBuf + vLumBufSize;
             int16_t **chrSrcPtr= chrPixBuf + chrBufIndex + firstChrSrcY - lastInChrBuf + vChrBufSize;
-#ifdef HAVE_MMX
+#if HAVE_MMX
             int i;
         if (flags & SWS_ACCURATE_RND){
             int s= APCK_SIZE / 8;
@@ -2987,7 +3026,7 @@ static int RENAME(swScale)(SwsContext *c, uint8_t* src[], int srcStride[], int s
         }
     }
 
-#ifdef HAVE_MMX
+#if HAVE_MMX
     __asm__ volatile(SFENCE:::"memory");
     __asm__ volatile(EMMS:::"memory");
 #endif

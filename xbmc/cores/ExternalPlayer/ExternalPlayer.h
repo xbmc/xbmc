@@ -77,11 +77,12 @@ public:
   virtual bool SetPlayerState(CStdString state);
   
 #if defined(_WIN32PC)
-  virtual void ExecuteAppW32(const char* strPath, const char* strSwitches);
+  virtual BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
+  static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
 #endif
 
 #if defined(_LINUX)
-  virtual void ExecuteAppLinux(const char* strSwitches);
+  virtual BOOL ExecuteAppLinux(const char* strSwitches);
 #endif
 
 private:
@@ -99,3 +100,4 @@ private:
   int m_xPos;
   int m_yPos;
 };
+

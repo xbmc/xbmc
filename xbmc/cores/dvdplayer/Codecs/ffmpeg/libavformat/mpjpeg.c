@@ -1,6 +1,6 @@
 /*
  * Multipart JPEG format
- * Copyright (c) 2000, 2001, 2002, 2003 Fabrice Bellard.
+ * Copyright (c) 2000, 2001, 2002, 2003 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -55,7 +55,7 @@ static int mpjpeg_write_trailer(AVFormatContext *s)
 
 AVOutputFormat mpjpeg_muxer = {
     "mpjpeg",
-    NULL_IF_CONFIG_SMALL("Mime multipart JPEG format"),
+    NULL_IF_CONFIG_SMALL("MIME multipart JPEG format"),
     "multipart/x-mixed-replace;boundary=" BOUNDARY_TAG,
     "mjpg",
     0,

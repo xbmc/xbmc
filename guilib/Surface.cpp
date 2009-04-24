@@ -26,7 +26,7 @@
 #include "include.h"
 #include "Surface.h"
 #ifdef __APPLE__
-#include "CocoaUtils.h"
+#include "CocoaInterface.h"
 #endif
 #include <string>
 #include "Settings.h"
@@ -39,6 +39,9 @@ using namespace Surface;
 #endif
 
 #ifdef HAS_GLX
+PFNGLXBINDTEXIMAGEEXTPROC    glXBindTexImageEXT    = NULL;
+PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT = NULL;
+
 Display* CSurface::s_dpy = 0;
 
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg)
@@ -96,14 +99,15 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_iSwapTime = 0;
   m_iSwapRate = 0;
   m_bVsyncInit = false;
-
 #ifdef __APPLE__
   m_glContext = 0;
 #endif
 
 #ifdef _WIN32
-  m_glDC = NULL; 
+  m_glDC = NULL;
   m_glContext = NULL;
+  m_bCoversScreen = false;
+  m_iOnTop = ONTOP_AUTO;
 
   timeBeginPeriod(1);
 #endif
@@ -114,6 +118,14 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_glContext = 0;
   m_glPBuffer = 0;
   m_glPixmap = 0;
+  m_glPixmapTexture = 0;
+  m_Pixmap = 0;
+  m_pixmapBound = false;
+
+  if (!glXBindTexImageEXT)
+    glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
+  if (!glXReleaseTexImageEXT)
+    glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 
   GLXFBConfig *fbConfigs = 0;
   bool mapWindow = false;
@@ -189,7 +201,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 
   if (pixmap)
   {
-    MakePixmap();
+    MakePixmap(width,height);
     return;
   }
 
@@ -224,6 +236,10 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 
   // obtain the xvisual from the first compatible framebuffer
   vInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
+  if (!vInfo) {
+    CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
+    return;
+  }
 
   // if no window is specified, create a window because a GL context needs to be
   // associated to a window
@@ -350,7 +366,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     // the context SDL creates isn't full screen compatible, so we create new one
     m_glContext = Cocoa_GL_ReplaceSDLWindowContext();
 #else
-    // We use the RESIZABLE flag or else the SDL wndproc won't let us ResizeSurface(), the 
+    // We use the RESIZABLE flag or else the SDL wndproc won't let us ResizeSurface(), the
     // first sizing will replace the borderstyle to prevent allowing abritrary resizes
     int options = SDL_OPENGL | SDL_RESIZABLE | (fullscreen?SDL_NOFRAME:0);
     m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
@@ -513,10 +529,163 @@ bool CSurface::MakePBuffer()
   return status;
 }
 
-bool CSurface::MakePixmap()
+void CSurface::BindPixmap()
 {
-// FIXME: this needs to be implemented
-  return false;
+  if (!m_pixmapBound)
+  {
+    glXBindTexImageEXT(s_dpy, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
+    VerifyGLState();
+    m_pixmapBound = true;
+  }
+}
+
+void CSurface::ReleasePixmap()
+{
+  if (m_pixmapBound)
+  {
+    glXReleaseTexImageEXT(s_dpy, m_glPixmap,GLX_FRONT_LEFT_EXT);
+    VerifyGLState();
+  }
+  m_pixmapBound = false;
+}
+
+bool CSurface::MakePixmap(int width, int height)
+{
+  int num=0;
+  GLXFBConfig *fbConfigs=NULL;
+  int fbConfigIndex = 0;
+  XVisualInfo *visInfo=NULL;
+
+  bool status = false;
+  int singleVisAttributes[] = {
+    GLX_RENDER_TYPE, GLX_RGBA_BIT,
+    GLX_RED_SIZE, m_iRedSize,
+    GLX_GREEN_SIZE, m_iGreenSize,
+    GLX_BLUE_SIZE, m_iBlueSize,
+    GLX_ALPHA_SIZE, m_iAlphaSize,
+    GLX_DEPTH_SIZE, 8,
+    GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
+    GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
+    GLX_X_RENDERABLE, True, // Added by Rob
+    None
+  };
+
+  int doubleVisAttributes[] = {
+    GLX_RENDER_TYPE, GLX_RGBA_BIT,
+    GLX_RED_SIZE, m_iRedSize,
+    GLX_GREEN_SIZE, m_iGreenSize,
+    GLX_BLUE_SIZE, m_iBlueSize,
+    GLX_ALPHA_SIZE, m_iAlphaSize,
+    GLX_DEPTH_SIZE, 8,
+    GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
+    GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
+    GLX_DOUBLEBUFFER, True,
+    GLX_Y_INVERTED_EXT, True,
+    GLX_X_RENDERABLE, True, // Added by Rob
+    None
+  };
+
+  int pixmapAttribs[] = {
+    GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
+    GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
+    None
+  };
+
+  if (m_bDoublebuffer)
+    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
+  else
+    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
+
+  // Get our window attribs.
+  XWindowAttributes wndattribs;
+  XGetWindowAttributes(s_dpy, DefaultRootWindow(s_dpy), &wndattribs); // returns a status but I don't know what success is
+
+  CLog::Log(LOGDEBUG, "Found %d fbconfigs.", num);
+  fbConfigIndex = 0;
+
+  if (fbConfigs==NULL) 
+  {
+    CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
+    XFree(fbConfigs);
+    return status;
+  }
+  CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
+  m_Pixmap = XCreatePixmap(s_dpy,
+                           DefaultRootWindow(s_dpy),
+                           width,
+                           height,
+                           wndattribs.depth);
+  if (!m_Pixmap)
+  {
+    CLog::Log(LOGERROR, "GLX Error: MakePixmap: Unable to create XPixmap");
+    XFree(fbConfigs);
+    return status;
+  }
+  m_glPixmap = glXCreatePixmap(s_dpy, fbConfigs[fbConfigIndex], m_Pixmap, pixmapAttribs);
+
+  if (m_glPixmap)
+  {
+    CLog::Log(LOGINFO, "GLX: Created Pixmap context");
+    visInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[fbConfigIndex]);
+    if (!visInfo)
+    {
+      CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
+      return false;
+    }
+    if (m_pShared)
+    {
+      CLog::Log(LOGINFO, "GLX: Creating shared Pixmap context");
+      m_glContext = glXCreateContext(s_dpy, visInfo, m_pShared->GetContext(), True);
+    } 
+    else
+    {
+      CLog::Log(LOGINFO, "GLX: Creating unshared Pixmap context");
+      m_glContext = glXCreateContext(s_dpy, visInfo, NULL, True);
+    }
+    XFree(visInfo);
+    if (glXMakeCurrent(s_dpy, m_glPixmap, m_glContext))
+    {
+      CLog::Log(LOGINFO, "GL: Initialised Pixmap");
+      if (!b_glewInit)
+      {
+        if (glewInit()!=GLEW_OK)
+          CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
+        else 
+        {
+          b_glewInit = true;
+          if (s_glVendor.length()==0)
+          {
+            s_glVendor = (const char*)glGetString(GL_VENDOR);
+            CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
+          }
+        }
+      }
+
+      GLenum glErr;
+      if (!m_glPixmapTexture)
+      {
+        glGenTextures (1, &m_glPixmapTexture);
+        glErr = glGetError();
+        if ((glErr == GL_INVALID_VALUE) | (glErr == GL_INVALID_OPERATION))
+        {
+          CLog::Log(LOGINFO, "glGenTextures returned an error!");
+          status = false;
+        }
+      }
+    } 
+    else
+    {
+      CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
+      status = false;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "GLX Error: Could not create Pixmap");
+    status = false;
+  }
+  XFree(fbConfigs);
+  return status;
 }
 #endif
 
@@ -532,6 +701,18 @@ CSurface::~CSurface()
   {
     CLog::Log(LOGINFO, "GLX: Destroying PBuffer");
     glXDestroyPbuffer(s_dpy, m_glPBuffer);
+  }
+  if (m_glPixmap)
+  {
+    CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
+    glXDestroyGLXPixmap(s_dpy, m_glPixmap);
+    m_glPixmap = NULL;
+  }
+  if (m_Pixmap)
+  {
+    CLog::Log(LOGINFO, "GLX: Destroying XPixmap");
+    XFreePixmap(s_dpy, m_Pixmap);
+    m_Pixmap = NULL;
   }
   if (m_glWindow && !IsShared())
   {
@@ -757,7 +938,7 @@ void CSurface::Flip()
 #ifdef HAS_GLX
     if (m_iVSyncMode == 3)
     {
-      glXWaitGL();
+      glFinish();
       unsigned int before, after;
       if(_glXGetVideoSyncSGI(&before) != 0)
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
@@ -775,7 +956,7 @@ void CSurface::Flip()
     }
     else if (m_iVSyncMode == 4)
     {
-      glXWaitGL();
+      glFinish();
       unsigned int vCount;
       if(_glXGetVideoSyncSGI(&vCount) == 0)
         _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
@@ -834,59 +1015,56 @@ void CSurface::Flip()
 
 bool CSurface::MakeCurrent()
 {
+  if (m_pShared)
+    return m_pShared->MakeCurrent();
+
+#ifdef HAS_SDL_OPENGL
+  if (!m_glContext)
+    return false;
+#endif
+
 #ifdef HAS_GLX
+  GLXDrawable drawable = None;
   if (m_glWindow)
+    drawable = m_glWindow;
+  else if(m_glPBuffer)
+    drawable = m_glPBuffer;
+  else
+    return false;
+
+  //attempt up to 10 times
+  int i = 0;
+  while (i<=10 && !glXMakeCurrent(s_dpy, drawable, m_glContext))
   {
-    //attempt up to 10 times
-    int i = 0;
-    while (i<=10 && !glXMakeCurrent(s_dpy, m_glWindow, m_glContext))
-    {
-      Sleep(5);
-      i++;
-    }
-    if (i==10)
-      return false;
-    return true;
-    //return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    Sleep(5);
+    i++;
   }
-  else if (m_glPBuffer)
-  {
-    return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
-  }
+  if (i==10)
+    return false;
+  return true;
 #endif
 
 #ifdef __APPLE__
-  //if (m_glContext)
-  if (m_pShared)
-  {
-    // Use the shared context, because ours might not be up to date (e.g. if
-    // a transition from windowed to full-screen took place).
-    //
-    m_pShared->MakeCurrent();
-  }
-  else if (m_glContext)
-  {
-    Cocoa_GL_MakeCurrentContext(m_glContext);
-    return true;
-  }
+  Cocoa_GL_MakeCurrentContext(m_glContext);
+  return true;
 #endif
 
 #ifdef _WIN32
-  if (IsShared())
-    return m_pShared->MakeCurrent();
-  if (m_glContext)
-  {
-    if(wglGetCurrentContext() == m_glContext)
-      return true;
-    else
-      return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
-    }
+  if(wglGetCurrentContext() == m_glContext)
+    return true;
+  else
+    return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
 #endif
   return false;
 }
 
 void CSurface::RefreshCurrentContext()
 {
+#ifdef HAS_GLX
+  ReleaseContext();
+  MakeCurrent();
+#endif
+
 #ifdef __APPLE__
   m_glContext = Cocoa_GL_GetCurrentContext();
 #endif
@@ -911,49 +1089,38 @@ void CSurface::ReleaseContext()
 #endif
 }
 
-bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
+bool CSurface::ResizeSurface(int newWidth, int newHeight)
 {
   CLog::Log(LOGDEBUG, "Asking to resize surface to %d x %d", newWidth, newHeight);
 #ifdef HAS_GLX
   if (m_parentWindow)
   {
+    XLockDisplay(s_dpy);
     XResizeWindow(s_dpy, m_parentWindow, newWidth, newHeight);
     XResizeWindow(s_dpy, m_glWindow, newWidth, newHeight);
     glXWaitX();
+    XUnlockDisplay(s_dpy);
   }
 #endif
 #ifdef __APPLE__
-  #include "SDL_private.h"
-  extern SDL_VideoDevice* current_video; // ignore the compiler warning
-  void* newContext = NULL;
-  if (current_video && current_video->hidden)
-    newContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight, (void*)(current_video->hidden->view));
-  else
-    newContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight, NULL);
-
-  if (current_video && current_video->screen)
+  m_glContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight);
+  // If we've resized, we likely lose the vsync settings so get it back.
+  if (m_bVSync)
   {
-    current_video->screen->w = newWidth;
-    current_video->screen->h = newHeight;
+    Cocoa_GL_EnableVSync(m_bVSync);
   }
-
-  if (useNewContext)
-    m_glContext = newContext; 
-  
-  // If we've resized, we likely lose the vsync settings.
-  m_bVSync = false;
 #endif
 #ifdef _WIN32
   SDL_SysWMinfo sysInfo;
   SDL_VERSION(&sysInfo.version);
-  if (SDL_GetWMInfo(&sysInfo)) 
+  if (SDL_GetWMInfo(&sysInfo))
   {
     RECT rBounds;
     HMONITOR hMonitor;
     MONITORINFO mi;
     HWND hwnd = sysInfo.window;
 
-    // Start by getting the current window rect and centering the new window on 
+    // Start by getting the current window rect and centering the new window on
     // the monitor that window is on
     GetWindowRect(hwnd, &rBounds);
     hMonitor = MonitorFromRect(&rBounds, MONITOR_DEFAULTTONEAREST);
@@ -966,25 +1133,34 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
     rBounds.bottom = rBounds.top + newHeight;
 
     // if this covers the screen area top to bottom, remove the window borders and caption bar
-    bool bCoversScreen = (mi.rcMonitor.top + newHeight == mi.rcMonitor.bottom);
+    m_bCoversScreen = (mi.rcMonitor.top + newHeight == mi.rcMonitor.bottom);
+    CLog::Log(LOGDEBUG, "New size %s the screen", (m_bCoversScreen ? "covers" : "does not cover"));
+
     DWORD styleOut, styleIn;
     DWORD swpOptions = SWP_NOCOPYBITS | SWP_SHOWWINDOW;
     HWND hInsertAfter;
 
     styleIn = styleOut = GetWindowLong(hwnd, GWL_STYLE);
-    // We basically want 2 styles, one that is our maximized borderless 
+    // We basically want 2 styles, one that is our maximized borderless
     // and one with a caption and non-resizable frame
-    if (bCoversScreen)
+    if (m_bCoversScreen)
     {
       styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_POPUP;
-      hInsertAfter = HWND_TOPMOST;
       LockSetForegroundWindow(LSFW_LOCK);
     }
     else
     {
       styleOut = WS_VISIBLE | WS_CLIPSIBLINGS | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-      hInsertAfter = HWND_NOTOPMOST;
       LockSetForegroundWindow(LSFW_UNLOCK);
+    }
+
+    if (IsOnTop())
+    {
+      hInsertAfter = HWND_TOPMOST;
+    }
+    else
+    {
+      hInsertAfter = HWND_NOTOPMOST;
     }
 
     if (styleIn != styleOut)
@@ -998,8 +1174,8 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
     AdjustWindowRectEx(&rBounds, styleOut, false, 0); // there is never a menu
 
     // finally, move and resize the window
-    SetWindowPos(hwnd, hInsertAfter, rBounds.left, rBounds.top, 
-      rBounds.right - rBounds.left, rBounds.bottom - rBounds.top, 
+    SetWindowPos(hwnd, hInsertAfter, rBounds.left, rBounds.top,
+      rBounds.right - rBounds.left, rBounds.bottom - rBounds.top,
       swpOptions);
 
     SetForegroundWindow(hwnd);
@@ -1008,7 +1184,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight, bool useNewContext)
 
     return true;
   }
-#endif 
+#endif
   return false;
 }
 
@@ -1034,11 +1210,11 @@ void CSurface::GetGLVersion(int& maj, int& min)
 }
 
 // function should return the timestamp
-// of the frame where a call to flip, 
+// of the frame where a call to flip,
 // earliest can land upon.
 DWORD CSurface::GetNextSwap()
 {
-  if (m_iVSyncMode && m_iSwapRate != 0) 
+  if (m_iVSyncMode && m_iSwapRate != 0)
   {
     __int64 curr, freq;
     QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
@@ -1051,5 +1227,84 @@ DWORD CSurface::GetNextSwap()
     return timestamp - (int)(1000 * curr / freq);
   }
   return timeGetTime();
+}
+
+#ifdef _WIN32
+void CSurface::SetOnTop(ONTOP onTop)
+{
+  m_iOnTop = onTop;
+}
+
+bool CSurface::IsOnTop() {
+  return m_iOnTop == ONTOP_ALWAYS || (m_iOnTop == ONTOP_FULLSCREEN && m_bCoversScreen) ||
+        (m_iOnTop == ONTOP_AUTO && m_bCoversScreen && (s_glVendor.find("Intel") != s_glVendor.npos));
+}
+#endif
+
+void CSurface::NotifyAppFocusChange(bool bGaining)
+{
+  /* Notification from the Application that we are either becoming the foreground window or are losing focus */
+#ifdef _WIN32
+  /* Remove our TOPMOST status when we lose focus.  TOPMOST seems to be required for Intel vsync, it isn't
+     like I actually want to be on top. Seems like a lot of work. */
+
+  if (m_iOnTop != ONTOP_ALWAYS && IsOnTop())
+  {
+    CLog::Log(LOGDEBUG, "NotifyAppFocusChange: bGaining=%d, m_bCoverScreen=%d", bGaining, m_bCoversScreen);
+
+    SDL_SysWMinfo sysInfo;
+    SDL_VERSION(&sysInfo.version);
+
+    if (SDL_GetWMInfo(&sysInfo))
+    {
+      HWND hwnd = sysInfo.window;
+
+      if (bGaining)
+      {
+        // For intel IGPs Vsync won't start working after we've lost focus and then regained it,
+        // to kick-start it we hide then re-show the window; it's gonna look a bit ugly but it
+        // seems to be the only option
+        if (s_glVendor.find("Intel") != s_glVendor.npos)
+        {
+          CLog::Log(LOGDEBUG, "NotifyAppFocusChange: hiding XBMC window (to workaround Intel Vsync bug)");
+          SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_HIDEWINDOW | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOSENDCHANGING);
+        }
+        CLog::Log(LOGDEBUG, "NotifyAppFocusChange: showing XBMC window TOPMOST");
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOSENDCHANGING);
+        SetForegroundWindow(hwnd);
+        LockSetForegroundWindow(LSFW_LOCK);
+      }
+      else
+      {
+        /*
+         * We can't just SetWindowPos(hwnd, hNewFore, ....) because (at least) on Vista focus may be lost to the
+         * Alt-Tab window-list which is also TOPMOST, so going just below that in the z-order will leave us still
+         * TOPMOST and so probably still above the window you eventually select from the window-list.
+         * Checking whether hNewFore is TOPMOST and, if so, making ourselves just NOTOPMOST is almost good enough;
+         * we should be NOTOPMOST when you select a window from the window-list and that will be raised above us.
+         * However, if the timing is just right (i.e. wrong) then we lose focus to the window-list, see that it's
+         * another TOPMOST window, at which time focus leaves the window-list and goes to the selected window
+         * and then make ourselves NOTOPMOST and so raise ourselves above it.
+         * We could just go straight to the bottom of the z-order but that'll mean we disappear as soon as the
+         * window-list appears.
+         * So, the best I can come up with is to go NOTOPMOST asap and then if hNewFore is NOTOPMOST go below that,
+         * this should minimize the timespan in which the above timing issue can happen.
+         */
+        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        CLog::Log(LOGDEBUG, "NotifyAppFocusChange: making XBMC window NOTOPMOST");
+
+        HWND hNewFore = GetForegroundWindow();
+        LONG newStyle = GetWindowLong(hNewFore, GWL_EXSTYLE);
+        if (!(newStyle & WS_EX_TOPMOST))
+        {
+          CLog::Log(LOGDEBUG, "NotifyAppFocusChange: lowering XBMC window beneath new foreground window");
+          SetWindowPos(hwnd, hNewFore, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
+
+        LockSetForegroundWindow(LSFW_UNLOCK);
+      }
+    }
+  }
+#endif
 }
 

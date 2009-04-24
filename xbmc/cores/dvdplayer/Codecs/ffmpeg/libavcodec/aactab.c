@@ -21,7 +21,7 @@
  */
 
 /**
- * @file aactab.c
+ * @file libavcodec/aactab.c
  * AAC data
  * @author Oded Shimon  ( ods15 ods15 dyndns org )
  * @author Maxim Gavrilov ( maxim.gavrilov gmail com )
@@ -36,15 +36,15 @@ DECLARE_ALIGNED(16, float,  ff_aac_kbd_long_1024[1024]);
 DECLARE_ALIGNED(16, float,  ff_aac_kbd_short_128[128]);
 
 const uint8_t ff_aac_num_swb_1024[] = {
-    41, 41, 47, 49, 49, 51, 47, 47, 43, 43, 43, 40
+    41, 41, 47, 49, 49, 51, 47, 47, 43, 43, 43, 40, 40
 };
 
 const uint8_t ff_aac_num_swb_128[] = {
-    12, 12, 12, 14, 14, 14, 15, 15, 15, 15, 15, 15
+    12, 12, 12, 14, 14, 14, 15, 15, 15, 15, 15, 15, 15
 };
 
 const uint8_t ff_aac_pred_sfb_max[] = {
-    33, 33, 38, 40, 40, 40, 41, 41, 37, 37, 37, 34
+    33, 33, 38, 40, 40, 40, 41, 41, 37, 37, 37, 34, 34
 };
 
 const uint32_t ff_aac_scalefactor_code[121] = {
@@ -899,7 +899,7 @@ const float * const ff_aac_codebook_vectors[] = {
     codebook_vector8, codebook_vector10,
 };
 
-#ifdef CONFIG_HARDCODED_TABLES
+#if CONFIG_HARDCODED_TABLES
 
 /**
  * Table of pow(2, (i - 200)/4.) used for different purposes depending on the

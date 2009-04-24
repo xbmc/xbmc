@@ -65,13 +65,6 @@ public:
 
   char *GetLocation(int iLocation);
   char *GetLastUpdateTime() { return m_szLastUpdateTime; };
-  char *GetCurrentConditions() { return m_szCurrentConditions; };
-  char *GetCurrentTemperature() { return m_szCurrentTemperature; };
-  char *GetCurrentFeelsLike() { return m_szCurrentFeelsLike; };
-  char *GetCurrentUVIndex() { return m_szCurrentUVIndex; };
-  char *GetCurrentWind() { return m_szCurrentWind; };
-  char *GetCurrentDewPoint() { return m_szCurrentDewPoint; };
-  char *GetCurrentHumidity() { return m_szCurrentHumidity; };
   bool IsFetched();
   void Reset();
 

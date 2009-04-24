@@ -83,5 +83,7 @@ private:
 
   static CStdString m_diskLabel;
   static CStdString m_diskPath;
+
+  CLibcdio* m_cdio;
 };
 }

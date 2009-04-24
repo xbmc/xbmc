@@ -36,7 +36,7 @@ CDDACodec::CDDACodec()
   m_CodecName = "CDDA";
 
   m_BufferSize=0;
-  m_Buffer = new BYTE[MAX_BUFFER_SIZE];  
+  m_Buffer = new BYTE[MAX_BUFFER_SIZE];
   m_BufferPos = 0;
 }
 
@@ -53,12 +53,12 @@ CDDACodec::~CDDACodec()
 
 bool CDDACodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  if (!m_file.Open(strFile, true, READ_CACHED))
+  if (!m_file.Open(strFile, READ_CACHED))
     return false;
 
   //  Calculate total time of the track
   m_TotalTime=(m_file.GetLength()/CDIO_CD_FRAMESIZE_RAW)/CDIO_CD_FRAMES_PER_SEC;
-  m_Bitrate = (int)((m_file.GetLength() * 8) / m_TotalTime); 
+  m_Bitrate = (int)((m_file.GetLength() * 8) / m_TotalTime);
   m_TotalTime*=1000; // ms
   return true;
 }

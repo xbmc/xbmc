@@ -45,9 +45,11 @@ GLfloat hSpeed = 0.05;
 GLenum  g_mode = GL_FILL;
 vector<VisSetting> g_vecSettings;
 
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
+extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 {
   g_vecSettings.clear();
+  m_uiVisElements = 0;
   VisSetting scale(VisSetting::SPIN, "Bar Height");
   scale.AddEntry("Default");
   scale.AddEntry("Big");
@@ -305,17 +307,25 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
 //-----------------------------------------------------------------------------
-extern "C" void GetSettings(vector<VisSetting> **vecSettings)
+extern "C" unsigned int GetSettings(StructSetting*** sSet)
+{ 
+  m_uiVisElements = VisUtils::VecToStruct(g_vecSettings, &m_structSettings);
+  *sSet = m_structSettings;
+  return m_uiVisElements;
+}
+
+extern "C" void FreeSettings()
 {
-  *vecSettings = &g_vecSettings;
-  return;
+  VisUtils::FreeStruct(m_uiVisElements, &m_structSettings);
 }
 
 //-- UpdateSetting ------------------------------------------------------------
 // Handle setting change request from XBMC
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num)
+extern "C" void UpdateSetting(int num, StructSetting*** sSet)
 {
+  VisUtils::StructToVec(m_uiVisElements, sSet, &g_vecSettings);
+
   if ( (int)g_vecSettings.size() <= num || num < 0 )
     return;
 
@@ -388,4 +398,12 @@ extern "C" void UpdateSetting(int num)
 	break;
       }
   }
+}
+
+//-- GetSubModules ------------------------------------------------------------
+// Return any sub modules supported by this vis
+//-----------------------------------------------------------------------------
+extern "C" int GetSubModules(char ***names, char ***paths)
+{
+  return 0; // this vis supports 0 sub modules
 }

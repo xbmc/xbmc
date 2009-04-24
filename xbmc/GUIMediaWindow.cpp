@@ -46,10 +46,6 @@
 #include "GUIDialogOK.h"
 #include "PlayList.h"
 
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "SkinInfo.h"
-#endif
-
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
 #define CONTROL_BTNSORTASC         4
@@ -165,7 +161,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     OnMessage(message);
     return true;
   }
-  
+
   if (action.wID == ACTION_BACKSPACE)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete
@@ -318,7 +314,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (message.GetStringParam().size())
         {
           m_vecItems->m_strPath = message.GetStringParam();
-          SetHistoryForPath(m_vecItems->m_strPath);
+          if (message.GetParam2()) // param2 is used for resetting the history
+            SetHistoryForPath(m_vecItems->m_strPath);
         }
         Update(m_vecItems->m_strPath);
       }
@@ -336,7 +333,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
       {
-        if (message.GetStringParam() == m_vecItems->m_strPath && IsActive()) 
+        if (message.GetStringParam() == m_vecItems->m_strPath && IsActive())
           Update(m_vecItems->m_strPath);
       }
       else
@@ -560,8 +557,8 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
     regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
   if (iWindow == WINDOW_PICTURES)
     regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
- 
-  if (regexps.size()) 
+
+  if (regexps.size())
   {
     for (int i=0; i < items.Size();)
     {
@@ -571,6 +568,10 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
         i++;
     }
   }
+
+  // clear window properties at root or plugin root
+  if (items.IsVirtualDirectoryRoot() || items.IsPluginRoot())
+    ClearProperties();
 
   return true;
 }
@@ -722,12 +723,27 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if ( pItem->m_bIsShareOrDrive )
     {
       const CStdString& strLockType=m_guiState->GetLockType();
+      ASSERT(g_settings.m_vecProfiles.size() > 0);
       if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
         if (!strLockType.IsEmpty() && !g_passwordManager.IsItemUnlocked(pItem.get(), strLockType))
             return true;
 
       if (!HaveDiscOrConnection(pItem->m_strPath, pItem->m_iDriveType))
         return true;
+    }
+
+    // check for the partymode playlist items - they may not exist yet
+    if ((pItem->m_strPath == g_settings.GetUserDataItem("PartyMode.xsp")) ||
+        (pItem->m_strPath == g_settings.GetUserDataItem("PartyMode-Video.xsp")))
+    {
+      // party mode playlist item - if it doesn't exist, prompt for user to define it
+      if (!XFILE::CFile::Exists(pItem->m_strPath))
+      {
+        m_vecItems->RemoveDiscCache();
+        if (CGUIDialogSmartPlaylistEditor::EditPlaylist(pItem->m_strPath))
+          Update(m_vecItems->m_strPath);
+        return true;
+      }
     }
 
     // remove the directory cache if the folder is not normally cached
@@ -741,8 +757,10 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
-  else if (pItem->m_strPath.Left(9).Equals("plugin://"))
+  else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") != "true")
+  {
     return DIRECTORY::CPluginDirectory::RunScriptWithParams(pItem->m_strPath);
+  }
   else
   {
     m_iSelectedItem = m_viewControl.GetSelectedItem();
@@ -750,7 +768,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if (pItem->m_strPath == "newplaylist://")
     {
       m_vecItems->RemoveDiscCache();
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR);
+      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
       return true;
     }
     else if (pItem->m_strPath.Left(19).Equals("newsmartplaylist://"))
@@ -938,8 +956,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
     {
       // Other items in virual directory
       CStdString strPath = pItem->m_strPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
+      CUtil::RemoveSlashAtEnd(strPath);
 
       strHistoryString = pItem->GetLabel() + strPath;
     }
@@ -950,18 +967,13 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
     // so add the offsets to build the history string
     strHistoryString.Format("%ld%ld", pItem->m_lStartOffset, pItem->m_lEndOffset);
     strHistoryString += pItem->m_strPath;
-
-    if (CUtil::HasSlashAtEnd(strHistoryString))
-      strHistoryString.Delete(strHistoryString.size() - 1);
   }
   else
   {
     // Normal directory items
     strHistoryString = pItem->m_strPath;
-
-    while (CUtil::HasSlashAtEnd(strHistoryString)) // to match CDirectoryHistory::GetSelectedItem
-      strHistoryString.Delete(strHistoryString.size() - 1);
   }
+  CUtil::RemoveSlashAtEnd(strHistoryString);
   strHistoryString.ToLower();
 }
 
@@ -976,8 +988,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
     // Build the directory history for default path
     CStdString strPath, strParentPath;
     strPath = strDirectory;
-    while (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
+    CUtil::RemoveSlashAtEnd(strPath);
 
     CFileItemList items;
     m_rootDir.GetDirectory("", items);
@@ -989,8 +1000,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
       for (int i = 0; i < (int)items.Size(); ++i)
       {
         CFileItemPtr pItem = items[i];
-        while (CUtil::HasSlashAtEnd(pItem->m_strPath))
-          pItem->m_strPath.Delete(pItem->m_strPath.size() - 1);
+        CUtil::RemoveSlashAtEnd(pItem->m_strPath);
         if (pItem->m_strPath == strPath)
         {
           CStdString strHistory;
@@ -1009,8 +1019,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
       m_history.AddPathFront(strPath);
       m_history.SetSelectedItem(strPath, strParentPath);
       strPath = strParentPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
+      CUtil::RemoveSlashAtEnd(strPath);
     }
   }
   else
@@ -1174,7 +1183,7 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
 
     // position it correctly
     CPoint pos = GetContextPosition();
-    pMenu->SetPosition(pos.x - pMenu->GetWidth() / 2, pos.y - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(pos.x, pos.y);
     pMenu->DoModal();
 
     // translate our button press
@@ -1215,7 +1224,7 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
   }
 
-  if (item->IsPluginFolder() && item->IsFileFolder())
+  if (item->IsPlugin() && item->IsFileFolder())
   {
     if (CPluginSettings::SettingsExist(item->m_strPath))
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
@@ -1224,13 +1233,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   if (item->GetPropertyBOOL("pluginreplacecontextitems"))
     return;
 
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  // check if the skin even supports favourites
-  RESOLUTION res;
-  CStdString favourites(g_SkinInfo.GetSkinPath("DialogFavourites.xml", &res));
-  if (XFILE::CFile::Exists(favourites))
-  {
-#endif
   // TODO: FAVOURITES Conditions on masterlock and localisation
   if (!item->IsParentFolder() && !item->m_strPath.Equals("add") && !item->m_strPath.Equals("newplaylist://") && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
   {
@@ -1239,9 +1241,6 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
     else
       buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14076);     // Add To Favourites;
   }
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  }
-#endif
 }
 
 bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -1326,10 +1325,8 @@ CPoint CGUIMediaWindow::GetContextPosition() const
   CPoint pos(200, 100);
   const CGUIControl *pList = GetControl(m_viewControl.GetCurrentControl());
   if (pList)
-  {
-    pos.x = pList->GetXPosition() + pList->GetWidth() / 2;
-    pos.y = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
+    pos = pList->GetRenderPosition() + CPoint(pList->GetWidth() * 0.5f, pList->GetHeight() * 0.5f);
   return pos;
 }
+
 

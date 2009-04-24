@@ -48,16 +48,16 @@
   }                                        \
 }\
 
-IDirectSoundRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
-  IDirectSoundRenderer *audioSink = CreateAudioRenderer(pCallback, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
+  IAudioRenderer *audioSink = CreateAudioRenderer(pCallback, iChannels, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
 
   return audioSink;
 }
 
-IDirectSoundRenderer* CAudioRendererFactory::CreateAudioRenderer(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+IAudioRenderer* CAudioRendererFactory::CreateAudioRenderer(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
-  IDirectSoundRenderer* audioSink = NULL;
+  IAudioRenderer* audioSink = NULL;
 
 /* First pass creation */
 #ifdef HAS_PULSEAUDIO

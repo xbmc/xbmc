@@ -13,6 +13,7 @@
 #include "SkinInfo.h"
 #include "GUISettings.h"
 #include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #if !defined(__GNUC__)
 #pragma comment(lib,"../../xbmc/lib/liblzo/lzo.lib")
@@ -35,9 +36,9 @@ class CAutoBuffer
 public:
   CAutoBuffer() { p = 0; }
   explicit CAutoBuffer(size_t s) { p = (BYTE*)malloc(s); }
-  ~CAutoBuffer() { if (p) free(p); }
+  ~CAutoBuffer() { free(p); }
 operator BYTE*() { return p; }
-  void Set(BYTE* buf) { if (p) free(p); p = buf; }
+  void Set(BYTE* buf) { free(p); p = buf; }
   bool Resize(size_t s);
 void Release() { p = 0; }
 };
@@ -88,6 +89,8 @@ CTextureBundle::CTextureBundle(void)
   m_PreLoadBuffer[0] = 0;
   m_PreLoadBuffer[1] = 0;
   m_themeBundle = false;
+  m_LoadIdx = 0;
+  m_PreloadIdx = 0;
 }
 
 CTextureBundle::~CTextureBundle(void)
@@ -106,7 +109,7 @@ CTextureBundle::~CTextureBundle(void)
 #ifndef _LINUX
   CloseHandle(m_Ovl[0].hEvent);
   CloseHandle(m_Ovl[1].hEvent);
-#endif    
+#endif
 }
 
 bool CTextureBundle::OpenBundle()
@@ -124,25 +127,28 @@ bool CTextureBundle::OpenBundle()
     Cleanup();
 
   CStdString strPath;
-  
+
   if (m_themeBundle)
   {
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
     CStdString themeXPR = g_guiSettings.GetString("lookandfeel.skintheme");
     if (!themeXPR.IsEmpty() && themeXPR.CompareNoCase("SKINDEFAULT"))
-      strPath.Format("%s\\media\\%s", g_graphicsContext.GetMediaDir(), themeXPR.c_str());
+    {
+      strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media");
+      strPath = CUtil::AddFileToFolder(strPath, themeXPR);
+    }
     else
       return false;
   }
   else
-    strPath.Format("%s\\media\\Textures.xpr", g_graphicsContext.GetMediaDir());
+    strPath = CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), "media/Textures.xpr");
 
   strPath = PTH_IC(strPath);
-  
+
 #ifndef _LINUX
   CStdStringW strPathW;
-  g_charsetConverter.utf8ToW(strPath, strPathW, false);
+  g_charsetConverter.utf8ToW(_P(strPath), strPathW, false);
   if (GetFileAttributesW(strPathW.c_str()) == -1)
     return false;
 
@@ -226,8 +232,7 @@ bool CTextureBundle::OpenBundle()
   for (unsigned i = 0; i < n; ++i)
   {
     std::pair<CStdString, FileHeader_t> entry;
-    entry.first = FileHeader[i].Name;
-    entry.first.Normalize();
+    entry.first = Normalize(FileHeader[i].Name);
     entry.second.Offset = FileHeader[i].Offset;
     entry.second.UnpackedSize = FileHeader[i].UnpackedSize;
     entry.second.PackedSize = FileHeader[i].PackedSize;
@@ -301,7 +306,7 @@ bool CTextureBundle::HasFile(const CStdString& Filename)
   struct stat fileStat;
   if (fstat(fileno(m_hFile), &fileStat) == -1)
     return false;
-  if (fileStat.st_mtime > m_TimeStamp) 
+  if (fileStat.st_mtime > m_TimeStamp)
 #endif
   {
     CLog::Log(LOGINFO, "Texture bundle has changed, reloading");
@@ -310,8 +315,7 @@ bool CTextureBundle::HasFile(const CStdString& Filename)
       return false;
   }
 
-  CStdString name(Filename);
-  name.Normalize();
+  CStdString name = Normalize(Filename);
   return m_FileHeaders.find(name) != m_FileHeaders.end();
 }
 
@@ -328,19 +332,9 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
     return;
 #endif
 
-  CStdString testPath(path);
-  testPath.Normalize();
-#ifndef _LINUX
+  CStdString testPath = Normalize(path);
   if (!CUtil::HasSlashAtEnd(testPath))
     testPath += "\\";
-#else
-  // In linux we already have a / at the end (usually). We need to replace
-  // with backslash since this is how it is stored in the XPR
-  if (!CUtil::HasSlashAtEnd(testPath))
-    testPath += "\\";
-
-  testPath.Replace('/', '\\');
-#endif
   int testLength = testPath.GetLength();
   std::map<CStdString, FileHeader_t>::iterator it;
   for (it = m_FileHeaders.begin(); it != m_FileHeaders.end(); it++)
@@ -352,8 +346,7 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
 
 bool CTextureBundle::PreloadFile(const CStdString& Filename)
 {
-  CStdString name(Filename);
-  name.Normalize();
+  CStdString name = Normalize(Filename);
 
   if (m_PreLoadBuffer[m_PreloadIdx])
     free(m_PreLoadBuffer[m_PreloadIdx]);
@@ -434,8 +427,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   if (Filename == "-")
     return 0;
 
-  CStdString name(Filename);
-  name.Normalize();
+  CStdString name = Normalize(Filename);
   if (m_CurFileHeader[0] != m_FileHeaders.end() && m_CurFileHeader[0]->first == name)
     m_LoadIdx = 0;
   else if (m_CurFileHeader[1] != m_FileHeaders.end() && m_CurFileHeader[1]->first == name)
@@ -458,7 +450,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
               m_CurFileHeader[m_LoadIdx]->second.UnpackedSize, stat.dwAvailPhys);
 #elif defined(__APPLE__)
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes)", name.c_str(),
-              m_CurFileHeader[m_LoadIdx]->second.UnpackedSize);     
+              m_CurFileHeader[m_LoadIdx]->second.UnpackedSize);
 #else
     struct sysinfo info;
     sysinfo(&info);
@@ -559,24 +551,24 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
 
   GetTextureFromData(pTex, ResData, ppTexture);
   delete[] pTex;
-  if (pPal) delete pPal;
+  delete pPal;
 
   pInfo->Width = RealSize[0];
   pInfo->Height = RealSize[1];
   pInfo->Depth = 0;
   pInfo->MipLevels = 1;
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
   D3DSURFACE_DESC desc;
   (*ppTexture)->GetLevelDesc(0, &desc);
   pInfo->Format = desc.Format;
-#endif  
+#endif
 
   return S_OK;
 
 PackedLoadError:
   CLog::Log(LOGERROR, "Error loading texture: %s: Invalid data", Filename.c_str());
-  delete [] pTex;
-  if (pPal) delete pPal;
+  delete[] pTex;
+  delete pPal;
   return E_FAIL;
 }
 
@@ -590,7 +582,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
 {
   DWORD ResDataOffset;
   int nTextures = 0;
-  
+
   *ppTextures = NULL; *ppPalette = NULL; *ppDelays = NULL;
 
   CAutoTexBuffer UnpackedBuf;
@@ -648,7 +640,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
   *ppTextures = new LPDIRECT3DTEXTURE8[nTextures];
 #else
   *ppTextures = new SDL_Surface*[nTextures];
-#endif  
+#endif
   for (int i = 0; i < nTextures; ++i)
   {
     if ((ppTex[i]->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
@@ -660,7 +652,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
 
   delete[] ppTex;
   ppTex = 0;
-  if (pPal) delete pPal;
+  delete pPal;
 
   pInfo->Width = pAnimInfo->RealSize[0];
   pInfo->Height = pAnimInfo->RealSize[1];
@@ -678,12 +670,22 @@ PackedAnimError:
       delete [] ppTex[i];
     delete [] ppTex;
   }
-  if (pPal) delete pPal;
-  if (*ppDelays) delete [] *ppDelays;
+  delete pPal;
+  delete [] *ppDelays;
   return 0;
 }
 
 void CTextureBundle::SetThemeBundle(bool themeBundle)
 {
   m_themeBundle = themeBundle;
+}
+
+// normalize to how it's stored within the bundle
+// lower case + using \\ rather than /
+CStdString CTextureBundle::Normalize(const CStdString &name)
+{
+  CStdString newName(name);
+  newName.Normalize();
+  newName.Replace('/','\\');
+  return newName;
 }

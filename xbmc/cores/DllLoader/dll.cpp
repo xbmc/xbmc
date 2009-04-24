@@ -25,9 +25,10 @@
 #include "DllLoaderContainer.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
-#include "Util.h"
+#include <climits>
+#include "FileSystem/SpecialProtocol.h"
 
-#define DEFAULT_DLLPATH "Q:\\system\\players\\mplayer\\codecs\\"
+#define DEFAULT_DLLPATH "special://xbmc/system/players/mplayer/codecs/"
 #define HIGH_WORD(a) ((uintptr_t)(a) >> 16)
 #define LOW_WORD(a) ((WORD)(((uintptr_t)(a)) & MAXWORD))
 
@@ -141,6 +142,12 @@ extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 {
   LibraryLoader* dllhandle = DllLoaderContainer::GetModule(hLibModule);
   
+  if( !dllhandle )
+  {
+    CLog::Log(LOGERROR, "%s - Invalid hModule specified",__FUNCTION__);
+    return 1;
+  }
+
   // to make sure systems dlls are never deleted
   if (dllhandle->IsSystemDll()) return 1;
   

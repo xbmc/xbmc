@@ -27,9 +27,9 @@
 #include "Util.h"
 #include "PlayListFactory.h"
 #include "Picture.h"
-#include "utils/HTTP.h"
 #include "utils/md5.h"
 #include "FileSystem/File.h"
+#include "FileSystem/FileCurl.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicDatabase.h"
 #include "MusicInfoTag.h"
@@ -123,7 +123,7 @@ bool CLastFmManager::RadioHandShake()
 
   m_RadioSession = "";
 
-  CHTTP http;
+  CFileCurl http;
   CStdString html;
 
   CStdString strPassword = g_guiSettings.GetString("lastfm.password");
@@ -225,7 +225,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 
   UpdateProgressDialog(15252); // Selecting station...
 
-  CHTTP http;
+  CFileCurl http;
   CStdString url;
   CStdString html;
   url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/adjust.php?session=%s&url=%s&debug=%i", m_RadioSession, strUrl, 0);
@@ -279,7 +279,7 @@ bool CLastFmManager::RequestRadioTracks()
   CStdString html;
   url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/xspf.php?sk=%s&discovery=0&desktop=", m_RadioSession);
   {
-    CHTTP http;
+    CFileCurl http;
     if (!http.Get(url, html))
     {
       m_RadioSession.empty();
@@ -412,7 +412,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
   CSingleLock lock(m_lockCache);
   int iNrCachedTracks = m_RadioTrackQueue->size();
   CPicture pic;
-  CHTTP http;
+  CFileCurl http;
   for (int i = 0; i < nrInitialTracksToAdd && i < iNrCachedTracks; i++)
   {
     CFileItemPtr item = (*m_RadioTrackQueue)[i];
@@ -429,7 +429,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
         Crc32 crc;
         crc.ComputeFromLowerCase(coverUrl);
         crcFile.Format("%08x.tbn", (__int32)crc);
-        CUtil::AddFileToFolder(_P(g_advancedSettings.m_cachePath), crcFile, cachedFile);
+        CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, crcFile, cachedFile);
         CUtil::AddFileToFolder(g_settings.GetLastFMThumbFolder(), crcFile, thumbFile);
         item->SetThumbnailImage("");
         try
@@ -437,7 +437,8 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
           //download to temp, then make a thumb
           if (CFile::Exists(thumbFile) || (http.Download(coverUrl, cachedFile) && pic.DoCreateThumbnail(cachedFile, thumbFile)))
           {
-            if (CFile::Exists(cachedFile)) CFile::Delete(cachedFile);
+            if (CFile::Exists(cachedFile))
+              CFile::Delete(cachedFile);
             item->SetThumbnailImage(thumbFile);
           }
         }
@@ -490,7 +491,7 @@ void CLastFmManager::OnSongChange(CFileItem& newSong)
       StopRadio(true);
     }
     else
-    {
+    { 
       DWORD start = timeGetTime();
       ReapSongs();
       MovePlaying();
@@ -611,9 +612,9 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
 {
   if (bKillSession)
   {
-	m_RadioSession = "";
-	g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, m_LastRepeatState);
-	g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, m_bLastShuffleState);
+    m_RadioSession = "";
+    g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, m_LastRepeatState);
+    g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, m_bLastShuffleState);
   }
   if (m_ThreadHandle)
   {
@@ -635,8 +636,11 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
       }
     }
   }
-
-  SendUpdateMessage();
+  
+  if (!bKillSession)
+  {
+    SendUpdateMessage();
+  }
 }
 
 void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash)
@@ -766,7 +770,7 @@ bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& arti
   CStdString strBody;
   strBody << doc;
 
-  CHTTP http;
+  CFileCurl http;
   CStdString html;
   CStdString url = "http://ws.audioscrobbler.com/1.0/rw/xmlrpc.php";
   http.SetContentType("text/xml");

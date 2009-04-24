@@ -22,7 +22,9 @@
 #include "libavutil/crc.h"
 #include "libavcodec/xiph.h"
 #include "libavcodec/bytestream.h"
+#include "libavcodec/flac.h"
 #include "avformat.h"
+#include "internal.h"
 
 typedef struct {
     int64_t duration;
@@ -81,12 +83,14 @@ static int ogg_write_page(AVFormatContext *s, const uint8_t *data, int size,
     return size;
 }
 
-static int ogg_build_flac_headers(const uint8_t *extradata, int extradata_size,
+static int ogg_build_flac_headers(AVCodecContext *avctx,
                                   OGGStreamContext *oggstream, int bitexact)
 {
     const char *vendor = bitexact ? "ffmpeg" : LIBAVFORMAT_IDENT;
+    enum FLACExtradataFormat format;
+    uint8_t *streaminfo;
     uint8_t *p;
-    if (extradata_size != 34)
+    if (!ff_flac_is_extradata_valid(avctx, &format, &streaminfo))
         return -1;
     oggstream->header_len[0] = 51;
     oggstream->header[0] = av_mallocz(51); // per ogg flac specs
@@ -99,7 +103,7 @@ static int ogg_build_flac_headers(const uint8_t *extradata, int extradata_size,
     bytestream_put_buffer(&p, "fLaC", 4);
     bytestream_put_byte(&p, 0x00); // streaminfo
     bytestream_put_be24(&p, 34);
-    bytestream_put_buffer(&p, extradata, 34);
+    bytestream_put_buffer(&p, streaminfo, FLAC_STREAMINFO_SIZE);
     oggstream->header_len[1] = 1+3+4+strlen(vendor)+4;
     oggstream->header[1] = av_mallocz(oggstream->header_len[1]);
     p = oggstream->header[1];
@@ -135,7 +139,7 @@ static int ogg_write_header(AVFormatContext *s)
         oggstream = av_mallocz(sizeof(*oggstream));
         st->priv_data = oggstream;
         if (st->codec->codec_id == CODEC_ID_FLAC) {
-            if (ogg_build_flac_headers(st->codec->extradata, st->codec->extradata_size,
+            if (ogg_build_flac_headers(st->codec,
                                        oggstream, st->codec->flags & CODEC_FLAG_BITEXACT) < 0) {
                 av_log(s, AV_LOG_ERROR, "Extradata corrupted\n");
                 av_freep(&st->priv_data);
@@ -202,36 +206,27 @@ static int ogg_write_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-int ogg_interleave_per_granule(AVFormatContext *s, AVPacket *out, AVPacket *pkt, int flush)
+static int ogg_compare_granule(AVFormatContext *s, AVPacket *next, AVPacket *pkt)
 {
-    AVPacketList *pktl, **next_point, *this_pktl;
+    AVStream *st2 = s->streams[next->stream_index];
+    AVStream *st  = s->streams[pkt ->stream_index];
+
+    int64_t next_granule = av_rescale_q(next->pts + next->duration,
+                                        st2->time_base, AV_TIME_BASE_Q);
+    int64_t cur_granule  = av_rescale_q(pkt ->pts + pkt ->duration,
+                                        st ->time_base, AV_TIME_BASE_Q);
+    return next_granule > cur_granule;
+}
+
+static int ogg_interleave_per_granule(AVFormatContext *s, AVPacket *out, AVPacket *pkt, int flush)
+{
+    AVPacketList *pktl;
     int stream_count = 0;
     int streams[MAX_STREAMS] = {0};
     int interleaved = 0;
 
     if (pkt) {
-        AVStream *st = s->streams[pkt->stream_index];
-        this_pktl = av_mallocz(sizeof(AVPacketList));
-        this_pktl->pkt = *pkt;
-        if (pkt->destruct == av_destruct_packet)
-            pkt->destruct = NULL; // not shared -> must keep original from being freed
-        else
-            av_dup_packet(&this_pktl->pkt); // shared -> must dup
-        next_point = &s->packet_buffer;
-        while (*next_point) {
-            AVStream *st2 = s->streams[(*next_point)->pkt.stream_index];
-            AVPacket *next_pkt = &(*next_point)->pkt;
-            int64_t cur_granule, next_granule;
-            next_granule = av_rescale_q(next_pkt->pts + next_pkt->duration,
-                                        st2->time_base, AV_TIME_BASE_Q);
-            cur_granule = av_rescale_q(pkt->pts + pkt->duration,
-                                       st->time_base, AV_TIME_BASE_Q);
-            if (next_granule > cur_granule)
-                break;
-            next_point= &(*next_point)->next;
-        }
-        this_pktl->next= *next_point;
-        *next_point= this_pktl;
+        ff_interleave_add_packet(s, pkt, ogg_compare_granule);
     }
 
     pktl = s->packet_buffer;

@@ -44,7 +44,9 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogProgress.h"
 #include "FileSystem/RarManager.h"
+#include "Favourites.h"
 #include "PlayList.h"
+#include "utils/AsyncFileCopy.h"
 
 using namespace std;
 using namespace XFILE;
@@ -662,14 +664,6 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", strFile.c_str(), strDestFile.c_str());
 
       CURL url(strFile);
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(0, 115);
-        m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, strShortDestFile);
-        m_dlgProgress->Progress();
-      }
-
       if (url.GetProtocol() == "rar")
       {
         g_RarManager.SetWipeAtWill(false);
@@ -685,7 +679,8 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       }
       else
       {
-        if (!CFile::Cache(strFile, strDestFile, this, NULL))
+        CAsyncFileCopy copier;
+        if (!copier.Copy(strFile, strDestFile, g_localizeStrings.Get(115)))
           return false;
       }
     }
@@ -696,14 +691,6 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
     {
       CLog::Log(LOGDEBUG,"FileManager: move %s->%s\n", strFile.c_str(), strDestFile.c_str());
 
-      if (m_dlgProgress)
-      {
-        m_dlgProgress->SetLine(0, 116);
-        m_dlgProgress->SetLine(1, strShortSourceFile);
-        m_dlgProgress->SetLine(2, strShortDestFile);
-        m_dlgProgress->Progress();
-      }
-
 #ifndef _LINUX
       if (strFile[1] == ':' && strFile[0] == strDestFile[0])
       {
@@ -712,7 +699,8 @@ bool CGUIWindowFileManager::DoProcessFile(int iAction, const CStdString& strFile
       }
       else
       {
-        if (CFile::Cache(strFile, strDestFile, this, NULL ) )
+        CAsyncFileCopy copier;
+        if (copier.Copy(strFile, strDestFile, g_localizeStrings.Get(116)))
         {
           CFile::Delete(strFile);
         }
@@ -979,7 +967,7 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
   if (CGUIDialogKeyboard::ShowAndGetInput(strNewFolder, g_localizeStrings.Get(16014), false))
   {
     CStdString strNewPath = m_Directory[iList]->m_strPath;
-    if (!CUtil::HasSlashAtEnd(strNewPath) ) CUtil::AddSlashAtEnd(strNewPath);
+    CUtil::AddSlashAtEnd(strNewPath);
     strNewPath += strNewFolder;
     CDirectory::Create(strNewPath);
     Refresh(iList);
@@ -989,7 +977,7 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
     {
       CFileItemPtr pItem=m_vecItems[iList]->Get(i);
       CStdString strPath=pItem->m_strPath;
-      if (CUtil::HasSlashAtEnd(strPath)) CUtil::RemoveSlashAtEnd(strPath);
+      CUtil::RemoveSlashAtEnd(strPath);
       if (strPath==strNewPath)
       {
         CONTROL_SELECT_ITEM(iList + CONTROL_LEFT_LIST, i);
@@ -1238,6 +1226,8 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   }
 
   CFileItemPtr pItem = m_vecItems[list]->Get(item);
+  if (!pItem.get())
+    return;
 
   if (m_Directory[list]->IsVirtualDirectoryRoot())
   {
@@ -1247,7 +1237,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     }
 
     // and do the popup menu
-    if (CGUIDialogContextMenu::SourcesMenu("files", pItem.get(), posX, posY))
+    if (CGUIDialogContextMenu::SourcesMenu("files", pItem, posX, posY))
     {
       m_rootDir.SetSources(g_settings.m_fileSources);
       if (m_Directory[1 - list]->IsVirtualDirectoryRoot())
@@ -1276,6 +1266,13 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     pMenu->Initialize();
     // add the needed buttons
     int btn_SelectAll = pMenu->AddButton(188); // SelectAll
+
+    int btn_HandleFavourite;  // Add/Remove Favourite
+    if (CFavourites::IsFavourite(pItem.get(), GetID()))
+      btn_HandleFavourite = pMenu->AddButton(14077);
+    else
+      btn_HandleFavourite = pMenu->AddButton(14076);
+
     int btn_PlayUsing = pMenu->AddButton(15213); // Play Using ..
     int btn_Rename = pMenu->AddButton(118); // Rename
     int btn_Delete = pMenu->AddButton(117); // Delete
@@ -1283,12 +1280,12 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     int btn_Move = pMenu->AddButton(116); // Move
     int btn_NewFolder = pMenu->AddButton(20309); // New Folder
     int btn_Size = pMenu->AddButton(13393); // Calculate Size
-
     int btn_Settings = pMenu->AddButton(5);     // Settings
     int btn_GoToRoot = pMenu->AddButton(20128); // Go To Root
     int btn_Switch = pMenu->AddButton(523);     // switch media
 
     pMenu->EnableButton(btn_SelectAll, item >= 0);
+    pMenu->EnableButton(btn_HandleFavourite, item >=0 && !pItem->IsParentFolder());
     pMenu->EnableButton(btn_PlayUsing, item >= 0 && vecCores.size() > 1);
     pMenu->EnableButton(btn_Rename, item >= 0 && CanRename(list) && !pItem->IsParentFolder());
     pMenu->EnableButton(btn_Delete, item >= 0 && CanDelete(list) && showEntry);
@@ -1298,13 +1295,18 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
     pMenu->EnableButton(btn_Size, item >=0 && pItem->m_bIsFolder && !pItem->IsParentFolder());
 
     // position it correctly
-    pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+    pMenu->OffsetPosition(posX, posY);
     pMenu->DoModal();
     int btnid = pMenu->GetButton();
     if (btnid == btn_SelectAll)
     {
       OnSelectAll(list);
       bDeselect=false;
+    }
+    if (btnid == btn_HandleFavourite)
+    {
+      CFavourites::AddOrRemove(pItem.get(), GetID());
+      return;
     }
     if (btnid == btn_PlayUsing)
     {
@@ -1527,19 +1529,6 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
 
     CGUIDialogOK::ShowAndGetInput(220, idMessageText, 0, 0);
   }
-}
-
-void CGUIWindowFileManager::OnWindowLoaded()
-{
-  CGUIWindow::OnWindowLoaded();
-  // disable the page spin controls
-  // TODO: ListContainer - what to do here?
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LEFT_LIST + 5000);
-  if (spin) spin->SetVisible(false);
-  spin = (CGUIControl *)GetControl(CONTROL_RIGHT_LIST + 5000);
-  if (spin) spin->SetVisible(false);
-#endif
 }
 
 void CGUIWindowFileManager::OnInitWindow()

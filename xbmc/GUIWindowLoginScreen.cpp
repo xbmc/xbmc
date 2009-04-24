@@ -102,13 +102,13 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
           if (bOkay)
           {
-            if (CFile::Exists(_P("q:\\scripts\\autoexec.py")) && watch.GetElapsedMilliseconds() < 5000.f)
+            if (CFile::Exists("special://scripts/autoexec.py") && watch.GetElapsedMilliseconds() < 5000.f)
               while (watch.GetElapsedMilliseconds() < 5000) ;
             if (iItem != 0 || g_settings.m_iLastLoadedProfileIndex != 0)
             {
               g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
               g_settings.LoadProfile(m_viewControl.GetSelectedItem());
-              g_application.StartEventServer(); // event server could be needed in some situations
+              g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_UP,1);
             }
             else
             {
@@ -263,7 +263,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     btn_ResetLock = pMenu->AddButton(12334);
 
   // position it correctly
-  pMenu->SetPosition(posX - pMenu->GetWidth() / 2, posY - pMenu->GetHeight() / 2);
+  pMenu->OffsetPosition(posX, posY);
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();

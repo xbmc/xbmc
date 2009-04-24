@@ -32,7 +32,7 @@ namespace DIRECTORY
 /*----------------------------------------------------------------------
 |   CUPnPVirtualPathDirectory class
 +---------------------------------------------------------------------*/
-class CUPnPVirtualPathDirectory : public CVirtualPathDirectory 
+class CUPnPVirtualPathDirectory : public CVirtualPathDirectory
 {
 public:
 
@@ -43,7 +43,7 @@ public:
     // CVirtualPathDirectory overrides
     bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     //bool GetMatchingSource(const CStdString &strPath, CMediaSource& share);
-    
+
     bool GetMatchingSource(const CStdString &strPath, CMediaSource& share, std::vector<CStdString>& paths);
 };
 }

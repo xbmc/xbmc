@@ -42,8 +42,11 @@ public:
                     VIS_ACTION_LOCK_PRESET,
                     VIS_ACTION_RATE_PRESET_PLUS,
                     VIS_ACTION_RATE_PRESET_MINUS,
-                    VIS_ACTION_UPDATE_ALBUMART};
-  CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName);
+                    VIS_ACTION_UPDATE_ALBUMART,
+                    VIS_ACTION_UPDATE_TRACK
+  };
+  CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll,
+                 const CStdString& strVisualisationName, const CStdString& strSubModuleName);
   ~CVisualisation();
 
   void Create(int posx, int posy, int width, int height);
@@ -54,16 +57,26 @@ public:
   void GetInfo(VIS_INFO *info);
   bool OnAction(VIS_ACTION action, void *param = NULL);
   void GetSettings(std::vector<VisSetting> **vecSettings);
-  void UpdateSetting(int num);
+  void UpdateSetting(int num, std::vector<VisSetting> **vecSettings);
   void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   void GetCurrentPreset(char **pPreset, bool *locked);
+  int  GetSubModules(std::map<std::string, std::string>& subModules);
   bool IsLocked();
   char *GetPreset();
+
+  // some helper functions
+  static CStdString GetFriendlyName(const char* strVisz, const char* strSubModule);
+  static CStdString GetFriendlyName(const char* combinedName);
+  static CStdString GetCombinedName(const char* strVisz, const char* strSubModule);
+  static CStdString GetCombinedName(const char* friendlyName);
 
 protected:
   std::auto_ptr<struct Visualisation> m_pVisz;
   std::auto_ptr<DllVisualisation> m_pDll;
   CStdString m_strVisualisationName;
+  CStdString m_strSubModuleName;
+
+  std::vector<VisSetting> m_vecSettings;
 };
 
 

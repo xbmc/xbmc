@@ -21,20 +21,19 @@
  *
  */
 
-//#include "GUIImage.h"
 #include "GUILabelControl.h"  // for CInfoPortion
 #include "GUIButtonControl.h"
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIMultiSelectTextControl : public CGUIControl
 {
 public:
   CGUIMultiSelectTextControl(DWORD dwParentID, DWORD dwControlId,
                     float posX, float posY, float width, float height,
-                    const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content);
+                    const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo &label, const CGUIInfoLabel &content);
 
   virtual ~CGUIMultiSelectTextControl(void);
   virtual CGUIMultiSelectTextControl *Clone() const { return new CGUIMultiSelectTextControl(*this); };
@@ -64,6 +63,7 @@ public:
   virtual void SetAnimations(const std::vector<CAnimation> &animations);
   virtual void SetFocus(bool focus);
 protected:
+  virtual void UpdateColors();
   void AddString(const CStdString &text, bool selectable, const CStdString &clickAction = "");
   void PositionButtons();
   unsigned int GetNumSelectable() const;

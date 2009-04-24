@@ -94,7 +94,7 @@ bool CPlayListXML::Load( const CStdString& strFileName )
   Clear();
 
   // Try to load the file as XML. If it does not load, return an error.
-  if ( !xmlDoc.LoadFile( strFileName.c_str() ) )
+  if ( !xmlDoc.LoadFile( strFileName ) )
   {
     CLog::Log(LOGERROR, "Playlist %s has invalid format/malformed xml", strFileName.c_str());
     return false;
@@ -153,16 +153,16 @@ bool CPlayListXML::Load( const CStdString& strFileName )
 
        if ( !lockpass.IsEmpty() )
        {
-          newItem->m_strLockCode = lockpass;
-          newItem->m_iHasLock = 2;
-		  newItem->m_iLockMode = LOCK_MODE_NUMERIC;
+         newItem->m_strLockCode = lockpass;
+         newItem->m_iHasLock = 2;
+         newItem->m_iLockMode = LOCK_MODE_NUMERIC;
        }
-		
+
        Add(newItem);
     }
     else
        CLog::Log(LOGERROR, "Playlist entry %s in file %s has missing <url> tag", name.c_str(), strFileName.c_str());
-   
+
     pSet = pSet->NextSiblingElement("stream");
   }
 
@@ -173,9 +173,9 @@ bool CPlayListXML::Load( const CStdString& strFileName )
 void CPlayListXML::Save(const CStdString& strFileName) const
 {
   if (!m_vecItems.size()) return ;
-  CStdString strPlaylist = CUtil::MakeLegalFileName(strFileName);
+  CStdString strPlaylist = CUtil::MakeLegalPath(strFileName);
   CFile file;
-  if (!file.OpenForWrite(strPlaylist, true, true))
+  if (!file.OpenForWrite(strPlaylist, true))
   {
     CLog::Log(LOGERROR, "Could not save WPL playlist: [%s]", strPlaylist.c_str());
     return ;

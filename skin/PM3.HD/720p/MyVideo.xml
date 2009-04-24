@@ -15,7 +15,6 @@
 				<include>VideoThumbnailView</include> <!-- view id = 53 -->
 				<include>WideIconView</include> <!-- view id = 54 -->
 				<include>MovieDVDView</include>  <!-- view id = 57 -->
-				<include>CommonNowPlaying_Controls</include>
 			</control>
 			<include>AllViewCommonPageControls</include>
 			<include>CommonFileCount</include>
@@ -45,7 +44,7 @@
 					<label>-</label>
 					<onleft>50</onleft>
 					<onright>50</onright>
-					<onup>7</onup>
+					<onup>611</onup>
 					<ondown>3</ondown>
 				</control>
 				<control type="button" id="3">
@@ -73,7 +72,7 @@
 					<description>Library button</description>
 					<posx>0</posx>
 					<posy>90</posy>
-					<label>$LOCALIZE[14022] $LOCALIZE[456]</label>
+					<label>$LOCALIZE[29800]</label>
 					<onclick>ReplaceWindow(myvideolibrary)</onclick>
 					<selected>Window.IsVisible(myvideolibrary)</selected>
 					<include>ButtonCommonValues</include>
@@ -93,8 +92,26 @@
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<onup>99</onup>
-					<ondown>2</ondown>
+					<ondown>610</ondown>
 					<animation effect="slide" start="0,0" end="0,-45" time="0" condition="!Control.IsVisible(99)">conditional</animation>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>7</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>180</posy>
+					<animation effect="slide" start="0,0" end="0,-45" time="0" condition="!Control.IsVisible(99)">conditional</animation>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
+					<ondown>2</ondown>
+					<visible>false</visible>
 				</control>
 			</control>
 		</control>

@@ -43,6 +43,10 @@
 #include "LinuxRenderer.h"
 #endif
 
+#ifdef HAVE_LIBVDPAU
+#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
+#endif
+
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
 
@@ -107,8 +111,7 @@ CXBoxRenderManager::CXBoxRenderManager()
 
 CXBoxRenderManager::~CXBoxRenderManager()
 {
-  if (m_pRenderer)
-    delete m_pRenderer;
+  delete m_pRenderer;
   m_pRenderer = NULL;
 }
 
@@ -489,5 +492,17 @@ void CXBoxRenderManager::PresentWeave()
       CLog::Log(LOGERROR, __FUNCTION__" - Waiting for vertical-blank timed out");
   }
   D3DDevice::Present( NULL, NULL, NULL, NULL );
+#endif
+}
+
+void CXBoxRenderManager::Recover()
+{
+#ifdef HAVE_LIBVDPAU
+  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  if (g_VDPAU)
+  {
+    glFlush(); // attempt to have gpu done with pixmap
+    g_VDPAU->CheckRecover(true);
+  }
 #endif
 }

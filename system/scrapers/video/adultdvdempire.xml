@@ -1,4 +1,4 @@
-<scraper name="Adult DVD Empire" content="movies" thumb="adultdvdempire.jpg">
+<scraper name="Adult DVD Empire" content="movies" thumb="adultdvdempire.jpg" language="en">
 <NfoUrl dest="3">
 <RegExp input="$$1" output="&lt;url&gt;http://www.adultdvdempire.com/itempage.aspx?item_id=\1&lt;/url&gt;" dest="3">
 <expression noclean="1">adultdvdempire.com/itempage.aspx?item_id=([0-9]*)</expression>
@@ -14,11 +14,8 @@
 
 <GetSearchResults dest="6">
 <RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="6">
-<RegExp input="$$1" output="\1" dest="4">
-<expression>&lt;a href=&quot;itempage.aspx?item_id=([0-9]*)[^&gt;]&gt;</expression>
-</RegExp>
-<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.adultdvdempire.com/itempage.aspx?item_id=\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
-<expression repeat="yes">ListItem_ItemTitle&quot;&gt;&lt;a href=[^=]*=([0-9]*)[^&gt;]*&gt;([^&lt;]*)</expression>
+<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.adultdvdempire.com/\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
+<expression repeat="yes">ListItem_ItemTitle&quot;&gt;&lt;a href=&quot;/([^&quot;]*)&quot;&gt;([^&lt;]*)</expression>
 </RegExp>
 <expression noclean="1"></expression>
 </RegExp>
@@ -26,7 +23,11 @@
 
 <GetDetails dest="3">
 <RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-<RegExp input="$$1" output="&lt;thumb&gt;http://images2.dvdempire.com/res/movies/\1h.jpg&lt;/thumb&gt;" dest="5">
+<RegExp input="$$1" output="&lt;thumbs&gt;&lt;thumb&gt;http://images2.dvdempire.com/res/movies/\1h.jpg&lt;/thumb&gt;" dest="5+">
+<expression>BoxCover_Container&quot;&gt;[^&gt;]*&gt;&lt;img src=&quot;http://images2.dvdempire.com/res/movies/([^m]*)</expression>
+</RegExp>
+
+<RegExp input="$$1" output="&lt;thumb&gt;http://images2.dvdempire.com/res/movies/\1bh.jpg&lt;/thumb&gt;&lt;/thumbs&gt;" dest="5+">
 <expression>BoxCover_Container&quot;&gt;[^&gt;]*&gt;&lt;img src=&quot;http://images2.dvdempire.com/res/movies/([^m]*)</expression>
 </RegExp>
 
@@ -42,20 +43,16 @@
 <expression>Year: ([0-9]*)</expression>
 </RegExp>
 
-<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
-<expression>InfoTagLine&quot;&gt;([^&lt;]*)</expression>
-</RegExp>
-
-<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="7">
-<expression clear="yes">Item_InfoContainer&quot;&gt;[^ ]*([^&lt;]*)&lt;</expression>
+<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;&lt;plot&gt;\2&lt;/plot&gt;" dest="5+">
+<expression>InfoTagLine&quot;&gt;([^&lt;]*)&lt;[^&gt;]*&gt;[^ ]*([^&lt;]*)&lt;</expression>
 </RegExp>
 
 <RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-<expression>Item_InfoContainer&quot;&gt;[^&gt;]*&gt;[^&lt;]*&lt;/span&gt;[^ ]*([^&lt;]*)&lt;</expression>
+<expression>Item_InfoContainer&quot;&gt;([^&lt;]*)&lt;</expression>
 </RegExp>
 
-<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\2&lt;/name&gt;&lt;thumb&gt;http://images.dvdempire.com/pornstar/actors/\1.jpg&lt;/thumb&gt;&lt;/actor&gt;" dest="5+">
-<expression repeat="yes">cast_id=([0-9]*)[^t]*type=1&quot;[^&gt;]*&gt;([^&lt;]*)</expression>
+<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\3&lt;/name&gt;&lt;thumb&gt;http://images.dvdempire.com/pornstar/actors/\1.jpg&lt;/thumb&gt;&lt;/actor&gt;" dest="5+">
+<expression repeat="yes">&lt;a href=&quot;/([0-9]*)/([^&quot;]*)-Pornstars.html&quot;&gt;([^&lt;]*)</expression>
 </RegExp>
 
 
@@ -72,8 +69,8 @@
 <expression>&gt;Rating: ([^&lt;]*)</expression>
 </RegExp>
 
-<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
-<expression repeat="yes">type=4&quot;&gt;([^&lt;]*)</expression>
+<RegExp input="$$1" output="&lt;director&gt;\3&lt;/director&gt;" dest="5+">
+<expression repeat="yes">&lt;a href=&quot;/([0-9]*)/([^&quot;]*)-Directors.html&quot;&gt;([^&lt;]*)</expression>
 </RegExp>
 <expression noclean="1"></expression>
 </RegExp>

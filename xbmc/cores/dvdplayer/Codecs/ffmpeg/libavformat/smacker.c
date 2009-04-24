@@ -1,6 +1,6 @@
 /*
  * Smacker demuxer
- * Copyright (c) 2006 Konstantin Shishkov.
+ * Copyright (c) 2006 Konstantin Shishkov
  *
  * This file is part of FFmpeg.
  *
@@ -24,6 +24,7 @@
  */
 
 #include "libavutil/bswap.h"
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 #define SMACKER_PAL 0x01

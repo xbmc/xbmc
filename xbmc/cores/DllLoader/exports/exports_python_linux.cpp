@@ -27,9 +27,11 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
-#include "../../../Util.h"
+#include "../../../FileSystem/SpecialProtocol.h"
 #include "../../../utils/log.h"
+#ifdef HAS_PYTHON
 #include "../../../lib/libPython/XBPython.h"
+#endif
 #include "../DllLoaderContainer.h"
 
 #ifdef __APPLE__
@@ -58,6 +60,7 @@ extern "C"
 
 void *xbp_dlopen(const char *filename, int flag)
 {
+#ifdef HAS_PYTHON
   CLog::Log(LOGDEBUG,"%s loading python lib %s. flags: %d", __FUNCTION__, filename, flag);
   LibraryLoader* pDll = DllLoaderContainer::LoadModule(filename);
   if (pDll)
@@ -69,15 +72,24 @@ void *xbp_dlopen(const char *filename, int flag)
     CLog::Log(LOGERROR,"%s failed to load %s", __FUNCTION__, filename);
   }
   return pDll;
+#else
+  CLog::Log(LOGDEBUG,"Cannot open python lib because python isnt being used!");
+  return NULL;
+#endif
 }
 
 int xbp_dlclose(void *handle)
 {
+#ifdef HAS_PYTHON
   LibraryLoader *pDll = (LibraryLoader*)handle;
   CLog::Log(LOGDEBUG,"%s - releasing python library %s", __FUNCTION__, pDll->GetName());
   g_pythonParser.UnregisterExtensionLib(pDll);
   DllLoaderContainer::ReleaseModule(pDll);
   return 0;
+#else
+  CLog::Log(LOGDEBUG,"Cannot release python lib because python isnt being used!");
+  return NULL;
+#endif
 }
 
 void *xbp_dlsym(void *handle, const char *symbol)
@@ -100,7 +112,7 @@ char* xbp_getcwd(char *buf, int size)
   {
     printf("Initializing Python path...\n");
     char* path = (char* )malloc(MAX_PATH);
-    strcpy(path, "Q:\\python");
+    strcpy(path, _P("special://xbmc/system/python").c_str());
     pthread_setspecific(tWorkingDir, (void*)path);
   }
 #endif
@@ -119,7 +131,7 @@ int xbp_chdir(const char *dirname)
   if (xbp_cw_dir == 0)
   {
     char* path = (char* )malloc(MAX_PATH);
-    strcpy(path, "Q:\\python");
+    strcpy(path, _P("special://xbmc/system/python").c_str());
     pthread_setspecific(tWorkingDir, (void*)path);
   }
 #endif

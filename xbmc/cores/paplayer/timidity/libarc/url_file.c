@@ -117,6 +117,9 @@ static int name_file_check(char *s)
 	if(strncasecmp(s, "filereader:", 10) == 0)
     return 1;
 
+    if(strncasecmp(s, "special:", 8) == 0)
+    return 1;
+
 #ifdef __W32__
     /* [A-Za-z]: (for Windows) */
     if((('A' <= s[0] && s[0] <= 'Z') ||

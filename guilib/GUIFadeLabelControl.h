@@ -1,6 +1,6 @@
 /*!
 \file GUIFadeLabelControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIFADELABELCONTROL_H
@@ -35,7 +35,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIFadeLabelControl : public CGUIControl
 {
@@ -53,6 +53,7 @@ public:
   void SetInfo(const std::vector<CGUIInfoLabel> &vecInfo);
 
 protected:
+  virtual void UpdateColors();
   void AddLabel(const std::string &label);
 
   std::vector< CGUIInfoLabel > m_infoLabels;

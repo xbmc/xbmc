@@ -86,7 +86,7 @@ public:
   virtual unsigned long long file_start             (cmyth_file_t file)=0;
 
   virtual char*             proginfo_pathname       (cmyth_proginfo_t prog)=0;
-  virtual char*             proginfo_title          (cmyth_proginfo_t prog)=0;  
+  virtual char*             proginfo_title          (cmyth_proginfo_t prog)=0;
   virtual char*             proginfo_description    (cmyth_proginfo_t prog)=0;
   virtual char*             proginfo_subtitle       (cmyth_proginfo_t prog)=0;
   virtual char*             proginfo_chanstr        (cmyth_proginfo_t prog)=0;

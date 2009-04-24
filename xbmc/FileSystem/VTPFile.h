@@ -29,14 +29,14 @@ class CVTPSession;
 
 namespace XFILE {
 
-class CVTPFile 
+class CVTPFile
   : public  IFile
   ,         ILiveTVInterface
 {
 public:
   CVTPFile();
   virtual ~CVTPFile();
-  virtual bool          Open(const CURL& url, bool binary = true);
+  virtual bool          Open(const CURL& url);
   virtual __int64       Seek(__int64 pos, int whence=SEEK_SET);
   virtual __int64       GetPosition()                                  { return -1; }
   virtual __int64       GetLength()                                    { return -1; }
@@ -66,4 +66,5 @@ protected:
 };
 
 }
+
 

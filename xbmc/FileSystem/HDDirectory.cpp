@@ -24,7 +24,6 @@
 #include "HDDirectory.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
-#include "DirectoryCache.h"
 #include "iso9660.h"
 #include "URL.h"
 #include "GUISettings.h"
@@ -42,7 +41,7 @@ typedef WIN32_FIND_DATAW LOCAL_WIN32_FIND_DATA;
 typedef WIN32_FIND_DATA LOCAL_WIN32_FIND_DATA;
 #define LocalFindFirstFile FindFirstFile
 #define LocalFindNextFile FindNextFile
-#endif 
+#endif
 
 using namespace AUTOPTR;
 using namespace DIRECTORY;
@@ -59,16 +58,12 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
   CStdString strPath=strPath1;
 
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath1);
-
-
   CStdString strRoot = strPath;
   CURL url(strPath);
 
   memset(&wfd, 0, sizeof(wfd));
   if (!CUtil::HasSlashAtEnd(strPath) )
-#ifndef _LINUX  
+#ifndef _LINUX
     strRoot += "\\";
   strRoot.Replace("/", "\\");
 #else
@@ -86,7 +81,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
 #ifndef _LINUX
   CStdStringW strSearchMask;
-  g_charsetConverter.utf8ToW(strRoot, strSearchMask, false); 
+  g_charsetConverter.utf8ToW(strRoot, strSearchMask, false);
   strSearchMask += "*.*";
 #else
   CStdString strSearchMask = strRoot;
@@ -95,9 +90,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
 
   FILETIME localTime;
   CAutoPtrFind hFind ( LocalFindFirstFile(strSearchMask.c_str(), &wfd));
-  
+
   // on error, check if path exists at all, this will return true if empty folder
-  if (!hFind.isValid()) 
+  if (!hFind.isValid())
       return Exists(strPath1);
 
   if (hFind.isValid())
@@ -124,11 +119,9 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             pItem->m_dateTime=localTime;
 
-            vecCacheItems.Add(pItem);
-
-            /* Checks if the file is hidden. If it is then we don't really need to add it */
-            if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden"))
-              items.Add(pItem);
+            if (wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+              pItem->SetProperty("file:hidden", true);
+            items.Add(pItem);
           }
         }
         else
@@ -141,21 +134,15 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
           pItem->m_dateTime=localTime;
 
-          /* Checks if the file is hidden. If it is then we don't really need to add it */
-          if ((!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden")) && IsAllowed(strLabel))
-          {
-            vecCacheItems.Add(pItem);
-            items.Add(pItem);
-          }
-          else
-            vecCacheItems.Add(pItem);
+          if (wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+            pItem->SetProperty("file:hidden", true);
+
+          items.Add(pItem);
         }
       }
     }
     while (LocalFindNextFile((HANDLE)hFind, &wfd));
   }
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath1, vecCacheItems);
   return true;
 }
 
@@ -163,13 +150,15 @@ bool CHDDirectory::Create(const char* strPath)
 {
   CStdString strPath1 = strPath;
   if (!CUtil::HasSlashAtEnd(strPath1))
-#ifndef _LINUX  
+#ifndef _LINUX
     strPath1 += '\\';
 #else
     strPath1 += '/';
 #endif
 
 #ifndef _LINUX
+  if (strPath1.size() == 3 && strPath1[1] == ':')
+    return Exists(strPath);  // A drive - we can't "create" a drive
   CStdStringW strWPath1;
   g_charsetConverter.utf8ToW(strPath1, strWPath1, false);
   if(::CreateDirectoryW(strWPath1, NULL))
@@ -204,7 +193,7 @@ bool CHDDirectory::Exists(const char* strPath)
     strReplaced += '\\';
   g_charsetConverter.utf8ToW(strReplaced, strWReplaced, false);
   DWORD attributes = GetFileAttributesW(strWReplaced);
-#else    
+#else
   DWORD attributes = GetFileAttributes(strReplaced.c_str());
 #endif
   if(attributes == INVALID_FILE_ATTRIBUTES)

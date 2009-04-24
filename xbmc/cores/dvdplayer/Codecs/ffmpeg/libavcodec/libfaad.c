@@ -1,7 +1,7 @@
 /*
  * Faad decoder
- * Copyright (c) 2003 Zdenek Kabelac.
- * Copyright (c) 2004 Thomas Raivio.
+ * Copyright (c) 2003 Zdenek Kabelac
+ * Copyright (c) 2004 Thomas Raivio
  *
  * This file is part of FFmpeg.
  *
@@ -21,7 +21,7 @@
  */
 
 /**
- * @file faad.c
+ * @file libavcodec/libfaad.c
  * AAC decoder.
  *
  * still a bit unfinished - but it plays something
@@ -35,12 +35,13 @@
 #endif
 
 /*
- * when CONFIG_LIBFAADBIN is defined the libfaad will be opened at runtime
+ * when CONFIG_LIBFAADBIN is true libfaad will be opened at runtime
  */
 //#undef CONFIG_LIBFAADBIN
-//#define CONFIG_LIBFAADBIN
+//#define CONFIG_LIBFAADBIN 0
+//#define CONFIG_LIBFAADBIN 1
 
-#ifdef CONFIG_LIBFAADBIN
+#if CONFIG_LIBFAADBIN
 #include <dlfcn.h>
 static const char* const libfaadname = "libfaad.so";
 #else
@@ -116,7 +117,7 @@ static void channel_setup(AVCodecContext *avctx)
 #endif
 }
 
-static int faac_init_mp4(AVCodecContext *avctx)
+static av_cold int faac_init_mp4(AVCodecContext *avctx)
 {
     FAACContext *s = avctx->priv_data;
     unsigned long samplerate;
@@ -224,7 +225,7 @@ static av_cold int faac_decode_init(AVCodecContext *avctx)
     FAACContext *s = avctx->priv_data;
     faacDecConfigurationPtr faac_cfg;
 
-#ifdef CONFIG_LIBFAADBIN
+#if CONFIG_LIBFAADBIN
     const char* err = 0;
 
     s->handle = dlopen(libfaadname, RTLD_LAZY);
@@ -259,7 +260,7 @@ static av_cold int faac_decode_init(AVCodecContext *avctx)
 
 #undef dfaac
 
-#ifdef CONFIG_LIBFAADBIN
+#if CONFIG_LIBFAADBIN
     if (err) {
         dlclose(s->handle);
         av_log(avctx, AV_LOG_ERROR, "FAAD library: cannot resolve %s in %s!\n",

@@ -330,21 +330,9 @@ bool CGUIWindowPictures::OnClick(int iItem)
       CUtil::CreateArchivePath(strComicPath, "zip", pItem->m_strPath, "");
     else
       CUtil::CreateArchivePath(strComicPath, "rar", pItem->m_strPath, "");
-    CFileItemList vecItems;
-    if (CGUIMediaWindow::GetDirectory(strComicPath, vecItems))
-    {
-      vecItems.Sort(SORT_METHOD_FILE,SORT_ORDER_ASC);
-      if (vecItems.Size() > 0)
-      {
-        OnShowPictureRecursive("",&vecItems);
-        return true;
-      }
-      else
-      {
-        CLog::Log(LOGERROR,"No pictures found in comic file!");
-        return false;
-      }
-    }
+
+    OnShowPictureRecursive(strComicPath);
+    return true;
   }
   else if (CGUIMediaWindow::OnClick(iItem))
     return true;
@@ -394,128 +382,50 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
       pSlideShow->Add(pItem.get());
     }
   }
-     
+
   if (pSlideShow->NumSlides() == 0)
-    return false; 
+    return false;
 
-  pSlideShow->Select(strPicture); 
+  pSlideShow->Select(strPicture);
 
-  if (startSlideShow) 
-    pSlideShow->StartSlideShow(); 
+  if (startSlideShow)
+    pSlideShow->StartSlideShow(false);
 
   m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
 
   return true;
 }
 
-void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPicture, CFileItemList* pVecItems)
+void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPath)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
-  if (!pSlideShow)
-    return ;
-  if (g_application.IsPlayingVideo())
-    g_application.StopPlaying();
-
-  pSlideShow->Reset();
-  if (!pVecItems)
-    pVecItems = m_vecItems;
-  CFileItemList& vecItems = *pVecItems;
-  for (int i = 0; i < (int)vecItems.Size();++i)
-  {
-    CFileItemPtr pItem = vecItems[i];
-    if (pItem->IsParentFolder())
-      continue;
-    if (pItem->m_bIsFolder)
-      AddDir(pSlideShow, pItem->m_strPath);
-    else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)) && !CUtil::GetFileName(pItem->m_strPath).Equals("folder.jpg"))
-      pSlideShow->Add(pItem.get());
-  }
-  if (!strPicture.IsEmpty())
-    pSlideShow->Select(strPicture);
-
-  m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
-}
-
-void CGUIWindowPictures::AddDir(CGUIWindowSlideShow *pSlideShow, const CStdString& strPath)
-{
-  if (!pSlideShow) return ;
-  CFileItemList items;
-  m_rootDir.GetDirectory(strPath, items);
-  items.Sort(SORT_METHOD_FILE,SORT_ORDER_ASC); // WARNING: might make sense with the media window sort order but currently used only with comics and there it doesn't.
-
-  for (int i = 0; i < (int)items.Size();++i)
-  {
-    CFileItemPtr pItem = items[i];
-    if (pItem->m_bIsFolder)
-      AddDir(pSlideShow, pItem->m_strPath);
-    else if (!(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
-      pSlideShow->Add(pItem.get());
-  }
+  if (pSlideShow)
+    pSlideShow->RunSlideShow(strPath, true);
 }
 
 void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
-  if (!pSlideShow)
-    return ;
-
-  if (g_application.IsPlayingVideo())
-    g_application.StopPlaying();
-
-  pSlideShow->Reset();
-  if (strPicture.IsEmpty())
-    AddDir(pSlideShow, m_vecItems->m_strPath);
-  else
-    AddDir(pSlideShow, strPicture);
-  if (g_guiSettings.GetBool("slideshow.shuffle"))
-    pSlideShow->Shuffle();
-  pSlideShow->StartSlideShow();
-  if (pSlideShow->NumSlides())
-    m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+  if (pSlideShow)
+    pSlideShow->RunSlideShow(strPicture, true, g_guiSettings.GetBool("slideshow.shuffle"));
 }
 
 void CGUIWindowPictures::OnSlideShowRecursive()
 {
   CStdString strEmpty = "";
-  OnSlideShowRecursive(strEmpty);
+  OnSlideShowRecursive(m_vecItems->m_strPath);
 }
 
 void CGUIWindowPictures::OnSlideShow()
 {
-  CStdString strEmpty = "";
-  OnSlideShow(strEmpty);
+  OnSlideShow(m_vecItems->m_strPath);
 }
 
 void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
-  if (!pSlideShow)
-    return ;
-  if (g_application.IsPlayingVideo())
-    g_application.StopPlaying();
-
-  pSlideShow->Reset();
-  CFileItemList* items=m_vecItems;
-  if (!strPicture.IsEmpty())
-  {
-    items = new CFileItemList;
-    CGUIMediaWindow::GetDirectory(strPicture,*items);
-  }
-  for (int i = 0; i < (int)items->Size();++i)
-  {
-    CFileItemPtr pItem = items->Get(i);
-    if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
-    {
-      pSlideShow->Add(pItem.get());
-    }
-  }
-  if (!strPicture.IsEmpty())
-    delete items;
-  if (g_guiSettings.GetBool("slideshow.shuffle"))
-    pSlideShow->Shuffle();
-  pSlideShow->StartSlideShow();
-  if (pSlideShow->NumSlides())
-    m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+  if (pSlideShow)
+    pSlideShow->RunSlideShow(strPicture);
 }
 
 void CGUIWindowPictures::OnRegenerateThumbs()
@@ -535,9 +445,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
   {
     if ( m_vecItems->IsVirtualDirectoryRoot() && item)
     {
-      // get the usual shares
-      CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item.get());
-      CGUIDialogContextMenu::GetContextButtons("pictures", share, buttons);
+      CGUIDialogContextMenu::GetContextButtons("pictures", item, buttons);
     }
     else
     {
@@ -573,8 +481,7 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
   if (m_vecItems->IsVirtualDirectoryRoot() && item)
   {
-    CMediaSource *share = CGUIDialogContextMenu::GetShare("pictures", item.get());
-    if (CGUIDialogContextMenu::OnContextButton("pictures", share, button))
+    if (CGUIDialogContextMenu::OnContextButton("pictures", item, button))
     {
       Update("");
       return true;
@@ -649,7 +556,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       CPicture pic;
       pic.DoCreateThumbnail(thumb, pItem->GetCachedPictureThumb(),true);
     }
-    else if (!pItem->IsPluginFolder())
+    else if (!pItem->IsPlugin())
     {
       // we load the directory, grab 4 random thumb files (if available) and then generate
       // the thumb.

@@ -21,7 +21,7 @@
  */
 
 /**
-* @file libdiracenc.c
+* @file libavcodec/libdiracenc.c
 * Dirac encoding support via libdirac library; more details about the
 * Dirac project can be found at http://dirac.sourceforge.net/.
 * The libdirac_encoder library implements Dirac specification version 2.2
@@ -127,7 +127,7 @@ static VideoFormat GetDiracVideoFormatPreset (AVCodecContext *avccontext)
                  ff_dirac_video_formats[idx] : VIDEO_FORMAT_CUSTOM;
 }
 
-static int libdirac_encode_init(AVCodecContext *avccontext)
+static av_cold int libdirac_encode_init(AVCodecContext *avccontext)
 {
 
     FfmpegDiracEncoderParams* p_dirac_params = avccontext->priv_data;
@@ -386,7 +386,7 @@ static int libdirac_encode_frame(AVCodecContext *avccontext,
     return enc_size;
 }
 
-static int libdirac_encode_close(AVCodecContext *avccontext)
+static av_cold int libdirac_encode_close(AVCodecContext *avccontext)
 {
     FfmpegDiracEncoderParams* p_dirac_params  = avccontext->priv_data;
 

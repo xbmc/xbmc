@@ -40,7 +40,7 @@ public:
   virtual void ClearFileItems();
   virtual void OnFinalizeFileItems(CFileItemList &items);
   virtual void OnInfo(CFileItem* pItem, const SScraperInfo&info);
-  static bool DeleteItem(CFileItem* pItem);
+  static bool DeleteItem(CFileItem* pItem, bool bUnavailable=false);
 
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};
@@ -55,6 +55,7 @@ protected:
   virtual void OnFilterItems();
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual bool OnClick(int iItem);
 
   virtual CStdString GetQuickpathName(const CStdString& strPath) const;
   void FilterItems(CFileItemList &items);

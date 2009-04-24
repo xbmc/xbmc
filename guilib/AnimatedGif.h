@@ -1,6 +1,6 @@
 /*!
 \file AnimatedGif.h
-\brief 
+\brief
 */
 
 
@@ -45,7 +45,7 @@ struct COLOR {unsigned char b, g, r, x;}
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 typedef struct tagGUIRGBQUAD
 {
@@ -58,7 +58,7 @@ GUIRGBQUAD;
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 typedef struct tagGUIBITMAPINFOHEADER
 {
@@ -78,7 +78,7 @@ GUIBITMAPINFOHEADER;
 
 /*!
  \ingroup textures
- \brief 
+ \brief
  */
 #if defined(_LINUX)
 typedef struct tagBITMAPINFO

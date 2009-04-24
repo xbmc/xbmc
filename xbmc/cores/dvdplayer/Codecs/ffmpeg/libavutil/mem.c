@@ -1,6 +1,6 @@
 /*
  * default memory allocator for libavutil
- * Copyright (c) 2002 Fabrice Bellard.
+ * Copyright (c) 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,29 +20,34 @@
  */
 
 /**
- * @file mem.c
- * default memory allocator for libavutil.
+ * @file libavutil/mem.c
+ * default memory allocator for libavutil
  */
 
-#include "common.h"
+#include "config.h"
 
-/* here we can use OS dependent allocation functions */
-#undef malloc
-#undef free
-#undef realloc
-
-#ifdef HAVE_MALLOC_H
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+#if HAVE_MALLOC_H
 #include <malloc.h>
 #endif
 
-/* you can redefine av_malloc and av_free in your project to use your
+#include "mem.h"
+
+/* here we can use OS-dependent allocation functions */
+#undef free
+#undef malloc
+#undef realloc
+
+/* You can redefine av_malloc and av_free in your project to use your
    memory allocator. You do not need to suppress this file because the
-   linker will do it automatically */
+   linker will do it automatically. */
 
 void *av_malloc(unsigned int size)
 {
-    void *ptr;
-#ifdef CONFIG_MEMALIGN_HACK
+    void *ptr = NULL;
+#if CONFIG_MEMALIGN_HACK
     long diff;
 #endif
 
@@ -50,20 +55,23 @@ void *av_malloc(unsigned int size)
     if(size > (INT_MAX-16) )
         return NULL;
 
-#ifdef CONFIG_MEMALIGN_HACK
+#if CONFIG_MEMALIGN_HACK
     ptr = malloc(size+16);
     if(!ptr)
         return ptr;
     diff= ((-(long)ptr - 1)&15) + 1;
     ptr = (char*)ptr + diff;
     ((char*)ptr)[-1]= diff;
-#elif defined (HAVE_MEMALIGN)
+#elif HAVE_POSIX_MEMALIGN
+    if (posix_memalign(&ptr,16,size))
+        ptr = NULL;
+#elif HAVE_MEMALIGN
     ptr = memalign(16,size);
     /* Why 64?
        Indeed, we should align it:
          on 4 for 386
          on 16 for 486
-         on 32 for 586, PPro - k6-III
+         on 32 for 586, PPro - K6-III
          on 64 for K7 (maybe for P3 too).
        Because L1 and L2 caches are aligned on those values.
        But I don't want to code such logic here!
@@ -71,10 +79,10 @@ void *av_malloc(unsigned int size)
      /* Why 16?
         Because some CPUs need alignment, for example SSE2 on P4, & most RISC CPUs
         it will just trigger an exception and the unaligned load will be done in the
-        exception handler or it will just segfault (SSE2 on P4)
+        exception handler or it will just segfault (SSE2 on P4).
         Why not larger? Because I did not see a difference in benchmarks ...
      */
-     /* benchmarks with p3
+     /* benchmarks with P3
         memalign(64)+1          3071,3051,3032
         memalign(64)+2          3051,3032,3041
         memalign(64)+4          2911,2896,2915
@@ -83,7 +91,7 @@ void *av_malloc(unsigned int size)
         memalign(64)+32         2546,2545,2571
         memalign(64)+64         2570,2533,2558
 
-        btw, malloc seems to do 8 byte alignment by default here
+        BTW, malloc seems to do 8-byte alignment by default here.
      */
 #else
     ptr = malloc(size);
@@ -93,7 +101,7 @@ void *av_malloc(unsigned int size)
 
 void *av_realloc(void *ptr, unsigned int size)
 {
-#ifdef CONFIG_MEMALIGN_HACK
+#if CONFIG_MEMALIGN_HACK
     int diff;
 #endif
 
@@ -101,7 +109,7 @@ void *av_realloc(void *ptr, unsigned int size)
     if(size > (INT_MAX-16) )
         return NULL;
 
-#ifdef CONFIG_MEMALIGN_HACK
+#if CONFIG_MEMALIGN_HACK
     //FIXME this isn't aligned correctly, though it probably isn't needed
     if(!ptr) return av_malloc(size);
     diff= ((char*)ptr)[-1];
@@ -115,7 +123,7 @@ void av_free(void *ptr)
 {
     /* XXX: this test should not be needed on most libcs */
     if (ptr)
-#ifdef CONFIG_MEMALIGN_HACK
+#if CONFIG_MEMALIGN_HACK
         free((char*)ptr - ((char*)ptr)[-1]);
 #else
         free(ptr);

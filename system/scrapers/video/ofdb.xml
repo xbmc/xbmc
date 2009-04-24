@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<scraper name="OFDb" content="movies" thumb="ofdb.png">
+<scraper name="OFDb" content="movies" thumb="ofdb.png" language="de">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
@@ -19,10 +19,23 @@
 	</GetSettings>
 
 	<NfoUrl dest="3">
-		<RegExp input="$$1" output="&lt;url&gt;\1\2,\3&lt;/url&gt;" dest="3+">
+		<RegExp input="$$1" output="&lt;url&gt;\1\2,\3&lt;/url&gt;" dest="3">
 			<expression clear="yes" noclean="1">(http://www.ofdb.de/film/)([0-9]*),(.*)</expression>
 		</RegExp>
+		<RegExp input="$$1" output="&lt;url function=&quot;GetByIMDBId&quot;&gt;http://www.ofdb.de/view.php?SText=\2&amp;amp;Kat=IMDb&amp;amp;page=suchergebnis&amp;amp;sourceid=mozilla-search&lt;/url&gt;" dest="3+">
+			<expression>(imdb.com/)Title\?([0-9]+)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;url function=&quot;GetByIMDBId&quot;&gt;http://www.ofdb.de/view.php?SText=\2&amp;amp;Kat=IMDb&amp;amp;page=suchergebnis&amp;amp;sourceid=mozilla-search&lt;/url&gt;" dest="3+">
+                        <expression>(imdb.com/title/tt)([0-9]*)</expression>
+                </RegExp>
 	</NfoUrl>
+
+	<GetByIMDBId dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.ofdb.de/film/\1,&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3+">
+			<expression repeat="yes" noclean="1">&quot;film/([0-9]*),</expression>
+		</RegExp>
+	</GetByIMDBId>
+
 
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="http://www.ofdb.de/view.php?SText=\1&amp;Kat=Titel&amp;page=suchergebnis&amp;sourceid=mozilla-search" dest="3">
@@ -41,118 +54,120 @@
 
         <GetDetails dest="3">
                 <RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="3">
+        		<!--Title -->
+		        <RegExp input="$$6" output="\1" dest="5+">
+	        	        <RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="6">
+                		        <expression trim="1">&lt;td width=&quot;99.&quot;&gt;&lt;h2&gt;&lt;font face=&quot;Arial,Helvetica,sans-serif&quot; size=&quot;3&quot;&gt;&lt;b&gt;([^&lt;]+)&lt;/b&gt;&lt;/font&gt;&lt;/h2&gt;&lt;/td&gt;</expression>
+	        	        </RegExp>
+        	        	<RegExp input="$$7" output="&lt;title&gt;\2 \1&lt;/title&gt;" dest="6">
+	                        	<RegExp input="$$1" output="\1" dest="7">
+						<expression trim="1">&lt;td width=&quot;99.&quot;&gt;&lt;h2&gt;&lt;font face=&quot;Arial,Helvetica,sans-serif&quot; size=&quot;3&quot;&gt;&lt;b&gt;([^&lt;]+)&lt;/b&gt;&lt;/font&gt;&lt;/h2&gt;&lt;/td&gt;</expression>
+					</RegExp>
+					<expression>(.*), (Die|Der|Das|The)</expression>
+        	        	</RegExp>
+		                <expression noclean="1"></expression>
+        		</RegExp>
 
-        <!--Title -->
-        <RegExp input="$$6" output="\1" dest="5+">
-                <RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="6">
-                        <expression trim="1">&lt;td width=&quot;99.&quot;&gt;&lt;h2&gt;&lt;font face=&quot;Arial,Helvetica,sans-serif&quot; size=&quot;3&quot;&gt;&lt;b&gt;([^&lt;]+)&lt;/b&gt;&lt;/font&gt;&lt;/h2&gt;&lt;/td&gt;</expression>
-                </RegExp>
-
-                <RegExp input="$$7" output="&lt;title&gt;\2 \1&lt;/title&gt;" dest="6">
-                        <RegExp input="$$1" output="\1" dest="7">
-                                <expression trim="1">&lt;td width=&quot;99.&quot;&gt;&lt;h2&gt;&lt;font face=&quot;Arial,Helvetica,sans-serif&quot; size=&quot;3&quot;&gt;&lt;b&gt;([^&lt;]+)&lt;/b&gt;&lt;/font&gt;&lt;/h2&gt;&lt;/td&gt;</expression>
-                </RegExp>
-                <expression>(.*), (Die|Der|Das|The)</expression>
-                </RegExp>
-                <expression noclean="1"></expression>
-        </RegExp>
-
-	<!--Original Title -->
-	<RegExp input="$$1" output="\1" dest="8">
-		<expression noclean="1">class=&quot;Normal&quot;&gt;Originaltitel(.*)class=&quot;Normal&quot;&gt;Herstellungsland</expression>
-	</RegExp>
-	<RegExp input="$$7" output="\1" dest="5+">
-		<RegExp input="$$8" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="7">
-			<expression>&lt;b&gt;([^&gt;]+)&lt;/b&gt;</expression>
-		</RegExp>
-		<RegExp input="$$6" output="&lt;originaltitle&gt;\2 \1&lt;/originaltitle&gt;" dest="7">
-			<RegExp input="$$8" output="\1" dest="6">
-				<expression noclean="1">&lt;b&gt;([^&gt;]+)&lt;/b&gt;</expression>
+			<!--Original Title -->
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression noclean="1">class=&quot;Normal&quot;&gt;Originaltitel(.*)class=&quot;Normal&quot;&gt;Herstellungsland</expression>
 			</RegExp>
-			<expression>(.*), (Die|Der|Das|The)</expression>
-		</RegExp>
-		<expression noclean="1"></expression>
-	</RegExp>
 
-	<!--Year -->
-	<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
-		<expression>view.php\?page=blaettern&amp;Kat=Jahr&amp;Text=([0-9]+)</expression></RegExp>
+			<RegExp input="$$7" output="\1" dest="5+">
+				<RegExp input="$$8" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="7">
+					<expression>&lt;b&gt;([^&gt;]+)&lt;/b&gt;</expression>
+				</RegExp>
+				<RegExp input="$$6" output="&lt;originaltitle&gt;\2 \1&lt;/originaltitle&gt;" dest="7">
+					<RegExp input="$$8" output="\1" dest="6">
+						<expression noclean="1">&lt;b&gt;([^&gt;]+)&lt;/b&gt;</expression>
+					</RegExp>
+					<expression>(.*), (Die|Der|Das|The)</expression>
+				</RegExp>
+				<expression noclean="1"></expression>
+			</RegExp>
 
-	<!--Director-->
-	<RegExp input="$$9" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
-		<RegExp input="$$1" output="\1" dest="9">
-			<expression noclean="1">class=&quot;Normal&quot;&gt;Regie(.*)class=&quot;Normal&quot;&gt;Darsteller</expression>
-		</RegExp>
-		<expression repeat="yes">Name=[^&gt;]*&gt;([^&lt;]+)</expression>
-	</RegExp>
+			<!--Year -->
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>view.php\?page=blaettern&amp;Kat=Jahr&amp;Text=([0-9]+)</expression>
+			</RegExp>
 
-	<!--Plot outline -->
-	<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-		<expression>&lt;b&gt;Inhalt:&lt;/b&gt;([^&lt;]+)</expression>
-	</RegExp>
+			<!--Director-->
+			<RegExp input="$$9" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="9">
+					<expression noclean="1">class=&quot;Normal&quot;&gt;Regie(.*)class=&quot;Normal&quot;&gt;Darsteller</expression>
+				</RegExp>
+				<expression repeat="yes">Name=[^&gt;]*&gt;([^&lt;]+)</expression>
+			</RegExp>
 
-	<!--Genre-->
-	<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
-		<expression repeat="yes">view.php\?page=genre&amp;Genre=[^&quot;]+&quot;&gt;([^&lt;]*)&lt;</expression>
-	</RegExp>
+			<!--Plot outline -->
+			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression>&lt;b&gt;Inhalt:&lt;/b&gt;([^&lt;]+)</expression>
+			</RegExp>
 
-	<!--Rating-->
-	<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
-		<expression>Note: ([0-9\.]+)</expression>
-	</RegExp>
+			<!--Genre-->
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression repeat="yes">view.php\?page=genre&amp;Genre=[^&quot;]+&quot;&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
 
-	<!--Votes-->
-	<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
-		<expression>Stimmen: ([0-9]+)</expression>
-	</RegExp>
+			<!--Rating-->
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
+				<expression>Note: ([0-9\.]+)</expression>
+			</RegExp>
 
-	<!--URL to Plot -->
-	<RegExp input="$$1" output="&lt;url function=&quot;Inhaltsangabe&quot;&gt;http://www.ofdb.de/plot/\1,\2,&lt;/url&gt;" dest="5+">
-		<expression>Inhalt:&lt;/b&gt;[^&lt;]*&lt;a href=&quot;plot/([0-9]+),([0-9]+),</expression>
-	</RegExp>
+			<!--Votes-->
+			<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
+				<expression>Stimmen: ([0-9]+)</expression>
+			</RegExp>
 
-	<!--URL to MPAA-->
-	<RegExp input="$$1" output="&lt;url function=&quot;Altersfreigabe&quot;&gt;http://www.ofdb.de/view.php?page=fassung&amp;amp;fid=\1&amp;amp;vid=\2&lt;/url&gt;" dest="5+">
-		<expression>&lt;a href=.view.php.page=fassung&amp;fid=([0-9]+)&amp;vid=([0-9]+).&gt;Kino:</expression>
-	</RegExp>
+			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
+				<expression>Freigabe: ([^&quot;]*)&quot;</expression>
+			</RegExp>
 
-	<!--URL to Studio-->
-	<RegExp input="$$1" output="&lt;url function=&quot;ofdbstudio&quot;&gt;http://www.ofdb.de/view.php?page=fassung&amp;amp;fid=\1&amp;amp;vid=\2&lt;/url&gt;" dest="5+">
-		<expression>&lt;a href=.view.php.page=fassung&amp;fid=([0-9]+)&amp;vid=([0-9]+).&gt;Kino:</expression>
-	</RegExp>
+			<RegExp input="$$1" output="&lt;id&gt;\2&lt;/id&gt;" dest="5+">
+				<expression>(imdb.com/)Title\?([0-9]+)</expression>
+			</RegExp>
 
-	<!--URL to IMDB-->
-	<RegExp input="$$1" output="&lt;url function=&quot;IMDB-Details&quot;&gt;http://www.imdb.com/title/tt\2/&lt;/url&gt;" dest="5+">
-		<expression>(imdb.com/)Title\?([0-9]+)</expression>
-	</RegExp>
+			<!--URL to Plot -->
+			<RegExp input="$$1" output="&lt;url function=&quot;Inhaltsangabe&quot;&gt;http://www.ofdb.de/plot/\1,\2,&lt;/url&gt;" dest="5+">
+				<expression>Inhalt:&lt;/b&gt;[^&lt;]*&lt;a href=&quot;plot/([0-9]+),([0-9]+),</expression>
+			</RegExp>
 
-	<!--URL to IMDBcredits-->
-	<RegExp input="$$1" output="&lt;url function=&quot;GetMovieCast&quot;&gt;http://www.imdb.com/title/tt\2/fullcredits#cast&lt;/url&gt;" dest="5+">
-		<expression>(imdb.com/)Title\?([0-9]+)</expression>
-	</RegExp>
+			<!--URL to MPAA / Studio / Runtime-->
+			<RegExp input="$$1" output="&lt;url function=&quot;OFDbInfo&quot;&gt;http://www.ofdb.de/view.php?page=fassung&amp;amp;fid=\1&amp;amp;vid=\2&lt;/url&gt;" dest="5+">
+				<expression>&lt;a href=.view.php.page=fassung&amp;fid=([0-9]+)&amp;vid=([0-9]+).&gt;Kino:</expression>
+			</RegExp>
 
-	<!--URL to Fanart-->
-	<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt\2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
-		<expression>(imdb.com/)Title\?([0-9]+)</expression>
-	</RegExp>
+			<!--URL to IMDB-->
+			<RegExp input="$$1" output="&lt;url function=&quot;IMDB-Details&quot;&gt;http://www.imdb.de/title/tt\2/&lt;/url&gt;" dest="5+">
+				<expression>(imdb.com/)Title\?([0-9]+)</expression>
+			</RegExp>
 
-	<!--URL to MoviePosterDB -->
-	<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?title=\2&lt;/url&gt;" dest="5+">
-  		<expression>(imdb.com/)Title\?([0-9]+)</expression> 
-	</RegExp>
+			<!--URL to IMDBcredits-->
+			<RegExp input="$$1" output="&lt;url function=&quot;GetMovieCast&quot;&gt;http://www.imdb.de/title/tt\2/fullcredits#cast&lt;/url&gt;" dest="5+">
+				<expression>(imdb.com/)Title\?([0-9]+)</expression>
+			</RegExp>
+
+			<!--URL to Fanart-->
+			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt\2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
+				<expression>(imdb.com/)Title\?([0-9]+)</expression>
+			</RegExp>
+
+			<!--URL to MoviePosterDB -->
+			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?title=\2&lt;/url&gt;" dest="5+">
+  				<expression>(imdb.com/)Title\?([0-9]+)</expression> 
+			</RegExp>
 	
-	<!-- Ofdb Poster -->
-	<RegExp input="$$3" output="&lt;url function=&quot;GetOfdbThumb&quot; cache=&quot;$$2.html&quot;&gt;\1&lt;/url&gt;" dest="5+">
-		<expression noclean="1"></expression>
-	</RegExp>
+			<!-- Ofdb Poster -->
+			<RegExp input="$$3" output="&lt;url function=&quot;GetOfdbThumb&quot; cache=&quot;$$2.html&quot;&gt;\1&lt;/url&gt;" dest="5+">
+				<expression noclean="1"></expression>
+			</RegExp>
 
-	<!-- Cast -->
-	<RegExp input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetMovieCast&quot;&gt;$$3&lt;/url&gt;" dest="5+">
-		<expression></expression>
-	</RegExp>
-
-		<expression noclean="1"></expression>
-	</RegExp>
+			<!-- Cast -->
+			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetMovieCast&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
 	</GetDetails>
   
 	<!--Plot-->
@@ -171,40 +186,36 @@
 		</RegExp>
 	</Inhaltsangabe>
   
-	<!--MPAA-->
-	<Altersfreigabe dest="5">
-		<RegExp input="$$1" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;&lt;mpaa&gt;(Kino) \1&lt;/mpaa&gt;&lt;/details&gt;" dest="5+">
-			<expression>Freigabe:&lt;/font&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;font[^&gt;]+&gt;&lt;b&gt;([^&lt;]+)&lt;/b&gt;</expression>
-		</RegExp>
-	</Altersfreigabe>
-
 	<!--Studio-->
-	<ofdbstudio dest="5">
-		<RegExp input="$$1" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;&lt;studio&gt;\1&lt;/studio&gt;&lt;/details&gt;" dest="5+">
-			<expression>Verleih:&lt;/font&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;font[^&gt;]+&gt;&lt;b&gt;([^&lt;]+)&lt;/b&gt;</expression>
+	<OFDbInfo dest="5">
+		<RegExp input="$$4" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="4+">
+				<expression>Verleih:&lt;/font&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;font[^&gt;]+&gt;&lt;b&gt;([^&lt;]+)&lt;/b&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="4+">
+				<expression>Laufzeit: ([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
 		</RegExp>
-	</ofdbstudio>
+	</OFDbInfo>
   
 	<!--IMDB-Details-->
 	<IMDB-Details dest="5">
-	<RegExp input="$$3" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5">
-		<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="3+">
-			<expression>L&amp;auml;nge:&lt;/h5&gt;([^&lt;]+)&lt;</expression>
+		<RegExp input="$$3" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="3+">
+				<expression>Werbezeile:&lt;/h5&gt;([^&lt;]*)&lt;</expression>
+	  		</RegExp>
+			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://akas.imdb.com/video/imdb/vi\1/player&lt;/url&gt;" dest="3+">
+				<expression>/vi([0-9]*)/&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">Drehbuchautor(.*)Premierendatum</expression>
+	  		</RegExp>
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="3+">
+  				<expression>&lt;a href=&quot;/name/nm[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+	  		</RegExp>
+			<expression noclean="1"></expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="3+">
-			<expression>Werbezeile:&lt;/h5&gt;([^&lt;]*)&lt;</expression>
-  		</RegExp>
-		<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://akas.imdb.com/video/imdb/vi\1/player&lt;/url&gt;" dest="3+">
-			<expression>/vi([0-9]*)/&quot;</expression>
-		</RegExp>
-		<RegExp input="$$1" output="\1" dest="6">
-			<expression noclean="1">Drehbuchautor(.*)Premierendatum</expression>
-  		</RegExp>
-		<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="3+">
-  			<expression>&lt;a href=&quot;/name/nm[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
-  		</RegExp>
-		<expression noclean="1"></expression>
-	</RegExp>
 	</IMDB-Details>
 
 	<!-- MovieCast -->
@@ -265,6 +276,7 @@
                         <expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
                 </RegExp>
         </GetTMDBId>
+
         <GetTMDBFanart dest="5">
                 <RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
                         <RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.jpg&quot;&gt;/\1/\2.jpg&lt;/thumb&gt;" dest="2">

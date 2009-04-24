@@ -11,6 +11,7 @@
 #include "VideoShaders/VideoFilterShader.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
+#include "GraphicContext.h"
 
 namespace Surface { class CSurface; }
 
@@ -84,6 +85,7 @@ enum RenderMethod
   RENDER_GLSL=0x01,
   RENDER_ARB=0x02,
   RENDER_SW=0x04,
+  RENDER_VDPAU=0x08,
   RENDER_POT=0x10
 };
 
@@ -178,6 +180,7 @@ protected:
   void RenderMultiPass(DWORD flags, int renderBuffer);  // multi pass glsl renderer
   void RenderSinglePass(DWORD flags, int renderBuffer); // single pass glsl renderer
   void RenderSoftware(DWORD flags, int renderBuffer);   // single pass s/w yuv2rgb renderer
+  void RenderVDPAU(DWORD flags, int renderBuffer);      // render using vdpau hardware
 
   CFrameBufferObject m_fbo;
   CSurface *m_pBuffer;
@@ -201,6 +204,7 @@ protected:
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
+  bool m_StrictBinding;
 
   // Software upscaling.
   int m_upscalingWidth;
@@ -276,7 +280,7 @@ protected:
 
 
 inline int NP2( unsigned x ) {
-#if defined(_LINUX) 
+#if defined(_LINUX) && !defined(__POWERPC__)
   // If there are any issues compiling this, just append a ' && 0'
   // to the above to make it '#if defined(_LINUX) && 0'
 

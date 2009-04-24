@@ -24,6 +24,8 @@ FFLIBS-$(CONFIG_SWSCALE)  += swscale
 
 FFLIBS := avdevice avformat avcodec avutil
 
+DATA_FILES := $(wildcard $(SRC_DIR)/ffpresets/*.ffpreset)
+
 include common.mak
 
 FF_LDFLAGS   := $(FFLDFLAGS)
@@ -35,7 +37,7 @@ ALL_TARGETS-$(BUILD_DOC)    += documentation
 
 INSTALL_TARGETS-$(CONFIG_VHOOK) += install-vhook
 ifneq ($(PROGS),)
-INSTALL_TARGETS-yes             += install-progs
+INSTALL_TARGETS-yes             += install-progs install-data
 INSTALL_TARGETS-$(BUILD_DOC)    += install-man
 endif
 INSTALL_PROGS_TARGETS-$(BUILD_SHARED) = install-libs
@@ -74,6 +76,8 @@ tools/%$(EXESUF): tools/%.c
 	$(CC) $(CFLAGS) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
 
 ffplay.o ffplay.d: CFLAGS += $(SDL_CFLAGS)
+
+cmdutils.o cmdutils.d: version.h
 
 alltools: $(addsuffix $(EXESUF),$(addprefix tools/, cws2fws pktdumper qt-faststart trasher))
 
@@ -129,6 +133,10 @@ install-progs: $(PROGS) $(INSTALL_PROGS_TARGETS-yes)
 	install -d "$(BINDIR)"
 	install -c -m 755 $(PROGS) "$(BINDIR)"
 
+install-data: $(DATA_FILES)
+	install -d "$(DATADIR)"
+	install -m 644 $(DATA_FILES) "$(DATADIR)"
+
 install-man: $(MANPAGES)
 	install -d "$(MANDIR)/man1"
 	install -m 644 $(MANPAGES) "$(MANDIR)/man1"
@@ -137,10 +145,13 @@ install-vhook: videohook
 	install -d "$(SHLIBDIR)/vhook"
 	install -m 755 $(HOOKS) "$(SHLIBDIR)/vhook"
 
-uninstall: uninstall-progs uninstall-man uninstall-vhook
+uninstall: uninstall-progs uninstall-data uninstall-man uninstall-vhook
 
 uninstall-progs:
 	rm -f $(addprefix "$(BINDIR)/", $(ALLPROGS))
+
+uninstall-data:
+	rm -rf "$(DATADIR)"
 
 uninstall-man:
 	rm -f $(addprefix "$(MANDIR)/man1/",$(ALLMANPAGES))
@@ -149,10 +160,12 @@ uninstall-vhook:
 	rm -f $(addprefix "$(SHLIBDIR)/",$(ALLHOOKS_SRCS:.c=$(SLIBSUF)))
 	-rmdir "$(SHLIBDIR)/vhook/"
 
-clean::
+testclean:
+	rm -rf tests/vsynth1 tests/vsynth2 tests/data tests/asynth1.sw tests/*~
+
+clean:: testclean
 	rm -f $(ALLPROGS) $(ALLPROGS_G) output_example$(EXESUF)
 	rm -f doc/*.html doc/*.pod doc/*.1
-	rm -rf tests/vsynth1 tests/vsynth2 tests/data tests/asynth1.sw tests/*~
 	rm -f $(addprefix tests/,$(addsuffix $(EXESUF),audiogen videogen rotozoom seek_test tiny_psnr))
 	rm -f $(addprefix tools/,$(addsuffix $(EXESUF),cws2fws pktdumper qt-faststart trasher))
 	rm -f vhook/*.o vhook/*~ vhook/*.so vhook/*.dylib vhook/*.dll
@@ -268,13 +281,22 @@ ROTOZOOM_REG = tests/data/rotozoom.regression
 VSYNTH_REG   = tests/data/vsynth.regression
 
 ifneq ($(CONFIG_SWSCALE),yes)
-servertest codectest $(CODEC_TESTS) libavtest: swscale_error
-swscale_error:
+servertest codectest $(CODEC_TESTS) libavtest: swscale-error
+swscale-error:
 	@echo
 	@echo "This regression test requires --enable-swscale."
 	@echo
 	@exit 1
 endif
+
+ifneq ($(CONFIG_ZLIB),yes)
+regtest-flashsv codectest: zlib-error
+endif
+zlib-error:
+	@echo
+	@echo "This regression test requires zlib."
+	@echo
+	@exit 1
 
 codectest: $(VSYNTH_REG) $(ROTOZOOM_REG)
 	diff -u -w $(FFMPEG_REFFILE)   $(VSYNTH_REG)
@@ -333,6 +355,6 @@ tests/seek_test$(EXESUF): tests/seek_test.c $(FF_DEP_LIBS)
 	$(CC) $(FF_LDFLAGS) $(CFLAGS) -o $@ $< $(FF_EXTRALIBS)
 
 
-.PHONY: lib videohook documentation *test regtest-* swscale-error alltools check
+.PHONY: lib videohook documentation *test regtest-* swscale-error zlib-error alltools check
 
 -include $(VHOOK_DEPS)

@@ -38,6 +38,7 @@ public:
   void SetMovie(const CFileItem *item);
   bool NeedRefresh() const;
   bool RefreshAll() const;
+  bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
 
   const CStdString &GetThumbnail() const;
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_movieItem; }
@@ -64,5 +65,6 @@ protected:
   bool m_bViewReview;
   bool m_bRefresh;
   bool m_bRefreshAll;
+  bool m_hasUpdatedThumb;
   CGUIDialogProgress* m_dlgProgress;
 };

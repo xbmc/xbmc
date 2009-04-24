@@ -1,6 +1,6 @@
 /*
  * MPEG2 transport stream (aka DVB) demuxer
- * Copyright (c) 2002-2003 Fabrice Bellard.
+ * Copyright (c) 2002-2003 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,6 +20,7 @@
  */
 
 #include "libavutil/crc.h"
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 #include "mpegts.h"
 #include "internal.h"
@@ -47,7 +48,7 @@ enum MpegTSFilterType {
 
 typedef struct MpegTSFilter MpegTSFilter;
 
-typedef void PESCallback(MpegTSFilter *f, const uint8_t *buf, int len, int is_start);
+typedef void PESCallback(MpegTSFilter *f, const uint8_t *buf, int len, int is_start, int64_t pos);
 
 typedef struct MpegTSPESFilter {
     PESCallback *pes_cb;
@@ -147,6 +148,7 @@ struct PESContext {
     int total_size;
     int pes_header_size;
     int64_t pts, dts;
+    int64_t ts_packet_pos; /**< position of first TS packet of this PES packet */
     uint8_t header[MAX_PES_HEADER_SIZE];
 };
 
@@ -335,15 +337,7 @@ static void mpegts_close_filter(MpegTSContext *ts, MpegTSFilter *filter)
     pid = filter->pid;
     if (filter->type == MPEGTS_SECTION)
         av_freep(&filter->u.section_filter.section_buf);
-    else if (filter->type == MPEGTS_PES) {
-        PESContext *pes = filter->u.pes_filter.opaque;
-        /* referenced private data will be freed later in
-         * av_close_input_stream */
-        if (!pes->st)
-            av_freep(&pes);
-    }
-    
-    av_free(filter);
+    else if (filter->type == MPEGTS_PES) {        /* referenced private data will be freed later in         * av_close_input_stream */        if (!((PESContext *)filter->u.pes_filter.opaque)->st) {            av_freep(&filter->u.pes_filter.opaque);        }    }    av_free(filter);
     ts->pids[pid] = NULL;
 }
 
@@ -589,6 +583,11 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                    desc_tag, desc_len);
 #endif
             switch(desc_tag) {
+            case VBI_SUBT_DESCID:
+                if (stream_type == STREAM_TYPE_PRIVATE_DATA)
+                    stream_type = STREAM_TYPE_SUBTITLE_VBI;
+
+                break;
             case DVB_SUBT_DESCID:
                 if (stream_type == STREAM_TYPE_PRIVATE_DATA)
                     stream_type = STREAM_TYPE_SUBTITLE_DVB;
@@ -601,6 +600,10 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                 comp_page = get16(&p, desc_end);
                 anc_page = get16(&p, desc_end);
 
+                break;
+            case ATSC_CAPTION_SERVICE_DESCID:
+                if (stream_type == 0x80)
+                    stream_type = STREAM_TYPE_VIDEO_MPEG2;
                 break;
             case 0x0a: /* ISO 639 language descriptor */
                 language[0] = get8(&p, desc_end);
@@ -615,10 +618,21 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                     bytes[1] = get8(&p, desc_end);
                     bytes[2] = get8(&p, desc_end);
                     bytes[3] = get8(&p, desc_end);
+
+                    if (stream_type == STREAM_TYPE_PRIVATE_DATA) {
+                        if(bytes[0] == 'A' && bytes[1] == 'C' &&
+                           bytes[2] == '-' && bytes[3] == '3')
+                            stream_type = STREAM_TYPE_AUDIO_AC3;
+
+                        if(bytes[0] == 'D' && bytes[1] == 'T' && bytes[2] == 'S' && 
+                          (bytes[3] == '1' || bytes[3] == '2' || bytes[3] == '3'))
+                            stream_type = STREAM_TYPE_AUDIO_DTS;
+                    } else {
                     if(bytes[0] == 'd' && bytes[1] == 'r' &&
                        bytes[2] == 'a' && bytes[3] == 'c')
                         has_dirac_descr = 1;
                     break;
+                    }
                 }
             default:
                 break;
@@ -650,6 +664,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
         case STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER:
         case STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD:
         case STREAM_TYPE_AUDIO_HDMV_AC3_PLUS:
+        case STREAM_TYPE_SUBTITLE_VBI:
         case STREAM_TYPE_SUBTITLE_DVB:
             if((stream_type == STREAM_TYPE_AUDIO_HDMV_DTS           && !has_hdmv_descr)
             || (stream_type == STREAM_TYPE_AUDIO_HDMV_DTS_HD        && !has_hdmv_descr)
@@ -678,7 +693,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
 
         if (st) {
             if (language[0] != 0) {
-                memcpy(st->language, language, 4);
+                av_metadata_set(&st->metadata, "language", language);
             }
 
             if (stream_type == STREAM_TYPE_SUBTITLE_DVB) {
@@ -809,8 +824,10 @@ static void sdt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                 name = getstr8(&p, p_end);
                 if (name) {
                     AVProgram *program = av_new_program(ts->stream, sid);
-                    if(program)
-                        av_set_program_name(program, provider_name, name);
+                    if(program) {
+                        av_metadata_set(&program->metadata, "name", name);
+                        av_metadata_set(&program->metadata, "provider_name", provider_name);
+                    }
                 }
                 av_free(name);
                 av_free(provider_name);
@@ -841,7 +858,8 @@ static int64_t get_pts(const uint8_t *p)
 
 /* return non zero if a packet could be constructed */
 static void mpegts_push_data(MpegTSFilter *filter,
-                             const uint8_t *buf, int buf_size, int is_start)
+                             const uint8_t *buf, int buf_size, int is_start,
+                             int64_t pos)
 {
     PESContext *pes = filter->u.pes_filter.opaque;
     MpegTSContext *ts = pes->ts;
@@ -854,6 +872,7 @@ static void mpegts_push_data(MpegTSFilter *filter,
     if (is_start) {
         pes->state = MPEGTS_HEADER;
         pes->data_index = 0;
+        pes->ts_packet_pos = pos;
     }
     p = buf;
     while (buf_size > 0) {
@@ -919,7 +938,7 @@ static void mpegts_push_data(MpegTSFilter *filter,
                 pes->pts = AV_NOPTS_VALUE;
                 pes->dts = AV_NOPTS_VALUE;
                 if ((flags & 0xc0) == 0x80) {
-                    pes->pts = get_pts(r);
+                    pes->dts = pes->pts = get_pts(r);
                     r += 5;
                 } else if ((flags & 0xc0) == 0xc0) {
                     pes->pts = get_pts(r);
@@ -946,6 +965,8 @@ static void mpegts_push_data(MpegTSFilter *filter,
                     pkt->stream_index = pes->st->index;
                     pkt->pts = pes->pts;
                     pkt->dts = pes->dts;
+                    /* store position of first TS packet of this PES packet */
+                    pkt->pos = pes->ts_packet_pos;
                     /* reset pts values */
                     pes->pts = AV_NOPTS_VALUE;
                     pes->dts = AV_NOPTS_VALUE;
@@ -1012,6 +1033,10 @@ static AVStream* new_pes_av_stream(PESContext *pes, uint32_t code)
         codec_type = CODEC_TYPE_AUDIO;
         codec_id = CODEC_ID_DTS;
         break;
+    case STREAM_TYPE_SUBTITLE_VBI:
+        codec_type = CODEC_TYPE_UNKNOWN;
+        codec_id = CODEC_ID_NONE;
+        break;
     case STREAM_TYPE_SUBTITLE_DVB:
         codec_type = CODEC_TYPE_SUBTITLE;
         codec_id = CODEC_ID_DVB_SUBTITLE;
@@ -1071,6 +1096,7 @@ static void handle_packet(MpegTSContext *ts, const uint8_t *packet)
     MpegTSFilter *tss;
     int len, pid, cc, cc_ok, afc, is_start;
     const uint8_t *p, *p_end;
+    int64_t pos;
 
     pid = AV_RB16(packet + 1) & 0x1fff;
     if(pid && discard_pid(ts, pid))
@@ -1105,7 +1131,8 @@ static void handle_packet(MpegTSContext *ts, const uint8_t *packet)
     if (p >= p_end)
         return;
 
-    ts->pos47= url_ftell(ts->stream->pb) % ts->raw_packet_size;
+    pos = url_ftell(ts->stream->pb);
+    ts->pos47= pos % ts->raw_packet_size;
 
     if (tss->type == MPEGTS_SECTION) {
         if (is_start) {
@@ -1133,8 +1160,9 @@ static void handle_packet(MpegTSContext *ts, const uint8_t *packet)
             }
         }
     } else {
+        // Note: The position here points actually behind the current packet.
         tss->u.pes_filter.pes_cb(tss,
-                                 p, p_end - p, is_start);
+                                 p, p_end - p, is_start, pos - ts->raw_packet_size);
     }
 }
 
@@ -1212,14 +1240,15 @@ static int mpegts_probe(AVProbeData *p)
 #if 1
     const int size= p->buf_size;
     int score, fec_score, dvhs_score;
+    int check_count= size / TS_FEC_PACKET_SIZE;
 #define CHECK_COUNT 10
 
-    if (size < (TS_FEC_PACKET_SIZE * CHECK_COUNT))
+    if (check_count < CHECK_COUNT)
         return -1;
 
-    score    = analyze(p->buf, TS_PACKET_SIZE    *CHECK_COUNT, TS_PACKET_SIZE, NULL);
-    dvhs_score  = analyze(p->buf, TS_DVHS_PACKET_SIZE    *CHECK_COUNT, TS_DVHS_PACKET_SIZE, NULL);
-    fec_score= analyze(p->buf, TS_FEC_PACKET_SIZE*CHECK_COUNT, TS_FEC_PACKET_SIZE, NULL);
+    score     = analyze(p->buf, TS_PACKET_SIZE     *check_count, TS_PACKET_SIZE     , NULL)*CHECK_COUNT/check_count;
+    dvhs_score= analyze(p->buf, TS_DVHS_PACKET_SIZE*check_count, TS_DVHS_PACKET_SIZE, NULL)*CHECK_COUNT/check_count;
+    fec_score = analyze(p->buf, TS_FEC_PACKET_SIZE *check_count, TS_FEC_PACKET_SIZE , NULL)*CHECK_COUNT/check_count;
 //    av_log(NULL, AV_LOG_DEBUG, "score: %d, dvhs_score: %d, fec_score: %d \n", score, dvhs_score, fec_score);
 
 // we need a clear definition for the returned score otherwise things will become messy sooner or later
@@ -1308,7 +1337,7 @@ static int mpegts_read_header(AVFormatContext *s,
 {
     MpegTSContext *ts = s->priv_data;
     ByteIOContext *pb = s->pb;
-    uint8_t buf[1024];
+    uint8_t buf[5*1024];
     int len;
     int64_t pos;
 

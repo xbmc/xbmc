@@ -3,22 +3,16 @@ TOC
 2. Getting the source code
 3. Installing the required Ubuntu packages
 4. How to compile
-	4.1 Using build.sh
-	4.2 Manual build
 5. How to run
-6. Tips n' Tricks section
+6. Uninstalling
 7. Endword
 
 -----------------------------------------------------------------------------
 1. Introduction
 -----------------------------------------------------------------------------
 
-This is a very early port of XBMC to Linux. It's target is developers
-and not end-users. We don't offer end-user support yet, and we're not
-really interrested to hear about bugs unless you can help track it
-down and possibly help with fixing it. We currently recommend Ubuntu
-7.10 (Gutsy Gibbon) as a development platform. A gfx-adapter with
-OpenGL acceleration is highly recommended and 24/32 bitdepth is
+We currently recommend Ubuntu Hardy(8.04) or Intrepid(8.10). A gfx-adapter
+with OpenGL acceleration is highly recommended and 24/32 bitdepth is 
 required with OpenGL.
 
 NOTE TO NEW LINUX USERS: All lines that are prefixed with the '#'
@@ -35,7 +29,6 @@ character itself should NOT be typed as part of the command.
    # cd $HOME
    # svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
 
-
 -----------------------------------------------------------------------------
 3. Installing the required Ubuntu packages
 -----------------------------------------------------------------------------
@@ -48,7 +41,7 @@ Two methods exist to install the required Ubuntu packages :
 
 For Ubuntu (all versions >= 7.04):
 
-   # sudo apt-get install subversion make g++ gcc gawk pmount libtool nasm automake cmake gperf unzip bison libsdl1.2-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libfribidi-dev liblzo-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound-dev python-sqlite libglew-dev libcurl3-dev x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmad0-dev libtre-dev libogg-dev libvorbis-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libfaac-dev libenca-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev
+   # sudo apt-get install subversion make g++ gcc gawk pmount libtool nasm automake cmake gperf unzip bison libsdl-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libfribidi-dev liblzo-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound-dev python-sqlite libglew-dev libcurl4-dev x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmad0-dev libogg-dev libvorbis-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libfaac-dev libenca-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev mesa-utils libcdio-dev
 
 --------------------------------------------------------------
 3.2. Use a single command to get all build dependencies
@@ -76,50 +69,25 @@ sudo apt-get install distcc
 4. How to compile
 -----------------------------------------------------------------------------
 
-----------------------------------------
-4.1 Using build.sh
-----------------------------------------
-NOTE: This is no longer the recommended build method
-
-AlTheKiller has made a fantastic script that makes it a breeze to
-build a working (depending on state of SVN naturally) XBMC solution.
-It handles the SVN update, build process and the copying of all needed
-files to the folder of your choice.  ./BUILD is the default target
-location. The script also creates a backup of your UserData, scripts
-and 3rd party skin/s folders.  Do './build.sh --help' to get all
-options.  
-
-Usage (examples):
-
-.1 Make a 3D version with debug (requires OpenGL hardware acceleration
-   support on gfx-adapter)
-   # ./build.sh
-
-.2 Make a SDL 2D version (very slow) + no debug (more CONFIGOPT's are
-   listed below in section 4.2)
-   # ./build.sh CONFIGOPT=--disable-gl CONFIGOPT=--disable-debug
-
-build.sh supports reading options from an external file:
-'~/.xbmc-build-settings'.  The options are delimited with space,
-here's an example line which disables debug and never ask for
-confirmation unless an error occur: 'CONFIGOPT=--disable-debug
-CONFIRM'(remove the ''). Do build.sh --help for more options
-
-----------------------------------------
-4.2 Manual build
-----------------------------------------
-
 To create the XBMC executable manually perform these two steps:
 
 .1  # ./configure <option1> <option2> <etc>
 
 These configure options exist:
-  --disable-debug          disable debug mode (default is enabled)
-  --disable-gl             disable OpenGL rendering and instead use 2D SDL (default is enabled). This is not recommended.
-  --enable-profiling       enable gprof profiling (default is disabled)
-  --disable-joystick       disable SDL joystick support (default is enabled)
-  --prefix=/path           install XBMC to /path rather than default (/usr/local)
-  --help                   shows all options, useful fallback if this README becomes outdated
+  --enable-debug          enable debugging information (default is yes)       
+  --enable-optimizations  enable optimization (default is yes)                
+  --enable-gl             enable OpenGL rendering (default is yes)            
+  --enable-vdpau          enable VDPAU decoding (default is no)               
+  --enable-profiling      enable gprof profiling (default is no)
+  --enable-joystick       enable SDL joystick support (default is yes)
+  --enable-xrandr         enable XRandR support (default is yes)
+  --enable-ccache         enable building with ccache feature (default is yes
+                          if ccache is installed)
+  --enable-pulse          enable PulseAudio support (default is yes)
+  --enable-faac           enable FAAC support (default is yes)
+  --enable-dvdcss         enable DVDCSS support (default is yes)
+  --enable-mid            enable MID support (default is no)
+  --enable-avahi          enable Avahi support (default is no)
 
 .2  # make
 
@@ -130,168 +98,36 @@ Tip: by adding -j<number> to the make command, you describe how many
 
 .3  # make install  
 
-This will install XBMC in the prefix provided in 4.2.1 as well as a launcher script.
+This will install XBMC in the prefix provided in 4.1 as well as a launcher script.
 
 NOTE: You may need to run this with sudo (sudo make install) if your user
 doesn't have write permissions to the prefix you have provided (as in the
 default case, /usr/local).
 
-NOTE2: You can now run xbmc by issuing the command "xbmc" in a terminal or
-creating an application launcher which executes it.  You should NEVER run
-xbmc.bin directly as this will not have platform mode enabled and hence xbmc
-will not have write access to its home directory (ie. it will probably crash).
-
-NOTE: XBMC can be uninstalled from the system by issuing "make uninstall" 
-from the root of the source tree (sudo applies here as above).  If you have
-rerun configure with a different prefix (or you've run build.sh) you will need
-to rerun configure with the appropriate prefix BEFORE issuing "make uninstall"
-
 -----------------------------------------------------------------------------
 5. How to run
 -----------------------------------------------------------------------------
-
-----------------------------------------
-5.1 build.sh
-----------------------------------------
-If using build.sh with default options, simply:
-   # cd BUILD
-   # ./xbmc.bin
-
-----------------------------------------
-5.2 Manual
-----------------------------------------
-If compiling manually you can use build.sh to prepare the BUILD
-What it does:
-* Copies needed files & folders to a BUILD folder incl. main executable
-* Backs up UserData, scripts and 3rd party skin/s folders
-* Fixes case sensitivity issues by renaming some files & folders
-Usage:
-   # ./build.sh NOUPDATE NOCOMPILE
-   # cd BUILD
-   # ./xbmc.bin
+You can now run xbmc by issuing the command "xbmc" in a terminal. You should 
+NEVER run xbmc.bin directly as this will not have platform mode enabled and 
+hence xbmc will not have write access to its home directory (ie. it will 
+probably crash).
 
 -----------------------------------------------------------------------------
 6. Uninstalling
------------------------------------------------------------------------------
-
------------------------------------------------------------------------------
-6.1 build.sh install
------------------------------------------------------------------------------
-Remove your BUILD directory (rm -rf /path/to/BUILD).  Keep in mind that your
-settings are stored in BUILD/userdata/ and any 3rd party addons (skins, 
-scripts, etc) are also stored in BUILD, so if you plan to use any of them later
-they should be backed up first.
-
------------------------------------------------------------------------------
-6.2 Manual install
 -----------------------------------------------------------------------------
 Issue "make uninstall"  ("sudo make uninstall" if you user doesn't have write
 permission to the install directory) from your source tree.  If you would like
 to also remove any settings and 3rd party addons (skins, scripts, etc) you 
 should also run "rm -rf ~/.xbmc/".
 
-NOTE: If you have rerun configure with a different prefix, or used build.sh
-since installing you will need to rerun configure with the correct prefix for
-this step to work correctly.
+NOTE: If you have rerun configure with a different prefix, you will need to 
+rerun configure with the correct prefix for this step to work correctly.
 
 -----------------------------------------------------------------------------
-7. Tips n' Tricks section
+7. Endword
 -----------------------------------------------------------------------------
 
-----------------------------------------
-7.1 Fullscreen
-----------------------------------------
-
-The best way is to go into settings\Appearance\Screen and set Resolution 
-to the one with (Full Screen) next to it eg: "1360x768 (Full Screen)".  
-Toggle FS with the \ key while XBMC is running.
-
-----------------------------------------
-7.2 Multi-monitor Fullscreen
-----------------------------------------
-
-If you have a multi-monitor setup and you want to run XBMC fullscreen
-only on one monitor, then make sure to set the environment variable
-SDL_VIDEO_FULLSCREEN_HEAD to the display no.  which you want to use.
-
-For e.g. "SDL_VIDEO_FULLSCREEN_HEAD=1 ./xbmc.bin" to tell XBMC 
-to use display no.1.
-
-Note: Nvidia Twinview users should be aware that X treats the
-twinviewed displays as the same head.  If you want to run fullscreen
-XBMC on one display and start it from the other you must configure X
-with two "Device" sections against the same physical card. See chapter
-16 of the Nvidia user guide for information on how to do this.
-
-----------------------------------------
-7.3 Channel downmixing
-----------------------------------------
-
-(This is Not required Anymore since revision 10937) 
-If your machine only has 2 speakers and you would like to watch movies
-with more channels (e.g. 5.1) then you need to configure your
-.asoundrc file. The .asoundrc file is a configuration file located in
-the user's home directory. A sample configuration named "demo-asoundrc"
-can be found in same folder as this README, so:
-
-
-.1 backup your .asoundrc if it exists (e.g. # cp ~/.asoundrc ~/.asoundrc.backup)
-
-.2 copy the demo asoundrc - # cp demo-asoundrc ~/.asoundrc
-
-.3 you can edit the file and change the downmix setup by changing the
-   "ttable" values. The values range from 0.0 to 1.0 and are actaully the
-   volume pct from the original channels volume.
-
-----------------------------------------
-7.4 Fullscreen Mouse Sensitivity
-----------------------------------------
-
-If you find that your mouse is not sensitive enough in fullscreen, set
-the environment variable SDL_VIDEO_X11_MOUSEACCEL to adjust mouse
-acceleration. From SDL docs:
-
-  "For X11, SDL_VIDEO_X11_MOUSEACCEL sets the mouse acceleration. The
-  value should be a string on the form: n/d/t where n and d are the
-  acceleration numerator/denumerators (so mouse movement is
-  accelerated by n/d), and t is the threshold above which acceleration
-  applies (counted as number of pixels the mouse moves at once)."
-
-----------------------------------------
-7.5 Turning off on screen debug info
-----------------------------------------
-
-The proper way is to compile with the --disable-debug option this will 
-make a smaller executeable as well.
-Add -q to the commandline "./xbmc.bin -q" will remove the on screen
-Debug info when you have compiled with debug mode on (default)
-
-----------------------------------------
-7.6 experimental - SMB mount shares 
-----------------------------------------
-
-this is an experimental feature. it will mount all smb sources externally (on filesystem under /media/xbmc/smb)
-and make xbmc access those shares as if they are local (let the OS do all the dirty work).
-this feature is turned off by default since its currently performing worse than the current libsmbclient solution.
-in order to enable this feature, smbfs is needed. 
-a simple "sudo apt-get install smbfs" would do.
-
-since mounting/unmounting can only be done by root, xbmc uses "sudo" to perform this action.
-you will beed to add the user that runs xbmc to the sudoers file.
-1. sudo visudo
-2. add the following line to the end of the file ("xbmc" is used as an example, this should be the user id that runs xmbc):
-xbmc ALL=NOPASSWD: /bin/mount, /bin/umount, /bin/mkdir
-^
-|--instead of "xbmc" use the user id which runs xbmc.
-
-3. turn on the "mount SMB shares" option. under Settings->Network->SMB Client
-
-
------------------------------------------------------------------------------
-8. Endword
------------------------------------------------------------------------------
-
-Don't expect too much, yet.
+Have fun!
 
 EOF
 

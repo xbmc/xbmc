@@ -20,7 +20,7 @@
  */
 
 /**
- * @file interplayvideo.c
+ * @file libavcodec/interplayvideo.c
  * Interplay MVE Video Decoder by Mike Melanson (melanson@pcisys.net)
  * For more information about the Interplay MVE format, visit:
  *   http://www.pcisys.net/~melanson/codecs/interplay-mve.txt
@@ -942,5 +942,5 @@ AVCodec interplay_video_decoder = {
     ipvideo_decode_end,
     ipvideo_decode_frame,
     CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Interplay MVE Video"),
+    .long_name = NULL_IF_CONFIG_SMALL("Interplay MVE video"),
 };

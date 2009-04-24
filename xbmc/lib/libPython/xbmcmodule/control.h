@@ -20,9 +20,7 @@
  */
 
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "GUIControl.h"
 #include "listitem.h"
 
@@ -129,13 +127,11 @@ namespace PYXBMC
     PyObject_HEAD_XBMC_CONTROL
     std::string strFont;
     DWORD dwTextColor;
-    ControlSpin* pControlSpin;
   } ControlTextBox;
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
     std::string strFileName;
-    DWORD strColorKey;
     DWORD aspectRatio;
     DWORD strColorDiffuse;
   } ControlImage;

@@ -1,22 +1,33 @@
 OBJS = ../src/xbmc_interface.o
 CFLAGS += -I../include -D_LINUX -fPIC
+CXXFLAGS += -I../include -D_LINUX -fPIC
 DIRS= ..
 
 ARCH=@ARCH@
 SYSDIR=../../../../../system/players/paplayer
 SO=libmpcdec-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
+SLIB=$(SYSDIR)/$(SO)
 
 .PHONY: compile
 
-$(LIB): $(OBJS) ../src/.libs/libmpcdec.a
+$(SLIB): $(OBJS) ../src/.libs/libmpcdec.a
+ifeq ($(findstring osx,$(ARCH)), osx)
+	ld -bundle -flat_namespace -undefined suppress -o $@ \
+		../src/.libs/libmpcdec.a \
+		../src/xbmc_interface.o $(BUNDLE1_O)
+	../../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+else
 	$(CC) -shared -o $@ -Wl,--whole-archive ../src/.libs/libmpcdec.a \
 		-Wl,--no-whole-archive ../src/xbmc_interface.o \
 		`cat ../../../DllLoader/exports/wrapper.def` \
 		../../../DllLoader/exports/wrapper.o
 
+endif
+
+include ../../../../../Makefile.include
+
 ../src/.libs/libmpcdec.a: compile
 	$(MAKE) -C ..
 
-include ../../../../../Makefile.include
 

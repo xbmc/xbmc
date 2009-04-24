@@ -31,11 +31,7 @@ CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, floa
 {
   ControlType = GUICONTAINER_PANEL;
   m_type = VIEW_TYPE_ICON;
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  m_spinControl = NULL;
-  m_largePanel = NULL;
   m_itemsPerRow = 1;
-//#endif
 }
 
 CGUIPanelContainer::~CGUIPanelContainer(void)
@@ -365,7 +361,8 @@ void CGUIPanelContainer::ValidateOffset()
 
 void CGUIPanelContainer::SetCursor(int cursor)
 {
-  if (cursor > m_itemsPerPage*m_itemsPerRow - 1) cursor = m_itemsPerPage*m_itemsPerRow - 1;
+  // +1 to ensure we're OK if we have a half item
+  if (cursor > (m_itemsPerPage + 1)*m_itemsPerRow - 1) cursor = (m_itemsPerPage + 1)*m_itemsPerRow - 1;
   if (cursor < 0) cursor = 0;
   g_infoManager.SetContainerMoving(GetID(), cursor - m_cursor);
   m_cursor = cursor;
@@ -410,34 +407,6 @@ int CGUIPanelContainer::CorrectOffset(int offset, int cursor) const
   return offset * m_itemsPerRow + cursor;
 }
 
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
-                         const CImage& imageNoFocus, const CImage& imageFocus,
-                         float itemWidth, float itemHeight,
-                         float textureWidth, float textureHeight,
-                         float thumbPosX, float thumbPosY, float thumbWidth, float thumbHeight, DWORD thumbAlign, const CGUIImage::CAspectRatio &thumbAspect,
-                         const CLabelInfo& labelInfo, bool hideLabels,
-                         CGUIControl *pSpin, CGUIControl *pPanel)
-: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200) 
-{
-  CGUIListItemLayout layout;
-  layout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, false, imageNoFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);
-  m_layouts.push_back(layout);
-  CGUIListItemLayout focusedLayout;
-  focusedLayout.CreateThumbnailPanelLayouts(itemWidth, itemHeight, true, imageFocus, textureWidth, textureHeight, thumbPosX, thumbPosY, thumbWidth, thumbHeight, thumbAlign, thumbAspect, labelInfo, hideLabels);
-  m_focusedLayouts.push_back(focusedLayout);
-  m_height -= 5;
-  m_itemsPerPage = (int)(m_height / itemHeight);
-  if (m_itemsPerPage < 1) m_itemsPerPage = 1;
-  m_itemsPerRow = (int)(m_width / itemWidth);
-  if (m_itemsPerRow < 1) m_itemsPerRow = 1;
-  m_height = m_itemsPerPage * itemHeight;
-  m_spinControl = pSpin;
-  m_largePanel = pPanel;
-  ControlType = GUICONTAINER_PANEL;
-}
-//#endif
-
 bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
 {
   if (!m_layout)
@@ -447,7 +416,7 @@ bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)
   float sizeY = m_orientation == VERTICAL ? m_layout->Size(VERTICAL) : m_layout->Size(HORIZONTAL);
 
   float posY = m_orientation == VERTICAL ? point.y : point.x;
-  for (int y = 0; y < m_itemsPerPage; y++)
+  for (int y = 0; y < m_itemsPerPage + 1; y++) // +1 to ensure if we have a half item we can select it
   {
     float posX = m_orientation == VERTICAL ? point.x : point.y;
     for (int x = 0; x < m_itemsPerRow; x++)

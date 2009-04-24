@@ -1,5 +1,7 @@
 INCLUDES=-I. -I../ -I../linux -I../../guilib -I../lib/UnrarXLib -I../utils -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include
-CFLAGS+= -D__STDC_FORMAT_MACROS
+INCLUDES+=-I../lib/libcdio/libcdio/include
+
+CXXFLAGS+= -D__STDC_FORMAT_MACROS
 
 SRCS=ASAPFileDirectory.cpp \
      CacheMemBuffer.cpp \
@@ -33,12 +35,14 @@ SRCS=ASAPFileDirectory.cpp \
      FileRar.cpp \
      FileRTV.cpp \
      FileShoutcast.cpp \
+     FileSpecialProtocol.cpp \
      FileSmb.cpp \
      FileTuxBox.cpp \
      FileXBMSP.cpp \
      FileZip.cpp \
      FTPDirectory.cpp \
      FTPParse.cpp \
+     HTTPDirectory.cpp \
      HDDirectory.cpp \
      HDHomeRun.cpp \
      IDirectory.cpp \
@@ -66,6 +70,8 @@ SRCS=ASAPFileDirectory.cpp \
      SIDFileDirectory.cpp \
      SmartPlaylistDirectory.cpp \
      SMBDirectory.cpp \
+     SpecialProtocol.cpp \
+     SpecialProtocolDirectory.cpp \
      StackDirectory.cpp \
      UPnPDirectory.cpp \
      UPnPVirtualPathDirectory.cpp \
@@ -77,7 +83,7 @@ SRCS=ASAPFileDirectory.cpp \
      VTPFile.cpp \
      XBMSDirectory.cpp \
      ZipDirectory.cpp \
-     ZipManager.cpp \
+     ZipManager.cpp
 
 INCLUDES+=-I../lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -I../lib/libUPnP/Platinum/Source/Core \

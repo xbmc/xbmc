@@ -19,6 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "libavutil/intreadwrite.h"
 #include "libavutil/tree.h"
 #include "libavcodec/mpegaudiodata.h"
 #include "nut.h"
@@ -108,7 +109,7 @@ static void build_elision_headers(AVFormatContext *s){
     int i;
     //FIXME this is lame
     //FIXME write a 2pass mode to find the maximal headers
-    const static uint8_t headers[][5]={
+    static const uint8_t headers[][5]={
         {3, 0x00, 0x00, 0x01},
         {4, 0x00, 0x00, 0x01, 0xB6},
         {2, 0xFF, 0xFA}, //mp3+crc
@@ -447,6 +448,7 @@ static int add_info(ByteIOContext *bc, const char *type, const char *value){
 
 static int write_globalinfo(NUTContext *nut, ByteIOContext *bc){
     AVFormatContext *s= nut->avf;
+    AVMetadataTag *title, *author, *copyright;
     ByteIOContext *dyn_bc;
     uint8_t *dyn_buf=NULL;
     int count=0, dyn_size;
@@ -454,9 +456,13 @@ static int write_globalinfo(NUTContext *nut, ByteIOContext *bc){
     if(ret < 0)
         return ret;
 
-    if(s->title    [0]) count+= add_info(dyn_bc, "Title"    , s->title);
-    if(s->author   [0]) count+= add_info(dyn_bc, "Author"   , s->author);
-    if(s->copyright[0]) count+= add_info(dyn_bc, "Copyright", s->copyright);
+    title     = av_metadata_get(s->metadata, "Title"    , NULL, 0);
+    author    = av_metadata_get(s->metadata, "Author"   , NULL, 0);
+    copyright = av_metadata_get(s->metadata, "Copyright", NULL, 0);
+
+    if(title    ) count+= add_info(dyn_bc, "Title"    , title->value);
+    if(author   ) count+= add_info(dyn_bc, "Author"   , author->value);
+    if(copyright) count+= add_info(dyn_bc, "Copyright", copyright->value);
     if(!(s->streams[0]->codec->flags & CODEC_FLAG_BITEXACT))
                         count+= add_info(dyn_bc, "Encoder"  , LIBAVFORMAT_IDENT);
 
@@ -808,9 +814,9 @@ AVOutputFormat nut_muxer = {
     "video/x-nut",
     "nut",
     sizeof(NUTContext),
-#ifdef CONFIG_LIBVORBIS
+#if   CONFIG_LIBVORBIS
     CODEC_ID_VORBIS,
-#elif defined(CONFIG_LIBMP3LAME)
+#elif CONFIG_LIBMP3LAME
     CODEC_ID_MP3,
 #else
     CODEC_ID_MP2,
@@ -819,6 +825,6 @@ AVOutputFormat nut_muxer = {
     write_header,
     write_packet,
     write_trailer,
-    .flags = AVFMT_GLOBALHEADER,
+    .flags = AVFMT_GLOBALHEADER | AVFMT_VARIABLE_FPS,
     .codec_tag= (const AVCodecTag* const []){codec_bmp_tags, codec_wav_tags, ff_nut_subtitle_tags, 0},
 };

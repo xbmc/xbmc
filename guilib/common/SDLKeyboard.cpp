@@ -38,9 +38,12 @@ void CLowLevelKeyboard::Initialize(HWND hWnd)
 
   desc = XkbGetKeyboard(dpy, XkbAllComponentsMask, XkbUseCoreKbd);
   if(!desc)
+  {
+    XCloseDisplay(dpy);
     return;
+  }
 
-  symbols  = XGetAtomName(dpy, desc->names->symbols);
+  symbols = XGetAtomName(dpy, desc->names->symbols);
   if(symbols)
   {
     CLog::Log(LOGDEBUG, "CLowLevelKeyboard::Initialize - XKb symbols %s", symbols);
@@ -48,7 +51,9 @@ void CLowLevelKeyboard::Initialize(HWND hWnd)
       m_bEvdev = true;
   }
 
+  XFree(symbols);
   XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
+  XCloseDisplay(dpy);
 #endif
 }
 
@@ -144,7 +149,7 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
       if (!m_VKey && !m_cAscii) // split block due to ms compiler complaints about nested code depth
       {
         // OSX defines unicode values for non-printing keys which breaks the key parser, set m_wUnicode
-        if (m_keyEvent.key.keysym.sym == SDLK_BACKSPACE) { m_VKey = 0x08; m_wUnicode=0x08; }   
+        if (m_keyEvent.key.keysym.sym == SDLK_BACKSPACE) { m_VKey = 0x08; m_wUnicode=0x08; }
         else if (m_keyEvent.key.keysym.sym == SDLK_TAB) m_VKey = 0x09;
         else if (m_keyEvent.key.keysym.sym == SDLK_RETURN) m_VKey = 0x0d;
         else if (m_keyEvent.key.keysym.sym == SDLK_ESCAPE) m_VKey = 0x1b;
@@ -203,20 +208,25 @@ void CLowLevelKeyboard::Update(SDL_Event& m_keyEvent)
         else if (m_keyEvent.key.keysym.scancode == 123) m_VKey = 0xaf; // Volume up
         else if (m_keyEvent.key.keysym.scancode == 135) m_VKey = 0x5d; // Right click
         else if (m_keyEvent.key.keysym.scancode == 136) m_VKey = 0xb2; // Stop
+        else if (m_keyEvent.key.keysym.scancode == 138) m_VKey = 0x49; // Info
         else if (m_keyEvent.key.keysym.scancode == 166) m_VKey = 0xa6; // Browser back
         else if (m_keyEvent.key.keysym.scancode == 167) m_VKey = 0xa7; // Browser forward
         else if (m_keyEvent.key.keysym.scancode == 171) m_VKey = 0xb0; // Next track
         else if (m_keyEvent.key.keysym.scancode == 172) m_VKey = 0xb3; // Play_Pause
         else if (m_keyEvent.key.keysym.scancode == 173) m_VKey = 0xb1; // Prev track
+        else if (m_keyEvent.key.keysym.scancode == 174) m_VKey = 0xb2; // Stop
+        else if (m_keyEvent.key.keysym.scancode == 176) m_VKey = 0x52; // Rewind
         else if (m_keyEvent.key.keysym.scancode == 180) m_VKey = 0xac; // Browser home
         else if (m_keyEvent.key.keysym.scancode == 181) m_VKey = 0xa8; // Browser refresh
+        else if (m_keyEvent.key.keysym.scancode == 214) m_VKey = 0x1B; // Close
         else if (m_keyEvent.key.keysym.scancode == 215) m_VKey = 0xb3; // Play_Pause
+        else if (m_keyEvent.key.keysym.scancode == 216) m_VKey = 0x46; // Forward
         //else if (m_keyEvent.key.keysym.scancode == 167) m_VKey = 0xb3; // Record
       }
       if (!m_VKey && !m_cAscii && !m_bEvdev)
       {
         // following scancode infos are
-        // 1. from ubuntu keyboard shortcut (hex) -> predefined 
+        // 1. from ubuntu keyboard shortcut (hex) -> predefined
         // 2. from unix tool xev and my keyboards (decimal)
         // m_VKey infos from CharProbe tool
         // Can we do the same for XBoxKeyboard and DirectInputKeyboard? Can we access the scancode of them? By the way how does SDL do it? I can't find it. (Automagically? But how exactly?)

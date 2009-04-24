@@ -23,8 +23,11 @@
 #include "RssFeed.h"
 #include "Settings.h"
 #include "Util.h"
-#include "HTTP.h"
+#include "FileSystem/FileCurl.h"
 #include "tinyXML/tinyxml.h"
+#ifdef _WIN32PC
+extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
+#endif
 
 using namespace std;
 
@@ -49,28 +52,9 @@ bool CRssFeed::Init(const CStdString& strURL) {
 time_t CRssFeed::ParseDate(const CStdString & strDate) {
   struct tm pubDate = {0};
   // TODO: Handle time zone
-#ifndef _WIN32 // TODO: Implement this on win32 (no strptime)
   strptime(strDate.c_str(), "%a, %d %b %Y %H:%M:%S", &pubDate);
-#endif
   // Check the difference between the time of last check and time of the item
   return mktime(&pubDate);
-}
-
-CStdString CRssFeed::CleanDescription(const CStdString& strDescription) {
-  CStdString description = strDescription;
-
-  while (description.Find("<") != -1)
-  {
-    int start = description.Find("<");
-    int end = description.Find(">");
-    if (end > start)
-      description.Delete(start, end-start+1);
-    else
-      description.Delete(start, description.GetLength() - start);
-  }
-  description.Trim();
-
-  return description;
 }
 
 bool CRssFeed::ReadFeed() {
@@ -80,8 +64,8 @@ bool CRssFeed::ReadFeed() {
   items.Clear();
   LeaveCriticalSection(m_ItemVectorLock);
 
-  string strXML;
-  CHTTP http;
+  CStdString strXML;
+  XFILE::CFileCurl http;
   if (!http.Get(m_strURL, strXML))
     return false;
 
@@ -185,7 +169,7 @@ bool CRssFeed::ReadFeed() {
         }
         const char * len = item_child->Attribute("length");
         if (len)
-          item->SetProperty("duration_ms", len);
+          item->m_dwSize = _atoi64(len);
       }
       else if(strcmp(item_child->Value(), "media:content") == 0) {
         const char * url = item_child->Attribute("url");

@@ -6,7 +6,6 @@
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<include>ContentPanel</include>
-			<include>CommonNowPlaying_Controls</include>
 			<control type="group">
 				<posx>317</posx>
 				<posy>135</posy>
@@ -58,7 +57,7 @@
 					<font>font35b</font>
 					<align>center</align>
 					<aligny>center</aligny>
-					<info>Window.Property(Current.Temperature)</info>
+					<label>$INFO[Window.Property(Current.Temperature)]$INFO[System.TemperatureUnits]</label>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
@@ -154,7 +153,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<info>Window.Property(Current.FeelsLike)</info>
+					<label>$INFO[Window.Property(Current.FeelsLike)]$INFO[System.TemperatureUnits]</label>
 					<textcolor>white</textcolor>
 				</control>
 				<control type="label">
@@ -165,7 +164,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<info>Window.Property(Current.DewPoint)</info>
+					<label>$INFO[Window.Property(Current.DewPoint)]$INFO[System.TemperatureUnits]</label>
 					<textcolor>white</textcolor>
 				</control>
 				<control type="label">
@@ -259,7 +258,7 @@
 					<posx>110</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<info>Window.Property(Day0.HighTemp)</info>
+					<label>$INFO[Window.Property(Day0.HighTemp)]$INFO[System.TemperatureUnits]</label>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -282,7 +281,7 @@
 					<posx>290</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<info>Window.Property(Day0.LowTemp)</info>
+					<label>$INFO[Window.Property(Day0.LowTemp)]$INFO[System.TemperatureUnits]</label>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -358,7 +357,7 @@
 					<posx>110</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<info>Window.Property(Day1.HighTemp)</info>
+					<label>$INFO[Window.Property(Day1.HighTemp)]$INFO[System.TemperatureUnits]</label>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -381,7 +380,7 @@
 					<posx>290</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<info>Window.Property(Day1.LowTemp)</info>
+					<label>$INFO[Window.Property(Day1.LowTemp)]$INFO[System.TemperatureUnits]</label>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -457,7 +456,7 @@
 					<posx>110</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<info>Window.Property(Day2.HighTemp)</info>
+					<label>$INFO[Window.Property(Day2.HighTemp)]$INFO[System.TemperatureUnits]</label>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -480,7 +479,7 @@
 					<posx>290</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<info>Window.Property(Day2.LowTemp)</info>
+					<label>$INFO[Window.Property(Day2.LowTemp)]$INFO[System.TemperatureUnits]</label>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -556,7 +555,7 @@
 					<posx>110</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<info>Window.Property(Day3.HighTemp)</info>
+					<label>$INFO[Window.Property(Day3.HighTemp)]$INFO[System.TemperatureUnits]</label>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -579,7 +578,7 @@
 					<posx>290</posx>
 					<posy>50</posy>
 					<height>20</height>
-					<info>Window.Property(Day3.LowTemp)</info>
+					<label>$INFO[Window.Property(Day3.LowTemp)]$INFO[System.TemperatureUnits]</label>
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
@@ -614,7 +613,7 @@
 					<include>ButtonCommonValues</include>
 					<onleft>99</onleft>
 					<onright>99</onright>
-					<onup>4</onup>
+					<onup>611</onup>
 					<ondown>2</ondown>
 				</control>
 				<control type="label">
@@ -664,8 +663,26 @@
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<onup>5</onup>
-					<ondown>3</ondown>
+					<ondown>610</ondown>
 					<animation effect="slide" end="0,-45" time="0" condition="!Control.IsVisible(5)">Conditional</animation>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>4</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>180</posy>
+					<animation effect="slide" start="0,0" end="0,-45" time="0" condition="!Control.IsVisible(5)">conditional</animation>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
+					<ondown>3</ondown>
+					<visible>false</visible>
 				</control>
 			</control>
 		</control>

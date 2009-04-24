@@ -27,7 +27,7 @@
 #include "utils/Thread.h"
 
 namespace XFILE
-{  
+{
 
   class CFileCache : public IFile, public CThread
   {
@@ -35,27 +35,27 @@ namespace XFILE
     CFileCache();
     CFileCache(CCacheStrategy *pCache, bool bDeleteCache=true);
     virtual ~CFileCache();
-    
+
     void SetCacheStrategy(CCacheStrategy *pCache, bool bDeleteCache=true);
 
     // CThread methods
     virtual void Process();
     virtual void OnExit();
     virtual void StopThread();
-    
+
     // IFIle methods
-    virtual bool          Open(const CURL& url, bool bBinary = true);
+    virtual bool          Open(const CURL& url);
     virtual bool          Attach(IFile *pFile);
     virtual void          Close();
     virtual bool          Exists(const CURL& url);
     virtual int           Stat(const CURL& url, struct __stat64* buffer);
-    
+
     virtual unsigned int  Read(void* lpBuf, __int64 uiBufSize);
-    
+
     virtual __int64       Seek(__int64 iFilePosition, int iWhence);
     virtual __int64       GetPosition();
     virtual __int64       GetLength();
-    
+
     virtual ICacheInterface* GetCache();
     IFile *GetFileImp();
 

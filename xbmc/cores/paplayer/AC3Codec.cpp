@@ -27,11 +27,11 @@
 static inline int16_t convert(int32_t i)
 {
 #ifdef LIBA52_FIXED
-    i >>= 15;
+  i >>= 15;
 #else
-    i -= 0x43c00000;
+  i -= 0x43c00000;
 #endif
-    return (i > 32767) ? 32767 : ((i < -32768) ? -32768 : i);
+  return (i > 32767) ? 32767 : ((i < -32768) ? -32768 : i);
 }
 
 /**
@@ -42,20 +42,22 @@ static inline int16_t convert(int32_t i)
  */
 static int resample_int16(sample_t * in, int16_t *out, int32_t channel_map)
 {
-    unsigned long i;
-    int16_t *p = out;
-    for (i = 0; i != 256; i++) {
-	unsigned long map = channel_map;
-	do {
-	    unsigned long ch = map & 15;
-	    if (ch == 15)
-		*p = 0;
-	    else
-		*p = convert( ((int32_t*)in)[i + ((ch-1)<<8)] );
-	    p++;
-	} while ((map >>= 4));
-    }
-    return (int16_t*) p - out;
+  unsigned long i;
+  int16_t *p = out;
+  for (i = 0; i != 256; i++)
+  {
+    unsigned long map = channel_map;
+    do
+	{
+      unsigned long ch = map & 15;
+      if (ch == 15)
+        *p = 0;
+      else
+        *p = convert( ((int32_t*)in)[i + ((ch-1)<<8)] );
+      p++;
+    } while ((map >>= 4));
+  }
+  return (int16_t*) p - out;
 }
 
 AC3Codec::AC3Codec()
@@ -123,7 +125,7 @@ void AC3Codec::PrepairBuffers()
 bool AC3Codec::InitFile(const CStdString &strFile, unsigned int filecache)
 {
   //  Open the file to play
-  return m_file.Open(strFile, true, READ_CACHED);
+  return m_file.Open(strFile, READ_CACHED);
 }
 
 bool AC3Codec::CalculateTotalTime()
@@ -196,34 +198,36 @@ void AC3Codec::SetupChannels(unsigned flags)
   // standard windows format
   if(m_iFlags & A52_LFE)
   {
-    switch (m_iFlags&~A52_LFE) {
+    switch (m_iFlags&~A52_LFE)
+	{
       case A52_MONO   : m_iOutputMapping = 0x12ffff; break;
-	  case A52_CHANNEL:
-	  case A52_STEREO :
-	  case A52_DOLBY  : m_iOutputMapping = 0x1fff32; break;
+      case A52_CHANNEL:
+      case A52_STEREO :
+      case A52_DOLBY  : m_iOutputMapping = 0x1fff32; break;
       case A52_2F1R   : m_iOutputMapping = 0x1f5542; break;
-	  case A52_2F2R   : m_iOutputMapping = 0x1f5432; break;
-	  case A52_3F     : m_iOutputMapping = 0x13ff42; break;
+      case A52_2F2R   : m_iOutputMapping = 0x1f5432; break;
+      case A52_3F     : m_iOutputMapping = 0x13ff42; break;
       case A52_3F2R   : m_iOutputMapping = 0x136542; break;
-	}
+    }
   }
   else
   {
-    switch (m_iFlags) {
-	  case A52_MONO   : m_iOutputMapping =     0x1; break;
-	  case A52_CHANNEL:
-	  case A52_STEREO :
-	  case A52_DOLBY  : m_iOutputMapping =    0x21; break;
+    switch (m_iFlags)
+	{
+      case A52_MONO   : m_iOutputMapping =     0x1; break;
+      case A52_CHANNEL:
+      case A52_STEREO :
+      case A52_DOLBY  : m_iOutputMapping =    0x21; break;
       case A52_2F1R   : m_iOutputMapping =  0x2231; break;
-	  case A52_2F2R   : m_iOutputMapping =  0x4321; break;
-	  case A52_3F     : m_iOutputMapping = 0x2ff31; break;
+      case A52_2F2R   : m_iOutputMapping =  0x4321; break;
+      case A52_3F     : m_iOutputMapping = 0x2ff31; break;
       case A52_3F2R   : m_iOutputMapping = 0x25431; break;
-	}
+    }
   }
 
   int channels = 0;
   unsigned int m = m_iOutputMapping<<4;
-  while(m>>=4) channels++;  
+  while(m>>=4) channels++;
 
   // xbox can't handle these
   if(channels == 5 || channels == 3)
@@ -251,7 +255,7 @@ void AC3Codec::SetupChannels(unsigned flags)
 int AC3Codec::ReadInput()
 {
   int inputBufferToRead = m_readingBufferSize - m_readBufferPos;
-  if ( inputBufferToRead && !m_eof ) 
+  if ( inputBufferToRead && !m_eof )
   {
     int fileLeft=(int)(m_file.GetLength() - m_file.GetPosition());
     if (inputBufferToRead >  fileLeft ) inputBufferToRead = fileLeft;
@@ -311,7 +315,7 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
 {
   sample_t bias = 384;
   m_DecoderError = false;
-  
+
   int iLen = 0;
   BYTE* pOldDataPointer = pData;
   while (iSize > HEADER_SIZEAC3)
@@ -337,7 +341,7 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
           //start of data in file
           if (m_iDataStart == -1)
             m_iDataStart = (pData - pOldDataPointer);
-          
+
           pData          += HEADER_SIZEAC3;
           m_pInputBuffer += HEADER_SIZEAC3;
           iSize          -= HEADER_SIZEAC3;
@@ -357,7 +361,7 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
         // we are at the end of our stream and don't have enough data for our header anymore.
         // copy it to our buffer for later use;
         for (int i = 0; i < iSize; i++) m_pInputBuffer[i] = pData[i];
-        
+
         m_pInputBuffer += iSize;
         pData          += iSize;
         iSize           = 0;
@@ -371,7 +375,7 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
       iLen = m_iFrameSize - (m_pInputBuffer - m_inputBuffer);
       if (iSize < iLen) iLen = iSize;
       memcpy(m_pInputBuffer, pData, iLen);
-      
+
       m_pInputBuffer += iLen;
       pData          += iLen;
       iSize          -= iLen;
@@ -379,7 +383,7 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
     else
     {
       // we have a frame to decode
-      float level = 1.0f;      
+      float level = 1.0f;
       int iFlags = m_iFlags;
 
       /* adjust level should always be set, to keep samples in proper range */
@@ -401,7 +405,7 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
           m_DecoderError = true;
           return (pData - pOldDataPointer);
         }
-        
+
         m_fSamples = m_dll.a52_samples(m_pState);
         m_decodedDataSize += 2*resample_int16(m_fSamples, (int16_t*)(m_decodedData + m_decodedDataSize), m_iOutputMapping);
       }
@@ -426,4 +430,5 @@ void AC3Codec::SetDefault()
 }
 
 #endif
+
 

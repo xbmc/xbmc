@@ -47,8 +47,8 @@ public:
   IFile();
   virtual ~IFile();
 
-  virtual bool Open(const CURL& url, bool bBinary = true) = 0;
-  virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false) { return false; };
+  virtual bool Open(const CURL& url) = 0;
+  virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false) { return false; };
   virtual bool Exists(const CURL& url) = 0;
   virtual int Stat(const CURL& url, struct __stat64* buffer) = 0;
   virtual int Stat(struct __stat64* buffer)
@@ -116,7 +116,7 @@ public:
   virtual bool Delete(const CURL& url) { return false; }
   virtual bool Rename(const CURL& url, const CURL& urlnew) { return false; }
 
-  virtual ICacheInterface* GetCache() {return NULL;} 
+  virtual ICacheInterface* GetCache() {return NULL;}
   virtual int IoControl(int request, void* param) { return -1; }
 
   virtual CStdString GetContent()                            { return "application/octet-stream"; }
@@ -134,4 +134,5 @@ public:
 }
 
 #endif // !defined(AFX_IFILE_H__7EE73AC7_36BC_4822_93FF_44F3B0C766F6__INCLUDED_)
+
 

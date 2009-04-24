@@ -51,6 +51,8 @@ CSong::CSong(CMusicInfoTag& tag)
   iEndOffset = 0;
   idSong = -1;
   iTimesPlayed = 0;
+  iKaraokeNumber = 0;
+  iKaraokeDelay = 0;         //! Karaoke song lyrics-music delay in 1/10 seconds.
 }
 
 CSong::CSong()
@@ -82,6 +84,9 @@ void CSong::Clear()
   idSong = -1;
   iTimesPlayed = 0;
   lastPlayed = "";
+  iKaraokeNumber = 0;
+  strKaraokeLyrEncoding.Empty();
+  iKaraokeDelay = 0;
 }
 
 CSongMap::CSongMap()

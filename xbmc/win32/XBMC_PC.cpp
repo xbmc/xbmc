@@ -35,6 +35,7 @@
 #endif
 #include "../../xbmc/Application.h"
 #include "WIN32Util.h"
+#include "shellapi.h"
 
 //-----------------------------------------------------------------------------
 // Resource defines
@@ -66,18 +67,35 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
   m_hInstance = hInstance;
   HRESULT hr = S_OK;
 
-  CStdString strcl(commandLine);
+  CStdStringW strcl(commandLine);
+  LPWSTR *szArglist;
+  int nArgs;
 
-  if(strcl.Find("-fs") >= 0)
-    g_advancedSettings.m_startFullScreen = true;
-
-  if(strcl.Find("-p") >= 0)
+  szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
+  if(szArglist != NULL)
   {
-#ifdef _DEBUG
-    printf("Using platform specific directories...\n");
-#endif
-    g_application.EnablePlatformDirectories();
+    for(int i=0;i<nArgs;i++)
+    {
+      CStdStringW strArgW(szArglist[i]);
+      if(strArgW.Equals(L"-fs"))
+        g_advancedSettings.m_startFullScreen = true;
+      else if(strArgW.Equals(L"-p") || strArgW.Equals(L"--portable"))
+        g_application.EnablePlatformDirectories(false);
+      else if(strArgW.Equals(L"-d"))
+      {
+        if(++i < nArgs)
+        {
+          int iSleep = _wtoi(szArglist[i]);
+          if(iSleep > 0 && iSleep < 360)
+            Sleep(iSleep*1000);
+          else
+            --i;
+        }
+      }
+    }
+    LocalFree(szArglist);
   }
+
   return S_OK;
 }
 
@@ -108,17 +126,6 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   CXBMC_PC myApp;
 
   g_xbmcPC = &myApp;
-
-  /*if (GetDriveType("Q:\\") == DRIVE_NO_ROOT_DIR)
-  {
-    MessageBox(NULL, "No Q:\\ Drive found, Exiting XBMC_PC", "XBMC_PC: Fatal Error", MB_OK);
-    return 0;
-  }*/
-  if (GetDriveType("Q:\\") == DRIVE_CDROM)
-  {
-    MessageBox(NULL, "Q:\\ Drive can not be DVD/CD Drive, Exiting XBMC", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
-    return 0;
-  }
 
   if(CWIN32Util::GetDesktopColorDepth() < 32)
   {

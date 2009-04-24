@@ -21,7 +21,7 @@
  */
 
 /**
- * @file aac.h
+ * @file libavcodec/aac.h
  * AAC definitions and structures
  * @author Oded Shimon  ( ods15 ods15 dyndns org )
  * @author Maxim Gavrilov ( maxim.gavrilov gmail com )
@@ -30,6 +30,7 @@
 #ifndef AVCODEC_AAC_H
 #define AVCODEC_AAC_H
 
+#include "libavutil/internal.h"
 #include "avcodec.h"
 #include "dsputil.h"
 #include "mpeg4audio.h"
@@ -252,7 +253,7 @@ typedef struct {
     DynamicRangeControl che_drc;
 
     /**
-     * @defgroup elements
+     * @defgroup elements Channel element related data.
      * @{
      */
     enum ChannelPosition che_pos[4][MAX_ELEM_ID]; /**< channel element channel mapping with the

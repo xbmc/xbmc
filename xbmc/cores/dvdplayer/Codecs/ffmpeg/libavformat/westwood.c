@@ -20,7 +20,7 @@
  */
 
 /**
- * @file westwood.c
+ * @file libavformat/westwood.c
  * Westwood Studios VQA & AUD file demuxers
  * by Mike Melanson (melanson@pcisys.net)
  * for more information on the Westwood file formats, visit:
@@ -33,6 +33,7 @@
  * qualify a file. Refer to wsaud_probe() for the precise parameters.
  */
 
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
 #define AUD_HEADER_SIZE 12
@@ -370,7 +371,7 @@ static int wsvqa_read_packet(AVFormatContext *s,
     return ret;
 }
 
-#ifdef CONFIG_WSAUD_DEMUXER
+#if CONFIG_WSAUD_DEMUXER
 AVInputFormat wsaud_demuxer = {
     "wsaud",
     NULL_IF_CONFIG_SMALL("Westwood Studios audio format"),
@@ -380,7 +381,7 @@ AVInputFormat wsaud_demuxer = {
     wsaud_read_packet,
 };
 #endif
-#ifdef CONFIG_WSVQA_DEMUXER
+#if CONFIG_WSVQA_DEMUXER
 AVInputFormat wsvqa_demuxer = {
     "wsvqa",
     NULL_IF_CONFIG_SMALL("Westwood Studios VQA format"),

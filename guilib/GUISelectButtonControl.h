@@ -1,6 +1,6 @@
 /*!
 \file GUISelectButtonControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIWINDOWSELECTCONTROL_H
@@ -34,13 +34,13 @@
 /*!
  \ingroup controls
  \brief Button with multi selection choice.
- 
+
  Behaves like a normal button control, but when pressing,
  it can show multiple strings. The user can choose one by
  moving left or right. \n
  \n
  Messages the button reactes on: \n
- 
+
  - GUI_MSG_LABEL_ADD \n
  Add a label to the control. Use CGUIMessage::SetLabel
  to set the label text.
@@ -49,7 +49,7 @@
  - GUI_MSG_ITEM_SELECTED \n
  After sending this message the CGUIMessage::GetParam1
  contains the selected label as an integer.
- \note The order of the items depends on the order they have been added to 
+ \note The order of the items depends on the order they have been added to
  the control using GUI_MSG_LABEL_ADD.
  - GUI_MSG_ITEM_SELECT \n
  Send this message with CGUIMessage::SetParam1() set to the label
@@ -82,7 +82,7 @@
       <ondown>7</ondown>
     </control>
   \endverbatim
- 
+
  \sa CGUIMessage
  */
 class CGUISelectButtonControl : public CGUIButtonControl
@@ -91,11 +91,11 @@ public:
   CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
                           float posX, float posY,
                           float width, float height,
-                          const CImage& buttonFocus, const CImage& button,
+                          const CTextureInfo& buttonFocus, const CTextureInfo& button,
                           const CLabelInfo& labelInfo,
-                          const CImage& selectBackground,
-                          const CImage& selectArrowLeft, const CImage& selectArrowLeftFocus,
-                          const CImage& selectArrowRight, const CImage& selectArrowRightFocus);
+                          const CTextureInfo& selectBackground,
+                          const CTextureInfo& selectArrowLeft, const CTextureInfo& selectArrowLeftFocus,
+                          const CTextureInfo& selectArrowRight, const CTextureInfo& selectArrowRightFocus);
   virtual ~CGUISelectButtonControl(void);
   virtual CGUISelectButtonControl *Clone() const { return new CGUISelectButtonControl(*this); };
 
@@ -113,15 +113,15 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
 
 protected:
+  virtual void UpdateColors();
   bool m_bShowSelect;
-  CGUIImage m_imgBackground;
-  CGUIImage m_imgLeft;
-  CGUIImage m_imgLeftFocus;
-  CGUIImage m_imgRight;
-  CGUIImage m_imgRightFocus;
+  CGUITexture m_imgBackground;
+  CGUITexture m_imgLeft;
+  CGUITexture m_imgLeftFocus;
+  CGUITexture m_imgRight;
+  CGUITexture m_imgRightFocus;
   std::vector<std::string> m_vecItems;
   int m_iCurrentItem;
   int m_iDefaultItem;

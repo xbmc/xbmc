@@ -84,7 +84,7 @@ DWORD GetTickCount(void)
   return SDL_GetTicks();
 }
 
-BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes) {
+BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
   if (lpPerformanceCount == NULL)
     return false;
 
@@ -114,12 +114,7 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount, bool bUseHighRes
 
 #else
   struct timespec now;
-
-  clockid_t clockUsed = CLOCK_MONOTONIC;
-  if (bUseHighRes)
-    clockUsed = CLOCK_PROCESS_CPUTIME_ID;
-
-  if (clock_gettime(clockUsed,&now) != 0) {
+  if (clock_gettime(CLOCK_MONOTONIC, &now) != 0) {
     CLog::Log(LOGERROR,"%s - error %d getting timer", __FUNCTION__, errno);
     return false;
   }
@@ -167,8 +162,8 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
 
   time_t t = mktime(&sysTime);
 
-  ULARGE_INTEGER result;
-  result.QuadPart = (unsigned long long) t * 10000000 + (unsigned long long) lpSystemTime->wMilliseconds * 10000;
+  LARGE_INTEGER result;
+  result.QuadPart = (long long) t * 10000000 + (long long) lpSystemTime->wMilliseconds * 10000;
   result.QuadPart += WIN32_TIME_OFFSET;
 
   lpFileTime->dwLowDateTime = result.u.LowPart;
@@ -197,7 +192,7 @@ LONG   CompareFileTime(const FILETIME* lpFileTime1, const FILETIME* lpFileTime2)
 
 BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTime)
 {
-  ULARGE_INTEGER fileTime;
+  LARGE_INTEGER fileTime;
   fileTime.u.LowPart = lpFileTime->dwLowDateTime;
   fileTime.u.HighPart = lpFileTime->dwHighDateTime;
 

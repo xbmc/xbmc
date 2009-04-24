@@ -20,7 +20,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "IAudioDeviceChangedCallback.h"
 #include "utils/CriticalSection.h"
 
@@ -56,6 +56,7 @@ public:
 
           void        Enable(bool bEnable);
           void        SetVolume(int iLevel);
+          void        Stop();
 private:
           bool        LoadWindowSound(TiXmlNode* pWindowNode, const CStdString& strIdentifier, CStdString& strFile);
 

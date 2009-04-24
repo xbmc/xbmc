@@ -1,6 +1,6 @@
 /*!
 \file GUIListContainer.h
-\brief 
+\brief
 */
 
 #pragma once
@@ -35,7 +35,7 @@ typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 
 class CGUIBaseContainer : public CGUIControl
@@ -60,7 +60,7 @@ public:
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
 
   virtual unsigned int GetRows() const;
-  
+
   virtual bool HasNextPage() const;
   virtual bool HasPreviousPage() const;
 
@@ -84,6 +84,8 @@ public:
   virtual bool GetCondition(int condition, int data) const;
   CStdString GetLabel(int info) const;
 
+  void SetStaticContent(const std::vector<CGUIListItemPtr> &items);
+
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
@@ -98,6 +100,7 @@ protected:
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout(bool refreshAllItems = false);
+  virtual void SetPageControlRange();
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
   virtual void Reset();

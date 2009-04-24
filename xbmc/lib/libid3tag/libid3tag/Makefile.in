@@ -189,6 +189,7 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@

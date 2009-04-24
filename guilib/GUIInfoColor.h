@@ -1,6 +1,6 @@
 /*!
 \file GUIInfoColor.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIINFOCOLOR_H
@@ -51,8 +51,9 @@ public:
 
   const CGUIInfoColor &operator=(const CGUIInfoColor &color);
   const CGUIInfoColor &operator=(DWORD color);
-  operator DWORD() const { return GetColor(); };
+  operator DWORD() const { return m_color; };
 
+  void Update();
   void Parse(const CStdString &label);
 
 private:

@@ -1,33 +1,34 @@
 #include "meta.h"
 #include "../util.h"
 
-/* LEG (header format found in Legaia 2 - Duel Saga) */
+/* LEG - found in Legaia 2 - Duel Saga (PS2)
+the headers are stored seperately in the main executable... */
 VGMSTREAM * init_vgmstream_leg(STREAMFILE *streamFile) {
     VGMSTREAM * vgmstream = NULL;
     char filename[260];
     off_t start_offset;
-
     int loop_flag = 0;
-	int channel_count;
+    int channel_count;
 
     /* check extension, case insensitive */
     streamFile->get_name(streamFile,filename,sizeof(filename));
     if (strcasecmp("leg",filename_extension(filename))) goto fail;
 
-    /* check header */
-    if (read_32bitBE(0x10,streamFile) != 0x00000000) /* 0000" */
+    /* comparing the filesize with (num_samples*0x800) + headersize,
+    if it doesn't match, we will abort the vgmstream... */
+    if ((read_32bitLE(0x48,streamFile)*0x800)+0x4C != get_streamfile_size(streamFile))
         goto fail;
 
     loop_flag = (read_32bitLE(0x44,streamFile)!=0);
     channel_count = 2;
     
-	/* build the VGMSTREAM */
+    /* build the VGMSTREAM */
     vgmstream = allocate_vgmstream(channel_count,loop_flag);
     if (!vgmstream) goto fail;
 
-	/* fill in the vital statistics */
+    /* fill in the vital statistics */
     start_offset = 0x4C;
-	vgmstream->channels = channel_count;
+    vgmstream->channels = channel_count;
     vgmstream->sample_rate = read_32bitLE(0x40,streamFile);
     vgmstream->coding_type = coding_PSX;
     vgmstream->num_samples = (read_32bitLE(0x48,streamFile)*0x800)*28/16/channel_count;

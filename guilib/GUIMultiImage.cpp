@@ -22,26 +22,24 @@
 #include "include.h"
 #include "GUIMultiImage.h"
 #include "TextureManager.h"
-#include "FileSystem/HDDirectory.h"
+#include "FileSystem/Directory.h"
 #include "Util.h"
 #include "FileItem.h"
 
 using namespace std;
 using namespace DIRECTORY;
 
-CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
+CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
-  m_texturePath = texturePath;
-  if (m_texturePath.file.IsConstant())
-    m_currentPath = m_texturePath.file.GetLabel(WINDOW_INVALID);
+  m_textureInfo = texture;
   m_currentImage = 0;
   m_timePerImage = timePerImage;
   m_timeToPauseAtEnd = timeToPauseAtEnd;
   m_fadeTime = fadeTime;
   m_randomized = randomized;
   m_loop = loop;
-  m_aspectRatio = CGUIImage::CAspectRatio::AR_STRETCH;
+  m_aspect = CAspectRatio::AR_STRETCH;
   ControlType = GUICONTROL_MULTI_IMAGE;
   m_bDynamicResourceAlloc=false;
   m_directoryLoaded = false;
@@ -50,16 +48,18 @@ CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, 
 CGUIMultiImage::CGUIMultiImage(const CGUIMultiImage &from)
 : CGUIControl(from)
 {
+  m_textureInfo = from.m_textureInfo;
   m_texturePath = from.m_texturePath;
   m_timePerImage = from.m_timePerImage;
   m_timeToPauseAtEnd = from.m_timeToPauseAtEnd;
   m_fadeTime = from.m_fadeTime;
   m_randomized = from.m_randomized;
   m_loop = from.m_loop;
-  m_aspectRatio = from.m_aspectRatio;
+  m_aspect = from.m_aspect;
+  m_bDynamicResourceAlloc=false;
   m_directoryLoaded = false;
-  if (m_texturePath.file.IsConstant())
-    m_currentPath = m_texturePath.file.GetLabel(WINDOW_INVALID);
+  if (m_texturePath.IsConstant())
+    m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);
   m_currentImage = 0;
   ControlType = GUICONTROL_MULTI_IMAGE;
 }
@@ -75,7 +75,7 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
   // check if we're hidden, and deallocate if so
   if (!IsVisible() && m_visible != DELAYED)
   {
-    if (m_bDynamicResourceAlloc && IsAllocated())
+    if (m_bDynamicResourceAlloc && m_bAllocated)
       FreeResources();
     return;
   }
@@ -84,9 +84,9 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
 
   // check for conditional information before we
   // alloc as this can free our resources
-  if (!m_texturePath.file.IsConstant())
+  if (!m_texturePath.IsConstant())
   {
-    CStdString texturePath(m_texturePath.file.GetLabel(m_dwParentID));
+    CStdString texturePath(m_texturePath.GetLabel(m_dwParentID));
     if (texturePath != m_currentPath && !texturePath.IsEmpty())
     {
       m_currentPath = texturePath;
@@ -96,7 +96,7 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
   }
 
   // and allocate our resources
-  if (!IsAllocated())
+  if (!m_bAllocated)
     AllocResources();
 }
 
@@ -111,6 +111,7 @@ void CGUIMultiImage::Render()
     if (nextImage >= m_images.size())
       nextImage = m_loop ? 0 : m_currentImage;  // stay on the last image if <loop>no</loop>
 
+    bool renderNext = false;
     if (nextImage != m_currentImage)
     {
       // check if we should be loading a new image yet
@@ -163,18 +164,16 @@ void CGUIMultiImage::Render()
             m_images[m_currentImage]->SetAlpha(255);
             m_images[nextImage]->SetAlpha((unsigned char)(255*fadeAmount));
           }
-          m_images[m_currentImage]->Render();
+          renderNext = true;
         }
-        m_images[nextImage]->Render();
-      }
-      else
-      { // only one image - render it.
-        m_images[m_currentImage]->Render();
       }
     }
-    else
-    { // only one image - render it.
-      m_images[m_currentImage]->Render();
+    m_images[m_currentImage]->SetDiffuseColor(m_diffuseColor);
+    m_images[m_currentImage]->Render();
+    if (renderNext)
+    {
+      m_images[nextImage]->SetDiffuseColor(m_diffuseColor);
+      m_images[nextImage]->Render();
     }
     g_graphicsContext.RestoreClipRegion();
   }
@@ -190,7 +189,7 @@ bool CGUIMultiImage::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_REFRESH_THUMBS)
   {
-    if (!m_texturePath.file.IsConstant())
+    if (!m_texturePath.IsConstant())
       FreeResources();
     return true;
   }
@@ -216,9 +215,9 @@ void CGUIMultiImage::AllocResources()
 
   for (unsigned int i=0; i < m_files.size(); i++)
   {
-    CImage image(m_texturePath);
-    image.file = m_files[i];
-    CGUIImage *pImage = new CGUIImage(GetParentID(), GetID(), m_posX, m_posY, m_width, m_height, image);
+    CTextureInfo info(m_textureInfo);
+    info.filename = m_files[i];
+    CGUITexture *pImage = new CGUITexture(m_posX, m_posY, m_width, m_height, info);
     if (pImage)
       m_images.push_back(pImage);
   }
@@ -238,21 +237,20 @@ void CGUIMultiImage::LoadImage(int image)
     return;
 
   m_images[image]->AllocResources();
-  m_images[image]->SetColorDiffuse(m_diffuseColor);
 
   // Scale image so that it will fill our render area
-  if (m_aspectRatio != CGUIImage::CAspectRatio::AR_STRETCH)
+  if (m_aspect.ratio != CAspectRatio::AR_STRETCH)
   {
     // to get the pixel ratio, we must use the SCALED output sizes
     float pixelRatio = g_graphicsContext.GetScalingPixelRatio();
 
-    float sourceAspectRatio = (float)m_images[image]->GetTextureWidth() / m_images[image]->GetTextureHeight();
+    float sourceAspectRatio = m_images[image]->GetTextureWidth() / m_images[image]->GetTextureHeight();
     float aspectRatio = sourceAspectRatio / pixelRatio;
 
     float newWidth = m_width;
     float newHeight = newWidth / aspectRatio;
-    if ((m_aspectRatio == CGUIImage::CAspectRatio::AR_SCALE && newHeight < m_height) ||
-      (m_aspectRatio == CGUIImage::CAspectRatio::AR_KEEP && newHeight > m_height))
+    if ((m_aspect.ratio == CAspectRatio::AR_SCALE && newHeight < m_height) ||
+      (m_aspect.ratio == CAspectRatio::AR_KEEP && newHeight > m_height))
     {
       newHeight = m_height;
       newWidth = newHeight * aspectRatio;
@@ -287,11 +285,11 @@ bool CGUIMultiImage::CanFocus() const
   return false;
 }
 
-void CGUIMultiImage::SetAspectRatio(CGUIImage::CAspectRatio::ASPECT_RATIO ratio)
+void CGUIMultiImage::SetAspectRatio(const CAspectRatio &ratio)
 {
-  if (m_aspectRatio != ratio)
+  if (m_aspect != ratio)
   {
-    m_aspectRatio = ratio;
+    m_aspect = ratio;
     m_bInvalidated = true;
   }
 }
@@ -321,9 +319,8 @@ void CGUIMultiImage::LoadDirectory()
       return;
 
     CUtil::AddSlashAtEnd(realPath);
-    CHDDirectory dir;
     CFileItemList items;
-    dir.GetDirectory(realPath, items);
+    CDirectory::GetDirectory(realPath, items);
     for (int i=0; i < items.Size(); i++)
     {
       CFileItemPtr pItem = items[i];
@@ -339,3 +336,9 @@ void CGUIMultiImage::LoadDirectory()
   m_directoryLoaded = true;
 }
 
+void CGUIMultiImage::SetInfo(const CGUIInfoLabel &info)
+{
+  m_texturePath = info;
+  if (m_texturePath.IsConstant())
+    m_currentPath = m_texturePath.GetLabel(WINDOW_INVALID);
+}

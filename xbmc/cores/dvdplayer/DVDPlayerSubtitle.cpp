@@ -120,9 +120,17 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
       BYTE* color = m_dvdspus.m_clut[i];
       BYTE* t = (BYTE*)pData->m_data[i];
 
+// pData->m_data[i] points to an uint32_t
+// Byte swapping is needed between big and little endian systems
+#if defined(__powerpc__) || defined(__ppc__)
+      color[0] = t[1]; // Y
+      color[1] = t[2]; // Cr
+      color[2] = t[3]; // Cb
+#else
       color[0] = t[2]; // Y
       color[1] = t[1]; // Cr
       color[2] = t[0]; // Cb
+#endif
     }
     m_dvdspus.m_bHasClut = true;
   }
@@ -216,7 +224,8 @@ void CDVDPlayerSubtitle::Process(double pts)
 
 bool CDVDPlayerSubtitle::AcceptsData()
 {
-  return true;
+  // FIXME : This may still be causing problems + magic number :(
+  return m_pOverlayContainer->GetSize() < 5;
 }
 
 bool CDVDPlayerSubtitle::GetCurrentSubtitle(CStdString& strSubtitle, double pts)

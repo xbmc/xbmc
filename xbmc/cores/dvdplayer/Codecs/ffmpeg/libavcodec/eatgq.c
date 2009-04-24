@@ -20,7 +20,7 @@
  */
 
 /**
- * @file eatgq.c
+ * @file libavcodec/eatgq.c
  * Electronic Arts TGQ Video Decoder
  * @author Peter Ross <pross@xvid.org>
  *
@@ -251,5 +251,5 @@ AVCodec eatgq_decoder = {
     tgq_decode_end,
     tgq_decode_frame,
     CODEC_CAP_DR1,
-    .long_name = NULL_IF_CONFIG_SMALL("Electronic Arts TGQ Video"),
+    .long_name = NULL_IF_CONFIG_SMALL("Electronic Arts TGQ video"),
 };

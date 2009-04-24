@@ -100,6 +100,9 @@
 /* Define to 1 if you have the `bz2' library (-lbz2). */
 #undef HAVE_LIBBZ2
 
+/* Define to 1 if you have the `cdio' library (-lcdio). */
+#undef HAVE_LIBCDIO
+
 /* Define to 1 if you have the `curl' library (-lcurl). */
 #undef HAVE_LIBCURL
 
@@ -111,6 +114,9 @@
 
 /* Define to 1 if you have the `enca' library (-lenca). */
 #undef HAVE_LIBENCA
+
+/* Define to 1 if you have the `faac' library (-lfaac). */
+#undef HAVE_LIBFAAC
 
 /* Define to 1 if you have the `fontconfig' library (-lfontconfig). */
 #undef HAVE_LIBFONTCONFIG
@@ -132,6 +138,9 @@
 
 /* Define to 1 if you have the `hal-storage' library (-lhal-storage). */
 #undef HAVE_LIBHAL_STORAGE
+
+/* Define to 1 if you have the `iconv' library (-liconv). */
+#undef HAVE_LIBICONV
 
 /* Define to 1 if you have the `jasper' library (-ljasper). */
 #undef HAVE_LIBJASPER
@@ -160,6 +169,9 @@
 /* Define to 1 if you have the `png12' library (-lpng12). */
 #undef HAVE_LIBPNG12
 
+/* Define to 1 if you have the `portaudio' library (-lportaudio). */
+#undef HAVE_LIBPORTAUDIO
+
 /* Define to 1 if you have the `python2.4' library (-lpython2.4). */
 #undef HAVE_LIBPYTHON2_4
 
@@ -181,11 +193,14 @@
 /* Define to 1 if you have the `SDL_mixer' library (-lSDL_mixer). */
 #undef HAVE_LIBSDL_MIXER
 
+/* Define to 1 if you have the `smbclient' library (-lsmbclient). */
+#undef HAVE_LIBSMBCLIENT
+
 /* Define to 1 if you have the `sqlite3' library (-lsqlite3). */
 #undef HAVE_LIBSQLITE3
 
-/* Define to 1 if you have the `tre' library (-ltre). */
-#undef HAVE_LIBTRE
+/* Define to 1 if you have the `vdpau' library (-lvdpau). */
+#undef HAVE_LIBVDPAU
 
 /* Define to 1 if you have the `vorbis' library (-lvorbis). */
 #undef HAVE_LIBVORBIS
@@ -201,6 +216,9 @@
 
 /* Define to 1 if you have the `Xt' library (-lXt). */
 #undef HAVE_LIBXT
+
+/* Define to 1 if you have the `z' library (-lz). */
+#undef HAVE_LIBZ
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
@@ -443,9 +461,6 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* Define to 1 if the C compiler supports function prototypes. */
-#undef PROTOTYPES
-
 /* Define as the return type of signal handlers (`int' or `void'). */
 #undef RETSIGTYPE
 
@@ -457,11 +472,6 @@
 
 /* Define to the type of arg 5 for `select'. */
 #undef SELECT_TYPE_ARG5
-
-/* Define to 1 if the `setvbuf' function takes the buffering type as its
-   second argument and the buffer pointer as the third, as on System V before
-   release 3. */
-#undef SETVBUF_REVERSED
 
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
@@ -487,22 +497,19 @@
 #undef _LARGEFILE_SOURCE
 
 /* Define for Solaris 2.5.1 so the uint32_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT32_T
 
 /* Define for Solaris 2.5.1 so the uint64_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT64_T
 
 /* Define for Solaris 2.5.1 so the uint8_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT8_T
-
-/* Define like PROTOTYPES; this can be used by system headers. */
-#undef __PROTOTYPES
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
@@ -544,9 +551,18 @@
 /* Define to rpl_realloc if the replacement function should be used. */
 #undef realloc
 
-/* Define to equivalent of C99 restrict keyword, or to nothing if this is not
-   supported. Do not define if restrict is supported directly. */
+/* Define to the equivalent of the C99 'restrict' keyword, or to
+   nothing if this is not supported.  Do not define if restrict is
+   supported directly.  */
 #undef restrict
+/* Work around a bug in Sun C++: it does not support _Restrict, even
+   though the corresponding Sun C compiler does, which causes
+   "#define restrict _Restrict" in the previous line.  Perhaps some future
+   version of Sun C++ will work with _Restrict; if so, it'll probably
+   define __RESTRICT, just as Sun C does.  */
+#if defined __SUNPRO_CC && !defined __RESTRICT
+# define _Restrict
+#endif
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t

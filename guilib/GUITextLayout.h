@@ -23,6 +23,13 @@
 
 #include <vector>
 
+#ifdef __GNUC__
+// under gcc, inline will only take place if optimizations are applied (-O). this will force inline even without optimizations.
+#define XBMC_FORCE_INLINE __attribute__((always_inline))
+#else
+#define XBMC_FORCE_INLINE
+#endif
+
 class CGUIFont;
 class CScrollInfo;
 
@@ -60,8 +67,8 @@ public:
   void GetTextExtent(float &width, float &height);
   float GetTextWidth();
   float GetTextWidth(const CStdStringW &text) const;
-  bool Update(const CStdString &text, float maxWidth = 0);
-  void SetText(const CStdStringW &text, float maxWidth = 0);
+  bool Update(const CStdString &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
+  void SetText(const CStdStringW &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
 
   unsigned int GetTextLength() const;
   void GetFirstText(std::vector<DWORD> &text) const;
@@ -79,6 +86,8 @@ protected:
   void ParseText(const CStdStringW &text, std::vector<DWORD> &parsedText);
   void LineBreakText(const std::vector<DWORD> &text, std::vector<CGUIString> &lines);
   void WrapText(const std::vector<DWORD> &text, float maxWidth);
+  void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
+  CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
 
   // our text to render
   std::vector<DWORD> m_colors;
@@ -94,6 +103,15 @@ protected:
 
   CStdString m_lastText;
 private:
+  inline bool IsSpace(DWORD letter) const XBMC_FORCE_INLINE
+  {
+    return (letter & 0xffff) == L' ';
+  };
+  inline bool CanWrapAtLetter(DWORD letter) const XBMC_FORCE_INLINE
+  {
+    DWORD ch = letter & 0xffff;
+    return ch == L' ' || (ch >=0x4e00 && ch <= 0x9fff);
+  };
   static void AppendToUTF32(const CStdString &utf8, DWORD colStyle, std::vector<DWORD> &utf32);
   static void AppendToUTF32(const CStdStringW &utf16, DWORD colStyle, std::vector<DWORD> &utf32);
   static void DrawOutlineText(CGUIFont *font, float x, float y, const std::vector<DWORD> &colors, DWORD outlineColor, DWORD outlineWidth, const std::vector<DWORD> &text, DWORD align, float maxWidth);

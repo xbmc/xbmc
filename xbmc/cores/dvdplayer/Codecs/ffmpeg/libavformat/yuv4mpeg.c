@@ -1,6 +1,6 @@
 /*
  * YUV4MPEG format
- * Copyright (c) 2001, 2002, 2003 Fabrice Bellard.
+ * Copyright (c) 2001, 2002, 2003 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -29,7 +29,7 @@ struct frame_attributes {
     int top_field_first;
 };
 
-#ifdef CONFIG_YUV4MPEGPIPE_MUXER
+#if CONFIG_YUV4MPEGPIPE_MUXER
 static int yuv4_generate_header(AVFormatContext *s, char* buf)
 {
     AVStream *st;
@@ -382,7 +382,7 @@ static int yuv4_probe(AVProbeData *pd)
         return 0;
 }
 
-#ifdef CONFIG_YUV4MPEGPIPE_DEMUXER
+#if CONFIG_YUV4MPEGPIPE_DEMUXER
 AVInputFormat yuv4mpegpipe_demuxer = {
     "yuv4mpegpipe",
     NULL_IF_CONFIG_SMALL("YUV4MPEG pipe format"),

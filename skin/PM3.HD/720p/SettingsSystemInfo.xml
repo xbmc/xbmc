@@ -54,7 +54,6 @@
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<include>ContentPanel</include>
-			<include>CommonNowPlaying_Controls</include>
 			<control type="label" id="40">
 				<description>fake filter text label</description>
 				<posx>410</posx>

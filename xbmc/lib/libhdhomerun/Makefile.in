@@ -1,54 +1,47 @@
+ARCH=@ARCH@
 
 OBJS += hdhomerun_pkt.o
+OBJS += hdhomerun_debug.o
 OBJS += hdhomerun_discover.o
-OBJS += hdhomerun_control.o
+OBJS += hdhomerun_channels.o
 OBJS += hdhomerun_channelscan.o
+OBJS += hdhomerun_control.o
 OBJS += hdhomerun_video.o
 OBJS += hdhomerun_device.o
 
-SRCS := $(OBJS:.o=.c)
-
 CFLAGS += -Wall -O2 -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wpointer-arith -fPIC
-CPPFLAGS += -Wall -O2 -fPIC
+ifeq ($(findstring osx,$(ARCH)), osx)
+	CFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	LDFLAGS +=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+endif
 
-LIBS += -lws2_32
+SLIBS += -lws2_32
 DEFINES += -D__MINGW__
 
-ARCH=@ARCH@
 SYSDIR=../../../system
 SO=hdhomerun-$(ARCH).so
-LIB=$(SYSDIR)/$(SO)
+SLIB=$(SYSDIR)/$(SO)
 
-all: $(LIB)
-
-%.o : %.c
-	$(CC) $(CFLAGS) $(DEFINES) -c -o $@ $<
-
-%.o : %.cpp
-	$(CXX) $(CPPFLAGS) $(DEFINES) -c -o $@ $<
-
-$(LIB): $(OBJS)
+$(SLIB): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CC) $(OBJS) -bundle -flat_namespace -undefined suppress -shared -o $@
+	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
+else
 	$(CC) $(OBJS) -shared -o $@ `cat ../../cores/DllLoader/exports/wrapper.def` \
 		../../cores/DllLoader/exports/wrapper.o && strip $@
+endif
 	
 hdhomerun_dll : $(OBJS)
-	gcc $(OBJS) $(LIBS) -Wl,--out-implib,hdhomerun.lib -shared -o hdhomerun.dll
+	gcc $(OBJS) $(SLIBS) -Wl,--out-implib,hdhomerun.lib -shared -o hdhomerun.dll
 	strip hdhomerun.dll
 
 hdhomerun_config hdhomerun_config.exe : $(OBJS) hdhomerun_config.o
-	gcc $(OBJS) hdhomerun_config.o $(LIBS) -lpthreadGC -liphlpapi -o $@
+	gcc $(OBJS) hdhomerun_config.o $(SLIBS) -lpthreadGC -liphlpapi -o $@
 	strip $@
 
 hdhomerun_mythconfig : $(LIBSRCS) hdhomerun_mythconfig.o
-	gcc $(OBJS) hdhomerun_config.o $(LIBS) -lpthreadGC -liphlpapi -lmysqlclient -o $@
+	gcc $(OBJS) hdhomerun_config.o $(SLIBS) -lpthreadGC -liphlpapi -lmysqlclient -o $@
 	strip $@
 
-clean :
-	rm -f hdhomerun_config
-	rm -f hdhomerun_config.exe
-	rm -f hdhomerun_mythconfig
-	rm -f *.o
-	rm -f hdhomerun.dll
-	rm -f $(LIB)
-
-distclean: clean
+include ../../../Makefile.include

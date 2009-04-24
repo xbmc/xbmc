@@ -32,9 +32,10 @@
 */
 
 #include "stdafx.h"
+
+#if defined(HAS_FILESYSTEM_SMB)
 #include "SMBDirectory.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "LocalizeStrings.h"
 #include "GUIPassword.h"
 #include "GUIWindowManager.h"
@@ -69,7 +70,7 @@ CSMBDirectory::CSMBDirectory(void)
 #ifdef _LINUX
   smb.AddActiveConnection();
 #endif
-} 
+}
 
 CSMBDirectory::~CSMBDirectory(void)
 {
@@ -81,8 +82,6 @@ CSMBDirectory::~CSMBDirectory(void)
 bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath);
 
   /* samba isn't thread safe with old interface, always lock */
   CSingleLock lock(smb);
@@ -101,8 +100,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (fd < 0)
     return false;
 
-  if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
-  if (!CUtil::HasSlashAtEnd(strAuth)) strAuth += "/";
+  CUtil::AddSlashAtEnd(strRoot);
+  CUtil::AddSlashAtEnd(strAuth);
 
   CStdString strFile;
 
@@ -112,7 +111,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   vector<CachedDirEntry> vecEntries;
   struct smbc_dirent* dirEnt;
 
-  lock.Enter(); 
+  lock.Enter();
   while ((dirEnt = smbc_readdir(fd)))
   {
     CachedDirEntry aDir;
@@ -153,7 +152,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 #else
         struct stat info = {0};
 #endif
-        if ( g_advancedSettings.m_sambastatfiles )
+        if (m_extFileInfo && g_advancedSettings.m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
           CStdString strFullName = strAuth + smb.URLEncode(strFile);
@@ -164,7 +163,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           {
 
 #ifndef _LINUX
-            if ((info.st_mode & S_IXOTH) && !g_guiSettings.GetBool("filelists.showhidden"))
+            if ((info.st_mode & S_IXOTH))
               hidden = true;
 #else
             char value[20];
@@ -173,11 +172,11 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
             if (smbc_getxattr(strFullName, "system.dos_attr.mode", value, sizeof(value)) > 0)
             {
               long longvalue = strtol(value, NULL, 16);
-              if (longvalue & SMBC_DOS_MODE_HIDDEN && !g_guiSettings.GetBool("filelists.showhidden"))
+              if (longvalue & SMBC_DOS_MODE_HIDDEN)
                 hidden = true;
             }
             else
-              CLog::Log(LOGERROR, "Getting extended attributes for the share: '%s'\nunix_err:'%x' error: '%s'", strFullName.c_str(), errno, strerror(errno));          
+              CLog::Log(LOGERROR, "Getting extended attributes for the share: '%s'\nunix_err:'%x' error: '%s'", strFullName.c_str(), errno, strerror(errno));
 #endif
 
             bIsDir = (info.st_mode & S_IFDIR) ? true : false;
@@ -215,11 +214,12 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           pItem->m_strPath = smb.URLEncode(rooturl);
         }
         pItem->m_strPath += aDir.name;
-        if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
+        CUtil::AddSlashAtEnd(pItem->m_strPath);
         pItem->m_bIsFolder = true;
         pItem->m_dateTime=localTime;
-        vecCacheItems.Add(pItem);
-        if (!hidden) items.Add(pItem);
+        if (hidden)
+          pItem->SetProperty("file:hidden", true);
+        items.Add(pItem);
       }
       else
       {
@@ -228,15 +228,12 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
         pItem->m_dateTime=localTime;
-
-        vecCacheItems.Add(pItem);
-        if (!hidden && IsAllowed(aDir.name)) items.Add(pItem);
+        if (hidden)
+          pItem->SetProperty("file:hidden", true);
+        items.Add(pItem);
       }
     }
   }
-
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath, vecCacheItems);
 
   return true;
 }
@@ -244,7 +241,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 int CSMBDirectory::Open(const CURL &url)
 {
   smb.Init();
-  CStdString strAuth;  
+  CStdString strAuth;
   return OpenDir(url, strAuth);
 }
 
@@ -257,7 +254,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 #ifndef _LINUX
   int nt_error;
 #endif
-  
+
   /* make a writeable copy */
   CURL urlIn(url);
 
@@ -275,21 +272,21 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
   if(it != g_passwordManager.m_mapSMBPasswordCache.end())
   {
     // if share found in cache use it to supply username and password
-    CURL url(it->second);		// map value contains the full url of the originally authenticated share. map key is just the share
+    CURL url(it->second);    // map value contains the full url of the originally authenticated share. map key is just the share
     CStdString strPassword = url.GetPassWord();
     CStdString strUserName = url.GetUserName();
     urlIn.SetPassword(strPassword);
     urlIn.SetUserName(strUserName);
   }
-  
+
   // for a finite number of attempts use the following instead of the while loop:
   // for(int i = 0; i < 3, fd < 0; i++)
   while (fd < 0)
-  {    
+  {
     /* samba has a stricter url encoding, than our own.. CURL can decode it properly */
     /* however doesn't always encode it correctly (spaces for example) */
     strPath = smb.URLEncode(urlIn);
-  
+
     // remove the / or \ at the end. the samba library does not strip them off
     // don't do this for smb:// !!
     CStdString s = strPath;
@@ -299,12 +296,12 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
     {
       s.erase(len - 1, 1);
     }
-    
+
     CLog::Log(LOGDEBUG, "%s - Using authentication url %s", __FUNCTION__, s.c_str());
-    { CSingleLock lock(smb);      
+    { CSingleLock lock(smb);
       fd = smbc_opendir(s.c_str());
     }
-    
+
     if (fd < 0)
     {
 #ifndef _LINUX
@@ -329,7 +326,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
         {
           g_passwordManager.SetSMBShare(strPath);
           if (!g_passwordManager.GetSMBShareUserPassword())  // Do this bit via a threadmessage?
-          	break;
+            break;
 
           /* must do this as our urlencoding for spaces is invalid for samba */
           /* and doing double url encoding will fail */
@@ -355,7 +352,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
         else
           cError = strerror(errno);
 #endif
-        
+
         if (m_allowPrompting)
         {
           CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
@@ -385,7 +382,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
   {
     g_passwordManager.m_mapSMBPasswordCache[strShare] = strPath;
     strAuth = strPath;
-  }  
+  }
 
   return fd;
 }
@@ -452,19 +449,19 @@ bool CSMBDirectory::Exists(const char* strPath)
   return (info.st_mode & S_IFDIR) ? true : false;
 }
 
-CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString &strType, const CStdString &strName, 
+CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString &strType, const CStdString &strName,
     const CStdString &strUser, const CStdString &strPass)
 {
 #ifdef _LINUX
   UnMountShare(strType, strName);
 
   CStdString strMountPoint = GetMountPoint(strType, strName);
-  
+
 #ifdef __APPLE__
   // Create the directory.
   CUtil::UrlDecode(strMountPoint);
   CreateDirectory(strMountPoint, NULL);
-  
+
   // Massage the path.
   CStdString smbFullPath = "//";
   if (smbFullPath.length() > 0)
@@ -472,14 +469,14 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
     smbFullPath += strUser;
     if (strPass.length() > 0)
       smbFullPath += ":" + strPass;
-    
+
     smbFullPath += "@";
   }
-  
+
   CStdString newPath = smbPath;
   newPath.TrimLeft("/");
   smbFullPath += newPath;
-  
+
   // Make the mount command.
   CStdStringArray args;
   args.push_back("/sbin/mount_smbfs");
@@ -487,18 +484,18 @@ CStdString CSMBDirectory::MountShare(const CStdString &smbPath, const CStdString
   args.push_back("nobrowse");
   args.push_back(smbFullPath);
   args.push_back(strMountPoint);
-  
+
   // Execute it.
   if (CUtil::Command(args))
     return strMountPoint;
 #else
   CUtil::SudoCommand("mkdir -p " + strMountPoint);
 
-  CStdString strCmd = "mount -t cifs " + smbPath + " " + strMountPoint + 
+  CStdString strCmd = "mount -t cifs " + smbPath + " " + strMountPoint +
     " -o rw,nobrl,directio";
   if (!strUser.IsEmpty())
-    strCmd += ",user=" + strUser + ",password=" + strPass; 
-  else 
+    strCmd += ",user=" + strUser + ",password=" + strPass;
+  else
     strCmd += ",guest";
 
   if (CUtil::SudoCommand(strCmd))
@@ -514,12 +511,12 @@ void CSMBDirectory::UnMountShare(const CStdString &strType, const CStdString &st
   // Decode the path.
   CStdString strMountPoint = GetMountPoint(strType, strName);
   CUtil::UrlDecode(strMountPoint);
-  
+
   // Make the unmount command.
   CStdStringArray args;
   args.push_back("/sbin/umount");
   args.push_back(strMountPoint);
-  
+
   // Execute command.
   CUtil::Command(args);
 #elif defined(_LINUX)
@@ -532,7 +529,7 @@ CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdStr
 {
   CStdString strPath = strType + strName;
   CUtil::URLEncode(strPath);
-  
+
 #ifdef __APPLE__
   CStdString str = getenv("HOME");
   return str + "/" + XBMC_SMB_MOUNT_PATH + strPath;
@@ -541,3 +538,4 @@ CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdStr
 #endif
 }
 
+#endif

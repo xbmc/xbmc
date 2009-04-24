@@ -27,4 +27,5 @@ public:
   CVisualisationFactory();
   virtual ~CVisualisationFactory();
   CVisualisation* LoadVisualisation(const CStdString& strVisz) const;
+  CVisualisation* LoadVisualisation(const CStdString& strVisz, const CStdString& strSubModule) const;
 };

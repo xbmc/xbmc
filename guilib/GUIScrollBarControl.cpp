@@ -24,16 +24,16 @@
 
 #define MIN_NIB_SIZE 4.0f
 
-CGUIScrollBar::CGUIScrollBar(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& backGroundTexture, const CImage& barTexture, const CImage& barTextureFocus, const CImage& nibTexture, const CImage& nibTextureFocus, ORIENTATION orientation, bool showOnePage)
+CGUIScrollBar::CGUIScrollBar(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& barTexture, const CTextureInfo& barTextureFocus, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, ORIENTATION orientation, bool showOnePage)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_guiBackground(dwParentID, dwControlId, posX, posY, width, height, backGroundTexture)
-    , m_guiBarNoFocus(dwParentID, dwControlId, posX, posY, width, height, barTexture)
-    , m_guiBarFocus(dwParentID, dwControlId, posX, posY, width, height, barTextureFocus)
-    , m_guiNibNoFocus(dwParentID, dwControlId, posX, posY, width, height, nibTexture)
-    , m_guiNibFocus(dwParentID, dwControlId, posX, posY, width, height, nibTextureFocus)
+    , m_guiBackground(posX, posY, width, height, backGroundTexture)
+    , m_guiBarNoFocus(posX, posY, width, height, barTexture)
+    , m_guiBarFocus(posX, posY, width, height, barTextureFocus)
+    , m_guiNibNoFocus(posX, posY, width, height, nibTexture)
+    , m_guiNibFocus(posX, posY, width, height, nibTextureFocus)
 {
-  m_guiNibNoFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_CENTER);
-  m_guiNibFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_CENTER);
+  m_guiNibNoFocus.SetAspectRatio(CAspectRatio::AR_CENTER);
+  m_guiNibFocus.SetAspectRatio(CAspectRatio::AR_CENTER);
   m_numItems = 100;
   m_offset = 0;
   m_pageSize = 10;
@@ -298,14 +298,14 @@ CStdString CGUIScrollBar::GetDescription() const
   return description;
 }
 
-void CGUIScrollBar::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUIScrollBar::UpdateColors()
 {
-  CGUIControl::SetColorDiffuse(color);
-  m_guiBackground.SetColorDiffuse(color);
-  m_guiBarNoFocus.SetColorDiffuse(color);
-  m_guiBarFocus.SetColorDiffuse(color);
-  m_guiNibNoFocus.SetColorDiffuse(color);
-  m_guiNibFocus.SetColorDiffuse(color);
+  CGUIControl::UpdateColors();
+  m_guiBackground.SetDiffuseColor(m_diffuseColor);
+  m_guiBarNoFocus.SetDiffuseColor(m_diffuseColor);
+  m_guiBarFocus.SetDiffuseColor(m_diffuseColor);
+  m_guiNibNoFocus.SetDiffuseColor(m_diffuseColor);
+  m_guiNibFocus.SetDiffuseColor(m_diffuseColor);
 }
 
 bool CGUIScrollBar::IsVisible() const

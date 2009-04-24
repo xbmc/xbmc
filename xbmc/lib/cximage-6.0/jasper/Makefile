@@ -1,7 +1,7 @@
 CC=gcc
-CFLAGS=-I./include -fPIC 
+CFLAGS=-O2 -I./include -fPIC 
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 endif
 
@@ -15,5 +15,3 @@ jasper.a: $(OBJS)
 
 clean:
 	$(RM) $(OBJS) jasper.a
-
-include ../Makefile.include

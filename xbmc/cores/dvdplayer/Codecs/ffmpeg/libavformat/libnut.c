@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libnut.c
+ * @file libavformat/libnut.c
  * NUT demuxing and muxing via libnut.
  * @author Oded Shimon <ods15@ods15.dyndns.org>
  */
@@ -44,7 +44,7 @@ static const AVCodecTag nut_tags[] = {
     { 0, 0 },
 };
 
-#ifdef CONFIG_LIBNUT_MUXER
+#if CONFIG_LIBNUT_MUXER
 static int av_write(void * h, size_t len, const uint8_t * buf) {
     ByteIOContext * bc = h;
     put_buffer(bc, buf, len);

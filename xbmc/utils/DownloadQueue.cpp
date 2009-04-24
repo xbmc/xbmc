@@ -21,10 +21,12 @@
 
 #include "stdafx.h"
 #include "DownloadQueue.h"
-#include "HTTP.h"
 #include "Util.h"
+#include "FileSystem/File.h"
+#include "FileSystem/FileCurl.h"
 
 using namespace std;
+using namespace XFILE;
 
 WORD CDownloadQueue::m_wNextQueueId = 0;
 
@@ -106,7 +108,7 @@ TICKET CDownloadQueue::RequestFile(CStdString& aUrl, IDownloadQueueObserver* aOb
   TICKET ticket(m_wQueueId, m_dwNextItemId++);
 
   CStdString strFilePath;
-  strFilePath.Format("Z:\\q%d-item%u%s", ticket.wQueueId, ticket.dwItemId, strExtension.c_str());
+  strFilePath.Format("special://temp/q%d-item%u%s", ticket.wQueueId, ticket.dwItemId, strExtension.c_str());
 
   Command request = {ticket, aUrl, strFilePath, aObserver};
   m_queue.push(request);
@@ -128,7 +130,7 @@ void CDownloadQueue::Process()
 {
   CLog::Log(LOGNOTICE, "DownloadQueue ready.");
 
-  CHTTP http;
+  CFileCurl http;
   bool bSuccess;
 
   while ( !m_bStop )
@@ -148,7 +150,7 @@ void CDownloadQueue::Process()
 
       if (bFileRequest)
       {
-        ::DeleteFile(request.content.c_str());
+        CFile::Delete(request.content);
         bSuccess = http.Download(request.location, request.content, &dwSize);
       }
       else
@@ -185,7 +187,7 @@ void CDownloadQueue::Process()
 
           if (bFileRequest)
           {
-            ::DeleteFile(request.content.c_str());
+            CFile::Delete(request.content);
           }
         }
       }

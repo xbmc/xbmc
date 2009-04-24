@@ -43,6 +43,8 @@ CGUIControl::CGUIControl()
   m_diffuseColor = 0xffffffff;
   m_posX = 0;
   m_posY = 0;
+  m_width = 0;
+  m_height = 0;
   m_dwControlLeft = 0;
   m_dwControlRight = 0;
   m_dwControlUp = 0;
@@ -53,6 +55,7 @@ CGUIControl::CGUIControl()
   m_parentControl = NULL;
   m_hasCamera = false;
   m_pushedUpdates = false;
+  m_pulseOnSelect = false;
 }
 
 CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
@@ -83,6 +86,7 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_parentControl = NULL;
   m_hasCamera = false;
   m_pushedUpdates = false;
+  m_pulseOnSelect = false;
 }
 
 
@@ -114,11 +118,6 @@ void CGUIControl::FreeResources()
     m_bAllocated=false;
   }
   m_hasRendered = false;
-} 
-
-bool CGUIControl::IsAllocated() const
-{
-  return m_bAllocated;
 }
 
 void CGUIControl::DynamicResourceAlloc(bool bOnOff)
@@ -294,8 +293,6 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
         CGUIMessage message(GUI_MSG_FOCUSED, GetParentID(), GetID());
         if (m_parentControl)
           m_parentControl->OnMessage(message);
-        else
-        SendWindowMessage(message);
       }
       return true;
       break;
@@ -504,6 +501,12 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   if (m_enableCondition)
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, item);
   m_allowHiddenFocus.Update(m_dwParentID, item);
+  UpdateColors();
+}
+
+void CGUIControl::UpdateColors()
+{
+  m_diffuseColor.Update();
 }
 
 void CGUIControl::SetInitialVisibility()
@@ -525,6 +528,7 @@ void CGUIControl::SetInitialVisibility()
       anim.SetInitialCondition(GetParentID());
   }
   m_allowHiddenFocus.Update(m_dwParentID);
+  UpdateColors();
 }
 
 void CGUIControl::SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus)
@@ -553,15 +557,15 @@ void CGUIControl::ResetAnimations()
     m_animations[i].ResetAnimation();
 }
 
-void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
+bool CGUIControl::CheckAnimation(ANIMATION_TYPE animType)
 {
   // rule out the animations we shouldn't perform
-  if (!IsVisible() || !HasRendered()) 
+  if (!IsVisible() || !HasRendered())
   { // hidden or never rendered - don't allow exit or entry animations for this control
     if (animType == ANIM_TYPE_WINDOW_CLOSE)
     { // could be animating a (delayed) window open anim, so reset it
       ResetAnimation(ANIM_TYPE_WINDOW_OPEN);
-      return;
+      return false;
     }
   }
   if (!IsVisible())
@@ -570,11 +574,18 @@ void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
     {
       // update states to force it hidden
       UpdateStates(animType, ANIM_PROCESS_NORMAL, ANIM_STATE_APPLIED);
-      return;
+      return false;
     }
     if (animType == ANIM_TYPE_WINDOW_OPEN)
-      return;
+      return false;
   }
+  return true;
+}
+
+void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
+{
+  if (!CheckAnimation(animType))
+    return;
   CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType, false);
   CAnimation *forwardAnim = GetAnimation(animType);
   // we first check whether the reverse animation is in progress (and reverse it)
@@ -601,10 +612,11 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
 {
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
-    if (m_animations[i].GetType() == type)
+    CAnimation &anim = m_animations[i];
+    if (anim.GetType() == type)
     {
-      if (!checkConditions || !m_animations[i].GetCondition() || g_infoManager.GetBool(m_animations[i].GetCondition()))
-        return &m_animations[i];
+      if (!checkConditions || !anim.GetCondition() || g_infoManager.GetBool(anim.GetCondition()))
+        return &anim;
     }
   }
   return NULL;
@@ -812,3 +824,12 @@ void CGUIControl::ExecuteActions(const vector<CStdString> &actions)
   }
 }
 
+CPoint CGUIControl::GetRenderPosition() const
+{
+  float z = 0;
+  CPoint point(m_posX, m_posY);
+  m_transform.TransformPosition(point.x, point.y, z);
+  if (m_parentControl)
+    point += m_parentControl->GetRenderPosition();
+  return point;
+}

@@ -6,7 +6,6 @@
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<include>ContentPanel</include>
-			<include>CommonNowPlaying_Controls</include>
 			<control type="panel" id="2">
 				<visible>!Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Songs)</visible>
 				<posx>300</posx>
@@ -147,8 +146,25 @@
 					<label>20096</label>
 					<onleft>2</onleft>
 					<onright>2</onright>
+					<onup>611</onup>
+					<ondown>610</ondown>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
 					<onup>4</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>45</posy>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
 					<ondown>4</ondown>
+					<visible>false</visible>
 				</control>
 			</control>
 		</control>

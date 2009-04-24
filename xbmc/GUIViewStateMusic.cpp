@@ -512,7 +512,10 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
     CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->m_strPath;
-    share.m_strThumbnailImage="defaultFolderBig.png";
+    if (!item->GetThumbnailImage().IsEmpty())
+      share.m_strThumbnailImage = item->GetThumbnailImage();
+    else
+      share.m_strThumbnailImage = "defaultFolderBig.png";
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }
@@ -521,7 +524,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   CMediaSource share;
   share.strName=g_localizeStrings.Get(136); // Playlists
   share.strPath = "special://musicplaylists/";
-  share.m_strThumbnailImage="defaultFolderBig.png";
+  share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicPlaylists.png");
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 
@@ -530,7 +533,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   // Search share
   share.strName=g_localizeStrings.Get(137); // Search
   share.strPath = "musicsearch://";
-  share.m_strThumbnailImage="defaultFolderBig.png";
+  share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicSearch.png");
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 
@@ -541,7 +544,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   {
     share.strName = g_localizeStrings.Get(20389);
     share.strPath = "videodb://3/";
-    share.m_strThumbnailImage = "defaultFolderBig.png";
+    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicVideos.png");
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }
@@ -551,6 +554,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   {
     share.strName = g_localizeStrings.Get(1038);
     share.strPath = "plugin://music/";
+    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultMusicPlugins.png");
     share.m_ignore = true;
     m_sources.push_back(share);
   }
@@ -592,7 +596,7 @@ CGUIViewStateWindowMusicSongs::CGUIViewStateWindowMusicSongs(const CFileItemList
 void CGUIViewStateWindowMusicSongs::SaveViewState()
 {
   if (g_guiSettings.GetBool("musicfiles.savefolderviews"))
-    SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_stSettings.m_viewStateMusicFiles);  
+    SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_FILES, &g_stSettings.m_viewStateMusicFiles);
   else
   {
     g_stSettings.m_viewStateMusicFiles = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
@@ -612,7 +616,7 @@ VECSOURCES& CGUIViewStateWindowMusicSongs::GetSources()
     if (CUtil::GetMatchingSource(share.strName, g_settings.m_musicSources, bIsSourceName) < 0)
       g_settings.m_musicSources.push_back(share);
   }
-  return g_settings.m_musicSources; 
+  return g_settings.m_musicSources;
 }
 
 CGUIViewStateWindowMusicPlaylist::CGUIViewStateWindowMusicPlaylist(const CFileItemList& items) : CGUIViewStateWindowMusic(items)

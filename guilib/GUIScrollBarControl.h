@@ -1,6 +1,6 @@
 /*!
 \file GUIScrollBar.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUISCROLLBAR_H
@@ -29,11 +29,12 @@
  *
  */
 
-#include "GUIImage.h"
+#include "GUITexture.h"
+#include "GUIControl.h"
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIScrollBar :
       public CGUIControl
@@ -41,9 +42,9 @@ class CGUIScrollBar :
 public:
   CGUIScrollBar(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
                        float width, float height,
-                       const CImage& backGroundTexture,
-                       const CImage& barTexture, const CImage& barTextureFocus,
-                       const CImage& nibTexture, const CImage& nibTextureFocus,
+                       const CTextureInfo& backGroundTexture,
+                       const CTextureInfo& barTexture, const CTextureInfo& barTextureFocus,
+                       const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus,
                        ORIENTATION orientation, bool showOnePage);
   virtual ~CGUIScrollBar(void);
   virtual CGUIScrollBar *Clone() const { return new CGUIScrollBar(*this); };
@@ -54,7 +55,6 @@ public:
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   virtual void SetRange(int pageSize, int numItems);
   virtual bool OnMessage(CGUIMessage& message);
   void SetValue(int value);
@@ -66,15 +66,16 @@ public:
   virtual CStdString GetDescription() const;
   virtual bool IsVisible() const;
 protected:
+  virtual void UpdateColors();
   void UpdateBarSize();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
 
-  CGUIImage m_guiBackground;
-  CGUIImage m_guiBarNoFocus;
-  CGUIImage m_guiBarFocus;
-  CGUIImage m_guiNibNoFocus;
-  CGUIImage m_guiNibFocus;
+  CGUITexture m_guiBackground;
+  CGUITexture m_guiBarNoFocus;
+  CGUITexture m_guiBarFocus;
+  CGUITexture m_guiNibNoFocus;
+  CGUITexture m_guiNibFocus;
 
   int m_numItems;
   int m_pageSize;

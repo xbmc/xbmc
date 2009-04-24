@@ -21,15 +21,12 @@
 
 #include "stdafx.h"
 #include "GUIDialogSettings.h"
+#include "GUIImage.h"
 #include "GUIControlGroupList.h"
 
 #define CONTROL_GROUP_LIST          5
 #define CONTROL_SETTINGS_LABEL      2
 #define CONTROL_NONE_AVAILABLE      3
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#define CONTROL_AREA                5
-#define CONTROL_GAP                 6
-#endif
 #define CONTROL_DEFAULT_BUTTON      7
 #define CONTROL_DEFAULT_RADIOBUTTON 8
 #define CONTROL_DEFAULT_SPIN        9
@@ -97,25 +94,6 @@ void CGUIDialogSettings::SetupPage()
   SET_CONTROL_LABEL(CONTROL_SETTINGS_LABEL, g_localizeStrings.Get(13395 + GetID() - WINDOW_DIALOG_VIDEO_OSD_SETTINGS));
 
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_GROUP_LIST);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (!group || group->GetControlType() != CGUIControl::GUICONTROL_GROUPLIST)
-  {
-    // our controls for layout...
-    CGUIControl *pArea = (CGUIControl *)GetControl(CONTROL_AREA);
-    const CGUIControl *pGap = GetControl(CONTROL_GAP);
-    if (!pArea || !pGap)
-      return;
-    Remove(pArea);
-    group = new CGUIControlGroupList(GetID(), CONTROL_GROUP_LIST, pArea->GetXPosition(), pArea->GetYPosition(),
-                                     pArea->GetWidth(), pArea->GetHeight(), pGap->GetHeight() - m_pOriginalSettingsButton->GetHeight(),
-                                     0, VERTICAL, false);
-    group->SetNavigation(CONTROL_OKAY_BUTTON, CONTROL_OKAY_BUTTON, CONTROL_GROUP_LIST, CONTROL_GROUP_LIST);
-    Insert(group, pGap);
-    pArea->FreeResources();
-    delete pArea;
-    SET_CONTROL_HIDDEN(CONTROL_PAGE);
-  }
-#endif
   if (!group)
     return;
 
@@ -270,11 +248,7 @@ void CGUIDialogSettings::FreeControls()
 {
   // just clear our group list
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_GROUP_LIST);
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  if (group && group->GetControlType() == CGUIControl::GUICONTROL_GROUPLIST)
-#else
   if (group)
-#endif
   {
     group->FreeResources();
     group->ClearAll();
@@ -448,7 +422,7 @@ void CGUIDialogSettings::AddSeparator(unsigned int id)
 void CGUIDialogSettings::OnInitWindow()
 {
   CreateSettings();
-  SetControlVisibility();
+  SetInitialVisibility();
   SetupPage();
   // set the default focus control
   m_lastControlID = CONTROL_START;

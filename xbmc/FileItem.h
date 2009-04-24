@@ -51,7 +51,7 @@ class CGenre;
 class CURL;
 
 /* special startoffset used to indicate that we wish to resume */
-#define STARTOFFSET_RESUME (-1) 
+#define STARTOFFSET_RESUME (-1)
 
 class CMediaSource;
 
@@ -81,8 +81,10 @@ public:
   virtual void Serialize(CArchive& ar);
   virtual bool IsFileItem() const { return true; };
 
+  bool Exists() const;
   bool IsVideo() const;
   bool IsPicture() const;
+  bool IsLyrics() const;
   bool IsAudio() const;
   bool IsCUESheet() const;
   bool IsShoutCast() const;
@@ -92,7 +94,8 @@ public:
   bool IsSmartPlayList() const;
   bool IsPythonScript() const;
   bool IsXBE() const;
-  bool IsPluginFolder() const;
+  bool IsPlugin() const;
+  bool IsPluginRoot() const;
   bool IsDefaultXBE() const;
   bool IsShortCut() const;
   bool IsNFO() const;
@@ -155,9 +158,9 @@ public:
   {
     return m_videoInfoTag != NULL;
   }
-  
+
   CVideoInfoTag* GetVideoInfoTag();
-  
+
   inline const CVideoInfoTag* GetVideoInfoTag() const
   {
     return m_videoInfoTag;
@@ -186,7 +189,7 @@ public:
   CStdString GetCachedSeasonThumb() const;
   CStdString GetCachedActorThumb() const;
   CStdString GetCachedFanart() const;
-  static CStdString GetCachedFanart(const CStdString &path);
+  static CStdString GetCachedThumb(const CStdString &path, const CStdString& strPath2, bool split=false);
 
   // Sets the video thumb (cached first, else caches user thumb)
   void SetVideoThumb();
@@ -220,11 +223,11 @@ public:
 
   virtual bool LoadMusicTag();
 
-  /* returns the content type of this item if known. will lookup for http streams */  
-  const CStdString& GetContentType() const; 
+  /* returns the content type of this item if known. will lookup for http streams */
+  const CStdString& GetContentType() const;
 
   /* sets the contenttype if known beforehand */
-  void              SetContentType(const CStdString& content) { m_contenttype = content; } ;  
+  void              SetContentType(const CStdString& content) { m_contenttype = content; } ;
 
   /* general extra info about the contents of the item, not for display */
   void SetExtraInfo(const CStdString& info) { m_extrainfo = info; };
@@ -333,6 +336,7 @@ public:
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);
   void Assign(const CFileItemList& itemlist, bool append = false);
+  bool Copy  (const CFileItemList& item);
   void Reserve(int iCount);
   void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
   void Randomize();

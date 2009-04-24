@@ -1,6 +1,6 @@
 /*!
 \file GUIToggleButtonControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUITOGGLEBUTTONCONTROL_H
@@ -33,12 +33,12 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIToggleButtonControl : public CGUIButtonControl
 {
 public:
-  CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CImage& altTextureFocus, const CImage& altTextureNoFocus, const CLabelInfo &labelInfo);
+  CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CTextureInfo& altTextureFocus, const CTextureInfo& altTextureNoFocus, const CLabelInfo &labelInfo);
   virtual ~CGUIToggleButtonControl(void);
   virtual CGUIToggleButtonControl *Clone() const { return new CGUIToggleButtonControl(*this); };
 
@@ -51,7 +51,6 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   void SetLabel(const std::string& strLabel);
   void SetAltLabel(const std::string& label);
   virtual CStdString GetLabel() const;
@@ -59,6 +58,7 @@ public:
   void SetAltClickActions(const std::vector<CStdString> &clickActions);
 
 protected:
+  virtual void UpdateColors();
   virtual void OnClick();
   virtual void SetInvalid();
   CGUIButtonControl m_selectButton;

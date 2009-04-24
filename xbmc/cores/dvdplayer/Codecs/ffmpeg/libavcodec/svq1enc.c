@@ -20,7 +20,7 @@
  */
 
 /**
- * @file svq1enc.c
+ * @file libavcodec/svq1enc.c
  * Sorenson Vector Quantizer #1 (SVQ1) video codec.
  * For more information of the SVQ1 algorithm, visit:
  *   http://www.pcisys.net/~melanson/codecs/
@@ -119,7 +119,7 @@ static void svq1_write_header(SVQ1Context *s, int frame_type)
 #define QUALITY_THRESHOLD 100
 #define THRESHOLD_MULTIPLIER 0.6
 
-#if defined(HAVE_ALTIVEC)
+#if HAVE_ALTIVEC
 #undef vector
 #endif
 

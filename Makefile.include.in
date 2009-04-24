@@ -1,28 +1,45 @@
 AR=ar
-ARFLAGS=rus
+ARFLAGS=crus
 RM=rm -f
+SHELL=/bin/bash
 ARCH=@ARCH@
 abs_top_srcdir=@abs_top_srcdir@
 prefix=@prefix@
 CXX=@CXX@
 CC=@CC@
+CXXFLAGS+=@CXXFLAGS@
+CXXFLAGS+=@DEBUG_FLAGS@
+CFLAGS+=@CFLAGS@
 CFLAGS+=@DEBUG_FLAGS@
-CFLAGS+=@LZO_INCLUDES@
 INCLUDES+=@INCLUDES@
-DEFINES+=-D_LINUX -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 @SDL_DEFINES@ -DINSTALL_PATH="\"@prefix@/share/xbmc\"" @ARCH_DEFINES@
+DEFINES+= \
+	-D_LINUX \
+	-D_FILE_DEFINED \
+	-D_REENTRANT \
+	-D_LARGEFILE64_SOURCE \
+	-D_FILE_OFFSET_BITS=64 \
+	-DINSTALL_PATH="\"@prefix@/share/xbmc\"" \
+	@SDL_DEFINES@ \
+	@ARCH_DEFINES@
+
 ifeq (linux,$(findstring linux, $(ARCH)))
 ifeq ($(ARCH), x86_64-linux)
-	DEFINES+=-DDLL_PATH_LIBCURL="\"$(shell ls /usr/lib64/libcurl.so.? | head -n1)\""
+	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib64/libcurl.so\""
 else
-	DEFINES+=-DDLL_PATH_LIBCURL="\"$(shell ls /usr/lib/libcurl.so.? | head -n1)\""
+	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib/libcurl.so\""
 endif
+endif
+ifeq ($(findstring osx,$(ARCH)), osx)
+	export MACOSX_DEPLOYMENT_TARGET=10.4
 endif
 
-SHELL=/bin/bash
+ifeq ($(ARCH), powerpc-osx)
+	BUNDLE1_O=-lbundle1.o
+endif
 
 .cpp.o:
 	@rm -f ${<:.cpp=.o}
-	$(CXX) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -30,7 +47,7 @@ SHELL=/bin/bash
 
 .cc.o:
 	@rm -f ${<:.cc=.o}
-	$(CXX) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cc=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cc=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -59,19 +76,38 @@ SHELL=/bin/bash
 %.h.gch : %.h
 	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
 
+.m.o:
+	@rm -f ${<:.m=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.m=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
+
+.mm.o:
+	@rm -f ${<:.mm=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.mm=.o}
+	@cp $*.d $*.P; \
+	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	  rm -f $*.d
+
 OBJS+=$(filter %.o,$(SRCS:.cpp=.o))
 OBJS+=$(filter %.o,$(SRCS:.c=.o))
 OBJS+=$(filter %.o,$(SRCS:.S=.o))
+OBJS+=$(filter %.o,$(SRCS:.mm=.o))
+OBJS+=$(filter %.o,$(SRCS:.m=.o))
 
 .PHONY : lib pch clean distclean distclean_evil
 
-lib: $(OBJS)
+$(LIB): $(OBJS)
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
 
 pch: $(PCH:.h=.h.gch)
 	for d in $(DIRS); do (cd $$d; $(MAKE) pch ); done
 
 clean: 
-	$(RM) $(OBJS) *.o $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d clean); fi ); done
 
 distclean_evil:
@@ -84,6 +120,6 @@ distclean_evil:
 	@echo "Done."
 
 distclean:
-	$(RM) $(OBJS) *.o $(LIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d distclean || $(MAKE) -C $$d clean); fi ); done
 

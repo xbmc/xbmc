@@ -455,7 +455,7 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
     return true;
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
   {
-    CStdString playlist = _P("P:\\PartyMode-Video.xsp");
+    CStdString playlist = "special://profile/PartyMode-Video.xsp";
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules

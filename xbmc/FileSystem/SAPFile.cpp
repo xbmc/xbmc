@@ -16,7 +16,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "stdafx.h" 
+#include "stdafx.h"
 #include "SAPFile.h"
 #include "SAPDirectory.h"
 #include <sys/stat.h>
@@ -37,7 +37,7 @@ CSAPFile::~CSAPFile()
 {
 }
 
-bool CSAPFile::Open(const CURL& url, bool bBinary)
+bool CSAPFile::Open(const CURL& url)
 {
   CStdString path;
   url.GetURL(path);

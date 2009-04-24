@@ -23,20 +23,20 @@
 #include "GUIProgressControl.h"
 #include "utils/GUIInfoManager.h"
 
-CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId, 
-                                         float posX, float posY, float width, 
-                                         float height, const CImage& backGroundTexture, 
-                                         const CImage& leftTexture, 
-                                         const CImage& midTexture, 
-                                         const CImage& rightTexture, 
-                                         const CImage& overlayTexture, float min, float max,
+CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId,
+                                         float posX, float posY, float width,
+                                         float height, const CTextureInfo& backGroundTexture,
+                                         const CTextureInfo& leftTexture,
+                                         const CTextureInfo& midTexture,
+                                         const CTextureInfo& rightTexture,
+                                         const CTextureInfo& overlayTexture, float min, float max,
                                          bool reveal)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_guiBackground(dwParentID, dwControlId, posX, posY, width, height, backGroundTexture)
-    , m_guiLeft(dwParentID, dwControlId, posX, posY, width, height, leftTexture)
-    , m_guiMid(dwParentID, dwControlId, posX, posY, width, height, midTexture)
-    , m_guiRight(dwParentID, dwControlId, posX, posY, width, height, rightTexture)
-    , m_guiOverlay(dwParentID, dwControlId, posX, posY, width, height, overlayTexture)
+    , m_guiBackground(posX, posY, width, height, backGroundTexture)
+    , m_guiLeft(posX, posY, width, height, leftTexture)
+    , m_guiMid(posX, posY, width, height, midTexture)
+    , m_guiRight(posX, posY, width, height, rightTexture)
+    , m_guiOverlay(posX, posY, width, height, overlayTexture)
 {
   m_RangeMin = min;
   m_RangeMax = max;
@@ -68,7 +68,7 @@ void CGUIProgressControl::Render()
       {
         if (m_fPercent > m_RangeMax)
           m_fPercent = m_RangeMax;
-        if (m_fPercent < m_RangeMin) 
+        if (m_fPercent < m_RangeMin)
           m_fPercent = m_RangeMin;
         m_fPercent = ((100*(m_fPercent - m_RangeMin)) / (m_RangeMax - m_RangeMin));
       }
@@ -78,11 +78,11 @@ void CGUIProgressControl::Render()
 
     float fScaleX, fScaleY;
     if (m_width == 0)
-      m_width = (float)m_guiBackground.GetTextureWidth();
+      m_width = m_guiBackground.GetTextureWidth();
     if (m_height == 0)
-      m_height = (float)m_guiBackground.GetTextureHeight();
-    fScaleY = m_height/(float)m_guiBackground.GetTextureHeight();
-    fScaleX = m_width/(float)m_guiBackground.GetTextureWidth();
+      m_height = m_guiBackground.GetTextureHeight();
+    fScaleY = m_height / m_guiBackground.GetTextureHeight();
+    fScaleX = m_width / m_guiBackground.GetTextureWidth();
 
     m_guiBackground.SetHeight(m_height);
     m_guiBackground.SetWidth(m_width);
@@ -123,7 +123,7 @@ void CGUIProgressControl::Render()
     {
 
       float fWidth = m_fPercent;
-      float fFullWidth = (float)(m_guiBackground.GetTextureWidth() - m_guiLeft.GetTextureWidth() - m_guiRight.GetTextureWidth());
+      float fFullWidth = m_guiBackground.GetTextureWidth() - m_guiLeft.GetTextureWidth() - m_guiRight.GetTextureWidth();
       fWidth /= 100.0f;
       fWidth *= fFullWidth;
 
@@ -132,11 +132,11 @@ void CGUIProgressControl::Render()
         m_guiLeft.SetPosition(posX, posY + offset);
       else
         m_guiLeft.SetPosition(posX, posY);
-      m_guiLeft.SetHeight(fScaleY*m_guiLeft.GetTextureHeight());
-      m_guiLeft.SetWidth(fScaleX*m_guiLeft.GetTextureWidth());
+      m_guiLeft.SetHeight(fScaleY * m_guiLeft.GetTextureHeight());
+      m_guiLeft.SetWidth(fScaleX * m_guiLeft.GetTextureWidth());
       m_guiLeft.Render();
 
-      posX += fScaleX*m_guiLeft.GetTextureWidth();
+      posX += fScaleX * m_guiLeft.GetTextureWidth();
       if (m_fPercent && (int)(fScaleX * fWidth) > 1)
       {
         float offset = fabs(fScaleY * 0.5f * (m_guiMid.GetTextureHeight() - m_guiBackground.GetTextureHeight()));
@@ -253,13 +253,19 @@ void CGUIProgressControl::SetInfo(int iInfo)
   m_iInfoCode = iInfo;
 }
 
-void CGUIProgressControl::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUIProgressControl::UpdateColors()
 {
-  CGUIControl::SetColorDiffuse(color);
-  m_guiBackground.SetColorDiffuse(color);
-  m_guiRight.SetColorDiffuse(color);
-  m_guiLeft.SetColorDiffuse(color);
-  m_guiMid.SetColorDiffuse(color);
-  m_guiOverlay.SetColorDiffuse(color);
+  CGUIControl::UpdateColors();
+  m_guiBackground.SetDiffuseColor(m_diffuseColor);
+  m_guiRight.SetDiffuseColor(m_diffuseColor);
+  m_guiLeft.SetDiffuseColor(m_diffuseColor);
+  m_guiMid.SetDiffuseColor(m_diffuseColor);
+  m_guiOverlay.SetDiffuseColor(m_diffuseColor);
 }
 
+CStdString CGUIProgressControl::GetDescription() const
+{
+  CStdString percent;
+  percent.Format("%2.f", m_fPercent);
+  return percent;
+}

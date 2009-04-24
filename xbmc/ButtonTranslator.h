@@ -34,6 +34,10 @@
 #include "utils/EventClient.h"
 #endif
 
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+#include "../guilib/common/SDLJoystick.h"
+#endif
+
 class CKey;
 class CAction;
 class TiXmlNode;
@@ -64,7 +68,7 @@ public:
 #endif
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   bool TranslateJoystickString(WORD wWindow, const char* szDevice, int id,
-                               bool axis, WORD& action, CStdString& strAction,
+                               short inputType, WORD& action, CStdString& strAction,
                                bool &fullrange);
 #endif
 
@@ -73,13 +77,8 @@ private:
   std::map<WORD, buttonMap> translatorMap;       // mapping of windows to button maps
   WORD GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction);
 
-  WORD TranslateGamepadButton(TiXmlElement *pButton);
   WORD TranslateGamepadString(const char *szButton);
-
-  WORD TranslateRemoteButton(TiXmlElement *pButton);
   WORD TranslateRemoteString(const char *szButton);
-
-  WORD TranslateUniversalRemoteButton(TiXmlElement *pButton);
   WORD TranslateUniversalRemoteString(const char *szButton);
 
   WORD TranslateKeyboardString(const char *szButton);
@@ -102,6 +101,7 @@ private:
   typedef std::map<WORD, std::map<int, std::string> > JoystickMap; // <window, <button/axis, action> >
   std::map<std::string, JoystickMap> m_joystickButtonMap;      // <joy name, button map>
   std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
+  std::map<std::string, JoystickMap> m_joystickHatMap;        // <joy name, hat map>
 #endif
 };
 

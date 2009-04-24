@@ -23,7 +23,6 @@
 #include "stdafx.h"
 #include "WINSMBDirectory.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "URL.h"
 #include "GUISettings.h"
 #include "FileItem.h"
@@ -68,9 +67,6 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
   WIN32_FIND_DATAW wfd;
 
   CStdString strPath=strPath1;
-
-  CFileItemList vecCacheItems;
-  g_directoryCache.ClearDirectory(strPath1);
 
   CURL url(strPath);
 
@@ -149,11 +145,10 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             pItem->m_dateTime=localTime;
 
-            vecCacheItems.Add(pItem);
+            if (wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+              pItem->SetProperty("file:hidden", true);
 
-            /* Checks if the file is hidden. If it is then we don't really need to add it */
-            if (!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden"))
-              items.Add(pItem);
+            items.Add(pItem);
           }
         }
         else
@@ -167,21 +162,14 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
           pItem->m_dateTime=localTime;
 
-          /* Checks if the file is hidden. If it is then we don't really need to add it */
-          if ((!(wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) || g_guiSettings.GetBool("filelists.showhidden")) && IsAllowed(strLabel))
-          {
-            vecCacheItems.Add(pItem);
-            items.Add(pItem);
-          }
-          else
-            vecCacheItems.Add(pItem);
+          if (wfd.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+            pItem->SetProperty("file:hidden", true);
+          items.Add(pItem);
         }
       }
     }
     while (FindNextFileW((HANDLE)hFind, &wfd));
   }
-  if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(strPath1, vecCacheItems);
   return true;
 }
 
@@ -215,7 +203,8 @@ bool CWINSMBDirectory::Exists(const char* strPath)
   DWORD attributes = GetFileAttributesW(strWReplaced);
   if(attributes == INVALID_FILE_ATTRIBUTES)
     return false;
-  if (FILE_ATTRIBUTE_DIRECTORY & attributes) return true;
+  if (FILE_ATTRIBUTE_DIRECTORY & attributes) 
+    return true;
   return false;
 }
 
@@ -224,17 +213,17 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
   DWORD dwResult, dwResultEnum;
   HANDLE hEnum;
   DWORD cbBuffer = 16384;     // 16K is a good size
+  LPNETRESOURCEW lpnrLocal;   // pointer to enumerated structures
   DWORD cEntries = -1;        // enumerate all possible entries
-  LPNETRESOURCEW lpnrLocal;    // pointer to enumerated structures
   DWORD i;
   //
   // Call the WNetOpenEnum function to begin the enumeration.
   //
-  dwResult = WNetOpenEnumW(RESOURCE_GLOBALNET, // all network resources
-                          RESOURCETYPE_ANY,   // all resources
-                          0,  // enumerate all resources
-                          lpnr,       // NULL first time the function is called
-                          &hEnum);    // handle to the resource
+  dwResult = WNetOpenEnumW( RESOURCE_GLOBALNET,  // all network resources
+                            RESOURCETYPE_DISK,   // all disk resources
+                            0,                   // enumerate all resources
+                            lpnr,                // NULL first time the function is called
+                            &hEnum);             // handle to the resource
 
   if (dwResult != NO_ERROR) 
   {
@@ -274,10 +263,10 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
     // Call the WNetEnumResource function to continue
     //  the enumeration.
     //
-    dwResultEnum = WNetEnumResourceW(hEnum,  // resource handle
-                                    &cEntries,      // defined locally as -1
-                                    lpnrLocal,      // LPNETRESOURCE
-                                    &cbBuffer);     // buffer size
+    dwResultEnum = WNetEnumResourceW( hEnum,          // resource handle
+                                      &cEntries,      // defined locally as -1
+                                      lpnrLocal,      // LPNETRESOURCE
+                                      &cbBuffer);     // buffer size
     //
     // If the call succeeds, loop through the structures.
     //
@@ -288,8 +277,8 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
         DWORD dwDisplayType = lpnrLocal[i].dwDisplayType;
         DWORD dwType = lpnrLocal[i].dwType;
 
-        if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) || 
-           (dwDisplayType == RESOURCEDISPLAYTYPE_SHARE)) &&
+        if((((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && (m_bHost == false)) || 
+           ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && m_bHost)) &&
            (dwType != RESOURCETYPE_PRINT))
         {
           CStdString strurl = "smb:";
@@ -318,10 +307,9 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           
           CFileItemPtr pItem(new CFileItem(strName));
           pItem->m_strPath = strurl;
+          CUtil::AddSlashAtEnd(pItem->m_strPath);
           pItem->m_bIsFolder = true;
-          if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && (m_bHost == false)) ||
-             ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && m_bHost))
-            items.Add(pItem);
+          items.Add(pItem);
         }
 
         // If the NETRESOURCE structure represents a container resource, 
@@ -388,15 +376,22 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
     urlIn.SetPassword(strPassword);
     urlIn.SetUserName(strUserName);
   }
+  else if(urlIn.GetUserNameA().empty() && !g_guiSettings.GetString("smb.username").IsEmpty())
+  {
+    urlIn.SetPassword(g_guiSettings.GetString("smb.password"));
+    urlIn.SetUserName(g_guiSettings.GetString("smb.username"));
+  }
 
   CStdString strAuth = URLEncode(urlIn);
 
   while(dwRet != NO_ERROR)
   {
     strPath = URLEncode(urlIn);
-    dwRet = WNetAddConnection2(&nr,(LPCTSTR)urlIn.GetPassWord().c_str(), (LPCTSTR)urlIn.GetUserNameA().c_str(), NULL);
+    LPCTSTR pUser = urlIn.GetUserNameA().empty() ? NULL : (LPCTSTR)urlIn.GetUserNameA().c_str();
+    LPCTSTR pPass = urlIn.GetPassWord().empty() ? NULL : (LPCTSTR)urlIn.GetPassWord().c_str();
+    dwRet = WNetAddConnection2(&nr, pPass, pUser, CONNECT_TEMPORARY);
     CLog::Log(LOGDEBUG,"Trying to connect to %s with username(%s) and password(%s)", strUNC.c_str(), urlIn.GetUserNameA().c_str(), urlIn.GetPassWord().c_str());
-    if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD)
+    if(dwRet == ERROR_ACCESS_DENIED || dwRet == ERROR_INVALID_PASSWORD || dwRet == ERROR_LOGON_FAILURE)
     {
       CLog::Log(LOGERROR,"Couldn't connect to %s, access denied", strUNC.c_str());
       if (m_allowPrompting)
@@ -411,6 +406,17 @@ bool CWINSMBDirectory::ConnectToShare(const CURL& url)
       }
       else
         break;
+    }
+    else if(dwRet == ERROR_SESSION_CREDENTIAL_CONFLICT)
+    {
+      DWORD dwRet2=-1;
+      CStdString strRN = nr.lpRemoteName;
+      do
+      {
+        dwRet2 = WNetCancelConnection2((LPCSTR)strRN.c_str(), 0, false);
+        strRN.erase(strRN.find_last_of("\\"),CStdString::npos);
+      } 
+      while(dwRet2 == ERROR_NOT_CONNECTED && !strRN.Equals("\\\\"));
     }
     else if(dwRet != NO_ERROR)
     {

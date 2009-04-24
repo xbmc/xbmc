@@ -1,6 +1,6 @@
 /*
  * ISO Media common code
- * Copyright (c) 2001 Fabrice Bellard.
+ * Copyright (c) 2001 Fabrice Bellard
  * Copyright (c) 2002 Francois Revol <revol@free.fr>
  * Copyright (c) 2006 Baptiste Coudurier <baptiste.coudurier@free.fr>
  *
@@ -28,6 +28,7 @@
 /* http://www.mp4ra.org */
 /* ordered by muxing preference */
 const AVCodecTag ff_mp4_obj_type[] = {
+    { CODEC_ID_MOV_TEXT  , 0x08 },
     { CODEC_ID_MPEG4     , 0x20 },
     { CODEC_ID_H264      , 0x21 },
     { CODEC_ID_AAC       , 0x40 },
@@ -256,7 +257,7 @@ int ff_mov_iso639_to_lang(const char *lang, int mp4)
     }
     /* XXX:can we do that in mov too? */
     if (!mp4)
-        return 0;
+        return -1;
     /* handle undefined as such */
     if (lang[0] == '\0')
         lang = "und";
@@ -264,16 +265,16 @@ int ff_mov_iso639_to_lang(const char *lang, int mp4)
     for (i = 0; i < 3; i++) {
         unsigned char c = (unsigned char)lang[i];
         if (c < 0x60)
-            return 0;
+            return -1;
         if (c > 0x60 + 0x1f)
-            return 0;
+            return -1;
         code <<= 5;
         code |= (c - 0x60);
     }
     return code;
 }
 
-int ff_mov_lang_to_iso639(int code, char *to)
+int ff_mov_lang_to_iso639(unsigned code, char *to)
 {
     int i;
     /* is it the mangled iso code? */

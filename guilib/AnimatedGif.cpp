@@ -13,7 +13,7 @@
 //
 //  --------------------------------------------------------------------------
 //
-// Copyright © 2000, Juan Soulie <jsoulie@cplusplus.com>
+// Copyright ï¿½ 2000, Juan Soulie <jsoulie@cplusplus.com>
 //
 // Permission to use, copy, modify, distribute and sell this software or any
 // part thereof and/or its documentation for any purpose is granted without fee
@@ -28,6 +28,7 @@
 // ****************************************************************************
 
 #include "AnimatedGif.h"
+#include "FileSystem/SpecialProtocol.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -35,7 +36,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #define fopen_utf8 fopen
 #endif
 
-#pragma pack(1) 
+#pragma pack(1)
 // Error processing macro (NO-OP by default):
 #define ERRORMSG(PARAM) {}
 
@@ -44,7 +45,27 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
  #define BI_RLE8       1L
  #define BI_RLE4       2L
  #define BI_BITFIELDS  3L
-#endif 
+#endif
+
+// Use SDL macros to swap data endianness
+// This assumes that big endian systems use SDL
+// Macros do not do anything on little endian systems
+#ifdef HAS_SDL
+#include <SDL/SDL_endian.h>
+
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+#define SWAP16(X)    (void)X
+#define SWAP32(X)    (void)X
+#else
+#define SWAP16(X)    X=SDL_Swap16(X)
+#define SWAP32(X)    X=SDL_Swap32(X)
+#endif
+
+#else
+#define SWAP16(X)    (void)X
+#define SWAP32(X)    (void)X
+#endif
+
 // pre-declaration:
 int LZWDecoder (char*, char*, short, int, int, int, const int);
 
@@ -54,9 +75,12 @@ int LZWDecoder (char*, char*, short, int, int, int, const int);
 
 CAnimatedGif::CAnimatedGif()
 {
+  Height = Width = 0;
   Raster = NULL;
   Palette = NULL;
   pbmi = NULL;
+  BPP = Transparent = BytesPerRow = 0;
+  xPos = yPos = Delay = Transparency = 0;
   nLoops = 1; //default=play animation 1 time
 }
 
@@ -86,7 +110,7 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   Height = iHeight;
   BPP = iBPP;
   // Animation Extra members setup:
-  xPos = xPos = Delay = 0;
+  xPos = yPos = Delay = Transparency = 0;
   nLoops = iLoops;
 
   if (BPP == 24)
@@ -139,6 +163,7 @@ CAnimatedGif& CAnimatedGif::operator = (CAnimatedGif& rhs)
 
 CAnimatedGifSet::CAnimatedGifSet()
 {
+  FrameHeight = FrameWidth = 0;
   nLoops = 1; //default=play animation 1 time
 }
 
@@ -227,7 +252,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
     int GraphicExtensionFound = 0;
 
     // OPEN FILE
-    FILE *fd = fopen_utf8(szFileName, "rb");
+    FILE *fd = fopen_utf8(_P(szFileName), "rb");
     if (!fd)
     {
       return 0;
@@ -268,6 +293,9 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
       fclose(fd);
       return 0;
     }
+    // endian swap
+    SWAP16(giflsd.ScreenWidth);
+    SWAP16(giflsd.ScreenHeight);
 
     GlobalBPP = (giflsd.PackedFields & 0x07) + 1;
 
@@ -308,6 +336,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
         case 0xF9:    // Graphic Control Extension
           {
             fread((char*)&gifgce, 1, sizeof(gifgce), fd);
+            SWAP16(gifgce.Delay);
             //dllprintf("got Graphic Control Extension:%i/%i fields:%x",gifgce.BlockSize,sizeof(gifgce),gifgce.PackedFields);
             GraphicExtensionFound++;
             getbyte(fd); // Block Terminator (always 0)
@@ -337,6 +366,7 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
             {
               struct GIFNetscapeTag tag;
               fread((char*)&tag, 1, sizeof(gifnetscape), fd);
+              SWAP16(tag.iIterations);
               nLoops = tag.iIterations;
               if (nLoops) nLoops++;
               getbyte(fd);
@@ -385,6 +415,11 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
         gifid;
 
         fread((char*)&gifid, 1, sizeof(gifid), fd);
+
+        SWAP16(gifid.xPos);
+        SWAP16(gifid.yPos);
+        SWAP16(gifid.Width);
+        SWAP16(gifid.Height);
 
         int LocalColorMap = (gifid.PackedFields & 0x08) ? 1 : 0;
 
@@ -546,6 +581,7 @@ int LZWDecoder (char * bufIn, char * bufOut,
     // For GIF Files, code sizes are variable between 9 and 12 bits
     // That's why we must read data (Code) this way:
     LongCode = *((long*)(bufIn + whichBit / 8));     // Get some bytes from bufIn
+    SWAP32(LongCode);
     LongCode >>= (whichBit&7);            // Discard too low bits
     Code = (short)((LongCode & ((1 << CodeSize) - 1) )); // Discard too high bits
     whichBit += CodeSize;              // Increase Bit Offset

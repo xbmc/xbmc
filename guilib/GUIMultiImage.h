@@ -1,6 +1,6 @@
 /*!
 \file GUIMultiImage.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIMULTIIMAGECONTROL_H
@@ -34,12 +34,12 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIMultiImage : public CGUIControl
 {
 public:
-  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& texturePath, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
+  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
   CGUIMultiImage(const CGUIMultiImage &from);
   virtual ~CGUIMultiImage(void);
   virtual CGUIMultiImage *Clone() const { return new CGUIMultiImage(*this); };
@@ -55,12 +55,14 @@ public:
   virtual bool IsDynamicallyAllocated() { return m_bDynamicResourceAlloc; };
   virtual bool CanFocus() const;
 
-  void SetAspectRatio(CGUIImage::CAspectRatio::ASPECT_RATIO ratio);
+  void SetInfo(const CGUIInfoLabel &info);
+  void SetAspectRatio(const CAspectRatio &ratio);
 
 protected:
   void LoadDirectory();
   void LoadImage(int image);
-  CImage m_texturePath;
+  CTextureInfo  m_textureInfo;
+  CGUIInfoLabel m_texturePath;
   CStdString m_currentPath;
   unsigned int m_currentImage;
   CStopWatch m_imageTimer;
@@ -70,8 +72,8 @@ protected:
   DWORD m_timeToPauseAtEnd;
   bool m_randomized;
   bool m_loop;
-  CGUIImage::CAspectRatio::ASPECT_RATIO m_aspectRatio;
-  std::vector <CGUIImage *> m_images;
+  CAspectRatio m_aspect;
+  std::vector <CGUITexture *> m_images;
 
   bool m_bDynamicResourceAlloc;
   bool m_directoryLoaded;

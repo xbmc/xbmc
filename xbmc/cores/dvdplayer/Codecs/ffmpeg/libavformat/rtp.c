@@ -1,6 +1,6 @@
 /*
  * RTP input/output format
- * Copyright (c) 2002 Fabrice Bellard.
+ * Copyright (c) 2002 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include "network.h"
 
-#include "rtp_internal.h"
+#include "rtp.h"
 
 //#define DEBUG
 
@@ -74,7 +74,7 @@ static const struct
   {-1, "",           CODEC_TYPE_UNKNOWN, CODEC_ID_NONE, -1, -1}
 };
 
-int rtp_get_codec_info(AVCodecContext *codec, int payload_type)
+int ff_rtp_get_codec_info(AVCodecContext *codec, int payload_type)
 {
     int i = 0;
 
@@ -93,7 +93,7 @@ int rtp_get_codec_info(AVCodecContext *codec, int payload_type)
     return -1;
 }
 
-int rtp_get_payload_type(AVCodecContext *codec)
+int ff_rtp_get_payload_type(AVCodecContext *codec)
 {
     int i, payload_type;
 

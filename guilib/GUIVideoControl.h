@@ -1,6 +1,6 @@
 /*!
 \file GUIVideoControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIVIDEOCONTROL_H
@@ -33,7 +33,7 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIVideoControl :
       public CGUIControl

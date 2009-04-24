@@ -1,6 +1,6 @@
 /*!
 \file GUISpinControlEx.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_SPINCONTROLEX_H
@@ -34,12 +34,12 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUISpinControlEx : public CGUISpinControl
 {
 public:
-  CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float spinWidth, float spinHeight, const CLabelInfo& spinInfo, const CImage &textureFocus, const CImage &textureNoFocus, const CImage& textureUp, const CImage& textureDown, const CImage& textureUpFocus, const CImage& textureDownFocus, const CLabelInfo& labelInfo, int iType);
+  CGUISpinControlEx(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float spinWidth, float spinHeight, const CLabelInfo& spinInfo, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo& labelInfo, int iType);
   virtual ~CGUISpinControlEx(void);
   virtual CGUISpinControlEx *Clone() const { return new CGUISpinControlEx(*this); };
 
@@ -56,7 +56,6 @@ public:
   const CStdString GetCurrentLabel() const;
   void SetText(const std::string & aLabel) {m_buttonControl.SetLabel(aLabel);};
   virtual void SetVisible(bool bVisible);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   const CLabelInfo& GetButtonLabelInfo() { return m_buttonControl.GetLabelInfo(); };
   virtual void SetEnabled(bool bEnable);
   virtual float GetXPosition() const { return m_buttonControl.GetXPosition();};
@@ -67,6 +66,7 @@ public:
 
   void SettingsCategorySetSpinTextColor(const CGUIInfoColor &color);
 protected:
+  virtual void UpdateColors();
   CGUIButtonControl m_buttonControl;
   float m_spinPosX;
 };

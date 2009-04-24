@@ -24,7 +24,6 @@
 #include "FTPParse.h"
 #include "URL.h"
 #include "Util.h"
-#include "DirectoryCache.h"
 #include "FileCurl.h"
 #include "FileItem.h"
 
@@ -36,9 +35,6 @@ CFTPDirectory::~CFTPDirectory(void){}
 
 bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  g_directoryCache.ClearDirectory(strPath);
-  CFileItemList vecCacheItems;
-
   CFileCurl reader;
 
   CURL url(strPath);
@@ -50,7 +46,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     url.SetFileName(path);
   }
 
-  if (!reader.Open(url, false))
+  if (!reader.Open(url))
     return false;
 
 
@@ -79,14 +75,14 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
       /* this should be conditional if we ever add    */
       /* support for the utf8 extension in ftp client */
-      g_charsetConverter.stringCharsetToUtf8(name);
+      g_charsetConverter.unknownToUTF8(name);
 
       CFileItemPtr pItem(new CFileItem(name));
-      
+
       pItem->m_strPath = path + name;
       pItem->m_bIsFolder = (bool)(lp.flagtrycwd != 0);
       if (pItem->m_bIsFolder)
-        if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += "/";
+        CUtil::AddSlashAtEnd(pItem->m_strPath);
 
       /* qualify the url with host and all */
       url.SetFileName(pItem->m_strPath);
@@ -95,17 +91,9 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       pItem->m_dwSize = lp.size;
       pItem->m_dateTime=lp.mtime;
 
-      if( m_cacheDirectory )
-        vecCacheItems.Add(pItem);
-
-      /* if file is ok by mask or a folder add it */
-      if( pItem->m_bIsFolder || IsAllowed(name) )
-        items.Add(pItem);
+      items.Add(pItem);
     }
   }
 
-
- if (m_cacheDirectory)
-    g_directoryCache.SetDirectory(path, vecCacheItems);
   return true;
 }

@@ -199,7 +199,7 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
 {
   m_iSourceFlags    = flags;
   m_iSourceChannels = GetNrOfChannels(flags);
-  if (g_advancedSettings.m_analogMultiChannel == false)
+  if (g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
     m_iOutputChannels = 2;
   else
     m_iOutputChannels = m_iSourceChannels;

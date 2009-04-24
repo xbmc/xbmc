@@ -66,7 +66,7 @@ public:
   void SetActivityTime();
   void AddActiveConnection();
   void AddIdleConnection();
-#endif  
+#endif
   CStdString URLEncode(const CStdString &value);
   CStdString URLEncode(const CURL &url);
 
@@ -94,7 +94,7 @@ public:
   virtual void Close();
   virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
   virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
-  virtual bool Open(const CURL& url, bool bBinary = true);
+  virtual bool Open(const CURL& url);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
   virtual int Stat(struct __stat64* buffer);
@@ -102,15 +102,14 @@ public:
   virtual __int64 GetPosition();
   virtual int Write(const void* lpBuf, __int64 uiBufSize);
 
-  virtual bool OpenForWrite(const CURL& url, bool bBinary = true, bool bOverWrite = false);
+  virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
   virtual bool Delete(const CURL& url);
   virtual bool Rename(const CURL& url, const CURL& urlnew);
 
 protected:
   CURL m_url;
-  bool IsValidFile(const CStdString& strFileName);  
+  bool IsValidFile(const CStdString& strFileName);
   __int64 m_fileSize;
-  bool m_bBinary;
   int m_fd;
 };
 }

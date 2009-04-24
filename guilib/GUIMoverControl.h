@@ -1,6 +1,6 @@
 /*!
 \file GUIMoverControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUIMoverCONTROL_H
@@ -29,7 +29,8 @@
  *
  */
 
-#include "GUIImage.h"
+#include "GUITexture.h"
+#include "GUIControl.h"
 
 #define ALLOWED_DIRECTIONS_ALL   0
 #define ALLOWED_DIRECTIONS_UPDOWN  1
@@ -47,14 +48,14 @@
 
 /*!
  \ingroup controls
- \brief 
+ \brief
  */
 class CGUIMoverControl : public CGUIControl
 {
 public:
   CGUIMoverControl(DWORD dwParentID, DWORD dwControlId,
                    float posX, float posY, float width, float height,
-                   const CImage& textureFocus, const CImage& textureNoFocus);
+                   const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
 
   virtual ~CGUIMoverControl(void);
   virtual CGUIMoverControl *Clone() const { return new CGUIMoverControl(*this); };
@@ -72,18 +73,18 @@ public:
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetPosition(float posX, float posY);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
   void SetLimits(int iX1, int iY1, int iX2, int iY2);
   void SetLocation(int iLocX, int iLocY, bool bSetPosition = true);
   int GetXLocation() const { return m_iLocationX;};
   int GetYLocation() const { return m_iLocationY;};
 
 protected:
+  virtual void UpdateColors();
   void SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Move(int iX, int iY);
-  CGUIImage m_imgFocus;
-  CGUIImage m_imgNoFocus;
+  CGUITexture m_imgFocus;
+  CGUITexture m_imgNoFocus;
   DWORD m_dwFrameCounter;
   DWORD m_dwLastMoveTime;
   int m_nDirection;

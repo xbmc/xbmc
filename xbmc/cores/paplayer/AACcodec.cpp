@@ -65,14 +65,14 @@ bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
     return false;
   }
 
-	AACInfo info;
-	if (m_dll.AACGetInfo(m_Handle, &info))
-	{
+  AACInfo info;
+  if (m_dll.AACGetInfo(m_Handle, &info))
+  {
     m_Channels = info.channels;
-		m_SampleRate = info.samplerate;
-		m_BitsPerSample = info.bitspersample;
+    m_SampleRate = info.samplerate;
+    m_BitsPerSample = info.bitspersample;
     m_TotalTime = info.totaltime;
-	  m_Bitrate = info.bitrate;
+    m_Bitrate = info.bitrate;
 
     m_Buffer = new BYTE[AAC_PCM_SIZE*m_Channels*2];
 
@@ -121,12 +121,12 @@ bool AACCodec::Init(const CStdString &strFile, unsigned int filecache)
       m_replayGain.fAlbumPeak = (float)atof(info.replaygain_album_peak);
       m_replayGain.iHasGainInfo |= REPLAY_GAIN_HAS_ALBUM_PEAK;
     }
-	}
-	else
-	{
+  }
+  else
+  {
     CLog::Log(LOGERROR,"AACCodec: No stream info found in file %s (%s)", strFile.c_str(), m_dll.AACGetErrorMessage());
     return false;
-	}
+  }
   return true;
 }
 
@@ -177,7 +177,7 @@ int AACCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     {
       CLog::Log(LOGERROR, "AACCodec: Unable to read data (%s)", m_dll.AACGetErrorMessage());
       return READ_ERROR;
-    } 
+    }
     else
       m_BufferSize+=iAmountRead;
   }
@@ -215,7 +215,7 @@ unsigned __int32 AACCodec::AACOpenCallback(const char *pName, const char *mode, 
   if (!codec)
     return 0;
 
-  return codec->m_file.Open(pName, true, READ_CACHED);
+  return codec->m_file.Open(pName, READ_CACHED);
 }
 
 void AACCodec::AACCloseCallback(void *userData)

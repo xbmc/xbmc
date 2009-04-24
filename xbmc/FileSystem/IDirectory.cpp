@@ -30,8 +30,9 @@ IDirectory::IDirectory(void)
 {
   m_strFileMask = "";
   m_allowPrompting = false;
-  m_cacheDirectory = false;
+  m_cacheDirectory = DIR_CACHE_NEVER;
   m_useFileDirectories = false;
+  m_extFileInfo = true;
 }
 
 IDirectory::~IDirectory(void)
@@ -42,47 +43,27 @@ IDirectory::~IDirectory(void)
  \param strFile File to test
  \return Returns \e true, if file is allowed.
  */
-bool IDirectory::IsAllowed(const CStdString& strFile)
+bool IDirectory::IsAllowed(const CStdString& strFile) const
 {
   CStdString strExtension;
   if ( !m_strFileMask.size() ) return true;
   if ( !strFile.size() ) return true;
 
   CUtil::GetExtension(strFile, strExtension);
-  strExtension.ToLower();
 
-  // ignore all non dvd related ifo files.
-  if (strExtension.Equals(".ifo"))
-  {
-    if (strFile.Equals("video_ts.ifo")) return true;
-    if (strFile.Left(4).Equals("vts_") && strFile.Right(6).Equals("_0.ifo") && strFile.length() == 12) return true;
-    return false;
-  }
-  
   if (!strExtension.size()) return false;
-  bool bOkay = false;
-  int i=-1;
-  while (!bOkay)
-  {
-    i = m_strFileMask.Find(strExtension,i+1);
-    if (i >= 0)
+
+  strExtension.ToLower();
+  strExtension += '|'; // ensures that we have a | at the end of it
+  if ((size_t)m_strFileMask.Find(strExtension) != CStdString::npos)
+  { // it's allowed, but we should also ignore all non dvd related ifo files.
+    if (strExtension.Equals(".ifo|"))
     {
-      if (i+strExtension.size() == m_strFileMask.size())
-        bOkay = true;
-      else
-      {
-        char c = m_strFileMask[i+strExtension.size()];
-        if (c == '|')
-          bOkay = true;
-        else
-          bOkay = false;
-      }
-    }    
-    else
-      break;
-  }
-  if ( i >= 0 && bOkay)
-  {
+      CStdString fileName = CUtil::GetFileName(strFile);
+      if (fileName.Equals("video_ts.ifo")) return true;
+      if (fileName.length() == 12 && fileName.Left(4).Equals("vts_") && fileName.Right(6).Equals("_0.ifo")) return true;
+      return false;
+    }
     return true;
   }
   return false;
@@ -91,7 +72,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile)
 /*!
  \brief Set a mask of extensions for the files in the directory.
  \param strMask Mask of file extensions that are allowed.
- 
+
  The mask has to look like the following: \n
  \verbatim
  .m4a|.flac|.aac|
@@ -101,13 +82,16 @@ bool IDirectory::IsAllowed(const CStdString& strFile)
 void IDirectory::SetMask(const CStdString& strMask)
 {
   m_strFileMask = strMask;
+  // ensure it's completed with a | so that filtering is easy.
   m_strFileMask.ToLower();
+  if (m_strFileMask.size() && m_strFileMask[m_strFileMask.size() - 1] != '|')
+    m_strFileMask += '|';
 }
 
 /*!
  \brief Set whether the directory handlers can prompt the user.
  \param allowPrompting Set true to allow prompting to occur (default is false).
- 
+
  Directory handlers should only prompt the user as a direct result of the
  users actions.
  */
@@ -119,10 +103,10 @@ void IDirectory::SetAllowPrompting(bool allowPrompting)
 
 /*!
  \brief Set whether the directory should be cached by our directory cache.
- \param cacheDirectory Set true to enable caching (default is false).
+ \param cacheDirectory Set DIR_CACHE_ONCE or DIR_CACHE_ALWAYS to enable caching (default is DIR_CACHE_NEVER).
  */
 
-void IDirectory::SetCacheDirectory(bool cacheDirectory)
+void IDirectory::SetCacheDirectory(DIR_CACHE_TYPE cacheDirectory)
 {
   m_cacheDirectory = cacheDirectory;
 }
@@ -137,3 +121,12 @@ void IDirectory::SetUseFileDirectories(bool useFileDirectories)
   m_useFileDirectories = useFileDirectories;
 }
 
+/*!
+ \brief Set whether the GetDirectory call will retrieve extended file information (stat calls for example).
+ \param extFileInfo Set true to enable extended file info (default is true).
+ */
+
+void IDirectory::SetExtFileInfo(bool extFileInfo)
+{
+  m_extFileInfo = extFileInfo;
+}

@@ -35,11 +35,13 @@
 #endif
 #ifdef _WIN32PC
 #include "ntddcdrm.h"
+#include "WIN32Util.h"
 #endif
 #if defined (_LINUX) && !defined(__APPLE__)
 #include <linux/limits.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <linux/cdrom.h>
 #endif
@@ -271,52 +273,22 @@ void CIoSupport::GetDrive(const char* szPartition, char* cDriveLetter)
 HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
 {
 #ifdef _WIN32PC
-  BOOL bRet= FALSE;
-  if( cDriveLetter )
-  {
-    CStdString strVolFormat; strVolFormat.Format( _T("\\\\.\\%c:" ), cDriveLetter);
-    HANDLE hDrive= CreateFile( strVolFormat, GENERIC_READ, FILE_SHARE_READ, 
-                               NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    CStdString strRootFormat; strRootFormat.Format( _T("%c:\\"), cDriveLetter);
-    if( ( hDrive != INVALID_HANDLE_VALUE || GetLastError() == NO_ERROR) && 
-        ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
-    {
-      DWORD dwDummy;
-      bRet= DeviceIoControl( hDrive, ( bEject ? IOCTL_STORAGE_EJECT_MEDIA : IOCTL_STORAGE_LOAD_MEDIA), 
-                                      NULL, 0, NULL, 0, &dwDummy, NULL);
-      CloseHandle( hDrive );
-    }
-  }
-  return bRet? S_OK : S_FALSE;
-#endif
-#ifdef _XBOX
-  HalWriteSMBusValue(0x20, 0x0C, FALSE, 0);  // eject tray
-#endif
-#ifdef __APPLE__
-  char* dvdDevice = CCdIoSupport::GetDeviceFileName();
+  return CWIN32Util::EjectTray(cDriveLetter);
+#else
+  CLibcdio *c_cdio = CLibcdio::GetInstance();
+  char* dvdDevice = c_cdio->GetDeviceFileName();
   m_isoReader.Reset();
   int nRetries=2;
   while (nRetries-- > 0)
   {
-    CdIo_t* cdio = cdio_open(dvdDevice, DRIVER_UNKNOWN);
+    CdIo_t* cdio = c_cdio->cdio_open(dvdDevice, DRIVER_UNKNOWN);
     if (cdio)
     {
-      cdio_eject_media(&cdio);
-      cdio_destroy(cdio);
+      c_cdio->cdio_eject_media(&cdio);
+      c_cdio->cdio_destroy(cdio);
     }
     else 
       break;
-  }
-#elif defined(_LINUX)
-  char* dvdDevice = CCdIoSupport::GetDeviceFileName();
-  if (strlen(dvdDevice) != 0)
-  {
-    int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
-    if (fd)
-    {
-      ioctl(fd, CDROMEJECT, 0);
-      close(fd);
-    }
   }
 #endif
   return S_OK;
@@ -330,16 +302,18 @@ HRESULT CIoSupport::CloseTray()
 #ifdef __APPLE__
   // FIXME...
 #elif defined(_LINUX)
-  char* dvdDevice = CCdIoSupport::GetDeviceFileName();
+  char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
   if (strlen(dvdDevice) != 0)
   {
     int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
-    if (fd)
+    if (fd >= 0)
     {
       ioctl(fd, CDROMCLOSETRAY, 0);
       close(fd);
     }
   }
+#elif defined(_WIN32PC)
+  return CWIN32Util::CloseTray();
 #endif
   return S_OK;
 }
@@ -351,6 +325,14 @@ DWORD CIoSupport::GetTrayState()
 #else
   return DRIVE_NOT_READY;
 #endif
+}
+
+HRESULT CIoSupport::ToggleTray()
+{
+  if (GetTrayState() == TRAY_OPEN || GetTrayState() == DRIVE_OPEN)
+    return CloseTray();
+  else
+    return EjectTray();
 }
 
 HRESULT CIoSupport::Shutdown()
@@ -386,12 +368,12 @@ HANDLE CIoSupport::OpenCDROM()
     return NULL;
   }
 #elif defined(_LINUX)
-  int fd = open(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName(), O_RDONLY | O_NONBLOCK);
+  int fd = open(CLibcdio::GetInstance()->GetDeviceFileName(), O_RDONLY | O_NONBLOCK);
   hDevice = new CXHandle(CXHandle::HND_FILE);
   hDevice->fd = fd;
   hDevice->m_bCDROM = true;
 #elif defined(_WIN32)
-  hDevice = CreateFile(MEDIA_DETECT::CCdIoSupport::GetDeviceFileName(), GENERIC_READ, FILE_SHARE_READ,
+  hDevice = CreateFile(CLibcdio::GetInstance()->GetDeviceFileName(), GENERIC_READ, FILE_SHARE_READ,
                        NULL, OPEN_EXISTING,
                        FILE_FLAG_RANDOM_ACCESS, NULL );
 #else
@@ -445,37 +427,33 @@ INT CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, LPSTR lpczBuffer)
   if (hDevice->m_bCDROM)
   {    
     int fd = hDevice->fd;
-    int lba = (dwSector + CD_MSF_OFFSET) ;
-    int m,s,f;
-    union 
-    {
-      struct cdrom_msf msf;
-      char buffer[2356];
-    } arg;
 
-    // convert sector offset to minute, second, frame format
-    // since that is what the 'ioctl' requires as input
-    f = lba % CD_FRAMES;
-    lba /= CD_FRAMES;
-    s = lba % CD_SECS;
-    lba /= CD_SECS;
-    m = lba;
+    // seek to requested sector
+    off_t offset = (off_t)dwSector * (off_t)MODE1_DATA_SIZE;
 
-    arg.msf.cdmsf_min0 = m;
-    arg.msf.cdmsf_sec0 = s;
-    arg.msf.cdmsf_frame0 = f;
-    
-    int ret = ioctl(fd, CDROMREADMODE1, &arg);
-    if (ret==0)
+    if (lseek(fd, offset, SEEK_SET) < 0)
     {
-      memcpy(lpczBuffer, arg.buffer, 2048);
-      return 2048;
+      CLog::Log(LOGERROR, "CD: ReadSector Request to read sector %d\n", (int)dwSector);
+      CLog::Log(LOGERROR, "CD: ReadSector error: %s\n", strerror(errno));
+      OutputDebugString("CD Read error\n");
+      return (-1);
     }
-    CLog::Log(LOGERROR, "CD: ReadSector Request to read sector %d\n", (int)dwSector);
-    CLog::Log(LOGERROR, "CD: ReadSector error: %s\n", strerror(errno));
-    CLog::Log(LOGERROR, "CD: ReadSector minute %d, second %d, frame %d\n", m, s, f);
-    OutputDebugString("CD Read error\n");
-    return -1;    
+
+    // read data block of this sector
+    while (read(fd, lpczBuffer, MODE1_DATA_SIZE) < 0)
+    {
+      // read was interrupted - try again
+      if (errno == EINTR)
+        continue;
+
+      // error reading sector
+      CLog::Log(LOGERROR, "CD: ReadSector Request to read sector %d\n", (int)dwSector);
+      CLog::Log(LOGERROR, "CD: ReadSector error: %s\n", strerror(errno));
+      OutputDebugString("CD Read error\n");
+      return (-1);
+    }
+
+    return MODE1_DATA_SIZE;
   }
 #endif
   LARGE_INTEGER Displacement;

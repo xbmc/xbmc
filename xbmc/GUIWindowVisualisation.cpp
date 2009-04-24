@@ -29,9 +29,6 @@
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
-#ifdef HAS_KARAOKE
-#include "CdgParser.h"
-#endif
 
 using namespace MUSIC_INFO;
 
@@ -171,11 +168,6 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       if (pOSD && pOSD->IsDialogRunning()) pOSD->Close(true);
       CGUIDialogVisualisationPresetList *pList = (CGUIDialogVisualisationPresetList *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIS_PRESET_LIST);
       if (pList && pList->IsDialogRunning()) pList->Close(true);
-
-#ifdef HAS_KARAOKE
-      if(g_application.m_pCdgParser)
-        g_application.m_pCdgParser->FreeGraphics();
-#endif
     }
     break;
   case GUI_MSG_WINDOW_INIT:
@@ -194,10 +186,6 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       if (g_infoManager.GetCurrentSongTag())
         m_tag = *g_infoManager.GetCurrentSongTag();
-#ifdef HAS_KARAOKE
-      if( g_application.m_pCdgParser && g_guiSettings.GetBool("karaoke.enabled"))
-        g_application.m_pCdgParser->AllocGraphics();
-#endif
 
       if (g_stSettings.m_bMyMusicSongThumbInVis)
       { // always on

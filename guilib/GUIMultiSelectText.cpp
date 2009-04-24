@@ -36,7 +36,7 @@ CGUIMultiSelectTextControl::CSelectableString::CSelectableString(CGUIFont *font,
   m_text.GetTextExtent(m_length, height);
 }
 
-CGUIMultiSelectTextControl::CGUIMultiSelectTextControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CImage& textureFocus, const CImage& textureNoFocus, const CLabelInfo& labelInfo, const CGUIInfoLabel &content)
+CGUIMultiSelectTextControl::CGUIMultiSelectTextControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo, const CGUIInfoLabel &content)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
     , m_button(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
@@ -60,6 +60,12 @@ void CGUIMultiSelectTextControl::DoRender(DWORD currentTime)
 {
   m_renderTime = currentTime;
   CGUIControl::DoRender(currentTime);
+}
+
+void CGUIMultiSelectTextControl::UpdateColors()
+{
+  m_label.UpdateColors();
+  CGUIControl::UpdateColors();
 }
 
 void CGUIMultiSelectTextControl::Render()

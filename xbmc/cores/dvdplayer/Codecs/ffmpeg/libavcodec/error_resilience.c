@@ -21,7 +21,7 @@
  */
 
 /**
- * @file error_resilience.c
+ * @file libavcodec/error_resilience.c
  * Error resilience / concealment.
  */
 
@@ -563,10 +563,9 @@ static int is_intra_more_likely(MpegEncContext *s){
 
     if(undamaged_count < 5) return 0; //almost all MBs damaged -> use temporal prediction
 
-#ifdef CONFIG_XVMC
     //prevent dsp.sad() check, that requires access to the image
-    if(s->avctx->xvmc_acceleration && s->pict_type==FF_I_TYPE) return 1;
-#endif
+    if(CONFIG_MPEG_XVMC_DECODER && s->avctx->xvmc_acceleration && s->pict_type == FF_I_TYPE)
+        return 1;
 
     skip_amount= FFMAX(undamaged_count/50, 1); //check only upto 50 MBs
     is_intra_likely=0;
@@ -621,6 +620,9 @@ void ff_er_add_slice(MpegEncContext *s, int startx, int starty, int endx, int en
     const int start_xy= s->mb_index2xy[start_i];
     const int end_xy  = s->mb_index2xy[end_i];
     int mask= -1;
+
+    if(s->avctx->hwaccel)
+        return;
 
     if(start_i > end_i || start_xy > end_xy){
         av_log(s->avctx, AV_LOG_ERROR, "internal error, slice end before start\n");
@@ -681,6 +683,8 @@ void ff_er_frame_end(MpegEncContext *s){
     Picture *pic= s->current_picture_ptr;
 
     if(!s->error_recognition || s->error_count==0 || s->avctx->lowres ||
+       s->avctx->hwaccel ||
+       s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU ||
        s->error_count==3*s->mb_width*(s->avctx->skip_top + s->avctx->skip_bottom)) return;
 
     if(s->current_picture.motion_val[0] == NULL){
@@ -934,10 +938,9 @@ void ff_er_frame_end(MpegEncContext *s){
     }else
         guess_mv(s);
 
-#ifdef CONFIG_XVMC
     /* the filters below are not XvMC compatible, skip them */
-    if(s->avctx->xvmc_acceleration) goto ec_clean;
-#endif
+    if(CONFIG_MPEG_XVMC_DECODER && s->avctx->xvmc_acceleration)
+        goto ec_clean;
     /* fill DC for inter blocks */
     for(mb_y=0; mb_y<s->mb_height; mb_y++){
         for(mb_x=0; mb_x<s->mb_width; mb_x++){
@@ -1023,9 +1026,7 @@ void ff_er_frame_end(MpegEncContext *s){
         v_block_filter(s, s->current_picture.data[2], s->mb_width  , s->mb_height  , s->uvlinesize, 0);
     }
 
-#ifdef CONFIG_XVMC
 ec_clean:
-#endif
     /* clean a few tables */
     for(i=0; i<s->mb_num; i++){
         const int mb_xy= s->mb_index2xy[i];

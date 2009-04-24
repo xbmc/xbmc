@@ -22,6 +22,7 @@
  */
 
 #include "DVDMessage.h"
+#include <string>
 
 typedef struct stDVDMessageListItem
 {
@@ -46,7 +47,7 @@ enum MsgQueueReturnCode
 class CDVDMessageQueue
 {
 public:
-  CDVDMessageQueue();
+  CDVDMessageQueue(const std::string &owner);
   virtual ~CDVDMessageQueue();
   
   void  Init();
@@ -65,8 +66,8 @@ public:
   
   int GetDataSize() const               { return m_iDataSize; }
   unsigned GetPacketCount(CDVDMsg::Message type);
-  bool RecievedAbortRequest()           { return m_bAbortRequest; }
-  void WaitUntilEmpty()                 { while (m_pFirstMessage && !m_bAbortRequest) Sleep(1); }
+  bool ReceivedAbortRequest()           { return m_bAbortRequest; }
+  void WaitUntilEmpty();
   
   // non messagequeue related functions
   bool IsFull() const                   { return (m_iDataSize >= m_iMaxDataSize); }
@@ -87,5 +88,7 @@ private:
 
   int m_iDataSize;
   int m_iMaxDataSize;
+  bool m_bEmptied;
+  std::string m_owner;
 };
 

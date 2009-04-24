@@ -52,7 +52,7 @@ CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& it
 void CGUIViewStateWindowPrograms::SaveViewState()
 {
   if (g_guiSettings.GetBool("programfiles.savefolderviews"))
-    SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAMS, &g_stSettings.m_viewStatePrograms);  
+    SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAMS, &g_stSettings.m_viewStatePrograms);
   else
   {
     g_stSettings.m_viewStatePrograms = CViewState(GetViewAsControl(), GetSortMethod(), GetSortOrder());
@@ -79,10 +79,11 @@ VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
     CMediaSource share;
     share.strName = g_localizeStrings.Get(1043); // Program Plugins
     share.strPath = "plugin://programs/";
+    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultProgramPlugins.png");
     share.m_ignore= true;
     if (CUtil::GetMatchingSource(share.strName, g_settings.m_programSources, bIsSourceName) < 0)
       g_settings.m_programSources.push_back(share);
   }
-  return g_settings.m_programSources; 
+  return g_settings.m_programSources;
 }
 

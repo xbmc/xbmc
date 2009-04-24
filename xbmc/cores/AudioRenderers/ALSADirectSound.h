@@ -29,7 +29,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "IDirectSoundRenderer.h"
+#include "IAudioRenderer.h"
 #include "IAudioCallback.h"
 #include "../ssrc.h"
 
@@ -41,7 +41,7 @@
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
-class CALSADirectSound : public IDirectSoundRenderer
+class CALSADirectSound : public IAudioRenderer
 {
 public:
   virtual void UnRegisterAudioCallback();
@@ -66,21 +66,19 @@ public:
   virtual HRESULT SetCurrentVolume(LONG nVolume);
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
-  virtual void DoWork();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
   virtual void Flush();
 
 private:
   snd_pcm_t 		*m_pPlayHandle;
-  snd_pcm_uframes_t 	m_maxFrames;
 
   IAudioCallback* m_pCallback;
 
   CPCMAmplifier 	m_amp;
   LONG m_nCurrentVolume;
-  DWORD m_dwPacketSize;
-  DWORD m_dwNumPackets;
+  snd_pcm_uframes_t m_dwPacketSize;
+  unsigned int      m_dwNumPackets;
   bool m_bPause;
   bool m_bIsAllocated;
   bool m_bCanPause;
@@ -88,8 +86,6 @@ private:
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
-
-  snd_pcm_uframes_t m_BufferSize;
 
   bool m_bPassthrough;
 };

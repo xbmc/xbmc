@@ -1,6 +1,6 @@
 /*
  * "Real" compatible demuxer.
- * Copyright (c) 2000, 2001 Fabrice Bellard.
+ * Copyright (c) 2000, 2001 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,6 +20,7 @@
  */
 
 #include "libavutil/avstring.h"
+#include "libavutil/intreadwrite.h"
 #include "avformat.h"
 #include "rm.h"
 
@@ -61,14 +62,20 @@ static inline void get_strl(ByteIOContext *pb, char *buf, int buf_size, int len)
     if (buf_size > 0) *q = '\0';
 }
 
-static void get_str16(ByteIOContext *pb, char *buf, int buf_size)
-{
-    get_strl(pb, buf, buf_size, get_be16(pb));
-}
-
 static void get_str8(ByteIOContext *pb, char *buf, int buf_size)
 {
     get_strl(pb, buf, buf_size, get_byte(pb));
+}
+
+static void rm_read_metadata(AVFormatContext *s, int wide)
+{
+    char buf[1024];
+    int i;
+    for (i=0; i<FF_ARRAY_ELEMS(ff_rm_metadata); i++) {
+        int len = wide ? get_be16(s->pb) : get_byte(s->pb);
+        get_strl(s->pb, buf, sizeof(buf), len);
+        av_metadata_set(&s->metadata, ff_rm_metadata[i], buf);
+    }
 }
 
 RMStream *ff_rm_alloc_rmstream (void)
@@ -94,10 +101,7 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
     if (((version >> 16) & 0xff) == 3) {
         int64_t startpos = url_ftell(pb);
         url_fskip(pb, 14);
-        get_str8(pb, s->title, sizeof(s->title));
-        get_str8(pb, s->author, sizeof(s->author));
-        get_str8(pb, s->copyright, sizeof(s->copyright));
-        get_str8(pb, s->comment, sizeof(s->comment));
+        rm_read_metadata(s, 0);
         if ((startpos + (version & 0xffff)) >= url_ftell(pb) + 2) {
             // fourcc (should always be "lpcJ")
             get_byte(pb);
@@ -212,11 +216,7 @@ static int rm_read_audio_stream_info(AVFormatContext *s, ByteIOContext *pb,
             get_byte(pb);
             get_byte(pb);
             get_byte(pb);
-
-            get_str8(pb, s->title, sizeof(s->title));
-            get_str8(pb, s->author, sizeof(s->author));
-            get_str8(pb, s->copyright, sizeof(s->copyright));
-            get_str8(pb, s->comment, sizeof(s->comment));
+            rm_read_metadata(s, 0);
         }
     }
     return 0;
@@ -245,7 +245,7 @@ ff_rm_read_mdpr_codecdata (AVFormatContext *s, ByteIOContext *pb,
             goto skip;
         }
         st->codec->codec_tag = get_le32(pb);
-//        av_log(NULL, AV_LOG_DEBUG, "%X %X\n", st->codec->codec_tag, MKTAG('R', 'V', '2', '0'));
+//        av_log(s, AV_LOG_DEBUG, "%X %X\n", st->codec->codec_tag, MKTAG('R', 'V', '2', '0'));
         if (   st->codec->codec_tag != MKTAG('R', 'V', '1', '0')
             && st->codec->codec_tag != MKTAG('R', 'V', '2', '0')
             && st->codec->codec_tag != MKTAG('R', 'V', '3', '0')
@@ -273,7 +273,7 @@ ff_rm_read_mdpr_codecdata (AVFormatContext *s, ByteIOContext *pb,
             return AVERROR(ENOMEM);
         get_buffer(pb, st->codec->extradata, st->codec->extradata_size);
 
-//        av_log(NULL, AV_LOG_DEBUG, "fps= %d fps2= %d\n", fps, fps2);
+//        av_log(s, AV_LOG_DEBUG, "fps= %d fps2= %d\n", fps, fps2);
         st->codec->time_base.den = fps * st->codec->time_base.num;
         switch(((uint8_t*)st->codec->extradata)[4]>>4){
         case 1: st->codec->codec_id = CODEC_ID_RV10; break;
@@ -363,10 +363,7 @@ static int rm_read_header(AVFormatContext *s, AVFormatParameters *ap)
             flags = get_be16(pb); /* flags */
             break;
         case MKTAG('C', 'O', 'N', 'T'):
-            get_str16(pb, s->title, sizeof(s->title));
-            get_str16(pb, s->author, sizeof(s->author));
-            get_str16(pb, s->copyright, sizeof(s->copyright));
-            get_str16(pb, s->comment, sizeof(s->comment));
+            rm_read_metadata(s, 1);
             break;
         case MKTAG('M', 'D', 'P', 'R'):
             st = av_new_stream(s, 0);
@@ -546,7 +543,7 @@ static int rm_assemble_video_frame(AVFormatContext *s, ByteIOContext *pb,
     if(type == 2 || (vst->videobufpos) == vst->videobufsize){
         vst->pkt.data[0] = vst->cur_slice-1;
         *pkt= vst->pkt;
-        vst->pkt.data=
+        vst->pkt.data= NULL;
         vst->pkt.size= 0;
         if(vst->slices != vst->cur_slice) //FIXME find out how to set slices correct from the begin
             memmove(pkt->data + 1 + 8*vst->cur_slice, pkt->data + 1 + 8*vst->slices,
@@ -658,7 +655,7 @@ ff_rm_parse_packet (AVFormatContext *s, ByteIOContext *pb,
     if (st->codec->codec_type == CODEC_TYPE_VIDEO) {
         if(st->codec->codec_id == CODEC_ID_RV20){
             int seq= 128*(pkt->data[2]&0x7F) + (pkt->data[3]>>1);
-            av_log(NULL, AV_LOG_DEBUG, "%d %"PRId64" %d\n", *timestamp, *timestamp*512LL/25, seq);
+            av_log(s, AV_LOG_DEBUG, "%d %"PRId64" %d\n", *timestamp, *timestamp*512LL/25, seq);
 
             seq |= (*timestamp&~0x3FFF);
             if(seq - *timestamp >  0x2000) seq -= 0x4000;
@@ -827,7 +824,7 @@ static int64_t rm_read_dts(AVFormatContext *s, int stream_index,
 
 AVInputFormat rm_demuxer = {
     "rm",
-    NULL_IF_CONFIG_SMALL("RM format"),
+    NULL_IF_CONFIG_SMALL("RealMedia format"),
     sizeof(RMDemuxContext),
     rm_probe,
     rm_read_header,
@@ -841,5 +838,8 @@ AVInputFormat rdt_demuxer = {
     "rdt",
     NULL_IF_CONFIG_SMALL("RDT demuxer"),
     sizeof(RMDemuxContext),
-    NULL, NULL, NULL, rm_read_close, NULL, NULL
+    NULL,
+    NULL,
+    NULL,
+    rm_read_close,
 };

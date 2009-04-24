@@ -97,13 +97,11 @@ public:
   void SetSpeed(int speed);
   void Flush();
 
-  // waits untill all available data has been rendered  
+  // waits until all available data has been rendered  
   void WaitForBuffers();
   bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg)                       { m_messageQueue.Put(pMsg); }
   
-  void DoWork()                                         { m_dvdAudio.DoWork(); }
-
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 
@@ -119,7 +117,8 @@ public:
 
   double GetCurrentPts()                            { return m_ptsOutput.Current(); }
 
-  bool IsStalled()                                  { return m_stalled;  }
+  bool IsStalled()                                  { return m_stalled 
+                                                          && m_messageQueue.GetDataSize() == 0;  }
 protected:
 
   virtual void OnStartup();

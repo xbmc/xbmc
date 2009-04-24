@@ -53,6 +53,7 @@ public:
 
   int xbmcCommand(const CStdString &parameter);
   int xbmcAddToPlayList(int numParas, CStdString paras[]);
+  int xbmcAddToPlayListFromDB(int numParas, CStdString paras[]);
   int xbmcPlayerPlayFile(int numParas, CStdString paras[]); 
   int xbmcClearPlayList(int numParas, CStdString paras[]); 
   int xbmcGetCurrentlyPlaying(int numParas, CStdString paras[]); 
@@ -86,6 +87,8 @@ public:
   int xbmcChooseAlbum(int numParas, CStdString paras[]);
   int xbmcQueryMusicDataBase(int numParas, CStdString paras[]);
   int xbmcQueryVideoDataBase(int numParas, CStdString paras[]);
+  int xbmcExecMusicDataBase(int numParas, CStdString paras[]);
+  int xbmcExecVideoDataBase(int numParas, CStdString paras[]);
   int xbmcDownloadInternetFile(int numParas, CStdString paras[]);
   int xbmcSetKey(int numParas, CStdString paras[]);
   int xbmcSetKeyRepeat(int numParas, CStdString paras[]);
@@ -98,6 +101,7 @@ public:
   int xbmcShowPicture(int numParas, CStdString paras[]);
   int xbmcGetGUIStatus();
   int xbmcExecBuiltIn(int numParas, CStdString paras[]);
+  int xbmcSTSetting(int numParas, CStdString paras[]);
   int xbmcConfig(int numParas, CStdString paras[]);
   int xbmcHelp();
   int xbmcGetSystemInfo(int numParas, CStdString paras[]);
@@ -135,7 +139,6 @@ private:
   CKey key;
   CUdpBroadcast* pUdpBroadcast;
   CUdpClient UdpClient;
-  bool UdpClientInit;
   CKey lastKey;
   int repeatKeyRate; //ms
   DWORD MarkTime;

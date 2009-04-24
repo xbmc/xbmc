@@ -23,7 +23,7 @@
 
 #include "IDirectory.h"
 
-namespace DIRECTORY 
+namespace DIRECTORY
 {
   class CStackDirectory : public IDirectory
   {
@@ -31,6 +31,7 @@ namespace DIRECTORY
     CStackDirectory();
     ~CStackDirectory();
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
+    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
     static CStdString GetStackedTitlePath(const CStdString &strPath);
     static CStdString GetFirstStackedFile(const CStdString &strPath);
     CStdString ConstructStackPath(const CFileItemList& items, const std::vector<int> &stack);

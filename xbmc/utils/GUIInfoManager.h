@@ -104,6 +104,7 @@ class CDateTime;
 #define WEATHER_IS_FETCHED          103
 #define WEATHER_FANART_CODE         104
 
+#define SYSTEM_TEMPERATURE_UNITS    106
 #define SYSTEM_PROGRESS_BAR         107
 #define SYSTEM_LANGUAGE             108
 #define SYSTEM_TIME                 110
@@ -170,6 +171,7 @@ class CDateTime;
 #define LCD_TIME_42                 177
 #define LCD_TIME_43                 178
 #define LCD_TIME_44                 179
+#define SYSTEM_ALARM_LESS_OR_EQUAL  180
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
@@ -247,6 +249,7 @@ class CDateTime;
 #define LASTFM_CANLOVE              306
 #define LASTFM_CANBAN               307
 
+#define CONTAINER_FOLDERNAME        354
 #define CONTAINER_SCROLLING         355
 #define CONTAINER_PLUGINNAME        356
 #define CONTAINER_PROPERTY          357
@@ -296,7 +299,7 @@ class CDateTime;
 #define VISUALISATION_ENABLED       403
 
 #define STRING_IS_EMPTY             410
-#define STRING_COMPARE	            411
+#define STRING_COMPARE              411
 #define STRING_STR                  412
 
 #define SKIN_HAS_THEME_START        500
@@ -369,6 +372,11 @@ class CDateTime;
 #define SYSTEM_PLATFORM_WINDOWS     742
 #define SYSTEM_PLATFORM_OSX         743
 
+#define SYSTEM_CAN_POWERDOWN        750
+#define SYSTEM_CAN_SUSPEND          751
+#define SYSTEM_CAN_HIBERNATE        752
+#define SYSTEM_CAN_REBOOT           753
+
 #define SKIN_THEME                  800
 #define SKIN_COLOUR_THEME           801
 
@@ -399,9 +407,9 @@ class CDateTime;
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
 #ifdef SVN_REV
-#define VERSION_STRING "pre-9.04 SVN:"SVN_REV
+#define VERSION_STRING "9.04-beta1 r"SVN_REV
 #else
-#define VERSION_STRING "pre-9.04"
+#define VERSION_STRING "9.04-beta1"
 #endif
 
 #define LISTITEM_START              35000
@@ -449,6 +457,8 @@ class CDateTime;
 #define LISTITEM_STAR_RATING        (LISTITEM_START + 41)
 #define LISTITEM_FILENAME_AND_PATH  (LISTITEM_START + 42)
 #define LISTITEM_SORT_LETTER        (LISTITEM_START + 43)
+#define LISTITEM_ALBUM_ARTIST       (LISTITEM_START + 44)
+#define LISTITEM_FOLDERNAME         (LISTITEM_START + 45)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -564,6 +574,7 @@ public:
   bool m_performingSeek;
 
   std::string GetSystemHeatInfo(int info);
+  CTemperature GetGPUTemperature();
 
   void UpdateFPS();
   inline float GetFPS() const { return m_fps; };
@@ -648,7 +659,7 @@ protected:
     CStdString m_info;    // the text expression
     int m_id;             // the id used to identify this expression
     std::list<int> m_postfix;  // the postfix binary expression
-    void operator=(const CCombinedValue& mSrc);
+    CCombinedValue& operator=(const CCombinedValue& mSrc);
   };
 
   int GetOperator(const char ch);

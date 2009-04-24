@@ -22,19 +22,13 @@
 #include "include.h"
 #include "GUIListContainer.h"
 #include "GUIListItem.h"
-
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-#include "utils/GUIInfoManager.h"
-//#endif
+#include "GUIInfoManager.h"
 
 CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
 {
   ControlType = GUICONTAINER_LIST;
   m_type = VIEW_TYPE_LIST;
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  m_spinControl = NULL;
-//#endif
 }
 
 CGUIListContainer::~CGUIListContainer(void)
@@ -321,12 +315,12 @@ void CGUIListContainer::SelectItem(int item)
     }
   }
 }
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
+//#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
 CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
                                  const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
-                                 const CImage& textureButton, const CImage& textureButtonFocus,
-                                 float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems, CGUIControl *pSpin)
-: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200) 
+                                 const CTextureInfo& textureButton, const CTextureInfo& textureButtonFocus,
+                                 float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems)
+: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200)
 {
   CGUIListItemLayout layout;
   layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, 0, 0);
@@ -338,7 +332,6 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
   focusLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, g_infoManager.TranslateString(condition2), g_infoManager.TranslateString(condition));
   m_focusedLayouts.push_back(focusLayout);
   m_height = floor(m_height / (textureHeight + spaceBetweenItems)) * (textureHeight + spaceBetweenItems);
-  m_spinControl = pSpin;
   ControlType = GUICONTAINER_LIST;
 }
 //#endif

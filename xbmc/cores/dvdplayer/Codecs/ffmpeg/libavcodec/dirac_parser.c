@@ -22,11 +22,12 @@
  */
 
 /**
- * @file dirac_parser.c
+ * @file libavcodec/dirac_parser.c
  * Dirac Parser
  * @author Marco Gerards <marco@gnu.org>
  */
 
+#include "libavutil/intreadwrite.h"
 #include "parser.h"
 
 #define DIRAC_PARSE_INFO_PREFIX 0x42424344

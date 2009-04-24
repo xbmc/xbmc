@@ -26,6 +26,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "DVDCodecs/Video/DVDVideoPPFFmpeg.h"
+#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "../../Util.h"
@@ -97,6 +98,7 @@ private:
 
 CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
 : CThread()
+, m_messageQueue("video")
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
@@ -198,6 +200,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   m_stalled = false;
   m_started = false;
+  m_codecname = m_pVideoCodec->GetName();
 
   m_messageQueue.Init();
 
@@ -675,10 +678,14 @@ void CDVDPlayerVideo::Flush()
   m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 }
 
+#ifdef HAS_VIDEO_PLAYBACK
 void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts)
 {
   // remove any overlays that are out of time
   m_pOverlayContainer->CleanUp(min(pts, pts - m_iSubtitleDelay));
+
+  if(pSource->iFlags & DVP_FLAG_NONIMAGE)
+    return;
 
   // rendering spu overlay types directly on video memory costs a lot of processing power.
   // thus we allocate a temp picture, copy the original to it (needed because the same picture can be used more than once).
@@ -736,9 +743,11 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   if (bHasSpecialOverlay && m_pTempOverlayPicture)
     CDVDCodecUtils::CopyPicture(pDest, m_pTempOverlayPicture);
 }
+#endif
 
 int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 {
+#ifdef HAS_VIDEO_PLAYBACK
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
   if (m_output.width != pPicture->iWidth
    || m_output.height != pPicture->iHeight
@@ -777,14 +786,12 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
       m_bAllowFullscreen = false; // only allow on first configure
     }
 
-#ifdef HAS_VIDEO_PLAYBACK
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f",__FUNCTION__,pPicture->iWidth, pPicture->iHeight,m_fFrameRate);
     if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_fFrameRate, flags))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
     }
-#endif
 
     m_output.width = pPicture->iWidth;
     m_output.height = pPicture->iHeight;
@@ -794,15 +801,20 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     m_output.color_matrix = pPicture->color_matrix;
     m_output.color_range = pPicture->color_range;
   }
-  
-#ifdef HAS_VIDEO_PLAYBACK
+
+  double maxfps  = 60.0;
+  bool   limited = false;
+  int    result  = 0;
+
   if (!g_renderManager.IsStarted()) {
     CLog::Log(LOGERROR, "%s - renderer not started", __FUNCTION__);
     return EOS_ABORT;
   }
-#endif
+  maxfps = g_renderManager.GetMaximumFPS();
 
-  int result = 0;
+  // check if our output will limit speed
+  if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
+    limited = true;
 
   //User set delay
   pts += m_iVideoDelay;
@@ -855,7 +867,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   m_FlipTimeStamp += iFrameDuration;
 
   // ask decoder to drop frames next round, as we are very late
-  if( iClockSleep < -DVD_MSEC_TO_TIME(100) )
+  if( limited == false  && iClockSleep < -DVD_MSEC_TO_TIME(100)
+  ||  limited == true   && iClockSleep < -iFrameDuration*0.5 )
     result |= EOS_VERYLATE;
 
   if( m_speed < 0 )
@@ -868,10 +881,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if( (pPicture->iFlags & DVP_FLAG_DROPPED) ) 
     return result | EOS_DROPPED;
 
-#ifdef HAS_VIDEO_PLAYBACK
-
-  float maxfps = g_renderManager.GetMaximumFPS();
-  if( m_speed != DVD_PLAYSPEED_NORMAL && m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL >  maxfps)
+  if( m_speed != DVD_PLAYSPEED_NORMAL && limited )
   {
     // calculate frame dropping pattern to render at this speed
     // we do that by deciding if this or next frame is closest
@@ -928,13 +938,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   g_renderManager.ReleaseImage(index);
   g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
 
+  return result;
 #else
   // no video renderer, let's mark it as dropped
-  result|= EOS_DROPPED;
+  return EOS_DROPPED;
 #endif
-
-  return result;
-
 }
 
 void CDVDPlayerVideo::UpdateMenuPicture()
@@ -956,9 +964,9 @@ std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
   s << "vq:" << std::setw(3) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
-  s << ", ";
-  s << "cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%, ";
-  s << "bitrate: " << std::setprecision(4) << (double)GetVideoBitrate() / (1024.0*1024.0) << " MBit/s";
+  s << ", dc: " << m_codecname;
+  s << ", cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
+  s << ", bitrate: " << std::setprecision(4) << (double)GetVideoBitrate() / (1024.0*1024.0) << " MBit/s";
   return s.str();
 }
 

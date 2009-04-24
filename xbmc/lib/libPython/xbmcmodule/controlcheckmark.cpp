@@ -21,9 +21,7 @@
 
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "GUICheckMarkControl.h"
 #include "GUIFontManager.h"
 #include "control.h"
@@ -134,8 +132,8 @@ namespace PYXBMC
     label.textColor = label.focusedColor = pControl->dwTextColor;
     label.font = g_fontManager.GetFont(pControl->strFont);
     label.align = pControl->dwAlign;
-    CImage imageFocus(pControl->strTextureFocus);
-    CImage imageNoFocus(pControl->strTextureNoFocus);
+    CTextureInfo imageFocus(pControl->strTextureFocus);
+    CTextureInfo imageNoFocus(pControl->strTextureNoFocus);
     pControl->pGUIControl = new CGUICheckMarkControl(
       pControl->iParentId,
       pControl->iControlId,
@@ -271,7 +269,7 @@ namespace PYXBMC
 
   PyObject* ControlCheckMark_SetSelected(ControlCheckMark *self, PyObject *args)
   {
-    bool isSelected = 0;
+    char isSelected = 0;
 
     if (!PyArg_ParseTuple(args, (char*)"b", &isSelected))
       return NULL;
@@ -279,7 +277,7 @@ namespace PYXBMC
     PyGUILock();
     if (self->pGUIControl)
     {
-      ((CGUICheckMarkControl*)self->pGUIControl)->SetSelected(isSelected);
+      ((CGUICheckMarkControl*)self->pGUIControl)->SetSelected(0 != isSelected);
     }
     PyGUIUnlock();
 

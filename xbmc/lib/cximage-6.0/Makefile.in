@@ -3,29 +3,39 @@ ARCH=@ARCH@
 SO=ImageLib-$(ARCH).so
 ARCHIVE=$(SO:.so=.a)
 SYSDIR=../../../system
-LIB=$(SYSDIR)/$(SO)
-DIRS=CxImage raw jbig tiff zlib
-LIBS=CxImage/cximage.a raw/raw.a jbig/jbig.a tiff/tiff.a zlib/libz.a
+SLIB=$(SYSDIR)/$(SO)
+DIRS=CxImage raw jbig tiff
+SLIBS=CxImage/cximage.a raw/raw.a jbig/jbig.a tiff/tiff.a
 
-ifeq ($(ARCH), x86-osx)
-DIRS+=jasper jpeg
-LIBS+=jasper/jasper.a jpeg/jpeg.a
+ifeq ($(findstring osx,$(ARCH)), osx)
+	export MACOSX_DEPLOYMENT_TARGET=10.4
+	export ARCH
+	CFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	CXXFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	DIRS+=jasper jpeg
+	SLIBS+=jasper/jasper.a jpeg/jpeg.a
+else
+	DIRS+=zlib
+	SLIBS+=zlib/libz.a
 endif
 
 .PHONY: compile
 
-$(LIB): $(LIBS)
-ifeq ($(ARCH), x86-osx)
-	gcc -bundle -flat_namespace -undefined suppress -shared -o ImageLib-osx.so \
-		CxImage/*.o jasper/*/*.o jbig/*.o jpeg/*.o png/*.o raw/*.o tiff/*.o
+$(SLIB): $(SLIBS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) -bundle -flat_namespace -undefined suppress -shared -fPIC -lpng -L/opt/local/lib \
+		-mmacosx-version-min=10.4 -o $@ \
+		CxImage/*.o jasper/*/*.o jbig/*.o jpeg/*.o raw/*.o tiff/*.o
+	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	chmod +x $@
 else 
-	gcc -shared -o $(LIB) -Wl,--whole-archive -lpng -ljasper -ljpeg \
-		$(LIBS) -Wl,--no-whole-archive \
+	$(CXX) -shared -o $(SLIB) -Wl,--whole-archive -lpng -ljasper -ljpeg \
+		$(SLIBS) -Wl,--no-whole-archive \
 		`cat ../../cores/DllLoader/exports/wrapper.def` \
 		../../cores/DllLoader/exports/wrapper.o
 endif
 
-$(LIBS): compile 
+$(SLIBS): compile 
 
 CxImage/cximage.a:
 	$(MAKE) -C CxImage ARCH=$(ARCH)
@@ -46,19 +56,7 @@ jpeg/jpeg.a:
 	$(MAKE) -C jpeg
 
 tiff/tiff.a:
-ifeq ($(ARCH), x86-osx)
-	$(MAKE) -C tiff -fMakefile.osx
-else
 	$(MAKE) -C tiff
-endif
 
-clean:
-	for d in $(DIRS); do (cd $$d; $(MAKE) clean ); done
-	rm -f $(LIB)
-
-distclean:
-	-for d in $(DIRS); do (cd $$d; $(MAKE) distclean ); done
-	rm -f $(LIB)
-
--include Makefile.include
+-include ../../../Makefile.include
 

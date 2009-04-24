@@ -67,7 +67,7 @@ CFileXBMSP::~CFileXBMSP()
 }
 
 //*********************************************************************************************
-bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
+bool CFileXBMSP::Open(const CURL& urlUtf8)
 {
   CStdString strURL;
   urlUtf8.GetURL(strURL);
@@ -168,7 +168,7 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
     return false;
   }
   if (strDir.size() > 0)
-  {  
+  {
     if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
       CLog::Log(LOGDEBUG,"xbms:setdir: %s",strDir.c_str());
 
@@ -221,14 +221,14 @@ bool CFileXBMSP::Open(const CURL& urlUtf8, bool bBinary)
 bool CFileXBMSP::Exists(const CURL& url)
 {
   bool exist(true);
-  exist = CFileXBMSP::Open(url, true);
+  exist = CFileXBMSP::Open(url);
   Close();
   return exist;
 }
 
 int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
 {
-  if (Open(url, true))
+  if (Open(url))
   {
     buffer->st_size = this->m_fileSize;
     buffer->st_mode = _S_IFREG;
@@ -272,16 +272,14 @@ unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
       CC_XSTREAM_CLIENT_OK)
   {
     CLog::Log(LOGERROR, "xbms:cc_xstream_client_file_read reported error on read");
-    if(buf) 
-      free(buf);
+    free(buf);
     return 0;
   }
   memcpy(lpBuf, buf, buflen);
   m_filePos += buflen;
 
-  if(buf)
-    free(buf);
-  
+  free(buf);
+
   return buflen;
 }
 
@@ -322,8 +320,12 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
   default:
     return -1;
   }
-  if (newpos > m_fileSize) newpos = m_fileSize;
+
+  // We can't seek beyond EOF
+  if (newpos > m_fileSize) return -1;
+
   if (newpos == m_filePos) return m_filePos;
+
   if ( newpos == 0 )
   {
     // goto beginning
@@ -395,4 +397,5 @@ __int64 CFileXBMSP::GetPosition()
 }
 
 }
+
 

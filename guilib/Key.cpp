@@ -64,7 +64,7 @@ DWORD CKey::GetButtonCode() const // for backwards compatibility only
 }
 
 DWORD CKey::GetUnicode() const
-{  
+{
   if (m_dwButtonCode>=KEY_ASCII && m_dwButtonCode < KEY_UNICODE) // will need to change when Unicode is fully implemented
     return m_dwButtonCode-KEY_ASCII;
   else
@@ -83,6 +83,7 @@ const CKey& CKey::operator=(const CKey& key)
   m_fRightThumbY = key.m_fRightThumbY;
   m_fRepeat = key.m_fRepeat;
   m_fromHttpApi = key.m_fromHttpApi;
+  m_held = key.m_held;
   return *this;
 }
 

@@ -42,7 +42,7 @@ extern "C" {
 #include <io.h>
 #else
 #include "system.h"
-#include "Util.h"
+#include "FileSystem/SpecialProtocol.h"
 #include <dirent.h>
 #endif
 
@@ -51,8 +51,8 @@ extern "C" {
 #define CONFIG_FILE "visualisations\\goom.conf"
 #define strcasecmp  stricmp
 #else
-#define PRESETS_DIR "Q:/visualisations/goom"
-#define CONFIG_FILE "P:/visualisations/goom.conf"
+#define PRESETS_DIR "special://xbmc/visualisations/goom"
+#define CONFIG_FILE "special://profile/visualisations/goom.conf"
 #endif
 
 extern int  preset_index;
@@ -106,13 +106,16 @@ int check_valid_extension(const struct dirent* ent)
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
 #ifdef HAS_XBOX_HARDWARE
-extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
+extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 #else
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio)
+extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 #endif
 {
   strcpy(g_visName, szVisualisationName);
   m_vecSettings.clear();
+  m_uiVisElements = 0;
 
   /** Initialise Goom */
   if (g_goom)
@@ -273,17 +276,30 @@ extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
 //-----------------------------------------------------------------------------
-extern "C" void GetSettings(vector<VisSetting> **vecSettings)
+extern "C" unsigned int GetSettings(StructSetting*** sSet)
+{ 
+  m_uiVisElements = VisUtils::VecToStruct(m_vecSettings, &m_structSettings);
+  *sSet = m_structSettings;
+  return m_uiVisElements;
+}
+
+extern "C" void FreeSettings()
 {
-  if (!vecSettings)
-    return;
-  *vecSettings = &m_vecSettings;
+  VisUtils::FreeStruct(m_uiVisElements, &m_structSettings);
 }
 
 //-- UpdateSetting ------------------------------------------------------------
 // Handle setting change request from XBMC
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num)
+extern "C" void UpdateSetting(int num, StructSetting*** sSet)
 {
   //VisSetting &setting = m_vecSettings[num];
+}
+
+//-- GetSubModules ------------------------------------------------------------
+// Return any sub modules supported by this vis
+//-----------------------------------------------------------------------------
+extern "C" int GetSubModules(char ***names, char ***paths)
+{
+  return 0; // this vis supports 0 sub modules
 }

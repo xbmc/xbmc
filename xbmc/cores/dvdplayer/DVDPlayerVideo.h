@@ -49,7 +49,7 @@ public:
   void StepFrame();
   void Flush();
 
-  // waits untill all available data has been rendered
+  // waits until all available data has been rendered
   // just waiting for packetqueue should be enough for video
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   bool AcceptsData()                                { return !m_messageQueue.IsFull(); }
@@ -84,7 +84,8 @@ public:
   double GetSubtitleDelay()                                { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay)                      { m_iSubtitleDelay = delay; }
 
-  bool IsStalled()                                  { return m_stalled;  }
+  bool IsStalled()                                  { return m_stalled
+                                                          && m_messageQueue.GetDataSize() == 0; }
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();
@@ -113,7 +114,9 @@ protected:
 #define EOS_VERYLATE 4
 
   int OutputPicture(DVDVideoPicture* pPicture, double pts);
+#ifdef HAS_VIDEO_PLAYBACK
   void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts);
+#endif
   void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);
   
   double m_iCurrentPts; // last pts displayed
@@ -151,6 +154,7 @@ protected:
 
   bool m_stalled;
   bool m_started;
+  std::string m_codecname;
 
   /* autosync decides on how much of clock we should use when deciding sleep time */
   /* the value is the same as 63% timeconstant, ie that the step response of */

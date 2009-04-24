@@ -1,6 +1,6 @@
 /*!
 \file GUIControl.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GUICONTROL_H
@@ -50,6 +50,15 @@ public:
     width = 0;
     angle = 0;
   };
+  void UpdateColors()
+  {
+    textColor.Update();
+    shadowColor.Update();
+    selectedColor.Update();
+    disabledColor.Update();
+    focusedColor.Update();
+  };
+
   CGUIInfoColor textColor;
   CGUIInfoColor shadowColor;
   CGUIInfoColor selectedColor;
@@ -126,7 +135,7 @@ public:
   virtual void UnfocusFromPoint(const CPoint &point);
 
   virtual bool OnMessage(CGUIMessage& message);
-  DWORD GetID(void) const;
+  virtual DWORD GetID(void) const;
   void SetID(DWORD dwID) { m_dwControlID = dwID; };
   virtual bool HasID(DWORD dwID) const;
   virtual bool HasVisibleID(DWORD dwID) const;
@@ -135,7 +144,6 @@ public:
   virtual void PreAllocResources() {}
   virtual void AllocResources();
   virtual void FreeResources();
-  virtual bool IsAllocated() const;
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual bool IsDynamicallyAllocated() { return false; };
   virtual bool CanFocus() const;
@@ -145,7 +153,8 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetHitRect(const CRect &rect);
   virtual void SetCamera(const CPoint &camera);
-  virtual void SetColorDiffuse(const CGUIInfoColor &color);
+  void SetColorDiffuse(const CGUIInfoColor &color);
+  CPoint GetRenderPosition() const;
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
@@ -159,9 +168,6 @@ public:
   DWORD GetControlIdLeft() const { return m_dwControlLeft;};
   DWORD GetControlIdRight() const { return m_dwControlRight;};
   virtual DWORD GetNextControl(int direction) const;
-//#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  const CGUIControl *GetParentControl() const { return m_parentControl; };
-//#endif
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
@@ -247,7 +253,9 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
+  virtual void UpdateColors();
   virtual void Animate(DWORD currentTime);
+  virtual bool CheckAnimation(ANIMATION_TYPE animType);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);
 

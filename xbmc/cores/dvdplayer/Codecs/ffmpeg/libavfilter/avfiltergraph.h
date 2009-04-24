@@ -27,6 +27,8 @@
 typedef struct AVFilterGraph {
     unsigned filter_count;
     AVFilterContext **filters;
+
+    char *scale_sws_opts; ///< sws options to use for the auto-inserted scale filters
 } AVFilterGraph;
 
 /**
@@ -45,6 +47,16 @@ AVFilterContext *avfilter_graph_get_filter(AVFilterGraph *graph, char *name);
 int avfilter_graph_add_filter(AVFilterGraph *graphctx, AVFilterContext *filter);
 
 /**
+ * Check for the validity of \p graph.
+ *
+ * A graph is considered valid if all its input and output pads are
+ * connected.
+ *
+ * @return 0 in case of success, a negative value otherwise
+ */
+int avfilter_graph_check_validity(AVFilterGraph *graphctx, AVClass *log_ctx);
+
+/**
  * Configure the formats of all the links in the graph.
  */
 int avfilter_graph_config_formats(AVFilterGraph *graphctx);
@@ -52,6 +64,6 @@ int avfilter_graph_config_formats(AVFilterGraph *graphctx);
 /**
  * Free a graph and destroy its links.
  */
-void avfilter_destroy_graph(AVFilterGraph *graph);
+void avfilter_graph_destroy(AVFilterGraph *graph);
 
 #endif  /* AVFILTER_AVFILTERGRAPH_H */

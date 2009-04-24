@@ -1,7 +1,7 @@
 CC=gcc
-CFLAGS+=-fPIC -D_LINUX
+CFLAGS+=-O2 -fPIC -D_LINUX
 
-ifeq ($(ARCH), osx)
+ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 endif
 
@@ -15,5 +15,3 @@ png.a: $(OBJS)
 
 clean:
 	$(RM) $(OBJS) png.a
-
-include ../Makefile.include

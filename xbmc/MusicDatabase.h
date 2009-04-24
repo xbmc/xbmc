@@ -137,6 +137,8 @@ public:
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
   long GetAlbumIdByPath(const CStdString& path);
   bool GetSongById(long idSong, CSong& song);
+  bool GetSongByKaraokeNumber( long number, CSong& song );
+  bool SetKaraokeSongDelay( long idSong, int delay );
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
   bool Search(const CStdString& search, CFileItemList &items);
 
@@ -145,6 +147,8 @@ public:
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,
                          const CStdString& strOpenRecord, const CStdString& strCloseRecord, const CStdString& strOpenField, const CStdString& strCloseField, CStdString& strResult);
+  bool ArbitraryExec(const CStdString& strExec);
+
   bool GetTop100(const CStdString& strBaseDir, CFileItemList& items);
   bool GetTop100Albums(VECALBUMS& albums);
   bool GetTop100AlbumSongs(const CStdString& strBaseDir, CFileItemList& item);
@@ -169,6 +173,7 @@ public:
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items);
   bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
   int GetSongsCount();
+  int GetKaraokeSongsCount();
   int GetSongsCount(const CStdString& strWhere);
   unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,long> > &songIDs);
 
@@ -193,8 +198,12 @@ public:
   bool SetScraperForPath(const CStdString& strPath, const SScraperInfo& info);
   bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
 
-  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false);
+  void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);
+
+  void ExportKaraokeInfo(const CStdString &outFile, bool asHTML );
+  void ImportKaraokeInfo(const CStdString &inputFile );
+
 protected:
   std::map<CStdString, int /*CArtistCache*/> m_artistCache;
   std::map<CStdString, int /*CGenreCache*/> m_genreCache;
@@ -209,6 +218,7 @@ protected:
   long AddThumb(const CStdString& strThumb1);
   void AddExtraAlbumArtists(const CStdStringArray& vecArtists, long lAlbumId);
   void AddExtraSongArtists(const CStdStringArray& vecArtists, long lSongId, bool bCheck = true);
+  void AddKaraokeData(const CSong& song);
   void AddExtraGenres(const CStdStringArray& vecGenres, long lSongId, long lAlbumId, bool bCheck = true);
   bool SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
@@ -262,7 +272,10 @@ private:
     song_strArtist,
     song_idGenre,
     song_strGenre,
-    song_strThumb
+    song_strThumb,
+    song_iKarNumber,
+    song_iKarDelay,
+    song_strKarEncoding
   } SongFields;
 
   // Fields should be ordered as they
@@ -303,8 +316,7 @@ private:
     artist_strDied,
     artist_strDisbanded,
     artist_strYearsActive,
-    artist_strImage
+    artist_strImage,
+    artist_strFanart
   } ArtistFields;
-
-  int m_iSongsBeforeCommit;
 };

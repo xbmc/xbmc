@@ -21,7 +21,7 @@
 
 /*!
 \file GraphicContext.h
-\brief 
+\brief
 */
 
 #ifndef GUILIB_GRAPHICCONTEXT_H
@@ -63,7 +63,7 @@ class CGUIMessage;
 
 /*!
  \ingroup graphics
- \brief 
+ \brief
  */
 enum RESOLUTION {
   INVALID = -1,
@@ -104,7 +104,7 @@ enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
 
 /*!
  \ingroup graphics
- \brief 
+ \brief
  */
 struct OVERSCAN
 {
@@ -116,7 +116,7 @@ struct OVERSCAN
 
 /*!
  \ingroup graphics
- \brief 
+ \brief
  */
 struct RESOLUTION_INFO
 {
@@ -135,26 +135,26 @@ struct RESOLUTION_INFO
 
 /*!
  \ingroup graphics
- \brief 
+ \brief
  */
 class CGraphicContext : public CCriticalSection
 {
 public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
-#ifndef HAS_SDL  
+#ifndef HAS_SDL
   LPDIRECT3DDEVICE8 Get3DDevice() { return m_pd3dDevice; }
   void SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice);
   //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
   int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
 #else
-  inline void setScreenSurface(Surface::CSurface* surface) XBMC_FORCE_INLINE { m_screenSurface = surface; }  
-  inline Surface::CSurface* getScreenSurface() XBMC_FORCE_INLINE { return m_screenSurface; }  
+  inline void setScreenSurface(Surface::CSurface* surface) XBMC_FORCE_INLINE { m_screenSurface = surface; }
+  inline Surface::CSurface* getScreenSurface() XBMC_FORCE_INLINE { return m_screenSurface; }
 #endif
 #ifdef HAS_SDL_2D
-  int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect); 
-#endif  
+  int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect);
+#endif
 #ifdef HAS_SDL_OPENGL
   bool ValidateSurface(Surface::CSurface* dest=NULL);
   Surface::CSurface* InitializeSurface();
@@ -232,13 +232,13 @@ public:
   void RestoreClipRegion();
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
+  void NotifyAppFocusChange(bool bGaining);
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
-  inline void SetWindowTransform(const TransformMatrix &matrix)
-  { // reset the group transform stack
+  inline void ResetWindowTransform()
+  {
     while (m_groupTransform.size())
       m_groupTransform.pop();
-    m_groupTransform.push(m_guiTransform * matrix);
-    UpdateFinalTransform(m_groupTransform.top());
+    m_groupTransform.push(m_guiTransform);
   }
   inline void AddTransform(const TransformMatrix &matrix)
   {
@@ -263,13 +263,13 @@ public:
   int GetMaxTextureSize() const { return m_maxTextureSize; };
 protected:
   IMsgSenderCallback* m_pCallback;
-#ifndef HAS_SDL    
+#ifndef HAS_SDL
   LPDIRECT3DDEVICE8 m_pd3dDevice;
   D3DPRESENT_PARAMETERS* m_pd3dParams;
   std::stack<D3DVIEWPORT8*> m_viewStack;
   DWORD m_stateBlock;
 #else
-  Surface::CSurface* m_screenSurface;  
+  Surface::CSurface* m_screenSurface;
 #endif
 #ifdef HAS_SDL_2D
   std::stack<SDL_Rect*> m_viewStack;
@@ -293,7 +293,7 @@ protected:
   bool m_bFullScreenVideo;
   bool m_bCalibrating;
   RESOLUTION m_Resolution;
-  
+
 private:
   void UpdateCameraPosition(const CPoint &camera);
   void UpdateFinalTransform(const TransformMatrix &matrix);
@@ -316,7 +316,7 @@ private:
 
 /*!
  \ingroup graphics
- \brief 
+ \brief
  */
 extern CGraphicContext g_graphicsContext;
 #endif

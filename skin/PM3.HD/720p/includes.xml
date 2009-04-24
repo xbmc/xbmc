@@ -1,8 +1,13 @@
 <includes>
 	<include file="defaults.xml" />
 	<include file="ViewsVideoLibrary.xml" />
+	<include file="ViewsMusicLibrary.xml" />
 	<include file="ViewsFileMode.xml" />
 	<include file="Views3dCoverView.xml" />
+
+	<constant name="FanartCrossfadeTime">600</constant>
+	<constant name="IconCrossfadeTime">400</constant>
+
 	<include name="CommonBackground">
 		<control type="image">
 			<posx>0</posx>
@@ -34,17 +39,36 @@
 		<include>Window_OpenClose_Animation</include>
 	</include>
 	<include name="CommonNowPlaying_Controls">
-		<control type="group">
-			<posx>310</posx>
-			<posy>665</posy>
-			<visible>[Player.HasAudio | Player.HasVideo] + system.getbool(lookandfeel.enablemouse) + !Window.IsActive(PlayerControls)</visible>
-			<include>VisibleFadeEffect</include>
+		<visible>[Player.HasAudio | Player.HasVideo]</visible>
+		<include>VisibleFadeEffect</include>
+		<control type="image">
+			<description>Unfocus Background</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>280</width>
+			<height>44</height>
+			<texture border="32,0,0,0">Button_Side_NoFocus.png</texture>
+			<visible>!ControlGroup(9005).HasFocus</visible>
+		</control>
+		<control type="image">
+			<description>Focus Background</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>280</width>
+			<height>44</height>
+			<texture border="32,0,0,0">Button_Side_Focus.png</texture>
+			<visible>ControlGroup(9005).HasFocus</visible>
+			<animation effect="fade" start="100" end="70" time="900" pulse="true" condition="ControlGroup(9005).HasFocus">conditional</animation>
+		</control>
+		<control type="group" id="9005">
+			<posx>38</posx>
+			<posy>6</posy>
 			<control type="image">
 				<description>Button background image</description>
 				<posx>-5</posx>
-				<posy>0</posy>
-				<width>170</width>
-				<height>34</height>
+				<posy>-2</posy>
+				<width>234</width>
+				<height>36</height>
 				<texture border="3">black-back2.png</texture>
 			</control>
 			<control type="button" id="600">
@@ -55,10 +79,10 @@
 				<label>-</label>
 				<texturefocus>PlayerControls-PrevFO.png</texturefocus>
 				<texturenofocus>PlayerControls-PrevNF.png</texturenofocus>
-				<onleft>604</onleft>
+				<onleft>50</onleft>
 				<onright>601</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
+				<onup>610</onup>
+				<ondown>607</ondown>
 				<onclick>XBMC.PlayerControl(Previous)</onclick>
 			</control>
 			<control type="button" id="601">
@@ -70,12 +94,13 @@
 				<texturefocus>PlayerControls-StopFO.png</texturefocus>
 				<texturenofocus>PlayerControls-StopNF.png</texturenofocus>
 				<onleft>600</onleft>
-				<onright>602</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
+				<onright>603</onright>
+				<onup>610</onup>
+				<ondown>607</ondown>
+				<onclick>Up</onclick>
 				<onclick>XBMC.PlayerControl(Stop)</onclick>
 			</control>
-			<control type="togglebutton" id="602">
+			<control type="togglebutton" id="603">
 				<posx>64</posx>
 				<posy>2</posy>
 				<width>32</width>
@@ -87,12 +112,12 @@
 				<alttexturefocus>PlayerControls-PlayFO.png</alttexturefocus>
 				<alttexturenofocus>PlayerControls-PlayNF.png</alttexturenofocus>
 				<onleft>601</onleft>
-				<onright>603</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
+				<onright>602</onright>
+				<onup>610</onup>
+				<ondown>607</ondown>
 				<onclick>XBMC.PlayerControl(Play)</onclick>
 			</control>
-			<control type="button" id="603">
+			<control type="button" id="602">
 				<posx>96</posx>
 				<posy>2</posy>
 				<width>32</width>
@@ -100,10 +125,10 @@
 				<label>-</label>
 				<texturefocus>PlayerControls-NextFO.png</texturefocus>
 				<texturenofocus>PlayerControls-NextNF.png</texturenofocus>
-				<onleft>602</onleft>
+				<onleft>603</onleft>
 				<onright>604</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
+				<onup>610</onup>
+				<ondown>607</ondown>
 				<onclick>XBMC.PlayerControl(Next)</onclick>
 			</control>
 			<control type="button" id="604">
@@ -112,29 +137,169 @@
 				<width>32</width>
 				<height>28</height>
 				<label>-</label>
-				<texturefocus>PlayerControls-FullScreenFO.png</texturefocus>
-				<texturenofocus>PlayerControls-FullScreenNF.png</texturenofocus>
-				<onleft>603</onleft>
-				<onright>600</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
-				<onclick>XBMC.ActivateWindow(Visualisation)</onclick>
-				<visible>Player.HasAudio</visible>
+				<texturefocus>-</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<onclick>XBMC.PlayerControl(Repeat)</onclick>
+				<onleft>602</onleft>
+				<onright>605</onright>
+				<onup>610</onup>
+				<ondown>607</ondown>
 			</control>
-			<control type="button" id="604">
+			<control type="image">
 				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatNF.png</texture>
+				<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+				<visible>!Control.HasFocus(604)</visible>
+			</control>
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatFO.png</texture>
+				<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+				<visible>Control.HasFocus(604)</visible>
+			</control>
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatOneNF.png</texture>
+				<visible>Playlist.IsRepeatOne</visible>
+				<visible>!Control.HasFocus(604)</visible>
+			</control>
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatOneFO.png</texture>
+				<visible>Playlist.IsRepeatOne</visible>
+				<visible>Control.HasFocus(604)</visible>
+			</control>
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatAllNF.png</texture>
+				<visible>Playlist.IsRepeat</visible>
+				<visible>!Control.HasFocus(604)</visible>
+			</control>
+			<control type="image">
+				<posx>128</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<texture>PlayerControls-RepeatAllFO.png</texture>
+				<visible>Playlist.IsRepeat</visible>
+				<visible>Control.HasFocus(604)</visible>
+			</control>
+			<control type="togglebutton" id="605">
+				<posx>160</posx>
+				<posy>2</posy>
+				<width>32</width>
+				<height>28</height>
+				<label>-</label>
+				<texturefocus>PlayerControls-RandomFO_2.png</texturefocus>
+				<texturenofocus>PlayerControls-RandomNF_2.png</texturenofocus>
+				<usealttexture>Playlist.IsRandom</usealttexture>
+				<alttexturefocus>PlayerControls-RandomOnFO_2.png</alttexturefocus>
+				<alttexturenofocus>PlayerControls-RandomOnNF_2.png</alttexturenofocus>
+				<onclick>XBMC.PlayerControl(Random)</onclick>
+				<onleft>604</onleft>
+				<onright>606</onright>
+				<onup>610</onup>
+				<ondown>607</ondown>
+			</control>
+			<control type="button" id="606">
+				<posx>192</posx>
 				<posy>2</posy>
 				<width>32</width>
 				<height>28</height>
 				<label>-</label>
 				<texturefocus>PlayerControls-FullScreenFO.png</texturefocus>
 				<texturenofocus>PlayerControls-FullScreenNF.png</texturenofocus>
-				<onleft>603</onleft>
-				<onright>600</onright>
-				<onup>9000</onup>
-				<ondown>9000</ondown>
-				<onclick>XBMC.ActivateWindow(FullscreenVideo)</onclick>
-				<visible>Player.HasVideo</visible>
+				<onleft>605</onleft>
+				<onright>50</onright>
+				<onup>610</onup>
+				<ondown>607</ondown>
+				<onclick>FullScreen</onclick>
+			</control>
+		</control>
+		<control type="group">
+			<description>LastFM Love Hate Stuff</description>
+			<posx>0</posx>
+			<posy>45</posy>
+			<visible>LastFM.RadioPlaying</visible>
+			<control type="image">
+				<description>Unfocus Background</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>280</width>
+				<height>44</height>
+				<texture border="32,0,0,0">Button_Side_NoFocus.png</texture>
+				<visible>!Control.HasFocus(607) + !Control.HasFocus(608)</visible>
+			</control>
+			<control type="image">
+				<description>Focus Background</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>280</width>
+				<height>44</height>
+				<texture border="32,0,0,0">Button_Side_Focus.png</texture>
+				<visible>Control.HasFocus(607) | Control.HasFocus(608)</visible>
+				<animation effect="fade" start="100" end="70" time="900" pulse="true" condition="Control.HasFocus(607) | Control.HasFocus(608)">conditional</animation>
+			</control>
+			<control type="label">
+				<description>LastFM Label</description>
+				<posx>35</posx>
+				<posy>0</posy>
+				<width>165</width>
+				<height>44</height>
+				<aligny>center</aligny>
+				<label>15200</label>
+			</control>
+			<control type="button" id="607">
+				<description>Love button</description>
+				<posx>200</posx>
+				<posy>7</posy>
+				<height>30</height>
+				<width>30</width>
+				<font>font13</font>
+				<texturefocus>lastfm-love-focus.png</texturefocus>
+				<texturenofocus>lastfm-love-nofocus.png</texturenofocus>
+				<onclick>XBMC.LastFM.Love</onclick>
+				<aspectratio align="right">keep</aspectratio>
+				<pulseonselect>false</pulseonselect>
+				<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+				<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
+				<onleft>50</onleft>
+				<onright>608</onright>
+				<onup>603</onup>
+				<ondown>611</ondown>
+			</control>
+			<control type="button" id="608">
+				<description>Hate button</description>
+				<posx>235</posx>
+				<posy>7</posy>
+				<height>30</height>
+				<width>30</width>
+				<texturefocus>lastfm-hate-focus.png</texturefocus>
+				<texturenofocus>lastfm-hate-nofocus.png</texturenofocus>
+				<onclick>XBMC.LastFM.Ban</onclick>
+				<aspectratio align="right">keep</aspectratio>
+				<pulseonselect>false</pulseonselect>
+				<animation effect="zoom" start="100" end="120" center="auto" time="100">focus</animation>
+				<animation effect="zoom" start="120" end="100" center="auto" time="100">unfocus</animation>
+				<onleft>607</onleft>
+				<onright>50</onright>
+				<onup>603</onup>
+				<ondown>611</ondown>
 			</control>
 		</control>
 	</include>
@@ -148,6 +313,8 @@
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(VideoFiles) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(500)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(55)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(56)]</visible>
 			<visible>![Window.IsVisible(MusicFiles) + Control.IsVisible(500)]</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
@@ -159,7 +326,19 @@
 				<bordertexture border="3">black-back2.png</bordertexture>
 				<bordersize>5</bordersize>
 				<aspectratio align="left">keep</aspectratio>
+				<visible>!Window.IsVisible(MusicLibrary)</visible>
 				<visible>!Window.IsVisible(VideoLibrary)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>175</height>
+				<texture>$INFO[MusicPlayer.Cover]</texture>
+				<bordertexture border="3">black-back2.png</bordertexture>
+				<bordersize>5</bordersize>
+				<aspectratio align="left">keep</aspectratio>
+				<visible>Window.IsVisible(MusicLibrary) + !LastFM.RadioPlaying</visible>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -170,18 +349,7 @@
 				<bordertexture border="3">black-back2.png</bordertexture>
 				<bordersize>5</bordersize>
 				<aspectratio align="left">keep</aspectratio>
-				<visible>Window.IsVisible(VideoLibrary) + !system.haslocks</visible>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>85</posy>
-				<width>180</width>
-				<height>95</height>
-				<texture>$INFO[MusicPlayer.Cover]</texture>
-				<bordertexture border="3">black-back2.png</bordertexture>
-				<bordersize>5</bordersize>
-				<aspectratio align="left">keep</aspectratio>
-				<visible>Window.IsVisible(VideoLibrary) + system.haslocks</visible>
+				<visible>Window.IsVisible(MusicLibrary) + LastFM.RadioPlaying</visible>
 			</control>
 			<control type="label">
 				<posx>5</posx>
@@ -234,6 +402,8 @@
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(VideoFiles) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(500)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(55)]</visible>
+			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(56)]</visible>
 			<visible>![Window.IsVisible(MusicFiles) + Control.IsVisible(500)]</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
@@ -251,38 +421,6 @@
 				<width>250</width>
 				<height>155</height>
 				<visible>!Window.IsVisible(VideoLibrary)</visible>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>45</posy>
-				<width>240</width>
-				<height>135</height>
-				<colordiffuse>AAFFFFFF</colordiffuse>
-				<texture>black-back.png</texture>
-				<visible>Window.IsVisible(VideoLibrary) + !system.haslocks</visible>
-			</control>
-			<control type="videowindow">
-				<posx>5</posx>
-				<posy>50</posy>
-				<width>230</width>
-				<height>125</height>
-				<visible>Window.IsVisible(VideoLibrary) + !system.haslocks</visible>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>85</posy>
-				<width>180</width>
-				<height>95</height>
-				<colordiffuse>AAFFFFFF</colordiffuse>
-				<texture>black-back.png</texture>
-				<visible>Window.IsVisible(VideoLibrary) + system.haslocks</visible>
-			</control>
-			<control type="videowindow">
-				<posx>5</posx>
-				<posy>90</posy>
-				<width>170</width>
-				<height>85</height>
-				<visible>Window.IsVisible(VideoLibrary) + system.haslocks</visible>
 			</control>
 			<control type="label">
 				<posx>5</posx>

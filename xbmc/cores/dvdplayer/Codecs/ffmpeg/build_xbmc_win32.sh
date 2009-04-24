@@ -10,7 +10,7 @@ make distclean
 --enable-w32threads \
 --enable-postproc \
 --enable-swscale \
---enable-protocol=http \
+--enable-zlib \
 --disable-static \
 --disable-altivec \
 --disable-vhook \
@@ -24,4 +24,3 @@ strip lib*/*.dll &&
 mkdir .libs &&
 cp lib*/*.dll .libs/ &&
 mv .libs/swscale-0.dll .libs/swscale-0.6.1.dll
-make install

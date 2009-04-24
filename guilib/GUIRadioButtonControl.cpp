@@ -25,18 +25,18 @@
 #include "GUIFontManager.h"
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
-    const CImage& textureFocus, const CImage& textureNoFocus,
+    const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
     const CLabelInfo& labelInfo,
-    const CImage& radioFocus, const CImage& radioNoFocus)
+    const CTextureInfo& radioFocus, const CTextureInfo& radioNoFocus)
     : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
-    , m_imgRadioFocus(dwParentID, dwControlId, posX, posY, 16, 16, radioFocus)
-    , m_imgRadioNoFocus(dwParentID, dwControlId, posX, posY, 16, 16, radioNoFocus)
+    , m_imgRadioFocus(posX, posY, 16, 16, radioFocus)
+    , m_imgRadioNoFocus(posX, posY, 16, 16, radioNoFocus)
 {
   m_radioPosX = 0;
   m_radioPosY = 0;
   m_toggleSelect = 0;
-  m_imgRadioFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_KEEP);
-  m_imgRadioNoFocus.SetAspectRatio(CGUIImage::CAspectRatio::AR_KEEP);
+  m_imgRadioFocus.SetAspectRatio(CAspectRatio::AR_KEEP);\
+  m_imgRadioNoFocus.SetAspectRatio(CAspectRatio::AR_KEEP);
   ControlType = GUICONTROL_RADIO;
 }
 
@@ -150,10 +150,10 @@ CStdString CGUIRadioButtonControl::GetDescription() const
   return strLabel;
 }
 
-void CGUIRadioButtonControl::SetColorDiffuse(const CGUIInfoColor &color)
+void CGUIRadioButtonControl::UpdateColors()
 {
-  CGUIButtonControl::SetColorDiffuse(color);
-  m_imgRadioFocus.SetColorDiffuse(color);
-  m_imgRadioNoFocus.SetColorDiffuse(color);
+  CGUIButtonControl::UpdateColors();
+  m_imgRadioFocus.SetDiffuseColor(m_diffuseColor);
+  m_imgRadioNoFocus.SetDiffuseColor(m_diffuseColor);
 }
 

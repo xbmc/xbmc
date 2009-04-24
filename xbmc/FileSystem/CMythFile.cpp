@@ -277,7 +277,7 @@ bool CCMythFile::SetupFile(const CURL& url)
   return true;
 }
 
-bool CCMythFile::Open(const CURL& url, bool binary)
+bool CCMythFile::Open(const CURL& url)
 {
   Close();
 
@@ -289,7 +289,7 @@ bool CCMythFile::Open(const CURL& url, bool binary)
       return false;
 
     CLog::Log(LOGDEBUG, "%s - file: size %"PRId64", start %"PRId64", ", __FUNCTION__,  m_dll->file_length(m_file), m_dll->file_start(m_file));
-  } 
+  }
   else if (path.Left(9) == "channels/")
   {
 
@@ -399,8 +399,8 @@ bool CCMythFile::Exists(const CURL& url)
   return false;
 }
 
-bool CCMythFile::Delete(const CURL& url) 
-{ 
+bool CCMythFile::Delete(const CURL& url)
+{
   CStdString path(url.GetFileName());
 
   if(path.Left(11) == "recordings/")
@@ -458,7 +458,7 @@ __int64 CCMythFile::GetLength()
 }
 
 unsigned int CCMythFile::Read(void* buffer, __int64 size)
-{ 
+{
   /* check for any events */
   HandleEvents();
 
@@ -636,4 +636,5 @@ bool CCMythFile::Record(bool bOnOff)
   }
   return false;
 }
+
 

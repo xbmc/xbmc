@@ -99,7 +99,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       // Setup item cache for tagloader
-      m_musicInfoLoader.UseCacheOnHD("Z:\\MusicPlaylist.fi");
+      m_musicInfoLoader.UseCacheOnHD("special://temp/MusicPlaylist.fi");
 
       m_vecItems->m_strPath="playlistmusic://";
 
@@ -581,7 +581,7 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   case CONTEXT_BUTTON_DELETE:
     RemovePlayListItem(itemNumber);
     return true;
-  
+
   case CONTEXT_BUTTON_ADD_FAVOURITE:
     {
       CFileItemPtr item = m_vecItems->Get(itemNumber);
@@ -595,7 +595,7 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
   {
-    CStdString playlist = "P:\\PartyMode.xsp";
+    CStdString playlist = "special://profile/PartyMode.xsp";
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules

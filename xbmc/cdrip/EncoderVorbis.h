@@ -31,7 +31,7 @@ class CEncoderVorbis : public CEncoder
 {
 public:
   CEncoderVorbis();
-  ~CEncoderVorbis();
+  virtual ~CEncoderVorbis() {};
   bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
   int Encode(int nNumBytesRead, BYTE* pbtStream);
   bool Close();

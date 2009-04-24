@@ -49,7 +49,7 @@ bool CGUIIncludes::LoadIncludes(const CStdString &includeFile)
     return true;
 
   TiXmlDocument doc;
-  if (!doc.LoadFile(includeFile.c_str()))
+  if (!doc.LoadFile(includeFile))
   {
     CLog::Log(LOGINFO, "Error loading includes.xml file (%s): %s (row=%i, col=%i)", includeFile.c_str(), doc.ErrorDesc(), doc.ErrorRow(), doc.ErrorCol());
     return false;
@@ -152,7 +152,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, const CStdString &type)
     const char *condition = include->Attribute("condition");
     if (condition)
     { // check this condition
-      if (!g_infoManager.GetBool(g_infoManager.TranslateString(condition))) 
+      if (!g_infoManager.GetBool(g_infoManager.TranslateString(condition)))
       {
         include = include->NextSiblingElement("include");
         continue;

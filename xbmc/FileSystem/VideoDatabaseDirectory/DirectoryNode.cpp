@@ -61,8 +61,7 @@ CDirectoryNode::CDirectoryNode(NODE_TYPE Type, const CStdString& strName, CDirec
 
 CDirectoryNode::~CDirectoryNode()
 {
-  if (m_pParent)
-    delete m_pParent;
+  delete m_pParent;
 }
 
 //  Parses a given path and returns the current node of the path
@@ -71,8 +70,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const CStdString& strPath)
   CURL url(strPath);
 
   CStdString strDirectory=url.GetFileName();
-  if (CUtil::HasSlashAtEnd(strDirectory))
-    strDirectory.Delete(strDirectory.size()-1);
+  CUtil::RemoveSlashAtEnd(strDirectory);
 
   CStdStringArray Path;
   StringUtils::SplitString(strDirectory, "/", Path);
@@ -192,7 +190,7 @@ CStdString CDirectoryNode::BuildPath()
 
   if (!m_strName.IsEmpty())
     array.insert(array.begin(), m_strName);
-  
+
   CDirectoryNode* pParent=m_pParent;
   while (pParent!=NULL)
   {
@@ -293,12 +291,13 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
         }
         pItem->SetProperty("watchedepisodes", watched);
         pItem->SetProperty("unwatchedepisodes", unwatched);
-        pItem->GetVideoInfoTag()->m_playCount = (unwatched == 0) ? 1 : 0;
         if (items.Size() && items[0]->GetVideoInfoTag())
         {
           *pItem->GetVideoInfoTag() = *items[0]->GetVideoInfoTag();
           pItem->GetVideoInfoTag()->m_iSeason = -1;
         }
+        pItem->GetVideoInfoTag()->m_iEpisode = watched + unwatched;
+        pItem->GetVideoInfoTag()->m_playCount = (unwatched == 0) ? 1 : 0;
         if (XFILE::CFile::Exists(pItem->GetCachedSeasonThumb()))
           pItem->SetThumbnailImage(pItem->GetCachedSeasonThumb());
       }

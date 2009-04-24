@@ -22,9 +22,7 @@
 #include "stdafx.h"
 #include "winxml.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "pyutil.h"
 #include "GUIPythonWindowXML.h"
 #include "SkinInfo.h"
@@ -63,7 +61,7 @@ namespace PYXBMC
     PyObject* pyOXMLname = NULL;
     PyObject* pyOname = NULL;
     PyObject* pyDName = NULL;
-    bool bForceDefaultSkin = false;
+    char bForceDefaultSkin = false;
 
     string strXMLname, strFallbackPath;
     string strDefault = "Default";

@@ -58,7 +58,7 @@ bool CDirectoryNodeMusicVideosOverview::GetContent(CFileItemList& items)
   vecRoot.push_back(g_localizeStrings.Get(369));  // Title
   vecRoot.push_back(g_localizeStrings.Get(562));  // Year
   vecRoot.push_back(g_localizeStrings.Get(133));  // Artists
-  vecRoot.push_back(g_localizeStrings.Get(132));  // Albums 
+  vecRoot.push_back(g_localizeStrings.Get(132));  // Albums
   vecRoot.push_back(g_localizeStrings.Get(20348));  // Directors
   vecRoot.push_back(g_localizeStrings.Get(20388));  // Studios
 

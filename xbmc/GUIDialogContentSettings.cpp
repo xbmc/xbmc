@@ -82,7 +82,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       m_bNeedSave = false;
       Close();
     }
-    
+
     if (iControl == CONTROL_CONTENT_TYPE)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_CONTENT_TYPE);
@@ -101,40 +101,40 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
               SetupPage();
               break;
       case 1: strLabel = g_localizeStrings.Get(20342);
-              m_info = FindDefault("movies",DEFAULT_MOVIE_SCRAPER);
+              m_info = FindDefault("movies", g_guiSettings.GetString("scrapers.moviedefault"));
               CreateSettings();
               SetupPage();
               break;
       case 2: strLabel = g_localizeStrings.Get(20343);
-              m_info = FindDefault("tvshows",DEFAULT_TVSHOW_SCRAPER);
+              m_info = FindDefault("tvshows", g_guiSettings.GetString("scrapers.tvshowdefault"));
               CreateSettings();
               SetupPage();
               break;
       case 3: strLabel = g_localizeStrings.Get(20389);
-              m_info = FindDefault("musicvideos",DEFAULT_MUSICVIDEO_SCRAPER);
+              m_info = FindDefault("musicvideos", g_guiSettings.GetString("scrapers.musicvideodefault"));
               CreateSettings();
               SetupPage();
               break;
       case 4: strLabel = g_localizeStrings.Get(132);
-              m_info = FindDefault("albums",DEFAULT_ALBUM_SCRAPER);
+              m_info = FindDefault("albums", g_guiSettings.GetString("musiclibrary.defaultscraper"));
               CreateSettings();
               SetupPage();
               break;
-      }  
+      }
     }
     if (iControl == CONTROL_SCRAPER_LIST)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SCRAPER_LIST);
       m_gWindowManager.SendMessage(msg);
       int iSelected = msg.GetParam1();
-     
+
       m_info = m_scrapers[m_info.strContent][iSelected];
       FillListControl();
       SET_CONTROL_FOCUS(30,0);
     }
     if (iControl == CONTROL_SCRAPER_SETTINGS)
     {
-      if (m_info.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\"+m_info.strPath))
+      if (m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/"+m_info.strPath))
       {
         CGUIDialogPluginSettings::ShowAndGetInput(m_info);
         m_bNeedSave = true;
@@ -145,7 +145,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     CScraperParser parser;
     CStdString strPath;
     if (!m_info.strContent.IsEmpty())
-      strPath="q:\\system\\scrapers\\video\\"+m_info.strPath;
+      strPath="special://xbmc/system/scrapers/video/"+m_info.strPath;
     if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
       CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
     else
@@ -158,12 +158,12 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
 void CGUIDialogContentSettings::OnWindowLoaded()
 {
   CGUIDialogSettings::OnWindowLoaded();
-  
+
   CFileItemList items;
   if (m_info.strContent.Equals("albums"))
-    CDirectory::GetDirectory(_P("q:\\system\\scrapers\\music"),items,".xml",false);
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
   else
-    CDirectory::GetDirectory(_P("q:\\system\\scrapers\\video"),items,".xml",false);
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/video/",items,".xml",false);
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
@@ -172,6 +172,7 @@ void CGUIDialogContentSettings::OnWindowLoaded()
       doc.LoadFile(items[i]->m_strPath);
       if (doc.RootElement())
       {
+        bool IsDefaultScraper = false;
         const char* content = doc.RootElement()->Attribute("content");
         const char* name = doc.RootElement()->Attribute("name");
         const char* thumb = doc.RootElement()->Attribute("thumb");
@@ -184,9 +185,23 @@ void CGUIDialogContentSettings::OnWindowLoaded()
             info.strThumb = thumb;
           info.strContent = content;
           info.settings = m_scraperSettings;
+
+          if ( info.strPath == g_guiSettings.GetString("musiclibrary.defaultscraper")
+            || info.strPath == g_guiSettings.GetString("scrapers.moviedefault")
+            || info.strPath == g_guiSettings.GetString("scrapers.tvshowdefault")
+            || info.strPath == g_guiSettings.GetString("scrapers.musicvideodefault"))
+          {
+             IsDefaultScraper = true;
+          }
+
           map<CStdString,vector<SScraperInfo> >::iterator iter=m_scrapers.find(content);
           if (iter != m_scrapers.end())
-            iter->second.push_back(info);
+          {
+            if (IsDefaultScraper)
+              iter->second.insert(iter->second.begin(),info);
+            else
+              iter->second.push_back(info);
+          }
           else
           {
             vector<SScraperInfo> vec;
@@ -218,7 +233,7 @@ void CGUIDialogContentSettings::OnWindowLoaded()
   CScraperParser parser;
   CStdString strPath;
   if (!m_info.strContent.IsEmpty())
-    strPath="q:\\system\\scrapers\\video\\"+m_info.strPath;
+    strPath="special://xbmc/system/scrapers/video/"+m_info.strPath;
   if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
     CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
   else
@@ -289,7 +304,7 @@ void CGUIDialogContentSettings::SetupPage()
   if (m_info.strContent.IsEmpty() || m_info.strContent.Equals("None"))
   {
     CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
-    OnMessage(msgReset); 
+    OnMessage(msgReset);
     CONTROL_DISABLE(CONTROL_SCRAPER_LIST);
   }
   else
@@ -314,7 +329,7 @@ void CGUIDialogContentSettings::CreateSettings()
   {
     AddBool(1,20345,&m_bRunScan);
     AddBool(2,20330,&m_bUseDirNames);
-    AddBool(3,20346,&m_bScanRecursive);    
+    AddBool(3,20346,&m_bScanRecursive);
     AddBool(4,20383,&m_bSingleItem, m_bUseDirNames);
     AddBool(5,20432,&m_bUpdate);
   }
@@ -327,7 +342,7 @@ void CGUIDialogContentSettings::CreateSettings()
   if (m_info.strContent.Equals("musicvideos"))
   {
     AddBool(1,20345,&m_bRunScan);
-    AddBool(2,20346,&m_bScanRecursive);    
+    AddBool(2,20346,&m_bScanRecursive);
     AddBool(3,20432,&m_bUpdate);
   }
   if (m_info.strContent.Equals("albums"))
@@ -341,7 +356,7 @@ void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
   // setting has changed - update anything that needs it
   if (num >= m_settings.size()) return;
   SettingInfo &setting = m_settings.at(num);
-  // check and update anything that needs it  
+  // check and update anything that needs it
   if (setting.id == 1 || setting.id == 2)
   {
     CreateSettings();
@@ -371,7 +386,7 @@ void CGUIDialogContentSettings::OnInitWindow()
 void CGUIDialogContentSettings::FillListControl()
 {
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_SCRAPER_LIST);
-  OnMessage(msgReset); 
+  OnMessage(msgReset);
   int iIndex=0;
   m_vecItems->Clear();
   for (vector<SScraperInfo>::iterator iter=m_scrapers.find(m_info.strContent)->second.begin();iter!=m_scrapers.find(m_info.strContent)->second.end();++iter)
@@ -379,9 +394,9 @@ void CGUIDialogContentSettings::FillListControl()
     CFileItemPtr item(new CFileItem(iter->strTitle));
     item->m_strPath = iter->strPath;
     if (m_info.strContent.Equals("albums"))
-      item->SetThumbnailImage(_P("Q:\\system\\scrapers\\music\\"+iter->strThumb));
+      item->SetThumbnailImage("special://xbmc/system/scrapers/music/"+iter->strThumb);
     else
-      item->SetThumbnailImage(_P("Q:\\system\\scrapers\\video\\"+iter->strThumb));
+      item->SetThumbnailImage("special://xbmc/system/scrapers/video/"+iter->strThumb);
     if (iter->strPath.Equals(m_info.strPath))
     {
       CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, iIndex);
@@ -448,7 +463,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
 
   dialog->m_scraperSettings = scraper.settings;
   dialog->m_bRunScan = bRunScan;
-  dialog->m_bScanRecursive = (settings.recurse > 0) && (!settings.parent_name && settings.recurse == 1);
+  dialog->m_bScanRecursive = (settings.recurse > 0 && !settings.parent_name) || (settings.recurse > 1 && settings.parent_name);
   dialog->m_bUseDirNames   = settings.parent_name;
   dialog->m_bExclude       = scraper.strContent.Equals("None");
   dialog->m_bSingleItem    = settings.parent_name_root;
@@ -465,11 +480,11 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
       settings.parent_name = dialog->m_bSingleItem;
       settings.parent_name_root = dialog->m_bSingleItem;
       settings.recurse = 0;
-      
+
       bRunScan = dialog->m_bRunScan;
     }
     else if (scraper.strContent.Equals("movies"))
-    {            
+    {
       if (dialog->m_bUseDirNames)
       {
         settings.parent_name = true;
@@ -492,7 +507,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
       bRunScan = dialog->m_bRunScan;
     }
     else if (scraper.strContent.Equals("musicvideos"))
-    {            
+    {
       settings.parent_name = false;
       settings.parent_name_root = false;
       settings.recurse = dialog->m_bScanRecursive ? INT_MAX : 0;
@@ -515,10 +530,10 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
 
     if (!scraper.strContent.IsEmpty() && !scraper.strContent.Equals("None") && (!scraper.settings.GetPluginRoot() || scraper.settings.GetSettings().IsEmpty()))
     { // load default scraper settings
-      scraper.settings.LoadSettingsXML("q:\\system\\scrapers\\video\\"+scraper.strPath);
+      scraper.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/"+scraper.strPath);
       scraper.settings.SaveFromDefault();
     }
-    
+
     return true;
   }
   return false;
@@ -535,7 +550,7 @@ SScraperInfo CGUIDialogContentSettings::FindDefault(const CStdString& strType, c
       break;
     }
   }
-  
+
   return result;
 }
 

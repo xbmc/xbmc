@@ -122,6 +122,7 @@ double CPTSInputQueue::Get(__int64 bytes, bool consume)
 
 CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) 
 : CThread()
+, m_messageQueue("audio")
 , m_dvdAudio((bool&)m_bStop)
 {
   m_pClock = pClock;
@@ -180,10 +181,20 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
   // send abort message to the audio queue
   m_messageQueue.Abort();
 
-  CLog::Log(LOGNOTICE, "waiting for audio thread to exit");
+  CLog::Log(LOGNOTICE, "Waiting for audio thread to exit");
 
   // shut down the adio_decode thread and wait for it
   StopThread(); // will set this->m_bStop to true
+
+  // destroy audio device
+  CLog::Log(LOGNOTICE, "Closing audio device");
+  if (bWaitForBuffers && m_speed > 0)
+  {
+    m_bStop = false;
+    m_dvdAudio.Drain();
+    m_bStop = true;
+  }
+  m_dvdAudio.Destroy();
 
   // uninit queue
   m_messageQueue.End();
@@ -301,7 +312,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
         // increase audioclock to after the packet
         m_audioClock += audioframe.duration;
-        datatimeout = (unsigned int)(audioframe.duration*2.0);
+        datatimeout = (unsigned int)(DVD_TIME_TO_MSEC(audioframe.duration * 2.0));
       }
 
       // if demux source want's us to not display this, continue
@@ -319,7 +330,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     // free the current packet
     m_decode.Release();
 
-    if (m_messageQueue.RecievedAbortRequest()) return DECODE_FLAG_ABORT;
+    if (m_messageQueue.ReceivedAbortRequest()) return DECODE_FLAG_ABORT;
 
     CDVDMsg* pMsg;
     int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
@@ -344,12 +355,11 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       CDVDMsgGeneralStreamChange* pMsgStreamChange = (CDVDMsgGeneralStreamChange*)pMsg;
       CDVDStreamInfo* hints = pMsgStreamChange->GetStreamInfo();
 
-      /* recieved a stream change, reopen codec. */
-      /* we should really not do this untill first packet arrives, to have a probe buffer */      
+      /* received a stream change, reopen codec. */
+      /* we should really not do this until first packet arrives, to have a probe buffer */      
 
       /* try to open decoder, if none is found keep consuming packets */
       OpenDecoder( *hints );
-
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
@@ -382,6 +392,11 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
         m_pAudioCodec->Reset();
 
       m_decode.Release();
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_EOF))
+    {
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio - CDVDMsg::GENERAL_EOF");
+      m_dvdAudio.Finish();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_DELAY))
     {
@@ -456,7 +471,7 @@ void CDVDPlayerAudio::Process()
 
     if( result & DECODE_FLAG_ABORT )
     {
-      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::Process - Abort recieved, exiting thread");
+      CLog::Log(LOGDEBUG, "CDVDPlayerAudio::Process - Abort received, exiting thread");
       break;
     }
 
@@ -528,10 +543,6 @@ void CDVDPlayerAudio::Process()
 void CDVDPlayerAudio::OnExit()
 {
   g_dvdPerformanceCounter.DisableAudioDecodePerformance();
-  
-  // destroy audio device
-  CLog::Log(LOGNOTICE, "Closing audio device");
-  m_dvdAudio.Destroy();
 
   CLog::Log(LOGNOTICE, "thread end: CDVDPlayerAudio::OnExit()");
 }

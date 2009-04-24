@@ -64,7 +64,7 @@ CFileRarExtractThread::~CFileRarExtractThread()
   SetEvent(hQuit);
   WaitForSingleObject(hRestart,INFINITE);
   StopThread();
-  
+
   CloseHandle(hRunning);
   CloseHandle(hQuit);
   CloseHandle(hRestart);
@@ -76,7 +76,7 @@ void CFileRarExtractThread::Start(Archive* pArc, CommandData* pCmd, CmdExtract* 
   m_pCmd = pCmd;
   m_pExtract = pExtract;
   m_iSize = iSize;
-  
+
   m_pExtract->GetDataIO().hBufferFilled = CreateEvent(NULL,false,false,NULL);
   m_pExtract->GetDataIO().hBufferEmpty = CreateEvent(NULL,false,false,NULL);
   m_pExtract->GetDataIO().hSeek = CreateEvent(NULL,true,false,NULL);
@@ -135,14 +135,14 @@ CFileRar::CFileRar()
 //*********************************************************************************************
 CFileRar::~CFileRar()
 {
-#ifdef HAS_RAR  
+#ifdef HAS_RAR
   if (!m_bOpen)
     return;
-  
+
   if (m_bUseFile)
   {
     m_File.Close();
-    g_RarManager.ClearCachedFile(m_strRarPath,m_strPathInRar); 
+    g_RarManager.ClearCachedFile(m_strRarPath,m_strPathInRar);
   }
   else
   {
@@ -156,11 +156,11 @@ CFileRar::~CFileRar()
 #endif
 }
 //*********************************************************************************************
-bool CFileRar::Open(const CURL& url, bool bBinary)
+bool CFileRar::Open(const CURL& url)
 {
-  CStdString strFile; 
+  CStdString strFile;
   url.GetURL(strFile);
-  
+
   InitFromUrl(url);
   CFileItemList items;
   g_RarManager.GetFilesInRar(items,m_strRarPath,false);
@@ -180,7 +180,7 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
 
       m_iFileSize = items[i]->m_dwSize;
       m_bOpen = true;
-      
+
       // perform 'noidx' check
       CFileInfo* pFile = g_RarManager.GetFileInRar(m_strRarPath,m_strPathInRar);
       if (pFile)
@@ -198,25 +198,25 @@ bool CFileRar::Open(const CURL& url, bool bBinary)
       }
       return true;
     }
-    else 
+    else
     {
       m_bUseFile = true;
       CStdString strPathInCache;
-      
-      if (!g_RarManager.CacheRarredFile(strPathInCache, m_strRarPath, m_strPathInRar, 
-                                        EXFILE_AUTODELETE | m_bFileOptions, m_strCacheDir, 
+
+      if (!g_RarManager.CacheRarredFile(strPathInCache, m_strRarPath, m_strPathInRar,
+                                        EXFILE_AUTODELETE | m_bFileOptions, m_strCacheDir,
                                         items[i]->m_dwSize))
       {
         CLog::Log(LOGERROR,"filerar::open failed to cache file %s",m_strPathInRar.c_str());
         return false;
       }
-      
-      if (!m_File.Open( strPathInCache, bBinary)) 
+
+      if (!m_File.Open( strPathInCache ))
       {
         CLog::Log(LOGERROR,"filerar::open failed to open file in cache: %s",strPathInCache.c_str());
         return false;
       }
-      
+
       m_bOpen = true;
       return true;
     }
@@ -229,16 +229,16 @@ bool CFileRar::Exists(const CURL& url)
   InitFromUrl(url);
   CStdString strPathInCache;
   bool bResult;
-  
-  if (!g_RarManager.IsFileInRar(bResult, m_strRarPath, m_strPathInRar)) 
+
+  if (!g_RarManager.IsFileInRar(bResult, m_strRarPath, m_strPathInRar))
     return false;
-  
+
   return bResult;
 }
 //*********************************************************************************************
 int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
 {
-  if (Open(url, true))
+  if (Open(url))
   {
     buffer->st_size = GetLength();
     buffer->st_mode = _S_IFREG;
@@ -262,7 +262,7 @@ int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
 
 
 //*********************************************************************************************
-bool CFileRar::OpenForWrite(const CURL& url, bool bBinary)
+bool CFileRar::OpenForWrite(const CURL& url)
 {
   return false;
 }
@@ -276,10 +276,10 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
 
   if (m_bUseFile)
     return m_File.Read(lpBuf,uiBufSize);
-  
+
   if (m_iFilePosition >= GetLength()) // we are done
     return 0;
-  
+
   if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,5000) == WAIT_TIMEOUT )
   {
     CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
@@ -308,18 +308,18 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
       m_szStartOfBuffer = m_szBuffer;
       m_iBufferStart = m_iFilePosition;
     }
-    
+
     SetEvent(m_pExtract->GetDataIO().hBufferFilled);
     WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,INFINITE);
 
     if (m_pExtract->GetDataIO().NextVolumeMissing)
       break;
-   
+
     m_iDataInBuffer = MAXWINMEMSIZE-m_pExtract->GetDataIO().UnpackToMemorySize;
-    
+
     if (m_iDataInBuffer == 0)
       break;
-    
+
     if (m_iDataInBuffer > uicBufSize)
     {
       memcpy(pBuf,m_szStartOfBuffer,int(uicBufSize));
@@ -339,9 +339,9 @@ unsigned int CFileRar::Read(void *lpBuf, __int64 uiBufSize)
       m_iDataInBuffer = 0;
     }
   }
-  
+
   SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
-  
+
   return static_cast<unsigned int>(uiBufSize-uicBufSize);
 #else
   return 0;
@@ -382,7 +382,7 @@ void CFileRar::Close()
 
 //*********************************************************************************************
 __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
-{ 
+{
 #ifdef HAS_RAR
   if (!m_bOpen)
     return -1;
@@ -392,7 +392,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
 
   if (m_bUseFile)
     return m_File.Seek(iFilePosition,iWhence);
-  
+
   if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
   {
     CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
@@ -400,7 +400,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   }
 
   SetEvent(m_pExtract->GetDataIO().hBufferEmpty);
- 
+
   switch (iWhence)
   {
     case SEEK_CUR:
@@ -411,11 +411,11 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
       break;
     case SEEK_END:
       if (iFilePosition == 0) // do not seek to end
-      { 
+      {
         m_iFilePosition = this->GetLength();
         m_iDataInBuffer = 0;
         m_iBufferStart = this->GetLength();
-        
+
         return this->GetLength();
       }
 
@@ -425,29 +425,29 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
     default:
       return -1;
   }
-  
-  if (iFilePosition > this->GetLength()) 
+
+  if (iFilePosition > this->GetLength())
     return -1;
-  
+
   if (iFilePosition == m_iFilePosition) // happens a lot
-    return m_iFilePosition; 
-  
-  if ((iFilePosition >= m_iBufferStart) && (iFilePosition < m_iBufferStart+MAXWINMEMSIZE) 
+    return m_iFilePosition;
+
+  if ((iFilePosition >= m_iBufferStart) && (iFilePosition < m_iBufferStart+MAXWINMEMSIZE)
                                         && (m_iDataInBuffer > 0)) // we are within current buffer
   {
     m_iDataInBuffer = MAXWINMEMSIZE-(iFilePosition-m_iBufferStart);
     m_szStartOfBuffer = m_szBuffer+MAXWINMEMSIZE-m_iDataInBuffer;
     m_iFilePosition = iFilePosition;
-    
+
     return m_iFilePosition;
   }
-  
+
   if (iFilePosition < m_iBufferStart )
   {
     CleanUp();
     if (!OpenInArchive())
       return -1;
-    
+
     if( WaitForSingleObject(m_pExtract->GetDataIO().hBufferEmpty,SEEKTIMOUT) == WAIT_TIMEOUT )
     {
       CLog::Log(LOGERROR, "%s - Timeout waiting for buffer to empty", __FUNCTION__);
@@ -458,7 +458,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   }
   else
     m_pExtract->GetDataIO().m_iSeekTo = iFilePosition;
-  
+
   m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,MAXWINMEMSIZE);
   SetEvent(m_pExtract->GetDataIO().hSeek);
   SetEvent(m_pExtract->GetDataIO().hBufferFilled);
@@ -483,7 +483,7 @@ __int64 CFileRar::Seek(__int64 iFilePosition, int iWhence)
   m_iBufferStart = m_pExtract->GetDataIO().m_iStartOfBuffer;
   m_szStartOfBuffer = m_szBuffer+MAXWINMEMSIZE-m_iDataInBuffer;
   m_iFilePosition = iFilePosition;
-  
+
   return m_iFilePosition;
 #else
   return -1;
@@ -528,15 +528,14 @@ void CFileRar::InitFromUrl(const CURL& url)
 {
   url.GetURL(m_strUrl);
   m_strCacheDir = g_advancedSettings.m_cachePath;//url.GetDomain();
-  if (!CUtil::HasSlashAtEnd(m_strCacheDir))
-    m_strCacheDir += "/"; // should work local and remote..
+  CUtil::AddSlashAtEnd(m_strCacheDir);
   m_strRarPath = url.GetHostName();
   m_strPassword = url.GetUserName();
-  m_strPathInRar = url.GetFileName();  
+  m_strPathInRar = url.GetFileName();
 
   vector<CStdString> options;
   CUtil::Tokenize(url.GetOptions().Mid(1), options, "&");
-  
+
   m_bFileOptions = 0;
   m_bRarOptions = 0;
 
@@ -565,9 +564,9 @@ void CFileRar::CleanUp()
     if (WaitForSingleObject(m_pExtractThread->hRunning,1) == WAIT_OBJECT_0)
     {
       SetEvent(m_pExtract->GetDataIO().hQuit);
-      while (WaitForSingleObject(m_pExtractThread->hRunning,1) == WAIT_OBJECT_0) 
+      while (WaitForSingleObject(m_pExtractThread->hRunning,1) == WAIT_OBJECT_0)
         Sleep(1);
-    
+
     }
     CloseHandle(m_pExtract->GetDataIO().hBufferFilled);
     CloseHandle(m_pExtract->GetDataIO().hBufferEmpty);
@@ -667,7 +666,7 @@ bool CFileRar::OpenInArchive()
    m_iSize=m_pArc->ReadHeader();
     if (stricmp(m_pArc->NewLhd.FileName,strPath.c_str()) == 0)
     {
-      while (m_pArc->GetHeaderType() != FILE_HEAD) 
+      while (m_pArc->GetHeaderType() != FILE_HEAD)
       {
         m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat);
         m_iSize = m_pArc->ReadHeader();
@@ -675,9 +674,9 @@ bool CFileRar::OpenInArchive()
       bRes = true;
       break;
     }
-    
+
     // this does NO extraction, only skips and handles solid volumes
-    if (!m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat)) 
+    if (!m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat))
     {
       bRes = FALSE;
       break;
@@ -688,22 +687,22 @@ bool CFileRar::OpenInArchive()
     CleanUp();
     return false;
   }
-  
+
   m_szBuffer = new byte[MAXWINMEMSIZE];
   m_szStartOfBuffer = m_szBuffer;
   m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,0);
   m_iDataInBuffer = -1;
   m_iFilePosition = 0;
   m_iBufferStart = 0;
-  
-  if (m_pExtractThread)
-    delete m_pExtractThread;
+
+  delete m_pExtractThread;
   m_pExtractThread = new CFileRarExtractThread();
   m_pExtractThread->Start(m_pArc,m_pCmd,m_pExtract,m_iSize);
-  
+
   return true;
 #else
   return false;
 #endif
 }
+
 

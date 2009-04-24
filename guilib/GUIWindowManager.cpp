@@ -300,7 +300,7 @@ void CGUIWindowManager::RefreshWindow()
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
   pWindow->OnMessage(msg);
   CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID);
-  pWindow->OnMessage(msg);
+  pWindow->OnMessage(msg2);
 }
 
 void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strPath)
@@ -690,7 +690,7 @@ void CGUIWindowManager::DispatchThreadMessages()
     // first remove the message from the queue,
     // else the message could be processed more then once
     it = messages.erase(it);
-    
+
     //Leave critical section here since this can cause some thread to come back here into dispatch
     if(dwWindow)
       SendMessage( *pMsg, dwWindow );
@@ -823,7 +823,7 @@ void CGUIWindowManager::AddToWindowHistory(DWORD newWindowID)
   { // didn't find window in history - add it to the stack
     m_windowHistory.push(newWindowID);
   }
-} 
+}
 
 void CGUIWindowManager::GetActiveModelessWindows(vector<DWORD> &ids)
 {

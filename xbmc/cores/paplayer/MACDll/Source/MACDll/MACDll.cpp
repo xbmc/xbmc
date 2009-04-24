@@ -1,6 +1,6 @@
 #include "MACDll.h"
 #include "resource.h"
-#ifndef _LINUX
+#if !defined(_LINUX) && !defined(__APPLE__)
 #include "WinFileIO.h"
 #include "APEInfoDialog.h"
 #include "WAVInfoDialog.h"
@@ -20,7 +20,7 @@ int __stdcall GetVersionNumber()
 	return MAC_VERSION_NUMBER;
 }
 
-#ifndef _LINUX 
+#if !defined(_LINUX) && !defined(__APPLE__)
 int __stdcall GetInterfaceCompatibility(int nVersion, BOOL bDisplayWarningsOnFailure, HWND hwndParent)
 {
 	int nRetVal = 0;
@@ -250,8 +250,6 @@ CAPETag * __stdcall c_GetAPETag(const str_ansi * pFilename, bool bCheckID3Tag)
 
 	return pAPETag;
 }
-
-typedef int64_t __int64;
 
 __int64 __stdcall c_GetAPEDuration(const str_ansi * pFilename)
 {

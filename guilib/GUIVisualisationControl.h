@@ -69,7 +69,7 @@ private:
   void LoadVisualisation();
   void CreateBuffers();
   void ClearBuffers();
-  bool UpdateAlbumArt();
+  bool UpdateTrack();
   CStdString      m_currentVis;
   CVisualisation* m_pVisualisation;
 

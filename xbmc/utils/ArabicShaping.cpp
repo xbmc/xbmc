@@ -148,10 +148,10 @@ static fribidi_boolean CharacterMapContains(FriBidiChar c)
   for (int i = 0; i < MAP_LENGTH; i++)
   {
     if (charsMap[i].code == c)
-      return FRIBIDI_TRUE;
+      return true;
   }
 
-  return FRIBIDI_FALSE;
+  return false;
 }
 
 static CharRep GetCharRep(FriBidiChar c)
@@ -186,9 +186,9 @@ static fribidi_boolean IsTransparent(FriBidiChar c)
   for (i = 0; i < TRANS_CHARS_LENGTH; i++)
   {
     if (transChars[i] == c)
-      return FRIBIDI_TRUE;
+      return true;
   }
-  return FRIBIDI_FALSE;
+  return false;
 }
 
 FriBidiChar* shape_arabic(FriBidiChar * str, int len)

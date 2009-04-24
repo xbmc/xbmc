@@ -23,7 +23,7 @@
 #include "bytestream.h"
 
 /**
- * @file adpcm.c
+ * @file libavcodec/adpcm.c
  * ADPCM codecs.
  * First version by Francois Revol (revol@free.fr)
  * Fringe ADPCM codecs (e.g., DK3, DK4, Westwood)
@@ -107,11 +107,6 @@ static const int ea_adpcm_table[] = {
     3, 4, 7, 8, 10, 11, 0, -1, -3, -4
 };
 
-static const int ct_adpcm_table[8] = {
-    0x00E6, 0x00E6, 0x00E6, 0x00E6,
-    0x0133, 0x0199, 0x0200, 0x0266
-};
-
 // padded to zero where table size is less then 16
 static const int swf_index_tables[4][16] = {
     /*2*/ { -1, 2 },
@@ -153,8 +148,8 @@ typedef struct ADPCMContext {
 
 /* XXX: implement encoding */
 
-#ifdef CONFIG_ENCODERS
-static int adpcm_encode_init(AVCodecContext *avctx)
+#if CONFIG_ENCODERS
+static av_cold int adpcm_encode_init(AVCodecContext *avctx)
 {
     if (avctx->channels > 2)
         return -1; /* only stereo or mono =) */
@@ -204,7 +199,7 @@ static int adpcm_encode_init(AVCodecContext *avctx)
     return 0;
 }
 
-static int adpcm_encode_close(AVCodecContext *avctx)
+static av_cold int adpcm_encode_close(AVCodecContext *avctx)
 {
     av_freep(&avctx->coded_frame);
 
@@ -759,7 +754,7 @@ static inline short adpcm_ct_expand_nibble(ADPCMChannelStatus *c, char nibble)
     c->predictor = ((c->predictor * 254) >> 8) + (sign ? -diff : diff);
     c->predictor = av_clip_int16(c->predictor);
     /* calculate new step and clamp it to range 511..32767 */
-    new_step = (ct_adpcm_table[nibble & 7] * c->step) >> 8;
+    new_step = (AdaptationTable[nibble & 7] * c->step) >> 8;
     c->step = av_clip(new_step, 511, 32767);
 
     return (short)c->predictor;
@@ -1131,6 +1126,33 @@ static int adpcm_decode_frame(AVCodecContext *avctx,
             *samples++ = c->status[0].predictor - c->status[1].predictor;
         }
         break;
+    case CODEC_ID_ADPCM_IMA_ISS:
+        c->status[0].predictor  = (int16_t)AV_RL16(src + 0);
+        c->status[0].step_index = src[2];
+        src += 4;
+        if(st) {
+            c->status[1].predictor  = (int16_t)AV_RL16(src + 0);
+            c->status[1].step_index = src[2];
+            src += 4;
+        }
+
+        while (src < buf + buf_size) {
+
+            if (st) {
+                *samples++ = adpcm_ima_expand_nibble(&c->status[0],
+                    src[0] >> 4  , 3);
+                *samples++ = adpcm_ima_expand_nibble(&c->status[1],
+                    src[0] & 0x0F, 3);
+            } else {
+                *samples++ = adpcm_ima_expand_nibble(&c->status[0],
+                    src[0] & 0x0F, 3);
+                *samples++ = adpcm_ima_expand_nibble(&c->status[0],
+                    src[0] >> 4  , 3);
+            }
+
+            src++;
+        }
+        break;
     case CODEC_ID_ADPCM_IMA_WS:
         /* no per-block initialization; just start decoding the data */
         while (src < buf + buf_size) {
@@ -1263,6 +1285,7 @@ static int adpcm_decode_frame(AVCodecContext *avctx,
         unsigned int channel;
         uint16_t *samplesC;
         const uint8_t *srcC;
+        const uint8_t *src_end = buf + buf_size;
 
         samples_in_chunk = (big_endian ? bytestream_get_be32(&src)
                                        : bytestream_get_le32(&src)) / 28;
@@ -1273,9 +1296,12 @@ static int adpcm_decode_frame(AVCodecContext *avctx,
         }
 
         for (channel=0; channel<avctx->channels; channel++) {
-            srcC = src + (big_endian ? bytestream_get_be32(&src)
-                                     : bytestream_get_le32(&src))
-                       + (avctx->channels-channel-1) * 4;
+            int32_t offset = (big_endian ? bytestream_get_be32(&src)
+                                         : bytestream_get_le32(&src))
+                           + (avctx->channels-channel-1) * 4;
+
+            if ((offset < 0) || (offset >= src_end - src - 4)) break;
+            srcC  = src + offset;
             samplesC = samples + channel;
 
             if (avctx->codec->id == CODEC_ID_ADPCM_EA_R1) {
@@ -1289,6 +1315,7 @@ static int adpcm_decode_frame(AVCodecContext *avctx,
             for (count1=0; count1<samples_in_chunk; count1++) {
                 if (*srcC == 0xEE) {  /* only seen in R2 and R3 */
                     srcC++;
+                    if (srcC > src_end - 30*2) break;
                     current_sample  = (int16_t)bytestream_get_be16(&srcC);
                     previous_sample = (int16_t)bytestream_get_be16(&srcC);
 
@@ -1301,6 +1328,7 @@ static int adpcm_decode_frame(AVCodecContext *avctx,
                     coeff2 = ea_adpcm_table[(*srcC>>4) + 4];
                     shift = (*srcC++ & 0x0F) + 8;
 
+                    if (srcC > src_end - 14) break;
                     for (count2=0; count2<28; count2++) {
                         if (count2 & 1)
                             next_sample = (int32_t)((*srcC++ & 0x0F) << 28) >> shift;
@@ -1589,7 +1617,7 @@ static int adpcm_decode_frame(AVCodecContext *avctx,
 
 
 
-#ifdef CONFIG_ENCODERS
+#if CONFIG_ENCODERS
 #define ADPCM_ENCODER(id,name,long_name_)       \
 AVCodec name ## _encoder = {                    \
     #name,                                      \
@@ -1607,7 +1635,7 @@ AVCodec name ## _encoder = {                    \
 #define ADPCM_ENCODER(id,name,long_name_)
 #endif
 
-#ifdef CONFIG_DECODERS
+#if CONFIG_DECODERS
 #define ADPCM_DECODER(id,name,long_name_)       \
 AVCodec name ## _decoder = {                    \
     #name,                                      \
@@ -1628,28 +1656,29 @@ AVCodec name ## _decoder = {                    \
     ADPCM_ENCODER(id,name,long_name_) ADPCM_DECODER(id,name,long_name_)
 
 /* Note: Do not forget to add new entries to the Makefile as well. */
-ADPCM_DECODER(CODEC_ID_ADPCM_4XM, adpcm_4xm, "4X Movie ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_CT, adpcm_ct, "Creative Technology ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_EA, adpcm_ea, "Electronic Arts ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_EA_MAXIS_XA, adpcm_ea_maxis_xa, "Electronic Arts Maxis CDROM XA ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_EA_R1, adpcm_ea_r1, "Electronic Arts R1 ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_EA_R2, adpcm_ea_r2, "Electronic Arts R2 ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_EA_R3, adpcm_ea_r3, "Electronic Arts R3 ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_EA_XAS, adpcm_ea_xas, "Electronic Arts XAS ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_IMA_AMV, adpcm_ima_amv, "IMA AMV ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_IMA_DK3, adpcm_ima_dk3, "IMA Duck DK3 ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_IMA_DK4, adpcm_ima_dk4, "IMA Duck DK4 ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_IMA_EA_EACS, adpcm_ima_ea_eacs, "IMA Electronic Arts EACS ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_IMA_EA_SEAD, adpcm_ima_ea_sead, "IMA Electronic Arts SEAD ADPCM");
-ADPCM_CODEC  (CODEC_ID_ADPCM_IMA_QT, adpcm_ima_qt, "IMA QuickTime ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_IMA_SMJPEG, adpcm_ima_smjpeg, "IMA Loki SDL MJPEG ADPCM");
-ADPCM_CODEC  (CODEC_ID_ADPCM_IMA_WAV, adpcm_ima_wav, "IMA Wav ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_IMA_WS, adpcm_ima_ws, "IMA Westwood ADPCM");
-ADPCM_CODEC  (CODEC_ID_ADPCM_MS, adpcm_ms, "Microsoft ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_SBPRO_2, adpcm_sbpro_2, "Sound Blaster Pro 2-bit ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_SBPRO_3, adpcm_sbpro_3, "Sound Blaster Pro 2.6-bit ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_SBPRO_4, adpcm_sbpro_4, "Sound Blaster Pro 4-bit ADPCM");
-ADPCM_CODEC  (CODEC_ID_ADPCM_SWF, adpcm_swf, "Shockwave Flash ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_THP, adpcm_thp, "Nintendo Gamecube THP ADPCM");
-ADPCM_DECODER(CODEC_ID_ADPCM_XA, adpcm_xa, "CDROM XA ADPCM");
-ADPCM_CODEC  (CODEC_ID_ADPCM_YAMAHA, adpcm_yamaha, "Yamaha ADPCM");
+ADPCM_DECODER(CODEC_ID_ADPCM_4XM, adpcm_4xm, "ADPCM 4X Movie");
+ADPCM_DECODER(CODEC_ID_ADPCM_CT, adpcm_ct, "ADPCM Creative Technology");
+ADPCM_DECODER(CODEC_ID_ADPCM_EA, adpcm_ea, "ADPCM Electronic Arts");
+ADPCM_DECODER(CODEC_ID_ADPCM_EA_MAXIS_XA, adpcm_ea_maxis_xa, "ADPCM Electronic Arts Maxis CDROM XA");
+ADPCM_DECODER(CODEC_ID_ADPCM_EA_R1, adpcm_ea_r1, "ADPCM Electronic Arts R1");
+ADPCM_DECODER(CODEC_ID_ADPCM_EA_R2, adpcm_ea_r2, "ADPCM Electronic Arts R2");
+ADPCM_DECODER(CODEC_ID_ADPCM_EA_R3, adpcm_ea_r3, "ADPCM Electronic Arts R3");
+ADPCM_DECODER(CODEC_ID_ADPCM_EA_XAS, adpcm_ea_xas, "ADPCM Electronic Arts XAS");
+ADPCM_DECODER(CODEC_ID_ADPCM_IMA_AMV, adpcm_ima_amv, "ADPCM IMA AMV");
+ADPCM_DECODER(CODEC_ID_ADPCM_IMA_DK3, adpcm_ima_dk3, "ADPCM IMA Duck DK3");
+ADPCM_DECODER(CODEC_ID_ADPCM_IMA_DK4, adpcm_ima_dk4, "ADPCM IMA Duck DK4");
+ADPCM_DECODER(CODEC_ID_ADPCM_IMA_EA_EACS, adpcm_ima_ea_eacs, "ADPCM IMA Electronic Arts EACS");
+ADPCM_DECODER(CODEC_ID_ADPCM_IMA_EA_SEAD, adpcm_ima_ea_sead, "ADPCM IMA Electronic Arts SEAD");
+ADPCM_DECODER(CODEC_ID_ADPCM_IMA_ISS, adpcm_ima_iss, "ADPCM IMA Funcom ISS");
+ADPCM_CODEC  (CODEC_ID_ADPCM_IMA_QT, adpcm_ima_qt, "ADPCM IMA QuickTime");
+ADPCM_DECODER(CODEC_ID_ADPCM_IMA_SMJPEG, adpcm_ima_smjpeg, "ADPCM IMA Loki SDL MJPEG");
+ADPCM_CODEC  (CODEC_ID_ADPCM_IMA_WAV, adpcm_ima_wav, "ADPCM IMA WAV");
+ADPCM_DECODER(CODEC_ID_ADPCM_IMA_WS, adpcm_ima_ws, "ADPCM IMA Westwood");
+ADPCM_CODEC  (CODEC_ID_ADPCM_MS, adpcm_ms, "ADPCM Microsoft");
+ADPCM_DECODER(CODEC_ID_ADPCM_SBPRO_2, adpcm_sbpro_2, "ADPCM Sound Blaster Pro 2-bit");
+ADPCM_DECODER(CODEC_ID_ADPCM_SBPRO_3, adpcm_sbpro_3, "ADPCM Sound Blaster Pro 2.6-bit");
+ADPCM_DECODER(CODEC_ID_ADPCM_SBPRO_4, adpcm_sbpro_4, "ADPCM Sound Blaster Pro 4-bit");
+ADPCM_CODEC  (CODEC_ID_ADPCM_SWF, adpcm_swf, "ADPCM Shockwave Flash");
+ADPCM_DECODER(CODEC_ID_ADPCM_THP, adpcm_thp, "ADPCM Nintendo Gamecube THP");
+ADPCM_DECODER(CODEC_ID_ADPCM_XA, adpcm_xa, "ADPCM CDROM XA");
+ADPCM_CODEC  (CODEC_ID_ADPCM_YAMAHA, adpcm_yamaha, "ADPCM Yamaha");

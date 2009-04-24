@@ -1,0 +1,15 @@
+ARCH=@ARCH@
+
+
+INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils
+CXXFLAGS=-fPIC
+ifeq ($(findstring osx,$(ARCH)), osx)
+	INCLUDES+= -I/opt/local/include
+	CXXFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+endif
+
+SRCS=ScreenSaver.cpp ScreenSaverFactory.cpp
+LIB=screensaver.a
+
+include ../../Makefile.include
+

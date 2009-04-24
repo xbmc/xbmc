@@ -1,6 +1,6 @@
 /*
  * Colorspace conversion defines
- * Copyright (c) 2001, 2002, 2003 Fabrice Bellard.
+ * Copyright (c) 2001, 2002, 2003 Fabrice Bellard
  *
  * This file is part of FFmpeg.
  *
@@ -20,7 +20,7 @@
  */
 
 /**
- * @file colorspace.h
+ * @file libavcodec/colorspace.h
  * Various defines for YUV<->RGB conversion
  */
 

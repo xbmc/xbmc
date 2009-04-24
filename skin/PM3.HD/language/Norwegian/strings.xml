@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<strings>
+  <string id="31000">Volum av</string>
+  <string id="31001"></string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">FANART[CR]BILDE[CR]IKKE[CR]TILGJENGELIG</string>
+  <string id="31011">EPISODE[CR]BILDE[CR]IKKE[CR]TILGJENGELIG</string>
+  <string id="31012">EPISODE[CR]BILDE[CR]IKKE[CR]TILGJENGELIG</string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">Kapitteltittel</string>
+  <string id="31021">Video - filer</string>
+  <string id="31022">Musikk - filer</string>
+  <string id="31023"></string>
+  <string id="31024">Side</string>
+  <string id="31025">Objekter</string>
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">DVD-miniatyrbilder</string>
+  <string id="31029">DVD-liste</string>
+  <string id="31030">Fanart</string>
+  <string id="31031">Full liste</string>
+  <string id="31032">Covervisning</string>
+  <string id="31033">Miniatyrbilder</string>
+  <string id="31034">Brede ikoner</string>
+
+  <string id="31040">Film som spilles nå[CR]Fanartbilde[CR][CR]Trykk for å endre</string>
+  <string id="31041">TV-serie som spilles
+  nå[CR]Fanarbilde[CR][CR]Trykk for å endre</string>
+  <string id="31042">Spiller</string>
+  <string id="31043">Pause</string>
+  <string id="31044">Spol framover</string>
+  <string id="31045">Spol bakover</string>
+  <string id="31046">Velkommen til XBMC - Vennligst logg inn</string>
+  <string id="31047">Siste innlogging</string>
+  <string id="31048">Artist som spilles nå[CR]Fanartbilde[CR][CR]Trykk
+  for å endre</string>
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">XBMC sangtekster</string>
+  <string id="31054">Velg sang fra lista</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Åpne spilleliste</string>
+  <string id="31056">Lagre spilleliste</string>
+  <string id="31057">Lukk spilleliste</string>
+  <string id="31058">Systemmusikkfiler</string>
+  <string id="31059">Nåværende spilleliste</string>
+  <string id="31060">Denne fila er stablet, velg delen du vil spille fra</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100">Bakgrunnsvalg</string>
+  <string id="31101">Innstillinger for hovedmeny</string>
+  <string id="31102">Bakgrunner</string>
+  <string id="31103">Vis "Pause" under bildevisning</string>
+  <string id="31104">Slå-av-meny - Bruk dvalemodusi stedet for suspend</string>
+  <string id="31105">Vis medietitler ved bakgrunnsskanning</string>
+  <string id="31106">Diverse innstilinger</string>
+  <string id="31107">Fjern skannelinjer fra bakgrunn</string>
+  <string id="31108">Fjern skannelinjer fra bakgrunn under videospilling</string>
+  <string id="31109">Bakgrunn på hovedsida</string>
+  <string id="31110"> - Egendefinerte bakgrunner</string>
+  <string id="31111">Alltid vis musikkinfo ved musikkteksting</string>
+  <string id="31112">Vis medietitler under "Brede ikoner"-visning</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">Egendefinerte skript-valg</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Sett navn på knapp</string>
+  <string id="31204">Skript-sti</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207"></string>
+  <string id="31208">Vis skript-knapp for musikktekst i OSD</string>
+  <string id="31209">Aktivér knapp for hurtigstart av skript for -</string>
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">Vis skuespillerliste</string>
+</strings>

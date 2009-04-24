@@ -74,46 +74,118 @@ VGMSTREAM * (*init_vgmstream_fcns[])(STREAMFILE *streamFile) = {
     init_vgmstream_riff,
     init_vgmstream_pos,
     init_vgmstream_nwa,
-	init_vgmstream_eacs,
+    init_vgmstream_eacs,
     init_vgmstream_xss,
     init_vgmstream_sl3,
     init_vgmstream_hgc1,
     init_vgmstream_aus,
     init_vgmstream_rws,
-	init_vgmstream_rsd,
-	init_vgmstream_fsb,
-	init_vgmstream_rwx,
-	init_vgmstream_xwb,
-	init_vgmstream_xa30,
-	init_vgmstream_musc,
-	init_vgmstream_musx,
-	init_vgmstream_leg,
-	init_vgmstream_filp,
-	init_vgmstream_ikm,
-	init_vgmstream_sfs,
-	init_vgmstream_bg00,
-	init_vgmstream_dvi,
-	init_vgmstream_kcey,
-	init_vgmstream_ps2_rstm,
+    init_vgmstream_fsb1,
+	init_vgmstream_fsb3,
+	init_vgmstream_fsb4,
+    init_vgmstream_rwx,
+    init_vgmstream_xwb,
+    init_vgmstream_xa30,
+    init_vgmstream_musc,
+    init_vgmstream_musx_v004,
+	init_vgmstream_musx_v006,
+	init_vgmstream_musx_v010,
+	init_vgmstream_musx_v201,
+    init_vgmstream_leg,
+    init_vgmstream_filp,
+    init_vgmstream_ikm,
+    init_vgmstream_sfs,
+    init_vgmstream_bg00,
+    init_vgmstream_dvi,
+    init_vgmstream_kcey,
+    init_vgmstream_ps2_rstm,
     init_vgmstream_acm,
     init_vgmstream_mus_acm,
-	init_vgmstream_ps2_kces,
-	init_vgmstream_ps2_dxh,
-	init_vgmstream_ps2_psh,
-	init_vgmstream_pcm,
-	init_vgmstream_ps2_rkv,
-	init_vgmstream_ps2_psw,
-	init_vgmstream_ps2_vas,
-	init_vgmstream_ps2_tec,
-	init_vgmstream_ps2_enth,
-	init_vgmstream_sdt,
+    init_vgmstream_ps2_kces,
+    init_vgmstream_ps2_dxh,
+    init_vgmstream_ps2_psh,
+    init_vgmstream_pcm,
+    init_vgmstream_ps2_rkv,
+    init_vgmstream_ps2_psw,
+    init_vgmstream_ps2_vas,
+    init_vgmstream_ps2_tec,
+    init_vgmstream_ps2_enth,
+    init_vgmstream_sdt,
     init_vgmstream_aix,
-	init_vgmstream_ngc_tydsp,
-	init_vgmstream_ngc_swd,
-	init_vgmstream_ngc_vjdsp,
-	init_vgmstream_xbox_wvs,
-	init_vgmstream_xbox_stma,
-	init_vgmstream_xbox_matx,
+    init_vgmstream_ngc_tydsp,
+    init_vgmstream_ngc_swd,
+    init_vgmstream_capdsp,
+    init_vgmstream_xbox_wvs,
+    init_vgmstream_dc_str,
+    init_vgmstream_dc_str_v2,
+    init_vgmstream_xbox_stma,
+    init_vgmstream_xbox_matx,
+    init_vgmstream_de2,
+	init_vgmstream_vs,
+    init_vgmstream_dc_str,
+    init_vgmstream_dc_str_v2,
+    init_vgmstream_xbox_xmu,
+    init_vgmstream_xbox_xvas,
+    init_vgmstream_ngc_bh2pcm,
+    init_vgmstream_sat_sap,
+    init_vgmstream_dc_idvi,
+    init_vgmstream_ps2_rnd,
+    init_vgmstream_wii_idsp,
+	init_vgmstream_kraw,
+	init_vgmstream_ps2_omu,
+	init_vgmstream_ps2_xa2,
+	init_vgmstream_idsp,
+	init_vgmstream_idsp2,
+	init_vgmstream_ngc_ymf,
+    init_vgmstream_sadl,
+	init_vgmstream_ps2_ccc,
+	init_vgmstream_psx_fag,
+	init_vgmstream_ps2_mihb,
+	init_vgmstream_ngc_pdt,
+    init_vgmstream_wii_mus,
+	init_vgmstream_dc_asd,
+	init_vgmstream_naomi_spsd,
+
+	init_vgmstream_rsd2vag,
+	init_vgmstream_rsd2pcmb,
+	init_vgmstream_rsd2xadp,
+	init_vgmstream_rsd3pcm,
+	init_vgmstream_rsd4pcmb,
+	init_vgmstream_rsd4pcm,
+	init_vgmstream_rsd4vag,
+	init_vgmstream_rsd6vag,
+	init_vgmstream_rsd6wadp,
+	init_vgmstream_rsd6xadp,
+    init_vgmstream_bgw,
+    init_vgmstream_spw,
+	init_vgmstream_ps2_ass,
+	init_vgmstream_waa_wac_wad_wam,
+	init_vgmstream_ps2_seg,
+	init_vgmstream_nds_strm_ffta2,
+	init_vgmstream_str_asr,
+	init_vgmstream_zwdsp,
+	init_vgmstream_gca,
+	init_vgmstream_spt_spd,
+	init_vgmstream_ish_isd,
+	init_vgmstream_gsp_gsb,
+	init_vgmstream_ydsp,
+	init_vgmstream_msvp,
+	init_vgmstream_ngc_ssm,
+	init_vgmstream_ps2_joe,
+	init_vgmstream_vgs,
+	init_vgmstream_dc_wav_dcs,
+	init_vgmstream_wii_smp,
+	init_vgmstream_emff_ps2,
+	init_vgmstream_emff_ngc,
+	init_vgmstream_ss_stream,
+	init_vgmstream_thp,
+	init_vgmstream_wii_sts,
+	init_vgmstream_ps2_p2bt,
+	init_vgmstream_ps2_gbts,
+    init_vgmstream_wii_sng,
+//	init_vgmstream_iadp,
+    init_vgmstream_aax,
+    init_vgmstream_ngc_ffcc_str,
 };
 
 #define INIT_VGMSTREAM_FCNS (sizeof(init_vgmstream_fcns)/sizeof(init_vgmstream_fcns[0]))
@@ -139,7 +211,12 @@ VGMSTREAM * init_vgmstream_internal(STREAMFILE *streamFile, int do_dfs) {
             }
 
             /* dual file stereo */
-            if (do_dfs && ((vgmstream->meta_type == meta_DSP_STD) || (vgmstream->meta_type == meta_PS2_VAGp) || (vgmstream->meta_type == meta_GENH)) && vgmstream->channels == 1) {
+            if (do_dfs && (
+                        (vgmstream->meta_type == meta_DSP_STD) ||
+                        (vgmstream->meta_type == meta_PS2_VAGp) ||
+                        (vgmstream->meta_type == meta_GENH) ||
+                        (vgmstream->meta_type == meta_KRAW)
+                        ) && vgmstream->channels == 1) {
                 try_dual_file_stereo(vgmstream, streamFile);
             }
 
@@ -223,6 +300,17 @@ void reset_vgmstream(VGMSTREAM * vgmstream) {
 
         data->current_segment = 0;
         for (i=0;i<data->segment_count*data->stream_count;i++)
+        {
+            reset_vgmstream(data->adxs[i]);
+        }
+    }
+
+    if (vgmstream->layout_type==layout_aax) {
+        aax_codec_data *data = vgmstream->codec_data;
+        int i;
+
+        data->current_segment = 0;
+        for (i=0;i<data->segment_count;i++)
         {
             reset_vgmstream(data->adxs[i]);
         }
@@ -385,6 +473,29 @@ void close_vgmstream(VGMSTREAM * vgmstream) {
         }
         vgmstream->codec_data = NULL;
     }
+    if (vgmstream->layout_type==layout_aax) {
+        aax_codec_data *data = vgmstream->codec_data;
+
+        if (data) {
+            if (data->adxs) {
+                int i;
+                for (i=0;i<data->segment_count;i++) {
+
+                    /* note that the AAX close_streamfile won't do anything but
+                     * deallocate itself, there is only one open file and that
+                     * is in vgmstream->ch[0].streamfile  */
+                    close_vgmstream(data->adxs[i]);
+                }
+                free(data->adxs);
+            }
+            if (data->sample_counts) {
+                free(data->sample_counts);
+            }
+
+            free(data);
+        }
+        vgmstream->codec_data = NULL;
+    }
 
     if (
             vgmstream->coding_type == coding_NWA0 ||
@@ -462,6 +573,14 @@ void render_vgmstream(sample * buffer, int32_t sample_count, VGMSTREAM * vgmstre
         case layout_str_snds_blocked:
         case layout_ws_aud_blocked:
 		case layout_matx_blocked:
+        case layout_de2_blocked:
+		case layout_vs_blocked:
+		case layout_emff_ps2_blocked:
+		case layout_emff_ngc_blocked:
+		case layout_gsb_blocked:
+		case layout_xvas_blocked:
+		case layout_thp_blocked:
+		case layout_filp_blocked:
             render_vgmstream_blocked(buffer,sample_count,vgmstream);
             break;
         case layout_interleave_byte:
@@ -474,12 +593,17 @@ void render_vgmstream(sample * buffer, int32_t sample_count, VGMSTREAM * vgmstre
         case layout_aix:
             render_vgmstream_aix(buffer,sample_count,vgmstream);
             break;
+        case layout_aax:
+            render_vgmstream_aax(buffer,sample_count,vgmstream);
+            break;
     }
 }
 
 int get_vgmstream_samples_per_frame(VGMSTREAM * vgmstream) {
     switch (vgmstream->coding_type) {
         case coding_CRI_ADX:
+        case coding_CRI_ADX_enc:
+        case coding_L5_555:
             return 32;
         case coding_NGC_DSP:
             return 14;
@@ -489,6 +613,7 @@ int get_vgmstream_samples_per_frame(VGMSTREAM * vgmstream) {
         case coding_PCM8:
 		case coding_PCM8_int:
         case coding_PCM8_SB_int:
+        case coding_PCM8_U_int:
 #ifdef VGM_USE_VORBIS
         case coding_ogg_vorbis:
 #endif
@@ -515,7 +640,7 @@ int get_vgmstream_samples_per_frame(VGMSTREAM * vgmstream) {
         case coding_NWA5:
             return 1;
         case coding_NDS_IMA:
-            return (vgmstream->interleave_block_size-4)*2;
+				return (vgmstream->interleave_block_size-4)*2;
         case coding_NGC_DTK:
             return 28;
         case coding_G721:
@@ -523,9 +648,12 @@ int get_vgmstream_samples_per_frame(VGMSTREAM * vgmstream) {
 		case coding_EACS_IMA:
         case coding_IMA:
             return 1;
+        case coding_INT_IMA:
 		case coding_INT_DVI_IMA:
+        case coding_AICA:
 			return 2;
         case coding_NGC_AFC:
+        case coding_FFXI:
             return 16;
         case coding_PSX:
         case coding_PSX_badflags:
@@ -542,6 +670,10 @@ int get_vgmstream_samples_per_frame(VGMSTREAM * vgmstream) {
             /* only works if output sample size is 8 bit, which is always
                is for WS ADPCM */
             return vgmstream->ws_output_size;
+        case coding_MSADPCM:
+            return (vgmstream->interleave_block_size-(7-1)*vgmstream->channels)*2/vgmstream->channels;
+        case coding_NDS_PROCYON:
+            return 30;
         default:
             return 0;
     }
@@ -559,6 +691,8 @@ int get_vgmstream_samples_per_shortframe(VGMSTREAM * vgmstream) {
 int get_vgmstream_frame_size(VGMSTREAM * vgmstream) {
     switch (vgmstream->coding_type) {
         case coding_CRI_ADX:
+        case coding_CRI_ADX_enc:
+        case coding_L5_555:
             return 18;
         case coding_NGC_DSP:
             return 8;
@@ -569,6 +703,7 @@ int get_vgmstream_frame_size(VGMSTREAM * vgmstream) {
         case coding_PCM8:
 		case coding_PCM8_int:
         case coding_PCM8_SB_int:
+        case coding_PCM8_U_int:
         case coding_SDX2:
         case coding_SDX2_int:
         case coding_NWA0:
@@ -589,10 +724,12 @@ int get_vgmstream_frame_size(VGMSTREAM * vgmstream) {
         case coding_G721:
             return 0;
         case coding_NGC_AFC:
+        case coding_FFXI:
             return 9;
         case coding_PSX:
         case coding_PSX_badflags:
         case coding_invert_PSX:
+        case coding_NDS_PROCYON:
             return 16;
 		case coding_XA:
 			return 14*vgmstream->channels;
@@ -604,8 +741,12 @@ int get_vgmstream_frame_size(VGMSTREAM * vgmstream) {
 			return 1; // the frame is variant in size
         case coding_WS:
             return vgmstream->current_block_size;
+        case coding_INT_IMA:
         case coding_INT_DVI_IMA:
+        case coding_AICA:
 			return 1; 
+        case coding_MSADPCM:
+            return vgmstream->interleave_block_size;
         default:
             return 0;
     }
@@ -641,6 +782,14 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
         case coding_CRI_ADX:
             for (chan=0;chan<vgmstream->channels;chan++) {
                 decode_adx(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
+                        vgmstream->channels,vgmstream->samples_into_block,
+                        samples_to_do);
+            }
+
+            break;
+        case coding_CRI_ADX_enc:
+            for (chan=0;chan<vgmstream->channels;chan++) {
+                decode_adx_enc(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
                         vgmstream->channels,vgmstream->samples_into_block,
                         samples_to_do);
             }
@@ -695,6 +844,13 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
                         samples_to_do);
             }
             break;
+        case coding_PCM8_U_int:
+            for (chan=0;chan<vgmstream->channels;chan++) {
+                decode_pcm8_unsigned_int(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
+                        vgmstream->channels,vgmstream->samples_into_block,
+                        samples_to_do);
+            }
+            break;
         case coding_NDS_IMA:
             for (chan=0;chan<vgmstream->channels;chan++) {
                 decode_nds_ima(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
@@ -704,7 +860,7 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
             break;
 		case coding_XBOX:
             for (chan=0;chan<vgmstream->channels;chan++) {
-                decode_xbox_ima(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
+                decode_xbox_ima(vgmstream,&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
                         vgmstream->channels,vgmstream->samples_into_block,
                         samples_to_do,chan);
             }
@@ -747,6 +903,13 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
         case coding_invert_PSX:
             for (chan=0;chan<vgmstream->channels;chan++) {
                 decode_invert_psx(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
+                        vgmstream->channels,vgmstream->samples_into_block,
+                        samples_to_do);
+            }
+            break;
+        case coding_FFXI:
+            for (chan=0;chan<vgmstream->channels;chan++) {
+                decode_ffxi_adpcm(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
                         vgmstream->channels,vgmstream->samples_into_block,
                         samples_to_do);
             }
@@ -809,6 +972,7 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
             }
             break;
 		case coding_IMA:
+        case coding_INT_IMA:
             for (chan=0;chan<vgmstream->channels;chan++) {
                 decode_ima(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
                         vgmstream->channels,vgmstream->samples_into_block,
@@ -858,6 +1022,36 @@ void decode_vgmstream(VGMSTREAM * vgmstream, int samples_written, int samples_to
                     buffer+samples_written*vgmstream->channels,
                     samples_to_do
                     );
+            break;
+        case coding_MSADPCM:
+            if (vgmstream->channels == 2) {
+                decode_msadpcm_stereo(vgmstream,
+                        buffer+samples_written*vgmstream->channels,
+                        vgmstream->samples_into_block,
+                        samples_to_do);
+            }
+            break;
+		case coding_AICA:
+            for (chan=0;chan<vgmstream->channels;chan++) {
+                decode_aica(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
+                        vgmstream->channels,vgmstream->samples_into_block,
+                        samples_to_do);
+            }
+            break;
+        case coding_NDS_PROCYON:
+            for (chan=0;chan<vgmstream->channels;chan++) {
+                decode_nds_procyon(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
+                        vgmstream->channels,vgmstream->samples_into_block,
+                        samples_to_do);
+            }
+            break;
+        case coding_L5_555:
+            for (chan=0;chan<vgmstream->channels;chan++) {
+                decode_l5_555(&vgmstream->ch[chan],buffer+samples_written*vgmstream->channels+chan,
+                        vgmstream->channels,vgmstream->samples_into_block,
+                        samples_to_do);
+            }
+
             break;
     }
 }
@@ -1037,6 +1231,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case coding_PCM8:
             snprintf(temp,TEMPSIZE,"8-bit PCM");
             break;
+        case coding_PCM8_U_int:
+            snprintf(temp,TEMPSIZE,"8-bit unsigned PCM with 1 byte interleave");
+            break;
         case coding_PCM8_int:
             snprintf(temp,TEMPSIZE,"8-bit PCM with 1 byte interleave");
             break;
@@ -1048,6 +1245,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
             break;
         case coding_CRI_ADX:
             snprintf(temp,TEMPSIZE,"CRI ADX 4-bit ADPCM");
+            break;
+        case coding_CRI_ADX_enc:
+            snprintf(temp,TEMPSIZE,"encrypted CRI ADX 4-bit ADPCM");
             break;
         case coding_NDS_IMA:
             snprintf(temp,TEMPSIZE,"NDS-style 4-bit IMA ADPCM");
@@ -1068,7 +1268,10 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
             snprintf(temp,TEMPSIZE,"Playstation 4-bit ADPCM with bad flags");
             break;
         case coding_invert_PSX:
-            snprintf(temp,TEMPSIZE,"Inverted (?) Playstation 4-bit ADPCM");
+            snprintf(temp,TEMPSIZE,"BMDX \"encrypted\" Playstation 4-bit ADPCM");
+            break;
+        case coding_FFXI:
+            snprintf(temp,TEMPSIZE,"FFXI Playstation-ish 4-bit ADPCM");
             break;
         case coding_XA:
             snprintf(temp,TEMPSIZE,"CD-ROM XA 4-bit ADPCM");
@@ -1101,6 +1304,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
             break;
 		case coding_EACS_IMA:
             snprintf(temp,TEMPSIZE,"EACS 4-bit IMA ADPCM");
+            break;
+        case coding_INT_IMA:
+            snprintf(temp,TEMPSIZE,"Interleaved 4-bit IMA ADPCM");
             break;
         case coding_IMA:
             snprintf(temp,TEMPSIZE,"4-bit IMA ADPCM");
@@ -1161,6 +1367,18 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case coding_NWA5:
             snprintf(temp,TEMPSIZE,"NWA DPCM Level 5");
             break;
+        case coding_MSADPCM:
+            snprintf(temp,TEMPSIZE,"Microsoft 4-bit ADPCM");
+            break;
+        case coding_AICA:
+            snprintf(temp,TEMPSIZE,"Yamaha AICA 4-bit ADPCM");
+            break;
+        case coding_NDS_PROCYON:
+            snprintf(temp,TEMPSIZE,"Procyon Studio Digital Sound Elements NDS 4-bit APDCM");
+            break;
+        case coding_L5_555:
+            snprintf(temp,TEMPSIZE,"Level-5 0x555 ADPCM");
+            break;
         default:
             snprintf(temp,TEMPSIZE,"CANNOT DECODE");
     }
@@ -1206,6 +1424,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case layout_wsi_blocked:
             snprintf(temp,TEMPSIZE,".wsi blocked");
             break;
+        case layout_xvas_blocked:
+            snprintf(temp,TEMPSIZE,".xvas blocked");
+            break;
 #ifdef VGM_USE_VORBIS
         case layout_ogg_vorbis:
             snprintf(temp,TEMPSIZE,"Ogg");
@@ -1219,6 +1440,27 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
             break;
         case layout_matx_blocked:
             snprintf(temp,TEMPSIZE,"Matrix .matx blocked");
+            break;
+        case layout_de2_blocked:
+            snprintf(temp,TEMPSIZE,"de2 blocked");
+            break;
+		case layout_vs_blocked:
+            snprintf(temp,TEMPSIZE,"vs blocked");
+            break;
+        case layout_emff_ps2_blocked:
+            snprintf(temp,TEMPSIZE,"EMFF (PS2) blocked");
+            break;
+        case layout_emff_ngc_blocked:
+            snprintf(temp,TEMPSIZE,"EMFF (NGC/WII) blocked");
+            break;
+        case layout_gsb_blocked:
+            snprintf(temp,TEMPSIZE,"GSB blocked");
+            break;
+        case layout_thp_blocked:
+            snprintf(temp,TEMPSIZE,"THP Movie Audio blocked");
+            break;
+        case layout_filp_blocked:
+            snprintf(temp,TEMPSIZE,"FILp blocked");
             break;
 #ifdef VGM_USE_MPEG
         case layout_fake_mpeg:
@@ -1236,6 +1478,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
             break;
         case layout_aix:
             snprintf(temp,TEMPSIZE,"AIX interleave, internally 18-byte interleaved");
+            break;
+        case layout_aax:
+            snprintf(temp,TEMPSIZE,"AAX blocked, 18-byte interleaved");
             break;
         default:
             snprintf(temp,TEMPSIZE,"INCONCEIVABLE");
@@ -1279,6 +1524,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case meta_AIX:
             snprintf(temp,TEMPSIZE,"CRI AIX header");
             break;
+        case meta_AAX:
+            snprintf(temp,TEMPSIZE,"CRI AAX header");
+            break;
         case meta_DSP_AGSC:
             snprintf(temp,TEMPSIZE,"Retro Studios AGSC header");
             break;
@@ -1318,6 +1566,12 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case meta_RWSD:
             snprintf(temp,TEMPSIZE,"Nintendo RWSD header (single stream)");
             break;
+        case meta_RWAR:
+            snprintf(temp,TEMPSIZE,"Nintendo RWAR header (single RWAV stream)");
+            break;
+        case meta_RWAV:
+            snprintf(temp,TEMPSIZE,"Nintendo RWAV header");
+            break;
         case meta_PSX_XA:
             snprintf(temp,TEMPSIZE,"RIFF/CDXA header");
             break;
@@ -1326,6 +1580,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
             break;
 		case meta_PS2_RAW:
             snprintf(temp,TEMPSIZE,"assumed RAW Interleaved PCM by .int extension");
+            break;
+		case meta_PS2_OMU:
+            snprintf(temp,TEMPSIZE,"Alter Echo OMU Header");
             break;
         case meta_DSP_STM:
             snprintf(temp,TEMPSIZE,"Nintendo STM header");
@@ -1357,8 +1614,8 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case meta_DSP_GCM:
             snprintf(temp,TEMPSIZE,"Double DSP header stereo by .gcm extension");
             break;
-		case meta_DSP_IDSP:
-            snprintf(temp,TEMPSIZE,"GCM file with IDSP Header");
+		case meta_DSP_WII_IDSP:
+            snprintf(temp,TEMPSIZE,"Wii IDSP Double DSP header");
             break;
         case meta_RSTM_SPM:
             snprintf(temp,TEMPSIZE,"Nintendo RSTM header and .brstmspm extension");
@@ -1411,6 +1668,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
 		case meta_EA_ADPCM:
             snprintf(temp,TEMPSIZE,"Electronic Arts XA R1");
             break;
+		case meta_EA_IMA:
+            snprintf(temp,TEMPSIZE,"Electronic Arts container with IMA blocks");
+            break;
 		case meta_EAXA_PSX:
             snprintf(temp,TEMPSIZE,"Electronic Arts With PSX ADPCM");
             break;
@@ -1445,6 +1705,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
 #endif
         case meta_DSP_SADB:
             snprintf(temp,TEMPSIZE,"sadb header");
+            break;
+        case meta_SADL:
+            snprintf(temp,TEMPSIZE,"sadl header");
             break;
         case meta_PS2_BMDX:
             snprintf(temp,TEMPSIZE,"Beatmania .bmdx header");
@@ -1514,14 +1777,17 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case meta_EACS_SAT:
             snprintf(temp,TEMPSIZE,"EACS Header (SATURN)");
             break;
-		case meta_RSD:
-            snprintf(temp,TEMPSIZE,"RSD4 or RSD6 Header");
-            break;
 		case meta_SL3:
             snprintf(temp,TEMPSIZE,"SL3 Header");
             break;
+		case meta_FSB1:
+            snprintf(temp,TEMPSIZE,"FMOD Sample Bank (FSB1) Header");
+            break;
 		case meta_FSB3:
             snprintf(temp,TEMPSIZE,"FMOD Sample Bank (FSB3) Header");
+            break;
+		case meta_FSB4:
+            snprintf(temp,TEMPSIZE,"FMOD Sample Bank (FSB4) Header");
             break;
 		case meta_RWX:
             snprintf(temp,TEMPSIZE,"RWX Header");
@@ -1535,14 +1801,23 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
 		case meta_MUSC:
             snprintf(temp,TEMPSIZE,"MUSC Header");
             break;
-		case meta_MUSX:
-            snprintf(temp,TEMPSIZE,"MUSX Header");
+		case meta_MUSX_V004:
+            snprintf(temp,TEMPSIZE,"MUSX / Version 004 Header");
+            break;
+		case meta_MUSX_V006:
+            snprintf(temp,TEMPSIZE,"MUSX / Version 006 Header");
+            break;
+		case meta_MUSX_V010:
+            snprintf(temp,TEMPSIZE,"MUSX / Version 010 Header");
+            break;
+		case meta_MUSX_V201:
+            snprintf(temp,TEMPSIZE,"MUSX / Version 201 Header");
             break;
 		case meta_LEG:
             snprintf(temp,TEMPSIZE,"Legaia 2 - Duel Saga LEG Header");
             break;
 		case meta_FILP:
-            snprintf(temp,TEMPSIZE,"Bio Hazard - Gun Survivor FILp/GEMp Header");
+            snprintf(temp,TEMPSIZE,"Bio Hazard - Gun Survivor FILp Header");
             break;
 		case meta_IKM:
             snprintf(temp,TEMPSIZE,"Zwei!! IKM Header");
@@ -1580,6 +1855,9 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
         case meta_RIFF_WAVE_labl_Marker:
             snprintf(temp,TEMPSIZE,"RIFF WAVE header with loop markers");
             break;
+        case meta_RIFF_WAVE_smpl:
+            snprintf(temp,TEMPSIZE,"RIFF WAVE header with sample looping info");
+            break;
 		case meta_PCM:
             snprintf(temp,TEMPSIZE,"PCM file with custom header");
             break;
@@ -1604,6 +1882,172 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
 		case meta_XBOX_MATX:
 			snprintf(temp,TEMPSIZE,"assumed Matrix file by .matx extension");
 			break;
+        case meta_DE2:
+            snprintf(temp,TEMPSIZE,"gurumin .de2 with embedded funky RIFF");
+            break;
+		case meta_VS:
+            snprintf(temp,TEMPSIZE,"Men in Black VS Header");
+            break;
+        case meta_DC_STR:
+            snprintf(temp,TEMPSIZE,"Sega Stream Asset Builder header");
+            break;
+        case meta_DC_STR_V2:
+            snprintf(temp,TEMPSIZE,"variant of Sega Stream Asset Builder header");
+            break;
+        case meta_XBOX_XMU:
+            snprintf(temp,TEMPSIZE,"XMU header");
+            break;
+        case meta_XBOX_XVAS:
+            snprintf(temp,TEMPSIZE,"assumed TMNT file by .xvas extension");
+            break;
+		case meta_PS2_XA2:
+            snprintf(temp,TEMPSIZE,"assumed XA2 file by .xa2 extension");
+            break;
+		case meta_DC_IDVI:
+            snprintf(temp,TEMPSIZE,"IDVI Header");
+            break;
+		case meta_NGC_YMF:
+            snprintf(temp,TEMPSIZE,"YMF DSP Header");
+            break;
+		case meta_PS2_CCC:
+            snprintf(temp,TEMPSIZE,"CCC Header");
+            break;
+		case meta_PSX_FAG:
+            snprintf(temp,TEMPSIZE,"FAG Header");
+            break;
+		case meta_PS2_MIHB:
+            snprintf(temp,TEMPSIZE,"Merged MIH+MIB");
+            break;
+        case meta_DSP_WII_MUS:
+            snprintf(temp,TEMPSIZE,"mus header");
+            break;
+        case meta_WII_SNG:
+            snprintf(temp,TEMPSIZE,"SNG DSP Header");
+            break;
+		case meta_RSD2VAG:
+            snprintf(temp,TEMPSIZE,"RSD2/VAG Header");
+            break;
+		case meta_RSD2PCMB:
+            snprintf(temp,TEMPSIZE,"RSD2/PCMB Header");
+            break;
+		case meta_RSD2XADP:
+            snprintf(temp,TEMPSIZE,"RSD2/XADP Header");
+            break;
+		case meta_RSD3PCM:
+            snprintf(temp,TEMPSIZE,"RSD3/PCM Header");
+            break;
+		case meta_RSD4PCMB:
+            snprintf(temp,TEMPSIZE,"RSD4/PCMB Header");
+            break;
+		case meta_RSD4PCM:
+            snprintf(temp,TEMPSIZE,"RSD4/PCM Header");
+            break;
+		case meta_RSD4VAG:
+            snprintf(temp,TEMPSIZE,"RSD4/VAG Header");
+            break;
+		case meta_RSD6XADP:
+            snprintf(temp,TEMPSIZE,"RSD6/XADP Header");
+            break;
+		case meta_RSD6VAG:
+            snprintf(temp,TEMPSIZE,"RSD6/VAG Header");
+            break;
+        case meta_RSD6WADP:
+            snprintf(temp,TEMPSIZE,"RSD6/WADP Header");
+            break;
+		case meta_DC_ASD:
+            snprintf(temp,TEMPSIZE,"ASD Header");
+            break;
+		case meta_NAOMI_SPSD:
+            snprintf(temp,TEMPSIZE,"SPSD Header");
+            break;
+        case meta_FFXI_BGW:
+            snprintf(temp,TEMPSIZE,"BGW BGMStream header");
+            break;
+        case meta_FFXI_SPW:
+            snprintf(temp,TEMPSIZE,"SPW SeWave header");
+            break;
+        case meta_PS2_ASS:
+            snprintf(temp,TEMPSIZE,"ASS Header");
+            break;
+		case meta_IDSP:
+            snprintf(temp,TEMPSIZE,"IDSP Header");
+            break;
+		case meta_IDSP2:
+            snprintf(temp,TEMPSIZE,"IDSP Header");
+            break;
+		case meta_WAA_WAC_WAD_WAM:
+            snprintf(temp,TEMPSIZE,"WAA/WAC/WAD/WAM RIFF Header");
+            break;
+		case meta_PS2_SEG:
+            snprintf(temp,TEMPSIZE,"SEG (PS2) Header");
+            break;
+		case meta_NDS_STRM_FFTA2:
+            snprintf(temp,TEMPSIZE,"Final Fantasy Tactics A2 RIFF Header");
+            break;
+		case meta_STR_ASR:
+            snprintf(temp,TEMPSIZE,"Donkey Kong Jet Race KNON/WII Header");
+            break;
+		case meta_ZWDSP:
+            snprintf(temp,TEMPSIZE,"Zack and Wiki custom DSP Header");
+            break;
+		case meta_GCA:
+            snprintf(temp,TEMPSIZE,"GCA DSP Header");
+            break;
+		case meta_SPT_SPD:
+            snprintf(temp,TEMPSIZE,"SPT+SPD DSP Header");
+            break;
+		case meta_ISH_ISD:
+            snprintf(temp,TEMPSIZE,"ISH+ISD DSP Header");
+            break;
+		case meta_YDSP:
+            snprintf(temp,TEMPSIZE,"YDSP Header");
+            break;
+		case meta_MSVP:
+            snprintf(temp,TEMPSIZE,"MSVP Header");
+            break;
+		case meta_NGC_SSM:
+            snprintf(temp,TEMPSIZE,"SSM DSP Header");
+            break;
+		case meta_PS2_JOE:
+            snprintf(temp,TEMPSIZE,"Disney/Pixar JOE Header");
+            break;
+		case meta_VGS:
+            snprintf(temp,TEMPSIZE,"Guitar Hero Encore Rocks the 80's Header");
+            break;
+		case meta_DC_WAV_DCS:
+            snprintf(temp,TEMPSIZE,"Evil Twin WAV+DCS Header");
+            break;
+		case meta_WII_SMP:
+            snprintf(temp,TEMPSIZE,"SMP DSP Header");
+            break;
+		case meta_EMFF_PS2:
+		case meta_EMFF_NGC:
+            snprintf(temp,TEMPSIZE,"Eidos Music File Format Header");
+            break;
+		case meta_THP:
+            snprintf(temp,TEMPSIZE,"THP Movie File Format Header");
+            break;
+		case meta_STS_WII:
+            snprintf(temp,TEMPSIZE,"Shikigami no Shiro (WII) Header");
+            break;
+		case meta_PS2_P2BT:
+            snprintf(temp,TEMPSIZE,"Pop'n'Music 7 Header");
+            break;
+		case meta_PS2_GBTS:
+            snprintf(temp,TEMPSIZE,"Pop'n'Music 9 Header");
+            break;
+		case meta_NGC_IADP:
+            snprintf(temp,TEMPSIZE,"Dr MUTO Header");
+            break;
+        case meta_RSTM_shrunken:
+            snprintf(temp,TEMPSIZE,"Nintendo RSTM header, corrupted by Atlus");
+            break;
+        case meta_RIFF_WAVE_MWV:
+            snprintf(temp,TEMPSIZE,"RIFF WAVE header with .mwv flavoring");
+            break;
+        case meta_FFCC_STR:
+            snprintf(temp,TEMPSIZE,"Final Fantasy: Crystal Chronicles STR header");
+            break;
         default:
             snprintf(temp,TEMPSIZE,"THEY SHOULD HAVE SENT A POET");
     }
@@ -1611,13 +2055,14 @@ void describe_vgmstream(VGMSTREAM * vgmstream, char * desc, int length) {
 }
 
 /* */
-#define DFS_PAIR_COUNT 4
-const char * const dfs_pairs[DFS_PAIR_COUNT][2] = {
+const char * const dfs_pairs[][2] = {
     {"L","R"},
     {"l","r"},
     {"_0","_1"},
     {"left","right"},
+    {"Left","Right"},
 };
+#define DFS_PAIR_COUNT (sizeof(dfs_pairs)/sizeof(dfs_pairs[0]))
 
 void try_dual_file_stereo(VGMSTREAM * opened_stream, STREAMFILE *streamFile) {
     char filename[260];

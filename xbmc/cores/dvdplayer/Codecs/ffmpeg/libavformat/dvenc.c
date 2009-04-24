@@ -6,7 +6,7 @@
  * of DV technical info.
  *
  * Raw DV format
- * Copyright (c) 2002 Fabrice Bellard.
+ * Copyright (c) 2002 Fabrice Bellard
  *
  * 50 Mbps (DVCPRO50) support
  * Copyright (c) 2006 Daniel Maas <dmaas@maasdigital.com>
@@ -231,7 +231,7 @@ static void dv_inject_metadata(DVMuxContext *c, uint8_t* frame)
  */
 
 int dv_assemble_frame(DVMuxContext *c, AVStream* st,
-                      const uint8_t* data, int data_size, uint8_t** frame)
+                      uint8_t* data, int data_size, uint8_t** frame)
 {
     int i, reqasize;
 
@@ -359,7 +359,7 @@ void dv_delete_mux(DVMuxContext *c)
         av_fifo_free(&c->audio_data[i]);
 }
 
-#ifdef CONFIG_DV_MUXER
+#if CONFIG_DV_MUXER
 static int dv_write_header(AVFormatContext *s)
 {
     if (!dv_init_mux(s)) {

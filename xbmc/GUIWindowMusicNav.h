@@ -73,6 +73,7 @@ protected:
   void OnSearchUpdate();
   void AddSearchFolder();
   CStdString m_search;      ///< current search string
+  CStdString m_startDirectory;
   CStopWatch m_searchTimer; ///< Timer to delay a search while more characters are entered
   bool m_searchWithEdit;    ///< Whether the skin supports the new edit control searching
 };

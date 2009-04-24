@@ -35,6 +35,7 @@ class CDAAPDirectory :
 public:
   CDAAPDirectory(void);
   virtual ~CDAAPDirectory(void);
+  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
   //virtual void CloseDAAP(void);
   int GetCurrLevel(CStdString strPath);

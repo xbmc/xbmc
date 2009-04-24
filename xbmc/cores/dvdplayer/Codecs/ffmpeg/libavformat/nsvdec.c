@@ -1,6 +1,6 @@
 /*
  * NSV demuxer
- * Copyright (c) 2004 The FFmpeg Project.
+ * Copyright (c) 2004 The FFmpeg Project
  *
  * This file is part of FFmpeg.
  *
@@ -337,15 +337,7 @@ static int nsv_parse_NSVf_header(AVFormatContext *s, AVFormatParameters *ap)
                 break;
             *p++ = '\0';
             PRINT(("NSV NSVf INFO: %s='%s'\n", token, value));
-            if (!strcmp(token, "ASPECT")) {
-                /* don't care */
-            } else if (!strcmp(token, "CREATOR") || !strcmp(token, "Author")) {
-                strncpy(s->author, value, 512-1);
-            } else if (!strcmp(token, "Copyright")) {
-                strncpy(s->copyright, value, 512-1);
-            } else if (!strcmp(token, "TITLE") || !strcmp(token, "Title")) {
-                strncpy(s->title, value, 512-1);
-            }
+            av_metadata_set(&s->metadata, token, value);
         }
         av_free(strings);
     }
@@ -753,7 +745,7 @@ static int nsv_probe(AVProbeData *p)
 
 AVInputFormat nsv_demuxer = {
     "nsv",
-    NULL_IF_CONFIG_SMALL("NullSoft Video format"),
+    NULL_IF_CONFIG_SMALL("Nullsoft Streaming Video"),
     sizeof(NSVContext),
     nsv_probe,
     nsv_read_header,

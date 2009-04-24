@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "AIFFcodec.h"
 
@@ -87,7 +87,7 @@ AIFFCodec::~AIFFCodec()
 
 bool AIFFCodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  if (!m_file.Open(strFile, true, READ_CACHED))
+  if (!m_file.Open(strFile, READ_CACHED))
     return false;
 
   // read header
@@ -213,18 +213,18 @@ int AIFFCodec::ConvertSampleRate(unsigned char *rate)
   if ( memcmp(rate, "\x40\x0E\xAC\x44", 4) == 0 )
     return 44100;
   else if ( memcmp(rate, "\x40\x0E\xBB\x80", 4) == 0 )
-    return 48000;    
+    return 48000;
   else if ( memcmp(rate, "\x40\x0D\xFA", 3) == 0 )
-    return 32000; 
+    return 32000;
   else if ( memcmp(rate, "\x40\x0D\xBB\x80", 4) == 0 )
     return 24000;
   else if ( memcmp(rate, "\x40\x0D\xAC\x44", 4) == 0 )
     return 22050;
   else if ( memcmp(rate, "\x40\x0C\xFA", 3) == 0 )
-    return 16000; 
+    return 16000;
   else if ( memcmp(rate, "\x40\x0C\xAC\x44", 4) == 0 )
-    return 11025; 
+    return 11025;
   else if ( memcmp(rate, "\x40\x0B\xFA", 3) == 0 )
-    return 8000; 
+    return 8000;
   return 0;
 }

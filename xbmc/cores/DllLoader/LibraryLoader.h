@@ -46,8 +46,8 @@ public:
   virtual bool HasSymbols() = 0;
     
   char* GetName(); // eg "mplayer.dll"
-  char* GetFileName(); // "Q:\system\mplayer\players\mplayer.dll"
-  char* GetPath(); // "Q:\system\mplayer\players\"
+  char* GetFileName(); // "special://xbmc/system/mplayer/players/mplayer.dll"
+  char* GetPath(); // "special://xbmc/system/mplayer/players/"
   
   int IncrRef();
   int DecrRef();

@@ -87,12 +87,16 @@ public:
     if (Label.size() > 0)
       share->strName = Label;
     else
-      share->strName = CUtil::GetFileName(MountPoint);
+    {
+      share->strName = MountPoint;
+      CUtil::RemoveSlashAtEnd(share->strName);
+      share->strName = CUtil::GetFileName(share->strName);
+    }
 
     share->m_ignore = true;
     if (HotPlugged)
       share->m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
-    else if(strcmp(FileSystem.c_str(), "iso9660") == 0)
+    else if(strcmp(FileSystem.c_str(), "iso9660") == 0 || strcmp(FileSystem.c_str(), "udf") == 0)
       share->m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
     else
       share->m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
@@ -110,18 +114,18 @@ public:
 
   void Initialize();
   CHalManager();
-  ~CHalManager();
+  void Stop();
   std::vector<CStorageDevice> GetVolumeDevices();
-
-  static bool PowerManagement(PowerState State);
-
+  bool Eject(CStdString path);
 protected:
   DBusConnection *m_DBusSystemConnection;
   LibHalContext  *m_Context;
   static DBusError m_Error;
   static bool NewMessage;
 
-  void ParseDevice(const char *udi);
+
+  void UpdateDevice(const char *udi);
+  void AddDevice(const char *udi);
   bool RemoveDevice(const char *udi);
 
 private:
@@ -131,12 +135,14 @@ private:
   void GenerateGDL();
 
   bool UnMount(CStorageDevice volume);
-  bool Mount(CStorageDevice volume, CStdString mountpath);
+  bool Mount(CStorageDevice *volume, CStdString mountpath);
+  void HandleNewVolume(CStorageDevice *dev);
 
   static bool DeviceFromVolumeUdi(const char *udi, CStorageDevice *device);
-  static std::vector<CStorageDevice> DeviceFromDriveUdi(const char *udi);
   static CCriticalSection m_lock;
 
+  bool m_bMultipleJoysticksSupport;
+  
   //Callbacks HAL
   static void DeviceRemoved(LibHalContext *ctx, const char *udi);
   static void DeviceNewCapability(LibHalContext *ctx, const char *udi, const char *capability);
@@ -147,6 +153,9 @@ private:
 
   //Remembered Devices
   std::vector<CStorageDevice> m_Volumes;
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+  std::vector<CHalDevice> m_Joysticks;
+#endif
 };
 
 extern CHalManager g_HalManager;

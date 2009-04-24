@@ -151,9 +151,9 @@ int CPlayListPlayer::GetNextSong()
 }
 
 /// \brief Play next entry in current playlist
-void CPlayListPlayer::PlayNext(bool bAutoPlay)
+void CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
 {
-  int iSong = GetNextSong();
+  int iSong = GetNextSong(offset);
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 
   // stop playing

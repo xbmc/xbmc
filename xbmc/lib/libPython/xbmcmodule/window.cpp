@@ -216,9 +216,7 @@ namespace PYXBMC
       break;
     case CGUIControl::GUICONTROL_TEXTBOX:
       pControl = (Control*)ControlTextBox_Type.tp_alloc(&ControlTextBox_Type, 0);
-      ((ControlTextBox*)pControl)->pControlSpin = (ControlSpin*)ControlSpin_New();
-      if (((ControlTextBox*)pControl)->pControlSpin) 
-         new(&((ControlTextBox*)pControl)->strFont) string();        
+      new(&((ControlTextBox*)pControl)->strFont) string();        
       break;
     case CGUIControl::GUICONTROL_IMAGE:
       pControl = (Control*)ControlImage_Type.tp_alloc(&ControlImage_Type, 0);
@@ -627,7 +625,7 @@ namespace PYXBMC
     // add control to list and allocate recources for the control
     self->vecControls.push_back(pControl);
     pControl->pGUIControl->AllocResources();
-    pWindow->Add(pControl->pGUIControl);
+    pWindow->AddControl(pControl->pGUIControl);
 
     PyGUIUnlock();
 
@@ -813,7 +811,7 @@ namespace PYXBMC
 
     PyGUILock();
 
-    pWindow->Remove(pControl->pGUIControl);
+    pWindow->RemoveControl(pControl->pGUIControl);
     pControl->pGUIControl->FreeResources();
     delete pControl->pGUIControl;
 

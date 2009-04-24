@@ -42,7 +42,6 @@ CGUIAudioManager::CGUIAudioManager()
 {
   m_actionSound=NULL;
   m_bEnabled=true;
-  g_audioContext.SetSoundDeviceCallback(this);    
 }
 
 CGUIAudioManager::~CGUIAudioManager()
@@ -70,46 +69,46 @@ void CGUIAudioManager::Initialize(int iDevice)
 
 void CGUIAudioManager::DeInitialize(int iDevice)
 {
-  CSingleLock lock(m_cs);
-
   if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
 
-  if (m_actionSound)
-  {
-    //  Wait for finish when an action sound is playing
+  CSingleLock lock(m_cs);
+  if (m_actionSound) //  Wait for finish when an action sound is playing
     while(m_actionSound->IsPlaying()) {}
 
+  Stop();
+#ifdef HAS_SDL_AUDIO
+  Mix_CloseAudio();
+#endif
+
+}
+void CGUIAudioManager::Stop()
+{
+  CSingleLock lock(m_cs);
+  if (m_actionSound)
+  {
     delete m_actionSound;
     m_actionSound=NULL;
   }
 
-  windowSoundsMap::iterator it=m_windowSounds.begin();
-  while (it!=m_windowSounds.end())
+  for (windowSoundsMap::iterator it=m_windowSounds.begin();it!=m_windowSounds.end();it++)
   {
     CGUISound* sound=it->second;
     if (sound->IsPlaying())
       sound->Stop();
 
     delete sound;
-    m_windowSounds.erase(it++);
   }
   m_windowSounds.clear();
 
-  pythonSoundsMap::iterator it1=m_pythonSounds.begin();
-  while (it1!=m_pythonSounds.end())
+  for (pythonSoundsMap::iterator it1=m_pythonSounds.begin();it1!=m_pythonSounds.end();it1++)
   {
     CGUISound* sound=it1->second;
     if (sound->IsPlaying())
       sound->Stop();
 
     delete sound;
-    m_pythonSounds.erase(it1++);
   }
   m_pythonSounds.clear();
-
-#ifdef HAS_SDL_AUDIO
-  Mix_CloseAudio();
-#endif
 }
 
 // \brief Clear any unused audio buffers
@@ -161,18 +160,17 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
   CSingleLock lock(m_cs);
 
   actionSoundMap::iterator it=m_actionSoundMap.find(action.wID);
-  if (it==m_actionSoundMap.end()) 
+  if (it==m_actionSoundMap.end())
     return;
-  
+
   if (m_actionSound)
   {
     delete m_actionSound;
     m_actionSound=NULL;
   }
 
-  CStdString strFile=_P(m_strMediaDir+"\\"+it->second);
   m_actionSound=new CGUISound();
-  if (!m_actionSound->Load(strFile))
+  if (!m_actionSound->Load(CUtil::AddFileToFolder(m_strMediaDir, it->second)))
   {
     delete m_actionSound;
     m_actionSound=NULL;
@@ -223,7 +221,7 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
   }
 
   CGUISound* sound=new CGUISound();
-  if (!sound->Load(_P(m_strMediaDir+"\\"+strFile)))
+  if (!sound->Load(CUtil::AddFileToFolder(m_strMediaDir, strFile)))
   {
     delete sound;
     return;
@@ -256,7 +254,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   }
 
   CGUISound* sound=new CGUISound();
-  if (!sound->Load(_P(strFileName)))
+  if (!sound->Load(strFileName))
   {
     delete sound;
     return;
@@ -271,7 +269,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
 // subfolder of the folder "sounds" in the root directory of
 // xbmc
 bool CGUIAudioManager::Load()
-{  
+{
   m_actionSoundMap.clear();
   m_windowSoundMap.clear();
 
@@ -280,20 +278,23 @@ bool CGUIAudioManager::Load()
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="SKINDEFAULT")
   {
-    m_strMediaDir=_P("U:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
+    m_strMediaDir="special://home/skin/" + g_guiSettings.GetString("lookandfeel.skin") + "/sounds";
     if ( ! CDirectory::Exists( m_strMediaDir ) )
-      m_strMediaDir=_P("Q:\\skin\\"+g_guiSettings.GetString("lookandfeel.skin")+"\\sounds");
+    {
+      m_strMediaDir = CUtil::AddFileToFolder("special://xbmc/skin", g_guiSettings.GetString("lookandfeel.skin"));
+      m_strMediaDir = CUtil::AddFileToFolder(m_strMediaDir, "sounds");
+    }
   }
   else
-    m_strMediaDir=_P("Q:\\sounds\\"+g_guiSettings.GetString("lookandfeel.soundskin"));
-    
-  CStdString strSoundsXml=_P(m_strMediaDir+"\\sounds.xml");
+    m_strMediaDir = CUtil::AddFileToFolder("special://xbmc/sounds", g_guiSettings.GetString("lookandfeel.soundskin"));
+
+  CStdString strSoundsXml = CUtil::AddFileToFolder(m_strMediaDir, "sounds.xml");
 
   //  Load our xml file
   TiXmlDocument xmlDoc;
 
   CLog::Log(LOGINFO, "Loading %s", strSoundsXml.c_str());
-  
+
   //  Load the config file
   if (!xmlDoc.LoadFile(strSoundsXml))
   {

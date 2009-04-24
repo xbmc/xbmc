@@ -35,10 +35,8 @@ public:
 
   int GetSelectedFile() const;
   void SetNumberOfFiles(int iFiles);
-  virtual void Render();
 protected:
   int m_iSelectedFile;
   int m_iNumberOfFiles;
-  int m_iFrames;
   CFileItemList* m_stackItems;
 };

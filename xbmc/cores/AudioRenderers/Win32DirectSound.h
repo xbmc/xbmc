@@ -29,14 +29,13 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "IDirectSoundRenderer.h"
-#include "IAudioCallback.h"
-#include "cores/ssrc.h"
+#include "IAudioRenderer.h"
+#include "utils/CriticalSection.h"
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
 
-class CWin32DirectSound : public IDirectSoundRenderer
+class CWin32DirectSound : public IAudioRenderer
 {
 public:
   virtual void UnRegisterAudioCallback();
@@ -61,29 +60,41 @@ public:
   virtual HRESULT SetCurrentVolume(LONG nVolume);
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
-  virtual void DoWork();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
 private:
-  LPDIRECTSOUNDBUFFER  m_pBufferPri;
+  void UpdateCacheStatus();
+  void CheckPlayStatus();
+  void MapDataIntoBuffer(unsigned char* pData, DWORD len, unsigned char* pOut);
+  unsigned char* GetChannelMap(unsigned int channels, const char* strAudioCodec);
+
   LPDIRECTSOUNDBUFFER  m_pBuffer;
   LPDIRECTSOUND8 m_pDSound;
 
   IAudioCallback* m_pCallback;
 
   LONG m_nCurrentVolume;
-  DWORD m_dwPacketSize;
-  DWORD m_dwNumPackets;
+  DWORD m_dwChunkSize;
+  DWORD m_dwBufferLen;
   bool m_bPause;
   bool m_bIsAllocated;
 
+  bool m_Passthrough;
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;
+  unsigned int m_AvgBytesPerSec;
 
-  unsigned int m_nextPacket;
   char * dserr2str(int err);
 
+  unsigned int m_BufferOffset;
+  unsigned int m_CacheLen;
+
+  unsigned int m_LastCacheCheck;
+  size_t m_PreCacheSize;
+
+  unsigned char* m_pChannelMap;
+  CCriticalSection m_critSection;
 };
 
 #endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)

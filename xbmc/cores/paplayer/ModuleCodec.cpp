@@ -30,7 +30,7 @@ bool ModuleCodec::IsSupportedFormat(const CStdString& strExt)
 {
   if (strExt == "mod" || strExt == "it" || strExt == "s3m" || strExt == "duh" || strExt == "xm")
     return true;
-  
+
   return false;
 }
 
@@ -58,12 +58,12 @@ bool ModuleCodec::Init(const CStdString &strFile, unsigned int filecache)
   m_CodecName.erase(0,1);
   m_CodecName.ToUpper();
 
-  CStdString strLoadFile = "Z:\\cachedmod";
+  CStdString strLoadFile = "special://temp/cachedmod";
   if (!CUtil::IsHD(strFile))
-    CFile::Cache(strFile,"Z:\\cachedmod");
+    CFile::Cache(strFile,"special://temp/cachedmod");
   else
     strLoadFile = strFile;
-  
+
   m_module = m_dll.LoadModule(strLoadFile.c_str());
   if (!m_module)
   {
@@ -93,7 +93,7 @@ __int64 ModuleCodec::Seek(__int64 iSeekTime)
 {
   if (m_renderID)
     m_dll.StopPlayback(m_renderID);
-  
+
   m_renderID = m_dll.StartPlayback(m_module,long(iSeekTime/1000*65536));
   if (m_renderID)
     return iSeekTime;
@@ -105,7 +105,7 @@ int ModuleCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   if (!m_module)
     return READ_ERROR;
-  
+
   if (m_dll.GetModulePosition(m_renderID) >= m_dll.GetModuleLength(m_module))
     return READ_EOF;
 
@@ -114,7 +114,7 @@ int ModuleCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 
   if ((*actualsize=m_dll.FillBuffer(m_module,m_renderID,(char*)pBuffer,size,1.f)*4) == size)
     return READ_SUCCESS;
-    
+
   return READ_ERROR;
 }
 

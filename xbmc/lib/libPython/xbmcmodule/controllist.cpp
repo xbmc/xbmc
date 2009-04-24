@@ -21,9 +21,7 @@
  
 #include "stdafx.h"
 #include "lib/libPython/Python/Include/Python.h"
-#ifdef _LINUX
 #include "../XBPythonDll.h"
-#endif
 #include "GUIListContainer.h"
 #include "GUIFontManager.h"
 #include "control.h"
@@ -193,7 +191,7 @@ namespace PYXBMC
       (CStdString)pControl->strTextureButtonFocus,
       (float)pControl->dwItemHeight,
       (float)pControl->dwImageWidth, (float)pControl->dwImageHeight,
-      (float)pControl->dwSpace, NULL);
+      (float)pControl->dwSpace);
 
     return pControl->pGUIControl;
   }
@@ -205,7 +203,7 @@ namespace PYXBMC
    * For a string we create a new ListItem and add it to the vector
    */
 PyDoc_STRVAR(addItem__doc__,
-    "addItem(item) -- Add a new item to this control list.\n"
+    "addItem(item) -- Add a new item to this list control.\n"
     "\n"
     "item               : string, unicode or ListItem - item to add.\n"
     "\n"
@@ -215,11 +213,9 @@ PyDoc_STRVAR(addItem__doc__,
   PyObject* ControlList_AddItem(ControlList *self, PyObject *args)
   {
     PyObject *pObject;
-    string strText;
+    if (!PyArg_ParseTuple(args, (char*)"O", &pObject))  return NULL;
 
     ListItem* pListItem = NULL;
-
-    if (!PyArg_ParseTuple(args, (char*)"O", &pObject))  return NULL;
     if (ListItem_CheckExact(pObject))
     {
       // object is a listitem
@@ -228,6 +224,7 @@ PyDoc_STRVAR(addItem__doc__,
     }
     else
     {
+      string strText;
       // object is probably a text item
       if (!PyGetUnicodeString(strText, pObject, 1)) return NULL;
       // object is a unicode string now, create a new ListItem
@@ -244,6 +241,73 @@ PyDoc_STRVAR(addItem__doc__,
     PyGUILock();
     if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
     PyGUIUnlock();
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
+PyDoc_STRVAR(addItems__doc__,
+    "addItems(items) -- Adds a list of listitems or strings to this list control.\n"
+    "\n"
+    "items                : List - list of strings, unicode objects or ListItems to add.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "       Large lists benefit considerably, than using the standard addItem()"
+    "\n"
+    "example:\n"
+    "  - cList.addItems(items=listitems)\n");
+
+  PyObject* ControlList_AddItems(ControlList *self, PyObject *args, PyObject *kwds)
+  {
+    PyObject *pList = NULL;
+    static const char *keywords[] = { "items", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O",
+      (char**)keywords,
+      &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
+    {
+      PyErr_SetString(PyExc_TypeError, "Object should be of type List");
+      return NULL;
+    }
+
+    CFileItemList items;
+    for (int item = 0; item < PyList_Size(pList); item++)
+    {
+      PyObject *pItem = PyList_GetItem(pList, item);
+
+      ListItem* pListItem = NULL;
+      if (ListItem_CheckExact(pItem))
+      {
+        // object is a listitem
+        pListItem = (ListItem*)pItem;
+        Py_INCREF(pListItem);
+      }
+      else
+      {
+        string strText;
+        // object is probably a text item
+        if (!PyGetUnicodeString(strText, pItem, 1)) return NULL;
+        // object is a unicode string now, create a new ListItem
+        pListItem = ListItem_FromString(strText);
+      }
+
+      // add item to objects vector
+      self->vecItems.push_back(pListItem);
+      items.Add(pListItem->item);
+    }
+
+    // create message
+    CGUIMessage msg(GUI_MSG_LABEL_BIND, self->iParentId, self->iControlId, 0, 0, &items);
+
+    // send message
+    PyGUILock();
+    if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
+    PyGUIUnlock();
+
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -323,7 +387,7 @@ PyDoc_STRVAR(addItem__doc__,
     "example:\n"
     "  - ctl = cList.getSpinControl()\n");
 
-  PyObject* ControlList_GetSpinControl(ControlTextBox *self, PyObject *args)
+  PyObject* ControlList_GetSpinControl(ControlList *self, PyObject *args)
   {
     Py_INCREF(self->pControlSpin);
     return (PyObject*)self->pControlSpin;
@@ -397,7 +461,7 @@ PyDoc_STRVAR(addItem__doc__,
 
   PyObject* ControlList_SetPageControlVisible(ControlList *self, PyObject *args)
   {
-    bool isOn = true;
+    char isOn = true;
 
     if (!PyArg_ParseTuple(args, (char*)"b", &isOn)) return NULL;
 
@@ -405,7 +469,7 @@ PyDoc_STRVAR(addItem__doc__,
     PyGUILock();
     if (self->pGUIControl)
     {
-      ((CGUIListControl*)self->pGUIControl)->SetPageControlVisible( isOn );
+      ((CGUIListControl*)self->pGUIControl)->SetPageControlVisible((bool)isOn );
     }
     PyGUIUnlock();
     */
@@ -564,6 +628,56 @@ PyDoc_STRVAR(addItem__doc__,
 		return Py_BuildValue((char*)"l", self->dwSpace);
 	}
 
+PyDoc_STRVAR(setStaticContent__doc__,
+    "setStaticContent(items) -- Fills a static list with a list of listitems.\n"
+    "\n"
+    "items                : List - list of listitems to add.\n"
+    "\n"
+    "*Note, You can use the above as keywords for arguments.\n"
+    "\n"
+    "example:\n"
+    "  - cList.setStaticContent(items=listitems)\n");
+
+  PyObject* ControlList_SetStaticContent(ControlList *self, PyObject *args, PyObject *kwds)
+  {
+    PyObject *pList = NULL;
+    static const char *keywords[] = { "items", NULL };
+
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O",
+      (char**)keywords,
+      &pList) || pList == NULL || !PyObject_TypeCheck(pList, &PyList_Type))
+    {
+      PyErr_SetString(PyExc_TypeError, "Object should be of type List");
+      return NULL;
+    }
+
+    vector<CGUIListItemPtr> items;
+    
+    for (int item = 0; item < PyList_Size(pList); item++)
+    {
+      PyObject *pItem = PyList_GetItem(pList, item);
+      if (!ListItem_CheckExact(pItem))
+      {
+        PyErr_SetString(PyExc_TypeError, "Only ListItems can be passed");
+        return NULL;
+      }
+      // object is a listitem, and we set m_idpeth to 0 as this
+      // is used as the visibility condition for the item in the list
+      ListItem *listItem = (ListItem*)pItem;
+      listItem->item->m_idepth = 0;
+
+      items.push_back((CFileItemPtr &)listItem->item);
+    }
+    // set static list
+    ((CGUIBaseContainer *)self->pGUIControl)->SetStaticContent(items);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+  }
+
   PyMethodDef ControlList_methods[] = {
     {(char*)"addItem", (PyCFunction)ControlList_AddItem, METH_VARARGS, addItem__doc__},
     {(char*)"selectItem", (PyCFunction)ControlList_SelectItem, METH_VARARGS,  selectItem},
@@ -579,6 +693,8 @@ PyDoc_STRVAR(addItem__doc__,
     {(char*)"getItemHeight", (PyCFunction)ControlList_GetItemHeight, METH_VARARGS, getItemHeight__doc__},
     {(char*)"getSpace", (PyCFunction)ControlList_GetSpace, METH_VARARGS, getSpace__doc__},
     {(char*)"getListItem", (PyCFunction)ControlList_GetListItem, METH_VARARGS, getListItem__doc__},
+    {(char*)"setStaticContent", (PyCFunction)ControlList_SetStaticContent, METH_VARARGS|METH_KEYWORDS, setStaticContent__doc__},
+    {(char*)"addItems", (PyCFunction)ControlList_AddItems, METH_VARARGS|METH_KEYWORDS, addItems__doc__},
     {NULL, NULL, 0, NULL}
   };
 

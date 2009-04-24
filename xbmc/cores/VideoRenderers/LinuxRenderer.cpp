@@ -285,17 +285,17 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
     m_iOSDTextureHeight[iOSDBuffer] = h;
     // Create osd textures for this buffer with new size
 #if defined(HAS_SDL_OPENGL)
-    m_pOSDYTexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000),false,true);
+    m_pOSDYTexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, RMASK, GMASK, BMASK, AMASK),false,true);
 
-    m_pOSDATexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000),false,true);
+    m_pOSDATexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, RMASK, GMASK, BMASK, AMASK),false,true);
 
     if (m_pOSDYTexture[iOSDBuffer] == NULL || m_pOSDATexture[iOSDBuffer] == NULL) 
 #else
     m_pOSDYTexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 
-		32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		32, RMASK, GMASK, BMASK, AMASK);
 
     m_pOSDATexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 
-		32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		32, RMASK, GMASK, BMASK, AMASK);
 
     if (m_pOSDYTexture[iOSDBuffer] == NULL || m_pOSDATexture[iOSDBuffer] == NULL) 
 #endif
@@ -646,10 +646,10 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
   }
 
   if (m_backbuffer == NULL)  
-     m_backbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);;
+     m_backbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);;
 
   if (m_screenbuffer == NULL)  
-     m_screenbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);;
+     m_screenbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);;
 
   if (m_image.plane[0] == NULL) {
      m_image.stride[0] = m_iSourceWidth;
@@ -737,7 +737,7 @@ void CLinuxRenderer::ReleaseImage(int source, bool preserve)
   SDL_LockSurface(m_backbuffer);
 
   // transform from YUV to RGB
-  struct SwsContext *context = m_dllSwScale.sws_getContext(m_image.width, m_image.height, PIX_FMT_YUV420P, m_backbuffer->w, m_backbuffer->h, PIX_FMT_RGB32, SWS_BILINEAR, NULL, NULL, NULL);
+  struct SwsContext *context = m_dllSwScale.sws_getContext(m_image.width, m_image.height, PIX_FMT_YUV420P, m_backbuffer->w, m_backbuffer->h, PIX_FMT_BGRA, SWS_BILINEAR, NULL, NULL, NULL);
   uint8_t *src[] = { m_image.plane[0], m_image.plane[1], m_image.plane[2] };
   int     srcStride[] = { m_image.stride[0], m_image.stride[1], m_image.stride[2] };
   uint8_t *dst[] = { (uint8_t*)m_backbuffer->pixels, 0, 0 };
