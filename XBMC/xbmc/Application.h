@@ -139,11 +139,11 @@ public:
   void RenderFullScreen();
   void DoRenderFullScreen();
   bool NeedRenderFullScreen();
-  bool IsPlaying() const ;
+  bool IsPlaying() const;
   bool IsPaused() const;
-  bool IsPlayingAudio() const ;
-  bool IsPlayingVideo() const ;
-  bool IsPlayingFullScreenVideo() const ;
+  bool IsPlayingAudio() const;
+  bool IsPlayingVideo() const;
+  bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
   bool OnAction(CAction &action);
