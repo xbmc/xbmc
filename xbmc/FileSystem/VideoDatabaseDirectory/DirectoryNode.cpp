@@ -190,7 +190,7 @@ CStdString CDirectoryNode::BuildPath()
 
   if (!m_strName.IsEmpty())
     array.insert(array.begin(), m_strName);
-  
+
   CDirectoryNode* pParent=m_pParent;
   while (pParent!=NULL)
   {
