@@ -584,27 +584,14 @@ void CDVDPlayerAudio::Process()
 
 bool CDVDPlayerAudio::OutputAudioframe(DVDAudioFrame &audioframe, bool newerror)
 {
-  bool packetAdded;
+  bool packetAdded = true;
   m_droptime = 0.0;
   int synctype = m_SyncType;
   
   if (audioframe.passthrough && m_SyncType == SYNC_RESAMPLE)
     synctype = SYNC_DISCON;
   
-  if (synctype == SYNC_DISCON)
-  {
-    //if we need to sync the clock, use the average error of the last second
-    if (newerror && fabs(m_CurrError) > DVD_MSEC_TO_TIME(10))
-    {
-      double clock = m_pClock->GetClock();
-      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock + m_CurrError, 0);
-      if(m_speed == DVD_PLAYSPEED_NORMAL)
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock + m_CurrError, m_CurrError);
-    }
-    m_dvdAudio.AddPackets(audioframe);
-    packetAdded = true;
-  }
-  else if (synctype == SYNC_SKIPDUP)
+  if (synctype == SYNC_SKIPDUP)
   {
     //skip/duplicate required number of frames
     if (m_SkipDupCount > 0)
@@ -683,7 +670,20 @@ bool CDVDPlayerAudio::OutputAudioframe(DVDAudioFrame &audioframe, bool newerror)
       m_dvdAudio.AddPackets(audioframe);
     }
   }
-  
+  else
+  {
+    //if we need to sync the clock, use the average error of the last second
+    if (newerror && fabs(m_CurrError) > DVD_MSEC_TO_TIME(10))
+    {
+      double clock = m_pClock->GetClock();
+      m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock + m_CurrError, 0);
+      if(m_speed == DVD_PLAYSPEED_NORMAL)
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock + m_CurrError, m_CurrError);
+    }
+    m_dvdAudio.AddPackets(audioframe);
+    packetAdded = true;
+  }
+
   return packetAdded;
 }
 
