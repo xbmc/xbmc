@@ -78,49 +78,49 @@ CPVRManager::~CPVRManager()
 
 void CPVRManager::Start()
 {
-  CSingleLock lock(m_clientsSection);
-  /* First remove any clients */
-  if (!m_clients.empty())
-    m_clients.clear();
-
-  if (!g_guiSettings.GetBool("pvr.enabled"))
-    return;
+//  CSingleLock lock(m_clientsSection);
+//  /* First remove any clients */
+//  if (!m_clients.empty())
+//    m_clients.clear();
+//
+//  if (!g_guiSettings.GetBool("pvr.enabled"))
+//    return;
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager starting");
 
-  /* create CEPG singleton */
-  CSingleLock epgLock(m_epgSection);
-  m_EPG = CEPG::Get();
-
-  /* Discover and load chosen plugins */
-  if (!LoadClients()) {
-    CLog::Log(LOGERROR, "PVR: couldn't load clients");
-    return;
-  }
-
-  /* Now that clients have been initialized, we check connectivity */
-  CheckClientConnections();
-
-  /* spawn a thread */
-  Create(false, THREAD_MINSTACKSIZE);
-  SetName("PVRManager Updater");
-  SetPriority(-15);
-
-  CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", m_clients.size());
+//  /* create CEPG singleton */
+//  CSingleLock epgLock(m_epgSection);
+//  m_EPG = CEPG::Get();
+//
+//  /* Discover and load chosen plugins */
+//  if (!LoadClients()) {
+//    CLog::Log(LOGERROR, "PVR: couldn't load clients");
+//    return;
+//  }
+//
+//  /* Now that clients have been initialized, we check connectivity */
+//  CheckClientConnections();
+//
+//  /* spawn a thread */
+//  Create(false, THREAD_MINSTACKSIZE);
+//  SetName("PVRManager Updater");
+//  SetPriority(-15);
+//
+//  CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", m_clients.size());
 }
 
 void CPVRManager::Stop()
 {
-  CSingleLock lock(m_clientsSection);
+//  CSingleLock lock(m_clientsSection);
+//
+//  StopThread();
+//
+//  for (unsigned int i=0; i < m_clients.size(); i++) {
+//    delete m_clients[i];
+//  }
+//  m_clients.clear();
+//  m_EPG->Close();
 
-  StopThread();
-
-  for (unsigned int i=0; i < m_clients.size(); i++) {
-    delete m_clients[i];
-  }
-  m_clients.clear();
-  m_EPG->Close();
-  
   CLog::Log(LOGNOTICE, "PVR: PVRManager stopped");
 }
 
@@ -174,7 +174,7 @@ void CPVRManager::Process()
 
   while (!m_bStop)
   {
-    
+
     Sleep(4000);
   }
 }
@@ -227,7 +227,7 @@ bool CPVRManager::CheckClientConnections()
 {
   std::map< long, IPVRClient* >::iterator clientItr(m_clients.begin());
   while (clientItr != m_clients.end())
-  { 
+  {
     // signal client to connect to backend
     PVR_ERROR err = (*clientItr).second->Connect();
     if ( err == PVR_ERROR_NO_ERROR || err == PVR_ERROR_NOT_IMPLEMENTED)
@@ -242,7 +242,7 @@ bool CPVRManager::CheckClientConnections()
     }
   }
 
-  if (m_clients.empty()) 
+  if (m_clients.empty())
   {
     CLog::Log(LOGERROR, "PVR: no clients could connect");
     return false;
@@ -330,7 +330,7 @@ int CPVRManager::GetAllTimers(CFileItemList* results)
       results->Add(timer);
     }
   }
- 
+
   lock.Leave();
 
   results->Sort(SORT_METHOD_DATE, SORT_ORDER_ASC);
@@ -673,7 +673,7 @@ CStdString CPVRManager::PrintStatus(RecStatus status)
     default:
       string = g_localizeStrings.Get(17100); // 17100 is "unknown"
   };
-  
+
   return string;
 }
 
@@ -711,7 +711,7 @@ int CPVRManager::GetTimers(long clientID)
   CSingleLock clientLock(m_clients[clientID]->m_critSection);
   err = m_clients[clientID]->GetTimers(timers);
   clientLock.Leave();
-  
+
   if(err == PVR_ERROR_NO_ERROR)
   {
     // first check there are no stored timers for this client
@@ -721,7 +721,7 @@ int CPVRManager::GetTimers(long clientID)
     {
       if (clientID == (*itr).first)
       {
-        itr = m_timers.erase(itr);
+        m_timers.erase(itr);
         if (m_timers.empty())
           break;
       }

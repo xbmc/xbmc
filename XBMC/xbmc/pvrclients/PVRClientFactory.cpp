@@ -34,12 +34,12 @@ CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& path, const CStdS
   CStdString strFileName = path;
   strFileName = strFileName + "default.pvr";
 
-  _T(strFileName);
+  //_T(strFileName);
 
   // load client
   DllPVRClient* pDll = new DllPVRClient;
   pDll->SetFile(strFileName);
-  
+
   pDll->EnableDelayedUnload(true);
   if (!pDll->Load())
   {

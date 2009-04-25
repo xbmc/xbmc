@@ -64,6 +64,18 @@ CEPGWorker::CEPGWorker(CEPGTaskQueue *queue, const long clientID)
     m_clientID(clientID)
 { }
 
+CEPGWorker::~CEPGWorker()
+{
+}
+
+void CEPGWorker::OnStartup()
+{
+}
+
+void CEPGWorker::OnExit()
+{
+}
+
 void CEPGWorker::Process()
 {
   /*CLog::Log(LOGDEBUG, "PVR: Begin Processing %u Tasks", m_tasks.size());*/
@@ -128,7 +140,7 @@ CEPG::CEPG(CPVRManager* manager)
   queue.Add(t1);
   queue.Add(t2);
   CEPGTask first = queue.Get();
-  delete queue;
+  //delete queue;
   int i = 3;
 }
 
@@ -178,7 +190,7 @@ void CEPG::Close()
 void CEPG::Process()
 {
   CSingleLock lock(m_tasksSection);
-  
+
 
   m_isRunning = false;
   CLog::Log(LOGDEBUG, "PVR: Finished Processing Tasks");
@@ -210,7 +222,7 @@ void CEPG::UpdateChannels()
     {
       Create(false, THREAD_MINSTACKSIZE);
       CStdString msg;
-      msg.Format("PVR: client_%u channel update", task.m_clientID); 
+      msg.Format("PVR: client_%u channel update", task.m_clientID);
       SetName(msg.c_str());
       SetPriority(-10);
     }
@@ -295,7 +307,7 @@ void CEPG::UpdateChannelsTask(long clientID)
     return;
   }
 
-  /* 
+  /*
   * Now we add new channels to frontend
   * All entries now present in the temp lists, are new entries
   */
@@ -314,7 +326,7 @@ void CEPG::UpdateChannelsTask(long clientID)
 
   CSingleLock epg(m_epgSection);
   m_grid = dbChannels;
-  
+
   /* notify observers entire channel list has been updated */
   NotifyObs(0);
 
@@ -332,7 +344,7 @@ void CEPG::UpdateEPG()
 
     if (!client)
       continue;
-    
+
     CEPGTask task;
     task.m_clientID = (*itr).m_clientID;
     clientsLock.Leave();
@@ -349,7 +361,7 @@ void CEPG::UpdateEPG()
     {
       Create(false, THREAD_MINSTACKSIZE);
       CStdString msg;
-      msg.Format("PVR: client_%u epg update", task.m_clientID); 
+      msg.Format("PVR: client_%u epg update", task.m_clientID);
       SetName(msg.c_str());
       SetPriority(-10);
     }
@@ -375,7 +387,7 @@ void CEPG::UpdateEPGTask(unsigned int channelNo)
   CDateTime start = now - span;
   span.SetDateTimeSpan(g_guiSettings.GetInt("pvrmenu.daystodisplay"), 0, 0, 0);
   CDateTime end   = now + span;
-  
+
   CFileItemList epg;
   client->GetEPGForChannel(channelNo, epg, start, end);
 }

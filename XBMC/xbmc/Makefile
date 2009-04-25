@@ -143,8 +143,6 @@ SRCS=Application.cpp \
      GUIDialogVolumeBar.cpp \
      GUIDialogYesNo.cpp \
      GUIMediaWindow.cpp \
-     GUIWindowEPG.cpp \
-     GUIWindowEPGProgInfo.cpp \
      GUIWindowFileManager.cpp \
      GUIWindowFullScreen.cpp \
      GUIWindowHome.cpp \

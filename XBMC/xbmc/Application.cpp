@@ -144,7 +144,7 @@
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowScripts.h"
-#include "GUIWindowEPG.h"
+//#include "GUIWindowEPG.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVisualisation.h"
@@ -196,7 +196,7 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
-#include "GUIDialogTVEPGProgInfo.h"
+//#include "GUIDialogTVEPGProgInfo.h"
 #include "GUIDialogTVRecordingInfo.h"
 #include "GUIDialogTVTimerSettings.h"
 #include "GUIDialogTVChannels.h"
@@ -775,7 +775,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(true, true, true);
   }
 #endif
-  
+
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
 
@@ -963,7 +963,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
-    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp"); 
+    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
 
     CUtil::AddDirectorySeperator(strTempPath);
@@ -1002,7 +1002,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp"); 
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
@@ -1274,12 +1274,12 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowFileManager);      // window id = 3
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
-  m_gWindowManager.Add(new CGUIWindowEPG);                       // window id = 9
-  m_gWindowManager.Add(new CGUIDialogTVEPGProgInfo);            // window id = 600
-  m_gWindowManager.Add(new CGUIDialogTVTimerSettings);          // window id = 602
-  m_gWindowManager.Add(new CGUIDialogTVChannels);               // window id = 603
-  m_gWindowManager.Add(new CGUIDialogTVRecordingInfo);          // window id = 603
-  m_gWindowManager.Add(new CGUIDialogTVGroupManager);           // window id = 603
+//  m_gWindowManager.Add(new CGUIWindowEPG);                       // window id = 9
+//  m_gWindowManager.Add(new CGUIDialogTVEPGProgInfo);            // window id = 600
+  //m_gWindowManager.Add(new CGUIDialogTVTimerSettings);          // window id = 602
+  //m_gWindowManager.Add(new CGUIDialogTVChannels);               // window id = 603
+  //m_gWindowManager.Add(new CGUIDialogTVRecordingInfo);          // window id = 603
+  //m_gWindowManager.Add(new CGUIDialogTVGroupManager);           // window id = 603
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
   m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
@@ -1498,7 +1498,7 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(m_network.m_networkinfo.ip, webPort, "special://xbmc/web", false);
 #endif
-    if (m_pWebServer) 
+    if (m_pWebServer)
     {
       m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());

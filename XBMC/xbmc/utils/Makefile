@@ -55,8 +55,10 @@ SRCS=Addon.cpp \
      DbusServer.cpp \
      Atomics.cpp \
      EPG.cpp \
-     TVChannel.cpp \
-     TVEPGInfoTag.cpp
+     TVChannelInfoTag.cpp \
+     TVEPGInfoTag.cpp \
+     TVRecordInfoTag.cpp \
+     TVTimerInfoTag.cpp
 
 LIB=utils.a
 
