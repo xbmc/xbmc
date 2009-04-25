@@ -20,7 +20,7 @@ bool g_verbose_mode = false;
 
 //
 const char* PROGNAME="OSXRemote";
-const char* PROGVERS="0.2";
+const char* PROGVERS="0.3";
 
 void ParseOptions(int argc, char** argv);
 void ReadConfig();
@@ -156,9 +156,13 @@ void ParseOptions(int argc, char** argv)
         break;
     }
   }
-	
+  //reset getopts state
+  optreset = 1;
+  optind = 0;
+  
 	if (readExternal == true)
 		ReadConfig();	
+    
 }
 
 //----------------------------------------------------------------------------
