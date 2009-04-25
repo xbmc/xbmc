@@ -1,6 +1,6 @@
 <window id="0">
 	<defaultcontrol>2</defaultcontrol>
-	<allowoverlay>no</allowoverlay>	
+	<allowoverlay>no</allowoverlay>
 	<controls>
 		<control type="videowindow">
 			<posx>356</posx>
@@ -28,7 +28,7 @@
 				<randomize>true</randomize>
 				<fadetime>2000</fadetime>
 				<include>backgroundfade</include>
-				<visible>ControlGroup(9000).HasFocus(2)</visible>
+				<visible>ControlGroup(9000).HasFocus(2) + System.GetBool(pvr.enabled)</visible>
 				<visible>Skin.HasSetting(Home_Enable_Custom_Back_TV)</visible>
 			</control>
 			<control type="image">
@@ -36,7 +36,7 @@
 				<posy>100</posy>
 				<width>924</width>
 				<height>520</height>
-				<visible>ControlGroup(9000).HasFocus(2)</visible>
+				<visible>ControlGroup(9000).HasFocus(2) + System.GetBool(pvr.enabled)</visible>
 				<texture>background-mytv.png</texture>
 				<include>backgroundfade</include>
 				<visible>!Skin.HasSetting(Home_Enable_Custom_Back_TV)</visible>
@@ -51,7 +51,7 @@
 				<randomize>true</randomize>
 				<fadetime>2000</fadetime>
 				<include>backgroundfade</include>
-				<visible>ControlGroup(9000).HasFocus(3)</visible>
+				<visible>[ControlGroup(9000).HasFocus(2) + !System.GetBool(pvr.enabled)] | [ControlGroup(9000).HasFocus(3) + System.GetBool(pvr.enabled)]</visible>
 				<visible>Skin.HasSetting(Home_Enable_Custom_Back_Video)</visible>
 			</control>
 			<control type="image">
@@ -59,7 +59,7 @@
 				<posy>100</posy>
 				<width>924</width>
 				<height>520</height>
-				<visible>ControlGroup(9000).HasFocus(3)</visible>
+				<visible>[ControlGroup(9000).HasFocus(2) + !System.GetBool(pvr.enabled)] | [ControlGroup(9000).HasFocus(3) + System.GetBool(pvr.enabled)]</visible>
 				<texture>background-videos.jpg</texture>
 				<include>backgroundfade</include>
 				<visible>!Skin.HasSetting(Home_Enable_Custom_Back_Video)</visible>
@@ -138,7 +138,8 @@
 				<posy>100</posy>
 				<width>924</width>
 				<height>520</height>
-				<info>Skin.String(Home_Custom_Back_Weather_Folder)</info>
+				<imagepath>weather\$INFO[Weather.FanartCode]</imagepath>
+				<info>Skin.String(Home_Custom_Back_Weather_Folder) </info>
 				<timeperimage>5000</timeperimage>
 				<randomize>true</randomize>
 				<fadetime>2000</fadetime>
@@ -201,29 +202,6 @@
 				<texture>background-scripts.jpg</texture>
 				<include>backgroundfade</include>
 				<visible>!Skin.HasSetting(Home_Enable_Custom_Back_Scripts)</visible>
-			</control>
-			<control type="multiimage">
-			<posx>356</posx>
-				<posy>100</posy>
-				<width>924</width>
-				<height>520</height>
-				<info>Skin.String(Home_Custom_Back_My_Files_Folder)</info>
-				<timeperimage>5000</timeperimage>
-				<randomize>true</randomize>
-				<fadetime>2000</fadetime>
-				<include>backgroundfade</include>
-				<visible>ControlGroup(9000).HasFocus(10)</visible>
-				<visible>Skin.HasSetting(Home_Enable_Custom_Back_My_Files)</visible>
-			</control>
-			<control type="image">
-				<posx>356</posx>
-				<posy>100</posy>
-				<width>924</width>
-				<height>520</height>
-				<visible>ControlGroup(9000).HasFocus(10)</visible>
-				<texture>background-myfiles.png</texture>
-				<include>backgroundfade</include>
-				<visible>!Skin.HasSetting(Home_Enable_Custom_Back_My_Files)</visible>
 			</control>
 		</control>
 		<control type="image">
@@ -592,7 +570,7 @@
 				<description>NextRecordingInfo</description>
 				<posx>600r</posx>
 				<posy>140</posy>
-				<visible>!PVR.IsRecording + PVR.HasTimer + !Skin.HasSetting(homepagePVRinfo)</visible>
+				<visible>Control.HasFocus(2) + !PVR.IsRecording + PVR.HasTimer + !Skin.HasSetting(homepagePVRinfo)</visible>
 				<include>homestatsinfo</include>
 				<control type="image">
 					<description>gradient</description>
@@ -671,7 +649,7 @@
 				<description>NowRecordingInfo</description>
 				<posx>600r</posx>
 				<posy>140</posy>
-				<visible>PVR.IsRecording</visible>
+				<visible>Control.HasFocus(2) + PVR.IsRecording</visible>
 				<include>homestatsinfo</include>
 				<control type="image">
 					<description>gradient</description>
@@ -763,7 +741,16 @@
 			<height>455</height>
 			<texture>Home-Menu-Back-2.png</texture>
 			<include>Window_OpenClose_Home_Panel_Animation</include>
-			<visible>Skin.HasSetting(ProgramsInHome)</visible>
+			<visible>[Skin.HasSetting(ProgramsInHome) + !System.GetBool(pvr.enabled)] | [!Skin.HasSetting(ProgramsInHome) + System.GetBool(pvr.enabled)]</visible>
+		</control>
+		<control type="image">
+			<posx>70</posx>
+			<posy>102</posy>
+			<width>450</width>
+			<height>520</height>
+			<texture>Home-Menu-Back-3.png</texture>
+			<include>Window_OpenClose_Home_Panel_Animation</include>
+			<visible>Skin.HasSetting(ProgramsInHome) + System.GetBool(pvr.enabled)</visible>
 		</control>
 		<control type="group" id="9000">
 		<visible>!System.GetBool(pvr.enabled)</visible>
@@ -977,7 +964,7 @@
 		<control type="group" id="9000">
 			<visible>System.GetBool(pvr.enabled)</visible>
 			<posx>130</posx>
-			<posy>203</posy>
+			<posy>173</posy>
 			<include>Window_OpenClose_Home_Panel_Animation</include>
 			<control type="group">
 				<animation effect="slide" end="0,-28" time="0" condition="Skin.HasSetting(ProgramsInHome)">Conditional</animation>
@@ -1093,45 +1080,45 @@
 					<texture>home-button-focus.gif</texture>
 					<visible>Control.HasFocus(5)</visible>
 				</control>
-			</control>
-			<control type="button" id="6">
-				<description>Programs push button</description>
-				<posx>0</posx>
-				<posy>199</posy>
-				<width>26</width>
-				<height>26</height>
-				<hitrect x="-10" y="188" w="345" h="55" />
-				<label>[B]$LOCALIZE[0][/B]</label>
-				<font>font20</font>
-				<aligny>-</aligny>
-				<textoffsetx>50</textoffsetx>
-				<textoffsety>-3</textoffsety>
-				<onclick>ActivateWindow(Programs)</onclick>
-				<texturefocus>home-button.png</texturefocus>
-				<texturenofocus>home-button.png</texturenofocus>
-				<onleft>20</onleft>
-				<onright>22</onright>
+				</control>
+				<control type="button" id="6">
+					<description>Programs push button</description>
+					<posx>0</posx>
+					<posy>199</posy>
+					<width>26</width>
+					<height>26</height>
+					<hitrect x="-10" y="188" w="345" h="55" />
+					<label>[B]$LOCALIZE[0][/B]</label>
+					<font>font20</font>
+					<aligny>-</aligny>
+					<textoffsetx>50</textoffsetx>
+					<textoffsety>-3</textoffsety>
+					<onclick>ActivateWindow(Programs)</onclick>
+					<texturefocus>home-button.png</texturefocus>
+					<texturenofocus>home-button.png</texturenofocus>
+					<onleft>20</onleft>
+					<onright>22</onright>
 					<onup>5</onup>
 					<ondown>7</ondown>
-				<visible>Skin.HasSetting(ProgramsInHome)</visible>
+					<visible>Skin.HasSetting(ProgramsInHome)</visible>
 				</control>
 				<control type="image">
 					<posx>3</posx>
-				<posy>202</posy>
+					<posy>202</posy>
 					<width>16</width>
 					<height>17</height>
 					<texture>home-button-focus.gif</texture>
 					<visible>Control.HasFocus(6)</visible>
 				</control>
-			<control type="group">
-				<animation effect="slide" end="0,28" time="0" condition="Skin.HasSetting(ProgramsInHome)">Conditional</animation>
-				<control type="button" id="7">
+				<control type="group">
+					<animation effect="slide" end="0,28" time="0" condition="Skin.HasSetting(ProgramsInHome)">Conditional</animation>
+					<control type="button" id="7">
 					<description>Weather push button</description>
 					<posx>0</posx>
 					<posy>228</posy>
 					<width>26</width>
 					<height>26</height>
-					<hitrect x="-10" y="220" w="345" h="55" />
+					<hitrect x="-10" y="217" w="345" h="55" />
 					<label>[B]$LOCALIZE[8][/B]</label>
 					<font>font20</font>
 					<aligny>-</aligny>
@@ -1159,7 +1146,7 @@
 					<posy>285</posy>
 					<width>26</width>
 					<height>26</height>
-					<hitrect x="-10" y="280" w="345" h="50" />
+					<hitrect x="-10" y="274" w="345" h="55" />
 					<label>[B]$LOCALIZE[247][/B]</label>
 					<font>font20</font>
 					<aligny>-</aligny>
@@ -1181,35 +1168,35 @@
 					<texture>home-button-focus.gif</texture>
 					<visible>Control.HasFocus(8)</visible>
 				</control>
-			</control>
-			<control type="button" id="9">
-				<description>Settings push button</description>
-				<posx>-10</posx>
-				<posy>367</posy>
-				<width>20</width>
-				<height>20</height>
-				<hitrect x="-10" y="342" w="345" h="50" />
-				<label>[B]$LOCALIZE[5][/B]</label>
-				<font>font10</font>
-				<aligny>-</aligny>
-				<textoffsetx>35</textoffsetx>
-				<textoffsety>0</textoffsety>
-				<onclick>ActivateWindow(Settings)</onclick>
-				<texturefocus>home-button.png</texturefocus>
-				<texturenofocus>home-button.png</texturenofocus>
-				<onleft>9001</onleft>
-				<onright>9001</onright>
-				<onup>8</onup>
-				<ondown>2</ondown>
-			</control>
-			<control type="image">
-				<posx>-7</posx>
-				<posy>369</posy>
-				<width>10</width>
-				<height>11</height>
-				<texture>home-button-focus.gif</texture>
-				<visible>Control.HasFocus(9)</visible>
+				<control type="button" id="9">
+					<description>Settings push button</description>
+					<posx>0</posx>
+					<posy>342</posy>
+					<width>26</width>
+					<height>26</height>
+					<hitrect x="-10" y="333" w="345" h="50" />
+					<label>[B]$LOCALIZE[5][/B]</label>
+					<font>font20</font>
+					<aligny>-</aligny>
+					<textoffsetx>50</textoffsetx>
+					<textoffsety>-3</textoffsety>
+					<onclick>ActivateWindow(Settings)</onclick>
+					<texturefocus>home-button.png</texturefocus>
+					<texturenofocus>home-button.png</texturenofocus>
+					<onleft>20</onleft>
+					<onright>22</onright>
+					<onup>8</onup>
+					<ondown>2</ondown>
 				</control>
+				<control type="image">
+					<posx>3</posx>
+					<posy>344</posy>
+					<width>16</width>
+					<height>17</height>
+					<texture>home-button-focus.gif</texture>
+					<visible>Control.HasFocus(9)</visible>
+				</control>
+			</control>
 		</control>
 		<control type="image">
 			<posx>0</posx>
@@ -1341,5 +1328,5 @@
 			<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
 			<include>Window_OpenClose_Animation</include>
 		</control>
-	</controls>	
+	</controls>
 </window>
