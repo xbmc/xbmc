@@ -39,21 +39,32 @@
 			<posx>20</posx>
 			<posy>100</posy>
 			<include>buttonpanelslide</include>
+			<control type="button" id="110">
+				<description>My Files</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<label>7</label>
+				<onclick>ActivateWindow(MyFiles)</onclick>
+				<onleft>8</onleft>
+				<onright>6</onright>
+				<onup>20</onup>
+				<ondown>11</ondown>
+			</control>
 			<control type="button" id="11">
 				<description>profiles</description>
 				<posx>0</posx>
-				<posy>0</posy>
+				<posy>37</posy>
 				<label>13200</label>
 				<onclick>XBMC.ActivateWindow(34)</onclick>
 				<onleft>8</onleft>
 				<onright>6</onright>
-				<onup>20</onup>
+				<onup>110</onup>
 				<ondown>112</ondown>
 			</control>
 			<control type="button" id="112">
 				<description>About XBMC</description>
 				<posx>0</posx>
-				<posy>37</posy>
+				<posy>74</posy>
 				<label>482</label>
 				<onclick>XBMC.Credits()</onclick>
 				<onleft>8</onleft>
@@ -65,7 +76,7 @@
 			<control type="button" id="13">
 				<description>skin Settings</description>
 				<posx>0</posx>
-				<posy>37</posy>
+				<posy>74</posy>
 				<label>20077</label>
 				<onclick>ActivateWindow(56)</onclick>
 				<onleft>8</onleft>
@@ -77,7 +88,7 @@
 			<control type="button" id="14">
 				<description>reload skin</description>
 				<posx>0</posx>
-				<posy>77</posy>
+				<posy>114</posy>
 				<label>20183</label>
 				<onclick>XBMC.ReloadSkin()</onclick>
 				<onleft>8</onleft>
@@ -89,7 +100,7 @@
 			<control type="button" id="13">
 				<description>skin Settings</description>
 				<posx>0</posx>
-				<posy>74</posy>
+				<posy>111</posy>
 				<label>20077</label>
 				<onclick>ActivateWindow(56)</onclick>
 				<onleft>8</onleft>
@@ -101,7 +112,7 @@
 			<control type="button" id="14">
 				<description>reload skin</description>
 				<posx>0</posx>
-				<posy>111</posy>
+				<posy>148</posy>
 				<label>20183</label>
 				<onclick>XBMC.ReloadSkin()</onclick>
 				<onleft>8</onleft>
@@ -113,7 +124,7 @@
 			<control type="group">
 				<description>LastFM Love Hate Stuff</description>
 				<posx>0</posx>
-				<posy>148</posy>
+				<posy>185</posy>
 				<visible>LastFM.RadioPlaying</visible>
 				<control type="image">
 					<description>Unfocus Background</description>
