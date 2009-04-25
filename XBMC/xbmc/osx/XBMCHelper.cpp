@@ -226,6 +226,10 @@ void XBMCHelper::Uninstall()
   std::string cmd = "/bin/launchctl unload ";
   cmd += m_launchAgentInstallFile;
   system(cmd.c_str());
+  
+  //this also stops the helper, so restart it here again, if not disabled
+  if(m_mode != APPLE_REMOTE_DISABLED)
+    Start();
 
   // Remove the plist file.
   DeleteFile(m_launchAgentInstallFile.c_str());
