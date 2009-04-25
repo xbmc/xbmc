@@ -78,26 +78,26 @@ CPVRManager::~CPVRManager()
 
 void CPVRManager::Start()
 {
-//  CSingleLock lock(m_clientsSection);
-//  /* First remove any clients */
-//  if (!m_clients.empty())
-//    m_clients.clear();
-//
-//  if (!g_guiSettings.GetBool("pvr.enabled"))
-//    return;
+  CSingleLock lock(m_clientsSection);
+  /* First remove any clients */
+  if (!m_clients.empty())
+    m_clients.clear();
+
+  if (!g_guiSettings.GetBool("pvr.enabled"))
+    return;
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager starting");
 
 //  /* create CEPG singleton */
 //  CSingleLock epgLock(m_epgSection);
 //  m_EPG = CEPG::Get();
-//
-//  /* Discover and load chosen plugins */
-//  if (!LoadClients()) {
-//    CLog::Log(LOGERROR, "PVR: couldn't load clients");
-//    return;
-//  }
-//
+
+  /* Discover and load chosen plugins */
+  if (!LoadClients()) {
+    CLog::Log(LOGERROR, "PVR: couldn't load clients");
+    return;
+  }
+
 //  /* Now that clients have been initialized, we check connectivity */
 //  CheckClientConnections();
 //
@@ -105,20 +105,20 @@ void CPVRManager::Start()
 //  Create(false, THREAD_MINSTACKSIZE);
 //  SetName("PVRManager Updater");
 //  SetPriority(-15);
-//
-//  CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", m_clients.size());
+
+  CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", m_clients.size());
 }
 
 void CPVRManager::Stop()
 {
-//  CSingleLock lock(m_clientsSection);
-//
-//  StopThread();
-//
-//  for (unsigned int i=0; i < m_clients.size(); i++) {
-//    delete m_clients[i];
-//  }
-//  m_clients.clear();
+  CSingleLock lock(m_clientsSection);
+
+  StopThread();
+
+  for (unsigned int i=0; i < m_clients.size(); i++) {
+    delete m_clients[i];
+  }
+  m_clients.clear();
 //  m_EPG->Close();
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager stopped");

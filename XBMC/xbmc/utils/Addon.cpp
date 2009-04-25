@@ -40,6 +40,7 @@ CAddon::CAddon()
   m_summary = "";
   m_strDesc = "";
   m_disclaimer = "";
+  m_strLibName = "";
 }
 
 bool CAddon::operator==(const CAddon &rhs) const {

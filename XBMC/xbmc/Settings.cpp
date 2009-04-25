@@ -2546,8 +2546,6 @@ void CSettings::GetAllAddons()
         XFILE::CFile::Cache(item2.GetThumbnailImage(), item->GetCachedProgramThumb());
       }
     }
-
-    addon.m_icon = item->GetCachedProgramThumb();
     
     //TODO fix all addon paths
     item->m_strPath.Replace("special://xbmc/", "addon://");
@@ -2593,7 +2591,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   element = xmlDoc.RootElement()->FirstChildElement("guid");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: %s/info.xml does not contain the <guid> element, ignoring", strPath);
+    CLog::Log(LOGERROR, "Addon: %s/info.xml does not contain the <guid> element, ignoring", strPath.c_str());
     return false;
   }
   guid = element->GetText(); // grab guid
@@ -2603,7 +2601,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   guidRE.RegComp(ADDON_GUID_RE.c_str());
   if (guidRE.RegFind(guid.c_str()) != 0)
   {
-    CLog::Log(LOGERROR, "Addon: %s has invalid <guid> element, ignoring", strPath);
+    CLog::Log(LOGERROR, "Addon: %s has invalid <guid> element, ignoring", strPath.c_str());
     return false;
   }
   addon.m_guid = guid; // guid was validated
@@ -2613,7 +2611,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   int type = atoi(element->GetText());
   if (type != 3)
   {
-    CLog::Log(LOGERROR, "Addon: %s has invalid type identifier: %d", strPath, type);
+    CLog::Log(LOGERROR, "Addon: %s has invalid type identifier: %d", strPath.c_str(), type);
     return false;
   }
   addon.m_addonType = (AddonType) type; // type was validated //TODO this cast to AddonType
@@ -2624,7 +2622,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   element = xmlDoc.RootElement()->FirstChildElement("name");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <name> element, ignoring", strPath);
+    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <name> element, ignoring", strPath.c_str());
     return false;
   }
   addon.m_strName = element->GetText();
@@ -2635,7 +2633,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   element = xmlDoc.RootElement()->FirstChildElement("version");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <version> element, ignoring", strPath);
+    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <version> element, ignoring", strPath.c_str());
     return false;
   }
   /* Validate version */
@@ -2644,7 +2642,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   versionRE.RegComp(ADDON_VERSION_RE.c_str());
   if (versionRE.RegFind(version.c_str()) != 0)
   {
-    CLog::Log(LOGERROR, "Addon: %s has invalid <version> element, ignoring", strPath);
+    CLog::Log(LOGERROR, "Addon: %s has invalid <version> element, ignoring", strPath.c_str());
     return false;
   }
   addon.m_strVersion = version; // guid was validated
@@ -2655,7 +2653,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   element = xmlDoc.RootElement()->FirstChildElement("summary");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <summary> element, ignoring", strPath);
+    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <summary> element, ignoring", strPath.c_str());
     return false;
   }
   addon.m_summary = element->GetText(); // summary was present
@@ -2681,6 +2679,20 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   element = xmlDoc.RootElement()->FirstChildElement("disclaimer");
   if (element)
     addon.m_disclaimer = element->GetText();
+
+  /* Retrieve library file name */
+  CStdString library;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("library");
+  if (element)
+    addon.m_strLibName = element->GetText();
+
+  /* Retrieve thumbnail file name */
+  CStdString icon;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("icon");
+  if (element)
+    addon.m_icon = path + element->GetText();
 
   /*** end of optional fields ***/
 

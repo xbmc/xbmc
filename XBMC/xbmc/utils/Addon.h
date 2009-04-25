@@ -72,6 +72,7 @@ public:
   CStdString m_summary;    ///< Short summary of addon
   CStdString m_strDesc;    ///< Description of addon
   CStdString m_strPath;    ///< Path to the addon
+  CStdString m_strLibName; ///< Name of the library
   CStdString m_strCreator; ///< Author(s) of the addon
   CStdString m_icon;       ///< Path to icon for the addon, or blank by default
   int        m_stars;      ///< Rating
