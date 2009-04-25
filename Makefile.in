@@ -233,7 +233,9 @@ papcodecs: dllloader linux dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
 	$(MAKE) -C xbmc/cores/paplayer/flac-1.2.1
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
+ifneq ($(ARCH), powerpc-osx)
 	$(MAKE) -C xbmc/cores/paplayer/MACDll
+endif
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
 ifneq ($(ARCH), x86_64-linux)
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
