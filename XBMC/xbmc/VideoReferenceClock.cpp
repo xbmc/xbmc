@@ -620,9 +620,12 @@ bool CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed, bool Upd
   
   if (NrVBlanks > 0 || m_FailedUpdates >= 10)
   {
-    m_FailedUpdates = 0;
     m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
-    if (UpdateVBlankTime) QueryPerformanceCounter(&m_VBlankTime);
+    if (UpdateVBlankTime)
+    {
+      QueryPerformanceCounter(&m_VBlankTime);
+      m_FailedUpdates = 0;
+    }
     return true;
   }
   else if (CheckMissed)
@@ -835,7 +838,6 @@ void CClockGuard::Process()
     DelayTime = Now.QuadPart - m_VideoReferenceClock->m_VBlankTime.QuadPart;
     if (DelayTime * RefreshRate > m_SystemFrequency.QuadPart * MAXDELAY / 1000)
     {
-      static int count = 0; cout << count++ << "\n";
       m_VideoReferenceClock->m_MissedVBlanks++;
       m_VideoReferenceClock->UpdateClock(1, false, false);
       m_VideoReferenceClock->SendVblankSignal();
