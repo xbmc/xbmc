@@ -61,7 +61,7 @@ class CVideoReferenceClock : public CThread
     double GetSpeed();
     int    GetRefreshRate();
     void   Wait(int msecs);
-    bool   UpdateClock(int NrVBlanks, bool CheckMissed, bool UpdateVBlankTime);
+    bool   UpdateClock(int NrVBlanks, bool CheckMissed);
     void   SendVblankSignal();
     void   Lock();
     void   Unlock();

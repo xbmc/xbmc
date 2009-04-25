@@ -312,7 +312,7 @@ void CVideoReferenceClock::RunGLX()
     if (VblankCount > PrevVblankCount)
     {
       Lock();
-      if (UpdateClock((int)(VblankCount - PrevVblankCount), true, true))
+      if (UpdateClock((int)(VblankCount - PrevVblankCount), true))
       {
         SendVblankSignal();
       }
@@ -378,7 +378,7 @@ void CVideoReferenceClock::RunD3D()
       NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
       Lock();
-      UpdateClock(NrVBlanks, false, false);
+      UpdateClock(NrVBlanks, false);
       SendVblankSignal();
       Unlock();
       
@@ -610,7 +610,7 @@ void CVideoReferenceClock::HandleWindowMessages()
 
 #endif /*_WIN32*/
 
-bool CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed, bool UpdateVBlankTime)
+bool CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 {
   if (CheckMissed)
   {
@@ -621,7 +621,7 @@ bool CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed, bool Upd
   if (NrVBlanks > 0 || m_FailedUpdates >= 10)
   {
     m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
-    if (UpdateVBlankTime)
+    if (CheckMissed)
     {
       QueryPerformanceCounter(&m_VBlankTime);
       m_FailedUpdates = 0;
@@ -839,7 +839,7 @@ void CClockGuard::Process()
     if (DelayTime * RefreshRate > m_SystemFrequency.QuadPart * MAXDELAY / 1000)
     {
       m_VideoReferenceClock->m_MissedVBlanks++;
-      m_VideoReferenceClock->UpdateClock(1, false, false);
+      m_VideoReferenceClock->UpdateClock(1, false);
       m_VideoReferenceClock->SendVblankSignal();
       m_VideoReferenceClock->m_VBlankTime.QuadPart += m_SystemFrequency.QuadPart / RefreshRate;
     }
