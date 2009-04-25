@@ -87,8 +87,13 @@ void ReadConfig()
 	int i = 0;
 	argv[i++] = "XBMCHelper";
   
-	for (vector<string>::iterator it = args.begin(); it != args.end(); )
+	for (vector<string>::iterator it = args.begin(); it != args.end(); ){
+    //fixup the arguments, here: remove '"' like bash would normally do
+    std::string::size_type j = 0;
+    while ((j = it->find("\"", j)) != std::string::npos )
+      it->replace(j, 1, "");
 		argv[i++] = (char* )(*it++).c_str();
+  }
 	
 	argv[i] = 0;
   
