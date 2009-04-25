@@ -20,7 +20,7 @@ bool g_verbose_mode = false;
 
 //
 const char* PROGNAME="OSXRemote";
-const char* PROGVERS="0.1";
+const char* PROGVERS="0.2";
 
 void ParseOptions(int argc, char** argv);
 void ReadConfig();
