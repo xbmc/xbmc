@@ -579,8 +579,8 @@ void CGUISettings::Initialize()
   AddBool(7, "pvr.showradio", 18008, true);
   AddBool(8, "pvr.infoswitch", 18010, true);
   AddInt(10, "pvr.infotime", 18011, 4, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddSeparator(12, "pvr.sep2");
-  AddString(13, "pvr.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddString(12, "pvr.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddSeparator(13, "pvr.sep2");
   AddInt(14, "pvr.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
   AddInt(15, "pvr.epgupdate", 18015, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddSeparator(16, "pvr.sep3");

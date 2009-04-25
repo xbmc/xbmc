@@ -1031,7 +1031,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (strSetting.Equals("pvr.infotime"))
       {
         CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-        if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvr.infoswitch"));
+        if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvr.enabled") && g_guiSettings.GetBool("pvr.infoswitch"));
 
       }
     }
@@ -1752,7 +1752,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.SetString("servers.ftpserveruser", pControl->GetCurrentLabel());
   }
 
-  else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") || 
+  else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") ||
             strSetting.Equals("servers.webserverusername") || strSetting.Equals("servers.webserverpassword"))
   {
     if (strSetting.Equals("servers.webserverport"))
@@ -1780,7 +1780,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
-  } 
+  }
   else if (strSetting.Equals("servers.zeroconf"))
   {
 #ifdef HAS_ZEROCONF
