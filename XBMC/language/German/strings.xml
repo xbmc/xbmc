@@ -1429,6 +1429,11 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18022">Nachlauf am Timer-Ende</string>
   <string id="18023">Wiedergabe</string>
   <string id="18024">Infobox für Videolänge verbergen</string>
+  <string id="18025">PVR-Service</string>
+  <string id="18026">PVR-Klient hinzufügen...</string>
+  <string id="18027">PVR-Klienten</string>
+  <string id="18028">PVR-Klienten verwalten</string>
+  <string id="18029">Klienten verwalten...</string>
 
   <string id="18048">Kanaleinstellungen bearbeiten</string>
   <string id="18049">Neuer Kanal</string>

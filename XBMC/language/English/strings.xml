@@ -760,7 +760,7 @@
   <string id="1255">Send FTP user and password</string>
   <string id="1256">Ping interval</string>
   <string id="1257">Would you like to connect to the auto-detected system?</string>
-  
+
   <string id="1260">Zeroconf publishing</string>
 
   <string id="1396">Drifting</string>
@@ -957,8 +957,8 @@
   <string id="13005">Shutdown</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Use custom dashboard path</string>
-  <string id="13008">Default shutdown mode</string> 
-  <string id="13009">Quit</string> 
+  <string id="13008">Default shutdown mode</string>
+  <string id="13009">Quit</string>
   <string id="13010">Hibernate</string>
   <string id="13011">Suspend</string>
   <string id="13012">Exit</string>
@@ -981,19 +981,19 @@
   <string id="13109">Test resolution</string>
   <string id="13110">Save resolution?</string>
   <string id="13111">Would you like to keep this resolution?</string>
-  
+
   <string id="13112">High quality software upscaling</string>
   <string id="13113">Disabled</string>
   <string id="13114">Enabled for SD content</string>
   <string id="13115">Always enabled</string>
-  
+
   <string id="13116">Upscaling method</string>
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
 
   <string id="13120">Strict Pixmap-Texture Binding (requires restart)</string>
-  
+
   <string id="13130">Display blanking</string>
   <string id="13131">Disabled</string>
   <string id="13132">Blank displays</string>
@@ -1020,7 +1020,7 @@
   <string id="13160">Gateway</string>
   <string id="13161">Primary DNS</string>
   <string id="13162">Initialize failed</string>
-  
+
   <string id="13163">Gamepad</string>
   <string id="13164">Keyboard</string>
   <string id="13165">Mouse</string>
@@ -1028,8 +1028,8 @@
   <string id="13167">Memory unit</string>
   <string id="13168">IR-Remote</string>
   <string id="13169">Controller port</string>
-  
-  
+
+
   <string id="13170">Never</string>
   <string id="13171">Immediately</string>
   <string id="13172">After %i secs</string>
@@ -1055,7 +1055,7 @@
 
   <string id="13270">Hardware:</string>
   <string id="13271">CPU Usage:</string>
-  
+
   <string id="13274">Connected, but no DNS is available.</string>
   <string id="13275">Hard Disk</string>
   <string id="13276">DVD-ROM</string>
@@ -1195,11 +1195,11 @@
   <string id="13601">Mode</string>
   <string id="13602">Always running</string>
   <string id="13603">Sequence delay time</string>
-  
+
   <string id="13610">Disabled</string>
   <string id="13611">Standard</string>
   <string id="13612">Universal Remote</string>
-  
+
   <string id="13620">Apple Remote Error</string>
   <string id="13621">Apple Remote support could be enabled.</string>
 
@@ -1484,7 +1484,7 @@
   <string id="16201">Copy failed</string>
   <string id="16202">Failed to copy at least one file</string>
   <string id="16203">Move failed</string>
-  <string id="16204">Failed to move at least one file</string>  
+  <string id="16204">Failed to move at least one file</string>
   <string id="16205">Delete failed</string>
   <string id="16206">Failed to delete at least one file</string>
 
@@ -1495,9 +1495,9 @@
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
-  
+
   <string id="16307">Bicubic (software)</string>
-  <string id="16308">Lanczos (software)</string>  
+  <string id="16308">Lanczos (software)</string>
   <string id="16309">Sinc (software)</string>
 
   <string id="16310">(VDPAU)Temporal</string>
@@ -1505,7 +1505,7 @@
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
-  <string id="17500">Display sleep timeout</string> 
+  <string id="17500">Display sleep timeout</string>
 
 
   <string id="17997">%i MByte</string>
@@ -1537,12 +1537,12 @@
   <string id="18021">Margin at start</string>
   <string id="18022">Margin at stop</string>
   <string id="18023">Replay</string>
-	<string id="18024">Show TV info</string>
-	<string id="18025">PVR service</string>
-	<string id="18026">Add PVR client..</string>
-	<string id="18027">PVR clients</string>
-	<string id="18028">Manage PVR clients</string>
-	<string id="18029">Manage clients..</string>
+  <string id="18024">Show TV info</string>
+  <string id="18025">PVR service</string>
+  <string id="18026">Add PVR client...</string>
+  <string id="18027">PVR clients</string>
+  <string id="18028">Manage PVR clients</string>
+  <string id="18029">Manage clients...</string>
   <string id="18048">Edit Channel Settings</string>
   <string id="18049">New Channel</string>
   <string id="18050">TV Guide</string>
@@ -1790,7 +1790,7 @@
   <string id="20097">Fetching album info</string>
   <string id="20098">Fetching info for album</string>
   <string id="20099">Can't rip CD or track while playing from CD</string>
-  <string id="20100">Master lock code and settings</string> 
+  <string id="20100">Master lock code and settings</string>
   <string id="20101">Entering master lock code always enables master mode</string>
   <string id="20102">or copy from default?</string>
   <string id="20103">Save changes to profile?</string>
@@ -1891,7 +1891,7 @@
   <string id="20199">Downloading artist info failed</string>
 
   <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
-  
+
   <string id="20250">Party on! (videos)</string>
   <string id="20251">Mixing drinks (videos)</string>
   <string id="20252">Filling glasses (videos)</string>
@@ -2029,11 +2029,11 @@
   <string id="20429">Separate</string>
   <string id="20430">Export thumbs and fanart?</string>
   <string id="20431">Overwrite old files?</string>
-  <string id="20432">Exclude path from library updates</string> 
+  <string id="20432">Exclude path from library updates</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
-  
+
   <string id="21331">TuxBox client</string>
   <string id="21332">WARNING: Target TuxBox device is in recording-mode!</string>
   <string id="21333">The stream will be stopped!</string>
@@ -2042,7 +2042,7 @@
   <string id="21336">Connecting to: %s</string>
   <string id="21337">TuxBox device</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
-  
+
   <string id="21356">UPnP music</string>
   <string id="21357">UPnP video</string>
   <string id="21358">UPnP pictures</string>
@@ -2055,7 +2055,7 @@
   <string id="21365">Remove media share</string>
   <string id="21366">Custom subtitle directory</string>
   <string id="21367">Movie &amp; alternate subtitle directory</string>
-  
+
   <string id="21369">Enable mouse</string>
   <string id="21370">Play navigation sounds during media playback</string>
   <string id="21371">Thumbnail</string>
@@ -2076,7 +2076,7 @@
   <string id="21386">Acoustic management level</string>
   <string id="21387">Fast</string>
   <string id="21388">Quiet</string>
-  <string id="21389">Enable custom background</string>  
+  <string id="21389">Enable custom background</string>
   <string id="21390">Power management level</string>
   <string id="21391">High power</string>
   <string id="21392">Low power</string>
@@ -2205,7 +2205,7 @@
   <string id="21898">Years active</string>
   <string id="21899">Label</string>
   <string id="21900">Born/Formed</string>
- 
+
   <!-- strings 21900 thru 21999 reserved for slideshow info -->
 
   <string id="22000">Update library on startup</string>
@@ -2249,13 +2249,13 @@
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY keyboard</string>
-  
+
   <string id="29999">Apply flicker filter setting to games</string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
-	
+
   <!-- strings 33000 thru 33499 reserved for the add-on framework -->
   <string id="33000">Add-ons</string>
   <string id="33001">Get Add-ons</string>
@@ -2268,5 +2268,5 @@
 	<string id="33008">Configure Add-on</string>
 	<string id="33009">Remove Add-on</string>
 	<string id="33010">Are you sure you want to disable this add-on?</string>
-	
+
 </strings>
