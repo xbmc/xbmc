@@ -42,9 +42,7 @@ public:
                     VIS_ACTION_LOCK_PRESET,
                     VIS_ACTION_RATE_PRESET_PLUS,
                     VIS_ACTION_RATE_PRESET_MINUS,
-                    VIS_ACTION_UPDATE_ALBUMART,
-                    VIS_ACTION_UPDATE_TRACK
-  };
+                    VIS_ACTION_UPDATE_ALBUMART};
   CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll, const CStdString& strVisualisationName);
   ~CVisualisation();
 
