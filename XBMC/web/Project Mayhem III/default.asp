@@ -107,8 +107,8 @@
                         <li class="Pause"><a href="/xbmcCmds/xbmcForm?command=pause" target="CommandFrame"><span>Pause</span></a></li>
                         <li class="Previous"><a href="/xbmcCmds/xbmcForm?command=previous" target="CommandFrame"><span>Previous</span></a></li>
                         <li class="Next"><a href="/xbmcCmds/xbmcForm?command=next" target="CommandFrame"><span>Next</span></a></li>
-                        <li class="SkipForward"><a href="/scripts/seek.spy?seek=5" target="CommandFrame"><span>Skip Forward</span></a></li>
-                        <li class="SkipBackward"><a href="/scripts/seek.spy?seek=-5" target="CommandFrame"><span>Skip Backward</span></a></li>
+                        <li class="SkipForward"><a href="/xbmcCmds/xbmcHttp?command=SeekPercentageRelative(5)" target="CommandFrame"><span>Skip Forward</span></a></li>
+                        <li class="SkipBackward"><a href="/xbmcCmds/xbmcHttp?command=SeekPercentageRelative(-5)" target="CommandFrame"><span>Skip Backward</span></a></li>
                     </ul>
                 </div>
             
