@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=XSession
+Exec=xbmc-standalone
+TryExec=xbmc-standalone
+Name=XBMC
