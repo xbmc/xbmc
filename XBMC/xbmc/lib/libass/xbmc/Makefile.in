@@ -18,7 +18,9 @@ $(SLIB): ../libass/.libs/libass.dylib
 	$(MAKE) -C ..
 else
 $(SLIB): ../libass/.libs/libass.so
-	cp ../libass/.libs/libass.so $@
+        $(CXX) -shared -o $(SLIB) ../libass/.libs/*.o \
+                `cat ../../cores/DllLoader/exports/wrapper.def` \
+                ../../cores/DllLoader/exports/wrapper.o
 
 ../libass/.libs/libass.so: compile
 	CFLAGS="-D_LINUX -D_DLL -fPIC -O2" $(MAKE) -C ..
