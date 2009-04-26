@@ -31,8 +31,6 @@
 
 #ifdef HAS_SDL_AUDIO
   #define GUI_SOUND_CHANNEL 0
-#elif defined (__APPLE__)
-  CCoreAudioSoundManager g_CASoundMgr;
 #else
   typedef struct
   {
@@ -58,8 +56,6 @@ CGUISound::~CGUISound()
 {
 #ifdef HAS_SDL_AUDIO
   Mix_FreeChunk(m_soundBuffer);
-#elif defined (__APPLE__)
-  g_CASoundMgr.UnregisterSound(m_soundBuffer);
 #else
   FreeBuffer();
 #endif
@@ -74,9 +70,6 @@ bool CGUISound::Load(const CStdString& strFile)
     return false;
   
   return true;
-#elif defined (__APPLE__)
-  m_soundBuffer = g_CASoundMgr.RegisterSound(CSpecialProtocol::TranslatePath(strFile));
-  return (m_soundBuffer != 0);
 #else
   LPBYTE pbData=NULL;
   WAVEFORMATEX wfx;
@@ -102,8 +95,6 @@ void CGUISound::Play()
   {
 #ifdef HAS_SDL_AUDIO
   Mix_PlayChannel(GUI_SOUND_CHANNEL, m_soundBuffer, 0);
-#elif defined (__APPLE__)
-    g_CASoundMgr.PlaySound(m_soundBuffer);
 #else
    m_soundBuffer->Play(0, 0, 0);
 #endif
@@ -115,9 +106,6 @@ bool CGUISound::IsPlaying()
 {
 #ifdef HAS_SDL_AUDIO
   return Mix_Playing(GUI_SOUND_CHANNEL) != 0;
-#elif defined (__APPLE__)
-  // TODO: Implement
-  return false;
 #else
   if (m_soundBuffer)
   {
@@ -137,8 +125,6 @@ void CGUISound::Stop()
   {
 #ifdef HAS_SDL_AUDIO
   Mix_HaltChannel(GUI_SOUND_CHANNEL);
-#elif defined (__APPLE__)
-   // TODO: Implement
 #else
    m_soundBuffer->Stop();
 #endif
@@ -153,8 +139,6 @@ void CGUISound::SetVolume(int level)
   {
 #ifdef HAS_SDL_AUDIO
   Mix_Volume(GUI_SOUND_CHANNEL, level);
-#elif defined (__APPLE__)
-  // TODO: Implement
 #else
   m_soundBuffer->SetVolume(level);
 #endif  

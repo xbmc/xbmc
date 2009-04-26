@@ -44,6 +44,7 @@ CGUIAudioManager::CGUIAudioManager()
 {
   m_actionSound=NULL;
   m_bEnabled=true;
+  m_bInitialized = false;
 }
 
 CGUIAudioManager::~CGUIAudioManager()
@@ -61,13 +62,13 @@ void CGUIAudioManager::Initialize(int iDevice)
     Mix_CloseAudio();
     if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
       CLog::Log(LOGERROR, "Unable to open audio mixer");
-#elif defined(__APPLE__)
-    g_CASoundMgr.Initialize(g_guiSettings.GetString("audiooutput.audiodevice"));
-    g_CASoundMgr.Run();
+    else 
+      m_bInitialized = true;
 #else
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
+    m_bInitialized = true;
 #endif
   }
 }
@@ -84,10 +85,8 @@ void CGUIAudioManager::DeInitialize(int iDevice)
   
 #ifdef HAS_SDL_AUDIO
   Mix_CloseAudio();
-#elif defined(__APPLE__)
-  g_CASoundMgr.Stop();
 #endif
-  
+  m_bInitialized = false;
 }
 void CGUIAudioManager::Stop()
 {
@@ -399,6 +398,14 @@ void CGUIAudioManager::Enable(bool bEnable)
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     return;
 
+#if defined(HAS_SDL_AUDIO) && defined(__APPLE__)
+  // Workaround for bug/quirk in OSX 10.4 CoreAudio subsystem
+  if (bEnable && !m_bInitialized)
+    Initialize(CAudioContext::DEFAULT_DEVICE);
+  else if (!bEnable && m_bInitialized)
+    DeInitialize(CAudioContext::DEFAULT_DEVICE);
+#endif
+  
   m_bEnabled=bEnable;
 }
 

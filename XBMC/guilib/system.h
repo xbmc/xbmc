@@ -154,9 +154,9 @@
 #endif
 
 #ifdef HAS_SDL
-  #ifndef __APPLE__
+//  #ifndef __APPLE__
     #define HAS_SDL_AUDIO
-  #endif
+//  #endif
   #define HAS_DVD_SWSCALE
   #ifndef HAS_SDL_2D
     #define HAS_SDL_OPENGL
