@@ -28,11 +28,10 @@
 using namespace XFILE;
 using namespace ADDON;
 
-CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& path, const CStdString& name, DWORD clientID, IPVRClientCallback *cb)
+CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& path, const CStdString& library, const CStdString& name, DWORD clientID, IPVRClientCallback *cb)
 {
   // add the .pvr extension to the addon's path
-  CStdString strFileName = path;
-  strFileName = strFileName + "default.pvr";
+  CStdString strFileName = path + library;
 
   //_T(strFileName);
 

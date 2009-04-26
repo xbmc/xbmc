@@ -4,16 +4,15 @@
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #else
-#ifdef _LINUX
+#ifndef _LINUX
+#include <windows.h>
+#else
 #define __cdecl
 #define __declspec(x)
 #include <time.h>
 #endif
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
 #endif
-#include <windows.h>
-#endif
+
 
 #include "PVRClientTypes.h"
 #include <vector>

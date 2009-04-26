@@ -207,7 +207,7 @@ bool CPVRManager::LoadClients()
     transPath.Replace("addon://", "special://xbmc/");
 
     IPVRClient *client;
-    client = factory.LoadPVRClient(transPath, clientAddon.m_strName, i, this);
+    client = factory.LoadPVRClient(transPath, clientAddon.m_strLibName, clientAddon.m_strName, i, this);
     if (client)
     {
       client->m_isRunning = false;
