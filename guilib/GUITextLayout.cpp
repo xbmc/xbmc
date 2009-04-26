@@ -357,7 +357,7 @@ void CGUITextLayout::ParseText(const CStdStringW &text, DWORD defaultStyle, vect
     else if (text.Mid(pos,5) == L"COLOR")
     { // color
       size_t finish = text.Find(L']', pos + 5);
-      if (on && finish != CStdString::npos && text.Find(L"[/COLOR]",finish) != CStdString::npos)
+      if (on && finish != CStdString::npos && (size_t)text.Find(L"[/COLOR]",finish) != CStdString::npos)
       { // create new color
         newColor = colors.size();
         colors.push_back(g_colorManager.GetColor(text.Mid(pos + 5, finish - pos - 5)));
