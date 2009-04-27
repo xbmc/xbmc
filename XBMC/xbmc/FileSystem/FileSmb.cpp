@@ -129,6 +129,7 @@ void CSMB::Init()
     if (f != NULL)
     {
       fprintf(f, "[global]\n");
+      fprintf(f, "lanman auth = yes\n");
       // if a wins-server is set, we have to change name resolve order to
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
       {
