@@ -64,7 +64,6 @@ CSMB::~CSMB()
 {
   Deinit();
 }
-
 void CSMB::Deinit()
 {
   CSingleLock lock(*this);
@@ -77,10 +76,17 @@ void CSMB::Deinit()
       smbc_set_context(NULL);
       smbc_free_context(m_context, 1);
     }
+#ifndef _LINUX
     catch(win32_exception e)
     {
       e.writelog(__FUNCTION__);
     }
+#else
+    catch(...)
+    {
+      CLog::Log(LOGERROR,"exception on CSMB::Deinit. errno: %d", errno);
+    }
+#endif
     m_context = NULL;
   }
 }
@@ -91,9 +97,10 @@ void CSMB::Init()
   if (!m_context)
   {
     set_xbox_interface(g_network.m_networkinfo.ip, g_network.m_networkinfo.subnet);
+#ifdef _WIN32
     // set the log function
     set_log_callback(xb_smbc_log);
-
+#endif
     // set workgroup for samba, after smbc_init it can be freed();
     xb_setSambaWorkgroup((char*)g_guiSettings.GetString("smb.workgroup").c_str());
 
@@ -115,6 +122,7 @@ void CSMB::Init()
       /* setup old interface to use this context */
       smbc_set_context(m_context);
 
+#ifndef _LINUX
       // if a wins-server is set, we have to change name resolve order to
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
       {
@@ -128,6 +136,7 @@ void CSMB::Init()
         lp_do_parameter( -1, "dos charset", g_advancedSettings.m_sambadoscodepage.c_str());
       else
         lp_do_parameter( -1, "dos charset", "CP850");
+#endif
     }
     else
     {
@@ -135,12 +144,17 @@ void CSMB::Init()
       m_context = NULL;
     }
   }
+#ifdef _LINUX
+  m_LastActive = timeGetTime();
+#endif
 }
 
 void CSMB::Purge()
 {
+#ifndef _LINUX
   CSingleLock lock(*this);
   smbc_purge();
+#endif
 }
 
 /*
@@ -158,8 +172,10 @@ void CSMB::PurgeEx(const CURL& url)
   CSingleLock lock(*this);
   CStdString strShare = url.GetFileName().substr(0, url.GetFileName().Find('/'));
 
+#ifndef _LINUX
   if (m_strLastShare.length() > 0 && (m_strLastShare != strShare || m_strLastHost != url.GetHostName()))
     smbc_purge();
+#endif
 
   m_strLastShare = strShare;
   m_strLastHost = url.GetHostName();
@@ -225,7 +241,7 @@ CStdString CSMB::URLEncode(const CStdString &value)
   return encoded;
 }
 
-
+#ifndef _LINUX
 DWORD CSMB::ConvertUnixToNT(int error)
 {
   DWORD nt_error;
@@ -235,6 +251,7 @@ DWORD CSMB::ConvertUnixToNT(int error)
 
   return nt_error;
 }
+#endif
 
 CSMB smb;
 
@@ -242,16 +259,23 @@ CFileSMB::CFileSMB()
 {
   smb.Init();
   m_fd = -1;
+#ifdef _LINUX
+  smb.AddActiveConnection();
+#endif
 }
 
 CFileSMB::~CFileSMB()
 {
   Close();
+#ifdef _LINUX
+  smb.AddIdleConnection();
+#endif
 }
 
 __int64 CFileSMB::GetPosition()
 {
   if (m_fd == -1) return 0;
+  smb.Init();
   CSingleLock lock(smb);
   __int64 pos = smbc_lseek(m_fd, 0, SEEK_CUR);
   if ( pos < 0 )
@@ -289,14 +313,21 @@ bool CFileSMB::Open(const CURL& url)
   if (m_fd == -1)
   {
     // write error to logfile
+#ifndef _LINUX
     int nt_error = smb.ConvertUnixToNT(errno);
     CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
+#else
+    CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' error : '%s'", strFileName.c_str(), errno, strerror(errno));
+#endif
     return false;
   }
 
   CSingleLock lock(smb);
-
+#ifndef _LINUX
   struct __stat64 tmpBuffer = {0};
+#else
+  struct stat tmpBuffer;
+#endif
   if (smbc_stat(strFileName, &tmpBuffer) < 0)
   {
     smbc_close(m_fd);
@@ -357,7 +388,11 @@ int CFileSMB::OpenFile(const CURL &url, CStdString& strAuth)
   }
 
   // file open failed, try to open the directory to force authentication
+#ifndef _LINUX
   if (fd < 0 && smb.ConvertUnixToNT(errno) == NT_STATUS_ACCESS_DENIED)
+#else
+  if (fd < 0 && errno == EACCES)
+#endif
   {
     CURL urlshare(url);
 
@@ -400,7 +435,11 @@ bool CFileSMB::Exists(const CURL& url)
   CStdString strFileName = smb.URLEncode(url);
   strFileName = g_passwordManager.GetSMBAuthFilename(strFileName);
 
+#ifndef _LINUX
   struct __stat64 info;
+#else
+  struct stat info;
+#endif
 
   CSingleLock lock(smb);
   int iResult = smbc_stat(strFileName, &info);
@@ -487,7 +526,11 @@ unsigned int CFileSMB::Read(void *lpBuf, __int64 uiBufSize)
 
   if ( bytesRead < 0 )
   {
+#ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+#else
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+#endif
     return 0;
   }
 
@@ -508,7 +551,11 @@ __int64 CFileSMB::Seek(__int64 iFilePosition, int iWhence)
 
   if ( pos < 0 )
   {
+#ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+#else
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+#endif
     return -1;
   }
 
@@ -549,7 +596,11 @@ bool CFileSMB::Delete(const CURL& url)
   int result = smbc_unlink(strFile.c_str());
 
   if(result != 0)
+#ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+#else
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+#endif
 
   return (result == 0);
 }
@@ -565,7 +616,11 @@ bool CFileSMB::Rename(const CURL& url, const CURL& urlnew)
   int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
 
   if(result != 0)
+#ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
+#else
+    CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
+#endif
 
   return (result == 0);
 }
@@ -598,8 +653,12 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
   if (m_fd == -1)
   {
     // write error to logfile
+#ifndef _LINUX
     int nt_error = map_nt_error_from_unix(errno);
     CLog::Log(LOGERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
+#else
+    CLog::Log(LOGERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' error : '%s'", strFileName.c_str(), errno, strerror(errno));
+#endif
     return false;
   }
 
