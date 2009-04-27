@@ -379,8 +379,12 @@ install: install-datas install-web
 	@cp -f xbmc.bin $(prefix)/share/xbmc/xbmc.bin
 	@mkdir -p $(prefix)/bin
 	@cp tools/Linux/xbmc.sh $(prefix)/bin/xbmc
+	@cp tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
 	@cp tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
+	@mkdir -p /usr/share/xsessions
+	@cp tools/Linux/xbmc-xsession.desktop /usr/share/xsessions/XBMC.desktop
 	@chmod 755 $(prefix)/bin/xbmc
+	@chmod 755 $(prefix)/bin/xbmc-standalone
 	@echo "Copying support and legal files,,,"
 	@cp README.linux LICENSE.GPL *.txt xbmc-xrandr $(prefix)/share/xbmc/
 	@echo "Done!"
@@ -406,6 +410,8 @@ install-web:
 uninstall:
 	@echo "Removing XBMC..."
 	@rm -rf $(prefix)/share/xbmc $(prefix)/bin/xbmc
+	@rm -rf $(prefix)/bin/xbmc-standalone
+	@rm -rf /usr/share/xsessions/XBMC.desktop
 	@echo "Done!"
 
 reallyclean:
