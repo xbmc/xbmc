@@ -895,8 +895,8 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   current = future;
   future = render->surface;
 
-  if (( (long)outRect.x1 != outWidth ) ||
-      ( (long)outRect.y1 != outHeight ))
+  if (( outRectVid.x1 != vid_width ) ||
+      ( outRectVid.y1 != vid_height ))
   {
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;

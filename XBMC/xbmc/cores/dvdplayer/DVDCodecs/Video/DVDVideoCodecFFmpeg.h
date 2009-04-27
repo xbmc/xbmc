@@ -64,5 +64,6 @@ protected:
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
   std::string m_name;
+  bool m_UsingSoftware;
 };
 
