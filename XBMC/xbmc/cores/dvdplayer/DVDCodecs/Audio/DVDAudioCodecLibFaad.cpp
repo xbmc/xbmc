@@ -138,6 +138,10 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
 
         m_bInitializedDecoder = true;
       }
+      else 
+      {
+        return -1;
+      }
     }
   }
 

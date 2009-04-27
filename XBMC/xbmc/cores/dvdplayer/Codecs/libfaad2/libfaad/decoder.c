@@ -306,6 +306,9 @@ int32_t NEAACDECAPI NeAACDecInit(NeAACDecHandle hDecoder, uint8_t *buffer,
     if (can_decode_ot(hDecoder->object_type) < 0)
         return -1;
 
+    if (hDecoder->sf_index > 12)
+        return -1;
+
     return bits;
 }
 
