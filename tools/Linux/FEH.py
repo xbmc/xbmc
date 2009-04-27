@@ -166,7 +166,7 @@ if __name__=="__main__":
         exit(0)
 
     if (badDirectRendering()):
-        error("XBMC can not run without direct rendering.\n\nPlease install a valid opengl driver.")
+        error("XBMC needs hardware accelerated OpenGL rendering.\nInstall an appropriate graphics driver.\n\nPlease consult XBMC Wiki for supported hardware\nhttp://xbmc.org/wiki/?title=Supported_hardware")
 
     if (badColorDepth()):
         error("XBMC cannot run unless the\nscreen color depth is atleast 24 bit.\n\nPlease reconfigure your screen.")
