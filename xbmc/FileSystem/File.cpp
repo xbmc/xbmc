@@ -779,7 +779,10 @@ bool CFile::Delete(const CStdString& strFileName)
     if (!pFile.get()) return false;
 
     if(pFile->Delete(url))
+    {
+      g_directoryCache.ClearFile(strFileName);
       return true;
+    }
   }
 #ifndef _LINUX
   catch (const access_violation &e)
@@ -810,7 +813,11 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
     if (!pFile.get()) return false;
 
     if(pFile->Rename(url, urlnew))
+    {
+      g_directoryCache.ClearFile(strFileName);
+      g_directoryCache.ClearFile(strNewFileName);
       return true;
+    }
   }
 #ifndef _LINUX
   catch (const win32_exception &e)
