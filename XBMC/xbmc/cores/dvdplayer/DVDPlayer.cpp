@@ -2883,27 +2883,13 @@ bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
   std::string ext = CUtil::GetExtension(filename);
   if(ext == ".idx")
   {
-#ifdef _XBOX // Don't try to load sub/idx on sdl ports, it's not supportted
-    CDVDDemuxVobsub v;
-    if(!v.Open(filename))
-      return false;
-
-    m_SelectionStreams.Update(NULL, &v);
-    return true;
-#else
+    // Don't try to load sub/idx on sdl ports, it's not supported
     return false;
-#endif
   }
   if(ext == ".sub")
   {
-#ifdef _XBOX
-    CStdString strReplace;
-    CUtil::ReplaceExtension(filename,".idx",strReplace);
-    if (XFILE::CFile::Exists(strReplace))
-      return false;
-#else
+    // Don't try to load sub/idx on sdl ports, it's not supported
     return false;
-#endif
   }
   SelectionStream s;
   s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
