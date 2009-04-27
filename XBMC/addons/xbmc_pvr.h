@@ -27,6 +27,7 @@ extern "C"
   //TODO inherit these functions from xbmc_addon.h
   bool __declspec(dllexport) HasSettings();
   __declspec(dllexport) DllSettings* GetSettings();
+  void __declspec(dllexport) Remove();
 
 
   // Functions that your client must implement

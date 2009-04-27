@@ -3530,10 +3530,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIWindowEPG.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIWindowEPGProgInfo.cpp"
 					>
 				</File>
