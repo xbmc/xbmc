@@ -392,6 +392,22 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
                 g_application.SeekTime(time);
               }
             }
+            else
+            {
+              CStdString strSub("special://temp/subtitle.sub");
+              CStdString strIdx("special://temp/subtitle.idx");
+              if(CFile::Exists(strSub)) CFile::Delete(strSub);
+              if(CFile::Exists(strIdx)) CFile::Delete(strIdx);
+              CFile::Rename(strSub + ".keep", strSub);
+              CFile::Rename(strIdx + ".keep", strIdx);
+
+              if(g_application.m_pPlayer->AddSubtitle(strIdx))
+              {
+                m_subtitleStream = g_application.m_pPlayer->GetSubtitleCount() - 1;
+                g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+                g_application.m_pPlayer->SetSubtitleVisible(true);
+              }
+            }
 
             Close();
           }
