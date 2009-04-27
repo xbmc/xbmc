@@ -27,7 +27,7 @@
 
 #include "../utils/TVChannelInfoTag.h"
 #include "../utils/TVTimerInfoTag.h"
-#include "../../pvrclients/PVRClientTypes.h"
+#include "../../addons/PVRClientTypes.h"
 
 class CPVRManager;
 class CEPG;

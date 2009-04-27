@@ -38,19 +38,19 @@ extern "C"
   const char* GetBackendName();
   const char* GetBackendVersion();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
-  int GetNumBouquets();
-  PVR_ERROR GetBouquetInfo(const unsigned number, PVR_BOUQUET *info);
-  int GetNumChannels();
-  unsigned int GetChannelList(PVR_CHANNEL ***channels);
-  PVR_ERROR GetEPGForChannel(const unsigned channel, PVR_PROGLIST **epg, time_t start, time_t end);
-  PVR_ERROR GetEPGNowInfo(const unsigned channel, PVR_PROGINFO *result);
-  PVR_ERROR GetEPGNextInfo(const unsigned channel, PVR_PROGINFO *result);
-  PVR_ERROR GetEPGDataEnd(time_t *end);
+//  int GetNumBouquets();
+//  PVR_ERROR GetBouquetInfo(const unsigned number, PVR_BOUQUET *info);
+//  int GetNumChannels();
+//  unsigned int GetChannelList(PVR_CHANNEL ***channels);
+//  PVR_ERROR GetEPGForChannel(const unsigned channel, PVR_PROGLIST **epg, time_t start, time_t end);
+//  PVR_ERROR GetEPGNowInfo(const unsigned channel, PVR_PROGINFO *result);
+//  PVR_ERROR GetEPGNextInfo(const unsigned channel, PVR_PROGINFO *result);
+//  PVR_ERROR GetEPGDataEnd(time_t *end);
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
-	  pClient->Create = Create;
+    pClient->Create = Create;
     pClient->GetProperties = GetProperties;
     pClient->Connect = Connect;
     pClient->Disconnect = Disconnect;
@@ -58,14 +58,14 @@ extern "C"
     pClient->GetBackendName = GetBackendName;
     pClient->GetBackendVersion = GetBackendVersion;
     pClient->GetDriveSpace = GetDriveSpace;
-    pClient->GetNumBouquets = GetNumBouquets;
-    pClient->GetBouquetInfo = GetBouquetInfo;
-    pClient->GetNumChannels = GetNumChannels;
-    pClient->GetChannelList = GetChannelList;
-    pClient->GetEPGForChannel = GetEPGForChannel;
-    pClient->GetEPGNowInfo = GetEPGNowInfo;
-    pClient->GetEPGNextInfo = GetEPGNextInfo;
-    pClient->GetEPGDataEnd = GetEPGDataEnd;
+//    pClient->GetNumBouquets = GetNumBouquets;
+//    pClient->GetBouquetInfo = GetBouquetInfo;
+//    pClient->GetNumChannels = GetNumChannels;
+//    pClient->GetChannelList = GetChannelList;
+//    pClient->GetEPGForChannel = GetEPGForChannel;
+//    pClient->GetEPGNowInfo = GetEPGNowInfo;
+//    pClient->GetEPGNextInfo = GetEPGNextInfo;
+//    pClient->GetEPGDataEnd = GetEPGDataEnd;
   };
 };
 

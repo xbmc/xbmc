@@ -2524,7 +2524,7 @@ void CSettings::GetAllAddons()
   m_allAddons.clear();
 
   CFileItemList items;
-  if (!CDirectory::GetDirectory("special://xbmc/pvrclients/", items, ADDON_PVRDLL_EXT, false))
+  if (!CDirectory::GetDirectory("special://xbmc/addons/", items, ADDON_PVRDLL_EXT, false))
     return;
 
   items.m_strPath.Replace("special://xbmc/", "addon://");

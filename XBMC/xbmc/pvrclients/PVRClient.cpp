@@ -22,7 +22,7 @@
 #include <vector>
 
 #include "PVRClient.h"
-#include "../../pvrclients/PVRClientTypes.h"
+#include "../../addons/PVRClientTypes.h"
 #include "../utils/log.h"
 
 CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
@@ -118,23 +118,23 @@ PVR_ERROR CPVRClient::GetBouquetInfo(const unsigned int number, PVR_BOUQUET& inf
 
 int CPVRClient::GetNumChannels()
 {
-  return m_pClient->GetNumChannels();
+  return 0;//m_pClient->GetNumChannels();
 }
 
 PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels)
 {
   // all memory allocation takes place in client, 
   // as we don't know beforehand how many channels exist
-  unsigned int num;
-  PVR_CHANNEL **clientChans = NULL;
-
-  num = m_pClient->GetChannelList(&clientChans);
-  if (num < 1)
-    return PVR_ERROR_SERVER_ERROR;
-
-  // after client returns, we take ownership over the allocated memory
-  if (!ConvertChannels(num, clientChans, channels))
-    return PVR_ERROR_SERVER_ERROR;
+//  unsigned int num;
+//  PVR_CHANNEL **clientChans = NULL;
+//
+//  num = m_pClient->GetChannelList(&clientChans);
+//  if (num < 1)
+//    return PVR_ERROR_SERVER_ERROR;
+//
+//  // after client returns, we take ownership over the allocated memory
+//  if (!ConvertChannels(num, clientChans, channels))
+//    return PVR_ERROR_SERVER_ERROR;
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -201,17 +201,17 @@ void CPVRClient::FreeChannelList(unsigned int num, PVR_CHANNEL **clientChans)
 // EPG ///////////////////////////////////////////////////////////////////////
 PVR_ERROR CPVRClient::GetEPGForChannel(const unsigned int number, CFileItemList &results, const CDateTime &start, const CDateTime &end)
 {
-  time_t start_t, end_t;
-  start.GetAsTime(start_t);
-  end.GetAsTime(end_t);
-
-  // all memory allocation takes place in client
-  PVR_ERROR err;
-  PVR_PROGLIST **epg = NULL;
-
-  err = m_pClient->GetEPGForChannel(number, epg, start_t, end_t);
-  if (err != PVR_ERROR_NO_ERROR)
-    return PVR_ERROR_SERVER_ERROR;
+//  time_t start_t, end_t;
+//  start.GetAsTime(start_t);
+//  end.GetAsTime(end_t);
+//
+//  // all memory allocation takes place in client
+//  PVR_ERROR err;
+//  PVR_PROGLIST **epg = NULL;
+//
+//  err = m_pClient->GetEPGForChannel(number, epg, start_t, end_t);
+//  if (err != PVR_ERROR_NO_ERROR)
+//    return PVR_ERROR_SERVER_ERROR;
 
   // after client returns, we take ownership over the allocated memory
 
@@ -220,12 +220,12 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const unsigned int number, CFileItemList 
 
 PVR_ERROR CPVRClient::GetEPGNowInfo(const unsigned int number, PVR_PROGINFO *result)
 {
-  return m_pClient->GetEPGNowInfo(number, result);
+  return PVR_ERROR_SERVER_ERROR;//m_pClient->GetEPGNowInfo(number, result);
 }
 
 PVR_ERROR CPVRClient::GetEPGNextInfo(const unsigned int number, PVR_PROGINFO *result)
 {
-  return m_pClient->GetEPGNextInfo(number, result);
+  return PVR_ERROR_SERVER_ERROR;//m_pClient->GetEPGNextInfo(number, result);
 }
 
 PVR_ERROR CPVRClient::GetEPGDataEnd(time_t end)

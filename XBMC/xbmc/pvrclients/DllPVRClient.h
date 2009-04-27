@@ -20,7 +20,7 @@
 *
 */
 #include "../DllAddon.h"
-#include "../../pvrclients/PVRClientTypes.h"
+#include "../../addons/PVRClientTypes.h"
 
 class DllPVRClient : public DllAddon<PVRClient>
 {

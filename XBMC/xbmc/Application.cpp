@@ -1287,7 +1287,7 @@ HRESULT CApplication::Initialize()
     CDirectory::Create("special://xbmc/plugins/programs");
     CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/visualisations");
-    CDirectory::Create("special://xbmc/pvrclients");
+    CDirectory::Create("special://xbmc/addons");
     CDirectory::Create("special://xbmc/sounds");
     CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
   }

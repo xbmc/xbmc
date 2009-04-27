@@ -21,7 +21,7 @@
 */
 
 #include "DynamicDll.h"
-#include "settings/DllAddonSettings.h"
+#include "../addons/DllAddonSettings.h"
 
 template <typename T>
 class DllAddonInterface
