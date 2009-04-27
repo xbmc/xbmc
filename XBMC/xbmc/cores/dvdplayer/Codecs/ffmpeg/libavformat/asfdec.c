@@ -704,7 +704,7 @@ int ff_asf_parse_packet(AVFormatContext *s, ByteIOContext *pb, AVPacket *pkt)
             //asf->packet_size_left <= asf->packet_padsize) {
             int ret = asf->packet_size_left + asf->packet_padsize;
             //printf("PacketLeftSize:%d  Pad:%d Pos:%"PRId64"\n", asf->packet_size_left, asf->packet_padsize, url_ftell(pb));
-            assert(ret>=0);
+            //xbmc assert(ret>=0);
             /* fail safe */
             url_fskip(pb, ret);
 
