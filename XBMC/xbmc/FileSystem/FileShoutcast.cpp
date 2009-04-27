@@ -123,6 +123,18 @@ error_code filelib_write_show(char *buf, u_long size)
   while (m_ringbuf.GetMaxWriteSize() < (int)size) Sleep(10);
   m_ringbuf.WriteBinary(buf, size);
   m_ripFile.Write( buf, size ); //will only write, if it has to
+  if (m_fileState.bBuffering)
+  {
+    if (rip_manager_get_content_type() == CONTENT_TYPE_OGG)
+    {
+      if (m_ringbuf.GetMaxReadSize() > (m_ringbuf.Size() / 8) )
+      {
+        // hack because ogg streams are very broke, force it to go.
+        m_fileState.bBuffering = false;
+      }
+    }
+  }
+
   return SR_SUCCESS;
 }
 }
@@ -198,7 +210,13 @@ bool CFileShoutcast::Open(const CURL& url)
   m_dwLastTime = timeGetTime();
   int ret;
 
-  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* dlgProgress = NULL;
+  
+  // workaround to avoid deadlocks caused by dvdplayer halting app, only ogg is played by dvdplayer
+  if (!url.GetFileType().Equals("ogg") )
+  {
+    dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  }
 
   set_rip_manager_options_defaults(&m_opt);
 
@@ -405,5 +423,15 @@ bool CFileShoutcast::GetMusicInfoTag(CMusicInfoTag& tag)
 
 CStdString CFileShoutcast::GetContent()
 {
-  return  m_contenttype;
+  switch (m_contenttype) 
+  { 
+    case CONTENT_TYPE_MP3: 
+      return "audio/mpeg"; 
+    case CONTENT_TYPE_OGG: 
+      return "audio/ogg"; 
+    case CONTENT_TYPE_AAC: 
+      return "audio/aac"; 
+    default: 
+      return "application/octet-stream";  
+  }
 }

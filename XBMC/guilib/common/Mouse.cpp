@@ -51,8 +51,6 @@ CMouse::CMouse()
 
 CMouse::~CMouse()
 {
-  if (m_mouseDevice)
-    delete m_mouseDevice;
 }
 
 void CMouse::Initialize(void *appData)
@@ -72,6 +70,12 @@ void CMouse::Initialize(void *appData)
 
   // Set the default resolution (PAL)
   SetResolution(720, 576, 1, 1);
+}
+
+void CMouse::Cleanup()
+{
+  delete m_mouseDevice;
+  m_mouseDevice = NULL;
 }
 
 void CMouse::Update()

@@ -160,39 +160,6 @@ extern "C" void __stdcall update_emu_environ()
   }
 }
 
-#ifndef _LINUX
-bool emu_is_hd(const char* path)
-{
-  if (path[0] != 0 && path[1] == ':')
-  {
-    if (path[0] == 'C' ||
-        path[0] == 'E' ||
-        path[0] == 'F' ||
-        path[0] == 'Q' ||
-        path[0] == 'S' ||
-        path[0] == 'T' ||
-        path[0] == 'U' ||
-        path[0] == 'V' ||
-        path[0] == 'Y' ||
-        path[0] == 'Z')
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
-bool emu_is_root_drive(const char* path)
-{
-  int pathlen = strlen(path);
-  if (pathlen == 2 || pathlen == 3)
-  {
-    return emu_is_hd(path);
-  }
-  return false;
-}
-#endif
-
 extern "C"
 {
   void dll_sleep(unsigned long imSec)
@@ -342,18 +309,24 @@ extern "C"
     if (len > 1 && relPath[1] == ':')
     {
       if (absPath == NULL) absPath = dll_strdup(relPath);
-      else strcpy(absPath, relPath);
+      else
+      {
+        strncpy(absPath, relPath, maxLength);
+        if (maxLength != 0)
+          absPath[maxLength-1] = '\0';
+      }
       return absPath;
     }
     if (!strncmp(relPath, "\\Device\\Cdrom0", 14))
     {
       // needed?
       if (absPath == NULL) absPath = strdup(relPath);
-      else strcpy(absPath, relPath);
-      /*
-       if(absPath == NULL) absPath = malloc(strlen(relPath) - 12); // \\Device\\Cdrom0 needs 12 bytes less then D:
-      strcpy(absPath, "D:");
-      strcat(absPath, relPath + 14);*/ 
+      else
+      {
+        strncpy(absPath, relPath, maxLength);
+        if (maxLength != 0)
+          absPath[maxLength-1] = '\0';
+      }
       return absPath;
     }
 
@@ -398,15 +371,24 @@ extern "C"
   int dll_open(const char* szFileName, int iMode)
   {
     char str[XBMC_MAX_PATH];
-
+    int size = sizeof(str);
     // move to CFile classes
     if (strncmp(szFileName, "\\Device\\Cdrom0", 14) == 0)
     {
       // replace "\\Device\\Cdrom0" with "D:"
-      strcpy(str, "D:");
-      strcat(str, szFileName + 14);
+      strncpy(str, "D:", size);
+      if (size)
+      {
+        str[size-1] = '\0';
+        strncat(str, szFileName + 14, size - strlen(str));
+      }
     }
-    else strcpy(str, szFileName);
+    else
+    {
+      strncpy(str, szFileName, size);
+      if (size)
+        str[size-1] = '\0';
+    }
 
     CFile* pFile = new CFile();
     bool bWrite = false;
@@ -674,7 +656,7 @@ extern "C"
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data)
   {
     char str[XBMC_MAX_PATH];
-
+    int size = sizeof(str);
     CURL url(file);
     if (url.IsLocal())
     {
@@ -682,10 +664,19 @@ extern "C"
       if (strncmp(file, "\\Device\\Cdrom0", 14) == 0)
       {
         // replace "\\Device\\Cdrom0" with "D:"
-        strcpy(str, "D:");
-        strcat(str, file + 14);
+        strncpy(str, "D:", size);
+        if (size)
+        {
+          str[size - 1] = '\0';
+          strncat(str, file + 14, size - strlen(str));
+        }
       }
-      else strcpy(str, file);
+      else
+      {
+        strncpy(str, file, size);
+        if (size)
+          str[size - 1] = '\0';
+      }
 
       // Make sure the slashes are correct & translate the path
       return _findfirst(_P(CURL::ValidatePath(str)), data);
@@ -723,7 +714,10 @@ extern "C"
     vecDirsOpen[iDirSlot].Directory->GetDirectory(strURL+fName,vecDirsOpen[iDirSlot].items);
     if (vecDirsOpen[iDirSlot].items.Size())
     {
-      strcpy(data->name,vecDirsOpen[iDirSlot].items[0]->GetLabel().c_str());
+      int size = sizeof(data->name);
+      strncpy(data->name,vecDirsOpen[iDirSlot].items[0]->GetLabel().c_str(), size);
+      if (size)
+        data->name[size - 1] = '\0';
       data->size = static_cast<_fsize_t>(vecDirsOpen[iDirSlot].items[0]->m_dwSize);
       data->time_write = iDirSlot; // save for later lookups
       data->time_access = 0;
@@ -746,7 +740,10 @@ extern "C"
     int iItem=data->time_access;
     if (iItem+1 < vecDirsOpen[data->time_write].items.Size()) // we have a winner!
     {
-      strcpy(data->name,vecDirsOpen[data->time_write].items[iItem+1]->GetLabel().c_str());
+      int size = sizeof(data->name);
+      strncpy(data->name,vecDirsOpen[data->time_write].items[iItem+1]->GetLabel().c_str(), size);
+      if (size)
+        data->name[size - 1] = '\0';
       data->size = static_cast<_fsize_t>(vecDirsOpen[data->time_write].items[iItem+1]->m_dwSize);
       data->time_access++;
       return 0;
@@ -1420,25 +1417,6 @@ extern "C"
   //SLOW CODE SHOULD BE REVISED
   int dll_stat(const char *path, struct stat *buffer)
   {
-#ifndef _LINUX
-    //stating a root, for example C:\\, failes on the xbox
-    if (emu_is_root_drive(path))
-    {
-        buffer->st_dev = 4294967280;
-        buffer->st_ino = 0;
-        buffer->st_mode = 16895;
-        buffer->st_nlink = 1;
-        buffer->st_uid = 0;
-        buffer->st_gid = 0;
-        buffer->st_rdev = 4294967280;
-        buffer->st_size = 0;
-        buffer->st_atime = 1000000000;
-        buffer->st_mtime = 1000000000;
-        buffer->st_ctime = 1000000000;
-        return 0;
-    }
- #endif
- 
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
       return -1;
     if (!strnicmp(path, "http://", 7)
@@ -1446,11 +1424,14 @@ extern "C"
       return -1;
     if (!strnicmp(path, "mms://", 6)) // don't stat mms
       return -1;
+      
+#ifdef _LINUX
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
     {
       buffer->st_mode = S_IFDIR;
       return 0;
     }
+#endif
     if (!stricmp(path, "\\Device\\Cdrom0") || !stricmp(path, "\\Device\\Cdrom0\\"))
     {
       buffer->st_mode = _S_IFDIR;
@@ -1480,24 +1461,6 @@ extern "C"
 
   int dll_stat64(const char *path, struct __stat64 *buffer)
   {
-#ifndef _LINUX
-    //stating a root, for example C:\\, failes on the xbox
-    if (emu_is_root_drive(path))
-    {
-        buffer->st_dev = 4294967280;
-        buffer->st_ino = 0;
-        buffer->st_mode = 16895;
-        buffer->st_nlink = 1;
-        buffer->st_uid = 0;
-        buffer->st_gid = 0;
-        buffer->st_rdev = 4294967280;
-        buffer->st_size = 0;
-        buffer->st_atime = 1000000000;
-        buffer->st_mtime = 1000000000;
-        buffer->st_ctime = 1000000000;
-        return 0;
-    }
- #endif 
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
       return -1;
     if (!strnicmp(path, "http://", 7)
@@ -1505,11 +1468,14 @@ extern "C"
       return -1;
     if (!strnicmp(path, "mms://", 6)) // don't stat mms
       return -1;
+
+#ifdef _LINUX
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
     }
+#endif
     if (!stricmp(path, "\\Device\\Cdrom0") || !stricmp(path, "\\Device\\Cdrom0\\"))
     {
       buffer->st_mode = _S_IFDIR;
@@ -1622,14 +1588,20 @@ extern "C"
       if (value_start != NULL)
       {
         char var[64];
-        char *value = (char*)malloc(strlen(envstring) + 1);
+        int size = strlen(envstring) + 1;
+        char *value = (char*)malloc(size);
+        
+        if (!value)
+          return -1;
         value[0] = 0;
         
         memcpy(var, envstring, value_start - envstring);
         var[value_start - envstring] = 0;
         strupr(var);
         
-        strcpy(value, value_start + 1);
+        strncpy(value, value_start + 1, size);
+        if (size)
+          value[size - 1] = '\0';
 
         EnterCriticalSection(&dll_cs_environ);
         
@@ -1656,11 +1628,16 @@ extern "C"
         if (free_position != NULL)
         {
           // free position, copy value
-          *free_position = (char*)malloc(strlen(var) + strlen(value) + 2); // for '=' and 0 termination
-          strcpy(*free_position, var);
-          strcat(*free_position, "=");
-          strcat(*free_position, value);
-          added = true;
+          size = strlen(var) + strlen(value) + 2;
+          *free_position = (char*)malloc(size); // for '=' and 0 termination
+          if ((*free_position))
+          {
+            strncpy(*free_position, var, size);
+            (*free_position)[size - 1] = '\0';
+            strncat(*free_position, "=", size - strlen(*free_position));
+            strncat(*free_position, value, size - strlen(*free_position));
+            added = true;
+          }
         }
         
         LeaveCriticalSection(&dll_cs_environ);

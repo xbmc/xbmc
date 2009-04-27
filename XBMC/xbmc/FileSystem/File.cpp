@@ -148,11 +148,25 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
       CUtil::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {
-        CUtil::Tokenize(strDirectory,tokens,"\\");
-        CStdString strCurrPath = tokens[0]+"\\";
-        for (vector<CStdString>::iterator iter=tokens.begin()+1;iter!=tokens.end();++iter)
+        CURL url(strDirectory);
+        CStdString pathsep;
+#ifndef _LINUX
+        pathsep = "\\";
+#else
+        pathsep = "/";
+#endif
+        CUtil::Tokenize(url.GetFileName(),tokens,pathsep.c_str());
+        CStdString strCurrPath;
+        // Handle special
+        if (!url.GetProtocol().IsEmpty()) {
+          pathsep = "/";
+          strCurrPath += url.GetProtocol() + "://";
+        } // If the directory has a / at the beginning, don't forget it
+        else if (strDirectory[0] == pathsep[0])
+          strCurrPath += pathsep;
+        for (vector<CStdString>::iterator iter=tokens.begin();iter!=tokens.end();++iter)
         {
-          strCurrPath += *iter+"\\";
+          strCurrPath += *iter+pathsep;
           CDirectory::Create(strCurrPath);
         }
       }
@@ -846,8 +860,8 @@ void CFileStreamBuffer::Detach()
 {
   setg(0,0,0);
   setp(0,0);
-  if(m_buffer)
-    SAFE_DELETE(m_buffer);
+  delete[] m_buffer;
+  m_buffer = NULL;
 }
 
 CFileStreamBuffer::int_type CFileStreamBuffer::underflow()

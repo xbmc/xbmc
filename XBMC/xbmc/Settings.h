@@ -28,7 +28,7 @@
 #define DEFAULT_THUMB_SIZE  256
 #else  // MID
 #define DEFAULT_SKIN        "PM3.HD"
-#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#define DEFAULT_VSYNC       VSYNC_DRIVER
 #define DEFAULT_THUMB_SIZE  512
 #endif // MID
 
@@ -144,7 +144,9 @@ public:
     bool m_DisableModChipDetection;
 
     int m_audioHeadRoom;
+    float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
+    float m_audioPlayCountMinimumPercent;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -172,10 +174,13 @@ public:
     int m_musicPercentSeekBackwardBig;
     int m_musicResample;
     int m_videoBlackBarColour;
+    int m_videoIgnoreAtStart;
     CStdString m_audioHost;
+    
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
-
+    float m_videoPlayCountMinimumPercent;
+        
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
@@ -190,7 +195,6 @@ public:
     int m_lcdScrolldelay;
 
     int m_autoDetectPingTime;
-    float m_playCountMinimumPercent;
 
     int m_songInfoDuration;
     int m_busyDialogDelay;
@@ -205,7 +209,8 @@ public:
     bool m_displayRemoteCodes;
     CStdStringArray m_videoCleanRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
-    CStdStringArray m_videoExcludeFromScanRegExps;
+    CStdStringArray m_moviesExcludeFromScanRegExps;
+    CStdStringArray m_tvshowExcludeFromScanRegExps;
     CStdStringArray m_audioExcludeFromListingRegExps;
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;

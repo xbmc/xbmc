@@ -51,8 +51,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
   static bool enigma2 = false;
   // Detect and delete slash at end
   CStdString strRoot = strPath;
-  if (CUtil::HasSlashAtEnd(strRoot))
-  strRoot.Delete(strRoot.size() - 1);
+  CUtil::RemoveSlashAtEnd(strRoot);
 
   //Get the request strings
   CStdString strBQRequest;

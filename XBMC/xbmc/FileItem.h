@@ -401,6 +401,7 @@ public:
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);
   void Assign(const CFileItemList& itemlist, bool append = false);
+  bool Copy  (const CFileItemList& item);
   void Reserve(int iCount);
   void Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder);
   void Randomize();

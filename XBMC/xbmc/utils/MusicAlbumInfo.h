@@ -23,6 +23,7 @@
 
 #include "Song.h"
 #include "Album.h"
+#include "ScraperParser.h"
 
 class TiXmlDocument;
 class CScraperUrl;
@@ -59,6 +60,7 @@ protected:
   float m_relevance;
   CStdString m_strTitle2;
   CScraperUrl m_albumURL;
+  CScraperParser m_parser;
   bool m_bLoaded;
 };
 }

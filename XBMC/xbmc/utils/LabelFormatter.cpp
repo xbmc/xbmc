@@ -203,7 +203,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'L':
     value = item->GetLabel();
     // is the label the actual file or folder name?
-    if (value == item->m_strPath.Right(value.GetLength()))
+    if (value == CUtil::GetFileName(item->m_strPath))
     { // label is the same as filename, clean it up as appropriate
       value = CUtil::GetTitleFromPath(item->m_strPath, item->m_bIsFolder && !item->IsFileFolder());
     }
@@ -298,7 +298,9 @@ void CLabelFormatter::SplitMask(unsigned int label, const CStdString &mask)
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match
     m_staticContent[label].push_back(work.Left(findStart));
-    m_dynamicContent[label].push_back(CMaskString("", *reg.GetReplaceString("\\1"), ""));
+    char* lp_tmp = reg.GetReplaceString("\\1");
+    m_dynamicContent[label].push_back(CMaskString("", *lp_tmp, ""));
+    free(lp_tmp);
     work = work.Mid(findStart + reg.GetFindLen());
   }
   m_staticContent[label].push_back(work);
@@ -320,8 +322,16 @@ void CLabelFormatter::AssembleMask(unsigned int label, const CStdString& mask)
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match for a pre/postfixed string
     // send anything
-    SplitMask(label, work.Left(findStart) + reg.GetReplaceString("\\1"));
-    m_dynamicContent[label].push_back(CMaskString(reg.GetReplaceString("\\2"), *reg.GetReplaceString("\\4"), reg.GetReplaceString("\\5")));
+    char *s1 = reg.GetReplaceString("\\1");
+    char *s2 = reg.GetReplaceString("\\2");
+    char *s4 = reg.GetReplaceString("\\4");
+    char *s5 = reg.GetReplaceString("\\5");
+    SplitMask(label, work.Left(findStart) + s1);
+    m_dynamicContent[label].push_back(CMaskString(s2, *s4, s5));
+    free(s1);
+    free(s2);
+    free(s4);
+    free(s5);
     work = work.Mid(findStart + reg.GetFindLen());
   }
   SplitMask(label, work);

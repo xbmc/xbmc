@@ -2,6 +2,12 @@
 <scraper name="Mtime(Chinese)" content="movies" thumb="mtime.jpg" language="cn">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Full Plot&quot; type=&quot;bool&quot; id=&quot;fullplot&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Plot Method B&quot; type=&quot;bool&quot; id=&quot;plotcoding&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
@@ -52,7 +58,7 @@
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
 				<expression>&lt;!-- 剧情介绍 --&gt;.*?&lt;p &gt;(.*?)\t&lt;/p&gt;</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetMoviePlot&quot;&gt;http://www.mtime.com/database/ShowPlotService.m?Ajax_CallBack=true&amp;amp;Ajax_CallBackType=Mtime.Community.Controls.CommunityPages.ShowPlotService&amp;amp;Ajax_CallBackMethod=LoadData&amp;amp;Ajax_RequestUrl=http%3A%2F%2Fwww.mtime.com%2Fmovie%2F$$2%2Fplots.html&amp;amp;Ajax_CallBackArgument0=1&amp;amp;Ajax_CallBackArgument1=$$2&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fullplot" input="$$2" output="&lt;url function=&quot;GetMoviePlot&quot;&gt;http://www.mtime.com/database/ShowPlotService.m?Ajax_CallBack=true&amp;amp;Ajax_CallBackType=Mtime.Community.Controls.CommunityPages.ShowPlotService&amp;amp;Ajax_CallBackMethod=LoadData&amp;amp;Ajax_RequestUrl=http%3A%2F%2Fwww.mtime.com%2Fmovie%2F$$2%2Fplots.html&amp;amp;Ajax_CallBackArgument0=1&amp;amp;Ajax_CallBackArgument1=$$2&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetFullcredits&quot;&gt;$$3fullcredits.html&lt;/url&gt;" dest="5+">
@@ -92,8 +98,11 @@
 	</GetRating>
 	<GetMoviePlot clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;&lt;plot&gt;\1&lt;/plot&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="\1\2" dest="6">
+			<RegExp conditional="!plotcoding" input="$$1" output="\1\2" dest="6">
 				<expression clear="yes" repeat="yes">pan&gt;(.*?)&lt;span|[13579]\\&quot;&gt;(.*?)&lt;/s</expression>
+			</RegExp>
+			<RegExp conditional="plotcoding" input="$$1" output="\1\2" dest="6">
+				<expression clear="yes" repeat="yes">pan&gt;(.*?)&lt;span|m_s\d?[24680]\\&quot;&gt;(.*?)&lt;/s</expression>
 			</RegExp>
 			<RegExp input="$$6" output="\1" dest="2">
 				<expression clear="yes" repeat="yes">(.*?)\\t</expression>

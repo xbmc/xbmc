@@ -181,6 +181,7 @@ bool CZeroconfAvahi::doRemoveService(const std::string& fcr_ident)
 
 void CZeroconfAvahi::doStop()
 {
+  ScopedEventLoopBlock l_block(mp_poll);
   for(tServiceMap::const_iterator it = m_services.begin(); it != m_services.end(); ++it)
   {
     if (it->second->mp_group)
@@ -214,7 +215,7 @@ void CZeroconfAvahi::clientCallback(AvahiClient* fp_client, AvahiClientState f_s
   case AVAHI_CLIENT_FAILURE:
     CLog::Log(LOGINFO, "CZeroconfAvahi::clientCallback: client failure. avahi-daemon stopped? Recreating client...");
     //We were forced to disconnect from server. now free and recreate the client object
-    avahi_client_free(p_instance->mp_client);
+    avahi_client_free(fp_client);
     p_instance->mp_client = 0;
     //freeing the client also frees all groups and browsers, pointers are undefined afterwards, so fix that now
     for(tServiceMap::const_iterator it = p_instance->m_services.begin(); it != p_instance->m_services.end(); ++it)
@@ -268,12 +269,13 @@ void CZeroconfAvahi::groupCallback(AvahiEntryGroup *fp_group, AvahiEntryGroupSta
       if (it->second->mp_group == fp_group)
         break;
     }
-    assert( it != p_instance->m_services.end() );
-    char* alt_name = avahi_alternative_service_name( it->second->m_name.c_str() );
-    it->second->m_name = alt_name;
-    avahi_free(alt_name);
-    CLog::Log(LOGNOTICE, "CZeroconfAvahi::groupCallback: Service name collision. Renamed to: %s", it->second->m_name.c_str());
-    p_instance->addService(it->second);
+    if( it != p_instance->m_services.end() ) {
+      char* alt_name = avahi_alternative_service_name( it->second->m_name.c_str() );
+      it->second->m_name = alt_name;
+      avahi_free(alt_name);
+      CLog::Log(LOGNOTICE, "CZeroconfAvahi::groupCallback: Service name collision. Renamed to: %s", it->second->m_name.c_str());
+      p_instance->addService(it->second);
+    }
     break;
   }
 

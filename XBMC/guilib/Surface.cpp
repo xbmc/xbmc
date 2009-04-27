@@ -39,6 +39,9 @@ using namespace Surface;
 #endif
 
 #ifdef HAS_GLX
+PFNGLXBINDTEXIMAGEEXTPROC    glXBindTexImageEXT    = NULL;
+PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT = NULL;
+
 Display* CSurface::s_dpy = 0;
 
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg)
@@ -117,6 +120,12 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_glPixmap = 0;
   m_glPixmapTexture = 0;
   m_Pixmap = 0;
+  m_pixmapBound = false;
+
+  if (!glXBindTexImageEXT)
+    glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
+  if (!glXReleaseTexImageEXT)
+    glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 
   GLXFBConfig *fbConfigs = 0;
   bool mapWindow = false;
@@ -520,6 +529,26 @@ bool CSurface::MakePBuffer()
   return status;
 }
 
+void CSurface::BindPixmap()
+{
+  if (!m_pixmapBound)
+  {
+    glXBindTexImageEXT(s_dpy, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
+    VerifyGLState();
+    m_pixmapBound = true;
+  }
+}
+
+void CSurface::ReleasePixmap()
+{
+  if (m_pixmapBound)
+  {
+    glXReleaseTexImageEXT(s_dpy, m_glPixmap,GLX_FRONT_LEFT_EXT);
+    VerifyGLState();
+  }
+  m_pixmapBound = false;
+}
+
 bool CSurface::MakePixmap(int width, int height)
 {
   int num=0;
@@ -909,7 +938,7 @@ void CSurface::Flip()
 #ifdef HAS_GLX
     if (m_iVSyncMode == 3)
     {
-      glXWaitGL();
+      glFinish();
       unsigned int before, after;
       if(_glXGetVideoSyncSGI(&before) != 0)
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
@@ -927,7 +956,7 @@ void CSurface::Flip()
     }
     else if (m_iVSyncMode == 4)
     {
-      glXWaitGL();
+      glFinish();
       unsigned int vCount;
       if(_glXGetVideoSyncSGI(&vCount) == 0)
         _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
@@ -986,59 +1015,56 @@ void CSurface::Flip()
 
 bool CSurface::MakeCurrent()
 {
+  if (m_pShared)
+    return m_pShared->MakeCurrent();
+
+#ifdef HAS_SDL_OPENGL
+  if (!m_glContext)
+    return false;
+#endif
+
 #ifdef HAS_GLX
+  GLXDrawable drawable = None;
   if (m_glWindow)
+    drawable = m_glWindow;
+  else if(m_glPBuffer)
+    drawable = m_glPBuffer;
+  else
+    return false;
+
+  //attempt up to 10 times
+  int i = 0;
+  while (i<=10 && !glXMakeCurrent(s_dpy, drawable, m_glContext))
   {
-    //attempt up to 10 times
-    int i = 0;
-    while (i<=10 && !glXMakeCurrent(s_dpy, m_glWindow, m_glContext))
-    {
-      Sleep(5);
-      i++;
-    }
-    if (i==10)
-      return false;
-    return true;
-    //return (bool)glXMakeCurrent(s_dpy, m_glWindow, m_glContext);
+    Sleep(5);
+    i++;
   }
-  else if (m_glPBuffer)
-  {
-    return (bool)glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext);
-  }
+  if (i==10)
+    return false;
+  return true;
 #endif
 
 #ifdef __APPLE__
-  //if (m_glContext)
-  if (m_pShared)
-  {
-    // Use the shared context, because ours might not be up to date (e.g. if
-    // a transition from windowed to full-screen took place).
-    //
-    m_pShared->MakeCurrent();
-  }
-  else if (m_glContext)
-  {
-    Cocoa_GL_MakeCurrentContext(m_glContext);
-    return true;
-  }
+  Cocoa_GL_MakeCurrentContext(m_glContext);
+  return true;
 #endif
 
 #ifdef _WIN32
-  if (IsShared())
-    return m_pShared->MakeCurrent();
-  if (m_glContext)
-  {
-    if(wglGetCurrentContext() == m_glContext)
-      return true;
-    else
-      return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
-    }
+  if(wglGetCurrentContext() == m_glContext)
+    return true;
+  else
+    return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
 #endif
   return false;
 }
 
 void CSurface::RefreshCurrentContext()
 {
+#ifdef HAS_GLX
+  ReleaseContext();
+  MakeCurrent();
+#endif
+
 #ifdef __APPLE__
   m_glContext = Cocoa_GL_GetCurrentContext();
 #endif

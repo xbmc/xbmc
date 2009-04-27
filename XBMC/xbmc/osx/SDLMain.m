@@ -293,6 +293,15 @@ static void CustomApplicationMain (int argc, char **argv)
 {
     int status;
 
+    // Block SIGPIPE
+    // SIGPIPE repeatably kills us, turn it off
+    {
+      sigset_t set;
+      sigemptyset(&set);
+      sigaddset(&set, SIGPIPE);
+      sigprocmask(SIG_BLOCK, &set, NULL);
+    }
+
     /* Set the working directory to the .app's parent directory */
     [self setupWorkingDirectory:gFinderLaunch];
 

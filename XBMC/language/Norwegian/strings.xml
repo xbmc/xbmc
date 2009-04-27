@@ -57,7 +57,7 @@
   <string id="119">Ny katalog</string>
   <string id="120">Bekreft kopiering</string>
   <string id="121">Bekreft flytting</string>
-  <string id="122">Bekreft sletting? Dette kan ikke angres.</string>
+  <string id="122">Bekreft sletting?</string>
   <string id="123">Kopiér disse filene?</string>
   <string id="124">Flytt disse filene?</string>
   <string id="125">Slett disse filene? Dette kan ikke angres.</string>
@@ -464,6 +464,7 @@
   <string id="545">Lydenhet</string>
   <string id="546">Direkte lydenhet</string>
   <string id="547">Ingen biografi for denne artist</string>
+  <string id="548">Nedmiks multikanals audio til stereo</string>
   
   <string id="550">Sortér etter: %s</string>
   <string id="551">Navn</string>
@@ -561,7 +562,8 @@
   <string id="659"></string>
   <string id="660">Lydforsterkning</string>
   <string id="661">Velg eksportmappe</string>
-  
+  <string id="662">Denne fila er ikke lenger tilgjengelig.</string>
+  <string id="663">Vil du fjerne den fra biblioteket?</string>
   <string id="700">Renser bibliotek</string>
   <string id="701">Fjerner gamle sanger fra bibliotek</string>
   <string id="702">Denne katalogen har blitt skannet før.</string>
@@ -710,6 +712,7 @@
   <string id="1045">Plugininstilling</string>
   <string id="1046">Aksesspunkt</string>
   <string id="1047">Andre..</string>
+  <string id="1048">Brukernavn på webserver</string>
   
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbeidsgruppe</string>
@@ -756,7 +759,8 @@
   <string id="1255">Send FTP brukernavn og passord</string>
   <string id="1256">Ping-intervall</string>
   <string id="1257">Ønsker du å koble til det oppdagede systemet?</string>
-  
+
+  <string id="1260">Zeroconf publisering</string>  
   <string id="1396">Forbigående</string>
   <string id="1397">og</string>
   <string id="1398">Kjølig</string>
@@ -778,6 +782,7 @@
   <string id="1414">lyn og torden</string>
   <string id="1415">duskregn</string>
   <string id="1416">tåkete</string>
+  <string id="1417">kornete</string> <!-- Please check this one -->
   
   <!-- strings through to 1450 reserved for weather translation -->
   
@@ -960,6 +965,9 @@
   <string id="13020">Er en annen sesjon aktiv, eventuelt over ssh?</string>
   <string id="13021">Montert utskiftbar harddisk</string>
   <string id="13022">Usikker enhetsfjerning</string>
+  <string id="13023">Enhet ble fjernet</string>
+  <string id="13024">Joystick ble plugget inn</string>
+  <string id="13025">Joystick ble plugget ut</string>
   <string id="13100">Flimmerfilter</string>
   <string id="13101">La skjermdriver velge (krever omstart)</string>
   <string id="13105">Vertikal blank synk</string>
@@ -979,6 +987,7 @@
   <string id="13117">Bikubisk</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Streng pixmap-tekstur-binding (krever omstart)</string>
  
   <string id="13130">Skjermblanking</string>
   <string id="13131">Deaktivert</string>
@@ -986,7 +995,7 @@
   
   <string id="13140">Aktive tilkoblinger oppdaget!</string>
   <string id="13141">Om du fortsetter kan det hende du ikke greier kontrollere XBMC</string>
-  <string id="13142">lengre. Er du sikker på å stoppe hendelseserveren?</string>
+  <string id="13142">lengre. Er du sikker på du vil stoppe hendelseserveren?</string>
 
   <string id="13144">Endre Apple fjernkontrollmodus?</string>
   <string id="13145">Om du nå bruker Apple fjernkontroll for å styre</string>
@@ -1174,6 +1183,8 @@
   <string id="13417">Grunnleggende shadere (ARB)</string>
   <string id="13418">Avanserte shadere (GLSL)</string>
   <string id="13419">Programvare</string>
+  <string id="13420">Løs ut</string>
+  <string id="13421">VDPAU</string>
   
   <string id="13600">Apple fjernkontroll</string>
   <string id="13601">Modus</string>
@@ -1483,7 +1494,12 @@
   <string id="16307">Bikubisk (programvare)</string>
   <string id="16308">Lanczos (programvare)</string>
   <string id="16309">Sinc (programvare)</string>
-  
+  <string id="16310">(VDPAU) temporal</string> 
+  <string id="16311">(VDPAU) temporal/romlig</string> 
+  <string id="16312">(VDPAU) støyreduksjon</string> 
+  <string id="16313">(VDPAU) skarphet</string> 
+  <string id="16314">Invers telecine</string> 
+
   <string id="17500">Skjermdvaletid </string>
   
   <string id="20000">CDDA rip-mappe</string>
@@ -1888,7 +1904,12 @@
   <string id="21409">før</string>
   <string id="21410">etter siste</string>
   <string id="21411">ikke etter siste</string>
-  
+  <string id="21412">Skrapere</string> 
+  <string id="21413">Standard filmskraper</string> 
+  <string id="21414">Standard TV-serie-skraper</string> 
+  <string id="21415">Standard musikkvideo-skraper</string> 
+  <string id="21416">Aktivér retrett basert på skraper-språk</string> 
+
   <string id="21420">Verdi som er lik</string>
   <string id="21421">Smart spillelisteoppsett</string>
   <string id="21422">Match oppføring hvor</string>
@@ -2025,6 +2046,7 @@
   <string id="22036">Importér karaoketitler...</string>
   <string id="22037">Automatisk sprett-opp-sangvelger</string>
   <string id="22038">Eksportér karaoketitler...</string>
+  <string id="22039">Skriv inn sangnummer</string>
   <string id="22040">hvitt/grønt</string>
   <string id="22041">hvitt/rødt</string>
   <string id="22042">hvitt/blått</string>

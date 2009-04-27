@@ -7,6 +7,8 @@ INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
           -Ilib/libUPnP/Platinum/Source/Devices/MediaConnect \
           -Ilib/libUPnP/Platinum/Source/Devices/MediaRenderer \
 
+INCLUDES+=-Ilib/libcdio/libcdio/include
+
 PCH=stdafx.h
 
 SRCS=Application.cpp \

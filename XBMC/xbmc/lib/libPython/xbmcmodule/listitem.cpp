@@ -282,11 +282,11 @@ namespace PYXBMC
   {
     if (!self->item) return NULL;
 
-    bool bOnOff = false;
+    char bOnOff = false;
     if (!PyArg_ParseTuple(args, (char*)"b", &bOnOff)) return NULL;
 
     PyGUILock();
-    self->item->Select(bOnOff);
+    self->item->Select(0 != bOnOff);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -616,7 +616,7 @@ namespace PYXBMC
     if (!self->item) return NULL;
 
     PyObject *pList = NULL;
-    bool bReplaceItems = false;
+    char bReplaceItems = false;
     static const char *keywords[] = { "items", "replaceItems", NULL };
 
     if (!PyArg_ParseTupleAndKeywords(
@@ -669,7 +669,7 @@ namespace PYXBMC
 
     // set our replaceItems status
     if (bReplaceItems)
-      self->item->SetProperty("pluginreplacecontextitems", bReplaceItems);
+      self->item->SetProperty("pluginreplacecontextitems", 0 != bReplaceItems);
 
     Py_INCREF(Py_None);
     return Py_None;

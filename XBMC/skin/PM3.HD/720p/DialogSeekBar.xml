@@ -70,7 +70,19 @@
 				<font>font10</font>
 				<textcolor>grey2</textcolor>
 				<label>31043</label>
-				<visible>Player.Paused + !Player.Seeking</visible>
+				<visible>[Player.Paused + !Player.Caching] + !Player.Seeking</visible>
+			</control>
+			<control type="label">
+				<description>Cache Label</description>
+				<posx>200</posx>
+				<posy>8</posy>
+				<height>20</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font10</font>
+				<textcolor>grey2</textcolor>
+				<label>$LOCALIZE[15107] $INFO[Player.CacheLevel]%</label>
+				<visible>[Player.Paused + Player.Caching] + !Player.Seeking</visible>
 			</control>
 			<control type="label">
 				<description>Seeking Label</description>
@@ -254,6 +266,16 @@
 				<height>8</height>
 				<info>Player.Progress</info>
 				<visible>true</visible>
+			</control>
+			<control type="progress">
+				<description>Player Caching Progress Bar</description>
+				<posx>10</posx>
+				<posy>40</posy>
+				<width>380</width>
+				<height>3</height>
+				<midtexture border="4,0,4,0">ProgressBuffer.png</midtexture>
+				<info>Player.CacheLevel</info>
+				<visible>Player.Caching</visible>
 			</control>
 			<control type="slider" id="401">
 				<description>Seek Slider</description>

@@ -24,6 +24,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+
+#if defined(HAS_FILESYSTEM_SMB)
 #include "FileSmb.h"
 #include "GUIPassword.h"
 #include "SMBDirectory.h"
@@ -127,6 +129,7 @@ void CSMB::Init()
     if (f != NULL)
     {
       fprintf(f, "[global]\n");
+      fprintf(f, "lanman auth = yes\n");
       // if a wins-server is set, we have to change name resolve order to
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
       {
@@ -745,3 +748,5 @@ bool CFileSMB::IsValidFile(const CStdString& strFileName)
       return false;
   return true;
 }
+
+#endif

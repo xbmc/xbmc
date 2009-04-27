@@ -52,7 +52,7 @@ protected:
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
 
-  AVFrame* m_pConvertFrame;
+  AVPicture* m_pConvertFrame;
 
   int m_iPictureWidth;
   int m_iPictureHeight;
@@ -64,5 +64,6 @@ protected:
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
   std::string m_name;
+  bool m_UsingSoftware;
 };
 

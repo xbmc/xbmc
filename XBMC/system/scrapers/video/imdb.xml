@@ -50,7 +50,7 @@
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes">/title/([t0-9]*)/faq</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;;&lt;url&gt;http://$INFO[url]/title/$$7/&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;&lt;url&gt;http://$INFO[url]/title/$$7/&lt;/url&gt;&lt;id&gt;$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
 				<expression clear="yes" noclean="1">&lt;meta name=&quot;title&quot; content=&quot;([^&quot;]*) \(([0-9]*)\)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="4">
@@ -201,8 +201,8 @@
 		<RegExp input="$$1" output="\1" dest="4">
 			<expression clear="yes" noclean="1">value=&quot;/([^&quot;]*)/[^&quot;]*\.html&quot;&gt;</expression>
 		</RegExp>
-		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="8+">
-			<expression clear="yes" noclean="1">&lt;img SRC=&quot;posters/([^&quot;]*)&quot;</expression>
+		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\2&lt;/thumb&gt;" dest="8+">
+			<expression clear="yes" noclean="1">&lt;img (SRC|src)=&quot;posters/([^&quot;]*)&quot;</expression>
 		</RegExp>
 		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="9+">
 			<expression clear="yes" repeat="yes" noclean="1">thumbs/imp_([^&gt;]*ver[^&gt;]*.jpg)&gt;</expression>

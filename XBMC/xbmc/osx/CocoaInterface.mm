@@ -721,30 +721,6 @@ void Cocoa_MountPoint2DeviceName(char* path)
 }
 
 /*
-int Cocoa_TouchDVDOpenMediaFile(const char *strDVDFile)
-{
-  //strDVDFile = "/dev/rdisk1";
-  OSStatus result;
-  result = DVDInitialize();
-  if (result == noErr)
-  {
-	FSRef fileRef;
-    Boolean isDirectory;
-    
-    result = FSPathMakeRef((UInt8 *)strDVDFile, &fileRef, &isDirectory);
-    
-    result = DVDOpenMediaFile(&fileRef);
-    if (result == kDVDErrordRegionCodeUninitialized) {
-      //CLog::Log(LOGERROR,"Error on DVD Region Code Uninitialized\n");
-    }
-  }
-  result = DVDDispose();
-  
-  return(0);
-}
-*/
-
-/*
 @interface MyView : NSOpenGLView
 {
     CVDisplayLinkRef displayLink; //display link for managing rendering thread
@@ -827,32 +803,3 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     [self setNeedsDisplay:YES];
 }
 */
-
-/*
-// Sleep
-  NSDictionary* errorDict;
-  NSAppleEventDescriptor* returnDescriptor = NULL;
-  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
-          @"tell application \"Finder\" to sleep"];
-  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
-  [scriptObject release];
-               
-    
-//Shut Down
-  NSDictionary* errorDict;
-  NSAppleEventDescriptor* returnDescriptor = NULL;
-  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
-          @"tell application \"Finder\" to shut down"];
-  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
-  [scriptObject release];
-
-\"System Events\"
-\"loginwindow\"
-
-NSAppleScript *playScript;
-playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to shut down"];
-playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to restart"];
-playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to sleep"];
-[playScript executeAndReturnError:nil];
-*/
-

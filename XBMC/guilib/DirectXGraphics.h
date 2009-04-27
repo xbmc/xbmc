@@ -135,24 +135,31 @@ bool IsPalettedFormat(XB_D3DFORMAT format);
 void ParseTextureHeader(D3DTexture *tex, XB_D3DFORMAT &fmt, DWORD &width, DWORD &height, DWORD &pitch, DWORD &offset);
 bool IsSwizzledFormat(XB_D3DFORMAT format);
 
+#ifndef _LINUX
+typedef unsigned __int32 uint32_t;
+typedef unsigned __int8 uint8_t;
+typedef __int16 int16_t;
+#endif
+
+#pragma pack(push, 2)
 typedef struct {
-  char padding[2];    // to fix aligning problems (why is this??)
-  char  id[2];           // offset
-  long filesize;        // 2
-  long reserved;        // 6
-  long headersize;      // 10
-  long infoSize;        // 14
-  long width;           // 18
-  long height;          // 22
-  short biPlanes;       // 26
-  short bits;           // 28
-  long biCompression;   // 30
-  long biSizeImage;     // 34
-  long biXPelsPerMeter; // 38
-  long biYPelsPerMeter; // 42
-  long biClrUsed;       // 46
-  long biClrImportant;  // 50
+  uint8_t  id[2];           // offset
+  uint32_t filesize;        // 2
+  uint32_t reserved;        // 6
+  uint32_t headersize;      // 10
+  uint32_t infoSize;        // 14
+  uint32_t width;           // 18
+  uint32_t height;          // 22
+  uint16_t biPlanes;       // 26
+  uint16_t bits;           // 28
+  uint32_t biCompression;   // 30
+  uint32_t biSizeImage;     // 34
+  uint32_t biXPelsPerMeter; // 38
+  uint32_t biYPelsPerMeter; // 42
+  uint32_t biClrUsed;       // 46
+  uint32_t biClrImportant;  // 50
 } BMPHEAD;
+#pragma pack(pop)
 
 #ifndef HAS_SDL
 HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName);

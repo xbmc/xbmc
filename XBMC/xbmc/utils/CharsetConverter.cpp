@@ -361,14 +361,15 @@ void CCharsetConverter::reset(void)
 
 // The bVisualBiDiFlip forces a flip of characters for hebrew/arabic languages, only set to false if the flipping
 // of the string is already made or the string is not displayed in the GUI
-void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/, bool* bWasFlipped/*=NULL*/)
+void CCharsetConverter::utf8ToW(const CStdStringA& utf8String, CStdStringW &wString, bool bVisualBiDiFlip/*=true*/, bool forceLTRReadingOrder /*=false*/, bool* bWasFlipped/*=NULL*/)
 {
   CStdStringA strFlipped;
 
   // Try to flip hebrew/arabic characters, if any
   if (bVisualBiDiFlip)
   {
-    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8);
+    FriBidiCharType charset = forceLTRReadingOrder ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_PDF;
+    logicalToVisualBiDi(utf8String, strFlipped, FRIBIDI_CHAR_SET_UTF8, charset, bWasFlipped);
     convert(m_iconvUtf8toW,sizeof(wchar_t),UTF8_SOURCE,WCHAR_CHARSET,strFlipped,wString);
   }
   else
@@ -393,18 +394,6 @@ void CCharsetConverter::utf8ToStringCharset(CStdStringA& strSourceDest)
   CStdString strDest;
   utf8ToStringCharset(strSourceDest, strDest);
   strSourceDest=strDest;
-}
-
-void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest)
-{
-  CSingleLock lock(m_critSection);
-  convert(m_iconvStringCharsetToUtf8,UTF8_DEST_MULTIPLIER,g_langInfo.GetGuiCharSet(),"UTF-8",strSource,strDest);
-}
-
-void CCharsetConverter::stringCharsetToUtf8(CStdStringA& strSourceDest)
-{
-  CStdString strSource=strSourceDest;
-  stringCharsetToUtf8(strSource, strSourceDest);
 }
 
 void CCharsetConverter::stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest)
@@ -458,7 +447,10 @@ void CCharsetConverter::unknownToUTF8(const CStdStringA &source, CStdStringA &de
   if (isValidUtf8(source))
     dest = source;
   else
-    stringCharsetToUtf8(source, dest);
+  {
+    CSingleLock lock(m_critSection);
+    convert(m_iconvStringCharsetToUtf8, UTF8_DEST_MULTIPLIER, g_langInfo.GetGuiCharSet(), "UTF-8", source, dest);
+  }
 }
 
 void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDest)

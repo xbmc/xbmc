@@ -266,7 +266,7 @@
   <string id="354">Matrix-spår</string>
   <string id="355">Tid innan skärmsläckare startar</string>
   <string id="356">Skärmsläckarläge</string>
-  <string id="357">Tid innan avstängning vid vila</string>
+  <string id="357">Avstängningsfunktionstimer</string>
   <string id="358">Alla album</string>
   <string id="359">Senast tillagda album</string>
   <string id="360">Skärmsläckare</string>
@@ -716,6 +716,7 @@
   <string id="1255">Skicka FTP användare och lösenord</string>
   <string id="1256">Pingintervall (sek)</string>
   <string id="1257">Vill du ansluta till det autodetekterade systemet?</string>
+  <string id="1260">Zeroconf publisering</string>
   <string id="1396">Blåsigt</string>
   <string id="1397">och</string>
   <string id="1398">Nollgradigt</string>
@@ -882,7 +883,7 @@
   <string id="13005">Stäng av</string>
   <string id="13006">Menysystem</string>
   <string id="13007">Använd egen menysystem sökväg</string>
-  <string id="13008">Standardinställning för avslut</string>
+  <string id="13008">Avstängningsfunktion</string>
   <string id="13009">Avsluta</string>
   <string id="13010">Viloläge</string>
   <string id="13011">Vänteläge</string>
@@ -912,6 +913,7 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Strikt Pixmap-Texture Bindning (kräver omstart)</string>
   <string id="13130">Skärmrensning</string>
   <string id="13131">Inaktivera</string>
   <string id="13132">Rensa skärmar</string>
@@ -1096,7 +1098,7 @@
   <string id="13417">Grundläggande shaders (ARB)</string>
   <string id="13418">Avancerade shaders (GLSL)</string>
   <string id="13419">Mjukvara</string>
-  <string id="13420">Mata ut</string>
+  <string id="13420">Säker borttagning</string>
   <string id="13421">VDPAU</string>
   <string id="13600">Apple fjärrkontroll</string>
   <string id="13601">Läge</string>

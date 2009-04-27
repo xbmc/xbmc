@@ -21,8 +21,10 @@
  *
  */
 
+#include <set>
 #include "GUIWindow.h"
 #include "utils/Thread.h"
+#include "utils/CriticalSection.h"
 #include "SlideShowPicture.h"
 #include "DllImageLib.h"
 
@@ -84,7 +86,8 @@ public:
   int CurrentSlide() const;
   void Shuffle();
 private:
-  void AddItems(const CStdString &strPath, bool bRecursive);
+  typedef std::set<CStdString> path_set;  // set to track which paths we're adding
+  void AddItems(const CStdString &strPath, path_set *recursivePaths);
   void RenderPause();
   void RenderErrorMessage();
   void Rotate();
@@ -114,4 +117,5 @@ private:
   bool m_bReloadImage;
   DllImageLib m_ImageLib;
   RESOLUTION m_Resolution;
+  CCriticalSection m_slideSection;
 };

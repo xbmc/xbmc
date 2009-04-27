@@ -87,7 +87,11 @@ public:
     if (Label.size() > 0)
       share->strName = Label;
     else
-      share->strName = CUtil::GetFileName(MountPoint);
+    {
+      share->strName = MountPoint;
+      CUtil::RemoveSlashAtEnd(share->strName);
+      share->strName = CUtil::GetFileName(share->strName);
+    }
 
     share->m_ignore = true;
     if (HotPlugged)
@@ -110,7 +114,7 @@ public:
 
   void Initialize();
   CHalManager();
-  ~CHalManager();
+  void Stop();
   std::vector<CStorageDevice> GetVolumeDevices();
   bool Eject(CStdString path);
 protected:
@@ -119,7 +123,9 @@ protected:
   static DBusError m_Error;
   static bool NewMessage;
 
-  void ParseDevice(const char *udi);
+
+  void UpdateDevice(const char *udi);
+  void AddDevice(const char *udi);
   bool RemoveDevice(const char *udi);
 
 private:
@@ -129,10 +135,10 @@ private:
   void GenerateGDL();
 
   bool UnMount(CStorageDevice volume);
-  bool Mount(CStorageDevice volume, CStdString mountpath);
+  bool Mount(CStorageDevice *volume, CStdString mountpath);
+  void HandleNewVolume(CStorageDevice *dev);
 
   static bool DeviceFromVolumeUdi(const char *udi, CStorageDevice *device);
-  static std::vector<CStorageDevice> DeviceFromDriveUdi(const char *udi);
   static CCriticalSection m_lock;
 
   bool m_bMultipleJoysticksSupport;

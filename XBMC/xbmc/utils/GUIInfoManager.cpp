@@ -1123,10 +1123,10 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
-    strLabel.Format("%s %ix%i %s %02.2f Hz.",g_localizeStrings.Get(13287),
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
-    g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
+    strLabel.Format("%ix%i %s %02.2f Hz.",
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
     return strLabel;
     break;
 
@@ -1344,67 +1344,57 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 #endif
   case NETWORK_IP_ADDRESS:
     {
-      CStdString ip;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
-        ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), iface->GetCurrentIPAddress().c_str());
+        return iface->GetCurrentIPAddress();
 #else
-      ip.Format("%s: %s", g_localizeStrings.Get(150).c_str(), g_application.getNetwork().m_networkinfo.ip);
+      return g_application.getNetwork().m_networkinfo.ip;
 #endif
-      return ip;
     }
     break;
   case NETWORK_SUBNET_ADDRESS:
     {
-      CStdString subnet;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
-        subnet.Format("%s: %s", g_localizeStrings.Get(13159), iface->GetCurrentNetmask().c_str());
+        return iface->GetCurrentNetmask();
 #else
-      subnet.Format("%s: %s", g_localizeStrings.Get(13159).c_str(), g_application.getNetwork().m_networkinfo.subnet);
+      return g_application.getNetwork().m_networkinfo.subnet;
 #endif
-      return subnet;
     }
     break;
   case NETWORK_GATEWAY_ADDRESS:
     {
-      CStdString gateway;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
-        gateway.Format("%s: %s", g_localizeStrings.Get(13160), iface->GetCurrentDefaultGateway().c_str());
+        return iface->GetCurrentDefaultGateway();
 #else
-      gateway.Format("%s: %s", g_localizeStrings.Get(13160).c_str(), g_application.getNetwork().m_networkinfo.gateway);
+      return g_application.getNetwork().m_networkinfo.gateway;
 #endif
-      return gateway;
     }
     break;
   case NETWORK_DNS1_ADDRESS:
     {
-      CStdString dns;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
-          dns.Format("%s: %s", g_localizeStrings.Get(13161), nss[0].c_str());
+        return nss[0];
 #else
-      dns.Format("%s: %s", g_localizeStrings.Get(13161).c_str(), g_application.getNetwork().m_networkinfo.DNS1);
+      return g_application.getNetwork().m_networkinfo.DNS1;
 #endif
-      return dns;
     }
     break;
   case NETWORK_DNS2_ADDRESS:
     {
-      CStdString dns;
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
-          dns.Format("%s: %s", g_localizeStrings.Get(20307), nss[1].c_str());
+        return nss[1];
 #else
-      dns.Format("%s: %s", g_localizeStrings.Get(20307).c_str(), g_application.getNetwork().m_networkinfo.DNS2);
+      return g_application.getNetwork().m_networkinfo.DNS2;
 #endif
-      return dns;
     }
     break;
   case NETWORK_DHCP_ADDRESS:
@@ -1489,16 +1479,16 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     }
     break;
   case SYSTEM_OPENGL_VENDOR:
-    strLabel.Format("%s %s", g_localizeStrings.Get(22007), Surface::CSurface::GetGLVendor());
+    strLabel = Surface::CSurface::GetGLVendor();
     break;
   case SYSTEM_OPENGL_RENDERER:
-    strLabel.Format("%s %s", g_localizeStrings.Get(22008), Surface::CSurface::GetGLRenderer());
+    strLabel = Surface::CSurface::GetGLRenderer();
     break;
   case SYSTEM_OPENGL_VERSION:
   {
     int major, minor;
     Surface::CSurface::GetGLVersion(major, minor);
-    strLabel.Format("%s %d.%d", g_localizeStrings.Get(22009), major, minor);
+    strLabel.Format("%d.%d", major, minor);
     break;
   }
   }
@@ -3198,29 +3188,23 @@ string CGUIInfoManager::GetSystemHeatInfo(int info)
   CStdString text;
   switch(info)
   {
-    case SYSTEM_CPU_TEMPERATURE:
-      text.Format("%s %s", g_localizeStrings.Get(22011).c_str(), m_cpuTemp.IsValid()?m_cpuTemp.ToString():"?");
-      break;
-    case SYSTEM_GPU_TEMPERATURE:
-      text.Format("%s %s", g_localizeStrings.Get(22010).c_str(), m_gpuTemp.IsValid()?m_gpuTemp.ToString():"?");
-      break;
-    case SYSTEM_FAN_SPEED:
-      text.Format("%s: %i%%", g_localizeStrings.Get(13300).c_str(), m_fanSpeed * 2);
-      break;
     case LCD_CPU_TEMPERATURE:
-      return m_cpuTemp.ToString();
+    case SYSTEM_CPU_TEMPERATURE:
+      return m_cpuTemp.IsValid() ? m_cpuTemp.ToString() : "?";
       break;
     case LCD_GPU_TEMPERATURE:
-      return m_gpuTemp.ToString();
+    case SYSTEM_GPU_TEMPERATURE:
+      return m_gpuTemp.IsValid() ? m_gpuTemp.ToString() : "?";
       break;
     case LCD_FAN_SPEED:
+    case SYSTEM_FAN_SPEED:
       text.Format("%i%%", m_fanSpeed * 2);
       break;
     case SYSTEM_CPU_USAGE:
 #if defined(__APPLE__) || defined(_WIN32)
-      text.Format("%s %d%", g_localizeStrings.Get(13271).c_str(), g_cpuInfo.getUsedPercentage());
+      text.Format("%d%%", g_cpuInfo.getUsedPercentage());
 #else
-      text.Format("%s %s", g_localizeStrings.Get(13271).c_str(), g_cpuInfo.GetCoresUsageString());
+      text.Format("%s", g_cpuInfo.GetCoresUsageString());
 #endif
       break;
   }
@@ -3413,7 +3397,11 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
   }
 
   if (!operand.empty())
-    comb.m_postfix.push_back(TranslateSingleString(operand));
+  {
+    int op = TranslateSingleString(operand);
+    if (op)
+      comb.m_postfix.push_back(op);
+  }
 
   // finish up by adding any operators
   while (!save.empty())
@@ -3779,7 +3767,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
     break;
   case LISTITEM_SORT_LETTER:
     {
-      CStdString letter = item->GetSortLabel().Left(1);
+      CStdString letter = g_charsetConverter.utf8Left(item->GetSortLabel(), 1);
       letter.ToUpper();
       return letter;
     }

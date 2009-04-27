@@ -37,8 +37,7 @@ void CDirectoryHistory::RemoveSelectedItem(const CStdString& strDirectory)
 {
   CStdString strDir = strDirectory;
   strDir.ToLower();
-  while (CUtil::HasSlashAtEnd(strDir) )
-    strDir = strDir.Left(strDir.size() - 1);
+  CUtil::RemoveSlashAtEnd(strDir);
 
   vector<CHistoryItem>::iterator Iter;
   for (Iter = m_vecHistory.begin();Iter != m_vecHistory.end(); Iter++)
@@ -57,17 +56,10 @@ void CDirectoryHistory::SetSelectedItem(const CStdString& strSelectedItem, const
   // if (strDirectory.size()==0) return;
   CStdString strDir = strDirectory;
   strDir.ToLower();
-  while (CUtil::HasSlashAtEnd(strDir) )
-  {
-    strDir = strDir.Left(strDir.size() - 1);
-  }
+  CUtil::RemoveSlashAtEnd(strDir);
 
   CStdString strItem = strSelectedItem;
-  while (CUtil::HasSlashAtEnd(strItem) )
-  {
-    strItem = strItem.Left(strItem.size() - 1);
-  }
-
+  CUtil::RemoveSlashAtEnd(strItem);
 
   for (int i = 0; i < (int)m_vecHistory.size(); ++i)
   {
@@ -89,10 +81,8 @@ const CStdString& CDirectoryHistory::GetSelectedItem(const CStdString& strDirect
 {
   CStdString strDir = strDirectory;
   strDir.ToLower();
-  while (CUtil::HasSlashAtEnd(strDir) )
-  {
-    strDir = strDir.Left(strDir.size() - 1);
-  }
+  CUtil::RemoveSlashAtEnd(strDir);
+
   for (int i = 0; i < (int)m_vecHistory.size(); ++i)
   {
     const CHistoryItem& item = m_vecHistory[i];

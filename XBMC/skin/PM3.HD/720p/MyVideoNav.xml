@@ -11,7 +11,7 @@
 			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
 			<texture diffuse="Fanart_Diffuse.png" fallback="background-videos.jpg">$INFO[Fanart.Image]</texture>
-			<visible>Control.IsVisible(55) | [Control.IsVisible(56) + Container.Content(Seasons)]</visible>
+			<visible>[Control.IsVisible(55) + !substring(Container.FolderPath,videodb://5/)] | [Control.IsVisible(56) + Container.Content(Seasons)]</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 		</control>
@@ -24,7 +24,7 @@
 			<texture diffuse="Fanart_Diffuse.png" fallback="background-videos.jpg">$INFO[ListItem.Property(Fanart_Image)]</texture>
 			<include>VisibleFadeEffect</include>
 			<fadetime>FanartCrossfadeTime</fadetime>
-			<visible>Control.IsVisible(56) + !Container.Content(Seasons)</visible>
+			<visible>[Control.IsVisible(55) + substring(Container.FolderPath,videodb://5/)] | [Control.IsVisible(56) + !Container.Content(Seasons)]</visible>
 			<include>Window_OpenClose_Animation</include>
 		</control>
 		<include>3d_CoverView</include> <!-- view id = 500 -->

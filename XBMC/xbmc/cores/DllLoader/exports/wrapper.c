@@ -37,6 +37,8 @@ typedef int64_t   off64_t;
 typedef off_t     __off_t;
 typedef off64_t   __off64_t;
 typedef fpos_t fpos64_t;
+#define stat64 stat
+#define statvfs64 statvfs
 #endif
 
 #ifdef _LINUX

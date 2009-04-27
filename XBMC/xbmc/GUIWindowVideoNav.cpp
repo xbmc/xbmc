@@ -95,9 +95,9 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
   if (action.wID == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
-    if (pItem->GetVideoInfoTag()->m_playCount == 0)
+    if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
       return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_WATCHED);
-    if (pItem->GetVideoInfoTag()->m_playCount > 0)
+    if (pItem && pItem->GetVideoInfoTag()->m_playCount > 0)
       return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
   }
   return CGUIWindowVideoBase::OnAction(action);
@@ -121,7 +121,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       // check for valid quickpath parameter
       CStdStringArray params;
       StringUtils::SplitString(message.GetStringParam(), ",", params);
-      bool returning = params.size() > 1 && params[1] == "return";
+      bool returning = params.size() > 1 && params[1].Equals("return");
 
       CStdString strDestination = params.size() ? params[0] : "";
       if (!strDestination.IsEmpty())
@@ -726,6 +726,18 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + g_localizeStrings.Get(20359) + "] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetTvShowsByName(strSearch, tempItems);
+
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + g_localizeStrings.Get(20364) + "] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
@@ -1637,4 +1649,22 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
                                  list[iSelectedLabel]->GetVideoInfoTag()->m_iDbId, bRemove);
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
+}
+
+bool CGUIWindowVideoNav::OnClick(int iItem)
+{
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
+  {
+    if (!DeleteItem(item.get(), true))
+      return true;
+
+    // update list
+    m_vecItems->RemoveDiscCache();
+    Update(m_vecItems->m_strPath);
+    m_viewControl.SetSelectedItem(iItem);
+    return true;
+  }
+
+  return CGUIWindowVideoBase::OnClick(iItem);
 }

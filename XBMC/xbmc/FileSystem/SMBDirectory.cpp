@@ -32,6 +32,8 @@
 */
 
 #include "stdafx.h"
+
+#if defined(HAS_FILESYSTEM_SMB)
 #include "SMBDirectory.h"
 #include "Util.h"
 #include "LocalizeStrings.h"
@@ -98,8 +100,8 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   if (fd < 0)
     return false;
 
-  if (!CUtil::HasSlashAtEnd(strRoot)) strRoot += "/";
-  if (!CUtil::HasSlashAtEnd(strAuth)) strAuth += "/";
+  CUtil::AddSlashAtEnd(strRoot);
+  CUtil::AddSlashAtEnd(strAuth);
 
   CStdString strFile;
 
@@ -212,7 +214,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           pItem->m_strPath = smb.URLEncode(rooturl);
         }
         pItem->m_strPath += aDir.name;
-        if (!CUtil::HasSlashAtEnd(pItem->m_strPath)) pItem->m_strPath += '/';
+        CUtil::AddSlashAtEnd(pItem->m_strPath);
         pItem->m_bIsFolder = true;
         pItem->m_dateTime=localTime;
         if (hidden)
@@ -536,3 +538,4 @@ CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdStr
 #endif
 }
 
+#endif

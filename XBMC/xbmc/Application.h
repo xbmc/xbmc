@@ -52,6 +52,9 @@ class CFileItemList;
 #ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
 #endif
+#ifdef _WIN32PC
+  #include "WIN32Util.h"
+#endif
 
 class CWebServer;
 class CXBFileZilla;
@@ -80,6 +83,7 @@ public:
   virtual void Render();
   virtual void DoRender();
   virtual void RenderNoPresent();
+  virtual void Preflight();
   virtual HRESULT Create(HWND hWnd);
   virtual HRESULT Cleanup();
 
@@ -130,6 +134,8 @@ public:
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
+  void UpdateVideoFileState();
+  void UpdateAudioFileState();
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -137,11 +143,11 @@ public:
   void RenderFullScreen();
   void DoRenderFullScreen();
   bool NeedRenderFullScreen();
-  bool IsPlaying() const ;
+  bool IsPlaying() const;
   bool IsPaused() const;
-  bool IsPlayingAudio() const ;
-  bool IsPlayingVideo() const ;
-  bool IsPlayingFullScreenVideo() const ;
+  bool IsPlayingAudio() const;
+  bool IsPlayingVideo() const;
+  bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
   bool OnAction(CAction &action);
@@ -211,7 +217,6 @@ public:
   DWORD m_dwSkinTime;
   bool m_bIsPaused;
   bool m_bPlaybackStarting;
-  std::queue<CGUIMessage> m_vPlaybackStarting;
 
   CKaraokeLyricsManager* m_pKaraokeMgr;
 
@@ -258,6 +263,8 @@ public:
   bool m_restartLCD;
 
 protected:
+  void RenderScreenSaver();
+
   friend class CApplicationMessenger;
   // screensaver
   bool m_bScreenSave;
@@ -278,7 +285,6 @@ protected:
   CStopWatch m_slowTimer;
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
-  CStopWatch m_displaySleepTimer;
 
   DWORD      m_lastActionCode;
   CStopWatch m_lastActionTimer;
@@ -295,6 +301,7 @@ protected:
   bool m_bInitializing;
   bool m_playCountUpdated;
   bool m_bPlatformDirectories;
+  int m_updateFileStateCounter;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
@@ -359,6 +366,9 @@ protected:
 
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
+#endif
+#ifdef _WIN32PC
+  CWIN32Util::SystemParams::SysParam *m_SSysParam;
 #endif
 };
 

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT("xbmc", 8.10, bugs@xbmc.org)
+AC_INIT("xbmc", 9.04, bugs@xbmc.org)
 AC_CONFIG_HEADER([config.h])
 
 # Ensure config.guess and config.sub exist and is executable
@@ -89,7 +89,7 @@ AC_ARG_ENABLE([gl],
 
 AC_ARG_ENABLE([vdpau],
             [AS_HELP_STRING([--enable-vdpau],
-               [enable VDPAU decoding (default is no)])],
+               [enable VDPAU decoding (default is yes)])],
             [use_vdpau=$enableval],
             [use_vdpau=yes])
 
@@ -142,10 +142,10 @@ AC_ARG_ENABLE([mid],
             [use_mid=$enableval],
             [use_mid=no])
 AC_ARG_ENABLE([avahi],
-             [AS_HELP_STRING([--enable-avahi],
-                [enable Avahi support (default is no)])],
+             [AS_HELP_STRING([--disable-avahi],
+                [disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)])],
              [use_avahi=$enableval],
-             [use_avahi=no])
+             [use_avahi=yes])
 
 # PCRE is a requirement
 use_pcre="yes"
@@ -336,7 +336,7 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($vdpau_disabled)
 else
   if test "$use_vdpau" = "yes"; then
-    AC_CHECK_LIB([vdpau], [main],,
+    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the `vdpau' library (-lvdpau).]),
       use_vdpau=no;AC_MSG_RESULT($vdpau_not_found))
   else
     AC_MSG_NOTICE($vdpau_disabled)
@@ -728,7 +728,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
-      --extra-cflags="-w -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
+      --extra-cflags="-w -D_DARWIN_C_SOURCE -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
       --enable-static \
       --disable-vhook \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
@@ -746,7 +746,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-swscale \
       --enable-protocol=http \
       --enable-pthreads &&
-    sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak
+    sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak &&
+    sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
 
   else
     ./configure \
@@ -791,64 +792,33 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
   fi
 ])
 
-# We need this whole block so we could have optional support of DVDCSS.
+# We need this whole block so we could have optional support of libdvdcss.
 if [[ $BUILD_DVDCSS == 1 ]]; then
-    if [[ -d xbmc/cores/dvdplayer/Codecs/libDVDCSS ]]; then
-    pushd xbmc/cores/dvdplayer/Codecs/libDVDCSS
+    if [[ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ]]; then
+    pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
     
     if test "$host_vendor" = "apple" ; then
-      CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
       ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+      CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+        --disable-doc \
         --enable-static \
-        --disable-shared \
         --with-pic
     else
       ./configure \
+        --disable-doc \
         --enable-static \
-        --disable-shared \
         --with-pic
     fi
     if [[ $? -ne 0 ]]; then
         popd
-        AC_MSG_ERROR([[Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS failed to configure]])
+        AC_MSG_ERROR([[Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss failed to configure]])
     else
         popd
     fi;
     else
-    AC_MSG_ERROR([[Submodule xbmc/cores/dvdplayer/Codecs/libDVDCSS doesn't exist]])
+    AC_MSG_ERROR([[Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss doesn't exist]])
     fi;
 fi
-XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvdnav], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="$DVDNAV_CFLAGS -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --enable-static \
-      --disable-shared \
-      --with-pic
-  else
-    ./configure \
-      --enable-static \
-      --disable-shared \
-      --with-pic \
-      CFLAGS="$DVDNAV_CFLAGS"
-  fi
-])
-# In place for testing platform builds of new libdvdcss
-XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
-  if test "$host_vendor" = "apple" ; then
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
-      CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-      --disable-doc \
-      --enable-static \
-      --with-pic
-  else
-    ./configure \
-      --disable-doc \
-      --enable-static \
-      --with-pic
-  fi
-])
-# In place for testing platform builds of new libdvdread
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
   if test "$host_vendor" = "apple" ; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
@@ -856,6 +826,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
+    mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   else
     ./configure2 \
@@ -863,6 +834,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
+    mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   fi
 

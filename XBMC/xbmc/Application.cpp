@@ -74,6 +74,7 @@
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
 #include "Surface.h"
+#include "PowerManager.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
@@ -217,7 +218,6 @@
 #endif
 #ifdef _WIN32
 #include <shlobj.h>
-#include <win32/MockXboxSymbols.h>
 #include "win32util.h"
 #endif
 #ifdef HAS_XRANDR
@@ -314,11 +314,12 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
   m_bPlaybackStarting = false;
+  m_updateFileStateCounter = 0;
 
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
 
-  /* for now allways keep this around */
+  /* for now always keep this around */
 #ifdef HAS_KARAOKE
   m_pKaraokeMgr = new CKaraokeLyricsManager();
 #endif
@@ -338,6 +339,9 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_restartLirc = false;
   m_restartLCD = false;
   m_lastActionCode = 0;
+#ifdef _WIN32PC
+  m_SSysParam = new CWIN32Util::SystemParams::SysParam;
+#endif
 }
 
 CApplication::~CApplication(void)
@@ -354,6 +358,11 @@ CApplication::~CApplication(void)
 
   if (m_frameCond)
     SDL_DestroyCond(m_frameCond);
+
+#ifdef _WIN32PC
+  if( m_SSysParam ) 
+    delete m_SSysParam;
+#endif
 }
 
 // text out routine for below
@@ -522,10 +531,28 @@ static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &fi
   }
 }
 
+void CApplication::Preflight()
+{
+  // run any platform preflight scripts.
+#ifdef __APPLE__
+  CStdString install_path;
+  
+  CUtil::GetHomePath(install_path);
+  setenv("XBMC_HOME", install_path.c_str(), 0);
+  install_path += "/tools/osx/preflight";
+  system(install_path.c_str());
+#endif
+}
+
 HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
+  
+#ifdef _WIN32PC
+  CWIN32Util::SystemParams::GetDefaults( m_SSysParam );
+  CWIN32Util::SystemParams::SetCustomParams();
+#endif  
 
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
@@ -660,7 +687,7 @@ HRESULT CApplication::Create(HWND hWnd)
   SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
 #else
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
+  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon32x32.png")), NULL);
 #endif
 #endif
 
@@ -1029,35 +1056,46 @@ CProfile* CApplication::InitDirectoriesOSX()
 #ifdef __APPLE__
   CProfile* profile = NULL;
 
-  // special://temp/ common for both
-  CSpecialProtocol::SetTempPath("/tmp/xbmc");
-  CDirectory::Create("special://temp/");
+  CStdString userName;
+  if (getenv("USER"))
+    userName = getenv("USER");
+  else
+    userName = "root";
 
   CStdString userHome;
   if (getenv("HOME"))
-  {
     userHome = getenv("HOME");
-  }
   else
-  {
     userHome = "/root";
-  }
+
+  CStdString strHomePath;
+  CUtil::GetHomePath(strHomePath);
+  setenv("XBMC_HOME", strHomePath.c_str(), 0);
 
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
-    CStdString logDir = userHome + "/Library/Logs/";
-    g_stSettings.m_logFolder = logDir;
-
-    // //Library/Application\ Support/XBMC/
-    CStdString install_path;
-    CUtil::GetHomePath(install_path);
-    setenv("XBMC_HOME", install_path.c_str(), 0);
-    CSpecialProtocol::SetXBMCPath(install_path);
+    // map our special drives
+    CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
 
+#ifdef __APPLE__
+    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/");
+    CDirectory::Create(strTempPath);
+#endif
+
+    strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp");
+    CSpecialProtocol::SetTempPath(strTempPath);
+
+#ifdef __APPLE__
+    strTempPath = userHome + "/Library/Logs";
+#endif
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
+
     CDirectory::Create("special://home/");
+    CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
@@ -1070,31 +1108,36 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/plugins/programs");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
-
-    CStdString str = install_path + "/scripts";
-    symlink( str.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
+#ifdef __APPLE__
+    strTempPath = strHomePath + "/scripts";
+#else
+    strTempPath = INSTALL_PATH "/scripts";
+#endif
+    symlink( strTempPath.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
 
     CDirectory::Create("special://masterprofile/");
 
     // copy required files
-    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");
+    //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml"); // Eventual FIXME.
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
-    // this is wrong, CopyUserDataIfNeeded pulls from special://xbmc/userdata, Lircmap.xml is in special://xbmc/system
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
   }
   else
   {
-    CStdString strHomePath;
-    CUtil::GetHomePath(strHomePath);
-    setenv("XBMC_HOME", strHomePath.c_str(), 0);
-
     CUtil::AddDirectorySeperator(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
     CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp"); 
+    CSpecialProtocol::SetTempPath(strTempPath);
+    CDirectory::Create("special://temp/");
+
+    CUtil::AddDirectorySeperator(strTempPath);
+    g_stSettings.m_logFolder = strTempPath;
   }
 
   g_settings.m_vecProfiles.clear();
@@ -1460,6 +1503,8 @@ HRESULT CApplication::Initialize()
 #ifdef __APPLE__
   g_xbmcHelper.CaptureAllInput();
 #endif
+
+  g_powerManager.Initialize();
 
   CLog::Log(LOGNOTICE, "initialize done");
 
@@ -1954,6 +1999,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
   g_graphicsContext.SetMediaDir(strSkinPath);
+  g_directoryCache.ClearSubPaths(strSkinPath);
   if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font")))
   {
     CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
@@ -2214,11 +2260,13 @@ void CApplication::RenderNoPresent()
 #endif
     // release the context so the async renderer can draw to it
 #ifdef HAS_SDL_OPENGL
+#ifdef HAS_VIDEO_PLAYBACK
     // Video rendering occuring from main thread for OpenGL
     if (m_bPresentFrame)
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
+#endif
 #else
     //g_graphicsContext.ReleaseCurrentContext();
     g_graphicsContext.Unlock(); // unlock to allow the async renderer to render
@@ -2335,6 +2383,8 @@ void CApplication::DoRender()
     RenderMemoryStatus();
   }
 
+  RenderScreenSaver();
+
 #ifndef HAS_SDL
   m_pd3dDevice->EndScene();
 #endif
@@ -2345,6 +2395,31 @@ void CApplication::DoRender()
   // fresh for the next process(), or after a windowclose animation (where process()
   // isn't called)
   g_infoManager.ResetCache();
+}
+
+static int screenSaverFadeAmount = 0;
+
+void CApplication::RenderScreenSaver()
+{
+  // special case for dim screensaver
+  if (m_bScreenSave)
+  {
+    float amount = 0.0f;
+    if (m_screenSaverMode == "Dim")
+      amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
+    else if (m_screenSaverMode == "Black")
+      amount = 1.0f; // fully fade
+    if (amount > 0.0f)
+    { // render a black quad at suitable transparency
+      if (screenSaverFadeAmount < 100)
+        screenSaverFadeAmount += 2;  // around a second to fade
+
+      DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
+      CGUITexture::DrawQuad(CRect(0,0,g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight()), color);
+    }
+  }
+  else
+    screenSaverFadeAmount = 0;
 }
 
 bool CApplication::WaitFrame(DWORD timeout)
@@ -2388,7 +2463,7 @@ void CApplication::Render()
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 0;
-    bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black");
+    bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black") && (screenSaverFadeAmount >= 100);
     unsigned int singleFrameTime = 10; // default limit 100 fps
 
 
@@ -3670,7 +3745,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    }
    else
    {
-     CLog::Log(LOGDEBUG, "ERROR mapping joystick action");
+     CLog::Log(LOGDEBUG, "ERROR mapping joystick action. Joystick: %s %i",joystickName.c_str(), wKeyID);
    }
 #endif
 
@@ -3877,6 +3952,7 @@ HRESULT CApplication::Cleanup()
     g_playlistPlayer.Clear();
     g_settings.Clear();
     g_guiSettings.Clear();
+    g_Mouse.Cleanup();
 
 #ifdef _LINUX
     CXHandle::DumpObjectTracker();
@@ -3907,6 +3983,10 @@ void CApplication::Stop()
 
       m_pXbmcHttp->shuttingDown = true;
     }
+#endif
+
+#ifdef _WIN32PC
+    CWIN32Util::SystemParams::SetDefaults( m_SSysParam );
 #endif
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
@@ -3982,6 +4062,10 @@ void CApplication::Stop()
       delete g_lcd;
       g_lcd=NULL;
     }
+#endif
+
+#ifdef HAS_HAL
+    g_HalManager.Stop();
 #endif
 
     CLog::Log(LOGNOTICE, "stopped");
@@ -4161,6 +4245,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
+    m_updateFileStateCounter = 0;
   }
 
   if (item.IsPlayList())
@@ -4301,7 +4386,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
 
   // tell system we are starting a file
-  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = true;
 
   // We should restart the player, unless the previous and next tracks are using
@@ -4352,25 +4436,31 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
       g_audioManager.Enable(false);
   }
-
-  if(!bResult || !IsPlaying())
-  {
-    // since we didn't manage to get playback started, send any queued up messages
-    while(m_vPlaybackStarting.size())
-    {
-      m_gWindowManager.SendMessage(m_vPlaybackStarting.front());
-      m_vPlaybackStarting.pop();
-    }
-  }
-
-  while(m_vPlaybackStarting.size()) m_vPlaybackStarting.pop();
   m_bPlaybackStarting = false;
+  if(bResult)
+  {
+    // we must have started, otherwise player might send this later
+    if(IsPlaying())
+      OnPlayBackStarted();
+  }
+  else
+  {
+    // we send this if it isn't playlistplayer that is doing this
+    int next = g_playlistPlayer.GetNextSong();
+    int size = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size();
+    if(next < 0 
+    || next >= size)
+      OnPlayBackStopped();
+  }
 
   return bResult;
 }
 
 void CApplication::OnPlayBackEnded()
 {
+  if(m_bPlaybackStarting)
+    return;
+
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -4386,15 +4476,14 @@ void CApplication::OnPlayBackEnded()
   CLog::Log(LOGDEBUG, "Playback has finished");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
-
-  if(m_bPlaybackStarting)
-    m_vPlaybackStarting.push(msg);
-  else
-    m_gWindowManager.SendThreadMessage(msg);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnPlayBackStarted()
 {
+  if(m_bPlaybackStarting)
+    return;
+
 #ifdef HAS_PYTHON
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
@@ -4434,6 +4523,9 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
+  if(m_bPlaybackStarting)
+    return;
+
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
@@ -4449,10 +4541,7 @@ void CApplication::OnPlayBackStopped()
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
-  if(m_bPlaybackStarting)
-    m_vPlaybackStarting.push(msg);
-  else
-    m_gWindowManager.SendThreadMessage(msg);
+  m_gWindowManager.SendThreadMessage(msg);
 }
 
 bool CApplication::IsPlaying() const
@@ -4503,6 +4592,73 @@ bool CApplication::IsPlayingFullScreenVideo() const
   return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
 }
 
+void CApplication::UpdateVideoFileState()
+{
+  // TODO: Add saving of watched status in here
+  // save our position for resuming at a later date
+  CVideoDatabase dbs;
+  if (dbs.Open())
+  {
+    // mark as watched if we are passed the usual amount
+    if (g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+        GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent)
+    {
+      if (!m_playCountUpdated) // no need to update more than once:
+      {
+        CLog::Log(LOGDEBUG, "%s - Marking current video file as watched", __FUNCTION__);
+        // consider this item as played
+        m_playCountUpdated=true;
+      
+        dbs.MarkAsWatched(*m_itemCurrentFile);
+      }
+    }
+    else
+      m_playCountUpdated=false;
+      
+    double current = GetTime();
+    // ignore x seconds at the start
+    if (current > g_advancedSettings.m_videoIgnoreAtStart)
+    {
+      CBookmark bookmark;
+      bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+      bookmark.playerState = m_pPlayer->GetPlayerState();
+      bookmark.timeInSeconds = current;
+      bookmark.thumbNailImage.Empty();
+
+      dbs.AddBookMarkToFile(CurrentFile(), bookmark, CBookmark::RESUME);
+    }
+  }
+}
+
+void CApplication::UpdateAudioFileState()
+{
+  if (g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+      GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent)
+  {
+    if (!m_playCountUpdated) // no need to update more than once
+    {
+      CLog::Log(LOGDEBUG, "%s - Marking current audio file as watched", __FUNCTION__);
+      
+      // consider this item as played
+      m_playCountUpdated = true;
+
+      // Can't write to the musicdatabase while scanning for music info
+      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      if (dialog && !dialog->IsDialogRunning())
+      {
+        CMusicDatabase musicdatabase;
+        if (musicdatabase.Open())
+        {
+          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile->m_strPath);
+          musicdatabase.Close();
+        }
+      }
+    }
+  }
+  else
+    m_playCountUpdated = false;
+}
+
 void CApplication::StopPlaying()
 {
   int iWin = m_gWindowManager.GetActiveWindow();
@@ -4517,42 +4673,21 @@ void CApplication::StopPlaying()
     if (iWin == WINDOW_VISUALISATION)
       m_gWindowManager.PreviousWindow();
 
-    // TODO: Add saving of watched status in here
-    if ( IsPlayingVideo() )
-    { // save our position for resuming at a later date
-      CVideoDatabase dbs;
-      if (dbs.Open())
-      {
-        // mark as watched if we are passed the usual amount
-        if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
-        {
-          dbs.MarkAsWatched(*m_itemCurrentFile);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-        }
+    // Save resume point & update watched status
+    if (IsPlayingVideo())
+    {
+      UpdateVideoFileState();
 
-        if( m_pPlayer )
-        {
-          // ignore two minutes at start and either 2 minutes, or up to 5% at end (end credits)
-          double current = GetTime();
-          double total = GetTotalTime();
-          if (current > 120 && total - current > 120 && total - current > 0.05 * total)
-          {
-            CBookmark bookmark;
-            bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-            bookmark.playerState = m_pPlayer->GetPlayerState();
-            bookmark.timeInSeconds = current;
-            bookmark.thumbNailImage.Empty();
-
-            dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
-          }
-          else
-            dbs.DeleteResumeBookMark(CurrentFile());
-        }
-        dbs.Close();
-      }
+      if (m_playCountUpdated)
+        CUtil::DeleteVideoDatabaseDirectoryCache();
     }
+
+    if (IsPlayingAudio())
+      UpdateAudioFileState();
+
     if (m_pPlayer)
       m_pPlayer->CloseFile();
+
     g_partyModeManager.Disable();
   }
 }
@@ -4657,63 +4792,18 @@ bool CApplication::ResetScreenSaverWindow()
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
-    float fFadeLevel = 1.0f;
     if (m_screenSaverMode == "Visualisation" || m_screenSaverMode == "Slideshow" || m_screenSaverMode == "Fanart Slideshow")
     {
       // we can just continue as usual from vis mode
       return false;
     }
-    else if (m_screenSaverMode == "Dim")
-    {
-      fFadeLevel = (float)g_guiSettings.GetInt("screensaver.dimlevel") / 100;
-    }
-    else if (m_screenSaverMode == "Black")
-    {
-      fFadeLevel = 0;
-    }
+    else if (m_screenSaverMode == "Dim" || m_screenSaverMode == "Black")
+      return true;
     else if (m_screenSaverMode != "None")
     { // we're in screensaver window
       if (m_gWindowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         m_gWindowManager.PreviousWindow();  // show the previous window
-      return true;
     }
-
-    // Fade to dim or black screensaver is active --> fade in
-#ifndef HAS_SDL
-    D3DGAMMARAMP Ramp;
-    for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
-    {
-      for (int i = 0;i < 256;i++)
-      {
-        Ramp.red[i] = (int)((float)m_OldRamp.red[i] * fade);
-        Ramp.green[i] = (int)((float)m_OldRamp.green[i] * fade);
-        Ramp.blue[i] = (int)((float)m_OldRamp.blue[i] * fade);
-      }
-      Sleep(5);
-      m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
-    }
-    m_pd3dDevice->SetGammaRamp(0, &m_OldRamp); // put the old gamma ramp back in place
-#else
-
-   if (g_advancedSettings.m_fullScreen == true)
-   {
-     Uint16 RampRed[256];
-     Uint16 RampGreen[256];
-     Uint16 RampBlue[256];
-     for (float fade = fFadeLevel; fade <= 1; fade += 0.01f)
-     {
-       for (int i = 0;i < 256;i++)
-       {
-         RampRed[i] = (Uint16)((float)m_OldRampRed[i] * fade);
-         RampGreen[i] = (Uint16)((float)m_OldRampGreen[i] * fade);
-         RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
-       }
-       Sleep(5);
-       SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
-     }
-     SDL_SetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue);
-   }
-#endif
     return true;
   }
   else
@@ -4754,8 +4844,6 @@ void CApplication::CheckScreenSaver()
 // the type of screensaver displayed
 void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 {
-  FLOAT fFadeLevel = 0;
-
   m_bScreenSave = true;
 
   // Get Screensaver Mode
@@ -4780,64 +4868,18 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
     m_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
-    return;
   }
   else if (m_screenSaverMode == "Dim")
-  {
-    fFadeLevel = (FLOAT) g_guiSettings.GetInt("screensaver.dimlevel") / 100; // 0.07f;
-  }
+    return;
   else if (m_screenSaverMode == "Black")
   {
-    fFadeLevel = 0;
+#ifdef __APPLE__
+    // if fading to black, power off display on OSX
+    Cocoa_IdleDisplays();
+#endif
   }
   else if (m_screenSaverMode != "None")
-  {
     m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
-    return ;
-  }
-
-  // Fade to fFadeLevel
-#ifndef HAS_SDL
-  D3DGAMMARAMP Ramp;
-  m_pd3dDevice->GetGammaRamp(&m_OldRamp); // Store the old gamma ramp
-  for (float fade = 1.f; fade >= fFadeLevel; fade -= 0.01f)
-  {
-    for (int i = 0;i < 256;i++)
-    {
-      Ramp.red[i] = (int)((float)m_OldRamp.red[i] * fade);
-      Ramp.green[i] = (int)((float)m_OldRamp.green[i] * fade);
-      Ramp.blue[i] = (int)((float)m_OldRamp.blue[i] * fade);
-    }
-    Sleep(5);
-    m_pd3dDevice->SetGammaRamp(GAMMA_RAMP_FLAG, &Ramp); // use immediate to get a smooth fade
-  }
-#else
-  if (g_advancedSettings.m_fullScreen == true)
-  {
-    SDL_GetGammaRamp(m_OldRampRed, m_OldRampGreen, m_OldRampBlue); // Store the old gamma ramp
-    Uint16 RampRed[256];
-    Uint16 RampGreen[256];
-    Uint16 RampBlue[256];
-    for (float fade = 1.f; fade >= fFadeLevel; fade -= 0.01f)
-    {
-      for (int i = 0;i < 256;i++)
-      {
-        RampRed[i] = (Uint16)((float)m_OldRampRed[i] * fade);
-        RampGreen[i] = (Uint16)((float)m_OldRampGreen[i] * fade);
-        RampBlue[i] = (Uint16)((float)m_OldRampBlue[i] * fade);
-      }
-      Sleep(5);
-      SDL_SetGammaRamp(RampRed, RampGreen, RampBlue);
-    }
-#ifdef __APPLE__
-    if (fFadeLevel == 0)
-    {
-      // if fading to black, power off display on OSX
-      Cocoa_IdleDisplays();
-    }
-#endif
-  }
-#endif
 }
 
 void CApplication::CheckShutdown()
@@ -5182,8 +5224,27 @@ void CApplication::Process()
   }
 }
 
+// We get called every 500ms
 void CApplication::ProcessSlow()
 {
+  // Update video file state every minute
+  if (IsPlayingVideo())
+  {
+    if (m_updateFileStateCounter++>120)
+    {
+      m_updateFileStateCounter=0;
+
+      UpdateVideoFileState();
+    }
+  }
+
+  if (IsPlayingAudio())
+  {
+    CheckAudioScrobblerStatus();
+    // Update audio file state every 0.5 second
+    UpdateAudioFileState();
+  }
+  
   // Check if we need to activate the screensaver (if enabled).
   if (g_guiSettings.GetString("screensaver.mode") != "None")
     CheckScreenSaver();
@@ -5623,7 +5684,7 @@ EPLAYERCORES CApplication::GetCurrentPlayer()
 // and enable tag reading and remote thums
 void CApplication::SaveMusicScanSettings()
 {
-  CLog::Log(LOGINFO,"Music scan has started ... enabling Tag Reading, and Remote Thumbs");
+  CLog::Log(LOGINFO,"Music scan has started... Enabling tag reading, and remote thumbs");
   g_stSettings.m_bMyMusicIsScanning = true;
   g_settings.Save();
 }
@@ -5656,34 +5717,6 @@ void CApplication::CheckPlayingProgress()
       }
     }
   }
-
-  if (!IsPlayingAudio()) return;
-
-  CheckAudioScrobblerStatus();
-
-  // work out where we are in the playing item
-  if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
-  { // consider this item as played
-    if (m_playCountUpdated)
-      return;
-    m_playCountUpdated = true;
-    if (IsPlayingAudio())
-    {
-      // Can't write to the musicdatabase while scanning for music info
-      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (dialog && !dialog->IsDialogRunning())
-      {
-        CMusicDatabase musicdatabase;
-        if (musicdatabase.Open())
-        {
-          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile->m_strPath);
-          musicdatabase.Close();
-        }
-      }
-    }
-  }
-  else
-    m_playCountUpdated = false;
 }
 
 void CApplication::CheckAudioScrobblerStatus()
