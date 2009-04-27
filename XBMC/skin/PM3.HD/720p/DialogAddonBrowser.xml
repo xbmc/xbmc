@@ -110,12 +110,12 @@
 						<info>Addon.Rating</info>
 					</control>
 				</itemlayout>
-				<focusedlayout height="120">
+				<focusedlayout height="64">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>560</width>
-						<height>115</height>
+						<height>60</height>
 						<visible>!Control.HasFocus(450)</visible>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
@@ -123,7 +123,7 @@
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>560</width>
-						<height>115</height>
+						<height>60</height>
 						<visible>Control.HasFocus(450)</visible>
 						<texture border="5">button-focus.png</texture>
 					</control>

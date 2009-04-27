@@ -2093,4 +2093,17 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="29800">Datenbank Modus</string>
   <string id="29801">QWERTY Tastatur</string>
   <string id="29999">Automatische Videofilter Korrektur für Spiele</string>
+
+  <!-- strings 33000 thru 33499 reserved for the add-on framework -->
+  <string id="33000">Erweiterungen</string>
+  <string id="33001">Lade Erweiterungen</string>
+  <string id="33002">Verfügbare Erweiterungen</string>
+  <string id="33003">Erweiterungsart</string>
+  <string id="33004">Empfohlen</string>
+  <string id="33005">Suche Erweiterungen</string>
+  <string id="33006">Suche...</string>
+  <string id="33007">Neue Suche</string>
+  <string id="33008">Erweiterung konfigurieren</string>
+  <string id="33009">Erweiterung entfernen</string>
+  <string id="33010">Sind sie sicher das die Erweiterung abgeschaltet werden soll?</string>
 </strings>

@@ -540,7 +540,7 @@ bool CSettings::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
   /* iterate through alladdons vec and return matched Addon */
   for (int i = 0; i < m_allAddons.size(); i++)
   {
-    if (m_allAddons[i].m_guid = guid)
+    if (m_allAddons[i].m_guid == guid)
     {
       addon = m_allAddons[i];
       return true;

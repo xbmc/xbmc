@@ -174,11 +174,11 @@ void CGUIDialogAddonBrowser::Update()
       for (unsigned i = 0; i < addons->size(); i++)
       {
         CAddon found = addons->at(i);
-        if (found.m_guid = addon.m_guid)
+        if (found.m_guid == addon.m_guid)
           skip = true;
       }
       if (skip)
-        break;
+        continue;
     }
 
     CFileItemPtr pItem(new CFileItem(addon.m_strPath, false));
@@ -341,14 +341,6 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
   if (!pMenu)
     return false;
 
-  float posX = 200, posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-
   pMenu->Initialize();
 
   int iSettingsLabel = 33008;
@@ -357,7 +349,7 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
   int btn_Settings = pMenu->AddButton(iSettingsLabel);
   int btn_Remove = pMenu->AddButton(iRemoveLabel);
 
-  pMenu->SetPosition(posX, posY);
+  pMenu->CenterWindow();
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
