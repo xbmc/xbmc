@@ -37,6 +37,7 @@ extern "C"
   bool IsUp();
   const char* GetBackendName();
   const char* GetBackendVersion();
+  const char* GetConnectionString();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
 //  int GetNumBouquets();
 //  PVR_ERROR GetBouquetInfo(const unsigned number, PVR_BOUQUET *info);
@@ -57,6 +58,7 @@ extern "C"
     pClient->IsUp = IsUp;
     pClient->GetBackendName = GetBackendName;
     pClient->GetBackendVersion = GetBackendVersion;
+    pClient->GetConnectionString = GetConnectionString;
     pClient->GetDriveSpace = GetDriveSpace;
 //    pClient->GetNumBouquets = GetNumBouquets;
 //    pClient->GetBouquetInfo = GetBouquetInfo;

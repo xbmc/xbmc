@@ -101,6 +101,11 @@ const std::string CPVRClient::GetBackendVersion()
   return m_pClient->GetBackendVersion();
 }
 
+const std::string CPVRClient::GetConnectionString()
+{
+  return m_pClient->GetConnectionString();
+}
+
 PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
 {
   return m_pClient->GetDriveSpace(total, used);

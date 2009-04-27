@@ -172,6 +172,7 @@ extern "C"
     bool (__cdecl* IsUp)();
     const char* (__cdecl* GetBackendName)();
     const char* (__cdecl* GetBackendVersion)();
+    const char* (__cdecl* GetConnectionString)();
     PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
 //    int (__cdecl* GetNumBouquets)();
 //    PVR_ERROR (__cdecl* GetBouquetInfo)(const unsigned number, PVR_BOUQUET *info);

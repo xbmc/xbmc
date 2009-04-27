@@ -49,6 +49,7 @@ public:
   /* General */
   virtual const std::string GetBackendName();
   virtual const std::string GetBackendVersion();
+  virtual const std::string GetConnectionString();
   virtual PVR_ERROR GetDriveSpace(long long *total, long long *used);
   /* Bouquets */
   virtual int GetNumBouquets();

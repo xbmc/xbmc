@@ -98,10 +98,10 @@ void CPVRManager::Start()
     return;
   }
 
-//  /* Now that clients have been initialized, we check connectivity */
-//  CheckClientConnections();
-//
-//  /* spawn a thread */
+  /* Now that clients have been initialized, we check connectivity */
+  CheckClientConnections();
+
+  /* spawn a thread */
 //  Create(false, THREAD_MINSTACKSIZE);
 //  SetName("PVRManager Updater");
 //  SetPriority(-15);

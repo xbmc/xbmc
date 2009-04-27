@@ -118,6 +118,12 @@ public:
   virtual const std::string GetBackendVersion(void)=0;
 
   /**
+  * Get the currently used Host/IP name and the used Port number
+  * \return std::string          = Host/IP:Port
+  */
+  virtual const std::string GetConnectionString()=0;
+
+  /**
   * Get the used and total diskspace for recordings available on the backend
   * \param long long ptr *total  = total available bytes
   * \param long long ptr *used   = number of bytes already used
