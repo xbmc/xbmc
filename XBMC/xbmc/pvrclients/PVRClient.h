@@ -29,11 +29,12 @@ class CPVRClient : public IPVRClient
 {
 public:
   CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll, 
-             const CStdString& strPVRClientName, IPVRClientCallback *cb);
+    const CStdString& strPVRClientName, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB);
   ~CPVRClient();
 
   // DLL related
   bool Init();
+  virtual void Remove();
   void GetSettings(std::vector<DllSetting> **vecSettings);
   void UpdateSetting(int num);
   void OnClientMessage(PVR_EVENT event);
@@ -73,7 +74,7 @@ public:
   
 protected:
   bool ConvertChannels(unsigned int num, PVR_CHANNEL **clientChans, VECCHANNELS &out);
-  void FreeChannelList(unsigned int num, PVR_CHANNEL **clientChans);
+  void ReleaseClientData(unsigned int num, PVR_CHANNEL **clientChans);
   const long m_clientID;
   std::auto_ptr<struct PVRClient> m_pClient;
   std::auto_ptr<DllPVRClient> m_pDll;

@@ -29,6 +29,8 @@ class CURL;
 namespace ADDON
 {
 
+class CAddon;
+
 enum AddonType
 {
   ADDON_UNKNOWN           = -1,
@@ -43,7 +45,16 @@ enum AddonType
   ADDON_PLUGIN_MUSIC      = 8,
   ADDON_PLUGIN_VIDEO      = 9,
   ADDON_PLUGIN_PROGRAM    = 10,
-  ADDON_PLUGIN_PICTURES   = 11
+  ADDON_PLUGIN_PICTURES   = 11 
+};
+
+/**
+* IAddonCallback
+*/
+class IAddonCallback
+{
+public:
+  virtual bool RequestRemoval(const CAddon* addon)=0;
 };
 
 const CStdString ADDON_PVRDLL_EXT = "*.pvr";
@@ -63,6 +74,8 @@ public:
   ~CAddon() {};
   bool operator==(const CAddon &rhs) const;
 
+  virtual void Remove() {};
+
   static void LoadAddonStrings(const CURL &url);
   static void ClearAddonStrings();
 
@@ -80,8 +93,6 @@ public:
   bool       m_disabled;   ///< Is this addon disabled?
 
   AddonType m_addonType;
-
-  
 };
 
 /*!

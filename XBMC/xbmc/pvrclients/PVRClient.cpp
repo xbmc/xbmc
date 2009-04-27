@@ -26,13 +26,13 @@
 #include "../utils/log.h"
 
 CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
-                       const CStdString& strPVRClientName, IPVRClientCallback* cb)
-                              : IPVRClient(clientID, cb)
+                       const CStdString& strPVRClientName, ADDON::IAddonCallback* addonCB, IPVRClientCallback* pvrCB)
+                              : IPVRClient(clientID, addonCB, pvrCB)
                               , m_clientID(clientID)
                               , m_pClient(pClient)
                               , m_pDll(pDll)
                               , m_clientName(strPVRClientName)
-                              , m_manager(cb)
+                              , m_manager(pvrCB)
 {
   InitializeCriticalSection(&m_critSection);
 }
@@ -159,7 +159,7 @@ bool CPVRClient::ConvertChannels(unsigned int num, PVR_CHANNEL **clientChans, VE
     catch (std::exception e)
     {
       CLog::Log(LOGERROR, "PVR: %s/%s - unitialized PVR_CHANNEL", m_clientName.c_str(), m_hostName.c_str());
-      FreeChannelList(num, clientChans);
+      ReleaseClientData(num, clientChans);
       return false;
     }
     if (chan->number < 1 || chan->name == "" || chan->hide == true)
@@ -176,12 +176,12 @@ bool CPVRClient::ConvertChannels(unsigned int num, PVR_CHANNEL **clientChans, VE
     xbmcChans.push_back(channel);
   }
 
-  /*FreeChannelList(num, clientChans);*/
+  /*ReleaseClientData(num, clientChans);*/
 
   return true;
 }
 
-void CPVRClient::FreeChannelList(unsigned int num, PVR_CHANNEL **clientChans)
+void CPVRClient::ReleaseClientData(unsigned int num, PVR_CHANNEL **clientChans)
 {
   PVR_CHANNEL *chan;
 
@@ -269,6 +269,13 @@ PVR_ERROR CPVRClient::UpdateTimer(const CTVTimerInfoTag &timerinfo)
 PVR_ERROR CPVRClient::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force /* = false */)
 {
   return PVR_ERROR_NO_ERROR;
+}
+
+// Addon specific functions //////////////////////////////////////////////////
+void CPVRClient::Remove()
+{
+  /*m_pClient->*/
+
 }
 
 void CPVRClient::GetSettings(std::vector<DllSetting> **vecSettings)

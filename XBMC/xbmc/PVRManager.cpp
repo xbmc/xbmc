@@ -88,9 +88,10 @@ void CPVRManager::Start()
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager starting");
 
-//  /* create CEPG singleton */
-//  CSingleLock epgLock(m_epgSection);
-//  m_EPG = CEPG::Get();
+  /* attach a CEPG singleton */
+  CSingleLock epgLock(m_epgSection);
+  m_EPG = CEPG::Get();
+  epgLock.Leave();
 
   /* Discover and load chosen plugins */
   if (!LoadClients()) {
@@ -207,7 +208,7 @@ bool CPVRManager::LoadClients()
     transPath.Replace("addon://", "special://xbmc/");
 
     IPVRClient *client;
-    client = factory.LoadPVRClient(transPath, clientAddon.m_strLibName, clientAddon.m_strName, i, this);
+    client = factory.LoadPVRClient(transPath, clientAddon.m_strLibName, clientAddon.m_strName, i, this, this);
     if (client)
     {
       client->m_isRunning = false;
@@ -225,7 +226,7 @@ bool CPVRManager::LoadClients()
 
 bool CPVRManager::CheckClientConnections()
 {
-  std::map< long, IPVRClient* >::iterator clientItr(m_clients.begin());
+  CLIENTMAPITR clientItr(m_clients.begin());
   while (clientItr != m_clients.end())
   {
     // signal client to connect to backend
@@ -254,7 +255,7 @@ bool CPVRManager::CheckClientConnections()
 void CPVRManager::GetClientProperties()
 {
   m_clientProps.clear();
-  std::map< long, IPVRClient* >::iterator itr = m_clients.begin();
+  CLIENTMAPITR itr = m_clients.begin();
   while (itr != m_clients.end())
   {
     GetClientProperties((*itr).first);
@@ -309,6 +310,29 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
   }
 }
 
+
+bool CPVRManager::RequestRemoval(const CAddon* addon)
+{
+  if (!addon)
+    return false;
+
+  CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->m_strName, addon->m_guid);
+  for (unsigned i=0; i < m_clients.size(); i++)
+  {
+    if (m_clients[i]->m_guid == addon->m_guid)
+    {
+      if (m_clients[i]->m_strName == addon->m_strName)
+      {
+        CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->m_strName, addon->m_guid);
+        m_clients[i]->Remove();
+      }
+
+    }
+  }
+  
+  return true;
+
+}
 
 /************************************************************/
 /** Timer handling **/

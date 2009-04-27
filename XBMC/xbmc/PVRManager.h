@@ -21,6 +21,7 @@
  */
 
 #include "utils/Thread.h"
+#include "utils/Addon.h"
 #include "pvrclients/IPVRClient.h"
 #include "utils/GUIInfoManager.h"
 #include "TVTimerInfoTag.h"
@@ -29,7 +30,11 @@
 
 #include <vector>
 
+typedef std::map< long, IPVRClient* >           CLIENTMAP;
+typedef std::map< long, IPVRClient* >::iterator CLIENTMAPITR;
+
 class CPVRManager : public IPVRClientCallback
+                  , public ADDON::IAddonCallback
                   , private CThread 
 {
 public:
@@ -43,6 +48,9 @@ public:
   static void ReleaseInstance();
   static CPVRManager* GetInstance();
   
+  /* addon specific */
+  bool RequestRemoval(const ADDON::CAddon* addon);
+
   /* Event Handling */
   bool LoadClients();
   void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
@@ -67,7 +75,7 @@ public:
   static bool IsRecording()   { return m_isRecording; };
   static bool HasRecordings() { return m_hasRecordings; };
 
-  static std::map< long, IPVRClient* > Clients() { return m_clients; }
+  static CLIENTMAP* Clients() { return &m_clients; }
 
 protected:
   CPVRManager();
@@ -93,10 +101,9 @@ protected:
 private:
   static CPVRManager* m_instance;
 
-  static std::map< long, IPVRClient* > m_clients; // pointer to each enabled client's interface
+  static CLIENTMAP m_clients; // pointer to each enabled client's interface
   std::map< long, PVR_SERVERPROPS > m_clientProps; // store the properties of each client locally
   
-
   static CCriticalSection m_timersSection;
   static CCriticalSection m_epgSection;
   static CCriticalSection m_clientsSection;

@@ -21,6 +21,7 @@
 *
 */
 
+#include "utils/Addon.h"
 #include "PVRClient.h"
 
 class CPVRClientFactory
@@ -29,5 +30,5 @@ public:
   CPVRClientFactory() {}
   virtual ~CPVRClientFactory() {}
 
-  static CPVRClient* LoadPVRClient(const CStdString& path, const CStdString& library, const CStdString& name, DWORD clientID, IPVRClientCallback *callback);
+  static CPVRClient* LoadPVRClient(const CStdString& path, const CStdString& library, const CStdString& name, DWORD clientID, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB);
 };
