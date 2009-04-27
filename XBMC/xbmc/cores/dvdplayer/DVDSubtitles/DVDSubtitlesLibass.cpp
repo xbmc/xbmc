@@ -40,7 +40,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   }
 
   //Setting the font directory to the temp dir(where mkv fonts are extracted to)
-  string strPath = "special://temp/";
+  CStdString strPath = "special://temp/";
 
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating ASS library structure");
   m_library  = m_dll.ass_library_init();
@@ -48,7 +48,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
     return;
 
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Initializing ASS library font settings");
-  m_dll.ass_set_fonts_dir(m_library,  strPath.c_str());
+  m_dll.ass_set_fonts_dir(m_library,  _P(strPath).c_str());
   m_dll.ass_set_extract_fonts(m_library, 1);
   m_dll.ass_set_style_overrides(m_library, NULL);
 
@@ -65,7 +65,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
   m_dll.ass_set_use_margins(m_renderer, 0);
   m_dll.ass_set_font_scale(m_renderer, 1);
-  m_dll.ass_set_fonts(m_renderer, strPath.c_str(), "");
+  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "");
 }
 
 
