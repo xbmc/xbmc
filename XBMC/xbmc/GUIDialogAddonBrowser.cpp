@@ -164,7 +164,7 @@ void CGUIDialogAddonBrowser::Update()
 
   for (unsigned i=0; i < addons->size(); i++)
   {
-    CAddon addon = addons->at(i);
+    CAddon &addon = (*addons)[i];
 
     if (m_getAddons)
     { // don't show addons that are enabled
@@ -173,8 +173,7 @@ void CGUIDialogAddonBrowser::Update()
       VECADDONS *addons = g_settings.GetAddonsFromType(m_type);
       for (unsigned i = 0; i < addons->size(); i++)
       {
-        CAddon found = addons->at(i);
-        if (found.m_guid == addon.m_guid)
+        if ((*addons)[i].m_guid == addon.m_guid)
           skip = true;
       }
       if (skip)
