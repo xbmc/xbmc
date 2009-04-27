@@ -24,11 +24,11 @@ except:
     pass
 
 def error(errorLine):
-    if "Qt" in Output:
+    if "Qt" in AvailableOutputs:
         createQt(errorLine)
-    elif "GTK" in Output:
+    elif "GTK" in AvailableOutputs:
         createGTK(errorLine)
-    elif "SDL" in Output:
+    elif "SDL" in AvailableOutputs:
         createSDL(errorLine)
     else:
         print errorLine
