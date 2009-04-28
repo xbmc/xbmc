@@ -234,7 +234,8 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
   else
   {
     /* open up settings dialog */
-
+    CURL url(pItem->m_strPath);
+    CGUIDialogAddonSettings::ShowAndGetInput(url);
   }
 }
 
