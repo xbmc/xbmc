@@ -45,6 +45,10 @@ def main():
     addr = (ip, port)
     sock = socket(AF_INET,SOCK_DGRAM)
     
+    if len(actions) is 0:
+        usage()
+        sys.exit(0)
+    
     for action in actions:
         print 'Sending action:', action
         packet = PacketACTION(actionmessage=action, actiontype=ACTION_BUTTON)
