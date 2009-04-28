@@ -160,7 +160,6 @@ void CPVRManager::OnStartup()
 void CPVRManager::OnExit()
 {
   CEPG::Get()->Close();
-  int problem = 12;
 }
 
 void CPVRManager::Process()
@@ -316,14 +315,14 @@ bool CPVRManager::RequestRemoval(const CAddon* addon)
   if (!addon)
     return false;
 
-  CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->m_strName, addon->m_guid);
+  CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
   for (unsigned i=0; i < m_clients.size(); i++)
   {
     if (m_clients[i]->m_guid == addon->m_guid)
     {
       if (m_clients[i]->m_strName == addon->m_strName)
       {
-        CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->m_strName, addon->m_guid);
+        CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
         m_clients[i]->Remove();
       }
 
@@ -424,8 +423,6 @@ bool CPVRManager::DeleteTimer(const CFileItem &item, bool force)
   CSingleLock lock(m_clientsSection);
   IPVRClient* client = m_clients[id];
   CSingleLock lock2(client->m_critSection);
-
-  PVR_ERROR err = client->AddTimer(timer);
 
   if (m_clientProps[id].SupportTimers)
   {

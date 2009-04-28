@@ -2712,7 +2712,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
 
   /* Everything's valid */
 
-  CLog::Log(LOGINFO, "Addon: %sinfo.xml retrieved. Name: %s, GUID: %s, Version: %s", 
+  CLog::Log(LOGINFO, "Addon: %s retrieved. Name: %s, GUID: %s, Version: %s", 
             strPath.c_str(), addon.m_strName.c_str(), addon.m_guid.c_str(), addon.m_strVersion.c_str());
 
   return true;

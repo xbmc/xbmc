@@ -99,6 +99,8 @@ protected:
   CStdString PrintStatusDescription(RecStatus status); // convert a RecStatus into a more verbose human readable string
 
 private:
+  friend class CEPG;
+
   static CPVRManager* m_instance;
 
   static CLIENTMAP m_clients; // pointer to each enabled client's interface

@@ -59,9 +59,8 @@ CEPGTask CEPGTaskQueue::Get()
 /* class CEPGWorker
 */
 
-CEPGWorker::CEPGWorker(CEPGTaskQueue *queue, const long clientID)
-  : m_queue(queue),
-    m_clientID(clientID)
+CEPGWorker::CEPGWorker(const long clientID)
+   : m_clientID(clientID)
 { }
 
 CEPGWorker::~CEPGWorker()
@@ -125,7 +124,7 @@ CEPG* CEPG::Get()
 
   /* updates client list */
   CSingleLock lock(m_clientsSection);
-  m_clients = CPVRManager::GetInstance()->Clients();
+  m_clients = CPVRManager::GetInstance()->m_clients;
   return m_instance;
 }
 

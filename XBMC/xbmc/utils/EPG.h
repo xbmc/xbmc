@@ -82,7 +82,7 @@ private:
 class CEPGWorker : private CThread
 {
 public:
-  CEPGWorker(CEPGTaskQueue *queue, const long clientID);
+  CEPGWorker(const long clientID);
   ~CEPGWorker();
 
   virtual void Process();
@@ -92,7 +92,6 @@ public:
 private:
   // one worker thread per client
   long m_clientID;
-  CEPGTaskQueue *m_queue;
   CEPGTask m_currTask;
 };
 
