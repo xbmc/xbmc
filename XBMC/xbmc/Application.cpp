@@ -315,7 +315,7 @@ CApplication::CApplication(void)
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
 
-  /* for now allways keep this around */
+  /* for now always keep this around */
 #ifdef HAS_KARAOKE
   m_pCdgParser = new CCdgParser();
 #endif
@@ -4159,7 +4159,8 @@ void CApplication::StopPlaying()
       if (dbs.Open())
       {
         // mark as watched if we are passed the usual amount
-        if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
+        if (g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+            GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent)
         {
           dbs.MarkAsWatched(*m_itemCurrentFile);
           CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -4167,11 +4168,16 @@ void CApplication::StopPlaying()
 
         if( m_pPlayer )
         {
-          // ignore 15 seconds at the start and 1 second at the end
           double current = GetTime();
           double total = GetTotalTime();
-          if (current > 15 && total - current > 1)
-          {
+
+          // Delete bookmark if 5 seconds from the end
+          if (total - current < 5)
+            dbs.DeleteResumeBookMark(CurrentFile());
+          else
+          // Ignore x seconds at the start
+          if (current > g_advancedSettings.m_videoIgnoreAtStart)
+          { 
             CBookmark bookmark;
             bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
             bookmark.playerState = m_pPlayer->GetPlayerState();
@@ -4180,14 +4186,13 @@ void CApplication::StopPlaying()
 
             dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
           }
-          else
-            dbs.DeleteResumeBookMark(CurrentFile());
         }
         dbs.Close();
       }
     }
     if (m_pPlayer)
       m_pPlayer->CloseFile();
+
     g_partyModeManager.Disable();
   }
 }
@@ -5348,7 +5353,7 @@ EPLAYERCORES CApplication::GetCurrentPlayer()
 // and enable tag reading and remote thums
 void CApplication::SaveMusicScanSettings()
 {
-  CLog::Log(LOGINFO,"Music scan has started ... enabling Tag Reading, and Remote Thumbs");
+  CLog::Log(LOGINFO,"Music scan has started... Enabling tag reading, and remote thumbs");
   g_stSettings.m_bMyMusicIsScanning = true;
   g_settings.Save();
 }
@@ -5387,7 +5392,8 @@ void CApplication::CheckPlayingProgress()
   CheckAudioScrobblerStatus();
 
   // work out where we are in the playing item
-  if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
+  if (g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+      GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent)
   { // consider this item as played
     if (m_playCountUpdated)
       return;

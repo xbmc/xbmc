@@ -76,6 +76,7 @@ CMusicDatabase::~CMusicDatabase(void)
 
 bool CMusicDatabase::CreateTables()
 {
+  BeginTransaction();
   try
   {
     CDatabase::CreateTables();
@@ -178,11 +179,11 @@ bool CMusicDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicbase::unable to create tables:%u",
-              GetLastError());
+    CLog::Log(LOGERROR, "%s unable to create tables:%i", __FUNCTION__, (int)GetLastError());
+    RollbackTransaction();
     return false;
   }
-
+  CommitTransaction();
   return true;
 }
 

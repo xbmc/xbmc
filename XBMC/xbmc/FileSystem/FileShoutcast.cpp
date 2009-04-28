@@ -47,8 +47,10 @@
 #include "ShoutcastRipFile.h"
 #include "utils/GUIInfoManager.h"
 
-using namespace MUSIC_INFO;
+using namespace std;
 using namespace XFILE;
+using namespace MUSIC_INFO;
+
 
 const int SHOUTCASTTIMEOUT = 100;
 static CRingBuffer m_ringbuf;
@@ -80,7 +82,7 @@ void rip_callback(int message, void *data)
       m_fileState.bBuffering = false;
     }
     else if (info->status == RM_STATUS_RECONNECTING)
-    {}
+  { }
     break;
   case RM_ERROR:
     ERROR_INFO *errInfo;
@@ -134,7 +136,7 @@ CFileShoutcast::CFileShoutcast()
     m_fileState.bRipDone = false;
     m_fileState.bRipStarted = false;
     m_fileState.bRipError = false;
-    m_ringbuf.Create(1024*256);
+    m_ringbuf.Create(1024*1024); // must be big enough. some stations use 192kbps.
     m_pShoutCastRipper = this;
   }
 }
@@ -196,7 +198,13 @@ bool CFileShoutcast::Open(const CURL& url)
                 OPT_SEARCH_PORTS |
                 OPT_ADD_ID3;
 
-  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* dlgProgress = NULL;
+  
+  // workaround to avoid deadlocks caused by dvdplayer halting app, only ogg is played by dvdplayer
+  if (!url.GetFileType().Equals("ogg") )
+  {
+    dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  }
 
   strcpy(m_opt.output_directory, "./");
   m_opt.proxyurl[0] = '\0';
@@ -234,7 +242,7 @@ bool CFileShoutcast::Open(const CURL& url)
   }
   int iShoutcastTimeout = 10 * SHOUTCASTTIMEOUT; //i.e: 10 * 10 = 100 * 100ms = 10s
   int iCount = 0;
-  while (!m_fileState.bRipDone && !m_fileState.bRipStarted && !m_fileState.bRipError)
+  while (!m_fileState.bRipDone && !m_fileState.bRipStarted && !m_fileState.bRipError && (!dlgProgress || !dlgProgress->IsCanceled()))
   {
     if (iCount <= iShoutcastTimeout) //Normally, this isn't the problem,
       //because if RIP_MANAGER fails, this would be here
@@ -256,12 +264,19 @@ bool CFileShoutcast::Open(const CURL& url)
     iCount++;
   }
 
+  if (dlgProgress && dlgProgress->IsCanceled())
+  {
+     Close();
+     dlgProgress->Close();
+     return false;
+  }
+
   /* store content type of stream */
   m_contenttype = m_ripInfo.contenttype;
 
   //CHANGED CODE: Don't reset timer anymore.
 
-  while (!m_fileState.bRipDone && !m_fileState.bRipError && m_fileState.bBuffering)
+  while (!m_fileState.bRipDone && !m_fileState.bRipError && m_fileState.bBuffering && (!dlgProgress || !dlgProgress->IsCanceled()))
   {
     if (iCount <= iShoutcastTimeout) //Here is the real problem: Sometimes the buffer fills just to
       //slowly, thus the quality of the stream will be bad, and should be
@@ -302,6 +317,12 @@ bool CFileShoutcast::Open(const CURL& url)
       return false;
     }
     iCount++;
+  }
+  if (dlgProgress && dlgProgress->IsCanceled())
+  {
+     Close();
+     dlgProgress->Close();
+     return false;
   }
   if ( m_fileState.bRipError )
   {
@@ -375,8 +396,6 @@ bool CFileShoutcast::IsRecording()
 {
   return m_ripFile.IsRecording();
 }
-
-
 
 bool CFileShoutcast::GetMusicInfoTag(CMusicInfoTag& tag)
 {

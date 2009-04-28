@@ -185,42 +185,42 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
-          if (!m_vecItems->IsPlugin())
-          {
-          if (item->IsVideoDb()       && 
-              item->HasVideoInfoTag() && 
-             !item->GetVideoInfoTag()->m_strPath.IsEmpty())
-          {
-            strDir = item->GetVideoInfoTag()->m_strPath;
-          }
+          if (m_vecItems->IsPlugin() || m_vecItems->IsMythTV())
+            info.strContent = "plugin";
           else
-            CUtil::GetDirectory(item->m_strPath,strDir);
+          {
+            if (item->IsVideoDb()       &&
+                item->HasVideoInfoTag() &&
+              !item->GetVideoInfoTag()->m_strPath.IsEmpty())
+            {
+              strDir = item->GetVideoInfoTag()->m_strPath;
+            }
+            else
+              CUtil::GetDirectory(item->m_strPath,strDir);
 
             int iFound;
             m_database.GetScraperForPath(strDir, info, settings, iFound);
 
-          if (info.strContent.IsEmpty() && 
-            !(m_database.HasMovieInfo(item->m_strPath) || 
-              m_database.HasTvShowInfo(strDir)                           || 
-              m_database.HasEpisodeInfo(item->m_strPath)))
-          {
-            // hack
-            CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-            if (pDialog && pDialog->IsScanning())
+            if (info.strContent.IsEmpty() &&
+              !(m_database.HasMovieInfo(item->m_strPath) ||
+                m_database.HasTvShowInfo(strDir)                           ||
+                m_database.HasEpisodeInfo(item->m_strPath)))
+            {
+              // hack
+              CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+              if (pDialog && pDialog->IsScanning())
+                return true;
+
+              CStdString strOldPath = item->m_strPath;
+              item->m_strPath = strDir;
+              OnAssignContent(iItem,1, info, settings);
+              item->m_strPath = strOldPath;
               return true;
+            }
 
-            CStdString strOldPath = item->m_strPath;
-            item->m_strPath = strDir;
-            OnAssignContent(iItem,1, info, settings);
-            item->m_strPath = strOldPath;
-            return true;
+            if (info.strContent.Equals("tvshows") && iFound == 1 && !settings.parent_name_root) // dont lookup on root tvshow folder
+              return true;
           }
-
-          if (info.strContent.Equals("tvshows") && iFound == 1 && !settings.parent_name_root) // dont lookup on root tvshow folder
-            return true;
-          }
-          else
-            info.strContent = "plugin";
 
           OnInfo(item.get(),info);
 
@@ -239,17 +239,17 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             // must be at the title window
             if (GetID() == WINDOW_VIDEO_NAV)
               OnDeleteItem(iItem);
- 
+
             // or be at the files window and have file deletion enabled
             else if (GetID() == WINDOW_VIDEO_FILES && g_guiSettings.GetBool("filelists.allowfiledeletion"))
               OnDeleteItem(iItem);
- 
+
             // or be at the video playlists location
             else if (m_vecItems->m_strPath.Equals("special://videoplaylists/"))
               OnDeleteItem(iItem);
             else
               return false;
- 
+
             return true;
           }
         }
@@ -405,7 +405,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (m_database.GetTvShowId(strParentDirectory) < 0)
       {
     	CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
-	return false;
+	    return false;
       }
 
       long lEpisodeHint=-1;
@@ -693,8 +693,8 @@ void CGUIWindowVideoBase::OnManualIMDB()
     return;
 
   CFileItem item(strInput);
-  item.m_strPath = "Z:\\";
-  ::DeleteFile(item.GetCachedVideoThumb().c_str());
+  item.m_strPath = "special://temp/";
+  CFile::Delete(item.GetCachedVideoThumb().c_str());
 
   SScraperInfo info;
   info.strContent = "movies";
@@ -851,7 +851,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
-    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true") 
+    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true")
     { // a playable python files
       queuedItems.Add(pItem);
     }
@@ -1122,7 +1122,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     {
       SScraperInfo info;
-      if (m_vecItems->IsPlugin())
+      if (m_vecItems->IsPlugin() || m_vecItems->IsMythTV())
         info.strContent = "plugin";
       else
       {
@@ -1568,7 +1568,7 @@ bool CGUIWindowVideoBase::GetDirectory(const CStdString &strDirectory, CFileItem
   bool bResult = CGUIMediaWindow::GetDirectory(strDirectory,items);
 
   // add in the "New Playlist" item if we're in the playlists folder
-  if (items.m_strPath == "special://videoplaylists/" && !items.Contains("newplaylist://"))
+  if ((items.m_strPath == "special://videoplaylists/") && !items.Contains("newplaylist://"))
   {
     CFileItemPtr newPlaylist(new CFileItem(g_settings.GetUserDataItem("PartyMode-Video.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));
