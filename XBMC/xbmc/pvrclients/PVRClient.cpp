@@ -308,14 +308,17 @@ void CPVRClient::PVRLogCallback(void *userData, const PVR_LOG loglevel, const ch
   if (!client)
     return;
 
-  CStdString message;
-  message.reserve(16384);
-  message.Format("PVR: %s/%s:", client->m_clientName, client->m_hostName);
+  CStdString clientMsg, xbmcMsg;
+  clientMsg.reserve(16384);
 
   va_list va;
   va_start(va, format);
-  message.FormatV(format, va);
+  clientMsg.FormatV(format, va);
   va_end(va);
+
+  /* insert internal identifiers for brevity */
+  xbmcMsg.Format("PVR: %s/%s: ", client->m_clientName, client->m_hostName);
+  xbmcMsg += clientMsg;
 
   int xbmclog;
   switch (loglevel)
@@ -332,5 +335,6 @@ void CPVRClient::PVRLogCallback(void *userData, const PVR_LOG loglevel, const ch
       break;
   }
 
-  CLog::Log(xbmclog, message);
+  /* finally write the logmessage */
+  CLog::Log(xbmclog, xbmcMsg);
 }
