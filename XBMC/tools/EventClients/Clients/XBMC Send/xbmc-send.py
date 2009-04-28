@@ -41,14 +41,12 @@ def main():
             actions.append(a)
         else:
             assert False, "unhandled option"
-
-    print ip
-    print actions
     
     addr = (ip, port)
     sock = socket(AF_INET,SOCK_DGRAM)
     
     for action in actions:
+        print 'Sending action:', action
         packet = PacketACTION(actionmessage=action, actiontype=ACTION_BUTTON)
         packet.send(sock, addr)
 
