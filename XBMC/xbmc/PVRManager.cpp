@@ -88,6 +88,9 @@ void CPVRManager::Start()
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager starting");
 
+  m_infoToogleStart = NULL;
+  m_infoToogleCurrent = 0;
+
   /* attach a CEPG singleton */
   CSingleLock epgLock(m_epgSection);
   m_EPG = CEPG::Get();
@@ -106,7 +109,7 @@ void CPVRManager::Start()
 //  Create(false, THREAD_MINSTACKSIZE);
 //  SetName("PVRManager Updater");
 //  SetPriority(-15);
-
+  
   CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", m_clients.size());
 }
 
@@ -115,6 +118,9 @@ void CPVRManager::Stop()
   CSingleLock lock(m_clientsSection);
 
   StopThread();
+
+  m_infoToogleStart = NULL;
+  m_infoToogleCurrent = 0;
 
   for (unsigned int i=0; i < m_clients.size(); i++) {
     delete m_clients[i];
@@ -272,6 +278,7 @@ void CPVRManager::GetClientProperties(long clientID)
   }
 }
 
+#define INFO_TOGGLE_TIME    1
 const char* CPVRManager::TranslateInfo(DWORD dwInfo)
 {
   if (dwInfo == PVR_NOW_RECORDING_CHANNEL) return m_nowRecordingClient;
@@ -280,6 +287,72 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
   else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL) return m_nextRecordingClient;
   else if (dwInfo == PVR_NEXT_RECORDING_TITLE) return m_nextRecordingTitle;
   else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) return m_nextRecordingDateTime;
+  else if (dwInfo == PVR_BACKEND_NAME) return m_backendName;
+  else if (dwInfo == PVR_BACKEND_VERSION) return m_backendVersion;
+  else if (dwInfo == PVR_BACKEND_HOST) return m_backendHost;
+  else if (dwInfo == PVR_BACKEND_DISKSPACE) return m_backendDiskspace;
+  else if (dwInfo == PVR_BACKEND_CHANNELS) return m_backendTimers;
+  else if (dwInfo == PVR_BACKEND_TIMERS) return m_backendRecordings;
+  else if (dwInfo == PVR_BACKEND_RECORDINGS) return m_backendChannels;
+  else if (dwInfo == PVR_BACKEND_NUMBER)
+  {
+    if (m_infoToogleStart == 0)
+    {
+      m_infoToogleStart = timeGetTime();
+      m_infoToogleCurrent = 0;
+    }
+    else
+    {
+      if (timeGetTime() - m_infoToogleStart > INFO_TOGGLE_TIME*1000)
+      {
+        if (m_clients.size() > 0)
+        {
+          m_infoToogleCurrent++;
+          if (m_infoToogleCurrent > m_clients.size()-1)
+            m_infoToogleCurrent = 0;
+
+          long long m_iDisktotal = 0;
+          long long m_iDiskused  = 0;
+          if (m_clients[m_infoToogleCurrent]->GetDriveSpace(&m_iDisktotal, &m_iDiskused) == PVR_ERROR_NO_ERROR)
+          {
+            m_iDisktotal /= 1024; // Convert to MBytes
+            m_iDiskused /= 1024;  // Convert to MBytes
+            m_backendDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) m_iDisktotal / 1024, g_localizeStrings.Get(156), (float) m_iDiskused / 1024);
+          }
+          else
+          {
+            m_backendDiskspace = g_localizeStrings.Get(18074);
+          }
+
+          m_backendName         = m_clients[m_infoToogleCurrent]->GetBackendName();
+          m_backendVersion      = m_clients[m_infoToogleCurrent]->GetBackendVersion();
+          m_backendHost         = m_clients[m_infoToogleCurrent]->GetConnectionString();
+          m_backendTimers       = "0";
+          m_backendRecordings   = "0";
+          m_backendChannels     = "0";
+        }
+        else
+        {
+          m_backendName         = "";
+          m_backendVersion      = "";
+          m_backendHost         = "";
+          m_backendDiskspace    = "";
+          m_backendTimers       = "";
+          m_backendRecordings   = "";
+          m_backendChannels     = "";
+        }
+        m_infoToogleStart = timeGetTime();
+      }
+    }
+    
+    CStdString backendClients;
+    if (m_clients.size() > 0)
+      backendClients.Format("%u %s %u",m_infoToogleCurrent+1 ,g_localizeStrings.Get(20163), m_clients.size());
+    else
+      backendClients = g_localizeStrings.Get(14023);
+
+    return backendClients;
+  }
   return "";
 }
 
@@ -309,7 +382,6 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
   }
 }
 
-
 bool CPVRManager::RequestRemoval(const CAddon* addon)
 {
   if (!addon)
@@ -332,6 +404,7 @@ bool CPVRManager::RequestRemoval(const CAddon* addon)
   return true;
 
 }
+
 
 /************************************************************/
 /** Timer handling **/

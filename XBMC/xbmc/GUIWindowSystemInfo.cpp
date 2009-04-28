@@ -23,6 +23,7 @@
 #include "GUIWindowSystemInfo.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
+#include "PVRManager.h"
 #ifdef HAS_SYSINFO
 #include "SystemInfo.h"
 #endif
@@ -156,6 +157,22 @@ void CGUIWindowSystemInfo::Render()
     i++; // empty line
     SetControlLabel(i++, "%s: %s", 22012, SYSTEM_TOTAL_MEMORY);
     SetControlLabel(i++, "%s: %s", 158, SYSTEM_FREE_MEMORY);
+  }
+  else if(iControl == CONTROL_BT_PVR)
+  {
+    SetLabelDummy();
+    SET_CONTROL_LABEL(40,g_localizeStrings.Get(18030));
+    int i = 2;
+
+    SetControlLabel(i++, "%s %s", 18208, PVR_BACKEND_NUMBER);
+    i++; // empty line
+    SetControlLabel(i++, "%s %s", 18200, PVR_BACKEND_NAME);
+    SetControlLabel(i++, "%s %s", 18201, PVR_BACKEND_VERSION);
+    SetControlLabel(i++, "%s %s", 18202, PVR_BACKEND_HOST);
+    SetControlLabel(i++, "%s %s", 18203, PVR_BACKEND_DISKSPACE);
+    SetControlLabel(i++, "%s %s", 18204, PVR_BACKEND_CHANNELS);
+    SetControlLabel(i++, "%s %s", 18205, PVR_BACKEND_TIMERS);
+    SetControlLabel(i++, "%s %s", 18206, PVR_BACKEND_RECORDINGS);
   }
   SET_CONTROL_LABEL(52, "XBMC "+g_infoManager.GetLabel(SYSTEM_BUILD_VERSION)+" (Compiled : "+g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
   CGUIWindow::Render();

@@ -39,6 +39,7 @@ private:
   #define CONTROL_BT_NETWORK  96
   #define CONTROL_BT_VIDEO    97
   #define CONTROL_BT_HARDWARE 98
+  #define CONTROL_BT_PVR      99
   unsigned int iControl;
   void SetLabelDummy();
   void SetControlLabel(int id, const char *format, int label, int info);

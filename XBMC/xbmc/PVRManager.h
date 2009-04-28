@@ -122,6 +122,10 @@ private:
   static bool m_hasRecordings;
   static bool m_hasTimer;
   static bool m_hasTimers;
+  
+  DWORD m_infoToogleStart;
+  unsigned int m_infoToogleCurrent;
+  
 
   std::map< long, VECTVTIMERS > m_timers;
 
@@ -131,6 +135,13 @@ private:
   CStdString  m_nowRecordingDateTime;
   CStdString  m_nowRecordingClient;
   CStdString  m_nowRecordingTitle;
+  CStdString  m_backendName;
+  CStdString  m_backendVersion;
+  CStdString  m_backendHost;
+  CStdString  m_backendDiskspace;
+  CStdString  m_backendTimers;
+  CStdString  m_backendRecordings;
+  CStdString  m_backendChannels;
 
   CEPG       *m_EPG;
   CTVDatabase m_database;

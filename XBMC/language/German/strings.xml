@@ -1469,6 +1469,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18027">PVR-Klienten</string>
   <string id="18028">PVR-Klienten verwalten</string>
   <string id="18029">Klienten verwalten...</string>
+  <string id="18030">PVR-Informationen</string>
 
   <string id="18048">Kanaleinstellungen bearbeiten</string>
   <string id="18049">Neuer Kanal</string>
@@ -1584,6 +1585,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18205">Aufnahmen:</string>
   <string id="18206">Timers:</string>
   <string id="18207">Bitte geben Sie den Timer Namen ein</string>
+  <string id="18208">Klientnummer:</string>
 
   <string id="18300">Mo-__-__-__-__-__-__</string>
   <string id="18301">__-Di-__-__-__-__-__</string>

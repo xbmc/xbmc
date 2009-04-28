@@ -232,6 +232,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.nextrecordingtitle")) ret = PVR_NEXT_RECORDING_TITLE;
     else if (strTest.Equals("pvr.nextrecordingdatetime")) ret = PVR_NEXT_RECORDING_DATETIME;
     else if (strTest.Equals("pvr.nextrecordingchannel")) ret = PVR_NEXT_RECORDING_CHANNEL;
+    else if (strTest.Equals("pvr.backendname")) ret = PVR_BACKEND_NAME;
+    else if (strTest.Equals("pvr.backendversion")) ret = PVR_BACKEND_VERSION;
+    else if (strTest.Equals("pvr.backendhost")) ret = PVR_BACKEND_HOST;
+    else if (strTest.Equals("pvr.backenddiskspace")) ret = PVR_BACKEND_DISKSPACE;
+    else if (strTest.Equals("pvr.backendchannels")) ret = PVR_BACKEND_CHANNELS;
+    else if (strTest.Equals("pvr.backendtimers")) ret = PVR_BACKEND_TIMERS;
+    else if (strTest.Equals("pvr.backendrecordings")) ret = PVR_BACKEND_RECORDINGS;
+    else if (strTest.Equals("pvr.backendnumber")) ret = PVR_BACKEND_NUMBER;
   }
   else if (strCategory.Equals("addon"))
   {
@@ -950,6 +958,14 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case PVR_NEXT_RECORDING_CHANNEL:
   case PVR_NEXT_RECORDING_DATETIME:
   case PVR_NEXT_RECORDING_TITLE:
+  case PVR_BACKEND_NAME:
+  case PVR_BACKEND_VERSION:
+  case PVR_BACKEND_HOST:
+  case PVR_BACKEND_DISKSPACE:
+  case PVR_BACKEND_CHANNELS:
+  case PVR_BACKEND_TIMERS:
+  case PVR_BACKEND_RECORDINGS:
+  case PVR_BACKEND_NUMBER:
     strLabel = CPVRManager::GetInstance()->TranslateInfo(info);
     break;
   case WEATHER_CONDITIONS:

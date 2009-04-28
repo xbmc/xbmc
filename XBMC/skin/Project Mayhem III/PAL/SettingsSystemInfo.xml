@@ -101,6 +101,15 @@
 				<font>font13</font>
 				<align>Left</align>
 			</control>
+			<control type="button" id="99">
+				<description>Button PVR</description>
+				<posx>-</posx>
+				<posy>-</posy>
+				<label>18025</label>
+				<font>font13</font>
+				<align>Left</align>
+				<visible>System.GetBool(pvr.enabled)</visible>
+			</control>
 		</control>
 		<control type="group">
 			<description>Default Contents</description>
