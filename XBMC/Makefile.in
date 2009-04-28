@@ -381,8 +381,8 @@ install: install-datas install-web
 	@cp tools/Linux/xbmc.sh $(prefix)/bin/xbmc
 	@cp tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
 	@cp tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
-	@mkdir -p /usr/share/xsessions
-	@cp tools/Linux/xbmc-xsession.desktop /usr/share/xsessions/XBMC.desktop
+	@-mkdir -p /usr/share/xsessions
+	@-cp tools/Linux/xbmc-xsession.desktop /usr/share/xsessions/XBMC.desktop
 	@chmod 755 $(prefix)/bin/xbmc
 	@chmod 755 $(prefix)/bin/xbmc-standalone
 	@echo "Copying support and legal files,,,"
