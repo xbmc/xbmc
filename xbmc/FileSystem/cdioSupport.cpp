@@ -104,6 +104,8 @@ CLibcdio::CLibcdio()
 
 CLibcdio::~CLibcdio()
 {
+  free(s_defaultDevice);
+  s_defaultDevice = NULL;
 }
 
 void CLibcdio::RemoveInstance()
