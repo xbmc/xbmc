@@ -774,6 +774,11 @@ bool CFileItem::IsMythTV() const
   return CUtil::IsMythTV(m_strPath);
 }
 
+bool CFileItem::IsHDHomeRun() const
+{
+  return CUtil::IsHDHomeRun(m_strPath);
+}
+
 bool CFileItem::IsVTP() const
 {
   return CUtil::IsVTP(m_strPath);
