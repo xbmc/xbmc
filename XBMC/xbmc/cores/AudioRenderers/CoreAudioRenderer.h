@@ -24,7 +24,49 @@
 
 #include <osx/CoreAudio.h>
 #include "IAudioRenderer.h"
-#include "SliceQueue.h"
+#include <utils/LockFree.h>
+
+struct audio_slice
+{
+  struct _tag_header{
+    unsigned __int64 timestamp; // Currently not used
+    size_t data_len;
+  } header;
+  unsigned int data[1];
+  unsigned char* get_data() {return (unsigned char*)&data;}
+};
+
+class CAtomicAllocator
+{
+public:
+  CAtomicAllocator(size_t blockSize);
+  ~CAtomicAllocator();
+  void* Alloc();
+  void Free(void* p);
+  size_t GetBlockSize();
+private:
+  lf_heap m_Heap ;
+  size_t m_BlockSize;
+};
+
+class CSliceQueue
+{
+public:
+  CSliceQueue(size_t sliceSize);
+  virtual ~CSliceQueue();
+  size_t AddData(void* pBuf, size_t bufLen);
+  size_t GetData(void* pBuf, size_t bufLen);
+  size_t GetTotalBytes();
+  void Clear();
+protected:
+  void Push(audio_slice* pSlice);
+  audio_slice* Pop(); // Does not respect remainder, so it must be private
+  CAtomicAllocator* m_pAllocator;
+  lf_queue m_Queue;
+  size_t m_TotalBytes;
+  audio_slice* m_pPartialSlice;
+  size_t m_RemainderSize;
+};
 
 class CCoreAudioPerformance
 {

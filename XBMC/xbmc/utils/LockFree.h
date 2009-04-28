@@ -31,11 +31,17 @@
 struct atomic_ptr
 {
   void* ptr;
+#ifndef __ppc__  
   long version;
+#endif  
 };
 
-// This is ugly but correct as long as sizeof(void*) == sizeof(long)...
-#define atomic_ptr_to_long_long(p) (long long) *((long long*)&p)
+#ifdef __ppc__  
+  #define atomic_ptr_to_long(p) (long) *((long*)&p)
+#else
+  // This is ugly but correct as long as sizeof(void*) == sizeof(long)...
+  #define atomic_ptr_to_long_long(p) (long long) *((long long*)&p)
+#endif
 
 struct lf_node
 {

@@ -78,9 +78,7 @@
 		81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064110E9B608800C203A6 /* FileXBMSP.cpp */; };
 		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
 		83C8CF370F9D77F300D3E3C5 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C8CF330F9D77F300D3E3C5 /* CoreAudioRenderer.cpp */; };
-		83C8CF380F9D77F300D3E3C5 /* SliceQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C8CF350F9D77F300D3E3C5 /* SliceQueue.cpp */; };
 		83C8CF390F9D77F300D3E3C5 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C8CF330F9D77F300D3E3C5 /* CoreAudioRenderer.cpp */; };
-		83C8CF3A0F9D77F300D3E3C5 /* SliceQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C8CF350F9D77F300D3E3C5 /* SliceQueue.cpp */; };
 		83C8CF3F0F9D781B00D3E3C5 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C8CF3B0F9D781B00D3E3C5 /* CoreAudio.cpp */; };
 		83C8CF400F9D781B00D3E3C5 /* CoreAudioSoundManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C8CF3D0F9D781B00D3E3C5 /* CoreAudioSoundManager.cpp */; };
 		83C8CF410F9D781B00D3E3C5 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C8CF3B0F9D781B00D3E3C5 /* CoreAudio.cpp */; };
@@ -1850,8 +1848,6 @@
 		81F064250E9BB99800C203A6 /* XBMSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMSDirectory.h; sourceTree = "<group>"; };
 		83C8CF330F9D77F300D3E3C5 /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
 		83C8CF340F9D77F300D3E3C5 /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRenderer.h; path = AudioRenderers/CoreAudioRenderer.h; sourceTree = "<group>"; };
-		83C8CF350F9D77F300D3E3C5 /* SliceQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SliceQueue.cpp; path = AudioRenderers/SliceQueue.cpp; sourceTree = "<group>"; };
-		83C8CF360F9D77F300D3E3C5 /* SliceQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliceQueue.h; path = AudioRenderers/SliceQueue.h; sourceTree = "<group>"; };
 		83C8CF3B0F9D781B00D3E3C5 /* CoreAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudio.cpp; sourceTree = "<group>"; };
 		83C8CF3C0F9D781B00D3E3C5 /* CoreAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudio.h; sourceTree = "<group>"; };
 		83C8CF3D0F9D781B00D3E3C5 /* CoreAudioSoundManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioSoundManager.cpp; sourceTree = "<group>"; };
@@ -6772,8 +6768,6 @@
 			children = (
 				83C8CF330F9D77F300D3E3C5 /* CoreAudioRenderer.cpp */,
 				83C8CF340F9D77F300D3E3C5 /* CoreAudioRenderer.h */,
-				83C8CF350F9D77F300D3E3C5 /* SliceQueue.cpp */,
-				83C8CF360F9D77F300D3E3C5 /* SliceQueue.h */,
 				F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */,
 				F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */,
 				F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */,
@@ -7820,7 +7814,6 @@
 				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */,
 				83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */,
 				83C8CF390F9D77F300D3E3C5 /* CoreAudioRenderer.cpp in Sources */,
-				83C8CF3A0F9D77F300D3E3C5 /* SliceQueue.cpp in Sources */,
 				83C8CF410F9D781B00D3E3C5 /* CoreAudio.cpp in Sources */,
 				83C8CF420F9D781B00D3E3C5 /* CoreAudioSoundManager.cpp in Sources */,
 				83C8CF540F9D7AEF00D3E3C5 /* paplayer_linux.cpp in Sources */,
@@ -8646,7 +8639,6 @@
 				F5A2BD0F0F7AD92C0006ABA0 /* Zeroconf.cpp in Sources */,
 				83E0B24A0F7C95FF0091643F /* Atomics.cpp in Sources */,
 				83C8CF370F9D77F300D3E3C5 /* CoreAudioRenderer.cpp in Sources */,
-				83C8CF380F9D77F300D3E3C5 /* SliceQueue.cpp in Sources */,
 				83C8CF3F0F9D781B00D3E3C5 /* CoreAudio.cpp in Sources */,
 				83C8CF400F9D781B00D3E3C5 /* CoreAudioSoundManager.cpp in Sources */,
 				83C8CF530F9D7AEF00D3E3C5 /* paplayer_linux.cpp in Sources */,

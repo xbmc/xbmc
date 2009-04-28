@@ -19,7 +19,9 @@
  *
  */
 
+#ifdef WIN32
 #include <stdafx.h>
+#endif
 #include "Atomics.h"
 
 ///////////////////////////////////////////////////////////////////////////
@@ -38,7 +40,7 @@ long cas(volatile long *pAddr, long expectedVal, long swapVal)
                         "          bne-     2f      \n" /* Bail if the two values are not equal [not as expected] */
                         "          stwcx.  %4,0,%2  \n" /* Attempt to store swapVal (%4) value into *pAddr (%2) [p must still be reserved] */
                         "          bne-    1b       \n" /* Loop if p was no longer reserved */
-                        "          sync             \n" /* Reconcile multiple processors [if present] */
+                        "          isync            \n" /* Reconcile multiple processors [if present] */
                         "  2:                       \n"
                         : "=&r" (prev), "+m" (*pAddr)                   /* Outputs [prev, *pAddr] */
                         : "r" (pAddr), "r" (expectedVal), "r" (swapVal) /* Inputs [pAddr, expectedVal, swapVal] */
@@ -49,7 +51,7 @@ long cas(volatile long *pAddr, long expectedVal, long swapVal)
 
 #elif defined(WIN32)
 
-long cas(volatile long* pAddr,long expectedVal, long swapVal)
+long cas(volatile long* pAddr, long expectedVal, long swapVal)
 {
   long prev;
   
@@ -61,7 +63,7 @@ long cas(volatile long* pAddr,long expectedVal, long swapVal)
     mov ecx, swapVal ;
     
     // Do Swap
-    lock cmpxchg [ebx], ecx ;
+    lock cmpxchg dword ptr [ebx], ecx ;
     
     // Store the return value
     mov prev, eax;
@@ -93,29 +95,28 @@ long cas(volatile long* pAddr,long expectedVal, long swapVal)
 ///////////////////////////////////////////////////////////////////////////
 #ifdef __ppc__ // PowerPC
 
-// OSAtomicCompareAndSwap64
-// OSAtomicCompareAndSwap64Barrier
-/*
+// Not available
 
-compare_and_swap64b:        // bool OSAtomicCompareAndSwapBarrier64( int64_t old, int64_t new, int64_t *value);
-lwsync                      // write barrier, NOP'd on a UP
-1:
-    ldarx   r7,0,r5
-    cmpld   r7,r3
-    bne--   2f
-    stdcx.  r4,0,r5
-    bne--   1b
-    isync                       // read barrier, NOP'd on a UP
-    li              r3,1
-    blr
-2:
-    li              r8,-8                           // on 970, must release reservation
-    li              r3,0                            // return failure
-    stdcx.  r4,r8,r1                        // store into red zone to release
-    blr
-
- */
 #elif defined(WIN32)
+
+long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
+{
+  long long prev;
+  
+  __asm
+  {
+    mov esi, pAddr ;
+    mov eax, dword ptr [expectedVal] ;
+    mov edx, dword ptr expectedVal[4] ;
+    mov ebx, dword ptr [swapVal] ;
+    mov ecx, dword ptr swapVal[4] ;
+    lock cmpxchg8b qword ptr [esi] ;
+    mov dword ptr [prev], eax ;
+    mov dword ptr prev[4], edx ;
+  }
+  
+  return prev; 
+}
 
 #else // Linux / OSX86 (GCC)
 
@@ -125,7 +126,7 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
   
   __asm__ volatile (
                         " push %%ebx        \n"  // We have to manually handle ebx, because PIC uses it and the compiler refuses to build anything that touches it
-                        " mov %4, %%ebx     \n"
+                        " mov %4, %%ebx     \n" // TODO: Consider #if __PIC__ to prevent other ebx issues (since we touch it but don't tell the compiler)
                         " lock/cmpxchg8b %3 \n"
                         " pop %%ebx"
                         : "=A" (prev)
@@ -141,8 +142,38 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
 // Returns new value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
 #ifdef __ppc__ // PowerPC
-// OSAtomicIncrement32Barrier
+
+long AtomicIncrement(volatile long* pAddr)
+{
+  long val;
+  
+  __asm__ __volatile__ (
+                        "sync             \n"
+                     "1: lwarx  %0, 0, %1 \n"
+                        "addic  %0, %0, 1 \n"
+                        "stwcx. %0, 0, %1 \n"
+                        "bne-   1b        \n"
+                        "isync"
+                        : "=&r" (val)
+                        : "r" (pAddr)
+                        : "cc", "xer", "memory");
+  return val;
+}
+
 #elif defined(WIN32)
+
+long AtomicIncrement(volatile long* pAddr)
+{
+  long val;
+  __asm
+  {
+    mov eax, pAddr ;
+    lock inc dword ptr [eax] ;
+    mov eax, [eax] ;
+    mov val, eax ;
+  }
+  return val;
+}
 
 #else // Linux / OSX86 (GCC)
 
@@ -165,8 +196,38 @@ long AtomicIncrement(volatile long* pAddr)
 // Returns new value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
 #ifdef __ppc__ // PowerPC
-// OSAtomicDecrement32Barrier
+
+long AtomicDecrement(volatile long* pAddr)
+{
+  long val;
+  
+  __asm__ __volatile__ (
+                        "sync                \n"
+                     "1: lwarx  %0, 0, %1    \n"
+                        "addic  %0, %0, -1   \n"
+                        "stwcx. %0, 0, %1    \n"
+                        "bne-   1b           \n"
+                        "isync"
+                        : "=&r" (val)
+                        : "r" (pAddr)
+                        : "cc", "xer", "memory");
+  return val;
+}
+
 #elif defined(WIN32)
+
+long AtomicDecrement(volatile long* pAddr)
+{
+  long val;
+  __asm
+  {
+    mov eax, pAddr ;
+    lock dec dword ptr [eax] ;
+    mov eax, [eax] ;
+    mov val, eax ;
+  }
+  return val;
+}
 
 #else // Linux / OSX86 (GCC)
 
@@ -195,56 +256,3 @@ CAtomicSpinLock::~CAtomicSpinLock()
 {
   m_Lock = 0; // Unlock
 }
-
-
-///////////////////////////////////////////////////////////////////////////////////
-// Trivial threadsafe queue implemented using a single spinlock for synchronization
-//////////////////////////////////////////////////////////////////////////////////
-template <class T>
-class CSafeQueue
-  {
-  public:
-    CSafeQueue(size_t maxItems = 0) : m_Lock(0), m_MaxItems(maxItems) {}
-    bool Push(const T& elem)
-    {
-      CAtomicSpinLock(m_Lock);
-      if (m_Queue.size() >= m_MaxItems)
-        return false;
-      
-      m_Queue.Push(elem);
-      return true;
-    }
-    
-    void Pop()
-    {
-      CAtomicSpinLock(m_Lock); 
-      m_Queue.pop();
-    }
-    
-    void Clear() 
-    {
-      CAtomicSpinLock(m_Lock); 
-      while (!m_Queue.empty())
-        m_Queue.pop();
-    }
-    
-    bool SetMaxItems(size_t maxItems)
-    {
-      CAtomicSpinLock(m_Lock);
-      if (maxItems < m_MaxItems)
-        if (maxItems < m_Queue.size())
-          return false;
-      m_MaxItems = maxItems;
-      return true;
-    }
-    size_t GetMaxItems() {CAtomicSpinLock(m_Lock); return m_MaxItems;}
-    T& Head() {CAtomicSpinLock(m_Lock); return m_Queue.front();}
-    T& Tail() {CAtomicSpinLock(m_Lock); return m_Queue.back();}
-    bool Empty() {CAtomicSpinLock(m_Lock); return m_Queue.empty();}
-    size_t Count() {CAtomicSpinLock(m_Lock); return m_Queue.size();}
-  protected:
-    long m_Lock;
-    std::queue<T> m_Queue;
-    size_t m_MaxItems;
-  };
-

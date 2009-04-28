@@ -302,7 +302,7 @@ const char* CCoreAudioDevice::GetName(CStdString& name)
     return NULL;
 
   UInt32 size = 0;
-  AudioDeviceGetPropertyInfo(m_DeviceId,0, false, kAudioDevicePropertyDeviceName, &size, NULL); // TODO: Change to kAudioObjectPropertyName
+  AudioDeviceGetPropertyInfo(m_DeviceId,0, false, kAudioDevicePropertyDeviceName, &size, NULL); // TODO: Change to kAudioObjectPropertyObjectName
   OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyDeviceName, &size, name.GetBufferSetLength(size));  
   if (ret)
   {
@@ -351,6 +351,17 @@ bool CCoreAudioDevice::GetStreams(AudioStreamIdList* pList)
   }
   delete[] pStreamList;
   return (ret == noErr);  
+}
+
+
+bool CCoreAudioDevice::IsRunning()
+{
+  UInt32 isRunning = false;
+  UInt32 size = sizeof(isRunning);
+  OSStatus ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyDeviceIsRunning, &size, &isRunning);
+  if (ret)
+    return false;
+  return (isRunning != 0);
 }
 
 bool CCoreAudioDevice::SetHogStatus(bool hog)
@@ -939,14 +950,14 @@ bool CCoreAudioUnit::SetInputChannelMap(CoreAudioChannelList* pChannelMap)
 void CCoreAudioUnit::Start()
 {
   // TODO: Check component status
-  if (m_Component)
+  if (m_Component && m_Initialized)
     AudioOutputUnitStart(m_Component);  
 }
 
 void CCoreAudioUnit::Stop()
 {
   // TODO: Check component status
-  if (m_Component)
+  if (m_Component && m_Initialized)
     AudioOutputUnitStop(m_Component);    
 }
 

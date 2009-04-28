@@ -55,11 +55,11 @@ public:
 };
 
 // Not yet implemented
-// kAudioDevicePropertyDeviceIsRunning, kAudioDevicePropertyDeviceIsRunningSomewhere, kAudioDevicePropertyHogMode, kAudioDevicePropertyLatency, 
+// kAudioDevicePropertyDeviceIsRunning, kAudioDevicePropertyDeviceIsRunningSomewhere, kAudioDevicePropertyLatency, 
 // kAudioDevicePropertyBufferFrameSize, kAudioDevicePropertyBufferFrameSizeRange, kAudioDevicePropertyUsesVariableBufferFrameSizes,
-// kAudioDevicePropertyStreams, kAudioDevicePropertySafetyOffset, kAudioDevicePropertyIOCycleUsage, kAudioDevicePropertyStreamConfiguration
+// kAudioDevicePropertySafetyOffset, kAudioDevicePropertyIOCycleUsage, kAudioDevicePropertyStreamConfiguration
 // kAudioDevicePropertyIOProcStreamUsage, kAudioDevicePropertyPreferredChannelsForStereo, kAudioDevicePropertyPreferredChannelLayout,
-// kAudioDevicePropertyNominalSampleRate, kAudioDevicePropertyAvailableNominalSampleRates, kAudioDevicePropertyActualSampleRate,
+// kAudioDevicePropertyAvailableNominalSampleRates, kAudioDevicePropertyActualSampleRate,
 // kAudioDevicePropertyTransportType
 
 typedef std::list<AudioStreamID> AudioStreamIdList;
@@ -85,6 +85,7 @@ public:
   const char* GetName(CStdString& name);
   UInt32 GetTotalOutputChannels();
   bool GetStreams(AudioStreamIdList* pList);
+  bool IsRunning();
   bool SetHogStatus(bool hog);
   pid_t GetHogStatus();
   bool SetMixingSupport(bool mix);
