@@ -261,12 +261,10 @@ if (errno == 20)
   result->fd = fd;
 
   // special case for opening the cdrom device
-  char *devName = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
-  if (strcmp(lpFileName, devName) == 0)
+  if (strcmp(lpFileName, MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName())==0)
     result->m_bCDROM = true;
   else
     result->m_bCDROM = false;
-  free(devName);
 
   // if FILE_FLAG_DELETE_ON_CLOSE then "unlink" the file (delete)
   // the file will be deleted when the last open descriptor is closed.
