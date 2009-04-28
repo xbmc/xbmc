@@ -329,7 +329,11 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, context->max_packet_size);
+      if (context && context->is_streamed)
+        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, 2048);
+      else
+        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, context->max_packet_size);
+
       if (pd.buf_size == 0)
       {
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
