@@ -160,7 +160,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 
   if ( pThread->IsAutoDelete() )
   {
-//    CLog::Log(LOGDEBUG,"%s, deleting thread object", __FUNCTION__);
+//    CLog::Log(LOGDEBUG,"Thread %u terminating (autodelete)", GetCurrentThreadId());
     delete pThread;
     pThread = NULL;
   }

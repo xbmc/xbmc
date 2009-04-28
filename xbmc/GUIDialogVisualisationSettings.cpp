@@ -142,7 +142,7 @@ void CGUIDialogVisualisationSettings::OnClick(int iID)
     CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(iID);
     setting.current = pControl->IsSelected() ? 1 : 0;
   }
-  m_pVisualisation->UpdateSetting(settingNum, &m_pSettings);
+  m_pVisualisation->UpdateSetting(settingNum);
   UpdateSettings();
 }
 

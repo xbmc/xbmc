@@ -51,6 +51,7 @@ namespace DIRECTORY
     bool GetDirectory(const CStdString& strPath, CFileItemList &items, bool retrieveAll = false);
     void SetDirectory(const CStdString& strPath, const CFileItemList &items, DIR_CACHE_TYPE cacheType);
     void ClearDirectory(const CStdString& strPath);
+    void ClearFile(const CStdString& strFile);
     void ClearSubPaths(const CStdString& strPath);
     void Clear();
     void AddFile(const CStdString& strFile);

@@ -133,6 +133,7 @@ public:
     float m_karaokeSyncDelay;
     float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
+    float m_audioPlayCountMinimumPercent;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -148,10 +149,7 @@ public:
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
-    int m_videoBlackBarColour;
     CStdString m_videoPPFFmpegType;
-    CStdString m_videoDefaultPlayer;
-        
     bool m_musicUseTimeSeeking;
     int m_musicTimeSeekForward;
     int m_musicTimeSeekBackward;
@@ -162,6 +160,11 @@ public:
     int m_musicPercentSeekForwardBig;
     int m_musicPercentSeekBackwardBig;
     int m_musicResample;
+    int m_videoBlackBarColour;
+    int m_videoIgnoreAtStart;
+
+    CStdString m_videoDefaultPlayer;
+    float m_videoPlayCountMinimumPercent;
 
     int m_cacheMemBufferSize;
     
@@ -177,7 +180,6 @@ public:
     int m_lcdAddress4;
 
     int m_autoDetectPingTime;
-    float m_playCountMinimumPercent;
 
     int m_songInfoDuration;
     int m_busyDialogDelay;
@@ -208,9 +210,9 @@ public:
     int m_thumbSize;
 
     int m_sambaclienttimeout;
-    bool m_sambastatfiles;
     CStdString m_sambadoscodepage;
-    bool m_bHTTPDirectoryLocalMode;
+    bool m_sambastatfiles;
+
     bool m_bHTTPDirectoryStatFilesize;
 
     CStdString m_musicThumbs;
@@ -255,6 +257,7 @@ public:
     
     bool m_bPythonVerbose;
   };
+
   struct stSettings
   {
 public:
@@ -314,8 +317,8 @@ public:
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
 
-	  int m_HttpApiBroadcastPort;
-	  int m_HttpApiBroadcastLevel;
+    int m_HttpApiBroadcastPort;
+    int m_HttpApiBroadcastLevel;
     int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
     int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
@@ -388,7 +391,7 @@ public:
 
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
-  
+
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 

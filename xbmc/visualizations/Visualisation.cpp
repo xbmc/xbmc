@@ -18,18 +18,15 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h" 
+#include "stdafx.h"
 // Visualisation.cpp: implementation of the CVisualisation class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "Visualisation.h"
-#include "visualizations/VisualisationTypes.h"
-#include "MusicInfoTag.h"
 #include "Settings.h"
 
 using namespace std;
-using namespace MUSIC_INFO;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -101,60 +98,21 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
   // returns false if vis doesnt want the input
   // returns true if vis handled the input
   if (action != VIS_ACTION_NONE && m_pVisz->OnAction)
-  {
-    // if this is a VIS_ACTION_UPDATE_TRACK action, copy relevant
-    // tags from CMusicInfoTag to VisTag
-    if ( action == VIS_ACTION_UPDATE_TRACK && param )
-    {
-      const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
-      VisTrack track;
-
-      track.title       = tag->GetTitle().c_str();
-      track.artist      = tag->GetArtist().c_str();
-      track.album       = tag->GetAlbum().c_str();
-      track.albumArtist = tag->GetAlbumArtist().c_str();
-      track.genre       = tag->GetGenre().c_str();
-      track.comment     = tag->GetComment().c_str();
-      track.lyrics      = tag->GetLyrics().c_str();
-      track.trackNumber = tag->GetTrackNumber();
-      track.discNumber  = tag->GetDiscNumber();
-      track.duration    = tag->GetDuration();
-      track.year        = tag->GetYear();
-      track.rating      = tag->GetRating();
-
-      return m_pVisz->OnAction((int)action, (void*)(&track));
-    }
     return m_pVisz->OnAction((int)action, param);
-  }
   return false;
 }
-
 
 void CVisualisation::GetSettings(vector<VisSetting> **vecSettings)
 {
   if (vecSettings) *vecSettings = NULL;
   if (m_pVisz->GetSettings)
-  {
-    unsigned int iEntries;
-    StructSetting** sSet;
-    iEntries = m_pVisz->GetSettings(&sSet);
-    VisUtils::StructToVec(iEntries, &sSet, &m_vecSettings);
-    if(m_pVisz->FreeSettings)
-      m_pVisz->FreeSettings();
-  }
-  *vecSettings = &m_vecSettings;
-}
-
-void CVisualisation::UpdateSetting(int num, vector<VisSetting> **vecSettings)
+    m_pVisz->GetSettings(vecSettings); 
+} 
+	 	 
+void CVisualisation::UpdateSetting(int num)   
 {
   if (m_pVisz->UpdateSetting)
-  {
-    unsigned int iEntries;
-    StructSetting** sSet;
-    iEntries = VisUtils::VecToStruct(m_vecSettings, &sSet);
-    m_pVisz->UpdateSetting(num, &sSet);
-    VisUtils::FreeStruct(iEntries, &sSet);
-  }
+    m_pVisz->UpdateSetting(num); 
 }
 
 void CVisualisation::GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)

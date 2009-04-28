@@ -22,12 +22,26 @@
 #include "stdafx.h"
 #ifdef HAS_WMA_CODEC
 #include "WMACodec.h"
+#include "../../utils/Win32Exception.h" 
+ 
+DWORD CALLBACK WMAStreamCallback( VOID* pContext, ULONG offset, ULONG num_bytes, 
+                                  VOID** ppData ) 
+{ 
+  WMAInfo *pThis = (WMAInfo*)pContext; 
+	 
+  if (offset != pThis->fileReader.GetPosition()) 
+    pThis->fileReader.Seek(offset,SEEK_SET); 
+	     
+  pThis->fileReader.Read(pThis->buffer,num_bytes); 
+  *ppData = pThis->buffer; 
+  return num_bytes; 
+} 
 
 WMACodec::WMACodec()
 {
+  m_pWMA = NULL;
   m_CodecName = "WMA";
   m_iDataPos = -1;
-  m_hnd = NULL;
 }
 
 WMACodec::~WMACodec()
@@ -37,62 +51,91 @@ WMACodec::~WMACodec()
 
 bool WMACodec::Init(const CStdString &strFile, unsigned int filecache)
 {
-  if (!m_dll.Load())
-    return false; // error logged previously
+  WAVEFORMATEX wfxSourceFormat;
 
-  m_dll.Init();
-
-  m_hnd = m_dll.LoadFile(strFile.c_str(), &m_TotalTime, &m_SampleRate, &m_BitsPerSample, &m_Channels);
-  if (m_hnd == 0)
+  if (!m_info.fileReader.Open(strFile, READ_CACHED)) 
     return false;
 
-  // We always ask ffmpeg to return s16le
-  m_BitsPerSample = 16;
+  m_info.iStartOfBuffer = -1; 
+ 
+  try 
+  { 
+    HRESULT hr = WmaCreateInMemoryDecoder( WMAStreamCallback, &m_info, 0, 
+                                    &wfxSourceFormat, (LPXMEDIAOBJECT*)&m_pWMA); 
+   
+    if (FAILED(hr)) 
+      return false; 
+   
+    WMAXMOFileHeader info; 
+    m_pWMA->GetFileHeader(&info); 
+    m_Channels = info.dwNumChannels; 
+    m_SampleRate = info.dwSampleRate; 
+    m_BitsPerSample = 16; 
+    m_TotalTime = info.dwDuration; // fixme? 
+    m_iDataPos = 0; 
+    m_iDataInBuffer = 0;     
+  } 
+  catch(win32_exception e) 
+  { 
+    e.writelog(__FUNCTION__); 
+    return false;   // We always ask ffmpeg to return s16le
+  }   m_BitsPerSample = 16;
 
   return true;
 }
 
 void WMACodec::DeInit()
-{
-  if (m_hnd != NULL)
-  {
-    m_dll.UnloadFile(m_hnd);
-    m_hnd = NULL;
-  }
-}
-
+{        
+  if (m_pWMA) 
+    m_pWMA->Release();      
+}        
+         
 __int64 WMACodec::Seek(__int64 iSeekTime)
-{
-  __int64 result = (__int64)m_dll.Seek(m_hnd, (unsigned long)iSeekTime);
-  m_iDataPos = result/1000*m_SampleRate*m_BitsPerSample*m_Channels/8;
-
-  return result;
-}
-
+{        
+  DWORD dwResult; 
+  m_pWMA->SeekToTime((DWORD)iSeekTime,&dwResult); 
+  return dwResult;
+}        
+         
 int WMACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
-{
-  if (m_iDataPos == -1)
-  {
-    m_iDataPos = 0;
+{        
+  unsigned int iSizeToGo = size; 
+  DWORD iPacketSize; 
+  XMEDIAPACKET xmp; 
+  ZeroMemory( &xmp, sizeof(xmp) ); 
+  xmp.pvBuffer = m_buffer; 
+  xmp.dwMaxSize = 2048*2*m_Channels; 
+  xmp.pdwCompletedSize = &iPacketSize; 
+  BYTE* pStartOfBuffer = pBuffer; 
+  while (iSizeToGo > 0) 
+  {         
+    if (m_iDataInBuffer == 0) 
+    { 
+      HRESULT hr = m_pWMA->Process(NULL,&xmp); 
+      if (FAILED(hr) || iPacketSize == 0) 
+      { 
+        *actualsize = size-iSizeToGo; 
+         return READ_EOF; 
+      } 
+      m_iDataInBuffer = iPacketSize; 
+      m_startOfBuffer = m_buffer; 
+    } 
+    int iCopy=m_iDataInBuffer>iSizeToGo?iSizeToGo:m_iDataInBuffer; 
+    memcpy(pStartOfBuffer,m_startOfBuffer,iCopy); 
+    iSizeToGo -= iCopy; 
+    pStartOfBuffer += iCopy; 
+    m_iDataInBuffer -= iCopy; 
+    m_startOfBuffer += iCopy; 
   }
-
-  if (m_iDataPos >= m_TotalTime/1000*m_SampleRate*m_BitsPerSample*m_Channels/8)
-  {
-    return READ_EOF;
-  }
-
-  if ((*actualsize=m_dll.FillBuffer(m_hnd, (char*)pBuffer,size))> 0)
-  {
-    m_iDataPos += *actualsize;
-    return READ_SUCCESS;
-  }
-
-  return READ_ERROR;
+  
+  *actualsize = size-iSizeToGo; 
+	 
+  return READ_SUCCESS; 
 }
 
 bool WMACodec::CanInit()
 {
-  return m_dll.CanLoad();
+  return true;
 }
 
 #endif

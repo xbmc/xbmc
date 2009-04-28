@@ -56,7 +56,7 @@ public:
   void GetInfo(VIS_INFO *info);
   bool OnAction(VIS_ACTION action, void *param = NULL);
   void GetSettings(std::vector<VisSetting> **vecSettings);
-  void UpdateSetting(int num, std::vector<VisSetting> **vecSettings);
+  void UpdateSetting(int num);
   void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   void GetCurrentPreset(char **pPreset, bool *locked);
   bool IsLocked();
@@ -66,8 +66,6 @@ protected:
   std::auto_ptr<struct Visualisation> m_pVisz;
   std::auto_ptr<DllVisualisation> m_pDll;
   CStdString m_strVisualisationName;
-
-  std::vector<VisSetting> m_vecSettings;
 };
 
 
