@@ -83,6 +83,7 @@ CGraphicContext::CGraphicContext(void)
   m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = INVALID;
   m_bFullScreenRoot = false;
+  m_screenSurface = NULL;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -108,6 +109,8 @@ CGraphicContext::~CGraphicContext(void)
     m_viewStack.pop();
     if (viewport) delete [] viewport;
   }
+
+  delete m_screenSurface;
 }
 
 #ifndef HAS_SDL
