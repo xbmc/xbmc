@@ -23,7 +23,6 @@
 #include "GUIWindowSystemInfo.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
-#include "PVRManager.h"
 #ifdef HAS_SYSINFO
 #include "SystemInfo.h"
 #endif

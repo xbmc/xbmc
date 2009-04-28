@@ -1,0 +1,222 @@
+<window id="126">
+	<defaultcontrol always="true">450</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<coordinates>
+		<system>1</system>
+		<posx>110</posx>
+		<posy>110</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="0">
+			<posx>-110</posx>
+			<posy>-110</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>-15</posx>
+			<posy>-15</posy>
+			<width>520</width>
+			<height>420</height>
+			<texture>dialog-panel2.png</texture>
+		</control>
+		<control type="label" id="411">
+			<description>Dialog Title</description>
+			<posx>10</posx>
+			<posy>-2</posy>
+			<width>300</width>
+			<font>special13</font>
+			<label>1023</label>
+		</control>
+		<control type="list" id="450">
+			<posx>10</posx>
+			<posy>30</posy>
+			<width>500</width>
+			<height>280</height>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<onup>450</onup>
+			<ondown>450</ondown>
+			<pagecontrol>-</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="64">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>480</width>
+					<height>64</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>2</posy>
+					<width>60</width>
+					<height>60</height>
+					<texture>$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="label">
+					<posx>85</posx>
+					<posy>2</posy>
+					<width>385</width>
+					<height>30</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Property(Addon.Name)</info>
+				</control>
+				<control type="label">
+					<posx>85</posx>
+					<posy>30</posy>
+					<width>385</width>
+					<height>30</height>
+					<font>font11</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Property(Addon.Summary)</info>
+				</control>
+				<control type="image">
+					<description>Addon rating</description>
+					<posx>365</posx>
+					<posy>5</posy>
+					<width>90</width>
+					<height>18</height>
+					<aligny>center</aligny>
+					<info>Addon.Rating</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="64">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>480</width>
+					<height>60</height>
+					<visible>!Control.HasFocus(450)</visible>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>480</width>
+					<height>60</height>
+					<visible>Control.HasFocus(450)</visible>
+					<texture border="5">button-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>2</posy>
+					<width>60</width>
+					<height>60</height>
+					<texture>$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="label">
+					<posx>85</posx>
+					<posy>2</posy>
+					<width>385</width>
+					<height>30</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Property(Addon.Name)</info>
+				</control>
+				<control type="image">
+					<description>Addon rating</description>
+					<posx>365</posx>
+					<posy>5</posy>
+					<width>90</width>
+					<height>18</height>
+					<aligny>center</aligny>
+					<info>Addon.Rating</info>
+				</control>
+				<control type="label">
+					<description>Addon description</description>
+					<posx>85</posx>
+					<posy>30</posy>
+					<width>385</width>
+					<height>120</height>
+					<font>font11</font>
+					<info>ListItem.Property(Addon.Description)</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="label">
+			<description>Page label</description>
+			<posx>10</posx>
+			<posy>330</posy>
+			<width>170</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font12b</font>
+			<label>($INFO[Container(450).NumItems]) - $LOCALIZE[18060] ($INFO[Container(450).CurrentPage]/$INFO[Container(450).NumPages])</label>
+			<visible>!Control.IsVisible(451)</visible>
+		</control>
+		<control type="label">
+			<description>Page label</description>
+			<posx>10</posx>
+			<posy>330</posy>
+			<width>170</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font12b</font>
+			<label>($INFO[Container(451).NumItems]) - $LOCALIZE[18060] ($INFO[Container(451).CurrentPage]/$INFO[Container(451).NumPages])</label>
+			<visible>Control.IsVisible(451)</visible>
+		</control>
+		<control type="group" id="9000">
+			<control type="button" id="413">
+				<description>OK button</description>
+				<posx>190</posx>
+				<posy>330</posy>
+				<width>90</width>
+				<height>32</height>
+				<font>font10</font>
+				<align>center</align>
+				<label>186</label>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>416</onleft>
+				<onright>414</onright>
+				<onup>450</onup>
+				<ondown>450</ondown>
+			</control>
+			<control type="button" id="414">
+				<description>Cancel button</description>
+				<posx>290</posx>
+				<posy>330</posy>
+				<width>90</width>
+				<height>32</height>
+				<font>font10</font>
+				<align>center</align>
+				<label>222</label>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>413</onleft>
+				<onright>415</onright>
+				<onup>450</onup>
+				<ondown>450</ondown>
+			</control>
+			<control type="button" id="415">
+				<description>Add-ons button</description>
+				<posx>390</posx>
+				<posy>330</posy>
+				<width>90</width>
+				<height>32</height>
+				<font>font10</font>
+				<align>center</align>
+				<label>33000</label>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>414</onleft>
+				<onright>416</onright>
+				<onup>450</onup>
+				<ondown>450</ondown>
+			</control>
+		</control>
+	</controls>
+</window>
