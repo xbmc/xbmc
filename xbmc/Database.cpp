@@ -180,6 +180,8 @@ bool CDatabase::Open()
 
   m_pDS->exec("PRAGMA cache_size=16384\n");
   m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
+  m_pDS->exec("PRAGMA journal_mode='TRUNCATE'\n");
+//  m_pDS->exec("PRAGMA journal_mode='OFF'\n");
   m_pDS->exec("PRAGMA count_changes='OFF'\n");
   m_bOpen = true;
   m_iRefCount++;
