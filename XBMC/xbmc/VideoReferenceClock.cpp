@@ -245,7 +245,7 @@ bool CVideoReferenceClock::SetupGLX()
   UpdateRefreshrate();
   
   m_FailedUpdates = 0;
-  StartClockGuard();
+  //StartClockGuard();
   
   return true;
 }
@@ -840,7 +840,9 @@ void CClockGuard::Process()
     {
       m_VideoReferenceClock->m_MissedVBlanks++;
       m_VideoReferenceClock->UpdateClock(1, false);
+      m_VideoReferenceClock->Lock();
       m_VideoReferenceClock->SendVblankSignal();
+      m_VideoReferenceClock->Unlock();
       m_VideoReferenceClock->m_VBlankTime.QuadPart += m_SystemFrequency.QuadPart / RefreshRate;
     }
     
