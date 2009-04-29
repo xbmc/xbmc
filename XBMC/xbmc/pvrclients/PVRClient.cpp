@@ -26,12 +26,11 @@
 #include "../utils/log.h"
 
 CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
-                       const CStdString& strPVRClientName, ADDON::IAddonCallback* addonCB, IPVRClientCallback* pvrCB)
-                              : IPVRClient(clientID, addonCB, pvrCB)
+                       const ADDON::CAddon& addon, ADDON::IAddonCallback* addonCB, IPVRClientCallback* pvrCB)
+                              : IPVRClient(clientID, addon, addonCB, pvrCB)
                               , m_clientID(clientID)
                               , m_pClient(pClient)
                               , m_pDll(pDll)
-                              , m_clientName(strPVRClientName)
                               , m_manager(pvrCB)
 {
   InitializeCriticalSection(&m_critSection);
@@ -70,14 +69,14 @@ PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
   }
   catch (std::exception e)
   {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception from GetProperties", m_clientName.c_str(), m_hostName.c_str());
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception from GetProperties", m_strName.c_str(), m_hostName.c_str());
     return PVR_ERROR_UNKOWN;
   }
 }
 
 PVR_ERROR CPVRClient::Connect()
 {
-  CLog::Log(LOGDEBUG, "PVR: %s - connecting", m_clientName.c_str());
+  CLog::Log(LOGDEBUG, "PVR: %s - connecting", m_strName.c_str());
   return m_pClient->Connect();
 }
 
@@ -158,7 +157,7 @@ bool CPVRClient::ConvertChannels(unsigned int num, PVR_CHANNEL **clientChans, VE
     }
     catch (std::exception e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - unitialized PVR_CHANNEL", m_clientName.c_str(), m_hostName.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s - unitialized PVR_CHANNEL", m_strName.c_str(), m_hostName.c_str());
       ReleaseClientData(num, clientChans);
       return false;
     }
@@ -194,7 +193,7 @@ void CPVRClient::ReleaseClientData(unsigned int num, PVR_CHANNEL **clientChans)
     }
     catch (std::exception e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s: uninitialized PVR_CHANNEL", m_clientName.c_str(), m_hostName.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s: uninitialized PVR_CHANNEL", m_strName.c_str(), m_hostName.c_str());
       clientChans = NULL;
       continue;
     }
@@ -322,7 +321,7 @@ void CPVRClient::PVRLogCallback(void *userData, const PVR_LOG loglevel, const ch
   va_end(va);
 
   /* insert internal identifiers for brevity */
-  xbmcMsg.Format("PVR: %s/%s: ", client->m_clientName, client->m_hostName);
+  xbmcMsg.Format("PVR: %s/%s: ", client->m_strName, client->m_hostName);
   xbmcMsg += clientMsg;
 
   int xbmclog;

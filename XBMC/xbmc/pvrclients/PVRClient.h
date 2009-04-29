@@ -29,7 +29,7 @@ class CPVRClient : public IPVRClient
 {
 public:
   CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll, 
-    const CStdString& strPVRClientName, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB);
+    const ADDON::CAddon& addon, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB);
   ~CPVRClient();
 
   // DLL related
@@ -79,7 +79,6 @@ protected:
   const long m_clientID;
   std::auto_ptr<struct PVRClient> m_pClient;
   std::auto_ptr<DllPVRClient> m_pDll;
-  CStdString m_clientName;
   CStdString m_hostName;
   CStdString m_backendName;
   CStdString m_backendVersion;

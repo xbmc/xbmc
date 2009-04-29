@@ -30,5 +30,5 @@ public:
   CPVRClientFactory() {}
   virtual ~CPVRClientFactory() {}
 
-  static CPVRClient* LoadPVRClient(const CStdString& path, const CStdString& library, const CStdString& name, DWORD clientID, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB);
+  static CPVRClient* LoadPVRClient(const CStdString& path, const ADDON::CAddon& addon, DWORD clientID, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB);
 };

@@ -103,7 +103,7 @@ void CPVRManager::Start()
   }
 
   /* Now that clients have been initialized, we check connectivity */
-  CheckClientConnections();
+  /*CheckClientConnections();*/
 
   /* spawn a thread */
 //  Create(false, THREAD_MINSTACKSIZE);
@@ -203,7 +203,7 @@ bool CPVRManager::LoadClients()
   CPVRClientFactory factory;
   for (unsigned i=0; i<addons->size(); i++)
   {
-    CAddon clientAddon = addons->at(i);
+    const CAddon& clientAddon = addons->at(i);
 
     if (clientAddon.m_disabled) // ignore disabled addons
       continue;
@@ -213,7 +213,7 @@ bool CPVRManager::LoadClients()
     transPath.Replace("addon://", "special://xbmc/");
 
     IPVRClient *client;
-    client = factory.LoadPVRClient(transPath, clientAddon.m_strLibName, clientAddon.m_strName, i, this, this);
+    client = factory.LoadPVRClient(transPath, clientAddon, i, this, this);
     if (client)
     {
       m_clients.insert(std::make_pair(client->GetID(), client));

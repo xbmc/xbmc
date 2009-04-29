@@ -58,7 +58,8 @@ public:
   * \param *addonCB         = IAddonCallback callback to the PVRManager
   * \param *pvrCB           = IPVRClientCallback callback to the PVRManager
   */
-  IPVRClient(long clientID, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB){};
+  IPVRClient(long clientID, const ADDON::CAddon& addon, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB) 
+    : CAddon(addon) {};
 
   /**
   * Destructor
