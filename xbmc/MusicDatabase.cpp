@@ -1532,8 +1532,6 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
 
     long songID = GetSongIDFromPath(strFileName);
 
-    m_pDS->close();
-
     CStdString sql=FormatSQL("UPDATE song SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idSong=%ld", songID);
     m_pDS->exec(sql.c_str());
     return true;

@@ -1646,12 +1646,17 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     CVideoInfoTag info = details;
 
     long lFileId = GetFileId(strFilenameAndPath);
+    
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
+    
     long lMovieId = GetMovieId(strFilenameAndPath);
+    
     if (lMovieId > -1)
       DeleteMovie(strFilenameAndPath, true); // true to keep the table entry
+    
     BeginTransaction();
+    
     lMovieId = AddMovie(strFilenameAndPath);
     if (lMovieId < 0)
     {
@@ -1716,7 +1721,9 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
       CLog::Log(LOGERROR, "%s: called without database open", __FUNCTION__);
       return -1;
     }
+    
     BeginTransaction();
+    
     long lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
@@ -1764,6 +1771,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
   try
   {
     BeginTransaction();
+    
     if (lEpisodeId == -1)
     {
       lEpisodeId = GetEpisodeId(strFilenameAndPath);
@@ -1828,6 +1836,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
   try
   {
     BeginTransaction();
+    
     long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
@@ -2968,6 +2977,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const SScrape
 bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
   BeginTransaction();
+  
   try
   {
     if (iVersion < 4)
