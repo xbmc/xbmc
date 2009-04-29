@@ -70,8 +70,10 @@ public:
 // if not it's just an empty inline stub, and thus won't affect performance
 // and will be optimized out.
 
+#undef GL_DEBUGGING
+
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
-#if  defined(_DEBUG) && defined(HAS_SDL_OPENGL)
+#if defined(GL_DEBUGGING) && defined(_DEBUG) && defined(HAS_SDL_OPENGL)
 #define VerifyGLState() _VerifyGLState(__FILE__, __FUNCTION__, __LINE__)
 #else
 #define VerifyGLState()
