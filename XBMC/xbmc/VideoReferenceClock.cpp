@@ -851,7 +851,9 @@ void CClockGuard::Process()
     m_VideoReferenceClock->Unlock();
     
     if (SleepTime > 100) SleepTime = 100;
-    if (SleepTime > 0) ::Sleep(SleepTime);
+    else if (SleepTime < 1) SleepTime = 1;
+    
+    ::Sleep(SleepTime);
   }
 }
 
