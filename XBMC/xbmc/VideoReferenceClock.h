@@ -83,7 +83,6 @@ class CVideoReferenceClock : public CThread
     
     LARGE_INTEGER m_LastRefreshTime;
     LARGE_INTEGER m_SystemFrequency;
-    LARGE_INTEGER m_PrevAdjustedFrequency;
     
     volatile bool    m_UseVblank;
     volatile __int64 m_RefreshRate;

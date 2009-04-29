@@ -34,7 +34,6 @@ CVideoReferenceClock::CVideoReferenceClock()
 {
   QueryPerformanceFrequency((LARGE_INTEGER*)&m_SystemFrequency);
   m_AdjustedFrequency.QuadPart = m_SystemFrequency.QuadPart;
-  m_PrevAdjustedFrequency.QuadPart = m_SystemFrequency.QuadPart;
   m_ClockOffset.QuadPart = 0;
   m_UseVblank = false;
 
@@ -660,11 +659,11 @@ void CVideoReferenceClock::SetSpeed(double Speed)
   //dvdplayer can change the speed to fit the rereshrate
   if (m_UseVblank)
   {
-    m_AdjustedFrequency.QuadPart = (__int64)((double)m_SystemFrequency.QuadPart * Speed);
-    if (m_AdjustedFrequency.QuadPart != m_PrevAdjustedFrequency.QuadPart)
+    __int64 Frequency = (__int64)((double)m_SystemFrequency.QuadPart * Speed);
+    if (Frequency != m_AdjustedFrequency.QuadPart)
     {
+      m_AdjustedFrequency.QuadPart = Frequency;
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Clock speed %f%%", GetSpeed() * 100);
-      m_PrevAdjustedFrequency.QuadPart = m_AdjustedFrequency.QuadPart;
     }
   }
 }
