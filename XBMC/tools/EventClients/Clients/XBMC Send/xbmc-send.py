@@ -12,16 +12,17 @@ except:
 def usage():
     print "xbmc-send [OPTION] --action=ACTION"
     print 'Example'
-    print '\txbmc-send --ip=192.168.0.1 --p 9777 --action="XBMC.Quit"'
+    print '\txbmc-send --host=192.168.0.1 --port=9777 --action="XBMC.Quit"'
     print "Options"
-    print "\t--help, -h.\t\t\tWill bring up this message"
-    print "\t-i IP, --ip=IP.\t\t\tChoose what IP to connect to (default=localhost)"
-    print "\t-p PORT, --port=PORT.\t\tChoose what PORT to connect to (default=9777)"
+    print "\t-?, --help\t\t\tWill bring up this message"
+    print "\t--host=HOST\t\t\tChoose what HOST to connect to (default=localhost)"
+    print "\t--port=PORT\t\t\tChoose what PORT to connect to (default=9777)"
+    print '\t--action=ACTION\t\t\tSends an action to XBMC, this option can be added multiple times to create a macro'
     pass
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hipa:v", ["help", "ip=", "port=", "action="])
+        opts, args = getopt.getopt(sys.argv[1:], "?pa:v", ["help", "host=", "port=", "action="])
     except getopt.GetoptError, err:
         # print help information and exit:
         print str(err) # will print something like "option -a not recognized"
@@ -32,11 +33,13 @@ def main():
     actions = []
     verbose = False
     for o, a in opts:
-        if o in ("-h", "--help"):
+        if o in ("-?", "--help"):
             usage()
             sys.exit()
-        elif o in ("-i", "--ip"):
+        elif o == "--host":
             ip = a
+        elif o == "--port":
+            port = int(a)
         elif o in ("-a", "--action"):
             actions.append(a)
         else:
