@@ -78,8 +78,7 @@ CStdString CDatabase::FormatSQL(CStdString strStmt, ...)
 
   va_list args;
   va_start(args, strStmt);
-  char *szSql = I(strStmt.c_str(), args);
-  CLog::Log (LOGDEBUG, "strStmt=%s", strStmt.c_str());
+  char *szSql = sqlite3_vmprintf(strStmt.c_str(), args);
   va_end(args);
 
   CStdString strResult;
@@ -187,7 +186,6 @@ bool CDatabase::Open()
 
   m_pDS->exec("PRAGMA cache_size=4096\n");
   m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
-  m_pDS->exec("PRAGMA journal_mode='TRUNCATE'\n");
   m_pDS->exec("PRAGMA count_changes='OFF'\n");
   m_bOpen = true;
   m_iRefCount++;
