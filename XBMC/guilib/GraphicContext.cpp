@@ -110,6 +110,9 @@ CGraphicContext::~CGraphicContext(void)
     if (viewport) delete [] viewport;
   }
 
+  // do not delete m_screenSurface, SDL is already gone and we will
+  // crash on exit in Surface::CSurface::~CSurface at SDL_FreeSurface(m_SDLSurface)
+  //delete m_screenSurface;
 }
 
 #ifndef HAS_SDL
