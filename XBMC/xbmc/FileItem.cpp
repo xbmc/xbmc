@@ -2546,9 +2546,18 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsFTP(strFile))
     return "";
 
-  // we consder folder as if they were files without extension
+  // special checks for subfolders
   if(m_bIsFolder)
-    CUtil::RemoveSlashAtEnd(strFile);
+  {
+    CStdString strArt;
+    CUtil::AddFileToFolder(strFile, "fanart.jpg", strArt);
+    if(CFile::Exists(strArt))
+      return strArt;
+    CUtil::AddFileToFolder(strFile, "fanart.png", strArt);
+    if(CFile::Exists(strArt))
+      return strArt;
+    return "";
+  }
 
   // we don't have a cached image, so let's see if the user has a local image ..
   CStdString strDir;
