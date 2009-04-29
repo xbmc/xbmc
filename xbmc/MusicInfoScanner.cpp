@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "MusicInfoScanner.h"
 #include "MusicDatabase.h"
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "utils/MusicAlbumInfo.h"
 #include "utils/MusicInfoScraper.h"
 #include "FileSystem/DirectoryCache.h"
@@ -83,7 +83,6 @@ void CMusicInfoScanner::Process()
     if (m_scanType == 0) // load info from files
     {
       CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
-      //m_musicDatabase.BeginTransaction();
 
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
@@ -115,7 +114,6 @@ void CMusicInfoScanner::Process()
 
       if (commit)
       {
-        //m_musicDatabase.CommitTransaction();
         g_infoManager.ResetPersistentCache();
 
         if (m_needsCleanup)
@@ -131,8 +129,6 @@ void CMusicInfoScanner::Process()
           m_musicDatabase.Compress(false);
         }
       }
-      //else
-      //  m_musicDatabase.RollbackTransaction();
 
       fileCountReader.StopThread();
 
@@ -335,7 +331,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
 
   if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
     return true;
-                                        
+
   // load subfolder
   CFileItemList items;
   CDirectory::GetDirectory(strDirectory, items, g_stSettings.m_musicExtensions + "|.jpg|.tbn");
@@ -422,9 +418,9 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     m_needsCleanup = true;
 
   VECSONGS songsToAdd;
-  
+
   CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
-  
+
   // for every file found, but skip folder
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -434,11 +430,11 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
 
     if (m_bStop)
       return 0;
-    
+
     // Discard all excluded files defined by m_musicExcludeRegExps
     if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, regexps))
       continue;
-                      
+
     // dont try reading id3tags for folders, playlists or shoutcast streams
     if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() && !pItem->IsPicture())
     {
@@ -811,13 +807,14 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   if (XFILE::CFile::Exists(strNfo))
   {
     CLog::Log(LOGDEBUG,"Found matching nfo file: %s", strNfo.c_str());
-    result = nfoReader.Create(strNfo,"albums"); 
+    result = nfoReader.Create(strNfo,"albums");
     if (result == CNfoFile::FULL_NFO)
     {
       CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
       CAlbum album;
       nfoReader.GetDetails(album);
       m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, album.songs);
+      GetAlbumArtwork(params.GetAlbumId(), album);
       m_musicDatabase.Close();
       return true;
     }
@@ -963,7 +960,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     albumInfo = scraper.GetAlbum(iSelectedAlbum);
     album = scraper.GetAlbum(iSelectedAlbum).GetAlbum();
     if (result == CNfoFile::COMBINED_NFO)
-      nfoReader.GetDetails(album);    
+      nfoReader.GetDetails(album);
     m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, scraper.GetAlbum(iSelectedAlbum).GetSongs(),false);
   }
   else
@@ -973,19 +970,23 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
   }
 
   // check thumb stuff
+  GetAlbumArtwork(params.GetAlbumId(), album);
+  m_musicDatabase.Close();
+  return true;
+}
+
+void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
+{
   if (album.thumbURL.m_url.size())
   {
     CStdString thumb;
-    if (!m_musicDatabase.GetAlbumThumb(params.GetAlbumId(),thumb) || thumb.IsEmpty() || !XFILE::CFile::Exists(thumb))
+    if (!m_musicDatabase.GetAlbumThumb(id, thumb) || thumb.IsEmpty() || !XFILE::CFile::Exists(thumb))
     {
       thumb = CUtil::GetCachedAlbumThumb(album.strAlbum,album.strArtist);
       CScraperUrl::DownloadThumbnail(thumb,album.thumbURL.m_url[0]);
-      m_musicDatabase.SaveAlbumThumb(params.GetAlbumId(), thumb);
+      m_musicDatabase.SaveAlbumThumb(id, thumb);
     }
   }
-
-  m_musicDatabase.Close();
-  return true;
 }
 
 bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStdString& strArtist, CGUIDialogProgress* pDialog)
@@ -1028,6 +1029,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
       CArtist artist;
       nfoReader.GetDetails(artist);
       m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
+      GetArtistArtwork(params.GetArtistId(), strArtist, artist);
       m_musicDatabase.Close();
       return true;
     }
@@ -1130,28 +1132,33 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   }
 
   // check thumb stuff
-  CStdString localThumb;
-  CFileItem item(strArtist);
+  GetArtistArtwork(params.GetArtistId(), strArtist, artist);
+
+  m_musicDatabase.Close();
+  return true;
+}
+
+void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, const CArtist &artist)
+{
+  CStdString artistPath;
+  CFileItem item(artistName);
   CStdString thumb = item.GetCachedArtistThumb();
-  if (m_musicDatabase.GetArtistPath(params.GetArtistId(),localThumb) && !XFILE::CFile::Exists(thumb))
+  if (m_musicDatabase.GetArtistPath(id, artistPath) && !XFILE::CFile::Exists(thumb))
   {
-    CStdString localThumb2 = CUtil::AddFileToFolder(localThumb,"folder.jpg");
-    if (XFILE::CFile::Exists(localThumb2))
+    CStdString localThumb = CUtil::AddFileToFolder(artistPath, "folder.jpg");
+    if (XFILE::CFile::Exists(localThumb))
     {
       CPicture pic;
-      pic.DoCreateThumbnail(localThumb2,thumb);
-    } 
+      pic.DoCreateThumbnail(localThumb, thumb);
+    }
   }
   if (!XFILE::CFile::Exists(thumb) && artist.thumbURL.m_url.size())
     CScraperUrl::DownloadThumbnail(thumb,artist.thumbURL.m_url[0]);
 
   // check fanart
-  CFileItem item2(localThumb,true);
+  CFileItem item2(artistPath, true);
   item.GetMusicInfoTag()->SetArtist(artist.strArtist);
   if (!CFile::Exists(item2.GetCachedFanart()))
     if (!artist.fanart.m_xml.IsEmpty() && artist.fanart.DownloadImage(item2.GetCachedFanart()))
       CLog::Log(LOGERROR, "Failed to download fanart %s to %s", artist.fanart.GetImageURL().c_str(), item2.GetCachedFanart().c_str());
-
-  m_musicDatabase.Close();
-  return true;
 }
