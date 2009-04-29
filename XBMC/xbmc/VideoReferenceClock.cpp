@@ -53,47 +53,34 @@ CVideoReferenceClock::~CVideoReferenceClock()
 
 void CVideoReferenceClock::Process()
 {
-  bool PrevSetupSuccess = true;
   bool SetupSuccess = false;
   LARGE_INTEGER Now;
   
   QueryPerformanceCounter((LARGE_INTEGER*)&m_CurrTime);
   m_CurrTime.QuadPart -= m_ClockOffset.QuadPart; //add the clock offset from the previous time we stopped
 
-  while(!m_bStop)
-  {
 #ifdef HAS_GLX
-    SetupSuccess = SetupGLX();
+  SetupSuccess = SetupGLX();
 #elif defined(_WIN32)
-    SetupSuccess = SetupD3D();
-#else
-    break;
+  SetupSuccess = SetupD3D();
 #endif
-    if (SetupSuccess)
-    {
-      m_UseVblank = true;
-#ifdef HAS_GLX
-      RunGLX();
-#elif defined(_WIN32)
-      RunD3D();
-#endif
-    }
-    else if (!SetupSuccess && !PrevSetupSuccess)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed twice in a row, falling back to QueryPerformanceCounter");
-      break;
-    }
-    PrevSetupSuccess = SetupSuccess;
-  }
+    
   if (SetupSuccess)
   {
+    m_UseVblank = true;
 #ifdef HAS_GLX
+    RunGLX();
     CleanupGLX();
 #elif defined(_WIN32)
+    RunD3D();
     CleanupD3D();
 #endif
   }
-  
+  else
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to QueryPerformanceCounter");
+  }
+
   Lock();
   m_UseVblank = false;
   QueryPerformanceCounter(&Now);
