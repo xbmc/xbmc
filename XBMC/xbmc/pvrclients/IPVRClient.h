@@ -246,18 +246,6 @@ public:
   * \return PVR_ERROR             = Error code
   */
   virtual PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo)=0;
-
-  /****************************************/
-  /**_ EPG INTERNAL __________________**/
-
-  private:
-    friend class CPVRManager;
-    friend class CEPG;
-    CCriticalSection  m_critSection;
-    bool              m_isRunning;
-    CDateTime         m_lastChannelScan;
-    CDateTime         m_lastEPGScan;
-
 };
 
 #endif /* XBMC_IPVRCLIENT_H */

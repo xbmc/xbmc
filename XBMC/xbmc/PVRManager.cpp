@@ -216,7 +216,6 @@ bool CPVRManager::LoadClients()
     client = factory.LoadPVRClient(transPath, clientAddon.m_strLibName, clientAddon.m_strName, i, this, this);
     if (client)
     {
-      client->m_isRunning = false;
       m_clients.insert(std::make_pair(client->GetID(), client));
       CAddon::TransferAddonSettings(&clientAddon);
     }
@@ -467,7 +466,6 @@ bool CPVRManager::AddTimer(const CFileItem &item)
 
   CSingleLock lock(m_clientsSection);
   IPVRClient* client = m_clients[id];
-  CSingleLock lock2(client->m_critSection);
 
   PVR_ERROR err = client->AddTimer(timer);
 
@@ -515,7 +513,6 @@ bool CPVRManager::DeleteTimer(const CFileItem &item, bool force)
 
   CSingleLock lock(m_clientsSection);
   IPVRClient* client = m_clients[id];
-  CSingleLock lock2(client->m_critSection);
 
   if (m_clientProps[id].SupportTimers)
   {
@@ -587,7 +584,6 @@ bool CPVRManager::RenameTimer(const CFileItem &item, CStdString &newname)
 
   CSingleLock lock(m_clientsSection);
   IPVRClient* client = m_clients[id];
-  CSingleLock lock2(client->m_critSection);
 
   if (m_clientProps[id].SupportTimers)
   {
@@ -640,7 +636,6 @@ bool CPVRManager::UpdateTimer(const CFileItem &item)
 
   CSingleLock lock(m_clientsSection);
   IPVRClient* client = m_clients[id];
-  CSingleLock lock2(client->m_critSection);
 
   if (client && m_clientProps[id].SupportTimers)
   {
@@ -690,7 +685,6 @@ CDateTime CPVRManager::NextTimerDate(void)
 
   CSingleLock lock(m_clientsSection);
   IPVRClient* client = m_clients[id];
-  CSingleLock lock(client->m_critSection);
 
   if (m_client)
   {
@@ -822,9 +816,7 @@ int CPVRManager::GetTimers(long clientID)
   if (!m_clients[clientID])
     return 0;
 
-  CSingleLock clientLock(m_clients[clientID]->m_critSection);
   err = m_clients[clientID]->GetTimers(timers);
-  clientLock.Leave();
 
   if(err == PVR_ERROR_NO_ERROR)
   {

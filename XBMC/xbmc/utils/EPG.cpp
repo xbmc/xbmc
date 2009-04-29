@@ -215,16 +215,14 @@ void CEPG::UpdateChannels()
     CSingleLock taskLock(m_tasksSection);
     m_tasks.push(task);
 
-    CSingleLock clientLock(client->m_critSection);
-
-    if (!client->m_isRunning)
-    {
-      Create(false, THREAD_MINSTACKSIZE);
-      CStdString msg;
-      msg.Format("PVR: client_%u channel update", task.m_clientID);
-      SetName(msg.c_str());
-      SetPriority(-10);
-    }
+    //if (!client->m_isRunning)
+    //{
+    //  Create(false, THREAD_MINSTACKSIZE);
+    //  CStdString msg;
+    //  msg.Format("PVR: client_%u channel update", task.m_clientID);
+    //  SetName(msg.c_str());
+    //  SetPriority(-10);
+    //}
     clientsLock.Enter();
     itr++;
   }
@@ -250,9 +248,7 @@ void CEPG::UpdateChannelsTask(long clientID)
   CSingleLock clientsLock(m_clientsSection);
   IPVRClient* client = m_clients[clientID];
 
-  CSingleLock clientLock(client->m_critSection);
   PVR_ERROR err = client->GetChannelList(channels);
-  clientLock.Leave();
 
   if(err == PVR_ERROR_NO_ERROR)
   {
@@ -354,16 +350,14 @@ void CEPG::UpdateEPG()
     CSingleLock taskLock(m_tasksSection);
     m_tasks.push(task);
 
-    CSingleLock clientLock(client->m_critSection);
-
-    if (!client->m_isRunning)
+    /*if (!client->m_isRunning)
     {
       Create(false, THREAD_MINSTACKSIZE);
       CStdString msg;
       msg.Format("PVR: client_%u epg update", task.m_clientID);
       SetName(msg.c_str());
       SetPriority(-10);
-    }
+    }*/
     clientsLock.Enter();
     itr++;
   }
