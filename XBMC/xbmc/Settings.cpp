@@ -544,7 +544,7 @@ void CSettings::LoadAddons()
 bool CSettings::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
 {
   /* iterate through alladdons vec and return matched Addon */
-  for (int i = 0; i < m_allAddons.size(); i++)
+  for (unsigned int i = 0; i < m_allAddons.size(); i++)
   {
     if (m_allAddons[i].m_guid == guid)
     {

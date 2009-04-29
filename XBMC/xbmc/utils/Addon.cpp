@@ -101,10 +101,16 @@ void CAddon::TransferAddonSettings(const CURL &url)
     addon.m_strPath = pathToAddon;
     TransferAddonSettings(&addon);
   }
+  else
+  {
+    CLog::Log(LOGERROR, "Unknown URL %s to transfer AddOn Settings", pathToAddon.c_str());
+  }
 }
 
 void CAddon::TransferAddonSettings(const CAddon* addon)
 {
+  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon->m_strName.c_str());
+  
   if (addon == NULL)
     return;
         
@@ -117,25 +123,33 @@ void CAddon::TransferAddonSettings(const CAddon* addon)
   TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
   while (setting)
   {
-    const char *type = setting->Attribute("type");
     const char *id = setting->Attribute("id");
-    const char *value = settings.Get(id).c_str();
-
+    const char *type = setting->Attribute("type");
+        
     if (type)
     {
-      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0)
+      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
+          strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
+          strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
+          strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
+          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
       {
-        addonCB->SetSetting(addon, id, value);
+        addonCB->SetSetting(addon, id, (const char*) settings.Get(id).c_str());
       }
-      else if (strcmpi(type, "integer") == 0)
+      else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
+               strcmpi(type, "labelenum") == 0)
       {
         int tmp = atoi(settings.Get(id));
         addonCB->SetSetting(addon, id, (int*) &tmp);
       }
-      if (strcmpi(type, "bool") == 0)
+      else if (strcmpi(type, "bool") == 0)
       {
         bool tmp = settings.Get(id) == "true" ? true : false;
         addonCB->SetSetting(addon, id, (bool*) &tmp);
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, addon->m_strName.c_str());
       }
     }
     setting = setting->NextSiblingElement("setting");

@@ -387,6 +387,7 @@ bool CPVRManager::SetSetting(const CAddon* addon, const char *settingName, const
   if (!addon)
     return false;
 
+  CLog::Log(LOGINFO, "PVR: set setting of clientName: %s, settingName: %s", addon->m_strName.c_str(), settingName);
   for (unsigned i=0; i < m_clients.size(); i++)
   {
     if (m_clients[i]->m_guid == addon->m_guid)
