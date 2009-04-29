@@ -232,7 +232,7 @@ __int64 CDVDInputStreamRTMP::Seek(__int64 offset, int whence)
 
 __int64 CDVDInputStreamRTMP::GetLength()
 {
-  return 0;
+  return -1;
 }
 
 bool CDVDInputStreamRTMP::NextStream()
