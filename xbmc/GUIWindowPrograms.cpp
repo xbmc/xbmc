@@ -26,6 +26,7 @@
 #include "FileSystem/HDDirectory.h"
 #include "GUIPassword.h"
 #include "GUIDialogMediaSource.h"
+#include "GUIDialogContentSettings.h"
 #include "Autorun.h"
 #include "utils/LabelFormatter.h"
 #include "Autorun.h"
@@ -33,13 +34,16 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIDialogSelect.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileSystem/RarManager.h"
 #include "FileItem.h"
+#include "ProgramInfoScraper.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace PROGRAM_GRABBER;
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY      3
@@ -197,6 +201,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     else
     {
+      // unused under windows & linux - need to be removed
       if (item->IsXBE() || item->IsShortCut())
       {
         CStdString strLaunch = g_localizeStrings.Get(518); // Launch
@@ -210,6 +215,12 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_RENAME, 520); // edit xbe title
         }
       }
+      else if (!item->m_bIsFolder)
+        buttons.Add(CONTEXT_BUTTON_LAUNCH, 518);// Launch
+      else
+        buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333); // Set Content
+      
+      buttons.Add(CONTEXT_BUTTON_INFO, 544); // Media Information
       buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
     }
   }
@@ -221,6 +232,8 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
 bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
+  SScraperInfo info;
+  bool bRunScan;
 
   if (item && m_vecItems->IsVirtualDirectoryRoot())
   {
@@ -274,10 +287,185 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     OnClick(itemNumber);
     return true;
 
+  case CONTEXT_BUTTON_SET_CONTENT:
+    if (CGUIDialogContentSettings::ShowForProgramsDirectory(item->m_strPath, info, bRunScan))
+    {
+      if (bRunScan)
+      {
+        // run scan
+      }
+      return true;
+    }
+    else
+      return false;
+
+  case CONTEXT_BUTTON_INFO:
+    // Check if the file has information
+    // If it has - Display it
+    // Otherwise, scan for info and display it
+    return GetProgramInfo(item);
+
   default:
     break;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
+}
+
+bool CGUIWindowPrograms::GetProgramInfo(CFileItemPtr item)
+{
+  SScraperInfo info;
+
+  if (m_database.GetScraperForPath(item->m_strPath, info))
+  {
+    bool manualSelect = false;
+    CStdString programName = item->GetLabel();
+
+    while (true)
+    {
+      // if needed - show keyboard to manually typing program name
+      if (manualSelect) 
+      {
+        CGUIDialogKeyboard* pDlgKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+        if (!pDlgKeyboard->ShowAndGetInput(programName,g_localizeStrings.Get(528), false))
+          return false;
+      }
+
+      CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      
+      CStdString strHeading;
+      strHeading.Format(g_localizeStrings.Get(197),info.strTitle);
+      pDlgProgress->SetHeading(strHeading);
+      pDlgProgress->SetLine(0, programName);
+      pDlgProgress->SetLine(1, "");
+      pDlgProgress->SetLine(2, "");
+      pDlgProgress->StartModal();
+      pDlgProgress->Progress();
+
+      CProgramInfoScraper scraper(info);
+      scraper.FindProgramInfo(programName);
+
+      while (!scraper.Completed())
+      {
+        pDlgProgress->Progress();
+        if (pDlgProgress->IsCanceled())
+        {
+          scraper.Cancel();
+          pDlgProgress->Close();
+          return false;
+        }
+        Sleep(1);
+      }
+      pDlgProgress->Close();
+
+      // show results
+      if (scraper.GetPrograms().size()>0)
+      {
+        int iSelected = 0;
+        CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+        if (scraper.GetPrograms().size() > 1)
+        {
+          pDlgSelect->SetHeading(424);
+          pDlgSelect->Reset();
+          for (unsigned int i = 0; i < scraper.GetPrograms().size(); ++i)
+          {
+            CProgramInfoTag program = scraper.GetPrograms()[i].GetProgram();
+            
+            // build the program name string
+            CStdString strProgramName;
+            if (!program.m_strPlatform.IsEmpty())
+              if (!program.m_strYear.IsEmpty())
+                strProgramName.Format("[B]%s[/B] (%s) [%s]",program.m_strTitle.c_str(), program.m_strYear.c_str(), program.m_strPlatform.c_str());
+              else
+                strProgramName.Format("%s [%s]",program.m_strTitle.c_str(), program.m_strPlatform.c_str());
+            else
+              if (!program.m_strYear.IsEmpty())
+                strProgramName.Format("%s (%s)",program.m_strTitle.c_str(), program.m_strYear.c_str());
+              else
+                strProgramName = program.m_strTitle;
+
+            pDlgSelect->Add(strProgramName);
+          }
+          pDlgSelect->EnableButton(true);
+          pDlgSelect->SetButtonLabel(413); // manual
+          pDlgSelect->DoModal();
+          
+          // and wait till user selects one
+          iSelected = pDlgSelect->GetSelectedLabel();
+        }
+        if (iSelected >= 0)
+        {
+          // download program details
+          pDlgProgress->SetHeading(20120);
+          pDlgProgress->SetLine(0, scraper.GetPrograms()[iSelected].GetProgram().m_strTitle);
+          pDlgProgress->SetLine(1, "");
+          pDlgProgress->SetLine(2, "");
+          pDlgProgress->StartModal();
+          pDlgProgress->Progress();
+
+          scraper.LoadProgramInfo(iSelected);
+          while (!scraper.Completed())
+          {
+            pDlgProgress->Progress();
+            if (pDlgProgress->IsCanceled())
+            {
+              scraper.Cancel();
+              pDlgProgress->Close();
+              return false;
+            }
+            Sleep(1);
+          }
+          pDlgProgress->Close();
+
+          // save program details into database 
+          CProgramInfoTag program = scraper.GetPrograms()[iSelected].GetProgram();
+          DWORD programId = m_database.AddTitle(program);
+          
+          // check if the file has info already , if so - delete it
+          DWORD oldTitleId = m_database.GetTitleId(item->m_strPath);
+          if (oldTitleId > 0)
+            m_database.RemoveTitle(oldTitleId);
+
+          // attach the new info to the file
+          if (m_database.GetProgramInfo(item.get())>0)
+            m_database.SetTitleId(item->m_strPath, programId);
+          else // if file doesn't have an info, then add it.
+            m_database.AddProgramInfo(item.get(), programId);
+
+          // update current item
+          item->SetLabel(program.m_strTitle);
+          // extra data (currently unused)
+          item->SetProperty("genre", program.m_strGenre);
+          item->SetProperty("platform", program.m_strPlatform);
+          item->SetProperty("publisher", program.m_strPublisher);
+          item->SetProperty("dateofrelease", program.m_strDateOfRelease);
+          item->SetProperty("style", program.m_strStyle);
+          item->SetProperty("year", program.m_strYear);
+          item->SetProperty("description", program.m_strDescription);
+
+          item->SetThumbnailImage(program.m_thumbURL.GetFirstThumb().m_url);
+         
+          // reload thumbnails 
+          CStdString strDirectory;
+          CUtil::GetParentPath(item->m_strPath, strDirectory);
+          Update(strDirectory);
+
+          return true;
+        }
+        else 
+        {
+          if (pDlgSelect->IsButtonPressed()) // user pressed manual button
+            manualSelect = true;
+          else
+            return false; 
+        }
+      }
+      else // nothing found
+         manualSelect = true;
+    }
+    return true;
+  }
+  else // no scraper
+    return false;
 }
 
 bool CGUIWindowPrograms::Update(const CStdString &strDirectory)
@@ -311,6 +499,8 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
     return MEDIA_DETECT::CAutorun::PlayDisc();
 
   if (pItem->m_bIsFolder) return false;
+
+  CUtil::ExecBuiltIn("System.ExecWait(\""+pItem->m_strPath+"\")");
 
   return false;
 }
@@ -404,6 +594,25 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
     }
     if (!shortcutPath.IsEmpty())
       item->m_strPath = shortcutPath;
+
+    // loading data from database
+    DWORD titleId = m_database.GetTitleId(item->m_strPath);
+    if (titleId > 0)
+    {
+      CProgramInfoTag program = m_database.GetTitle(titleId);
+      item->SetLabel(program.m_strTitle);
+      // extra data (currently unused)
+      item->SetProperty("genre", program.m_strGenre);
+      item->SetProperty("platform", program.m_strPlatform);
+      item->SetProperty("publisher", program.m_strPublisher);
+      item->SetProperty("dateofrelease", program.m_strDateOfRelease);
+      item->SetProperty("style", program.m_strStyle);
+      item->SetProperty("year", program.m_strYear);
+      item->SetProperty("description", program.m_strDescription);
+      
+      // setting thumbnail
+      item->SetThumbnailImage(program.m_thumbURL.GetFirstThumb().m_url);
+    }
   }
   m_database.CommitTransaction();
   // set the cached thumbs
