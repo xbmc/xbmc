@@ -88,8 +88,8 @@ void CPVRManager::Start()
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager starting");
 
-  m_infoToogleStart = NULL;
-  m_infoToogleCurrent = 0;
+  m_infoToggleStart = NULL;
+  m_infoToggleCurrent = 0;
 
   /* attach a CEPG singleton */
   CSingleLock epgLock(m_epgSection);
@@ -119,8 +119,8 @@ void CPVRManager::Stop()
 
   StopThread();
 
-  m_infoToogleStart = NULL;
-  m_infoToogleCurrent = 0;
+  m_infoToggleStart = NULL;
+  m_infoToggleCurrent = 0;
 
   for (unsigned int i=0; i < m_clients.size(); i++) {
     delete m_clients[i];
@@ -296,24 +296,24 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
   else if (dwInfo == PVR_BACKEND_RECORDINGS) return m_backendChannels;
   else if (dwInfo == PVR_BACKEND_NUMBER)
   {
-    if (m_infoToogleStart == 0)
+    if (m_infoToggleStart == 0)
     {
-      m_infoToogleStart = timeGetTime();
-      m_infoToogleCurrent = 0;
+      m_infoToggleStart = timeGetTime();
+      m_infoToggleCurrent = 0;
     }
     else
     {
-      if (timeGetTime() - m_infoToogleStart > INFO_TOGGLE_TIME*1000)
+      if (timeGetTime() - m_infoToggleStart > INFO_TOGGLE_TIME*1000)
       {
         if (m_clients.size() > 0)
         {
-          m_infoToogleCurrent++;
-          if (m_infoToogleCurrent > m_clients.size()-1)
-            m_infoToogleCurrent = 0;
+          m_infoToggleCurrent++;
+          if (m_infoToggleCurrent > m_clients.size()-1)
+            m_infoToggleCurrent = 0;
 
           long long m_iDisktotal = 0;
           long long m_iDiskused  = 0;
-          if (m_clients[m_infoToogleCurrent]->GetDriveSpace(&m_iDisktotal, &m_iDiskused) == PVR_ERROR_NO_ERROR)
+          if (m_clients[m_infoToggleCurrent]->GetDriveSpace(&m_iDisktotal, &m_iDiskused) == PVR_ERROR_NO_ERROR)
           {
             m_iDisktotal /= 1024; // Convert to MBytes
             m_iDiskused /= 1024;  // Convert to MBytes
@@ -324,9 +324,9 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
             m_backendDiskspace = g_localizeStrings.Get(18074);
           }
 
-          m_backendName         = m_clients[m_infoToogleCurrent]->GetBackendName();
-          m_backendVersion      = m_clients[m_infoToogleCurrent]->GetBackendVersion();
-          m_backendHost         = m_clients[m_infoToogleCurrent]->GetConnectionString();
+          m_backendName         = m_clients[m_infoToggleCurrent]->GetBackendName();
+          m_backendVersion      = m_clients[m_infoToggleCurrent]->GetBackendVersion();
+          m_backendHost         = m_clients[m_infoToggleCurrent]->GetConnectionString();
           m_backendTimers       = "0";
           m_backendRecordings   = "0";
           m_backendChannels     = "0";
@@ -341,13 +341,13 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
           m_backendRecordings   = "";
           m_backendChannels     = "";
         }
-        m_infoToogleStart = timeGetTime();
+        m_infoToggleStart = timeGetTime();
       }
     }
     
     CStdString backendClients;
     if (m_clients.size() > 0)
-      backendClients.Format("%u %s %u",m_infoToogleCurrent+1 ,g_localizeStrings.Get(20163), m_clients.size());
+      backendClients.Format("%u %s %u",m_infoToggleCurrent+1 ,g_localizeStrings.Get(20163), m_clients.size());
     else
       backendClients = g_localizeStrings.Get(14023);
 

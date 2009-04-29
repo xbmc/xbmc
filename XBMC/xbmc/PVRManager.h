@@ -124,8 +124,8 @@ private:
   static bool m_hasTimer;
   static bool m_hasTimers;
   
-  DWORD m_infoToogleStart;
-  unsigned int m_infoToogleCurrent;
+  DWORD m_infoToggleStart;
+  unsigned int m_infoToggleCurrent;
   
 
   std::map< long, VECTVTIMERS > m_timers;
