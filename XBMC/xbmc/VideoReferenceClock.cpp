@@ -243,17 +243,12 @@ bool CVideoReferenceClock::SetupGLX()
   m_LastRefreshTime.QuadPart = 0;
   UpdateRefreshrate();
   
-  m_FailedUpdates = 0;
-  //StartClockGuard();
-  
   return true;
 }
 
 void CVideoReferenceClock::CleanupGLX()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
-  
-  m_ClockGuard.StopThread();
   
   if (m_fbConfigs)
   {
@@ -293,12 +288,12 @@ void CVideoReferenceClock::RunGLX()
   unsigned int  VblankCount;
   int           ReturnV;
   
-  m_glXGetVideoSyncSGI(&PrevVblankCount);
+  m_glXGetVideoSyncSGI(&VblankCount);
+  PrevVblankCount = VblankCount;
   UpdateRefreshrate();
   
   while(!m_bStop)
   {
-    m_glXGetVideoSyncSGI(&VblankCount); 
     ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
     m_glXGetVideoSyncSGI(&VblankCount);
     if(ReturnV)
@@ -311,10 +306,8 @@ void CVideoReferenceClock::RunGLX()
     if (VblankCount > PrevVblankCount)
     {
       Lock();
-      if (UpdateClock((int)(VblankCount - PrevVblankCount), true))
-      {
-        SendVblankSignal();
-      }
+      UpdateClock((int)(VblankCount - PrevVblankCount));
+      SendVblankSignal();
       Unlock();
       
       UpdateRefreshrate();
@@ -377,7 +370,7 @@ void CVideoReferenceClock::RunD3D()
       NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
       Lock();
-      UpdateClock(NrVBlanks, false);
+      UpdateClock(NrVBlanks);
       SendVblankSignal();
       Unlock();
       
@@ -521,7 +514,6 @@ bool CVideoReferenceClock::SetupD3D()
   m_LastRefreshTime.QuadPart = 0;
   m_Width = 0;
   m_Height = 0;
-  m_FailedUpdates = 0;
   UpdateRefreshrate();
 
   return true;
@@ -609,30 +601,9 @@ void CVideoReferenceClock::HandleWindowMessages()
 
 #endif /*_WIN32*/
 
-bool CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
+void CVideoReferenceClock::UpdateClock(int NrVBlanks)
 {
-  if (CheckMissed)
-  {
-    NrVBlanks -= m_MissedVBlanks;
-    m_MissedVBlanks = 0;
-  }
-  
-  if (NrVBlanks > 0 || m_FailedUpdates >= 10)
-  {
-    m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
-    if (CheckMissed)
-    {
-      QueryPerformanceCounter((LARGE_INTEGER*)&m_VBlankTime);
-      m_FailedUpdates = 0;
-    }
-    return true;
-  }
-  else if (CheckMissed)
-  {
-    m_FailedUpdates++;
-  }
-  
-  return false;
+  m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
 }
 
 void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
@@ -805,57 +776,6 @@ void CVideoReferenceClock::Unlock()
 #ifdef HAS_SDL
   SDL_mutexV(m_VblankMutex);
 #endif
-}
-
-void CVideoReferenceClock::StartClockGuard()
-{
-  QueryPerformanceCounter((LARGE_INTEGER*)&m_VBlankTime);
-  m_ClockGuard.m_VideoReferenceClock = this;
-  m_MissedVBlanks = 0;
-  m_ClockGuard.Create();
-}
-
-CClockGuard::CClockGuard()
-{
-  QueryPerformanceFrequency(&m_SystemFrequency);
-}
-
-#define MAXDELAY 1200
-
-void CClockGuard::Process()
-{
-  LARGE_INTEGER Now;
-  __int64       RefreshRate, DelayTime, NextVBlank;
-  int           SleepTime;
-  
-  while(!m_bStop)
-  {
-    m_VideoReferenceClock->Lock();
-    QueryPerformanceCounter(&Now);
-    RefreshRate = m_VideoReferenceClock->GetRefreshRate();
-    
-    DelayTime = Now.QuadPart - m_VideoReferenceClock->m_VBlankTime.QuadPart;
-    if (DelayTime * RefreshRate > m_SystemFrequency.QuadPart * MAXDELAY / 1000)
-    {
-      m_VideoReferenceClock->m_MissedVBlanks++;
-      m_VideoReferenceClock->UpdateClock(1, false);
-      m_VideoReferenceClock->Lock();
-      m_VideoReferenceClock->SendVblankSignal();
-      m_VideoReferenceClock->Unlock();
-      m_VideoReferenceClock->m_VBlankTime.QuadPart += m_SystemFrequency.QuadPart / RefreshRate;
-    }
-    
-    NextVBlank = m_VideoReferenceClock->m_VBlankTime.QuadPart + m_SystemFrequency.QuadPart / RefreshRate;
-    NextVBlank += (m_SystemFrequency.QuadPart * (MAXDELAY - 1000) / 1000) / RefreshRate;
-    SleepTime = (NextVBlank - Now.QuadPart) * 1000 / m_SystemFrequency.QuadPart;
-    
-    m_VideoReferenceClock->Unlock();
-    
-    if (SleepTime > 100) SleepTime = 100;
-    else if (SleepTime < 1) SleepTime = 1;
-    
-    ::Sleep(SleepTime);
-  }
 }
 
 CVideoReferenceClock g_VideoReferenceClock;

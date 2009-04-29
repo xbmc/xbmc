@@ -34,21 +34,6 @@
   }
 #endif
 
-//forward declaration
-class CVideoReferenceClock;
-  
-class CClockGuard : public CThread
-{
-  public:
-    CClockGuard();
-    CVideoReferenceClock* m_VideoReferenceClock;
-  
-  private:
-    void Process();
-    
-    LARGE_INTEGER m_SystemFrequency;
-};
-  
 class CVideoReferenceClock : public CThread
 {
   public:
@@ -61,21 +46,14 @@ class CVideoReferenceClock : public CThread
     double GetSpeed();
     int    GetRefreshRate();
     void   Wait(int msecs);
-    bool   UpdateClock(int NrVBlanks, bool CheckMissed);
-    void   SendVblankSignal();
-    void   Lock();
-    void   Unlock();
+    void   UpdateClock(int NrVBlanks);
 
-    volatile LARGE_INTEGER m_VBlankTime;
-    volatile int           m_MissedVBlanks;
-    
   protected:
     void Process();
     bool UpdateRefreshrate();
-    
-    void        StartClockGuard();
-    CClockGuard m_ClockGuard;
-    int         m_FailedUpdates;
+    void Lock();
+    void Unlock();
+    void SendVblankSignal();
     
     volatile LARGE_INTEGER m_CurrTime;
     volatile LARGE_INTEGER m_AdjustedFrequency;
