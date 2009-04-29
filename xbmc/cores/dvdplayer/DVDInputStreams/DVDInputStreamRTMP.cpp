@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "DVDInputStreamRTMP.h"
 #include "VideoInfoTag.h"
+#include "FileSystem/IFile.h"
 
 #ifdef _LINUX
   #include <sys/types.h>
