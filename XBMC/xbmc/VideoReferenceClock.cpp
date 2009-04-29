@@ -60,28 +60,35 @@ void CVideoReferenceClock::Process()
   QueryPerformanceCounter((LARGE_INTEGER*)&m_CurrTime);
   m_CurrTime.QuadPart -= m_ClockOffset.QuadPart; //add the clock offset from the previous time we stopped
 
+  while(!m_bStop)
+  {
 #ifdef HAS_GLX
-  SetupSuccess = SetupGLX();
+    SetupSuccess = SetupGLX();
 #elif defined(_WIN32)
-  SetupSuccess = SetupD3D();
+    SetupSuccess = SetupD3D();
 #endif
     
-  if (SetupSuccess)
-  {
-    m_UseVblank = true;
-    Unlock();
+    if (SetupSuccess)
+    {
+      m_UseVblank = true;
+      Unlock();
 #ifdef HAS_GLX
-    RunGLX();
-    CleanupGLX();
+      RunGLX();
 #elif defined(_WIN32)
-    RunD3D();
+      RunD3D();
+#endif
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to QueryPerformanceCounter");
+      Unlock();
+    }
+#ifdef HAS_GLX
+    CleanupGLX();
+#elif defined(_WIN32)  
     CleanupD3D();
 #endif
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to QueryPerformanceCounter");
-    Unlock();
+    if (!SetupSuccess) break;
   }
 
   Lock();
@@ -131,7 +138,6 @@ bool CVideoReferenceClock::SetupGLX()
   if (!m_Dpy)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to open display");
-    CleanupGLX();
     return false;
   }
   
@@ -141,7 +147,6 @@ bool CVideoReferenceClock::SetupGLX()
   if (!m_fbConfigs)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseFBConfig returned NULL");
-    CleanupGLX();
     return false;
   }
   
@@ -149,7 +154,6 @@ bool CVideoReferenceClock::SetupGLX()
   if (!m_vInfo)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVisualFromFBConfig returned NULL");
-    CleanupGLX();
     return false;
   }
   
@@ -169,7 +173,6 @@ bool CVideoReferenceClock::SetupGLX()
   if (!m_glXWaitVideoSyncSGI)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI not found");
-    CleanupGLX();
     return false;
   }
   
@@ -177,7 +180,6 @@ bool CVideoReferenceClock::SetupGLX()
   if (ReturnV)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
-    CleanupGLX();
     return false;
   }
   
@@ -185,7 +187,6 @@ bool CVideoReferenceClock::SetupGLX()
   if (!m_glXWaitVideoSyncSGI)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI not found");
-    CleanupGLX();
     return false;
   }
   
@@ -193,7 +194,6 @@ bool CVideoReferenceClock::SetupGLX()
   if (ReturnV)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI returned %i", ReturnV);
-    CleanupGLX();
     return false;
   }
   
@@ -201,7 +201,6 @@ bool CVideoReferenceClock::SetupGLX()
   if (ReturnV == 0)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: RandR not supported");
-    CleanupGLX();
     return false;
   }
   
@@ -294,7 +293,6 @@ void CVideoReferenceClock::RunGLX()
     if(ReturnV)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
-      CleanupGLX();
       return;
     }
     
@@ -374,7 +372,6 @@ void CVideoReferenceClock::RunD3D()
         Unlock();
         //reset direct3d because of videodriver bugs
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: Displaymode changed");
-        CleanupD3D();
         return;
       }
       Unlock();
@@ -392,7 +389,6 @@ void CVideoReferenceClock::RunD3D()
     if (SleepCount >= 1000)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus is not responding");
-      CleanupD3D();
       return;
     }
   }
@@ -426,7 +422,6 @@ bool CVideoReferenceClock::SetupD3D()
   
   if (!CreateHiddenWindow())
   {
-    CleanupD3D();
     return false;
   }
 
@@ -435,7 +430,6 @@ bool CVideoReferenceClock::SetupD3D()
   if (!m_D3d)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Direct3DCreate9 failed");
-    CleanupD3D();
     return false;
   }
 
@@ -459,7 +453,6 @@ bool CVideoReferenceClock::SetupD3D()
   if (ReturnV != D3D_OK && ReturnV != D3DERR_DEVICELOST)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i", ReturnV & 0xFFFF);
-    CleanupD3D();
     return false;
   }
   else if (ReturnV == D3DERR_DEVICELOST)
@@ -469,7 +462,6 @@ bool CVideoReferenceClock::SetupD3D()
     if (ReturnV != D3D_OK)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Reset returned %i", ReturnV & 0xFFFF);
-      CleanupD3D();
       return false;
     }
   }
@@ -479,14 +471,12 @@ bool CVideoReferenceClock::SetupD3D()
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDeviceCaps returned %i",
               ReturnV & 0xFFFF);
-    CleanupD3D();
     return false;
   }
 
   if (DevCaps.Caps != D3DCAPS_READ_SCANLINE)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Hardware does not support GetRasterStatus");
-    CleanupD3D();
     return false;
   }
 
@@ -495,7 +485,6 @@ bool CVideoReferenceClock::SetupD3D()
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i",
               ReturnV & 0xFFFF);
-    CleanupD3D();
     return false;
   }
 
@@ -504,7 +493,6 @@ bool CVideoReferenceClock::SetupD3D()
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetAdapterDisplayMode returned %i",
               ReturnV & 0xFFFF);
-    CleanupD3D();
     return false;
   }
 
