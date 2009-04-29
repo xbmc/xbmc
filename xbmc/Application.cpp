@@ -4551,6 +4551,7 @@ void CApplication::UpdateVideoFileState()
 
       dbs.AddBookMarkToFile(CurrentFile(), bookmark, CBookmark::RESUME);
     }
+    dbs.Close();
   }
 }
 
