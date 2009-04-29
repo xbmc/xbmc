@@ -1,34 +1,35 @@
 import os
 import sys
-import datetime
 import re
 
 AvailableOutputs = []
+Output = None
 
 try:
     from qt import *
-    AvailableOutputs.append("Qt")
+    AvailableOutputs.append("--error-output=Qt")
 except:
     pass
 try:
     import pygtk
     pygtk.require('2.0')
     import gtk
-    AvailableOutputs.append("GTK")
+    AvailableOutputs.append("--error-output=GTK")
 except:
     pass
 try:
     import pygame
-    AvailableOutputs.append("SDL")
+    import datetime
+    AvailableOutputs.append("--error-output=SDL")
 except:
     pass
 
 def error(errorLine):
-    if "Qt" in AvailableOutputs:
+    if Output == "--error-output=Qt":
         createQt(errorLine)
-    elif "GTK" in AvailableOutputs:
+    elif Output == "--error-output=GTK":
         createGTK(errorLine)
-    elif "SDL" in AvailableOutputs:
+    elif Output == "--error-output=SDL":
         createSDL(errorLine)
     else:
         print errorLine
