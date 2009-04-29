@@ -46,7 +46,7 @@ class CVideoReferenceClock : public CThread
     double GetSpeed();
     int    GetRefreshRate();
     void   Wait(int msecs);
-    void   UpdateClock(int NrVBlanks);
+    void   UpdateClock(int NrVBlanks, bool CheckMissed);
 
   protected:
     void Process();
@@ -65,6 +65,8 @@ class CVideoReferenceClock : public CThread
     volatile bool    m_UseVblank;
     volatile __int64 m_RefreshRate;
     int              m_PrevRefreshRate;
+    volatile int     m_MissedVblanks;
+    volatile __int64 m_VblankTime;
 
 #ifdef HAS_SDL
     SDL_cond*  m_VblankCond;
