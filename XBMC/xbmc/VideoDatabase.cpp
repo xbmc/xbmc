@@ -1996,9 +1996,7 @@ void CVideoDatabase::DeleteResumeBookMark(const CStdString &strFilenameAndPath)
   try
   {
     CStdString sql = FormatSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
-    BeginTransaction();
     m_pDS->exec(sql.c_str());
-    CommitTransaction();
   }
   catch(...)
   {
@@ -2071,9 +2069,7 @@ void CVideoDatabase::AddBookMarkToFile(const CStdString& strFilenameAndPath, con
     else
       strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,'%s','%s','%s', %i)", lFileId, bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), (int)type);
     
-    BeginTransaction();
     m_pDS->exec(strSQL.c_str());
-    CommitTransaction();
   }
   catch (...)
   {
@@ -3419,9 +3415,7 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
     {
       count++;
       CStdString strSQL = FormatSQL("update files set playCount=%i,lastPlayed=CURRENT_TIMESTAMP where idFile=%u", count, id);
-      BeginTransaction();
       m_pDS->exec(strSQL.c_str());
-      CommitTransaction();
     }
   }
   catch (...)
@@ -5920,10 +5914,11 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
   CGUIDialogProgress *progress=NULL;
   try
   {
-    BeginTransaction();
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
+    BeginTransaction();
+    
     // find all the files
     CStdString sql;
     if (paths)
