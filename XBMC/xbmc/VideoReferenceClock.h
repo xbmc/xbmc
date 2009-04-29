@@ -66,8 +66,8 @@ class CVideoReferenceClock : public CThread
     void   Lock();
     void   Unlock();
 
-    LARGE_INTEGER m_VBlankTime;
-    int           m_MissedVBlanks;
+    volatile LARGE_INTEGER m_VBlankTime;
+    volatile int           m_MissedVBlanks;
     
   protected:
     void Process();
@@ -77,16 +77,17 @@ class CVideoReferenceClock : public CThread
     CClockGuard m_ClockGuard;
     int         m_FailedUpdates;
     
-    LARGE_INTEGER m_CurrTime;
+    volatile LARGE_INTEGER m_CurrTime;
+    volatile LARGE_INTEGER m_AdjustedFrequency;
+    volatile LARGE_INTEGER m_ClockOffset;
+    
     LARGE_INTEGER m_LastRefreshTime;
     LARGE_INTEGER m_SystemFrequency;
-    LARGE_INTEGER m_AdjustedFrequency;
     LARGE_INTEGER m_PrevAdjustedFrequency;
-    LARGE_INTEGER m_ClockOffset;
     
-    bool    m_UseVblank;
-    __int64 m_RefreshRate;
-    int     m_PrevRefreshRate;
+    volatile bool    m_UseVblank;
+    volatile __int64 m_RefreshRate;
+    int              m_PrevRefreshRate;
 
 #ifdef HAS_SDL
     SDL_cond*  m_VblankCond;

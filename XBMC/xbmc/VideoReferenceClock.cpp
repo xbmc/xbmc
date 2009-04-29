@@ -32,9 +32,9 @@ using namespace std;
 
 CVideoReferenceClock::CVideoReferenceClock()
 {
-  QueryPerformanceFrequency(&m_SystemFrequency);
-  m_AdjustedFrequency = m_SystemFrequency;
-  m_PrevAdjustedFrequency = m_SystemFrequency;
+  QueryPerformanceFrequency((LARGE_INTEGER*)&m_SystemFrequency);
+  m_AdjustedFrequency.QuadPart = m_SystemFrequency.QuadPart;
+  m_PrevAdjustedFrequency.QuadPart = m_SystemFrequency.QuadPart;
   m_ClockOffset.QuadPart = 0;
   m_UseVblank = false;
 
@@ -58,7 +58,7 @@ void CVideoReferenceClock::Process()
   bool SetupSuccess = false;
   LARGE_INTEGER Now;
   
-  QueryPerformanceCounter(&m_CurrTime);
+  QueryPerformanceCounter((LARGE_INTEGER*)&m_CurrTime);
   m_CurrTime.QuadPart -= m_ClockOffset.QuadPart; //add the clock offset from the previous time we stopped
 
   while(!m_bStop)
@@ -623,7 +623,7 @@ bool CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
     m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
     if (CheckMissed)
     {
-      QueryPerformanceCounter(&m_VBlankTime);
+      QueryPerformanceCounter((LARGE_INTEGER*)&m_VBlankTime);
       m_FailedUpdates = 0;
     }
     return true;
@@ -641,7 +641,7 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   //when using vblank, get the time from that, otherwise use the systemclock
   if (m_UseVblank)
   {
-    *ptime = m_CurrTime;
+    ptime->QuadPart = m_CurrTime.QuadPart;
   }
   else
   {
@@ -664,7 +664,7 @@ void CVideoReferenceClock::SetSpeed(double Speed)
     if (m_AdjustedFrequency.QuadPart != m_PrevAdjustedFrequency.QuadPart)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Clock speed %f%%", GetSpeed() * 100);
-      m_PrevAdjustedFrequency = m_AdjustedFrequency;
+      m_PrevAdjustedFrequency.QuadPart = m_AdjustedFrequency.QuadPart;
     }
   }
 }
@@ -684,7 +684,7 @@ bool CVideoReferenceClock::UpdateRefreshrate()
   if (m_CurrTime.QuadPart - m_LastRefreshTime.QuadPart > m_SystemFrequency.QuadPart)
   {
 #ifdef HAS_GLX
-    m_LastRefreshTime = m_CurrTime;
+    m_LastRefreshTime.QuadPart = m_CurrTime.QuadPart;
     
     XRRScreenConfiguration *CurrInfo;
     CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
@@ -810,7 +810,7 @@ void CVideoReferenceClock::Unlock()
 
 void CVideoReferenceClock::StartClockGuard()
 {
-  QueryPerformanceCounter(&m_VBlankTime);
+  QueryPerformanceCounter((LARGE_INTEGER*)&m_VBlankTime);
   m_ClockGuard.m_VideoReferenceClock = this;
   m_MissedVBlanks = 0;
   m_ClockGuard.Create();
