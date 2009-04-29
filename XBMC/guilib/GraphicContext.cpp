@@ -110,7 +110,6 @@ CGraphicContext::~CGraphicContext(void)
     if (viewport) delete [] viewport;
   }
 
-  delete m_screenSurface;
 }
 
 #ifndef HAS_SDL
