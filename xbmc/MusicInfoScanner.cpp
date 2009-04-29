@@ -83,7 +83,6 @@ void CMusicInfoScanner::Process()
     if (m_scanType == 0) // load info from files
     {
       CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
-      //m_musicDatabase.BeginTransaction();
 
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
@@ -115,7 +114,6 @@ void CMusicInfoScanner::Process()
 
       if (commit)
       {
-        //m_musicDatabase.CommitTransaction();
         g_infoManager.ResetPersistentCache();
 
         if (m_needsCleanup)
@@ -131,8 +129,6 @@ void CMusicInfoScanner::Process()
           m_musicDatabase.Compress(false);
         }
       }
-      //else
-      //  m_musicDatabase.RollbackTransaction();
 
       fileCountReader.StopThread();
 
