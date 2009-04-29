@@ -2377,11 +2377,12 @@ CStdString CFileItem::GetTBNFile() const
   if (m_bIsFolder && !IsFileFolder())
     CUtil::RemoveSlashAtEnd(strFile);
 
-  if(strFile.IsEmpty())
-    thumbFile = "";
-  else
+  if (!strFile.IsEmpty())
   {
-    CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+    if (m_bIsFolder && !IsFileFolder())
+      thumbFile = strFile + ".tbn"; // folder, so just add ".tbn"
+    else
+      CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
     url.SetFileName(thumbFile);
     url.GetURL(thumbFile);
   }

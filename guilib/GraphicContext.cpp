@@ -73,6 +73,7 @@ CGraphicContext::~CGraphicContext(void)
     m_viewStack.pop();
     if (viewport) delete viewport;
   }
+
 }
 
 
