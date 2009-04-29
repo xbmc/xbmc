@@ -216,6 +216,8 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     CStdStringArray vecGenres; CStdString extraGenres;
     SplitString(song.strGenre, vecGenres, extraGenres);
 
+    BeginTransaction();
+    
     // add the primary artist/genre
     // SplitString returns >= 1 so no worries referencing the first item here
     long lArtistId = AddArtist(vecArtists[0]);
@@ -247,7 +249,13 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     {
       strSQL=FormatSQL("select * from song where idAlbum=%i and dwFileNameCRC='%ul' and strTitle='%s'",
                     lAlbumId, crc, song.strTitle.c_str());
-      if (!m_pDS->query(strSQL.c_str())) return ;
+      
+      if (!m_pDS->query(strSQL.c_str()))
+      {
+        CommitTransaction();
+        return;
+      }
+      
       if (m_pDS->num_rows() != 0)
       {
         lSongId = m_pDS->fv("idSong").get_asLong();
@@ -298,6 +306,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
       mysong.idSong = lSongId;
       AddKaraokeData( mysong );
     }
+    CommitTransaction();
   }
   catch (...)
   {
@@ -1526,7 +1535,9 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
     m_pDS->close();
 
     CStdString sql=FormatSQL("UPDATE song SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idSong=%ld", songID);
+    BeginTransaction();
     m_pDS->exec(sql.c_str());
+    CommitTransaction();
     return true;
   }
   catch (...)
