@@ -52,7 +52,10 @@ SRCS=AlarmClock.cpp \
      ArabicShaping.cpp \
      AsyncFileCopy.cpp \
      DbusServer.cpp \
-     Atomics.cpp
+     Atomics.cpp \
+     ProgramInfoScraper.cpp \
+     ProgramInfo.cpp
+
 
 LIB=utils.a
 

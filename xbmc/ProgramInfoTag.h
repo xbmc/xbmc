@@ -21,7 +21,7 @@
  */
 
 #include "utils/ScraperUrl.h"
-#include "utils/fanart.h"
+#include "utils/Fanart.h"
 #include <map>
 #include <vector>
 

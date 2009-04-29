@@ -68,7 +68,7 @@ CStdString CGUIViewStateWindowPrograms::GetLockType()
 CStdString CGUIViewStateWindowPrograms::GetExtensions()
 {
 #ifdef _LINUX
-  return ""
+  return "";
 #endif
 #ifdef _WIN32
     return ".exe|.lnk|.cmd|.bat";

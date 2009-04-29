@@ -199,6 +199,8 @@ SRCS=Application.cpp \
      GUIDialogFullScreenInfo.cpp \
      PowerManager.cpp \
      Zeroconf.cpp \
+     ProgramInfoScanner.cpp \
+     ProgramInfoTag.cpp
 
 LIB=xbmc.a
 
