@@ -141,6 +141,7 @@ public:
   bool IsRemovable() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;
+  bool IsHDHomeRun() const;
   bool IsVTP() const;
   bool IsTV() const;
 

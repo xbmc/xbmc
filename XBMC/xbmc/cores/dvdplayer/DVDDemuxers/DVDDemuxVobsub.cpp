@@ -178,8 +178,8 @@ DemuxPacket* CDVDDemuxVobsub::Read()
     return NULL;
 
   packet->iStreamId = current->id;
-  if(current->pts != DVD_NOPTS_VALUE)
-    packet->pts = current->pts;
+  packet->pts = current->pts;
+  packet->dts = current->pts;
 
   return packet;
 }

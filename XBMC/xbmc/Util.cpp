@@ -1329,6 +1329,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   CFileItem item(strMovie, false);
   if (item.IsInternetStream()) return ;
+  if (item.IsHDHomeRun()) return ;
   if (item.IsPlayList()) return ;
   if (!item.IsVideo()) return ;
 
@@ -1659,7 +1660,8 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   }
 
   strResult = strFolder;
-  AddSlashAtEnd(strResult);
+  if(!strResult.IsEmpty())
+    AddSlashAtEnd(strResult);
 
   // Remove any slash at the start of the file
   if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))

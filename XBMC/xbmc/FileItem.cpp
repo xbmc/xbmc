@@ -1001,6 +1001,11 @@ bool CFileItem::IsMythTV() const
   return CUtil::IsMythTV(m_strPath);
 }
 
+bool CFileItem::IsHDHomeRun() const
+{
+  return CUtil::IsHDHomeRun(m_strPath);
+}
+
 bool CFileItem::IsVTP() const
 {
   return CUtil::IsVTP(m_strPath);
@@ -2611,11 +2616,12 @@ CStdString CFileItem::GetTBNFile() const
   if (m_bIsFolder && !IsFileFolder())
     CUtil::RemoveSlashAtEnd(strFile);
 
-  if(strFile.IsEmpty())
-    thumbFile = "";
-  else
+  if (!strFile.IsEmpty())
   {
-    CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+    if (m_bIsFolder && !IsFileFolder())
+      thumbFile = strFile + ".tbn"; // folder, so just add ".tbn"
+    else
+      CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
     url.SetFileName(thumbFile);
     url.GetURL(thumbFile);
   }
@@ -2775,9 +2781,18 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsFTP(strFile))
     return "";
 
-  // we consder folder as if they were files without extension
+  // special checks for subfolders
   if(m_bIsFolder)
-    CUtil::RemoveSlashAtEnd(strFile);
+  {
+    CStdString strArt;
+    CUtil::AddFileToFolder(strFile, "fanart.jpg", strArt);
+    if(CFile::Exists(strArt))
+      return strArt;
+    CUtil::AddFileToFolder(strFile, "fanart.png", strArt);
+    if(CFile::Exists(strArt))
+      return strArt;
+    return "";
+  }
 
   // we don't have a cached image, so let's see if the user has a local image ..
   CStdString strDir;

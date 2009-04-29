@@ -64,7 +64,9 @@ CBackgroundPicLoader::CBackgroundPicLoader()
 }
 
 CBackgroundPicLoader::~CBackgroundPicLoader()
-{}
+{
+  CloseHandle(m_loadPic);
+}
 
 void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
 {

@@ -37,7 +37,7 @@
 	</NfoUrl>
 
 	<CreateSearchUrl dest="3" SearchStringEncoding="iso-8859-1">
-		<RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/search.php?stext=\1&amp;amp;stype=title&lt;/url&gt;">
+		<RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/search.php?stext=\1&amp;amp;stype=none&lt;/url&gt;">
 			<expression noclean="1"></expression>
 		</RegExp>
 	</CreateSearchUrl>
