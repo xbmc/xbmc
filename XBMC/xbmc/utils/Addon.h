@@ -55,6 +55,7 @@ class IAddonCallback
 {
 public:
   virtual bool RequestRemoval(const CAddon* addon)=0;
+  virtual bool SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)=0;
 };
 
 const CStdString ADDON_PVRDLL_EXT = "*.pvr";
@@ -75,9 +76,13 @@ public:
   bool operator==(const CAddon &rhs) const;
 
   virtual void Remove() {};
+  virtual bool SetSetting(const char *settingName, const void *settingValue) { return false; };
 
   static void LoadAddonStrings(const CURL &url);
   static void ClearAddonStrings();
+  static void TransferAddonSettings(const CURL &url);
+  static void TransferAddonSettings(const CAddon* addon);
+  static IAddonCallback* GetCallbackForType(AddonType type);
 
   CStdString m_guid;       ///< Unique identifier for this addon, chosen by developer
   CStdString m_strName;    ///< Name of the addon, can be chosen freely.

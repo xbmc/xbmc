@@ -26,6 +26,7 @@ extern "C"
 {
   //TODO inherit these functions from xbmc_addon.h
   bool __declspec(dllexport) HasSettings();
+  bool __declspec(dllexport) SetSetting(const char *settingName, const void *settingValue);
   __declspec(dllexport) DllSettings* GetSettings();
   void __declspec(dllexport) Remove();
 

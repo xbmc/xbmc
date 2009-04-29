@@ -22,6 +22,8 @@
 #include "stdafx.h"
 #include "Addon.h"
 #include "Settings.h"
+#include "settings/AddonSettings.h"
+#include "PVRManager.h"
 #include "Util.h"
 #include "URL.h"
 
@@ -82,6 +84,96 @@ void CAddon::ClearAddonStrings()
 {
   // Unload temporary language strings
   g_localizeStringsTemp.Clear();
+}
+
+void CAddon::TransferAddonSettings(const CURL &url)
+{
+  // Path where the addon resides
+  CStdString pathToAddon = "addon://";
+
+  // Build the addon's path
+  CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
+  CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
+
+  CAddon addon;
+  if (g_settings.AddonFromInfoXML(pathToAddon, addon))
+  {
+    addon.m_strPath = pathToAddon;
+    TransferAddonSettings(&addon);
+  }
+}
+
+void CAddon::TransferAddonSettings(const CAddon* addon)
+{
+  if (addon == NULL)
+    return;
+        
+  /* Transmit current unified user settings to the PVR Addon */
+  ADDON::IAddonCallback* addonCB = GetCallbackForType(addon->m_addonType);
+
+  CAddonSettings settings;
+  settings.Load(addon->m_strPath);
+
+  TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
+  while (setting)
+  {
+    const char *type = setting->Attribute("type");
+    const char *id = setting->Attribute("id");
+    const char *value = settings.Get(id).c_str();
+
+    if (type)
+    {
+      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0)
+      {
+        addonCB->SetSetting(addon, id, value);
+      }
+      else if (strcmpi(type, "integer") == 0)
+      {
+        int tmp = atoi(settings.Get(id));
+        addonCB->SetSetting(addon, id, (int*) &tmp);
+      }
+      if (strcmpi(type, "bool") == 0)
+      {
+        bool tmp = settings.Get(id) == "true" ? true : false;
+        addonCB->SetSetting(addon, id, (bool*) &tmp);
+      }
+    }
+    setting = setting->NextSiblingElement("setting");
+  }
+}
+
+IAddonCallback* CAddon::GetCallbackForType(AddonType type)
+{
+  switch (type)
+  {
+    case ADDON_MULTITYPE:
+      return NULL;
+    case ADDON_VIZ:
+      return NULL;
+    case ADDON_SKIN:
+      return NULL;
+    case ADDON_PVRDLL:
+      return CPVRManager::GetInstance();
+    case ADDON_SCRIPT:
+      return NULL;
+    case ADDON_SCRAPER:
+      return NULL;
+    case ADDON_SCREENSAVER:
+      return NULL;
+    case ADDON_PLUGIN_PVR:
+      return NULL;
+    case ADDON_PLUGIN_MUSIC:
+      return NULL;
+    case ADDON_PLUGIN_VIDEO:
+      return NULL;
+    case ADDON_PLUGIN_PROGRAM:
+      return NULL;
+    case ADDON_PLUGIN_PICTURES:
+      return NULL;
+    case ADDON_UNKNOWN:
+    default:
+      return NULL;
+  }
 }
 
 } /* namespace ADDON */

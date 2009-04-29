@@ -35,6 +35,7 @@ public:
   // DLL related
   bool Init();
   virtual void Remove();
+  virtual bool SetSetting(const char *settingName, const void *settingValue);
   void GetSettings(std::vector<DllSetting> **vecSettings);
   void UpdateSetting(int num);
   void OnClientMessage(PVR_EVENT event);

@@ -86,7 +86,13 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
       else
         bCloseDialog = ShowVirtualKeyboard(iControl);
 
-      if (iControl == ID_BUTTON_OK || iControl == ID_BUTTON_CANCEL || bCloseDialog)
+      if (iControl == ID_BUTTON_CANCEL || bCloseDialog)
+      {
+        m_bConfirmed = false;
+        Close();
+        return true;
+      }
+      else if (iControl == ID_BUTTON_OK)
       {
         m_bConfirmed = true;
         Close();
@@ -133,7 +139,12 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
 
   // Unload temporary language strings
   CAddon::ClearAddonStrings();
-
+  
+  if (pDialog->m_bConfirmed)
+  {
+    CAddon::TransferAddonSettings(url);
+  }
+  
   return;
 }
 

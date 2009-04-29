@@ -50,6 +50,7 @@ public:
   
   /* addon specific */
   bool RequestRemoval(const ADDON::CAddon* addon);
+  bool SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
 
   /* Event Handling */
   bool LoadClients();

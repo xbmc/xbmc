@@ -122,6 +122,7 @@ public:
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
   bool GetAddonFromGUID(const CStdString &guid, ADDON::CAddon &addon);
+  bool AddonFromInfoXML(const CStdString &path, ADDON::CAddon &addon);
   ADDON::VECADDONS *GetAddonsFromType(const ADDON::AddonType &type);
   bool DisableAddon(const CStdString &addon, const ADDON::AddonType &type);
 
@@ -490,8 +491,6 @@ protected:
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;
-
-  bool AddonFromInfoXML(const CStdString &path, ADDON::CAddon &addon);
 
   // Advanced settings
   void LoadAdvancedSettings();

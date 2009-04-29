@@ -153,7 +153,7 @@
 			<align>center</align>
 			<aligny>center</aligny>
 			<font>font12b</font>
-			<label>($INFO[Container(450).NumItems]) - $LOCALIZE[18060] ($INFO[Container(450).CurrentPage]/$INFO[Container(450).NumPages])</label>
+			<label>($INFO[Container(450).NumItems]) $LOCALIZE[127] - $LOCALIZE[18060] ($INFO[Container(450).CurrentPage]/$INFO[Container(450).NumPages])</label>
 			<visible>!Control.IsVisible(451)</visible>
 		</control>
 		<control type="label">
@@ -165,7 +165,7 @@
 			<align>center</align>
 			<aligny>center</aligny>
 			<font>font12b</font>
-			<label>($INFO[Container(451).NumItems]) - $LOCALIZE[18060] ($INFO[Container(451).CurrentPage]/$INFO[Container(451).NumPages])</label>
+			<label>($INFO[Container(451).NumItems]) $LOCALIZE[127] - $LOCALIZE[18060] ($INFO[Container(451).CurrentPage]/$INFO[Container(451).NumPages])</label>
 			<visible>Control.IsVisible(451)</visible>
 		</control>
 		<control type="group" id="9000">

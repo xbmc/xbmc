@@ -218,6 +218,7 @@ bool CPVRManager::LoadClients()
     {
       client->m_isRunning = false;
       m_clients.insert(std::make_pair(client->GetID(), client));
+      CAddon::TransferAddonSettings(&clientAddon);
     }
   }
 
@@ -380,6 +381,25 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     default:
       break;
   }
+}
+
+bool CPVRManager::SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)
+{
+  if (!addon)
+    return false;
+
+  for (unsigned i=0; i < m_clients.size(); i++)
+  {
+    if (m_clients[i]->m_guid == addon->m_guid)
+    {
+      if (m_clients[i]->m_strName == addon->m_strName)
+      {
+        m_clients[i]->SetSetting(settingName, settingValue);
+      }
+    }
+  }
+  
+  return true;
 }
 
 bool CPVRManager::RequestRemoval(const CAddon* addon)

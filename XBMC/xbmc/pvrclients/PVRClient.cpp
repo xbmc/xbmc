@@ -278,6 +278,11 @@ void CPVRClient::Remove()
 
 }
 
+bool CPVRClient::SetSetting(const char *settingName, const void *settingValue)
+{
+  return m_pDll->SetSetting(settingName, settingValue);
+}
+
 void CPVRClient::GetSettings(std::vector<DllSetting> **vecSettings)
 {
   /*if (vecSettings) *vecSettings = NULL;
