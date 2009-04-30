@@ -127,7 +127,7 @@ error_code filelib_write_show(char *buf, u_long size)
   {
     if (rip_manager_get_content_type() == CONTENT_TYPE_OGG)
     {
-      if (m_ringbuf.GetMaxReadSize() > (m_ringbuf.Size() / 4) )
+      if (m_ringbuf.GetMaxReadSize() > (m_ringbuf.Size() / 8) )
       {
         // hack because ogg streams are very broke, force it to go.
         m_fileState.bBuffering = false;
@@ -210,7 +210,13 @@ bool CFileShoutcast::Open(const CURL& url)
   m_dwLastTime = timeGetTime();
   int ret;
 
-  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* dlgProgress = NULL;
+  
+  // workaround to avoid deadlocks caused by dvdplayer halting app, only ogg is played by dvdplayer
+  if (!url.GetFileType().Equals("ogg") )
+  {
+    dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  }
 
   set_rip_manager_options_defaults(&m_opt);
 

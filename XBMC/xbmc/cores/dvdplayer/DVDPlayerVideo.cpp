@@ -741,9 +741,9 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime >= pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
     {
       if (bHasSpecialOverlay && m_pTempOverlayPicture) 
-        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts);
+        CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts2);
       else 
-        CDVDOverlayRenderer::Render(pDest, pOverlay, pts);
+        CDVDOverlayRenderer::Render(pDest, pOverlay, pts2);
     }
   }
   
@@ -882,8 +882,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   m_FlipTimeStamp += iFrameDuration;
 
   // ask decoder to drop frames next round, as we are very late
-  if( limited == false  && iClockSleep < -DVD_MSEC_TO_TIME(100)
-  ||  limited == true   && iClockSleep < -iFrameDuration*0.5 )
+  if( (limited == false  && iClockSleep < -DVD_MSEC_TO_TIME(100))
+  ||  (limited == true   && iClockSleep < -iFrameDuration*0.5 ) )
     result |= EOS_VERYLATE;
 
   if( m_speed < 0 )

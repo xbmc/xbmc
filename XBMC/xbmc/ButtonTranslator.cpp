@@ -26,9 +26,6 @@
 #include "SkinInfo.h"
 #include "Key.h"
 #include "File.h"
-#ifdef HAS_SDL_JOYSTICK
-#include "../guilib/common/SDLJoystick.h"
-#endif
 
 using namespace std;
 using namespace XFILE;
@@ -285,11 +282,6 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
             axisMap[id] = string(szAction);
             axisMap[-id] = string(szAction);
           }
-#ifdef HAS_SDL_JOYSTICK
-	  // Map axis Dpad
-	  if(strcmp(szAction,"Left")==0 || strcmp(szAction,"Right")==0 || strcmp(szAction,"Down")==0 || strcmp(szAction,"Up")==0)
-	    g_Joystick.SetAxisPad(joyname,id);
-#endif
         }
         else if (strcmpi(szType, "hat")==0)
         {
@@ -369,10 +361,6 @@ bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevi
   else if(inputType == JACTIVE_BUTTON)
   {
     jmap = &m_joystickButtonMap;
-  }
-  else if(inputType == JACTIVE_HAT)
-  {
-    jmap = &m_joystickHatMap;
   }
   else
   {

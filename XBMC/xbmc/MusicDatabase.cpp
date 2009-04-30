@@ -77,6 +77,7 @@ CMusicDatabase::~CMusicDatabase(void)
 
 bool CMusicDatabase::CreateTables()
 {
+  BeginTransaction();
   try
   {
     CDatabase::CreateTables();
@@ -179,11 +180,11 @@ bool CMusicDatabase::CreateTables()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "musicbase::unable to create tables:%u",
-              GetLastError());
+    CLog::Log(LOGERROR, "%s unable to create tables:%i", __FUNCTION__, (int)GetLastError());
+    RollbackTransaction();
     return false;
   }
-
+  CommitTransaction();
   return true;
 }
 
@@ -215,6 +216,8 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     CStdStringArray vecGenres; CStdString extraGenres;
     SplitString(song.strGenre, vecGenres, extraGenres);
 
+    BeginTransaction();
+    
     // add the primary artist/genre
     // SplitString returns >= 1 so no worries referencing the first item here
     long lArtistId = AddArtist(vecArtists[0]);
@@ -246,7 +249,13 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     {
       strSQL=FormatSQL("select * from song where idAlbum=%i and dwFileNameCRC='%ul' and strTitle='%s'",
                     lAlbumId, crc, song.strTitle.c_str());
-      if (!m_pDS->query(strSQL.c_str())) return ;
+      
+      if (!m_pDS->query(strSQL.c_str()))
+      {
+        CommitTransaction();
+        return;
+      }
+      
       if (m_pDS->num_rows() != 0)
       {
         lSongId = m_pDS->fv("idSong").get_asLong();
@@ -297,6 +306,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
       mysong.idSong = lSongId;
       AddKaraokeData( mysong );
     }
+    CommitTransaction();
   }
   catch (...)
   {
@@ -1521,8 +1531,6 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
     if (NULL == m_pDS.get()) return false;
 
     long songID = GetSongIDFromPath(strFileName);
-
-    m_pDS->close();
 
     CStdString sql=FormatSQL("UPDATE song SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idSong=%ld", songID);
     m_pDS->exec(sql.c_str());
@@ -4628,10 +4636,8 @@ bool CMusicDatabase::SetKaraokeSongDelay(long idSong, int delay)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    BeginTransaction();
     CStdString strSQL = FormatSQL("UPDATE karaokedata SET iKaraDelay=%i WHERE idSong=%i", delay, idSong);
     m_pDS->exec(strSQL.c_str());
-    CommitTransaction();
 
     return true;
   }

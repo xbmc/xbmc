@@ -57,13 +57,14 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 
   m_iScreenWidth = 0;
   m_iScreenHeight = 0;
+  m_UsingSoftware = true;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
 #ifdef HAVE_LIBVDPAU
   CExclusiveLock lock(g_renderManager.GetSection());
-  if (g_VDPAU) {
+  if (g_VDPAU && !m_UsingSoftware) {
     delete g_VDPAU;
     g_VDPAU = NULL;
   }
@@ -96,7 +97,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     }
   }
 
-  if(pCodec)
+  if(pCodec && !hints.software)
   {
     CExclusiveLock lock(g_renderManager.GetSection());
     CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i)",hints.width, hints.height);
@@ -108,6 +109,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       g_VDPAU = NULL;
       pCodec  = NULL;
     }
+    else m_UsingSoftware = false;
   }
 #endif
 

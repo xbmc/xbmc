@@ -234,8 +234,17 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     return;
   }
 
-  // obtain the xvisual from the first compatible framebuffer
-  vInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
+  for (int i=0;i<num;i++)
+  {
+    // obtain the xvisual from the first compatible framebuffer
+    vInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[i]);
+    if (vInfo->depth == 24)
+    {
+      CLog::Log(LOGNOTICE,"Using fbConfig[%i]",i);
+      break;
+    }
+  }
+
   if (!vInfo) {
     CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
     return;

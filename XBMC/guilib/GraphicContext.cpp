@@ -83,6 +83,7 @@ CGraphicContext::CGraphicContext(void)
   m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = INVALID;
   m_bFullScreenRoot = false;
+  m_screenSurface = NULL;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -108,6 +109,10 @@ CGraphicContext::~CGraphicContext(void)
     m_viewStack.pop();
     if (viewport) delete [] viewport;
   }
+
+  // do not delete m_screenSurface, SDL is already gone and we will
+  // crash on exit in Surface::CSurface::~CSurface at SDL_FreeSurface(m_SDLSurface)
+  //delete m_screenSurface;
 }
 
 #ifndef HAS_SDL

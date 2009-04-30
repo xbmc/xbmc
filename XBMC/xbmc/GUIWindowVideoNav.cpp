@@ -1219,7 +1219,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       }
 
       if ((CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) == NODE_TYPE_TITLE_MOVIES ||
-           CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) ==NODE_TYPE_TITLE_MUSICVIDEOS ||
+           CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) == NODE_TYPE_TITLE_MUSICVIDEOS ||
            item->m_strPath.Equals("videodb://1/") ||
            item->m_strPath.Equals("videodb://4/") ||
            item->m_strPath.Equals("videodb://6/")) &&

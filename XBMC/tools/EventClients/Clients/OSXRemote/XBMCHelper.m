@@ -49,7 +49,7 @@
   }
   
   NSFileManager *fileManager = [NSFileManager defaultManager];
-  if(![fileManager fileExistsAtPath:mp_app_path isDirectory:NULL]){
+  if(![fileManager fileExistsAtPath:mp_app_path]){
     ELOG(@"Path does not exist: %@. Cannot launch executable", mp_app_path);
     return;
   }
@@ -147,7 +147,7 @@
 - (void) setApplicationPath:(NSString*) fp_app_path{
   if (mp_app_path != fp_app_path) {
     [mp_app_path release]; 
-    mp_app_path = [fp_app_path copy];
+    mp_app_path = [[fp_app_path stringByStandardizingPath] retain];
   }
 }
 
@@ -155,7 +155,7 @@
 - (void) setApplicationHome:(NSString*) fp_home_path{
   if (mp_home_path != fp_home_path) {
     [mp_home_path release]; 
-    mp_home_path = [fp_home_path copy];
+    mp_home_path = [[fp_home_path stringByStandardizingPath] retain];
   }
 }
 //   NSString* pressed;

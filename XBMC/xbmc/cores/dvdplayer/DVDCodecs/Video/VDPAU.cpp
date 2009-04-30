@@ -55,24 +55,22 @@ CVDPAU::CVDPAU(int width, int height)
   if (!dl_handle) return;
   surfaceNum      = presentSurfaceNum = 0;
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
-  vdpauConfigured = false;
-  CSingleLock lock(g_graphicsContext);
-  m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
-  m_Surface->MakePixmap(width,height);
-  m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
-  InitVDPAUProcs();
+  vdpauConfigured = vdpauInited = false;
   recover = VDPAURecovered = false;
   totalAvailableOutputSurfaces = outputSurface = presentSurface = 0;
   vid_width = vid_height = outWidth = outHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
+  m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
+
+  InitVDPAUProcs();
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
   interlaced     = false;
   VDPAUSwitching = false;
   max_references = 0;
- 
+
   if (vdp_device)
     InitCSCMatrix();
 
@@ -85,20 +83,34 @@ CVDPAU::CVDPAU(int width, int height)
 CVDPAU::~CVDPAU()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
-  m_Surface->ReleasePixmap();
-  FiniVDPAUOutput();
-  FiniVDPAUProcs();
-  if (m_Surface)
+  if (vdpauInited)
   {
-    CLog::Log(LOGNOTICE,"Deleting m_Surface in CVDPAU");
-    delete m_Surface;
-    m_Surface = NULL;
+    m_Surface->ReleasePixmap();
+    FiniVDPAUOutput();
+    FiniVDPAUProcs();
+    if (m_Surface)
+    {
+      CLog::Log(LOGNOTICE,"Deleting m_Surface in CVDPAU");
+      delete m_Surface;
+      m_Surface = NULL;
+    }
   }
   if (dl_handle)
   {
     dlclose(dl_handle);
     dl_handle = NULL;
   }
+}
+
+void CVDPAU::Create(int width, int height)
+{
+  if (vdpauInited)
+    return;
+
+  CSingleLock lock(g_graphicsContext);
+  m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
+  m_Surface->MakePixmap(width,height);
+  vdpauInited = true;
 }
 
 void CVDPAU::CheckRecover(bool force)
@@ -775,6 +787,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   vdpau_render_state * render = NULL;
 
+  vdp->Create(avctx->width,avctx->height);
   // make sure device is recovered
   vdp->CheckRecover();
 
@@ -932,8 +945,8 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     future = render->surface;
   }
 
-  if (( (long)outRectVid.x1 != vid_width ) ||
-      ( (long)outRectVid.y1 != vid_height ))
+  if (( outRectVid.x1 != vid_width ) ||
+      ( outRectVid.y1 != vid_height ))
   {
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;
