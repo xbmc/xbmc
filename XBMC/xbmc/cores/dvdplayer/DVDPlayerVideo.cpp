@@ -954,16 +954,16 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     double Fps = 1.0 / (iFrameDuration / DVD_TIME_BASE);
     double FrameWeight = (double)RefreshRate / (double)MathUtils::round_int(Fps);
     
-    if (m_MaxSpeedAdjust != 0.0)
+    if (m_MaxSpeedAdjust > 0.1)
     {
       if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + m_MaxSpeedAdjust / 100.0 &&
           FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - m_MaxSpeedAdjust / 100.0)
       {
         FrameWeight = MathUtils::round_int(FrameWeight);
       }
-      double Speed = (double)RefreshRate / (Fps * FrameWeight);
-      g_VideoReferenceClock.SetSpeed(Speed);
     }
+    double Speed = (double)RefreshRate / (Fps * FrameWeight);
+    g_VideoReferenceClock.SetSpeed(Speed);
   }
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
