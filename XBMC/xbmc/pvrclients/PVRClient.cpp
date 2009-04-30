@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "PVRClient.h"
+#include "URL.h"
 #include "../../addons/PVRClientTypes.h"
 #include "../utils/log.h"
 
@@ -46,13 +47,26 @@ CPVRClient::~CPVRClient()
 
 bool CPVRClient::Init()
 {
-  PVRCallbacks *callbacks = new PVRCallbacks;
-  callbacks->userData     = this;
-  callbacks->Event        = PVREventCallback;
-  callbacks->ReportStatus = AddOnStatusCallback;
-  callbacks->Log          = AddOnLogCallback;
-  callbacks->CharConv     = AddOnCharConv;
-  callbacks->LocateString = AddOnLocStrings;
+  PVRCallbacks *callbacks           = new PVRCallbacks;
+  callbacks->userData               = this;
+  callbacks->Event                  = PVREventCallback;
+  callbacks->AddOn.ReportStatus     = AddOnStatusCallback;
+  callbacks->AddOn.Log              = AddOnLogCallback;
+  callbacks->AddOn.OpenSettings     = AddOnOpenSettings;
+  callbacks->AddOn.OpenOwnSettings  = AddOnOpenOwnSettings;
+
+  callbacks->Dialog.OpenOK          = CAddon::OpenDialogOK;
+  callbacks->Dialog.OpenYesNo       = CAddon::OpenDialogYesNo;
+  callbacks->Dialog.OpenBrowse      = CAddon::OpenDialogBrowse;
+  callbacks->Dialog.OpenNumeric     = CAddon::OpenDialogNumeric;
+  callbacks->Dialog.OpenSelect      = CAddon::OpenDialogSelect;
+  callbacks->Dialog.ProgressCreate  = CAddon::ProgressDialogCreate;
+  callbacks->Dialog.ProgressUpdate  = CAddon::ProgressDialogUpdate;
+  callbacks->Dialog.ProgressIsCanceled = CAddon::ProgressDialogIsCanceled;
+  callbacks->Dialog.ProgressClose   = CAddon::ProgressDialogClose;
+
+  callbacks->Utils.UnknownToUTF8    = CAddon::UnknownToUTF8;
+  callbacks->Utils.LocalizedString  = AddOnGetLocalizedString;
 
   m_pClient->Create(callbacks);
   
@@ -409,15 +423,26 @@ void CPVRClient::AddOnLogCallback(void *userData, const ADDON_LOG loglevel, cons
   CLog::Log(xbmclog, xbmcMsg);
 }
 
-const char* CPVRClient::AddOnLocStrings(long dwCode)
+void CPVRClient::AddOnOpenSettings(const char *url, bool bReload)
 {
-  return g_localizeStrings.Get(dwCode).c_str();
+  CURL cUrl(url);
+  CAddon::OpenAddonSettings(cUrl, bReload);
 }
 
-const char* CPVRClient::AddOnCharConv(const char *sourceDest)
+void CPVRClient::AddOnOpenOwnSettings(void *userData, bool bReload)
 {
-  CStdString string = sourceDest;
-  g_charsetConverter.unknownToUTF8(string);
-  return string.c_str();
+  CPVRClient* client=(CPVRClient*) userData;
+  if (!client)
+    return;
+
+  CAddon::OpenAddonSettings(client, bReload);
 }
-  
+
+const char* CPVRClient::AddOnGetLocalizedString(void *userData, long dwCode)
+{
+  CPVRClient* client=(CPVRClient*) userData;
+  if (!client)
+    return "";
+
+  return CAddon::GetLocalizedString(client, dwCode);
+}

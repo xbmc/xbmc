@@ -20,9 +20,18 @@
 */
 
 #include "stdafx.h"
+#include "Application.h"
 #include "Addon.h"
 #include "Settings.h"
 #include "settings/AddonSettings.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogAddonSettings.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogYesNo.h"
+#include "GUIDialogFileBrowser.h"
+#include "GUIDialogNumeric.h"
+#include "GUIDialogSelect.h"
+#include "GUIDialogProgress.h"
 #include "PVRManager.h"
 #include "Util.h"
 #include "URL.h"
@@ -86,6 +95,290 @@ void CAddon::ClearAddonStrings()
   g_localizeStringsTemp.Clear();
 }
 
+void CAddon::OpenAddonSettings(const CURL &url, bool bReload)
+{
+  // Path where the addon resides
+  CStdString pathToAddon = "addon://";
+
+  // Build the addon's path
+  CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
+  CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
+
+  CAddon addon;
+  if (g_settings.AddonFromInfoXML(pathToAddon, addon))
+  {
+    addon.m_strPath = pathToAddon;
+    OpenAddonSettings(&addon, bReload);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "Unknown URL %s to open AddOn Settings", pathToAddon.c_str());
+  }
+}
+
+void CAddon::OpenAddonSettings(const CAddon* addon, bool bReload)
+{
+  if (addon == NULL)
+    return;
+
+  CLog::Log(LOGDEBUG, "Calling OpenAddonSettings for: %s", addon->m_strName.c_str());
+
+  if (!CAddonSettings::SettingsExist(addon->m_strPath))
+  {
+    CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", addon->m_strName.c_str());
+    return;
+  }
+
+  CURL cUrl(addon->m_strPath);
+  CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
+
+  // reload plugin settings & strings
+  if (bReload)
+  {
+    g_currentPluginSettings.Load(cUrl);
+    CAddon::LoadAddonStrings(cUrl);
+  }
+
+  return;
+}
+
+/**
+* XBMC AddOn Dialog callbacks
+* Helper functions to access GUI Dialog related functions
+*/
+
+bool CAddon::OpenDialogOK(const char* heading, const char* line1, const char* line2, const char* line3)
+{
+  const DWORD dWindow = WINDOW_DIALOG_OK;
+  CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(dWindow);
+  if (!pDialog) return false;
+
+  if (heading != NULL ) pDialog->SetHeading(heading);
+  if (line1 != NULL )   pDialog->SetLine(0, line1);
+  if (line2 != NULL )   pDialog->SetLine(1, line2);
+  if (line3 != NULL )   pDialog->SetLine(2, line3);
+
+  //send message and wait for user input
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, m_gWindowManager.GetActiveWindow()};
+  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+
+  return pDialog->IsConfirmed();  
+}
+
+bool CAddon::OpenDialogYesNo(const char* heading, const char* line1, const char* line2, 
+                             const char* line3, const char* nolabel, const char* yeslabel)
+{
+  const DWORD dWindow = WINDOW_DIALOG_YES_NO;
+
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(dWindow);
+  if (!pDialog) return false;
+
+  if (heading != NULL ) pDialog->SetHeading(heading);
+  if (line1 != NULL )   pDialog->SetLine(0, line1);
+  if (line2 != NULL )   pDialog->SetLine(1, line2);
+  if (line3 != NULL )   pDialog->SetLine(2, line3);
+  
+  if (nolabel != NULL )
+    pDialog->SetChoice(0,nolabel);
+
+  if (yeslabel != NULL )
+    pDialog->SetChoice(1,yeslabel);
+
+  //send message and wait for user input
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, m_gWindowManager.GetActiveWindow()};
+  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+
+  return pDialog->IsConfirmed();
+}
+
+const char* CAddon::OpenDialogBrowse(int type, const char* heading, const char* shares, const char* mask, bool useThumbs, bool treatAsFolder, const char* default_folder)
+{
+  CStdString value;
+  CStdString type_mask = mask;
+
+  if (treatAsFolder && !type_mask.size() == 0)
+    type_mask += "|.rar|.zip";
+
+  VECSOURCES *shares_type = g_settings.GetSourcesFromType(shares);
+  if (!shares_type) return "";
+    
+  value = default_folder;
+  if (type == 1)
+    CGUIDialogFileBrowser::ShowAndGetFile(*shares_type, type_mask, heading, value, useThumbs, treatAsFolder);
+  else if (type == 2)
+    CGUIDialogFileBrowser::ShowAndGetImage(*shares_type, heading, value);
+  else
+    CGUIDialogFileBrowser::ShowAndGetDirectory(*shares_type, heading, value, type != 0);
+
+  return value.c_str();
+}
+
+const char* CAddon::OpenDialogNumeric(int type, const char* heading, const char* default_value)
+{
+  CStdString value;
+  SYSTEMTIME timedate;
+  GetLocalTime(&timedate);
+
+  if (heading)
+  {
+    if (type == 1)
+    {
+      if (default_value && strlen(default_value) == 10)
+      {
+        CStdString sDefault = default_value;
+        timedate.wDay = atoi(sDefault.Left(2));
+        timedate.wMonth = atoi(sDefault.Mid(3,4));
+        timedate.wYear = atoi(sDefault.Right(4));
+      }
+      if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
+        value.Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
+      else
+        value = default_value;
+    }
+    else if (type == 2)
+    {
+      if (default_value && strlen(default_value) == 5)
+      {
+        CStdString sDefault = default_value;
+        timedate.wHour = atoi(sDefault.Left(2));
+        timedate.wMinute = atoi(sDefault.Right(2));
+      }
+      if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
+        value.Format("%2d:%02d", timedate.wHour, timedate.wMinute);
+      else
+        value = default_value;
+    }
+    else if (type == 3)
+    {
+      value = default_value;
+      CGUIDialogNumeric::ShowAndGetIPAddress(value, heading);
+    }
+    else
+    {
+      value = default_value;
+      CGUIDialogNumeric::ShowAndGetNumber(value, heading);
+    }
+  }
+  return value.c_str();
+}
+
+int CAddon::OpenDialogSelect(const char* heading, AddOnStringList* list)
+{
+  const DWORD dWindow = WINDOW_DIALOG_SELECT;
+  CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(dWindow);
+  if (!pDialog) return NULL;
+
+  pDialog->Reset();
+
+  if (heading != NULL)
+    pDialog->SetHeading(heading);
+
+  const char *listLine = NULL;
+  for(int i = 0; i < list->Items; i++)
+  {
+    listLine = list->Strings[i];
+    if (listLine)
+      pDialog->Add(listLine);
+  }
+
+  //send message and wait for user input
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, m_gWindowManager.GetActiveWindow()};
+  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+
+  return pDialog->GetSelectedLabel();
+}
+
+bool CAddon::ProgressDialogCreate(const char* heading, const char* line1, const char* line2, const char* line3)
+{
+  CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (!pDialog) return true;
+
+  if (heading != NULL ) pDialog->SetHeading(heading);
+  if (line1 != NULL )   pDialog->SetLine(0, line1);
+  if (line2 != NULL )   pDialog->SetLine(1, line2);
+  if (line3 != NULL )   pDialog->SetLine(2, line3);
+
+  pDialog->StartModal();
+
+  return false;
+}
+
+void CAddon::ProgressDialogUpdate(int percent, const char* line1, const char* line2, const char* line3)
+{
+  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (!pDialog) return;
+
+  if (percent >= 0 && percent <= 100)
+  {
+    pDialog->SetPercentage(percent);
+    pDialog->ShowProgressBar(true);
+  }
+  else
+  {
+    pDialog->ShowProgressBar(false);
+  }
+
+  if (line1 != NULL )   pDialog->SetLine(0, line1);
+  if (line2 != NULL )   pDialog->SetLine(1, line2);
+  if (line3 != NULL )   pDialog->SetLine(2, line3);
+
+  return;
+}
+
+bool CAddon::ProgressDialogIsCanceled()
+{
+  bool canceled = false;
+  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (!pDialog) return canceled;
+
+  canceled = pDialog->IsCanceled();
+
+  return canceled;
+}
+
+void CAddon::ProgressDialogClose()
+{
+  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  if (!pDialog) return;
+
+  pDialog->Close();
+
+  return;
+}
+  
+
+/**
+* XBMC AddOn Utils callbacks
+* Helper' to access XBMC Utilities
+*/
+
+const char* CAddon::GetLocalizedString(const CAddon* addon, long dwCode)
+{
+  CURL cUrl(addon->m_strPath);
+
+  // Load language strings temporarily
+  CAddon::LoadAddonStrings(cUrl);
+
+  if (dwCode >= 30000 && dwCode <= 30999)
+    return g_localizeStringsTemp.Get(dwCode).c_str();
+  else if (dwCode >= 32000 && dwCode <= 32999)
+    return g_localizeStringsTemp.Get(dwCode).c_str();
+  else
+    return g_localizeStrings.Get(dwCode).c_str();
+
+  // Unload temporary language strings
+  CAddon::ClearAddonStrings();
+
+  return "";
+}
+
+const char* CAddon::UnknownToUTF8(const char *sourceDest)
+{
+  CStdString string = sourceDest;
+  g_charsetConverter.unknownToUTF8(string);
+  return string.c_str();
+}
+
 void CAddon::TransferAddonSettings(const CURL &url)
 {
   // Path where the addon resides
@@ -109,10 +402,10 @@ void CAddon::TransferAddonSettings(const CURL &url)
 
 void CAddon::TransferAddonSettings(const CAddon* addon)
 {
-  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon->m_strName.c_str());
-  
   if (addon == NULL)
     return;
+
+  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon->m_strName.c_str());
         
   /* Transmit current unified user settings to the PVR Addon */
   ADDON::IAddonCallback* addonCB = GetCallbackForType(addon->m_addonType);

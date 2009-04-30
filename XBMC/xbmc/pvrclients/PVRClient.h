@@ -91,8 +91,9 @@ private:
 
   static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
   static void AddOnLogCallback(void *userData, const ADDON_LOG loglevel, const char *format, ... );
-  static const char* AddOnLocStrings(long dwCode);
-  static const char* AddOnCharConv(const char *sourceDest);
+  static void AddOnOpenSettings(const char *url, bool bReload);
+  static void AddOnOpenOwnSettings(void *userData, bool bReload);
+  static const char* AddOnGetLocalizedString(void *userData, long dwCode);
 };
 
 typedef std::vector<CPVRClient*> VECCLIENTS;

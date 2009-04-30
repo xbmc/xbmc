@@ -22,6 +22,7 @@
 
 #include "StdString.h"
 #include "FileSystem/Directory.h"
+#include "../addons/DllAddonTypes.h"
 #include <vector>
 
 class CURL;
@@ -80,6 +81,23 @@ public:
 
   static void LoadAddonStrings(const CURL &url);
   static void ClearAddonStrings();
+  static void OpenAddonSettings(const CURL &url, bool bReload = true);
+  static void OpenAddonSettings(const CAddon* addon, bool bReload);
+
+  static bool OpenDialogOK(const char* heading, const char* line1, const char* line2, const char* line3);
+  static bool OpenDialogYesNo(const char* heading, const char* line1, const char* line2, const char* line3, const char* nolabel, const char* yeslabel);
+  static const char* OpenDialogBrowse(int type, const char* heading, const char* shares, const char* mask, bool useThumbs, bool treatAsFolder, const char* default_folder);
+  static const char* OpenDialogNumeric(int type, const char* heading, const char* default_value);
+  static int OpenDialogSelect(const char* heading, AddOnStringList* list);
+  static bool ProgressDialogCreate(const char* heading, const char* line1, const char* line2, const char* line3);
+  static void ProgressDialogUpdate(int percent, const char* line1, const char* line2, const char* line3);
+
+  static const char* GetLocalizedString(const CAddon* addon, long dwCode);
+  static const char* UnknownToUTF8(const char *sourceDest);
+
+  static bool ProgressDialogIsCanceled();
+  static void ProgressDialogClose();
+
   static void TransferAddonSettings(const CURL &url);
   static void TransferAddonSettings(const CAddon* addon);
   static IAddonCallback* GetCallbackForType(AddonType type);
