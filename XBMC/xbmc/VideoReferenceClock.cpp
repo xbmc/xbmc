@@ -61,7 +61,6 @@ void CVideoReferenceClock::Process()
   QueryPerformanceCounter((LARGE_INTEGER*)&m_CurrTime);
   m_CurrTime.QuadPart -= m_ClockOffset.QuadPart; //add the clock offset from the previous time we stopped
   m_AdjustedFrequency.QuadPart = m_SystemFrequency.QuadPart;
-  m_Started.Reset();
 
   while(!m_bStop)
   {
