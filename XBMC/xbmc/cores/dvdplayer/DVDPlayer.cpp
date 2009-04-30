@@ -731,6 +731,7 @@ void CDVDPlayer::Process()
   if (g_guiSettings.GetBool("videoplayer.usedisplayasclock"))
   {
     g_VideoReferenceClock.Create();
+    g_VideoReferenceClock.WaitStarted(1000);
     g_VideoReferenceClock.SetSpeed(1.0);
   }
 

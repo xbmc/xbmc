@@ -36,6 +36,7 @@ CVideoReferenceClock::CVideoReferenceClock()
   m_AdjustedFrequency.QuadPart = m_SystemFrequency.QuadPart;
   m_ClockOffset.QuadPart = 0;
   m_UseVblank = false;
+  m_Started.Reset();
 
 #ifdef HAS_SDL
   m_VblankCond = SDL_CreateCond();
@@ -60,6 +61,7 @@ void CVideoReferenceClock::Process()
   QueryPerformanceCounter((LARGE_INTEGER*)&m_CurrTime);
   m_CurrTime.QuadPart -= m_ClockOffset.QuadPart; //add the clock offset from the previous time we stopped
   m_AdjustedFrequency.QuadPart = m_SystemFrequency.QuadPart;
+  m_Started.Reset();
 
   while(!m_bStop)
   {
@@ -71,6 +73,7 @@ void CVideoReferenceClock::Process()
     
     if (SetupSuccess)
     {
+      m_Started.Set();
       m_UseVblank = true;
       Unlock();
 #ifdef HAS_GLX
@@ -84,6 +87,9 @@ void CVideoReferenceClock::Process()
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to QueryPerformanceCounter");
       Unlock();
     }
+    
+    m_Started.Reset();
+    
 #ifdef HAS_GLX
     CleanupGLX();
 #elif defined(_WIN32)  
@@ -98,6 +104,11 @@ void CVideoReferenceClock::Process()
   m_ClockOffset.QuadPart = Now.QuadPart - m_CurrTime.QuadPart;
   SendVblankSignal();
   Unlock();
+}
+
+void CVideoReferenceClock::WaitStarted(int MSecs)
+{
+  m_Started.WaitMSec(MSecs);
 }
 
 #ifdef HAS_GLX
@@ -291,6 +302,7 @@ void CVideoReferenceClock::RunGLX()
     ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
     m_glXGetVideoSyncSGI(&VblankCount);
     QueryPerformanceCounter(&Now);
+    
     if(ReturnV)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
