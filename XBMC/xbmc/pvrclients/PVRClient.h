@@ -88,7 +88,11 @@ protected:
 
 private:
   static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);
-  static void PVRLogCallback(void *userData, const PVR_LOG loglevel, const char *format, ... );
+
+  static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
+  static void AddOnLogCallback(void *userData, const ADDON_LOG loglevel, const char *format, ... );
+  static const char* AddOnLocStrings(long dwCode);
+  static const char* AddOnCharConv(const char *sourceDest);
 };
 
 typedef std::vector<CPVRClient*> VECCLIENTS;

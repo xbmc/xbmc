@@ -28,6 +28,7 @@ Common data structures shared between XBMC and PVR clients
 
 #define MIN_XBMC_PVRDLL_API 1
 
+#include "DllAddonTypes.h"
 #include "DllAddonSettings.h"
 
 #include <vector>
@@ -36,15 +37,6 @@ Common data structures shared between XBMC and PVR clients
 
 extern "C"
 {
-  /**
-  * XBMC logging levels
-  */ 
-  enum PVR_LOG {
-    LOG_DEBUG,
-    LOG_INFO,
-    LOG_ERROR
-  };
-
   /**
   * PVR Client Error Codes
   */
@@ -152,12 +144,14 @@ extern "C"
   * XBMC callbacks
   */ 
   typedef void (*PVREventCallback)(void *userData, const PVR_EVENT, const char*);
-  typedef void (*PVRLogCallback)(void *userData, const PVR_LOG loglevel, const char *format, ... );
 
   typedef struct PVRCallbacks
   {
-    PVREventCallback Event;
-    PVRLogCallback   Log;
+    PVREventCallback    Event;
+    AddOnStatusCallback ReportStatus;
+    AddOnLogCallback    Log;
+    AddOnCharConv       CharConv;
+    AddOnLocStrings     LocateString;
     void *userData;
   } PVRCallbacks;
 
