@@ -760,9 +760,14 @@ void CVideoReferenceClock::Wait(int msecs)
     SleepTime = (NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency.QuadPart;
     
     if (SleepTime <= 0)
+    {
       Late = true;
+    }
     else if (SDL_CondWaitTimeout(m_VblankCond, m_VblankMutex, SleepTime) != 0)
+    {
+      Lock();
       Late = true;
+    }
     
     if (Late)
     {
