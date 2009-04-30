@@ -308,7 +308,7 @@ float CThread::GetRelativeUsage()
 
 DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
 {
-  if(dwMilliseconds > 10)
+  if(dwMilliseconds > 10 && GetCurrentThreadId() == m_ThreadId)
   {
     HANDLE handles[2] = {hHandle, m_StopEvent};
     DWORD result = ::WaitForMultipleObjects(2, handles, false, dwMilliseconds);
@@ -333,7 +333,7 @@ DWORD CThread::WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWai
 
 void CThread::Sleep(DWORD dwMilliseconds)
 {
-  if(dwMilliseconds > 10)
+  if(dwMilliseconds > 10 && GetCurrentThreadId() == m_ThreadId)
     ::WaitForSingleObject(m_StopEvent, dwMilliseconds);
   else
     ::Sleep(dwMilliseconds);
