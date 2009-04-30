@@ -14,13 +14,13 @@ mountroot ()
 
     if [ -f ${CFG_FILE} ]
     then
-	. ${CFG_FILE}
+        . ${CFG_FILE}
     else
-	if [ "$QUIET" == "" ]; then
-		echo "Did not find config file: ${CFG_FILE}"
-	fi
-	sleep 5
-	halt
+        if [ "$QUIET" == "" ]; then
+                echo "Did not find config file: ${CFG_FILE}"
+        fi
+        sleep 5
+        halt
     fi
 
 
@@ -50,23 +50,6 @@ mountroot ()
         XBMC_AMD="$( echo $XBMC_PARAMS | grep "amd" )"
     fi
 
-    if [ "$XBMC_NVIDIA" != "" ]; then
-           if [ "$QUIET" = "" ]; then
-               echo "Mounting NVIDIA drivers..."
-           fi
-    else
-        if [ "$XBMC_AMD" != "" ]; then
-            if [ "$QUIET" = "" ]; then
-                echo "Mounting AMD drivers..."
-            fi
-        else
-           # No Ops for Intel as of today
-            if [ "$QUIET" = "" ]; then
-                echo "Defaulting to Xorg autodetect..."
-            fi
-        fi
-    fi
-
     BOOTMEDIAMNTPOINT=/bootmediamnt
     mkdir -p $BOOTMEDIAMNTPOINT
     mkdir -p /squashmnt1
@@ -80,7 +63,10 @@ mountroot ()
 
         mount -o ro -t iso9660 ${ROOT} $BOOTMEDIAMNTPOINT 2> /dev/null
         while [ ! -e $BOOTMEDIAMNTPOINT/rootfs.img ]; do
-            /bin/sleep 0.5
+            /bin/sleep 1
+            if [ "$QUIET" == "" ]; then
+                    echo "Trying again $ROOT ...."
+            fi
             mount -o ro ${ROOT} -t iso9660 $BOOTMEDIAMNTPOINT 2> /dev/null
         done
     else
@@ -121,7 +107,7 @@ mountroot ()
         mount -o ro -t iso9660 /dev/${device} $BOOTMEDIAMNTPOINT 2> /dev/null
 
         while [ ! -e $BOOTMEDIAMNTPOINT/rootfs.img ]; do
-            /bin/sleep 0.5
+            /bin/sleep 1
             if [ "$QUIET" == "" ]; then
                 echo "Trying again /dev/${device} ...."
             fi
@@ -147,7 +133,7 @@ mountroot ()
     mount -o ro,loop -t squashfs $BOOTMEDIAMNTPOINT/rootfs.img /squashmnt1
 
     if [ "$XBMC_NVIDIA" != "" ]; then
-        if [ -f $BOOTMEDIAMNTPOINTrestrictedDrivers.nvidia.img ]; then
+        if [ -f $BOOTMEDIAMNTPOINT/restrictedDrivers.nvidia.img ]; then
                if [ "$QUIET" = "" ]; then
                    echo "Mounting NVIDIA drivers..."
                fi
@@ -172,7 +158,6 @@ mountroot ()
 
     mount -t tmpfs -o noatime,nodiratime none /persistmnt
 
-    # Mount the union:
     mount -t unionfs -o dirs=/persistmnt=rw:/squashmnt2=ro:/squashmnt1=ro none ${rootmnt}
 
     # Correct the permissions of /:
