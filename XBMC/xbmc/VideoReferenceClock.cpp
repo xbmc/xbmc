@@ -32,9 +32,11 @@ using namespace std;
 
 CVideoReferenceClock::CVideoReferenceClock()
 {
-  QueryPerformanceFrequency((LARGE_INTEGER*)&m_SystemFrequency);
-  m_AdjustedFrequency.QuadPart = m_SystemFrequency.QuadPart;
-  m_ClockOffset.QuadPart = 0;
+  LARGE_INTEGER Freq;
+  QueryPerformanceFrequency(&Freq);
+  m_SystemFrequency = Freq.QuadPart;
+  m_AdjustedFrequency = Freq.QuadPart;
+  m_ClockOffset = 0;
   m_UseVblank = false;
   m_Started.Reset();
 
@@ -58,9 +60,9 @@ void CVideoReferenceClock::Process()
   LARGE_INTEGER Now;
   
   Lock();
-  QueryPerformanceCounter(&m_CurrTime);
-  m_CurrTime.QuadPart -= m_ClockOffset.QuadPart; //add the clock offset from the previous time we stopped
-  m_AdjustedFrequency.QuadPart = m_SystemFrequency.QuadPart;
+  QueryPerformanceCounter(&Now);
+  m_CurrTime = Now.QuadPart - m_ClockOffset; //add the clock offset from the previous time we stopped
+  m_AdjustedFrequency = m_SystemFrequency;
 
   while(!m_bStop)
   {
@@ -100,7 +102,7 @@ void CVideoReferenceClock::Process()
   Lock();
   m_UseVblank = false;
   QueryPerformanceCounter(&Now);
-  m_ClockOffset.QuadPart = Now.QuadPart - m_CurrTime.QuadPart;
+  m_ClockOffset = Now.QuadPart - m_CurrTime;
   SendVblankSignal();
   Unlock();
 }
@@ -240,7 +242,7 @@ bool CVideoReferenceClock::SetupGLX()
   }
   
   m_PrevRefreshRate = -1;
-  m_LastRefreshTime.QuadPart = 0;
+  m_LastRefreshTime = 0;
   
   Lock();
   UpdateRefreshrate();
@@ -322,7 +324,7 @@ void CVideoReferenceClock::RunGLX()
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
       
       Lock();
-      m_CurrTime.QuadPart += m_AdjustedFrequency.QuadPart / m_RefreshRate;
+      m_CurrTime += m_AdjustedFrequency / m_RefreshRate;
       SendVblankSignal();
       Unlock();
       
@@ -371,7 +373,7 @@ void CVideoReferenceClock::RunD3D()
     if (RasterStatus.InVBlank || (RasterStatus.ScanLine < LastLine))
     {
       QueryPerformanceCounter(&CurrVBlankTime);
-      VBlankTime = (double)(CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart) / (double)m_SystemFrequency.QuadPart;
+      VBlankTime = (double)(CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart) / (double)m_SystemFrequency;
       NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
       Lock();
@@ -509,7 +511,7 @@ bool CVideoReferenceClock::SetupD3D()
   }
 
   m_PrevRefreshRate = -1;
-  m_LastRefreshTime.QuadPart = 0;
+  m_LastRefreshTime = 0;
   m_Width = 0;
   m_Height = 0;
   
@@ -612,7 +614,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
   }
   
   if (NrVBlanks > 0)
-    m_CurrTime.QuadPart += (__int64)NrVBlanks * m_AdjustedFrequency.QuadPart / m_RefreshRate;
+    m_CurrTime += (__int64)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
 }
 
 void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
@@ -621,19 +623,19 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   //when using vblank, get the time from that, otherwise use the systemclock
   if (m_UseVblank)
   {
-    ptime->QuadPart = m_CurrTime.QuadPart;
+    ptime->QuadPart = m_CurrTime;
   }
   else
   {
     QueryPerformanceCounter(ptime);
-    ptime->QuadPart -= m_ClockOffset.QuadPart;
+    ptime->QuadPart -= m_ClockOffset;
   }
   Unlock();
 }
 
 void CVideoReferenceClock::GetFrequency(LARGE_INTEGER *pfreq)
 {
-  *pfreq = m_SystemFrequency;
+  pfreq->QuadPart = m_SystemFrequency;
 }
 
 void CVideoReferenceClock::SetSpeed(double Speed)
@@ -642,10 +644,10 @@ void CVideoReferenceClock::SetSpeed(double Speed)
   //dvdplayer can change the speed to fit the rereshrate
   if (m_UseVblank)
   {
-    __int64 Frequency = (__int64)((double)m_SystemFrequency.QuadPart * Speed);
-    if (Frequency != m_AdjustedFrequency.QuadPart)
+    __int64 Frequency = (__int64)((double)m_SystemFrequency * Speed);
+    if (Frequency != m_AdjustedFrequency)
     {
-      m_AdjustedFrequency.QuadPart = Frequency;
+      m_AdjustedFrequency = Frequency;
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Clock speed %f%%", GetSpeed() * 100);
     }
   }
@@ -658,7 +660,7 @@ double CVideoReferenceClock::GetSpeed()
   
   Lock();
   //dvdplayer needs to know the speed for the resampler
-  if (m_UseVblank) Speed = (double)m_AdjustedFrequency.QuadPart / (double)m_SystemFrequency.QuadPart;
+  if (m_UseVblank) Speed = (double)m_AdjustedFrequency / (double)m_SystemFrequency;
   Unlock();
   
   return Speed;
@@ -667,10 +669,10 @@ double CVideoReferenceClock::GetSpeed()
 bool CVideoReferenceClock::UpdateRefreshrate()
 {
   bool Changed = false;
-  if (m_CurrTime.QuadPart - m_LastRefreshTime.QuadPart > m_SystemFrequency.QuadPart)
+  if (m_CurrTime - m_LastRefreshTime > m_SystemFrequency)
   {
 #ifdef HAS_GLX
-    m_LastRefreshTime.QuadPart = m_CurrTime.QuadPart;
+    m_LastRefreshTime = m_CurrTime;
     
     XRRScreenConfiguration *CurrInfo;
     CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
@@ -761,15 +763,15 @@ void CVideoReferenceClock::Wait(int msecs)
   __int64       NextVblank;
   int           SleepTime;
   bool          Late = false;
-  
+  int64_t blaat;
   Lock();
   //when using vblank, wait for the vblank signal
   if (m_UseVblank)
   {
 #ifdef HAS_SDL
     QueryPerformanceCounter(&Now);
-    NextVblank = m_VblankTime + (m_SystemFrequency.QuadPart / m_RefreshRate * MAXDELAY / 1000);
-    SleepTime = (NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency.QuadPart;
+    NextVblank = m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXDELAY / 1000);
+    SleepTime = (NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency;
     
     if (SleepTime <= 0)
       Late = true;
@@ -779,7 +781,7 @@ void CVideoReferenceClock::Wait(int msecs)
     if (Late)
     {
       m_MissedVblanks++;
-      m_VblankTime += m_SystemFrequency.QuadPart / m_RefreshRate;
+      m_VblankTime += m_SystemFrequency / m_RefreshRate;
       UpdateClock(1, false);
     }
     

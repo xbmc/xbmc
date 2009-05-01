@@ -56,11 +56,11 @@ class CVideoReferenceClock : public CThread
     void Unlock();
     void SendVblankSignal();
     
-    LARGE_INTEGER m_CurrTime;
-    LARGE_INTEGER m_AdjustedFrequency;
-    LARGE_INTEGER m_ClockOffset;
-    LARGE_INTEGER m_LastRefreshTime;
-    LARGE_INTEGER m_SystemFrequency;
+    __int64 m_CurrTime;
+    __int64 m_AdjustedFrequency;
+    __int64 m_ClockOffset;
+    __int64 m_LastRefreshTime;
+    __int64 m_SystemFrequency;
     
     bool    m_UseVblank;
     __int64 m_RefreshRate;
