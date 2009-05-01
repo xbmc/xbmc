@@ -763,7 +763,7 @@ void CVideoReferenceClock::Wait(int msecs)
   __int64       NextVblank;
   int           SleepTime;
   bool          Late = false;
-  int64_t blaat;
+  
   Lock();
   //when using vblank, wait for the vblank signal
   if (m_UseVblank)
