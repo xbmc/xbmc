@@ -92,8 +92,37 @@ public:
   static bool ProgressDialogCreate(const char* heading, const char* line1, const char* line2, const char* line3);
   static void ProgressDialogUpdate(int percent, const char* line1, const char* line2, const char* line3);
 
+  static void GUILock();
+  static void GUIUnlock();
+  static int GUIGetCurrentWindowId();
+  static int GUIGetCurrentWindowDialogId();
+
+  static void Shutdown();
+  static void Restart();
+  static void Dashboard();
+  static void ExecuteScript(const char *script);
+  static void ExecuteBuiltIn(const char *function);
+  static const char* ExecuteHttpApi(char *httpcommand);
   static const char* GetLocalizedString(const CAddon* addon, long dwCode);
+  static const char* GetSkinDir();
   static const char* UnknownToUTF8(const char *sourceDest);
+  static const char* GetLanguage();
+  static const char* GetIPAddress();
+  static int GetDVDState();
+  static int GetFreeMem();
+  static const char* GetInfoLabel(const char *infotag);
+  static const char* GetInfoImage(const char *infotag);
+  static bool GetCondVisibility(const char *condition);
+  static void EnableNavSounds(bool yesNo);
+  static void PlaySFX(const char *filename);
+  static int GetGlobalIdleTime();
+  static const char* GetCacheThumbName(const char *path);
+  static const char* MakeLegalFilename(const char *filename);
+  static const char* TranslatePath(const char *path);
+  static const char* GetRegion(const char *id);
+  static const char* GetSupportedMedia(const char *media);
+  static bool SkinHasImage(const char *filename);
+  
 
   static bool ProgressDialogIsCanceled();
   static void ProgressDialogClose();

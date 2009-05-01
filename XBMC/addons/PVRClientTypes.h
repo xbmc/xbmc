@@ -151,6 +151,7 @@ extern "C"
 
     AddOnCallbacks      AddOn;
     DialogCallbacks     Dialog;
+    GUICallbacks        GUI;
     UtilsCallbacks      Utils;
     void *userData;
   } PVRCallbacks;

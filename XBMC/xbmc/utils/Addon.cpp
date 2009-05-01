@@ -32,12 +32,24 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogProgress.h"
+#include "GUIAudioManager.h"
+#include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "PVRManager.h"
 #include "Util.h"
 #include "URL.h"
+#ifdef HAS_WEB_SERVER
+#include "lib/libGoAhead/XBMChttp.h"
+#endif
+#include "Crc32.h"
+
+using namespace std;
+using namespace XFILE;
 
 namespace ADDON
 {
+
+static int iAddOnGUILockRef = 0;
 
 CAddon::CAddon()
 {
@@ -348,9 +360,102 @@ void CAddon::ProgressDialogClose()
   
 
 /**
+ * XBMC AddOn GUI callbacks
+ * Helper to access different types of GUI functions
+ */
+
+void CAddon::GUILock()
+{
+  if (iAddOnGUILockRef == 0) g_graphicsContext.Lock();
+    iAddOnGUILockRef++;
+}
+
+void CAddon::GUIUnlock()
+{
+  if (iAddOnGUILockRef > 0)
+  {
+    iAddOnGUILockRef--;
+    if (iAddOnGUILockRef == 0) g_graphicsContext.Unlock();
+  }
+}
+
+int CAddon::GUIGetCurrentWindowId()
+{
+  GUILock();
+  DWORD dwId = m_gWindowManager.GetActiveWindow();
+  GUIUnlock();
+  return dwId;
+}
+
+int CAddon::GUIGetCurrentWindowDialogId()
+{
+  GUILock();
+  DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
+  GUIUnlock();
+  return dwId;
+}
+
+
+/**
 * XBMC AddOn Utils callbacks
 * Helper' to access XBMC Utilities
 */
+
+void CAddon::Shutdown()
+{
+  ThreadMessage tMsg = {TMSG_SHUTDOWN};
+  g_application.getApplicationMessenger().SendMessage(tMsg);
+  return;
+}
+
+void CAddon::Restart()
+{
+  ThreadMessage tMsg = {TMSG_RESTART};
+  g_application.getApplicationMessenger().SendMessage(tMsg);
+  return;
+}
+
+void CAddon::Dashboard()
+{
+  ThreadMessage tMsg = {TMSG_DASHBOARD};
+  g_application.getApplicationMessenger().SendMessage(tMsg);
+}
+
+void CAddon::ExecuteScript(const char *script)
+{
+  ThreadMessage tMsg = {TMSG_EXECUTE_SCRIPT};
+  tMsg.strParam = script;
+  g_application.getApplicationMessenger().SendMessage(tMsg);
+}
+
+void CAddon::ExecuteBuiltIn(const char *function)
+{
+  g_application.getApplicationMessenger().ExecBuiltIn(function);
+}
+
+const char* CAddon::ExecuteHttpApi(char *httpcommand)
+{
+#ifdef HAS_WEB_SERVER
+  CStdString ret;
+
+  if (!m_pXbmcHttp)
+  {
+    CSectionLoader::Load("LIBHTTP");
+    m_pXbmcHttp = new CXbmcHttp();
+  }
+  if (!pXbmcHttpShim)
+  {
+    pXbmcHttpShim = new CXbmcHttpShim();
+    if (!pXbmcHttpShim)
+      return "";
+  }
+  ret = pXbmcHttpShim->xbmcExternalCall(httpcommand);
+
+  return ret.c_str();
+#else
+  return "";
+#endif
+}
 
 const char* CAddon::GetLocalizedString(const CAddon* addon, long dwCode)
 {
@@ -372,12 +477,155 @@ const char* CAddon::GetLocalizedString(const CAddon* addon, long dwCode)
   return "";
 }
 
+const char* CAddon::GetSkinDir()
+{
+  return g_guiSettings.GetString("lookandfeel.skin");
+}
+
 const char* CAddon::UnknownToUTF8(const char *sourceDest)
 {
   CStdString string = sourceDest;
   g_charsetConverter.unknownToUTF8(string);
   return string.c_str();
 }
+
+const char* CAddon::GetLanguage()
+{
+  return g_guiSettings.GetString("locale.language");
+}
+
+const char* CAddon::GetIPAddress()
+{
+  return g_infoManager.GetLabel(NETWORK_IP_ADDRESS).c_str();
+}
+
+int CAddon::GetDVDState()
+{
+  return CIoSupport::GetTrayState();
+}
+
+int CAddon::GetFreeMem()
+{
+  MEMORYSTATUS stat;
+  GlobalMemoryStatus(&stat);
+  return stat.dwAvailPhys  / ( 1024 * 1024 );
+}
+
+const char* CAddon::GetInfoLabel(const char *infotag)
+{
+  int ret = g_infoManager.TranslateString(infotag);
+  return g_infoManager.GetLabel(ret).c_str();
+}
+
+const char* CAddon::GetInfoImage(const char *infotag)
+{
+  int ret = g_infoManager.TranslateString(infotag);
+  return g_infoManager.GetImage(ret, WINDOW_INVALID).c_str();
+}
+
+bool CAddon::GetCondVisibility(const char *condition)
+{
+  DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
+  if (dwId == WINDOW_INVALID) dwId = m_gWindowManager.GetActiveWindow();
+
+  int ret = g_infoManager.TranslateString(condition);
+  return g_infoManager.GetBool(ret,dwId);
+}
+
+void CAddon::EnableNavSounds(bool yesNo)
+{
+  g_audioManager.Enable(yesNo);
+}
+
+void CAddon::PlaySFX(const char *filename)
+{
+  if (CFile::Exists(filename))
+  {
+    g_audioManager.PlayPythonSound(filename);
+  }
+}
+
+int CAddon::GetGlobalIdleTime()
+{
+  return g_application.GlobalIdleTime();
+}
+
+const char* CAddon::GetCacheThumbName(const char *path)
+{
+  string strText = path;
+
+  Crc32 crc;
+  CStdString strPath;
+  crc.ComputeFromLowerCase(strText);
+  strPath.Format("%08x.tbn", (unsigned __int32)crc);
+  return strPath.c_str();
+}
+
+const char* CAddon::MakeLegalFilename(const char *filename)
+{
+  CStdString strText = filename;
+  CStdString strFilename;
+  strFilename = CUtil::MakeLegalPath(strText);
+  return strFilename.c_str();
+}
+
+const char* CAddon::TranslatePath(const char *path)
+{
+  CStdString strText = path;
+
+  CStdString strPath;
+  if (CUtil::IsDOSPath(strText))
+    strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
+
+  strPath = CSpecialProtocol::TranslatePath(strText);
+
+  return strPath.c_str();
+}
+
+const char* CAddon::GetRegion(const char *id)
+{
+  CStdString result;
+
+  if (strcmpi(id, "datelong") == 0)
+    result = g_langInfo.GetDateFormat(true);
+  else if (strcmpi(id, "dateshort") == 0)
+    result = g_langInfo.GetDateFormat(false);
+  else if (strcmpi(id, "tempunit") == 0)
+    result = g_langInfo.GetTempUnitString();
+  else if (strcmpi(id, "speedunit") == 0)
+    result = g_langInfo.GetSpeedUnitString();
+  else if (strcmpi(id, "time") == 0)
+    result = g_langInfo.GetTimeFormat();
+  else if (strcmpi(id, "meridiem") == 0)
+    result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
+
+  return result.c_str();
+}
+
+const char* CAddon::GetSupportedMedia(const char *media)
+{
+  CStdString result;
+  if (strcmpi(media, "video") == 0)
+    result = g_stSettings.m_videoExtensions;
+  else if (strcmpi(media, "music") == 0)
+    result = g_stSettings.m_musicExtensions;
+  else if (strcmpi(media, "picture") == 0)
+    result = g_stSettings.m_pictureExtensions;
+  else
+    return "";
+
+  return result.c_str();
+}
+
+bool CAddon::SkinHasImage(const char *filename)
+{
+  bool exists = g_TextureManager.HasTexture(filename);
+  return exists;
+}
+
+
+
+
 
 void CAddon::TransferAddonSettings(const CURL &url)
 {

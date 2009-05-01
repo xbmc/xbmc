@@ -113,7 +113,7 @@ extern "C"
     typedef void (*AddOnStatusCallback)(void *userData, const ADDON_STATUS, const char*);
 
     /**
-     * AddOnCallbacks -- Log -- Write a string to XBMC's log file and the debug window.
+     * AddOnCallbacks -- Log -- Write a string to XBMC's log file
      *
      * userData       : pointer - Points to the AddOn specific data
      * loglevel       : enum - log level to ouput at. (default=LOG_DEBUG)
@@ -123,7 +123,6 @@ extern "C"
      *   LOG_DEBUG  : Show as debug meassage
      *   LOG_INFO   : Show as info meassage
      *   LOG_ERROR  : Show as error meassage
-     *   3 : ShowAndGetWriteableDirectory
      *
      * example:
      *  - g_xbmc->AddOn.Log(g_xbmc->userData, LOG_INFO, "This is a test string.");
@@ -163,6 +162,7 @@ extern "C"
       AddOnOpenSettings      OpenSettings;
       AddOnOpenOwnSettings   OpenOwnSettings;
     } AddOnCallbacks;
+
 
   /************************************************************************************************************
    * XBMC AddOn Dialog callbacks
@@ -330,9 +330,116 @@ extern "C"
 
 
   /************************************************************************************************************
+   * XBMC AddOn GUI callbacks
+   * Helper to access different types of GUI functions
+   */
+
+    /**
+     * UtilsCallbacks -- Lock -- Lock the gui until xbmcgui.unlock() is called.
+     * 
+     * *Note, This will improve performance when doing a lot of gui manipulation at once.
+     *        The main program (xbmc itself) will freeze until xbmcgui.unlock() is called.
+     *
+     * example:
+     *   - g_xbmc->GUI.Lock());
+     */
+    typedef void (*GUILock)();
+
+    /**
+     * UtilsCallbacks -- Unlock -- Unlock the gui from a lock() call.
+     *
+     * example:
+     *   - g_xbmc->GUI.Unlock();
+     */
+    typedef void (*GUIUnlock)();
+
+    /**
+     * UtilsCallbacks -- GetCurrentWindowId -- Returns the id for the current 'active' window as an integer.
+     *
+     * example:
+     *   - int wid = g_xbmc->GUI.GetCurrentWindowId());
+     */
+    typedef int (*GUIGetCurrentWindowId)();
+
+    /**
+     * UtilsCallbacks -- GetCurrentWindowDialogId -- Returns the id for the current 'active' dialog as an integer.
+     *
+     * example:
+     *   - int wid = g_xbmc->GUI.GetCurrentWindowDialogId());
+     */
+    typedef int (*GUIGetCurrentWindowDialogId)();
+
+    typedef struct GUICallbacks
+    {
+      GUILock                       Lock;
+      GUIUnlock                     Unlock;
+      GUIGetCurrentWindowId         GetCurrentWindowId;
+      GUIGetCurrentWindowDialogId   GetCurrentWindowDialogId;
+    } GUICallbacks;
+
+
+  /************************************************************************************************************
    * XBMC AddOn Utilities callbacks
    * Helper to access different types of useful functions
    */
+   
+    /**
+     * UtilsCallbacks -- Shutdown -- Shutdown the xbox.
+     *
+     * example:
+     *   - g_xbmc->Utils.Shutdown();
+     */
+     typedef void (*UtilsShutdown)();
+
+    /**
+     * UtilsCallbacks -- Restart -- Restart the xbox.
+     *
+     * example:
+     *   - g_xbmc->Utils.Restart();
+     */
+     typedef void (*UtilsRestart)();
+
+    /**
+     * UtilsCallbacks -- Dashboard -- Boot to dashboard as set in My Pograms/General.
+     *
+     * example:
+     *   - g_xbmc->Utils.Dashboard();
+     */
+     typedef void (*UtilsDashboard)();
+
+    /**
+     * UtilsCallbacks -- ExecuteScript -- Execute a python script.
+    "
+    "script         : string - script filename to execute.
+    "
+    "example:
+    "  - g_xbmc->Utils.ExecuteScript("special://home/scripts/update.py");
+     */
+    typedef void (*UtilsExecuteScript)(const char *script);
+
+    /**
+     * UtilsCallbacks -- ExecuteBuiltIn -- Execute a built in XBMC function.
+     *
+     * function       : string - builtin function to execute.
+     *
+     * List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions 
+     * 
+     * example:
+     *   - g_xbmc->Utils.ExecuteBuiltIn("XBMC.RunXBE(c:\\\\avalaunch.xbe)");
+     */
+    typedef void (*UtilsExecuteBuiltIn)(const char *function);
+
+    /**
+     * UtilsCallbacks -- ExecuteHttpApi -- Execute an HTTP API command.
+     *
+     * httpcommand    : string - http command to execute.
+     *
+     * List of commands - http://xbmc.org/wiki/?title=WebServerHTTP-API#The_Commands
+     *
+     * example:
+     *   - const char* string = g_xbmc->Utils.ExecuteHttpApi("TakeScreenShot(special://temp/test.jpg,0,false,200,-1,90)");
+     */
+    typedef const char* (*UtilsExecuteHttpApi)(char *httpcommand);
 
     /**
      * UtilsCallbacks -- LocalizedString -- Returns a localized 'unicode string'.
@@ -346,9 +453,21 @@ extern "C"
      *       Once you use a keyword, all following arguments require the keyword.
      *
      * example:
-     *   - const char* string = g_xbmc->Dialog.LocalizedString(g_xbmc->userData, 124);
+     *   - const char* string = g_xbmc->Utils.LocalizedString(g_xbmc->userData, 124);
      */
     typedef const char* (*UtilsLocStrings)(void *userData, long dwCode);
+
+    /**
+     * UtilsCallbacks -- GetSkinDir -- Returns the active skin directory as a string.
+     *
+     * sourceDest     : string - the string to convert
+     *
+     * *Note, This is not the full path like 'special://home/skin/MediaCenter', but only 'MediaCenter'.
+     *
+     * example:
+     *   - const char* string = g_xbmc->Utils.GetSkinDir();
+     */
+    typedef const char* (*UtilsGetSkinDir)();
 
     /**
      * UtilsCallbacks -- UnknownToUTF8 -- Converts a string to UTF8 coding.
@@ -358,14 +477,220 @@ extern "C"
      * *Note, Returns the entered data as a string in UTF8.
      *
      * example:
-     *   - g_xbmc->Dialog.UnknownToUTF8("German have umlauts like 'ÄÖÜäöü' that must be converted");
+     *   - g_xbmc->Utils.UnknownToUTF8("German have umlauts like 'ÄÖÜäöü' that must be converted");
      */
     typedef const char* (*UtilsUnknownToUTF8)(const char *sourceDest);
 
+    /**
+     * UtilsCallbacks -- GetLanguage -- Returns the active language as a string.
+     *
+     * example:
+     *   - const char* language = g_xbmc->Utils.GetLanguage();
+     */
+    typedef const char* (*UtilsGetLanguage)();
+
+    /**
+     * UtilsCallbacks -- GetIPAddress -- Returns the current ip address as a string.
+     *
+     * example:
+     *   - const char* ip = g_xbmc->Utils.GetIPAddress();
+     */
+    typedef const char* (*UtilsGetIPAddress)();
+
+    /**
+     * UtilsCallbacks -- GetDVDState -- Returns the dvd state as an integer.
+     *
+     * return values are:
+     *   0 : DRIVE_OPEN                 : Open...
+     *   1 : DRIVE_NOT_READY            : Opening.. Closing...
+     *   2 : DRIVE_READY                :
+     *   3 : DRIVE_CLOSED_NO_MEDIA      : CLOSED...but no media in drive
+     *   4 : DRIVE_CLOSED_MEDIA_PRESENT : Will be send once when the drive just have closed
+     *   5 : DRIVE_NONE                 : system doesn't have an optical drive
+     *
+     * example:
+     *   - int dvdstate = g_xbmc->Utils.GetDVDState();
+     */
+    typedef int (*UtilsGetDVDState)();
+
+    /**
+     * UtilsCallbacks -- GetFreeMem -- Returns the amount of free memory in MB as an integer.
+     *
+     * example:
+     *   - int freemem = g_xbmc->Utils.GetFreeMem();
+     */
+    typedef int (*UtilsGetFreeMem)();
+    
+    /**
+     * UtilsCallbacks -- GetInfoLabel -- Returns an InfoLabel as a string.
+     *
+     * infotag        : string - infoTag for value you want returned.
+     *
+     * List of InfoTags - http://xbmc.org/wiki/?title=InfoLabels
+     *
+     * example:
+     *   - const char* label = g_xbmc->Utils.GetInfoLabel("Weather.Conditions");
+     */
+    typedef const char* (*UtilsGetInfoLabel)(const char *infotag);
+
+    /**
+     * UtilsCallbacks -- GetInfoImage -- Returns a filename including path to 
+     *                                   the InfoImage's thumbnail as a string.
+     *
+     * infotag        : string - infoTag for value you want returned.
+     *
+     * List of InfoTags - http://xbmc.org/wiki/?title=InfoLabels
+     *
+     * example:
+     *   - const char* filename = g_xbmc->Utils.GetInfoImage("Weather.Conditions");
+     */
+    typedef const char* (*UtilsGetInfoImage)(const char *infotag);
+
+    /**
+     * UtilsCallbacks -- EnableNavSounds -- Returns True (1) or False (0) as a bool.
+     * 
+     * condition      : string - condition to check.
+     * 
+     * List of Conditions - http://xbmc.org/wiki/?title=List_of_Boolean_Conditions 
+     * 
+     * *Note, You can combine two (or more) of the above settings by using "+" as an AND operator,
+     * "|" as an OR operator, "!" as a NOT operator, and "[" and "]" to bracket expressions.
+     * 
+     * example:
+     *   - visible bool = g_xbmc->Utils.GetCondVisibility("[Control.IsVisible(41) + !Control.IsVisible(12)]");
+     */
+    typedef bool (*UtilsGetCondVisibility)(const char *condition);
+
+    /**
+     * UtilsCallbacks -- EnableNavSounds -- Enables/Disables nav sounds.
+     *
+     * yesNo         : boolean - enable (True) or disable (False) nav sounds
+     *
+     * example:
+     *   - g_xbmc->Utils.EnableNavSounds(false);
+     */
+    typedef void (*UtilsEnableNavSounds)(bool yesNo);
+
+    /**
+     * UtilsCallbacks -- PlaySFX -- Plays a wav file by filename.
+     *
+     * filename     : string - filename of the wav file to play.
+     *
+     * example:
+     *   - g_xbmc->Utils.PlaySFX("special://xbmc/scripts/dingdong.wav");
+     */
+    typedef void (*UtilsPlaySFX)(const char *filename);
+
+    /**
+     * UtilsCallbacks -- GetSupportedMedia -- Returns the supported file types for the specific media as a string.
+     *
+     * media          : string - media type
+     *
+     * *Note, media type can be (video, music, picture).
+     *        The return value is a pipe separated string of filetypes (eg. '.mov|.avi').
+     *        You can use the above as keywords for arguments.
+     *
+     * example:
+     *   - const char* mTypes = g_xbmc->Utils.GetSupportedMedia("video.png");
+     */
+    typedef const char* (*UtilsGetSupportedMedia)(const char *media);
+
+    /**
+     * UtilsCallbacks -- GetGlobalIdleTime -- Returns the elapsed idle time in seconds as an integer.
+     *
+     * example:
+     *   - int t = xbmc.GetGlobalIdleTime();
+     */
+     typedef int (*UtilsGetGlobalIdleTime)();
+
+    /**
+     * UtilsCallbacks -- GetCacheThumbName -- Returns a thumb cache filename.
+     *
+     * path           : string or unicode - path to file
+     *
+     * example:
+     *   - const char* thumb = xbmc.GetCacheThumbName("f:\\\\videos\\\\movie.avi");
+     */
+     typedef const char* (*UtilsGetCacheThumbName)(const char *path);
+
+    /**
+     * UtilsCallbacks -- MakeLegalFilename -- Returns a legal filename or path as a string.
+     *
+     * filename       : string or unicode - filename/path to make legal
+     *
+     * example:
+     *   - const char* filename = xbmc.MakeLegalFilename("F:\\Trailers\\Ice Age: The Meltdown.avi");
+     */
+    typedef const char* (*UtilsMakeLegalFilename)(const char *filename);
+
+    /**
+     * UtilsCallbacks -- TranslatePath -- Returns the translated path.
+     *
+     * path           : string or unicode - Path to format
+     *
+     * *Note, Only useful if you are coding for both Linux and the Xbox.
+     *        e.g. Converts 'special://masterprofile/script_data' -> '/home/user/XBMC/UserData/script_data'
+     *        on Linux. Would return 'special://masterprofile/script_data' on the Xbox.
+     *
+     * example:
+     *   - const char* fpath = g_xbmc->Utils.TranslatePath("special://masterprofile/script_data");
+     */
+    typedef const char* (*UtilsTranslatePath)(const char *path);
+
+    /**
+     * UtilsCallbacks -- GetRegion -- Returns your regions setting as a string for the specified id.
+     *
+     * id             : string - id of setting to return
+     *
+     * *Note, choices are (dateshort, datelong, time, meridiem, tempunit, speedunit).
+     *        You can use the above as keywords for arguments.
+     *
+     * example:
+     *   - const char* date_long_format = g_xbmc->Utils.GetRegion("datelong");
+     */
+     typedef const char* (*UtilsGetRegion)(const char *id);
+
+    /**
+     * UtilsCallbacks -- SkinHasImage -- Returns True if the image file exists in the skin.
+     *
+     * image          : string - image filename
+     *
+     * *Note, If the media resides in a subfolder include it. (eg. home-myfiles\\\\home-myfiles2.png)
+     *        You can use the above as keywords for arguments.
+     *
+     * example:
+     *   - bool exists = g_xbmc->Utils.SkinHasImage("ButtonFocusedTexture.png");
+     */
+    typedef bool (*UtilsSkinHasImage)(const char *filename);
+
     typedef struct UtilsCallbacks
     {
-      UtilsUnknownToUTF8     UnknownToUTF8;
-      UtilsLocStrings        LocalizedString;
+      UtilsShutdown             Shutdown;
+      UtilsRestart              Restart;
+      UtilsDashboard            Dashboard;
+      UtilsExecuteScript        ExecuteScript;
+      UtilsExecuteBuiltIn       ExecuteBuiltIn;
+      UtilsExecuteHttpApi       ExecuteHttpApi;
+      UtilsUnknownToUTF8        UnknownToUTF8;
+      UtilsLocStrings           LocalizedString;
+      UtilsGetSkinDir           GetSkinDir;
+      UtilsGetLanguage          GetLanguage;
+      UtilsGetIPAddress         GetIPAddress;
+      UtilsGetDVDState          GetDVDState;
+      UtilsGetFreeMem           GetFreeMem;
+      UtilsGetInfoLabel         GetInfoLabel;
+      UtilsGetInfoImage         GetInfoImage;
+      UtilsGetCondVisibility    GetCondVisibility;
+      UtilsEnableNavSounds      EnableNavSounds;
+      UtilsPlaySFX              PlaySFX;
+      UtilsGetSupportedMedia    GetSupportedMedia;
+      UtilsGetGlobalIdleTime    GetGlobalIdleTime;
+      UtilsGetCacheThumbName    GetCacheThumbName;
+      UtilsMakeLegalFilename    MakeLegalFilename;
+      UtilsTranslatePath        TranslatePath;
+      UtilsGetRegion            GetRegion;
+      UtilsSkinHasImage         SkinHasImage;
+
     } UtilsCallbacks;
 
 }

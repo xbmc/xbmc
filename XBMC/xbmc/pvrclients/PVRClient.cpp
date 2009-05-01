@@ -47,26 +47,54 @@ CPVRClient::~CPVRClient()
 
 bool CPVRClient::Init()
 {
-  PVRCallbacks *callbacks           = new PVRCallbacks;
-  callbacks->userData               = this;
-  callbacks->Event                  = PVREventCallback;
-  callbacks->AddOn.ReportStatus     = AddOnStatusCallback;
-  callbacks->AddOn.Log              = AddOnLogCallback;
-  callbacks->AddOn.OpenSettings     = AddOnOpenSettings;
-  callbacks->AddOn.OpenOwnSettings  = AddOnOpenOwnSettings;
+  PVRCallbacks *callbacks               = new PVRCallbacks;
+  callbacks->userData                   = this;
+  callbacks->Event                      = PVREventCallback;
+  callbacks->AddOn.ReportStatus         = AddOnStatusCallback;
+  callbacks->AddOn.Log                  = AddOnLogCallback;
+  callbacks->AddOn.OpenSettings         = AddOnOpenSettings;
+  callbacks->AddOn.OpenOwnSettings      = AddOnOpenOwnSettings;
 
-  callbacks->Dialog.OpenOK          = CAddon::OpenDialogOK;
-  callbacks->Dialog.OpenYesNo       = CAddon::OpenDialogYesNo;
-  callbacks->Dialog.OpenBrowse      = CAddon::OpenDialogBrowse;
-  callbacks->Dialog.OpenNumeric     = CAddon::OpenDialogNumeric;
-  callbacks->Dialog.OpenSelect      = CAddon::OpenDialogSelect;
-  callbacks->Dialog.ProgressCreate  = CAddon::ProgressDialogCreate;
-  callbacks->Dialog.ProgressUpdate  = CAddon::ProgressDialogUpdate;
-  callbacks->Dialog.ProgressIsCanceled = CAddon::ProgressDialogIsCanceled;
-  callbacks->Dialog.ProgressClose   = CAddon::ProgressDialogClose;
+  callbacks->Dialog.OpenOK              = CAddon::OpenDialogOK;
+  callbacks->Dialog.OpenYesNo           = CAddon::OpenDialogYesNo;
+  callbacks->Dialog.OpenBrowse          = CAddon::OpenDialogBrowse;
+  callbacks->Dialog.OpenNumeric         = CAddon::OpenDialogNumeric;
+  callbacks->Dialog.OpenSelect          = CAddon::OpenDialogSelect;
+  callbacks->Dialog.ProgressCreate      = CAddon::ProgressDialogCreate;
+  callbacks->Dialog.ProgressUpdate      = CAddon::ProgressDialogUpdate;
+  callbacks->Dialog.ProgressIsCanceled  = CAddon::ProgressDialogIsCanceled;
+  callbacks->Dialog.ProgressClose       = CAddon::ProgressDialogClose;
 
-  callbacks->Utils.UnknownToUTF8    = CAddon::UnknownToUTF8;
-  callbacks->Utils.LocalizedString  = AddOnGetLocalizedString;
+  callbacks->GUI.Lock                   = CAddon::GUILock;
+  callbacks->GUI.Unlock                 = CAddon::GUIUnlock;
+  callbacks->GUI.GetCurrentWindowId     = CAddon::GUIGetCurrentWindowId;
+  callbacks->GUI.GetCurrentWindowDialogId   = CAddon::GUIGetCurrentWindowDialogId;
+      
+  callbacks->Utils.Shutdown             = CAddon::Shutdown;
+  callbacks->Utils.Restart              = CAddon::Restart;
+  callbacks->Utils.Dashboard            = CAddon::Dashboard;
+  callbacks->Utils.ExecuteScript        = CAddon::ExecuteScript;
+  callbacks->Utils.ExecuteBuiltIn       = CAddon::ExecuteBuiltIn;
+  callbacks->Utils.ExecuteHttpApi       = CAddon::ExecuteHttpApi;
+  callbacks->Utils.UnknownToUTF8        = CAddon::UnknownToUTF8;
+  callbacks->Utils.LocalizedString      = AddOnGetLocalizedString;
+  callbacks->Utils.GetSkinDir           = CAddon::GetSkinDir;
+  callbacks->Utils.GetLanguage          = CAddon::GetLanguage;
+  callbacks->Utils.GetIPAddress         = CAddon::GetIPAddress;
+  callbacks->Utils.GetDVDState          = CAddon::GetDVDState;
+  callbacks->Utils.GetInfoLabel         = CAddon::GetInfoLabel;
+  callbacks->Utils.GetInfoImage         = CAddon::GetInfoImage;
+  callbacks->Utils.GetFreeMem           = CAddon::GetFreeMem;
+  callbacks->Utils.GetCondVisibility    = CAddon::GetCondVisibility;
+  callbacks->Utils.EnableNavSounds      = CAddon::EnableNavSounds;
+  callbacks->Utils.PlaySFX              = CAddon::PlaySFX;
+  callbacks->Utils.GetSupportedMedia    = CAddon::GetSupportedMedia;
+  callbacks->Utils.GetGlobalIdleTime    = CAddon::GetGlobalIdleTime;
+  callbacks->Utils.GetCacheThumbName    = CAddon::GetCacheThumbName;
+  callbacks->Utils.MakeLegalFilename    = CAddon::MakeLegalFilename;
+  callbacks->Utils.TranslatePath        = CAddon::TranslatePath;
+  callbacks->Utils.GetRegion            = CAddon::GetRegion;
+  callbacks->Utils.SkinHasImage         = CAddon::SkinHasImage;
 
   m_pClient->Create(callbacks);
   
