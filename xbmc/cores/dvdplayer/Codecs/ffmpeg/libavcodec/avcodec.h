@@ -386,7 +386,7 @@ enum SampleFormat {
 #define CH_LAYOUT_STEREO_DOWNMIX    (CH_STEREO_LEFT|CH_STEREO_RIGHT)
 
 /* in bytes */
-#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
+#define AVCODEC_MAX_AUDIO_FRAME_SIZE 1130496
 
 /**
  * Required number of additionally allocated bytes at the end of the input bitstream for decoding.
