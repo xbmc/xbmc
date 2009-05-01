@@ -83,7 +83,10 @@
         [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_RELEASE];
       break;
     case kRemoteButtonRight_Hold:
-      if(pressedDown) [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H];
+      if(pressedDown) 
+        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H_RELEASE];
       break;
     case kRemoteButtonLeft:
       if(pressedDown) 
@@ -92,7 +95,10 @@
         [mp_wrapper handleEvent:ATV_BUTTON_LEFT_RELEASE];
       break;
     case kRemoteButtonLeft_Hold:
-      if(pressedDown) [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H];
+      if(pressedDown) 
+        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H_RELEASE];
       break;
     case kRemoteButtonPlus:
       if(pressedDown) 
