@@ -281,10 +281,10 @@ void CPVRManager::GetClientProperties(long clientID)
 #define INFO_TOGGLE_TIME    1
 const char* CPVRManager::TranslateInfo(DWORD dwInfo)
 {
-  if (dwInfo == PVR_NOW_RECORDING_CHANNEL) return m_nowRecordingClient;
+  if (dwInfo == PVR_NOW_RECORDING_CHANNEL) return m_nowRecordingChannel;
   else if (dwInfo == PVR_NOW_RECORDING_TITLE) return m_nowRecordingTitle;
   else if (dwInfo == PVR_NOW_RECORDING_DATETIME) return m_nowRecordingDateTime;
-  else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL) return m_nextRecordingClient;
+  else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL) return m_nextRecordingChannel;
   else if (dwInfo == PVR_NEXT_RECORDING_TITLE) return m_nextRecordingTitle;
   else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) return m_nextRecordingDateTime;
   else if (dwInfo == PVR_BACKEND_NAME) return m_backendName;
@@ -311,13 +311,13 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
           if (m_infoToggleCurrent > m_clients.size()-1)
             m_infoToggleCurrent = 0;
 
-          long long m_iDisktotal = 0;
-          long long m_iDiskused  = 0;
-          if (m_clients[m_infoToggleCurrent]->GetDriveSpace(&m_iDisktotal, &m_iDiskused) == PVR_ERROR_NO_ERROR)
+          long long kBTotal = 0;
+          long long kBUsed  = 0;
+          if (m_clients[m_infoToggleCurrent]->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
           {
-            m_iDisktotal /= 1024; // Convert to MBytes
-            m_iDiskused /= 1024;  // Convert to MBytes
-            m_backendDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) m_iDisktotal / 1024, g_localizeStrings.Get(156), (float) m_iDiskused / 1024);
+            kBTotal /= 1024; // Convert to MBytes
+            kBUsed /= 1024;  // Convert to MBytes
+            m_backendDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
           }
           else
           {
@@ -462,8 +462,8 @@ bool CPVRManager::AddTimer(const CFileItem &item)
     return false;
   }
 
-  const CTVTimerInfoTag timer = item.GetTVTimerInfoTag();
-  long id = timer.m_clientID;
+  const CTVTimerInfoTag *timer = item.GetTVTimerInfoTag();
+  long id = timer->m_clientID;
 
   CSingleLock lock(m_clientsSection);
   IPVRClient* client = m_clients[id];
@@ -729,7 +729,7 @@ void CPVRManager::SyncInfo()
         {
           nextRec = timer->m_StartTime;
           m_nextRecordingTitle = timer->m_strTitle;
-          m_nextRecordingClient = "VDRClient";
+          m_nextRecordingChannel = timer->m_strChannel;
           m_nextRecordingDateTime = nextRec.GetAsLocalizedDateTime(false, false);
           if (timer->m_recStatus)
             m_isRecording = true;
@@ -745,13 +745,13 @@ void CPVRManager::SyncInfo()
   if (m_isRecording)
   {
     m_nowRecordingTitle = m_nextRecordingTitle;
-    m_nowRecordingClient = m_nextRecordingClient;
+    m_nowRecordingChannel = m_nextRecordingChannel;
     m_nowRecordingDateTime = m_nextRecordingDateTime;
   }
   else
   {
     m_nowRecordingTitle.clear();
-    m_nowRecordingClient.clear();
+    m_nowRecordingChannel.clear();
     m_nowRecordingDateTime.clear();
   }
 }

@@ -131,10 +131,10 @@ private:
   std::map< long, VECTVTIMERS > m_timers;
 
   CStdString  m_nextRecordingDateTime;
-  CStdString  m_nextRecordingClient;
+  CStdString  m_nextRecordingChannel;
   CStdString  m_nextRecordingTitle;
   CStdString  m_nowRecordingDateTime;
-  CStdString  m_nowRecordingClient;
+  CStdString  m_nowRecordingChannel;
   CStdString  m_nowRecordingTitle;
   CStdString  m_backendName;
   CStdString  m_backendVersion;
