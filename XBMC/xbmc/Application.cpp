@@ -4551,7 +4551,7 @@ void CApplication::UpdateVideoFileState()
       bookmark.playerState = m_pPlayer->GetPlayerState();
       bookmark.timeInSeconds = current;
       bookmark.thumbNailImage.Empty();
-
+      
       dbs.AddBookMarkToFile(CurrentFile(), bookmark, CBookmark::RESUME);
     }
     dbs.Close();
@@ -5156,7 +5156,8 @@ void CApplication::Process()
 void CApplication::ProcessSlow()
 {
   // Update video file state every minute
-  if (IsPlayingVideo())
+  // No we're not, this takes 10 milliseconds!
+  /*if (IsPlayingVideo())
   {
     if (m_updateFileStateCounter++>120)
     {
@@ -5164,7 +5165,7 @@ void CApplication::ProcessSlow()
 
       UpdateVideoFileState();
     }
-  }
+  }*/
 
   if (IsPlayingAudio())
   {
