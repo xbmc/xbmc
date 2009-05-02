@@ -101,6 +101,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     m_parser.m_param[i] = strHTML[i];
   m_parser.m_param[strHTML.size()] = scrURL.m_url[0].m_url;
   CStdString strXML = m_parser.Parse(strFunction,&m_info.settings);
+  CLog::Log(LOGDEBUG,"scraper: %s returned %s",strFunction.c_str(),strXML.c_str());
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
@@ -209,6 +210,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
     m_parser.m_param[1] = url.m_url[i].m_url;
 
     CStdString strXML = m_parser.Parse("GetEpisodeList",&m_info.settings);
+    CLog::Log(LOGDEBUG,"scraper: GetEpisodeList returned %s",strXML.c_str());
     if (strXML.IsEmpty())
     {
       CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
@@ -306,6 +308,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
   m_parser.m_param[strHTML.size()+1] = url.m_url[0].m_url;
 
   CStdString strXML = m_parser.Parse(strFunction,&m_info.settings);
+  CLog::Log(LOGDEBUG,"scraper: %s returned %s",strFunction.c_str(),strXML.c_str());
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site [%s]",__FUNCTION__,url.m_url[0].m_url.c_str());
