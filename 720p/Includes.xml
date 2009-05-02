@@ -1950,12 +1950,12 @@
   </include>
 
   <include name="NoIconsListView">
-    <posx>-670</posx>
+    <posx>-470</posx>
     <width>1280</width>
   </include>
   
   <include name="NoIconListViewScrollbar">
-    <posx>-650</posx>
+    <posx>-445</posx>
   </include>
 
   <include name="NoIconListViewFadeOverlay">
@@ -1964,7 +1964,7 @@
   </include>
 
   <include name="NoIconsListContextMenuPos">
-    <posx>340</posx>
+    <posx>0</posx>
   </include>
 
   <include name="ListViewItemLayout">
@@ -2772,10 +2772,12 @@
     <texture>MediaItemBG.png</texture>
   </include>
 
-  <include name="MediaItemBGWide">
-    <posx>-70</posx>
-    <width>1580</width>
-    <include>MediaItemBG</include>
+  <include name="MediaItemBGSuperWide">
+    <posx>0</posx>
+    <posy>-6</posy>
+    <width>1450</width>
+    <height>54</height>
+    <texture>MediaItemBG.png</texture>
   </include>
 
   <include name="MediaItemMainFontNF">

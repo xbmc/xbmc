@@ -70,7 +70,7 @@
 
         <itemlayout condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsVisible(MyVideoFiles) | Window.IsVisible(MyVideoLibrary) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="1280" height="42">
           <control type="image">
-            <include>MediaItemBGWide</include>
+            <include>MediaItemBGSuperWide</include>
           </control>
           <control type="label">
             <width>1026</width>
