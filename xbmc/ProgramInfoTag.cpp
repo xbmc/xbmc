@@ -32,6 +32,7 @@ bool CProgramInfoTag::Load(const TiXmlElement *node, bool chained/*=false*/)
     if (!chained)
       Reset();
 
+    XMLUtils::GetInt(node, "type", m_iType);
     XMLUtils::GetString(node,"title", m_strTitle);
     XMLUtils::GetString(node,"platform", m_strPlatform);
     XMLUtils::GetString(node,"description", m_strDescription);
@@ -69,6 +70,7 @@ bool CProgramInfoTag::Save(TiXmlNode *node, const CStdString &tag)
 
   if (!program) return false;
 
+  XMLUtils::SetInt(program, "type", m_iType);
   XMLUtils::SetString(program,"title",m_strTitle);
   XMLUtils::SetString(program,"platform", m_strPlatform);
   XMLUtils::SetString(program,"description", m_strDescription);
@@ -93,6 +95,7 @@ void CProgramInfoTag::Serialize(CArchive& ar)
   if (ar.IsStoring())
   {
     ar << m_idProgram;
+    ar << m_iType;
     ar << m_strTitle;
     ar << m_strPlatform;
     ar << m_strDescription;
@@ -108,6 +111,7 @@ void CProgramInfoTag::Serialize(CArchive& ar)
   else
   {
     ar >> m_idProgram;
+    ar >> m_iType;
     ar >> m_strTitle;
     ar >> m_strPlatform;
     ar >> m_strDescription;

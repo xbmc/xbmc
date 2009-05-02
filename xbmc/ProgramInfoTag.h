@@ -28,10 +28,13 @@
 class CProgramInfoTag : public ISerializable
 {
   public:
+    enum {TYPE_PROGRAM, TYPE_GAME};
+
   CProgramInfoTag() { m_idProgram = 0; };
   void Reset()
   {
     m_idProgram = -1;
+    m_iType = TYPE_PROGRAM;
     m_strTitle.Empty();
     m_strPlatform.Empty();
     m_strDescription.Empty();
@@ -49,6 +52,7 @@ class CProgramInfoTag : public ISerializable
   virtual void Serialize(CArchive& ar);
   
   long m_idProgram;
+  int m_iType;
   CStdString m_strTitle;
   CStdString m_strPlatform;
   CStdString m_strDescription;

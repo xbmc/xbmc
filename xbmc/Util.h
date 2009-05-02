@@ -204,6 +204,7 @@ public:
   static bool IsBuiltIn(const CStdString& execString);
   static void GetBuiltInHelp(CStdString &help);
   static int ExecBuiltIn(const CStdString& execString);
+  static void SystemExecute(const CStdString& strPath, bool bWaitForScriptExit, bool bMinimizeBeforeLaunching=true, bool bFreeSoundDevice=true);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static const CStdString  GetMovieName(CFileItem* pItem, bool bUseFolderNames = false);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);

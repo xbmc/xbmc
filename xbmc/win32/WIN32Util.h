@@ -42,7 +42,7 @@ public:
   static void UpdateDriveMask();
   static CStdString GetChangedDrive();
   static bool PowerManagement(PowerState State);
-  static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
+  static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false, bool bMinimizeBeforeLaunching=true);
   static std::vector<CStdString> GetDiskUsage();
   static CStdString GetResInfoString();
   static int GetDesktopColorDepth();

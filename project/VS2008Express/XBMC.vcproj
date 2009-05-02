@@ -4689,6 +4689,10 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="ProgramDatabaseDirectory"
+					>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="common"

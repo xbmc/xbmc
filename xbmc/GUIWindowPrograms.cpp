@@ -220,7 +220,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
       else
         buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333); // Set Content
       
-      buttons.Add(CONTEXT_BUTTON_INFO, 544); // Media Information
+      buttons.Add(CONTEXT_BUTTON_SCAN, 13352); // Media Information
       buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
     }
   }
@@ -292,17 +292,15 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if (bRunScan)
       {
-        // run scan
+        // TODO - run recursive scan
+        // unimplemented
       }
       return true;
     }
     else
       return false;
 
-  case CONTEXT_BUTTON_INFO:
-    // Check if the file has information
-    // If it has - Display it
-    // Otherwise, scan for info and display it
+  case CONTEXT_BUTTON_SCAN:
     return GetProgramInfo(item);
 
   default:
@@ -500,8 +498,12 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 
   if (pItem->m_bIsFolder) return false;
 
-  CUtil::ExecBuiltIn("System.ExecWait(\""+pItem->m_strPath+"\")");
+  bool bWait = g_guiSettings.GetBool("programfiles.waitforexit");
+  bool bMinimize = g_guiSettings.GetBool("programfiles.minimizebeforelaunch");
+  bool bReleaseSound = g_guiSettings.GetBool("programfiles.releasesoundbeforelaunch");
 
+  CUtil::SystemExecute("\"" + pItem->m_strPath + "\"", bWait, bMinimize,bReleaseSound);
+  
   return false;
 }
 

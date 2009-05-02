@@ -63,7 +63,7 @@ bool CProgramDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX idxTitleIdFiles ON files(titleId)");
     CLog::Log(LOGINFO, "create titles table");
 
-    m_pDS->exec("CREATE TABLE titles ( idTitle integer primary key, strTitle text, strDescription text, strGenre text, strStyle text, strPublisher text, strDateOfRelease text, strYear text, thumbURL text, fanartURL text )\n");
+    m_pDS->exec("CREATE TABLE titles ( idTitle integer primary key, strTitle text, strDescription text, iType integer, strGenre text, strStyle text, strPublisher text, strDateOfRelease text, strYear text, thumbURL text, fanartURL text )\n");
     CLog::Log(LOGINFO, "create titles index");
     m_pDS->exec("CREATE INDEX idxTitles ON titles(idTitle)");
 
@@ -493,8 +493,8 @@ DWORD CProgramDatabase::AddTitle(CProgramInfoTag program)
     if (NULL == m_pDS.get()) return 0;
     
     // insert the new program info
-    CStdString strSQL=FormatSQL("insert into titles(idTitle, strTitle, strDescription, strGenre, strStyle, strPublisher, strDateOfRelease, strYear, thumbURL, fanartURL) values (NULL,'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
-      program.m_strTitle.c_str(), program.m_strDescription.c_str(), program.m_strGenre.c_str(), program.m_strStyle.c_str(), program.m_strPublisher.c_str(), program.m_strDateOfRelease.c_str(), program.m_strYear.c_str(), program.m_thumbURL.m_xml.c_str(), program.m_fanart.m_xml.c_str());
+    CStdString strSQL=FormatSQL("insert into titles(idTitle, iType, strTitle, strDescription, strGenre, strStyle, strPublisher, strDateOfRelease, strYear, thumbURL, fanartURL) values (NULL,'%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
+      program.m_iType, program.m_strTitle.c_str(), program.m_strDescription.c_str(), program.m_strGenre.c_str(), program.m_strStyle.c_str(), program.m_strPublisher.c_str(), program.m_strDateOfRelease.c_str(), program.m_strYear.c_str(), program.m_thumbURL.m_xml.c_str(), program.m_fanart.m_xml.c_str());
     m_pDS->exec(strSQL.c_str());
 
     // return the generated id of it
@@ -517,12 +517,13 @@ CProgramInfoTag CProgramDatabase::GetTitle(DWORD titleId)
     
 
     // if doesn't, insert a new one
-    CStdString strSQL=FormatSQL("select idTitle, strTitle, strDescription, strGenre, strStyle, strPublisher, strDateOfRelease, strYear, thumbURL from titles where idTitle=%i", titleId);
+    CStdString strSQL=FormatSQL("select idTitle, iType, strTitle, strDescription, strGenre, strStyle, strPublisher, strDateOfRelease, strYear, thumbURL from titles where idTitle=%i", titleId);
     m_pDS->query(strSQL.c_str());
 
     if (!m_pDS->eof())
     {
       result.m_idProgram = m_pDS->fv("titles.idTitle").get_asLong();
+      result.m_iType = m_pDS->fv("titles.iType").get_asInteger();
       result.m_strTitle = m_pDS->fv("titles.strTitle").get_asString();
       result.m_strDescription = m_pDS->fv("titles.strDescription").get_asString();
       result.m_strGenre = m_pDS->fv("titles.strGenre").get_asString();

@@ -22,8 +22,12 @@
 				<expression noclean="1" repeat="yes">&lt;tr.*?id="trlink".*?&gt;.*?&lt;a href="game.php\?id=(.*?)"&gt;(.*?)&lt;/a&gt;.*?&lt;td.*?&gt;.*?([0-9]+?)&lt;/td&gt;.*?&lt;a href="platform.php\?id=.*?"&gt;(.*?)&lt;/a&gt;.*?&lt;/tr&gt;</expression>
 			</RegExp>
 		</RegExp>
-	</GetProgramSearchResults><GetProgramDetails dest="3"><RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+	</GetProgramSearchResults><GetProgramDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;type&gt;1&lt;/type&gt;" dest="5">
+				<expression noclean="1"></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
 				<expression trim="1">&lt;title&gt;(.*) - Overview - allgame&lt;/title&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url post=&quot;yes&quot; function=&quot;GetFanartId&quot;&gt;http://htbackdrops.com/search.php?cat_id=2&amp;amp;search_fields=all&amp;amp;search_keywords=\1&amp;amp;search_terms=all&lt;/url&gt;" dest="5+">

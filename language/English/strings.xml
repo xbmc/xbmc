@@ -1505,7 +1505,11 @@
   <string id="16312">(VDPAU)Noise Reduction</string>
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
-  <string id="17500">Display sleep timeout</string> 
+  <string id="17500">Display sleep timeout</string>
+
+  <string id="18001">Suspend XBMC while program is running</string>
+  <string id="18002">Minimize XBMC before program launching</string>
+  <string id="18003">Free sound device before program launching</string>
 
   <string id="20000">CDDA rip folder</string>
   <string id="20001">Use external DVD player</string>

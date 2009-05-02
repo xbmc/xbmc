@@ -4518,6 +4518,19 @@ void CUtil::ClearFileItemCache()
   }
 }
 
+void CUtil::SystemExecute(const CStdString& strPath, bool bWaitForScriptExit, bool bMinimizeBeforeLaunching/*=true*/, bool bFreeSoundDevice/*=true*/)
+{
+  #ifdef _WIN32
+  CWIN32Util::XBMCShellExecute(strPath, bWaitForScriptExit, bMinimizeBeforeLaunching);
+  #endif
+
+  #ifdef _LINUX
+  // TODO - make it support bWaitForScriptExit, bMinimizeBeforeLaunching & bFreeSoundDevice parameters
+  system(strPath);
+  #endif
+}
+
+
 #ifdef _LINUX
 
 //
