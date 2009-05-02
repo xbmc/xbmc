@@ -5152,8 +5152,9 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
+  //disabled for now, because it can cause jerks and framedrops
   // Update video file state every minute
-  if (IsPlayingVideo())
+  /*if (IsPlayingVideo())
   {
     if (m_updateFileStateCounter++>120)
     {
@@ -5161,7 +5162,7 @@ void CApplication::ProcessSlow()
 
       UpdateVideoFileState();
     }
-  }
+  }*/
 
   if (IsPlayingAudio())
   {
