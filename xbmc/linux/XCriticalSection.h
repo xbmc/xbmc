@@ -58,11 +58,6 @@ class XCriticalSection
 
  private:
 
-#ifdef __APPLE__
-  // Save the Mach thread port, useful for debugging.
-  mach_port_t     m_ownerThreadMachPort;
-#endif
-
   DWORD           m_ownerThread;
   pthread_mutex_t m_mutex;
   pthread_mutex_t m_countMutex;
