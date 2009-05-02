@@ -1538,7 +1538,7 @@ void CApplication::StopFtpServer()
   if (m_pFileZilla)
   {
     CLog::Log(LOGINFO, "XBFileZilla: Stopping...");
-
+/*
     std::vector<SXFConnection> mConnections;
     std::vector<SXFConnection>::iterator it;
 
@@ -1546,9 +1546,10 @@ void CApplication::StopFtpServer()
 
     for(it = mConnections.begin();it != mConnections.end();it++)
     {
+      CLog(LOGDEBUG, "%s - Closing FTP connection %i", it->mId);
       m_pFileZilla->CloseConnection(it->mId);
     }
-
+*/
     m_pFileZilla->Stop();
     delete m_pFileZilla;
     m_pFileZilla = NULL;
