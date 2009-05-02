@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#ifdef SPYCE_SUPPORT
 #include "SpyceModule.h"
 
 #ifndef __GNUC__
@@ -142,4 +143,4 @@ namespace WEBS_SPYCE
 		return 0;
 	}
 }
-
+#endif

@@ -20,8 +20,8 @@ extern "C" {
 typedef char char_t;
 typedef struct websRec *webs_t;
 
-int	  aspTest(int eid, webs_t wp, int argc, char_t **argv);
-void  formTest(webs_t wp, char_t *path, char_t *query);
+int	  XbmcAspTest(int eid, webs_t wp, int argc, char_t **argv);
+void  XbmcFormTest(webs_t wp, char_t *path, char_t *query);
 int	  XbmcWebsAspCommand(int eid, webs_t wp, int argc, char_t **argv);
 void  XbmcWebsForm(webs_t wp, char_t *path, char_t *query);
 void  XbmcHttpCommand(webs_t wp, char_t *path, char_t *query);

@@ -76,7 +76,7 @@ static inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
   long prev;
   
   __asm__ __volatile__ (
-                        "lock cmpxchg %1, %2"
+                        "lock/cmpxchg %1, %2"
                         : "=a" (prev)
                         : "r" (swapVal), "m" (*pAddr), "0" (expectedVal)
                         : "memory" );

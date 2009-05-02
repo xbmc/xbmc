@@ -34,6 +34,9 @@
 #ifdef _LINUX
 #include <sys/resource.h>
 #endif
+#ifdef __APPLE__
+#include "Util.h"
+#endif
 
 
 CApplication g_application;
@@ -108,12 +111,7 @@ int main(int argc, char* argv[])
     }
   }
 
-  // if we're on a Mac or if XBMC_PLATFORM_MODE is set, enable platform
-  // specific directories.
-#ifdef __APPLE__
-  system("XBMC.app/Contents/Resources/XBMC/tools/preflight");
-#endif
-
+  g_application.Preflight();
   g_application.Create(NULL);
   if (playlist.Size() > 0)
   {

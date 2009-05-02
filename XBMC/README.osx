@@ -164,19 +164,11 @@ first. This is a simple step and involves the following:
 
 The configure operation will setup the build environment for codecs and
 internal libraries that are used by XBMC. This step is required for both Xcode
-<<<<<<< HEAD:README.osx
-and command-line building. The "make clean" ensures that there areno stale 
-binaries from svn that might cause problems The last step will pre-build 
-the majority of the codecs and libs:
-
- 
-=======
 and command-line building. The "make clean" ensures that there areno stale
 binaries from svn that might cause problems The last step will pre-build
 the majority of the codecs and libs:
 
 
->>>>>>> svn/linuxport:README.osx
 The configure operation will default to building "debug". To build "release"
 codecs and libraries for Xcode, do the configure step with "--disable-debug"
 but remember that Xcode will need to be also built "Release":

@@ -52,6 +52,9 @@ class CFileItemList;
 #ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
 #endif
+#ifdef _WIN32PC
+  #include "WIN32Util.h"
+#endif
 
 class CWebServer;
 class CXBFileZilla;
@@ -80,6 +83,7 @@ public:
   virtual void Render();
   virtual void DoRender();
   virtual void RenderNoPresent();
+  virtual void Preflight();
   virtual HRESULT Create(HWND hWnd);
   virtual HRESULT Cleanup();
 
@@ -209,7 +213,6 @@ public:
   DWORD m_dwSkinTime;
   bool m_bIsPaused;
   bool m_bPlaybackStarting;
-  std::queue<CGUIMessage> m_vPlaybackStarting;
 
   CKaraokeLyricsManager* m_pKaraokeMgr;
 
@@ -256,6 +259,8 @@ public:
   bool m_restartLCD;
 
 protected:
+  void RenderScreenSaver();
+
   friend class CApplicationMessenger;
   // screensaver
   bool m_bScreenSave;
@@ -276,7 +281,6 @@ protected:
   CStopWatch m_slowTimer;
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
-  CStopWatch m_displaySleepTimer;
 
   DWORD      m_lastActionCode;
   CStopWatch m_lastActionTimer;
@@ -357,6 +361,9 @@ protected:
 
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
+#endif
+#ifdef _WIN32PC
+  CWIN32Util::SystemParams::SysParam *m_SSysParam;
 #endif
 };
 

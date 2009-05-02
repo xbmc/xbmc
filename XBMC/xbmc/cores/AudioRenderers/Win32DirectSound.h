@@ -30,6 +30,7 @@
 #endif // _MSC_VER > 1000
 
 #include "IAudioRenderer.h"
+#include "utils/CriticalSection.h"
 
 extern void RegisterAudioCallback(IAudioCallback* pCallback);
 extern void UnRegisterAudioCallback();
@@ -63,11 +64,9 @@ public:
 
 private:
   void UpdateCacheStatus();
-<<<<<<< HEAD:xbmc/cores/AudioRenderers/Win32DirectSound.h
-=======
+  void CheckPlayStatus();
   void MapDataIntoBuffer(unsigned char* pData, DWORD len, unsigned char* pOut);
   unsigned char* GetChannelMap(unsigned int channels, const char* strAudioCodec);
->>>>>>> svn/linuxport:xbmc/cores/AudioRenderers/Win32DirectSound.h
 
   LPDIRECTSOUNDBUFFER  m_pBuffer;
   LPDIRECTSOUND8 m_pDSound;
@@ -93,11 +92,9 @@ private:
 
   unsigned int m_LastCacheCheck;
   size_t m_PreCacheSize;
-<<<<<<< HEAD:xbmc/cores/AudioRenderers/Win32DirectSound.h
-=======
 
   unsigned char* m_pChannelMap;
->>>>>>> svn/linuxport:xbmc/cores/AudioRenderers/Win32DirectSound.h
+  CCriticalSection m_critSection;
 };
 
 #endif // !defined(AFX_ASYNCAUDIORENDERER_H__B590A94D_D15E_43A6_A41D_527BD441B5F5__INCLUDED_)

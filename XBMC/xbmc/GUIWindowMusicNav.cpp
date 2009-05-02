@@ -96,7 +96,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
       // check for valid quickpath parameter
       CStdStringArray params;
       StringUtils::SplitString(message.GetStringParam(), ",", params);
-      bool returning = params.size() > 1 && params[1] == "return";
+      bool returning = params.size() > 1 && params[1].Equals("return");
 
       CStdString strDestination = params.size() ? params[0] : "";
       if (!strDestination.IsEmpty())

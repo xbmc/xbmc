@@ -37,7 +37,6 @@ class XBMCHelper
   void Uninstall();
 
   bool IsRunning();
-  bool IsAppleTV();
   void CaptureAllInput();
   void ReleaseAllInput();
 
@@ -64,6 +63,7 @@ class XBMCHelper
   std::string m_configFile;
   std::string m_launchAgentLocalFile;
   std::string m_launchAgentInstallFile;
+  std::string m_homepath;
   std::string m_helperFile;
 };
 

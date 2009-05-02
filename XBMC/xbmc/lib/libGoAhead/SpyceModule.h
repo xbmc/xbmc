@@ -1,4 +1,5 @@
 #include "includes.h"
+#ifdef SPYCE_SUPPORT
 #include "../libPython/XBPython.h"
 
 #ifdef __cplusplus
@@ -14,5 +15,6 @@ extern "C" {
 
 #if defined(__cplusplus)
 }
-#endif 
-
+#endif
+ 
+#endif

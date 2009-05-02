@@ -42,7 +42,7 @@
 
 
 // Prototypes for exif utility functions.
-static void ErrNonfatal(const void* const msg, int a1, int a2);
+static void ErrNonfatal(const char* const msg, int a1, int a2);
 
 #define DIR_ENTRY_ADDR(Start, Entry) ((Start)+2+12*(Entry))
 
@@ -177,7 +177,7 @@ enum {
   ExifStrGpsLatitude,
   ExifStrGpsLongitude,
   ExifStrGpsAltitude,
-} E_ExifParseStringId;
+};
 
 
 
@@ -206,12 +206,11 @@ CExifParse::CExifParse () : m_FocalPlaneXRes(0.0),
 //--------------------------------------------------------------------------
 int CExifParse::Get16(const void* const Short, const bool motorolaOrder)
 {
-    int retVal = *(unsigned short*)Short;
     if (motorolaOrder) {
-        retVal = ((retVal & 0x00FF) << 8) |
-                 ((retVal & 0xFF00) >> 8);
+        return (((unsigned char *)Short)[0] << 8) | ((unsigned char *)Short)[1];
+    } else {
+        return (((unsigned char *)Short)[1] << 8) | ((unsigned char *)Short)[0];
     }
-    return retVal;
 }
 
 //--------------------------------------------------------------------------
@@ -219,14 +218,13 @@ int CExifParse::Get16(const void* const Short, const bool motorolaOrder)
 //--------------------------------------------------------------------------
 int CExifParse::Get32(const void* const Long, const bool motorolaOrder)
 {
-    int retVal = *(unsigned long*)Long;
     if (motorolaOrder) {
-        retVal = ((retVal & 0x000000FF) << 24) |
-                 ((retVal & 0x0000FF00) << 8)  |
-                 ((retVal & 0x00FF0000) >> 8)  |
-                 ((retVal & 0xFF000000) >> 24);
+        return  ((( char *)Long)[0] << 24) | (((unsigned char *)Long)[1] << 16)
+          | (((unsigned char *)Long)[2] << 8 ) | (((unsigned char *)Long)[3] << 0 );
+    } else {
+        return  ((( char *)Long)[3] << 24) | (((unsigned char *)Long)[2] << 16)
+          | (((unsigned char *)Long)[1] << 8 ) | (((unsigned char *)Long)[0] << 0 );
     }
-    return retVal;
 }
 
 //--------------------------------------------------------------------------
@@ -261,7 +259,7 @@ double CExifParse::ConvertAnyFormat(const void* const ValuePtr, int Format)
     case FMT_BYTE:      Value = *(unsigned char*)ValuePtr;          break;
 
     case FMT_USHORT:    Value = Get16(ValuePtr, m_MotorolaOrder);   break;
-    case FMT_ULONG:     Value = Get32(ValuePtr, m_MotorolaOrder);   break;
+    case FMT_ULONG:     Value = (unsigned)Get32(ValuePtr, m_MotorolaOrder);   break;
 
     case FMT_URATIONAL:
     case FMT_SRATIONAL:
@@ -358,10 +356,6 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
     }
   }
 
-  int     flashUsed       = -1;
-  int     isoEquivalent   = 0;
-  float   exposureTime    = 0.0;
-  float   apertureFNumber = 0.0;
   const int BytesPerFormat[] = {0,1,1,2,4,8,1,1,2,4,8,4,8};
 
 
@@ -394,7 +388,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
     if (ByteCount > 4)
     {
       unsigned OffsetVal;
-      OffsetVal = Get32(DirEntry+8, m_MotorolaOrder);
+      OffsetVal = (unsigned)Get32(DirEntry+8, m_MotorolaOrder);
       // If its bigger than 4 bytes, the dir entry contains an offset.
       if (OffsetVal+ByteCount > ExifLength)
       {
@@ -596,7 +590,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       case TAG_EXIF_OFFSET:
       case TAG_INTEROP_OFFSET:
       {
-        const unsigned char* const SubdirStart = OffsetBase + Get32(ValuePtr, m_MotorolaOrder);
+        const unsigned char* const SubdirStart = OffsetBase + (unsigned)Get32(ValuePtr, m_MotorolaOrder);
         if (SubdirStart < OffsetBase || SubdirStart > OffsetBase+ExifLength)
         {
           ErrNonfatal("Illegal exif or interop ofset directory link",0,0);
@@ -611,7 +605,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
 
       case TAG_GPSINFO:
       {
-        const unsigned char* const SubdirStart = OffsetBase + Get32(ValuePtr, m_MotorolaOrder);
+        const unsigned char* const SubdirStart = OffsetBase + (unsigned)Get32(ValuePtr, m_MotorolaOrder);
         if (SubdirStart < OffsetBase || SubdirStart > OffsetBase+ExifLength)
         {
           ErrNonfatal("Illegal GPS directory link",0,0);
@@ -641,7 +635,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
 
   if (DIR_ENTRY_ADDR(DirStart, NumDirEntries) + 4 <= OffsetBase+ExifLength)
   {
-    Offset = Get32(DirStart+2+12*NumDirEntries, m_MotorolaOrder);
+    Offset = (unsigned)Get32(DirStart+2+12*NumDirEntries, m_MotorolaOrder);
     if (Offset)
     {
       const unsigned char* const SubdirStart = OffsetBase + Offset;
@@ -740,7 +734,7 @@ bool CExifParse::Process (const unsigned char* const ExifSection, const unsigned
   }
   pos += sizeof(short);
 
-  unsigned long FirstOffset = Get32((void*)pos, m_MotorolaOrder);
+  unsigned long FirstOffset = (unsigned)Get32((void*)pos, m_MotorolaOrder);
   if (FirstOffset < 8 || FirstOffset > 16)
   {
     // Usually set to 8, but other values valid too.
@@ -824,7 +818,7 @@ void CExifParse::ProcessGpsInfo(
 
     unsigned Tag        = Get16(DirEntry);
     unsigned Format     = Get16(DirEntry+2);
-    unsigned Components = Get32(DirEntry+4);
+    unsigned Components = (unsigned)Get32(DirEntry+4);
     if ((Format-1) >= NUM_FORMATS)
     {
       // (-1) catches illegal zero case as unsigned underflows to positive large.
@@ -840,7 +834,7 @@ void CExifParse::ProcessGpsInfo(
 
     if (ByteCount > 4)
     {
-      unsigned OffsetVal = Get32(DirEntry+8);
+      unsigned OffsetVal = (unsigned)Get32(DirEntry+8);
       // If its bigger than 4 bytes, the dir entry contains an offset.
       if (OffsetVal+ByteCount > ExifLength)
       {

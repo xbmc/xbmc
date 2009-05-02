@@ -461,7 +461,7 @@ PyDoc_STRVAR(addItems__doc__,
 
   PyObject* ControlList_SetPageControlVisible(ControlList *self, PyObject *args)
   {
-    bool isOn = true;
+    char isOn = true;
 
     if (!PyArg_ParseTuple(args, (char*)"b", &isOn)) return NULL;
 
@@ -469,7 +469,7 @@ PyDoc_STRVAR(addItems__doc__,
     PyGUILock();
     if (self->pGUIControl)
     {
-      ((CGUIListControl*)self->pGUIControl)->SetPageControlVisible( isOn );
+      ((CGUIListControl*)self->pGUIControl)->SetPageControlVisible((bool)isOn );
     }
     PyGUIUnlock();
     */

@@ -50,6 +50,7 @@ class CGUITextureSDL : public CGUITextureBase
 {
 public:
   CGUITextureSDL(float posX, float posY, float width, float height, const CTextureInfo& texture);
+  static void DrawQuad(const CRect &rect, DWORD color) {};
 protected:
   void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation);
   virtual void Allocate();

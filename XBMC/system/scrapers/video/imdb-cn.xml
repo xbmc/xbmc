@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scraper name="IMDb-CN" content="movies" thumb="imdb-cn.gif" language="cn">
+﻿﻿<?xml version="1.0" encoding="UTF-8"?>
+<scraper name="IMDb-CN(Chinese)" content="movies" thumb="imdb-cn.gif" language="cn">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
@@ -13,7 +13,7 @@
 	</GetSettings>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;\1&lt;/url&gt;" dest="3">
-			<expression clear="yes" noclean="1">(http://www.imdb.cn/title/tt([0-9]*)</expression>
+			<expression clear="yes" noclean="1">(http://www.imdb.cn/title/tt[0-9]*)</expression>
 		</RegExp>
 	</NfoUrl>
 	<CreateSearchUrl dest="3" SearchStringEncoding="gb2312">
@@ -29,7 +29,7 @@
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression clear="yes">&lt;td colspan=2&gt;&lt;span class=mn&gt;([^&lt;]*)&lt;/span&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 - $$6 (\2)&lt;/title&gt;&lt;url&gt;http://www.imdb.cn/title/$$7/&lt;/url&gt;&lt;id&gt;\$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 - $$6 (\2)&lt;/title&gt;&lt;url&gt;http://www.imdb.cn/title/$$7&lt;/url&gt;&lt;id&gt;\$$7&lt;/id&gt;&lt;/entity&gt;" dest="5">
 				<expression clear="yes" noclean="1">&lt;h1&gt;([^&lt;]*)&lt;/h1&gt;[^&quot;]*&quot;http://www.imdb.cn/Sections/Years/([0-9]*)&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 - \3 (\4)&lt;/title&gt;&lt;url&gt;http://www.imdb.cn/title/\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
@@ -74,13 +74,13 @@
 				<expression repeat="yes">&lt;A href=http://www.imdb.cn/name/nm[0-9]+&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
-				<expression repeat="yes">href=&apos;http://www.imdb.cn/name/nm[0-9]+&apos; &gt;([^&lt;]*)&lt;[^\n\r]*[^&gt;]*&gt;([^&lt;]*)&lt;/td&gt;</expression>
+				<expression repeat="yes">&lt;td  height=27 &gt;&lt;a href=/name/nm[0-9]+&gt;([^&lt;]*)&lt;/a&gt; &lt;/td&gt;&lt;td &gt; ....&lt;/td&gt;&lt;td&gt;([^&lt;]*)&lt;/td&gt;</expression>
 			</RegExp>
 			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?title=\1&lt;/url&gt;" dest="5+">
 				<expression>/title/tt([0-9]*)/ratings</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetIMDBCNPoster&quot;&gt;\1&lt;/url&gt;" dest="5+">
-				<expression>&lt;a href=&quot;(http://posters.imdb.cn/poster/[0-9]*)&quot;</expression>
+				<expression>&lt;a href=(http://posters.imdb.cn/poster/[0-9]*)</expression>
 			</RegExp>
 			<RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=$$2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
 				<expression></expression>

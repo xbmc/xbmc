@@ -3,7 +3,6 @@
 		<posx>0</posx>
 		<posy>0</posy>
 		<texture>-</texture>
-		<colorkey>0</colorkey>
 		<textcolor>white</textcolor>
 	</default>
 	<default type="label">

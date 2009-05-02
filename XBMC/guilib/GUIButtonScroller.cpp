@@ -220,7 +220,7 @@ void CGUIButtonScroller::LoadButtons(TiXmlNode *node)
       else
       { // convert to UTF-8
         CStdString utf8String;
-        g_charsetConverter.stringCharsetToUtf8(strLabel, utf8String);
+        g_charsetConverter.unknownToUTF8(strLabel, utf8String);
         button->strLabel = utf8String;
       }
     }

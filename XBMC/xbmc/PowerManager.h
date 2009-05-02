@@ -61,6 +61,8 @@ public:
   CPowerManager();
   virtual ~CPowerManager();
 
+  virtual void Initialize();
+
   virtual bool Powerdown();
   virtual bool Suspend();
   virtual bool Hibernate();

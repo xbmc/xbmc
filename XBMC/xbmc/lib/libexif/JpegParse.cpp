@@ -58,7 +58,7 @@ enum {
   ProcessSof13,
   ProcessSof14,
   ProcessSof15,
-} E_JpegParseStringId;
+};
 
 
 
@@ -152,9 +152,9 @@ bool CJpegParse::ExtractInfo (FILE *infile)
 
   for(;;)
   {
-    int marker = 0;
+    BYTE marker = 0;
     for (a=0; a<7; a++) {
-      bytesRead = fread(&marker, 1, sizeof(char), infile);
+      bytesRead = fread(&marker, 1, sizeof(BYTE), infile);
       if (marker != 0xFF)
         break;
 

@@ -174,16 +174,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
 case TMSG_POWERDOWN:
       {
+        g_application.Stop();
+        Sleep(200);
 #ifndef HAS_SDL
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
-
         g_powerManager.Powerdown();
-        {
-          g_application.Stop();
-          exit(64);
-        }
+        exit(64);
       }
       break;
 

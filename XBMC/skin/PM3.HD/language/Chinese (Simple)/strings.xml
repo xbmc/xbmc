@@ -12,7 +12,7 @@
   <string id="31009"></string>
   <string id="31010">剧照[CR]图片[CR]不[CR]存在</string>
   <string id="31011">剧集[CR]图片[CR]不[CR]存在</string>
-  <string id="31012"></string>
+  <string id="31012">剧集[CR]图片[CR]不[CR]存在</string>
   <string id="31013"></string>
   <string id="31014"></string>
   <string id="31015"></string>
@@ -34,19 +34,19 @@
   <string id="31029">DVD 目录</string>
   <string id="31030">剧照</string>
   <string id="31031">全目录</string>
-  <string id="31032">-</string>
+  <string id="31032">流动封面</string>
   <string id="31033">图片缩略图</string>
   <string id="31034">宽图标</string>
 
-  <string id="31040">当前[CR]剧照图片[CR][CR]点击修改</string>
-  <string id="31041">当前电视剧[CR]的剧照图片[CR][CR]点击修改</string>
+  <string id="31040">当前电影[CR]剧照图片[CR][CR]点击修改</string>
+  <string id="31041">当前电视剧[CR]剧照图片[CR][CR]点击修改</string>
   <string id="31042">正在播放</string>
   <string id="31043">暂停</string>
   <string id="31044">快进</string>
   <string id="31045">快退</string>
   <string id="31046">欢迎使用 XBMC - 请登录</string>
   <string id="31047">最后一次登录</string>
-  <string id="31048"></string>
+  <string id="31048">当前艺人[CR]剧照图片[CR][CR]点击修改</string>
 
   <string id="31050"></string>
   <string id="31051"></string>
@@ -68,8 +68,8 @@
   <string id="31100">背景选项</string>
   <string id="31101">主屏幕选项</string>
   <string id="31102">背景</string>
-  <string id="31103">在图片幻灯片播放是显示"暂停"</string>
-  <string id="31104">关机菜单 - 实用休眠替代待机</string>
+  <string id="31103">在图片幻灯片播放时显示"暂停"</string>
+  <string id="31104">关机菜单 - 使用休眠替代待机</string>
   <string id="31105">后台扫描时显示媒体标题</string>
   <string id="31106">其他选项</string>
   <string id="31107">除掉背景中的扫描线</string>

@@ -234,8 +234,10 @@ void CJoystick::Update()
 void CJoystick::SetAxisPad(string joyname, int axis)
 {
   for(size_t idJoyNames = 0; idJoyNames < m_JoystickNames.size(); idJoyNames++)
+  {
     if(joyname.compare(m_JoystickNames[idJoyNames].c_str())==0)
-  m_JoyPadAxis[idJoyNames][abs(axis)-1] = true;
+      m_JoyPadAxis[idJoyNames][abs(axis)-1] = true;
+  }
 }
 
 void CJoystick::Update(SDL_Event& joyEvent)

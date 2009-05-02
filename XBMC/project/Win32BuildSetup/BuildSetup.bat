@@ -159,6 +159,10 @@ rem	CONFIG START
   xcopy ..\..\sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy "..\..\web\Project Mayhem III" BUILD_WIN32\Xbmc\web /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   
+  SET skinpath=%CD%\Add_skins
+  SET scriptpath=%CD%\Add_scripts
+  SET pluginpath=%CD%\Add_plugins
+  rem override skin/script/pluginpaths from config.ini if there's a config.ini
   IF EXIST config.ini FOR /F "tokens=* DELIMS=" %%a IN ('FINDSTR/R "=" config.ini') DO SET %%a
   
   IF EXIST error.log del error.log > NUL
@@ -191,8 +195,13 @@ rem	CONFIG START
   FOR /F "tokens=2* delims=	" %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
   IF NOT EXIST "%NSISExePath%" (
     rem try with space delim instead of tab
-	FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+    FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
   )
+  IF NOT EXIST "%NSISExePath%" (
+    rem extra check for x64
+    SET NSISExePath=%ProgramFiles(x86)%\NSIS
+  )
+
   SET NSISExe=%NSISExePath%\makensis.exe
   "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dxbmc_root="%CD%\BUILD_WIN32" /Dxbmc_revision="%XBMC_REV%" "XBMC for Windows.nsi"
   IF NOT EXIST "%XBMC_SETUPFILE%" (

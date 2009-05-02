@@ -550,13 +550,13 @@ BOOL GetDiskFreeSpaceEx(
     return false;
 
   if (lpFreeBytesAvailable)
-    lpFreeBytesAvailable->QuadPart =  fsInfo.f_bavail * fsInfo.f_bsize;
+    lpFreeBytesAvailable->QuadPart =  (ULONGLONG)fsInfo.f_bavail * (ULONGLONG)fsInfo.f_bsize;
 
   if (lpTotalNumberOfBytes)
-    lpTotalNumberOfBytes->QuadPart = fsInfo.f_blocks * fsInfo.f_bsize;
+    lpTotalNumberOfBytes->QuadPart = (ULONGLONG)fsInfo.f_blocks * (ULONGLONG)fsInfo.f_bsize;
 
   if (lpTotalNumberOfFreeBytes)
-    lpTotalNumberOfFreeBytes->QuadPart = fsInfo.f_bfree * fsInfo.f_bsize;
+    lpTotalNumberOfFreeBytes->QuadPart = (ULONGLONG)fsInfo.f_bfree * (ULONGLONG)fsInfo.f_bsize;
 
   return true;
 }

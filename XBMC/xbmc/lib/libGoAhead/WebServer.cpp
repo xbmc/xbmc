@@ -73,14 +73,10 @@ CWebServer::CWebServer()
     m_pXbmcHttp = new CXbmcHttp();
   m_port = 80;					/* Server port */
   m_szPassword[0] = '\0';
-<<<<<<< HEAD:xbmc/lib/libGoAhead/WebServer.cpp
-  strcpy(m_szUserName,"xbmc");
-=======
   int end = sizeof(m_szUserName);
   strncpy(m_szUserName,"xbmc",end);
   if (end)
     m_szUserName[end-1] = '\0';
->>>>>>> svn/linuxport:xbmc/lib/libGoAhead/WebServer.cpp
 
   m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
@@ -250,8 +246,8 @@ int CWebServer::initWebs()
 	 *	Now define two test procedures. Replace these with your application
 	 *	relevant ASP script procedures and form functions.
 	 */
-	websAspDefine(T((char*)"aspTest"), aspTest);
-	websFormDefine(T((char*)"formTest"), formTest);
+	websAspDefine(T((char*)"aspTest"), XbmcAspTest);
+	websFormDefine(T((char*)"formTest"), XbmcFormTest);
 	websFormDefine(T((char*)"xbmcForm"), XbmcWebsForm);
 	websFormDefine(T((char*)"xbmcHttp"), XbmcHttpCommand);
 
@@ -356,9 +352,6 @@ void CWebServer::SetPassword(const char* strPassword)
   dbZero(did);
 
   // save password in member var for later usage by GetPassword()
-<<<<<<< HEAD:xbmc/lib/libGoAhead/WebServer.cpp
-  if (strPassword) strcpy(m_szPassword, strPassword);
-=======
   if (strPassword)
   {
     int end = sizeof(m_szPassword);
@@ -366,7 +359,6 @@ void CWebServer::SetPassword(const char* strPassword)
     if (end)
       m_szPassword[end - 1] = '\0';
   }
->>>>>>> svn/linuxport:xbmc/lib/libGoAhead/WebServer.cpp
 
   // if password !NULL and greater then 0, enable user access
   if (strPassword && strlen(strPassword) > 0)
@@ -396,14 +388,10 @@ void CWebServer::SetUserName(const char* strUserName)
   if (strUserName && strlen(strUserName) > 0)
   {  
     // save username in member var for later usage by GetPassword()
-<<<<<<< HEAD:xbmc/lib/libGoAhead/WebServer.cpp
-    strcpy(m_szUserName, strUserName);
-=======
     int end = sizeof(m_szUserName);
     strncpy(m_szUserName, strUserName, end);
     if (end)
       m_szUserName[end - 1] = '\0';
->>>>>>> svn/linuxport:xbmc/lib/libGoAhead/WebServer.cpp
     if (m_szPassword && m_szPassword[0] != '\0')
       SetPassword(m_szPassword);
   }
@@ -562,7 +550,7 @@ void defaultTraceHandler(int level, char_t *buf)
  * embedded in an ASP page. See web/asp.asp for usage. Set browser to 
  * "localhost/asp.asp" to test.
  */
-int aspTest(int eid, webs_t wp, int argc, char_t **argv)
+int XbmcAspTest(int eid, webs_t wp, int argc, char_t **argv)
 {
 	char_t	*name, *address;
 
@@ -576,7 +564,7 @@ int aspTest(int eid, webs_t wp, int argc, char_t **argv)
 /* Test form for posted data (in-memory CGI). This will be called when the
  * form in web/forms.asp is invoked. Set browser to "localhost/forms.asp" to test.
  */
-void formTest(webs_t wp, char_t *path, char_t *query)
+void XbmcFormTest(webs_t wp, char_t *path, char_t *query)
 {
 	char_t	*name, *address;
 

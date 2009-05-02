@@ -43,6 +43,12 @@ CRemoteControl::~CRemoteControl()
   Close();
 }
 
+void CRemoteControl::Disconnect()
+{
+  StopThread();
+  Close();
+}
+
 void CRemoteControl::Close()
 {
   m_isConnecting = false;

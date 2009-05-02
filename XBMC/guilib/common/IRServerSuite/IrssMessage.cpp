@@ -86,14 +86,10 @@ void CIrssMessage::SetDataAsString(const CStdString& data)
 
 void CIrssMessage::FreeData()
 {
-  if (m_data)
-  {
-    free(m_data);
-  }
+  free(m_data);
   m_data = NULL;
   m_dataSize = 0;
 }
-
 
 char* CIrssMessage::ToBytes(int& size)
 {

@@ -57,8 +57,7 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CURL url(strPath);
 
   CStdString strRoot = strPath;
-  if (!CUtil::HasSlashAtEnd(strPath) )
-    strRoot += "/";
+  CUtil::AddSlashAtEnd(strRoot);
 
   // Host name is "*" so we try to discover all ReplayTVs.  This requires some trickery but works.
   if (url.GetHostName() == "*")

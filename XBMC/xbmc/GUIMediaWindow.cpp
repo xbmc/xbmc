@@ -314,7 +314,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (message.GetStringParam().size())
         {
           m_vecItems->m_strPath = message.GetStringParam();
-          SetHistoryForPath(m_vecItems->m_strPath);
+          if (message.GetParam2()) // param2 is used for resetting the history
+            SetHistoryForPath(m_vecItems->m_strPath);
         }
         Update(m_vecItems->m_strPath);
       }
@@ -731,6 +732,20 @@ bool CGUIMediaWindow::OnClick(int iItem)
         return true;
     }
 
+    // check for the partymode playlist items - they may not exist yet
+    if ((pItem->m_strPath == g_settings.GetUserDataItem("PartyMode.xsp")) ||
+        (pItem->m_strPath == g_settings.GetUserDataItem("PartyMode-Video.xsp")))
+    {
+      // party mode playlist item - if it doesn't exist, prompt for user to define it
+      if (!XFILE::CFile::Exists(pItem->m_strPath))
+      {
+        m_vecItems->RemoveDiscCache();
+        if (CGUIDialogSmartPlaylistEditor::EditPlaylist(pItem->m_strPath))
+          Update(m_vecItems->m_strPath);
+        return true;
+      }
+    }
+
     // remove the directory cache if the folder is not normally cached
     CFileItemList items(pItem->m_strPath);
     if (!items.AlwaysCache())
@@ -941,8 +956,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
     {
       // Other items in virual directory
       CStdString strPath = pItem->m_strPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
+      CUtil::RemoveSlashAtEnd(strPath);
 
       strHistoryString = pItem->GetLabel() + strPath;
     }
@@ -953,18 +967,13 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, CStdStri
     // so add the offsets to build the history string
     strHistoryString.Format("%ld%ld", pItem->m_lStartOffset, pItem->m_lEndOffset);
     strHistoryString += pItem->m_strPath;
-
-    if (CUtil::HasSlashAtEnd(strHistoryString))
-      strHistoryString.Delete(strHistoryString.size() - 1);
   }
   else
   {
     // Normal directory items
     strHistoryString = pItem->m_strPath;
-
-    while (CUtil::HasSlashAtEnd(strHistoryString)) // to match CDirectoryHistory::GetSelectedItem
-      strHistoryString.Delete(strHistoryString.size() - 1);
   }
+  CUtil::RemoveSlashAtEnd(strHistoryString);
   strHistoryString.ToLower();
 }
 
@@ -979,8 +988,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
     // Build the directory history for default path
     CStdString strPath, strParentPath;
     strPath = strDirectory;
-    while (CUtil::HasSlashAtEnd(strPath))
-      strPath.Delete(strPath.size() - 1);
+    CUtil::RemoveSlashAtEnd(strPath);
 
     CFileItemList items;
     m_rootDir.GetDirectory("", items);
@@ -992,8 +1000,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
       for (int i = 0; i < (int)items.Size(); ++i)
       {
         CFileItemPtr pItem = items[i];
-        while (CUtil::HasSlashAtEnd(pItem->m_strPath))
-          pItem->m_strPath.Delete(pItem->m_strPath.size() - 1);
+        CUtil::RemoveSlashAtEnd(pItem->m_strPath);
         if (pItem->m_strPath == strPath)
         {
           CStdString strHistory;
@@ -1012,8 +1019,7 @@ void CGUIMediaWindow::SetHistoryForPath(const CStdString& strDirectory)
       m_history.AddPathFront(strPath);
       m_history.SetSelectedItem(strPath, strParentPath);
       strPath = strParentPath;
-      while (CUtil::HasSlashAtEnd(strPath))
-        strPath.Delete(strPath.size() - 1);
+      CUtil::RemoveSlashAtEnd(strPath);
     }
   }
   else

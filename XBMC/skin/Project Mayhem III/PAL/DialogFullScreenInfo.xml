@@ -74,7 +74,7 @@
 			<control type="group">
 				<visible>Control.HasFocus(2) | Control.HasFocus(61)</visible>
 				<control type="textbox">
-					<description>Textbox when scrollbar is not visible</description>
+					<description>Textbox for Plot info</description>
 					<posx>160</posx>
 					<posy>5</posy>
 					<width>520</width>
@@ -82,23 +82,10 @@
 					<font>font13</font>
 					<pagecontrol>61</pagecontrol>
 					<label>$INFO[VideoPlayer.Plot]</label>
-					<visible>!Control.IsVisible(61)</visible>
-				        <align>justify</align>
-				</control>
-				<control type="textbox" id="50">
-					<description>Textbox when scrollbar is visible</description>
-					<posx>160</posx>
-					<posy>5</posy>
-					<width>490</width>
-					<height>90</height>
-					<font>font13</font>
-					<pagecontrol>61</pagecontrol>
-					<label>$INFO[VideoPlayer.Plot]</label>
-					<visible>Control.IsVisible(61)</visible>
-				        <align>justify</align>
+					<align>justify</align>
 				</control>
 				<control type="button">
-					<posx>660</posx>
+					<posx>685</posx>
 					<posy>10</posy>
 					<include>scrollbar_width</include>
 					<height>20</height>
@@ -108,7 +95,7 @@
 					<visible>Control.IsVisible(61)</visible>
 				</control>
 				<control type="button">
-					<posx>660</posx>
+					<posx>685</posx>
 					<posy>80</posy>
 					<include>scrollbar_width</include>
 					<height>20</height>
@@ -118,7 +105,7 @@
 					<visible>Control.IsVisible(61)</visible>
 				</control>
 				<control type="scrollbar" id="61">
-					<posx>660</posx>
+					<posx>685</posx>
 					<posy>30</posy>
 					<include>scrollbar_width</include>
 					<height>50</height>

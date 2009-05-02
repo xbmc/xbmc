@@ -178,8 +178,7 @@ void CGUIWindowMusicTop100::OnClick(int iItem)
   // Save current window and directroy to know where the selected item was
   m_nTempPlayListWindow = GetID();
   m_strTempPlayListDirectory = m_Directory.m_strPath;
-  if (CUtil::HasSlashAtEnd(m_strTempPlayListDirectory))
-    m_strTempPlayListDirectory.Delete(m_strTempPlayListDirectory.size() - 1);
+  CUtil::RemoveSlashAtEnd(m_strTempPlayListDirectory);
 
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC_TEMP);
   g_playlistPlayer.Play(iItem);

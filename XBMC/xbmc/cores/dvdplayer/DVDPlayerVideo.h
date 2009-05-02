@@ -114,7 +114,9 @@ protected:
 #define EOS_VERYLATE 4
 
   int OutputPicture(DVDVideoPicture* pPicture, double pts);
+#ifdef HAS_VIDEO_PLAYBACK
   void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts);
+#endif
   void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);
   
   double m_iCurrentPts; // last pts displayed

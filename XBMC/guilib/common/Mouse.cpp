@@ -51,8 +51,7 @@ CMouse::CMouse()
 
 CMouse::~CMouse()
 {
-  if (m_mouseDevice)
-    delete m_mouseDevice;
+  delete m_mouseDevice;
 }
 
 void CMouse::Initialize(void *appData)

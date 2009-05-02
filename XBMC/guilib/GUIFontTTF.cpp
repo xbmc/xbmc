@@ -62,14 +62,17 @@ using namespace std;
 //#define ROUND_TO_PIXEL rintf
 #define ROUND(x) MathUtils::round_int(x)
 #define ROUND_TO_PIXEL(x) MathUtils::round_int(x)
+#define TRUNC_TO_PIXEL(x) MathUtils::truncate_int(x)
 #else
 
 #define ROUND(x) (float)(MathUtils::round_int(x))
 
 #if defined(HAS_SDL_OPENGL)
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
+#define TRUNC_TO_PIXEL(x) (float)(MathUtils::truncate_int(x))
 #else
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
+#define TRUNC_TO_PIXEL(x) (float)(MathUtils::truncate_int(x)) - 0.5f
 #endif
 
 #endif // _LINUX
@@ -877,19 +880,30 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
   // transform our positions - note, no scaling due to GUI calibration/resolution occurs
   float x[4];
 
+  x[0] = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1);
+  x[1] = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1);
+  x[2] = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2);
+  x[3] = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2);
+
   if (roundX)
   {
-    x[0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
-    x[1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
-    x[2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
-    x[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
-  }
-  else
-  {
-    x[0] = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1);
-    x[1] = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1);
-    x[2] = g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2);
-    x[3] = g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2);
+    // We only round the "left" side of the character, and then use the direction of rounding to
+    // move the "right" side of the character.  This ensures that a constant width is kept when rendering
+    // the same letter at the same size at different places of the screen, avoiding the problem
+    // of the "left" side rounding one way while the "right" side rounds the other way, thus getting
+    // altering the width of thin characters substantially.  This only really works for positive
+    // coordinates (due to the direction of truncation for negatives) but this is the only case that
+    // really interests us anyway.
+    float rx0 = ROUND_TO_PIXEL(x[0]);
+    float rx3 = ROUND_TO_PIXEL(x[3]);
+    x[1] = TRUNC_TO_PIXEL(x[1]);
+    x[2] = TRUNC_TO_PIXEL(x[2]);
+    if (rx0 > x[0])
+      x[1] += 1;
+    if (rx3 > x[3])
+      x[2] += 1;
+    x[0] = rx0;
+    x[3] = rx3;
   }
 
   float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));

@@ -61,6 +61,7 @@ public:
   int GetInfo() const {return m_iInfoCode;};
 
   float GetPercentage() const;
+  CStdString GetDescription() const;
 protected:
   virtual void UpdateColors();
   CGUITexture m_guiBackground;

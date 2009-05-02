@@ -39,7 +39,6 @@ NODE_TYPE CDirectoryNodeMusicVideoAlbum::GetChildType()
 
 bool CDirectoryNodeMusicVideoAlbum::GetContent(CFileItemList& items)
 {
-  printf("here!\n");
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return false;

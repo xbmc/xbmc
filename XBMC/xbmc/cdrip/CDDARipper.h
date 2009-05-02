@@ -45,7 +45,7 @@ private:
   int RipChunk(int& nPercent);
   bool Rip(const CStdString& strTrackFile, const CStdString& strFileName, MUSIC_INFO::CMusicInfoTag& infoTag);
   const char* GetExtension(int iEncoder);
-  CStdString GetTrackName(CFileItem *item, bool isFatX);
+  CStdString GetTrackName(CFileItem *item, int LegalType);
 
   CEncoder* m_pEncoder;
   CCDDAReader m_cdReader;

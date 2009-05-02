@@ -746,7 +746,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
-      m_subsLayout->Update(subtitleText, maxWidth * 0.9f);
+      m_subsLayout->Update(subtitleText, maxWidth * 0.9f, true); // true to force LTR reading order (most Hebrew subs are this format)
 
       float textWidth, textHeight;
       m_subsLayout->GetTextExtent(textWidth, textHeight);

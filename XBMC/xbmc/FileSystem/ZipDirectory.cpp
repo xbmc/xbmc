@@ -66,8 +66,7 @@ namespace DIRECTORY
     CStdString strBuffer;
 
     // the RAR code depends on things having a "/" at the end of the path
-    if (!CUtil::HasSlashAtEnd(strSlashPath))
-      strSlashPath += '/';
+    CUtil::AddSlashAtEnd(strSlashPath);
 
     vector<SZipEntry> entries;
     // turn on fast lookups

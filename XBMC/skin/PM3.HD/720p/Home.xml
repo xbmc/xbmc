@@ -316,7 +316,7 @@
 				<posy>37</posy>
 				<height>30</height>
 				<width>500</width>
-				<label>$INFO[Network.IPAddress]</label>
+				<label>$LOCALIZE[150]: $INFO[Network.IPAddress]</label>
 				<align>right</align>
 				<aligny>center</aligny>
 				<font>font18</font>
@@ -340,7 +340,7 @@
 				<posy>95</posy>
 				<height>30</height>
 				<width>500</width>
-				<label>$INFO[System.cpufrequency]</label>
+				<label>$LOCALIZE[13284] $INFO[System.cpufrequency]</label>
 				<align>right</align>
 				<aligny>center</aligny>
 				<font>font12</font>

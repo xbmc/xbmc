@@ -277,13 +277,14 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("upnp");
   else if (m_protocol == NET_PROTOCOL_TUXBOX)
     url.SetProtocol("tuxbox");
-  if (!m_username.IsEmpty() && !m_server.IsEmpty())
+  if (!m_username.IsEmpty())
   {
     url.SetUserName(m_username);
     if (!m_password.IsEmpty())
       url.SetPassword(m_password);
-    url.SetHostName(m_server);
   }
+  if(!m_server.IsEmpty())
+    url.SetHostName(m_server);
   if (((m_protocol == NET_PROTOCOL_FTP) ||
        (m_protocol == NET_PROTOCOL_HTTP) || 
        (m_protocol == NET_PROTOCOL_HTTPS) ||

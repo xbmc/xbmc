@@ -205,7 +205,8 @@ bool CWINSMBDirectory::Exists(const char* strPath)
   DWORD attributes = GetFileAttributesW(strWReplaced);
   if(attributes == INVALID_FILE_ATTRIBUTES)
     return false;
-  if (FILE_ATTRIBUTE_DIRECTORY & attributes) return true;
+  if (FILE_ATTRIBUTE_DIRECTORY & attributes) 
+    return true;
   return false;
 }
 
@@ -214,16 +215,17 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
   DWORD dwResult, dwResultEnum;
   HANDLE hEnum;
   DWORD cbBuffer = 16384;     // 16K is a good size
-  LPNETRESOURCEW lpnrLocal;    // pointer to enumerated structures
+  LPNETRESOURCEW lpnrLocal;   // pointer to enumerated structures
+  DWORD cEntries = -1;        // enumerate all possible entries
   DWORD i;
   //
   // Call the WNetOpenEnum function to begin the enumeration.
   //
-  dwResult = WNetOpenEnumW(RESOURCE_GLOBALNET, // all network resources
-                          RESOURCETYPE_ANY,   // all resources
-                          0,  // enumerate all resources
-                          lpnr,       // NULL first time the function is called
-                          &hEnum);    // handle to the resource
+  dwResult = WNetOpenEnumW( RESOURCE_GLOBALNET,  // all network resources
+                            RESOURCETYPE_DISK,   // all disk resources
+                            0,                   // enumerate all resources
+                            lpnr,                // NULL first time the function is called
+                            &hEnum);             // handle to the resource
 
   if (dwResult != NO_ERROR) 
   {
@@ -264,10 +266,10 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
     // Call the WNetEnumResource function to continue
     //  the enumeration.
     //
-    dwResultEnum = WNetEnumResourceW(hEnum,  // resource handle
-                                    &cEntries,      // defined locally as -1
-                                    lpnrLocal,      // LPNETRESOURCE
-                                    &cbBuffer);     // buffer size
+    dwResultEnum = WNetEnumResourceW( hEnum,          // resource handle
+                                      &cEntries,      // defined locally as -1
+                                      lpnrLocal,      // LPNETRESOURCE
+                                      &cbBuffer);     // buffer size
     //
     // If the call succeeds, loop through the structures.
     //
@@ -278,8 +280,8 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
         DWORD dwDisplayType = lpnrLocal[i].dwDisplayType;
         DWORD dwType = lpnrLocal[i].dwType;
 
-        if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) || 
-           (dwDisplayType == RESOURCEDISPLAYTYPE_SHARE)) &&
+        if((((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && (m_bHost == false)) || 
+           ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && m_bHost)) &&
            (dwType != RESOURCETYPE_PRINT))
         {
           CStdString strurl = "smb:";
@@ -310,9 +312,7 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
           pItem->m_strPath = strurl;
           CUtil::AddSlashAtEnd(pItem->m_strPath);
           pItem->m_bIsFolder = true;
-          if(((dwDisplayType == RESOURCEDISPLAYTYPE_SERVER) && (m_bHost == false)) ||
-             ((dwDisplayType == RESOURCEDISPLAYTYPE_SHARE) && m_bHost))
-            items.Add(pItem);
+          items.Add(pItem);
         }
 
         // If the NETRESOURCE structure represents a container resource, 

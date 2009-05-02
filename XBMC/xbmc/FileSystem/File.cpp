@@ -26,6 +26,7 @@
 #include "DirectoryCache.h"
 #include "FileCache.h"
 #include "FileItem.h"
+#include "SpecialProtocol.h"
 
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
@@ -140,26 +141,50 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     }
 
     CFile newFile;
-    if (CUtil::IsHD(strDest)) // create possible missing dirs
+    CStdString strDirectory, strDest2;
+    if (CUtil::IsSpecial(strDest))
+      strDest2 = CSpecialProtocol::TranslatePath(strDest);
+    else
+      strDest2 = strDest;
+    if (CUtil::IsHD(strDest2)) // create possible missing dirs
     {
       vector<CStdString> tokens;
-      CStdString strDirectory;
-      CUtil::GetDirectory(strDest,strDirectory);
+      CUtil::GetDirectory(strDest2,strDirectory);
       CUtil::RemoveSlashAtEnd(strDirectory);  // for the test below
       if (!(strDirectory.size() == 2 && strDirectory[1] == ':'))
       {
+#ifndef _LINUX        
         CUtil::Tokenize(strDirectory,tokens,"\\");
-        CStdString strCurrPath = tokens[0]+"\\";
-        for (vector<CStdString>::iterator iter=tokens.begin()+1;iter!=tokens.end();++iter)
+        CStdString strCurrPath;
+        // If the directory has a / at the beginning, don't forget it
+        if (strDirectory[0] == '\\')
+        {
+          strCurrPath += "\\";
+        }
+        for (vector<CStdString>::iterator iter=tokens.begin();iter!=tokens.end();++iter)
         {
           strCurrPath += *iter+"\\";
           CDirectory::Create(strCurrPath);
         }
+#else
+        CUtil::Tokenize(strDirectory,tokens,"/");
+        CStdString strCurrPath;
+        // If the directory has a / at the beginning, don't forget it
+        if (strDirectory[0] == '/')
+        {
+          strCurrPath += "/";
+        }
+        for (vector<CStdString>::iterator iter=tokens.begin();iter!=tokens.end();++iter)
+        {
+          strCurrPath += *iter+"/";
+          CDirectory::Create(strCurrPath);
+        }
+#endif
       }
     }
-    if (CFile::Exists(strDest))
-      CFile::Delete(strDest);
-    if (!newFile.OpenForWrite(strDest, true))  // overwrite always
+    if (CFile::Exists(strDest2))
+      CFile::Delete(strDest2);
+    if (!newFile.OpenForWrite(strDest2, true))  // overwrite always
     {
       file.Close();
       return false;
@@ -215,7 +240,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 
       if (iWrite != iRead)
       {
-        CLog::Log(LOGERROR, "%s - Failed write to file %s", __FUNCTION__, strDest.c_str());
+        CLog::Log(LOGERROR, "%s - Failed write to file %s", __FUNCTION__, strDest2.c_str());
         break;
       }
 
@@ -256,7 +281,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
     /* verify that we managed to completed the file */
     if (llPos != llFileSizeOrg)
     {
-      CFile::Delete(strDest);
+      CFile::Delete(strDest2);
       return false;
     }
     return true;

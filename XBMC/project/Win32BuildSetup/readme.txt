@@ -5,40 +5,30 @@ Prerequisites for building an XBMC for Windows installer:
 
 
 Usage:
-1) Run BuildSetup.bat in project\Win32BuildSetup
-2) watch the screen, maybe you're asked for input
-3) wait... wait... wait...
+1) Copy the microsoft runtime dlls msvcp71.dll and msvcr71.dll into dependencies\
+2) Copy all plugins, skins and scripts you wish to include into the Add_* folders
+3) Run BuildSetup.bat in project\Win32BuildSetup
+4) Watch the screen, maybe you're asked for input
+5) Wait... Wait... Wait...
 You should now have XBMCSetup-Rev<svnrevisionnr>.exe file.
 
 
 Adding additional skins:
-1) Copy or rename config.ini.template to config.ini if not already done.
-2) Enter a path for "skinpath" in config.ini to where the skins are located.
-3) The buildscript will try to find build.bat or build_skin.bat for each of the subdirectories of <skinpath> and build the skins.
+1) Copy the desired skins into Add_skins\
+2) The buildscript will try to find build.bat or build_skin.bat for each of the subdirectories of <skinpath> and build the skins.
    Only skins that output the build to BUILD\<skinname> will be included in the setup at this point.
-   I build.bat is not found it will look for skin.xml and copy the directory if found (prebuilt skin).
-
-Example:
-Skins are located in E:\Data\XBMC\Skins and it contains the Basics-101 and xTV skin.
-You edit config.ini to skinpath=E:\Data\XBMC\Skins
-Build of Basics-101 is copied to E:\Data\XBMC\Skins\Basics-101\BUILD\Basics-101, ok, so it will be include in the installer.
-Build of xTV is copied to E:\Data\XBMC\Skins\xTV\BUILD\xTV, ok, so it will be include in the installer.
-When running the installer it will now provide Basics-101 and xTV as optional skins to install.
+   If build.bat is not found it will look for skin.xml and copy the directory if found (prebuilt skin).
 
 Adding scripts:
-1) Copy or rename config.ini.template to config.ini if not already done.
-2) Enter a path for "scriptpath" in config.ini to where the scripts are located.
-3) The buildscript will try to find build.bat for each of the subdirectories of <scriptpath> and build the scripts.
+1) Copy the desired scripts into Add_scripts\
+2) The buildscript will try to find build.bat for each of the subdirectories of <scriptpath> and build the scripts.
    Only scripts that output the build to BUILD\<scriptname> will be included in the setup at this point.
-   I build.bat is not found it will look for default.py and copy the directory if found (prebuilt script).
+   If build.bat is not found it will look for default.py and copy the directory if found (prebuilt script).
 
 Adding plugins:
-1) Copy or rename config.ini.template to config.ini if not already done.
-2) Enter a path for "pluginpath" in config.ini to where the plugins are located.
-   A directorystructure of <pluginpath>\video\, <pluginpath>\music\, <pluginpath>\programs\, <pluginpath>\pictures\ is expected.
-3) The buildscript will try to find build.bat for each of the subdirectories in <pluginpath>\video,music,programs,pictures and build the plugins.
-Only plugins that output the build to BUILD\<video/music/programs/picture>\<plugins> will be included in the setup at this point.
-I build.bat is not found it will look for default.py and copy the directory if found (prebuilt plugin).
+1) Copy the desired plugins into Add_plugins\video, Add_plugins\music, Add_plugins\programs or Add_plugins\pictures
+2) The buildscript will try to find build.bat for each of the subdirectories in <pluginpath>\video,music,programs,pictures and build the plugins.
+   If build.bat is not found it will look for default.py and copy the directory if found (prebuilt plugin).
 
 
 TODO:

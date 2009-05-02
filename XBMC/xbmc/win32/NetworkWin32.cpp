@@ -53,7 +53,7 @@ CNetworkInterfaceWin32::~CNetworkInterfaceWin32(void)
 CStdString& CNetworkInterfaceWin32::GetName(void)
 {
   if (!g_charsetConverter.isValidUtf8(m_adaptername)) 
-    g_charsetConverter.stringCharsetToUtf8(m_adaptername);
+    g_charsetConverter.unknownToUTF8(m_adaptername);
   return m_adaptername;
 }
 

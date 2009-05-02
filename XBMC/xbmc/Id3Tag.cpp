@@ -45,10 +45,10 @@ CStdString CID3Tag::ToStringCharset(const id3_ucs4_t* ucs4, id3_field_textencodi
   CStdString strValue;
 
   if (encoding==ID3_FIELD_TEXTENCODING_ISO_8859_1)
-  { // TODO: UTF-8: Should these be converted to UTF-8 ?
+  { // TODO: UTF-8: Should these be converted to UTF-8 using the predefined charset (8859-1)?
     id3_latin1_t* latin1=m_dll.id3_ucs4_latin1duplicate(ucs4);
     //strValue=(LPCSTR)latin1;
-    g_charsetConverter.stringCharsetToUtf8((LPCSTR)latin1, strValue);
+    g_charsetConverter.unknownToUTF8((LPCSTR)latin1, strValue);
     m_dll.id3_latin1_free(latin1);
   }
   else

@@ -48,7 +48,7 @@ public:
   static void Render(DVDPictureRenderer* pPicture, CDVDOverlayImage* pOverlay);
   static void Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA *pOverlay, double pts);
 
-
+#ifdef HAS_VIDEO_PLAYBACK
   static void Render(YV12Image* pImage, CDVDOverlay* pOverlay, double pts)
   {
     DVDPictureRenderer p;
@@ -68,6 +68,7 @@ public:
     
     Render(&p, pOverlay, pts);
   }
+#endif
   
   static void Render(DVDVideoPicture* pPicture, CDVDOverlay* pOverlay, double pts)
   {

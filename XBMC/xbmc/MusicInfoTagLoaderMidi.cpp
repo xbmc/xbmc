@@ -56,8 +56,7 @@ bool CMusicInfoTagLoaderMidi::Load(const CStdString & strFileName, CMusicInfoTag
 
   tag.SetTitle( title );
 
-  if ( CUtil::HasSlashAtEnd( path ) )
-    CUtil::RemoveSlashAtEnd(path );
+  CUtil::RemoveSlashAtEnd(path );
 
   if ( !path.IsEmpty() )
   {

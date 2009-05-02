@@ -58,8 +58,7 @@ namespace DIRECTORY
     url.GetURL(strSlashPath);
 
     // the RAR code depends on things having a "\" at the end of the path
-    if (!CUtil::HasSlashAtEnd(strSlashPath))
-      strSlashPath += "/";
+    CUtil::AddSlashAtEnd(strSlashPath);
 
     if (g_RarManager.GetFilesInRar(items,strArchive,true,strPathInArchive))
     {

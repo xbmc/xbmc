@@ -43,9 +43,15 @@ public:
 
 protected:
   AVCodecContext* m_pCodecContext;
+  AVAudioConvert* m_pConvert;;
+  enum SampleFormat m_iSampleFormat;
 
-  BYTE *m_buffer;
-  int m_iBufferSize;
+  BYTE *m_pBuffer1;
+  int   m_iBufferSize1;
+
+  BYTE *m_pBuffer2;
+  int   m_iBufferSize2;
+
   bool m_bOpenedCodec;
   int m_iBuffered;
   

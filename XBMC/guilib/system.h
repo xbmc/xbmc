@@ -158,11 +158,9 @@
 #define HAS_DVD_SWSCALE
 #ifndef HAS_SDL_2D
 #define HAS_SDL_OPENGL
-#ifdef _LINUX
-#ifndef __APPLE__
+#endif
+#if defined(_LINUX) && !defined(__APPLE__) && defined(HAS_SDL_OPENGL)
 #define HAS_GLX
-#endif
-#endif
 #endif
 #ifdef _WIN32
 #define _WIN32PC       // precompiler definition for the windows build

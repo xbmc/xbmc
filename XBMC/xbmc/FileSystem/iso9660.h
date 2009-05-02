@@ -22,6 +22,14 @@
 #define ISO9660_H
 #pragma once
 #include "xbox/IoSupport.h"
+#ifdef _WIN32
+// Ideally we should just be including iso9660.h, but it's not win32-ified at this point,
+// and these are all we need
+typedef uint32_t iso723_t;
+typedef uint64_t iso733_t;
+#else
+#include "lib/libcdio/iso9660.h"
+#endif
 
 #pragma pack(1)
 struct iso9660_VolumeDescriptor
@@ -39,8 +47,7 @@ struct iso9660_VolumeDescriptor
   WORD wVolumeSetSizeBE;       //122-123
   WORD wVolumeSequenceNumberLE;   //124-125
   WORD wVolumeSequenceNumberBE;   //126-127
-  WORD wSectorSizeLE;        //128-129
-  WORD wSectorSizeBE;        //130-131
+  iso723_t logical_block_size;    // sector size, e.g. 2048 (128-129 LE - 130-131 BE)
   DWORD dwPathTableLengthLE;     //132-135
   DWORD dwPathTableLengthBE;     //136-139
   DWORD wFirstPathTableStartSectorLE; //140-143
@@ -88,10 +95,8 @@ struct iso9660_Directory
 
   BYTE ucRecordLength;      //0      the number of bytes in the record (which must be even)
   BYTE ucExtendAttributeSectors; //1      [number of sectors in extended attribute record]
-  DWORD dwFileLocationLE;     //2..5   number of the first sector of file data or directory
-  DWORD dwFileLocationBE;     //6..9
-  DWORD dwFileLengthLE;      //10..13 number of bytes of file data or length of directory
-  DWORD dwFileLengthBE;           //14..17
+  iso733_t extent;        // LBA of first local block allocated to the extent (2..5 LE - 6..9 BE)
+  iso733_t size;          // data length of File Section.  This does not include the length of any XA Records. (10..13 LE - 14..17 BE)
   iso9660_Datetime DateTime;      //18..24 date
   BYTE byFlags;         //25     flags
   BYTE UnitSize;         //26     file unit size for an interleaved file

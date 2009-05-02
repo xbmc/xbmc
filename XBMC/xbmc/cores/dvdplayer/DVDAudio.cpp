@@ -192,16 +192,16 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   DWORD total = len;
   DWORD copied;
 
-  if (m_iBufferSize > 0)
+  if (m_iBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
   {
-    copied = std::min(m_dwPacketSize - m_iBufferSize, len);
+    copied = std::min(m_dwPacketSize - m_iBufferSize, len); // Smaller of either the data provided or the leftover data
 
-    memcpy(m_pBuffer + m_iBufferSize, data, copied);
-    data += copied;
-    len -= copied;
-    m_iBufferSize += copied;
+    memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
+    data += copied; // Move forward in caller's data
+    len -= copied; // Decrease amount of data available from caller 
+    m_iBufferSize += copied; // Increase amount of data available in buffer
 
-    if(m_iBufferSize < m_dwPacketSize)
+    if(m_iBufferSize < m_dwPacketSize) // If we don't have enough data to give to the renderer, wait until next time
       return copied;
 
     if(AddPacketsRenderer(m_pBuffer, m_iBufferSize, lock) != m_iBufferSize)
@@ -212,6 +212,8 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
     }
 
     m_iBufferSize = 0;
+    if (!len)
+      return copied; // We used up all the caller's data
   }
 
   copied = AddPacketsRenderer(data, len, lock);

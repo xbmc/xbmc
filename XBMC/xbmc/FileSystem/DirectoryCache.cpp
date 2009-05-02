@@ -77,12 +77,7 @@ bool CDirectoryCache::GetDirectory(const CStdString& strPath, CFileItemList &ite
     if (dir->m_cacheType == DIRECTORY::DIR_CACHE_ALWAYS ||
        (dir->m_cacheType == DIRECTORY::DIR_CACHE_ONCE && retrieveAll))
     {
-      // make a copy of each item (see SetDirectory())
-      for (int i = 0; i < dir->m_Items->Size(); i++)
-      {
-        CFileItemPtr newItem(new CFileItem(*dir->m_Items->Get(i)));
-        items.Add(newItem);
-      }
+      items.Copy(*dir->m_Items);
       dir->SetLastAccess(m_accessCounter);
 #ifdef _DEBUG
       m_cacheHits+=items.Size();
@@ -119,12 +114,7 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
   CheckIfFull();
 
   CDir* dir = new CDir(cacheType);
-  // make a copy of each item
-  for (int i = 0; i < items.Size(); i++)
-  {
-    CFileItemPtr newItem(new CFileItem(*items[i]));
-    dir->m_Items->Add(newItem);
-  }
+  dir->m_Items->Copy(items);
   dir->SetLastAccess(m_accessCounter);
   m_cache.insert(pair<CStdString, CDir*>(storedPath, dir));
 }

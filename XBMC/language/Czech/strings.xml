@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: ezechiel1917-->
-<!--Date of translation: 17/03/2009-->
+<!--Date of translation: 14/04/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 18548-->
+<!--Based on english strings version 19463-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Obrázky</string>
@@ -764,6 +764,8 @@
   <string id="1256">Doba odezvy</string>
   <string id="1257">Chcete se připojit k nalezenému systému?</string>
 
+  <string id="1260">Zeroconf publishing</string>
+
   <string id="1396">ustupující</string>
   <string id="1397">a</string>
   <string id="1398">mrzoucí</string>
@@ -969,6 +971,8 @@
   <string id="13021">Načtený vyměnitelný pevný disk</string>
   <string id="13022">Nebezpečně odebrat zařízení</string>
   <string id="13023">Zařízení bylo úspěšně odebráno</string>
+  <string id="13024">Joystick byl připojen</string>
+  <string id="13025">Joystick byl odpojen</string>
 
   <string id="13100">Filtr blikání</string>
   <string id="13101">Ponechat nastavení ovladače (vyžaduje restart)</string>
@@ -989,6 +993,8 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+
+  <string id="13120">Strict Pixmap-Texture Binding (vyžadován restart)</string>
 
   <string id="13130">Blikání displeje</string>
   <string id="13131">Zakázano</string>
@@ -1186,7 +1192,9 @@
   <string id="13417">Basic Shaders (ARB)</string>
   <string id="13418">Advanced Shaders (GLSL)</string>
   <string id="13419">Softwarově</string>
-  <string id="13420">Vysunout</string>
+  <string id="13420">Bezpečně odebrat</string>
+  <string id="13421">VDPAU</string>
+
 
   <string id="13600">Dálkové ovládání Apple</string>
   <string id="13601">Mód</string>
@@ -1496,6 +1504,11 @@
   <string id="16308">Lanczos (softwarově)</string>
   <string id="16309">Sinc (softwarově)</string>
 
+  <string id="16310">(VDPAU) Temporal</string>
+  <string id="16311">(VDPAU) Temporal/Spatial</string>
+  <string id="16312">(VDPAU) Redukce šumu</string>
+  <string id="16313">(VDPAU) Ostrost</string>
+  <string id="16314">Inverzní Telecine</string>
   <string id="17500">Zobrazit odpočet do uspání</string>
 
   <string id="20000">Složka pro ukládání CDDA kopií</string>
@@ -2041,6 +2054,7 @@
   <string id="22036">Importovat karaoke tituly...</string>
   <string id="22037">Automaticky zobrazovat dialog s výběrem písničky</string>
   <string id="22038">Exportovat karaoke tituly...</string>
+  <string id="22039">Zvolte číslo skladby</string>
   <string id="22040">bílá/zelená</string>
   <string id="22041">bílá/červená</string>
   <string id="22042">bílá/modrá</string>

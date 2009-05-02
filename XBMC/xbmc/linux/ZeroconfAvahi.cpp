@@ -214,7 +214,7 @@ void CZeroconfAvahi::clientCallback(AvahiClient* fp_client, AvahiClientState f_s
   case AVAHI_CLIENT_FAILURE:
     CLog::Log(LOGINFO, "CZeroconfAvahi::clientCallback: client failure. avahi-daemon stopped? Recreating client...");
     //We were forced to disconnect from server. now free and recreate the client object
-    avahi_client_free(p_instance->mp_client);
+    avahi_client_free(fp_client);
     p_instance->mp_client = 0;
     //freeing the client also frees all groups and browsers, pointers are undefined afterwards, so fix that now
     for(tServiceMap::const_iterator it = p_instance->m_services.begin(); it != p_instance->m_services.end(); ++it)

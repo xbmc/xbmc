@@ -132,7 +132,7 @@ void CHTMLUtil::ConvertHTMLToUTF8(const CStdString& strHTML, string& strStripped
   // TODO UTF8: This assumes the HTML is in the users charset
   ConvertHTMLToAnsi(strHTML, strStripped);
   CStdString utf8String;
-  g_charsetConverter.stringCharsetToUtf8(strStripped, utf8String);
+  g_charsetConverter.unknownToUTF8(strStripped, utf8String);
   strStripped = utf8String;
 }
 

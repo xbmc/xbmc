@@ -35,7 +35,7 @@ public:
 
   void clear();
 
-  void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true, bool* bWasFlipped=NULL);
+  void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true, bool forceLTRReadingOrder=false, bool* bWasFlipped=NULL);
 
   void utf16LEtoW(const CStdStringW& utf16String, CStdStringW &wString);
 
@@ -49,11 +49,7 @@ public:
   void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int16_t>& strDest);
   void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int32_t>& strDest);
 
-  void stringCharsetToUtf8(const CStdStringA& strSource, CStdStringA& strDest);
-
   void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
-
-  void stringCharsetToUtf8(CStdStringA& strSourceDest);
 
   bool isValidUtf8(const CStdString& str);
 

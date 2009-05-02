@@ -35,7 +35,9 @@ class CScraperParser
 {
 public:
   CScraperParser();
+  CScraperParser(const CScraperParser& parser);
   ~CScraperParser();
+  CScraperParser& operator= (const CScraperParser& parser);
 
   void Clear();
   bool Load(const CStdString& strXMLFile);
@@ -50,6 +52,7 @@ public:
   static void ClearCache();
 
 private:
+  bool LoadFromXML();
   void ReplaceBuffers(CStdString& strDest);
   void ParseExpression(const CStdString& input, CStdString& dest, TiXmlElement* element, bool bAppend);
   void ParseNext(TiXmlElement* element);

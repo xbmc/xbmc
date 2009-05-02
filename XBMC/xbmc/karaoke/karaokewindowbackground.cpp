@@ -143,10 +143,12 @@ void CKaraokeWindowBackground::Render()
   // Proceed with video rendering
   if ( m_currentMode == BACKGROUND_VIDEO )
   {
+#ifdef HAS_VIDEO_PLAYBACK
     if ( g_application.IsPresentFrame() )
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
+#endif
   }
 
   // For other visualisations just disable the screen saver

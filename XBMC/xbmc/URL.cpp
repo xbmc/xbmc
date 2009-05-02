@@ -669,19 +669,21 @@ CStdString CURL::ValidatePath(const CStdString &path)
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
   {
     result.Replace('\\', '/');
-    // Fixup for double forward slashes(/) but don't touch the :// of URLs 
+    // Fixup for double forward slashes(/) but don't touch the :// of URLs
+    // The %3A-exclude is to protect against modifying half-URL-encoded %3A// (= ://)
     for (int x=1; x<result.GetLength()-1; x++) 
     { 
-      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':') 
+      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':' && !(x>3 && result.Mid(x-3,3)=="%3A")) 
         result.Delete(x); 
     }        
   }
 #else
   result.Replace('\\', '/');
   // Fixup for double forward slashes(/) but don't touch the :// of URLs 
+  // The %3A-exclude is to protect against modifying half-URL-encoded %3A// (= ://)
   for (int x=1; x<result.GetLength()-1; x++) 
   { 
-    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':') 
+    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':' && !(x>3 && result.Mid(x-3,3)=="%3A")) 
       result.Delete(x); 
   }        
 #endif

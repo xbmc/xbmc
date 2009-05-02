@@ -19,10 +19,7 @@
  *
  */
 #import <unistd.h>
-<<<<<<< HEAD:xbmc/osx/CocoaInterface.mm
-=======
 #import <sys/mount.h>
->>>>>>> svn/linuxport:xbmc/osx/CocoaInterface.mm
 
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
@@ -693,15 +690,13 @@ void Cocoa_DoAppleScript(const char* scriptSource)
   [scriptObject release];
 }
                    
-<<<<<<< HEAD:xbmc/osx/CocoaInterface.mm
-=======
 void Cocoa_MountPoint2DeviceName(char* path)
 {
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // path will get realloc'ed and replaced IF this is a physical DVD.
   char* strDVDDevice;
   strDVDDevice = strdup(path);
-  if (strncasecmp(strDVDDevice + strlen(strDVDDevice) - 8, "VIDEO_TS", 8) == 0)
+if (strncasecmp(strDVDDevice + strlen(strDVDDevice) - 8, "VIDEO_TS", 8) == 0)
   {
     struct statfs *mntbufp;
     int i, mounts;
@@ -724,31 +719,6 @@ void Cocoa_MountPoint2DeviceName(char* path)
     free(strDVDDevice);
   }
 }
->>>>>>> svn/linuxport:xbmc/osx/CocoaInterface.mm
-
-/*
-int Cocoa_TouchDVDOpenMediaFile(const char *strDVDFile)
-{
-  //strDVDFile = "/dev/rdisk1";
-  OSStatus result;
-  result = DVDInitialize();
-  if (result == noErr)
-  {
-	FSRef fileRef;
-    Boolean isDirectory;
-    
-    result = FSPathMakeRef((UInt8 *)strDVDFile, &fileRef, &isDirectory);
-    
-    result = DVDOpenMediaFile(&fileRef);
-    if (result == kDVDErrordRegionCodeUninitialized) {
-      //CLog::Log(LOGERROR,"Error on DVD Region Code Uninitialized\n");
-    }
-  }
-  result = DVDDispose();
-  
-  return(0);
-}
-*/
 
 /*
 @interface MyView : NSOpenGLView
@@ -833,32 +803,3 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     [self setNeedsDisplay:YES];
 }
 */
-
-/*
-// Sleep
-  NSDictionary* errorDict;
-  NSAppleEventDescriptor* returnDescriptor = NULL;
-  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
-          @"tell application \"Finder\" to sleep"];
-  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
-  [scriptObject release];
-               
-    
-//Shut Down
-  NSDictionary* errorDict;
-  NSAppleEventDescriptor* returnDescriptor = NULL;
-  NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
-          @"tell application \"Finder\" to shut down"];
-  returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
-  [scriptObject release];
-
-\"System Events\"
-\"loginwindow\"
-
-NSAppleScript *playScript;
-playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to shut down"];
-playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to restart"];
-playScript = [[NSAppleScript alloc] initWithSource:@"tell application \"Finder\" to sleep"];
-[playScript executeAndReturnError:nil];
-*/
-

@@ -1,8 +1,6 @@
 #ifndef ZIP_MANAGER_H_
 #define ZIP_MANAGER_H_
 
-#define ZIP_LOCAL_HEADER 0x04034b50
-#define ZIP_CENTRAL_HEADER 0x02014b50
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -24,6 +22,13 @@
  *
  */
 
+// See http://www.pkware.com/documents/casestudies/APPNOTE.TXT
+#define ZIP_LOCAL_HEADER 0x04034b50
+#define ZIP_CENTRAL_HEADER 0x02014b50
+#define ZIP_END_CENTRAL_HEADER 0x06054b50
+#define LHDR_SIZE 30
+#define CHDR_SIZE 46
+#define ECDREC_SIZE 22
 
 #include  "StdString.h"
 
@@ -31,18 +36,20 @@
 #include <vector>
 #include <map>
 
-struct SZipEntry { // sizeof(zipentry) == 30 + flength + elength
+struct SZipEntry {
   unsigned int header;
   unsigned short version;
   unsigned short flags;
   unsigned short method;
   unsigned short mod_time;
   unsigned short mod_date;
-  int crc32;
+  unsigned int crc32;
   unsigned int csize; // compressed size
   unsigned int usize; // uncompressed size
   unsigned short flength; // filename length
   unsigned short elength; // length of extra field
+  unsigned short clength; // file comment length
+  unsigned int lhdrOffset; // Relative offset of local header
   __int64 offset;         // offset in file to compressed data
   char name[255];
 
@@ -59,6 +66,8 @@ struct SZipEntry { // sizeof(zipentry) == 30 + flength + elength
     usize = 0;
     flength = 0;
     elength = 0;
+    clength = 0;
+    lhdrOffset = 0;
     offset = 0;
     name[0] = '\0';
   }
@@ -71,11 +80,13 @@ struct SZipEntry { // sizeof(zipentry) == 30 + flength + elength
     memcpy(&method,&SNewItem.method,sizeof(unsigned short));
     memcpy(&mod_time,&SNewItem.mod_time,sizeof(unsigned short));
     memcpy(&mod_date,&SNewItem.mod_date,sizeof(unsigned short));
-    memcpy(&crc32,&SNewItem.crc32,sizeof(int));
+    memcpy(&crc32,&SNewItem.crc32,sizeof(unsigned int));
     memcpy(&csize,&SNewItem.csize,sizeof(unsigned int));
     memcpy(&usize,&SNewItem.usize,sizeof(unsigned int));
     memcpy(&flength,&SNewItem.flength,sizeof(unsigned short));
     memcpy(&elength,&SNewItem.elength,sizeof(unsigned short));
+    memcpy(&clength,&SNewItem.clength,sizeof(unsigned short));
+    memcpy(&lhdrOffset,&SNewItem.lhdrOffset,sizeof(unsigned int));
     memcpy(&offset,&SNewItem.offset,sizeof(__int64));
     memcpy(name,SNewItem.name,255*sizeof(char));
   }
@@ -94,6 +105,7 @@ public:
   void CleanUp(const CStdString& strArchive, const CStdString& strPath); // deletes extracted archive. use with care!
   void release(const CStdString& strPath); // release resources used by list zip
   static void readHeader(const char* buffer, SZipEntry& info);
+  static void readCHeader(const char* buffer, SZipEntry& info);
 private:
   std::map<CStdString,std::vector<SZipEntry> > mZipMap;
   std::map<CStdString,__int64> mZipDate;

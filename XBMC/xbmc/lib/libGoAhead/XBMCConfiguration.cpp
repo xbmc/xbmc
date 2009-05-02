@@ -310,13 +310,8 @@ int CXbmcConfiguration::AddBookmark( int eid, webs_t wp, CStdString& response, i
   if (numParas==5)
     share.m_strThumbnailImage = thumbnail;
   CStdString strPath=path;
-  if (!CUtil::HasSlashAtEnd(strPath))
-  {
-    if (strPath.Find("//") >= 0 )
-      strPath += "/";
-    else
-      strPath += "\\";
-  }
+  CUtil::AddSlashAtEnd(strPath);
+
   share.strPath = strPath;
   share.vecPaths.push_back(strPath.c_str());
   g_settings.AddShare(type,share);
