@@ -291,9 +291,9 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
   else if (dwInfo == PVR_BACKEND_VERSION) return m_backendVersion;
   else if (dwInfo == PVR_BACKEND_HOST) return m_backendHost;
   else if (dwInfo == PVR_BACKEND_DISKSPACE) return m_backendDiskspace;
-  else if (dwInfo == PVR_BACKEND_CHANNELS) return m_backendTimers;
-  else if (dwInfo == PVR_BACKEND_TIMERS) return m_backendRecordings;
-  else if (dwInfo == PVR_BACKEND_RECORDINGS) return m_backendChannels;
+  else if (dwInfo == PVR_BACKEND_CHANNELS) return m_backendChannels;
+  else if (dwInfo == PVR_BACKEND_TIMERS) return m_backendTimers;
+  else if (dwInfo == PVR_BACKEND_RECORDINGS) return m_backendRecordings;
   else if (dwInfo == PVR_BACKEND_NUMBER)
   {
     if (m_infoToggleStart == 0)
