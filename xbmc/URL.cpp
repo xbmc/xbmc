@@ -64,7 +64,7 @@ CURL::CURL(const CStdString& strURL1)
   {
     // form is drive:directoryandfile
 
-    /* set filename and update extension*/
+    // set filename and update extension
 
     SetFileName(strURL);
     return ;
@@ -255,17 +255,15 @@ CURL::CURL(const CStdString& strURL1)
     else
     {
       if (!m_strHostName.IsEmpty() && strURL[iEnd-1]=='/')
-        m_strFileName=m_strHostName + "/";
+        m_strFileName = m_strHostName + "/";
       else
         m_strFileName = m_strHostName;
       m_strHostName = "";
     }
   }
 
-  m_strFileName.Replace("\\", "/");
-
-  /* update extension */
-  SetFileName(m_strFileName);
+  // update extension
+  SetFileName(ValidatePath(m_strFileName));
 
   /* decode urlencoding on this stuff */
   if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
@@ -617,7 +615,9 @@ CStdString CURL::ValidatePath(const CStdString &path)
         result.Delete(x);   
     }    
   }
-  else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
+  // Don't do any stuff on URLs containing %-characters as we may screw up
+  // embedded full file-names (like with zip:// & rar://)
+  else if ((path.Find("://") >= 0 && path.Find('%')<=0) || path.Find(":\\\\") >= 0)
   {
     result.Replace('\\', '/');
     // Fixup for double forward slashes(/) but don't touch the :// of URLs
