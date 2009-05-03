@@ -262,8 +262,10 @@ CURL::CURL(const CStdString& strURL1)
     }
   }
 
-  // update extension
-  SetFileName(ValidatePath(m_strFileName));
+  m_strFileName.Replace("\\", "/");
+
+  /* update extension */
+  SetFileName(m_strFileName);
 
   /* decode urlencoding on this stuff */
   if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
@@ -610,10 +612,10 @@ CStdString CURL::ValidatePath(const CStdString &path)
     result.Replace('/', '\\');
     // Fixup for double back slashes (but ignore \\ of unc-paths) 
     for (int x=1; x<result.GetLength()-1; x++) 
-    { 
+    {
       if (result[x] == '\\' && result[x+1] == '\\') 
-        result.Delete(x);   
-    }    
+        result.Delete(x);
+    }
   }
   // Don't do any stuff on URLs containing %-characters as we may screw up
   // embedded full file-names (like with zip:// & rar://)
@@ -623,10 +625,10 @@ CStdString CURL::ValidatePath(const CStdString &path)
     // Fixup for double forward slashes(/) but don't touch the :// of URLs
     // The %3A-exclude is to protect against modifying half-URL-encoded %3A// (= ://)
     for (int x=1; x<result.GetLength()-1; x++) 
-    { 
+    {
       if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':' && !(x>3 && result.Mid(x-3,3)=="%3A")) 
         result.Delete(x); 
-    }        
+    }
   }
 #else
   result.Replace('\\', '/');
