@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: olympia-->
 <!--Email: nadasbence@msn.com-->
-<!--Date of translation: 04/10/2009-->
+<!--Date of translation: 05/01/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">Programok</string>
@@ -60,11 +60,11 @@
   <string id="120">Másolás megerősítése</string>
   <string id="121">Áthelyezés megerősítése</string>
   <string id="122">Törlés megerősítése</string>
-  <string id="123">Fájlok átmásolása?</string>
-  <string id="124">Fájlok mozgatása?</string>
-  <string id="125">Fájlok törlése?</string>
+  <string id="123">Kijelölt mappák és fájlok átmásolása?</string>
+  <string id="124">Kijelölt mappák és fájlok áthelyezése?</string>
+  <string id="125">Kijelölt mappák és fájlok törlése? Nem visszaállítható!</string>
   <string id="126">Állapot</string>
-  <string id="127">Objektumok</string>
+  <string id="127">Objektum</string>
   <string id="128">Általános</string>
   <string id="129">Diavetítés</string>
   <string id="130">Rendszer információ</string>
@@ -120,7 +120,7 @@
   <string id="185">Album keresése</string>
   <string id="186">OK</string>
   <string id="187">Nincs találat!</string>
-  <string id="188">Mindet kiválaszt</string>
+  <string id="188">Összes kijelölése</string>
   <string id="189">Média információ keresése</string>
   <string id="190">Mentés</string>
   <string id="191">Keverés</string>
@@ -296,7 +296,7 @@
   <string id="378">Délelőtt</string>
   <string id="379">Délután</string>
   <string id="380">Zivatar</string>
-  <string id="381">Néhány</string>
+  <string id="381">Helyenként</string>
   <string id="382">Elszórtan</string>
   <string id="383">Szél</string>
   <string id="384">Erős</string>
@@ -322,8 +322,8 @@
   <string id="404">Szél</string>
   <string id="405">Harmat pont</string>
   <string id="406">Páratartalom</string>
-  <string id="407">Iránya</string>
-  <string id="408">at</string>
+  <string id="407">Iránya:</string>
+  <string id="408">Sebessége:</string>
   <string id="409">Alapértelmezett</string>
   <string id="410">Időjárás-szolgáltató keresése</string>
   <string id="411">Időjárás lekérdezése:</string>
@@ -565,7 +565,7 @@
   <string id="715">- Kijelölés</string>
   <string id="716">Automatikus (DHCP)</string>
   <string id="717">Kézi (Statikus)</string>
-  <string id="718">Alapértelmezett (Dashboard)</string>
+  <string id="718">Alapértelmezett (Főmenü)</string>
   <string id="719">- IP cím</string>
   <string id="720">- hálózati maszk</string>
   <string id="721">- Alapértelmezett átjáró</string>
@@ -615,7 +615,7 @@
   <string id="768">Fenntartva</string>
   <string id="769">Fenntartva</string>
   <string id="770">Hiba %i: megosztás nem elérhető</string>
-  <string id="771">- Auto fatx korlátozás</string>
+  <string id="771">- Automatikus fatx korlátozás</string>
   <string id="772">Audió hardver</string>
   <string id="773">Keresés</string>
   <string id="774">Diavetítő mappa</string>
@@ -913,9 +913,9 @@
   <string id="12387">
   </string>
   <string id="12390">Rendszer uptime</string>
-  <string id="12391">Percek</string>
-  <string id="12392">Órák</string>
-  <string id="12393">Napok</string>
+  <string id="12391">Perc</string>
+  <string id="12392">Óra</string>
+  <string id="12393">Nap</string>
   <string id="12394">Teljes uptime</string>
   <string id="12600">Időjárás</string>
   <string id="12900">Képernyőkímélő</string>
@@ -926,8 +926,8 @@
   <string id="13003">- Késleltetés</string>
   <string id="13004">- Minimum fájl hossz</string>
   <string id="13005">Leállítás</string>
-  <string id="13006">Dashboard</string>
-  <string id="13007">Egyéni Dashboard útvonal használata</string>
+  <string id="13006">Főmenü</string>
+  <string id="13007">Egyéni útvonal használata a főmenühöz</string>
   <string id="13008">Alapértelmezett leállítási mód</string>
   <string id="13009">Kilépés</string>
   <string id="13010">Hibernálás</string>
@@ -1211,7 +1211,7 @@ ehhez a vizualizációhoz</string>
   <string id="14057">Média info átvizsgálása közben nem lehetséges</string>
   <string id="14058">Film szemcsézet (grain) hatás</string>
   <string id="14059">Bélyegképek keresése távoli megosztásokon</string>
-  <string id="14060">Ismeretlen típus cache - Internet</string>
+  <string id="14060">Ismeretlen cache típus - Internet</string>
   <string id="14061">Auto</string>
   <string id="14062">Felhasználónév a következőhöz:</string>
   <string id="14063">Dátum és Idő</string>
@@ -1356,7 +1356,7 @@ ehhez a vizualizációhoz</string>
   <string id="16103">Megnézettként megjelöl</string>
   <string id="16104">Nem látottként megjelöl</string>
   <string id="16105">Cím szerkesztése</string>
-  <string id="16106">NTSC (M vagy J) haszn.</string>
+  <string id="16106">NTSC (M vagy J) használata</string>
   <string id="16107">Csak NTSC-M használata</string>
   <string id="16108">Csak NTSC-J használata</string>
   <string id="16109">Csak PAL-60 használata</string>
@@ -1421,7 +1421,7 @@ ehhez a vizualizációhoz</string>
   <string id="20047">A(z) '%s' profil létrehozása?</string>
   <string id="20048">Létrehozás alapbeállításokkal</string>
   <string id="20049">Az elérhető legjobb</string>
-  <string id="20050">Automatikus váltás 16x9 és 4x3 között</string>
+  <string id="20050">Automatikus váltás 16:9 és 4:3 között</string>
   <string id="20051">Többrészes fájlok egy fájlként kezelése</string>
   <string id="20052">Figyelmeztetés</string>
   <string id="20053">Kilépés adminisztrátor módból</string>
@@ -1554,8 +1554,7 @@ ehhez a vizualizációhoz</string>
   <string id="20182">Szóköz</string>
   <string id="20183">Skin újraindítása</string>
   <string id="20184">Forgatás EXIF információ alapján</string>
-  <string id="20185">
-  </string>
+  <string id="20185">Poszter nézet használata TV műsoroknál</string>
   <string id="20186">Kérem várjon</string>
   <string id="20187">EEPROM mentése</string>
   <string id="20188">BIOS mentése</string>
@@ -1584,7 +1583,7 @@ ehhez a vizualizációhoz</string>
   </string>
   <string id="20305">
   </string>
-  <string id="20306">Ismeretlen. MD5 hozzáadása az xbmc.log-ból a BiosIDs.ini-be.</string>
+  <string id="20306">Ismeretlen. Hozzá kell adni az MD5-öt az xbmc.log-ból a BiosIDs.ini-hez.</string>
   <string id="20307">Másodlagos DNS</string>
   <string id="20308">DHCP szerver:</string>
   <string id="20309">Új mappa létrehozása</string>
@@ -1733,34 +1732,34 @@ ehhez a vizualizációhoz</string>
   <string id="21369">Egér engedélyezése</string>
   <string id="21370">Navigációs hangok lejátszás közben</string>
   <string id="21371">Bélyegkép</string>
-  <string id="21372">Kikényszerített DVD régió</string>
+  <string id="21372">Kényszerített DVD régiókód használata</string>
   <string id="21373">Videó hardver</string>
   <string id="21374">Videó képarány</string>
   <string id="21375">Normál</string>
   <string id="21376">Hagyományos megjelenítő</string>
-  <string id="21377">Széles megjelenító</string>
-  <string id="21378">480p</string>
-  <string id="21379">720p</string>
-  <string id="21380">1080i</string>
+  <string id="21377">Szélesvászon</string>
+  <string id="21378">480p engedélyezése</string>
+  <string id="21379">720p engedélyezése</string>
+  <string id="21380">1080i engedélyezése</string>
   <string id="21381">Lejátszási lista nevének megadása</string>
   <string id="21382">Forrás gomb rejtése a fájl listában</string>
   <string id="21383">Görgetősávok engedélyezése</string>
   <string id="21384">A látott státusz kapcsolóként értelmezése a médiatárban</string>
   <string id="21385">Megnyitás</string>
   <string id="21386">Zajszint menedzsment</string>
-  <string id="21387">Gyors</string>
-  <string id="21388">Csendes</string>
+  <string id="21387">Gyors (hangos)</string>
+  <string id="21388">Lassú (csendes)</string>
   <string id="21389">Saját háttér</string>
   <string id="21390">Energiagazdálkodás </string>
-  <string id="21391">High power</string>
-  <string id="21392">Low power</string>
+  <string id="21391">Magas teljesítmény</string>
+  <string id="21392">Energiatakarékos</string>
   <string id="21393">High standby</string>
   <string id="21394">Low standby</string>
-  <string id="21395">4GB-nál nagyobb file nem cache-elhetőek</string>
+  <string id="21395">4GB-nál nagyobb file-ok nem cache-elhetőek</string>
   <string id="21396">Fejezet</string>
   <string id="21397">High quality pixel shader v2</string>
   <string id="21398">Lejátszási lista engedélyezése induláskor</string>
-  <string id="21399">Tween animációk használata</string>
+  <string id="21399">Pattogó animációk használata</string>
   <string id="21400">tartalmazza</string>
   <string id="21401">nem tartalmazza</string>
   <string id="21402">egyenlő</string>
@@ -1821,12 +1820,12 @@ ehhez a vizualizációhoz</string>
   <string id="21828">Gyújtótávolság</string>
   <string id="21829">Exponálás</string>
   <string id="21830">Exponálási idő</string>
-  <string id="21831">Exposure bias</string>
+  <string id="21831">Exponálási eltérés</string>
   <string id="21832">Exponálás módja</string>
   <string id="21833">Vaku</string>
   <string id="21834">Fehér-egyensúly</string>
   <string id="21835">Fényforrás</string>
-  <string id="21836">Metering mode</string>
+  <string id="21836">Fénymérés módja</string>
   <string id="21837">ISO</string>
   <string id="21838">Digitális nagyítás</string>
   <string id="21839">CCD width</string>
@@ -1912,5 +1911,5 @@ ehhez a vizualizációhoz</string>
   <string id="22043">fekete/fehér</string>
   <string id="29800">Médiatár mód</string>
   <string id="29801">QWERTY billentyűzet</string>
-  <string id="29999">Villogás szűrő érvényesítése játékokra</string>
+  <string id="29999">Villogás szűrő alkalmazása játékokra</string>
 </strings>

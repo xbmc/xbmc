@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
   "XBMC Live" installer
-  V0.986 - 20090316
+  V0.993 - 20090430
   Luigi Capriotti @2009
 
 """ 
@@ -17,8 +17,8 @@ import optparse
 gMinSizeMB = 1500
 
 # For HDD installations
-gFixedDiskMinSizeMB = 3500
-gBootPartitionSizeMB = 2048
+gFixedDiskMinSizeMB = 5000
+gBootPartitionSizeMB = 4096
 gSwapPartitionSizeMB = 512
 
 gPermStorageFilename = "ext3fs.img"
@@ -99,7 +99,8 @@ def findBootVolume(lookForRootFS):
 			if  os.path.exists("/sys/block/" + deviceNode + "/removable"):
 				if isRemovableDisk(device):
 					if bootMedia == 'disk' or bootMedia == 'usb':
-						mountDevice(device + "1", "", gBootPartMountPoint)
+						device = device + "1"
+						mountDevice(device, "", gBootPartMountPoint)
 					else:
 						mountDevice(device, "-o ro -t iso9660", gBootPartMountPoint)
 
@@ -201,17 +202,29 @@ def chooseDisk(availableDrives):
 	print ""
 	return  userChoice("Type the digit, or 0 to restart the procedure: ", availChoices, "0")
 
-def partitionFormatDisk(device, bootPartSize, swapPartSize):
+def partitionFormatDisk(device, bIsRemovableDisk, bootPartSize, swapPartSize):
 	runSilent("dd if=/dev/zero of=" + device + " bs=512 count=2")
 	runSilent("sync")
 
-	if bootPartSize <=0:
-		partEnd = ""
-	else:
+	if bIsRemovableDisk:
+		strFdiskCommands = ["o","n","p","1","","","t","c","a","1","w"]
+
+		stdInFile = tempfile.NamedTemporaryFile()
+		for line in strFdiskCommands:
+			stdInFile.write(line + "\n")
+		stdInFile.flush()
+
+		runSilent("cat " + stdInFile.name + " | fdisk " + device)
+		stdInFile.close()
+
+		runSilent("mkfs.vfat -I -F 32 -n XBMCLive_" + str(random.randint(0, 999)) + " " + device + "1")
+		return
+	
+	partEnd = ""
+	if bootPartSize > 0:
 		partEnd = "+" + str(bootPartSize) + "M"
 
-	strFdiskCommands = ["o","n","p","1","",partEnd,"t","c","a","1","w"]
-
+	strFdiskCommands = ["o","n","p","1","",partEnd,"a","1","w"]
 	stdInFile = tempfile.NamedTemporaryFile()
 	for line in strFdiskCommands:
 		stdInFile.write(line + "\n")
@@ -220,13 +233,12 @@ def partitionFormatDisk(device, bootPartSize, swapPartSize):
 	runSilent("cat " + stdInFile.name + " | fdisk " + device)
 	stdInFile.close()
 
-	runSilent("mkfs.vfat -I -F 32 -n XBMCLive_" + str(random.randint(0, 999)) + " " + device + "1")
+	runSilent("mkfs.ext3 " + device + "1")
 
-	if swapPartSize !=0:
+	if swapPartSize != 0:
 		partEnd = "+" + str(swapPartSize) + "M"
 
 		strFdiskCommands = ["n","p","2","",partEnd,"t","2","82","n","p","3","","","w"]
-
 		stdInFile = tempfile.NamedTemporaryFile()
 		for line in strFdiskCommands:
 			stdInFile.write(line + "\n")
@@ -238,16 +250,16 @@ def partitionFormatDisk(device, bootPartSize, swapPartSize):
 		runSilent("mkswap -c " + device +"2")
 		runSilent("mkfs.ext3 " + device +"3")
 	else:
-		if bootPartSize >0:
-			strFdiskCommands = ["n","p","2","","","w"]
-			stdInFile = tempfile.NamedTemporaryFile()
-			for line in strFdiskCommands:
-				stdInFile.write(line + "\n")
-			stdInFile.flush()
-			runSilent("cat " + stdInFile.name + " | fdisk " + device)
-			stdInFile.close()
+		strFdiskCommands = ["n","p","2","","","w"]
+		stdInFile = tempfile.NamedTemporaryFile()
+		for line in strFdiskCommands:
+			stdInFile.write(line + "\n")
+		stdInFile.flush()
 
-			runSilent("mkfs.ext3 " + device +"2")
+		runSilent("cat " + stdInFile.name + " | fdisk " + device)
+		stdInFile.close()
+
+		runSilent("mkfs.ext3 " + device +"2")
 
 	runSilent("sync")
 	
@@ -277,7 +289,7 @@ def umountDevice(aDirectory, removeMountPoint=True):
 	if removeMountPoint == True:
 		os.rmdir(aDirectory)
 
-def copySystemFiles(srcDirectory, dstDirectory, skipLargeFiles):
+def copySystemFiles(srcDirectory, dstDirectory, bIsRemovableDisk, skipLargeFiles):
 	global gDebugMode
 	# This one needs python 2.6, for future use
 	# Do not copy storage file
@@ -291,31 +303,96 @@ def copySystemFiles(srcDirectory, dstDirectory, skipLargeFiles):
 	runSilent("ls -aRl " + srcDirectory)
 	runSilent("ls -aRl " + dstDirectory)
 
-	for root, dirs, files in os.walk(srcDirectory):
-		for file in files:
-			# Do not copy storage file
-			if file == gPermStorageFilename:
-				continue
-
-			writeLog("Copying file: " + file)
-			if skipLargeFiles == True:
-				if file.find("img") > 0:
-					writeLog("TEST MODE = " + str(gDebugMode) + " : file skipped.")
+	if bIsRemovableDisk: 
+		for root, dirs, files in os.walk(srcDirectory):
+			for file in files:
+				# Do not copy storage file
+				if file == gPermStorageFilename:
 					continue
 
-			from_ = os.path.join(root, file)
-			to_ = from_.replace(srcDirectory, dstDirectory, 1)
-			to_directory = os.path.split(to_)[0]
-			if not os.path.exists(to_directory):
-				os.makedirs(to_directory)
-			try:
-				shutil.copyfile(from_, to_)
-			except:
-				print "Error copying file: " + file + " - check your media"
-				continue
+				writeLog("Copying file: " + file)
+				if skipLargeFiles == True:
+					if file.find("img") > 0:
+						writeLog("TEST MODE = " + str(gDebugMode) + " : file skipped.")
+						continue
 
-	if not os.path.exists(dstDirectory + "/" + "Config"):
-		os.mkdir(dstDirectory + "/" + "Config")
+				from_ = os.path.join(root, file)
+				to_ = from_.replace(srcDirectory, dstDirectory, 1)
+				to_directory = os.path.split(to_)[0]
+				if not os.path.exists(to_directory):
+					os.makedirs(to_directory)
+				try:
+					shutil.copyfile(from_, to_)
+				except:
+					writeLog("Error copying file: " + file + " - check your media")
+					print "Error copying file: " + file + " - check your media"
+					continue
+
+		if not os.path.exists(dstDirectory + "/" + "Config"):
+			os.mkdir(dstDirectory + "/" + "Config")
+	else:
+		tmpMountPoint="/tmp/tmpMntPoint"
+
+		mountDevice(srcDirectory + "/rootfs.img", "-o ro,loop -t squashfs", tmpMountPoint)
+		runSilent("cp -a " + tmpMountPoint + "/* " + dstDirectory)
+		umountDevice(tmpMountPoint)
+
+		# Defaults to current GPU
+		# May fail if more than one GPU is available (nvidia has proprity though)
+		hasAMD, retCode = runSilent("lspci -nn | grep 0300 | grep 1002")
+		hasNVIDIA, retCode = runSilent("lspci -nn | grep 0300 | grep 10de")
+
+		if len(hasNVIDIA):
+			print "Installing NVIDIA restricted drivers..."
+			writeLog("Installing NVIDIA restricted drivers...")
+			mountDevice(srcDirectory + "/restrictedDrivers.nvidia.img", "-o ro,loop", tmpMountPoint)
+			runSilent("cp -a " + tmpMountPoint + "/* " + dstDirectory)
+			umountDevice(tmpMountPoint)
+		elif len(hasAMD):
+			print "Installing ATI/AMD restricted drivers..."
+			writeLog("Installing ATI/AMD restricted drivers...")
+			mountDevice(srcDirectory + "/restrictedDrivers.amd.img", "-o ro,loop", tmpMountPoint)
+			runSilent("cp -a " + tmpMountPoint + "/* " + dstDirectory)
+			umountDevice(tmpMountPoint)
+
+		if not os.path.exists(dstDirectory + "/boot"):
+			os.mkdir(dstDirectory + "/boot")
+
+		aFileName = os.readlink("/initrd.img")
+		# writeLog("Src=" + srcDirectory + "/initrd0.img")
+		# writeLog("Dest=" + dstDirectory + "/" + aFileName)
+		try:
+			writeLog("Copying " + srcDirectory + "/initrd0.img")
+			shutil.copyfile(srcDirectory + "/initrd0.img", dstDirectory + "/" + aFileName)
+		except:
+			writeLog("Error copying file: " + "initrd0.img")
+			print "Error copying file: " + "initrd0.img" + " - check your media"
+
+		aFileName = os.readlink("/vmlinuz")
+		# writeLog("Src=" + srcDirectory + "/vmlinuz")
+		# writeLog("Dest=" + dstDirectory + "/" + aFileName)
+		try:
+			writeLog("Copying " + srcDirectory + "/vmlinuz")
+			shutil.copyfile(srcDirectory + "/vmlinuz", dstDirectory + "/" + aFileName)
+		except:
+			writeLog("Error copying file: " + "vmlinuz")
+			print "Error copying file: " + "vmlinuz" + " - check your media"
+
+		# shutil.copyfile(srcDirectory + "/boot/xbmc.xpm.gz", dstDirectory + "/boot/xbmc.xpm.gz")
+		for root, dirs, files in os.walk(srcDirectory + "/boot"):
+			for file in files:
+				from_ = os.path.join(root, file)
+				to_ = from_.replace(srcDirectory, dstDirectory, 1)
+				to_directory = os.path.split(to_)[0]
+				if not os.path.exists(to_directory):
+					os.makedirs(to_directory)
+				try:
+					# print "Copying from: " + from_ + " to>: " + to_
+					shutil.copyfile(from_, to_)
+				except:
+					print "Error copying file: " + file + " - check your media"
+					writeLog("Error copying file: " + file)
+					continue
 
 
 def createPermanentStorageFile(aFileFName, aSizeMB):
@@ -325,36 +402,35 @@ def createPermanentStorageFile(aFileFName, aSizeMB):
 	return
 
 def findUUID(aPartition):
-	cmdLine = 'blkid | grep ' + aPartition + ' | cut -d " " -f 2 | cut -d "=" -f 2 | sed \'s/"//g' + "'"
+	cmdLine = 'blkid -s UUID | grep ' + aPartition + ' | cut -d " " -f 2 | cut -d "=" -f 2 | sed \'s/"//g' + "'"
 	anUUID, retCode = runSilent(cmdLine)
-	return anUUID
+	return anUUID.rstrip("\n\r")
 
 def installGrub(bootDevice, dstDirectory):
-	runSilent("grub-install --recheck  --force-lba --root-directory=" + dstDirectory + " " + bootDevice)
+	runSilent("grub-install --recheck --root-directory=" + dstDirectory + " " + bootDevice)
 
 def modifyGrubMenu(menuFName, isaRemovableDrive, bootPartition):
-	content = readFile(menuFName)
-
 	if isaRemovableDrive:
+		content = readFile(menuFName)
 		content = re.sub("boot=[a-z]*", "boot=usb", content)
 	else:
-		content = re.sub("boot=[a-z]*", "boot=disk", content)
-
-		# Defaults to current GPU
-		hasAMD, retCode = runSilent("lspci -nn | grep 0300 | grep 1002")
-		hasNVIDIA, retCode = runSilent("lspci -nn | grep 0300 | grep 10de")
-
-		gpuType=2
-		if len(hasNVIDIA):
-			gpuType=0
-		if len(hasAMD):
-			gpuType=1
-
-		content = re.sub("default [0-9]", "default " + str(gpuType), content)
-		content = re.sub("timeout [0-9]*", "timeout 1", content)
-		content = "hiddenmenu\n" + content
-
-		content = ("groot=UUID=" + findUUID(bootPartition) + "\n") + content
+		content = ("default 0" + "\n")
+		content += ("hiddenmenu" + "\n")
+		content += ("timeout 5" + "\n")
+		content += ("foreground eeeeee" + "\n")
+		content += ("background 333333" + "\n")
+		content += ("splashimage=/boot/xbmc.xpm.gz" + "\n")
+		content += ("\n")
+		content += ("title  XBMCLive" + "\n")
+		content += ("kernel /vmlinuz root=UUID=" + findUUID(bootPartition) + " quiet splash xbmc=nodiskmount,tempfs,setvolume,noredir loglevel=0" + "\n")
+		content += ("initrd /initrd.img" + "\n")
+		content += ("boot" + "\n")
+		content += ("\n")
+		content += ("title  XBMCLive - SAFE MODE" + "\n")
+		content += ("kernel /vmlinuz root=UUID=" + findUUID(bootPartition) + " xbmc=nodiskmount,noredir loglevel=0" + "\n")
+		content += ("initrd /initrd.img" + "\n")
+		content += ("boot" + "\n")
+		content += ("\n")
 
 	writeFile(menuFName, content)
 
@@ -368,7 +444,7 @@ def changePasswords(liveRootDir):
 		if retcode >= 0:
 			break
 
-	shutil.copyfile("/etc/shadow", liveRootDir + "/Config/shadow")
+	shutil.copyfile("/etc/shadow", liveRootDir + "/etc/shadow")
 
 def prepareFstab(liveRootDir, bootDevice, swapFileSize):
 	# Prepare /etc/fstab
@@ -380,7 +456,7 @@ def prepareFstab(liveRootDir, bootDevice, swapFileSize):
 	else:
 		content += ("UUID=" + findUUID(bootDevice + "2") + "   none            swap    sw,auto       0 0\n")
 		content += ("UUID=" + findUUID(bootDevice + "3") + "  /home            ext3    defaults,auto 0 0\n")
-	writeFile(liveRootDir + "/Config/fstab", content)
+	writeFile(liveRootDir + "/etc/fstab", content)
 
 
 def prepareHomeDirectory(bootDevice, swapFileSize):
@@ -502,11 +578,10 @@ def main():
 		print "   for USB flash disks: the disk must have at least " + str(gMinSizeMB) + " MB of capacity!"
 		print "   for fixed disks: the disk must have at least " + str(gFixedDiskMinSizeMB) + " MB of capacity!"
 		print ""
-		print "Select the disk you want to use."
 		print "CAUTION: the process will erase all data on the specified disk drive!"
 		print "CAUTION: this is an experimental tool, use at your own risk!"
 		print ""
-		raw_input("Press a key to continue, or Ctlr-C to exit.")
+		raw_input("Press a key to continue, or Ctrl-C to exit.")
 		
 		print ""
 		print "Identifying boot disk..."
@@ -557,11 +632,7 @@ def main():
 
 		print "Partitioning & formatting disk..."
 
-		if isRemovableDisk(availableDisks[diskIndex]):
-			gBootPartitionSizeMB = -1
-			gSwapPartitionSizeMB = 0
-
-		partitionFormatDisk(availableDisks[diskIndex], gBootPartitionSizeMB, gSwapPartitionSizeMB)
+		partitionFormatDisk(availableDisks[diskIndex], isRemovableDisk(availableDisks[diskIndex]), gBootPartitionSizeMB, gSwapPartitionSizeMB)
 
 		print "Copying system files - please wait..."
 
@@ -576,7 +647,7 @@ def main():
 		else:
 			mountDevice(cmdLineOptions.isoFileName, "-o loop", gBootPartMountPoint)
 
-		copySystemFiles(gBootPartMountPoint, gLivePartMountPoint, cmdLineOptions.skipFileCopy)
+		copySystemFiles(gBootPartMountPoint, gLivePartMountPoint, isRemovableDisk(availableDisks[diskIndex]), cmdLineOptions.skipFileCopy)
 
 		umountDevice(gBootPartMountPoint)
 
@@ -585,18 +656,19 @@ def main():
 		installGrub(availableDisks[diskIndex], gLivePartMountPoint)
 
 		if not gDebugMode > 10:
-			print ""
-			print " XBMC Live saves all system changes into a file, if available."
-			print " If such a file, called 'permanent storage file' does not exist,"
-			print " changes to system configuration are lost when rebooting."
-			print ""
-			if not userChoice("Do you want to create a permanent system storage file (Y/N)? ","Yy","Nn") == 0:
-				availSpace = freeSpaceMB(availableDisks[diskIndex] + "1")
-				storageSize = (availSpace/10)*7
-				if storageSize > 4000:
-					storageSize = 4000
-				print "Permanent system storage size = " + str(storageSize) + " MB, Please wait..."
-				createPermanentStorageFile(gLivePartMountPoint + "/" + gPermStorageFilename, storageSize)
+			if isRemovableDisk(availableDisks[diskIndex]):
+				print ""
+				print " XBMC Live saves all system changes into a file, if available."
+				print " If such a file, called 'permanent storage file' does not exist,"
+				print " changes to system configuration are lost when rebooting."
+				print ""
+				if not userChoice("Do you want to create a permanent system storage file (Y/N)? ","Yy","Nn") == 0:
+					availSpace = freeSpaceMB(availableDisks[diskIndex] + "1")
+					storageSize = (availSpace/10)*7
+					if storageSize > 4000:
+						storageSize = 4000
+					print "Permanent system storage size = " + str(storageSize) + " MB, Please wait..."
+					createPermanentStorageFile(gLivePartMountPoint + "/" + gPermStorageFilename, storageSize)
 
 		modifyGrubMenu(gLivePartMountPoint + "/boot/grub/menu.lst", isRemovableDisk(availableDisks[diskIndex]), availableDisks[diskIndex] + "1")
 

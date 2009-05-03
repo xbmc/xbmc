@@ -262,15 +262,17 @@ void XBMCClientWrapperImpl::populateEventMap(){
 	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_RELEASE,  new CPacketBUTTON(3, "JS0:AppleRemote", BTN_UP | BTN_NO_REPEAT | BTN_QUEUE)));
 	lr_map.insert(std::make_pair(ATV_BUTTON_MENU,          new CPacketBUTTON(6, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
 	lr_map.insert(std::make_pair(ATV_BUTTON_MENU_H,        new CPacketBUTTON(8, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-	lr_map.insert(std::make_pair(ATV_BUTTON_UP,            new CPacketBUTTON(1, "JS0:AppleRemote", BTN_DOWN  | BTN_QUEUE)));
-	lr_map.insert(std::make_pair(ATV_BUTTON_UP_RELEASE,    new CPacketBUTTON(1, "JS0:AppleRemote", BTN_UP  | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_UP,            new CPacketBUTTON(1, "JS0:AppleRemote", BTN_DOWN | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_UP_RELEASE,    new CPacketBUTTON(1, "JS0:AppleRemote", BTN_UP | BTN_QUEUE)));
 	lr_map.insert(std::make_pair(ATV_BUTTON_DOWN,          new CPacketBUTTON(2, "JS0:AppleRemote", BTN_DOWN | BTN_QUEUE)));
 	lr_map.insert(std::make_pair(ATV_BUTTON_DOWN_RELEASE,  new CPacketBUTTON(2, "JS0:AppleRemote", BTN_UP | BTN_QUEUE)));
 	
-	// only present on ATV <= 2.1
-	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_H, new CPacketBUTTON(10, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));	
-	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H,  new CPacketBUTTON(11, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-	
+	// only present on ATV <= 2.1 <--- check that; OSX seems to have the release parts
+	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_H, new CPacketBUTTON(10, "JS0:AppleRemote", BTN_DOWN | BTN_QUEUE)));	
+	lr_map.insert(std::make_pair(ATV_BUTTON_RIGHT_H_RELEASE, new CPacketBUTTON(10, "JS0:AppleRemote", BTN_UP | BTN_QUEUE)));	
+	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H,  new CPacketBUTTON(11, "JS0:AppleRemote", BTN_DOWN | BTN_QUEUE)));
+	lr_map.insert(std::make_pair(ATV_BUTTON_LEFT_H_RELEASE, new CPacketBUTTON(11, "JS0:AppleRemote", BTN_UP | BTN_QUEUE)));	
+  	
 	// only present on atv >= 2.2
 	lr_map.insert(std::make_pair(ATV_BUTTON_PLAY_H,  new CPacketBUTTON(7, "JS0:AppleRemote", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
   
@@ -361,23 +363,26 @@ void XBMCClientWrapperImpl::populateMultiRemoteModeMap(){
     // pro: custom tweaks. e.g. button 1 on the harmony may be  (153, ATV_BUTTON_LEFT) and this should not get a repeat
     //      maybe use the loop and tweak individual buttons later; plex maps here to strings, and later in keymap.xml to other strings,
     //      but this may need another kind of remote in XBMC source
-    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_UP),            new CPacketBUTTON(1 + offset, "JS0:Harmony", BTN_DOWN  | BTN_QUEUE)));
-    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_UP_RELEASE),    new CPacketBUTTON(1 + offset, "JS0:Harmony", BTN_UP  | BTN_QUEUE)));
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_UP),            new CPacketBUTTON(1 + offset, "JS0:Harmony", BTN_DOWN | BTN_QUEUE)));
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_UP_RELEASE),    new CPacketBUTTON(1 + offset, "JS0:Harmony", BTN_UP | BTN_QUEUE)));
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_DOWN),          new CPacketBUTTON(2 + offset, "JS0:Harmony", BTN_DOWN | BTN_QUEUE)));
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_DOWN_RELEASE),  new CPacketBUTTON(2 + offset, "JS0:Harmony", BTN_UP | BTN_QUEUE)));
     
-    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_LEFT),          new CPacketBUTTON(3 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT| BTN_QUEUE)));
-    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_LEFT_RELEASE),  new CPacketBUTTON(3 + offset, "JS0:Harmony", BTN_UP | BTN_NO_REPEAT | BTN_QUEUE)));
-    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_RIGHT),         new CPacketBUTTON(4 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
-    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_RIGHT_RELEASE), new CPacketBUTTON(4 + offset, "JS0:Harmony", BTN_UP | BTN_NO_REPEAT | BTN_QUEUE)));
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_LEFT),          new CPacketBUTTON(3 + offset, "JS0:Harmony", BTN_DOWN | BTN_QUEUE)));
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_LEFT_RELEASE),  new CPacketBUTTON(3 + offset, "JS0:Harmony", BTN_UP | BTN_QUEUE)));
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_RIGHT),         new CPacketBUTTON(4 + offset, "JS0:Harmony", BTN_DOWN | BTN_QUEUE)));
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_RIGHT_RELEASE), new CPacketBUTTON(4 + offset, "JS0:Harmony", BTN_UP | BTN_QUEUE)));
     
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_PLAY),          new CPacketBUTTON(5 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_MENU),          new CPacketBUTTON(6 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_PLAY_H),        new CPacketBUTTON(7 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
     m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_MENU_H),        new CPacketBUTTON(8 + offset, "JS0:Harmony", BTN_DOWN | BTN_NO_REPEAT | BTN_QUEUE)));
     
-    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_RIGHT_H),       new CPacketBUTTON(9 + offset, "JS0:Harmony", BTN_UP | BTN_QUEUE)));
-    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_LEFT_H),        new CPacketBUTTON(10 + offset, "JS0:Harmony", BTN_UP | BTN_QUEUE)));    
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_RIGHT_H),       new CPacketBUTTON(9 + offset, "JS0:Harmony", BTN_DOWN | BTN_QUEUE)));
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_RIGHT_H_RELEASE),new CPacketBUTTON(9 + offset, "JS0:Harmony", BTN_UP | BTN_QUEUE)));
+        
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_LEFT_H),        new CPacketBUTTON(10 + offset, "JS0:Harmony", BTN_DOWN | BTN_QUEUE)));    
+    m_multiremote_map.insert(std::make_pair(std::make_pair(*device_id,ATV_BUTTON_LEFT_H_RELEASE),new CPacketBUTTON(10 + offset, "JS0:Harmony", BTN_UP | BTN_QUEUE)));    
   }
 }
 

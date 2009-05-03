@@ -71,6 +71,8 @@ windows:
 Install MacPorts 1.7 (http://www.macports.org/). If you are going to run
 under the same OSX version as you build under, just install the required port
 packages without the extra flags. No modifications of MacPorts is required.
+That means skip 1), 2), 3) and 4) below and don't add "+universal" or 
+"macosx_deployment_target=10.4" when installing the ports. 
 
 If you want to build a cross-compiled version that can run under
 10.5/10.4/AppleTV, then change MacPorts's behavior to always build universal

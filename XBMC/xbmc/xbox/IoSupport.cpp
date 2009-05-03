@@ -274,11 +274,7 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
 {
 #ifdef _WIN32PC
   return CWIN32Util::EjectTray(cDriveLetter);
-#endif
-#ifdef _XBOX
-  HalWriteSMBusValue(0x20, 0x0C, FALSE, 0);  // eject tray
-#endif
-#ifdef __APPLE__
+#else
   CLibcdio *c_cdio = CLibcdio::GetInstance();
   char* dvdDevice = c_cdio->GetDeviceFileName();
   m_isoReader.Reset();
@@ -293,22 +289,6 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
     }
     else 
       break;
-  }
-#elif defined(_LINUX)
-  char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
-  std::cout << "Device: " << dvdDevice << std::endl;
-  if (strlen(dvdDevice) != 0)
-  {
-    std::cout << "Opened\n";
-    int fd = open(dvdDevice, O_RDONLY | O_NONBLOCK);
-    if (fd >= 0)
-    {
-      if (ioctl(fd, CDROMEJECT, 0) == 0)
-        std::cout << "Worked\n";
-      else
-        std::cout << "Didn't work\n";
-      close(fd);
-    }
   }
 #endif
   return S_OK;

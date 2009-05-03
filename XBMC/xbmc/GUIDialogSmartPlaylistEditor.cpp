@@ -168,9 +168,8 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     CStdString path;
     if (CGUIDialogKeyboard::ShowAndGetInput(filename, g_localizeStrings.Get(16013), false))
     {
-      CStdString strTmp;
-      CUtil::AddFileToFolder(m_playlist.GetSaveLocation(), filename, strTmp);
-      CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),strTmp,path);
+      path = CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),m_playlist.GetSaveLocation());
+      path = CUtil::AddFileToFolder(path, filename);
     }
     else
       return;
@@ -191,9 +190,8 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
       if (strFolder != m_playlist.GetSaveLocation())
       { // move to the correct folder
         XFILE::CFile::Delete(m_path);
-        CStdString strTmp;
-        CUtil::AddFileToFolder(m_playlist.GetSaveLocation(),filename,strTmp);
-        CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),strTmp,m_path);
+        m_path = CUtil::AddFileToFolder(g_guiSettings.GetString("system.playlistspath"),m_playlist.GetSaveLocation());
+        m_path = CUtil::AddFileToFolder(m_path, filename);
       }
     }
   }

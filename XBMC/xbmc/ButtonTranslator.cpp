@@ -319,6 +319,34 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
             }
           }
         }
+        else if (strcmpi(szType, "hat")==0)
+        {
+          string position;
+          if (pButton->QueryValueAttribute("position", &position) == TIXML_SUCCESS)
+          {
+            Uint32 hatID = id|0xFFF00000;
+            if (position.compare("up")==0)
+            {
+              hatMap[(SDL_HAT_UP<<16)|hatID] = string(szAction);
+            }
+            else if (position.compare("down")==0)
+            {
+              hatMap[(SDL_HAT_DOWN<<16)|hatID] = string(szAction);
+            }
+            else if (position.compare("right")==0)
+            {
+              hatMap[(SDL_HAT_RIGHT<<16)|hatID] = string(szAction);
+            }
+            else if (position.compare("left")==0)
+            {
+              hatMap[(SDL_HAT_LEFT<<16)|hatID] = string(szAction);
+            }
+            else
+            {
+              CLog::Log(LOGERROR, "Error in joystick map, invalid position specified %s for axis %d", position.c_str(), id);
+            }
+          }
+        }
         else
         {
           CLog::Log(LOGERROR, "Error reading joystick map element, unknown button type: %s", szType);
@@ -369,10 +397,6 @@ bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevi
   else if(inputType == JACTIVE_BUTTON)
   {
     jmap = &m_joystickButtonMap;
-  }
-  else if(inputType == JACTIVE_HAT)
-  {
-    jmap = &m_joystickHatMap;
   }
   else
   {

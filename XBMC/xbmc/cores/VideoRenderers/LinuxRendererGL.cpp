@@ -40,8 +40,6 @@
 #endif
 #ifdef HAS_GLX
 #include <GL/glx.h>
-PFNGLXBINDTEXIMAGEEXTPROC    glXBindTexImageEXT    = NULL;
-PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT = NULL;
 #endif
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
@@ -95,15 +93,8 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
 
-#ifdef HAS_GLX
-  if (!glXBindTexImageEXT)
-    glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
-  if (!glXReleaseTexImageEXT)
-    glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
-#endif
 #ifdef HAVE_LIBVDPAU
   m_StrictBinding = g_guiSettings.GetBool("videoplayer.strictbinding");
-  m_PixmapBound = false;
 #endif
 }
 
@@ -2098,14 +2089,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   glEnable(m_textureTarget);
 
   glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex());
-  if ( (m_StrictBinding) || (!m_PixmapBound) )
-  {
-    glXBindTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
-                      , g_VDPAU->m_Surface->GetGLPixmap()
-                      , GLX_FRONT_LEFT_EXT, NULL);
-    VerifyGLState();
-    m_PixmapBound = true;
-  }
+  g_VDPAU->m_Surface->BindPixmap();
 
   glActiveTextureARB(GL_TEXTURE0);
 
@@ -2137,14 +2121,12 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   }
   glEnd();
   VerifyGLState();
-
   if (m_StrictBinding)
   {
-    glXReleaseTexImageEXT( g_VDPAU->m_Surface->GetDisplay()
-                         , g_VDPAU->m_Surface->GetGLPixmap()
-                         , GLX_FRONT_LEFT_EXT);
-    VerifyGLState();
+    glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex());
+    g_VDPAU->m_Surface->ReleasePixmap();
   }
+
   glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
 #endif

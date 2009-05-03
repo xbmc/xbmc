@@ -152,7 +152,7 @@ CURL::CURL(const CStdString& strURL1)
     m_strProtocol.Equals("special")
     )
   {
-    m_strFileName = strURL.Mid(iPos);
+    SetFileName(strURL.Mid(iPos));
     return;
   }
 
