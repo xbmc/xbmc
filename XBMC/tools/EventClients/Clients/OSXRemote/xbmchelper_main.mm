@@ -10,7 +10,7 @@
 using namespace std;
 
 //instantiate XBMCHelper which registers itself to IR handling stuff
-XBMCHelper* g_xbmchelper;
+XBMCHelper* gp_xbmchelper;
 eRemoteMode g_mode = DEFAULT_MODE;
 std::string g_server_address="localhost";
 std::string g_app_path = "";
@@ -20,7 +20,7 @@ bool g_verbose_mode = false;
 
 //
 const char* PROGNAME="OSXRemote";
-const char* PROGVERS="0.3";
+const char* PROGVERS="0.4";
 
 void ParseOptions(int argc, char** argv);
 void ReadConfig();
@@ -167,14 +167,14 @@ void ParseOptions(int argc, char** argv)
 
 //----------------------------------------------------------------------------
 void StartHelper(){
-  [g_xbmchelper enableVerboseMode:g_verbose_mode];
+  [gp_xbmchelper enableVerboseMode:g_verbose_mode];
   
   //set apppath to startup when pressing Menu
-  [g_xbmchelper setApplicationPath:[NSString stringWithCString:g_app_path.c_str()]];    
+  [gp_xbmchelper setApplicationPath:[NSString stringWithCString:g_app_path.c_str()]];    
   //set apppath to startup when pressing Menu
-  [g_xbmchelper setApplicationHome:[NSString stringWithCString:g_app_home.c_str()]];
+  [gp_xbmchelper setApplicationHome:[NSString stringWithCString:g_app_home.c_str()]];
   //connect to specified server
-  [g_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] withMode:g_mode withTimeout: g_universal_timeout];  
+  [gp_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] withMode:g_mode withTimeout: g_universal_timeout];  
 }
 
 //----------------------------------------------------------------------------
@@ -185,15 +185,17 @@ void Reconfigure(int nSignal)
     
     StartHelper();
   }
-	else
-    exit(0);
+  else {
+    QuitEventLoop(GetMainEventLoop());
+  }
 }
 
 //----------------------------------------------------------------------------
 int main (int argc,  char * argv[]) {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  
   NSLog(@"%s %s starting up...", PROGNAME, PROGVERS);
-  g_xbmchelper = [[XBMCHelper alloc] init];  
+  gp_xbmchelper = [[XBMCHelper alloc] init];  
   
   signal(SIGHUP, Reconfigure);
 	signal(SIGINT, Reconfigure);
@@ -204,9 +206,9 @@ int main (int argc,  char * argv[]) {
   
   //run event loop in this thread
   RunCurrentEventLoop(kEventDurationForever);
-  
+  NSLog(@"%s %s exiting...", PROGNAME, PROGVERS);
   //cleanup
-  [g_xbmchelper release];
+  [gp_xbmchelper release];
   [pool drain];
   return 0;
 }
