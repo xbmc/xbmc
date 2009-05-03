@@ -35,3 +35,13 @@ protected:
   virtual VECSOURCES& GetSources();
 };
 
+class CGUIViewStateWindowProgramNav : public CGUIViewStateWindowPrograms
+{
+public:
+  CGUIViewStateWindowProgramNav(const CFileItemList& items);
+
+protected:
+  virtual void SaveViewState();
+  virtual VECSOURCES& GetSources();
+};
+

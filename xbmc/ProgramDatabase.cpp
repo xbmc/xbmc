@@ -502,7 +502,7 @@ DWORD CProgramDatabase::AddTitle(CProgramInfoTag program)
    }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, program.m_strTitle);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, program.m_strTitle.c_str());
     return 0;
   }
 }
@@ -517,7 +517,7 @@ CProgramInfoTag CProgramDatabase::GetTitle(DWORD titleId)
     
 
     // if doesn't, insert a new one
-    CStdString strSQL=FormatSQL("select idTitle, iType, strTitle, strDescription, strGenre, strStyle, strPublisher, strDateOfRelease, strYear, thumbURL from titles where idTitle=%i", titleId);
+    CStdString strSQL=FormatSQL("select idTitle, iType, strTitle, strDescription, strGenre, strStyle, strPublisher, strDateOfRelease, strYear, thumbURL, fanartURL from titles where idTitle=%i", titleId);
     m_pDS->query(strSQL.c_str());
 
     if (!m_pDS->eof())
@@ -560,5 +560,35 @@ void CProgramDatabase::RemoveTitle(DWORD titleId)
   }
 }
 
+int CProgramDatabase::GetProgramsCount()
+{
+  return GetProgramsCount((CStdString)"");
+}
 
+int CProgramDatabase::GetProgramsCount(const CStdString& strWhere)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+
+    CStdString strSQL = "select count(idTitle) as NumProgs from titles " + strWhere;
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return 0;
+    }
+
+    int iNumSongs = m_pDS->fv(0).get_asLong();
+    // cleanup
+    m_pDS->close();
+    return iNumSongs;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strWhere.c_str());
+  }
+  return 0;
+}
 

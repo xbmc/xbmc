@@ -200,7 +200,8 @@ SRCS=Application.cpp \
      PowerManager.cpp \
      Zeroconf.cpp \
      ProgramInfoScanner.cpp \
-     ProgramInfoTag.cpp
+     ProgramInfoTag.cpp \
+     GUIWindowProgramNav.cpp
 
 LIB=xbmc.a
 

@@ -67,6 +67,8 @@ public:
   DWORD AddTitle(CProgramInfoTag program);
   CProgramInfoTag GetTitle(DWORD titleId);
   void RemoveTitle(DWORD titleId);
+  int GetProgramsCount();
+  int GetProgramsCount(const CStdString& strWhere);
 
 protected:
   virtual bool CreateTables();

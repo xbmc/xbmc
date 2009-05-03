@@ -907,6 +907,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("pictureinfo")) wWindowID = WINDOW_DIALOG_PICTURE_INFO;
   else if (strWindow.Equals("pluginsettings")) wWindowID = WINDOW_DIALOG_PLUGIN_SETTINGS;
   else if (strWindow.Equals("fullscreeninfo")) wWindowID = WINDOW_DIALOG_FULLSCREEN_INFO;
+  else if (strWindow.Equals("programlibrary")) wWindowID = WINDOW_PROGRAM_NAV;
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 

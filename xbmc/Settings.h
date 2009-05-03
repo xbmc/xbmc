@@ -348,6 +348,7 @@ public:
     bool m_bMyVideoPlaylistRepeat;
     bool m_bMyVideoPlaylistShuffle;
     bool m_bMyVideoNavFlatten;
+    bool m_bMyProgramNavFlatten;
     bool m_bStartVideoWindowed;
 
     int m_iVideoStartWindow;
@@ -387,6 +388,7 @@ public:
   CStdString m_defaultVideoSource;
   CStdString m_defaultMusicLibSource;
   CStdString m_defaultVideoLibSource;
+  CStdString m_defaultProgramLibSource;
 
   VECSOURCES m_UPnPMusicSources;
   VECSOURCES m_UPnPVideoSources;
