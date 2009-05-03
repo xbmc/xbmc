@@ -732,7 +732,6 @@ void CDVDPlayer::Process()
   {
     g_VideoReferenceClock.Create();
     g_VideoReferenceClock.WaitStarted(1000);
-    g_VideoReferenceClock.SetSpeed(1.0);
   }
 
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
@@ -1470,7 +1469,6 @@ void CDVDPlayer::SendPlayerMessage(CDVDMsg* pMsg, unsigned int target)
 
 void CDVDPlayer::OnExit()
 {
-  g_VideoReferenceClock.SetSpeed(1.0);
   g_VideoReferenceClock.StopThread();
   
   g_dvdPerformanceCounter.DisableMainPerformance();

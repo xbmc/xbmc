@@ -103,6 +103,7 @@ void CVideoReferenceClock::Process()
   m_UseVblank = false;
   QueryPerformanceCounter(&Now);
   m_ClockOffset = Now.QuadPart - m_CurrTime;
+  m_AdjustedFrequency = m_SystemFrequency;
   SendVblankSignal();
   Unlock();
 }
