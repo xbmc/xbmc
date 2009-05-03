@@ -117,13 +117,8 @@
 	
 	unsigned int keycode = defaultKeycode;
 	if (keycodeCfg) keycode = [keycodeCfg unsignedIntValue];
-<<<<<<< HEAD:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
-				  
-    [self registerHotKeyCode: keycode  modifiers: modifiers remoteEventIdentifier: remoteButtonIdentifier];
-=======
   
   [self registerHotKeyCode: keycode  modifiers: modifiers remoteEventIdentifier: remoteButtonIdentifier];
->>>>>>> svn/linuxport:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
 }	
 
 - (void) setListeningToRemote: (BOOL) value {
@@ -141,24 +136,15 @@
 - (IBAction) startListening: (id) sender {
 	
 	if (eventHandlerRef) return;
-<<<<<<< HEAD:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
-		
-=======
   
->>>>>>> svn/linuxport:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
 	EventTypeSpec eventSpec[2] = {
 		{ kEventClassKeyboard, kEventHotKeyPressed },
 		{ kEventClassKeyboard, kEventHotKeyReleased }
 	};    
 	
 	InstallEventHandler( GetEventDispatcherTarget(),
-<<<<<<< HEAD:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
-						 (EventHandlerProcPtr)hotKeyEventHandler, 
-						 2, eventSpec, self, &eventHandlerRef);	
-=======
                       (EventHandlerProcPtr)hotKeyEventHandler, 
                       2, eventSpec, self, &eventHandlerRef);	
->>>>>>> svn/linuxport:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
 }
 - (IBAction) stopListening: (id) sender {
 	RemoveEventHandler(eventHandlerRef);
@@ -182,11 +168,7 @@
 	OSStatus err;
 	EventHotKeyID hotKeyID;
 	EventHotKeyRef carbonHotKey;
-<<<<<<< HEAD:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
-
-=======
   
->>>>>>> svn/linuxport:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
 	hotKeyID.signature = 'PTHk';
 	hotKeyID.id = (long)keycode;
 	
@@ -200,31 +182,6 @@
 	return YES;
 }
 /*
-<<<<<<< HEAD:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
-- (void)unregisterHotKey: (PTHotKey*)hotKey
-{
-	OSStatus err;
-	EventHotKeyRef carbonHotKey;
-	NSValue* key;
-	
-	if( [[self allHotKeys] containsObject: hotKey] == NO )
-		return;
-	
-	carbonHotKey = [self _carbonHotKeyForHotKey: hotKey];
-	NSAssert( carbonHotKey != nil, @"" );
-	
-	err = UnregisterEventHotKey( carbonHotKey );
-	//Watch as we ignore 'err':
-	
-	key = [NSValue valueWithPointer: carbonHotKey];
-	[mHotKeys removeObjectForKey: key];
-	
-	[self _updateEventHandler];
-	
-	//See that? Completely ignored
-}
-*/
-=======
  - (void)unregisterHotKey: (PTHotKey*)hotKey
  {
  OSStatus err;
@@ -248,7 +205,6 @@
  //See that? Completely ignored
  }
  */
->>>>>>> svn/linuxport:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
 
 - (RemoteControlEventIdentifier) remoteControlEventIdentifierForID: (unsigned int) id {
 	NSNumber* remoteEventIdentifier = [hotKeyRemoteEventMapping objectForKey:[NSNumber numberWithUnsignedInt: id]];
@@ -266,11 +222,7 @@ static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef in
 	GlobalKeyboardDevice* keyboardDevice = (GlobalKeyboardDevice*) userData;
 	EventHotKeyID hkCom;
 	GetEventParameter(inEvent,kEventParamDirectObject,typeEventHotKeyID,NULL,sizeof(hkCom),NULL,&hkCom);
-<<<<<<< HEAD:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
-
-=======
   
->>>>>>> svn/linuxport:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
 	RemoteControlEventIdentifier identifier = [keyboardDevice remoteControlEventIdentifierForID:hkCom.id];
 	if (identifier == 0) return noErr;
 	
@@ -279,11 +231,7 @@ static OSStatus hotKeyEventHandler(EventHandlerCallRef inHandlerRef, EventRef in
 		lastEvent = identifier;
 	} else {
 		lastEvent = 0;
-<<<<<<< HEAD:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
-	    pressedDown = NO;
-=======
     pressedDown = NO;
->>>>>>> svn/linuxport:tools/EventClients/Clients/OSXRemote/RemoteControlWrapper/GlobalKeyboardDevice.m
 	}
 	[keyboardDevice sendRemoteButtonEvent: identifier pressedDown: pressedDown];
 	

@@ -138,7 +138,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"b", &enabled)) return NULL;
 
     PyGUILock();
-    if (self->pGUIControl)   self->pGUIControl->SetEnabled((bool)enabled);
+    if (self->pGUIControl)   self->pGUIControl->SetEnabled(0 != enabled);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -162,7 +162,7 @@ namespace PYXBMC
     PyGUILock();
     if (self->pGUIControl)
     {
-      self->pGUIControl->SetVisible((bool)visible);
+      self->pGUIControl->SetVisible(0 != visible);
     }
     PyGUIUnlock();
 
@@ -194,7 +194,7 @@ namespace PYXBMC
 
     PyGUILock();
     if (self->pGUIControl)
-      self->pGUIControl->SetVisibleCondition(ret, (bool)bHidden);
+      self->pGUIControl->SetVisibleCondition(ret, 0 != bHidden);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);

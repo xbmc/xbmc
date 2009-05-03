@@ -277,7 +277,7 @@ namespace PYXBMC
     PyGUILock();
     if (self->pGUIControl)
     {
-      ((CGUICheckMarkControl*)self->pGUIControl)->SetSelected((bool)isSelected);
+      ((CGUICheckMarkControl*)self->pGUIControl)->SetSelected(0 != isSelected);
     }
     PyGUIUnlock();
 

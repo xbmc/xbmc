@@ -137,12 +137,9 @@ void CLinuxFileSystem::GetDrives(int *DeviceType, int len, VECSOURCES &shares)
       {
         if (reMount.RegFind(line) != -1)
         {
+          bool accepted = false;
           char* mount = reMount.GetReplaceString("\\1");
           char* fs    = reMount.GetReplaceString("\\2");
-
-          // Ignore root
-          if (strcmp(mount, "/") == 0)
-            continue;
             
           // Here we choose which filesystems are approved
           if (strcmp(fs, "fuseblk") == 0 || strcmp(fs, "vfat") == 0
@@ -150,6 +147,13 @@ void CLinuxFileSystem::GetDrives(int *DeviceType, int len, VECSOURCES &shares)
               || strcmp(fs, "reiserfs") == 0 || strcmp(fs, "xfs") == 0
               || strcmp(fs, "ntfs-3g") == 0 || strcmp(fs, "iso9660") == 0
               || strcmp(fs, "fusefs") == 0 || strcmp(fs, "hfs") == 0)
+            accepted = true;
+
+          // Ignore root
+          if (strcmp(mount, "/") == 0)
+            accepted = false;          
+          
+          if(accepted)
             result.push_back(mount);
 
           free(fs);

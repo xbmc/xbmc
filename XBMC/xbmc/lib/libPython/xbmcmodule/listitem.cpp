@@ -286,7 +286,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"b", &bOnOff)) return NULL;
 
     PyGUILock();
-    self->item->Select((bool)bOnOff);
+    self->item->Select(0 != bOnOff);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -669,7 +669,7 @@ namespace PYXBMC
 
     // set our replaceItems status
     if (bReplaceItems)
-      self->item->SetProperty("pluginreplacecontextitems", (bool)bReplaceItems);
+      self->item->SetProperty("pluginreplacecontextitems", 0 != bReplaceItems);
 
     Py_INCREF(Py_None);
     return Py_None;

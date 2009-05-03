@@ -107,7 +107,9 @@ public:
   bool MakePixmap(int width, int height);
   Display* GetDisplay() {return s_dpy;}
   GLuint GetGLPixmapTex() {return m_glPixmapTexture;}
-  
+  void BindPixmap();
+  void ReleasePixmap();
+  bool m_pixmapBound;
 #endif
 
   static std::string& GetGLVendor() { return s_glVendor; }
