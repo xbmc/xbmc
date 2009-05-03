@@ -20,7 +20,7 @@ bool g_verbose_mode = false;
 
 //
 const char* PROGNAME="OSXRemote";
-const char* PROGVERS="0.3";
+const char* PROGVERS="0.4";
 
 void ParseOptions(int argc, char** argv);
 void ReadConfig();
@@ -181,14 +181,16 @@ void Reconfigure(int nSignal)
 		ReadConfig();
     StartHelper();
   }
-	else
-    exit(0);
+	else {
+    QuitEventLoop(GetMainEventLoop());
+  }
 }
 
 //----------------------------------------------------------------------------
 int main (int argc,  char * argv[]) {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   
+  NSLog(@"%s %s starting up...", PROGNAME, PROGVERS);
   gp_xbmchelper = [[XBMCHelper alloc] init];  
   
   signal(SIGHUP, Reconfigure);
@@ -200,7 +202,7 @@ int main (int argc,  char * argv[]) {
   
   //run event loop in this thread
   RunCurrentEventLoop(kEventDurationForever);
-  
+  NSLog(@"%s %s exiting...", PROGNAME, PROGVERS);
   //cleanup
   [gp_xbmchelper release];
   [pool drain];

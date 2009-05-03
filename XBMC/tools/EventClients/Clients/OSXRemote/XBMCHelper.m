@@ -20,6 +20,7 @@
   mp_wrapper = nil;
   mp_remote_control = [[[AppleRemote alloc] initWithDelegate: self] retain];
   [mp_remote_control setProcessesBacklog:true];
+  [mp_remote_control setOpenInExclusiveMode:true];
   if( ! mp_remote_control ){
     NSException* myException = [NSException
                                 exceptionWithName:@"AppleRemoteInitExecption"
@@ -28,12 +29,16 @@
     @throw myException;
   }
   [mp_remote_control startListening: self];
+  if(![mp_remote_control isListeningToRemote]){
+    ELOG(@"Warning: XBMCHelper could not open the IR-Device in exclusive mode. Other remote control apps running?");
+  }
   return self;
 }
 
 - (void) dealloc{
   PRINT_SIGNATURE();
-  [mp_remote_control release];
+  [mp_remote_control stopListening: self];  
+  [mp_remote_control release];  
   [mp_wrapper release];
   [mp_app_path release];
   [mp_home_path release];
@@ -213,6 +218,5 @@
 //    }
 //    NSLog(@"%@ %@", pressed, buttonName);
 //    }
-
 
 @end
