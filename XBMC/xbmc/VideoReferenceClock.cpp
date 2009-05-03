@@ -370,7 +370,7 @@ void CVideoReferenceClock::RunD3D()
       return;
     }
 
-    if (RasterStatus.InVBlank || (RasterStatus.ScanLine < LastLine))
+    if ((RasterStatus.InVBlank && LastLine > 0) || (RasterStatus.ScanLine < LastLine))
     {
       QueryPerformanceCounter(&CurrVBlankTime);
       VBlankTime = (double)(CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart) / (double)m_SystemFrequency;
