@@ -342,42 +342,43 @@ void CVideoReferenceClock::RunGLX()
 void CVideoReferenceClock::RunD3D()
 {
   D3dClock::D3DRASTER_STATUS RasterStatus;
-  LARGE_INTEGER              CurrVBlankTime;
-  LARGE_INTEGER              LastVBlankTime;
+  LARGE_INTEGER              Now;
+  __int64                    LastVBlankTime;
+  __int64                    NextVBlankTime;
 
   unsigned int LastLine;
   int          NrVBlanks;
   double       VBlankTime;
   int          ReturnV;
-  int          SleepCount = 0;
+  int          PollCount = 0;
 
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 
   m_D3dDev->GetRasterStatus(0, &RasterStatus);
-
   if (RasterStatus.InVBlank) LastLine = 0;
   else LastLine = RasterStatus.ScanLine;
 
-  QueryPerformanceCounter(&LastVBlankTime);
+  QueryPerformanceCounter(&Now);
+  LastVBlankTime = Now.QuadPart;
 
   while(!m_bStop)
   {
     ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
-
     if (ReturnV != D3D_OK)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i", ReturnV & 0xFFFF);
       return;
     }
+    PollCount++;
 
     if ((RasterStatus.InVBlank && LastLine > 0) || (RasterStatus.ScanLine < LastLine))
     {
-      QueryPerformanceCounter(&CurrVBlankTime);
-      VBlankTime = (double)(CurrVBlankTime.QuadPart - LastVBlankTime.QuadPart) / (double)m_SystemFrequency;
+      QueryPerformanceCounter(&Now);
+      VBlankTime = (double)(Now.QuadPart - LastVBlankTime) / (double)m_SystemFrequency;
       NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
       Lock();
-      m_VblankTime = CurrVBlankTime.QuadPart;
+      m_VblankTime = Now.QuadPart;
       UpdateClock(NrVBlanks, true);
       SendVblankSignal();
       
@@ -390,21 +391,26 @@ void CVideoReferenceClock::RunD3D()
       }
       Unlock();
       
-      LastVBlankTime = CurrVBlankTime;
-      SleepCount = 0;
+      LastVBlankTime = Now.QuadPart;
+      PollCount = 0;
 
       HandleWindowMessages();
+
+      //because we had a vblank, sleep for half a refreshrate period
+      ::Sleep(500 / m_RefreshRate);
     }
+    else
+    {
+      //if the next vblank is more than 2 milliseconds away, sleep for 1 millisecond
+      //if polled for more than 50000 times since the last vblank, sleep as well to prevent hangs
+      QueryPerformanceCounter(&Now);
+      NextVBlankTime = LastVBlankTime + m_SystemFrequency / m_RefreshRate;
+      if ((NextVBlankTime - Now.QuadPart) * 500 > m_SystemFrequency || PollCount > 50000)
+        ::Sleep(1);
+    }
+
     if (RasterStatus.InVBlank) LastLine = 0;
     else LastLine = RasterStatus.ScanLine;
-
-    Sleep(1);
-    SleepCount++;
-    if (SleepCount >= 1000)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus is not responding");
-      return;
-    }
   }
 }
 
