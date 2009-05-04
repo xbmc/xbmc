@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "DVDInputStreamRTMP.h"
 #include "VideoInfoTag.h"
+#include "FileSystem/IFile.h"
 
 #ifdef _LINUX
   #include <sys/types.h>
@@ -62,7 +63,7 @@ bool CDVDInputStreamRTMP::IsEOF()
 
 bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
 {
-  if (!CDVDInputStream::Open(strFile, content)) return false;
+  if (!CDVDInputStream::Open(strFile, "video/x-flv")) return false;
 
   m_rtmp.SetPlayer(m_item.GetProperty("SWFPlayer")); 
   m_rtmp.SetPageUrl(m_item.GetProperty("PageURL")); 
@@ -223,16 +224,15 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
 
 __int64 CDVDInputStreamRTMP::Seek(__int64 offset, int whence)
 {
-  int ret = 0;
-  /* if we succeed, we are not eof anymore */
-  if( ret >= 0 ) m_eof = false;
-
-  return ret;
+  if(whence == SEEK_POSSIBLE)
+    return 0;
+  else
+    return -1;
 }
 
 __int64 CDVDInputStreamRTMP::GetLength()
 {
-  return 0;
+  return -1;
 }
 
 bool CDVDInputStreamRTMP::NextStream()

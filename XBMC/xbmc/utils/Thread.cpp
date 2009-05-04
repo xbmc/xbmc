@@ -241,15 +241,14 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 
   if ( pThread->IsAutoDelete() )
   {
-    CLog::Log(LOGDEBUG,"%s, deleting thread object", __FUNCTION__);
+    CLog::Log(LOGDEBUG,"Thread %u terminating (autodelete)", GetCurrentThreadId());
     delete pThread;
     pThread = NULL;
   }
+  else
+    CLog::Log(LOGDEBUG,"Thread %u terminating", GetCurrentThreadId());  
 
-  CLog::Log(LOGDEBUG,"%s, deleting thread graphic context", __FUNCTION__);
   g_graphicsContext.DeleteThreadContext();
-
-  CLog::Log(LOGDEBUG,"Thread %u terminating", GetCurrentThreadId());
 
 #ifndef _LINUX
   _endthreadex(123);
@@ -406,7 +405,7 @@ float CThread::GetRelativeUsage()
 
 DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
 {
-  if(dwMilliseconds > 10)
+  if(dwMilliseconds > 10 && GetCurrentThreadId() == m_ThreadId)
   {
     HANDLE handles[2] = {hHandle, m_StopEvent};
     DWORD result = ::WaitForMultipleObjects(2, handles, false, dwMilliseconds);
@@ -431,7 +430,7 @@ DWORD CThread::WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWai
 
 void CThread::Sleep(DWORD dwMilliseconds)
 {
-  if(dwMilliseconds > 10)
+  if(dwMilliseconds > 10 && GetCurrentThreadId() == m_ThreadId)
     ::WaitForSingleObject(m_StopEvent, dwMilliseconds);
   else
     ::Sleep(dwMilliseconds);

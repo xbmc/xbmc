@@ -56,6 +56,7 @@ public:
   virtual ~CMouse();
 
   void Initialize(void *appData = NULL);
+  void Cleanup();
   void Update();
   void Acquire();
   void SetResolution(int maxX, int maxY, float speedX, float speedY);

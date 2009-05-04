@@ -77,7 +77,7 @@ These configure options exist:
   --enable-debug          enable debugging information (default is yes)       
   --enable-optimizations  enable optimization (default is yes)                
   --enable-gl             enable OpenGL rendering (default is yes)            
-  --enable-vdpau          enable VDPAU decoding (default is no)               
+  --enable-vdpau          enable VDPAU decoding (default is yes if vdpau installed)
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
   --enable-xrandr         enable XRandR support (default is yes)
@@ -87,7 +87,7 @@ These configure options exist:
   --enable-faac           enable FAAC support (default is yes)
   --enable-dvdcss         enable DVDCSS support (default is yes)
   --enable-mid            enable MID support (default is no)
-  --enable-avahi          enable Avahi support (default is no)
+  --disable-avahi         disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)
 
 .2  # make
 
@@ -111,6 +111,9 @@ You can now run xbmc by issuing the command "xbmc" in a terminal. You should
 NEVER run xbmc.bin directly as this will not have platform mode enabled and 
 hence xbmc will not have write access to its home directory (ie. it will 
 probably crash).
+
+If you wish to use VDPAU decoding you will now have to change the Render Method
+in Settings->Videos->Player from "Auto Detect" to "VDPAU".
 
 -----------------------------------------------------------------------------
 6. Uninstalling

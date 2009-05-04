@@ -160,39 +160,6 @@ extern "C" void __stdcall update_emu_environ()
   }
 }
 
-#ifndef _LINUX
-bool emu_is_hd(const char* path)
-{
-  if (path[0] != 0 && path[1] == ':')
-  {
-    if (path[0] == 'C' ||
-        path[0] == 'E' ||
-        path[0] == 'F' ||
-        path[0] == 'Q' ||
-        path[0] == 'S' ||
-        path[0] == 'T' ||
-        path[0] == 'U' ||
-        path[0] == 'V' ||
-        path[0] == 'Y' ||
-        path[0] == 'Z')
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
-bool emu_is_root_drive(const char* path)
-{
-  int pathlen = strlen(path);
-  if (pathlen == 2 || pathlen == 3)
-  {
-    return emu_is_hd(path);
-  }
-  return false;
-}
-#endif
-
 extern "C"
 {
   void dll_sleep(unsigned long imSec)
@@ -1450,25 +1417,6 @@ extern "C"
   //SLOW CODE SHOULD BE REVISED
   int dll_stat(const char *path, struct stat *buffer)
   {
-#ifndef _LINUX
-    //stating a root, for example C:\\, failes on the xbox
-    if (emu_is_root_drive(path))
-    {
-        buffer->st_dev = 4294967280;
-        buffer->st_ino = 0;
-        buffer->st_mode = 16895;
-        buffer->st_nlink = 1;
-        buffer->st_uid = 0;
-        buffer->st_gid = 0;
-        buffer->st_rdev = 4294967280;
-        buffer->st_size = 0;
-        buffer->st_atime = 1000000000;
-        buffer->st_mtime = 1000000000;
-        buffer->st_ctime = 1000000000;
-        return 0;
-    }
- #endif
- 
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
       return -1;
     if (!strnicmp(path, "http://", 7)
@@ -1476,11 +1424,14 @@ extern "C"
       return -1;
     if (!strnicmp(path, "mms://", 6)) // don't stat mms
       return -1;
+      
+#ifdef _LINUX
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
     {
       buffer->st_mode = S_IFDIR;
       return 0;
     }
+#endif
     if (!stricmp(path, "\\Device\\Cdrom0") || !stricmp(path, "\\Device\\Cdrom0\\"))
     {
       buffer->st_mode = _S_IFDIR;
@@ -1510,24 +1461,6 @@ extern "C"
 
   int dll_stat64(const char *path, struct __stat64 *buffer)
   {
-#ifndef _LINUX
-    //stating a root, for example C:\\, failes on the xbox
-    if (emu_is_root_drive(path))
-    {
-        buffer->st_dev = 4294967280;
-        buffer->st_ino = 0;
-        buffer->st_mode = 16895;
-        buffer->st_nlink = 1;
-        buffer->st_uid = 0;
-        buffer->st_gid = 0;
-        buffer->st_rdev = 4294967280;
-        buffer->st_size = 0;
-        buffer->st_atime = 1000000000;
-        buffer->st_mtime = 1000000000;
-        buffer->st_ctime = 1000000000;
-        return 0;
-    }
- #endif 
     if (!strnicmp(path, "shout://", 8)) // don't stat shoutcast
       return -1;
     if (!strnicmp(path, "http://", 7)
@@ -1535,11 +1468,14 @@ extern "C"
       return -1;
     if (!strnicmp(path, "mms://", 6)) // don't stat mms
       return -1;
+
+#ifdef _LINUX
     if (!_stricmp(path, "D:") || !_stricmp(path, "D:\\"))
     {
       buffer->st_mode = _S_IFDIR;
       return 0;
     }
+#endif
     if (!stricmp(path, "\\Device\\Cdrom0") || !stricmp(path, "\\Device\\Cdrom0\\"))
     {
       buffer->st_mode = _S_IFDIR;
