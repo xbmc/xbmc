@@ -364,6 +364,31 @@
 
 <!-- UNICODE fonts -->
     <font>
+      <name>NPArtistFont</name>
+      <filename>Arial.ttf</filename>
+			<variant>Bold</variant>
+      <size>44</size>
+    </font>
+    <font>
+      <name>NPTitleFont</name>
+      <filename>Arial.ttf</filename>
+			<variant>Bold</variant>
+      <size>32</size>
+    </font>
+    <font>
+      <name>NPAlbumFont</name>
+      <filename>Arial.ttf</filename>
+			<variant>Regular</variant>
+      <size>32</size>
+    </font>
+    <font>
+      <name>NPNextFont</name>
+      <filename>Arial.ttf</filename>
+			<variant>Regular</variant>
+      <size>20</size>
+    </font>
+    
+    <font>
       <name>XLargeDefaultFont</name>
       <filename>Arial.ttf</filename>
       <size>32</size>
@@ -647,6 +672,27 @@
   </fontset>
 
 	<fontset id="Original" unicode="false">
+    <font>
+      <name>NPArtistFont</name>
+      <filename>Title.ttf</filename>
+      <size>44</size>
+    </font>
+    <font>
+      <name>NPTitleFont</name>
+      <filename>Default.ttf</filename>
+      <size>32</size>
+    </font>
+    <font>
+      <name>NPAlbumFont</name>
+      <filename>Default.ttf</filename>
+      <size>32</size>
+    </font>
+    <font>
+      <name>NPNextFont</name>
+      <filename>Default.ttf</filename>
+      <size>20</size>
+    </font>
+
 
 	<!-- Default fonts -->
 	    <font>
