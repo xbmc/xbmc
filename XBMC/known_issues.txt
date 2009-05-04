@@ -62,7 +62,12 @@ or httpapi, crashes during navigation, may not launch at all.
 davilla? phi? mdd? beenje? others?
 
 --- Windows Specific Issues ---------------------------------------------------
-WiSo? jmarshall? others?
+*) There's currently no support for multi monitor setups. Read the forum for
+workarounds.
+
+*) When XBMC is started in fullscreen switching to window mode isn't working
+atm. Just start XBMC in window mode and choose your desktop resolution from
+the settings to enable fullscreen.
 
 --- Xbox Specific Issues ------------------------------------------------------
 *) Graphical artifacts after starting a new video while another video, with
