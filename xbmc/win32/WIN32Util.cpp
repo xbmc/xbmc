@@ -30,6 +30,7 @@
 #include <shlobj.h>
 #include "SpecialProtocol.h"
 #include "my_ntddscsi.h"
+#include "Surface.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -604,6 +605,26 @@ void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
   }
   SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, sSysParam.bScrSaver, NULL, 0 );
   SetThreadExecutionState( sSysParam.dwEsFlags );
+}
+
+bool CWIN32Util::HasGLDefaultDrivers()
+{
+  CStdString strVendor = Surface::CSurface::GetGLVendor();
+
+  if(strVendor.find("Microsoft")!= strVendor.npos)
+    return true;
+  else
+    return false;
+}
+
+bool CWIN32Util::HasReqGLVersion()
+{
+  int a=0,b=0;
+  Surface::CSurface::GetGLVersion(a, b);
+  if((a>=2) || (a == 1 && b >= 4))
+    return true;
+  else
+    return false;
 }
 
 extern "C"
