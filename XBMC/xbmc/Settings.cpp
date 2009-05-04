@@ -1036,7 +1036,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     int interlaceMethod;
-    GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_RENDER_BLEND);
+    GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_INVERSE_TELECINE);
     g_stSettings.m_defaultVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD)interlaceMethod;
 
     GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 0, 10);
