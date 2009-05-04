@@ -729,6 +729,7 @@ namespace VIDEO
         return;
       }
       m_pathsToClean.push_back(m_database.GetPathId(item->m_strPath));
+      m_database.GetPathsForTvShow(m_database.GetTvShowId(item->m_strPath),m_pathsToClean);
       item->SetProperty("hash",hash);
     }
     else
