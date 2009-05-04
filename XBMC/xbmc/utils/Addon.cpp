@@ -154,6 +154,59 @@ void CAddon::OpenAddonSettings(const CAddon* addon, bool bReload)
   return;
 }
 
+bool CAddon::GetAddonSetting(const CAddon* addon, const char* settingName, void *settingValue)
+{
+  if (addon == NULL || settingName == NULL || settingValue == NULL)
+    return false;
+
+  CLog::Log(LOGDEBUG, "CAddon: AddOn %s request Setting %s", addon->m_strName.c_str(), settingName);
+    
+  /* TODO: Add a caching mechanism to prevent a reloading of settings file on every call */
+  CAddonSettings settings;
+  if (!settings.Load(addon->m_strPath))
+  {
+    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s", addon->m_strName.c_str());
+    return false;
+  }
+
+  TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
+  while (setting)
+  {
+    const char *id = setting->Attribute("id");
+    const char *type = setting->Attribute("type");
+        
+    if (strcmpi(id, settingName) == 0 && type)
+    {
+      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
+          strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
+          strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
+          strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
+          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
+      {
+        strcpy((char*) settingValue, settings.Get(id).c_str());
+        return true;
+      }
+      else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
+               strcmpi(type, "labelenum") == 0)
+      {
+        *(int*) settingValue = (int) atoi(settings.Get(id));
+        return true;
+      }
+      else if (strcmpi(type, "bool") == 0)
+      {
+        *(bool*) settingValue = (bool) (settings.Get(id) == "true" ? true : false);
+        return true;
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "Unknown setting type '%s' for id %s in %s", type, id, addon->m_strName.c_str());
+      }
+    }
+    setting = setting->NextSiblingElement("setting");
+  }
+  return false;
+}
+
 /**
 * XBMC AddOn Dialog callbacks
 * Helper functions to access GUI Dialog related functions
@@ -659,7 +712,11 @@ void CAddon::TransferAddonSettings(const CAddon* addon)
   ADDON::IAddonCallback* addonCB = GetCallbackForType(addon->m_addonType);
 
   CAddonSettings settings;
-  settings.Load(addon->m_strPath);
+  if (!settings.Load(addon->m_strPath))
+  {
+    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s during transfer", addon->m_strName.c_str());
+    return;
+  }
 
   TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
   while (setting)

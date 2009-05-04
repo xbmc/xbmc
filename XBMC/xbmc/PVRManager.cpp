@@ -103,7 +103,7 @@ void CPVRManager::Start()
   }
 
   /* Now that clients have been initialized, we check connectivity */
-  /*CheckClientConnections();*/
+  CheckClientConnections();
 
   /* spawn a thread */
 //  Create(false, THREAD_MINSTACKSIZE);
@@ -217,7 +217,6 @@ bool CPVRManager::LoadClients()
     if (client)
     {
       m_clients.insert(std::make_pair(client->GetID(), client));
-      CAddon::TransferAddonSettings(&clientAddon);
     }
   }
 
@@ -231,27 +230,21 @@ bool CPVRManager::LoadClients()
 
 bool CPVRManager::CheckClientConnections()
 {
+  if (m_clients.empty())
+  {
+    CLog::Log(LOGERROR, "PVR: no clients are connected during CheckClientConnections");
+    return false;
+  }
+
   CLIENTMAPITR clientItr(m_clients.begin());
   while (clientItr != m_clients.end())
   {
-    // signal client to connect to backend
-    PVR_ERROR err = (*clientItr).second->Connect();
-    if ( err == PVR_ERROR_NO_ERROR || err == PVR_ERROR_NOT_IMPLEMENTED)
-    {
-      clientItr++;
-    }
-    else
-    {
-      m_clients.erase(clientItr);
-      if (m_clients.empty())
-        break; // due to non-uniform map::erase implementation
-    }
-  }
+    /* Get the current running status of our PVR AddOn's */
+    ADDON_STATUS status = (*clientItr).second->GetStatus();
+    // TODO: Add something like a exception handler
 
-  if (m_clients.empty())
-  {
-    CLog::Log(LOGERROR, "PVR: no clients could connect");
-    return false;
+
+    clientItr++;
   }
 
   return true;

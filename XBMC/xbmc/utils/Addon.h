@@ -83,6 +83,7 @@ public:
   static void ClearAddonStrings();
   static void OpenAddonSettings(const CURL &url, bool bReload = true);
   static void OpenAddonSettings(const CAddon* addon, bool bReload);
+  static bool GetAddonSetting(const CAddon* addon, const char* settingName, void *settingValue);
 
   static bool OpenDialogOK(const char* heading, const char* line1, const char* line2, const char* line3);
   static bool OpenDialogYesNo(const char* heading, const char* line1, const char* line2, const char* line3, const char* nolabel, const char* yeslabel);

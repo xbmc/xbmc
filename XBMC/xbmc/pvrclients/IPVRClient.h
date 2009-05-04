@@ -88,21 +88,11 @@ public:
   virtual PVR_ERROR GetProperties(PVR_SERVERPROPS *props)=0;
 
   /**
-  * Connect to the PVR backend
-  * \return PVR_ERROR            = Error code
+  * Get the current status of the PVR AddOn dll related to "ADDON_STATUS"
+  * defined inside "DllAddonTypes.h"
+  * \return ADDON_STATUS         = the current status of the PVR AddOn
   */
-  virtual PVR_ERROR Connect(void)=0;
-
-  /**
-  * Disconnect from the PVR backend
-  */
-  virtual void Disconnect(void)=0;
-
-  /**
-  * Check if XBMC is connected to the PVR backend
-  * \return bool                 = true = connected, false = disconnected
-  */
-  virtual bool IsUp(void)=0;
+  virtual ADDON_STATUS GetStatus(void)=0;
 
 /****************************************/
 /**_GENERAL INTERFACE__________________**/

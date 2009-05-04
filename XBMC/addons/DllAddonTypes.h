@@ -130,6 +130,35 @@ extern "C"
     typedef void (*AddOnLogCallback)(void *userData, const ADDON_LOG loglevel, const char *format, ... );
 
     /**
+     * AddOnCallbacks -- GetSetting -- Get a current addon setting value
+     *
+     * userData       : pointer - Points to the AddOn specific data
+     * settingName    : string - name of the settings used inside the XML Files.
+     * settingValue   : pointer - Points to the memory where the value must saved
+     * 
+     * *Note, Returns True if 'Ok', else False.
+     *        Address of Boolean or Integer values can be passed directly by "settingValue".
+     *        For character values a buffer with a minimum size of 1024 Bytes must
+     *        be used with "settingValue".
+     *        If the Setting is not found, "settingValue" is mot modified.
+     *
+     * example 1:
+     *  - char * buffer;
+     *  - buffer = (char*) malloc (1024);
+     *  - buffer[0] = 0;
+     *  - if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "hostname", buffer))
+     *  - {
+     *  -   ***do something***
+     *  - }
+     *  - free(buffer);
+     *
+     * example 2:
+     *  - int port;
+     *  - g_xbmc->AddOn.GetSetting(g_xbmc->userData, "port", &port)
+     */
+    typedef bool (*AddOnGetSetting)(void *userData, const char *settingName, void *settingValue);
+
+    /**
      * AddOnCallbacks -- OpenSettings -- Opens some AddOn settings.
      *
      * url            : string - url of plugin. (addon://addons/pvrVDR/)
@@ -159,6 +188,7 @@ extern "C"
     {
       AddOnStatusCallback    ReportStatus;
       AddOnLogCallback       Log;
+      AddOnGetSetting        GetSetting;
       AddOnOpenSettings      OpenSettings;
       AddOnOpenOwnSettings   OpenOwnSettings;
     } AddOnCallbacks;

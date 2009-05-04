@@ -39,8 +39,8 @@ CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* p
 
 CPVRClient::~CPVRClient()
 {
-  // tell the plugin to disconnect and prepare for destruction
-  Disconnect();
+  /* tell the AddOn to disconnect and prepare for destruction */
+  m_pClient->Destroy();
   /*DeInit();*/
   DeleteCriticalSection(&m_critSection);
 }
@@ -52,6 +52,7 @@ bool CPVRClient::Init()
   callbacks->Event                      = PVREventCallback;
   callbacks->AddOn.ReportStatus         = AddOnStatusCallback;
   callbacks->AddOn.Log                  = AddOnLogCallback;
+  callbacks->AddOn.GetSetting           = AddOnGetSetting;
   callbacks->AddOn.OpenSettings         = AddOnOpenSettings;
   callbacks->AddOn.OpenOwnSettings      = AddOnOpenOwnSettings;
 
@@ -64,11 +65,6 @@ bool CPVRClient::Init()
   callbacks->Dialog.ProgressUpdate      = CAddon::ProgressDialogUpdate;
   callbacks->Dialog.ProgressIsCanceled  = CAddon::ProgressDialogIsCanceled;
   callbacks->Dialog.ProgressClose       = CAddon::ProgressDialogClose;
-
-  callbacks->GUI.Lock                   = CAddon::GUILock;
-  callbacks->GUI.Unlock                 = CAddon::GUIUnlock;
-  callbacks->GUI.GetCurrentWindowId     = CAddon::GUIGetCurrentWindowId;
-  callbacks->GUI.GetCurrentWindowDialogId   = CAddon::GUIGetCurrentWindowDialogId;
       
   callbacks->Utils.Shutdown             = CAddon::Shutdown;
   callbacks->Utils.Restart              = CAddon::Restart;
@@ -96,9 +92,16 @@ bool CPVRClient::Init()
   callbacks->Utils.GetRegion            = CAddon::GetRegion;
   callbacks->Utils.SkinHasImage         = CAddon::SkinHasImage;
 
-  m_pClient->Create(callbacks);
-  
+  /* Call Create to make connections, initializing data or whatever is
+     needed to become the AddOn running */
+  ADDON_STATUS status = m_pClient->Create(callbacks);
+
   return true;
+}
+
+ADDON_STATUS CPVRClient::GetStatus()
+{
+  return m_pDll->GetStatus();
 }
 
 long CPVRClient::GetID()
@@ -117,22 +120,6 @@ PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
     CLog::Log(LOGERROR, "PVR: %s/%s - exception from GetProperties", m_strName.c_str(), m_hostName.c_str());
     return PVR_ERROR_UNKOWN;
   }
-}
-
-PVR_ERROR CPVRClient::Connect()
-{
-  CLog::Log(LOGDEBUG, "PVR: %s - connecting", m_strName.c_str());
-  return m_pClient->Connect();
-}
-
-void CPVRClient::Disconnect()
-{
-  m_pClient->Disconnect();
-}
-
-bool CPVRClient::IsUp()
-{
-  return m_pClient->IsUp();
 }
 
 const std::string CPVRClient::GetBackendName()
@@ -449,6 +436,15 @@ void CPVRClient::AddOnLogCallback(void *userData, const ADDON_LOG loglevel, cons
 
   /* finally write the logmessage */
   CLog::Log(xbmclog, xbmcMsg);
+}
+
+bool CPVRClient::AddOnGetSetting(void *userData, const char *settingName, void *settingValue)
+{
+  CPVRClient* client=(CPVRClient*) userData;
+  if (!client)
+    return NULL;
+
+  return CAddon::GetAddonSetting(client, settingName, settingValue);
 }
 
 void CPVRClient::AddOnOpenSettings(const char *url, bool bReload)

@@ -31,7 +31,6 @@
 #include "DllAddonTypes.h"
 #include "DllAddonSettings.h"
 
-#include <vector>
 #include <string.h>
 #include <time.h>
 
@@ -151,7 +150,6 @@ extern "C"
 
     AddOnCallbacks      AddOn;
     DialogCallbacks     Dialog;
-    GUICallbacks        GUI;
     UtilsCallbacks      Utils;
     void *userData;
   } PVRCallbacks;
@@ -159,12 +157,9 @@ extern "C"
   // Structure to transfer the above functions to XBMC
   struct PVRClient
   {
-    PVR_ERROR (__cdecl* Create)(PVRCallbacks *callbacks);
-    long (__cdecl* GetID)();
+    ADDON_STATUS (__cdecl* Create)(PVRCallbacks *callbacks);
+    void (__cdecl* Destroy)();
     PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);
-    PVR_ERROR (__cdecl* Connect)();
-    void (__cdecl* Disconnect)();
-    bool (__cdecl* IsUp)();
     const char* (__cdecl* GetBackendName)();
     const char* (__cdecl* GetBackendVersion)();
     const char* (__cdecl* GetConnectionString)();

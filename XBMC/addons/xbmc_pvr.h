@@ -13,30 +13,16 @@
 #endif
 #endif
 
-
+#include "xbmc_addon.h"               /* Dll related functions available to all AddOn's */
 #include "PVRClientTypes.h"
-#include <vector>
-
-
-
-using namespace std;
-
 
 extern "C"
 {
-  //TODO inherit these functions from xbmc_addon.h
-  bool __declspec(dllexport) HasSettings();
-  bool __declspec(dllexport) SetSetting(const char *settingName, const void *settingValue);
-  __declspec(dllexport) DllSettings* GetSettings();
-  void __declspec(dllexport) Remove();
-
-
-  // Functions that your client must implement
-  PVR_ERROR Create(PVRCallbacks*);
+  // Functions that your PVR client must implement, also you must implement the functions from
+  // xbmc_addon.h
+  ADDON_STATUS Create(PVRCallbacks*);
+  void Destroy();
   PVR_ERROR GetProperties(PVR_SERVERPROPS* pProps);
-  PVR_ERROR Connect();
-  void Disconnect();
-  bool IsUp();
   const char* GetBackendName();
   const char* GetBackendVersion();
   const char* GetConnectionString();
@@ -54,10 +40,8 @@ extern "C"
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
     pClient->Create = Create;
+    pClient->Destroy = Destroy;
     pClient->GetProperties = GetProperties;
-    pClient->Connect = Connect;
-    pClient->Disconnect = Disconnect;
-    pClient->IsUp = IsUp;
     pClient->GetBackendName = GetBackendName;
     pClient->GetBackendVersion = GetBackendVersion;
     pClient->GetConnectionString = GetConnectionString;
