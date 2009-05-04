@@ -402,11 +402,11 @@ void CVideoReferenceClock::RunD3D()
     }
     else
     {
-      //if the next vblank is more than 2 milliseconds away, sleep for 1 millisecond
+      //if the next vblank is more than 1 millisecond away, sleep for 1 millisecond
       //if polled for more than 50000 times since the last vblank, sleep as well to prevent hangs
       QueryPerformanceCounter(&Now);
       NextVBlankTime = LastVBlankTime + m_SystemFrequency / m_RefreshRate;
-      if ((NextVBlankTime - Now.QuadPart) * 500 > m_SystemFrequency || PollCount > 50000)
+      if ((NextVBlankTime - Now.QuadPart) * 1000 > m_SystemFrequency || PollCount > 50000)
         ::Sleep(1);
     }
 
