@@ -75,7 +75,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   // create our settings
   {
     const int entries[] = { 16018, 16019, 20131, 20130, 20129, 16022, 16021, 16020, 
-#ifdef _LINUX
+#ifdef HAVE_LIBVDPAU
                             16310,
 #endif
                             16314};
