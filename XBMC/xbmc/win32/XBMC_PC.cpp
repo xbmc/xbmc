@@ -109,7 +109,7 @@ INT CXBMC_PC::Run()
 
   if(CWIN32Util::HasGLDefaultDrivers())
   {
-    MessageBox(NULL, "MS default OpenGL drivers detected. Please get OpenGL drivers from you vendor", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
+    MessageBox(NULL, "MS default OpenGL drivers detected. Please get OpenGL drivers from your vendor", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
     g_application.Cleanup();
     return E_FAIL;
   }
