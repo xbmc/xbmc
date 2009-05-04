@@ -44,9 +44,9 @@ start)
 		# Generates valid xorg.conf for proprietary drivers if missing
 		XBMC_NOGENXCONF="$( echo $XBMC_PARAMS | grep "nogenxconf" )"
 		if [ ! -e /etc/X11/xorg.conf ] && [ "$XBMC_NOGENXCONF" == "" ]; then
-			NVIDIA="$( echo $XBMC_PARAMS | grep "nvidia" )"
+			NVIDIA="$(lspci -nn | grep 0300 | grep 10de)"
 			if [ "$NVIDIA" == "" ]; then
-				AMD="$( echo $XBMC_PARAMS | grep "amd" )"
+				AMD="$(lspci -nn | grep 0300 | grep 1002)"
 				if [ "$AMD" != "" ]; then
 					# run aticonfig
 					echo "Generating xorg.conf for ATI..."
