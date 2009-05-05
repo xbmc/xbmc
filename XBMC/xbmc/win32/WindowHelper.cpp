@@ -27,9 +27,6 @@ extern HWND g_hWnd;
 
 using namespace std;
 
-HWND  CWHelper::m_hwnd = NULL;
-HANDLE CWHelper::m_hProcess = NULL;
-
 CWHelper g_windowHelper;
 
 CWHelper::CWHelper(void)
@@ -40,6 +37,7 @@ CWHelper::CWHelper(void)
 
 CWHelper::~CWHelper(void)
 {
+  StopThread();
   m_hwnd = NULL;
   if(m_hProcess != NULL)
   {
@@ -96,3 +94,4 @@ void CWHelper::SetHANDLE(HANDLE hProcess)
 {
   m_hProcess = hProcess;
 }
+
