@@ -142,6 +142,7 @@ Then install the following port packages (order is very important):
  $ sudo port install openssl +universal
  $ sudo port install samba3 macosx_deployment_target=10.4
  $ sudo port install mysql5 +universal
+ $ sudo port install sqlite3 +universal
 
  $ sudo port install libsdl +no_x11 +universal
  $ sudo port install smpeg +universal
