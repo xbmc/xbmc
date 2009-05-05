@@ -23,7 +23,7 @@
 /*
  * Common data structures shared between XBMC and Add-On's
  *
- * The following data structures and definations are used
+ * The following data structures and definitions are used
  * by all the types of AddOn's and must be handled by the
  * XBMC part of the AddOn type.
  *

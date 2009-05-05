@@ -164,11 +164,12 @@ extern "C"
     const char* (__cdecl* GetBackendVersion)();
     const char* (__cdecl* GetConnectionString)();
     PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
-//    int (__cdecl* GetNumBouquets)();
+    int (__cdecl* GetNumBouquets)();
+    int (__cdecl* GetNumChannels)();
+    int (__cdecl* GetNumRecordings)();
+    int (__cdecl* GetNumTimers)();
 //    PVR_ERROR (__cdecl* GetBouquetInfo)(const unsigned number, PVR_BOUQUET *info);
-//    int (__cdecl* GetNumChannels)();
 //    unsigned int (__cdecl* GetChannelList)(PVR_CHANNEL ***channels);
-//    unsigned int (__cdecl* GetNumTimers)();
 //    PVR_ERROR (__cdecl* GetTimers)(PVR_ ***timers);
 //    PVR_ERROR (__cdecl* GetEPGForChannel)(const unsigned channel, PVR_PROGLIST **epg, time_t start, time_t end);
 //    PVR_ERROR (__cdecl* GetEPGNowInfo)(const unsigned channel, PVR_PROGINFO *result);

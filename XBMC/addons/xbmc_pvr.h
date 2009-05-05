@@ -27,9 +27,11 @@ extern "C"
   const char* GetBackendVersion();
   const char* GetConnectionString();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
-//  int GetNumBouquets();
+  int GetNumBouquets();
+  int GetNumChannels();
+  int GetNumRecordings();
+  int GetNumTimers();
 //  PVR_ERROR GetBouquetInfo(const unsigned number, PVR_BOUQUET *info);
-//  int GetNumChannels();
 //  unsigned int GetChannelList(PVR_CHANNEL ***channels);
 //  PVR_ERROR GetEPGForChannel(const unsigned channel, PVR_PROGLIST **epg, time_t start, time_t end);
 //  PVR_ERROR GetEPGNowInfo(const unsigned channel, PVR_PROGINFO *result);
@@ -46,9 +48,11 @@ extern "C"
     pClient->GetBackendVersion = GetBackendVersion;
     pClient->GetConnectionString = GetConnectionString;
     pClient->GetDriveSpace = GetDriveSpace;
-//    pClient->GetNumBouquets = GetNumBouquets;
+    pClient->GetNumBouquets = GetNumBouquets;
+    pClient->GetNumChannels = GetNumChannels;
+    pClient->GetNumRecordings = GetNumRecordings;
+    pClient->GetNumTimers = GetNumTimers;
 //    pClient->GetBouquetInfo = GetBouquetInfo;
-//    pClient->GetNumChannels = GetNumChannels;
 //    pClient->GetChannelList = GetChannelList;
 //    pClient->GetEPGForChannel = GetEPGForChannel;
 //    pClient->GetEPGNowInfo = GetEPGNowInfo;

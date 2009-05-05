@@ -29,17 +29,17 @@ class CPVRClient : public IPVRClient
 {
 public:
   CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll, 
-    const ADDON::CAddon& addon, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB);
+             const ADDON::CAddon& addon, ADDON::IAddonCallback *addonCB, 
+             IPVRClientCallback *pvrCB);
   ~CPVRClient();
 
   // DLL related
   bool Init();
+  void DeInit();
   virtual void Remove();
   virtual ADDON_STATUS GetStatus();
   virtual bool SetSetting(const char *settingName, const void *settingValue);
   void GetSettings(std::vector<DllSetting> **vecSettings);
-  void UpdateSetting(int num);
-  void OnClientMessage(PVR_EVENT event);
 
   // IPVRClient //////////////////////////////////////////////////////////////
   virtual CCriticalSection* GetLock() { return &m_critSection; }
@@ -62,27 +62,31 @@ public:
   virtual PVR_ERROR GetEPGNowInfo(const unsigned int number, PVR_PROGINFO *result);
   virtual PVR_ERROR GetEPGNextInfo(const unsigned int number, PVR_PROGINFO *result);
   virtual PVR_ERROR GetEPGDataEnd(time_t end);
+  /* Recordings */
+  virtual int GetNumRecordings(void);
   /* Timers */
-  virtual const unsigned int GetNumTimers(void);
+  virtual int GetNumTimers(void);
   virtual PVR_ERROR GetTimers(VECTVTIMERS &timers);
   virtual PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo);
   virtual PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force = false);
   virtual PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname);
   virtual PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo);
 
-  
 protected:
   bool ConvertChannels(unsigned int num, PVR_CHANNEL **clientChans, VECCHANNELS &out);
   void ReleaseClientData(unsigned int num, PVR_CHANNEL **clientChans);
+
   const long m_clientID;
+  bool m_ReadyToUse;
   std::auto_ptr<struct PVRClient> m_pClient;
   std::auto_ptr<DllPVRClient> m_pDll;
   CStdString m_hostName;
   CStdString m_backendName;
   CStdString m_backendVersion;
 
-  CCriticalSection m_critSection;
-  IPVRClientCallback* m_manager;
+  CCriticalSection    m_critSection;
+  IPVRClientCallback *m_manager;
+  PVRCallbacks       *m_callbacks;
 
 private:
   static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);

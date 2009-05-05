@@ -316,13 +316,28 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
           {
             m_backendDiskspace = g_localizeStrings.Get(18074);
           }
+          
+          int NumChannels = m_clients[m_infoToggleCurrent]->GetNumChannels();
+          if (NumChannels >= 0)
+            m_backendChannels.Format("%i", NumChannels);
+          else
+            m_backendChannels = g_localizeStrings.Get(161);
+
+          int NumTimers = m_clients[m_infoToggleCurrent]->GetNumTimers();
+          if (NumTimers >= 0)
+            m_backendTimers.Format("%i", NumTimers);
+          else
+            m_backendTimers = g_localizeStrings.Get(161);
+
+          int NumRecordings = m_clients[m_infoToggleCurrent]->GetNumRecordings();
+          if (NumRecordings >= 0)
+            m_backendRecordings.Format("%i", NumRecordings);
+          else
+            m_backendRecordings = g_localizeStrings.Get(161);
 
           m_backendName         = m_clients[m_infoToggleCurrent]->GetBackendName();
           m_backendVersion      = m_clients[m_infoToggleCurrent]->GetBackendVersion();
           m_backendHost         = m_clients[m_infoToggleCurrent]->GetConnectionString();
-          m_backendTimers       = "0";
-          m_backendRecordings   = "0";
-          m_backendChannels     = "0";
         }
         else
         {

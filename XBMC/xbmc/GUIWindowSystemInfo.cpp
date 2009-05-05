@@ -170,8 +170,8 @@ void CGUIWindowSystemInfo::Render()
     SetControlLabel(i++, "%s %s", 18202, PVR_BACKEND_HOST);
     SetControlLabel(i++, "%s %s", 18203, PVR_BACKEND_DISKSPACE);
     SetControlLabel(i++, "%s %s", 18204, PVR_BACKEND_CHANNELS);
-    SetControlLabel(i++, "%s %s", 18205, PVR_BACKEND_TIMERS);
-    SetControlLabel(i++, "%s %s", 18206, PVR_BACKEND_RECORDINGS);
+    SetControlLabel(i++, "%s %s", 18205, PVR_BACKEND_RECORDINGS);
+    SetControlLabel(i++, "%s %s", 18206, PVR_BACKEND_TIMERS);
   }
   SET_CONTROL_LABEL(52, "XBMC "+g_infoManager.GetLabel(SYSTEM_BUILD_VERSION)+" (Compiled : "+g_infoManager.GetLabel(SYSTEM_BUILD_DATE)+")");
   CGUIWindow::Render();

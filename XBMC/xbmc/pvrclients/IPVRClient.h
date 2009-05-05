@@ -193,14 +193,23 @@ public:
   */
   virtual PVR_ERROR GetEPGDataEnd(time_t end)=0;
 
-  /****************************************/
-  /**_ TIMER INTERFACE __________________**/
+/****************************************/
+/**_ RECORDINGS INTERFACE _____________**/
+
+  /**
+  * Get number of present recordings
+  * \return int                   = number of recordings present (-1 if fails)
+  */
+  virtual int GetNumRecordings(void)=0;
+
+/****************************************/
+/**_ TIMER INTERFACE __________________**/
 
   /**
   * Get number of active timers
   * \return int                   = number of timers active (-1 if fails)
   */
-  virtual const unsigned int GetNumTimers(void)=0;
+  virtual int GetNumTimers(void)=0;
 
   /**
   * Get a list of any timers that are available, including ones not yet finished

@@ -109,22 +109,29 @@ void CAddon::ClearAddonStrings()
 
 void CAddon::OpenAddonSettings(const CURL &url, bool bReload)
 {
-  // Path where the addon resides
-  CStdString pathToAddon = "addon://";
-
-  // Build the addon's path
-  CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
-  CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
-
-  CAddon addon;
-  if (g_settings.AddonFromInfoXML(pathToAddon, addon))
+  try 
   {
-    addon.m_strPath = pathToAddon;
-    OpenAddonSettings(&addon, bReload);
+    // Path where the addon resides
+    CStdString pathToAddon = "addon://";
+
+    // Build the addon's path
+    CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
+    CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
+
+    CAddon addon;
+    if (g_settings.AddonFromInfoXML(pathToAddon, addon))
+    {
+      addon.m_strPath = pathToAddon;
+      OpenAddonSettings(&addon, bReload);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Unknown URL %s to open AddOn Settings", pathToAddon.c_str());
+    }
   }
-  else
+  catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "Unknown URL %s to open AddOn Settings", pathToAddon.c_str());
+    CLog::Log(LOGERROR, "CAddon: Exception '%s' during OpenAddonSettings occurred", e.what());
   }
 }
 
@@ -133,25 +140,30 @@ void CAddon::OpenAddonSettings(const CAddon* addon, bool bReload)
   if (addon == NULL)
     return;
 
-  CLog::Log(LOGDEBUG, "Calling OpenAddonSettings for: %s", addon->m_strName.c_str());
-
-  if (!CAddonSettings::SettingsExist(addon->m_strPath))
+  try 
   {
-    CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", addon->m_strName.c_str());
-    return;
+    CLog::Log(LOGDEBUG, "Calling OpenAddonSettings for: %s", addon->m_strName.c_str());
+
+    if (!CAddonSettings::SettingsExist(addon->m_strPath))
+    {
+      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", addon->m_strName.c_str());
+      return;
+    }
+
+    CURL cUrl(addon->m_strPath);
+    CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
+
+    // reload plugin settings & strings
+    if (bReload)
+    {
+      g_currentPluginSettings.Load(cUrl);
+      CAddon::LoadAddonStrings(cUrl);
+    }
   }
-
-  CURL cUrl(addon->m_strPath);
-  CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
-
-  // reload plugin settings & strings
-  if (bReload)
+  catch (std::exception &e)
   {
-    g_currentPluginSettings.Load(cUrl);
-    CAddon::LoadAddonStrings(cUrl);
+    CLog::Log(LOGERROR, "PVR: %s - exception '%s' during OpenAddonSettings occurred, contact Developer '%s' of this AddOn", addon->m_strName.c_str(), e.what(), addon->m_strCreator.c_str());
   }
-
-  return;
 }
 
 bool CAddon::GetAddonSetting(const CAddon* addon, const char* settingName, void *settingValue)
@@ -159,50 +171,57 @@ bool CAddon::GetAddonSetting(const CAddon* addon, const char* settingName, void 
   if (addon == NULL || settingName == NULL || settingValue == NULL)
     return false;
 
-  CLog::Log(LOGDEBUG, "CAddon: AddOn %s request Setting %s", addon->m_strName.c_str(), settingName);
+  try 
+  {
+    CLog::Log(LOGDEBUG, "CAddon: AddOn %s request Setting %s", addon->m_strName.c_str(), settingName);
     
-  /* TODO: Add a caching mechanism to prevent a reloading of settings file on every call */
-  CAddonSettings settings;
-  if (!settings.Load(addon->m_strPath))
-  {
-    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s", addon->m_strName.c_str());
-    return false;
-  }
-
-  TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
-  while (setting)
-  {
-    const char *id = setting->Attribute("id");
-    const char *type = setting->Attribute("type");
-        
-    if (strcmpi(id, settingName) == 0 && type)
+    /* TODO: Add a caching mechanism to prevent a reloading of settings file on every call */
+    CAddonSettings settings;
+    if (!settings.Load(addon->m_strPath))
     {
-      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
-          strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
-          strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
-          strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
-      {
-        strcpy((char*) settingValue, settings.Get(id).c_str());
-        return true;
-      }
-      else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
-               strcmpi(type, "labelenum") == 0)
-      {
-        *(int*) settingValue = (int) atoi(settings.Get(id));
-        return true;
-      }
-      else if (strcmpi(type, "bool") == 0)
-      {
-        *(bool*) settingValue = (bool) (settings.Get(id) == "true" ? true : false);
-        return true;
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "Unknown setting type '%s' for id %s in %s", type, id, addon->m_strName.c_str());
-      }
+      CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s", addon->m_strName.c_str());
+      return false;
     }
-    setting = setting->NextSiblingElement("setting");
+
+    TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
+    while (setting)
+    {
+      const char *id = setting->Attribute("id");
+      const char *type = setting->Attribute("type");
+        
+      if (strcmpi(id, settingName) == 0 && type)
+      {
+        if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
+            strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
+            strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
+            strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
+            strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
+        {
+          strcpy((char*) settingValue, settings.Get(id).c_str());
+          return true;
+        }
+        else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
+                 strcmpi(type, "labelenum") == 0)
+        {
+          *(int*) settingValue = (int) atoi(settings.Get(id));
+          return true;
+        }
+        else if (strcmpi(type, "bool") == 0)
+        {
+          *(bool*) settingValue = (bool) (settings.Get(id) == "true" ? true : false);
+          return true;
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "Unknown setting type '%s' for id %s in %s", type, id, addon->m_strName.c_str());
+        }
+      }
+      setting = setting->NextSiblingElement("setting");
+    }
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "PVR: %s - exception '%s' during GetAddonSetting occurred, contact Developer '%s' of this AddOn", addon->m_strName.c_str(), e.what(), addon->m_strCreator.c_str());
   }
   return false;
 }
