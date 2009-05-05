@@ -40,6 +40,7 @@ CWHelper::CWHelper(void)
 
 CWHelper::~CWHelper(void)
 {
+  StopThread();
   m_hwnd = NULL;
   if(m_hProcess != NULL)
   {
@@ -96,3 +97,4 @@ void CWHelper::SetHANDLE(HANDLE hProcess)
 {
   m_hProcess = hProcess;
 }
+
