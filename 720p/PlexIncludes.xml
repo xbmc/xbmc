@@ -3,7 +3,7 @@
     <control type="group">
       <description>Current cover</description>
       <visible>Player.HasMusicPlaylist</visible>
-      <control type="image" id="0">
+      <control type="image">
         <posy>332</posy>
         <width>330</width>
         <height>330</height>
@@ -19,14 +19,14 @@
         <aspectratio>stretch</aspectratio>
         <texture>NowPlayingCoverDropShadow.png</texture>
       </control>
-      <control type="image" id="0">
+      <control type="image">
         <width>330</width>
         <height>330</height>
         <info>MusicPlayer.Cover</info>
         <aspectratio>stretch</aspectratio>
         <texture diffuse="NowPlayingCoverDiffuse.png"/>
       </control>
-      <control type="image" id="0">
+      <control type="image">
         <width>330</width>
         <height>330</height>
         <aspectratio>stretch</aspectratio>
@@ -39,14 +39,14 @@
     <control type="group">
       <description>Next cover</description>
       <visible>Player.HasMusicPlaylist</visible>
-      <control type="image" id="0">
+      <control type="image">
         <width>264</width>
         <height>264</height>
         <info>MusicPlayer.NextNewCover</info>
         <aspectratio>stretch</aspectratio>
         <texture diffuse="NowPlayingSmallCoverDiffuse.png"/>
       </control>
-      <control type="image" id="0">
+      <control type="image">
         <posy>264</posy>
         <width>264</width>
         <height>264</height>
@@ -54,7 +54,7 @@
         <aspectratio>stretch</aspectratio>
         <texture flipy="true" diffuse="NowPlayingSmallReflectionDiffuse.png"/>
       </control>
-      <control type="image" id="0">
+      <control type="image">
         <posx>104</posx>
         <width>176</width>
         <height>264</height>
@@ -62,7 +62,7 @@
         <texture>NowPlayingCoverShadow.png</texture>
         <visible>MusicPlayer.HasNext</visible>
       </control>
-      <control type="image" id="0">
+      <control type="image">
         <width>264</width>
         <height>264</height>
         <aspectratio>stretch</aspectratio>
@@ -76,7 +76,7 @@
     <control type="group">
       <description>Current track info</description>
       
-      <control type="label" id="0">
+      <control type="label">
         <posx>500</posx>
         <width>500</width>
         <font>NPArtistFont</font>
@@ -85,7 +85,7 @@
         <align>right</align>
       </control>
   
-      <control type="label" id="0">
+      <control type="label">
         <posx>500</posx>
         <posy>50</posy>
         <width>500</width>
@@ -95,7 +95,7 @@
         <align>right</align>
       </control>
   
-      <control type="label" id="0">
+      <control type="label">
         <posx>500</posx>
         <posy>88</posy>
         <width>500</width>
@@ -111,7 +111,7 @@
     <control type="group">
       <description>Next track info</description>
       
-      <control type="label" id="0">
+      <control type="label">
         <posx>500</posx>
         <width>500</width>
         <font>NPNextFont</font>
@@ -120,7 +120,7 @@
         <align>right</align>
       </control>
       
-      <control type="label" id="0">
+      <control type="label">
         <posx>500</posx>
         <posy>30</posy>
         <width>500</width>
@@ -130,7 +130,7 @@
         <align>right</align>
       </control>
       
-      <control type="label" id="0">
+      <control type="label">
         <posx>500</posx>
         <posy>53</posy>
         <width>500</width>
@@ -146,7 +146,7 @@
     <control type="group">
       <description>Current track info</description>
       
-      <control type="label" id="0">
+      <control type="label">
         <posx>0</posx>
         <width>500</width>
         <font>NPArtistFont</font>
@@ -155,7 +155,7 @@
         <align>left</align>
       </control>
   
-      <control type="label" id="0">
+      <control type="label">
         <posx>0</posx>
         <posy>50</posy>
         <width>500</width>
@@ -165,7 +165,7 @@
         <align>left</align>
       </control>
   
-      <control type="label" id="0">
+      <control type="label">
         <posx>0</posx>
         <posy>88</posy>
         <width>500</width>
@@ -181,7 +181,7 @@
     <control type="group">
       <description>Next track info</description>
       
-      <control type="label" id="0">
+      <control type="label">
         <posx>0</posx>
         <width>500</width>
         <font>NPNextFont</font>
@@ -190,7 +190,7 @@
         <align>left</align>
       </control>
       
-      <control type="label" id="0">
+      <control type="label">
         <posx>0</posx>
         <posy>30</posy>
         <width>500</width>
@@ -200,7 +200,7 @@
         <align>left</align>
       </control>
       
-      <control type="label" id="0">
+      <control type="label">
         <posx>0</posx>
         <posy>53</posy>
         <width>500</width>

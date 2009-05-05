@@ -3822,7 +3822,7 @@
   
   <include name="MusicNowPlayingDetails">
     <control type="group">
-      <control type="image" id="0">
+      <control type="image">
         <description>album cover</description>
         <include>MusicNowPlayingCoverDims</include>
         <info>MusicPlayer.Cover</info>
@@ -3831,14 +3831,14 @@
         <bordersize>8</bordersize>
       </control>
 
-      <control type="label" id="0">
+      <control type="label">
         <description>artist</description>
         <font>MediumSmallTitleCapsFont</font>
         <label>$INFO[MusicPlayer.Artist]</label>
         <include>MusicNowPlayingText</include>
       </control>
 
-      <control type="label" id="0">
+      <control type="label">
         <description>album</description>
         <posy>22</posy>
         <font>SmallTitleCapsFont</font>
@@ -3846,7 +3846,7 @@
         <include>MusicNowPlayingText</include>
       </control>
 
-      <control type="label" id="0">
+      <control type="label">
         <description>track title</description>
         <posy>38</posy>
         <aligny>bottom</aligny>
@@ -3855,7 +3855,7 @@
         <include>MusicNowPlayingText</include>
       </control>
 
-      <control type="label" id="0">
+      <control type="label">
         <description>time</description>
         <posy>62</posy>
         <aligny>top</aligny>
@@ -3920,12 +3920,12 @@
         <include>MusicNowPlayingDetails</include>
       </control>
 
-      <control type="group" id="1">
+      <control type="group">
         <description>Seek Indicators</description>
         <posx>420</posx>
         <posy>8</posy>
 
-        <control type="image" id="1">
+        <control type="image">
           <description>FF/REW container image</description>
           <posx>7</posx>
           <posy>50</posy>
@@ -3938,7 +3938,7 @@
         <control type="group">
           <posy>56</posy>
 
-          <control type="image" id="1">
+          <control type="image">
             <description>RW image</description>
             <width>13</width>
             <height>28</height>
@@ -3946,7 +3946,7 @@
             <texture>OSDSeekRewind.png</texture>
           </control>
 
-          <control type="image" id="1">
+          <control type="image">
             <description>FF image</description>
             <posx>65</posx>
             <width>13</width>
@@ -3956,33 +3956,33 @@
           </control>
         </control>
 
-        <control type="group" id="1">
+        <control type="group">
           <posx>11</posx>
           <posy>53</posy>
 
-          <control type="image" id="1">
+          <control type="image">
             <description>2x FF image</description>
             <include>MusicOSDSeekImage</include>
             <texture>OSD2x.png</texture>
             <visible>Player.Forwarding2x</visible>
           </control>
-          <control type="image" id="1">
+          <control type="image">
             <description>32x REW image</description>
             <include>MusicOSDSeekImage</include>
             <texture>OSD32x.png</texture>
             <visible>Player.Rewinding32x</visible>
           </control>
 
-          <control type="group" id="1">
+          <control type="group">
             <posx>6</posx>
 
-            <control type="image" id="1">
+            <control type="image">
               <description>4x FF image</description>
               <include>MusicOSDSeekImage</include>
               <texture>OSD4x.png</texture>
               <visible>Player.Forwarding4x</visible>
             </control>
-            <control type="image" id="1">
+            <control type="image">
               <description>16x REW image</description>
               <include>MusicOSDSeekImage</include>
               <texture>OSD16x.png</texture>
@@ -3990,16 +3990,16 @@
             </control>
           </control>
 
-          <control type="group" id="1">
+          <control type="group">
             <posx>12</posx>
 
-            <control type="image" id="1">
+            <control type="image">
               <description>8x FF image</description>
               <include>MusicOSDSeekImage</include>
               <texture>OSD8x.png</texture>
               <visible>Player.Forwarding8x</visible>
             </control>
-            <control type="image" id="1">
+            <control type="image">
               <description>8x REW image</description>
               <include>MusicOSDSeekImage</include>
               <texture>OSD8x.png</texture>
@@ -4007,16 +4007,16 @@
             </control>
           </control>
 
-          <control type="group" id="1">
+          <control type="group">
             <posx>18</posx>
 
-            <control type="image" id="1">
+            <control type="image">
               <description>16x FF image</description>
               <include>MusicOSDSeekImage</include>
               <texture>OSD16x.png</texture>
               <visible>Player.Forwarding16x</visible>
             </control>
-            <control type="image" id="1">
+            <control type="image">
               <description>4x REW image</description>
               <include>MusicOSDSeekImage</include>
               <texture>OSD4x.png</texture>
@@ -4024,16 +4024,16 @@
             </control>
           </control>
 
-          <control type="group" id="1">
+          <control type="group">
             <posx>24</posx>
 
-            <control type="image" id="1">
+            <control type="image">
               <description>32x FF image</description>
               <include>MusicOSDSeekImage</include>
               <texture>OSD32x.png</texture>
               <visible>Player.Forwarding32x</visible>
             </control>
-            <control type="image" id="1">
+            <control type="image">
               <description>2x REW image</description>
               <include>MusicOSDSeekImage</include>
               <texture>OSD2x.png</texture>

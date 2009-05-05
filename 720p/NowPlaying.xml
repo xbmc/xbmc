@@ -15,8 +15,8 @@
     <!-- Normal view -->
     <control type="group">
       <visible>!MusicPlayer.NowPlayingFlipped</visible>
-      <animation effect="rotatey" center="640" start="0" end="-90" time="250" reversible="false">Hidden</animation>
-      <animation effect="rotatey" center="640" start="-90" end="0" time="250" delay="250" reversible="false">Visible</animation>
+      <animation effect="rotatey" center="640" start="0" end="-90" time="500" reversible="false">Hidden</animation>
+      <animation effect="rotatey" center="640" start="-90" end="0" time="500" delay="500" reversible="false">Visible</animation>
 
       <!-- Second cover -->
       <control type="group">
@@ -38,7 +38,7 @@
         <visible>MusicPlayer.HasNewCoverNext</visible>
         <animation effect="slide" end="80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
         <animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
-        <control type="group" id="1">
+        <control type="group">
           <description>Album covers</description>
           <posx>587</posx>
           <posy>204</posy>
@@ -85,7 +85,7 @@
         <animation effect="slide" end="-80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
         <animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
         
-        <control type="group" id="1">
+        <control type="group">
           <description>Album covers</description>
           <posx>587</posx>
           <posy>204</posy>
@@ -103,7 +103,7 @@
             <include>NowPlayingCurrentInfo</include>
           </control>
           
-          <control type="progress" id="20">
+          <control type="progress" id="21">
             <description>Progress control</description>
             <posx>129</posx>
             <posy>162</posy>
@@ -129,8 +129,8 @@
     <!-- Flipped view -->
     <control type="group">
       <visible>MusicPlayer.NowPlayingFlipped</visible>
-      <animation effect="rotatey" center="640" start="0" end="90" time="250" reversible="false">Hidden</animation>
-      <animation effect="rotatey" center="640" start="90" end="0" time="250" delay="250" reversible="false">Visible</animation>
+      <animation effect="rotatey" center="640" start="0" end="90" time="500" reversible="false">Hidden</animation>
+      <animation effect="rotatey" center="640" start="90" end="0" time="500" delay="500" reversible="false">Visible</animation>
 
       <!-- Second cover (flipped) -->
       <control type="group">
@@ -149,7 +149,7 @@
       
       <!-- Double cover view (flipped) -->
       <control type="group">
-        <control type="group" id="1">
+        <control type="group">
           <visible>MusicPlayer.HasNewCoverNext</visible>
           <animation effect="slide" end="80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
           <animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
@@ -173,7 +173,7 @@
             <include>NowPlayingCurrentInfoFlipped</include>
           </control>
           
-          <control type="progress" id="20">
+          <control type="progress" id="22">
             <description>Progress control</description>
             <posx>0</posx>
             <posy>162</posy>
@@ -201,7 +201,7 @@
         
         <posx>80</posx>
         
-        <control type="group" id="1">
+        <control type="group">
           <visible>!MusicPlayer.HasNewCoverNext</visible>
           <animation effect="slide" end="-80,0" time="1000" tween="cubic" easing="inout">Hidden</animation>
           <animation effect="fade" start="0" end="100" delay="1000" time="0">Visible</animation>
@@ -226,7 +226,7 @@
             <include>NowPlayingCurrentInfoFlipped</include>
           </control>
           
-          <control type="progress" id="20">
+          <control type="progress" id="23">
             <description>Progress control</description>
             <posx>0</posx>
             <posy>162</posy>
