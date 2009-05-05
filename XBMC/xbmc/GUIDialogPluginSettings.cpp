@@ -247,9 +247,14 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
         {
           if (setting->Attribute("default"))
           {
+            CStdString action = setting->Attribute("default");
+            CStdString url;
+            m_url.GetURL(url);
+            // replace $CWD with the url of plugin
+            action.Replace("$CWD", url);
             if (option)
               bCloseDialog = (strcmpi(option, "close") == 0);
-            g_application.getApplicationMessenger().ExecBuiltIn(setting->Attribute("default"));
+            g_application.getApplicationMessenger().ExecBuiltIn(action);
           }
         }
         break;
