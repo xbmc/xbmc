@@ -33,13 +33,12 @@ public:
   virtual void OnExit();
   virtual void Process();
 
-  static void SetHWND(HWND hwnd);
-  static void SetHANDLE(HANDLE hProcess);
-  
+  void SetHWND(HWND hwnd);
+  void SetHANDLE(HANDLE hProcess);
 
 private:
-  static HWND  m_hwnd;
-  static HANDLE m_hProcess;
+  HWND  m_hwnd;
+  HANDLE m_hProcess;
 
 };
 
