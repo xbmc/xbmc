@@ -65,6 +65,7 @@ CBackgroundPicLoader::CBackgroundPicLoader()
 
 CBackgroundPicLoader::~CBackgroundPicLoader()
 {
+  StopThread();
   CloseHandle(m_loadPic);
 }
 
