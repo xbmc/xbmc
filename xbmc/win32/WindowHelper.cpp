@@ -27,9 +27,6 @@ extern HWND g_hWnd;
 
 using namespace std;
 
-HWND  CWHelper::m_hwnd = NULL;
-HANDLE CWHelper::m_hProcess = NULL;
-
 CWHelper g_windowHelper;
 
 CWHelper::CWHelper(void)
