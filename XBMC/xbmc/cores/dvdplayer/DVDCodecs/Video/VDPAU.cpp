@@ -645,6 +645,7 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   else
     max_references = 2;
 
+  CSingleLock lock(g_graphicsContext);
   if (IsVDPAUFormat(avctx->pix_fmt)) {
     vdp_st = vdp_decoder_create(vdp_device,
                                 vdp_decoder_profile,
