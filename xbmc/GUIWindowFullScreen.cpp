@@ -270,6 +270,10 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       g_stSettings.m_currentVideoSettings.m_SubtitleDelay = -g_advancedSettings.m_videoSubsDelayRange;
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
+
+    g_application.m_guiDialogSubtitleDelayBar.Show();
+    g_application.m_guiDialogSubtitleDelayBar.OnAction(action);
+
     return true;
     break;
   case ACTION_SUBTITLE_DELAY_PLUS:
@@ -278,6 +282,10 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       g_stSettings.m_currentVideoSettings.m_SubtitleDelay = g_advancedSettings.m_videoSubsDelayRange;
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
+
+    g_application.m_guiDialogSubtitleDelayBar.Show();
+    g_application.m_guiDialogSubtitleDelayBar.OnAction(action);
+
     return true;
     break;
   case ACTION_AUDIO_DELAY_MIN:
@@ -286,6 +294,10 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       g_stSettings.m_currentVideoSettings.m_AudioDelay = -g_advancedSettings.m_videoAudioDelayRange;
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+
+    g_application.m_guiDialogAudioDelayBar.Show();
+    g_application.m_guiDialogAudioDelayBar.OnAction(action);
+
     return true;
     break;
   case ACTION_AUDIO_DELAY_PLUS:
@@ -294,6 +306,10 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       g_stSettings.m_currentVideoSettings.m_AudioDelay = g_advancedSettings.m_videoAudioDelayRange;
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+
+    g_application.m_guiDialogAudioDelayBar.Show();
+    g_application.m_guiDialogAudioDelayBar.OnAction(action);
+
     return true;
     break;
   case ACTION_AUDIO_NEXT_LANGUAGE:

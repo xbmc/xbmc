@@ -141,6 +141,8 @@ SRCS=Application.cpp \
      GUIDialogVisualisationPresetList.cpp \
      GUIDialogVisualisationSettings.cpp \
      GUIDialogVolumeBar.cpp \
+     GUIDialogSubtitleDelayBar.cpp \
+     GUIDialogAudioDelayBar.cpp \
      GUIDialogYesNo.cpp \
      GUIMediaWindow.cpp \
      GUIWindowFileManager.cpp \
