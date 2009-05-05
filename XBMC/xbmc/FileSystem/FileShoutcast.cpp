@@ -25,6 +25,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "Application.h"
 #include "FileShoutcast.h"
 #include "GUISettings.h"
 #include "GUIDialogProgress.h"
@@ -36,7 +37,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "lib/libshout/rip_manager.h"
-//#include "lib/libshout/util.h"
 #include "lib/libshout/filelib.h"
 #include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
@@ -212,8 +212,8 @@ bool CFileShoutcast::Open(const CURL& url)
 
   CGUIDialogProgress* dlgProgress = NULL;
   
-  // workaround to avoid deadlocks caused by dvdplayer halting app, only ogg is played by dvdplayer
-  if (!url.GetFileType().Equals("ogg") )
+  // dvdplayer can deadlock with progress dialog so check first
+  if (g_application.GetCurrentPlayer() == EPC_PAPLAYER)
   {
     dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   }

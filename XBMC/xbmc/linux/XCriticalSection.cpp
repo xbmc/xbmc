@@ -35,9 +35,6 @@ XCriticalSection::XCriticalSection()
 	, m_isDestroyed(false)
 	, m_isInitialized(false)
 {
-#ifdef __APPLE__
-  m_ownerThreadMachPort = 0;
-#endif
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -122,9 +119,6 @@ void XCriticalSection::Enter()
 	// Save the owner, bump the count.
 	m_count++;
 	m_ownerThread = GetCurrentThreadId();
-#ifdef __APPLE__
-	m_ownerThreadMachPort = mach_thread_self();
-#endif
 	
 	pthread_mutex_unlock(&m_countMutex);
 }

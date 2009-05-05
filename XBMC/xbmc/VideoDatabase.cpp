@@ -446,6 +446,30 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
   return false;
 }
 
+bool CVideoDatabase::GetPathsForTvShow(long idShow, vector<long>& paths)
+{
+  CStdString strSQL;
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    strSQL = FormatSQL("select distinct path.idPath from path,tvshowlinkepisode join episode on tvshowlinkepisode.idEpisode=episode.idEpisode join files on files.idPath=path.idPath where episode.idFile = files.idFile and tvshowlinkepisode.idShow=%u",idShow);
+    m_pDS->query(strSQL.c_str());
+    while (!m_pDS->eof())
+    {
+      paths.push_back(m_pDS->fv(0).get_asLong());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s error during query: %s",__FUNCTION__, strSQL.c_str());
+  }
+  return false;
+}
+
 long CVideoDatabase::AddPath(const CStdString& strPath)
 {
   CStdString strSQL;

@@ -283,7 +283,6 @@ using namespace DBUSSERVER;
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
   #pragma comment (lib,"../../xbmc/lib/libsamplerate/libsamplerate_win32.lib")
  #endif
- #pragma comment (lib,"d3d9.lib")
 #endif
 
 #define MAX_FFWD_SPEED 5
@@ -629,7 +628,7 @@ HRESULT CApplication::Create(HWND hWnd)
     g_stSettings.m_logFolder = "special://masterprofile/";
   }
 
- #ifdef HAS_XRANDR
+#ifdef HAS_XRANDR
   g_xrandr.LoadCustomModeLinesToAllOutputs();
 #endif
 
@@ -4551,7 +4550,7 @@ void CApplication::UpdateVideoFileState()
       bookmark.playerState = m_pPlayer->GetPlayerState();
       bookmark.timeInSeconds = current;
       bookmark.thumbNailImage.Empty();
-      
+
       dbs.AddBookMarkToFile(CurrentFile(), bookmark, CBookmark::RESUME);
     }
     dbs.Close();
@@ -5155,8 +5154,8 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
+  //disabled for now, because it can cause jerks and framedrops
   // Update video file state every minute
-  // No we're not, this takes 10 milliseconds!
   /*if (IsPlayingVideo())
   {
     if (m_updateFileStateCounter++>120)
