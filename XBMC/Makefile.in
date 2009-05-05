@@ -415,6 +415,14 @@ install-datas:
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec cp '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
 
+install-livedatas:
+	@echo "Install Live CD datas in $(prefix) ..."
+	@mkdir -p $(prefix)/bin 
+	@cp tools/XBMCLive/diskmounter $(prefix)/bin
+	@cp tools/XBMCLive/installXBMC.py $(prefix)/bin
+	@cp tools/XBMCLive/runXBMC.sh $(prefix)/bin
+	@cp tools/XBMCLive/setAlsaVolumes.py $(prefix)/bin
+
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
 	@unzip -oq web/Project_Mayhem_III_webserver_v1.0.zip \

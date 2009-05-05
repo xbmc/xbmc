@@ -42,6 +42,12 @@ fast-forward and rewind past the 2GB point.
 *) PulseAudio can cause various audio related problems for XBMC.  It is advised
 you disable or uninstall it if you experience any.
  
+*) VDPAU is still a new and experimental feature. It is disabled by default and
+will NOT be selected if renderer is set to 'Auto', it must be set manually.
+Ensure that the latest drivers from NVidia are installed. As of this writing,
+>180.44 is sufficient. It is known that certain subtitles may not be displayed
+when VDPAU is enabled.
+
 *) Compositing window managers (Compiz, beryl, etc) and other OpenGL "Desktop
 Effects" can cause graphical problems (usually can't stay in full screen) with
 XBMC.  It is advised you disable or uninstall these features if you have
@@ -54,22 +60,24 @@ start XBMC again and close it normally.
 *) 64bit linux hasn't really been given any real attention.  You are advised to
 use 32bit unless you NEED 64bit for some reason (4GB of RAM is NOT a reason,
 google "Physical Address Extension").  Some popular problems are; no webserver
-or httpapi, crashes during navigation, may not launch at all.
+or httpapi, crashes during navigation, crash opening movie infopanel, crash on
+some plugins, may not launch at all.
 
 --- OSX Specific Issues -------------------------------------------------------
 *) There is currently no support for FLAC or WAV audio formats under PPC OSX.
 
-davilla? phi? mdd? beenje? others?
-
 --- Windows Specific Issues ---------------------------------------------------
-WiSo? jmarshall? others?
+*) There's currently no support for multi monitor setups. Read the forum for
+workarounds.
+
+*) When XBMC is started in fullscreen switching to window mode isn't working
+atm. Just start XBMC in window mode and choose your desktop resolution from
+the settings to enable fullscreen.
 
 --- Xbox Specific Issues ------------------------------------------------------
 *) Graphical artifacts after starting a new video while another video, with
 differing dimensions, is already playing.  This occurs only when using
 dvdplayer for playback not mplayer.
-
-arnova? others?
 
 --- Other Issues --------------------------------------------------------------
 For other, less obivious issues and new and improved ones, please visit our bug
