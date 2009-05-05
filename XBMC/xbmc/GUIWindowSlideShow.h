@@ -71,6 +71,7 @@ public:
   const CFileItemList &GetSlideShowContents();
   const CFileItemPtr GetCurrentSlide();
   void RunSlideShow(const CStdString &strPath, bool bRecursive = false, bool bRandom = false, bool bNotRandom = false);
+  void AddFromPath(const CStdString &strPath, bool bRecursive);
   void StartSlideShow(bool screensaver=false);
   bool InSlideShow() const;
   virtual bool OnMessage(CGUIMessage& message);

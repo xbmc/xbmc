@@ -106,21 +106,13 @@ void CEventServer::StartServer()
     m_iMaxClients = 20;
   }
 
-  m_bStop = false;
-  m_pThread = new CThread(this);
-  m_pThread->Create();
-  m_pThread->SetName("EventServer");
+  CThread::Create();
+  CThread::SetName("EventServer");
 }
 
 void CEventServer::StopServer()
 {
-  m_bStop = true;
-  if (m_pThread)
-  {
-    m_pThread->WaitForThreadExit(2000);
-    delete m_pThread;
-  }
-  m_pThread = NULL;
+  StopThread();
 }
 
 void CEventServer::Cleanup()
@@ -157,7 +149,7 @@ int CEventServer::GetNumberOfClients()
   return m_clients.size();
 }
 
-void CEventServer::Run()
+void CEventServer::Process()
 {
   CAddress any_addr;
   CSocketListener listener;
