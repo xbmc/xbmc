@@ -1884,6 +1884,8 @@ void CFileItemList::Stack()
   if (IsVirtualDirectoryRoot() || IsTV())
     return;
 
+  SetProperty("isstacked", "1");
+
   // items needs to be sorted for stuff below to work properly
   Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
