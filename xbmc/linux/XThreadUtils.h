@@ -22,6 +22,8 @@
  *
  */
 
+#include <malloc.h>
+
 HANDLE WINAPI CreateThread(
       LPSECURITY_ATTRIBUTES lpThreadAttributes,
         SIZE_T dwStackSize,

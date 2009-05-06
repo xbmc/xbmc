@@ -30,6 +30,7 @@
 
 #include "PlatformDefs.h"
 #include "StringUtils.h"
+#include "XHandlePublic.h"
 
 struct CXHandle {
 
@@ -79,10 +80,6 @@ protected:
   static int m_objectTracker[10];
 
 };
-
-#define HANDLE CXHandle*
-
-bool CloseHandle(HANDLE hObject);
 
 #endif
 

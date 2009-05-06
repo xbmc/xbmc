@@ -22,6 +22,7 @@
 #include "system.h"
 #include "PlatformDefs.h"
 #include "XEventUtils.h"
+#include "XHandle.h"
 
 HANDLE WINAPI CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName)
 {
