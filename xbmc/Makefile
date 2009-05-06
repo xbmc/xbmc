@@ -9,6 +9,9 @@ INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
 
 INCLUDES+=-Ilib/libcdio/libcdio/include
 
+CXXFLAGS+=-DENABLE_DVDPLAYER_HTSP \
+
+
 PCH=stdafx.h
 
 SRCS=Application.cpp \

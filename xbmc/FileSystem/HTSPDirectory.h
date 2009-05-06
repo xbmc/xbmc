@@ -32,19 +32,22 @@ namespace DIRECTORY
       : public CThread
   {
     public: 
-      CHTSPDirectorySession ();
-      ~CHTSPDirectorySession();
-
-      bool   Open(const CURL& url);
-      void   Close();
-
       bool                    GetEvent(CHTSPSession::SEvent& event, uint32_t id);
       CHTSPSession::SChannels GetChannels();
       htsmsg_t*               ReadResult(htsmsg_t* m);
 
 
-      static CHTSPDirectorySession* Aquire (const CURL& url);
-      static void                   Release(CHTSPDirectorySession* session);
+      static CHTSPDirectorySession* Acquire(const CURL& url);
+      static void                   Release(CHTSPDirectorySession* &session);
+      static void                   CheckIdle(DWORD idle = 10000);
+
+    protected:
+       CHTSPDirectorySession();
+      ~CHTSPDirectorySession();
+
+      bool   Open(const CURL& url);
+      void   Close();
+
     private:
       virtual void Process();
       CHTSPSession            m_session;
@@ -70,6 +73,7 @@ namespace DIRECTORY
       virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
       virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_NEVER; };
     private:
+      CHTSPDirectorySession* m_session;
   };
 }
 
