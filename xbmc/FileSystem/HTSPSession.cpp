@@ -347,28 +347,27 @@ void CHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
 {
   uint32_t id, event = 0;
   const char *name, *icon;
-  if(         htsmsg_get_u32(msg, "channelId", &id)
-  ||  (name = htsmsg_get_str(msg, "channelName")) == NULL)
+  if(htsmsg_get_u32(msg, "channelId", &id))
   {
     CLog::Log(LOGERROR, "CHTSPSession::ParseChannelUpdate - malformed message received");
     htsmsg_print(msg);
     return;
   }
 
-  if(htsmsg_get_u32(msg, "eventId", &event))
-    event = 0;
+  SChannel &channel = channels[id];
+  channel.id = id;
 
-  if((icon = htsmsg_get_str(msg, "channelIcon")) == NULL)
-    icon = "";
+  if(htsmsg_get_u32(msg, "eventId", &event) == 0)
+    channel.event = event;
+
+  if((name = htsmsg_get_str(msg, "channelName")))
+    channel.name = name;
+
+  if((icon = htsmsg_get_str(msg, "channelIcon")))
+    channel.icon = icon;
 
   CLog::Log(LOGDEBUG, "CHTSPSession::ParseChannelUpdate - id:%u, name:'%s', icon:'%s', event:%u"
-                    , id, name, icon, event);
-
-  SChannel &channel = channels[id];
-  channel.id    = id;
-  channel.name  = name;
-  channel.icon  = icon;
-  channel.event = event;
+                    , id, name ? name : "(null)", icon ? icon : "(null)", event);
 }
 
 void CHTSPSession::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)
@@ -389,27 +388,27 @@ void CHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
 {
   uint32_t id;
   const char *name, *icon;
-  if(         htsmsg_get_u32(msg, "tagId", &id)
-  ||  (name = htsmsg_get_str(msg, "tagName")) == NULL)
+  if(htsmsg_get_u32(msg, "tagId", &id))
   {
     CLog::Log(LOGERROR, "CHTSPSession::ParseTagUpdate - malformed message received");
     htsmsg_print(msg);
     return;
   }
-
-  if((icon = htsmsg_get_str(msg, "tagIcon")) == NULL)
-    icon = "";
-
   STag &tag = tags[id];
-  tag.id    = id;
-  tag.name  = name;
-  tag.icon  = icon;
-  tag.channels.clear();
+  tag.id = id;
+
+  if((icon = htsmsg_get_str(msg, "tagIcon")))
+    tag.icon  = icon;
+
+  if((name = htsmsg_get_str(msg, "tagName")))
+    tag.name  = name;
 
   htsmsg_t *channels;
 
   if((channels = htsmsg_get_list(msg, "members")))
   {
+    tag.channels.clear();
+
     htsmsg_field_t *f;
     HTSMSG_FOREACH(f, channels)
     {
@@ -420,7 +419,7 @@ void CHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
   }
 
   CLog::Log(LOGDEBUG, "CHTSPSession::ParseTagUpdate - id:%u, name:'%s', icon:'%s'"
-                    , id, name, icon);
+                    , id, name ? name : "(null)", icon ? icon : "(null)");
 
 }
 
