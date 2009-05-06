@@ -78,6 +78,7 @@ CDVDInputStreamHTSP::CDVDInputStreamHTSP()
   , m_subs(0)
   , m_startup(false)
   , m_channel(0)
+  , m_tag(0)
 {
 }
 
@@ -92,7 +93,7 @@ bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
     return false;
 
   CURL url(file);
-  if(sscanf(url.GetFileName().c_str(), "channels/%d", &m_channel) != 1)
+  if(sscanf(url.GetFileName().c_str(), "tags/%d/%d", &m_tag, &m_channel) != 2)
   {
     CLog::Log(LOGERROR, "CDVDInputStreamHTSP::Open - invalid url (%s)\n", url.GetFileName().c_str());
     return false;
@@ -196,7 +197,7 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
       m_event.id = channel.event;
     }
   }
-  CHTSPSession::ParseItem(channel, m_event, item);
+  CHTSPSession::ParseItem(channel, 0, m_event, item);
   item.SetThumbnailImage(channel.icon);
   item.SetCachedVideoThumb();
   return true;

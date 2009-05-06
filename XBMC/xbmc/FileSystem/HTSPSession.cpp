@@ -438,14 +438,14 @@ void CHTSPSession::ParseTagRemove(htsmsg_t* msg, STags &tags)
   tags.erase(id);
 }
 
-bool CHTSPSession::ParseItem(const SChannel& channel, const SEvent& event, CFileItem& item)
+bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& event, CFileItem& item)
 {
   CVideoInfoTag* tag = item.GetVideoInfoTag();
 
   CStdString temp, path;
 
   CURL url(item.m_strPath);
-  temp.Format("channels/%d.ts", channel.id);
+  temp.Format("tags/%d/%d.ts", tagid, channel.id);
   url.SetFileName(temp);
   url.GetURL(path);
 

@@ -85,7 +85,7 @@ namespace DIRECTORY
       virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
     private:
       bool GetChannels(const CURL& base, CFileItemList &items);
-      bool GetChannels(const CURL& base, CFileItemList &items, HTSP::SChannels channels);
+      bool GetChannels(const CURL& base, CFileItemList &items, HTSP::SChannels channels, int tag);
       bool GetTag     (const CURL& base, CFileItemList &items);
 
       HTSP::CHTSPDirectorySession* m_session;

@@ -53,6 +53,7 @@ private:
   bool               m_startup;
   HTSP::CHTSPSession m_session;
   int                m_channel;
+  int                m_tag;
   HTSP::SChannels    m_channels;
   HTSP::SEvent       m_event;
 };
