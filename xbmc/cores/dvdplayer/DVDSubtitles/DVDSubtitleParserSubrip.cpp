@@ -27,7 +27,7 @@
 using namespace std;
 
 CDVDSubtitleParserSubrip::CDVDSubtitleParserSubrip(CDVDSubtitleStream* pStream, const string& strFile)
-    : CDVDSubtitleParser(pStream, strFile)
+    : CDVDSubtitleParserText(pStream, strFile)
 {
 }
 
@@ -38,37 +38,9 @@ CDVDSubtitleParserSubrip::~CDVDSubtitleParserSubrip()
 
 bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
 {
-  if (m_pStream->Open(m_strFileName))
-  {
-    ParseFile();
-    m_pStream->Close();
+  if (!CDVDSubtitleParserText::Open())
+    return false;
 
-    return true;
-  }
-
-  return false;
-}
-
-void CDVDSubtitleParserSubrip::Dispose()
-{
-  //m_pStream->Close();
-  m_collection.Clear();
-}
-
-void CDVDSubtitleParserSubrip::Reset()
-{
-  m_collection.Reset();
-}
-
-// parse exactly one subtitle
-CDVDOverlay* CDVDSubtitleParserSubrip::Parse(double iPts)
-{
-  CDVDOverlay* pOverlay = m_collection.Get(iPts);
-  return pOverlay;
-}
-
-int CDVDSubtitleParserSubrip::ParseFile()
-{
   char line[1024];
   char* pLineStart;
 
@@ -128,6 +100,7 @@ int CDVDSubtitleParserSubrip::ParseFile()
     }
   }
 
-  return m_collection.GetSize();
+  m_pStream->Close();
+  return true;
 }
 
