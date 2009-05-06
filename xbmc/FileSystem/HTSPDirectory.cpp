@@ -35,6 +35,44 @@ extern "C" {
 using namespace XFILE;
 using namespace DIRECTORY;
 
+struct SSession
+{
+  SSession()
+  {
+    session = NULL;
+    refs    = 0;
+  }
+
+  std::string            hostname;
+  int                    port;
+  std::string            username;
+  std::string            password;
+  CHTSPDirectorySession* session;
+  int                    refs;
+  DWORD                  last;
+};
+
+struct STimedOut
+{
+  STimedOut(DWORD idle) : m_idle(idle) 
+  { 
+    m_time = GetTickCount(); 
+  }
+  bool operator()(SSession& data)
+  {
+    return data.refs == 0 && data.last + m_idle < m_time;
+  }
+  DWORD m_idle;
+  DWORD m_time;
+};
+
+typedef std::vector<SSession> SSessions;
+
+
+static SSessions         g_sessions;
+static CCriticalSection  g_section;
+
+
 CHTSPDirectorySession::CHTSPDirectorySession()
 {
 }
@@ -44,19 +82,69 @@ CHTSPDirectorySession::~CHTSPDirectorySession()
   Close();
 }
 
-CHTSPDirectorySession* CHTSPDirectorySession::Aquire(const CURL& url)
+CHTSPDirectorySession* CHTSPDirectorySession::Acquire(const CURL& url)
 {
+  CSingleLock lock(g_section);
+
+  for(SSessions::iterator it = g_sessions.begin(); it != g_sessions.end(); it++)
+  {
+    if(it->hostname == url.GetHostName()
+    && it->port     == url.GetPort()
+    && it->username == url.GetUserName()
+    && it->password == url.GetPassWord())
+    {
+      it->refs++;
+      return it->session;
+    }
+  }
+
   CHTSPDirectorySession* session = new CHTSPDirectorySession();
   if(session->Open(url))
+  {
+    SSession data;
+    data.hostname = url.GetHostName();
+    data.port     = url.GetPort();
+    data.username = url.GetUserName();
+    data.password = url.GetPassWord();
+    data.session  = session;
+    data.refs     = 1;
+    g_sessions.push_back(data);
     return session;
+  }
 
   delete session;
   return NULL;
 }
 
-void CHTSPDirectorySession::Release(CHTSPDirectorySession* session)
+void CHTSPDirectorySession::Release(CHTSPDirectorySession* &session)
 {
-  delete session;
+  if(session == NULL)
+    return;
+
+  CSingleLock lock(g_section);
+  for(SSessions::iterator it = g_sessions.begin(); it != g_sessions.end(); it++)
+  {
+    if(it->session == session)
+    {
+      it->refs--;
+      it->last = GetTickCount();
+      return;
+    }
+  }
+  CLog::Log(LOGERROR, "CHTSPDirectorySession::Release - release of invalid session");
+  ASSERT(0);
+}
+
+void CHTSPDirectorySession::CheckIdle(DWORD idle)
+{
+  CSingleLock lock(g_section);
+  SSessions::iterator it2 = remove_if(g_sessions.begin(), g_sessions.end(), STimedOut(idle));
+  for(SSessions::iterator it = it2; it != g_sessions.end(); it++)
+  {
+    CLog::Log(LOGINFO, "CheckIdle - Closing session to htsp://%s:%i", it->hostname.c_str(), it->port);
+    delete it->session;
+  }
+  g_sessions.erase(it2, g_sessions.end());
 }
 
 bool CHTSPDirectorySession::Open(const CURL& url)
@@ -184,29 +272,31 @@ CHTSPSession::SChannels CHTSPDirectorySession::GetChannels()
 
 CHTSPDirectory::CHTSPDirectory(void)
 {
+  m_session = NULL;
 }
 
 CHTSPDirectory::~CHTSPDirectory(void)
 {
+  CHTSPDirectorySession::Release(m_session);
 }
 
 bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CURL                    url(strPath);
-  CHTSPDirectorySession   session;
   CHTSPSession::SChannels channels;
 
-  if(!session.Open(url))
+  CHTSPDirectorySession::Release(m_session);
+  if(!(m_session = CHTSPDirectorySession::Acquire(url)))
     return false;
 
-  channels = session.GetChannels();
+  channels = m_session->GetChannels();
 
   for(CHTSPSession::SChannels::iterator it = channels.begin(); it != channels.end(); it++)
   {
     CHTSPSession::SChannel& channel(it->second);
     CHTSPSession::SEvent    event;
 
-    if(!session.GetEvent(event, channel.event))
+    if(!m_session->GetEvent(event, channel.event))
     {
       CLog::Log(LOGERROR, "CHTSPDirectory::GetDirectory - failed to get event %d", channel.event);
       event.Clear();
