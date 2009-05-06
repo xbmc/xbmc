@@ -22,7 +22,7 @@
  *
  */
 
-#include <malloc.h>
+#include <stdlib.h>
 
 HANDLE WINAPI CreateThread(
       LPSECURITY_ATTRIBUTES lpThreadAttributes,
