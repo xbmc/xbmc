@@ -2227,33 +2227,18 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
-  // don't do anything that would require graphiccontext to be locked before here in fullscreen.
-  // that stuff should go into renderfullscreen instead as that is called from the renderin thread
-
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
-    //g_ApplicationRenderer.Render();
-
 #ifdef HAS_SDL
     if (g_videoConfig.GetVSyncMode()==VSYNC_VIDEO)
       g_graphicsContext.getScreenSurface()->EnableVSync(true);
 #endif
-    // release the context so the async renderer can draw to it
-#ifdef HAS_SDL_OPENGL
-#ifdef HAS_VIDEO_PLAYBACK
-    // Video rendering occuring from main thread for OpenGL
     if (m_bPresentFrame)
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
-#endif
-#else
-    //g_graphicsContext.ReleaseCurrentContext();
-    g_graphicsContext.Unlock(); // unlock to allow the async renderer to render
-    Sleep(25);
-    g_graphicsContext.Lock();
-#endif
+
     ResetScreenSaver();
     g_infoManager.ResetCache();
     return;
