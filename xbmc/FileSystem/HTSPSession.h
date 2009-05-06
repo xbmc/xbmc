@@ -27,6 +27,47 @@ typedef struct htsmsg htsmsg_t;
 namespace HTSP
 {
 
+template<typename T>
+class const_circular_iter 
+  : public std::iterator<std::bidirectional_iterator_tag, typename T::value_type>
+{
+  protected:
+    typename T::iterator   begin;
+    typename T::iterator   end;
+    typename T::iterator   iter;
+  public:
+    const_circular_iter(T& t) : iter(t.begin()), begin(t.begin()), end(t.end()) {};
+    const_circular_iter(T& t, typename T::iterator c) :begin(t.begin()), end(t.end()), iter(c) {};
+    const_circular_iter(typename T::iterator b, typename T::iterator e) : begin(b), end(e), iter(b) {};
+    const_circular_iter<T>& operator++()
+    {
+      if(begin == end)
+        return(*this);
+      ++iter;
+      if (iter == end)
+        iter = begin;
+      return(*this);
+    }
+
+    const_circular_iter<T>& operator--()
+    {
+      if(begin == end)
+        return(*this);
+      if (iter == begin)
+        iter = end;
+      iter--;
+      return(*this);
+    }
+
+    const typename T::value_type& operator*() const { return (*iter); }
+    const typename T::value_type* operator->() const { return &(*iter); }
+    bool operator==(const const_circular_iter<T>&            rhs) const { return (iter == rhs.iter); }
+    bool operator==(const typename T::iterator&              rhs) const { return (iter == rhs); }
+    bool operator!=(const const_circular_iter<T>&            rhs) const { return ! operator==(rhs); }
+    bool operator!=(const typename T::iterator&              rhs) const { return ! operator==(rhs); }
+};
+
+
 struct STag
 {
   int              id;
