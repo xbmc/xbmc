@@ -77,7 +77,7 @@
 		81F064100E9B5FE400C203A6 /* libxbms-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81F0640F0E9B5FE400C203A6 /* libxbms-x86-osx.a */; };
 		81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064110E9B608800C203A6 /* FileXBMSP.cpp */; };
 		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
-		83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
+		83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; settings = {COMPILER_FLAGS = "-O0"; }; };
 		83E0B24A0F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
 		880DBE550DC224A100E26B71 /* MusicFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */; };
