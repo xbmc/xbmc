@@ -50,9 +50,9 @@ void RTMPPacket::Reset()
   m_nChannel = 0;
   m_nInfoField1 = 0; 
   m_nInfoField2 = 0; 
+  m_hasAbsTimestamp = false;
   m_nBodySize = 0;
   m_nBytesRead = 0;
-  m_nInternalTimestamp = 0;
   m_body = NULL;
 }
 
