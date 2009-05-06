@@ -211,6 +211,13 @@ bool CHTSPDirectorySession::GetEvent(CHTSPSession::SEvent& event, uint32_t id)
     return false;
   }
 
+  CHTSPSession::SEvents::iterator it = m_events.find(id);
+  if(it != m_events.end())
+  {
+    event = it->second;
+    return true;
+  }
+
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getEvent");
   htsmsg_add_u32(msg, "eventId", id);
@@ -219,7 +226,11 @@ bool CHTSPDirectorySession::GetEvent(CHTSPSession::SEvent& event, uint32_t id)
     CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - failed to get event %u", id);
     return false;
   }
-  return CHTSPSession::ParseEvent(msg, id, event);
+  if(!CHTSPSession::ParseEvent(msg, id, event))
+    return false;
+
+  m_events[id] = event;
+  return true;
 }
 
 void CHTSPDirectorySession::Process()

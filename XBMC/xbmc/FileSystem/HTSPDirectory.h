@@ -58,6 +58,7 @@ namespace DIRECTORY
       CHTSPSession            m_session;
       CHTSPSession::SChannels m_channels;
       CHTSPSession::STags     m_tags;
+      CHTSPSession::SEvents   m_events;
       CCriticalSection        m_section;
       CEvent                  m_started;
 
