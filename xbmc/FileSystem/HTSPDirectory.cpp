@@ -34,6 +34,7 @@ extern "C" {
 
 using namespace XFILE;
 using namespace DIRECTORY;
+using namespace HTSP;
 
 struct SSession
 {
@@ -203,7 +204,7 @@ htsmsg_t* CHTSPDirectorySession::ReadResult(htsmsg_t* m)
   return m;
 }
 
-bool CHTSPDirectorySession::GetEvent(CHTSPSession::SEvent& event, uint32_t id)
+bool CHTSPDirectorySession::GetEvent(SEvent& event, uint32_t id)
 {
   if(id == 0)
   {
@@ -211,7 +212,7 @@ bool CHTSPDirectorySession::GetEvent(CHTSPSession::SEvent& event, uint32_t id)
     return false;
   }
 
-  CHTSPSession::SEvents::iterator it = m_events.find(id);
+  SEvents::iterator it = m_events.find(id);
   if(it != m_events.end())
   {
     event = it->second;
@@ -287,33 +288,33 @@ void CHTSPDirectorySession::Process()
   CLog::Log(LOGDEBUG, "CHTSPDirectorySession::Process() - Exiting");
 }
 
-CHTSPSession::SChannels CHTSPDirectorySession::GetChannels()
+SChannels CHTSPDirectorySession::GetChannels()
 {
   CSingleLock lock(m_section);
   return m_channels;
 }
 
-CHTSPSession::SChannels CHTSPDirectorySession::GetChannels(int tag)
+SChannels CHTSPDirectorySession::GetChannels(int tag)
 {
   CSingleLock lock(m_section);
-  CHTSPSession::STags::iterator it = m_tags.find(tag);
+  STags::iterator it = m_tags.find(tag);
   if(it == m_tags.end())
   {
-    CHTSPSession::SChannels channels;
+    SChannels channels;
     return channels;
   }
   return GetChannels(it->second);
 }
 
-CHTSPSession::SChannels CHTSPDirectorySession::GetChannels(CHTSPSession::STag& tag)
+SChannels CHTSPDirectorySession::GetChannels(STag& tag)
 {
   CSingleLock lock(m_section);
-  CHTSPSession::SChannels channels;
+  SChannels channels;
 
   std::vector<int>::iterator it;
   for(it = tag.channels.begin(); it != tag.channels.end(); it++)
   {
-    CHTSPSession::SChannels::iterator it2 = m_channels.find(*it);
+    SChannels::iterator it2 = m_channels.find(*it);
     if(it2 == m_channels.end())
     {
       CLog::Log(LOGERROR, "CHTSPDirectorySession::GetChannels - tag points to unknown channel %d", *it);
@@ -325,7 +326,7 @@ CHTSPSession::SChannels CHTSPDirectorySession::GetChannels(CHTSPSession::STag& t
 }
 
 
-CHTSPSession::STags CHTSPDirectorySession::GetTags()
+STags CHTSPDirectorySession::GetTags()
 {
   CSingleLock lock(m_section);
   return m_tags;
@@ -344,19 +345,19 @@ CHTSPDirectory::~CHTSPDirectory(void)
 
 bool CHTSPDirectory::GetChannels(const CURL &base, CFileItemList &items)
 {
-  CHTSPSession::SChannels channels = m_session->GetChannels();
+  SChannels channels = m_session->GetChannels();
   return GetChannels(base, items, channels);
 }
 
 bool CHTSPDirectory::GetChannels( const CURL &base
                                 , CFileItemList &items
-                                , CHTSPSession::SChannels channels)
+                                , SChannels channels)
 {
   CURL url(base);
 
-  CHTSPSession::SEvent event;
+  SEvent event;
 
-  for(CHTSPSession::SChannels::iterator it = channels.begin(); it != channels.end(); it++)
+  for(SChannels::iterator it = channels.begin(); it != channels.end(); it++)
   {
     if(!m_session->GetEvent(event, it->second.event))
       event.Clear();
@@ -392,7 +393,7 @@ bool CHTSPDirectory::GetTag(const CURL &base, CFileItemList &items)
 
   CStdString id = url.GetFileName().Mid(5);
 
-  CHTSPSession::SChannels channels = m_session->GetChannels(atoi(id.c_str()));
+  SChannels channels = m_session->GetChannels(atoi(id.c_str()));
   if(channels.size() == 0)
     return false;
 
@@ -420,9 +421,9 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     item->SetLabelPreformated(true);
     items.Add(item);
 
-    CHTSPSession::STags tags = m_session->GetTags();
+    STags tags = m_session->GetTags();
     CStdString filename, label;
-    for(CHTSPSession::STags::iterator it = tags.begin(); it != tags.end(); it++)
+    for(STags::iterator it = tags.begin(); it != tags.end(); it++)
     {
       filename.Format("tags/%d/", it->second.id);
       label.Format("Tag: %s", it->second.name);

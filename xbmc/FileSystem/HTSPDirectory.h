@@ -28,17 +28,17 @@
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
-namespace DIRECTORY
+namespace HTSP
 {
   class CHTSPDirectorySession 
       : public CThread
   {
     public: 
-      bool                    GetEvent(CHTSPSession::SEvent& event, uint32_t id);
-      CHTSPSession::SChannels GetChannels();
-      CHTSPSession::SChannels GetChannels(int tag);
-      CHTSPSession::SChannels GetChannels(CHTSPSession::STag &tag);
-      CHTSPSession::STags     GetTags();
+      bool                    GetEvent(SEvent& event, uint32_t id);
+      SChannels               GetChannels();
+      SChannels               GetChannels(int tag);
+      SChannels               GetChannels(STag &tag);
+      STags                   GetTags();
       htsmsg_t*               ReadResult(htsmsg_t* m);
 
 
@@ -56,9 +56,9 @@ namespace DIRECTORY
     private:
       virtual void Process();
       CHTSPSession            m_session;
-      CHTSPSession::SChannels m_channels;
-      CHTSPSession::STags     m_tags;
-      CHTSPSession::SEvents   m_events;
+      SChannels               m_channels;
+      STags                   m_tags;
+      SEvents                 m_events;
       CCriticalSection        m_section;
       CEvent                  m_started;
 
@@ -71,6 +71,10 @@ namespace DIRECTORY
 
       SMessages m_queue;
   };
+}
+
+namespace DIRECTORY
+{
 
   class CHTSPDirectory : public IDirectory
   {
@@ -81,10 +85,10 @@ namespace DIRECTORY
       virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ONCE; };
     private:
       bool GetChannels(const CURL& base, CFileItemList &items);
-      bool GetChannels(const CURL& base, CFileItemList &items, CHTSPSession::SChannels channels);
+      bool GetChannels(const CURL& base, CFileItemList &items, HTSP::SChannels channels);
       bool GetTag     (const CURL& base, CFileItemList &items);
 
-      CHTSPDirectorySession* m_session;
+      HTSP::CHTSPDirectorySession* m_session;
   };
 }
 

@@ -24,72 +24,73 @@
 
 typedef struct htsmsg htsmsg_t;
 
+namespace HTSP
+{
+
+struct STag
+{
+  int              id;
+  std::string      name;
+  std::string      icon;
+  std::vector<int> channels;
+
+  STag() { Clear(); }
+  void Clear()
+  {
+    id    = 0;
+    name.empty();
+    icon.empty();
+    channels.clear();
+  }
+};
+
+struct SChannel
+{
+  int         id;
+  std::string name;
+  std::string icon;
+  int         event;
+
+  SChannel() { Clear(); }
+  void Clear()
+  {
+    id    = 0;
+    event = 0;
+    name.empty();
+    icon.empty();
+  }
+};
+
+struct SEvent
+{
+  int         id;
+  int         next;
+
+  int         start;
+  int         stop;
+  std::string title;
+  std::string descs;
+
+  SEvent() { Clear(); }
+  void Clear()
+  {
+    id    = 0;
+    next  = 0;
+    start = 0;
+    stop  = 0;
+    title.empty();
+    descs.empty();
+  }
+};
+
+typedef std::map<int, SChannel> SChannels;
+typedef std::map<int, STag>     STags;
+typedef std::map<int, SEvent>   SEvents;
+
 
 class CHTSPSession
 {
 public:
-
-  struct STag
-  {
-    int              id;
-    std::string      name;
-    std::string      icon;
-    std::vector<int> channels;
-
-    STag() { Clear(); }
-    void Clear()
-    {
-      id    = 0;
-      name.empty();
-      icon.empty();
-      channels.clear();
-    }
-  };
-
-  struct SChannel
-  {
-    int         id;
-    std::string name;
-    std::string icon;
-    int         event;
-
-    SChannel() { Clear(); }
-    void Clear()
-    {
-      id    = 0;
-      event = 0;
-      name.empty();
-      icon.empty();
-    }
-  };
-
-  struct SEvent
-  {
-    int         id;
-    int         next;
-
-    int         start;
-    int         stop;
-    std::string title;
-    std::string descs;
-
-    SEvent() { Clear(); }
-    void Clear()
-    {
-      id    = 0;
-      next  = 0;
-      start = 0;
-      stop  = 0;
-      title.empty();
-      descs.empty();
-    }
-  };
-
-
-  typedef std::map<int, SChannel> SChannels;
-  typedef std::map<int, STag>     STags;
-  typedef std::map<int, SEvent>     SEvents;
-
   CHTSPSession();
   ~CHTSPSession();
 
@@ -129,3 +130,5 @@ private:
   std::deque<htsmsg_t*> m_queue;
   const unsigned int    m_queue_size;
 };
+
+}
