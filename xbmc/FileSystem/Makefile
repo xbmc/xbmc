@@ -46,6 +46,7 @@ SRCS=ASAPFileDirectory.cpp \
      FTPParse.cpp \
      HTTPDirectory.cpp \
      HTSPDirectory.cpp \
+     HTSPSession.cpp \
      HDDirectory.cpp \
      HDHomeRun.cpp \
      IDirectory.cpp \
