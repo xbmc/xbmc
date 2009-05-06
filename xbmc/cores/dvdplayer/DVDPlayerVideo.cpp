@@ -96,9 +96,12 @@ private:
 };
 
 
-CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
+CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
+                                , CDVDOverlayContainer* pOverlayContainer
+                                , CDVDMessageQueue& parent) 
 : CThread()
 , m_messageQueue("video")
+, m_messageParent(parent)
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
