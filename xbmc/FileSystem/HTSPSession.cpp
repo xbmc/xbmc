@@ -288,7 +288,7 @@ bool CHTSPSession::SendEnableAsync()
   return ReadSuccess(m, true, "enableAsyncMetadata failed");
 }
 
-bool CHTSPSession::GetEvent(SEvent& event, int id)
+bool CHTSPSession::GetEvent(SEvent& event, uint32_t id)
 {
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getEvent");
@@ -298,14 +298,19 @@ bool CHTSPSession::GetEvent(SEvent& event, int id)
     CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - failed to get event %d", id);
     return false;
   }
+  return OnEvent(msg, id, event);
+}
+
+bool CHTSPSession::OnEvent(htsmsg_t* msg, uint32_t id, CHTSPSession::SEvent &event)
+{
   uint32_t start, stop, next;
   const char *title, *desc;
   if(         htsmsg_get_u32(msg, "start", &start)
   ||          htsmsg_get_u32(msg, "stop" , &stop)
   || (title = htsmsg_get_str(msg, "title")) == NULL
-  || (desc  = htsmsg_get_str(msg, "description"))  == NULL )
+  || (desc  = htsmsg_get_str(msg, "description"))  == NULL)
   {
-    CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - malformed event");
+    CLog::Log(LOGDEBUG, "CHTSPSession::OnEvent - malformed event");
     htsmsg_print(msg);
     htsmsg_destroy(msg);
     return false;
