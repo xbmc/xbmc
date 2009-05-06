@@ -181,6 +181,10 @@ HANDLE WINAPI GetCurrentThread(void) {
   return (HANDLE)-1; // -1 a special value - pseudo handle
 }
 
+HANDLE WINAPI GetCurrentProcess(void) {
+  return (HANDLE)-1; // -1 a special value - pseudo handle
+}
+
 HANDLE _beginthreadex(
    void *security,
    unsigned stack_size,

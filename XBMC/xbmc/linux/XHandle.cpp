@@ -22,6 +22,7 @@
 #include <SDL/SDL.h>
 
 #include "XHandle.h"
+#include "XThreadUtils.h"
 #include "../utils/log.h"
 
 int CXHandle::m_objectTracker[10] = {0};
@@ -160,5 +161,34 @@ bool CloseHandle(HANDLE hObject) {
     delete hObject;
 
   return true;
+}
+
+BOOL WINAPI DuplicateHandle(
+  HANDLE hSourceProcessHandle,
+  HANDLE hSourceHandle,
+  HANDLE hTargetProcessHandle,
+  LPHANDLE lpTargetHandle,
+  DWORD dwDesiredAccess,
+  BOOL bInheritHandle,
+  DWORD dwOptions
+)
+{
+  /* only a simple version of this is supported */
+  ASSERT(hSourceProcessHandle == GetCurrentProcess()
+      && hTargetProcessHandle == GetCurrentProcess()
+      && dwOptions            == DUPLICATE_SAME_ACCESS);
+
+  if (hSourceHandle == INVALID_HANDLE_VALUE)
+    return FALSE;
+
+  /* psuevdo handles re not supported */
+  if (hSourceHandle == (HANDLE)-1)
+    return FALSE;
+
+  SDL_LockMutex(hSourceHandle->m_internalLock);
+  hSourceHandle->m_nRefCount++;
+  SDL_UnlockMutex(hSourceHandle->m_internalLock);
+  
+  *lpTargetHandle = hSourceHandle;
 }
 
