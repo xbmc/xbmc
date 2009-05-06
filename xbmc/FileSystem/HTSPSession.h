@@ -86,11 +86,12 @@ public:
   bool      SendSubscribe  (int subscription, int channel);
   bool      SendUnsubscribe(int subscription);
   bool      SendEnableAsync();
-  bool      GetEvent(SEvent& event, int id);
+  bool      GetEvent(SEvent& event, uint32_t id);
 
   int       GetProtocol() { return m_protocol; }
-  int       AddSequence() { return ++m_seq; }
+  unsigned  AddSequence() { return ++m_seq; }
 
+  static bool OnEvent        (htsmsg_t* msg, uint32_t, SEvent &event);
   static void OnChannelUpdate(htsmsg_t* msg, SChannels &channels);
   static void OnChannelRemove(htsmsg_t* msg, SChannels &channels);
   static bool UpdateItem(CFileItem& item, const SChannel& channel, const SEvent& event);
