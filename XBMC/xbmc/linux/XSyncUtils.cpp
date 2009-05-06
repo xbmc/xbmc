@@ -231,10 +231,10 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
     return WAIT_FAILED;
 
   DWORD dwRet = WAIT_FAILED;
-  BOOL bNeedWait = true;
 
   switch (hHandle->GetType()) {
     case CXHandle::HND_EVENT:
+    case CXHandle::HND_THREAD:
 
       SDL_mutexP(hHandle->m_hMutex);
 
@@ -251,21 +251,14 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
         hHandle->RecursionCount > 0) {
         hHandle->RecursionCount++;
         dwRet = WAIT_OBJECT_0;
-        bNeedWait = false;
+        SDL_mutexV(hHandle->m_hMutex);
+        break;
       }
-      SDL_mutexV(hHandle->m_hMutex);
-
-      if (!bNeedWait)
-        break; // no need for the wait.
-
-    case CXHandle::HND_THREAD:
-
-      SDL_mutexP(hHandle->m_hMutex);
 
       // Perform the wait.
       dwRet = WaitForEvent(hHandle, dwMilliseconds);
 
-      if (dwRet == WAIT_OBJECT_0 && hHandle->GetType() == CXHandle::HND_MUTEX)
+      if (dwRet == WAIT_OBJECT_0)
       {
         hHandle->OwningThread = SDL_ThreadID();
         hHandle->RecursionCount = 1;
