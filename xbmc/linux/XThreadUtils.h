@@ -52,6 +52,7 @@ uintptr_t _beginthread(
 DWORD WINAPI GetCurrentThreadId(void);
 
 HANDLE WINAPI GetCurrentThread(void);
+HANDLE WINAPI GetCurrentProcess(void);
 
 BOOL WINAPI GetThreadTimes (
   HANDLE hThread,
