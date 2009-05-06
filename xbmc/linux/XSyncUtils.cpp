@@ -188,7 +188,7 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
+static DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
 {
   DWORD dwRet = 0;
   int   nRet = 0;
