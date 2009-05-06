@@ -117,7 +117,7 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
 }
 
 #else // Linux / OSX86 (GCC)
-
+#if !defined (__x86_64)
 long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
 {
   long long prev;
@@ -132,7 +132,13 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
                         : "memory");
   return prev;
 }
-
+#else
+// Hack to allow compilation on x86_64
+long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
+{
+  return 0;
+}
+#endif // !defined (__x86_64)
 #endif
 
 ///////////////////////////////////////////////////////////////////////////
@@ -179,8 +185,8 @@ long AtomicIncrement(volatile long* pAddr)
 {
   register long reg __asm__ ("eax") = 1;
   __asm__ __volatile__ (
-                        "lock/xaddl %0, %1 \n"
-                        "incl %%eax"
+                        "lock/xadd %0, %1 \n"
+                        "inc %%eax"
                         : "+r" (reg)
                         : "m" (*pAddr)
                         : "memory" );
@@ -233,8 +239,8 @@ long AtomicDecrement(volatile long* pAddr)
 {
   register long reg __asm__ ("eax") = -1;
   __asm__ __volatile__ (
-                        "lock/xaddl %0, %1 \n"
-                        "decl %%eax"
+                        "lock/xadd %0, %1 \n"
+                        "dec %%eax"
                         : "+r" (reg)
                         : "m" (*pAddr)
                         : "memory" );
