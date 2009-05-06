@@ -174,11 +174,21 @@ m_mode(f_mode), m_address(fcr_address), m_timer(0), m_sequence_timeout(0.5), m_d
 	}
 }
 
+namespace {
+ struct delete_second{
+   template <class T> 
+   void operator ()(T& fr_pair){
+     delete fr_pair.second;
+   }
+ };
+}
 XBMCClientWrapperImpl::~XBMCClientWrapperImpl(){
 	PRINT_SIGNATURE();
   resetTimer();
   shutdown(m_socket, SHUT_RDWR);
-  //TODO delete maps
+  std::for_each(m_event_map.begin(), m_event_map.end(), delete_second());
+  std::for_each(m_sequence_map.begin(), m_sequence_map.end(), delete_second());
+  std::for_each(m_multiremote_map.begin(), m_multiremote_map.end(), delete_second());
 }
 
 bool XBMCClientWrapperImpl::isStartToken(eATVClientEvent f_event){
