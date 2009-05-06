@@ -25,7 +25,7 @@
 
 #ifdef _LINUX
 #include "PlatformDefs.h"
-#include "XHandle.h"
+#include "XHandlePublic.h"
 #include "XFileUtils.h"
 #endif
 #include "utils/CriticalSection.h"

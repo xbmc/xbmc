@@ -2,7 +2,6 @@
 #include "../../../builders/resid-builder/include/sidplay/builders/resid.h"
 
 #ifdef _LINUX
-#include "XHandle.h"
 #include "XSyncUtils.h"
 #else
 #include <windows.h>

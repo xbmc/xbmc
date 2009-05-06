@@ -238,6 +238,10 @@
 
 #include "lib/libcdio/logging.h"
 
+#ifdef _LINUX
+#include "XHandle.h"
+#endif
+
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
