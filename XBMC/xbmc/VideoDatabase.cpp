@@ -6152,28 +6152,54 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     sql = "delete from tvshowlinkepisode where idEpisode in " + episodesToDelete;
     m_pDS->exec(sql.c_str());
 
+    CLog::Log(LOGDEBUG, "Cleaning paths that don't exist and don't have content set...");
+    sql = "select * from path where strContent not like ''";
+    m_pDS->query(sql.c_str());
+    CStdString strIds;
+    while (!m_pDS->eof())
+    {
+      if (!CDirectory::Exists(m_pDS->fv("path.strPath").get_asString()))
+        strIds.Format("%s %u,",strIds.Mid(0),m_pDS->fv("path.idPath").get_asLong()); // mid since we cannot format the same string
+      m_pDS->next();
+    }
+    if (!strIds.IsEmpty())
+    {
+      strIds.TrimLeft(" ");
+      strIds.TrimRight(",");
+      sql = FormatSQL("delete from path where idpath in (%s)",strIds.c_str());
+      m_pDS->exec(sql.c_str());
+      sql = FormatSQL("delete from tvshowlinkpath where idpath in (%s)",strIds.c_str());
+      m_pDS->exec(sql.c_str());
+    }
+
     CLog::Log(LOGDEBUG, "%s Cleaning tvshow table", __FUNCTION__);
-    sql = "delete from tvshow where idshow not in (select distinct idShow from tvshowlinkepisode)";
+    sql = "delete from tvshow where idshow not in (select idshow from tvshowlinkpath)";
+    m_pDS->exec(sql.c_str());
+    sql = "delete from tvshow where idShow in (select tvshow.idShow from tvshow "
+                                               "join tvshowlinkpath on tvshow.idshow=tvshowlinkpath.idshow "
+                                               "join path on path.idpath=tvshowlinkpath.idpath "
+                                               "where tvshow.idShow not in (select idShow from tvshowlinkepisode) "
+                                               "and path.strContent == '')";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning actorlinktvshow table", __FUNCTION__);
-    sql = "delete from actorlinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
+    sql = "delete from actorlinktvshow where idShow not in (select idShow from tvshow)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning directorlinktvshow table", __FUNCTION__);
-    sql = "delete from directorlinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
+    sql = "delete from directorlinktvshow where idShow not in (select idShow from tvshow)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning tvshowlinkpath table", __FUNCTION__);
-    sql = "delete from tvshowlinkpath where idshow not in (select distinct idShow from tvshowlinkepisode)";
+    sql = "delete from tvshowlinkpath where idshow not in (select idShow from tvshow)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning genrelinktvshow table", __FUNCTION__);
-    sql = "delete from genrelinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
+    sql = "delete from genrelinktvshow where idShow not in (select idShow from tvshow)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning movielinktvshow table", __FUNCTION__);
-    sql = "delete from movielinktvshow where idShow not in (select distinct idShow from tvshowlinkepisode)";
+    sql = "delete from movielinktvshow where idShow not in (select idShow from tvshow)";
     m_pDS->exec(sql.c_str());
     sql = "delete from movielinktvshow where idMovie not in (select distinct idMovie from movie)";
     m_pDS->exec(sql.c_str());
@@ -6201,22 +6227,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     CLog::Log(LOGDEBUG, "%s Cleaning path table", __FUNCTION__);
     sql = "delete from path where idPath not in (select distinct idPath from files) and idPath not in (select distinct idPath from tvshowlinkpath) and strContent=''";
     m_pDS->exec(sql.c_str());
-    sql = "select * from path where strContent not like ''";
-    m_pDS->query(sql.c_str());
-    CStdString strIds;
-    while (!m_pDS->eof())
-    {
-      if (!CDirectory::Exists(m_pDS->fv("path.strPath").get_asString()))
-        strIds.Format("%s %u,",strIds.Mid(0),m_pDS->fv("path.idPath").get_asLong()); // mid since we cannot format the same string
-      m_pDS->next();
-    }
-    if (!strIds.IsEmpty())
-    {
-      strIds.TrimLeft(" ");
-      strIds.TrimRight(",");
-      sql = FormatSQL("delete from path where idpath in (%s)",strIds.c_str());
-      m_pDS->exec(sql.c_str());
-    }
 
     CLog::Log(LOGDEBUG, "%s Cleaning genre table", __FUNCTION__);
     sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie) and idGenre not in (select distinct idGenre from genrelinktvshow) and idGenre not in (select distinct idGenre from genrelinkmusicvideo)";
