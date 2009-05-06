@@ -36,6 +36,7 @@ extern "C" {
 }
 
 using namespace std;
+using namespace HTSP;
 
 CHTSPSession::CHTSPSession()
   : m_fd(INVALID_SOCKET)
@@ -307,7 +308,7 @@ bool CHTSPSession::GetEvent(SEvent& event, uint32_t id)
   return ParseEvent(msg, id, event);
 }
 
-bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, CHTSPSession::SEvent &event)
+bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
 {
   uint32_t start, stop, next;
   const char *title, *desc;

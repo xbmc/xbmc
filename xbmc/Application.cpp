@@ -5211,7 +5211,7 @@ void CApplication::ProcessSlow()
   CCMythSession::CheckIdle();
 
   // check for any idle htsp sessions
-  CHTSPDirectorySession::CheckIdle();
+  HTSP::CHTSPDirectorySession::CheckIdle();
 
 #ifdef HAS_TIME_SERVER
   // check for any needed sntp update
