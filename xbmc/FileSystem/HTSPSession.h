@@ -88,6 +88,7 @@ public:
 
   typedef std::map<int, SChannel> SChannels;
   typedef std::map<int, STag>     STags;
+  typedef std::map<int, SEvent>     SEvents;
 
   CHTSPSession();
   ~CHTSPSession();
