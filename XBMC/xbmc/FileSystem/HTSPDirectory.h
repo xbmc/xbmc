@@ -20,9 +20,38 @@
  */
 #pragma once
 #include "IDirectory.h"
+#include "Thread.h"
+#include "utils/CriticalSection.h"
+#include "utils/Event.h"
+#include "URL.h"
+#include "HTSPSession.h"
 
 namespace DIRECTORY
 {
+  class CHTSPDirectorySession 
+      : public CThread
+  {
+    public: 
+      CHTSPDirectorySession ();
+      ~CHTSPDirectorySession();
+
+      bool   Open(const CURL& url);
+      void   Close();
+
+      CHTSPSession::SChannels       GetChannels();
+
+
+      static CHTSPDirectorySession* Aquire (const CURL& url);
+      static void                   Release(CHTSPDirectorySession* session);
+
+    private:
+      virtual void Process();
+      CHTSPSession            m_session;
+      CHTSPSession::SChannels m_channels;
+      CCriticalSection        m_section;
+      CEvent                  m_started;
+  };
+
   class CHTSPDirectory : public IDirectory
   {
     public:
@@ -33,3 +62,4 @@ namespace DIRECTORY
     private:
   };
 }
+
