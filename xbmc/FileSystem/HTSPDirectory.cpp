@@ -254,6 +254,12 @@ void CHTSPDirectorySession::Process()
       CHTSPSession::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelRemove"))
       CHTSPSession::ParseChannelRemove(msg, m_channels);
+    if     (strstr(method, "tagAdd"))
+      CHTSPSession::ParseTagUpdate(msg, m_tags);
+    else if(strstr(method, "tagUpdate"))
+      CHTSPSession::ParseTagUpdate(msg, m_tags);
+    else if(strstr(method, "tagRemove"))
+      CHTSPSession::ParseTagRemove(msg, m_tags);
     else if(strstr(method, "initialSyncCompleted"))
       m_started.Set();
 
@@ -270,6 +276,44 @@ CHTSPSession::SChannels CHTSPDirectorySession::GetChannels()
   return m_channels;
 }
 
+CHTSPSession::SChannels CHTSPDirectorySession::GetChannels(int tag)
+{
+  CSingleLock lock(m_section);
+  CHTSPSession::STags::iterator it = m_tags.find(tag);
+  if(it == m_tags.end())
+  {
+    CHTSPSession::SChannels channels;
+    return channels;
+  }
+  return GetChannels(it->second);
+}
+
+CHTSPSession::SChannels CHTSPDirectorySession::GetChannels(CHTSPSession::STag& tag)
+{
+  CSingleLock lock(m_section);
+  CHTSPSession::SChannels channels;
+
+  std::vector<int>::iterator it;
+  for(it = tag.channels.begin(); it != tag.channels.end(); it++)
+  {
+    CHTSPSession::SChannels::iterator it2 = m_channels.find(*it);
+    if(it2 == m_channels.end())
+    {
+      CLog::Log(LOGERROR, "CHTSPDirectorySession::GetChannels - tag points to unknown channel %d", *it);
+      continue;
+    }
+    channels[*it] = it2->second;
+  }
+  return channels;
+}
+
+
+CHTSPSession::STags CHTSPDirectorySession::GetTags()
+{
+  CSingleLock lock(m_section);
+  return m_tags;
+}
+
 CHTSPDirectory::CHTSPDirectory(void)
 {
   m_session = NULL;
@@ -280,35 +324,36 @@ CHTSPDirectory::~CHTSPDirectory(void)
   CHTSPDirectorySession::Release(m_session);
 }
 
-bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+
+bool CHTSPDirectory::GetChannels(const CURL &base, CFileItemList &items)
 {
-  CURL                    url(strPath);
-  CHTSPSession::SChannels channels;
+  CHTSPSession::SChannels channels = m_session->GetChannels();
+  return GetChannels(base, items, channels);
+}
 
-  CHTSPDirectorySession::Release(m_session);
-  if(!(m_session = CHTSPDirectorySession::Acquire(url)))
-    return false;
+bool CHTSPDirectory::GetChannels( const CURL &base
+                                , CFileItemList &items
+                                , CHTSPSession::SChannels channels)
+{
+  CURL url(base);
 
-  channels = m_session->GetChannels();
+  CHTSPSession::SEvent event;
 
   for(CHTSPSession::SChannels::iterator it = channels.begin(); it != channels.end(); it++)
   {
-    CHTSPSession::SChannel& channel(it->second);
-    CHTSPSession::SEvent    event;
 
-    if(!m_session->GetEvent(event, channel.event))
+    if(!m_session->GetEvent(event, it->second.event))
     {
-      CLog::Log(LOGERROR, "CHTSPDirectory::GetDirectory - failed to get event %d", channel.event);
+      CLog::Log(LOGERROR, "CHTSPDirectory::GetChannel - failed to get event %d", it->second.event);
       event.Clear();
     }
-
-    CFileItemPtr item(new CFileItem());
+    CFileItemPtr item(new CFileItem("", true));
 
     url.SetFileName("");
     url.GetURL(item->m_strPath);
-    CHTSPSession::ParseItem(channel, event, *item);
+    CHTSPSession::ParseItem(it->second, event, *item);
     item->m_bIsFolder = false;
-    item->m_strTitle.Format("%d", channel.id);
+    item->m_strTitle.Format("%d", it->second.id);
 
     items.Add(item);
   }
@@ -324,4 +369,64 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     items.AddSortMethod(SORT_METHOD_LABEL, 20364, LABEL_MASKS("%Z", "%B", "%L", ""));
 
   return channels.size() > 0;
+
+}
+
+bool CHTSPDirectory::GetTag(const CURL &base, CFileItemList &items)
+{
+  CURL url(base);
+
+  CStdString id = url.GetFileName().Mid(5);
+
+  CHTSPSession::SChannels channels = m_session->GetChannels(atoi(id.c_str()));
+  if(channels.size() == 0)
+    return false;
+
+  return GetChannels(base, items, channels);
+}
+
+
+bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
+{
+  CURL                    url(strPath);
+
+  CHTSPDirectorySession::Release(m_session);
+  if(!(m_session = CHTSPDirectorySession::Acquire(url)))
+    return false;
+
+
+  if(url.GetFileName().IsEmpty())
+  {
+    CFileItemPtr item;
+
+    item.reset(new CFileItem("", true));
+    url.SetFileName("channels/");
+    url.GetURL(item->m_strPath);
+    item->SetLabel(g_localizeStrings.Get(22018));
+    item->SetLabelPreformated(true);
+    items.Add(item);
+
+    CHTSPSession::STags tags = m_session->GetTags();
+    CStdString filename, label;
+    for(CHTSPSession::STags::iterator it = tags.begin(); it != tags.end(); it++)
+    {
+      filename.Format("tags/%d/", it->second.id);
+      label.Format("Tag: %s", it->second.name);
+
+      item.reset(new CFileItem("", true));
+      url.SetFileName(filename);
+      url.GetURL(item->m_strPath);
+      item->SetLabel(label);
+      item->SetLabelPreformated(true);
+      item->SetThumbnailImage(it->second.icon);
+      items.Add(item);
+    }
+
+    return true;
+  }
+  else if(url.GetFileName() == "channels/")
+    return GetChannels(url, items);
+  else if(url.GetFileName().Left(5) == "tags/")
+    return GetTag(url, items);
+  return false;
 }
