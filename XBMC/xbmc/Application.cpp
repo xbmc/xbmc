@@ -64,7 +64,7 @@
 #ifdef HAS_FILESYSTEM_SAP
 #include "FileSystem/SAPDirectory.h"
 #endif
-#ifdef ENABLE_DVDPLAYER_HTSP
+#ifdef HAS_FILESYSTEM_HTSP
 #include "FileSystem/HTSPDirectory.h"
 #endif
 #include "utils/TuxBoxUtil.h"

@@ -70,7 +70,7 @@
 #ifdef HAS_FILESYSTEM_VTP
 #include "VTPDirectory.h"
 #endif
-#ifdef ENABLE_DVDPLAYER_HTSP
+#ifdef HAS_FILESYSTEM_HTSP
 #include "HTSPDirectory.h"
 #endif
 #include "../utils/Network.h"
@@ -162,7 +162,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_FILESYSTEM_VTP
     if (strProtocol == "vtp") return new CVTPDirectory();
 #endif
-#ifdef ENABLE_DVDPLAYER_HTSP
+#ifdef HAS_FILESYSTEM_HTSP
     if (strProtocol == "htsp") return new CHTSPDirectory();
 #endif
   }
