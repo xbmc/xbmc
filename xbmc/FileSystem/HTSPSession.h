@@ -91,10 +91,11 @@ public:
   int       GetProtocol() { return m_protocol; }
   unsigned  AddSequence() { return ++m_seq; }
 
-  static bool OnEvent        (htsmsg_t* msg, uint32_t, SEvent &event);
-  static void OnChannelUpdate(htsmsg_t* msg, SChannels &channels);
-  static void OnChannelRemove(htsmsg_t* msg, SChannels &channels);
-  static bool UpdateItem(CFileItem& item, const SChannel& channel, const SEvent& event);
+  static bool ParseEvent        (htsmsg_t* msg, uint32_t id, SEvent &event);
+  static void ParseChannelUpdate(htsmsg_t* msg, SChannels &channels);
+  static void ParseChannelRemove(htsmsg_t* msg, SChannels &channels);
+  static bool ParseItem         (const SChannel& channel, const SEvent& event, CFileItem& item);
+
 private:
   SOCKET      m_fd;
   unsigned    m_seq;

@@ -125,7 +125,7 @@ bool CHTSPDirectorySession::GetEvent(CHTSPSession::SEvent& event, uint32_t id)
     CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - failed to get event %u", id);
     return false;
   }
-  return CHTSPSession::OnEvent(msg, id, event);
+  return CHTSPSession::ParseEvent(msg, id, event);
 }
 
 void CHTSPDirectorySession::Process()
@@ -161,11 +161,11 @@ void CHTSPDirectorySession::Process()
     }
 
     if     (strstr(method, "channelAdd"))
-      CHTSPSession::OnChannelUpdate(msg, m_channels);
+      CHTSPSession::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelUpdate"))
-      CHTSPSession::OnChannelUpdate(msg, m_channels);
+      CHTSPSession::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelRemove"))
-      CHTSPSession::OnChannelRemove(msg, m_channels);
+      CHTSPSession::ParseChannelRemove(msg, m_channels);
     else if(strstr(method, "initialSyncCompleted"))
       m_started.Set();
 
@@ -216,7 +216,7 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
     url.SetFileName("");
     url.GetURL(item->m_strPath);
-    CHTSPSession::UpdateItem(*item, channel, event);
+    CHTSPSession::ParseItem(channel, event, *item);
     item->m_bIsFolder = false;
     item->m_strTitle.Format("%d", channel.id);
 
