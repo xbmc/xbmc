@@ -28,6 +28,24 @@ typedef struct htsmsg htsmsg_t;
 class CHTSPSession
 {
 public:
+
+  struct STag
+  {
+    int              id;
+    std::string      name;
+    std::string      icon;
+    std::vector<int> channels;
+
+    STag() { Clear(); }
+    void Clear()
+    {
+      id    = 0;
+      name.empty();
+      icon.empty();
+      channels.clear();
+    }
+  };
+
   struct SChannel
   {
     int         id;
@@ -67,7 +85,9 @@ public:
     }
   };
 
+
   typedef std::map<int, SChannel> SChannels;
+  typedef std::map<int, STag>     STags;
 
   CHTSPSession();
   ~CHTSPSession();
@@ -94,6 +114,8 @@ public:
   static bool ParseEvent        (htsmsg_t* msg, uint32_t id, SEvent &event);
   static void ParseChannelUpdate(htsmsg_t* msg, SChannels &channels);
   static void ParseChannelRemove(htsmsg_t* msg, SChannels &channels);
+  static void ParseTagUpdate    (htsmsg_t* msg, STags &tags);
+  static void ParseTagRemove    (htsmsg_t* msg, STags &tags);
   static bool ParseItem         (const SChannel& channel, const SEvent& event, CFileItem& item);
 
 private:
