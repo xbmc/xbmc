@@ -2,8 +2,6 @@ INCLUDES=-I. -I../ -I../linux -I../../guilib -I../lib/UnrarXLib -I../utils -I/us
 INCLUDES+=-I../lib/libcdio/libcdio/include
 
 CXXFLAGS+=-D__STDC_FORMAT_MACROS \
-          -DENABLE_DVDPLAYER_HTSP \
-
 
 SRCS=ASAPFileDirectory.cpp \
      CacheMemBuffer.cpp \
