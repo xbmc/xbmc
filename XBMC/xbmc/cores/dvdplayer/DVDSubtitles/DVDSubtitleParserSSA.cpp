@@ -27,8 +27,8 @@
 
 using namespace std;
 
-CDVDSubtitleParserSSA::CDVDSubtitleParserSSA(CDVDSubtitleStream* pStream, const string& strFile)
-  : CDVDSubtitleParser(pStream, strFile)
+CDVDSubtitleParserSSA::CDVDSubtitleParserSSA(const string& strFile)
+  : CDVDSubtitleParserCollection(strFile)
 {
   m_libass = new CDVDSubtitlesLibass();
 }
@@ -41,7 +41,7 @@ CDVDSubtitleParserSSA::~CDVDSubtitleParserSSA()
 bool CDVDSubtitleParserSSA::Open(CDVDStreamInfo &hints)
 {
 
-  if(!m_libass->ReadFile(m_strFileName))
+  if(!m_libass->ReadFile(m_filename))
     return false;
 
   //Creating the overlays by going through the list of ass_events
@@ -73,16 +73,5 @@ void CDVDSubtitleParserSSA::Dispose()
     SAFE_RELEASE(m_libass);
     CLog::Log(LOGINFO, "SSA Parser: Releasing reference to ASS Library");
   }
-
-  m_collection.Clear();
-}
-
-void CDVDSubtitleParserSSA::Reset()
-{
-  m_collection.Reset();
-}
-
-CDVDOverlay* CDVDSubtitleParserSSA::Parse(double iPts)
-{
-  return m_collection.Get(iPts);
+  CDVDSubtitleParserCollection::Dispose();
 }
