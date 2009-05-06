@@ -73,17 +73,15 @@ extern "C"
    */ 
   enum ADDON_STATUS {
     STATUS_OK,                 /* Normally not returned (everything is ok) */
-    STATUS_DATA_UPDATE,        /* Data structures handled by the AddOn are changed */
+    STATUS_INVALID_HOST,       /* AddOn want to connect to unknown host (for ones that use Network) */
+    STATUS_INVALID_USER,       /* Invalid or unknown user */
+    STATUS_WRONG_PASS,         /* Invalid or wrong password */
+    STATUS_LOST_CONNECTION,    /* AddOn lost connection to his backend (for ones that use Network) */
     STATUS_NEED_RESTART,       /* Request to restart the AddOn and data structures need updated */
     STATUS_NEED_EMER_RESTART,  /* Request to restart XBMC (hope no AddOn need or do this) */
     STATUS_MISSING_SETTINGS,   /* Some required settings are missing */
     STATUS_BAD_SETTINGS,       /* A setting value is invalid */
-    STATUS_WRONG_HOST,         /* AddOn want to connect to unknown host (for ones that use Network) */
-    STATUS_INVALID_USER,       /* Invalid or unknown user */
-    STATUS_WRONG_PASS,         /* Invalid or wrong password */
-    STATUS_MISSING_DATA,       /* Some AddOn data is missing (check log's for missing data) */
     STATUS_MISSING_FILE,       /* A AddOn file is missing (check log's for missing data) */
-    STATUS_OUTDATED,           /* Some data is outdated */
     STATUS_UNKNOWN             /* A unknown event is occurred */
   };
 
@@ -279,6 +277,27 @@ extern "C"
     typedef const char* (*DialogOpenNumeric)(int, const char*, const char*);
 
     /**
+     * DialogCallbacks -- OpenKeyboard -- Creates a new Keyboard object with default text
+     *                                    heading and hidden input flag if supplied.
+     *
+     * heading        : string - keyboard heading (Optional).
+     * default        : string - default text entry (Optional).
+     * hidden         : boolean - True for hidden text entry.
+     *
+     *  
+     * *Note, Returns the entered data as a string.
+     *  Returns NULL if keyboard was canceled.
+     *
+     * example:
+     *   - const char *yourName = g_xbmc->Dialog.OpenKeyboard("Enter your Name", "John Doe", false)
+     *   - if (yourName != NULL)
+     *   - {
+     *   -   *** do something ***
+     *   - }
+     */
+    typedef const char* (*DialogOpenKeyboard)(const char*, const char*, bool);
+
+    /**
      * DialogCallbacks -- OpenSelect -- Show a select dialog.
      *
      * heading        : string or unicode - dialog heading.
@@ -351,6 +370,7 @@ extern "C"
       DialogOpenYesNo           OpenYesNo;
       DialogOpenBrowse          OpenBrowse;
       DialogOpenNumeric         OpenNumeric;
+      DialogOpenKeyboard        OpenKeyboard;
       DialogOpenSelect          OpenSelect;
       DialogProgressCreate      ProgressCreate;
       DialogProgressUpdate      ProgressUpdate;
@@ -365,7 +385,7 @@ extern "C"
    */
 
     /**
-     * UtilsCallbacks -- Lock -- Lock the gui until xbmcgui.unlock() is called.
+     * GUICallbacks -- Lock -- Lock the gui until xbmcgui.unlock() is called.
      * 
      * *Note, This will improve performance when doing a lot of gui manipulation at once.
      *        The main program (xbmc itself) will freeze until xbmcgui.unlock() is called.
@@ -376,7 +396,7 @@ extern "C"
     typedef void (*GUILock)();
 
     /**
-     * UtilsCallbacks -- Unlock -- Unlock the gui from a lock() call.
+     * GUICallbacks -- Unlock -- Unlock the gui from a lock() call.
      *
      * example:
      *   - g_xbmc->GUI.Unlock();
@@ -384,7 +404,7 @@ extern "C"
     typedef void (*GUIUnlock)();
 
     /**
-     * UtilsCallbacks -- GetCurrentWindowId -- Returns the id for the current 'active' window as an integer.
+     * GUICallbacks -- GetCurrentWindowId -- Returns the id for the current 'active' window as an integer.
      *
      * example:
      *   - int wid = g_xbmc->GUI.GetCurrentWindowId());
@@ -392,7 +412,7 @@ extern "C"
     typedef int (*GUIGetCurrentWindowId)();
 
     /**
-     * UtilsCallbacks -- GetCurrentWindowDialogId -- Returns the id for the current 'active' dialog as an integer.
+     * GUICallbacks -- GetCurrentWindowDialogId -- Returns the id for the current 'active' dialog as an integer.
      *
      * example:
      *   - int wid = g_xbmc->GUI.GetCurrentWindowDialogId());

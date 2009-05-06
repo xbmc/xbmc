@@ -32,6 +32,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogKeyboard.h"
 #include "GUIAudioManager.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
@@ -51,6 +52,406 @@ namespace ADDON
 
 static int iAddOnGUILockRef = 0;
 
+
+/**********************************************************
+ * CAddonStatusHandler - AddOn Status Report Class
+ *
+ * Used to informate the user about occurred errors and
+ * changes inside Add-on's, and ask him what to do.
+ *
+ */
+ 
+CCriticalSection CAddonStatusHandler::m_critSection;
+
+CAddonStatusHandler::CAddonStatusHandler(const CAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread)
+{
+  if (addon == NULL)
+    return;
+
+  CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientGUID:%s (same Thread=%s)", status, addon->m_strName.c_str(), addon->m_guid.c_str(), sameThread ? "yes" : "no");
+
+  m_addon   = addon;
+  m_status  = status;
+  m_message = message;
+
+  if (sameThread)
+  {
+    Process();
+    delete this;
+  }
+  else
+  {
+    CStdString ThreadName;
+    ThreadName.Format("Addon Status: %s", m_addon->m_strName.c_str());
+
+    Create(false, THREAD_MINSTACKSIZE);
+    SetName(ThreadName.c_str());
+    SetPriority(-15);
+  }
+  return;
+}
+
+CAddonStatusHandler::~CAddonStatusHandler()
+{
+  StopThread();
+}
+
+void CAddonStatusHandler::OnStartup()
+{
+}
+
+void CAddonStatusHandler::OnExit()
+{
+  delete this;
+}
+  
+void CAddonStatusHandler::Process()
+{
+  CSingleLock lock(m_critSection);
+
+  /* AddOn want to connect to unknown host (for ones that use Network) */
+  if (m_status == STATUS_INVALID_HOST)
+  {
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (!pDialog) return;
+    
+    CStdString heading;
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+
+    pDialog->SetHeading(heading);
+    pDialog->SetLine(1, 23040);
+    pDialog->SetLine(2, 23041);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  }
+  /* Invalid or unknown user */
+  else if (m_status == STATUS_INVALID_USER)
+  {
+    CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialogYesNo) return;
+   
+    CStdString heading;
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+   
+    pDialogYesNo->SetHeading(heading);
+    pDialogYesNo->SetLine(1, 23042);
+    pDialogYesNo->SetLine(2, 23043);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+
+    if (!pDialogYesNo->IsConfirmed()) return;
+
+    if (!CAddonSettings::SettingsExist(m_addon->m_strPath))
+    {
+      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", m_addon->m_strName.c_str());
+      return;
+    }
+
+    CURL cUrl(m_addon->m_strPath);
+
+    // Load language strings temporarily
+    CAddon::LoadAddonStrings(cUrl);
+
+    // Create the dialog
+    CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+
+    heading.Format("$LOCALIZE[23044]: %s %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    pDialog->SetHeading(heading);
+
+    CAddonSettings settings;
+    settings.Load(cUrl);
+    pDialog->SetSettings(settings);
+
+    pDialog->DoModal();
+
+    settings = pDialog->GetSettings();
+    settings.Save();
+
+    // Unload temporary language strings
+    CAddon::ClearAddonStrings();
+
+    if (pDialog->IsConfirmed())
+    {
+      CAddon::GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, true);
+    }
+  }
+  /* Invalid or wrong password */
+  else if (m_status == STATUS_WRONG_PASS)
+  {
+    CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialogYesNo) return;
+   
+    CStdString heading;
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+   
+    pDialogYesNo->SetHeading(heading);
+    pDialogYesNo->SetLine(1, 23045);
+    pDialogYesNo->SetLine(2, 23043);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+
+    if (!pDialogYesNo->IsConfirmed()) return;
+
+    if (!CAddonSettings::SettingsExist(m_addon->m_strPath))
+    {
+      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", m_addon->m_strName.c_str());
+      return;
+    }
+
+    CURL cUrl(m_addon->m_strPath);
+
+    // Load language strings temporarily
+    CAddon::LoadAddonStrings(cUrl);
+
+    // Create the dialog
+    CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+
+    heading.Format("$LOCALIZE[23046]: %s %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    pDialog->SetHeading(heading);
+
+    CAddonSettings settings;
+    settings.Load(cUrl);
+    pDialog->SetSettings(settings);
+
+    pDialog->DoModal();
+
+    settings = pDialog->GetSettings();
+    settings.Save();
+
+    // Unload temporary language strings
+    CAddon::ClearAddonStrings();
+
+    if (pDialog->IsConfirmed())
+    {
+      CAddon::GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, true);
+    }
+  }
+  /* AddOn lost connection to his backend (for ones that use Network) */
+  else if (m_status == STATUS_LOST_CONNECTION)
+  {
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialog) return;
+   
+    CStdString heading;
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+   
+    pDialog->SetHeading(heading);
+    pDialog->SetLine(1, 23047);
+    pDialog->SetLine(2, 23048);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+
+    if (pDialog->IsConfirmed())
+    {
+      CAddon::GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, false);
+    }
+  }
+  /* Request to restart the AddOn and data structures need updated */
+  else if (m_status == STATUS_NEED_RESTART)
+  {
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (!pDialog) return;
+    
+    CStdString heading;
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+
+    pDialog->SetHeading(heading);
+    pDialog->SetLine(1, 23049);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+    
+    CAddon::GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, true);
+  }
+  /* Request to restart XBMC (hope no AddOn need or do this) */
+  else if (m_status == STATUS_NEED_EMER_RESTART)
+  {
+    /* okey we really don't need to restarat, only deinit Add-on, but that could be damn hard if something is playing*/
+    //TODO - General way of handling setting changes that require restart
+
+    CGUIDialogYesNo *pDialog = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialog) return ;
+
+    CStdString heading;
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+
+    pDialog->SetHeading(heading);
+    pDialog->SetLine( 0, 23050);
+    pDialog->SetLine( 1, 23051);
+    pDialog->SetLine( 2, 23052);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+
+    if (pDialog->IsConfirmed())
+    {
+      g_application.getApplicationMessenger().RestartApp();
+    }
+  }
+  /* Some required settings are missing */
+  else if (m_status == STATUS_MISSING_SETTINGS)
+  {
+    CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialogYesNo) return;
+   
+    CStdString heading;
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+   
+    pDialogYesNo->SetHeading(heading);
+    pDialogYesNo->SetLine(1, 23053);
+    pDialogYesNo->SetLine(2, 23043);
+    pDialogYesNo->SetLine(3, m_message);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+
+    if (!pDialogYesNo->IsConfirmed()) return;
+
+    if (!CAddonSettings::SettingsExist(m_addon->m_strPath))
+    {
+      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", m_addon->m_strName.c_str());
+      return;
+    }
+
+    CURL cUrl(m_addon->m_strPath);
+
+    // Load language strings temporarily
+    CAddon::LoadAddonStrings(cUrl);
+
+    // Create the dialog
+    CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+
+    heading.Format("$LOCALIZE[23053]: %s %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    pDialog->SetHeading(heading);
+
+    CAddonSettings settings;
+    settings.Load(cUrl);
+    pDialog->SetSettings(settings);
+
+    pDialog->DoModal();
+
+    settings = pDialog->GetSettings();
+    settings.Save();
+
+    // Unload temporary language strings
+    CAddon::ClearAddonStrings();
+
+    if (pDialog->IsConfirmed())
+    {
+      CAddon::GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, true);
+    }
+  }
+  /* A setting value is invalid */
+  else if (m_status == STATUS_BAD_SETTINGS)
+  {
+    CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    if (!pDialogYesNo) return;
+   
+    CStdString heading;
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+   
+    pDialogYesNo->SetHeading(heading);
+    pDialogYesNo->SetLine(1, 23054);
+    pDialogYesNo->SetLine(2, 23043);
+    pDialogYesNo->SetLine(3, m_message);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+
+    if (!pDialogYesNo->IsConfirmed()) return;
+
+    if (!CAddonSettings::SettingsExist(m_addon->m_strPath))
+    {
+      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", m_addon->m_strName.c_str());
+      return;
+    }
+
+    CURL cUrl(m_addon->m_strPath);
+
+    // Load language strings temporarily
+    CAddon::LoadAddonStrings(cUrl);
+
+    // Create the dialog
+    CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+
+    heading.Format("$LOCALIZE[23054]: %s %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    pDialog->SetHeading(heading);
+
+    CAddonSettings settings;
+    settings.Load(cUrl);
+    pDialog->SetSettings(settings);
+
+    pDialog->DoModal();
+
+    settings = pDialog->GetSettings();
+    settings.Save();
+
+    // Unload temporary language strings
+    CAddon::ClearAddonStrings();
+
+    if (pDialog->IsConfirmed())
+    {
+      CAddon::GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, true);
+    }
+  }
+  /* One or more AddOn file(s) missing (check log's for missing data) */
+  else if (m_status == STATUS_MISSING_FILE)
+  {
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (!pDialog) return;
+    
+    CStdString heading;
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+
+    pDialog->SetHeading(heading);
+    pDialog->SetLine(1, 23055);
+    pDialog->SetLine(2, 23056);
+    pDialog->SetLine(3, m_message);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  }
+  /* A unknown event is occurred */
+  else if (m_status == STATUS_UNKNOWN)
+  {
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (!pDialog) return;
+    
+    CStdString heading;
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+
+    pDialog->SetHeading(heading);
+    pDialog->SetLine(1, 23057);
+    pDialog->SetLine(2, 23056);
+    pDialog->SetLine(3, m_message);
+
+    //send message and wait for user input
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  }
+
+  return;
+}
+
+
+/**********************************************************
+ * CAddon - AddOn Info Class
+ *
+ */
+ 
 CAddon::CAddon()
 {
   m_guid = "";
@@ -344,6 +745,44 @@ const char* CAddon::OpenDialogNumeric(int type, const char* heading, const char*
     }
   }
   return value.c_str();
+}
+
+const char* CAddon::OpenDialogKeyboard(const char* heading, const char* default_value, bool hidden)
+{
+  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+
+  if (!pKeyboard)
+    return NULL;
+
+  // setup keyboard
+  pKeyboard->Initialize();
+  pKeyboard->CenterWindow();
+  if (heading != NULL)
+    pKeyboard->SetHeading(heading);
+  else
+    pKeyboard->SetHeading("");
+  pKeyboard->SetHiddenInput(hidden);
+  if (default_value != NULL)
+    pKeyboard->SetText(default_value);
+  else
+    pKeyboard->SetText("");
+
+  // do this using a thread message to avoid render() conflicts
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
+  g_application.getApplicationMessenger().SendMessage(tMsg, true);
+  pKeyboard->Close();
+
+  // If have text - update this.
+  if (pKeyboard->IsConfirmed())
+  {
+    CStdString TextString = pKeyboard->GetText();
+    if (TextString.IsEmpty())
+      return NULL;
+
+    return TextString.c_str();
+  }
+
+  return NULL;
 }
 
 int CAddon::OpenDialogSelect(const char* heading, AddOnStringList* list)

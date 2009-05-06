@@ -21,6 +21,7 @@
 */
 
 #include "StdString.h"
+#include "utils/Thread.h"
 #include "FileSystem/Directory.h"
 #include "../addons/DllAddonTypes.h"
 #include <vector>
@@ -55,6 +56,7 @@ enum AddonType
 class IAddonCallback
 {
 public:
+  virtual bool RequestRestart(const CAddon* addon, bool datachanged)=0;
   virtual bool RequestRemoval(const CAddon* addon)=0;
   virtual bool SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)=0;
 };
@@ -63,6 +65,26 @@ const CStdString ADDON_PVRDLL_EXT = "*.pvr";
 const CStdString ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
 const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
 
+/**
+ * CAddonStatusHandler
+ */
+class CAddonStatusHandler : private CThread
+{
+public:
+  CAddonStatusHandler(const CAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread = true);
+  ~CAddonStatusHandler();
+
+  /* Thread handling */
+  virtual void Process();
+  virtual void OnStartup();
+  virtual void OnExit();
+
+private:
+  static CCriticalSection   m_critSection;
+  const CAddon*             m_addon;
+  ADDON_STATUS              m_status;
+  CStdString                m_message;
+};
 
 /*!
 \ingroup windows
@@ -89,9 +111,12 @@ public:
   static bool OpenDialogYesNo(const char* heading, const char* line1, const char* line2, const char* line3, const char* nolabel, const char* yeslabel);
   static const char* OpenDialogBrowse(int type, const char* heading, const char* shares, const char* mask, bool useThumbs, bool treatAsFolder, const char* default_folder);
   static const char* OpenDialogNumeric(int type, const char* heading, const char* default_value);
+  static const char* OpenDialogKeyboard(const char* heading, const char* default_value, bool hidden);
   static int OpenDialogSelect(const char* heading, AddOnStringList* list);
   static bool ProgressDialogCreate(const char* heading, const char* line1, const char* line2, const char* line3);
   static void ProgressDialogUpdate(int percent, const char* line1, const char* line2, const char* line3);
+  static bool ProgressDialogIsCanceled();
+  static void ProgressDialogClose();
 
   static void GUILock();
   static void GUIUnlock();
@@ -123,10 +148,6 @@ public:
   static const char* GetRegion(const char *id);
   static const char* GetSupportedMedia(const char *media);
   static bool SkinHasImage(const char *filename);
-  
-
-  static bool ProgressDialogIsCanceled();
-  static void ProgressDialogClose();
 
   static void TransferAddonSettings(const CURL &url);
   static void TransferAddonSettings(const CAddon* addon);

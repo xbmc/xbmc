@@ -68,7 +68,6 @@ CVTPSession::CVTPSession()
 CVTPSession::~CVTPSession()
 {
   Close();
-  Quit();
 }
 
 bool CVTPSession::OpenStreamSocket(SOCKET& sock, struct sockaddr_in& address2)
@@ -171,17 +170,9 @@ bool CVTPSession::Open(const string &host, int port)
   int    code;
   ReadResponse(code, line);
 
-  CLog::Log(LOGERROR, "CVTPSession::Open - server greeting: %s", line.c_str());
+  CLog::Log(LOGDEBUG, "CVTPSession::Open - server greeting: %s", line.c_str());
 
   return true;
-}
-
-bool CVTPSession::IsOpen()
-{
-  if(m_socket == INVALID_SOCKET)
-    return false;
-  else
-    return true;
 }
 
 bool CVTPSession::ReadResponse(int &code, string &line)
@@ -200,7 +191,6 @@ bool CVTPSession::ReadResponse(int &code, vector<string> &lines)
   fd_set         set_r, set_e;
   struct timeval tv;
   int            result;
-  int            retries = 5;
   char           buffer[256];
   char           cont = 0;
   string         line;
@@ -246,28 +236,19 @@ bool CVTPSession::ReadResponse(int &code, vector<string> &lines)
     if(result < 0)
     {
       CLog::Log(LOGDEBUG, "CVTPSession::ReadResponse - select failed");
-      m_socket = INVALID_SOCKET;
       return false;
     }
 
     if(result == 0)
     {
       CLog::Log(LOGDEBUG, "CVTPSession::ReadResponse - timeout waiting for response, retrying...");
-      if (retries != 0) {
-          retries--;
       continue;
-    }
-      else {
-          m_socket = INVALID_SOCKET;
-          return false;
-      }
     }
 
     result = recv(m_socket, buffer, sizeof(buffer), 0);
     if(result < 0)
     {
       CLog::Log(LOGDEBUG, "CVTPSession::ReadResponse - recv failed");
-      m_socket = INVALID_SOCKET;
       return false;
     }
     buffer[result] = 0;
@@ -286,9 +267,6 @@ bool CVTPSession::ReadResponse(int &code, vector<string> &lines)
 
 bool CVTPSession::SendCommand(const string &command)
 {
-  fd_set set_w, set_e;
-  struct timeval tv;
-  int  result;
   char buffer[1024];
   int  len;
 
@@ -296,31 +274,9 @@ bool CVTPSession::SendCommand(const string &command)
 #ifdef DEBUG
   CLog::Log(LOGERROR, "CVTPSession::SendCommand - sending '%s'", command.c_str());
 #endif
-  // fill with new data
-  tv.tv_sec  = 0;
-  tv.tv_usec = 0;
-
-  FD_ZERO(&set_w);
-  FD_ZERO(&set_e);
-  FD_SET(m_socket, &set_w);
-  FD_SET(m_socket, &set_e);
-  result = select(FD_SETSIZE, &set_w, NULL, &set_e, &tv);
-  if(result < 0)
-  {
-    CLog::Log(LOGERROR, "CVTPSession::SendCommand - select failed");
-    m_socket = INVALID_SOCKET;
-    return false;
-  }
-  if (FD_ISSET(m_socket, &set_w))
-  {
-    CLog::Log(LOGERROR, "CVTPSession::SendCommand - failed to send data");
-    m_socket = INVALID_SOCKET;
-    return false;
-  }
   if(send(m_socket, buffer, len, 0) != len)
   {
     CLog::Log(LOGERROR, "CVTPSession::SendCommand - failed to send data");
-    m_socket = INVALID_SOCKET;
     return false;
   }
   return true;
@@ -347,7 +303,7 @@ bool CVTPSession::SendCommand(const string &command, int &code, vector<string> &
 
   if(code < 200 || code > 299)
   {
-    CLog::Log(LOGERROR, "CVTPSession::SendCommand - Failed with code: %d (%s)", code, lines[lines.size()-1].c_str());
+    CLog::Log(LOGERROR, "CVTPSession::GetChannels - Failed with code: %d (%s)", code, lines[lines.size()-1].c_str());
     return false;
   }
 
@@ -464,60 +420,6 @@ SOCKET CVTPSession::GetStreamLive(int channel)
   return sock;
 }
 
-SOCKET CVTPSession::GetStreamRecording(int recording, uint64_t *size, uint32_t *frames) {
-
-    sockaddr_in address;
-    SOCKET      sock;
-    socklen_t   len = sizeof(address);
-    char        buffer[1024];
-    string      result;
-    int         code;
-    vector<string> lines;
-
-    sprintf(buffer, "PLAY %d", recording);
-    if (!SendCommand(buffer, code, lines)) {
-        return INVALID_SOCKET;
-    }
-
-    vector<string>::iterator it = lines.begin();
-    string& data(*it);
-
-    sscanf(data.c_str(), "%I64u", size);
-    data.erase(0,data.find(" ", 0)+1);
-    *frames = atol(data.c_str());
-
-    if(getsockname(m_socket, (struct sockaddr*) &address, &len) == SOCKET_ERROR) {
-        CLog::Log(LOGERROR, "CVTPSession::GetStreamRecording - getsockname failed");
-        return INVALID_SOCKET;
-    }
-
-    CLog::Log(LOGDEBUG, "CVTPSession::GetStreamRecording - local address %s:%d", inet_ntoa(address.sin_addr), ntohs(address.sin_port) );
-
-    if(!OpenStreamSocket(sock, address))
-        return INVALID_SOCKET;
-
-    int port = ntohs(address.sin_port);
-    int addr = ntohl(address.sin_addr.s_addr);
-
-    sprintf(buffer, "PORT 1 %d,%d,%d,%d,%d,%d"
-                  , (addr & 0xFF000000)>>24
-                  , (addr & 0x00FF0000)>>16
-                  , (addr & 0x0000FF00)>>8
-                  , (addr & 0x000000FF)>>0
-                  , (port & 0xFF00)>>8
-                  , (port & 0x00FF)>>0);
-
-    if(!SendCommand(buffer, code, result)) {
-        return INVALID_SOCKET;
-    }
-
-    if(!AcceptStreamSocket(sock)) {
-        closesocket(sock);
-        return INVALID_SOCKET;
-    }
-    return sock;
-}
-
 void CVTPSession::AbortStreamLive()
 {
   if(m_socket == INVALID_SOCKET)
@@ -527,17 +429,6 @@ void CVTPSession::AbortStreamLive()
   int    code;
   if(!SendCommand("ABRT 0", code, line))
     CLog::Log(LOGERROR, "CVTPSession::AbortStreamLive - failed");
-}
-
-void CVTPSession::AbortStreamRecording()
-{
-  if(m_socket == INVALID_SOCKET)
-    return;
-
-  string line;
-  int    code;
-  if(!SendCommand("ABRT 1", code, line))
-    CLog::Log(LOGERROR, "CVTPSession::AbortStreamRecording - failed");
 }
 
 bool CVTPSession::CanStreamLive(int channel)
@@ -556,38 +447,6 @@ bool CVTPSession::CanStreamLive(int channel)
     return false;
   }
   return true;
-}
-
-bool CVTPSession::SuspendServer() {
-
-    vector<string> lines;
-    int            code;
-    bool           ret;
-
-    ret = SendCommand("SUSP", code, lines);
-
-    if (!ret || code != 220)
-    {
-        CLog::Log(LOGERROR, "CVTPSession::SuspendServer: Couldn't suspend server");
-        return false;
-    }
-    return true;
-}
-
-bool CVTPSession::Quit() {
-
-    vector<string> lines;
-    int            code;
-    bool           ret;
-
-    ret = SendCommand("QUIT", code, lines);
-
-    if (!ret || code != 221)
-    {
-        CLog::Log(LOGERROR, "CVTPSession::Quit: Couldn't quit command connection");
-        return false;
-    }
-    return true;
 }
 
 #if VTP_STANDALONE

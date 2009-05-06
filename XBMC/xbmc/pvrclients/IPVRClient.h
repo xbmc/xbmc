@@ -71,6 +71,9 @@ public:
   * \return CCriticalSection*
   */
   virtual CCriticalSection* GetLock(void)=0;
+  
+  
+  virtual void ReInit()=0;
 
 /***************************************/
 /**_SERVER INTERFACE__________________**/

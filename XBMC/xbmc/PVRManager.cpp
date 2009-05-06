@@ -410,6 +410,30 @@ bool CPVRManager::SetSetting(const CAddon* addon, const char *settingName, const
   return true;
 }
 
+bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
+{
+  if (!addon)
+    return false;
+
+  CLog::Log(LOGINFO, "PVR: requested restart of clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
+  for (unsigned i=0; i < m_clients.size(); i++)
+  {
+    if (m_clients[i]->m_guid == addon->m_guid)
+    {
+      if (m_clients[i]->m_strName == addon->m_strName)
+      {
+        CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
+        m_clients[i]->ReInit();
+        if (datachanged)
+        {
+            
+        }
+      }
+    }
+  }
+  return true;
+}
+
 bool CPVRManager::RequestRemoval(const CAddon* addon)
 {
   if (!addon)

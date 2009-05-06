@@ -49,6 +49,7 @@ public:
   static CPVRManager* GetInstance();
   
   /* addon specific */
+  bool RequestRestart(const ADDON::CAddon* addon, bool datachanged);
   bool RequestRemoval(const ADDON::CAddon* addon);
   bool SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
 

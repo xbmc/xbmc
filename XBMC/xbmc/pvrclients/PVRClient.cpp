@@ -43,6 +43,7 @@
 #include "../utils/log.h"
 
 using namespace std;
+using namespace ADDON;
 
 /**********************************************************
  * CPVRClient Class constructor/destructor
@@ -99,6 +100,7 @@ bool CPVRClient::Init()
   m_callbacks->Dialog.OpenYesNo         = CAddon::OpenDialogYesNo;
   m_callbacks->Dialog.OpenBrowse        = CAddon::OpenDialogBrowse;
   m_callbacks->Dialog.OpenNumeric       = CAddon::OpenDialogNumeric;
+  m_callbacks->Dialog.OpenKeyboard      = CAddon::OpenDialogKeyboard;
   m_callbacks->Dialog.OpenSelect        = CAddon::OpenDialogSelect;
   m_callbacks->Dialog.ProgressCreate    = CAddon::ProgressDialogCreate;
   m_callbacks->Dialog.ProgressUpdate    = CAddon::ProgressDialogUpdate;
@@ -151,7 +153,9 @@ bool CPVRClient::Init()
   {
     CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad status (%i) after Create and is not usable", m_strName.c_str(), m_hostName.c_str(), status);
     m_ReadyToUse = false;
-    // TODO: Handle the different status types
+
+    /* Delete is performed by the calling class */
+    new CAddonStatusHandler(this, status, "", false);
   }
 
   return m_ReadyToUse;
@@ -176,6 +180,12 @@ void CPVRClient::DeInit()
   {
     CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during destruction of AddOn occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
   }
+}
+
+void CPVRClient::ReInit()
+{
+  DeInit();
+  Init();
 }
 
 ADDON_STATUS CPVRClient::GetStatus()
@@ -297,7 +307,7 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
 
 
 /**********************************************************
- * Bouquets related PVR Functions
+ * Bouquets PVR Functions
  */
  
 int CPVRClient::GetNumBouquets()
@@ -323,7 +333,7 @@ PVR_ERROR CPVRClient::GetBouquetInfo(const unsigned int number, PVR_BOUQUET& inf
 
 
 /**********************************************************
- * Channels related PVR Functions
+ * Channels PVR Functions
  */
  
 int CPVRClient::GetNumChannels()
@@ -584,47 +594,14 @@ void CPVRClient::AddOnStatusCallback(void *userData, const ADDON_STATUS status, 
 
   CLog::Log(LOGINFO, "PVR: %s/%s: Reported bad status: %i", client->m_strName.c_str(), client->m_hostName.c_str(), status);
 
-  switch (status)
+  if (status != STATUS_OK)
   {
-     case STATUS_DATA_UPDATE:         /* Data structures handled by the AddOn are changed */
-       CLog::Log(LOGINFO, "PVR: %s/%s: Data reloading", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_NEED_RESTART:       /* Request to restart the AddOn and data structures need updated */
-       CLog::Log(LOGINFO, "PVR: %s/%s: Requesting AddOn Restart and data reloading", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_NEED_EMER_RESTART:  /* Request to restart XBMC (hope no AddOn need or do this) */
-       CLog::Log(LOGERROR, "PVR: %s/%s: PANIC!!! Requesting XBMC restart", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_MISSING_SETTINGS:   /* Some required settings are missing */
-       CLog::Log(LOGERROR, "PVR: %s/%s: Some required settings are missing", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_BAD_SETTINGS:       /* A setting value is invalid */
-       CLog::Log(LOGERROR, "PVR: %s/%s: One setting is wrong", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_WRONG_HOST:         /* AddOn want to connect to unknown host (for ones that use Network) */
-       CLog::Log(LOGERROR, "PVR: %s/%s: Wan't to connect to invalid host", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_INVALID_USER:       /* Invalid or unknown user */
-       CLog::Log(LOGERROR, "PVR: %s/%s: Unknown user name", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_WRONG_PASS:         /* Invalid or wrong password */
-       CLog::Log(LOGERROR, "PVR: %s/%s: Password is not accepted", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_MISSING_DATA:       /* Some AddOn data is missing (check log's for missing data) */
-       CLog::Log(LOGERROR, "PVR: %s/%s: Some AddOn data is missing", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_MISSING_FILE:       /* A AddOn file is missing (check log's for missing data) */
-       CLog::Log(LOGERROR, "PVR: %s/%s: A AddOn file is missing", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_OUTDATED:           /* Some data is outdated */
-       CLog::Log(LOGERROR, "PVR: %s/%s: The AddOn is outdated and need to be updated", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_UNKNOWN:            /* A unknown event is occurred */
-       CLog::Log(LOGERROR, "PVR: %s/%s: A Unknown Error is occurred", client->m_strName.c_str(), client->m_hostName.c_str());
-       return;
-     case STATUS_OK:                 /* Normally not returned (everything is ok) */
-     default:
-       return;
+    CStdString message;
+    if (msg != NULL)
+      message = msg;
+
+    /* Delete is performed by the calling class */
+    new CAddonStatusHandler(client, status, message, false);
   }
 }
 

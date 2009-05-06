@@ -36,6 +36,7 @@ public:
   // DLL related
   bool Init();
   void DeInit();
+  void ReInit();
   virtual void Remove();
   virtual ADDON_STATUS GetStatus();
   virtual bool SetSetting(const char *settingName, const void *settingValue);

@@ -126,7 +126,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
     heading.Format("$LOCALIZE[33000] - %s", heading.c_str());
 
   // Set the heading
-  pDialog->m_strHeading = heading;
+  pDialog->SetHeading(heading);
 
   CAddonSettings settings;
   settings.Load(m_url);
@@ -155,7 +155,9 @@ void CGUIDialogAddonSettings::ShowAndGetInput(SScraperInfo& info)
   CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
   pDialog->m_settings = info.settings;
-  pDialog->m_strHeading.Format("$LOCALIZE[20407] - %s", info.strTitle.c_str());
+  CStdString heading;
+  heading.Format("$LOCALIZE[20407] - %s", info.strTitle.c_str());
+  pDialog->SetHeading(heading);
 
   pDialog->DoModal();
   info.settings.LoadUserXML(static_cast<CScraperSettings&>(pDialog->m_settings).GetSettings());
@@ -285,6 +287,11 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
   }
   EnableControls();
   return bCloseDialog;
+}
+
+void CGUIDialogAddonSettings::SetHeading(const CStdString& strHeading)
+{
+  m_strHeading = strHeading;
 }
 
 // Go over all the settings and set their values according to the values of the GUI components
