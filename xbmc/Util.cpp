@@ -1046,9 +1046,18 @@ bool CUtil::IsVTP(const CStdString& strFile)
   return strFile.Left(4).Equals("vtp:");
 }
 
+bool CUtil::IsHTSP(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("htsp:");
+}
+
 bool CUtil::IsTV(const CStdString& strFile)
 {
-  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile);
+  return IsMythTV(strFile)
+      || IsTuxBox(strFile)
+      || IsVTP(strFile)
+      || IsHDHomeRun(strFile)
+      || IsHTSP(strFile);
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
