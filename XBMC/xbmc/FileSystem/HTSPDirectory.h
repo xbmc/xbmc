@@ -38,18 +38,28 @@ namespace DIRECTORY
       bool   Open(const CURL& url);
       void   Close();
 
-      CHTSPSession::SChannels       GetChannels();
+      bool                    GetEvent(CHTSPSession::SEvent& event, uint32_t id);
+      CHTSPSession::SChannels GetChannels();
+      htsmsg_t*               ReadResult(htsmsg_t* m);
 
 
       static CHTSPDirectorySession* Aquire (const CURL& url);
       static void                   Release(CHTSPDirectorySession* session);
-
     private:
       virtual void Process();
       CHTSPSession            m_session;
       CHTSPSession::SChannels m_channels;
       CCriticalSection        m_section;
       CEvent                  m_started;
+
+      struct SMessage
+      {
+        CEvent   * event;
+        htsmsg_t * msg;
+      };
+      typedef std::map<int, SMessage> SMessages;
+
+      SMessages m_queue;
   };
 
   class CHTSPDirectory : public IDirectory
