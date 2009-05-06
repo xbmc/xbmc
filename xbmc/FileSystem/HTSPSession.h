@@ -118,7 +118,7 @@ public:
   static void ParseChannelRemove(htsmsg_t* msg, SChannels &channels);
   static void ParseTagUpdate    (htsmsg_t* msg, STags &tags);
   static void ParseTagRemove    (htsmsg_t* msg, STags &tags);
-  static bool ParseItem         (const SChannel& channel, const SEvent& event, CFileItem& item);
+  static bool ParseItem         (const SChannel& channel, int tag, const SEvent& event, CFileItem& item);
 
 private:
   SOCKET      m_fd;
