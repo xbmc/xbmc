@@ -290,13 +290,15 @@ void CHTSPDirectorySession::Process()
 
 SChannels CHTSPDirectorySession::GetChannels()
 {
-  CSingleLock lock(m_section);
-  return m_channels;
+  return GetChannels(0);
 }
 
 SChannels CHTSPDirectorySession::GetChannels(int tag)
 {
   CSingleLock lock(m_section);
+  if(tag == 0)
+    return m_channels;
+
   STags::iterator it = m_tags.find(tag);
   if(it == m_tags.end())
   {
@@ -346,12 +348,13 @@ CHTSPDirectory::~CHTSPDirectory(void)
 bool CHTSPDirectory::GetChannels(const CURL &base, CFileItemList &items)
 {
   SChannels channels = m_session->GetChannels();
-  return GetChannels(base, items, channels);
+  return GetChannels(base, items, channels, 0);
 }
 
 bool CHTSPDirectory::GetChannels( const CURL &base
                                 , CFileItemList &items
-                                , SChannels channels)
+                                , SChannels channels
+                                , int tag)
 {
   CURL url(base);
 
@@ -366,7 +369,7 @@ bool CHTSPDirectory::GetChannels( const CURL &base
 
     url.SetFileName("");
     url.GetURL(item->m_strPath);
-    CHTSPSession::ParseItem(it->second, event, *item);
+    CHTSPSession::ParseItem(it->second, tag, event, *item);
     item->m_bIsFolder = false;
     item->m_strTitle.Format("%d", it->second.id);
 
@@ -391,13 +394,13 @@ bool CHTSPDirectory::GetTag(const CURL &base, CFileItemList &items)
 {
   CURL url(base);
 
-  CStdString id = url.GetFileName().Mid(5);
+  int id = atoi(url.GetFileName().Mid(5));
 
-  SChannels channels = m_session->GetChannels(atoi(id.c_str()));
+  SChannels channels = m_session->GetChannels(id);
   if(channels.size() == 0)
     return false;
 
-  return GetChannels(base, items, channels);
+  return GetChannels(base, items, channels, id);
 }
 
 
@@ -415,7 +418,7 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     CFileItemPtr item;
 
     item.reset(new CFileItem("", true));
-    url.SetFileName("channels/");
+    url.SetFileName("tags/0/");
     url.GetURL(item->m_strPath);
     item->SetLabel(g_localizeStrings.Get(22018));
     item->SetLabelPreformated(true);
@@ -439,8 +442,6 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
     return true;
   }
-  else if(url.GetFileName() == "channels/")
-    return GetChannels(url, items);
   else if(url.GetFileName().Left(5) == "tags/")
     return GetTag(url, items);
   return false;
