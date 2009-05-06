@@ -379,6 +379,58 @@ void CHTSPSession::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)
   channels.erase(id);
 }
 
+void CHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
+{
+  uint32_t id;
+  const char *name, *icon;
+  if(         htsmsg_get_u32(msg, "tagId", &id)
+  ||  (name = htsmsg_get_str(msg, "tagName")) == NULL)
+  {
+    CLog::Log(LOGERROR, "CHTSPSession::ParseTagUpdate - malformed message received");
+    htsmsg_print(msg);
+    return;
+  }
+
+  if((icon = htsmsg_get_str(msg, "tagIcon")) == NULL)
+    icon = "";
+
+  STag &tag = tags[id];
+  tag.id    = id;
+  tag.name  = name;
+  tag.icon  = icon;
+  tag.channels.clear();
+
+  htsmsg_t *channels;
+
+  if((channels = htsmsg_get_list(msg, "members")))
+  {
+    htsmsg_field_t *f;
+    HTSMSG_FOREACH(f, channels)
+    {
+      if(f->hmf_type != HMF_S64)
+        continue;
+      tag.channels.push_back(f->hmf_s64);
+    }
+  }
+
+  CLog::Log(LOGDEBUG, "CHTSPSession::ParseTagUpdate - id:%u, name:'%s', icon:'%s'"
+                    , id, name, icon);
+
+}
+
+void CHTSPSession::ParseTagRemove(htsmsg_t* msg, STags &tags)
+{
+  uint32_t id;
+  if(htsmsg_get_u32(msg, "tagId", &id))
+  {
+    CLog::Log(LOGERROR, "CHTSPSession::ParseTagRemove - malformed message received");
+    htsmsg_print(msg);
+    return;
+  }
+  CLog::Log(LOGDEBUG, "CHTSPSession::ParseTagRemove - id:%u", id);
+
+  tags.erase(id);
+}
 
 bool CHTSPSession::ParseItem(const SChannel& channel, const SEvent& event, CFileItem& item)
 {
