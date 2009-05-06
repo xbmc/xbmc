@@ -44,7 +44,7 @@ namespace DIRECTORY
 
       static CHTSPDirectorySession* Acquire(const CURL& url);
       static void                   Release(CHTSPDirectorySession* &session);
-      static void                   CheckIdle(DWORD idle = 10000);
+      static void                   CheckIdle(DWORD idle = 60000);
 
     protected:
        CHTSPDirectorySession();
