@@ -205,6 +205,12 @@ htsmsg_t* CHTSPDirectorySession::ReadResult(htsmsg_t* m)
 
 bool CHTSPDirectorySession::GetEvent(CHTSPSession::SEvent& event, uint32_t id)
 {
+  if(id == 0)
+  {
+    event.Clear();
+    return false;
+  }
+
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getEvent");
   htsmsg_add_u32(msg, "eventId", id);
@@ -341,12 +347,9 @@ bool CHTSPDirectory::GetChannels( const CURL &base
 
   for(CHTSPSession::SChannels::iterator it = channels.begin(); it != channels.end(); it++)
   {
-
     if(!m_session->GetEvent(event, it->second.event))
-    {
-      CLog::Log(LOGERROR, "CHTSPDirectory::GetChannel - failed to get event %d", it->second.event);
       event.Clear();
-    }
+
     CFileItemPtr item(new CFileItem("", true));
 
     url.SetFileName("");
