@@ -80,7 +80,7 @@ typedef std::vector<CDVDCodecOption> CDVDCodecOptions;
 #define VC_BUFFER   0x00000002  // the decoder needs more data
 #define VC_PICTURE  0x00000004  // the decoder got a picture, call Decode(NULL, 0) again to parse the rest of the data
 #define VC_USERDATA 0x00000008  // the decoder found some userdata,  call Decode(NULL, 0) again to parse the rest of the data
-
+#define VC_FLUSHED  0x00000010  // the decoder lost it's state, we need to restart decoding again
 class CDVDVideoCodec
 {
 public:
