@@ -62,7 +62,9 @@
 #include "../FileSystem/cdioSupport.h"
 #include "../DetectDVDType.h"
 #include "FileSystem/iso9660.h"
+#ifdef _LINUX
 #include "XHandle.h"
+#endif
 
 using namespace MEDIA_DETECT;
 

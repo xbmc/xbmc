@@ -23,7 +23,9 @@
 #include "Util.h"
 #include "URL.h"
 #include "GUISettings.h"
+#ifdef _LINUX
 #include "XHandle.h"
+#endif
 
 #include <sys/stat.h>
 #ifdef _LINUX
