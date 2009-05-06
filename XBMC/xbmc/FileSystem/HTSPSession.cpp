@@ -290,6 +290,12 @@ bool CHTSPSession::SendEnableAsync()
 
 bool CHTSPSession::GetEvent(SEvent& event, uint32_t id)
 {
+  if(id == 0)
+  {
+    event.Clear();
+    return false;
+  }
+
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "getEvent");
   htsmsg_add_u32(msg, "eventId", id);
