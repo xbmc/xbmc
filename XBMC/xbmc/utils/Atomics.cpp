@@ -126,11 +126,11 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
   
   __asm__ volatile (
                         " push %%ebx        \n"  // We have to manually handle ebx, because PIC uses it and the compiler refuses to build anything that touches it
-                        " mov %4, %%ebx     \n" // TODO: Consider #if __PIC__ to prevent other ebx issues (since we touch it but don't tell the compiler)
-                        " lock/cmpxchg8b %3 \n"
+                        " mov %4, %%ebx     \n"
+                        " lock/cmpxchg8b (%%esi) \n"
                         " pop %%ebx"
                         : "=A" (prev)
-                        : "c" ((unsigned long)(swapVal >> 32)), "0" (expectedVal), "m" (*pAddr), "m" (swapVal)
+                        : "c" ((unsigned long)(swapVal >> 32)), "0" (expectedVal), "S" (pAddr), "m" (swapVal)
                         : "memory");
   return prev;
 }
