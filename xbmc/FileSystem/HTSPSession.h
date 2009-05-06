@@ -83,6 +83,11 @@ struct STag
     icon.empty();
     channels.clear();
   }
+  bool BelongsTo(int channel) const
+  {
+    return std::find(channels.begin(), channels.end(), channel) != channels.end();
+  }
+
 };
 
 struct SChannel
@@ -101,6 +106,10 @@ struct SChannel
     name.empty();
     icon.empty();
     tags.clear();
+  }
+  bool MemberOf(int tag) const
+  {
+    return std::find(tags.begin(), tags.end(), tag) != tags.end();
   }
 };
 
