@@ -265,12 +265,7 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
       // Perform the wait.
       dwRet = WaitForEvent(hHandle, dwMilliseconds);
 
-      // In case of successful wait with manual event wake up all threads that are waiting.
-      if (dwRet == WAIT_OBJECT_0 && (hHandle->GetType() == CXHandle::HND_EVENT || hHandle->GetType() == CXHandle::HND_THREAD) && hHandle->m_bManualEvent)
-      {
-        SDL_CondBroadcast(hHandle->m_hCond);
-      }
-      else if (dwRet == WAIT_OBJECT_0 && hHandle->GetType() == CXHandle::HND_MUTEX)
+      if (dwRet == WAIT_OBJECT_0 && hHandle->GetType() == CXHandle::HND_MUTEX)
       {
         hHandle->OwningThread = SDL_ThreadID();
         hHandle->RecursionCount = 1;
