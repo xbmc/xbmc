@@ -2487,12 +2487,7 @@ void CApplication::Render()
   }
   g_graphicsContext.Lock();
   RenderNoPresent();
-  // Present the backbuffer contents to the display
-#ifdef HAS_SDL
   g_graphicsContext.Flip();
-#else
-  if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-#endif
   g_graphicsContext.Unlock();
 
 #ifdef HAS_SDL
