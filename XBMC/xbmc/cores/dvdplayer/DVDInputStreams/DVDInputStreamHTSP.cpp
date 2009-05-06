@@ -152,33 +152,34 @@ bool CDVDInputStreamHTSP::SetChannel(int channel)
 bool CDVDInputStreamHTSP::NextChannel()
 {
   if(m_channels.size() == 0)
-    return SetChannel(m_channel + 1);
-  if(m_channels.size() == 1)
     return false;
 
-  SChannels::iterator it = m_channels.find(m_channel);
-  if(it == m_channels.end())
-    it = m_channels.begin();
-  else
-    it++;
+  SChannels::iterator start = m_channels.find(m_channel);
+  const_circular_iter<SChannels> it(m_channels, m_channels.find(m_channel));
 
-  if(it == m_channels.end())
-    it = m_channels.begin();
-  return SetChannel(it->first);
+  while(++it != start)
+  {
+    if(m_tag == 0 || it->second.MemberOf(m_tag))
+      return SetChannel(it->first);
+  }
+
+  return false;
 }
 
 bool CDVDInputStreamHTSP::PrevChannel()
 {
   if(m_channels.size() == 0)
-    return SetChannel(m_channel - 1);
-  if(m_channels.size() == 1)
     return false;
 
-  SChannels::iterator it = m_channels.find(m_channel);
-  if(it == m_channels.begin())
-    it = m_channels.end();
-  it--;
-  return SetChannel(it->first);
+  SChannels::iterator start = m_channels.find(m_channel);
+  const_circular_iter<SChannels> it(m_channels, m_channels.find(m_channel));
+
+  while(--it != start)
+  {
+    if(m_tag == 0 || it->second.MemberOf(m_tag))
+      return SetChannel(it->first);
+  }
+  return false;
 }
 
 bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
