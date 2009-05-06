@@ -948,13 +948,15 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   ProcessOverlays(pPicture, &image, pts);
   
+  //check if the videoreferenceclock is running, will return -1 if not
   int RefreshRate = g_VideoReferenceClock.GetRefreshRate();
   if (RefreshRate > 0)
   {
     double Fps = 1.0 / (iFrameDuration / DVD_TIME_BASE);
     double FrameWeight = (double)RefreshRate / (double)MathUtils::round_int(Fps);
     
-    if (m_MaxSpeedAdjust > 0.1)
+    //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
+    if (m_MaxSpeedAdjust > 0.05)
     {
       if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + m_MaxSpeedAdjust / 100.0 &&
           FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - m_MaxSpeedAdjust / 100.0)
@@ -965,6 +967,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     double Speed = (double)RefreshRate / (Fps * FrameWeight);
     g_VideoReferenceClock.SetSpeed(Speed);
   }
+  
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
   g_renderManager.ReleaseImage(index);

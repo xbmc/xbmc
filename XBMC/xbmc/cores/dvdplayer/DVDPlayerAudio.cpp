@@ -637,6 +637,7 @@ bool CDVDPlayerAudio::OutputAudioframe(DVDAudioFrame &audioframe, bool newerror)
       //if the error is bigger than 1 second, reset the integral
       if (fabs(m_CurrError) < DVD_TIME_BASE)
       {
+        //only add errors larger than 5 milliseconds to the integral
         if (fabs(m_CurrError) > DVD_MSEC_TO_TIME(5))
           m_Integral += m_CurrError / DVD_TIME_BASE / INTEGRAL;
       }
@@ -656,7 +657,7 @@ bool CDVDPlayerAudio::OutputAudioframe(DVDAudioFrame &audioframe, bool newerror)
           
       Proportional = m_CurrError / DVD_TIME_BASE / ProportionalDiv;
     }
-        
+    
     m_Resampler.SetRatio(1.0 / g_VideoReferenceClock.GetSpeed() + Proportional + m_Integral);
         
     //add to the resampler
@@ -670,7 +671,7 @@ bool CDVDPlayerAudio::OutputAudioframe(DVDAudioFrame &audioframe, bool newerror)
       m_dvdAudio.AddPackets(audioframe);
     }
   }
-  else
+  else //SYNC_DISCON
   {
     //if we need to sync the clock, use the average error of the last second
     if (newerror && fabs(m_CurrError) > DVD_MSEC_TO_TIME(10))

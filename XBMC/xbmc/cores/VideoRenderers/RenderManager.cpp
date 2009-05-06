@@ -290,6 +290,7 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
   
   m_presentevent.Reset();
   g_application.NewFrame();
+  //give application 1 millisecond to present
   m_presentevent.WaitMSec(1);
 }
 
