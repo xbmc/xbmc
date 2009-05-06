@@ -51,6 +51,11 @@ CHTSPSession::~CHTSPSession()
   Close();
 }
 
+void CHTSPSession::Abort()
+{
+  shutdown(m_fd, SHUT_RDWR);
+}
+
 void CHTSPSession::Close()
 {
   if(m_fd != INVALID_SOCKET)

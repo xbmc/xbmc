@@ -35,6 +35,97 @@ extern "C" {
 using namespace XFILE;
 using namespace DIRECTORY;
 
+CHTSPDirectorySession::CHTSPDirectorySession()
+{
+}
+
+CHTSPDirectorySession::~CHTSPDirectorySession()
+{
+  Close();
+}
+
+CHTSPDirectorySession* CHTSPDirectorySession::Aquire(const CURL& url)
+{
+  CHTSPDirectorySession* session = new CHTSPDirectorySession();
+  if(session->Open(url))
+    return session;
+
+  delete session;
+  return NULL;
+}
+
+void CHTSPDirectorySession::Release(CHTSPDirectorySession* session)
+{
+  delete session;
+}
+
+bool CHTSPDirectorySession::Open(const CURL& url)
+{
+  if(!m_session.Connect(url.GetHostName(), url.GetPort()))
+    return false;
+
+  if(m_session.GetProtocol() < 2)
+  {
+    CLog::Log(LOGERROR, "CHTSPDirectory::GetDirectory - incompatible protocol version %d", m_session.GetProtocol());
+    return false;
+  }
+
+  if(!url.GetUserName().IsEmpty())
+    m_session.Auth(url.GetUserName(), url.GetPassWord());
+
+  Create();
+
+  m_started.WaitMSec(30000);
+  return true;
+}
+
+void CHTSPDirectorySession::Close()
+{
+  m_bStop = true;
+  m_session.Abort();
+  StopThread();
+}
+
+void CHTSPDirectorySession::Process()
+{
+  CLog::Log(LOGDEBUG, "CHTSPDirectorySession::Process() - Starting");
+  m_session.SendEnableAsync();
+
+  htsmsg_t* msg;
+
+  while(!m_bStop)
+  {
+    if((msg = m_session.ReadMessage()) == NULL)
+      continue;
+
+    const char* method;
+    if((method = htsmsg_get_str(msg, "method")) == NULL)
+    {
+      htsmsg_destroy(msg);
+      continue;
+    }
+
+    if     (strstr(method, "channelAdd"))
+      CHTSPSession::OnChannelUpdate(msg, m_channels);
+    else if(strstr(method, "channelUpdate"))
+      CHTSPSession::OnChannelUpdate(msg, m_channels);
+    else if(strstr(method, "channelRemove"))
+      CHTSPSession::OnChannelRemove(msg, m_channels);
+    else if(strstr(method, "initialSyncCompleted"))
+      m_started.Set();
+
+    htsmsg_destroy(msg);
+  }
+
+  m_session.Close();
+  CLog::Log(LOGDEBUG, "CHTSPDirectorySession::Process() - Exiting");
+}
+
+CHTSPSession::SChannels CHTSPDirectorySession::GetChannels()
+{
+  CSingleLock lock(m_section);
+  return m_channels;
+}
 
 CHTSPDirectory::CHTSPDirectory(void)
 {
@@ -47,66 +138,25 @@ CHTSPDirectory::~CHTSPDirectory(void)
 bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CURL                    url(strPath);
-  CHTSPSession            session;
+  CHTSPDirectorySession   session;
   CHTSPSession::SChannels channels;
 
-  if(!session.Connect(url.GetHostName(), url.GetPort()))
+  if(!session.Open(url))
     return false;
 
-  if(session.GetProtocol() < 2)
-  {
-    CLog::Log(LOGERROR, "CHTSPDirectory::GetDirectory - incompatible protocol version %d", session.GetProtocol());
-    return false;
-  }
-
-  if(!url.GetUserName().IsEmpty())
-    session.Auth(url.GetUserName(), url.GetPassWord());
-
-  session.SendEnableAsync();
-
-  DWORD     timeout = GetTickCount() + 20000;
-  htsmsg_t* msg     = NULL;
-
-  while((msg = session.ReadMessage()))
-  {
-    if(GetTickCount() > timeout)
-    {
-      htsmsg_destroy(msg);
-      break;
-    }
-
-    const char* method;
-    if((method = htsmsg_get_str(msg, "method")) == NULL)
-    {
-      htsmsg_destroy(msg);
-      continue;
-    }
-
-    if     (strstr(method, "channelAdd"))
-      CHTSPSession::OnChannelUpdate(msg, channels);
-    else if(strstr(method, "channelUpdate"))
-      CHTSPSession::OnChannelUpdate(msg, channels);
-    else if(strstr(method, "channelRemove"))
-      CHTSPSession::OnChannelRemove(msg, channels);
-    else if(strstr(method, "initialSyncCompleted"))
-    {
-      htsmsg_destroy(msg);
-      break;
-    }
-
-    htsmsg_destroy(msg);
-  }
+  channels = session.GetChannels();
 
   for(CHTSPSession::SChannels::iterator it = channels.begin(); it != channels.end(); it++)
   {
     CHTSPSession::SChannel& channel(it->second);
     CHTSPSession::SEvent    event;
-
+/*
     if(!session.GetEvent(event, channel.event))
     {
       CLog::Log(LOGERROR, "CHTSPDirectory::GetDirectory - failed to get event %d", channel.event);
       event.Clear();
     }
+*/
     CFileItemPtr item(new CFileItem());
 
     url.SetFileName("");

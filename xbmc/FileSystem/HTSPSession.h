@@ -1,4 +1,3 @@
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -75,6 +74,7 @@ public:
 
   bool      Connect(const std::string& hostname, int port);
   void      Close();
+  void      Abort();
   bool      Auth(const std::string& username, const std::string& password);
 
   htsmsg_t* ReadMessage();
@@ -89,6 +89,7 @@ public:
   bool      GetEvent(SEvent& event, int id);
 
   int       GetProtocol() { return m_protocol; }
+  int       AddSequence() { return ++m_seq; }
 
   static void OnChannelUpdate(htsmsg_t* msg, SChannels &channels);
   static void OnChannelRemove(htsmsg_t* msg, SChannels &channels);
