@@ -46,10 +46,11 @@ struct STag
 
 struct SChannel
 {
-  int         id;
-  std::string name;
-  std::string icon;
-  int         event;
+  int              id;
+  std::string      name;
+  std::string      icon;
+  int              event;
+  std::vector<int> tags;
 
   SChannel() { Clear(); }
   void Clear()
@@ -58,6 +59,7 @@ struct SChannel
     event = 0;
     name.empty();
     icon.empty();
+    tags.clear();
   }
 };
 
