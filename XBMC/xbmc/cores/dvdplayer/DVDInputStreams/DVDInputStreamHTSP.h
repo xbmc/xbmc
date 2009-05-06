@@ -48,15 +48,11 @@ public:
 
 private:
 
-  typedef CHTSPSession::SChannel  SChannel;
-  typedef CHTSPSession::SChannels SChannels;
-  typedef CHTSPSession::SEvent    SEvent;
-
   bool      SetChannel(int channel);
-  unsigned     m_subs;
-  bool         m_startup;
-  CHTSPSession m_session;
-  int          m_channel;
-  SChannels    m_channels;
-  SEvent       m_event;
+  unsigned           m_subs;
+  bool               m_startup;
+  HTSP::CHTSPSession m_session;
+  int                m_channel;
+  HTSP::SChannels    m_channels;
+  HTSP::SEvent       m_event;
 };
