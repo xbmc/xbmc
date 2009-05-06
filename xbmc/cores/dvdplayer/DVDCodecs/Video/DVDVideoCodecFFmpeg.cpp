@@ -296,7 +296,7 @@ static double pts_itod(int64_t pts)
 
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 {
-  int iGotPicture = 0, len = 0;
+  int iGotPicture = 0, len = 0, result = 0;
 
   if (!m_pCodecContext) 
     return VC_ERROR;
@@ -385,11 +385,18 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 
+  result = VC_PICTURE | VC_BUFFER;
+
 #ifdef HAVE_LIBVDPAU
   if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
+  {
     g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
+    if(g_VDPAU->VDPAURecovered)
+      result |= VC_FLUSHED;
+    g_VDPAU->VDPAURecovered = false;
+  }
 #endif
-  return VC_PICTURE | VC_BUFFER;
+  return result;
 }
 
 void CDVDVideoCodecFFmpeg::Reset()
