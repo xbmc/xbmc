@@ -23,7 +23,7 @@
  */
 
 #include "XCriticalSection.h"
-#include "XHandle.h"
+#include "XHandlePublic.h"
 
 #ifdef _LINUX
 
@@ -58,8 +58,6 @@ LONG InterlockedExchange(
   LONG volatile* Target,
   LONG Value
 );
-
-int SDL_SemWaitTimeout2(SDL_sem *sem, Uint32 ms);
 
 #endif
 

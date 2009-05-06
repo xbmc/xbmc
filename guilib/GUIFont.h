@@ -9,6 +9,8 @@
 
 #include "GraphicContext.h"
 #include "utils/SingleLock.h"
+#include "StdString.h"
+
 
 class CGUIFontTTF;
 
