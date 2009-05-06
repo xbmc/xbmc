@@ -79,8 +79,8 @@ struct STag
   void Clear()
   {
     id    = 0;
-    name.empty();
-    icon.empty();
+    name.clear();
+    icon.clear();
     channels.clear();
   }
   bool BelongsTo(int channel) const
@@ -103,8 +103,8 @@ struct SChannel
   {
     id    = 0;
     event = 0;
-    name.empty();
-    icon.empty();
+    name.clear();
+    icon.clear();
     tags.clear();
   }
   bool MemberOf(int tag) const
@@ -130,8 +130,8 @@ struct SEvent
     next  = 0;
     start = 0;
     stop  = 0;
-    title.empty();
-    descs.empty();
+    title.clear();
+    descs.clear();
   }
 };
 
