@@ -89,14 +89,17 @@ public:
   bool      SendEnableAsync();
   bool      GetEvent(SEvent& event, int id);
 
+  int       GetProtocol() { return m_protocol; }
+
   static void OnChannelUpdate(htsmsg_t* msg, SChannels &channels);
   static void OnChannelRemove(htsmsg_t* msg, SChannels &channels);
-
+  static bool UpdateItem(CFileItem& item, const SChannel& channel, const SEvent& event);
 private:
   SOCKET      m_fd;
   unsigned    m_seq;
   void*       m_challenge;
   int         m_challenge_len;
+  int         m_protocol;
 
   std::deque<htsmsg_t*> m_queue;
   const unsigned int    m_queue_size;
