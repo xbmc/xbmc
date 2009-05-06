@@ -490,7 +490,10 @@ void ParseOptions(int argc, char** argv)
       break;
     }
   }
-	
+  //reset getopts state
+  optreset = 1;
+  optind = 0;
+  
 	if (readExternal == true)
 		ReadConfig();	
 }

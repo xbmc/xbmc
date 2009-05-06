@@ -42,17 +42,20 @@ start)
 		su -c "/usr/bin/installXBMC.py" -l 
 	else
 		# Generates valid xorg.conf for proprietary drivers if missing
-		if [ ! -f /etc/X11/xorg.conf ]; then
-			NVIDIA="$( echo $XBMC_PARAMS | grep "nvidia" )"
-			if [ "$NVIDIA" = "" ]; then
-				AMD="$( echo $XBMC_PARAMS | grep "amd" )"
+		XBMC_NOGENXCONF="$( echo $XBMC_PARAMS | grep "nogenxconf" )"
+		if [ ! -e /etc/X11/xorg.conf ] && [ "$XBMC_NOGENXCONF" == "" ]; then
+			NVIDIA="$(lspci -nn | grep 0300 | grep 10de)"
+			if [ "$NVIDIA" == "" ]; then
+				AMD="$(lspci -nn | grep 0300 | grep 1002)"
 				if [ "$AMD" != "" ]; then
 					# run aticonfig
-					aticonfig --initial --sync-vsync=on -f
+					echo "Generating xorg.conf for ATI..."
+					/usr/bin/aticonfig --initial --sync-vsync=on -f
 				fi
 			else
 				# run nvidia-xconfig
-				nvidia-xconfig -s --no-logo --force-generate
+				echo "Generating xorg.conf for NVIDIA..."
+				/usr/bin/nvidia-xconfig -s --no-logo --force-generate
 			fi
 		fi
 
@@ -65,14 +68,14 @@ start)
 			fi
 		else
 			NOMOUNT="$( echo $XBMC_PARAMS | grep "nodiskmount" )"
-			if [ "$NOMOUNT" = "" ]; then
+			if [ "$NOMOUNT" == "" ]; then
 				/usr/bin/diskmounter &
 			fi
 
 			# Redirect XBMC home folder and logfile to usb flash
-			if [ "$SRCMEDIA" = "usb" ]; then
+			if [ "$SRCMEDIA" == "usb" ]; then
 				NOREDIR="$( echo $XBMC_PARAMS | grep "noredir" )"
-				if [ "$NOREDIR" = "" ]; then
+				if [ "$NOREDIR" == "" ]; then
 					echo "Redirect XBMC home folder and logfile to usb flash..."
 
 					# Relies on init scripts to mount boot device on a specified directory

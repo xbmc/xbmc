@@ -51,6 +51,8 @@ public:
   static HRESULT ToggleTray(const char cDriveLetter='\0');
   static HRESULT EjectTray(const char cDriveLetter='\0');
   static HRESULT CloseTray(const char cDriveLetter='\0');
+  static bool HasGLDefaultDrivers();
+  static bool HasReqGLVersion();
   
   class SystemParams
   {

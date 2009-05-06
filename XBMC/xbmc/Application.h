@@ -32,6 +32,8 @@ class CFileItemList;
 #include "GUIDialogSeekBar.h"
 #include "GUIDialogKaiToast.h"
 #include "GUIDialogVolumeBar.h"
+#include "GUIDialogSubtitleDelayBar.h"
+#include "GUIDialogAudioDelayBar.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
 #include "Settings.h"
@@ -132,6 +134,8 @@ public:
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
+  void UpdateVideoFileState();
+  void UpdateAudioFileState();
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -139,11 +143,11 @@ public:
   void RenderFullScreen();
   void DoRenderFullScreen();
   bool NeedRenderFullScreen();
-  bool IsPlaying() const ;
+  bool IsPlaying() const;
   bool IsPaused() const;
-  bool IsPlayingAudio() const ;
-  bool IsPlayingVideo() const ;
-  bool IsPlayingFullScreenVideo() const ;
+  bool IsPlayingAudio() const;
+  bool IsPlayingVideo() const;
+  bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
   bool OnKey(CKey& key);
   bool OnAction(CAction &action);
@@ -161,6 +165,8 @@ public:
   void SetVolume(int iPercent);
   void Mute(void);
   int GetPlaySpeed() const;
+  int GetSubtitleDelay() const;
+  int GetAudioDelay() const;
   void SetPlaySpeed(int iSpeed);
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
@@ -190,6 +196,8 @@ public:
 #endif
 
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
+  CGUIDialogSubtitleDelayBar m_guiDialogSubtitleDelayBar;
+  CGUIDialogAudioDelayBar m_guiDialogAudioDelayBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
   CGUIDialogMuteBug m_guiDialogMuteBug;
@@ -297,6 +305,7 @@ protected:
   bool m_bInitializing;
   bool m_playCountUpdated;
   bool m_bPlatformDirectories;
+  int m_updateFileStateCounter;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;

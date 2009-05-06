@@ -233,7 +233,9 @@ papcodecs: dllloader linux dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
 	$(MAKE) -C xbmc/cores/paplayer/flac-1.2.1
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
+ifneq ($(ARCH), powerpc-osx)
 	$(MAKE) -C xbmc/cores/paplayer/MACDll
+endif
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
 ifneq ($(ARCH), x86_64-linux)
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
@@ -377,8 +379,12 @@ install: install-datas install-web
 	@cp -f xbmc.bin $(prefix)/share/xbmc/xbmc.bin
 	@mkdir -p $(prefix)/bin
 	@cp tools/Linux/xbmc.sh $(prefix)/bin/xbmc
+	@cp tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
 	@cp tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
+	@mkdir -p $(prefix)/share/xsessions
+	@cp tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
 	@chmod 755 $(prefix)/bin/xbmc
+	@chmod 755 $(prefix)/bin/xbmc-standalone
 	@echo "Copying support and legal files,,,"
 	@cp README.linux LICENSE.GPL *.txt xbmc-xrandr $(prefix)/share/xbmc/
 	@echo "Done!"
@@ -396,6 +402,14 @@ install-datas:
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec cp '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
 
+install-livedatas:
+	@echo "Install Live CD datas in $(prefix) ..."
+	@mkdir -p $(prefix)/bin 
+	@cp tools/XBMCLive/diskmounter $(prefix)/bin
+	@cp tools/XBMCLive/installXBMC.py $(prefix)/bin
+	@cp tools/XBMCLive/runXBMC.sh $(prefix)/bin
+	@cp tools/XBMCLive/setAlsaVolumes.py $(prefix)/bin
+
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
 	@unzip -oq web/Project_Mayhem_III_webserver_v1.0.zip \
@@ -404,6 +418,8 @@ install-web:
 uninstall:
 	@echo "Removing XBMC..."
 	@rm -rf $(prefix)/share/xbmc $(prefix)/bin/xbmc
+	@rm -rf $(prefix)/bin/xbmc-standalone
+	@rm -rf /usr/share/xsessions/XBMC.desktop
 	@echo "Done!"
 
 reallyclean:

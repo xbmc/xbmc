@@ -307,11 +307,12 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
   m_bPlaybackStarting = false;
+  m_updateFileStateCounter = 0;
 
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
 
-  /* for now allways keep this around */
+  /* for now always keep this around */
 #ifdef HAS_KARAOKE
   m_pKaraokeMgr = new CKaraokeLyricsManager();
 #endif
@@ -1348,6 +1349,8 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
   m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
 #endif
+  m_gWindowManager.Add(&m_guiDialogSubtitleDelayBar);          // window id = 145
+  m_gWindowManager.Add(&m_guiDialogAudioDelayBar);          // window id = 146
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
@@ -1978,6 +1981,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
   g_graphicsContext.SetMediaDir(strSkinPath);
+  g_directoryCache.ClearSubPaths(strSkinPath);
   if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font")))
   {
     CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
@@ -2039,6 +2043,8 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogSeekBar.AllocResources(true);
   m_guiDialogKaiToast.AllocResources(true);
   m_guiDialogMuteBug.AllocResources(true);
+  m_guiDialogSubtitleDelayBar.AllocResources(true);
+  m_guiDialogAudioDelayBar.AllocResources(true);
   m_gWindowManager.AddMsgTarget(this);
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
   m_gWindowManager.AddMsgTarget(&g_infoManager);
@@ -3377,36 +3383,6 @@ bool CApplication::ProcessGamepad(float frameTime)
       g_Joystick.Reset();
     }
   }
-  if (g_Joystick.GetHat(bid))
-  {
-    // reset Idle Timer
-    m_idleTimer.StartZero();
-
-    ResetScreenSaver();
-    if (ResetScreenSaverWindow())
-    {
-      g_Joystick.Reset(true);
-      return true;
-    }
-
-    CAction action;
-    bool fullrange;
-    string jname = g_Joystick.GetJoystick();
-    bid = bid|(g_Joystick.getHatState()<<16);  // hat flag
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
-    {
-      action.fAmount1 = g_Joystick.getHatState();
-      action.fRepeat = 0.0f;
-      g_audioManager.PlayActionSound(action);
-      g_Joystick.Reset();
-      g_Mouse.SetInactive();
-      return OnAction(action);
-    }
-    else
-    {
-      g_Joystick.Reset();
-    }
-  }
   if (g_Joystick.GetAxis(bid))
   {
     CAction action;
@@ -3877,6 +3853,8 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
     m_gWindowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
 
+    m_gWindowManager.Remove(WINDOW_DIALOG_SUBTITLE_DELAY_BAR);
+    m_gWindowManager.Remove(WINDOW_DIALOG_AUDIO_DELAY_BAR);
     m_gWindowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     m_gWindowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
@@ -3918,6 +3896,7 @@ HRESULT CApplication::Cleanup()
     g_playlistPlayer.Clear();
     g_settings.Clear();
     g_guiSettings.Clear();
+    g_Mouse.Cleanup();
 
 #ifdef _LINUX
     CXHandle::DumpObjectTracker();
@@ -4210,6 +4189,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
+    m_updateFileStateCounter = 0;
   }
 
   if (item.IsPlayList())
@@ -4556,6 +4536,74 @@ bool CApplication::IsPlayingFullScreenVideo() const
   return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
 }
 
+void CApplication::UpdateVideoFileState()
+{
+  // TODO: Add saving of watched status in here
+  // save our position for resuming at a later date
+  CVideoDatabase dbs;
+  if (dbs.Open())
+  {
+    // mark as watched if we are passed the usual amount
+    if (g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+        GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent)
+    {
+      if (!m_playCountUpdated) // no need to update more than once:
+      {
+        CLog::Log(LOGDEBUG, "%s - Marking current video file as watched", __FUNCTION__);
+        // consider this item as played
+        m_playCountUpdated=true;
+      
+        dbs.MarkAsWatched(*m_itemCurrentFile);
+      }
+    }
+    else
+      m_playCountUpdated=false;
+      
+    double current = GetTime();
+    // ignore x seconds at the start
+    if (current > g_advancedSettings.m_videoIgnoreAtStart)
+    {
+      CBookmark bookmark;
+      bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+      bookmark.playerState = m_pPlayer->GetPlayerState();
+      bookmark.timeInSeconds = current;
+      bookmark.thumbNailImage.Empty();
+
+      dbs.AddBookMarkToFile(CurrentFile(), bookmark, CBookmark::RESUME);
+    }
+    dbs.Close();
+  }
+}
+
+void CApplication::UpdateAudioFileState()
+{
+  if (g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+      GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent)
+  {
+    if (!m_playCountUpdated) // no need to update more than once
+    {
+      CLog::Log(LOGDEBUG, "%s - Marking current audio file as watched", __FUNCTION__);
+      
+      // consider this item as played
+      m_playCountUpdated = true;
+
+      // Can't write to the musicdatabase while scanning for music info
+      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      if (dialog && !dialog->IsDialogRunning())
+      {
+        CMusicDatabase musicdatabase;
+        if (musicdatabase.Open())
+        {
+          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile->m_strPath);
+          musicdatabase.Close();
+        }
+      }
+    }
+  }
+  else
+    m_playCountUpdated = false;
+}
+
 void CApplication::StopPlaying()
 {
   int iWin = m_gWindowManager.GetActiveWindow();
@@ -4570,42 +4618,21 @@ void CApplication::StopPlaying()
     if (iWin == WINDOW_VISUALISATION)
       m_gWindowManager.PreviousWindow();
 
-    // TODO: Add saving of watched status in here
-    if ( IsPlayingVideo() )
-    { // save our position for resuming at a later date
-      CVideoDatabase dbs;
-      if (dbs.Open())
-      {
-        // mark as watched if we are passed the usual amount
-        if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
-        {
-          dbs.MarkAsWatched(*m_itemCurrentFile);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-        }
+    // Save resume point & update watched status
+    if (IsPlayingVideo())
+    {
+      UpdateVideoFileState();
 
-        if( m_pPlayer )
-        {
-          // ignore two minutes at start and either 2 minutes, or up to 5% at end (end credits)
-          double current = GetTime();
-          double total = GetTotalTime();
-          if (current > 120 && total - current > 120 && total - current > 0.05 * total)
-          {
-            CBookmark bookmark;
-            bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-            bookmark.playerState = m_pPlayer->GetPlayerState();
-            bookmark.timeInSeconds = current;
-            bookmark.thumbNailImage.Empty();
-
-            dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
-          }
-          else
-            dbs.DeleteResumeBookMark(CurrentFile());
-        }
-        dbs.Close();
-      }
+      if (m_playCountUpdated)
+        CUtil::DeleteVideoDatabaseDirectoryCache();
     }
+
+    if (IsPlayingAudio())
+      UpdateAudioFileState();
+
     if (m_pPlayer)
       m_pPlayer->CloseFile();
+
     g_partyModeManager.Disable();
   }
 }
@@ -5142,8 +5169,28 @@ void CApplication::Process()
   }
 }
 
+// We get called every 500ms
 void CApplication::ProcessSlow()
 {
+  //disabled for now, because it can cause jerks and framedrops
+  // Update video file state every minute
+  /*if (IsPlayingVideo())
+  {
+    if (m_updateFileStateCounter++>120)
+    {
+      m_updateFileStateCounter=0;
+
+      UpdateVideoFileState();
+    }
+  }*/
+
+  if (IsPlayingAudio())
+  {
+    CheckAudioScrobblerStatus();
+    // Update audio file state every 0.5 second
+    UpdateAudioFileState();
+  }
+  
   // Check if we need to activate the screensaver (if enabled).
   if (g_guiSettings.GetString("screensaver.mode") != "None")
     CheckScreenSaver();
@@ -5371,6 +5418,18 @@ int CApplication::GetVolume() const
   return int(((float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
 }
 
+int CApplication::GetSubtitleDelay() const
+{
+  // converts subtitle delay to a percentage
+  return int(((float)(g_stSettings.m_currentVideoSettings.m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
+}
+
+int CApplication::GetAudioDelay() const
+{
+  // converts subtitle delay to a percentage
+  return int(((float)(g_stSettings.m_currentVideoSettings.m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
+}
+
 void CApplication::SetPlaySpeed(int iSpeed)
 {
   if (!IsPlayingAudio() && !IsPlayingVideo())
@@ -5583,7 +5642,7 @@ EPLAYERCORES CApplication::GetCurrentPlayer()
 // and enable tag reading and remote thums
 void CApplication::SaveMusicScanSettings()
 {
-  CLog::Log(LOGINFO,"Music scan has started ... enabling Tag Reading, and Remote Thumbs");
+  CLog::Log(LOGINFO,"Music scan has started... Enabling tag reading, and remote thumbs");
   g_stSettings.m_bMyMusicIsScanning = true;
   g_settings.Save();
 }
@@ -5616,34 +5675,6 @@ void CApplication::CheckPlayingProgress()
       }
     }
   }
-
-  if (!IsPlayingAudio()) return;
-
-  CheckAudioScrobblerStatus();
-
-  // work out where we are in the playing item
-  if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
-  { // consider this item as played
-    if (m_playCountUpdated)
-      return;
-    m_playCountUpdated = true;
-    if (IsPlayingAudio())
-    {
-      // Can't write to the musicdatabase while scanning for music info
-      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (dialog && !dialog->IsDialogRunning())
-      {
-        CMusicDatabase musicdatabase;
-        if (musicdatabase.Open())
-        {
-          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile->m_strPath);
-          musicdatabase.Close();
-        }
-      }
-    }
-  }
-  else
-    m_playCountUpdated = false;
 }
 
 void CApplication::CheckAudioScrobblerStatus()

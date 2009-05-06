@@ -103,6 +103,26 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
 INT CXBMC_PC::Run()
 {
   g_application.Create(NULL);
+
+  // we don't want to see the "no disc in drive" windows message box
+  SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
+
+  if(CWIN32Util::HasGLDefaultDrivers())
+  {
+    MessageBox(NULL, "MS default OpenGL drivers detected. Please get OpenGL drivers from your vendor", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
+    g_application.Cleanup();
+    return E_FAIL;
+  }
+
+  if(!CWIN32Util::HasReqGLVersion())
+  {
+    if(MessageBox(NULL, "Your OpenGL version doesn't meet the XBMC requirements", "XBMC: Warning", MB_OKCANCEL|MB_ICONWARNING) == IDCANCEL)
+    {
+      g_application.Cleanup();
+      return E_FAIL;
+    }
+  }
+
   g_application.Run();
   return 0;
 }
@@ -133,9 +153,6 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     MessageBox(NULL, "Desktop Color Depth isn't 32Bit", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
     return 0;
   }
-
-  // we don't want to see the "no disc in drive" windows message box
-  SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
   // update the current drive mask
   CWIN32Util::UpdateDriveMask();

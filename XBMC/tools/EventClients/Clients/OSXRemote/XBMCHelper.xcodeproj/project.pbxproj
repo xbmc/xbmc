@@ -226,6 +226,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				INSTALL_PATH = /usr/local/bin;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = OSXRemote;
 				SDKROOT = macosx10.4;
 				STRIP_STYLE = debugging;
@@ -239,6 +240,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = OSXRemote;
 				SDKROOT = macosx10.4;
 				STRIP_STYLE = debugging;

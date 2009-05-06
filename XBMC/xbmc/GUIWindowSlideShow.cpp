@@ -64,7 +64,10 @@ CBackgroundPicLoader::CBackgroundPicLoader()
 }
 
 CBackgroundPicLoader::~CBackgroundPicLoader()
-{}
+{
+  StopThread();
+  CloseHandle(m_loadPic);
+}
 
 void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
 {
@@ -778,11 +781,8 @@ int CGUIWindowSlideShow::CurrentSlide() const
   return m_iCurrentSlide + 1;
 }
 
-void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursive /* = false */, bool bRandom /* = false */, bool bNotRandom /* = false */)
+void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath, bool bRecursive)
 {
-  // stop any video
-  if (g_application.IsPlayingVideo())
-    g_application.StopPlaying();
   if (strPath!="")
   {
     // reset the slideshow
@@ -794,8 +794,16 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
     }
     else
       AddItems(strPath, NULL);
-    // ok, now run the slideshow
   }
+}
+
+void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursive /* = false */, bool bRandom /* = false */, bool bNotRandom /* = false */)
+{
+  // stop any video
+  if (g_application.IsPlayingVideo())
+    g_application.StopPlaying();
+
+  AddFromPath(strPath, bRecursive);
 
   // mutually exclusive options
   // if both are set, clear both and use the gui setting

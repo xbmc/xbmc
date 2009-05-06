@@ -173,7 +173,7 @@ namespace PYXBMC
     
     value = cDefault;
     if (browsetype == 1)
-      CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, (bool)useThumbs, (bool)useFileDirectories);
+      CGUIDialogFileBrowser::ShowAndGetFile(*shares, utf8Line[2], utf8Line[0], value, 0 != useThumbs, 0 != useFileDirectories);
     else if (browsetype == 2)
       CGUIDialogFileBrowser::ShowAndGetImage(*shares, utf8Line[0], value);
     else

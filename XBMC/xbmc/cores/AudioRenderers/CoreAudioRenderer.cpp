@@ -241,7 +241,7 @@ void CCoreAudioPerformance::ReportData(UInt32 bytesIn, UInt32 bytesOut)
   m_ActualBytesPerSec = (m_TotalBytesOut - m_LastWatchdogBytesOut) / ((float)deltaTime/1000.0f);
   if (deltaTime > m_WatchdogInterval)
   {
-    if (m_TotalBytesOut > m_WatchdogPreroll) // Allow m_TotalBytesOut bytes to go by unmonitored
+    if (m_TotalBytesOut > m_WatchdogPreroll) // Allow m_WatchdogPreroll bytes to go by unmonitored
     {
       // Check outgoing bitrate
       if (m_ActualBytesPerSec < m_WatchdogBitrateSensitivity * m_ExpectedBytesPerSec) 
@@ -464,7 +464,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
     if (!m_AudioUnit.SetMaxFramesPerSlice(bufferFrames))
       return false;    
     
-    m_ChunkLen = bufferFrames * m_BytesPerFrame;                       // This is the minimum amount of data that we will accept from a client
+    m_ChunkLen = bufferFrames * m_BytesPerFrame;  // This is the minimum amount of data that we will accept from a client
 
     // Setup the callback function that the AudioUnit will use to request data	
     if (!m_AudioUnit.SetRenderProc(RenderCallback, this))
