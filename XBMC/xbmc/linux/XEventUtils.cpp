@@ -24,6 +24,8 @@
 #include "XEventUtils.h"
 #include "XHandle.h"
 
+using namespace std;
+
 HANDLE WINAPI CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName)
 {
   CXHandle *pHandle = new CXHandle(CXHandle::HND_EVENT);
@@ -55,12 +57,28 @@ bool WINAPI SetEvent(HANDLE hEvent)
 
   SDL_mutexP(hEvent->m_hMutex);
   hEvent->m_bEventSet = true;
+  list<CXHandle*> events = hEvent->m_hParents;
   SDL_mutexV(hEvent->m_hMutex);
 
+  for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
+  {
+    SDL_mutexP((*it)->m_hMutex);
+    (*it)->m_bEventSet = true;
+    SDL_mutexV((*it)->m_hMutex);
+  }
+
   if (hEvent->m_bManualEvent == true)
+  {
     SDL_CondBroadcast(hEvent->m_hCond);
+    for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
+      SDL_CondBroadcast((*it)->m_hCond);
+  }
   else
+  {
     SDL_CondSignal(hEvent->m_hCond);
+    for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
+      SDL_CondSignal((*it)->m_hCond);
+  }
 
   return true;
 }

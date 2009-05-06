@@ -31,6 +31,7 @@
 #include "PlatformDefs.h"
 #include "StringUtils.h"
 #include "XHandlePublic.h"
+#include <list>
 
 struct CXHandle {
 
@@ -49,6 +50,7 @@ public:
   SDL_sem    *m_hSem;
   SDL_Thread  *m_hThread;
   SDL_cond    *m_hCond;
+  std::list<CXHandle*> m_hParents;
 
 #ifdef __APPLE__
   // Save the Mach thrad port, I don't think it can be obtained from
