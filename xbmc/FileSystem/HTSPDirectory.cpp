@@ -86,6 +86,48 @@ void CHTSPDirectorySession::Close()
   StopThread();
 }
 
+htsmsg_t* CHTSPDirectorySession::ReadResult(htsmsg_t* m)
+{
+  CSingleLock lock(m_section);
+  unsigned    seq (m_session.AddSequence());
+
+  SMessage &message(m_queue[seq]);
+  message.event = new CEvent();
+  message.msg   = NULL;
+
+  lock.Leave();
+  htsmsg_add_u32(m, "seq", seq);
+  if(!m_session.SendMessage(m))
+  {
+    m_queue.erase(seq);
+    return NULL;
+  }
+
+  if(!message.event->WaitMSec(2000))
+    CLog::Log(LOGERROR, "CHTSPDirectorySession::ReadResult - Timeout waiting for response");
+  lock.Enter();
+
+  m =    message.msg;
+  delete message.event;
+
+  m_queue.erase(seq);
+
+  return m;
+}
+
+bool CHTSPDirectorySession::GetEvent(CHTSPSession::SEvent& event, uint32_t id)
+{
+  htsmsg_t *msg = htsmsg_create_map();
+  htsmsg_add_str(msg, "method", "getEvent");
+  htsmsg_add_u32(msg, "eventId", id);
+  if((msg = ReadResult(msg)) == NULL)
+  {
+    CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - failed to get event %u", id);
+    return false;
+  }
+  return CHTSPSession::OnEvent(msg, id, event);
+}
+
 void CHTSPDirectorySession::Process()
 {
   CLog::Log(LOGDEBUG, "CHTSPDirectorySession::Process() - Starting");
@@ -97,6 +139,19 @@ void CHTSPDirectorySession::Process()
   {
     if((msg = m_session.ReadMessage()) == NULL)
       continue;
+
+    uint32_t seq;
+    if(htsmsg_get_u32(msg, "seq", &seq) == 0)
+    {
+      CSingleLock lock(m_section);
+      SMessages::iterator it = m_queue.find(seq);
+      if(it != m_queue.end())
+      {
+        it->second.msg = msg;
+        it->second.event->Set();
+        continue;
+      }
+    }
 
     const char* method;
     if((method = htsmsg_get_str(msg, "method")) == NULL)
@@ -150,13 +205,13 @@ bool CHTSPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   {
     CHTSPSession::SChannel& channel(it->second);
     CHTSPSession::SEvent    event;
-/*
+
     if(!session.GetEvent(event, channel.event))
     {
       CLog::Log(LOGERROR, "CHTSPDirectory::GetDirectory - failed to get event %d", channel.event);
       event.Clear();
     }
-*/
+
     CFileItemPtr item(new CFileItem());
 
     url.SetFileName("");
