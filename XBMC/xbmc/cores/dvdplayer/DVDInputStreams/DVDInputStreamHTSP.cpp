@@ -112,6 +112,8 @@ bool CHTSPSession::Connect(const std::string& hostname, int port)
   CLog::Log(LOGDEBUG, "CHTSPSession::Open - connected to server: [%s], version: [%s], proto: %d"
                     , server ? server : "", version ? version : "", proto);
 
+  m_protocol = proto;
+
   if(chall && chall_len)
   {
     m_challenge     = malloc(chall_len);
@@ -370,6 +372,37 @@ void CHTSPSession::OnChannelRemove(htsmsg_t* msg, SChannels &channels)
 }
 
 
+bool CHTSPSession::UpdateItem(CFileItem& item, const SChannel& channel, const SEvent& event)
+{
+  CVideoInfoTag* tag = item.GetVideoInfoTag();
+
+  CStdString temp, path;
+
+  CURL url(item.m_strPath);
+  temp.Format("channels/%d.ts", channel.id);
+  url.SetFileName(temp);
+  url.GetURL(path);
+
+  tag->m_iSeason  = 0;
+  tag->m_iEpisode = 0;
+  tag->m_strAlbum     = channel.name;
+  tag->m_strShowTitle = event.title;
+  tag->m_strPlot      = event.descs;
+  tag->m_strStatus    = "livetv";
+
+  tag->m_strTitle = tag->m_strAlbum;
+  if(tag->m_strShowTitle.length() > 0)
+    tag->m_strTitle += " : " + tag->m_strShowTitle;
+
+  item.m_strPath  = path;
+  item.m_strTitle = tag->m_strTitle;
+  item.SetThumbnailImage(channel.icon);
+  item.SetContentType("video/X-htsp");
+  item.SetCachedVideoThumb();
+  return true;
+}
+
+
 htsmsg_t* CDVDInputStreamHTSP::ReadStream()
 {
   htsmsg_t* msg;
@@ -516,8 +549,7 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
   if(it == m_channels.end())
     return false;
 
-  SChannel&  channel = it->second;
-  CVideoInfoTag* tag = item.GetVideoInfoTag();
+  SChannel& channel = it->second;
 
   if(channel.event != m_event.id)
   {
@@ -527,34 +559,7 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
       m_event.id = channel.event;
     }
   }
-  CStdString temp, path;
-
-  CURL url(item.m_strPath);
-  temp.Format("channels/%d", channel.id);
-  url.SetFileName(temp);
-  url.GetURL(path);
-
-  /* check if we don't need to modify */
-  if(tag->m_strAlbum     == channel.name
-  && tag->m_strShowTitle == m_event.title
-  && tag->m_strPlot      == m_event.descs
-  && tag->m_iSeason      == 0
-  && tag->m_iEpisode     == 0
-  && item.m_strPath      == path)
-    return false;
-
-  tag->m_iSeason  = 0;
-  tag->m_iEpisode = 0;
-  tag->m_strAlbum     = channel.name;
-  tag->m_strShowTitle = m_event.title;
-  tag->m_strPlot      = m_event.descs;
-
-  tag->m_strTitle = tag->m_strAlbum;
-  if(tag->m_strShowTitle.length() > 0)
-    tag->m_strTitle += " : " + tag->m_strShowTitle;
-
-  item.m_strPath  = path;
-  item.m_strTitle = tag->m_strAlbum;
+  CHTSPSession::UpdateItem(item, channel, m_event);
   item.SetThumbnailImage(channel.icon);
   item.SetCachedVideoThumb();
   return true;
