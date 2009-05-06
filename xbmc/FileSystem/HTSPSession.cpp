@@ -367,6 +367,23 @@ void CHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
   if((icon = htsmsg_get_str(msg, "channelIcon")))
     channel.icon = icon;
 
+
+  htsmsg_t *tags;
+
+  if((tags = htsmsg_get_list(msg, "tags")))
+  {
+    channel.tags.clear();
+
+    htsmsg_field_t *f;
+    HTSMSG_FOREACH(f, tags)
+    {
+      if(f->hmf_type != HMF_S64)
+        continue;
+      channel.tags.push_back(f->hmf_s64);
+    }
+  }
+
+
   CLog::Log(LOGDEBUG, "CHTSPSession::ParseChannelUpdate - id:%u, name:'%s', icon:'%s', event:%u"
                     , id, name ? name : "(null)", icon ? icon : "(null)", event);
 }
