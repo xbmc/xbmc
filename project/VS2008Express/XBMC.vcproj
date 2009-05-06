@@ -2051,6 +2051,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\GUIDialogAudioDelayBar.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIDialogAudioDelayBar.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIDialogSubtitleDelayBar.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\GUIDialogSubtitleDelayBar.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\stdafx.cpp"
 				>
 				<FileConfiguration
