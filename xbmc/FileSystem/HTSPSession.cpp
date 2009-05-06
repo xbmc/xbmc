@@ -298,10 +298,10 @@ bool CHTSPSession::GetEvent(SEvent& event, uint32_t id)
     CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - failed to get event %d", id);
     return false;
   }
-  return OnEvent(msg, id, event);
+  return ParseEvent(msg, id, event);
 }
 
-bool CHTSPSession::OnEvent(htsmsg_t* msg, uint32_t id, CHTSPSession::SEvent &event)
+bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, CHTSPSession::SEvent &event)
 {
   uint32_t start, stop, next;
   const char *title, *desc;
@@ -310,7 +310,7 @@ bool CHTSPSession::OnEvent(htsmsg_t* msg, uint32_t id, CHTSPSession::SEvent &eve
   || (title = htsmsg_get_str(msg, "title")) == NULL
   || (desc  = htsmsg_get_str(msg, "description"))  == NULL)
   {
-    CLog::Log(LOGDEBUG, "CHTSPSession::OnEvent - malformed event");
+    CLog::Log(LOGDEBUG, "CHTSPSession::ParseEvent - malformed event");
     htsmsg_print(msg);
     htsmsg_destroy(msg);
     return false;
@@ -326,7 +326,7 @@ bool CHTSPSession::OnEvent(htsmsg_t* msg, uint32_t id, CHTSPSession::SEvent &eve
   else
     event.next = next;
 
-  CLog::Log(LOGDEBUG, "CHTSPSession::GetEvent - id:%u, title:'%s', desc:'%s', start:%u, stop:%u, next:%u"
+  CLog::Log(LOGDEBUG, "CHTSPSession::ParseEvent - id:%u, title:'%s', desc:'%s', start:%u, stop:%u, next:%u"
                     , event.id
                     , event.title.c_str()
                     , event.descs.c_str()
@@ -337,14 +337,14 @@ bool CHTSPSession::OnEvent(htsmsg_t* msg, uint32_t id, CHTSPSession::SEvent &eve
   return true;
 }
 
-void CHTSPSession::OnChannelUpdate(htsmsg_t* msg, SChannels &channels)
+void CHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
 {
   uint32_t id, event = 0;
   const char *name, *icon;
   if(         htsmsg_get_u32(msg, "channelId", &id)
   ||  (name = htsmsg_get_str(msg, "channelName")) == NULL)
   {
-    CLog::Log(LOGERROR, "CHTSPSession::OnChannelUpdate - malformed message received");
+    CLog::Log(LOGERROR, "CHTSPSession::ParseChannelUpdate - malformed message received");
     htsmsg_print(msg);
     return;
   }
@@ -355,7 +355,7 @@ void CHTSPSession::OnChannelUpdate(htsmsg_t* msg, SChannels &channels)
   if((icon = htsmsg_get_str(msg, "channelIcon")) == NULL)
     icon = "";
 
-  CLog::Log(LOGDEBUG, "CHTSPSession::OnChannelUpdate - id:%u, name:'%s', icon:'%s', event:%u"
+  CLog::Log(LOGDEBUG, "CHTSPSession::ParseChannelUpdate - id:%u, name:'%s', icon:'%s', event:%u"
                     , id, name, icon, event);
 
   SChannel &channel = channels[id];
@@ -365,22 +365,22 @@ void CHTSPSession::OnChannelUpdate(htsmsg_t* msg, SChannels &channels)
   channel.event = event;
 }
 
-void CHTSPSession::OnChannelRemove(htsmsg_t* msg, SChannels &channels)
+void CHTSPSession::ParseChannelRemove(htsmsg_t* msg, SChannels &channels)
 {
   uint32_t id;
   if(htsmsg_get_u32(msg, "channelId", &id))
   {
-    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::OnChannelUpdate - malformed message received");
+    CLog::Log(LOGERROR, "CDVDInputStreamHTSP::ParseChannelRemove - malformed message received");
     htsmsg_print(msg);
     return;
   }
-  CLog::Log(LOGDEBUG, "CHTSPSession::OnChannelRemove - id:%u", id);
+  CLog::Log(LOGDEBUG, "CHTSPSession::ParseChannelRemove - id:%u", id);
 
   channels.erase(id);
 }
 
 
-bool CHTSPSession::UpdateItem(CFileItem& item, const SChannel& channel, const SEvent& event)
+bool CHTSPSession::ParseItem(const SChannel& channel, const SEvent& event, CFileItem& item)
 {
   CVideoInfoTag* tag = item.GetVideoInfoTag();
 

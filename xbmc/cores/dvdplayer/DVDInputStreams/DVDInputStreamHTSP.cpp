@@ -50,11 +50,11 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
       continue;
 
     if     (strstr(method, "channelAdd"))
-      CHTSPSession::OnChannelUpdate(msg, m_channels);
+      CHTSPSession::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelUpdate"))
-      CHTSPSession::OnChannelUpdate(msg, m_channels);
+      CHTSPSession::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelRemove"))
-      CHTSPSession::OnChannelRemove(msg, m_channels);
+      CHTSPSession::ParseChannelRemove(msg, m_channels);
 
     uint32_t subs;
     if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
@@ -195,7 +195,7 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
       m_event.id = channel.event;
     }
   }
-  CHTSPSession::UpdateItem(item, channel, m_event);
+  CHTSPSession::ParseItem(channel, m_event, item);
   item.SetThumbnailImage(channel.icon);
   item.SetCachedVideoThumb();
   return true;
