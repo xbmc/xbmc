@@ -51,7 +51,6 @@ CEventServer::CEventServer()
   m_pSocket       = NULL;
   m_pPacketBuffer = NULL;
   m_bStop         = false;
-  m_pThread       = NULL;
   m_bRunning      = false;
   m_bRefreshSettings = false;
 
@@ -80,9 +79,9 @@ CEventServer* CEventServer::GetInstance()
 void CEventServer::StartServer()
 {
   CSingleLock lock(m_critSection);
-  if (m_pThread)
+  if(m_bRunning)
     return;
-
+    
   // set default port
   string port = (const char*)g_guiSettings.GetString("remoteevents.port");
   if (port.length() == 0)
