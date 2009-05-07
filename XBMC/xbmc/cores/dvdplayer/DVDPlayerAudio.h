@@ -170,21 +170,25 @@ protected:
   double  m_droptime;
   bool    m_stalled;
   bool    m_started;
-  CRITICAL_SECTION m_critCodecSection;
   
-  void   ResetErrorCounters();
-  bool   OutputAudioframe(DVDAudioFrame &audioframe, bool newerror);
+  CDVDPlayerResampler m_resampler;
   
-  int    m_SyncType; //audio sync type
-  double m_CurrError; //current average error
-  double m_AverageError; //place to store errors
-  int    m_ErrorCount; //amount of error stored
-  int    m_SkipDupCount; //whether to skip, duplicate or play normal
-  bool   m_PrevSkipped; //if the previous frame was skipped, don't skip the current one
-  double m_MeasureTime; //timestamp when the last average error was measured
-  double m_Integral;
-  bool   m_SyncClock; //if we have to sync the clock
+  bool OutputPacket(DVDAudioFrame &audioframe);
+  
+  int    m_synctype;  //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
+  double m_error;     //last average error
+  
+  LARGE_INTEGER m_errortime; //timestamp of last time we measured
+  LARGE_INTEGER m_freq;
+  
+  void   HandleSyncError(double duration);
+  double m_errorbuff; //place to store average errors
+  int    m_errorcount;//number of errors stored
+  
+  double m_integral; //integral correction for resampler
+  int    m_skipdupcount; //counter for skip/duplicate synctype
+  bool   m_prevskipped;
 
-  CDVDPlayerResampler m_Resampler;
+  CRITICAL_SECTION m_critCodecSection;
 };
 
