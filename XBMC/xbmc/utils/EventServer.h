@@ -75,7 +75,6 @@ namespace EVENTSERVER
     void RefreshClients();
 
     std::map<unsigned long, EVENTCLIENT::CEventClient*>  m_clients;
-    CThread*             m_pThread;
     static CEventServer* m_pInstance;
     SOCKETS::CUDPSocket* m_pSocket;
     int              m_iPort;
