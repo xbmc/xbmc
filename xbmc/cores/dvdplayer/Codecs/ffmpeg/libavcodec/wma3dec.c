@@ -1421,18 +1421,10 @@ static int wma_decode_frame(WMA3DecodeContext *s)
     for(i = 0; i < s->num_channels; i++) {
         int16_t* ptr;
         int incr = s->num_channels;
-        /* FIXME: what about other channel layouts? */
-        const char layout[] = {0,1,4,5,2,3};
-        int chpos;
         float* iptr = s->channel[i].out;
         int x;
 
-        if(s->num_channels == 6){
-              chpos = layout[i];
-        }else
-              chpos = i;
-
-        ptr = s->samples + chpos;
+        ptr = s->samples + i;
 
         for(x=0;x<s->samples_per_frame;x++) {
             *ptr = av_clip_int16(lrintf(*iptr++));
