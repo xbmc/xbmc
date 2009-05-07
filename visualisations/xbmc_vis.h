@@ -2,6 +2,7 @@
 #define __XBMC_VIS_H__
 
 #include <vector>
+#include <string>
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #else
