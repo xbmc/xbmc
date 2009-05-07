@@ -5,7 +5,7 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 04/24/2009-->
+<!--Date of translation: 05/03/2009-->
 <!--Based on english strings revision 19506-->
 <!--$Revision$-->
 <strings>
@@ -724,7 +724,7 @@
   <string id="1048">Web sunucusu kullanıcı adı</string>
   
   <string id="1200">SMB istemcisi</string>
-  <string id="1202">Workgroup</string>
+  <string id="1202">Çalışma grubu</string>
   <string id="1203">Varsayılan kullanıcı adı</string>
   <string id="1204">Varsayılan şifre</string>
   
@@ -807,7 +807,7 @@
   <string id="10004">Ayarlar</string>
   <string id="10005">Müzik</string>
   <string id="10006">Videolar</string>
-  <string id="10007">Sistem Bilgisi</string>
+  <string id="10007">Sistem bilgisi</string>
   <string id="10008">Ayarlar - Genel</string>
   <string id="10009">Ayarlar - Ekran</string>
   <string id="10010">Ayarlar - Görünüm - Ekran Ayarları</string>
@@ -841,12 +841,12 @@
   <string id="10501">Müzik/Dosyalar</string>
   <string id="10502">Müzik/Kitaplık</string>
   <string id="10503">Çalma listesi düzenleyicisi</string>
-  <string id="10504">En İyi 100 Şarkı</string>
-  <string id="10505">En İyi 100 Albüm</string>
+  <string id="10504">En iyi 100 şarkı</string>
+  <string id="10505">En iyi 100 albüm</string>
   <string id="10506">Programlar</string>
   <string id="10507">Ayarlar</string>
   <string id="10508">Hava Tahmini</string>
-  <string id="10509">Ağ Üzerinden Oyun</string>
+  <string id="10509">Ağ üzerinden oyun</string>
   <string id="10510">Eklentiler</string>
   <string id="10511">Sistem bilgisi</string>
   <string id="10512"></string>
@@ -872,7 +872,7 @@
   <string id="12006">Müzik görsel ögesi</string>
   <string id="12007"></string>
   <string id="12008">Dosya sıralama penceresi</string>
-  <string id="12009">İndeksi yenile...</string>
+  <string id="12009">İçeriği yenile...</string>
   <string id="12010">Müzik penceresine dön</string>
   <string id="12011">Videolar penceresine dön</string>
   <string id="12012">Hile listesini güncelle</string>
@@ -1436,7 +1436,7 @@
   <string id="15300">Dizin bulunamadı veya geçersiz</string>
   <string id="15301">Ağ sunucusuna bağlanamıyor</string>
   <string id="15302">Sunucu bulunamadı</string>
-  <string id="15303">Workgroup bulunamadı</string>
+  <string id="15303">Çalışma grubu bulunamadı</string>
   
   <string id="15310">Çok dizinli kaynak açılıyor</string>
   <string id="15311">Dizin:</string>
@@ -1762,7 +1762,7 @@
   <string id="20344">Bu dizinin içeriği</string>
   <string id="20345">Otomatik taramayı çalıştır</string>
   <string id="20346">Alt dizinleride tara</string>
-  <string id="20347">gibi</string>
+  <string id="20347">-</string>
   <string id="20348">Yönetmenler</string>
   <string id="20349">Bu dizinde video dosyası bulunamadı!</string>
   <string id="20350">oylar</string>
