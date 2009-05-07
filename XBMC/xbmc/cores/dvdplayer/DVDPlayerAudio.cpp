@@ -529,6 +529,9 @@ void CDVDPlayerAudio::Process()
     {
       m_droptime = 0.0;
 
+      if (audioframe.passthrough && m_synctype == SYNC_RESAMPLE)
+        m_synctype = SYNC_DISCON;
+      
       packetadded = OutputPacket(audioframe);
     }
 
