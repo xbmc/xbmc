@@ -651,7 +651,7 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
       m_dvdAudio.AddPackets(audioframe);
       m_skipdupcount--;
     }
-    else
+    else if (m_skipdupcount == 0)
     {
       m_dvdAudio.AddPackets(audioframe);
     }
