@@ -455,7 +455,7 @@ void CDVDPlayerVideo::Process()
         if (iDecoderState & VC_FLUSHED)
         {
           CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder was flushed");
-          m_messageParent.Put(new CDVDMsgPlayerSeek(pts, true, true, true));
+          m_messageParent.Put(new CDVDMsgPlayerSeek(pts/1000, true, true, true));
         }
 
         // if decoder had an error, tell it to reset to avoid more problems
