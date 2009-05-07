@@ -29,10 +29,12 @@
 
 class CGUIImage;
 
+typedef CStdString (*FORMATFUNCTION) (float value, float min);
+
 class SettingInfo
 {
 public:
-  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, CHECK_UCHAR, SPIN, SLIDER, SLIDER_ABS, SEPARATOR };
+  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, CHECK_UCHAR, SPIN, SLIDER, SEPARATOR };
   SettingInfo()
   {
     id = 0;
@@ -42,6 +44,7 @@ public:
     min = 0;
     max = 0;
     interval = 0;
+    formatFunction = NULL;
   };
   SETTING_TYPE type;
   CStdString name;
@@ -50,7 +53,7 @@ public:
   float min;
   float max;
   float interval;
-  CStdString format;
+  FORMATFUNCTION formatFunction;
   std::vector<CStdString> entry;
   bool enabled;
 };
@@ -81,7 +84,7 @@ protected:
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max, const char* minLabel = NULL);
-  void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, const char *format = NULL, bool absvalue=false);
+  void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION formatFunction = NULL);
   void AddSeparator(unsigned int id);
 
   CGUISpinControlEx *m_pOriginalSpin;
