@@ -35,7 +35,6 @@
 #define SPIN_CONTROL_TYPE_INT       1
 #define SPIN_CONTROL_TYPE_FLOAT     2
 #define SPIN_CONTROL_TYPE_TEXT      3
-#define SPIN_CONTROL_TYPE_FLOAT_ABS 4
 
 /*!
  \ingroup controls
@@ -74,7 +73,7 @@ public:
   virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual CStdString GetDescription() const;
-  void SetFormatString(const char *format) { if (format) m_formatString = format; };
+  void SetTextValue(const CStdString &textValue) { m_textValue = textValue; };
 protected:
   virtual void UpdateColors();
   virtual void Move(int iNumSteps);
@@ -96,6 +95,6 @@ protected:
   float m_controlOffsetY;
   int m_iInfoCode;
   bool m_renderText;
-  CStdString m_formatString;
+  CStdString m_textValue; ///< Allows overriding of the text value to be displayed (parent must update when the slider updates)
 };
 #endif

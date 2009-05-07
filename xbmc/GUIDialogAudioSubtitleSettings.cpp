@@ -64,18 +64,36 @@ CGUIDialogAudioSubtitleSettings::~CGUIDialogAudioSubtitleSettings(void)
 #define SUBTITLE_SETTINGS_BROWSER        11
 #define AUDIO_SETTINGS_MAKE_DEFAULT      12
 
+CStdString DbFormatFunction(float value, float interval)
+{
+  CStdString text;
+  text.Format("%2.1f dB", value);
+  return text;
+}
+
+CStdString DelayFormatFunction(float value, float interval)
+{
+  CStdString text;
+  if (fabs(value) < interval)
+    text = "0.000s";
+  else if (value < 0)
+    text.Format(g_localizeStrings.Get(22004).c_str(), fabs(value));
+  else
+    text.Format(g_localizeStrings.Get(22005).c_str(), value);
+  return text;
+}
+
 void CGUIDialogAudioSubtitleSettings::CreateSettings()
 {
   // clear out any old settings
   m_settings.clear();
   // create our settings
   m_volume = g_stSettings.m_nVolumeLevel * 0.01f;
-  AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, "%2.1f dB");
+  AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, DbFormatFunction);
 #if 0
-  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_stSettings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) * 0.0005f, VOLUME_DRC_MAXIMUM * 0.01f, "%2.1f dB");
+  AddSlider(AUDIO_SETTINGS_VOLUME_AMPLIFICATION, 660, &g_stSettings.m_currentVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) * 0.0005f, VOLUME_DRC_MAXIMUM * 0.01f, DbFormatFunction);
 #endif
-  AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_stSettings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, "%2.3fs", true);
-  OnSettingChanged(m_settings.size()-1);
+  AddSlider(AUDIO_SETTINGS_DELAY, 297, &g_stSettings.m_currentVideoSettings.m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, DelayFormatFunction);
   AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
   // only show stuff available in digital mode if we have digital output
@@ -91,8 +109,7 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
   AddBool(SUBTITLE_SETTINGS_ENABLE, 13397, &m_subtitleVisible);
-  AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, "%2.3fs", true);
-  OnSettingChanged(m_settings.size()-1);
+  AddSlider(SUBTITLE_SETTINGS_DELAY, 22006, &g_stSettings.m_currentVideoSettings.m_SubtitleDelay, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, DelayFormatFunction);
   AddSubtitleStreams(SUBTITLE_SETTINGS_STREAM);
   AddButton(SUBTITLE_SETTINGS_BROWSER,13250);
   AddButton(AUDIO_SETTINGS_MAKE_DEFAULT, 12376);
@@ -199,15 +216,6 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
   m_settings.push_back(setting);
 }
 
-#define UPDATE_SETTING_LABEL(x) \
-    if (fabs(x) < setting.interval) \
-      x = 0; \
-    setting.format = "%2.3fs"; \
-    if (x < 0)  \
-      setting.format = g_localizeStrings.Get(22004); \
-    if (x > 0)\
-      setting.format = g_localizeStrings.Get(22005);
-
 void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
 {
   // setting has changed - update anything that needs it
@@ -228,7 +236,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   {
     if (g_application.m_pPlayer)
       g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
-    UPDATE_SETTING_LABEL(g_stSettings.m_currentVideoSettings.m_AudioDelay)
   }
   else if (setting.id == AUDIO_SETTINGS_STREAM)
   {
@@ -278,7 +285,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(unsigned int num)
   else if (setting.id == SUBTITLE_SETTINGS_DELAY)
   {
     g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
-    UPDATE_SETTING_LABEL(g_stSettings.m_currentVideoSettings.m_SubtitleDelay)
   }
   else if (setting.id == SUBTITLE_SETTINGS_STREAM && setting.max > 0)
   {
