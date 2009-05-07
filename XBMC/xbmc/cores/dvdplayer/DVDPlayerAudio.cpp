@@ -180,6 +180,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_integral = 0;
   m_skipdupcount = 0;
   m_prevskipped = false;
+  m_syncclock = true;
   QueryPerformanceCounter(&m_errortime);
   
   CLog::Log(LOGNOTICE, "Creating audio thread");
@@ -224,6 +225,7 @@ void CDVDPlayerAudio::CloseStream(bool bWaitForBuffers)
 
   // flush any remaining pts values
   m_ptsOutput.Flush();
+  m_resampler.Flush();
 }
 
 bool CDVDPlayerAudio::OpenDecoder(CDVDStreamInfo &hints, BYTE* buffer /* = NULL*/, unsigned int size /* = 0*/)
@@ -402,6 +404,8 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       m_dvdAudio.Flush();
       m_ptsOutput.Flush();
       m_ptsInput.Flush();
+      m_resampler.Flush();
+      m_syncclock = true;
 
       if (m_pAudioCodec)
         m_pAudioCodec->Reset();
@@ -435,6 +439,8 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
       if (m_speed == DVD_PLAYSPEED_PAUSE)
       {
         m_ptsOutput.Flush();
+        m_resampler.Flush();
+        m_syncclock = true;
         m_dvdAudio.Pause();
       }
       else 
@@ -560,7 +566,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   double error = m_ptsOutput.Current() - clock;
   LARGE_INTEGER now;
   
-  if( fabs(error) > DVD_MSEC_TO_TIME(100) )
+  if( fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock )
   {
     m_pClock->Discontinuity(CLOCK_DISC_NORMAL, clock+error, 0);
     if(m_speed == DVD_PLAYSPEED_NORMAL)
@@ -570,6 +576,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     m_errorcount = 0;
     m_skipdupcount = 0;
     m_error = 0;
+    m_syncclock = false;
     QueryPerformanceCounter(&m_errortime);
     
     return;
