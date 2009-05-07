@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 02/04/2009-->
+<!--Date of translation: 05/03/2009-->
 <!--Turkish strings based on English strings revision 17639-->
 <!--$Revision$-->
 <strings>
@@ -28,8 +28,8 @@
   <string id="31019"></string>
 
   <string id="31020">Bölüm başlığı</string>
-  <string id="31021">Videolarım - Dosyalar</string>
-  <string id="31022">Müziklerim - Dosyalar</string>
+  <string id="31021">Videolar - Dosyalar</string>
+  <string id="31022">Müzik - Dosyalar</string>
   <string id="31023"></string>
   <string id="31024">Sayfa</string>
   <string id="31025">Nesne</string>
