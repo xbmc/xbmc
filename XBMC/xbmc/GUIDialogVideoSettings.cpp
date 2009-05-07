@@ -95,11 +95,11 @@ void CGUIDialogVideoSettings::CreateSettings()
 
 #ifdef HAS_VIDEO_PLAYBACK
   if (g_renderManager.SupportsBrightness())
-    AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_stSettings.m_currentVideoSettings.m_Brightness, 0, 100);
+    AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_stSettings.m_currentVideoSettings.m_Brightness, 0, 1, 100);
   if (g_renderManager.SupportsContrast())
-    AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 100);
+    AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 1, 100);
   if (g_renderManager.SupportsGamma())
-    AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
+    AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 1, 100);
 #ifdef HAVE_LIBVDPAU
   CSharedLock lock(g_renderManager.GetSection());
   if (g_VDPAU) {
@@ -113,7 +113,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
   if (g_application.GetCurrentPlayer() == EPC_MPLAYER)
   {
-    AddSlider(VIDEO_SETTINGS_FILM_GRAIN, 14058, (int*)&g_stSettings.m_currentVideoSettings.m_FilmGrain, 0, 10);
+    AddSlider(VIDEO_SETTINGS_FILM_GRAIN, 14058, &g_stSettings.m_currentVideoSettings.m_FilmGrain, 0, 1, 10);
     AddBool(VIDEO_SETTINGS_NON_INTERLEAVED, 306, &g_stSettings.m_currentVideoSettings.m_NonInterleaved);
     AddBool(VIDEO_SETTINGS_NO_CACHE, 431, &g_stSettings.m_currentVideoSettings.m_NoCache);
     AddButton(VIDEO_SETTINGS_FORCE_INDEX, 12009);
