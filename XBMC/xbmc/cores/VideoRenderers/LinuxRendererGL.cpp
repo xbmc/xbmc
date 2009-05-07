@@ -1453,6 +1453,11 @@ void CLinuxRendererGL::UnInit()
 void CLinuxRendererGL::OnClose()
 {
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
+  CSingleLock lock(g_graphicsContext);
+#ifdef HAVE_LIBVDPAU
+  if (g_VDPAU)
+    g_VDPAU->ReleasePixmap();
+#endif
   // YV12 textures, subtitle and osd stuff
   for (int i = 0; i < NUM_BUFFERS; ++i)
   {
@@ -2074,7 +2079,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 {
 #ifdef HAVE_LIBVDPAU
-  if (!g_VDPAU || !g_VDPAU->m_Surface)
+  if (!g_VDPAU)
   {
     CLog::Log(LOGERROR,"(VDPAU) m_Surface is NULL");
     return;
@@ -2085,8 +2090,8 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 
   glEnable(m_textureTarget);
 
-  glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex());
-  g_VDPAU->m_Surface->BindPixmap();
+  glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
+  g_VDPAU->BindPixmap();
 
   glActiveTextureARB(GL_TEXTURE0);
 
@@ -2120,8 +2125,8 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   VerifyGLState();
   if (m_StrictBinding)
   {
-    glBindTexture(m_textureTarget, g_VDPAU->m_Surface->GetGLPixmapTex());
-    g_VDPAU->m_Surface->ReleasePixmap();
+    glBindTexture(m_textureTarget, g_VDPAU->m_glPixmapTexture);
+    g_VDPAU->ReleasePixmap();
   }
 
   glBindTexture (m_textureTarget, 0);

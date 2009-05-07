@@ -64,6 +64,18 @@ public:
   CVDPAU(int width, int height);
   virtual ~CVDPAU();
 
+  bool MakePixmap(int width, int height);
+  void ReleasePixmap();
+  void BindPixmap();
+
+  PFNGLXBINDTEXIMAGEEXTPROC    glXBindTexImageEXT;
+  PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT;
+  GLXPixmap  m_glPixmap;
+  Pixmap  m_Pixmap;
+  GLuint   m_glPixmapTexture;
+  GLXContext m_glContext;
+  bool m_pixmapBound;
+
   static void             FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
   static void             FFDrawSlice(struct AVCodecContext *s,
                                const AVFrame *src, int offset[4],
@@ -181,7 +193,6 @@ public:
   uint32_t vid_width, vid_height;
   uint32_t max_references;
   Display* m_Display;
-  Surface::CSurface *m_Surface;
   bool     vdpauConfigured;
   bool     vdpauInited;
 
