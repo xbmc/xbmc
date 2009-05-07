@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -51,7 +51,7 @@ public:
   /* addon specific */
   bool RequestRestart(const ADDON::CAddon* addon, bool datachanged);
   bool RequestRemoval(const ADDON::CAddon* addon);
-  bool SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
+  ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
 
   /* Event Handling */
   bool LoadClients();

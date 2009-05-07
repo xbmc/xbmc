@@ -2281,6 +2281,8 @@
   <string id="23055">Missing Files in Add-on</string>
   <string id="23056">Add-on can not used</string>
   <string id="23057">A unknown error is occurred</string>
+  <string id="23058">Disclaimer</string>
+  <string id="23059">Would you still use the Add-on?</string>
   
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

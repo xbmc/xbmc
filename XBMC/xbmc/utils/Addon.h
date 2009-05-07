@@ -1,24 +1,24 @@
 #pragma once
 /*
-*      Copyright (C) 2005-2009 Team XBMC
-*      http://www.xbmc.org
-*
-*  This Program is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2, or (at your option)
-*  any later version.
-*
-*  This Program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*  GNU General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
-*
-*/
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "StdString.h"
 #include "utils/Thread.h"
@@ -47,18 +47,8 @@ enum AddonType
   ADDON_PLUGIN_MUSIC      = 8,
   ADDON_PLUGIN_VIDEO      = 9,
   ADDON_PLUGIN_PROGRAM    = 10,
-  ADDON_PLUGIN_PICTURES   = 11 
-};
-
-/**
-* IAddonCallback
-*/
-class IAddonCallback
-{
-public:
-  virtual bool RequestRestart(const CAddon* addon, bool datachanged)=0;
-  virtual bool RequestRemoval(const CAddon* addon)=0;
-  virtual bool SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)=0;
+  ADDON_PLUGIN_PICTURES   = 11,
+  ADDON_DSP_AUDIO         = 12
 };
 
 const CStdString ADDON_PVRDLL_EXT = "*.pvr";
@@ -66,7 +56,40 @@ const CStdString ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[
 const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
 
 /**
- * CAddonStatusHandler
+ * Class - IAddonCallback
+ * Used to access Add-on internal functions
+ * The callback is handled from the parent class which
+ * handle this types of Add-on's, as example for PVR Clients
+ * it is CPVRManager
+ */
+class IAddonCallback
+{
+public:
+  virtual bool RequestRestart(const CAddon* addon, bool datachanged)=0;
+  virtual bool RequestRemoval(const CAddon* addon)=0;
+  virtual ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)=0;
+};
+
+/**
+ * Class - CAddonDummyCallback
+ * Used as fallback by unkown Add-on type
+ */
+class CAddonDummyCallback : public IAddonCallback
+{
+public:
+  CAddonDummyCallback() {}
+  ~CAddonDummyCallback() {}
+  bool RequestRestart(const CAddon* addon, bool datachanged) { return false; }
+  bool RequestRemoval(const CAddon* addon) { return false; }
+  ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; }
+};
+ 
+/**
+ * Class - CAddonStatusHandler
+ * Used to informate the user about occurred errors and
+ * changes inside Add-on's, and ask him what to do.
+ * It can executed in the same thread as the calling
+ * function or in a seperate thread.
  */
 class CAddonStatusHandler : private CThread
 {
@@ -99,14 +122,21 @@ public:
   bool operator==(const CAddon &rhs) const;
 
   virtual void Remove() {};
-  virtual bool SetSetting(const char *settingName, const void *settingValue) { return false; };
+  virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; };
+  
+  /* Callback pointer return function */
+  static IAddonCallback* GetCallbackForType(AddonType type);
 
+  /* Add-on settings and language functions */
   static void LoadAddonStrings(const CURL &url);
   static void ClearAddonStrings();
   static void OpenAddonSettings(const CURL &url, bool bReload = true);
   static void OpenAddonSettings(const CAddon* addon, bool bReload);
+  static void TransferAddonSettings(const CURL &url);
+  static void TransferAddonSettings(const CAddon* addon);
   static bool GetAddonSetting(const CAddon* addon, const char* settingName, void *settingValue);
 
+  /* Add-on Dialog helper functions */
   static bool OpenDialogOK(const char* heading, const char* line1, const char* line2, const char* line3);
   static bool OpenDialogYesNo(const char* heading, const char* line1, const char* line2, const char* line3, const char* nolabel, const char* yeslabel);
   static const char* OpenDialogBrowse(int type, const char* heading, const char* shares, const char* mask, bool useThumbs, bool treatAsFolder, const char* default_folder);
@@ -118,11 +148,13 @@ public:
   static bool ProgressDialogIsCanceled();
   static void ProgressDialogClose();
 
+  /* Add-on GUI helper functions */
   static void GUILock();
   static void GUIUnlock();
   static int GUIGetCurrentWindowId();
   static int GUIGetCurrentWindowDialogId();
 
+  /* Add-on Utilities helper functions */
   static void Shutdown();
   static void Restart();
   static void Dashboard();
@@ -145,14 +177,11 @@ public:
   static const char* GetCacheThumbName(const char *path);
   static const char* MakeLegalFilename(const char *filename);
   static const char* TranslatePath(const char *path);
-  static const char* GetRegion(const char *id);
-  static const char* GetSupportedMedia(const char *media);
+  static const char* GetRegion(int id);
+  static const char* GetSupportedMedia(int media);
   static bool SkinHasImage(const char *filename);
 
-  static void TransferAddonSettings(const CURL &url);
-  static void TransferAddonSettings(const CAddon* addon);
-  static IAddonCallback* GetCallbackForType(AddonType type);
-
+  /* Beginning of Add-on data fields (readed from info.xml) */
   CStdString m_guid;       ///< Unique identifier for this addon, chosen by developer
   CStdString m_strName;    ///< Name of the addon, can be chosen freely.
   CStdString m_strVersion; ///< Version of the addon, must be in form 
@@ -165,8 +194,7 @@ public:
   int        m_stars;      ///< Rating
   CStdString m_disclaimer; ///< if exists, user needs to confirm before installation
   bool       m_disabled;   ///< Is this addon disabled?
-
-  AddonType m_addonType;
+  AddonType  m_addonType;  ///< Type identifier of this Add-on
 };
 
 /*!

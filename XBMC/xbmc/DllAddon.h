@@ -31,7 +31,7 @@ public:
   virtual void GetAddon(T* pAddon) =0;
   virtual ADDON_STATUS GetStatus() =0;  /* For "ADDON_STATUS" see header "DllAddonTypes.h" */
   virtual bool HasSettings() =0;
-  virtual bool SetSetting(const char *settingName, const void *settingValue) =0;
+  virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) =0;
   virtual DllSettings* GetSettings() =0;
   virtual void Remove() =0;
 };
@@ -44,7 +44,7 @@ public:
   DEFINE_METHOD0(ADDON_STATUS, GetStatus)
   DEFINE_METHOD0(DllSettings*, GetSettings)
   DEFINE_METHOD0(bool, HasSettings)
-  DEFINE_METHOD2(bool, SetSetting, (const char *p1, const void *p2))
+  DEFINE_METHOD2(ADDON_STATUS, SetSetting, (const char *p1, const void *p2))
   DEFINE_METHOD0(void, Remove)
   DEFINE_METHOD1(void, GetAddon, (T* p1))
   BEGIN_METHOD_RESOLVE()

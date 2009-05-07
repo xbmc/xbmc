@@ -39,7 +39,7 @@ public:
   void ReInit();
   virtual void Remove();
   virtual ADDON_STATUS GetStatus();
-  virtual bool SetSetting(const char *settingName, const void *settingValue);
+  virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
   void GetSettings(std::vector<DllSetting> **vecSettings);
 
   // IPVRClient //////////////////////////////////////////////////////////////

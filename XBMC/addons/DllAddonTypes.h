@@ -634,7 +634,12 @@ extern "C"
     /**
      * UtilsCallbacks -- GetSupportedMedia -- Returns the supported file types for the specific media as a string.
      *
-     * media          : string - media type
+     * media          : integer - media type
+     *
+     * Media Types:
+     *   0 : Video
+     *   1 : Music
+     *   2 : Pictures
      *
      * *Note, media type can be (video, music, picture).
      *        The return value is a pipe separated string of filetypes (eg. '.mov|.avi').
@@ -643,7 +648,7 @@ extern "C"
      * example:
      *   - const char* mTypes = g_xbmc->Utils.GetSupportedMedia("video.png");
      */
-    typedef const char* (*UtilsGetSupportedMedia)(const char *media);
+    typedef const char* (*UtilsGetSupportedMedia)(int media);
 
     /**
      * UtilsCallbacks -- GetGlobalIdleTime -- Returns the elapsed idle time in seconds as an integer.
@@ -690,15 +695,22 @@ extern "C"
     /**
      * UtilsCallbacks -- GetRegion -- Returns your regions setting as a string for the specified id.
      *
-     * id             : string - id of setting to return
+     * id             : integer - id of setting to return
      *
+     * Id Types:
+     *   0 : datelong
+     *   1 : dateshort
+     *   2 : tempunit
+     *   3 : speedunit
+     *   4 : time
+     *   5 : meridiem
      * *Note, choices are (dateshort, datelong, time, meridiem, tempunit, speedunit).
      *        You can use the above as keywords for arguments.
      *
      * example:
      *   - const char* date_long_format = g_xbmc->Utils.GetRegion("datelong");
      */
-     typedef const char* (*UtilsGetRegion)(const char *id);
+     typedef const char* (*UtilsGetRegion)(int id);
 
     /**
      * UtilsCallbacks -- SkinHasImage -- Returns True if the image file exists in the skin.

@@ -1,23 +1,23 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
-*      http://www.xbmc.org
-*
-*  This Program is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2, or (at your option)
-*  any later version.
-*
-*  This Program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*  GNU General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
-*
-*/
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "Application.h"
@@ -50,7 +50,10 @@ using namespace XFILE;
 namespace ADDON
 {
 
-static int iAddOnGUILockRef = 0;
+/**********************************************************
+ * Callback for unknown Add-on types as fallback
+ */
+CAddonDummyCallback *AddonDummyCallback = new CAddonDummyCallback();
 
 
 /**********************************************************
@@ -275,7 +278,7 @@ void CAddonStatusHandler::Process()
   /* Request to restart XBMC (hope no AddOn need or do this) */
   else if (m_status == STATUS_NEED_EMER_RESTART)
   {
-    /* okey we really don't need to restarat, only deinit Add-on, but that could be damn hard if something is playing*/
+    /* okey we really don't need to restart, only deinit Add-on, but that could be damn hard if something is playing*/
     //TODO - General way of handling setting changes that require restart
 
     CGUIDialogYesNo *pDialog = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -448,7 +451,7 @@ void CAddonStatusHandler::Process()
 
 
 /**********************************************************
- * CAddon - AddOn Info Class
+ * CAddon - AddOn Info and Helper Class
  *
  */
  
@@ -467,8 +470,45 @@ CAddon::CAddon()
   m_strLibName = "";
 }
 
-bool CAddon::operator==(const CAddon &rhs) const {
+bool CAddon::operator==(const CAddon &rhs) const
+{
   return (m_guid == rhs.m_guid);
+}
+
+IAddonCallback* CAddon::GetCallbackForType(AddonType type)
+{
+  switch (type)
+  {
+    case ADDON_MULTITYPE:
+      return AddonDummyCallback;
+    case ADDON_VIZ:
+      return AddonDummyCallback;
+    case ADDON_SKIN:
+      return AddonDummyCallback;
+    case ADDON_PVRDLL:
+      return CPVRManager::GetInstance();
+    case ADDON_SCRIPT:
+      return AddonDummyCallback;
+    case ADDON_SCRAPER:
+      return AddonDummyCallback;
+    case ADDON_SCREENSAVER:
+      return AddonDummyCallback;
+    case ADDON_PLUGIN_PVR:
+      return AddonDummyCallback;
+    case ADDON_PLUGIN_MUSIC:
+      return AddonDummyCallback;
+    case ADDON_PLUGIN_VIDEO:
+      return AddonDummyCallback;
+    case ADDON_PLUGIN_PROGRAM:
+      return AddonDummyCallback;
+    case ADDON_PLUGIN_PICTURES:
+      return AddonDummyCallback;
+    case ADDON_DSP_AUDIO:
+      return AddonDummyCallback;
+    case ADDON_UNKNOWN:
+    default:
+      return AddonDummyCallback;
+  }
 }
 
 void CAddon::LoadAddonStrings(const CURL &url)
@@ -567,6 +607,92 @@ void CAddon::OpenAddonSettings(const CAddon* addon, bool bReload)
   }
 }
 
+void CAddon::TransferAddonSettings(const CURL &url)
+{
+  // Path where the addon resides
+  CStdString pathToAddon = "addon://";
+
+  // Build the addon's path
+  CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
+  CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
+
+  CAddon addon;
+  if (g_settings.AddonFromInfoXML(pathToAddon, addon))
+  {
+    addon.m_strPath = pathToAddon;
+    TransferAddonSettings(&addon);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "Unknown URL %s to transfer AddOn Settings", pathToAddon.c_str());
+  }
+}
+
+void CAddon::TransferAddonSettings(const CAddon* addon)
+{
+  bool restart = false;
+  ADDON_STATUS reportStatus = STATUS_OK;
+
+  if (addon == NULL)
+    return;
+
+  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon->m_strName.c_str());
+          
+  /* Transmit current unified user settings to the PVR Addon */
+  ADDON::IAddonCallback* addonCB = GetCallbackForType(addon->m_addonType);
+
+  CAddonSettings settings;
+  if (!settings.Load(addon->m_strPath))
+  {
+    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s during transfer", addon->m_strName.c_str());
+    return;
+  }
+
+  TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
+  while (setting)
+  {
+    ADDON_STATUS status;
+    const char *id = setting->Attribute("id");
+    const char *type = setting->Attribute("type");
+        
+    if (type)
+    {
+      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
+          strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
+          strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
+          strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
+          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
+      {
+        status = addonCB->SetSetting(addon, id, (const char*) settings.Get(id).c_str());
+      }
+      else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
+               strcmpi(type, "labelenum") == 0)
+      {
+        int tmp = atoi(settings.Get(id));
+        status = addonCB->SetSetting(addon, id, (int*) &tmp);
+      }
+      else if (strcmpi(type, "bool") == 0)
+      {
+        bool tmp = settings.Get(id) == "true" ? true : false;
+        status = addonCB->SetSetting(addon, id, (bool*) &tmp);
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, addon->m_strName.c_str());
+      }
+      
+      if (status == STATUS_NEED_RESTART)
+        restart = true; 
+      else if (status != STATUS_OK)
+        reportStatus = status;
+    }
+    setting = setting->NextSiblingElement("setting");
+  }
+
+  if (restart || reportStatus != STATUS_OK)
+    new CAddonStatusHandler(addon, restart ? STATUS_NEED_RESTART : reportStatus, "", true);
+}
+
 bool CAddon::GetAddonSetting(const CAddon* addon, const char* settingName, void *settingValue)
 {
   if (addon == NULL || settingName == NULL || settingValue == NULL)
@@ -627,9 +753,10 @@ bool CAddon::GetAddonSetting(const CAddon* addon, const char* settingName, void 
   return false;
 }
 
+
 /**
 * XBMC AddOn Dialog callbacks
-* Helper functions to access GUI Dialog related functions
+* Helper functions to access GUI Dialog functions
 */
 
 bool CAddon::OpenDialogOK(const char* heading, const char* line1, const char* line2, const char* line3)
@@ -875,6 +1002,8 @@ void CAddon::ProgressDialogClose()
  * Helper to access different types of GUI functions
  */
 
+static int iAddOnGUILockRef = 0;
+
 void CAddon::GUILock()
 {
   if (iAddOnGUILockRef == 0) g_graphicsContext.Lock();
@@ -909,7 +1038,7 @@ int CAddon::GUIGetCurrentWindowDialogId()
 
 /**
 * XBMC AddOn Utils callbacks
-* Helper' to access XBMC Utilities
+* Helper to access XBMC Utilities
 */
 
 void CAddon::Shutdown()
@@ -934,6 +1063,9 @@ void CAddon::Dashboard()
 
 void CAddon::ExecuteScript(const char *script)
 {
+  if (script == NULL)
+    return;
+
   ThreadMessage tMsg = {TMSG_EXECUTE_SCRIPT};
   tMsg.strParam = script;
   g_application.getApplicationMessenger().SendMessage(tMsg);
@@ -941,11 +1073,17 @@ void CAddon::ExecuteScript(const char *script)
 
 void CAddon::ExecuteBuiltIn(const char *function)
 {
+  if (function == NULL)
+    return;
+
   g_application.getApplicationMessenger().ExecBuiltIn(function);
 }
 
 const char* CAddon::ExecuteHttpApi(char *httpcommand)
 {
+  if (httpcommand == NULL)
+    return "";
+
 #ifdef HAS_WEB_SERVER
   CStdString ret;
 
@@ -970,6 +1108,9 @@ const char* CAddon::ExecuteHttpApi(char *httpcommand)
 
 const char* CAddon::GetLocalizedString(const CAddon* addon, long dwCode)
 {
+  if (addon == NULL)
+    return "";
+
   CURL cUrl(addon->m_strPath);
 
   // Load language strings temporarily
@@ -995,6 +1136,9 @@ const char* CAddon::GetSkinDir()
 
 const char* CAddon::UnknownToUTF8(const char *sourceDest)
 {
+  if (sourceDest == NULL)
+    return "";
+
   CStdString string = sourceDest;
   g_charsetConverter.unknownToUTF8(string);
   return string.c_str();
@@ -1024,18 +1168,27 @@ int CAddon::GetFreeMem()
 
 const char* CAddon::GetInfoLabel(const char *infotag)
 {
+  if (infotag == NULL)
+    return "";
+
   int ret = g_infoManager.TranslateString(infotag);
   return g_infoManager.GetLabel(ret).c_str();
 }
 
 const char* CAddon::GetInfoImage(const char *infotag)
 {
+  if (infotag == NULL)
+    return "";
+
   int ret = g_infoManager.TranslateString(infotag);
   return g_infoManager.GetImage(ret, WINDOW_INVALID).c_str();
 }
 
 bool CAddon::GetCondVisibility(const char *condition)
 {
+  if (condition == NULL)
+    return false;
+
   DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
   if (dwId == WINDOW_INVALID) dwId = m_gWindowManager.GetActiveWindow();
 
@@ -1050,6 +1203,9 @@ void CAddon::EnableNavSounds(bool yesNo)
 
 void CAddon::PlaySFX(const char *filename)
 {
+  if (filename == NULL)
+    return;
+
   if (CFile::Exists(filename))
   {
     g_audioManager.PlayPythonSound(filename);
@@ -1063,6 +1219,9 @@ int CAddon::GetGlobalIdleTime()
 
 const char* CAddon::GetCacheThumbName(const char *path)
 {
+  if (path == NULL)
+    return "";
+
   string strText = path;
 
   Crc32 crc;
@@ -1074,176 +1233,64 @@ const char* CAddon::GetCacheThumbName(const char *path)
 
 const char* CAddon::MakeLegalFilename(const char *filename)
 {
+  if (filename == NULL)
+    return "";
+
   CStdString strText = filename;
-  CStdString strFilename;
-  strFilename = CUtil::MakeLegalPath(strText);
+  CStdString strFilename = CUtil::MakeLegalPath(strText);
   return strFilename.c_str();
 }
 
 const char* CAddon::TranslatePath(const char *path)
 {
+  if (path == NULL)
+    return "";
+
   CStdString strText = path;
 
-  CStdString strPath;
   if (CUtil::IsDOSPath(strText))
     strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
 
-  strPath = CSpecialProtocol::TranslatePath(strText);
-
+  CStdString strPath = CSpecialProtocol::TranslatePath(strText);
   return strPath.c_str();
 }
 
-const char* CAddon::GetRegion(const char *id)
+const char* CAddon::GetRegion(int id)
 {
   CStdString result;
 
-  if (strcmpi(id, "datelong") == 0)
+  if (id == 0)      // datelong
     result = g_langInfo.GetDateFormat(true);
-  else if (strcmpi(id, "dateshort") == 0)
+  else if (id == 1) // dateshort
     result = g_langInfo.GetDateFormat(false);
-  else if (strcmpi(id, "tempunit") == 0)
+  else if (id == 2) // tempunit
     result = g_langInfo.GetTempUnitString();
-  else if (strcmpi(id, "speedunit") == 0)
+  else if (id == 3) // speedunit
     result = g_langInfo.GetSpeedUnitString();
-  else if (strcmpi(id, "time") == 0)
+  else if (id == 4) // time
     result = g_langInfo.GetTimeFormat();
-  else if (strcmpi(id, "meridiem") == 0)
+  else if (id == 5) // meridiem
     result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
 
   return result.c_str();
 }
 
-const char* CAddon::GetSupportedMedia(const char *media)
+const char* CAddon::GetSupportedMedia(int media)
 {
   CStdString result;
-  if (strcmpi(media, "video") == 0)
+  if (media == 0)
     result = g_stSettings.m_videoExtensions;
-  else if (strcmpi(media, "music") == 0)
+  else if (media == 1)
     result = g_stSettings.m_musicExtensions;
-  else if (strcmpi(media, "picture") == 0)
+  else if (media == 2)
     result = g_stSettings.m_pictureExtensions;
-  else
-    return "";
 
   return result.c_str();
 }
 
 bool CAddon::SkinHasImage(const char *filename)
 {
-  bool exists = g_TextureManager.HasTexture(filename);
-  return exists;
-}
-
-
-
-
-
-void CAddon::TransferAddonSettings(const CURL &url)
-{
-  // Path where the addon resides
-  CStdString pathToAddon = "addon://";
-
-  // Build the addon's path
-  CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
-  CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
-
-  CAddon addon;
-  if (g_settings.AddonFromInfoXML(pathToAddon, addon))
-  {
-    addon.m_strPath = pathToAddon;
-    TransferAddonSettings(&addon);
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "Unknown URL %s to transfer AddOn Settings", pathToAddon.c_str());
-  }
-}
-
-void CAddon::TransferAddonSettings(const CAddon* addon)
-{
-  if (addon == NULL)
-    return;
-
-  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon->m_strName.c_str());
-        
-  /* Transmit current unified user settings to the PVR Addon */
-  ADDON::IAddonCallback* addonCB = GetCallbackForType(addon->m_addonType);
-
-  CAddonSettings settings;
-  if (!settings.Load(addon->m_strPath))
-  {
-    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s during transfer", addon->m_strName.c_str());
-    return;
-  }
-
-  TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
-  while (setting)
-  {
-    const char *id = setting->Attribute("id");
-    const char *type = setting->Attribute("type");
-        
-    if (type)
-    {
-      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
-          strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
-          strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
-          strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
-      {
-        addonCB->SetSetting(addon, id, (const char*) settings.Get(id).c_str());
-      }
-      else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
-               strcmpi(type, "labelenum") == 0)
-      {
-        int tmp = atoi(settings.Get(id));
-        addonCB->SetSetting(addon, id, (int*) &tmp);
-      }
-      else if (strcmpi(type, "bool") == 0)
-      {
-        bool tmp = settings.Get(id) == "true" ? true : false;
-        addonCB->SetSetting(addon, id, (bool*) &tmp);
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, addon->m_strName.c_str());
-      }
-    }
-    setting = setting->NextSiblingElement("setting");
-  }
-}
-
-IAddonCallback* CAddon::GetCallbackForType(AddonType type)
-{
-  switch (type)
-  {
-    case ADDON_MULTITYPE:
-      return NULL;
-    case ADDON_VIZ:
-      return NULL;
-    case ADDON_SKIN:
-      return NULL;
-    case ADDON_PVRDLL:
-      return CPVRManager::GetInstance();
-    case ADDON_SCRIPT:
-      return NULL;
-    case ADDON_SCRAPER:
-      return NULL;
-    case ADDON_SCREENSAVER:
-      return NULL;
-    case ADDON_PLUGIN_PVR:
-      return NULL;
-    case ADDON_PLUGIN_MUSIC:
-      return NULL;
-    case ADDON_PLUGIN_VIDEO:
-      return NULL;
-    case ADDON_PLUGIN_PROGRAM:
-      return NULL;
-    case ADDON_PLUGIN_PICTURES:
-      return NULL;
-    case ADDON_UNKNOWN:
-    default:
-      return NULL;
-  }
+  return g_TextureManager.HasTexture(filename);
 }
 
 } /* namespace ADDON */

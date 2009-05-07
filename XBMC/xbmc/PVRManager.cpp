@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -390,10 +390,10 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
   }
 }
 
-bool CPVRManager::SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)
+ADDON_STATUS CPVRManager::SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)
 {
   if (!addon)
-    return false;
+    return STATUS_UNKNOWN;
 
   CLog::Log(LOGINFO, "PVR: set setting of clientName: %s, settingName: %s", addon->m_strName.c_str(), settingName);
   for (unsigned i=0; i < m_clients.size(); i++)
@@ -402,12 +402,11 @@ bool CPVRManager::SetSetting(const CAddon* addon, const char *settingName, const
     {
       if (m_clients[i]->m_strName == addon->m_strName)
       {
-        m_clients[i]->SetSetting(settingName, settingValue);
+        return m_clients[i]->SetSetting(settingName, settingValue);
       }
     }
   }
-  
-  return true;
+  return STATUS_UNKNOWN;
 }
 
 bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
@@ -448,13 +447,13 @@ bool CPVRManager::RequestRemoval(const CAddon* addon)
       {
         CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
         m_clients[i]->Remove();
+        m_clients.erase(i);
+        return true;
       }
-
     }
   }
   
-  return true;
-
+  return false;
 }
 
 

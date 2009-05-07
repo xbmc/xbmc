@@ -1,23 +1,23 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
-*      http://www.xbmc.org
-*
-*  This Program is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2, or (at your option)
-*  any later version.
-*
-*  This Program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*  GNU General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
-*
-*/
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "utils/Addon.h"
@@ -220,6 +220,14 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
     CAddon addon;
     if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
     {
+      CStdString disclaimer = pItem->GetProperty("Addon.Disclaimer");
+      if (disclaimer.size() > 0)
+      {
+         CGUIDialogYesNo* pDialog = new CGUIDialogYesNo();
+         if (!pDialog->ShowAndGetInput(g_localizeStrings.Get(23058), pItem->GetProperty("Addon.Name"), disclaimer, g_localizeStrings.Get(23059)))
+           return;
+      }
+
       // add the addon to g_settings, not saving to addons.xml until parent dialog is confirmed
       addons->push_back(addon);
       m_confirmed = true;
@@ -367,8 +375,13 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
     CGUIDialogYesNo* pDialog = new CGUIDialogYesNo();
     if (pDialog->ShowAndGetInput(g_localizeStrings.Get(33009), pItem->GetProperty("Addon.Name"), "", g_localizeStrings.Get(33010)))
     {
+      CAddon addon;
+      g_settings.AddonFromInfoXML(pItem->m_strPath, addon);
+      CAddon::GetCallbackForType(m_type)->RequestRemoval(&addon);
+
       g_settings.DisableAddon(pItem->GetProperty("Addon.GUID"), m_type);
       m_changed = true;
+
       Update();
     }
 

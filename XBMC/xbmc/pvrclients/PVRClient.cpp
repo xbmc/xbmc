@@ -540,11 +540,13 @@ PVR_ERROR CPVRClient::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force /
 // Addon specific functions //////////////////////////////////////////////////
 void CPVRClient::Remove()
 {
-  /*m_pClient->*/
+  DeInit();
 
+  /* Unload library file */
+  m_pDll->Unload();
 }
 
-bool CPVRClient::SetSetting(const char *settingName, const void *settingValue)
+ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *settingValue)
 {
   try 
   {
@@ -553,7 +555,7 @@ bool CPVRClient::SetSetting(const char *settingName, const void *settingValue)
   catch (std::exception &e)
   {
     CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SetSetting occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    return false;
+    return STATUS_UNKNOWN;
   }
 }
 
