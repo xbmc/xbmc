@@ -19,7 +19,7 @@ double g_universal_timeout = 500;
 bool g_verbose_mode = false;
 
 //
-const char* PROGNAME="OSXRemote";
+const char* PROGNAME="XBMCHelper";
 const char* PROGVERS="0.4";
 
 void ParseOptions(int argc, char** argv);
