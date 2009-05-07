@@ -1039,7 +1039,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_INVERSE_TELECINE);
     g_stSettings.m_defaultVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD)interlaceMethod;
 
-    GetInteger(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 0, 10);
+    GetFloat(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 0, 10);
     GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
     GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 0.5f, 2.0f);
     GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
@@ -1048,9 +1048,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "sharpness", g_stSettings.m_defaultVideoSettings.m_Sharpness, 0.0f, -1.0f, 1.0f);
     XMLUtils::GetBoolean(pElement, "outputtoallspeakers", g_stSettings.m_defaultVideoSettings.m_OutputToAllSpeakers);
     XMLUtils::GetBoolean(pElement, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
-    GetInteger(pElement, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness, 50, 0, 100);
-    GetInteger(pElement, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast, 50, 0, 100);
-    GetInteger(pElement, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma, 20, 0, 100);
+    GetFloat(pElement, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness, 50, 0, 100);
+    GetFloat(pElement, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast, 50, 0, 100);
+    GetFloat(pElement, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma, 20, 0, 100);
     GetFloat(pElement, "audiodelay", g_stSettings.m_defaultVideoSettings.m_AudioDelay, 0.0f, -10.0f, 10.0f);
     GetFloat(pElement, "subtitledelay", g_stSettings.m_defaultVideoSettings.m_SubtitleDelay, 0.0f, -10.0f, 10.0f);
 
@@ -1776,16 +1776,16 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetInt(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
   XMLUtils::SetFloat(pNode, "noisereduction", g_stSettings.m_defaultVideoSettings.m_NoiseReduction);
   XMLUtils::SetFloat(pNode, "sharpness", g_stSettings.m_defaultVideoSettings.m_Sharpness);
-  XMLUtils::SetInt(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);
+  XMLUtils::SetFloat(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);
   XMLUtils::SetInt(pNode, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode);
   XMLUtils::SetFloat(pNode, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount);
   XMLUtils::SetFloat(pNode, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio);
   XMLUtils::SetFloat(pNode, "volumeamplification", g_stSettings.m_defaultVideoSettings.m_VolumeAmplification);
   XMLUtils::SetBoolean(pNode, "outputtoallspeakers", g_stSettings.m_defaultVideoSettings.m_OutputToAllSpeakers);
   XMLUtils::SetBoolean(pNode, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
-  XMLUtils::SetInt(pNode, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness);
-  XMLUtils::SetInt(pNode, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast);
-  XMLUtils::SetInt(pNode, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma);
+  XMLUtils::SetFloat(pNode, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness);
+  XMLUtils::SetFloat(pNode, "contrast", g_stSettings.m_defaultVideoSettings.m_Contrast);
+  XMLUtils::SetFloat(pNode, "gamma", g_stSettings.m_defaultVideoSettings.m_Gamma);
   XMLUtils::SetFloat(pNode, "audiodelay", g_stSettings.m_defaultVideoSettings.m_AudioDelay);
   XMLUtils::SetFloat(pNode, "subtitledelay", g_stSettings.m_defaultVideoSettings.m_SubtitleDelay);
 
