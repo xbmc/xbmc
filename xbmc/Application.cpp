@@ -316,6 +316,10 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_bPlaybackStarting = false;
   m_updateFileStateCounter = 0;
 
+#ifdef HAS_GLX
+  XInitThreads();
+#endif
+
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
 
