@@ -184,6 +184,7 @@ protected:
   void   HandleSyncError(double duration);
   double m_errorbuff; //place to store average errors
   int    m_errorcount;//number of errors stored
+  bool   m_syncclock;
   
   double m_integral; //integral correction for resampler
   int    m_skipdupcount; //counter for skip/duplicate synctype
