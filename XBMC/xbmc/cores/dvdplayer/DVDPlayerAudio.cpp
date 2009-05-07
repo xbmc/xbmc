@@ -624,9 +624,9 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     else if (m_synctype == SYNC_RESAMPLE)
     {
       //reset the integral on big errors, failsafe
-      if (m_error > DVD_TIME_BASE)
+      if (fabs(m_error) > DVD_TIME_BASE)
         m_integral = 0;
-      else if (m_error > DVD_MSEC_TO_TIME(5))
+      else if (fabs(m_error) > DVD_MSEC_TO_TIME(5))
         m_integral += m_error / DVD_TIME_BASE / INTEGRAL;
     }
   }  
