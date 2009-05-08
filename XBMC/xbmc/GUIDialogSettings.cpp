@@ -235,7 +235,7 @@ void CGUIDialogSettings::OnClick(int iID)
     if (setting.data) *(float *)setting.data = pControl->GetFloatValue();
     if (setting.formatFunction) pControl->SetTextValue(setting.formatFunction(pControl->GetFloatValue(), setting.interval));
   }
-  OnSettingChanged(settingNum);
+  OnSettingChanged(setting);
 }
 
 void CGUIDialogSettings::FreeControls()
