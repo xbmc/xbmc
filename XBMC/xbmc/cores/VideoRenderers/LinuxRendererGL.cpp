@@ -621,7 +621,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   ChooseBestResolution(m_fps);
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
   ManageDisplay();
-  
+
   m_upscalingWidth = rd.right-rd.left;
   m_upscalingHeight = rd.bottom-rd.top;
   m_scalingMethod = GetDefaultUpscalingMethod();
@@ -667,22 +667,22 @@ ESCALINGMETHOD CLinuxRendererGL::GetDefaultUpscalingMethod()
     CLog::Log(LOGWARNING, "Upscale: Disabled due to HD source.");
     candidateForUpscaling = false;
   }
-  
+
   ESCALINGMETHOD ret = VS_SCALINGMETHOD_LINEAR;
-  
+
   if (candidateForUpscaling)
   {
     ret = (ESCALINGMETHOD)g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
-    
+
     // Make sure to override the default setting for the video
     g_stSettings.m_currentVideoSettings.m_ScalingMethod = ret;
-    
+
     // Initialize software upscaling.
     InitializeSoftwareUpscaling();
   }
-  
+
   CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
-  
+
   return ret;
 }
 
@@ -691,7 +691,7 @@ void CLinuxRendererGL::InitializeSoftwareUpscaling()
   // Allocate a new destination image.
   m_imScaled.cshift_x = m_imScaled.cshift_y = 1;
   m_imScaled.texcoord_x = m_imScaled.texcoord_y = 1;
-  
+
   // Free the old planes if they exist.
   for (int i=0; i<3; i++)
   {
@@ -701,7 +701,7 @@ void CLinuxRendererGL::InitializeSoftwareUpscaling()
       m_imScaled.plane[i] = 0;
     }
   }
-  
+
   m_imScaled.stride[0] = ALIGN((m_upscalingWidth)   , 16);
   m_imScaled.stride[1] = ALIGN((m_upscalingWidth>>1), 16);
   m_imScaled.stride[2] = ALIGN((m_upscalingWidth>>1), 16);
@@ -723,7 +723,7 @@ bool CLinuxRendererGL::IsSoftwareUpscaling()
   {
     return false;
   }
-  
+
   return true;
 }
 
@@ -823,10 +823,10 @@ void CLinuxRendererGL::LoadTextures(int source)
   {
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
       CreateYV12Texture(i);
-    
+
     im->flags = IMAGE_FLAG_READY;
   }
-  
+
   // if we don't have a shader, fallback to SW YUV2RGB for now
   if (m_renderMethod & RENDER_SW)
   {
@@ -849,7 +849,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     uint8_t* dst[] =       { m_imScaled.plane[0],  m_imScaled.plane[1],  m_imScaled.plane[2] };
     int      dstStride[] = { m_imScaled.stride[0], m_imScaled.stride[1], m_imScaled.stride[2] };
     int      algorithm   = 0;
-    
+
     switch (m_scalingMethod)
     {
     case VS_SCALINGMETHOD_BICUBIC_SOFTWARE: algorithm = SWS_BICUBIC; break;
@@ -857,17 +857,17 @@ void CLinuxRendererGL::LoadTextures(int source)
     case VS_SCALINGMETHOD_SINC_SOFTWARE:    algorithm = SWS_SINC;    break;
     default: break;
     }
-    
+
     struct SwsContext *ctx = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
                                                          m_upscalingWidth, m_upscalingHeight, PIX_FMT_YUV420P,
                                                          algorithm, NULL, NULL, NULL);
     m_dllSwScale.sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
     m_dllSwScale.sws_freeContext(ctx);
-    
+
     im = &m_imScaled;
     im->flags = IMAGE_FLAG_READY;
   }
-  
+
   static int imaging = -1;
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
@@ -1246,10 +1246,10 @@ void CLinuxRendererGL::UpdateVideoFilter()
     delete m_pVideoFilterShader;
     m_pVideoFilterShader = NULL;
   }
-  
+
   VerifyGLState();
   m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
-  
+
   switch (g_stSettings.m_currentVideoSettings.m_ScalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
@@ -1286,7 +1286,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
     m_renderQuality = RQ_SINGLEPASS;
     break;
-    
+
   case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
   case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
   case VS_SCALINGMETHOD_SINC_SOFTWARE:
@@ -1414,7 +1414,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     CLog::Log(LOGERROR, "GL: Falling back to Software YUV2RGB");
     m_renderMethod = RENDER_SW;
   }
-  
+
   // determine whether GPU supports NPOT textures
   if (!glewIsSupported("GL_ARB_texture_non_power_of_two"))
   {
@@ -2328,7 +2328,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 */
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
-  
+
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;
 
@@ -2341,7 +2341,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
     im.height = m_iSourceHeight;
     im.width = m_iSourceWidth;
-    
+
     im.stride[0] = im.width;
     im.stride[1] = im.width/2;
     im.stride[2] = im.width/2;
