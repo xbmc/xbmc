@@ -198,6 +198,7 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
+#include "GUIDialogSlider.h"
 #include "cores/dlgcache.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -1350,8 +1351,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
   m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
 #endif
-  m_gWindowManager.Add(&m_guiDialogSubtitleDelayBar);          // window id = 145
-  m_gWindowManager.Add(&m_guiDialogAudioDelayBar);          // window id = 146
+  m_gWindowManager.Add(new CGUIDialogSlider);             // window id = 145
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
@@ -2044,8 +2044,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   m_guiDialogSeekBar.AllocResources(true);
   m_guiDialogKaiToast.AllocResources(true);
   m_guiDialogMuteBug.AllocResources(true);
-  m_guiDialogSubtitleDelayBar.AllocResources(true);
-  m_guiDialogAudioDelayBar.AllocResources(true);
   m_gWindowManager.AddMsgTarget(this);
   m_gWindowManager.AddMsgTarget(&g_playlistPlayer);
   m_gWindowManager.AddMsgTarget(&g_infoManager);
@@ -3800,6 +3798,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
     m_gWindowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SLIDER);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_LOGIN_SCREEN);
@@ -3834,8 +3833,6 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
     m_gWindowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
 
-    m_gWindowManager.Remove(WINDOW_DIALOG_SUBTITLE_DELAY_BAR);
-    m_gWindowManager.Remove(WINDOW_DIALOG_AUDIO_DELAY_BAR);
     m_gWindowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     m_gWindowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
