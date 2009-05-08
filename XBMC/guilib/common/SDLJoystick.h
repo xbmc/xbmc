@@ -2,6 +2,8 @@
 #define SDL_JOYSTICK_H
 
 #include "../system.h"
+#include <vector>
+#include <string>
 
 #ifdef HAS_SDL_JOYSTICK
 

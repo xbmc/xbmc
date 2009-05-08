@@ -97,9 +97,12 @@ private:
 };
 
 
-CDVDPlayerVideo::CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer) 
+CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
+                                , CDVDOverlayContainer* pOverlayContainer
+                                , CDVDMessageQueue& parent) 
 : CThread()
 , m_messageQueue("video")
+, m_messageParent(parent)
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
@@ -454,8 +457,24 @@ void CDVDPlayerVideo::Process()
       }
 
       // loop while no error
-      while (!m_bStop && !(iDecoderState & VC_ERROR))
+      while (!m_bStop)
       {
+
+        // if decoder was flushed, we need to seek back again to resume rendering
+        if (iDecoderState & VC_FLUSHED)
+        {
+          CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder was flushed");
+          m_messageParent.Put(new CDVDMsgPlayerSeek(pts/1000, true, true, true));
+        }
+
+        // if decoder had an error, tell it to reset to avoid more problems
+        if (iDecoderState & VC_ERROR)
+        {
+          CLog::Log(LOGDEBUG, "CDVDPlayerVideo - video decoder returned error");
+          m_pVideoCodec->Reset();
+          break;
+        }
+
         // check for a new picture
         if (iDecoderState & VC_PICTURE)
         {
@@ -585,9 +604,6 @@ void CDVDPlayerVideo::Process()
         iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
       }
 
-      // if decoder had an error, tell it to reset to avoid more problems
-      if( iDecoderState & VC_ERROR ) 
-        m_pVideoCodec->Reset();
 
       LeaveCriticalSection(&m_critCodecSection);
     }    

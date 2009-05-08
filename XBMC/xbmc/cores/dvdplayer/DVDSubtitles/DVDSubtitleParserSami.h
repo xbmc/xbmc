@@ -26,19 +26,13 @@
 class CDVDOverlayText;
 class CRegExp;
 
-class CDVDSubtitleParserSami : public CDVDSubtitleParser
+class CDVDSubtitleParserSami : public CDVDSubtitleParserText
 {
 public:
   CDVDSubtitleParserSami(CDVDSubtitleStream* pStream, const std::string& strFile);
   virtual ~CDVDSubtitleParserSami();
-  
   virtual bool Open(CDVDStreamInfo &hints);
-  virtual void Dispose();
-  virtual void Reset();
-  
-  virtual CDVDOverlay* Parse(double iPts);
 
 private:
   void AddText(CRegExp& tags, CDVDOverlayText*, const char* data, int len);
-  CDVDSubtitleLineCollection m_collection;
 };

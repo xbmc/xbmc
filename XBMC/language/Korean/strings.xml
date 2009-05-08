@@ -2,8 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@-->
-<!--Date of translation: 04/17/2009-->
+<!--Date of translation: 05/07/2009-->
 <!--$Revision$-->
+<!--Based on english strings version 19506-->
 <strings>
   <string id="0">프로그램</string>
   <string id="1">사진</string>
@@ -44,8 +45,8 @@
   <string id="106">아니오</string>
   <string id="107">예</string>
   <string id="108">슬라이드쇼</string>
-  <string id="109">미리보기 생성</string>
-  <string id="110">미리보기 생성</string>
+  <string id="109">미리보기 만들기</string>
+  <string id="110">미리보기 만들기</string>
   <string id="111">바로가기</string>
   <string id="112">일시정지</string>
   <string id="115">복사</string>
@@ -104,7 +105,7 @@
   <string id="168">인터넷 시간서버와 동기화 사용</string>
   <string id="169">해상도</string>
   <string id="170">새로 고침 비율 조정</string>
-  <string id="172">제작일</string>
+  <string id="172">개봉일</string>
   <string id="175">분위기</string>
   <string id="176">형식</string>
   <string id="179">노래</string>
@@ -204,7 +205,7 @@
   <string id="280">기본 설정 사용</string>
   <string id="281">XML 파일을 확인해 주세요</string>
   <string id="282">%i 항목 찾음</string>
-  <string id="283">결과 찾기</string>
+  <string id="283">검색 결과</string>
   <string id="284">결과 찾지 못함</string>
   <string id="286">후처리 필터</string>
   <string id="287">자막</string>
@@ -214,7 +215,7 @@
   <string id="291">비디오</string>
   <string id="292">오디오</string>
   <string id="293">자막 찾기</string>
-  <string id="294">북마크 생성</string>
+  <string id="294">북마크 만들기</string>
   <string id="296">북마크 지우기</string>
   <string id="297">오디오 오프셋</string>
   <string id="298">북마크</string>
@@ -243,7 +244,7 @@
   <string id="325">경로 정리 오류</string>
   <string id="326">앨범 정리중...</string>
   <string id="327">앨범 정리 오류</string>
-  <string id="328">변경 사항 쓰는중...</string>
+  <string id="328">변경 쓰는중...</string>
   <string id="329">변경 사항 쓰기 오류</string>
   <string id="330">시간이 좀 걸립니다...</string>
   <string id="331">데이터베이스 압축중...</string>
@@ -268,7 +269,7 @@
   <string id="354">매트릭스 트레일</string>
   <string id="355">화면보호기 대기 시간제한</string>
   <string id="356">화면보호기 모드</string>
-  <string id="357">대기 타이머</string>
+  <string id="357">종료 기능 타이머</string>
   <string id="358">모든 앨범</string>
   <string id="359">최근 추가된 앨범</string>
   <string id="360">화면보호기</string>
@@ -536,7 +537,7 @@
   <string id="658">노래 정보</string>
   <string id="660">음량 증폭</string>
   <string id="661">내보내기 폴더 선택</string>
-  <string id="662">이 파일은 더 이상 사용할수 없음.</string>
+  <string id="662">이 파일은 더 이상 사용할수 없습니다.</string>
   <string id="663">라이브러리에서 제거 하시겠습니까?</string>
   <string id="700">라이브러리 정리</string>
   <string id="701">라이브러리에서 오래된 노래 제거</string>
@@ -617,10 +618,10 @@
   <string id="782">WPA</string>
   <string id="783">WPA2</string>
   <string id="784">네트워크 인터페이스 설정을 적용중. 기다려 주세요.</string>
-  <string id="785">정상적으로 네트워크 인터페이스 재시작 됨.</string>
-  <string id="786">정상적으로 네트워크 인터페이스 시작되지 않음.</string>
+  <string id="785">정상적으로 네트워크 인터페이스 재시작 되었습니다.</string>
+  <string id="786">정상적으로 네트워크 인터페이스 시작되지 않았습니다.</string>
   <string id="787">인터페이스 중지됨</string>
-  <string id="788">정상적으로 네트워크 인터페이스 중지됨.</string>
+  <string id="788">정상적으로 네트워크 인터페이스가 중지 되었습니다.</string>
   <string id="789">무선 네트워크 이름 (ESSID)</string>
   <string id="790">이벤트 서버</string>
   <string id="791">이벤트 서버 사용</string>
@@ -646,15 +647,15 @@
   <string id="1014">사용자명</string>
   <string id="1015">네트워크 서버 찾기</string>
   <string id="1016">서버 네트워크 주소 입력</string>
-  <string id="1017">서버 네트워크 포트 입력</string>
+  <string id="1017">서버 경로 입력</string>
   <string id="1018">포트 번호 입력</string>
   <string id="1019">사용자명 입력</string>
   <string id="1020">%s 소스 추가</string>
-  <string id="1021">미디어 위치의 경로 입력 또는 찾기.</string>
+  <string id="1021">미디어 위치의 경로를 입력하거나 찾아보세요.</string>
   <string id="1022">미디어 소스의 이름을 입력하세요.</string>
   <string id="1023">새 공유 찾기</string>
   <string id="1024">찾기</string>
-  <string id="1025">디렉터리 정보를 검색할수 없음.</string>
+  <string id="1025">디렉터리 정보를 검색할수 없습니다.</string>
   <string id="1026">소스 추가</string>
   <string id="1027">소스 수정</string>
   <string id="1028">%s 소스 수정</string>
@@ -808,13 +809,13 @@
   <string id="12014">트레이너 찾지 못함</string>
   <string id="12015">트레이너 설정</string>
   <string id="12016">모든 등록된 트레이너가 없어짐. 목록을 업데이트 하세요</string>
-  <string id="12017">마지막 위치에서 자동 재시작</string>
+  <string id="12017">마지막 위치에서 자동 되시작</string>
   <string id="12018">아니오</string>
   <string id="12019">예</string>
   <string id="12020">물어보기</string>
   <string id="12021">처음부터 시작</string>
-  <string id="12022">%s 부터 재시작</string>
-  <string id="12023">존재하는 트레이너 확인중...</string>
+  <string id="12022">%s 부터 되시작</string>
+  <string id="12023">현재 트레이너 확인중...</string>
   <string id="12024">표지없는 비디오 미리보기 자동 생성</string>
   <string id="12310">0</string>
   <string id="12311">1</string>
@@ -835,7 +836,7 @@
   <string id="12328">잠금해제 코드 입력</string>
   <string id="12329">- C 버튼을 누르면 취소</string>
   <string id="12330">게임패드 버튼 조합을 입력한 후</string>
-  <string id="12331">start 를 또는 취소하려면 Back 를 누르세요</string>
+  <string id="12331">Start 누르거나 취소는 Back 을 누름</string>
   <string id="12332">잠금 설정</string>
   <string id="12333">잠금해제</string>
   <string id="12334">잠금 초기화</string>
@@ -844,12 +845,12 @@
   <string id="12338">게임패드 버튼 조합</string>
   <string id="12339">문자 비밀번호</string>
   <string id="12340">새 비밀번호 입력</string>
-  <string id="12341">새 비밀번호 재 입력</string>
+  <string id="12341">새 비밀번호 재입력</string>
   <string id="12342">잘못된 비밀번호,</string>
-  <string id="12343">재시도 남음 </string>
-  <string id="12344">입력된 비밀번호가 일치하지 않음.</string>
-  <string id="12345">접근 불가</string>
-  <string id="12346">비밀번호 재입력 횟수제한을 초과.</string>
+  <string id="12343">남은 재시도</string>
+  <string id="12344">입력된 비밀번호가 일치하지 않습니다.</string>
+  <string id="12345">접근 거부됨</string>
+  <string id="12346">비밀번호 재시도 제한이 초과 되었습니다.</string>
   <string id="12347">지금 시스템이 종료됩니다.</string>
   <string id="12348">항목 잠김</string>
   <string id="12353">잠금 재활성화</string>
@@ -857,7 +858,7 @@
   <string id="12357">소스 잠금</string>
   <string id="12358">비밀번호가 비었습니다. 다시 시도해 주세요.</string>
   <string id="12360">마스터 잠금</string>
-  <string id="12362">마스터 잠금 시도 횟수 초과시 시스템 종료</string>
+  <string id="12362">마스터 잠금 재시도 초과시 시스템 종료</string>
   <string id="12367">마스터 코드가 정확하지 않습니다!</string>
   <string id="12368">정확한 마스터 코드를 입력해 주세요!</string>
   <string id="12373">설정 &amp; 파일 관리자</string>
@@ -888,8 +889,8 @@
   <string id="13005">종료</string>
   <string id="13006">대시보드</string>
   <string id="13007">사용자 지정 대쉬보드 경로 사용</string>
-  <string id="13008">대기 타이머 기능</string>
-  <string id="13009">종료</string>
+  <string id="13008">종료 기능</string>
+  <string id="13009">나가기</string>
   <string id="13010">최대절전</string>
   <string id="13011">대기</string>
   <string id="13012">종료</string>
@@ -971,7 +972,7 @@
   <string id="13253">이동 취소</string>
   <string id="13270">하드웨어:</string>
   <string id="13271">CPU 사용량:</string>
-  <string id="13274">연결됨, 그러나 DNS 사용할수 없음.</string>
+  <string id="13274">연결됨, 그러나 DNS 사용할수 없습니다.</string>
   <string id="13275">하드디스크</string>
   <string id="13276">DVD-롬</string>
   <string id="13277">저장장치</string>
@@ -1064,7 +1065,7 @@
   <string id="13378">기본 명암</string>
   <string id="13379">기본 대비</string>
   <string id="13380">기본 감마</string>
-  <string id="13381">비디오 재시작</string>
+  <string id="13381">비디오 되시작</string>
   <string id="13382">음성 변조 - 포트 0</string>
   <string id="13383">음성 변조 - 포트 1</string>
   <string id="13384">음성 변조 - 포트 2</string>
@@ -1089,7 +1090,7 @@
   <string id="13401">%s 찾기</string>
   <string id="13402">트랙 위치 보기</string>
   <string id="13403">기본값 지우기</string>
-  <string id="13404">재시작</string>
+  <string id="13404">되시작</string>
   <string id="13405">미리보기 가져오기</string>
   <string id="13406">사진 정보</string>
   <string id="13407">%s 사전설정</string>
@@ -1115,7 +1116,7 @@
   <string id="13611">표준</string>
   <string id="13612">유니버셜 리모트</string>
   <string id="13620">애플 리모트 오류</string>
-  <string id="13621">애플 리모트 지원 사용함.</string>
+  <string id="13621">애플 리모트 지원을 사용할수 없습니다.</string>
   <string id="14000">연결재생</string>
   <string id="14001">연결재생 해제</string>
   <string id="14003">재생목록 파일 다운로드중...</string>
@@ -1219,7 +1220,7 @@
   <string id="15210"> %i 곡 캐시됨</string>
   <string id="15211">전송중...</string>
   <string id="15212">%i 초 후 전송</string>
-  <string id="15213">재생중...</string>
+  <string id="15213">재생 사용중...</string>
   <string id="15214">자동 A/V 싱크 사용</string>
   <string id="15215">미리보기에서 파일 이름 숨김</string>
   <string id="15216">통합 모드 재생</string>
@@ -1254,8 +1255,8 @@
   <string id="15278">%name% 의 선호 트랙 Last.fm 라디오 듣기</string>
   <string id="15279">Last.fm 에서 목록을 검색중...</string>
   <string id="15280">Last.fm 에서 목록을 검색할수 없음...</string>
-  <string id="15281">찾을 관련 아티스트 이름을 입력하세요</string>
-  <string id="15282">찾을 유사 태그 이름을 입력하세요</string>
+  <string id="15281">찾을 관련 아티스트 이름을 입력</string>
+  <string id="15282">찾을 유사 태그 이름을 입력</string>
   <string id="15283">%name% 의 최근 들은 트랙</string>
   <string id="15284">%name 의 추천 Last.fm 라디오 듣기</string>
   <string id="15285">%name% 의 인기 태그</string>
@@ -1263,7 +1264,7 @@
   <string id="15287">현재 트랙을 선호 트랙에 추가 하시겠습니까?</string>
   <string id="15288">현재 트랙을 제거 하시겠습니까?</string>
   <string id="15289">선호 트랙에 추가됨: '%s'.</string>
-  <string id="15290">'%s' 를 선호 트랙에 추가할수 없음.</string>
+  <string id="15290">'%s' 를 선호 트랙에 추가할수 없습니다.</string>
   <string id="15291">제거됨: '%s'.</string>
   <string id="15292">'%s' 를 제거하지못함.</string>
   <string id="15293">%name% 의 최근 선호 트랙</string>
@@ -1305,10 +1306,10 @@
   <string id="16027">연속 실패 초과된 항목</string>
   <string id="16028">값 입력</string>
   <string id="16030">통합 모드 중지됨.</string>
-  <string id="16031">일치하는 노래가 라이브러리에 없음.</string>
-  <string id="16032">데이터베이스를 초기화 할수 없음.</string>
-  <string id="16033">데이터이스를 열수 없음.</string>
-  <string id="16034">데이터베이스에서 노래를 가져오지못함.</string>
+  <string id="16031">일치하는 노래가 라이브러리에 없습니다.</string>
+  <string id="16032">데이터베이스를 초기화 할수 없습니다.</string>
+  <string id="16033">데이터이스를 열수 없습니다.</string>
+  <string id="16034">데이터베이스에서 노래를 가져오지 못했습니다.</string>
   <string id="16035">통합 모드 재생목록</string>
   <string id="16100">모든 비디오</string>
   <string id="16101">미시청</string>
@@ -1376,7 +1377,7 @@
   <string id="20044">새로 고침 시작</string>
   <string id="20045">마스터 모드 들어가기</string>
   <string id="20046">마스터 모드 나가기</string>
-  <string id="20047">'%s' 프로파일을 생성 하시겠습니까?</string>
+  <string id="20047">'%s' 프로파일을 만드시겠습니까?</string>
   <string id="20048">새로운 설정으로 시작</string>
   <string id="20049">사용가능 최적</string>
   <string id="20050">16x9 와 4x3 자동-변경</string>
@@ -1397,7 +1398,7 @@
   <string id="20066">선택 잠금</string>
   <string id="20067">프로파일 수정</string>
   <string id="20068">프로파일 잠금</string>
-  <string id="20069">폴더를 생성할수 없음</string>
+  <string id="20069">폴더를 만들수 없음</string>
   <string id="20070">프로파일 디렉터리</string>
   <string id="20071">시작시 미디어 소스 갱신</string>
   <string id="20072">선택된 폴더가 쓰기 가능한지와</string>
@@ -1418,7 +1419,7 @@
   <string id="20087">E: F: G: 디스크의 남은 공간 보기</string>
   <string id="20088">날씨 정보</string>
   <string id="20089">드라이브 여유공간</string>
-  <string id="20090">존재하는 공유의 이름을 입력</string>
+  <string id="20090">현재 공유의 이름 입력</string>
   <string id="20091">잠금 코드</string>
   <string id="20092">프로파일 읽기</string>
   <string id="20093">프로파일 이름</string>
@@ -1432,9 +1433,9 @@
   <string id="20101">마스터 모드 사용시 항상 마스터 잠금 코드 입력</string>
   <string id="20102">또는 기본값을 복사 하시겠습니까?</string>
   <string id="20103">프로파일에 변경사항을 저장 하시겠습니까?</string>
-  <string id="20104">오래된 설정 찾음.</string>
+  <string id="20104">오래된 설정을 찾았습니다.</string>
   <string id="20105">이것을 사용 하시겠습니까?</string>
-  <string id="20106">오래된 미디어 소스 찾음.</string>
+  <string id="20106">오래된 미디어 소스 찾았습니다.</string>
   <string id="20107">분리 (잠김)</string>
   <string id="20108">루트</string>
   <string id="20109">- 확대</string>
@@ -1445,7 +1446,7 @@
   <string id="20114">프로파일 %i / %i</string>
   <string id="20115">사용자 로그인 / 프로파일 선택</string>
   <string id="20116">로그인 화면에서 잠금 사용</string>
-  <string id="20117">잘못된 잠금 코드.</string>
+  <string id="20117">잠금 코드가 잘못 되었습니다.</string>
   <string id="20118">마스터 잠금이 설정이 필요합니다.</string>
   <string id="20119">지금 설정 하시겠습니까?</string>
   <string id="20120">프로그램 정보 읽기</string>
@@ -1501,7 +1502,7 @@
   <string id="20171">윈도우즈 네트워크(SMB)</string>
   <string id="20172">XBMSP 서버</string>
   <string id="20173">FTP 서버</string>
-  <string id="20174">아이튠 음악 공유(DAAP)</string>
+  <string id="20174">iTunes 음악 공유(DAAP)</string>
   <string id="20175">UPnP 서버</string>
   <string id="20176">비디오 정보 보기</string>
   <string id="20177">완료</string>
@@ -1613,25 +1614,25 @@
   <string id="20386">최근 추가된 영화</string>
   <string id="20387">최근 추가된 에피소드</string>
   <string id="20388">스튜디오</string>
-  <string id="20389">뮤직 비디오</string>
-  <string id="20390">최근 추가된 뮤직 비디오</string>
-  <string id="20391">뮤직 비디오</string>
-  <string id="20392">라이브러리에서 뮤직 비디오 제거</string>
-  <string id="20393">뮤직 비디오 정보</string>
-  <string id="20394">뮤직 비디오 정보 읽기</string>
+  <string id="20389">뮤직비디오</string>
+  <string id="20390">최근 추가된 뮤직비디오</string>
+  <string id="20391">뮤직비디오</string>
+  <string id="20392">라이브러리에서 뮤직비디오 제거</string>
+  <string id="20393">뮤직비디오 정보</string>
+  <string id="20394">뮤직비디오 정보 읽기</string>
   <string id="20395">통합</string>
   <string id="20396">아트스트 앨범으로 가기</string>
   <string id="20397">앨범으로 가기</string>
   <string id="20398">노래 재생</string>
-  <string id="20399">앨범에서 뮤직 비디오로 가기</string>
-  <string id="20400">아티스트의 뮤직 비디오로 가기</string>
-  <string id="20401">뮤직 비디오 재생</string>
+  <string id="20399">앨범에서 뮤직비디오로 가기</string>
+  <string id="20400">아티스트의 뮤직비디오로 가기</string>
+  <string id="20401">뮤직비디오 재생</string>
   <string id="20402">자동으로 배우 미리보기 가져오기</string>
   <string id="20403">배우 미리보기 설정</string>
   <string id="20405">에피소드 북마크 제거</string>
   <string id="20406">에피소드 북마크 설정</string>
   <string id="20407">자료수집기 설정</string>
-  <string id="20408">뮤직 비디오 정보 다운로드</string>
+  <string id="20408">뮤직비디오 정보 다운로드</string>
   <string id="20409">TV 쇼 정보 다운로드</string>
   <string id="20410">트레이너</string>
   <string id="20411">병합</string>
@@ -1722,7 +1723,7 @@
   <string id="21412">자료수집기</string>
   <string id="21413">기본 영화 자료수집기</string>
   <string id="21414">기본 TV 쇼 자료수집기</string>
-  <string id="21415">기본 뮤직 비디오 자료수집기</string>
+  <string id="21415">기본 뮤직비디오 자료수집기</string>
   <string id="21416">자료수집기 언어 기반의 대체 사용</string>
   <string id="21420">일치하는 값</string>
   <string id="21421">지능형 재생목록 규칙</string>

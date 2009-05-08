@@ -119,11 +119,8 @@ void CGUIDialogLockSettings::CreateSettings()
   }
 }
 
-void CGUIDialogLockSettings::OnSettingChanged(unsigned int num)
+void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
 {
-  // setting has changed - update anything that needs it
-  if (num >= m_settings.size()) return;
-  SettingInfo &setting = m_settings.at(num);
   // check and update anything that needs it
   if (setting.id == 1)
   {

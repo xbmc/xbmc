@@ -129,6 +129,9 @@ void XBMCHelper::Configure()
     if (m_mode == APPLE_REMOTE_UNIVERSAL)
       strConfig = "--universal ";
 
+    if (m_mode == APPLE_REMOTE_MULTIREMOTE)
+      strConfig = "--multiremote ";
+
     char strDelay[64];
     sprintf(strDelay, "--timeout %d ", m_sequenceDelay);
     strConfig += strDelay;

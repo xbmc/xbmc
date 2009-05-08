@@ -9,6 +9,7 @@ INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
 
 INCLUDES+=-Ilib/libcdio/libcdio/include
 
+
 PCH=stdafx.h
 
 SRCS=Application.cpp \
@@ -141,6 +142,7 @@ SRCS=Application.cpp \
      GUIDialogVisualisationPresetList.cpp \
      GUIDialogVisualisationSettings.cpp \
      GUIDialogVolumeBar.cpp \
+     GUIDialogSlider.cpp \
      GUIDialogYesNo.cpp \
      GUIMediaWindow.cpp \
      GUIWindowFileManager.cpp \

@@ -30,6 +30,7 @@
  */
 
 #include "XBIRRemote.h"
+#include <StdString.h>
 
 // Analogue - don't change order
 #define KEY_BUTTON_A                        256
@@ -337,6 +338,7 @@
 #define WINDOW_DIALOG_FULLSCREEN_INFO     10142
 #define WINDOW_DIALOG_KARAOKE_SONGSELECT  10143
 #define WINDOW_DIALOG_KARAOKE_SELECTOR    10144
+#define WINDOW_DIALOG_SLIDER              10145
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

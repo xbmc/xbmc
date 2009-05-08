@@ -25,7 +25,7 @@
 
 #define TIME_TO_SCROLL 200;
 
-CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions)
+CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions, DWORD alignment)
 : CGUIControlGroup(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_itemGap = itemGap;
@@ -33,6 +33,7 @@ CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, 
   m_offset = 0;
   m_totalSize = 10;
   m_orientation = orientation;
+  m_alignment = alignment;
   m_scrollOffset = 0;
   m_scrollSpeed = 0;
   m_scrollTime = 0;
@@ -72,6 +73,13 @@ void CGUIControlGroupList::Render()
   float pos = 0;
   float focusedPos = 0;
   CGUIControl *focusedControl = NULL;
+  if (m_totalSize < Size())
+  {
+    if (m_alignment & XBFONT_RIGHT)
+      pos += Size() - m_totalSize;
+    if (m_alignment & XBFONT_CENTER_X)
+      pos += (Size() - m_totalSize)*0.5f;
+  }
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     // note we render all controls, even if they're offscreen, as then they'll be updated

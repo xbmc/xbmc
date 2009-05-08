@@ -31,11 +31,42 @@ CEvent::CEvent()
   m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 }
 
-
+CEvent::CEvent(const CEvent& src)
+{
+  if(DuplicateHandle( GetCurrentProcess()
+                    , src.m_hEvent
+                    , GetCurrentProcess()
+                    , &m_hEvent
+                    , 0
+                    , TRUE
+                    , DUPLICATE_SAME_ACCESS ))
+  {
+    CLog::Log(LOGERROR, "CEvent - failed to duplicate handle");
+    m_hEvent = INVALID_HANDLE_VALUE;
+  }
+}
 
 CEvent::~CEvent()
 {
   CloseHandle(m_hEvent);
+}
+
+CEvent& CEvent::operator=(const CEvent& src)
+{
+  CloseHandle(m_hEvent);
+
+  if(DuplicateHandle( GetCurrentProcess()
+                    , src.m_hEvent
+                    , GetCurrentProcess()
+                    , &m_hEvent
+                    , 0
+                    , TRUE
+                    , DUPLICATE_SAME_ACCESS ))
+  {
+    CLog::Log(LOGERROR, "CEvent - failed to duplicate handle");  
+    m_hEvent = INVALID_HANDLE_VALUE;
+  }
+  return *this;
 }
 
 

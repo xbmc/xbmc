@@ -104,7 +104,6 @@
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
-		E33979930D62FC46004ECDDA /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */; };
 		E33979960D62FD48004ECDDA /* DVDInputStreamTV.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */; };
 		E354EF040D99EDC900B55311 /* controlradiobutton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E354EF030D99EDC900B55311 /* controlradiobutton.cpp */; };
 		E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
@@ -450,7 +449,6 @@
 		E38E20930D25F9FD00618676 /* GUIDialogProfileSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17CC0D25F9FA00618676 /* GUIDialogProfileSettings.cpp */; };
 		E38E20940D25F9FD00618676 /* GUIDialogProgress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17CE0D25F9FA00618676 /* GUIDialogProgress.cpp */; };
 		E38E20950D25F9FD00618676 /* GUIDialogSeekBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17D00D25F9FA00618676 /* GUIDialogSeekBar.cpp */; };
-		E38E20960D25F9FD00618676 /* GUIDialogSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17D20D25F9FA00618676 /* GUIDialogSelect.cpp */; };
 		E38E20970D25F9FD00618676 /* GUIDialogSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17D40D25F9FA00618676 /* GUIDialogSettings.cpp */; };
 		E38E20980D25F9FD00618676 /* GUIDialogSmartPlaylistEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17D60D25F9FA00618676 /* GUIDialogSmartPlaylistEditor.cpp */; };
 		E38E20990D25F9FD00618676 /* GUIDialogSmartPlaylistRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17D80D25F9FA00618676 /* GUIDialogSmartPlaylistRule.cpp */; };
@@ -828,6 +826,10 @@
 		E3E920020D8C622A002BF43D /* EventClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920010D8C622A002BF43D /* EventClient.cpp */; };
 		E3E920060D8C6277002BF43D /* ScraperSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3E920050D8C6277002BF43D /* ScraperSettings.cpp */; };
 		E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
+		E43196170FB2382E0030E150 /* HTSPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43196140FB2382E0030E150 /* HTSPDirectory.cpp */; };
+		E43196180FB2382E0030E150 /* HTSPSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43196160FB2382E0030E150 /* HTSPSession.cpp */; };
+		E43196190FB2382E0030E150 /* HTSPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43196140FB2382E0030E150 /* HTSPDirectory.cpp */; };
+		E431961A0FB2382E0030E150 /* HTSPSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E43196160FB2382E0030E150 /* HTSPSession.cpp */; };
 		E46464360E7DF0B9003CB291 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464320E7DF0B9003CB291 /* NptStdcEnvironment.cpp */; };
 		E46464450E7DF115003CB291 /* NptStdcDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464430E7DF115003CB291 /* NptStdcDebug.cpp */; };
 		E46464470E7DF12B003CB291 /* NptPosixNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46464460E7DF12B003CB291 /* NptPosixNetwork.cpp */; };
@@ -1213,7 +1215,6 @@
 		F5A1C9BE0F6B06CF00A96ABD /* GUIDialogProfileSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17CC0D25F9FA00618676 /* GUIDialogProfileSettings.cpp */; };
 		F5A1C9BF0F6B06CF00A96ABD /* GUIDialogProgress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17CE0D25F9FA00618676 /* GUIDialogProgress.cpp */; };
 		F5A1C9C00F6B06CF00A96ABD /* GUIDialogSeekBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17D00D25F9FA00618676 /* GUIDialogSeekBar.cpp */; };
-		F5A1C9C10F6B06CF00A96ABD /* GUIDialogSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17D20D25F9FA00618676 /* GUIDialogSelect.cpp */; };
 		F5A1C9C20F6B06CF00A96ABD /* GUIDialogSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17D40D25F9FA00618676 /* GUIDialogSettings.cpp */; };
 		F5A1C9C30F6B06CF00A96ABD /* GUIDialogSmartPlaylistEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17D60D25F9FA00618676 /* GUIDialogSmartPlaylistEditor.cpp */; };
 		F5A1C9C40F6B06CF00A96ABD /* GUIDialogSmartPlaylistRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17D80D25F9FA00618676 /* GUIDialogSmartPlaylistRule.cpp */; };
@@ -1708,7 +1709,6 @@
 		F5A1CBB40F6B06CF00A96ABD /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */; };
 		F5A1CBB50F6B06CF00A96ABD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E35EF3230D380E1E00DB5CD5 /* Carbon.framework */; };
 		F5A1CBB60F6B06CF00A96ABD /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */; };
-		F5A1CBB70F6B06CF00A96ABD /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */; };
 		F5A1CBBA0F6B06CF00A96ABD /* libpcre.0.0.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */; };
 		F5A1CBBB0F6B06CF00A96ABD /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6580DE013C4003396A7 /* DiskArbitration.framework */; };
 		F5A1CBBC0F6B06CF00A96ABD /* libfontconfig.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */; };
@@ -1736,6 +1736,12 @@
 		F5A2BD0F0F7AD92C0006ABA0 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
 		F5A2BD600F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
 		F5A2BD610F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
+		F5AAC9CF0FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */; };
+		F5AAC9D00FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */; };
+		F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */; };
+		F5AACA690FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */; };
+		F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
+		F5AACA980FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */; };
 		F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */; };
 		F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
@@ -1896,7 +1902,6 @@
 		E30B3E8E0D5D59290030A311 /* libshout-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libshout-x86-osx.a"; path = "xbmc/lib/libshout/libshout-x86-osx.a"; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
 		E33466A50D2E5103005A65EC /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /usr/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
 		E33979940D62FD47004ECDDA /* DVDInputStreamTV.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamTV.cpp; sourceTree = "<group>"; };
 		E33979950D62FD47004ECDDA /* DVDInputStreamTV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamTV.h; sourceTree = "<group>"; };
 		E354EF030D99EDC900B55311 /* controlradiobutton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlradiobutton.cpp; sourceTree = "<group>"; };
@@ -2718,8 +2723,6 @@
 		E38E17CF0D25F9FA00618676 /* GUIDialogProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogProgress.h; sourceTree = "<group>"; };
 		E38E17D00D25F9FA00618676 /* GUIDialogSeekBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSeekBar.cpp; sourceTree = "<group>"; };
 		E38E17D10D25F9FA00618676 /* GUIDialogSeekBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSeekBar.h; sourceTree = "<group>"; };
-		E38E17D20D25F9FA00618676 /* GUIDialogSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSelect.cpp; sourceTree = "<group>"; };
-		E38E17D30D25F9FA00618676 /* GUIDialogSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSelect.h; sourceTree = "<group>"; };
 		E38E17D40D25F9FA00618676 /* GUIDialogSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSettings.cpp; sourceTree = "<group>"; };
 		E38E17D50D25F9FA00618676 /* GUIDialogSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSettings.h; sourceTree = "<group>"; };
 		E38E17D60D25F9FA00618676 /* GUIDialogSmartPlaylistEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSmartPlaylistEditor.cpp; sourceTree = "<group>"; };
@@ -3560,6 +3563,10 @@
 		E3E920050D8C6277002BF43D /* ScraperSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScraperSettings.cpp; sourceTree = "<group>"; };
 		E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.0.2.1.dylib; path = /opt/local/lib/libmad.0.2.1.dylib; sourceTree = "<absolute>"; };
 		E3EB8F050D5D5C0300FFF489 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = /opt/local/lib/libvorbis.dylib; sourceTree = "<absolute>"; };
+		E43196130FB2382D0030E150 /* HTSPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTSPDirectory.h; sourceTree = "<group>"; };
+		E43196140FB2382E0030E150 /* HTSPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTSPDirectory.cpp; sourceTree = "<group>"; };
+		E43196150FB2382E0030E150 /* HTSPSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTSPSession.h; sourceTree = "<group>"; };
+		E43196160FB2382E0030E150 /* HTSPSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTSPSession.cpp; sourceTree = "<group>"; };
 		E46464320E7DF0B9003CB291 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcEnvironment.cpp; sourceTree = "<group>"; };
 		E46464430E7DF115003CB291 /* NptStdcDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcDebug.cpp; sourceTree = "<group>"; };
 		E46464460E7DF12B003CB291 /* NptPosixNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixNetwork.cpp; sourceTree = "<group>"; };
@@ -3664,6 +3671,11 @@
 		F5A1CC190F6B21F800A96ABD /* avformat-52-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avformat-52-powerpc-osx.a"; path = "system/players/dvdplayer/avformat-52-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC1B0F6B220D00A96ABD /* swscale-0.6.1-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "swscale-0.6.1-powerpc-osx.a"; path = "system/players/dvdplayer/swscale-0.6.1-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC1D0F6B221400A96ABD /* postproc-51-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "postproc-51-powerpc-osx.a"; path = "system/players/dvdplayer/postproc-51-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
+		F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /opt/local/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
+		F5AACA660FB3DE2D00DBB77C /* GUIDialogSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSelect.h; sourceTree = "<group>"; };
+		F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSelect.cpp; sourceTree = "<group>"; };
+		F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogSlider.cpp; sourceTree = "<group>"; };
+		F5AACA960FB3E2B800DBB77C /* GUIDialogSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSlider.h; sourceTree = "<group>"; };
 		F5AC52870F58504F003EEAA4 /* DTSCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTSCodec.h; path = xbmc/cores/paplayer/DTSCodec.h; sourceTree = SOURCE_ROOT; };
 		F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DTSCodec.cpp; path = xbmc/cores/paplayer/DTSCodec.cpp; sourceTree = SOURCE_ROOT; };
 		F5AC528F0F58525B003EEAA4 /* DTSCDDACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTSCDDACodec.h; path = xbmc/cores/paplayer/DTSCDDACodec.h; sourceTree = SOURCE_ROOT; };
@@ -3730,7 +3742,6 @@
 				E35EF2550D380C3D00DB5CD5 /* QuickTime.framework in Frameworks */,
 				E35EF3240D380E1E00DB5CD5 /* Carbon.framework in Frameworks */,
 				E3EB8F080D5D5C0300FFF489 /* libvorbis.dylib in Frameworks */,
-				E33979930D62FC46004ECDDA /* libsqlite3.0.dylib in Frameworks */,
 				810CA01C0D68A6E20095F5DD /* libshout-x86-osx.a in Frameworks */,
 				E3BBB7A20D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib in Frameworks */,
 				88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */,
@@ -3753,6 +3764,7 @@
 				F527E8380F293F420046DBD3 /* libSDL_mixer-x86-osx.a in Frameworks */,
 				F5EA08860F78B1E7005C2EC5 /* libcdio.dylib in Frameworks */,
 				F5A2BD600F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */,
+				F5AAC9CF0FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3778,7 +3790,6 @@
 				F5A1CBB40F6B06CF00A96ABD /* QuickTime.framework in Frameworks */,
 				F5A1CBB50F6B06CF00A96ABD /* Carbon.framework in Frameworks */,
 				F5A1CBB60F6B06CF00A96ABD /* libvorbis.dylib in Frameworks */,
-				F5A1CBB70F6B06CF00A96ABD /* libsqlite3.0.dylib in Frameworks */,
 				F5A1CBBA0F6B06CF00A96ABD /* libpcre.0.0.1.dylib in Frameworks */,
 				F5A1CBBB0F6B06CF00A96ABD /* DiskArbitration.framework in Frameworks */,
 				F5A1CBBC0F6B06CF00A96ABD /* libfontconfig.1.dylib in Frameworks */,
@@ -3804,6 +3815,7 @@
 				F5A1CC1E0F6B221400A96ABD /* postproc-51-powerpc-osx.a in Frameworks */,
 				F5EA08850F78B1E7005C2EC5 /* libcdio.dylib in Frameworks */,
 				F5A2BD610F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */,
+				F5AAC9D00FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3837,7 +3849,6 @@
 				F57E1ED30E36E96B00700C9D /* macport libs */,
 				F57E1ED20E36E8FD00700C9D /* internal libs */,
 				F57E21400E3C3AD400700C9D /* libz.dylib */,
-				E33979920D62FC46004ECDDA /* libsqlite3.0.dylib */,
 				88ECB6580DE013C4003396A7 /* DiskArbitration.framework */,
 				E35EF3230D380E1E00DB5CD5 /* Carbon.framework */,
 				E35EF2540D380C3D00DB5CD5 /* QuickTime.framework */,
@@ -4306,10 +4317,12 @@
 				E38E17CF0D25F9FA00618676 /* GUIDialogProgress.h */,
 				E38E17D00D25F9FA00618676 /* GUIDialogSeekBar.cpp */,
 				E38E17D10D25F9FA00618676 /* GUIDialogSeekBar.h */,
-				E38E17D20D25F9FA00618676 /* GUIDialogSelect.cpp */,
-				E38E17D30D25F9FA00618676 /* GUIDialogSelect.h */,
+				F5AACA660FB3DE2D00DBB77C /* GUIDialogSelect.h */,
+				F5AACA670FB3DE2D00DBB77C /* GUIDialogSelect.cpp */,
 				E38E17D40D25F9FA00618676 /* GUIDialogSettings.cpp */,
 				E38E17D50D25F9FA00618676 /* GUIDialogSettings.h */,
+				F5AACA950FB3E2B800DBB77C /* GUIDialogSlider.cpp */,
+				F5AACA960FB3E2B800DBB77C /* GUIDialogSlider.h */,
 				E38E17D60D25F9FA00618676 /* GUIDialogSmartPlaylistEditor.cpp */,
 				E38E17D70D25F9FA00618676 /* GUIDialogSmartPlaylistEditor.h */,
 				E38E17D80D25F9FA00618676 /* GUIDialogSmartPlaylistRule.cpp */,
@@ -5304,6 +5317,10 @@
 				E38E16E90D25F9FA00618676 /* HDDirectory.h */,
 				E38E16EA0D25F9FA00618676 /* HDHomeRun.cpp */,
 				E38E16EB0D25F9FA00618676 /* HDHomeRun.h */,
+				E43196130FB2382D0030E150 /* HTSPDirectory.h */,
+				E43196140FB2382E0030E150 /* HTSPDirectory.cpp */,
+				E43196150FB2382E0030E150 /* HTSPSession.h */,
+				E43196160FB2382E0030E150 /* HTSPSession.cpp */,
 				F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */,
 				F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */,
 				E38E16EC0D25F9FA00618676 /* IDirectory.cpp */,
@@ -6751,6 +6768,7 @@
 				F5EA08840F78B1E7005C2EC5 /* libcdio.dylib */,
 				F54C512F0F1C65D100D46E3C /* libportaudio.dylib */,
 				E3D547950D723EFD00F36320 /* libsmbclient.dylib */,
+				F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */,
 				88ECB6EB0DE07C56003396A7 /* libmysqlclient.15.dylib */,
 				88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */,
 			);
@@ -7327,7 +7345,6 @@
 				E38E20930D25F9FD00618676 /* GUIDialogProfileSettings.cpp in Sources */,
 				E38E20940D25F9FD00618676 /* GUIDialogProgress.cpp in Sources */,
 				E38E20950D25F9FD00618676 /* GUIDialogSeekBar.cpp in Sources */,
-				E38E20960D25F9FD00618676 /* GUIDialogSelect.cpp in Sources */,
 				E38E20970D25F9FD00618676 /* GUIDialogSettings.cpp in Sources */,
 				E38E20980D25F9FD00618676 /* GUIDialogSmartPlaylistEditor.cpp in Sources */,
 				E38E20990D25F9FD00618676 /* GUIDialogSmartPlaylistRule.cpp in Sources */,
@@ -7811,6 +7828,10 @@
 				E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */,
 				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */,
 				83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */,
+				E43196170FB2382E0030E150 /* HTSPDirectory.cpp in Sources */,
+				E43196180FB2382E0030E150 /* HTSPSession.cpp in Sources */,
+				F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */,
+				F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8151,7 +8172,6 @@
 				F5A1C9BE0F6B06CF00A96ABD /* GUIDialogProfileSettings.cpp in Sources */,
 				F5A1C9BF0F6B06CF00A96ABD /* GUIDialogProgress.cpp in Sources */,
 				F5A1C9C00F6B06CF00A96ABD /* GUIDialogSeekBar.cpp in Sources */,
-				F5A1C9C10F6B06CF00A96ABD /* GUIDialogSelect.cpp in Sources */,
 				F5A1C9C20F6B06CF00A96ABD /* GUIDialogSettings.cpp in Sources */,
 				F5A1C9C30F6B06CF00A96ABD /* GUIDialogSmartPlaylistEditor.cpp in Sources */,
 				F5A1C9C40F6B06CF00A96ABD /* GUIDialogSmartPlaylistRule.cpp in Sources */,
@@ -8635,6 +8655,10 @@
 				F5A2BD0E0F7AD9140006ABA0 /* ZeroconfOSX.mm in Sources */,
 				F5A2BD0F0F7AD92C0006ABA0 /* Zeroconf.cpp in Sources */,
 				83E0B24A0F7C95FF0091643F /* Atomics.cpp in Sources */,
+				E43196190FB2382E0030E150 /* HTSPDirectory.cpp in Sources */,
+				E431961A0FB2382E0030E150 /* HTSPSession.cpp in Sources */,
+				F5AACA690FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */,
+				F5AACA980FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

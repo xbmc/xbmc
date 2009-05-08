@@ -40,8 +40,6 @@ public:
 protected:
   bool   m_eof;
   RTMP_LIB::CRTMP  m_rtmp;
-  unsigned int m_videoTS;
-  unsigned int m_audioTS;
   int          m_prevTagSize;
   bool         m_bSentHeader;
   char         *m_leftOver;

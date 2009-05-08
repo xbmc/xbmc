@@ -64,6 +64,9 @@
 #ifdef HAS_FILESYSTEM_SAP
 #include "FileSystem/SAPDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_HTSP
+#include "FileSystem/HTSPDirectory.h"
+#endif
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "ApplicationRenderer.h"
@@ -195,6 +198,7 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
+#include "GUIDialogSlider.h"
 #include "cores/dlgcache.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -234,6 +238,10 @@
 #endif
 
 #include "lib/libcdio/logging.h"
+
+#ifdef _LINUX
+#include "XHandle.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -311,6 +319,10 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_playCountUpdated = false;
   m_bPlaybackStarting = false;
   m_updateFileStateCounter = 0;
+
+#ifdef HAS_GLX
+  XInitThreads();
+#endif
 
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
@@ -866,6 +878,10 @@ HRESULT CApplication::Create(HWND hWnd)
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
+#ifdef _WIN32PC
+  CWIN32Util::CheckGLVersion();
+#endif
+
   // initialize our charset converter
   g_charsetConverter.reset();
 
@@ -1338,6 +1354,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
   m_gWindowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
 #endif
+  m_gWindowManager.Add(new CGUIDialogSlider);             // window id = 145
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
@@ -2215,33 +2232,18 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
-  // don't do anything that would require graphiccontext to be locked before here in fullscreen.
-  // that stuff should go into renderfullscreen instead as that is called from the renderin thread
-
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
-    //g_ApplicationRenderer.Render();
-
 #ifdef HAS_SDL
     if (g_videoConfig.GetVSyncMode()==VSYNC_VIDEO)
       g_graphicsContext.getScreenSurface()->EnableVSync(true);
 #endif
-    // release the context so the async renderer can draw to it
-#ifdef HAS_SDL_OPENGL
-#ifdef HAS_VIDEO_PLAYBACK
-    // Video rendering occuring from main thread for OpenGL
     if (m_bPresentFrame)
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
-#endif
-#else
-    //g_graphicsContext.ReleaseCurrentContext();
-    g_graphicsContext.Unlock(); // unlock to allow the async renderer to render
-    Sleep(25);
-    g_graphicsContext.Lock();
-#endif
+
     ResetScreenSaver();
     g_infoManager.ResetCache();
     return;
@@ -2475,12 +2477,7 @@ void CApplication::Render()
   }
   g_graphicsContext.Lock();
   RenderNoPresent();
-  // Present the backbuffer contents to the display
-#ifdef HAS_SDL
   g_graphicsContext.Flip();
-#else
-  if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-#endif
   g_graphicsContext.Unlock();
 
 #ifdef HAS_SDL
@@ -3804,6 +3801,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
     m_gWindowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SLIDER);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_LOGIN_SCREEN);
@@ -5200,6 +5198,11 @@ void CApplication::ProcessSlow()
   // check for any idle myth sessions
   CCMythSession::CheckIdle();
 
+#ifdef HAS_FILESYSTEM_HTSP
+  // check for any idle htsp sessions
+  HTSP::CHTSPDirectorySession::CheckIdle();
+#endif
+
 #ifdef HAS_TIME_SERVER
   // check for any needed sntp update
   if(m_psntpClient && m_psntpClient->UpdateNeeded())
@@ -5399,6 +5402,18 @@ int CApplication::GetVolume() const
 {
   // converts the hardware volume (in mB) to a percentage
   return int(((float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
+}
+
+int CApplication::GetSubtitleDelay() const
+{
+  // converts subtitle delay to a percentage
+  return int(((float)(g_stSettings.m_currentVideoSettings.m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
+}
+
+int CApplication::GetAudioDelay() const
+{
+  // converts subtitle delay to a percentage
+  return int(((float)(g_stSettings.m_currentVideoSettings.m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
 }
 
 void CApplication::SetPlaySpeed(int iSpeed)

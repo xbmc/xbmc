@@ -3346,6 +3346,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogSlider.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogSlider.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogSubMenu.cpp"
 					>
 				</File>

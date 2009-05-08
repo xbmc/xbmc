@@ -1046,9 +1046,18 @@ bool CUtil::IsVTP(const CStdString& strFile)
   return strFile.Left(4).Equals("vtp:");
 }
 
+bool CUtil::IsHTSP(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("htsp:");
+}
+
 bool CUtil::IsTV(const CStdString& strFile)
 {
-  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile);
+  return IsMythTV(strFile)
+      || IsTuxBox(strFile)
+      || IsVTP(strFile)
+      || IsHDHomeRun(strFile)
+      || IsHTSP(strFile);
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -1874,19 +1883,19 @@ void CUtil::RestoreBrightnessContrastGamma()
   g_graphicsContext.Unlock();
 }
 
-void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate)
+void CUtil::SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate)
 {
-  if (iBrightNess < 0) iBrightNess = 0;
-  if (iBrightNess > 100) iBrightNess = 100;
-  if (iContrast < 0) iContrast = 0;
-  if (iContrast > 100) iContrast = 100;
-  if (iGamma < 0) iGamma = 0;
-  if (iGamma > 100) iGamma = 100;
+  if (brightness < 0) brightness = 0;
+  if (brightness > 100) brightness = 100;
+  if (contrast < 0) contrast = 0;
+  if (contrast > 100) contrast = 100;
+  if (gamma < 0) gamma = 0;
+  if (gamma > 100) gamma = 100;
 
-  float fBrightNess = (((float)iBrightNess) / 50.0f) - 1.0f; // -1..1 Default: 0
-  float fContrast = (((float)iContrast) / 50.0f);      // 0..2  Default: 1
-  float fGamma = (((float)iGamma) / 40.0f) + 0.5f;      // 0.5..3.0 Default: 1
-  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
+  float fBrightNess = brightness / 50.0f - 1.0f; // -1..1    Default: 0
+  float fContrast = contrast / 50.0f;            // 0..2     Default: 1
+  float fGamma = gamma / 40.0f + 0.5f;           // 0.5..3.0 Default: 1
+  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, immediate);
 }
 
 void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
@@ -3296,7 +3305,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("updatelibrary"))
   {
-    if (parameter.Equals("music"))
+    CStdStringArray param_array;
+    // Use parameter with case intact
+    StringUtils::SplitString(strParameterCaseIntact,",", param_array);
+    if (param_array.size() < 1)
+      return -1;
+    if (param_array[0].Equals("music"))
     {
       CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
       if (scanner)
@@ -3307,7 +3321,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           scanner->StartScanning("");
       }
     }
-    if (parameter.Equals("video"))
+    if (param_array[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       SScraperInfo info;
@@ -3317,7 +3331,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan("",info,settings);
+          CGUIWindowVideoBase::OnScan(param_array.size() > 1 ? param_array[1] : "",info,settings);
       }
     }
   }

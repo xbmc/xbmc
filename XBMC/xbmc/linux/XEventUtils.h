@@ -22,7 +22,7 @@
  *
  */
 
-#include "XHandle.h"
+#include "XHandlePublic.h"
 
 #ifdef _LINUX
 

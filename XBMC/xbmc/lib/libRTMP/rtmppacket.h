@@ -50,9 +50,9 @@ namespace RTMP_LIB
       BYTE           m_nChannel;
       int            m_nInfoField1; // 3 first bytes
       int            m_nInfoField2; // last 4 bytes in a long header
+      bool           m_hasAbsTimestamp; // timestamp absolute or relative?
       unsigned long  m_nBodySize;
       unsigned long  m_nBytesRead;
-      unsigned long  m_nInternalTimestamp;
       char           *m_body;
   };
 };
