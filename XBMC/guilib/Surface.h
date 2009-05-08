@@ -113,6 +113,8 @@ public:
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
   SDL_Surface* SDL() {return m_SDLSurface;}
 
+  bool glxIsSupported(const char*);
+
  protected:
   CSurface* m_pShared;
   int m_iWidth;
@@ -149,6 +151,7 @@ public:
   static bool b_glewInit;
   static std::string s_glVendor;
   static std::string s_glRenderer;
+  static std::string s_glxExt;
   static int         s_glMajVer;
   static int         s_glMinVer;
 

@@ -59,6 +59,7 @@ static __int64 abs(__int64 a)
 bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
 std::string CSurface::s_glRenderer = "";
+std::string CSurface::s_glxExt = "";
 int         CSurface::s_glMajVer = 0;
 int         CSurface::s_glMinVer = 0;
 
@@ -566,6 +567,17 @@ CSurface::~CSurface()
 #endif
 }
 
+bool CSurface::glxIsSupported(const char* extension)
+{
+  CStdString name;
+
+  name  = " ";
+  name += extension;
+  name += " ";
+
+  return s_glxExt.find(name) != std::string::npos;
+}
+
 void CSurface::EnableVSync(bool enable)
 {
 #ifdef HAS_SDL_OPENGL
@@ -604,17 +616,17 @@ void CSurface::EnableVSync(bool enable)
 
 #ifdef HAS_GLX
   // Obtain function pointers
-  if (!_glXGetSyncValuesOML)
+  if (!_glXGetSyncValuesOML  && glxIsSupported("GLX_OML_sync_control"))
     _glXGetSyncValuesOML = (Bool (*)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*))glXGetProcAddress((const GLubyte*)"glXGetSyncValuesOML");
-  if (!_glXSwapBuffersMscOML)
+  if (!_glXSwapBuffersMscOML && glxIsSupported("GLX_OML_sync_control"))
     _glXSwapBuffersMscOML = (int64_t (*)(Display*, GLXDrawable, int64_t, int64_t, int64_t))glXGetProcAddress((const GLubyte*)"glXSwapBuffersMscOML");
-  if (!_glXWaitVideoSyncSGI)
+  if (!_glXWaitVideoSyncSGI  && glxIsSupported("GLX_SGI_video_sync"))
     _glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
-  if (!_glXGetVideoSyncSGI)
+  if (!_glXGetVideoSyncSGI   && glxIsSupported("GLX_SGI_video_sync"))
     _glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
-  if (!_glXSwapIntervalSGI)
+  if (!_glXSwapIntervalSGI   && glxIsSupported("GLX_SGI_swap_control") )
     _glXSwapIntervalSGI = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalSGI");
-  if (!_glXSwapIntervalMESA)
+  if (!_glXSwapIntervalMESA  && glxIsSupported("GLX_MESA_swap_control"))
     _glXSwapIntervalMESA = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
 #elif defined (_WIN32)
   if (!_wglSwapIntervalEXT)
@@ -1026,6 +1038,15 @@ void CSurface::GetGLVersion(int& maj, int& min)
     s_glVendor   = (const char*)glGetString(GL_VENDOR);
     s_glRenderer = (const char*)glGetString(GL_RENDERER);
   }
+#ifdef HAS_GLX
+  if (s_glxExt.length()==0)
+  {
+    s_glxExt  = " ";
+    s_glxExt += (const char*)glXQueryExtensionsString(s_dpy, DefaultScreen(s_dpy));
+    s_glxExt += " ";
+  }
+#endif
+
 #endif
   maj = s_glMajVer;
   min = s_glMinVer;
