@@ -207,7 +207,7 @@ libhts:
 	$(MAKE) -C xbmc/lib/libhts
 eventclients:
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(MAKE) -C tools/EventClients/Clients/AppleRemote
+	$(MAKE) -C tools/EventClients/Clients/OSXRemote
 else
 	$(MAKE) -C tools/EventClients
 endif
