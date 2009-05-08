@@ -1,19 +1,15 @@
-TOP=../../../../
-TARGET = ../../../osx/XBMCHelper
+#convenience makefile to allow headless osx build
 
-all: $(TARGET)
-
-include $(TOP)Makefile.include
+DEBUG_FLAGS=@DEBUG_FLAGS@
 
 #check for debug build
-ifneq (,$(findstring _DEBUG, $(CXXFLAGS)))
+ifneq (,$(findstring _DEBUG, $(DEBUG_FLAGS)))
   CONFIGURATION=Debug
 else
   CONFIGURATION=Release
 endif
 
-$(TARGET): 
-	echo $(CXXFLAGS)
+all: 
 	xcodebuild -sdk macosx10.4 -configuration $(CONFIGURATION)
 
 clean:

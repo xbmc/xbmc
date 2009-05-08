@@ -629,6 +629,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/visualizations/iTunes/Makefile]
                 [tools/Linux/xbmc.sh]
                 [tools/XBMCTex/Makefile]
+                [tools/EventClients/Clients/OSXRemote/Makefile]
 )
 
 AC_DEFUN([XB_CONFIG_MODULE],[
