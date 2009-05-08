@@ -264,6 +264,12 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   return strPath;
 }
 
+bool CSkinInfo::HasSkinFile(const CStdString &strFile)
+{
+  RESOLUTION res = INVALID;
+  return CFile::Exists(GetSkinPath(strFile, &res));
+}
+
 CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
 {
   CStdString strRes;
