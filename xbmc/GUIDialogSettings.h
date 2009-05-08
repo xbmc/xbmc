@@ -26,6 +26,7 @@
 #include "GUIRadioButtonControl.h"
 #include "GUIButtonControl.h"
 #include "GUISettingsSliderControl.h"
+#include "GUIDialogSlider.h"
 
 class CGUIImage;
 
@@ -59,12 +60,14 @@ public:
 };
 
 class CGUIDialogSettings :
-      public CGUIDialog
+      public CGUIDialog, public ISliderCallback
 {
 public:
   CGUIDialogSettings(DWORD id, const char *xmlFile);
   virtual ~CGUIDialogSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
+
+  virtual void OnSliderChange(void *data, CGUISliderControl *slider);
 protected:
   virtual void OnOkay() {};
   virtual void OnCancel() {};
@@ -80,11 +83,11 @@ protected:
 
   void AddSetting(SettingInfo &setting, float width, int iControlID);
 
-  void AddButton(unsigned int it, int label, bool bOn=true);
+  void AddButton(unsigned int id, int label, float *current = NULL, float min = 0, float interval = 0, float max = 0, FORMATFUNCTION function = NULL);
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max, const char* minLabel = NULL);
-  void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION formatFunction);
+  void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION formatFunction, bool allowPopup = true);
   void AddSeparator(unsigned int id);
 
   CGUISpinControlEx *m_pOriginalSpin;

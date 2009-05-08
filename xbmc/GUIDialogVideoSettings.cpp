@@ -31,6 +31,7 @@
 #include "VideoDatabase.h"
 #include "GUIDialogYesNo.h"
 #include "Settings.h"
+#include "SkinInfo.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
@@ -70,6 +71,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
+  m_usePopupSliders = g_SkinInfo.HasSkinFile("DialogSlider.xml");
   // clear out any old settings
   m_settings.clear();
   // create our settings
