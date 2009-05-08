@@ -89,7 +89,6 @@
 		83A758120F9B90F400AF5C5B /* CoreAudioSoundManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A758100F9B90F400AF5C5B /* CoreAudioSoundManager.cpp */; };
 		83AEF5AA0F7773E3002E08DE /* paplayer_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */; };
 		83C98B8A0F759368005759EE /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98B890F759368005759EE /* CoreAudioRenderer.cpp */; };
-		83C98F990F770B1F005759EE /* SliceQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83C98F980F770B1F005759EE /* SliceQueue.cpp */; };
 		8800B9120E5C9D4E005F98A4 /* libcdio-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8800B9110E5C9D4E005F98A4 /* libcdio-x86-osx.a */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
 		880DBE550DC224A100E26B71 /* MusicFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */; };
@@ -1734,6 +1733,11 @@
 		F5A1CC1A0F6B21F800A96ABD /* avformat-52-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC190F6B21F800A96ABD /* avformat-52-powerpc-osx.a */; };
 		F5A1CC1C0F6B220D00A96ABD /* swscale-0.6.1-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC1B0F6B220D00A96ABD /* swscale-0.6.1-powerpc-osx.a */; };
 		F5A1CC1E0F6B221400A96ABD /* postproc-51-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC1D0F6B221400A96ABD /* postproc-51-powerpc-osx.a */; };
+		F5AACB5E0FB4B12800DBB77C /* libSDL_mixer-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AACB5D0FB4B12800DBB77C /* libSDL_mixer-x86-osx.a */; };
+		F5AACB680FB4B1C600DBB77C /* GUIDialogSubtitleDelayBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACB670FB4B1C600DBB77C /* GUIDialogSubtitleDelayBar.cpp */; };
+		F5AACB690FB4B1C600DBB77C /* GUIDialogSubtitleDelayBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACB670FB4B1C600DBB77C /* GUIDialogSubtitleDelayBar.cpp */; };
+		F5AACB6C0FB4B1E900DBB77C /* GUIDialogAudioDelayBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACB6B0FB4B1E900DBB77C /* GUIDialogAudioDelayBar.cpp */; };
+		F5AACB6D0FB4B1E900DBB77C /* GUIDialogAudioDelayBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AACB6B0FB4B1E900DBB77C /* GUIDialogAudioDelayBar.cpp */; };
 		F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */; };
 		F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
@@ -1851,8 +1855,6 @@
 		83AEF5A90F7773E3002E08DE /* paplayer_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = paplayer_linux.cpp; sourceTree = "<group>"; };
 		83C98B880F759368005759EE /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRenderer.h; path = AudioRenderers/CoreAudioRenderer.h; sourceTree = "<group>"; };
 		83C98B890F759368005759EE /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
-		83C98F980F770B1F005759EE /* SliceQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SliceQueue.cpp; path = AudioRenderers/SliceQueue.cpp; sourceTree = "<group>"; };
-		83C98F9A0F770BA7005759EE /* SliceQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliceQueue.h; path = AudioRenderers/SliceQueue.h; sourceTree = "<group>"; };
 		8800B9110E5C9D4E005F98A4 /* libcdio-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libcdio-x86-osx.a"; path = "xbmc/lib/libcdio/libcdio-x86-osx.a"; sourceTree = "<group>"; };
 		8806941E0DCF67A500836761 /* libSDL_image-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_image-x86-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_image-x86-osx.a"; sourceTree = "<group>"; };
 		880DBE360DC2077000E26B71 /* README.osx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.osx; sourceTree = "<group>"; };
@@ -3550,7 +3552,7 @@
 		E3B53E7B0D97B08100021A96 /* DVDSubtitleParserMicroDVD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMicroDVD.h; sourceTree = "<group>"; };
 		E3BBB7980D7EA78A00CAAFD3 /* CMythSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CMythSession.cpp; sourceTree = "<group>"; };
 		E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpcre.0.0.1.dylib; path = /opt/local/lib/libpcre.0.0.1.dylib; sourceTree = "<absolute>"; };
-		E3D547950D723EFD00F36320 /* libsmbclient.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib; path = /Users/chris/libsmbclient.dylib; sourceTree = "<absolute>"; };
+		E3D547950D723EFD00F36320 /* libsmbclient.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; name = libsmbclient.dylib; path = /opt/local/lib/samba3/libsmbclient.dylib; sourceTree = "<absolute>"; };
 		E3D87AE90D3182F4000CF031 /* XCriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XCriticalSection.cpp; sourceTree = "<group>"; };
 		E3D87AEA0D3182F4000CF031 /* XCriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCriticalSection.h; sourceTree = "<group>"; };
 		E3DAAF8A0D6E1B0500F17647 /* FileSmb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileSmb.cpp; sourceTree = "<group>"; };
@@ -3665,6 +3667,11 @@
 		F5A1CC190F6B21F800A96ABD /* avformat-52-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "avformat-52-powerpc-osx.a"; path = "system/players/dvdplayer/avformat-52-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC1B0F6B220D00A96ABD /* swscale-0.6.1-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "swscale-0.6.1-powerpc-osx.a"; path = "system/players/dvdplayer/swscale-0.6.1-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC1D0F6B221400A96ABD /* postproc-51-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "postproc-51-powerpc-osx.a"; path = "system/players/dvdplayer/postproc-51-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
+		F5AACB5D0FB4B12800DBB77C /* libSDL_mixer-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-x86-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_mixer-x86-osx.a"; sourceTree = SOURCE_ROOT; };
+		F5AACB660FB4B1C600DBB77C /* GUIDialogSubtitleDelayBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogSubtitleDelayBar.h; path = xbmc/GUIDialogSubtitleDelayBar.h; sourceTree = SOURCE_ROOT; };
+		F5AACB670FB4B1C600DBB77C /* GUIDialogSubtitleDelayBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogSubtitleDelayBar.cpp; path = xbmc/GUIDialogSubtitleDelayBar.cpp; sourceTree = SOURCE_ROOT; };
+		F5AACB6A0FB4B1E900DBB77C /* GUIDialogAudioDelayBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogAudioDelayBar.h; path = xbmc/GUIDialogAudioDelayBar.h; sourceTree = SOURCE_ROOT; };
+		F5AACB6B0FB4B1E900DBB77C /* GUIDialogAudioDelayBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogAudioDelayBar.cpp; path = xbmc/GUIDialogAudioDelayBar.cpp; sourceTree = SOURCE_ROOT; };
 		F5AC52870F58504F003EEAA4 /* DTSCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTSCodec.h; path = xbmc/cores/paplayer/DTSCodec.h; sourceTree = SOURCE_ROOT; };
 		F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DTSCodec.cpp; path = xbmc/cores/paplayer/DTSCodec.cpp; sourceTree = SOURCE_ROOT; };
 		F5AC528F0F58525B003EEAA4 /* DTSCDDACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTSCDDACodec.h; path = xbmc/cores/paplayer/DTSCDDACodec.h; sourceTree = SOURCE_ROOT; };
@@ -3751,6 +3758,7 @@
 				F527E8330F293DD70046DBD3 /* libSDL-x86-osx.a in Frameworks */,
 				F527E8370F293F3C0046DBD3 /* libSDL_image-x86-osx.a in Frameworks */,
 				831F66960F93F86F0051DBCA /* Carbon.framework in Frameworks */,
+				F5AACB5E0FB4B12800DBB77C /* libSDL_mixer-x86-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4255,6 +4263,8 @@
 				E38E16940D25F9FA00618676 /* FileSystem */,
 				E38E17980D25F9FA00618676 /* FlacTag.cpp */,
 				E38E17990D25F9FA00618676 /* FlacTag.h */,
+				F5AACB6A0FB4B1E900DBB77C /* GUIDialogAudioDelayBar.h */,
+				F5AACB6B0FB4B1E900DBB77C /* GUIDialogAudioDelayBar.cpp */,
 				E38E179A0D25F9FA00618676 /* GUIDialogAudioSubtitleSettings.cpp */,
 				E38E179B0D25F9FA00618676 /* GUIDialogAudioSubtitleSettings.h */,
 				E38E179C0D25F9FA00618676 /* GUIDialogBoxBase.cpp */,
@@ -4317,6 +4327,8 @@
 				E38E17DB0D25F9FA00618676 /* GUIDialogSongInfo.h */,
 				E38E17DC0D25F9FA00618676 /* GUIDialogSubMenu.cpp */,
 				E38E17DD0D25F9FA00618676 /* GUIDialogSubMenu.h */,
+				F5AACB660FB4B1C600DBB77C /* GUIDialogSubtitleDelayBar.h */,
+				F5AACB670FB4B1C600DBB77C /* GUIDialogSubtitleDelayBar.cpp */,
 				E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */,
 				E38E17E10D25F9FA00618676 /* GUIDialogVideoBookmarks.h */,
 				E38E17E20D25F9FA00618676 /* GUIDialogVideoScan.cpp */,
@@ -6758,8 +6770,6 @@
 		F5A00B060EFDDDB700CD59F3 /* AudioRenderers */ = {
 			isa = PBXGroup;
 			children = (
-				83C98F9A0F770BA7005759EE /* SliceQueue.h */,
-				83C98F980F770B1F005759EE /* SliceQueue.cpp */,
 				83C98B880F759368005759EE /* CoreAudioRenderer.h */,
 				83C98B890F759368005759EE /* CoreAudioRenderer.cpp */,
 				F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */,
@@ -6804,6 +6814,7 @@
 				E38F12E90D2A17B30035C331 /* libGoAhead-x86-osx.a */,
 				810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */,
 				8806941E0DCF67A500836761 /* libSDL_image-x86-osx.a */,
+				F5AACB5D0FB4B12800DBB77C /* libSDL_mixer-x86-osx.a */,
 				F583FE9C0F019C1E00E181F2 /* avutil-49-x86-osx.a */,
 				F583FE9E0F019C3200E181F2 /* avcodec-52-x86-osx.a */,
 				F583FEA20F019C4500E181F2 /* avformat-52-x86-osx.a */,
@@ -6985,7 +6996,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/music\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/pictures\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/video\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/screensavers\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/scripts\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/MediaStream\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/Project Mayhem III\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/XBMCHelper\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/EventClients/Clients/AppleRemote/org.xbmc.helper.plist\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/language\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/skin\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/web/Project Mayhem III/\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\n${SYNC} \"$SRCROOT/tools/PackageMaker/preflight\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\nif [ -e \"$SRCROOT/visualisations/ProjectM.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/projectM\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/\"\n\t${SYNC} \"$SRCROOT/visualisations/ProjectM.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/ProjectM.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/opengl_spectrum.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/opengl_spectrum.vis\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/opengl_spectrum.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/Goom.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Goom.vis\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Goom.vis\"\nfi \nif [ -e \"$SRCROOT/visualisations/Waveform.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Waveform.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Waveform.vis\"\nfi\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\n#TARGET_NAME=XBMC.app\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -av --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg\"\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/music\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/pictures\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/plugins/video\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/screensavers\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/scripts\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/MediaStream\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/skin/Project Mayhem III\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools/osx\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\n\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/\"\n${SYNC} \"$SRCROOT/tools/osx\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/tools\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNCSKIN} \"$SRCROOT/skin\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/screensavers\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\n${SYNC} \"$SRCROOT/web/Project Mayhem III/\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/web\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/extras/user\"\nfi\n\nif [ -e \"$SRCROOT/visualisations/ProjectM.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/projectM\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/\"\n\t${SYNC} \"$SRCROOT/visualisations/ProjectM.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/ProjectM.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/opengl_spectrum.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/opengl_spectrum.vis\" \"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/opengl_spectrum.vis\"\nfi\nif [ -e \"$SRCROOT/visualisations/Goom.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Goom.vis\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Goom.vis\"\nfi \nif [ -e \"$SRCROOT/visualisations/Waveform.vis\" ]; then\n\t${SYNC} \"$SRCROOT/visualisations/Waveform.vis\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources/XBMC/visualisations/Waveform.vis\"\nfi\n\n# magic that gets the icon to update\ntouch \"$TARGET_BUILD_DIR/$TARGET_NAME\"\n\n# not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name\n#mv \"$TARGET_BUILD_DIR/$TARGET_NAME\" \"$TARGET_BUILD_DIR/XBMC Media Center.app\"\n\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -7805,7 +7816,6 @@
 				F5EA04800F72F188005C2EC5 /* SDLMain.m in Sources */,
 				F5EA05C20F733812005C2EC5 /* CocoaInterface.mm in Sources */,
 				83C98B8A0F759368005759EE /* CoreAudioRenderer.cpp in Sources */,
-				83C98F990F770B1F005759EE /* SliceQueue.cpp in Sources */,
 				83AEF5AA0F7773E3002E08DE /* paplayer_linux.cpp in Sources */,
 				E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */,
 				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */,
@@ -7813,6 +7823,8 @@
 				839270550F7F3DAF00406D11 /* CoreAudio.cpp in Sources */,
 				831F61030F9272DC0051DBCA /* LockFree.cpp in Sources */,
 				83A758120F9B90F400AF5C5B /* CoreAudioSoundManager.cpp in Sources */,
+				F5AACB680FB4B1C600DBB77C /* GUIDialogSubtitleDelayBar.cpp in Sources */,
+				F5AACB6C0FB4B1E900DBB77C /* GUIDialogAudioDelayBar.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8634,6 +8646,8 @@
 				839270560F7F3DAF00406D11 /* CoreAudio.cpp in Sources */,
 				831F61020F9272DC0051DBCA /* LockFree.cpp in Sources */,
 				83A758110F9B90F400AF5C5B /* CoreAudioSoundManager.cpp in Sources */,
+				F5AACB690FB4B1C600DBB77C /* GUIDialogSubtitleDelayBar.cpp in Sources */,
+				F5AACB6D0FB4B1E900DBB77C /* GUIDialogAudioDelayBar.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8713,12 +8727,14 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libtsci2/tsc-i2lib/.libs\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
@@ -8789,11 +8805,13 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
