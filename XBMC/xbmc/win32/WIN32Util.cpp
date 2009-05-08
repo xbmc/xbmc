@@ -611,7 +611,7 @@ void CWIN32Util::CheckGLVersion()
 {
   if(CWIN32Util::HasGLDefaultDrivers())
   {
-    MessageBox(NULL, "MS default OpenGL drivers detected. Please get OpenGL drivers from your vendor", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
+    MessageBox(NULL, "MS default OpenGL drivers detected. Please get OpenGL drivers from your video card vendor", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
     exit(1);
   }
 
