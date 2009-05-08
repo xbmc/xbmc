@@ -751,6 +751,13 @@ OSStatus CCoreAudioRenderer::RenderCallback(void *inRefCon, AudioUnitRenderActio
   return ((CCoreAudioRenderer*)inRefCon)->OnRender(ioActionFlags, inTimeStamp, inBusNumber, inNumberFrames, ioData);
 }
 
+// Static Callback from AudioDevice
+OSStatus CCoreAudioRenderer::DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData)
+{
+  CCoreAudioRenderer* pThis = (CCoreAudioRenderer*)inClientData;
+  return pThis->OnRender(NULL, inInputTime, 0, outOutputData->mBuffers[0].mDataByteSize / pThis->m_BytesPerFrame, outOutputData);
+}
+
 //***********************************************************************************************
 // Audio Device Initialization Methods
 //***********************************************************************************************
@@ -823,7 +830,7 @@ bool CCoreAudioRenderer::InitializePCMEncoded()
 bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
 {
   // TODO: Comment out
-  return false; // un-comment to force PCM Spoofing (DD-Wav)
+  //return false; // un-comment to force PCM Spoofing (DD-Wav)
   
   CStdString formatString;
   AudioStreamBasicDescription outputFormat = {0};
@@ -901,7 +908,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
   m_OutputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
   
   // Register for data request callbacks from the driver
-  m_AudioDevice.AddIOProc(DirectRenderCallback, this);  
+  m_AudioDevice.AddIOProc(DirectRenderCallback, this);
   
   m_EnableVolumeControl = false; // Prevent attempts to change the output volume. It is not possible with encoded audio
   return true;
