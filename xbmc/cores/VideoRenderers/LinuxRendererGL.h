@@ -153,11 +153,11 @@ protected:
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
   void CalculateFrameAspectRatio(int desired_width, int desired_height);
   void ChooseBestResolution(float fps);
-  
+
   ESCALINGMETHOD GetDefaultUpscalingMethod();
   bool IsSoftwareUpscaling();
   void InitializeSoftwareUpscaling();
-  
+
   virtual void ManageDisplay();
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
@@ -211,7 +211,7 @@ protected:
   int m_upscalingHeight;
   YV12Image m_imScaled;
   bool m_isSoftwareUpscaling;
-  
+
   // OSD stuff
   GLuint m_pOSDYTexture[NUM_BUFFERS];
   GLuint m_pOSDATexture[NUM_BUFFERS];
