@@ -140,7 +140,10 @@ def process_input(data, xbmc=None, mouse_enabled=0):
 
     bflags = struct.unpack("H", data[3:5])[0]
     psflags = struct.unpack("B", data[5:6])[0]
-    pressure = struct.unpack("BBBBBBBBBBBB", data[15:27])
+    if len(data) > 27:
+        pressure = struct.unpack("BBBBBBBBBBBB", data[15:27])
+    else:
+        pressure = [0,0,0,0,0,0,0,0,0,0,0,0,0]
 
     roll  = -math.atan2(ax, math.sqrt(ay*ay + az*az))
     pitch = math.atan2(ay, math.sqrt(ax*ax + az*az))
