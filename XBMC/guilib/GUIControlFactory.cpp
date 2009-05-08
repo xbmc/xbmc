@@ -242,7 +242,7 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* st
   if (!pNode || !pNode->FirstChild()) return false;
 
   CStdString strAlign = pNode->FirstChild()->Value();
-  if (strAlign == "right") dwAlignment = XBFONT_RIGHT;
+  if (strAlign == "right" || strAlign == "bottom") dwAlignment = XBFONT_RIGHT;
   else if (strAlign == "center") dwAlignment = XBFONT_CENTER_X;
   else if (strAlign == "justify") dwAlignment = XBFONT_JUSTIFIED;
   else dwAlignment = XBFONT_LEFT;
@@ -1003,7 +1003,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   else if (strType == "grouplist")
   {
     control = new CGUIControlGroupList(
-      dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords);
+      dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align);
     ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
   }
   else if (strType == "label")
