@@ -74,7 +74,7 @@ protected:
   virtual void CreateSettings() {};
   void UpdateSetting(unsigned int setting);
   void EnableSettings(unsigned int setting, bool enabled);
-  virtual void OnSettingChanged(unsigned int setting) {};
+  virtual void OnSettingChanged(SettingInfo &setting) {};
   void FreeControls();
   void OnClick(int iControlID);
 
@@ -84,7 +84,7 @@ protected:
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max, const char* minLabel = NULL);
-  void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION formatFunction = NULL);
+  void AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION formatFunction);
   void AddSeparator(unsigned int id);
 
   CGUISpinControlEx *m_pOriginalSpin;
@@ -94,4 +94,6 @@ protected:
   CGUIImage *m_pOriginalSeparator;
 
   std::vector<SettingInfo> m_settings;
+
+  bool m_usePopupSliders;
 };
