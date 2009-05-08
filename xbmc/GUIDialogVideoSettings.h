@@ -30,8 +30,11 @@ public:
   CGUIDialogVideoSettings(void);
   virtual ~CGUIDialogVideoSettings(void);
 
+  static CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum);
+  static CStdString CGUIDialogVideoSettings::FormatFloat(float value, float minimum);
+
 protected:
   virtual void CreateSettings();
-  virtual void OnSettingChanged(unsigned int setting);
+  virtual void OnSettingChanged(SettingInfo &setting);
 };
 
