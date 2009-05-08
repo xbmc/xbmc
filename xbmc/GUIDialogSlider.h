@@ -23,16 +23,29 @@
 
 #include "GUIDialog.h"
 
-class CGUIDialogSubtitleDelayBar : public CGUIDialog
+class CGUISliderControl;
+
+class ISliderCallback
 {
 public:
-  CGUIDialogSubtitleDelayBar(void);
-  virtual ~CGUIDialogSubtitleDelayBar(void);
+  virtual void OnSliderChange(void *data, CGUISliderControl *slider)=0;
+};
+
+class CGUIDialogSlider : public CGUIDialog
+{
+public:
+  CGUIDialogSlider();
+  virtual ~CGUIDialogSlider(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  virtual void Render();
-  void ResetTimer();
+
+  static void ShowAndGetInput(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData);
+  static void Display(int label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData = NULL);
 protected:
-  DWORD m_dwTimer;
+  void SetSlider(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData);
+  virtual void OnWindowLoaded();
+
+  ISliderCallback *m_callback;
+  void *m_callbackData;
 };
 

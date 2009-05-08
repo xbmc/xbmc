@@ -32,8 +32,6 @@ class CFileItemList;
 #include "GUIDialogSeekBar.h"
 #include "GUIDialogKaiToast.h"
 #include "GUIDialogVolumeBar.h"
-#include "GUIDialogSubtitleDelayBar.h"
-#include "GUIDialogAudioDelayBar.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
 #include "Settings.h"
@@ -196,8 +194,6 @@ public:
 #endif
 
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
-  CGUIDialogSubtitleDelayBar m_guiDialogSubtitleDelayBar;
-  CGUIDialogAudioDelayBar m_guiDialogAudioDelayBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
   CGUIDialogMuteBug m_guiDialogMuteBug;
