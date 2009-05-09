@@ -51,7 +51,7 @@ class CVideoReferenceClock : public CThread
 
   protected:
     void Process();
-    bool UpdateRefreshrate();
+    bool UpdateRefreshrate(bool Forced = false);
     void Lock();
     void Unlock();
     void SendVblankSignal();

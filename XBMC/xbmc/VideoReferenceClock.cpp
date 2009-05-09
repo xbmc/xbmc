@@ -266,13 +266,9 @@ bool CVideoReferenceClock::SetupGLX()
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
   }
   
-  m_PrevRefreshRate = -1;
+  UpdateRefreshrate(true);
   m_LastRefreshTime = 0;
-  
-  Lock();
-  UpdateRefreshrate();
   m_MissedVblanks = 0;
-  Unlock();
   
   return true;
 }
@@ -550,15 +546,11 @@ bool CVideoReferenceClock::SetupD3D()
     return false;
   }
 
-  m_PrevRefreshRate = -1;
-  m_LastRefreshTime = 0;
   m_Width = 0;
   m_Height = 0;
-  
-  Lock();
-  UpdateRefreshrate();
+  UpdateRefreshrate(true);
+  m_LastRefreshTime = 0;
   m_MissedVblanks = 0;
-  Unlock();
 
   return true;
 }
@@ -706,9 +698,9 @@ double CVideoReferenceClock::GetSpeed()
   return Speed;
 }
 
-bool CVideoReferenceClock::UpdateRefreshrate()
+bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 {
-  if (m_CurrTime - m_LastRefreshTime < m_SystemFrequency)
+  if (m_CurrTime - m_LastRefreshTime < m_SystemFrequency && !Forced)
     return false;
 
   m_LastRefreshTime = m_CurrTime;
@@ -719,7 +711,7 @@ bool CVideoReferenceClock::UpdateRefreshrate()
   int RRRefreshRate = XRRConfigCurrentRate(CurrInfo);
   XRRFreeScreenConfigInfo(CurrInfo);
   
-  if (RRRefreshRate == m_PrevRefreshRate)
+  if (RRRefreshRate == m_PrevRefreshRate && !Forced)
     return false;
     
   if (m_UseNvSettings)
@@ -789,23 +781,20 @@ bool CVideoReferenceClock::UpdateRefreshrate()
   D3dClock::D3DDISPLAYMODE DisplayMode;
   m_D3d->GetAdapterDisplayMode(m_Adapter, &DisplayMode);
   
-  //0 indicated adapter default
+  //0 indicates adapter default
   if (DisplayMode.RefreshRate == 0)
     DisplayMode.RefreshRate = 60;
   
-  if (m_RefreshRate != DisplayMode.RefreshRate)
+  if (m_RefreshRate != DisplayMode.RefreshRate || Forced)
   {
     Lock();
     m_RefreshRate = DisplayMode.RefreshRate;
     Unlock();
-  }
-  
-  if (m_RefreshRate != m_PrevRefreshRate)
-  {
-    m_PrevRefreshRate = m_RefreshRate;
+    
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
     Changed = true;
   }
+  
   if (m_Width != DisplayMode.Width || m_Height != DisplayMode.Height)
   {
     Changed = true;
