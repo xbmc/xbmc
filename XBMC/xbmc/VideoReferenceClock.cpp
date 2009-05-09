@@ -329,9 +329,9 @@ void CVideoReferenceClock::RunGLX()
       Lock();
       m_VblankTime = Now.QuadPart;
       UpdateClock((int)(VblankCount - PrevVblankCount), true);
+      Unlock();
       SendVblankSignal();
       UpdateRefreshrate();
-      Unlock();
       
       ResetCount = 0;
     }
@@ -403,16 +403,15 @@ void CVideoReferenceClock::RunD3D()
       Lock();
       m_VblankTime = Now.QuadPart;
       UpdateClock(NrVBlanks, true);
+      Unlock();
       SendVblankSignal();
       
       if (UpdateRefreshrate())
       {
-        Unlock();
         //reset direct3d because of videodriver bugs
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: Displaymode changed");
         return;
       }
-      Unlock();
       
       LastVBlankTime = Now.QuadPart;
       PollCount = 0;
@@ -737,7 +736,10 @@ bool CVideoReferenceClock::UpdateRefreshrate()
             if (ReturnV == 1 && fRefreshRate > 0.0)
             {
               m_PrevRefreshRate = RRRefreshRate;
+              Lock();
               m_RefreshRate = MathUtils::round_int(fRefreshRate);
+              Unlock();
+              
               CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate by nvidia-settings: %f hertz, rounding to %i hertz",
                         fRefreshRate, (int)m_RefreshRate);
             }
@@ -761,7 +763,10 @@ bool CVideoReferenceClock::UpdateRefreshrate()
       }
       else
       {
+        Lock();
         m_RefreshRate = RRRefreshRate;
+        Unlock();
+        
         m_PrevRefreshRate = RRRefreshRate;
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
       }
@@ -770,9 +775,11 @@ bool CVideoReferenceClock::UpdateRefreshrate()
 #elif defined(_WIN32)
     D3dClock::D3DDISPLAYMODE DisplayMode;
     m_D3d->GetAdapterDisplayMode(m_Adapter, &DisplayMode);
+    
+    Lock();
     m_RefreshRate = DisplayMode.RefreshRate;
-
     if (m_RefreshRate == 0) m_RefreshRate = 60;
+    Unlock();
 
     if (m_RefreshRate != m_PrevRefreshRate)
     {
