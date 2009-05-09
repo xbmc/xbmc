@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 04/24/2009-->
+<!--Date of translation: 05/09/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 19506-->
+<!--Based on english strings version 20067-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1201,6 +1201,7 @@
   <string id="13610">关闭</string>
   <string id="13611">标准</string>
   <string id="13612">通用遥控器</string>
+  <string id="13613">万能遥控器(Harmony)</string>
 
   <string id="13620">Apple 遥控器错误</string>
   <string id="13621">不能打开 Apple 遥控器支持.</string>
