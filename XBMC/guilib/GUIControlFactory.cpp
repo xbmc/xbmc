@@ -573,9 +573,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CGUIInfoLabel texturePath;
   FRECT borderSize = { 0, 0, 0, 0};
 
-  float controlOffsetX = 0;
-  float controlOffsetY = 0;
-
   float itemWidth = 16, itemHeight = 16;
   float sliderWidth = 150, sliderHeight = 16;
   float textureWidthBig = 128;
@@ -698,9 +695,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
-
-  GetFloat(pControlNode, "controloffsetx", controlOffsetX);
-  GetFloat(pControlNode, "controloffsety", controlOffsetY);
 
   if (!GetNavigation(pControlNode, "onup", up, upActions)) up = id - 1;
   if (!GetNavigation(pControlNode, "ondown", down, downActions)) down = id + 1;
@@ -1150,8 +1144,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       textureBar, textureNib, textureNibFocus, SPIN_CONTROL_TYPE_TEXT);
 
     ((CGUISliderControl *)control)->SetInfo(singleInfo);
-    ((CGUISliderControl *)control)->SetControlOffsetX(controlOffsetX);
-    ((CGUISliderControl *)control)->SetControlOffsetY(controlOffsetY);
   }
   else if (strType == "sliderex")
   {
@@ -1323,7 +1315,6 @@ void CGUIControlFactory::ScaleElement(TiXmlElement *element, RESOLUTION fileRes,
           name == "width" ||
           name == "gfxthumbwidth" ||
           name == "gfxthumbspacex" ||
-          name == "controloffsetx" ||
           name == "textoffsetx" ||
           name == "textxoff" ||
           name == "textxoff2" ||
@@ -1354,7 +1345,6 @@ void CGUIControlFactory::ScaleElement(TiXmlElement *element, RESOLUTION fileRes,
           name == "textspacey" ||
           name == "gfxthumbheight" ||
           name == "gfxthumbspacey" ||
-          name == "controloffsety" ||
           name == "textoffsety" ||
           name == "textyoff" ||
           name == "textyoff2" ||

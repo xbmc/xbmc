@@ -66,8 +66,6 @@ public:
   float GetFloatValue() const;
   void SetFloatInterval(float fInterval);
   void SetType(int iType) { m_iType = iType; };
-  void SetControlOffsetX(float controlOffsetX) { m_controlOffsetX = controlOffsetX;};
-  void SetControlOffsetY(float controlOffsetY) { m_controlOffsetY = controlOffsetY;};
   virtual bool HitTest(const CPoint &point) const;
   virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
@@ -82,19 +80,20 @@ protected:
   CGUITexture m_guiBackground;
   CGUITexture m_guiMid;
   CGUITexture m_guiMidFocus;
-  int m_iPercent;
   int m_iType;
+
+  int m_iPercent;
+
+  int m_iValue;
   int m_iStart;
   int m_iEnd;
-  float m_fStart;
-  float m_fEnd;
-  int m_iValue;
+
   float m_fValue;
+  float m_fStart;
   float m_fInterval;
-  float m_controlOffsetX;
-  float m_controlOffsetY;
+  float m_fEnd;
+
   int m_iInfoCode;
-  bool m_renderText;
   CStdString m_textValue; ///< Allows overriding of the text value to be displayed (parent must update when the slider updates)
 };
 #endif
