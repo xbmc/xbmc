@@ -155,6 +155,18 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
   
+  if (!glXQueryExtension(m_Dpy, NULL, NULL))
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: X server does not support GLX");
+    return false;
+  }
+  
+  if (!strstr(glXQueryExtensionsString(m_Dpy, DefaultScreen(m_Dpy)), "SGI_video_sync"))
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: X server does not support SGI_video_sync");
+    return false;
+  }
+  
   m_fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), doubleBufferAttributes, &Num);
   if (!m_fbConfigs) m_fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), singleBufferAttributess, &Num);
   
