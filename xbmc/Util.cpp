@@ -1201,7 +1201,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
   if ( !CDetectDVDMedia::IsDiscInDrive() )
   {
-    strIcon = "defaultDVDEmpty.png";
+    strIcon = "DefaultDVDEmpty.png";
     return ;
   }
 
@@ -1211,10 +1211,10 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
     //  xbox DVD
     if ( pInfo != NULL && pInfo->IsUDFX( 1 ) )
     {
-      strIcon = "defaultXBOXDVD.png";
+      strIcon = "DefaultXboxDVD.png";
       return ;
     }
-    strIcon = "defaultDVDRom.png";
+    strIcon = "DefaultDVDRom.png";
     return ;
   }
 
@@ -1223,16 +1223,16 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
     CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
-      strIcon = "defaultVCD.png";
+      strIcon = "DefaultVCD.png";
       return ;
     }
-    strIcon = "defaultDVDRom.png";
+    strIcon = "DefaultDVDRom.png";
     return ;
   }
 
   if ( IsCDDA(strPath) )
   {
-    strIcon = "defaultCDDA.png";
+    strIcon = "DefaultCDDA.png";
     return ;
   }
 }
@@ -4473,7 +4473,7 @@ CStdString CUtil::GetDefaultFolderThumb(const CStdString &folderThumb)
 {
   if (g_TextureManager.HasTexture(folderThumb))
     return folderThumb;
-  return "defaultFolderBig.png";
+  return "";
 }
 
 void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
