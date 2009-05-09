@@ -201,14 +201,17 @@ class PS3RemoteThread ( StoppableThread ):
         self.xbmc.connect()
         try:
             while not self.stop():
-                if process_remote(self.isock, self.xbmc)=="2":
+                status = process_remote(self.isock, self.xbmc)
+
+                if status == 2:   # 2 = socket read timeout
                     if self.timed_out():
                         raise Exception("PS3 Blu-Ray Remote powering off, "\
                                             "timed out")
-                elif process_remote(self.isock, self.xbmc):
-                    break
-                else:
+
+                elif not status:  # 0 = keys are normally processed
                     self.reset_timeout()
+
+        # process_remote() will raise an exception on read errors
         except Exception, e:
             print str(e)
         self.close_sockets()
