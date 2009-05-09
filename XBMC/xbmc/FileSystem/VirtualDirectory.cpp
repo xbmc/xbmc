@@ -119,17 +119,19 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
         pItem->SetThumbnailImage(strThumb);
     }
     else if (strPathUpper.Left(11) == "SOUNDTRACK:")
-      strIcon = "defaultHardDisk.png";
+      strIcon = "DefaultHardDisk.png";
+    else if (pItem->IsLastFM() || pItem->IsShoutCast())
+      strIcon = "DefaultFolder.png";
     else if (pItem->IsRemote())
-      strIcon = "defaultNetwork.png";
+      strIcon = "DefaultNetwork.png";
     else if (pItem->IsISO9660())
-      strIcon = "defaultDVDRom.png";
+      strIcon = "DefaultDVDRom.png";
     else if (pItem->IsDVD())
-      strIcon = "defaultDVDRom.png";
+      strIcon = "DefaultDVDRom.png";
     else if (pItem->IsCDDA())
-      strIcon = "defaultCDDA.png";
+      strIcon = "DefaultCDDA.png";
     else
-      strIcon = "defaultHardDisk.png";
+      strIcon = "DefaultHardDisk.png";
 
     pItem->SetIconImage(strIcon);
     if (share.m_iHasLock == 2 && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
