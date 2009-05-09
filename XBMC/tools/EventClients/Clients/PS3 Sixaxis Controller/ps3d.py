@@ -4,15 +4,9 @@ import sys
 import traceback
 
 sys.path.append("../PS3 BD Remote")
+
 try:
-    from xbmc.bt.hid import HID
-    from xbmc.bt.bt import bt_lookup_name
-    from xbmc.xbmcclient import XBMCClient
-    from xbmc.ps3 import sixaxis
-    from xbmc.ps3.keymaps import keymap_sixaxis
-    from xbmc.ps3_remote import process_keys as process_remote
-    from xbmc.xbmc.defs import *
-except:
+    # try loading modules from source directory
     sys.path.append("../../lib/python")
     from bt.hid import HID
     from bt.bt import bt_lookup_name
@@ -21,6 +15,15 @@ except:
     from ps3.keymaps import keymap_sixaxis
     from ps3_remote import process_keys as process_remote
     ICON_PATH = "../../icons/"
+except:
+    # fallback to system wide modules
+    from xbmc.bt.hid import HID
+    from xbmc.bt.bt import bt_lookup_name
+    from xbmc.xbmcclient import XBMCClient
+    from xbmc.ps3 import sixaxis
+    from xbmc.ps3.keymaps import keymap_sixaxis
+    from xbmc.ps3_remote import process_keys as process_remote
+    from xbmc.defs import *
 
 import time
 import struct
