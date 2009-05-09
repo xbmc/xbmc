@@ -54,7 +54,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
   for (int i=0;i<items.Size();++i)
   {
     CFileItemPtr item = items[i];
-    if (item->m_bIsFolder && !item->HasThumbnail())
+    if (item->m_bIsFolder && !item->HasIcon() && !item->HasThumbnail())
     {
       CStdString strImage = GetIcon(item->m_strPath);
       if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))

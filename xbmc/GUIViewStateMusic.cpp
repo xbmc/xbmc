@@ -487,15 +487,9 @@ void CGUIViewStateWindowMusicNav::AddOnlineShares()
   {
     CMediaSource share = g_settings.m_musicSources.at(i);
     if (share.strPath.Find(SHOUTCAST_MASTER_LINK) == 0)//shoutcast shares
-    {
-      share.m_strThumbnailImage="defaultFolderBig.png";
       m_sources.push_back(share);
-    }
     else if (share.strPath.Find("lastfm://") == 0)//lastfm share
-    {
-      share.m_strThumbnailImage="defaultFolderBig.png";
       m_sources.push_back(share);
-    }
   }
 }
 
@@ -512,10 +506,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
     CMediaSource share;
     share.strName=item->GetLabel();
     share.strPath = item->m_strPath;
-    if (!item->GetThumbnailImage().IsEmpty())
-      share.m_strThumbnailImage = item->GetThumbnailImage();
-    else
-      share.m_strThumbnailImage = "defaultFolderBig.png";
+    share.m_strThumbnailImage = item->GetThumbnailImage();
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
   }
@@ -664,7 +655,6 @@ VECSOURCES& CGUIViewStateWindowMusicPlaylist::GetSources()
   //  Playlist share
   CMediaSource share;
   share.strPath = "playlistmusic://";
-  share.m_strThumbnailImage="defaultFolderBig.png";
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   m_sources.push_back(share);
 

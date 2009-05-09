@@ -1311,7 +1311,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
     if (!item.HasThumbnail())
 	{
       thumb = "[None] " + thumb;
-	  copyThumb("defaultPictureBig.png",thumbFn);
+	  copyThumb("DefaultPicture.png",thumbFn);
 	}
 	else
       copyThumb(thumb,thumbFn);
