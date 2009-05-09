@@ -468,6 +468,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
 
+      CGUIDialogSlider *slider = (CGUIDialogSlider *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SLIDER);
+      if (slider) slider->Close(true);
       CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
       if (pDialog) pDialog->Close(true);
       pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
