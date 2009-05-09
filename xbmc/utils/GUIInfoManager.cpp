@@ -66,6 +66,7 @@
 #include "GUILabelControl.h"  // for CInfoLabel
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
+#include "SkinInfo.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -3689,7 +3690,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
       {
         strThumb = item->GetIconImage();
-        strThumb.Insert(strThumb.Find("."), "Big");
+        if (g_SkinInfo.GetVersion() <= 2.10)
+          strThumb.Insert(strThumb.Find("."), "Big");
       }
       return strThumb;
     }
