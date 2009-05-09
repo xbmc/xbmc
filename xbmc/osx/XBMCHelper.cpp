@@ -126,12 +126,19 @@ void XBMCHelper::Configure()
   {
     // Build a new config string.
     std::string strConfig;
-    if (m_mode == APPLE_REMOTE_UNIVERSAL)
-      strConfig = "--universal ";
-
-    if (m_mode == APPLE_REMOTE_MULTIREMOTE)
-      strConfig = "--multiremote ";
-
+    switch (m_mode) {
+      case APPLE_REMOTE_UNIVERSAL:
+        strConfig = "--universal ";
+        break;
+      case APPLE_REMOTE_MULTIREMOTE:
+        strConfig = "--multiremote ";
+        break;
+      default:
+        break;
+    }
+#ifdef _DEBUG
+    strConfig += "--verbose ";
+#endif
     char strDelay[64];
     sprintf(strDelay, "--timeout %d ", m_sequenceDelay);
     strConfig += strDelay;
