@@ -2306,7 +2306,9 @@
   <string id="23070">Manage Program extensions</string>
   <string id="23071">Manage Picture extensions</string>
   <string id="23072">Manage Audio DSP's</string>
+
   <string id="23080">Manage external Screensaver</string>
+  <string id="23081">This Add-on don't have settings</string>
   
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

@@ -52,6 +52,7 @@
 			<aligny>center</aligny>
 			<label>-</label>
 			<font>font12</font>
+			<scroll>true</scroll>
 		</control>
 		<control type="label" id="3">
 			<description>dialog line 2</description>
@@ -63,6 +64,7 @@
 			<aligny>center</aligny>
 			<label>-</label>
 			<font>font12</font>
+			<scroll>true</scroll>
 		</control>
 		<control type="label" id="4">
 			<description>dialog line 3</description>
@@ -74,6 +76,7 @@
 			<aligny>center</aligny>
 			<label>-</label>
 			<font>font12</font>
+			<scroll>true</scroll>
 		</control>
 		<control type="button" id="11">
 			<description>Yes button</description>

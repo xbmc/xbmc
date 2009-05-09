@@ -38,10 +38,12 @@ CScreenSaver::CScreenSaver(struct ScreenSaver* pScr, DllScreensaver* pDll, const
     , m_pDll(pDll)
     , CAddon(addon)
     , m_ReadyToUse(false)
+    , m_callbacks(NULL)
 {}
 
 CScreenSaver::~CScreenSaver()
 {
+  Destroy();
 }
 
 void CScreenSaver::Create()

@@ -110,7 +110,6 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       {
         OutputDebugString("ScreenSaver::Stop()\n");
         m_pScreenSaver->Stop();
-        m_pScreenSaver->Destroy();
 
         OutputDebugString("delete ScreenSaver()\n");
         delete m_pScreenSaver;
@@ -140,7 +139,6 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       if (m_pScreenSaver)
       {
         m_pScreenSaver->Stop();
-        m_pScreenSaver->Destroy();
         delete m_pScreenSaver;
         g_graphicsContext.ApplyStateBlock();
       }

@@ -25,6 +25,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIControlGroupList.h"
+#include "GUIDialogOK.h"
 #include "Util.h"
 #include "MediaManager.h"
 #include "GUIRadioButtonControl.h"
@@ -123,27 +124,31 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
   if (url.GetProtocol() == "plugin")
     heading.Format("$LOCALIZE[1045] - %s", heading.c_str());
   else
-    heading.Format("$LOCALIZE[33000] - %s", heading.c_str());
+    heading.Format("$LOCALIZE[23000] - %s", heading.c_str());
 
   // Set the heading
   pDialog->SetHeading(heading);
 
   CAddonSettings settings;
-  settings.Load(m_url);
-  pDialog->m_settings = settings;
+  if (settings.Load(m_url))
+  {
+    pDialog->m_settings = settings;
 
-  pDialog->DoModal();
+    pDialog->DoModal();
 
-  settings = pDialog->m_settings;
-  settings.Save();
+    settings = pDialog->m_settings;
+    settings.Save();
+
+    if (pDialog->m_bConfirmed)
+      CAddon::TransferAddonSettings(url);
+  }
+  else
+  {
+    CGUIDialogOK::ShowAndGetInput(18100,0,23081,0);
+  }
 
   // Unload temporary language strings
   CAddon::ClearAddonStrings();
-  
-  if (pDialog->m_bConfirmed)
-  {
-    CAddon::TransferAddonSettings(url);
-  }
   
   return;
 }

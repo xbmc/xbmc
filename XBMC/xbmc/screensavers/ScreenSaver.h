@@ -32,12 +32,6 @@
 #include "DllScreenSaver.h"
 #include "../utils/Addon.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-}
-#endif
-
 class CScreenSaver : public ADDON::CAddon
 {
 public:
@@ -66,7 +60,6 @@ private:
   static void AddOnOpenOwnSettings(void *userData, bool bReload);
   static const char* AddOnGetLocalizedString(void *userData, long dwCode);
 };
-
 
 #endif // !defined(AFX_ScreenSaver_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_)
 

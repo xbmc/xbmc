@@ -20,13 +20,9 @@
  */
 
 #include "stdafx.h"
-#include "Addon.h"
 #include "PVRClientFactory.h"
 #include "DllPVRClient.h"
-#include "Util.h"
-#include "FileSystem/File.h"
 
-using namespace XFILE;
 using namespace ADDON;
 
 CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& path, const CAddon& addon, DWORD clientID, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB)
