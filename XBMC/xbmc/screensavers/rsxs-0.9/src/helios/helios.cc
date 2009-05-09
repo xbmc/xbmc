@@ -698,15 +698,16 @@ void Hack::pointerEnter() {}
 void Hack::pointerLeave() {}
 
 #define _LINUX
-#include "../../../xbmc_scr.h"
+#include "../../../../../addons/xbmc_scr.h"
 
 extern "C" {
 
-void Create(void* pd3dDevice, int iWidth, int iHeight, const char * szScreensaver, float pixelRatio)
+ADDON_STATUS Create(ScreensaverCallbacks* cb, void* pd3dDevice, int iWidth, int iHeight, const char * szScreensaver, float pixelRatio)
 {
   Common::width = iWidth;
   Common::height = iHeight;
   Common::aspectRatio = float(Common::width) / float(Common::height);
+  return STATUS_OK;
 }
 
 void Start()
@@ -722,6 +723,34 @@ void Render()
 void Stop()
 {
   Hack::stop();
+}
+
+void GetInfo(SCR_INFO* pInfo)
+{
+}
+
+void Remove()
+{
+}
+
+ADDON_STATUS GetStatus()
+{
+  return STATUS_OK;
+}
+
+bool HasSettings()
+{
+  return false;
+}
+
+DllSettings* GetSettings()
+{
+  return NULL;
+}
+
+ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+{
+  return STATUS_OK;
 }
 
 }

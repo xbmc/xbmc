@@ -122,6 +122,7 @@ public:
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
   bool GetAddonFromGUID(const CStdString &guid, ADDON::CAddon &addon);
+  bool GetAddonFromNameAndType(const CStdString &name, const ADDON::AddonType &type, ADDON::CAddon &addon);
   bool AddonFromInfoXML(const CStdString &path, ADDON::CAddon &addon);
   ADDON::VECADDONS *GetAddonsFromType(const ADDON::AddonType &type);
   bool DisableAddon(const CStdString &addon, const ADDON::AddonType &type);
@@ -387,9 +388,21 @@ public:
   VECSOURCES m_fileSources;
   VECSOURCES m_musicSources;
   VECSOURCES m_videoSources;
-  
+
   ADDON::VECADDONS  m_allAddons;
+  ADDON::VECADDONS  m_multitypeAddons;
+  ADDON::VECADDONS  m_visualisationAddons;
+  ADDON::VECADDONS  m_skinAddons;
   ADDON::VECADDONS  m_pvrAddons;
+  ADDON::VECADDONS  m_scriptAddons;
+  ADDON::VECADDONS  m_scraperAddons;
+  ADDON::VECADDONS  m_screensaverAddons;
+  ADDON::VECADDONS  m_pluginPvrAddons;
+  ADDON::VECADDONS  m_pluginMusicAddons;
+  ADDON::VECADDONS  m_pluginVideoAddons;
+  ADDON::VECADDONS  m_pluginProgramAddons;
+  ADDON::VECADDONS  m_pluginPictureAddons;
+  ADDON::VECADDONS  m_DSPAudioAddons;
 
   CStdString m_defaultProgramSource;
   CStdString m_defaultMusicSource;

@@ -504,13 +504,37 @@ CStdString CSettings::GetDefaultSourceFromType(const CStdString &type)
     defaultShare = g_settings.m_defaultPictureSource;
   return defaultShare;
 }
-
+  
 VECADDONS *CSettings::GetAddonsFromType(const AddonType &type)
 {
   switch (type)
   {
+  case ADDON_MULTITYPE:
+    return &g_settings.m_multitypeAddons;
+  case ADDON_VIZ:
+    return &g_settings.m_visualisationAddons;
+  case ADDON_SKIN:
+    return &g_settings.m_skinAddons;
   case ADDON_PVRDLL:
     return &g_settings.m_pvrAddons;
+  case ADDON_SCRIPT:
+    return &g_settings.m_scriptAddons;
+  case ADDON_SCRAPER:
+    return &g_settings.m_scraperAddons;
+  case ADDON_SCREENSAVER:
+    return &g_settings.m_screensaverAddons;
+  case ADDON_PLUGIN_PVR:
+    return &g_settings.m_pluginPvrAddons;
+  case ADDON_PLUGIN_MUSIC:
+    return &g_settings.m_pluginMusicAddons;
+  case ADDON_PLUGIN_VIDEO:
+    return &g_settings.m_pluginVideoAddons;
+  case ADDON_PLUGIN_PROGRAM:
+    return &g_settings.m_pluginProgramAddons;
+  case ADDON_PLUGIN_PICTURES:
+    return &g_settings.m_pluginPictureAddons;
+  case ADDON_DSP_AUDIO:
+    return &g_settings.m_DSPAudioAddons;
   default:
     return NULL;
   }
@@ -537,10 +561,23 @@ void CSettings::LoadAddons()
 
   if (pRootElement)
   { // parse addons...
+    GetAddons(pRootElement, ADDON_MULTITYPE);
+    GetAddons(pRootElement, ADDON_VIZ);
+    GetAddons(pRootElement, ADDON_SKIN);
     GetAddons(pRootElement, ADDON_PVRDLL);
+    GetAddons(pRootElement, ADDON_SCRIPT);
+    GetAddons(pRootElement, ADDON_SCRAPER);
+    GetAddons(pRootElement, ADDON_SCREENSAVER);
+    GetAddons(pRootElement, ADDON_PLUGIN_PVR);
+    GetAddons(pRootElement, ADDON_PLUGIN_MUSIC);
+    GetAddons(pRootElement, ADDON_PLUGIN_VIDEO);
+    GetAddons(pRootElement, ADDON_PLUGIN_PROGRAM);
+    GetAddons(pRootElement, ADDON_PLUGIN_PICTURES);
+    GetAddons(pRootElement, ADDON_DSP_AUDIO);
     // and so on
   }
 }
+
 bool CSettings::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
 {
   /* iterate through alladdons vec and return matched Addon */
@@ -549,6 +586,22 @@ bool CSettings::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
     if (m_allAddons[i].m_guid == guid)
     {
       addon = m_allAddons[i];
+      return true;
+    }
+  }
+  return false;
+}
+
+bool CSettings::GetAddonFromNameAndType(const CStdString &name, const AddonType &type, CAddon &addon)
+{
+  VECADDONS *addons = GetAddonsFromType(type);
+  if (!addons) return false;
+
+  for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+  {
+    if ((*it).m_strName == name)
+    {
+      addon = (*it);
       return true;
     }
   }
@@ -747,10 +800,45 @@ void CSettings::GetAddons(const TiXmlElement* pRootElement, const AddonType &typ
   CStdString strTagName;
   switch (type)
   {
+  case ADDON_MULTITYPE:
+      strTagName = "multitype";
+      break;
+  case ADDON_VIZ:
+      strTagName = "visualistation";
+      break;
+  case ADDON_SKIN:
+      strTagName = "skin";
+      break;
   case ADDON_PVRDLL:
       strTagName = "pvr";
       break;
-
+  case ADDON_SCRIPT:
+      strTagName = "script";
+      break;
+  case ADDON_SCRAPER:
+      strTagName = "scraper";
+      break;
+  case ADDON_SCREENSAVER:
+      strTagName = "screensaver";
+      break;
+  case ADDON_PLUGIN_PVR:
+      strTagName = "pluginpvr";
+      break;
+  case ADDON_PLUGIN_MUSIC:
+      strTagName = "pluginmusic";
+      break;
+  case ADDON_PLUGIN_VIDEO:
+      strTagName = "pluginvideo";
+      break;
+  case ADDON_PLUGIN_PROGRAM:
+      strTagName = "pluginprogram";
+      break;
+  case ADDON_PLUGIN_PICTURES:
+      strTagName = "pluginpictures";
+      break;
+  case ADDON_DSP_AUDIO:
+      strTagName = "dspaudio";
+      break;
   default:
     return;
   }
@@ -2514,17 +2602,45 @@ bool CSettings::SaveAddons()
   if (!pRoot) return false;
 
   // ok, now run through and save each addons section
+  SetAddons(pRoot, ADDON_MULTITYPE, g_settings.m_multitypeAddons);
+  SetAddons(pRoot, ADDON_VIZ, g_settings.m_visualisationAddons);
+  SetAddons(pRoot, ADDON_SKIN, g_settings.m_skinAddons);
   SetAddons(pRoot, ADDON_PVRDLL, g_settings.m_pvrAddons);
+  SetAddons(pRoot, ADDON_SCRIPT, g_settings.m_scriptAddons);
+  SetAddons(pRoot, ADDON_SCRAPER, g_settings.m_scraperAddons);
+  SetAddons(pRoot, ADDON_SCREENSAVER, g_settings.m_screensaverAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_PVR, g_settings.m_pluginPvrAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_MUSIC, g_settings.m_pluginMusicAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_VIDEO, g_settings.m_pluginVideoAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_PROGRAM, g_settings.m_pluginProgramAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_PICTURES, g_settings.m_pluginPictureAddons);
+  SetAddons(pRoot, ADDON_DSP_AUDIO, g_settings.m_DSPAudioAddons);
+
   return doc.SaveFile(g_settings.GetAddonsFile());
 }
 
 void CSettings::GetAllAddons()
 {
-  //TODO only currently scans for pvr dlls & only caches packaged icon thumbnail
+  //TODO: only caches packaged icon thumbnail
   m_allAddons.clear();
 
+  // Go thru all addon directorys
   CFileItemList items;
-  if (!CDirectory::GetDirectory("special://xbmc/addons/", items, ADDON_PVRDLL_EXT, false))
+  CDirectory::GetDirectory("special://xbmc/addons/multitype", items, ADDON_MULTITYPE_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/visualisations", items, ADDON_VIZ_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/skin", items, ADDON_SKIN_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/pvr", items, ADDON_PVRDLL_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scripts", items, ADDON_SCRIPT_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scrapers", items, ADDON_SCRAPER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/plugin-pvr", items, ADDON_PLUGIN_PVR_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/plugin-music", items, ADDON_PLUGIN_MUSIC_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/plugin-video", items, ADDON_PLUGIN_VIDEO_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/plugin-program", items, ADDON_PLUGIN_PROGRAM_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/plugin-pictures", items, ADDON_PLUGIN_PICTURES_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
+
+  if (items.Size() == 0)
     return;
 
   items.m_strPath.Replace("special://xbmc/", "addon://");
@@ -2538,7 +2654,7 @@ void CSettings::GetAllAddons()
     CAddon addon;
     if (!AddonFromInfoXML(item->m_strPath, addon))
     {
-      CLog::Log(LOGERROR, "PVR: Error reading %s/info.xml, bypassing package", item->m_strPath.c_str());
+      CLog::Log(LOGERROR, "Addon: Error reading %s/info.xml, bypassing package", item->m_strPath.c_str());
       continue;
     }
 
@@ -2550,7 +2666,7 @@ void CSettings::GetAllAddons()
     if (!item->HasThumbnail())
     {
       CFileItem item2(item->m_strPath);
-      CUtil::AddFileToFolder(item->m_strPath, "default" + ADDON_PVRDLL_EXT, item2.m_strPath);
+      CUtil::AddFileToFolder(item->m_strPath, addon.m_strLibName, item2.m_strPath);
       item2.m_bIsFolder = false;
       item2.SetCachedProgramThumb();
       if (!item2.HasThumbnail())
@@ -2623,7 +2739,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   /* Validate type */
   element = xmlDoc.RootElement()->FirstChildElement("type");
   int type = atoi(element->GetText());
-  if (type != 3)
+  if (type < ADDON_MULTITYPE || type > ADDON_DSP_AUDIO)
   {
     CLog::Log(LOGERROR, "Addon: %s has invalid type identifier: %d", strPath.c_str(), type);
     return false;
@@ -2723,10 +2839,45 @@ bool CSettings::SetAddons(TiXmlNode *root, const AddonType &type, const VECADDON
   CStdString strType;
   switch (type)
   {
-  case ADDON_PVRDLL: {
+  case ADDON_MULTITYPE:
+      strType = "multitype";
+      break;
+  case ADDON_VIZ:
+      strType = "visualistation";
+      break;
+  case ADDON_SKIN:
+      strType = "skin";
+      break;
+  case ADDON_PVRDLL:
       strType = "pvr";
       break;
-    }
+  case ADDON_SCRIPT:
+      strType = "script";
+      break;
+  case ADDON_SCRAPER:
+      strType = "scraper";
+      break;
+  case ADDON_SCREENSAVER:
+      strType = "screensaver";
+      break;
+  case ADDON_PLUGIN_PVR:
+      strType = "pluginpvr";
+      break;
+  case ADDON_PLUGIN_MUSIC:
+      strType = "pluginmusic";
+      break;
+  case ADDON_PLUGIN_VIDEO:
+      strType = "pluginvideo";
+      break;
+  case ADDON_PLUGIN_PROGRAM:
+      strType = "pluginprogram";
+      break;
+  case ADDON_PLUGIN_PICTURES:
+      strType = "pluginpictures";
+      break;
+  case ADDON_DSP_AUDIO:
+      strType = "dspaudio";
+      break;
   default:
     return false;
   }

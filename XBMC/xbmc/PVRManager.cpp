@@ -50,12 +50,12 @@ using namespace ADDON;
 
 using namespace DIRECTORY;
 
-CPVRManager* CPVRManager::m_instance=NULL;
 std::map< long, IPVRClient* > CPVRManager::m_clients;
-bool CPVRManager::m_hasRecordings = false;
-bool CPVRManager::m_isRecording = false;
-bool CPVRManager::m_hasTimer = false;
-bool CPVRManager::m_hasTimers = false;
+CPVRManager* CPVRManager::m_instance    = NULL;
+bool CPVRManager::m_hasRecordings       = false;
+bool CPVRManager::m_isRecording         = false;
+bool CPVRManager::m_hasTimer            = false;
+bool CPVRManager::m_hasTimers           = false;
 CCriticalSection CPVRManager::m_epgSection;
 CCriticalSection CPVRManager::m_timersSection;
 CCriticalSection CPVRManager::m_clientsSection;
@@ -96,14 +96,12 @@ void CPVRManager::Start()
   m_EPG = CEPG::Get();
   epgLock.Leave();
 
-  /* Discover and load chosen plugins */
-  if (!LoadClients()) {
+  /* Discover, load and create chosen Client add-on's. */
+  if (!LoadClients())
+  {
     CLog::Log(LOGERROR, "PVR: couldn't load clients");
     return;
   }
-
-  /* Now that clients have been initialized, we check connectivity */
-  CheckClientConnections();
 
   /* spawn a thread */
 //  Create(false, THREAD_MINSTACKSIZE);
@@ -122,7 +120,8 @@ void CPVRManager::Stop()
   m_infoToggleStart = NULL;
   m_infoToggleCurrent = 0;
 
-  for (unsigned int i=0; i < m_clients.size(); i++) {
+  for (unsigned int i=0; i < m_clients.size(); i++)
+  {
     delete m_clients[i];
   }
   m_clients.clear();
@@ -149,8 +148,8 @@ void CPVRManager::ReleaseInstance()
 
 void CPVRManager::RemoveInstance()
 {
-
-  if (m_instance) {
+  if (m_instance)
+  {
     delete m_instance;
     m_instance = NULL;
   }
@@ -194,12 +193,13 @@ bool CPVRManager::LoadClients()
   // call update
   addons = g_settings.GetAddonsFromType(ADDON_PVRDLL);
 
+  /* Make sure addon's are loaded */
   if (addons == NULL || addons->empty())
     return false;
 
-  // load the clients
   m_database.Open();
 
+  /* load the clients */
   CPVRClientFactory factory;
   for (unsigned i=0; i<addons->size(); i++)
   {
@@ -212,6 +212,19 @@ bool CPVRManager::LoadClients()
     CStdString transPath(clientAddon.m_strPath);
     transPath.Replace("addon://", "special://xbmc/");
 
+    /* Add client to TV-Database to identify different backend types,
+     * if client is already added his id is given. 
+     */
+    long clientID = m_database.AddClient(clientAddon.m_strName, clientAddon.m_guid);
+    if (clientID == -1)
+    {
+      CLog::Log(LOGERROR, "PVR: Can't Add/Get PVR Client '%s' to to TV Database", clientAddon.m_strName.c_str());
+      continue;
+    }
+
+    /* Load the Client library's and inside them into Client list if
+     * success. Client initialization is also performed during loading.
+     */
     IPVRClient *client;
     client = factory.LoadPVRClient(transPath, clientAddon, i, this, this);
     if (client)
@@ -226,28 +239,6 @@ bool CPVRManager::LoadClients()
   GetClientProperties();
 
   return !m_clients.empty();
-}
-
-bool CPVRManager::CheckClientConnections()
-{
-  if (m_clients.empty())
-  {
-    CLog::Log(LOGERROR, "PVR: no clients are connected during CheckClientConnections");
-    return false;
-  }
-
-  CLIENTMAPITR clientItr(m_clients.begin());
-  while (clientItr != m_clients.end())
-  {
-    /* Get the current running status of our PVR AddOn's */
-    ADDON_STATUS status = (*clientItr).second->GetStatus();
-    // TODO: Add something like a exception handler
-
-
-    clientItr++;
-  }
-
-  return true;
 }
 
 void CPVRManager::GetClientProperties()

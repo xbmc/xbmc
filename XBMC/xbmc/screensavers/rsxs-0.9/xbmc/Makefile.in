@@ -4,20 +4,20 @@ CXXFLAGS=-fPIC
 
 .PHONY: compile
 
-OUTDIR=../../../../screensavers
+OUTDIR=../../../../addons/screensavers
 RSXS=..
 
 DIRS=$(RSXS)
 
 RSXS-OBJS=$(RSXS)/src/common.o $(RSXS)/src/color.o $(RSXS)/lib/libmisc.a
 
-SOLARWINDS-OUT=$(OUTDIR)/Solarwinds.xbs
+SOLARWINDS-OUT=$(OUTDIR)/Solarwinds/Solarwinds.xbs
 SOLARWINDS-DEP=$(RSXS)/src/solarwinds/rs-solarwinds
 
-PLASMA-OUT=$(OUTDIR)/Plasma.xbs
+PLASMA-OUT=$(OUTDIR)/Plasma/Plasma.xbs
 PLASMA-DEP=$(RSXS)/src/plasma/rs-plasma
 
-EUPHORIA-OUT=$(OUTDIR)/Euphoria.xbs
+EUPHORIA-OUT=$(OUTDIR)/Euphoria/Euphoria.xbs
 EUPHORIA-DEP=$(RSXS)/src/euphoria/rs-euphoria
 
 CLEAN_FILES=$(SOLARWINDS-OUT) $(PLASMA-OUT) $(EUPHORIA-OUT)

@@ -51,7 +51,19 @@ enum AddonType
   ADDON_DSP_AUDIO         = 12
 };
 
-const CStdString ADDON_PVRDLL_EXT = "*.pvr";
+const CStdString ADDON_MULTITYPE_EXT        = "*.add";
+const CStdString ADDON_VIZ_EXT              = "*.vis";
+const CStdString ADDON_SKIN_EXT             = "*.skin";
+const CStdString ADDON_PVRDLL_EXT           = "*.pvr";
+const CStdString ADDON_SCRIPT_EXT           = "*.py";
+const CStdString ADDON_SCRAPER_EXT          = "*.idl";
+const CStdString ADDON_SCREENSAVER_EXT      = "*.xbs";
+const CStdString ADDON_PLUGIN_PVR_EXT       = "*.plpvr";
+const CStdString ADDON_PLUGIN_MUSIC_EXT     = "*.plmus";
+const CStdString ADDON_PLUGIN_VIDEO_EXT     = "*.plvid";
+const CStdString ADDON_PLUGIN_PROGRAM_EXT   = "*.plpro";
+const CStdString ADDON_PLUGIN_PICTURES_EXT  = "*.plpic";
+const CStdString ADDON_DSP_AUDIO_EXT        = "*.adsp";
 const CStdString ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
 const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
 
@@ -119,6 +131,7 @@ class CAddon
 public:
   CAddon(void);
   ~CAddon() {};
+  void Reset();
   bool operator==(const CAddon &rhs) const;
 
   virtual void Remove() {};

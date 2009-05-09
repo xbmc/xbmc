@@ -2082,7 +2082,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else if (iValue == 4)
       strScreenSaver = "Fanart Slideshow"; //Fanart Slideshow
     else
-      strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
+      strScreenSaver = pControl->GetCurrentLabel();
     pSettingString->SetData(strScreenSaver);
   }
   else if (strSetting.Equals("screensaver.preview"))
@@ -2095,6 +2095,19 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CStdString path = pSettingString->GetData();
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
+  }
+  else if (strSetting.Equals("screensaver.manage"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_SCREENSAVER, true))
+    {
+      FillInScreenSavers(g_guiSettings.GetSetting("screensaver.mode"));
+      // save the new list
+      g_settings.SaveAddons();
+    }
+    else
+    { // reload the existing list
+      g_settings.LoadAddons();
+    }
   }
   else if (strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
   {
@@ -3277,47 +3290,39 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->AddLabel(g_localizeStrings.Get(108), 3); // PictureSlideShow
   pControl->AddLabel(g_localizeStrings.Get(20425), 4); // Fanart Slideshow
 
-  //find screensavers ....
-  CFileItemList items;
-  CDirectory::GetDirectory( "special://xbmc/screensavers/", items);
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/screensavers/", items);
-
   int iCurrentScr = -1;
   vector<CStdString> vecScr;
-  int i = 0;
-  for (i = 0; i < items.Size(); ++i)
+  ADDON::VECADDONS *addons = g_settings.GetAddonsFromType(ADDON::ADDON_SCREENSAVER);
+
+  /* Make sure addon's are loaded */
+  if (addons != NULL || !addons->empty())
   {
-    CFileItemPtr pItem = items[i];
-    if (!pItem->m_bIsFolder)
+    for (unsigned int i = 0; i < addons->size(); i++)
     {
-      CStdString strExtension;
-      CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".xbs")
-      {
+      const ADDON::CAddon& addon = addons->at(i);
+
+      CStdString strFileName = addon.m_strPath + addon.m_strLibName;
+
+      //TODO fix addons paths
+      strFileName.Replace("addon://", "special://xbmc/");
+
 #ifdef _LINUX
-        void *handle = dlopen(_P(pItem->m_strPath).c_str(), RTLD_LAZY);
-        if (!handle)
-        {
-          CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", pItem->m_strPath.c_str(), dlerror());
-          continue;
-        }
-        dlclose(handle);
-#endif
-        CStdString strLabel = pItem->GetLabel();
-        vecScr.push_back(strLabel.Mid(0, strLabel.size() - 4));
+      void *handle = dlopen(_P(strFileName).c_str(), RTLD_LAZY);
+      if (!handle)
+      {
+        CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", strFileName.c_str(), dlerror());
+        continue;
       }
+      dlclose(handle);
+#endif
+      vecScr.push_back(addon.m_strName);
     }
   }
 
   CStdString strDefaultScr = pSettingString->GetData();
-  CStdString strExtension;
-  CUtil::GetExtension(strDefaultScr, strExtension);
-  if (strExtension == ".xbs")
-    strDefaultScr.Delete(strDefaultScr.size() - 4, 4);
 
   sort(vecScr.begin(), vecScr.end(), sortstringbyname());
-  for (i = 0; i < (int) vecScr.size(); ++i)
+  for (int i = 0; i < (int) vecScr.size(); ++i)
   {
     CStdString strScr = vecScr[i];
 

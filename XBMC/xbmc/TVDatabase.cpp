@@ -50,7 +50,7 @@ bool CTVDatabase::CreateTables()
     CLog::Log(LOGINFO, "TV: Creating tables");
 
     CLog::Log(LOGINFO, "TV: Creating Clients table");
-    m_pDS->exec("CREATE TABLE Clients (idClient integer primary key, Name text)\n");
+    m_pDS->exec("CREATE TABLE Clients (idClient integer primary key, Name text, GUID text)\n");
 
     CLog::Log(LOGINFO, "TV: Creating Last Channel table");
     m_pDS->exec("CREATE TABLE LastChannel (idClient integer, idChannel integer primary key, Number integer, Name text)\n");
@@ -179,29 +179,28 @@ bool CTVDatabase::UpdateLastChannel(DWORD clientID, unsigned int channelID, CStd
   }
 }
 
-long CTVDatabase::AddClient(const CStdString &client)
+long CTVDatabase::AddClient(const CStdString &client, const CStdString &guid)
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    long clientId;
-
-    clientId = GetClientId(client);
-
+    long clientId = GetClientId(guid);
     if (clientId < 0)
     {
-      CStdString SQL=FormatSQL("insert into Clients (idClient, Name) values (NULL, '%s')\n", client.c_str());
+      CStdString SQL=FormatSQL("insert into Clients (idClient, Name, GUID) values (NULL, '%s', '%s')\n", client.c_str(), guid.c_str());
       m_pDS->exec(SQL.c_str());
       clientId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+
+      CLog::Log(LOGNOTICE, "TVDatabase: Added new PVR Client ID '%i' with Name '%s' and GUID '%s'", clientId, client.c_str(), guid.c_str());
     }
 
     return clientId;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, client.c_str());
+    CLog::Log(LOGERROR, "%s (Name: %s, GUID: %s) failed", __FUNCTION__, client.c_str(), guid.c_str());
   }
 
   return -1;
@@ -700,18 +699,18 @@ bool CTVDatabase::GetGroupList(DWORD clientID, CHANNELGROUPS_DATA* results)
   return false;
 }
 
-long CTVDatabase::GetClientId(const CStdString& client)
+long CTVDatabase::GetClientId(const CStdString& guid)
 {
   CStdString SQL;
 
   try
   {
-    long clientId=-1;
+    long clientId = -1;
 
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    SQL=FormatSQL("select idClient from Clients where Name like '%s'", client.c_str());
+    SQL = FormatSQL("select idClient from Clients where GUID like '%s'", guid.c_str());
 
     m_pDS->query(SQL.c_str());
 

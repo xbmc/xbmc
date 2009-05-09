@@ -22,6 +22,7 @@
  */
 
 #include "GUIWindow.h"
+#include "utils/Addon.h"
 #ifdef HAS_SCREENSAVER
 #include "screensavers/ScreenSaver.h"
 #endif
@@ -49,4 +50,5 @@ private:
 #endif
   bool m_bInitialized;
   CCriticalSection m_critSection;
+  ADDON::CAddon m_addon;
 };

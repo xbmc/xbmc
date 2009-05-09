@@ -457,17 +457,22 @@ void CAddonStatusHandler::Process()
  
 CAddon::CAddon()
 {
-  m_guid = "";
-  m_addonType = ADDON_UNKNOWN;
-  m_strPath = "";
-  m_disabled = false;
-  m_stars = -1;
-  m_strVersion = "";
-  m_strName = "";
-  m_summary = "";
-  m_strDesc = "";
-  m_disclaimer = "";
-  m_strLibName = "";
+  Reset();
+}
+
+void CAddon::Reset()
+{
+  m_guid        = "";
+  m_addonType   = ADDON_UNKNOWN;
+  m_strPath     = "";
+  m_disabled    = false;
+  m_stars       = -1;
+  m_strVersion  = "";
+  m_strName     = "";
+  m_summary     = "";
+  m_strDesc     = "";
+  m_disclaimer  = "";
+  m_strLibName  = "";
 }
 
 bool CAddon::operator==(const CAddon &rhs) const

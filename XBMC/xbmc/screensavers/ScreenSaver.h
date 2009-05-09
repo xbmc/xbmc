@@ -30,6 +30,7 @@
 #endif // _MSC_VER > 1000
 
 #include "DllScreenSaver.h"
+#include "../utils/Addon.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -37,14 +38,15 @@ extern "C"
 }
 #endif
 
-class CScreenSaver
+class CScreenSaver : public ADDON::CAddon
 {
 public:
-  CScreenSaver(struct ScreenSaver* pScr, DllScreensaver* pDll, const CStdString& strScreenSaverName);
+  CScreenSaver(struct ScreenSaver* pScr, DllScreensaver* pDll, const ADDON::CAddon& addon);
   ~CScreenSaver();
 
   // Things that MUST be supplied by the child classes
   void Create();
+  void Destroy();
   void Start();
   void Render();
   void Stop();
@@ -53,7 +55,16 @@ public:
 protected:
   std::auto_ptr<struct ScreenSaver> m_pScr;
   std::auto_ptr<DllScreensaver> m_pDll;
-  CStdString m_strScreenSaverName;
+  ScreensaverCallbacks *m_callbacks;
+  bool m_ReadyToUse;
+
+private:
+  static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
+  static void AddOnLogCallback(void *userData, const ADDON_LOG loglevel, const char *format, ... );
+  static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
+  static void AddOnOpenSettings(const char *url, bool bReload);
+  static void AddOnOpenOwnSettings(void *userData, bool bReload);
+  static const char* AddOnGetLocalizedString(void *userData, long dwCode);
 };
 
 

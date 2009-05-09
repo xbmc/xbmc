@@ -682,6 +682,8 @@ void CGUISettings::Initialize()
   AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddPath(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddBool(9, "screensaver.slideshowshuffle", 13319, false);
+  AddSeparator(10, "screensaver.sep2");
+  AddString(11, "screensaver.manage", 23080, "", BUTTON_CONTROL_STANDARD);
 
   AddPath(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }

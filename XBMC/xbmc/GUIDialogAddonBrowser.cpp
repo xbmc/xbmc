@@ -165,6 +165,9 @@ void CGUIDialogAddonBrowser::Update()
   for (unsigned i=0; i < addons->size(); i++)
   {
     CAddon &addon = (*addons)[i];
+    
+    if (addon.m_addonType != m_type)
+        continue;
 
     if (m_getAddons)
     { // don't show addons that are enabled
@@ -284,20 +287,9 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool 
   // determine the correct heading
   CStdString heading;
   if (!viewActive)
-    heading = g_localizeStrings.Get(33002); // "Available Add-ons"
+    heading = g_localizeStrings.Get(23002); // "Available Add-ons"
   else
-  {
-    // set according to addon type
-    switch (type)
-    {
-    case ADDON_PVRDLL:
-      heading = g_localizeStrings.Get(18028); // "Manage PVR clients"
-      break;
-
-    default:
-      break;
-    }
-  }
+    heading = g_localizeStrings.Get(23060 + type); // Name is calculated by type!
   
   // finalize the window and display
   browser->SetHeading(heading);
@@ -351,8 +343,8 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
 
   pMenu->Initialize();
 
-  int iSettingsLabel = 33008;
-  int iRemoveLabel = 33009;
+  int iSettingsLabel = 23008;
+  int iRemoveLabel = 23009;
 
   int btn_Settings = pMenu->AddButton(iSettingsLabel);
   int btn_Remove = pMenu->AddButton(iRemoveLabel);
@@ -373,7 +365,7 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
   else if (btnid == btn_Remove)
   { // request confirmation  
     CGUIDialogYesNo* pDialog = new CGUIDialogYesNo();
-    if (pDialog->ShowAndGetInput(g_localizeStrings.Get(33009), pItem->GetProperty("Addon.Name"), "", g_localizeStrings.Get(33010)))
+    if (pDialog->ShowAndGetInput(g_localizeStrings.Get(23009), pItem->GetProperty("Addon.Name"), "", g_localizeStrings.Get(23010)))
     {
       CAddon addon;
       g_settings.AddonFromInfoXML(pItem->m_strPath, addon);

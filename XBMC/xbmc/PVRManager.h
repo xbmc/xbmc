@@ -84,7 +84,6 @@ protected:
 
   void SyncInfo(); // synchronize InfoManager related stuff
 
-  bool CheckClientConnections();
   void LostConnection();
 
   CURL GetConnString(long clientID);

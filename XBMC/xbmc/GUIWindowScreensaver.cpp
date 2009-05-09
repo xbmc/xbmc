@@ -29,11 +29,14 @@
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
 
+using namespace ADDON;
+
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
     : CGUIWindow(WINDOW_SCREENSAVER, "")
 {
 #ifdef HAS_SCREENSAVER
   m_pScreenSaver = NULL;
+  m_addon.Reset();
 #endif
 }
 
@@ -107,6 +110,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       {
         OutputDebugString("ScreenSaver::Stop()\n");
         m_pScreenSaver->Stop();
+        m_pScreenSaver->Destroy();
 
         OutputDebugString("delete ScreenSaver()\n");
         delete m_pScreenSaver;
@@ -114,6 +118,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
         g_graphicsContext.ApplyStateBlock();
       }
       m_pScreenSaver = NULL;
+      m_addon.Reset();
 #endif
       m_bInitialized = false;
 
@@ -135,18 +140,26 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       if (m_pScreenSaver)
       {
         m_pScreenSaver->Stop();
+        m_pScreenSaver->Destroy();
         delete m_pScreenSaver;
         g_graphicsContext.ApplyStateBlock();
       }
       m_pScreenSaver = NULL;
       m_bInitialized = false;
+      m_addon.Reset();
 
       // Setup new screensaver instance
       CScreenSaverFactory factory;
-      CStdString strScr;
+      if (!g_settings.GetAddonFromNameAndType(g_guiSettings.GetString("screensaver.mode"), ADDON_SCREENSAVER, m_addon))
+        return false;
+
       OutputDebugString("Load Screensaver\n");
-      strScr.Format("special://xbmc/screensavers/%s", g_guiSettings.GetString("screensaver.mode").c_str());
-      m_pScreenSaver = factory.LoadScreenSaver(strScr.c_str());
+
+      //TODO fix addons paths
+      CStdString transPath(m_addon.m_strPath);
+      transPath.Replace("addon://", "special://xbmc/");
+    
+      m_pScreenSaver = factory.LoadScreenSaver(transPath, m_addon);
       if (m_pScreenSaver)
       {
         OutputDebugString("ScreenSaver::Create()\n");
@@ -173,4 +186,3 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
   }
   return CGUIWindow::OnMessage(message);
 }
-
