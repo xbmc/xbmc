@@ -16,17 +16,20 @@
 #
 
 import sys
+
 try:
-    from xbmc.xbmcclient import *
-    from xbmc.ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
-    from xbmc.bt.bt import *
-    from xbmc.defs import *
-except:
+    # try loading modules from source directory
     sys.path.append("../../lib/python")
     from xbmcclient import *
     from ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
     from bt.bt import *
     ICON_PATH = "../../icons/"
+except:
+    # fallback to system wide modules
+    from xbmc.xbmcclient import *
+    from xbmc.ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
+    from xbmc.bt.bt import *
+    from xbmc.defs import *
 
 import os
 import time
