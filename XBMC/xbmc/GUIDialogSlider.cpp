@@ -25,8 +25,9 @@
 #include "GUIWindowManager.h"
 #include "Util.h"
 
-#define CONTROL_LABEL 10
-#define CONTROL_SLIDER 11
+#define CONTROL_HEADING 10
+#define CONTROL_SLIDER  11
+#define CONTROL_LABEL   12
 
 CGUIDialogSlider::CGUIDialogSlider(void)
     : CGUIDialog(WINDOW_DIALOG_SLIDER, "DialogSlider.xml")
@@ -58,7 +59,10 @@ bool CGUIDialogSlider::OnMessage(CGUIMessage& message)
     {
       CGUISliderControl *slider = (CGUISliderControl *)GetControl(CONTROL_SLIDER);
       if (slider && m_callback)
+      {
         m_callback->OnSliderChange(m_callbackData, slider);
+        SET_CONTROL_LABEL(CONTROL_LABEL, slider->GetDescription());
+      }
     }
     break;
   }
@@ -67,7 +71,7 @@ bool CGUIDialogSlider::OnMessage(CGUIMessage& message)
 
 void CGUIDialogSlider::SetSlider(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
 {
-  SET_CONTROL_LABEL(CONTROL_LABEL, label);
+  SET_CONTROL_LABEL(CONTROL_HEADING, label);
   CGUISliderControl *slider = (CGUISliderControl *)GetControl(CONTROL_SLIDER);
   m_callback = callback;
   m_callbackData = callbackData;
@@ -78,7 +82,10 @@ void CGUIDialogSlider::SetSlider(const CStdString &label, float value, float min
     slider->SetFloatInterval(delta);
     slider->SetFloatValue(value);
     if (m_callback)
+    {
       m_callback->OnSliderChange(m_callbackData, slider);
+      SET_CONTROL_LABEL(CONTROL_LABEL, slider->GetDescription());
+    }
   }
 }
 
