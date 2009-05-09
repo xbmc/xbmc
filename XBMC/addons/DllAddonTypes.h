@@ -32,6 +32,7 @@
  *
  * Identifier               ID  Description
  * --------------------------------------------------------
+ * ADDON_MULTITYPE          0   General usage, like a DVD Burning Tool
  * ADDON_VIZ                1   Visualisation AddOn
  * ADDON_SKIN               2   Skin Theme AddOn
  * ADDON_PVRDLL             3   PVR Client<->Backend Interface

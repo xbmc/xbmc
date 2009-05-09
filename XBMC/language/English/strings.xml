@@ -1541,7 +1541,6 @@
   <string id="18025">PVR service</string>
   <string id="18026">Add PVR client...</string>
   <string id="18027">PVR clients</string>
-  <string id="18028">Manage PVR clients</string>
   <string id="18029">Manage clients...</string>
   <string id="18030">PVR information</string>
   <string id="18048">Edit Channel Settings</string>
@@ -2248,6 +2247,17 @@
   <string id="22042">white/blue</string>
   <string id="22043">black/white</string>
 
+  <string id="23000">Add-ons</string>
+  <string id="23001">Get Add-ons</string>
+  <string id="23002">Available Add-ons</string>
+  <string id="23003">Add-on Type</string>
+  <string id="23004">Recommended</string>
+  <string id="23005">Search Add-ons</string>
+  <string id="23006">Searching..</string>
+  <string id="23007">New search</string>
+  <string id="23008">Configure Add-on</string>
+  <string id="23009">Remove Add-on</string>
+  <string id="23010">Are you sure you want to disable this add-on?</string>
   <string id="23011">Unknown Add-on</string>
   <string id="23012">Multitype Add-on</string>
   <string id="23013">Visualisation</string>
@@ -2283,6 +2293,20 @@
   <string id="23057">A unknown error is occurred</string>
   <string id="23058">Disclaimer</string>
   <string id="23059">Would you still use the Add-on?</string>
+  <string id="23060">Manage Multitype Add-on's</string>
+  <string id="23061">Manage Visualization</string>
+  <string id="23062">Manage Skin Add-on's</string>
+  <string id="23063">Manage PVR clients</string>
+  <string id="23064">Manage Scripts</string>
+  <string id="23065">Manage Scrapers</string>
+  <string id="23066">Manage Screensaver</string>
+  <string id="23067">Manage PVR clients extensions</string>
+  <string id="23068">Manage Music extensions</string>
+  <string id="23069">Manage Video extensions</string>
+  <string id="23070">Manage Program extensions</string>
+  <string id="23071">Manage Picture extensions</string>
+  <string id="23072">Manage Audio DSP's</string>
+  <string id="23080">Manage external Screensaver</string>
   
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

@@ -1,0 +1,31 @@
+<addons>
+    <multitype />
+    <visualistation />
+    <skin />
+    <pvr />
+    <script />
+    <scraper />
+    <screensaver>
+        <addon>
+            <name>Solarwinds</name>
+            <path pathversion="1">addon://addons/screensavers/Solarwinds/</path>
+            <thumbnail pathversion="1">special://xbmc/addons/screensavers/Solarwinds/Solarwinds.tbn</thumbnail>
+        </addon>
+        <addon>
+            <name>Plasma</name>
+            <path pathversion="1">addon://addons/screensavers/Plasma/</path>
+            <thumbnail pathversion="1">special://xbmc/addons/screensavers/Plasma/Plasma.tbn</thumbnail>
+        </addon>
+        <addon>
+            <name>Euphoria</name>
+            <path pathversion="1">addon://addons/screensavers/Euphoria/</path>
+            <thumbnail pathversion="1">special://xbmc/addons/screensavers/Euphoria/Euphoria.tbn</thumbnail>
+        </addon>
+    </screensaver>
+    <pluginpvr />
+    <pluginmusic />
+    <pluginvideo />
+    <pluginprogram />
+    <pluginpictures />
+    <dspaudio />
+</addons>
