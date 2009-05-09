@@ -218,11 +218,11 @@ def usage():
     print """
 PS3 Sixaxis / Blu-Ray Remote HID Server v0.1
 
-Usage: ps3.py [bdaddress] [ip address of XBMC]
+Usage: ps3.py [bdaddress] [XBMC host]
 
   bdaddress  => address of local bluetooth device to use (default: auto)
                 (e.g. aa:bb:cc:dd:ee:ff)
-  ip address => IP address of the XBMC instance (default: localhost)
+  ip address => IP address or hostname of the XBMC instance (default: localhost)
                 (e.g. 192.168.1.110)
 """
 
@@ -281,10 +281,8 @@ def main():
                 print "Connecting to Bluetooth device: %s" % bdaddr
             except Exception, e:
                 try:
-                    if len(addr.split(".")) != 4:
-                        raise Exception("Invalid format")
                     ipaddr = addr
-                    print "Connecting to IP: %s" % ipaddr
+                    print "Connecting to : %s" % ipaddr
                 except:
                     print str(e)
                     return usage()
