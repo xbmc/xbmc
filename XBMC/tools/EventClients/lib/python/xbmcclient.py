@@ -232,7 +232,11 @@ class Packet:
         """
         self.uid = uid
         for a in range ( 0, self.num_packets() ):
-            sock.sendto(self.get_udp_message(a+1), addr)
+            try:
+                sock.sendto(self.get_udp_message(a+1), addr)
+                return True
+            except:
+                return False
 
 
 class PacketHELO (Packet):
@@ -474,19 +478,19 @@ class XBMCClient:
             self.port = int(port)
         self.addr = (self.ip, self.port)
         packet = PacketHELO(self.name, self.icon_type, self.icon_file)                            
-        packet.send(self.sock, self.addr, self.uid)
+        return packet.send(self.sock, self.addr, self.uid)
 
 
     def close(self):
         """Close the current connection"""
         packet = PacketBYE()
-        packet.send(self.sock, self.addr, self.uid)
+        return packet.send(self.sock, self.addr, self.uid)
 
 
     def ping(self):
         """Send a PING packet"""
         packet = PacketPING()
-        packet.send(self.sock, self.addr, self.uid)
+        return packet.send(self.sock, self.addr, self.uid)
 
         
     def send_notification(self, title="", message="", icon_file=None):
@@ -500,7 +504,7 @@ class XBMCClient:
         packet = PacketNOTIFICATION(title, message,
                                     self._get_icon_type(icon_file),
                                     icon_file)
-        packet.send(self.sock, self.addr, self.uid)
+        return packet.send(self.sock, self.addr, self.uid)
 
 
     def send_keyboard_button(self, button=None):
@@ -510,7 +514,7 @@ class XBMCClient:
         """
         if not button:
             return
-        self.send_button(map="KB", button=button)
+        return self.send_button(map="KB", button=button)
 
 
     def send_remote_button(self, button=None):
@@ -520,14 +524,13 @@ class XBMCClient:
         """
         if not button:
             return
-        self.send_button(map="R1", button=button)
+        return self.send_button(map="R1", button=button)
 
 
     def release_button(self):
         """Release all buttons"""
         packet = PacketBUTTON(code=0x01, down=0)
-        packet.send(self.sock, self.addr, self.uid)
-        return
+        return packet.send(self.sock, self.addr, self.uid)
 
 
     def send_button(self, map="", button="", amount=0):
@@ -549,8 +552,7 @@ class XBMCClient:
                   "printscreen", "minus", "x", etc.
         """
         packet = PacketBUTTON(map_name=str(map), button_name=str(button), amount=amount)
-        packet.send(self.sock, self.addr, self.uid)
-        return
+        return packet.send(self.sock, self.addr, self.uid)
 
     def send_button_state(self, map="", button="", amount=0, down=0, axis=0):
         """Send a button event to XBMC
@@ -577,8 +579,7 @@ class XBMCClient:
             down = 1
 
         packet = PacketBUTTON(map_name=str(map), button_name=str(button), amount=amount, down=down, queue=1, axis=axis)
-        packet.send(self.sock, self.addr, self.uid)
-        return
+        return packet.send(self.sock, self.addr, self.uid)
 
     def send_mouse_position(self, x=0, y=0):
         """Send a mouse event to XBMC
@@ -588,7 +589,7 @@ class XBMCClient:
         y -- same a 'x' but relates to the screen height
         """
         packet = PacketMOUSE(int(x), int(y))
-        packet.send(self.sock, self.addr, self.uid)
+        return packet.send(self.sock, self.addr, self.uid)
 
     def send_log(self, loglevel=0, logmessage="", autoprint=True):
         """
@@ -598,7 +599,7 @@ class XBMCClient:
         autoprint -- if the logmessage should automaticly be printed to stdout
         """
         packet = PacketLOG(loglevel, logmessage)
-        packet.send(self.sock, self.addr, self.uid)
+        return packet.send(self.sock, self.addr, self.uid)
 
     def send_action(self, actionmessage="", actiontype=ACTION_EXECBUILTIN):
         """
@@ -607,7 +608,7 @@ class XBMCClient:
         actiontype -- The ActionType the ActionString should be sent to.
         """
         packet = PacketACTION(actionmessage, actiontype)
-        packet.send(self.sock, self.addr, self.uid)
+        return packet.send(self.sock, self.addr, self.uid)
 
     def _get_icon_type(self, icon_file):
         if icon_file:
