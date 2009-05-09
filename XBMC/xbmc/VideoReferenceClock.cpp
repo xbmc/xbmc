@@ -696,110 +696,114 @@ double CVideoReferenceClock::GetSpeed()
 
 bool CVideoReferenceClock::UpdateRefreshrate()
 {
-  bool Changed = false;
-  if (m_CurrTime - m_LastRefreshTime > m_SystemFrequency)
-  {
+  if (m_CurrTime - m_LastRefreshTime < m_SystemFrequency)
+    return false;
+
+  m_LastRefreshTime = m_CurrTime;
+
 #ifdef HAS_GLX
-    m_LastRefreshTime = m_CurrTime;
+  XRRScreenConfiguration *CurrInfo;
+  CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
+  int RRRefreshRate = XRRConfigCurrentRate(CurrInfo);
+  XRRFreeScreenConfigInfo(CurrInfo);
+  
+  if (RRRefreshRate == m_PrevRefreshRate)
+    return false;
     
-    XRRScreenConfiguration *CurrInfo;
-    CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
-    int RRRefreshRate = XRRConfigCurrentRate(CurrInfo);
-    XRRFreeScreenConfigInfo(CurrInfo);
+  if (m_UseNvSettings)
+  {
+    double fRefreshRate;
+    char Buff[255];
+    struct lconv *Locale = localeconv();
     
-    if (RRRefreshRate != m_PrevRefreshRate)
+    FILE* NvSettings = popen(NVSETTINGSCMD, "r");
+    
+    if (!NvSettings)
     {
-      if (m_UseNvSettings)
-      {
-        float fRefreshRate;
-        char Buff[255];
-        struct lconv *Locale = localeconv();
-        
-        FILE* NvSettings = popen(NVSETTINGSCMD, "r");
-        if (NvSettings)
-        {
-          int ReturnV = fscanf(NvSettings, "%254[^\n]", Buff);
-          pclose(NvSettings);
-          
-          if (ReturnV == 1)
-          {
-            CLog::Log(LOGDEBUG, "CVideoReferenceClock: Output of %s: %s", NVSETTINGSCMD, Buff);
-            
-            for (int i = 0; i < 253 && Buff[i]; i++)
-            {
-              //workaround for locale mismatch and filter out unwanted chars
-              if (Buff[i] == '.' || Buff[i] == ',') Buff[i] = *Locale->decimal_point;
-              else if (Buff[i] < '0' || Buff[i] > '9') Buff[i] = ' ';
-            }
-
-            ReturnV = sscanf(Buff, "%f", &fRefreshRate);
-            if (ReturnV == 1 && fRefreshRate > 0.0)
-            {
-              m_PrevRefreshRate = RRRefreshRate;
-              Lock();
-              m_RefreshRate = MathUtils::round_int(fRefreshRate);
-              Unlock();
-              
-              CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate by nvidia-settings: %f hertz, rounding to %i hertz",
-                        fRefreshRate, (int)m_RefreshRate);
-            }
-            else
-            {
-              CLog::Log(LOGDEBUG, "CVideoReferenceClock: falling back to RandR", NVSETTINGSCMD);
-              m_UseNvSettings = false;
-            }
-          }
-          else
-          {
-            CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s produced no output, falling back to RandR", NVSETTINGSCMD);
-            m_UseNvSettings = false;
-          }
-        }
-        else
-        {
-          CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s: %s, falling back to RandR", NVSETTINGSCMD, strerror(errno));
-          m_UseNvSettings = false;
-        }
-      }
-      else
-      {
-        Lock();
-        m_RefreshRate = RRRefreshRate;
-        Unlock();
-        
-        m_PrevRefreshRate = RRRefreshRate;
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
-      }
-      Changed = true;
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s: %s, falling back to RandR", NVSETTINGSCMD, strerror(errno));
+      m_UseNvSettings = false;
+      return false;
     }
-#elif defined(_WIN32)
-    D3dClock::D3DDISPLAYMODE DisplayMode;
-    m_D3d->GetAdapterDisplayMode(m_Adapter, &DisplayMode);
     
+    int ReturnV = fscanf(NvSettings, "%254[^\n]", Buff);
+    pclose(NvSettings);
+    
+    if (ReturnV != 1)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s produced no output, falling back to RandR", NVSETTINGSCMD);
+      m_UseNvSettings = false;
+      return false;
+    }
+    
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Output of %s: %s", NVSETTINGSCMD, Buff);
+    
+    for (int i = 0; i < 253 && Buff[i]; i++)
+    {
+      //workaround for locale mismatch and filter out unwanted chars
+      if (Buff[i] == '.' || Buff[i] == ',') Buff[i] = *Locale->decimal_point;
+      else if (Buff[i] < '0' || Buff[i] > '9') Buff[i] = ' ';
+    }
+
+    ReturnV = sscanf(Buff, "%lf", &fRefreshRate);
+    if (ReturnV != 1 || fRefreshRate <= 0.0)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: falling back to RandR", NVSETTINGSCMD);
+      m_UseNvSettings = false;
+      return false;
+    }
+      
+    m_PrevRefreshRate = RRRefreshRate;
     Lock();
-    m_RefreshRate = DisplayMode.RefreshRate;
-    if (m_RefreshRate == 0) m_RefreshRate = 60;
+    m_RefreshRate = MathUtils::round_int(fRefreshRate);
     Unlock();
-
-    if (m_RefreshRate != m_PrevRefreshRate)
-    {
-      m_PrevRefreshRate = m_RefreshRate;
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
-      Changed = true;
-    }
-    if (m_Width != DisplayMode.Width || m_Height != DisplayMode.Height)
-    {
-      Changed = true;
-    }
-    m_Width = DisplayMode.Width;
-    m_Height = DisplayMode.Height;
-#endif
-    return Changed;
+      
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate by nvidia-settings: %f hertz, rounding to %i hertz",
+              fRefreshRate, (int)m_RefreshRate);
   }
   else
   {
-    return false;
+    Lock();
+    m_RefreshRate = RRRefreshRate;
+    Unlock();
+    
+    m_PrevRefreshRate = RRRefreshRate;
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
   }
+  return true;
+  
+#elif defined(_WIN32)
+  bool Changed = false;
+  
+  D3dClock::D3DDISPLAYMODE DisplayMode;
+  m_D3d->GetAdapterDisplayMode(m_Adapter, &DisplayMode);
+  
+  //0 indicated adapter default
+  if (DisplayMode.RefreshRate == 0)
+    DisplayMode.RefreshRate = 60;
+  
+  if (m_RefreshRate != DisplayMode.RefreshRate)
+  {
+    Lock();
+    m_RefreshRate = DisplayMode.RefreshRate;
+    Unlock();
+  }
+  
+  if (m_RefreshRate != m_PrevRefreshRate)
+  {
+    m_PrevRefreshRate = m_RefreshRate;
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
+    Changed = true;
+  }
+  if (m_Width != DisplayMode.Width || m_Height != DisplayMode.Height)
+  {
+    Changed = true;
+  }
+  m_Width = DisplayMode.Width;
+  m_Height = DisplayMode.Height;
+
+  return Changed;
+#endif
+  return false;
 }
 
 int CVideoReferenceClock::GetRefreshRate()
