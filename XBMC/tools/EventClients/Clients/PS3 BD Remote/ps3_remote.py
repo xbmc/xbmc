@@ -109,7 +109,7 @@ Usage: ps3_remote.py <address> [port]
 """
 
 def process_keys(remote, xbmc):
-    done = False
+    done = 0
 
     xbmc.connect()
     datalen = 0
@@ -118,9 +118,11 @@ def process_keys(remote, xbmc):
         datalen = len(data)
     except Exception, e:
         if str(e)=="timed out":
-            return "2"
+            return 2
         time.sleep(2)
-        done = True
+        # done = 1
+        # some other read exception occured, so raise it
+        raise e
 
     if datalen == 13:
         keycode = data.encode("hex")[10:12]
