@@ -211,6 +211,9 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   const char *flipY = pNode->Attribute("flipy");
   if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
   image.diffuse = pNode->Attribute("diffuse");
+  const char *background = pNode->Attribute("background");
+  if (background && strnicmp(background, "true", 4) == 0)
+    image.useLarge = true;
   image.filename = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
   return true;
 }
