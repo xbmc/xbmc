@@ -115,12 +115,6 @@ libsmbclient in a compatible manner
     #    ln -sf ${bindir}/${f} ${destroot}${prefix}/bin/${f}${major_version}
     #}
 
- 5) Force lzo to build a static lib (needed to compile XBMCTex with satic libs)
-
-   $ sudo nano /opt/local/var/macports/sources/rsync.macports.org/release/ports/devel/lzo/Portfile
-
-   change "--disable-static" to "--enable-static".
-
 
 Then install the following port packages (order is very important):
 
