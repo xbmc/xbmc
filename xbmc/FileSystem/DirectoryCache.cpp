@@ -119,6 +119,13 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
   m_cache.insert(pair<CStdString, CDir*>(storedPath, dir));
 }
 
+void CDirectoryCache::ClearFile(const CStdString& strFile)
+{
+  CStdString strPath;
+  CUtil::GetDirectory(strFile, strPath);
+  ClearDirectory(strPath);
+}
+
 void CDirectoryCache::ClearDirectory(const CStdString& strPath)
 {
   CSingleLock lock (m_cs);

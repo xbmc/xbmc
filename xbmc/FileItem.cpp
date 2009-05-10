@@ -2541,6 +2541,10 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsFTP(strFile))
     return "";
 
+  // we consder folder as if they were files without extension
+  if(m_bIsFolder)
+    CUtil::RemoveSlashAtEnd(strFile);
+
   // we don't have a cached image, so let's see if the user has a local image ..
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 04/13/2009-->
+<!--Date of translation: 04/24/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 19415-->
+<!--Based on english strings version 19506-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -282,7 +282,7 @@
   <string id="354">骇客任务</string>
   <string id="355">屏保空闲时间</string>
   <string id="356">屏幕保护模式</string>
-  <string id="357">空闲计时器</string>
+  <string id="357">自动关机功能计时器</string>
   <string id="358">全部专辑</string>
   <string id="359">新加的专辑</string>
   <string id="360">屏幕保护</string>
@@ -960,7 +960,7 @@
   <string id="13005">关机</string>
   <string id="13006">Dashboard</string>
   <string id="13007">使用定制 Dashboard 的路径</string>
-  <string id="13008">空闲计时器功能</string>
+  <string id="13008">自动关机功能</string>
   <string id="13009">退出</string>
   <string id="13010">休眠</string>
   <string id="13011">待机</string>

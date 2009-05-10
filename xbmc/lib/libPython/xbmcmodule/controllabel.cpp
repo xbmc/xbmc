@@ -87,7 +87,7 @@ namespace PYXBMC
         Py_DECREF( self );
         return NULL;
     }
-    self->bHasPath = (bool)bHasPath;
+    self->bHasPath = (0 != bHasPath);
     if (!PyGetUnicodeString(self->strText, pObjectText, 5))
     {
       Py_DECREF( self );

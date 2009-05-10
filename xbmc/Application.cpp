@@ -311,11 +311,12 @@ CApplication::CApplication(void)
   m_nextPlaylistItem = -1;
   m_playCountUpdated = false;
   m_bPlaybackStarting = false;
+  m_updateFileStateCounter = 0;
 
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
 
-  /* for now allways keep this around */
+  /* for now always keep this around */
 #ifdef HAS_KARAOKE
   m_pCdgParser = new CCdgParser();
 #endif
@@ -1950,6 +1951,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
   g_graphicsContext.SetMediaDir(strSkinPath);
+  g_directoryCache.ClearSubPaths(strSkinPath);
   if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode(g_guiSettings.GetString("lookandfeel.font")))
   {
     CLog::Log(LOGINFO, "    language needs a ttf font, loading first ttf font available");
@@ -3812,6 +3814,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
+    m_updateFileStateCounter = 0;
   }
 
   if (item.IsPlayList())
@@ -4139,6 +4142,73 @@ bool CApplication::IsPlayingFullScreenVideo() const
   return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
 }
 
+void CApplication::UpdateVideoFileState()
+{
+  // TODO: Add saving of watched status in here
+  // save our position for resuming at a later date
+  CVideoDatabase dbs;
+  if (dbs.Open())
+  {
+    // mark as watched if we are passed the usual amount
+    if (g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+        GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent)
+    {
+      if (!m_playCountUpdated) // no need to update more than once:
+      {
+        CLog::Log(LOGDEBUG, "%s - Marking current video file as watched", __FUNCTION__);
+        // consider this item as played
+        m_playCountUpdated=true;
+      
+        dbs.MarkAsWatched(*m_itemCurrentFile);
+      }
+    }
+    else
+      m_playCountUpdated=false;
+      
+    double current = GetTime();
+    // ignore x seconds at the start
+    if (current > g_advancedSettings.m_videoIgnoreAtStart)
+    {
+      CBookmark bookmark;
+      bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+      bookmark.playerState = m_pPlayer->GetPlayerState();
+      bookmark.timeInSeconds = current;
+      bookmark.thumbNailImage.Empty();
+
+      dbs.AddBookMarkToFile(CurrentFile(), bookmark, CBookmark::RESUME);
+    }
+  }
+}
+
+void CApplication::UpdateAudioFileState()
+{
+  if (g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+      GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent)
+  {
+    if (!m_playCountUpdated) // no need to update more than once
+    {
+      CLog::Log(LOGDEBUG, "%s - Marking current audio file as watched", __FUNCTION__);
+      
+      // consider this item as played
+      m_playCountUpdated = true;
+
+      // Can't write to the musicdatabase while scanning for music info
+      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      if (dialog && !dialog->IsDialogRunning())
+      {
+        CMusicDatabase musicdatabase;
+        if (musicdatabase.Open())
+        {
+          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile->m_strPath);
+          musicdatabase.Close();
+        }
+      }
+    }
+  }
+  else
+    m_playCountUpdated = false;
+}
+
 void CApplication::StopPlaying()
 {
   int iWin = m_gWindowManager.GetActiveWindow();
@@ -4153,42 +4223,21 @@ void CApplication::StopPlaying()
     if (iWin == WINDOW_VISUALISATION)
       m_gWindowManager.PreviousWindow();
 
-    // TODO: Add saving of watched status in here
-    if ( IsPlayingVideo() )
-    { // save our position for resuming at a later date
-      CVideoDatabase dbs;
-      if (dbs.Open())
-      {
-        // mark as watched if we are passed the usual amount
-        if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
-        {
-          dbs.MarkAsWatched(*m_itemCurrentFile);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-        }
+    // Save resume point & update watched status
+    if (IsPlayingVideo())
+    {
+      UpdateVideoFileState();
 
-        if( m_pPlayer )
-        {
-          // ignore 15 seconds at the start and 1 second at the end
-          double current = GetTime();
-          double total = GetTotalTime();
-          if (current > 15 && total - current > 1)
-          {
-            CBookmark bookmark;
-            bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-            bookmark.playerState = m_pPlayer->GetPlayerState();
-            bookmark.timeInSeconds = current;
-            bookmark.thumbNailImage.Empty();
-
-            dbs.AddBookMarkToFile(CurrentFile(),bookmark, CBookmark::RESUME);
-          }
-          else
-            dbs.DeleteResumeBookMark(CurrentFile());
-        }
-        dbs.Close();
-      }
+      if (m_playCountUpdated)
+        CUtil::DeleteVideoDatabaseDirectoryCache();
     }
+
+    if (IsPlayingAudio())
+      UpdateAudioFileState();
+
     if (m_pPlayer)
       m_pPlayer->CloseFile();
+
     g_partyModeManager.Disable();
   }
 }
@@ -4937,15 +4986,24 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
-  // check our network state every 10 seconds or when net status changes
-  g_network.CheckNetwork(20);
-  
-  // check if we need 2 spin down the harddisk
-  CheckNetworkHDSpinDown();
-  if (!m_bNetworkSpinDown)
-    CheckHDSpindown();
+  // check our network state every 10 seconds or when net status changes  g_network.CheckNetwork(20);    // check if we need 2 spin down the harddisk  CheckNetworkHDSpinDown();  if (!m_bNetworkSpinDown)    CheckHDSpindown();  // Update video file state every minute  if (IsPlayingVideo())
+  {
+    if (m_updateFileStateCounter++>120)
+    {
+      m_updateFileStateCounter=0;
 
-  // check if we need to activate the screensaver (if enabled)
+      UpdateVideoFileState();
+    }
+  }
+
+  if (IsPlayingAudio())
+  {
+    CheckAudioScrobblerStatus();
+    // Update audio file state every 0.5 second
+    UpdateAudioFileState();
+  }
+  
+  // Check if we need to activate the screensaver (if enabled).
   if (g_guiSettings.GetString("screensaver.mode") != "None")
     CheckScreenSaver();
 
@@ -5349,7 +5407,7 @@ EPLAYERCORES CApplication::GetCurrentPlayer()
 // and enable tag reading and remote thums
 void CApplication::SaveMusicScanSettings()
 {
-  CLog::Log(LOGINFO,"Music scan has started ... enabling Tag Reading, and Remote Thumbs");
+  CLog::Log(LOGINFO,"Music scan has started... Enabling tag reading, and remote thumbs");
   g_stSettings.m_bMyMusicIsScanning = true;
   g_settings.Save();
 }
@@ -5382,34 +5440,6 @@ void CApplication::CheckPlayingProgress()
       }
     }
   }
-
-  if (!IsPlayingAudio()) return;
-
-  CheckAudioScrobblerStatus();
-
-  // work out where we are in the playing item
-  if (GetPercentage() >= g_advancedSettings.m_playCountMinimumPercent)
-  { // consider this item as played
-    if (m_playCountUpdated)
-      return;
-    m_playCountUpdated = true;
-    if (IsPlayingAudio())
-    {
-      // Can't write to the musicdatabase while scanning for music info
-      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (dialog && !dialog->IsDialogRunning())
-      {
-        CMusicDatabase musicdatabase;
-        if (musicdatabase.Open())
-        {
-          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile->m_strPath);
-          musicdatabase.Close();
-        }
-      }
-    }
-  }
-  else
-    m_playCountUpdated = false;
 }
 
 void CApplication::CheckAudioScrobblerStatus()

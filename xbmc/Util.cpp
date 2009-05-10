@@ -2857,18 +2857,18 @@ bool CUtil::IsDOSPath(const CStdString &path)
 
 void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult)
 {
-  CURL url(strFolder);
-  strResult = url.GetFileName();
-
-  // Add a slash to the end of the path if necessary
-  bool unixPath = !IsDOSPath(strFolder);
-  if (!CUtil::HasSlashAtEnd(strResult) && !strResult.IsEmpty())
+  if(strFolder.Find("://") >= 0)
   {
-    if (unixPath)
-      strResult += '/';
-    else
-      strResult += '\\';
+    CURL url(strFolder);
+    AddFileToFolder(url.GetFileName(), strFile, strResult);
+    url.SetFileName(strResult);
+    url.GetURL(strResult);
+    return;
   }
+
+  strResult = strFolder;
+  AddSlashAtEnd(strResult);
+
   // Remove any slash at the start of the file
   if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
     strResult += strFile.Mid(1);
@@ -2876,13 +2876,10 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
     strResult += strFile;
 
   // correct any slash directions
-  if (unixPath)
+  if (!IsDOSPath(strFolder))
     strResult.Replace('\\', '/');
   else
     strResult.Replace('/', '\\');
-
-  url.SetFileName(strResult);
-  url.GetURL(strResult);
 }
 
 void CUtil::AddSlashAtEnd(CStdString& strFolder)
@@ -3403,7 +3400,7 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
   result.Replace('\\', '_');
   result.Replace('?', '_');
 
-  if (LegalType == LEGAL_WIN32_COMPAT) 
+  if (LegalType == LEGAL_WIN32_COMPAT)
   {
     // just filter out some illegal characters on windows
     result.Replace(':', '_');
@@ -3524,6 +3521,7 @@ const BUILT_IN commands[] = {
   { "Container.SetSortMethod",    true,   "Change to the specified sort method" },
   { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
+  { "Control.SetFocus",           true,   "Change current focus to a different control id" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" }
@@ -3708,7 +3706,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       return false;
     }
   }
-  else if (execute.Equals("setfocus"))
+  else if (execute.Equals("setfocus") || execute.Equals("control.setfocus"))
   {
     // see whether we have more than one param
     vector<CStdString> params;
@@ -4131,6 +4129,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       m_gWindowManager.SendThreadMessage(msg);
     }
   }
+  else if (execute.Equals("playwith"))
+  {
+    g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetPlayerCore(parameter);
+    CAction action;
+    action.wID = ACTION_PLAYER_PLAY;
+    g_application.OnAction(action);
+  }
   else if (execute.Equals("mute"))
   {
     g_application.Mute();
@@ -4516,7 +4521,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
     message.SetStringParam(strParameterCaseIntact);
     g_graphicsContext.SendMessage(message);
-  }  
+  }
   else if (execute.Equals("container.update"))
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
