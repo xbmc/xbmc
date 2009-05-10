@@ -124,12 +124,7 @@ double CXBoxRenderManager::GetPresentTime()
 
 void CXBoxRenderManager::WaitPresentTime(double presenttime)
 {
-  double now = GetPresentTime();
-  while(now + 0.001 < presenttime)
-  {
-    g_VideoReferenceClock.Wait((int)((presenttime - now) * 1000.0));
-    now = GetPresentTime();
-  }
+  CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
 }
 
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)

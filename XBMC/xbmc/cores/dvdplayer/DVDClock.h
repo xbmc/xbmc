@@ -62,6 +62,7 @@ public:
 
   static double GetAbsoluteClock();
   static double GetFrequency() { return (double)m_systemFrequency.QuadPart ; }
+  static double WaitAbsoluteClock(double target);
 protected:
   CSharedSection m_critSection;
   LARGE_INTEGER m_systemUsed;  

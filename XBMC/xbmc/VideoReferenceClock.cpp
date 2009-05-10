@@ -821,7 +821,59 @@ int CVideoReferenceClock::GetRefreshRate()
 
 #define MAXDELAY 1200
 
-void CVideoReferenceClock::Wait(int msecs)
+void CVideoReferenceClock::Wait(__int64 Target)
+{
+  LARGE_INTEGER Now;
+  int           SleepTime;
+  __int64       NextVblank;
+  bool          Late;
+
+  Lock();
+  if (m_UseVblank)
+  {
+#ifdef HAS_SDL
+    while (m_CurrTime < Target)
+    {
+      QueryPerformanceCounter(&Now);
+      NextVblank = m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXDELAY / 1000);
+      SleepTime = (NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency;
+      
+      if (SleepTime <= 0)
+        Late = true;
+      else if (SDL_CondWaitTimeout(m_VblankCond, m_VblankMutex, SleepTime) != 0)
+        Late = true;
+      else
+        Late = false;
+
+      if (Late)
+      {
+        m_MissedVblanks++;
+        m_VblankTime += m_SystemFrequency / m_RefreshRate;
+        UpdateClock(1, false);
+      }
+    }
+    Unlock();      
+#else
+    while(m_CurrTime < Target)
+    {
+      Unlock();
+      Sleep(1);
+      Lock();
+    }
+    Unlock();
+#endif
+  }
+  else
+  {
+    Unlock();
+    QueryPerformanceCounter(&Now);
+    SleepTime = (Target - Now.QuadPart + m_ClockOffset) * 1000 / m_SystemFrequency;
+    if (SleepTime > 0) ::Sleep(SleepTime);
+  }
+}
+
+
+/*void CVideoReferenceClock::Wait(__int64 target)
 {
   LARGE_INTEGER Now;
   __int64       NextVblank;
@@ -860,7 +912,7 @@ void CVideoReferenceClock::Wait(int msecs)
     Unlock();
     ::Sleep(msecs);
   }
-}
+}*/
 
 void CVideoReferenceClock::SendVblankSignal()
 {
