@@ -196,13 +196,9 @@ bool CFileShoutcast::Open(const CURL& url)
                 OPT_SEARCH_PORTS |
                 OPT_ADD_ID3;
 
+  // No progress dialog for now as it may deadlock when DVDplayer is used
   CGUIDialogProgress* dlgProgress = NULL;
-  
-  // workaround to avoid deadlocks caused by dvdplayer halting app, only ogg is played by dvdplayer
-  if (!url.GetFileType().Equals("ogg") )
-  {
-    dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  }
+  //CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   strcpy(m_opt.output_directory, "./");
   m_opt.proxyurl[0] = '\0';

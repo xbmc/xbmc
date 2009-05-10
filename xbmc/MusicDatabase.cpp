@@ -1535,8 +1535,6 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
 
     long songID = GetSongIDFromPath(strFileName);
 
-    m_pDS->close();
-
     CStdString sql=FormatSQL("UPDATE song SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idSong=%ld", songID);
     BeginTransaction();
     m_pDS->exec(sql.c_str());
@@ -4644,10 +4642,8 @@ bool CMusicDatabase::SetKaraokeSongDelay(long idSong, int delay)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    BeginTransaction();
     CStdString strSQL = FormatSQL("UPDATE karaokedata SET iKaraDelay=%i WHERE idSong=%i", delay, idSong);
     m_pDS->exec(strSQL.c_str());
-    CommitTransaction();
 
     return true;
   }

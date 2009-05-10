@@ -446,6 +446,30 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
   return false;
 }
 
+bool CVideoDatabase::GetPathsForTvShow(long idShow, vector<long>& paths)
+{
+  CStdString strSQL;
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    strSQL = FormatSQL("select distinct path.idPath from path,tvshowlinkepisode join episode on tvshowlinkepisode.idEpisode=episode.idEpisode join files on files.idPath=path.idPath where episode.idFile = files.idFile and tvshowlinkepisode.idShow=%u",idShow);
+    m_pDS->query(strSQL.c_str());
+    while (!m_pDS->eof())
+    {
+      paths.push_back(m_pDS->fv(0).get_asLong());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s error during query: %s",__FUNCTION__, strSQL.c_str());
+  }
+  return false;
+}
+
 long CVideoDatabase::AddPath(const CStdString& strPath)
 {
   CStdString strSQL;
@@ -1646,12 +1670,17 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     CVideoInfoTag info = details;
 
     long lFileId = GetFileId(strFilenameAndPath);
+    
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
+    
     long lMovieId = GetMovieId(strFilenameAndPath);
+    
     if (lMovieId > -1)
       DeleteMovie(strFilenameAndPath, true); // true to keep the table entry
+    
     BeginTransaction();
+    
     lMovieId = AddMovie(strFilenameAndPath);
     if (lMovieId < 0)
     {
@@ -1716,7 +1745,9 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
       CLog::Log(LOGERROR, "%s: called without database open", __FUNCTION__);
       return -1;
     }
+    
     BeginTransaction();
+    
     long lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
@@ -1764,6 +1795,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
   try
   {
     BeginTransaction();
+    
     if (lEpisodeId == -1)
     {
       lEpisodeId = GetEpisodeId(strFilenameAndPath);
@@ -1828,6 +1860,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
   try
   {
     BeginTransaction();
+    
     long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
@@ -2070,10 +2103,8 @@ void CVideoDatabase::AddBookMarkToFile(const CStdString& strFilenameAndPath, con
       strSQL=FormatSQL("update bookmark set timeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idBookmark);
     else
       strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,'%s','%s','%s', %i)", lFileId, bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), (int)type);
-    
-    BeginTransaction();
+
     m_pDS->exec(strSQL.c_str());
-    CommitTransaction();
   }
   catch (...)
   {
@@ -2970,6 +3001,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const SScrape
 bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
   BeginTransaction();
+  
   try
   {
     if (iVersion < 4)
@@ -5918,10 +5950,11 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
   CGUIDialogProgress *progress=NULL;
   try
   {
-    BeginTransaction();
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
+    BeginTransaction();
+    
     // find all the files
     CStdString sql;
     if (paths)

@@ -2537,6 +2537,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   CFileItem item(strMovie, false);
   if (item.IsInternetStream()) return ;
+  if (item.IsHDHomeRun()) return ;
   if (item.IsPlayList()) return ;
   if (!item.IsVideo()) return ;
 
@@ -4473,7 +4474,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("updatelibrary"))
   {
-    if (parameter.Equals("music"))
+    CStdStringArray param_array;
+    // Use parameter with case intact
+    StringUtils::SplitString(strParameterCaseIntact,",", param_array);
+    if (param_array.size() < 1)
+      return -1;
+    if (param_array[0].Equals("music"))
     {
       CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
       if (scanner)
@@ -4484,7 +4490,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           scanner->StartScanning("");
       }
     }
-    if (parameter.Equals("video"))
+    if (param_array[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       SScraperInfo info;
@@ -4494,7 +4500,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan("",info,settings);
+          CGUIWindowVideoBase::OnScan(param_array.size() > 1 ? param_array[1] : "",info,settings);
       }
     }
   }

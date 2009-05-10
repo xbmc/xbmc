@@ -311,12 +311,15 @@ namespace VIDEO
 
     if (!bSkip)
     {
-      RetrieveVideoInfo(items,settings.parent_name_root,m_info);
-      if (!m_bStop && (m_info.strContent.Equals("movies") || m_info.strContent.Equals("musicvideos")))
+      if (RetrieveVideoInfo(items,settings.parent_name_root,m_info))
       {
-        m_database.SetPathHash(strDirectory, hash);
-        m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
-      }
+        if (!m_bStop && (m_info.strContent.Equals("movies") || m_info.strContent.Equals("musicvideos")))
+        {
+          m_database.SetPathHash(strDirectory, hash);
+          m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+        }
+      } else
+        CLog::Log(LOGDEBUG, "Not adding item to library as no info was found :(");
     }
 
     if (m_pObserver)
@@ -394,6 +397,7 @@ namespace VIDEO
       g_infoManager.GetBool(i);
     //m_database.BeginTransaction();
 
+    bool Return(false);
     for (int i = 0; i < (int)items.Size(); ++i)
     {
       m_nfoReader.Close();
@@ -585,6 +589,7 @@ namespace VIDEO
               FetchSeasonThumbs(lResult);
             if (!bRefresh && info2.strContent.Equals("tvshows"))
               i--;
+            Return = true;
             continue;
           }
           if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
@@ -645,6 +650,7 @@ namespace VIDEO
                   if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
                     FetchSeasonThumbs(lResult);
               }
+              Return = true;
             }
           }
         }
@@ -657,7 +663,7 @@ namespace VIDEO
     //m_database.CommitTransaction();
     g_infoManager.ResetPersistentCache();
     m_database.Close();
-    return true;
+    return Return;
   }
 
   // This function is run by another thread
@@ -723,6 +729,7 @@ namespace VIDEO
         return;
       }
       m_pathsToClean.push_back(m_database.GetPathId(item->m_strPath));
+      m_database.GetPathsForTvShow(m_database.GetTvShowId(item->m_strPath),m_pathsToClean);
       item->SetProperty("hash",hash);
     }
     else

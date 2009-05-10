@@ -404,8 +404,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       CUtil::GetParentPath(item->m_strPath,strParentDirectory);
       if (m_database.GetTvShowId(strParentDirectory) < 0)
       {
-    	CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
-	    return false;
+        CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
+        return false;
       }
 
       long lEpisodeHint=-1;

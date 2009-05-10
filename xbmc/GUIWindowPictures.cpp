@@ -402,7 +402,14 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPath)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
-    pSlideShow->RunSlideShow(strPath, true);
+  {
+    // stop any video
+    if (g_application.IsPlayingVideo())
+      g_application.StopPlaying();
+    pSlideShow->AddFromPath(strPath, true);
+    if (pSlideShow->NumSlides())
+      m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+  }
 }
 
 void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)

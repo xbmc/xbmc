@@ -48,6 +48,7 @@ public:
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence)=0;
   virtual void av_read_frame_flush(AVFormatContext *s)=0;
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
+  virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
 };
 
 #ifdef __APPLE__
@@ -91,6 +92,7 @@ public:
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence) { return ::url_fseek(s, offset, whence); }
   virtual void av_read_frame_flush(AVFormatContext *s) { ::av_read_frame_flush(s); }
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_buffer(s, buf, size); }
+  virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_partial_buffer(s, buf, size); }
   
   // DLL faking.
   virtual bool ResolveExports() { return true; }
@@ -122,6 +124,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
   DEFINE_FUNC_ALIGNED1(void, __cdecl, av_read_frame_flush, AVFormatContext*)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_buffer, ByteIOContext*, unsigned char *, int)
+  DEFINE_FUNC_ALIGNED3(int, __cdecl, get_partial_buffer, ByteIOContext*, unsigned char *, int)
 #else
   DEFINE_METHOD2(int, av_read_frame, (AVFormatContext *p1, AVPacket *p2))
   DEFINE_METHOD4(int, av_seek_frame, (AVFormatContext *p1, int p2, int64_t p3, int p4))
@@ -131,6 +134,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD2(AVInputFormat*, av_probe_input_format, (AVProbeData* p1 , int p2))
   DEFINE_METHOD1(void, av_read_frame_flush, (AVFormatContext* p1))
   DEFINE_METHOD3(int, get_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
+  DEFINE_METHOD3(int, get_partial_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
 #endif
   DEFINE_METHOD1(void, url_set_interrupt_cb, (URLInterruptCB *p1))
   DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
@@ -169,6 +173,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(url_fseek)
     RESOLVE_METHOD(av_read_frame_flush)
     RESOLVE_METHOD(get_buffer)
+    RESOLVE_METHOD(get_partial_buffer)
   END_METHOD_RESOLVE()
 public:
   void av_register_all()

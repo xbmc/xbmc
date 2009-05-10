@@ -176,7 +176,13 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
   TiXmlElement* pExpression = element->FirstChildElement("expression");
   if (pExpression)
   {
-    CRegExp reg;
+    bool bInsensitive=true;
+    const char* sensitive = pExpression->Attribute("cs");
+    if (sensitive)
+      if (stricmp(sensitive,"yes") == 0)
+        bInsensitive=false; // match case sensitive
+    
+    CRegExp reg(bInsensitive);
     CStdString strExpression;
     if (pExpression->FirstChild())
       strExpression = pExpression->FirstChild()->Value();
