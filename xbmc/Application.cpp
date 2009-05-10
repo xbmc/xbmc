@@ -4177,6 +4177,7 @@ void CApplication::UpdateVideoFileState()
 
       dbs.AddBookMarkToFile(CurrentFile(), bookmark, CBookmark::RESUME);
     }
+    dbs.Close();
   }
 }
 
@@ -4986,7 +4987,17 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
-  // check our network state every 10 seconds or when net status changes  g_network.CheckNetwork(20);    // check if we need 2 spin down the harddisk  CheckNetworkHDSpinDown();  if (!m_bNetworkSpinDown)    CheckHDSpindown();  // Update video file state every minute  if (IsPlayingVideo())
+  // check our network state every 10 seconds or when net status changes
+  g_network.CheckNetwork(20);
+  
+  // check if we need 2 spin down the harddisk
+  CheckNetworkHDSpinDown();
+  if (!m_bNetworkSpinDown)
+    CheckHDSpindown();
+
+  //disabled for now, because it can cause jerks and framedrops
+  // Update video file state every minute
+  /*if (IsPlayingVideo())
   {
     if (m_updateFileStateCounter++>120)
     {
@@ -4994,7 +5005,7 @@ void CApplication::ProcessSlow()
 
       UpdateVideoFileState();
     }
-  }
+  }*/
 
   if (IsPlayingAudio())
   {
