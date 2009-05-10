@@ -752,7 +752,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     ReturnV = sscanf(Buff, "%lf", &fRefreshRate);
     if (ReturnV != 1 || fRefreshRate <= 0.0)
     {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: falling back to RandR", NVSETTINGSCMD);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: falling back to RandR");
       m_UseNvSettings = false;
       return false;
     }
