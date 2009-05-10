@@ -416,9 +416,9 @@ class CDateTime;
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
 #ifdef SVN_REV
-#define VERSION_STRING "9.04-beta1 r"SVN_REV
+#define VERSION_STRING "pre-9.10 r"SVN_REV
 #else
-#define VERSION_STRING "9.04-beta1"
+#define VERSION_STRING "pre-9.10"
 #endif
 
 #define LISTITEM_START              35000
