@@ -13,7 +13,7 @@
 extern "C"
 {
   // Functions that your visualisation must implement
-#ifndef _LINUX
+#if !defined(_LINUX) && !defined(HAS_SDL)
   ADDON_STATUS Create(ScreensaverCallbacks* cb, LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float fPixelRatio);
 #else
   ADDON_STATUS Create(ScreensaverCallbacks* cb, void* pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float fPixelRatio);

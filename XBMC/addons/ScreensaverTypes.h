@@ -20,11 +20,11 @@
  *
  */
 
-#include "DllAddonTypes.h"
-#include "DllAddonSettings.h"
-
 #ifndef __SCREENSAVER_TYPES_H__
 #define __SCREENSAVER_TYPES_H__
+
+#include "DllAddonTypes.h"
+#include "DllAddonSettings.h"
 
 extern "C"
 {
@@ -43,7 +43,7 @@ extern "C"
 
   struct ScreenSaver
   {
-#ifndef _LINUX
+#if !defined(_LINUX) && !defined(HAS_SDL)
     ADDON_STATUS (__cdecl* Create)(ScreensaverCallbacks* cb, LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
 #else
     ADDON_STATUS (__cdecl* Create)(ScreensaverCallbacks* cb, void* pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
