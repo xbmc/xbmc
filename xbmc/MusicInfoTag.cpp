@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "musicInfoTag.h"
+#include "MusicInfoTag.h"
 #include "Album.h"
 
 using namespace MUSIC_INFO;
@@ -329,7 +329,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
   SetArtist(album.strArtist);
   SetAlbum(album.strAlbum);
-  SetAlbumArtist(album.strAlbum);
+  SetAlbumArtist(album.strArtist);
   SetGenre(album.strGenre);
   SYSTEMTIME stTime;
   stTime.wYear = album.iYear;
