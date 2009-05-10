@@ -35,7 +35,6 @@ public:
   virtual CGUIBorderedImage *Clone() const { return new CGUIBorderedImage(*this); };
 
   virtual void Render();
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);

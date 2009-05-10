@@ -157,13 +157,6 @@ void CGUIResizeControl::UpdateSpeed(int nDirection)
   }
 }
 
-void CGUIResizeControl::PreAllocResources()
-{
-  CGUIControl::PreAllocResources();
-  m_imgFocus.PreAllocResources();
-  m_imgNoFocus.PreAllocResources();
-}
-
 void CGUIResizeControl::AllocResources()
 {
   CGUIControl::AllocResources();

@@ -251,15 +251,6 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
   Draw(x, y, z, texture, diffuse, color, orientation);
 }
 
-void CGUITextureBase::PreAllocResources()
-{
-  FreeResources();
-  if (!m_info.useLarge)
-    g_TextureManager.PreLoad(m_info.filename);
-  if (!m_info.diffuse.IsEmpty())
-    g_TextureManager.PreLoad(m_info.diffuse);
-}
-
 void CGUITextureBase::AllocResources()
 {
   if (m_info.filename.IsEmpty())
