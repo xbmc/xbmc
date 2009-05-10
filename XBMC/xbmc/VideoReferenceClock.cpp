@@ -666,13 +666,15 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   if (m_UseVblank)
   {
     ptime->QuadPart = m_CurrTime;
+    Unlock();
   }
   else
   {
+    __int64 ClockOffset = m_ClockOffset;
+    Unlock();
     QueryPerformanceCounter(ptime);
-    ptime->QuadPart += m_ClockOffset;
+    ptime->QuadPart += ClockOffset;
   }
-  Unlock();
 }
 
 void CVideoReferenceClock::GetFrequency(LARGE_INTEGER *pfreq)
