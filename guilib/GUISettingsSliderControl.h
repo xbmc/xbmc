@@ -50,7 +50,6 @@ public:
 
   virtual void Render();
   virtual bool OnAction(const CAction &action);
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);

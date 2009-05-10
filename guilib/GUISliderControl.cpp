@@ -266,14 +266,6 @@ void CGUISliderControl::DynamicResourceAlloc(bool bOnOff)
   m_guiMidFocus.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUISliderControl::PreAllocResources()
-{
-  CGUIControl::PreAllocResources();
-  m_guiBackground.PreAllocResources();
-  m_guiMid.PreAllocResources();
-  m_guiMidFocus.PreAllocResources();
-}
-
 void CGUISliderControl::AllocResources()
 {
   CGUIControl::AllocResources();

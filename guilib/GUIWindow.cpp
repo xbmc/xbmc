@@ -23,7 +23,6 @@
 #include "GUIWindow.h"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
-#include "TextureManager.h"
 #include "Settings.h"
 #include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
@@ -662,21 +661,12 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   QueryPerformanceCounter(&slend);
 
   // and now allocate resources
-  g_TextureManager.StartPreLoad();
-  CGUIControlGroup::PreAllocResources();
-  g_TextureManager.EndPreLoad();
-
-  LARGE_INTEGER plend;
-  QueryPerformanceCounter(&plend);
-
   CGUIControlGroup::AllocResources();
-
-  g_TextureManager.FlushPreLoad();
 
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
-  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - slend.QuadPart) / freq.QuadPart);
+  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart);
 
   m_bAllocated = true;
 }

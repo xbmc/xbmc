@@ -73,12 +73,6 @@ void CGUISettingsSliderControl::DynamicResourceAlloc(bool bOnOff)
   m_buttonControl.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUISettingsSliderControl::PreAllocResources()
-{
-  CGUISliderControl::PreAllocResources();
-  m_buttonControl.PreAllocResources();
-}
-
 void CGUISettingsSliderControl::AllocResources()
 {
   CGUISliderControl::AllocResources();

@@ -54,12 +54,6 @@ void CGUIBorderedImage::Render()
   CGUIImage::Render();
 }
 
-void CGUIBorderedImage::PreAllocResources()
-{
-  m_borderImage.PreAllocResources();
-  CGUIImage::PreAllocResources();
-}
-
 void CGUIBorderedImage::AllocResources()
 {
   m_borderImage.AllocResources();
