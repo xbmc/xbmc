@@ -290,6 +290,10 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
   // Try to find an album to lookup from the current item
   CAlbum album;
   CArtist artist;
+  bool foundAlbum = false;
+
+  album.idAlbum = -1;
+
   // we have a folder
   if (pItem->IsMusicDb())
   {
@@ -299,7 +303,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
     { // artist lookup
       artist.idArtist = params.GetArtistId();
       artist.strArtist = pItem->GetMusicInfoTag()->GetArtist();
-      album.idAlbum = -1;
     }
     else
     { // album lookup
@@ -330,7 +333,6 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
         return;
     }
     // check the first song we find in the folder, and grab it's album info
-    bool foundAlbum(false);
     for (int i = 0; i < items.Size() && !foundAlbum; i++)
     {
       CFileItemPtr pItem = items[i];
@@ -357,14 +359,13 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
       if (m_dlgProgress && bShowInfo)
         m_dlgProgress->Close();
       return;
-      return;
     }
 
     if (m_dlgProgress && bShowInfo)
       m_dlgProgress->Close();
   }
 
-  if (album.idAlbum == -1)
+  if (album.idAlbum == -1 && foundAlbum == false)
     ShowArtistInfo(artist, pItem->m_strPath, false, bShowInfo);
   else
     ShowAlbumInfo(album, strPath, false, bShowInfo);
@@ -618,7 +619,8 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 
   OnRetrieveMusicInfo(*m_vecItems);
 
-  CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took %lu msec", timeGetTime()-dwStartTick);
+  CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took %u msec",
+            timeGetTime() - dwStartTick);
 }
 
 /// \brief Add selected list/thumb control item to playlist and start playing
@@ -1269,7 +1271,6 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
   {
     return;
   }
-
   // Start the music info loader thread
   m_musicInfoLoader.SetProgressCallback(m_dlgProgress);
   m_musicInfoLoader.Load(items);
@@ -1319,7 +1320,7 @@ bool CGUIWindowMusicBase::GetDirectory(const CStdString &strDirectory, CFileItem
     items.SetMusicThumb();
 
   // add in the "New Playlist" item if we're in the playlists folder
-  if (items.m_strPath == "special://musicplaylists/" && !items.Contains("newplaylist://"))
+  if ((items.m_strPath == "special://musicplaylists/") && !items.Contains("newplaylist://"))
   {
     CFileItemPtr newPlaylist(new CFileItem(g_settings.GetUserDataItem("PartyMode.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));

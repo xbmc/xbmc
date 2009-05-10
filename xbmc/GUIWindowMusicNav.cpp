@@ -799,7 +799,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
       CStdString thumbFromWeb;
       CStdString strLabel;
       strLabel.Format("allmusicthumb%i.jpg",i);
-      CUtil::AddFileToFolder("z:\\", strLabel, thumbFromWeb);
+      CUtil::AddFileToFolder("special://temp/", strLabel, thumbFromWeb);
       if (CScraperUrl::DownloadThumbnail(thumbFromWeb,*iter))
       {
         CStdString strItemPath;
@@ -815,8 +815,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
   else
   {
     strPath = m_vecItems->Get(iItem)->m_strPath;
-    strPath.Replace("plugin://music/","Q:\\plugins\\music\\"); 
-    strPath.Replace("/","\\"); 
+    strPath.Replace("plugin://music/","special://home/plugins/music/");
     picturePath = strPath;
     CFileItem item(strPath,true);
     cachedThumb = item.GetCachedProgramThumb();

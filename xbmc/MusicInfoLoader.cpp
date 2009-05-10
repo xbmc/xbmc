@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "MusicInfoLoader.h"
 #include "MusicDatabase.h"
-#include "musicInfoTagLoaderFactory.h"
+#include "MusicInfoTagLoaderFactory.h"
 #include "FileSystem/DirectoryCache.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory/DirectoryNode.h"

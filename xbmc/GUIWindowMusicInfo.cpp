@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowMusicInfo.h"
 #include "Util.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
@@ -695,3 +695,4 @@ CFileItemPtr CGUIWindowMusicInfo::GetCurrentListItem(int offset)
 { 
   return m_albumItem; 
 }
+
