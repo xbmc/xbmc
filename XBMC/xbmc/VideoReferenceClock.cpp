@@ -190,9 +190,21 @@ bool CVideoReferenceClock::SetupGLX()
 
   m_Window = XCreateWindow(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), 0, 0, 256, 256, 0,
                            m_vInfo->depth, InputOutput, m_vInfo->visual, SwaMask, &Swa);
-  
+
   m_Context = glXCreateNewContext(m_Dpy, m_fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
+  if (!m_Context)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXCreateNewContext returned NULL");
+    return false;
+  }
+
   m_GLXWindow = glXCreateWindow(m_Dpy, m_fbConfigs[0], m_Window, NULL );
+  if (!m_GLXWindow)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXCreateWindow returned NULL");
+    return false;
+  }
+
   glXMakeCurrent(m_Dpy, m_GLXWindow, m_Context);
   
   m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
