@@ -377,6 +377,7 @@ public:
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
+  bool GetPathsForTvShow(long idShow, std::vector<long>& paths);
 
   // for music + musicvideo linkups - if no album and title given it will return the artist id, else the id of the matching video
   long GetMatchingMusicVideo(const CStdString& strArtist, const CStdString& strAlbum = "", const CStdString& strTitle = "");

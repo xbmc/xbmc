@@ -601,6 +601,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (offset || id)
         return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset, INFOFLAG_LISTITEM_WRAP));
     }
+    else if (info.Equals("hasfiles")) ret = CONTAINER_HASFILES;
+    else if (info.Equals("hasfolders")) ret = CONTAINER_HASFOLDERS;
+    else if (info.Equals("isstacked")) ret = CONTAINER_STACKED;
     else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
     else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
@@ -1781,6 +1784,34 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   {
     bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
               g_application.IsPlayingAudio();
+  }
+  else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
+  {
+    CGUIWindow *pWindow = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (pWindow)
+    {
+      const CFileItemList& items=((CGUIMediaWindow*)pWindow)->CurrentDirectory();
+      for (int i=0;i<items.Size();++i)
+      {
+        CFileItemPtr item=items.Get(i);
+        if (!item->m_bIsFolder && condition == CONTAINER_HASFILES)
+        {
+          bReturn=true;
+          break;
+        }
+        else if (item->m_bIsFolder && !item->IsParentFolder() && condition == CONTAINER_HASFOLDERS)
+        {
+          bReturn=true;
+          break;
+        }
+      }
+    }
+  }
+  else if (condition == CONTAINER_STACKED)
+  {
+    CGUIWindow *pWindow = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (pWindow)
+      bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().GetProperty("isstacked")=="1";
   }
   else if (condition == CONTAINER_HAS_THUMB)
   {

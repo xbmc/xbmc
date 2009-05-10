@@ -52,6 +52,9 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
     return 0;
   
+  // unless this debug information becomes useful, we disable it.
+  return 0;
+
   CStdString strLine;
   strLine.append(output, size);
   std::vector<CStdString> vecLines;
