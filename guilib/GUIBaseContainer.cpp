@@ -852,8 +852,8 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
           (*it).Replace(",", ",,");
         StringUtils::JoinString(actions, " , ", newItem->m_strPath);
         newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
-        newItem->SetThumbnailImage(thumb);
-        newItem->SetIconImage(icon);
+        newItem->SetThumbnailImage(CGUIControlFactory::FilterLabel(thumb));
+        newItem->SetIconImage(CGUIControlFactory::FilterLabel(icon));
         if (id) newItem->m_iprogramCount = atoi(id);
         newItem->m_idepth = visibleCondition;
       }
@@ -867,8 +867,8 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         newItem.reset(new CFileItem(label ? CGUIControlFactory::FilterLabel(label) : ""));
         newItem->m_strPath = item->FirstChild()->Value();
         if (label2) newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
-        if (thumb) newItem->SetThumbnailImage(thumb);
-        if (icon) newItem->SetIconImage(icon);
+        if (thumb) newItem->SetThumbnailImage(CGUIControlFactory::FilterLabel(thumb));
+        if (icon) newItem->SetIconImage(CGUIControlFactory::FilterLabel(icon));
         if (id) newItem->m_iprogramCount = atoi(id);
         newItem->m_idepth = 0;  // no visibility condition
       }
