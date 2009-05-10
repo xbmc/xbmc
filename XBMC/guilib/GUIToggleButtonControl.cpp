@@ -71,12 +71,6 @@ bool CGUIToggleButtonControl::OnAction(const CAction &action)
   return CGUIButtonControl::OnAction(action);
 }
 
-void CGUIToggleButtonControl::PreAllocResources()
-{
-  CGUIButtonControl::PreAllocResources();
-  m_selectButton.PreAllocResources();
-}
-
 void CGUIToggleButtonControl::AllocResources()
 {
   CGUIButtonControl::AllocResources();

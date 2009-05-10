@@ -58,7 +58,6 @@ public:
   virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);

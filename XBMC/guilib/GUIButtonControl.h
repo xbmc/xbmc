@@ -51,7 +51,6 @@ public:
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);

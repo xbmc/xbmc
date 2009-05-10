@@ -116,7 +116,6 @@ public:
   void Render();
 
   void DynamicResourceAlloc(bool bOnOff);
-  void PreAllocResources();
   void AllocResources();
   void FreeResources(bool immediately = false);
 

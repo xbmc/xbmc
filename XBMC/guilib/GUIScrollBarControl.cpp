@@ -169,16 +169,6 @@ void CGUIScrollBar::DynamicResourceAlloc(bool bOnOff)
   m_guiNibFocus.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIScrollBar::PreAllocResources()
-{
-  CGUIControl::PreAllocResources();
-  m_guiBackground.PreAllocResources();
-  m_guiBarNoFocus.PreAllocResources();
-  m_guiBarFocus.PreAllocResources();
-  m_guiNibNoFocus.PreAllocResources();
-  m_guiNibFocus.PreAllocResources();
-}
-
 void CGUIScrollBar::AllocResources()
 {
   CGUIControl::AllocResources();

@@ -185,12 +185,6 @@ bool CGUIImage::OnMessage(CGUIMessage& message)
   return CGUIControl::OnMessage(message);
 }
 
-void CGUIImage::PreAllocResources()
-{
-  FreeResources();
-  m_texture.PreAllocResources();
-}
-
 void CGUIImage::AllocResources()
 {
   if (m_texture.GetFileName().IsEmpty())
