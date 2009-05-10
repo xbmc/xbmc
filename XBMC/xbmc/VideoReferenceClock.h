@@ -46,7 +46,6 @@ class CVideoReferenceClock : public CThread
     double GetSpeed();
     int    GetRefreshRate();
     void   Wait(__int64 Target);
-    void   UpdateClock(int NrVBlanks, bool CheckMissed);
     void   WaitStarted(int MSecs);
 
   protected:
@@ -55,6 +54,7 @@ class CVideoReferenceClock : public CThread
     void Lock();
     void Unlock();
     void SendVblankSignal();
+    void UpdateClock(int NrVBlanks, bool CheckMissed);
     
     __int64 m_CurrTime;
     __int64 m_AdjustedFrequency;
