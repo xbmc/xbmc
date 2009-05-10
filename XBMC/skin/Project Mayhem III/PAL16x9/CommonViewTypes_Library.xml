@@ -1561,7 +1561,7 @@
 					<textureslidernibfocus>-</textureslidernibfocus>
 					<onleft>50</onleft>
 					<onright>9000</onright>
-					<showonepage>true</showonepage>
+					<showonepage>false</showonepage>
 					<orientation>vertical</orientation>
 				</control>
 				<control type="image">
