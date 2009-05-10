@@ -219,7 +219,7 @@ namespace PYXBMC
 
     PyGUILock();
     if (self->pGUIControl)
-      ((CGUIRadioButtonControl*)self->pGUIControl)->SetSelected((bool)selected);
+      ((CGUIRadioButtonControl*)self->pGUIControl)->SetSelected(0 != selected);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);

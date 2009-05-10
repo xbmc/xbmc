@@ -32,9 +32,7 @@
 #include <string>
 
 #include "sqlitedataset.h"
-#include "sqlite3.h"
 #include "utils/log.h"
-//#include <unistd.h>
 
 using namespace std;
 

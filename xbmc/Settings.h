@@ -133,6 +133,7 @@ public:
     float m_karaokeSyncDelay;
     float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
+    float m_audioPlayCountMinimumPercent;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -148,10 +149,8 @@ public:
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
-    int m_videoBlackBarColour;
     CStdString m_videoPPFFmpegType;
-    CStdString m_videoDefaultPlayer;
-        
+
     bool m_musicUseTimeSeeking;
     int m_musicTimeSeekForward;
     int m_musicTimeSeekBackward;
@@ -162,9 +161,15 @@ public:
     int m_musicPercentSeekForwardBig;
     int m_musicPercentSeekBackwardBig;
     int m_musicResample;
+    int m_videoBlackBarColour;
+    int m_videoIgnoreAtStart;
+
+    CStdString m_videoDefaultPlayer;
+
+    float m_videoPlayCountMinimumPercent;
 
     int m_cacheMemBufferSize;
-    
+
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
@@ -177,7 +182,6 @@ public:
     int m_lcdAddress4;
 
     int m_autoDetectPingTime;
-    float m_playCountMinimumPercent;
 
     int m_songInfoDuration;
     int m_busyDialogDelay;
