@@ -882,7 +882,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
     __int64 ClockOffset = m_ClockOffset;
     Unlock();
     QueryPerformanceCounter(&Now);
-    SleepTime = (Target - Now.QuadPart + ClockOffset) * 1000 / m_SystemFrequency;
+    SleepTime = (Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency;
     if (SleepTime > 0) ::Sleep(SleepTime);
   }
 }
