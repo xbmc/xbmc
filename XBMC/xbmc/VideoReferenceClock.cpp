@@ -865,54 +865,13 @@ void CVideoReferenceClock::Wait(__int64 Target)
   }
   else
   {
+    __int64 ClockOffset = m_ClockOffset;
     Unlock();
     QueryPerformanceCounter(&Now);
-    SleepTime = (Target - Now.QuadPart + m_ClockOffset) * 1000 / m_SystemFrequency;
+    SleepTime = (Target - Now.QuadPart + ClockOffset) * 1000 / m_SystemFrequency;
     if (SleepTime > 0) ::Sleep(SleepTime);
   }
 }
-
-
-/*void CVideoReferenceClock::Wait(__int64 target)
-{
-  LARGE_INTEGER Now;
-  __int64       NextVblank;
-  int           SleepTime;
-  bool          Late = false;
-  
-  Lock();
-  //when using vblank, wait for the vblank signal
-  if (m_UseVblank)
-  {
-#ifdef HAS_SDL
-    QueryPerformanceCounter(&Now);
-    NextVblank = m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXDELAY / 1000);
-    SleepTime = (NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency;
-    
-    if (SleepTime <= 0)
-      Late = true;
-    else if (SDL_CondWaitTimeout(m_VblankCond, m_VblankMutex, SleepTime) != 0)
-      Late = true;
-    
-    if (Late)
-    {
-      m_MissedVblanks++;
-      m_VblankTime += m_SystemFrequency / m_RefreshRate;
-      UpdateClock(1, false);
-    }
-    
-    Unlock();
-#else
-    Unlock();
-    ::Sleep(1);
-#endif
-  }
-  else
-  {
-    Unlock();
-    ::Sleep(msecs);
-  }
-}*/
 
 void CVideoReferenceClock::SendVblankSignal()
 {
