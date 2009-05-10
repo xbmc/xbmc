@@ -33,6 +33,8 @@ static void TimeGetTimeCounter(LARGE_INTEGER* val)   { val->QuadPart = timeGetTi
 
 LARGE_INTEGER CDVDClock::m_systemOffset;
 LARGE_INTEGER CDVDClock::m_systemFrequency;
+CCriticalSection CDVDClock::m_systemsection;
+
 CDVDClock::CDVDClock()
 {
   if(!m_systemFrequency.QuadPart)
@@ -53,8 +55,7 @@ CDVDClock::~CDVDClock()
 // Returns the current absolute clock in units of DVD_TIME_BASE (usually microseconds).
 double CDVDClock::GetAbsoluteClock()
 {
-  static CCriticalSection section;
-  CSingleLock lock(section);
+  CSingleLock lock(m_systemsection);
 
   if(!m_systemFrequency.QuadPart)
     g_VideoReferenceClock.GetFrequency(&m_systemFrequency);
@@ -78,8 +79,7 @@ double CDVDClock::GetAbsoluteClock()
 
 double CDVDClock::WaitAbsoluteClock(double target)
 {
-  static CCriticalSection section;
-  CSingleLock lock(section);
+  CSingleLock lock(m_systemsection);
   
   __int64 systemtarget;
 

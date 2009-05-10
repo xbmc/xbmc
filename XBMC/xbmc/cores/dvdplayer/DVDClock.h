@@ -73,4 +73,6 @@ protected:
   
   static LARGE_INTEGER m_systemFrequency;
   static LARGE_INTEGER m_systemOffset;
+  
+  static CCriticalSection m_systemsection;
 };
