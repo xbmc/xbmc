@@ -59,11 +59,6 @@ void CVideoReferenceClock::Process()
   bool SetupSuccess = false;
   LARGE_INTEGER Now;
   
-  Lock();
-  QueryPerformanceCounter(&Now);
-  m_CurrTime = Now.QuadPart - m_ClockOffset; //add the clock offset from the previous time we stopped
-  m_AdjustedFrequency = m_SystemFrequency;
-
   while(!m_bStop)
   {
 #ifdef HAS_GLX
@@ -72,24 +67,37 @@ void CVideoReferenceClock::Process()
     SetupSuccess = SetupD3D();
 #endif
     
+    Lock();
+    QueryPerformanceCounter(&Now);
+    m_CurrTime = Now.QuadPart + m_ClockOffset; //add the clock offset from the previous time we stopped
+    m_AdjustedFrequency = m_SystemFrequency;
+    m_Started.Set();
+    
     if (SetupSuccess)
     {
-      m_Started.Set();
       m_UseVblank = true;
+      m_VblankTime = Now.QuadPart;
       Unlock();
+
 #ifdef HAS_GLX
       RunGLX();
 #elif defined(_WIN32)
       RunD3D();
 #endif
+    
     }
     else
     {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to QueryPerformanceCounter");
       Unlock();
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to QueryPerformanceCounter");
     }
     
+    Lock();
+    m_UseVblank = false;
+    QueryPerformanceCounter(&Now);
+    m_ClockOffset = m_CurrTime - Now.QuadPart;
     m_Started.Reset();
+    Unlock();
     
 #ifdef HAS_GLX
     CleanupGLX();
@@ -98,14 +106,6 @@ void CVideoReferenceClock::Process()
 #endif
     if (!SetupSuccess) break;
   }
-
-  Lock();
-  m_UseVblank = false;
-  QueryPerformanceCounter(&Now);
-  m_ClockOffset = Now.QuadPart - m_CurrTime;
-  m_AdjustedFrequency = m_SystemFrequency;
-  SendVblankSignal();
-  Unlock();
 }
 
 void CVideoReferenceClock::WaitStarted(int MSecs)
@@ -267,7 +267,6 @@ bool CVideoReferenceClock::SetupGLX()
   }
   
   UpdateRefreshrate(true);
-  m_LastRefreshTime = 0;
   m_MissedVblanks = 0;
   
   return true;
@@ -549,7 +548,6 @@ bool CVideoReferenceClock::SetupD3D()
   m_Width = 0;
   m_Height = 0;
   UpdateRefreshrate(true);
-  m_LastRefreshTime = 0;
   m_MissedVblanks = 0;
 
   return true;
@@ -660,7 +658,7 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   else
   {
     QueryPerformanceCounter(ptime);
-    ptime->QuadPart -= m_ClockOffset;
+    ptime->QuadPart += m_ClockOffset;
   }
   Unlock();
 }
@@ -703,7 +701,10 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   if (m_CurrTime - m_LastRefreshTime < m_SystemFrequency && !Forced)
     return false;
 
-  m_LastRefreshTime = m_CurrTime;
+  if (Forced)
+    m_LastRefreshTime = 0;
+  else    
+    m_LastRefreshTime = m_CurrTime;
 
 #ifdef HAS_GLX
   XRRScreenConfiguration *CurrInfo;
