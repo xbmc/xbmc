@@ -183,8 +183,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_prevskipped = false;
   m_syncclock = true;
   m_synctype = SYNC_DISCON;
-  //m_usingpassthrough = false;
-  m_usingpassthrough = true;
+  m_usingpassthrough = false;
   QueryPerformanceCounter(&m_errortime);
   
   CLog::Log(LOGNOTICE, "Creating audio thread");
