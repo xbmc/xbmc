@@ -733,10 +733,7 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
 void CDVDPlayer::Process()
 {
   if (g_guiSettings.GetBool("videoplayer.usedisplayasclock"))
-  {
     g_VideoReferenceClock.Create();
-    g_VideoReferenceClock.WaitStarted(1000);
-  }
 
   if (m_pDlgCache && m_pDlgCache->IsCanceled())
     return;
