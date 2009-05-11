@@ -279,11 +279,12 @@ BOOL WINAPI GetThreadTimes (
     {
       lpUserTime->dwLowDateTime = 0;
       lpUserTime->dwHighDateTime = 0;
+      pthread_t thread = (pthread_t)SDL_GetThreadID(hThread->m_hThread);
 
-      if(hThread)
+      if(thread)
       {
         clockid_t clock;
-        if(pthread_getcpuclockid((pthread_t)hThread, &clock) == 0)
+        if(pthread_getcpuclockid(thread, &clock) == 0)
         {
           struct timespec tp = {};
           clock_gettime(clock, &tp);
