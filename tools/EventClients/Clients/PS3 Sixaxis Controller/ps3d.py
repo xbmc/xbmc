@@ -204,7 +204,7 @@ class PS3RemoteThread ( StoppableThread ):
         self.csock = csock
         self.isock = isock
         self.xbmc = XBMCClient(name="PS3 Blu-Ray Remote", icon_file=ICON_PATH + "/bluetooth.png", ip=ipaddr)
-        self.set_timeout(300)
+        self.set_timeout(600)
         self.services = []
         self.current_xbmc = 0
 
@@ -271,6 +271,7 @@ class PS3RemoteThread ( StoppableThread ):
             service = self.services[ self.current_xbmc ]
             print "Connecting to %s" % service['name']
             self.xbmc.connect( service['address'], service['port'] )
+            self.xbmc.send_notification("PS3 Blu-Ray Remote", "New Connection", None)
         except Exception, e:
             print str(e)
 
