@@ -229,44 +229,55 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
   
-  float fRefreshRate;
-  m_UseNvSettings = false;
-  FILE* NvSettings = popen(NVSETTINGSCMD, "r");
-  if (NvSettings)
-  {
-    char Buff[255];
-    ReturnV = fscanf(NvSettings, "%254[^\n]", Buff);
-    pclose(NvSettings);
-    
-    if (ReturnV == 1)
-    {
-      ReturnV = sscanf(Buff, "%f", &fRefreshRate);
-      if (ReturnV == 1 && fRefreshRate > 0.0)
-        m_UseNvSettings = true;
-      else
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: output of %s: %s", NVSETTINGSCMD, Buff);
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s produced no output", NVSETTINGSCMD);
-    }
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s: %s", NVSETTINGSCMD, strerror(errno));
-  }
-  
-  if (m_UseNvSettings)
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using %s for refreshrate detection", NVSETTINGSCMD);
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
-  }
-  
   UpdateRefreshrate(true);
   m_MissedVblanks = 0;
+  
+  return true;
+}
+
+bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
+{
+  double fRefreshRate;
+  char   Buff[255];
+  int    ReturnV;
+  struct lconv *Locale = localeconv();
+    
+  FILE* NvSettings = popen(NVSETTINGSCMD, "r");
+  
+  if (!NvSettings)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s: %s", NVSETTINGSCMD, strerror(errno));
+    return false;
+  }
+  
+  ReturnV = fscanf(NvSettings, "%254[^\n]", Buff);
+  if (ReturnV != 1)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s produced no output", NVSETTINGSCMD);
+    return false;
+  }
+  
+  pclose(NvSettings);
+  
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: output of %s: %s", NVSETTINGSCMD, Buff);
+  
+  for (int i = 0; i < 255 && Buff[i]; i++)
+  {
+      //workaround for locale mismatch and filter out unwanted chars
+    if (Buff[i] == '.' || Buff[i] == ',') Buff[i] = *Locale->decimal_point;
+    else if (Buff[i] < '0' || Buff[i] > '9') Buff[i] = ' ';
+  }
+
+  ReturnV = sscanf(Buff, "%lf", &fRefreshRate);
+  if (ReturnV != 1 || fRefreshRate <= 0.0)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: can't make sense of that", NVSETTINGSCMD, Buff);
+    return false;
+  }
+  
+  RefreshRate = MathUtils::round_int(fRefreshRate);
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate by nvidia-settings: %f hertz, rounding to %i hertz",
+            fRefreshRate, RefreshRate);
   
   return true;
 }
@@ -719,54 +730,21 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   if (RRRefreshRate == m_PrevRefreshRate && !Forced)
     return false;
     
-  if (m_UseNvSettings)
+  if (m_UseNvSettings || Forced)
   {
-    double fRefreshRate;
-    char Buff[255];
-    struct lconv *Locale = localeconv();
+    int RefreshRate;
+    m_UseNvSettings = ParseNvSettings(RefreshRate);
     
-    FILE* NvSettings = popen(NVSETTINGSCMD, "r");
-    
-    if (!NvSettings)
+    if (!m_UseNvSettings)
     {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s: %s, falling back to RandR", NVSETTINGSCMD, strerror(errno));
-      m_UseNvSettings = false;
-      return false;
+       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
+       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)RRRefreshRate);
+       RefreshRate = RRRefreshRate;
     }
     
-    int ReturnV = fscanf(NvSettings, "%254[^\n]", Buff);
-    pclose(NvSettings);
-    
-    if (ReturnV != 1)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s produced no output, falling back to RandR", NVSETTINGSCMD);
-      m_UseNvSettings = false;
-      return false;
-    }
-    
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Output of %s: %s", NVSETTINGSCMD, Buff);
-    
-    for (int i = 0; i < 253 && Buff[i]; i++)
-    {
-      //workaround for locale mismatch and filter out unwanted chars
-      if (Buff[i] == '.' || Buff[i] == ',') Buff[i] = *Locale->decimal_point;
-      else if (Buff[i] < '0' || Buff[i] > '9') Buff[i] = ' ';
-    }
-
-    ReturnV = sscanf(Buff, "%lf", &fRefreshRate);
-    if (ReturnV != 1 || fRefreshRate <= 0.0)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: falling back to RandR");
-      m_UseNvSettings = false;
-      return false;
-    }
-      
     CSingleLock SingleLock(m_CritSection);
-    m_RefreshRate = MathUtils::round_int(fRefreshRate);
+    m_RefreshRate = RefreshRate;
     m_PrevRefreshRate = RRRefreshRate;
-      
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate by nvidia-settings: %f hertz, rounding to %i hertz",
-              fRefreshRate, (int)m_RefreshRate);
   }
   else
   {
