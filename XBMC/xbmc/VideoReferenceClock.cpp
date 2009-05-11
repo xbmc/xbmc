@@ -41,10 +41,6 @@ CVideoReferenceClock::CVideoReferenceClock()
   m_Started.Reset();
 }
 
-CVideoReferenceClock::~CVideoReferenceClock()
-{
-}
-
 void CVideoReferenceClock::Process()
 {
   bool SetupSuccess = false;
