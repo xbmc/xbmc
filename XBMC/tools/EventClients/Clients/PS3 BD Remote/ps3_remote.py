@@ -112,7 +112,21 @@ Usage: ps3_remote.py <address> [port]
 """
 
 def process_keys(remote, xbmc):
+    """
+    Return codes:
+    0 - key was processed normally
+    2 - socket read timeout
+    3 - PS and then Skip Plus was pressed (sequentially)
+    4 - PS and then Skip Minus was pressed (sequentially)
+
+    FIXME: move to enums
+    """
     done = 0
+
+    try:
+        xbmc.previous_key
+    except:
+        xbmc.previous_key = ""
 
     xbmc.connect()
     datalen = 0
@@ -123,7 +137,7 @@ def process_keys(remote, xbmc):
         if str(e)=="timed out":
             return 2
         time.sleep(2)
-        # done = 1
+
         # some other read exception occured, so raise it
         raise e
 
@@ -133,6 +147,18 @@ def process_keys(remote, xbmc):
             xbmc.release_button()
             return done
         try:
+            # if the user presses the PS button followed by skip + or skip -
+            # return different codes.
+            if xbmc.previous_key == "43":
+                xbmc.previous_key = keycode
+                if keycode == "31":    # skip +
+                    return 3
+                elif keycode == "30":  # skip -
+                    return 4
+
+            # save previous key press
+            xbmc.previous_key = keycode
+
             if g_keymap[keycode]:
                 xbmc.send_remote_button(g_keymap[keycode])
         except Exception, e:
