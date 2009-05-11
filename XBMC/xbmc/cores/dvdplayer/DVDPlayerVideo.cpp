@@ -211,8 +211,6 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   m_synctype = g_guiSettings.GetInt("audiooutput.synctype");
   m_maxspeedadjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
   
-  m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SYNCTYPE, m_synctype), 1);
-  
   m_usingpassthrough = false;
   
   m_genpts = -1;
@@ -288,6 +286,8 @@ void CDVDPlayerVideo::Process()
 
   m_videoStats.Start();
 
+  m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SYNCTYPE, m_synctype), 1);
+  
   while (!m_bStop)
   {
     int iQueueTimeOut = (int)(m_stalled ? frametime / 4 : frametime * 10) / 1000;
