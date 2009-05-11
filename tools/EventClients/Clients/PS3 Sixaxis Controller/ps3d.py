@@ -2,6 +2,9 @@
 
 import sys
 import traceback
+import time
+import struct
+import threading
 
 sys.path.append("../PS3 BD Remote")
 
@@ -14,6 +17,10 @@ try:
     from ps3 import sixaxis
     from ps3.keymaps import keymap_sixaxis
     from ps3_remote import process_keys as process_remote
+    try:
+        import zeroconf
+    except:
+        zeroconf = None
     ICON_PATH = "../../icons/"
 except:
     # fallback to system wide modules
@@ -24,10 +31,11 @@ except:
     from xbmc.ps3.keymaps import keymap_sixaxis
     from xbmc.ps3_remote import process_keys as process_remote
     from xbmc.defs import *
+    try:
+        import xbmc.zeroconf as zeroconf
+    except:
+        zeroconf = None
 
-import time
-import struct
-import threading
 
 event_threads = []
 
@@ -39,9 +47,8 @@ def printerr():
 		exception += entry
 	tb_list = traceback.format_tb(sys.exc_info()[2])
 	for entry in tb_list:
-		trace += entry	
+		trace += entry
 	print("%s\n%s" % (exception, trace), "Script Error")
-
 
 
 class StoppableThread ( threading.Thread ):
@@ -151,7 +158,7 @@ class PS3SixaxisThread ( StoppableThread ):
                             for key in (held | pressed):
                                 (mapname, action, amount, axis) = keymap_sixaxis[key]
                                 self.xbmc.send_button_state(map=mapname, button=action, amount=0, down=0, axis=axis)
-  
+
                             raise Exception("PS3 Sixaxis powering off, user request")
                     else:
                         psdown = time.time()
@@ -198,11 +205,23 @@ class PS3RemoteThread ( StoppableThread ):
         self.isock = isock
         self.xbmc = XBMCClient(name="PS3 Blu-Ray Remote", icon_file=ICON_PATH + "/bluetooth.png", ip=ipaddr)
         self.set_timeout(300)
+        self.services = []
+        self.current_xbmc = 0
 
     def run(self):
         sixaxis.initialize(self.csock, self.isock)
         self.xbmc.connect()
         try:
+            # start the zeroconf thread if possible
+            try:
+                self.zeroconf_thread = ZeroconfThread()
+                self.zeroconf_thread.add_service('_xbmc-events._udp',
+                                             self.zeroconf_service_handler)
+                self.zeroconf_thread.start()
+            except Exception, e:
+                print str(e)
+
+            # main thread loop
             while not self.stop():
                 status = process_remote(self.isock, self.xbmc)
 
@@ -210,6 +229,11 @@ class PS3RemoteThread ( StoppableThread ):
                     if self.timed_out():
                         raise Exception("PS3 Blu-Ray Remote powering off, "\
                                             "timed out")
+                elif status == 3: # 3 = ps and skip +
+                    self.next_xbmc()
+
+                elif status == 4: # 4 = ps and skip -
+                    self.previous_xbmc()
 
                 elif not status:  # 0 = keys are normally processed
                     self.reset_timeout()
@@ -217,7 +241,99 @@ class PS3RemoteThread ( StoppableThread ):
         # process_remote() will raise an exception on read errors
         except Exception, e:
             print str(e)
+
+        self.zeroconf_thread.stop()
         self.close_sockets()
+
+    def next_xbmc(self):
+        """
+        Connect to the next XBMC instance
+        """
+        self.current_xbmc = (self.current_xbmc + 1) % len( self.services )
+        self.reconnect()
+        return
+
+    def previous_xbmc(self):
+        """
+        Connect to the previous XBMC instance
+        """
+        self.current_xbmc -= 1
+        if self.current_xbmc < 0 :
+            self.current_xbmc = len( self.services ) - 1
+        self.reconnect()
+        return
+
+    def reconnect(self):
+        """
+        Reconnect to an XBMC instance based on self.current_xbmc
+        """
+        try:
+            service = self.services[ self.current_xbmc ]
+            print "Connecting to %s" % service['name']
+            self.xbmc.connect( service['address'], service['port'] )
+        except Exception, e:
+            print str(e)
+
+    def zeroconf_service_handler(self, event, service):
+        """
+        Zeroconf event handler
+        """
+        if event == zeroconf.SERVICE_FOUND:  # new xbmc service detected
+            self.services.append( service )
+
+        elif event == zeroconf.SERVICE_LOST: # xbmc service lost
+            try:
+                # search for the service by name, since IP+port isn't available
+                for s in self.services:
+                    # nuke it, if found
+                    if service['name'] == s['name']:
+                        self.services.remove(s)
+                        break
+            except:
+                pass
+        return
+
+
+class ZeroconfThread ( threading.Thread ):
+    """
+    
+    """
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self._zbrowser = None
+        self._services = []
+
+    def run(self):
+        if zeroconf:
+            # create zeroconf service browser
+            self._zbrowser = zeroconf.Browser()
+
+            # add the requested services
+            for service in self._services:
+                self._zbrowser.add_service( service[0], service[1] )
+
+            # run the event loop
+            self._zbrowser.run()
+
+        return
+
+
+    def stop(self):
+        """
+        Stop the zeroconf browser
+        """
+        try:
+            self._zbrowser.stop()
+        except:
+            pass
+        return
+
+    def add_service(self, type, handler):
+        """
+        Add a new service to search for.
+        NOTE: Services must be added before thread starts.
+        """
+        self._services.append( [ type, handler ] )
 
 
 def usage():
@@ -292,7 +408,7 @@ def main():
                 except:
                     print str(e)
                     return usage()
-    except:
+    except Exception, e:
         pass
 
     print "Starting HID daemon"
@@ -313,3 +429,4 @@ if __name__=="__main__":
             except Exception, e:
                 print str(e)
         pass
+
