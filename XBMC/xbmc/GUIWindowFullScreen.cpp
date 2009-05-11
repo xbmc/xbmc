@@ -291,6 +291,18 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
                                      g_advancedSettings.m_videoSubsDelayRange, this);
     return true;
     break;
+  case ACTION_SUBTITLE_DELAY:
+    CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(22006), g_stSettings.m_currentVideoSettings.m_SubtitleDelay,
+                                                                   -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
+                                                                    g_advancedSettings.m_videoSubsDelayRange, this, (void *)&action.wID);
+    return true;
+    break;
+  case ACTION_AUDIO_DELAY:
+    CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(297), g_stSettings.m_currentVideoSettings.m_AudioDelay,
+                                                                 -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
+                                                                  g_advancedSettings.m_videoAudioDelayRange, this, (void *)&action.wID);
+    return true;
+    break;
   case ACTION_AUDIO_DELAY_MIN:
     g_stSettings.m_currentVideoSettings.m_AudioDelay -= 0.025f;
     if (g_stSettings.m_currentVideoSettings.m_AudioDelay < -g_advancedSettings.m_videoAudioDelayRange)
@@ -834,4 +846,17 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
     return;
 
   slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
+  if (data && g_application.m_pPlayer)
+  {
+    if (*(DWORD *)data = ACTION_AUDIO_DELAY)
+    {
+      g_stSettings.m_currentVideoSettings.m_AudioDelay = slider->GetFloatValue();
+      g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+    }
+    else if (*(DWORD *)data = ACTION_SUBTITLE_DELAY)
+    {
+      g_stSettings.m_currentVideoSettings.m_SubtitleDelay = slider->GetFloatValue();
+      g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
+    }
+  }
 }

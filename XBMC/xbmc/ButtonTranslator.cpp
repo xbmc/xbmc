@@ -681,8 +681,10 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("rotate")) wAction = ACTION_ROTATE_PICTURE;
   else if (strAction.Equals("close")) wAction = ACTION_CLOSE_DIALOG;
   else if (strAction.Equals("subtitledelayminus")) wAction = ACTION_SUBTITLE_DELAY_MIN;
+  else if (strAction.Equals("subtitledelay")) wAction = ACTION_SUBTITLE_DELAY;
   else if (strAction.Equals("subtitledelayplus")) wAction = ACTION_SUBTITLE_DELAY_PLUS;
   else if (strAction.Equals("audiodelayminus")) wAction = ACTION_AUDIO_DELAY_MIN;
+  else if (strAction.Equals("audiodelay")) wAction = ACTION_AUDIO_DELAY;
   else if (strAction.Equals("audiodelayplus")) wAction = ACTION_AUDIO_DELAY_PLUS;
   else if (strAction.Equals("audionextlanguage")) wAction = ACTION_AUDIO_NEXT_LANGUAGE;
   else if (strAction.Equals("nextresolution")) wAction = ACTION_CHANGE_RESOLUTION;
