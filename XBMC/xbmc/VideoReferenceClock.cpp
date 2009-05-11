@@ -251,13 +251,12 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
   }
   
   ReturnV = fscanf(NvSettings, "%254[^\n]", Buff);
+  pclose(NvSettings);
   if (ReturnV != 1)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s produced no output", NVSETTINGSCMD);
     return false;
   }
-  
-  pclose(NvSettings);
   
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: output of %s: %s", NVSETTINGSCMD, Buff);
   
