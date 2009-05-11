@@ -116,9 +116,10 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
   TiXmlNode* pWindow = pRoot->FirstChild();
   while (pWindow)
   {
-    WORD wWindowID = WINDOW_INVALID;
-    const char *szWindow = pWindow->Value();
+    if (pWindow->Type() == TiXmlNode::ELEMENT)
     {
+      WORD wWindowID = WINDOW_INVALID;
+      const char *szWindow = pWindow->Value();
       if (szWindow)
       {
         if (strcmpi(szWindow, "global") == 0)
@@ -127,8 +128,8 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
           wWindowID = TranslateWindowString(szWindow);
       }
       MapWindowActions(pWindow, wWindowID);
-      pWindow = pWindow->NextSibling();
     }
+    pWindow = pWindow->NextSibling();
   }
 
   return true;
