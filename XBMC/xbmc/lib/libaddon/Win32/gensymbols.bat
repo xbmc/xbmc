@@ -1,0 +1,1 @@
+dumpbin /symbols Release\*.obj | grep -E "SECT.. notype \(\) +External +\| \_[^\_]"
