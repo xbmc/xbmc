@@ -177,5 +177,6 @@ protected:
   
   float  m_MaxSpeedAdjust;
   double m_GenPts;
+  bool   m_usingpassthrough;
 };
 

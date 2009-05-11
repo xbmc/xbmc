@@ -214,6 +214,8 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   else
     m_MaxSpeedAdjust = 0.0;
   
+  m_usingpassthrough = false;
+  
   m_GenPts = -1;
   
   CLog::Log(LOGNOTICE, "Creating video thread");
@@ -401,6 +403,11 @@ void CDVDPlayerVideo::Process()
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
       if(m_speed == DVD_PLAYSPEED_PAUSE)
         m_iNrOfPicturesNotToSkip = 0;
+    }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_USING_PASSTHROUGH))
+    {
+      m_usingpassthrough = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+      //doesn't do anything yet
     }
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))

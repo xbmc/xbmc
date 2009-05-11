@@ -1748,7 +1748,14 @@ void CDVDPlayer::HandleMessages()
         }
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))
+      {
         OnAction(((CDVDMsgType<CAction>*)pMsg)->m_value);
+      }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_USING_PASSTHROUGH))
+      {
+        bool usingpassthrough = static_cast<CDVDMsgBool*>(pMsg)->m_value;
+        m_dvdPlayerVideo.m_messageQueue.Put(new CDVDMsgBool(CDVDMsg::PLAYER_USING_PASSTHROUGH, usingpassthrough), 1);
+      }
     }
     catch (...)
     {

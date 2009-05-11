@@ -176,7 +176,11 @@ protected:
   
   bool OutputPacket(DVDAudioFrame &audioframe);
   
-  int    m_synctype;  //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
+  //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
+  int    m_guisynctype;
+  int    m_synctype;
+  bool   m_usingpassthrough;
+  
   double m_error;     //last average error
   
   LARGE_INTEGER m_errortime; //timestamp of last time we measured
