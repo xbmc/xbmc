@@ -210,13 +210,13 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   int SyncType = g_guiSettings.GetInt("audiooutput.synctype");
   if (SyncType == SYNC_RESAMPLE)
-    m_MaxSpeedAdjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
+    m_maxspeedadjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
   else
-    m_MaxSpeedAdjust = 0.0;
+    m_maxspeedadjust = 0.0;
   
   m_usingpassthrough = false;
   
-  m_GenPts = -1;
+  m_genpts = -1;
   
   CLog::Log(LOGNOTICE, "Creating video thread");
   Create();
@@ -852,11 +852,11 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   pts += m_iVideoDelay;
 
   //workaround for broken timestamps
-  m_GenPts += pPicture->iDuration;
-  if (fabs(pts - m_GenPts) < pPicture->iDuration / 2.0)
-    pts = m_GenPts;
+  m_genpts += pPicture->iDuration;
+  if (fabs(pts - m_genpts) < pPicture->iDuration / 2.0)
+    pts = m_genpts;
   else
-    m_GenPts = pts;
+    m_genpts = pts;
   // calculate the time we need to delay this picture before displaying
   double iSleepTime, iClockSleep, iFrameSleep, iCurrentClock, iFrameDuration;
   
@@ -979,10 +979,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     double FrameWeight = (double)RefreshRate / (double)MathUtils::round_int(Fps);
     
     //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
-    if (m_MaxSpeedAdjust > 0.05)
+    if (m_maxspeedadjust > 0.05 && !m_usingpassthrough)
     {
-      if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + m_MaxSpeedAdjust / 100.0 &&
-          FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - m_MaxSpeedAdjust / 100.0)
+      if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + m_maxspeedadjust / 100.0 &&
+          FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - m_maxspeedadjust / 100.0)
       {
         FrameWeight = MathUtils::round_int(FrameWeight);
       }

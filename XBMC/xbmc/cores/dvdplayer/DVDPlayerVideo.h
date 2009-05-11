@@ -175,8 +175,8 @@ protected:
   
   CRITICAL_SECTION m_critCodecSection;
   
-  float  m_MaxSpeedAdjust;
-  double m_GenPts;
+  float  m_maxspeedadjust;
+  double m_genpts;
   bool   m_usingpassthrough;
 };
 
