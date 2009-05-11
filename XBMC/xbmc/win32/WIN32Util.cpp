@@ -638,7 +638,7 @@ bool CWIN32Util::HasReqGLVersion()
 {
   int a=0,b=0;
   Surface::CSurface::GetGLVersion(a, b);
-  if((a>=2) || (a == 1 && b >= 4))
+  if((a>=2) || (a == 1 && b >= 3))
     return true;
   else
     return false;
