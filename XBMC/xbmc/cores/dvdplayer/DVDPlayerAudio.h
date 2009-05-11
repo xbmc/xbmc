@@ -177,7 +177,7 @@ protected:
   bool OutputPacket(DVDAudioFrame &audioframe);
   
   //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
-  int    m_guisynctype;
+  int    m_setsynctype;
   int    m_synctype;
   bool   m_usingpassthrough;
   

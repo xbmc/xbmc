@@ -65,6 +65,7 @@ public:
     PLAYER_SEEK_CHAPTER,            //
     PLAYER_SETSPEED,                // set the playback speed
     PLAYER_USING_PASSTHROUGH,       // if using passthrough
+    PLAYER_SYNCTYPE,                // SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
 
     PLAYER_CHANNEL_NEXT,            // switches to next playback channel
     PLAYER_CHANNEL_PREV,            // switches to previous playback channel

@@ -208,11 +208,10 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   m_messageQueue.Init();
 
-  int SyncType = g_guiSettings.GetInt("audiooutput.synctype");
-  if (SyncType == SYNC_RESAMPLE)
-    m_maxspeedadjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
-  else
-    m_maxspeedadjust = 0.0;
+  m_synctype = g_guiSettings.GetInt("audiooutput.synctype");
+  m_maxspeedadjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
+  
+  m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SYNCTYPE, m_synctype), 1);
   
   m_usingpassthrough = false;
   
@@ -979,7 +978,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     double FrameWeight = (double)RefreshRate / (double)MathUtils::round_int(Fps);
     
     //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
-    if (m_maxspeedadjust > 0.05 && !m_usingpassthrough)
+    if (m_synctype == SYNC_RESAMPLE && !m_usingpassthrough)
     {
       if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + m_maxspeedadjust / 100.0 &&
           FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - m_maxspeedadjust / 100.0)

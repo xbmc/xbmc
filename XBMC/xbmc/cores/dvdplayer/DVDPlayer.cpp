@@ -1756,6 +1756,11 @@ void CDVDPlayer::HandleMessages()
         bool usingpassthrough = static_cast<CDVDMsgBool*>(pMsg)->m_value;
         m_dvdPlayerVideo.m_messageQueue.Put(new CDVDMsgBool(CDVDMsg::PLAYER_USING_PASSTHROUGH, usingpassthrough), 1);
       }
+      else if (pMsg->IsType(CDVDMsg::PLAYER_SYNCTYPE))
+      {
+        int synctype = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+        m_dvdPlayerAudio.m_messageQueue.Put(new CDVDMsgInt(CDVDMsg::PLAYER_SYNCTYPE, synctype), 1);
+      }
     }
     catch (...)
     {

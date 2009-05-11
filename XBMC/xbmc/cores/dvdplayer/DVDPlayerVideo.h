@@ -178,5 +178,6 @@ protected:
   float  m_maxspeedadjust;
   double m_genpts;
   bool   m_usingpassthrough;
+  int    m_synctype; //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
 };
 
