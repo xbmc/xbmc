@@ -155,8 +155,8 @@
 	</GetTMDBId>
 
 	<GetTMDBFanart clearbuffers="no" dest="8">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://themoviedb.org/image/backdrops/\1/\2_poster.jpg&quot;&gt;http://themoviedb.org/image/backdrops/\1/\2.jpg&lt;/thumb&gt;" dest="10+">
-				<expression clear="yes" noclean="1" repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]*)/([^\.]+).jpg&lt;/backdrop&gt;</expression>
+                        <RegExp input="$$1" output="&lt;thumb preview=&quot;http://themoviedb.org/image/backdrops/\1/\2_poster.\3&quot;&gt;http://themoviedb.org/image/backdrops/\1/\2.\3&lt;/thumb&gt;" dest="10+">
+                                <expression clear="yes" noclean="1" repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
 			</RegExp>
 	</GetTMDBFanart>
 
