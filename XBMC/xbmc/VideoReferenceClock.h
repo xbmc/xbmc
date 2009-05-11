@@ -51,8 +51,6 @@ class CVideoReferenceClock : public CThread
   protected:
     void Process();
     bool UpdateRefreshrate(bool Forced = false);
-    void Lock();
-    void Unlock();
     void SendVblankSignal();
     void UpdateClock(int NrVBlanks, bool CheckMissed);
     
@@ -69,11 +67,9 @@ class CVideoReferenceClock : public CThread
     __int64 m_VblankTime;
     
     CEvent m_Started;
-
-#ifdef HAS_SDL
-    SDL_cond*  m_VblankCond;
-    SDL_mutex* m_VblankMutex;
-#endif
+    CEvent m_VblankEvent;
+    
+    CCriticalSection m_CritSection;
     
 #ifdef HAS_GLX
     bool SetupGLX();
