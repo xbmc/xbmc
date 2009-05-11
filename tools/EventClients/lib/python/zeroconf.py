@@ -135,7 +135,7 @@ if __name__ == "__main__":
 
     browser = Browser( {
             '_xbmc-events._udp' : service_handler,
-            '_xbmc-web._tcp'    : service_handler 
+            '_xbmc-web._tcp'    : service_handler
             } )
     browser.run()
 

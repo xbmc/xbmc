@@ -90,7 +90,7 @@ def format_uint16(num):
     if num<0:
         num = 0
     elif num>65535:
-        num = 65535    
+        num = 65535
     return pack ("!H", num)
 
 
@@ -365,7 +365,7 @@ class PacketBUTTON (Packet):
 
 class PacketMOUSE (Packet):
     """A MOUSE packet
-    
+
     A MOUSE packets sets the mouse position in XBMC
     """
     def __init__(self, x, y):
@@ -385,13 +385,13 @@ class PacketMOUSE (Packet):
 
 class PacketBYE (Packet):
     """A BYE packet
-    
+
     A BYE packet terminates the connection to XBMC.
     """
     def __init__(self):
         Packet.__init__(self)
         self.packettype = PT_BYE
-        
+
 
 class PacketPING (Packet):
     """A PING packet
@@ -448,7 +448,7 @@ class PacketACTION (Packet):
 class XBMCClient:
     """An XBMC event client"""
 
-    def __init__(self, name ="", icon_file=None, broadcast=False, uid=UNIQUE_IDENTIFICATION, 
+    def __init__(self, name ="", icon_file=None, broadcast=False, uid=UNIQUE_IDENTIFICATION,
                  ip="127.0.0.1"):
         """
         Keyword arguments:
@@ -466,7 +466,7 @@ class XBMCClient:
             self.sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         self.uid = uid
 
-    
+
     def connect(self, ip=None, port=None):
         """Initialize connection to XBMC
         ip -- IP Address of XBMC
@@ -477,7 +477,7 @@ class XBMCClient:
         if port:
             self.port = int(port)
         self.addr = (self.ip, self.port)
-        packet = PacketHELO(self.name, self.icon_type, self.icon_file)                            
+        packet = PacketHELO(self.name, self.icon_type, self.icon_file)
         return packet.send(self.sock, self.addr, self.uid)
 
 
@@ -492,7 +492,7 @@ class XBMCClient:
         packet = PacketPING()
         return packet.send(self.sock, self.addr, self.uid)
 
-        
+
     def send_notification(self, title="", message="", icon_file=None):
         """Send a notification to the connected XBMC
         Keyword Arguments:
@@ -548,7 +548,7 @@ class XBMCClient:
                                       actual device's name
         button -- a button name defined in the map specified in map, above.
                   For example, if map is "KB" refering to the <keyboard>
-                  section in Keymap.xml then, valid buttons include 
+                  section in Keymap.xml then, valid buttons include
                   "printscreen", "minus", "x", etc.
         """
         packet = PacketBUTTON(map_name=str(map), button_name=str(button), amount=amount)
@@ -569,7 +569,7 @@ class XBMCClient:
                                       actual device's name
         button -- a button name defined in the map specified in map, above.
                   For example, if map is "KB" refering to the <keyboard>
-                  section in Keymap.xml then, valid buttons include 
+                  section in Keymap.xml then, valid buttons include
                   "printscreen", "minus", "x", etc.
         """
         if axis:
