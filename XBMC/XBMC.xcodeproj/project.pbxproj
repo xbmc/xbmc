@@ -6930,7 +6930,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake externals\n\n\tmake more_libs\n\n\tmake tools/XBMCTex/XBMCTex\n\n\tmake skin/PM3.HD/media/Textures.xpr\n\n\tmake skin/Project\\ Mayhem\\ III/media/Textures.xpr\n\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
+			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake tools/XBMCTex/XBMCTex\n\n\tmake skin/PM3.HD/media/Textures.xpr\n\n\tmake skin/Project\\ Mayhem\\ III/media/Textures.xpr\n\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
 			showEnvVarsInLog = 0;
 		};
 		F5A1C8720F6B06CF00A96ABD /* ShellScript */ = {
@@ -6944,7 +6944,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake externals\n\n\tmake more_libs\n\n\tmake tools/XBMCTex/XBMCTex\n\n\tmake skin/PM3.HD/media/Textures.xpr\n\n\tmake skin/Project\\ Mayhem\\ III/media/Textures.xpr\n\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
+			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake tools/XBMCTex/XBMCTex\n\n\tmake skin/PM3.HD/media/Textures.xpr\n\n\tmake skin/Project\\ Mayhem\\ III/media/Textures.xpr\n\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
 			showEnvVarsInLog = 0;
 		};
 		F5A1CBDE0F6B0B4700A96ABD /* copy root files */ = {
