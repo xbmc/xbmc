@@ -122,10 +122,11 @@ double CPTSInputQueue::Get(__int64 bytes, bool consume)
   return DVD_NOPTS_VALUE;
 }
 
-CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock) 
+CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent) 
 : CThread()
 , m_messageQueue("audio")
 , m_dvdAudio((bool&)m_bStop)
+, m_messageParent(parent)
 {
   m_pClock = pClock;
   m_pAudioCodec = NULL;  
