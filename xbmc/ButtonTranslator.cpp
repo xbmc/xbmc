@@ -51,13 +51,13 @@ bool CButtonTranslator::Load()
   if(CFile::Exists(keymapPath))
     success |= LoadKeymap(keymapPath);
   else
-    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system keymap found, skipping");
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system Keymap.xml found, skipping");
 
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
   if(CFile::Exists(keymapPath))
     success |= LoadKeymap(keymapPath);
   else
-    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata keymap found, skipping");
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata Keymap.xml found, skipping");
 
   if (!success)
   {
@@ -73,12 +73,20 @@ bool CButtonTranslator::Load()
 #endif
   CStdString lircmapPath;
   CUtil::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
-  success = LoadLircMap(lircmapPath);
+  if(CFile::Exists(lircmapPath))
+    success |= LoadLircMap(lircmapPath);
+  else
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system %s found, skipping", REMOTEMAP);
+
   lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
-  success |= LoadLircMap(lircmapPath);
+  if(CFile::Exists(lircmapPath))
+    success |= LoadLircMap(lircmapPath);
+  else
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata %s found, skipping", REMOTEMAP);
+
   if (!success)
   {
-    CLog::Log(LOGERROR, "%s - unable to load remote map %s", __FUNCTION__, REMOTEMAP);
+    CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
     // don't return false - it is to only indicate a fatal error (which this is not)
   }
 #endif
@@ -144,7 +152,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     g_LoadErrorStr.Format("%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false; // This is so people who don't have the file won't fail, just warn
   }
-
+ 
   lircRemotesMap.clear();
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
@@ -153,7 +161,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     g_LoadErrorStr.Format("%sl Doesn't contain <%s>", lircmapPath.c_str(), REMOTEMAPTAG);
     return false;
   }
-
+ 
   // run through our window groups
   TiXmlNode* pRemote = pRoot->FirstChild();
   while (pRemote)
