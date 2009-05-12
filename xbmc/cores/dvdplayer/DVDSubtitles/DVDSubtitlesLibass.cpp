@@ -39,33 +39,40 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
     return;
   }
 
-  //Setting a Default Font
-  string strFont = "Arial.ttf";
-  string strPath = "";
-
+#ifdef _XBOX
+  CStdString strPath = "special://xbmc/media/Fonts/";
+#else
+  //Setting the font directory to the temp dir(where mkv fonts are extracted to)
+  CStdString strPath = "special://temp/";
+#endif
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating ASS library structure");
   m_library  = m_dll.ass_library_init();
   if(!m_library)
     return;
 
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Initializing ASS library font settings");
-  strPath = "Q:\\media\\Fonts\\";
-  m_dll.ass_set_fonts_dir(m_library,  strPath.c_str());
-  strPath += strFont;
-
+  // libass uses fontconfig (system lib) which is not wrapped 
+  //  so translate the path before calling into libass
+  m_dll.ass_set_fonts_dir(m_library,  _P(strPath).c_str());
   m_dll.ass_set_extract_fonts(m_library, 0);
   m_dll.ass_set_style_overrides(m_library, NULL);
 
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Initializing ASS Renderer");
 
   m_renderer = m_dll.ass_renderer_init(m_library);
+
   if(!m_renderer)
     return;
+
+  //Setting default font to the Arial in \media\fonts (used if FontConfig fails)
+  strPath = "special://xbmc/media/Fonts/arial.ttf";
+
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
   m_dll.ass_set_use_margins(m_renderer, 0);
   m_dll.ass_set_font_scale(m_renderer, 1);
+  // libass uses fontconfig (system lib) which is not wrapped 
+  //  so translate the path before calling into libass
   m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "");
-
 }
 
 
@@ -116,8 +123,10 @@ bool CDVDSubtitlesLibass::ReadFile(const string& strFile)
     return false;
   }
 
-  //Fixing up the pathname.
   string fileName =  strFile;
+#ifdef _LINUX
+  fileName = PTH_IC(fileName);
+#endif
 
   CLog::Log(LOGINFO, "SSA Parser: Creating m_track from SSA file:  %s", fileName.c_str());
 
@@ -177,3 +186,4 @@ int CDVDSubtitlesLibass::GetNrOfEvents()
     return 0;
   return m_track->n_events;
 }
+

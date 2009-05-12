@@ -790,10 +790,12 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   }
 
   int iPos = strFile.ReverseFind('/');
+#ifndef _LINUX
   if (iPos < 0)
   {
     iPos = strFile.ReverseFind('\\');
   }
+#endif
   if (iPos < 0)
   {
     url.SetFileName("");
@@ -852,7 +854,11 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   {
     if (plItemUrl.IsLocal() ) //Filename is local or not qualified
     {
+#ifdef _LINUX
+      if (!( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') ) ) //Filename not fully qualified
+#else
       if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
+#endif
       {
         if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath))
         {
@@ -884,7 +890,11 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
   {
     if (plItemUrl.IsLocal()) //Filename is local
     {
+#ifdef _LINUX
+      if ( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') )  //Filename not fully qualified
+#else
       if (strFilename[1] == ':') // already fully qualified
+#endif
         return;
       if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
 
@@ -1446,6 +1456,15 @@ void CUtil::RunShortcut(const char* szShortcutPath)
   }
 }
 
+void CUtil::GetHomePath(CStdString& strPath)
+{
+  char szXBEFileName[1024];
+  CIoSupport::GetXbePath(szXBEFileName);
+  char *szFileName = strrchr(szXBEFileName, '\\');
+  *szFileName = 0;
+  strPath = szXBEFileName;
+}
+
 bool CUtil::RunFFPatchedXBE(CStdString szPath1, CStdString& szNewPath)
 {
   if (!g_guiSettings.GetBool("myprograms.autoffpatch"))
@@ -1631,16 +1650,6 @@ void CUtil::LaunchXbe(const char* szPath, const char* szXbe, const char* szParam
 #endif
 }
 
-void CUtil::GetHomePath(CStdString& strPath)
-{
-  char szXBEFileName[1024];
-  CIoSupport::GetXbePath(szXBEFileName);
-  char *szFileName = strrchr(szXBEFileName, '\\');
-  *szFileName = 0;
-  strPath = szXBEFileName;
-}
-
-/* WARNING, this function can easily fail on full urls, since they might have options at the end */
 void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension, CStdString& strChangedFile)
 {
   if(strFile.Find("://") >= 0)
@@ -1807,7 +1816,8 @@ bool CUtil::IsMultiPath(const CStdString& strPath)
 
 bool CUtil::IsDVD(const CStdString& strFile)
 {
-  CStdString strFileLow = strFile; strFileLow.MakeLower();
+  CStdString strFileLow = strFile; 
+  strFileLow.MakeLower();
   if (strFileLow == "d:\\"  || strFileLow == "d:" || strFileLow == "iso9660://" || strFileLow == "udf://" || strFileLow == "dvd://1" )
     return true;
 
@@ -1927,9 +1937,18 @@ bool CUtil::IsVTP(const CStdString& strFile)
   return strFile.Left(4).Equals("vtp:");
 }
 
+bool CUtil::IsHTSP(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("htsp:");
+}
+
 bool CUtil::IsTV(const CStdString& strFile)
 {
-  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile);
+  return IsMythTV(strFile)
+      || IsTuxBox(strFile)
+      || IsVTP(strFile)
+      || IsHDHomeRun(strFile)
+      || IsHTSP(strFile);
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -2367,7 +2386,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
   if ( !CDetectDVDMedia::IsDiscInDrive() )
   {
-    strIcon = "defaultDVDEmpty.png";
+    strIcon = "DefaultDVDEmpty.png";
     return ;
   }
 
@@ -2377,10 +2396,10 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
     //  xbox DVD
     if ( pInfo != NULL && pInfo->IsUDFX( 1 ) )
     {
-      strIcon = "defaultXBOXDVD.png";
+      strIcon = "DefaultXboxDVD.png";
       return ;
     }
-    strIcon = "defaultDVDRom.png";
+    strIcon = "DefaultDVDRom.png";
     return ;
   }
 
@@ -2389,16 +2408,16 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
     CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
-      strIcon = "defaultVCD.png";
+      strIcon = "DefaultVCD.png";
       return ;
     }
-    strIcon = "defaultDVDRom.png";
+    strIcon = "DefaultDVDRom.png";
     return ;
   }
 
   if ( IsCDDA(strPath) )
   {
-    strIcon = "defaultCDDA.png";
+    strIcon = "DefaultCDDA.png";
     return ;
   }
 }
@@ -2480,8 +2499,11 @@ void CUtil::ClearSubtitles()
 {
   //delete cached subs
   WIN32_FIND_DATA wfd;
-  CAutoPtrFind hFind ( FindFirstFile("Z:\\*.*", &wfd));
-
+#ifndef _LINUX
+  CAutoPtrFind hFind ( FindFirstFile(_P("special://temp/*.*"), &wfd));
+#else
+  CAutoPtrFind hFind ( FindFirstFile(_P("special://temp/*"), &wfd));
+#endif
   if (hFind.isValid())
   {
     do
@@ -2868,7 +2890,8 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   }
 
   strResult = strFolder;
-  AddSlashAtEnd(strResult);
+  if(!strResult.IsEmpty())
+    AddSlashAtEnd(strResult);
 
   // Remove any slash at the start of the file
   if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
@@ -3279,9 +3302,16 @@ void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = (__int64)stat->st_size;
+
+#ifndef _LINUX
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
+#else
+  result->_st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
+  result->_st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
+  result->_st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
+#endif
 }
 
 void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
@@ -3294,9 +3324,15 @@ void CUtil::Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = stat->st_size;
+#ifndef _LINUX
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
   result->st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
+#else
+  result->_st_atime = (long)(stat->st_atime & 0xFFFFFFFF);
+  result->_st_mtime = (long)(stat->st_mtime & 0xFFFFFFFF);
+  result->_st_ctime = (long)(stat->st_ctime & 0xFFFFFFFF);
+#endif
 }
 
 void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
@@ -3309,9 +3345,15 @@ void CUtil::StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat)
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
   result->st_size = stat->st_size;
+#ifndef _LINUX
   result->st_atime = stat->st_atime;
   result->st_mtime = stat->st_mtime;
   result->st_ctime = stat->st_ctime;
+#else
+  result->st_atime = stat->_st_atime;
+  result->st_mtime = stat->_st_mtime;
+  result->st_ctime = stat->_st_ctime;
+#endif
 }
 
 void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
@@ -3323,8 +3365,13 @@ void CUtil::Stat64ToStat(struct _stat *result, struct __stat64 *stat)
   result->st_uid = stat->st_uid;
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
+#ifndef _LINUX
   if (stat->st_size <= LONG_MAX)
     result->st_size = (_off_t)stat->st_size;
+#else
+  if (sizeof(stat->st_size) <= sizeof(result->st_size) )
+    result->st_size = (off_t)stat->st_size;
+#endif
   else
   {
     result->st_size = 0;
@@ -3352,9 +3399,9 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   if (CDirectory::Exists(strPath)) return true;
 
   // split strPath up into an array
-  // music\\album\\ will result in
+  // music\album\ will result in
   // music
-  // music\\album
+  // music\album
   //
 
   int i = 0;
@@ -3397,6 +3444,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
 {
   CStdString result = strFile;
+
   result.Replace('/', '_');
   result.Replace('\\', '_');
   result.Replace('?', '_');
@@ -3738,7 +3786,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         argv[i] = (char*)params[i].c_str();
 
       g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
-      delete argv;
+      delete [] argv;
     }
     else
       g_pythonParser.evalFile(strParameterCaseIntact.c_str());
@@ -4547,7 +4595,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("container.previousviewmode"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, (DWORD)-1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setviewmode"))
@@ -4562,7 +4610,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("container.previoussortmethod"))
   {
-    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
+    CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, (DWORD)-1);
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.setsortmethod"))
@@ -5039,8 +5087,8 @@ bool CUtil::AutoDetection()
       }
     }
   }
-}
-return bReturn;
+  }
+  return bReturn;
 }
 
 bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort)
@@ -5108,7 +5156,11 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
     return false;
   memset(&(server),0,sizeof(server));
   server.sin_family = AF_INET;
+#ifndef _LINUX
   server.sin_addr.S_un.S_addr = INADDR_BROADCAST;
+#else
+  server.sin_addr.s_addr = INADDR_BROADCAST;
+#endif
   server.sin_port = htons(iUDPPort);
   sendto(udp_server_socket,(char *)strSendMessage.c_str(),5,0,(struct sockaddr *)(&server),sizeof(server));
 	FD_ZERO(&readfds);
@@ -5198,10 +5250,19 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
         //We received new client information, extracting information
         CStdString strInfo, strIP;
         strInfo.Format("%s",sztmp); //this is the client info
-        strIP.Format("%d.%d.%d.%d", cliAddr.sin_addr.S_un.S_un_b.s_b1,
+        strIP.Format("%d.%d.%d.%d", 
+#ifndef _LINUX
+          cliAddr.sin_addr.S_un.S_un_b.s_b1,
           cliAddr.sin_addr.S_un.S_un_b.s_b2,
           cliAddr.sin_addr.S_un.S_un_b.s_b3,
-          cliAddr.sin_addr.S_un.S_un_b.s_b4 ); //this is the client IP
+          cliAddr.sin_addr.S_un.S_un_b.s_b4
+#else
+          (int)((char *)(cliAddr.sin_addr.s_addr))[0],
+          (int)((char *)(cliAddr.sin_addr.s_addr))[1],
+          (int)((char *)(cliAddr.sin_addr.s_addr))[2],
+          (int)((char *)(cliAddr.sin_addr.s_addr))[3]
+#endif
+        ); //this is the client IP
         
         //Is this our Local IP ?
         if ( !strIP.Equals(strLocalIP) )
