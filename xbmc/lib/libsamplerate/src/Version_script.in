@@ -1,0 +1,53 @@
+#
+# Export file for libsamplerate
+#
+# Only the symbols listed in the global section will be callable from 
+# applications linking to libsamplerate.
+#
+
+@PACKAGE@.so.0.0
+{
+	global:
+		src_new ;
+		src_delete ;
+		src_get_name ;
+		src_get_description ;
+		src_get_version ;
+		src_process ;
+		src_reset ;
+		src_error ;
+		src_strerror ;
+		src_simple ;
+		src_is_valid_ratio ;
+		src_set_ratio ;
+		
+	local:
+		*;
+};
+
+@PACKAGE@.so.0.1
+{
+	global:
+		src_new ;
+		src_delete ;
+		src_get_name ;
+		src_get_description ;
+		src_get_version ;
+		src_process ;
+		src_reset ;
+		src_error ;
+		src_strerror ;
+		src_simple ;
+		src_is_valid_ratio ;
+		src_set_ratio ;
+		
+		src_callback_new ;
+		src_callback_read ;
+
+		src_short_to_float_array ;
+		src_float_to_short_array ;
+		src_int_to_float_array ;
+		src_float_to_int_array ;
+	local:
+		*;
+};
