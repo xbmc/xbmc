@@ -27,6 +27,7 @@ using namespace std;
 CGUIControlGroup::CGUIControlGroup()
 {
   m_defaultControl = 0;
+  m_defaultAlways = false;
   m_focusedControl = 0;
   m_renderTime = 0;
   m_renderFocusedLast = false;
@@ -37,6 +38,7 @@ CGUIControlGroup::CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float po
 : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_defaultControl = 0;
+  m_defaultAlways = false;
   m_focusedControl = 0;
   m_renderTime = 0;
   m_renderFocusedLast = false;
@@ -47,6 +49,7 @@ CGUIControlGroup::CGUIControlGroup(const CGUIControlGroup &from)
 : CGUIControl(from)
 {
   m_defaultControl = from.m_defaultControl;
+  m_defaultAlways = from.m_defaultAlways;
   m_renderFocusedLast = from.m_renderFocusedLast;
 
   // run through and add our controls
@@ -164,7 +167,7 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
   case GUI_MSG_SETFOCUS:
     {
       // first try our last focused control...
-      if (m_focusedControl)
+      if (!m_defaultAlways && m_focusedControl)
       {
         CGUIControl *control = GetFirstFocusableControl(m_focusedControl);
         if (control)

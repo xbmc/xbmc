@@ -539,6 +539,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   DWORD pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
   DWORD defaultControl = 0;
+  bool  defaultAlways = false;
   CStdString strTmp;
   int singleInfo = 0;
   CStdString strLabel;
@@ -704,7 +705,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (!GetNavigation(pControlNode, "onleft", left, leftActions)) left = id;
   if (!GetNavigation(pControlNode, "onright", right, rightActions)) right = id;
 
-  XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl);
+  if (XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl))
+  {
+    const char *always = pControlNode->FirstChildElement("defaultcontrol")->Attribute("always");
+    if (always && strnicmp(always, "true", 4) == 0)
+      defaultAlways = true;
+  }
   XMLUtils::GetDWORD(pControlNode, "pagecontrol", pageControl);
 
   GetInfoColor(pControlNode, "colordiffuse", colorDiffuse);
@@ -993,7 +999,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     {
       control = new CGUIControlGroup(
         dwParentId, id, posX, posY, width, height);
-      ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl);
+      ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl, defaultAlways);
       ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
     }
   }
