@@ -2454,7 +2454,7 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
   else if (info == MUSICPLAYER_COVER)
   {
     if (!g_application.IsPlayingAudio()) return "";
-    return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "defaultAlbumCover.png";
+    return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultAlbumCover.png";
   }
   else if (info == MUSICPLAYER_RATING)
   {
@@ -2470,7 +2470,7 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
   {
     if (!g_application.IsPlayingVideo()) return "";
     if(m_currentMovieThumb.IsEmpty())
-      return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "defaultVideoCover.png";
+      return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultVideoCover.png";
     else return m_currentMovieThumb;
   }
   else if (info == CONTAINER_FOLDERTHUMB)
@@ -2708,7 +2708,7 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) cons
     playlistItem->SetMusicThumb();
     // still no thumb? then just the set the default cover
     if (!playlistItem->HasThumbnail())
-      playlistItem->SetThumbnailImage("defaultAlbumCover.png");
+      playlistItem->SetThumbnailImage("DefaultAlbumCover.png");
   }
   if (info.m_info == MUSICPLAYER_PLAYLISTPOS)
   {

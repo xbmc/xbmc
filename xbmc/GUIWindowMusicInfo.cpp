@@ -237,7 +237,7 @@ void CGUIWindowMusicInfo::SetDiscography()
     if (!strThumb.IsEmpty() && CFile::Exists(strThumb))
       item->SetThumbnailImage(strThumb);
     else
-      item->SetThumbnailImage("defaultAlbumCover.png");
+      item->SetThumbnailImage("DefaultAlbumCover.png");
 
     m_albumSongs->Add(item);
   }
@@ -544,7 +544,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   if (result == "thumb://None")
   { // cache the default thumb
     CPicture pic;
-    pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
+    pic.CacheSkinImage("DefaultAlbumCover.png", cachedThumb);
   }
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
