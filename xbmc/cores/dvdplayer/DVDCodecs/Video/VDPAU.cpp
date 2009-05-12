@@ -234,7 +234,7 @@ void CVDPAU::BindPixmap()
 {
   if (!m_pixmapBound)
   {
-    CLog::Log(LOGDEBUG,"glXBindTexImageEXT");
+    //CLog::Log(LOGDEBUG,"glXBindTexImageEXT");
     CSingleLock lock(g_graphicsContext);
     XLockDisplay(m_Display);
     glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
@@ -249,7 +249,7 @@ void CVDPAU::ReleasePixmap()
 {
   if (m_pixmapBound)
   {
-    CLog::Log(LOGDEBUG,"glXReleaseTexImageEXT");
+    //CLog::Log(LOGDEBUG,"glXReleaseTexImageEXT");
     glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
     VerifyGLState();
   }
