@@ -880,6 +880,12 @@
 		F584E0FC0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */; };
 		F584E1290F257BD800DB26A5 /* FileSpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */; };
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
+		F59874D80FB914CA008EF4FB /* VideoReferenceClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59874D70FB914CA008EF4FB /* VideoReferenceClock.cpp */; };
+		F59874D90FB914CA008EF4FB /* VideoReferenceClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59874D70FB914CA008EF4FB /* VideoReferenceClock.cpp */; };
+		F59874DC0FB91561008EF4FB /* DVDPlayerAudioResampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59874DA0FB91561008EF4FB /* DVDPlayerAudioResampler.cpp */; };
+		F59874DD0FB91561008EF4FB /* DVDPlayerAudioResampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59874DA0FB91561008EF4FB /* DVDPlayerAudioResampler.cpp */; };
+		F59874EC0FB91656008EF4FB /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F59874EB0FB91656008EF4FB /* libsamplerate.dylib */; };
+		F59874ED0FB91656008EF4FB /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F59874EB0FB91656008EF4FB /* libsamplerate.dylib */; };
 		F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */; };
 		F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */; };
 		F5A1C8740F6B06CF00A96ABD /* ActionManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138A0D25F9F900618676 /* ActionManager.cpp */; };
@@ -3653,6 +3659,11 @@
 		F584E1280F257BD800DB26A5 /* FileSpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileSpecialProtocol.h; path = xbmc/FileSystem/FileSpecialProtocol.h; sourceTree = SOURCE_ROOT; };
 		F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPDirectory.h; path = xbmc/FileSystem/HTTPDirectory.h; sourceTree = SOURCE_ROOT; };
 		F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HTTPDirectory.cpp; path = xbmc/FileSystem/HTTPDirectory.cpp; sourceTree = SOURCE_ROOT; };
+		F59874D60FB914CA008EF4FB /* VideoReferenceClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoReferenceClock.h; sourceTree = "<group>"; };
+		F59874D70FB914CA008EF4FB /* VideoReferenceClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoReferenceClock.cpp; sourceTree = "<group>"; };
+		F59874DA0FB91561008EF4FB /* DVDPlayerAudioResampler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerAudioResampler.cpp; sourceTree = "<group>"; };
+		F59874DB0FB91561008EF4FB /* DVDPlayerAudioResampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerAudioResampler.h; sourceTree = "<group>"; };
+		F59874EB0FB91656008EF4FB /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsamplerate.dylib; path = /opt/local/lib/libsamplerate.dylib; sourceTree = "<absolute>"; };
 		F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AudioRendererFactory.cpp; path = xbmc/cores/AudioRenderers/AudioRendererFactory.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AudioRendererFactory.h; path = xbmc/cores/AudioRenderers/AudioRendererFactory.h; sourceTree = SOURCE_ROOT; };
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
@@ -3765,6 +3776,7 @@
 				F5EA08860F78B1E7005C2EC5 /* libcdio.dylib in Frameworks */,
 				F5A2BD600F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */,
 				F5AAC9CF0FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */,
+				F59874EC0FB91656008EF4FB /* libsamplerate.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3816,6 +3828,7 @@
 				F5EA08850F78B1E7005C2EC5 /* libcdio.dylib in Frameworks */,
 				F5A2BD610F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */,
 				F5AAC9D00FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */,
+				F59874ED0FB91656008EF4FB /* libsamplerate.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4584,6 +4597,8 @@
 				E38E1E200D25F9FD00618676 /* Util.cpp */,
 				E38E1E210D25F9FD00618676 /* Util.h */,
 				E38E1E220D25F9FD00618676 /* utils */,
+				F59874D60FB914CA008EF4FB /* VideoReferenceClock.h */,
+				F59874D70FB914CA008EF4FB /* VideoReferenceClock.cpp */,
 				E38E1E930D25F9FD00618676 /* VideoDatabase.cpp */,
 				E38E1E940D25F9FD00618676 /* VideoDatabase.h */,
 				E38E1E950D25F9FD00618676 /* VideoInfoScanner.cpp */,
@@ -4810,6 +4825,8 @@
 				E38E15850D25F9FA00618676 /* DVDPlayer.h */,
 				E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */,
 				E38E15870D25F9FA00618676 /* DVDPlayerAudio.h */,
+				F59874DA0FB91561008EF4FB /* DVDPlayerAudioResampler.cpp */,
+				F59874DB0FB91561008EF4FB /* DVDPlayerAudioResampler.h */,
 				E38E15880D25F9FA00618676 /* DVDPlayerSubtitle.cpp */,
 				E38E15890D25F9FA00618676 /* DVDPlayerSubtitle.h */,
 				E38E158A0D25F9FA00618676 /* DVDPlayerVideo.cpp */,
@@ -6755,6 +6772,7 @@
 		F57E1ED30E36E96B00700C9D /* macport libs */ = {
 			isa = PBXGroup;
 			children = (
+				F59874EB0FB91656008EF4FB /* libsamplerate.dylib */,
 				E38E24270D26317D00618676 /* liblzo.dylib */,
 				E38E24250D26317D00618676 /* libGLEW.dylib */,
 				E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */,
@@ -6930,7 +6948,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake externals\n\n\tmake more_libs\n\n\tmake tools/XBMCTex/XBMCTex\n\n\tmake skin/PM3.HD/media/Textures.xpr\n\n\tmake skin/Project\\ Mayhem\\ III/media/Textures.xpr\n\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
+			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake tools/XBMCTex/XBMCTex\n\n\tmake skin/PM3.HD/media/Textures.xpr\n\n\tmake skin/Project\\ Mayhem\\ III/media/Textures.xpr\n\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
 			showEnvVarsInLog = 0;
 		};
 		F5A1C8720F6B06CF00A96ABD /* ShellScript */ = {
@@ -6944,7 +6962,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake externals\n\n\tmake more_libs\n\n\tmake tools/XBMCTex/XBMCTex\n\n\tmake skin/PM3.HD/media/Textures.xpr\n\n\tmake skin/Project\\ Mayhem\\ III/media/Textures.xpr\n\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
+			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake tools/XBMCTex/XBMCTex\n\n\tmake skin/PM3.HD/media/Textures.xpr\n\n\tmake skin/Project\\ Mayhem\\ III/media/Textures.xpr\n\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
 			showEnvVarsInLog = 0;
 		};
 		F5A1CBDE0F6B0B4700A96ABD /* copy root files */ = {
@@ -7832,6 +7850,8 @@
 				E43196180FB2382E0030E150 /* HTSPSession.cpp in Sources */,
 				F5AACA680FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */,
 				F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */,
+				F59874D80FB914CA008EF4FB /* VideoReferenceClock.cpp in Sources */,
+				F59874DC0FB91561008EF4FB /* DVDPlayerAudioResampler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8659,6 +8679,8 @@
 				E431961A0FB2382E0030E150 /* HTSPSession.cpp in Sources */,
 				F5AACA690FB3DE2D00DBB77C /* GUIDialogSelect.cpp in Sources */,
 				F5AACA980FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */,
+				F59874D90FB914CA008EF4FB /* VideoReferenceClock.cpp in Sources */,
+				F59874DD0FB91561008EF4FB /* DVDPlayerAudioResampler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
