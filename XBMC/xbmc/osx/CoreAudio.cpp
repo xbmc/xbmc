@@ -54,13 +54,13 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdStri
                  (UInt32)desc.mSampleRate);
       break;
     case kAudioFormatAC3:
-      str.Format("[%s] AC-3/DTS (%uHz)", fourCC, (UInt32)desc.mSampleRate);
+      str.Format("[%4.4s] AC-3/DTS (%uHz)", fourCC, (UInt32)desc.mSampleRate);
       break;
     case kAudioFormat60958AC3:
-      str.Format("[%s] AC-3/DTS for S/PDIF (%uHz)", fourCC, (UInt32)desc.mSampleRate);
+      str.Format("[%4.4s] AC-3/DTS for S/PDIF (%uHz)", fourCC, (UInt32)desc.mSampleRate);
       break;
     default:
-      str.Format("[%s]", fourCC);
+      str.Format("[%4.4s]", fourCC);
       break;
   }
   return str.c_str();
