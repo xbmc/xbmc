@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "RenderManager.h"
 #include "utils/CriticalSection.h"
+#include "VideoReferenceClock.h"
 
 #ifndef HAS_SDL
 #include "PixelShaderRenderer.h"
@@ -123,13 +124,9 @@ double CXBoxRenderManager::GetPresentTime()
 
 void CXBoxRenderManager::WaitPresentTime(double presenttime)
 {
-  double now = GetPresentTime();
-  while(now + 0.001 < presenttime)
-  {
-    Sleep((int)((presenttime - now) * 1000.0));
-    now = GetPresentTime();
-  }
+  CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
 }
+
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   /* all frames before this should be rendered */
