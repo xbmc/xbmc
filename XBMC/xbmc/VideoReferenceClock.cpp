@@ -270,7 +270,7 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
   ReturnV = sscanf(Buff, "%lf", &fRefreshRate);
   if (ReturnV != 1 || fRefreshRate <= 0.0)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: can't make sense of that", NVSETTINGSCMD, Buff);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: can't make sense of that", NVSETTINGSCMD);
     return false;
   }
   
