@@ -1123,6 +1123,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   Render(flags, index);
   VerifyGLState();
   glEnable(GL_BLEND);
+  glFlush();
   g_graphicsContext.EndPaint();
 }
 

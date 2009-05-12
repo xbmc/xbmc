@@ -286,8 +286,9 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_pRenderer->FlipPage(source);
   }
 
+  m_presentevent.Reset();
   g_application.NewFrame();
-  g_application.WaitFrame(1); // we give the application thread 1ms to present
+  m_presentevent.WaitMSec(1); // we give the application thread 1ms to present
 }
 
 float CXBoxRenderManager::GetMaximumFPS()
@@ -342,9 +343,14 @@ void CXBoxRenderManager::Present()
 {
   CSharedLock lock(m_sharedSection);
 
+#ifdef HAVE_LIBVDPAU
   /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo())
+  if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
+  {
+    m_presentevent.Set();
     WaitPresentTime(m_presenttime);
+  }
+#endif
 
   if (!m_pRenderer)
   {
@@ -391,6 +397,18 @@ void CXBoxRenderManager::Present()
     PresentBlend();
   else
     PresentSingle();
+
+  /* wait for this present to be valid */
+  if(g_graphicsContext.IsFullScreenVideo())
+  {
+#ifdef HAVE_LIBVDPAU
+    if (!g_VDPAU)
+#endif
+    {
+      m_presentevent.Set();
+      WaitPresentTime(m_presenttime);
+    }
+  }
 }
 
 /* simple present method */
