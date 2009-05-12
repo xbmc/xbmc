@@ -449,7 +449,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
       }
       if (!item->HasThumbnail())
       {
-        item->SetThumbnailImage("defaultAlbumCover.png");
+        item->SetThumbnailImage("DefaultAlbumCover.png");
       }
       item->GetMusicInfoTag()->SetLoaded();
     }

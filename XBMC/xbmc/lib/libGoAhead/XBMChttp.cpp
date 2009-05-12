@@ -1416,7 +1416,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
 	  thumb=g_infoManager.GetImage(VIDEOPLAYER_COVER, (DWORD)-1);
 		
 		//CPicture pic;
-        //pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
+        //pic.CacheSkinImage("DefaultAlbumCover.png", cachedThumb);
 
 	  copyThumb(thumb,thumbFn);
 	  output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
