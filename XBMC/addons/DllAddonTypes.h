@@ -55,7 +55,7 @@ extern "C"
 {
   /**
    * XBMC logging levels
-   */ 
+   */
   enum ADDON_LOG {
     LOG_DEBUG,
     LOG_INFO,
@@ -71,7 +71,7 @@ extern "C"
    * As example: AddOn report "STATUS_BAD_SETTINGS" in this case
    * the string must be included the name of the setting that is wrong.
    * This is then reported by XBMC to inform the user.
-   */ 
+   */
   enum ADDON_STATUS {
     STATUS_OK,                 /* Normally not returned (everything is ok) */
     STATUS_INVALID_HOST,       /* AddOn want to connect to unknown host (for ones that use Network) */
@@ -95,7 +95,7 @@ extern "C"
    * where AddOnStringList.Items hold how many strings are must stored.
    *
    * It must be released by the creating function.
-   */ 
+   */
   typedef struct {
     const char**    Strings;
     int             Items;
@@ -117,7 +117,7 @@ extern "C"
      * userData       : pointer - Points to the AddOn specific data
      * loglevel       : enum - log level to ouput at. (default=LOG_DEBUG)
      * format         : string - text to output.
-     * 
+     *
      * Text is written to the log for the following conditions:
      *   LOG_DEBUG  : Show as debug meassage
      *   LOG_INFO   : Show as info meassage
@@ -134,7 +134,7 @@ extern "C"
      * userData       : pointer - Points to the AddOn specific data
      * settingName    : string - name of the settings used inside the XML Files.
      * settingValue   : pointer - Points to the memory where the value must saved
-     * 
+     *
      * *Note, Returns True if 'Ok', else False.
      *        Address of Boolean or Integer values can be passed directly by "settingValue".
      *        For character values a buffer with a minimum size of 1024 Bytes must
@@ -183,6 +183,30 @@ extern "C"
      */
     typedef void (*AddOnOpenOwnSettings)(void *userData, bool bReload);
 
+    /**
+     * AddOnCallbacks -- GetAddonDirectory -- Get this AddOn directory (read-only).
+     *
+     * userData       : pointer - Points to the AddOn specific data
+     *
+     * *Note, Returns path as a string to the location of the AddOn.
+     *
+     * example:
+     *   - const char *myDir = g_xbmc->Dialog.GetAddonDirectory();
+     */
+    typedef const char* (*AddOnGetAddonDirectory)(void *userData);
+
+    /**
+     * AddOnCallbacks -- GetUserDirectory -- Get this AddOn profile directory (read-write).
+     *
+     * userData       : pointer - Points to the AddOn specific data
+     *
+     * *Note, Returns path as a string to the location of the AddOn.
+     *
+     * example:
+     *   - const char *myProfile = g_xbmc->Dialog.GetUserDirectory();
+     */
+    typedef const char* (*AddOnGetUserDirectory)(void *userData);
+
     typedef struct AddOnCallbacks
     {
       AddOnStatusCallback    ReportStatus;
@@ -190,13 +214,15 @@ extern "C"
       AddOnGetSetting        GetSetting;
       AddOnOpenSettings      OpenSettings;
       AddOnOpenOwnSettings   OpenOwnSettings;
+      AddOnGetAddonDirectory GetAddonDirectory;
+      AddOnGetUserDirectory  GetUserDirectory;
     } AddOnCallbacks;
 
 
   /************************************************************************************************************
    * XBMC AddOn Dialog callbacks
    * Helper's to access GUI Dialog related functions
-   */ 
+   */
 
     /**
      * DialogCallbacks -- OpenOK -- Show a dialog 'OK'.
@@ -268,7 +294,7 @@ extern "C"
      *   1 : ShowAndGetDate      (default format: DD/MM/YYYY)
      *   2 : ShowAndGetTime      (default format: HH:MM)
      *   3 : ShowAndGetIPAddress (default format: #.#.#.#)
-     *  
+     *
      * *Note, Returns the entered data as a string.
      *  Returns the default value if dialog was canceled.
      *
@@ -285,7 +311,7 @@ extern "C"
      * default        : string - default text entry (Optional).
      * hidden         : boolean - True for hidden text entry.
      *
-     *  
+     *
      * *Note, Returns the entered data as a string.
      *  Returns NULL if keyboard was canceled.
      *
@@ -387,7 +413,7 @@ extern "C"
 
     /**
      * GUICallbacks -- Lock -- Lock the gui until xbmcgui.unlock() is called.
-     * 
+     *
      * *Note, This will improve performance when doing a lot of gui manipulation at once.
      *        The main program (xbmc itself) will freeze until xbmcgui.unlock() is called.
      *
@@ -433,7 +459,7 @@ extern "C"
    * XBMC AddOn Utilities callbacks
    * Helper to access different types of useful functions
    */
-   
+
     /**
      * UtilsCallbacks -- Shutdown -- Shutdown the xbox.
      *
@@ -473,8 +499,8 @@ extern "C"
      *
      * function       : string - builtin function to execute.
      *
-     * List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions 
-     * 
+     * List of functions - http://xbmc.org/wiki/?title=List_of_Built_In_Functions
+     *
      * example:
      *   - g_xbmc->Utils.ExecuteBuiltIn("XBMC.RunXBE(c:\\\\avalaunch.xbe)");
      */
@@ -571,7 +597,7 @@ extern "C"
      *   - int freemem = g_xbmc->Utils.GetFreeMem();
      */
     typedef int (*UtilsGetFreeMem)();
-    
+
     /**
      * UtilsCallbacks -- GetInfoLabel -- Returns an InfoLabel as a string.
      *
@@ -585,7 +611,7 @@ extern "C"
     typedef const char* (*UtilsGetInfoLabel)(const char *infotag);
 
     /**
-     * UtilsCallbacks -- GetInfoImage -- Returns a filename including path to 
+     * UtilsCallbacks -- GetInfoImage -- Returns a filename including path to
      *                                   the InfoImage's thumbnail as a string.
      *
      * infotag        : string - infoTag for value you want returned.
@@ -599,14 +625,14 @@ extern "C"
 
     /**
      * UtilsCallbacks -- EnableNavSounds -- Returns True (1) or False (0) as a bool.
-     * 
+     *
      * condition      : string - condition to check.
-     * 
-     * List of Conditions - http://xbmc.org/wiki/?title=List_of_Boolean_Conditions 
-     * 
+     *
+     * List of Conditions - http://xbmc.org/wiki/?title=List_of_Boolean_Conditions
+     *
      * *Note, You can combine two (or more) of the above settings by using "+" as an AND operator,
      * "|" as an OR operator, "!" as a NOT operator, and "[" and "]" to bracket expressions.
-     * 
+     *
      * example:
      *   - visible bool = g_xbmc->Utils.GetCondVisibility("[Control.IsVisible(41) + !Control.IsVisible(12)]");
      */

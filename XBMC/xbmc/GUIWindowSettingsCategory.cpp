@@ -1483,7 +1483,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (pControl->GetValue() == 0)
       pSettingString->SetData("None");
     else
-      pSettingString->SetData( CVisualisation::GetCombinedName( pControl->GetCurrentLabel() ) );
+      pSettingString->SetData(pControl->GetCurrentLabel());
   }
   else if (strSetting.Equals("system.debuglogging"))
   {
@@ -1525,6 +1525,20 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("karaoke.port3voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(3, g_guiSettings.GetSetting("karaoke.port3voicemask"));
+  }
+  else if (strSetting.Equals("mymusic.managevisual"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_VIZ, true))
+    {
+      CSetting *pSetting = g_guiSettings.GetSetting("mymusic.visualisation");
+      FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
+      // save the new list
+      g_settings.SaveAddons();
+    }
+    else
+    { // reload the existing list
+      g_settings.LoadAddons();
+    }
   }
   else if (strSetting.Equals("musiclibrary.cleanup"))
   {
@@ -2958,64 +2972,39 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     CGUIMessage msg(GUI_MSG_LABEL_RESET, iWinID, iControlID);
     g_graphicsContext.SendMessage(msg);
   }
-  vector<CStdString> vecVis;
+
   //find visz....
-  CFileItemList items;
-  CDirectory::GetDirectory("special://xbmc/visualisations/", items);
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/visualisations/", items);
+  vector<CStdString> vecVis;
+  ADDON::VECADDONS *addons = g_settings.GetAddonsFromType(ADDON::ADDON_VIZ);
 
-  CVisualisationFactory visFactory;
-  CStdString strExtension;
-  for (int i = 0; i < items.Size(); ++i)
+  /* Make sure addon's are loaded */
+  if (addons != NULL || !addons->empty())
   {
-    CFileItemPtr pItem = items[i];
-    if (!pItem->m_bIsFolder)
+    for (unsigned int i = 0; i < addons->size(); i++)
     {
-      const char *visPath = (const char*)pItem->m_strPath;
+      const ADDON::CAddon& addon = addons->at(i);
 
-      CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".vis")  // normal visualisation
-      {
+      CStdString strFileName = addon.m_strPath + addon.m_strLibName;
+
+      //TODO fix addons paths
+      strFileName.Replace("addon://", "special://xbmc/");
+
 #ifdef _LINUX
-        void *handle = dlopen( _P(visPath).c_str(), RTLD_LAZY );
-        if (!handle)
-          continue;
-        dlclose(handle);
-#endif
-        CStdString strLabel = pItem->GetLabel();
-        vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) );
-      }
-      else if ( strExtension == ".mvis" )  // multi visualisation with sub modules
+      void *handle = dlopen(_P(strFileName).c_str(), RTLD_LAZY);
+      if (!handle)
       {
-        CVisualisation* vis = visFactory.LoadVisualisation( visPath );
-        if ( vis )
-        {
-          map<string, string> subModules;
-          map<string, string>::iterator iter;
-          string moduleName, path;
-          CStdString visName = pItem->GetLabel();
-          visName = visName.Mid(0, visName.size() - 5);
-
-          // get list of sub modules from the visualisation
-          vis->GetSubModules( subModules );
-
-          for ( iter=subModules.begin() ; iter!=subModules.end() ; iter++ )
-          {
-            // each pair of the map is of the format 'module name' => 'module path'
-            moduleName = iter->first;
-            vecVis.push_back( CVisualisation::GetFriendlyName( visName.c_str(), moduleName.c_str() ).c_str() );
-            CLog::Log(LOGDEBUG, "Module %s for visualisation %s", moduleName.c_str(), visPath);
-          }
-          delete vis;
-        }
+        CLog::Log(LOGERROR, "FillInVisualisations: Unable to load %s, reason: %s", strFileName.c_str(), dlerror());
+        continue;
       }
+      dlclose(handle);
+#endif
+      vecVis.push_back(addon.m_strName);
     }
   }
 
   CStdString strDefaultVis = pSettingString->GetData();
   if (!strDefaultVis.Equals("None"))
-    strDefaultVis = CVisualisation::GetFriendlyName( strDefaultVis );
+    strDefaultVis = strDefaultVis;
 
   sort(vecVis.begin(), vecVis.end(), sortstringbyname());
 

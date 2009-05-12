@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Render-Qualität</string>
+    <string id="30001">Niedrig</string>
+    <string id="30002">Mittel</string>
+    <string id="30003">Hoch</string>
+    <string id="30004">Maximal</string>
+    <string id="30005">Zufallsmodus</string>
+    <string id="30006">Dauer der Überblendung (s)</string>
+    <string id="30007">Dauer für Einstellung (s)</string>
+    <string id="30008">Takt Empfindlichkeit</string>
+</strings>

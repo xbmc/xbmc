@@ -24,7 +24,6 @@
 #define __SCREENSAVER_TYPES_H__
 
 #include "DllAddonTypes.h"
-#include "DllAddonSettings.h"
 
 extern "C"
 {

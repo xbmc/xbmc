@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting id="renderquality" type="enum" lvalues="30001|30002|30003|30004" label="30000" default="2" />
+    <setting id="shufflemode" type="bool" label="30005" default="true" />
+    <setting id="smoothpresetduration" type="enum" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|20|25|30|35|40|45|50" label="30006" default="5" />
+    <setting id="presetduration" type="enum" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|20|25|30|35|40|45|50" label="30007" default="15" />
+    <setting id="beatsensitivity" type="enum" values="0|2|5|7|10|12|15|17|20|22|25|27|30|32|35|37|40|42|45|47|50|52|55|57|60|62|65|67|70|72|75|77|80|82|85|87|90|92|95|97|100" label="30008" default="15" />
+</settings>

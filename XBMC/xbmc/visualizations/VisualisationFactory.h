@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,6 +19,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#include "utils/Addon.h"
 #include "Visualisation.h"
 
 class CVisualisationFactory
@@ -26,6 +28,5 @@ class CVisualisationFactory
 public:
   CVisualisationFactory();
   virtual ~CVisualisationFactory();
-  CVisualisation* LoadVisualisation(const CStdString& strVisz) const;
-  CVisualisation* LoadVisualisation(const CStdString& strVisz, const CStdString& strSubModule) const;
+  CVisualisation* LoadVisualisation(const CStdString& path, const ADDON::CAddon& addon) const;
 };

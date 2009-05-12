@@ -23,6 +23,7 @@
 
 #include "GUIControl.h"
 #include "cores/IAudioCallback.h"
+#include "utils/Addon.h"
 
 // forward definitions
 class CVisualisation;
@@ -83,4 +84,5 @@ private:
   bool m_bCalculate_Freq;       // True if the vis wants freq data
   bool m_bInitialized;
   CStdString m_AlbumThumb;
+  ADDON::CAddon m_addon;
 };

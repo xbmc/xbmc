@@ -29,7 +29,6 @@
 #define MIN_XBMC_PVRDLL_API 1
 
 #include "DllAddonTypes.h"
-#include "DllAddonSettings.h"
 
 #include <string.h>
 #include <time.h>

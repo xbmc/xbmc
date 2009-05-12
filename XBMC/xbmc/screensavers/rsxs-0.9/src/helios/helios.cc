@@ -743,11 +743,6 @@ bool HasSettings()
   return false;
 }
 
-DllSettings* GetSettings()
-{
-  return NULL;
-}
-
 ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
 {
   return STATUS_OK;

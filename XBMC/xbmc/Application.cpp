@@ -999,7 +999,9 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/visualisations");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/visualisations");
     CDirectory::Create("special://home/addons/screensavers");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
@@ -1097,7 +1099,9 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/visualisations");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/visualisations");
     CDirectory::Create("special://home/addons/screensavers");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
@@ -1189,7 +1193,9 @@ CProfile* CApplication::InitDirectoriesWin32()
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/visualisations");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/visualisations");
     CDirectory::Create("special://home/addons/screensavers");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
@@ -1286,10 +1292,12 @@ HRESULT CApplication::Initialize()
     CDirectory::Create("special://xbmc/plugins/pictures");
     CDirectory::Create("special://xbmc/plugins/programs");
     CDirectory::Create("special://xbmc/language");
-    CDirectory::Create("special://xbmc/visualisations");
+    CDirectory::Create("special://xbmc/addons");
+    CDirectory::Create("special://xbmc/addons/pvr");
+    CDirectory::Create("special://xbmc/addons/screensavers");
+    CDirectory::Create("special://xbmc/addons/visualisations");
     CDirectory::Create("special://xbmc/addons");
     CDirectory::Create("special://xbmc/sounds");
-    CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
   }
 
   // initialize network

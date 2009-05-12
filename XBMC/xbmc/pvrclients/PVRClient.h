@@ -27,8 +27,8 @@
 class CPVRClient : public IPVRClient
 {
 public:
-  CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll, 
-             const ADDON::CAddon& addon, ADDON::IAddonCallback *addonCB, 
+  CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
+             const ADDON::CAddon& addon, ADDON::IAddonCallback *addonCB,
              IPVRClientCallback *pvrCB);
   ~CPVRClient();
 
@@ -39,7 +39,6 @@ public:
   virtual void Remove();
   virtual ADDON_STATUS GetStatus();
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
-  void GetSettings(std::vector<DllSetting> **vecSettings);
 
   // IPVRClient //////////////////////////////////////////////////////////////
   virtual CCriticalSection* GetLock() { return &m_critSection; }
@@ -97,6 +96,9 @@ private:
   static void AddOnOpenSettings(const char *url, bool bReload);
   static void AddOnOpenOwnSettings(void *userData, bool bReload);
   static const char* AddOnGetLocalizedString(void *userData, long dwCode);
+  static const char* AddOnGetAddonDirectory(void *userData);
+  static const char* AddOnGetUserDirectory(void *userData);
+  static const char* AddOnTranslatePath(const char *path);
 };
 
 typedef std::vector<CPVRClient*> VECCLIENTS;

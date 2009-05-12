@@ -21,7 +21,6 @@
 */
 
 #include "DynamicDll.h"
-#include "../addons/DllAddonSettings.h"
 #include "../addons/DllAddonTypes.h"
 
 template <typename T>
@@ -32,7 +31,6 @@ public:
   virtual ADDON_STATUS GetStatus() =0;  /* For "ADDON_STATUS" see header "DllAddonTypes.h" */
   virtual bool HasSettings() =0;
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) =0;
-  virtual DllSettings* GetSettings() =0;
   virtual void Remove() =0;
 };
 
@@ -42,7 +40,6 @@ class DllAddon : public DllDynamic, public DllAddonInterface<T>
 public:
   DECLARE_DLL_WRAPPER_TEMPLATE(DllAddon)
   DEFINE_METHOD0(ADDON_STATUS, GetStatus)
-  DEFINE_METHOD0(DllSettings*, GetSettings)
   DEFINE_METHOD0(bool, HasSettings)
   DEFINE_METHOD2(ADDON_STATUS, SetSetting, (const char *p1, const void *p2))
   DEFINE_METHOD0(void, Remove)
@@ -51,7 +48,6 @@ public:
     RESOLVE_METHOD_RENAME(get_addon,GetAddon)
     RESOLVE_METHOD(GetStatus)
     RESOLVE_METHOD(SetSetting)
-    RESOLVE_METHOD(GetSettings)
     RESOLVE_METHOD(HasSettings)
     RESOLVE_METHOD(Remove)
   END_METHOD_RESOLVE()

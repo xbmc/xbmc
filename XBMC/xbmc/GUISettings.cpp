@@ -235,16 +235,17 @@ void CGUISettings::Initialize()
   AddGroup(3, 2);
   AddCategory(3, "mymusic", 16000);
 #ifdef _LINUX
-  AddString(1, "mymusic.visualisation", 250, "opengl_spectrum.vis", SPIN_CONTROL_TEXT);
+  AddString(1, "mymusic.visualisation", 250, "", SPIN_CONTROL_TEXT);
 #elif defined(_WIN32PC)
-  AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
+  AddString(1, "mymusic.visualisation", 250, "", SPIN_CONTROL_TEXT);
 #endif
-  AddSeparator(2, "mymusic.sep1");
-  AddBool(3, "mymusic.autoplaynextitem", 489, true);
-  //AddBool(4, "musicfiles.repeat", 488, false);
-  AddBool(5, "mymusic.clearplaylistsonend",239,false);
-  AddSeparator(6, "mymusic.sep2");
-  AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddString(2, "mymusic.managevisual", 23061, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(3, "mymusic.sep1");
+  AddBool(4, "mymusic.autoplaynextitem", 489, true);
+  //AddBool(5, "musicfiles.repeat", 488, false);
+  AddBool(6, "mymusic.clearplaylistsonend",239,false);
+  AddSeparator(7, "mymusic.sep2");
+  AddPath(8,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(1, "musiclibrary.enabled", 418, true);

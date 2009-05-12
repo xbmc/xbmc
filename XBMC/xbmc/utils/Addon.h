@@ -95,7 +95,7 @@ public:
   bool RequestRemoval(const CAddon* addon) { return false; }
   ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; }
 };
- 
+
 /**
  * Class - CAddonStatusHandler
  * Used to informate the user about occurred errors and
@@ -136,7 +136,7 @@ public:
 
   virtual void Remove() {};
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; };
-  
+
   /* Callback pointer return function */
   static IAddonCallback* GetCallbackForType(AddonType type);
 
@@ -148,6 +148,8 @@ public:
   static void TransferAddonSettings(const CURL &url);
   static void TransferAddonSettings(const CAddon* addon);
   static bool GetAddonSetting(const CAddon* addon, const char* settingName, void *settingValue);
+  static CStdString GetAddonDirectory(const CAddon* addon);
+  static CStdString GetUserDirectory(const CAddon* addon);
 
   /* Add-on Dialog helper functions */
   static bool OpenDialogOK(const char* heading, const char* line1, const char* line2, const char* line3);
@@ -189,7 +191,7 @@ public:
   static int GetGlobalIdleTime();
   static const char* GetCacheThumbName(const char *path);
   static const char* MakeLegalFilename(const char *filename);
-  static const char* TranslatePath(const char *path);
+  static CStdString TranslatePath(const char *path);
   static const char* GetRegion(int id);
   static const char* GetSupportedMedia(int media);
   static bool SkinHasImage(const char *filename);
@@ -197,7 +199,7 @@ public:
   /* Beginning of Add-on data fields (readed from info.xml) */
   CStdString m_guid;       ///< Unique identifier for this addon, chosen by developer
   CStdString m_strName;    ///< Name of the addon, can be chosen freely.
-  CStdString m_strVersion; ///< Version of the addon, must be in form 
+  CStdString m_strVersion; ///< Version of the addon, must be in form
   CStdString m_summary;    ///< Short summary of addon
   CStdString m_strDesc;    ///< Description of addon
   CStdString m_strPath;    ///< Path to the addon

@@ -35,6 +35,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIAudioManager.h"
 #include "FileSystem/File.h"
+#include "FileSystem/Directory.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "PVRManager.h"
 #include "Util.h"
@@ -63,7 +64,7 @@ CAddonDummyCallback *AddonDummyCallback = new CAddonDummyCallback();
  * changes inside Add-on's, and ask him what to do.
  *
  */
- 
+
 CCriticalSection CAddonStatusHandler::m_critSection;
 
 CAddonStatusHandler::CAddonStatusHandler(const CAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread)
@@ -107,7 +108,7 @@ void CAddonStatusHandler::OnExit()
 {
   delete this;
 }
-  
+
 void CAddonStatusHandler::Process()
 {
   CSingleLock lock(m_critSection);
@@ -117,7 +118,7 @@ void CAddonStatusHandler::Process()
   {
     CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
-    
+
     CStdString heading;
     heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
 
@@ -134,10 +135,10 @@ void CAddonStatusHandler::Process()
   {
     CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
-   
+
     CStdString heading;
     heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
-   
+
     pDialogYesNo->SetHeading(heading);
     pDialogYesNo->SetLine(1, 23042);
     pDialogYesNo->SetLine(2, 23043);
@@ -187,10 +188,10 @@ void CAddonStatusHandler::Process()
   {
     CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
-   
+
     CStdString heading;
     heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
-   
+
     pDialogYesNo->SetHeading(heading);
     pDialogYesNo->SetLine(1, 23045);
     pDialogYesNo->SetLine(2, 23043);
@@ -240,10 +241,10 @@ void CAddonStatusHandler::Process()
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialog) return;
-   
+
     CStdString heading;
     heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
-   
+
     pDialog->SetHeading(heading);
     pDialog->SetLine(1, 23047);
     pDialog->SetLine(2, 23048);
@@ -262,7 +263,7 @@ void CAddonStatusHandler::Process()
   {
     CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
-    
+
     CStdString heading;
     heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
 
@@ -272,7 +273,7 @@ void CAddonStatusHandler::Process()
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
-    
+
     CAddon::GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, true);
   }
   /* Request to restart XBMC (hope no AddOn need or do this) */
@@ -306,10 +307,10 @@ void CAddonStatusHandler::Process()
   {
     CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
-   
+
     CStdString heading;
     heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
-   
+
     pDialogYesNo->SetHeading(heading);
     pDialogYesNo->SetLine(1, 23053);
     pDialogYesNo->SetLine(2, 23043);
@@ -360,10 +361,10 @@ void CAddonStatusHandler::Process()
   {
     CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
-   
+
     CStdString heading;
     heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
-   
+
     pDialogYesNo->SetHeading(heading);
     pDialogYesNo->SetLine(1, 23054);
     pDialogYesNo->SetLine(2, 23043);
@@ -414,7 +415,7 @@ void CAddonStatusHandler::Process()
   {
     CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
-    
+
     CStdString heading;
     heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
 
@@ -432,7 +433,7 @@ void CAddonStatusHandler::Process()
   {
     CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
-    
+
     CStdString heading;
     heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
 
@@ -454,7 +455,7 @@ void CAddonStatusHandler::Process()
  * CAddon - AddOn Info and Helper Class
  *
  */
- 
+
 CAddon::CAddon()
 {
   Reset();
@@ -520,7 +521,7 @@ void CAddon::LoadAddonStrings(const CURL &url)
 {
   // Path where the addon resides
   CStdString pathToAddon;
-  
+
   //TODO fix all Addon paths
   if (url.GetProtocol() == "plugin")
     pathToAddon = "special://home/plugins/";
@@ -555,7 +556,7 @@ void CAddon::ClearAddonStrings()
 
 void CAddon::OpenAddonSettings(const CURL &url, bool bReload)
 {
-  try 
+  try
   {
     // Path where the addon resides
     CStdString pathToAddon = "addon://";
@@ -586,7 +587,7 @@ void CAddon::OpenAddonSettings(const CAddon* addon, bool bReload)
   if (addon == NULL)
     return;
 
-  try 
+  try
   {
     CLog::Log(LOGDEBUG, "Calling OpenAddonSettings for: %s", addon->m_strName.c_str());
 
@@ -642,7 +643,7 @@ void CAddon::TransferAddonSettings(const CAddon* addon)
     return;
 
   CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon->m_strName.c_str());
-          
+
   /* Transmit current unified user settings to the PVR Addon */
   ADDON::IAddonCallback* addonCB = GetCallbackForType(addon->m_addonType);
 
@@ -659,7 +660,7 @@ void CAddon::TransferAddonSettings(const CAddon* addon)
     ADDON_STATUS status;
     const char *id = setting->Attribute("id");
     const char *type = setting->Attribute("type");
-        
+
     if (type)
     {
       if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
@@ -685,9 +686,9 @@ void CAddon::TransferAddonSettings(const CAddon* addon)
       {
         CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, addon->m_strName.c_str());
       }
-      
+
       if (status == STATUS_NEED_RESTART)
-        restart = true; 
+        restart = true;
       else if (status != STATUS_OK)
         reportStatus = status;
     }
@@ -703,10 +704,10 @@ bool CAddon::GetAddonSetting(const CAddon* addon, const char* settingName, void 
   if (addon == NULL || settingName == NULL || settingValue == NULL)
     return false;
 
-  try 
+  try
   {
     CLog::Log(LOGDEBUG, "CAddon: AddOn %s request Setting %s", addon->m_strName.c_str(), settingName);
-    
+
     /* TODO: Add a caching mechanism to prevent a reloading of settings file on every call */
     CAddonSettings settings;
     if (!settings.Load(addon->m_strPath))
@@ -720,7 +721,7 @@ bool CAddon::GetAddonSetting(const CAddon* addon, const char* settingName, void 
     {
       const char *id = setting->Attribute("id");
       const char *type = setting->Attribute("type");
-        
+
       if (strcmpi(id, settingName) == 0 && type)
       {
         if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
@@ -758,6 +759,43 @@ bool CAddon::GetAddonSetting(const CAddon* addon, const char* settingName, void 
   return false;
 }
 
+CStdString CAddon::GetAddonDirectory(const CAddon* addon)
+{
+  if (addon == NULL)
+    return "";
+
+  CURL url(addon->m_strPath);
+
+  //TODO fix all Addon paths
+  CStdString addonFileName;
+  if (url.GetProtocol() == "plugin")
+    addonFileName = "special://home/plugins/";
+  else if (url.GetProtocol() == "addon")
+    addonFileName = "special://xbmc/";
+  else
+    return "";
+
+  // Create our final path
+  CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
+  CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
+  CUtil::RemoveSlashAtEnd(addonFileName);
+
+  return addonFileName;
+}
+
+CStdString CAddon::GetUserDirectory(const CAddon* addon)
+{
+  if (addon == NULL)
+    return "";
+
+  // create the users filepath
+  CStdString m_userFileName;
+  CURL url(addon->m_strPath);
+  m_userFileName.Format("special://profile/addon_data/%s/%s", url.GetHostName().c_str(), url.GetFileName().c_str());
+  CUtil::RemoveSlashAtEnd(m_userFileName);
+
+  return m_userFileName;
+}
 
 /**
 * XBMC AddOn Dialog callbacks
@@ -779,10 +817,10 @@ bool CAddon::OpenDialogOK(const char* heading, const char* line1, const char* li
   ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, m_gWindowManager.GetActiveWindow()};
   g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
-  return pDialog->IsConfirmed();  
+  return pDialog->IsConfirmed();
 }
 
-bool CAddon::OpenDialogYesNo(const char* heading, const char* line1, const char* line2, 
+bool CAddon::OpenDialogYesNo(const char* heading, const char* line1, const char* line2,
                              const char* line3, const char* nolabel, const char* yeslabel)
 {
   const DWORD dWindow = WINDOW_DIALOG_YES_NO;
@@ -794,7 +832,7 @@ bool CAddon::OpenDialogYesNo(const char* heading, const char* line1, const char*
   if (line1 != NULL )   pDialog->SetLine(0, line1);
   if (line2 != NULL )   pDialog->SetLine(1, line2);
   if (line3 != NULL )   pDialog->SetLine(2, line3);
-  
+
   if (nolabel != NULL )
     pDialog->SetChoice(0,nolabel);
 
@@ -818,7 +856,7 @@ const char* CAddon::OpenDialogBrowse(int type, const char* heading, const char* 
 
   VECSOURCES *shares_type = g_settings.GetSourcesFromType(shares);
   if (!shares_type) return "";
-    
+
   value = default_folder;
   if (type == 1)
     CGUIDialogFileBrowser::ShowAndGetFile(*shares_type, type_mask, heading, value, useThumbs, treatAsFolder);
@@ -1000,7 +1038,7 @@ void CAddon::ProgressDialogClose()
 
   return;
 }
-  
+
 
 /**
  * XBMC AddOn GUI callbacks
@@ -1246,7 +1284,7 @@ const char* CAddon::MakeLegalFilename(const char *filename)
   return strFilename.c_str();
 }
 
-const char* CAddon::TranslatePath(const char *path)
+CStdString CAddon::TranslatePath(const char *path)
 {
   if (path == NULL)
     return "";
@@ -1257,7 +1295,7 @@ const char* CAddon::TranslatePath(const char *path)
     strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
 
   CStdString strPath = CSpecialProtocol::TranslatePath(strText);
-  return strPath.c_str();
+  return strPath;
 }
 
 const char* CAddon::GetRegion(int id)

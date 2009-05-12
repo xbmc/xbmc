@@ -27,51 +27,30 @@
  *  Also added 'hSpeed' to animate transition between bar heights
  */
 
+/*
+ *  Mon May 11 18:12:37 GMT 2009
+ *  Moved to XBMC Add-on framework by alwinus
+ */
 
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #endif
-#include "../../../visualisations/xbmc_vis.h"
+#include "../../../addons/xbmc_vis.h"
 #include <math.h>
 #include <GL/glew.h>
+#include <string>
 
 #define NUM_BANDS 16
 
+using namespace std;
+
+VisCallbacks *g_xbmc = NULL;
 GLfloat y_angle = 45.0, y_speed = 0.5;
 GLfloat x_angle = 20.0, x_speed = 0.0;
 GLfloat z_angle = 0.0, z_speed = 0.0;
 GLfloat heights[16][16], cHeights[16][16], scale;
 GLfloat hSpeed = 0.05;
 GLenum  g_mode = GL_FILL;
-vector<VisSetting> g_vecSettings;
-
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
-{
-  g_vecSettings.clear();
-  m_uiVisElements = 0;
-  VisSetting scale(VisSetting::SPIN, "Bar Height");
-  scale.AddEntry("Default");
-  scale.AddEntry("Big");
-  scale.AddEntry("Very Big");
-  scale.AddEntry("Small");
-
-  VisSetting mode(VisSetting::SPIN, "Mode");
-  mode.AddEntry("Default");
-  mode.AddEntry("Wireframe");
-  mode.AddEntry("Points");
-
-  VisSetting speed(VisSetting::SPIN, "Speed");
-  speed.AddEntry("Default");
-  speed.AddEntry("Slow");
-  speed.AddEntry("Very Slow");
-  speed.AddEntry("Fast");
-  speed.AddEntry("Very Fast");
-
-  g_vecSettings.push_back( scale );
-  g_vecSettings.push_back( mode );  
-  g_vecSettings.push_back( speed );
-}
 
 void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
 {
@@ -167,10 +146,43 @@ void draw_bars(void)
   glPopMatrix();
 }
 
+
+//-----------------------------------------------------------------------------
+// All function follow are public to access from XBMC
+//-----------------------------------------------------------------------------
+
+extern "C" {
+
+//-- Create -------------------------------------------------------------------
+// Called after add-on loading to perform all initializing stuff
+//-----------------------------------------------------------------------------
+ADDON_STATUS Create(VisCallbacks* cb, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                    float fPixelRatio)
+{
+  int tmp;
+  
+  /* Save callback pointer */
+  g_xbmc = cb;
+  
+  /* Read setting "barheight" from settings.xml */
+  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "barheight", &tmp))
+    SetSetting("barheight", &tmp);
+
+  /* Read setting "mode" from settings.xml */
+  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "mode", &tmp))
+    SetSetting("mode", &tmp);
+
+  /* Read setting "speed" from settings.xml */
+  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "speed", &tmp))
+    SetSetting("speed", &tmp);
+
+  return STATUS_OK;
+}
+
 //-- Render -------------------------------------------------------------------
 // Called once per frame. Do all rendering here.
 //-----------------------------------------------------------------------------
-extern "C" void Render()
+void Render()
 {
   bool configured = true; //FALSE;
 
@@ -209,7 +221,10 @@ extern "C" void Render()
   glEnable(GL_BLEND);
 }
 
-extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
+//-- Start --------------------------------------------------------------------
+// Start this visualisation
+//-----------------------------------------------------------------------------
+void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
 {
   int x, y;
 
@@ -231,12 +246,18 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
   z_angle = 0.0;
 }
 
-extern "C" void Stop()
+//-- Stop ---------------------------------------------------------------------
+// Stop this visualisation
+//-----------------------------------------------------------------------------
+void Stop()
 {
 
 }
 
-extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+//-- AudioData ----------------------------------------------------------------
+// Audio data receiver
+//-----------------------------------------------------------------------------
+void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   int i,c;
   int y=0;
@@ -276,21 +297,19 @@ extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqD
     }
 }
 
-
 //-- GetInfo ------------------------------------------------------------------
 // Tell XBMC our requirements
 //-----------------------------------------------------------------------------
-extern "C" void GetInfo(VIS_INFO* pInfo)
+void GetInfo(VIS_INFO* pInfo)
 {
   pInfo->bWantsFreq = false;
   pInfo->iSyncDelay = 0;
 }
 
-
 //-- OnAction -----------------------------------------------------------------
 // Handle XBMC actions such as next preset, lock preset, album art changed etc
 //-----------------------------------------------------------------------------
-extern "C" bool OnAction(long flags, void *param)
+bool OnAction(long flags, void *param)
 {
   bool ret = false;
   return ret;
@@ -299,111 +318,113 @@ extern "C" bool OnAction(long flags, void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
 {
 
 }
 
-//-- GetSettings --------------------------------------------------------------
-// Return the settings for XBMC to display
+//-- Remove -------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" unsigned int GetSettings(StructSetting*** sSet)
-{ 
-  m_uiVisElements = VisUtils::VecToStruct(g_vecSettings, &m_structSettings);
-  *sSet = m_structSettings;
-  return m_uiVisElements;
-}
-
-extern "C" void FreeSettings()
+void Remove()
 {
-  VisUtils::FreeStruct(m_uiVisElements, &m_structSettings);
 }
 
-//-- UpdateSetting ------------------------------------------------------------
-// Handle setting change request from XBMC
+//-- HasSettings --------------------------------------------------------------
+// Returns true if this add-on use settings
+// !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num, StructSetting*** sSet)
+bool HasSettings()
 {
-  VisUtils::StructToVec(m_uiVisElements, sSet, &g_vecSettings);
+  return true;
+}
 
-  if ( (int)g_vecSettings.size() <= num || num < 0 )
-    return;
+//-- SetSetting ---------------------------------------------------------------
+// Returns the current Status of this visualisation
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+ADDON_STATUS GetStatus()
+{
+  return STATUS_OK;
+}
 
-  if (strcmp(g_vecSettings[num].name, "Size")==0)
+//-- SetSetting ---------------------------------------------------------------
+// Set a specific Setting value (called from XBMC)
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+{
+  string str = settingName;
+  if (str == "barheight")
   {
-    switch (g_vecSettings[num].current)
-      {
+    switch (*(int*) settingValue)
+    {
       case 0:
-	scale = 1.0 / log(256.0);
-	break;
+        scale = 1.0 / log(256.0);
+        break;
 
       case 1:
-	scale = 2.0 / log(256.0);
-	break;
+        scale = 2.0 / log(256.0);
+        break;
 
       case 2:
-	scale = 3.0 / log(256.0);
-	break;
+        scale = 3.0 / log(256.0);
+        break;
 
       case 3:
-	scale = 0.5 / log(256.0);
-	break;
+        scale = 0.5 / log(256.0);
+        break;
 
       case 4:
-	scale = 0.33 / log(256.0);
-	break;
-      }
+        scale = 0.33 / log(256.0);
+        break;
+    }
   }
-
-  if (strcmp(g_vecSettings[num].name, "Speed")==0)
+  else if (str == "mode")
   {
-    switch (g_vecSettings[num].current)
-      {
+    switch (*(int*) settingValue)
+    {
       case 0:
-	hSpeed = 0.05;
-	break;
+        g_mode = GL_FILL;
+        break;
 
       case 1:
-	hSpeed = 0.025;
-	break;
+        g_mode = GL_LINE;
+        break;
 
       case 2:
-	hSpeed = 0.0125;
-	break;
+        g_mode = GL_POINT;
+        break;
+    }
+  }
+  else if (str == "speed")
+  {
+    switch (*(int*) settingValue)
+    {
+      case 0:
+        hSpeed = 0.05;
+        break;
+
+      case 1:
+        hSpeed = 0.025;
+        break;
+
+      case 2:
+        hSpeed = 0.0125;
+        break;
 
       case 3:
-	hSpeed = 0.10;
-	break;
+        hSpeed = 0.10;
+        break;
 
       case 4:
-	hSpeed = 0.20;
-	break;
-      }
+        hSpeed = 0.20;
+        break;
+    }
   }
 
-  if (strcmp(g_vecSettings[num].name, "Mode")==0)
-  {
-    switch (g_vecSettings[num].current)
-      {
-      case 0:
-	g_mode = GL_FILL;
-	break;
-
-      case 1:
-	g_mode = GL_LINE;
-	break;
-
-      case 2:
-	g_mode = GL_POINT;
-	break;
-      }
-  }
+  return STATUS_OK;
 }
 
-//-- GetSubModules ------------------------------------------------------------
-// Return any sub modules supported by this vis
-//-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
-{
-  return 0; // this vis supports 0 sub modules
 }

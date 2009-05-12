@@ -144,14 +144,8 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
     }
   }
   // update our settings label
-  CStdString strVis = g_guiSettings.GetString("mymusic.visualisation");
-  if (strVis != "None" && strVis.size() > 4)
-  { // make it look pretty
-    strVis = strVis.Left(strVis.size() - 4);
-    strVis[0] = toupper(strVis[0]);
-  }
   CStdString strSettings;
-  strSettings.Format(g_localizeStrings.Get(13407).c_str(), strVis.c_str());
+  strSettings.Format(g_localizeStrings.Get(13407).c_str(), g_guiSettings.GetString("mymusic.visualisation").c_str());
   SET_CONTROL_LABEL(CONTROL_PRESETS_LABEL, strSettings);
   // if there is no presets, add a label saying so
   if (m_vecPresets->Size() == 0)

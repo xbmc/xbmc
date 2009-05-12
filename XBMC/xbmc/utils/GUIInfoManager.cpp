@@ -1457,14 +1457,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     }
     break;
   case VISUALISATION_NAME:
-    {
-      strLabel = g_guiSettings.GetString("mymusic.visualisation");
-      if (strLabel != "None" && strLabel.size() > 4)
-      { // make it look pretty
-        strLabel = strLabel.Left(strLabel.size() - 4);
-        strLabel[0] = toupper(strLabel[0]);
-      }
-    }
+    strLabel = g_guiSettings.GetString("mymusic.visualisation");
     break;
   case FANART_COLOR1:
     {

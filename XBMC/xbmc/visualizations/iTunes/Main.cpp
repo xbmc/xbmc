@@ -25,7 +25,7 @@
 */
 
 
-#include "xbmc_vis.h"
+#include "../../../addons/xbmc_vis.h"
 #include <GL/glew.h>
 #include <string>
 #ifdef _WIN32PC
@@ -67,9 +67,9 @@ ITunesVis*  g_plugin          = NULL;
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth,
+extern "C" ADDON_STATUS Create(VisCallbacks* cb, void* pd3dDevice, int iPosX, int iPosY, int iWidth,
                        int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
+                       float fPixelRatio)
 {
   if ( szVisualisationName )
     g_vis_name = szVisualisationName;
@@ -81,7 +81,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth,
   g_window_height = g_tex_height = iHeight;
   g_window_xpos   = iPosX;
   g_window_ypos   = iPosY;
-  g_sub_module    = szSubModuleName;
+  g_sub_module    = NULL;//szSubModuleName;
 
   /* create texture buffer */
   g_tex_buffer_size = g_tex_width * g_tex_height * 4;
@@ -117,7 +117,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth,
     ivis_start( g_plugin );
   }
 
-  return;
+  return STATUS_OK;
 }
 
 //-- Start --------------------------------------------------------------------
@@ -341,4 +341,27 @@ extern "C" void UpdateSetting(int num, StructSetting*** sSet)
 extern "C" int GetSubModules(char ***names, char ***paths)
 {
   return ivis_get_visualisations( names, paths );
+}
+
+extern "C" {
+
+void Remove()
+{
+}
+
+bool HasSettings()
+{
+  return false;
+}
+
+ADDON_STATUS GetStatus()
+{
+  return STATUS_OK;
+}
+
+ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+{
+  return STATUS_OK;
+}
+
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,20 +18,26 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
 #include "stdafx.h"
 #include "ScreenSaverFactory.h"
 #include "Util.h"
 
-
 CScreenSaverFactory::CScreenSaverFactory()
-{}
+{
+
+}
+
 CScreenSaverFactory::~CScreenSaverFactory()
-{}
+{
+
+}
 
 CScreenSaver* CScreenSaverFactory::LoadScreenSaver(const CStdString& path, const ADDON::CAddon& addon) const
 {
   CStdString strFileName = path + addon.m_strLibName;
 
+#ifdef HAS_SCREENSAVER
   // load screensaver
   DllScreensaver* pDll = new DllScreensaver;
   pDll->SetFile(strFileName);
@@ -48,4 +54,7 @@ CScreenSaver* CScreenSaverFactory::LoadScreenSaver(const CStdString& path, const
 
   // and pass it to a new instance of CScreenSaver() which will handle the screensaver
   return new CScreenSaver(pScr, pDll, addon);
+#else
+  return NULL;
+#endif
 }

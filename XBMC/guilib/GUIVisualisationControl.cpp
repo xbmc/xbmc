@@ -13,6 +13,7 @@
 
 using namespace std;
 using namespace MUSIC_INFO;
+using namespace ADDON;
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -79,6 +80,7 @@ CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwCon
   m_iNumBuffers = 0;
   m_currentVis = "";
   ControlType = GUICONTROL_VISUALISATION;
+  m_addon.Reset();
 }
 
 CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationControl &from)
@@ -89,6 +91,7 @@ CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationContro
   m_iNumBuffers = 0;
   m_currentVis = "";
   ControlType = GUICONTROL_VISUALISATION;
+  m_addon.Reset();
 }
 
 CGUIVisualisationControl::~CGUIVisualisationControl(void)
@@ -120,6 +123,7 @@ void CGUIVisualisationControl::FreeVisualisation()
 
     /* we released the global vis spot */
     m_globalvis = false;
+    m_addon.Reset();
   }
   m_pVisualisation = NULL;
   ClearBuffers();
@@ -138,28 +142,16 @@ void CGUIVisualisationControl::LoadVisualisation()
   if(m_globalvis)
     return;
 
-  CVisualisationFactory factory;
-  CStdString strVisz, strModule;
   m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
-
-  if (m_currentVis.Equals("None"))
+  CVisualisationFactory factory;
+  if (!g_settings.GetAddonFromNameAndType(m_currentVis, ADDON_VIZ, m_addon))
     return;
 
-  // check if it's a multi-vis and if it is , get it's module name
-  {
-    int colonPos = m_currentVis.ReverseFind(":");
-    if ( colonPos > 0 )
-    {
-      strModule = m_currentVis.Mid( colonPos+1 );
-      strVisz = m_currentVis.Mid( 0, colonPos );
-      m_pVisualisation = factory.LoadVisualisation(strVisz, strModule);
-    }
-    else
-    {
-      strVisz = m_currentVis;
-      m_pVisualisation = factory.LoadVisualisation(strVisz);
-    }
-  }
+  //TODO fix addons paths
+  CStdString transPath(m_addon.m_strPath);
+  transPath.Replace("addon://", "special://xbmc/");
+    
+  m_pVisualisation = factory.LoadVisualisation(transPath, m_addon);
   if (m_pVisualisation)
   {
     g_graphicsContext.CaptureStateBlock();
@@ -182,6 +174,10 @@ void CGUIVisualisationControl::LoadVisualisation()
     CreateBuffers();
 
     m_globalvis = true;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "CGUIVisualisationControl(): Can't Load or Create visualisation");
   }
 
   // tell our app that we're back

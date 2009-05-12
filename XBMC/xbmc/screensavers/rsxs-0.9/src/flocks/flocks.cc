@@ -254,11 +254,6 @@ bool HasSettings()
   return false;
 }
 
-DllSettings* GetSettings()
-{
-  return NULL;
-}
-
 ADDON_STATUS GetStatus()
 {
   return STATUS_OK;

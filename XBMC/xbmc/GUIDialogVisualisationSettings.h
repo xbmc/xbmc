@@ -26,6 +26,7 @@
 #include "GUISpinControlEx.h"
 #include "GUIRadioButtonControl.h"
 #include "GUIButtonControl.h"
+#include "settings/AddonSettings.h"
 
 class CGUIDialogVisualisationSettings :
       public CGUIDialog
@@ -37,17 +38,18 @@ public:
   virtual void Render();
 protected:
   virtual void OnInitWindow();
+  virtual void OnDeinitWindow(int nextWindowID);
   void SetVisualisation(CVisualisation *pVisualisation);
-  virtual void SetupPage();
-  void UpdateSettings();
-  virtual void FreeControls();
   void OnClick(int iControl);
-  void AddSetting(VisSetting &setting, float width, int iControlID);
-
-  CGUISpinControlEx *m_pOriginalSpin;
-  CGUIRadioButtonControl *m_pOriginalRadioButton;
-  CGUIButtonControl *m_pOriginalSettingsButton;
 
   CVisualisation *m_pVisualisation;
-  std::vector<VisSetting> *m_pSettings;
+  CAddonSettings m_pSettings;
+
+private:
+  bool ShowVirtualKeyboard(int iControl);
+  void CreateControls();
+  void FreeControls();
+  void EnableControls();
+  bool GetCondition(const CStdString &condition, const int controlId);
+  bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
 };

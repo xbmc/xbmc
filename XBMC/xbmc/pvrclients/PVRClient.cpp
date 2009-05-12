@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 /*
  * Description:
  *
@@ -29,11 +29,11 @@
  * called inside client. Further it translate the "C" compatible data
  * strucures to classes that can easily used by the PVRManager.
  *
- * It generate also a callback table with pointers to useful helper 
+ * It generate also a callback table with pointers to useful helper
  * functions, that can be used inside the client to access XBMC
  * internals.
  */
- 
+
 #include "stdafx.h"
 #include <vector>
 
@@ -48,7 +48,7 @@ using namespace ADDON;
 /**********************************************************
  * CPVRClient Class constructor/destructor
  */
- 
+
 CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
                        const ADDON::CAddon& addon, ADDON::IAddonCallback* addonCB, IPVRClientCallback* pvrCB)
                               : IPVRClient(clientID, addon, addonCB, pvrCB)
@@ -75,7 +75,7 @@ CPVRClient::~CPVRClient()
 /**********************************************************
  * AddOn/PVR specific init and status functions
  */
- 
+
 bool CPVRClient::Init()
 {
   CLog::Log(LOGDEBUG, "PVR: %s - Initializing PVR-Client AddOn", m_strName.c_str());
@@ -94,6 +94,8 @@ bool CPVRClient::Init()
   m_callbacks->AddOn.GetSetting         = AddOnGetSetting;
   m_callbacks->AddOn.OpenSettings       = AddOnOpenSettings;
   m_callbacks->AddOn.OpenOwnSettings    = AddOnOpenOwnSettings;
+  m_callbacks->AddOn.GetAddonDirectory  = AddOnGetAddonDirectory;
+  m_callbacks->AddOn.GetUserDirectory   = AddOnGetUserDirectory;
 
   /* GUI Dialog Helper functions */
   m_callbacks->Dialog.OpenOK            = CAddon::OpenDialogOK;
@@ -130,13 +132,13 @@ bool CPVRClient::Init()
   m_callbacks->Utils.GetGlobalIdleTime  = CAddon::GetGlobalIdleTime;
   m_callbacks->Utils.GetCacheThumbName  = CAddon::GetCacheThumbName;
   m_callbacks->Utils.MakeLegalFilename  = CAddon::MakeLegalFilename;
-  m_callbacks->Utils.TranslatePath      = CAddon::TranslatePath;
+  m_callbacks->Utils.TranslatePath      = AddOnTranslatePath;
   m_callbacks->Utils.GetRegion          = CAddon::GetRegion;
   m_callbacks->Utils.SkinHasImage       = CAddon::SkinHasImage;
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  try 
+  try
   {
     ADDON_STATUS status = m_pClient->Create(m_callbacks);
     if (status != STATUS_OK)
@@ -164,7 +166,7 @@ bool CPVRClient::Init()
 void CPVRClient::DeInit()
 {
   /* tell the AddOn to disconnect and prepare for destruction */
-  try 
+  try
   {
     CLog::Log(LOGDEBUG, "PVR: %s/%s - Destroying PVR-Client AddOn", m_strName.c_str(), m_hostName.c_str());
     m_ReadyToUse = false;
@@ -208,7 +210,7 @@ long CPVRClient::GetID()
 
 PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
 {
-  try 
+  try
   {
     return m_pClient->GetProperties(props);
   }
@@ -235,12 +237,12 @@ PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
 /**********************************************************
  * General PVR Functions
  */
- 
+
 const std::string CPVRClient::GetBackendName()
 {
   if (m_ReadyToUse)
   {
-    try 
+    try
     {
       return m_pClient->GetBackendName();
     }
@@ -257,7 +259,7 @@ const std::string CPVRClient::GetBackendVersion()
 {
   if (m_ReadyToUse)
   {
-    try 
+    try
     {
       return m_pClient->GetBackendVersion();
     }
@@ -274,7 +276,7 @@ const std::string CPVRClient::GetConnectionString()
 {
   if (m_ReadyToUse)
   {
-    try 
+    try
     {
       return m_pClient->GetConnectionString();
     }
@@ -291,7 +293,7 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
 {
   if (m_ReadyToUse)
   {
-    try 
+    try
     {
       return m_pClient->GetDriveSpace(total, used);
     }
@@ -309,12 +311,12 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
 /**********************************************************
  * Bouquets PVR Functions
  */
- 
+
 int CPVRClient::GetNumBouquets()
 {
   if (m_ReadyToUse)
   {
-    try 
+    try
     {
       return m_pClient->GetNumBouquets();
     }
@@ -335,12 +337,12 @@ PVR_ERROR CPVRClient::GetBouquetInfo(const unsigned int number, PVR_BOUQUET& inf
 /**********************************************************
  * Channels PVR Functions
  */
- 
+
 int CPVRClient::GetNumChannels()
 {
   if (m_ReadyToUse)
   {
-    try 
+    try
     {
       return m_pClient->GetNumChannels();
     }
@@ -354,7 +356,7 @@ int CPVRClient::GetNumChannels()
 
 PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels)
 {
-  // all memory allocation takes place in client, 
+  // all memory allocation takes place in client,
   // as we don't know beforehand how many channels exist
 //  unsigned int num;
 //  PVR_CHANNEL **clientChans = NULL;
@@ -378,7 +380,7 @@ bool CPVRClient::ConvertChannels(unsigned int num, PVR_CHANNEL **clientChans, VE
   for (unsigned i = 0; i < num; i++)
   {
     // don't trust the client to have correctly initialized memory
-    try 
+    try
     {
       chan = clientChans[i];
     }
@@ -414,7 +416,7 @@ void CPVRClient::ReleaseClientData(unsigned int num, PVR_CHANNEL **clientChans)
   for (unsigned i = 0; i < num; i++)
   {
     // don't trust the client to have correctly initialized memory
-    try 
+    try
     {
       chan = &(*clientChans)[i];
     }
@@ -429,11 +431,11 @@ void CPVRClient::ReleaseClientData(unsigned int num, PVR_CHANNEL **clientChans)
   }
 }
 
- 
+
 /**********************************************************
  * EPG PVR Functions
  */
- 
+
 PVR_ERROR CPVRClient::GetEPGForChannel(const unsigned int number, CFileItemList &results, const CDateTime &start, const CDateTime &end)
 {
 //  time_t start_t, end_t;
@@ -477,7 +479,7 @@ int CPVRClient::GetNumRecordings()
 {
   if (m_ReadyToUse)
   {
-    try 
+    try
     {
       return m_pClient->GetNumRecordings();
     }
@@ -493,12 +495,12 @@ int CPVRClient::GetNumRecordings()
 /**********************************************************
  * Timers PVR Functions
  */
- 
+
 int CPVRClient::GetNumTimers()
 {
   if (m_ReadyToUse)
   {
-    try 
+    try
     {
       return m_pClient->GetNumTimers();
     }
@@ -512,7 +514,7 @@ int CPVRClient::GetNumTimers()
 
 PVR_ERROR CPVRClient::GetTimers(VECTVTIMERS &timers)
 {
-  //PVR_ERROR err = 
+  //PVR_ERROR err =
   return PVR_ERROR_NO_ERROR;
 
 }
@@ -548,7 +550,7 @@ void CPVRClient::Remove()
 
 ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *settingValue)
 {
-  try 
+  try
   {
     return m_pDll->SetSetting(settingName, settingValue);
   }
@@ -559,20 +561,13 @@ ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *setting
   }
 }
 
-void CPVRClient::GetSettings(std::vector<DllSetting> **vecSettings)
-{
-  /*if (vecSettings) *vecSettings = NULL;
-  if (m_pClient->GetSettings)
-    m_pClient->GetSettings(vecSettings);*/
-}
-
 
 /**********************************************************
  * Client specific Callbacks
  * Are independent and can be different for every type of
  * AddOn
  */
- 
+
 void CPVRClient::PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg)
 {
   CPVRClient* client=(CPVRClient*) userData;
@@ -612,8 +607,8 @@ void CPVRClient::AddOnLogCallback(void *userData, const ADDON_LOG loglevel, cons
   CPVRClient* client = (CPVRClient*) userData;
   if (!client)
     return;
-      
-  try 
+
+  try
   {
     CStdString clientMsg, xbmcMsg;
     clientMsg.reserve(16384);
@@ -683,4 +678,30 @@ const char* CPVRClient::AddOnGetLocalizedString(void *userData, long dwCode)
     return "";
 
   return CAddon::GetLocalizedString(client, dwCode);
+}
+
+const char* CPVRClient::AddOnGetAddonDirectory(void *userData)
+{
+  CPVRClient* client = (CPVRClient*) userData;
+  if (!client)
+    return "";
+
+  static CStdString retString = CAddon::GetAddonDirectory(client);
+  return retString.c_str();
+}
+
+const char* CPVRClient::AddOnGetUserDirectory(void *userData)
+{
+  CPVRClient* client = (CPVRClient*) userData;
+  if (!client)
+    return "";
+
+  static CStdString retString = CAddon::GetUserDirectory(client);
+  return retString.c_str();
+}
+
+const char* CPVRClient::AddOnTranslatePath(const char *path)
+{
+  static CStdString retString = CAddon::TranslatePath(path);
+  return retString.c_str();
 }

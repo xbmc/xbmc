@@ -30,8 +30,9 @@
 #endif // _MSC_VER > 1000
 #include "Key.h"
 #include "DllVisualisation.h"
+#include "../utils/Addon.h"
 
-class CVisualisation
+class CVisualisation : public ADDON::CAddon
 {
 public:
   enum VIS_ACTION { VIS_ACTION_NONE = 0,
@@ -46,8 +47,12 @@ public:
                     VIS_ACTION_UPDATE_TRACK
   };
   CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll,
-                 const CStdString& strVisualisationName, const CStdString& strSubModuleName);
+                 const CAddon& addon);
   ~CVisualisation();
+
+  virtual void Remove();
+  virtual ADDON_STATUS GetStatus();
+  virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
 
   void Create(int posx, int posy, int width, int height);
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
@@ -56,27 +61,27 @@ public:
   void Stop();
   void GetInfo(VIS_INFO *info);
   bool OnAction(VIS_ACTION action, void *param = NULL);
-  void GetSettings(std::vector<VisSetting> **vecSettings);
-  void UpdateSetting(int num, std::vector<VisSetting> **vecSettings);
   void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   void GetCurrentPreset(char **pPreset, bool *locked);
-  int  GetSubModules(std::map<std::string, std::string>& subModules);
   bool IsLocked();
   char *GetPreset();
-
-  // some helper functions
-  static CStdString GetFriendlyName(const char* strVisz, const char* strSubModule);
-  static CStdString GetFriendlyName(const char* combinedName);
-  static CStdString GetCombinedName(const char* strVisz, const char* strSubModule);
-  static CStdString GetCombinedName(const char* friendlyName);
 
 protected:
   std::auto_ptr<struct Visualisation> m_pVisz;
   std::auto_ptr<DllVisualisation> m_pDll;
-  CStdString m_strVisualisationName;
-  CStdString m_strSubModuleName;
+  VisCallbacks *m_callbacks;
+  bool m_ReadyToUse;
 
-  std::vector<VisSetting> m_vecSettings;
+private:
+  static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
+  static void AddOnLogCallback(void *userData, const ADDON_LOG loglevel, const char *format, ... );
+  static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
+  static void AddOnOpenSettings(const char *url, bool bReload);
+  static void AddOnOpenOwnSettings(void *userData, bool bReload);
+  static const char* AddOnGetLocalizedString(void *userData, long dwCode);
+  static const char* AddOnGetAddonDirectory(void *userData);
+  static const char* AddOnGetUserDirectory(void *userData);
+  static const char* AddOnTranslatePath(const char *path);
 };
 
 

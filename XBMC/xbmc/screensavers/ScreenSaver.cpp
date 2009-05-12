@@ -18,12 +18,12 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h" 
+#include "stdafx.h"
 // Screensaver.cpp: implementation of the CScreenSaver class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "ScreenSaver.h" 
+#include "ScreenSaver.h"
 #include "URL.h"
 #include "Settings.h"
 
@@ -63,6 +63,8 @@ void CScreenSaver::Create()
   m_callbacks->AddOn.GetSetting         = AddOnGetSetting;
   m_callbacks->AddOn.OpenSettings       = AddOnOpenSettings;
   m_callbacks->AddOn.OpenOwnSettings    = AddOnOpenOwnSettings;
+  m_callbacks->AddOn.GetAddonDirectory  = AddOnGetAddonDirectory;
+  m_callbacks->AddOn.GetUserDirectory   = AddOnGetUserDirectory;
 
   /* GUI Dialog Helper functions */
   m_callbacks->Dialog.OpenOK            = CAddon::OpenDialogOK;
@@ -99,10 +101,10 @@ void CScreenSaver::Create()
   m_callbacks->Utils.GetGlobalIdleTime  = CAddon::GetGlobalIdleTime;
   m_callbacks->Utils.GetCacheThumbName  = CAddon::GetCacheThumbName;
   m_callbacks->Utils.MakeLegalFilename  = CAddon::MakeLegalFilename;
-  m_callbacks->Utils.TranslatePath      = CAddon::TranslatePath;
+  m_callbacks->Utils.TranslatePath      = AddOnTranslatePath;
   m_callbacks->Utils.GetRegion          = CAddon::GetRegion;
   m_callbacks->Utils.SkinHasImage       = CAddon::SkinHasImage;
-  
+
   // pass it the screen width,height
   // and the name of the screensaver
   int iWidth = g_graphicsContext.GetWidth();
@@ -113,10 +115,10 @@ void CScreenSaver::Create()
   OutputDebugString(szTmp);
 
   float pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
-  
+
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  try 
+  try
   {
 #ifndef HAS_SDL
     ADDON_STATUS status = m_pScr->Create(m_callbacks, g_graphicsContext.Get3DDevice(), iWidth, iHeight, m_strName.c_str(), pixelRatio);
@@ -145,7 +147,7 @@ void CScreenSaver::Create()
 void CScreenSaver::Destroy()
 {
   /* tell the AddOn to disconnect and prepare for destruction */
-  try 
+  try
   {
     CLog::Log(LOGDEBUG, "Screensaver: %s - Destroying Screensaver AddOn", m_strName.c_str());
     Stop();
@@ -215,8 +217,8 @@ void CScreenSaver::AddOnLogCallback(void *userData, const ADDON_LOG loglevel, co
   CScreenSaver* client = (CScreenSaver*) userData;
   if (!client)
     return;
-      
-  try 
+
+  try
   {
     CStdString clientMsg, xbmcMsg;
     clientMsg.reserve(16384);
@@ -286,4 +288,30 @@ const char* CScreenSaver::AddOnGetLocalizedString(void *userData, long dwCode)
     return "";
 
   return CAddon::GetLocalizedString(client, dwCode);
+}
+
+const char* CScreenSaver::AddOnGetAddonDirectory(void *userData)
+{
+  CScreenSaver* client = (CScreenSaver*) userData;
+  if (!client)
+    return "";
+
+  static CStdString retString = CAddon::GetAddonDirectory(client);
+  return retString.c_str();
+}
+
+const char* CScreenSaver::AddOnGetUserDirectory(void *userData)
+{
+  CScreenSaver* client = (CScreenSaver*) userData;
+  if (!client)
+    return "";
+
+  static CStdString retString = CAddon::GetUserDirectory(client);
+  return retString.c_str();
+}
+
+const char* CScreenSaver::AddOnTranslatePath(const char *path)
+{
+  static CStdString retString = CAddon::TranslatePath(path);
+  return retString.c_str();
 }

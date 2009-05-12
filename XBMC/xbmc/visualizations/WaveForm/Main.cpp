@@ -4,10 +4,15 @@
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #endif
-#include "../../../visualisations/xbmc_vis.h"
+#include "../../../addons/xbmc_vis.h"
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
 #endif
+#include <string.h>
+#include <stdio.h>
+
+typedef unsigned int D3DCOLOR;
+
 
 char g_visName[512];
 #ifndef HAS_SDL_OPENGL
@@ -43,20 +48,21 @@ struct Vertex_t
 #define VERTEX_FORMAT     (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
 #endif
 
+extern "C" {
+    
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
 #ifndef HAS_SDL_OPENGL
-extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
+ADDON_STATUS Create(VisCallbacks* cb, LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio)
 #else
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
+ADDON_STATUS Create(VisCallbacks* cb, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio)
 #endif
 {
   //printf("Creating Waveform\n");
   strcpy(g_visName, szVisualisationName);
-  m_uiVisElements = 0;
   g_device = pd3dDevice;
   g_viewport.X = iPosX;
   g_viewport.Y = iPosY;
@@ -64,12 +70,13 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   g_viewport.Height = iHeight;
   g_viewport.MinZ = 0;
   g_viewport.MaxZ = 1;
+  return STATUS_OK;
 }
 
 //-- Start --------------------------------------------------------------------
 // Called when a new soundtrack is played
 //-----------------------------------------------------------------------------
-extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
+void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
 {
   //printf("Got Start Command\n");
 }
@@ -77,7 +84,7 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
 //-- Stop ---------------------------------------------------------------------
 // Called when the visualisation is closed by XBMC
 //-----------------------------------------------------------------------------
-extern "C" void Stop()
+void Stop()
 {
   //printf("Got Stop Command\n");
 }
@@ -85,7 +92,7 @@ extern "C" void Stop()
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   // Convert the audio data into a floating -1 to +1 range
   int ipos=0;
@@ -105,7 +112,7 @@ extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqD
 //-- Render -------------------------------------------------------------------
 // Called once per frame. Do all rendering here.
 //-----------------------------------------------------------------------------
-extern "C" void Render()
+void Render()
 {
   Vertex_t  verts[512];
 
@@ -176,7 +183,7 @@ extern "C" void Render()
 //-- GetInfo ------------------------------------------------------------------
 // Tell XBMC our requirements
 //-----------------------------------------------------------------------------
-extern "C" void GetInfo(VIS_INFO* pInfo)
+void GetInfo(VIS_INFO* pInfo)
 {
   pInfo->bWantsFreq = false;
   pInfo->iSyncDelay = 0;
@@ -185,7 +192,7 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 //-- OnAction -----------------------------------------------------------------
 // Handle XBMC actions such as next preset, lock preset, album art changed etc
 //-----------------------------------------------------------------------------
-extern "C" bool OnAction(long flags, void *param)
+bool OnAction(long flags, void *param)
 {
   bool ret = false;
   return ret;
@@ -194,37 +201,43 @@ extern "C" bool OnAction(long flags, void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
 {
-
 }
 
-//-- GetSettings --------------------------------------------------------------
-// Return the settings for XBMC to display
+//-- Remove -------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" unsigned int GetSettings(StructSetting*** sSet)
+void Remove()
 {
-  return 0;
 }
 
-extern "C" void FreeSettings()
-{
-  return;
-}
-
-
-//-- UpdateSetting ------------------------------------------------------------
-// Handle setting change request from XBMC
+//-- HasSettings --------------------------------------------------------------
+// Returns true if this add-on use settings
+// !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num, StructSetting*** sSet)
+bool HasSettings()
 {
-
+  return false;
 }
 
-//-- GetSubModules ------------------------------------------------------------
-// Return any sub modules supported by this vis
+//-- SetSetting ---------------------------------------------------------------
+// Returns the current Status of this visualisation
+// !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
+ADDON_STATUS GetStatus()
 {
-  return 0; // this vis supports 0 sub modules
+  return STATUS_OK;
+}
+
+//-- SetSetting ---------------------------------------------------------------
+// Set a specific Setting value (called from XBMC)
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+{
+  return STATUS_OK;
+}
+
 }
