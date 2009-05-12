@@ -489,6 +489,14 @@
 					RelativePath="..\..\xbmc\cores\dvdplayer\IDVDPlayer.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\xbmc\VideoReferenceClock.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\VideoReferenceClock.h"
+					>
+				</File>
 				<Filter
 					Name="DVDCodecs"
 					>
