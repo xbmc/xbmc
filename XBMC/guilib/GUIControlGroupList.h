@@ -55,6 +55,7 @@ protected:
   inline float Size(const CGUIControl *control) const;
   inline float Size() const;
   void ScrollTo(float offset);
+  float GetAlignOffset() const;
 
   float m_itemGap;
   DWORD m_pageControl;
