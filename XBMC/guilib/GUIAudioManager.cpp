@@ -400,10 +400,11 @@ void CGUIAudioManager::Enable(bool bEnable)
 
 #if defined(HAS_SDL_AUDIO) && defined(__APPLE__)
   // Workaround for bug/quirk in OSX 10.4 CoreAudio subsystem
-  if (bEnable && !m_bInitialized)
-    Initialize(CAudioContext::DEFAULT_DEVICE);
-  else if (!bEnable && m_bInitialized)
-    DeInitialize(CAudioContext::DEFAULT_DEVICE);
+  // TODO: Re-work. Hangs initialization of AudioRenderer is samplerate changes... 
+//  if (bEnable && !m_bInitialized)
+//    Initialize(CAudioContext::DEFAULT_DEVICE);
+//  else if (!bEnable && m_bInitialized)
+//    DeInitialize(CAudioContext::DEFAULT_DEVICE);
 #endif
   
   m_bEnabled=bEnable;

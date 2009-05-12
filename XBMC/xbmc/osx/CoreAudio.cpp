@@ -54,10 +54,10 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdStri
                  (UInt32)desc.mSampleRate);
       break;
     case kAudioFormatAC3:
-      str.Format("[%s] AC-3/DTS", fourCC);
+      str.Format("[%s] AC-3/DTS (%uHz)", fourCC, (UInt32)desc.mSampleRate);
       break;
     case kAudioFormat60958AC3:
-      str.Format("[%s] AC-3/DTS for S/PDIF", fourCC);
+      str.Format("[%s] AC-3/DTS for S/PDIF (%uHz)", fourCC, (UInt32)desc.mSampleRate);
       break;
     default:
       str.Format("[%s]", fourCC);
@@ -520,6 +520,7 @@ bool CCoreAudioDevice::SetNominalSampleRate(Float64 sampleRate)
   CLog::Log(LOGDEBUG,  "CCoreAudioUnit::SetNominalSampleRate: Changed device sample rate from %0.0f to %0.0f.", (float)currentRate, (float)sampleRate);
   if (m_SampleRateRestore == 0.0f)
     m_SampleRateRestore = currentRate;
+  
   return true;
 }
 
