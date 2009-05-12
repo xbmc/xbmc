@@ -156,6 +156,7 @@ protected:
 
   double     m_presenttime;
   EFIELDSYNC m_presentfield;
+  CEvent     m_presentevent;
 
 };
 
