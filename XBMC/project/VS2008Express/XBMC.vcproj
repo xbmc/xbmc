@@ -462,6 +462,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDPlayerAudioResampler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDPlayerAudioResampler.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDPlayerSubtitle.cpp"
 					>
 				</File>
@@ -487,14 +495,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\IDVDPlayer.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\VideoReferenceClock.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\VideoReferenceClock.h"
 					>
 				</File>
 				<Filter
@@ -3063,6 +3063,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\VideoInfoTag.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\VideoReferenceClock.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\VideoReferenceClock.h"
 					>
 				</File>
 				<File
