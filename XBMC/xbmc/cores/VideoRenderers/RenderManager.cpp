@@ -293,7 +293,10 @@ float CXBoxRenderManager::GetMaximumFPS()
   float fps;
 
   if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS || g_videoConfig.GetVSyncMode() == VSYNC_VIDEO) 
-    fps = g_graphicsContext.GetFPS();
+  {
+    fps = g_VideoReferenceClock.GetRefreshRate();
+    if (fps <= 0) fps = g_graphicsContext.GetFPS();
+  }
   else
     fps = 1000.0f;
 
