@@ -121,6 +121,7 @@ Then install the following port packages (order is very important):
  $ sudo port install pcre +universal
  $ sudo port install expat +universal
  $ sudo port install libiconv +universal
+ $ sudo port install gettext +universal
  $ sudo port install libtool yasm cmake gmake pkgconfig
 
  $ sudo port install lzo +universal
@@ -133,7 +134,7 @@ Then install the following port packages (order is very important):
  $ sudo port install libpng +universal
  $ sudo port install libogg +universal
  $ sudo port install libvorbis +universal
- $ sudo port install libmad +universal
+ $ sudo port install libmad macosx_deployment_target=10.4
  $ sudo port install fribidi +universal
 
  $ sudo port install glew +universal
