@@ -174,5 +174,7 @@ protected:
   DVDVideoPicture* m_pTempOverlayPicture;
   
   CRITICAL_SECTION m_critCodecSection;
+  
+  float  m_maxspeedadjust;
 };
 
