@@ -661,10 +661,14 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
   }
   else if (m_synctype == SYNC_SKIPDUP)
   {
-    if (m_skipdupcount < 0 && !(m_prevskipped = !m_prevskipped))
+    if (m_skipdupcount < 0)
     {
-      m_dvdAudio.AddPackets(audioframe);
-      m_skipdupcount++;
+      m_prevskipped = !m_prevskipped;
+      if (!m_prevskipped)
+      {
+        m_dvdAudio.AddPackets(audioframe);
+        m_skipdupcount++;
+      }
     }
     else if (m_skipdupcount > 0)
     {
