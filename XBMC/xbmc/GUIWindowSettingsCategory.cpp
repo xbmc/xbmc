@@ -751,6 +751,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13610), APPLE_REMOTE_DISABLED);
       pControl->AddLabel(g_localizeStrings.Get(13611), APPLE_REMOTE_STANDARD);
       pControl->AddLabel(g_localizeStrings.Get(13612), APPLE_REMOTE_UNIVERSAL);
+      pControl->AddLabel(g_localizeStrings.Get(13613), APPLE_REMOTE_MULTIREMOTE);
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif

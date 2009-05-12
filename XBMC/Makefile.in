@@ -212,7 +212,7 @@ libhts:
 	$(MAKE) -C xbmc/lib/libhts
 eventclients:
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(MAKE) -C tools/EventClients/Clients/AppleRemote
+	$(MAKE) -C tools/EventClients/Clients/OSXRemote
 else
 	$(MAKE) -C tools/EventClients
 endif
@@ -408,6 +408,14 @@ install-datas:
 	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec cp '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
+
+install-livedatas:
+	@echo "Install Live CD datas in $(prefix) ..."
+	@mkdir -p $(prefix)/bin 
+	@cp tools/XBMCLive/diskmounter $(prefix)/bin
+	@cp tools/XBMCLive/installXBMC.py $(prefix)/bin
+	@cp tools/XBMCLive/runXBMC.sh $(prefix)/bin
+	@cp tools/XBMCLive/setAlsaVolumes.py $(prefix)/bin
 
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web

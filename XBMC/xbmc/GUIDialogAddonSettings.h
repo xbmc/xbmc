@@ -52,6 +52,7 @@ private:
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
   CAddonSettings m_settings;
   CStdString m_strHeading;
+  std::map<CStdString,CStdString> m_buttonValues;
 };
 
 #endif

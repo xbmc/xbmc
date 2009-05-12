@@ -149,7 +149,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
 
   // Unload temporary language strings
   CAddon::ClearAddonStrings();
-  
+
   return;
 }
 
@@ -183,10 +183,11 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
       const CGUIControl* control = GetControl(controlId);
       if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       {
+        const char *id = setting->Attribute("id");
         const char *type = setting->Attribute("type");
         const char *option = setting->Attribute("option");
         const char *source = setting->Attribute("source");
-        CStdString value = ((CGUIButtonControl*) control)->GetLabel2();
+        CStdString value = m_buttonValues[id];
 
         if (strcmp(type, "text") == 0)
         {
@@ -196,7 +197,18 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             bHidden = (strcmp(option, "hidden") == 0);
 
           if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
-            ((CGUIButtonControl*) control)->SetLabel2(value);
+          {
+            m_buttonValues[id] = value;
+            // if hidden hide input
+            if (bHidden)
+            {
+              CStdString hiddenText;
+              hiddenText.append(value.size(), L'*');
+              ((CGUIButtonControl *)control)->SetLabel2(hiddenText);
+            }
+            else
+              ((CGUIButtonControl*) control)->SetLabel2(value);
+          }
         }
         else if (strcmp(type, "integer") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
@@ -279,9 +291,14 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         {
           if (setting->Attribute("default"))
           {
+            CStdString action = setting->Attribute("default");
+            CStdString url;
+            m_url.GetURL(url);
+            // replace $CWD with the url of plugin
+            action.Replace("$CWD", url);
             if (option)
               bCloseDialog = (strcmpi(option, "close") == 0);
-            g_application.getApplicationMessenger().ExecBuiltIn(setting->Attribute("default"));
+            g_application.getApplicationMessenger().ExecBuiltIn(action);
           }
         }
         break;
@@ -321,7 +338,7 @@ bool CGUIDialogAddonSettings::SaveSettings(void)
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          value = ((CGUIButtonControl*) control)->GetLabel2();
+          value = m_buttonValues[id];
           break;
         case CGUIControl::GUICONTROL_RADIO:
           value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
@@ -426,7 +443,19 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
         ((CGUIButtonControl *)pControl)->SetLabel(label);
         if (id)
-          ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
+        {
+          m_buttonValues[id] = m_settings.Get(id);
+          // get any option to test for hidden
+          const char *option = setting->Attribute("option");
+          if (option && (strcmp(option, "hidden") == 0))
+          {
+            CStdString hiddenText;
+            hiddenText.append(m_settings.Get(id).size(), L'*');
+            ((CGUIButtonControl *)pControl)->SetLabel2(hiddenText);
+          }
+          else
+            ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
+        }
       }
       else if (strcmpi(type, "bool") == 0)
       {

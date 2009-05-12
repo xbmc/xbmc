@@ -72,13 +72,6 @@ bool CGUIRadioButtonControl::OnMessage(CGUIMessage& message)
   return CGUIButtonControl::OnMessage(message);
 }
 
-void CGUIRadioButtonControl::PreAllocResources()
-{
-  CGUIButtonControl::PreAllocResources();
-  m_imgRadioFocus.PreAllocResources();
-  m_imgRadioNoFocus.PreAllocResources();
-}
-
 void CGUIRadioButtonControl::AllocResources()
 {
   CGUIButtonControl::AllocResources();

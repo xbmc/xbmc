@@ -24,9 +24,9 @@ DEFINES+= \
 
 ifeq (linux,$(findstring linux, $(ARCH)))
 ifeq ($(ARCH), x86_64-linux)
-	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib64/libcurl.so\""
+	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib64/libcurl.so.4\""
 else
-	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib/libcurl.so\""
+	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib/libcurl.so.4\""
 endif
 endif
 ifeq ($(findstring osx,$(ARCH)), osx)

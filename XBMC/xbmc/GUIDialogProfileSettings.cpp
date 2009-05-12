@@ -172,7 +172,11 @@ void CGUIDialogProfileSettings::OnSettingChanged(unsigned int num)
 {
   // setting has changed - update anything that needs it
   if (num >= m_settings.size()) return;
-  SettingInfo &setting = m_settings.at(num);
+  OnSettingChanged(m_settings.at(num));
+}
+
+void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
+{
   // check and update anything that needs it
   if (setting.id == 1)
   {

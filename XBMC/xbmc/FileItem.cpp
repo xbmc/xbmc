@@ -1080,27 +1080,27 @@ void CFileItem::FillInDefaultIcon()
     {
       if ( IsPlayList() )
       {
-        SetIconImage("defaultPlaylist.png");
+        SetIconImage("DefaultPlaylist.png");
       }
       else if ( IsPicture() )
       {
         // picture
-        SetIconImage("defaultPicture.png");
+        SetIconImage("DefaultPicture.png");
       }
       else if ( IsXBE() )
       {
         // xbe
-        SetIconImage("defaultProgram.png");
+        SetIconImage("DefaultProgram.png");
       }
       else if ( IsAudio() )
       {
         // audio
-        SetIconImage("defaultAudio.png");
+        SetIconImage("DefaultAudio.png");
       }
       else if ( IsVideo() )
       {
         // video
-        SetIconImage("defaultVideo.png");
+        SetIconImage("DefaultVideo.png");
       }
       else if ( IsShortCut() && !IsLabelPreformated() )
       {
@@ -1112,7 +1112,7 @@ void CFileItem::FillInDefaultIcon()
         int iPos = strFName.ReverseFind(".");
         strDescription = strFName.Left(iPos);
         SetLabel(strDescription);
-        SetIconImage("defaultShortcut.png");
+        SetIconImage("DefaultShortcut.png");
       }
       else if ( IsPythonScript() )
       {
@@ -1121,22 +1121,22 @@ void CFileItem::FillInDefaultIcon()
       else
       {
         // default icon for unknown file type
-        SetIconImage("defaultFile.png");
+        SetIconImage("DefaultFile.png");
       }
     }
     else
     {
       if ( IsPlayList() )
       {
-        SetIconImage("defaultPlaylist.png");
+        SetIconImage("DefaultPlaylist.png");
       }
       else if (IsParentFolder())
       {
-        SetIconImage("defaultFolderBack.png");
+        SetIconImage("DefaultFolderBack.png");
       }
       else
       {
-        SetIconImage("defaultFolder.png");
+        SetIconImage("DefaultFolder.png");
       }
     }
   }
@@ -2116,6 +2116,8 @@ void CFileItemList::Stack()
   // not allowed here
   if (IsVirtualDirectoryRoot() || IsTV())
     return;
+
+  SetProperty("isstacked", "1");
 
   // items needs to be sorted for stuff below to work properly
   Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);

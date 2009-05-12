@@ -222,8 +222,6 @@ bool CTextureMap::IsEmpty() const
 //------------------------------------------------------------------------------
 CGUITextureManager::CGUITextureManager(void)
 {
-  for (int bundle = 0; bundle < 2; bundle++)
-    m_iNextPreload[bundle] = m_PreLoadNames[bundle].end();
   // we set the theme bundle to be the first bundle (thus prioritising it
   m_TexBundle[0].SetThemeBundle(true);
 
@@ -297,60 +295,6 @@ DWORD PadPow2(DWORD x)
 }
 #endif
 
-void CGUITextureManager::StartPreLoad()
-{
-  for (int bundle = 0; bundle < 2; bundle++)
-    m_PreLoadNames[bundle].clear();
-}
-
-void CGUITextureManager::PreLoad(const CStdString& strTextureName)
-{
-  if (strTextureName.c_str()[1] == ':' || strTextureName == "-")
-    return ;
-
-  for (int i = 0; i < (int)m_vecTextures.size(); ++i)
-  {
-    CTextureMap *pMap = m_vecTextures[i];
-    if (pMap->GetName() == strTextureName)
-      return ;
-  }
-
-  for (int bundle = 0; bundle < 2; bundle++)
-  {
-    for (list<CStdString>::iterator i = m_PreLoadNames[bundle].begin(); i != m_PreLoadNames[bundle].end(); ++i)
-    {
-      if (*i == strTextureName)
-        return ;
-    }
-
-    if (m_TexBundle[bundle].HasFile(strTextureName))
-    {
-      m_PreLoadNames[bundle].push_back(strTextureName);
-      return;
-    }
-  }
-}
-
-void CGUITextureManager::EndPreLoad()
-{
-  for (int i = 0; i < 2; i++)
-  {
-    m_iNextPreload[i] = m_PreLoadNames[i].begin();
-    // preload next file
-    if (m_iNextPreload[i] != m_PreLoadNames[i].end())
-      m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
-  }
-}
-
-void CGUITextureManager::FlushPreLoad()
-{
-  for (int i = 0; i < 2; i++)
-  {
-    m_PreLoadNames[i].clear();
-    m_iNextPreload[i] = m_PreLoadNames[i].end();
-  }
-}
-
 bool CGUITextureManager::CanLoad(const CStdString &texturePath) const
 {
   if (texturePath == "-")
@@ -380,16 +324,6 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
     CTextureMap *pMap = m_vecTextures[i];
     if (pMap->GetName() == textureName)
     {
-      for (int i = 0; i < 2; i++)
-      {
-        if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == bundledName))
-        {
-          ++m_iNextPreload[i];
-          // preload next file
-          if (m_iNextPreload[i] != m_PreLoadNames[i].end())
-            m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
-        }
-      }
       if (size) *size = 1;
       return true;
     }
@@ -397,16 +331,7 @@ bool CGUITextureManager::HasTexture(const CStdString &textureName, CStdString *p
 
   for (int i = 0; i < 2; i++)
   {
-    if (m_iNextPreload[i] != m_PreLoadNames[i].end() && (*m_iNextPreload[i] == bundledName))
-    {
-      if (bundle) *bundle = i;
-      ++m_iNextPreload[i];
-      // preload next file
-      if (m_iNextPreload[i] != m_PreLoadNames[i].end())
-        m_TexBundle[i].PreloadFile(*m_iNextPreload[i]);
-      return true;
-    }
-    else if (m_TexBundle[i].HasFile(bundledName))
+    if (m_TexBundle[i].HasFile(bundledName))
     {
       if (bundle) *bundle = i;
       return true;
@@ -466,7 +391,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
       int nLoops = 0;
       int* Delay;
 #ifndef HAS_SDL
-      int nImages = m_TexBundle[bundle].LoadAnim(g_graphicsContext.Get3DDevice(), strTextureName, &info, &pTextures, &pPal, nLoops, &Delay);
+      int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &info, &pTextures, &pPal, nLoops, &Delay);
 #else
       int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &info, &pTextures, &pPal, nLoops, &Delay);
 #endif
@@ -585,7 +510,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   if (bundle >= 0)
   {
 #ifndef HAS_SDL
-    if (FAILED(m_TexBundle[bundle].LoadTexture(g_graphicsContext.Get3DDevice(), strTextureName, &info, &pTexture, &pPal)))
+    if (FAILED(m_TexBundle[bundle].LoadTexture(strTextureName, &info, &pTexture, &pPal)))
 #else
     if (FAILED(m_TexBundle[bundle].LoadTexture(strTextureName, &info, &pTexture, &pPal)))
 #endif

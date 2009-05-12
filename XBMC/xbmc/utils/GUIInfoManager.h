@@ -97,6 +97,8 @@ class CDateTime;
 #define PLAYER_CACHELEVEL            39
 #define PLAYER_STAR_RATING           40
 #define PLAYER_CHAPTERNAME           41
+#define PLAYER_SUBTITLE_DELAY        42
+#define PLAYER_AUDIO_DELAY           43
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -249,6 +251,9 @@ class CDateTime;
 #define LASTFM_CANLOVE              306
 #define LASTFM_CANBAN               307
 
+#define CONTAINER_HASFILES          351
+#define CONTAINER_HASFOLDERS        352
+#define CONTAINER_STACKED           353
 #define CONTAINER_FOLDERNAME        354
 #define CONTAINER_SCROLLING         355
 #define CONTAINER_PLUGINNAME        356
@@ -427,9 +432,9 @@ class CDateTime;
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
 #ifdef SVN_REV
-#define VERSION_STRING "9.04-beta1 r"SVN_REV
+#define VERSION_STRING "pre-9.10 r"SVN_REV
 #else
-#define VERSION_STRING "9.04-beta1"
+#define VERSION_STRING "pre-9.10"
 #endif
 
 #define LISTITEM_START              35000

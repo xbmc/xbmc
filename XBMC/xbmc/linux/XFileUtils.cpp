@@ -26,7 +26,7 @@
 #include "FileSystem/SpecialProtocol.h"
 
 #ifdef _LINUX
-
+#include "XHandle.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifndef __APPLE__

@@ -141,7 +141,6 @@ public:
   virtual bool HasVisibleID(DWORD dwID) const;
   DWORD GetParentID() const;
   virtual bool HasFocus() const;
-  virtual void PreAllocResources() {}
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);

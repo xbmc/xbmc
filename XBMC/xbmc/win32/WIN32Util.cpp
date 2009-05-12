@@ -30,6 +30,7 @@
 #include <shlobj.h>
 #include "SpecialProtocol.h"
 #include "my_ntddscsi.h"
+#include "Surface.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -604,6 +605,43 @@ void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
   }
   SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, sSysParam.bScrSaver, NULL, 0 );
   SetThreadExecutionState( sSysParam.dwEsFlags );
+}
+
+void CWIN32Util::CheckGLVersion()
+{
+  if(CWIN32Util::HasGLDefaultDrivers())
+  {
+    MessageBox(NULL, "MS default OpenGL drivers detected. Please get OpenGL drivers from your video card vendor", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
+    exit(1);
+  }
+
+  if(!CWIN32Util::HasReqGLVersion())
+  {
+    if(MessageBox(NULL, "Your OpenGL version doesn't meet the XBMC requirements", "XBMC: Warning", MB_OKCANCEL|MB_ICONWARNING) == IDCANCEL)
+    {
+      exit(1);
+    }
+  }
+}
+
+bool CWIN32Util::HasGLDefaultDrivers()
+{
+  CStdString strVendor = Surface::CSurface::GetGLVendor();
+
+  if(strVendor.find("Microsoft")!= strVendor.npos)
+    return true;
+  else
+    return false;
+}
+
+bool CWIN32Util::HasReqGLVersion()
+{
+  int a=0,b=0;
+  Surface::CSurface::GetGLVersion(a, b);
+  if((a>=2) || (a == 1 && b >= 3))
+    return true;
+  else
+    return false;
 }
 
 extern "C"

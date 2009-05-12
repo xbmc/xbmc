@@ -29,7 +29,7 @@
 #include "../../../FileSystem/cdioSupport.h"
 #include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
-#ifdef ENABLE_DVDPLAYER_HTSP
+#ifdef HAS_FILESYSTEM_HTSP
 #include "DVDInputStreamHTSP.h"
 #endif
 #ifdef ENABLE_DVDINPUTSTREAM_STACK
@@ -66,7 +66,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 #endif
   else if(file.substr(0, 7) == "rtmp://")
     return new CDVDInputStreamRTMP();
-#ifdef ENABLE_DVDPLAYER_HTSP
+#ifdef HAS_FILESYSTEM_HTSP
   else if(file.substr(0, 7) == "htsp://")
     return new CDVDInputStreamHTSP();
 #endif

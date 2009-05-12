@@ -179,9 +179,9 @@
       <!-- hold play  --> <button id="7">Fullscreen</button>
       <!-- hold menu  --> <button id="8">ContextMenu</button>
       
-      <!-- old buttons (ATV <2.2) -->
-      <!-- hold left  --> <button id="9">BigStepBack</button>
-      <!-- hold right --> <button id="10">BigStepForward</button>
+      <!-- old buttons for ATV <2.2, used on OSX  -->
+      <!-- hold left  --> <button id="9">Left</button>
+      <!-- hold right --> <button id="10">Right</button>
       
       <!-- Learned remote buttons (ATV >2.3) -->
       <!-- Play --> <button id="70">Play</button>
@@ -195,6 +195,82 @@
       <!-- Enter --> <button id="78">ShowVideoMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- up       	--> <button id="1">Up</button>
+      <!-- minus      	--> <button id="2">Down</button>
+      <!-- left       	--> <button id="3">Left</button>
+      <!-- right      	--> <button id="4">Right</button>
+      <!-- OK		 	--> <button id="5">Select</button>
+      <!-- menu       	--> <button id="6">ContextMenu</button>
+      <!-- hold play  	--> <button id="7">Fullscreen</button>
+      <!-- hold menu  	--> <button id="8">ContextMenu</button>
+      <!-- hold left  	--> <button id="9">Left</button>
+      <!-- hold right 	--> <button id="10">Right</button>
+      
+      <!-- Stop       	--> <button id="15">Stop</button>
+      <!-- Stop Hold   	--> <button id="17"></button>
+      <!-- Play       	--> <button id="16">Play</button>
+      <!-- Play Hold   	--> <button id="18"></button>
+      <!-- Replay       --> <button id="91">SkipPrevious</button>
+      <!-- Skip      	--> <button id="92">SkipNext</button>      
+      <!-- Record		--> <button id="52">Screenshot</button>
+      <!-- Rew       	--> <button id="41">BigStepBack</button>
+      <!-- Fwd  		--> <button id="42">BigStepForward</button>
+      <!-- Pause	  	--> <button id="26">Pause</button>
+      <!-- Prev			--> <button id="32">ParentDir</button>
+      
+      <!-- Guide  		--> <button id="65">FullScreen</button>
+      <!-- Info  		--> <button id="31">Info</button>
+      <!-- Exit 		--> <button id="51">PreviousMenu</button>    
+      <!-- Channel Up  	--> <button id="71">PageUp</button>
+      <!-- Channel Down --> <button id="72">PageDown</button>
+      <!-- looks like buttons below are duplicates of those above
+      Arrow Up  	 <button id="71"></button>
+      Arrow Down 	 <button id="72"></button>
+	  -->
+      <!-- Volume + 	--> <button id="21">VolumeUp</button>
+      <!-- Volume - 	--> <button id="22">VolumeDown</button>
+      <!-- 1 			--> <button id="11">Number1</button>
+      <!-- 2 			--> <button id="12">Number2</button>
+      <!-- 3 			--> <button id="13">Number3</button>
+      <!-- 4 			--> <button id="14">Number4</button>
+      <!-- 5 			--> <button id="23">Number5</button>
+      <!-- 6 			--> <button id="24">Number6</button>
+      <!-- 7 			--> <button id="33">Number7</button>
+      <!-- 8 			--> <button id="34">Number8</button>
+      <!-- 9 			--> <button id="43">Number9</button>
+      <!-- 0 			--> <button id="44">Number0</button>
+      <!-- * clear 		--> <button id="45">ParentDir</button>
+      <!-- # enter 		--> <button id="36">Select</button>
+      <!-- Mute			--> <button id="25">Mute</button>
+
+      <!-- Aspect		--> <button id="61">AspectRatio</button>
+      <!-- F1			--> <button id="53">XBMC.ActivateWindow(Music)</button>
+      <!-- F3			--> <button id="55">XBMC.ActivateWindow(videolibrary,tvshowtitles,return)</button>
+      <!-- F2			--> <button id="54">XBMC.ActivateWindow(videolibrary,movietitles,return)</button>
+      <!-- F4			--> <button id="56">XBMC.ActivateWindow(Weather)</button>
+      <!-- F5			--> <button id="93"></button>
+      <!-- F7			--> <button id="95"></button>
+      <!-- F6			--> <button id="94"></button>
+      <!-- F8			--> <button id="96"></button>
+      <!-- F9			--> <button id="73"></button>
+      <!-- F10			--> <button id="74"></button>
+      <!-- F11			--> <button id="75"></button>
+      <!-- F12			--> <button id="76"></button>
+      <!-- F13			--> <button id="63"></button>
+      <!-- F14			--> <button id="64"></button>      
+      <!-- Large Down	--> <button id="82">PageDown</button>
+      <!-- Large Up		--> <button id="81">PageUp</button>
+      <!-- pwrToggle	--> <button id="66">XBMC.ShutDown()</button>
+      <!-- Queue		--> <button id="62">Queue</button>
+      <!-- Sleep		--> <button id="46">XBMC.SleepSystem()</button>
+
+      <!-- Red			--> <button id="83">XBMC.ActivateWindow(Music)</button>
+      <!-- Green		--> <button id="84">XBMC.ActivateWindow(videolibrary,tvshowtitles,return)</button>
+      <!-- Yellow		--> <button id="85">xbmc.ActivateWindow(videolibrary,movietitles,return)</button>
+      <!-- Blue			--> <button id="86">XBMC.ActivateWindow(Weather)</button>
+    </joystick>
+    
     <keyboard>
       <p>Play</p>
       <q>Queue</q>
@@ -277,7 +353,15 @@
     <joystick name="AppleRemote">
       <button id="6">Fullscreen</button>
     </joystick>
-
+    
+    <joystick name="Harmony">
+      <!-- menu       	--> <button id="6">XBMC.ActivateWindow(PlayerControls)</button>
+      <!-- Info  		--> <button id="31">XBMC.ActivateWindow(Settings)</button>
+      <!-- Exit 		--> <button id="51">XBMC.ActivateWindow(ShutdownMenu)</button>    
+      <!-- #enter		--> <button id="36">XBMC.ActivateWindow(SystemInfo)</button>
+      <!-- 1 			--> <button id="11">ToggleFullScreen</button>
+    </joystick>
+    
     <remote>
       <menu>XBMC.Skin.ToggleSetting(HomeViewToggle)</menu>
       <info>XBMC.ActivateWindow(SystemInfo)</info>
@@ -309,6 +393,13 @@
       <button id="11">Highlight</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- 1 			--> <button id="11">Highlight</button>
+      <!-- 4 			--> <button id="14">Copy</button>
+      <!-- 7 			--> <button id="33">Move</button>
+      <!-- * clear 		--> <button id="45">Delete</button>
+    </joystick>
+    
     <remote>
       <zero>Delete</zero>
       <one>Highlight</one>
@@ -355,6 +446,13 @@
 
     <joystick name="AppleRemote">
       <button id="6">Playlist</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">Playlist</button>
+      <!-- * clear 		--> <button id="45">Delete</button>
+      <!-- Channel Up  	--> <button id="71">MoveItemUp</button>
+      <!-- Channel Down --> <button id="72">MoveItemDown</button>
     </joystick>
 
     <remote>
@@ -546,7 +644,19 @@
       <button id="5">OSD</button>
       <button id="6">Fullscreen</button>
     </joystick>
-
+    
+    <joystick name="Harmony">
+      <!-- up       	--> <button id="1">BigStepForward</button>
+      <!-- down      	--> <button id="2">BigStepBack</button>
+      <!-- left       	--> <button id="3">StepBack</button>
+      <!-- right      	--> <button id="4">StepForward</button>
+      <!-- menu       	--> <button id="6">OSD</button>
+      <!-- Prev			--> <button id="32">SmallStepBack</button>
+      <!-- Info  		--> <button id="31">Info</button>
+      <!-- F7			--> <button id="95">NextSubtitle</button>
+      <!-- F6			--> <button id="94">ShowSubtitles</button>
+    </joystick>
+	
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
@@ -568,6 +678,7 @@
       <right>StepForward</right>
       <up>BigStepForward</up>
       <down>BigStepBack</down>
+      <a>AudioDelay</a>
       <escape>Fullscreen</escape>
     </keyboard>
   </FullscreenVideo>
@@ -607,6 +718,10 @@
 
     <joystick name="AppleRemote">
       <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- Info  		--> <button id="31">Close</button>
     </joystick>
 
     <keyboard>
@@ -649,6 +764,10 @@
     <remote>
       <menu>Close</menu>
     </remote>
+
+    <joystick name="Harmony">
+      <!-- menu       	--> <button id="6">Close</button>
+	</joystick>      
   </PlayerControls>
 
 
@@ -719,6 +838,18 @@
       <button id="6">Fullscreen</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- up       	--> <button id="1">IncreaseRating</button>
+      <!-- minus      	--> <button id="2">DecreaseRating</button>
+      <!-- left       	--> <button id="3">PreviousPreset</button>
+      <!-- right      	--> <button id="4">NextPreset</button>
+      <!-- menu       	--> <button id="6">XBMC.ActivateWindow(MusicOSD)</button>
+      <!-- Prev			--> <button id="32">LockPreset</button>
+      <!-- Info  		--> <button id="31">Info</button>
+      <!-- F8			--> <button id="96">XBMC.ActivateWindow(VisualisationPresetList)</button>
+      <!-- F9			--> <button id="73">XBMC.ActivateWindow(VisualisationSettings)</button>
+    </joystick>
+    
     <keyboard>
       <f>FastForward</f>
       <r>Rewind</r>
@@ -769,6 +900,12 @@
 
     <joystick name="AppleRemote">
       <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- menu       	--> <button id="6">Close</button>
+      <!-- Info  		--> <button id="31">CodecInfo</button>
+      <!-- Exit 		--> <button id="51">Close</button>    
     </joystick>
 
     <remote>
@@ -823,6 +960,11 @@
     <joystick name="AppleRemote">
       <button id="6">Close</button>
     </joystick>
+    
+    <joystick name="Harmony">
+      <!-- menu       	--> <button id="6">Close</button>
+      <!-- Exit 		--> <button id="51">Close</button>    
+    </joystick>
 
     <keyboard>
       <escape>Close</escape>
@@ -869,6 +1011,11 @@
 
     <joystick name="AppleRemote">
       <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- menu       	--> <button id="6">Close</button>
+      <!-- Exit 		--> <button id="51">Close</button>    
     </joystick>
 
     <keyboard>
@@ -940,7 +1087,25 @@
       <button id="5">Info</button>
       <button id="6">Stop</button>
     </joystick>
-
+    
+    <joystick name="Harmony">
+      <!-- 1 			--> <button id="11">ZoomLevel1</button>
+      <!-- 2 			--> <button id="12">ZoomLevel2</button>
+      <!-- 3 			--> <button id="13">ZoomLevel3</button>
+      <!-- 4 			--> <button id="14">ZoomLevel4</button>
+      <!-- 5 			--> <button id="23">ZoomLevel5</button>
+      <!-- 6 			--> <button id="24">ZoomLevel6</button>
+      <!-- 7 			--> <button id="33">ZoomLevel7</button>
+      <!-- 8 			--> <button id="34">ZoomLevel8</button>
+      <!-- 9 			--> <button id="43">ZoomLevel9</button>
+      <!-- 0 			--> <button id="44">ZoomNormal</button>
+      
+      <!-- Skip      	--> <button id="92">NextPicture</button>      
+      <!-- Replay       --> <button id="91">PreviousPicture</button>
+      <!-- Info  		--> <button id="31">Info</button>
+      <!-- OK			--> <button id="5" >Rotate</button>
+    </joystick>
+    
     <remote>
       <zero>ZoomNormal</zero>
       <one>ZoomLevel1</one>
@@ -1011,6 +1176,13 @@
       <button id="5">NextCalibration</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- OK		 	--> <button id="5">NextCalibration</button>
+      <!-- 0 			--> <button id="44">ResetCalibration</button>
+      <!-- # enter 		--> <button id="36">NextCalibration</button>
+      <!-- Guide  		--> <button id="65">NextResolution</button>
+    </joystick>
+    
     <remote>
       <select>NextCalibration</select>
       <enter>NextCalibration</enter>
@@ -1044,6 +1216,12 @@
       <button id="6">NextResolution</button>
       <button id="2">PreviousMenu</button>
     </joystick>
+    
+    <joystick name="Harmony">
+      <!-- OK		 	--> <button id="5">NextCalibration</button>
+      <!-- 0 			--> <button id="44">ResetCalibration</button>
+      <!-- # enter 		--> <button id="36">NextCalibration</button>
+    </joystick>
 
     <remote>
       <select>NextCalibration</select>
@@ -1076,6 +1254,11 @@
 
     <joystick name="AppleRemote">
       <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- Exit 		--> <button id="51">Close</button>    
+      <!-- Prev			--> <button id="32">Close</button>
     </joystick>
 
     <remote>
@@ -1114,6 +1297,12 @@
 
     <joystick name="AppleRemote">
       <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- menu       	--> <button id="6">Close</button>
+      <!-- Exit 		--> <button id="51">Close</button>   
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
     </joystick>
 
     <remote>
@@ -1163,7 +1352,13 @@
     <joystick name="AppleRemote">
       <button id="5">OSD</button>
     </joystick>
-
+    
+    <joystick name="Harmony">
+      <!-- menu       	--> <button id="6">OSD</button>
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+      <!-- Info  		--> <button id="31">Info</button>
+    </joystick>
+    
     <remote>
       <menu>OSD</menu>
       <back>PreviousMenu</back>
@@ -1219,7 +1414,12 @@
     <joystick name="AppleRemote">
       <button id="6">Close</button>
     </joystick>
-
+    
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">Close</button>
+      <!-- menu       	--> <button id="6">Close</button>
+    </joystick>
+    
     <remote>
       <back>Close</back>
       <menu>Close</menu>
@@ -1264,7 +1464,13 @@
     <joystick name="AppleRemote">
       <button id="6">Close</button>
     </joystick>
-
+    
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">Close</button>
+      <!-- menu       	--> <button id="6">Close</button>
+      <!-- Exit 		--> <button id="51">Close</button>      
+    </joystick>
+    
     <remote>
       <back>Close</back>
       <menu>Close</menu>
@@ -1308,7 +1514,14 @@
     <joystick name="AppleRemote">
       <button id="6">Close</button>
     </joystick>
-
+    
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">Close</button>
+      <!-- menu       	--> <button id="6">Close</button>
+      <!-- Exit 		--> <button id="51">Close</button>      
+      <!-- * clear 		--> <button id="45">Delete</button>
+    </joystick>
+    
     <remote>
       <back>Close</back>
       <menu>Close</menu>
@@ -1341,6 +1554,11 @@
 
     <joystick name="AppleRemote">
       <button id="6">ParentDir</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- * clear 		--> <button id="45">Delete</button>
+      <!-- # enter 		--> <button id="36">ToggleWatched</button>
     </joystick>
 
     <remote>
@@ -1379,6 +1597,10 @@
 
     <joystick name="AppleRemote">
       <button id="6">ParentDir</button>
+    </joystick>
+
+    <joystick name="Harmony">
+    <!-- * clear 		--> <button id="45">Delete</button>
     </joystick>
 
     <remote>
@@ -1424,6 +1646,13 @@
       <button id="6">Playlist</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">Playlist</button> <!-- Close playlist -->
+      <!-- * clear 		--> <button id="45">Delete</button>
+      <!-- Channel Up  	--> <button id="71">MoveItemUp</button>
+      <!-- Channel Down --> <button id="72">MoveItemDown</button>
+    </joystick>
+    
     <remote>
       <back>Playlist</back> <!-- Close playlist -->
       <clear>Delete</clear>
@@ -1603,6 +1832,25 @@
       <button id="6">Close</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">BackSpace</button>
+      <!-- * clear 		--> <button id="45">Shift</button>
+      <!-- # enter 		--> <button id="36">Symbols</button>
+      <!-- 1 			--> <button id="11">Number1</button>
+      <!-- 2 			--> <button id="12">Number2</button>
+      <!-- 3 			--> <button id="13">Number3</button>
+      <!-- 4 			--> <button id="14">Number4</button>
+      <!-- 5 			--> <button id="23">Number5</button>
+      <!-- 6 			--> <button id="24">Number6</button>
+      <!-- 7 			--> <button id="33">Number7</button>
+      <!-- 8 			--> <button id="34">Number8</button>
+      <!-- 9 			--> <button id="43">Number9</button>
+      <!-- 0 			--> <button id="44">Number0</button>
+
+      <!-- Rew       	--> <button id="41">CursorLeft</button>
+      <!-- Fwd  		--> <button id="42">CursorRight</button>
+    </joystick>
+
     <remote>
       <back>BackSpace</back>
       <star>Shift</star>
@@ -1649,6 +1897,10 @@
       <button id="6">Close</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">Close</button>
+    </joystick>
+
     <keyboard>
       <c>Close</c>
       <menu>Close</menu>
@@ -1663,6 +1915,10 @@
 
     <joystick name="AppleRemote">
       <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">Close</button>
     </joystick>
 
     <keyboard>
@@ -1688,6 +1944,10 @@
       <button id="11">XBMC.ActivateWindow(ScriptsDebugInfo)</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Info  		--> <button id="31">XBMC.ActivateWindow(ScriptsDebugInfo)</button>
+    </joystick>
+
     <remote>
       <info>XBMC.ActivateWindow(ScriptsDebugInfo)</info>
     </remote>
@@ -1702,6 +1962,10 @@
     <gamepad>
       <white>Info</white> <!-- clears debug python info -->
     </gamepad>
+
+    <joystick name="Harmony">
+      <!-- Info  		--> <button id="31">Info</button> <!-- clears debug python info -->
+    </joystick>
 
     <remote>
       <info>Info</info> <!-- clears debug python info -->
@@ -1737,6 +2001,20 @@
       <button id="9">SkipNext</button>
       <button id="10">Enter</button>
       <button id="11">BackSpace</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- 1 			--> <button id="11">Number1</button>
+      <!-- 2 			--> <button id="12">Number2</button>
+      <!-- 3 			--> <button id="13">Number3</button>
+      <!-- 4 			--> <button id="14">Number4</button>
+      <!-- 5 			--> <button id="23">Number5</button>
+      <!-- 6 			--> <button id="24">Number6</button>
+      <!-- 7 			--> <button id="33">Number7</button>
+      <!-- 8 			--> <button id="34">Number8</button>
+      <!-- 9 			--> <button id="43">Number9</button>
+      <!-- 0 			--> <button id="44">Number0</button>
+      <!-- Prev			--> <button id="32">BackSpace</button>
     </joystick>
 
     <remote>
@@ -1778,6 +2056,10 @@
       <button id="2">PreviousMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+
     <remote>
       <back>PreviousMenu</back>
     </remote>
@@ -1799,6 +2081,10 @@
       <button id="2">PreviousMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+    
     <remote>
       <back>PreviousMenu</back>
     </remote>
@@ -1817,6 +2103,10 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="2">PreviousMenu</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
     </joystick>
 
     <remote>
@@ -1838,7 +2128,11 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="2">PreviousMenu</button>
     </joystick>
-
+    
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+    
     <remote>
       <back>PreviousMenu</back>
     </remote>
@@ -1859,6 +2153,10 @@
       <button id="2">PreviousMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+    
     <remote>
       <back>PreviousMenu</back>
     </remote>
@@ -1879,6 +2177,10 @@
       <button id="2">PreviousMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+    
     <remote>
       <back>PreviousMenu</back>
     </remote>
@@ -1899,6 +2201,10 @@
       <button id="2">PreviousMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+    
     <remote>
       <back>PreviousMenu</back>
     </remote>
@@ -1919,6 +2225,10 @@
       <button id="2">PreviousMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+    
     <remote>
       <back>PreviousMenu</back>
     </remote>
@@ -1939,6 +2249,10 @@
       <button id="2">PreviousMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+    
     <remote>
       <back>PreviousMenu</back>
     </remote>
@@ -1957,6 +2271,10 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="2">PreviousMenu</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
     </joystick>
 
     <remote>
@@ -1979,6 +2297,10 @@
       <button id="2">PreviousMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+
     <remote>
       <back>PreviousMenu</back>
     </remote>
@@ -1997,6 +2319,10 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="2">PreviousMenu</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
     </joystick>
 
     <remote>
@@ -2019,6 +2345,10 @@
       <button id="2">PreviousMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+
     <remote>
       <back>PreviousMenu</back>
     </remote>
@@ -2037,6 +2367,10 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <button id="2">PreviousMenu</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
     </joystick>
 
     <remote>
@@ -2065,6 +2399,11 @@
 
     <joystick name="AppleRemote">
       <button id="6">Close</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">Close</button>
+      <!-- menu       	--> <button id="6">Close</button>
     </joystick>
 
     <remote>
@@ -2096,6 +2435,11 @@
       <button id="6">Close</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- Prev			--> <button id="32">Close</button>
+      <!-- menu       	--> <button id="6">Close</button>
+    </joystick>
+
     <remote>
       <back>Close</back>
     </remote>
@@ -2119,6 +2463,11 @@
       <button id="9">Close</button>
       <button id="2">PreviousMenu</button>
       <button id="17">PreviousMenu</button>
+    </joystick>
+
+    <joystick name="Harmony">
+      <!-- menu       	--> <button id="6">Close</button>
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
     </joystick>
 
     <remote>
@@ -2147,6 +2496,11 @@
       <button id="17">PreviousMenu</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- menu       	--> <button id="6">Close</button>
+      <!-- Prev			--> <button id="32">PreviousMenu</button>
+    </joystick>
+    
     <remote>
       <menu>Close</menu>
       <back>PreviousMenu</back>
@@ -2182,6 +2536,13 @@
       <button id="3">Left</button>
       <button id="4">Right</button>
       <button id="6">Close</button>
+    </joystick>
+    
+    <joystick name="Harmony">
+      <!-- Replay       --> <button id="91">PreviousPicture</button>
+      <!-- Skip      	--> <button id="92">NextPicture</button>      
+      <!-- Info  		--> <button id="31">Close</button>
+	  <!-- Prev			--> <button id="32">Close</button>
     </joystick>
 
     <keyboard>

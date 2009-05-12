@@ -348,8 +348,11 @@ HRESULT CPulseAudioDirectSound::Deinitialize()
 
 inline bool CPulseAudioDirectSound::WaitForOperation(pa_operation *op, const char *LogEntry = "")
 {
+	if (op == NULL)
+		return false;
+
   bool sucess = true;
-  assert(op);
+
   while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
     pa_threaded_mainloop_wait(m_MainLoop);
 
@@ -460,8 +463,8 @@ HRESULT CPulseAudioDirectSound::SetCurrentVolume(LONG nVolume)
   pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_Volume, NULL, NULL);
   if (op == NULL)
     CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
-
-  pa_operation_unref(op);
+  else
+    pa_operation_unref(op);
 
   pa_threaded_mainloop_unlock(m_MainLoop);
 

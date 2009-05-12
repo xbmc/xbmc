@@ -65,7 +65,6 @@ public:
   virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual void Render();
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);

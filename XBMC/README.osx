@@ -121,6 +121,7 @@ Then install the following port packages (order is very important):
  $ sudo port install pcre +universal
  $ sudo port install expat +universal
  $ sudo port install libiconv +universal
+ $ sudo port install gettext +universal
  $ sudo port install libtool yasm cmake gmake pkgconfig
 
  $ sudo port install lzo +universal
@@ -133,7 +134,7 @@ Then install the following port packages (order is very important):
  $ sudo port install libpng +universal
  $ sudo port install libogg +universal
  $ sudo port install libvorbis +universal
- $ sudo port install libmad +universal
+ $ sudo port install libmad macosx_deployment_target=10.4
  $ sudo port install fribidi +universal
 
  $ sudo port install glew +universal
@@ -142,6 +143,7 @@ Then install the following port packages (order is very important):
  $ sudo port install openssl +universal
  $ sudo port install samba3 macosx_deployment_target=10.4
  $ sudo port install mysql5 +universal
+ $ sudo port install sqlite3 +universal
 
  $ sudo port install libsdl +no_x11 +universal
  $ sudo port install smpeg +universal
@@ -219,6 +221,16 @@ You can specify "Release" instead of "Debug" as a configuration.
 -----------------------------------------------------------------------------
 4.2 Using Terminal (command-line) (this is a work in progress and might fail)
 -----------------------------------------------------------------------------
+There are two methods, a) make/Xcode and b) make (which might fail as it's under
+construction).
+
+ a)
+ $ cd $HOME/XBMC
+ $ export XBMC_HOME=`pwd`
+ $ make externals more_libs
+ $ xcodebuild -sdk macosx10.4 -project XBMC.xcodeproj -target XBMC.app -configuration Release build
+
+ b)
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
  $ make externals more_libs

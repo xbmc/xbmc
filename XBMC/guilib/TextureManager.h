@@ -153,10 +153,6 @@ public:
   CGUITextureManager(void);
   virtual ~CGUITextureManager(void);
 
-  void StartPreLoad();
-  void PreLoad(const CStdString& strTextureName);
-  void EndPreLoad();
-  void FlushPreLoad();
   bool HasTexture(const CStdString &textureName, CStdString *path = NULL, int *bundle = NULL, int *size = NULL);
   bool CanLoad(const CStdString &texturePath) const; ///< Returns true if the texture manager can load this texture
   int Load(const CStdString& strTextureName, bool checkBundleOnly = false);
@@ -178,8 +174,6 @@ protected:
   typedef std::vector<CTextureMap*>::iterator ivecTextures;
   // we have 2 texture bundles (one for the base textures, one for the theme)
   CTextureBundle m_TexBundle[2];
-  std::list<CStdString> m_PreLoadNames[2];
-  std::list<CStdString>::iterator m_iNextPreload[2];
 
   std::vector<CStdString> m_texturePaths;
 };

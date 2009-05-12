@@ -47,6 +47,7 @@
 #endif
 #include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
+#include "StdString.h"
 
 namespace Surface { class CSurface; }
 

@@ -16,17 +16,20 @@
 #
 
 import sys
+
 try:
-    from xbmc.xbmcclient import *
-    from xbmc.ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
-    from xbmc.bt.bt import *
-    from xbmc.defs import *
-except:
+    # try loading modules from source directory
     sys.path.append("../../lib/python")
     from xbmcclient import *
     from ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
     from bt.bt import *
     ICON_PATH = "../../icons/"
+except:
+    # fallback to system wide modules
+    from xbmc.xbmcclient import *
+    from xbmc.ps3.keymaps import keymap_remote as g_keymap # look here to change the keymapping
+    from xbmc.bt.bt import *
+    from xbmc.defs import *
 
 import os
 import time
@@ -109,7 +112,21 @@ Usage: ps3_remote.py <address> [port]
 """
 
 def process_keys(remote, xbmc):
-    done = False
+    """
+    Return codes:
+    0 - key was processed normally
+    2 - socket read timeout
+    3 - PS and then Skip Plus was pressed (sequentially)
+    4 - PS and then Skip Minus was pressed (sequentially)
+
+    FIXME: move to enums
+    """
+    done = 0
+
+    try:
+        xbmc.previous_key
+    except:
+        xbmc.previous_key = ""
 
     xbmc.connect()
     datalen = 0
@@ -118,9 +135,11 @@ def process_keys(remote, xbmc):
         datalen = len(data)
     except Exception, e:
         if str(e)=="timed out":
-            return "2"
+            return 2
         time.sleep(2)
-        done = True
+
+        # some other read exception occured, so raise it
+        raise e
 
     if datalen == 13:
         keycode = data.encode("hex")[10:12]
@@ -128,6 +147,18 @@ def process_keys(remote, xbmc):
             xbmc.release_button()
             return done
         try:
+            # if the user presses the PS button followed by skip + or skip -
+            # return different codes.
+            if xbmc.previous_key == "43":
+                xbmc.previous_key = keycode
+                if keycode == "31":    # skip +
+                    return 3
+                elif keycode == "30":  # skip -
+                    return 4
+
+            # save previous key press
+            xbmc.previous_key = keycode
+
             if g_keymap[keycode]:
                 xbmc.send_remote_button(g_keymap[keycode])
         except Exception, e:

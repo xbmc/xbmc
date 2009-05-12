@@ -35,7 +35,7 @@
 class CGUIControlGroupList : public CGUIControlGroup
 {
 public:
-  CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions);
+  CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions, DWORD alignment);
   virtual ~CGUIControlGroupList(void);
   virtual CGUIControlGroupList *Clone() const { return new CGUIControlGroupList(*this); };
 
@@ -68,5 +68,6 @@ protected:
 
   bool m_useControlPositions;
   ORIENTATION m_orientation;
+  DWORD m_alignment;
 };
 

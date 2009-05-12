@@ -188,6 +188,7 @@ case TMSG_POWERDOWN:
     case TMSG_QUIT:
       {
         g_application.Stop();
+        Sleep(200);
         exit(0);
       }
       break;

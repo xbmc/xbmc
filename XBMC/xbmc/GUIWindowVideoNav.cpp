@@ -1316,7 +1316,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           strItemPath.Format("thumb://Remote%i",i++);
           CFileItemPtr item(new CFileItem(strItemPath, false));
           item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
-          item->SetIconImage("defaultPicture.png");
+          item->SetIconImage("DefaultPicture.png");
           item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(*iter);
           item->SetLabel(g_localizeStrings.Get(415));
           item->SetProperty("labelonthumbload",g_localizeStrings.Get(20015));
@@ -1354,7 +1354,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
             }
           }
         }
-        noneitem->SetThumbnailImage("DefaultFolderBig.png");
+        noneitem->SetIconImage("DefaultFolder.png");
         noneitem->SetLabel(g_localizeStrings.Get(20018));
       }
       if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
@@ -1373,7 +1373,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       else
       {
-        noneitem->SetThumbnailImage("DefaultFolderBig.png");
+        noneitem->SetIconImage("DefaultFolder.png");
         noneitem->SetLabel(g_localizeStrings.Get(20018));
       }
 
@@ -1392,7 +1392,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           }
           else
           {
-            noneitem->SetThumbnailImage("DefaultFolderBig.png");
+            noneitem->SetIconImage("DefaultFolder.png");
             noneitem->SetLabel(g_localizeStrings.Get(20018));
           }
         }
@@ -1407,7 +1407,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
         else
         {
-          noneitem->SetThumbnailImage("DefaultFolderBig.png");
+          noneitem->SetIconImage("DefaultFolder.png");
           noneitem->SetLabel(g_localizeStrings.Get(20018));
         }
         CUtil::AddFileToFolder(strPath,"default.tbn",strThumb);
@@ -1420,7 +1420,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
         else
         {
-          noneitem->SetThumbnailImage("DefaultFolderBig.png");
+          noneitem->SetIconImage("DefaultFolder.png");
           noneitem->SetLabel(g_localizeStrings.Get(20018));
         }
       }
@@ -1455,7 +1455,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
         else
         {
-          noneitem->SetThumbnailImage("DefaultArtistBig.png");
+          noneitem->SetIconImage("DefaultArtist.png");
           noneitem->SetLabel(g_localizeStrings.Get(20018));
         }
       }
@@ -1474,7 +1474,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
         else
         {
-          noneitem->SetThumbnailImage("DefaultActorBig.png");
+          noneitem->SetIconImage("DefaultActor.png");
           noneitem->SetLabel(g_localizeStrings.Get(20018));
         }
       }
@@ -1510,8 +1510,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         CFile::Delete(cachedThumb);
         if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
         {
-          CPicture picture;
-          picture.CacheSkinImage("DefaultFolderBig.png",cachedThumb);
           CFileItem item2(strPath,false);
           CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
           CFile::Delete(item2.GetCachedProgramThumb());

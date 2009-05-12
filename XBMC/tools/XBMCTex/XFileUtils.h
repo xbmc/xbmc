@@ -23,7 +23,7 @@
  */
 
 #include "PlatformDefs.h"
-#include "XHandle.h"
+#include "XHandlePublic.h"
 
 #ifdef _LINUX
 #define XBMC_FILE_SEP '/'

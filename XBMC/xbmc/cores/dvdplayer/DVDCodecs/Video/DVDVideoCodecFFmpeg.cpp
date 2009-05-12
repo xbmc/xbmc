@@ -121,7 +121,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to find codec %d", hints.codec);
     return false;
   }
-  
+
   CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using codec: %s",pCodec->long_name ? pCodec->long_name : pCodec->name);
 
 #ifdef HAVE_LIBVDPAU
@@ -165,7 +165,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   // set acceleration
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
-  
+
   // This doesn't seem to help with the H.264 MT patch. "Basically, the code decodes 
   // up to 128 macroblocks in one thread while doing prediction+idct+deblock of the 
   // previously decoded 128 blocks in another thread." This could explain the lack of
@@ -240,7 +240,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
     m_dllAvUtil.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
-  
+
   m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
 }
@@ -296,7 +296,7 @@ static double pts_itod(int64_t pts)
 
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 {
-  int iGotPicture = 0, len = 0;
+  int iGotPicture = 0, len = 0, result = 0;
 
   if (!m_pCodecContext) 
     return VC_ERROR;
@@ -340,7 +340,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
       if(!m_dllSwScale.Load())
         return VC_ERROR;
 
-      m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);    
+      m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
     }
 
     if (!m_pConvertFrame)
@@ -361,8 +361,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 
     // convert the picture
     struct SwsContext *context = m_dllSwScale.sws_getContext(m_pCodecContext->width, m_pCodecContext->height, 
-			m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height, 
-			PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                                         m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height, 
+                                         PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
     m_dllSwScale.sws_scale(context
                           , m_pFrame->data
@@ -385,11 +385,18 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 
+  result = VC_PICTURE | VC_BUFFER;
+
 #ifdef HAVE_LIBVDPAU
   if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
+  {
     g_VDPAU->PrePresent(m_pCodecContext,m_pFrame);
+    if(g_VDPAU->VDPAURecovered)
+      result |= VC_FLUSHED;
+    g_VDPAU->VDPAURecovered = false;
+  }
 #endif
-  return VC_PICTURE | VC_BUFFER;
+  return result;
 }
 
 void CDVDVideoCodecFFmpeg::Reset()

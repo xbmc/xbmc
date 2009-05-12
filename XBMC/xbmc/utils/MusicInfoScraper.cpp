@@ -40,6 +40,7 @@ CMusicInfoScraper::CMusicInfoScraper(const SScraperInfo& info)
 
 CMusicInfoScraper::~CMusicInfoScraper(void)
 {
+  StopThread();
 }
 
 int CMusicInfoScraper::GetAlbumCount() const

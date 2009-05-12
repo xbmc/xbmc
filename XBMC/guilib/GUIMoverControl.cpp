@@ -169,13 +169,6 @@ void CGUIMoverControl::UpdateSpeed(int nDirection)
   }
 }
 
-void CGUIMoverControl::PreAllocResources()
-{
-  CGUIControl::PreAllocResources();
-  m_imgFocus.PreAllocResources();
-  m_imgNoFocus.PreAllocResources();
-}
-
 void CGUIMoverControl::AllocResources()
 {
   CGUIControl::AllocResources();

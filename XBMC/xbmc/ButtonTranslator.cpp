@@ -51,13 +51,13 @@ bool CButtonTranslator::Load()
   if(CFile::Exists(keymapPath))
     success |= LoadKeymap(keymapPath);
   else
-    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system keymap found, skipping");
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system Keymap.xml found, skipping");
 
   keymapPath = g_settings.GetUserDataItem("Keymap.xml");
   if(CFile::Exists(keymapPath))
     success |= LoadKeymap(keymapPath);
   else
-    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata keymap found, skipping");
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata Keymap.xml found, skipping");
 
   if (!success)
   {
@@ -73,12 +73,20 @@ bool CButtonTranslator::Load()
 #endif
   CStdString lircmapPath;
   CUtil::AddFileToFolder("special://xbmc/system/", REMOTEMAP, lircmapPath);
-  success = LoadLircMap(lircmapPath);
+  if(CFile::Exists(lircmapPath))
+    success |= LoadLircMap(lircmapPath);
+  else
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system %s found, skipping", REMOTEMAP);
+
   lircmapPath = g_settings.GetUserDataItem(REMOTEMAP);
-  success |= LoadLircMap(lircmapPath);
+  if(CFile::Exists(lircmapPath))
+    success |= LoadLircMap(lircmapPath);
+  else
+    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata %s found, skipping", REMOTEMAP);
+
   if (!success)
   {
-    CLog::Log(LOGERROR, "%s - unable to load remote map %s", __FUNCTION__, REMOTEMAP);
+    CLog::Log(LOGERROR, "CButtonTranslator::Load - unable to load remote map %s", REMOTEMAP);
     // don't return false - it is to only indicate a fatal error (which this is not)
   }
 #endif
@@ -108,9 +116,10 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
   TiXmlNode* pWindow = pRoot->FirstChild();
   while (pWindow)
   {
-    WORD wWindowID = WINDOW_INVALID;
-    const char *szWindow = pWindow->Value();
+    if (pWindow->Type() == TiXmlNode::ELEMENT)
     {
+      WORD wWindowID = WINDOW_INVALID;
+      const char *szWindow = pWindow->Value();
       if (szWindow)
       {
         if (strcmpi(szWindow, "global") == 0)
@@ -119,8 +128,8 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
           wWindowID = TranslateWindowString(szWindow);
       }
       MapWindowActions(pWindow, wWindowID);
-      pWindow = pWindow->NextSibling();
     }
+    pWindow = pWindow->NextSibling();
   }
 
   return true;
@@ -144,7 +153,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     g_LoadErrorStr.Format("%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false; // This is so people who don't have the file won't fail, just warn
   }
-
+ 
   lircRemotesMap.clear();
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
@@ -153,7 +162,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     g_LoadErrorStr.Format("%sl Doesn't contain <%s>", lircmapPath.c_str(), REMOTEMAPTAG);
     return false;
   }
-
+ 
   // run through our window groups
   TiXmlNode* pRemote = pRoot->FirstChild();
   while (pRemote)
@@ -681,8 +690,10 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("rotate")) wAction = ACTION_ROTATE_PICTURE;
   else if (strAction.Equals("close")) wAction = ACTION_CLOSE_DIALOG;
   else if (strAction.Equals("subtitledelayminus")) wAction = ACTION_SUBTITLE_DELAY_MIN;
+  else if (strAction.Equals("subtitledelay")) wAction = ACTION_SUBTITLE_DELAY;
   else if (strAction.Equals("subtitledelayplus")) wAction = ACTION_SUBTITLE_DELAY_PLUS;
   else if (strAction.Equals("audiodelayminus")) wAction = ACTION_AUDIO_DELAY_MIN;
+  else if (strAction.Equals("audiodelay")) wAction = ACTION_AUDIO_DELAY;
   else if (strAction.Equals("audiodelayplus")) wAction = ACTION_AUDIO_DELAY_PLUS;
   else if (strAction.Equals("audionextlanguage")) wAction = ACTION_AUDIO_NEXT_LANGUAGE;
   else if (strAction.Equals("nextresolution")) wAction = ACTION_CHANGE_RESOLUTION;
@@ -901,6 +912,9 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("pictureinfo")) wWindowID = WINDOW_DIALOG_PICTURE_INFO;
   else if (strWindow.Equals("pluginsettings") || strWindow.Equals("addonsettings")) wWindowID = WINDOW_DIALOG_ADDON_SETTINGS;
   else if (strWindow.Equals("fullscreeninfo")) wWindowID = WINDOW_DIALOG_FULLSCREEN_INFO;
+  else if (strWindow.Equals("karaokeselector")) wWindowID = WINDOW_DIALOG_KARAOKE_SONGSELECT;
+  else if (strWindow.Equals("karaokelargeselector")) wWindowID = WINDOW_DIALOG_KARAOKE_SELECTOR;
+  else if (strWindow.Equals("sliderdialog")) wWindowID = WINDOW_DIALOG_SLIDER;
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 

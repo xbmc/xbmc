@@ -117,6 +117,7 @@ namespace RTMP_LIB
       int  m_nBufferSize;   // number of unprocessed bytes in buffer
       RTMPPacket m_vecChannelsIn[64];
       RTMPPacket m_vecChannelsOut[64];
+      int  m_channelTimestamp[64]; // abs timestamp of last packet
 
   };
 };

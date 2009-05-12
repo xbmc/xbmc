@@ -51,7 +51,6 @@ CEventServer::CEventServer()
   m_pSocket       = NULL;
   m_pPacketBuffer = NULL;
   m_bStop         = false;
-  m_pThread       = NULL;
   m_bRunning      = false;
   m_bRefreshSettings = false;
 
@@ -80,9 +79,9 @@ CEventServer* CEventServer::GetInstance()
 void CEventServer::StartServer()
 {
   CSingleLock lock(m_critSection);
-  if (m_pThread)
+  if(m_bRunning)
     return;
-
+    
   // set default port
   string port = (const char*)g_guiSettings.GetString("remoteevents.port");
   if (port.length() == 0)
@@ -107,22 +106,14 @@ void CEventServer::StartServer()
     m_iMaxClients = 20;
   }
 
-  m_bStop = false;
-  m_pThread = new CThread(this);
-  m_pThread->Create();
-  m_pThread->SetName("EventServer");
+  CThread::Create();
+  CThread::SetName("EventServer");
 }
 
 void CEventServer::StopServer()
 {
-  m_bStop = true;
   CZeroconf::GetInstance()->RemoveService("servers.eventserver");
-  if (m_pThread)
-  {
-    m_pThread->WaitForThreadExit(2000);
-    delete m_pThread;
-  }
-  m_pThread = NULL;
+  StopThread();
 }
 
 void CEventServer::Cleanup()
@@ -159,7 +150,7 @@ int CEventServer::GetNumberOfClients()
   return m_clients.size();
 }
 
-void CEventServer::Run()
+void CEventServer::Process()
 {
   CAddress any_addr;
   CSocketListener listener;

@@ -67,6 +67,7 @@
 #include "GUILabelControl.h"  // for CInfoLabel
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
+#include "SkinInfo.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -207,6 +208,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(15).Equals("player.duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(15))));
     else if (strTest.Left(17).Equals("player.finishtime")) return AddMultiInfo(GUIInfo(PLAYER_FINISH_TIME, TranslateTimeFormat(strTest.Mid(17))));
     else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
+    else if (strTest.Equals("player.subtitledelay")) ret = PLAYER_SUBTITLE_DELAY;
+    else if (strTest.Equals("player.audiodelay")) ret = PLAYER_AUDIO_DELAY;
     else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
     else if (strTest.Equals("player.hasduration")) ret = PLAYER_HASDURATION;
     else if (strTest.Equals("player.chapter")) ret = PLAYER_CHAPTER;
@@ -599,6 +602,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (offset || id)
         return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset, INFOFLAG_LISTITEM_WRAP));
     }
+    else if (info.Equals("hasfiles")) ret = CONTAINER_HASFILES;
+    else if (info.Equals("hasfolders")) ret = CONTAINER_HASFOLDERS;
+    else if (info.Equals("isstacked")) ret = CONTAINER_STACKED;
     else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
     else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
     else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
@@ -993,6 +999,12 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
   case PLAYER_VOLUME:
     strLabel.Format("%2.1f dB", (float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel) * 0.01f);
+    break;
+  case PLAYER_SUBTITLE_DELAY:
+    strLabel.Format("%2.3f s", g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
+    break;
+  case PLAYER_AUDIO_DELAY:
+    strLabel.Format("%2.3f s", g_stSettings.m_currentVideoSettings.m_AudioDelay);
     break;
   case PLAYER_CHAPTER:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
@@ -1512,6 +1524,10 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
   {
     case PLAYER_VOLUME:
       return g_application.GetVolume();
+    case PLAYER_SUBTITLE_DELAY:
+      return g_application.GetSubtitleDelay();
+    case PLAYER_AUDIO_DELAY:
+      return g_application.GetAudioDelay();
     case PLAYER_PROGRESS:
     case PLAYER_SEEKBAR:
     case PLAYER_CACHELEVEL:
@@ -1761,6 +1777,34 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   {
     bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
               g_application.IsPlayingAudio();
+  }
+  else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
+  {
+    CGUIWindow *pWindow = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (pWindow)
+    {
+      const CFileItemList& items=((CGUIMediaWindow*)pWindow)->CurrentDirectory();
+      for (int i=0;i<items.Size();++i)
+      {
+        CFileItemPtr item=items.Get(i);
+        if (!item->m_bIsFolder && condition == CONTAINER_HASFILES)
+        {
+          bReturn=true;
+          break;
+        }
+        else if (item->m_bIsFolder && !item->IsParentFolder() && condition == CONTAINER_HASFOLDERS)
+        {
+          bReturn=true;
+          break;
+        }
+      }
+    }
+  }
+  else if (condition == CONTAINER_STACKED)
+  {
+    CGUIWindow *pWindow = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (pWindow)
+      bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().GetProperty("isstacked")=="1";
   }
   else if (condition == CONTAINER_HAS_THUMB)
   {
@@ -2447,7 +2491,7 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
   else if (info == MUSICPLAYER_COVER)
   {
     if (!g_application.IsPlayingAudio()) return "";
-    return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "defaultAlbumCover.png";
+    return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultAlbumCover.png";
   }
   else if (info == MUSICPLAYER_RATING)
   {
@@ -2463,7 +2507,7 @@ CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
   {
     if (!g_application.IsPlayingVideo()) return "";
     if(m_currentMovieThumb.IsEmpty())
-      return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "defaultVideoCover.png";
+      return m_currentFile->HasThumbnail() ? m_currentFile->GetThumbnailImage() : "DefaultVideoCover.png";
     else return m_currentMovieThumb;
   }
   else if (info == CONTAINER_FOLDERTHUMB)
@@ -2701,7 +2745,7 @@ const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) cons
     playlistItem->SetMusicThumb();
     // still no thumb? then just the set the default cover
     if (!playlistItem->HasThumbnail())
-      playlistItem->SetThumbnailImage("defaultAlbumCover.png");
+      playlistItem->SetThumbnailImage("DefaultAlbumCover.png");
   }
   if (info.m_info == MUSICPLAYER_PLAYLISTPOS)
   {
@@ -3683,7 +3727,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       if(strThumb.IsEmpty() && !item->GetIconImage().IsEmpty())
       {
         strThumb = item->GetIconImage();
-        strThumb.Insert(strThumb.Find("."), "Big");
+        if (g_SkinInfo.GetVersion() <= 2.10)
+          strThumb.Insert(strThumb.Find("."), "Big");
       }
       return strThumb;
     }

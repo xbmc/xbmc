@@ -30,6 +30,7 @@
  */
 
 #include "XBIRRemote.h"
+#include <StdString.h>
 
 // Analogue - don't change order
 #define KEY_BUTTON_A                        256
@@ -260,6 +261,8 @@
 
 #define ACTION_FIRST_PAGE             159
 #define ACTION_LAST_PAGE              160
+#define ACTION_AUDIO_DELAY            161
+#define ACTION_SUBTITLE_DELAY         162
 
 #define ACTION_RECORD                 170
 
@@ -343,6 +346,7 @@
 #define WINDOW_DIALOG_FULLSCREEN_INFO     10142
 #define WINDOW_DIALOG_KARAOKE_SONGSELECT  10143
 #define WINDOW_DIALOG_KARAOKE_SELECTOR    10144
+#define WINDOW_DIALOG_SLIDER              10145
 
 #define WINDOW_DIALOG_ADDON_BROWSER       10160
 

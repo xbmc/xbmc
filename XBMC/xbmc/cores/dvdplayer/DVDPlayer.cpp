@@ -247,10 +247,10 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
       m_CurrentAudio(STREAM_AUDIO),
       m_CurrentVideo(STREAM_VIDEO),
       m_CurrentSubtitle(STREAM_SUBTITLE),
-      m_dvdPlayerVideo(&m_clock, &m_overlayContainer),
+      m_messenger("player"),
+      m_dvdPlayerVideo(&m_clock, &m_overlayContainer, m_messenger),
       m_dvdPlayerAudio(&m_clock),
-      m_dvdPlayerSubtitle(&m_overlayContainer),
-      m_messenger("player")
+      m_dvdPlayerSubtitle(&m_overlayContainer)
 {
   m_pDemuxer = NULL;
   m_pSubtitleDemuxer = NULL;
@@ -371,6 +371,10 @@ bool CDVDPlayer::CloseFile()
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
 #if defined(_LINUX) && defined(HAS_VIDEO_PLAYBACK)
   g_renderManager.OnClose();
+#ifdef HAVE_LIBVDPAU
+  if (g_VDPAU)
+    CloseVideoStream(!m_bAbortRequest);
+#endif //HAVE_LIBVDPAU
 #endif
   return true;
 }
@@ -849,20 +853,6 @@ void CDVDPlayer::Process()
 
     // update application with our state
     UpdateApplication(1000);
-
-#ifdef HAVE_LIBVDPAU
-    if(g_VDPAU)
-    {
-      CSharedLock lock(g_renderManager.GetSection());
-      if (g_VDPAU && g_VDPAU->VDPAURecovered)
-      {
-        CLog::Log(LOGDEBUG, "CDVDPlayer::Process - caught preemption");
-        // we just try to seek to first keyframe before current time
-        m_messenger.Put(new CDVDMsgPlayerSeek(GetTime(), true, true, true));
-        g_VDPAU->VDPAURecovered = false;
-      }
-    }
-#endif
 
     // present the cache dialog until playback actually started
     if (m_pDlgCache)
@@ -1490,6 +1480,9 @@ void CDVDPlayer::OnExit()
     if (m_CurrentVideo.id >= 0)
     {
       CLog::Log(LOGNOTICE, "DVDPlayer: closing video stream");
+#ifdef HAVE_LIBVDPAU
+      if (!g_VDPAU)
+#endif
       CloseVideoStream(!m_bAbortRequest);
     }
     if (m_CurrentSubtitle.id >= 0)

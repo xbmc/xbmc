@@ -1311,7 +1311,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
     if (!item.HasThumbnail())
 	{
       thumb = "[None] " + thumb;
-	  copyThumb("defaultPictureBig.png",thumbFn);
+	  copyThumb("DefaultPicture.png",thumbFn);
 	}
 	else
       copyThumb(thumb,thumbFn);
@@ -1416,7 +1416,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
 	  thumb=g_infoManager.GetImage(VIDEOPLAYER_COVER, (DWORD)-1);
 		
 		//CPicture pic;
-        //pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
+        //pic.CacheSkinImage("DefaultAlbumCover.png", cachedThumb);
 
 	  copyThumb(thumb,thumbFn);
 	  output+=closeTag+openTag+"Thumb"+tag+":"+thumb;

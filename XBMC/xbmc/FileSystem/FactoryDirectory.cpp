@@ -70,6 +70,9 @@
 #ifdef HAS_FILESYSTEM_VTP
 #include "VTPDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_HTSP
+#include "HTSPDirectory.h"
+#endif
 #include "../utils/Network.h"
 #include "ZipDirectory.h"
 #include "RarDirectory.h"
@@ -158,6 +161,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
 #ifdef HAS_FILESYSTEM_VTP
     if (strProtocol == "vtp") return new CVTPDirectory();
+#endif
+#ifdef HAS_FILESYSTEM_HTSP
+    if (strProtocol == "htsp") return new CHTSPDirectory();
 #endif
   }
 

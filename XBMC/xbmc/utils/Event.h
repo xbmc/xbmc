@@ -48,11 +48,12 @@ public:
   void Set();
   void Wait();
   CEvent();
+  CEvent(const CEvent& event);
+  CEvent& operator=(const CEvent& src);
+
   virtual ~CEvent();
 
 protected:
-  CEvent(const CEvent& event);
-  CEvent& operator=(const CEvent& src);
   HANDLE m_hEvent;
 };
 

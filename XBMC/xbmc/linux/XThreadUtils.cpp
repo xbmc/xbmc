@@ -59,6 +59,63 @@ struct InternalThreadParam {
   HANDLE handle;
 };
 
+/*
+   Workaround for http://xbmc.org/trac/ticket/6145
+
+   Expose struct SDL_Error as defined in SDL (Trunk Revision 4211) internal file
+   SDL_error_c.h to expose struct SDL_Thread as defined in SDL (Trunk Revision 4211)
+   internal file SDL_thread_c.h
+
+   Ideally we'd just do a 
+
+   #include<SDL/SDL_thread.h> 
+
+   here and either have the SDL_Thread struct exposed or have a method to access the 
+   "SYS_ThreadHandle handle;".
+*/
+ 
+#define ERR_MAX_STRLEN  128
+#define ERR_MAX_ARGS    5
+
+typedef struct SDL_error {
+        /* This is a numeric value corresponding to the current error */
+        int error;
+
+        /* This is a key used to index into a language hashtable containing
+           internationalized versions of the SDL error messages.  If the key
+           is not in the hashtable, or no hashtable is available, the key is
+           used directly as an error message format string.
+        */
+        char key[ERR_MAX_STRLEN];
+
+        /* These are the arguments for the error functions */
+        int argc;
+        union {
+                void *value_ptr;
+#if 0   /* What is a character anyway?  (UNICODE issues) */
+                unsigned char value_c;
+#endif
+                int value_i;
+                double value_f;
+                char buf[ERR_MAX_STRLEN];
+        } args[ERR_MAX_ARGS];
+} SDL_error;
+
+
+/* This is the system-independent thread info structure */
+struct SDL_Thread {
+        Uint32 threadid;
+        // SYS_ThreadHandle handle;
+        pthread_t handle;
+        int status;
+        SDL_error errbuf;
+        void *data;
+};
+
+/*
+   /Workaround for http://xbmc.org/trac/ticket/6145
+*/
+
 #ifdef __APPLE__
 // Use pthread's built-in support for TLS, it's more portable.
 static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
@@ -181,6 +238,10 @@ HANDLE WINAPI GetCurrentThread(void) {
   return (HANDLE)-1; // -1 a special value - pseudo handle
 }
 
+HANDLE WINAPI GetCurrentProcess(void) {
+  return (HANDLE)-1; // -1 a special value - pseudo handle
+}
+
 HANDLE _beginthreadex(
    void *security,
    unsigned stack_size,
@@ -275,8 +336,20 @@ BOOL WINAPI GetThreadTimes (
     {
       lpUserTime->dwLowDateTime = 0;
       lpUserTime->dwHighDateTime = 0;
-      pthread_t thread = (pthread_t)SDL_GetThreadID(hThread->m_hThread);
-      if(thread)
+/*
+   Workaround for http://xbmc.org/trac/ticket/6145
+
+   Ideally this would be:
+
+   pthread_t thread = (pthread_t) SDL_GetThreadHandle(SDL_Thread *thread);
+
+   But that method doesn't exist...
+*/
+        pthread_t thread = (pthread_t) hThread->m_hThread->handle;
+/*
+   /Workaround for http://xbmc.org/trac/ticket/6145
+*/
+      if (thread)
       {
         clockid_t clock;
         if(pthread_getcpuclockid(thread, &clock) == 0)
