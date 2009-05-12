@@ -21,6 +21,7 @@
  
 #include "stdafx.h"
 #include "Settings.h"
+#include "VideoReferenceClock.h"
 #include "DVDPlayer.h"
 #include "DVDPlayerVideo.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
@@ -207,6 +208,8 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   m_messageQueue.Init();
 
+  m_maxspeedadjust = 0.0;
+  
   CLog::Log(LOGNOTICE, "Creating video thread");
   Create();
 
@@ -948,6 +951,26 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     return EOS_DROPPED;
 
   ProcessOverlays(pPicture, &image, pts);
+  
+  //check if the videoreferenceclock is running, will return -1 if not
+  int RefreshRate = g_VideoReferenceClock.GetRefreshRate();
+  if (RefreshRate > 0)
+  {
+    double Fps = 1.0 / (iFrameDuration / DVD_TIME_BASE);
+    double FrameWeight = (double)RefreshRate / (double)MathUtils::round_int(Fps);
+    
+    //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
+    if (m_maxspeedadjust > 0.05)
+    {
+      if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + m_maxspeedadjust / 100.0 &&
+          FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - m_maxspeedadjust / 100.0)
+      {
+        FrameWeight = MathUtils::round_int(FrameWeight);
+      }
+    }
+    double Speed = (double)RefreshRate / (Fps * FrameWeight);
+    g_VideoReferenceClock.SetSpeed(Speed);
+  }
   
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
