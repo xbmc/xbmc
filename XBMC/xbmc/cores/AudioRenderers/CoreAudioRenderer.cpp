@@ -885,9 +885,6 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
   m_ChunkLen = outputFormat.mBytesPerPacket; // 1 Chunk == 1 Packet
   m_AvgBytesPerSec = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3) * outputFormat.mSampleRate; // mBytesPerFrame is 0 for a cac3 stream
   m_BytesPerFrame = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3);
-  AudioStreamBasicDescription previousFormat;
-  m_OutputStream.GetPhysicalFormat(&previousFormat);
-  CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Previous Physical Format: %s (%u Bytes/sec.)", StreamDescriptionToString(previousFormat, formatString), m_AvgBytesPerSec);
   CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Selected stream[%u] - id: 0x%04X, Physical Format: %s (%u Bytes/sec.)", streamIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_AvgBytesPerSec);  
   
   // TODO: Auto hogging sets this for us. Figure out how/when to turn it off or use it
@@ -908,6 +905,9 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
   
   // Configure the output stream object
   m_OutputStream.Open(outputStream); // This is the one we will keep
+  AudioStreamBasicDescription previousFormat;
+  m_OutputStream.GetPhysicalFormat(&previousFormat);
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Previous Physical Format: %s (%u Bytes/sec.)", StreamDescriptionToString(previousFormat, formatString), m_AvgBytesPerSec);
   m_OutputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
   
   // Register for data request callbacks from the driver
