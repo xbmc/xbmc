@@ -181,6 +181,9 @@
 /* Define to 1 if you have the `rt' library (-lrt). */
 #undef HAVE_LIBRT
 
+/* Define to 1 if you have the `samplerate' library (-lsamplerate). */
+#undef HAVE_LIBSAMPLERATE
+
 /* Define to 1 if you have the `SDL' library (-lSDL). */
 #undef HAVE_LIBSDL
 
