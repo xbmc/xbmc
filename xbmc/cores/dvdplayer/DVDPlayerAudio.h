@@ -28,6 +28,7 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "BitstreamStats.h"
+#include "DVDPlayerAudioResampler.h"
 
 class CDVDPlayer;
 class CDVDAudioCodec;
@@ -169,6 +170,29 @@ protected:
   double  m_droptime;
   bool    m_stalled;
   bool    m_started;
+  
+  CDVDPlayerResampler m_resampler;
+  
+  bool OutputPacket(DVDAudioFrame &audioframe);
+  
+  //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
+  int    m_synctype;
+  int    m_setsynctype;
+  
+  double m_error;    //last average error
+  
+  LARGE_INTEGER m_errortime; //timestamp of last time we measured
+  LARGE_INTEGER m_freq;
+
+  void   HandleSyncError(double duration);
+  double m_errorbuff; //place to store average errors
+  int    m_errorcount;//number of errors stored
+  bool   m_syncclock;
+  
+  double m_integral; //integral correction for resampler
+  int    m_skipdupcount; //counter for skip/duplicate synctype
+  bool   m_prevskipped;
+  
   CRITICAL_SECTION m_critCodecSection;
 };
 
