@@ -47,6 +47,8 @@ public:
   bool IsEmpty() const;
 
   const CStdString GetFallback() const { return m_fallback; };
+
+  static CStdString GetLabel(const CStdString &label, bool preferImage = false);
 private:
   void Parse(const CStdString &label);
 

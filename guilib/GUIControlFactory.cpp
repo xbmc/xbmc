@@ -489,9 +489,7 @@ CStdString CGUIControlFactory::FilterLabel(const CStdString &label)
     viewLabel = g_localizeStrings.Get(atoi(label));
   else
     g_charsetConverter.unknownToUTF8(viewLabel);
-  // translate the label
-  CGUIInfoLabel info(viewLabel, "");
-  return info.GetLabel(0);
+  return viewLabel;
 }
 
 bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTag, CStdString &text)
@@ -971,7 +969,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       viewType = VIEW_TYPE_BIG_WRAP;
     const char *label = itemElement->Attribute("label");
     if (label)
-      viewLabel = FilterLabel(label);
+      viewLabel = CGUIInfoLabel::GetLabel(FilterLabel(label));
   }
 
   TiXmlElement *cam = pControlNode->FirstChildElement("camera");

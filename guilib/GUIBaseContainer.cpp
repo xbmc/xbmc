@@ -24,6 +24,7 @@
 #include "GUIControlFactory.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
+#include "GUILabelControl.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
 #include "FileItem.h"
@@ -666,6 +667,15 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     // be visible.  Save the previous item and keep it if we are adding that one.
     CGUIListItem *lastItem = m_lastItem;
     Reset();
+    static DWORD lastUpdateTime = 0;
+    bool updateItems = false;
+    if (!lastUpdateTime)
+      lastUpdateTime = timeGetTime();
+    if (timeGetTime() - lastUpdateTime > 1000)
+    {
+      lastUpdateTime = timeGetTime();
+      updateItems = true;
+    }
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
     {
       CFileItemPtr item = boost::static_pointer_cast<CFileItem>(m_staticItems[i]);
@@ -675,6 +685,17 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
         m_items.push_back(item);
         if (item.get() == lastItem)
           m_lastItem = lastItem;
+      }
+      if (updateItems && item->HasProperties()) 
+      { // has info, so update it
+        CStdString info = item->GetProperty("label");
+        if (!info.IsEmpty()) item->SetLabel(CGUIInfoLabel::GetLabel(info));
+        info = item->GetProperty("label2");
+        if (!info.IsEmpty()) item->SetLabel2(CGUIInfoLabel::GetLabel(info));
+        info = item->GetProperty("icon");
+        if (!info.IsEmpty()) item->SetIconImage(CGUIInfoLabel::GetLabel(info, true));
+        info = item->GetProperty("thumb");
+        if (!info.IsEmpty()) item->SetThumbnailImage(CGUIInfoLabel::GetLabel(info, true));
       }
     }
     UpdateScrollByLetter();
@@ -837,38 +858,43 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
       if (click && click->FirstChild())
       {
         CStdString label, label2, thumb, icon;
-        XMLUtils::GetString(item, "label", label);
-        XMLUtils::GetString(item, "label2", label2);
-        XMLUtils::GetString(item, "thumb", thumb);
-        XMLUtils::GetString(item, "icon", icon);
+        XMLUtils::GetString(item, "label", label);   label  = CGUIControlFactory::FilterLabel(label);
+        XMLUtils::GetString(item, "label2", label2); label2 = CGUIControlFactory::FilterLabel(label2);
+        XMLUtils::GetString(item, "thumb", thumb);   thumb  = CGUIControlFactory::FilterLabel(thumb);
+        XMLUtils::GetString(item, "icon", icon);     icon   = CGUIControlFactory::FilterLabel(icon);
         const char *id = item->Attribute("id");
         int visibleCondition = 0;
         CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
-        newItem.reset(new CFileItem(CGUIControlFactory::FilterLabel(label)));
+        newItem.reset(new CFileItem(CGUIInfoLabel::GetLabel(label)));
         // multiple action strings are concat'd together, separated with " , "
         vector<CStdString> actions;
         CGUIControlFactory::GetMultipleString(item, "onclick", actions);
         for (vector<CStdString>::iterator it = actions.begin(); it != actions.end(); ++it)
           (*it).Replace(",", ",,");
         StringUtils::JoinString(actions, " , ", newItem->m_strPath);
-        newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
-        newItem->SetThumbnailImage(CGUIControlFactory::FilterLabel(thumb));
-        newItem->SetIconImage(CGUIControlFactory::FilterLabel(icon));
+        newItem->SetLabel2(CGUIInfoLabel::GetLabel(label2));
+        newItem->SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, true));
+        newItem->SetIconImage(CGUIInfoLabel::GetLabel(icon, true));
+        if (label.Find("$INFO") >= 0) newItem->SetProperty("label", label);
+        if (label2.Find("$INFO") >= 0) newItem->SetProperty("label2", label2);
+        if (icon.Find("$INFO") >= 0) newItem->SetProperty("icon", icon);
+        if (thumb.Find("$INFO") >= 0) newItem->SetProperty("thumb", thumb);
         if (id) newItem->m_iprogramCount = atoi(id);
         newItem->m_idepth = visibleCondition;
       }
       else
       {
-        const char *label = item->Attribute("label");
-        const char *label2 = item->Attribute("label2");
-        const char *thumb = item->Attribute("thumb");
-        const char *icon = item->Attribute("icon");
+        CStdString label, label2, thumb, icon;
+        label  = item->Attribute("label");  label  = CGUIControlFactory::FilterLabel(label);
+        label2 = item->Attribute("label2"); label2 = CGUIControlFactory::FilterLabel(label2);
+        thumb  = item->Attribute("thumb");  thumb  = CGUIControlFactory::FilterLabel(thumb);
+        icon   = item->Attribute("icon");   icon   = CGUIControlFactory::FilterLabel(icon);
         const char *id = item->Attribute("id");
-        newItem.reset(new CFileItem(label ? CGUIControlFactory::FilterLabel(label) : ""));
+        newItem.reset(new CFileItem(CGUIInfoLabel::GetLabel(label)));
         newItem->m_strPath = item->FirstChild()->Value();
-        if (label2) newItem->SetLabel2(CGUIControlFactory::FilterLabel(label2));
-        if (thumb) newItem->SetThumbnailImage(CGUIControlFactory::FilterLabel(thumb));
-        if (icon) newItem->SetIconImage(CGUIControlFactory::FilterLabel(icon));
+        newItem->SetLabel2(CGUIInfoLabel::GetLabel(label2));
+        newItem->SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, true));
+        newItem->SetIconImage(CGUIInfoLabel::GetLabel(icon, true));
         if (id) newItem->m_iprogramCount = atoi(id);
         newItem->m_idepth = 0;  // no visibility condition
       }
