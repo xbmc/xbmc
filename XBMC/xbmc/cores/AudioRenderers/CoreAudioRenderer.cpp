@@ -887,7 +887,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
   m_BytesPerFrame = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3);
   AudioStreamBasicDescription previousFormat;
   m_OutputStream.GetPhysicalFormat(&previousFormat);
-  CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Previous Physical Format: %s (%u Bytes/sec.)", StreamDescriptionToString(outputFormat, formatString), m_AvgBytesPerSec);
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Previous Physical Format: %s (%u Bytes/sec.)", StreamDescriptionToString(previousFormat, formatString), m_AvgBytesPerSec);
   CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Selected stream[%u] - id: 0x%04X, Physical Format: %s (%u Bytes/sec.)", streamIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_AvgBytesPerSec);  
   
   // TODO: Auto hogging sets this for us. Figure out how/when to turn it off or use it
