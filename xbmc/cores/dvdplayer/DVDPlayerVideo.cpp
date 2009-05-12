@@ -208,7 +208,12 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   m_messageQueue.Init();
 
-  m_maxspeedadjust = 0.0;
+  m_maxspeedadjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
+  if(g_guiSettings.GetInt("audiooutput.synctype") == SYNC_RESAMPLE)
+    m_maxspeedadjust = 0.0;
+  
+  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock"))
+    g_VideoReferenceClock.Create();
   
   CLog::Log(LOGNOTICE, "Creating video thread");
   Create();
@@ -243,6 +248,8 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
     CDVDCodecUtils::FreePicture(m_pTempOverlayPicture);
     m_pTempOverlayPicture = NULL;
   }
+  
+  g_VideoReferenceClock.StopThread();
 }
 
 void CDVDPlayerVideo::OnStartup()
