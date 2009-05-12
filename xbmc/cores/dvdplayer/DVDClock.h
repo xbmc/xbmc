@@ -62,6 +62,7 @@ public:
 
   static double GetAbsoluteClock();
   static double GetFrequency() { return (double)m_systemFrequency.QuadPart ; }
+  static void   WaitAbsoluteClock(double target);
 protected:
   CSharedSection m_critSection;
   LARGE_INTEGER m_systemUsed;  
@@ -72,4 +73,6 @@ protected:
   
   static LARGE_INTEGER m_systemFrequency;
   static LARGE_INTEGER m_systemOffset;
+  
+  static CCriticalSection m_systemsection;
 };
