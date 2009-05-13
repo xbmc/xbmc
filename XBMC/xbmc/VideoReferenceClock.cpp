@@ -137,8 +137,7 @@ void CVideoReferenceClock::WaitStarted(int MSecs)
 bool CVideoReferenceClock::SetupGLX()
 {
   int singleBufferAttributess[] = {
-    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-    GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+    GLX_RGBA,
     GLX_RED_SIZE,      1,
     GLX_GREEN_SIZE,    1,
     GLX_BLUE_SIZE,     1,
@@ -146,8 +145,7 @@ bool CVideoReferenceClock::SetupGLX()
   };
 
   int doubleBufferAttributes[] = {
-    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-    GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+    GLX_RGBA,
     GLX_DOUBLEBUFFER,  True,
     GLX_RED_SIZE,      1,
     GLX_GREEN_SIZE,    1,
@@ -155,12 +153,11 @@ bool CVideoReferenceClock::SetupGLX()
     None
   };
 
-  int Num = 0, ReturnV, SwaMask;
+  int ReturnV, SwaMask;
   unsigned int VblankCount;
   XSetWindowAttributes Swa;
 
   m_Dpy = NULL;
-  m_fbConfigs = NULL;
   m_vInfo = NULL;
   m_Context = NULL;
   m_Window = NULL;
@@ -186,19 +183,10 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  m_fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), doubleBufferAttributes, &Num);
-  if (!m_fbConfigs) m_fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), singleBufferAttributess, &Num);
-
-  if (!m_fbConfigs)
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseFBConfig returned NULL");
-    return false;
-  }
-
-  m_vInfo = glXGetVisualFromFBConfig(m_Dpy, m_fbConfigs[0]);
+  m_vInfo = glXChooseVisual(m_Dpy, DefaultScreen(m_Dpy), doubleBufferAttributes);
   if (!m_vInfo)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVisualFromFBConfig returned NULL");
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseVisual returned NULL");
     return false;
   }
 
@@ -310,11 +298,6 @@ void CVideoReferenceClock::CleanupGLX()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
 
-  if (m_fbConfigs)
-  {
-    XFree(m_fbConfigs);
-    m_fbConfigs = NULL;
-  }
   if (m_vInfo)
   {
     XFree(m_vInfo);
