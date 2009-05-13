@@ -23,7 +23,7 @@
 #include "VideoReferenceClock.h"
 #include "Util.h"
 
-#ifdef HAS_GLX
+#if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <X11/extensions/Xrandr.h>
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate 2>&1"
 #elif defined(__APPLE__)
@@ -74,7 +74,7 @@ void CVideoReferenceClock::Process()
 
   while(!m_bStop)
   {
-#ifdef HAS_GLX
+#if defined(HAS_GLX) && defined(HAS_XRANDR)
     SetupSuccess = SetupGLX();
 #elif defined(_WIN32)
     SetupSuccess = SetupD3D();
@@ -92,7 +92,7 @@ void CVideoReferenceClock::Process()
       m_VblankTime = Now.QuadPart;
       SingleLock.Leave();
 
-#ifdef HAS_GLX
+#if defined(HAS_GLX) && defined(HAS_XRANDR)
       RunGLX();
 #elif defined(_WIN32)
       RunD3D();
@@ -115,7 +115,7 @@ void CVideoReferenceClock::Process()
     m_Started.Reset();
     SingleLock.Leave();
 
-#ifdef HAS_GLX
+#if defined(HAS_GLX) && defined(HAS_XRANDR)
     CleanupGLX();
 #elif defined(_WIN32)
     CleanupD3D();
@@ -133,7 +133,7 @@ void CVideoReferenceClock::WaitStarted(int MSecs)
   m_Started.WaitMSec(MSecs);
 }
 
-#ifdef HAS_GLX
+#if defined(HAS_GLX) && defined(HAS_XRANDR)
 bool CVideoReferenceClock::SetupGLX()
 {
   int singleBufferAttributes[] = {
@@ -717,7 +717,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   else
     m_LastRefreshTime = m_CurrTime;
 
-#ifdef HAS_GLX
+#if defined(HAS_GLX) && defined(HAS_XRANDR)
   XRRScreenConfiguration *CurrInfo;
   CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
   int RRRefreshRate = XRRConfigCurrentRate(CurrInfo);
