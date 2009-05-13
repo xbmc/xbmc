@@ -248,7 +248,7 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
   g_VideoReferenceClock.StopThread();
 
   //tell the clock we stopped playing video
-  m_pClock->GetMaxSpeedAdjust(false);
+  m_pClock->UpdateFramerate(0.0);
 }
 
 void CDVDPlayerVideo::OnStartup()
