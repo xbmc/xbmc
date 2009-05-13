@@ -346,6 +346,9 @@ void CVideoReferenceClock::RunGLX()
       SendVblankSignal();
       UpdateRefreshrate();
 
+      if(VblankCount > PrevVblankCount + 1)
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %d frames late", VblankCount - PrevVblankCount - 1);
+
       ResetCount = 0;
     }
     else
