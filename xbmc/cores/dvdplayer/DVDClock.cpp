@@ -47,6 +47,8 @@ CDVDClock::CDVDClock()
   m_pauseClock.QuadPart = 0;
   m_bReset = true;
   m_iDisc = 0;
+  m_maxspeedadjust = 0.0;
+  m_playingvideo = false;
 }
 
 CDVDClock::~CDVDClock()
@@ -191,4 +193,20 @@ double CDVDClock::DistanceToDisc()
 {
   // GetClock will lock. if we lock the shared lock here there's potentialy a chance that another thread will try exclusive lock on the section and we'll deadlock
   return GetClock() - m_iDisc;
+}
+
+double CDVDClock::GetMaxSpeedAdjust(bool playingvideo)
+{
+  CSingleLock lock(m_speedsection);
+  
+  m_playingvideo = playingvideo;
+  return m_maxspeedadjust;
+}
+
+bool CDVDClock::SetMaxSpeedAdjust(double speed)
+{
+  CSingleLock lock(m_speedsection);
+  
+  m_maxspeedadjust = speed;
+  return m_playingvideo;
 }

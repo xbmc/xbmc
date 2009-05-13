@@ -208,12 +208,11 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   m_messageQueue.Init();
 
-  m_maxspeedadjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
-  if(g_guiSettings.GetInt("audiooutput.synctype") == SYNC_RESAMPLE)
-    m_maxspeedadjust = 0.0;
-  
   if(g_guiSettings.GetBool("videoplayer.usedisplayasclock"))
     g_VideoReferenceClock.Create();
+  
+  //tell the clock we're playing video
+  m_maxspeedadjust = m_pClock->GetMaxSpeedAdjust(true);
   
   CLog::Log(LOGNOTICE, "Creating video thread");
   Create();
@@ -250,6 +249,9 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
   }
   
   g_VideoReferenceClock.StopThread();
+  
+  //tell the clock we stopped playing video
+  m_pClock->GetMaxSpeedAdjust(false);
 }
 
 void CDVDPlayerVideo::OnStartup()
@@ -965,6 +967,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   {
     double Fps = 1.0 / (iFrameDuration / DVD_TIME_BASE);
     double FrameWeight = (double)RefreshRate / (double)MathUtils::round_int(Fps);
+    
+    m_maxspeedadjust = m_pClock->GetMaxSpeedAdjust(true);
     
     //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
     if (m_maxspeedadjust > 0.05)
