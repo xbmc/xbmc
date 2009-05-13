@@ -47,6 +47,10 @@ class CVideoReferenceClock : public CThread
     void   Wait(__int64 Target);
     void   WaitStarted(int MSecs);
 
+#ifdef __APPLE__
+    void VblankHandler();
+#endif
+    
   protected:
     void Process();
     bool UpdateRefreshrate(bool Forced = false);
