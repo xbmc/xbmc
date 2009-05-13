@@ -264,6 +264,7 @@ void CCoreAudioDevice::Stop()
   OSStatus ret = AudioDeviceStop(m_DeviceId, m_IoProc);
   if (ret)
     CLog::Log(LOGERROR, "CCoreAudioDevice::Stop: Unable to stop device. Error = 0x%08x (%4.4s).", ret, CONVERT_OSSTATUS(ret));
+  m_Started = false;
 }
 
 bool CCoreAudioDevice::AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData)
