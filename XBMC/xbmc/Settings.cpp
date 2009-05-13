@@ -307,11 +307,12 @@ void CSettings::Initialize()
   g_advancedSettings.m_bVirtualShares = true;
   g_advancedSettings.m_bNavVKeyboard = false;
 
-#ifdef _WIN32
-  g_advancedSettings.m_ForcedSwapTime = 2.0;
-#else
+//caused lots of jerks
+//#ifdef _WIN32
+//  g_advancedSettings.m_ForcedSwapTime = 2.0;
+//#else
   g_advancedSettings.m_ForcedSwapTime = 0.0;
-#endif
+//#endif
   g_advancedSettings.m_externalPlayerFilename = "";
   g_advancedSettings.m_externalPlayerArgs = "";
 #ifdef _WIN32PC
