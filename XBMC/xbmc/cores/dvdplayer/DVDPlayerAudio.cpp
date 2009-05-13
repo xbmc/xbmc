@@ -537,10 +537,14 @@ void CDVDPlayerAudio::Process()
     {
       m_droptime = 0.0;
 
+      //set the synctype from the gui
+      //use skip/duplicate when resample is selected and passthrough is on
       m_synctype = m_setsynctype;
       if (audioframe.passthrough && m_synctype == SYNC_RESAMPLE)
         m_synctype = SYNC_SKIPDUP;
       
+      //tell dvdplayervideo how much it can change the speed
+      //if SetMaxSpeedAdjust returns false, it means no video is played and we need to use clock feedback
       double maxspeedadjust = 0.0;
       if (m_synctype == SYNC_RESAMPLE)
         maxspeedadjust = m_maxspeedadjust;
