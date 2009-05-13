@@ -803,11 +803,11 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   return Changed;
 
 #elif defined(__APPLE__)
-  CSingleLock SingleLock(m_CritSection);
   int RefreshRate = (int)Cocoa_GetCVDisplayLinkRefreshPeriod();
   
   if (RefreshRate != m_RefreshRate || Forced)
   {
+    CSingleLock SingleLock(m_CritSection);
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", RefreshRate);
     m_RefreshRate = RefreshRate;
     return true;
