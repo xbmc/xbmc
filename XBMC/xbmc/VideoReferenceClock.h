@@ -105,7 +105,11 @@ class CVideoReferenceClock : public CThread
     unsigned int m_Adapter;
 
 #elif defined(__APPLE__)
-
+    bool SetupCocoa();
+    void RunCocoa();
+    void CleanupCocoa();
+    
+    __int64 m_LastVBlankTime;
 #endif
 };
 
