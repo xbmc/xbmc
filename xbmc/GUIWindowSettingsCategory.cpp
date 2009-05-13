@@ -905,7 +905,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 {
   for (unsigned int i = 0; i < m_vecSettings.size(); i++)
   {
-    CBaseSettingControl *pSettingControl = m_vecSettings[i];
+    CBaseSettingControl *pSettingControl = m_vecSettings[i];  
     pSettingControl->Update();
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
     if (strSetting.Equals("videoscreen.testresolution"))
@@ -1705,14 +1705,15 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     JumpToSection(WINDOW_SETTINGS_APPEARANCE, "locale");
   }
-  else if (strSetting.Equals("lastfm.enable") || strSetting.Equals("lastfm.username") || strSetting.Equals("lastfm.password"))
+  else if (strSetting.Equals("lastfm.submit") || strSetting.Equals("lastfm.submitradio") || strSetting.Equals("lastfm.username") || strSetting.Equals("lastfm.password"))
   {
-    if (g_guiSettings.GetBool("lastfm.enable") || g_guiSettings.GetBool("lastfm.recordtoprofile"))
+    CStdString strPassword=g_guiSettings.GetString("lastfm.password");
+    CStdString strUserName=g_guiSettings.GetString("lastfm.username");
+    if ((g_guiSettings.GetBool("lastfm.submit") || 
+         g_guiSettings.GetBool("lastfm.submitradio")) &&
+         !strUserName.IsEmpty() && !strPassword.IsEmpty())
     {
-      CStdString strPassword=g_guiSettings.GetString("lastfm.password");
-      CStdString strUserName=g_guiSettings.GetString("lastfm.username");
-      if (!strUserName.IsEmpty() || !strPassword.IsEmpty())
-        CScrobbler::GetInstance()->Init();
+      CScrobbler::GetInstance()->Init();
     }
     else
     {

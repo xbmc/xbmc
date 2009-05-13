@@ -286,8 +286,8 @@ void CGUISettings::Initialize()
   AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
   AddCategory(3, "lastfm", 15200);
-  AddBool(1, "lastfm.enable", 15201, false);
-  AddBool(2, "lastfm.recordtoprofile", 15250, false);
+  AddBool(1, "lastfm.submit", 15201, false);
+  AddBool(2, "lastfm.submitradio", 15250, false);
   AddString(3,"lastfm.username", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
   AddString(4,"lastfm.password", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
 

@@ -1,90 +1,82 @@
 /*
-    This file is part of libscrobbler. Modified for XBMC by Bobbin007
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
-    libscrobbler is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    libscrobbler is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with libscrobbler; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-  Copyright © 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
-*/
 #include "stdafx.h"
+#include "PlatformDefs.h"
 #include "scrobbler.h"
-#include "errors.h"
+#include "tinyXML/tinyxml.h"
 #include "utils/md5.h"
-#include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "Util.h"
-#include "Settings.h"
-#include "Application.h"
 #include "MusicInfoTag.h"
-#include "FileSystem/File.h"
-#include "FileSystem/FileCurl.h"
-#include "tinyXML/tinyxml.h"
+#include "errors.h"
+#include "utils/Atomics.h"
+#include "Settings.h"
 #include "XMLUtils.h"
-#include "RegExp.h"
+#include "Application.h"
+#include "SingleLock.h"
 
-using namespace std;
-using namespace MUSIC_INFO;
-using namespace XFILE;
+#define SCROBBLER_CLIENT              "xbm"
+//#define SCROBBLER_CLIENT              "tst"     // For testing ONLY!
+#define SCROBBLER_PROTOCOL            "1.2.1"
+#define SCROBBLER_CLIENT_VERSION      "0.2"
+#define SCROBBLER_JOURNAL_VERSION     1
+#define SCROBBLER_MAX_SUBMISSIONS     50        // API rule
+#define SCROBBLER_MIN_DURATION        30        // seconds. API rule
+#define SCROBBLER_ACTION_SUBMIT       1
+#define SCROBBLER_ACTION_NOWPLAYING   2
+#define SCROBBLER_HANDSHAKE_URL       "post.audioscrobbler.com"
+//#define SCROBBLER_HANDSHAKE_URL       "89.16.177.55" // libre.fm
 
-#define LS_VER    "1.4"
-#define MINLENGTH 30
-#define MAXLENGTH 10800
-#define HS_FAIL_WAIT 100000
-#define MAXSUBMISSIONS 50
+long CScrobbler::m_instanceLock = 0;
+CScrobbler *CScrobbler::m_pInstance = NULL;
 
-//#define CLIENT_ID "tst"
-#define CLIENT_ID "xbm"
-#define CLIENT_VERSION "0.1"
+CScrobbler::CScrobbler() : CThread()
+{ 
+  m_bRunThread  = false;
+  m_bBanned     = false;
+  m_bBadAuth    = false;
+  m_pHttp        = NULL;
+  ResetState();
 
-CScrobbler* CScrobbler::m_pInstance=NULL;
-
-CScrobbler::CScrobbler()
-{
-  m_bShouldSubmit=false;
-  m_bUpdateWarningDone=false;
-  m_bConnectionWarningDone=false;
-  m_bAuthWarningDone=false;
-  m_bBadPassWarningDone=false;
-  m_bReHandShaking=false;
-  m_strClientId = CLIENT_ID;
-  m_strClientVer = CLIENT_VERSION;
-  m_bCloseThread = false;
-  m_Interval = m_LastConnect = m_SongStartTime = 0;
-  m_iSecsTillSubmit=0;
-  m_bSubmitInProgress = false;
-  m_bReadyToSubmit=false;
-  m_iSongNum=0;
-  m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
-  if (!m_hWorkerEvent)
+  if (!(m_hEvent = CreateEvent(NULL, false, false, NULL)))
     throw EOutOfMemory();
-  Create();
 }
 
 CScrobbler::~CScrobbler()
 {
-  m_bCloseThread = true;
-  SetEvent(m_hWorkerEvent);
-  WaitForThreadExit(INFINITE);
-  CloseHandle(m_hWorkerEvent);
-  Sleep(0);
+  Term();
+  CloseHandle(m_hEvent);
 }
 
-CScrobbler* CScrobbler::GetInstance()
+CScrobbler *CScrobbler::GetInstance()
 {
-  if (!m_pInstance)
-    m_pInstance=new CScrobbler;
-
+  if (!m_pInstance) // Avoid spinning aimlessly
+  {
+    CAtomicSpinLock lock(m_instanceLock);
+    if (!m_pInstance)
+    {
+      m_pInstance = new CScrobbler;
+    }
+  }
   return m_pInstance;
 }
 
@@ -92,61 +84,112 @@ void CScrobbler::RemoveInstance()
 {
   if (m_pInstance)
   {
-    m_pInstance->Term();
+    CAtomicSpinLock lock(m_instanceLock);
     delete m_pInstance;
-    m_pInstance=NULL;
+    m_pInstance = NULL;
   }
 }
 
 void CScrobbler::Init()
 {
-  if ((!g_guiSettings.GetBool("lastfm.enable") && !g_guiSettings.GetBool("lastfm.recordtoprofile")) || !g_guiSettings.GetBool("network.enableinternet"))
+  if (!CanScrobble())
     return;
-
-  CStdString strPassword=g_guiSettings.GetString("lastfm.password");
-  CStdString strUserName=g_guiSettings.GetString("lastfm.username");
-
-  if (strPassword.IsEmpty() || strUserName.IsEmpty())
-    return;
-
-  // show all warnings each time we init the scrobbler
-  m_bAuthWarningDone=false;
-  m_bUpdateWarningDone=false;
-  m_bConnectionWarningDone=false;
-  m_bBadPassWarningDone=false;
-
-  SetPassword(strPassword);
-  SetUsername(strUserName);
-
+  ResetState();
+  SetUsername(g_guiSettings.GetString("lastfm.username"));
+  SetPassword(g_guiSettings.GetString("lastfm.password"));
   LoadJournal();
-  DoHandshake();
+  if (!m_bRunThread)
+    Create();
 }
 
 void CScrobbler::Term()
 {
-  m_bReadyToSubmit=false;
+  m_bRunThread = false;
+  SetEvent(m_hEvent);
+  StopThread();
   SaveJournal();
 }
 
-void CScrobbler::SetPassword(const CStdString& strPass)
+void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag)
 {
-  if (strPass.IsEmpty())
+  ClearSubmissionState();
+
+  if (!CanScrobble() || !tag.Loaded())
     return;
-  XBMC::MD5 md5state;
-  unsigned char md5pword[16];
-  md5state.append(strPass);
-  md5state.getDigest(md5pword);
-  char tmp[33];
-  strncpy(tmp, "\0", sizeof(tmp));
-  for (int j = 0;j < 16;j++)
+
+  if (tag.GetArtist().IsEmpty() || tag.GetTitle().IsEmpty())
+    return;
+  
+  // our tags are stored as UTF-8, so no conversion needed
+  m_CurrentTrack.length           = tag.GetDuration();
+  m_CurrentTrack.strArtist        = tag.GetArtist();
+  m_CurrentTrack.strAlbum         = tag.GetAlbum();
+  m_CurrentTrack.strTitle         = tag.GetTitle();
+  m_CurrentTrack.strMusicBrainzID = tag.GetMusicBrainzTrackID();
+  m_CurrentTrack.strSource        = "P";  // TODO Set source more appropriately
+  m_CurrentTrack.strRating        = "";
+  m_CurrentTrack.strLength.Format("%d", m_CurrentTrack.length);
+  m_CurrentTrack.strStartTime.Format("%d", time(NULL));
+  m_CurrentTrack.strTrackNum.Format("%d",tag.GetTrackNumber());
+  
+  CUtil::URLEncode(m_CurrentTrack.strArtist); 
+  CUtil::URLEncode(m_CurrentTrack.strTitle);
+  CUtil::URLEncode(m_CurrentTrack.strAlbum);
+  CUtil::URLEncode(m_CurrentTrack.strMusicBrainzID);
+
+  m_bNotified = false;
+  if (m_CurrentTrack.length > SCROBBLER_MIN_DURATION)
+    m_bSubmitted = false;
+}
+
+void CScrobbler::UpdateStatus()
+{
+  // Called from CApp::ProcessSlow() every ~500ms.
+  if (!CanScrobble())
+    return;
+  if (g_application.IsPaused())
+    return;
+
+  m_submissionTimer++;
+
+  // Try to notify Last.fm of our currently playing after ~5s of playback.
+  // Don't try too hard, this is optional and doesn't affect the users library.
+  if (!m_bNotified && m_submissionTimer >= 10)
   {
-    char a[3];
-    sprintf(a, "%02x", md5pword[j]);
-    tmp[2*j] = a[0];
-    tmp[2*j+1] = a[1];
+    m_bNotified = true; // Only try once
+    {
+      CSingleLock lock(m_actionLock);
+      m_action = SCROBBLER_ACTION_NOWPLAYING;
+    }
+    SetEvent(m_hEvent);
+    return;
   }
-  m_strPassword = tmp;
-  GenSessionKey();
+
+  // Scrobble the track after 50% playback or 240s, whichever occurs first.
+  // Just toss it in the queue here. We'll try to submit the queue at the
+  // end of playback.
+  if (!m_bSubmitted &&
+      (m_submissionTimer > m_CurrentTrack.length || 
+       m_submissionTimer >= 480))
+  {
+    CSingleLock lock(m_queueLock);
+    m_bSubmitted = true;
+    m_vecSubmissionQueue.push_back(m_CurrentTrack);
+    SaveJournal();
+    CLog::Log(LOGDEBUG, "CScrobbler: Queued track for submission");
+  }
+}
+
+void CScrobbler::SubmitQueue()
+{
+  if (CanScrobble())
+  {
+    {
+      CSingleLock lock(m_actionLock);
+      m_action = SCROBBLER_ACTION_SUBMIT;
+    }
+    SetEvent(m_hEvent);
+  }
 }
 
 void CScrobbler::SetUsername(const CStdString& strUser)
@@ -154,655 +197,510 @@ void CScrobbler::SetUsername(const CStdString& strUser)
   if (strUser.IsEmpty())
     return;
 
-  m_strUserName=strUser;
-
-  CUtil::URLEncode(m_strUserName);
-
-  m_strHsString = "http://post.audioscrobbler.com/?hs=true&p=1.1&c=" + m_strClientId + "&v=" + m_strClientVer + "&u=" + m_strUserName;
+  m_strUsername=strUser;
+  CUtil::URLEncode(m_strUsername);
+  m_bBadAuth = false;
 }
 
-int CScrobbler::AddSong(const CMusicInfoTag& tag)
+void CScrobbler::SetPassword(const CStdString& strPass)
 {
-  if ((!g_guiSettings.GetBool("lastfm.enable") && !g_guiSettings.GetBool("lastfm.recordtoprofile")) || !g_guiSettings.GetBool("network.enableinternet"))
-    return 0;
-
-  if (tag.GetDuration() <= MINLENGTH || tag.GetDuration() > MAXLENGTH) // made <= to minlength to stop iTMS previews being submitted in iTunes
-    return 0;
-
-  if (!tag.Loaded() || tag.GetArtist().IsEmpty() || tag.GetTitle().IsEmpty())
-    return 0;
-
-  if(m_bSubmitInProgress)
-  {
-    StatusUpdate(S_NOT_SUBMITTING,"Previous submission still in progress");
-    return 0;
-  }
-
-  char ti[20];
-  struct tm *today = gmtime(&m_SongStartTime);
-  strftime(ti, sizeof(ti), "%Y-%m-%d %H:%M:%S", today);
-
-  SubmissionJournalEntry entry;
-  // our tags are stored as UTF-8, so no conversion needed
-  entry.strArtist = tag.GetArtist();
-  entry.strAlbum = tag.GetAlbum();
-  entry.strTitle = tag.GetTitle();
-  entry.strStartTime = ti;
-  entry.strLength.Format("%d",tag.GetDuration());
-  entry.strMusicBrainzID = tag.GetMusicBrainzTrackID();
-  m_vecSubmissionJournal.push_back(entry);
-  SaveJournal();
-
-  while ((unsigned)m_iSongNum < m_vecSubmissionJournal.size() && m_iSongNum < MAXSUBMISSIONS)
-  {
-    entry = m_vecSubmissionJournal[m_iSongNum];
-    CStdString strStartTime = entry.strStartTime;
-    CUtil::URLEncode(entry.strArtist); 
-    CUtil::URLEncode(entry.strTitle);
-    CUtil::URLEncode(entry.strAlbum);
-    CUtil::URLEncode(entry.strMusicBrainzID);
-    CUtil::URLEncode(entry.strLength);
-    CUtil::URLEncode(entry.strStartTime);
-    CStdString strSubmitStr;
-    strSubmitStr.Format("a[%i]=%s&t[%i]=%s&b[%i]=%s&m[%i]=%s&l[%i]=%s&i[%i]=%s&", 
-        m_iSongNum, 
-        entry.strArtist, 
-        m_iSongNum, 
-        entry.strTitle,
-        m_iSongNum,
-        entry.strAlbum,
-        m_iSongNum, 
-        entry.strMusicBrainzID,
-        m_iSongNum, 
-        entry.strLength,
-        m_iSongNum, 
-        entry.strStartTime);
-
-    if(m_strPostString.find(strStartTime) != m_strPostString.npos)
-    {
-      // we have already tried to add a song at this time stamp
-      // I have no idea how this could happen but apparently it does so
-      // we stop it now
-
-      StatusUpdate(S_NOT_SUBMITTING,strSubmitStr);
-      StatusUpdate(S_NOT_SUBMITTING,m_strPostString);
-      StatusUpdate(S_NOT_SUBMITTING,"Submission error, duplicate subbmission time found");
-      
-      m_vecSubmissionJournal.erase(m_vecSubmissionJournal.begin() + m_iSongNum);
-      SaveJournal();
-
-      return 3;
-    }
-
-    m_strPostString += strSubmitStr;
-    m_iSongNum++;
-  }
-
-  time_t now;
-  time (&now);
-  if ((m_Interval + m_LastConnect) < now)
-  {
-    DoSubmit();
-    return 1;
-  }
-  else
-  {
-    CStdString strMsg;
-    strMsg.Format("Not submitting, caching for %i more seconds. Cache is %i entries.", (int)(m_Interval + m_LastConnect - now), m_vecSubmissionJournal.size());
-    StatusUpdate(S_NOT_SUBMITTING,strMsg);
-    return 2;
-  }
-}
-
-void CScrobbler::DoHandshake()
-{
-  if (m_strUserName.IsEmpty() || m_strPassword.IsEmpty() || 
-      (!g_guiSettings.GetBool("lastfm.enable") && 
-       !g_guiSettings.GetBool("lastfm.recordtoprofile")) ||
-      !g_guiSettings.GetBool("network.enableinternet"))
+  if (strPass.IsEmpty())
     return;
-
-  m_bReadyToSubmit = false;
-  time_t now;
-  time (&now);
-  m_LastConnect = now;
-  m_strHsString = "http://post.audioscrobbler.com/?hs=true&p=1.1&c=" + m_strClientId + "&v=" + m_strClientVer + "&u=" + m_strUserName;
-  SetEvent(m_hWorkerEvent);
-}
-
-void CScrobbler::DoSubmit()
-{
-  if(m_bSubmitInProgress)
-  {
-    StatusUpdate(S_NOT_SUBMITTING,"Previous submission still in progress");
-    return;
-  }
-
-  if (m_strUserName.IsEmpty() || m_strPassword.IsEmpty() || !m_bReadyToSubmit)
-    return;
-
-  m_bSubmitInProgress = true;
-
-  StatusUpdate(S_SUBMITTING,"Submitting cache...");
-  time_t now;
-  time (&now);
-  m_LastConnect = now;
-  m_strSubmit.Format("u=%s&s=%s&", m_strUserName.c_str(), m_strSessionKey.c_str());
-  m_strSubmit += m_strPostString;
-  StatusUpdate(S_SUBMITTING,m_strSubmit);
-  SetEvent(m_hWorkerEvent);
-}
-
-void CScrobbler::HandleHandshake(char *handshake)
-{
-  // Doesn't take into account multiple-packet returns (not that I've seen one yet)...
-
-  // Ian says: strtok() is not re-entrant, but since it's only being called
-  //  in only one function at a time, it's ok so far.
-
-  char seps[] = " \n\r";
-  char *response = strtok(handshake, seps);
-  if (!response)
-  {
-    StatusUpdate(S_HANDSHAKE_INVALID_RESPONSE,"Handshake failed: Response invalid");
-    return;
-  }
-  do
-  {
-    if (stricmp("UPTODATE", response) == 0)
-    {
-      StatusUpdate(S_HANDSHAKE_UP_TO_DATE,"Handshaking: Client up to date.");
-    }
-    else if (stricmp("UPDATE", response) == 0)
-    {
-      char *updateurl = strtok(NULL, seps);
-      if (!updateurl)
-        break;
-      string msg = "Handshaking: Please update your client at: ";
-      msg += updateurl;
-      StatusUpdate(S_HANDSHAKE_OLD_CLIENT,msg.c_str());
-    }
-    else if (stricmp("BADUSER", response) == 0)
-    {
-      StatusUpdate(S_HANDSHAKE_BAD_USERNAME,"Handshake failed: Bad username");
-      return;
-    }
-    else
-    {
-      break;
-    }
-    m_strChallenge = strtok(NULL, seps);
-    m_strSubmitUrl = strtok(NULL, seps);
-    char *inttext = strtok(NULL, seps);
-    if (!inttext || !(stricmp("INTERVAL", inttext) == 0))
-      break;
-    SetInterval(atoi(strtok(NULL, seps)));
-    GenSessionKey();
-    m_bReadyToSubmit = true;
-    StatusUpdate( S_HANDSHAKE_SUCCESS,"Handshake successful.");
-    return;
-  } while (0);
-  CStdString strBuf;
-  strBuf.Format("Handshake failed: %s", strtok(NULL, "\n"));
-  StatusUpdate(S_HANDSHAKE_ERROR, strBuf);
-}
-
-void CScrobbler::HandleSubmit(char *data)
-{
-  //  submit returned
-  m_bSubmitInProgress = false; //- this should already have been cancelled by the header callback
-
-  StatusUpdate(S_DEBUG,data);
-
-  // Doesn't take into account multiple-packet returns (not that I've seen one yet)...
-  char seps[] = " \n\r";
-  char * response = strtok(data, seps);
-  if (!response)
-  {
-    StatusUpdate(S_SUBMIT_INVALID_RESPONSE,"Submission failed: Response invalid");
-    return;
-  }
-  if (stricmp("OK", response) == 0)
-  {
-    StatusUpdate(S_SUBMIT_SUCCESS,"Submission succeeded.");
-
-    char *inttext = strtok(NULL, seps);
-    if (inttext && (stricmp("INTERVAL", inttext) == 0))
-    {
-      m_Interval = atoi(strtok(NULL, seps));
-      CStdString strBuf;
-      strBuf.Format("Submit interval set to %i seconds.", m_Interval);
-      StatusUpdate(S_SUBMIT_INTERVAL, strBuf);
-    }
-    
-    // Remove successfully submitted songs from journal and clear POST data
-    std::vector<SubmissionJournalEntry>::iterator it;
-    it = m_vecSubmissionJournal.begin();
-    m_vecSubmissionJournal.erase(it, it + m_iSongNum);
-    m_strPostString = "";
-    m_iSongNum = 0;
-    SaveJournal();
-  }
-  else if (stricmp("BADPASS", response) == 0)
-  {
-    StatusUpdate(S_SUBMIT_BAD_PASSWORD,"Submission failed: bad password.");
-  }
-  else if (stricmp("FAILED", response) == 0)
-  {
-    CStdString strBuf;
-    strBuf.Format("Submission failed: %s", strtok(NULL, "\n"));
-    StatusUpdate(S_SUBMIT_FAILED, strBuf);
-    char *inttext = strtok(NULL, seps);
-    if (inttext && (stricmp("INTERVAL", inttext) == 0))
-    {
-      m_Interval = atoi(strtok(NULL, seps));
-      strBuf.Format("Submit interval set to %i seconds.", m_Interval);
-      StatusUpdate(S_SUBMIT_INTERVAL, strBuf);
-    }
-  }
-  else if (stricmp("BADAUTH",response) == 0)
-  {
-    StatusUpdate(S_SUBMIT_BADAUTH,"Submission failed: bad authorization.");
-    char *inttext = strtok(NULL, seps);
-    if (inttext && (stricmp("INTERVAL", inttext) == 0))
-    {
-      m_Interval = atoi(strtok(NULL, seps));
-      CStdString strBuf;
-      strBuf.Format("Submit interval set to %i seconds.", m_Interval);
-      StatusUpdate(S_SUBMIT_INTERVAL, strBuf);
-    }
-    //re-handshake
-    m_bReHandShaking = true;
-    DoHandshake();
-  }
-  else
-  {
-    CStdString strBuf;
-    strBuf.Format("Submission failed: %s", strtok(NULL, "\n"));
-    StatusUpdate(S_SUBMIT_FAILED, strBuf);
-  }
-}
-
-void CScrobbler::SetInterval(int in)
-{
-  m_Interval = in;
-  CStdString ret;
-  ret.Format("Submit interval set to %d seconds.", in);
-  StatusUpdate(S_SUBMIT_INTERVAL, ret);
-}
-
-void CScrobbler::GenSessionKey()
-{
-  CStdString clear = m_strPassword + m_strChallenge;
-  unsigned char md5pword[16];
   XBMC::MD5 md5state;
-  md5state.append(clear);
-  md5state.getDigest(md5pword);
-
-  char key[33];
-  strncpy(key, "\0", sizeof(key));
-  for (int j = 0;j < 16;j++)
-  {
-    char a[3];
-    sprintf(a, "%02x", md5pword[j]);
-    key[2*j] = a[0];
-    key[2*j+1] = a[1];
-  }
-  m_strSessionKey = key;
+  md5state.append(strPass);
+  md5state.getDigest(m_strPasswordHash);
+  m_bBadAuth = false;
 }
 
-int CScrobbler::LoadCache()
+CStdString CScrobbler::GetConnectionState()
 {
-  CFile file;
-  if (file.Open(GetTempFileName()))
-  {
-    CArchive ar(&file, CArchive::load);
-    ar >> m_iSongNum;
-    ar >> m_strPostString;
-    ar.Close();
-    file.Close();
-    return 1;
-  }
-  return 0;
+  if (!CanScrobble())
+    return "";
+  return (m_strSessionID.IsEmpty()) ?
+    g_localizeStrings.Get(15208) : g_localizeStrings.Get(15207);
 }
 
-int CScrobbler::LoadJournal()
+CStdString CScrobbler::GetSubmitInterval()
 {
-  SubmissionJournalEntry entry;
-  m_vecSubmissionJournal.clear();
+  CStdString strInterval;
+  if (!CanScrobble())
+    return strInterval;
+  CStdString strFormat = g_localizeStrings.Get(15209);
+  strInterval.Format(strFormat, m_failedHandshakeDelay);
+  return strInterval;
+}
+
+CStdString CScrobbler::GetFilesCached()
+{
+  CStdString strCachedTracks;
+  if (!CanScrobble())
+    return strCachedTracks;
+  CSingleLock lock(m_queueLock);
+  CStdString strFormat = g_localizeStrings.Get(15210);
+  strCachedTracks.Format(strFormat, m_vecSubmissionQueue.size());
+}
+
+CStdString CScrobbler::GetSubmitState()
+{
+  CStdString strState;
+  CStdString strFormat = g_localizeStrings.Get(15212);
+  if (!CanScrobble())
+    return strState;
+  if (m_bSubmitting)
+    strState = g_localizeStrings.Get(15211);
+  else if (m_bBadAuth || m_bBanned)
+    strState.Format(strFormat, 0);
+  else if (m_strSessionID.IsEmpty())
+    strState.Format(strFormat, m_failedHandshakeDelay);
+  else
+  {
+    int seconds = m_CurrentTrack.length;
+    seconds -= time(NULL) - atoi(m_CurrentTrack.strStartTime.c_str());
+    strState.Format(strFormat, std::min(0, seconds));
+  }
+  return strState;
+}
+
+void CScrobbler::ResetState()
+{
+  ClearSession();
+  ClearSubmissionState();
+  ClearErrorState();
+}
+
+void CScrobbler::ClearErrorState()
+{
+  m_hardErrorCount        = 0;
+  m_lastFailedHandshake   = 0;
+  m_failedHandshakeDelay  = 0;
+}
+
+void CScrobbler::ClearSubmissionState()
+{
+  m_bNotified             = true;  // Explicitly clear these when necessary
+  m_bSubmitting           = false;
+  m_bSubmitted            = true;
+  m_submissionTimer       = 0;
+  CSingleLock lock(m_actionLock);
+  m_action                = 0;
+}
+
+void CScrobbler::ClearSession()
+{
+  CLog::Log(LOGDEBUG, "CScrobbler: Clearing session.");
+  m_strSessionID.clear();
+}
+
+void CScrobbler::HandleHardError()
+{
+  CLog::Log(LOGDEBUG, "CScrobbler: A hard error has occurred.");
+  if (++m_hardErrorCount == 3)
+  {
+    CLog::Log(LOGDEBUG, "CScrobbler: Three consecuetive hard errors have "\
+        "occured. Forcing new handshake.");
+    ClearSession();
+  }
+}
+
+bool CScrobbler::CanScrobble()
+{
+  return (!g_guiSettings.GetString("lastfm.username").IsEmpty()  &&
+          !g_guiSettings.GetString("lastfm.password").IsEmpty()  &&
+         (g_guiSettings.GetBool("lastfm.submit") ||
+          g_guiSettings.GetBool("lastfm.submitradio")));
+}
+
+bool CScrobbler::LoadJournal()
+{
+  int                     journalVersion  = 0;
+  SubmissionJournalEntry  entry;
+  TiXmlDocument           xmlDoc;
+  CStdString              JournalFileName = GetJournalFileName();
+  CSingleLock             lock(m_queueLock);
+
+  m_vecSubmissionQueue.clear();
   
-  if (LoadCache()) 
-  {
-    // load old style cache
-    CLog::Log(LOGDEBUG, "Audioscrobbler: Found old submission cache, converting to submission journal.");
-    for (int i = 0; i < m_iSongNum; i++)
-    {
-      CStdString strRegEx;
-      strRegEx.Format("a\\[%i\\]=(.*?)&t\\[%i\\]=(.*?)&b\\[%i\\]=(.*?)&m\\[%i\\]=(.*?)&l\\[%i\\]=(.*?)&i\\[%i\\]=(.*?)&", i, i, i, i, i, i);
-      CRegExp re;
-      if (!re.RegComp(strRegEx.c_str()))
-        break;
-      if (re.RegFind(m_strPostString) < 0)
-        continue;
-      
-      char *s;
-      s = re.GetReplaceString("\\1"); 
-      entry.strArtist = s;
-      free(s);
-      s = re.GetReplaceString("\\2"); 
-      entry.strTitle = s;
-      free(s);
-      s = re.GetReplaceString("\\3"); 
-      entry.strAlbum = s;
-      free(s);
-      s = re.GetReplaceString("\\4"); 
-      entry.strMusicBrainzID = s;
-      free(s);
-      s = re.GetReplaceString("\\5"); 
-      entry.strLength = s;
-      free(s);
-      s = re.GetReplaceString("\\6"); 
-      entry.strStartTime = s;
-      free(s);
-      CUtil::UrlDecode(entry.strArtist);
-      CUtil::UrlDecode(entry.strTitle);
-      CUtil::UrlDecode(entry.strAlbum);
-      CUtil::UrlDecode(entry.strMusicBrainzID);
-      CUtil::UrlDecode(entry.strLength);
-      CUtil::UrlDecode(entry.strStartTime);
-      m_vecSubmissionJournal.push_back(entry);
-    }
-    m_iSongNum = 0;
-    m_strPostString = "";
-    CFile::Delete(GetTempFileName());
-    CLog::Log(LOGDEBUG, "Audioscrobbler: Added %d entries from old cache file (%s) to journal.", m_vecSubmissionJournal.size(), GetTempFileName().c_str());
-  }
-
-  TiXmlDocument xmlDoc;
-  CStdString JournalFileName = GetJournalFileName();
   if (!xmlDoc.LoadFile(JournalFileName))
   {
-    CLog::Log(LOGDEBUG, "Audioscrobbler: %s, Line %d (%s)", JournalFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return 0;
+    CLog::Log(LOGDEBUG, "CScrobbler: %s, Line %d (%s)", 
+        JournalFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    return false;
   }
 
   TiXmlElement *pRoot = xmlDoc.RootElement();
   if (strcmpi(pRoot->Value(), "asjournal") != 0)
   {
-    CLog::Log(LOGDEBUG, "Audioscrobbler: %s missing <asjournal>", JournalFileName.c_str());
-    return 0;
+    CLog::Log(LOGDEBUG, "CScrobbler: %s missing <asjournal>",
+        JournalFileName.c_str());
+    return false;
   }
 
+  if (pRoot->Attribute("version"))
+    journalVersion = atoi(pRoot->Attribute("version"));
+
   TiXmlNode *pNode = pRoot->FirstChild("entry");
-  while (pNode)
+  for (; pNode; pNode = pNode->NextSibling("entry"))
   {
+    entry.Clear();
     XMLUtils::GetString(pNode, "artist", entry.strArtist);
     XMLUtils::GetString(pNode, "album", entry.strAlbum);
     XMLUtils::GetString(pNode, "title", entry.strTitle);
     XMLUtils::GetString(pNode, "length", entry.strLength);
+    entry.length = atoi(entry.strLength.c_str());
     XMLUtils::GetString(pNode, "starttime", entry.strStartTime);
     XMLUtils::GetString(pNode, "musicbrainzid", entry.strMusicBrainzID);
-    m_vecSubmissionJournal.push_back(entry);
-    pNode = pNode->NextSibling("entry");
+
+    if (journalVersion > 0)
+    {
+      XMLUtils::GetString(pNode, "tracknum", entry.strTrackNum);
+      XMLUtils::GetString(pNode, "source", entry.strSource);
+      XMLUtils::GetString(pNode, "rating", entry.strRating);
+    }
+    else
+    {
+      // Update from journal v0
+      // Convert start time stamp
+      struct tm starttm;
+      time_t startt;
+      if (!strptime(entry.strStartTime.c_str(), "%Y-%m-%d %H:%M:%S", &starttm))
+        continue;
+      if ((startt = mktime(&starttm)) == -1)
+        continue;
+      entry.strStartTime.Format("%d", startt);
+      // url encode entries
+      CUtil::URLEncode(entry.strArtist); 
+      CUtil::URLEncode(entry.strTitle);
+      CUtil::URLEncode(entry.strAlbum);
+      CUtil::URLEncode(entry.strMusicBrainzID);
+    }
+    m_vecSubmissionQueue.push_back(entry);
   }
 
-  CLog::Log(LOGDEBUG, "Audioscrobbler: Journal loaded with %d entries.", m_vecSubmissionJournal.size());
-  return (m_vecSubmissionJournal.size() > 0) ? 1 : 0;
+  CLog::Log(LOGDEBUG, "CScrobbler: Journal loaded with %d entries.",
+      m_vecSubmissionQueue.size());
+  return !m_vecSubmissionQueue.empty();
 }
 
-int CScrobbler::SaveJournal()
+bool CScrobbler::SaveJournal()
 {
-  TiXmlDocument xmlDoc;
-  TiXmlDeclaration decl("1.0", "utf-8", "yes");
+  CSingleLock lock(m_queueLock);
+
+  CStdString        strJournalVersion;
+  TiXmlDocument     xmlDoc;
+  TiXmlDeclaration  decl("1.0", "utf-8", "yes");
+  TiXmlElement      xmlRootElement("asjournal");
   xmlDoc.InsertEndChild(decl);
-  TiXmlElement xmlRootElement("asjournal");
+  strJournalVersion.Format("%d", SCROBBLER_JOURNAL_VERSION);
+  xmlRootElement.SetAttribute("version", strJournalVersion.c_str());
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot)
-    return 0;
-  std::vector<SubmissionJournalEntry>::iterator it = m_vecSubmissionJournal.begin();
-  for (; it != m_vecSubmissionJournal.end(); it++)
+    return false;
+
+  int i = 0;
+  SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
+  for (; it != m_vecSubmissionQueue.end(); it++, i++)
   {
     TiXmlElement entryNode("entry");
     TiXmlNode *pNode = pRoot->InsertEndChild(entryNode);
     if (!pNode)
-      return 0;
+      return false;
     XMLUtils::SetString(pNode, "artist", it->strArtist);
     XMLUtils::SetString(pNode, "album", it->strAlbum);
     XMLUtils::SetString(pNode, "title", it->strTitle);
     XMLUtils::SetString(pNode, "length", it->strLength);
     XMLUtils::SetString(pNode, "starttime", it->strStartTime);
     XMLUtils::SetString(pNode, "musicbrainzid", it->strMusicBrainzID);
+    XMLUtils::SetString(pNode, "tracknum", it->strTrackNum);
+    XMLUtils::SetString(pNode, "source", it->strSource);
+    XMLUtils::SetString(pNode, "rating", it->strRating);
   }
 
   CStdString FileName = GetJournalFileName();
-  return (xmlDoc.SaveFile(FileName)) ? 1 : 0;
+  CLog::Log(LOGDEBUG, "CScrobbler: Journal with %d entries saved to %s", i,
+      FileName.c_str());
+  return xmlDoc.SaveFile(FileName);
 }
 
-void CScrobbler::StatusUpdate(ScrobbleStatus status, const CStdString& strText)
+bool CScrobbler::DoHandshake(time_t now)
 {
-  switch (status)
+  XBMC::MD5         authToken;
+  CStdString        strAuthToken;
+  CStdString        strTimeStamp;
+  CStdString        strResponse;
+  CStdString        strHandshakeRequest;
+
+  // Create auth token. md5(md5(pass)+str(now))
+  strTimeStamp.Format("%d", now);
+  authToken.append(m_strPasswordHash + strTimeStamp);
+  authToken.getDigest(strAuthToken);
+  
+  // Construct handshake URL.
+  strHandshakeRequest.Format("http://%s/?hs=true"\
+      "&p=%s&c=%s&v=%s&u=%s&t=%d&a=%s", SCROBBLER_HANDSHAKE_URL,
+      SCROBBLER_PROTOCOL, SCROBBLER_CLIENT, SCROBBLER_CLIENT_VERSION,
+      m_strUsername.c_str(), now, strAuthToken.c_str());
+  
+  // Make and handle request
+  if (m_pHttp->Get(strHandshakeRequest, strResponse) &&
+      HandleHandshake(strResponse))
+    return true;
+    
+  m_failedHandshakeDelay = // 60, 120, 240, ... 7200s
+    (m_failedHandshakeDelay) ? std::min(2*m_failedHandshakeDelay, 7200) : 60;
+  m_lastFailedHandshake = now;
+  if (!m_bBanned && !m_bBadAuth)
+    CLog::Log(LOGDEBUG, "CScrobbler: A hard error has occurred during "\
+        "handshake. Sleeping for %d minutes.", m_failedHandshakeDelay/60);
+  
+  return false;
+}
+
+bool CScrobbler::HandleHandshake(CStdString &strResponse)
+{
+  // TODO toast messages
+  if (strResponse.IsEmpty())
+    return false;
+  
+  std::vector<CStdString> vecTokens;
+  CUtil::Tokenize(strResponse, vecTokens, " \n\r");
+
+  if (vecTokens[0] == "OK")
   {
-    case S_HANDSHAKE_ERROR:
-    case S_SUBMIT_FAILED:
-    case S_HANDSHAKE_INVALID_RESPONSE:
-    case S_SUBMIT_INVALID_RESPONSE:
-    case S_CONNECT_ERROR:
-      // these are the bad ones just log
-      CLog::Log(LOGERROR, "AudioScrobbler: %s", strText.c_str());
-      break;
-    case S_HANDSHAKE_SUCCESS:
-      CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
-      break;
-    case S_HANDSHAKE_BAD_USERNAME:
-    case S_SUBMIT_BADAUTH:
-      CLog::Log(LOGERROR, "AudioScrobbler: %s", strText.c_str());
-      if(!m_bAuthWarningDone)
-      {
-        m_bAuthWarningDone=true;
-        m_bConnectionWarningDone=true; // eat "handshake not ready" message in this case
-        CStdString strMsg=g_localizeStrings.Get(15206); // Bad authorization: Check username and password
-        StatusUpdate(strMsg);
-      }
-      break;
-    case S_SUBMIT_BAD_PASSWORD:
-      CLog::Log(LOGERROR, "AudioScrobbler: %s", strText.c_str());
-      if(!m_bBadPassWarningDone)
-      {
-        m_bBadPassWarningDone=true;
-        CStdString strMsg=g_localizeStrings.Get(15206); // Bad authorization: Check username and password
-        StatusUpdate(strMsg);
-      }
-      break;
-    case S_HANDHAKE_NOTREADY:
-      CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
-      if(!m_bConnectionWarningDone)
-      {
-        m_bConnectionWarningDone=true;
-        CStdString strMsg=g_localizeStrings.Get(15204); // Unable to handshake: sleeping...
-        StatusUpdate(strMsg);
-      }
-      break;
-    case S_HANDSHAKE_OLD_CLIENT:
-      CLog::Log(LOGNOTICE, "AudioScrobbler: %s", strText.c_str());
-      if(!m_bUpdateWarningDone)
-      {
-        m_bUpdateWarningDone=true;
-        CStdString strMsg=g_localizeStrings.Get(15205); // Please update xbmc
-        StatusUpdate(strMsg);
-      }
-      break;
-    default:
-      CLog::Log(LOGDEBUG, "AudioScrobbler: %s", strText.c_str());
-      break;
+    if (vecTokens.size() >= 4)
+    {
+      m_strSessionID      = vecTokens[1];
+      m_strNowPlayingURL  = vecTokens[2];
+      m_strSubmissionURL  = vecTokens[3];
+      CLog::Log(LOGDEBUG,  "CScrobbler: Handshake succeeded!");
+      CLog::Log(LOGDEBUG, "CScrobbler: SessionID is %s",
+          m_strSessionID.c_str());
+      CLog::Log(LOGDEBUG, "CScrobbler: NP URL is %s",
+          m_strNowPlayingURL.c_str());
+      CLog::Log(LOGDEBUG, "CScrobbler: Submit URL is %s",
+          m_strSubmissionURL.c_str());
+      ClearErrorState();
+      return true;
+    }
+    CLog::Log(LOGERROR, "CScrobbler: Handshake failed! Received malformed "\
+        "reply.");
   }
-}
-
-void CScrobbler::StatusUpdate(const CStdString& strText)
-{
-  CStdString strAudioScrobbler=g_localizeStrings.Get(15200);  // AudioScrobbler
-  g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
-}
-
-void CScrobbler::OnStartup()
-{
-  CLog::Log(LOGDEBUG, "Audioscrobbler worker thread starting");
-}
-
-void CScrobbler::OnExit()
-{
-  CLog::Log(LOGDEBUG, "Audioscrobbler worker thread stopping");
-}
-
-void CScrobbler::Process()
-{
-  while (1) 
+  else if (vecTokens[0] == "BANNED")
   {
-    WaitForSingleObject(m_hWorkerEvent, INFINITE);
-    if (m_bCloseThread)
-      break;
-
-    CFileCurl http;
-    CStdString strHtml;
-    bool bSuccess;
-    if (!m_bReadyToSubmit)
+    CLog::Log(LOGERROR, "CScrobbler: Handshake failed! Client is banned! "\
+        "Disabling submissions. Subsequent scrobbles will be cached. "\
+        "Please update your client to the newest version. ");
+    if (m_failedHandshakeDelay == 0)
     {
-      bSuccess=http.Get(m_strHsString, strHtml);
-      if (bSuccess)
-      {
-        LPSTR lphtml=strHtml.GetBuffer();
-        HandleHandshake(lphtml);
-        strHtml.ReleaseBuffer();
-        if (m_bReHandShaking)
-          m_bReHandShaking = false;
-      }
-    }
-    else
-    {
-      bSuccess=http.Post(m_strSubmitUrl, m_strSubmit, strHtml);
-      if (bSuccess)
-      {
-        LPSTR lphtml=strHtml.GetBuffer();
-        HandleSubmit(lphtml);
-        strHtml.ReleaseBuffer();
-        if (m_bReHandShaking) continue;
-      }
-    }
-
-    if(!bSuccess)
-    {
-      if(m_bReadyToSubmit)
-        m_bSubmitInProgress = false; // failed to post, means post is over
-
-      StatusUpdate(S_CONNECT_ERROR,"Could not connect to server.");
-    }
-
-    // OK, if this was a handshake, it failed since m_bReadyToSubmit isn't true. Submissions get cached.
-    while (!m_bReadyToSubmit)
-    {
-      StatusUpdate(S_HANDHAKE_NOTREADY,"Unable to handshake: sleeping...");
-      // sleep for HS_FAIL_WAIT, or until we have cancelled our thread
-      WaitForSingleObject(m_hWorkerEvent, HS_FAIL_WAIT);
-      if (m_bCloseThread)
-        return;
-      // and try again.
-      bSuccess=http.Get(m_strHsString, strHtml);
-      if (bSuccess)
-      {
-        LPSTR lphtml=strHtml.GetBuffer();
-        HandleHandshake(lphtml);
-        strHtml.ReleaseBuffer();
-      }
+      CStdString strText = g_localizeStrings.Get(15205);
+      m_bBanned = true;
+      CStdString strAudioScrobbler=g_localizeStrings.Get(15200);  // AudioScrobbler
+      g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
     }
   }
-}
-
-void CScrobbler::SetSongStartTime()
-{
-  time(&m_SongStartTime);
-}
-
-CStdString CScrobbler::GetConnectionState()
-{
-  if (!g_guiSettings.GetBool("lastfm.enable") && !g_guiSettings.GetBool("lastfm.recordtoprofile"))
-    return "";
-
-  return (m_bReadyToSubmit ? g_localizeStrings.Get(15207) : g_localizeStrings.Get(15208));  // Connected : Not Connected
-}
-
-CStdString CScrobbler::GetSubmitInterval()
-{
-  CStdString strInterval;
-
-  if (!g_guiSettings.GetBool("lastfm.enable") && !g_guiSettings.GetBool("lastfm.recordtoprofile"))
-    return strInterval;
-
-  CStdString strFormat=g_localizeStrings.Get(15209);  // Submit Interval %i
-  strInterval.Format(strFormat.c_str(), m_Interval);
-
-  return strInterval;
-}
-
-CStdString CScrobbler::GetFilesCached()
-{
-  CStdString strCachedFiles;
-
-  if (!g_guiSettings.GetBool("lastfm.enable") && !g_guiSettings.GetBool("lastfm.recordtoprofile"))
-    return strCachedFiles;
-
-  CStdString strFormat=g_localizeStrings.Get(15210);  // Cached %i Songs
-  strCachedFiles.Format(strFormat.c_str(), m_vecSubmissionJournal.size());
-
-  return strCachedFiles;
-}
-
-void CScrobbler::SetSecsTillSubmit(int iSecs)
-{
-  m_iSecsTillSubmit=iSecs;
-}
-
-CStdString CScrobbler::GetSubmitState()
-{
-  CStdString strText;
-
-  if (!g_guiSettings.GetBool("lastfm.enable") && !g_guiSettings.GetBool("lastfm.recordtoprofile"))
-    return strText;
-
-  if (m_bSubmitInProgress)
+  else if (vecTokens[0] == "BADAUTH")
   {
-    strText=g_localizeStrings.Get(15211);  // Submitting...
-    return strText;
+    CLog::Log(LOGERROR, "CScrobbler: Handshake failed! Authentication failed! "\
+        "Disabling submissions. Subsequent scrobbles will be cached. "\
+        "Please enter the correct credentials to re-enable scrobbling. ");
+    if (m_failedHandshakeDelay == 0)
+    {
+      CStdString strText = g_localizeStrings.Get(15206);
+      m_bBadAuth = true;
+      CStdString strAudioScrobbler=g_localizeStrings.Get(15200);  // AudioScrobbler
+      g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
+    }
+  }
+  else if (vecTokens[0] == "BADTIME")
+  {
+    CLog::Log(LOGDEBUG, "CScrobbler: Handshake failed! Timestamp is invalid! "\
+        "Disabling submissions. Subsequent scrobbles will be cached. "\
+        "Please correct the system time and restart the application. ");
+  }
+  else if (vecTokens[0] == "FAILED")
+  {
+    CLog::Log(LOGDEBUG, "CScrobbler: Handshake failed! REASON: %s! ", 
+        strResponse.c_str());
+  }
+  else
+    CLog::Log(LOGDEBUG, "CScrobbler: Handshake failed! REASON: Unspecified!");
+  
+  return false;
+}
+
+bool CScrobbler::DoNowPlayingNotification()
+{
+  CStdString        strNowPlayingRequest;
+  CStdString        strResponse;
+
+  // Construct now playing notification URL.
+  strNowPlayingRequest.Format("s=%s&a=%s&t=%s&b=%s&l=%d&n=%s&m=%s",
+      m_strSessionID.c_str(), m_CurrentTrack.strArtist.c_str(),
+      m_CurrentTrack.strTitle.c_str(), m_CurrentTrack.strAlbum.c_str(),
+      m_CurrentTrack.length, m_CurrentTrack.strTrackNum.c_str(),
+      m_CurrentTrack.strMusicBrainzID.c_str());
+
+  // Make and handle request
+  if (m_pHttp->Post(m_strNowPlayingURL, strNowPlayingRequest, strResponse) &&
+      HandleNowPlayingNotification(strResponse))
+    return true;
+  
+  HandleHardError();
+  return false;
+}
+
+bool CScrobbler::HandleNowPlayingNotification(CStdString &strResponse)
+{
+  if (strResponse.IsEmpty())
+    return false;
+ 
+  std::vector<CStdString> vecTokens;
+  CUtil::Tokenize(strResponse, vecTokens, " \n\r");
+
+  if (vecTokens[0] == "OK")
+  {
+    CLog::Log(LOGDEBUG, "CScrobbler: Now playing notification succeeded!");
+    ClearErrorState();
+    return true;
+  }
+  else if (vecTokens[0] == "BADSESSION")
+  {
+    CLog::Log(LOGDEBUG, "CScrobbler: Now playing notification failed! "\
+        "REASON: Bad session ID. Forcing new handshake.");
+    ClearSession();
+  }
+  else
+    CLog::Log(LOGDEBUG, "CScrobbler: Now playing notification failed! "\
+        "REASON: Unspecified.");
+
+  return false;
+}
+
+bool CScrobbler::DoSubmission()
+{
+  int               i;
+  int               numSubmissions;
+  CStdString        strSubmissionRequest;
+  CStdString        strSubmission;
+  CStdString        strResponse;
+  CSingleLock lock(m_queueLock);
+
+  // Construct submission URL.
+  numSubmissions = 
+    std::min((size_t)SCROBBLER_MAX_SUBMISSIONS, m_vecSubmissionQueue.size());
+  if (numSubmissions == 0)
+    return true;
+  strSubmissionRequest.Format("s=%s", m_strSessionID.c_str());
+  SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
+  for (i = 0; it != m_vecSubmissionQueue.end() && i < numSubmissions; i++,it++)
+  {
+    strSubmission.Format("&a[%d]=%s&t[%d]=%s&i[%d]=%s&o[%d]=%s&r[%d]=%s",
+        i, it->strArtist.c_str(),     i, it->strTitle.c_str(),
+        i, it->strStartTime.c_str(),  i, it->strSource.c_str(),
+        i, it->strRating.c_str());
+    // Too many params, must be split (or hack CStdString)
+    strSubmission.Format("%s&l[%d]=%s&b[%d]=%s&n[%d]=%s&m[%d]=%s",
+        strSubmission.c_str(),        i, it->strLength.c_str(),
+        i, it->strAlbum.c_str(),      i, it->strTrackNum.c_str(),
+        i, it->strMusicBrainzID.c_str());
+    strSubmissionRequest += strSubmission;
   }
 
-  if (m_bReadyToSubmit && m_bShouldSubmit)
+  // Make and handle request
+  if (m_pHttp->Post(m_strSubmissionURL, strSubmissionRequest, strResponse) &&
+      HandleSubmission(strResponse))
   {
-    CStdString strFormat=g_localizeStrings.Get(15212);  // Submitting in %i secs
-    strText.Format(strFormat.c_str(), m_iSecsTillSubmit);
-    return strText;
+    SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
+    m_vecSubmissionQueue.erase(it, it + i); // Remove submitted entries
+    SaveJournal();
+    return true;
   }
 
-  return strText;
+  HandleHardError();
+  return false;
 }
 
-void CScrobbler::SetSubmitSong(bool bSubmit)
+bool CScrobbler::HandleSubmission(CStdString &strResponse)
 {
-  m_bShouldSubmit=bSubmit;
-  m_iSecsTillSubmit=0;
-}
+  if (strResponse.IsEmpty())
+    return false;
+  
+  std::vector<CStdString> vecTokens;
+  CUtil::Tokenize(strResponse, vecTokens, " \n\r");
 
-bool CScrobbler::ShouldSubmit()
-{
-  return m_bShouldSubmit;
-}
+  if (vecTokens[0] == "OK")
+  {
+    CLog::Log(LOGDEBUG, "CScrobbler: Submission succeeded!");
+    ClearErrorState();
+    return true;
+  }
+  else if (vecTokens[0] == "BADSESSION")
+  {
+    CLog::Log(LOGDEBUG, "CScrobbler: Submission failed! "\
+        "REASON: Bad session. Forcing new handshake.");
+    ClearSession();
+  }
+  else if (vecTokens[0] == "FAILED")
+  {
+    CLog::Log(LOGDEBUG, "CScrobbler: Submission failed! "\
+        "REASON: %s", strResponse.c_str());
+  }
+  else
+    CLog::Log(LOGDEBUG, "CScrobbler: Submission failed! "\
+        "REASON: Unspecified.");
 
-CStdString CScrobbler::GetTempFileName()
-{
-  CStdString strFileName = g_settings.GetProfileUserDataFolder();
-  return CUtil::AddFileToFolder(strFileName, "Scrobbler.tmp");
+  return false;
 }
 
 CStdString CScrobbler::GetJournalFileName()
 {
   CStdString strFileName = g_settings.GetProfileUserDataFolder();
   return CUtil::AddFileToFolder(strFileName, "Scrobbler.xml");
+}
+
+void CScrobbler::Process()
+{
+  CLog::Log(LOGDEBUG, "CScrobbler: Thread started.");
+  if (!m_pHttp)
+  {
+    // Hack since CFileCurl isn't threadsafe
+    if (!(m_pHttp = new XFILE::CFileCurl))
+      return;
+  }
+  m_bRunThread = true;
+  while (1)
+  {
+    WaitForSingleObject(m_hEvent, INFINITE);
+    if (!m_bRunThread)
+      break;
+    
+    if (m_strSessionID.IsEmpty())
+    {
+      time_t now = time(NULL);
+      // We need to handshake.
+      if (m_bBanned || m_bBadAuth ||
+          !g_guiSettings.GetBool("network.enableinternet") ||
+          ((now - m_lastFailedHandshake) < m_failedHandshakeDelay))
+        continue;
+      if (!DoHandshake(now))
+        continue;
+    }
+    int action = 0;
+    {
+      CSingleLock lock(m_actionLock);
+      action = m_action;
+      m_action = 0;
+    }
+    if (action == SCROBBLER_ACTION_NOWPLAYING)
+      DoNowPlayingNotification();
+    else if (action == SCROBBLER_ACTION_SUBMIT)
+    {
+      m_bSubmitting = true;
+      DoSubmission();
+      m_bSubmitting = false;
+    }
+  }
+  delete m_pHttp; // More of aforementioned hack 
+  m_pHttp = NULL;
+  CLog::Log(LOGDEBUG, "CScrobbler: Thread ended.");
 }
 
