@@ -26,9 +26,31 @@
 #ifdef HAS_GLX
   #include <X11/extensions/Xrandr.h>
   #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate 2>&1"
+#elif defined(__APPLE__)
+  #include <QuartzCore/CVDisplayLink.h>
+  #include "CocoaInterface.h"
 #endif
 
 using namespace std;
+
+#if defined(__APPLE__)
+// Called by the Core Video Display Link whenever it's appropriate to render a frame.
+static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+{
+	CEvent *VblankEvent = (CEvent*)displayLinkContext;
+  void* pool; 	
+	// Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
+  pool = Cocoa_Create_AutoReleasePool();
+	
+	// Simply set the event
+	VblankEvent->Set();
+	
+	// Destroy the autorelease pool
+  Cocoa_Destroy_AutoReleasePool(pool);
+	
+	return kCVReturnSuccess;
+}
+#endif
 
 CVideoReferenceClock::CVideoReferenceClock()
 {
@@ -46,6 +68,10 @@ void CVideoReferenceClock::Process()
   bool SetupSuccess = false;
   LARGE_INTEGER Now;
   
+#if defined(__APPLE__)
+  SetupSuccess = Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, &m_VblankEvent);
+#endif
+
   while(!m_bStop)
   {
 #ifdef HAS_GLX
@@ -70,8 +96,11 @@ void CVideoReferenceClock::Process()
       RunGLX();
 #elif defined(_WIN32)
       RunD3D();
+#elif defined(__APPLE__)
+      UpdateRefreshrate();
+      Sleep(500);
 #endif
-    
+
     }
     else
     {
@@ -93,6 +122,10 @@ void CVideoReferenceClock::Process()
 #endif
     if (!SetupSuccess) break;
   }
+
+#if defined(__APPLE__)
+  Cocoa_CVDisplayLinkRelease();
+#endif
 }
 
 void CVideoReferenceClock::WaitStarted(int MSecs)
@@ -781,7 +814,12 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   m_Height = DisplayMode.Height;
 
   return Changed;
+  
+#elif defined(__APPLE__)
+  m_RefreshRate = (int)Cocoa_GetCVDisplayLinkRefreshPeriod();
+  return true;
 #endif
+
   return false;
 }
 
@@ -841,7 +879,8 @@ void CVideoReferenceClock::Wait(__int64 Target)
     SingleLock.Leave();
     QueryPerformanceCounter(&Now);
     SleepTime = (Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency;
-    if (SleepTime > 0) ::Sleep(SleepTime);
+    if (SleepTime > 0) 
+      ::Sleep(SleepTime);
   }
 }
 
