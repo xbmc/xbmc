@@ -76,7 +76,7 @@ CGraphicContext::CGraphicContext(void)
   m_maxTextureSize = 2048;
 #endif
   m_dwID = 0;
-  m_strMediaDir = "D:\\media";
+  m_strMediaDir = "";
   m_bCalibrating = false;
   m_Resolution = INVALID;
   m_pCallback = NULL;
