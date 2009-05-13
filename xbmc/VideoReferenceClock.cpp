@@ -164,7 +164,6 @@ bool CVideoReferenceClock::SetupGLX()
   m_vInfo = NULL;
   m_Context = NULL;
   m_Window = NULL;
-  m_GLXWindow = NULL;
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
 
@@ -211,21 +210,14 @@ bool CVideoReferenceClock::SetupGLX()
   m_Window = XCreateWindow(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), 0, 0, 256, 256, 0,
                            m_vInfo->depth, InputOutput, m_vInfo->visual, SwaMask, &Swa);
 
-  m_Context = glXCreateNewContext(m_Dpy, m_fbConfigs[0], GLX_RGBA_TYPE, NULL, True);
+  m_Context = glXCreateContext(m_Dpy, m_vInfo, NULL, True);
   if (!m_Context)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXCreateNewContext returned NULL");
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXCreateContext returned NULL");
     return false;
   }
 
-  m_GLXWindow = glXCreateWindow(m_Dpy, m_fbConfigs[0], m_Window, NULL );
-  if (!m_GLXWindow)
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXCreateWindow returned NULL");
-    return false;
-  }
-
-  glXMakeCurrent(m_Dpy, m_GLXWindow, m_Context);
+  glXMakeCurrent(m_Dpy, m_Window, m_Context);
 
   m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
   if (!m_glXWaitVideoSyncSGI)
@@ -333,11 +325,6 @@ void CVideoReferenceClock::CleanupGLX()
     glXDestroyContext(m_Dpy, m_Context);
     m_Context = NULL;
   }
-  if (m_GLXWindow)
-  {
-    glXDestroyWindow(m_Dpy, m_GLXWindow);
-    m_GLXWindow = NULL;
-  }
   if (m_Window)
   {
     XDestroyWindow(m_Dpy, m_Window);
@@ -398,7 +385,7 @@ void CVideoReferenceClock::RunGLX()
 
       //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
       glXMakeCurrent(m_Dpy, None, NULL);
-      glXMakeCurrent(m_Dpy, m_GLXWindow, m_Context);
+      glXMakeCurrent(m_Dpy, m_Window, m_Context);
 
       ResetCount++;
       if (ResetCount > 100)
