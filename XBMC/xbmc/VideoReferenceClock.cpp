@@ -806,7 +806,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   CSingleLock SingleLock(m_CritSection);
   int RefreshRate = (int)Cocoa_GetCVDisplayLinkRefreshPeriod();
   
-  if (RefreshRate != m_RefreshRate)
+  if (RefreshRate != m_RefreshRate || Forced)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", RefreshRate);
     m_RefreshRate = RefreshRate;
