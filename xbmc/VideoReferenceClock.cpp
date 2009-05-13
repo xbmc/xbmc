@@ -57,6 +57,10 @@ void CVideoReferenceClock::Process()
     SetupSuccess = SetupD3D();
 #elif defined(__APPLE__)
     SetupSuccess = SetupCocoa();
+#elif defined(HAS_GLX)
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: compiled without RandR support");
+#else
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: no implementation available");
 #endif
 
     CSingleLock SingleLock(m_CritSection);
