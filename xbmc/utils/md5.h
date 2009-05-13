@@ -62,6 +62,7 @@ namespace XBMC
     void append(unsigned char *inBuf, unsigned int inLen);
     void append(const CStdString& str);
     void getDigest(unsigned char digest[16]);
+    void getDigest(CStdString& digest);
 
   private:
     MD5_CTX m_ctx;
