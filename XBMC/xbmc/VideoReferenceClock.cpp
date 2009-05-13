@@ -663,14 +663,15 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
   // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
   pool = Cocoa_Create_AutoReleasePool();
   
+  CSingleLock SingleLock(m_CritSection);
+  
   VBlankTime = (double)(Now.QuadPart - m_LastVBlankTime) / (double)m_SystemFrequency;
   NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
   m_LastVBlankTime = Now.QuadPart;
-  
-  SingleLock.Enter();
   m_VblankTime = Now.QuadPart;
   UpdateClock(NrVBlanks, true);
+  
   SingleLock.Leave();
   SendVblankSignal();
   
