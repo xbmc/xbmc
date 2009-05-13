@@ -87,6 +87,7 @@ class CVideoReferenceClock : public CThread
     GLXContext   m_Context;
             
     bool     m_UseNvSettings;
+    
 #elif defined(_WIN32)
     bool CreateHiddenWindow();
     bool SetupD3D();
@@ -103,6 +104,9 @@ class CVideoReferenceClock : public CThread
     unsigned int m_Width;
     unsigned int m_Height;
     unsigned int m_Adapter;
+    
+#elif defined(__APPLE__)
+
 #endif
 };
 
