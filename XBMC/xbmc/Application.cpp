@@ -3371,6 +3371,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 
     string jname = g_Joystick.GetJoystick();
     action.fAmount1 = g_Joystick.GetAmount();
+
     if (action.fAmount1<0)
     {
       bid = -bid;
@@ -3401,6 +3402,25 @@ bool CApplication::ProcessGamepad(float frameTime)
     else
     {
       g_Joystick.ResetAxis(abs(bid));
+    }
+  }
+  int position;
+  if (g_Joystick.GetHat(bid, position))
+  {
+    CAction action;
+    bool fullrange;
+
+    string jname = g_Joystick.GetJoystick();
+    bid = position<<16|bid;
+
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
+    {
+      action.fAmount1 = 1.0f;
+      action.fRepeat = 0.0f;
+      g_audioManager.PlayActionSound(action);
+      g_Joystick.Reset();
+      g_Mouse.SetInactive();
+      return OnAction(action);
     }
   }
 #endif
