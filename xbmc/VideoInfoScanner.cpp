@@ -933,6 +933,7 @@ namespace VIDEO
     CStdString strThumb = pItem->GetCachedVideoThumb();
     if (content.Equals("tvshows") && !pItem->m_bIsFolder && CFile::Exists(strThumb))
     {
+      movieDetails.m_strFileNameAndPath = pItem->m_strPath;
       CFileItem item(movieDetails);
       strThumb = item.GetCachedEpisodeThumb();
     }
