@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDClock.h"
 #include "VideoReferenceClock.h"
@@ -82,7 +82,7 @@ double CDVDClock::GetAbsoluteClock()
 void CDVDClock::WaitAbsoluteClock(double target)
 {
   CSingleLock lock(m_systemsection);
-  
+
   __int64 systemtarget;
 
   if(!m_systemFrequency.QuadPart)
@@ -90,12 +90,12 @@ void CDVDClock::WaitAbsoluteClock(double target)
 
   if(!m_systemOffset.QuadPart)
     g_VideoReferenceClock.GetTime(&m_systemOffset);
-  
+
   systemtarget = (__int64)(target / DVD_TIME_BASE * (double)m_systemFrequency.QuadPart);
   systemtarget += m_systemOffset.QuadPart;
-  
+
   lock.Leave();
-  
+
   g_VideoReferenceClock.Wait(systemtarget);
 }
 
@@ -103,7 +103,7 @@ double CDVDClock::GetClock()
 {
   CSharedLock lock(m_critSection);
   LARGE_INTEGER current;
-    
+
   if (m_bReset)
   {
     g_VideoReferenceClock.GetTime(&m_startClock);
@@ -133,10 +133,10 @@ void CDVDClock::SetSpeed(int iSpeed)
       g_VideoReferenceClock.GetTime(&m_pauseClock);
     return;
   }
-  
+
   LARGE_INTEGER current;
   __int64 newfreq = m_systemFrequency.QuadPart * DVD_PLAYSPEED_NORMAL / iSpeed;
-  
+
   g_VideoReferenceClock.GetTime(&current);
   if( m_pauseClock.QuadPart )
   {
@@ -145,7 +145,7 @@ void CDVDClock::SetSpeed(int iSpeed)
   }
 
   m_startClock.QuadPart = current.QuadPart - ( newfreq * (current.QuadPart - m_startClock.QuadPart) ) / m_systemUsed.QuadPart;
-  m_systemUsed.QuadPart = newfreq;    
+  m_systemUsed.QuadPart = newfreq;
 }
 
 void CDVDClock::Discontinuity(ClockDiscontinuityType type, double currentPts, double delay)
@@ -186,7 +186,7 @@ void CDVDClock::Resume()
 
     m_startClock.QuadPart += current.QuadPart - m_pauseClock.QuadPart;
     m_pauseClock.QuadPart = 0;
-  }  
+  }
 }
 
 double CDVDClock::DistanceToDisc()
@@ -198,7 +198,7 @@ double CDVDClock::DistanceToDisc()
 double CDVDClock::GetMaxSpeedAdjust(bool playingvideo)
 {
   CSingleLock lock(m_speedsection);
-  
+
   m_playingvideo = playingvideo;
   return m_maxspeedadjust;
 }
@@ -206,7 +206,7 @@ double CDVDClock::GetMaxSpeedAdjust(bool playingvideo)
 bool CDVDClock::SetMaxSpeedAdjust(double speed)
 {
   CSingleLock lock(m_speedsection);
-  
+
   m_maxspeedadjust = speed;
   return m_playingvideo;
 }

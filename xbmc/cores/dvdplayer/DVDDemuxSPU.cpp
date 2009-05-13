@@ -123,7 +123,7 @@ CSPUInfo* CDVDDemuxSPU::AddData(BYTE* data, int iSize, double pts)
     pSPUData->data[pSPUData->iSize] = 0xff;
     pSPUData->iSize++;
   }
-  
+
   if (pSPUData->iSize == pSPUData->iNeededSize)
   {
     DebugLog("got complete spu packet\n  length: %i bytes\n  stream: %i\n", pSPUData->iSize);
@@ -148,7 +148,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 {
   unsigned int alpha[4];
   BYTE* pUnparsedData = NULL;
-  
+
   if (pSPUData->iNeededSize != pSPUData->iSize)
   {
     DebugLog("GetPacket, packet is incomplete, missing: %i bytes", (pSPUData->iNeededSize - pSPUData->iSize));
@@ -222,7 +222,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
           if (m_bHasClut)
           {
             pSPUInfo->bHasColor = true;
-            
+
             unsigned int idx[4];
             // 0, 1, 2, 3
             idx[0] = (p[0] >> 4) & 0x0f;
@@ -239,7 +239,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
               pSPUInfo->color[3 - i][2] = iColor[2]; // Cb
             }
           }
-          
+
           DebugLog("    GetPacket, SET_COLOR:");
           p += 2;
         }
@@ -257,7 +257,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
           if (alpha[0] | alpha[1] | alpha[2] | alpha[3])
           {
             pSPUInfo->bHasAlpha = true;
-            
+
             // 0, 1, 2, 3
             pSPUInfo->alpha[0] = alpha[3]; //0 // background, should be hidden
             pSPUInfo->alpha[1] = alpha[2]; //1
@@ -314,7 +314,7 @@ CSPUInfo* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
       DebugLog("GetPacket, end off SP_DCSQT, but did not found 0xff (CMD_END)");
     }
   }
-  
+
   // parse the rle.
   // this should be chnaged so it get's converted to a yuv overlay
   return ParseRLE(pSPUInfo, pUnparsedData);
@@ -415,7 +415,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
 
       // keep trace of all occouring pixels, even keeping the background in mind
       pSPU->stats[i_code & 0x3] += i_code >> 2;
-      
+
       // count the number of pixels for every occouring parts, without background
       if (pSPU->alpha[i_code & 0x3] != 0x00)
       {
@@ -502,7 +502,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
       if (!pSPU->CanDisplayWithAlphas(pSPU->alpha))
       {
         CLog::Log(LOGINFO, "%s - no  matching color and alpha found, resetting alpha", __FUNCTION__);
-         
+
         pSPU->alpha[0] = 0x00; // back ground
         pSPU->alpha[1] = 0x0f;
         pSPU->alpha[2] = 0x0f;
@@ -512,7 +512,7 @@ CSPUInfo* CDVDDemuxSPU::ParseRLE(CSPUInfo* pSPU, BYTE* pUnparsedData)
     else
     {
       CLog::Log(LOGINFO, "%s - ignoring blank alpha palette, using default", __FUNCTION__);
-      
+
       pSPU->alpha[0] = 0x00; // back ground
       pSPU->alpha[1] = 0x0f;
       pSPU->alpha[2] = 0x0f;
@@ -529,19 +529,19 @@ void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CSPUInfo* pSP
   const int COLOR_INNER = 0;
   const int COLOR_SHADE = 1;
   const int COLOR_BORDER = 2;
-  
+
   //BYTE custom_subtitle_color[4][3] = { // blue, yellow and something else (xine)
   //  { 0x80, 0x90, 0x80 }, // inner color
   //  { 0x00, 0x90, 0x00 }, // shade color
   //  { 0x00, 0x90, 0xff }  // border color
   //};
-  
+
   BYTE custom_subtitle_color[4][3] = { // inner color white, gray shading and a black border
     { 0xff, 0x80, 0x80 }, // inner color, white
     { 0x80, 0x80, 0x80 }, // shade color, gray
     { 0x00, 0x80, 0x80 }  // border color, black
   };
-  
+
   //BYTE custom_subtitle_color[4][3] = { // completely white and a black border
   //  { 0xff, 0x80, 0x80 }, // inner color, white
   //  { 0xff, 0x80, 0x80 }, // shade color, white
@@ -554,7 +554,7 @@ void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CSPUInfo* pSP
   {
     if (pSPU->alpha[i] > 0) nrOfUsedColors++;
   }
-  
+
   if (nrOfUsedColors == 0)
   {
     // nothing todo

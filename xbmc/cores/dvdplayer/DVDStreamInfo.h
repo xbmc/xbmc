@@ -26,7 +26,7 @@ enum StreamType;
 enum CodecID;
 #else
 #include "DVDDemuxers/DVDDemux.h"
-extern "C" { 
+extern "C" {
 #include "../ffmpeg/avcodec.h"
 }
 #endif

@@ -63,7 +63,7 @@ class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
   DEFINE_METHOD3(void, mpeg2_set_buf, (mpeg2dec_t * p1, uint8_t * p2[3], void * p3))
   DEFINE_METHOD2(void, mpeg2_custom_fbuf, (mpeg2dec_t * p1, int p2))
   DEFINE_METHOD3(int, mpeg2_convert, (mpeg2dec_t * p1, mpeg2_convert_t p2, void * p3))
-  DEFINE_METHOD2(void,mpeg2_skip, (mpeg2dec_t * p1, int p2)) 
+  DEFINE_METHOD2(void,mpeg2_skip, (mpeg2dec_t * p1, int p2))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(mpeg2_accel)
     RESOLVE_METHOD(mpeg2_init)

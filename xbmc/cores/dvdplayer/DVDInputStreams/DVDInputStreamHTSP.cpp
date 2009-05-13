@@ -73,7 +73,7 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
   return NULL;
 }
 
-CDVDInputStreamHTSP::CDVDInputStreamHTSP() 
+CDVDInputStreamHTSP::CDVDInputStreamHTSP()
   : CDVDInputStream(DVDSTREAM_TYPE_HTSP)
   , m_subs(0)
   , m_startup(false)
@@ -89,7 +89,7 @@ CDVDInputStreamHTSP::~CDVDInputStreamHTSP()
 
 bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
 {
-  if (!CDVDInputStream::Open(file, content)) 
+  if (!CDVDInputStream::Open(file, content))
     return false;
 
   CURL url(file);

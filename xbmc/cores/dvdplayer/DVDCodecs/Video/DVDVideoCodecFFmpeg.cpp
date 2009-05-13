@@ -91,7 +91,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   {
     while((pCodec = m_dllAvCodec.av_codec_next(pCodec)))
     {
-      if(pCodec->id == hints.codec 
+      if(pCodec->id == hints.codec
       && pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU)
         break;
     }
@@ -114,7 +114,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 #endif
 
   if(pCodec == NULL)
-    pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);  
+    pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
 
   if(pCodec == NULL)
   {
@@ -142,7 +142,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   /* some decoders (eg. dv) do not know the pix_fmt until they decode the
    * first frame. setting to -1 avoid enabling DR1 for them.
    */
-  m_pCodecContext->pix_fmt = (PixelFormat) - 1;  
+  m_pCodecContext->pix_fmt = (PixelFormat) - 1;
 
   if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1)
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
@@ -166,8 +166,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // set acceleration
   m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
 
-  // This doesn't seem to help with the H.264 MT patch. "Basically, the code decodes 
-  // up to 128 macroblocks in one thread while doing prediction+idct+deblock of the 
+  // This doesn't seem to help with the H.264 MT patch. "Basically, the code decodes
+  // up to 128 macroblocks in one thread while doing prediction+idct+deblock of the
   // previously decoded 128 blocks in another thread." This could explain the lack of
   // much difference.
   //
@@ -188,12 +188,12 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 #if defined(_LINUX) || defined(_WIN32PC)
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
-  if( num_threads > 1 
+  if( num_threads > 1
 #ifdef HAVE_LIBVDPAU
   &&  !g_VDPAU
 #endif
-  && ( pCodec->id == CODEC_ID_H264 
-    || pCodec->id == CODEC_ID_MPEG4 
+  && ( pCodec->id == CODEC_ID_H264
+    || pCodec->id == CODEC_ID_MPEG4
     || pCodec->id == CODEC_ID_MPEG2VIDEO ))
     m_dllAvCodec.avcodec_thread_init(m_pCodecContext, num_threads);
 #endif
@@ -298,7 +298,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 {
   int iGotPicture = 0, len = 0, result = 0;
 
-  if (!m_pCodecContext) 
+  if (!m_pCodecContext)
     return VC_ERROR;
 
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
@@ -360,19 +360,19 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
 
     // convert the picture
-    struct SwsContext *context = m_dllSwScale.sws_getContext(m_pCodecContext->width, m_pCodecContext->height, 
-                                         m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height, 
+    struct SwsContext *context = m_dllSwScale.sws_getContext(m_pCodecContext->width, m_pCodecContext->height,
+                                         m_pCodecContext->pix_fmt, m_pCodecContext->width, m_pCodecContext->height,
                                          PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
     m_dllSwScale.sws_scale(context
                           , m_pFrame->data
                           , m_pFrame->linesize
-                          , 0 
+                          , 0
                           , m_pCodecContext->height
                           , m_pConvertFrame->data
                           , m_pConvertFrame->linesize);
 
-    m_dllSwScale.sws_freeContext(context); 
+    m_dllSwScale.sws_freeContext(context);
   }
   else
   {
@@ -456,7 +456,7 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
       pDvdVideoPicture->iLineSize[i] = frame->linesize[i];
   }
   pDvdVideoPicture->iRepeatPicture = frame->repeat_pict;
-  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;    
+  pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
   pDvdVideoPicture->iFlags |= frame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pDvdVideoPicture->iFlags |= frame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;
   pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED;

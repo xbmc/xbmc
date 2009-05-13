@@ -36,7 +36,7 @@ public:
   virtual void Reset();
   virtual void Flush();
   virtual CDVDOverlay* GetOverlay();
-  
+
 private:
   bool             m_bIsSSA;
   CDVDOverlayText* m_pOverlay;

@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDSubtitleParserSami.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
@@ -72,7 +72,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
       pOverlay = new CDVDOverlayText();
       pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
 
-      pOverlay->iPTSStartTime = int64_t(atoi(start.c_str()))*DVD_TIME_BASE/1000; 
+      pOverlay->iPTSStartTime = int64_t(atoi(start.c_str()))*DVD_TIME_BASE/1000;
       pOverlay->iPTSStopTime  = DVD_NOPTS_VALUE;
       m_collection.Add(pOverlay);
       text += pos + reg.GetFindLen();

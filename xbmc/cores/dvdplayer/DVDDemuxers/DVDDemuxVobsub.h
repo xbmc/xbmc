@@ -32,7 +32,7 @@ class CDVDDemuxVobsub : public CDVDDemux
 public:
   CDVDDemuxVobsub();
   virtual ~CDVDDemuxVobsub();
-  
+
   virtual bool          Open(const std::string& filename);
   virtual void          Reset();
   virtual void          Abort() {};
@@ -46,7 +46,7 @@ public:
   virtual std::string   GetFileName()        { return m_Filename; }
 
 private:
-  class CStream 
+  class CStream
     : public CDemuxStreamSubtitle
   {
   public:

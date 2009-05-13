@@ -10,7 +10,7 @@
 enum DVDOverlayType
 {
   DVDOVERLAY_TYPE_NONE    = -1,
-  DVDOVERLAY_TYPE_SPU     = 1,  
+  DVDOVERLAY_TYPE_SPU     = 1,
   DVDOVERLAY_TYPE_TEXT    = 2,
   DVDOVERLAY_TYPE_IMAGE   = 3,
   DVDOVERLAY_TYPE_SSA     = 4
@@ -22,19 +22,19 @@ public:
   CDVDOverlay(DVDOverlayType type)
   {
     m_type = type;
-     
+
     iPTSStartTime = 0LL;
     iPTSStopTime = 0LL;
     bForced = false;
     replace = false;
-    
+
     m_references = 1;
 #ifdef DVDDEBUG_OVERLAY_TRACKER
     m_bTrackerReference = 0;
 #endif
     iGroupId = 0;
   }
-  
+
   virtual ~CDVDOverlay()
   {
     // CLog::DebugLog("CDVDOverlay::CleanUp, remove, start : %d, stop : %d", (int)(iPTSStartTime / 1000), (int)(iPTSStopTime / 1000));
@@ -46,16 +46,16 @@ public:
   }
 
   /**
-   * decrease the reference counter by one.   
+   * decrease the reference counter by one.
    */
   long Acquire()
   {
     long count = InterlockedIncrement(&m_references);
     return count;
   }
-  
+
   /**
-   * increase the reference counter by one.   
+   * increase the reference counter by one.
    */
   long Release()
   {
@@ -68,9 +68,9 @@ public:
   {
     return m_references;
   }
-  
+
   bool IsOverlayType(DVDOverlayType type) { return (m_type == type); }
-  
+
   double iPTSStartTime;
   double iPTSStopTime;
   bool bForced; // display, no matter what
@@ -79,7 +79,7 @@ public:
 #ifdef DVDDEBUG_OVERLAY_TRACKER
   int m_bTrackerReference;
 #endif
-  
+
 protected:
   DVDOverlayType m_type;
 

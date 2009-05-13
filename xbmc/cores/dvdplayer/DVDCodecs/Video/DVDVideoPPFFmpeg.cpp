@@ -46,7 +46,7 @@ void CDVDVideoPPFFmpeg::Dispose()
     m_dll.pp_free_context(m_pContext);
     m_pContext = NULL;
   }
-  
+
   if( m_FrameBuffer.iFlags & DVP_FLAG_ALLOCATED )
   {
     for( int i = 0; i<4; i++ )
@@ -70,7 +70,7 @@ void CDVDVideoPPFFmpeg::Dispose()
 bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
 {
   if (!m_dll.IsLoaded() && !m_dll.Load()) return false;
-  
+
   if(m_iInitWidth != iWidth || m_iInitHeight != iHeight)
   {
     if(m_pContext || m_pMode)
@@ -87,7 +87,7 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
   }
 
 
-  if(m_pMode) 
+  if(m_pMode)
     return true;
   else
     return false;
@@ -118,11 +118,11 @@ void CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
     }
   }
 
-  m_dll.pp_postprocess(m_pSource->data, m_pSource->iLineSize, 
-                m_pTarget->data, m_pTarget->iLineSize,        
+  m_dll.pp_postprocess(m_pSource->data, m_pSource->iLineSize,
+                m_pTarget->data, m_pTarget->iLineSize,
                 m_pSource->iWidth, m_pSource->iHeight,
                 0, 0,
-                m_pMode, m_pContext, 
+                m_pMode, m_pContext,
                 PP_PICT_TYPE_QP2); //m_pSource->iFrameType);
 
   //Copy frame information over to target, but make sure it is set as allocated should decoder have forgotten
@@ -137,7 +137,7 @@ void CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
 
 
 }
- 
+
 
 
 bool CDVDVideoPPFFmpeg::CheckFrameBuffer(const DVDVideoPicture* pSource)
@@ -164,13 +164,13 @@ bool CDVDVideoPPFFmpeg::CheckFrameBuffer(const DVDVideoPicture* pSource)
 
     m_FrameBuffer.iWidth = pSource->iWidth;
     m_FrameBuffer.iHeight = pSource->iHeight;
-    
+
     unsigned int iPixels = pSource->iWidth*pSource->iHeight;
 
     m_FrameBuffer.data[0] = new BYTE[iPixels];    //Y
     m_FrameBuffer.data[1] = new BYTE[iPixels/4];  //U
     m_FrameBuffer.data[2] = new BYTE[iPixels/4];  //V
-  
+
     if( !m_FrameBuffer.data[0] || !m_FrameBuffer.data[1] || !m_FrameBuffer.data[2])
     {
       CLog::Log(LOGERROR, "CDVDVideoDeinterlace::AllocBufferOfType - Unable to allocate framebuffer, bailing");

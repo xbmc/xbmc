@@ -63,9 +63,9 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
 {
   if (!CDVDInputStream::Open(strFile, "video/x-flv")) return false;
 
-  m_rtmp.SetPlayer(m_item.GetProperty("SWFPlayer")); 
-  m_rtmp.SetPageUrl(m_item.GetProperty("PageURL")); 
-  m_rtmp.SetPlayPath(m_item.GetProperty("PlayPath")); 
+  m_rtmp.SetPlayer(m_item.GetProperty("SWFPlayer"));
+  m_rtmp.SetPageUrl(m_item.GetProperty("PageURL"));
+  m_rtmp.SetPlayPath(m_item.GetProperty("PlayPath"));
   m_rtmp.SetBufferMS(20000);
 
   if (!m_rtmp.Connect(strFile))
@@ -117,7 +117,7 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
       if (buf_size < 9)
         return -1;
 
-      char header[] = { 'F', 'L', 'V', 0x01, 
+      char header[] = { 'F', 'L', 'V', 0x01,
                       0x05, // video + audio
                       0x00, 0x00, 0x00, 0x09};
       memcpy(buf, header, 9);
@@ -131,7 +131,7 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
 
     // skip video info/command packets
     // if we keep these it chokes the dvdplayer
-    if ( packet.m_packetType == 0x09 && 
+    if ( packet.m_packetType == 0x09 &&
          packet.m_nBodySize == 2 &&
          ( (*packet.m_body & 0xf0) == 0x50) )
     {
@@ -160,7 +160,7 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
       *ptr = packet.m_packetType;
       ptr++;
       ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, packet.m_nBodySize);
-      
+
       ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, packet.m_nInfoField1);
       *ptr = (char)((packet.m_nInfoField1 & 0xFF000000) >> 24);
       ptr++;
@@ -176,9 +176,9 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
     }
     else if (packet.m_packetType == 0x16)
     {
-      // FLV tag(s) packet 
+      // FLV tag(s) packet
       // contains it's own tagsize footer, don't write another
-      m_prevTagSize = -1; 
+      m_prevTagSize = -1;
     }
 
     int nBodyLen = packet.m_nBodySize;
@@ -186,18 +186,18 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
     {
       memcpy(ptr, packet.m_body, buf_size);
       nRead += buf_size;
-    
+
       m_leftOver = new char[packet.m_nBodySize - buf_size];
       memcpy(m_leftOver, packet.m_body + buf_size, packet.m_nBodySize - buf_size);
       m_leftOverSize =  packet.m_nBodySize - buf_size;
       m_leftOverConsumed = 0;
       break;
     }
-    else 
+    else
     {
       memcpy(ptr, packet.m_body, nBodyLen);
       nRead += nBodyLen;
-      buf_size -= nBodyLen; 
+      buf_size -= nBodyLen;
     }
 
   }
@@ -206,7 +206,7 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
   if (m_rtmp.IsConnected())
     return nRead;
 
-  return -1;  
+  return -1;
 }
 
 __int64 CDVDInputStreamRTMP::Seek(__int64 offset, int whence)

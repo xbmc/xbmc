@@ -41,13 +41,13 @@ public:
   virtual int GetBitsPerSample();
   virtual bool NeedPasstrough() { return true; }
   virtual const char* GetName()  { return "passthrough"; }
-  
+
 private:
   int ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize);
 
   int PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pOut);
   int PaddDTSData( BYTE* pData, int iDataSize, BYTE* pOut);
-  
+
   BYTE m_OutputBuffer[131072];
   int  m_OutputSize;
 
@@ -68,7 +68,7 @@ private:
 
   DllLibDts m_dllDTS;
   DllLiba52 m_dllA52;
-  
+
   dts_state_t* m_pStateDTS;
   a52_state_t* m_pStateA52;
 };

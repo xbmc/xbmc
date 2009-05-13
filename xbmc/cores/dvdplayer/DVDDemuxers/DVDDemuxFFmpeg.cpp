@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
@@ -243,7 +243,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("aac");
     else if( content.compare("audio/aac") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("aac");
-    else if( content.compare("audio/mpeg") == 0  )  
+    else if( content.compare("audio/mpeg") == 0  )
       iformat = m_dllAvFormat.av_find_input_format("mp3");
     else if( content.compare("video/mpeg") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
@@ -307,7 +307,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     context->filename = (char *) &context[1];
 #endif
 
-    strcpy(context->filename, strFile.c_str());  
+    strcpy(context->filename, strFile.c_str());
 
     // open our virtual file device
     if(m_dllAvFormat.url_fdopen(&m_ioContext, context) < 0)
@@ -365,7 +365,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       return false;
     }
   }
-  
+
   // we need to know if this is matroska later
   m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
 
@@ -375,7 +375,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   {
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
     {
-      /* too speed up livetv channel changes, only analyse very short */ 
+      /* too speed up livetv channel changes, only analyse very short */
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
         m_pFormatContext->max_analyze_duration = 500000;
     }
@@ -462,17 +462,17 @@ void CDVDDemuxFFmpeg::Dispose()
   m_speed = DVD_PLAYSPEED_NORMAL;
 
   for (int i = 0; i < MAX_STREAMS; i++)
-  {    
-    if (m_streams[i]) 
+  {
+    if (m_streams[i])
     {
       if (m_streams[i]->ExtraData)
         delete[] (BYTE*)(m_streams[i]->ExtraData);
       delete m_streams[i];
     }
     m_streams[i] = NULL;
-  }  
+  }
   m_pInput = NULL;
-  
+
   m_dllAvFormat.Unload();
   m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
@@ -493,7 +493,7 @@ void CDVDDemuxFFmpeg::Flush()
   {
     m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
 
-    // reset any dts interpolation      
+    // reset any dts interpolation
     for(int i=0;i<MAX_STREAMS;i++)
     {
       if(m_pFormatContext->streams[i])
@@ -572,7 +572,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
   AVPacket pkt;
   DemuxPacket* pPacket = NULL;
-  // on some cases where the received packet is invalid we will need to return an empty packet (0 length) otherwise the main loop (in CDVDPlayer) 
+  // on some cases where the received packet is invalid we will need to return an empty packet (0 length) otherwise the main loop (in CDVDPlayer)
   // would consider this the end of stream and stop.
   bool bReturnEmpty = false;
   Lock();
@@ -780,7 +780,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     return true;
   }
 
-  if(!m_pInput->Seek(0, SEEK_POSSIBLE) 
+  if(!m_pInput->Seek(0, SEEK_POSSIBLE)
   && !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
   {
     CLog::Log(LOGDEBUG, "%s - input stream reports it is not seekable", __FUNCTION__);
@@ -882,7 +882,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
   AVStream* pStream = m_pFormatContext->streams[iId];
   if (pStream)
   {
-    if (m_streams[iId]) 
+    if (m_streams[iId])
     {
       if( m_streams[iId]->ExtraData ) delete[] (BYTE*)(m_streams[iId]->ExtraData);
       delete m_streams[iId];
@@ -924,7 +924,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->iHeight = pStream->codec->height;
         if (pStream->sample_aspect_ratio.num == 0)
           st->fAspect = 0.0;
-        else 
+        else
           st->fAspect = av_q2d(pStream->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
 
         break;
@@ -992,7 +992,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
     {
       // this stuff is really only valid for dvd's.
-      // this is so that the physicalid matches the 
+      // this is so that the physicalid matches the
       // id's reported from libdvdnav
       switch(m_streams[iId]->codec)
       {
@@ -1024,9 +1024,9 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 std::string CDVDDemuxFFmpeg::GetFileName()
 {
   if(m_pInput && m_pInput)
-    return m_pInput->GetFileName(); 
-  else 
-    return ""; 
+    return m_pInput->GetFileName();
+  else
+    return "";
 }
 
 int CDVDDemuxFFmpeg::GetChapterCount()
@@ -1043,8 +1043,8 @@ int CDVDDemuxFFmpeg::GetChapter()
 {
   if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
     return ((CDVDInputStreamNavigator*)m_pInput)->GetChapter();
-    
-  if(m_pFormatContext == NULL 
+
+  if(m_pFormatContext == NULL
   || m_iCurrentPts == DVD_NOPTS_VALUE)
     return 0;
 
@@ -1062,7 +1062,7 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
 {
   if(m_pInput && m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
     return;
-  else 
+  else
   {
     int chapterIdx = GetChapter();
     if(chapterIdx > 0 && m_pFormatContext->chapters[chapterIdx-1]->title)
