@@ -60,6 +60,9 @@ public:
   void Resume();
   void SetSpeed(int iSpeed);
 
+  double GetMaxSpeedAdjust(bool playingvideo);
+  bool   SetMaxSpeedAdjust(double speed);
+  
   static double GetAbsoluteClock();
   static double GetFrequency() { return (double)m_systemFrequency.QuadPart ; }
   static void   WaitAbsoluteClock(double target);
@@ -73,6 +76,9 @@ protected:
   
   static LARGE_INTEGER m_systemFrequency;
   static LARGE_INTEGER m_systemOffset;
-  
   static CCriticalSection m_systemsection;
+  
+  double           m_maxspeedadjust;
+  bool             m_playingvideo;
+  CCriticalSection m_speedsection;
 };

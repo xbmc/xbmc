@@ -184,6 +184,8 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_syncclock = true;
   QueryPerformanceCounter(&m_errortime);
   
+  m_maxspeedadjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
+  
   CLog::Log(LOGNOTICE, "Creating audio thread");
   Create();
 
@@ -537,6 +539,13 @@ void CDVDPlayerAudio::Process()
 
       m_synctype = m_setsynctype;
       if (audioframe.passthrough && m_synctype == SYNC_RESAMPLE)
+        m_synctype = SYNC_SKIPDUP;
+      
+      double maxspeedadjust = 0.0;
+      if (m_synctype == SYNC_RESAMPLE)
+        maxspeedadjust = m_maxspeedadjust;
+      
+      if (!m_pClock->SetMaxSpeedAdjust(maxspeedadjust))
         m_synctype = SYNC_DISCON;
       
       // add any packets play
