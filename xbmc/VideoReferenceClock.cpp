@@ -33,25 +33,6 @@
 
 using namespace std;
 
-#if defined(__APPLE__)
-// Called by the Core Video Display Link whenever it's appropriate to render a frame.
-static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
-{
-	CEvent *VblankEvent = (CEvent*)displayLinkContext;
-  void* pool; 	
-	// Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
-  pool = Cocoa_Create_AutoReleasePool();
-	
-	// Simply set the event
-	VblankEvent->Set();
-	
-	// Destroy the autorelease pool
-  Cocoa_Destroy_AutoReleasePool(pool);
-	
-	return kCVReturnSuccess;
-}
-#endif
-
 CVideoReferenceClock::CVideoReferenceClock()
 {
   LARGE_INTEGER Freq;
@@ -68,16 +49,14 @@ void CVideoReferenceClock::Process()
   bool SetupSuccess = false;
   LARGE_INTEGER Now;
 
-#if defined(__APPLE__)
-  SetupSuccess = Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, &m_VblankEvent);
-#endif
-
   while(!m_bStop)
   {
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
     SetupSuccess = SetupGLX();
 #elif defined(_WIN32)
     SetupSuccess = SetupD3D();
+#elif defined(__APPLE__)
+    SetupSuccess = SetupCocoa();
 #endif
 
     CSingleLock SingleLock(m_CritSection);
@@ -97,8 +76,7 @@ void CVideoReferenceClock::Process()
 #elif defined(_WIN32)
       RunD3D();
 #elif defined(__APPLE__)
-      UpdateRefreshrate();
-      Sleep(500);
+      RunCocoa();
 #endif
 
     }
@@ -119,13 +97,11 @@ void CVideoReferenceClock::Process()
     CleanupGLX();
 #elif defined(_WIN32)
     CleanupD3D();
+#elif defined(__APPLE__)
+    CleanupCocoa();
 #endif
     if (!SetupSuccess) break;
   }
-
-#if defined(__APPLE__)
-  Cocoa_CVDisplayLinkRelease();
-#endif
 }
 
 void CVideoReferenceClock::WaitStarted(int MSecs)
@@ -642,7 +618,75 @@ void CVideoReferenceClock::HandleWindowMessages()
   }
 }
 
-#endif /*_WIN32*/
+#elif defined(__APPLE__)
+
+bool CVideoReferenceClock::SetupCocoa()
+{
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: setting up up Cocoa");
+  LARGE_INTEGER Now;
+  
+  QueryPerformanceCounter(&Now);
+  m_LastVBlankTime = Now.QuadPart;
+  m_MissedVblanks = 0;
+  
+  if (!Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, reinterpret_cast<void*>(this)))
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cocoa_CVDisplayLinkCreate failed");
+    return false;
+  }
+  else
+  {
+    UpdateRefreshRate(true);
+    return true;
+  }
+}
+
+void CVideoReferenceClock::RunCocoa()
+{
+  while(!m_bStop)
+  {
+    UpdateRefreshRate();
+    Sleep(1000);
+  }
+}
+
+// Called by the Core Video Display Link whenever it's appropriate to render a frame.
+static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+{
+  int           NrVBlanks;
+  double        VBlankTime;
+  LARGE_INTEGER Now;
+  QueryPerformanceCounter&Now;
+  
+  CVideoReferenceClock *this = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
+  void* pool;   
+  // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
+  pool = Cocoa_Create_AutoReleasePool();
+  
+  VBlankTime = (double)(Now.QuadPart - m_LastVBlankTime) / (double)m_SystemFrequency;
+  NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
+
+  m_LastVBlankTime = Now.QuadPart;
+  
+  SingleLock.Enter();
+  m_VblankTime = Now.QuadPart;
+  UpdateClock(NrVBlanks, true);
+  SingleLock.Leave();
+  SendVblankSignal();
+  
+  // Destroy the autorelease pool
+  Cocoa_Destroy_AutoReleasePool(pool);
+  
+  return kCVReturnSuccess;
+}
+
+void CVideoReferenceClock::CleanupCocoa()
+{
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: cleaning up Cocoa");
+  Cocoa_CVDisplayLinkRelease();
+}    
+
+#endif
 
 void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 {
