@@ -76,13 +76,13 @@ inline __int64 get_thread_cpu_usage(ProcessPerformance* p)
     FILETIME current_time_system;
     ULARGE_INTEGER old_time_thread;
     ULARGE_INTEGER old_time_system;
-    
+
     old_time_thread.QuadPart = p->timer_thread.QuadPart;
     old_time_system.QuadPart = p->timer_system.QuadPart;
-    
+
     GetThreadTimes(p->hThread, &dummy, &dummy, &current_time_thread, &dummy);
     GetSystemTimeAsFileTime(&current_time_system);
-    
+
     FILETIME_TO_ULARGE_INTEGER(p->timer_thread, current_time_thread);
     FILETIME_TO_ULARGE_INTEGER(p->timer_system, current_time_system);
 
@@ -124,13 +124,13 @@ CDVDPerformanceCounter::CDVDPerformanceCounter()
 {
   m_pAudioQueue = NULL;
   m_pVideoQueue = NULL;
-  
+
   memset(&m_videoDecodePerformance, 0, sizeof(m_videoDecodePerformance)); // video decoding
   memset(&m_audioDecodePerformance, 0, sizeof(m_audioDecodePerformance)); // audio decoding + output to audio device
   memset(&m_mainPerformance,        0, sizeof(m_mainPerformance));        // reading files, demuxing, decoding of subtitles + menu overlays
-  
+
   InitializeCriticalSection(&m_critSection);
-  
+
   Initialize();
 }
 
@@ -143,7 +143,7 @@ CDVDPerformanceCounter::~CDVDPerformanceCounter()
 bool CDVDPerformanceCounter::Initialize()
 {
   Lock();
-  
+
 #ifdef DVDDEBUG_WITH_PERFORMANCE_COUNTER
 
   DmRegisterPerformanceCounter("DVDAudioQueue",               DMCOUNT_SYNC, DVDPerformanceCounterAudioQueue);
@@ -162,7 +162,7 @@ bool CDVDPerformanceCounter::Initialize()
 void CDVDPerformanceCounter::DeInitialize()
 {
   Lock();
-  
+
   Unlock();
 }
 

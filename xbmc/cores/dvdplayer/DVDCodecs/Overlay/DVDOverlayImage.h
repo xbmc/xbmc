@@ -20,7 +20,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "DVDOverlay.h"
 
 class CDVDOverlayImage : public CDVDOverlay

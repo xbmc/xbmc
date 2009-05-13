@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDAudioCodecLPcm.h"
 #include "DVDStreamInfo.h"
@@ -35,12 +35,12 @@ bool CDVDAudioCodecLPcm::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
   CDVDStreamInfo hints2(hints, true);
   hints2.codec = CODEC_ID_NONE;
-#if 0  
+#if 0
   if (hints.codecID = CODEC_ID_LPCM_S24BE) hints2.codec = CODEC_ID_PCM_S24BE;
 #endif
   if (hints2.codec != CODEC_ID_NONE)
     return CDVDAudioCodecPcm::Open(hints2, options);
-  
+
   return false;
 }
 
@@ -51,7 +51,7 @@ int CDVDAudioCodecLPcm::Decode(BYTE* pData, int iSize)
   int iDecoded = 0;
 
   if (iSize > m_bufferSize) iSize = m_bufferSize;
-  
+
   if (iSize >= 12)
   {
 #if 0
@@ -76,14 +76,14 @@ int CDVDAudioCodecLPcm::Decode(BYTE* pData, int iSize)
         d[9] = s[6];
         d[10] = s[7];
         d[11] = s[11];
-        
+
         s += 12;
         d += 12;
       }
     }
-    
+
     return CDVDAudioCodecPcm::Decode(m_buffer, iDecoded);
   }
-  
+
   return iSize;
 }

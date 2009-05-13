@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
@@ -59,7 +59,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
                      &hh1, &sep, &mm1, &sep, &ss1, &sep, &ms1,
                      &hh2, &sep, &mm2, &sep, &ss2, &sep, &ms2);
 
-      if (c == 1) 
+      if (c == 1)
       {
         // numbering, skip it
       }
@@ -86,7 +86,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
           if (g_charsetConverter.isValidUtf8(line))
             strUTF8 = line;
           else
-          {  
+          {
             g_charsetConverter.subtitleCharsetToW(line, strUTF16);
             g_charsetConverter.wToUTF8(strUTF16,strUTF8);
           }

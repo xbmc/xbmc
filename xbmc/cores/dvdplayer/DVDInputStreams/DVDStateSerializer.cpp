@@ -48,12 +48,12 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
 
   TiXmlElement eRoot("navstate");
   eRoot.SetAttribute("version", 1);
-  
+
 	
   { TiXmlElement eRegisters("registers");
 
     for( int i = 0; i < 24; i++ )
-    {    
+    {
 
       if( state->registers.SPRM[i] )
       { TiXmlElement eReg("sprm");
@@ -80,7 +80,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
           eValue.InsertEndChild( TiXmlText(buffer) );
           eReg.InsertEndChild(eValue);
         }
-        
+
         { TiXmlElement eMode("mode");
           sprintf(buffer, "0x%c", state->registers.GPRM_mode[i]);
           eMode.InsertEndChild( TiXmlText(buffer) );
@@ -89,19 +89,19 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
 
         { TiXmlElement eTime("time");
           { TiXmlElement eValue("tv_sec");
-            sprintf(buffer, "%ld", state->registers.GPRM_time[i].tv_sec);      
+            sprintf(buffer, "%ld", state->registers.GPRM_time[i].tv_sec);
             eValue.InsertEndChild( TiXmlText( buffer ) );
             eTime.InsertEndChild( eValue ) ;
           }
 
           { TiXmlElement eValue("tv_usec");
-            sprintf(buffer, "%ld", state->registers.GPRM_time[i].tv_usec);      
+            sprintf(buffer, "%ld", state->registers.GPRM_time[i].tv_usec);
             eValue.InsertEndChild( TiXmlText( buffer ) );
             eTime.InsertEndChild( eValue ) ;
           }
           eReg.InsertEndChild(eTime);
-        }    
-        eRegisters.InsertEndChild(eReg);  
+        }
+        eRegisters.InsertEndChild(eReg);
       }
     }
     eRoot.InsertEndChild(eRegisters);
@@ -124,7 +124,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
     element.InsertEndChild( TiXmlText( buffer ) );
     eRoot.InsertEndChild(element);
   }
-  
+
   { TiXmlElement element("pgn");
     sprintf(buffer, "%d", state->pgN);
     element.InsertEndChild( TiXmlText( buffer ) );
@@ -150,7 +150,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
   }
 
   { TiXmlElement rsm("rsm");
-    
+
     { TiXmlElement element("vtsn");
       sprintf(buffer, "%d", state->rsm_vtsN);
       element.InsertEndChild( TiXmlText( buffer ) );
@@ -178,7 +178,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
     { TiXmlElement regs("registers");
 
       for( int i = 0; i < 5; i++ )
-      { 
+      {
         TiXmlElement reg("sprm");
         reg.SetAttribute("index", i);
 
@@ -197,7 +197,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
 
 
   xmlDoc.InsertEndChild(eRoot);
-  
+
   std::stringstream stream;
   stream << xmlDoc;
   xmlstate = stream.str();
@@ -209,16 +209,16 @@ bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &
   TiXmlDocument xmlDoc;
 
   xmlDoc.Parse(xmlstate.c_str());
-  
+
   if( xmlDoc.Error() )
     return false;
 
-  TiXmlHandle hRoot( xmlDoc.RootElement() );  
-  if( strcmp( hRoot.Element()->Value(), "navstate" ) != 0 ) return false;  
-  
-  TiXmlElement *element = NULL;  
+  TiXmlHandle hRoot( xmlDoc.RootElement() );
+  if( strcmp( hRoot.Element()->Value(), "navstate" ) != 0 ) return false;
+
+  TiXmlElement *element = NULL;
   TiXmlText *text = NULL;
-  int index = 0;  
+  int index = 0;
 
   element = hRoot.FirstChildElement("registers").FirstChildElement("sprm").Element();
   while( element )
@@ -228,10 +228,10 @@ bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &
     text = TiXmlHandle( element ).FirstChildElement("value").FirstChild().Text();
     if( text && index >= 0 && index < 24 )
       sscanf(text->Value(), "0x%hx", &state->registers.SPRM[index]);
-        
+
     element = element->NextSiblingElement("sprm");
   }
- 
+
   element = hRoot.FirstChildElement("registers").FirstChildElement("gprm").Element();
   while( element )
   {
@@ -239,7 +239,7 @@ bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &
     if( index >= 0 && index < 16 )
     {
       text = TiXmlHandle( element ).FirstChildElement("value").FirstChild().Text();
-      if( text ) 
+      if( text )
         sscanf(text->Value(), "0x%hx", &state->registers.GPRM[index]);
 
       text = TiXmlHandle( element ).FirstChildElement("mode").FirstChild().Text();
@@ -256,7 +256,7 @@ bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &
     }
     element = element->NextSiblingElement("gprm");
   }
- 
+
   if( (text = hRoot.FirstChildElement("domain").FirstChild().Text()) )
     sscanf(text->Value(), "%d", (int*) &state->domain);
 

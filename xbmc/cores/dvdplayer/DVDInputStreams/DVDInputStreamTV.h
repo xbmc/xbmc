@@ -29,7 +29,7 @@ class ILiveTVInterface;
 class IRecordable;
 }
 
-class CDVDInputStreamTV 
+class CDVDInputStreamTV
   : public CDVDInputStream
   , public CDVDInputStream::IChannel
 {

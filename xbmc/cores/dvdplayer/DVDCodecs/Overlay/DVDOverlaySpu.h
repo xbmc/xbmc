@@ -43,7 +43,7 @@ public:
 
     bHasColor = false;
     bHasAlpha = false;
-  
+
     memset(alpha, 0, sizeof(alpha));
     memset(color, 0, sizeof(color));
     memset(stats, 0, sizeof(stats));
@@ -60,22 +60,22 @@ public:
   int height;
 
   int stats[4]; // nr of pixels for each color found in the overlay.
-  
+
   // the four contrasts, [0] = background
   int alpha[4];
   bool bHasAlpha;
-  
+
   // the four yuv colors, containing [][0] = Y, [][1] = Cr, [][2] = Cb
   // [0][] = background, [1][] = pattern, [2][] = emphasis1, [3][] = emphasis2
   int color[4][3];
   bool bHasColor;
-  
+
   // used for cropping overlays
   int crop_i_x_end;
   int crop_i_y_end;
   int crop_i_x_start;
   int crop_i_y_start;
-  
+
   // provided by the navigator engine
   // should be used on the highlighted areas
   int highlight_color[4][3];

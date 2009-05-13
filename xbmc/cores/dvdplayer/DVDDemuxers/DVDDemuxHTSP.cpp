@@ -35,7 +35,7 @@ extern "C" {
 }
 
 
-CDVDDemuxHTSP::CDVDDemuxHTSP() 
+CDVDDemuxHTSP::CDVDDemuxHTSP()
   : CDVDDemux()
   , m_Input(NULL)
   , m_StatusCount(0)
@@ -243,8 +243,8 @@ int CDVDDemuxHTSP::GetNrOfStreams()
 std::string CDVDDemuxHTSP::GetFileName()
 {
   if(m_Input)
-    return m_Input->GetFileName(); 
-  else 
-    return ""; 
+    return m_Input->GetFileName();
+  else
+    return "";
 }
 

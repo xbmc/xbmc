@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDSubtitleParserMicroDVD.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
@@ -49,7 +49,7 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
   {
     m_framerate = (double)hints.fpsscale / (double)hints.fpsrate;
     m_framerate *= DVD_TIME_BASE;
-  } 
+  }
   else
     m_framerate = DVD_TIME_BASE / 25.0;
 

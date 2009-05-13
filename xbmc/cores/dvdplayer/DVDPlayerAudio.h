@@ -94,15 +94,15 @@ public:
 
   bool OpenStream(CDVDStreamInfo &hints);
   void CloseStream(bool bWaitForBuffers);
-  
+
   void SetSpeed(int speed);
   void Flush();
 
-  // waits until all available data has been rendered  
+  // waits until all available data has been rendered
   void WaitForBuffers();
   bool AcceptsData()                                    { return !m_messageQueue.IsFull(); }
   void SendMessage(CDVDMsg* pMsg)                       { m_messageQueue.Put(pMsg); }
-  
+
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
 
@@ -111,14 +111,14 @@ public:
 
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
-  
+
   CDVDMessageQueue m_messageQueue;
   CPTSOutputQueue m_ptsOutput;
   CPTSInputQueue  m_ptsInput;
 
   double GetCurrentPts()                            { return m_ptsOutput.Current(); }
 
-  bool IsStalled()                                  { return m_stalled 
+  bool IsStalled()                                  { return m_stalled
                                                           && m_messageQueue.GetDataSize() == 0;  }
 protected:
 
@@ -128,11 +128,11 @@ protected:
 
   int DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket);
 
-  // tries to open a decoder for the given data. 
+  // tries to open a decoder for the given data.
   bool OpenDecoder(CDVDStreamInfo &hint, BYTE* buffer = NULL, unsigned int size = 0);
 
   double m_audioClock;
-  
+
   // data for audio decoding
   struct
   {
@@ -145,7 +145,7 @@ protected:
     {
       msg = msg2;
       msg->Acquire();
-      DemuxPacket* p = msg->GetPacket();      
+      DemuxPacket* p = msg->GetPacket();
       data = p->pData;
       size = p->iSize;
       dts = p->dts;
@@ -170,17 +170,17 @@ protected:
   double  m_droptime;
   bool    m_stalled;
   bool    m_started;
-  
+
   CDVDPlayerResampler m_resampler;
-  
+
   bool OutputPacket(DVDAudioFrame &audioframe);
-  
+
   //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
   int    m_synctype;
   int    m_setsynctype;
-  
+
   double m_error;    //last average error
-  
+
   LARGE_INTEGER m_errortime; //timestamp of last time we measured
   LARGE_INTEGER m_freq;
 
@@ -188,12 +188,12 @@ protected:
   double m_errorbuff; //place to store average errors
   int    m_errorcount;//number of errors stored
   bool   m_syncclock;
-  
+
   double m_integral; //integral correction for resampler
   int    m_skipdupcount; //counter for skip/duplicate synctype
   bool   m_prevskipped;
   double m_maxspeedadjust;
-  
+
   CRITICAL_SECTION m_critCodecSection;
 };
 

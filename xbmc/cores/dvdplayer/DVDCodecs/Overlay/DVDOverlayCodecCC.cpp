@@ -66,7 +66,7 @@ int CDVDOverlayCodecCC::Decode(BYTE* pData, int iSize, double pts, double durati
   {
     Flush();
     m_pCurrentOverlay = new CDVDOverlayText();
-    
+
     cc_buffer_t* data = &m_cc_decoder->on_buf->channel[0];
     for (int r = 0; r < CC_ROWS; r++)
     {
@@ -84,11 +84,11 @@ int CDVDOverlayCodecCC::Decode(BYTE* pData, int iSize, double pts, double durati
         m_pCurrentOverlay->AddElement(pText);
       }
     }
-    
+
     return OC_OVERLAY;
-    
+
     /*
-    
+
     m_pCurrentOverlay->iPTSStartTime = pts;
     m_pCurrentOverlay->iPTSStopTime = 0LL;
 

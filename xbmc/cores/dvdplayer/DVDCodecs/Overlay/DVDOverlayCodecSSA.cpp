@@ -84,7 +84,7 @@ int CDVDOverlayCodecSSA::Decode(BYTE* data, int size, double pts, double duratio
       auto_aptr<char> layer(new char[line.length()+1]);
 
       if(sscanf(line.c_str(), "%*[^:]%[^,],%d:%d:%d%*c%d,%d:%d:%d%*c%d"
-                            , layer.get(), &sh, &sm, &ss, &sc, &eh,&em, &es, &ec) != 9) 
+                            , layer.get(), &sh, &sm, &ss, &sc, &eh,&em, &es, &ec) != 9)
         continue;
 
       duration  = (eh*360000.0)+(em*6000.0)+(es*100.0)+ec;

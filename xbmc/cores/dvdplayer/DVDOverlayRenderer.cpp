@@ -41,15 +41,15 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlay* pOve
     Render(pPicture, (CDVDOverlayImage*)pOverlay);
   }
   else if (pOverlay->IsOverlayType(DVDOVERLAY_TYPE_SSA))
-  {     
+  {
     Render(pPicture, (CDVDOverlaySSA*)pOverlay, pts);
   }
   else if (false && pOverlay->IsOverlayType(DVDOVERLAY_TYPE_TEXT))
   {
     CDVDOverlayText* pOverlayText = (CDVDOverlayText*)pOverlay;
-    
+
     //CLog::Log(LOGDEBUG, " - s: %i, e: %i", (int)(pOverlayText->iPTSStartTime / 1000), (int)(pOverlayText->iPTSStopTime / 1000));
-    
+
     CDVDOverlayText::CElement* e = pOverlayText->m_pHead;
     while (e)
     {
@@ -140,11 +140,11 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage*
     DWORD color = pOverlay->palette[i];
 
     palette[3][i] = (BYTE)((color >> 24) & 0xff);
-    
+
     double r = ((color >> 16) & 0xff) / 255.0;
     double g = ((color >> 8 ) & 0xff) / 255.0;
     double b = ((color >> 0 ) & 0xff) / 255.0;
-    
+
     palette[0][i] = (BYTE)(255 * CLAMP(0.299 * r + 0.587 * g + 0.114 * b, 0.0, 1.0));
     palette[1][i] = (BYTE)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));
     palette[2][i] = (BYTE)(127.5 + 255 * CLAMP(-0.169 * r - 0.331 * g + 0.500 * b, -0.5, 0.5));
@@ -161,7 +161,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage*
 
     BYTE* line = pOverlay->data + pOverlay->linesize*i;
 
-    BYTE* target[3];    
+    BYTE* target[3];
     target[0] = pPicture->data[0] + pPicture->stride[0]*(i + y) + x;
     target[1] = pPicture->data[1] + pPicture->stride[1]*((i + y)>>1) + (x>>1);
     target[2] = pPicture->data[2] + pPicture->stride[2]*((i + y)>>1) + (x>>1);
@@ -183,7 +183,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage*
 
       int s_blend = palette[3][index] + 1;
       int t_blend = 256 - s_blend;
-      
+
       target[0][j] = (target[0][j] * t_blend + palette[0][index] * s_blend) >> 8;
       if(!(1&(i|j)))
       {
@@ -201,7 +201,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlayImage*
 void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverlay* pOverlaySpu, bool bCrop)
 {
   CDVDOverlaySpu* pOverlay = (CDVDOverlaySpu*)pOverlaySpu;
-  
+
   unsigned __int8*  p_destptr = NULL;
   unsigned __int16* p_source = (unsigned __int16*)pOverlay->pData;
   unsigned __int8*  p_dest[3];
@@ -209,12 +209,12 @@ void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverl
   int i_x, i_y;
   int rp_len, i_color, pixels_to_draw;
   unsigned __int16 i_colprecomp, i_destalpha;
-  
+
   int btn_x_start = pOverlay->crop_i_x_start;
   int btn_x_end   = pOverlay->crop_i_x_end;
   int btn_y_start = pOverlay->crop_i_y_start;
   int btn_y_end   = pOverlay->crop_i_y_end;
-  
+
   int *p_color;
   int p_alpha;
 
@@ -233,7 +233,7 @@ void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverl
       rp_len = *p_source++ >> 2;
 
       while( rp_len > 0 )
-      {      
+      {
         pixels_to_draw = rp_len;
 
         p_color = pOverlay->color[i_color];
@@ -242,22 +242,22 @@ void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverl
         if (bCrop)
         {
           if (i_y > btn_y_start && i_y < btn_y_end)
-          {            
+          {
             if (i_x < btn_x_start && i_x + rp_len >= btn_x_start) // starts outside
               pixels_to_draw = btn_x_start - i_x;
             else if( i_x >= btn_x_start && i_x <= btn_x_end ) // starts inside
             {
               p_color = pOverlay->highlight_color[i_color];
-              p_alpha = pOverlay->highlight_alpha[i_color];              
+              p_alpha = pOverlay->highlight_alpha[i_color];
               pixels_to_draw = btn_x_end - i_x + 1; // don't draw part that is outside
             }
           }
           /* make sure we are not requested to draw to far */
           /* that part will be taken care of in next pass */
-          if( pixels_to_draw > rp_len ) 
+          if( pixels_to_draw > rp_len )
             pixels_to_draw = rp_len;
         }
-        
+
         switch (p_alpha)
         {
         case 0x00:
@@ -275,17 +275,17 @@ void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverl
         default:
           /* To be able to divide by 16 (>>4) we add 1 to the alpha.
             * This means Alpha 0 won't be completely transparent, but
-            * that's handled in a special case above anyway. */ 
+            * that's handled in a special case above anyway. */
           // First we deal with Y
           i_colprecomp = (unsigned __int16)p_color[0]
                         * (unsigned __int16)(p_alpha + 1);
           i_destalpha = 15 - p_alpha;
-          
+
           for (p_destptr = p_dest[0] + i_x; p_destptr < p_dest[0] + i_x + pixels_to_draw; p_destptr++)
           {
             *p_destptr = (( i_colprecomp + (unsigned __int16) * p_destptr * i_destalpha ) >> 4) & 0xFF;
           }
-          
+
           if (!(i_y & 1)) // Only draw even lines
           {
             // now U
