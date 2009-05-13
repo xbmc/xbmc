@@ -45,12 +45,12 @@ protected:
   int  GetNrOfChannels(int flags);
   void SetupChannels(int flags);
   int ParseFrame(BYTE* data, int size, BYTE** frame, int* framesize);
-  
+
   // taken from the libdts project
   static void convert2s16_multi(convert_t * _f, int16_t * s16, int flags);
 
   dts_state_t* m_pState;
-  
+
   int m_iFrameSize;
   float* m_fSamples;
 

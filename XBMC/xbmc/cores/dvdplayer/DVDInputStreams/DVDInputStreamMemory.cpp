@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDInputStreamMemory.h"
 
@@ -55,8 +55,8 @@ void CDVDInputStreamMemory::Close()
   if (m_pData) delete[] m_pData;
   m_pData = NULL;
   m_iDataSize = 0;
-  m_iDataPos = 0;  
-  
+  m_iDataPos = 0;
+
   CDVDInputStream::Close();
 }
 
@@ -65,13 +65,13 @@ int CDVDInputStreamMemory::Read(BYTE* buf, int buf_size)
   int iBytesToCopy = buf_size;
   int iBytesLeft = m_iDataSize - m_iDataPos;
   if (iBytesToCopy > iBytesLeft) iBytesToCopy = iBytesLeft;
-  
+
   if (iBytesToCopy > 0)
   {
     memcpy(buf, m_pData + m_iDataPos, iBytesToCopy);
     m_iDataPos += iBytesToCopy;
   }
-  
+
   return iBytesToCopy;
 }
 

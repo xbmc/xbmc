@@ -19,7 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "Thread.h"
 
@@ -38,7 +38,7 @@ class CVideoReferenceClock : public CThread
 {
   public:
     CVideoReferenceClock();
-    
+
     void   GetTime(LARGE_INTEGER *ptime);
     void   GetFrequency(LARGE_INTEGER *pfreq);
     void   SetSpeed(double Speed);
@@ -52,42 +52,42 @@ class CVideoReferenceClock : public CThread
     bool UpdateRefreshrate(bool Forced = false);
     void SendVblankSignal();
     void UpdateClock(int NrVBlanks, bool CheckMissed);
-    
+
     __int64 m_CurrTime;
     __int64 m_AdjustedFrequency;
     __int64 m_ClockOffset;
     __int64 m_LastRefreshTime;
     __int64 m_SystemFrequency;
-    
+
     bool    m_UseVblank;
     __int64 m_RefreshRate;
     int     m_PrevRefreshRate;
     int     m_MissedVblanks;
     __int64 m_VblankTime;
-    
+
     CEvent m_Started;
     CEvent m_VblankEvent;
-    
+
     CCriticalSection m_CritSection;
-    
+
 #ifdef HAS_GLX
     bool SetupGLX();
     void RunGLX();
     void CleanupGLX();
     bool ParseNvSettings(int& RefreshRate);
-    
+
     int  (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
     int  (*m_glXGetVideoSyncSGI)(unsigned int*);
-    
+
     Display*     m_Dpy;
     GLXFBConfig *m_fbConfigs;
     XVisualInfo *m_vInfo;
     Window       m_Window;
     GLXWindow    m_GLXWindow;
     GLXContext   m_Context;
-            
+
     bool     m_UseNvSettings;
-    
+
 #elif defined(_WIN32)
     bool CreateHiddenWindow();
     bool SetupD3D();
@@ -104,7 +104,7 @@ class CVideoReferenceClock : public CThread
     unsigned int m_Width;
     unsigned int m_Height;
     unsigned int m_Adapter;
-    
+
 #elif defined(__APPLE__)
 
 #endif

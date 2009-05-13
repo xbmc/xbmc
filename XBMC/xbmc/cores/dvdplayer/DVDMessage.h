@@ -41,53 +41,53 @@ public:
   enum Message
   {
     NONE = 1000,
-    
-    
+
+
     // messages used in the whole system
-    
-    GENERAL_RESYNC,                 // 
-    GENERAL_FLUSH,                  // 
-    GENERAL_STREAMCHANGE,           // 
-    GENERAL_SYNCHRONIZE,            // 
+
+    GENERAL_RESYNC,                 //
+    GENERAL_FLUSH,                  //
+    GENERAL_STREAMCHANGE,           //
+    GENERAL_SYNCHRONIZE,            //
     GENERAL_DELAY,                  //
     GENERAL_GUI_ACTION,             // gui action of some sort
     GENERAL_EOF,                    // eof of stream
-    
-    
+
+
     // player core related messages (cdvdplayer.cpp)
-    
+
     PLAYER_SET_AUDIOSTREAM,         //
     PLAYER_SET_SUBTITLESTREAM,      //
     PLAYER_SET_SUBTITLESTREAM_VISIBLE, //
     PLAYER_SET_STATE,               // restore the dvdplayer to a certain state
     PLAYER_SET_RECORD,              // set record state
-    PLAYER_SEEK,                    // 
+    PLAYER_SEEK,                    //
     PLAYER_SEEK_CHAPTER,            //
     PLAYER_SETSPEED,                // set the playback speed
 
     PLAYER_CHANNEL_NEXT,            // switches to next playback channel
     PLAYER_CHANNEL_PREV,            // switches to previous playback channel
-    
+
     // demuxer related messages
-    
+
     DEMUXER_PACKET,                 // data packet
     DEMUXER_RESET,                  // reset the demuxer
-    
-    
+
+
     // video related messages
-    
+
     VIDEO_NOSKIP,                   // next pictures is not to be skipped by the video renderer
     VIDEO_SET_ASPECT,               // set aspectratio of video
 
     // subtitle related messages
     SUBTITLE_CLUTCHANGE
   };
-  
+
   CDVDMsg(Message msg)
   {
     m_references = 1;
     m_message = msg;
-    
+
 #ifdef DVDDEBUG_MESSAGE_TRACKER
     g_dvdMessageTracker.Register(this);
 #endif
@@ -97,16 +97,16 @@ public:
   {
     m_references = references;
     m_message = msg;
-    
+
 #ifdef DVDDEBUG_MESSAGE_TRACKER
     g_dvdMessageTracker.Register(this);
 #endif
   }
-  
+
   virtual ~CDVDMsg()
   {
     assert(m_references == 0);
-    
+
 #ifdef DVDDEBUG_MESSAGE_TRACKER
     g_dvdMessageTracker.UnRegister(this);
 #endif
@@ -119,23 +119,23 @@ public:
   {
     return (m_message == msg);
   }
-  
+
   inline Message GetMessageType() XBMC_FORCE_INLINE
   {
     return m_message;
   }
-  
+
   /**
-   * decrease the reference counter by one.   
+   * decrease the reference counter by one.
    */
   long Acquire()
   {
     long count = InterlockedIncrement(&m_references);
     return count;
   }
-  
+
   /**
-   * increase the reference counter by one.   
+   * increase the reference counter by one.
    */
   long Release()
   {
@@ -191,7 +191,7 @@ public:
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
-  void Wait(volatile bool *abort, DWORD source); 
+  void Wait(volatile bool *abort, DWORD source);
 private:
   DWORD m_sources;
   long m_objects;
@@ -202,8 +202,8 @@ template <typename T>
 class CDVDMsgType : public CDVDMsg
 {
 public:
-  CDVDMsgType(Message type, T value) 
-    : CDVDMsg(type) 
+  CDVDMsgType(Message type, T value)
+    : CDVDMsg(type)
     , m_value(value)
   {}
   operator T() { return m_value; }
@@ -275,11 +275,11 @@ class CDVDMsgPlayerSeekChapter : public CDVDMsg
       : CDVDMsg(PLAYER_SEEK_CHAPTER)
       , m_iChapter(iChapter)
     {}
-    
+
     int GetChapter() const { return m_iChapter; }
-    
+
   private:
-    
+
     int m_iChapter;
 };
 

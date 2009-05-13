@@ -18,13 +18,13 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDInputStreamFFmpeg.h"
 
 using namespace XFILE;
 
-CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg() 
+CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg()
   : CDVDInputStream(DVDSTREAM_TYPE_FFMPEG)
 {
 
@@ -32,7 +32,7 @@ CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg()
 
 CDVDInputStreamFFmpeg::~CDVDInputStreamFFmpeg()
 {
-  Close();  
+  Close();
 }
 
 bool CDVDInputStreamFFmpeg::IsEOF()
@@ -42,7 +42,7 @@ bool CDVDInputStreamFFmpeg::IsEOF()
 
 bool CDVDInputStreamFFmpeg::Open(const char* strFile, const std::string& content)
 {
-  if (!CDVDInputStream::Open(strFile, content)) 
+  if (!CDVDInputStream::Open(strFile, content))
     return false;
 
   return true;

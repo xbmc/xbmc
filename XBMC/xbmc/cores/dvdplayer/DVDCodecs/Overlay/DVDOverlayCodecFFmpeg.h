@@ -38,7 +38,7 @@ public:
   virtual void Reset();
   virtual void Flush();
   virtual CDVDOverlay* GetOverlay();
-  
+
 private:
   void FreeSubtitle(AVSubtitle &sub);
 

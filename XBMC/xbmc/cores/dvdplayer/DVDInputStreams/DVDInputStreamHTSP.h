@@ -23,7 +23,7 @@
 #include "DVDInputStream.h"
 #include "FileSystem/HTSPSession.h"
 
-class CDVDInputStreamHTSP 
+class CDVDInputStreamHTSP
   : public CDVDInputStream
   , public CDVDInputStream::IChannel
 {

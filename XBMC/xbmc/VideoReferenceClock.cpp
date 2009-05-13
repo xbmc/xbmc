@@ -67,7 +67,7 @@ void CVideoReferenceClock::Process()
 {
   bool SetupSuccess = false;
   LARGE_INTEGER Now;
-  
+
 #if defined(__APPLE__)
   SetupSuccess = Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, &m_VblankEvent);
 #endif
@@ -79,13 +79,13 @@ void CVideoReferenceClock::Process()
 #elif defined(_WIN32)
     SetupSuccess = SetupD3D();
 #endif
-    
+
     CSingleLock SingleLock(m_CritSection);
     QueryPerformanceCounter(&Now);
     m_CurrTime = Now.QuadPart + m_ClockOffset; //add the clock offset from the previous time we stopped
     m_AdjustedFrequency = m_SystemFrequency;
     m_Started.Set();
-    
+
     if (SetupSuccess)
     {
       m_UseVblank = true;
@@ -107,17 +107,17 @@ void CVideoReferenceClock::Process()
       SingleLock.Leave();
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to QueryPerformanceCounter");
     }
-    
+
     SingleLock.Enter();
     m_UseVblank = false;
     QueryPerformanceCounter(&Now);
     m_ClockOffset = m_CurrTime - Now.QuadPart;
     m_Started.Reset();
     SingleLock.Leave();
-    
+
 #ifdef HAS_GLX
     CleanupGLX();
-#elif defined(_WIN32)  
+#elif defined(_WIN32)
     CleanupD3D();
 #endif
     if (!SetupSuccess) break;
@@ -165,44 +165,44 @@ bool CVideoReferenceClock::SetupGLX()
   m_Context = NULL;
   m_Window = NULL;
   m_GLXWindow = NULL;
-  
+
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up GLX");
-  
+
   m_Dpy = XOpenDisplay(NULL);
   if (!m_Dpy)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Unable to open display");
     return false;
   }
-  
+
   if (!glXQueryExtension(m_Dpy, NULL, NULL))
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: X server does not support GLX");
     return false;
   }
-  
+
   if (!strstr(glXQueryExtensionsString(m_Dpy, DefaultScreen(m_Dpy)), "SGI_video_sync"))
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: X server does not support SGI_video_sync");
     return false;
   }
-  
+
   m_fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), doubleBufferAttributes, &Num);
   if (!m_fbConfigs) m_fbConfigs = glXChooseFBConfig(m_Dpy, DefaultScreen(m_Dpy), singleBufferAttributess, &Num);
-  
+
   if (!m_fbConfigs)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseFBConfig returned NULL");
     return false;
   }
-  
+
   m_vInfo = glXGetVisualFromFBConfig(m_Dpy, m_fbConfigs[0]);
   if (!m_vInfo)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVisualFromFBConfig returned NULL");
     return false;
   }
-  
+
   Swa.border_pixel = 0;
   Swa.event_mask = StructureNotifyMask;
   Swa.colormap = XCreateColormap(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen), m_vInfo->visual, AllocNone );
@@ -226,45 +226,45 @@ bool CVideoReferenceClock::SetupGLX()
   }
 
   glXMakeCurrent(m_Dpy, m_GLXWindow, m_Context);
-  
+
   m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
   if (!m_glXWaitVideoSyncSGI)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI not found");
     return false;
   }
-  
+
   ReturnV = m_glXWaitVideoSyncSGI(2, 0, &VblankCount);
   if (ReturnV)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
     return false;
   }
-  
+
   m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
   if (!m_glXWaitVideoSyncSGI)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI not found");
     return false;
   }
-  
+
   ReturnV = m_glXGetVideoSyncSGI(&VblankCount);
   if (ReturnV)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI returned %i", ReturnV);
     return false;
   }
-  
+
   XRRSizes(m_Dpy, m_vInfo->screen, &ReturnV);
   if (ReturnV == 0)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: RandR not supported");
     return false;
   }
-  
+
   UpdateRefreshrate(true);
   m_MissedVblanks = 0;
-  
+
   return true;
 }
 
@@ -274,15 +274,15 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
   char   Buff[255];
   int    ReturnV;
   struct lconv *Locale = localeconv();
-    
+
   FILE* NvSettings = popen(NVSETTINGSCMD, "r");
-  
+
   if (!NvSettings)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s: %s", NVSETTINGSCMD, strerror(errno));
     return false;
   }
-  
+
   ReturnV = fscanf(NvSettings, "%254[^\n]", Buff);
   pclose(NvSettings);
   if (ReturnV != 1)
@@ -290,9 +290,9 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: %s produced no output", NVSETTINGSCMD);
     return false;
   }
-  
+
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: output of %s: %s", NVSETTINGSCMD, Buff);
-  
+
   for (int i = 0; i < 255 && Buff[i]; i++)
   {
       //workaround for locale mismatch and filter out unwanted chars
@@ -306,18 +306,18 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: can't make sense of that");
     return false;
   }
-  
+
   RefreshRate = MathUtils::round_int(fRefreshRate);
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate by nvidia-settings: %f hertz, rounding to %i hertz",
             fRefreshRate, RefreshRate);
-  
+
   return true;
 }
 
 void CVideoReferenceClock::CleanupGLX()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
-  
+
   if (m_fbConfigs)
   {
     XFree(m_fbConfigs);
@@ -357,25 +357,25 @@ void CVideoReferenceClock::RunGLX()
   int           ReturnV;
   int           ResetCount = 0;
   LARGE_INTEGER Now;
-  
+
   CSingleLock SingleLock(m_CritSection);
   SingleLock.Leave();
-  
+
   m_glXGetVideoSyncSGI(&VblankCount);
   PrevVblankCount = VblankCount;
-  
+
   while(!m_bStop)
   {
     ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
     m_glXGetVideoSyncSGI(&VblankCount);
     QueryPerformanceCounter(&Now);
-    
+
     if(ReturnV)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
       return;
     }
-    
+
     if (VblankCount > PrevVblankCount)
     {
       SingleLock.Enter();
@@ -384,22 +384,22 @@ void CVideoReferenceClock::RunGLX()
       SingleLock.Leave();
       SendVblankSignal();
       UpdateRefreshrate();
-      
+
       ResetCount = 0;
     }
     else
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
-      
+
       SingleLock.Enter();
       m_CurrTime += m_AdjustedFrequency / m_RefreshRate;
       SendVblankSignal();
       SingleLock.Leave();
-      
+
       //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
       glXMakeCurrent(m_Dpy, None, NULL);
       glXMakeCurrent(m_Dpy, m_GLXWindow, m_Context);
-      
+
       ResetCount++;
       if (ResetCount > 100)
       {
@@ -460,14 +460,14 @@ void CVideoReferenceClock::RunD3D()
       UpdateClock(NrVBlanks, true);
       SingleLock.Leave();
       SendVblankSignal();
-      
+
       if (UpdateRefreshrate())
       {
         //reset direct3d because of videodriver bugs
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: Displaymode changed");
         return;
       }
-      
+
       LastVBlankTime = Now.QuadPart;
       PollCount = 0;
 
@@ -516,7 +516,7 @@ bool CVideoReferenceClock::SetupD3D()
   }
 
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up Direct3d on adapter %i", m_Adapter);
-  
+
   if (!CreateHiddenWindow())
   {
     return false;
@@ -636,7 +636,7 @@ bool CVideoReferenceClock::CreateHiddenWindow()
   m_WinCl.hInstance = GetModuleHandle(NULL);
   m_WinCl.lpszClassName = CLASSNAME;
   m_WinCl.lpfnWndProc = WindowProcedure;
-  m_WinCl.style = CS_DBLCLKS;          
+  m_WinCl.style = CS_DBLCLKS;
   m_WinCl.cbSize = sizeof(WNDCLASSEX);
   m_WinCl.hIcon = NULL;
   m_WinCl.hIconSm = NULL;
@@ -652,7 +652,7 @@ bool CVideoReferenceClock::CreateHiddenWindow()
     return false;
   }
   m_HasWinCl = true;
-  
+
   m_Hwnd = CreateWindowEx(WS_EX_LEFT|WS_EX_LTRREADING|WS_EX_WINDOWEDGE, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
                           WS_OVERLAPPED|WS_MINIMIZEBOX|WS_SYSMENU|WS_CLIPSIBLINGS|WS_CAPTION, CW_USEDEFAULT, CW_USEDEFAULT,
                           400, 430, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
@@ -676,7 +676,7 @@ void CVideoReferenceClock::HandleWindowMessages()
 
   while(PeekMessage(&Message, m_Hwnd, 0, 0, PM_REMOVE))
   {
-    TranslateMessage(&Message); 
+    TranslateMessage(&Message);
     DispatchMessage(&Message);
   }
 }
@@ -690,7 +690,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
     NrVBlanks -= m_MissedVblanks;
     m_MissedVblanks = 0;
   }
-  
+
   if (NrVBlanks > 0)
     m_CurrTime += (__int64)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
 }
@@ -736,10 +736,10 @@ double CVideoReferenceClock::GetSpeed()
 {
   double Speed = 1.0;
   CSingleLock SingleLock(m_CritSection);
-  
+
   //dvdplayer needs to know the speed for the resampler
   if (m_UseVblank) Speed = (double)m_AdjustedFrequency / (double)m_SystemFrequency;
-  
+
   return Speed;
 }
 
@@ -750,7 +750,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 
   if (Forced)
     m_LastRefreshTime = 0;
-  else    
+  else
     m_LastRefreshTime = m_CurrTime;
 
 #ifdef HAS_GLX
@@ -758,22 +758,22 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
   int RRRefreshRate = XRRConfigCurrentRate(CurrInfo);
   XRRFreeScreenConfigInfo(CurrInfo);
-  
+
   if (RRRefreshRate == m_PrevRefreshRate && !Forced)
     return false;
-    
+
   if (m_UseNvSettings || Forced)
   {
     int RefreshRate;
     m_UseNvSettings = ParseNvSettings(RefreshRate);
-    
+
     if (!m_UseNvSettings)
     {
        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)RRRefreshRate);
        RefreshRate = RRRefreshRate;
     }
-    
+
     CSingleLock SingleLock(m_CritSection);
     m_RefreshRate = RefreshRate;
     m_PrevRefreshRate = RRRefreshRate;
@@ -786,26 +786,26 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
   }
   return true;
-  
+
 #elif defined(_WIN32)
   bool Changed = false;
-  
+
   D3dClock::D3DDISPLAYMODE DisplayMode;
   m_D3d->GetAdapterDisplayMode(m_Adapter, &DisplayMode);
-  
+
   //0 indicates adapter default
   if (DisplayMode.RefreshRate == 0)
     DisplayMode.RefreshRate = 60;
-  
+
   if (m_RefreshRate != DisplayMode.RefreshRate || Forced)
   {
     CSingleLock SingleLock(m_CritSection);
     m_RefreshRate = DisplayMode.RefreshRate;
-    
+
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
     Changed = true;
   }
-  
+
   if (m_Width != DisplayMode.Width || m_Height != DisplayMode.Height)
   {
     Changed = true;
@@ -814,7 +814,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   m_Height = DisplayMode.Height;
 
   return Changed;
-  
+
 #elif defined(__APPLE__)
   m_RefreshRate = (int)Cocoa_GetCVDisplayLinkRefreshPeriod();
   return true;
@@ -826,7 +826,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 int CVideoReferenceClock::GetRefreshRate()
 {
   CSingleLock SingleLock(m_CritSection);
-  
+
   if (m_UseVblank)
     return m_RefreshRate;
   else
@@ -843,7 +843,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
   bool          Late;
 
   CSingleLock SingleLock(m_CritSection);
-  
+
   if (m_UseVblank)
   {
     while (m_CurrTime < Target)
@@ -851,7 +851,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
       QueryPerformanceCounter(&Now);
       NextVblank = m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXDELAY / 1000);
       SleepTime = (NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency;
-      
+
       Late = false;
       if (SleepTime <= 0)
       {
@@ -879,7 +879,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
     SingleLock.Leave();
     QueryPerformanceCounter(&Now);
     SleepTime = (Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency;
-    if (SleepTime > 0) 
+    if (SleepTime > 0)
       ::Sleep(SleepTime);
   }
 }
