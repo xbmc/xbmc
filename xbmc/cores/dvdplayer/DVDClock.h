@@ -60,6 +60,10 @@ public:
   void Resume();
   void SetSpeed(int iSpeed);
 
+  /* tells clock at what framerate video is, to  *
+   * allow it to adjust speed for a better match */
+  void UpdateFramerate(double fps);
+
   double GetMaxSpeedAdjust(bool playingvideo);
   bool   SetMaxSpeedAdjust(double speed);
 

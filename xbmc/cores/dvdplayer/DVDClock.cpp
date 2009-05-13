@@ -23,6 +23,7 @@
 #include "DVDClock.h"
 #include "VideoReferenceClock.h"
 #include <math.h>
+#include "../../Util.h"
 
 #if defined(_WIN32)
 static void TimeGetTimeFrequency(LARGE_INTEGER* freq){ freq->QuadPart = 1000; }
@@ -209,4 +210,29 @@ bool CDVDClock::SetMaxSpeedAdjust(double speed)
 
   m_maxspeedadjust = speed;
   return m_playingvideo;
+}
+
+void CDVDClock::UpdateFramerate(double fps)
+{
+  //check if the videoreferenceclock is running, will return -1 if not
+  int rate = g_VideoReferenceClock.GetRefreshRate();
+  if (rate > 0)
+  {
+    CSingleLock lock(m_speedsection);
+
+    double weight = (double)rate / (double)MathUtils::round_int(fps);
+
+    //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
+    if (m_maxspeedadjust > 0.05)
+    {
+      if (weight / MathUtils::round_int(weight) < 1.0 + m_maxspeedadjust / 100.0 
+      &&  weight / MathUtils::round_int(weight) > 1.0 - m_maxspeedadjust / 100.0)
+        weight = MathUtils::round_int(weight);
+    }
+    double speed = (double)rate / (fps * weight);
+    lock.Leave();
+
+    g_VideoReferenceClock.SetSpeed(speed);
+  }
+
 }
