@@ -632,6 +632,7 @@ bool CVideoReferenceClock::SetupCocoa()
   QueryPerformanceCounter(&Now);
   m_LastVBlankTime = Now.QuadPart;
   m_MissedVblanks = 0;
+  m_RefreshRate = 60;
   
   if (!Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, reinterpret_cast<void*>(this)))
   {
