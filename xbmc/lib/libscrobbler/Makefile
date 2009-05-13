@@ -1,5 +1,5 @@
 INCLUDES=-I. -I../../ -I../../linux -I../../../guilib -I../../utils
-SRCS=scrobbler.cpp
+SRCS=scrobbler.cpp lastfmscrobbler.cpp librefmscrobbler.cpp
 
 LIB=scrobbler.a
 

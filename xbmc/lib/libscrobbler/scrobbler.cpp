@@ -43,18 +43,18 @@
 #define SCROBBLER_MIN_DURATION        30        // seconds. API rule
 #define SCROBBLER_ACTION_SUBMIT       1
 #define SCROBBLER_ACTION_NOWPLAYING   2
-#define SCROBBLER_HANDSHAKE_URL       "post.audioscrobbler.com"
+//#define SCROBBLER_HANDSHAKE_URL       "post.audioscrobbler.com"
 //#define SCROBBLER_HANDSHAKE_URL       "89.16.177.55" // libre.fm
 
-long CScrobbler::m_instanceLock = 0;
-CScrobbler *CScrobbler::m_pInstance = NULL;
-
-CScrobbler::CScrobbler() : CThread()
+CScrobbler::CScrobbler(const CStdString &strHandshakeURL, const CStdString &strLogPrefix)
+  : CThread()
 { 
-  m_bRunThread  = false;
-  m_bBanned     = false;
-  m_bBadAuth    = false;
-  m_pHttp        = NULL;
+  m_bRunThread      = false;
+  m_bBanned         = false;
+  m_bBadAuth        = false;
+  m_pHttp           = NULL;
+  m_strHandshakeURL = strHandshakeURL;
+  m_strLogPrefix    = strLogPrefix;
   ResetState();
 
   if (!(m_hEvent = CreateEvent(NULL, false, false, NULL)))
@@ -63,31 +63,7 @@ CScrobbler::CScrobbler() : CThread()
 
 CScrobbler::~CScrobbler()
 {
-  Term();
   CloseHandle(m_hEvent);
-}
-
-CScrobbler *CScrobbler::GetInstance()
-{
-  if (!m_pInstance) // Avoid spinning aimlessly
-  {
-    CAtomicSpinLock lock(m_instanceLock);
-    if (!m_pInstance)
-    {
-      m_pInstance = new CScrobbler;
-    }
-  }
-  return m_pInstance;
-}
-
-void CScrobbler::RemoveInstance()
-{
-  if (m_pInstance)
-  {
-    CAtomicSpinLock lock(m_instanceLock);
-    delete m_pInstance;
-    m_pInstance = NULL;
-  }
 }
 
 void CScrobbler::Init()
@@ -95,8 +71,7 @@ void CScrobbler::Init()
   if (!CanScrobble())
     return;
   ResetState();
-  SetUsername(g_guiSettings.GetString("lastfm.username"));
-  SetPassword(g_guiSettings.GetString("lastfm.password"));
+  LoadCredentials();
   LoadJournal();
   if (!m_bRunThread)
     Create();
@@ -110,7 +85,7 @@ void CScrobbler::Term()
   SaveJournal();
 }
 
-void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag)
+void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool submit)
 {
   ClearSubmissionState();
 
@@ -138,7 +113,7 @@ void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag)
   CUtil::URLEncode(m_CurrentTrack.strMusicBrainzID);
 
   m_bNotified = false;
-  if (m_CurrentTrack.length > SCROBBLER_MIN_DURATION)
+  if (submit && m_CurrentTrack.length > SCROBBLER_MIN_DURATION)
     m_bSubmitted = false;
 }
 
@@ -176,7 +151,7 @@ void CScrobbler::UpdateStatus()
     m_bSubmitted = true;
     m_vecSubmissionQueue.push_back(m_CurrentTrack);
     SaveJournal();
-    CLog::Log(LOGDEBUG, "CScrobbler: Queued track for submission");
+    CLog::Log(LOGDEBUG, "%s: Queued track for submission", m_strLogPrefix.c_str());
   }
 }
 
@@ -288,27 +263,19 @@ void CScrobbler::ClearSubmissionState()
 
 void CScrobbler::ClearSession()
 {
-  CLog::Log(LOGDEBUG, "CScrobbler: Clearing session.");
+  CLog::Log(LOGDEBUG, "%s: Clearing session.", m_strLogPrefix.c_str());
   m_strSessionID.clear();
 }
 
 void CScrobbler::HandleHardError()
 {
-  CLog::Log(LOGDEBUG, "CScrobbler: A hard error has occurred.");
+  CLog::Log(LOGDEBUG, "%s: A hard error has occurred.", m_strLogPrefix.c_str());
   if (++m_hardErrorCount == 3)
   {
-    CLog::Log(LOGDEBUG, "CScrobbler: Three consecuetive hard errors have "\
-        "occured. Forcing new handshake.");
+    CLog::Log(LOGDEBUG, "%s: Three consecuetive hard errors have "\
+        "occured. Forcing new handshake.", m_strLogPrefix.c_str());
     ClearSession();
   }
-}
-
-bool CScrobbler::CanScrobble()
-{
-  return (!g_guiSettings.GetString("lastfm.username").IsEmpty()  &&
-          !g_guiSettings.GetString("lastfm.password").IsEmpty()  &&
-         (g_guiSettings.GetBool("lastfm.submit") ||
-          g_guiSettings.GetBool("lastfm.submitradio")));
 }
 
 bool CScrobbler::LoadJournal()
@@ -323,7 +290,7 @@ bool CScrobbler::LoadJournal()
   
   if (!xmlDoc.LoadFile(JournalFileName))
   {
-    CLog::Log(LOGDEBUG, "CScrobbler: %s, Line %d (%s)", 
+    CLog::Log(LOGDEBUG, "%s: %s, Line %d (%s)", m_strLogPrefix.c_str(), 
         JournalFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
@@ -331,7 +298,7 @@ bool CScrobbler::LoadJournal()
   TiXmlElement *pRoot = xmlDoc.RootElement();
   if (strcmpi(pRoot->Value(), "asjournal") != 0)
   {
-    CLog::Log(LOGDEBUG, "CScrobbler: %s missing <asjournal>",
+    CLog::Log(LOGDEBUG, "%s: %s missing <asjournal>", m_strLogPrefix.c_str(),
         JournalFileName.c_str());
     return false;
   }
@@ -377,7 +344,7 @@ bool CScrobbler::LoadJournal()
     m_vecSubmissionQueue.push_back(entry);
   }
 
-  CLog::Log(LOGDEBUG, "CScrobbler: Journal loaded with %d entries.",
+  CLog::Log(LOGDEBUG, "%s: Journal loaded with %d entries.", m_strLogPrefix.c_str(),
       m_vecSubmissionQueue.size());
   return !m_vecSubmissionQueue.empty();
 }
@@ -417,8 +384,8 @@ bool CScrobbler::SaveJournal()
   }
 
   CStdString FileName = GetJournalFileName();
-  CLog::Log(LOGDEBUG, "CScrobbler: Journal with %d entries saved to %s", i,
-      FileName.c_str());
+  CLog::Log(LOGDEBUG, "%s: Journal with %d entries saved to %s",
+      m_strLogPrefix.c_str(), i, FileName.c_str());
   return xmlDoc.SaveFile(FileName);
 }
 
@@ -437,7 +404,7 @@ bool CScrobbler::DoHandshake(time_t now)
   
   // Construct handshake URL.
   strHandshakeRequest.Format("http://%s/?hs=true"\
-      "&p=%s&c=%s&v=%s&u=%s&t=%d&a=%s", SCROBBLER_HANDSHAKE_URL,
+      "&p=%s&c=%s&v=%s&u=%s&t=%d&a=%s", m_strHandshakeURL.c_str(),
       SCROBBLER_PROTOCOL, SCROBBLER_CLIENT, SCROBBLER_CLIENT_VERSION,
       m_strUsername.c_str(), now, strAuthToken.c_str());
   
@@ -450,15 +417,15 @@ bool CScrobbler::DoHandshake(time_t now)
     (m_failedHandshakeDelay) ? std::min(2*m_failedHandshakeDelay, 7200) : 60;
   m_lastFailedHandshake = now;
   if (!m_bBanned && !m_bBadAuth)
-    CLog::Log(LOGDEBUG, "CScrobbler: A hard error has occurred during "\
-        "handshake. Sleeping for %d minutes.", m_failedHandshakeDelay/60);
+    CLog::Log(LOGDEBUG, "%s: A hard error has occurred during "\
+        "handshake. Sleeping for %d minutes.",
+        m_strLogPrefix.c_str(), m_failedHandshakeDelay/60);
   
   return false;
 }
 
 bool CScrobbler::HandleHandshake(CStdString &strResponse)
 {
-  // TODO toast messages
   if (strResponse.IsEmpty())
     return false;
   
@@ -472,58 +439,54 @@ bool CScrobbler::HandleHandshake(CStdString &strResponse)
       m_strSessionID      = vecTokens[1];
       m_strNowPlayingURL  = vecTokens[2];
       m_strSubmissionURL  = vecTokens[3];
-      CLog::Log(LOGDEBUG,  "CScrobbler: Handshake succeeded!");
-      CLog::Log(LOGDEBUG, "CScrobbler: SessionID is %s",
+      CLog::Log(LOGDEBUG, "%s: Handshake succeeded!", m_strLogPrefix.c_str());
+      CLog::Log(LOGDEBUG, "%s: SessionID is %s", m_strLogPrefix.c_str(),
           m_strSessionID.c_str());
-      CLog::Log(LOGDEBUG, "CScrobbler: NP URL is %s",
+      CLog::Log(LOGDEBUG, "%s: NP URL is %s", m_strLogPrefix.c_str(),
           m_strNowPlayingURL.c_str());
-      CLog::Log(LOGDEBUG, "CScrobbler: Submit URL is %s",
+      CLog::Log(LOGDEBUG, "%s: Submit URL is %s", m_strLogPrefix.c_str(),
           m_strSubmissionURL.c_str());
       ClearErrorState();
       return true;
     }
-    CLog::Log(LOGERROR, "CScrobbler: Handshake failed! Received malformed "\
-        "reply.");
+    CLog::Log(LOGERROR, "%s: Handshake failed! Received malformed "\
+        "reply.", m_strLogPrefix.c_str());
   }
   else if (vecTokens[0] == "BANNED")
   {
-    CLog::Log(LOGERROR, "CScrobbler: Handshake failed! Client is banned! "\
+    CLog::Log(LOGERROR, "%s: Handshake failed! Client is banned! "\
         "Disabling submissions. Subsequent scrobbles will be cached. "\
-        "Please update your client to the newest version. ");
+        "Please update your client to the newest version. ", m_strLogPrefix.c_str());
     if (m_failedHandshakeDelay == 0)
     {
-      CStdString strText = g_localizeStrings.Get(15205);
-      m_bBanned = true;
-      CStdString strAudioScrobbler=g_localizeStrings.Get(15200);  // AudioScrobbler
-      g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
+      NotifyUser(SCROBBLER_USER_ERROR_BANNED);
     }
   }
   else if (vecTokens[0] == "BADAUTH")
   {
-    CLog::Log(LOGERROR, "CScrobbler: Handshake failed! Authentication failed! "\
+    CLog::Log(LOGERROR, "%s: Handshake failed! Authentication failed! "\
         "Disabling submissions. Subsequent scrobbles will be cached. "\
-        "Please enter the correct credentials to re-enable scrobbling. ");
+        "Please enter the correct credentials to re-enable scrobbling. ",
+        m_strLogPrefix.c_str());
     if (m_failedHandshakeDelay == 0)
     {
-      CStdString strText = g_localizeStrings.Get(15206);
-      m_bBadAuth = true;
-      CStdString strAudioScrobbler=g_localizeStrings.Get(15200);  // AudioScrobbler
-      g_application.m_guiDialogKaiToast.QueueNotification("", strAudioScrobbler, strText, 10000);
+      NotifyUser(SCROBBLER_USER_ERROR_BADAUTH);
     }
   }
   else if (vecTokens[0] == "BADTIME")
   {
-    CLog::Log(LOGDEBUG, "CScrobbler: Handshake failed! Timestamp is invalid! "\
+    CLog::Log(LOGDEBUG, "%s: Handshake failed! Timestamp is invalid! "\
         "Disabling submissions. Subsequent scrobbles will be cached. "\
-        "Please correct the system time and restart the application. ");
+        "Please correct the system time and restart the application. ",
+        m_strLogPrefix.c_str());
   }
   else if (vecTokens[0] == "FAILED")
   {
-    CLog::Log(LOGDEBUG, "CScrobbler: Handshake failed! REASON: %s! ", 
+    CLog::Log(LOGDEBUG, "%s: Handshake failed! REASON: %s! ", m_strLogPrefix.c_str(), 
         strResponse.c_str());
   }
   else
-    CLog::Log(LOGDEBUG, "CScrobbler: Handshake failed! REASON: Unspecified!");
+    CLog::Log(LOGDEBUG, "%s: Handshake failed! REASON: Unspecified!", m_strLogPrefix.c_str());
   
   return false;
 }
@@ -559,19 +522,19 @@ bool CScrobbler::HandleNowPlayingNotification(CStdString &strResponse)
 
   if (vecTokens[0] == "OK")
   {
-    CLog::Log(LOGDEBUG, "CScrobbler: Now playing notification succeeded!");
+    CLog::Log(LOGDEBUG, "%s: Now playing notification succeeded!", m_strLogPrefix.c_str());
     ClearErrorState();
     return true;
   }
   else if (vecTokens[0] == "BADSESSION")
   {
-    CLog::Log(LOGDEBUG, "CScrobbler: Now playing notification failed! "\
-        "REASON: Bad session ID. Forcing new handshake.");
+    CLog::Log(LOGDEBUG, "%s: Now playing notification failed! "\
+        "REASON: Bad session ID. Forcing new handshake.", m_strLogPrefix.c_str());
     ClearSession();
   }
   else
-    CLog::Log(LOGDEBUG, "CScrobbler: Now playing notification failed! "\
-        "REASON: Unspecified.");
+    CLog::Log(LOGDEBUG, "%s: Now playing notification failed! "\
+        "REASON: Unspecified.", m_strLogPrefix.c_str());
 
   return false;
 }
@@ -630,37 +593,31 @@ bool CScrobbler::HandleSubmission(CStdString &strResponse)
 
   if (vecTokens[0] == "OK")
   {
-    CLog::Log(LOGDEBUG, "CScrobbler: Submission succeeded!");
+    CLog::Log(LOGDEBUG, "%s: Submission succeeded!", m_strLogPrefix.c_str());
     ClearErrorState();
     return true;
   }
   else if (vecTokens[0] == "BADSESSION")
   {
-    CLog::Log(LOGDEBUG, "CScrobbler: Submission failed! "\
-        "REASON: Bad session. Forcing new handshake.");
+    CLog::Log(LOGDEBUG, "%s: Submission failed! "\
+        "REASON: Bad session. Forcing new handshake.", m_strLogPrefix.c_str());
     ClearSession();
   }
   else if (vecTokens[0] == "FAILED")
   {
-    CLog::Log(LOGDEBUG, "CScrobbler: Submission failed! "\
-        "REASON: %s", strResponse.c_str());
+    CLog::Log(LOGDEBUG, "%s: Submission failed! "\
+        "REASON: %s", m_strLogPrefix.c_str(), strResponse.c_str());
   }
   else
-    CLog::Log(LOGDEBUG, "CScrobbler: Submission failed! "\
-        "REASON: Unspecified.");
+    CLog::Log(LOGDEBUG, "%s: Submission failed! "\
+        "REASON: Unspecified.", m_strLogPrefix.c_str());
 
   return false;
 }
 
-CStdString CScrobbler::GetJournalFileName()
-{
-  CStdString strFileName = g_settings.GetProfileUserDataFolder();
-  return CUtil::AddFileToFolder(strFileName, "Scrobbler.xml");
-}
-
 void CScrobbler::Process()
 {
-  CLog::Log(LOGDEBUG, "CScrobbler: Thread started.");
+  CLog::Log(LOGDEBUG, "%s: Thread started.", m_strLogPrefix.c_str());
   if (!m_pHttp)
   {
     // Hack since CFileCurl isn't threadsafe
@@ -702,6 +659,26 @@ void CScrobbler::Process()
   }
   delete m_pHttp; // More of aforementioned hack 
   m_pHttp = NULL;
-  CLog::Log(LOGDEBUG, "CScrobbler: Thread ended.");
+  CLog::Log(LOGDEBUG, "%s: Thread ended.", m_strLogPrefix.c_str());
+}
+
+void CScrobbler::NotifyUser(int error)
+{
+}
+
+bool CScrobbler::CanScrobble()
+{
+  return false;
+}
+
+void CScrobbler::LoadCredentials()
+{
+  SetUsername("");
+  SetPassword("");
+}
+
+CStdString CScrobbler::GetJournalFileName()
+{
+  return "";
 }
 

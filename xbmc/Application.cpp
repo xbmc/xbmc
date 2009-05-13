@@ -49,7 +49,8 @@
 #endif
 #include "ButtonTranslator.h"
 #include "GUIAudioManager.h"
-#include "lib/libscrobbler/scrobbler.h"
+#include "lib/libscrobbler/lastfmscrobbler.h"
+#include "lib/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
 #include "ApplicationMessenger.h"
 #include "SectionLoader.h"
@@ -3883,7 +3884,8 @@ HRESULT CApplication::Cleanup()
     g_charsetConverter.clear();
     g_directoryCache.Clear();
     g_buttonTranslator.Clear();
-    CScrobbler::RemoveInstance();
+    CLastfmScrobbler::RemoveInstance();
+    CLibrefmScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
@@ -4416,7 +4418,10 @@ void CApplication::OnPlayBackEnded()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
   if (IsPlayingAudio())
-    CScrobbler::GetInstance()->SubmitQueue();
+  {
+    CLastfmScrobbler::GetInstance()->SubmitQueue();
+    CLibrefmScrobbler::GetInstance()->SubmitQueue();
+  }
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
@@ -4463,7 +4468,10 @@ void CApplication::OnQueueNextItem()
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
   if(IsPlayingAudio())
-    CScrobbler::GetInstance()->SubmitQueue();
+  {
+    CLastfmScrobbler::GetInstance()->SubmitQueue();
+    CLibrefmScrobbler::GetInstance()->SubmitQueue();
+  }
 
   CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
@@ -4485,7 +4493,8 @@ void CApplication::OnPlayBackStopped()
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
-  CScrobbler::GetInstance()->SubmitQueue();
+  CLastfmScrobbler::GetInstance()->SubmitQueue();
+  CLibrefmScrobbler::GetInstance()->SubmitQueue();
 
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
 
@@ -4938,7 +4947,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
         // Let scrobbler know about the track
         const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
         if (tag)
-          CScrobbler::GetInstance()->AddSong(*tag);
+        {
+          bool submit = !(CLastFmManager::GetInstance()->IsRadioEnabled() && !g_guiSettings.GetBool("scrobbler.lastfmsubmitradio"));
+          CLastfmScrobbler::GetInstance()->AddSong(*tag, submit);
+          CLibrefmScrobbler::GetInstance()->AddSong(*tag, submit);
+        }
       }
       return true;
     }
@@ -5184,7 +5197,8 @@ void CApplication::ProcessSlow()
 
   if (IsPlayingAudio())
   {
-    CScrobbler::GetInstance()->UpdateStatus();
+    CLastfmScrobbler::GetInstance()->UpdateStatus();
+    CLibrefmScrobbler::GetInstance()->UpdateStatus();
     // Update audio file state every 0.5 second
     UpdateAudioFileState();
   }
