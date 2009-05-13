@@ -624,6 +624,8 @@ void CVideoReferenceClock::HandleWindowMessages()
 
 #elif defined(__APPLE__)
 
+static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext);
+
 bool CVideoReferenceClock::SetupCocoa()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: setting up up Cocoa");
@@ -641,7 +643,7 @@ bool CVideoReferenceClock::SetupCocoa()
   }
   else
   {
-    UpdateRefreshRate(true);
+    UpdateRefreshrate(true);
     return true;
   }
 }
@@ -650,7 +652,7 @@ void CVideoReferenceClock::RunCocoa()
 {
   while(!m_bStop)
   {
-    UpdateRefreshRate();
+    UpdateRefreshrate();
     Sleep(1000);
   }
 }
@@ -661,8 +663,8 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
   // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
   void* pool = Cocoa_Create_AutoReleasePool();
   
-  CVideoReferenceClock* this = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
-  this->VblankHandler();
+  CVideoReferenceClock* p_instance = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
+  p_instance->VblankHandler();
   
   // Destroy the autorelease pool
   Cocoa_Destroy_AutoReleasePool(pool);
