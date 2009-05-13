@@ -136,20 +136,11 @@ void CVideoReferenceClock::WaitStarted(int MSecs)
 #ifdef HAS_GLX
 bool CVideoReferenceClock::SetupGLX()
 {
-  int singleBufferAttributess[] = {
+  int singleBufferAttributes[] = {
     GLX_RGBA,
-    GLX_RED_SIZE,      1,
-    GLX_GREEN_SIZE,    1,
-    GLX_BLUE_SIZE,     1,
-    None
-  };
-
-  int doubleBufferAttributes[] = {
-    GLX_RGBA,
-    GLX_DOUBLEBUFFER,  True,
-    GLX_RED_SIZE,      1,
-    GLX_GREEN_SIZE,    1,
-    GLX_BLUE_SIZE,     1,
+    GLX_RED_SIZE,      0,
+    GLX_GREEN_SIZE,    0,
+    GLX_BLUE_SIZE,     0,
     None
   };
 
@@ -183,7 +174,7 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  m_vInfo = glXChooseVisual(m_Dpy, DefaultScreen(m_Dpy), doubleBufferAttributes);
+  m_vInfo = glXChooseVisual(m_Dpy, DefaultScreen(m_Dpy), singleBufferAttributes);
   if (!m_vInfo)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseVisual returned NULL");
