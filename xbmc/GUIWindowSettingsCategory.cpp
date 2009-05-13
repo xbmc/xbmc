@@ -871,7 +871,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(12020), RESUME_ASK);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("audiooutput.synctype"))
+    else if (strSetting.Equals("videoplayer.synctype"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -880,7 +880,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13503), SYNC_RESAMPLE);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("audiooutput.resamplequality"))
+    else if (strSetting.Equals("videoplayer.resamplequality"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
@@ -1391,15 +1391,15 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
-    else if (strSetting.Equals("audiooutput.maxadjust"))
+    else if (strSetting.Equals("videoplayer.maxspeedadjust"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.synctype") == SYNC_RESAMPLE);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
     }      
-    else if (strSetting.Equals("audiooutput.resamplequality"))
+    else if (strSetting.Equals("videoplayer.resamplequality"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.synctype") == SYNC_RESAMPLE);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
     }      
   }
 }
