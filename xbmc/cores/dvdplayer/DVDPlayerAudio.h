@@ -192,6 +192,7 @@ protected:
   double m_integral; //integral correction for resampler
   int    m_skipdupcount; //counter for skip/duplicate synctype
   bool   m_prevskipped;
+  double m_maxspeedadjust;
   
   CRITICAL_SECTION m_critCodecSection;
 };
