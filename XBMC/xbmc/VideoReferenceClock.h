@@ -83,7 +83,6 @@ class CVideoReferenceClock : public CThread
     GLXFBConfig *m_fbConfigs;
     XVisualInfo *m_vInfo;
     Window       m_Window;
-    GLXWindow    m_GLXWindow;
     GLXContext   m_Context;
 
     bool     m_UseNvSettings;
