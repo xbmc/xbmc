@@ -466,7 +466,7 @@ void CGUISettings::Initialize()
 
   AddInt(18, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
   AddFloat(19, "videoplayer.maxspeedadjust", 13504, 5.0, 0.0, 0.1, 10.0);
-  AddInt(20, "videoplayer.resamplequality", 13505, RESAMPLE_LOW, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
+  AddInt(20, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "arial.ttf", SPIN_CONTROL_TEXT);
