@@ -656,12 +656,11 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
   int           NrVBlanks;
   double        VBlankTime;
   LARGE_INTEGER Now;
-  QueryPerformanceCounter&Now;
+  QueryPerformanceCounter(&Now);
   
   CVideoReferenceClock *this = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
-  void* pool;   
   // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
-  pool = Cocoa_Create_AutoReleasePool();
+  void* pool = Cocoa_Create_AutoReleasePool();
   
   CSingleLock SingleLock(m_CritSection);
   
