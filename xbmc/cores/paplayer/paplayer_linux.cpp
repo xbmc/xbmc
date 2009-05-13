@@ -65,25 +65,24 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
   m_IsFFwdRewding = false;
   m_timeOffset = 0;
 
-  m_pAudioDecoder[0] = NULL;
-  m_pAudioDecoder[1] = NULL;
-  m_pcmBuffer[0] = NULL;
-  m_pcmBuffer[1] = NULL;
-  m_bufferPos[0] = 0;
-  m_bufferPos[1] = 0;
-  m_Chunklen[0]  = PACKET_SIZE;
-  m_Chunklen[1]  = PACKET_SIZE;
+  for (int i=0; i<2; i++)
+  {
+    m_channelCount[i] = -1;
+    m_sampleRate[i] = -1;
+    m_bitsPerSample[i] = -1;
+    
+    m_pAudioDecoder[i] = NULL;
+    m_pcmBuffer[i] = NULL;
+    m_bufferPos[i] = 0;
+    m_Chunklen[i]  = PACKET_SIZE;
+  }
 
   m_currentStream = 0;
   m_packet[0][0].packet = NULL;
   m_packet[1][0].packet = NULL;
 
   m_bytesSentOut = 0;
-
   m_BytesPerSecond = 0;
-  m_SampleRate = 0;
-  m_Channels = 0;
-  m_BitsPerSample = 0;
 
   m_resampleAudio = false;
 
@@ -155,9 +154,10 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
   m_timeOffset = (__int64)(options.starttime * 1000);
 
-  m_decoder[m_currentDecoder].GetDataFormat(&m_Channels, &m_SampleRate, &m_BitsPerSample);
+  unsigned int channel, sampleRate, bitsPerSample;
+  m_decoder[m_currentDecoder].GetDataFormat(&channel, &sampleRate, &bitsPerSample);
 
-  if (!CreateStream(m_currentStream, m_Channels, m_SampleRate, m_BitsPerSample))
+  if (!CreateStream(m_currentStream, channel, sampleRate, bitsPerSample))
   {
     m_decoder[m_currentDecoder].Destroy();
     CLog::Log(LOGERROR, "PAPlayer::Unable to create audio stream");
@@ -286,7 +286,8 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
   for (int i = 0; i < 2; i++)
   {
     m_decoder[i].Destroy();
-    FreeStream(i);
+    if (bAudioDevice)
+      FreeStream(i);
   }
 
   m_currentFile->Reset();
@@ -349,46 +350,51 @@ void PAPlayer::DrainStream(int stream)
   m_pAudioDecoder[stream]->WaitCompletion();
 }
 
-bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
+bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int samplerate, unsigned int bitspersample, CStdString codec)
 {
-  FreeStream(num);
+  int outputSampleRate = (channels <= 2 && g_advancedSettings.m_musicResample) ? g_advancedSettings.m_musicResample : samplerate;
 
-  if (channels <= 2 && g_advancedSettings.m_musicResample)
-    m_SampleRateOutput = g_advancedSettings.m_musicResample;
+  if (m_pAudioDecoder[num] != NULL && m_channelCount[num] == channels && m_sampleRate[num] == outputSampleRate /* && m_bitsPerSample[num] == bitspersample */)
+  {
+    CLog::Log(LOGDEBUG, "PAPlayer: Using existing audio renderer");
+    m_pAudioDecoder[num]->Stop();
+    m_pAudioDecoder[num]->Resume();
+    m_bufferPos[num] = 0;
+  }
   else
-    m_SampleRateOutput = samplerate;
+  {
+    FreeStream(num);
+    CLog::Log(LOGDEBUG, "PAPlayer: Creating new audio renderer");
+    m_bitsPerSample[num]  = 16;
+    m_sampleRate[num]     = outputSampleRate;
+    m_channelCount[num]   = channels;
+    m_BytesPerSecond      = (m_bitsPerSample[num] / 8)* outputSampleRate * channels;
 
-  m_BitsPerSampleOutput = 16;
+    /* Open the device */
+    m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, m_channelCount[num], m_sampleRate[num], m_bitsPerSample[num], false, codec.c_str(), true, false);
 
-  m_BytesPerSecond = (m_BitsPerSampleOutput / 8)*m_SampleRateOutput*channels;
+    if (!m_pAudioDecoder[num]) return false;
 
-  /* Open the device */
-  m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, channels, m_SampleRateOutput, m_BitsPerSampleOutput, false, codec.c_str(), true, false);
+    m_pcmBuffer[num] = (unsigned char*)malloc((m_pAudioDecoder[num]->GetChunkLen() + PACKET_SIZE));
+    m_bufferPos[num] = 0;
+    m_latency[num]   = m_pAudioDecoder[num]->GetDelay();
+    m_Chunklen[num]  = std::max(PACKET_SIZE, (int)m_pAudioDecoder[num]->GetChunkLen());
+    m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
+    for (int i = 1; i < PACKET_COUNT ; i++)
+      m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
 
-  if (!m_pAudioDecoder[num]) return false;
+    // set initial volume
+    SetStreamVolume(num, g_stSettings.m_nVolumeLevel);
+  }
 
-  m_pcmBuffer[num] = (unsigned char*)malloc((m_pAudioDecoder[num]->GetChunkLen() + PACKET_SIZE));
-  m_bufferPos[num] = 0;
-  m_latency[num]   = m_pAudioDecoder[num]->GetDelay();
-  m_Chunklen[num]  = std::max(PACKET_SIZE, (int)m_pAudioDecoder[num]->GetChunkLen());
-  m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
-  for (int i = 1; i < PACKET_COUNT ; i++)
-    m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
-
- 
-  // create our resampler  // upsample to XBMC_SAMPLE_RATE, only do this for sources with 1 or 2 channels
-  m_resampler[num].InitConverter(samplerate, bitspersample, channels, m_SampleRateOutput, m_BitsPerSampleOutput, PACKET_SIZE);
-
-  // set initial volume
-  SetStreamVolume(num, g_stSettings.m_nVolumeLevel);
+  m_resampler[num].InitConverter(samplerate, bitspersample, channels, outputSampleRate, m_bitsPerSample[num], PACKET_SIZE);
 
   // TODO: How do we best handle the callback, given that our samplerate etc. may be
   // changing at this point?
 
-  // fire off our init to our callback
+  // fire off our init to our callback  
   if (m_pCallback)
-    m_pCallback->OnInitialize(channels, m_SampleRateOutput, m_BitsPerSampleOutput);
-
+    m_pCallback->OnInitialize(channels, outputSampleRate, m_bitsPerSample[num]);
   return true;
 }
 
@@ -991,7 +997,7 @@ void PAPlayer::RegisterAudioCallback(IAudioCallback *pCallback)
 {
   m_pCallback = pCallback;
   if (m_pCallback)
-    m_pCallback->OnInitialize(m_Channels, m_SampleRateOutput, m_BitsPerSampleOutput);
+    m_pCallback->OnInitialize(m_channelCount[m_currentStream], m_sampleRate[m_currentStream], m_bitsPerSample[m_currentStream]);
 }
 
 void PAPlayer::UnRegisterAudioCallback()

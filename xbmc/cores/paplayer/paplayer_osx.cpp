@@ -292,7 +292,8 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
   for (int i = 0; i < 2; i++)
   {
     m_decoder[i].Destroy();
-    FreeStream(i);
+    if (bAudioDevice)
+      FreeStream(i);
   }
 
   m_currentFile->Reset();
@@ -328,7 +329,7 @@ void PAPlayer::FreeStream(int stream)
   m_resampler[stream].DeInitialize();
 }
 
-bool PAPlayer::CreateStream(int num, int channels, int samplerate, int bitspersample, CStdString codec)
+bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int samplerate, unsigned int bitspersample, CStdString codec)
 {
     if (channels <= 2 && g_advancedSettings.m_musicResample)
       m_SampleRateOutput = g_advancedSettings.m_musicResample;
