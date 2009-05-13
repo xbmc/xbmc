@@ -285,11 +285,15 @@ void CGUISettings::Initialize()
   AddBool(10, "musicfiles.usecddb", 227, true);
   AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
-  AddCategory(3, "lastfm", 15200);
-  AddBool(1, "lastfm.submit", 15201, false);
-  AddBool(2, "lastfm.submitradio", 15250, false);
-  AddString(3,"lastfm.username", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
-  AddString(4,"lastfm.password", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
+  AddCategory(3, "scrobbler", 15221);
+  AddBool(1, "scrobbler.lastfmsubmit", 15201, false);
+  AddBool(2, "scrobbler.lastfmsubmitradio", 15250, false);
+  AddString(3,"scrobbler.lastfmusername", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
+  AddString(4,"scrobbler.lastfmpassword", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
+  AddSeparator(5, "scrobbler.sep1");
+  AddBool(6, "scrobbler.librefmsubmit", 15217, false);
+  AddString(7, "scrobbler.librefmusername", 15218, "", EDIT_CONTROL_INPUT, false, 15218);
+  AddString(8, "scrobbler.librefmpassword", 15219, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15219);
 
   AddCategory(3, "cddaripper", 620);
   AddPath(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
