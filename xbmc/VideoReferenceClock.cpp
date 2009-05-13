@@ -653,26 +653,27 @@ void CVideoReferenceClock::RunCocoa()
 // Called by the Core Video Display Link whenever it's appropriate to render a frame.
 static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
 {
-  int           NrVBlanks;
-  double        VBlankTime;
-  LARGE_INTEGER Now;
+  // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
+  void*         pool = Cocoa_Create_AutoReleasePool();
+  
+  CVideoReferenceClock* this = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
+  int                   NrVBlanks;
+  double                VBlankTime;
+  LARGE_INTEGER         Now;
+
   QueryPerformanceCounter(&Now);
   
-  CVideoReferenceClock *this = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
-  // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
-  void* pool = Cocoa_Create_AutoReleasePool();
+  CSingleLock SingleLock(this->m_CritSection);
   
-  CSingleLock SingleLock(m_CritSection);
-  
-  VBlankTime = (double)(Now.QuadPart - m_LastVBlankTime) / (double)m_SystemFrequency;
-  NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
+  VBlankTime = (double)(Now.QuadPart - this->m_LastVBlankTime) / (double)this->m_SystemFrequency;
+  NrVBlanks = MathUtils::round_int(VBlankTime * (double)this->m_RefreshRate);
 
-  m_LastVBlankTime = Now.QuadPart;
-  m_VblankTime = Now.QuadPart;
-  UpdateClock(NrVBlanks, true);
+  this->m_LastVBlankTime = Now.QuadPart;
+  this->m_VblankTime = Now.QuadPart;
+  this->UpdateClock(NrVBlanks, true);
   
   SingleLock.Leave();
-  SendVblankSignal();
+  this->SendVblankSignal();
   
   // Destroy the autorelease pool
   Cocoa_Destroy_AutoReleasePool(pool);
