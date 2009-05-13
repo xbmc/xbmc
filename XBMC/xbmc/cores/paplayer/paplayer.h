@@ -180,15 +180,15 @@ private:
   unsigned char*    m_pcmBuffer[2];
   int               m_bufferPos[2];
   unsigned int      m_Chunklen[2];
-  
+#endif
+
   unsigned int     m_SampleRate;
   unsigned int     m_Channels;
   unsigned int     m_BitsPerSample;
- 
+  
   unsigned int     m_SampleRateOutput;
   unsigned int     m_BitsPerSampleOutput;
-#endif
-
+ 
   AudioPacket      m_packet[2][PACKET_COUNT];
 
   IAudioCallback*  m_pCallback;
