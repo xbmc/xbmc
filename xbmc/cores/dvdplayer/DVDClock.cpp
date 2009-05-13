@@ -20,6 +20,7 @@
  */
  
 #include "stdafx.h"
+//#include <iostream>
 #include "DVDClock.h"
 #include "VideoReferenceClock.h"
 #include <math.h>
@@ -81,6 +82,8 @@ double CDVDClock::GetAbsoluteClock()
 
 void CDVDClock::WaitAbsoluteClock(double target)
 {
+  //std::cout << target - GetAbsoluteClock() << "\n";
+  
   CSingleLock lock(m_systemsection);
   
   __int64 systemtarget;
