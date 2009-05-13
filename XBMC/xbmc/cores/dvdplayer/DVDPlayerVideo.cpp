@@ -143,6 +143,8 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
     g_renderManager.UnInit();
   }
 #endif
+
+  g_VideoReferenceClock.StopThread();
 }
 
 double CDVDPlayerVideo::GetOutputDelay()
@@ -208,7 +210,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   m_messageQueue.Init();
 
-  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock"))
+  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
     g_VideoReferenceClock.Create();
 
   CLog::Log(LOGNOTICE, "Creating video thread");
@@ -244,8 +246,6 @@ void CDVDPlayerVideo::CloseStream(bool bWaitForBuffers)
     CDVDCodecUtils::FreePicture(m_pTempOverlayPicture);
     m_pTempOverlayPicture = NULL;
   }
-
-  g_VideoReferenceClock.StopThread();
 
   //tell the clock we stopped playing video
   m_pClock->UpdateFramerate(0.0);
