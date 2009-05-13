@@ -172,8 +172,8 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_started = false;
 
   m_synctype = SYNC_DISCON;
-  m_setsynctype = g_guiSettings.GetInt("audiooutput.synctype");
-  m_resampler.SetQuality(g_guiSettings.GetInt("audiooutput.resamplequality"));
+  m_setsynctype = g_guiSettings.GetInt("videoplayer.synctype");
+  m_resampler.SetQuality(g_guiSettings.GetInt("videoplayer.resamplequality"));
 
   m_error = 0;
   m_errorbuff = 0;
@@ -184,7 +184,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_syncclock = true;
   QueryPerformanceCounter(&m_errortime);
 
-  m_maxspeedadjust = g_guiSettings.GetFloat("audiooutput.maxadjust");
+  m_maxspeedadjust = g_guiSettings.GetFloat("videoplayer.maxspeedadjust");
 
   CLog::Log(LOGNOTICE, "Creating audio thread");
   Create();
