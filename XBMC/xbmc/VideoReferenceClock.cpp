@@ -624,7 +624,20 @@ void CVideoReferenceClock::HandleWindowMessages()
 
 #elif defined(__APPLE__)
 
-static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext);
+// Called by the Core Video Display Link whenever it's appropriate to render a frame.
+static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
+{
+  // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
+  void* pool = Cocoa_Create_AutoReleasePool();
+  
+  CVideoReferenceClock *VideoReferenceClock = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
+  VideoReferenceClock->VblankHandler();
+  
+  // Destroy the autorelease pool
+  Cocoa_Destroy_AutoReleasePool(pool);
+  
+  return kCVReturnSuccess;
+}
 
 bool CVideoReferenceClock::SetupCocoa()
 {
@@ -657,21 +670,6 @@ void CVideoReferenceClock::RunCocoa()
   }
 }
 
-// Called by the Core Video Display Link whenever it's appropriate to render a frame.
-static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
-{
-  // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
-  void* pool = Cocoa_Create_AutoReleasePool();
-  
-  CVideoReferenceClock* p_instance = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
-  p_instance->VblankHandler();
-  
-  // Destroy the autorelease pool
-  Cocoa_Destroy_AutoReleasePool(pool);
-  
-  return kCVReturnSuccess;
-}
-
 void CVideoReferenceClock::VblankHandler()
 {
   int           NrVBlanks;
@@ -680,7 +678,7 @@ void CVideoReferenceClock::VblankHandler()
 
   QueryPerformanceCounter(&Now);
   
-  CSingleLock SingleLock(m_CritSection);
+  //CSingleLock SingleLock(m_CritSection);
   
   VBlankTime = (double)(Now.QuadPart - m_LastVBlankTime) / (double)m_SystemFrequency;
   NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
@@ -689,7 +687,7 @@ void CVideoReferenceClock::VblankHandler()
   m_VblankTime = Now.QuadPart;
   UpdateClock(NrVBlanks, true);
   
-  SingleLock.Leave();
+  //SingleLock.Leave();
   
   SendVblankSignal();
 }
