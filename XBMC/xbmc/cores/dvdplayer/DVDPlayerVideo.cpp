@@ -852,6 +852,12 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   iFrameSleep = m_FlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
   iFrameDuration = pPicture->iDuration;
 
+  // signal to clock what our framerate is, it may want to adjust it's
+  // speed to better match with our video renderer's output speed
+  // TODO - this should be based on m_fFrameRate, as the timestamps
+  //        in the stream matches that better, durations can vary
+  m_pClock->UpdateFramerate(1.0 / (iFrameDuration / DVD_TIME_BASE));
+
   // correct sleep times based on speed
   if(m_speed)
   {
@@ -957,28 +963,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     return EOS_DROPPED;
 
   ProcessOverlays(pPicture, &image, pts);
-
-  //check if the videoreferenceclock is running, will return -1 if not
-  int RefreshRate = g_VideoReferenceClock.GetRefreshRate();
-  if (RefreshRate > 0)
-  {
-    double Fps = 1.0 / (iFrameDuration / DVD_TIME_BASE);
-    double FrameWeight = (double)RefreshRate / (double)MathUtils::round_int(Fps);
-
-    double maxadjust = m_pClock->GetMaxSpeedAdjust(true);
-
-    //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
-    if (maxadjust > 0.05)
-    {
-      if (FrameWeight / MathUtils::round_int(FrameWeight) < 1.0 + maxadjust / 100.0 &&
-          FrameWeight / MathUtils::round_int(FrameWeight) > 1.0 - maxadjust / 100.0)
-      {
-        FrameWeight = MathUtils::round_int(FrameWeight);
-      }
-    }
-    double Speed = (double)RefreshRate / (Fps * FrameWeight);
-    g_VideoReferenceClock.SetSpeed(Speed);
-  }
 
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
