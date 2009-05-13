@@ -126,8 +126,8 @@ bool CLastFmManager::RadioHandShake()
   CFileCurl http;
   CStdString html;
 
-  CStdString strPassword = g_guiSettings.GetString("lastfm.password");
-  CStdString strUserName = g_guiSettings.GetString("lastfm.username");
+  CStdString strPassword = g_guiSettings.GetString("scrobbler.lastfmpassword");
+  CStdString strUserName = g_guiSettings.GetString("scrobbler.lastfmusername");
   if (strUserName.IsEmpty() || strPassword.IsEmpty())
   {
     CLog::Log(LOGERROR, "Last.fm stream selected but no username or password set.");
@@ -676,8 +676,8 @@ void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& h
 */
 bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& artist, const CStdString& title)
 {
-  CStdString strUserName = g_guiSettings.GetString("lastfm.username");
-  CStdString strPassword = g_guiSettings.GetString("lastfm.password");
+  CStdString strUserName = g_guiSettings.GetString("scrobbler.lastfmusername");
+  CStdString strPassword = g_guiSettings.GetString("scrobbler.lastfmpassword");
   if (strUserName.IsEmpty() || strPassword.IsEmpty())
   {
     CLog::Log(LOGERROR, "Last.fm CallXmlRpc no username or password set.");
@@ -1002,8 +1002,8 @@ bool CLastFmManager::Unban(const CMusicInfoTag& musicinfotag, bool askConfirmati
 bool CLastFmManager::IsLastFmEnabled()
 {
   return (
-    !g_guiSettings.GetString("lastfm.username").IsEmpty() &&
-    !g_guiSettings.GetString("lastfm.password").IsEmpty()
+    !g_guiSettings.GetString("scrobbler.lastfmusername").IsEmpty() &&
+    !g_guiSettings.GetString("scrobbler.lastfmpassword").IsEmpty()
   );
 }
 
@@ -1031,7 +1031,7 @@ bool CLastFmManager::CanBan()
 bool CLastFmManager::CanScrobble(const CFileItem &fileitem)
 {
   return (
-    (!fileitem.IsInternetStream() && g_guiSettings.GetBool("lastfm.submit")) ||
-    (fileitem.IsLastFM() && g_guiSettings.GetBool("lastfm.submitradio"))
+    (!fileitem.IsInternetStream() && g_guiSettings.GetBool("scrobbler.lastfmsubmit")) ||
+    (fileitem.IsLastFM() && g_guiSettings.GetBool("scrobbler.lastfmsubmitradio"))
   );
 }

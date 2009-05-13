@@ -28,6 +28,9 @@
 #include "FileSystem/FileCurl.h"
 #include "CriticalSection.h"
 
+#define SCROBBLER_USER_ERROR_BADAUTH  1
+#define SCROBBLER_USER_ERROR_BANNED   2
+
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
@@ -105,9 +108,7 @@ typedef std::vector<SubmissionJournalEntry>::iterator SCROBBLERJOURNALITERATOR;
 
 class CScrobbler : public CThread
 {
-private:
-  static long m_instanceLock;
-  static CScrobbler *m_pInstance;
+protected:
   bool m_bRunThread;
   bool m_bNotified;
   bool m_bSubmitting;
@@ -119,9 +120,11 @@ private:
   int m_failedHandshakeDelay;
   int m_action;
   time_t m_lastFailedHandshake;
+  CStdString m_strLogPrefix;
   CStdString m_strUsername;
   CStdString m_strPasswordHash;
   CStdString m_strSessionID;
+  CStdString m_strHandshakeURL;
   CStdString m_strNowPlayingURL;
   CStdString m_strSubmissionURL;
   CStdString m_strHandshakeTimeStamp;
@@ -131,14 +134,12 @@ private:
   CCriticalSection  m_queueLock;
   CCriticalSection  m_actionLock;
   std::vector<SubmissionJournalEntry> m_vecSubmissionQueue;
-
 private:
   void ResetState();
   void ClearErrorState();
   void ClearSubmissionState();
   void ClearSession();
   void HandleHardError();
-  bool CanScrobble();
   bool LoadJournal();
   bool SaveJournal();
   bool DoHandshake(time_t now);
@@ -147,17 +148,19 @@ private:
   bool HandleNowPlayingNotification(CStdString &strResponse);
   bool DoSubmission();
   bool HandleSubmission(CStdString &strResponse);
-  CStdString GetJournalFileName();
-  virtual void Process();
+  virtual void Process();  // Shouldn't need over ridden by inheriting CScrobblers
+protected:
+  virtual void NotifyUser(int error);
+  virtual bool CanScrobble();
+  virtual void LoadCredentials();
+  virtual CStdString GetJournalFileName();
 
 public:
-  CScrobbler();
+  CScrobbler(const CStdString &strHandshakeURL, const CStdString &strLogPrefix = "CScrobbler");
   virtual ~CScrobbler();
-  static CScrobbler *GetInstance();
-  static void RemoveInstance();
   void Init();
   void Term();
-  void AddSong(const MUSIC_INFO::CMusicInfoTag &tag);
+  void AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool submit = true);
   void UpdateStatus();
   void SubmitQueue();
   void SetUsername(const CStdString &strUser);
