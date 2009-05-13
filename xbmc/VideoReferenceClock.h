@@ -23,7 +23,7 @@
 #include "stdafx.h"
 #include "Thread.h"
 
-#ifdef HAS_GLX
+#if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <X11/X.h>
   #include <X11/Xlib.h>
   #include <GL/glx.h>
@@ -70,7 +70,7 @@ class CVideoReferenceClock : public CThread
 
     CCriticalSection m_CritSection;
 
-#ifdef HAS_GLX
+#if defined(HAS_GLX) && defined(HAS_XRANDR)
     bool SetupGLX();
     void RunGLX();
     void CleanupGLX();
