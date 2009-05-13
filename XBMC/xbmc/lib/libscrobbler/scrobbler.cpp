@@ -238,6 +238,7 @@ CStdString CScrobbler::GetFilesCached()
   CSingleLock lock(m_queueLock);
   CStdString strFormat = g_localizeStrings.Get(15210);
   strCachedTracks.Format(strFormat, m_vecSubmissionQueue.size());
+  return strCachedTracks;
 }
 
 CStdString CScrobbler::GetSubmitState()

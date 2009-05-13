@@ -107,7 +107,6 @@ void CGUIMultiImage::Render()
     if (nextImage >= m_files.size())
       nextImage = m_loop ? 0 : m_currentImage;  // stay on the last image if <loop>no</loop>
 
-    bool renderNext = false;
     if (nextImage != m_currentImage)
     {
       // check if we should be loading a new image yet
