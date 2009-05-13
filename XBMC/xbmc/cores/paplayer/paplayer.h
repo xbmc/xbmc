@@ -158,7 +158,7 @@ private:
 #if defined(_LINUX) || defined(_WIN32PC)
   void DrainStream(int stream);
 #endif
-  bool CreateStream(int stream, int channels, int samplerate, int bitspersample, CStdString codec = "");
+  bool CreateStream(int stream, unsigned int channels, unsigned int samplerate, unsigned int bitspersample, CStdString codec = "");
   void FlushStreams();
   void WaitForStream();
   void SetStreamVolume(int stream, long nVolume);
@@ -174,15 +174,19 @@ private:
 #elif defined(__APPLE__)
   PaStream*         m_pStream[2];
   CPCMAmplifier     m_amp[2];
-  int               m_channelCount[2];
-  int               m_sampleRate[2];
-  int               m_bitsPerSample[2];
 #else
   IAudioRenderer*   m_pAudioDecoder[2];
   float             m_latency[2];
   unsigned char*    m_pcmBuffer[2];
   int               m_bufferPos[2];
   unsigned int      m_Chunklen[2];
+  
+  unsigned int     m_SampleRate;
+  unsigned int     m_Channels;
+  unsigned int     m_BitsPerSample;
+ 
+  unsigned int     m_SampleRateOutput;
+  unsigned int     m_BitsPerSampleOutput;
 #endif
 
   AudioPacket      m_packet[2][PACKET_COUNT];
@@ -192,13 +196,10 @@ private:
   __int64          m_bytesSentOut;
 
   // format (this should be stored/retrieved from the audio device object probably)
-  unsigned int     m_SampleRate;
-  unsigned int     m_Channels;
-  unsigned int     m_BitsPerSample;
+  unsigned int     m_channelCount[2];
+  unsigned int     m_sampleRate[2];
+  unsigned int     m_bitsPerSample[2];
   unsigned int     m_BytesPerSecond;
-
-  unsigned int     m_SampleRateOutput;
-  unsigned int     m_BitsPerSampleOutput;
 
   unsigned int     m_CacheLevel;
   unsigned int     m_LastCacheLevelCheck;
