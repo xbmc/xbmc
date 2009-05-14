@@ -5,7 +5,7 @@
 			<expression>(http://www.last.fm/music/([^/]*)/(.*))</expression>
 		</RegExp>
 		<RegExp input="$$1" output="http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&amp;artist=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b" dest="3">
-			<expression>(http://www.last.fm/music/([^/]*)$</expression>
+			<expression>(http://www.last.fm/music/([^/]*))$</expression>
 		</RegExp>
 	</NfoUrl>
 	<CreateAlbumSearchUrl dest="3">
