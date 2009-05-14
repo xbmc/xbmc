@@ -684,7 +684,7 @@ void CVideoReferenceClock::VblankHandler(__int64 nowtime, double fps)
 {
   int           NrVBlanks;
   double        VBlankTime;
-  int           RefreshRate = (int)fps;
+  int           RefreshRate = MathUtils::round_int(fps);
   
   CSingleLock SingleLock(m_CritSection);
 
@@ -844,7 +844,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   return Changed;
 
 #elif defined(__APPLE__)
-  int RefreshRate = (int)Cocoa_GetCVDisplayLinkRefreshPeriod();
+  int RefreshRate = MathUtils::round_int(Cocoa_GetCVDisplayLinkRefreshPeriod());
   
   if (RefreshRate != m_RefreshRate || Forced)
   {
