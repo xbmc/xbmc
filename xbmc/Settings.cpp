@@ -319,6 +319,11 @@ void CSettings::Initialize()
   g_advancedSettings.m_externalPlayerFilenameReplacers.push_back("^smb:// , / , \\\\ , g");
   g_advancedSettings.m_externalPlayerFilenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
 #endif
+  g_advancedSettings.m_externalPlayerForceontop = false;
+  g_advancedSettings.m_externalPlayerHideconsole = false;
+  g_advancedSettings.m_externalPlayerHidecursor = false;
+  g_advancedSettings.m_externalPlayerHidexbmc = false;
+  g_advancedSettings.m_externalPlayerStartupTime = 5000;
 
   g_advancedSettings.m_cpuTempCmd = "";
   g_advancedSettings.m_gpuTempCmd = "";
