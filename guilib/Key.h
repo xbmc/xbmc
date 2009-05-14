@@ -261,6 +261,9 @@
 #define ACTION_FIRST_PAGE             159
 #define ACTION_LAST_PAGE              160
 
+#define ACTION_AUDIO_DELAY            161
+#define ACTION_SUBTITLE_DELAY         162
+
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 #define ACTION_TOGGLE_WATCHED         200 // Toggle watched status (videos)
 #define ACTION_SCAN_ITEM              201 // scan item

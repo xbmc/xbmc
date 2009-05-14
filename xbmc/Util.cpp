@@ -5732,7 +5732,7 @@ CStdString CUtil::GetDefaultFolderThumb(const CStdString &folderThumb)
 {
   if (g_TextureManager.HasTexture(folderThumb))
     return folderThumb;
-  return "defaultFolderBig.png";
+  return "";
 }
 
 void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)

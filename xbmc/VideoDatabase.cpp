@@ -3888,8 +3888,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
       {
         if (CFile::Exists(pItem->GetCachedArtistThumb()))
           pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
-        else
-          pItem->SetThumbnailImage("DefaultArtistBig.png");
+        pItem->SetIconImage("DefaultArtist.png");
         if (CFile::Exists(pItem->GetCachedFanart()))
           pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
       }
@@ -3897,8 +3896,7 @@ bool CVideoDatabase::GetActorsNav(const CStdString& strBaseDir, CFileItemList& i
       {
         if (CFile::Exists(pItem->GetCachedActorThumb()))
           pItem->SetThumbnailImage(pItem->GetCachedActorThumb());
-        else
-          pItem->SetThumbnailImage("DefaultActorBig.png");
+        pItem->SetIconImage("DefaultActor.png");
       }
     }
     return true;

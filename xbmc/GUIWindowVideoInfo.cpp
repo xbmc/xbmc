@@ -727,7 +727,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     strItemPath.Format("thumb://Remote%i",i++);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
-    item->SetIconImage("defaultPicture.png");
+    item->SetIconImage("DefaultPicture.png");
     item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(*iter);
     item->SetLabel(g_localizeStrings.Get(415));
     item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
@@ -755,7 +755,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
     // which is probably the IMDb thumb.  These could be wrong, so allow the user
     // to delete the incorrect thumb
     CFileItemPtr item(new CFileItem("thumb://None", false));
-    item->SetThumbnailImage("defaultVideoBig.png");
+    item->SetIconImage("DefaultVideo.png");
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
   }
@@ -837,7 +837,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
     strItemPath.Format("fanart://Remote%i",i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
-    item->SetIconImage("defaultPicture.png");
+    item->SetIconImage("DefaultPicture.png");
     item->GetVideoInfoTag()->m_fanart = m_movieItem->GetVideoInfoTag()->m_fanart;
     item->SetProperty("fanart_number", (int)i);
     item->SetLabel(g_localizeStrings.Get(415));
@@ -870,7 +870,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   }
 
   CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-  itemNone->SetThumbnailImage("defaultVideoBig.png");
+  itemNone->SetIconImage("DefaultVideo.png");
   itemNone->SetLabel(g_localizeStrings.Get(20018));
   items.Add(itemNone);
 

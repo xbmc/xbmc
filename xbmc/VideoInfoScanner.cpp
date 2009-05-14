@@ -1108,7 +1108,7 @@ namespace VIDEO
       CStdString strPath;
       CUtil::GetDirectory(item->m_strPath,strPath);
       nfoFile = CUtil::AddFileToFolder(strPath,"mymovies.xml");
-      if (CFile::Exists(nfoFile))
+      if (CFile::Exists(nfoFile) && !item->m_bIsFolder) // "our" mymovies.xml only work for movies, not shows (mymovies.dk vs windows mce
         return nfoFile;
 
       nfoFile = CUtil::AddFileToFolder(strPath,"movie.nfo");

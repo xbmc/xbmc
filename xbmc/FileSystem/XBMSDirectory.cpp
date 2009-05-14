@@ -283,7 +283,7 @@ static void DiscoveryCallback(const char *addr, const char *port, const char *ve
   g_charsetConverter.unknownToUTF8(pItem->m_strPath);
   pItem->m_bIsFolder = true;
   pItem->m_bIsShareOrDrive = true;
-  pItem->SetIconImage("defaultNetwork.png");
+  pItem->SetIconImage("DefaultNetwork.png");
   c->items->Add(pItem);
 }
 bool CXBMSDirectory::Exists(const char* strPath)

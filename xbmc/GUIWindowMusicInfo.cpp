@@ -237,7 +237,7 @@ void CGUIWindowMusicInfo::SetDiscography()
     if (!strThumb.IsEmpty() && CFile::Exists(strThumb))
       item->SetThumbnailImage(strThumb);
     else
-      item->SetThumbnailImage("defaultAlbumCover.png");
+      item->SetThumbnailImage("DefaultAlbumCover.png");
 
     m_albumSongs->Add(item);
   }
@@ -468,7 +468,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
     strThumb.Format("thumb://Remote%i",i);
     CFileItemPtr item(new CFileItem(strThumb, false));
     item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
-    item->SetIconImage("defaultPicture.png");
+    item->SetIconImage("DefaultPicture.png");
     item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(url.m_url[i]);
     item->SetLabel(g_localizeStrings.Get(415));
     item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
@@ -506,9 +506,9 @@ void CGUIWindowMusicInfo::OnGetThumb()
   
   CFileItemPtr item(new CFileItem("thumb://None", false));
   if (m_bArtistInfo)
-    item->SetThumbnailImage("defaultArtistBig.png");
+    item->SetIconImage("DefaultArtist.png");
   else
-    item->SetThumbnailImage("defaultAlbumCover.png");
+    item->SetIconImage("DefaultAlbum.png");
   item->SetLabel(g_localizeStrings.Get(20018));
   items.Add(item);
   
@@ -544,7 +544,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   if (result == "thumb://None")
   { // cache the default thumb
     CPicture pic;
-    pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
+    pic.CacheSkinImage("DefaultAlbumCover.png", cachedThumb);
   }
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
@@ -572,7 +572,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   CFileItemList items;
 
   CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-  itemNone->SetThumbnailImage("DefaultArtistBig.png");
+  itemNone->SetIconImage("DefaultArtist.png");
   itemNone->SetLabel(g_localizeStrings.Get(20018));
   items.Add(itemNone);
   
@@ -610,7 +610,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
     strItemPath.Format("fanart://Remote%i",i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
     item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
-    item->SetIconImage("defaultPicture.png");
+    item->SetIconImage("DefaultPicture.png");
     item->GetVideoInfoTag()->m_fanart = m_artist.fanart;
     item->SetProperty("fanart_number", (int)i);
     item->SetLabel(g_localizeStrings.Get(415));

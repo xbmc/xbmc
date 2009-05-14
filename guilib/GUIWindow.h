@@ -156,7 +156,7 @@ public:
   void DumpTextureUse();
 #endif
 
-  bool HasSaveLastControl() const { return m_saveLastControl; };
+  bool HasSaveLastControl() const { return !m_defaultAlways; };
 
 protected:
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
@@ -212,7 +212,6 @@ protected:
   std::vector<COrigin> m_origins;  // positions of dialogs depending on base window
 
   // control states
-  bool m_saveLastControl;
   int m_lastControlID;
   std::vector<CControlState> m_controlStates;
   DWORD m_previousWindow;

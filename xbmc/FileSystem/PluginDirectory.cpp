@@ -65,7 +65,7 @@ int CPluginDirectory::getNewHandle(CPluginDirectory *cp)
 void CPluginDirectory::removeHandle(int handle)
 {
   CSingleLock lock(m_handleLock);
-  if (handle > 0 && handle < (int)globalHandles.size())
+  if (handle >= 0 && handle < (int)globalHandles.size())
     globalHandles.erase(globalHandles.begin() + handle);
 }
 
