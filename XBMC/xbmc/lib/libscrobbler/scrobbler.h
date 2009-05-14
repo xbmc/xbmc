@@ -160,7 +160,7 @@ public:
   virtual ~CScrobbler();
   void Init();
   void Term();
-  void AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool submit = true);
+  void AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool lastfmradio);
   void UpdateStatus();
   void SubmitQueue();
   void SetUsername(const CStdString &strUser);
