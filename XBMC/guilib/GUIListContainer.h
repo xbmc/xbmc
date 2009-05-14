@@ -35,7 +35,7 @@
 class CGUIListContainer : public CGUIBaseContainer
 {
 public:
-  CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime);
+  CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems);
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
   CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
                          const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
@@ -45,7 +45,6 @@ public:
   virtual ~CGUIListContainer(void);
   virtual CGUIListContainer *Clone() const { return new CGUIListContainer(*this); };
 
-  virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
 
