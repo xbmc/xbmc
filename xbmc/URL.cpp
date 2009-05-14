@@ -312,7 +312,11 @@ CURL::CURL(const CStdString& strURL1)
 
   /* decode urlencoding on this stuff */
   if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
+  {
     CUtil::UrlDecode(m_strHostName);
+    // Validate it as it is likely to contain a filename
+    SetHostName(ValidatePath(m_strHostName));
+  }
 
   CUtil::UrlDecode(m_strUserName);
   CUtil::UrlDecode(m_strPassword);
@@ -654,38 +658,40 @@ bool CURL::IsFullPath(const CStdString &url)
 CStdString CURL::ValidatePath(const CStdString &path)
 {
   CStdString result = path;
+  
+  // Don't do any stuff on URLs containing %-characters as we may screw up
+  // URL-encoded (embedded) filenames (like with zip:// & rar://)
+  if (path.Find("://") >= 0 && path.Find('%') >= 0)
+    return result;
+   
   // check the path for incorrect slashes
 #ifdef _WIN32
   if (CUtil::IsDOSPath(path))
   {
     result.Replace('/', '\\');
-    // Fixup for double back slashes (but ignore \\ of unc-paths) 
+    // Fixup for double back slashes (but ignore the \\ of unc-paths) 
     for (int x=1; x<result.GetLength()-1; x++) 
     {
       if (result[x] == '\\' && result[x+1] == '\\') 
         result.Delete(x);
     }
   }
-  // Don't do any stuff on URLs containing %-characters as we may screw up
-  // embedded full file-names (like with zip:// & rar://)
-  else if ((path.Find("://") >= 0 && path.Find('%')<=0) || path.Find(":\\\\") >= 0)
+  else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
   {
     result.Replace('\\', '/');
     // Fixup for double forward slashes(/) but don't touch the :// of URLs
-    // The %3A-exclude is to protect against modifying half-URL-encoded %3A// (= ://)
     for (int x=1; x<result.GetLength()-1; x++) 
     {
-      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':' && !(x>3 && result.Mid(x-3,3)=="%3A")) 
+      if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':') 
         result.Delete(x); 
     }
   }
 #else
   result.Replace('\\', '/');
   // Fixup for double forward slashes(/) but don't touch the :// of URLs 
-  // The %3A-exclude is to protect against modifying half-URL-encoded %3A// (= ://)
   for (int x=1; x<result.GetLength()-1; x++) 
   { 
-    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':' && !(x>3 && result.Mid(x-3,3)=="%3A")) 
+    if (result[x] == '/' && result[x+1] == '/' && result[x-1] != ':') 
       result.Delete(x); 
   }        
 #endif
