@@ -62,6 +62,7 @@
   //
   bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext);
   void Cocoa_CVDisplayLinkRelease(void);
+  void Cocoa_CVDisplayLinkUpdate(void);
   double Cocoa_GetCVDisplayLinkRefreshPeriod(void);
 
   // AppleScript

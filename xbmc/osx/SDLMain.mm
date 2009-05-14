@@ -14,6 +14,8 @@
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
 
+#import "CocoaInterface.h"
+
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
  but the method still is there and works. To avoid warnings, we declare
  it ourselves here. */
@@ -34,10 +36,11 @@ typedef struct CPSProcessSerNum
 	UInt32		hi;
 } CPSProcessSerNum;
 
+extern "C" {
 extern OSErr	CPSGetCurrentProcess( CPSProcessSerNum *psn);
 extern OSErr 	CPSEnableForegroundOperation( CPSProcessSerNum *psn, UInt32 _arg2, UInt32 _arg3, UInt32 _arg4, UInt32 _arg5);
 extern OSErr	CPSSetFrontProcess( CPSProcessSerNum *psn);
-
+}
 #endif /* SDL_USE_CPS */
 
 static int    gArgc;
@@ -75,6 +78,10 @@ static NSString *getApplicationName(void)
 /* Invoked from the Quit menu item */
 - (void)terminate:(id)sender
 {
+    // remove any notification handlers
+    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
     /* Post a SDL_QUIT event */
     SDL_Event event;
     event.type = SDL_QUIT;
@@ -288,6 +295,28 @@ static void CustomApplicationMain (int argc, char **argv)
 }
 
 
+
+- (void)workspaceDidWake:(NSNotification *)aNotification
+{
+}
+
+- (void)workspaceWillSleep:(NSNotification *)aNotification
+{
+}
+
+- (void)applicationWillResignActive:(NSNotification *)aNotification
+{
+}
+
+- (void)applicationWillBecomeActive:(NSNotification *)aNotification
+{
+}
+
+- (void)windowChangedScreen:(NSNotification*)aNotification
+{
+  Cocoa_CVDisplayLinkUpdate();
+}
+
 /* Called when the internal event loop has just started running */
 - (void) applicationDidFinishLaunching: (NSNotification *) note
 {
@@ -310,6 +339,31 @@ static void CustomApplicationMain (int argc, char **argv)
     [self fixMenu:[NSApp mainMenu] withAppName:getApplicationName()];
 #endif
 
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+      selector:@selector(workspaceDidWake:)
+      name:NSWorkspaceDidWakeNotification
+      object:nil];
+      
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+      selector:@selector(workspaceWillSleep:)
+      name:NSWorkspaceWillSleepNotification
+      object:nil];
+      
+    [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(applicationWillResignActive:)
+      name:NSApplicationWillResignActiveNotification
+      object:nil];
+      
+    [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(applicationWillBecomeActive:)
+      name:NSApplicationWillBecomeActiveNotification
+      object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(windowChangedScreen:)
+      name:NSWindowDidChangeScreenNotification
+      object:nil];
+
     /* Hand off to main application code */
     gCalledAppMainline = TRUE;
     status = SDL_main (gArgc, gArgv);
@@ -318,7 +372,6 @@ static void CustomApplicationMain (int argc, char **argv)
     exit(status);
 }
 @end
-
 
 @implementation NSString (ReplaceSubString)
 
@@ -332,7 +385,7 @@ static void CustomApplicationMain (int argc, char **argv)
     NSString *result;
 
     bufferSize = selfLen + aStringLen - aRange.length;
-    buffer = NSAllocateMemoryPages(bufferSize*sizeof(unichar));
+    buffer = (unichar*)NSAllocateMemoryPages(bufferSize*sizeof(unichar));
     
     /* Get first part into buffer */
     localRange.location = 0;

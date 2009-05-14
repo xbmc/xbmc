@@ -627,11 +627,16 @@ void CVideoReferenceClock::HandleWindowMessages()
 // Called by the Core Video Display Link whenever it's appropriate to render a frame.
 static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeStamp* inNow, const CVTimeStamp* inOutputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
 {
+  double fps = 60.0;
+
+  if (inNow->videoRefreshPeriod > 0)
+    fps = (double)inOutputTime->videoTimeScale / (double)inOutputTime->videoRefreshPeriod;
+
   // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
   void* pool = Cocoa_Create_AutoReleasePool();
   
   CVideoReferenceClock *VideoReferenceClock = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
-  VideoReferenceClock->VblankHandler();
+  VideoReferenceClock->VblankHandler(inNow->hostTime, fps);
   
   // Destroy the autorelease pool
   Cocoa_Destroy_AutoReleasePool(pool);
@@ -665,31 +670,8 @@ void CVideoReferenceClock::RunCocoa()
 {
   while(!m_bStop)
   {
-    UpdateRefreshrate();
     Sleep(1000);
   }
-}
-
-void CVideoReferenceClock::VblankHandler()
-{
-  int           NrVBlanks;
-  double        VBlankTime;
-  LARGE_INTEGER Now;
-
-  QueryPerformanceCounter(&Now);
-  
-  //CSingleLock SingleLock(m_CritSection);
-  
-  VBlankTime = (double)(Now.QuadPart - m_LastVBlankTime) / (double)m_SystemFrequency;
-  NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
-
-  m_LastVBlankTime = Now.QuadPart;
-  m_VblankTime = Now.QuadPart;
-  UpdateClock(NrVBlanks, true);
-  
-  //SingleLock.Leave();
-  
-  SendVblankSignal();
 }
 
 void CVideoReferenceClock::CleanupCocoa()
@@ -698,6 +680,32 @@ void CVideoReferenceClock::CleanupCocoa()
   Cocoa_CVDisplayLinkRelease();
 }    
 
+void CVideoReferenceClock::VblankHandler(__int64 nowtime, double fps)
+{
+  int           NrVBlanks;
+  double        VBlankTime;
+  int           RefreshRate = (int)fps;
+  
+  CSingleLock SingleLock(m_CritSection);
+
+  if (RefreshRate != m_RefreshRate)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", RefreshRate);
+    m_RefreshRate = RefreshRate;
+  }
+  m_LastRefreshTime = m_CurrTime;
+  
+  VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)m_SystemFrequency;
+  NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
+
+  m_LastVBlankTime = nowtime;
+  m_VblankTime = nowtime;
+  UpdateClock(NrVBlanks, true);
+  
+  SingleLock.Leave();
+  
+  SendVblankSignal();
+}
 #endif
 
 void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
