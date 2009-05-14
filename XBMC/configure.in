@@ -26,8 +26,8 @@ AC_CANONICAL_HOST
 # message strings
 configure_debug="ERROR: this is a configure debug statement"
 
-missing_library="ERROR: Could not find a required library. Please see README.linux"
-missing_program="ERROR: Could not find a required program. Please see README.linux."
+missing_library="Could not find a required library. Please see the README for your platform."
+missing_program="Could not find a required program. Please see the README for your platform."
 xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
