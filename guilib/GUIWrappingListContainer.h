@@ -34,11 +34,10 @@
 class CGUIWrappingListContainer : public CGUIBaseContainer
 {
 public:
-  CGUIWrappingListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int fixedPosition);
+  CGUIWrappingListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition);
   virtual ~CGUIWrappingListContainer(void);
   virtual CGUIWrappingListContainer *Clone() const { return new CGUIWrappingListContainer(*this); };
 
-  virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
   virtual int GetSelectedItem() const;
@@ -55,6 +54,7 @@ protected:
   virtual unsigned int GetNumItems() const { return m_items.size() - m_extraItems; };
   virtual int GetCurrentPage() const;
   virtual void SetPageControlRange();
+  virtual void UpdatePageControl(int offset);
 
   void ResetExtraItems();
   unsigned int m_extraItems;
