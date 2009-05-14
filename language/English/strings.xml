@@ -1195,7 +1195,7 @@
   <string id="13501">Audio Clock</string>
   <string id="13502">Video Clock (Drop/Dupe Audio)</string>
   <string id="13503">Video Clock (Resample Audio)</string>
-  <string id="13504">Maximum Resample Ammount (%)</string>
+  <string id="13504">Maximum Resample Amount (%)</string>
   <string id="13505">Resample Quality</string>
   <string id="13506">Low</string>
   <string id="13507">Medium</string>
