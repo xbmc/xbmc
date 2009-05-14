@@ -31,7 +31,7 @@
 #include "Win32DirectSound.h"
 #endif
 #ifdef __APPLE__
-#include "PortaudioDirectSound.h"
+#include "CoreAudioRenderer.h"
 #elif defined(_LINUX)
 #include "ALSADirectSound.h"
 #endif
@@ -72,7 +72,7 @@ IAudioRenderer* CAudioRendererFactory::CreateAudioRenderer(IAudioCallback* pCall
   ReturnOnValidInitialize();
 #endif
 #ifdef __APPLE__
-  audioSink = new PortAudioDirectSound();
+  audioSink = new CCoreAudioRenderer();
   ReturnOnValidInitialize();
 #elif defined(_LINUX)
   audioSink = new CALSADirectSound();

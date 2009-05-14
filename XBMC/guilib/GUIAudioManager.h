@@ -75,7 +75,8 @@ private:
 
   CStdString          m_strMediaDir;
   bool                m_bEnabled;
-
+  bool                m_bInitialized;
+  
   CCriticalSection    m_cs;
 };
 
