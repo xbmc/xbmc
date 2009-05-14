@@ -447,7 +447,6 @@ void CGUISettings::Initialize()
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
-  AddBool(6, "videoplayer.usedisplayasclock", 13510, false);
 #ifdef HAS_MPLAYER
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif
@@ -468,9 +467,11 @@ void CGUISettings::Initialize()
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
   AddBool(17, "videoplayer.editdecision", 22003, false);
 
-  AddInt(18, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
-  AddFloat(19, "videoplayer.maxspeedadjust", 13504, 5.0, 0.0, 0.1, 10.0);
-  AddInt(20, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
+  AddSeparator(18, "videoplayer.sep4");
+  AddBool(19, "videoplayer.usedisplayasclock", 13510, false);
+  AddInt(20, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddFloat(21, "videoplayer.maxspeedadjust", 13504, 5.0, 0.0, 0.1, 10.0);
+  AddInt(22, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "arial.ttf", SPIN_CONTROL_TEXT);
