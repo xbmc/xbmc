@@ -4957,9 +4957,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
         const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
         if (tag)
         {
-          bool submit = !(CLastFmManager::GetInstance()->IsRadioEnabled() && !g_guiSettings.GetBool("scrobbler.lastfmsubmitradio"));
-          CLastfmScrobbler::GetInstance()->AddSong(*tag, submit);
-          CLibrefmScrobbler::GetInstance()->AddSong(*tag, submit);
+          CLastfmScrobbler::GetInstance()->AddSong(*tag, CLastFmManager::GetInstance()->IsRadioEnabled());
+          CLibrefmScrobbler::GetInstance()->AddSong(*tag, CLastFmManager::GetInstance()->IsRadioEnabled());
         }
       }
       return true;
