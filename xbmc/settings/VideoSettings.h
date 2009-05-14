@@ -56,7 +56,7 @@ public:
   bool m_NonInterleaved;
   bool m_bForceIndex;
   EINTERLACEMETHOD m_InterlaceMethod;
-  int m_FilmGrain;
+  float m_FilmGrain;
   int m_ViewMode;   // current view mode
   float m_CustomZoomAmount; // custom setting zoom amount
   float m_CustomPixelRatio; // custom setting pixel ratio
@@ -67,9 +67,9 @@ public:
   float m_SubtitleDelay;
   bool m_SubtitleOn;
   bool m_SubtitleCached;
-  int m_Brightness;
-  int m_Contrast;
-  int m_Gamma;
+  float m_Brightness;
+  float m_Contrast;
+  float m_Gamma;
   float m_AudioDelay;
   int m_ResumeTime;
   bool m_Crop;

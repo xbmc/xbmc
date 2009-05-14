@@ -209,6 +209,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Left(15).Equals("player.duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(15))));
     else if (strTest.Left(17).Equals("player.finishtime")) return AddMultiInfo(GUIInfo(PLAYER_FINISH_TIME, TranslateTimeFormat(strTest.Mid(17))));
     else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
+    else if (strTest.Equals("player.subtitledelay")) ret = PLAYER_SUBTITLE_DELAY;
+    else if (strTest.Equals("player.audiodelay")) ret = PLAYER_AUDIO_DELAY;
     else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
     else if (strTest.Equals("player.hasduration")) ret = PLAYER_HASDURATION;
     else if (strTest.Equals("player.chapter")) ret = PLAYER_CHAPTER;
@@ -986,6 +988,12 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case PLAYER_VOLUME:
     strLabel.Format("%2.1f dB", (float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel) * 0.01f);
     break;
+  case PLAYER_SUBTITLE_DELAY:
+    strLabel.Format("%2.3f s", g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
+    break;
+  case PLAYER_AUDIO_DELAY:
+    strLabel.Format("%2.3f s", g_stSettings.m_currentVideoSettings.m_AudioDelay);
+    break;
   case PLAYER_CHAPTER:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       strLabel.Format("%02d", g_application.m_pPlayer->GetChapter());
@@ -1530,6 +1538,10 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
   {
     case PLAYER_VOLUME:
       return g_application.GetVolume();
+    case PLAYER_SUBTITLE_DELAY:
+      return g_application.GetSubtitleDelay();
+    case PLAYER_AUDIO_DELAY:
+      return g_application.GetAudioDelay();
     case PLAYER_PROGRESS:
     case PLAYER_SEEKBAR:
     case PLAYER_CACHELEVEL:

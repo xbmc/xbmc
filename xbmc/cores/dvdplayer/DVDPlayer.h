@@ -281,13 +281,13 @@ protected:
   } m_SpeedState;
 
   int m_errorCount;
-  // classes
+
+  CDVDMessageQueue m_messenger;     // thread messenger
+
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part
   CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
-  
-  CDVDMessageQueue m_messenger;     // thread messenger, only the dvdplayer.cpp class itself may send message to this!
-  
+
   CDVDClock m_clock;                // master clock  
   CDVDOverlayContainer m_overlayContainer;
   

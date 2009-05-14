@@ -23,11 +23,12 @@
 
 #include "GUIWindow.h"
 #include "utils/CriticalSection.h"
+#include "GUIDialogSlider.h"
 
 class CGUITextLayout; // forward
 
 class CGUIWindowFullScreen :
-      public CGUIWindow
+      public CGUIWindow, public ISliderCallback
 {
 public:
   CGUIWindowFullScreen(void);
@@ -43,12 +44,14 @@ public:
   bool NeedRenderFullScreen();
   void ChangetheTimeCode(DWORD remote);
 
+  virtual void OnSliderChange(void *data, CGUISliderControl *slider);
 protected:
   virtual void OnDeinitWindow(int nextWindow) {}; // no out window animation for fullscreen video
 
 private:
   void RenderTTFSubtitles();
   void Seek(bool bPlus, bool bLargeStep);
+  void SeekChapter(int iChapter);
   void PreloadDialog(unsigned int windowID);
   void UnloadDialog(unsigned int windowID);
 

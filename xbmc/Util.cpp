@@ -3103,19 +3103,19 @@ void CUtil::RestoreBrightnessContrastGamma()
   g_graphicsContext.Unlock();
 }
 
-void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate)
+void CUtil::SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate)
 {
-  if (iBrightNess < 0) iBrightNess = 0;
-  if (iBrightNess > 100) iBrightNess = 100;
-  if (iContrast < 0) iContrast = 0;
-  if (iContrast > 100) iContrast = 100;
-  if (iGamma < 0) iGamma = 0;
-  if (iGamma > 100) iGamma = 100;
+  if (brightness < 0) brightness = 0;
+  if (brightness > 100) brightness = 100;
+  if (contrast < 0) contrast = 0;
+  if (contrast > 100) contrast = 100;
+  if (gamma < 0) gamma = 0;
+  if (gamma > 100) gamma = 100;
 
-  float fBrightNess = (((float)iBrightNess) / 50.0f) - 1.0f; // -1..1 Default: 0
-  float fContrast = (((float)iContrast) / 50.0f);      // 0..2  Default: 1
-  float fGamma = (((float)iGamma) / 40.0f) + 0.5f;      // 0.5..3.0 Default: 1
-  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
+  float fBrightNess = brightness / 50.0f - 1.0f; // -1..1    Default: 0
+  float fContrast = contrast / 50.0f;            // 0..2     Default: 1
+  float fGamma = gamma / 40.0f + 0.5f;           // 0.5..3.0 Default: 1
+  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, immediate);
 }
 
 void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)

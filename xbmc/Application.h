@@ -144,6 +144,8 @@ public:
   void SetVolume(int iPercent);
   void Mute(void);
   int GetPlaySpeed() const;
+  int GetSubtitleDelay() const;
+  int GetAudioDelay() const;
   void SetPlaySpeed(int iSpeed);
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();

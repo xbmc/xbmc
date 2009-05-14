@@ -194,7 +194,7 @@ public:
   static void TakeScreenshot();
   static void TakeScreenshot(const char* fn, bool flash);
   static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
-  static void SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate);
+  static void SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate);
   static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
   static void FlashScreen(bool bImmediate, bool bOn);
   static void RestoreBrightnessContrastGamma();

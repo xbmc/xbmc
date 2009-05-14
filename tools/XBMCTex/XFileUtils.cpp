@@ -24,6 +24,7 @@
 #include "XFileUtils.h"
 #include "XTimeUtils.h"
 #include "Util.h"
+#include "XHandle.h"
 
 #ifdef _LINUX
 
