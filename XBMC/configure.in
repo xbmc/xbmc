@@ -191,6 +191,8 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -framework AudioUnit"
   LDFLAGS="$LDFLAGS -framework Foundation"
   LDFLAGS="$LDFLAGS -framework CoreServices"
+  LDFLAGS="$LDFLAGS -framework CoreVideo"
+  LDFLAGS="$LDFLAGS -framework CoreAudio"
   LDFLAGS="$LDFLAGS -framework AudioToolbox"
   LDFLAGS="$LDFLAGS -framework CoreFoundation"
   LDFLAGS="$LDFLAGS -framework DiskArbitration"
@@ -250,7 +252,6 @@ if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([z],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([portaudio], [main],, AC_MSG_ERROR($missing_library))
 else
   AC_CHECK_LIB([SDL],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))

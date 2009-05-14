@@ -6,7 +6,8 @@ SRCS = \
 	SDLMain.m \
 	XBMCHelper.m \
 	CocoaInterface.mm \
-	CPortAudio.cpp \
+	CoreAudio.cpp \
+	CoreAudioSoundManager.cpp \
 	CocoaPowerSyscall.cpp \
 	OSXGNUReplacements.c \
 	ZeroconfOSX.mm \
