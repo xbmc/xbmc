@@ -48,7 +48,7 @@ class CVideoReferenceClock : public CThread
     void   WaitStarted(int MSecs);
 
 #ifdef __APPLE__
-    void VblankHandler();
+    void VblankHandler(__int64 nowtime, double fps);
 #endif
     
   protected:

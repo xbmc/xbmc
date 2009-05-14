@@ -717,8 +717,8 @@ bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkConte
   CVReturn status = kCVReturnError;
   CGDirectDisplayID display_id;
     
+  Cocoa_GL_EnableVSync(true);
   display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
-  
   if (!displayLink)
   {
     // Create a display link capable of being used with all active displays
@@ -730,7 +730,7 @@ bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkConte
 
   if (status == kCVReturnSuccess)
   {
-    // Set the display link for the current renderer
+    // Set the display link for the current display
     status = CVDisplayLinkSetCurrentCGDisplay(displayLink, display_id);
 
     // Activate the display link
@@ -742,10 +742,26 @@ bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkConte
 
 void Cocoa_CVDisplayLinkRelease(void)
 {
-  CVDisplayLinkStop(displayLink);
-  // Release the display link
-  CVDisplayLinkRelease(displayLink);
-  displayLink = NULL;
+  if (displayLink)
+  {
+    if (CVDisplayLinkIsRunning(displayLink))
+      CVDisplayLinkStop(displayLink);
+    // Release the display link
+    CVDisplayLinkRelease(displayLink);
+    displayLink = NULL;
+  }
+}
+
+void Cocoa_CVDisplayLinkUpdate(void)
+{
+  if (displayLink)
+  {
+    CGDirectDisplayID display_id;
+    
+    display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
+    // Set the display link to the current display
+    CVDisplayLinkSetCurrentCGDisplay(displayLink, display_id);
+  }
 }
 
 double Cocoa_GetCVDisplayLinkRefreshPeriod(void)
@@ -834,57 +850,6 @@ void SetPIDFrontProcess(pid_t pid) {
 */
 
 /*
-@interface MyView : NSOpenGLView
-{
-    CVDisplayLinkRef displayLink; //display link for managing rendering thread
-}
-@end
-
-- (void)prepareOpenGL
-{
-    // Synchronize buffer swaps with vertical refresh rate
-    GLint swapInt = 1;
-    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; 
-
-    // Create a display link capable of being used with all active displays
-    CVDisplayLinkCreateWithActiveCGDisplays(&displayLink);
-
-    // Set the renderer output callback function
-    CVDisplayLinkSetOutputCallback(displayLink, &MyViewDisplayLinkCallback, self);
-
-    // Set the display link for the current renderer
-    CGLContextObj cglContext = [[self openGLContext] CGLContextObj];
-    CGLPixelFormatObj cglPixelFormat = [[self pixelFormat] CGLPixelFormatObj];
-    CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(displayLink, cglContext, cglPixelFormat);
-
-    // Activate the display link
-    CVDisplayLinkStart(displayLink);
-}
-
-// This is the renderer output callback function
-static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
-{
-    CVReturn result = [(MyView*)displayLinkContext getFrameForTime:outputTime];
-    return result;
-}
-
-- (CVReturn)getFrameForTime:(const CVTimeStamp*)outputTime
-{
-    // Add your drawing codes here
-
-    return kCVReturnSuccess;
-}
-
-- (void)dealloc
-{
-    // Release the display link
-    CVDisplayLinkRelease(displayLink);
-
-    [super dealloc];
-}
-
-//888888888888888888
-
 // Synchronize buffer swaps with vertical refresh rate (NSTimer)
 - (void)prepareOpenGL
 {
@@ -915,4 +880,9 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     // All we do here is tell the display it needs a refresh
     [self setNeedsDisplay:YES];
 }
+
+[newWindow setFrameAutosaveName:@"some name"] 
+
+and the window's frame is automatically saved for you in the application 
+defaults each time its location changes. 
 */
