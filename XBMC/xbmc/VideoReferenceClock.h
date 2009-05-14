@@ -46,6 +46,7 @@ class CVideoReferenceClock : public CThread
     int    GetRefreshRate();
     void   Wait(__int64 Target);
     void   WaitStarted(int MSecs);
+    int    GetMissedVblanks();
 
 #ifdef __APPLE__
     void VblankHandler(__int64 nowtime, double fps);
@@ -67,6 +68,7 @@ class CVideoReferenceClock : public CThread
     __int64 m_RefreshRate;       //current refreshrate
     int     m_PrevRefreshRate;   //previous refresrate, used for log printing and getting refreshrate from nvidia-settings
     int     m_MissedVblanks;     //number of clock updates missed by the vblank clock
+    int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
     __int64 m_VblankTime;        //last time the clock was updated when using vblank as clock
 
     CEvent m_Started;            //set when the vblank clock is started

@@ -40,6 +40,7 @@ CVideoReferenceClock::CVideoReferenceClock()
   m_SystemFrequency = Freq.QuadPart;
   m_AdjustedFrequency = Freq.QuadPart;
   m_ClockOffset = 0;
+  m_TotalMissedVblanks = 0;
   m_UseVblank = false;
   m_Started.Reset();
 }
@@ -68,6 +69,7 @@ void CVideoReferenceClock::Process()
     QueryPerformanceCounter(&Now);
     m_CurrTime = Now.QuadPart + m_ClockOffset; //add the clock offset from the previous time we stopped
     m_AdjustedFrequency = m_SystemFrequency;
+    m_TotalMissedVblanks = 0;
     m_Started.Set();
 
     if (SetupSuccess)
@@ -941,6 +943,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
       if (Late) //if the vblank clock was late with its update, we update the clock ourselves
       {
         m_MissedVblanks++; //tell the vblank clock how many vblanks it missed
+        m_TotalMissedVblanks++; //for the codec information screen
         m_VblankTime += m_SystemFrequency / m_RefreshRate; //set the vblank time one vblank period forward
         UpdateClock(1, false); //update the clock by 1 vblank
       }
@@ -956,6 +959,15 @@ void CVideoReferenceClock::Wait(__int64 Target)
     if (SleepTime > 0)
       ::Sleep(SleepTime);
   }
+}
+
+//for the codec information screen
+int CVideoReferenceClock::GetMissedVblanks()
+{
+  if (m_UseVblank)
+    return m_TotalMissedVblanks;
+  else
+    return 0;
 }
 
 void CVideoReferenceClock::SendVblankSignal()
