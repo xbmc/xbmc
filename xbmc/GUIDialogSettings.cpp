@@ -163,17 +163,15 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
     CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(controlID);
     if (pControl && setting.data) pControl->SetSelected(*(unsigned char*)setting.data ? true : false);
   }
-  else if (setting.type == SettingInfo::SLIDER || setting.type == SettingInfo::SLIDER_ABS)
+  else if (setting.type == SettingInfo::SLIDER)
   {
     CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(controlID);
-    pControl->SetFormatString(setting.format);
     float value = *(float *)setting.data;
-    if (pControl && setting.data) pControl->SetFloatValue(value);
-  }
-  else if (setting.type == SettingInfo::SLIDER_INT)
-  {
-    CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(controlID);
-    if (pControl && setting.data) pControl->SetIntValue(*(int *)setting.data);
+    if (pControl && setting.data)
+    {
+      pControl->SetFloatValue(value);
+      if (setting.formatFunction) pControl->SetTextValue(setting.formatFunction(value, setting.interval));
+    }
   }
   else if (setting.type == SettingInfo::BUTTON)
       SET_CONTROL_LABEL(controlID,setting.name);
@@ -231,17 +229,13 @@ void CGUIDialogSettings::OnClick(int iID)
     CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(iID);
     if (setting.data) *(unsigned char*)setting.data = pControl->IsSelected() ? 1 : 0;
   }
-  else if (setting.type == SettingInfo::SLIDER || setting.type == SettingInfo::SLIDER_ABS)
+  else if (setting.type == SettingInfo::SLIDER)
   {
     CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(iID);
     if (setting.data) *(float *)setting.data = pControl->GetFloatValue();
+    if (setting.formatFunction) pControl->SetTextValue(setting.formatFunction(pControl->GetFloatValue(), setting.interval));
   }
-  else if (setting.type == SettingInfo::SLIDER_INT)
-  {
-    CGUISettingsSliderControl *pControl = (CGUISettingsSliderControl *)GetControl(iID);
-    if (setting.data) *(int *)setting.data = pControl->GetIntValue();
-  }
-  OnSettingChanged(settingNum);
+  OnSettingChanged(setting);
 }
 
 void CGUIDialogSettings::FreeControls()
@@ -291,27 +285,19 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
       ((CGUISpinControlEx *)pControl)->AddLabel(setting.entry[i], i);
     if (setting.data) ((CGUISpinControlEx *)pControl)->SetValue(*(int *)setting.data);
   }
-  else if (setting.type == SettingInfo::SLIDER || setting.type == SettingInfo::SLIDER_INT|| setting.type == SettingInfo::SLIDER_ABS)
+  else if (setting.type == SettingInfo::SLIDER)
   {
     if (!m_pOriginalSlider) return;
     pControl = new CGUISettingsSliderControl(*m_pOriginalSlider);
     if (!pControl) return ;
     pControl->SetWidth(width);
     ((CGUISettingsSliderControl *)pControl)->SetText(setting.name);
-    if (setting.type == SettingInfo::SLIDER || setting.type == SettingInfo::SLIDER_ABS)
-    {
-      ((CGUISettingsSliderControl *)pControl)->SetFormatString(setting.format);
-      ((CGUISettingsSliderControl *)pControl)->SetType(setting.type==SettingInfo::SLIDER?SPIN_CONTROL_TYPE_FLOAT:SPIN_CONTROL_TYPE_FLOAT_ABS);
-      ((CGUISettingsSliderControl *)pControl)->SetFloatRange(setting.min, setting.max);
-      ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(setting.interval);
-      if (setting.data) ((CGUISettingsSliderControl *)pControl)->SetFloatValue(*(float *)setting.data);
-    }
-    else
-    {
-      ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_INT);
-      ((CGUISettingsSliderControl *)pControl)->SetRange((int)setting.min, (int)setting.max);
-      if (setting.data) ((CGUISettingsSliderControl *)pControl)->SetIntValue(*(int *)setting.data);
-    }
+    if (setting.formatFunction)
+      ((CGUISettingsSliderControl *)pControl)->SetTextValue(setting.formatFunction(*(float *)setting.data, setting.interval));
+    ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_FLOAT);
+    ((CGUISettingsSliderControl *)pControl)->SetFloatRange(setting.min, setting.max);
+    ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(setting.interval);
+    if (setting.data) ((CGUISettingsSliderControl *)pControl)->SetFloatValue(*(float *)setting.data);
   }
   if (!pControl) return;
 
@@ -381,32 +367,17 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsig
   m_settings.push_back(setting);
 }
 
-void CGUIDialogSettings::AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, const char *format /*= NULL*/, bool absvalue /* = false */)
+void CGUIDialogSettings::AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION function, bool allowPopup /* = true*/)
 {
   SettingInfo setting;
   setting.id = id;
   setting.name = g_localizeStrings.Get(label);
-  if (absvalue)
-    setting.type = SettingInfo::SLIDER_ABS;
-  else
-    setting.type = SettingInfo::SLIDER;
+  setting.type = SettingInfo::SLIDER;
   setting.min = min;
   setting.interval = interval;
   setting.max = max;
   setting.data = current;
-  if (format) setting.format = format;
-  m_settings.push_back(setting);
-}
-
-void CGUIDialogSettings::AddSlider(unsigned int id, int label, int *current, int min, int max)
-{
-  SettingInfo setting;
-  setting.id = id;
-  setting.name = g_localizeStrings.Get(label);
-  setting.type = SettingInfo::SLIDER_INT;
-  setting.min = (float)min;
-  setting.max = (float)max;
-  setting.data = current;
+  setting.formatFunction = function;
   m_settings.push_back(setting);
 }
 

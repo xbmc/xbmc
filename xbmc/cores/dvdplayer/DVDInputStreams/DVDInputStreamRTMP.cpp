@@ -42,8 +42,6 @@ using namespace XFILE;
 CDVDInputStreamRTMP::CDVDInputStreamRTMP() : CDVDInputStream(DVDSTREAM_TYPE_RTMP)
 {
   m_eof = true;
-  m_videoTS = 0;
-  m_audioTS = 0;
   m_prevTagSize = 0;
   m_bSentHeader = false;
   m_leftOver = NULL;
@@ -163,19 +161,8 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
       ptr++;
       ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, packet.m_nBodySize);
       
-      unsigned int nTimeStamp = 0;
-      if (packet.m_packetType == 0x08){ // audio
-        nTimeStamp = m_audioTS;
-        m_audioTS += packet.m_nInfoField1;
-      }
-      else if (packet.m_packetType == 0x09){ // video
-        nTimeStamp = m_videoTS;
-        m_videoTS += packet.m_nInfoField1;
-      }
-      
-      ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, nTimeStamp);
-
-      *ptr = (char)((nTimeStamp & 0xFF000000) >> 24);
+      ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, packet.m_nInfoField1);
+      *ptr = (char)((packet.m_nInfoField1 & 0xFF000000) >> 24);
       ptr++;
 
       ptr += RTMP_LIB::CRTMP::EncodeInt24(ptr, 0);

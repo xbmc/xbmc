@@ -128,6 +128,7 @@ void CRssReader::Process()
 
     CFileCurl http;
     http.SetUserAgent(m_userAgent);
+    http.SetTimeout(2);
     CStdString strXML;
     CStdString strUrl = m_vecUrls[iFeed];
 
@@ -141,8 +142,16 @@ void CRssReader::Process()
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
     else
     {
+      DWORD starttime = timeGetTime();
       while ( (!m_bStop) && (nRetries > 0) )
       {
+        DWORD currenttimer = timeGetTime() - starttime;
+        if (currenttimer > 15000)
+        {
+          CLog::Log(LOGERROR,"Timeout whilst retrieving %s", strUrl.c_str());
+          http.Cancel();
+          break;
+        } 
         nRetries--;
 
         if (url.GetProtocol() != "http" && url.GetProtocol() != "https")
@@ -165,6 +174,7 @@ void CRssReader::Process()
             break;
           }
       }
+      http.Cancel();
     }
     if ((!strXML.IsEmpty()) && m_pObserver)
     {

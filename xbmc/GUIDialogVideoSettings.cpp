@@ -74,11 +74,12 @@ void CGUIDialogVideoSettings::CreateSettings()
     const int entries[] = {630, 631, 632, 633, 634, 635, 636 };
     AddSpin(VIDEO_SETTINGS_VIEW_MODE, 629, &g_stSettings.m_currentVideoSettings.m_ViewMode, 7, entries);
   }
-  AddSlider(VIDEO_SETTINGS_ZOOM, 216, &g_stSettings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.01f, 2.0f);
-  AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_stSettings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f);
-  AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_stSettings.m_currentVideoSettings.m_Brightness, 0, 100);
-  AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 100);
-  AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 100);
+  AddSlider(VIDEO_SETTINGS_ZOOM, 216, &g_stSettings.m_currentVideoSettings.m_CustomZoomAmount, 0.5f, 0.01f, 2.0f, FormatFloat);
+  AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_stSettings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
+
+  AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_stSettings.m_currentVideoSettings.m_Brightness, 0, 1, 100, FormatInteger);
+  AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 1, 100, FormatInteger);
+  AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 1, 100, FormatInteger);
 
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
@@ -89,18 +90,15 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
   if (g_application.GetCurrentPlayer() == EPC_MPLAYER)
   {
-    AddSlider(VIDEO_SETTINGS_FILM_GRAIN, 14058, (int*)&g_stSettings.m_currentVideoSettings.m_FilmGrain, 0, 10);
+    AddSlider(VIDEO_SETTINGS_FILM_GRAIN, 14058, &g_stSettings.m_currentVideoSettings.m_FilmGrain, 0, 1, 10, FormatInteger);
     AddBool(VIDEO_SETTINGS_NON_INTERLEAVED, 306, &g_stSettings.m_currentVideoSettings.m_NonInterleaved);
     AddBool(VIDEO_SETTINGS_NO_CACHE, 431, &g_stSettings.m_currentVideoSettings.m_NoCache);
     AddButton(VIDEO_SETTINGS_FORCE_INDEX, 12009);
   }
 }
 
-void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
+void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
 {
-  // setting has changed - update anything that needs it
-  if (num >= m_settings.size()) return;
-  SettingInfo &setting = m_settings.at(num);
   // check and update anything that needs it
   if (setting.id == VIDEO_SETTINGS_NON_INTERLEAVED ||  setting.id == VIDEO_SETTINGS_NO_CACHE)
     g_application.Restart(true);
@@ -163,5 +161,19 @@ void CGUIDialogVideoSettings::OnSettingChanged(unsigned int num)
       g_settings.Save();
     }
   }
+}
+
+CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum)
+{
+  CStdString text;
+  text.Format("%i", MathUtils::round_int(value));
+  return text;
+}
+
+CStdString CGUIDialogVideoSettings::FormatFloat(float value, float minimum)
+{
+  CStdString text;
+  text.Format("%2.2f", value);
+  return text;
 }
 

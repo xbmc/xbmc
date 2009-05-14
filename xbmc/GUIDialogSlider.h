@@ -1,4 +1,5 @@
 #pragma once
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -20,30 +21,31 @@
  *
  */
 
-#include "DVDInputStream.h"
-#include "rtmp.h"
+#include "GUIDialog.h"
 
-class CDVDInputStreamRTMP : public CDVDInputStream
+class CGUISliderControl;
+
+class ISliderCallback
 {
 public:
-  CDVDInputStreamRTMP();
-  virtual ~CDVDInputStreamRTMP();
-  virtual bool    Open(const char* strFile, const std::string &content);
-  virtual void    Close();
-  virtual int     Read(BYTE* buf, int buf_size);
-  virtual __int64 Seek(__int64 offset, int whence);
-  virtual bool    IsEOF();
-  virtual __int64 GetLength();
+  virtual void OnSliderChange(void *data, CGUISliderControl *slider)=0;
+};
 
-  virtual bool    NextStream();
+class CGUIDialogSlider : public CGUIDialog
+{
+public:
+  CGUIDialogSlider();
+  virtual ~CGUIDialogSlider(void);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
 
+  static void ShowAndGetInput(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData);
+  static void Display(int label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData = NULL);
 protected:
-  bool   m_eof;
-  RTMP_LIB::CRTMP  m_rtmp;
-  int          m_prevTagSize;
-  bool         m_bSentHeader;
-  char         *m_leftOver;
-  unsigned int m_leftOverSize;
-  unsigned int m_leftOverConsumed;
+  void SetSlider(const CStdString &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData);
+  virtual void OnWindowLoaded();
+
+  ISliderCallback *m_callback;
+  void *m_callbackData;
 };
 

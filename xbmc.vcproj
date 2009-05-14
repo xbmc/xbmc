@@ -1314,6 +1314,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\GUIDialogSettings.h">
 				</File>
+                                <File
+                                        RelativePath=".\xbmc\GUIDialogSlider.cpp">
+                                </File>
+                                <File
+ 	                                RelativePath=".\xbmc\GUIDialogSlider.h">
+ 	                        </File>
 				<File
 					RelativePath=".\xbmc\GUIDialogSubMenu.cpp">
 				</File>

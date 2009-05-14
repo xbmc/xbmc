@@ -40,7 +40,9 @@ class CDVDOverlayCodecCC;
 class CDVDPlayerVideo : public CThread
 {
 public:
-  CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer);
+  CDVDPlayerVideo( CDVDClock* pClock
+                 , CDVDOverlayContainer* pOverlayContainer
+                 , CDVDMessageQueue& parent);
   virtual ~CDVDPlayerVideo();
 
   bool OpenStream(CDVDStreamInfo &hint);
@@ -100,6 +102,8 @@ public:
 
   // classes
   CDVDMessageQueue m_messageQueue;
+  CDVDMessageQueue& m_messageParent;
+
   CDVDOverlayContainer* m_pOverlayContainer;
   
   CDVDClock* m_pClock;

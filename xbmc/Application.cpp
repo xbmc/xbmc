@@ -188,7 +188,12 @@
 #include "GUIDialogPictureInfo.h"
 #include "GUIDialogPluginSettings.h"
 #include "GUIDialogFullScreenInfo.h"
+#include "GUIDialogSlider.h"
 #include "cores/dlgcache.h"
+
+#ifdef _LINUX
+#include "XHandle.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -1280,6 +1285,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   m_gWindowManager.Add(new CGUIDialogMusicScan);          // window id = 112
   m_gWindowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
+  m_gWindowManager.Add(new CGUIDialogSlider);             // window id = 145
   m_gWindowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
   m_gWindowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   m_gWindowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
@@ -3496,6 +3502,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_BUSY);
     m_gWindowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
     m_gWindowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_SLIDER);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_LOGIN_SCREEN);
@@ -3527,8 +3534,8 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Remove(WINDOW_SETTINGS_MYVIDEOS);
     m_gWindowManager.Remove(WINDOW_SETTINGS_NETWORK);
     m_gWindowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
-
     m_gWindowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
+
     m_gWindowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     m_gWindowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
 
@@ -5220,6 +5227,18 @@ int CApplication::GetVolume() const
 {
   // converts the hardware volume (in mB) to a percentage
   return int(((float)(g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
+}
+
+int CApplication::GetSubtitleDelay() const
+{
+  // converts subtitle delay to a percentage
+  return int(((float)(g_stSettings.m_currentVideoSettings.m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
+}
+
+int CApplication::GetAudioDelay() const
+{
+  // converts subtitle delay to a percentage
+  return int(((float)(g_stSettings.m_currentVideoSettings.m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
 }
 
 void CApplication::SetPlaySpeed(int iSpeed)
