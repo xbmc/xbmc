@@ -139,7 +139,6 @@ Then install the following port packages (order is very important):
 
  $ sudo port install glew +universal
  $ sudo port install libcdio +universal
- $ sudo port install portaudio +universal
  $ sudo port install openssl +universal
  $ sudo port install samba3 macosx_deployment_target=10.4
  $ sudo port install mysql5 +universal
