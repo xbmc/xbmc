@@ -560,13 +560,13 @@ void CMPlayer::Options::GetOptions(int& argc, char* argv[])
     }
   }
 
-  if (g_stSettings.m_currentVideoSettings.m_FilmGrain > 0)
+  if (g_stSettings.m_currentVideoSettings.m_FilmGrain > 0.0f)
   {
     CStdString strOpt;
     if (strTmp.size() > 0)
       strTmp += ",";
 
-    strOpt.Format("noise=%dta:%dta", g_stSettings.m_currentVideoSettings.m_FilmGrain, g_stSettings.m_currentVideoSettings.m_FilmGrain);
+    strOpt.Format("noise=%dta:%dta", (int) g_stSettings.m_currentVideoSettings.m_FilmGrain, (int) g_stSettings.m_currentVideoSettings.m_FilmGrain);
     strTmp += strOpt;
   }
 
