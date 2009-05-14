@@ -2726,8 +2726,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       pItem->m_bIsFolder=true;
       if (CFile::Exists(pItem->GetCachedArtistThumb()))
         pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
-      else
-        pItem->SetThumbnailImage("DefaultArtistBig.png");
+      pItem->SetIconImage("DefaultArtist.png");
       CStdString strFanart = pItem->GetCachedFanart();
       if (CFile::Exists(strFanart))
         pItem->SetProperty("fanart_image",strFanart);

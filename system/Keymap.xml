@@ -561,6 +561,7 @@
       <right>StepForward</right>
       <up>BigStepForward</up>
       <down>BigStepBack</down>
+      <a>AudioDelay</a>
       <escape>Fullscreen</escape>
     </keyboard>
   </FullscreenVideo>

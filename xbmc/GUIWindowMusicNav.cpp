@@ -866,9 +866,9 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
   CFileItemPtr nItem(new CFileItem("thumb://None",false));
   nItem->SetLabel(g_localizeStrings.Get(20018));
   if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
-    nItem->SetThumbnailImage("DefaultArtistBig.png");
+    nItem->SetIconImage("DefaultArtist.png");
   else
-    nItem->SetThumbnailImage("DefaultFolderBig.png");
+    nItem->SetIconImage("DefaultFolder.png");
   items.Add(nItem);
 
   if (CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources,
@@ -883,8 +883,6 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
       XFILE::CFile::Delete(cachedThumb);
       if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
-        CPicture picture;
-        picture.CacheSkinImage("DefaultFolderBig.png",cachedThumb);
         CFileItem item2(strPath,false);
         CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
         XFILE::CFile::Delete(item2.GetCachedProgramThumb());
@@ -1083,7 +1081,6 @@ void CGUIWindowMusicNav::AddSearchFolder()
       CMediaSource share;
       share.strName=g_localizeStrings.Get(137); // Search
       share.strPath = "musicsearch://";
-      share.m_strThumbnailImage="defaultFolderBig.png";
       share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
       sources.push_back(share);
     }

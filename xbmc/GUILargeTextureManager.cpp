@@ -87,9 +87,12 @@ void CGUILargeTextureManager::Process()
     { // no need for the texture any more
       SAFE_RELEASE(texture);
     }
-    lock.Leave();
-    m_listEvent.WaitMSec(1000);
-    lock.Enter();
+    if (m_queued.size() == 0)
+    { // hang around for a while as there may well be more images on the way (saves reloading the thread)
+      lock.Leave();
+      m_listEvent.WaitMSec(1000);
+      lock.Enter();
+    }
   }
   m_running = false;
 }

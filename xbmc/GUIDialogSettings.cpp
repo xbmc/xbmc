@@ -45,6 +45,7 @@ CGUIDialogSettings::CGUIDialogSettings(DWORD id, const char *xmlFile)
   m_pOriginalSettingsButton = NULL;
   m_pOriginalSlider = NULL;
   m_pOriginalSeparator = NULL;
+  m_usePopupSliders = false;
 }
 
 CGUIDialogSettings::~CGUIDialogSettings(void)
@@ -174,7 +175,11 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
     }
   }
   else if (setting.type == SettingInfo::BUTTON)
-      SET_CONTROL_LABEL(controlID,setting.name);
+  {
+    SET_CONTROL_LABEL(controlID,setting.name);
+    if (m_usePopupSliders && setting.data && setting.formatFunction)
+      SET_CONTROL_LABEL2(controlID,setting.formatFunction(*(float *)setting.data, setting.interval));
+  }
 
   if (setting.enabled)
   {
@@ -235,6 +240,12 @@ void CGUIDialogSettings::OnClick(int iID)
     if (setting.data) *(float *)setting.data = pControl->GetFloatValue();
     if (setting.formatFunction) pControl->SetTextValue(setting.formatFunction(pControl->GetFloatValue(), setting.interval));
   }
+  else if (setting.type == SettingInfo::BUTTON && m_usePopupSliders && setting.data)
+  { // we're using popup sliders
+    CGUIDialogSlider::ShowAndGetInput(setting.name, *(float *)setting.data, setting.min, setting.interval, setting.max, this, &setting);
+    if (setting.formatFunction)
+      SET_CONTROL_LABEL2(iID, setting.formatFunction(*(float *)setting.data, setting.interval));
+  }
   OnSettingChanged(setting);
 }
 
@@ -257,6 +268,8 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
     if (!pControl) return ;
     ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
+    if (setting.formatFunction)
+      ((CGUIButtonControl *)pControl)->SetLabel2(setting.formatFunction(*(float *)setting.data, setting.interval));
     pControl->SetWidth(width);
   }
   else if (setting.type == SettingInfo::SEPARATOR && m_pOriginalSeparator)
@@ -314,14 +327,17 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     delete pControl;
 }
 
-void CGUIDialogSettings::AddButton(unsigned int id, int label,bool bOn)
+void CGUIDialogSettings::AddButton(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION function)
 {
   SettingInfo setting;
   setting.id = id;
   setting.name = g_localizeStrings.Get(label);
   setting.type = SettingInfo::BUTTON;
-  setting.enabled  = bOn;
-  setting.data = NULL;
+  setting.data = current;
+  setting.min = min;
+  setting.max = max;
+  setting.interval = interval;
+  setting.formatFunction = function;
   m_settings.push_back(setting);
 }
 
@@ -369,6 +385,11 @@ void CGUIDialogSettings::AddSpin(unsigned int id, int label, int *current, unsig
 
 void CGUIDialogSettings::AddSlider(unsigned int id, int label, float *current, float min, float interval, float max, FORMATFUNCTION function, bool allowPopup /* = true*/)
 {
+  if (m_usePopupSliders && allowPopup)
+  {
+    AddButton(id, label, current, min, interval, max, function);
+    return;
+  }
   SettingInfo setting;
   setting.id = id;
   setting.name = g_localizeStrings.Get(label);
@@ -398,4 +419,16 @@ void CGUIDialogSettings::OnInitWindow()
   // set the default focus control
   m_lastControlID = CONTROL_START;
   CGUIDialog::OnInitWindow();
+}
+
+void CGUIDialogSettings::OnSliderChange(void *data, CGUISliderControl *slider)
+{
+  if (!data || !slider)
+    return;
+
+  SettingInfo *setting = (SettingInfo *)data;
+  *(float *)setting->data = slider->GetFloatValue();
+  OnSettingChanged(*setting);
+  if (setting->formatFunction)
+    slider->SetTextValue(setting->formatFunction(slider->GetFloatValue(), setting->interval));
 }

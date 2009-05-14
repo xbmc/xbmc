@@ -115,6 +115,7 @@ public:
   void Serialize(CArchive& ar);
 
   bool       HasProperty(const CStdString &strKey) const;
+  bool       HasProperties() const { return m_mapProperties.size() > 0; };
   void       ClearProperty(const CStdString &strKey);
 
   CStdString GetProperty(const CStdString &strKey) const;

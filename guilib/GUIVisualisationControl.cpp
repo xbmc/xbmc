@@ -385,7 +385,7 @@ bool CGUIVisualisationControl::UpdateTrack()
   CLog::Log(LOGDEBUG,"Updating visualisation albumart: %s", m_AlbumThumb.c_str());
   if ( m_pVisualisation )
   {
-    if (m_AlbumThumb == "defaultAlbumCover.png")
+    if (m_AlbumThumb == "DefaultAlbumCover.png")
       m_AlbumThumb = "";
 
     // inform the visulisation of the current album art

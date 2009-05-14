@@ -250,7 +250,7 @@ void CGUIDialogSongInfo::OnGetThumb()
     // which is probably the allmusic.com thumb.  These could be wrong, so allow the user
     // to delete the incorrect thumb
     CFileItemPtr item(new CFileItem("thumb://None", false));
-    item->SetThumbnailImage("defaultAlbumCover.png");
+    item->SetThumbnailImage("DefaultAlbumCover.png");
     item->SetLabel(g_localizeStrings.Get(20018));
     items.Add(item);
   }
@@ -270,7 +270,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   if (result == "thumb://None")
   { // cache the default thumb
     CPicture pic;
-    pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
+    pic.CacheSkinImage("DefaultAlbumCover.png", cachedThumb);
   }
   else if (result == "thumb://allmusic.com")
     CFile::Cache(thumbFromWeb, cachedThumb);
