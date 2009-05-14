@@ -703,8 +703,7 @@ bool CCoreAudioRenderer::InitializePCMEncoded()
 
 bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
 {
-  // TODO: Comment out
-  return false; // un-comment to force PCM Spoofing (DD-Wav)
+  //return false; // un-comment to force PCM Spoofing (DD-Wav). For testing use only.
   
   CStdString formatString;
   AudioStreamBasicDescription outputFormat = {0};
