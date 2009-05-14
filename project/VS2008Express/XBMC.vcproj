@@ -6038,6 +6038,22 @@
 				Name="libScrobbler"
 				>
 				<File
+					RelativePath="..\..\xbmc\lib\libscrobbler\lastfmscrobbler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libscrobbler\lastfmscrobbler.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libscrobbler\librefmscrobbler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libscrobbler\librefmscrobbler.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\lib\libscrobbler\scrobbler.cpp"
 					>
 				</File>
