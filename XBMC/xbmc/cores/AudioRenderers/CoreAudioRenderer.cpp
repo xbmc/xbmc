@@ -795,33 +795,8 @@ bool CCoreAudioRenderer::InitializePCMEncoded()
   // Set the Sample Rate as defined by the spec.
   m_AudioDevice.SetNominalSampleRate(48000.0f);
 
-  // Set the input stream format for the AudioUnit. We will convert the data to this format before passing it to the AudioUnit.
-  AudioStreamBasicDescription inputFormat;
-  inputFormat.mFormatID = kAudioFormatLinearPCM;			      //	Data encoding format
-  inputFormat.mFormatFlags = kAudioFormatFlagsNativeFloatPacked; // 32-bit float
-  inputFormat.mChannelsPerFrame = 2;       // Number of interleaved audiochannels
-  inputFormat.mSampleRate = 48000.0;       //	the sample rate of the audio stream
-  inputFormat.mBitsPerChannel = 32;        // Number of bits per sample, per channel
-  inputFormat.mBytesPerFrame = 8;          // Size of a frame == 1 sample per channel		
-  inputFormat.mFramesPerPacket = 1;        // The smallest amount of indivisible data. Always 1 for uncompressed audio 	
-  inputFormat.mBytesPerPacket = 8;
-  
-  if (!m_AudioUnit.SetInputFormat(&inputFormat))
+  if (!InitializePCM(2, 48000, 16))
     return false;
-  
-  // Create a converter to handle 'fooling' the AudioUnit into passing our data along unmodified
-  m_pConverter = new CCoreAudioSampleConverter();
-  if (!m_pConverter->Initialize(kAudioFormatFlagIsSignedInteger, 16, kAudioFormatFlagsNativeFloatPacked, 32))
-  {
-    CLog::Log(LOGERROR, "CCoreAudioRenderer::InitializePCMEncoded: Unable to initialize sample converter.");
-    delete m_pConverter;
-    m_pConverter = NULL;
-    return false;
-  }
-  
-  // These are based on the 16-bit data coming from the client
-  m_BytesPerFrame = inputFormat.mBytesPerFrame / 2;
-  m_AvgBytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame / 2;
   
   m_EnableVolumeControl = false; // Disable output volume control
   return true;  
