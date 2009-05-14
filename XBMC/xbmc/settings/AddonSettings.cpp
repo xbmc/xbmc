@@ -24,7 +24,9 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/PluginDirectory.h"
 
+using namespace DIRECTORY;
 
 bool CAddonSettings::SaveFromDefault(void)
 {
@@ -120,37 +122,15 @@ bool CAddonSettings::Load(const CURL& url)
 {
   m_url = url;
 
-  // create the users filepath  
-  //TODO remove this specialization
-  CStdString addonData;
-  if (url.GetProtocol() == "plugin")
-    addonData = "plugin_data";
-  else if (url.GetProtocol() == "addon")
-    addonData = "addon_data";
-  else
-    return false;
-
-  m_userFileName.Format("special://profile/%s/%s/%s", addonData.c_str(), url.GetHostName().c_str(), url.GetFileName().c_str());
-  CUtil::RemoveSlashAtEnd(m_userFileName);
+  // create the users filepath
+  m_userFileName = GetUserDirectory(url);
   CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
 
-  // Create our final path
-  //TODO remove this specialization
   CStdString addonFileName;
-  if (url.GetProtocol() == "plugin")
-    addonFileName = "special://home/plugins/";
-  else if (url.GetProtocol() == "addon")
-    addonFileName = "special://xbmc/";
-  else
-    return false;
-
-  CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
-  CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
-
+  url.GetURL(addonFileName);
+  addonFileName = CPluginDirectory::TranslatePluginDirectory(addonFileName);
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
-
-  addonFileName = addonFileName;
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
@@ -214,21 +194,7 @@ TiXmlElement* CAddonSettings::GetAddonRoot()
 
 bool CAddonSettings::SettingsExist(const CStdString& strPath)
 {
-  CURL url(strPath);
-
-  //TODO fix all Addon paths
-  CStdString addonFileName;
-  if (url.GetProtocol() == "plugin")
-    addonFileName = "special://home/plugins/";
-  else if (url.GetProtocol() == "addon")
-    addonFileName = "special://xbmc/";
-  else
-    return false;
-
-  // Create our final path
-  CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
-  CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
-
+  CStdString addonFileName = CPluginDirectory::TranslatePluginDirectory(strPath);
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
 
@@ -245,4 +211,19 @@ bool CAddonSettings::SettingsExist(const CStdString& strPath)
   return true;
 }
 
-CAddonSettings g_currentPluginSettings;
+CStdString CAddonSettings::GetUserDirectory(const CURL& url)
+{
+  CStdString addonUserName;
+  url.GetURL(addonUserName);
+  addonUserName = CPluginDirectory::TranslatePluginDirectory(addonUserName);
+  // Remove the special path
+  addonUserName.Replace("special://home/addons/", "");
+  addonUserName.Replace("special://xbmc/addons/", "");
+
+  // and create the users filepath
+  addonUserName.Format("special://profile/addon_data/%s", addonUserName.c_str());
+  CUtil::RemoveSlashAtEnd(addonUserName);
+  return addonUserName;
+}
+
+CAddonSettings g_currentAddonSettings;

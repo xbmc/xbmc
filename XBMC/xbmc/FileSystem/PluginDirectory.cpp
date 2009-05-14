@@ -77,8 +77,8 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
 
   CStdString fileName;
 
-  // path is special://home/plugins/<path from here>
-  CStdString pathToScript = "special://home/plugins/";
+  // path is special://home/addons/plugins/<path from here>
+  CStdString pathToScript = "special://home/addons/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, url.GetFileName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, "default.py", pathToScript);
@@ -95,7 +95,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
 
   // Load the plugin settings
   CLog::Log(LOGDEBUG, "%s - URL for plugin settings: %s", __FUNCTION__, url.GetFileName().c_str() );
-  g_currentPluginSettings.Load(url);
+  g_currentAddonSettings.Load(url);
 
   // Load language strings
   ADDON::CAddon::LoadAddonStrings(url);
@@ -393,13 +393,13 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
     return false;
 
   // Load the settings incase they changed while in the plugins directory
-  g_currentPluginSettings.Load(url);
+  g_currentAddonSettings.Load(url);
 
   // Load language strings
   ADDON::CAddon::LoadAddonStrings(url);
 
-  // path is special://home/plugins/<path from here>
-  CStdString pathToScript = "special://home/plugins/";
+  // path is special://home/addons/plugins/<path from here>
+  CStdString pathToScript = "special://home/addons/plugins/";
   CUtil::AddFileToFolder(pathToScript, url.GetHostName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, url.GetFileName(), pathToScript);
   CUtil::AddFileToFolder(pathToScript, "default.py", pathToScript);
@@ -435,63 +435,89 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
 bool CPluginDirectory::HasPlugins(const CStdString &type)
 {
-  CStdString path = "special://home/plugins/";
-  CUtil::AddFileToFolder(path, type, path);
-  CFileItemList items;
-  if (CDirectory::GetDirectory(path, items, "/", false))
-  {
-    for (int i = 0; i < items.Size(); i++)
-    {
-      CFileItemPtr item = items[i];
-      if (item->m_bIsFolder && !item->IsParentFolder() && !item->m_bIsShareOrDrive)
-      {
-        CStdString defaultPY;
-        CUtil::AddFileToFolder(item->m_strPath, "default.py", defaultPY);
-        if (XFILE::CFile::Exists(defaultPY))
-          return true;
-      }
-    }
-  }
+  VECADDONS *addons;
+
+  if (type == "pvr")
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PVR);
+  else if (type == "video")
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_VIDEO);
+  else if (type == "music")
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_MUSIC);
+  else if (type == "pictures")
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PICTURES);
+  else if (type == "programs")
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
+
+  if (addons && addons->size() > 0)
+    return true;
+
   return false;
 }
 
 bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList &items)
 {
-  // retrieve our folder
-  CStdString pluginsFolder = "special://home/plugins";
-  CUtil::AddFileToFolder(pluginsFolder, type, pluginsFolder);
-  CUtil::AddSlashAtEnd(pluginsFolder);
+  VECADDONS *addons = NULL;
+  CStdString extension;
 
-  if (!CDirectory::GetDirectory(pluginsFolder, items, "*.py", false))
+  if (type == "pvr")
+  {
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PVR);
+    extension = ADDON_PLUGIN_PVR_EXT;
+  }
+  else if (type == "video")
+  {
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_VIDEO);
+    extension = ADDON_PLUGIN_VIDEO_EXT;
+  }
+  else if (type == "music")
+  {
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_MUSIC);
+    extension = ADDON_PLUGIN_MUSIC_EXT;
+  }
+  else if (type == "pictures")
+  {
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PICTURES);
+    extension = ADDON_PLUGIN_PICTURES_EXT;
+  }
+  else if (type == "programs")
+  {
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
+    extension = ADDON_PLUGIN_PROGRAM_EXT;
+  }
+
+  if (addons && addons->size() == 0)
     return false;
 
-  items.m_strPath.Replace("special://home/plugins/", "plugin://");
-
-  // flatten any folders - TODO: Assigning of thumbs
-  for (int i = 0; i < items.Size(); i++)
+  for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
   {
-    CFileItemPtr item = items[i];
-    item->SetThumbnailImage("");
-    item->SetCachedProgramThumb();
-    if (!item->HasThumbnail())
-      item->SetUserProgramThumb();
-    if (!item->HasThumbnail())
+    CStdString path = (*it).m_strPath;
+    path.Replace("special://home/addons/plugins/", "plugin://");
+    path.Replace("\\", "/");
+    CFileItemPtr newItem(new CFileItem(path,true));
+
+    newItem->SetThumbnailImage("");
+    newItem->SetCachedProgramThumb();
+    if (!newItem->HasThumbnail())
+      newItem->SetUserProgramThumb();
+    if (!newItem->HasThumbnail())
     {
-      CFileItem item2(item->m_strPath);
-      CUtil::AddFileToFolder(item->m_strPath,"default.py",item2.m_strPath);
+      CFileItem item2((*it).m_strPath);
+      CUtil::AddFileToFolder((*it).m_strPath, (*it).m_strLibName, item2.m_strPath);
       item2.m_bIsFolder = false;
       item2.SetCachedProgramThumb();
       if (!item2.HasThumbnail())
         item2.SetUserProgramThumb();
+      if (!item2.HasThumbnail())
+        item2.SetThumbnailImage((*it).m_strPath + (*it).m_icon);
       if (item2.HasThumbnail())
       {
-        XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
-        item->SetThumbnailImage(item->GetCachedProgramThumb());
+        XFILE::CFile::Cache(item2.GetThumbnailImage(),newItem->GetCachedProgramThumb());
+        newItem->SetThumbnailImage(newItem->GetCachedProgramThumb());
       }
     }
-    item->m_strPath.Replace("special://home/plugins/", "plugin://");
-    item->m_strPath.Replace("\\", "/");
+    items.Add(newItem);
   }
+
   return true;
 }
 
@@ -620,5 +646,19 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
   dir->m_listItems->SetProperty(strProperty, strValue);
 }
 
-
-
+CStdString CPluginDirectory::TranslatePluginDirectory(const CStdString &strPath)
+{
+  CStdString addonFileName;
+  CURL url(strPath);
+  if (url.GetProtocol() == "plugin")
+  {
+    addonFileName = "special://home/addons/plugins/";
+    CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
+    CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
+  }
+  else
+  {
+    addonFileName = strPath;
+  }
+  return addonFileName;
+}

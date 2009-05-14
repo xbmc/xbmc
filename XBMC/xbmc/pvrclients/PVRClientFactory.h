@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
@@ -27,8 +26,7 @@
 class CPVRClientFactory
 {
 public:
-  CPVRClientFactory() {}
-  virtual ~CPVRClientFactory() {}
-
-  static CPVRClient* LoadPVRClient(const CStdString& path, const ADDON::CAddon& addon, DWORD clientID, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB);
+  CPVRClientFactory();
+  virtual ~CPVRClientFactory();
+  CPVRClient* LoadPVRClient(const ADDON::CAddon& addon, DWORD clientID, IPVRClientCallback *pvrCB) const;
 };

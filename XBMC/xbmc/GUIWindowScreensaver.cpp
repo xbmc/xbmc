@@ -153,11 +153,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 
       OutputDebugString("Load Screensaver\n");
 
-      //TODO fix addons paths
-      CStdString transPath(m_addon.m_strPath);
-      transPath.Replace("addon://", "special://xbmc/");
-    
-      m_pScreenSaver = factory.LoadScreenSaver(transPath, m_addon);
+      m_pScreenSaver = factory.LoadScreenSaver(m_addon);
       if (m_pScreenSaver)
       {
         OutputDebugString("ScreenSaver::Create()\n");

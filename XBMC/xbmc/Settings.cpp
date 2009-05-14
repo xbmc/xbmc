@@ -504,7 +504,7 @@ CStdString CSettings::GetDefaultSourceFromType(const CStdString &type)
     defaultShare = g_settings.m_defaultPictureSource;
   return defaultShare;
 }
-  
+
 VECADDONS *CSettings::GetAddonsFromType(const AddonType &type)
 {
   switch (type)
@@ -1007,7 +1007,7 @@ void CSettings::GetViewState(const TiXmlElement *pRootElement, const CStdString 
     return;
   }
   GetInteger(pNode, "viewmode", viewState.m_viewMode, defaultView, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
-  
+
   int sortMethod;
   GetInteger(pNode, "sortmethod", sortMethod, defaultSort, SORT_METHOD_NONE, SORT_METHOD_MAX);
   viewState.m_sortMethod = (SORT_METHOD)sortMethod;
@@ -1353,7 +1353,7 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
     GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
     GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_audioPlayCountMinimumPercent, 0.0f, 100.0f);
-    
+
     XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);
     GetInteger(pElement, "timeseekforward", g_advancedSettings.m_musicTimeSeekForward, 0, 6000);
     GetInteger(pElement, "timeseekbackward", g_advancedSettings.m_musicTimeSeekBackward, -6000, 0);
@@ -1413,7 +1413,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
     GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
     GetInteger(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
-    
+
     GetInteger(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 1, INT_MAX);
     GetInteger(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 1, 10);
     GetInteger(pElement, "smallstepbackdelay", g_advancedSettings.m_videoSmallStepBackDelay, 100, 5000); //MS
@@ -1482,13 +1482,13 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "hidexbmc", g_advancedSettings.m_externalPlayerHidexbmc);
     GetInteger(pElement, "startuptime", g_advancedSettings.m_externalPlayerStartupTime, 5000, 0, INT_MAX);
     TiXmlElement* pReplacers = pElement->FirstChildElement("replacers");
-    while (pReplacers) 
+    while (pReplacers)
     {
       GetCustomRegexpReplacers(pReplacers, g_advancedSettings.m_externalPlayerFilenameReplacers);
       pReplacers = pReplacers->NextSiblingElement("replacers");
     }
 
-    CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s), Hidexbmc (%s), StartupTime (%d)", 
+    CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s), Hidexbmc (%s), StartupTime (%d)",
               g_advancedSettings.m_externalPlayerForceontop ? "true" : "false",
               g_advancedSettings.m_externalPlayerHideconsole ? "true" : "false",
               g_advancedSettings.m_externalPlayerHidecursor ? "true" : "false",
@@ -1874,7 +1874,7 @@ void CSettings::GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringA
         strMatch.Replace(",",",,");
         strPat.Replace(",",",,");
         strRep.Replace(",",",,");
-        
+
         CStdString strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
         if (iAction == 2)
           settings.insert(settings.begin() + i++, 1, strReplacer);
@@ -2241,6 +2241,10 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     profile.setWriteSources(bHas);
 
     bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockaddonmanager", bHas);
+    profile.setAddonManagerLocked(bHas);
+
+    bHas = false;
     XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
     profile.setSettingsLocked(bHas);
 
@@ -2317,6 +2321,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
       XMLUtils::SetBoolean(pNode,"lockpictures",g_settings.m_vecProfiles[iProfile].picturesLocked());
       XMLUtils::SetBoolean(pNode,"lockprograms",g_settings.m_vecProfiles[iProfile].programsLocked());
       XMLUtils::SetBoolean(pNode,"locksettings",g_settings.m_vecProfiles[iProfile].settingsLocked());
+      XMLUtils::SetBoolean(pNode,"lockaddonmanager",g_settings.m_vecProfiles[iProfile].addonmanagerLocked());
       XMLUtils::SetBoolean(pNode,"lockfiles",g_settings.m_vecProfiles[iProfile].filesLocked());
     }
 
@@ -2624,26 +2629,45 @@ void CSettings::GetAllAddons()
   //TODO: only caches packaged icon thumbnail
   m_allAddons.clear();
 
-  // Go thru all addon directorys
+  // Go thru all addon directorys in xbmc and if present in user directory
   CFileItemList items;
+  // User add-on's have priority over application add-on's
+  if (!CSpecialProtocol::XBMCIsHome())
+  {
+    CDirectory::GetDirectory("special://home/addons/multitype", items, ADDON_MULTITYPE_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/visualisations", items, ADDON_VIZ_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/pvr", items, ADDON_PVRDLL_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/scripts", items, ADDON_SCRIPT_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/scrapers/pvr", items, ADDON_SCRAPER_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/scrapers/video", items, ADDON_SCRAPER_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/scrapers/music", items, ADDON_SCRAPER_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/scrapers/programs", items, ADDON_SCRAPER_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
+    CDirectory::GetDirectory("special://home/skin", items, ADDON_SKIN_EXT, false);
+  }
+  // Now load the add-on's located in the application directory
   CDirectory::GetDirectory("special://xbmc/addons/multitype", items, ADDON_MULTITYPE_EXT, false);
   CDirectory::GetDirectory("special://xbmc/addons/visualisations", items, ADDON_VIZ_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/skin", items, ADDON_SKIN_EXT, false);
   CDirectory::GetDirectory("special://xbmc/addons/pvr", items, ADDON_PVRDLL_EXT, false);
   CDirectory::GetDirectory("special://xbmc/addons/scripts", items, ADDON_SCRIPT_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/scrapers", items, ADDON_SCRAPER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scrapers/pvr", items, ADDON_SCRAPER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scrapers/video", items, ADDON_SCRAPER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scrapers/music", items, ADDON_SCRAPER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scrapers/programs", items, ADDON_SCRAPER_EXT, false);
   CDirectory::GetDirectory("special://xbmc/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/plugin-pvr", items, ADDON_PLUGIN_PVR_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/plugin-music", items, ADDON_PLUGIN_MUSIC_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/plugin-video", items, ADDON_PLUGIN_VIDEO_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/plugin-program", items, ADDON_PLUGIN_PROGRAM_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/plugin-pictures", items, ADDON_PLUGIN_PICTURES_EXT, false);
   CDirectory::GetDirectory("special://xbmc/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/skin", items, ADDON_SKIN_EXT, false); // Don't use addons for skins
+
+  // Plugin Directory currently only located in Home
+  CDirectory::GetDirectory("special://home/addons/plugins/pvr", items, ADDON_PLUGIN_PVR_EXT, false);
+  CDirectory::GetDirectory("special://home/addons/plugins/music", items, ADDON_PLUGIN_MUSIC_EXT, false);
+  CDirectory::GetDirectory("special://home/addons/plugins/video", items, ADDON_PLUGIN_VIDEO_EXT, false);
+  CDirectory::GetDirectory("special://home/addons/plugins/programs", items, ADDON_PLUGIN_PROGRAM_EXT, false);
+  CDirectory::GetDirectory("special://home/addons/plugins/pictures", items, ADDON_PLUGIN_PICTURES_EXT, false);
 
   if (items.Size() == 0)
     return;
-
-  items.m_strPath.Replace("special://xbmc/", "addon://");
 
   // for each folder found
   for (int i = 0; i < items.Size(); ++i)
@@ -2658,6 +2682,16 @@ void CSettings::GetAllAddons()
       continue;
     }
 
+    // iterate through current alladdons vec and skip if guid is already present
+    for (unsigned int i = 0; i < m_allAddons.size(); i++)
+    {
+      if (m_allAddons[i].m_guid == addon.m_guid)
+      {
+        CLog::Log(LOGNOTICE, "Addon: GUID=%s, Name=%s already present in %s, ignoring package", addon.m_guid.c_str(), addon.m_strName.c_str(), m_allAddons[i].m_strPath.c_str());
+        continue;
+      }
+    }
+
     // check for/cache icon thumbnail
     item->SetThumbnailImage("");
     item->SetCachedProgramThumb();
@@ -2665,22 +2699,22 @@ void CSettings::GetAllAddons()
       item->SetUserProgramThumb();
     if (!item->HasThumbnail())
     {
-      CFileItem item2(item->m_strPath);
-      CUtil::AddFileToFolder(item->m_strPath, addon.m_strLibName, item2.m_strPath);
+      CFileItem item2(addon.m_strPath);
+      CUtil::AddFileToFolder(addon.m_strPath, addon.m_strLibName, item2.m_strPath);
       item2.m_bIsFolder = false;
       item2.SetCachedProgramThumb();
       if (!item2.HasThumbnail())
         item2.SetUserProgramThumb();
+      if (!item2.HasThumbnail())
+        item2.SetThumbnailImage(addon.m_strPath + addon.m_icon);
       if (item2.HasThumbnail())
       {
-        XFILE::CFile::Cache(item2.GetThumbnailImage(), item->GetCachedProgramThumb());
+        XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
+        item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
-    
-    //TODO fix all addon paths
-    item->m_strPath.Replace("special://xbmc/", "addon://");
     addon.m_strPath = item->m_strPath;
-    
+
     // everything ok, add to available addons
     m_allAddons.push_back(addon);
   }
@@ -2691,9 +2725,6 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   // First check that we can load info.xml
   CStdString strPath(path);
   CUtil::AddFileToFolder(strPath, "info.xml", strPath);
-
-  //TODO fix all Addon paths
-  strPath.Replace("addon://", "special://xbmc/");
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strPath))
@@ -2713,15 +2744,16 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
    * 1. guid exists and is valid
    * 2. type exists and is valid
    * 3. version exists
-   * 4. operating system matches ours //TODO
-   * 5. summary exists */
+   * 4. operating system matches ours
+   * 5. summary exists
+   */
 
   /* Read guid */
   CStdString guid;
   element = xmlDoc.RootElement()->FirstChildElement("guid");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: %s/info.xml does not contain the <guid> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "Addon: %s does not contain the <guid> element, ignoring", strPath.c_str());
     return false;
   }
   guid = element->GetText(); // grab guid
@@ -2752,7 +2784,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   element = xmlDoc.RootElement()->FirstChildElement("name");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <name> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "Addon: %s missing <name> element, ignoring", strPath.c_str());
     return false;
   }
   addon.m_strName = element->GetText();
@@ -2763,7 +2795,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   element = xmlDoc.RootElement()->FirstChildElement("version");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <version> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "Addon: %s missing <version> element, ignoring", strPath.c_str());
     return false;
   }
   /* Validate version */
@@ -2777,13 +2809,54 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   }
   addon.m_strVersion = version; // guid was validated
 
+  /* Retrieve platform which is supported */
+  CStdString platform;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("platform");
+  if (!element)
+  {
+    CLog::Log(LOGERROR, "Addon: %s missing <platform> element, ignoring", strPath.c_str());
+    return false;
+  }
+  /* Validate platform */
+  platform = element->GetText();
+  size_t found = platform.Find("all");
+  if (platform.Find("all") < 0)
+  {
+#ifdef _LINUX
+    if (platform.Find("linux") < 0)
+    {
+      CLog::Log(LOGERROR, "Addon: $s is not supported under Linux, ignoring", strPath.c_str());
+      return false;
+    }
+#elif _WIN32PC
+    if (platform.Find("windows") < 0)
+    {
+      CLog::Log(LOGERROR, "Addon: $s is not supported under Windows, ignoring", strPath.c_str());
+      return false;
+    }
+#elif __APPLE__
+    if (platform.Find("osx") < 0)
+    {
+      CLog::Log(LOGERROR, "Addon: $s is not supported under OSX, ignoring", strPath.c_str());
+      return false;
+    }
+#elif _XBOX
+    if (platform.Find("xbox") < 0)
+    {
+      CLog::Log(LOGERROR, "Addon: $s is not supported under XBOX, ignoring", strPath.c_str());
+      return false;
+    }
+#endif
+  }
+
   /* Retrieve summary */
   CStdString summary;
   element = NULL;
   element = xmlDoc.RootElement()->FirstChildElement("summary");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: $s/info.xml missing <summary> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "Addon: %s missing <summary> element, ignoring", strPath.c_str());
     return false;
   }
   addon.m_summary = element->GetText(); // summary was present
@@ -2817,6 +2890,18 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   if (element)
     addon.m_strLibName = element->GetText();
 
+#ifdef _WIN32PC
+  /* Retrieve WIN32 library file name in case it is present
+   * This is required for no overwrite to the fixed WIN32 add-on's
+   * during compile time
+   */
+  CStdString library;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("librarywin32");
+  if (element) // If it is found overwrite standart library name
+    addon.m_strLibName = element->GetText();
+#endif
+
   /* Retrieve thumbnail file name */
   CStdString icon;
   element = NULL;
@@ -2828,7 +2913,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
 
   /* Everything's valid */
 
-  CLog::Log(LOGINFO, "Addon: %s retrieved. Name: %s, GUID: %s, Version: %s", 
+  CLog::Log(LOGINFO, "Addon: %s retrieved. Name: %s, GUID: %s, Version: %s",
             strPath.c_str(), addon.m_strName.c_str(), addon.m_guid.c_str(), addon.m_strVersion.c_str());
 
   return true;
@@ -3379,6 +3464,17 @@ CStdString CSettings::GetScriptsFolder() const
   return folder;
 }
 
+CStdString CSettings::GetAddonsFolder() const
+{
+  CStdString folder = "special://home/addons";
+
+  if ( CDirectory::Exists(folder) )
+    return folder;
+
+  folder = "special://xbmc/addons";
+  return folder;
+}
+
 CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
 {
   CStdString folder;
@@ -3485,5 +3581,5 @@ void CSettings::CreateProfileFolders()
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
   }
-  CDirectory::Create("special://profile/visualisations");
+  CDirectory::Create("special://profile/addon_data");
 }

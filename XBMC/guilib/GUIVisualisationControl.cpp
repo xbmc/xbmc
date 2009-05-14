@@ -147,11 +147,7 @@ void CGUIVisualisationControl::LoadVisualisation()
   if (!g_settings.GetAddonFromNameAndType(m_currentVis, ADDON_VIZ, m_addon))
     return;
 
-  //TODO fix addons paths
-  CStdString transPath(m_addon.m_strPath);
-  transPath.Replace("addon://", "special://xbmc/");
-    
-  m_pVisualisation = factory.LoadVisualisation(transPath, m_addon);
+  m_pVisualisation = factory.LoadVisualisation(m_addon);
   if (m_pVisualisation)
   {
     g_graphicsContext.CaptureStateBlock();

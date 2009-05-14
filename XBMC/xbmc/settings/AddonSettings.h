@@ -1,5 +1,4 @@
-#ifndef PLUGINSETTINGS_H_
-#define PLUGINSETTINGS_H_
+#pragma once
 /*
  *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
@@ -20,6 +19,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#ifndef ADDONSETTINGS_H_
+#define ADDONSETTINGS_H_
 
 #include "tinyXML/tinyxml.h"
 #include "URL.h"
@@ -48,11 +50,13 @@ protected:
   TiXmlDocument   m_addonXmlDoc;
 
 private:
+  CStdString GetUserDirectory(const CURL& url);
+
   CStdString      m_id;
   CURL            m_url;
   CStdString      m_userFileName;
 };
 
-extern CAddonSettings g_currentPluginSettings;
+extern CAddonSettings g_currentAddonSettings;
 
-#endif
+#endif /* ADDONSETTINGS_H_ */

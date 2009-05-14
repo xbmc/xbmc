@@ -19,7 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "utils/Addon.h"
 #include "ScreenSaver.h"
 
@@ -28,5 +28,5 @@ class CScreenSaverFactory
 public:
   CScreenSaverFactory();
   virtual ~CScreenSaverFactory();
-  CScreenSaver* LoadScreenSaver(const CStdString& path, const ADDON::CAddon& addon) const;
+  CScreenSaver* LoadScreenSaver(const ADDON::CAddon& addon) const;
 };

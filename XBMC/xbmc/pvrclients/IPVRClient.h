@@ -58,7 +58,7 @@ public:
   * \param *addonCB         = IAddonCallback callback to the PVRManager
   * \param *pvrCB           = IPVRClientCallback callback to the PVRManager
   */
-  IPVRClient(long clientID, const ADDON::CAddon& addon, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB) 
+  IPVRClient(long clientID, const ADDON::CAddon& addon, IPVRClientCallback *pvrCB)
     : CAddon(addon) {};
 
   /**
@@ -71,8 +71,8 @@ public:
   * \return CCriticalSection*
   */
   virtual CCriticalSection* GetLock(void)=0;
-  
-  
+
+
   virtual void ReInit()=0;
 
 /***************************************/
@@ -99,13 +99,13 @@ public:
 
 /****************************************/
 /**_GENERAL INTERFACE__________________**/
-  
+
   /**
   * Get a string with the backend name
   * \return std::string          = Backend name
   */
   virtual const std::string GetBackendName(void)=0;
-  
+
   /**
   * Get a string with the backend version
   * \return std::string          = Backend version
@@ -189,7 +189,7 @@ public:
   virtual PVR_ERROR GetEPGNextInfo(const unsigned int number, PVR_PROGINFO *result)=0;
 
   /**
-  * Get end of available EPG 
+  * Get end of available EPG
   * \param unsigned int number    = Channel number
   * \param CFileItemList *results = pointer to a new epg information structure
   * \return PVR_ERROR             = Error code

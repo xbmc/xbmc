@@ -108,20 +108,23 @@ int check_valid_extension(const struct dirent* ent)
 
 std::string GetConfigFile()
 {
-  std::string configFile;
-  configFile = g_xbmc->AddOn.GetUserDirectory(g_xbmc->userData);
+  // FIXME: Use static dir until add-on helper library is finished
+  std::string configFile = CONFIG_FILE;
+//  configFile = g_xbmc->AddOn.GetUserDirectory(g_xbmc->userData);
   configFile = g_xbmc->Utils.TranslatePath(configFile.c_str());
-  configFile += "/projectM.conf";
+//  configFile += "/projectM.conf";
 
   return configFile;
 }
 
 std::string GetPresetDir()
 {
-  std::string presetsDir;
-  presetsDir = g_xbmc->AddOn.GetAddonDirectory(g_xbmc->userData);
+  // FIXME: Use static dir until add-on helper library is finished
+  std::string presetsDir = PRESETS_DIR;
+//  presetsDir = g_xbmc->AddOn.GetAddonDirectory(g_xbmc->userData);
   presetsDir = g_xbmc->Utils.TranslatePath(presetsDir.c_str());
-  presetsDir += "/resources/presets";
+  g_xbmc->AddOn.Log(g_xbmc->userData, LOG_ERROR, "<---------< %s\n", presetsDir.c_str());
+//  presetsDir += "/resources/presets";
 
   return presetsDir;
 }

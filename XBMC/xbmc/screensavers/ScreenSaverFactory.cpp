@@ -21,7 +21,9 @@
 
 #include "stdafx.h"
 #include "ScreenSaverFactory.h"
-#include "Util.h"
+#include "DllScreenSaver.h"
+
+using namespace ADDON;
 
 CScreenSaverFactory::CScreenSaverFactory()
 {
@@ -33,9 +35,10 @@ CScreenSaverFactory::~CScreenSaverFactory()
 
 }
 
-CScreenSaver* CScreenSaverFactory::LoadScreenSaver(const CStdString& path, const ADDON::CAddon& addon) const
+CScreenSaver* CScreenSaverFactory::LoadScreenSaver(const CAddon& addon) const
 {
-  CStdString strFileName = path + addon.m_strLibName;
+  // add the library name readed from info.xml to the addon's path
+  CStdString strFileName = addon.m_strPath + addon.m_strLibName;
 
 #ifdef HAS_SCREENSAVER
   // load screensaver

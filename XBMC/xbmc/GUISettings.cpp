@@ -209,6 +209,8 @@ void CGUISettings::Initialize()
   AddInt(0, "pictures.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddSeparator(9,"pictures.sep2");
   AddPath(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddSeparator(11,"pictures.sep3");
+  AddString(12, "pictures.manageplugin", 23071, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -221,6 +223,7 @@ void CGUISettings::Initialize()
 
   AddCategory(1,"programfiles",744);
   AddBool(4, "programfiles.savefolderviews", 583, true);
+  AddString(12, "programfiles.manageplugin", 23070, "", BUTTON_CONTROL_STANDARD);
 
   // My Weather settings
   AddGroup(2, 8);
@@ -246,6 +249,8 @@ void CGUISettings::Initialize()
   AddBool(6, "mymusic.clearplaylistsonend",239,false);
   AddSeparator(7, "mymusic.sep2");
   AddPath(8,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddSeparator(9, "mymusic.sep3");
+  AddString(10, "mymusic.manageplugin", 23069, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(1, "musiclibrary.enabled", 418, true);
@@ -411,6 +416,8 @@ void CGUISettings::Initialize()
   AddBool(4, "myvideos.cleanfilenames", 20418, false);
   AddSeparator(5, "myvideos.sep1");
   AddBool(8, "myvideos.savefolderviews", 583, true);
+  AddSeparator(9, "myvideos.sep2");
+  AddString(10, "myvideos.manageplugin", 23068, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videolibrary", 14022);
 
@@ -579,12 +586,13 @@ void CGUISettings::Initialize()
   AddCategory(6, "pvr", 18025);
   AddBool(1, "pvr.enabled", 18001, false);
   AddString(2, "pvr.pvrsources", 18029, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(3, "pvr.sep1");
-  AddInt(4, "pvr.daystodisplay", 18005, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
-  AddInt(5, "pvr.lingertime", 18006, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddBool(6, "pvr.ftaonly", 18007, false);
-  AddBool(7, "pvr.showradio", 18008, true);
-  AddBool(8, "pvr.infoswitch", 18010, true);
+  AddString(3, "pvr.manageplugin", 23067, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(4, "pvr.sep1");
+  AddInt(5, "pvr.daystodisplay", 18005, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(6, "pvr.lingertime", 18006, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddBool(7, "pvr.ftaonly", 18007, false);
+  AddBool(8, "pvr.showradio", 18008, true);
+  AddBool(9, "pvr.infoswitch", 18010, true);
   AddInt(10, "pvr.infotime", 18011, 4, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddString(12, "pvr.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddSeparator(13, "pvr.sep2");

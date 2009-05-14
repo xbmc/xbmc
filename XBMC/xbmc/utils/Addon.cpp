@@ -521,16 +521,14 @@ void CAddon::LoadAddonStrings(const CURL &url)
 {
   // Path where the addon resides
   CStdString pathToAddon;
-
-  //TODO fix all Addon paths
   if (url.GetProtocol() == "plugin")
-    pathToAddon = "special://home/plugins/";
+  {
+    pathToAddon = "special://home/addons/plugins/";
+    CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
+    CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
+  }
   else
-    pathToAddon = "special://xbmc/";
-
-  // Build the addon's path
-  CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
-  CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
+    url.GetURL(pathToAddon);
 
   // Path where the language strings reside
   CStdString pathToLanguageFile = pathToAddon;
@@ -603,7 +601,7 @@ void CAddon::OpenAddonSettings(const CAddon* addon, bool bReload)
     // reload plugin settings & strings
     if (bReload)
     {
-      g_currentPluginSettings.Load(cUrl);
+      g_currentAddonSettings.Load(cUrl);
       CAddon::LoadAddonStrings(cUrl);
     }
   }
@@ -769,7 +767,7 @@ CStdString CAddon::GetAddonDirectory(const CAddon* addon)
   //TODO fix all Addon paths
   CStdString addonFileName;
   if (url.GetProtocol() == "plugin")
-    addonFileName = "special://home/plugins/";
+    addonFileName = "special://home/addons/plugins/";
   else if (url.GetProtocol() == "addon")
     addonFileName = "special://xbmc/";
   else

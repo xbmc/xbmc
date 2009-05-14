@@ -28,5 +28,5 @@ class CVisualisationFactory
 public:
   CVisualisationFactory();
   virtual ~CVisualisationFactory();
-  CVisualisation* LoadVisualisation(const CStdString& path, const ADDON::CAddon& addon) const;
+  CVisualisation* LoadVisualisation(const ADDON::CAddon& addon) const;
 };

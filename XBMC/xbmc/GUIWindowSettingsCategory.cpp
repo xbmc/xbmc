@@ -1541,6 +1541,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_settings.LoadAddons();
     }
   }
+  else if (strSetting.Equals("mymusic.manageplugin"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PLUGIN_MUSIC, true))
+      g_settings.SaveAddons();
+  }
   else if (strSetting.Equals("musiclibrary.cleanup"))
   {
     CMusicDatabase musicdatabase;
@@ -2147,6 +2152,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       pSettingString->SetData(path);
     }
   }
+  else if (strSetting.Equals("pictures.manageplugin"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PLUGIN_PICTURES, true))
+      g_settings.SaveAddons();
+  }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
     g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("musicplayer.replaygaintype");
@@ -2336,6 +2346,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_settings.LoadAddons();
     }
   }
+  else if (strSetting.Equals("pvr.manageplugin"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PLUGIN_PVR, true))
+      g_settings.SaveAddons();
+  }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
     // Now Prompt User to enter the old and then the new MasterCode!
@@ -2353,9 +2368,19 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_VIDEO_FILES);
   }
+  else if (strSetting.Equals("myvideos.manageplugin"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PLUGIN_VIDEO, true))
+      g_settings.SaveAddons();
+  }
   else if (strSetting.Equals("programfiles.savefolderviews"))
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PROGRAMS);
+  }
+  else if (strSetting.Equals("programfiles.manageplugin"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PLUGIN_PROGRAM, true))
+      g_settings.SaveAddons();
   }
   else if (strSetting.Equals("pictures.savefolderviews"))
   {
@@ -2986,10 +3011,6 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
       const ADDON::CAddon& addon = addons->at(i);
 
       CStdString strFileName = addon.m_strPath + addon.m_strLibName;
-
-      //TODO fix addons paths
-      strFileName.Replace("addon://", "special://xbmc/");
-
 #ifdef _LINUX
       void *handle = dlopen(_P(strFileName).c_str(), RTLD_LAZY);
       if (!handle)
@@ -3292,10 +3313,6 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
       const ADDON::CAddon& addon = addons->at(i);
 
       CStdString strFileName = addon.m_strPath + addon.m_strLibName;
-
-      //TODO fix addons paths
-      strFileName.Replace("addon://", "special://xbmc/");
-
 #ifdef _LINUX
       void *handle = dlopen(_P(strFileName).c_str(), RTLD_LAZY);
       if (!handle)

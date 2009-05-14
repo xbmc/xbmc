@@ -50,8 +50,8 @@ using namespace ADDON;
  */
 
 CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
-                       const ADDON::CAddon& addon, ADDON::IAddonCallback* addonCB, IPVRClientCallback* pvrCB)
-                              : IPVRClient(clientID, addon, addonCB, pvrCB)
+                       const ADDON::CAddon& addon, IPVRClientCallback* pvrCB)
+                              : IPVRClient(clientID, addon, pvrCB)
                               , m_clientID(clientID)
                               , m_pClient(pClient)
                               , m_pDll(pDll)

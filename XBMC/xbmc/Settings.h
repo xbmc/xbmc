@@ -178,11 +178,11 @@ public:
     int m_videoBlackBarColour;
     int m_videoIgnoreAtStart;
     CStdString m_audioHost;
-    
+
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;
-        
+
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
@@ -450,6 +450,7 @@ public:
   CStdString GetSkinFolder() const;
   CStdString GetSkinFolder(const CStdString& skinName) const;
   CStdString GetScriptsFolder() const;
+  CStdString GetAddonsFolder() const;
   CStdString GetVideoFanartFolder() const;
   CStdString GetMusicFanartFolder() const;
 

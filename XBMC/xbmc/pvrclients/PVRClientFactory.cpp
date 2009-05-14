@@ -25,11 +25,22 @@
 
 using namespace ADDON;
 
-CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& path, const CAddon& addon, DWORD clientID, ADDON::IAddonCallback *addonCB, IPVRClientCallback *pvrCB)
+CPVRClientFactory::CPVRClientFactory()
+{
+
+}
+
+CPVRClientFactory::~CPVRClientFactory()
+{
+
+}
+
+CPVRClient* CPVRClientFactory::LoadPVRClient(const CAddon& addon, DWORD clientID, IPVRClientCallback *pvrCB) const
 {
   // add the library name readed from info.xml to the addon's path
-  CStdString strFileName = path + addon.m_strLibName;
+  CStdString strFileName = addon.m_strPath + addon.m_strLibName;
 
+#ifdef HAS_PVRCLIENTS
   // load client
   DllPVRClient* pDll = new DllPVRClient;
   pDll->SetFile(strFileName);
@@ -47,9 +58,12 @@ CPVRClient* CPVRClientFactory::LoadPVRClient(const CStdString& path, const CAddo
   pDll->GetAddon(pClient);
 
   // and pass it to a new instance of CPVRClient() which will handle the client
-  CPVRClient *client(new CPVRClient(clientID, pClient, pDll, addon, addonCB, pvrCB));
+  CPVRClient *client(new CPVRClient(clientID, pClient, pDll, addon, pvrCB));
   // Initialize client and perform all steps to become it running
   client->Init();
 
   return client;
+#else
+  return NULL;
+#endif
 }

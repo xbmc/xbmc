@@ -372,7 +372,7 @@ CApplication::~CApplication(void)
     SDL_DestroyCond(m_frameCond);
 
 #ifdef _WIN32PC
-  if( m_SSysParam ) 
+  if( m_SSysParam )
     delete m_SSysParam;
 #endif
 }
@@ -548,7 +548,7 @@ void CApplication::Preflight()
   // run any platform preflight scripts.
 #ifdef __APPLE__
   CStdString install_path;
-  
+
   CUtil::GetHomePath(install_path);
   setenv("XBMC_HOME", install_path.c_str(), 0);
   install_path += "/tools/osx/preflight";
@@ -560,11 +560,11 @@ HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
-  
+
 #ifdef _WIN32PC
   CWIN32Util::SystemParams::GetDefaults( m_SSysParam );
   CWIN32Util::SystemParams::SetCustomParams();
-#endif  
+#endif
 
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
@@ -1016,16 +1016,26 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/multitype");
     CDirectory::Create("special://home/addons/visualisations");
+//    CDirectory::Create("special://home/addons/skin");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/scripts");
+    CDirectory::Create("special://home/addons/scrapers");
+    CDirectory::Create("special://home/addons/scrapers/pvr");
+    CDirectory::Create("special://home/addons/scrapers/video");
+    CDirectory::Create("special://home/addons/scrapers/music");
+    CDirectory::Create("special://home/addons/scrapers/programs");
     CDirectory::Create("special://home/addons/screensavers");
+    CDirectory::Create("special://home/addons/plugins");
+    CDirectory::Create("special://home/addons/plugins/pvr");
+    CDirectory::Create("special://home/addons/plugins/music");
+    CDirectory::Create("special://home/addons/plugins/video");
+    CDirectory::Create("special://home/addons/plugins/programs");
+    CDirectory::Create("special://home/addons/plugins/pictures");
+    CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
-    CDirectory::Create("special://home/plugins");
-    CDirectory::Create("special://home/plugins/video");
-    CDirectory::Create("special://home/plugins/music");
-    CDirectory::Create("special://home/plugins/pictures");
-    CDirectory::Create("special://home/plugins/programs");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
     symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
@@ -1116,16 +1126,26 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/multitype");
     CDirectory::Create("special://home/addons/visualisations");
+//    CDirectory::Create("special://home/addons/skin");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/scripts");
+    CDirectory::Create("special://home/addons/scrapers");
+    CDirectory::Create("special://home/addons/scrapers/pvr");
+    CDirectory::Create("special://home/addons/scrapers/video");
+    CDirectory::Create("special://home/addons/scrapers/music");
+    CDirectory::Create("special://home/addons/scrapers/programs");
     CDirectory::Create("special://home/addons/screensavers");
+    CDirectory::Create("special://home/addons/plugins");
+    CDirectory::Create("special://home/addons/plugins/pvr");
+    CDirectory::Create("special://home/addons/plugins/music");
+    CDirectory::Create("special://home/addons/plugins/video");
+    CDirectory::Create("special://home/addons/plugins/programs");
+    CDirectory::Create("special://home/addons/plugins/pictures");
+    CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
-    CDirectory::Create("special://home/plugins");
-    CDirectory::Create("special://home/plugins/video");
-    CDirectory::Create("special://home/plugins/music");
-    CDirectory::Create("special://home/plugins/pictures");
-    CDirectory::Create("special://home/plugins/programs");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
 #ifdef __APPLE__
@@ -1152,7 +1172,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp"); 
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
@@ -1210,16 +1230,26 @@ CProfile* CApplication::InitDirectoriesWin32()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/multitype");
     CDirectory::Create("special://home/addons/visualisations");
+//    CDirectory::Create("special://home/addons/skin");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/scripts");
+    CDirectory::Create("special://home/addons/scrapers");
+    CDirectory::Create("special://home/addons/scrapers/pvr");
+    CDirectory::Create("special://home/addons/scrapers/video");
+    CDirectory::Create("special://home/addons/scrapers/music");
+    CDirectory::Create("special://home/addons/scrapers/programs");
     CDirectory::Create("special://home/addons/screensavers");
+    CDirectory::Create("special://home/addons/plugins");
+    CDirectory::Create("special://home/addons/plugins/pvr");
+    CDirectory::Create("special://home/addons/plugins/music");
+    CDirectory::Create("special://home/addons/plugins/video");
+    CDirectory::Create("special://home/addons/plugins/programs");
+    CDirectory::Create("special://home/addons/plugins/pictures");
+    CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
-    CDirectory::Create("special://home/plugins");
-    CDirectory::Create("special://home/plugins/video");
-    CDirectory::Create("special://home/plugins/music");
-    CDirectory::Create("special://home/plugins/pictures");
-    CDirectory::Create("special://home/plugins/programs");
     CDirectory::Create("special://home/scripts");
 
     CDirectory::Create("special://masterprofile");
@@ -1302,17 +1332,20 @@ HRESULT CApplication::Initialize()
 #endif
   {
     CDirectory::Create("special://xbmc/scripts");
-    CDirectory::Create("special://xbmc/plugins");
-    CDirectory::Create("special://xbmc/plugins/music");
-    CDirectory::Create("special://xbmc/plugins/video");
-    CDirectory::Create("special://xbmc/plugins/pictures");
-    CDirectory::Create("special://xbmc/plugins/programs");
     CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/addons");
-    CDirectory::Create("special://xbmc/addons/pvr");
-    CDirectory::Create("special://xbmc/addons/screensavers");
+    CDirectory::Create("special://xbmc/addons/multitype");
     CDirectory::Create("special://xbmc/addons/visualisations");
-    CDirectory::Create("special://xbmc/addons");
+    CDirectory::Create("special://xbmc/addons/pvr");
+    CDirectory::Create("special://xbmc/addons/scripts");
+    CDirectory::Create("special://xbmc/addons/scrapers");
+    CDirectory::Create("special://xbmc/addons/screensavers");
+    CDirectory::Create("special://xbmc/addons/plugin-pvr");
+    CDirectory::Create("special://xbmc/addons/plugin-music");
+    CDirectory::Create("special://xbmc/addons/plugin-video");
+    CDirectory::Create("special://xbmc/addons/plugin-program");
+    CDirectory::Create("special://xbmc/addons/plugin-pictures");
+    CDirectory::Create("special://xbmc/addons/dsp-audio");
     CDirectory::Create("special://xbmc/sounds");
   }
 
@@ -4424,7 +4457,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // we send this if it isn't playlistplayer that is doing this
     int next = g_playlistPlayer.GetNextSong();
     int size = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size();
-    if(next < 0 
+    if(next < 0
     || next >= size)
       OnPlayBackStopped();
   }
@@ -4584,13 +4617,13 @@ void CApplication::UpdateVideoFileState()
         CLog::Log(LOGDEBUG, "%s - Marking current video file as watched", __FUNCTION__);
         // consider this item as played
         m_playCountUpdated=true;
-      
+
         dbs.MarkAsWatched(*m_itemCurrentFile);
       }
     }
     else
       m_playCountUpdated=false;
-      
+
     double current = GetTime();
     // ignore x seconds at the start
     if (current > g_advancedSettings.m_videoIgnoreAtStart)
@@ -4615,7 +4648,7 @@ void CApplication::UpdateAudioFileState()
     if (!m_playCountUpdated) // no need to update more than once
     {
       CLog::Log(LOGDEBUG, "%s - Marking current audio file as watched", __FUNCTION__);
-      
+
       // consider this item as played
       m_playCountUpdated = true;
 
@@ -5222,7 +5255,7 @@ void CApplication::ProcessSlow()
     // Update audio file state every 0.5 second
     UpdateAudioFileState();
   }
-  
+
   // Check if we need to activate the screensaver (if enabled).
   if (g_guiSettings.GetString("screensaver.mode") != "None")
     CheckScreenSaver();

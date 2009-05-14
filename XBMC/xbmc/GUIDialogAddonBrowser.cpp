@@ -110,6 +110,10 @@ bool CGUIDialogAddonBrowser::OnMessage(CGUIMessage& message)
       }
       else if (message.GetSenderId() == CONTROL_ADDONS)
       {
+        // check if user is allowed to open this window
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
         OnGetAddons(m_type);
         return true;
       }
@@ -165,7 +169,7 @@ void CGUIDialogAddonBrowser::Update()
   for (unsigned i=0; i < addons->size(); i++)
   {
     CAddon &addon = (*addons)[i];
-    
+
     if (addon.m_addonType != m_type)
         continue;
 
@@ -244,6 +248,11 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
   }
   else
   {
+    // check if user is allowed to open this window
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return;
+
     /* open up settings dialog */
     CURL url(pItem->m_strPath);
     CGUIDialogAddonSettings::ShowAndGetInput(url);
@@ -290,7 +299,11 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool 
     heading = g_localizeStrings.Get(23002); // "Available Add-ons"
   else
     heading = g_localizeStrings.Get(23060 + type); // Name is calculated by type!
-  
+
+  // check if user is allowed to open this window
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    heading = heading + " (" + g_localizeStrings.Get(20166) + ")";
+
   // finalize the window and display
   browser->SetHeading(heading);
   browser->SetAddonType(type);
@@ -333,6 +346,11 @@ void CGUIDialogAddonBrowser::OnGetAddons(const AddonType &type)
 
 bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
 {
+  // check if user is allowed to open this window
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return false;
+
   // disable context menu for available addons for now
   if (m_getAddons)
     return true;
@@ -363,7 +381,7 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
     return true;
   }
   else if (btnid == btn_Remove)
-  { // request confirmation  
+  { // request confirmation
     CGUIDialogYesNo* pDialog = new CGUIDialogYesNo();
     if (pDialog->ShowAndGetInput(g_localizeStrings.Get(23009), pItem->GetProperty("Addon.Name"), "", g_localizeStrings.Get(23010)))
     {

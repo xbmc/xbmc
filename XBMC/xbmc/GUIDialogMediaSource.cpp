@@ -371,6 +371,17 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share2);
     }
   }
+  else if (m_type == "pvr")
+  {
+    if (CPluginDirectory::HasPlugins("pvr"))
+    {
+      CMediaSource share2;
+      share2.strPath = "plugin://pvr/";
+      share2.strName = g_localizeStrings.Get(18028); // PVR Plugins
+      share2.m_ignore = true;
+      extraShares.push_back(share2);
+    }
+  }
   if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {
     m_paths->Get(item)->m_strPath = path;
@@ -421,7 +432,7 @@ void CGUIDialogMediaSource::OnOK()
     if (share.strPath.Left(9).Equals("plugin://"))
     {
       CStdString strPath=share.strPath;
-      strPath.Replace("plugin://","special://home/plugins/");
+      strPath.Replace("plugin://","special://home/addons/plugins/");
       CFileItem item(strPath,true);
       item.SetCachedProgramThumb();
       if (!item.HasThumbnail())

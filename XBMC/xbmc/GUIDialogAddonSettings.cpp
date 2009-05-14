@@ -32,6 +32,7 @@
 #include "GUISpinControlEx.h"
 #include "GUIImage.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/PluginDirectory.h"
 #include "VideoInfoScanner.h"
 #include "ScraperSettings.h"
 #include "GUIWindowManager.h"
@@ -398,15 +399,9 @@ void CGUIDialogAddonSettings::CreateControls()
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, m_strHeading);
 
   // Create our base path, used for type "fileenum" settings
-  //TODO Fix all Addon paths
   CStdString basepath;
-  if (m_url.GetProtocol() == "plugin")
-    basepath = "special://home/plugins/";
-  else
-    basepath = "special://xbmc/";
-
-  CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
-  CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
+  m_url.GetURL(basepath);
+  basepath = CPluginDirectory::TranslatePluginDirectory(basepath);
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;

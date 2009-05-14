@@ -21,7 +21,9 @@
 
 #include "stdafx.h"
 #include "VisualisationFactory.h"
-#include "Util.h"
+#include "DllVisualisation.h"
+
+using namespace ADDON;
 
 CVisualisationFactory::CVisualisationFactory()
 {
@@ -33,15 +35,16 @@ CVisualisationFactory::~CVisualisationFactory()
 
 }
 
-CVisualisation* CVisualisationFactory::LoadVisualisation(const CStdString& path, const ADDON::CAddon& addon) const
+CVisualisation* CVisualisationFactory::LoadVisualisation(const CAddon& addon) const
 {
-  CStdString strFileName = path + addon.m_strLibName;
+  // add the library name readed from info.xml to the addon's path
+  CStdString strFileName = addon.m_strPath + addon.m_strLibName;
 
 #ifdef HAS_VISUALISATION
   // load visualisation
   DllVisualisation* pDll = new DllVisualisation;
   pDll->SetFile(strFileName);
-  //  FIXME: Some Visualisations do not work 
+  //  FIXME: Some Visualisations do not work
   //  when their dll is not unloaded immediatly
   pDll->EnableDelayedUnload(false);
   if (!pDll->Load())

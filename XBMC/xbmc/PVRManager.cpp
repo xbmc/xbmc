@@ -208,10 +208,6 @@ bool CPVRManager::LoadClients()
     if (clientAddon.m_disabled) // ignore disabled addons
       continue;
 
-    //TODO fix addons paths
-    CStdString transPath(clientAddon.m_strPath);
-    transPath.Replace("addon://", "special://xbmc/");
-
     /* Add client to TV-Database to identify different backend types,
      * if client is already added his id is given. 
      */
@@ -226,7 +222,7 @@ bool CPVRManager::LoadClients()
      * success. Client initialization is also performed during loading.
      */
     IPVRClient *client;
-    client = factory.LoadPVRClient(transPath, clientAddon, i, this, this);
+    client = factory.LoadPVRClient(clientAddon, clientID, this);
     if (client)
     {
       m_clients.insert(std::make_pair(client->GetID(), client));

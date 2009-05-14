@@ -28,8 +28,7 @@ class CPVRClient : public IPVRClient
 {
 public:
   CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
-             const ADDON::CAddon& addon, ADDON::IAddonCallback *addonCB,
-             IPVRClientCallback *pvrCB);
+             const ADDON::CAddon& addon, IPVRClientCallback *pvrCB);
   ~CPVRClient();
 
   // DLL related

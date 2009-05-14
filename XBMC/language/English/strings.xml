@@ -957,8 +957,8 @@
   <string id="13005">Shutdown</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Use custom dashboard path</string>
-  <string id="13008">Shutdown function</string> 
-  <string id="13009">Quit</string> 
+  <string id="13008">Shutdown function</string>
+  <string id="13009">Quit</string>
   <string id="13010">Hibernate</string>
   <string id="13011">Suspend</string>
   <string id="13012">Exit</string>
@@ -1200,7 +1200,7 @@
   <string id="13611">Standard</string>
   <string id="13612">Universal Remote</string>
   <string id="13613">Multi Remote (Harmony)</string>
-  
+
   <string id="13620">Apple Remote Error</string>
   <string id="13621">Apple Remote support could be enabled.</string>
 
@@ -1542,6 +1542,7 @@
   <string id="18025">PVR service</string>
   <string id="18026">Add PVR client...</string>
   <string id="18027">PVR clients</string>
+  <string id="18028">PVR plugins</string>
   <string id="18029">Manage clients...</string>
   <string id="18030">PVR information</string>
   <string id="18048">Edit Channel Settings</string>
@@ -2268,8 +2269,8 @@
   <string id="23017">Scraper</string>
   <string id="23018">Screensaver</string>
   <string id="23019">PVR Add-on</string>
-  <string id="23020">Music Add-on</string>
-  <string id="23021">Video Add-on</string>
+  <string id="23020">Video Add-on</string>
+  <string id="23021">Music Add-on</string>
   <string id="23022">Program Add-on</string>
   <string id="23023">Pictures Add-on</string>
   <string id="23024">Audio DSP Add-on</string>
@@ -2301,16 +2302,17 @@
   <string id="23064">Manage Scripts</string>
   <string id="23065">Manage Scrapers</string>
   <string id="23066">Manage Screensaver</string>
-  <string id="23067">Manage PVR clients extensions</string>
-  <string id="23068">Manage Music extensions</string>
-  <string id="23069">Manage Video extensions</string>
-  <string id="23070">Manage Program extensions</string>
-  <string id="23071">Manage Picture extensions</string>
+  <string id="23067">Manage PVR plugins</string>
+  <string id="23068">Manage Video plugins</string>
+  <string id="23069">Manage Music plugins</string>
+  <string id="23070">Manage Program plugins</string>
+  <string id="23071">Manage Picture plugins</string>
   <string id="23072">Manage Audio DSP's</string>
 
   <string id="23080">Manage external Screensaver</string>
   <string id="23081">This Add-on don't have settings</string>
-  
+  <string id="23082">Lock Add-on manager</string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY keyboard</string>
