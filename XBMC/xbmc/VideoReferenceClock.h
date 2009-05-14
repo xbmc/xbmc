@@ -57,20 +57,20 @@ class CVideoReferenceClock : public CThread
     void SendVblankSignal();
     void UpdateClock(int NrVBlanks, bool CheckMissed);
 
-    __int64 m_CurrTime;
-    __int64 m_AdjustedFrequency;
-    __int64 m_ClockOffset;
-    __int64 m_LastRefreshTime;
-    __int64 m_SystemFrequency;
+    __int64 m_CurrTime;          //the current time of the clock when using vblank as clock source
+    __int64 m_AdjustedFrequency; //the frequency of the clock set by dvdplayer
+    __int64 m_ClockOffset;       //the difference between the vblank clock and systemclock, set when vblank clock is stopped
+    __int64 m_LastRefreshTime;   //last time we updated the refreshrate
+    __int64 m_SystemFrequency;   //frequency of the systemclock
 
-    bool    m_UseVblank;
-    __int64 m_RefreshRate;
-    int     m_PrevRefreshRate;
-    int     m_MissedVblanks;
-    __int64 m_VblankTime;
+    bool    m_UseVblank;         //set to true when vblank is used as clock source
+    __int64 m_RefreshRate;       //current refreshrate
+    int     m_PrevRefreshRate;   //previous refresrate, used for log printing and getting refreshrate from nvidia-settings
+    int     m_MissedVblanks;     //number of clock updates missed by the vblank clock
+    __int64 m_VblankTime;        //last time the clock was updated when using vblank as clock
 
-    CEvent m_Started;
-    CEvent m_VblankEvent;
+    CEvent m_Started;            //set when the vblank clock is started
+    CEvent m_VblankEvent;        //set when a vblank happens
 
     CCriticalSection m_CritSection;
 
@@ -113,7 +113,8 @@ class CVideoReferenceClock : public CThread
     void RunCocoa();
     void CleanupCocoa();
     
-    __int64 m_LastVBlankTime;
+    __int64 m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
+                               //not the same as m_VblankTime
 #endif
 };
 

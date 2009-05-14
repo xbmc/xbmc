@@ -51,6 +51,7 @@ void CVideoReferenceClock::Process()
 
   while(!m_bStop)
   {
+    //set up the vblank clock
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
     SetupSuccess = SetupGLX();
 #elif defined(_WIN32)
@@ -71,10 +72,11 @@ void CVideoReferenceClock::Process()
 
     if (SetupSuccess)
     {
-      m_UseVblank = true;
-      m_VblankTime = Now.QuadPart;
+      m_UseVblank = true;          //tell other threads we're using vblank as clock
+      m_VblankTime = Now.QuadPart; //initialize the timestamp of the last vblank
       SingleLock.Leave();
 
+      //run the clock
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
       RunGLX();
 #elif defined(_WIN32)
@@ -91,12 +93,13 @@ void CVideoReferenceClock::Process()
     }
 
     SingleLock.Enter();
-    m_UseVblank = false;
-    QueryPerformanceCounter(&Now);
+    m_UseVblank = false;                       //we're back to using the systemclock
+    QueryPerformanceCounter(&Now);             //set the clockoffset between the vblank clock and systemclock
     m_ClockOffset = m_CurrTime - Now.QuadPart;
     m_Started.Reset();
     SingleLock.Leave();
 
+    //clean up the vblank clock
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
     CleanupGLX();
 #elif defined(_WIN32)
@@ -213,7 +216,7 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  UpdateRefreshrate(true);
+  UpdateRefreshrate(true); //forced refreshrate update
   m_MissedVblanks = 0;
 
   return true;
@@ -302,14 +305,16 @@ void CVideoReferenceClock::RunGLX()
   CSingleLock SingleLock(m_CritSection);
   SingleLock.Leave();
 
+  //get the current vblank counter
   m_glXGetVideoSyncSGI(&VblankCount);
   PrevVblankCount = VblankCount;
 
   while(!m_bStop)
   {
+    //wait for the next vblank
     ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
     m_glXGetVideoSyncSGI(&VblankCount);
-    QueryPerformanceCounter(&Now);
+    QueryPerformanceCounter(&Now); //get the timestamp of this vblank
 
     if(ReturnV)
     {
@@ -319,6 +324,7 @@ void CVideoReferenceClock::RunGLX()
 
     if (VblankCount > PrevVblankCount)
     {
+      //update the vblank timestamp, update the clock and send a signal that we got a vblank
       SingleLock.Enter();
       m_VblankTime = Now.QuadPart;
       UpdateClock((int)(VblankCount - PrevVblankCount), true);
@@ -371,17 +377,21 @@ void CVideoReferenceClock::RunD3D()
   CSingleLock SingleLock(m_CritSection);
   SingleLock.Leave();
 
+  //we need a high priority to get accurate timing
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 
+  //get the scanline we're currently at
   m_D3dDev->GetRasterStatus(0, &RasterStatus);
   if (RasterStatus.InVBlank) LastLine = 0;
   else LastLine = RasterStatus.ScanLine;
 
+  //init the vblanktime
   QueryPerformanceCounter(&Now);
   LastVBlankTime = Now.QuadPart;
 
   while(!m_bStop)
   {
+    //get the scanline we're currently at
     ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
     if (ReturnV != D3D_OK)
     {
@@ -390,12 +400,15 @@ void CVideoReferenceClock::RunD3D()
     }
     PollCount++;
 
+    //if InVBlank is set, or the current scanline is lower than the previous scanline, a vblank happened
     if ((RasterStatus.InVBlank && LastLine > 0) || (RasterStatus.ScanLine < LastLine))
     {
+      //calculate how many vblanks happened
       QueryPerformanceCounter(&Now);
       VBlankTime = (double)(Now.QuadPart - LastVBlankTime) / (double)m_SystemFrequency;
       NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
+      //update the vblank timestamp, update the clock and send a signal that we got a vblank
       SingleLock.Enter();
       m_VblankTime = Now.QuadPart;
       UpdateClock(NrVBlanks, true);
@@ -409,6 +422,7 @@ void CVideoReferenceClock::RunD3D()
         return;
       }
 
+      //save the timestamp of this vblank so we can calulate how many vblanks happened next time
       LastVBlankTime = Now.QuadPart;
       PollCount = 0;
 
@@ -446,6 +460,7 @@ bool CVideoReferenceClock::SetupD3D()
   m_Hwnd = NULL;
   m_HasWinCl = false;
 
+  //we have to set up direct3d on a specific monitor, currently this is done with an environment variable
   m_Adapter = 0;
   if (getenv("SDL_FULLSCREEN_HEAD"))
   {
@@ -650,9 +665,9 @@ bool CVideoReferenceClock::SetupCocoa()
   LARGE_INTEGER Now;
   
   QueryPerformanceCounter(&Now);
-  m_LastVBlankTime = Now.QuadPart;
+  m_LastVBlankTime = Now.QuadPart; //init the vblank timestamp
   m_MissedVblanks = 0;
-  m_RefreshRate = 60;
+  m_RefreshRate = 60;              //init the refreshrate so we don't get any division by 0 errors
   
   if (!Cocoa_CVDisplayLinkCreate((void*)DisplayLinkCallBack, reinterpret_cast<void*>(this)))
   {
@@ -668,6 +683,7 @@ bool CVideoReferenceClock::SetupCocoa()
 
 void CVideoReferenceClock::RunCocoa()
 {
+  //because cocoa has a vblank callback, we just keep sleeping until we're asked to stop the thread
   while(!m_bStop)
   {
     Sleep(1000);
@@ -695,10 +711,14 @@ void CVideoReferenceClock::VblankHandler(__int64 nowtime, double fps)
   }
   m_LastRefreshTime = m_CurrTime;
   
+  //calculate how many vblanks happened
   VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)m_SystemFrequency;
   NrVBlanks = MathUtils::round_int(VBlankTime * (double)m_RefreshRate);
 
+  //save the timestamp of this vblank so we can calculate how many happened next time
   m_LastVBlankTime = nowtime;
+  
+  //update the vblank timestamp, update the clock and send a signal that we got a vblank
   m_VblankTime = nowtime;
   UpdateClock(NrVBlanks, true);
   
@@ -708,21 +728,23 @@ void CVideoReferenceClock::VblankHandler(__int64 nowtime, double fps)
 }
 #endif
 
+//this is called from the vblank run function and from CVideoReferenceClock::Wait in case of a late update
 void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 {
-  if (CheckMissed)
+  if (CheckMissed) //set to true from the vblank run function
   {
-    if (NrVBlanks < m_MissedVblanks)
+    if (NrVBlanks < m_MissedVblanks) //if this is true the vblank detection in the run function is wrong
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: detected %i vblanks, missed %i", NrVBlanks, m_MissedVblanks);
     
-    NrVBlanks -= m_MissedVblanks;
+    NrVBlanks -= m_MissedVblanks; //subtract the vblanks we missed
     m_MissedVblanks = 0;
   }
 
-  if (NrVBlanks > 0)
+  if (NrVBlanks > 0) //update the clock if we have any vblanks
     m_CurrTime += (__int64)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
 }
 
+//called from dvdclock to get the time
 void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
 {
   CSingleLock SingleLock(m_CritSection);
@@ -740,6 +762,7 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   }
 }
 
+//called from dvdclock to get the clock frequency
 void CVideoReferenceClock::GetFrequency(LARGE_INTEGER *pfreq)
 {
   pfreq->QuadPart = m_SystemFrequency;
@@ -773,6 +796,7 @@ double CVideoReferenceClock::GetSpeed()
 
 bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 {
+  //update the refreshrate about once a second, or update immediately if a forced update is required
   if (m_CurrTime - m_LastRefreshTime < m_SystemFrequency && !Forced)
     return false;
 
@@ -787,13 +811,15 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   int RRRefreshRate = XRRConfigCurrentRate(CurrInfo);
   XRRFreeScreenConfigInfo(CurrInfo);
 
+  //just return if the refreshrate given by RandR didn't change
   if (RRRefreshRate == m_PrevRefreshRate && !Forced)
     return false;
 
+  //the refreshrate from RandR can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
   if (m_UseNvSettings || Forced)
   {
     int RefreshRate;
-    m_UseNvSettings = ParseNvSettings(RefreshRate);
+    m_UseNvSettings = ParseNvSettings(RefreshRate); //if this fails we can't get the refreshrate from nvidia-settings
 
     if (!m_UseNvSettings)
     {
@@ -804,7 +830,8 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 
     CSingleLock SingleLock(m_CritSection);
     m_RefreshRate = RefreshRate;
-    m_PrevRefreshRate = RRRefreshRate;
+    m_PrevRefreshRate = RRRefreshRate; //save the refreshrate from RandR,
+                                       //which does not have to be same as the refreshrate nvidia-settings gave us
   }
   else
   {
@@ -834,6 +861,8 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     Changed = true;
   }
 
+  //we have to set up direct3d again if the display mode changed
+  //could be videodriver bugs?
   if (m_Width != DisplayMode.Width || m_Height != DisplayMode.Height)
   {
     Changed = true;
@@ -859,6 +888,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   return false;
 }
 
+//dvdplayer needs to know the refreshrate for matching the fps of the video playing to it
 int CVideoReferenceClock::GetRefreshRate()
 {
   CSingleLock SingleLock(m_CritSection);
@@ -871,6 +901,8 @@ int CVideoReferenceClock::GetRefreshRate()
 
 #define MAXDELAY 1200
 
+//this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBoxRenderManager::WaitPresentTime
+//it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
 void CVideoReferenceClock::Wait(__int64 Target)
 {
   LARGE_INTEGER Now;
@@ -880,16 +912,18 @@ void CVideoReferenceClock::Wait(__int64 Target)
 
   CSingleLock SingleLock(m_CritSection);
 
-  if (m_UseVblank)
+  if (m_UseVblank) //when true the vblank is used as clock source
   {
     while (m_CurrTime < Target)
     {
+      //calculate when the next vblank will happen, based on when the last one happened and what the refreshrate is
+      //then advance that value by 20% of a vblank period, if the vblank clock doesn't update by that time we know it's late
       QueryPerformanceCounter(&Now);
       NextVblank = m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXDELAY / 1000);
       SleepTime = (NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency;
 
       Late = false;
-      if (SleepTime <= 0)
+      if (SleepTime <= 0) //if sleeptime is 0 or lower, the vblank clock is already late in updating
       {
         Late = true;
       }
@@ -897,15 +931,16 @@ void CVideoReferenceClock::Wait(__int64 Target)
       {
         m_VblankEvent.Reset();
         SingleLock.Leave();
-        if (!m_VblankEvent.WaitMSec(SleepTime)) Late = true;
+        if (!m_VblankEvent.WaitMSec(SleepTime)) //if this returns false, it means the vblank event was not set within
+          Late = true;                          //the required time
         SingleLock.Enter();
       }
 
-      if (Late)
+      if (Late) //if the vblank clock was late with its update, we update the clock ourselves
       {
-        m_MissedVblanks++;
-        m_VblankTime += m_SystemFrequency / m_RefreshRate;
-        UpdateClock(1, false);
+        m_MissedVblanks++; //tell the vblank clock how many vblanks it missed
+        m_VblankTime += m_SystemFrequency / m_RefreshRate; //set the vblank time one vblank period forward
+        UpdateClock(1, false); //update the clock by 1 vblank
       }
     }
   }
@@ -914,6 +949,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
     __int64 ClockOffset = m_ClockOffset;
     SingleLock.Leave();
     QueryPerformanceCounter(&Now);
+    //sleep until the timestamp has passed
     SleepTime = (Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency;
     if (SleepTime > 0)
       ::Sleep(SleepTime);
