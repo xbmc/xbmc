@@ -2029,9 +2029,7 @@ void CVideoDatabase::DeleteResumeBookMark(const CStdString &strFilenameAndPath)
   try
   {
     CStdString sql = FormatSQL("delete from bookmark where idFile=%i and type=%i", fileID, CBookmark::RESUME);
-    BeginTransaction();
     m_pDS->exec(sql.c_str());
-    CommitTransaction();
   }
   catch(...)
   {
@@ -2793,10 +2791,10 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
                        " values (%i,%i,%i,%i,%f,%i,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%f,%f,",
                        lFileId, setting.m_NonInterleaved, setting.m_NoCache, setting.m_InterlaceMethod, setting.m_FilmGrain, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
-                       setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay);
+                       setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay, 0.0f, 0.0f);
       CStdString strSQL2;
       strSQL2=FormatSQL("%i,%i,%i,%i,%i,%f,%f)\n", setting.m_OutputToAllSpeakers, setting.m_ResumeTime, setting.m_Crop, setting.m_CropLeft, setting.m_CropRight,
-                    setting.m_CropTop, setting.m_CropBottom);
+                    setting.m_CropTop, setting.m_CropBottom, 0.0f, 0.0f);
       strSQL += strSQL2;
       m_pDS->exec(strSQL.c_str());
     }
@@ -3449,9 +3447,7 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
     {
       count++;
       CStdString strSQL = FormatSQL("update files set playCount=%i,lastPlayed=CURRENT_TIMESTAMP where idFile=%u", count, id);
-      BeginTransaction();
       m_pDS->exec(strSQL.c_str());
-      CommitTransaction();
     }
   }
   catch (...)
