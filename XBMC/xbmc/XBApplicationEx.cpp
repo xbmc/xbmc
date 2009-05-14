@@ -377,7 +377,7 @@ void CXBApplicationEx::ReadInput()
           g_settings.DeleteSource("pictures",strName,strDrive);
           g_settings.DeleteSource("music",strName,strDrive);
           g_settings.DeleteSource("programs",strName,strDrive);
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           m_gWindowManager.SendThreadMessage( msg );
         }
         if(event.syswm.msg->msg == WM_POWERBROADCAST && (event.syswm.msg->wParam == PBT_APMRESUMESUSPEND || event.syswm.msg->wParam == PBT_APMRESUMEAUTOMATIC))
