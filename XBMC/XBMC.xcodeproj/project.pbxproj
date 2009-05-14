@@ -888,6 +888,10 @@
 		F59876C50FBA3569008EF4FB /* libsamplerate.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F59876C30FBA3569008EF4FB /* libsamplerate.dylib */; };
 		F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59879070FBAA0C3008EF4FB /* QuartzCore.framework */; };
 		F59879090FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59879070FBAA0C3008EF4FB /* QuartzCore.framework */; };
+		F5987B250FBB9682008EF4FB /* librefmscrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987B220FBB9682008EF4FB /* librefmscrobbler.cpp */; };
+		F5987B260FBB9682008EF4FB /* lastfmscrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987B230FBB9682008EF4FB /* lastfmscrobbler.cpp */; };
+		F5987B270FBB9682008EF4FB /* librefmscrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987B220FBB9682008EF4FB /* librefmscrobbler.cpp */; };
+		F5987B280FBB9682008EF4FB /* lastfmscrobbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987B230FBB9682008EF4FB /* lastfmscrobbler.cpp */; };
 		F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */; };
 		F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */; };
 		F5A1C8740F6B06CF00A96ABD /* ActionManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138A0D25F9F900618676 /* ActionManager.cpp */; };
@@ -3667,6 +3671,10 @@
 		F59876BF0FBA351D008EF4FB /* VideoReferenceClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoReferenceClock.cpp; sourceTree = "<group>"; };
 		F59876C30FBA3569008EF4FB /* libsamplerate.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsamplerate.dylib; path = /opt/local/lib/libsamplerate.dylib; sourceTree = "<absolute>"; };
 		F59879070FBAA0C3008EF4FB /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
+		F5987B210FBB9682008EF4FB /* lastfmscrobbler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lastfmscrobbler.h; sourceTree = "<group>"; };
+		F5987B220FBB9682008EF4FB /* librefmscrobbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = librefmscrobbler.cpp; sourceTree = "<group>"; };
+		F5987B230FBB9682008EF4FB /* lastfmscrobbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lastfmscrobbler.cpp; sourceTree = "<group>"; };
+		F5987B240FBB9682008EF4FB /* librefmscrobbler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = librefmscrobbler.h; sourceTree = "<group>"; };
 		F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AudioRendererFactory.cpp; path = xbmc/cores/AudioRenderers/AudioRendererFactory.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AudioRendererFactory.h; path = xbmc/cores/AudioRenderers/AudioRendererFactory.h; sourceTree = SOURCE_ROOT; };
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
@@ -5754,6 +5762,10 @@
 			isa = PBXGroup;
 			children = (
 				E38E1A220D25F9FB00618676 /* errors.h */,
+				F5987B210FBB9682008EF4FB /* lastfmscrobbler.h */,
+				F5987B220FBB9682008EF4FB /* librefmscrobbler.cpp */,
+				F5987B230FBB9682008EF4FB /* lastfmscrobbler.cpp */,
+				F5987B240FBB9682008EF4FB /* librefmscrobbler.h */,
 				E38E1A250D25F9FB00618676 /* scrobbler.cpp */,
 				E38E1A260D25F9FB00618676 /* scrobbler.h */,
 			);
@@ -7858,6 +7870,8 @@
 				F5AACA970FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */,
 				F59876BC0FBA34C0008EF4FB /* DVDPlayerAudioResampler.cpp in Sources */,
 				F59876C00FBA351D008EF4FB /* VideoReferenceClock.cpp in Sources */,
+				F5987B250FBB9682008EF4FB /* librefmscrobbler.cpp in Sources */,
+				F5987B260FBB9682008EF4FB /* lastfmscrobbler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8687,6 +8701,8 @@
 				F5AACA980FB3E2B800DBB77C /* GUIDialogSlider.cpp in Sources */,
 				F59876BD0FBA34C0008EF4FB /* DVDPlayerAudioResampler.cpp in Sources */,
 				F59876C10FBA351D008EF4FB /* VideoReferenceClock.cpp in Sources */,
+				F5987B270FBB9682008EF4FB /* librefmscrobbler.cpp in Sources */,
+				F5987B280FBB9682008EF4FB /* lastfmscrobbler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
