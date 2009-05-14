@@ -313,7 +313,7 @@ void CVideoReferenceClock::RunGLX()
   {
     //wait for the next vblank
     ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
-    m_glXGetVideoSyncSGI(&VblankCount);
+    m_glXGetVideoSyncSGI(&VblankCount); //the vblank count returned by glXWaitVideoSyncSGI is not always correct
     QueryPerformanceCounter(&Now); //get the timestamp of this vblank
 
     if(ReturnV)
@@ -347,6 +347,8 @@ void CVideoReferenceClock::RunGLX()
       glXMakeCurrent(m_Dpy, None, NULL);
       glXMakeCurrent(m_Dpy, m_Window, m_Context);
 
+      //failsafe, seen at least once that glXWaitVideoSyncSGI didn't wait at all,
+      //even after reattaching the glx context
       ResetCount++;
       if (ResetCount > 100)
       {
@@ -740,7 +742,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
     m_MissedVblanks = 0;
   }
 
-  if (NrVBlanks > 0) //update the clock if we have any vblanks
+  if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
     m_CurrTime += (__int64)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
 }
 
