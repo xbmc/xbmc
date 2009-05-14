@@ -98,31 +98,6 @@ protected:
   UInt32 m_WatchdogPreroll;
 };
 
-class CCoreAudioSampleConverter
-{
-public:
-  CCoreAudioSampleConverter();
-  ~CCoreAudioSampleConverter();
-  bool Initialize(UInt32 inputFlags, UInt32 inputBitDepth, UInt32 outputFlags, UInt32 outputBitDepth);
-  float GetInputFactor(); // Number of bytes in per byte out
-  float GetOutputFactor(); // Number of bytes out per byte in
-  void* GetInputBuffer(UInt32 minSize);
-  UInt32 Convert(void* pOut, UInt32 outLen); // Returns bytes written to pOut
-protected:
-  enum
-  {
-    Conversion_Unsupported = 0,
-    Conversion_S16_F32 = 1
-  };
-  UInt32 m_InputFormatFlags;
-  UInt32 m_OutputFormatFlags;
-  UInt32 m_InputBitsPerSample;
-  UInt32 m_OutputBitsPerSample;
-  void* m_pInputBuffer;
-  UInt32 m_InputBufferLen;
-  UInt32 m_ConversionSelector;
-};
-
 class CCoreAudioRenderer : public IAudioRenderer
   {
   public:
@@ -173,7 +148,6 @@ class CCoreAudioRenderer : public IAudioRenderer
     
     bool m_Passthrough;
     bool m_EnableVolumeControl;
-    CCoreAudioSampleConverter* m_pConverter;
     
     // Stream format
     size_t m_AvgBytesPerSec;

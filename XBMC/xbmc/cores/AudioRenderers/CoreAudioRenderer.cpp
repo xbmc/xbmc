@@ -281,98 +281,6 @@ void CCoreAudioPerformance::Reset()
 }
 
 //***********************************************************************************************
-// Audio Sample Format Conversion Class (Data Representation only, not sample rate)
-//***********************************************************************************************
-CCoreAudioSampleConverter::CCoreAudioSampleConverter() :
-  m_InputFormatFlags(0),
-  m_OutputFormatFlags(0),
-  m_InputBitsPerSample(0),
-  m_OutputBitsPerSample(0),
-  m_pInputBuffer(NULL),
-  m_InputBufferLen(0),
-  m_ConversionSelector(Conversion_Unsupported)
-{
-  
-}
-
-CCoreAudioSampleConverter::~CCoreAudioSampleConverter()
-{
-  if (m_pInputBuffer)
-    free(m_pInputBuffer);
-}
-
-bool CCoreAudioSampleConverter::Initialize(UInt32 inputFlags, UInt32 inputBitDepth, UInt32 outputFlags, UInt32 outputBitDepth)
-{
-  // TODO: Check for supported format
-  m_InputFormatFlags = inputFlags;
-  m_OutputFormatFlags = outputFlags;
-  m_InputBitsPerSample = inputBitDepth;
-  m_OutputBitsPerSample = outputBitDepth;
-  
-  m_ConversionSelector = Conversion_S16_F32; // Set conversion type
-  return true;
-}
-
-float CCoreAudioSampleConverter::GetInputFactor()
-{
-  if (!m_OutputBitsPerSample) // Avoid a divide-by-zero error
-    return 0.0f;
-  
-  return (float)m_InputBitsPerSample / (float)m_OutputBitsPerSample;
-}
-
-float CCoreAudioSampleConverter::GetOutputFactor()
-{
-  if (!m_InputBitsPerSample) // Avoid a divide-by-zero error
-    return 0.0f;
-  
-  return (float)m_OutputBitsPerSample / (float)m_InputBitsPerSample;
-}
-
-void* CCoreAudioSampleConverter::GetInputBuffer(UInt32 minSize)
-{
-  if (m_InputBufferLen < minSize) // Make sure the buffer is at least as big as requested
-  {
-    if (m_pInputBuffer)
-      free(m_pInputBuffer);
-    m_pInputBuffer = malloc(minSize);
-    m_InputBufferLen = minSize;
-  }
-  return m_pInputBuffer;
-}
-
-// ** Currently only supports 16-bit signed integer to 32-bit float (It's the only one we need),
-// but adding new conversions is straightforward
-UInt32 CCoreAudioSampleConverter::Convert(void* pOut, UInt32 outLen)
-{
-  const float short_to_float_mult = 1.0f / 32768.f; // Conversion constant reduces floating-point ops while converting
-
-  if (!m_pInputBuffer)
-    return 0;
-  
-  if (outLen * GetInputFactor() > m_InputBufferLen)
-    outLen = m_InputBufferLen * GetOutputFactor();
-  
-  switch (m_ConversionSelector)
-  {
-    case Conversion_S16_F32:
-      UInt32 bytesWritten = outLen;
-      short* pShort = (short*)m_pInputBuffer;
-      float* pFloat = (float*)pOut;
-      while (outLen-=sizeof(float)) // One sample at a time...
-      {
-        *pFloat = *pShort * short_to_float_mult;
-        pShort++;
-        pFloat++;
-      }
-      return bytesWritten;
-    case Conversion_Unsupported:
-    default:
-      return 0;
-  }
-}
-
-//***********************************************************************************************
 // Contruction/Destruction
 //***********************************************************************************************
 CCoreAudioRenderer::CCoreAudioRenderer() :
@@ -384,7 +292,6 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_Initialized(false),
   m_Passthrough(false),
   m_EnableVolumeControl(true),
-  m_pConverter(NULL),
   m_OutputBufferIndex(0),
   m_pCache(NULL),
   m_RunoutEvent(NULL)
@@ -510,8 +417,6 @@ HRESULT CCoreAudioRenderer::Deinitialize()
   if (m_Passthrough)
     m_AudioDevice.RemoveIOProc();
   m_AudioUnit.Close();
-  delete m_pConverter;
-  m_pConverter = NULL;
   m_OutputStream.Close();
   m_AudioDevice.Close();
   delete m_pCache;
@@ -612,8 +517,6 @@ HRESULT CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
   {  
     // Convert milliBels to percent
     Float32 volPct = pow(10.0f, (float)nVolume/2000.0f);
-    // Scale the provided value to a range of 0.0 -> 1.0
-    //Float32 volPct = (Float32)(nVolume + 6000.0f)/6000.0f;
     
     // Try to set the volume. If it fails there is not a lot to be done.
     if (!m_AudioUnit.SetCurrentVolume(volPct))
@@ -673,8 +576,7 @@ void CCoreAudioRenderer::WaitCompletion()
   OSStatus ret =  MPCreateEvent(&m_RunoutEvent);
   if (!ret)
   {
-    // TODO: If we want to be REALLY tight, we could add silence to run-out the hardware/os delay as well (not really necessary)
-    UInt32 delay =  GetDelay()/1000.0f + 10; // This is how much time 'should' be in the cache ( plus 10ms)
+    UInt32 delay =  GetDelay()/1000.0f + 10; // This is how much time 'should' be in the cache ( plus 10ms for preemption hedge)
     // TODO: How should we really determiine the wait time 'padding'?
     ret = MPWaitForEvent(m_RunoutEvent, NULL, kDurationMillisecond * delay); // Wait for the callback thread to process the whole cache, but only wait as long as we expect it to take
     switch (ret)
@@ -725,15 +627,7 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
   }
   else // Fetch some data for the caller
   {
-    if (m_pConverter) // Samples need to be converted before passing along
-    {
-      m_pCache->GetData(m_pConverter->GetInputBuffer(bytesRequested), bytesRequested); // Retrieve data into the coverter's input buffer
-      m_pConverter->Convert(ioData->mBuffers[m_OutputBufferIndex].mData, ioData->mBuffers[m_OutputBufferIndex].mDataByteSize); // Convert data into caller's buffer
-    }
-    else // Copy data as-is
-    {
-      m_pCache->GetData(ioData->mBuffers[m_OutputBufferIndex].mData, bytesRequested);
-    }
+    m_pCache->GetData(ioData->mBuffers[m_OutputBufferIndex].mData, bytesRequested);
     
     // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
     if (!m_EnableVolumeControl && m_CurrentVolume == -6000) 
@@ -798,14 +692,14 @@ bool CCoreAudioRenderer::InitializePCMEncoded()
   if (!InitializePCM(2, 48000, 16))
     return false;
   
-  m_EnableVolumeControl = false; // Disable output volume control
+  m_EnableVolumeControl = false; // Prevent attempts to change the output volume. It is not possible with encoded audio
   return true;  
 }
 
 bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
 {
   // TODO: Comment out
-  //return false; // un-comment to force PCM Spoofing (DD-Wav)
+  return false; // un-comment to force PCM Spoofing (DD-Wav)
   
   CStdString formatString;
   AudioStreamBasicDescription outputFormat = {0};

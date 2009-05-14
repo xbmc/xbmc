@@ -4348,7 +4348,11 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_eCurrentPlayer = eNewCore;
     m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
   }
-
+  
+  // Disable GUI sounds (unless configured otherwise)
+  if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+    g_audioManager.Enable(false);
+  
   bool bResult;
   if (m_pPlayer)
     bResult = m_pPlayer->OpenFile(item, options);
@@ -4377,8 +4381,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
 #endif
 
-    if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-      g_audioManager.Enable(false);
+
   }
   m_bPlaybackStarting = false;
   if(bResult)
