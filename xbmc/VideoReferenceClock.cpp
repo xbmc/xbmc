@@ -961,6 +961,12 @@ void CVideoReferenceClock::Wait(__int64 Target)
   }
 }
 
+
+bool CVideoReferenceClock::UseVblank()
+{
+    return m_UseVblank;
+}
+
 //for the codec information screen
 int CVideoReferenceClock::GetMissedVblanks()
 {
