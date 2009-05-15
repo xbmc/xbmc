@@ -221,7 +221,7 @@ void CExternalPlayer::Process()
 
   // We don't want to come back to an active screensaver
   g_application.ResetScreenSaver();
-  g_application.ResetScreenSaverWindow();
+  g_application.WakeUpScreenSaverAndDPMS();
   g_audioContext.SetActiveDevice(iActiveDevice);
 
   if (ret) 
