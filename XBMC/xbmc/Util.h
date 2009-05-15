@@ -71,6 +71,9 @@ namespace MathUtils
 {
   // GCC does something stupid with optimization on release builds if we try
   // to assert in these functions
+  
+  //TODO: Make ARM Assembler (or NEON) Optimised versions of below functions (McGeagh)
+
   inline int round_int (double x)
   {
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
@@ -88,7 +91,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #if defined(__powerpc__) || defined(__ppc__)
+    #if defined(__powerpc__) || defined(__ppc__) || defined(_ARMEL)
         i = floor(x + round_to_nearest);
     #else
         __asm__ __volatile__ (
@@ -108,7 +111,7 @@ namespace MathUtils
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
 
-    #if !defined(__powerpc__) && !defined(__ppc__)
+    #if !defined(__powerpc__) && !defined(__ppc__) && !defined(_ARMEL)
         const float round_towards_p_i = -0.5f;
     #endif
     int i;
@@ -123,7 +126,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #if defined(__powerpc__) || defined(__ppc__)
+    #if defined(__powerpc__) || defined(__ppc__) || defined(_ARMEL)
         return (int)ceil(x);
     #else
         __asm__ __volatile__ (
@@ -143,7 +146,7 @@ namespace MathUtils
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
 
-    #if !defined(__powerpc__) && !defined(__ppc__)
+    #if !defined(__powerpc__) && !defined(__ppc__) && !defined(_ARMEL)
         const float round_towards_m_i = -0.5f;
     #endif
     int i;
@@ -159,7 +162,7 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #if defined(__powerpc__) || defined(__ppc__)
+    #if defined(__powerpc__) || defined(__ppc__) || defined(_ARMEL)
         return (int)x;
     #else
         __asm__ __volatile__ (
