@@ -27,7 +27,8 @@
 #include "GUIDialogProgress.h"
 #include "Application.h"
 #include "Util.h"
-#include "lib/libscrobbler/scrobbler.h"
+#include "lib/libscrobbler/lastfmscrobbler.h"
+#include "lib/libscrobbler/librefmscrobbler.h"
 #include "utils/TuxBoxUtil.h"
 #include "Weather.h"
 #include "PlayListPlayer.h"
@@ -3301,16 +3302,16 @@ CStdString CGUIInfoManager::GetAudioScrobblerLabel(int item)
   switch (item)
   {
   case AUDIOSCROBBLER_CONN_STATE:
-    return CScrobbler::GetInstance()->GetConnectionState();
+    return CLastfmScrobbler::GetInstance()->GetConnectionState();
     break;
   case AUDIOSCROBBLER_SUBMIT_INT:
-    return CScrobbler::GetInstance()->GetSubmitInterval();
+    return CLastfmScrobbler::GetInstance()->GetSubmitInterval();
     break;
   case AUDIOSCROBBLER_FILES_CACHED:
-    return CScrobbler::GetInstance()->GetFilesCached();
+    return CLastfmScrobbler::GetInstance()->GetFilesCached();
     break;
   case AUDIOSCROBBLER_SUBMIT_STATE:
-    return CScrobbler::GetInstance()->GetSubmitState();
+    return CLastfmScrobbler::GetInstance()->GetSubmitState();
     break;
   }
 

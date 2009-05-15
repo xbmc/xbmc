@@ -1374,6 +1374,11 @@
   <string id="15214">Use smoothed A/V synchronization</string>
   <string id="15215">Hide file names in thumbs view</string>
   <string id="15216">Play in party mode</string>
+  <string id="15217">Submit songs to Libre.fm</string>
+  <string id="15218">Libre.fm username</string>
+  <string id="15219">Libre.fm password</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
 
   <string id="15250">Submit Last.fm Radio to Last.fm</string>
   <string id="15251">Connecting to Last.fm...</string>

@@ -182,7 +182,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
 
   pItem->SetCanQueue(false);
   //the extra info is used in the mediawindows to determine which items are needed in the contextmenu
-  if (m_objname.Equals(g_guiSettings.GetString("lastfm.username")))
+  if (m_objname.Equals(g_guiSettings.GetString("scrobbler.lastfmusername")))
   {
     if (m_objrequest.Equals("recentbannedtracks"))
     {
@@ -596,9 +596,9 @@ bool CLastFMDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     AddEntry(15253, "lastfm://xbmc/artist/*/similar/", "", true, items);
     AddEntry(15254, "lastfm://xbmc/tag/*/search/", "", true, items);
     AddEntry(15256, "lastfm://xbmc/tag/xbmc/toptags/", "", true, items);
-    if (g_guiSettings.GetString("lastfm.username") != "")
+    if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
     {
-      m_encodedobjname = m_objname = g_guiSettings.GetString("lastfm.username");
+      m_encodedobjname = m_objname = g_guiSettings.GetString("scrobbler.lastfmusername");
       CUtil::UrlDecode(m_encodedobjname);
       AddEntry(15255, "lastfm://xbmc/user/%name%/", "", true, items);
     }

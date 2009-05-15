@@ -59,7 +59,8 @@
 #include "lib/libPython/XBPython.h"
 #include "ButtonTranslator.h"
 #include "GUIAudioManager.h"
-#include "lib/libscrobbler/scrobbler.h"
+#include "lib/libscrobbler/lastfmscrobbler.h"
+#include "lib/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
 #include "ApplicationMessenger.h"
 #include "SectionLoader.h"
@@ -2826,7 +2827,6 @@ bool CApplication::OnAction(CAction &action)
   if (IsPlaying() && action.fAmount1 && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
   {
     if (!m_pPlayer->CanSeek()) return false;
-    CScrobbler::GetInstance()->SetSubmitSong(false);  // Do not submit songs to Audioscrobbler when seeking, see CheckAudioScrobblerStatus()
     m_guiDialogSeekBar.OnAction(action);
     return true;
   }
@@ -3558,7 +3558,8 @@ HRESULT CApplication::Cleanup()
     g_charsetConverter.clear();
     g_directoryCache.Clear();
     g_buttonTranslator.Clear();
-    CScrobbler::RemoveInstance();
+    CLastfmScrobbler::RemoveInstance();
+    CLibrefmScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
@@ -4041,6 +4042,12 @@ void CApplication::OnPlayBackEnded()
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackEnded;1");
+  
+  if (IsPlayingAudio())
+  {
+    CLastfmScrobbler::GetInstance()->SubmitQueue();
+    CLibrefmScrobbler::GetInstance()->SubmitQueue();
+  }
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
@@ -4079,6 +4086,12 @@ void CApplication::OnQueueNextItem()
 
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
+  if(IsPlayingAudio())
+  {
+    CLastfmScrobbler::GetInstance()->SubmitQueue();
+    CLibrefmScrobbler::GetInstance()->SubmitQueue();
+  }
+
   CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
 }
@@ -4095,6 +4108,12 @@ void CApplication::OnPlayBackStopped()
   // Let's tell the outside world as well
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     g_applicationMessenger.HttpApi("broadcastlevel; OnPlayBackStopped;1");
+  
+  if (IsPlayingAudio())
+  {
+    CLastfmScrobbler::GetInstance()->SubmitQueue();
+    CLibrefmScrobbler::GetInstance()->SubmitQueue();
+  }
 
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
 
@@ -4731,14 +4750,13 @@ bool CApplication::OnMessage(CGUIMessage& message)
             m_pCdgParser->Start(m_itemCurrentFile->m_strPath);
         }
 #endif
-        //  Activate audio scrobbler
-        if (CLastFmManager::GetInstance()->CanScrobble(*m_itemCurrentFile))
+        // Let scrobbler know about the track
+        const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
+        if (tag)
         {
-          CScrobbler::GetInstance()->SetSongStartTime();
-          CScrobbler::GetInstance()->SetSubmitSong(true);
+          CLastfmScrobbler::GetInstance()->AddSong(*tag, CLastFmManager::GetInstance()->IsRadioEnabled());
+          CLibrefmScrobbler::GetInstance()->AddSong(*tag, CLastFmManager::GetInstance()->IsRadioEnabled());
         }
-        else
-          CScrobbler::GetInstance()->SetSubmitSong(false);
       }
       return true;
     }
@@ -4800,9 +4818,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       m_itemCurrentFile->Reset();
       g_infoManager.ResetCurrentItem();
       m_currentStack->Clear();
-
-      // Reset audioscrobbler submit status
-      CScrobbler::GetInstance()->SetSubmitSong(false);
 
       // stop lastfm
       if (CLastFmManager::GetInstance()->IsRadioEnabled())
@@ -5016,7 +5031,8 @@ void CApplication::ProcessSlow()
 
   if (IsPlayingAudio())
   {
-    CheckAudioScrobblerStatus();
+    CLastfmScrobbler::GetInstance()->UpdateStatus();
+    CLibrefmScrobbler::GetInstance()->UpdateStatus();
     // Update audio file state every 0.5 second
     UpdateAudioFileState();
   }
@@ -5469,54 +5485,6 @@ void CApplication::CheckPlayingProgress()
         g_application.SeekTime(0);
       }
     }
-  }
-}
-
-void CApplication::CheckAudioScrobblerStatus()
-{
-  if (IsPlayingAudio() && CLastFmManager::GetInstance()->CanScrobble(*m_itemCurrentFile) &&
-      !CScrobbler::GetInstance()->ShouldSubmit() && GetTime()==0.0)
-  {
-    //  We seeked to the beginning of the file
-    //  reinit audio scrobbler
-    CScrobbler::GetInstance()->SetSongStartTime();
-    CScrobbler::GetInstance()->SetSubmitSong(true);
-    return;
-  }
-
-  if (!IsPlayingAudio() || !CScrobbler::GetInstance()->ShouldSubmit())
-    return;
-
-  //  Don't submit songs to audioscrobber when the user seeks.
-  //  Rule from audioscrobbler:
-  //  http://www.audioscrobbler.com/development/protocol.php
-  if (GetPlaySpeed()!=1)
-  {
-    CScrobbler::GetInstance()->SetSubmitSong(false);
-    return;
-  }
-
-  //  Submit the song if 50% or 240 seconds are played
-  double dTime=(double)g_infoManager.GetPlayTime()/1000.0;
-  const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
-  double dLength=0.f;
-  if (tag)
-    dLength=(tag->GetDuration()>0) ? (tag->GetDuration()/2.0f) : (GetTotalTime()/2.0f);
-
-  if (!tag || !tag->Loaded() || dLength==0.0f)
-  {
-    CScrobbler::GetInstance()->SetSubmitSong(false);
-    return;
-  }
-  if ((dLength)>240.0f)
-    dLength=240.0f;
-  int iTimeTillSubmit=(int)(dLength-dTime);
-  CScrobbler::GetInstance()->SetSecsTillSubmit(iTimeTillSubmit);
-
-  if (dTime>dLength)
-  {
-    CScrobbler::GetInstance()->AddSong(*tag);
-    CScrobbler::GetInstance()->SetSubmitSong(false);
   }
 }
 

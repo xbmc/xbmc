@@ -291,7 +291,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="./xbmc;./xbmc/cores/dvdplayer/;./guilib;./guilib/common;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox;./xbmc/lib/boost;./xbmc/lib/libRTMP"
+				AdditionalIncludeDirectories="./xbmc;./xbmc/cores/dvdplayer/;./guilib;./guilib/common;&quot;$(XDK)\Samples\Xbox\Common\Include&quot;;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;xbmc/lib/libUPnP/Platinum/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Xbox;./xbmc/lib/boost;./xbmc/lib/libRTMP;./xbmc/utils;./xbmc/xbox"
 				PreprocessorDefinitions="_XBOX;NDEBUG;HAVE_MSWINDOWS;LTCG;NOMINMAX"
 				StringPooling="TRUE"
 				ExceptionHandling="FALSE"
@@ -983,7 +983,7 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\utils\log.cpp">
 				</File>
 				<File
-					RelativePath=".\xbmc\utils\md5.c">
+					RelativePath=".\xbmc\utils\md5.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\MediaManager.cpp">
@@ -1080,6 +1080,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\StringUtils.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\strptime.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\strptime.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\SystemInfo.cpp">
@@ -1314,12 +1320,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				<File
 					RelativePath=".\xbmc\GUIDialogSettings.h">
 				</File>
-                                <File
-                                        RelativePath=".\xbmc\GUIDialogSlider.cpp">
-                                </File>
-                                <File
- 	                                RelativePath=".\xbmc\GUIDialogSlider.h">
- 	                        </File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSlider.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\GUIDialogSlider.h">
+				</File>
 				<File
 					RelativePath=".\xbmc\GUIDialogSubMenu.cpp">
 				</File>
@@ -1621,16 +1627,16 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\FileSystem\FileLastFM.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\FileSystem\FileMMS.cpp">
-				</File>
-				<File
-					RelativePath=".\xbmc\FileSystem\FileMMS.h">
-				</File>
-				<File
 					RelativePath=".\xbmc\FileSystem\FileMemUnit.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\FileMemUnit.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\FileMMS.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\FileMMS.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\FileMusicDatabase.cpp">
@@ -3990,10 +3996,10 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\cores\paplayer\OGGcodec.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\paplayer\paplayer_xbox.cpp">
+					RelativePath=".\xbmc\cores\paplayer\paplayer.h">
 				</File>
 				<File
-					RelativePath=".\xbmc\cores\paplayer\paplayer.h">
+					RelativePath=".\xbmc\cores\paplayer\paplayer_xbox.cpp">
 				</File>
 				<File
 					RelativePath=".\xbmc\cores\paplayer\ReplayGain.cpp">
@@ -4843,6 +4849,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<Filter
 				Name="libScrobbler"
 				Filter="">
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\lastfmscrobbler.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\lastfmscrobbler.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\librefmscrobbler.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\lib\libscrobbler\librefmscrobbler.h">
+				</File>
 				<File
 					RelativePath=".\xbmc\lib\libscrobbler\scrobbler.cpp">
 				</File>

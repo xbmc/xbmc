@@ -46,7 +46,8 @@
 #include "SkinInfo.h"
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
-#include "lib/libscrobbler/scrobbler.h"
+#include "lib/libscrobbler/lastfmscrobbler.h"
+#include "lib/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIDialogGamepad.h"
@@ -936,6 +937,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("network.usehttpproxy"));
     }
+    else if (strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
+    {
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+        pControl->SetEnabled(g_guiSettings.GetBool("scrobbler.lastfmsubmit") | g_guiSettings.GetBool("scrobbler.lastfmsubmitradio"));
+    }
+    else if (strSetting.Equals("scrobbler.librefmusername") || strSetting.Equals("scrobbler.librefmpassword"))
+    {
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("scrobbler.librefmsubmit"));
+    }
     else if (strSetting.Equals("postprocessing.verticaldeblocklevel"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
@@ -1370,18 +1382,34 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     JumpToSection(WINDOW_SETTINGS_APPEARANCE, "locale");
   }
-  else if (strSetting.Equals("lastfm.enable") || strSetting.Equals("lastfm.username") || strSetting.Equals("lastfm.password"))
+  else if (strSetting.Equals("scrobbler.lastfmsubmit") || strSetting.Equals("scrobbler.lastfmsubmitradio") || strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
   {
-    if (g_guiSettings.GetBool("lastfm.enable") || g_guiSettings.GetBool("lastfm.recordtoprofile"))
+    CStdString strPassword=g_guiSettings.GetString("scrobbler.lastfmpassword");
+    CStdString strUserName=g_guiSettings.GetString("scrobbler.lastfmusername");
+    if ((g_guiSettings.GetBool("scrobbler.lastfmsubmit") || 
+         g_guiSettings.GetBool("scrobbler.lastfmsubmitradio")) &&
+         !strUserName.IsEmpty() && !strPassword.IsEmpty())
     {
-      CStdString strPassword=g_guiSettings.GetString("lastfm.password");
-      CStdString strUserName=g_guiSettings.GetString("lastfm.username");
-      if (!strUserName.IsEmpty() || !strPassword.IsEmpty())
-        CScrobbler::GetInstance()->Init();
+      CLastfmScrobbler::GetInstance()->Init();
     }
     else
     {
-      CScrobbler::GetInstance()->Term();
+      CLastfmScrobbler::GetInstance()->Term();
+    }
+  }
+  else if (strSetting.Equals("scrobbler.librefmsubmit") || strSetting.Equals("scrobbler.librefmsubmitradio") || strSetting.Equals("scrobbler.librefmusername") || strSetting.Equals("scrobbler.librefmpassword"))
+  {
+    CStdString strPassword=g_guiSettings.GetString("scrobbler.librefmpassword");
+    CStdString strUserName=g_guiSettings.GetString("scrobbler.librefmusername");
+    if ((g_guiSettings.GetBool("scrobbler.librefmsubmit") || 
+         g_guiSettings.GetBool("scrobbler.librefmsubmitradio")) &&
+         !strUserName.IsEmpty() && !strPassword.IsEmpty())
+    {
+      CLibrefmScrobbler::GetInstance()->Init();
+    }
+    else
+    {
+      CLibrefmScrobbler::GetInstance()->Term();
     }
   }
   else if (strSetting.Equals("musicplayer.outputtoallspeakers"))

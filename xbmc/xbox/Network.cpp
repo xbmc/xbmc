@@ -27,7 +27,8 @@
 #endif
 #include "Application.h"
 #include "FileSystem/FileSmb.h"
-#include "lib/libscrobbler/scrobbler.h"
+#include "lib/libscrobbler/lastfmscrobbler.h"
+#include "lib/libscrobbler/librefmscrobbler.h"
 #include "Settings.h"
 #include "GUIWindowManager.h"
 #include "../utils/RssReader.h"
@@ -550,7 +551,8 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StartFtpServer();      
       g_application.StartUPnP();
       g_application.StartEventServer();
-      CScrobbler::GetInstance()->Init();
+      CLastfmScrobbler::GetInstance()->Init();
+      CLibrefmScrobbler::GetInstance()->Init();
       g_rssManager.Start();
     }
     break;
@@ -562,7 +564,8 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
       g_application.StopFtpServer();
       g_application.StopUPnP();
       g_application.StopEventServer();
-      CScrobbler::GetInstance()->Term();
+      CLastfmScrobbler::GetInstance()->Term();
+      CLibrefmScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.
 
       g_rssManager.Stop();
