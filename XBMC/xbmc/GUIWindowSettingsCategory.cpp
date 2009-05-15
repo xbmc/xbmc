@@ -1609,7 +1609,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
     if (cancelled)
       return;
-    overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
+    if (singleFile)
+      overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     if (cancelled)
       return;
     if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
@@ -2510,6 +2511,7 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
 
 void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int &iControlID)
 {
+  if (!pSetting->IsVisible()) return;  // not displayed in current session
   CBaseSettingControl *pSettingControl = NULL;
   CGUIControl *pControl = NULL;
   if (pSetting->GetControlType() == CHECKMARK_CONTROL)
@@ -3903,5 +3905,3 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
    }
 #endif
 }
-
-

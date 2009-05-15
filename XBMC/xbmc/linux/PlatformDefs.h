@@ -195,7 +195,7 @@ typedef short       SHORT;
 typedef unsigned short  USHORT;
 typedef int         INT;
 typedef unsigned int  UINT;
-typedef unsigned int  INT32;
+// typedef int INT32;              // unused; must match Xmd.h but why bother
 typedef unsigned int  UINT32;
 typedef long long     INT64;
 typedef unsigned long long    UINT64;

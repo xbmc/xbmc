@@ -664,10 +664,13 @@ void CGUISettings::Initialize()
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddBool(5, "screensaver.uselock",20140,false);
-  AddSeparator(6, "screensaver.sep1");
-  AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddBool(9, "screensaver.slideshowshuffle", 13319, false);
+  // Note: Application.cpp might hide powersaving settings if not supported.
+  AddSeparator(6, "screensaver.sep_powersaving");
+  AddInt(7, "screensaver.powersavingtime", 1450, 0, 0, 5, 4 * 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddSeparator(8, "screensaver.sep1");
+  AddInt(9, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddPath(10, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddBool(11, "screensaver.slideshowshuffle", 13319, false);
 
   AddPath(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }

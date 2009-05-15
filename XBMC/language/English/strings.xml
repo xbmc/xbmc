@@ -788,6 +788,9 @@
 
   <!-- strings through to 1450 reserved for weather translation -->
 
+  <string id="1450">Enable power saving when idle</string>
+  <!-- strings through to 1470 reserved for power-saving -->
+
   <string id="2050">Runtime</string>
 
   <string id="4501">LCD type</string>

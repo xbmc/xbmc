@@ -61,6 +61,7 @@ class CXBFileZilla;
 class CSNTPClient;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
+class DPMSSupport;
 
 class CBackgroundPlayer : public CThread
 {
@@ -151,7 +152,8 @@ public:
   bool OnAction(CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
-  void CheckScreenSaver();   // CB: SCREENSAVER PATCH
+  // Checks whether the screensaver and / or DPMS should become active.
+  void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
   void ActivateScreenSaver(bool forceType = false);
@@ -169,7 +171,9 @@ public:
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
   void ResetScreenSaverTimer();
-  bool ResetScreenSaverWindow();
+  // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
+  bool WakeUpScreenSaverAndDPMS();
+  bool WakeUpScreenSaver();
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;
@@ -288,6 +292,9 @@ protected:
 
   DWORD      m_lastActionCode;
   CStopWatch m_lastActionTimer;
+
+  DPMSSupport* m_dpms;
+  bool m_dpmsIsActive;
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;

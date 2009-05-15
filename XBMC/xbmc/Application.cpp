@@ -78,6 +78,7 @@
 #include "PlayList.h"
 #include "Surface.h"
 #include "PowerManager.h"
+#include "DPMSSupport.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
@@ -311,6 +312,8 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_pFileZilla = NULL;
   m_pPlayer = NULL;
   m_bScreenSave = false;
+  m_dpms = NULL;
+  m_dpmsIsActive = false;
   m_iScreenSaveLock = 0;
   m_dwSkinTime = 0;
   m_bInitializing = true;
@@ -367,6 +370,8 @@ CApplication::~CApplication(void)
 
   if (m_frameCond)
     SDL_DestroyCond(m_frameCond);
+
+  delete m_dpms;
 
 #ifdef _WIN32PC
   if( m_SSysParam ) 
@@ -1317,6 +1322,13 @@ HRESULT CApplication::Initialize()
   }
 
   StartServices();
+
+  // Init DPMS, before creating the corresponding setting control.
+  m_dpms = new DPMSSupport(g_graphicsContext.getScreenSurface());
+  g_guiSettings.GetSetting("screensaver.sep_powersaving")->SetVisible(
+      m_dpms->IsSupported());
+  g_guiSettings.GetSetting("screensaver.powersavingtime")->SetVisible(
+      m_dpms->IsSupported());
 
   m_gWindowManager.Add(new CGUIWindowHome);                     // window id = 0
 
@@ -2434,7 +2446,10 @@ void CApplication::Render()
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 0;
-    bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black") && (screenSaverFadeAmount >= 100);
+    // Less fps in DPMS or Black screensaver
+    bool lowfps = (m_dpmsIsActive
+                   || (m_bScreenSave && (m_screenSaverMode == "Black")
+                       && (screenSaverFadeAmount >= 100)));
     unsigned int singleFrameTime = 10; // default limit 100 fps
 
 
@@ -2459,7 +2474,7 @@ void CApplication::Render()
       if (g_videoConfig.GetVSyncMode() != VSYNC_ALWAYS || lowfps)
       {
         if(lowfps)
-          singleFrameTime *= 10;
+          singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
 
         if (lastFrameTime + singleFrameTime > currentTime)
           nDelayTime = lastFrameTime + singleFrameTime - currentTime;
@@ -2567,7 +2582,7 @@ bool CApplication::OnKey(CKey& key)
     ResetScreenSaver();
 
     // allow some keys to be processed while the screensaver is active
-    if (ResetScreenSaverWindow() && !processKey)
+    if (WakeUpScreenSaverAndDPMS() && !processKey)
     {
       g_Keyboard.Reset();
       return true;
@@ -3341,7 +3356,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     m_idleTimer.StartZero();
 
     ResetScreenSaver();
-    if (ResetScreenSaverWindow())
+    if (WakeUpScreenSaverAndDPMS())
     {
       g_Joystick.Reset(true);
       return true;
@@ -3379,7 +3394,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.wID, action.strAction, fullrange))
     {
       ResetScreenSaver();
-      if (ResetScreenSaverWindow())
+      if (WakeUpScreenSaverAndDPMS())
       {
         return true;
       }
@@ -3480,7 +3495,7 @@ bool CApplication::ProcessMouse()
   // Reset the screensaver and idle timers
   m_idleTimer.StartZero();
   ResetScreenSaver();
-  if (ResetScreenSaverWindow())
+  if (WakeUpScreenSaverAndDPMS())
     return true;
 
   // call OnAction with ACTION_MOUSE
@@ -3575,7 +3590,7 @@ bool CApplication::ProcessEventServer(float frameTime)
     // reset idle timers
     m_idleTimer.StartZero();
     ResetScreenSaver();
-    ResetScreenSaverWindow();
+    WakeUpScreenSaverAndDPMS();
   }
 
   // now handle any buttons or axis
@@ -3662,7 +3677,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
 
    // Make sure to reset screen saver, mouse.
    ResetScreenSaver();
-   if (ResetScreenSaverWindow())
+   if (WakeUpScreenSaverAndDPMS())
      return true;
 
 #ifdef HAS_SDL_JOYSTICK
@@ -4714,8 +4729,9 @@ void CApplication::ResetScreenSaver()
   // reset our timers
   m_shutdownTimer.StartZero();
 
-  // screen saver timer is reset only if we're not already in screensaver mode
-  if (!m_bScreenSave && m_iScreenSaveLock == 0)
+  // screen saver timer is reset only if we're not already in screensaver or
+  // DPMS mode
+  if ((!m_bScreenSave && m_iScreenSaveLock == 0) && !m_dpmsIsActive)
     ResetScreenSaverTimer();
 }
 
@@ -4727,7 +4743,23 @@ void CApplication::ResetScreenSaverTimer()
   m_screenSaverTimer.StartZero();
 }
 
-bool CApplication::ResetScreenSaverWindow()
+bool CApplication::WakeUpScreenSaverAndDPMS()
+{
+  // First reset DPMS, if active
+  if (m_dpmsIsActive)
+  {
+    // TODO: if screensaver lock is specified but screensaver is not active
+    // (DPMS came first), activate screensaver now.
+    m_dpms->DisablePowerSaving();
+    m_dpmsIsActive = false;
+    ResetScreenSaverTimer();
+    return !m_bScreenSave || WakeUpScreenSaver();
+  } 
+  else
+    return WakeUpScreenSaver();
+}
+
+bool CApplication::WakeUpScreenSaver()
 {
   if (m_iScreenSaveLock == 2)
     return false;
@@ -4778,33 +4810,49 @@ bool CApplication::ResetScreenSaverWindow()
     return false;
 }
 
-void CApplication::CheckScreenSaver()
+void CApplication::CheckScreenSaverAndDPMS()
 {
-  // if the screen saver window is active, then clearly we are already active
-  if (m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER))
+  bool maybeScreensaver =
+      !m_dpmsIsActive && !m_bScreenSave
+      && g_guiSettings.GetString("screensaver.mode") != "None";
+  bool maybeDPMS =
+      !m_dpmsIsActive && m_dpms->IsSupported()
+      && g_guiSettings.GetInt("screensaver.powersavingtime") > 0;
+
+  // Has the screen saver window become active?
+  if (maybeScreensaver && m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER))
   {
     m_bScreenSave = true;
-    return;
+    maybeScreensaver = false;
   }
 
-  bool resetTimer = false;
-  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a video and it is not paused?
-    resetTimer = true;
+  if (!maybeScreensaver && !maybeDPMS) return;  // Nothing to do.
 
-  if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION) // are we playing some music in fullscreen vis?
-    resetTimer = true;
-
-  if (resetTimer)
+  // See if we need to reset timer.
+  // * Are we playing a video and it is not paused?
+  if ((IsPlayingVideo() && !m_pPlayer->IsPaused())
+      // * Are we playing some music in fullscreen vis?
+      || (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION))
   {
     ResetScreenSaverTimer();
     return;
   }
 
-  if (m_bScreenSave) // already running the screensaver
-    return;
+  float elapsed = m_screenSaverTimer.GetElapsedSeconds();
 
-  if ( m_screenSaverTimer.GetElapsedSeconds() > g_guiSettings.GetInt("screensaver.time") * 60 )
+  // DPMS has priority (it makes the screensaver not needed)
+  if (maybeDPMS
+      && elapsed > g_guiSettings.GetInt("screensaver.powersavingtime") * 60)
+  {
+    m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]);
+    m_dpmsIsActive = true;
+    WakeUpScreenSaver();
+  } 
+  else if (maybeScreensaver
+           && elapsed > g_guiSettings.GetInt("screensaver.time") * 60)
+  {
     ActivateScreenSaver();
+  }
 }
 
 // activate the screensaver.
@@ -5061,7 +5109,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         g_settings.Save();  // save vis settings
-        ResetScreenSaverWindow();
+        WakeUpScreenSaverAndDPMS();
         m_gWindowManager.PreviousWindow();
       }
 
@@ -5078,7 +5126,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings
-        ResetScreenSaverWindow();
+        WakeUpScreenSaverAndDPMS();
         m_gWindowManager.PreviousWindow();
       }
       return true;
@@ -5211,9 +5259,8 @@ void CApplication::ProcessSlow()
     UpdateAudioFileState();
   }
   
-  // Check if we need to activate the screensaver (if enabled).
-  if (g_guiSettings.GetString("screensaver.mode") != "None")
-    CheckScreenSaver();
+  // Check if we need to activate the screensaver / DPMS.
+  CheckScreenSaverAndDPMS();
 
   // Check if we need to shutdown (if enabled).
 #ifdef __APPLE__

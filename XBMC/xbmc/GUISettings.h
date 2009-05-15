@@ -191,7 +191,14 @@ struct ReplayGainSettings
 class CSetting
 {
 public:
-  CSetting(int iOrder, const char *strSetting, int iLabel, int iControlType) { m_iOrder = iOrder; m_strSetting = strSetting; m_iLabel = iLabel; m_iControlType = iControlType; m_advanced = false; };
+  CSetting(int iOrder, const char *strSetting, int iLabel, int iControlType) {
+    m_iOrder = iOrder;
+    m_strSetting = strSetting;
+    m_iLabel = iLabel;
+    m_iControlType = iControlType;
+    m_advanced = false;
+    m_visible = true;
+  };
   virtual ~CSetting() {};
   virtual int GetType() { return 0; };
   int GetControlType() { return m_iControlType; };
@@ -202,11 +209,16 @@ public:
   int GetOrder() const { return m_iOrder; };
   void SetAdvanced() { m_advanced = true; };
   bool IsAdvanced() { return m_advanced; };
+  // A setting might be invisible in the current session, yet carried over
+  // in the config file.
+  void SetVisible(bool visible) { m_visible = visible; }
+  bool IsVisible() { return m_visible; }
 private:
   int m_iControlType;
   int m_iLabel;
   int m_iOrder;
   bool m_advanced;
+  bool m_visible;
   CStdString m_strSetting;
 };
 
