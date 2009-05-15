@@ -31,9 +31,6 @@ private:
   char m_cAscii;
   WCHAR m_wUnicode;
   BYTE m_VKey;
-#ifdef HAS_SDL_JOYSTICK
-  SDL_Joystick* m_pJoy;
-#endif
 
   SDL_Event m_lastKey;
   DWORD m_lastKeyTime;
