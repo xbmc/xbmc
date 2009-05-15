@@ -329,7 +329,7 @@ OBJSXBMC += \
 	system/players/dvdplayer/avformat-52-@ARCH@.a \
 	system/players/dvdplayer/postproc-51-@ARCH@.a
 
-else
+else ifneq ($(ARCH), arm)
 OBJSXBMC += \
 	xbmc/lib/libsmb/libsmbclient-@ARCH@.a
 
