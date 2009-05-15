@@ -184,6 +184,36 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 }
 
 /////  Add other platforms here.
+#elif defined(_WIN32PC)
+void DPMSSupport::PlatformSpecificInit()
+{
+  // Assume we support DPMS. Is there a way to test it?
+  m_supportedModes.push_back(OFF);
+  m_supportedModes.push_back(STANDBY);
+}
+
+bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
+{
+  switch(mode)
+  {
+  case OFF:
+    // Turn off display
+    SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 2);
+    break;
+  case STANDBY:
+    // Set display to low power
+    SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1);
+    break;
+  }
+  return true;
+}
+
+bool DPMSSupport::PlatformSpecificDisablePowerSaving()
+{
+  // Turn display on
+  SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1);
+  return true;
+}
 #else
 // Not implemented on this platform
 void DPMSSupport::PlatformSpecificInit()
