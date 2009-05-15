@@ -318,8 +318,11 @@ namespace VIDEO
           m_database.SetPathHash(strDirectory, hash);
           m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
         }
-      } else
-        CLog::Log(LOGDEBUG, "Not adding item to library as no info was found :(");
+      } 
+      else
+      {
+        m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+        CLog::Log(LOGDEBUG, "Not adding item to library as no info was found :(");    }
     }
 
     if (m_pObserver)
