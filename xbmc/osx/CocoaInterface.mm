@@ -650,21 +650,6 @@ void* Cocoa_GL_ReplaceSDLWindowContext(void)
   return newContext;
 }
 
-int Cocoa_IdleDisplays(void)
-{
-#if !defined(__POWERPC__)
-  // http://lists.apple.com/archives/Cocoa-dev/2007/Nov/msg00267.html
-  // This is an unsupported system call that kernel panics on PPC boxes
-  io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
-  if(!r) return 1;
-  int err = IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue);
-  IOObjectRelease(r);
-  return err;
-#else
-  return 0;
-#endif
-}
-
 /* 10.5 only
 void Cocoa_SetSystemSleep(bool enable)
 {
