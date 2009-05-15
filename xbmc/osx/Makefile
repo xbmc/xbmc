@@ -3,7 +3,7 @@ INCLUDES=-I. -I.. -I../../guilib -I../linux -I../utils -I../FileSystem -I../lib/
 .SUFFIXES : .m .mm
 
 SRCS = \
-	SDLMain.m \
+	SDLMain.mm \
 	XBMCHelper.m \
 	CocoaInterface.mm \
 	CoreAudio.cpp \
