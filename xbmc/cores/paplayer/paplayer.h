@@ -26,11 +26,6 @@
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
 #include "cores/AudioRenderers/IAudioRenderer.h"
-#ifdef HAS_ALSA
-#define ALSA_PCM_NEW_HW_PARAMS_API
-#include <alsa/asoundlib.h>
-#include "../../utils/PCMAmplifier.h"
-#endif
 
 class CFileItem;
 #ifndef _LINUX
