@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "DVDPlayerAudioResampler.h"
 #include "DVDPlayerAudio.h"
-
+#include <mmreg.h>
 CDVDPlayerResampler::CDVDPlayerResampler()
 {
   m_NrChannels = -1;
@@ -105,7 +105,7 @@ bool CDVDPlayerResampler::Retreive(DVDAudioFrame &audioframe, double &pts)
 {
   int i, NrSamples = audioframe.size / audioframe.channels / (audioframe.bits_per_sample / 8);
   int Value, GetPos, Bytes = audioframe.bits_per_sample / 8;
-  float Multiply = (float)(1 << (audioframe.bits_per_sample - 1)) - 1.0;
+  float Multiply = (float)(1 << (audioframe.bits_per_sample - 1)) - 1.0f;
   
   CheckResampleBuffers(audioframe.channels);
   
