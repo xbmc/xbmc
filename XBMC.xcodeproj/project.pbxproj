@@ -38,6 +38,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		43248C4E0FBE224000B88866 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
+		43248C510FBE224C00B88866 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
+		43248C520FBE224E00B88866 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */; };
+		43248C560FBE22EA00B88866 /* paplayer_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B9C0FBC8F8800171871 /* paplayer_linux.cpp */; };
 		6E32A0AD0E353A37008872A4 /* FileMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E32A0AC0E353A37008872A4 /* FileMMS.cpp */; };
 		6E97BDBE0DA2B5D8003A2A89 /* GUIInfoColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */; };
 		6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */; };
@@ -8699,6 +8703,10 @@
 				F5987B270FBB9682008EF4FB /* librefmscrobbler.cpp in Sources */,
 				F5987B280FBB9682008EF4FB /* lastfmscrobbler.cpp in Sources */,
 				F5987F060FBDF274008EF4FB /* DPMSSupport.cpp in Sources */,
+				43248C4E0FBE224000B88866 /* LockFree.cpp in Sources */,
+				43248C510FBE224C00B88866 /* CoreAudio.cpp in Sources */,
+				43248C520FBE224E00B88866 /* CoreAudioRenderer.cpp in Sources */,
+				43248C560FBE22EA00B88866 /* paplayer_linux.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
