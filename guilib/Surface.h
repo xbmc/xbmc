@@ -38,6 +38,10 @@
 #include <GL/glew.h>
 #endif
 
+#ifdef HAS_GLX
+#include <GL/glx.h>
+#endif
+
 namespace Surface {
 #if defined(_WIN32PC)
 /*!
@@ -52,17 +56,8 @@ enum ONTOP {
 };
 #endif
 
-#ifdef HAS_GLX
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <GL/glx.h>
-/*
-static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
-  return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
-}
-*/
-#endif
-
 class CSurface
 {
 public:

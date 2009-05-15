@@ -2568,7 +2568,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (iWindow != WINDOW_INVALID)
     {
       // disable the screensaver
-      g_application.ResetScreenSaverWindow();
+      g_application.WakeUpScreenSaverAndDPMS();
       if (execute.Equals("activatewindow"))
         m_gWindowManager.ActivateWindow(iWindow, strPath);
       else  // ReplaceWindow
@@ -2726,7 +2726,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     // reset screensaver
     g_application.ResetScreenSaver();
-    g_application.ResetScreenSaverWindow();
+    g_application.WakeUpScreenSaverAndDPMS();
 
     // set fullscreen or windowed
     if (params2.size() == 2 && params2[1] == "1")
@@ -2814,7 +2814,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("playercontrol"))
   {
     g_application.ResetScreenSaver();
-    g_application.ResetScreenSaverWindow();
+    g_application.WakeUpScreenSaverAndDPMS();
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");

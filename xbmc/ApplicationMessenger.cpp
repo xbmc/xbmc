@@ -263,7 +263,7 @@ case TMSG_POWERDOWN:
           m_gWindowManager.PreviousWindow();
 
         g_application.ResetScreenSaver();
-        g_application.ResetScreenSaverWindow();
+        g_application.WakeUpScreenSaverAndDPMS();
 
         //g_application.StopPlaying();
         // play file
@@ -304,7 +304,7 @@ case TMSG_POWERDOWN:
           m_gWindowManager.PreviousWindow();
 
         g_application.ResetScreenSaver();
-        g_application.ResetScreenSaverWindow();
+        g_application.WakeUpScreenSaverAndDPMS();
 
         g_graphicsContext.Lock();
         pSlideShow->Reset();
@@ -384,7 +384,7 @@ case TMSG_POWERDOWN:
           m_gWindowManager.PreviousWindow();
 
         g_application.ResetScreenSaver();
-        g_application.ResetScreenSaverWindow();
+        g_application.WakeUpScreenSaverAndDPMS();
 
         // stop playing file
         if (g_application.IsPlaying()) g_application.StopPlaying();
@@ -395,7 +395,7 @@ case TMSG_POWERDOWN:
       if (g_application.m_pPlayer)
       {
         g_application.ResetScreenSaver();
-        g_application.ResetScreenSaverWindow();
+        g_application.WakeUpScreenSaverAndDPMS();
         g_application.m_pPlayer->Pause();
       }
       break;
