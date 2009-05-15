@@ -56,8 +56,11 @@ enum ONTOP {
 };
 #endif
 
+#if defined(_LINUX) && !defined(__APPLE__)
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#endif
+
 class CSurface
 {
 public:
