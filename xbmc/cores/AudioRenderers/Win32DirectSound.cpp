@@ -288,13 +288,7 @@ DWORD CWin32DirectSound::AddPackets(const void* data, DWORD len)
 {
   CSingleLock lock (m_critSection);
   DWORD total = len;
-
-#if defined(_DEBUG) // Watch for junk (unitialized) data
-  short* pSamples = (short*)data;
-  // Find 5 low samples in a row that == 0xCDCD
-  if (pSamples[0] == -12851 && pSamples[1] == -12851 && pSamples[2] == -12851 && pSamples[3] == -12851 && pSamples[4] == -12851)
-    CLog::Log(LOGDEBUG, "CWin32DirectSound::AddPackets: Uninitialized data passed to renderer. POP!");
-#endif
+  unsigned char* pBuffer = (unsigned char*)data;
 
   while (len >= m_dwChunkSize && GetSpace() >= m_dwChunkSize) // We want to write at least one chunk at a time
   {
@@ -311,17 +305,17 @@ DWORD CWin32DirectSound::AddPackets(const void* data, DWORD len)
     }
 
     // Write data into the buffer
-    MapDataIntoBuffer(data, size, (unsigned char*)start);
+    MapDataIntoBuffer(pBuffer, size, (unsigned char*)start);
     m_BufferOffset += size;
     if (startWrap) // Write-region wraps to beginning of buffer
     {
-      MapDataIntoBuffer(data + size, sizeWrap, (unsigned char*)startWrap);
+      MapDataIntoBuffer(pBuffer + size, sizeWrap, (unsigned char*)startWrap);
       m_BufferOffset = sizeWrap;
     }
     
     size_t bytes = size + sizeWrap;
     m_CacheLen += bytes; // This data is now in the cache
-    data += bytes; // Update buffer pointer
+    pBuffer += bytes; // Update buffer pointer
     len -= bytes; // Update remaining data len
 
     m_pBuffer->Unlock(start, size, startWrap, sizeWrap);
