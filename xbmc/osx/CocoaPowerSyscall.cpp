@@ -27,7 +27,6 @@ typedef unsigned char   BYTE;
 #include "CocoaPowerSyscall.h"
 #include "Application.h"
 #ifdef __APPLE__
-#include <sys/reboot.h>
 #include <IOKit/pwr_mgt/IOPMLib.h>
 
 #include "CocoaInterface.h"
