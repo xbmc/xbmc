@@ -6,7 +6,7 @@
 	</NfoUrl>
 
 	<CreateSearchUrl dest="3">
-		<RegExp input="$$1" output="&lt;url&gt;http://search.excaliburfilms.com/excals.htm?searchString=%25\1%25&amp;amp;Search=AdultDVDMovies&amp;amp;SearchFor=Title.x&lt;/url&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://search.excaliburfilms.com/excals.htm?searchString=\1&amp;amp;Search=AdultDVDMovies&amp;amp;SearchFor=Title.x&lt;/url&gt;" dest="3">
 			<expression noclean="1"></expression>
 		</RegExp>
 	</CreateSearchUrl>
