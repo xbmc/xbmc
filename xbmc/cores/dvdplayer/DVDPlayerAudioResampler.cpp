@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "DVDPlayerAudioResampler.h"
 #include "DVDPlayerAudio.h"
-#include <mmreg.h>
+
 CDVDPlayerResampler::CDVDPlayerResampler()
 {
   m_NrChannels = -1;
