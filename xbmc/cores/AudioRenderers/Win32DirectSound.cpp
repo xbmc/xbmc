@@ -284,7 +284,7 @@ HRESULT CWin32DirectSound::SetCurrentVolume(LONG nVolume)
 }
 
 //***********************************************************************************************
-DWORD CWin32DirectSound::AddPackets(unsigned char *data, DWORD len)
+DWORD CWin32DirectSound::AddPackets(const void* data, DWORD len)
 {
   CSingleLock lock (m_critSection);
   DWORD total = len;
