@@ -552,7 +552,7 @@ DWORD CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
   if (len > cacheSpace)
     return 0; // Wait until we can accept all of it
   
-  size_t bytesUsed = m_pCache->AddData(data, len);
+  size_t bytesUsed = m_pCache->AddData((void*)data, len);
   
   // Update tracking variable
   m_PerfMon.ReportData(bytesUsed, 0);
