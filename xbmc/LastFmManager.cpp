@@ -392,6 +392,18 @@ bool CLastFmManager::RequestRadioTracks()
         }
       }
     }
+    //trackauth is needed for validating the track when scrobbling
+    pElement = pTrackElement->FirstChildElement("lastfm:trackauth");
+    if (pElement)
+    {
+      TiXmlNode* child = pElement->FirstChild();
+      if (child)
+      {
+        CStdString trackAuth = child->Value();
+        //abuse comment field for the track authcode
+        newItem->GetMusicInfoTag()->SetComment(trackAuth);
+      }
+    }
 
     {
       CSingleLock lock(m_lockCache);

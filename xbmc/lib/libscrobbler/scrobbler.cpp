@@ -100,7 +100,7 @@ void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool lastfmradio)
   m_CurrentTrack.strTitle         = tag.GetTitle();
   m_CurrentTrack.strMusicBrainzID = tag.GetMusicBrainzTrackID();
   if (lastfmradio)  // TODO Set source more appropriately
-    m_CurrentTrack.strSource        = "L";
+    m_CurrentTrack.strSource        = "L" + tag.GetComment();
   else
     m_CurrentTrack.strSource        = "P";
   m_CurrentTrack.strRating        = "";
