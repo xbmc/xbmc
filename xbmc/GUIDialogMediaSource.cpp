@@ -287,7 +287,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       share1.strPath = SHOUTCAST_MASTER_LINK;
       extraShares.push_back(share1);
 
-      if (g_guiSettings.GetString("lastfm.username") != "")
+      if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
       {
         share1.strName = "Last.FM";
         share1.strPath = "lastfm://";

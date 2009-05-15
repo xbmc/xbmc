@@ -303,14 +303,11 @@ struct Bios * CSysInfo::LoadBiosSigns()
 }
 char* CSysInfo::MD5Buffer(char *buffer, long PosizioneInizio,int KBytes)
 {
-  MD5_CTX mdContext;
-  unsigned char md5sum[16];
-  char md5sumstring[33] = "";
-  MD5Init (&mdContext);
-  MD5Update(&mdContext, (unsigned char *)(buffer + PosizioneInizio), KBytes * 1024);
-  MD5Final (md5sum, &mdContext);
-  XKGeneral::BytesToHexStr(md5sum, 16, md5sumstring);
-  strcpy(MD5_Sign, md5sumstring);
+  XBMC::MD5 mdContext;
+  CStdString md5sumstring;
+  mdContext.append((unsigned char *)(buffer + PosizioneInizio), KBytes * 1024);
+  mdContext.getDigest(md5sumstring);
+  strcpy(MD5_Sign, md5sumstring.c_str());
   return MD5_Sign;
 }
 
@@ -1110,14 +1107,9 @@ CStdString CSysInfo::GetModCHIPDetected()
 CStdString CSysInfo::MD5BufferNew(char *buffer,long PosizioneInizio,int KBytes)
 {
   CStdString strReturn;
-  MD5_CTX mdContext;
-  unsigned char md5sum[16];
-  char md5sumstring[33] = "";
-  MD5Init (&mdContext);
-  MD5Update(&mdContext, (unsigned char *)(buffer + PosizioneInizio), KBytes * 1024);
-  MD5Final (md5sum, &mdContext);
-  XKGeneral::BytesToHexStr(md5sum, 16, md5sumstring);
-  strReturn.Format("%s", md5sumstring);
+  XBMC::MD5 mdContext;
+  mdContext.append((unsigned char *)(buffer + PosizioneInizio), KBytes * 1024);
+  mdContext.getDigest(strReturn);
   return strReturn;
 }
 

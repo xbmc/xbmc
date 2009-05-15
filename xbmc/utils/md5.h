@@ -41,13 +41,9 @@
 #define _MD5_H_ 1
 
 #include "system.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "StdString.h"
 
 /* typedef a 32 bit type */
-//typedef unsigned long int UINT4;
 typedef uint32_t UINT4;
 
 /* Data structure for MD5 (Message Digest) computation */
@@ -57,12 +53,21 @@ typedef struct {
   unsigned char in[64];                              /* input buffer */
 } MD5_CTX;
 
-void MD5Init (MD5_CTX *mdContext);
-void MD5Update (MD5_CTX *mdContext, unsigned char *inBuf, unsigned int inLen);
-void MD5Final (unsigned char digest[16], MD5_CTX *mdContext);
+namespace XBMC
+{
+  class MD5
+  {
+  public:
+    MD5(void);
+    void append(unsigned char *inBuf, unsigned int inLen);
+    void append(const CStdString& str);
+    void getDigest(unsigned char digest[16]);
+    void getDigest(CStdString& digest);
 
-#ifdef __cplusplus
+  private:
+    MD5_CTX m_ctx;
+  };
 }
-#endif
 
 #endif
+
