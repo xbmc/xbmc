@@ -593,9 +593,51 @@ DWORD   nAvgBytesPerSec;
 WORD    nBlockAlign;
 WORD    wBitsPerSample;
 WORD    cbSize;
-} WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
+} __attribute__((__packed__)) WAVEFORMATEX, *PWAVEFORMATEX, *LPWAVEFORMATEX;
 
-#define WAVE_FORMAT_PCM 0x0001
+#define WAVE_FORMAT_PCM               0x0001
+#define WAVE_FORMAT_EXTENSIBLE        0xFFFE
+
+#define SPEAKER_FRONT_LEFT            0x00001
+#define SPEAKER_FRONT_RIGHT           0x00002
+#define SPEAKER_FRONT_CENTER          0x00004
+#define SPEAKER_LOW_FREQUENCY         0x00008
+#define SPEAKER_BACK_LEFT             0x00010
+#define SPEAKER_BACK_RIGHT            0x00020
+#define SPEAKER_FRONT_LEFT_OF_CENTER  0x00040
+#define SPEAKER_FRONT_RIGHT_OF_CENTER 0x00080
+#define SPEAKER_BACK_CENTER           0x00100
+#define SPEAKER_SIDE_LEFT             0x00200
+#define SPEAKER_SIDE_RIGHT            0x00400
+#define SPEAKER_TOP_CENTER            0x00800
+#define SPEAKER_TOP_FRONT_LEFT        0x01000
+#define SPEAKER_TOP_FRONT_CENTER      0x02000
+#define SPEAKER_TOP_FRONT_RIGHT       0x04000
+#define SPEAKER_TOP_BACK_LEFT         0x08000
+#define SPEAKER_TOP_BACK_CENTER       0x10000
+#define SPEAKER_TOP_BACK_RIGHT        0x20000
+
+typedef struct tGUID
+{
+  DWORD Data1;
+  WORD  Data2, Data3;
+  char  Data4[8];
+} __attribute__((__packed__)) GUID;
+
+typedef struct tWAVEFORMATEXTENSIBLE
+{
+  WAVEFORMATEX Format;
+  union
+  {
+    WORD wValidBitsPerSample;
+    WORD wSamplesPerBlock;
+    WORD wReserved;
+  } Samples;
+  DWORD dwChannelMask;
+  GUID SubFormat;
+} __attribute__((__packed__)) WAVEFORMATEXTENSIBLE;
+
+
 
 #endif
 
