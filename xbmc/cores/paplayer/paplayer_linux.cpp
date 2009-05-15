@@ -67,9 +67,9 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
 
   for (int i=0; i<2; i++)
   {
-    m_channelCount[i] = -1;
-    m_sampleRate[i] = -1;
-    m_bitsPerSample[i] = -1;
+    m_channelCount[i]   = 0;
+    m_sampleRate[i]     = 0;
+    m_bitsPerSample[i]  = 0;
     
     m_pAudioDecoder[i] = NULL;
     m_pcmBuffer[i] = NULL;
