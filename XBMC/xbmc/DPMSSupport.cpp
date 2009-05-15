@@ -19,6 +19,7 @@
  *
  */
 
+#include "stdafx.h"
 #include <assert.h>
 #include <string>
 #include "DPMSSupport.h"
@@ -190,12 +191,12 @@ void DPMSSupport::PlatformSpecificInit()
   CLog::Log(LOGINFO, "DPMS: not supported on this platform");
 }
 
-void DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
+bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
   return false;
 }
 
-void DPMSSupport::PlatformSpecificDisablePowerSaving()
+bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
   return false;
 }
