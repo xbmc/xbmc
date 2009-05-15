@@ -517,6 +517,9 @@ bool CVideoReferenceClock::SetupD3D()
     return false;
   }
 
+  UpdateWindow(m_Hwnd);
+  HandleWindowMessages();
+
   ReturnV = m_D3dDev->GetDeviceCaps(&DevCaps);
   if (ReturnV != D3D_OK)
   {
@@ -551,6 +554,10 @@ bool CVideoReferenceClock::SetupD3D()
   m_Height = 0;
   UpdateRefreshrate(true);
   m_MissedVblanks = 0;
+
+  ShowWindow(m_Hwnd, SW_HIDE);
+  UpdateWindow(m_Hwnd);
+  HandleWindowMessages();
 
   return true;
 }
@@ -607,9 +614,9 @@ bool CVideoReferenceClock::CreateHiddenWindow()
   }
   m_HasWinCl = true;
 
-  m_Hwnd = CreateWindowEx(WS_EX_LEFT|WS_EX_LTRREADING|WS_EX_WINDOWEDGE, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
-                          WS_OVERLAPPED|WS_MINIMIZEBOX|WS_SYSMENU|WS_CLIPSIBLINGS|WS_CAPTION, CW_USEDEFAULT, CW_USEDEFAULT,
-                          400, 430, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
+  m_Hwnd = CreateWindowEx(WS_EX_LEFT, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
+                          WS_VISIBLE | WS_MINIMIZE, 0, 0,
+                          64, 64, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
 
   if (!m_Hwnd)
   {
@@ -617,7 +624,6 @@ bool CVideoReferenceClock::CreateHiddenWindow()
     return false;
   }
 
-  ShowWindow(m_Hwnd, SW_HIDE);
   UpdateWindow(m_Hwnd);
   HandleWindowMessages();
 
