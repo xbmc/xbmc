@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 03/23/2009-->
+<!--Date of translation: 05/15/2009-->
 <!--$Revision$-->
+<!--Based on english strings version 20309-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -738,6 +740,7 @@
   <string id="1415">Duggar</string>
   <string id="1416">Disigt</string>
   <string id="1417">Grynigt</string>
+  <string id="1450">Aktivera strömspar under inaktivitet</string>
   <string id="2050">Speltid</string>
   <string id="4501">LCD typ</string>
   <string id="10000">Hem</string>
@@ -1100,6 +1103,17 @@
   <string id="13419">Mjukvara</string>
   <string id="13420">Säker borttagning</string>
   <string id="13421">VDPAU</string>
+  <string id="13500">A/V synkmetod</string>
+  <string id="13501">Ljudklocka</string>
+  <string id="13502">Videoklocka (tappat/dubblett ljud)</string>
+  <string id="13503">Videoklocka (omsamplingsljud)</string>
+  <string id="13504">Maximal omsampling (%)</string>
+  <string id="13505">Omsamplingskvalitet</string>
+  <string id="13506">Låg</string>
+  <string id="13507">Medium</string>
+  <string id="13508">Hög</string>
+  <string id="13509">Riktigt hög</string>
+  <string id="13510">Synkronisera uppspelning till display</string>
   <string id="13600">Apple fjärrkontroll</string>
   <string id="13601">Läge</string>
   <string id="13602">Körs alltid</string>
@@ -1217,6 +1231,11 @@
   <string id="15214">Använd utjämnad A/V synkronisering</string>
   <string id="15215">Göm filnamn i miniatyrläget</string>
   <string id="15216">Spela i partyläge</string>
+  <string id="15217">Skicka låtar till Libre.fm</string>
+  <string id="15218">Libre.fm användarnamn</string>
+  <string id="15219">Libre.fm lösenord</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
   <string id="15250">Skicka radio till Last.fm</string>
   <string id="15251">Ansluter till Last.fm...</string>
   <string id="15252">Väljer station...</string>
