@@ -506,7 +506,10 @@ namespace VIDEO
             m_pObserver->OnDirectoryChanged(pItem->m_strPath);
 
           if (OnProcessSeriesFolder(episodes,files,lTvShowId,showDetails.m_strTitle,pDlgProgress))
+          {
+            Return = true;
             m_database.SetPathHash(pItem->m_strPath,pItem->GetProperty("hash"));
+          }
           continue;
         }
         else
