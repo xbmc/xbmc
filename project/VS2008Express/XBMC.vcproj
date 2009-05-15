@@ -2710,6 +2710,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\DPMSSupport.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\DPMSSupport.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\DynamicDll.cpp"
 					>
 				</File>
