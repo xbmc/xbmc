@@ -40,5 +40,6 @@ public:
 private:
   long m_iDataStart;
   long m_iDataLen;
+  DWORD m_ChannelMask;
 };
 
