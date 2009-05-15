@@ -2031,6 +2031,10 @@ case $host in
        ARCH_DEFINES="-D_POWERPC64"
 
        ;;
+    arm-*-linux-gnu*)
+       ARCH="arm"
+       ARCH_DEFINES="-D_ARMEL"
+       ;;
     *)
        { { $as_echo "$as_me:$LINENO: error: unsupported host ($host)" >&5
 $as_echo "$as_me: error: unsupported host ($host)" >&2;}
