@@ -641,8 +641,12 @@ void CGUIWindowFullScreen::RenderFullScreen()
 #else
       CStdString strCores = g_cpuInfo.GetCoresUsageString();
 #endif
-      strGeneralFPS.Format("fps: %02.2f %s VBlanks missed: %i\n%s", g_infoManager.GetFPS(), strCores.c_str(),
+      if (g_VideoReferenceClock.UseVblank())
+        strGeneralFPS.Format("fps: %02.2f %s VBlanks missed: %i\n%s", g_infoManager.GetFPS(), strCores.c_str(),
                            g_VideoReferenceClock.GetMissedVblanks(), strGeneral.c_str() );
+      else
+        strGeneralFPS.Format("fps: %02.2f %s\n%s", g_infoManager.GetFPS(), strCores.c_str(), strGeneral.c_str() );
+        
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strGeneralFPS);
       OnMessage(msg);
