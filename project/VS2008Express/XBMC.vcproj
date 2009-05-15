@@ -1314,11 +1314,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer.h"
+					RelativePath="..\..\xbmc\cores\paplayer\PAPlayer.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer_linux.cpp"
+					RelativePath="..\..\xbmc\cores\paplayer\PAPlayer.h"
 					>
 				</File>
 				<File
