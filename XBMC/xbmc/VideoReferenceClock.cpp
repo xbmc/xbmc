@@ -507,20 +507,14 @@ bool CVideoReferenceClock::SetupD3D()
   ReturnV = m_D3d->CreateDevice(m_Adapter, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
 
-  if (ReturnV != D3D_OK && ReturnV != D3DERR_DEVICELOST)
+  if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i", ReturnV & 0xFFFF);
+    if (ReturnV == D3DERR_DEVICELOST)
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned D3DERR_DEVICELOST");
+    else
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i", ReturnV & 0xFFFF);
+    
     return false;
-  }
-  else if (ReturnV == D3DERR_DEVICELOST)
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned D3DERR_DEVICELOST, resetting device");
-    ReturnV = m_D3dDev->Reset(&D3dPP);
-    if (ReturnV != D3D_OK)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Reset returned %i", ReturnV & 0xFFFF);
-      return false;
-    }
   }
 
   ReturnV = m_D3dDev->GetDeviceCaps(&DevCaps);
