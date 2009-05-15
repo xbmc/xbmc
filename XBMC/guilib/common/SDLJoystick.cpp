@@ -112,7 +112,6 @@ void CJoystick::Update()
 {
   int buttonId    = -1;
   int axisId      = -1;
-  int hatposition = -1;
   int hatId       = -1;
   int numj        = m_Joysticks.size();
   if (numj <= 0)
