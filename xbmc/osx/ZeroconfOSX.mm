@@ -62,7 +62,7 @@
 
 -(id) init
 {
-  if( self = [super init] )
+  if( (self = [super init]) )
   {
     services = [[NSMutableDictionary alloc] init];
   }
@@ -161,7 +161,7 @@
 - (void)handleError:(NSNumber *)error withService:(NSNetService *)service
 {
   CLog::Log(LOGERROR, "CZeroconfOSX::handleError An error occurred with service %s.%s.%s, error code = %i",
-            [[service name] cString], [[service type] cString], [[service domain] cString], error);
+            [[service name] cString], [[service type] cString], [[service domain] cString], (int)error);
   // Handle error here
 }
 
