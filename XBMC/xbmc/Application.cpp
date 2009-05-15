@@ -4888,12 +4888,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   else if (m_screenSaverMode == "Dim")
     return;
   else if (m_screenSaverMode == "Black")
-  {
-#ifdef __APPLE__
-    // if fading to black, power off display on OSX
-    Cocoa_IdleDisplays();
-#endif
-  }
+    return;
   else if (m_screenSaverMode != "None")
     m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }

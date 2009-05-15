@@ -214,6 +214,61 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1);
   return true;
 }
+
+#elif defined(__APPLE__)
+#include <Carbon/Carbon.h>
+
+void DPMSSupport::PlatformSpecificInit()
+{
+#if defined(__POWERPC__)
+  CLog::Log(LOGINFO, "DPMS: not supported on this platform");
+#else
+  m_supportedModes.push_back(OFF);
+  m_supportedModes.push_back(STANDBY);
+#endif
+}
+
+bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
+{
+#if defined(__POWERPC__)
+  return false;
+#else
+  bool status;
+  // http://lists.apple.com/archives/Cocoa-dev/2007/Nov/msg00267.html
+  // This is an unsupported system call that kernel panics on PPC boxes
+  io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
+  if(!r) return false;
+
+  switch(mode)
+  {
+  case OFF:
+    // Turn off display
+    status = (IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue) == 0);
+    break;
+  case STANDBY:
+    // Set display to low power
+    status = (IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue) == 0);
+    break;
+  }
+  return status;
+#endif
+}
+
+bool DPMSSupport::PlatformSpecificDisablePowerSaving()
+{
+#if defined(__POWERPC__)
+  return false;
+#else
+  // http://lists.apple.com/archives/Cocoa-dev/2007/Nov/msg00267.html
+  // This is an unsupported system call that kernel panics on PPC boxes
+  io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
+  if(!r) return false;
+
+  // Turn display on
+  return (IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanFalse) == 0);
+#endif
+}
+
 #else
 // Not implemented on this platform
 void DPMSSupport::PlatformSpecificInit()
