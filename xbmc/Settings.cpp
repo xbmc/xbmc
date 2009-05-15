@@ -1573,16 +1573,16 @@ bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
   pNode = io_pRoot->InsertEndChild(videoSettingsNode);
   if (!pNode) return false;
   XMLUtils::SetInt(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
-  XMLUtils::SetInt(pNode, "filmgrain", g_stSettings.m_currentVideoSettings.m_FilmGrain);
+  XMLUtils::SetFloat(pNode, "filmgrain", g_stSettings.m_currentVideoSettings.m_FilmGrain);
   XMLUtils::SetInt(pNode, "viewmode", g_stSettings.m_currentVideoSettings.m_ViewMode);
   XMLUtils::SetFloat(pNode, "zoomamount", g_stSettings.m_currentVideoSettings.m_CustomZoomAmount);
   XMLUtils::SetFloat(pNode, "pixelratio", g_stSettings.m_currentVideoSettings.m_CustomPixelRatio);
   XMLUtils::SetFloat(pNode, "volumeamplification", g_stSettings.m_currentVideoSettings.m_VolumeAmplification);
   XMLUtils::SetBoolean(pNode, "outputtoallspeakers", g_stSettings.m_currentVideoSettings.m_OutputToAllSpeakers);
   XMLUtils::SetBoolean(pNode, "showsubtitles", g_stSettings.m_currentVideoSettings.m_SubtitleOn);
-  XMLUtils::SetInt(pNode, "brightness", g_stSettings.m_currentVideoSettings.m_Brightness);
-  XMLUtils::SetInt(pNode, "contrast", g_stSettings.m_currentVideoSettings.m_Contrast);
-  XMLUtils::SetInt(pNode, "gamma", g_stSettings.m_currentVideoSettings.m_Gamma);
+  XMLUtils::SetFloat(pNode, "brightness", g_stSettings.m_currentVideoSettings.m_Brightness);
+  XMLUtils::SetFloat(pNode, "contrast", g_stSettings.m_currentVideoSettings.m_Contrast);
+  XMLUtils::SetFloat(pNode, "gamma", g_stSettings.m_currentVideoSettings.m_Gamma);
 
   TiXmlElement audiooutputNode("audiooutput");
   pNode = io_pRoot->InsertEndChild(audiooutputNode);
