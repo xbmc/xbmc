@@ -17602,7 +17602,8 @@ $as_echo "$as_me: error: Submodule xbmc/visualizations/Goom/goom2k4-0 doesn't ex
    { (exit 1); exit 1; }; }
 fi;
 
-
+# TEMPORARY: Cannot have screensavers if building for ARM as it requires OpenGL (McGeagh)
+if test "$host_cpu" != "arm" ; then
 if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
   pushd xbmc/screensavers/rsxs-0.9/
 
@@ -17652,7 +17653,7 @@ else
 $as_echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
 fi;
-
+fi
 
 # configure is writing to config.log, and then calls config.status.
 # config.status does its own redirection, appending to config.log.
