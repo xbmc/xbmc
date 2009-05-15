@@ -70,6 +70,13 @@ long cas(volatile long* pAddr, long expectedVal, long swapVal)
   return prev;
 }
 
+#elif defined(_ARMEL)
+// Currently ARM will not use Atomics, thus cannot use ZeroConf, and thus cannot use AVAHI
+long cas(volatile long* pAddr,long expectedVal, long swapVal)
+{
+	return 0;
+}
+
 #else // Linux / OSX86 (GCC)
 
 long cas(volatile long* pAddr,long expectedVal, long swapVal)
@@ -114,6 +121,13 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
   }
   
   return prev; 
+}
+
+#elif defined(_ARMEL)
+// Currently ARM will not use Atomics, thus cannot use ZeroConf, and thus cannot use AVAHI
+long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
+{
+	return 0;
 }
 
 #else // Linux / OSX86 (GCC)
@@ -179,6 +193,13 @@ long AtomicIncrement(volatile long* pAddr)
   return val;
 }
 
+#elif defined(_ARMEL)
+// Currently ARM will not use Atomics, thus cannot use ZeroConf, and thus cannot use AVAHI
+long AtomicIncrement(volatile long* pAddr)
+{
+	return 0;
+}
+
 #else // Linux / OSX86 (GCC)
 
 long AtomicIncrement(volatile long* pAddr)
@@ -231,6 +252,13 @@ long AtomicDecrement(volatile long* pAddr)
     mov val, eax ;
   }
   return val;
+}
+
+#elif defined(_ARMEL)
+// Currently ARM will not use Atomics, thus cannot use ZeroConf, and thus cannot use AVAHI
+long AtomicDecrement(volatile long* pAddr)
+{
+	return 0;
 }
 
 #else // Linux / OSX86 (GCC)
