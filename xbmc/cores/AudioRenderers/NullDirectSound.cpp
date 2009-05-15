@@ -138,7 +138,7 @@ DWORD CNullDirectSound::GetSpace()
 }
 
 //***********************************************************************************************
-DWORD CNullDirectSound::AddPackets(unsigned char *data, DWORD len)
+DWORD CNullDirectSound::AddPackets(const void* data, DWORD len)
 {
   if (m_paused)
     return 0;

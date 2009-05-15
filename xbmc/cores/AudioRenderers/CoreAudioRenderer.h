@@ -107,7 +107,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual FLOAT GetDelay();
     virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
     virtual HRESULT Deinitialize();
-    virtual DWORD AddPackets(unsigned char* data, DWORD len);
+    virtual DWORD AddPackets(const void* data, DWORD len);
     virtual DWORD GetSpace();
     virtual HRESULT Pause();
     virtual HRESULT Stop();

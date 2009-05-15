@@ -540,7 +540,7 @@ DWORD CCoreAudioRenderer::GetSpace()
   return m_MaxCacheLen - m_pCache->GetTotalBytes(); // This is just an estimate, since the driver is asynchonously pulling data.
 }
 
-DWORD CCoreAudioRenderer::AddPackets(unsigned char *data, DWORD len)
+DWORD CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
 {  
   VERIFY_INIT(0);
   

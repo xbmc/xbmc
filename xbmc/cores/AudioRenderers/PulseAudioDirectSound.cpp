@@ -483,7 +483,7 @@ DWORD CPulseAudioDirectSound::GetSpace()
   return l;
 }
 
-DWORD CPulseAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
+DWORD CPulseAudioDirectSound::AddPackets(const void* data, DWORD len)
 {
   if (!m_bIsAllocated)
     return len;
