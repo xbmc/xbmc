@@ -216,7 +216,8 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 }
 
 #elif defined(__APPLE__)
-#include <Carbon/Carbon.h>
+#include <IOKit/IOKitLib.h>
+#include <CoreFoundation/CFNumber.h>
 
 void DPMSSupport::PlatformSpecificInit()
 {
