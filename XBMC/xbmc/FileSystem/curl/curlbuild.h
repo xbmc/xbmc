@@ -276,6 +276,16 @@
 #  define CURL_SUFFIX_CURL_OFF_T  L
 #  define CURL_SUFFIX_CURL_OFF_TU UL
 
+#elif defined(_ARMEL)
+#    define CURL_SIZEOF_LONG        4
+#    define CURL_TYPEOF_CURL_OFF_T  long long
+#    define CURL_FORMAT_CURL_OFF_T  "lld"
+#    define CURL_FORMAT_CURL_OFF_TU "llu"
+#    define CURL_FORMAT_OFF_T       "%lld"
+#    define CURL_SIZEOF_CURL_OFF_T  8
+#    define CURL_SUFFIX_CURL_OFF_T  LL
+#    define CURL_SUFFIX_CURL_OFF_TU ULL
+   
 #elif defined(__SYMBIAN32__)
 #  if defined(__EABI__)  /* Treat all ARM compilers equally */
 #    define CURL_SIZEOF_LONG        4
