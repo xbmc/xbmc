@@ -54,7 +54,6 @@
   
   // Power and Screen
   //
-  int  Cocoa_IdleDisplays(void);
   void Cocoa_UpdateSystemActivity(void);
   void Cocoa_DisableOSXScreenSaver(void);
   
