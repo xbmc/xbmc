@@ -789,7 +789,41 @@ bool CxImage::Decode(CxFile *hFile, DWORD imagetype)
 		{ CxImageSKA newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
 #endif
 #if CXIMAGE_SUPPORT_RAW
-		{ CxImageRAW newima; newima.CopyInfo(*this); if (newima.Decode(hFile)) { Transfer(newima); return true; } else hFile->Seek(pos,SEEK_SET); }
+		{ CxImageRAW newima;
+          newima.CopyInfo(*this);
+
+          // libDCR performs a high volume of seeks/reads which XBMC's
+          // VFS cannot sustain efficiently, therefore read the file into
+          // memory and send it to the decoder.
+
+          long buffer_size = hFile->Size();
+          unsigned char* buffer = (unsigned char*)malloc( buffer_size );
+
+          // if we were able to allocate the buffer, transfer to a CxMemFile
+          if ( buffer )
+          {
+            hFile->Read( buffer, buffer_size, 1 );
+            CxMemFile hMemFile( buffer, buffer_size );
+            if (newima.Decode( &hMemFile ))
+            {
+              Transfer(newima);
+              return true;
+            }
+            else
+              hFile->Seek(pos, SEEK_SET);
+          }
+          else
+          {
+            // fallback to default method
+            if (newima.Decode(hFile)) 
+            {
+              Transfer(newima);
+              return true;
+            } 
+            else 
+              hFile->Seek(pos,SEEK_SET); 
+          }
+        }
 #endif
 	}
 
@@ -1001,17 +1035,49 @@ bool CxImage::Decode(CxFile *hFile, DWORD imagetype)
 #endif
 
 #if CXIMAGE_SUPPORT_RAW
-	if (imagetype==CXIMAGE_FORMAT_RAW){
-		CxImageRAW newima;
-		newima.CopyInfo(*this);
-		if (newima.Decode(hFile)){
-			Transfer(newima);
-			return true;
-		} else {
-			strcpy(info.szLastError,newima.GetLastError());
-			return false;
-		}
-	}
+	if (imagetype==CXIMAGE_FORMAT_RAW)
+    {
+      CxImageRAW newima;
+      newima.CopyInfo(*this);
+
+      // libDCR performs a high volume of seeks/reads which XBMC's
+      // VFS cannot sustain efficiently, therefore read the file into
+      // memory and send it to the decoder.
+
+      long buffer_size = hFile->Size();
+      unsigned char* buffer = (unsigned char*)malloc( buffer_size );
+
+      // if we were able to allocate the buffer, transfer to a CxMemFile
+      if ( buffer )
+      {
+        hFile->Read( buffer, buffer_size, 1 );
+        CxMemFile hMemFile( buffer, buffer_size );
+        if (newima.Decode( &hMemFile ))
+        {
+          Transfer(newima);
+          return true;
+        }
+        else
+        {
+          strcpy(info.szLastError,newima.GetLastError());
+          return false;
+        }
+       }
+      else
+      {
+        // fallback to default method
+        if (newima.Decode(hFile))
+        {
+          Transfer(newima);
+          return true;
+        }
+        else
+        {
+          strcpy(info.szLastError,newima.GetLastError());
+          return false;
+        }
+      }
+    }
 #endif
 
 	strcpy(info.szLastError,"Decode: Unknown or wrong format");
