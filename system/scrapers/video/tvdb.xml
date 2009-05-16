@@ -94,6 +94,9 @@
 			<RegExp input="$$5" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="4+">
 				<expression>&lt;Rating&gt;([^&lt;]*)&lt;/Rating&gt;</expression>
 			</RegExp>
+			<RegExp input="$$5" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="4+">
+				<expression>&lt;Network&gt;([^&lt;]*)&lt;/Network&gt;</expression>
+			</RegExp>
 			<RegExp input="$$5" output="&lt;title&gt;\1&lt;/title&gt;" dest="4+">
 				<expression>&lt;SeriesName&gt;([^&lt;]*)&lt;/SeriesName&gt;</expression>
 			</RegExp>
