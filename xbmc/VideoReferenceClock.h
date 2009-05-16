@@ -28,6 +28,10 @@
   #include <X11/Xlib.h>
   #include <GL/glx.h>
 #elif defined(_WIN32)
+  #ifdef _DEBUG
+    #define D3D_DEBUG_INFO
+  #endif
+
   namespace D3dClock
   {
     #include <d3d9.h>
