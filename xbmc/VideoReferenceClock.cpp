@@ -491,17 +491,18 @@ bool CVideoReferenceClock::SetupD3D()
   }
 
   ZeroMemory(&D3dPP, sizeof(D3dPP));
-  D3dPP.Windowed = TRUE;
-  D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_DISCARD;
-  D3dPP.hDeviceWindow = m_Hwnd;
   D3dPP.BackBufferWidth = 64;
   D3dPP.BackBufferHeight = 64;
   D3dPP.BackBufferFormat = D3dClock::D3DFMT_UNKNOWN;
   D3dPP.BackBufferCount = 1;
   D3dPP.MultiSampleType = D3dClock::D3DMULTISAMPLE_NONE;
   D3dPP.MultiSampleQuality = 0;
-  D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_FLIP;
+  D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_COPY;
+  D3dPP.hDeviceWindow = m_Hwnd;
+  D3dPP.Windowed = TRUE;
   D3dPP.EnableAutoDepthStencil = FALSE;
+  D3dPP.Flags = 0;
+  D3dPP.FullScreen_RefreshRateInHz = 0;
   D3dPP.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
   ReturnV = m_D3d->CreateDevice(m_Adapter, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
