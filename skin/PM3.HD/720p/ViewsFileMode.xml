@@ -852,6 +852,7 @@
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<orientation>horizontal</orientation>
+			<preloaditems>3</preloaditems>
 			<itemlayout height="130" width="182">
 				<control type="image">
 					<posx>0</posx>
@@ -866,7 +867,7 @@
 					<width>170</width>
 					<height>110</height>
 					<aspectratio>keep</aspectratio>
-					<texture>$INFO[ListItem.Icon]</texture>
+					<texture background="true">$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="image">
 					<posx>140</posx>
@@ -893,7 +894,7 @@
 					<width>170</width>
 					<height>110</height>
 					<aspectratio>keep</aspectratio>
-					<texture>$INFO[ListItem.Icon]</texture>
+					<texture background="true">$INFO[ListItem.Icon]</texture>
                                         <animation reversible="false" effect="zoom" center="auto" start="100" end="110" time="100">focus</animation>
                                         <animation reversible="false" effect="zoom" center="auto" start="110" end="100" time="100">unfocus</animation>
 				</control>
@@ -929,6 +930,7 @@
 				<posy>145</posy>
 				<width>970</width>
 				<height>345</height>
+				<fadetime>FanartCrossfadeTime</fadetime>
 				<info>ListItem.FilenameAndPath</info>
 				<aspectratio>keep</aspectratio>
 			</control>
@@ -948,6 +950,7 @@
 			<viewtype label="21371">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
+			<preloaditems>2</preloaditems>
 			<itemlayout height="170" width="190">
 				<control type="image">
 					<posx>1</posx>
@@ -956,7 +959,7 @@
 					<height>145</height>
 					<bordertexture border="5">button-nofocus.png</bordertexture>
 					<bordersize>5</bordersize>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>94</posx>
@@ -987,7 +990,7 @@
 					<height>145</height>
 					<bordertexture border="5">folder-focus.png</bordertexture>
 					<bordersize>5</bordersize>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>94</posx>
@@ -1026,6 +1029,7 @@
 			<viewtype label="21371">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
+			<preloaditems>2</preloaditems>
 			<itemlayout condition="!Container.Content(Movies)" height="255" width="316">
 				<control type="image">
 					<posx>1</posx>
@@ -1034,7 +1038,7 @@
 					<height>230</height>
 					<bordertexture border="5">button-nofocus.png</bordertexture>
 					<bordersize>5</bordersize>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>158</posx>
@@ -1065,7 +1069,7 @@
 					<height>230</height>
 					<bordertexture border="5">folder-focus.png</bordertexture>
 					<bordersize>5</bordersize>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>158</posx>
@@ -1097,7 +1101,7 @@
 					<bordertexture border="5">button-nofocus.png</bordertexture>
 					<bordersize>5</bordersize>
 					<aspectratio>stretch</aspectratio>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>79</posx>
@@ -1129,7 +1133,7 @@
 					<bordertexture border="5">folder-focus.png</bordertexture>
 					<bordersize>5</bordersize>
 					<aspectratio>stretch</aspectratio>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>79</posx>
@@ -1168,6 +1172,7 @@
 			<viewtype label="31034">list</viewtype>
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
+			<preloaditems>2</preloaditems>
 			<itemlayout height="127" width="475" condition="!Skin.HasSetting(Media_Titles_WideIcons)">
 				<control type="image">
 					<posx>1</posx>
@@ -1176,7 +1181,7 @@
 					<height>100</height>
 					<bordertexture border="5">button-nofocus.png</bordertexture>
 					<bordersize>5</bordersize>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>237</posx>
@@ -1207,7 +1212,7 @@
 					<height>100</height>
 					<bordertexture border="5">button-nofocus.png</bordertexture>
 					<bordersize>5</bordersize>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<visible>!Control.HasFocus(54)</visible>
 					<include>VisibleFadeEffect</include>
 				</control>
@@ -1251,7 +1256,7 @@
 					<height>100</height>
 					<bordertexture border="5">button-nofocus.png</bordertexture>
 					<bordersize>5</bordersize>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="image">
 					<posx>438</posx>
@@ -1270,7 +1275,7 @@
 					<height>100</height>
 					<bordertexture border="5">button-nofocus.png</bordertexture>
 					<bordersize>5</bordersize>
-					<texture>$INFO[Listitem.Icon]</texture>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 					<visible>!Control.HasFocus(54)</visible>
 					<include>VisibleFadeEffect</include>
 				</control>
