@@ -413,7 +413,7 @@ case TMSG_POWERDOWN:
 #if defined( _LINUX) && !defined(__APPLE__)
       CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
 #elif defined(_WIN32PC)
-      CWIN32Util::XBMCShellExecute(strParameterCaseIntact, (pMsg->dwParam1 == 1));
+      CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
 #endif
       break;
 
