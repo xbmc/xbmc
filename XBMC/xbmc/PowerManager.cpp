@@ -23,6 +23,10 @@
 #include "PowerManager.h"
 #include "Application.h"
 
+#ifdef HAS_LCD
+#include "utils/LCDFactory.h"
+#endif
+
 #ifdef __APPLE__
 #include "osx/CocoaPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
@@ -107,7 +111,10 @@ bool CPowerManager::Suspend()
   if (CanSuspend())
   {
     g_application.m_restartLirc = true;
-    g_application.m_restartLCD= true;
+    g_application.m_restartLCD = true;
+#ifdef HAS_LCD
+    g_lcd->SetBackLight(0);
+#endif
     return m_instance->Suspend();
   }
   
@@ -118,7 +125,7 @@ bool CPowerManager::Hibernate()
   if (CanHibernate())
   {
     g_application.m_restartLirc = true;
-    g_application.m_restartLCD= true;
+    g_application.m_restartLCD = true;
     return m_instance->Hibernate();
   }
 
