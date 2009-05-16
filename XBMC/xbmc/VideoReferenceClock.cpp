@@ -381,10 +381,6 @@ void CVideoReferenceClock::RunD3D()
   CSingleLock SingleLock(m_CritSection);
   SingleLock.Leave();
 
-  //we need a high priority to get accurate timing
-  if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: SetThreadPriority failed");
-
   //get the scanline we're currently at
   m_D3dDev->GetRasterStatus(0, &RasterStatus);
   if (RasterStatus.InVBlank) LastLine = 0;
@@ -506,6 +502,15 @@ bool CVideoReferenceClock::SetupD3D()
   D3dPP.FullScreen_RefreshRateInHz = 0;
   D3dPP.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
+  //we need a high priority thread to get accurate timing
+  if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: SetThreadPriority failed");
+
+  //put the window on top because direct3d wants exclusive access for some reason
+  LockSetForegroundWindow(LSFW_UNLOCK);
+  SetForegroundWindow(m_Hwnd);
+  HandleWindowMessages();
+
   ReturnV = m_D3d->CreateDevice(m_Adapter, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
 
@@ -519,7 +524,8 @@ bool CVideoReferenceClock::SetupD3D()
     return false;
   }
 
-  UpdateWindow(m_Hwnd);
+  //now that d3d is set up, we can hide the window
+  ShowWindow(m_Hwnd, SW_HIDE);
   HandleWindowMessages();
 
   ReturnV = m_D3dDev->GetDeviceCaps(&DevCaps);
@@ -556,11 +562,6 @@ bool CVideoReferenceClock::SetupD3D()
   m_Height = 0;
   UpdateRefreshrate(true);
   m_MissedVblanks = 0;
-
-  //now that d3d is set up, we can hide the window
-  ShowWindow(m_Hwnd, SW_HIDE);
-  UpdateWindow(m_Hwnd);
-  HandleWindowMessages();
 
   return true;
 }
@@ -617,10 +618,9 @@ bool CVideoReferenceClock::CreateHiddenWindow()
   }
   m_HasWinCl = true;
 
-  //create a minimized window, will show up in the taskbar
-  m_Hwnd = CreateWindowEx(WS_EX_LEFT, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
-                          WS_VISIBLE | WS_MINIMIZE, 0, 0,
-                          64, 64, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
+  //make a layered window which can be made transparent
+  m_Hwnd = CreateWindowEx(WS_EX_LAYERED, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
+                          WS_VISIBLE, 0, 0, 64, 64, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
 
   if (!m_Hwnd)
   {
@@ -628,8 +628,8 @@ bool CVideoReferenceClock::CreateHiddenWindow()
     return false;
   }
 
-  UpdateWindow(m_Hwnd);
-  HandleWindowMessages();
+  //make the window completely transparent
+  SetLayeredWindowAttributes(m_Hwnd, 0, 0, LWA_ALPHA);
 
   return true;
 }
