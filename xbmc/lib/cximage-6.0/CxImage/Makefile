@@ -1,7 +1,7 @@
 CC=g++
 ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common \
-	  -O2 -fPIC -DXBMC -D_DLL -DNO_LCMS -DNO_JPEG -I../jasper/include -I../jpeg/
+	  -O2 -fPIC -DXBMC -D_DLL -I../jasper/include -I../jpeg/
 else
 	CFLAGS+=-O2 -fPIC -DXBMC -D_DLL -D_LINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 endif
