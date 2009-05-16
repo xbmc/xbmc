@@ -26,6 +26,7 @@
 #include "AudioDecoder.h"
 #include "cores/ssrc.h"
 #include "cores/AudioRenderers/IAudioRenderer.h"
+#include "cores/masteraudio/PCMAudioClient.h"
 
 class CFileItem;
 #ifndef _LINUX
@@ -164,11 +165,8 @@ private:
 #ifdef HAS_XBOX_AUDIO
   IDirectSoundStream *m_pStream[2];
 #else
-  IAudioRenderer*   m_pAudioDecoder[2];
+  CPCMAudioClient* m_pAudioClient[2];
   float             m_latency[2];
-  unsigned char*    m_pcmBuffer[2];
-  int               m_bufferPos[2];
-  unsigned int      m_Chunklen[2];
 #endif
 
   unsigned int     m_SampleRate;
