@@ -1018,7 +1018,6 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/addons");
     CDirectory::Create("special://home/addons/multitype");
     CDirectory::Create("special://home/addons/visualisations");
-//    CDirectory::Create("special://home/addons/skin");
     CDirectory::Create("special://home/addons/pvr");
     CDirectory::Create("special://home/addons/scripts");
     CDirectory::Create("special://home/addons/scrapers");
@@ -1128,7 +1127,6 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/addons");
     CDirectory::Create("special://home/addons/multitype");
     CDirectory::Create("special://home/addons/visualisations");
-//    CDirectory::Create("special://home/addons/skin");
     CDirectory::Create("special://home/addons/pvr");
     CDirectory::Create("special://home/addons/scripts");
     CDirectory::Create("special://home/addons/scrapers");
@@ -1232,7 +1230,6 @@ CProfile* CApplication::InitDirectoriesWin32()
     CDirectory::Create("special://home/addons");
     CDirectory::Create("special://home/addons/multitype");
     CDirectory::Create("special://home/addons/visualisations");
-//    CDirectory::Create("special://home/addons/skin");
     CDirectory::Create("special://home/addons/pvr");
     CDirectory::Create("special://home/addons/scripts");
     CDirectory::Create("special://home/addons/scrapers");

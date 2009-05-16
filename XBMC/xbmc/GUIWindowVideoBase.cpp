@@ -26,7 +26,7 @@
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowVideoInfo.h"
-#include "GUIWindowVideoNav.h" 
+#include "GUIWindowVideoNav.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogSmartPlaylistEditor.h"
@@ -470,12 +470,9 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (!info.settings.GetAddonRoot() && info.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
   {
     CScraperParser parser;
-    CStdString strPath;
-    if (!info.strContent.IsEmpty())
-      strPath = "special://xbmc/system/scrapers/video/"+info.strPath;
-    if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
+    if (!info.strPath.IsEmpty() && parser.Load(info.strPath) && parser.HasFunction("GetSettings"))
     {
-      info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info.strPath);
+      info.settings.LoadSettingsXML(info.strPath);
       info.settings.SaveFromDefault();
     }
   }
@@ -693,10 +690,14 @@ void CGUIWindowVideoBase::OnManualIMDB()
   item.m_strPath = "special://temp/";
   CFile::Delete(item.GetCachedVideoThumb().c_str());
 
+  ADDON::CAddon addon;
+  if (!g_settings.GetAddonFromNameAndType("IMDb", ADDON::ADDON_SCRAPER_VIDEO, addon))
+    return;
+
   SScraperInfo info;
   info.strContent = "movies";
-  info.strPath = "imdb.xml";
-  info.strTitle = "IMDb";
+  info.strPath = addon.m_strPath + addon.m_strLibName;
+  info.strTitle = addon.m_strName;
 
   ShowIMDB(&item,info);
 

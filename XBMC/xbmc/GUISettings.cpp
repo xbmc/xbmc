@@ -210,7 +210,7 @@ void CGUISettings::Initialize()
   AddSeparator(9,"pictures.sep2");
   AddPath(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
   AddSeparator(11,"pictures.sep3");
-  AddString(12, "pictures.manageplugin", 23071, "", BUTTON_CONTROL_STANDARD);
+  AddString(12, "pictures.manageplugin", 23074, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -223,7 +223,9 @@ void CGUISettings::Initialize()
 
   AddCategory(1,"programfiles",744);
   AddBool(4, "programfiles.savefolderviews", 583, true);
-  AddString(12, "programfiles.manageplugin", 23070, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "programfiles.manageplugin", 23073, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "programfiles.defaultscraper", 20194, "", SPIN_CONTROL_TEXT);
+  AddString(6, "programfiles.managescraper", 23068, "", BUTTON_CONTROL_STANDARD);
 
   // My Weather settings
   AddGroup(2, 8);
@@ -250,7 +252,7 @@ void CGUISettings::Initialize()
   AddSeparator(7, "mymusic.sep2");
   AddPath(8,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
   AddSeparator(9, "mymusic.sep3");
-  AddString(10, "mymusic.manageplugin", 23069, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "mymusic.manageplugin", 23072, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(1, "musiclibrary.enabled", 418, true);
@@ -259,11 +261,12 @@ void CGUISettings::Initialize()
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
   AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
-  AddBool(7, "musiclibrary.updateonstartup", 22000, false);
-  AddSeparator(8,"musiclibrary.sep2");
-  AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(10, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
-  AddString(11, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
+  AddString(7, "musiclibrary.managescraper", 23067, "", BUTTON_CONTROL_STANDARD);
+  AddBool(8, "musiclibrary.updateonstartup", 22000, false);
+  AddSeparator(9,"musiclibrary.sep2");
+  AddString(10, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
+  AddString(12, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -417,7 +420,7 @@ void CGUISettings::Initialize()
   AddSeparator(5, "myvideos.sep1");
   AddBool(8, "myvideos.savefolderviews", 583, true);
   AddSeparator(9, "myvideos.sep2");
-  AddString(10, "myvideos.manageplugin", 23068, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "myvideos.manageplugin", 23071, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videolibrary", 14022);
 
@@ -500,8 +503,9 @@ void CGUISettings::Initialize()
   AddString(1, "scrapers.moviedefault", 21413, "tmdb.xml", SPIN_CONTROL_TEXT);
   AddString(2, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
   AddString(3, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
-  AddSeparator(4,"scrapers.sep2");
-  AddBool(5, "scrapers.langfallback", 21416, true);
+  AddString(4, "scrapers.managescraper", 23066, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(5,"scrapers.sep2");
+  AddBool(6, "scrapers.langfallback", 21416, true);
 
   // network settings
   AddGroup(6, 705);
@@ -586,19 +590,21 @@ void CGUISettings::Initialize()
   AddCategory(6, "pvr", 18025);
   AddBool(1, "pvr.enabled", 18001, false);
   AddString(2, "pvr.pvrsources", 18029, "", BUTTON_CONTROL_STANDARD);
-  AddString(3, "pvr.manageplugin", 23067, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(4, "pvr.sep1");
-  AddInt(5, "pvr.daystodisplay", 18005, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
-  AddInt(6, "pvr.lingertime", 18006, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddBool(7, "pvr.ftaonly", 18007, false);
-  AddBool(8, "pvr.showradio", 18008, true);
-  AddBool(9, "pvr.infoswitch", 18010, true);
-  AddInt(10, "pvr.infotime", 18011, 4, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddString(12, "pvr.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddSeparator(13, "pvr.sep2");
-  AddInt(14, "pvr.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
-  AddInt(15, "pvr.epgupdate", 18015, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddSeparator(16, "pvr.sep3");
+  AddString(3, "pvr.manageplugin", 23070, "", BUTTON_CONTROL_STANDARD);
+  AddString(4, "pvr.defaultscraper", 20194, "", SPIN_CONTROL_TEXT);
+  AddString(5, "pvr.managescraper", 23065, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(6, "pvr.sep1");
+  AddInt(7, "pvr.daystodisplay", 18005, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(8, "pvr.lingertime", 18006, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddBool(9, "pvr.ftaonly", 18007, false);
+  AddBool(10, "pvr.showradio", 18008, true);
+  AddBool(11, "pvr.infoswitch", 18010, true);
+  AddInt(12, "pvr.infotime", 18011, 4, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddString(13, "pvr.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddSeparator(14, "pvr.sep2");
+  AddInt(15, "pvr.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
+  AddInt(16, "pvr.epgupdate", 18015, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddSeparator(17, "pvr.sep3");
   AddInt(18, "pvr.instantrecordtime", 18018, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddInt(19, "pvr.defaultpriority", 18019, 50, 1, 1, 100, SPIN_CONTROL_INT_PLUS);
   AddInt(20, "pvr.defaultlifetime", 18020, 99, 1, 1, 365, SPIN_CONTROL_INT_PLUS, MASK_DAYS);

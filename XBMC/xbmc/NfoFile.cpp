@@ -26,6 +26,7 @@
 #include "NfoFile.h"
 #include "VideoDatabase.h"
 #include "utils/IMDB.h"
+#include "utils/Addon.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
@@ -36,6 +37,8 @@
 
 using namespace DIRECTORY;
 using namespace std;
+using namespace ADDON;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -58,29 +61,64 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
     return NO_NFO;
 
   CFileItemList items;
-  CStdString strURL, strScraperBasePath, strDefault, strSelected;
+  CStdString strScraperBasePath, strDefault, strSelected;
   bool bNfo=false;
   if (m_strContent.Equals("albums"))
   {
     CAlbum album;
-    bNfo = GetDetails(album);
-    CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
-    strScraperBasePath = "special://xbmc/system/scrapers/music/";
-    CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("musiclibrary.defaultscraper"), strDefault);
+    bNfo                = GetDetails(album);
+    strDefault          = g_guiSettings.GetString("musiclibrary.defaultscraper");
+    VECADDONS *addons   = g_settings.GetAddonsFromType(ADDON_SCRAPER_MUSIC);
+    if (addons || addons->size() == 0)
+      return NO_NFO;
+
+    for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+    {
+      CStdString pathFile = (*it).m_strPath + (*it).m_strLibName;
+      CFileItemPtr newItem(new CFileItem(pathFile ,false));
+      items.Add(newItem);
+    }
   }
   else if (m_strContent.Equals("artists"))
   {
     CArtist artist;
-    bNfo = GetDetails(artist);
-    CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
-    strScraperBasePath = "special://xbmc/system/scrapers/music/";
-    CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("musiclibrary.defaultscraper"), strDefault);
+    bNfo                = GetDetails(artist);
+    strDefault          = g_guiSettings.GetString("musiclibrary.defaultscraper");
+    VECADDONS *addons   = g_settings.GetAddonsFromType(ADDON_SCRAPER_MUSIC);
+
+    if (addons || addons->size() == 0)
+      return NO_NFO;
+
+    for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+    {
+      CStdString pathFile = (*it).m_strPath + (*it).m_strLibName;
+      CFileItemPtr newItem(new CFileItem(pathFile ,false));
+      items.Add(newItem);
+    }
   }
   else if (m_strContent.Equals("tvshows") || m_strContent.Equals("movies") || m_strContent.Equals("musicvideos"))
   {
     // first check if it's an XML file with the info we need
     CVideoInfoTag details;
     bNfo = GetDetails(details);
+    if (m_strContent.Equals("movies"))
+      strDefault = g_guiSettings.GetString("scrapers.moviedefault");
+    else if (m_strContent.Equals("tvshows"))
+      strDefault = g_guiSettings.GetString("scrapers.tvshowdefault");
+    else if (m_strContent.Equals("musicvideos"))
+      strDefault = g_guiSettings.GetString("scrapers.musicvideodefault");
+    VECADDONS *addons = g_settings.GetAddonsFromType(ADDON_SCRAPER_VIDEO);
+
+    if (addons || addons->size() == 0)
+      return NO_NFO;
+
+    for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+    {
+      CStdString pathFile = (*it).m_strPath + (*it).m_strLibName;
+      CFileItemPtr newItem(new CFileItem(pathFile ,false));
+      items.Add(newItem);
+    }
+
     if (episode > -1 && bNfo && m_strContent.Equals("tvshows"))
     {
       int infos=0;
@@ -99,16 +137,6 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
           bNfo = GetDetails(details);
       }
     }
-    strURL = details.m_strEpisodeGuide;
-    strScraperBasePath = "special://xbmc/system/scrapers/video/";
-    CDirectory::GetDirectory("special://xbmc/system/scrapers/video/",items,".xml",false);
-
-    if (m_strContent.Equals("movies"))
-      CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("scrapers.moviedefault"), strDefault);
-    else if (m_strContent.Equals("tvshows"))
-      CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("scrapers.tvshowdefault"), strDefault);
-    else if (m_strContent.Equals("musicvideos"))
-      CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("scrapers.musicvideodefault"), strDefault);
   }
 
   // Get Selected Scraper

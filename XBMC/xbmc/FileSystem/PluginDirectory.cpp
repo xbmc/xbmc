@@ -457,35 +457,19 @@ bool CPluginDirectory::HasPlugins(const CStdString &type)
 bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList &items)
 {
   VECADDONS *addons = NULL;
-  CStdString extension;
 
   if (type == "pvr")
-  {
     addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PVR);
-    extension = ADDON_PLUGIN_PVR_EXT;
-  }
   else if (type == "video")
-  {
     addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_VIDEO);
-    extension = ADDON_PLUGIN_VIDEO_EXT;
-  }
   else if (type == "music")
-  {
     addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_MUSIC);
-    extension = ADDON_PLUGIN_MUSIC_EXT;
-  }
   else if (type == "pictures")
-  {
     addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PICTURES);
-    extension = ADDON_PLUGIN_PICTURES_EXT;
-  }
   else if (type == "programs")
-  {
     addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
-    extension = ADDON_PLUGIN_PROGRAM_EXT;
-  }
 
-  if (addons && addons->size() == 0)
+  if (!addons || addons->size() == 0)
     return false;
 
   for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
@@ -508,7 +492,7 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
       if (!item2.HasThumbnail())
         item2.SetUserProgramThumb();
       if (!item2.HasThumbnail())
-        item2.SetThumbnailImage((*it).m_strPath + (*it).m_icon);
+        item2.SetThumbnailImage((*it).m_icon);
       if (item2.HasThumbnail())
       {
         XFILE::CFile::Cache(item2.GetThumbnailImage(),newItem->GetCachedProgramThumb());

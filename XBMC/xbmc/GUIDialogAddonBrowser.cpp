@@ -33,6 +33,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "ScraperSettings.h"
 
 #define CONTROL_LIST            450
 #define CONTROL_HEADING_LABEL   411
@@ -194,6 +195,7 @@ void CGUIDialogAddonBrowser::Update()
     pItem->SetProperty("Addon.Description", addon.m_strDesc);
     pItem->SetProperty("Addon.Creator", addon.m_strCreator);
     pItem->SetProperty("Addon.Disclaimer", addon.m_disclaimer);
+    pItem->SetProperty("Addon.m_strLibName", addon.m_disclaimer);
     pItem->SetProperty("Addon.Rating", addon.m_stars);
     pItem->SetThumbnailImage(addon.m_icon);
     m_vecItems->Add(pItem);
@@ -253,9 +255,13 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 
-    /* open up settings dialog */
-    CURL url(pItem->m_strPath);
-    CGUIDialogAddonSettings::ShowAndGetInput(url);
+    if (m_type != ADDON_SCRAPER_PVR && m_type != ADDON_SCRAPER_VIDEO &&
+        m_type != ADDON_SCRAPER_MUSIC && m_type != ADDON_SCRAPER_PROGRAM)
+    {
+      /* open up settings dialog */
+      CURL url(pItem->m_strPath);
+      CGUIDialogAddonSettings::ShowAndGetInput(url);
+    }
   }
 }
 
@@ -364,7 +370,10 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
   int iSettingsLabel = 23008;
   int iRemoveLabel = 23009;
 
-  int btn_Settings = pMenu->AddButton(iSettingsLabel);
+  int btn_Settings = -1;
+  if (m_type != ADDON_SCRAPER_PVR && m_type != ADDON_SCRAPER_VIDEO &&
+      m_type != ADDON_SCRAPER_MUSIC && m_type != ADDON_SCRAPER_PROGRAM)
+    btn_Settings = pMenu->AddButton(iSettingsLabel);
   int btn_Remove = pMenu->AddButton(iRemoveLabel);
 
   pMenu->CenterWindow();

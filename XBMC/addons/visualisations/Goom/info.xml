@@ -8,13 +8,16 @@
     2:  skin
     3:  pvrdll
     4:  script
-    5:  scraper
-    6:  screensaver
-    7:  plugin-pvr
-    8:  plugin-video
-    9:  plugin-music
-    10: plugin-program
-    11: plugin-pictures !-->
+    5:  scraper-pvr
+    6:  scraper-video
+    7:  scraper-music
+    8:  scraper-program
+    9:  screensaver
+    10: plugin-pvr
+    11: plugin-video
+    12: plugin-music
+    13: plugin-program
+    14: plugin-pictures !-->
   <type>1</type>
 
   <!-- name: name of the addon !-->
@@ -22,6 +25,9 @@
 
   <!-- library: file name of the library !-->
   <library>Goom.vis</library>
+
+  <!-- library: file name of the library for WIN32 to different between static build (optional) !-->
+  <librarywin32>Goom_win32.vis</librarywin32>
 
   <!-- icon: icon name of the library !-->
   <icon>Goom.tbn</icon>

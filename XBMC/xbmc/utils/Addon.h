@@ -41,14 +41,17 @@ enum AddonType
   ADDON_SKIN              = 2,
   ADDON_PVRDLL            = 3,
   ADDON_SCRIPT            = 4,
-  ADDON_SCRAPER           = 5,
-  ADDON_SCREENSAVER       = 6,
-  ADDON_PLUGIN_PVR        = 7,
-  ADDON_PLUGIN_VIDEO      = 8,
-  ADDON_PLUGIN_MUSIC      = 9,
-  ADDON_PLUGIN_PROGRAM    = 10,
-  ADDON_PLUGIN_PICTURES   = 11,
-  ADDON_DSP_AUDIO         = 12
+  ADDON_SCRAPER_PVR       = 5,
+  ADDON_SCRAPER_VIDEO     = 6,
+  ADDON_SCRAPER_MUSIC     = 7,
+  ADDON_SCRAPER_PROGRAM   = 8,
+  ADDON_SCREENSAVER       = 9,
+  ADDON_PLUGIN_PVR        = 10,
+  ADDON_PLUGIN_VIDEO      = 11,
+  ADDON_PLUGIN_MUSIC      = 12,
+  ADDON_PLUGIN_PROGRAM    = 13,
+  ADDON_PLUGIN_PICTURES   = 14,
+  ADDON_DSP_AUDIO         = 15
 };
 
 const CStdString ADDON_MULTITYPE_EXT        = "*.add";
@@ -56,7 +59,7 @@ const CStdString ADDON_VIZ_EXT              = "*.vis";
 const CStdString ADDON_SKIN_EXT             = "*.skin";
 const CStdString ADDON_PVRDLL_EXT           = "*.pvr";
 const CStdString ADDON_SCRIPT_EXT           = "*.py";
-const CStdString ADDON_SCRAPER_EXT          = "*.idl";
+const CStdString ADDON_SCRAPER_EXT          = "*.xml|*.idl";
 const CStdString ADDON_SCREENSAVER_EXT      = "*.xbs";
 const CStdString ADDON_PLUGIN_PVR_EXT       = "*.py|*.plpvr";
 const CStdString ADDON_PLUGIN_MUSIC_EXT     = "*.py|*.plmus";

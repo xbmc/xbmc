@@ -519,8 +519,14 @@ VECADDONS *CSettings::GetAddonsFromType(const AddonType &type)
     return &g_settings.m_pvrAddons;
   case ADDON_SCRIPT:
     return &g_settings.m_scriptAddons;
-  case ADDON_SCRAPER:
-    return &g_settings.m_scraperAddons;
+  case ADDON_SCRAPER_PVR:
+    return &g_settings.m_scraperPVRAddons;
+  case ADDON_SCRAPER_VIDEO:
+    return &g_settings.m_scraperVideoAddons;
+  case ADDON_SCRAPER_MUSIC:
+    return &g_settings.m_scraperMusicAddons;
+  case ADDON_SCRAPER_PROGRAM:
+    return &g_settings.m_scraperProgramAddons;
   case ADDON_SCREENSAVER:
     return &g_settings.m_screensaverAddons;
   case ADDON_PLUGIN_PVR:
@@ -566,7 +572,10 @@ void CSettings::LoadAddons()
     GetAddons(pRootElement, ADDON_SKIN);
     GetAddons(pRootElement, ADDON_PVRDLL);
     GetAddons(pRootElement, ADDON_SCRIPT);
-    GetAddons(pRootElement, ADDON_SCRAPER);
+    GetAddons(pRootElement, ADDON_SCRAPER_PVR);
+    GetAddons(pRootElement, ADDON_SCRAPER_VIDEO);
+    GetAddons(pRootElement, ADDON_SCRAPER_MUSIC);
+    GetAddons(pRootElement, ADDON_SCRAPER_PROGRAM);
     GetAddons(pRootElement, ADDON_SCREENSAVER);
     GetAddons(pRootElement, ADDON_PLUGIN_PVR);
     GetAddons(pRootElement, ADDON_PLUGIN_MUSIC);
@@ -815,8 +824,17 @@ void CSettings::GetAddons(const TiXmlElement* pRootElement, const AddonType &typ
   case ADDON_SCRIPT:
       strTagName = "script";
       break;
-  case ADDON_SCRAPER:
-      strTagName = "scraper";
+  case ADDON_SCRAPER_PVR:
+      strTagName = "scraperpvr";
+      break;
+  case ADDON_SCRAPER_VIDEO:
+      strTagName = "scrapervideo";
+      break;
+  case ADDON_SCRAPER_MUSIC:
+      strTagName = "scrapermusic";
+      break;
+  case ADDON_SCRAPER_PROGRAM:
+      strTagName = "scraperprogram";
       break;
   case ADDON_SCREENSAVER:
       strTagName = "screensaver";
@@ -2612,7 +2630,10 @@ bool CSettings::SaveAddons()
   SetAddons(pRoot, ADDON_SKIN, g_settings.m_skinAddons);
   SetAddons(pRoot, ADDON_PVRDLL, g_settings.m_pvrAddons);
   SetAddons(pRoot, ADDON_SCRIPT, g_settings.m_scriptAddons);
-  SetAddons(pRoot, ADDON_SCRAPER, g_settings.m_scraperAddons);
+  SetAddons(pRoot, ADDON_SCRAPER_PVR, g_settings.m_scraperPVRAddons);
+  SetAddons(pRoot, ADDON_SCRAPER_VIDEO, g_settings.m_scraperVideoAddons);
+  SetAddons(pRoot, ADDON_SCRAPER_MUSIC, g_settings.m_scraperMusicAddons);
+  SetAddons(pRoot, ADDON_SCRAPER_PROGRAM, g_settings.m_scraperProgramAddons);
   SetAddons(pRoot, ADDON_SCREENSAVER, g_settings.m_screensaverAddons);
   SetAddons(pRoot, ADDON_PLUGIN_PVR, g_settings.m_pluginPvrAddons);
   SetAddons(pRoot, ADDON_PLUGIN_MUSIC, g_settings.m_pluginMusicAddons);
@@ -2644,7 +2665,6 @@ void CSettings::GetAllAddons()
     CDirectory::GetDirectory("special://home/addons/scrapers/programs", items, ADDON_SCRAPER_EXT, false);
     CDirectory::GetDirectory("special://home/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
     CDirectory::GetDirectory("special://home/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
-    CDirectory::GetDirectory("special://home/skin", items, ADDON_SKIN_EXT, false);
   }
   // Now load the add-on's located in the application directory
   CDirectory::GetDirectory("special://xbmc/addons/multitype", items, ADDON_MULTITYPE_EXT, false);
@@ -2657,7 +2677,6 @@ void CSettings::GetAllAddons()
   CDirectory::GetDirectory("special://xbmc/addons/scrapers/programs", items, ADDON_SCRAPER_EXT, false);
   CDirectory::GetDirectory("special://xbmc/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
   CDirectory::GetDirectory("special://xbmc/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/skin", items, ADDON_SKIN_EXT, false); // Don't use addons for skins
 
   // Plugin Directory currently only located in Home
   CDirectory::GetDirectory("special://home/addons/plugins/pvr", items, ADDON_PLUGIN_PVR_EXT, false);
@@ -2706,7 +2725,7 @@ void CSettings::GetAllAddons()
       if (!item2.HasThumbnail())
         item2.SetUserProgramThumb();
       if (!item2.HasThumbnail())
-        item2.SetThumbnailImage(addon.m_strPath + addon.m_icon);
+        item2.SetThumbnailImage(addon.m_icon);
       if (item2.HasThumbnail())
       {
         XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
@@ -2939,8 +2958,17 @@ bool CSettings::SetAddons(TiXmlNode *root, const AddonType &type, const VECADDON
   case ADDON_SCRIPT:
       strType = "script";
       break;
-  case ADDON_SCRAPER:
-      strType = "scraper";
+  case ADDON_SCRAPER_PVR:
+      strType = "scraperpvr";
+      break;
+  case ADDON_SCRAPER_VIDEO:
+      strType = "scrapervideo";
+      break;
+  case ADDON_SCRAPER_MUSIC:
+      strType = "scrapermusic";
+      break;
+  case ADDON_SCRAPER_PROGRAM:
+      strType = "scraperprogram";
       break;
   case ADDON_SCREENSAVER:
       strType = "screensaver";

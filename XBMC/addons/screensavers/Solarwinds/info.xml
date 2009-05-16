@@ -8,14 +8,17 @@
     2:  skin
     3:  pvrdll
     4:  script
-    5:  scraper
-    6:  screensaver
-    7:  plugin-pvr
-    8:  plugin-video
-    9:  plugin-music
-    10: plugin-program
-    11: plugin-pictures !-->
-  <type>6</type>
+    5:  scraper-pvr
+    6:  scraper-video
+    7:  scraper-music
+    8:  scraper-program
+    9:  screensaver
+    10: plugin-pvr
+    11: plugin-video
+    12: plugin-music
+    13: plugin-program
+    14: plugin-pictures !-->
+  <type>9</type>
 
   <!-- name: name of the addon !-->
   <name>Solarwinds</name>

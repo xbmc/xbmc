@@ -2220,9 +2220,14 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   CStdString albums="", album, artist="", tmp;
   double relevance;
   bool rel = false;
+  ADDON::CAddon addon;
+  if (!g_settings.GetAddonFromNameAndType(g_guiSettings.GetString("musiclibrary.defaultscraper"), ADDON::ADDON_SCRAPER_MUSIC, addon))
+    SetResponse(openTag+"Error");
+
   SScraperInfo info;
   info.strContent = "albums";
-  info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+  info.strPath = addon.m_strPath + addon.m_strLibName;
+  info.strTitle = addon.m_strName;
   CMusicInfoScraper scraper(info); 
 
   if (numParas<1)

@@ -495,7 +495,13 @@ IAddonCallback* CAddon::GetCallbackForType(AddonType type)
       return CPVRManager::GetInstance();
     case ADDON_SCRIPT:
       return AddonDummyCallback;
-    case ADDON_SCRAPER:
+    case ADDON_SCRAPER_PVR:
+      return AddonDummyCallback;
+    case ADDON_SCRAPER_VIDEO:
+      return AddonDummyCallback;
+    case ADDON_SCRAPER_MUSIC:
+      return AddonDummyCallback;
+    case ADDON_SCRAPER_PROGRAM:
       return AddonDummyCallback;
     case ADDON_SCREENSAVER:
       return AddonDummyCallback;

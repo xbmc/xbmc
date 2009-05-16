@@ -4060,7 +4060,12 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     }
     if (info.strPath.IsEmpty()) // default fallback
     {
-      info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+      ADDON::CAddon addon;
+      if (!g_settings.GetAddonFromNameAndType(g_guiSettings.GetString("musiclibrary.defaultscraper"), ADDON::ADDON_SCRAPER_MUSIC, addon))
+        return false;
+
+      info.strPath = addon.m_strPath + addon.m_strLibName;
+      info.strTitle = addon.m_strName;
       info.strContent = "albums";
     }
 

@@ -395,7 +395,10 @@ public:
   ADDON::VECADDONS  m_skinAddons;
   ADDON::VECADDONS  m_pvrAddons;
   ADDON::VECADDONS  m_scriptAddons;
-  ADDON::VECADDONS  m_scraperAddons;
+  ADDON::VECADDONS  m_scraperPVRAddons;
+  ADDON::VECADDONS  m_scraperVideoAddons;
+  ADDON::VECADDONS  m_scraperMusicAddons;
+  ADDON::VECADDONS  m_scraperProgramAddons;
   ADDON::VECADDONS  m_screensaverAddons;
   ADDON::VECADDONS  m_pluginPvrAddons;
   ADDON::VECADDONS  m_pluginMusicAddons;

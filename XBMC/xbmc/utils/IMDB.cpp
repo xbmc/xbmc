@@ -85,8 +85,8 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
       return false;
   }
   else
-    scrURL = *pUrl;  
-  
+    scrURL = *pUrl;
+
   vector<CStdString> strHTML;
   for (unsigned int i=0;i<scrURL.m_url.size();++i)
   {
@@ -119,7 +119,7 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
     CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
     return false;
   }
- 
+
   TiXmlHandle docHandle( &doc );
 
   TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
@@ -487,7 +487,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
   //CLog::Log(LOGDEBUG,"CIMDB::FindMovie(%s)", strMovie.c_str());
 
   // load our scraper xml
-  if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
+  if (!m_parser.Load(m_info.strPath))
     return false;
   CScraperParser::ClearCache();
 
@@ -517,7 +517,7 @@ bool CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGU
     CloseThread();
     return true;
   }
-  
+
   // unthreaded
   bool success = InternalFindMovie(strMovie, movieList);
   // sort our movie list by fuzzy match
@@ -531,7 +531,7 @@ bool CIMDB::GetDetails(const CScraperUrl &url, CVideoInfoTag &movieDetails, CGUI
   m_url = url;
   m_movieDetails = movieDetails;
   // load our scraper xml
-  if (!m_parser.Load("special://xbmc/system/scrapers/video/"+m_info.strPath))
+  if (!m_parser.Load(m_info.strPath))
     return false;
 
   // fill in the defaults
@@ -601,7 +601,7 @@ bool CIMDB::GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& movieDetail
   m_episode = movieDetails;
 
   // load our scraper xml
-  if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
+  if (!m_parser.Load(m_info.strPath))
     return false;
 
   // fill in the defaults

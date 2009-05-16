@@ -88,12 +88,12 @@ void CMusicInfoScraper::FindAlbuminfo()
   m_vecAlbums.erase(m_vecAlbums.begin(), m_vecAlbums.end());
 
   CScraperParser parser;
-  if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath))
+  if (!parser.Load(m_info.strPath))
     return;
 
   if (!m_info.settings.GetAddonRoot() || m_info.settings.GetSettings().IsEmpty())
   {
-    m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + m_info.strPath);
+    m_info.settings.LoadSettingsXML(m_info.strPath);
     m_info.settings.SaveFromDefault();
   }
 
@@ -194,12 +194,12 @@ void CMusicInfoScraper::FindArtistinfo()
   m_vecArtists.erase(m_vecArtists.begin(), m_vecArtists.end());
 
   CScraperParser parser;
-  if (!parser.Load("special://xbmc/system/scrapers/music/" + m_info.strPath))
+  if (!parser.Load(m_info.strPath))
     return;
 
   if (!m_info.settings.GetAddonRoot() || m_info.settings.GetSettings().IsEmpty())
   {
-    m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/" + m_info.strPath);
+    m_info.settings.LoadSettingsXML(m_info.strPath);
     m_info.settings.SaveFromDefault();
   }
 

@@ -1670,17 +1670,17 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     CVideoInfoTag info = details;
 
     long lFileId = GetFileId(strFilenameAndPath);
-    
+
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
-    
+
     long lMovieId = GetMovieId(strFilenameAndPath);
-    
+
     if (lMovieId > -1)
       DeleteMovie(strFilenameAndPath, true); // true to keep the table entry
-    
+
     BeginTransaction();
-    
+
     lMovieId = AddMovie(strFilenameAndPath);
     if (lMovieId < 0)
     {
@@ -1745,9 +1745,9 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
       CLog::Log(LOGERROR, "%s: called without database open", __FUNCTION__);
       return -1;
     }
-    
+
     BeginTransaction();
-    
+
     long lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
@@ -1795,7 +1795,7 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
   try
   {
     BeginTransaction();
-    
+
     if (lEpisodeId == -1)
     {
       lEpisodeId = GetEpisodeId(strFilenameAndPath);
@@ -1860,7 +1860,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
   try
   {
     BeginTransaction();
-    
+
     long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
@@ -2101,7 +2101,7 @@ void CVideoDatabase::AddBookMarkToFile(const CStdString& strFilenameAndPath, con
       strSQL=FormatSQL("update bookmark set timeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idBookmark);
     else
       strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,'%s','%s','%s', %i)", lFileId, bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), (int)type);
-    
+
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -3001,7 +3001,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const SScrape
 bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
   BeginTransaction();
-  
+
   try
   {
     if (iVersion < 4)
@@ -5002,7 +5002,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       info.settings.LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
 
       CScraperParser parser;
-      parser.Load("special://xbmc/system/scrapers/video/" + info.strPath);
+      parser.Load(info.strPath);
       info.strLanguage = parser.GetLanguage();
       info.strTitle = parser.GetName();
 
@@ -5027,7 +5027,7 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
           info.settings.LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
 
           CScraperParser parser;
-          parser.Load("special://xbmc/system/scrapers/video/" + info.strPath);
+          parser.Load(info.strPath);
           info.strLanguage = parser.GetLanguage();
           info.strTitle = parser.GetName();
 
@@ -5950,7 +5950,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     if (NULL == m_pDS.get()) return;
 
     BeginTransaction();
-    
+
     // find all the files
     CStdString sql;
     if (paths)

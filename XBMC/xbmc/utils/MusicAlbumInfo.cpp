@@ -125,7 +125,7 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
 bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction, const CScraperUrl* url)
 {
   // load our scraper xml
-  if (!m_parser.Load("special://xbmc/system/scrapers/music/" + info.strPath))
+  if (!m_parser.Load(info.strPath))
     return false;
 
   bool bChained=true;
