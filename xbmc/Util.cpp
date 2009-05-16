@@ -4556,7 +4556,7 @@ bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
     }
   }
 
-  Command(args, waitExit);
+  return Command(args, waitExit);
 }
 
 //
