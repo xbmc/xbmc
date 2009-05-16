@@ -76,12 +76,13 @@ void CGUIDialogVideoSettings::CreateSettings()
   m_settings.clear();
   // create our settings
   {
-    const int entries[] = { 16018, 16019, 20131, 20130, 20129, 16022, 16021, 16020, 
 #ifdef HAVE_LIBVDPAU
-                            16310,
-#endif
-                            16314};
+    const int entries[] = { 16018, 16019, 20131, 20130, 20129, 16022, 16021, 16020, 16310, 16314};
+    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 10, entries);                           
+#else
+    const int entries[] = { 16018, 16019, 20131, 20130, 20129, 16022, 16021, 16020, 16314};
     AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_stSettings.m_currentVideoSettings.m_InterlaceMethod, 9, entries);
+#endif
   }
   {
     const int entries[] = { 16301, 16302, 16303, 16304, 16305, 16306, 16307, 16308, 16309 };
