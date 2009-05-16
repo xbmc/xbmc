@@ -556,6 +556,7 @@ bool CVideoReferenceClock::SetupD3D()
   UpdateRefreshrate(true);
   m_MissedVblanks = 0;
 
+  //now that d3d is set up, we can hide the window
   ShowWindow(m_Hwnd, SW_HIDE);
   UpdateWindow(m_Hwnd);
   HandleWindowMessages();
@@ -615,6 +616,7 @@ bool CVideoReferenceClock::CreateHiddenWindow()
   }
   m_HasWinCl = true;
 
+  //create a minimized window, will show up in the taskbar
   m_Hwnd = CreateWindowEx(WS_EX_LEFT, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
                           WS_VISIBLE | WS_MINIMIZE, 0, 0,
                           64, 64, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
