@@ -68,7 +68,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
   if (strncmp(riffh.riff, "RIFF", 4)!=0 && strncmp(riffh.rifftype, "WAVE", 4)!=0)
     return false;
 
-  long offset = 0, pos;
+  unsigned long offset = 0, pos;
   offset += sizeof(WAVE_RIFFHEADER);
   offset -= sizeof(WAVE_CHUNK);
 

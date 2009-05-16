@@ -433,7 +433,7 @@ void CVideoReferenceClock::RunD3D()
       HandleWindowMessages();
 
       //because we had a vblank, sleep for half a refreshrate period
-      ::Sleep(500 / m_RefreshRate);
+      ::Sleep(500 / (unsigned int)m_RefreshRate);
     }
     else
     {
@@ -898,7 +898,7 @@ int CVideoReferenceClock::GetRefreshRate()
   CSingleLock SingleLock(m_CritSection);
 
   if (m_UseVblank)
-    return m_RefreshRate;
+    return (int)m_RefreshRate;
   else
     return -1;
 }
@@ -924,7 +924,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
       //then advance that value by 20% of a vblank period, if the vblank clock doesn't update by that time we know it's late
       QueryPerformanceCounter(&Now);
       NextVblank = m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXDELAY / 1000);
-      SleepTime = (NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency;
+      SleepTime = (int)((NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency);
 
       Late = false;
       if (SleepTime <= 0) //if sleeptime is 0 or lower, the vblank clock is already late in updating
@@ -955,7 +955,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
     SingleLock.Leave();
     QueryPerformanceCounter(&Now);
     //sleep until the timestamp has passed
-    SleepTime = (Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency;
+    SleepTime = (int)((Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency);
     if (SleepTime > 0)
       ::Sleep(SleepTime);
   }
