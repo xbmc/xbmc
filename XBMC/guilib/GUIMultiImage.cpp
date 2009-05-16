@@ -156,6 +156,10 @@ void CGUIMultiImage::AllocResources()
   m_currentImage = 0;
   m_imageTimer.StartZero();
 
+  // and re-randomize if our control has been reallocated
+  if (m_randomized)
+    random_shuffle(m_files.begin(), m_files.end());
+
   m_image.SetFileName(m_files.size() ? m_files[0] : "");
 }
 
