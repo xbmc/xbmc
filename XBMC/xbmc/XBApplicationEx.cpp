@@ -438,6 +438,7 @@ void CXBApplicationEx::ReadInput()
       if( event.active.state & SDL_APPACTIVE )
       {
         m_AppActive = event.active.gain != 0;
+        if (m_AppActive) g_application.Minimize(false);
       }
       if (event.active.state & SDL_APPINPUTFOCUS)
       {
@@ -556,6 +557,22 @@ bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
 
 bool CXBApplicationEx::ProcessLinuxShortcuts(SDL_Event& event)
 {
+  bool alt = false;
+
+  alt = !!(SDL_GetModState() & (KMOD_LALT  | KMOD_RALT));
+
+  if (alt && event.key.type == SDL_KEYDOWN)
+  {
+    switch(event.key.keysym.sym)
+    {
+      case SDLK_TAB:  // ALT+TAB to minimize/hide
+        g_application.Minimize();
+        return true;
+      default:
+        break;
+    }
+  }
+
   return false;
 }
 
