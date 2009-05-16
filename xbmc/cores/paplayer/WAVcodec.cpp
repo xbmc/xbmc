@@ -22,6 +22,10 @@
 #include "stdafx.h"
 #include "WAVcodec.h"
 
+#if defined(WIN32)
+#include <mmreg.h>
+#endif
+
 typedef struct
 {
   char chunk_id[4];
