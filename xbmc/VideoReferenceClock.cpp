@@ -382,7 +382,8 @@ void CVideoReferenceClock::RunD3D()
   SingleLock.Leave();
 
   //we need a high priority to get accurate timing
-  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+  if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: SetThreadPriority failed");
 
   //get the scanline we're currently at
   m_D3dDev->GetRasterStatus(0, &RasterStatus);
