@@ -48,6 +48,10 @@ int main(int argc, char* argv[])
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
   setrlimit(RLIMIT_CORE, &rlim);
+
+  // Prevent child processes from becoming zombies on exit if not waited upon. See also Util::Command
+  struct sigaction sa = {.sa_handler = SIG_IGN};
+  sigaction(SIGCHLD, &sa, NULL);
 #endif
   if (argc > 1)
   {
