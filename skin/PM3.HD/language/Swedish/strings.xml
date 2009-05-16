@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 10/22/2008-->
+<!--Date of translation: 05/16/2009-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Volym avstängd</string>
@@ -93,6 +93,8 @@
   <string id="31110">knapp - Aktivera egna bakgrunder</string>
   <string id="31111">Visa alltid musikinfo vid sångtexter</string>
   <string id="31112">Visa mediatitlar i "Bredikon" visningen</string>
+  <string id="31113">Enstaka bild</string>
+  <string id="31114">Multibild</string>
   <string id="31200">Egna skriptval</string>
   <string id="31201">
   </string>
