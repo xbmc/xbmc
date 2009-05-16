@@ -263,6 +263,8 @@ public:
 
   bool IsPresentFrame();
 
+  void Minimize(bool minimize = true);
+
   bool m_restartLirc;
   bool m_restartLCD;
 
@@ -318,6 +320,7 @@ protected:
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
+  bool m_bWasFullScreenBeforeMinimize;
 
 #ifdef HAS_SDL
   int        m_frameCount;
@@ -334,7 +337,6 @@ protected:
 
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
-  bool Minimize();
   bool ProcessMouse();
   bool ProcessHTTPApiButtons();
   bool ProcessKeyboard();
