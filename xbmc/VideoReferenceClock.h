@@ -53,7 +53,9 @@ class CVideoReferenceClock : public CThread
     bool   UseVblank();
     int    GetMissedVblanks();
 
-#ifdef __APPLE__
+#ifdef _WIN32
+    void SetMonitor(MONITORINFOEX &Monitor);
+#elif defined(__APPLE__)
     void VblankHandler(__int64 nowtime, double fps);
 #endif
     
@@ -108,12 +110,14 @@ class CVideoReferenceClock : public CThread
     D3dClock::LPDIRECT3D9       m_D3d;
     D3dClock::LPDIRECT3DDEVICE9 m_D3dDev;
 
-    HWND         m_Hwnd;
-    WNDCLASSEX   m_WinCl;
-    bool         m_HasWinCl;
-    unsigned int m_Width;
-    unsigned int m_Height;
-    unsigned int m_Adapter;
+    HWND          m_Hwnd;
+    WNDCLASSEX    m_WinCl;
+    bool          m_HasWinCl;
+    unsigned int  m_Width;
+    unsigned int  m_Height;
+    unsigned int  m_Adapter;
+    MONITORINFOEX m_Monitor;
+    MONITORINFOEX m_PrevMonitor;
 
 #elif defined(__APPLE__)
     bool SetupCocoa();
