@@ -43,6 +43,11 @@ CVideoReferenceClock::CVideoReferenceClock()
   m_TotalMissedVblanks = 0;
   m_UseVblank = false;
   m_Started.Reset();
+
+#ifdef _WIN32
+  ZeroMemory(&m_Monitor, sizeof(m_Monitor));
+  ZeroMemory(&m_PrevMonitor, sizeof(m_PrevMonitor));
+#endif
 }
 
 void CVideoReferenceClock::Process()
@@ -449,10 +454,11 @@ void CVideoReferenceClock::RunD3D()
 
 bool CVideoReferenceClock::SetupD3D()
 {
-  D3dClock::D3DPRESENT_PARAMETERS D3dPP;
-  D3dClock::D3DCAPS9              DevCaps;
-  D3dClock::D3DRASTER_STATUS      RasterStatus;
-  D3dClock::D3DDISPLAYMODE        DisplayMode;
+  D3dClock::D3DPRESENT_PARAMETERS  D3dPP;
+  D3dClock::D3DCAPS9               DevCaps;
+  D3dClock::D3DRASTER_STATUS       RasterStatus;
+  D3dClock::D3DDISPLAYMODE         DisplayMode;
+  D3dClock::D3DADAPTER_IDENTIFIER9 AIdentifier;
 
   int ReturnV;
 
@@ -461,18 +467,7 @@ bool CVideoReferenceClock::SetupD3D()
   m_Hwnd = NULL;
   m_HasWinCl = false;
 
-  //we have to set up direct3d on a specific monitor, currently this is done with an environment variable
-  m_Adapter = 0;
-  if (getenv("SDL_FULLSCREEN_HEAD"))
-  {
-    unsigned int Adapter;
-    if (sscanf(getenv("SDL_FULLSCREEN_HEAD"), "%u", &Adapter) == 1)
-    {
-      m_Adapter = Adapter - 1;
-    }
-  }
-
-  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up Direct3d on adapter %i", m_Adapter);
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up Direct3d on monitor %s", m_Monitor.szDevice);
 
   if (!CreateHiddenWindow())
   {
@@ -486,6 +481,24 @@ bool CVideoReferenceClock::SetupD3D()
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Direct3DCreate9 failed");
     return false;
   }
+
+  int NrAdapters = m_D3d->GetAdapterCount();
+  m_Adapter = 0;
+  
+  //try to get the adapter the main window is on
+  CSingleLock SingleLock(m_CritSection);
+  for (int i = 0; i < NrAdapters; i++)
+  {
+    m_D3d->GetAdapterIdentifier(i, 0, &AIdentifier);
+    if (strncmp(m_Monitor.szDevice, AIdentifier.DeviceName, sizeof(m_Monitor.szDevice)) == 0)
+    {
+      m_Adapter = i;
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: monitor %s is adapter %i", m_Monitor.szDevice, i);
+      break;
+    }
+  }
+  m_PrevMonitor = m_Monitor;
+  SingleLock.Leave();
 
   ZeroMemory(&D3dPP, sizeof(D3dPP));
   D3dPP.BackBufferWidth = 64;
@@ -620,7 +633,8 @@ bool CVideoReferenceClock::CreateHiddenWindow()
 
   //make a layered window which can be made transparent
   m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
-                          WS_VISIBLE, 0, 0, 64, 64, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
+                          WS_VISIBLE, m_Monitor.rcMonitor.left, m_Monitor.rcMonitor.top, 64, 64,
+                          HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
 
   if (!m_Hwnd)
   {
@@ -643,6 +657,12 @@ void CVideoReferenceClock::HandleWindowMessages()
     TranslateMessage(&Message);
     DispatchMessage(&Message);
   }
+}
+
+void CVideoReferenceClock::SetMonitor(MONITORINFOEX &Monitor)
+{
+  CSingleLock SingleLock(m_CritSection);
+  m_Monitor = Monitor;
 }
 
 #elif defined(__APPLE__)
@@ -877,6 +897,18 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   }
   m_Width = DisplayMode.Width;
   m_Height = DisplayMode.Height;
+   
+  //we don't want to know about monitor changes for a forced update
+  //also prevent having an extra lock every second
+  if (!Forced && strncmp(m_Monitor.szDevice, m_PrevMonitor.szDevice, sizeof(m_Monitor.szDevice) - 1))
+  {
+    CSingleLock SingleLock(m_CritSection);
+    if (strncmp(m_Monitor.szDevice, m_PrevMonitor.szDevice, sizeof(m_Monitor.szDevice) - 1))
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: monitor changed to %s", m_Monitor.szDevice);
+      Changed = true;
+    }
+  }
 
   return Changed;
 
