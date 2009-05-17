@@ -467,7 +467,7 @@ bool CVideoReferenceClock::SetupD3D()
   m_Hwnd = NULL;
   m_HasWinCl = false;
 
-  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up Direct3d on monitor %s", m_Monitor.szDevice);
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up Direct3d on monitor %31s", m_Monitor.szDevice);
 
   if (!CreateHiddenWindow())
   {
@@ -493,7 +493,7 @@ bool CVideoReferenceClock::SetupD3D()
     if (strncmp(m_Monitor.szDevice, AIdentifier.DeviceName, sizeof(m_Monitor.szDevice)) == 0)
     {
       m_Adapter = i;
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: monitor %s is adapter %i", m_Monitor.szDevice, i);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: monitor %31s is adapter %i", m_Monitor.szDevice, i);
       break;
     }
   }
