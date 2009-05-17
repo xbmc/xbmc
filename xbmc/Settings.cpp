@@ -294,6 +294,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_curlconnecttimeout = 10;
   g_advancedSettings.m_curllowspeedtime = 5;
+  g_advancedSettings.m_curlretries = 3;
 
 #ifdef HAS_SDL
   g_advancedSettings.m_fullScreen = g_advancedSettings.m_startFullScreen;
@@ -1271,6 +1272,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetInt(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 1, 240);
     XMLUtils::GetInt(pElement, "curlclienttimeout", g_advancedSettings.m_curlconnecttimeout, 1, 1000);
     XMLUtils::GetInt(pElement, "curllowspeedtime", g_advancedSettings.m_curllowspeedtime, 1, 1000);
+    XMLUtils::GetInt(pElement, "curlretries", g_advancedSettings.m_curlretries, 0, 10);
   }
 
   pElement = pRootElement->FirstChildElement("samba");
