@@ -46,7 +46,6 @@ CGUIImage::CGUIImage(const CGUIImage &left)
   m_lastRenderTime = 0;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
-  m_texturesAllocated = false;
 }
 
 CGUIImage::~CGUIImage(void)
@@ -98,10 +97,6 @@ void CGUIImage::AllocateOnDemand()
 
 void CGUIImage::Render()
 {
-  // we need the checks for visibility and resource allocation here as
-  // most controls use CGUIImage's to do their rendering (where UpdateVisibility doesn't apply)
-  AllocateOnDemand();
-  
   if (!IsVisible()) return;
 
   if (m_crossFadeTime)
@@ -200,17 +195,14 @@ void CGUIImage::AllocResources()
 {
   if (m_texture.GetFileName().IsEmpty())
     return;
-  FreeTextures();
   
   CGUIControl::AllocResources();
   m_texture.AllocResources();
-  m_texturesAllocated = true;
 }
 
 void CGUIImage::FreeTextures(bool immediately /* = false */)
 {
   m_texture.FreeResources(immediately);
-  m_texturesAllocated = false;
   for (unsigned int i = 0; i < m_fadingTextures.size(); i++)
     delete m_fadingTextures[i];
   m_fadingTextures.clear();
@@ -288,11 +280,6 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
     m_currentFadeTime = 0;
   }
   m_texture.SetFileName(strFileName);
-}
-
-void CGUIImage::SetAlpha(unsigned char alpha)
-{
-  m_texture.SetAlpha(alpha);
 }
 
 #ifdef _DEBUG
