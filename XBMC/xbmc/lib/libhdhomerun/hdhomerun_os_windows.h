@@ -34,7 +34,6 @@
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <wspiapi.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -43,6 +42,24 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
+
+#ifdef __MINGW__
+extern 
+int WSAAPI getaddrinfo(
+  const char *nodename,
+  const char *servname,
+  const struct addrinfo *hints,
+  struct addrinfo **res
+);
+
+extern
+void WSAAPI freeaddrinfo(
+  struct addrinfo *ai
+);
+#else
+#include <wspiapi.h>
+#endif
+
 
 #if defined(DLL_IMPORT)
 #define LIBTYPE __declspec( dllexport )
@@ -68,7 +85,9 @@ typedef HANDLE pthread_mutex_t;
 #define close closesocket
 #define sock_getlasterror WSAGetLastError()
 #define sock_getlasterror_socktimeout (WSAGetLastError() == WSAETIMEDOUT)
+#ifndef va_copy
 #define va_copy(x, y) x = y
+#endif
 #define atoll _atoi64
 #define strdup _strdup
 #define strcasecmp _stricmp
