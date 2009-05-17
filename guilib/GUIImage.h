@@ -41,6 +41,28 @@
 class CGUIImage : public CGUIControl
 {
 public:
+  class CFadingTexture
+  {
+  public:
+    CFadingTexture(const CGUITexture &texture, unsigned int fadeTime)
+    {
+      // create a copy of our texture, and allocate resources
+      m_texture = new CGUITexture(texture);
+      m_texture->AllocResources();
+      m_fadeTime = fadeTime;
+      m_fading = false;
+    };
+    ~CFadingTexture()
+    {
+      m_texture->FreeResources();
+      delete m_texture;
+    };
+
+    CGUITexture *m_texture;  ///< texture to fade out
+    unsigned int m_fadeTime; ///< time to fade out (ms)
+    bool         m_fading;   ///< whether we're fading out
+  };
+
   CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture);
   CGUIImage(const CGUIImage &left);
   virtual ~CGUIImage(void);
@@ -65,6 +87,7 @@ public:
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
   virtual void SetPosition(float posX, float posY);
+  void SetCrossFade(unsigned int time);
 
   const CStdString& GetFileName() const;
   float GetTextureWidth() const;
@@ -78,6 +101,8 @@ protected:
   virtual void FreeTextures(bool immediately = false);
   void FreeResourcesButNotAnims();
   void Process();
+  unsigned char GetFadeLevel(unsigned int time) const;
+  bool RenderFading(CFadingTexture *texture, unsigned int frameTime);
   void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
 
   bool m_bDynamicResourceAlloc;
@@ -90,5 +115,10 @@ protected:
   CGUIInfoLabel m_info;
 
   CGUITexture m_texture;
+  std::vector<CFadingTexture *> m_fadingTextures;
+
+  unsigned int m_crossFadeTime;
+  unsigned int m_currentFadeTime;
+  unsigned int m_lastRenderTime;
 };
 #endif
