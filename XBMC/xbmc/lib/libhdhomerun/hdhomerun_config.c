@@ -183,7 +183,7 @@ static int cmd_set(const char *item, const char *value)
 				return -1;
 			}
 
-			int size = fread(buffer + pos, 1, 1024, stdin);
+			size_t size = fread(buffer + pos, 1, 1024, stdin);
 			pos += size;
 
 			if (size < 1024) {
@@ -294,22 +294,11 @@ static int cmd_scan(const char *tuner_str, const char *filename)
 	return ret;
 }
 
-static void cmd_save_abort(int junk)
+static bool_t cmd_saving = FALSE;
+
+static void cmd_save_abort(int arg)
 {
-	struct hdhomerun_video_stats_t stats;
-	hdhomerun_device_get_video_stats(hd, &stats);
-	hdhomerun_device_stream_stop(hd);
-	hdhomerun_device_destroy(hd);
-
-	fprintf(stderr, "\n");
-	fprintf(stderr, "-- Video statistics --\n");
-	fprintf(stderr, "%u packets received, %u network errors, %u transport errors, %u sequence errors\n",
-		(unsigned)stats.packet_count, 
-		(unsigned)stats.network_error_count, 
-		(unsigned)stats.transport_error_count, 
-		(unsigned)stats.sequence_error_count);
-
-	exit(0);
+	cmd_saving = FALSE;
 }
 
 static int cmd_save(const char *tuner_str, const char *filename)
@@ -345,12 +334,15 @@ static int cmd_save(const char *tuner_str, const char *filename)
 	hdhomerun_device_get_video_stats(hd, &stats_old);
 
 	uint64_t next_progress = getcurrenttime() + 1000;
-	while (1) {
-		usleep(64000);
+
+	cmd_saving = TRUE;
+	while (cmd_saving) {
+		uint64_t loop_start_time = getcurrenttime();
 
 		size_t actual_size;
 		uint8_t *ptr = hdhomerun_device_stream_recv(hd, VIDEO_DATA_BUFFER_SIZE_1S, &actual_size);
 		if (!ptr) {
+			msleep(64);
 			continue;
 		}
 
@@ -361,13 +353,17 @@ static int cmd_save(const char *tuner_str, const char *filename)
 			}
 		}
 
-		uint64_t current_time = getcurrenttime();
-		if (current_time >= next_progress) {
-			next_progress = current_time + 1000;
+		if (loop_start_time >= next_progress) {
+			next_progress += 1000;
+			if (loop_start_time >= next_progress) {
+				next_progress = loop_start_time + 1000;
+			}
 
 			hdhomerun_device_get_video_stats(hd, &stats_cur);
 
-			if (stats_cur.network_error_count > stats_old.network_error_count) {
+			if (stats_cur.overflow_error_count > stats_old.overflow_error_count) {
+				fprintf(stderr, "o");
+			} else if (stats_cur.network_error_count > stats_old.network_error_count) {
 				fprintf(stderr, "n");
 			} else if (stats_cur.transport_error_count > stats_old.transport_error_count) {
 				fprintf(stderr, "t");
@@ -380,7 +376,32 @@ static int cmd_save(const char *tuner_str, const char *filename)
 			stats_old = stats_cur;
 			fflush(stderr);
 		}
+
+		int32_t delay = 64 - (int32_t)(getcurrenttime() - loop_start_time);
+		if (delay <= 0) {
+			continue;
+		}
+
+		msleep(delay);
 	}
+
+	if (fp) {
+		fclose(fp);
+	}
+
+	hdhomerun_device_stream_stop(hd);
+	hdhomerun_device_get_video_stats(hd, &stats_cur);
+
+	fprintf(stderr, "\n");
+	fprintf(stderr, "-- Video statistics --\n");
+	fprintf(stderr, "%u packets received, %u overflow errors, %u network errors, %u transport errors, %u sequence errors\n",
+		(unsigned int)stats_cur.packet_count, 
+		(unsigned int)stats_cur.overflow_error_count,
+		(unsigned int)stats_cur.network_error_count, 
+		(unsigned int)stats_cur.transport_error_count, 
+		(unsigned int)stats_cur.sequence_error_count);
+
+	return 0;
 }
 
 static int cmd_upgrade(const char *filename)
@@ -424,6 +445,62 @@ static int cmd_upgrade(const char *filename)
 	return 0;
 }
 
+static int cmd_execute(void)
+{
+	char *ret_value;
+	char *ret_error;
+	if (hdhomerun_device_get_var(hd, "/sys/boot", &ret_value, &ret_error) < 0) {
+		fprintf(stderr, "communication error sending request to hdhomerun device\n");
+		return -1;
+	}
+
+	if (ret_error) {
+		printf("%s\n", ret_error);
+		return 0;
+	}
+
+	char *end = ret_value + strlen(ret_value);
+	char *pos = ret_value;
+
+	while (1) {
+		if (pos >= end) {
+			break;
+		}
+
+		char *eol_r = strchr(pos, '\r');
+		if (!eol_r) {
+			eol_r = end;
+		}
+
+		char *eol_n = strchr(pos, '\n');
+		if (!eol_n) {
+			eol_n = end;
+		}
+
+		char *eol = min(eol_r, eol_n);
+
+		char *sep = strchr(pos, ' ');
+		if (!sep || sep > eol) {
+			pos = eol + 1;
+			continue;
+		}
+
+		*sep = 0;
+		*eol = 0;
+
+		char *item = pos;
+		char *value = sep + 1;
+
+		printf("set %s \"%s\"\n", item, value);
+
+		cmd_set_internal(item, value);
+
+		pos = eol + 1;
+	}
+
+	return 1;
+}
+
 static int main_cmd(int argc, char *argv[])
 {
 	if (argc < 1) {
@@ -431,6 +508,17 @@ static int main_cmd(int argc, char *argv[])
 	}
 
 	char *cmd = *argv++; argc--;
+
+	if (contains(cmd, "key")) {
+		if (argc < 2) {
+			return help();
+		}
+		uint32_t lockkey = strtoul(argv[0], NULL, 0);
+		hdhomerun_device_tuner_lockkey_use_value(hd, lockkey);
+
+		cmd = argv[1];
+		argv+=2; argc-=2;
+	}
 
 	if (contains(cmd, "get")) {
 		if (argc < 1) {
@@ -471,6 +559,10 @@ static int main_cmd(int argc, char *argv[])
 		return cmd_upgrade(argv[0]);
 	}
 
+	if (contains(cmd, "execute")) {
+		return cmd_execute();
+	}
+
 	return help();
 }
 
@@ -504,7 +596,7 @@ static int main_internal(int argc, char *argv[])
 	}
 
 	/* Device object. */
-	hd = hdhomerun_device_create_from_str(id_str);
+	hd = hdhomerun_device_create_from_str(id_str, NULL);
 	if (!hd) {
 		fprintf(stderr, "invalid device id: %s\n", id_str);
 		return -1;

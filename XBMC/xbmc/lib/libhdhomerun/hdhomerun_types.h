@@ -63,6 +63,7 @@ struct hdhomerun_channelscan_result_t {
 	struct hdhomerun_tuner_status_t status;
 	int program_count;
 	struct hdhomerun_channelscan_program_t programs[HDHOMERUN_CHANNELSCAN_MAX_PROGRAM_COUNT];
+	uint32_t pat_crc;
 };
 
 struct hdhomerun_plotsample_t {
