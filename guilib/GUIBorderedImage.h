@@ -24,7 +24,7 @@
 
 #include "GUIControl.h"
 #include "TextureManager.h"
-#include "guiImage.h"
+#include "GUIImage.h"
 
 class CGUIBorderedImage : public CGUIImage
 {

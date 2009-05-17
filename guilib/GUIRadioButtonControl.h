@@ -59,7 +59,6 @@ public:
   void SetRadioDimensions(float posX, float posY, float width, float height);
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
   bool IsSelected() const { return m_bSelected; };
-
 protected:
   virtual void UpdateColors();
   CGUITexture m_imgRadioFocus;

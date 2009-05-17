@@ -83,7 +83,6 @@ public:
   virtual void SetInfo(const CGUIInfoLabel &info);
   virtual void SetFileName(const CStdString& strFileName, bool setConstant = false);
   virtual void SetAspectRatio(const CAspectRatio &aspect);
-  void SetAlpha(unsigned char alpha);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
   virtual void SetPosition(float posX, float posY);
@@ -100,15 +99,10 @@ protected:
   virtual void AllocateOnDemand();
   virtual void FreeTextures(bool immediately = false);
   void FreeResourcesButNotAnims();
-  void Process();
   unsigned char GetFadeLevel(unsigned int time) const;
   bool RenderFading(CFadingTexture *texture, unsigned int frameTime);
-  void Render(float left, float top, float bottom, float right, float u1, float v1, float u2, float v2);
 
   bool m_bDynamicResourceAlloc;
-
-  // for when we are changing textures
-  bool m_texturesAllocated;
 
   // border + conditional info
   CTextureInfo m_image;

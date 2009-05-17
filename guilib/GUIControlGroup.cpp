@@ -67,17 +67,6 @@ CGUIControlGroup::~CGUIControlGroup(void)
   ClearAll();
 }
 
-void CGUIControlGroup::PreAllocResources()
-{
-  CGUIControl::PreAllocResources();
-  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-  {
-    CGUIControl *control = *it;
-    if (!control->IsDynamicallyAllocated())
-      control->PreAllocResources();
-  }
-}
-
 void CGUIControlGroup::AllocResources()
 {
   CGUIControl::AllocResources();
