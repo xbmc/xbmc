@@ -29,19 +29,16 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	chmod +x $@
 else
 	$(CC) $(OBJS) -shared -o $@ `cat ../../cores/DllLoader/exports/wrapper.def` \
-		../../cores/DllLoader/exports/wrapper.o && strip $@
+		../../cores/DllLoader/exports/wrapper.o $@
 endif
 	
 hdhomerun_dll : $(OBJS)
-	gcc $(OBJS) $(SLIBS) -Wl,--out-implib,hdhomerun.lib -shared -o hdhomerun.dll
-	strip hdhomerun.dll
+	$(CC) $(OBJS) $(SLIBS) -Wl,--out-implib,hdhomerun.lib -shared -o hdhomerun.dll
 
 hdhomerun_config hdhomerun_config.exe : $(OBJS) hdhomerun_config.o
-	gcc $(OBJS) hdhomerun_config.o $(SLIBS) -lpthreadGC -liphlpapi -o $@
-	strip $@
+	$(CC) $(OBJS) hdhomerun_config.o $(SLIBS) -lpthreadGC -liphlpapi -o $@
 
 hdhomerun_mythconfig : $(LIBSRCS) hdhomerun_mythconfig.o
-	gcc $(OBJS) hdhomerun_config.o $(SLIBS) -lpthreadGC -liphlpapi -lmysqlclient -o $@
-	strip $@
+	$(CC) $(OBJS) hdhomerun_config.o $(SLIBS) -lpthreadGC -liphlpapi -lmysqlclient -o $@
 
 include ../../../Makefile.include
