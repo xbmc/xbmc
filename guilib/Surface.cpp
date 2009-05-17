@@ -31,6 +31,10 @@
 #include <string>
 #include "Settings.h"
 
+#ifdef _WIN32
+#include "VideoReferenceClock.h"
+#endif
+
 using namespace Surface;
 
 #ifdef HAS_SDL_OPENGL
@@ -951,7 +955,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
   {
     RECT rBounds;
     HMONITOR hMonitor;
-    MONITORINFO mi;
+    MONITORINFOEX mi;
     HWND hwnd = sysInfo.window;
 
     // Start by getting the current window rect and centering the new window on
@@ -960,6 +964,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
     hMonitor = MonitorFromRect(&rBounds, MONITOR_DEFAULTTONEAREST);
     mi.cbSize = sizeof(mi);
     GetMonitorInfo(hMonitor, &mi);
+    g_VideoReferenceClock.SetMonitor(mi); //let the videoreferenceclock know which monitor we're on
 
     rBounds.left = mi.rcMonitor.left + (mi.rcMonitor.right - mi.rcMonitor.left - newWidth) / 2;
     rBounds.top = mi.rcMonitor.top + (mi.rcMonitor.bottom - mi.rcMonitor.top - newHeight) / 2;
