@@ -818,7 +818,8 @@ extern "C"
       int iItemsRead = dll_read(fd, buffer, count * size);
       if (iItemsRead >= 0)
       {
-        iItemsRead /= size;
+        if (size)
+          iItemsRead /= size;
         return iItemsRead;
       }
     }
