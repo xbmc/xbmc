@@ -94,7 +94,6 @@ bool CAudioStream::ProcessStream()
   m_IntervalTimer.lap_end();
   // TODO: Consider multiple calls to fill downstream buffers
   bool ret = true;
-  MA_RESULT res = MA_SUCCESS;
   
   m_ProcessTimer.lap_start();
 
@@ -427,26 +426,31 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
  {
     // Global AC3 Output profile
     CStreamAttributeCollection* pAtts = g_AudioProfileAC3.output_descriptor.GetAttributes();
-    pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_ENCODED);
+    pAtts->SetInt(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED);
+    pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_IEC61937);
     pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_AC3);
 
     // Global Stereo Output Profile
     pAtts = g_AudioProfileStereo.output_descriptor.GetAttributes();
-    pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_PCM);
-    pAtts->SetInt(MA_ATT_TYPE_CHANNELS,2);
+    pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_LPCM);
+    pAtts->SetInt(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED);
+    pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
+    pAtts->SetInt(MA_ATT_TYPE_CHANNEL_COUNT,2);
     pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,16);
     pAtts->SetInt(MA_ATT_TYPE_SAMPLESPERSEC,44100);
-    pAtts->SetInt64(MA_ATT_TYPE_CHANNEL_MAP,0xffffffffffffff10);
+    pAtts->SetInt64(MA_ATT_TYPE_CHANNEL_MAP,0xffffffffffffff10LLU);
 
     // Global 6-Ch Output Profile
     pAtts = g_AudioProfile6Ch.output_descriptor.GetAttributes();
-    pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_PCM);
-    pAtts->SetInt(MA_ATT_TYPE_CHANNELS,6);
+    pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_LPCM);
+    pAtts->SetInt(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED);
+    pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
+    pAtts->SetInt(MA_ATT_TYPE_CHANNEL_MAP,6);
     pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,16);
     pAtts->SetInt(MA_ATT_TYPE_SAMPLESPERSEC,48000);
-    pAtts->SetInt64(MA_ATT_TYPE_CHANNEL_MAP,0xffffffffff325410);
+    pAtts->SetInt64(MA_ATT_TYPE_CHANNEL_MAP,0xffffffffff325410LLU);
 
     g_AudioProfileInit = true;
  }
- return &g_AudioProfileStereo;
+ return &g_AudioProfileAC3;
 }

@@ -29,7 +29,8 @@
 #include "MasterAudioCore.h"
 #include <vector>
 
-typedef unsigned int MA_STREAM_ID;
+
+typedef void* MA_STREAM_ID;
 
 #define MA_MIXER_HARDWARE 1
 #define MA_MIXER_SOFTWARE 2

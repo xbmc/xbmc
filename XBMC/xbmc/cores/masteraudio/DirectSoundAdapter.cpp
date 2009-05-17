@@ -81,8 +81,8 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
   m_pRenderer = NULL;
   switch (format)
   {
-  case MA_STREAM_FORMAT_PCM:
-    if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_CHANNELS,(int*)&channels))
+  case MA_STREAM_FORMAT_LPCM:
+    if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_CHANNEL_COUNT,(int*)&channels))
       return MA_ERROR;
     if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_BITDEPTH,(int*)&bitsPerSample))
       return MA_ERROR;
@@ -90,7 +90,7 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
       return MA_ERROR;
     m_pRenderer = CAudioRendererFactory::Create(NULL,channels, samplesPerSecond, bitsPerSample, false,"",false,false);
     break;
-  case MA_STREAM_FORMAT_ENCODED:
+  case MA_STREAM_FORMAT_IEC61937:
     if ((MA_SUCCESS == pAtts->GetInt(MA_ATT_TYPE_ENCODING,(int*)&encoding)) && (encoding == MA_STREAM_ENCODING_AC3 || encoding == MA_STREAM_ENCODING_DTS))
     {
       m_pRenderer = CAudioRendererFactory::Create(NULL, 2, 48000, 16, false, "", false, true);
@@ -130,8 +130,6 @@ MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
 
   if (pSlice->header.data_len % m_ChunkLen)
     return MA_ERROR; // Data is misaligned
-
-  size_t newLen = pSlice->header.data_len;
 
   // Try send some data to the renderer
   if (m_pInputSlice && m_BufferOffset) // We have a leftover slice from last time

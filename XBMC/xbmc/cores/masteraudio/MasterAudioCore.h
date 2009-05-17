@@ -75,48 +75,96 @@ struct lap_timer
 ////////////////////////////////////////////
 typedef unsigned int MA_RESULT;
 
-#define MA_ERROR            0
-#define MA_SUCCESS          1
-#define MA_NOT_IMPLEMENTED  2
-#define MA_BUSYORFULL       3
-#define MA_NEED_DATA        4
-#define MA_TYPE_MISMATCH    5
-#define MA_NOTFOUND         6
-#define MA_NOT_SUPPORTED    7
+// MA_RESULT Values (Error Codes)
+enum
+{
+ MA_ERROR            = 0,
+ MA_SUCCESS          = 1,
+ MA_NOT_IMPLEMENTED  = 2,
+ MA_BUSYORFULL       = 3,
+ MA_NEED_DATA        = 4,
+ MA_TYPE_MISMATCH    = 5,
+ MA_NOTFOUND         = 6,
+ MA_NOT_SUPPORTED    = 7
+};
 
-#define MA_STREAM_NONE NULL
-#define MA_MAX_INPUT_STREAMS 4
+#define MA_STREAM_NONE        0
+#define MA_MAX_INPUT_STREAMS  4
 
-#define MA_UNKNOWN_CONTROL 0x0000
-#define MA_CONTROL_STOP 0x0001
-#define MA_CONTROL_PLAY 0x0002
-#define MA_CONTROL_PAUSE 0x0003
-#define MA_CONTROL_RESUME 0x0004
-#define MA_MAX_CONTROL AM_CONTROL_RESUME
+// Transport Control Codes
+enum
+{
+  MA_UNKNOWN_CONTROL = 0x0000,
+  MA_CONTROL_STOP    = 0x0001,
+  MA_CONTROL_PLAY    = 0x0002,
+  MA_CONTROL_PAUSE   = 0x0003,
+  MA_CONTROL_RESUME  = 0x0004
+};
 
 typedef unsigned int MA_ATTRIB_ID;
 
 // TODO: Document Attributes and points of use
 
+////////////////////////////////////////////////////////////////////////////////
 // Attribute Types
-#define MA_ATT_TYPE_STREAM_FORMAT   0x0001
-#define MA_ATT_TYPE_BITDEPTH        0x0002
-#define MA_ATT_TYPE_CHANNELS        0x0003
-#define MA_ATT_TYPE_SAMPLESPERSEC   0x0004
-#define MA_ATT_TYPE_ENCODING        0x0005
-#define MA_ATT_TYPE_PASSTHROUGH     0x0006
-#define MA_ATT_TYPE_CHANNEL_MAP     0x0007
+////////////////////////////////////////////////////////////////////////////////
+// Each AudioStream must have the following attibutes set to be considered valid.
+enum
+{
+  MA_ATT_TYPE_STREAM_FLAGS,     // type: int (bitfield) 
+  MA_ATT_TYPE_AVG_BIRATE,       // type: int
+  MA_ATT_TYPE_MIN_FRAME_SIZE,   // type: int
+  MA_ATT_TYPE_STREAM_FORMAT,    // type: int (The value of the this attribute defines what other attibutes are valid/required)
+  
+  // Linear PCM Format Attributes
+  MA_ATT_TYPE_LPCM_FLAGS,       // type: int (bitfield)
+  MA_ATT_TYPE_SAMPLE_TYPE,      // type: int
+  MA_ATT_TYPE_BITDEPTH,         // type: int
+  MA_ATT_TYPE_SAMPLESPERSEC,    // type: int
+  MA_ATT_TYPE_CHANNEL_COUNT,    // type: int
+  MA_ATT_TYPE_CHANNEL_MAP,      // type: int64
+  
+  // IEC61937(AC3/DTS over PCM) Format Attributes
+  MA_ATT_TYPE_ENCODING          // type: int
+};
 
 // MA_ATT_TYPE_STREAM_FORMAT Values
-#define MA_STREAM_FORMAT_PCM      0x0001
-#define MA_STREAM_FORMAT_FLOAT    0x0002
-#define MA_STREAM_FORMAT_ENCODED  0x0003
+enum
+{
+  MA_STREAM_FORMAT_LPCM,
+  MA_STREAM_FORMAT_IEC61937
+};
+
+// MA_ATT_TYPE_STREAM_FLAGS Values
+enum
+{
+  MA_STREAM_FLAG_NONE     = (1L << 0),
+  MA_STREAM_FLAG_LOCKED   = (1L << 1)  // The stream data is not to be modified by the audio chain in any way 
+};
+
+// MA_ATT_TYPE_LPCM_FLAGS Values
+enum
+{
+  MA_LPCM_FLAG_NONE         = (1L << 0),
+  MA_LPCM_FLAG_INTERLEAVED  = (1L << 1)
+};
+
+// MA_ATT_TYPE_SAMPLE_TYPE Values
+enum
+{
+  MA_SAMPLE_TYPE_SINT,
+  MA_SAMPLE_TYPE_UINT,
+  MA_SAMPLE_TYPE_FLOAT
+};
 
 // MA_ATT_TYPE_ENCODING Values
-#define MA_STREAM_ENCODING_AC3    0x0001
-#define MA_STREAM_ENCODING_DTS    0x0002
+enum
+{
+  MA_STREAM_ENCODING_AC3,
+  MA_STREAM_ENCODING_DTS
+};
 
-// Audio Channel Locations (Indexes)
+// Audio Channel Locations
 #define MA_CHANNEL_FRONT_LEFT     0x0
 #define MA_CHANNEL_FRONT_RIGHT    0x1
 #define MA_CHANNEL_REAR_LEFT      0x2
@@ -366,7 +414,8 @@ public:
 protected:
   void DisposeGraph();
   audio_slice* m_pInputSlice;
-  bool m_Passthrough;
+  int m_InputStreamFlags;
+  int m_OutputStreamFlags;
   dsp_filter_node* m_pHead;
   dsp_filter_node* m_pTail;
 };
@@ -396,11 +445,11 @@ protected:
 
 // Interconnects
 ////////////////////////////////////////////
-class CSliceQueue
+class CAudioQueue
 {
 public:
-  CSliceQueue();
-  virtual ~CSliceQueue();
+  CAudioQueue();
+  virtual ~CAudioQueue();
   void Push(audio_slice* pSlice);
   audio_slice* GetSlice(size_t align, size_t maxSize);
   size_t GetTotalBytes() {return m_TotalBytes + m_RemainderSize;}
@@ -427,7 +476,7 @@ protected:
   IAudioSource* m_pSource; // Input
   IAudioSink* m_pSink; // Output
   audio_slice* m_pSlice; // Holding
-  CSliceQueue m_Queue;
+  CAudioQueue m_Queue;
   audio_data_transfer_props m_InputProps;
   audio_data_transfer_props m_OutputProps;
 };

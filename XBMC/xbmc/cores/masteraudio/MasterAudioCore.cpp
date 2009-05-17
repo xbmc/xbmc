@@ -25,9 +25,6 @@
 // TODO: Move with mixer
 #include "DirectSoundAdapter.h"
 
-#include "Filters/AC3Encoder.h"
-#include "Filters/StandardFilters.h"
-
 unsigned __int64 audio_slice_id = 0;
 
 // CStreamInput
@@ -118,7 +115,9 @@ MA_RESULT CStreamInput::GetSlice(audio_slice** pSlice)
 CDSPChain::CDSPChain() :
   m_pInputSlice(NULL),
   m_pHead(NULL),
-  m_pTail(NULL)
+  m_pTail(NULL),
+  m_InputStreamFlags(0),
+  m_OutputStreamFlags(0)
 {
 
 }
@@ -143,33 +142,18 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
   if (!pInDesc || !pOutDesc)
     return MA_ERROR;
 
+  // Store the input ant output stream flags for future reference
+  pInDesc->GetAttributes()->GetInt(MA_ATT_TYPE_STREAM_FLAGS, &m_InputStreamFlags);
+  pOutDesc->GetAttributes()->GetInt(MA_ATT_TYPE_STREAM_FLAGS, &m_OutputStreamFlags);
+  
   // See if the stream wants to be passed-through untouched (must be specified in both input AND output descriptors)
-  m_Passthrough = false;
-  if (MA_SUCCESS == pInDesc->GetAttributes()->GetBool(MA_ATT_TYPE_PASSTHROUGH,&m_Passthrough) && m_Passthrough)
+  if ((m_InputStreamFlags & MA_STREAM_FLAG_LOCKED) && (m_OutputStreamFlags & MA_STREAM_FLAG_LOCKED))
   {
-    m_Passthrough = false;
-    if (MA_SUCCESS == pOutDesc->GetAttributes()->GetBool(MA_ATT_TYPE_PASSTHROUGH,&m_Passthrough) && m_Passthrough)
-    {
-      CLog::Log(LOGINFO,"MasterAudio:CDSPChain: Detected passthrough stream. No filters will be created or applied.");
-      return MA_SUCCESS;
-    }
-    else
-    {
-      CLog::Log(LOGWARNING,"MasterAudio:CDSPChain: Detected conflicting passthrough attributes. Passthrough will be ignored.");
-    }
+    CLog::Log(LOGINFO,"MasterAudio:CDSPChain: Detected locked stream. No filters will be created or applied.");
+    // TODO: How do we want to handle scenarios where the flag cannot be honored because it is not set on both input and output
   }
  
   // TODO: Dynamically create DSP Filter Graph 
-
-  // TEST FILTER
-  IDSPFilter* pFilter = new CChannelRemapFilter();
-  pFilter->SetInputFormat(pInDesc);
-  pFilter->SetOutputFormat(pOutDesc);
-  dsp_filter_node* pNode = new dsp_filter_node;
-  pNode->filter = pFilter;
-  pNode->next = NULL;
-  pNode->prev = NULL;
-  m_pHead = m_pTail = pNode;
 
   CLog::Log(LOGINFO,"MasterAudio:CDSPChain: Creating dummy filter graph.");
 
@@ -456,9 +440,9 @@ bool CHardwareMixer::DrainChannel(int channel, unsigned int timeout)
   return m_pChannel[channel-1]->Drain(timeout);
 }
 
-// CSliceQueue
+// CAudioQueue
 //////////////////////////////////////////////////////////////////////////////////////
-CSliceQueue::CSliceQueue() :
+CAudioQueue::CAudioQueue() :
   m_TotalBytes(0),
   m_pPartialSlice(NULL),
   m_RemainderSize(0)
@@ -466,12 +450,12 @@ CSliceQueue::CSliceQueue() :
 
 }
 
-CSliceQueue::~CSliceQueue()
+CAudioQueue::~CAudioQueue()
 {
   Clear();
 }
 
-void CSliceQueue::Push(audio_slice* pSlice) 
+void CAudioQueue::Push(audio_slice* pSlice) 
 {
   if (pSlice)
   {
@@ -480,7 +464,7 @@ void CSliceQueue::Push(audio_slice* pSlice)
   }
 }
 
-audio_slice* CSliceQueue::Pop()
+audio_slice* CAudioQueue::Pop()
 {
   audio_slice* pSlice = NULL;
   if (!m_Slices.empty())
@@ -493,7 +477,7 @@ audio_slice* CSliceQueue::Pop()
 }
 
 // TODO: Try to respect preferred transfer size
-audio_slice* CSliceQueue::GetSlice(size_t alignSize, size_t maxSize)
+audio_slice* CAudioQueue::GetSlice(size_t alignSize, size_t maxSize)
 {
   if (GetTotalBytes() < alignSize) // Need to have enough data to give
     return NULL;
@@ -565,7 +549,7 @@ audio_slice* CSliceQueue::GetSlice(size_t alignSize, size_t maxSize)
   return pOutSlice;
 }
 
-void CSliceQueue::Clear()
+void CAudioQueue::Clear()
 {
   while (!m_Slices.empty())
     delete Pop();

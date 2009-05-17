@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "AudioManagerClient.h"
 
-
 CAudioManagerClient::CAudioManagerClient(CAudioManager* pManager) :
   m_pManager(pManager),
   m_StreamId(MA_STREAM_NONE)
@@ -105,6 +104,7 @@ bool CAudioManagerClient::OpenStream(CStreamDescriptor* pDesc)
 {
   if (!m_pManager)
     return false;
+  
   m_StreamId = m_pManager->OpenStream(pDesc);
   return (m_StreamId != MA_STREAM_NONE);
 }

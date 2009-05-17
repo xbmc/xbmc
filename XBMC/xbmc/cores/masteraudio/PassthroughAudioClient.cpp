@@ -29,9 +29,10 @@ bool CPassthroughAudioClient::OpenAC3Stream()
   if(!pAtts)
     return false;
 
-  pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_ENCODED);
+  pAtts->SetInt(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED);
+  pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_IEC61937);
   pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_AC3);
-  pAtts->SetBool(MA_ATT_TYPE_PASSTHROUGH,true);
+
   return CAudioManagerClient::OpenStream(&desc);
 }
 
@@ -42,9 +43,9 @@ bool CPassthroughAudioClient::OpenDTSStream()
   if(!pAtts)
     return false;
 
-  pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_ENCODED);
+  pAtts->SetInt(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED);
+  pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_IEC61937);
   pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_DTS);
-  pAtts->SetBool(MA_ATT_TYPE_PASSTHROUGH,true);
 
   return CAudioManagerClient::OpenStream(&desc);
 }

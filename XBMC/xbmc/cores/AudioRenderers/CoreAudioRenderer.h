@@ -26,7 +26,7 @@
 #include "IAudioRenderer.h"
 #include <utils/LockFree.h>
 
-struct audio_slice
+struct ca_audio_slice
 {
   struct _tag_header{
     unsigned __int64 timestamp; // Currently not used
@@ -59,12 +59,12 @@ public:
   size_t GetTotalBytes();
   void Clear();
 protected:
-  void Push(audio_slice* pSlice);
-  audio_slice* Pop(); // Does not respect remainder, so it must be private
+  void Push(ca_audio_slice* pSlice);
+  ca_audio_slice* Pop(); // Does not respect remainder, so it must be private
   CAtomicAllocator* m_pAllocator;
   lf_queue m_Queue;
   size_t m_TotalBytes;
-  audio_slice* m_pPartialSlice;
+  ca_audio_slice* m_pPartialSlice;
   size_t m_RemainderSize;
 };
 

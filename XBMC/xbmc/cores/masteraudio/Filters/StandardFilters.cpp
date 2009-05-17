@@ -52,7 +52,7 @@ MA_RESULT CChannelRemapFilter::TestInputFormat(CStreamDescriptor* pDesc)
 
   int format = 0;
   pDesc->GetAttributes()->GetInt(MA_ATT_TYPE_STREAM_FORMAT, &format);
-  if (format != MA_STREAM_FORMAT_PCM) // TODO: We can do floats, too
+  if (format != MA_STREAM_FORMAT_LPCM)
     return MA_NOT_SUPPORTED;
 
   return MA_SUCCESS;
@@ -65,7 +65,7 @@ MA_RESULT CChannelRemapFilter::SetInputFormat(CStreamDescriptor* pDesc)
     return test;
 
   int channels = 0;
-  if (MA_SUCCESS != pDesc->GetAttributes()->GetInt(MA_ATT_TYPE_CHANNELS, &channels))
+  if (MA_SUCCESS != pDesc->GetAttributes()->GetInt(MA_ATT_TYPE_CHANNEL_COUNT, &channels))
     return MA_ERROR;
 
   int bitdepth = 0;
@@ -132,7 +132,7 @@ MA_RESULT CChannelRemapFilter::TestOutputFormat(CStreamDescriptor* pDesc)
 
   int format = 0;
   pDesc->GetAttributes()->GetInt(MA_ATT_TYPE_STREAM_FORMAT, &format);
-  if (format != MA_STREAM_FORMAT_PCM) // TODO: We can do floats, too
+  if (format != MA_STREAM_FORMAT_LPCM)
     return MA_NOT_SUPPORTED;
 
   return MA_SUCCESS;
@@ -142,7 +142,7 @@ MA_RESULT CChannelRemapFilter::SetOutputFormat(CStreamDescriptor* pDesc)
 {
 
   int channels = 0;
-  if (MA_SUCCESS != pDesc->GetAttributes()->GetInt(MA_ATT_TYPE_CHANNELS, &channels))
+  if (MA_SUCCESS != pDesc->GetAttributes()->GetInt(MA_ATT_TYPE_CHANNEL_COUNT, &channels))
     return MA_ERROR;
 
   int bitdepth = 0;
