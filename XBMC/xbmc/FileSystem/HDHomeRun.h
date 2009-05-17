@@ -39,7 +39,7 @@ public:
   virtual int           device_set_tuner_program(struct hdhomerun_device_t *hd, const char *program)=0;
   virtual int           device_set_tuner_from_str(struct hdhomerun_device_t *hd, const char *tuner_str)=0;
   virtual void          device_set_tuner(struct hdhomerun_device_t *hd, unsigned int tuner)=0;
-  virtual int           device_get_tuner_status(struct hdhomerun_device_t *hd, struct hdhomerun_tuner_status_t *status)=0;
+  virtual int           device_get_tuner_status(struct hdhomerun_device_t *hd, char **pstatus_str, struct hdhomerun_tuner_status_t *status)=0;
 };
 
 class DllHdHomeRun : public DllDynamic, public DllHdHomeRunInterface
@@ -55,7 +55,7 @@ class DllHdHomeRun : public DllDynamic, public DllHdHomeRunInterface
   DEFINE_METHOD2(int, device_set_tuner_program, (struct hdhomerun_device_t *p1, const char *p2))
   DEFINE_METHOD2(int, device_set_tuner_from_str, (struct hdhomerun_device_t *p1, const char *p2))
   DEFINE_METHOD2(void, device_set_tuner, (struct hdhomerun_device_t *p1, unsigned int p2))
-  DEFINE_METHOD2(int, device_get_tuner_status, (struct hdhomerun_device_t *p1, struct hdhomerun_tuner_status_t *p2));
+  DEFINE_METHOD3(int, device_get_tuner_status, (struct hdhomerun_device_t *p1, char **p2, struct hdhomerun_tuner_status_t *p3));
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(hdhomerun_discover_find_devices_custom, discover_find_devices_custom)
     RESOLVE_METHOD_RENAME(hdhomerun_device_create_from_str, device_create_from_str)
