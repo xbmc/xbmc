@@ -3476,9 +3476,14 @@ bool CApplication::ProcessRemote(float frameTime)
     return OnKey(key);
   }
 #endif
-#if defined(_LINUX) && !defined(__APPLE__)
+#ifdef HAS_LCD
   if (m_restartLCD) {
     CLog::Log(LOGDEBUG, "g_application.m_restartLCD is true - restarting LCDd");
+#ifdef _LINUX
+    g_lcd->SetBackLight(1);
+#else
+    g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
+#endif
     g_lcd->Stop();
     g_lcd->Initialize();
     m_restartLCD = false;
