@@ -619,7 +619,7 @@ bool CVideoReferenceClock::CreateHiddenWindow()
   m_HasWinCl = true;
 
   //make a layered window which can be made transparent
-  m_Hwnd = CreateWindowEx(WS_EX_LAYERED, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
+  m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
                           WS_VISIBLE, 0, 0, 64, 64, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
 
   if (!m_Hwnd)
