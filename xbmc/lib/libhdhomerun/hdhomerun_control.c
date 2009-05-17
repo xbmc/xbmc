@@ -67,13 +67,15 @@ void hdhomerun_control_set_device(struct hdhomerun_control_sock_t *cs, uint32_t 
 	cs->actual_device_ip = 0;
 }
 
-struct hdhomerun_control_sock_t *hdhomerun_control_create(uint32_t device_id, uint32_t device_ip)
+struct hdhomerun_control_sock_t *hdhomerun_control_create(uint32_t device_id, uint32_t device_ip, struct hdhomerun_debug_t *dbg)
 {
 	struct hdhomerun_control_sock_t *cs = (struct hdhomerun_control_sock_t *)calloc(1, sizeof(struct hdhomerun_control_sock_t));
 	if (!cs) {
+		hdhomerun_debug_printf(dbg, "hdhomerun_control_create: failed to allocate control object\n");
 		return NULL;
 	}
 
+	cs->dbg = dbg;
 	cs->sock = -1;
 	hdhomerun_control_set_device(cs, device_id, device_ip);
 
@@ -84,11 +86,6 @@ void hdhomerun_control_destroy(struct hdhomerun_control_sock_t *cs)
 {
 	hdhomerun_control_close_sock(cs);
 	free(cs);
-}
-
-void hdhomerun_control_set_debug(struct hdhomerun_control_sock_t *cs, struct hdhomerun_debug_t *dbg)
-{
-	cs->dbg = dbg;
 }
 
 static bool_t hdhomerun_control_connect_sock(struct hdhomerun_control_sock_t *cs)
@@ -299,6 +296,7 @@ static int hdhomerun_control_get_set(struct hdhomerun_control_sock_t *cs, const 
 
 	int name_len = (int)strlen(name) + 1;
 	if (tx_pkt->end + 3 + name_len > tx_pkt->limit) {
+		hdhomerun_debug_printf(cs->dbg, "hdhomerun_control_get_set: request too long\n");
 		return -1;
 	}
 	hdhomerun_pkt_write_u8(tx_pkt, HDHOMERUN_TAG_GETSET_NAME);
@@ -308,6 +306,7 @@ static int hdhomerun_control_get_set(struct hdhomerun_control_sock_t *cs, const 
 	if (value) {
 		int value_len = (int)strlen(value) + 1;
 		if (tx_pkt->end + 3 + value_len > tx_pkt->limit) {
+			hdhomerun_debug_printf(cs->dbg, "hdhomerun_control_get_set: request too long\n");
 			return -1;
 		}
 		hdhomerun_pkt_write_u8(tx_pkt, HDHOMERUN_TAG_GETSET_VALUE);
@@ -317,6 +316,7 @@ static int hdhomerun_control_get_set(struct hdhomerun_control_sock_t *cs, const 
 
 	if (lockkey != 0) {
 		if (tx_pkt->end + 6 > tx_pkt->limit) {
+			hdhomerun_debug_printf(cs->dbg, "hdhomerun_control_get_set: request too long\n");
 			return -1;
 		}
 		hdhomerun_pkt_write_u8(tx_pkt, HDHOMERUN_TAG_GETSET_LOCKKEY);
@@ -326,6 +326,7 @@ static int hdhomerun_control_get_set(struct hdhomerun_control_sock_t *cs, const 
 
 	/* Send/Recv. */
 	if (hdhomerun_control_send_recv_internal(cs, tx_pkt, rx_pkt, HDHOMERUN_TYPE_GETSET_REQ, HDHOMERUN_CONTROL_RECV_TIMEOUT) < 0) {
+		hdhomerun_debug_printf(cs->dbg, "hdhomerun_control_get_set: send/recv error\n");
 		return -1;
 	}
 
@@ -350,13 +351,16 @@ static int hdhomerun_control_get_set(struct hdhomerun_control_sock_t *cs, const 
 			return 1;
 
 		case HDHOMERUN_TAG_ERROR_MESSAGE:
+			rx_pkt->pos[len] = 0;
+			hdhomerun_debug_printf(cs->dbg, "hdhomerun_control_get_set: %s\n", rx_pkt->pos);
+
 			if (pvalue) {
 				*pvalue = NULL;
 			}
 			if (perror) {
 				*perror = (char *)rx_pkt->pos;
-				rx_pkt->pos[len] = 0;
 			}
+
 			return 0;
 		}
 
@@ -401,6 +405,7 @@ int hdhomerun_control_upgrade(struct hdhomerun_control_sock_t *cs, FILE *upgrade
 		hdhomerun_pkt_write_mem(tx_pkt, data, length);
 
 		if (hdhomerun_control_send_recv_internal(cs, tx_pkt, NULL, HDHOMERUN_TYPE_UPGRADE_REQ, 0) < 0) {
+			hdhomerun_debug_printf(cs->dbg, "hdhomerun_control_upgrade: send/recv failed\n");
 			return -1;
 		}
 
@@ -409,6 +414,7 @@ int hdhomerun_control_upgrade(struct hdhomerun_control_sock_t *cs, FILE *upgrade
 
 	if (sequence == 0) {
 		/* No data in file. Error, but no need to close connection. */
+		hdhomerun_debug_printf(cs->dbg, "hdhomerun_control_upgrade: zero length file\n");
 		return 0;
 	}
 
@@ -417,6 +423,7 @@ int hdhomerun_control_upgrade(struct hdhomerun_control_sock_t *cs, FILE *upgrade
 	hdhomerun_pkt_write_u32(tx_pkt, 0xFFFFFFFF);
 
 	if (hdhomerun_control_send_recv_internal(cs, tx_pkt, rx_pkt, HDHOMERUN_TYPE_UPGRADE_REQ, HDHOMERUN_CONTROL_UPGRADE_TIMEOUT) < 0) {
+		hdhomerun_debug_printf(cs->dbg, "hdhomerun_control_upgrade: send/recv failed\n");
 		return -1;
 	}
 
@@ -431,6 +438,8 @@ int hdhomerun_control_upgrade(struct hdhomerun_control_sock_t *cs, FILE *upgrade
 
 		switch (tag) {
 		case HDHOMERUN_TAG_ERROR_MESSAGE:
+			rx_pkt->pos[len] = 0;
+			hdhomerun_debug_printf(cs->dbg, "hdhomerun_control_upgrade: %s\n", (char *)rx_pkt->pos);
 			return 0;
 
 		default:
