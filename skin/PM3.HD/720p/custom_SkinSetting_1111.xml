@@ -368,7 +368,7 @@
 						<item id="4">
 							<label>0</label>
 							<onclick>-</onclick>
-							<icon>special://skin/backgrounds/rograms.jpg</icon>
+							<icon>special://skin/backgrounds/programs.jpg</icon>
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
 							<visible>Skin.HasSetting(ProgramsInHome)</visible>
 						</item>
