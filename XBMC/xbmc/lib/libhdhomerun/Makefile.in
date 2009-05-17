@@ -29,7 +29,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	chmod +x $@
 else
 	$(CC) $(OBJS) -shared -o $@ `cat ../../cores/DllLoader/exports/wrapper.def` \
-		../../cores/DllLoader/exports/wrapper.o $@
+		../../cores/DllLoader/exports/wrapper.o
 endif
 	
 hdhomerun_dll : $(OBJS)
