@@ -661,6 +661,7 @@ void CVideoReferenceClock::HandleWindowMessages()
   }
 }
 
+//called from surface.cpp to set the monitor the main window is on
 void CVideoReferenceClock::SetMonitor(MONITORINFOEX &Monitor)
 {
   CSingleLock SingleLock(m_CritSection);
