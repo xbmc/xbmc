@@ -230,7 +230,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
-  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+p{ar}?t[ _\\.-]*([0-9a-d]+)");
+  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+p(?:ar)?t[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dis[ck][ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\.....?)$"); // can anyone explain this one?  should this be ([0-9a-d]+) ?
   g_advancedSettings.m_videoStackRegExps.push_back("()cd([0-9a-d]+)(\\.....?)$");
