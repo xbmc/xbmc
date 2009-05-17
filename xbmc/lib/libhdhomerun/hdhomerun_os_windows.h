@@ -68,9 +68,7 @@ typedef HANDLE pthread_mutex_t;
 #define close closesocket
 #define sock_getlasterror WSAGetLastError()
 #define sock_getlasterror_socktimeout (WSAGetLastError() == WSAETIMEDOUT)
-#ifndef va_copy
 #define va_copy(x, y) x = y
-#endif
 #define atoll _atoi64
 #define strdup _strdup
 #define strcasecmp _stricmp
@@ -80,15 +78,15 @@ typedef HANDLE pthread_mutex_t;
 #define THREAD_FUNC_PREFIX DWORD WINAPI
 #define SIGPIPE SIGABRT
 
-static inline int usleep(unsigned int us)
+static inline int msleep(unsigned int ms)
 {
-	Sleep((us)/1000);
+	Sleep(ms);
 	return 0;
 }
 
 static inline int sleep(unsigned int sec)
 {
-	Sleep((sec)*1000);
+	Sleep(sec * 1000);
 	return 0;
 }
 
