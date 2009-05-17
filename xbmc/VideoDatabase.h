@@ -432,7 +432,7 @@ public:
   bool GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idArtist);
 
   bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idStudio=-1);
-  bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1);
+  bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idStudio=-1);
   bool GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, long idActor=-1, long idDirector=-1, long idGenre=-1, long idYear=-1, long idShow=-1);
   bool GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idShow=-1, long idSeason=-1);
   bool GetMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idArtist=-1, long idDirector=-1, long idStudio=-1, long idAlbum=-1);
@@ -495,6 +495,7 @@ protected:
   void AddGenreToMusicVideo(long lMVideoId, long lGenreId);
 
   void AddStudioToMovie(long lMovieId, long lStudioId);
+  void AddStudioToTvShow(long lTvShowId, long lStudioId);
   void AddStudioToMusicVideo(long lMVideoId, long lStudioId);
 
   void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<long>& vecDirectors, std::vector<long>& vecGenres, std::vector<long>& vecStudios);
