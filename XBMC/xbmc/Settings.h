@@ -259,8 +259,10 @@ public:
     int m_iTuxBoxZapWaitTime;
     bool m_bTuxBoxSendAllAPids;
 
+    bool m_bFirstLoop;
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
+    int m_curlretries;
 
 #ifdef HAS_SDL
     bool m_fullScreen;
