@@ -376,7 +376,6 @@ void CVideoReferenceClock::RunD3D()
   int          NrVBlanks;
   double       VBlankTime;
   int          ReturnV;
-  int          PollCount = 0;
 
   CSingleLock SingleLock(m_CritSection);
   SingleLock.Leave();
@@ -399,7 +398,6 @@ void CVideoReferenceClock::RunD3D()
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i", ReturnV & 0xFFFF);
       return;
     }
-    PollCount++;
 
     //if InVBlank is set, or the current scanline is lower than the previous scanline, a vblank happened
     if ((RasterStatus.InVBlank && LastLine > 0) || (RasterStatus.ScanLine < LastLine))
@@ -425,21 +423,17 @@ void CVideoReferenceClock::RunD3D()
 
       //save the timestamp of this vblank so we can calulate how many vblanks happened next time
       LastVBlankTime = Now.QuadPart;
-      PollCount = 0;
 
       HandleWindowMessages();
 
-      //because we had a vblank, sleep for half a refreshrate period
-      ::Sleep(500 / (unsigned int)m_RefreshRate);
+      //because we had a vblank, sleep until half the refreshrate period
+      QueryPerformanceCounter(&Now);
+      int SleepTime = (LastVBlankTime + (m_SystemFrequency / m_RefreshRate / 2) - Now.QuadPart) * 1000 / m_SystemFrequency;
+      if (SleepTime > 0) ::Sleep(SleepTime);
     }
     else
     {
-      //if the next vblank is more than 1 millisecond away, sleep for 1 millisecond
-      //if polled for more than 50000 times since the last vblank, sleep as well to prevent hangs
-      QueryPerformanceCounter(&Now);
-      NextVBlankTime = LastVBlankTime + m_SystemFrequency / m_RefreshRate;
-      if ((NextVBlankTime - Now.QuadPart) * 1000 > m_SystemFrequency || PollCount > 50000)
-        ::Sleep(1);
+      ::Sleep(1);
     }
 
     if (RasterStatus.InVBlank) LastLine = 0;
