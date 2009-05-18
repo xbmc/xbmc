@@ -323,10 +323,12 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
     m_bitStreamStats.Start();
     return true;
   }
-  catch (const win32_exception &e) 
+#ifndef _LINUX
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -374,10 +376,12 @@ bool CFile::OpenForWrite(const CStdString& strFileName, bool bOverWrite)
     }
     return false;
   }
-  catch (const win32_exception &e) 
+#ifndef _LINUX
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception opening %s", __FUNCTION__, strFileName.c_str());
@@ -405,10 +409,12 @@ bool CFile::Exists(const CStdString& strFileName)
 
     return pFile->Exists(url);
   }
-  catch (const win32_exception &e) 
+#ifndef _LINUX
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -433,10 +439,12 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
 
     return pFile->Stat(url, buffer);
   }
+#ifndef _LINUX
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -495,10 +503,12 @@ unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
       return done;
     }
   }
-  catch (const win32_exception &e) 
+#ifndef _LINUX
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -517,10 +527,12 @@ void CFile::Close()
     if (m_pFile)
       SAFE_DELETE(m_pFile);
   }
+#ifndef _LINUX
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -534,10 +546,12 @@ void CFile::Flush()
   {
     if (m_pFile) m_pFile->Flush();
   }
+#ifndef _LINUX
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -579,10 +593,12 @@ __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
     else
       return m_pFile->Seek(iFilePosition, iWhence);
   }
+#ifndef _LINUX
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -598,10 +614,12 @@ __int64 CFile::GetLength()
     if (m_pFile) return m_pFile->GetLength();
     return 0;
   }
+#ifndef _LINUX
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -622,10 +640,12 @@ __int64 CFile::GetPosition()
   {
     return m_pFile->GetPosition();
   }
+#ifndef _LINUX
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -687,10 +707,12 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   {
     return m_pFile->ReadString(szLine, iLineLength);
   }
-  catch (const win32_exception &e) 
+#ifndef _LINUX
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -704,10 +726,12 @@ int CFile::Write(const void* lpBuf, __int64 uiBufSize)
   {
     return m_pFile->Write(lpBuf, uiBufSize);
   }
+#ifndef _LINUX
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -730,6 +754,7 @@ bool CFile::Delete(const CStdString& strFileName)
       return true;
     }
   }
+#ifndef _LINUX
   catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
@@ -738,6 +763,7 @@ bool CFile::Delete(const CStdString& strFileName)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -763,10 +789,12 @@ bool CFile::Rename(const CStdString& strFileName, const CStdString& strNewFileNa
       return true;
     }
   }
+#ifndef _LINUX
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception ", __FUNCTION__);
@@ -829,14 +857,18 @@ CFileStreamBuffer::int_type CFileStreamBuffer::underflow()
   }
 
   unsigned int size = 0;
+#ifndef _LINUX
   try
   {
+#endif
     size = m_file->Read(m_buffer+backsize, m_frontsize);
+#ifndef _LINUX
   }
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
 
   if(size == 0)
     return traits_type::eof();
@@ -878,20 +910,24 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   setp(0,0);
 
   __int64 position = -1;
+#ifndef _LINUX
   try
   {
+#endif
     if(way == ios_base::cur)
       position = m_file->Seek(offset, SEEK_CUR);
     else if(way == ios_base::end)
       position = m_file->Seek(offset, SEEK_END);
     else
       position = m_file->Seek(offset, SEEK_SET);
+#ifndef _LINUX
   }
   catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
     return streampos(-1);
   }
+#endif
 
   if(position<0)
     return streampos(-1);

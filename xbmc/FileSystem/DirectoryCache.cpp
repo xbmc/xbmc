@@ -101,7 +101,7 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
   // CDirectoryCache::FileExists() would fail for files that really do exist (just their
   // URL's have been altered).  This is called from CFile::Exists() which causes
   // all sorts of hassles.
-  // IDEALLY, any further processing on the item would actually create a new item 
+  // IDEALLY, any further processing on the item would actually create a new item
   // instead of altering it, but we can't really enforce that in an easy way, so
   // this is the best solution for now.
   CSingleLock lock (m_cs);
@@ -334,8 +334,8 @@ void CDirectoryCache::ClearMusicThumbCache()
 void CDirectoryCache::CheckIfFull()
 {
   CSingleLock lock (m_cs);
-  // Set this to 3 on Xbox due to the limited amount of memory:
-  static const unsigned int max_cached_dirs = 3;
+  // Set this to 5 on Xbox due to the limited amount of memory:
+  static const unsigned int max_cached_dirs = 5;
 
   // find the last accessed folder, and remove if the number of cached folders is too many
   iCache lastAccessed = m_cache.end();
