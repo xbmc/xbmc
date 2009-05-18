@@ -23,7 +23,9 @@
 #include "Directory.h"
 #include "FactoryDirectory.h"
 #include "FactoryFileDirectory.h"
+#ifndef _LINUX
 #include "utils/Win32Exception.h"
+#endif
 #include "Util.h"
 #include "FileItem.h"
 #include "DirectoryCache.h"
@@ -110,11 +112,13 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     }
     return true;
   }
-  catch (const win32_exception &e) 
+#ifndef _LINUX
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
-  catch (...) 
+#endif
+  catch (...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
   }
@@ -131,10 +135,12 @@ bool CDirectory::Create(const CStdString& strPath)
       if(pDirectory->Create(strPath.c_str()))
         return true;
   }
-  catch (const win32_exception &e) 
+#ifndef _LINUX
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch (...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -151,10 +157,12 @@ bool CDirectory::Exists(const CStdString& strPath)
     if (pDirectory.get())
       return pDirectory->Exists(strPath.c_str());
   }
-  catch (const win32_exception &e) 
+#ifndef _LINUX
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch (...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
@@ -172,10 +180,12 @@ bool CDirectory::Remove(const CStdString& strPath)
       if(pDirectory->Remove(strPath.c_str()))
         return true;
   }
-  catch (const win32_exception &e) 
+#ifndef _LINUX
+  catch (const win32_exception &e)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch (...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception", __FUNCTION__);
