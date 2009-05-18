@@ -197,6 +197,16 @@
 #endif
 #endif
 
+#ifdef _ARMEL
+//TODO: If building for ARM, Theres a few things you cannot build for (atleast temporarily). This does that.
+#undef HAS_SCREENSAVER
+#undef HAS_AVAHI
+#undef HAS_ZEROCONF
+#undef HAS_PYTHON
+#undef HAS_FILESYSTEM_SMB
+#undef HAS_WEB_SERVER
+#endif
+
 #ifdef __APPLE__
 #include "../svn_revision.h"
 #endif
