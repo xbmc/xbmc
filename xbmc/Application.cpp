@@ -3516,6 +3516,7 @@ bool CApplication::ProcessMouse()
 
 void  CApplication::CheckForTitleChange()
 {
+#ifdef HAS_WEB_SERVER
   if (g_stSettings.m_HttpApiBroadcastLevel>=1)
   {
     if (IsPlayingVideo())
@@ -3549,6 +3550,7 @@ void  CApplication::CheckForTitleChange()
       }
     }
   }
+#endif
 }
 
 bool CApplication::ProcessHTTPApiButtons()
