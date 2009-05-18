@@ -138,4 +138,8 @@ static inline void mvp_atomic_set(mvp_atomic_t *a, unsigned val) {
 	*a = val;
 };
 
+#ifdef __APPLE__
+#pragma GCC optimization_level reset
+#endif
+
 #endif  /* __MVP_ATOMIC_H */
