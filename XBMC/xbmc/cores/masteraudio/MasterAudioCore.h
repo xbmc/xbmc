@@ -78,14 +78,15 @@ typedef unsigned int MA_RESULT;
 // MA_RESULT Values (Error Codes)
 enum
 {
- MA_ERROR            = 0,
- MA_SUCCESS          = 1,
- MA_NOT_IMPLEMENTED  = 2,
- MA_BUSYORFULL       = 3,
- MA_NEED_DATA        = 4,
- MA_TYPE_MISMATCH    = 5,
- MA_NOTFOUND         = 6,
- MA_NOT_SUPPORTED    = 7
+ MA_ERROR             = 0,
+ MA_SUCCESS           = 1,
+ MA_NOT_IMPLEMENTED   = 2,
+ MA_BUSYORFULL        = 3,
+ MA_NEED_DATA         = 4,
+ MA_TYPE_MISMATCH     = 5,
+ MA_NOTFOUND          = 6,
+ MA_NOT_SUPPORTED     = 7,
+ MA_MISSING_ATTRIBUTE = 8
 };
 
 #define MA_STREAM_NONE        0
@@ -241,7 +242,7 @@ public:
   MA_RESULT GetString(MA_ATTRIB_ID id, char** pVal);
   MA_RESULT GetPtr(MA_ATTRIB_ID id, void** pVal);
   MA_RESULT GetBool(MA_ATTRIB_ID id, bool* pVal);
-  MA_RESULT GetFlag(MA_ATTRIB_ID id, unsigned long flag, bool* pVal);
+  MA_RESULT GetFlag(MA_ATTRIB_ID id, int flag, bool* pVal);
   MA_RESULT SetInt(MA_ATTRIB_ID id, int val);
   MA_RESULT SetInt64(MA_ATTRIB_ID id, __int64 val);
   MA_RESULT SetFloat(MA_ATTRIB_ID id, float val);

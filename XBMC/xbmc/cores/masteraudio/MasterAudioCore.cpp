@@ -745,7 +745,7 @@ MA_RESULT CStreamAttributeCollection::GetBool(MA_ATTRIB_ID id, bool* pVal)
   return MA_SUCCESS;
 }
 
-MA_RESULT CStreamAttributeCollection::GetFlag(MA_ATTRIB_ID id, unsigned long flag, bool* pVal)
+MA_RESULT CStreamAttributeCollection::GetFlag(MA_ATTRIB_ID id, int flag, bool* pVal)
 {
   stream_attribute* pAtt = FindAttribute(id);
   if (!pAtt)
