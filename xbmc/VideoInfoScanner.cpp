@@ -1232,19 +1232,23 @@ namespace VIDEO
   {
     // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
     if (0 == items.Size()) return 0;
+    unsigned char md5hash[16];
+    char md5HexString[33];
     XBMC::MD5 md5state;
     int count = 0;
     for (int i = 0; i < items.Size(); ++i)
     {
       const CFileItemPtr pItem = items[i];
-      md5state.append((unsigned char *)pItem->m_strPath.c_str(), (int)pItem->m_strPath.size());
+      md5state.append(pItem->m_strPath);
       md5state.append((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
       FILETIME time = pItem->m_dateTime;
       md5state.append((unsigned char *)&time, sizeof(FILETIME));
       if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
         count++;
     }
-    md5state.getDigest(hash);
+    md5state.getDigest(md5hash);
+    XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
+    hash = md5HexString;
     return count;
   }
 
