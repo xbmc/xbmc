@@ -239,7 +239,9 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
 ifneq ($(ARCH), x86_64-linux)
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
+ifneq ($(ARCH), arm)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
+endif
 endif
 	$(MAKE) -C xbmc/cores/paplayer/timidity
 	$(MAKE) -C xbmc/cores/paplayer/MPCCodec/xbmc
