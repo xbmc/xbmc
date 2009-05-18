@@ -151,9 +151,15 @@ $(SYSDIR)/avutil-49-$(ARCH).so: ffmpeg/libavutil/libavutil.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavutil/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
+ifeq ($(ARCH), arm)
+$(SYSDIR)/avcodec-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.so
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavcodec/*.o \
+		ffmpeg/libavcodec/arm/*.o `cat $(WRAPPER:.o=.def)` $(WRAPPER)
+else
 $(SYSDIR)/avcodec-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavcodec/*.o \
 		ffmpeg/libavcodec/x86/*.o `cat $(WRAPPER:.o=.def)` $(WRAPPER)
+endif
 
 $(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavformat/*.o \
