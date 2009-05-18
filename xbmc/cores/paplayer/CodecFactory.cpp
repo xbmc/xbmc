@@ -36,7 +36,9 @@
 #include "NSFCodec.h"
 #include "AC3Codec.h"
 #include "AC3CDDACodec.h"
+#ifdef HAS_SPC_CODEC
 #include "SPCCodec.h"
+#endif
 #include "GYMCodec.h"
 #include "SIDCodec.h"
 #include "AdplugCodec.h"
@@ -90,8 +92,10 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new ModuleCodec();
   else if (strFileType.Equals("nsf") || strFileType.Equals("nsfstream"))
     return new NSFCodec();
+#ifdef HAS_SPC_CODEC
   else if (strFileType.Equals("spc"))
     return new SPCCodec();
+#endif
   else if (strFileType.Equals("gym"))
     return new GYMCodec();
   else if (strFileType.Equals("sid") || strFileType.Equals("sidstream"))
