@@ -344,6 +344,11 @@ ifeq ($(ARCH), powerpc64-linux)
 	LIBS += -lpython2.4
 endif
 
+# TODO: XBPythonDLLFuncs.S not implemented on ARM, use system version instead
+ifeq ($(ARCH), arm)
+	LIBS += -lpython2.4
+endif
+
 $(wildcard $(OBJSXBMC)) :| compile
 
 xbmc.bin: $(wildcard $(OBJSXBMC)) | compile
