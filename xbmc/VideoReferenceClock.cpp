@@ -623,9 +623,9 @@ bool CVideoReferenceClock::CreateHiddenWindow()
 
   //make a layered window which can be made transparent
   CSingleLock SingleLock(m_CritSection);
-  m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
-                          WS_VISIBLE, m_Monitor.rcMonitor.left, m_Monitor.rcMonitor.top, 64, 64,
-                          HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
+  m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_TOPMOST, m_WinCl.lpszClassName,
+                          m_WinCl.lpszClassName, WS_VISIBLE, m_Monitor.rcMonitor.left,
+                          m_Monitor.rcMonitor.top, 64, 64, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
   SingleLock.Leave();
   
   if (!m_Hwnd)
