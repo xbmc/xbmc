@@ -357,9 +357,6 @@ bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int sampler
   if (m_pAudioDecoder[num] != NULL && m_channelCount[num] == channels && m_sampleRate[num] == outputSampleRate /* && m_bitsPerSample[num] == bitspersample */)
   {
     CLog::Log(LOGDEBUG, "PAPlayer: Using existing audio renderer");
-    m_pAudioDecoder[num]->Stop();
-    m_pAudioDecoder[num]->Resume();
-    m_bufferPos[num] = 0;
   }
   else
   {
@@ -382,10 +379,10 @@ bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int sampler
     m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
     for (int i = 1; i < PACKET_COUNT ; i++)
       m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
-
-    // set initial volume
-    SetStreamVolume(num, g_stSettings.m_nVolumeLevel);
   }
+  
+  // set initial volume
+  SetStreamVolume(num, g_stSettings.m_nVolumeLevel);
 
   m_resampler[num].InitConverter(samplerate, bitspersample, channels, outputSampleRate, m_bitsPerSample[num], PACKET_SIZE);
 
