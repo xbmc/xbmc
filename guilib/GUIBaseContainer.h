@@ -41,7 +41,7 @@ typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 class CGUIBaseContainer : public CGUIControl
 {
 public:
-  CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime);
+  CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems);
   virtual ~CGUIBaseContainer(void);
 
   virtual bool OnAction(const CAction &action);
@@ -92,6 +92,7 @@ public:
 protected:
   bool OnClick(DWORD actionID);
   virtual bool SelectItemFromPoint(const CPoint &point);
+  virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
   virtual bool MoveDown(bool wrapAround);
@@ -101,6 +102,7 @@ protected:
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout(bool refreshAllItems = false);
   virtual void SetPageControlRange();
+  virtual void UpdatePageControl(int offset);
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
   virtual void Reset();
@@ -154,12 +156,16 @@ protected:
                     // changing around)
 
   void UpdateScrollByLetter();
+  void GetCacheOffsets(int &cacheBefore, int &cacheAfter);
+  bool ScrollingDown() const { return m_scrollSpeed > 0; };
+  bool ScrollingUp() const { return m_scrollSpeed < 0; };
   void OnNextLetter();
   void OnPrevLetter();
   void OnJumpLetter(char letter);
   void OnJumpSMS(int letter);
   std::vector< std::pair<int, CStdString> > m_letterOffsets;
 private:
+  int m_cacheItems;
   float m_scrollSpeed;
   CStopWatch m_scrollTimer;
   CStopWatch m_pageChangeTimer;

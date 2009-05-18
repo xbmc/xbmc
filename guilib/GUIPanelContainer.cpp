@@ -26,8 +26,8 @@
 
 using namespace std;
 
-CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
-    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
+CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
+    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime, preloadItems)
 {
   ControlType = GUICONTAINER_PANEL;
   m_type = VIEW_TYPE_ICON;
@@ -51,76 +51,70 @@ void CGUIPanelContainer::Render()
 
   int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
 
+  int cacheBefore, cacheAfter;
+  GetCacheOffsets(cacheBefore, cacheAfter);
+
   // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
-  FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, (m_itemsPerPage + 1) * m_itemsPerRow));
+  FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + cacheAfter + m_itemsPerPage + 1, 0));
 
   g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-  float posX = m_posX;
-  float posY = m_posY;
-  if (m_orientation == VERTICAL)
-    posY += (offset * m_layout->Size(m_orientation) - m_scrollOffset);
-  else
-    posX += (offset * m_layout->Size(m_orientation) - m_scrollOffset);;
+  float pos = (m_orientation == VERTICAL) ? m_posY : m_posX;
+  float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
+  pos += (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scrollOffset;
+  end += cacheAfter * m_layout->Size(m_orientation);
 
-  float focusedPosX = 0;
-  float focusedPosY = 0;
+  float focusedPos = 0;
+  int focusedCol = 0;
   CGUIListItemPtr focusedItem;
-  int current = offset * m_itemsPerRow;
-  int row = 1;
-  while (posX < m_posX + m_width && posY < m_posY + m_height && m_items.size())
+  int current = (offset - cacheBefore) * m_itemsPerRow;
+  int col = 0;
+  while (pos < end && m_items.size())
   {
     if (current >= (int)m_items.size())
       break;
-    CGUIListItemPtr item = m_items[current];
-    bool focused = (current == m_offset * m_itemsPerRow + m_cursor) && m_bHasFocus;
-    // render our item
-    if (focused)
+    if (current >= 0)
     {
-      focusedPosX = posX;
-      focusedPosY = posY;
-      focusedItem = item;
+      CGUIListItemPtr item = m_items[current];
+      bool focused = (current == m_offset * m_itemsPerRow + m_cursor) && m_bHasFocus;
+      // render our item
+      if (focused)
+      {
+        focusedPos = pos;
+        focusedCol = col;
+        focusedItem = item;
+      }
+      else
+      {
+        if (m_orientation == VERTICAL)
+          RenderItem(m_posX + col * m_layout->Size(HORIZONTAL), pos, item.get(), false);
+        else
+          RenderItem(pos, m_posY + col * m_layout->Size(VERTICAL), item.get(), false);          
+      }
     }
-    else
-      RenderItem(posX, posY, item.get(), focused);
-
     // increment our position
-    if (row < m_itemsPerRow)
-    {
-      if (m_orientation == VERTICAL)
-        posX += m_layout->Size(HORIZONTAL);
-      else
-        posY += m_layout->Size(VERTICAL);
-      row++;
-    }
+    if (col < m_itemsPerRow - 1)
+      col++;
     else
     {
-      if (m_orientation == VERTICAL)
-      {
-        posY += m_layout->Size(VERTICAL);
-        posX -= m_layout->Size(HORIZONTAL) * (m_itemsPerRow - 1);
-      }
-      else
-      {
-        posX += m_layout->Size(HORIZONTAL);
-        posY -= m_layout->Size(VERTICAL) * (m_itemsPerRow - 1);
-      }
-      row = 1;
+      pos += m_layout->Size(m_orientation);
+      col = 0;
     }
     current++;
   }
   // and render the focused item last (for overlapping purposes)
   if (focusedItem)
-    RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
+  {
+    if (m_orientation == VERTICAL)
+      RenderItem(m_posX + focusedCol * m_layout->Size(HORIZONTAL), focusedPos, focusedItem.get(), true);
+    else
+      RenderItem(focusedPos, m_posY + focusedCol * m_layout->Size(VERTICAL), focusedItem.get(), true);
+  }
 
   g_graphicsContext.RestoreClipRegion();
 
-  if (m_pageControl)
-  { // tell our pagecontrol (scrollbar or whatever) to update
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
-    SendWindowMessage(msg);
-  }
+  UpdatePageControl(offset);
 
-  CGUIBaseContainer::Render();
+  CGUIControl::Render();
 }
 
 bool CGUIPanelContainer::OnAction(const CAction &action)

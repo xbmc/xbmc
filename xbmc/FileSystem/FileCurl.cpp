@@ -43,9 +43,6 @@ using namespace XCURL;
 
 extern "C" int __stdcall dllselect(int ntfs, fd_set *readfds, fd_set *writefds, fd_set *errorfds, const timeval *timeout);
 
-// Maximum retry amount:
-#define MAX_RETRIES 4
-
 // curl calls this routine to debug
 extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *output, size_t size, void *data)
 {
@@ -174,6 +171,7 @@ CFileCurl::CReadState::CReadState()
   m_fileSize = 0;
   m_bufferSize = 0;
   m_cancelled = false;
+  m_bFirstLoop = true;
 }
 
 CFileCurl::CReadState::~CReadState()
@@ -1024,6 +1022,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
   {
     if (m_cancelled)
       return false;
+
     /* if there is data in overflow buffer, try to use that first */
     if (m_overflowSize)
     {
@@ -1083,7 +1082,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         m_overflowSize = 0;
 
         // If we got here something is wrong
-        if (++retry > MAX_RETRIES)
+        if (++retry > g_advancedSettings.m_curlretries)
         {
           CLog::Log(LOGDEBUG, "%s: Reconnect failed!", __FUNCTION__);
           // Reset the rest of the variables like we would in Disconnect()
@@ -1097,17 +1096,17 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         CLog::Log(LOGDEBUG, "%s: Reconnect, (re)try %i", __FUNCTION__, retry);
         
         // On timeout, when we have to retry more than 2 times in a row
-        // we increase the Curl low speed timeout
-        if (retry>1 && CURLresult == CURLE_OPERATION_TIMEDOUT)
+        // we increase the Curl low speed timeout, but only at start
+        if (m_bFirstLoop && retry > 1 && CURLresult == CURLE_OPERATION_TIMEDOUT && m_fileSize != 0)
         {
           int newlowspeedtime;
 
           if (g_advancedSettings.m_curllowspeedtime<5)
-            newlowspeedtime = 0;
+            newlowspeedtime = 5;
           else
-            newlowspeedtime = g_advancedSettings.m_curllowspeedtime-5;
+            newlowspeedtime = g_advancedSettings.m_curllowspeedtime;
 
-          newlowspeedtime += (5*retry);
+          newlowspeedtime += (5*(retry-1));
           
           CLog::Log(LOGDEBUG, "%s: Setting low-speed-time to %i seconds", __FUNCTION__, newlowspeedtime);
           g_curlInterface.easy_setopt(m_easyHandle, CURLOPT_LOW_SPEED_TIME, newlowspeedtime);
@@ -1122,6 +1121,10 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
       }
       return false;
     }
+
+    // We've finished out first loop
+    m_bFirstLoop=false;
+
     switch (result)
     {
       case CURLM_OK:

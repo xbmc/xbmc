@@ -24,8 +24,8 @@
 #include "GUIListItem.h"
 #include "utils/GUIInfoManager.h"
 
-CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
-    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
+CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
+    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime, preloadItems)
 {
   ControlType = GUICONTAINER_LIST;
   m_type = VIEW_TYPE_LIST;
@@ -33,78 +33,6 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
 
 CGUIListContainer::~CGUIListContainer(void)
 {
-}
-
-void CGUIListContainer::Render()
-{
-  ValidateOffset();
-
-  if (m_bInvalidated)
-    UpdateLayout();
-
-  if (!m_layout || !m_focusedLayout) return;
-
-  UpdateScrollOffset();
-
-  int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
-  // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
-  FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
-
-  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-  float posX = m_posX;
-  float posY = m_posY;
-  // we offset our draw position to take into account scrolling and whether or not our focused
-  // item is offscreen "above" the list.
-  float drawOffset = offset * m_layout->Size(m_orientation) - m_scrollOffset;
-  if (offset > m_offset + m_cursor)
-    drawOffset += m_focusedLayout->Size(m_orientation) - m_layout->Size(m_orientation);
-
-  if (m_orientation == VERTICAL)
-    posY += drawOffset;
-  else
-    posX += drawOffset;
-
-  float focusedPosX = 0;
-  float focusedPosY = 0;
-  CGUIListItemPtr focusedItem;
-  int current = offset;
-  while (posX < m_posX + m_width && posY < m_posY + m_height && m_items.size())
-  {
-    if (current >= (int)m_items.size())
-      break;
-    CGUIListItemPtr item = m_items[current];
-    bool focused = (current == m_offset + m_cursor);
-    // render our item
-    if (focused)
-    {
-      focusedPosX = posX;
-      focusedPosY = posY;
-      focusedItem = item;
-    }
-    else
-      RenderItem(posX, posY, item.get(), focused);
-
-    // increment our position
-    if (m_orientation == VERTICAL)
-      posY += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
-    else
-      posX += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
-
-    current++;
-  }
-  // and render the focused item last (for overlapping purposes)
-  if (focusedItem)
-    RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
-
-  g_graphicsContext.RestoreClipRegion();
-
-  if (m_pageControl)
-  { // tell our pagecontrol (scrollbar or whatever) to update
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
-    SendWindowMessage(msg);
-  }
-
-  CGUIBaseContainer::Render();
 }
 
 bool CGUIListContainer::OnAction(const CAction &action)
@@ -320,7 +248,7 @@ CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float 
                                  const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
                                  const CTextureInfo& textureButton, const CTextureInfo& textureButtonFocus,
                                  float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems)
-: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200) 
+: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200, 0)
 {
   CGUIListItemLayout layout;
   layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, 0, 0);

@@ -82,6 +82,8 @@ bool CZipManager::HasMultipleEntries(const CStdString& strPath)
 
 bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items)
 {
+  CLog::Log(LOGDEBUG, "%s - Processing %s", __FUNCTION__, strPath.c_str());
+  
   CURL url(strPath);
   __stat64 m_StatData;
 

@@ -46,7 +46,7 @@ bool CDirectoryNodeTitleTvShows::GetContent(CFileItemList& items)
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess=videodatabase.GetTvShowsNav(BuildPath(), items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId());
+  bool bSuccess=videodatabase.GetTvShowsNav(BuildPath(), items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(), params.GetStudioId());
 
   videodatabase.Close();
 
