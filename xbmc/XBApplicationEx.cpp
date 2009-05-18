@@ -26,6 +26,7 @@
 #include "SDL/SDL_syswm.h"
 #include "GUIWindowManager.h"
 #include "WIN32Util.h"
+#include "VideoReferenceClock.h"
 extern HWND g_hWnd;
 #endif
 
@@ -391,6 +392,20 @@ void CXBApplicationEx::ReadInput()
             SetForegroundWindow(g_hWnd);
             LockSetForegroundWindow(LSFW_LOCK);
           }
+        }
+        if (event.syswm.msg->msg == WM_MOVE) //we moved
+        {
+          RECT rBounds;
+          HMONITOR hMonitor;
+          MONITORINFOEX mi;
+          
+          //get the monitor the main window is on
+          GetWindowRect(g_hWnd, &rBounds);
+          hMonitor = MonitorFromRect(&rBounds, MONITOR_DEFAULTTONEAREST);
+          mi.cbSize = sizeof(mi);
+          GetMonitorInfo(hMonitor, &mi);
+
+          g_VideoReferenceClock.SetMonitor(mi); //let the videoreferenceclock know which monitor we're on
         }
       }
       break;
