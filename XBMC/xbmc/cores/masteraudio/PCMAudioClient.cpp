@@ -33,13 +33,13 @@ bool CPCMAudioClient::OpenStream(int channels, int bitsPerSample, int samplesPer
   pAtts->SetInt(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_NONE);
   pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_LPCM);
   pAtts->SetInt(MA_ATT_TYPE_MIN_FRAME_SIZE,channels * (bitsPerSample >> 3));
-  pAtts->SetInt(MA_ATT_TYPE_AVG_BIRATE, samplesPerSecond * channels * bitsPerSample);
+  pAtts->SetInt(MA_ATT_TYPE_BYTES_PER_SEC, samplesPerSecond * channels * bitsPerSample);
   
   // LPCM Attributes
   pAtts->SetInt(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED);
   pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
   pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,bitsPerSample);
-  pAtts->SetInt(MA_ATT_TYPE_SAMPLESPERSEC,samplesPerSecond);
+  pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,samplesPerSecond);
   pAtts->SetInt(MA_ATT_TYPE_CHANNEL_COUNT,channels);
 
   int64_t layout = 0;

@@ -670,7 +670,8 @@ MA_RESULT CStreamAttributeCollection::GetInt(MA_ATTRIB_ID id, int* pVal)
   if (pAtt->type != stream_attribute_int)
     return MA_TYPE_MISMATCH;
 
-  *pVal = pAtt->intVal;
+  if (pVal)
+    *pVal = pAtt->intVal;
   return MA_SUCCESS;
 }
 
@@ -683,7 +684,8 @@ MA_RESULT CStreamAttributeCollection::GetInt64(MA_ATTRIB_ID id, __int64* pVal)
   if (pAtt->type != stream_attribute_int64)
     return MA_TYPE_MISMATCH;
 
-  *pVal = pAtt->int64Val;
+  if (pVal)
+    *pVal = pAtt->int64Val;
   return MA_SUCCESS;
 }
 
@@ -696,7 +698,8 @@ MA_RESULT CStreamAttributeCollection::GetFloat(MA_ATTRIB_ID id, float* pVal)
   if (pAtt->type != stream_attribute_float)
     return MA_TYPE_MISMATCH;
 
-  *pVal = pAtt->floatVal;
+  if (pVal)
+    *pVal = pAtt->floatVal;
   return MA_SUCCESS;
 }
 
@@ -709,7 +712,8 @@ MA_RESULT CStreamAttributeCollection::GetString(MA_ATTRIB_ID id, char** pVal)
   if (pAtt->type != stream_attribute_string)
     return MA_TYPE_MISMATCH;
 
-  *pVal = pAtt->stringVal;
+  if (pVal)
+    *pVal = pAtt->stringVal;
   return MA_SUCCESS;
 }
 
@@ -722,7 +726,8 @@ MA_RESULT CStreamAttributeCollection::GetPtr(MA_ATTRIB_ID id, void** pVal)
   if (pAtt->type != stream_attribute_ptr)
     return MA_TYPE_MISMATCH;
 
-  *pVal = pAtt->ptrVal;
+  if (pVal)
+    *pVal = pAtt->ptrVal;
   return MA_SUCCESS;
 }
 
@@ -735,7 +740,22 @@ MA_RESULT CStreamAttributeCollection::GetBool(MA_ATTRIB_ID id, bool* pVal)
   if (pAtt->type != stream_attribute_bool)
     return MA_TYPE_MISMATCH;
 
-  *pVal = pAtt->boolVal;
+  if (pVal)
+    *pVal = pAtt->boolVal;
+  return MA_SUCCESS;
+}
+
+MA_RESULT CStreamAttributeCollection::GetFlag(MA_ATTRIB_ID id, unsigned long flag, bool* pVal)
+{
+  stream_attribute* pAtt = FindAttribute(id);
+  if (!pAtt)
+    return MA_NOTFOUND;
+  
+  if (pAtt->type != stream_attribute_bitfield)
+    return MA_TYPE_MISMATCH;
+
+  if (pVal)
+    *pVal = (pAtt->bitfieldVal & flag) ? true : false;
   return MA_SUCCESS;
 }
 
@@ -783,12 +803,35 @@ MA_RESULT CStreamAttributeCollection::SetPtr(MA_ATTRIB_ID id, void* val)
   m_Attributes[id] = att;
   return MA_SUCCESS;
 }
+
 MA_RESULT CStreamAttributeCollection::SetBool(MA_ATTRIB_ID id, bool val)
 {
   stream_attribute att;
   att.boolVal = val;
   att.type = stream_attribute_bool;
   m_Attributes[id] = att;
+  return MA_SUCCESS;
+}
+
+MA_RESULT CStreamAttributeCollection::SetFlag(MA_ATTRIB_ID id, int flag, bool val)
+{
+  stream_attribute att;
+  stream_attribute* pAtt = FindAttribute(id);
+  if (pAtt)
+  {
+    att = *pAtt;
+    if (pAtt->type != stream_attribute_bitfield)
+      return MA_TYPE_MISMATCH;
+  }
+  else
+    att.type = stream_attribute_bitfield;
+
+  if (val)
+   att.bitfieldVal |= flag;
+  else
+    att.bitfieldVal ^= flag;
+  m_Attributes[id] = att;
+  
   return MA_SUCCESS;
 }
 

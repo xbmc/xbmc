@@ -437,7 +437,7 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
     pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
     pAtts->SetInt(MA_ATT_TYPE_CHANNEL_COUNT,2);
     pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,16);
-    pAtts->SetInt(MA_ATT_TYPE_SAMPLESPERSEC,44100);
+    pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,44100);
     pAtts->SetInt64(MA_ATT_TYPE_CHANNEL_MAP,0xffffffffffffff10LLU);
 
     // Global 6-Ch Output Profile
@@ -447,7 +447,7 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
     pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
     pAtts->SetInt(MA_ATT_TYPE_CHANNEL_MAP,6);
     pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,16);
-    pAtts->SetInt(MA_ATT_TYPE_SAMPLESPERSEC,48000);
+    pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,48000);
     pAtts->SetInt64(MA_ATT_TYPE_CHANNEL_MAP,0xffffffffff325410LLU);
 
     g_AudioProfileInit = true;

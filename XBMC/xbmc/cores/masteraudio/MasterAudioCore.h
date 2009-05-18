@@ -112,7 +112,7 @@ typedef unsigned int MA_ATTRIB_ID;
 enum
 {
   MA_ATT_TYPE_STREAM_FLAGS,     // type: int (bitfield) 
-  MA_ATT_TYPE_AVG_BIRATE,       // type: int
+  MA_ATT_TYPE_BYTES_PER_SEC,    // type: int
   MA_ATT_TYPE_MIN_FRAME_SIZE,   // type: int
   MA_ATT_TYPE_STREAM_FORMAT,    // type: int (The value of the this attribute defines what other attibutes are valid/required)
   
@@ -120,7 +120,7 @@ enum
   MA_ATT_TYPE_LPCM_FLAGS,       // type: int (bitfield)
   MA_ATT_TYPE_SAMPLE_TYPE,      // type: int
   MA_ATT_TYPE_BITDEPTH,         // type: int
-  MA_ATT_TYPE_SAMPLESPERSEC,    // type: int
+  MA_ATT_TYPE_SAMPLERATE,       // type: int
   MA_ATT_TYPE_CHANNEL_COUNT,    // type: int
   MA_ATT_TYPE_CHANNEL_MAP,      // type: int64
   
@@ -139,7 +139,8 @@ enum
 enum
 {
   MA_STREAM_FLAG_NONE     = (1L << 0),
-  MA_STREAM_FLAG_LOCKED   = (1L << 1)  // The stream data is not to be modified by the audio chain in any way 
+  MA_STREAM_FLAG_LOCKED   = (1L << 1),  // The stream data is not to be modified by the audio chain in any way 
+  MA_STREAM_FLAG_VBR      = (1L << 2)
 };
 
 // MA_ATT_TYPE_LPCM_FLAGS Values
@@ -180,6 +181,7 @@ enum
 
 enum stream_attribute_type
 {
+  stream_attribute_bitfield,
   stream_attribute_int,
   stream_attribute_int64,
   stream_attribute_float,
@@ -193,6 +195,7 @@ struct stream_attribute
   stream_attribute_type type;
   union
   {
+    unsigned int bitfieldVal;
     bool boolVal;
     int intVal;
     __int64 int64Val;
@@ -238,13 +241,14 @@ public:
   MA_RESULT GetString(MA_ATTRIB_ID id, char** pVal);
   MA_RESULT GetPtr(MA_ATTRIB_ID id, void** pVal);
   MA_RESULT GetBool(MA_ATTRIB_ID id, bool* pVal);
-
+  MA_RESULT GetFlag(MA_ATTRIB_ID id, unsigned long flag, bool* pVal);
   MA_RESULT SetInt(MA_ATTRIB_ID id, int val);
   MA_RESULT SetInt64(MA_ATTRIB_ID id, __int64 val);
   MA_RESULT SetFloat(MA_ATTRIB_ID id, float val);
   MA_RESULT SetString(MA_ATTRIB_ID id, char* val);
   MA_RESULT SetPtr(MA_ATTRIB_ID id, void* val);
   MA_RESULT SetBool(MA_ATTRIB_ID id, bool val);
+  MA_RESULT SetFlag(MA_ATTRIB_ID id, int flag, bool val);
 protected:
   std::map<MA_ATTRIB_ID,stream_attribute> m_Attributes;
   stream_attribute* FindAttribute(MA_ATTRIB_ID id);

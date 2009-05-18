@@ -86,7 +86,7 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
       return MA_ERROR;
     if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_BITDEPTH,(int*)&bitsPerSample))
       return MA_ERROR;
-    if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_SAMPLESPERSEC,(int*)&samplesPerSecond))
+    if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_SAMPLERATE,(int*)&samplesPerSecond))
       return MA_ERROR;
     m_pRenderer = CAudioRendererFactory::Create(NULL,channels, samplesPerSecond, bitsPerSample, false,"",false,false);
     break;
