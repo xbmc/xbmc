@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 05/15/2009-->
+<!--Date of translation: 05/17/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20309-->
+<!--Based on english strings version 20327-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1149,7 +1149,7 @@
   <string id="13421">VDPAU</string>
   <string id="13500">Μέθοδος συγχρονισμού A/V</string>
   <string id="13501">Χρονισμός ήχου</string>
-  <string id="13502">Χρονισµός Βίντεο (εις βάρος του ήχου)</string>
+  <string id="13502">Χρονισµός βίντεο (εις βάρος του ήχου)</string>
   <string id="13503">Χρονισμός βίντεο (εν νέου δειγματοληψία ήχου)</string>
   <string id="13504">Μέγιστο ποσοστό επανάληψης δειγματοληψίας (%)</string>
   <string id="13505">Ποιότητα επανάληψης δειγματοληψίας</string>
