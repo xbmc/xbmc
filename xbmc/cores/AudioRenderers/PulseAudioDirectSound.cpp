@@ -348,8 +348,8 @@ HRESULT CPulseAudioDirectSound::Deinitialize()
 
 inline bool CPulseAudioDirectSound::WaitForOperation(pa_operation *op, const char *LogEntry = "")
 {
-	if (op == NULL)
-		return false;
+  if (op == NULL)
+    return false;
 
   bool sucess = true;
 
