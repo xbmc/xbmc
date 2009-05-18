@@ -155,7 +155,9 @@ visualization-interface:
 visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
+ifneq ($(ARCH), arm)
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
+endif
 	$(MAKE) -C xbmc/visualizations/Goom
 screensaver-interface: 
 	$(MAKE) -C xbmc/screensavers
