@@ -202,7 +202,6 @@
 #undef HAS_SCREENSAVER
 #undef HAS_AVAHI
 #undef HAS_ZEROCONF
-#undef HAS_PYTHON
 #undef HAS_FILESYSTEM_SMB
 #undef HAS_WEB_SERVER
 #endif

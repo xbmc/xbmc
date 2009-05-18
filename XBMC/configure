@@ -8296,7 +8296,7 @@ $as_echo "$as_me: $vdpau_disabled" >&6;}
 fi
 
 # Python
-if test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple" ; then
+if (test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple") || test "$host_cpu" = "arm" ; then
 
 { $as_echo "$as_me:$LINENO: checking for main in -lpython2.4" >&5
 $as_echo_n "checking for main in -lpython2.4... " >&6; }
