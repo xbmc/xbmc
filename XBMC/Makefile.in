@@ -306,7 +306,6 @@ OBJSXBMC=	\
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
-	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/UnrarXLib/UnrarXLib.a \
 	xbmc/linux/linux.a \
@@ -331,6 +330,7 @@ OBJSXBMC += \
 
 else ifneq ($(ARCH), arm)
 OBJSXBMC += \
+	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/libsmb/libsmbclient-@ARCH@.a
 
 endif
