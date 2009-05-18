@@ -162,7 +162,9 @@ endif
 screensaver-interface: 
 	$(MAKE) -C xbmc/screensavers
 screensavers: exports
+ifneq ($(ARCH), arm)
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
+endif
 utils: 
 	$(MAKE) -C xbmc/utils
 common: 
