@@ -9,7 +9,7 @@ SRCS = \
 	DirectSoundAdapter.cpp \
 	Util/SimpleBuffer.cpp	\
 	Util/WaveFileRenderer.cpp \
-	Filters/AC3Encoder.cpp
+        Filters/StandardFilters.cpp
 
 LIB=masteraudio.a
 
