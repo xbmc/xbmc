@@ -345,11 +345,6 @@ void CVideoReferenceClock::RunGLX()
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
 
-      SingleLock.Enter();
-      m_CurrTime += m_AdjustedFrequency / m_RefreshRate;
-      SendVblankSignal();
-      SingleLock.Leave();
-
       //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
       glXMakeCurrent(m_Dpy, None, NULL);
       glXMakeCurrent(m_Dpy, m_Window, m_Context);
