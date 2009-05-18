@@ -416,7 +416,8 @@ void CVideoReferenceClock::RunD3D()
 
       if (UpdateRefreshrate())
       {
-        //reset direct3d because of videodriver bugs
+        //reset direct3d because it goes in a reset state after a displaymode change
+        //maybe should call IDirect3DDevice9::Reset here
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: Displaymode changed");
         return;
       }
@@ -882,7 +883,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   }
 
   //we have to set up direct3d again if the display mode changed
-  //could be videodriver bugs?
+  //because direct3d goes in a reset state
   if (m_Width != DisplayMode.Width || m_Height != DisplayMode.Height)
   {
     Changed = true;
