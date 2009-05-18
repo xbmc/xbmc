@@ -64,6 +64,10 @@ case $host in
        ARCH="powerpc64-linux"
        AC_SUBST(ARCH_DEFINES, "-D_POWERPC64")
        ;;
+    arm-*-linux-gnu*)
+       ARCH="arm"
+       AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
+       ;;
     *)
        AC_MSG_ERROR(unsupported host ($host))
 esac
@@ -347,7 +351,7 @@ else
 fi
 
 # Python
-if test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple" ; then
+if (test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple") || test "$host_cpu" = "arm" ; then
   AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR($missing_library) )
 fi
 

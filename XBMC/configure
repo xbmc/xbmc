@@ -17503,11 +17503,13 @@ $as_echo "$as_me: error: Submodule xbmc/visualizations/Goom/goom2k4-0 doesn't ex
    { (exit 1); exit 1; }; }
 fi;
 
-# TEMPORARY: Cannot have screensavers if building for ARM as it requires OpenGL (McGeagh)
-if test "$host_cpu" != "arm" ; then
+
 if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
   pushd xbmc/screensavers/rsxs-0.9/
-
+  
+  # TEMPORARY: Cannot have screensavers if building for ARM as it requires OpenGL
+  if test "$host_cpu" != "arm" ; then
+  
   if test "$host_vendor" = "apple" ; then
     ./configure \
       CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17549,12 +17551,13 @@ $as_echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configu
   else
     popd
   fi;
+  fi; # ARM
 else
   { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
 fi;
-fi
+
 
 # configure is writing to config.log, and then calls config.status.
 # config.status does its own redirection, appending to config.log.
