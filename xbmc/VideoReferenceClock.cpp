@@ -368,14 +368,13 @@ void CVideoReferenceClock::RunGLX()
 void CVideoReferenceClock::RunD3D()
 {
   D3dClock::D3DRASTER_STATUS RasterStatus;
-  LARGE_INTEGER              Now;
-  __int64                    LastVBlankTime;
-  __int64                    NextVBlankTime;
 
-  unsigned int LastLine;
-  int          NrVBlanks;
-  double       VBlankTime;
-  int          ReturnV;
+  LARGE_INTEGER Now;
+  __int64       LastVBlankTime;
+  unsigned int  LastLine;
+  int           NrVBlanks;
+  double        VBlankTime;
+  int           ReturnV;
 
   CSingleLock SingleLock(m_CritSection);
   SingleLock.Leave();
@@ -429,7 +428,7 @@ void CVideoReferenceClock::RunD3D()
 
       //because we had a vblank, sleep until half the refreshrate period
       QueryPerformanceCounter(&Now);
-      int SleepTime = (LastVBlankTime + (m_SystemFrequency / m_RefreshRate / 2) - Now.QuadPart) * 1000 / m_SystemFrequency;
+      int SleepTime = (int)((LastVBlankTime + (m_SystemFrequency / m_RefreshRate / 2) - Now.QuadPart) * 1000 / m_SystemFrequency);
       if (SleepTime > 0) ::Sleep(SleepTime);
     }
     else
