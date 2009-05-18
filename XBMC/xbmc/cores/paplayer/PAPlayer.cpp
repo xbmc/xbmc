@@ -337,7 +337,7 @@ bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int sampler
 {
   int outputSampleRate = (channels <= 2 && g_advancedSettings.m_musicResample) ? g_advancedSettings.m_musicResample : samplerate;
 
-  if (m_pAudioClient[num]->IsStreamOpen() != NULL && m_channelCount[num] == channels && m_sampleRate[num] == outputSampleRate /* && m_bitsPerSample[num] == bitspersample */)
+  if (m_pAudioClient[num]->IsStreamOpen() && m_channelCount[num] == channels && m_sampleRate[num] == outputSampleRate /* && m_bitsPerSample[num] == bitspersample */)
   {
     CLog::Log(LOGDEBUG, "PAPlayer: Using existing audio client");
     m_pAudioClient[num]->Stop();
