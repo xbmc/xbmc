@@ -1172,7 +1172,7 @@ HRESULT CApplication::Create(HWND hWnd)
     }
   }
   int iResolution = g_graphicsContext.GetVideoResolution();
-  CLog::Log(LOGINFO, " GUI format %ix%i %s",
+  CLog::Log(LOGINFO, "GUI format %ix%i %s",
             g_settings.m_ResInfo[iResolution].iWidth,
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode);
@@ -1203,10 +1203,9 @@ HRESULT CApplication::Initialize()
 {
   CLog::Log(LOGINFO, "creating subdirectories");
 
-  //CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "  recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "  screenshots folder:%s", g_guiSettings.GetString("pictures.screenshotpath",false).c_str());
+  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
+  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("pictures.screenshotpath",false).c_str());
 
   // UserData folder layout:
   // UserData/

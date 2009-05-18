@@ -34,7 +34,7 @@ using namespace std;
 #define HOLD_TIME_START 1000
 #define HOLD_TIME_END   4000
 
-CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime)
+CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_cursor = 0;
@@ -54,11 +54,91 @@ CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_wasReset = false;
   m_layout = NULL;
   m_focusedLayout = NULL;
+  m_cacheItems = preloadItems;
 }
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
 {
 }
+
+void CGUIBaseContainer::Render()
+{
+  ValidateOffset();
+
+  if (m_bInvalidated)
+    UpdateLayout();
+
+  if (!m_layout || !m_focusedLayout) return;
+
+  UpdateScrollOffset();
+
+  int offset = (int)floorf(m_scrollOffset / m_layout->Size(m_orientation));
+
+  int cacheBefore, cacheAfter;
+  GetCacheOffsets(cacheBefore, cacheAfter);
+
+  // Free memory not used on screen
+  if ((int)m_items.size() > m_itemsPerPage + cacheBefore + cacheAfter)
+    FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + m_itemsPerPage + 1 + cacheAfter, 0));
+
+  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
+  float pos = (m_orientation == VERTICAL) ? m_posY : m_posX;
+  float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
+
+  // we offset our draw position to take into account scrolling and whether or not our focused
+  // item is offscreen "above" the list.
+  float drawOffset = (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scrollOffset;
+  if (m_offset + m_cursor < offset)
+    drawOffset += m_focusedLayout->Size(m_orientation) - m_layout->Size(m_orientation);
+  pos += drawOffset;
+  end += cacheAfter * m_layout->Size(m_orientation);
+
+  float focusedPos = 0;
+  CGUIListItemPtr focusedItem;
+  int current = offset - cacheBefore;
+  while (pos < end && m_items.size())
+  {
+    int itemNo = CorrectOffset(current, 0);
+    if (itemNo >= (int)m_items.size())
+      break;
+    bool focused = (current == m_offset + m_cursor);
+    if (itemNo >= 0)
+    {
+      CGUIListItemPtr item = m_items[itemNo];
+      // render our item
+      if (focused)
+      {
+        focusedPos = pos;
+        focusedItem = item;
+      }
+      else
+      {
+        if (m_orientation == VERTICAL)
+          RenderItem(m_posX, pos, item.get(), false);
+        else
+          RenderItem(pos, m_posY, item.get(), false);
+      }
+    }
+    // increment our position
+    pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
+    current++;
+  }
+  // render focused item last so it can overlap other items
+  if (focusedItem)
+  {
+    if (m_orientation == VERTICAL)
+      RenderItem(m_posX, focusedPos, focusedItem.get(), true);
+    else
+      RenderItem(focusedPos, m_posY, focusedItem.get(), true);
+  }
+
+  g_graphicsContext.RestoreClipRegion();
+
+  UpdatePageControl(offset);
+
+  CGUIControl::Render();
+}
+
 
 void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
 {
@@ -645,6 +725,15 @@ void CGUIBaseContainer::SetPageControlRange()
   }
 }
 
+void CGUIBaseContainer::UpdatePageControl(int offset)
+{
+  if (m_pageControl)
+  { // tell our pagecontrol (scrollbar or whatever) to update (offset it by our cursor position)
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
+    SendWindowMessage(msg);
+  }
+}
+
 void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
 {
   CGUIControl::UpdateVisibility(item);
@@ -1062,4 +1151,23 @@ int CGUIBaseContainer::GetCurrentPage() const
   if (m_offset + m_itemsPerPage >= (int)GetRows())  // last page
     return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
   return m_offset / m_itemsPerPage + 1;
+}
+
+void CGUIBaseContainer::GetCacheOffsets(int &cacheBefore, int &cacheAfter)
+{
+  if (m_scrollSpeed > 0)
+  {
+    cacheBefore = 0;
+    cacheAfter = m_cacheItems;
+  }
+  else if (m_scrollSpeed < 0)
+  {
+    cacheBefore = m_cacheItems;
+    cacheAfter = 0;
+  }
+  else
+  {
+    cacheBefore = m_cacheItems / 2;
+    cacheAfter = m_cacheItems / 2;
+  }
 }

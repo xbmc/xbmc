@@ -107,7 +107,6 @@ void CGUIMultiImage::Render()
     if (nextImage >= m_files.size())
       nextImage = m_loop ? 0 : m_currentImage;  // stay on the last image if <loop>no</loop>
 
-    bool renderNext = false;
     if (nextImage != m_currentImage)
     {
       // check if we should be loading a new image yet
@@ -153,13 +152,13 @@ void CGUIMultiImage::AllocResources()
   if (!m_directoryLoaded)
     LoadDirectory();
 
-  // Randomize or sort our images if necessary
-  if (m_randomized)
-    random_shuffle(m_files.begin(), m_files.end());
-
   // Load in the current image, and reset our timer
   m_currentImage = 0;
   m_imageTimer.StartZero();
+
+  // and re-randomize if our control has been reallocated
+  if (m_randomized)
+    random_shuffle(m_files.begin(), m_files.end());
 
   m_image.SetFileName(m_files.size() ? m_files[0] : "");
 }
@@ -222,11 +221,15 @@ void CGUIMultiImage::LoadDirectory()
     }
   }
 
-  // sort our images - they'll be randomized in AllocResources() if necessary
-  sort(m_files.begin(), m_files.end());
+  // Randomize or sort our images if necessary
+  if (m_randomized)
+    random_shuffle(m_files.begin(), m_files.end());
+  else
+    sort(m_files.begin(), m_files.end());
 
   // flag as loaded - no point in constantly reloading them
   m_directoryLoaded = true;
+  m_imageTimer.StartZero();
 }
 
 void CGUIMultiImage::SetInfo(const CGUIInfoLabel &info)

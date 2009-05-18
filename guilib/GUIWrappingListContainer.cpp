@@ -23,8 +23,8 @@
 #include "GUIWrappingListContainer.h"
 #include "FileItem.h"
 
-CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int fixedPosition)
-    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
+CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition)
+    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime, preloadItems)
 {
   m_cursor = fixedPosition;
   ControlType = GUICONTAINER_WRAPLIST;
@@ -36,70 +36,13 @@ CGUIWrappingListContainer::~CGUIWrappingListContainer(void)
 {
 }
 
-void CGUIWrappingListContainer::Render()
+void CGUIWrappingListContainer::UpdatePageControl(int offset)
 {
-  if (!IsVisible()) return;
-
-  ValidateOffset();
-
-  if (m_bInvalidated)
-    UpdateLayout();
-
-  if (!m_layout || !m_focusedLayout) return;
-
-  UpdateScrollOffset();
-
-  int offset = (int)floorf(m_scrollOffset / m_layout->Size(m_orientation));
-  // Free memory not used on scre  if (m_scrollSpeed)
-  if ((int)m_items.size() > m_itemsPerPage)
-    FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
-
-  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-  float posX = m_posX;
-  float posY = m_posY;
-  if (m_orientation == VERTICAL)
-    posY += (offset * m_layout->Size(m_orientation) - m_scrollOffset);
-  else
-    posX += (offset * m_layout->Size(m_orientation) - m_scrollOffset);;
-
-  float focusedPosX = 0;
-  float focusedPosY = 0;
-  CGUIListItemPtr focusedItem;
-  int current = offset;
-  while (posX < m_posX + m_width && posY < m_posY + m_height && m_items.size())
-  {
-    CGUIListItemPtr item = m_items[CorrectOffset(current, 0)];
-    bool focused = (current == m_offset + m_cursor) && m_bHasFocus;
-    // render our item
-    if (focused)
-    {
-      focusedPosX = posX;
-      focusedPosY = posY;
-      focusedItem = item;
-    }
-    else
-      RenderItem(posX, posY, item.get(), focused);
-
-    // increment our position
-    if (m_orientation == VERTICAL)
-      posY += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
-    else
-      posX += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
-
-    current++;
-  }
-  // render focused item last so it can overlap other items
-  if (focusedItem)
-    RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
-
-  g_graphicsContext.RestoreClipRegion();
-
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update (offset it by our cursor position)
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset, m_cursor));
     SendWindowMessage(msg);
   }
-  CGUIBaseContainer::Render();
 }
 
 bool CGUIWrappingListContainer::OnAction(const CAction &action)

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
-<!--Email: airplanez@-->
-<!--Date of translation: 04/07/2009-->
+<!--Email: airplanez@gmail.com-->
+<!--Date of translation: 05/12/2009-->
 <!--$Revision$-->
 <strings>
-  <string id="31000">음소거</string>
+  <string id="31000">음소거됨</string>
   <string id="31001">
   </string>
   <string id="31002">
@@ -62,7 +62,7 @@
   <string id="31040">현재 영화[CR]팬아트 이미지[CR][CR]변경 클릭</string>
   <string id="31041">현재 TV 쇼[CR]팬아트 이미지[CR][CR]변경 클릭</string>
   <string id="31042">재생중</string>
-  <string id="31043">일시정지</string>
+  <string id="31043">일시중지</string>
   <string id="31044">빨리 감기</string>
   <string id="31045">되감기</string>
   <string id="31046">XBMC에 오신것을 환영합니다 - 로그인해 주세요</string>
@@ -85,16 +85,16 @@
   <string id="31100">배경 옵션</string>
   <string id="31101">홈 화면 옵션</string>
   <string id="31102">배경</string>
-  <string id="31103">사진 슬라이드쇼에 "일시정지" 보이기</string>
-  <string id="31104">종료 메뉴 - 대기모드 대신 최대절전 사용</string>
+  <string id="31103">사진 슬라이드쇼에 "일시중지" 보이기</string>
+  <string id="31104">종료 메뉴 - 대기 대신 최대절전 사용</string>
   <string id="31105">백그라운드 스캐너에 미디어 제목 보이기</string>
   <string id="31106">기타 옵션</string>
   <string id="31107">배경에서 스캔 라인 제거</string>
-  <string id="31108">비디오 재생시 배경에서 스캔 라인 제거</string>
+  <string id="31108">비디오 재생때 배경에서 스캔 라인 제거</string>
   <string id="31109">홈 화면 배경</string>
   <string id="31110">버튼 - 사용자 지정 배경 사용</string>
   <string id="31111">가사에 음악 정보 항상 보이기</string>
-  <string id="31112">"넓은 아이콘" 에 미디어 제목 보이기</string>
+  <string id="31112">"넓은 아이콘" 보기에 미디어 제목 보이기</string>
   <string id="31200">사용자 지정 스크립트 옵션</string>
   <string id="31201">
   </string>

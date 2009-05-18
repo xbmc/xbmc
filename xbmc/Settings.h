@@ -248,8 +248,10 @@ public:
     int m_iTuxBoxZapWaitTime;
     bool m_bTuxBoxSendAllAPids;
 
+    bool m_bFirstLoop;
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
+    int m_curlretries;
 
     int m_playlistRetries;
     int m_playlistTimeout;
@@ -401,11 +403,6 @@ public:
   bool SaveSources();
 
 protected:
-  // these 3 don't have a default - used for advancedsettings.xml
-  bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iMin, const int iMax);
-  bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fMin, const float fMax);
-  bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue);
-
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
   void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
