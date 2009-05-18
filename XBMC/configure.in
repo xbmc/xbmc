@@ -997,6 +997,8 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
   fi
 ])
 
+# TEMPORARY: Cannot have screensavers if building for ARM as it requires OpenGL
+if test "$host_cpu" != "arm" ; then
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
@@ -1031,6 +1033,7 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
       --disable-skyrocket
   fi
 ])
+fi
 
 AC_OUTPUT
 
