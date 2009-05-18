@@ -211,10 +211,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   m_messageQueue.Init();
 
   if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
-  {
     g_VideoReferenceClock.Create();
-    g_VideoReferenceClock.WaitStarted(1000); //wait for it to start so direct3d can get its exclusive lock
-  }
 
   CLog::Log(LOGNOTICE, "Creating video thread");
   Create();
