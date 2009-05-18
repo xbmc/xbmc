@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 05/09/2009-->
+<!--Date of translation: 05/15/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20067-->
+<!--Based on english strings version 20309-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -414,7 +414,7 @@
   <string id="492">Μεγέθυνση υποτίτλων</string>
   <string id="493">Ρυθμίσεις για προχωρημένους!</string>
   <string id="494">Εύρος στάθμης γενικού ήχου</string>
-  <string id="495">Αύξηση δείγματος ανάλυσης σε γραφικό περιβάλλον (GUI)</string>
+  <string id="495">Αύξηση δειγματοληψίας ανάλυσης σε γραφικό περιβάλλον (GUI)</string>
   <string id="496">Βαθμονόμηση</string>
   <string id="497">Απόκρυψη επεκτάσεων των πολυμέσων</string>
   <string id="498">Ταξιν: Τύπος</string>
@@ -768,6 +768,7 @@
   <string id="1415">Ασθενής βροχή</string>
   <string id="1416">Ομιχλώδης</string>
   <string id="1417">Κόκκοι</string>
+  <string id="1450">Εξοικονόμηση ενέργειας κατά την αναμονή</string>
   <string id="2050">Εκτέλεση</string>
   <string id="4501">Τύπος LCD</string>
   <string id="10000">Αρχική τοποθεσία</string>
@@ -1146,6 +1147,17 @@
   <string id="13419">Λογισμικό</string>
   <string id="13420">Ασφαλής κατάργηση</string>
   <string id="13421">VDPAU</string>
+  <string id="13500">Μέθοδος συγχρονισμού A/V</string>
+  <string id="13501">Χρονισμός ήχου</string>
+  <string id="13502">Χρονισµός Βίντεο (εις βάρος του ήχου)</string>
+  <string id="13503">Χρονισμός βίντεο (εν νέου δειγματοληψία ήχου)</string>
+  <string id="13504">Μέγιστο ποσοστό επανάληψης δειγματοληψίας (%)</string>
+  <string id="13505">Ποιότητα επανάληψης δειγματοληψίας</string>
+  <string id="13506">Χαμηλή</string>
+  <string id="13507">Μεσαία</string>
+  <string id="13508">Υψηλή</string>
+  <string id="13509">Πραγματικά Υψηλή</string>
+  <string id="13510">Συγχρονισμός αναπαραγωγής ήχου κατά τη προβολή</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Κατάσταση</string>
   <string id="13602">Να εκτελείται πάντα</string>
@@ -1263,6 +1275,11 @@
   <string id="15214">Χρήση συγχρονισμού Smoothed A/V</string>
   <string id="15215">Απόκρυψη ονομάτων αρχείων στην προβολή μικρογραφιών</string>
   <string id="15216">Εκτελείτε σε Party Mode</string>
+  <string id="15217">Υποβολή τραγουδιών στο Libre.fm</string>
+  <string id="15218">Όνομα χρήστη (Libre.fm)</string>
+  <string id="15219">Κωδικός πρόσβασης (Libre.fm)</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
   <string id="15250">Αποστολή Last.FM Radio στο Last.FM</string>
   <string id="15251">Σύνδεση με Last.FM...</string>
   <string id="15252">Επιλογή σταθμού...</string>

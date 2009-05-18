@@ -23,9 +23,6 @@
 - (void)setAppleMenu:(NSMenu *)menu;
 @end
 
-/* Use this flag to determine whether we use SDLMain.nib or not */
-#define		SDL_USE_NIB_FILE	0
-
 /* Use this flag to determine whether we use CPS (docking) or not */
 #define		SDL_USE_CPS		1
 #ifdef SDL_USE_CPS
@@ -37,9 +34,9 @@ typedef struct CPSProcessSerNum
 } CPSProcessSerNum;
 
 extern "C" {
-extern OSErr	CPSGetCurrentProcess( CPSProcessSerNum *psn);
-extern OSErr 	CPSEnableForegroundOperation( CPSProcessSerNum *psn, UInt32 _arg2, UInt32 _arg3, UInt32 _arg4, UInt32 _arg5);
-extern OSErr	CPSSetFrontProcess( CPSProcessSerNum *psn);
+extern OSErr	CPSGetCurrentProcess(CPSProcessSerNum *psn);
+extern OSErr 	CPSEnableForegroundOperation(CPSProcessSerNum *psn, UInt32 _arg2, UInt32 _arg3, UInt32 _arg4, UInt32 _arg5);
+extern OSErr	CPSSetFrontProcess(CPSProcessSerNum *psn);
 }
 #endif /* SDL_USE_CPS */
 
@@ -63,79 +60,6 @@ static NSString *getApplicationName(void)
 
     return appName;
 }
-
-#if SDL_USE_NIB_FILE
-/* A helper category for NSString */
-@interface NSString (ReplaceSubString)
-- (NSString *)stringByReplacingRange:(NSRange)aRange with:(NSString *)aString;
-@end
-#endif
-
-@interface SDLApplication : NSApplication
-@end
-
-@implementation SDLApplication
-/* Invoked from the Quit menu item */
-- (void)terminate:(id)sender
-{
-    // remove any notification handlers
-    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-
-    /* Post a SDL_QUIT event */
-    SDL_Event event;
-    event.type = SDL_QUIT;
-    SDL_PushEvent(&event);
-}
-@end
-
-/* The main class of the application, the application's delegate */
-@implementation SDLMain
-
-/* Set the working directory to the .app's parent directory */
-- (void) setupWorkingDirectory:(BOOL)shouldChdir
-{
-    if (shouldChdir)
-    {
-        char parentdir[MAXPATHLEN];
-		CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-		CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
-		if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN)) {
-	        assert ( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
-		}
-		CFRelease(url);
-		CFRelease(url2);
-	}
-
-}
-
-#if SDL_USE_NIB_FILE
-
-/* Fix menu to contain the real app name instead of "SDL App" */
-- (void)fixMenu:(NSMenu *)aMenu withAppName:(NSString *)appName
-{
-    NSRange aRange;
-    NSEnumerator *enumerator;
-    NSMenuItem *menuItem;
-
-    aRange = [[aMenu title] rangeOfString:@"SDL App"];
-    if (aRange.length != 0)
-        [aMenu setTitle: [[aMenu title] stringByReplacingRange:aRange with:appName]];
-
-    enumerator = [[aMenu itemArray] objectEnumerator];
-    while ((menuItem = [enumerator nextObject]))
-    {
-        aRange = [[menuItem title] rangeOfString:@"SDL App"];
-        if (aRange.length != 0)
-            [menuItem setTitle: [[menuItem title] stringByReplacingRange:aRange with:appName]];
-        if ([menuItem hasSubmenu])
-            [self fixMenu:[menuItem submenu] withAppName:appName];
-    }
-    [ aMenu sizeToFit ];
-}
-
-#else
-
 static void setApplicationMenu(void)
 {
     /* warning: this code is very odd */
@@ -207,44 +131,33 @@ static void setupWindowMenu(void)
     [windowMenuItem release];
 }
 
-/* Replacement for NSApplicationMain */
-static void CustomApplicationMain (int argc, char **argv)
+@interface SDLApplication : NSApplication
+@end
+
+@implementation SDLApplication
+
+// Called before the internal event loop has started running.
+- (void) finishLaunching
 {
-    NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-    SDLMain				*sdlMain;
-
-    /* Ensure the application object is initialised */
-    [SDLApplication sharedApplication];
-    
-#ifdef SDL_USE_CPS
-    {
-        CPSProcessSerNum PSN;
-        /* Tell the dock about us */
-        if (!CPSGetCurrentProcess(&PSN))
-            if (!CPSEnableForegroundOperation(&PSN,0x03,0x3C,0x2C,0x1103))
-                if (!CPSSetFrontProcess(&PSN))
-                    [SDLApplication sharedApplication];
-    }
-#endif /* SDL_USE_CPS */
-
-    /* Set up the menubar */
-    [NSApp setMainMenu:[[NSMenu alloc] init]];
-    setApplicationMenu();
-    setupWindowMenu();
-
-    /* Create SDLMain and make it the app delegate */
-    sdlMain = [[SDLMain alloc] init];
-    [NSApp setDelegate:sdlMain];
-    
-    /* Start the main event loop */
-    [NSApp run];
-    
-    [sdlMain release];
-    [pool release];
+  [super finishLaunching];
 }
 
-#endif
+// Invoked from the Quit menu item
+- (void)terminate:(id)sender
+{
+    // remove any notification handlers
+    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 
+    /* Post a SDL_QUIT event */
+    SDL_Event event;
+    event.type = SDL_QUIT;
+    SDL_PushEvent(&event);
+}
+@end
+
+// The main class of the application, the application's delegate
+@implementation SDLMain
 
 /*
  * Catch document open requests...this lets us notice files when the app
@@ -294,50 +207,28 @@ static void CustomApplicationMain (int argc, char **argv)
     return TRUE;
 }
 
-
-
-- (void)workspaceDidWake:(NSNotification *)aNotification
+/* Set the working directory to the .app's parent directory */
+- (void) setupWorkingDirectory:(BOOL)shouldChdir
 {
+    if (shouldChdir)
+    {
+        char parentdir[MAXPATHLEN];
+        CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+        CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
+        if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN)) {
+            assert( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
+		}
+		CFRelease(url);
+		CFRelease(url2);
+	}
+
 }
 
-- (void)workspaceWillSleep:(NSNotification *)aNotification
-{
-}
-
-- (void)applicationWillResignActive:(NSNotification *)aNotification
-{
-}
-
-- (void)applicationWillBecomeActive:(NSNotification *)aNotification
-{
-}
-
-- (void)windowChangedScreen:(NSNotification*)aNotification
-{
-  Cocoa_CVDisplayLinkUpdate();
-}
-
-/* Called when the internal event loop has just started running */
+// Called after the internal event loop has started running.
 - (void) applicationDidFinishLaunching: (NSNotification *) note
 {
-    int status;
-
-    // Block SIGPIPE
-    // SIGPIPE repeatably kills us, turn it off
-    {
-      sigset_t set;
-      sigemptyset(&set);
-      sigaddset(&set, SIGPIPE);
-      sigprocmask(SIG_BLOCK, &set, NULL);
-    }
-
     /* Set the working directory to the .app's parent directory */
     [self setupWorkingDirectory:gFinderLaunch];
-
-#if SDL_USE_NIB_FILE
-    /* Set the main menu to contain the real app name instead of "SDL App" */
-    [self fixMenu:[NSApp mainMenu] withAppName:getApplicationName()];
-#endif
 
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
       selector:@selector(workspaceDidWake:)
@@ -350,80 +241,64 @@ static void CustomApplicationMain (int argc, char **argv)
       object:nil];
       
     [[NSNotificationCenter defaultCenter] addObserver:self
-      selector:@selector(applicationWillResignActive:)
-      name:NSApplicationWillResignActiveNotification
-      object:nil];
-      
-    [[NSNotificationCenter defaultCenter] addObserver:self
-      selector:@selector(applicationWillBecomeActive:)
-      name:NSApplicationWillBecomeActiveNotification
+      selector:@selector(windowDidMove:)
+      name:NSWindowDidMoveNotification
       object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-      selector:@selector(windowChangedScreen:)
-      name:NSWindowDidChangeScreenNotification
-      object:nil];
+    // We're going to manually manage the screensaver.
+    setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
 
     /* Hand off to main application code */
     gCalledAppMainline = TRUE;
-    status = SDL_main (gArgc, gArgv);
+    int status = SDL_main(gArgc, gArgv);
 
     /* We're done, thank you for playing */
     exit(status);
 }
-@end
 
-@implementation NSString (ReplaceSubString)
-
-- (NSString *)stringByReplacingRange:(NSRange)aRange with:(NSString *)aString
+- (void) applicationWillTerminate: (NSNotification *) note
 {
-    unsigned int bufferSize;
-    unsigned int selfLen = [self length];
-    unsigned int aStringLen = [aString length];
-    unichar *buffer;
-    NSRange localRange;
-    NSString *result;
-
-    bufferSize = selfLen + aStringLen - aRange.length;
-    buffer = (unichar*)NSAllocateMemoryPages(bufferSize*sizeof(unichar));
-    
-    /* Get first part into buffer */
-    localRange.location = 0;
-    localRange.length = aRange.location;
-    [self getCharacters:buffer range:localRange];
-    
-    /* Get middle part into buffer */
-    localRange.location = 0;
-    localRange.length = aStringLen;
-    [aString getCharacters:(buffer+aRange.location) range:localRange];
-     
-    /* Get last part into buffer */
-    localRange.location = aRange.location + aRange.length;
-    localRange.length = selfLen - localRange.location;
-    [self getCharacters:(buffer+aRange.location+aStringLen) range:localRange];
-    
-    /* Build output string */
-    result = [NSString stringWithCharacters:buffer length:bufferSize];
-    
-    NSDeallocateMemoryPages(buffer, bufferSize);
-    
-    return result;
 }
 
+- (void) applicationWillResignActive:(NSNotification *) note
+{
+}
+
+- (void) applicationWillBecomeActive:(NSNotification *) note
+{
+}
+
+- (void) workspaceDidWake:(NSNotification *) note
+{
+}
+
+- (void) workspaceWillSleep:(NSNotification *) note
+{
+}
+
+- (void) windowDidMove:(NSNotification*) note
+{
+  Cocoa_CVDisplayLinkUpdate();
+}
 @end
-
-
 
 #ifdef main
 #  undef main
 #endif
-
-
 /* Main entry point to executable - should *not* be SDL_main! */
 int main(int argc, char *argv[])
 {
-    // We're going to manually manage the screensaver.
-    setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
+    NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+    SDLMain				*sdlMain;
+
+    // Block SIGPIPE
+    // SIGPIPE repeatably kills us, turn it off
+    {
+      sigset_t set;
+      sigemptyset(&set);
+      sigaddset(&set, SIGPIPE);
+      sigprocmask(SIG_BLOCK, &set, NULL);
+    }
 
     /* Copy the arguments into a global variable */
     /* This is passed if we are launched by double-clicking */
@@ -442,12 +317,34 @@ int main(int argc, char *argv[])
         gFinderLaunch = NO;
     }
 
-#if SDL_USE_NIB_FILE
-    [SDLApplication poseAsClass:[NSApplication class]];
-    NSApplicationMain (argc, argv);
-#else
-    CustomApplicationMain (argc, argv);
-#endif
+    /* Ensure the application object is initialised */
+    [SDLApplication sharedApplication];
+    
+#ifdef SDL_USE_CPS
+    {
+        CPSProcessSerNum PSN;
+        /* Tell the dock about us */
+        if (!CPSGetCurrentProcess(&PSN))
+            if (!CPSEnableForegroundOperation(&PSN,0x03,0x3C,0x2C,0x1103))
+                if (!CPSSetFrontProcess(&PSN))
+                    [SDLApplication sharedApplication];
+    }
+#endif /* SDL_USE_CPS */
+
+    /* Set up the menubar */
+    [NSApp setMainMenu:[[NSMenu alloc] init]];
+    setApplicationMenu();
+    setupWindowMenu();
+
+    /* Create SDLMain and make it the app delegate */
+    sdlMain = [[SDLMain alloc] init];
+    [NSApp setDelegate:sdlMain];
+    
+    /* Start the main event loop */
+    [NSApp run];
+    
+    [sdlMain release];
+    [pool release];
     return 0;
 }
 

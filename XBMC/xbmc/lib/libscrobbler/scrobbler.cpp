@@ -43,8 +43,6 @@
 #define SCROBBLER_MIN_DURATION        30        // seconds. API rule
 #define SCROBBLER_ACTION_SUBMIT       1
 #define SCROBBLER_ACTION_NOWPLAYING   2
-//#define SCROBBLER_HANDSHAKE_URL       "post.audioscrobbler.com"
-//#define SCROBBLER_HANDSHAKE_URL       "89.16.177.55" // libre.fm
 
 CScrobbler::CScrobbler(const CStdString &strHandshakeURL, const CStdString &strLogPrefix)
   : CThread()
@@ -85,7 +83,7 @@ void CScrobbler::Term()
   SaveJournal();
 }
 
-void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool submit)
+void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool lastfmradio)
 {
   ClearSubmissionState();
 
@@ -101,7 +99,10 @@ void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool submit)
   m_CurrentTrack.strAlbum         = tag.GetAlbum();
   m_CurrentTrack.strTitle         = tag.GetTitle();
   m_CurrentTrack.strMusicBrainzID = tag.GetMusicBrainzTrackID();
-  m_CurrentTrack.strSource        = "P";  // TODO Set source more appropriately
+  if (lastfmradio)  // TODO Set source more appropriately
+    m_CurrentTrack.strSource        = "L" + tag.GetComment();
+  else
+    m_CurrentTrack.strSource        = "P";
   m_CurrentTrack.strRating        = "";
   m_CurrentTrack.strLength.Format("%d", m_CurrentTrack.length);
   m_CurrentTrack.strStartTime.Format("%d", time(NULL));
@@ -113,8 +114,14 @@ void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool submit)
   CUtil::URLEncode(m_CurrentTrack.strMusicBrainzID);
 
   m_bNotified = false;
-  if (submit && m_CurrentTrack.length > SCROBBLER_MIN_DURATION)
-    m_bSubmitted = false;
+  if (lastfmradio)
+    m_bSubmitted = !g_guiSettings.GetBool("scrobbler.lastfmsubmitradio");
+  else
+  {
+    if ((m_CurrentTrack.length > SCROBBLER_MIN_DURATION) ||
+        !m_CurrentTrack.strMusicBrainzID.IsEmpty())
+      m_bSubmitted = false;
+  }
 }
 
 void CScrobbler::UpdateStatus()
@@ -232,7 +239,7 @@ CStdString CScrobbler::GetSubmitState()
   {
     int seconds = m_CurrentTrack.length;
     seconds -= time(NULL) - atoi(m_CurrentTrack.strStartTime.c_str());
-    strState.Format(strFormat, std::min(0, seconds));
+    strState.Format(strFormat, std::max(0, seconds));
   }
   return strState;
 }

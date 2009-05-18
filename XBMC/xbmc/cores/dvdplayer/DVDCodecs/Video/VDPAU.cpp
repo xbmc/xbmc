@@ -835,7 +835,7 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   VdpStatus vdp_st;
   VdpDecoderProfile vdp_decoder_profile;
   vid_width = avctx->width;
-  vid_height = avctx->coded_height;
+  vid_height = avctx->height;
 
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
   CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",g_graphicsContext.GetWidth(),vid_width);

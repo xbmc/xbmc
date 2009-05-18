@@ -73,7 +73,7 @@
 #endif
 #endif
 #ifdef __APPLE__
-#include "CPortAudio.h"
+#include "CoreAudio.h"
 #include "XBMCHelper.h"
 #endif
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
@@ -1609,7 +1609,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
     if (cancelled)
       return;
-    overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
+    if (singleFile)
+      overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     if (cancelled)
       return;
     if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
@@ -2510,6 +2511,7 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
 
 void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int &iControlID)
 {
+  if (!pSetting->IsVisible()) return;  // not displayed in current session
   CBaseSettingControl *pSettingControl = NULL;
   CGUIControl *pControl = NULL;
   if (pSetting->GetControlType() == CHECKMARK_CONTROL)
@@ -3800,20 +3802,26 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
 #ifdef __APPLE__
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-
-  std::vector<PaDeviceInfo* > deviceList = CPortAudio::GetDeviceList();
-  std::vector<PaDeviceInfo* >::const_iterator iter = deviceList.begin();
-
-  for (int i=0; iter != deviceList.end(); i++)
+  
+  CoreAudioDeviceList deviceList;
+  CCoreAudioHardware::GetOutputDevices(&deviceList);
+  
+  if (CCoreAudioHardware::GetDefaultOutputDevice())
+    pControl->AddLabel("Default Output Device", 0); // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
+  int activeDevice = 0;
+  
+  CStdString deviceName;
+  for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
   {
-    PaDeviceInfo* dev = *iter;
-    pControl->AddLabel(dev->name, i);
-
-    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev->name))
-        pControl->SetValue(i);
-
-    ++iter;
+    CCoreAudioDevice device(deviceList.front());
+    pControl->AddLabel(device.GetName(deviceName), i);
+    
+    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
+      activeDevice = i; // Tag this one
+    
+    deviceList.pop_front();
   }
+  pControl->SetValue(activeDevice);
 #elif defined(_WIN32PC)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
@@ -3897,5 +3905,3 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
    }
 #endif
 }
-
-

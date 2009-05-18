@@ -1314,11 +1314,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer.h"
+					RelativePath="..\..\xbmc\cores\paplayer\PAPlayer.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer_linux.cpp"
+					RelativePath="..\..\xbmc\cores\paplayer\PAPlayer.h"
 					>
 				</File>
 				<File
@@ -2707,6 +2707,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\DownloadQueueManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\DPMSSupport.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\DPMSSupport.h"
 					>
 				</File>
 				<File

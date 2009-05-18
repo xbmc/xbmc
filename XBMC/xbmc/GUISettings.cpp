@@ -447,7 +447,6 @@ void CGUISettings::Initialize()
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(0, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
   AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
-  AddBool(6, "videoplayer.usedisplayasclock", 13510, false);
 #ifdef HAS_MPLAYER
   AddInt(6, "videoplayer.framerateconversions", 336, FRAME_RATE_LEAVE_AS_IS, FRAME_RATE_LEAVE_AS_IS, 1, FRAME_RATE_USE_PAL60, SPIN_CONTROL_TEXT);
 #endif
@@ -468,9 +467,11 @@ void CGUISettings::Initialize()
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
   AddBool(17, "videoplayer.editdecision", 22003, false);
 
-  AddInt(18, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
-  AddFloat(19, "videoplayer.maxspeedadjust", 13504, 5.0, 0.0, 0.1, 10.0);
-  AddInt(20, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
+  AddSeparator(18, "videoplayer.sep4");
+  AddBool(19, "videoplayer.usedisplayasclock", 13510, false);
+  AddInt(20, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddFloat(21, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
+  AddInt(22, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "arial.ttf", SPIN_CONTROL_TEXT);
@@ -663,10 +664,13 @@ void CGUISettings::Initialize()
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddBool(5, "screensaver.uselock",20140,false);
-  AddSeparator(6, "screensaver.sep1");
-  AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddBool(9, "screensaver.slideshowshuffle", 13319, false);
+  // Note: Application.cpp might hide powersaving settings if not supported.
+  AddSeparator(6, "screensaver.sep_powersaving");
+  AddInt(7, "screensaver.powersavingtime", 1450, 0, 0, 5, 4 * 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddSeparator(8, "screensaver.sep1");
+  AddInt(9, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddPath(10, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddBool(11, "screensaver.slideshowshuffle", 13319, false);
 
   AddPath(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }

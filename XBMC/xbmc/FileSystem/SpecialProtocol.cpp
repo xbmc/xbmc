@@ -129,6 +129,8 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
     CUtil::AddFileToFolder(CUtil::VideoPlaylistsLocation(), FileName, translatedPath);
   else if (RootDir.Equals("cdrips"))
     CUtil::AddFileToFolder(g_guiSettings.GetString("cddaripper.path"), FileName, translatedPath);
+  else if (RootDir.Equals("skin"))
+    CUtil::AddFileToFolder(g_graphicsContext.GetMediaDir(), FileName, translatedPath);
 
   // from here on, we have our "real" special paths
   else if (RootDir.Equals("xbmc"))

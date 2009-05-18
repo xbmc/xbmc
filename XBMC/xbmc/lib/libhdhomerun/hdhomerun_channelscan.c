@@ -63,7 +63,7 @@ void channelscan_destroy(struct hdhomerun_channelscan_t *scan)
 	free(scan);
 }
 
-static int channelscan_execute_find_lock(struct hdhomerun_channelscan_t *scan, uint32_t frequency, struct hdhomerun_channelscan_result_t *result)
+static int channelscan_find_lock(struct hdhomerun_channelscan_t *scan, uint32_t frequency, struct hdhomerun_channelscan_result_t *result)
 {
 	/* Set channel. */
 	char channel_str[64];
@@ -84,10 +84,8 @@ static int channelscan_execute_find_lock(struct hdhomerun_channelscan_t *scan, u
 	}
 
 	/* Wait for symbol quality = 100%. */
-	int i;
-	for (i = 0; i < 5 * 4; i++) {
-		usleep(250000);
-
+	uint64_t timeout = getcurrenttime() + 5000;
+	while (1) {
 		ret = hdhomerun_device_get_tuner_status(scan->hd, NULL, &result->status);
 		if (ret <= 0) {
 			return ret;
@@ -96,10 +94,13 @@ static int channelscan_execute_find_lock(struct hdhomerun_channelscan_t *scan, u
 		if (result->status.symbol_error_quality == 100) {
 			return 1;
 		}
-	}
 
-	/* Timeout. */
-	return 1;
+		if (getcurrenttime() >= timeout) {
+			return 1;
+		}
+
+		msleep(250);
+	}
 }
 
 static void channelscan_extract_name(struct hdhomerun_channelscan_program_t *program, const char *line)
@@ -137,9 +138,10 @@ static void channelscan_extract_name(struct hdhomerun_channelscan_program_t *pro
 	program->name[length] = 0;
 }
 
-static int channelscan_execute_detect_programs(struct hdhomerun_channelscan_t *scan, struct hdhomerun_channelscan_result_t *result, int *pchanged)
+static int channelscan_detect_programs(struct hdhomerun_channelscan_t *scan, struct hdhomerun_channelscan_result_t *result, bool_t *pchanged, bool_t *pincomplete)
 {
 	*pchanged = FALSE;
+	*pincomplete = FALSE;
 
 	char *streaminfo;
 	int ret = hdhomerun_device_get_tuner_streaminfo(scan->hd, &streaminfo);
@@ -158,6 +160,12 @@ static int channelscan_execute_detect_programs(struct hdhomerun_channelscan_t *s
 
 		*end = 0;
 
+		unsigned long pat_crc;
+		if (sscanf(line, "crc=0x%lx", &pat_crc) == 1) {
+			result->pat_crc = pat_crc;
+			continue;
+		}
+
 		struct hdhomerun_channelscan_program_t program;
 		memset(&program, 0, sizeof(program));
 
@@ -167,7 +175,10 @@ static int channelscan_execute_detect_programs(struct hdhomerun_channelscan_t *s
 		unsigned int program_number;
 		unsigned int virtual_major, virtual_minor;
 		if (sscanf(line, "%u: %u.%u", &program_number, &virtual_major, &virtual_minor) != 3) {
-			continue;
+			if (sscanf(line, "%u: %u", &program_number, &virtual_major) != 2) {
+				continue;
+			}
+			virtual_minor = 0;
 		}
 
 		program.program_number = program_number;
@@ -176,15 +187,18 @@ static int channelscan_execute_detect_programs(struct hdhomerun_channelscan_t *s
 
 		channelscan_extract_name(&program, line);
 
-		program.type = HDHOMERUN_CHANNELSCAN_PROGRAM_NORMAL;
-		if (strstr(line, "(no data)")) {
-			program.type = HDHOMERUN_CHANNELSCAN_PROGRAM_NODATA;
-		}
 		if (strstr(line, "(control)")) {
 			program.type = HDHOMERUN_CHANNELSCAN_PROGRAM_CONTROL;
-		}
-		if (strstr(line, "(encrypted)")) {
+		} else if (strstr(line, "(encrypted)")) {
 			program.type = HDHOMERUN_CHANNELSCAN_PROGRAM_ENCRYPTED;
+		} else if (strstr(line, "(no data)")) {
+			program.type = HDHOMERUN_CHANNELSCAN_PROGRAM_NODATA;
+			*pincomplete = TRUE;
+		} else {
+			program.type = HDHOMERUN_CHANNELSCAN_PROGRAM_NORMAL;
+			if ((program.virtual_major == 0) || (program.name[0] == 0)) {
+				*pincomplete = TRUE;
+			}
 		}
 
 		if (memcmp(&result->programs[program_count], &program, sizeof(program)) != 0) {
@@ -200,6 +214,9 @@ static int channelscan_execute_detect_programs(struct hdhomerun_channelscan_t *s
 		line = end + 1;
 	}
 
+	if (program_count == 0) {
+		*pincomplete = TRUE;
+	}
 	if (result->program_count != program_count) {
 		result->program_count = program_count;
 		*pchanged = TRUE;
@@ -246,7 +263,7 @@ int channelscan_detect(struct hdhomerun_channelscan_t *scan, struct hdhomerun_ch
 	scan->scanned_channels++;
 
 	/* Find lock. */
-	int ret = channelscan_execute_find_lock(scan, result->frequency, result);
+	int ret = channelscan_find_lock(scan, result->frequency, result);
 	if (ret <= 0) {
 		return ret;
 	}
@@ -257,35 +274,29 @@ int channelscan_detect(struct hdhomerun_channelscan_t *scan, struct hdhomerun_ch
 	/* Detect programs. */
 	result->program_count = 0;
 
-	int changed;
-	ret = channelscan_execute_detect_programs(scan, result, &changed);
-	if (ret <= 0) {
-		return ret;
-	}
-
-	int same_count = 0;
-	int i;
-	for (i = 0; i < 5 * 4; i++) {
-		usleep(250000);
-
-		ret = channelscan_execute_detect_programs(scan, result, &changed);
+	uint64_t timeout = getcurrenttime() + 10000;
+	uint64_t complete_time = getcurrenttime() + 2000;
+	while (1) {
+		bool_t changed, incomplete;
+		ret = channelscan_detect_programs(scan, result, &changed, &incomplete);
 		if (ret <= 0) {
 			return ret;
 		}
 
 		if (changed) {
-			same_count = 0;
-			continue;
+			complete_time = getcurrenttime() + 2000;
 		}
 
-		same_count++;
-		if (same_count >= 8) {
-			break;
+		if (!incomplete && (getcurrenttime() >= complete_time)) {
+			return 1;
 		}
+
+		if (getcurrenttime() >= timeout) {
+			return 1;
+		}
+
+		msleep(250);
 	}
-
-	/* Complete. */
-	return 1;
 }
 
 uint8_t channelscan_get_progress(struct hdhomerun_channelscan_t *scan)

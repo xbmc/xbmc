@@ -23,7 +23,7 @@
 #include "utils/BitstreamStats.h"
 #include "PlayerCoreFactory.h"
 #include "dvdplayer/DVDPlayer.h"
-#include "paplayer/paplayer.h"
+#include "paplayer/PAPlayer.h"
 #include "paplayer/DVDPlayerCodec.h"
 #include "GUIDialogContextMenu.h"
 #include "XBAudioConfig.h"

@@ -61,6 +61,7 @@ class CXBFileZilla;
 class CSNTPClient;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
+class DPMSSupport;
 
 class CBackgroundPlayer : public CThread
 {
@@ -151,7 +152,8 @@ public:
   bool OnAction(CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
-  void CheckScreenSaver();   // CB: SCREENSAVER PATCH
+  // Checks whether the screensaver and / or DPMS should become active.
+  void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
   void ActivateScreenSaver(bool forceType = false);
@@ -169,7 +171,9 @@ public:
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
   void ResetScreenSaverTimer();
-  bool ResetScreenSaverWindow();
+  // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
+  bool WakeUpScreenSaverAndDPMS();
+  bool WakeUpScreenSaver();
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;
@@ -259,6 +263,8 @@ public:
 
   bool IsPresentFrame();
 
+  void Minimize(bool minimize = true);
+
   bool m_restartLirc;
   bool m_restartLCD;
 
@@ -289,6 +295,9 @@ protected:
   DWORD      m_lastActionCode;
   CStopWatch m_lastActionTimer;
 
+  DPMSSupport* m_dpms;
+  bool m_dpmsIsActive;
+
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
@@ -311,6 +320,7 @@ protected:
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
+  bool m_bWasFullScreenBeforeMinimize;
 
 #ifdef HAS_SDL
   int        m_frameCount;
@@ -327,7 +337,6 @@ protected:
 
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
-  bool Minimize();
   bool ProcessMouse();
   bool ProcessHTTPApiButtons();
   bool ProcessKeyboard();

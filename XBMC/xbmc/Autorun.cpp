@@ -59,7 +59,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
   if ( pInfo == NULL )
     return ;
 
-  g_application.ResetScreenSaverWindow();  // turn off the screensaver if it's active
+  g_application.WakeUpScreenSaverAndDPMS();  // turn off the screensaver if it's active
 
   if ( pInfo->IsAudio( 1 ) )
   {

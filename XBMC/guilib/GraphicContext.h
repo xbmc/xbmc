@@ -183,6 +183,7 @@ public:
   const RECT& GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
   void SetFullScreenViewWindow(RESOLUTION &res);
+  bool IsFullScreenRoot() const;
   bool ToggleFullScreenRoot();
   void SetFullScreenRoot(bool fs = true);
   void ClipToViewWindow();

@@ -141,7 +141,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
         info2.strLanguage = parser2.GetLanguage();
 
         // skip wrong content type
-        if (info.strContent != info2.strContent)
+        if (info.strContent != info2.strContent && (info.strContent.Equals("movies") || info.strContent.Equals("tvshows") || info.strContent.Equals("musicvideos")))
           continue;
 
         // add same language, multi-language and music scrapers

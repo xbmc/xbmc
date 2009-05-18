@@ -139,7 +139,6 @@ Then install the following port packages (order is very important):
 
  $ sudo port install glew +universal
  $ sudo port install libcdio +universal
- $ sudo port install portaudio +universal
  $ sudo port install openssl +universal
  $ sudo port install samba3 macosx_deployment_target=10.4
  $ sudo port install mysql5 +universal
@@ -150,6 +149,12 @@ Then install the following port packages (order is very important):
  $ sudo port install smpeg +universal
  $ sudo port install libsdl_mixer +universal
  $ sudo port install libsdl_image +universal
+
+If you understand the following two lines, you can run it to automate
+the installation of the ports in the above order:
+
+  sudo bash
+  cat README.osx | perl -ne 'print `port install $1` if /^ \$ sudo port install (.*)$/;'
 
 Finally, fix the mysql package default install location with this symlink:
 

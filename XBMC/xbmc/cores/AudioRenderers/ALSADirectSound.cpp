@@ -438,7 +438,7 @@ DWORD CALSADirectSound::GetSpace()
 }
 
 //***********************************************************************************************
-DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
+DWORD CALSADirectSound::AddPackets(const void* data, DWORD len)
 {
   if (!m_bIsAllocated) {
     CLog::Log(LOGERROR,"CALSADirectSound::AddPackets - sanity failed. no valid play handle!");
@@ -449,7 +449,7 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
   if(m_bPause)
     return 0;
 
-  unsigned char *pcmPtr = data;
+  const unsigned char *pcmPtr = (const unsigned char *)data;
   int framesToWrite; 
 
   framesToWrite  = std::min(GetSpace(), len);
@@ -480,7 +480,7 @@ DWORD CALSADirectSound::AddPackets(unsigned char *data, DWORD len)
   if (writeResult>0)
     pcmPtr += snd_pcm_frames_to_bytes(m_pPlayHandle, writeResult);
 
-  return pcmPtr - data;
+  return writeResult * (m_uiBitsPerSample / 8) * m_uiChannels;
 }
 
 //***********************************************************************************************

@@ -28,6 +28,10 @@
   #include <X11/Xlib.h>
   #include <GL/glx.h>
 #elif defined(_WIN32)
+  #ifdef _DEBUG
+    #define D3D_DEBUG_INFO
+  #endif
+
   namespace D3dClock
   {
     #include <d3d9.h>
@@ -46,8 +50,12 @@ class CVideoReferenceClock : public CThread
     int    GetRefreshRate();
     void   Wait(__int64 Target);
     void   WaitStarted(int MSecs);
+    bool   UseVblank();
+    int    GetMissedVblanks();
 
-#ifdef __APPLE__
+#ifdef _WIN32
+    void SetMonitor(MONITORINFOEX &Monitor);
+#elif defined(__APPLE__)
     void VblankHandler(__int64 nowtime, double fps);
 #endif
     
@@ -67,6 +75,7 @@ class CVideoReferenceClock : public CThread
     __int64 m_RefreshRate;       //current refreshrate
     int     m_PrevRefreshRate;   //previous refresrate, used for log printing and getting refreshrate from nvidia-settings
     int     m_MissedVblanks;     //number of clock updates missed by the vblank clock
+    int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
     __int64 m_VblankTime;        //last time the clock was updated when using vblank as clock
 
     CEvent m_Started;            //set when the vblank clock is started
@@ -101,12 +110,14 @@ class CVideoReferenceClock : public CThread
     D3dClock::LPDIRECT3D9       m_D3d;
     D3dClock::LPDIRECT3DDEVICE9 m_D3dDev;
 
-    HWND         m_Hwnd;
-    WNDCLASSEX   m_WinCl;
-    bool         m_HasWinCl;
-    unsigned int m_Width;
-    unsigned int m_Height;
-    unsigned int m_Adapter;
+    HWND          m_Hwnd;
+    WNDCLASSEX    m_WinCl;
+    bool          m_HasWinCl;
+    unsigned int  m_Width;
+    unsigned int  m_Height;
+    unsigned int  m_Adapter;
+    MONITORINFOEX m_Monitor;
+    MONITORINFOEX m_PrevMonitor;
 
 #elif defined(__APPLE__)
     bool SetupCocoa();

@@ -147,13 +147,10 @@ void XLCDproc::SetContrast(int iContrast)
 
 void XLCDproc::Stop()
 {
-  if (!m_bStop)
-  {
-    //Close connection
-    if (sockfd >= 0)
-      shutdown(sockfd, SHUT_RDWR);
-    m_bStop = true;
-  }
+  //Close connection
+  if (sockfd >= 0)
+    shutdown(sockfd, SHUT_RDWR);
+  m_bStop = true;
 }
 
 void XLCDproc::Suspend() 

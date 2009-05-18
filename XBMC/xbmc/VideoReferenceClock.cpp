@@ -40,8 +40,14 @@ CVideoReferenceClock::CVideoReferenceClock()
   m_SystemFrequency = Freq.QuadPart;
   m_AdjustedFrequency = Freq.QuadPart;
   m_ClockOffset = 0;
+  m_TotalMissedVblanks = 0;
   m_UseVblank = false;
   m_Started.Reset();
+
+#ifdef _WIN32
+  ZeroMemory(&m_Monitor, sizeof(m_Monitor));
+  ZeroMemory(&m_PrevMonitor, sizeof(m_PrevMonitor));
+#endif
 }
 
 void CVideoReferenceClock::Process()
@@ -68,6 +74,7 @@ void CVideoReferenceClock::Process()
     QueryPerformanceCounter(&Now);
     m_CurrTime = Now.QuadPart + m_ClockOffset; //add the clock offset from the previous time we stopped
     m_AdjustedFrequency = m_SystemFrequency;
+    m_TotalMissedVblanks = 0;
     m_Started.Set();
 
     if (SetupSuccess)
@@ -379,9 +386,6 @@ void CVideoReferenceClock::RunD3D()
   CSingleLock SingleLock(m_CritSection);
   SingleLock.Leave();
 
-  //we need a high priority to get accurate timing
-  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
-
   //get the scanline we're currently at
   m_D3dDev->GetRasterStatus(0, &RasterStatus);
   if (RasterStatus.InVBlank) LastLine = 0;
@@ -431,7 +435,7 @@ void CVideoReferenceClock::RunD3D()
       HandleWindowMessages();
 
       //because we had a vblank, sleep for half a refreshrate period
-      ::Sleep(500 / m_RefreshRate);
+      ::Sleep(500 / (unsigned int)m_RefreshRate);
     }
     else
     {
@@ -450,10 +454,11 @@ void CVideoReferenceClock::RunD3D()
 
 bool CVideoReferenceClock::SetupD3D()
 {
-  D3dClock::D3DPRESENT_PARAMETERS D3dPP;
-  D3dClock::D3DCAPS9              DevCaps;
-  D3dClock::D3DRASTER_STATUS      RasterStatus;
-  D3dClock::D3DDISPLAYMODE        DisplayMode;
+  D3dClock::D3DPRESENT_PARAMETERS  D3dPP;
+  D3dClock::D3DCAPS9               DevCaps;
+  D3dClock::D3DRASTER_STATUS       RasterStatus;
+  D3dClock::D3DDISPLAYMODE         DisplayMode;
+  D3dClock::D3DADAPTER_IDENTIFIER9 AIdentifier;
 
   int ReturnV;
 
@@ -462,18 +467,7 @@ bool CVideoReferenceClock::SetupD3D()
   m_Hwnd = NULL;
   m_HasWinCl = false;
 
-  //we have to set up direct3d on a specific monitor, currently this is done with an environment variable
-  m_Adapter = 0;
-  if (getenv("SDL_FULLSCREEN_HEAD"))
-  {
-    unsigned int Adapter;
-    if (sscanf(getenv("SDL_FULLSCREEN_HEAD"), "%u", &Adapter) == 1)
-    {
-      m_Adapter = Adapter - 1;
-    }
-  }
-
-  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up Direct3d on adapter %i", m_Adapter);
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setting up Direct3d on monitor %0.31s", m_Monitor.szDevice);
 
   if (!CreateHiddenWindow())
   {
@@ -488,38 +482,64 @@ bool CVideoReferenceClock::SetupD3D()
     return false;
   }
 
+  int NrAdapters = m_D3d->GetAdapterCount();
+  m_Adapter = 0;
+  
+  //try to get the adapter the main window is on
+  CSingleLock SingleLock(m_CritSection);
+  for (int i = 0; i < NrAdapters; i++)
+  {
+    m_D3d->GetAdapterIdentifier(i, 0, &AIdentifier);
+    if (strncmp(m_Monitor.szDevice, AIdentifier.DeviceName, sizeof(m_Monitor.szDevice)) == 0)
+    {
+      m_Adapter = i;
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: monitor %0.31s is adapter %i", m_Monitor.szDevice, i);
+      break;
+    }
+  }
+  m_PrevMonitor = m_Monitor;
+  SingleLock.Leave();
+
   ZeroMemory(&D3dPP, sizeof(D3dPP));
-  D3dPP.Windowed = TRUE;
-  D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_DISCARD;
-  D3dPP.hDeviceWindow = m_Hwnd;
   D3dPP.BackBufferWidth = 64;
   D3dPP.BackBufferHeight = 64;
   D3dPP.BackBufferFormat = D3dClock::D3DFMT_UNKNOWN;
   D3dPP.BackBufferCount = 1;
   D3dPP.MultiSampleType = D3dClock::D3DMULTISAMPLE_NONE;
   D3dPP.MultiSampleQuality = 0;
-  D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_FLIP;
+  D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_COPY;
+  D3dPP.hDeviceWindow = m_Hwnd;
+  D3dPP.Windowed = TRUE;
   D3dPP.EnableAutoDepthStencil = FALSE;
+  D3dPP.Flags = 0;
+  D3dPP.FullScreen_RefreshRateInHz = 0;
   D3dPP.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
+
+  //we need a high priority thread to get accurate timing
+  if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: SetThreadPriority failed");
+
+  //put the window on top because direct3d wants exclusive access for some reason
+  LockSetForegroundWindow(LSFW_UNLOCK);
+  SetForegroundWindow(m_Hwnd);
+  HandleWindowMessages();
 
   ReturnV = m_D3d->CreateDevice(m_Adapter, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
 
-  if (ReturnV != D3D_OK && ReturnV != D3DERR_DEVICELOST)
+  if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i", ReturnV & 0xFFFF);
+    if (ReturnV == D3DERR_DEVICELOST)
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned D3DERR_DEVICELOST");
+    else
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i", ReturnV & 0xFFFF);
+    
     return false;
   }
-  else if (ReturnV == D3DERR_DEVICELOST)
-  {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned D3DERR_DEVICELOST, resetting device");
-    ReturnV = m_D3dDev->Reset(&D3dPP);
-    if (ReturnV != D3D_OK)
-    {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Reset returned %i", ReturnV & 0xFFFF);
-      return false;
-    }
-  }
+
+  //now that d3d is set up, we can hide the window
+  ShowWindow(m_Hwnd, SW_HIDE);
+  HandleWindowMessages();
 
   ReturnV = m_D3dDev->GetDeviceCaps(&DevCaps);
   if (ReturnV != D3D_OK)
@@ -611,19 +631,21 @@ bool CVideoReferenceClock::CreateHiddenWindow()
   }
   m_HasWinCl = true;
 
-  m_Hwnd = CreateWindowEx(WS_EX_LEFT|WS_EX_LTRREADING|WS_EX_WINDOWEDGE, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
-                          WS_OVERLAPPED|WS_MINIMIZEBOX|WS_SYSMENU|WS_CLIPSIBLINGS|WS_CAPTION, CW_USEDEFAULT, CW_USEDEFAULT,
-                          400, 430, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
-
+  //make a layered window which can be made transparent
+  CSingleLock SingleLock(m_CritSection);
+  m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
+                          WS_VISIBLE, m_Monitor.rcMonitor.left, m_Monitor.rcMonitor.top, 64, 64,
+                          HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
+  SingleLock.Leave();
+  
   if (!m_Hwnd)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateWindowEx failed");
     return false;
   }
 
-  ShowWindow(m_Hwnd, SW_HIDE);
-  UpdateWindow(m_Hwnd);
-  HandleWindowMessages();
+  //make the window completely transparent
+  SetLayeredWindowAttributes(m_Hwnd, 0, 0, LWA_ALPHA);
 
   return true;
 }
@@ -637,6 +659,13 @@ void CVideoReferenceClock::HandleWindowMessages()
     TranslateMessage(&Message);
     DispatchMessage(&Message);
   }
+}
+
+//called from surface.cpp to set the monitor the main window is on
+void CVideoReferenceClock::SetMonitor(MONITORINFOEX &Monitor)
+{
+  CSingleLock SingleLock(m_CritSection);
+  m_Monitor = Monitor;
 }
 
 #elif defined(__APPLE__)
@@ -871,6 +900,18 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   }
   m_Width = DisplayMode.Width;
   m_Height = DisplayMode.Height;
+   
+  //we don't want to know about monitor changes for a forced update
+  //also prevent having an extra lock every second
+  if (!Forced && strncmp(m_Monitor.szDevice, m_PrevMonitor.szDevice, sizeof(m_Monitor.szDevice) - 1))
+  {
+    CSingleLock SingleLock(m_CritSection);
+    if (strncmp(m_Monitor.szDevice, m_PrevMonitor.szDevice, sizeof(m_Monitor.szDevice) - 1))
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: monitor changed to %s", m_Monitor.szDevice);
+      Changed = true;
+    }
+  }
 
   return Changed;
 
@@ -896,7 +937,7 @@ int CVideoReferenceClock::GetRefreshRate()
   CSingleLock SingleLock(m_CritSection);
 
   if (m_UseVblank)
-    return m_RefreshRate;
+    return (int)m_RefreshRate;
   else
     return -1;
 }
@@ -922,7 +963,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
       //then advance that value by 20% of a vblank period, if the vblank clock doesn't update by that time we know it's late
       QueryPerformanceCounter(&Now);
       NextVblank = m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXDELAY / 1000);
-      SleepTime = (NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency;
+      SleepTime = (int)((NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency);
 
       Late = false;
       if (SleepTime <= 0) //if sleeptime is 0 or lower, the vblank clock is already late in updating
@@ -941,6 +982,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
       if (Late) //if the vblank clock was late with its update, we update the clock ourselves
       {
         m_MissedVblanks++; //tell the vblank clock how many vblanks it missed
+        m_TotalMissedVblanks++; //for the codec information screen
         m_VblankTime += m_SystemFrequency / m_RefreshRate; //set the vblank time one vblank period forward
         UpdateClock(1, false); //update the clock by 1 vblank
       }
@@ -952,10 +994,25 @@ void CVideoReferenceClock::Wait(__int64 Target)
     SingleLock.Leave();
     QueryPerformanceCounter(&Now);
     //sleep until the timestamp has passed
-    SleepTime = (Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency;
+    SleepTime = (int)((Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency);
     if (SleepTime > 0)
       ::Sleep(SleepTime);
   }
+}
+
+
+bool CVideoReferenceClock::UseVblank()
+{
+    return m_UseVblank;
+}
+
+//for the codec information screen
+int CVideoReferenceClock::GetMissedVblanks()
+{
+  if (m_UseVblank)
+    return m_TotalMissedVblanks;
+  else
+    return 0;
 }
 
 void CVideoReferenceClock::SendVblankSignal()
