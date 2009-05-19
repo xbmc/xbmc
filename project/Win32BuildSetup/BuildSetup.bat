@@ -197,9 +197,14 @@ rem	CONFIG START
     rem try with space delim instead of tab
     FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
   )
+  rem proper x64 registry checks
   IF NOT EXIST "%NSISExePath%" (
-    rem extra check for x64
-    SET NSISExePath=%ProgramFiles(x86)%\NSIS
+    ECHO using x64 registry entries
+    FOR /F "tokens=2* delims=	" %%A IN ('REG QUERY "HKLM\Software\Wow6432Node\NSIS" /ve') DO SET NSISExePath=%%B
+  )
+  IF NOT EXIST "%NSISExePath%" (
+    rem try with space delim instead of tab
+    FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\Wow6432Node\NSIS" /ve') DO SET NSISExePath=%%B
   )
 
   SET NSISExe=%NSISExePath%\makensis.exe
