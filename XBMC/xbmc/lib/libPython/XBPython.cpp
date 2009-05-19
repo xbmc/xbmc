@@ -51,6 +51,8 @@ XBPython g_pythonParser;
 #else
 #define PYTHON_DLL "special://xbmc/system/python/python24-x86-osx.so"
 #endif
+#elif defined(_ARMEL)
+#define PYTHON_DLL "special://xbmc/system/python/python24-arm.so"
 #elif defined(__x86_64__)
 #define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
 #else /* !__x86_64__ */
