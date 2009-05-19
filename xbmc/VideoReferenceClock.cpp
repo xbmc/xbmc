@@ -429,7 +429,7 @@ void CVideoReferenceClock::RunD3D()
       //because we had a vblank, sleep until half the refreshrate period
       QueryPerformanceCounter(&Now);
       int SleepTime = (int)((LastVBlankTime + (m_SystemFrequency / m_RefreshRate / 2) - Now.QuadPart) * 1000 / m_SystemFrequency);
-      if (SleepTime > 8) SleepTime = 8; //don't sleep for too long otherwise we miss a vblank
+      if (SleepTime > 100) SleepTime = 100; //failsafe
       if (SleepTime > 0) ::Sleep(SleepTime);
     }
     else
