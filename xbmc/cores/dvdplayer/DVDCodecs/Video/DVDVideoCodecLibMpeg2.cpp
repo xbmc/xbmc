@@ -168,11 +168,7 @@ bool CDVDVideoCodecLibMpeg2::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   if (!m_dll.Load())
     return false;
 
-#ifdef __APPLE__
-  m_dll.mpeg2_accel(MPEG2_ACCEL_X86_SSE3 | MPEG2_ACCEL_X86_SSE2 | MPEG2_ACCEL_X86_MMXEXT | MPEG2_ACCEL_X86_MMX);
-#else
   m_dll.mpeg2_accel(MPEG2_ACCEL_X86_MMX);
-#endif
 
   m_pHandle = m_dll.mpeg2_init();
   if (!m_pHandle) return false;
