@@ -129,7 +129,7 @@ void CScrobbler::UpdateStatus()
   // Called from CApp::ProcessSlow() every ~500ms.
   if (!CanScrobble())
     return;
-  if (g_application.IsPaused())
+  if (g_application.IsPaused() || (g_application.GetPlaySpeed() != 1))
     return;
 
   m_submissionTimer++;
@@ -208,7 +208,8 @@ CStdString CScrobbler::GetSubmitInterval()
   if (!CanScrobble())
     return strInterval;
   CStdString strFormat = g_localizeStrings.Get(15209);
-  strInterval.Format(strFormat, m_failedHandshakeDelay);
+  int seconds = m_CurrentTrack.length - m_submissionTimer/2;
+  strInterval.Format(strFormat, std::max(seconds, m_failedHandshakeDelay));
   return strInterval;
 }
 
@@ -231,14 +232,13 @@ CStdString CScrobbler::GetSubmitState()
     return strState;
   if (m_bSubmitting)
     strState = g_localizeStrings.Get(15211);
-  else if (m_bBadAuth || m_bBanned)
+  else if (!g_application.IsPlayingAudio() || m_bBadAuth || m_bBanned)
     strState.Format(strFormat, 0);
   else if (m_strSessionID.IsEmpty())
     strState.Format(strFormat, m_failedHandshakeDelay);
   else
   {
-    int seconds = m_CurrentTrack.length;
-    seconds -= time(NULL) - atoi(m_CurrentTrack.strStartTime.c_str());
+    int seconds = m_CurrentTrack.length - m_submissionTimer/2;
     strState.Format(strFormat, std::max(0, seconds));
   }
   return strState;
