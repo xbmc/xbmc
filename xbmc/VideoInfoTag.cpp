@@ -493,6 +493,9 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
 {
   XMLUtils::GetString(movie, "LocalTitle", m_strTitle);
   XMLUtils::GetString(movie, "OriginalTitle", m_strOriginalTitle);
+  XMLUtils::GetFloat(movie, "Rating", m_fRating);
+  m_strVotes = "Unknown"; // not present in mymovies.xml so unknown so far
+  XMLUtils::GetString(movie, "IMDB", m_strIMDBNumber);
   XMLUtils::GetInt(movie, "ProductionYear", m_iYear);
   int runtime = 0;
   XMLUtils::GetInt(movie, "RunningTime", runtime);
@@ -500,7 +503,12 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
   XMLUtils::GetString(movie, "TagLine", m_strTagLine);
   XMLUtils::GetString(movie, "Description", m_strPlot);
   if (m_strTagLine.IsEmpty())
-    m_strPlotOutline = m_strPlot;
+  {
+    if (m_strPlot.find("\r\n") > 0)
+      m_strPlotOutline = m_strPlot.substr(0, m_strPlot.find("\r\n") - 1);
+    else
+      m_strPlotOutline = m_strPlot;
+  }
 
   // thumb
   CStdString strTemp;
@@ -508,7 +516,7 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
   while (node)
   {
     const TiXmlNode *front = node->FirstChild("Front");
-    if (front)
+    if (front && front->FirstChild())
     {
       strTemp = front->FirstChild()->Value();
       if (!strTemp.IsEmpty())
