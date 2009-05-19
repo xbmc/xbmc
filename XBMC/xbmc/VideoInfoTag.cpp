@@ -494,7 +494,6 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
   XMLUtils::GetString(movie, "LocalTitle", m_strTitle);
   XMLUtils::GetString(movie, "OriginalTitle", m_strOriginalTitle);
   XMLUtils::GetFloat(movie, "Rating", m_fRating);
-  m_strVotes = "Unknown"; // not present in mymovies.xml so unknown so far
   XMLUtils::GetString(movie, "IMDB", m_strIMDBNumber);
   XMLUtils::GetInt(movie, "ProductionYear", m_iYear);
   int runtime = 0;
