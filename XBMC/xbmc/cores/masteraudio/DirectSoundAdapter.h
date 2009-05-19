@@ -36,10 +36,9 @@ public:
   virtual ~CDirectSoundAdapter();
 
   // IAudioSink
-  MA_RESULT TestInputFormat(CStreamDescriptor* pDesc);
-  MA_RESULT SetInputFormat(CStreamDescriptor* pDesc);
-  MA_RESULT GetInputProperties(audio_data_transfer_props* pProps);
-  MA_RESULT AddSlice(audio_slice* pSlice);
+  MA_RESULT TestInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
+  MA_RESULT SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
+  MA_RESULT SetSource(IAudioSource* pSource, unsigned int sourceBus, unsigned int sinkBus = 0);
   float GetMaxLatency();
   void Flush();
 
@@ -54,13 +53,14 @@ public:
   void Close();
   bool IsIdle();
   bool Drain(unsigned int timeout);
+  void Render();
   
 protected:
+  IAudioSource* m_pSource;
+  unsigned int m_SourceBus;
   size_t m_ChunkLen;
   IAudioRenderer* m_pRenderer;
   unsigned __int64 m_TotalBytesReceived;
-  audio_slice* m_pInputSlice;
-  size_t m_BufferOffset;
 };
 
 #endif // __DIRECT_SOUND_ADAPTER_H__

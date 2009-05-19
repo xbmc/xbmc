@@ -29,11 +29,11 @@ CWaveFileRenderer waveOut;
 bool writeWave = false;
 
 CDirectSoundAdapter::CDirectSoundAdapter() : 
+  m_pSource(NULL),
+  m_SourceBus(0),
   m_pRenderer(NULL),
   m_TotalBytesReceived(0),
-  m_pInputSlice(NULL),
-  m_ChunkLen(0),
-  m_BufferOffset(0)
+  m_ChunkLen(0)
 {
 
 }
@@ -44,15 +44,18 @@ CDirectSoundAdapter::~CDirectSoundAdapter()
 }
 
 // IAudioSink
-MA_RESULT CDirectSoundAdapter::TestInputFormat(CStreamDescriptor* pDesc)
+MA_RESULT CDirectSoundAdapter::TestInputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
 {
   // TODO: Implement properly
 
   return MA_SUCCESS;
 }
 
-MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
+MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
 {
+  if (bus > 0)
+    return MA_INVALID_BUS;
+
   if (m_pRenderer)
     Close();
 
@@ -110,60 +113,60 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc)
   return MA_SUCCESS;
 }
 
-MA_RESULT CDirectSoundAdapter::GetInputProperties(audio_data_transfer_props* pProps)
+MA_RESULT CDirectSoundAdapter::SetSource(IAudioSource* pSource, unsigned int sourceBus, unsigned int sinkBus /* = 0*/)
 {
-  if (!pProps || ! m_pRenderer)
-    return MA_ERROR;
+  if (sinkBus > 0)
+    return MA_INVALID_BUS;
 
-  pProps->transfer_alignment = m_ChunkLen; // This is the smallest size we can write to the renderer, so we don't want anything smaller
-  pProps->max_transfer_size = 0;  // Anything goes
-  pProps->preferred_transfer_size = m_ChunkLen; // We prefer one renderer chunk at a time
+  m_pSource = pSource;
+  m_SourceBus = sourceBus;
 
   return MA_SUCCESS;
 }
 
-MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
-{
-  // TODO: manage cache/buffer level to prevent underruns
-  if (!m_pRenderer || !pSlice)
-    return MA_ERROR;
-
-  if (pSlice->header.data_len % m_ChunkLen)
-    return MA_ERROR; // Data is misaligned
-
-  // Try send some data to the renderer
-  if (m_pInputSlice && m_BufferOffset) // We have a leftover slice from last time
-  {
-    size_t bytesWritten = m_pRenderer->AddPackets(m_pInputSlice->get_data() + m_BufferOffset, m_pInputSlice->header.data_len - m_BufferOffset);
-    m_BufferOffset += bytesWritten;
-    // TODO: How should we handle misalignment caused by reads by the renderer? Can we?
-    if (m_BufferOffset >= m_pInputSlice->header.data_len) // We are done with this one
-    {
-      delete m_pInputSlice;
-      m_pInputSlice = NULL;
-      m_BufferOffset = 0;
-    }
-    else
-      return MA_BUSYORFULL; // We still have data to transfer
-  }
-
-  size_t bytesWritten = m_pRenderer->AddPackets(pSlice->get_data(), pSlice->header.data_len);
-  if (!bytesWritten) // The renderer is not accepting data
-    return MA_BUSYORFULL;
-
-  m_TotalBytesReceived += pSlice->header.data_len;
-  if (bytesWritten < pSlice->header.data_len) // Save it for later
-  {
-    m_BufferOffset = bytesWritten;
-    m_pInputSlice = pSlice; // Store the provided slice
-  }
-  else // We are done with this one
-  {
-    delete pSlice;
-  }
-
-  return MA_SUCCESS;
-}
+// TODO: Move to StreamInput most likely
+//MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
+//{
+//  // TODO: manage cache/buffer level to prevent underruns
+//  if (!m_pRenderer || !pSlice)
+//    return MA_ERROR;
+//
+//  if (pSlice->header.data_len % m_ChunkLen)
+//    return MA_ERROR; // Data is misaligned
+//
+//  // Try send some data to the renderer
+//  if (m_pInputSlice && m_BufferOffset) // We have a leftover slice from last time
+//  {
+//    size_t bytesWritten = m_pRenderer->AddPackets(m_pInputSlice->get_data() + m_BufferOffset, m_pInputSlice->header.data_len - m_BufferOffset);
+//    m_BufferOffset += bytesWritten;
+//    // TODO: How should we handle misalignment caused by reads by the renderer? Can we?
+//    if (m_BufferOffset >= m_pInputSlice->header.data_len) // We are done with this one
+//    {
+//      delete m_pInputSlice;
+//      m_pInputSlice = NULL;
+//      m_BufferOffset = 0;
+//    }
+//    else
+//      return MA_BUSYORFULL; // We still have data to transfer
+//  }
+//
+//  size_t bytesWritten = m_pRenderer->AddPackets(pSlice->get_data(), pSlice->header.data_len);
+//  if (!bytesWritten) // The renderer is not accepting data
+//    return MA_BUSYORFULL;
+//
+//  m_TotalBytesReceived += pSlice->header.data_len;
+//  if (bytesWritten < pSlice->header.data_len) // Save it for later
+//  {
+//    m_BufferOffset = bytesWritten;
+//    m_pInputSlice = pSlice; // Store the provided slice
+//  }
+//  else // We are done with this one
+//  {
+//    delete pSlice;
+//  }
+//
+//  return MA_SUCCESS;
+//}
 
 float CDirectSoundAdapter::GetMaxLatency()
 {
@@ -180,9 +183,6 @@ void CDirectSoundAdapter::Flush()
   if (m_pRenderer)
     m_pRenderer->Stop();
 
-  delete m_pInputSlice; // We don't need it and can't give it away
-  m_pInputSlice = NULL;
-  m_BufferOffset = 0;
 }
 
 bool CDirectSoundAdapter::Drain(unsigned int timeout)
@@ -194,6 +194,11 @@ bool CDirectSoundAdapter::Drain(unsigned int timeout)
     m_pRenderer->WaitCompletion();
 
   return true;
+}
+
+void CDirectSoundAdapter::Render()
+{
+  // TODO: Pull data through the upstream source and push to the output renderer
 }
 
 // IRenderingControl
@@ -210,10 +215,6 @@ void CDirectSoundAdapter::Stop()
 
   if (m_pRenderer)
     m_pRenderer->Stop();
-
-  delete m_pInputSlice;
-  m_pInputSlice = NULL;
-  m_BufferOffset = 0;
 
   CLog::Log(LOGINFO, "MasterAudio:DirectSoundAdapter: Stopped - Total Bytes Received = %I64d",m_TotalBytesReceived);
 }

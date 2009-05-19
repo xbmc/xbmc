@@ -7,10 +7,12 @@ SRCS = \
 	PCMAudioClient.cpp \
 	PassthroughAudioClient.cpp \
 	DirectSoundAdapter.cpp \
+	DSPChain.cpp \
 	Util/SimpleBuffer.cpp	\
 	Util/WaveFileRenderer.cpp \
-        Filters/StandardFilters.cpp
-
+	Filters/StandardFilters.cpp \
+  Filters/DSPFilter.cpp
+  
 LIB=masteraudio.a
 
 include ../../../Makefile.include

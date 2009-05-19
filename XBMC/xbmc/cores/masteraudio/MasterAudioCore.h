@@ -86,7 +86,9 @@ enum
  MA_TYPE_MISMATCH     = 5,
  MA_NOTFOUND          = 6,
  MA_NOT_SUPPORTED     = 7,
- MA_MISSING_ATTRIBUTE = 8
+ MA_MISSING_ATTRIBUTE = 8,
+ MA_INVALID_BUS       = 9,
+ MA_NO_SOURCE         =10
 };
 
 #define MA_STREAM_NONE        0
@@ -114,7 +116,7 @@ enum
 {
   MA_ATT_TYPE_STREAM_FLAGS,     // type: int (bitfield) 
   MA_ATT_TYPE_BYTES_PER_SEC,    // type: int
-  MA_ATT_TYPE_MIN_FRAME_SIZE,   // type: int
+  MA_ATT_TYPE_BYTES_PER_FRAME,  // type: int
   MA_ATT_TYPE_STREAM_FORMAT,    // type: int (The value of the this attribute defines what other attibutes are valid/required)
   
   // Linear PCM Format Attributes
@@ -125,7 +127,7 @@ enum
   MA_ATT_TYPE_CHANNEL_COUNT,    // type: int
   MA_ATT_TYPE_CHANNEL_MAP,      // type: int64
   
-  // IEC61937(AC3/DTS over PCM) Format Attributes
+  // IEC61937(AC3/DTS over S/PDIF) Format Attributes
   MA_ATT_TYPE_ENCODING          // type: int
 };
 
@@ -206,6 +208,8 @@ struct stream_attribute
   };
 };
 
+typedef unsigned __int64 ma_timestamp;
+
 // TODO: This is temporary. Remove when global allocator is implemented.
 extern unsigned __int64 audio_slice_id;
 struct audio_slice
@@ -213,10 +217,10 @@ struct audio_slice
   // TODO: Determine appropriate information to pass along with the slice
   struct _tag_header{
     unsigned __int64 id;
-    unsigned __int64 timestamp;
+    ma_timestamp timestamp;
     size_t data_len;
   } header;
-  unsigned int data[1]; // Placeholder (TODO: This is hackish)
+  unsigned int data[1]; // Ensure compatibility with compilers that don't support variable length arrays
 
   // TODO: All of this is a hack
   unsigned char* get_data() {return (unsigned char*)&data;}
@@ -228,6 +232,22 @@ struct audio_slice
     p->header.id = ++audio_slice_id;
     return p;
   }
+};
+
+// An ma_audio_buffer is used to move data between elements in the framework.
+struct ma_audio_buffer
+{
+  size_t allocated_len;
+  size_t data_len;
+  unsigned char data[1]; // Ensure compatibility with compilers that don't support variable length arrays
+};
+
+// The ma_audio_container structure provides a means to package multiple ma_audio_buffer
+// structures together for transport.
+struct ma_audio_container
+{
+  unsigned int buffer_count;
+  ma_audio_buffer buffer[1]; // Ensure compatibility with compilers that don't support variable length arrays
 };
 
 typedef std::map<MA_ATTRIB_ID,stream_attribute>::iterator StreamAttributeIterator; 
@@ -288,28 +308,26 @@ struct audio_channel_layout
 
 // Common Interfaces
 ////////////////////////////////////////////
-class IAudioSink
-{
-public:
-  virtual MA_RESULT TestInputFormat(CStreamDescriptor* pDesc) = 0;
-  virtual MA_RESULT SetInputFormat(CStreamDescriptor* pDesc) = 0;
-  virtual MA_RESULT GetInputProperties(audio_data_transfer_props* pProps) = 0;
-  virtual MA_RESULT AddSlice(audio_slice* pSlice) = 0;
-  virtual float GetMaxLatency() = 0;
-  virtual void Flush() = 0;
-protected:
-  IAudioSink() {}
-};
-
 class IAudioSource
 {
 public:
-  virtual MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc) = 0;
-  virtual MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc) = 0;
-  virtual MA_RESULT GetOutputProperties(audio_data_transfer_props* pProps) = 0;
-  virtual MA_RESULT GetSlice(audio_slice** ppSlice) = 0;
+  virtual MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0) = 0;
+  virtual MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0) = 0;
+  virtual MA_RESULT Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0) = 0;
 protected:
   IAudioSource() {}
+};
+
+class IAudioSink
+{
+public:
+  virtual MA_RESULT TestInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0) = 0;
+  virtual MA_RESULT SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0) = 0;
+  virtual MA_RESULT SetSource(IAudioSource* pSource, unsigned int sourceBus, unsigned int sinkBus = 0) = 0;
+  virtual float GetMaxLatency() = 0; // TODO: This is the wrong place for this
+  virtual void Flush() = 0; // TODO: This is the wrong place for this
+protected:
+  IAudioSink() {}
 };
 
 class IRenderingControl
@@ -330,6 +348,7 @@ public:
   virtual void Close() = 0;
   virtual bool IsIdle() = 0;
   virtual bool Drain(unsigned int timeout) = 0;
+  virtual void Render() = 0;
 protected:
   IMixerChannel() {};
 };
@@ -353,23 +372,20 @@ protected:
 
 // Input Stage
 ////////////////////////////////////////////
-class CStreamInput : IAudioSource
+class CStreamInput : public IAudioSource
 {
 public:
   CStreamInput();
   virtual ~CStreamInput();
 
   // IAudioSource
-  MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc);
-  MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc);
-  MA_RESULT GetOutputProperties(audio_data_transfer_props* pProps);
-  MA_RESULT GetSlice(audio_slice** pSlice);
+  MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
+  MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
+  MA_RESULT Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
 
-  IAudioSource* GetSource();
   MA_RESULT AddData(void* pBuffer, size_t bufLen);  // Writes all or nothing
   void Reset();
 protected:
-  audio_slice* m_pSlice;
 };
 
 // Processing Stage
@@ -380,49 +396,6 @@ public:
   virtual void Close() = 0;
 protected:
   IDSPFilter() {}
-};
-
-struct dsp_filter_node
-{
-  IDSPFilter* filter;
-  dsp_filter_node* prev;
-  dsp_filter_node* next;
-};
-
-class CDSPChain : public IDSPFilter
-{
-public:
-  CDSPChain();
-  virtual ~CDSPChain();
-
-  IAudioSink* GetSink();
-  IAudioSource* GetSource();
-
-  // IDSPFilter
-  void Close();
-
-  // IAudioSource
-  MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc);
-  MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc);
-  MA_RESULT GetOutputProperties(audio_data_transfer_props* pProps);
-  MA_RESULT GetSlice(audio_slice** pSlice);
-
-  // IAudioSink
-  MA_RESULT TestInputFormat(CStreamDescriptor* pDesc);
-  MA_RESULT SetInputFormat(CStreamDescriptor* pDesc);
-  MA_RESULT GetInputProperties(audio_data_transfer_props* pProps);
-  MA_RESULT AddSlice(audio_slice* pSlice);
-  float GetMaxLatency();
-  void Flush();
-
-  MA_RESULT CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescriptor* pOutDesc);
-protected:
-  void DisposeGraph();
-  audio_slice* m_pInputSlice;
-  int m_InputStreamFlags;
-  int m_OutputStreamFlags;
-  dsp_filter_node* m_pHead;
-  dsp_filter_node* m_pTail;
 };
 
 // Output Stage
@@ -448,43 +421,11 @@ protected:
   IMixerChannel** m_pChannel;
 };
 
-// Interconnects
-////////////////////////////////////////////
-class CAudioQueue
-{
-public:
-  CAudioQueue();
-  virtual ~CAudioQueue();
-  void Push(audio_slice* pSlice);
-  audio_slice* GetSlice(size_t align, size_t maxSize);
-  size_t GetTotalBytes() {return m_TotalBytes + m_RemainderSize;}
-  void Clear();
-protected:
-  audio_slice* Pop(); // Does not respect remainder, so it must be private
-  std::queue<audio_slice*> m_Slices;
-  size_t m_TotalBytes;
-  audio_slice* m_pPartialSlice;
-  size_t m_RemainderSize;
-};
 
-class CAudioDataInterconnect
-{
-public:
-  CAudioDataInterconnect();
-  virtual ~CAudioDataInterconnect();
-  MA_RESULT Link(IAudioSource* pSource, IAudioSink* pSink);
-  void Unlink();
-  MA_RESULT Process();
-  void Flush();
-  size_t GetCacheSize();
-protected:
-  IAudioSource* m_pSource; // Input
-  IAudioSink* m_pSink; // Output
-  audio_slice* m_pSlice; // Holding
-  CAudioQueue m_Queue;
-  audio_data_transfer_props m_InputProps;
-  audio_data_transfer_props m_OutputProps;
-};
+// Base Classes
+////////////////////////////////////////////
+
+
 
 // Performance Monitoring
 ////////////////////////////////////////////

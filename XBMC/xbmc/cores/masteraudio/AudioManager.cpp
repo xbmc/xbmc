@@ -51,11 +51,8 @@ bool CAudioStream::Initialize(CStreamInput* pInput, CDSPChain* pDSPChain, int mi
   m_MixerChannel = mixerChannel;
   m_pMixerSink = pMixerSink;
 
-  // Hook-up interconnections: Input -> DSPChain, DSPChain -> Mixer
+  // TODO: Hook-up interconnections: Input -> DSPChain, DSPChain -> Mixer
   // It is assumed at this point that the input/output stream formats are compatible
-  if ((MA_SUCCESS != m_InputConnection.Link(m_pInput->GetSource(),m_pDSPChain->GetSink()) ||
-   (MA_SUCCESS != m_OutputConnection.Link(m_pDSPChain->GetSource(),m_pMixerSink))))
-    return false; // There was a problem linking the sink/source
 
   m_Open = true;
   return m_Open;
@@ -66,10 +63,8 @@ void CAudioStream::Close()
   if (!m_Open)
     return;
 
-  // Break down any data connections
+  // TODO: Break down any data connections
   m_Open = false;
-  m_InputConnection.Unlink();
-  m_OutputConnection.Unlink();
 
   CLog::Log(LOGINFO,"MasterAudio:AudioStream: Closing. Average time to process = %0.2fms / %0.2fms (%0.2f%% duty cycle)", m_ProcessTimer.average_time/1000.0f, m_IntervalTimer.average_time/1000.0f, (m_ProcessTimer.average_time / m_IntervalTimer.average_time) * 100);
 }
@@ -97,8 +92,7 @@ bool CAudioStream::ProcessStream()
   
   m_ProcessTimer.lap_start();
 
-  m_InputConnection.Process();
-  m_OutputConnection.Process();
+  // TODO: Pull data through
 
   m_ProcessTimer.lap_end();
 
@@ -125,10 +119,8 @@ void CAudioStream::Flush()
   if (m_pInput)
     m_pInput->Reset();
 
-  // Flush connections
-  m_InputConnection.Flush();
-  m_OutputConnection.Flush();
-
+  // TODO: Flush data from end
+  
   CLog::Log(LOGINFO,"MasterAudio:AudioStream: Flushed stream.");
 }
 
@@ -139,18 +131,10 @@ bool CAudioStream::Drain(unsigned int timeout)
   timer.lap_start();
   while (timer.elapsed_time()/1000 < timeout)
   {
-    // Move any remaining data along
-    m_InputConnection.Process();
-    m_OutputConnection.Process();
-  
-    if (!m_InputConnection.GetCacheSize() && !m_OutputConnection.GetCacheSize()) // No input left here. Try to empy out the mixer channel
-    {
-      // TODO: Drain mixer channel
-      m_pInput->Reset();  // Just in case there is a partial slice left
-      return true;
-    }
+    // TODO: Pull any remaining data through
+    break;
   }
-  
+
   Flush();  // Abandon any remaining data
   return false; // We ran out of time
 }
@@ -438,7 +422,6 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
     pAtts->SetInt(MA_ATT_TYPE_CHANNEL_COUNT,2);
     pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,16);
     pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,44100);
-    pAtts->SetInt64(MA_ATT_TYPE_CHANNEL_MAP,0xffffffffffffff10LLU);
 
     // Global 6-Ch Output Profile
     pAtts = g_AudioProfile6Ch.output_descriptor.GetAttributes();
@@ -448,7 +431,6 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
     pAtts->SetInt(MA_ATT_TYPE_CHANNEL_MAP,6);
     pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,16);
     pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,48000);
-    pAtts->SetInt64(MA_ATT_TYPE_CHANNEL_MAP,0xffffffffff325410LLU);
 
     g_AudioProfileInit = true;
  }

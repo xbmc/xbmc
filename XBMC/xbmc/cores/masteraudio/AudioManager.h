@@ -27,6 +27,7 @@
 #endif // _MSC_VER > 1000
 
 #include "MasterAudioCore.h"
+#include "DSPChain.h"
 #include <vector>
 
 
@@ -59,8 +60,6 @@ private:
   CDSPChain* m_pDSPChain;
   int m_MixerChannel;
   IAudioSink* m_pMixerSink;
-  CAudioDataInterconnect m_InputConnection;
-  CAudioDataInterconnect m_OutputConnection;
   lap_timer m_ProcessTimer;
   lap_timer m_IntervalTimer;
   bool m_Open;
