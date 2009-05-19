@@ -990,19 +990,16 @@ void CVideoReferenceClock::Wait(__int64 Target)
   }
 }
 
-
-bool CVideoReferenceClock::UseVblank()
-{
-    return m_UseVblank;
-}
-
 //for the codec information screen
-int CVideoReferenceClock::GetMissedVblanks()
+bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed)
 {
   if (m_UseVblank)
-    return m_TotalMissedVblanks;
-  else
-    return 0;
+  {
+    MissedVblanks = m_TotalMissedVblanks;
+    ClockSpeed = (double)m_AdjustedFrequency / (double)m_SystemFrequency * 100.0;
+    return true;
+  }
+  return false;
 }
 
 void CVideoReferenceClock::SendVblankSignal()
