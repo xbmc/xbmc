@@ -135,7 +135,6 @@ public:
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
-  virtual void         OnClose(); // called from main GUI thread
   virtual void         Reset(); /* resets renderer after seek for example */
 
   void AutoCrop(bool bCrop);
