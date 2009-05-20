@@ -60,6 +60,8 @@ public:
   void ResetAutoScrolling();
   CStdString GetLabel(int info) const;
 
+  void Scroll(unsigned int offset);
+
 protected:
   virtual void UpdateColors();
   void UpdatePageControl();
