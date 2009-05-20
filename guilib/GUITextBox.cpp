@@ -238,8 +238,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == m_pageControl)
       { // update our page
-        ResetAutoScrolling();
-        ScrollToOffset(message.GetParam1());
+        Scroll(message.GetParam1());
         return true;
       }
     }
@@ -270,6 +269,16 @@ void CGUITextBox::SetPageControl(DWORD pageControl)
 void CGUITextBox::SetInfo(const CGUIInfoLabel &infoLabel)
 {
   m_info = infoLabel;
+}
+
+void CGUITextBox::Scroll(unsigned int offset)
+{
+  ResetAutoScrolling();
+  if (m_lines.size() <= m_itemsPerPage)
+    return; // no need to scroll
+  if (offset > m_lines.size() - m_itemsPerPage)
+    offset = m_lines.size() - m_itemsPerPage; // on last page
+  ScrollToOffset(offset);
 }
 
 void CGUITextBox::ScrollToOffset(int offset, bool autoScroll)
