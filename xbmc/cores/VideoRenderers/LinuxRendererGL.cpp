@@ -1465,6 +1465,7 @@ void CLinuxRendererGL::UnInit()
   m_fbo.Cleanup();
   m_bValidated = false;
   m_bImageReady = false;
+  m_bConfigured = false;
 }
 
 void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
