@@ -302,3 +302,32 @@ void CGUITextBox::ResetAutoScrolling()
   if (m_autoScrollRepeatAnim)
     m_autoScrollRepeatAnim->ResetAnimation();
 }
+
+unsigned int CGUITextBox::GetRows() const
+{
+  return m_lines.size();
+}
+
+int CGUITextBox::GetCurrentPage() const
+{
+  if (m_offset + m_itemsPerPage >= (int)GetRows())  // last page
+    return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+  return m_offset / m_itemsPerPage + 1;
+}
+
+CStdString CGUITextBox::GetLabel(int info) const
+{
+  CStdString label;
+  switch (info)
+  {
+  case CONTAINER_NUM_PAGES:
+    label.Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
+    break;
+  case CONTAINER_CURRENT_PAGE:
+    label.Format("%u", GetCurrentPage());
+    break;
+  default:
+    break;
+  }
+  return label;
+}
