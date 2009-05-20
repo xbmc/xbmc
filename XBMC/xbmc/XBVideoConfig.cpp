@@ -167,6 +167,22 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
 #else
   res.fRefreshRate = 0.0f;
 #endif
+  
+#elif defined(_ARMEL)
+  res.iWidth = 1280;
+  res.iHeight = 720;
+#ifdef HAS_XRANDR
+  XOutput output = g_xrandr.GetCurrentOutput();
+  XMode   mode   = g_xrandr.GetCurrentMode(output.name);
+  res.fRefreshRate = mode.hz;
+  res.strId[15]     = 0;
+  res.strOutput[31] = 0;
+  strncpy(res.strId    , mode.id    , 15);
+  strncpy(res.strOutput, output.name, 31);
+#else
+  res.fRefreshRate = 0.0f;
+#endif
+  
 #endif
 }
 #endif
