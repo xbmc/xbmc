@@ -41,13 +41,12 @@ public:
   CDSPChain();
   virtual ~CDSPChain();
 
-  IAudioSink* GetSink();
-  IAudioSource* GetSource();
   MA_RESULT CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescriptor* pOutDesc);
 
   // Base class overrides
-  void Close();
+  MA_RESULT SetSource(IAudioSource* pSource, unsigned int sourceBus = 0, unsigned int sinkBus = 0);
   MA_RESULT RenderOutput(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
+  void Close();
   float GetMaxLatency();
   void Flush();
 

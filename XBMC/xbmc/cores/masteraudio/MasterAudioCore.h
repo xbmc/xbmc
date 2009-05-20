@@ -208,7 +208,7 @@ struct stream_attribute
   };
 };
 
-typedef unsigned __int64 ma_timestamp;
+typedef unsigned __int64 ma_timestamp; // In nanoseconds
 
 // TODO: This is temporary. Remove when global allocator is implemented.
 extern unsigned __int64 audio_slice_id;
@@ -283,29 +283,6 @@ protected:
   CStreamAttributeCollection m_Attributes;
 };
 
-struct audio_data_transfer_props
-{
-  size_t transfer_alignment; // Minimum transfer amount, increment
-  size_t preferred_transfer_size;
-  size_t max_transfer_size;
-};
-
-#define MA_GET_CHANNEL_POS(map, chan) (chan % 2) ? (0x0F & (unsigned char*)map[chan/2]) : (0x0F & ((unsigned char*)map[chan/2] >> 4))
-#define MA_SET_CHANNEL_POS(map, chan, pos) map[chan/2] |= (chan % 2) ? pos << 4 : pos
-
-// Supports up to 14 discrete channels (why on EARTH would we need more than that?!?)
-// Fits nicely into an __int64
-struct audio_channel_layout
-{
-  __int8 flags;
-  __int8 channel_map[7]; // 2 Channels per nybble
-
-  __int8 get_pos(int channel)
-  {
-    return (channel % 2) ? 0x0F & channel_map[channel/2] : 0x0F & (channel_map[channel/2] >> 4);
-  }
-};
-
 // Common Interfaces
 ////////////////////////////////////////////
 class IAudioSource
@@ -323,7 +300,7 @@ class IAudioSink
 public:
   virtual MA_RESULT TestInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0) = 0;
   virtual MA_RESULT SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0) = 0;
-  virtual MA_RESULT SetSource(IAudioSource* pSource, unsigned int sourceBus, unsigned int sinkBus = 0) = 0;
+  virtual MA_RESULT SetSource(IAudioSource* pSource, unsigned int sourceBus = 0, unsigned int sinkBus = 0) = 0;
   virtual float GetMaxLatency() = 0; // TODO: This is the wrong place for this
   virtual void Flush() = 0; // TODO: This is the wrong place for this
 protected:
@@ -366,6 +343,7 @@ public:
   virtual float GetMaxChannelLatency(int channel) = 0;
   virtual void FlushChannel(int channel) = 0;
   virtual bool DrainChannel(int channel, unsigned int timeout) = 0;
+  virtual void Render() = 0;
 protected:
   IAudioMixer() {}
 };
@@ -415,6 +393,7 @@ public:
   float GetMaxChannelLatency(int channel);
   void FlushChannel(int channel);
   bool DrainChannel(int channel, unsigned int timeout);
+  void Render();
 protected:
   int m_MaxChannels;
   int m_ActiveChannels;

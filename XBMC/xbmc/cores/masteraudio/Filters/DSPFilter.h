@@ -38,7 +38,7 @@ public:
   // IAudioSink
   virtual MA_RESULT TestInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
   virtual MA_RESULT SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
-  virtual MA_RESULT SetSource(IAudioSource* pSource, unsigned int sourceBus, unsigned int sinkBus = 0);
+  virtual MA_RESULT SetSource(IAudioSource* pSource, unsigned int sourceBus = 0, unsigned int sinkBus = 0);
   virtual float GetMaxLatency(); // TODO: This is the wrong place for this
   virtual void Flush(); // TODO: This is the wrong place for this
 
@@ -51,9 +51,9 @@ public:
   virtual void Close();
 
 protected:
+  // Required attributes for all stream descriptor
   struct StreamAttributes
   {
-  // Required attributes for all stream descriptor
     bool m_Locked;                 //MA_ATT_TYPE_STREAM_FLAGS
     bool m_VariableBitrate;        //MA_ATT_TYPE_STREAM_FLAGS
     unsigned int m_BytesPerSecond; //MA_ATT_TYPE_BYTES_PER_SEC
@@ -61,20 +61,33 @@ protected:
     int m_StreamFormat;            //MA_ATT_TYPE_STREAM_FORMAT
   };
 
-  // Internal member to be called by derived classes (not to be overridden)
-  ma_audio_container* GetInputData(unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
-
-  // Internal member to be overridden by derived classes
-  virtual MA_RESULT RenderOutput(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
+  MA_RESULT RenderOutput(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
   
-  void ClearInputFormat(unsigned int bus = 0);
-  void ClearOutputFormat(unsigned int bus = 0);
+  // Internal member to be called by derived classes (not to be overridden)
+  MA_RESULT GetInputData(ma_audio_container* pInput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
+  
+  inline const StreamAttributes* GetInputAttributes(unsigned int bus = 0)
+  {
+    if (bus < m_InputBusses)
+      return &m_pInputDescriptor[bus];
+    return NULL;
+  };
+
+  inline const StreamAttributes* GetOutputAttributes(unsigned int bus = 0)
+  {
+    if (bus < m_InputBusses)
+      return &m_pOutputDescriptor[bus];
+    return NULL;
+  };
+
+  virtual void ClearInputFormat(unsigned int bus = 0);
+  virtual void ClearOutputFormat(unsigned int bus = 0);
+
+  virtual void Create(unsigned int inputBusses, unsigned int outputBusses);
+  virtual void Destroy();
 
   unsigned int m_InputBusses;
   unsigned int m_OutputBusses;
-
-  StreamAttributes* m_pInputDescriptor;
-  StreamAttributes* m_pOutputDescriptor;
 
 private:
   struct InputBus
@@ -83,12 +96,10 @@ private:
     unsigned int bus;
   };
 
-  void Create(unsigned int inputBusses, unsigned int outputBusses);
-  void Destroy();
-
+  StreamAttributes* m_pInputDescriptor;
+  StreamAttributes* m_pOutputDescriptor;
   InputBus* m_pInput;
   ma_audio_container** m_pInputContainer;
-
 };
 
 #endif // __DSP_FILTER_H__

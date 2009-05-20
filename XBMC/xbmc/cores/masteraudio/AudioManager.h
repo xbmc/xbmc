@@ -98,4 +98,18 @@ protected:
 
 extern CAudioManager g_AudioLibManager;
 
+#include <math.h>
+
+class CWaveGenerator : IAudioSource
+{
+public:
+  CWaveGenerator(float freq);
+  MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
+  MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
+  MA_RESULT Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
+protected:
+  float m_Freq;
+  __int64 m_FramesRendered;
+};
+
 #endif // __AUDIO_MANAGER_H__

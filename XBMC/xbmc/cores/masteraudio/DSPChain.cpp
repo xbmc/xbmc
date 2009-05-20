@@ -36,16 +36,6 @@ CDSPChain::~CDSPChain()
   Close();
 }
 
-IAudioSource* CDSPChain::GetSource()
-{
-  return (IAudioSource*)this;
-}
-
-IAudioSink* CDSPChain::GetSink()
-{
-  return (IAudioSink*)this;
-}
-
 // TODO: Trigger graph creation on format change
 
 MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescriptor* pOutDesc)
@@ -58,7 +48,7 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
     return MA_NOT_SUPPORTED;
 
   // See if the stream wants to be passed-through untouched (must be specified in both input AND output descriptors)
-  if (m_pInputDescriptor[0].m_Locked && m_pOutputDescriptor[0].m_Locked)
+  if (GetInputAttributes(0)->m_Locked && GetOutputAttributes(0)->m_Locked)
   {
     CLog::Log(LOGINFO,"MasterAudio:CDSPChain: Detected locked stream. No filters will be created or applied.");
     // TODO: How do we want to handle scenarios where the flag cannot be honored because it is not set on both input and output
@@ -100,6 +90,14 @@ float CDSPChain::GetMaxLatency()
 {
   // TODO: Calculate and return the actual latency through the filter graph
   return 0.0f;
+}
+
+MA_RESULT CDSPChain::SetSource(IAudioSource* pSource, unsigned int sourceBus /* = 0*/, unsigned int sinkBus /* = 0*/)
+{
+  if (m_pHead)
+    return m_pHead->filter->SetSource(pSource, sourceBus, sinkBus);
+
+  return CDSPFilter::SetSource(pSource, sourceBus, sinkBus);
 }
 
 void CDSPChain::Flush()

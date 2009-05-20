@@ -51,8 +51,10 @@ bool CAudioStream::Initialize(CStreamInput* pInput, CDSPChain* pDSPChain, int mi
   m_MixerChannel = mixerChannel;
   m_pMixerSink = pMixerSink;
 
-  // TODO: Hook-up interconnections: Input -> DSPChain, DSPChain -> Mixer
+  // Hook-up interconnections: Input <-DSPChain, DSPChain <- Mixer
   // It is assumed at this point that the input/output stream formats are compatible
+  m_pDSPChain->SetSource(m_pInput);
+  m_pMixerSink->SetSource(m_pDSPChain);
 
   m_Open = true;
   return m_Open;
@@ -92,7 +94,6 @@ bool CAudioStream::ProcessStream()
   
   m_ProcessTimer.lap_start();
 
-  // TODO: Pull data through
 
   m_ProcessTimer.lap_end();
 
@@ -195,7 +196,6 @@ MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc)
 
     // TODO: Fetch profile
     CStreamDescriptor* pOutputDesc = &pProfile->output_descriptor;
-    //CStreamDescriptor* pOutputDesc = pDesc;
 
     // Open a mixer channel using the preferred format
     mixerChannel = m_pMixer->OpenChannel(pOutputDesc);  // Virtual Mixer Channel
@@ -248,8 +248,8 @@ size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t
   else
     bytesAdded = 0;
 
-  // 'Push' data through the stream
-  pStream->ProcessStream();
+  // 'Pull' data through the stream
+  m_pMixer->Render();
 
   return bytesAdded;
 }
@@ -435,4 +435,26 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
     g_AudioProfileInit = true;
  }
  return &g_AudioProfileAC3;
+}
+
+CWaveGenerator::CWaveGenerator(float freq) :
+  m_Freq(0),
+  m_FramesRendered(0)
+{
+
+}
+
+MA_RESULT CWaveGenerator::TestOutputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
+{
+  return MA_NOT_IMPLEMENTED;
+}
+
+MA_RESULT CWaveGenerator::SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
+{
+  return MA_NOT_IMPLEMENTED;
+}
+
+MA_RESULT CWaveGenerator::Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
+{
+  return MA_NOT_IMPLEMENTED;
 }

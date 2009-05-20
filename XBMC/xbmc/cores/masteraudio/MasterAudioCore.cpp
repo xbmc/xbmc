@@ -222,6 +222,13 @@ bool CHardwareMixer::DrainChannel(int channel, unsigned int timeout)
   return m_pChannel[channel-1]->Drain(timeout);
 }
 
+// TODO: Improve this method's usefulness 
+void CHardwareMixer::Render()
+{
+  for(int c = 0; c < m_MaxChannels; c++)
+    m_pChannel[c]->Render();
+}
+
 // CStreamAttributeCollection
 //////////////////////////////////////////////////////////////////////////////////////
 CStreamAttributeCollection::CStreamAttributeCollection()

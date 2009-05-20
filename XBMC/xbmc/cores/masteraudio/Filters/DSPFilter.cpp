@@ -95,7 +95,7 @@ MA_RESULT CDSPFilter::SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus 
   return MA_SUCCESS;
 }
 
-MA_RESULT CDSPFilter::SetSource(IAudioSource* pSource, unsigned int sourceBus, unsigned int sinkBus /* = 0*/)
+MA_RESULT CDSPFilter::SetSource(IAudioSource* pSource, unsigned int sourceBus /* = 0*/, unsigned int sinkBus /* = 0*/)
 {
   if (sinkBus >= m_InputBusses)
     return MA_INVALID_BUS;
@@ -172,28 +172,25 @@ MA_RESULT CDSPFilter::Render(ma_audio_container* pOutput, unsigned int frameCoun
 // IDSPFilter
 void CDSPFilter::Close()
 {
-
+  Flush();
 }
 
-// Local Implementation
-
-ma_audio_container* CDSPFilter::GetInputData(unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
+MA_RESULT CDSPFilter::GetInputData(ma_audio_container* pInput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
 {
-  if (m_pInput[bus].source && bus < m_InputBusses)
-  {
-    // TODO: These containers don't exist yet
-    ma_audio_container* pInput = m_pInputContainer[bus];
-    if (pInput && MA_SUCCESS == m_pInput[bus].source->Render(pInput, frameCount, renderTime, renderFlags, m_pInput[bus].bus))
-      return pInput;
-  }
-  return NULL;
+  if (!pInput)
+    return MA_ERROR;
+
+  // Pull data from the configured AudioSource
+  if (bus < m_InputBusses)
+    return m_pInput[bus].source->Render(pInput, frameCount, renderTime, renderFlags, m_pInput[bus].bus);
+  
+  return MA_INVALID_BUS;
 }
 
 MA_RESULT CDSPFilter::RenderOutput(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
 {
-  ma_audio_container* pInput = GetInputData(frameCount, renderTime, renderFlags, bus);
-  // TODO: pull data and slice as necessary
-  return MA_NOT_IMPLEMENTED;
+  // Just pass the data on through
+  return GetInputData(pOutput, frameCount, renderTime, renderFlags, bus);
 }
 
 void CDSPFilter::ClearInputFormat(unsigned int bus /* = 0 */)
