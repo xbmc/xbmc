@@ -368,15 +368,13 @@ void CVideoReferenceClock::RunGLX()
 void CVideoReferenceClock::RunD3D()
 {
   D3dClock::D3DRASTER_STATUS RasterStatus;
-  LARGE_INTEGER              Now;
-  __int64                    LastVBlankTime;
-  __int64                    NextVBlankTime;
 
-  unsigned int LastLine;
-  int          NrVBlanks;
-  double       VBlankTime;
-  int          ReturnV;
-  int          PollCount = 0;
+  LARGE_INTEGER Now;
+  __int64       LastVBlankTime;
+  unsigned int  LastLine;
+  int           NrVBlanks;
+  double        VBlankTime;
+  int           ReturnV;
 
   CSingleLock SingleLock(m_CritSection);
   SingleLock.Leave();
@@ -399,7 +397,6 @@ void CVideoReferenceClock::RunD3D()
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i", ReturnV & 0xFFFF);
       return;
     }
-    PollCount++;
 
     //if InVBlank is set, or the current scanline is lower than the previous scanline, a vblank happened
     if ((RasterStatus.InVBlank && LastLine > 0) || (RasterStatus.ScanLine < LastLine))
@@ -418,28 +415,26 @@ void CVideoReferenceClock::RunD3D()
 
       if (UpdateRefreshrate())
       {
-        //reset direct3d because of videodriver bugs
+        //reset direct3d because it goes in a reset state after a displaymode change
+        //maybe should call IDirect3DDevice9::Reset here
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: Displaymode changed");
         return;
       }
 
       //save the timestamp of this vblank so we can calulate how many vblanks happened next time
       LastVBlankTime = Now.QuadPart;
-      PollCount = 0;
 
       HandleWindowMessages();
 
-      //because we had a vblank, sleep for half a refreshrate period
-      ::Sleep(500 / (unsigned int)m_RefreshRate);
+      //because we had a vblank, sleep until half the refreshrate period
+      QueryPerformanceCounter(&Now);
+      int SleepTime = (int)((LastVBlankTime + (m_SystemFrequency / m_RefreshRate / 2) - Now.QuadPart) * 1000 / m_SystemFrequency);
+      if (SleepTime > 8) SleepTime = 8; //don't sleep for too long otherwise we miss a vblank
+      if (SleepTime > 0) ::Sleep(SleepTime);
     }
     else
     {
-      //if the next vblank is more than 1 millisecond away, sleep for 1 millisecond
-      //if polled for more than 50000 times since the last vblank, sleep as well to prevent hangs
-      QueryPerformanceCounter(&Now);
-      NextVBlankTime = LastVBlankTime + m_SystemFrequency / m_RefreshRate;
-      if ((NextVBlankTime - Now.QuadPart) * 1000 > m_SystemFrequency || PollCount > 50000)
-        ::Sleep(1);
+      ::Sleep(1);
     }
 
     if (RasterStatus.InVBlank) LastLine = 0;
@@ -628,9 +623,9 @@ bool CVideoReferenceClock::CreateHiddenWindow()
 
   //make a layered window which can be made transparent
   CSingleLock SingleLock(m_CritSection);
-  m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW, m_WinCl.lpszClassName, m_WinCl.lpszClassName,
-                          WS_VISIBLE, m_Monitor.rcMonitor.left, m_Monitor.rcMonitor.top, 64, 64,
-                          HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
+  m_Hwnd = CreateWindowEx(WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_TOPMOST, m_WinCl.lpszClassName,
+                          m_WinCl.lpszClassName, WS_VISIBLE, m_Monitor.rcMonitor.left,
+                          m_Monitor.rcMonitor.top, 64, 64, HWND_DESKTOP, NULL, m_WinCl.hInstance, NULL);
   SingleLock.Leave();
   
   if (!m_Hwnd)
@@ -888,7 +883,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   }
 
   //we have to set up direct3d again if the display mode changed
-  //could be videodriver bugs?
+  //because direct3d goes in a reset state
   if (m_Width != DisplayMode.Width || m_Height != DisplayMode.Height)
   {
     Changed = true;

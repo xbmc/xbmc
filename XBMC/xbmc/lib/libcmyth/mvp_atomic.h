@@ -1,6 +1,10 @@
 #ifndef __MVP_ATOMIC_H
 #define __MVP_ATOMIC_H
 
+#ifdef __APPLE__
+#pragma GCC optimization_level 0
+#endif
+
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
@@ -29,7 +33,7 @@ __mvp_atomic_increment(mvp_atomic_t *valp)
 		      : "memory");
 	/* on the x86 __val is the pre-increment value, so normalize it. */
 	++__val;
-#elif defined __powerpc__
+#elif defined __powerpc__ || defined __ppc__
 	asm volatile ("1:	lwarx   %0,0,%1\n"
 		      "	addic.   %0,%0,1\n"
 		      "	dcbt    %0,%1\n"
@@ -80,7 +84,7 @@ __mvp_atomic_decrement(mvp_atomic_t *valp)
 		      : "memory");
 	/* __val is the pre-decrement value, so normalize it */
 	--__val;
-#elif defined __powerpc__
+#elif defined __powerpc__ || defined __ppc__
 	asm volatile ("1:	lwarx   %0,0,%1\n"
 		      "	addic.   %0,%0,-1\n"
 		      "	dcbt    %0,%1\n"
@@ -133,5 +137,9 @@ static inline int mvp_atomic_dec_and_test(mvp_atomic_t *a) {
 static inline void mvp_atomic_set(mvp_atomic_t *a, unsigned val) {
 	*a = val;
 };
+
+#ifdef __APPLE__
+#pragma GCC optimization_level reset
+#endif
 
 #endif  /* __MVP_ATOMIC_H */
