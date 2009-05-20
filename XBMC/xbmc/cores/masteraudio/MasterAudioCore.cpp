@@ -269,6 +269,16 @@ MA_RESULT CStreamAttributeCollection::GetInt64(MA_ATTRIB_ID id, __int64* pVal)
   return MA_SUCCESS;
 }
 
+MA_RESULT CStreamAttributeCollection::GetUInt(MA_ATTRIB_ID id, unsigned int* pVal)
+{
+  return GetInt(id, (int*)pVal);
+}
+
+MA_RESULT CStreamAttributeCollection::GetUInt64(MA_ATTRIB_ID id, unsigned __int64* pVal)
+{
+  return GetInt64(id, (__int64*)pVal);
+}
+
 MA_RESULT CStreamAttributeCollection::GetFloat(MA_ATTRIB_ID id, float* pVal)
 {
   stream_attribute* pAtt = FindAttribute(id);
@@ -355,6 +365,16 @@ MA_RESULT CStreamAttributeCollection::SetInt64(MA_ATTRIB_ID id, __int64 val)
   att.type = stream_attribute_int64;
   m_Attributes[id] = att;
   return MA_SUCCESS;
+}
+
+MA_RESULT CStreamAttributeCollection::SetUInt(MA_ATTRIB_ID id, unsigned int val)
+{
+  return SetInt(id, (int)val);
+}
+
+MA_RESULT CStreamAttributeCollection::SetUInt64(MA_ATTRIB_ID id, unsigned __int64 val)
+{
+  return SetInt64(id, (__int64)val);
 }
 
 MA_RESULT CStreamAttributeCollection::SetFloat(MA_ATTRIB_ID id, float val)

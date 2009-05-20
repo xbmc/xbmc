@@ -258,13 +258,18 @@ public:
   virtual ~CStreamAttributeCollection();
   MA_RESULT GetInt(MA_ATTRIB_ID id, int* pVal);
   MA_RESULT GetInt64(MA_ATTRIB_ID id, __int64* pVal);
+  MA_RESULT GetUInt(MA_ATTRIB_ID id, unsigned int* pVal);
+  MA_RESULT GetUInt64(MA_ATTRIB_ID id, unsigned __int64* pVal);
   MA_RESULT GetFloat(MA_ATTRIB_ID id, float* pVal);
   MA_RESULT GetString(MA_ATTRIB_ID id, char** pVal);
   MA_RESULT GetPtr(MA_ATTRIB_ID id, void** pVal);
   MA_RESULT GetBool(MA_ATTRIB_ID id, bool* pVal);
   MA_RESULT GetFlag(MA_ATTRIB_ID id, int flag, bool* pVal);
+
   MA_RESULT SetInt(MA_ATTRIB_ID id, int val);
   MA_RESULT SetInt64(MA_ATTRIB_ID id, __int64 val);
+  MA_RESULT SetUInt(MA_ATTRIB_ID id, unsigned int val);
+  MA_RESULT SetUInt64(MA_ATTRIB_ID id, unsigned __int64 val);
   MA_RESULT SetFloat(MA_ATTRIB_ID id, float val);
   MA_RESULT SetString(MA_ATTRIB_ID id, char* val);
   MA_RESULT SetPtr(MA_ATTRIB_ID id, void* val);
