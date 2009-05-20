@@ -57,28 +57,24 @@ bool WINAPI SetEvent(HANDLE hEvent)
 
   SDL_mutexP(hEvent->m_hMutex);
   hEvent->m_bEventSet = true;
+
+  // we must guarantee that these handle's won't be deleted, until we are done
   list<CXHandle*> events = hEvent->m_hParents;
+  for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
+    DuplicateHandle(GetCurrentProcess(), *it, GetCurrentProcess(), NULL, 0, FALSE, DUPLICATE_SAME_ACCESS);
+
   SDL_mutexV(hEvent->m_hMutex);
 
   for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
   {
-    SDL_mutexP((*it)->m_hMutex);
-    (*it)->m_bEventSet = true;
-    SDL_mutexV((*it)->m_hMutex);
+    SetEvent(*it);
+    CloseHandle(*it);
   }
 
   if (hEvent->m_bManualEvent == true)
-  {
     SDL_CondBroadcast(hEvent->m_hCond);
-    for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
-      SDL_CondBroadcast((*it)->m_hCond);
-  }
   else
-  {
     SDL_CondSignal(hEvent->m_hCond);
-    for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
-      SDL_CondSignal((*it)->m_hCond);
-  }
 
   return true;
 }
