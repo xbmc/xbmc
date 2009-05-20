@@ -256,9 +256,9 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
 
   for (int i = 0; i < 255 && Buff[i]; i++)
   {
-      //workaround for locale mismatch and filter out unwanted chars
-    if (Buff[i] == '.' || Buff[i] == ',') Buff[i] = *Locale->decimal_point;
-    else if (Buff[i] < '0' || Buff[i] > '9') Buff[i] = ' ';
+      //workaround for locale mismatch
+    if (Buff[i] == '.' || Buff[i] == ',')
+      Buff[i] = *Locale->decimal_point;
   }
 
   ReturnV = sscanf(Buff, "%lf", &fRefreshRate);
