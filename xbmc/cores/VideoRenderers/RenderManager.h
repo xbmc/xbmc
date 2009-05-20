@@ -80,18 +80,6 @@ public:
     return 0;
   }
 
-#ifdef _LINUX
-  // should be called from the GUI thread after playback has finished
-  void OnClose()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-    {
-      m_pRenderer->OnClose();
-    }
-  }
-#endif
-
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
