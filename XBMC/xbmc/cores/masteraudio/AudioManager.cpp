@@ -437,10 +437,16 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
  return &g_AudioProfileAC3;
 }
 
+// Test class to generate a sin waveform
+////////////////////////////////////////////////////////////////////
 CWaveGenerator::CWaveGenerator(float freq) :
   m_Freq(0),
   m_FramesRendered(0)
 {
+  if (
+    (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_SEC , NULL) != MA_SUCCESS) ||
+    (pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT , NULL) != MA_SUCCESS)) 
+    return MA_MISSING_ATTRIBUTE;
 
 }
 
