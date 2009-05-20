@@ -216,7 +216,7 @@ static DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
       nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwMilliseconds);
   }
 
-  if (hHandle->m_bManualEvent == false && nRet != SDL_MUTEX_TIMEDOUT)
+  if (hHandle->m_bManualEvent == false && nRet == 0)
     hHandle->m_bEventSet = false;
 
   // Translate return code.
