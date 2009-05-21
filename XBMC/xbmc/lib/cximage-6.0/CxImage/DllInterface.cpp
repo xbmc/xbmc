@@ -46,14 +46,13 @@ DWORD GetImageType(const char *file)
 { // determines based on file extension the type of file
   char *ext = (char *)file + strlen(file) - 1;
   char *end = ext;
-  while (ext > file)
+  while (ext >= file)
   {
     if (*ext == '.')
     {
       // if the file doesn't end with a '.' increment 'ext' so
       // we only have the extension in 'ext'.
-      if ( ext != end )
-        ext++;
+      ext++;
       break;
     }
     ext--;
