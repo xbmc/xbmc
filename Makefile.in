@@ -288,7 +288,7 @@ codecs: papcodecs dvdpcodecs
 libs: libhdhomerun libid3tag imagelib libexif python
 externals: codecs libs python visualizations screensavers
 
-xcode_depends:
+xcode_depends: \
 	codecs libs python visualizations screensavers \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libXBMS/libxbms-x86-osx.a \
