@@ -14,10 +14,6 @@ DIRS=	ffmpeg \
 	liba52 \
 	libmpeg2 \
 
-# for clean purposes
-DIRS+=  libdvdnav \
-	libDVDCSS
-
 ifeq ($(findstring osx,$(ARCH)), osx)
 LIBS=	avutil-49-$(ARCH).a \
 	avcodec-52-$(ARCH).a \
