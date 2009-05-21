@@ -150,19 +150,18 @@ XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode, const std::stri
 m_mode(f_mode), m_address(fcr_address), m_timer(0), m_sequence_timeout(0.5), m_device_id(150), m_verbose_mode(f_verbose_mode){
 	PRINT_SIGNATURE();
 	
-  if(m_mode == UNIVERSAL_MODE){
-    if(m_verbose_mode)
-      NSLog(@"XBMCClientWrapperImpl started in universal mode sending to address %s", fcr_address.c_str());
-    populateSequenceMap();
-  } 
-  else if(m_mode == MULTIREMOTE_MODE){
-    populateMultiRemoteModeMap();
+  if(m_mode == MULTIREMOTE_MODE){
     if(m_verbose_mode)
       NSLog(@"XBMCClientWrapperImpl started in multiremote mode sending to address %s", fcr_address.c_str());
+    populateMultiRemoteModeMap();
   } else {
+    if(m_mode == UNIVERSAL_MODE){
+      if(m_verbose_mode)
+        NSLog(@"XBMCClientWrapperImpl started in universal mode sending to address %s", fcr_address.c_str());
+      populateSequenceMap();
+    } else if(m_verbose_mode)
+        NSLog(@"XBMCClientWrapperImpl started in normal mode sending to address %s", fcr_address.c_str());
     populateEventMap();
-    if(m_verbose_mode)
-      NSLog(@"XBMCClientWrapperImpl started in normal mode sending to address %s", fcr_address.c_str());
   }
   
 	//open udp port etc
@@ -174,11 +173,21 @@ m_mode(f_mode), m_address(fcr_address), m_timer(0), m_sequence_timeout(0.5), m_d
 	}
 }
 
+namespace {
+ struct delete_second{
+   template <class T> 
+   void operator ()(T& fr_pair){
+     delete fr_pair.second;
+   }
+ };
+}
 XBMCClientWrapperImpl::~XBMCClientWrapperImpl(){
 	PRINT_SIGNATURE();
   resetTimer();
   shutdown(m_socket, SHUT_RDWR);
-  //TODO delete maps
+  std::for_each(m_event_map.begin(), m_event_map.end(), delete_second());
+  std::for_each(m_sequence_map.begin(), m_sequence_map.end(), delete_second());
+  std::for_each(m_multiremote_map.begin(), m_multiremote_map.end(), delete_second());
 }
 
 bool XBMCClientWrapperImpl::isStartToken(eATVClientEvent f_event){
@@ -215,9 +224,8 @@ void XBMCClientWrapperImpl::sendSequence(){
     CPacketBUTTON& packet = *(it->second);
     CAddress addr(m_address.c_str());
     packet.Send(m_socket, addr);      
-    // TODO: add GetButtonCode to CPacketButton?
-    //    if(m_verbose_mode)
-    //      NSLog(@"XBMCClientWrapperImpl::sendSequence: sent sequence %s as button %i", m_sequence.str().c_str(), it->second->GetButtonCode());
+    if(m_verbose_mode)
+      NSLog(@"XBMCClientWrapperImpl::sendSequence sent sequence %i down:%i up:%i", packet.GetButtonCode(), packet.GetFlags()&BTN_DOWN,packet.GetFlags()&BTN_UP );
   } else {
     ELOG(@"XBMCClientWrapperImpl::sendSequence: No mapping defined for sequence %s", m_sequence.str().c_str());
   }
