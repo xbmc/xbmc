@@ -295,6 +295,8 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
 
   if(bAudioDevice)
     g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+  else
+    FlushStreams();
 
   return true;
 }
