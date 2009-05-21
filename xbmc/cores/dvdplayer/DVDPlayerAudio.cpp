@@ -557,7 +557,7 @@ void CDVDPlayerAudio::Process()
       {
         char *synctypes[] = {(char*)"clock feedback", (char*)"skip/duplicate", (char*)"resample", (char*)"invalid"};
         int synctype = (m_synctype >= 0 && m_synctype <= 2) ? m_synctype : 3;
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: synctype set to %s", synctypes[synctype]);
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: synctype set to %i: %s", m_synctype, synctypes[synctype]);
         m_prevsynctype = m_synctype;
       }
       
