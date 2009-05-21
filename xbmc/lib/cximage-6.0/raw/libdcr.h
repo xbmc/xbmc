@@ -212,8 +212,10 @@ struct dcr_DCRAW {
 	ushort (*image)[4], white[8][8], curve[0x4001], cr2_slice[3], sraw_mul[4];
 	float cam_mul[4], pre_mul[4], cmatrix[3][4], rgb_cam[3][4];
 	int histogram[4][0x2000];
-	void (*write_thumb)(DCRAW *, FILE *), (*write_fun)(DCRAW *, FILE *);
-	void (*load_raw)(DCRAW *), (*thumb_load_raw)(DCRAW *);
+	void (*write_thumb)(DCRAW *, FILE *);
+	void (*write_fun)(DCRAW *, FILE *);
+	void (*load_raw)(DCRAW *);
+	void (*thumb_load_raw)(DCRAW *);
 	jmp_buf failure;
 	char *sz_error;
 };
