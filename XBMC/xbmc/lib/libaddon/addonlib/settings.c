@@ -29,7 +29,7 @@
 #include <errno.h>
 #include <mvp_refmem.h>
 #include <addon.h>
-#include <addon_local.h>
+#include "../addon_local.h"
 
 /*
  * addon_settings_destroy(void)
