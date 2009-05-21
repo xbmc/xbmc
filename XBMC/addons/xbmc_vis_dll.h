@@ -16,8 +16,8 @@
 #include <windows.h>
 #endif
 
-#include "xbmc_addon.h"               /* Dll related functions available to all AddOn's */
-#include "VisualisationTypes.h"
+#include "xbmc_addon_dll.h"               /* Dll related functions available to all AddOn's */
+#include "xbmc_vis_types.h"
 
 extern "C"
 {
@@ -35,7 +35,7 @@ extern "C"
   #define VIS_ACTION_USER 100
 
   // Functions that your visualisation must implement
-  ADDON_STATUS Create(VisCallbacks* cb, void* unused, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+  ADDON_STATUS Create(ADDON_HANDLE hdl, void* unused, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
               float fPixelRatio);
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
   void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);

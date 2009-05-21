@@ -13,14 +13,14 @@
 #endif
 #endif
 
-#include "xbmc_addon.h"               /* Dll related functions available to all AddOn's */
-#include "PVRClientTypes.h"
+#include "xbmc_addon_dll.h"               /* Dll related functions available to all AddOn's */
+#include "xbmc_pvr_types.h"
 
 extern "C"
 {
   // Functions that your PVR client must implement, also you must implement the functions from
   // xbmc_addon.h
-  ADDON_STATUS Create(PVRCallbacks*);
+  ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID);
   void Destroy();
   PVR_ERROR GetProperties(PVR_SERVERPROPS* pProps);
   const char* GetBackendName();
@@ -32,7 +32,7 @@ extern "C"
   int GetNumRecordings();
   int GetNumTimers();
 //  PVR_ERROR GetBouquetInfo(const unsigned number, PVR_BOUQUET *info);
-//  unsigned int GetChannelList(PVR_CHANNEL ***channels);
+  PVR_ERROR RequestChannelList(PVRHANDLE handle);
 //  PVR_ERROR GetEPGForChannel(const unsigned channel, PVR_PROGLIST **epg, time_t start, time_t end);
 //  PVR_ERROR GetEPGNowInfo(const unsigned channel, PVR_PROGINFO *result);
 //  PVR_ERROR GetEPGNextInfo(const unsigned channel, PVR_PROGINFO *result);
@@ -52,6 +52,7 @@ extern "C"
     pClient->GetNumChannels = GetNumChannels;
     pClient->GetNumRecordings = GetNumRecordings;
     pClient->GetNumTimers = GetNumTimers;
+    pClient->RequestChannelList = RequestChannelList;
 //    pClient->GetBouquetInfo = GetBouquetInfo;
 //    pClient->GetChannelList = GetChannelList;
 //    pClient->GetEPGForChannel = GetEPGForChannel;

@@ -23,7 +23,7 @@
 #ifndef __SCREENSAVER_TYPES_H__
 #define __SCREENSAVER_TYPES_H__
 
-#include "DllAddonTypes.h"
+#include "xbmc_addon_types.h"
 
 extern "C"
 {
@@ -32,20 +32,12 @@ extern "C"
     int dummy;
   };
 
-  typedef struct ScreensaverCallbacks
-  {
-    AddOnCallbacks      AddOn;
-    DialogCallbacks     Dialog;
-    UtilsCallbacks      Utils;
-    void *userData;
-  } ScreensaverCallbacks;
-
   struct ScreenSaver
   {
 #if !defined(_LINUX) && !defined(HAS_SDL)
-    ADDON_STATUS (__cdecl* Create)(ScreensaverCallbacks* cb, LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
+    ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
 #else
-    ADDON_STATUS (__cdecl* Create)(ScreensaverCallbacks* cb, void* pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
+    ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, void* pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
 #endif
     void (__cdecl* Start) ();
     void (__cdecl* Render) ();

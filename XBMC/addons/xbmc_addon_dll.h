@@ -15,7 +15,7 @@
 #endif
 #endif
 
-#include "DllAddonTypes.h"
+#include "xbmc_addon_types.h"
 
 extern "C"
 {

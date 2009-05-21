@@ -26,7 +26,7 @@
 #ifndef __VISUALISATION_TYPES_H__
 #define __VISUALISATION_TYPES_H__
 
-#include "DllAddonTypes.h"
+#include "xbmc_addon_types.h"
 
 extern "C"
 {
@@ -68,19 +68,10 @@ extern "C"
     int        reserved4;
   } VisTrack;
 
-
-  typedef struct VisCallbacks
-  {
-    AddOnCallbacks      AddOn;
-    DialogCallbacks     Dialog;
-    UtilsCallbacks      Utils;
-    void *userData;
-  } VisCallbacks;
-
   struct Visualisation
   {
-    ADDON_STATUS (__cdecl* Create)(VisCallbacks* cb, void* unused, int iPosX, int iPosY, int iWidth, int iHeight,
-                           const char* szVisualisation,float pixelRatio);
+    ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, void* unused, int iPosX, int iPosY, int iWidth, int iHeight,
+                           const char* szVisualisation, float pixelRatio);
     void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
     void (__cdecl* AudioData)(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
     void (__cdecl* Render) ();

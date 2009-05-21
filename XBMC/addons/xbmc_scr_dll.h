@@ -8,15 +8,16 @@
 #define __declspec(x)
 #endif
 
-#include "ScreensaverTypes.h"
+#include "xbmc_addon_dll.h"               /* Dll related functions available to all AddOn's */
+#include "xbmc_scr_types.h"
 
 extern "C"
 {
   // Functions that your visualisation must implement
 #if !defined(_LINUX) && !defined(HAS_SDL)
-  ADDON_STATUS Create(ScreensaverCallbacks* cb, LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float fPixelRatio);
+  ADDON_STATUS Create(ADDON_HANDLE hdl, LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float fPixelRatio);
 #else
-  ADDON_STATUS Create(ScreensaverCallbacks* cb, void* pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float fPixelRatio);
+  ADDON_STATUS Create(ADDON_HANDLE hdl, void* pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float fPixelRatio);
 #endif
   void Start();
   void Render();
