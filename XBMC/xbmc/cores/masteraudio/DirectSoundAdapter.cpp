@@ -125,50 +125,6 @@ MA_RESULT CDirectSoundAdapter::SetSource(IAudioSource* pSource, unsigned int sou
   return MA_SUCCESS;
 }
 
-// TODO: Move to StreamInput most likely
-//MA_RESULT CDirectSoundAdapter::AddSlice(audio_slice* pSlice)
-//{
-//  // TODO: manage cache/buffer level to prevent underruns
-//  if (!m_pRenderer || !pSlice)
-//    return MA_ERROR;
-//
-//  if (pSlice->header.data_len % m_ChunkLen)
-//    return MA_ERROR; // Data is misaligned
-//
-//  // Try send some data to the renderer
-//  if (m_pInputSlice && m_BufferOffset) // We have a leftover slice from last time
-//  {
-//    size_t bytesWritten = m_pRenderer->AddPackets(m_pInputSlice->get_data() + m_BufferOffset, m_pInputSlice->header.data_len - m_BufferOffset);
-//    m_BufferOffset += bytesWritten;
-//    // TODO: How should we handle misalignment caused by reads by the renderer? Can we?
-//    if (m_BufferOffset >= m_pInputSlice->header.data_len) // We are done with this one
-//    {
-//      delete m_pInputSlice;
-//      m_pInputSlice = NULL;
-//      m_BufferOffset = 0;
-//    }
-//    else
-//      return MA_BUSYORFULL; // We still have data to transfer
-//  }
-//
-//  size_t bytesWritten = m_pRenderer->AddPackets(pSlice->get_data(), pSlice->header.data_len);
-//  if (!bytesWritten) // The renderer is not accepting data
-//    return MA_BUSYORFULL;
-//
-//  m_TotalBytesReceived += pSlice->header.data_len;
-//  if (bytesWritten < pSlice->header.data_len) // Save it for later
-//  {
-//    m_BufferOffset = bytesWritten;
-//    m_pInputSlice = pSlice; // Store the provided slice
-//  }
-//  else // We are done with this one
-//  {
-//    delete pSlice;
-//  }
-//
-//  return MA_SUCCESS;
-//}
-
 float CDirectSoundAdapter::GetMaxLatency()
 {
   if (!m_pRenderer)
@@ -199,13 +155,11 @@ bool CDirectSoundAdapter::Drain(unsigned int timeout)
 
 void CDirectSoundAdapter::Render()
 {
-  // TODO: Pull data through the upstream source and push to the output renderer
-
   unsigned int frames = m_ChunkLen / m_BytesPerFrame;
   if (m_ChunkLen % m_BytesPerFrame)
     frames++;
 
-  ma_audio_container* pCont = ma_alloc_container(1, 2, frames * 2);
+  ma_audio_container* pCont = ma_alloc_container(1, 4, frames);
 
   while (m_pRenderer->GetSpace() >= m_ChunkLen)
   {
@@ -217,7 +171,7 @@ void CDirectSoundAdapter::Render()
     else
       break;
   }
-  free(pCont);
+  ma_free_container(pCont);
 }
 
 // IRenderingControl

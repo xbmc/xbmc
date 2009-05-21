@@ -252,6 +252,7 @@ struct ma_audio_container
 };
 
 ma_audio_container* ma_alloc_container(unsigned int buffers, size_t bytesPerFrame, size_t framesPerBuffer);
+void ma_free_container(ma_audio_container* pCont);
 
 typedef std::map<MA_ATTRIB_ID,stream_attribute>::iterator StreamAttributeIterator; 
 class CStreamAttributeCollection
@@ -377,6 +378,10 @@ protected:
 
 // Input Stage
 ////////////////////////////////////////////
+
+// Temporary include for input buffer class. To be replaced when message queue is inplemented
+#include "FileSystem/RingBuffer.h"
+
 class CStreamInput : public IAudioSource
 {
 public:
@@ -391,11 +396,9 @@ public:
   MA_RESULT AddData(void* pBuffer, size_t bufLen);  // Writes all or nothing
   void Reset();
 protected:
-  unsigned int m_MaxCacheLen;
-  unsigned int m_CacheLen;
   unsigned int m_BytesPerFrame;
   unsigned int m_BytesPerSecond;
-  CWaveGenerator* m_pGenerator;
+  CRingBuffer m_Cache;
 };
 
 // Processing Stage

@@ -42,18 +42,23 @@ ma_audio_container* ma_alloc_container(unsigned int buffers, size_t bytesPerFram
   return pCont;
 }
 
+void ma_free_container(ma_audio_container* pCont)
+{
+  if (pCont)
+  {
+    free(pCont->buffer[0].data);
+    free(pCont);
+  }
+}
+
 // CStreamInput
 //////////////////////////////////////////////////////////////////////////////////////
 CStreamInput::CStreamInput()
 {
-  m_CacheLen = 0;
-  m_MaxCacheLen = 0;
-  m_pGenerator = NULL;
 }
 
 CStreamInput::~CStreamInput()
 {
-  delete m_pGenerator;
 }
 
 MA_RESULT CStreamInput::AddData(void* pBuffer, size_t bufLen)
@@ -61,10 +66,9 @@ MA_RESULT CStreamInput::AddData(void* pBuffer, size_t bufLen)
   if (!pBuffer)
     return MA_ERROR;
 
-  // TODO: Implement inbound cache
-  if (m_CacheLen + bufLen < m_MaxCacheLen)
+  if ((size_t)m_Cache.GetMaxWriteSize() >= bufLen)
   {  
-    m_CacheLen += bufLen;
+    m_Cache.WriteBinary((const char*)pBuffer, bufLen);
     return MA_SUCCESS;
   }
 
@@ -73,8 +77,7 @@ MA_RESULT CStreamInput::AddData(void* pBuffer, size_t bufLen)
 
 void CStreamInput::Reset()
 {
-  // TODO: Clear the cache
-  m_CacheLen = 0;
+
 }
 
 // IAudioSource
@@ -111,22 +114,22 @@ MA_RESULT CStreamInput::SetOutputFormat(CStreamDescriptor* pDesc, unsigned int b
       (pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_SEC, &m_BytesPerSecond) != MA_SUCCESS))
      return MA_MISSING_ATTRIBUTE;
 
-  m_MaxCacheLen = m_BytesPerSecond;
-  m_pGenerator = new CWaveGenerator(440.0f);
-  m_pGenerator->SetOutputFormat(pDesc, bus);
+  m_Cache.Create(m_BytesPerSecond);
+
   return MA_SUCCESS;
 }
 
 MA_RESULT CStreamInput::Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
 {
-  // TODO: Pull data from inbound cache
   unsigned int bytesToRender = (m_BytesPerFrame * frameCount);
-  if (m_CacheLen > bytesToRender)
+  if ((unsigned int)m_Cache.GetMaxReadSize() >= bytesToRender)
   {
-    MA_RESULT res =  m_pGenerator->Render(pOutput, frameCount, renderTime, renderFlags);
-    if (res == MA_SUCCESS)
-      m_CacheLen -= bytesToRender;
-    return res;
+    if (m_Cache.ReadBinary((char*)pOutput->buffer[0].data, bytesToRender))
+    {
+      pOutput->buffer[0].data_len = bytesToRender;
+      return MA_SUCCESS;
+    }
+    return MA_ERROR;
   }
   return MA_NEED_DATA;
 }
