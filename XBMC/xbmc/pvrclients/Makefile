@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils
+INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils -I../lib/libaddon
 
 SRCS=PVRClient.cpp \
      PVRClientFactory.cpp

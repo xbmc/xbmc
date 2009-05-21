@@ -23,7 +23,7 @@
 #include "StdString.h"
 #include "utils/Thread.h"
 #include "FileSystem/Directory.h"
-#include "../addons/DllAddonTypes.h"
+#include "../addons/xbmc_addon_types.h"
 #include <vector>
 
 class CURL;
@@ -142,62 +142,12 @@ public:
 
   /* Callback pointer return function */
   static IAddonCallback* GetCallbackForType(AddonType type);
+  static bool RegisterAddonCallback(AddonType type, IAddonCallback* cb);
+  static void UnregisterAddonCallback(AddonType type);
 
-  /* Add-on settings and language functions */
+  /* Add-on language functions */
   static void LoadAddonStrings(const CURL &url);
   static void ClearAddonStrings();
-  static void OpenAddonSettings(const CURL &url, bool bReload = true);
-  static void OpenAddonSettings(const CAddon* addon, bool bReload);
-  static void TransferAddonSettings(const CURL &url);
-  static void TransferAddonSettings(const CAddon* addon);
-  static bool GetAddonSetting(const CAddon* addon, const char* settingName, void *settingValue);
-  static CStdString GetAddonDirectory(const CAddon* addon);
-  static CStdString GetUserDirectory(const CAddon* addon);
-
-  /* Add-on Dialog helper functions */
-  static bool OpenDialogOK(const char* heading, const char* line1, const char* line2, const char* line3);
-  static bool OpenDialogYesNo(const char* heading, const char* line1, const char* line2, const char* line3, const char* nolabel, const char* yeslabel);
-  static const char* OpenDialogBrowse(int type, const char* heading, const char* shares, const char* mask, bool useThumbs, bool treatAsFolder, const char* default_folder);
-  static const char* OpenDialogNumeric(int type, const char* heading, const char* default_value);
-  static const char* OpenDialogKeyboard(const char* heading, const char* default_value, bool hidden);
-  static int OpenDialogSelect(const char* heading, AddOnStringList* list);
-  static bool ProgressDialogCreate(const char* heading, const char* line1, const char* line2, const char* line3);
-  static void ProgressDialogUpdate(int percent, const char* line1, const char* line2, const char* line3);
-  static bool ProgressDialogIsCanceled();
-  static void ProgressDialogClose();
-
-  /* Add-on GUI helper functions */
-  static void GUILock();
-  static void GUIUnlock();
-  static int GUIGetCurrentWindowId();
-  static int GUIGetCurrentWindowDialogId();
-
-  /* Add-on Utilities helper functions */
-  static void Shutdown();
-  static void Restart();
-  static void Dashboard();
-  static void ExecuteScript(const char *script);
-  static void ExecuteBuiltIn(const char *function);
-  static const char* ExecuteHttpApi(char *httpcommand);
-  static const char* GetLocalizedString(const CAddon* addon, long dwCode);
-  static const char* GetSkinDir();
-  static const char* UnknownToUTF8(const char *sourceDest);
-  static const char* GetLanguage();
-  static const char* GetIPAddress();
-  static int GetDVDState();
-  static int GetFreeMem();
-  static const char* GetInfoLabel(const char *infotag);
-  static const char* GetInfoImage(const char *infotag);
-  static bool GetCondVisibility(const char *condition);
-  static void EnableNavSounds(bool yesNo);
-  static void PlaySFX(const char *filename);
-  static int GetGlobalIdleTime();
-  static const char* GetCacheThumbName(const char *path);
-  static const char* MakeLegalFilename(const char *filename);
-  static CStdString TranslatePath(const char *path);
-  static const char* GetRegion(int id);
-  static const char* GetSupportedMedia(int media);
-  static bool SkinHasImage(const char *filename);
 
   /* Beginning of Add-on data fields (readed from info.xml) */
   CStdString m_guid;       ///< Unique identifier for this addon, chosen by developer
@@ -213,7 +163,26 @@ public:
   CStdString m_disclaimer; ///< if exists, user needs to confirm before installation
   bool       m_disabled;   ///< Is this addon disabled?
   AddonType  m_addonType;  ///< Type identifier of this Add-on
+
+private:
+  static IAddonCallback *m_cbMultitye;
+  static IAddonCallback *m_cbViz;
+  static IAddonCallback *m_cbSkin;
+  static IAddonCallback *m_cbPVR;
+  static IAddonCallback *m_cbScript;
+  static IAddonCallback *m_cbScraperPVR;
+  static IAddonCallback *m_cbScraperVideo;
+  static IAddonCallback *m_cbScraperMusic;
+  static IAddonCallback *m_cbScraperProgram;
+  static IAddonCallback *m_cbScreensaver;
+  static IAddonCallback *m_cbPluginPVR;
+  static IAddonCallback *m_cbPluginVideo;
+  static IAddonCallback *m_cbPluginMusic;
+  static IAddonCallback *m_cbPluginProgram;
+  static IAddonCallback *m_cbPluginPictures;
+  static IAddonCallback *m_cbDSPAudio;
 };
+
 
 /*!
 \ingroup windows

@@ -2842,28 +2842,28 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   size_t found = platform.Find("all");
   if (platform.Find("all") < 0)
   {
-#ifdef _LINUX
+#if defined(_LINUX)
     if (platform.Find("linux") < 0)
     {
-      CLog::Log(LOGERROR, "Addon: $s is not supported under Linux, ignoring", strPath.c_str());
+      CLog::Log(LOGERROR, "Addon: %s is not supported under Linux, ignoring", strPath.c_str());
       return false;
     }
-#elif _WIN32PC
+#elif defined(_WIN32PC)
     if (platform.Find("windows") < 0)
     {
-      CLog::Log(LOGERROR, "Addon: $s is not supported under Windows, ignoring", strPath.c_str());
+      CLog::Log(LOGERROR, "Addon: %s is not supported under Windows, ignoring", strPath.c_str());
       return false;
     }
-#elif __APPLE__
+#elif defined(__APPLE__)
     if (platform.Find("osx") < 0)
     {
-      CLog::Log(LOGERROR, "Addon: $s is not supported under OSX, ignoring", strPath.c_str());
+      CLog::Log(LOGERROR, "Addon: %s is not supported under OSX, ignoring", strPath.c_str());
       return false;
     }
-#elif _XBOX
+#elif defined(_XBOX)
     if (platform.Find("xbox") < 0)
     {
-      CLog::Log(LOGERROR, "Addon: $s is not supported under XBOX, ignoring", strPath.c_str());
+      CLog::Log(LOGERROR, "Addon: %s is not supported under XBOX, ignoring", strPath.c_str());
       return false;
     }
 #endif
@@ -2914,7 +2914,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
    * This is required for no overwrite to the fixed WIN32 add-on's
    * during compile time
    */
-  CStdString library;
+  CStdString library_win32;
   element = NULL;
   element = xmlDoc.RootElement()->FirstChildElement("librarywin32");
   if (element) // If it is found overwrite standart library name

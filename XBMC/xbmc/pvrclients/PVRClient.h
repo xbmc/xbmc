@@ -23,6 +23,7 @@
 #include "IPVRClient.h"
 #include "DllPVRClient.h"
 #include "Thread.h"
+#include "../lib/libaddon/addon_local.h"
 
 class CPVRClient : public IPVRClient
 {
@@ -71,9 +72,6 @@ public:
   virtual PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo);
 
 protected:
-  bool ConvertChannels(unsigned int num, PVR_CHANNEL **clientChans, VECCHANNELS &out);
-  void ReleaseClientData(unsigned int num, PVR_CHANNEL **clientChans);
-
   const long m_clientID;
   bool m_ReadyToUse;
   std::auto_ptr<struct PVRClient> m_pClient;
@@ -84,20 +82,19 @@ protected:
 
   CCriticalSection    m_critSection;
   IPVRClientCallback *m_manager;
-  PVRCallbacks       *m_callbacks;
+  AddonCB            *m_callbacks;
 
 private:
+  /* PVR API Callback functions */
   static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);
+  static void PVRTransferChannelEntry(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *chan);
 
   static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
-  static void AddOnLogCallback(void *userData, const ADDON_LOG loglevel, const char *format, ... );
   static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
   static void AddOnOpenSettings(const char *url, bool bReload);
   static void AddOnOpenOwnSettings(void *userData, bool bReload);
-  static const char* AddOnGetLocalizedString(void *userData, long dwCode);
   static const char* AddOnGetAddonDirectory(void *userData);
   static const char* AddOnGetUserDirectory(void *userData);
-  static const char* AddOnTranslatePath(const char *path);
 };
 
 typedef std::vector<CPVRClient*> VECCLIENTS;

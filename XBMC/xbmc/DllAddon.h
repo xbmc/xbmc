@@ -21,14 +21,14 @@
 */
 
 #include "DynamicDll.h"
-#include "../addons/DllAddonTypes.h"
+#include "../addons/xbmc_addon_types.h"
 
 template <typename T>
 class DllAddonInterface
 {
 public:
   virtual void GetAddon(T* pAddon) =0;
-  virtual ADDON_STATUS GetStatus() =0;  /* For "ADDON_STATUS" see header "DllAddonTypes.h" */
+  virtual ADDON_STATUS GetStatus() =0;  /* For "ADDON_STATUS" see header "xbmc_addon_types.h" */
   virtual bool HasSettings() =0;
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) =0;
   virtual void Remove() =0;

@@ -25,7 +25,10 @@ BIN_DIRS=	\
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/karaoke \
-	xbmc/lib/libaddon \
+	xbmc/lib/libaddon/addonlib \
+	xbmc/lib/libaddon/addonlib++ \
+	xbmc/lib/libaddon/pvrlib \
+	xbmc/lib/libaddon/pvrlib++ \
 	xbmc/lib/libcmyth \
 	xbmc/lib/libhts \
 	xbmc/lib/libGoAhead \
@@ -205,7 +208,10 @@ dvdpcodecs: dllloader
 cdrip:
 	$(MAKE) -C xbmc/cdrip
 libaddon: dllloader
-	$(MAKE) -C xbmc/lib/libaddon
+	$(MAKE) -C xbmc/lib/libaddon/addonlib
+	$(MAKE) -C xbmc/lib/libaddon/addonlib++
+	$(MAKE) -C xbmc/lib/libaddon/pvrlib
+	$(MAKE) -C xbmc/lib/libaddon/pvrlib++
 libcmyth: dllloader 
 	$(MAKE) -C xbmc/lib/libcmyth
 libhts:
@@ -300,7 +306,6 @@ OBJSXBMC=	\
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
 	xbmc/karaoke/karaoke.a \
-	xbmc/lib/libaddon/libaddon.a \
 	xbmc/lib/libcmyth/libcmyth.a \
 	xbmc/lib/libhts/libhts.a \
 	xbmc/lib/libPython/python.a \

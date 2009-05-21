@@ -97,6 +97,7 @@ void CPVRManager::Start()
   epgLock.Leave();
 
   /* Discover, load and create chosen Client add-on's. */
+  CAddon::RegisterAddonCallback(ADDON_PVRDLL, this);
   if (!LoadClients())
   {
     CLog::Log(LOGERROR, "PVR: couldn't load clients");
@@ -107,7 +108,7 @@ void CPVRManager::Start()
 //  Create(false, THREAD_MINSTACKSIZE);
 //  SetName("PVRManager Updater");
 //  SetPriority(-15);
-  
+
   CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", m_clients.size());
 }
 
@@ -115,6 +116,7 @@ void CPVRManager::Stop()
 {
   CSingleLock lock(m_clientsSection);
 
+  CAddon::UnregisterAddonCallback(ADDON_PVRDLL);
   StopThread();
 
   m_infoToggleStart = NULL;
@@ -209,7 +211,7 @@ bool CPVRManager::LoadClients()
       continue;
 
     /* Add client to TV-Database to identify different backend types,
-     * if client is already added his id is given. 
+     * if client is already added his id is given.
      */
     long clientID = m_database.AddClient(clientAddon.m_strName, clientAddon.m_guid);
     if (clientID == -1)
@@ -303,7 +305,7 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
           {
             m_backendDiskspace = g_localizeStrings.Get(18074);
           }
-          
+
           int NumChannels = m_clients[m_infoToggleCurrent]->GetNumChannels();
           if (NumChannels >= 0)
             m_backendChannels.Format("%i", NumChannels);
@@ -339,7 +341,7 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
         m_infoToggleStart = timeGetTime();
       }
     }
-    
+
     CStdString backendClients;
     if (m_clients.size() > 0)
       backendClients.Format("%u %s %u",m_infoToggleCurrent+1 ,g_localizeStrings.Get(20163), m_clients.size());
@@ -412,7 +414,7 @@ bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
         m_clients[i]->ReInit();
         if (datachanged)
         {
-            
+
         }
       }
     }
@@ -439,7 +441,7 @@ bool CPVRManager::RequestRemoval(const CAddon* addon)
       }
     }
   }
-  
+
   return false;
 }
 

@@ -41,6 +41,7 @@
 #include "URL.h"
 #include "../../addons/PVRClientTypes.h"
 #include "../utils/log.h"
+#include "../utils/AddonHelpers.h"
 
 using namespace std;
 using namespace ADDON;
@@ -82,65 +83,24 @@ bool CPVRClient::Init()
 
   /* Allocate the callback table to save all the pointers
      to the helper callback functions */
-  m_callbacks = new PVRCallbacks;
+  m_callbacks = new AddonCB;
 
   /* PVR Helper functions */
-  m_callbacks->userData                 = this;
-  m_callbacks->Event                    = PVREventCallback;
+  m_callbacks->userData     = this;
+  m_callbacks->addonData    = (CAddon*) this;
 
-  /* AddOn Helper functions */
-  m_callbacks->AddOn.ReportStatus       = AddOnStatusCallback;
-  m_callbacks->AddOn.Log                = AddOnLogCallback;
-  m_callbacks->AddOn.GetSetting         = AddOnGetSetting;
-  m_callbacks->AddOn.OpenSettings       = AddOnOpenSettings;
-  m_callbacks->AddOn.OpenOwnSettings    = AddOnOpenOwnSettings;
-  m_callbacks->AddOn.GetAddonDirectory  = AddOnGetAddonDirectory;
-  m_callbacks->AddOn.GetUserDirectory   = AddOnGetUserDirectory;
+  /* Write XBMC Global Add-on function addresses to callback table */
+  CAddonUtils::CreateAddOnCallbacks(m_callbacks);
 
-  /* GUI Dialog Helper functions */
-  m_callbacks->Dialog.OpenOK            = CAddon::OpenDialogOK;
-  m_callbacks->Dialog.OpenYesNo         = CAddon::OpenDialogYesNo;
-  m_callbacks->Dialog.OpenBrowse        = CAddon::OpenDialogBrowse;
-  m_callbacks->Dialog.OpenNumeric       = CAddon::OpenDialogNumeric;
-  m_callbacks->Dialog.OpenKeyboard      = CAddon::OpenDialogKeyboard;
-  m_callbacks->Dialog.OpenSelect        = CAddon::OpenDialogSelect;
-  m_callbacks->Dialog.ProgressCreate    = CAddon::ProgressDialogCreate;
-  m_callbacks->Dialog.ProgressUpdate    = CAddon::ProgressDialogUpdate;
-  m_callbacks->Dialog.ProgressIsCanceled= CAddon::ProgressDialogIsCanceled;
-  m_callbacks->Dialog.ProgressClose     = CAddon::ProgressDialogClose;
-
-  /* Utilities Helper functions */
-  m_callbacks->Utils.Shutdown           = CAddon::Shutdown;
-  m_callbacks->Utils.Restart            = CAddon::Restart;
-  m_callbacks->Utils.Dashboard          = CAddon::Dashboard;
-  m_callbacks->Utils.ExecuteScript      = CAddon::ExecuteScript;
-  m_callbacks->Utils.ExecuteBuiltIn     = CAddon::ExecuteBuiltIn;
-  m_callbacks->Utils.ExecuteHttpApi     = CAddon::ExecuteHttpApi;
-  m_callbacks->Utils.UnknownToUTF8      = CAddon::UnknownToUTF8;
-  m_callbacks->Utils.LocalizedString    = AddOnGetLocalizedString;
-  m_callbacks->Utils.GetSkinDir         = CAddon::GetSkinDir;
-  m_callbacks->Utils.GetLanguage        = CAddon::GetLanguage;
-  m_callbacks->Utils.GetIPAddress       = CAddon::GetIPAddress;
-  m_callbacks->Utils.GetDVDState        = CAddon::GetDVDState;
-  m_callbacks->Utils.GetInfoLabel       = CAddon::GetInfoLabel;
-  m_callbacks->Utils.GetInfoImage       = CAddon::GetInfoImage;
-  m_callbacks->Utils.GetFreeMem         = CAddon::GetFreeMem;
-  m_callbacks->Utils.GetCondVisibility  = CAddon::GetCondVisibility;
-  m_callbacks->Utils.EnableNavSounds    = CAddon::EnableNavSounds;
-  m_callbacks->Utils.PlaySFX            = CAddon::PlaySFX;
-  m_callbacks->Utils.GetSupportedMedia  = CAddon::GetSupportedMedia;
-  m_callbacks->Utils.GetGlobalIdleTime  = CAddon::GetGlobalIdleTime;
-  m_callbacks->Utils.GetCacheThumbName  = CAddon::GetCacheThumbName;
-  m_callbacks->Utils.MakeLegalFilename  = CAddon::MakeLegalFilename;
-  m_callbacks->Utils.TranslatePath      = AddOnTranslatePath;
-  m_callbacks->Utils.GetRegion          = CAddon::GetRegion;
-  m_callbacks->Utils.SkinHasImage       = CAddon::SkinHasImage;
+  /* Write XBMC PVR specific Add-on function addresses to callback table */
+  m_callbacks->PVR.EventCallback        = PVREventCallback;
+  m_callbacks->PVR.TransferChannelEntry = PVRTransferChannelEntry;
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
   try
   {
-    ADDON_STATUS status = m_pClient->Create(m_callbacks);
+    ADDON_STATUS status = m_pClient->Create(m_callbacks, m_clientID);
     if (status != STATUS_OK)
       throw status;
     m_ReadyToUse = true;
@@ -159,6 +119,16 @@ bool CPVRClient::Init()
     /* Delete is performed by the calling class */
     new CAddonStatusHandler(this, status, "", false);
   }
+
+/***** CHANNEL TRANSFER TEST *****/
+//VECCHANNELS channels;
+//GetChannelList(channels);
+//  VECCHANNELS::iterator itr = channels.begin();
+//  while (itr != channels.end())
+//  {
+//    fprintf(stderr, "<< %s __ %s\n", (*itr).m_strChannel.c_str(), (*itr).m_strFileNameAndPath.c_str());
+//    itr++;
+//  }
 
   return m_ReadyToUse;
 }
@@ -356,79 +326,49 @@ int CPVRClient::GetNumChannels()
 
 PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels)
 {
-  // all memory allocation takes place in client,
-  // as we don't know beforehand how many channels exist
-//  unsigned int num;
-//  PVR_CHANNEL **clientChans = NULL;
-//
-//  num = m_pClient->GetChannelList(&clientChans);
-//  if (num < 1)
-//    return PVR_ERROR_SERVER_ERROR;
-//
-//  // after client returns, we take ownership over the allocated memory
-//  if (!ConvertChannels(num, clientChans, channels))
-//    return PVR_ERROR_SERVER_ERROR;
-
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      const PVRHANDLE handle = (VECCHANNELS*) &channels;
+      PVR_ERROR err = m_pClient->RequestChannelList(handle);
+      if (err != PVR_ERROR_NO_ERROR)
+        throw err;
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetChannelList occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+    catch (PVR_ERROR err)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after GetChannelList", m_strName.c_str(), m_hostName.c_str(), err);
+    }
+  }
   return PVR_ERROR_NO_ERROR;
 }
 
-bool CPVRClient::ConvertChannels(unsigned int num, PVR_CHANNEL **clientChans, VECCHANNELS &xbmcChans)
+void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *chan)
 {
-  xbmcChans.clear();
-  PVR_CHANNEL *chan;
-
-  for (unsigned i = 0; i < num; i++)
+  CPVRClient* client = (CPVRClient*) userData;
+  if (!client || handle == NULL || chan == NULL)
   {
-    // don't trust the client to have correctly initialized memory
-    try
-    {
-      chan = clientChans[i];
-    }
-    catch (std::exception e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s - unitialized PVR_CHANNEL", m_strName.c_str(), m_hostName.c_str());
-      ReleaseClientData(num, clientChans);
-      return false;
-    }
-    if (chan->number < 1 || chan->name == "" || chan->hide == true)
-      continue;
-
-    CTVChannelInfoTag channel;
-    channel.m_clientID   = m_clientID;
-    channel.m_iClientNum = chan->number;
-    channel.m_IconPath   = chan->iconpath;
-    channel.m_strChannel = chan->name;
-    channel.m_radio      = chan->radio;
-    channel.m_encrypted  = chan->encrypted;
-
-    xbmcChans.push_back(channel);
+    CLog::Log(LOGERROR, "PVR: PVRTransferChannelEntry is called with NULL-Pointer");
+    return;
   }
 
-  /*ReleaseClientData(num, clientChans);*/
+  VECCHANNELS *xbmcChans = (VECCHANNELS*) handle;
 
-  return true;
-}
+  CTVChannelInfoTag channel;
+  channel.m_clientID            = client->m_clientID;
+  channel.m_iClientNum          = chan->number;
+  channel.m_IconPath            = chan->iconpath;
+  channel.m_strChannel          = chan->name;
+  channel.m_radio               = chan->radio;
+  channel.m_encrypted           = chan->encrypted;
+  channel.m_strFileNameAndPath  = chan->stream_url;
 
-void CPVRClient::ReleaseClientData(unsigned int num, PVR_CHANNEL **clientChans)
-{
-  PVR_CHANNEL *chan;
-
-  for (unsigned i = 0; i < num; i++)
-  {
-    // don't trust the client to have correctly initialized memory
-    try
-    {
-      chan = &(*clientChans)[i];
-    }
-    catch (std::exception e)
-    {
-      CLog::Log(LOGERROR, "PVR: %s/%s: uninitialized PVR_CHANNEL", m_strName.c_str(), m_hostName.c_str());
-      clientChans = NULL;
-      continue;
-    }
-    free(chan);
-    chan = NULL;
-  }
+  xbmcChans->push_back(channel);
+  return;
 }
 
 
@@ -575,133 +515,4 @@ void CPVRClient::PVREventCallback(void *userData, const PVR_EVENT pvrevent, cons
     return;
 
   client->m_manager->OnClientMessage(client->m_clientID, pvrevent, msg);
-}
-
-
-/**********************************************************
- * Addon specific Callbacks
- * Is a must do, to all types of available addons handler
- */
-
-void CPVRClient::AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg)
-{
-  CPVRClient* client=(CPVRClient*) userData;
-  if (!client)
-    return;
-
-  CLog::Log(LOGINFO, "PVR: %s/%s: Reported bad status: %i", client->m_strName.c_str(), client->m_hostName.c_str(), status);
-
-  if (status != STATUS_OK)
-  {
-    CStdString message;
-    if (msg != NULL)
-      message = msg;
-
-    /* Delete is performed by the calling class */
-    new CAddonStatusHandler(client, status, message, false);
-  }
-}
-
-void CPVRClient::AddOnLogCallback(void *userData, const ADDON_LOG loglevel, const char *format, ... )
-{
-  CPVRClient* client = (CPVRClient*) userData;
-  if (!client)
-    return;
-
-  try
-  {
-    CStdString clientMsg, xbmcMsg;
-    clientMsg.reserve(16384);
-
-    va_list va;
-    va_start(va, format);
-    clientMsg.FormatV(format, va);
-    va_end(va);
-
-    /* insert internal identifiers for brevity */
-    xbmcMsg.Format("PVR: %s/%s: ", client->m_strName, client->m_hostName);
-    xbmcMsg += clientMsg;
-
-    int xbmclog;
-    switch (loglevel)
-    {
-      case LOG_ERROR:
-        xbmclog = LOGERROR;
-        break;
-      case LOG_INFO:
-        xbmclog = LOGINFO;
-        break;
-      case LOG_DEBUG:
-      default:
-        xbmclog = LOGDEBUG;
-        break;
-    }
-
-    /* finally write the logmessage */
-    CLog::Log(xbmclog, xbmcMsg);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during AddOnLogCallback occurred, contact Developer '%s' of this AddOn", client->m_strName.c_str(), client->m_hostName.c_str(), e.what(), client->m_strCreator.c_str());
-    return;
-  }
-}
-
-bool CPVRClient::AddOnGetSetting(void *userData, const char *settingName, void *settingValue)
-{
-  CPVRClient* client=(CPVRClient*) userData;
-  if (!client)
-    return NULL;
-
-  return CAddon::GetAddonSetting(client, settingName, settingValue);
-}
-
-void CPVRClient::AddOnOpenSettings(const char *url, bool bReload)
-{
-  CURL cUrl(url);
-  CAddon::OpenAddonSettings(cUrl, bReload);
-}
-
-void CPVRClient::AddOnOpenOwnSettings(void *userData, bool bReload)
-{
-  CPVRClient* client=(CPVRClient*) userData;
-  if (!client)
-    return;
-
-  CAddon::OpenAddonSettings(client, bReload);
-}
-
-const char* CPVRClient::AddOnGetLocalizedString(void *userData, long dwCode)
-{
-  CPVRClient* client=(CPVRClient*) userData;
-  if (!client)
-    return "";
-
-  return CAddon::GetLocalizedString(client, dwCode);
-}
-
-const char* CPVRClient::AddOnGetAddonDirectory(void *userData)
-{
-  CPVRClient* client = (CPVRClient*) userData;
-  if (!client)
-    return "";
-
-  static CStdString retString = CAddon::GetAddonDirectory(client);
-  return retString.c_str();
-}
-
-const char* CPVRClient::AddOnGetUserDirectory(void *userData)
-{
-  CPVRClient* client = (CPVRClient*) userData;
-  if (!client)
-    return "";
-
-  static CStdString retString = CAddon::GetUserDirectory(client);
-  return retString.c_str();
-}
-
-const char* CPVRClient::AddOnTranslatePath(const char *path)
-{
-  static CStdString retString = CAddon::TranslatePath(path);
-  return retString.c_str();
 }

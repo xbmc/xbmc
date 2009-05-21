@@ -21,7 +21,7 @@
  */
 
 #include "../DllAddon.h"
-#include "../../addons/PVRClientTypes.h"
+#include "../../addons/xbmc_pvr_types.h"
 
 class DllPVRClient : public DllAddon<PVRClient>
 {

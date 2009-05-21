@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIDialogAddonSettings.h"
 #include "utils/Addon.h"
+#include "utils/AddonHelpers.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIControlGroupList.h"
@@ -141,7 +142,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
     settings.Save();
 
     if (pDialog->m_bConfirmed)
-      CAddon::TransferAddonSettings(url);
+      CAddonUtils::TransferAddonSettings(url);
   }
   else
   {

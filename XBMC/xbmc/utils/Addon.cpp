@@ -28,22 +28,7 @@
 #include "GUIDialogAddonSettings.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
-#include "GUIDialogFileBrowser.h"
-#include "GUIDialogNumeric.h"
-#include "GUIDialogSelect.h"
-#include "GUIDialogProgress.h"
-#include "GUIDialogKeyboard.h"
-#include "GUIAudioManager.h"
-#include "FileSystem/File.h"
-#include "FileSystem/Directory.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "PVRManager.h"
 #include "Util.h"
-#include "URL.h"
-#ifdef HAS_WEB_SERVER
-#include "lib/libGoAhead/XBMChttp.h"
-#endif
-#include "Crc32.h"
 
 using namespace std;
 using namespace XFILE;
@@ -456,6 +441,23 @@ void CAddonStatusHandler::Process()
  *
  */
 
+IAddonCallback *CAddon::m_cbMultitye = NULL;
+IAddonCallback *CAddon::m_cbViz = NULL;
+IAddonCallback *CAddon::m_cbSkin = NULL;
+IAddonCallback *CAddon::m_cbPVR = NULL;
+IAddonCallback *CAddon::m_cbScript = NULL;
+IAddonCallback *CAddon::m_cbScraperPVR = NULL;
+IAddonCallback *CAddon::m_cbScraperVideo = NULL;
+IAddonCallback *CAddon::m_cbScraperMusic = NULL;
+IAddonCallback *CAddon::m_cbScraperProgram = NULL;
+IAddonCallback *CAddon::m_cbScreensaver = NULL;
+IAddonCallback *CAddon::m_cbPluginPVR = NULL;
+IAddonCallback *CAddon::m_cbPluginVideo = NULL;
+IAddonCallback *CAddon::m_cbPluginMusic = NULL;
+IAddonCallback *CAddon::m_cbPluginProgram = NULL;
+IAddonCallback *CAddon::m_cbPluginPictures = NULL;
+IAddonCallback *CAddon::m_cbDSPAudio = NULL;
+
 CAddon::CAddon()
 {
   Reset();
@@ -483,43 +485,168 @@ bool CAddon::operator==(const CAddon &rhs) const
 
 IAddonCallback* CAddon::GetCallbackForType(AddonType type)
 {
+  IAddonCallback *cb_tmp;
+
   switch (type)
   {
     case ADDON_MULTITYPE:
-      return AddonDummyCallback;
+      cb_tmp = m_cbMultitye;
+      break;
     case ADDON_VIZ:
-      return AddonDummyCallback;
+      cb_tmp = m_cbViz;
+      break;
     case ADDON_SKIN:
-      return AddonDummyCallback;
+      cb_tmp = m_cbSkin;
+      break;
     case ADDON_PVRDLL:
-      return CPVRManager::GetInstance();
+      cb_tmp = m_cbPVR;
+      break;
     case ADDON_SCRIPT:
-      return AddonDummyCallback;
+      cb_tmp = m_cbScript;
+      break;
     case ADDON_SCRAPER_PVR:
-      return AddonDummyCallback;
+      cb_tmp = m_cbScraperPVR;
+      break;
     case ADDON_SCRAPER_VIDEO:
-      return AddonDummyCallback;
+      cb_tmp = m_cbScraperVideo;
+      break;
     case ADDON_SCRAPER_MUSIC:
-      return AddonDummyCallback;
+      cb_tmp = m_cbScraperMusic;
+      break;
     case ADDON_SCRAPER_PROGRAM:
-      return AddonDummyCallback;
+      cb_tmp = m_cbScraperProgram;
+      break;
     case ADDON_SCREENSAVER:
-      return AddonDummyCallback;
+      cb_tmp = m_cbScreensaver;
+      break;
     case ADDON_PLUGIN_PVR:
-      return AddonDummyCallback;
+      cb_tmp = m_cbPluginPVR;
+      break;
     case ADDON_PLUGIN_MUSIC:
-      return AddonDummyCallback;
+      cb_tmp = m_cbPluginMusic;
+      break;
     case ADDON_PLUGIN_VIDEO:
-      return AddonDummyCallback;
+      cb_tmp = m_cbPluginVideo;
+      break;
     case ADDON_PLUGIN_PROGRAM:
-      return AddonDummyCallback;
+      cb_tmp = m_cbPluginProgram;
+      break;
     case ADDON_PLUGIN_PICTURES:
-      return AddonDummyCallback;
+      cb_tmp = m_cbPluginPictures;
+      break;
     case ADDON_DSP_AUDIO:
-      return AddonDummyCallback;
+      cb_tmp = m_cbDSPAudio;
+      break;
     case ADDON_UNKNOWN:
     default:
-      return AddonDummyCallback;
+      cb_tmp = NULL;
+      break;
+  }
+
+  if (cb_tmp == NULL)
+    cb_tmp = AddonDummyCallback;
+
+  return cb_tmp;
+}
+
+bool CAddon::RegisterAddonCallback(AddonType type, IAddonCallback* cb)
+{
+  if (cb == NULL)
+    return false;
+
+  if (type == ADDON_MULTITYPE && m_cbMultitye == NULL)
+    m_cbMultitye = cb;
+  else if (type == ADDON_VIZ && m_cbViz == NULL)
+    m_cbViz = cb;
+  else if (type == ADDON_SKIN && m_cbSkin == NULL)
+    m_cbSkin = cb;
+  else if (type == ADDON_PVRDLL && m_cbPVR == NULL)
+    m_cbPVR = cb;
+  else if (type == ADDON_SCRIPT && m_cbScript == NULL)
+    m_cbScript = cb;
+  else if (type == ADDON_SCRAPER_PVR && m_cbScraperPVR == NULL)
+    m_cbScraperPVR = cb;
+  else if (type == ADDON_SCRAPER_VIDEO && m_cbScraperVideo == NULL)
+    m_cbScraperVideo = cb;
+  else if (type == ADDON_SCRAPER_MUSIC && m_cbScraperMusic == NULL)
+    m_cbScraperMusic = cb;
+  else if (type == ADDON_SCRAPER_PROGRAM && m_cbScraperProgram == NULL)
+    m_cbScraperProgram = cb;
+  else if (type == ADDON_SCREENSAVER && m_cbScreensaver == NULL)
+    m_cbScreensaver = cb;
+  else if (type == ADDON_PLUGIN_PVR && m_cbPluginPVR == NULL)
+    m_cbPluginPVR = cb;
+  else if (type == ADDON_PLUGIN_MUSIC && m_cbPluginMusic == NULL)
+    m_cbPluginMusic = cb;
+  else if (type == ADDON_PLUGIN_VIDEO && m_cbPluginVideo == NULL)
+    m_cbPluginVideo = cb;
+  else if (type == ADDON_PLUGIN_PROGRAM && m_cbPluginProgram == NULL)
+    m_cbPluginProgram = cb;
+  else if (type == ADDON_PLUGIN_PICTURES && m_cbPluginPictures == NULL)
+    m_cbPluginPictures = cb;
+  else if (type == ADDON_DSP_AUDIO && m_cbDSPAudio == NULL)
+    m_cbDSPAudio = cb;
+  else
+    return false;
+
+  return true;
+}
+
+void CAddon::UnregisterAddonCallback(AddonType type)
+{
+  switch (type)
+  {
+    case ADDON_MULTITYPE:
+      m_cbMultitye = NULL;
+      return;
+    case ADDON_VIZ:
+      m_cbViz = NULL;
+      return;
+    case ADDON_SKIN:
+      m_cbSkin = NULL;
+      return;
+    case ADDON_PVRDLL:
+      m_cbPVR = NULL;
+      return;
+    case ADDON_SCRIPT:
+      m_cbScript = NULL;
+      return;
+    case ADDON_SCRAPER_PVR:
+      m_cbScraperPVR = NULL;
+      return;
+    case ADDON_SCRAPER_VIDEO:
+      m_cbScraperVideo = NULL;
+      return;
+    case ADDON_SCRAPER_MUSIC:
+      m_cbScraperMusic = NULL;
+      return;
+    case ADDON_SCRAPER_PROGRAM:
+      m_cbScraperProgram = NULL;
+      return;
+    case ADDON_SCREENSAVER:
+      m_cbScreensaver = NULL;
+      return;
+    case ADDON_PLUGIN_PVR:
+      m_cbPluginPVR = NULL;
+      return;
+    case ADDON_PLUGIN_MUSIC:
+      m_cbPluginMusic = NULL;
+      return;
+    case ADDON_PLUGIN_VIDEO:
+      m_cbPluginVideo = NULL;
+      return;
+    case ADDON_PLUGIN_PROGRAM:
+      m_cbPluginProgram = NULL;
+      return;
+    case ADDON_PLUGIN_PICTURES:
+      m_cbPluginPictures = NULL;
+      return;
+    case ADDON_DSP_AUDIO:
+      m_cbDSPAudio = NULL;
+      return;
+    case ADDON_UNKNOWN:
+    default:
+      return;
   }
 }
 
@@ -556,788 +683,6 @@ void CAddon::ClearAddonStrings()
 {
   // Unload temporary language strings
   g_localizeStringsTemp.Clear();
-}
-
-void CAddon::OpenAddonSettings(const CURL &url, bool bReload)
-{
-  try
-  {
-    // Path where the addon resides
-    CStdString pathToAddon = "addon://";
-
-    // Build the addon's path
-    CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
-    CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
-
-    CAddon addon;
-    if (g_settings.AddonFromInfoXML(pathToAddon, addon))
-    {
-      addon.m_strPath = pathToAddon;
-      OpenAddonSettings(&addon, bReload);
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Unknown URL %s to open AddOn Settings", pathToAddon.c_str());
-    }
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "CAddon: Exception '%s' during OpenAddonSettings occurred", e.what());
-  }
-}
-
-void CAddon::OpenAddonSettings(const CAddon* addon, bool bReload)
-{
-  if (addon == NULL)
-    return;
-
-  try
-  {
-    CLog::Log(LOGDEBUG, "Calling OpenAddonSettings for: %s", addon->m_strName.c_str());
-
-    if (!CAddonSettings::SettingsExist(addon->m_strPath))
-    {
-      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", addon->m_strName.c_str());
-      return;
-    }
-
-    CURL cUrl(addon->m_strPath);
-    CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
-
-    // reload plugin settings & strings
-    if (bReload)
-    {
-      g_currentAddonSettings.Load(cUrl);
-      CAddon::LoadAddonStrings(cUrl);
-    }
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "PVR: %s - exception '%s' during OpenAddonSettings occurred, contact Developer '%s' of this AddOn", addon->m_strName.c_str(), e.what(), addon->m_strCreator.c_str());
-  }
-}
-
-void CAddon::TransferAddonSettings(const CURL &url)
-{
-  // Path where the addon resides
-  CStdString pathToAddon = "addon://";
-
-  // Build the addon's path
-  CUtil::AddFileToFolder(pathToAddon, url.GetHostName(), pathToAddon);
-  CUtil::AddFileToFolder(pathToAddon, url.GetFileName(), pathToAddon);
-
-  CAddon addon;
-  if (g_settings.AddonFromInfoXML(pathToAddon, addon))
-  {
-    addon.m_strPath = pathToAddon;
-    TransferAddonSettings(&addon);
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "Unknown URL %s to transfer AddOn Settings", pathToAddon.c_str());
-  }
-}
-
-void CAddon::TransferAddonSettings(const CAddon* addon)
-{
-  bool restart = false;
-  ADDON_STATUS reportStatus = STATUS_OK;
-
-  if (addon == NULL)
-    return;
-
-  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon->m_strName.c_str());
-
-  /* Transmit current unified user settings to the PVR Addon */
-  ADDON::IAddonCallback* addonCB = GetCallbackForType(addon->m_addonType);
-
-  CAddonSettings settings;
-  if (!settings.Load(addon->m_strPath))
-  {
-    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s during transfer", addon->m_strName.c_str());
-    return;
-  }
-
-  TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
-  while (setting)
-  {
-    ADDON_STATUS status;
-    const char *id = setting->Attribute("id");
-    const char *type = setting->Attribute("type");
-
-    if (type)
-    {
-      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
-          strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
-          strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
-          strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
-      {
-        status = addonCB->SetSetting(addon, id, (const char*) settings.Get(id).c_str());
-      }
-      else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
-               strcmpi(type, "labelenum") == 0)
-      {
-        int tmp = atoi(settings.Get(id));
-        status = addonCB->SetSetting(addon, id, (int*) &tmp);
-      }
-      else if (strcmpi(type, "bool") == 0)
-      {
-        bool tmp = settings.Get(id) == "true" ? true : false;
-        status = addonCB->SetSetting(addon, id, (bool*) &tmp);
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, addon->m_strName.c_str());
-      }
-
-      if (status == STATUS_NEED_RESTART)
-        restart = true;
-      else if (status != STATUS_OK)
-        reportStatus = status;
-    }
-    setting = setting->NextSiblingElement("setting");
-  }
-
-  if (restart || reportStatus != STATUS_OK)
-    new CAddonStatusHandler(addon, restart ? STATUS_NEED_RESTART : reportStatus, "", true);
-}
-
-bool CAddon::GetAddonSetting(const CAddon* addon, const char* settingName, void *settingValue)
-{
-  if (addon == NULL || settingName == NULL || settingValue == NULL)
-    return false;
-
-  try
-  {
-    CLog::Log(LOGDEBUG, "CAddon: AddOn %s request Setting %s", addon->m_strName.c_str(), settingName);
-
-    /* TODO: Add a caching mechanism to prevent a reloading of settings file on every call */
-    CAddonSettings settings;
-    if (!settings.Load(addon->m_strPath))
-    {
-      CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s", addon->m_strName.c_str());
-      return false;
-    }
-
-    TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
-    while (setting)
-    {
-      const char *id = setting->Attribute("id");
-      const char *type = setting->Attribute("type");
-
-      if (strcmpi(id, settingName) == 0 && type)
-      {
-        if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
-            strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
-            strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
-            strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-            strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
-        {
-          strcpy((char*) settingValue, settings.Get(id).c_str());
-          return true;
-        }
-        else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
-                 strcmpi(type, "labelenum") == 0)
-        {
-          *(int*) settingValue = (int) atoi(settings.Get(id));
-          return true;
-        }
-        else if (strcmpi(type, "bool") == 0)
-        {
-          *(bool*) settingValue = (bool) (settings.Get(id) == "true" ? true : false);
-          return true;
-        }
-        else
-        {
-          CLog::Log(LOGERROR, "Unknown setting type '%s' for id %s in %s", type, id, addon->m_strName.c_str());
-        }
-      }
-      setting = setting->NextSiblingElement("setting");
-    }
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "PVR: %s - exception '%s' during GetAddonSetting occurred, contact Developer '%s' of this AddOn", addon->m_strName.c_str(), e.what(), addon->m_strCreator.c_str());
-  }
-  return false;
-}
-
-CStdString CAddon::GetAddonDirectory(const CAddon* addon)
-{
-  if (addon == NULL)
-    return "";
-
-  CURL url(addon->m_strPath);
-
-  //TODO fix all Addon paths
-  CStdString addonFileName;
-  if (url.GetProtocol() == "plugin")
-    addonFileName = "special://home/addons/plugins/";
-  else if (url.GetProtocol() == "addon")
-    addonFileName = "special://xbmc/";
-  else
-    return "";
-
-  // Create our final path
-  CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
-  CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
-  CUtil::RemoveSlashAtEnd(addonFileName);
-
-  return addonFileName;
-}
-
-CStdString CAddon::GetUserDirectory(const CAddon* addon)
-{
-  if (addon == NULL)
-    return "";
-
-  // create the users filepath
-  CStdString m_userFileName;
-  CURL url(addon->m_strPath);
-  m_userFileName.Format("special://profile/addon_data/%s/%s", url.GetHostName().c_str(), url.GetFileName().c_str());
-  CUtil::RemoveSlashAtEnd(m_userFileName);
-
-  return m_userFileName;
-}
-
-/**
-* XBMC AddOn Dialog callbacks
-* Helper functions to access GUI Dialog functions
-*/
-
-bool CAddon::OpenDialogOK(const char* heading, const char* line1, const char* line2, const char* line3)
-{
-  const DWORD dWindow = WINDOW_DIALOG_OK;
-  CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(dWindow);
-  if (!pDialog) return false;
-
-  if (heading != NULL ) pDialog->SetHeading(heading);
-  if (line1 != NULL )   pDialog->SetLine(0, line1);
-  if (line2 != NULL )   pDialog->SetLine(1, line2);
-  if (line3 != NULL )   pDialog->SetLine(2, line3);
-
-  //send message and wait for user input
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, m_gWindowManager.GetActiveWindow()};
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
-
-  return pDialog->IsConfirmed();
-}
-
-bool CAddon::OpenDialogYesNo(const char* heading, const char* line1, const char* line2,
-                             const char* line3, const char* nolabel, const char* yeslabel)
-{
-  const DWORD dWindow = WINDOW_DIALOG_YES_NO;
-
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(dWindow);
-  if (!pDialog) return false;
-
-  if (heading != NULL ) pDialog->SetHeading(heading);
-  if (line1 != NULL )   pDialog->SetLine(0, line1);
-  if (line2 != NULL )   pDialog->SetLine(1, line2);
-  if (line3 != NULL )   pDialog->SetLine(2, line3);
-
-  if (nolabel != NULL )
-    pDialog->SetChoice(0,nolabel);
-
-  if (yeslabel != NULL )
-    pDialog->SetChoice(1,yeslabel);
-
-  //send message and wait for user input
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, m_gWindowManager.GetActiveWindow()};
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
-
-  return pDialog->IsConfirmed();
-}
-
-const char* CAddon::OpenDialogBrowse(int type, const char* heading, const char* shares, const char* mask, bool useThumbs, bool treatAsFolder, const char* default_folder)
-{
-  CStdString value;
-  CStdString type_mask = mask;
-
-  if (treatAsFolder && !type_mask.size() == 0)
-    type_mask += "|.rar|.zip";
-
-  VECSOURCES *shares_type = g_settings.GetSourcesFromType(shares);
-  if (!shares_type) return "";
-
-  value = default_folder;
-  if (type == 1)
-    CGUIDialogFileBrowser::ShowAndGetFile(*shares_type, type_mask, heading, value, useThumbs, treatAsFolder);
-  else if (type == 2)
-    CGUIDialogFileBrowser::ShowAndGetImage(*shares_type, heading, value);
-  else
-    CGUIDialogFileBrowser::ShowAndGetDirectory(*shares_type, heading, value, type != 0);
-
-  return value.c_str();
-}
-
-const char* CAddon::OpenDialogNumeric(int type, const char* heading, const char* default_value)
-{
-  CStdString value;
-  SYSTEMTIME timedate;
-  GetLocalTime(&timedate);
-
-  if (heading)
-  {
-    if (type == 1)
-    {
-      if (default_value && strlen(default_value) == 10)
-      {
-        CStdString sDefault = default_value;
-        timedate.wDay = atoi(sDefault.Left(2));
-        timedate.wMonth = atoi(sDefault.Mid(3,4));
-        timedate.wYear = atoi(sDefault.Right(4));
-      }
-      if (CGUIDialogNumeric::ShowAndGetDate(timedate, heading))
-        value.Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
-      else
-        value = default_value;
-    }
-    else if (type == 2)
-    {
-      if (default_value && strlen(default_value) == 5)
-      {
-        CStdString sDefault = default_value;
-        timedate.wHour = atoi(sDefault.Left(2));
-        timedate.wMinute = atoi(sDefault.Right(2));
-      }
-      if (CGUIDialogNumeric::ShowAndGetTime(timedate, heading))
-        value.Format("%2d:%02d", timedate.wHour, timedate.wMinute);
-      else
-        value = default_value;
-    }
-    else if (type == 3)
-    {
-      value = default_value;
-      CGUIDialogNumeric::ShowAndGetIPAddress(value, heading);
-    }
-    else
-    {
-      value = default_value;
-      CGUIDialogNumeric::ShowAndGetNumber(value, heading);
-    }
-  }
-  return value.c_str();
-}
-
-const char* CAddon::OpenDialogKeyboard(const char* heading, const char* default_value, bool hidden)
-{
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
-
-  if (!pKeyboard)
-    return NULL;
-
-  // setup keyboard
-  pKeyboard->Initialize();
-  pKeyboard->CenterWindow();
-  if (heading != NULL)
-    pKeyboard->SetHeading(heading);
-  else
-    pKeyboard->SetHeading("");
-  pKeyboard->SetHiddenInput(hidden);
-  if (default_value != NULL)
-    pKeyboard->SetText(default_value);
-  else
-    pKeyboard->SetText("");
-
-  // do this using a thread message to avoid render() conflicts
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
-  pKeyboard->Close();
-
-  // If have text - update this.
-  if (pKeyboard->IsConfirmed())
-  {
-    CStdString TextString = pKeyboard->GetText();
-    if (TextString.IsEmpty())
-      return NULL;
-
-    return TextString.c_str();
-  }
-
-  return NULL;
-}
-
-int CAddon::OpenDialogSelect(const char* heading, AddOnStringList* list)
-{
-  const DWORD dWindow = WINDOW_DIALOG_SELECT;
-  CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(dWindow);
-  if (!pDialog) return NULL;
-
-  pDialog->Reset();
-
-  if (heading != NULL)
-    pDialog->SetHeading(heading);
-
-  const char *listLine = NULL;
-  for(int i = 0; i < list->Items; i++)
-  {
-    listLine = list->Strings[i];
-    if (listLine)
-      pDialog->Add(listLine);
-  }
-
-  //send message and wait for user input
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, m_gWindowManager.GetActiveWindow()};
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
-
-  return pDialog->GetSelectedLabel();
-}
-
-bool CAddon::ProgressDialogCreate(const char* heading, const char* line1, const char* line2, const char* line3)
-{
-  CGUIDialogProgress* pDialog= (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (!pDialog) return true;
-
-  if (heading != NULL ) pDialog->SetHeading(heading);
-  if (line1 != NULL )   pDialog->SetLine(0, line1);
-  if (line2 != NULL )   pDialog->SetLine(1, line2);
-  if (line3 != NULL )   pDialog->SetLine(2, line3);
-
-  pDialog->StartModal();
-
-  return false;
-}
-
-void CAddon::ProgressDialogUpdate(int percent, const char* line1, const char* line2, const char* line3)
-{
-  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (!pDialog) return;
-
-  if (percent >= 0 && percent <= 100)
-  {
-    pDialog->SetPercentage(percent);
-    pDialog->ShowProgressBar(true);
-  }
-  else
-  {
-    pDialog->ShowProgressBar(false);
-  }
-
-  if (line1 != NULL )   pDialog->SetLine(0, line1);
-  if (line2 != NULL )   pDialog->SetLine(1, line2);
-  if (line3 != NULL )   pDialog->SetLine(2, line3);
-
-  return;
-}
-
-bool CAddon::ProgressDialogIsCanceled()
-{
-  bool canceled = false;
-  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (!pDialog) return canceled;
-
-  canceled = pDialog->IsCanceled();
-
-  return canceled;
-}
-
-void CAddon::ProgressDialogClose()
-{
-  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  if (!pDialog) return;
-
-  pDialog->Close();
-
-  return;
-}
-
-
-/**
- * XBMC AddOn GUI callbacks
- * Helper to access different types of GUI functions
- */
-
-static int iAddOnGUILockRef = 0;
-
-void CAddon::GUILock()
-{
-  if (iAddOnGUILockRef == 0) g_graphicsContext.Lock();
-    iAddOnGUILockRef++;
-}
-
-void CAddon::GUIUnlock()
-{
-  if (iAddOnGUILockRef > 0)
-  {
-    iAddOnGUILockRef--;
-    if (iAddOnGUILockRef == 0) g_graphicsContext.Unlock();
-  }
-}
-
-int CAddon::GUIGetCurrentWindowId()
-{
-  GUILock();
-  DWORD dwId = m_gWindowManager.GetActiveWindow();
-  GUIUnlock();
-  return dwId;
-}
-
-int CAddon::GUIGetCurrentWindowDialogId()
-{
-  GUILock();
-  DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
-  GUIUnlock();
-  return dwId;
-}
-
-
-/**
-* XBMC AddOn Utils callbacks
-* Helper to access XBMC Utilities
-*/
-
-void CAddon::Shutdown()
-{
-  ThreadMessage tMsg = {TMSG_SHUTDOWN};
-  g_application.getApplicationMessenger().SendMessage(tMsg);
-  return;
-}
-
-void CAddon::Restart()
-{
-  ThreadMessage tMsg = {TMSG_RESTART};
-  g_application.getApplicationMessenger().SendMessage(tMsg);
-  return;
-}
-
-void CAddon::Dashboard()
-{
-  ThreadMessage tMsg = {TMSG_DASHBOARD};
-  g_application.getApplicationMessenger().SendMessage(tMsg);
-}
-
-void CAddon::ExecuteScript(const char *script)
-{
-  if (script == NULL)
-    return;
-
-  ThreadMessage tMsg = {TMSG_EXECUTE_SCRIPT};
-  tMsg.strParam = script;
-  g_application.getApplicationMessenger().SendMessage(tMsg);
-}
-
-void CAddon::ExecuteBuiltIn(const char *function)
-{
-  if (function == NULL)
-    return;
-
-  g_application.getApplicationMessenger().ExecBuiltIn(function);
-}
-
-const char* CAddon::ExecuteHttpApi(char *httpcommand)
-{
-  if (httpcommand == NULL)
-    return "";
-
-#ifdef HAS_WEB_SERVER
-  CStdString ret;
-
-  if (!m_pXbmcHttp)
-  {
-    CSectionLoader::Load("LIBHTTP");
-    m_pXbmcHttp = new CXbmcHttp();
-  }
-  if (!pXbmcHttpShim)
-  {
-    pXbmcHttpShim = new CXbmcHttpShim();
-    if (!pXbmcHttpShim)
-      return "";
-  }
-  ret = pXbmcHttpShim->xbmcExternalCall(httpcommand);
-
-  return ret.c_str();
-#else
-  return "";
-#endif
-}
-
-const char* CAddon::GetLocalizedString(const CAddon* addon, long dwCode)
-{
-  if (addon == NULL)
-    return "";
-
-  CURL cUrl(addon->m_strPath);
-
-  // Load language strings temporarily
-  CAddon::LoadAddonStrings(cUrl);
-
-  if (dwCode >= 30000 && dwCode <= 30999)
-    return g_localizeStringsTemp.Get(dwCode).c_str();
-  else if (dwCode >= 32000 && dwCode <= 32999)
-    return g_localizeStringsTemp.Get(dwCode).c_str();
-  else
-    return g_localizeStrings.Get(dwCode).c_str();
-
-  // Unload temporary language strings
-  CAddon::ClearAddonStrings();
-
-  return "";
-}
-
-const char* CAddon::GetSkinDir()
-{
-  return g_guiSettings.GetString("lookandfeel.skin");
-}
-
-const char* CAddon::UnknownToUTF8(const char *sourceDest)
-{
-  if (sourceDest == NULL)
-    return "";
-
-  CStdString string = sourceDest;
-  g_charsetConverter.unknownToUTF8(string);
-  return string.c_str();
-}
-
-const char* CAddon::GetLanguage()
-{
-  return g_guiSettings.GetString("locale.language");
-}
-
-const char* CAddon::GetIPAddress()
-{
-  return g_infoManager.GetLabel(NETWORK_IP_ADDRESS).c_str();
-}
-
-int CAddon::GetDVDState()
-{
-  return CIoSupport::GetTrayState();
-}
-
-int CAddon::GetFreeMem()
-{
-  MEMORYSTATUS stat;
-  GlobalMemoryStatus(&stat);
-  return stat.dwAvailPhys  / ( 1024 * 1024 );
-}
-
-const char* CAddon::GetInfoLabel(const char *infotag)
-{
-  if (infotag == NULL)
-    return "";
-
-  int ret = g_infoManager.TranslateString(infotag);
-  return g_infoManager.GetLabel(ret).c_str();
-}
-
-const char* CAddon::GetInfoImage(const char *infotag)
-{
-  if (infotag == NULL)
-    return "";
-
-  int ret = g_infoManager.TranslateString(infotag);
-  return g_infoManager.GetImage(ret, WINDOW_INVALID).c_str();
-}
-
-bool CAddon::GetCondVisibility(const char *condition)
-{
-  if (condition == NULL)
-    return false;
-
-  DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
-  if (dwId == WINDOW_INVALID) dwId = m_gWindowManager.GetActiveWindow();
-
-  int ret = g_infoManager.TranslateString(condition);
-  return g_infoManager.GetBool(ret,dwId);
-}
-
-void CAddon::EnableNavSounds(bool yesNo)
-{
-  g_audioManager.Enable(yesNo);
-}
-
-void CAddon::PlaySFX(const char *filename)
-{
-  if (filename == NULL)
-    return;
-
-  if (CFile::Exists(filename))
-  {
-    g_audioManager.PlayPythonSound(filename);
-  }
-}
-
-int CAddon::GetGlobalIdleTime()
-{
-  return g_application.GlobalIdleTime();
-}
-
-const char* CAddon::GetCacheThumbName(const char *path)
-{
-  if (path == NULL)
-    return "";
-
-  string strText = path;
-
-  Crc32 crc;
-  CStdString strPath;
-  crc.ComputeFromLowerCase(strText);
-  strPath.Format("%08x.tbn", (unsigned __int32)crc);
-  return strPath.c_str();
-}
-
-const char* CAddon::MakeLegalFilename(const char *filename)
-{
-  if (filename == NULL)
-    return "";
-
-  CStdString strText = filename;
-  CStdString strFilename = CUtil::MakeLegalPath(strText);
-  return strFilename.c_str();
-}
-
-CStdString CAddon::TranslatePath(const char *path)
-{
-  if (path == NULL)
-    return "";
-
-  CStdString strText = path;
-
-  if (CUtil::IsDOSPath(strText))
-    strText = CSpecialProtocol::ReplaceOldPath(strText, 0);
-
-  CStdString strPath = CSpecialProtocol::TranslatePath(strText);
-  return strPath;
-}
-
-const char* CAddon::GetRegion(int id)
-{
-  CStdString result;
-
-  if (id == 0)      // datelong
-    result = g_langInfo.GetDateFormat(true);
-  else if (id == 1) // dateshort
-    result = g_langInfo.GetDateFormat(false);
-  else if (id == 2) // tempunit
-    result = g_langInfo.GetTempUnitString();
-  else if (id == 3) // speedunit
-    result = g_langInfo.GetSpeedUnitString();
-  else if (id == 4) // time
-    result = g_langInfo.GetTimeFormat();
-  else if (id == 5) // meridiem
-    result.Format("%s/%s", g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_AM), g_langInfo.GetMeridiemSymbol(CLangInfo::MERIDIEM_SYMBOL_PM));
-
-  return result.c_str();
-}
-
-const char* CAddon::GetSupportedMedia(int media)
-{
-  CStdString result;
-  if (media == 0)
-    result = g_stSettings.m_videoExtensions;
-  else if (media == 1)
-    result = g_stSettings.m_musicExtensions;
-  else if (media == 2)
-    result = g_stSettings.m_pictureExtensions;
-
-  return result.c_str();
-}
-
-bool CAddon::SkinHasImage(const char *filename)
-{
-  return g_TextureManager.HasTexture(filename);
 }
 
 } /* namespace ADDON */

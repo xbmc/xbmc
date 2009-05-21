@@ -28,7 +28,7 @@
 #include "../utils/Addon.h"
 #include "../utils/TVChannelInfoTag.h"
 #include "../utils/TVTimerInfoTag.h"
-#include "../../addons/PVRClientTypes.h"
+#include "../../addons/xbmc_pvr_types.h"
 
 class CPVRManager;
 class CEPG;
@@ -92,7 +92,7 @@ public:
 
   /**
   * Get the current status of the PVR AddOn dll related to "ADDON_STATUS"
-  * defined inside "DllAddonTypes.h"
+  * defined inside "xbmc_addon_types.h"
   * \return ADDON_STATUS         = the current status of the PVR AddOn
   */
   virtual ADDON_STATUS GetStatus(void)=0;

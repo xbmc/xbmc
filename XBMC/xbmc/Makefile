@@ -9,6 +9,7 @@ INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
 
 INCLUDES+=-Ilib/libcdio/libcdio/include
 
+INCLUDES+=-Ilib/libaddon
 
 PCH=stdafx.h
 
