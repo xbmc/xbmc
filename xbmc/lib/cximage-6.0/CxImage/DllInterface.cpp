@@ -42,8 +42,13 @@ static void DeleteFile(const char* name)
 #endif
 
 // helper functions
+
+// determines based on file extension the type of file
 DWORD GetImageType(const char *file)
-{ // determines based on file extension the type of file
+{ 
+  if ( !file || ( 0 == *file ) ) // ensure file is not NULL and has non-zero length
+    return CXIMAGE_FORMAT_UNKNOWN;
+
   char *ext = (char *)file + strlen(file) - 1;
   char *end = ext;
   while (ext >= file)
