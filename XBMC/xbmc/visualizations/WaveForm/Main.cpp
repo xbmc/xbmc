@@ -4,7 +4,8 @@
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #endif
-#include "../../../addons/xbmc_vis.h"
+#include "../../../addons/xbmc_addon_lib++.h"
+#include "../../../addons/xbmc_vis_dll.h"
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
 #endif
@@ -49,18 +50,21 @@ struct Vertex_t
 #endif
 
 extern "C" {
-    
+
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
 #ifndef HAS_SDL_OPENGL
-ADDON_STATUS Create(VisCallbacks* cb, LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+ADDON_STATUS Create(ADDON_HANDLE hdl, LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
                        float fPixelRatio)
 #else
-ADDON_STATUS Create(VisCallbacks* cb, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+ADDON_STATUS Create(ADDON_HANDLE hdl, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
                        float fPixelRatio)
 #endif
 {
+  if (!XBMC_register_me(hdl))
+    return STATUS_UNKNOWN;
+
   //printf("Creating Waveform\n");
   strcpy(g_visName, szVisualisationName);
   g_device = pd3dDevice;
@@ -136,7 +140,7 @@ void Render()
     verts[i].x = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
     verts[i].y = g_viewport.Y + g_viewport.Height * 0.33f + (g_fWaveform[0][i] * g_viewport.Height * 0.15f);
     verts[i].z = 1.0;
-    verts[i].w = 1;    
+    verts[i].w = 1;
 #ifdef HAS_SDL_OPENGL
     glVertex2f(verts[i].x, verts[i].y);
 #endif

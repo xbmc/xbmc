@@ -27,8 +27,8 @@ Goom Visualization Interface for XBMC
 
 */
 
-
-#include "../../../addons/xbmc_vis.h"
+#include "../../../addons/xbmc_addon_lib++.h"
+#include "../../../addons/xbmc_vis_dll.h"
 extern "C" {
 #include "goom.h"
 }
@@ -107,14 +107,17 @@ extern "C" {
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
 #ifdef HAS_XBOX_HARDWARE
-ADDON_STATUS Create(VisCallbacks* cb, LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+ADDON_STATUS Create(ADDON_HANDLE hdl, LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
                        float fPixelRatio)
 #else
-ADDON_STATUS Create(VisCallbacks* cb, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+ADDON_STATUS Create(ADDON_HANDLE hdl, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
                        float fPixelRatio)
 #endif
 {
   strcpy(g_visName, szVisualisationName);
+
+  if (!XBMC_register_me(hdl))
+    return STATUS_UNKNOWN;
 
   /** Initialise Goom */
   if (g_goom)

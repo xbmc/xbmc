@@ -2,7 +2,7 @@ ARCH=@ARCH@
 INCLUDES=-I. -I../../linux -I../../ -I ../../../guilib
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
-OBJS=Main.o
+OBJS=Main.o ../../../addons/xbmc_addon_lib++.a
 
 SLIB=../../../addons/visualisations/Waveform/Waveform.vis
 

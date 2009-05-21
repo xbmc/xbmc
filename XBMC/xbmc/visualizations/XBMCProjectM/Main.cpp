@@ -34,7 +34,8 @@ d4rk@xbmc.org
 
 */
 
-#include "../../../addons/xbmc_vis.h"
+#include "../../../addons/xbmc_addon_lib++.h"
+#include "../../../addons/xbmc_vis_dll.h"
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
 #include "libprojectM/projectM.hpp"
@@ -48,11 +49,7 @@ d4rk@xbmc.org
 #include <dirent.h>
 #endif
 
-#define PRESETS_DIR "special://xbmc/addons/visualisations/ProjectM/resources/presets"
-#define CONFIG_FILE "special://profile/visualisations/projectM.conf"
-
 projectM *globalPM = NULL;
-VisCallbacks *g_xbmc = NULL;
 
 extern int preset_index;
 
@@ -108,24 +105,21 @@ int check_valid_extension(const struct dirent* ent)
 
 std::string GetConfigFile()
 {
-  // FIXME: Use static dir until add-on helper library is finished
-  std::string configFile = CONFIG_FILE;
-//  configFile = g_xbmc->AddOn.GetUserDirectory(g_xbmc->userData);
-  configFile = g_xbmc->Utils.TranslatePath(configFile.c_str());
-//  configFile += "/projectM.conf";
-
+  std::string configFile;
+  configFile = XBMC_get_user_directory();
+  configFile = XBMC_translate_path(configFile);
+  configFile += "/projectM.conf";
+  XBMC_log(LOG_INFO, "Using '%s' as location for config file", configFile.c_str());
   return configFile;
 }
 
 std::string GetPresetDir()
 {
-  // FIXME: Use static dir until add-on helper library is finished
-  std::string presetsDir = PRESETS_DIR;
-//  presetsDir = g_xbmc->AddOn.GetAddonDirectory(g_xbmc->userData);
-  presetsDir = g_xbmc->Utils.TranslatePath(presetsDir.c_str());
-  g_xbmc->AddOn.Log(g_xbmc->userData, LOG_ERROR, "<---------< %s\n", presetsDir.c_str());
-//  presetsDir += "/resources/presets";
-
+  std::string presetsDir;
+  presetsDir = XBMC_get_addon_directory();
+  presetsDir = XBMC_translate_path(presetsDir);
+  presetsDir += "/resources/presets";
+  XBMC_log(LOG_INFO, "Searching presets in: %s", presetsDir.c_str());
   return presetsDir;
 }
 
@@ -145,12 +139,12 @@ bool HasSettings()
   return false;
 }
 
-ADDON_STATUS GetStatus()
+addon_status_t GetStatus()
 {
   return STATUS_OK;
 }
 
-ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+addon_status_t SetSetting(const char *settingName, const void *settingValue)
 {
   string str = settingName;
   if (str == "shufflemode")
@@ -209,18 +203,19 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
 #ifdef HAS_XBOX_HARDWARE
-ADDON_STATUS Create(VisCallbacks* cb, LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+addon_status_t Create(ADDON_HANDLE hdl, LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
                        float fPixelRatio)
 #else
-ADDON_STATUS Create(VisCallbacks* cb, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+addon_status_t Create(ADDON_HANDLE hdl, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
                        float fPixelRatio)
 #endif
 {
   int tmp;
   bool tmp2;
 
-  /* Save callback pointer */
-  g_xbmc = cb;
+  if (!XBMC_register_me(hdl))
+    return STATUS_UNKNOWN;
+
   currentPresetsList.numPresets = 0;
 
   strcpy(g_visName, szVisualisationName);
@@ -269,7 +264,7 @@ ADDON_STATUS Create(VisCallbacks* cb, void* pd3dDevice, int iPosX, int iPosY, in
       f = fopen(g_configFile.c_str(), "w");   // Config does not exist, but we still need at least a blank file.
       fclose(f);
     }
-      projectM::writeConfig(g_configFile, g_configPM);
+    projectM::writeConfig(g_configFile, g_configPM);
   }
 
   if (globalPM)
@@ -277,19 +272,19 @@ ADDON_STATUS Create(VisCallbacks* cb, void* pd3dDevice, int iPosX, int iPosY, in
 
   globalPM = new projectM(g_configFile);
 
-  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "renderquality", &tmp))
+  if (XBMC_get_setting("renderquality", &tmp))
     SetSetting("renderquality", &tmp);
 
-  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "shufflemode", &tmp2))
+  if (XBMC_get_setting("shufflemode", &tmp2))
     SetSetting("shufflemode", &tmp2);
 
-  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "smoothpresetduration", &tmp))
+  if (XBMC_get_setting("smoothpresetduration", &tmp))
     SetSetting("smoothpresetduration", &tmp);
 
-  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "presetduration", &tmp))
+  if (XBMC_get_setting("presetduration", &tmp))
     SetSetting("presetduration", &tmp);
 
-  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "beatsensitivity", &tmp))
+  if (XBMC_get_setting("beatsensitivity", &tmp))
     SetSetting("beatsensitivity", &tmp);
 
   return STATUS_OK;

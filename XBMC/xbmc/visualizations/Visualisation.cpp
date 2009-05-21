@@ -24,10 +24,11 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "Visualisation.h"
-#include "../../addons/VisualisationTypes.h"
+#include "../../addons/xbmc_vis_types.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"
 #include "URL.h"
+#include "../utils/AddonHelpers.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -53,58 +54,14 @@ void CVisualisation::Create(int posx, int posy, int width, int height)
 {
   /* Allocate the callback table to save all the pointers
      to the helper callback functions */
-  m_callbacks = new VisCallbacks;
+  m_callbacks = new AddonCB;
 
-  /* Visualisation Helper functions */
+  /* PVR Helper functions */
   m_callbacks->userData                 = this;
+  m_callbacks->addonData                = (CAddon*) this;
 
-  /* AddOn Helper functions */
-  m_callbacks->AddOn.ReportStatus       = AddOnStatusCallback;
-  m_callbacks->AddOn.Log                = AddOnLogCallback;
-  m_callbacks->AddOn.GetSetting         = AddOnGetSetting;
-  m_callbacks->AddOn.OpenSettings       = AddOnOpenSettings;
-  m_callbacks->AddOn.OpenOwnSettings    = AddOnOpenOwnSettings;
-  m_callbacks->AddOn.GetAddonDirectory  = AddOnGetAddonDirectory;
-  m_callbacks->AddOn.GetUserDirectory   = AddOnGetUserDirectory;
-
-  /* GUI Dialog Helper functions */
-  m_callbacks->Dialog.OpenOK            = CAddon::OpenDialogOK;
-  m_callbacks->Dialog.OpenYesNo         = CAddon::OpenDialogYesNo;
-  m_callbacks->Dialog.OpenBrowse        = CAddon::OpenDialogBrowse;
-  m_callbacks->Dialog.OpenNumeric       = CAddon::OpenDialogNumeric;
-  m_callbacks->Dialog.OpenKeyboard      = CAddon::OpenDialogKeyboard;
-  m_callbacks->Dialog.OpenSelect        = CAddon::OpenDialogSelect;
-  m_callbacks->Dialog.ProgressCreate    = CAddon::ProgressDialogCreate;
-  m_callbacks->Dialog.ProgressUpdate    = CAddon::ProgressDialogUpdate;
-  m_callbacks->Dialog.ProgressIsCanceled= CAddon::ProgressDialogIsCanceled;
-  m_callbacks->Dialog.ProgressClose     = CAddon::ProgressDialogClose;
-
-  /* Utilities Helper functions */
-  m_callbacks->Utils.Shutdown           = CAddon::Shutdown;
-  m_callbacks->Utils.Restart            = CAddon::Restart;
-  m_callbacks->Utils.Dashboard          = CAddon::Dashboard;
-  m_callbacks->Utils.ExecuteScript      = CAddon::ExecuteScript;
-  m_callbacks->Utils.ExecuteBuiltIn     = CAddon::ExecuteBuiltIn;
-  m_callbacks->Utils.ExecuteHttpApi     = CAddon::ExecuteHttpApi;
-  m_callbacks->Utils.UnknownToUTF8      = CAddon::UnknownToUTF8;
-  m_callbacks->Utils.LocalizedString    = AddOnGetLocalizedString;
-  m_callbacks->Utils.GetSkinDir         = CAddon::GetSkinDir;
-  m_callbacks->Utils.GetLanguage        = CAddon::GetLanguage;
-  m_callbacks->Utils.GetIPAddress       = CAddon::GetIPAddress;
-  m_callbacks->Utils.GetDVDState        = CAddon::GetDVDState;
-  m_callbacks->Utils.GetInfoLabel       = CAddon::GetInfoLabel;
-  m_callbacks->Utils.GetInfoImage       = CAddon::GetInfoImage;
-  m_callbacks->Utils.GetFreeMem         = CAddon::GetFreeMem;
-  m_callbacks->Utils.GetCondVisibility  = CAddon::GetCondVisibility;
-  m_callbacks->Utils.EnableNavSounds    = CAddon::EnableNavSounds;
-  m_callbacks->Utils.PlaySFX            = CAddon::PlaySFX;
-  m_callbacks->Utils.GetSupportedMedia  = CAddon::GetSupportedMedia;
-  m_callbacks->Utils.GetGlobalIdleTime  = CAddon::GetGlobalIdleTime;
-  m_callbacks->Utils.GetCacheThumbName  = CAddon::GetCacheThumbName;
-  m_callbacks->Utils.MakeLegalFilename  = CAddon::MakeLegalFilename;
-  m_callbacks->Utils.TranslatePath      = AddOnTranslatePath;
-  m_callbacks->Utils.GetRegion          = CAddon::GetRegion;
-  m_callbacks->Utils.SkinHasImage       = CAddon::SkinHasImage;
+  /* Write XBMC Global Add-on function addresses to callback table */
+  CAddonUtils::CreateAddOnCallbacks(m_callbacks);
 
   // allow vis. to create internal things needed
   // pass it the location,width,height
@@ -289,133 +246,3 @@ ADDON_STATUS CVisualisation::SetSetting(const char *settingName, const void *set
     return STATUS_UNKNOWN;
   }
 }
-
-
-/**********************************************************
- * Addon specific Callbacks
- * Is a must do, to all types of available addons handler
- */
-
-void CVisualisation::AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg)
-{
-  CVisualisation* client=(CVisualisation*) userData;
-  if (!client)
-    return;
-
-  CLog::Log(LOGINFO, "Visualisation: %s: Reported bad status: %i", client->m_strName.c_str(), status);
-
-  if (status != STATUS_OK)
-  {
-    CStdString message;
-    if (msg != NULL)
-      message = msg;
-
-    /* Delete is performed by the calling class */
-    new CAddonStatusHandler(client, status, message, false);
-  }
-}
-
-void CVisualisation::AddOnLogCallback(void *userData, const ADDON_LOG loglevel, const char *format, ... )
-{
-  CVisualisation* client = (CVisualisation*) userData;
-  if (!client)
-    return;
-
-  try
-  {
-    CStdString clientMsg, xbmcMsg;
-    clientMsg.reserve(16384);
-
-    va_list va;
-    va_start(va, format);
-    clientMsg.FormatV(format, va);
-    va_end(va);
-
-    /* insert internal identifiers for brevity */
-    xbmcMsg.Format("Visualisation: %s: ", client->m_strName);
-    xbmcMsg += clientMsg;
-
-    int xbmclog;
-    switch (loglevel)
-    {
-      case LOG_ERROR:
-        xbmclog = LOGERROR;
-        break;
-      case LOG_INFO:
-        xbmclog = LOGINFO;
-        break;
-      case LOG_DEBUG:
-      default:
-        xbmclog = LOGDEBUG;
-        break;
-    }
-
-    /* finally write the logmessage */
-    CLog::Log(xbmclog, xbmcMsg);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "Visualisation: %s - exception '%s' during AddOnLogCallback occurred, contact Developer '%s' of this AddOn", client->m_strName.c_str(), e.what(), client->m_strCreator.c_str());
-    return;
-  }
-}
-
-bool CVisualisation::AddOnGetSetting(void *userData, const char *settingName, void *settingValue)
-{
-  CVisualisation* client=(CVisualisation*) userData;
-  if (!client)
-    return NULL;
-
-  return CAddon::GetAddonSetting(client, settingName, settingValue);
-}
-
-void CVisualisation::AddOnOpenSettings(const char *url, bool bReload)
-{
-  CURL cUrl(url);
-  CAddon::OpenAddonSettings(cUrl, bReload);
-}
-
-void CVisualisation::AddOnOpenOwnSettings(void *userData, bool bReload)
-{
-  CVisualisation* client=(CVisualisation*) userData;
-  if (!client)
-    return;
-
-  CAddon::OpenAddonSettings(client, bReload);
-}
-
-const char* CVisualisation::AddOnGetLocalizedString(void *userData, long dwCode)
-{
-  CVisualisation* client=(CVisualisation*) userData;
-  if (!client)
-    return "";
-
-  return CAddon::GetLocalizedString(client, dwCode);
-}
-
-const char* CVisualisation::AddOnGetAddonDirectory(void *userData)
-{
-  CVisualisation* client = (CVisualisation*) userData;
-  if (!client)
-    return "";
-
-  static CStdString retString = CAddon::GetAddonDirectory(client);
-  return retString.c_str();
-}
-
-const char* CVisualisation::AddOnGetUserDirectory(void *userData)
-{
-  CVisualisation* client = (CVisualisation*) userData;
-  if (!client)
-    return "";
-
-  static CStdString retString = CAddon::GetUserDirectory(client);
-  return retString.c_str();
-}
-
-const char* CVisualisation::AddOnTranslatePath(const char *path)
-{
-  static CStdString retString = CAddon::TranslatePath(path);
-  return retString.c_str();
-}
-

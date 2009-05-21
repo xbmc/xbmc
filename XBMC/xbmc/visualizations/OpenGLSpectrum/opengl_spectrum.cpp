@@ -18,7 +18,7 @@
 
 /*
  *  Wed May 24 10:49:37 CDT 2000
- *  Fixes to threading/context creation for the nVidia X4 drivers by 
+ *  Fixes to threading/context creation for the nVidia X4 drivers by
  *  Christian Zander <phoenix@minion.de>
  */
 
@@ -35,7 +35,8 @@
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #endif
-#include "../../../addons/xbmc_vis.h"
+#include "../../../addons/xbmc_addon_lib++.h"
+#include "../../../addons/xbmc_vis_dll.h"
 #include <math.h>
 #include <GL/glew.h>
 #include <string>
@@ -44,7 +45,6 @@
 
 using namespace std;
 
-VisCallbacks *g_xbmc = NULL;
 GLfloat y_angle = 45.0, y_speed = 0.5;
 GLfloat x_angle = 20.0, x_speed = 0.0;
 GLfloat z_angle = 0.0, z_speed = 0.0;
@@ -55,11 +55,11 @@ GLenum  g_mode = GL_FILL;
 void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
 {
   if(y1 == y2)
-    {	
+    {
       glVertex3f(x1, y1, z1);
       glVertex3f(x2, y1, z1);
       glVertex3f(x2, y2, z2);
-		
+
       glVertex3f(x2, y2, z2);
       glVertex3f(x1, y2, z2);
       glVertex3f(x1, y1, z1);
@@ -69,7 +69,7 @@ void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, 
       glVertex3f(x1, y1, z1);
       glVertex3f(x2, y1, z2);
       glVertex3f(x2, y2, z2);
-		
+
       glVertex3f(x2, y2, z2);
       glVertex3f(x1, y2, z1);
       glVertex3f(x1, y1, z1);
@@ -89,7 +89,7 @@ void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, G
       draw_rectangle(x_offset, height, z_offset, x_offset + width, height, z_offset + 0.1);
     }
   draw_rectangle(x_offset, 0, z_offset, x_offset + width, 0, z_offset + 0.1);
-	
+
   if (g_mode != GL_POINT)
     {
       glColor3f(0.5 * red, 0.5 * green, 0.5 * blue);
@@ -100,9 +100,9 @@ void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, G
   if (g_mode != GL_POINT)
     {
       glColor3f(0.25 * red, 0.25 * green, 0.25 * blue);
-      draw_rectangle(x_offset, 0.0, z_offset , x_offset, height, z_offset + 0.1);	
+      draw_rectangle(x_offset, 0.0, z_offset , x_offset, height, z_offset + 0.1);
     }
-  draw_rectangle(x_offset + width, 0.0, z_offset , x_offset + width, height, z_offset + 0.1);	
+  draw_rectangle(x_offset + width, 0.0, z_offset , x_offset + width, height, z_offset + 0.1);
 }
 
 void draw_bars(void)
@@ -113,7 +113,7 @@ void draw_bars(void)
   //glClearColor(0,0,0,0);
   glClear(GL_DEPTH_BUFFER_BIT);
   glPushMatrix();
-  glTranslatef(0.0,-0.5,-5.0);	      
+  glTranslatef(0.0,-0.5,-5.0);
   glRotatef(x_angle,1.0,0.0,0.0);
   glRotatef(y_angle,0.0,1.0,0.0);
   glRotatef(z_angle,0.0,0.0,1.0);
@@ -125,10 +125,10 @@ void draw_bars(void)
 
       b_base = y * (1.0 / 15);
       r_base = 1.0 - b_base;
-			
+
       for(x = 0; x < 16; x++)
         {
-          x_offset = -1.6 + (x * 0.2);			
+          x_offset = -1.6 + (x * 0.2);
           if (::fabs(cHeights[y][x]-heights[y][x])>hSpeed) {
             if (cHeights[y][x]<heights[y][x]) {
               cHeights[y][x] += hSpeed;
@@ -136,8 +136,8 @@ void draw_bars(void)
               cHeights[y][x] -= hSpeed;
             }
           }
-          draw_bar(x_offset, z_offset, 
-		   cHeights[y][x], r_base - (x * (r_base / 15.0)), 
+          draw_bar(x_offset, z_offset,
+		   cHeights[y][x], r_base - (x * (r_base / 15.0)),
 		   x * (1.0 / 15), b_base);
         }
     }
@@ -156,24 +156,24 @@ extern "C" {
 //-- Create -------------------------------------------------------------------
 // Called after add-on loading to perform all initializing stuff
 //-----------------------------------------------------------------------------
-ADDON_STATUS Create(VisCallbacks* cb, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+ADDON_STATUS Create(ADDON_HANDLE hdl, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
                     float fPixelRatio)
 {
   int tmp;
-  
-  /* Save callback pointer */
-  g_xbmc = cb;
-  
+
+  if (!XBMC_register_me(hdl))
+    return STATUS_UNKNOWN;
+
   /* Read setting "barheight" from settings.xml */
-  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "barheight", &tmp))
+  if (XBMC_get_setting("barheight", &tmp))
     SetSetting("barheight", &tmp);
 
   /* Read setting "mode" from settings.xml */
-  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "mode", &tmp))
+  if (XBMC_get_setting("mode", &tmp))
     SetSetting("mode", &tmp);
 
   /* Read setting "speed" from settings.xml */
-  if (g_xbmc->AddOn.GetSetting(g_xbmc->userData, "speed", &tmp))
+  if (XBMC_get_setting("speed", &tmp))
     SetSetting("speed", &tmp);
 
   return STATUS_OK;
@@ -203,15 +203,15 @@ void Render()
       x_angle += x_speed;
       if(x_angle >= 360.0)
         x_angle -= 360.0;
-            
+
       y_angle += y_speed;
       if(y_angle >= 360.0)
         y_angle -= 360.0;
-            
+
       z_angle += z_speed;
       if(z_angle >= 360.0)
         z_angle -= 360.0;
-            
+
       draw_bars();
     }
   glPopMatrix();
@@ -272,7 +272,7 @@ void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iF
           heights[y][i] = heights[y - 1][i];
         }
     }
-	
+
   for(i = 0; i < NUM_BANDS; i++)
     {
       for(c = xscale[i], y = 0; c < xscale[i + 1]; c++)
@@ -292,8 +292,8 @@ void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iF
         val = (logf(y) * scale);
 #endif
       else
-        val = 0;				
-      heights[0][i] = val;		
+        val = 0;
+      heights[0][i] = val;
     }
 }
 

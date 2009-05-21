@@ -31,6 +31,7 @@
 #include "Key.h"
 #include "DllVisualisation.h"
 #include "../utils/Addon.h"
+#include "../lib/libaddon/addon_local.h"
 
 class CVisualisation : public ADDON::CAddon
 {
@@ -69,19 +70,8 @@ public:
 protected:
   std::auto_ptr<struct Visualisation> m_pVisz;
   std::auto_ptr<DllVisualisation> m_pDll;
-  VisCallbacks *m_callbacks;
+  AddonCB *m_callbacks;
   bool m_ReadyToUse;
-
-private:
-  static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
-  static void AddOnLogCallback(void *userData, const ADDON_LOG loglevel, const char *format, ... );
-  static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
-  static void AddOnOpenSettings(const char *url, bool bReload);
-  static void AddOnOpenOwnSettings(void *userData, bool bReload);
-  static const char* AddOnGetLocalizedString(void *userData, long dwCode);
-  static const char* AddOnGetAddonDirectory(void *userData);
-  static const char* AddOnGetUserDirectory(void *userData);
-  static const char* AddOnTranslatePath(const char *path);
 };
 
 
