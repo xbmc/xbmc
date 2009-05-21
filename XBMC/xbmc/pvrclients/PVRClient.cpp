@@ -39,7 +39,6 @@
 
 #include "PVRClient.h"
 #include "URL.h"
-#include "../../addons/PVRClientTypes.h"
 #include "../utils/log.h"
 #include "../utils/AddonHelpers.h"
 
