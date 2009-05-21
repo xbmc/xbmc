@@ -112,7 +112,7 @@ all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Te
 
 include Makefile.include
 
-.PHONY : dllloader exports visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force
+.PHONY : dllloader exports visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals 
 
 $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
@@ -120,116 +120,115 @@ $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)
 $(PM3HD_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3HD_MEDIA)/*.png $(PM3HD_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3HD_MEDIA)\" -output \"$(PM3HD_MEDIA)/Textures.xpr\"
 
-guilib/guilib.a: force
+guilib/guilib.a: 
 	make -C guilib
-guilib/common/gui_common.a: force
+guilib/common/gui_common.a: 
 	make -C guilib/common
-guilib/tinyXML/tinyxml.a: force
+guilib/tinyXML/tinyxml.a: 
 	make -C guilib/tinyXML
-xbmc/xbmc.a: force
+xbmc/xbmc.a: 
 	make -C xbmc
-xbmc/cdrip/cdrip.a: force
+xbmc/cdrip/cdrip.a: 
 	make -C xbmc/cdrip
-xbmc/cores/cores.a: force
+xbmc/cores/cores.a: 
 	make -C xbmc/cores
-xbmc/cores/DllLoader/dllloader.a: force
+xbmc/cores/DllLoader/dllloader.a: 
 	make -C xbmc/cores/DllLoader/
-xbmc/cores/DllLoader/exports/exports.a: force
+xbmc/cores/DllLoader/exports/exports.a: 
 	make -C xbmc/cores/DllLoader/exports
-xbmc/cores/DllLoader/exports/util/exports_utils.a: force
+xbmc/cores/DllLoader/exports/util/exports_utils.a: 
 	make -C xbmc/cores/DllLoader/exports/util
-xbmc/cores/dvdplayer/DVDPlayer.a: force
+xbmc/cores/dvdplayer/DVDPlayer.a: 
 	make -C xbmc/cores/dvdplayer
-xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a: force
+xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a: 
 	make -C xbmc/cores/dvdplayer/DVDCodecs
-xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a: force
+xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a: 
 	make -C xbmc/cores/dvdplayer/DVDCodecs/Audio
-xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a: force
+xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a: 
 	make -C xbmc/cores/dvdplayer/DVDCodecs/Overlay
-xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a: force
+xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a: 
 	make -C xbmc/cores/dvdplayer/DVDCodecs/Video
-xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a: force
+xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a: 
 	make -C xbmc/cores/dvdplayer/DVDDemuxers
-xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a: force
+xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a: 
 	make -C xbmc/cores/dvdplayer/DVDInputStreams
-xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a: force
+xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a: 
 	make -C xbmc/cores/dvdplayer/DVDSubtitles
-xbmc/cores/paplayer/paplayer.a: force
+xbmc/cores/paplayer/paplayer.a: 
 	make -C xbmc/cores/paplayer
-xbmc/cores/AudioRenderers/audiorenderers.a: force
+xbmc/cores/AudioRenderers/audiorenderers.a: 
 	make -C xbmc/cores/AudioRenderers
-xbmc/cores/VideoRenderers/VideoRenderer.a: force
+xbmc/cores/VideoRenderers/VideoRenderer.a: 
 	make -C xbmc/cores/VideoRenderers
-xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a: force
+xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a: 
 	make -C xbmc/cores/VideoRenderers/VideoShaders
-xbmc/cores/ExternalPlayer/ExternalPlayer.a: force
+xbmc/cores/ExternalPlayer/ExternalPlayer.a: 
 	make -C xbmc/cores/ExternalPlayer
-xbmc/FileSystem/filesystem.a: force
+xbmc/FileSystem/filesystem.a: 
 	make -C xbmc/FileSystem
-xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a: force
+xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a: 
 	make -C xbmc/FileSystem/MusicDatabaseDirectory
-xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a: force
+xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a: 
 	make -C xbmc/FileSystem/VideoDatabaseDirectory
-xbmc/karaoke/karaoke.a: force
+xbmc/karaoke/karaoke.a: 
 	make -C xbmc/karaoke
-xbmc/lib/libcmyth/libcmyth.a: force
+xbmc/lib/libcmyth/libcmyth.a: 
 	make -C xbmc/lib/libcmyth
-xbmc/lib/libhts/libhts.a: force
+xbmc/lib/libhts/libhts.a: 
 	make -C xbmc/lib/libhts
-xbmc/lib/libPython/python.a: force
+xbmc/lib/libPython/python.a: 
 	make -C xbmc/lib/libPython
-xbmc/lib/libPython/xbmcmodule/xbmcmodule.a: force
+xbmc/lib/libPython/xbmcmodule/xbmcmodule.a: 
 	make -C xbmc/lib/libPython/xbmcmodule
-xbmc/lib/libRTMP/librtmp.a: force
+xbmc/lib/libRTMP/librtmp.a: 
 	make -C xbmc/lib/libRTMP
-xbmc/lib/libscrobbler/scrobbler.a: force
+xbmc/lib/libscrobbler/scrobbler.a: 
 	make -C xbmc/lib/libscrobbler
-xbmc/lib/libRTV/librtv-@ARCH@.a: force
+xbmc/lib/libRTV/librtv-@ARCH@.a: 
 	make -C xbmc/lib/libRTV
-xbmc/lib/libshout/libshout-@ARCH@.a: force
+xbmc/lib/libshout/libshout-@ARCH@.a: 
 	make -C xbmc/lib/libshout
-xbmc/lib/libUPnP/libupnp-@ARCH@.a: force
+xbmc/lib/libUPnP/libupnp-@ARCH@.a: 
 	make -C xbmc/lib/libUPnP
-xbmc/lib/libXBMS/libxbms-@ARCH@.a: force
+xbmc/lib/libXBMS/libxbms-@ARCH@.a: 
 	make -C xbmc/lib/libXBMS
-xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: force
+xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: 
 	make -C xbmc/lib/libXDAAP
-xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a: force
+xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a: 
 	make -C xbmc/lib/libGoAhead
-xbmc/lib/sqLite/sqllite.a: force
+xbmc/lib/sqLite/sqllite.a: 
 	make -C xbmc/lib/sqLite
-xbmc/lib/UnrarXLib/UnrarXLib.a: force
+xbmc/lib/UnrarXLib/UnrarXLib.a: 
 	make -C xbmc/lib/UnrarXLib
-xbmc/linux/linux.a: force
+xbmc/linux/linux.a: 
 	make -C xbmc/linux
-xbmc/screensavers/screensaver.a: force
+xbmc/screensavers/screensaver.a: 
 	make -C xbmc/screensavers
-xbmc/settings/settings.a: force
+xbmc/settings/settings.a: 
 	make -C xbmc/settings
-xbmc/utils/utils.a: force
+xbmc/utils/utils.a: 
 	make -C xbmc/utils
-xbmc/visualizations/visualization.a: force
+xbmc/visualizations/visualization.a: 
 	make -C xbmc/visualizations
-xbmc/xbox/xbox.a: force
+xbmc/xbox/xbox.a: 
 	make -C xbmc/xbox
-xbmc/osx/osx.a: force
+xbmc/osx/osx.a: 
 	make -C xbmc/osx
-xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a: force
-xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a: force
-xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a: force
+xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a: 
+xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a: 
+xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a: 
 	make -C xbmc/lib/libSDL-OSX
-system/players/dvdplayer/avutil-49-@ARCH@.a: force
-system/players/dvdplayer/avcodec-52-@ARCH@.a: force
-system/players/dvdplayer/swscale-0.6.1-@ARCH@.a: force
-system/players/dvdplayer/avformat-52-@ARCH@.a: force
-system/players/dvdplayer/postproc-51-@ARCH@.a: force
+system/players/dvdplayer/avutil-49-@ARCH@.a: 
+system/players/dvdplayer/avcodec-52-@ARCH@.a: 
+system/players/dvdplayer/swscale-0.6.1-@ARCH@.a: 
+system/players/dvdplayer/avformat-52-@ARCH@.a: 
+system/players/dvdplayer/postproc-51-@ARCH@.a: 
 	make -C xbmc/cores/dvdplayer/Codecs
-xbmc/lib/libsmb/libsmbclient-@ARCH@.a: force
-	make -C xbmc/lib/libsmb
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
 	$(MAKE) xbmc/cores/DllLoader/exports/util/exports_utils.a
+	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
 dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports
@@ -351,7 +350,6 @@ OBJSXBMC += \
 	system/players/dvdplayer/swscale-0.6.1-@ARCH@.a \
 	system/players/dvdplayer/avformat-52-@ARCH@.a \
 	system/players/dvdplayer/postproc-51-@ARCH@.a
-
 else
 OBJSXBMC += \
 	xbmc/lib/libsmb/libsmbclient-@ARCH@.a
