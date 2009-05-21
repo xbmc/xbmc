@@ -170,7 +170,7 @@ first. This is a simple step and involves the following:
  $ autoconf
  $ ./configure
  $ make clean
- $ make externals more_libs
+ $ make xcode_depends
 
 The configure operation will setup the build environment for codecs and
 internal libraries that are used by XBMC. This step is required for both Xcode
@@ -233,13 +233,12 @@ construction).
  a)
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
- $ make externals more_libs
+ $ make xcode_depends
  $ xcodebuild -sdk macosx10.4 -project XBMC.xcodeproj -target XBMC.app -configuration Release build
 
  b)
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
- $ make externals more_libs
  $ make xbmc
  $ ./xbmc.bin
 
