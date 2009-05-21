@@ -28,16 +28,32 @@
 
 unsigned __int64 audio_slice_id = 0;
 
+ma_audio_container* ma_alloc_container(unsigned int buffers, size_t bytesPerFrame, size_t framesPerBuffer)
+{
+  ma_audio_container* pCont = (ma_audio_container*)calloc(1, sizeof(ma_audio_container) + sizeof(ma_audio_buffer) * (buffers - 1));
+  pCont->buffer_count = buffers;
+  size_t bytesPerBuffer = bytesPerFrame * framesPerBuffer;
+  unsigned char* data = (unsigned char*)calloc(1, bytesPerBuffer * buffers);
+  for(unsigned int i = 0; i < buffers; i++)
+  {
+    pCont->buffer[i].data = data + (bytesPerBuffer * i);
+    pCont->buffer[i].allocated_len = bytesPerBuffer;
+  }
+  return pCont;
+}
+
 // CStreamInput
 //////////////////////////////////////////////////////////////////////////////////////
 CStreamInput::CStreamInput()
 {
-
+  m_CacheLen = 0;
+  m_MaxCacheLen = 0;
+  m_pGenerator = NULL;
 }
 
 CStreamInput::~CStreamInput()
 {
-  
+  delete m_pGenerator;
 }
 
 MA_RESULT CStreamInput::AddData(void* pBuffer, size_t bufLen)
@@ -46,13 +62,19 @@ MA_RESULT CStreamInput::AddData(void* pBuffer, size_t bufLen)
     return MA_ERROR;
 
   // TODO: Implement inbound cache
+  if (m_CacheLen + bufLen < m_MaxCacheLen)
+  {  
+    m_CacheLen += bufLen;
+    return MA_SUCCESS;
+  }
 
-  return MA_NOT_IMPLEMENTED;
+  return MA_BUSYORFULL;
 }
 
 void CStreamInput::Reset()
 {
   // TODO: Clear the cache
+  m_CacheLen = 0;
 }
 
 // IAudioSource
@@ -67,10 +89,10 @@ MA_RESULT CStreamInput::TestOutputFormat(CStreamDescriptor* pDesc, unsigned int 
   CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
   // Verify that the required attributes are present and of the correct type
   if (
-    (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS , MA_STREAM_FLAG_LOCKED, NULL) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_SEC , NULL) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_FRAME, NULL) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT , NULL) != MA_SUCCESS)) 
+    (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS, MA_STREAM_FLAG_LOCKED, NULL) != MA_SUCCESS) ||
+    (pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_SEC, NULL) != MA_SUCCESS) ||
+    (pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, NULL) != MA_SUCCESS) ||
+    (pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT, NULL) != MA_SUCCESS)) 
     return MA_MISSING_ATTRIBUTE;
 
   return MA_SUCCESS;
@@ -78,13 +100,35 @@ MA_RESULT CStreamInput::TestOutputFormat(CStreamDescriptor* pDesc, unsigned int 
 
 MA_RESULT CStreamInput::SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
 {
-  return TestOutputFormat(pDesc, bus); // Not much else to do here
+  if(!pDesc)
+    return MA_ERROR;
+  
+  if (bus > 0) // Only one bus
+    return MA_INVALID_BUS;
+
+  CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
+  if ((pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, &m_BytesPerFrame) != MA_SUCCESS) ||
+      (pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_SEC, &m_BytesPerSecond) != MA_SUCCESS))
+     return MA_MISSING_ATTRIBUTE;
+
+  m_MaxCacheLen = m_BytesPerSecond;
+  m_pGenerator = new CWaveGenerator(440.0f);
+  m_pGenerator->SetOutputFormat(pDesc, bus);
+  return MA_SUCCESS;
 }
 
 MA_RESULT CStreamInput::Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
 {
   // TODO: Pull data from inbound cache
-  return MA_NOT_IMPLEMENTED;
+  unsigned int bytesToRender = (m_BytesPerFrame * frameCount);
+  if (m_CacheLen > bytesToRender)
+  {
+    MA_RESULT res =  m_pGenerator->Render(pOutput, frameCount, renderTime, renderFlags);
+    if (res == MA_SUCCESS)
+      m_CacheLen -= bytesToRender;
+    return res;
+  }
+  return MA_NEED_DATA;
 }
 
 // CHardwareMixer
@@ -223,10 +267,12 @@ bool CHardwareMixer::DrainChannel(int channel, unsigned int timeout)
 }
 
 // TODO: Improve this method's usefulness 
-void CHardwareMixer::Render()
+void CHardwareMixer::Render(int channel)
 {
-  for(int c = 0; c < m_MaxChannels; c++)
-    m_pChannel[c]->Render();
+  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
+    return;
+
+  m_pChannel[channel-1]->Render();
 }
 
 // CStreamAttributeCollection
@@ -441,4 +487,89 @@ stream_attribute* CStreamAttributeCollection::FindAttribute(MA_ATTRIB_ID id)
   if (iter != m_Attributes.end())
     return &iter->second;
   return NULL;
+}
+
+// Test class to generate a sin waveform
+////////////////////////////////////////////////////////////////////
+const double CWaveGenerator::pi = 3.141592653589793238462643383279502884197169399375;
+CWaveGenerator::CWaveGenerator(float freq) :
+  m_Freq(freq),
+  m_FramesRendered(0),
+  m_Channels(0),
+  m_SampleRate(0)
+{
+
+}
+
+MA_RESULT CWaveGenerator::TestOutputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
+{
+  if(!pDesc)
+    return MA_ERROR;
+  
+  if (bus > 0)
+    return MA_INVALID_BUS;
+
+  CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
+  int streamFormat = 0;
+  int sampleType = 0;
+  unsigned int bitDepth = 0;
+  bool interleaved = false;
+  if ((pAttribs->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, NULL) != MA_SUCCESS) ||
+      (pAttribs->GetUInt(MA_ATT_TYPE_SAMPLERATE, NULL) != MA_SUCCESS) ||
+      (pAttribs->GetInt(MA_ATT_TYPE_SAMPLE_TYPE, &sampleType) != MA_SUCCESS) ||
+      (pAttribs->GetFlag(MA_ATT_TYPE_LPCM_FLAGS, MA_LPCM_FLAG_INTERLEAVED, &interleaved) != MA_SUCCESS) ||
+      (pAttribs->GetUInt(MA_ATT_TYPE_BITDEPTH, &bitDepth) != MA_SUCCESS) ||
+      (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_SEC, &streamFormat) != MA_SUCCESS))
+    return MA_MISSING_ATTRIBUTE;
+
+  // For now, we only support 16-bit, interleaved
+  if ((streamFormat != MA_STREAM_FORMAT_LPCM) ||
+      (sampleType != MA_SAMPLE_TYPE_SINT) ||
+      (bitDepth != 16) ||
+      (!interleaved))
+    return MA_NOT_SUPPORTED;
+
+  return MA_SUCCESS;
+}
+
+MA_RESULT CWaveGenerator::SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
+{
+  if(!pDesc)
+    return MA_ERROR;
+  
+  if (bus > 0)
+    return MA_INVALID_BUS;
+
+  CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
+  if ((pAttribs->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, &m_Channels) != MA_SUCCESS) ||
+      (pAttribs->GetUInt(MA_ATT_TYPE_SAMPLERATE, &m_SampleRate) != MA_SUCCESS))
+    return MA_MISSING_ATTRIBUTE;
+
+  return MA_SUCCESS;
+}
+
+MA_RESULT CWaveGenerator::Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
+{
+  if (!pOutput || pOutput->buffer_count == 0)
+    return MA_ERROR;
+
+  unsigned int bytesToRender = frameCount * 2 * m_Channels;
+  if (pOutput->buffer[0].allocated_len < (frameCount * m_Channels * 2))
+    return MA_ERROR;
+
+  double amplitude = 0.7;
+  short* pFrame = (short*)pOutput->buffer[0].data;
+  for (unsigned int i = m_FramesRendered; i < m_FramesRendered + frameCount; i++)
+  {
+    short sample = (short)(amplitude * sin(((2 * pi * (double)m_Freq) / (double)m_SampleRate) * i) * 32767);
+    for (unsigned int c = 0; c < m_Channels; c++)
+    {
+      *pFrame = sample;
+      pFrame++;
+    }
+  }
+  m_FramesRendered += frameCount;
+  pOutput->buffer[0].data_len = bytesToRender;
+
+  return MA_SUCCESS;
 }

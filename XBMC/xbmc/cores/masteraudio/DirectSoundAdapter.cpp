@@ -33,7 +33,8 @@ CDirectSoundAdapter::CDirectSoundAdapter() :
   m_SourceBus(0),
   m_pRenderer(NULL),
   m_TotalBytesReceived(0),
-  m_ChunkLen(0)
+  m_ChunkLen(0),
+  m_BytesPerFrame(0)
 {
 
 }
@@ -77,20 +78,19 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc, unsigned
   unsigned int encoding = 0;
  
   // TODO: Write helper method to fetch attributes
-  if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_STREAM_FORMAT,(int*)&format))
-    return MA_ERROR;
+  if ((MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_STREAM_FORMAT,(int*)&format))||
+      (MA_SUCCESS != pAtts->GetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, &m_BytesPerFrame)))
+     return MA_MISSING_ATTRIBUTE;
 
   // TODO: Find a more elegant way to configure the renderer
   m_pRenderer = NULL;
   switch (format)
   {
   case MA_STREAM_FORMAT_LPCM:
-    if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_CHANNEL_COUNT,(int*)&channels))
-      return MA_ERROR;
-    if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_BITDEPTH,(int*)&bitsPerSample))
-      return MA_ERROR;
-    if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_SAMPLERATE,(int*)&samplesPerSecond))
-      return MA_ERROR;
+    if ((MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_CHANNEL_COUNT,(int*)&channels)) ||
+        (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_BITDEPTH,(int*)&bitsPerSample)) || 
+        (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_SAMPLERATE,(int*)&samplesPerSecond)))
+      return MA_MISSING_ATTRIBUTE;
     m_pRenderer = CAudioRendererFactory::Create(NULL,channels, samplesPerSecond, bitsPerSample, false,"",false,false);
     break;
   case MA_STREAM_FORMAT_IEC61937:
@@ -103,7 +103,8 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc, unsigned
     break;  // Unsupported format
   }
   if (!m_pRenderer)
-    return MA_ERROR;
+    return MA_NOT_SUPPORTED;
+
 
   m_ChunkLen = m_pRenderer->GetChunkLen();
 
@@ -199,6 +200,24 @@ bool CDirectSoundAdapter::Drain(unsigned int timeout)
 void CDirectSoundAdapter::Render()
 {
   // TODO: Pull data through the upstream source and push to the output renderer
+
+  unsigned int frames = m_ChunkLen / m_BytesPerFrame;
+  if (m_ChunkLen % m_BytesPerFrame)
+    frames++;
+
+  ma_audio_container* pCont = ma_alloc_container(1, 2, frames * 2);
+
+  while (m_pRenderer->GetSpace() >= m_ChunkLen)
+  {
+    if (MA_SUCCESS == m_pSource->Render(pCont, frames, 0, 0, m_SourceBus))
+    {
+      // TODO: What if this fails?
+      m_pRenderer->AddPackets(pCont->buffer[0].data, pCont->buffer[0].data_len);
+    }
+    else
+      break;
+  }
+  free(pCont);
 }
 
 // IRenderingControl

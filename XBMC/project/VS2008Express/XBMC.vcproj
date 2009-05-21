@@ -2050,6 +2050,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\masteraudio\DSPChain.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\masteraudio\DSPChain.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\masteraudio\MasterAudioCore.cpp"
 					>
 				</File>
@@ -2089,19 +2097,11 @@
 					Name="Filters"
 					>
 					<File
-						RelativePath="..\..\xbmc\cores\masteraudio\Filters\AC3Encoder.cpp"
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilter.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\masteraudio\Filters\AC3Encoder.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\masteraudio\Filters\StandardFilters.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\masteraudio\Filters\StandardFilters.h"
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilter.h"
 						>
 					</File>
 				</Filter>

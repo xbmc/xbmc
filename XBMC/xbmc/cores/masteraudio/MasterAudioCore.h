@@ -29,6 +29,7 @@
 #include <map>
 #include <queue>
 
+
 // Util
 ////////////////////////////////////////////
 
@@ -111,21 +112,20 @@ typedef unsigned int MA_ATTRIB_ID;
 ////////////////////////////////////////////////////////////////////////////////
 // Attribute Types
 ////////////////////////////////////////////////////////////////////////////////
-// Each AudioStream must have the following attibutes set to be considered valid.
 enum
 {
+  // Each AudioStream must have the following attibutes set to be considered valid.
   MA_ATT_TYPE_STREAM_FLAGS,     // type: int (bitfield) 
-  MA_ATT_TYPE_BYTES_PER_SEC,    // type: int
-  MA_ATT_TYPE_BYTES_PER_FRAME,  // type: int
+  MA_ATT_TYPE_BYTES_PER_SEC,    // type: uint
+  MA_ATT_TYPE_BYTES_PER_FRAME,  // type: uint
   MA_ATT_TYPE_STREAM_FORMAT,    // type: int (The value of the this attribute defines what other attibutes are valid/required)
   
   // Linear PCM Format Attributes
   MA_ATT_TYPE_LPCM_FLAGS,       // type: int (bitfield)
   MA_ATT_TYPE_SAMPLE_TYPE,      // type: int
-  MA_ATT_TYPE_BITDEPTH,         // type: int
-  MA_ATT_TYPE_SAMPLERATE,       // type: int
-  MA_ATT_TYPE_CHANNEL_COUNT,    // type: int
-  MA_ATT_TYPE_CHANNEL_MAP,      // type: int64
+  MA_ATT_TYPE_BITDEPTH,         // type: uint
+  MA_ATT_TYPE_SAMPLERATE,       // type: uint
+  MA_ATT_TYPE_CHANNEL_COUNT,    // type: uint
   
   // IEC61937(AC3/DTS over S/PDIF) Format Attributes
   MA_ATT_TYPE_ENCODING          // type: int
@@ -134,6 +134,7 @@ enum
 // MA_ATT_TYPE_STREAM_FORMAT Values
 enum
 {
+  MA_STREAM_FORMAT_UNKNOWN,
   MA_STREAM_FORMAT_LPCM,
   MA_STREAM_FORMAT_IEC61937
 };
@@ -239,7 +240,7 @@ struct ma_audio_buffer
 {
   size_t allocated_len;
   size_t data_len;
-  unsigned char data[1]; // Ensure compatibility with compilers that don't support variable length arrays
+  void* data;
 };
 
 // The ma_audio_container structure provides a means to package multiple ma_audio_buffer
@@ -249,6 +250,8 @@ struct ma_audio_container
   unsigned int buffer_count;
   ma_audio_buffer buffer[1]; // Ensure compatibility with compilers that don't support variable length arrays
 };
+
+ma_audio_container* ma_alloc_container(unsigned int buffers, size_t bytesPerFrame, size_t framesPerBuffer);
 
 typedef std::map<MA_ATTRIB_ID,stream_attribute>::iterator StreamAttributeIterator; 
 class CStreamAttributeCollection
@@ -348,10 +351,29 @@ public:
   virtual float GetMaxChannelLatency(int channel) = 0;
   virtual void FlushChannel(int channel) = 0;
   virtual bool DrainChannel(int channel, unsigned int timeout) = 0;
-  virtual void Render() = 0;
+  virtual void Render(int channel) = 0;
 protected:
   IAudioMixer() {}
 };
+
+// Testing
+////////////////////////////////////////////
+#include <math.h>
+class CWaveGenerator : IAudioSource
+{
+public:
+  CWaveGenerator(float freq);
+  MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
+  MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
+  MA_RESULT Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
+protected:
+  float m_Freq;
+  unsigned int m_SampleRate;
+  unsigned int m_FramesRendered;
+  unsigned int m_Channels;
+  static const double pi;
+};
+
 
 // Input Stage
 ////////////////////////////////////////////
@@ -369,6 +391,11 @@ public:
   MA_RESULT AddData(void* pBuffer, size_t bufLen);  // Writes all or nothing
   void Reset();
 protected:
+  unsigned int m_MaxCacheLen;
+  unsigned int m_CacheLen;
+  unsigned int m_BytesPerFrame;
+  unsigned int m_BytesPerSecond;
+  CWaveGenerator* m_pGenerator;
 };
 
 // Processing Stage
@@ -398,7 +425,7 @@ public:
   float GetMaxChannelLatency(int channel);
   void FlushChannel(int channel);
   bool DrainChannel(int channel, unsigned int timeout);
-  void Render();
+  void Render(int channel);
 protected:
   int m_MaxChannels;
   int m_ActiveChannels;
@@ -420,5 +447,8 @@ public:
 protected:
 
 };
+
+
+
 
 #endif // __AUDIO_LIB_CORE_H__

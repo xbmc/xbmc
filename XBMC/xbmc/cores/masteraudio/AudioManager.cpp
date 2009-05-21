@@ -53,6 +53,7 @@ bool CAudioStream::Initialize(CStreamInput* pInput, CDSPChain* pDSPChain, int mi
 
   // Hook-up interconnections: Input <-DSPChain, DSPChain <- Mixer
   // It is assumed at this point that the input/output stream formats are compatible
+
   m_pDSPChain->SetSource(m_pInput);
   m_pMixerSink->SetSource(m_pDSPChain);
 
@@ -93,7 +94,6 @@ bool CAudioStream::ProcessStream()
   bool ret = true;
   
   m_ProcessTimer.lap_start();
-
 
   m_ProcessTimer.lap_end();
 
@@ -248,9 +248,13 @@ size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t
   else
     bytesAdded = 0;
 
+  try {
   // 'Pull' data through the stream
-  m_pMixer->Render();
-
+  m_pMixer->Render(pStream->GetMixerChannel());
+  }
+  catch (...) {
+  CLog::Log(LOGERROR,"MasterAudio:AudioManager: Exception while rendering");
+  }
   return bytesAdded;
 }
 
@@ -410,57 +414,33 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
  {
     // Global AC3 Output profile
     CStreamAttributeCollection* pAtts = g_AudioProfileAC3.output_descriptor.GetAttributes();
-    pAtts->SetInt(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED);
+    pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,true);
+    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,192000);
     pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_IEC61937);
     pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_AC3);
 
     // Global Stereo Output Profile
     pAtts = g_AudioProfileStereo.output_descriptor.GetAttributes();
+    pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,false);
     pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_LPCM);
-    pAtts->SetInt(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED);
+    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,176400);
+    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,4);
+    pAtts->SetFlag(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED,true);
     pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
-    pAtts->SetInt(MA_ATT_TYPE_CHANNEL_COUNT,2);
-    pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,16);
-    pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,44100);
+    pAtts->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT,2);
+    pAtts->SetUInt(MA_ATT_TYPE_BITDEPTH,16);
+    pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,44100);
 
     // Global 6-Ch Output Profile
     pAtts = g_AudioProfile6Ch.output_descriptor.GetAttributes();
     pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_LPCM);
     pAtts->SetInt(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED);
     pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
-    pAtts->SetInt(MA_ATT_TYPE_CHANNEL_MAP,6);
+    pAtts->SetInt(MA_ATT_TYPE_CHANNEL_COUNT,6);
     pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,16);
     pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,48000);
 
     g_AudioProfileInit = true;
  }
- return &g_AudioProfileAC3;
-}
-
-// Test class to generate a sin waveform
-////////////////////////////////////////////////////////////////////
-CWaveGenerator::CWaveGenerator(float freq) :
-  m_Freq(0),
-  m_FramesRendered(0)
-{
-  if (
-    (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_SEC , NULL) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT , NULL) != MA_SUCCESS)) 
-    return MA_MISSING_ATTRIBUTE;
-
-}
-
-MA_RESULT CWaveGenerator::TestOutputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
-{
-  return MA_NOT_IMPLEMENTED;
-}
-
-MA_RESULT CWaveGenerator::SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
-{
-  return MA_NOT_IMPLEMENTED;
-}
-
-MA_RESULT CWaveGenerator::Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
-{
-  return MA_NOT_IMPLEMENTED;
+ return &g_AudioProfileStereo;
 }

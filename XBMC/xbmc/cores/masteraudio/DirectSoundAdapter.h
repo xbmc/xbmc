@@ -61,6 +61,7 @@ protected:
   size_t m_ChunkLen;
   IAudioRenderer* m_pRenderer;
   unsigned __int64 m_TotalBytesReceived;
+  unsigned int m_BytesPerFrame;
 };
 
 #endif // __DIRECT_SOUND_ADAPTER_H__

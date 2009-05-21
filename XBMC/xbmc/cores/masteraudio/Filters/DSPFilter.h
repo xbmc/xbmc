@@ -61,9 +61,8 @@ protected:
     int m_StreamFormat;            //MA_ATT_TYPE_STREAM_FORMAT
   };
 
-  MA_RESULT RenderOutput(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
+  virtual MA_RESULT RenderOutput(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
   
-  // Internal member to be called by derived classes (not to be overridden)
   MA_RESULT GetInputData(ma_audio_container* pInput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
   
   inline const StreamAttributes* GetInputAttributes(unsigned int bus = 0)
@@ -99,7 +98,6 @@ private:
   StreamAttributes* m_pInputDescriptor;
   StreamAttributes* m_pOutputDescriptor;
   InputBus* m_pInput;
-  ma_audio_container** m_pInputContainer;
 };
 
 #endif // __DSP_FILTER_H__

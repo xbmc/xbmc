@@ -30,27 +30,17 @@ bool CPCMAudioClient::OpenStream(int channels, int bitsPerSample, int samplesPer
     return false;
   
   // Required Attributes
-  pAtts->SetInt(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_NONE);
+  pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_NONE,false);
   pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_LPCM);
-  pAtts->SetInt(MA_ATT_TYPE_BYTES_PER_FRAME,channels * (bitsPerSample >> 3));
-  pAtts->SetInt(MA_ATT_TYPE_BYTES_PER_SEC, samplesPerSecond * channels * bitsPerSample);
+  pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,channels * (bitsPerSample >> 3));
+  pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC, samplesPerSecond * channels * (bitsPerSample >> 3));
   
   // LPCM Attributes
-  pAtts->SetInt(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED);
+  pAtts->SetFlag(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED,true);
   pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
-  pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,bitsPerSample);
-  pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,samplesPerSecond);
-  pAtts->SetInt(MA_ATT_TYPE_CHANNEL_COUNT,channels);
-
-  int64_t layout = 0;
-  if (channels == 6)
-    layout = 0xff543210; // As provided by dvdaudio
-  else if (channels == 2)
-    layout = 0xffffff10; // As provided by dvdaudio
-  else
-    return false;
-
-  pAtts->SetInt64(MA_ATT_TYPE_CHANNEL_MAP,layout);
+  pAtts->SetUInt(MA_ATT_TYPE_BITDEPTH,bitsPerSample);
+  pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,samplesPerSecond);
+  pAtts->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT,channels);
 
   // Invoke the base class member
   return CAudioManagerClient::OpenStream(&desc);
