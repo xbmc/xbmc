@@ -32,7 +32,7 @@
 #import <IOKit/IOKitLib.h>
 #import <IOKit/IOCFPlugIn.h>
 #import <IOKit/hid/IOHIDKeys.h>
-#import <Carbon/Carbon.h>
+#import "XBMCDebugHelpers.h"
 
 @interface HIDRemoteControlDevice (PrivateMethods) 
 - (NSDictionary*) cookieToButtonMapping;
@@ -40,7 +40,8 @@
 - (IOHIDDeviceInterface**) hidDeviceInterface;
 - (void) removeNotifcationObserver;
 - (void) remoteControlAvailable:(NSNotification *)notification;
-
+- (void) enableSecureInputFix;
+- (void) disableSecureInputFix;
 @end
 
 @interface HIDRemoteControlDevice (IOKitMethods) 
@@ -50,6 +51,12 @@
 - (BOOL) openDevice;
 @end
 
+//handler to regrab device if openend in exclusive mode on app-switches
+//installed in startListening and removed in stopListening
+pascal OSStatus appSwitchedEventHandler(EventHandlerCallRef nextHandler,
+                                        EventRef switchEvent,
+                                        void* userData);
+                                        
 @implementation HIDRemoteControlDevice
 
 + (const char*) remoteControlDeviceName {
@@ -85,6 +92,7 @@
 		}
 		
 		fixSecureEventInputBug = [[NSUserDefaults standardUserDefaults] boolForKey: @"remoteControlWrapperFixSecureEventInputBug"];
+    appSwitchedHandlerUPP = NewEventHandlerUPP(appSwitchedEventHandler);
 	}
 	
 	return self;
@@ -135,7 +143,26 @@
 }
 - (void) setProcessesBacklog: (BOOL) value {
 	processesBacklog = value;
-}
+}         
+
+//handler to regrab device if openend in exclusive mode on app-switches
+//installed in startListening and removed in stopListening
+pascal OSStatus appSwitchedEventHandler(EventHandlerCallRef nextHandler,
+                                        EventRef switchEvent,
+                                        void* userData)
+{
+  HIDRemoteControlDevice* p_this = (HIDRemoteControlDevice*)userData;
+  if (p_this->hidDeviceInterface)
+  {
+    if ((*(p_this->hidDeviceInterface))->close(p_this->hidDeviceInterface) != KERN_SUCCESS)
+      ELOG("failed closing Apple Remote device\n");
+    
+    if ((*(p_this->hidDeviceInterface))->open(p_this->hidDeviceInterface, kIOHIDOptionsTypeSeizeDevice) != KERN_SUCCESS)
+      ELOG("failed opening Apple Remote device\n");
+  }  
+  DLOG("Reopened Apple Remote in exclusive mode\n");  
+  return 0;
+}  
 
 - (IBAction) startListening: (id) sender {	
 	if ([self isListeningToRemote]) return;
@@ -158,8 +185,8 @@
 	// 
 	// Note that there is a corresponding DisableSecureEventInput in the stopListening method below.
 	// 
-	if ([self isOpenInExclusiveMode] && fixSecureEventInputBug) EnableSecureEventInput();	
-	
+  [self enableSecureInputFix];
+  	
 	[self removeNotifcationObserver];
 	
 	io_object_t hidDevice = [[self class] findRemoteDevice];
@@ -183,7 +210,7 @@
 	
 error:
 	[self stopListening:self];
-	DisableSecureEventInput();
+  [self disableSecureInputFix];
 	
 cleanup:	
 	IOObjectRelease(hidDevice);	
@@ -227,8 +254,7 @@ cleanup:
 		
 		hidDeviceInterface = NULL;
 	}
-	
-	if ([self isOpenInExclusiveMode] && fixSecureEventInputBug) DisableSecureEventInput();
+	[self disableSecureInputFix];
 	
 	if ([self isOpenInExclusiveMode] && sendNotification) {
 		[[self class] sendFinishedNotifcationForAppIdentifier: nil];		
@@ -269,6 +295,30 @@ cleanup:
 - (void) remoteControlAvailable:(NSNotification *)notification {
 	[self removeNotifcationObserver];
 	[self startListening: self];
+}
+
+- (void) enableSecureInputFix {
+	if ([self isOpenInExclusiveMode]) {
+    //2 ways to fix exclusive mode, either the one mentioned above
+    if (fixSecureEventInputBug) 
+      EnableSecureEventInput();	
+    else {
+      //or registering for all app-switch events and just reopening the device on each switch
+      const EventTypeSpec applicationEvents[]  = { { kEventClassApplication, kEventAppFrontSwitched } };
+      InstallApplicationEventHandler(appSwitchedHandlerUPP,
+                                     GetEventTypeCount(applicationEvents), applicationEvents, self, &appSwitchedHandlerRef);
+    }
+  }  
+}
+
+- (void) disableSecureInputFix{
+	if ([self isOpenInExclusiveMode]){
+    if(fixSecureEventInputBug) 
+      DisableSecureEventInput();
+    else{
+      RemoveEventHandler(appSwitchedHandlerRef);
+    }
+  }  
 }
 
 @end

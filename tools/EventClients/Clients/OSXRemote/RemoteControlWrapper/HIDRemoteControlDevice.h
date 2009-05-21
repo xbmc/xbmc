@@ -26,6 +26,7 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
+#import <Carbon/Carbon.h>
 #import <IOKit/hid/IOHIDLib.h>
 
 #import "RemoteControl.h"
@@ -50,6 +51,9 @@ typedef enum _eCookieModifier{
 	BOOL processesBacklog;	
 	
 	int supportedButtonEvents;
+  
+  EventHandlerUPP appSwitchedHandlerUPP;
+  EventHandlerRef appSwitchedHandlerRef;
 }
 
 // When your application needs to much time on the main thread when processing an event other events
