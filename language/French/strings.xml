@@ -4,20 +4,20 @@
 
  <strings>
   <string id="31000">Parcourir</string>
-  <string id="31001">Videos</string>
+  <string id="31001">Vidéos</string>
   <string id="31002">Musique</string>
   <string id="31003">Images</string>
   <string id="31004">Applis</string>
-  <string id="31005">Meteo</string>
-  <string id="31006">Systeme</string>
+  <string id="31005">Météo</string>
+  <string id="31006">Système</string>
   <string id="31007">ON/OFF</string>
-  <string id="31008">Series tv</string>
+  <string id="31008">Séries TV</string>
   <string id="31011">Visionner vos</string>
   <string id="31012">Ecouter votre</string>
   <string id="31013">Voir vos</string>
-  <string id="31014">Utilisez vos</string>
+  <string id="31014">Utiliser vos</string>
   <string id="31015">Consulter</string>
-  <string id="31016">Configurer le</string> 
+  <string id="31016">Configurer les</string> 
   <string id="31017">Power</string> 
   <string id="31018">Menu</string> 
   <string id="31019">Jouer le</string> 
@@ -25,16 +25,16 @@
   <string id="31021">Saisons</string> 
   <string id="31022">Cacher</string>
   <string id="31023">Lister par</string> 
-  <string id="31024">Direction du trie</string> 
-  <string id="31025">Backward</string> 
-  <string id="31026">Forward</string> 
+  <string id="31024">Direction du tri</string> 
+  <string id="31025">Reculer</string> 
+  <string id="31026">Avancer</string> 
   <string id="31027">Débuté</string> 
   <string id="31028">Terminé</string>
-  <string id="31029">Scenariste</string> 
+  <string id="31029">Scénariste</string> 
   <string id="31030">Piste No.</string> 
   <string id="31031">Active</string> 
   <string id="31032">Instrmts</string> 
-  <string id="31033">Mise à jour le</string>
+  <string id="31033">Mise-à-jour le</string>
   <string id="31034">Version</string>
   <string id="31035">RAM libre</string>
   <string id="31036">Addr. IP</string>
@@ -55,13 +55,13 @@
   <string id="31043">Applis</string>
 
 <!--  System  --> 
-  <string id="31060">Parametres</string>
+  <string id="31060">Paramètres</string>
   <string id="31061">Scripts</string>
   <string id="31062">Fichiers</string>
   <string id="31063">Favoris</string>
   <string id="31064">Profils</string>
   <string id="31065">Infos</string>
-  <string id="31066">Rafraichir</string>
+  <string id="31066">Rafraîchir</string>
   <string id="31067">Informations sur votre</string>
 
 <!--  Power  --> 
@@ -70,19 +70,19 @@
   <string id="31073">RELANCER XBMC</string>
   <string id="31074">DASHBOARD</string>
   <string id="31075">RAFRAÎCHIR</string>
-  <string id="31075">Rafraichir le Skin</string>
+  <string id="31075">Rafraîchir la Skin</string>
 
 <!--  Video  -->
   <string id="31111">Films</string>
-  <string id="31112">Series TV</string>
-  <string id="31113">Vos Videos</string>
+  <string id="31112">Séries TV</string>
+  <string id="31113">Vos Vidéos</string>
   <string id="31114">Épisode:</string>
   <string id="31115">N/A</string>
   <string id="31116">Titre du Film</string>
   <string id="31117">Vignette</string>
   <string id="31118">Fanart</string>
-  <string id="31119">RÉSUMÉ</string>
-  <string id="31120">Star Rating</string>
+  <string id="31119">Résumé</string>
+  <string id="31120">Note</string>
   <string id="31121">Détails du Film</string>
   <string id="31122">Sortie le</string>
   <string id="31123">MPAA</string>
@@ -100,7 +100,7 @@
   <string id="31225">Note</string>
   <string id="31226">Change</string>
   <string id="31227">Vos sélections</string>
-  <string id="31228">Parôles</string>
+  <string id="31228">Paroles</string>
 
 <!--  Settings  --> 
   <string id="31601">Apparence</string>
@@ -133,7 +133,7 @@
   <string id="31662">Cacher l'horloge</string>
   <string id="31663">Afficher le compteur de Media</string>
   <string id="31664">Cacher la barre de défilement sur l'écran Média</string>
-  <string id="31665">Cacher les icones vue/non vue</string>
+  <string id="31665">Cacher les icônes vue/non vue</string>
   <string id="31666">Afficher la lame au milieu de l'écran</string>
   <string id="31667">MediaStream</string>
   <string id="31668">Afficher grande Horloge</string>
@@ -158,7 +158,7 @@
   <string id="31687">de la vue Video</string>
   <string id="31688">de la vue Musique</string>
   <string id="31689">de la vue Images</string>
-  <string id="31690">Cacher les icones No Thumb</string>
+  <string id="31690">Cacher les icônes</string>
   <string id="31691">Utiliser un Overlay légé pour le Coverflow Série TV</string>
   <string id="31692">Cacher les infos dans la vue Wall Stream</string>
   <string id="31693">Cacher les vignettes du menu Options</string>
@@ -189,14 +189,14 @@
   <string id="31801">Bienvenue sur</string>
   <string id="31802">vos médias....[COLOR Highlighted]votre[/COLOR] voie</string>
   <string id="31803"></string>
-  <string id="31804">MediaStream est une nouvelle interface utilisateur pour le projet multimédia XBMC. Créé par l’équipe nouvellement formé « RazorFish », elle est le fruit d’une combinaison entre la fonctionnalité et la forme, la fusion du style et de la substance.  Dessiné et optimisé pour la génération « haute définition », cette interface  a pour but de vous apporter une nouvelle expérience sur cette plateforme déjà très populaire.</string>
+  <string id="31804">MediaStream est une nouvelle interface utilisateur pour le projet multimédia XBMC. Créée par l’équipe nouvellement formé "RazorFish", elle est le fruit d’une combinaison entre la fonctionnalité et la forme, la fusion du style et de la substance. Dessinée et optimisée pour la génération "haute définition", cette interface  a pour but de vous apporter une nouvelle expérience sur cette plateforme déjà très populaire.</string>
   <string id="31805">Note</string>
   <string id="31806">Vérifiez que vous disposez bien d'une version récente de XBMC.  Nous recommandons la toute dernière version SVN de XBMC, et nous vous demandons de toujours télécharger l’archive entière du thème.</string>
   <string id="31807">Skin Credits</string>
-  <string id="31808">Le projet entier a été une collaboration d’effort entre plusieurs individus très talentueux. Ceux-ci sont les suivants : skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 et aenima99x. Un remerciement spécial pour emilio (a.k.a. thedeViL), sans qui ce projet n’aurait jamais abouti. Bien sur tout les remerciements vont pour vous, la communauté XBMC… sans vous il n’y aurait pas eu de raisons que l’on fasse ce que l'on a fait… Continuez d’assurer, vous êtes les meilleurs !!!</string>
-  <string id="31809">Remerciements Specials: Toute l'équipe XBMC, et les supporters des forums xbmc et xbox-scene</string>
+  <string id="31808">Le projet entier a été une collaboration d’efforts entre plusieurs individus très talentueux. Ceux-ci sont les suivants : skunkmonkee, manturafs, justmed, timdog82001, wir3d, syphon, jmarshall, jezz_x, blittan, mikebeecham, grrowl, modplug, nuka1195 et aenima99x. Un remerciement spécial pour emilio (a.k.a. thedeViL), sans qui ce projet n’aurait jamais abouti. Bien sûr tout les remerciements vont pour vous, la communauté XBMC… sans vous il n’y aurait pas eu de raisons que l’on fasse ce que l'on a fait… Continuez d’assurer, vous êtes les meilleurs !!!</string>
+  <string id="31809">Remerciements Particuliers : Toute l'équipe XBMC, et les supporters des forums xbmc et xbox-scene</string>
   <string id="31810">Cliquez sur "OK" pour continuer et commencer à utiliser notre thème.</string>
-  <string id="31811">Note: Vous ne verrez plus ce message les prochaines fois, après avoir cliqué sur "OK"</string>
+  <string id="31811">Note : Vous ne verrez plus ce message les prochaines fois, après avoir cliqué sur "OK"</string>
 
 <!--  Profiles  -->
   <string id="31900">Connexion</string>
@@ -204,4 +204,12 @@
   <string id="31902">Profil</string>
   <string id="31903">Profil nom</string>
   <string id="31904">Profile image</string>
+  <!-- Plex additions -->
+  <string id="31950">Afficher vos</string>
+  <string id="31951">Ouvrir</string>
+  <string id="31952">App Store</string>
+  <string id="31953">Ouvrir</string>
+  <string id="31954">Aide</string>
+  <string id="31955">Préférences</string>
+  <string id="31956">Montrer</string>
  </strings>
