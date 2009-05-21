@@ -287,7 +287,15 @@ imagelib: dllloader
 codecs: papcodecs dvdpcodecs
 libs: libhdhomerun libid3tag imagelib libexif python
 externals: codecs libs python visualizations screensavers
-more_libs: librtmp libxbms librtv libxdaap libshout libgoahead
+
+xcode_depends:
+	codecs libs python visualizations screensavers \
+	xbmc/lib/libRTMP/librtmp.a \
+	xbmc/lib/libXBMS/libxbms-x86-osx.a \
+	xbmc/lib/libRTV/librtv-x86-osx.a \
+	xbmc/lib/libXDAAP/libxdaap-x86-osx.a \
+	xbmc/lib/libshout/libshout-x86-osx.a \
+	xbmc/lib/libGoAhead/libGoAhead-x86-osx.a
 
 # platform independend objects
 OBJSXBMC=	\
