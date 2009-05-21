@@ -214,10 +214,10 @@ xbmc/xbox/xbox.a:
 	make -C xbmc/xbox
 xbmc/osx/osx.a: 
 	make -C xbmc/osx
-xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a: 
-xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a: 
-xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a: 
-	make -C xbmc/lib/libSDL-OSX
+#xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a: 
+#xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a: 
+#xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a: 
+#	make -C xbmc/lib/libSDL-OSX
 system/players/dvdplayer/avutil-49-@ARCH@.a: 
 system/players/dvdplayer/avcodec-52-@ARCH@.a: 
 system/players/dvdplayer/swscale-0.6.1-@ARCH@.a: 
