@@ -607,6 +607,23 @@ void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
   SetThreadExecutionState( sSysParam.dwEsFlags );
 }
 
+void CWIN32Util::CheckGLVersion()
+{
+  if(CWIN32Util::HasGLDefaultDrivers())
+  {
+    MessageBox(NULL, "MS default OpenGL drivers detected. Please get OpenGL drivers from your video card vendor", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
+    exit(1);
+  }
+
+  if(!CWIN32Util::HasReqGLVersion())
+  {
+    if(MessageBox(NULL, "Your OpenGL version doesn't meet the XBMC requirements", "XBMC: Warning", MB_OKCANCEL|MB_ICONWARNING) == IDCANCEL)
+    {
+      exit(1);
+    }
+  }
+}
+
 bool CWIN32Util::HasGLDefaultDrivers()
 {
   CStdString strVendor = Surface::CSurface::GetGLVendor();
@@ -621,7 +638,7 @@ bool CWIN32Util::HasReqGLVersion()
 {
   int a=0,b=0;
   Surface::CSurface::GetGLVersion(a, b);
-  if((a>=2) || (a == 1 && b >= 4))
+  if((a>=2) || (a == 1 && b >= 3))
     return true;
   else
     return false;

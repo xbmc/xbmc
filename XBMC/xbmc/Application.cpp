@@ -862,6 +862,10 @@ HRESULT CApplication::Create(HWND hWnd)
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
+#ifdef _WIN32PC
+  CWIN32Util::CheckGLVersion();
+#endif
+
   // initialize our charset converter
   g_charsetConverter.reset();
 
