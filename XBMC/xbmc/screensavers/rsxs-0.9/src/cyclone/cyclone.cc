@@ -448,11 +448,12 @@ void Hack::pointerEnter() {}
 void Hack::pointerLeave() {}
 
 #define _LINUX
-#include "../../../../../addons/xbmc_scr.h"
+#include "../../../../../addons/xbmc_addon_lib++.h"
+#include "../../../../../addons/xbmc_scr_dll.h"
 
 extern "C" {
 
-ADDON_STATUS Create(ScreensaverCallbacks* cb, void* pd3dDevice, int iWidth, int iHeight, const char * szScreensaver, float pixelRatio)
+ADDON_STATUS Create(ADDON_HANDLE hdl, void* pd3dDevice, int iWidth, int iHeight, const char * szScreensaver, float pixelRatio)
 {
   Common::width = iWidth;
   Common::height = iHeight;

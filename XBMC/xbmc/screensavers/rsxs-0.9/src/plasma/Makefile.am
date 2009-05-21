@@ -2,7 +2,7 @@
 
 include $(srcdir)/../Makefile.common
 
-rs_plasma_SOURCES = $(COMMON) plasma.cc plasma.hh
+rs_plasma_SOURCES = $(COMMON) plasma.cc plasma.hh ../../../../../addons/xbmc_addon_lib++.a
 rs_plasma_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
 
 hack_PROGRAMS = rs-plasma

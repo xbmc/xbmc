@@ -3,7 +3,7 @@
 include $(srcdir)/../Makefile.common
 
 rs_lattice_SOURCES = $(COMMON) $(VECTOR) $(IMAGE) camera.hh lattice.cc \
-	lattice.hh resources.cc resources.hh
+	lattice.hh resources.cc resources.hh ../../../../../addons/xbmc_addon_lib++.a
 
 AM_CPPFLAGS += $(IMAGE_CPPFLAGS)
 AM_CXXFLAGS += $(IMAGE_CXXFLAGS)

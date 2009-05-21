@@ -293,7 +293,7 @@ AM_LDFLAGS = $(IMAGE_LDFLAGS)
 AM_CXXFLAGS = -Wall -funroll-loops $(IMAGE_CXXFLAGS)
 AM_ETAGSFLAGS = --extra=fq
 rs_helios_SOURCES = $(COMMON) $(COLOR) $(VECTOR) $(IMAGE) $(IMPLICIT) \
-	helios.cc helios.hh particle.cc particle.hh sphere.hh
+	helios.cc helios.hh particle.cc particle.hh sphere.hh ../../../../../addons/xbmc_addon_lib++.a
 
 rs_helios_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS) $(IMAGE_LIBS)
 heliosdatadir = $(pkgdatadir)/helios

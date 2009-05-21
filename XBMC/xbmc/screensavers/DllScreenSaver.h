@@ -21,7 +21,7 @@
  */
 
 #include "../DllAddon.h"
-#include "../../addons/ScreensaverTypes.h"
+#include "../../addons/xbmc_scr_types.h"
 
 class DllScreensaver : public DllAddon<ScreenSaver>
 {

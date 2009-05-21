@@ -31,6 +31,7 @@
 
 #include "DllScreenSaver.h"
 #include "../utils/Addon.h"
+#include "../lib/libaddon/addon_local.h"
 
 class CScreenSaver : public ADDON::CAddon
 {
@@ -49,19 +50,8 @@ public:
 protected:
   std::auto_ptr<struct ScreenSaver> m_pScr;
   std::auto_ptr<DllScreensaver> m_pDll;
-  ScreensaverCallbacks *m_callbacks;
+  AddonCB *m_callbacks;
   bool m_ReadyToUse;
-
-private:
-  static void AddOnStatusCallback(void *userData, const ADDON_STATUS status, const char* msg);
-  static void AddOnLogCallback(void *userData, const ADDON_LOG loglevel, const char *format, ... );
-  static bool AddOnGetSetting(void *userData, const char *settingName, void *settingValue);
-  static void AddOnOpenSettings(const char *url, bool bReload);
-  static void AddOnOpenOwnSettings(void *userData, bool bReload);
-  static const char* AddOnGetLocalizedString(void *userData, long dwCode);
-  static const char* AddOnGetAddonDirectory(void *userData);
-  static const char* AddOnGetUserDirectory(void *userData);
-  static const char* AddOnTranslatePath(const char *path);
 };
 
 #endif // !defined(AFX_ScreenSaver_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_)

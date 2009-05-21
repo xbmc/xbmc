@@ -276,7 +276,7 @@ AM_CPPFLAGS = -DPKGDATADIR=\"$(pkgdatadir)\" -I$(srcdir)/.. -I$(top_srcdir)/lib 
 AM_LDFLAGS = 
 AM_CXXFLAGS = -Wall -funroll-loops
 AM_ETAGSFLAGS = --extra=fq
-rs_plasma_SOURCES = $(COMMON) plasma.cc plasma.hh
+rs_plasma_SOURCES = $(COMMON) plasma.cc plasma.hh ../../../../../addons/xbmc_addon_lib++.a
 rs_plasma_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
 all: all-am;
 
