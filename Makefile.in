@@ -445,7 +445,7 @@ uninstall:
 	@echo "Removing XBMC..."
 	@rm -rf $(prefix)/share/xbmc $(prefix)/bin/xbmc
 	@rm -rf $(prefix)/bin/xbmc-standalone
-	@rm -rf /usr/share/xsessions/XBMC.desktop
+	@rm -rf $(prefix)/share/xsessions/XBMC.desktop
 	@echo "Done!"
 
 reallyclean:
