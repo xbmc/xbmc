@@ -112,7 +112,7 @@ all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Te
 
 include Makefile.include
 
-.PHONY : guilib xbmc filesystem cores paplayer dllloader exports osx xbox linux visualization-interface visualizations screensaver-interface screensavers utils common tinyxml sqllite libscrobbler unrarxlib libpython libgoahead compile dvdplayer libupnp libcmyth eventclients librtmp papcodecs dvdpcodecs imagelib codecs externals cdrip externalplayer libkaraoke settings
+.PHONY : dllloader exports visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force
 
 $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
@@ -120,127 +120,153 @@ $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)
 $(PM3HD_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3HD_MEDIA)/*.png $(PM3HD_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3HD_MEDIA)\" -output \"$(PM3HD_MEDIA)/Textures.xpr\"
 
-guilib: 
-	$(MAKE) -C guilib
-xbmc: 
-	$(MAKE) -C xbmc
-externalplayer: 
-	$(MAKE) -C xbmc/cores/ExternalPlayer
-filesystem: 
-	$(MAKE) -C xbmc/FileSystem
-	$(MAKE) -C xbmc/FileSystem/MusicDatabaseDirectory
-	$(MAKE) -C xbmc/FileSystem/VideoDatabaseDirectory
-cores: 
-	$(MAKE) -C xbmc/cores
-audiorenderers: 
-	$(MAKE) -C xbmc/cores/AudioRenderers
-paplayer: 
-	$(MAKE) -C xbmc/cores/paplayer
-dllloader: exports
-	$(MAKE) -C xbmc/cores/DllLoader
+guilib/guilib.a: force
+	make -C guilib
+guilib/common/gui_common.a: force
+	make -C guilib/common
+guilib/tinyXML/tinyxml.a: force
+	make -C guilib/tinyXML
+xbmc/xbmc.a: force
+	make -C xbmc
+xbmc/cdrip/cdrip.a: force
+	make -C xbmc/cdrip
+xbmc/cores/cores.a: force
+	make -C xbmc/cores
+xbmc/cores/DllLoader/dllloader.a: force
+	make -C xbmc/cores/DllLoader/
+xbmc/cores/DllLoader/exports/exports.a: force
+	make -C xbmc/cores/DllLoader/exports
+xbmc/cores/DllLoader/exports/util/exports_utils.a: force
+	make -C xbmc/cores/DllLoader/exports/util
+xbmc/cores/dvdplayer/DVDPlayer.a: force
+	make -C xbmc/cores/dvdplayer
+xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a: force
+	make -C xbmc/cores/dvdplayer/DVDCodecs
+xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a: force
+	make -C xbmc/cores/dvdplayer/DVDCodecs/Audio
+xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a: force
+	make -C xbmc/cores/dvdplayer/DVDCodecs/Overlay
+xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a: force
+	make -C xbmc/cores/dvdplayer/DVDCodecs/Video
+xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a: force
+	make -C xbmc/cores/dvdplayer/DVDDemuxers
+xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a: force
+	make -C xbmc/cores/dvdplayer/DVDInputStreams
+xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a: force
+	make -C xbmc/cores/dvdplayer/DVDSubtitles
+xbmc/cores/paplayer/paplayer.a: force
+	make -C xbmc/cores/paplayer
+xbmc/cores/AudioRenderers/audiorenderers.a: force
+	make -C xbmc/cores/AudioRenderers
+xbmc/cores/VideoRenderers/VideoRenderer.a: force
+	make -C xbmc/cores/VideoRenderers
+xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a: force
+	make -C xbmc/cores/VideoRenderers/VideoShaders
+xbmc/cores/ExternalPlayer/ExternalPlayer.a: force
+	make -C xbmc/cores/ExternalPlayer
+xbmc/FileSystem/filesystem.a: force
+	make -C xbmc/FileSystem
+xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a: force
+	make -C xbmc/FileSystem/MusicDatabaseDirectory
+xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a: force
+	make -C xbmc/FileSystem/VideoDatabaseDirectory
+xbmc/karaoke/karaoke.a:
+	make -C xbmc/karaoke
+xbmc/lib/libcmyth/libcmyth.a:
+	make -C xbmc/lib/libcmyth
+xbmc/lib/libhts/libhts.a:
+	make -C xbmc/lib/libhts
+xbmc/lib/libPython/python.a:
+	make -C xbmc/lib/libPython
+xbmc/lib/libPython/xbmcmodule/xbmcmodule.a:
+	make -C xbmc/lib/libPython/xbmcmodule
+xbmc/lib/libRTMP/librtmp.a:
+	make -C xbmc/lib/libRTMP
+xbmc/lib/libscrobbler/scrobbler.a:
+	make -C xbmc/lib/libscrobbler
+xbmc/lib/libRTV/librtv-@ARCH@.a:
+	make -C xbmc/lib/libRTV
+xbmc/lib/libshout/libshout-@ARCH@.a:
+	make -C xbmc/lib/libshout
+xbmc/lib/libUPnP/libupnp-@ARCH@.a:
+	make -C xbmc/lib/libUPnP
+xbmc/lib/libXBMS/libxbms-@ARCH@.a:
+	make -C xbmc/lib/libXBMS
+xbmc/lib/libXDAAP/libxdaap-@ARCH@.a:
+	make -C xbmc/lib/libXDAAP
+xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a:
+	make -C xbmc/lib/libGoAhead
+xbmc/lib/sqLite/sqllite.a:
+	make -C xbmc/lib/sqLite
+xbmc/lib/UnrarXLib/UnrarXLib.a:
+	make -C xbmc/lib/UnrarXLib
+xbmc/linux/linux.a:
+	make -C xbmc/linux
+xbmc/screensavers/screensaver.a:
+	make -C xbmc/screensavers
+xbmc/settings/settings.a:
+	make -C xbmc/settings
+xbmc/utils/utils.a:
+	make -C xbmc/utils
+xbmc/visualizations/visualization.a:
+	make -C xbmc/visualizations
+xbmc/xbox/xbox.a:
+	make -C xbmc/xbox
+xbmc/osx/osx.a:
+	make -C xbmc/osx
+xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a:
+xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a:
+xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a:
+	make -C xbmc/lib/libSDL-OSX
+system/players/dvdplayer/avutil-49-@ARCH@.a:
+system/players/dvdplayer/avcodec-52-@ARCH@.a:
+system/players/dvdplayer/swscale-0.6.1-@ARCH@.a:
+system/players/dvdplayer/avformat-52-@ARCH@.a:
+system/players/dvdplayer/postproc-51-@ARCH@.a:
+	make -C xbmc/cores/dvdplayer/Codecs
+xbmc/lib/libsmb/libsmbclient-@ARCH@.a:
+	make -C xbmc/lib/libsmb
+
 exports:
-	$(MAKE) -C xbmc/cores/DllLoader/exports
-	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
-	$(MAKE) -C xbmc/cores/DllLoader/exports/util
-osx: 
-ifeq ($(findstring osx,$(ARCH)), osx)
-	$(MAKE) -C xbmc/osx
-endif
-xbox: 
-	$(MAKE) -C xbmc/xbox
-linux: 
-	$(MAKE) -C xbmc/linux
-visualization-interface: 
-	$(MAKE) -C xbmc/visualizations
+	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
+	$(MAKE) xbmc/cores/DllLoader/exports/util/exports_utils.a
+dllloader: exports
+	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
 	$(MAKE) -C xbmc/visualizations/Goom
-screensaver-interface: 
-	$(MAKE) -C xbmc/screensavers
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
-utils: 
-	$(MAKE) -C xbmc/utils
-common: 
-	$(MAKE) -C guilib/common
-tinyxml: 
-	$(MAKE) -C guilib/tinyXML
-sqllite: 
-	$(MAKE) -C xbmc/lib/sqLite
-libscrobbler: 
-	$(MAKE) -C xbmc/lib/libscrobbler
-unrarxlib: 
-	$(MAKE) -C xbmc/lib/UnrarXLib
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
 python: dllloader
 	$(MAKE) -C xbmc/lib/libPython/linux
-libgoahead: 
-	$(MAKE) -C xbmc/lib/libGoAhead
-libupnp: 
-	$(MAKE) -C xbmc/lib/libUPnP
-settings:
-	$(MAKE) -C xbmc/settings
-dvdplayer:
-	$(MAKE) -C xbmc/cores/dvdplayer
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Audio
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Overlay
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDDemuxers
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDInputStreams
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDSubtitles
-	$(MAKE) -C xbmc/cores/VideoRenderers 
-	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders 
 dvdpcodecs: dllloader
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libdvd
 	$(MAKE) -C xbmc/lib/libass/xbmc
-cdrip:
-	$(MAKE) -C xbmc/cdrip
-libcmyth: dllloader 
-	$(MAKE) -C xbmc/lib/libcmyth
-libhts:
-	$(MAKE) -C xbmc/lib/libhts
 eventclients:
 ifeq ($(findstring osx,$(ARCH)), osx)
 	$(MAKE) -C tools/EventClients/Clients/OSXRemote
 else
 	$(MAKE) -C tools/EventClients
 endif
-librtmp:
-	$(MAKE) -C xbmc/lib/libRTMP
-libxbms:
-	$(MAKE) -C xbmc/lib/libXBMS
 libexif: dllloader
 	$(MAKE) -C xbmc/lib/libexif
-librtv:
-	$(MAKE) -C xbmc/lib/libRTV
-libxdaap:
-	$(MAKE) -C xbmc/lib/libXDAAP
 libhdhomerun: dllloader
 	$(MAKE) -C xbmc/lib/libhdhomerun
-libshout:
-	$(MAKE) -C xbmc/lib/libshout
 libid3tag: dllloader
 	$(MAKE) -C xbmc/lib/libid3tag
-papcodecs: dllloader linux dvdpcodecs
+papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
 	$(MAKE) -C xbmc/cores/paplayer/flac-1.2.1
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
-ifneq ($(ARCH), powerpc-osx)
-	$(MAKE) -C xbmc/cores/paplayer/MACDll
-endif
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
-ifneq ($(ARCH), x86_64-linux)
-	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
-	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
-endif
 	$(MAKE) -C xbmc/cores/paplayer/timidity
 	$(MAKE) -C xbmc/cores/paplayer/MPCCodec/xbmc
 	$(MAKE) -C xbmc/cores/paplayer/MP3Codec
@@ -249,23 +275,20 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/vorbisfile
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
+ifneq ($(ARCH), powerpc-osx)
+	$(MAKE) -C xbmc/cores/paplayer/MACDll
+endif
+ifneq ($(ARCH), x86_64-linux)
+	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
+	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
+endif
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
-libkaraoke:
-	$(MAKE) -C xbmc/karaoke
 
 codecs: papcodecs dvdpcodecs
-
 libs: libhdhomerun libid3tag imagelib libexif python
-	
 externals: codecs libs python visualizations screensavers
 more_libs: librtmp libxbms librtv libxdaap libshout libgoahead
-
-compile: guilib xbmc filesystem cores audiorenderers cdrip \
-	paplayer dllloader exports osx xbox linux utils common tinyxml sqllite \
-	libscrobbler libgoahead unrarxlib libpython dvdplayer libupnp libcmyth \
-	librtmp libxbms librtv libxdaap libshout screensaver-interface \
-	visualization-interface externalplayer libkaraoke libhts settings 
 
 # platform independend objects
 OBJSXBMC=	\
@@ -332,7 +355,6 @@ OBJSXBMC += \
 else
 OBJSXBMC += \
 	xbmc/lib/libsmb/libsmbclient-@ARCH@.a
-
 endif
 
 # TODO: XBPythonDLLFuncs.S not implemented on PowerPC
@@ -342,9 +364,7 @@ ifeq ($(ARCH), powerpc64-linux)
 	LIBS += -lpython2.4
 endif
 
-$(wildcard $(OBJSXBMC)) :| compile
-
-xbmc.bin: $(wildcard $(OBJSXBMC)) | compile
+xbmc.bin: $(OBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 else
