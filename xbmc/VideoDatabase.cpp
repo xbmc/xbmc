@@ -5044,6 +5044,8 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       parser.Load("special://xbmc/system/scrapers/video/" + info.strPath);
       info.strLanguage = parser.GetLanguage();
       info.strTitle = parser.GetName();
+      info.strDate = parser.GetDate();
+      info.strFramework = parser.GetFramework();
 
       settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
       settings.recurse = m_pDS->fv("path.scanRecursive").get_asInteger();
@@ -5069,6 +5071,8 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
           parser.Load("special://xbmc/system/scrapers/video/" + info.strPath);
           info.strLanguage = parser.GetLanguage();
           info.strTitle = parser.GetName();
+          info.strDate = parser.GetDate();
+          info.strFramework = parser.GetFramework();
 
           settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
           settings.recurse = m_pDS->fv("path.scanRecursive").get_asInteger();
