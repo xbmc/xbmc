@@ -4,6 +4,7 @@
   <animation effect="fade" start="100" end="0" time="1000" reversible="true">WindowClose</animation>
 
   <controls>
+	<!--
     <control type="image" id="0">
       <posx>0</posx>
       <posy>0</posy>
@@ -11,6 +12,7 @@
       <height>720</height>
       <texture>NowPlayingBG.png</texture>  
     </control>
+	-->
     
     <!-- Normal view -->
     <control type="group">
