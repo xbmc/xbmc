@@ -733,7 +733,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
       --extra-cflags="-w -D_DARWIN_C_SOURCE -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
-      --enable-static \
+      --disable-static \
       --disable-vhook \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
@@ -742,7 +742,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
-      --disable-shared \
+      --enable-shared \
       --disable-ipv6 \
       --disable-decoder=mpeg_xvmc \
       --enable-postproc \
