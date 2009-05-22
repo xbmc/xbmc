@@ -971,6 +971,11 @@ void CVideoReferenceClock::Wait(__int64 Target)
 
       if (Late) //if the vblank clock was late with its update, we update the clock ourselves
       {
+#ifndef HAVE_LIBVDPAU
+        // vdpau spams the log with missed vblanks so only log if vdpau is not compiled in.
+        // actually checking for vdpau enabled is too messy to be used in this routine. 
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: vblank clock was late: SleepTime %i", SleepTime);
+#endif
         m_MissedVblanks++; //tell the vblank clock how many vblanks it missed
         m_TotalMissedVblanks++; //for the codec information screen
         m_VblankTime += m_SystemFrequency / m_RefreshRate; //set the vblank time one vblank period forward
