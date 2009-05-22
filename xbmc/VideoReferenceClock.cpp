@@ -971,6 +971,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
 
       if (Late) //if the vblank clock was late with its update, we update the clock ourselves
       {
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: vblank clock was late: %i SleepTime", SleepTime);
         m_MissedVblanks++; //tell the vblank clock how many vblanks it missed
         m_TotalMissedVblanks++; //for the codec information screen
         m_VblankTime += m_SystemFrequency / m_RefreshRate; //set the vblank time one vblank period forward
