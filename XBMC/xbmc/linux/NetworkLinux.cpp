@@ -382,29 +382,28 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
       DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
       if (reply)
       {
-	        const char*   obj_path          = NULL;
-	        const char*   interface         = NULL;
-	        NMDeviceType  type              = DEVICE_TYPE_UNKNOWN;
-	        const char*   udi               = NULL;
-	        dbus_bool_t   active            = false;
-	        NMActStage    act_stage         = NM_ACT_STAGE_UNKNOWN;
-	        const char*   ipv4_address      = NULL;
-	        const char*   subnetmask        = NULL;
-	        const char*   broadcast         = NULL;
-	        const char*   hw_address        = NULL;
-	        const char*   route             = NULL;
-	        const char*   pri_dns           = NULL;
-	        const char*   sec_dns           = NULL;
-	        dbus_int32_t  mode              = 0;
-	        dbus_int32_t  strength          = -1;
-	        dbus_bool_t   link_active       = false;
-	        dbus_int32_t  speed             = 0;
-	        dbus_uint32_t capabilities      = NM_DEVICE_CAP_NONE;
-	        dbus_uint32_t capabilities_type = NM_DEVICE_CAP_NONE;
-	        char**        networks          = NULL;
-	        int           num_networks      = 0;
-	        const char*   active_net_path   = NULL;
-        
+        const char*   obj_path          = NULL;
+        const char*   interface         = NULL;
+        NMDeviceType  type              = DEVICE_TYPE_UNKNOWN;
+        const char*   udi               = NULL;
+        dbus_bool_t   active            = false;
+        NMActStage    act_stage         = NM_ACT_STAGE_UNKNOWN;
+        const char*   ipv4_address      = NULL;
+        const char*   subnetmask        = NULL;
+        const char*   broadcast         = NULL;
+        const char*   hw_address        = NULL;
+        const char*   route             = NULL;
+        const char*   pri_dns           = NULL;
+        const char*   sec_dns           = NULL;
+        dbus_int32_t  mode              = 0;
+        dbus_int32_t  strength          = -1;
+        dbus_bool_t   link_active       = false;
+        dbus_int32_t  speed             = 0;
+        dbus_uint32_t capabilities      = NM_DEVICE_CAP_NONE;
+        dbus_uint32_t capabilities_type = NM_DEVICE_CAP_NONE;
+        char**        networks          = NULL;
+        int           num_networks      = 0;
+        const char*   active_net_path   = NULL;
 
 	      if (dbus_message_get_args (reply, NULL, 
             DBUS_TYPE_OBJECT_PATH,             &obj_path,
@@ -430,9 +429,8 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 						DBUS_TYPE_ARRAY, DBUS_TYPE_STRING, &networks, &num_networks, DBUS_TYPE_INVALID))
         {
           for (unsigned int i = 0; i < num_networks; i++)
-          {
-           AddNetworkAccessPoint(result, networks[i], con);
-          }
+            AddNetworkAccessPoint(result, networks[i], con);
+
         }
     		dbus_free_string_array (networks);
       	dbus_message_unref (reply);
@@ -440,6 +438,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 		  dbus_message_unref (msg);
 	  }
   }
+  else
   {
     CLog::Log(LOGERROR, "DBus: Could not get system bus: %s", error.message);
     dbus_error_free (&error);
@@ -458,7 +457,7 @@ void CNetworkInterfaceLinux::AddNetworkAccessPoint(std::vector<NetworkAccessPoin
     DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
     if (reply)
     {
-    	const char*  obj_path     = NULL;
+      const char*  obj_path     = NULL;
       const char*  essid        = NULL;
       const char*  hw_address   = NULL;
       dbus_int32_t strength     = -1;
@@ -477,11 +476,17 @@ void CNetworkInterfaceLinux::AddNetworkAccessPoint(std::vector<NetworkAccessPoin
               DBUS_TYPE_INT32,       &rate,
               DBUS_TYPE_INT32,       &mode,
               DBUS_TYPE_INT32,       &capabilities,
-              DBUS_TYPE_BOOLEAN,     &broadcast, DBUS_TYPE_INVALID)) { }
+              DBUS_TYPE_BOOLEAN,     &broadcast, DBUS_TYPE_INVALID))
+      {
+        CLog::Log(LOGERROR, "DBus: Failed to get getProperties of Network on %s", NetworkPath);
+      }
       EncMode encryption = ENC_NONE;
-      if (capabilities & NM_802_11_CAP_PROTO_WEP) { encryption = ENC_WEP; }
-      else if (capabilities & NM_802_11_CAP_PROTO_WPA) { encryption = ENC_WPA; }
-      else if (capabilities & NM_802_11_CAP_PROTO_WPA2) { encryption = ENC_WPA2; }
+      if (capabilities & NM_802_11_CAP_PROTO_WEP)
+        encryption = ENC_WEP;
+      else if (capabilities & NM_802_11_CAP_PROTO_WPA)
+        encryption = ENC_WPA;
+      else if (capabilities & NM_802_11_CAP_PROTO_WPA2)
+        encryption = ENC_WPA2;
 
       CStdString essId = essid;
       NetworkAccessPoint ap(essId, (int)strength, encryption);
@@ -518,29 +523,28 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
       DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
       if (reply)
       {
-	        const char*   obj_path          = NULL;
-	        const char*   interface         = NULL;
-	        NMDeviceType  type              = DEVICE_TYPE_UNKNOWN;
-	        const char*   udi               = NULL;
-	        dbus_bool_t   active            = false;
-	        NMActStage    act_stage         = NM_ACT_STAGE_UNKNOWN;
-	        const char*   ipv4_address      = NULL;
-	        const char*   subnetmask        = NULL;
-	        const char*   broadcast         = NULL;
-	        const char*   hw_address        = NULL;
-	        const char*   route             = NULL;
-	        const char*   pri_dns           = NULL;
-	        const char*   sec_dns           = NULL;
-	        dbus_int32_t  mode              = 0;
-	        dbus_int32_t  strength          = -1;
-	        dbus_bool_t   link_active       = false;
-	        dbus_int32_t  speed             = 0;
-	        dbus_uint32_t capabilities      = NM_DEVICE_CAP_NONE;
-	        dbus_uint32_t capabilities_type = NM_DEVICE_CAP_NONE;
-	        char**        networks          = NULL;
-	        int           num_networks      = 0;
-	        const char*   active_net_path   = NULL;
-        
+        const char*   obj_path          = NULL;
+        const char*   interface         = NULL;
+        NMDeviceType  type              = DEVICE_TYPE_UNKNOWN;
+        const char*   udi               = NULL;
+        dbus_bool_t   active            = false;
+        NMActStage    act_stage         = NM_ACT_STAGE_UNKNOWN;
+        const char*   ipv4_address      = NULL;
+        const char*   subnetmask        = NULL;
+        const char*   broadcast         = NULL;
+        const char*   hw_address        = NULL;
+        const char*   route             = NULL;
+        const char*   pri_dns           = NULL;
+        const char*   sec_dns           = NULL;
+        dbus_int32_t  mode              = 0;
+        dbus_int32_t  strength          = -1;
+        dbus_bool_t   link_active       = false;
+        dbus_int32_t  speed             = 0;
+        dbus_uint32_t capabilities      = NM_DEVICE_CAP_NONE;
+        dbus_uint32_t capabilities_type = NM_DEVICE_CAP_NONE;
+        char**        networks          = NULL;
+        int           num_networks      = 0;
+        const char*   active_net_path   = NULL;
 
 	      if (dbus_message_get_args (reply, NULL, 
             DBUS_TYPE_OBJECT_PATH,             &obj_path,
