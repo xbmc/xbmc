@@ -1232,8 +1232,6 @@ namespace VIDEO
   {
     // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
     if (0 == items.Size()) return 0;
-    unsigned char md5hash[16];
-    char md5HexString[33];
     XBMC::MD5 md5state;
     int count = 0;
     for (int i = 0; i < items.Size(); ++i)
@@ -1246,9 +1244,7 @@ namespace VIDEO
       if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
         count++;
     }
-    md5state.getDigest(md5hash);
-    XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
-    hash = md5HexString;
+    md5state.getDigest(hash);
     return count;
   }
 
