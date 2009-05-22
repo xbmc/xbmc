@@ -660,6 +660,7 @@ void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& h
   XBMC::MD5 md5state;
   md5state.append(bufferToHash);
   md5state.getDigest(hash);
+  hash.ToLower();
 }
 
 /*
