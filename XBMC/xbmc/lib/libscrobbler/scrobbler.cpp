@@ -191,6 +191,7 @@ void CScrobbler::SetPassword(const CStdString& strPass)
   XBMC::MD5 md5state;
   md5state.append(strPass);
   md5state.getDigest(m_strPasswordHash);
+  m_strPasswordHash.ToLower();
   m_bBadAuth = false;
 }
 
@@ -408,6 +409,7 @@ bool CScrobbler::DoHandshake(time_t now)
   strTimeStamp.Format("%d", now);
   authToken.append(m_strPasswordHash + strTimeStamp);
   authToken.getDigest(strAuthToken);
+  strAuthToken.ToLower();
   
   // Construct handshake URL.
   strHandshakeRequest.Format("http://%s/?hs=true"\
