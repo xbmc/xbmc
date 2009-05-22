@@ -36,7 +36,7 @@ codecs: $(addprefix $(SYSDIR)/, $(LIBS));
 ifeq ($(findstring osx,$(ARCH)), osx)
 # Add -lbundle1.o for powerpc-osx
 ifeq ($(ARCH), powerpc-osx)
-	BUNDLE1_O = -lbundle1.o
+BUNDLE1_O = -lbundle1.o
 endif
 
 $(SYSDIR)/avutil-49-$(ARCH).so: ffmpeg/libavutil/libavutil.dylib
