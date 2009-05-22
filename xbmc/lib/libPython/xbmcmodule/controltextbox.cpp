@@ -149,7 +149,6 @@ namespace PYXBMC
 
   PyObject* ControlTextBox_Scroll(ControlTextBox *self, PyObject *args)
   {
-    PyObject *pObjectText;
     int position = 0;
     if (!PyArg_ParseTuple(args, (char*)"l", &position))
       return NULL;
