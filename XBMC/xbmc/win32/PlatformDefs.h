@@ -32,6 +32,8 @@ typedef __int64 fpos64_t;
 typedef __int64 __off64_t;
 typedef long    __off_t;
 
+#define ssize_t int
+
 #define snprintf _snprintf
 #define ftello64 _ftelli64
 #define fseeko64 _fseeki64
