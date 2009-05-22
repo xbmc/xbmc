@@ -550,13 +550,11 @@ if test "$use_dvdcss" = "yes"; then
   AC_MSG_NOTICE($dvdcss_enabled)
   final_message="$final_message\n  DVDCSS:\tYes"
   BUILD_DVDCSS=1
-  DVDNAV_CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
   DVDREAD_CFLAGS="-D_XBMC -DHAVE_DVDCSS_DVDCSS_H"
 else
   AC_MSG_NOTICE($dvdcss_disabled)
   final_message="$final_message\n  DVDCSS:\tNo"
   BUILD_DVDCSS=0
-  DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
   DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
 fi
 if test "$use_avahi" = "yes"; then
