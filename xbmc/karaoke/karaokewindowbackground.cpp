@@ -313,6 +313,10 @@ void CKaraokeWindowBackground::OnQueueNextItem()
 {
 }
 
+void CKaraokeWindowBackground::OnFileClosed()
+{
+}
+
 void CKaraokeWindowBackground::Pause(bool now_paused)
 {
   if ( m_currentMode == BACKGROUND_VIDEO && m_videoPlayer )

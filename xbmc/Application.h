@@ -46,6 +46,8 @@ class CFileItemList;
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
 #include "utils/Network.h"
+#include "MusicDatabase.h"
+#include "VideoDatabase.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
@@ -129,6 +131,7 @@ public:
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
+  virtual void OnFileClosed();
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
@@ -308,9 +311,11 @@ protected:
   bool m_bSettingsLoaded;
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
-  bool m_playCountUpdated;
   bool m_bPlatformDirectories;
-  int m_updateFileStateCounter;
+  CBookmark VideoResumeBookmark;
+  __int64 m_lastGetTime;
+  __int64 m_lastGetPercentage;
+  CStdString m_lastFileName;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
