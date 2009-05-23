@@ -62,6 +62,7 @@ public:
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
+  virtual void OnFileClosed();
 
 private:
   enum BackgroundMode

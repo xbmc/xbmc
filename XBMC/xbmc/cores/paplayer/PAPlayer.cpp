@@ -70,7 +70,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
     m_channelCount[i]   = 0;
     m_sampleRate[i]     = 0;
     m_bitsPerSample[i]  = 0;
-    
+
     m_pAudioDecoder[i] = NULL;
     m_pcmBuffer[i] = NULL;
     m_bufferPos[i] = 0;
@@ -278,6 +278,9 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
 
   m_bStopPlaying = true;
   m_bStop = true;
+
+  // Call the FileClosed-callback to store resume point etc.
+  m_callback.OnFileClosed();
 
   m_visBufferLength = 0;
   StopThread();
