@@ -4799,7 +4799,7 @@ void CApplication::CheckShutdown()
   if ( m_shutdownTimer.GetElapsedSeconds() > g_guiSettings.GetInt("system.shutdowntime") * 60 )
   {
     // Since it is a sleep instead of a shutdown, let's set everything to reset when we wake up.
-    m_shutdownTimer.StartZero();
+    m_shutdownTimer.Stop();
 
     // Sleep the box
     getApplicationMessenger().Shutdown();
