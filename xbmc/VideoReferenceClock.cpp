@@ -786,7 +786,7 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
 //called from dvdclock to get the clock frequency
 void CVideoReferenceClock::GetFrequency(LARGE_INTEGER *pfreq)
 {
-  pfreq->QuadPart = m_SystemFrequency;
+  QueryPerformanceFrequency(pfreq);
 }
 
 void CVideoReferenceClock::SetSpeed(double Speed)
@@ -944,7 +944,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
   bool          Late;
 
   CSingleLock SingleLock(m_CritSection);
-
+  
   if (m_UseVblank) //when true the vblank is used as clock source
   {
     while (m_CurrTime < Target)
