@@ -521,7 +521,7 @@
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
 				</item>
 				<item id="7">
-					<label>13000</label>
+					<label>5</label>
 					<onclick>ActivateWindow(Settings)</onclick>
 					<icon>special://skin/backgrounds/settings.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Settings_Folder)]</thumb>
