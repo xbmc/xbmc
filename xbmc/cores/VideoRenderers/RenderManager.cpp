@@ -239,14 +239,11 @@ void CXBoxRenderManager::UnInit()
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
   m_bIsStarted = false;
+
+  // free renderer resources.
+  // TODO: we may also want to release the renderer here.
   if (m_pRenderer)
-  {
     m_pRenderer->UnInit();
-#ifndef _LINUX
-    delete m_pRenderer;
-    m_pRenderer = NULL;
-#endif
-  }
 }
 
 void CXBoxRenderManager::SetupScreenshot()
