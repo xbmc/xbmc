@@ -260,7 +260,7 @@ void CPVRManager::GetClientProperties(long clientID)
   }
 }
 
-#define INFO_TOGGLE_TIME    1
+#define INFO_TOGGLE_TIME    1500
 const char* CPVRManager::TranslateInfo(DWORD dwInfo)
 {
   if (dwInfo == PVR_NOW_RECORDING_CHANNEL) return m_nowRecordingChannel;
@@ -285,7 +285,7 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
     }
     else
     {
-      if (timeGetTime() - m_infoToggleStart > INFO_TOGGLE_TIME*1000)
+      if (timeGetTime() - m_infoToggleStart > INFO_TOGGLE_TIME)
       {
         if (m_clients.size() > 0)
         {
@@ -293,9 +293,13 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
           if (m_infoToggleCurrent > m_clients.size()-1)
             m_infoToggleCurrent = 0;
 
+          CLIENTMAPITR itr = m_clients.begin();
+          for (int i = 0; i < m_infoToggleCurrent; i++)
+            itr++;
+
           long long kBTotal = 0;
           long long kBUsed  = 0;
-          if (m_clients[m_infoToggleCurrent]->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
+          if (m_clients[(*itr).first]->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
           {
             kBTotal /= 1024; // Convert to MBytes
             kBUsed /= 1024;  // Convert to MBytes
@@ -306,27 +310,27 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
             m_backendDiskspace = g_localizeStrings.Get(18074);
           }
 
-          int NumChannels = m_clients[m_infoToggleCurrent]->GetNumChannels();
+          int NumChannels = m_clients[(*itr).first]->GetNumChannels();
           if (NumChannels >= 0)
             m_backendChannels.Format("%i", NumChannels);
           else
             m_backendChannels = g_localizeStrings.Get(161);
 
-          int NumTimers = m_clients[m_infoToggleCurrent]->GetNumTimers();
+          int NumTimers = m_clients[(*itr).first]->GetNumTimers();
           if (NumTimers >= 0)
             m_backendTimers.Format("%i", NumTimers);
           else
             m_backendTimers = g_localizeStrings.Get(161);
 
-          int NumRecordings = m_clients[m_infoToggleCurrent]->GetNumRecordings();
+          int NumRecordings = m_clients[(*itr).first]->GetNumRecordings();
           if (NumRecordings >= 0)
             m_backendRecordings.Format("%i", NumRecordings);
           else
             m_backendRecordings = g_localizeStrings.Get(161);
 
-          m_backendName         = m_clients[m_infoToggleCurrent]->GetBackendName();
-          m_backendVersion      = m_clients[m_infoToggleCurrent]->GetBackendVersion();
-          m_backendHost         = m_clients[m_infoToggleCurrent]->GetConnectionString();
+          m_backendName         = m_clients[(*itr).first]->GetBackendName();
+          m_backendVersion      = m_clients[(*itr).first]->GetBackendVersion();
+          m_backendHost         = m_clients[(*itr).first]->GetConnectionString();
         }
         else
         {
@@ -385,15 +389,17 @@ ADDON_STATUS CPVRManager::SetSetting(const CAddon* addon, const char *settingNam
     return STATUS_UNKNOWN;
 
   CLog::Log(LOGINFO, "PVR: set setting of clientName: %s, settingName: %s", addon->m_strName.c_str(), settingName);
-  for (unsigned i=0; i < m_clients.size(); i++)
+  CLIENTMAPITR itr = m_clients.begin();
+  while (itr != m_clients.end())
   {
-    if (m_clients[i]->m_guid == addon->m_guid)
+    if (m_clients[(*itr).first]->m_guid == addon->m_guid)
     {
-      if (m_clients[i]->m_strName == addon->m_strName)
+      if (m_clients[(*itr).first]->m_strName == addon->m_strName)
       {
-        return m_clients[i]->SetSetting(settingName, settingValue);
+        return m_clients[(*itr).first]->SetSetting(settingName, settingValue);
       }
     }
+    itr++;
   }
   return STATUS_UNKNOWN;
 }
@@ -404,20 +410,22 @@ bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
     return false;
 
   CLog::Log(LOGINFO, "PVR: requested restart of clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
-  for (unsigned i=0; i < m_clients.size(); i++)
+  CLIENTMAPITR itr = m_clients.begin();
+  while (itr != m_clients.end())
   {
-    if (m_clients[i]->m_guid == addon->m_guid)
+    if (m_clients[(*itr).first]->m_guid == addon->m_guid)
     {
-      if (m_clients[i]->m_strName == addon->m_strName)
+      if (m_clients[(*itr).first]->m_strName == addon->m_strName)
       {
         CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
-        m_clients[i]->ReInit();
+        m_clients[(*itr).first]->ReInit();
         if (datachanged)
         {
 
         }
       }
     }
+    itr++;
   }
   return true;
 }
@@ -428,18 +436,20 @@ bool CPVRManager::RequestRemoval(const CAddon* addon)
     return false;
 
   CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
-  for (unsigned i=0; i < m_clients.size(); i++)
+  CLIENTMAPITR itr = m_clients.begin();
+  while (itr != m_clients.end())
   {
-    if (m_clients[i]->m_guid == addon->m_guid)
+    if (m_clients[(*itr).first]->m_guid == addon->m_guid)
     {
-      if (m_clients[i]->m_strName == addon->m_strName)
+      if (m_clients[(*itr).first]->m_strName == addon->m_strName)
       {
         CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
-        m_clients[i]->Remove();
-        m_clients.erase(i);
+        m_clients[(*itr).first]->Remove();
+        m_clients.erase((*itr).first);
         return true;
       }
     }
+    itr++;
   }
 
   return false;

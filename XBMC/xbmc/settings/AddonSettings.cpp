@@ -27,6 +27,7 @@
 #include "FileSystem/PluginDirectory.h"
 
 using namespace DIRECTORY;
+using namespace ADDON;
 
 bool CAddonSettings::SaveFromDefault(void)
 {
@@ -162,6 +163,53 @@ bool CAddonSettings::Load(const CURL& url)
     // in the settings dialog
   }
 
+  return true;
+}
+
+bool CAddonSettings::Load(const CAddon& addon)
+{
+  // create the users filepath
+  m_userFileName = GetUserDirectory(addon.m_strPath);
+
+  // If it is a virtual child add-on add the guid to the path
+  if (!addon.m_guid_parent.IsEmpty())
+    m_userFileName += "-" + addon.m_guid;
+
+  CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
+
+  CStdString addonFileName = addon.m_strPath;
+  CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
+  CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
+
+  if (!m_addonXmlDoc.LoadFile(addonFileName))
+  {
+    CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
+    return false;
+  }
+
+  // Make sure that the addon XML has the settings element
+  TiXmlElement *setting = m_addonXmlDoc.RootElement();
+  if (!setting || strcmpi(setting->Value(), "settings") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading Settings %s: cannot find root element 'settings'", addonFileName.c_str());
+    return false;
+  }
+
+  // Load the user saved settings. If it does not exist, create it
+  if (!m_userXmlDoc.LoadFile(m_userFileName))
+  {
+    TiXmlDocument doc;
+    TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+    doc.InsertEndChild(decl);
+
+    TiXmlElement xmlRootElement("settings");
+    doc.InsertEndChild(xmlRootElement);
+
+    m_userXmlDoc = doc;
+
+    // Don't worry about the actual settings, they will be set when the user clicks "Ok"
+    // in the settings dialog
+  }
   return true;
 }
 

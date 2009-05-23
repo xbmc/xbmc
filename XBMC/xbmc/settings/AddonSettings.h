@@ -26,6 +26,7 @@
 #include "tinyXML/tinyxml.h"
 #include "URL.h"
 #include "Settings.h"
+#include "utils/Addon.h"
 
 class CAddonSettings
 {
@@ -37,6 +38,7 @@ public:
 
   bool SaveFromDefault(void);
   virtual bool Load(const CURL& url);
+  virtual bool Load(const ADDON::CAddon& addon);
   virtual bool Save(void);
   void Clear();
 

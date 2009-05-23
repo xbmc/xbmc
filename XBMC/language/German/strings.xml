@@ -2161,6 +2161,17 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="22042">weiß/blau</string>
   <string id="22043">schwarz/weiß</string>
 
+  <string id="23000">Erweiterungen</string>
+  <string id="23001">Lade Erweiterungen</string>
+  <string id="23002">Verfügbare Erweiterungen</string>
+  <string id="23003">Erweiterungsart</string>
+  <string id="23004">Empfohlen</string>
+  <string id="23005">Suche Erweiterungen</string>
+  <string id="23006">Suche...</string>
+  <string id="23007">Neue Suche</string>
+  <string id="23008">Erweiterung konfigurieren</string>
+  <string id="23009">Erweiterung entfernen</string>
+  <string id="23010">Sind sie sicher das die Erweiterung abgeschaltet werden soll?</string>
   <string id="23011">Unbekannte Erweiterung</string>
   <string id="23012">Multitype Erweiterung</string>
   <string id="23013">Visualisierung</string>
@@ -2179,17 +2190,6 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="23026">Pictures-Erweiterung</string>
   <string id="23027">Audio DSP Erweiterung</string>
 
-  <string id="23000">Erweiterungen</string>
-  <string id="23001">Lade Erweiterungen</string>
-  <string id="23002">Verfügbare Erweiterungen</string>
-  <string id="23003">Erweiterungsart</string>
-  <string id="23004">Empfohlen</string>
-  <string id="23005">Suche Erweiterungen</string>
-  <string id="23006">Suche...</string>
-  <string id="23007">Neue Suche</string>
-  <string id="23008">Erweiterung konfigurieren</string>
-  <string id="23009">Erweiterung entfernen</string>
-  <string id="23010">Sind sie sicher das die Erweiterung abgeschaltet werden soll?</string>
   <string id="23040">Erweiterung konnte sich nicht verbinden</string>
   <string id="23041">Bitte überprüfen Sie ihre Einstellungen oder den Server</string>
   <string id="23042">Unbekannter Benutzername für die Erweiterung</string>
@@ -2230,6 +2230,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="23080">Externe Bildschirmschoner verwalten</string>
   <string id="23081">Diese Erweiterung hat keine Einstellungen</string>
   <string id="23082">Verwaltung von Erweiterungen sperren</string>
+  <string id="23083">Erweiterung nochmal verwenden</string>
 
   <string id="29800">Datenbank Modus</string>
   <string id="29801">QWERTY Tastatur</string>

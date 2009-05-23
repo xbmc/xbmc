@@ -466,6 +466,7 @@ CAddon::CAddon()
 void CAddon::Reset()
 {
   m_guid        = "";
+  m_guid_parent = "";
   m_addonType   = ADDON_UNKNOWN;
   m_strPath     = "";
   m_disabled    = false;
@@ -476,6 +477,7 @@ void CAddon::Reset()
   m_strDesc     = "";
   m_disclaimer  = "";
   m_strLibName  = "";
+  m_childs      = 0;
 }
 
 bool CAddon::operator==(const CAddon &rhs) const
@@ -683,6 +685,36 @@ void CAddon::ClearAddonStrings()
 {
   // Unload temporary language strings
   g_localizeStringsTemp.Clear();
+}
+
+
+bool CAddon::CreateChildAddon(const CAddon &parent, CAddon &child)
+{
+  if (parent.m_addonType != ADDON_PVRDLL)
+  {
+    CLog::Log(LOGERROR, "Can't create a child add-on for '%s' and type '%i', is not allowed for this type!", parent.m_strName.c_str(), parent.m_addonType);
+    return false;
+  }
+
+  child = parent;
+  child.m_guid_parent = parent.m_guid;
+  if (!CUtil::CreateGUID(child.m_guid))
+    return false;
+
+  VECADDONS *addons = g_settings.GetAddonsFromType(parent.m_addonType);
+  if (!addons) return false;
+
+  for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+  {
+    if ((*it).m_guid == parent.m_guid)
+    {
+      (*it).m_childs++;
+      child.m_strName.Format("%s #%i", child.m_strName.c_str(), (*it).m_childs);
+      break;
+    }
+  }
+
+  return true;
 }
 
 } /* namespace ADDON */

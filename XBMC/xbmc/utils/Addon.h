@@ -149,8 +149,11 @@ public:
   static void LoadAddonStrings(const CURL &url);
   static void ClearAddonStrings();
 
+  static bool CreateChildAddon(const CAddon &parent, CAddon &child);
+
   /* Beginning of Add-on data fields (readed from info.xml) */
   CStdString m_guid;       ///< Unique identifier for this addon, chosen by developer
+  CStdString m_guid_parent;///< Unique identifier of the parent for this child addon, chosen by developer
   CStdString m_strName;    ///< Name of the addon, can be chosen freely.
   CStdString m_strVersion; ///< Version of the addon, must be in form
   CStdString m_summary;    ///< Short summary of addon
@@ -163,6 +166,7 @@ public:
   CStdString m_disclaimer; ///< if exists, user needs to confirm before installation
   bool       m_disabled;   ///< Is this addon disabled?
   AddonType  m_addonType;  ///< Type identifier of this Add-on
+  int        m_childs;     ///< How many child add-on's are present
 
 private:
   static IAddonCallback *m_cbMultitye;

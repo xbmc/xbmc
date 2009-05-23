@@ -22,8 +22,11 @@
 #include "stdafx.h"
 #include "PVRClientFactory.h"
 #include "DllPVRClient.h"
+#include "Util.h"
+#include "FileSystem/File.h"
 
 using namespace ADDON;
+using namespace XFILE;
 
 CPVRClientFactory::CPVRClientFactory()
 {
@@ -37,10 +40,26 @@ CPVRClientFactory::~CPVRClientFactory()
 
 CPVRClient* CPVRClientFactory::LoadPVRClient(const CAddon& addon, DWORD clientID, IPVRClientCallback *pvrCB) const
 {
-  // add the library name readed from info.xml to the addon's path
-  CStdString strFileName = addon.m_strPath + addon.m_strLibName;
-
 #ifdef HAS_PVRCLIENTS
+  // add the library name readed from info.xml to the addon's path
+  CStdString strFileName;
+  if (addon.m_guid_parent.IsEmpty())
+  {
+    strFileName = addon.m_strPath + addon.m_strLibName;
+  }
+  else
+  {
+    CStdString extension = CUtil::GetExtension(addon.m_strLibName);
+    strFileName = "special://temp/" + addon.m_strLibName;
+    CUtil::RemoveExtension(strFileName);
+    strFileName += "-" + addon.m_guid + extension;
+
+    if (!CFile::Exists(strFileName))
+      CFile::Cache(addon.m_strPath + addon.m_strLibName, strFileName);
+
+    CLog::Log(LOGNOTICE, "Loaded virtual child addon %s", strFileName.c_str());
+  }
+
   // load client
   DllPVRClient* pDll = new DllPVRClient;
   pDll->SetFile(strFileName);

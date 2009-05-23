@@ -390,6 +390,8 @@ public:
   VECSOURCES m_videoSources;
 
   ADDON::VECADDONS  m_allAddons;
+  ADDON::VECADDONS  m_virtualAddons;
+
   ADDON::VECADDONS  m_multitypeAddons;
   ADDON::VECADDONS  m_visualisationAddons;
   ADDON::VECADDONS  m_skinAddons;

@@ -35,6 +35,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   static void ShowAndGetInput(CURL& url);
   static void ShowAndGetInput(SScraperInfo& info);
+  static void ShowAndGetInput(ADDON::CAddon& addon);
   void SetHeading(const CStdString &strHeading);
   void SetSettings(CAddonSettings settings) { m_settings = settings; };
   CAddonSettings GetSettings() { return m_settings; };

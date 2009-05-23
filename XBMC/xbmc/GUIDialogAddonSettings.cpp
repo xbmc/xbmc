@@ -139,10 +139,49 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
     pDialog->DoModal();
 
     settings = pDialog->m_settings;
-    settings.Save();
 
     if (pDialog->m_bConfirmed)
-      CAddonUtils::TransferAddonSettings(url);
+      settings.Save();
+  }
+  else
+  {
+    CGUIDialogOK::ShowAndGetInput(18100,0,23081,0);
+  }
+
+  // Unload temporary language strings
+  CAddon::ClearAddonStrings();
+
+  return;
+}
+
+// \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
+void CGUIDialogAddonSettings::ShowAndGetInput(CAddon& addon)
+{
+  m_url = addon.m_strPath;
+
+  // Load language strings temporarily
+  CAddon::LoadAddonStrings(m_url);
+
+  // Create the dialog
+  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+
+  // Set the heading
+  CStdString heading;
+  heading.Format("$LOCALIZE[23000] - %s", addon.m_strName.c_str());
+  pDialog->SetHeading(heading);
+
+  CAddonSettings settings;
+  if (settings.Load(addon))
+  {
+    pDialog->m_settings = settings;
+    pDialog->DoModal();
+    settings = pDialog->m_settings;
+
+    if (pDialog->m_bConfirmed)
+    {
+      settings.Save();
+      CAddonUtils::TransferAddonSettings(addon);
+    }
   }
   else
   {
@@ -214,10 +253,12 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         }
         else if (strcmp(type, "integer") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
+          m_buttonValues[id] = value;
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmp(type, "ipaddress") == 0 && CGUIDialogNumeric::ShowAndGetIPAddress(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
+          m_buttonValues[id] = value;
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmpi(type, "video") == 0 || strcmpi(type, "music") == 0 ||
@@ -249,12 +290,18 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               bWriteOnly = (strcmpi(option, "writeable") == 0);
 
             if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, ((CGUIButtonControl*) control)->GetLabel(), value, bWriteOnly))
+            {
               ((CGUIButtonControl*) control)->SetLabel2(value);
+              m_buttonValues[id] = value;
+            }
           }
           else if (strcmpi(type, "pictures") == 0)
           {
             if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, ((CGUIButtonControl*) control)->GetLabel(), value))
+            {
               ((CGUIButtonControl*) control)->SetLabel2(value);
+              m_buttonValues[id] = value;
+            }
           }
           else
           {
@@ -286,7 +333,10 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             }
 
             if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, ((CGUIButtonControl*) control)->GetLabel(), value))
+            {
               ((CGUIButtonControl*) control)->SetLabel2(value);
+              m_buttonValues[id] = value;
+            }
           }
         }
         else if (strcmpi(type, "action") == 0)

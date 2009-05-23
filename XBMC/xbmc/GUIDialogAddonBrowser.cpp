@@ -190,6 +190,7 @@ void CGUIDialogAddonBrowser::Update()
 
     CFileItemPtr pItem(new CFileItem(addon.m_strPath, false));
     pItem->SetProperty("Addon.GUID", addon.m_guid);
+    pItem->SetProperty("Addon.parentGUID", addon.m_guid_parent);
     pItem->SetProperty("Addon.Name", addon.m_strName);
     pItem->SetProperty("Addon.Summary", addon.m_summary);
     pItem->SetProperty("Addon.Description", addon.m_strDesc);
@@ -259,8 +260,9 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
         m_type != ADDON_SCRAPER_MUSIC && m_type != ADDON_SCRAPER_PROGRAM)
     {
       /* open up settings dialog */
-      CURL url(pItem->m_strPath);
-      CGUIDialogAddonSettings::ShowAndGetInput(url);
+      CAddon addon;
+      if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+        CGUIDialogAddonSettings::ShowAndGetInput(addon);
     }
   }
 }
@@ -276,6 +278,9 @@ void CGUIDialogAddonBrowser::OnWindowLoaded()
   CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LIST + 5000);
   if (spin) spin->SetVisible(false);
 #endif
+
+  // request available addons update
+  g_settings.GetAllAddons();
 }
 
 void CGUIDialogAddonBrowser::OnWindowUnload()
@@ -337,9 +342,6 @@ void CGUIDialogAddonBrowser::OnGetAddons(const AddonType &type)
   // Add it to our window manager
   m_gWindowManager.AddUniqueInstance(browser);
 
-  // request available addons update
-  g_settings.GetAllAddons();
-
   // present dialog with available addons
   if (ShowAndGetAddons(type, false))
   {
@@ -366,28 +368,50 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
     return false;
 
   pMenu->Initialize();
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
 
   int iSettingsLabel = 23008;
+  int iReUseLabel = 23083;
   int iRemoveLabel = 23009;
 
   int btn_Settings = -1;
+  int btn_ReUse = -1;
   if (m_type != ADDON_SCRAPER_PVR && m_type != ADDON_SCRAPER_VIDEO &&
       m_type != ADDON_SCRAPER_MUSIC && m_type != ADDON_SCRAPER_PROGRAM)
     btn_Settings = pMenu->AddButton(iSettingsLabel);
+  if (m_type == ADDON_PVRDLL && pItem->GetProperty("Addon.parentGUID").IsEmpty())
+    btn_ReUse = pMenu->AddButton(iReUseLabel);
   int btn_Remove = pMenu->AddButton(iRemoveLabel);
 
   pMenu->CenterWindow();
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
-
-  CFileItemPtr pItem = m_vecItems->Get(iItem);
-
   if (btnid == btn_Settings)
   { // present addon settings dialog
-    CURL url(pItem->m_strPath);
-    CGUIDialogAddonSettings::ShowAndGetInput(url);
+    CAddon addon;
+    if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
     return true;
+  }
+  else if (btnid == btn_ReUse)
+  {
+    /* need to determine which addon from allAddons this and add to AddonType specific vector */
+    VECADDONS *addons = g_settings.GetAddonsFromType(m_type);
+    CAddon addon_parent;
+    if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon_parent))
+    {
+      CAddon addon_child;
+      if (CAddon::CreateChildAddon(addon_parent, addon_child))
+      {
+        // add the addon to g_settings, not saving to addons.xml until parent dialog is confirmed
+        addons->push_back(addon_child);
+        g_settings.m_virtualAddons.push_back(addon_child);
+        m_changed = true;
+        Update();
+        return true;
+      }
+    }
   }
   else if (btnid == btn_Remove)
   { // request confirmation
@@ -395,16 +419,15 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
     if (pDialog->ShowAndGetInput(g_localizeStrings.Get(23009), pItem->GetProperty("Addon.Name"), "", g_localizeStrings.Get(23010)))
     {
       CAddon addon;
-      g_settings.AddonFromInfoXML(pItem->m_strPath, addon);
-      CAddon::GetCallbackForType(m_type)->RequestRemoval(&addon);
-
-      g_settings.DisableAddon(pItem->GetProperty("Addon.GUID"), m_type);
-      m_changed = true;
-
-      Update();
+      if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+      {
+        CAddon::GetCallbackForType(m_type)->RequestRemoval(&addon);
+        g_settings.DisableAddon(addon.m_guid, m_type);
+        m_changed = true;
+        Update();
+        return true;
+      }
     }
-
-    return true;
   }
   return false;
 }

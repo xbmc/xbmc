@@ -567,6 +567,7 @@ void CSettings::LoadAddons()
 
   if (pRootElement)
   { // parse addons...
+    m_virtualAddons.clear();
     GetAddons(pRootElement, ADDON_MULTITYPE);
     GetAddons(pRootElement, ADDON_VIZ);
     GetAddons(pRootElement, ADDON_SKIN);
@@ -877,6 +878,11 @@ void CSettings::GetAddons(const TiXmlElement* pRootElement, const AddonType &typ
         if (GetAddon(type, pChild, addon))
         {
           addons->push_back(addon);
+          /* If it is a virtual child add-on push it also to the m_virtualAddons list */
+          if (!addon.m_guid_parent.IsEmpty())
+          {
+            m_virtualAddons.push_back(addon);
+          }
         }
       }
       pChild = pChild->NextSibling();
@@ -908,6 +914,13 @@ bool CSettings::GetAddon(const AddonType &type, const TiXmlNode *node, CAddon &a
   }
   else
     return false;
+
+  // childguid if present
+  const TiXmlNode *pNodeChildGUID = node->FirstChild("childguid");
+  if (pNodeChildGUID && pNodeChildGUID->FirstChild())
+  {
+    addon.m_guid = pNodeChildGUID->FirstChild()->Value();
+  }
 
   // validate path and addon package
   if (!AddonFromInfoXML(addon.m_strPath, addon))
@@ -2737,6 +2750,10 @@ void CSettings::GetAllAddons()
     // everything ok, add to available addons
     m_allAddons.push_back(addon);
   }
+
+  /* Copy also virtual child add-on's to the list */
+  for (unsigned int i = 0; i < m_virtualAddons.size(); i++)
+    m_allAddons.push_back(m_virtualAddons[i]);
 }
 
 bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
@@ -2777,16 +2794,6 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   }
   guid = element->GetText(); // grab guid
 
-  /* Validate guid*/
-  CRegExp guidRE;
-  guidRE.RegComp(ADDON_GUID_RE.c_str());
-  if (guidRE.RegFind(guid.c_str()) != 0)
-  {
-    CLog::Log(LOGERROR, "Addon: %s has invalid <guid> element, ignoring", strPath.c_str());
-    return false;
-  }
-  addon.m_guid = guid; // guid was validated
-
   /* Validate type */
   element = xmlDoc.RootElement()->FirstChildElement("type");
   int type = atoi(element->GetText());
@@ -2796,6 +2803,33 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
     return false;
   }
   addon.m_addonType = (AddonType) type; // type was validated //TODO this cast to AddonType
+
+  /* Validate guid*/
+  CRegExp guidRE;
+  guidRE.RegComp(ADDON_GUID_RE.c_str());
+  if (guidRE.RegFind(guid.c_str()) != 0)
+  {
+    CLog::Log(LOGERROR, "Addon: %s has invalid <guid> element, ignoring", strPath.c_str());
+    return false;
+  }
+  if (addon.m_guid.IsEmpty())
+    addon.m_guid = guid; // guid was validated
+  else
+  {
+    addon.m_guid_parent = guid; // guid was validated and is part of a child addon
+
+    VECADDONS *addons = GetAddonsFromType(addon.m_addonType);
+    if (!addons) return false;
+
+    for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+    {
+      if ((*it).m_guid == addon.m_guid_parent)
+      {
+        (*it).m_childs++;
+        break;
+      }
+    }
+  }
 
   /* Retrieve Name */
   CStdString name;
@@ -2837,6 +2871,7 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
     CLog::Log(LOGERROR, "Addon: %s missing <platform> element, ignoring", strPath.c_str());
     return false;
   }
+
   /* Validate platform */
   platform = element->GetText();
   size_t found = platform.Find("all");
@@ -3006,6 +3041,8 @@ bool CSettings::SetAddons(TiXmlNode *root, const AddonType &type, const VECADDON
 
       XMLUtils::SetString(&element, "name", addon.m_strName);
       XMLUtils::SetPath(&element, "path", addon.m_strPath);
+      if (!addon.m_guid_parent.IsEmpty())
+        XMLUtils::SetString(&element, "childguid", addon.m_guid);
 
       if (!addon.m_icon.IsEmpty())
         XMLUtils::SetPath(&element, "thumbnail", addon.m_icon);

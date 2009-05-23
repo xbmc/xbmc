@@ -177,7 +177,7 @@ void CAddonUtils::OpenAddonSettings(void *addonData)
     CURL cUrl(addon->m_strPath);
     CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
 
-    g_currentAddonSettings.Load(cUrl);
+    g_currentAddonSettings.Load(*addon);
     CAddon::LoadAddonStrings(cUrl);
   }
   catch (std::exception &e)
@@ -186,42 +186,20 @@ void CAddonUtils::OpenAddonSettings(void *addonData)
   }
 }
 
-void CAddonUtils::TransferAddonSettings(const CURL &url)
-{
-  // Path where the addon resides
-  CStdString pathToAddon;
-  url.GetURL(pathToAddon);
-  pathToAddon = CPluginDirectory::TranslatePluginDirectory(pathToAddon);
-
-  CAddon addon;
-  if (g_settings.AddonFromInfoXML(pathToAddon, addon))
-  {
-    addon.m_strPath = pathToAddon;
-    TransferAddonSettings(&addon);
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "Unknown URL %s to transfer AddOn Settings", pathToAddon.c_str());
-  }
-}
-
-void CAddonUtils::TransferAddonSettings(const CAddon* addon)
+void CAddonUtils::TransferAddonSettings(const CAddon &addon)
 {
   bool restart = false;
   ADDON_STATUS reportStatus = STATUS_OK;
 
-  if (addon == NULL)
-    return;
-
-  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon->m_strName.c_str());
+  CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon.m_strName.c_str());
 
   /* Transmit current unified user settings to the PVR Addon */
-  ADDON::IAddonCallback* addonCB = CAddon::GetCallbackForType(addon->m_addonType);
+  ADDON::IAddonCallback* addonCB = CAddon::GetCallbackForType(addon.m_addonType);
 
   CAddonSettings settings;
-  if (!settings.Load(addon->m_strPath))
+  if (!settings.Load(addon))
   {
-    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s during transfer", addon->m_strName.c_str());
+    CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s during transfer", addon.m_strName.c_str());
     return;
   }
 
@@ -240,22 +218,22 @@ void CAddonUtils::TransferAddonSettings(const CAddon* addon)
           strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
           strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
       {
-        status = addonCB->SetSetting(addon, id, (const char*) settings.Get(id).c_str());
+        status = addonCB->SetSetting(&addon, id, (const char*) settings.Get(id).c_str());
       }
       else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
                strcmpi(type, "labelenum") == 0)
       {
         int tmp = atoi(settings.Get(id));
-        status = addonCB->SetSetting(addon, id, (int*) &tmp);
+        status = addonCB->SetSetting(&addon, id, (int*) &tmp);
       }
       else if (strcmpi(type, "bool") == 0)
       {
         bool tmp = settings.Get(id) == "true" ? true : false;
-        status = addonCB->SetSetting(addon, id, (bool*) &tmp);
+        status = addonCB->SetSetting(&addon, id, (bool*) &tmp);
       }
       else
       {
-        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, addon->m_strName.c_str());
+        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, addon.m_strName.c_str());
       }
 
       if (status == STATUS_NEED_RESTART)
@@ -267,7 +245,7 @@ void CAddonUtils::TransferAddonSettings(const CAddon* addon)
   }
 
   if (restart || reportStatus != STATUS_OK)
-    new CAddonStatusHandler(addon, restart ? STATUS_NEED_RESTART : reportStatus, "", true);
+    new CAddonStatusHandler(&addon, restart ? STATUS_NEED_RESTART : reportStatus, "", true);
 }
 
 bool CAddonUtils::GetAddonSetting(void *addonData, const char* settingName, void *settingValue)
@@ -282,7 +260,7 @@ bool CAddonUtils::GetAddonSetting(void *addonData, const char* settingName, void
 
     /* TODO: Add a caching mechanism to prevent a reloading of settings file on every call */
     CAddonSettings settings;
-    if (!settings.Load(addon->m_strPath))
+    if (!settings.Load(*addon))
     {
       CLog::Log(LOGERROR, "Could't get Settings for AddOn: %s", addon->m_strName.c_str());
       return false;

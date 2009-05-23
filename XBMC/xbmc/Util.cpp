@@ -105,6 +105,11 @@
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "Crc32.h"
+#ifdef _WIN32
+#include <objbase.h>
+#else
+#include <uuid/uuid.h>
+#endif
 
 using namespace std;
 using namespace DIRECTORY;
@@ -4571,6 +4576,44 @@ bool CUtil::Command(const CStdStringArray& arrArgs)
   }
 
   return WEXITSTATUS(n) == 0;
+}
+
+bool CUtil::CreateGUID(CStdString &guidStr)
+{
+  char guidStrTmp[40];
+#ifdef _WIN32
+  GUID  guid;
+  guid = GUID_NULL;
+  HRESULT result;
+
+  if (CoInitialize(NULL) != S_OK)
+  {
+    CLog::Log(LOGERROR, "Unable to initalize OLE libraries");
+    return false;
+  }
+  result = CoCreateGuid(&guid);
+  if (result != S_OK)
+  {
+    CLog::Log(LOGERROR, "Unable to create GUID");
+    CoUninitialize();
+    return false;
+  }
+
+  const char *strfmt = "%08lX-%04X-%04x-%02X%02X-%02X%02X%02X%02X%02X%02X";
+  sprintf(guidStrTmp, strfmt, guid.Data1,    guid.Data2,    guid.Data3,    guid.Data4[0],
+                              guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4],
+                              guid.Data4[5], guid.Data4[6], guid.Data4[7], guid.Data1,
+                              guid.Data2,    guid.Data3,    guid.Data4[0], guid.Data4[1],
+                              guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5],
+                              guid.Data4[6], guid.Data4[7]);
+  CoUninitialize();
+#else
+  uuid_t id;
+  uuid_generate(id);
+  uuid_unparse(id, guidStrTmp);
+#endif
+  guidStr = guidStrTmp;
+  return true;
 }
 
 bool CUtil::SudoCommand(const CStdString &strCommand)
