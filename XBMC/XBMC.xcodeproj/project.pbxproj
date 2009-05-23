@@ -88,10 +88,11 @@
 		83A72E080FBE7E1100171871 /* SimpleBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72E040FBE7E1100171871 /* SimpleBuffer.cpp */; };
 		83A72E090FBE7E1100171871 /* WaveFileRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72E060FBE7E1100171871 /* WaveFileRenderer.cpp */; };
 		83A72E0C0FBE7EEE00171871 /* DirectSoundAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72E0A0FBE7EEE00171871 /* DirectSoundAdapter.cpp */; };
-		83A72E130FBE7F0200171871 /* StandardFilters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72E100FBE7F0200171871 /* StandardFilters.cpp */; };
 		83A72E160FBE7F5F00171871 /* AudioManagerClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72E140FBE7F5F00171871 /* AudioManagerClient.cpp */; };
 		83A72E1B0FBE804900171871 /* PassthroughAudioClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72E170FBE804900171871 /* PassthroughAudioClient.cpp */; };
 		83A72E1C0FBE804900171871 /* PCMAudioClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72E190FBE804900171871 /* PCMAudioClient.cpp */; };
+		83AE5F8A0FC658E00004D908 /* DSPFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83AE5F880FC658E00004D908 /* DSPFilter.cpp */; };
+		83AE5F8D0FC658F40004D908 /* DSPChain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83AE5F8B0FC658F40004D908 /* DSPChain.cpp */; };
 		83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
 		83E0B24A0F7C95FF0091643F /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83E0B2480F7C95FF0091643F /* Atomics.cpp */; };
 		880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
@@ -1888,14 +1889,16 @@
 		83A72E070FBE7E1100171871 /* WaveFileRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveFileRenderer.h; path = masteraudio/Util/WaveFileRenderer.h; sourceTree = "<group>"; };
 		83A72E0A0FBE7EEE00171871 /* DirectSoundAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DirectSoundAdapter.cpp; path = masteraudio/DirectSoundAdapter.cpp; sourceTree = "<group>"; };
 		83A72E0B0FBE7EEE00171871 /* DirectSoundAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectSoundAdapter.h; path = masteraudio/DirectSoundAdapter.h; sourceTree = "<group>"; };
-		83A72E100FBE7F0200171871 /* StandardFilters.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StandardFilters.cpp; path = masteraudio/Filters/StandardFilters.cpp; sourceTree = "<group>"; };
-		83A72E110FBE7F0200171871 /* StandardFilters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StandardFilters.h; path = masteraudio/Filters/StandardFilters.h; sourceTree = "<group>"; };
 		83A72E140FBE7F5F00171871 /* AudioManagerClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioManagerClient.cpp; path = masteraudio/AudioManagerClient.cpp; sourceTree = "<group>"; };
 		83A72E150FBE7F5F00171871 /* AudioManagerClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioManagerClient.h; path = masteraudio/AudioManagerClient.h; sourceTree = "<group>"; };
 		83A72E170FBE804900171871 /* PassthroughAudioClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PassthroughAudioClient.cpp; path = masteraudio/PassthroughAudioClient.cpp; sourceTree = "<group>"; };
 		83A72E180FBE804900171871 /* PassthroughAudioClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PassthroughAudioClient.h; path = masteraudio/PassthroughAudioClient.h; sourceTree = "<group>"; };
 		83A72E190FBE804900171871 /* PCMAudioClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PCMAudioClient.cpp; path = masteraudio/PCMAudioClient.cpp; sourceTree = "<group>"; };
 		83A72E1A0FBE804900171871 /* PCMAudioClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCMAudioClient.h; path = masteraudio/PCMAudioClient.h; sourceTree = "<group>"; };
+		83AE5F880FC658E00004D908 /* DSPFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DSPFilter.cpp; path = masteraudio/Filters/DSPFilter.cpp; sourceTree = "<group>"; };
+		83AE5F890FC658E00004D908 /* DSPFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DSPFilter.h; path = masteraudio/Filters/DSPFilter.h; sourceTree = "<group>"; };
+		83AE5F8B0FC658F40004D908 /* DSPChain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DSPChain.cpp; path = masteraudio/DSPChain.cpp; sourceTree = "<group>"; };
+		83AE5F8C0FC658F40004D908 /* DSPChain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DSPChain.h; path = masteraudio/DSPChain.h; sourceTree = "<group>"; };
 		83E0B2470F7C95FF0091643F /* Atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomics.h; sourceTree = "<group>"; };
 		83E0B2480F7C95FF0091643F /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
 		8806941E0DCF67A500836761 /* libSDL_image-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_image-x86-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_image-x86-osx.a"; sourceTree = "<group>"; };
@@ -3988,6 +3991,8 @@
 		83A72DF70FBE7C8A00171871 /* masteraudio */ = {
 			isa = PBXGroup;
 			children = (
+				83AE5F8B0FC658F40004D908 /* DSPChain.cpp */,
+				83AE5F8C0FC658F40004D908 /* DSPChain.h */,
 				83A72E030FBE7DF000171871 /* Util */,
 				83A72E020FBE7DE000171871 /* RendererAdapters */,
 				83A72E010FBE7DD600171871 /* DSPFilters */,
@@ -4016,8 +4021,8 @@
 		83A72E010FBE7DD600171871 /* DSPFilters */ = {
 			isa = PBXGroup;
 			children = (
-				83A72E100FBE7F0200171871 /* StandardFilters.cpp */,
-				83A72E110FBE7F0200171871 /* StandardFilters.h */,
+				83AE5F880FC658E00004D908 /* DSPFilter.cpp */,
+				83AE5F890FC658E00004D908 /* DSPFilter.h */,
 			);
 			name = DSPFilters;
 			sourceTree = "<group>";
@@ -7965,10 +7970,11 @@
 				83A72E080FBE7E1100171871 /* SimpleBuffer.cpp in Sources */,
 				83A72E090FBE7E1100171871 /* WaveFileRenderer.cpp in Sources */,
 				83A72E0C0FBE7EEE00171871 /* DirectSoundAdapter.cpp in Sources */,
-				83A72E130FBE7F0200171871 /* StandardFilters.cpp in Sources */,
 				83A72E160FBE7F5F00171871 /* AudioManagerClient.cpp in Sources */,
 				83A72E1B0FBE804900171871 /* PassthroughAudioClient.cpp in Sources */,
 				83A72E1C0FBE804900171871 /* PCMAudioClient.cpp in Sources */,
+				83AE5F8A0FC658E00004D908 /* DSPFilter.cpp in Sources */,
+				83AE5F8D0FC658F40004D908 /* DSPChain.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
