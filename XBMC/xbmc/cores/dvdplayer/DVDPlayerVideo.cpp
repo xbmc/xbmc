@@ -765,7 +765,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 {
 #ifdef HAS_VIDEO_PLAYBACK
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
-  if (m_output.width != pPicture->iWidth
+  if (!g_renderManager.IsConfigured()
+   || m_output.width != pPicture->iWidth
    || m_output.height != pPicture->iHeight
    || m_output.dwidth != pPicture->iDisplayWidth
    || m_output.dheight != pPicture->iDisplayHeight
