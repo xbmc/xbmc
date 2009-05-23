@@ -107,8 +107,8 @@
 #include "Crc32.h"
 #ifdef _WIN32
 #include <objbase.h>
-#else
-#include <uuid/uuid.h>
+#elif HAVE_LIBUUID__
+#include <uuid++.hh>
 #endif
 
 using namespace std;
@@ -4607,12 +4607,45 @@ bool CUtil::CreateGUID(CStdString &guidStr)
                               guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5],
                               guid.Data4[6], guid.Data4[7]);
   CoUninitialize();
-#else
-  uuid_t id;
-  uuid_generate(id);
-  uuid_unparse(id, guidStrTmp);
-#endif
   guidStr = guidStrTmp;
+#elif HAVE_LIBUUID__
+  uuid id;
+  id.make(UUID_MAKE_V1);
+  guidStr = id.string();
+#else
+  char *pGuidStr = guidStrTmp;
+  int i;
+
+  srand(static_cast<unsigned int> (time(NULL))); /*Randomize based on time.*/
+
+  /*Data1 - 8 characters.*/
+  for(i = 0; i < 8; i++, pGuidStr++)
+    ((*pGuidStr = (rand() % 16)) < 10) ? *pGuidStr += 48 : *pGuidStr += 55; 
+
+  /*Data2 - 4 characters.*/
+  *pGuidStr++ = '-'; 
+  for(i = 0; i < 4; i++, pGuidStr++)
+    ((*pGuidStr = (rand() % 16)) < 10) ? *pGuidStr += 48 : *pGuidStr += 55;
+
+  /*Data3 - 4 characters.*/
+  *pGuidStr++ = '-'; 
+  for(i = 0; i < 4; i++, pGuidStr++)
+    ((*pGuidStr = (rand() % 16)) < 10) ? *pGuidStr += 48 : *pGuidStr += 55;
+
+  /*Data4 - 4 characters.*/
+  *pGuidStr++ = '-'; 
+  for(i = 0; i < 4; i++, pGuidStr++)
+    ((*pGuidStr = (rand() % 16)) < 10) ? *pGuidStr += 48 : *pGuidStr += 55;
+
+  /*Data5 - 12 characters.*/
+  *pGuidStr++ = '-'; 
+  for(i = 0; i < 12; i++, pGuidStr++)
+    ((*pGuidStr = (rand() % 16)) < 10) ? *pGuidStr += 48 : *pGuidStr += 55;
+  
+  *pGuidStr = '\0'; 
+
+  guidStr = guidStrTmp;
+#endif
   return true;
 }
 

@@ -103,6 +103,9 @@
 /* Define to 1 if you have the `cdio' library (-lcdio). */
 #undef HAVE_LIBCDIO
 
+/* Define to 1 if you have the `libuuid++' library (-luuid++). */
+#undef HAVE_LIBUUID__
+
 /* Define to 1 if you have the `curl' library (-lcurl). */
 #undef HAVE_LIBCURL
 
