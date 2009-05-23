@@ -1323,7 +1323,8 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     requested for it. (settings -> video -> player -> rendermethod)
    */
   if (glCreateProgram // TODO: proper check
-      && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
+      && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL
+            || requestedMethod==RENDER_METHOD_VDPAU))
   {
     if (m_pYUVShader)
     {
