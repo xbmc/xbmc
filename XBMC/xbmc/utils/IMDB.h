@@ -34,6 +34,7 @@
 #include "ScraperParser.h"
 #include "VideoInfoTag.h"
 #include "ScraperSettings.h"
+#include "DateTime.h"
 #include "FileSystem/FileCurl.h"
 
 // forward definitions
@@ -41,7 +42,15 @@ class TiXmlDocument;
 class CGUIDialogProgress;
 
 typedef std::vector<CScraperUrl> IMDB_MOVIELIST;
-typedef std::map<std::pair<int,int>,CScraperUrl> IMDB_EPISODELIST;
+
+typedef struct
+{
+  std::pair<int,int> key;
+  CDateTime cDate;
+  CScraperUrl cScraperUrl;
+} IMDB_EPISODE;
+
+typedef std::vector<IMDB_EPISODE> IMDB_EPISODELIST;
 
 class CIMDB : public CThread
 {

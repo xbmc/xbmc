@@ -72,6 +72,19 @@
    like special://masterprofile/ */
 #define PROFILES_FILE "special://masterprofile/profiles.xml"
 
+struct TVShowRegexp
+{
+  bool byDate;
+  CStdString regexp;
+  TVShowRegexp(bool d, const CStdString& r)
+  {
+    byDate = d;
+    regexp = r;
+  }
+};
+
+typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
+
 class CSkinString
 {
 public:
@@ -210,7 +223,7 @@ public:
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
-    CStdStringArray m_tvshowStackRegExps;
+    SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
@@ -444,6 +457,7 @@ public:
 
 protected:
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
+  void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
   void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
