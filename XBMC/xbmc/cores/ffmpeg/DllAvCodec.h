@@ -20,12 +20,13 @@ extern "C" {
 #endif
 
 #if (defined USE_EXTERNAL_FFMPEG)
-  #error "Use of external ffmpeg is currently unsupported."
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
   #elif (defined HAVE_FFMPEG_AVCODEC_H)
     #include <ffmpeg/avcodec.h>
   #endif
+  /* We'll just inlude this header in our project for now */
+  #include "audioconvert.h"
 #else
   #include "avcodec.h"
   #include "audioconvert.h"
@@ -265,7 +266,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
 {
 public:
   
-  virtual ~DllAvUtil() {}
+  virtual ~DllAvUtilBase() {}
  #if LIBAVUTIL_VERSION_INT < (50<<16)
    virtual void av_log_set_callback(void (*foo)(void*, int, const char*, va_list)) { ::av_log_set_callback(foo); }
  #endif
