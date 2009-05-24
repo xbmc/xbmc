@@ -337,7 +337,7 @@ public:
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
   static void ClearFileItemCache();
 
-  static bool CreateGUID(CStdString &guidStr);
+  static CStdString CreateUUID();
 
 #ifdef _LINUX
   // this will run the command using sudo in a new process.

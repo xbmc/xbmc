@@ -698,8 +698,7 @@ bool CAddon::CreateChildAddon(const CAddon &parent, CAddon &child)
 
   child = parent;
   child.m_guid_parent = parent.m_guid;
-  if (!CUtil::CreateGUID(child.m_guid))
-    return false;
+  child.m_guid = CUtil::CreateUUID();
 
   VECADDONS *addons = g_settings.GetAddonsFromType(parent.m_addonType);
   if (!addons) return false;

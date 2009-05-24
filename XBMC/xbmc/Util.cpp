@@ -105,13 +105,6 @@
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "Crc32.h"
-#ifdef _WIN32
-#include <objbase.h>
-#elif HAVE_LIBLIBOSSP_UUID__
-#include <ossp/uuid++.hh>
-#elif HAVE_LIBUUID__
-#include <uuid++.hh>
-#endif
 
 using namespace std;
 using namespace DIRECTORY;
@@ -4542,75 +4535,44 @@ void CUtil::ClearFileItemCache()
   }
 }
 
-bool CUtil::CreateGUID(CStdString &guidStr)
+CStdString CUtil::CreateUUID()
 {
-  char guidStrTmp[40];
-#ifdef _WIN32
-  GUID  guid;
-  guid = GUID_NULL;
-  HRESULT result;
-
-  if (CoInitialize(NULL) != S_OK)
-  {
-    CLog::Log(LOGERROR, "Unable to initalize OLE libraries");
-    return false;
-  }
-  result = CoCreateGuid(&guid);
-  if (result != S_OK)
-  {
-    CLog::Log(LOGERROR, "Unable to create GUID");
-    CoUninitialize();
-    return false;
-  }
-
-  const char *strfmt = "%08lX-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X";
-  sprintf(guidStrTmp, strfmt, guid.Data1,    guid.Data2,    guid.Data3,    guid.Data4[0],
-                              guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4],
-                              guid.Data4[5], guid.Data4[6], guid.Data4[7], guid.Data1,
-                              guid.Data2,    guid.Data3,    guid.Data4[0], guid.Data4[1],
-                              guid.Data4[2], guid.Data4[3], guid.Data4[4], guid.Data4[5],
-                              guid.Data4[6], guid.Data4[7]);
-  CoUninitialize();
-  guidStr = guidStrTmp;
-#elif defined (HAVE_LIBLIBOSSP_UUID__) || defined(HAVE_LIBUUID__)
-  uuid id;
-  id.make(UUID_MAKE_V1);
-  guidStr = id.string();
-#else
-  char *pGuidStr = guidStrTmp;
+  /* This function generate a DCE 1.1, ISO/IEC 11578:1996 and IETF RFC-4122
+   * Version 4 conform local unique UUID based upon random number generation.
+   */
+  char UuidStrTmp[40];
+  char *pUuidStr = UuidStrTmp;
   int i;
 
   srand(static_cast<unsigned int> (time(NULL))); /*Randomize based on time.*/
 
   /*Data1 - 8 characters.*/
-  for(i = 0; i < 8; i++, pGuidStr++)
-    ((*pGuidStr = (rand() % 16)) < 10) ? *pGuidStr += 48 : *pGuidStr += 55; 
+  for(i = 0; i < 8; i++, pUuidStr++)
+    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55; 
 
   /*Data2 - 4 characters.*/
-  *pGuidStr++ = '-'; 
-  for(i = 0; i < 4; i++, pGuidStr++)
-    ((*pGuidStr = (rand() % 16)) < 10) ? *pGuidStr += 48 : *pGuidStr += 55;
+  *pUuidStr++ = '-'; 
+  for(i = 0; i < 4; i++, pUuidStr++)
+    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
 
   /*Data3 - 4 characters.*/
-  *pGuidStr++ = '-'; 
-  for(i = 0; i < 4; i++, pGuidStr++)
-    ((*pGuidStr = (rand() % 16)) < 10) ? *pGuidStr += 48 : *pGuidStr += 55;
+  *pUuidStr++ = '-'; 
+  for(i = 0; i < 4; i++, pUuidStr++)
+    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
 
   /*Data4 - 4 characters.*/
-  *pGuidStr++ = '-'; 
-  for(i = 0; i < 4; i++, pGuidStr++)
-    ((*pGuidStr = (rand() % 16)) < 10) ? *pGuidStr += 48 : *pGuidStr += 55;
+  *pUuidStr++ = '-'; 
+  for(i = 0; i < 4; i++, pUuidStr++)
+    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
 
   /*Data5 - 12 characters.*/
-  *pGuidStr++ = '-'; 
-  for(i = 0; i < 12; i++, pGuidStr++)
-    ((*pGuidStr = (rand() % 16)) < 10) ? *pGuidStr += 48 : *pGuidStr += 55;
+  *pUuidStr++ = '-'; 
+  for(i = 0; i < 12; i++, pUuidStr++)
+    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
   
-  *pGuidStr = '\0'; 
+  *pUuidStr = '\0'; 
 
-  guidStr = guidStrTmp;
-#endif
-  return true;
+  return UuidStrTmp;
 }
 
 #ifdef _LINUX
