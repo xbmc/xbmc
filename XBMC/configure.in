@@ -488,9 +488,7 @@ else
 fi
 
 # External FFmpeg
-if test "$use_external_ffmpeg" = "yes"; then
-  AC_MSG_ERROR([Use of external ffmpeg is currently unsupported.])
-
+if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"; then
   AC_CHECK_LIB([avcodec],          [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([avformat],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([avutil],           [main],, AC_MSG_ERROR($missing_library))

@@ -17,7 +17,6 @@ extern "C" {
 #endif
   
 #if (defined USE_EXTERNAL_FFMPEG)
-  #error "Use of external ffmpeg is currently unsupported."
   #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
     #include <libavutil/avutil.h>
   #elif (defined HAVE_FFMPEG_AVUTIL_H)
