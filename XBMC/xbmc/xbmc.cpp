@@ -41,7 +41,8 @@
 
 CApplication g_application;
 
-int main(int argc, char* argv[])
+//int main(int argc, char* argv[])
+int oldMain(int argc, char* argv[])
 {
   CFileItemList playlist;
 #if defined(_LINUX) && defined(DEBUG) && !defined(__APPLE__)
