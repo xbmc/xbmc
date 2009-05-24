@@ -24,8 +24,8 @@
 #include "GUIListItem.h"
 #include "utils/GUIInfoManager.h"
 
-CGUIFixedListContainer::CGUIFixedListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int fixedPosition)
-    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime)
+CGUIFixedListContainer::CGUIFixedListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition)
+    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime, preloadItems)
 {
   ControlType = GUICONTAINER_FIXEDLIST;
   m_type = VIEW_TYPE_LIST;
@@ -34,74 +34,6 @@ CGUIFixedListContainer::CGUIFixedListContainer(DWORD dwParentID, DWORD dwControl
 
 CGUIFixedListContainer::~CGUIFixedListContainer(void)
 {
-}
-
-void CGUIFixedListContainer::Render()
-{
-  ValidateOffset();
-
-  if (m_bInvalidated)
-    UpdateLayout();
-
-  if (!m_focusedLayout || !m_layout) return;
-
-  UpdateScrollOffset();
-
-  int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
-  // Free memory not used on screen at the moment, do this first so there's more memory for the new items.
-  FreeMemory(CorrectOffset(offset, 0), CorrectOffset(offset, m_itemsPerPage + 1));
-
-  g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
-  float posX = m_posX;
-  float posY = m_posY;
-  if (m_orientation == VERTICAL)
-    posY += (offset * m_layout->Size(m_orientation) - m_scrollOffset);
-  else
-    posX += (offset * m_layout->Size(m_orientation) - m_scrollOffset);;
-
-  float focusedPosX = 0;
-  float focusedPosY = 0;
-  CGUIListItemPtr focusedItem;
-  int current = offset;
-  while (posX < m_posX + m_width && posY < m_posY + m_height && m_items.size())
-  {
-    if (current >= (int)m_items.size())
-      break;
-    bool focused = (current == m_offset + m_cursor);
-    if (current >= 0)
-    {
-      CGUIListItemPtr item = m_items[current];
-      // render our item
-      if (focused)
-      {
-        focusedPosX = posX;
-        focusedPosY = posY;
-        focusedItem = item;
-      }
-      else
-        RenderItem(posX, posY, item.get(), focused);
-    }
-
-    // increment our position
-    if (m_orientation == VERTICAL)
-      posY += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
-    else
-      posX += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
-
-    current++;
-  }
-  // and render the focused item last (for overlapping purposes)
-  if (focusedItem)
-    RenderItem(focusedPosX, focusedPosY, focusedItem.get(), true);
-
-  g_graphicsContext.RestoreClipRegion();
-
-  if (m_pageControl)
-  { // tell our pagecontrol (scrollbar or whatever) to update
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, offset);
-    SendWindowMessage(msg);
-  }
-  CGUIBaseContainer::Render();
 }
 
 bool CGUIFixedListContainer::OnAction(const CAction &action)

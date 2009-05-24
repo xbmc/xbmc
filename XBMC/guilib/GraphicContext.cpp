@@ -76,7 +76,7 @@ CGraphicContext::CGraphicContext(void)
   m_maxTextureSize = 2048;
 #endif
   m_dwID = 0;
-  m_strMediaDir = "D:\\media";
+  m_strMediaDir = "";
   m_bCalibrating = false;
   m_Resolution = INVALID;
   m_pCallback = NULL;
@@ -1480,6 +1480,11 @@ void CGraphicContext::EndPaint(CSurface *dest, bool lock)
 #endif
 }
 
+bool CGraphicContext::IsFullScreenRoot () const
+{
+  return m_bFullScreenRoot;
+}
+
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
 #ifndef _WIN32PC
@@ -1671,7 +1676,11 @@ void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
 
 void CGraphicContext::Flip()
 {
+#ifdef HAS_SDL
   m_screenSurface->Flip();
+#else
+  if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+#endif
 }
 
 void CGraphicContext::ApplyHardwareTransform()

@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "Settings.h"
 #include "DVDAudioCodecLiba52.h"
@@ -83,7 +83,7 @@ bool CDVDAudioCodecLiba52::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
 
   SetDefault();
-  
+
   m_pState = m_dll.a52_init(MM_ACCEL_X86_MMX |MM_ACCEL_X86_MMXEXT);
   if (!m_pState)
   {
@@ -158,7 +158,7 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
 
   int channels = 0;
   unsigned int m = m_iOutputMapping<<4;
-  while(m>>=4) channels++;  
+  while(m>>=4) channels++;
 
   // xbox can't handle these
   if(channels == 5 || channels == 3)
@@ -232,7 +232,7 @@ int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
   }
 
   // attempt to fill up to 7 bytes
-  if(m_inputSize < HEADER_SIZE) 
+  if(m_inputSize < HEADER_SIZE)
   {
     len = HEADER_SIZE-m_inputSize;
     if(len > size)
@@ -243,7 +243,7 @@ int CDVDAudioCodecLiba52::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
     size        -= len;
   }
 
-  if(m_inputSize < HEADER_SIZE) 
+  if(m_inputSize < HEADER_SIZE)
     return data - orig;
 
   // attempt to sync by shifting bytes
@@ -308,7 +308,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
   m_dll.a52_frame(m_pState, frame, &flags, &level, bias);
 
   //m_dll.a52_dynrng(m_pState, NULL, NULL);
-  
+
   for (int i = 0; i < 6; i++)
   {
     if (m_dll.a52_block(m_pState) != 0)

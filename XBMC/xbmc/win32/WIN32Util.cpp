@@ -31,6 +31,7 @@
 #include "SpecialProtocol.h"
 #include "my_ntddscsi.h"
 #include "Surface.h"
+#include "Setupapi.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -579,6 +580,135 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
     return S_OK;
 }
 
+// safe removal of USB drives: 
+// http://www.codeproject.com/KB/system/RemoveDriveByLetter.aspx
+// http://www.techtalkz.com/microsoft-device-drivers/250734-remove-usb-device-c-3.html
+
+DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber) 
+{
+
+  GUID* guid = (GUID*)(void*)&GUID_DEVINTERFACE_DISK;
+
+  // Get device interface info set handle for all devices attached to system
+  HDEVINFO hDevInfo = SetupDiGetClassDevs(guid, NULL, NULL, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+
+  if (hDevInfo == INVALID_HANDLE_VALUE)
+    return 0;
+
+  // Retrieve a context structure for a device interface of a device
+  // information set.
+  DWORD dwIndex = 0;
+  SP_DEVICE_INTERFACE_DATA devInterfaceData = {0};
+  devInterfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
+  BOOL bRet = FALSE;
+
+  PSP_DEVICE_INTERFACE_DETAIL_DATA pspdidd;
+  SP_DEVICE_INTERFACE_DATA spdid;
+  SP_DEVINFO_DATA spdd;
+  DWORD dwSize;
+
+  spdid.cbSize = sizeof(spdid);
+
+  while ( true ) 
+  {
+    bRet = SetupDiEnumDeviceInterfaces(hDevInfo, NULL, guid, dwIndex, &devInterfaceData);
+    if (!bRet)
+      break;
+
+    SetupDiEnumInterfaceDevice(hDevInfo, NULL, guid, dwIndex, &spdid);
+
+    dwSize = 0;
+    SetupDiGetDeviceInterfaceDetail(hDevInfo, &spdid, NULL, 0, &dwSize, NULL);
+
+    if ( dwSize ) 
+    {
+      pspdidd = (PSP_DEVICE_INTERFACE_DETAIL_DATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, dwSize);
+      if ( pspdidd == NULL )
+        continue;
+
+      pspdidd->cbSize = sizeof(*pspdidd);
+      ZeroMemory((PVOID)&spdd, sizeof(spdd));
+      spdd.cbSize = sizeof(spdd);
+
+      long res = SetupDiGetDeviceInterfaceDetail(hDevInfo, &spdid,
+      pspdidd, dwSize, &dwSize, &spdd);
+      if ( res ) 
+      {
+        HANDLE hDrive = CreateFile(pspdidd->DevicePath, 0, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, NULL, NULL);
+        if ( hDrive != INVALID_HANDLE_VALUE ) 
+        {
+          STORAGE_DEVICE_NUMBER sdn;
+          DWORD dwBytesReturned = 0;
+          res = DeviceIoControl(hDrive, IOCTL_STORAGE_GET_DEVICE_NUMBER, NULL, 0, &sdn, sizeof(sdn), &dwBytesReturned, NULL);
+          if ( res ) 
+          {
+            if ( DiskNumber == (long)sdn.DeviceNumber ) 
+            {
+              CloseHandle(hDrive);
+              SetupDiDestroyDeviceInfoList(hDevInfo);
+              return spdd.DevInst;
+            }
+          }
+          CloseHandle(hDrive);
+        }
+      }
+      HeapFree(GetProcessHeap(), 0, pspdidd);
+    }
+    dwIndex++;
+  }
+  SetupDiDestroyDeviceInfoList(hDevInfo);
+  return 0;
+}
+
+bool CWIN32Util::EjectDrive(const char cDriveLetter)
+{
+  if( !cDriveLetter )
+    return false;
+
+  CStdString strVolFormat; 
+  strVolFormat.Format( _T("\\\\.\\%c:" ), cDriveLetter);
+
+  long DiskNumber = -1;
+
+  HANDLE hVolume = CreateFile(strVolFormat.c_str(), 0, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, NULL, NULL);
+  if (hVolume == INVALID_HANDLE_VALUE)
+    return false;
+
+  STORAGE_DEVICE_NUMBER sdn;
+  DWORD dwBytesReturned = 0;
+  long res = DeviceIoControl(hVolume, IOCTL_STORAGE_GET_DEVICE_NUMBER,NULL, 0, &sdn, sizeof(sdn), &dwBytesReturned, NULL);
+  CloseHandle(hVolume);
+  if ( res )
+    DiskNumber = sdn.DeviceNumber;
+  else
+    return false;
+
+  DEVINST DevInst = GetDrivesDevInstByDiskNumber(DiskNumber);
+
+  if ( DevInst == 0 )
+    return false;
+
+  ULONG Status = 0;
+  ULONG ProblemNumber = 0;
+  PNP_VETO_TYPE VetoType = PNP_VetoTypeUnknown;
+  char VetoName[MAX_PATH];
+  bool bSuccess = false;
+
+  res = CM_Get_Parent(&DevInst, DevInst, 0); // disk's parent, e.g. the USB bridge, the SATA controller....
+  res = CM_Get_DevNode_Status(&Status, &ProblemNumber, DevInst, 0);
+
+  for(int i=0;i<3;i++)
+  {
+    res = CM_Request_Device_Eject(DevInst, &VetoType, VetoName, MAX_PATH, 0);
+    bSuccess = (res==CR_SUCCESS && VetoType==PNP_VetoTypeUnknown);
+   if ( bSuccess )
+    break;
+  }
+
+  return bSuccess;
+}
+// safe removal
+
 void CWIN32Util::SystemParams::GetDefaults( SysParam *SSysParam )
 {
   SystemParametersInfo(SPI_GETSCREENSAVEACTIVE, 0, &SSysParam->bScrSaver, 0 );
@@ -607,6 +737,23 @@ void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
   SetThreadExecutionState( sSysParam.dwEsFlags );
 }
 
+void CWIN32Util::CheckGLVersion()
+{
+  if(CWIN32Util::HasGLDefaultDrivers())
+  {
+    MessageBox(NULL, "MS default OpenGL drivers detected. Please get OpenGL drivers from your video card vendor", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
+    exit(1);
+  }
+
+  if(!CWIN32Util::HasReqGLVersion())
+  {
+    if(MessageBox(NULL, "Your OpenGL version doesn't meet the XBMC requirements", "XBMC: Warning", MB_OKCANCEL|MB_ICONWARNING) == IDCANCEL)
+    {
+      exit(1);
+    }
+  }
+}
+
 bool CWIN32Util::HasGLDefaultDrivers()
 {
   CStdString strVendor = Surface::CSurface::GetGLVendor();
@@ -621,7 +768,7 @@ bool CWIN32Util::HasReqGLVersion()
 {
   int a=0,b=0;
   Surface::CSurface::GetGLVersion(a, b);
-  if((a>=2) || (a == 1 && b >= 4))
+  if((a>=2) || (a == 1 && b >= 3))
     return true;
   else
     return false;

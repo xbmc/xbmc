@@ -81,27 +81,27 @@ public:
     hint.Clear();
     stream = NULL;
     inited = false;
-    if(startsync) 
+    if(startsync)
       startsync->Release();
     startsync = NULL;
     startpts  = DVD_NOPTS_VALUE;
   }
 };
 
-typedef struct 
+typedef struct
 {
   StreamType   type;
   std::string  filename;
   std::string  language;
   std::string  name;
   int          source;
-  int          id;  
+  int          id;
 } SelectionStream;
 
 class CSelectionStreams
 {
   CCriticalSection m_section;
-  SelectionStream  m_invalid;  
+  SelectionStream  m_invalid;
 public:
   CSelectionStreams()
   {
@@ -115,7 +115,7 @@ public:
   int              IndexOf (StreamType type, CDVDPlayer& p);
   int              Count   (StreamType type) { return IndexOf(type, STREAM_SOURCE_NONE, -1) + 1; }
   SelectionStream& Get     (StreamType type, int index);
-  
+
   void             Clear   (StreamType type, StreamSource source);
   int              Source  (StreamSource source, std::string filename);
 
@@ -192,21 +192,21 @@ public:
   virtual int GetAudioBitrate();
   virtual int GetVideoBitrate();
   virtual int GetSourceBitrate();
-  
+
   virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
-  
+
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
 
   virtual bool IsCaching() const { return m_caching; }
-  virtual int GetCacheLevel() const ; 
+  virtual int GetCacheLevel() const ;
 
-  virtual int OnDVDNavResult(void* pData, int iMessage);    
-protected:  
+  virtual int OnDVDNavResult(void* pData, int iMessage);
+protected:
   friend class CSelectionStreams;
   void LockStreams()                                            { EnterCriticalSection(&m_critStreamSection); }
   void UnlockStreams()                                          { LeaveCriticalSection(&m_critStreamSection); }
-  
+
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
@@ -222,7 +222,7 @@ protected:
   void ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
-  
+
   bool AddSubtitleFile(const std::string& filename);
   /**
    * one of the DVD_PLAYSPEED defines
@@ -281,16 +281,16 @@ protected:
   } m_SpeedState;
 
   int m_errorCount;
-  // classes
+
+  CDVDMessageQueue m_messenger;     // thread messenger
+
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part
   CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
-  
-  CDVDMessageQueue m_messenger;     // thread messenger, only the dvdplayer.cpp class itself may send message to this!
-  
-  CDVDClock m_clock;                // master clock  
+
+  CDVDClock m_clock;                // master clock
   CDVDOverlayContainer m_overlayContainer;
-  
+
   CDVDInputStream* m_pInputStream;  // input stream for current playing file
   CDVDDemux* m_pDemuxer;            // demuxer for current playing file
   CDVDDemux* m_pSubtitleDemuxer;
@@ -313,7 +313,7 @@ protected:
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   } m_dvd;
 
-  CDlgCache *m_pDlgCache;  
+  CDlgCache *m_pDlgCache;
 
   struct SPlayerState
   {

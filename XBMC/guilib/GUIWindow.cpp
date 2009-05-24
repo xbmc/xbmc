@@ -23,7 +23,6 @@
 #include "GUIWindow.h"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
-#include "TextureManager.h"
 #include "Settings.h"
 #include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
@@ -48,7 +47,6 @@ CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
   SetID(dwID);
   m_xmlFile = xmlFile;
   m_dwIDRange = 1;
-  m_saveLastControl = false;
   m_lastControlID = 0;
   m_bRelativeCoords = false;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
@@ -156,7 +154,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     {
       const char *always = pChild->Attribute("always");
       if (always && strcmpi(always, "true") == 0)
-        m_saveLastControl = false;
+        m_defaultAlways = true;
       m_defaultControl = atoi(pChild->FirstChild()->Value());
     }
     else if (strValue == "visible" && pChild->FirstChild())
@@ -216,11 +214,6 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
       {
         if (strcmpi(pControl->Value(), "control") == 0)
         {
-          LoadControl(pControl, NULL);
-        }
-        else if (strcmpi(pControl->Value(), "controlgroup") == 0)
-        {
-          // backward compatibility...
           LoadControl(pControl, NULL);
         }
         pControl = pControl->NextSiblingElement();
@@ -662,21 +655,12 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   QueryPerformanceCounter(&slend);
 
   // and now allocate resources
-  g_TextureManager.StartPreLoad();
-  CGUIControlGroup::PreAllocResources();
-  g_TextureManager.EndPreLoad();
-
-  LARGE_INTEGER plend;
-  QueryPerformanceCounter(&plend);
-
   CGUIControlGroup::AllocResources();
-
-  g_TextureManager.FlushPreLoad();
 
   LARGE_INTEGER end, freq;
   QueryPerformanceCounter(&end);
   QueryPerformanceFrequency(&freq);
-  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load, %.2f ms preload)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (plend.QuadPart - slend.QuadPart) / freq.QuadPart);
+  CLog::Log(LOGDEBUG,"Alloc resources: %.2fms (%.2f ms skin load)", 1000.f * (end.QuadPart - start.QuadPart) / freq.QuadPart, 1000.f * (slend.QuadPart - start.QuadPart) / freq.QuadPart);
 
   m_bAllocated = true;
 }
@@ -785,7 +769,7 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
 void CGUIWindow::SaveControlStates()
 {
   ResetControlStates();
-  if (m_saveLastControl)
+  if (!m_defaultAlways)
     m_lastControlID = GetFocusedControlID();
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
     (*it)->SaveStates(m_controlStates);
@@ -798,7 +782,7 @@ void CGUIWindow::RestoreControlStates()
     CGUIMessage message(GUI_MSG_ITEM_SELECT, GetID(), (*it).m_id, (*it).m_data);
     OnMessage(message);
   }
-  int focusControl = (m_saveLastControl && m_lastControlID) ? m_lastControlID : m_defaultControl;
+  int focusControl = (!m_defaultAlways && m_lastControlID) ? m_lastControlID : m_defaultControl;
   SET_CONTROL_FOCUS(focusControl, 0);
 }
 
@@ -846,7 +830,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
 void CGUIWindow::SetDefaults()
 {
   m_renderOrder = 0;
-  m_saveLastControl = true;
+  m_defaultAlways = false;
   m_defaultControl = 0;
   m_bRelativeCoords = false;
   m_posX = m_posY = m_width = m_height = 0;

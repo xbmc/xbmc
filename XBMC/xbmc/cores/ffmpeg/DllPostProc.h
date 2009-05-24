@@ -90,4 +90,3 @@ class DllPostProc : public DllDynamic, DllPostProcInterface
     RESOLVE_METHOD(pp_free_context)
   END_METHOD_RESOLVE()
 };
-#endif

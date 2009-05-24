@@ -62,6 +62,7 @@ extern "C" {
  * uint32_t device_id = 32-bit device id of device. Set to HDHOMERUN_DEVICE_ID_WILDCARD to match any device ID.
  * uint32_t device_ip = IP address of device. Set to 0 to auto-detect.
  * unsigned int tuner = tuner index (0 or 1). Can be changed later by calling hdhomerun_device_set_tuner.
+ * struct hdhomerun_debug_t *dbg: Pointer to debug logging object. May be NULL.
  *
  * Returns a pointer to the newly created device object.
  *
@@ -80,8 +81,8 @@ extern "C" {
  *     <tuner index>
  *     /tuner<tuner index>
  */
-extern LIBTYPE struct hdhomerun_device_t *hdhomerun_device_create(uint32_t device_id, uint32_t device_ip, unsigned int tuner);
-extern LIBTYPE struct hdhomerun_device_t *hdhomerun_device_create_from_str(const char *device_str);
+extern LIBTYPE struct hdhomerun_device_t *hdhomerun_device_create(uint32_t device_id, uint32_t device_ip, unsigned int tuner, struct hdhomerun_debug_t *dbg);
+extern LIBTYPE struct hdhomerun_device_t *hdhomerun_device_create_from_str(const char *device_str, struct hdhomerun_debug_t *dbg);
 extern LIBTYPE void hdhomerun_device_destroy(struct hdhomerun_device_t *hd);
 
 /*
@@ -189,8 +190,14 @@ extern LIBTYPE int hdhomerun_device_set_var(struct hdhomerun_device_t *hd, const
  * previously held lock. If locking is used then this function must be called
  * before destroying the hdhomerun_device object.
  */
-extern LIBTYPE int hdhomerun_device_tuner_lockkey_request(struct hdhomerun_device_t *hd);
+extern LIBTYPE int hdhomerun_device_tuner_lockkey_request(struct hdhomerun_device_t *hd, char **perror);
 extern LIBTYPE int hdhomerun_device_tuner_lockkey_release(struct hdhomerun_device_t *hd);
+extern LIBTYPE int hdhomerun_device_tuner_lockkey_force(struct hdhomerun_device_t *hd);
+
+/*
+ * Intended only for non persistent connections; eg, hdhomerun_config.
+ */
+extern LIBTYPE void hdhomerun_device_tuner_lockkey_use_value(struct hdhomerun_device_t *hd, uint32_t lockkey);
 
 /*
  * Wait for tuner lock after channel change.
@@ -265,9 +272,7 @@ extern LIBTYPE struct hdhomerun_video_sock_t *hdhomerun_device_get_video_sock(st
 /*
  * Debug print internal stats.
  */
-extern LIBTYPE void hdhomerun_device_set_debug(struct hdhomerun_device_t *hd, struct hdhomerun_debug_t *dbg);
 extern LIBTYPE void hdhomerun_device_debug_print_video_stats(struct hdhomerun_device_t *hd);
-
 extern LIBTYPE void hdhomerun_device_get_video_stats(struct hdhomerun_device_t *hd, struct hdhomerun_video_stats_t *stats);
 
 #ifdef __cplusplus

@@ -22,6 +22,7 @@
 #include "XSyncUtils.h"
 #include "PlatformDefs.h"
 #include "XHandle.h"
+#include "XEventUtils.h"
 
 #ifdef __APPLE__
 #include <mach/mach.h>
@@ -37,6 +38,10 @@
 #include <semaphore.h>
 #include <time.h>
 #include <errno.h>
+#include <stack>
+#include <functional>
+
+using namespace std;
 
 #include "../utils/log.h"
 
@@ -188,32 +193,25 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
+static DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
 {
   DWORD dwRet = 0;
   int   nRet = 0;
 
-  if (dwMilliseconds == 0)
+  if (hHandle->m_bEventSet == false)
   {
-    if (hHandle->m_bEventSet == true)
-      nRet = 0;
-    else
+    if (dwMilliseconds == 0)
       nRet = SDL_MUTEX_TIMEDOUT;
-  }
-  else if (dwMilliseconds == INFINITE)
-  {
-    if (hHandle->m_bEventSet == false)
+
+    else if (dwMilliseconds == INFINITE)
       nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
-    if (hHandle->m_bManualEvent == false)
-      hHandle->m_bEventSet = false;
-  }
-  else
-  {
-    if (hHandle->m_bEventSet == false)
+
+    else
       nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwMilliseconds);
-    if (hHandle->m_bManualEvent == false && nRet != SDL_MUTEX_TIMEDOUT)
-      hHandle->m_bEventSet = false;
   }
+
+  if (hHandle->m_bManualEvent == false && nRet == 0)
+    hHandle->m_bEventSet = false;
 
   // Translate return code.
   if (nRet == 0)
@@ -231,10 +229,10 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
     return WAIT_FAILED;
 
   DWORD dwRet = WAIT_FAILED;
-  BOOL bNeedWait = true;
 
   switch (hHandle->GetType()) {
     case CXHandle::HND_EVENT:
+    case CXHandle::HND_THREAD:
 
       SDL_mutexP(hHandle->m_hMutex);
 
@@ -251,26 +249,14 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
         hHandle->RecursionCount > 0) {
         hHandle->RecursionCount++;
         dwRet = WAIT_OBJECT_0;
-        bNeedWait = false;
+        SDL_mutexV(hHandle->m_hMutex);
+        break;
       }
-      SDL_mutexV(hHandle->m_hMutex);
-
-      if (!bNeedWait)
-        break; // no need for the wait.
-
-    case CXHandle::HND_THREAD:
-
-      SDL_mutexP(hHandle->m_hMutex);
 
       // Perform the wait.
       dwRet = WaitForEvent(hHandle, dwMilliseconds);
 
-      // In case of successful wait with manual event wake up all threads that are waiting.
-      if (dwRet == WAIT_OBJECT_0 && (hHandle->GetType() == CXHandle::HND_EVENT || hHandle->GetType() == CXHandle::HND_THREAD) && hHandle->m_bManualEvent)
-      {
-        SDL_CondBroadcast(hHandle->m_hCond);
-      }
-      else if (dwRet == WAIT_OBJECT_0 && hHandle->GetType() == CXHandle::HND_MUTEX)
+      if (dwRet == WAIT_OBJECT_0)
       {
         hHandle->OwningThread = SDL_ThreadID();
         hHandle->RecursionCount = 1;
@@ -295,9 +281,15 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
   BOOL bWaitEnded    = FALSE;
   DWORD dwStartTime   = SDL_GetTicks();
   BOOL *bDone = new BOOL[nCount];
+  CXHandle* multi = CreateEvent(NULL, FALSE, FALSE, NULL);
 
-  for (unsigned int nFlag=0; nFlag<nCount; nFlag++ )
-    bDone[nFlag] = FALSE;
+  for (unsigned int i=0; i < nCount; i++)
+  {
+    bDone[i] = FALSE;
+    SDL_mutexP(lpHandles[i]->m_hMutex);
+    lpHandles[i]->m_hParents.push_back(multi);
+    SDL_mutexV(lpHandles[i]->m_hMutex);
+  }
 
   DWORD nSignalled = 0;
   while (!bWaitEnded) {
@@ -305,7 +297,7 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
     for (unsigned int i=0; i < nCount; i++) {
 
       if (!bDone[i]) {
-        DWORD dwWaitRC = WaitForSingleObject(lpHandles[i], 20);
+        DWORD dwWaitRC = WaitForSingleObject(lpHandles[i], 0);
         if (dwWaitRC == WAIT_OBJECT_0) {
           dwRet = WAIT_OBJECT_0 + i;
 
@@ -319,12 +311,16 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
           }
         }
         else if (dwWaitRC == WAIT_FAILED) {
+          dwRet = WAIT_FAILED;
           bWaitEnded = TRUE;
           break;
         }
       }
 
     }
+
+    if (bWaitEnded)
+      break;
 
     DWORD dwElapsed = SDL_GetTicks() - dwStartTime;
     if (dwMilliseconds != INFINITE && dwElapsed >= dwMilliseconds) {
@@ -333,11 +329,27 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
       break;
     }
 
-    // wait 100ms between rounds
-    SDL_Delay(100);
+    SDL_mutexP(multi->m_hMutex);
+    DWORD dwWaitRC = WaitForEvent(multi, 200);
+    SDL_mutexV(multi->m_hMutex);
+
+    if(dwWaitRC == WAIT_FAILED)
+    {
+      dwRet = WAIT_FAILED;
+      bWaitEnded = TRUE;
+      break;
+    }
+  }
+
+  for (unsigned int i=0; i < nCount; i++)
+  {
+    SDL_mutexP(lpHandles[i]->m_hMutex);
+    lpHandles[i]->m_hParents.remove_if(bind2nd(equal_to<CXHandle*>(), multi));
+    SDL_mutexV(lpHandles[i]->m_hMutex);
   }
 
   delete [] bDone;
+  CloseHandle(multi);
   return dwRet;
 }
 

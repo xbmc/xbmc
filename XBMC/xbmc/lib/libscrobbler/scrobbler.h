@@ -1,268 +1,174 @@
 /*
-    This file is part of libscrobbler. Modified for XBMC by Bobbin007
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
-    libscrobbler is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    libscrobbler is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with libscrobbler; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-  Copyright © 2003 Russell Garrett (russ-scrobbler@garrett.co.uk)
-*/
-#ifndef _SCROBBLER_H
-#define _SCROBBLER_H
+#ifndef LIBSCROBBLER_H__
+#define LIBSCROBBLER_H__
 
 #include <vector>
+#include "StdString.h"
 #include "Thread.h"
+#include "FileSystem/FileCurl.h"
+#include "CriticalSection.h"
+
+#define SCROBBLER_USER_ERROR_BADAUTH  1
+#define SCROBBLER_USER_ERROR_BANNED   2
 
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
 }
 
-/**
-  An enumeration of the status messages so that clients can
-  do things with them, and not have to parse the text
-  to work out what's going on.
-  If you don't care about these, then you can continue to
-  just override the char* only version of statusUpdate
-*/
-enum ScrobbleStatus
+/* The following structure describes an entry in the scrobbler submission
+ * journal.  Declare members added purely for convenience at the top and
+ * members which will actually be read/written from/to disk under a
+ * version number comment.  Also, remember to bump the version macro in
+ * scrobbler.cpp.
+ */
+typedef struct SubmissionJournalEntry_s
 {
-  S_SUBMITTING = 0,
-
-  S_NOT_SUBMITTING,
-
-  S_CONNECT_ERROR,
-  
-  S_HANDSHAKE_SUCCESS,
-  S_HANDSHAKE_UP_TO_DATE,
-  S_HANDSHAKE_OLD_CLIENT,
-  S_HANDSHAKE_INVALID_RESPONSE,
-  S_HANDSHAKE_BAD_USERNAME,
-  S_HANDSHAKE_ERROR,
-  S_HANDHAKE_NOTREADY,
-
-  S_SUBMIT_SUCCESS,
-  S_SUBMIT_INVALID_RESPONSE,
-  S_SUBMIT_INTERVAL,
-  S_SUBMIT_BAD_PASSWORD,
-  S_SUBMIT_FAILED,
-  S_SUBMIT_BADAUTH,
-
-  S_DEBUG
-
-};
-
-typedef struct SubmissionJournalEntry_s {
+  int        length;
+  // v0
   CStdString strArtist;
   CStdString strAlbum;
   CStdString strTitle;
-  CStdString strLength;
+  CStdString strLength;  // Required if strSource below is "P"
   CStdString strStartTime;
   CStdString strMusicBrainzID;
-  SubmissionJournalEntry_s() {};
-  SubmissionJournalEntry_s(const struct SubmissionJournalEntry_s& j) {
-    strArtist = j.strArtist;
-    strAlbum = j.strAlbum;
-    strTitle = j.strTitle;
-    strLength = j.strLength;
-    strStartTime = j.strStartTime;
-    strMusicBrainzID = j.strMusicBrainzID;
-  };
+  // v1
+  CStdString strTrackNum;
+  CStdString strSource;
+  /* strSource must be one of the following.
+   *  P: Chosen by the user (the most common value, unless you have a reason
+   *     for choosing otherwise, use this).
+   *  R: Non-personalised broadcast (e.g. Shoutcast, BBC Radio 1).
+   *  E: Personalised recommendation except Last.fm (e.g. Pandora, Launchcast).
+   *  L: Last.fm (any mode). In this case, the 5-digit Last.fm recommendation
+   *     key must be appended to this source ID to prove the validity of the
+   *     submission (for example, "o[0]=L1b48a").
+   *  U: Source unknown.
+   */
+  CStdString strRating;
+  /* strRating must be one of the following or empty.
+   *  L: Love (on any mode if the user has manually loved the track). This
+   *     implies a listen.
+   *  B: Ban (only if source=L). This implies a skip, and the client should
+   *     skip to the next track when a ban happens.
+   *  S: Skip (only if source=L)
+   *
+   *  NOTE: This will eventually replace the love/ban web service.
+   */
+  SubmissionJournalEntry_s() {}
+  SubmissionJournalEntry_s(const struct SubmissionJournalEntry_s& j)
+  {
+    strArtist         = j.strArtist;
+    strAlbum          = j.strAlbum;
+    strTitle          = j.strTitle;
+    strLength         = j.strLength;
+    strStartTime      = j.strStartTime;
+    strMusicBrainzID  = j.strMusicBrainzID;
+    strTrackNum       = j.strTrackNum;
+    strSource         = j.strSource;
+    strRating         = j.strRating;
+    length            = j.length;
+  }
+  void Clear()
+  {
+    strArtist.clear();
+    strAlbum.clear();
+    strTitle.clear();
+    strLength.clear();
+    strStartTime.clear();
+    strMusicBrainzID.clear();
+    strTrackNum.clear();
+    strSource = "P";
+    strRating.clear();
+    length = 0;
+  }
 } SubmissionJournalEntry;
 
-/**
-  Audioscrobbler client class.
-  $Id$
-
-  @version  1.1
-  @author   Russ Garrett (russ-scrobbler@garrett.co.uk)
-*/
+typedef std::vector<SubmissionJournalEntry>::iterator SCROBBLERJOURNALITERATOR;
 
 class CScrobbler : public CThread
 {
+protected:
+  bool m_bRunThread;
+  bool m_bNotified;
+  bool m_bSubmitting;
+  bool m_bSubmitted;
+  bool m_bBanned;
+  bool m_bBadAuth;
+  int m_submissionTimer;
+  int m_hardErrorCount;
+  int m_failedHandshakeDelay;
+  int m_action;
+  time_t m_lastFailedHandshake;
+  CStdString m_strLogPrefix;
+  CStdString m_strUsername;
+  CStdString m_strPasswordHash;
+  CStdString m_strSessionID;
+  CStdString m_strHandshakeURL;
+  CStdString m_strNowPlayingURL;
+  CStdString m_strSubmissionURL;
+  CStdString m_strHandshakeTimeStamp;
+  SubmissionJournalEntry m_CurrentTrack;
+  HANDLE m_hEvent;
+  XFILE::CFileCurl  *m_pHttp;
+  CCriticalSection  m_queueLock;
+  CCriticalSection  m_actionLock;
+  std::vector<SubmissionJournalEntry> m_vecSubmissionQueue;
 private:
-  /**
-    Use this to initially set up the username and password. This sends a 
-    handshake request to the server to determine the submit URL and 
-    initial submit interval, and submissions will only be sent when 
-    it recieves a response to this.
-    
-    @param user   The user's Audioscrobbler username.
-    @param pass   The user's Audioscrobbler password.
-    @see      setPassword()
-    @see      setUsername()
-  */
-  CScrobbler();
-  virtual void Process();
-  virtual void OnStartup();
-  virtual void OnExit();
+  void ResetState();
+  void ClearErrorState();
+  void ClearSubmissionState();
+  void ClearSession();
+  void HandleHardError();
+  bool LoadJournal();
+  bool SaveJournal();
+  bool DoHandshake(time_t now);
+  bool HandleHandshake(CStdString &strResponse);
+  bool DoNowPlayingNotification();
+  bool HandleNowPlayingNotification(CStdString &strResponse);
+  bool DoSubmission();
+  bool HandleSubmission(CStdString &strResponse);
+  virtual void Process();  // Shouldn't need over ridden by inheriting CScrobblers
+protected:
+  virtual void NotifyUser(int error);
+  virtual bool CanScrobble();
+  virtual void LoadCredentials();
+  virtual CStdString GetJournalFileName();
 
 public:
+  CScrobbler(const CStdString &strHandshakeURL, const CStdString &strLogPrefix = "CScrobbler");
   virtual ~CScrobbler();
-
-  static void RemoveInstance();
-  static CScrobbler* GetInstance();
-  /**
-    Call this to add a song to the submission queue. The submission will get
-    sent immediately unless the server has told it to cache, in which case it
-    will get sent with the first song submission after the cache period has 
-    expired. 
-    
-    @note Submission is not synchronous, so song submission status is only available through the statusUpdate callback.
-    @note There's no way to tell the class to submit explicitly, it'll try to submit when you addSong.
-
-    @param artist The artist name.
-    @param title  The title of the song.
-    @param length The length of the song in seconds.
-    @param ltime  The time (unix time) in seconds when playback of the song started.
-    @param trackid  The MusicBrainz TrackID of the song (in guid format).
-    @see      statusUpdate()
-    @retval 0   Failure. This could be because the song submitted was too short.
-    @retval 1   This tripped song submission, Scrobbler is now connecting.
-    @retval 2   The submission was cached.
-  */
-  int AddSong(const MUSIC_INFO::CMusicInfoTag& tag);
-
-  /**
-    Set the user's password if it's changed since the constructor.
-
-    @param pass   The user's new password.
-    @see      Scrobbler()
-    @see      setUsername()
-  */
-  void SetPassword(const CStdString& strPass);
-
-  //  should call just after contruction
   void Init();
-
-  // should call juts before deletion
   void Term();
-
-
-  /**
-    Set the user's user name if it's changed since the constructor.
-
-    @param user   The user's new user name.
-    @see      Scrobbler()
-    @see      setUsername()
-  */
-  void SetUsername(const CStdString& strUser);
-
-  void SetSubmitSong(bool bSubmit);
-  bool ShouldSubmit();
-  void SetSongStartTime();
-
+  void AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool lastfmradio);
+  void UpdateStatus();
+  void SubmitQueue();
+  void SetUsername(const CStdString &strUser);
+  void SetPassword(const CStdString &strPass);
   CStdString GetConnectionState();
   CStdString GetSubmitInterval();
   CStdString GetFilesCached();
-  void  SetSecsTillSubmit(int iSecs);
   CStdString GetSubmitState();
-private:
-
-  /**
-    Override this to receive updates on the status of the scrobbler 
-    client to display to the user. You don't have to override this,
-    but it helps.
-  
-    If you do ovveride it, the old text only version won't
-    work any more.
-
-    @param status The status code.
-    @param text   The text of the status update.
-  */
-  virtual void StatusUpdate(ScrobbleStatus status, const CStdString& strText);
-
-  /**
-    old status update - text only
-    
-    Override this to receive updates on the status of the scrobbler 
-    client to display to the user. You don't have to override this,
-    but it helps.
-
-    @param text   The text of the status update.
-  */
-  virtual void StatusUpdate(const CStdString& strText);
-
-  virtual void SetInterval(int in);
-
-  /**
-    Override this to save the cache - called from the destructor.
-
-    @see        LoadJournal()
-    @retval 1   You saved some cache.
-    @retval 0   You didn't save cache, or can't.
-  */
-  virtual int SaveJournal();
-  
-  /**
-    This is called when you should load the cache. Use setCache.
-
-    @see      SaveJournal()
-    @retval 1   You loaded some cache.
-    @retval 0   There was no cache to load, or you can't.
-  */
-  virtual int LoadCache();
-  virtual int LoadJournal();
-
-  virtual void GenSessionKey();
-
-  void DoSubmit();
-  void DoHandshake();
-
-   // call back functions from curl
-  void HandleHandshake(char *handshake);
-  void HandleSubmit(char *data);
-
-  CStdString GetTempFileName();
-  CStdString GetJournalFileName();
-
-  CStdString m_strUserName;
-  CStdString m_strPassword; // MD5 hash
-  CStdString m_strChallenge;
-  CStdString m_strSessionKey;
-  CStdString m_strHsString;
-  CStdString m_strSubmitUrl;
-  CStdString m_strSubmit;
-  CStdString m_strClientId;
-  CStdString m_strClientVer;
-  CStdString m_strPostString;
-  
-  bool m_bReadyToSubmit;
-
-  bool m_bSubmitInProgress;
-
-  bool m_bCloseThread;
-  HANDLE m_hWorkerEvent;
-
-  int m_iSongNum;
-
-  time_t m_Interval;
-  time_t m_LastConnect;
-
-  time_t m_SongStartTime;
-
-  bool m_bUpdateWarningDone;
-  bool m_bConnectionWarningDone;
-  bool m_bAuthWarningDone;
-  bool m_bBadPassWarningDone;
-
-  int m_iSecsTillSubmit;
-  bool m_bShouldSubmit;
-  bool m_bReHandShaking;
-  
-  std::vector<SubmissionJournalEntry> m_vecSubmissionJournal;
-
-  static CScrobbler* m_pInstance;
 };
 
-#endif
+#endif // LIBSCROBBLER_H__

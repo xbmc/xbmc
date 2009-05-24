@@ -25,7 +25,7 @@
 
 #define TIME_TO_SCROLL 200;
 
-CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions)
+CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions, DWORD alignment)
 : CGUIControlGroup(dwParentID, dwControlId, posX, posY, width, height)
 {
   m_itemGap = itemGap;
@@ -33,6 +33,7 @@ CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, 
   m_offset = 0;
   m_totalSize = 10;
   m_orientation = orientation;
+  m_alignment = alignment;
   m_scrollOffset = 0;
   m_scrollSpeed = 0;
   m_scrollTime = 0;
@@ -69,7 +70,7 @@ void CGUIControlGroupList::Render()
   }
   // we run through the controls, rendering as we go
   bool render(g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height));
-  float pos = 0;
+  float pos = GetAlignOffset();
   float focusedPos = 0;
   CGUIControl *focusedControl = NULL;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
@@ -301,6 +302,7 @@ bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **
   float pos = 0;
   CPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
+  float alignOffset = GetAlignOffset();
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     const CGUIControl *child = *it;
@@ -308,8 +310,8 @@ bool CGUIControlGroupList::CanFocusFromPoint(const CPoint &point, CGUIControl **
     {
       if (pos + Size(child) > m_offset && pos < m_offset + Size())
       { // we're on screen
-        float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + pos - m_offset;
-        float offsetY = m_orientation == VERTICAL ? m_posY + pos - m_offset : m_posY;
+        float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + alignOffset + pos - m_offset;
+        float offsetY = m_orientation == VERTICAL ? m_posY + alignOffset + pos - m_offset : m_posY;
         if (child->CanFocusFromPoint(controlCoords - CPoint(offsetX, offsetY), control, controlPoint))
           return true;
       }
@@ -325,6 +327,7 @@ void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
   float pos = 0;
   CPoint controlCoords(point);
   m_transform.InverseTransformPosition(controlCoords.x, controlCoords.y);
+  float alignOffset = GetAlignOffset();
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
@@ -332,7 +335,7 @@ void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
     {
       if (pos + Size(child) > m_offset && pos < m_offset + Size())
       { // we're on screen
-        CPoint offset = (m_orientation == VERTICAL) ? CPoint(m_posX, m_posY + pos - m_offset) : CPoint(m_posX + pos - m_offset, m_posY);
+        CPoint offset = (m_orientation == VERTICAL) ? CPoint(m_posX, m_posY + alignOffset + pos - m_offset) : CPoint(m_posX + alignOffset + pos - m_offset, m_posY);
         child->UnfocusFromPoint(controlCoords - offset);
       }
       pos += Size(child) + m_itemGap;
@@ -380,3 +383,14 @@ bool CGUIControlGroupList::IsLastFocusableControl(const CGUIControl *control) co
   return false;
 }
 
+float CGUIControlGroupList::GetAlignOffset() const
+{
+  if (m_totalSize < Size())
+  {
+    if (m_alignment & XBFONT_RIGHT)
+      return Size() - m_totalSize;
+    if (m_alignment & XBFONT_CENTER_X)
+      return (Size() - m_totalSize)*0.5f;
+  }
+  return 0.0f;
+}

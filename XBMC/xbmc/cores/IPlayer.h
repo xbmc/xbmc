@@ -32,6 +32,7 @@ public:
   virtual void OnPlayBackStarted() = 0;
   virtual void OnPlayBackStopped() = 0;
   virtual void OnQueueNextItem() = 0;
+  virtual void OnFileClosed() = 0;
 };
 
 class CPlayerOptions

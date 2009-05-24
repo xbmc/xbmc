@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDFactoryInputStream.h"
 #include "DVDInputStream.h"
@@ -29,7 +29,7 @@
 #include "../../../FileSystem/cdioSupport.h"
 #include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
-#ifdef ENABLE_DVDPLAYER_HTSP
+#ifdef HAS_FILESYSTEM_HTSP
 #include "DVDInputStreamHTSP.h"
 #endif
 #ifdef ENABLE_DVDINPUTSTREAM_STACK
@@ -66,7 +66,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 #endif
   else if(file.substr(0, 7) == "rtmp://")
     return new CDVDInputStreamRTMP();
-#ifdef ENABLE_DVDPLAYER_HTSP
+#ifdef HAS_FILESYSTEM_HTSP
   else if(file.substr(0, 7) == "htsp://")
     return new CDVDInputStreamHTSP();
 #endif
@@ -75,9 +75,9 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   //  /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */
   //  /* currently ffmpeg isn't able to detect that */
   //  return (new CDVDInputStreamHttp());
-  //else if (item.IsInternetStream() )  
+  //else if (item.IsInternetStream() )
   //  return (new CDVDInputStreamHttp());
-  
+
   // our file interface handles all these types of streams
   return (new CDVDInputStreamFile());
 }

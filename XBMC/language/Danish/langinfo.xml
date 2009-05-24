@@ -19,5 +19,9 @@
       <tempunit>C</tempunit>
       <speedunit>mps</speedunit>
     </region>
-  </regions>
+</regions>
+
+<sorttokens>
+    <token>The</token>
+</sorttokens>
 </language>

@@ -55,7 +55,7 @@ enum StreamType
 
 enum StreamSource {
   STREAM_SOURCE_NONE          = 0x000,
-  STREAM_SOURCE_DEMUX         = 0x100, 
+  STREAM_SOURCE_DEMUX         = 0x100,
   STREAM_SOURCE_NAV           = 0x200,
   STREAM_SOURCE_DEMUX_SUB     = 0x300,
   STREAM_SOURCE_TEXT          = 0x400
@@ -177,7 +177,7 @@ typedef struct DemuxPacket
   int iSize;     // data size
   int iStreamId; // integer representing the stream index
   int iGroupId;  // the group this data belongs to, used to group data from different streams together
-  
+
   double pts; // pts in DVD_TIME_BASE
   double dts; // dts in DVD_TIME_BASE
   double duration; // duration in DVD_TIME_BASE if available
@@ -190,13 +190,13 @@ public:
 
   CDVDDemux() {}
   virtual ~CDVDDemux() {}
-  
-  
+
+
   /*
    * Reset the entire demuxer (same result as closing and opening it)
    */
   virtual void Reset() = 0;
-  
+
   /*
    * Aborts any internal reading that might be stalling main thread
    * NOTICE - this can be called from another thread
@@ -207,13 +207,13 @@ public:
    * Flush the demuxer, if any data is kept in buffers, this should be freed now
    */
   virtual void Flush() = 0;
-  
+
   /*
    * Read a packet, returns NULL on error
-   * 
+   *
    */
   virtual DemuxPacket* Read() = 0;
-  
+
   /*
    * Seek, time in msec calculated from stream start
    */
@@ -221,7 +221,7 @@ public:
 
   /*
    * Seek to a specified chapter.
-   * startpts can be updated to the point where display should start 
+   * startpts can be updated to the point where display should start
    */
   virtual bool SeekChapter(int chapter, double* startpts = NULL) { return false; }
 
@@ -231,7 +231,7 @@ public:
   virtual int GetChapterCount() { return 0; }
 
   /*
-   * Get current chapter 
+   * Get current chapter
    */
   virtual int GetChapter() { return -1; }
 
@@ -250,17 +250,17 @@ public:
    * returns the total time in msec
    */
   virtual int GetStreamLength() = 0;
-  
+
   /*
    * returns the stream or NULL on error, starting from 0
    */
   virtual CDemuxStream* GetStream(int iStreamId) = 0;
-  
+
   /*
    * return nr of streams, 0 if none
    */
   virtual int GetNrOfStreams() = 0;
-  
+
   /*
    * returns opened filename
    */
@@ -269,12 +269,12 @@ public:
    * return nr of audio streams, 0 if none
    */
   int GetNrOfAudioStreams();
-  
+
   /*
    * return nr of video streams, 0 if none
    */
   int GetNrOfVideoStreams();
-  
+
   /*
    * return nr of subtitle streams, 0 if none
    */
@@ -289,10 +289,10 @@ public:
    * return the video stream, or NULL if it does not exist
    */
   CDemuxStreamVideo* GetStreamFromVideoId(int iVideoIndex);
-  
+
   /*
    * return the subtitle stream, or NULL if it does not exist
    */
   CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
-  
+
 };

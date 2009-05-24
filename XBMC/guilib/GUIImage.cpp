@@ -141,7 +141,7 @@ void CGUIImage::Render()
     if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
     { // fade the new one in
       m_currentFadeTime += frameTime;
-      if (m_currentFadeTime > m_crossFadeTime)
+      if (m_currentFadeTime > m_crossFadeTime || frameTime == 0) // for if we allocate straight away on creation
         m_currentFadeTime = m_crossFadeTime;
     }
     m_texture.SetAlpha(GetFadeLevel(m_currentFadeTime));
@@ -183,12 +183,6 @@ bool CGUIImage::OnMessage(CGUIMessage& message)
     return true;
   }
   return CGUIControl::OnMessage(message);
-}
-
-void CGUIImage::PreAllocResources()
-{
-  FreeResources();
-  m_texture.PreAllocResources();
 }
 
 void CGUIImage::AllocResources()

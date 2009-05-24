@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDInputStreamStack.h"
 #include "FileItem.h"
@@ -49,7 +49,7 @@ bool CDVDInputStreamStack::IsEOF()
 
 bool CDVDInputStreamStack::Open(const char* path, const std::string& content)
 {
-  if (!CDVDInputStream::Open(path, content)) 
+  if (!CDVDInputStream::Open(path, content))
     return false;
 
   CStackDirectory dir;

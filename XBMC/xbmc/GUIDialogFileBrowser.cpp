@@ -590,7 +590,7 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, VECSOURC
   {
     CFileItemPtr item(new CFileItem("image://Browse", false));
     item->SetLabel(g_localizeStrings.Get(20153));
-    item->SetThumbnailImage("defaultPictureBig.png");
+    item->SetIconImage("DefaultFolder.png");
     browser->m_vecItems->Add(item);
   }
   browser->SetHeading(heading);

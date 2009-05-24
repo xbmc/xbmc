@@ -36,6 +36,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
+#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
 #include "../ffmpeg/DllAvFormat.h"
 #include "../ffmpeg/DllAvCodec.h"
@@ -126,9 +127,22 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   bool bOk = false;
   if (nVideoStream != -1)
   {
+    CDVDVideoCodec *pVideoCodec;
+    
     CDVDStreamInfo hint(*pStream, true);
     hint.software = true;
-    CDVDVideoCodec *pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
+    
+    if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
+    {
+      // libmpeg2 is not thread safe so use ffmepg for mpeg2/mpeg1 thumb extraction 
+      CDVDCodecOptions dvdOptions;
+      pVideoCodec = CDVDFactoryCodec::OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions);
+    }
+    else
+    {
+      pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
+    }
+
     if (pVideoCodec)
     {
       int nTotalLen = pDemuxer->GetStreamLength();
@@ -138,7 +152,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
       if (pDemuxer->SeekTime(nSeekTo, true))
       {
         DemuxPacket* pPacket = NULL;
-  
+
         bool bHasFrame = false;
         while (!bHasFrame)
         {
@@ -177,7 +191,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
                 dllSwScale.Load();
 
                 BYTE *pOutBuf = (BYTE*)new int[nWidth * nHeight * 4];
-                struct SwsContext *context = dllSwScale.sws_getContext(picture.iWidth, picture.iHeight, 
+                struct SwsContext *context = dllSwScale.sws_getContext(picture.iWidth, picture.iHeight,
                       PIX_FMT_YUV420P, nWidth, nHeight, PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
                 uint8_t *src[] = { picture.data[0], picture.data[1], picture.data[2] };
                 int     srcStride[] = { picture.iLineSize[0], picture.iLineSize[1], picture.iLineSize[2] };
@@ -186,29 +200,29 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
 
                 if (context)
                 {
-                  dllSwScale.sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);  
+                  dllSwScale.sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
                   dllSwScale.sws_freeContext(context);
 
                   CPicture out;
                   out.CreateThumbnailFromSurface(pOutBuf, nWidth, nHeight, nWidth * 4, strTarget);
-                  bOk = true; 
+                  bOk = true;
                 }
 
-                dllSwScale.Unload();                
+                dllSwScale.Unload();
                 delete [] pOutBuf;
               }
-              else 
+              else
               {
                 CLog::Log(LOGDEBUG,"%s - coudln't get picture from decoder in  %s", __FUNCTION__, strPath.c_str());
               }
             }
           }
-          else 
+          else
           {
             CLog::Log(LOGDEBUG,"%s - decode failed in %s", __FUNCTION__, strPath.c_str());
             break;
           }
- 
+
         }
       }
       delete pVideoCodec;
@@ -266,7 +280,7 @@ void CDVDFileInfo::GetFileMetaData(const CStdString &strPath, CFileItem *pItem)
     return ;
   }
 
-  AVFormatContext *pContext = pDemuxer->m_pFormatContext; 
+  AVFormatContext *pContext = pDemuxer->m_pFormatContext;
   if (pContext)
   {
     int nLenMsec = pDemuxer->GetStreamLength();
@@ -293,6 +307,6 @@ void CDVDFileInfo::GetFileMetaData(const CStdString &strPath, CFileItem *pItem)
   delete pDemuxer;
   pInputStream->Close();
   delete pInputStream;
-  
+
 }
 

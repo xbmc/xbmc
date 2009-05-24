@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "RenderManager.h"
 #include "utils/CriticalSection.h"
+#include "VideoReferenceClock.h"
 
 #ifndef HAS_SDL
 #include "PixelShaderRenderer.h"
@@ -123,13 +124,9 @@ double CXBoxRenderManager::GetPresentTime()
 
 void CXBoxRenderManager::WaitPresentTime(double presenttime)
 {
-  double now = GetPresentTime();
-  while(now + 0.001 < presenttime)
-  {
-    Sleep((int)((presenttime - now) * 1000.0));
-    now = GetPresentTime();
-  }
+  CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
 }
+
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   /* all frames before this should be rendered */
@@ -157,6 +154,13 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
   }
   
   return result;
+}
+
+bool CXBoxRenderManager::IsConfigured()
+{
+  if (!m_pRenderer)
+    return false;
+  return m_pRenderer->IsConfigured();
 }
 
 void CXBoxRenderManager::Update(bool bPauseDrawing)
@@ -235,14 +239,11 @@ void CXBoxRenderManager::UnInit()
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
   m_bIsStarted = false;
+
+  // free renderer resources.
+  // TODO: we may also want to release the renderer here.
   if (m_pRenderer)
-  {
     m_pRenderer->UnInit();
-#ifndef _LINUX
-    delete m_pRenderer;
-    m_pRenderer = NULL;
-#endif
-  }
 }
 
 void CXBoxRenderManager::SetupScreenshot()
@@ -286,8 +287,9 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_pRenderer->FlipPage(source);
   }
 
+  m_presentevent.Reset();
   g_application.NewFrame();
-  g_application.WaitFrame(1); // we give the application thread 1ms to present
+  m_presentevent.WaitMSec(1); // we give the application thread 1ms to present
 }
 
 float CXBoxRenderManager::GetMaximumFPS()
@@ -295,7 +297,10 @@ float CXBoxRenderManager::GetMaximumFPS()
   float fps;
 
   if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS || g_videoConfig.GetVSyncMode() == VSYNC_VIDEO) 
-    fps = g_graphicsContext.GetFPS();
+  {
+    fps = g_VideoReferenceClock.GetRefreshRate();
+    if (fps <= 0) fps = g_graphicsContext.GetFPS();
+  }
   else
     fps = 1000.0f;
 
@@ -342,9 +347,14 @@ void CXBoxRenderManager::Present()
 {
   CSharedLock lock(m_sharedSection);
 
+#ifdef HAVE_LIBVDPAU
   /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo())
+  if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
+  {
+    m_presentevent.Set();
     WaitPresentTime(m_presenttime);
+  }
+#endif
 
   if (!m_pRenderer)
   {
@@ -391,6 +401,18 @@ void CXBoxRenderManager::Present()
     PresentBlend();
   else
     PresentSingle();
+
+  /* wait for this present to be valid */
+  if(g_graphicsContext.IsFullScreenVideo())
+  {
+#ifdef HAVE_LIBVDPAU
+    if (!g_VDPAU)
+#endif
+    {
+      m_presentevent.Set();
+      WaitPresentTime(m_presenttime);
+    }
+  }
 }
 
 /* simple present method */

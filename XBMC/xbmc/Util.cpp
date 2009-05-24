@@ -1046,9 +1046,18 @@ bool CUtil::IsVTP(const CStdString& strFile)
   return strFile.Left(4).Equals("vtp:");
 }
 
+bool CUtil::IsHTSP(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("htsp:");
+}
+
 bool CUtil::IsTV(const CStdString& strFile)
 {
-  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile);
+  return IsMythTV(strFile)
+      || IsTuxBox(strFile)
+      || IsVTP(strFile)
+      || IsHDHomeRun(strFile)
+      || IsHTSP(strFile);
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -1192,7 +1201,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
   if ( !CDetectDVDMedia::IsDiscInDrive() )
   {
-    strIcon = "defaultDVDEmpty.png";
+    strIcon = "DefaultDVDEmpty.png";
     return ;
   }
 
@@ -1202,10 +1211,10 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
     //  xbox DVD
     if ( pInfo != NULL && pInfo->IsUDFX( 1 ) )
     {
-      strIcon = "defaultXBOXDVD.png";
+      strIcon = "DefaultXboxDVD.png";
       return ;
     }
-    strIcon = "defaultDVDRom.png";
+    strIcon = "DefaultDVDRom.png";
     return ;
   }
 
@@ -1214,16 +1223,16 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
     CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
-      strIcon = "defaultVCD.png";
+      strIcon = "DefaultVCD.png";
       return ;
     }
-    strIcon = "defaultDVDRom.png";
+    strIcon = "DefaultDVDRom.png";
     return ;
   }
 
   if ( IsCDDA(strPath) )
   {
-    strIcon = "defaultCDDA.png";
+    strIcon = "DefaultCDDA.png";
     return ;
   }
 }
@@ -1874,19 +1883,19 @@ void CUtil::RestoreBrightnessContrastGamma()
   g_graphicsContext.Unlock();
 }
 
-void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate)
+void CUtil::SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate)
 {
-  if (iBrightNess < 0) iBrightNess = 0;
-  if (iBrightNess > 100) iBrightNess = 100;
-  if (iContrast < 0) iContrast = 0;
-  if (iContrast > 100) iContrast = 100;
-  if (iGamma < 0) iGamma = 0;
-  if (iGamma > 100) iGamma = 100;
+  if (brightness < 0) brightness = 0;
+  if (brightness > 100) brightness = 100;
+  if (contrast < 0) contrast = 0;
+  if (contrast > 100) contrast = 100;
+  if (gamma < 0) gamma = 0;
+  if (gamma > 100) gamma = 100;
 
-  float fBrightNess = (((float)iBrightNess) / 50.0f) - 1.0f; // -1..1 Default: 0
-  float fContrast = (((float)iContrast) / 50.0f);      // 0..2  Default: 1
-  float fGamma = (((float)iGamma) / 40.0f) + 0.5f;      // 0.5..3.0 Default: 1
-  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
+  float fBrightNess = brightness / 50.0f - 1.0f; // -1..1    Default: 0
+  float fContrast = contrast / 50.0f;            // 0..2     Default: 1
+  float fGamma = gamma / 40.0f + 0.5f;           // 0.5..3.0 Default: 1
+  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, immediate);
 }
 
 void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
@@ -2359,9 +2368,7 @@ const BUILT_IN commands[] = {
   { "Dialog.Close",               true,   "Close a dialog" },
   { "System.LogOff",              false,  "Log off current user" },
   { "System.Exec",                true,   "Execute shell commands" },
-#ifdef _WIN32PC
   { "System.ExecWait",            true,   "Execute shell commands and freezes XBMC until shell is closed" },
-#endif
   { "Resolution",                 true,   "Change XBMC's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
@@ -2559,7 +2566,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (iWindow != WINDOW_INVALID)
     {
       // disable the screensaver
-      g_application.ResetScreenSaverWindow();
+      g_application.WakeUpScreenSaverAndDPMS();
       if (execute.Equals("activatewindow"))
         m_gWindowManager.ActivateWindow(iWindow, strPath);
       else  // ReplaceWindow
@@ -2609,21 +2616,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_pythonParser.evalFile(strParameterCaseIntact.c_str());
   }
 #endif
-#if defined(_LINUX) && !defined(__APPLE__)
   else if (execute.Equals("system.exec"))
   {
-    system(strParameterCaseIntact.c_str());
-  }
-#elif defined(_WIN32PC)
-  else if (execute.Equals("system.exec"))
-  {
-    CWIN32Util::XBMCShellExecute(strParameterCaseIntact, false);
+    g_application.getApplicationMessenger().Minimize();
+    g_application.getApplicationMessenger().ExecOS(strParameterCaseIntact, false);
   }
   else if (execute.Equals("system.execwait"))
   {
-    CWIN32Util::XBMCShellExecute(strParameterCaseIntact, true);
+    g_application.getApplicationMessenger().Minimize();
+    g_application.getApplicationMessenger().ExecOS(strParameterCaseIntact, true);
   }
-#endif
   else if (execute.Equals("resolution"))
   {
     RESOLUTION res = PAL_4x3;
@@ -2717,7 +2719,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     // reset screensaver
     g_application.ResetScreenSaver();
-    g_application.ResetScreenSaverWindow();
+    g_application.WakeUpScreenSaverAndDPMS();
 
     // set fullscreen or windowed
     if (params2.size() == 2 && params2[1] == "1")
@@ -2805,7 +2807,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("playercontrol"))
   {
     g_application.ResetScreenSaver();
-    g_application.ResetScreenSaverWindow();
+    g_application.WakeUpScreenSaverAndDPMS();
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
@@ -2896,8 +2898,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
+#ifdef HAS_WEB_SERVER
         if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
           g_application.getApplicationMessenger().HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
+#endif
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
@@ -3296,7 +3300,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("updatelibrary"))
   {
-    if (parameter.Equals("music"))
+    CStdStringArray param_array;
+    // Use parameter with case intact
+    StringUtils::SplitString(strParameterCaseIntact,",", param_array);
+    if (param_array.size() < 1)
+      return -1;
+    if (param_array[0].Equals("music"))
     {
       CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
       if (scanner)
@@ -3307,7 +3316,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           scanner->StartScanning("");
       }
     }
-    if (parameter.Equals("video"))
+    if (param_array[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       SScraperInfo info;
@@ -3317,7 +3326,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan("",info,settings);
+          CGUIWindowVideoBase::OnScan(param_array.size() > 1 ? param_array[1] : "",info,settings);
       }
     }
   }
@@ -4459,7 +4468,7 @@ CStdString CUtil::GetDefaultFolderThumb(const CStdString &folderThumb)
 {
   if (g_TextureManager.HasTexture(folderThumb))
     return folderThumb;
-  return "defaultFolderBig.png";
+  return "";
 }
 
 void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
@@ -4523,10 +4532,39 @@ void CUtil::ClearFileItemCache()
 
 #ifdef _LINUX
 
+bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
+{
+  CStdStringArray args;
+
+  StringUtils::SplitString(cmdLine, ",", args);
+
+  // Strip quotes and whitespace around the arguments, or exec will fail.
+  // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
+  // But it's still limited, for example quotes inside the strings are not expanded, etc.
+  // TODO: Maybe some python library routine can parse this more properly ?
+  for (size_t i=0; i<args.size(); i++)
+  {
+    CStdString &s = args[i];
+    CStdString stripd = s.Trim();
+    if (stripd[0] == '"' || stripd[0] == '\'')
+    {
+      s = s.TrimLeft();
+      s = s.Right(s.size() - 1);
+    }
+    if (stripd[stripd.size() - 1] == '"' || stripd[stripd.size() - 1] == '\'')
+    {
+      s = s.TrimRight();
+      s = s.Left(s.size() - 1);
+    }
+  }
+
+  return Command(args, waitExit);
+}
+
 //
 // FIXME, this should be merged with the function below.
 //
-bool CUtil::Command(const CStdStringArray& arrArgs)
+bool CUtil::Command(const CStdStringArray& arrArgs, bool waitExit)
 {
 #ifdef _DEBUG
   printf("Executing: ");
@@ -4553,10 +4591,10 @@ bool CUtil::Command(const CStdStringArray& arrArgs)
   }
   else
   {
-    waitpid(child, &n, 0);
+    if (waitExit) waitpid(child, &n, 0);
   }
 
-  return WEXITSTATUS(n) == 0;
+  return (waitExit) ? (WEXITSTATUS(n) == 0) : true;
 }
 
 bool CUtil::SudoCommand(const CStdString &strCommand)

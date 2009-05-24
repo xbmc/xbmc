@@ -36,7 +36,7 @@ public:
   virtual void Reset();
   virtual void Flush();
   virtual CDVDOverlay* GetOverlay();
-  
+
 private:
   CDVDOverlayText* m_pCurrentOverlay;
 };

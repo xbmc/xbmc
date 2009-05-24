@@ -40,7 +40,9 @@ class CDVDOverlayCodecCC;
 class CDVDPlayerVideo : public CThread
 {
 public:
-  CDVDPlayerVideo(CDVDClock* pClock, CDVDOverlayContainer* pOverlayContainer);
+  CDVDPlayerVideo( CDVDClock* pClock
+                 , CDVDOverlayContainer* pOverlayContainer
+                 , CDVDMessageQueue& parent);
   virtual ~CDVDPlayerVideo();
 
   bool OpenStream(CDVDStreamInfo &hint);
@@ -61,7 +63,7 @@ public:
   void Update(bool bPauseDrawing)                   { }
 #endif
   void UpdateMenuPicture();
- 
+
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled()                          { return m_bRenderSubs; }
 
@@ -89,7 +91,7 @@ public:
   int GetNrOfDroppedFrames()                        { return m_iDroppedFrames; }
 
   bool InitializedOutputDevice();
-  
+
   double GetCurrentPts()                           { return m_iCurrentPts; }
 
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
@@ -100,11 +102,13 @@ public:
 
   // classes
   CDVDMessageQueue m_messageQueue;
+  CDVDMessageQueue& m_messageParent;
+
   CDVDOverlayContainer* m_pOverlayContainer;
-  
+
   CDVDClock* m_pClock;
 
-protected:  
+protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
@@ -118,7 +122,7 @@ protected:
   void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts);
 #endif
   void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);
-  
+
   double m_iCurrentPts; // last pts displayed
   double m_iVideoDelay;
   double m_iSubtitleDelay;
@@ -143,9 +147,9 @@ protected:
 
   bool m_bAllowFullscreen;
   bool m_bRenderSubs;
-  
+
   float m_fForcedAspectRatio;
-  
+
   int m_iNrOfPicturesNotToSkip;
   int m_speed;
 
@@ -162,13 +166,13 @@ protected:
   unsigned int m_autosync;
 
   BitstreamStats m_videoStats;
-  
+
   // classes
   CDVDVideoCodec* m_pVideoCodec;
   CDVDOverlayCodecCC* m_pOverlayCodecCC;
-  
+
   DVDVideoPicture* m_pTempOverlayPicture;
-  
+
   CRITICAL_SECTION m_critCodecSection;
 };
 

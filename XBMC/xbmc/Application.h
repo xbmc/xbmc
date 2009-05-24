@@ -46,6 +46,8 @@ class CFileItemList;
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
 #include "utils/Network.h"
+#include "MusicDatabase.h"
+#include "VideoDatabase.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
@@ -61,6 +63,7 @@ class CXBFileZilla;
 class CSNTPClient;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
+class DPMSSupport;
 
 class CBackgroundPlayer : public CThread
 {
@@ -128,6 +131,7 @@ public:
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
+  virtual void OnFileClosed();
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
@@ -151,7 +155,8 @@ public:
   bool OnAction(CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
-  void CheckScreenSaver();   // CB: SCREENSAVER PATCH
+  // Checks whether the screensaver and / or DPMS should become active.
+  void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
   void ActivateScreenSaver(bool forceType = false);
@@ -163,11 +168,15 @@ public:
   void SetVolume(int iPercent);
   void Mute(void);
   int GetPlaySpeed() const;
+  int GetSubtitleDelay() const;
+  int GetAudioDelay() const;
   void SetPlaySpeed(int iSpeed);
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
   void ResetScreenSaverTimer();
-  bool ResetScreenSaverWindow();
+  // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
+  bool WakeUpScreenSaverAndDPMS();
+  bool WakeUpScreenSaver();
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;
@@ -257,6 +266,8 @@ public:
 
   bool IsPresentFrame();
 
+  void Minimize(bool minimize = true);
+
   bool m_restartLirc;
   bool m_restartLCD;
 
@@ -287,6 +298,9 @@ protected:
   DWORD      m_lastActionCode;
   CStopWatch m_lastActionTimer;
 
+  DPMSSupport* m_dpms;
+  bool m_dpmsIsActive;
+
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
@@ -297,9 +311,11 @@ protected:
   bool m_bSettingsLoaded;
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
-  bool m_playCountUpdated;
   bool m_bPlatformDirectories;
-  int m_updateFileStateCounter;
+  CBookmark VideoResumeBookmark;
+  __int64 m_lastGetTime;
+  __int64 m_lastGetPercentage;
+  CStdString m_lastFileName;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
@@ -309,6 +325,7 @@ protected:
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
+  bool m_bWasFullScreenBeforeMinimize;
 
 #ifdef HAS_SDL
   int        m_frameCount;
@@ -325,7 +342,6 @@ protected:
 
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
-  bool Minimize();
   bool ProcessMouse();
   bool ProcessHTTPApiButtons();
   bool ProcessKeyboard();

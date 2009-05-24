@@ -128,6 +128,7 @@ public:
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
@@ -135,7 +136,6 @@ public:
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
-  virtual void         OnClose(); // called from main GUI thread
   virtual void         Reset(); /* resets renderer after seek for example */
 
   void AutoCrop(bool bCrop);
@@ -153,11 +153,11 @@ protected:
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
   void CalculateFrameAspectRatio(int desired_width, int desired_height);
   void ChooseBestResolution(float fps);
-  
+
   ESCALINGMETHOD GetDefaultUpscalingMethod();
   bool IsSoftwareUpscaling();
   void InitializeSoftwareUpscaling();
-  
+
   virtual void ManageDisplay();
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
@@ -211,7 +211,7 @@ protected:
   int m_upscalingHeight;
   YV12Image m_imScaled;
   bool m_isSoftwareUpscaling;
-  
+
   // OSD stuff
   GLuint m_pOSDYTexture[NUM_BUFFERS];
   GLuint m_pOSDATexture[NUM_BUFFERS];

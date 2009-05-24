@@ -750,8 +750,6 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
 {
   // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
   if (0 == items.Size()) return 0;
-  unsigned char md5hash[16];
-  char md5HexString[33];
   XBMC::MD5 md5state;
   int count = 0;
   for (int i = 0; i < items.Size(); ++i)
@@ -764,9 +762,7 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
     if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
-  md5state.getDigest(md5hash);
-  XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
-  hash = md5HexString;
+  md5state.getDigest(hash);
   return count;
 }
 
@@ -823,6 +819,10 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     {
       CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
       CMusicAlbumInfo album("nfo",scrUrl);
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReader.m_strScraper.c_str());
+      CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
+      info.strPath = nfoReader.m_strScraper;
+      scraper.SetScraperInfo(info);
       scraper.GetAlbums().push_back(album);
     }
     else
@@ -1038,6 +1038,10 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     {
       CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
       CMusicArtistInfo artist("nfo",scrUrl);
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReader.m_strScraper.c_str());
+      CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
+      info.strPath = nfoReader.m_strScraper;
+      scraper.SetScraperInfo(info);
       scraper.GetArtists().push_back(artist);
     }
     else

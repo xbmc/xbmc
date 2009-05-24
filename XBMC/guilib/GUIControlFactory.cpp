@@ -211,6 +211,9 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   const char *flipY = pNode->Attribute("flipy");
   if (flipY && strcmpi(flipY, "true") == 0) image.orientation = 3 - image.orientation;  // either 3 or 2
   image.diffuse = pNode->Attribute("diffuse");
+  const char *background = pNode->Attribute("background");
+  if (background && strnicmp(background, "true", 4) == 0)
+    image.useLarge = true;
   image.filename = (pNode->FirstChild() && pNode->FirstChild()->ValueStr() != "-") ? pNode->FirstChild()->Value() : "";
   return true;
 }
@@ -242,7 +245,7 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* st
   if (!pNode || !pNode->FirstChild()) return false;
 
   CStdString strAlign = pNode->FirstChild()->Value();
-  if (strAlign == "right") dwAlignment = XBFONT_RIGHT;
+  if (strAlign == "right" || strAlign == "bottom") dwAlignment = XBFONT_RIGHT;
   else if (strAlign == "center") dwAlignment = XBFONT_CENTER_X;
   else if (strAlign == "justify") dwAlignment = XBFONT_JUSTIFIED;
   else dwAlignment = XBFONT_LEFT;
@@ -486,9 +489,7 @@ CStdString CGUIControlFactory::FilterLabel(const CStdString &label)
     viewLabel = g_localizeStrings.Get(atoi(label));
   else
     g_charsetConverter.unknownToUTF8(viewLabel);
-  // translate the label
-  CGUIInfoLabel info(viewLabel, "");
-  return info.GetLabel(0);
+  return viewLabel;
 }
 
 bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode, const char *strTag, CStdString &text)
@@ -536,6 +537,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   DWORD pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
   DWORD defaultControl = 0;
+  bool  defaultAlways = false;
   CStdString strTmp;
   int singleInfo = 0;
   CStdString strLabel;
@@ -572,9 +574,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CTextureInfo imageNoFocus, imageFocus;
   CGUIInfoLabel texturePath;
   FRECT borderSize = { 0, 0, 0, 0};
-
-  float controlOffsetX = 0;
-  float controlOffsetY = 0;
 
   float itemWidth = 16, itemHeight = 16;
   float sliderWidth = 150, sliderHeight = 16;
@@ -636,6 +635,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   ORIENTATION orientation = VERTICAL;
   bool showOnePage = true;
   bool scrollOut = true;
+  int preloadItems = 0;
 
   CLabelInfo labelInfo;
   CLabelInfo labelInfo2;
@@ -699,15 +699,17 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
 
-  GetFloat(pControlNode, "controloffsetx", controlOffsetX);
-  GetFloat(pControlNode, "controloffsety", controlOffsetY);
-
   if (!GetNavigation(pControlNode, "onup", up, upActions)) up = id - 1;
   if (!GetNavigation(pControlNode, "ondown", down, downActions)) down = id + 1;
   if (!GetNavigation(pControlNode, "onleft", left, leftActions)) left = id;
   if (!GetNavigation(pControlNode, "onright", right, rightActions)) right = id;
 
-  XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl);
+  if (XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl))
+  {
+    const char *always = pControlNode->FirstChildElement("defaultcontrol")->Attribute("always");
+    if (always && strnicmp(always, "true", 4) == 0)
+      defaultAlways = true;
+  }
   XMLUtils::GetDWORD(pControlNode, "pagecontrol", pageControl);
 
   GetInfoColor(pControlNode, "colordiffuse", colorDiffuse);
@@ -923,6 +925,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   XMLUtils::GetBoolean(pControlNode, "showonepage", showOnePage);
   XMLUtils::GetInt(pControlNode, "focusposition", focusPosition);
   XMLUtils::GetInt(pControlNode, "scrolltime", scrollTime);
+  XMLUtils::GetInt(pControlNode, "preloaditems", preloadItems, 0, 2);
 
   XMLUtils::GetBoolean(pControlNode, "usecontrolcoords", useControlCoords);
   XMLUtils::GetBoolean(pControlNode, "renderfocusedlast", renderFocusedLast);
@@ -968,7 +971,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       viewType = VIEW_TYPE_BIG_WRAP;
     const char *label = itemElement->Attribute("label");
     if (label)
-      viewLabel = FilterLabel(label);
+      viewLabel = CGUIInfoLabel::GetLabel(FilterLabel(label));
   }
 
   TiXmlElement *cam = pControlNode->FirstChildElement("camera");
@@ -996,14 +999,14 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     {
       control = new CGUIControlGroup(
         dwParentId, id, posX, posY, width, height);
-      ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl);
+      ((CGUIControlGroup *)control)->SetDefaultControl(defaultControl, defaultAlways);
       ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
     }
   }
   else if (strType == "grouplist")
   {
     control = new CGUIControlGroupList(
-      dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords);
+      dwParentId, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align);
     ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
   }
   else if (strType == "label")
@@ -1150,8 +1153,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       textureBar, textureNib, textureNibFocus, SPIN_CONTROL_TYPE_TEXT);
 
     ((CGUISliderControl *)control)->SetInfo(singleInfo);
-    ((CGUISliderControl *)control)->SetControlOffsetX(controlOffsetX);
-    ((CGUISliderControl *)control)->SetControlOffsetY(controlOffsetY);
   }
   else if (strType == "sliderex")
   {
@@ -1206,7 +1207,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "list")
   {
-    control = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
+    control = new CGUIListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
     ((CGUIListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIListContainer *)control)->LoadContent(pControlNode);
     ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
@@ -1214,7 +1215,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "wraplist")
   {
-    control = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
+    control = new CGUIWrappingListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
     ((CGUIWrappingListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
@@ -1222,7 +1223,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "fixedlist")
   {
-    control = new CGUIFixedListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, focusPosition);
+    control = new CGUIFixedListContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
     ((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
@@ -1230,7 +1231,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   }
   else if (strType == "panel")
   {
-    control = new CGUIPanelContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime);
+    control = new CGUIPanelContainer(dwParentId, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
     ((CGUIPanelContainer *)control)->LoadLayout(pControlNode);
     ((CGUIPanelContainer *)control)->LoadContent(pControlNode);
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
@@ -1323,7 +1324,6 @@ void CGUIControlFactory::ScaleElement(TiXmlElement *element, RESOLUTION fileRes,
           name == "width" ||
           name == "gfxthumbwidth" ||
           name == "gfxthumbspacex" ||
-          name == "controloffsetx" ||
           name == "textoffsetx" ||
           name == "textxoff" ||
           name == "textxoff2" ||
@@ -1354,7 +1354,6 @@ void CGUIControlFactory::ScaleElement(TiXmlElement *element, RESOLUTION fileRes,
           name == "textspacey" ||
           name == "gfxthumbheight" ||
           name == "gfxthumbspacey" ||
-          name == "controloffsety" ||
           name == "textoffsety" ||
           name == "textyoff" ||
           name == "textyoff2" ||

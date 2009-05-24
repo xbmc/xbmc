@@ -54,50 +54,17 @@ struct hdhomerun_video_sock_t {
 
 static THREAD_FUNC_PREFIX hdhomerun_video_thread_execute(void *arg);
 
-static bool_t hdhomerun_video_bind_sock_internal(struct hdhomerun_video_sock_t *vs, uint16_t listen_port)
-{
-	struct sockaddr_in sock_addr;
-	memset(&sock_addr, 0, sizeof(sock_addr));
-	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	sock_addr.sin_port = htons(listen_port);
-	if (bind(vs->sock, (struct sockaddr *)&sock_addr, sizeof(sock_addr)) != 0) {
-		return FALSE;
-	}
-	return TRUE;
-}
-
-static bool_t hdhomerun_video_bind_sock(struct hdhomerun_video_sock_t *vs, uint16_t listen_port)
-{
-	if (listen_port != 0) {
-		return hdhomerun_video_bind_sock_internal(vs, listen_port);
-	}
-
-#if defined(__CYGWIN__) || defined(__WINDOWS__)
-	/* Windows firewall silently blocks a listening port if the port number is not explicitly given. */
-	/* Workaround - pick a random port number. The port may already be in use to try multiple port numbers. */
-	srand((int)getcurrenttime());
-	int retry;
-	for (retry = 8; retry > 0; retry--) {
-		uint16_t listen_port = (uint16_t)((rand() % 32768) + 32768);
-		if (hdhomerun_video_bind_sock_internal(vs, listen_port)) {
-			return TRUE;
-		}
-	}
-	return FALSE;
-#else
-	return hdhomerun_video_bind_sock_internal(vs, listen_port);
-#endif
-}
-
-struct hdhomerun_video_sock_t *hdhomerun_video_create(uint16_t listen_port, size_t buffer_size)
+struct hdhomerun_video_sock_t *hdhomerun_video_create(uint16_t listen_port, size_t buffer_size, struct hdhomerun_debug_t *dbg)
 {
 	/* Create object. */
 	struct hdhomerun_video_sock_t *vs = (struct hdhomerun_video_sock_t *)calloc(1, sizeof(struct hdhomerun_video_sock_t));
 	if (!vs) {
+		hdhomerun_debug_printf(dbg, "hdhomerun_video_create: failed to allocate video object\n");
 		return NULL;
 	}
 
+	vs->dbg = dbg;
+	vs->sock = -1;
 	pthread_mutex_init(&vs->lock, NULL);
 
 	/* Reset sequence tracking. */
@@ -106,24 +73,23 @@ struct hdhomerun_video_sock_t *hdhomerun_video_create(uint16_t listen_port, size
 	/* Buffer size. */
 	vs->buffer_size = (buffer_size / VIDEO_DATA_PACKET_SIZE) * VIDEO_DATA_PACKET_SIZE;
 	if (vs->buffer_size == 0) {
-		free(vs);
-		return NULL;
+		hdhomerun_debug_printf(dbg, "hdhomerun_video_create: invalid buffer size (%lu bytes)\n", (unsigned long)buffer_size);
+		goto error;
 	}
 	vs->buffer_size += VIDEO_DATA_PACKET_SIZE;
 
 	/* Create buffer. */
 	vs->buffer = (uint8_t *)malloc(vs->buffer_size);
 	if (!vs->buffer) {
-		free(vs);
-		return NULL;
+		hdhomerun_debug_printf(dbg, "hdhomerun_video_create: failed to allocate buffer (%lu bytes)\n", (unsigned long)vs->buffer_size);
+		goto error;
 	}
 	
 	/* Create socket. */
 	vs->sock = (int)socket(AF_INET, SOCK_DGRAM, 0);
 	if (vs->sock == -1) {
-		free(vs->buffer);
-		free(vs);
-		return NULL;
+		hdhomerun_debug_printf(dbg, "hdhomerun_video_create: failed to allocate socket\n");
+		goto error;
 	}
 
 	/* Expand socket buffer size. */
@@ -135,23 +101,34 @@ struct hdhomerun_video_sock_t *hdhomerun_video_create(uint16_t listen_port, size
 	setsocktimeout(vs->sock, SOL_SOCKET, SO_RCVTIMEO, 1000);
 
 	/* Bind socket. */
-	if (!hdhomerun_video_bind_sock(vs, listen_port)) {
-		close(vs->sock);
-		free(vs->buffer);
-		free(vs);
-		return NULL;
+	struct sockaddr_in sock_addr;
+	memset(&sock_addr, 0, sizeof(sock_addr));
+	sock_addr.sin_family = AF_INET;
+	sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	sock_addr.sin_port = htons(listen_port);
+	if (bind(vs->sock, (struct sockaddr *)&sock_addr, sizeof(sock_addr)) != 0) {
+		hdhomerun_debug_printf(dbg, "hdhomerun_video_create: failed to bind socket (port %u)\n", listen_port);
+		goto error;
 	}
 
 	/* Start thread. */
 	if (pthread_create(&vs->thread, NULL, &hdhomerun_video_thread_execute, vs) != 0) {
-		close(vs->sock);
-		free(vs->buffer);
-		free(vs);
-		return NULL;
+		hdhomerun_debug_printf(dbg, "hdhomerun_video_create: failed to start thread\n");
+		goto error;
 	}
 
 	/* Success. */
 	return vs;
+
+error:
+	if (vs->sock != -1) {
+		close(vs->sock);
+	}
+	if (vs->buffer) {
+		free(vs->buffer);
+	}
+	free(vs);
+	return NULL;
 }
 
 void hdhomerun_video_destroy(struct hdhomerun_video_sock_t *vs)
@@ -165,11 +142,6 @@ void hdhomerun_video_destroy(struct hdhomerun_video_sock_t *vs)
 	free(vs);
 }
 
-void hdhomerun_video_set_debug(struct hdhomerun_video_sock_t *vs, struct hdhomerun_debug_t *dbg)
-{
-	vs->dbg = dbg;
-}
-
 uint16_t hdhomerun_video_get_local_port(struct hdhomerun_video_sock_t *vs)
 {
 	struct sockaddr_in sock_addr;
@@ -178,6 +150,7 @@ uint16_t hdhomerun_video_get_local_port(struct hdhomerun_video_sock_t *vs)
 		hdhomerun_debug_printf(vs->dbg, "hdhomerun_video_get_local_port: getsockname failed (%d)\n", sock_getlasterror);
 		return 0;
 	}
+
 	return ntohs(sock_addr.sin_port);
 }
 

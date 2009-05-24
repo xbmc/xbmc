@@ -42,7 +42,7 @@ public:
   virtual int av_read_play(AVFormatContext *s)=0;
   virtual int av_read_pause(AVFormatContext *s)=0;
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
-  virtual int av_find_stream_info(AVFormatContext *ic)=0;
+  virtual int av_find_stream_info_dont_call(AVFormatContext *ic)=0;
   virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap)=0;
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb)=0;
   virtual int av_dup_packet(AVPacket *pkt)=0;
@@ -135,7 +135,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
 #ifndef _LINUX
   DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, av_seek_frame, AVFormatContext*, int, int64_t, int)
-  DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info, AVFormatContext*)
+  DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info_dont_call, AVFormatContext*)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, av_open_input_file, AVFormatContext**, const char *, AVInputFormat *, int, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED5(int,__cdecl, av_open_input_stream, AVFormatContext **, ByteIOContext *, const char *, AVInputFormat *, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
@@ -145,7 +145,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
 #else
   DEFINE_METHOD2(int, av_read_frame, (AVFormatContext *p1, AVPacket *p2))
   DEFINE_METHOD4(int, av_seek_frame, (AVFormatContext *p1, int p2, int64_t p3, int p4))
-  DEFINE_METHOD1(int, av_find_stream_info, (AVFormatContext *p1))
+  DEFINE_METHOD1(int, av_find_stream_info_dont_call, (AVFormatContext *p1))
   DEFINE_METHOD5(int, av_open_input_file, (AVFormatContext **p1, const char *p2, AVInputFormat *p3, int p4, AVFormatParameters *p5))
   DEFINE_METHOD5(int, av_open_input_stream, (AVFormatContext **p1, ByteIOContext *p2, const char *p3, AVInputFormat *p4, AVFormatParameters *p5))
   DEFINE_METHOD2(AVInputFormat*, av_probe_input_format, (AVProbeData* p1 , int p2))
@@ -175,7 +175,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_play)
     RESOLVE_METHOD(av_read_pause)
     RESOLVE_METHOD(av_seek_frame)
-    RESOLVE_METHOD(av_find_stream_info)
+    RESOLVE_METHOD_RENAME(av_find_stream_info, av_find_stream_info_dont_call)
     RESOLVE_METHOD(av_open_input_file)
     RESOLVE_METHOD(url_set_interrupt_cb)
     RESOLVE_METHOD(av_dup_packet)
@@ -198,6 +198,9 @@ public:
     CSingleLock lock(DllAvCodec::m_critSection);
     av_register_all_dont_call();
   }
+  int av_find_stream_info(AVFormatContext *ic)
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    return(av_find_stream_info_dont_call(ic));
+  }
 };
-
-#endif

@@ -853,27 +853,27 @@ void CFileItem::FillInDefaultIcon()
     {
       if ( IsPlayList() )
       {
-        SetIconImage("defaultPlaylist.png");
+        SetIconImage("DefaultPlaylist.png");
       }
       else if ( IsPicture() )
       {
         // picture
-        SetIconImage("defaultPicture.png");
+        SetIconImage("DefaultPicture.png");
       }
       else if ( IsXBE() )
       {
         // xbe
-        SetIconImage("defaultProgram.png");
+        SetIconImage("DefaultProgram.png");
       }
       else if ( IsAudio() )
       {
         // audio
-        SetIconImage("defaultAudio.png");
+        SetIconImage("DefaultAudio.png");
       }
       else if ( IsVideo() )
       {
         // video
-        SetIconImage("defaultVideo.png");
+        SetIconImage("DefaultVideo.png");
       }
       else if ( IsShortCut() && !IsLabelPreformated() )
       {
@@ -885,7 +885,7 @@ void CFileItem::FillInDefaultIcon()
         int iPos = strFName.ReverseFind(".");
         strDescription = strFName.Left(iPos);
         SetLabel(strDescription);
-        SetIconImage("defaultShortcut.png");
+        SetIconImage("DefaultShortcut.png");
       }
       else if ( IsPythonScript() )
       {
@@ -894,22 +894,22 @@ void CFileItem::FillInDefaultIcon()
       else
       {
         // default icon for unknown file type
-        SetIconImage("defaultFile.png");
+        SetIconImage("DefaultFile.png");
       }
     }
     else
     {
       if ( IsPlayList() )
       {
-        SetIconImage("defaultPlaylist.png");
+        SetIconImage("DefaultPlaylist.png");
       }
       else if (IsParentFolder())
       {
-        SetIconImage("defaultFolderBack.png");
+        SetIconImage("DefaultFolderBack.png");
       }
       else
       {
-        SetIconImage("defaultFolder.png");
+        SetIconImage("DefaultFolder.png");
       }
     }
   }
@@ -1884,6 +1884,8 @@ void CFileItemList::Stack()
   if (IsVirtualDirectoryRoot() || IsTV())
     return;
 
+  SetProperty("isstacked", "1");
+
   // items needs to be sorted for stuff below to work properly
   Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
@@ -2546,48 +2548,50 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsFTP(strFile))
     return "";
 
+  CStdString localFanart;
+
   // special checks for subfolders
   if(m_bIsFolder)
   {
     CStdString strArt;
     CUtil::AddFileToFolder(strFile, "fanart.jpg", strArt);
     if(CFile::Exists(strArt))
-      return strArt;
+      localFanart = strArt;
+
     CUtil::AddFileToFolder(strFile, "fanart.png", strArt);
-    if(CFile::Exists(strArt))
-      return strArt;
-    return "";
+    if(localFanart.IsEmpty() && CFile::Exists(strArt))
+      localFanart = strArt;
   }
 
   // we don't have a cached image, so let's see if the user has a local image ..
-  CStdString strDir;
-  CUtil::GetDirectory(strFile, strDir);
-  if (strDir.IsEmpty()) return "";
-
-  bool bFoundFanart = false;
-  CStdString localFanart;
-  CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
-  CUtil::RemoveExtension(strFile);
-  strFile += "-fanart";
-  CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
-
-  for (int i = 0; i < items.Size(); i++)
+  if (localFanart.IsEmpty())
   {
-    CStdString strCandidate = items[i]->m_strPath;
-    CUtil::RemoveExtension(strCandidate);
-    if (strCandidate.CompareNoCase(strFile) == 0 ||
-        strCandidate.CompareNoCase(strFile2) == 0 ||
-        strCandidate.CompareNoCase(strFile3) == 0)
+    CStdString strDir;
+    CUtil::GetDirectory(strFile, strDir);
+    if (strDir.IsEmpty()) return "";
+    
+    CFileItemList items;
+    CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
+    CUtil::RemoveExtension(strFile);
+    strFile += "-fanart";
+    CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
+
+    for (int i = 0; i < items.Size(); i++)
     {
-      bFoundFanart = true;
-      localFanart = items[i]->m_strPath;
-      break;
+      CStdString strCandidate = items[i]->m_strPath;
+      CUtil::RemoveExtension(strCandidate);
+      if (strCandidate.CompareNoCase(strFile) == 0 ||
+          strCandidate.CompareNoCase(strFile2) == 0 ||
+          strCandidate.CompareNoCase(strFile3) == 0)
+      {
+        localFanart = items[i]->m_strPath;
+        break;
+      }
     }
   }
 
   // no local fanart found
-  if(!bFoundFanart)
+  if(localFanart.IsEmpty())
     return "";
 
   if (!probe)

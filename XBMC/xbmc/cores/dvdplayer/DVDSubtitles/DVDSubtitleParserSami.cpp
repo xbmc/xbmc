@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDSubtitleParserSami.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
@@ -28,8 +28,8 @@
 
 using namespace std;
 
-CDVDSubtitleParserSami::CDVDSubtitleParserSami(CDVDSubtitleStream* stream, const string& filename)
-    : CDVDSubtitleParser(stream, filename)
+CDVDSubtitleParserSami::CDVDSubtitleParserSami(CDVDSubtitleStream* pStream, const string& filename)
+    : CDVDSubtitleParserText(pStream, filename)
 {
 
 }
@@ -41,7 +41,7 @@ CDVDSubtitleParserSami::~CDVDSubtitleParserSami()
 
 bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
 {
-  if (!m_pStream->Open(m_strFileName))
+  if (!CDVDSubtitleParserText::Open())
     return false;
 
   char line[1024];
@@ -72,7 +72,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
       pOverlay = new CDVDOverlayText();
       pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
 
-      pOverlay->iPTSStartTime = int64_t(atoi(start.c_str()))*DVD_TIME_BASE/1000; 
+      pOverlay->iPTSStartTime = int64_t(atoi(start.c_str()))*DVD_TIME_BASE/1000;
       pOverlay->iPTSStopTime  = DVD_NOPTS_VALUE;
       m_collection.Add(pOverlay);
       text += pos + reg.GetFindLen();
@@ -84,6 +84,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   if(pOverlay)
     pOverlay->Release();
 
+  m_pStream->Close();
   return true;
 }
 
@@ -113,21 +114,5 @@ void CDVDSubtitleParserSami::AddText(CRegExp& tags, CDVDOverlayText* pOverlay, c
     return;
   // add a new text element to our container
   pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
-}
-
-void CDVDSubtitleParserSami::Dispose()
-{
-  m_collection.Clear();
-}
-
-void CDVDSubtitleParserSami::Reset()
-{
-  m_collection.Reset();
-}
-
-// parse exactly one subtitle
-CDVDOverlay* CDVDSubtitleParserSami::Parse(double iPts)
-{
-  return  m_collection.Get(iPts);;
 }
 

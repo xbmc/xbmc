@@ -36,7 +36,7 @@ namespace EVENTSERVER
   /**********************************************************************/
   /* UDP Event Server Class                                             */
   /**********************************************************************/
-  class CEventServer : public IRunnable
+  class CEventServer : private CThread
   {
   public:
     static void RemoveInstance();
@@ -44,7 +44,7 @@ namespace EVENTSERVER
     virtual ~CEventServer() {}
 
     // IRunnable entry point for thread
-    virtual void  Run();
+    virtual void  Process();
 
     bool Running()
     {
@@ -75,14 +75,12 @@ namespace EVENTSERVER
     void RefreshClients();
 
     std::map<unsigned long, EVENTCLIENT::CEventClient*>  m_clients;
-    CThread*             m_pThread;
     static CEventServer* m_pInstance;
     SOCKETS::CUDPSocket* m_pSocket;
     int              m_iPort;
     int              m_iListenTimeout;
     int              m_iMaxClients;
     unsigned char*   m_pPacketBuffer;
-    bool             m_bStop;
     bool             m_bRunning;
     CCriticalSection m_critSection;
     bool             m_bRefreshSettings;

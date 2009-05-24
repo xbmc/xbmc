@@ -248,13 +248,6 @@ void CGUIButtonScroller::LoadButtons(TiXmlNode *node)
   }
 }
 
-void CGUIButtonScroller::PreAllocResources()
-{
-  CGUIControl::PreAllocResources();
-  m_imgFocus.PreAllocResources();
-  m_imgNoFocus.PreAllocResources();
-}
-
 void CGUIButtonScroller::AllocResources()
 {
   CGUIControl::AllocResources();

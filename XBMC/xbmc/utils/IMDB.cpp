@@ -65,6 +65,9 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
   CStdString movieYear;
   GetCleanNameAndYear(movieTitle, movieYear);
 
+  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
+    __FUNCTION__, movieTitle.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strLanguage.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
+
   if (!pUrl)
   {
     if (m_parser.HasFunction("CreateSearchUrl"))
@@ -241,6 +244,7 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
       TiXmlNode *epnum = movie->FirstChild("epnum");
       TiXmlNode *season = movie->FirstChild("season");
       TiXmlNode* id = movie->FirstChild("id");
+      TiXmlNode *aired = movie->FirstChild("aired");
       if (link && link->FirstChild() && epnum && epnum->FirstChild() && season && season->FirstChild())
       {
         CScraperUrl url2;
@@ -258,7 +262,24 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
         if (id && id->FirstChild())
           url2.strId = id->FirstChild()->Value();
         pair<int,int> key(atoi(season->FirstChild()->Value()),atoi(epnum->FirstChild()->Value()));
-        temp.insert(make_pair(key,url2));
+        IMDB_EPISODE newEpisode;
+        newEpisode.key = key;
+        newEpisode.cDate.SetValid(FALSE);
+        if (aired && aired->FirstChild())
+        {
+          const char *dateStr = aired->FirstChild()->Value();
+          // date must be the format of yyyy-mm-dd
+          if (strlen(dateStr)==10)
+          {
+            char year[4];
+            char month[2];
+            memcpy(year,dateStr,4);
+            memcpy(month,dateStr+5,2);
+            newEpisode.cDate.SetDate(atoi(year),atoi(month),atoi(dateStr+8));
+          }
+        }
+        newEpisode.cScraperUrl = url2;
+        temp.push_back(newEpisode);
       }
       movie = movie->NextSiblingElement();
     }
@@ -268,19 +289,23 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
   map<int,int> min;
   for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter )
   {
-    if ((signed int) min.size() == (iter->first.first -1))
-      min.insert(iter->first);
-    else if (iter->first.second < min[iter->first.first])
-      min[iter->first.first] = iter->first.second;
+    if ((signed int) min.size() == (iter->key.first -1))
+      min.insert(iter->key);
+    else if (iter->key.second < min[iter->key.first])
+      min[iter->key.first] = iter->key.second;
   }
   // correct episode numbers
   for (IMDB_EPISODELIST::iterator iter=temp.begin(); iter != temp.end(); ++iter )
   {
-    int episode=iter->first.second - min[iter->first.first];
-    if (min[iter->first.first] > 0)
+    int episode=iter->key.second - min[iter->key.first];
+    if (min[iter->key.first] > 0)
       episode++;
-    pair<int,int> key(iter->first.first,episode);
-    details.insert(make_pair(key,iter->second));
+    pair<int,int> key(iter->key.first,episode);
+    IMDB_EPISODE newEpisode;
+    newEpisode.key = key;
+    newEpisode.cDate = iter->cDate;
+    newEpisode.cScraperUrl = iter->cScraperUrl;
+    details.push_back(newEpisode);
   }
 
   return true;

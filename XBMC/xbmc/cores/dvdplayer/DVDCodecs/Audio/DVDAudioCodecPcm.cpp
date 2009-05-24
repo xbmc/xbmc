@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDAudioCodecPcm.h"
 #include "DVDStreamInfo.h"
@@ -127,12 +127,12 @@ CDVDAudioCodecPcm::~CDVDAudioCodecPcm()
 bool CDVDAudioCodecPcm::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   SetDefault();
-  
+
   m_codecID = hints.codec;
   m_iSourceChannels = hints.channels;
   m_iSourceSampleRate = hints.samplerate;
   m_iSourceBitrate = 16;
-  
+
   switch (m_codecID)
   {
     case CODEC_ID_PCM_ALAW:
@@ -170,7 +170,7 @@ int CDVDAudioCodecPcm::Decode(BYTE* pData, int iSize)
     samples = (short*)m_decodedData;
     src = pData;
     int buf_size = iSize;
-    
+
     if (iSize > AVCODEC_MAX_AUDIO_FRAME_SIZE / 2)
         iSize = AVCODEC_MAX_AUDIO_FRAME_SIZE / 2;
 
@@ -263,7 +263,7 @@ int CDVDAudioCodecPcm::Decode(BYTE* pData, int iSize)
     default:
         return -1;
     }
-    
+
     m_decodedDataSize = (BYTE*)samples - (BYTE*)m_decodedData;
     return iSize;
 }

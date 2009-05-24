@@ -124,13 +124,6 @@ void CGUIDialogContextMenu::OffsetPosition(float offsetX, float offsetY)
 {
   float newX = m_posX + offsetX - GetWidth() * 0.5f;
   float newY = m_posY + offsetY - GetHeight() * 0.5f;
-
-  // we currently hack the positioning of the buttons from y position 0, which
-  // forces skinners to place the top image at a negative y value.  Subtracting
-  // this back off the newY position will ensure it's centered vertically correctly
-  const CGUIControl *top = GetControl(BACKGROUND_TOP);
-  if (top)
-    newY -= top->GetYPosition();
   SetPosition(newX, newY);
 }
 
@@ -142,6 +135,12 @@ void CGUIDialogContextMenu::SetPosition(float posX, float posY)
   if (posX + GetWidth() > g_settings.m_ResInfo[m_coordsRes].iWidth)
     posX = g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth();
   if (posX < 0) posX = 0;
+  // we currently hack the positioning of the buttons from y position 0, which
+  // forces skinners to place the top image at a negative y value.  Thus, we offset
+  // the y coordinate by the height of the top image.
+  const CGUIControl *top = GetControl(BACKGROUND_TOP);
+  if (top)
+    posY += top->GetHeight();
   CGUIDialog::SetPosition(posX, posY);
 }
 
@@ -352,6 +351,8 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   case CONTEXT_BUTTON_EJECT_DRIVE:
 #ifdef HAS_HAL
     return g_HalManager.Eject(item->m_strPath);
+#elif defined(_WIN32PC)
+    return CWIN32Util::EjectDrive(item->m_strPath[0]);
 #else
     return false;
 #endif

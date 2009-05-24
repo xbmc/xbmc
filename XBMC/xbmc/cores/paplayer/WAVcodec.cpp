@@ -22,16 +22,20 @@
 #include "stdafx.h"
 #include "WAVcodec.h"
 
+#if defined(WIN32)
+#include <mmreg.h>
+#endif
+
 typedef struct
 {
   char chunk_id[4];
-  long chunksize;
+  DWORD chunksize;
 } WAVE_CHUNK;
 
 typedef struct
 {
   char riff[4];
-  long filesize;
+  DWORD filesize;
   char rifftype[4];
 } WAVE_RIFFHEADER;
 
@@ -64,7 +68,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
   if (strncmp(riffh.riff, "RIFF", 4)!=0 && strncmp(riffh.rifftype, "WAVE", 4)!=0)
     return false;
 
-  long offset=0;
+  unsigned long offset = 0, pos;
   offset += sizeof(WAVE_RIFFHEADER);
   offset -= sizeof(WAVE_CHUNK);
 
@@ -78,19 +82,28 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_file.Read(&chunk, sizeof(WAVE_CHUNK));
 
     if (!strncmp(chunk.chunk_id, "fmt ", 4))
-    { // format chunk
-      WAVEFORMATEX wfx;
-      memset(&wfx, 0, sizeof(WAVEFORMATEX));
-      m_file.Read(&wfx, 16);
+    {
+      pos = (long)m_file.GetPosition();
+
+      // format chunk
+      WAVEFORMATEXTENSIBLE wfx;
+      m_file.Read(&wfx, sizeof(WAVEFORMATEX));
 
       //  Get file info
-      m_SampleRate = wfx.nSamplesPerSec;
-      m_Channels = wfx.nChannels;
-      m_BitsPerSample = wfx.wBitsPerSample;
+      m_SampleRate    = wfx.Format.nSamplesPerSec;
+      m_Channels      = wfx.Format.nChannels;
+      m_BitsPerSample = wfx.Format.wBitsPerSample;
 
-      // we only need 16 bytes of the fmt chunk
-      if (chunk.chunksize-16>0)
-        m_file.Seek(chunk.chunksize-16, SEEK_CUR);
+      //  Is it an extensible wav file
+      if ((wfx.Format.wFormatTag == WAVE_FORMAT_EXTENSIBLE) && (wfx.Format.cbSize >= 22))
+      {
+        m_file.Read(&wfx + sizeof(WAVEFORMATEX), sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX));
+        m_ChannelMask = wfx.dwChannelMask;
+      } else {
+        m_ChannelMask = 0;
+      }
+
+      m_file.Seek(pos + chunk.chunksize, SEEK_SET);
     }
     else if (!strncmp(chunk.chunk_id, "data", 4))
     { // data chunk

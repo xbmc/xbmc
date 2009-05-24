@@ -38,7 +38,7 @@ protected:
   virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings();
-  void OnSettingChanged(unsigned int setting);
+  virtual void OnSettingChanged(SettingInfo &setting);
   void EnableDetails(bool bEnable);
 
   LockType m_iLock;

@@ -23,7 +23,7 @@
  */
 
 #include "PlatformDefs.h"
-#include "XHandle.h"
+#include "XHandlePublic.h"
 #include "XFileUtils.h"
 #include "XSyncUtils.h"
 #include "XEventUtils.h"

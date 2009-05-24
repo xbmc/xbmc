@@ -54,7 +54,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
   for (int i=0;i<items.Size();++i)
   {
     CFileItemPtr item = items[i];
-    if (item->m_bIsFolder && !item->HasThumbnail())
+    if (item->m_bIsFolder && !item->HasIcon() && !item->HasThumbnail())
     {
       CStdString strImage = GetIcon(item->m_strPath);
       if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))
@@ -219,8 +219,8 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
     if (strDirectory.Equals("videodb://2/2/"))
     {
       if (g_stSettings.m_bMyVideoNavFlatten)
-        return "DefaultTvshows.png";
-      return "DefaultTvshowTitle.png";
+        return "DefaultTVShows.png";
+      return "DefaultTVShowTitle.png";
     }
     return "";
   case NODE_TYPE_TITLE_MUSICVIDEOS:
@@ -242,7 +242,7 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_MOVIES_OVERVIEW: // Movies
     return "DefaultMovies.png";
   case NODE_TYPE_TVSHOWS_OVERVIEW: // TV Shows
-    return "DefaultTvshows.png";
+    return "DefaultTVShows.png";
   case NODE_TYPE_RECENTLY_ADDED_MOVIES: // Recently Added Movies
     return "DefaultRecentlyAddedMovies.png";
   case NODE_TYPE_RECENTLY_ADDED_EPISODES: // Recently Added Episodes

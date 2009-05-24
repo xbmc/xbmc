@@ -31,6 +31,10 @@
 #include <string>
 #include "Settings.h"
 
+#ifdef _WIN32
+#include "VideoReferenceClock.h"
+#endif
+
 using namespace Surface;
 
 #ifdef HAS_SDL_OPENGL
@@ -39,9 +43,6 @@ using namespace Surface;
 #endif
 
 #ifdef HAS_GLX
-PFNGLXBINDTEXIMAGEEXTPROC    glXBindTexImageEXT    = NULL;
-PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT = NULL;
-
 Display* CSurface::s_dpy = 0;
 
 static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg)
@@ -62,6 +63,7 @@ static __int64 abs(__int64 a)
 bool CSurface::b_glewInit = 0;
 std::string CSurface::s_glVendor = "";
 std::string CSurface::s_glRenderer = "";
+std::string CSurface::s_glxExt = "";
 int         CSurface::s_glMajVer = 0;
 int         CSurface::s_glMinVer = 0;
 
@@ -117,15 +119,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_parentWindow = 0;
   m_glContext = 0;
   m_glPBuffer = 0;
-  m_glPixmap = 0;
-  m_glPixmapTexture = 0;
-  m_Pixmap = 0;
-  m_pixmapBound = false;
-
-  if (!glXBindTexImageEXT)
-    glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
-  if (!glXReleaseTexImageEXT)
-    glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
 
   GLXFBConfig *fbConfigs = 0;
   bool mapWindow = false;
@@ -196,12 +189,6 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   if (pbuffer)
   {
     MakePBuffer();
-    return;
-  }
-
-  if (pixmap)
-  {
-    MakePixmap(width,height);
     return;
   }
 
@@ -538,195 +525,26 @@ bool CSurface::MakePBuffer()
   return status;
 }
 
-void CSurface::BindPixmap()
-{
-  if (!m_pixmapBound)
-  {
-    glXBindTexImageEXT(s_dpy, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-    VerifyGLState();
-    m_pixmapBound = true;
-  }
-}
 
-void CSurface::ReleasePixmap()
-{
-  if (m_pixmapBound)
-  {
-    glXReleaseTexImageEXT(s_dpy, m_glPixmap,GLX_FRONT_LEFT_EXT);
-    VerifyGLState();
-  }
-  m_pixmapBound = false;
-}
-
-bool CSurface::MakePixmap(int width, int height)
-{
-  int num=0;
-  GLXFBConfig *fbConfigs=NULL;
-  int fbConfigIndex = 0;
-  XVisualInfo *visInfo=NULL;
-
-  bool status = false;
-  int singleVisAttributes[] = {
-    GLX_RENDER_TYPE, GLX_RGBA_BIT,
-    GLX_RED_SIZE, m_iRedSize,
-    GLX_GREEN_SIZE, m_iGreenSize,
-    GLX_BLUE_SIZE, m_iBlueSize,
-    GLX_ALPHA_SIZE, m_iAlphaSize,
-    GLX_DEPTH_SIZE, 8,
-    GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
-    GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
-    GLX_X_RENDERABLE, True, // Added by Rob
-    None
-  };
-
-  int doubleVisAttributes[] = {
-    GLX_RENDER_TYPE, GLX_RGBA_BIT,
-    GLX_RED_SIZE, m_iRedSize,
-    GLX_GREEN_SIZE, m_iGreenSize,
-    GLX_BLUE_SIZE, m_iBlueSize,
-    GLX_ALPHA_SIZE, m_iAlphaSize,
-    GLX_DEPTH_SIZE, 8,
-    GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
-    GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
-    GLX_DOUBLEBUFFER, True,
-    GLX_Y_INVERTED_EXT, True,
-    GLX_X_RENDERABLE, True, // Added by Rob
-    None
-  };
-
-  int pixmapAttribs[] = {
-    GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
-    GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
-    None
-  };
-
-  if (m_bDoublebuffer)
-    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
-  else
-    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
-
-  // Get our window attribs.
-  XWindowAttributes wndattribs;
-  XGetWindowAttributes(s_dpy, DefaultRootWindow(s_dpy), &wndattribs); // returns a status but I don't know what success is
-
-  CLog::Log(LOGDEBUG, "Found %d fbconfigs.", num);
-  fbConfigIndex = 0;
-
-  if (fbConfigs==NULL) 
-  {
-    CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
-    XFree(fbConfigs);
-    return status;
-  }
-  CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
-  m_Pixmap = XCreatePixmap(s_dpy,
-                           DefaultRootWindow(s_dpy),
-                           width,
-                           height,
-                           wndattribs.depth);
-  if (!m_Pixmap)
-  {
-    CLog::Log(LOGERROR, "GLX Error: MakePixmap: Unable to create XPixmap");
-    XFree(fbConfigs);
-    return status;
-  }
-  m_glPixmap = glXCreatePixmap(s_dpy, fbConfigs[fbConfigIndex], m_Pixmap, pixmapAttribs);
-
-  if (m_glPixmap)
-  {
-    CLog::Log(LOGINFO, "GLX: Created Pixmap context");
-    visInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[fbConfigIndex]);
-    if (!visInfo)
-    {
-      CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
-      return false;
-    }
-    if (m_pShared)
-    {
-      CLog::Log(LOGINFO, "GLX: Creating shared Pixmap context");
-      m_glContext = glXCreateContext(s_dpy, visInfo, m_pShared->GetContext(), True);
-    } 
-    else
-    {
-      CLog::Log(LOGINFO, "GLX: Creating unshared Pixmap context");
-      m_glContext = glXCreateContext(s_dpy, visInfo, NULL, True);
-    }
-    XFree(visInfo);
-    if (glXMakeCurrent(s_dpy, m_glPixmap, m_glContext))
-    {
-      CLog::Log(LOGINFO, "GL: Initialised Pixmap");
-      if (!b_glewInit)
-      {
-        if (glewInit()!=GLEW_OK)
-          CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
-        else 
-        {
-          b_glewInit = true;
-          if (s_glVendor.length()==0)
-          {
-            s_glVendor = (const char*)glGetString(GL_VENDOR);
-            CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
-          }
-        }
-      }
-
-      GLenum glErr;
-      if (!m_glPixmapTexture)
-      {
-        glGenTextures (1, &m_glPixmapTexture);
-        glErr = glGetError();
-        if ((glErr == GL_INVALID_VALUE) | (glErr == GL_INVALID_OPERATION))
-        {
-          CLog::Log(LOGINFO, "glGenTextures returned an error!");
-          status = false;
-        }
-      }
-    } 
-    else
-    {
-      CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
-      status = false;
-    }
-  }
-  else
-  {
-    CLog::Log(LOGINFO, "GLX Error: Could not create Pixmap");
-    status = false;
-  }
-  XFree(fbConfigs);
-  return status;
-}
 #endif
 
 CSurface::~CSurface()
 {
 #ifdef HAS_GLX
-  if (m_glContext && !IsShared())
-  {
-    CLog::Log(LOGINFO, "GLX: Destroying OpenGL Context");
-    glXDestroyContext(s_dpy, m_glContext);
-  }
   if (m_glPBuffer)
   {
     CLog::Log(LOGINFO, "GLX: Destroying PBuffer");
     glXDestroyPbuffer(s_dpy, m_glPBuffer);
   }
-  if (m_glPixmap)
-  {
-    CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
-    glXDestroyGLXPixmap(s_dpy, m_glPixmap);
-    m_glPixmap = NULL;
-  }
-  if (m_Pixmap)
-  {
-    CLog::Log(LOGINFO, "GLX: Destroying XPixmap");
-    XFreePixmap(s_dpy, m_Pixmap);
-    m_Pixmap = NULL;
-  }
   if (m_glWindow && !IsShared())
   {
     CLog::Log(LOGINFO, "GLX: Destroying Window");
     glXDestroyWindow(s_dpy, m_glWindow);
+  }
+  if (m_glContext && !IsShared())
+  {
+    CLog::Log(LOGINFO, "GLX: Destroying OpenGL Context");
+    glXDestroyContext(s_dpy, m_glContext);
   }
 #else
   if (IsValid() && m_SDLSurface
@@ -751,6 +569,17 @@ CSurface::~CSurface()
   timeEndPeriod(1);
 #endif
 #endif
+}
+
+bool CSurface::glxIsSupported(const char* extension)
+{
+  CStdString name;
+
+  name  = " ";
+  name += extension;
+  name += " ";
+
+  return s_glxExt.find(name) != std::string::npos;
 }
 
 void CSurface::EnableVSync(bool enable)
@@ -791,17 +620,17 @@ void CSurface::EnableVSync(bool enable)
 
 #ifdef HAS_GLX
   // Obtain function pointers
-  if (!_glXGetSyncValuesOML)
+  if (!_glXGetSyncValuesOML  && glxIsSupported("GLX_OML_sync_control"))
     _glXGetSyncValuesOML = (Bool (*)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*))glXGetProcAddress((const GLubyte*)"glXGetSyncValuesOML");
-  if (!_glXSwapBuffersMscOML)
+  if (!_glXSwapBuffersMscOML && glxIsSupported("GLX_OML_sync_control"))
     _glXSwapBuffersMscOML = (int64_t (*)(Display*, GLXDrawable, int64_t, int64_t, int64_t))glXGetProcAddress((const GLubyte*)"glXSwapBuffersMscOML");
-  if (!_glXWaitVideoSyncSGI)
+  if (!_glXWaitVideoSyncSGI  && glxIsSupported("GLX_SGI_video_sync"))
     _glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
-  if (!_glXGetVideoSyncSGI)
+  if (!_glXGetVideoSyncSGI   && glxIsSupported("GLX_SGI_video_sync"))
     _glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
-  if (!_glXSwapIntervalSGI)
+  if (!_glXSwapIntervalSGI   && glxIsSupported("GLX_SGI_swap_control") )
     _glXSwapIntervalSGI = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalSGI");
-  if (!_glXSwapIntervalMESA)
+  if (!_glXSwapIntervalMESA  && glxIsSupported("GLX_MESA_swap_control"))
     _glXSwapIntervalMESA = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
 #elif defined (_WIN32)
   if (!_wglSwapIntervalEXT)
@@ -1126,7 +955,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
   {
     RECT rBounds;
     HMONITOR hMonitor;
-    MONITORINFO mi;
+    MONITORINFOEX mi;
     HWND hwnd = sysInfo.window;
 
     // Start by getting the current window rect and centering the new window on
@@ -1135,6 +964,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
     hMonitor = MonitorFromRect(&rBounds, MONITOR_DEFAULTTONEAREST);
     mi.cbSize = sizeof(mi);
     GetMonitorInfo(hMonitor, &mi);
+    g_VideoReferenceClock.SetMonitor(mi); //let the videoreferenceclock know which monitor we're on
 
     rBounds.left = mi.rcMonitor.left + (mi.rcMonitor.right - mi.rcMonitor.left - newWidth) / 2;
     rBounds.top = mi.rcMonitor.top + (mi.rcMonitor.bottom - mi.rcMonitor.top - newHeight) / 2;
@@ -1213,6 +1043,15 @@ void CSurface::GetGLVersion(int& maj, int& min)
     s_glVendor   = (const char*)glGetString(GL_VENDOR);
     s_glRenderer = (const char*)glGetString(GL_RENDERER);
   }
+#ifdef HAS_GLX
+  if (s_glxExt.length()==0)
+  {
+    s_glxExt  = " ";
+    s_glxExt += (const char*)glXQueryExtensionsString(s_dpy, DefaultScreen(s_dpy));
+    s_glxExt += " ";
+  }
+#endif
+
 #endif
   maj = s_glMajVer;
   min = s_glMinVer;

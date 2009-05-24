@@ -34,12 +34,6 @@ CGUISpinControlEx::~CGUISpinControlEx(void)
 {
 }
 
-void CGUISpinControlEx::PreAllocResources()
-{
-  CGUISpinControl::PreAllocResources();
-  m_buttonControl.PreAllocResources();
-}
-
 void CGUISpinControlEx::AllocResources()
 {
   // Correct alignment - we always align the spincontrol on the right,

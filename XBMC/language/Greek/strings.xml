@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 04/17/2009-->
+<!--Date of translation: 05/17/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 19506-->
+<!--Based on english strings version 20327-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -163,7 +163,7 @@
   <string id="226">Δοκιμή μοτίβων...</string>
   <string id="227">Έρευνα μουσικών CD's στο Internet</string>
   <string id="228">Ανακάτεμα λίστας αναπαραγωγής κατα τη φόρτωση</string>
-  <string id="229">Ελάττωση περιστροφής (Spindown)</string>
+  <string id="229">Χρόνος ελάττωσης περιστροφής (Spindown)</string>
   <string id="230">Φίλτρα βίντεο</string>
   <string id="231">Κανένα</string>
   <string id="232">Σημειακό</string>
@@ -240,7 +240,7 @@
   <string id="309">- Οριζόντιο φίλτρο deblocking</string>
   <string id="310">- Αυτόματη φωτεινότητα/αντίθεση</string>
   <string id="311">- Dering</string>
-  <string id="312">(0=Αυτόματα)</string>
+  <string id="312">(0=αυτόματα)</string>
   <string id="313">Εκκαθάριση βάσης δεδομένων</string>
   <string id="314">Προετοιμασία...</string>
   <string id="315">Σφάλμα στη βάση δεδομένων</string>
@@ -278,7 +278,7 @@
   <string id="351">Ανενεργό/ή</string>
   <string id="352">Αμυδρό φως</string>
   <string id="353">Μαύρη οθόνη</string>
-  <string id="354">Matrix Trails</string>
+  <string id="354">Ίχνη πλέγματος</string>
   <string id="355">Προφύλαξη οθόνης μετά από</string>
   <string id="356">Λειτουργία προφύλαξης οθόνης</string>
   <string id="357">Χρονοδιακόπτης λειτουργίας τερματισμού</string>
@@ -354,7 +354,7 @@
   <string id="427">Δίσκος</string>
   <string id="428">Εισαγωγή ορθού CD/DVD</string>
   <string id="429">Παρακαλώ, εισάγετε το παρακάτω CD/DVD</string>
-  <string id="430">Ταξ.: DVD#</string>
+  <string id="430">Ταξιν.: DVD#</string>
   <string id="431">Δεν υπάρχει ελεύθερη λανθάνουσα μνήμη</string>
   <string id="432">Διαγραφή ταινίας από τη συλλογή</string>
   <string id="433">Να διαγραφεί '%s';</string>
@@ -381,9 +381,9 @@
   <string id="455">Γραμμές</string>
   <string id="456">Μέθοδος</string>
   <string id="457">Εναλλαγή προβολής</string>
-  <string id="459">Subs</string>
+  <string id="459">Υπότιτλοι</string>
   <string id="460">Ηχητική ροή</string>
-  <string id="461">[Ενεργό]</string>
+  <string id="461">[ενεργό]</string>
   <string id="462">Υπότιτλος</string>
   <string id="463">Οπίσθιος φωτισμός</string>
   <string id="464">Φωτεινότητα</string>
@@ -414,7 +414,7 @@
   <string id="492">Μεγέθυνση υποτίτλων</string>
   <string id="493">Ρυθμίσεις για προχωρημένους!</string>
   <string id="494">Εύρος στάθμης γενικού ήχου</string>
-  <string id="495">Αύξηση δείγματος ανάλυσης σε γραφικό περιβάλλον (GUI)</string>
+  <string id="495">Αύξηση δειγματοληψίας ανάλυσης σε γραφικό περιβάλλον (GUI)</string>
   <string id="496">Βαθμονόμηση</string>
   <string id="497">Απόκρυψη επεκτάσεων των πολυμέσων</string>
   <string id="498">Ταξιν: Τύπος</string>
@@ -507,19 +507,19 @@
   <string id="595">Επανάληψη: Όχι</string>
   <string id="596">Επανάληψη: Μία φορά</string>
   <string id="597">Επανάληψη: Όλων</string>
-  <string id="600">Δημιουργία MP3 από CD</string>
+  <string id="600">Εγγραφή CD ήχου</string>
   <string id="601">Μεσαία</string>
   <string id="602">Κανονική</string>
   <string id="603">Ακραία</string>
   <string id="604">Σταθερός ρυθμός</string>
-  <string id="605">Δημιουργία MP3...</string>
+  <string id="605">Εγγραφή...</string>
   <string id="606">Αριθμός κομματιού</string>
   <string id="607">Προς:</string>
   <string id="608">Αδυναμία εγγραφής CD ή κομματιού</string>
   <string id="609">Δεν ορίσθηκε διαδρομή εξαγωγής CDDA.</string>
   <string id="610">Εγγραφή κομματιού</string>
   <string id="611">Εισαγωγή αριθμού</string>
-  <string id="620">Αντιγραφή CD</string>
+  <string id="620">Εγγραφή CD</string>
   <string id="621">Κωδικοποιητής</string>
   <string id="622">Ποιότητα</string>
   <string id="623">Ρυθμός</string>
@@ -740,13 +740,13 @@
   <string id="1250">Αυτόματος εντοπισμός</string>
   <string id="1251">Αυτόματος εντοπισμός συστήματος</string>
   <string id="1252">Ψευδώνυμο</string>
-  <string id="1253">Δημιουργία FTP Συνδέσμου στα Αρχεία</string>
+  <string id="1253">Δημιουργία FTP συνδέσμου στα αρχεία</string>
   <string id="1254">Να απαιτείται επιβεβαίωση για να συνδεθεί</string>
   <string id="1255">Αποστολή ονόματος και κωδικού πρόσβασης χρήστη (FTP) </string>
   <string id="1256">Διάστημα μεταλλικού θορύβου</string>
   <string id="1257">Να συνδεθείτε στο συστήμα που εντοπίστηκε;</string>
   <string id="1260">Έκδοση Zeroconf</string>
-  <string id="1396">Μετακινούμενη</string>
+  <string id="1396">Πυκνό </string>
   <string id="1397">και</string>
   <string id="1398">Παγωνιά</string>
   <string id="1399">Το βράδυ</string>
@@ -768,6 +768,7 @@
   <string id="1415">Ασθενής βροχή</string>
   <string id="1416">Ομιχλώδης</string>
   <string id="1417">Κόκκοι</string>
+  <string id="1450">Εξοικονόμηση ενέργειας κατά την αναμονή</string>
   <string id="2050">Εκτέλεση</string>
   <string id="4501">Τύπος LCD</string>
   <string id="10000">Αρχική τοποθεσία</string>
@@ -999,7 +1000,7 @@
   <string id="13205">Άγνωστο</string>
   <string id="13206">Αντικατάσταση</string>
   <string id="13208">Ξυπνητήρι</string>
-  <string id="13209">Διάρκεια κουδουνιστού (σε λεπτά)</string>
+  <string id="13209">Διάρκεια κουδουνισμού (σε λεπτά)</string>
   <string id="13210">Εκκίνηση ξυπνητηριού σε %im</string>
   <string id="13211">Συναγερμός!</string>
   <string id="13212">Ακυρώθηκε %im%is απέμειναν</string>
@@ -1036,7 +1037,7 @@
   <string id="13297">Δε συνδέθηκε. Ελέγξτε τις ρυθμίσεις δικτύου.</string>
   <string id="13298">Κλειδί Xbox Live:</string>
   <string id="13299">Θερμοκρασία στόχος</string>
-  <string id="13300">Ταχύτητά ανεμιστήρα</string>
+  <string id="13300">Ταχύτητα ανεμιστήρα</string>
   <string id="13301">Αυτόματος έλεγχος θερμοκρασίας</string>
   <string id="13302">Προτεραιότητα στην ταχύτητα του ανεμιστήρα</string>
   <string id="13303">- Γραμματοσειρές</string>
@@ -1146,6 +1147,17 @@
   <string id="13419">Λογισμικό</string>
   <string id="13420">Ασφαλής κατάργηση</string>
   <string id="13421">VDPAU</string>
+  <string id="13500">Μέθοδος συγχρονισμού A/V</string>
+  <string id="13501">Χρονισμός ήχου</string>
+  <string id="13502">Χρονισµός βίντεο (εις βάρος του ήχου)</string>
+  <string id="13503">Χρονισμός βίντεο (εν νέου δειγματοληψία ήχου)</string>
+  <string id="13504">Μέγιστο ποσοστό επανάληψης δειγματοληψίας (%)</string>
+  <string id="13505">Ποιότητα επανάληψης δειγματοληψίας</string>
+  <string id="13506">Χαμηλή</string>
+  <string id="13507">Μεσαία</string>
+  <string id="13508">Υψηλή</string>
+  <string id="13509">Πραγματικά Υψηλή</string>
+  <string id="13510">Συγχρονισμός αναπαραγωγής ήχου κατά τη προβολή</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Κατάσταση</string>
   <string id="13602">Να εκτελείται πάντα</string>
@@ -1153,6 +1165,7 @@
   <string id="13610">Ανενεργή</string>
   <string id="13611">Τυπική</string>
   <string id="13612">Τηλεχειριστήριο γενικής χρήσης</string>
+  <string id="13613">Τηλεχειριστήριο γενικής χρήσης (Harmony)</string>
   <string id="13620">Σφάλμα συσκευής (Apple Remote)</string>
   <string id="13621">Αδυναμία υποστήριξης συσκευής (Apple Remote).</string>
   <string id="14000">Στοίβαγμα</string>
@@ -1262,6 +1275,11 @@
   <string id="15214">Χρήση συγχρονισμού Smoothed A/V</string>
   <string id="15215">Απόκρυψη ονομάτων αρχείων στην προβολή μικρογραφιών</string>
   <string id="15216">Εκτελείτε σε Party Mode</string>
+  <string id="15217">Υποβολή τραγουδιών στο Libre.fm</string>
+  <string id="15218">Όνομα χρήστη (Libre.fm)</string>
+  <string id="15219">Κωδικός πρόσβασης (Libre.fm)</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
   <string id="15250">Αποστολή Last.FM Radio στο Last.FM</string>
   <string id="15251">Σύνδεση με Last.FM...</string>
   <string id="15252">Επιλογή σταθμού...</string>
@@ -1468,7 +1486,7 @@
   <string id="20096">Οθόνη σύνδεσης</string>
   <string id="20097">Λήψη πληροφοριών άλμπουμ</string>
   <string id="20098">Λαμβάνει πληροφορίες για το άλμπουμ</string>
-  <string id="20099">Αδυναμία αντιγραφής του CD ή του κομματιού κατά την αναπαραγωγή δίσκου</string>
+  <string id="20099">Αδυναμία εγγραφής του CD ή του κομματιού κατά την αναπαραγωγή δίσκου</string>
   <string id="20100">Κεντρικό κλείδωμα και επιλογές</string>
   <string id="20101">Ενεργοποίηση γενικής διαχείριση πάντα με κωδικό</string>
   <string id="20102">ή αντιγραφή από το προκαθορισμένο;</string>

@@ -234,9 +234,6 @@
 /* Define to 1 if you have the `png12' library (-lpng12). */
 #undef HAVE_LIBPNG12
 
-/* Define to 1 if you have the `portaudio' library (-lportaudio). */
-#undef HAVE_LIBPORTAUDIO
-
 /* Define to 1 if you have the `postproc' library (-lpostproc). */
 #undef HAVE_LIBPOSTPROC
 
@@ -251,6 +248,9 @@
 
 /* Define to 1 if you have the `rt' library (-lrt). */
 #undef HAVE_LIBRT
+
+/* Define to 1 if you have the `samplerate' library (-lsamplerate). */
+#undef HAVE_LIBSAMPLERATE
 
 /* Define to 1 if you have the `SDL' library (-lSDL). */
 #undef HAVE_LIBSDL

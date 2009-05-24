@@ -65,6 +65,7 @@ CBackgroundPicLoader::CBackgroundPicLoader()
 
 CBackgroundPicLoader::~CBackgroundPicLoader()
 {
+  StopThread();
   CloseHandle(m_loadPic);
 }
 
@@ -165,7 +166,7 @@ void CGUIWindowSlideShow::Reset()
   m_iCurrentPic = 0;
   CSingleLock lock(m_slideSection);
   m_slides->Clear();
-  m_Resolution = INVALID;
+  m_Resolution = g_graphicsContext.GetVideoResolution();
 }
 
 void CGUIWindowSlideShow::FreeResources()

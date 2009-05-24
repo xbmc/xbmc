@@ -1,6 +1,5 @@
 INCLUDES=-I. -I.. -I../../../ -I../../ffmpeg -I../../../linux -I../../../../guilib
 CXXFLAGS+=-D__STDC_CONSTANT_MACROS \
-        -DENABLE_DVDPLAYER_HTSP \
 
 SRCS=	DVDDemux.cpp \
 	DVDDemuxFFmpeg.cpp \

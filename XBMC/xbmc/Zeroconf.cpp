@@ -121,7 +121,7 @@ CZeroconf*  CZeroconf::GetInstance()
   if(!smp_instance)
   {
     //use double checked locking
-    CAtomicLock lock(sm_singleton_guard);
+    CAtomicSpinLock lock(sm_singleton_guard);
     if(!smp_instance)
     {
 #ifndef HAS_ZEROCONF
@@ -141,7 +141,7 @@ CZeroconf*  CZeroconf::GetInstance()
 
 void CZeroconf::ReleaseInstance()
 {
-  CAtomicLock lock(sm_singleton_guard);
+  CAtomicSpinLock lock(sm_singleton_guard);
   delete smp_instance;
   smp_instance = 0;
 }

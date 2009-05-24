@@ -68,7 +68,6 @@ public:
   virtual void OnRight();
   virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
   virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);

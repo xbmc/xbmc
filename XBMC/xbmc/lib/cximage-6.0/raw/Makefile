@@ -1,4 +1,4 @@
-CFLAGS+=-O2 -fPIC -DXBMC -D_LINUX
+CFLAGS+=-O2 -fPIC -DXBMC -D_LINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4

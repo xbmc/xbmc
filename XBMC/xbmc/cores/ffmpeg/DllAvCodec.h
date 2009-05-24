@@ -236,7 +236,6 @@ public:
       return avcodec_close_dont_call(avctx);
     }
 };
-#endif
 
 
 // calback used for logging
@@ -336,5 +335,3 @@ public:
     return false;
   }
 };
-
-#endif

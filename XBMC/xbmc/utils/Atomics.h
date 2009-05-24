@@ -22,131 +22,23 @@
 #ifndef __ATOMICS_H__
 #define __ATOMICS_H__
 
-#include <queue>
-
-// 32-bit atomic compare-and-swap
-// Returns previous value of *pAddr
-#ifdef __ppc__ // PowerPC
-inline long cas(volatile long *pAddr, long expectedVal, long swapVal)
-{
-  unsigned int prev;
-  
-  __asm__ __volatile__ (
-                        "  1:      lwarx   %0,0,%2  \n" /* Load the current value of *pAddr(%2) into prev (%0) and lock pAddr,  */
-                        "          cmpw     0,%0,%3 \n" /* Verify that the current value (%2) == old value (%3) */
-                        "          bne-     2f      \n" /* Bail if the two values are not equal [not as expected] */
-                        "          stwcx.  %4,0,%2  \n" /* Attempt to store swapVal (%4) value into *pAddr (%2) [p must still be reserved] */
-                        "          bne-    1b       \n" /* Loop if p was no longer reserved */
-                        "          sync             \n" /* Reconcile multiple processors [if present] */
-                        "  2:                       \n"
-                        : "=&r" (prev), "+m" (*pAddr)                   /* Outputs [prev, *pAddr] */
-                        : "r" (pAddr), "r" (expectedVal), "r" (swapVal) /* Inputs [pAddr, expectedVal, swapVal] */
-                        : "cc", "memory");                              /* Clobbers */
-  
-  return prev;
-}
-
-#elif defined(WIN32)
-
-inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
-{
-  long prev;
-  
-  __asm
-  {
-    // Load parameters
-    mov eax, expectedVal ;
-    mov ebx, pAddr ;
-    mov ecx, swapVal ;
-    
-    // Do Swap
-    lock cmpxchg [ebx], ecx ;
-    
-    // Store the return value
-    mov prev, eax;
-  }
-  
-  return prev;
-}
-
-#else // Linux / OSX (GCC)
-
-inline long cas(volatile long* pAddr,long expectedVal, long swapVal)
-{
-  long prev;
-  
-  __asm__ __volatile__ (
-                        "lock/cmpxchg %1, %2"
-                        : "=a" (prev)
-                        : "r" (swapVal), "m" (*pAddr), "0" (expectedVal)
-                        : "memory" );
-  return prev;
-  
-}
-
+// TODO: Inline these methods
+long cas(volatile long *pAddr, long expectedVal, long swapVal);
+#ifndef __ppc__
+long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal);
 #endif
+long AtomicIncrement(volatile long* pAddr);
+long AtomicDecrement(volatile long* pAddr);
 
-class CAtomicLock
+class CAtomicSpinLock
 {
 public:
-  CAtomicLock(long& lock) : m_Lock(lock)
-  {
-    while (cas(&m_Lock, 0, 1) != 0); // Lock
-  }
-  ~CAtomicLock()
-  {
-    m_Lock = 0; // Unlock
-  }
+  CAtomicSpinLock(long& lock);
+  ~CAtomicSpinLock();
 private:
   long& m_Lock;
 };
 
-template <class T>
-class CSafeQueue
-{
-public:
-  CSafeQueue(size_t maxItems = 0) : m_Lock(0), m_MaxItems(maxItems) {}
-  bool Push(const T& elem)
-  {
-    CAtomicLock(m_Lock);
-    if (m_Queue.size() >= m_MaxItems)
-      return false;
-
-    m_Queue.Push(elem);
-    return true;
-  }
-
-  void Pop()
-  {
-    CAtomicLock(m_Lock); 
-    m_Queue.pop();
-  }
-
-  void Clear() 
-  {
-    CAtomicLock(m_Lock); 
-    while (!m_Queue.empty())
-      m_Queue.pop();
-  }
-
-  bool SetMaxItems(size_t maxItems)
-  {
-    CAtomicLock(m_Lock);
-    if (maxItems < m_MaxItems)
-      if (maxItems < m_Queue.size())
-        return false;
-    m_MaxItems = maxItems;
-    return true;
-  }
-  size_t GetMaxItems() {CAtomicLock(m_Lock); return m_MaxItems;}
-  T& Head() {CAtomicLock(m_Lock); return m_Queue.front();}
-  T& Tail() {CAtomicLock(m_Lock); return m_Queue.back();}
-  bool Empty() {CAtomicLock(m_Lock); return m_Queue.empty();}
-  size_t Count() {CAtomicLock(m_Lock); return m_Queue.size();}
-protected:
-  long m_Lock;
-  std::queue<T> m_Queue;
-  size_t m_MaxItems;
-};
 
 #endif // __ATOMICS_H__
+

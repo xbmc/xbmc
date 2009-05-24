@@ -28,9 +28,6 @@ CGUISettingsSliderControl::CGUISettingsSliderControl(DWORD dwParentID, DWORD dwC
     , m_textLayout(labelInfo.font, false)
 {
   ControlType = GUICONTROL_SETTINGS_SLIDER;
-  m_controlOffsetX = 0;  // no offsets for setting sliders
-  m_controlOffsetY = 0;
-  m_renderText = false;
 }
 
 CGUISettingsSliderControl::~CGUISettingsSliderControl(void)
@@ -74,12 +71,6 @@ void CGUISettingsSliderControl::DynamicResourceAlloc(bool bOnOff)
 {
   CGUISliderControl::DynamicResourceAlloc(bOnOff);
   m_buttonControl.DynamicResourceAlloc(bOnOff);
-}
-
-void CGUISettingsSliderControl::PreAllocResources()
-{
-  CGUISliderControl::PreAllocResources();
-  m_buttonControl.PreAllocResources();
 }
 
 void CGUISettingsSliderControl::AllocResources()

@@ -115,14 +115,14 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
   }
   else
   {
-    hdhomerun_device_t* device = m_dll.device_create_from_str(url.GetHostName().c_str());
+    hdhomerun_device_t* device = m_dll.device_create_from_str(url.GetHostName().c_str(), NULL);
     if(!device)
       return false;
 
     m_dll.device_set_tuner_from_str(device, url.GetFileName().c_str());
 
     hdhomerun_tuner_status_t status;
-    if(!m_dll.device_get_tuner_status(device, &status))
+    if(!m_dll.device_get_tuner_status(device, NULL, &status))
     {
       m_dll.device_destroy(device);
       return true;
@@ -199,7 +199,7 @@ bool CFileHomeRun::Open(const CURL &url)
   if(!m_dll.IsLoaded())
     return false;
 
-  m_device = m_dll.device_create_from_str(url.GetHostName().c_str());
+  m_device = m_dll.device_create_from_str(url.GetHostName().c_str(), NULL);
   if(!m_device)
     return false;
 

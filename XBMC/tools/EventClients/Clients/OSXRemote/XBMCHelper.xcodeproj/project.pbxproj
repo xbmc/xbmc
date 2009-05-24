@@ -37,7 +37,7 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
-		8DD76F7E0486A8DE00D96B5E /* OSXRemote */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OSXRemote; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DD76F7E0486A8DE00D96B5E /* XBMCHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMCHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		E45F2B1A0F95191E007BCC0B /* IRKeyboardEmu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IRKeyboardEmu.h; sourceTree = "<group>"; };
 		E45F2B1B0F95191E007BCC0B /* IRKeyboardEmu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IRKeyboardEmu.m; sourceTree = "<group>"; };
 		E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = xbmchelper_main.mm; sourceTree = "<group>"; };
@@ -120,7 +120,7 @@
 		19C28FBDFE9D53C911CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8DD76F7E0486A8DE00D96B5E /* OSXRemote */,
+				8DD76F7E0486A8DE00D96B5E /* XBMCHelper */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -158,9 +158,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8DD76F740486A8DE00D96B5E /* OSXRemote */ = {
+		8DD76F740486A8DE00D96B5E /* XBMCHelper */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "OSXRemote" */;
+			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMCHelper" */;
 			buildPhases = (
 				8DD76F760486A8DE00D96B5E /* Sources */,
 				8DD76F780486A8DE00D96B5E /* Frameworks */,
@@ -170,10 +170,10 @@
 			);
 			dependencies = (
 			);
-			name = OSXRemote;
+			name = XBMCHelper;
 			productInstallPath = "$(HOME)/bin";
 			productName = XBMCHelper;
-			productReference = 8DD76F7E0486A8DE00D96B5E /* OSXRemote */;
+			productReference = 8DD76F7E0486A8DE00D96B5E /* XBMCHelper */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -188,7 +188,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8DD76F740486A8DE00D96B5E /* OSXRemote */,
+				8DD76F740486A8DE00D96B5E /* XBMCHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -219,6 +219,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../osx;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -227,7 +228,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				INSTALL_PATH = /usr/local/bin;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_NAME = OSXRemote;
+				PRODUCT_NAME = XBMCHelper;
 				SDKROOT = macosx10.4;
 				STRIP_STYLE = debugging;
 			};
@@ -237,11 +238,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../../osx;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				INSTALL_PATH = /usr/local/bin;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_NAME = OSXRemote;
+				PRODUCT_NAME = XBMCHelper;
 				SDKROOT = macosx10.4;
 				STRIP_STYLE = debugging;
 			};
@@ -266,6 +268,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
@@ -276,7 +279,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "OSXRemote" */ = {
+		1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMCHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB924808733DCA0010E9CD /* Debug */,

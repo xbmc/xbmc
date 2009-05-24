@@ -62,7 +62,7 @@ void CPerformanceStats::DumpStats()
 {
   double dError = CPerformanceSample::GetEstimatedError();
   CLog::Log(LOGINFO, "%s - estimated error: %f", __FUNCTION__, dError);
-  CLog::Log(LOGINFO," %s - ignore user/sys values when sample count is low", __FUNCTION__);
+  CLog::Log(LOGINFO, "%s - ignore user/sys values when sample count is low", __FUNCTION__);
 
   map<string, PerformanceCounter*>::iterator iter = m_mapStats.begin();
   while (iter != m_mapStats.end())

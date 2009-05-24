@@ -169,16 +169,6 @@ void CGUIScrollBar::DynamicResourceAlloc(bool bOnOff)
   m_guiNibFocus.DynamicResourceAlloc(bOnOff);
 }
 
-void CGUIScrollBar::PreAllocResources()
-{
-  CGUIControl::PreAllocResources();
-  m_guiBackground.PreAllocResources();
-  m_guiBarNoFocus.PreAllocResources();
-  m_guiBarFocus.PreAllocResources();
-  m_guiNibNoFocus.PreAllocResources();
-  m_guiNibFocus.PreAllocResources();
-}
-
 void CGUIScrollBar::AllocResources()
 {
   CGUIControl::AllocResources();
@@ -204,6 +194,8 @@ void CGUIScrollBar::UpdateBarSize()
     m_guiBarFocus.SetHeight(nibSize);
     m_guiNibNoFocus.SetHeight(nibSize);
     m_guiNibFocus.SetHeight(nibSize);
+    // nibSize may be altered by the border size of the nib (and bar).
+    nibSize = std::max(m_guiBarFocus.GetHeight(), m_guiNibFocus.GetHeight());
 
     // and the position
     percent = (m_numItems == m_pageSize) ? 0 : (float)m_offset / (m_numItems - m_pageSize);

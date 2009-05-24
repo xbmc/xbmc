@@ -285,11 +285,15 @@ void CGUISettings::Initialize()
   AddBool(10, "musicfiles.usecddb", 227, true);
   AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
-  AddCategory(3, "lastfm", 15200);
-  AddBool(1, "lastfm.enable", 15201, false);
-  AddBool(2, "lastfm.recordtoprofile", 15250, false);
-  AddString(3,"lastfm.username", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
-  AddString(4,"lastfm.password", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
+  AddCategory(3, "scrobbler", 15221);
+  AddBool(1, "scrobbler.lastfmsubmit", 15201, false);
+  AddBool(2, "scrobbler.lastfmsubmitradio", 15250, false);
+  AddString(3,"scrobbler.lastfmusername", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
+  AddString(4,"scrobbler.lastfmpassword", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
+  AddSeparator(5, "scrobbler.sep1");
+  AddBool(6, "scrobbler.librefmsubmit", 15217, false);
+  AddString(7, "scrobbler.librefmusername", 15218, "", EDIT_CONTROL_INPUT, false, 15218);
+  AddString(8, "scrobbler.librefmpassword", 15219, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15219);
 
   AddCategory(3, "cddaripper", 620);
   AddPath(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
@@ -341,7 +345,7 @@ void CGUISettings::Initialize()
 
 #ifdef __APPLE__
   AddCategory(4, "appleremote", 13600);
-  AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_UNIVERSAL, SPIN_CONTROL_TEXT);
+  AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_MULTIREMOTE, SPIN_CONTROL_TEXT);
   AddBool(2, "appleremote.alwayson", 13602, false);
   AddInt(3, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
 #endif
@@ -462,6 +466,12 @@ void CGUISettings::Initialize()
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
   AddBool(17, "videoplayer.editdecision", 22003, false);
+
+  AddSeparator(18, "videoplayer.sep4");
+  AddBool(19, "videoplayer.usedisplayasclock", 13510, false);
+  AddInt(20, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddFloat(21, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
+  AddInt(22, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "arial.ttf", SPIN_CONTROL_TEXT);
@@ -654,10 +664,13 @@ void CGUISettings::Initialize()
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddBool(5, "screensaver.uselock",20140,false);
-  AddSeparator(6, "screensaver.sep1");
-  AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddBool(9, "screensaver.slideshowshuffle", 13319, false);
+  // Note: Application.cpp might hide powersaving settings if not supported.
+  AddSeparator(6, "screensaver.sep_powersaving");
+  AddInt(7, "screensaver.powersavingtime", 1450, 0, 0, 5, 4 * 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddSeparator(8, "screensaver.sep1");
+  AddInt(9, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddPath(10, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddBool(11, "screensaver.slideshowshuffle", 13319, false);
 
   AddPath(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }

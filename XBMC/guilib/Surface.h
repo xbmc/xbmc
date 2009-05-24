@@ -38,6 +38,10 @@
 #include <GL/glew.h>
 #endif
 
+#ifdef HAS_GLX
+#include <GL/glx.h>
+#endif
+
 namespace Surface {
 #if defined(_WIN32PC)
 /*!
@@ -52,15 +56,9 @@ enum ONTOP {
 };
 #endif
 
-#ifdef HAS_GLX
+#if defined(_LINUX) && !defined(__APPLE__)
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <GL/glx.h>
-/*
-static Bool WaitForNotify(Display *dpy, XEvent *event, XPointer arg) {
-  return (event->type == MapNotify) && (event->xmap.window == (Window) arg);
-}
-*/
 #endif
 
 class CSurface
@@ -101,15 +99,9 @@ public:
   GLXContext GetContext() {return m_glContext;}
   GLXWindow GetWindow() {return m_glWindow;}
   GLXPbuffer GetPBuffer() {return m_glPBuffer;}
-  Pixmap GetXPixmap() {return m_Pixmap;}
-  GLXPixmap GetGLPixmap() {return m_glPixmap;}
   bool MakePBuffer();
   bool MakePixmap(int width, int height);
   Display* GetDisplay() {return s_dpy;}
-  GLuint GetGLPixmapTex() {return m_glPixmapTexture;}
-  void BindPixmap();
-  void ReleasePixmap();
-  bool m_pixmapBound;
 #endif
 
   static std::string& GetGLVendor() { return s_glVendor; }
@@ -118,6 +110,8 @@ public:
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
   SDL_Surface* SDL() {return m_SDLSurface;}
+
+  bool glxIsSupported(const char*);
 
  protected:
   CSurface* m_pShared;
@@ -140,10 +134,7 @@ public:
   GLXContext m_glContext;
   GLXWindow  m_glWindow;
   Window  m_parentWindow;
-  GLXPixmap  m_glPixmap;
-  Pixmap  m_Pixmap;
   GLXPbuffer  m_glPBuffer;
-  GLuint   m_glPixmapTexture;
   static Display* s_dpy;
 #endif
 #ifdef __APPLE__
@@ -158,6 +149,7 @@ public:
   static bool b_glewInit;
   static std::string s_glVendor;
   static std::string s_glRenderer;
+  static std::string s_glxExt;
   static int         s_glMajVer;
   static int         s_glMinVer;
 

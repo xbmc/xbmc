@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDAudioCodecPassthrough.h"
 #include "DVDCodecs/DVDCodecs.h"
@@ -100,14 +100,14 @@ int CDVDAudioCodecPassthrough::PaddDTSData( BYTE* pData, int iDataSize, BYTE* pO
     break;
   }
 
-  pOut[5] = 0;                      /* ?? */    
+  pOut[5] = 0;                      /* ?? */
   pOut[6] = (iDataSize2 << 3) & 0xFF;
   pOut[7] = (iDataSize2 >> 5) & 0xFF;
 
   int iOutputSize = OUT_SAMPLESTOBYTES(m_iSamplesPerFrame);
 
-  if ( iDataSize2 > iOutputSize - 8 ) 
-  {          
+  if ( iDataSize2 > iOutputSize - 8 )
+  {
     //Crap frame with more data than we can handle, can be worked around i think
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::PaddDTSData - larger frame than will fit, skipping");
     return 0;
@@ -119,7 +119,7 @@ int CDVDAudioCodecPassthrough::PaddDTSData( BYTE* pData, int iDataSize, BYTE* pO
   else
     memcpy((char*)pOut+8, (char*)pData, iDataSize);
 
-  memset(pOut + iDataSize2 + 8, 0, iOutputSize - iDataSize2 - 8);  
+  memset(pOut + iDataSize2 + 8, 0, iOutputSize - iDataSize2 - 8);
 
   return iOutputSize;
 }
@@ -141,8 +141,8 @@ int CDVDAudioCodecPassthrough::PaddAC3Data( BYTE* pData, int iDataSize, BYTE* pO
 
   int iOutputSize = OUT_SAMPLESTOBYTES(m_iSamplesPerFrame);
 
-  if ( iDataSize2 > iOutputSize - 8 ) 
-  {          
+  if ( iDataSize2 > iOutputSize - 8 )
+  {
     //Crap frame with more data than we can handle, can be worked around i think
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthrough::PaddAC3Data - larger frame than will fit, skipping");
     return 0;
@@ -164,11 +164,11 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   {
     bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
     bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
-  }  
+  }
 
-  //Samplerate cannot be checked here as we don't know it at this point in time. 
+  //Samplerate cannot be checked here as we don't know it at this point in time.
   //We should probably have a way to try to decode data so that we know what samplerate it is.
-  if ((hints.codec == CODEC_ID_AC3 && bSupportsAC3Out) 
+  if ((hints.codec == CODEC_ID_AC3 && bSupportsAC3Out)
    || (hints.codec == CODEC_ID_DTS && bSupportsDTSOut))
   {
 
@@ -206,9 +206,9 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       m_pStateDTS = m_dllDTS.dts_init(0);
       if(m_pStateDTS == NULL)
         return false;
-    } 
+    }
 
-    return true;    
+    return true;
   }
   else
     return false;
@@ -269,7 +269,7 @@ int CDVDAudioCodecPassthrough::ParseFrame(BYTE* data, int size, BYTE** frame, in
   }
 
   // attempt to fill up to 7 bytes
-  if(m_InputSize < HEADER_SIZE) 
+  if(m_InputSize < HEADER_SIZE)
   {
     len = HEADER_SIZE-m_InputSize;
     if(len > size)
@@ -280,7 +280,7 @@ int CDVDAudioCodecPassthrough::ParseFrame(BYTE* data, int size, BYTE** frame, in
     size        -= len;
   }
 
-  if(m_InputSize < HEADER_SIZE) 
+  if(m_InputSize < HEADER_SIZE)
     return data - orig;
 
   // attempt to sync by shifting bytes
@@ -328,7 +328,7 @@ int CDVDAudioCodecPassthrough::ParseFrame(BYTE* data, int size, BYTE** frame, in
 }
 
 int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
-{  
+{
 
   int len, framesize;
   BYTE* frame;

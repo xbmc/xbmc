@@ -188,6 +188,7 @@ case TMSG_POWERDOWN:
     case TMSG_QUIT:
       {
         g_application.Stop();
+        Sleep(200);
         exit(0);
       }
       break;
@@ -262,7 +263,7 @@ case TMSG_POWERDOWN:
           m_gWindowManager.PreviousWindow();
 
         g_application.ResetScreenSaver();
-        g_application.ResetScreenSaverWindow();
+        g_application.WakeUpScreenSaverAndDPMS();
 
         //g_application.StopPlaying();
         // play file
@@ -303,7 +304,7 @@ case TMSG_POWERDOWN:
           m_gWindowManager.PreviousWindow();
 
         g_application.ResetScreenSaver();
-        g_application.ResetScreenSaverWindow();
+        g_application.WakeUpScreenSaverAndDPMS();
 
         g_graphicsContext.Lock();
         pSlideShow->Reset();
@@ -383,7 +384,7 @@ case TMSG_POWERDOWN:
           m_gWindowManager.PreviousWindow();
 
         g_application.ResetScreenSaver();
-        g_application.ResetScreenSaverWindow();
+        g_application.WakeUpScreenSaverAndDPMS();
 
         // stop playing file
         if (g_application.IsPlaying()) g_application.StopPlaying();
@@ -394,7 +395,7 @@ case TMSG_POWERDOWN:
       if (g_application.m_pPlayer)
       {
         g_application.ResetScreenSaver();
-        g_application.ResetScreenSaverWindow();
+        g_application.WakeUpScreenSaverAndDPMS();
         g_application.m_pPlayer->Pause();
       }
       break;
@@ -406,6 +407,14 @@ case TMSG_POWERDOWN:
 
     case TMSG_MINIMIZE:
       g_application.Minimize();
+      break;
+
+    case TMSG_EXECUTE_OS:
+#if defined( _LINUX) && !defined(__APPLE__)
+      CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
+#elif defined(_WIN32PC)
+      CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
+#endif
       break;
 
     case TMSG_HTTPAPI:
@@ -734,10 +743,10 @@ void CApplicationMessenger::SwitchToFullscreen()
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::Minimize()
+void CApplicationMessenger::Minimize(bool wait)
 {
   ThreadMessage tMsg = {TMSG_MINIMIZE};
-  SendMessage(tMsg, false);
+  SendMessage(tMsg, wait);
 }
 
 void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param)
@@ -748,6 +757,15 @@ void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CS
   tMsg.strParam = param;
   SendMessage(tMsg, true);
 }
+
+void CApplicationMessenger::ExecOS(const CStdString command, bool waitExit)
+{
+  ThreadMessage tMsg = {TMSG_EXECUTE_OS};
+  tMsg.strParam = command;
+  tMsg.dwParam1 = (DWORD)waitExit;
+  SendMessage(tMsg, false);
+}
+
 
 void CApplicationMessenger::Show(CGUIDialog *pDialog)
 {

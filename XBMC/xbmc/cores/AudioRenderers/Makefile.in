@@ -6,7 +6,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 SRCS = \
 	NullDirectSound.cpp \
 	AudioRendererFactory.cpp \
-	PortaudioDirectSound.cpp
+	CoreAudioRenderer.cpp
 else
 SRCS = \
 	NullDirectSound.cpp \

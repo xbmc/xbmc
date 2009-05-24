@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDAudioCodecLibMad.h"
 #include "DVDStreamInfo.h"
@@ -51,10 +51,10 @@ CDVDAudioCodecLibMad::~CDVDAudioCodecLibMad()
 bool CDVDAudioCodecLibMad::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   if (m_bInitialized) Dispose();
-  
+
   if (!m_dll.Load())
     return false;
-  
+
   memset(&m_synth, 0, sizeof(m_synth));
   memset(&m_stream, 0, sizeof(m_stream));
   memset(&m_frame, 0, sizeof(m_frame));
@@ -63,15 +63,15 @@ bool CDVDAudioCodecLibMad::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_dll.mad_stream_init(&m_stream);
   m_dll.mad_frame_init(&m_frame);
   m_stream.options = MAD_OPTION_IGNORECRC;
-  
+
   m_iDecodedDataSize = 0;
-  
+
   m_iSourceSampleRate = 0;
   m_iSourceChannels = 0;
   m_iSourceBitrate = 0;
-  
+
   m_iInputBufferSize = 0;
-  
+
   m_bInitialized = true;
   return true;
 }
@@ -92,19 +92,19 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
   BYTE* pBuffer = m_inputBuffer;
   //int iBufferSize = iSize;
   bool bFullOutputBuffer = false;
-  
+
   m_iDecodedDataSize = 0;
-  
+
   // m_inputBuffer should always have room here for extra bytes
   int iBytesFree = MAD_INPUT_SIZE - m_iInputBufferSize;
   int iBytesUsed = iBytesFree;
   if (iBytesUsed > iSize) iBytesUsed = iSize;
-  
+
   // copy data into our buffer for decoding
   memcpy(m_inputBuffer + m_iInputBufferSize, pData, iBytesUsed);
   m_iInputBufferSize += iBytesUsed;
-  
-  
+
+
 
   if (m_bInitialized)
   {
@@ -130,7 +130,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
 
           return iBytesUsed;
         }
-        
+
         // sync stream
         if (m_stream.next_frame)
         {
@@ -142,7 +142,7 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
         {
           return iBytesUsed;
         }
-        
+
 	      // buffer again after a sync
 	      m_dll.mad_stream_buffer(&m_stream, pBuffer, m_iInputBufferSize);
       }
@@ -157,24 +157,24 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
   /*
               switch (this->frame.header.layer) {
               case MAD_LAYER_I:
-                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC, 
+                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC,
                   "MPEG audio layer 1 (lib: MAD)");
                 break;
               case MAD_LAYER_II:
-                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC, 
+                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC,
                   "MPEG audio layer 2 (lib: MAD)");
                 break;
               case MAD_LAYER_III:
-                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC, 
+                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC,
                   "MPEG audio layer 3 (lib: MAD)");
                 break;
               default:
-                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC, 
+                _x_meta_info_set_utf8(this->xstream, XINE_META_INFO_AUDIOCODEC,
                   "MPEG audio (lib: MAD)");
               }
   */
         m_dll.mad_synth_frame(&m_synth, &m_frame);
-        
+
         {
           unsigned int nchannels, nsamples;
 	        mad_fixed_t const* left_ch, *right_ch;
@@ -188,23 +188,23 @@ int CDVDAudioCodecLibMad::Decode(BYTE* pData, int iSize)
 
           int iSize = nsamples * 2;
           if (nchannels == 2) iSize += nsamples * 2;
-          
+
           if (iSize < (MAD_DECODED_SIZE - m_iDecodedDataSize))
           {
 	          while (nsamples--)
 	          {
 	            // output sample(s) in 16-bit signed little-endian PCM
 	            *output++ = scale(*left_ch++);
-        	    
+        	
 	            if (nchannels == 2)
 	            {
 	              *output++ = scale(*right_ch++);
 	            }
 	          }
-	          
+	
 	          m_iDecodedDataSize += iSize;
 	        }
-	        
+	
 	        if (iSize > (MAD_DECODED_SIZE - m_iDecodedDataSize))
           {
             // next audio frame is not going to fit
@@ -230,17 +230,17 @@ void CDVDAudioCodecLibMad::Reset()
     mad_synth_finish(&m_synth);
     m_dll.mad_stream_finish(&m_stream);
     m_dll.mad_frame_finish(&m_frame);
-    
+
     m_dll.mad_synth_init(&m_synth);
     m_dll.mad_stream_init(&m_stream);
     m_dll.mad_frame_init(&m_frame);
     m_stream.options = MAD_OPTION_IGNORECRC;
-    
+
     m_iDecodedDataSize = 0;
     m_iSourceSampleRate = 0;
     m_iSourceChannels = 0;
     m_iSourceBitrate = 0;
-    
+
     m_iInputBufferSize = 0;
   }
 }

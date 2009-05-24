@@ -15,12 +15,12 @@ eRemoteMode g_mode = DEFAULT_MODE;
 std::string g_server_address="localhost";
 std::string g_app_path = "";
 std::string g_app_home = "";
-double g_universal_timeout = 500;
+double g_universal_timeout = 0.500;
 bool g_verbose_mode = false;
 
 //
-const char* PROGNAME="OSXRemote";
-const char* PROGVERS="0.4";
+const char* PROGNAME="XBMCHelper";
+const char* PROGVERS="0.5";
 
 void ParseOptions(int argc, char** argv);
 void ReadConfig();
@@ -113,7 +113,7 @@ void ParseOptions(int argc, char** argv)
   g_mode = DEFAULT_MODE;
   g_app_path = "";
   g_app_home = "";
-  g_universal_timeout = 500;
+  g_universal_timeout = 0.5;
   g_verbose_mode = false;
   
   while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1) 

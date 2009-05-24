@@ -35,6 +35,6 @@ public:
   virtual __int64 Seek(__int64 offset, int whence);
   virtual bool IsEOF();
   virtual __int64 GetLength();
-  
+
 protected:
 };

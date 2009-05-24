@@ -22,6 +22,10 @@
 #include "system.h"
 #include "PlatformDefs.h"
 #include "XEventUtils.h"
+#include "XHandle.h"
+#include "../utils/log.h"
+
+using namespace std;
 
 HANDLE WINAPI CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState, char *szDummyName)
 {
@@ -53,23 +57,25 @@ bool WINAPI SetEvent(HANDLE hEvent)
     return false;
 
   SDL_mutexP(hEvent->m_hMutex);
-  if (hEvent->m_bEventSet == false)
-  {
-    hEvent->m_bEventSet = true;
+  hEvent->m_bEventSet = true;
 
-    // FIXME: Don't we need to wake all threads with a manual event?
-    //        Doing so results in weirdness.
-    //if (hEvent->m_bManualEvent == true)
-    //SDL_CondBroadcast(hEvent->m_hCond) < 0);
-    //else
-    SDL_CondSignal(hEvent->m_hCond);
+  // we must guarantee that these handle's won't be deleted, until we are done
+  list<CXHandle*> events = hEvent->m_hParents;
+  for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
+    DuplicateHandle(GetCurrentProcess(), *it, GetCurrentProcess(), NULL, 0, FALSE, DUPLICATE_SAME_ACCESS);
 
-    // FIXME: Why dont' we need to reset if it's an automatic event?
-    //        Doing so results in weirdness.
-    //if (hEvent->m_bManualEvent == false)
-    //  hEvent->m_bEventSet = false;
-  }
   SDL_mutexV(hEvent->m_hMutex);
+
+  for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
+  {
+    SetEvent(*it);
+    CloseHandle(*it);
+  }
+
+  if (hEvent->m_bManualEvent == true)
+    SDL_CondBroadcast(hEvent->m_hCond);
+  else
+    SDL_CondSignal(hEvent->m_hCond);
 
   return true;
 }
@@ -91,9 +97,42 @@ bool WINAPI PulseEvent(HANDLE hEvent)
   if (hEvent == NULL || hEvent->m_hCond == NULL || hEvent->m_hMutex == NULL)
     return false;
 
-  SetEvent(hEvent);
-  SDL_Delay(100);
-  ResetEvent(hEvent);
+  SDL_mutexP(hEvent->m_hMutex);
+  // we must guarantee that these handle's won't be deleted, until we are done
+  list<CXHandle*> events = hEvent->m_hParents;
+  for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
+    DuplicateHandle(GetCurrentProcess(), *it, GetCurrentProcess(), NULL, 0, FALSE, DUPLICATE_SAME_ACCESS);
+
+  if(events.size())
+  {
+    CLog::Log(LOGWARNING,"PulseEvent - ineffecient multiwait detected");
+    hEvent->m_bEventSet = true;
+  }
+
+  SDL_mutexV(hEvent->m_hMutex);
+
+  for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
+  {
+    SetEvent(*it);
+    CloseHandle(*it);
+
+    if (hEvent->m_bManualEvent == false)
+      break;
+  }
+
+  // for multiwaits, we must yield some time to get the multiwaits to notice it was signaled
+  if(events.size())
+    Sleep(10);
+
+  // we should always unset the event on pulse
+  SDL_mutexP(hEvent->m_hMutex);
+  hEvent->m_bEventSet = false;
+  SDL_mutexV(hEvent->m_hMutex);
+
+  if (hEvent->m_bManualEvent == true)
+    SDL_CondBroadcast(hEvent->m_hCond);
+  else
+    SDL_CondSignal(hEvent->m_hCond);
 
   return true;
 }

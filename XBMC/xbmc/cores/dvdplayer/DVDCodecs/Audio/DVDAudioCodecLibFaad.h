@@ -47,22 +47,22 @@ private:
 
   void CloseDecoder();
   bool OpenDecoder();
-  
+
   bool SyncStream();
-  
+
   int m_iSourceSampleRate;
   int m_iSourceChannels;
   int m_iSourceBitrate;
-  
+
   bool m_bInitializedDecoder;
   bool m_bRawAACStream;
-  
+
   faacDecHandle m_pHandle;
   faacDecFrameInfo m_frameInfo;
 
   short* m_DecodedData;
   int   m_DecodedDataSize;
-  
+
   BYTE m_InputBuffer[LIBFAAD_INPUT_SIZE];
   int  m_InputBufferSize;
 

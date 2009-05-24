@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDOverlayCodecFFmpeg.h"
 #include "DVDOverlayText.h"
@@ -36,14 +36,14 @@ CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subt
 }
 
 CDVDOverlayCodecFFmpeg::~CDVDOverlayCodecFFmpeg()
-{  
+{
   Dispose();
 }
 
 bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
-  
+
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
@@ -83,7 +83,7 @@ void CDVDOverlayCodecFFmpeg::Dispose()
     m_pCodecContext = NULL;
   }
   FreeSubtitle(m_Subtitle);
-  
+
   m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
 }
@@ -112,8 +112,8 @@ void CDVDOverlayCodecFFmpeg::FreeSubtitle(AVSubtitle& sub)
 }
 
 int CDVDOverlayCodecFFmpeg::Decode(BYTE* data, int size, double pts, double duration)
-{  
-  if (!m_pCodecContext) 
+{
+  if (!m_pCodecContext)
     return 1;
 
   int gotsub = 0, len = 0;
@@ -183,8 +183,8 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
 #else
     AVSubtitleRect& rect = m_Subtitle.rects[m_SubtitleIndex];
 #endif
-    
-    CDVDOverlayImage *overlay = new CDVDOverlayImage();
+
+    CDVDOverlayImage* overlay = new CDVDOverlayImage();
 
     overlay->iPTSStartTime = DVD_MSEC_TO_TIME(m_Subtitle.start_display_time);
     overlay->iPTSStopTime  = DVD_MSEC_TO_TIME(m_Subtitle.end_display_time);
@@ -211,7 +211,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     m_dllAvUtil.av_free(rect.pict.data[0]);
     m_dllAvUtil.av_free(rect.pict.data[1]);
     m_dllAvUtil.av_freep(&m_Subtitle.rects[m_SubtitleIndex]);
-#else    
+#else
     BYTE* s = rect.bitmap;
     BYTE* t = overlay->data;
     for(int i=0;i<rect.h;i++)
