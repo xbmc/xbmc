@@ -35,6 +35,7 @@
   namespace D3dClock
   {
     #include <d3d9.h>
+    #include <Dxerr.h>
   }
 #endif
 
