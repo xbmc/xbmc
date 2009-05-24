@@ -72,6 +72,7 @@ void CNetworkInterfaceLinux::Update()
     return;
  
 //dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/Hal/devices/net_00_1a_92_e9_d8_0a org.freedesktop.DBus.Properties.GetAll string:'org.freedesktop.NetworkManager.Device'
+//Second call uses 'org.freedesktop.NetworkManager.Device.[WIRELESS|WIRED]'
 
   GetAll(NM_DBUS_INTERFACE_DEVICE);
   if (IsWireless())
