@@ -41,13 +41,20 @@
 #include "Util.h"
 #include "log.h"
 
+#ifndef WAIT_TIME
+#define WAIT_TIME 1000
+#endif
+
 using namespace std;
 
-CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName)
+CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdString objectPath)
 
 {
-   m_network = network;
-   m_interfaceName = interfaceName;
+  m_network = network;
+  m_objectPath = objectPath;
+  m_lastUpdate = 0;
+
+  Update();
 }
 
 CNetworkInterfaceLinux::~CNetworkInterfaceLinux(void)
@@ -56,7 +63,108 @@ CNetworkInterfaceLinux::~CNetworkInterfaceLinux(void)
 
 CStdString& CNetworkInterfaceLinux::GetName(void)
 {
-   return m_interfaceName;
+   return m_interface;
+}
+
+void CNetworkInterfaceLinux::Update()
+{
+  if (timeGetTime() < (m_lastUpdate + WAIT_TIME))
+    return;
+ 
+//dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/Hal/devices/net_00_1a_92_e9_d8_0a org.freedesktop.DBus.Properties.GetAll string:'org.freedesktop.NetworkManager.Device'
+
+  GetAll(NM_DBUS_INTERFACE_DEVICE);
+  if (IsWireless())
+    GetAll(NM_DBUS_INTERFACE_DEVICE_WIRELESS);
+  else
+    GetAll(NM_DBUS_INTERFACE_DEVICE_WIRED);
+
+  m_lastUpdate = timeGetTime();
+}
+
+void CNetworkInterfaceLinux::GetAll(const char *interface)
+{
+  DBusError error;
+  dbus_error_init (&error);
+  DBusConnection *con= dbus_bus_get(DBUS_BUS_SYSTEM, &error);
+
+  if (con != NULL)
+  {
+    DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, m_objectPath.c_str(), "org.freedesktop.DBus.Properties", "GetAll");
+	  if (msg)
+    {
+      if (dbus_message_append_args(msg, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID))
+      {
+        DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
+        if (reply)
+        {
+          DBusMessageIter iter;        
+          if (dbus_message_iter_init(reply, &iter))
+          {
+            if (!dbus_message_has_signature(reply, "a{sv}"))
+              CLog::Log(LOGERROR, "DBus: wrong signature on GetAll - should be a{sv} but was %s", dbus_message_iter_get_signature(&iter));
+            else
+            {
+              do
+              {
+                DBusMessageIter sub;
+                dbus_message_iter_recurse(&iter, &sub);
+                do
+                {
+                  DBusMessageIter dict;
+                  dbus_message_iter_recurse(&sub, &dict);
+                  do
+                  {
+                    const char *    string  = NULL;
+                    dbus_int32_t    int32   = 0;
+                    bool            boolean = false;
+                    dbus_message_iter_get_basic(&dict, &string);
+                    dbus_message_iter_next(&dict);
+
+                    DBusMessageIter variant;
+                    dbus_message_iter_recurse(&dict, &variant);
+                    int type = dbus_message_iter_get_arg_type(&variant);
+
+                    if (strcmp(string, "Interface") == 0 && type == DBUS_TYPE_STRING)
+                    {
+                      dbus_message_iter_get_basic(&variant, &string);
+                      m_interface.Format("%s", string);
+                    }
+                    else if (strcmp(string, "Ip4Address") == 0 && DBUS_TYPE_INT32)
+                    {
+                      dbus_message_iter_get_basic(&variant, &int32);
+                      m_IP.Format("%i", int32);
+                    }
+                    else if (strcmp(string, "State") == 0 && DBUS_TYPE_INT32)
+                    {
+                      dbus_message_iter_get_basic(&variant, &int32);
+                      m_isConnected = (int32 == NM_STATE_CONNECTED);
+                    }
+                  } while (dbus_message_iter_next(&dict));
+
+                } while (dbus_message_iter_next(&sub));
+
+              } while (dbus_message_iter_next(&iter));
+            }
+          }
+          dbus_message_unref(reply);
+        }
+        else
+          CLog::Log(LOGERROR, "DBus: Failed to get reply");
+      }
+      dbus_message_unref(msg);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "DBus: Failed to create message: %s", error.message);
+      dbus_error_free (&error);
+    }
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "DBus: Could not get system bus: %s", error.message);
+    dbus_error_free (&error);
+  }
 }
 
 bool CNetworkInterfaceLinux::IsWireless()
@@ -65,7 +173,7 @@ bool CNetworkInterfaceLinux::IsWireless()
   return false;
 #else
   struct iwreq wrq;
-   strcpy(wrq.ifr_name, m_interfaceName.c_str());
+   strcpy(wrq.ifr_name, m_interface.c_str());
    if (ioctl(m_network->GetSocket(), SIOCGIWNAME, &wrq) < 0)
       return false;
 #endif
@@ -76,7 +184,7 @@ bool CNetworkInterfaceLinux::IsWireless()
 bool CNetworkInterfaceLinux::IsEnabled()
 {
    struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
+   strcpy(ifr.ifr_name, m_interface.c_str());
    if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
       return false;
 
@@ -85,52 +193,26 @@ bool CNetworkInterfaceLinux::IsEnabled()
 
 bool CNetworkInterfaceLinux::IsConnected()
 {
-   struct ifreq ifr;
-   memset(&ifr,0,sizeof(struct ifreq));
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   if (ioctl(m_network->GetSocket(), SIOCGIFFLAGS, &ifr) < 0)
-      return false;
-
-   // ignore loopback
-   int iRunning = ( (ifr.ifr_flags & IFF_RUNNING) && (!(ifr.ifr_flags & IFF_LOOPBACK)));
-
-   if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) < 0)
-      return false;
-
-   // return only interfaces which has ip address
-   return iRunning && (*(int*)&ifr.ifr_addr.sa_data != 0) ;
+  return m_isConnected;
 }
 
 CStdString CNetworkInterfaceLinux::GetMacAddress()
 {
-   CStdString result = "";
-
 #ifdef __APPLE__
-   result.Format("00:00:00:00:00:00");
+   return "00:00:00:00:00:00";
 #else
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
-   if (ioctl(m_network->GetSocket(), SIOCGIFHWADDR, &ifr) >= 0)
-   {
-      result.Format("%hhX:%hhX:%hhX:%hhX:%hhX:%hhX",
-         ifr.ifr_hwaddr.sa_data[0],
-         ifr.ifr_hwaddr.sa_data[1],
-         ifr.ifr_hwaddr.sa_data[2],
-         ifr.ifr_hwaddr.sa_data[3],
-         ifr.ifr_hwaddr.sa_data[4],
-         ifr.ifr_hwaddr.sa_data[5]);
-   }
+  Update();
+  return m_MAC;
 #endif
-
-   return result;
 }
 
 CStdString CNetworkInterfaceLinux::GetCurrentIPAddress(void)
 {
+#ifdef __APPLE__
    CStdString result = "";
 
    struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
+   strcpy(ifr.ifr_name, m_interface.c_str());
    ifr.ifr_addr.sa_family = AF_INET;
    if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
    {
@@ -138,6 +220,10 @@ CStdString CNetworkInterfaceLinux::GetCurrentIPAddress(void)
    }
 
    return result;
+#else
+  Update();
+  return m_IP;
+#endif
 }
 
 CStdString CNetworkInterfaceLinux::GetCurrentNetmask(void)
@@ -145,7 +231,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentNetmask(void)
    CStdString result = "";
 
    struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interfaceName.c_str());
+   strcpy(ifr.ifr_name, m_interface.c_str());
    ifr.ifr_addr.sa_family = AF_INET;
    if (ioctl(m_network->GetSocket(), SIOCGIFNETMASK, &ifr) >= 0)
    {
@@ -164,7 +250,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
    memset(&essid, 0, sizeof(essid));
 
    struct iwreq wrq;
-   strcpy(wrq.ifr_name,  m_interfaceName.c_str());
+   strcpy(wrq.ifr_name,  m_interface.c_str());
    wrq.u.essid.pointer = (caddr_t) essid;
    wrq.u.essid.length = IW_ESSID_MAX_SIZE;
    wrq.u.essid.flags = 0;
@@ -209,7 +295,7 @@ CStdString CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
       if (n < 3)
          continue;
 
-      if (strcmp(iface, m_interfaceName.c_str()) == 0 &&
+      if (strcmp(iface, m_interface.c_str()) == 0 &&
           strcmp(dst, "00000000") == 0 &&
           strcmp(gateway, "00000000") != 0)
       {
@@ -284,48 +370,50 @@ void CNetworkLinux::queryInterfaceList()
    freeifaddrs(list);
 
 #else
-   FILE* fp = fopen("/proc/net/dev", "r");
-   if (!fp)
-   {
-     // TBD: Error
-     return;
-   }
-
-   char* line = NULL;
-   size_t linel = 0;
-   int n;
-   char* p;
-   int linenum = 0;
-   while (getdelim(&line, &linel, '\n', fp) > 0)
-   {
-      // skip first two lines
-      if (linenum++ < 2)
-         continue;
-
-    // search where the word begins
-      p = line;
-      while (isspace(*p))
-      ++p;
-
-      // read word until :
-      n = strcspn(p, ": \t");
-      p[n] = 0;
-
-      // make sure the device has ethernet encapsulation
-      struct ifreq ifr;
-      strcpy(ifr.ifr_name, p);
-      if (ioctl(GetSocket(), SIOCGIFHWADDR, &ifr) >= 0 && ifr.ifr_hwaddr.sa_family == ARPHRD_ETHER)
+//dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/NetworkManager org.freedesktop.NetworkManager.GetDevices
+  DBusError error;
+  dbus_error_init (&error);
+  DBusConnection *con= dbus_bus_get(DBUS_BUS_SYSTEM, &error);
+  
+  if (con != NULL)
+  {
+    DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, NM_DBUS_PATH, NM_DBUS_INTERFACE, "GetDevices");
+	  if (msg)
+    {
+      DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
+      if (reply)
       {
-         // save the result
-         CStdString interfaceName = p;
-     m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName));
+        char** interfaces = NULL;
+        int    length     = 0;
+        
+        if (dbus_message_get_args (reply, NULL,
+						DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &interfaces, &length, DBUS_TYPE_INVALID))
+			  {
+          for (int i = 0; i < length; i++)
+          {
+            printf("Found %s\n", interfaces[i]);
+            m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaces[i]));
+          }
+          dbus_free_string_array(interfaces);
+        }
+        dbus_message_unref(reply);
       }
-   }
+      else
+        CLog::Log(LOGERROR, "DBus: Failed to get reply from NetworkManager::GetDevices");
 
-   if (line)
-     free(line);
-
-   fclose(fp);
+      dbus_message_unref(msg);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "DBus: Failed to create message: %s", error.message);
+      dbus_error_free (&error);
+    }
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "DBus: Could not get system bus: %s", error.message);
+    dbus_error_free (&error);
+  }
 #endif
 }
 
@@ -363,6 +451,7 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 {
+// dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/Hal/devices/net_00_1a_92_e9_d8_0a org.freedesktop.NetworkManager.getProperties
   std::vector<NetworkAccessPoint> result;
 
   if (!IsWireless())
@@ -373,66 +462,23 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
   DBusConnection *con= dbus_bus_get(DBUS_BUS_SYSTEM, &error);
   if (con != NULL)
   {
-    CStdString NetworkPath;
-    NetworkPath.Format("%s/%s", NM_DBUS_PATH_DEVICES, m_interfaceName.c_str());
-
-    DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, NetworkPath.c_str(), NM_DBUS_INTERFACE, "getProperties");
+    DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, m_objectPath.c_str(), NM_DBUS_INTERFACE_DEVICE_WIRELESS, "GetAccessPoints");
 	  if (msg)
     {
       DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
       if (reply)
       {
-        const char*   obj_path          = NULL;
-        const char*   interface         = NULL;
-        NMDeviceType  type              = DEVICE_TYPE_UNKNOWN;
-        const char*   udi               = NULL;
-        dbus_bool_t   active            = false;
-        NMActStage    act_stage         = NM_ACT_STAGE_UNKNOWN;
-        const char*   ipv4_address      = NULL;
-        const char*   subnetmask        = NULL;
-        const char*   broadcast         = NULL;
-        const char*   hw_address        = NULL;
-        const char*   route             = NULL;
-        const char*   pri_dns           = NULL;
-        const char*   sec_dns           = NULL;
-        dbus_int32_t  mode              = 0;
-        dbus_int32_t  strength          = -1;
-        dbus_bool_t   link_active       = false;
-        dbus_int32_t  speed             = 0;
-        dbus_uint32_t capabilities      = NM_DEVICE_CAP_NONE;
-        dbus_uint32_t capabilities_type = NM_DEVICE_CAP_NONE;
-        char**        networks          = NULL;
-        int           num_networks      = 0;
-        const char*   active_net_path   = NULL;
+        char** networks     = NULL;
+        int    num_networks = 0;
 
-	      if (dbus_message_get_args (reply, NULL, 
-            DBUS_TYPE_OBJECT_PATH,             &obj_path,
-						DBUS_TYPE_STRING,                  &interface,
-						DBUS_TYPE_UINT32,                  &type,
-						DBUS_TYPE_STRING,                  &udi,
-						DBUS_TYPE_BOOLEAN,                 &active,
-						DBUS_TYPE_UINT32,                  &act_stage,
-						DBUS_TYPE_STRING,                  &ipv4_address,
-						DBUS_TYPE_STRING,                  &subnetmask,
-						DBUS_TYPE_STRING,                  &broadcast,
-						DBUS_TYPE_STRING,                  &hw_address,
-						DBUS_TYPE_STRING,                  &route,
-						DBUS_TYPE_STRING,                  &pri_dns,
-						DBUS_TYPE_STRING,                  &sec_dns,
-						DBUS_TYPE_INT32,                   &mode,
-						DBUS_TYPE_INT32,                   &strength,
-						DBUS_TYPE_BOOLEAN,                 &link_active,
-						DBUS_TYPE_INT32,                   &speed,
-						DBUS_TYPE_UINT32,                  &capabilities,
-						DBUS_TYPE_UINT32,                  &capabilities_type,
-						DBUS_TYPE_STRING,                  &active_net_path,
-						DBUS_TYPE_ARRAY, DBUS_TYPE_STRING, &networks, &num_networks, DBUS_TYPE_INVALID))
+	      if (dbus_message_get_args (reply, NULL,
+						DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &networks, &num_networks, DBUS_TYPE_INVALID))
         {
-          for (unsigned int i = 0; i < num_networks; i++)
+          for (int i = 0; i < num_networks; i++)
             AddNetworkAccessPoint(result, networks[i], con);
 
+      		dbus_free_string_array (networks);
         }
-    		dbus_free_string_array (networks);
       	dbus_message_unref (reply);
       }
 		  dbus_message_unref (msg);
@@ -464,7 +510,7 @@ void CNetworkInterfaceLinux::AddNetworkAccessPoint(std::vector<NetworkAccessPoin
       double       freq         = 0;
       dbus_int32_t rate         = 0;
       dbus_int32_t mode         = 0;
-      dbus_int32_t capabilities = NM_802_11_CAP_NONE;
+      dbus_int32_t capabilities = NM_WIFI_DEVICE_CAP_NONE;
       dbus_bool_t  broadcast    = true;
 
       if (dbus_message_get_args (reply, NULL, 
@@ -480,13 +526,14 @@ void CNetworkInterfaceLinux::AddNetworkAccessPoint(std::vector<NetworkAccessPoin
       {
         CLog::Log(LOGERROR, "DBus: Failed to get getProperties of Network on %s", NetworkPath);
       }
+
       EncMode encryption = ENC_NONE;
-      if (capabilities & NM_802_11_CAP_PROTO_WEP)
+      if (capabilities & NM_WIFI_DEVICE_CAP_CIPHER_WEP40 || capabilities & NM_WIFI_DEVICE_CAP_CIPHER_WEP104)
         encryption = ENC_WEP;
-      else if (capabilities & NM_802_11_CAP_PROTO_WPA)
+      else if (capabilities & NM_WIFI_DEVICE_CAP_WPA)
         encryption = ENC_WPA;
-      else if (capabilities & NM_802_11_CAP_PROTO_WPA2)
-        encryption = ENC_WPA2;
+/*      else if (capabilities & NM_802_11_CAP_PROTO_WPA2)
+        encryption = ENC_WPA2;*/
 
       CStdString essId = essid;
       NetworkAccessPoint ap(essId, (int)strength, encryption);
@@ -509,15 +556,23 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
    assignment = NETWORK_DISABLED;
 
 #ifndef __APPLE__
+/*        print "  Dev Mode:", self.IW_MODE[self.devpi.Get(NMI, "Mode")]
+        wcaps = self.devpi.Get(NMI, "WirelessCapabilities")
+        print "  Wifi Capabilities:", bitmask_str(self.NM_802_11_DEVICE_CAP, wcaps)
+        for P in ["HwAddress", "Bitrate", "ActiveAccessPoint"]:
+            print "  %s: %s" % (P, self.devpi.Get(NMI, P))
+        if options.ap:
+            print "  Access Points"
+            for ap in self.APs():
+                ap.Dump()
+
+
   DBusError error;
   dbus_error_init (&error);
   DBusConnection *con= dbus_bus_get(DBUS_BUS_SYSTEM, &error);
   if (con != NULL)
   {
-    CStdString NetworkPath;
-    NetworkPath.Format("%s/%s", NM_DBUS_PATH_DEVICES, m_interfaceName.c_str());
-
-    DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, NetworkPath.c_str(), NM_DBUS_INTERFACE, "getProperties");
+    DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, m_objectPath.c_str(), NM_DBUS_INTERFACE, "getProperties");
 	  if (msg)
     {
       DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
@@ -591,107 +646,19 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdStri
   {
     CLog::Log(LOGERROR, "DBus: Could not get system bus: %s", error.message);
     dbus_error_free (&error);
-  }
+  }*/
 #endif
 }
 
 void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
 {
 #ifndef __APPLE__
-   FILE* fr = fopen("/etc/network/interfaces", "r");
-   if (!fr)
-   {
-      // TODO
-      return;
-   }
+        /*self.nmi.setActiveDevice(device.opath, ssid_str(conn.Ssid()),
+                                    reply_handler=self.silent_handler,
+                                    error_handler=self.err_handler,
+                                    )
 
-   FILE* fw = fopen("/tmp/interfaces.temp", "w");
-   if (!fw)
-   {
-      // TODO
-      return;
-   }
-
-   char* line = NULL;
-   size_t linel = 0;
-   CStdString s;
-   bool foundInterface = false;
-   bool dataWritten = false;
-
-   while (getdelim(&line, &linel, '\n', fr) > 0)
-   {
-      vector<CStdString> tokens;
-
-      s = line;
-      s.TrimLeft(" \t").TrimRight(" \n");
-
-      // skip comments
-      if (!foundInterface && (s.length() == 0 || s.GetAt(0) == '#'))
-      {
-        fprintf(fw, "%s", line);
-        continue;
-      }
-
-      // look for "iface <interface name> inet"
-      CUtil::Tokenize(s, tokens, " ");
-      if (tokens.size() == 2 &&
-          tokens[0].Equals("auto") &&
-          tokens[1].Equals(GetName()))
-      {
-         continue;
-      }
-      else if (!foundInterface &&
-          tokens.size() == 4 &&
-          tokens[0].Equals("iface") &&
-          tokens[1].Equals(GetName()) &&
-          tokens[2].Equals("inet"))
-      {
-         foundInterface = true;
-         WriteSettings(fw, assignment, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);
-         dataWritten = true;
-      }
-      else if (foundInterface &&
-               tokens.size() == 4 &&
-               tokens[0].Equals("iface"))
-      {
-        foundInterface = false;
-        fprintf(fw, "%s", line);
-      }
-      else if (!foundInterface)
-      {
-        fprintf(fw, "%s", line);
-      }
-   }
-
-   if (line)
-     free(line);
-
-   if (!dataWritten && assignment != NETWORK_DISABLED)
-   {
-      fprintf(fw, "\n");
-      WriteSettings(fw, assignment, ipAddress, networkMask, defaultGateway, essId, key, encryptionMode);
-   }
-
-   fclose(fr);
-   fclose(fw);
-
-   // Rename the file
-   if (rename("/tmp/interfaces.temp", "/etc/network/interfaces") < 0)
-   {
-      // TODO
-      return;
-   }
-
-   CLog::Log(LOGINFO, "Stopping interface %s", GetName().c_str());
-   std::string cmd = "/sbin/ifdown " + GetName();
-   system(cmd.c_str());
-
-   if (assignment != NETWORK_DISABLED)
-   {
-      CLog::Log(LOGINFO, "Starting interface %s", GetName().c_str());
-      cmd = "/sbin/ifup " + GetName();
-      system(cmd.c_str());
-   }
+  */
 #endif
 }
 
@@ -732,7 +699,7 @@ void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignmen
       fprintf(fw, "auto %s\n\n", GetName().c_str());
 }
 
-/*
+
 int main(void)
 {
   CStdString mac;
@@ -740,10 +707,23 @@ int main(void)
   x.GetNameServers();
   std::vector<CNetworkInterface*>& ifaces = x.GetInterfaceList();
   CNetworkInterface* i1 = ifaces[0];
-  printf("%s en=%d run=%d wi=%d mac=%s ip=%s nm=%s gw=%s ess=%s\n", i1->GetName().c_str(), i1->IsEnabled(), i1->IsConnected(), i1->IsWireless(), i1->GetMacAddress().c_str(), i1->GetCurrentIPAddress().c_str(), i1->GetCurrentNetmask().c_str(), i1->GetCurrentDefaultGateway().c_str(), i1->GetCurrentWirelessEssId().c_str());
-  i1 = ifaces[1];
-  printf("%s en=%d run=%d wi=%d mac=%s ip=%s nm=%s gw=%s ess=%s\n", i1->GetName().c_str(), i1->IsEnabled(), i1->IsConnected(), i1->IsWireless(), i1->GetMacAddress().c_str(), i1->GetCurrentIPAddress().c_str(), i1->GetCurrentNetmask().c_str(), i1->GetCurrentDefaultGateway().c_str(), i1->GetCurrentWirelessEssId().c_str());
+  
+  CNetworkInterface *wlan;
+  
+  for (int i = 0; i < ifaces.size(); i++)
+  {
+    i1 = ifaces[i];
+    printf("%s en=%d run=%d wi=%d mac=%s ip=%s nm=%s gw=%s ess=%s\n", i1->GetName().c_str(), i1->IsEnabled(), i1->IsConnected(), i1->IsWireless(), i1->GetMacAddress().c_str(), i1->GetCurrentIPAddress().c_str(), i1->GetCurrentNetmask().c_str(), i1->GetCurrentDefaultGateway().c_str(), i1->GetCurrentWirelessEssId().c_str());
+    
+    if (i1->IsWireless())
+      wlan = i1;
+  }
 
+  std::vector<NetworkAccessPoint> aps = wlan->GetAccessPoints();
+  for (int i = 0; i < aps.size(); i++)
+  {
+    printf("%s\n", aps[i].getEssId().c_str());
+  }
   return 0;
 }
-*/
+

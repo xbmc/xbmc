@@ -33,7 +33,7 @@ class CNetworkLinux;
 class CNetworkInterfaceLinux : public CNetworkInterface
 {
 public:
-  CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName);
+  CNetworkInterfaceLinux(CNetworkLinux* network, CStdString objectPath);
   ~CNetworkInterfaceLinux(void);
 
   virtual CStdString& GetName(void);
@@ -56,8 +56,17 @@ public:
   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
 private:
   void WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
-  CStdString     m_interfaceName;
-  CNetworkLinux* m_network;
+  void Update();
+  void GetAll(const char *interface);
+  CStdString      m_objectPath;
+  CStdString      m_interface;
+  CStdString      m_IP;
+  CStdString      m_MAC;
+  CStdString      m_Netmask;
+  CStdString      m_ESSID;
+  CNetworkLinux*  m_network;
+  int             m_lastUpdate;
+  bool            m_isConnected;
   void AddNetworkAccessPoint(std::vector<NetworkAccessPoint> &apv, const char *NetworkPath, DBusConnection *con);
 };
 
