@@ -588,6 +588,7 @@
 			<scrolltime>0</scrolltime>
 			<include>Window_OpenClose_Home_Panel_Animation</include>
 			<animation effect="slide" end="0,-28" time="0" condition="Skin.HasSetting(ProgramsInHome)">Conditional</animation>
+			<animation effect="slide" end="0,-28" time="0" condition="System.GetBool(pvr.enabled)">Conditional</animation>
 			<itemlayout height="57" width="345">
 				<control type="image">
 					<posx>0</posx>
@@ -642,6 +643,7 @@
 					<onclick>ActivateWindow(TV)</onclick>
 					<icon>special://skin/backgrounds/tv.png</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</thumb>
+					<visible>System.GetBool(pvr.enabled)</visible>
 				</item>
 				<item id="2">
 					<label>3</label>
