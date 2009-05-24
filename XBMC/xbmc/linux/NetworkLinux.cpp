@@ -403,7 +403,6 @@ void CNetworkLinux::queryInterfaceList()
 			  {
           for (int i = 0; i < length; i++)
           {
-            printf("Found %s\n", interfaces[i]);
             m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaces[i]));
           }
           dbus_free_string_array(interfaces);
@@ -463,7 +462,7 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 {
-// dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/Hal/devices/net_00_1a_92_e9_d8_0a org.freedesktop.NetworkManager.getProperties
+// dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/Hal/devices/net_00_1a_92_e9_d8_0a org.freedesktop.NetworkManager.Device.Wireless.GetAccessPoints
   std::vector<NetworkAccessPoint> result;
 
   if (!IsWireless())
