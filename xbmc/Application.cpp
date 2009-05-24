@@ -292,6 +292,7 @@ using namespace DBUSSERVER;
   #pragma comment (lib,"../../xbmc/lib/libsamplerate/libsamplerate_win32.lib")
  #endif
  #pragma comment (lib,"d3d9.lib")
+ #pragma comment (lib,"DxErr.lib")
 #endif
 
 #define MAX_FFWD_SPEED 5
