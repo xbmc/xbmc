@@ -72,20 +72,19 @@ void CNetworkInterfaceLinux::Update()
 {
   if (timeGetTime() < (m_lastUpdate + WAIT_TIME))
     return;
- 
 //dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/Hal/devices/net_00_1a_92_e9_d8_0a org.freedesktop.DBus.Properties.GetAll string:'org.freedesktop.NetworkManager.Device'
 //Second call uses 'org.freedesktop.NetworkManager.Device.[WIRELESS|WIRED]'
 
-  GetAll(NM_DBUS_INTERFACE_DEVICE);
+  Update(NM_DBUS_INTERFACE_DEVICE);
   if (IsWireless())
-    GetAll(NM_DBUS_INTERFACE_DEVICE_WIRELESS);
+    Update(NM_DBUS_INTERFACE_DEVICE_WIRELESS);
   else
-    GetAll(NM_DBUS_INTERFACE_DEVICE_WIRED);
+    Update(NM_DBUS_INTERFACE_DEVICE_WIRED);
 
   m_lastUpdate = timeGetTime();
 }
 
-void CNetworkInterfaceLinux::GetAll(const char *interface)
+void CNetworkInterfaceLinux::Update(const char *interface)
 {
   DBusError error;
   dbus_error_init (&error);
@@ -148,6 +147,16 @@ void CNetworkInterfaceLinux::GetAll(const char *interface)
                       dbus_message_iter_get_basic(&variant, &int32);
                       m_DeviceType = (NMDeviceType)int32;
                     }
+                    else if (strcmp(string, "HwAddress") == 0 && type == DBUS_TYPE_STRING)
+                    {
+                      dbus_message_iter_get_basic(&variant, &string);
+                      m_MAC.Format("%s", string);
+                    }
+                    else if (strcmp(string, "ActiveAccessPoint") && type == DBUS_TYPE_OBJECT_PATH)
+                    {
+                      dbus_message_iter_get_basic(&variant, &string);
+                      m_ESSID.Format("%s", string);
+                    }
                   } while (dbus_message_iter_next(&dict));
 
                 } while (dbus_message_iter_next(&sub));
@@ -203,32 +212,30 @@ bool CNetworkInterfaceLinux::IsConnected()
 
 CStdString CNetworkInterfaceLinux::GetMacAddress()
 {
+  CStdString result = "";
+
 #ifdef __APPLE__
-   return "00:00:00:00:00:00";
+  result.Format("00:00:00:00:00:00");
 #else
-  Update();
-  return m_MAC;
+  result.Format("%s", m_MAC.c_str());
 #endif
+
+  return result;
 }
 
 CStdString CNetworkInterfaceLinux::GetCurrentIPAddress(void)
 {
-#ifdef __APPLE__
-   CStdString result = "";
+  CStdString result = "";
 
-   struct ifreq ifr;
-   strcpy(ifr.ifr_name, m_interface.c_str());
-   ifr.ifr_addr.sa_family = AF_INET;
-   if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
-   {
-      result = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
-   }
+  struct ifreq ifr;
+  strcpy(ifr.ifr_name, m_interface.c_str());
+  ifr.ifr_addr.sa_family = AF_INET;
+  if (ioctl(m_network->GetSocket(), SIOCGIFADDR, &ifr) >= 0)
+  {
+    result = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+  }
 
-   return result;
-#else
-  Update();
-  return m_IP;
-#endif
+  return result;
 }
 
 CStdString CNetworkInterfaceLinux::GetCurrentNetmask(void)
@@ -727,6 +734,7 @@ int main(void)
   if (wlan)
   {
     std::vector<NetworkAccessPoint> aps = wlan->GetAccessPoints();
+    printf("WLAN: %s has %i networks\n", wlan->GetName().c_str(), aps.size());
     for (int i = 0; i < aps.size(); i++)
     {
       printf("%s\n", aps[i].getEssId().c_str());

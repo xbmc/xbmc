@@ -57,7 +57,7 @@ public:
 private:
   void WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
   void Update();
-  void GetAll(const char *interface);
+  void Update(const char *interface);
   CStdString      m_objectPath;
   CStdString      m_interface;
   CStdString      m_IP;
