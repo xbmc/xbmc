@@ -367,6 +367,7 @@ void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
   // setting has changed - update anything that needs it
   if (num >= m_settings.size()) return;
   SettingInfo &setting = m_settings.at(num);
+  OnSettingChanged(setting);
 }
 
 void CGUIDialogContentSettings::OnSettingChanged(SettingInfo &setting)

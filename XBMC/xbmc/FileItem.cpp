@@ -2783,48 +2783,50 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsFTP(strFile))
     return "";
 
+  CStdString localFanart;
+
   // special checks for subfolders
   if(m_bIsFolder)
   {
     CStdString strArt;
     CUtil::AddFileToFolder(strFile, "fanart.jpg", strArt);
     if(CFile::Exists(strArt))
-      return strArt;
+      localFanart = strArt;
+
     CUtil::AddFileToFolder(strFile, "fanart.png", strArt);
-    if(CFile::Exists(strArt))
-      return strArt;
-    return "";
+    if(localFanart.IsEmpty() && CFile::Exists(strArt))
+      localFanart = strArt;
   }
 
   // we don't have a cached image, so let's see if the user has a local image ..
-  CStdString strDir;
-  CUtil::GetDirectory(strFile, strDir);
-  if (strDir.IsEmpty()) return "";
-
-  bool bFoundFanart = false;
-  CStdString localFanart;
-  CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
-  CUtil::RemoveExtension(strFile);
-  strFile += "-fanart";
-  CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
-
-  for (int i = 0; i < items.Size(); i++)
+  if (localFanart.IsEmpty())
   {
-    CStdString strCandidate = items[i]->m_strPath;
-    CUtil::RemoveExtension(strCandidate);
-    if (strCandidate.CompareNoCase(strFile) == 0 ||
-        strCandidate.CompareNoCase(strFile2) == 0 ||
-        strCandidate.CompareNoCase(strFile3) == 0)
+    CStdString strDir;
+    CUtil::GetDirectory(strFile, strDir);
+    if (strDir.IsEmpty()) return "";
+    
+    CFileItemList items;
+    CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
+    CUtil::RemoveExtension(strFile);
+    strFile += "-fanart";
+    CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
+
+    for (int i = 0; i < items.Size(); i++)
     {
-      bFoundFanart = true;
-      localFanart = items[i]->m_strPath;
-      break;
+      CStdString strCandidate = items[i]->m_strPath;
+      CUtil::RemoveExtension(strCandidate);
+      if (strCandidate.CompareNoCase(strFile) == 0 ||
+          strCandidate.CompareNoCase(strFile2) == 0 ||
+          strCandidate.CompareNoCase(strFile3) == 0)
+      {
+        localFanart = items[i]->m_strPath;
+        break;
+      }
     }
   }
 
   // no local fanart found
-  if(!bFoundFanart)
+  if(localFanart.IsEmpty())
     return "";
 
   if (!probe)

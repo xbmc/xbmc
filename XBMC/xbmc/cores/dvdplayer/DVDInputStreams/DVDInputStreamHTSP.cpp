@@ -73,7 +73,7 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
   return NULL;
 }
 
-CDVDInputStreamHTSP::CDVDInputStreamHTSP() 
+CDVDInputStreamHTSP::CDVDInputStreamHTSP()
   : CDVDInputStream(DVDSTREAM_TYPE_HTSP)
   , m_subs(0)
   , m_startup(false)
@@ -89,7 +89,7 @@ CDVDInputStreamHTSP::~CDVDInputStreamHTSP()
 
 bool CDVDInputStreamHTSP::Open(const char* file, const std::string& content)
 {
-  if (!CDVDInputStream::Open(file, content)) 
+  if (!CDVDInputStream::Open(file, content))
     return false;
 
   CURL url(file);
@@ -155,8 +155,9 @@ bool CDVDInputStreamHTSP::NextChannel()
     return false;
 
   SChannels::iterator start = m_channels.find(m_channel);
-  const_circular_iter<SChannels> it(m_channels, m_channels.find(m_channel));
-
+  const_circular_iter<SChannels::iterator> it(m_channels.begin()
+                                            , m_channels.end()
+                                            , m_channels.find(m_channel));
   while(++it != start)
   {
     if(m_tag == 0 || it->second.MemberOf(m_tag))
@@ -172,8 +173,9 @@ bool CDVDInputStreamHTSP::PrevChannel()
     return false;
 
   SChannels::iterator start = m_channels.find(m_channel);
-  const_circular_iter<SChannels> it(m_channels, m_channels.find(m_channel));
-
+  const_circular_iter<SChannels::iterator> it(m_channels.begin()
+                                            , m_channels.end()
+                                            , m_channels.find(m_channel));
   while(--it != start)
   {
     if(m_tag == 0 || it->second.MemberOf(m_tag))

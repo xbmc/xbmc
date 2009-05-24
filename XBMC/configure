@@ -1883,8 +1883,8 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 # message strings
 configure_debug="ERROR: this is a configure debug statement"
 
-missing_library="ERROR: Could not find a required library. Please see README.linux"
-missing_program="ERROR: Could not find a required program. Please see README.linux."
+missing_library="Could not find a required library. Please see the README for your platform."
+missing_program="Could not find a required program. Please see the README for your platform."
 xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
@@ -3482,6 +3482,8 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -framework AudioUnit"
   LDFLAGS="$LDFLAGS -framework Foundation"
   LDFLAGS="$LDFLAGS -framework CoreServices"
+  LDFLAGS="$LDFLAGS -framework CoreVideo"
+  LDFLAGS="$LDFLAGS -framework CoreAudio"
   LDFLAGS="$LDFLAGS -framework AudioToolbox"
   LDFLAGS="$LDFLAGS -framework CoreFoundation"
   LDFLAGS="$LDFLAGS -framework DiskArbitration"
@@ -4904,6 +4906,145 @@ echo "$as_me: error: $missing_library" >&2;}
 fi
 
 
+if test "${ac_cv_header_samplerate_h+set}" = set; then
+  { echo "$as_me:$LINENO: checking for samplerate.h" >&5
+echo $ECHO_N "checking for samplerate.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_samplerate_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_samplerate_h" >&5
+echo "${ECHO_T}$ac_cv_header_samplerate_h" >&6; }
+else
+  # Is the header compilable?
+{ echo "$as_me:$LINENO: checking samplerate.h usability" >&5
+echo $ECHO_N "checking samplerate.h usability... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <samplerate.h>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+echo "${ECHO_T}$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ echo "$as_me:$LINENO: checking samplerate.h presence" >&5
+echo $ECHO_N "checking samplerate.h presence... $ECHO_C" >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <samplerate.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+echo "${ECHO_T}$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { echo "$as_me:$LINENO: WARNING: samplerate.h: accepted by the compiler, rejected by the preprocessor!" >&5
+echo "$as_me: WARNING: samplerate.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { echo "$as_me:$LINENO: WARNING: samplerate.h: proceeding with the compiler's result" >&5
+echo "$as_me: WARNING: samplerate.h: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { echo "$as_me:$LINENO: WARNING: samplerate.h: present but cannot be compiled" >&5
+echo "$as_me: WARNING: samplerate.h: present but cannot be compiled" >&2;}
+    { echo "$as_me:$LINENO: WARNING: samplerate.h:     check for missing prerequisite headers?" >&5
+echo "$as_me: WARNING: samplerate.h:     check for missing prerequisite headers?" >&2;}
+    { echo "$as_me:$LINENO: WARNING: samplerate.h: see the Autoconf documentation" >&5
+echo "$as_me: WARNING: samplerate.h: see the Autoconf documentation" >&2;}
+    { echo "$as_me:$LINENO: WARNING: samplerate.h:     section \"Present But Cannot Be Compiled\"" >&5
+echo "$as_me: WARNING: samplerate.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { echo "$as_me:$LINENO: WARNING: samplerate.h: proceeding with the preprocessor's result" >&5
+echo "$as_me: WARNING: samplerate.h: proceeding with the preprocessor's result" >&2;}
+    { echo "$as_me:$LINENO: WARNING: samplerate.h: in the future, the compiler will take precedence" >&5
+echo "$as_me: WARNING: samplerate.h: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ---------------------------- ##
+## Report this to bugs@xbmc.org ##
+## ---------------------------- ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ echo "$as_me:$LINENO: checking for samplerate.h" >&5
+echo $ECHO_N "checking for samplerate.h... $ECHO_C" >&6; }
+if test "${ac_cv_header_samplerate_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_cv_header_samplerate_h=$ac_header_preproc
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_header_samplerate_h" >&5
+echo "${ECHO_T}$ac_cv_header_samplerate_h" >&6; }
+
+fi
+if test $ac_cv_header_samplerate_h = yes; then
+  :
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
 
 { echo "$as_me:$LINENO: checking for main in -lmad" >&5
 echo $ECHO_N "checking for main in -lmad... $ECHO_C" >&6; }
@@ -6073,6 +6214,75 @@ echo "$as_me: error: $missing_library" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+
+{ echo "$as_me:$LINENO: checking for main in -lsamplerate" >&5
+echo $ECHO_N "checking for main in -lsamplerate... $ECHO_C" >&6; }
+if test "${ac_cv_lib_samplerate_main+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lsamplerate  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_samplerate_main=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_samplerate_main=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_samplerate_main" >&5
+echo "${ECHO_T}$ac_cv_lib_samplerate_main" >&6; }
+if test $ac_cv_lib_samplerate_main = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSAMPLERATE 1
+_ACEOF
+
+  LIBS="-lsamplerate $LIBS"
+
+else
+  { { echo "$as_me:$LINENO: error: $missing_library" >&5
+echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
 
@@ -6275,75 +6485,6 @@ if test $ac_cv_lib_smbclient_main = yes; then
 _ACEOF
 
   LIBS="-lsmbclient $LIBS"
-
-else
-  { { echo "$as_me:$LINENO: error: $missing_library" >&5
-echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-
-{ echo "$as_me:$LINENO: checking for main in -lportaudio" >&5
-echo $ECHO_N "checking for main in -lportaudio... $ECHO_C" >&6; }
-if test "${ac_cv_lib_portaudio_main+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lportaudio  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext &&
-       $as_test_x conftest$ac_exeext; then
-  ac_cv_lib_portaudio_main=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_portaudio_main=no
-fi
-
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ echo "$as_me:$LINENO: result: $ac_cv_lib_portaudio_main" >&5
-echo "${ECHO_T}$ac_cv_lib_portaudio_main" >&6; }
-if test $ac_cv_lib_portaudio_main = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPORTAUDIO 1
-_ACEOF
-
-  LIBS="-lportaudio $LIBS"
 
 else
   { { echo "$as_me:$LINENO: error: $missing_library" >&5
@@ -12318,7 +12459,6 @@ cat >>conftest.$ac_ext <<_ACEOF
 # endif
 #endif
 
-#include <limits.h>
 #include <stdlib.h>
 
 #ifdef HAVE_UNISTD_H
@@ -12467,15 +12607,12 @@ main ()
      isn't worth using anyway.  */
   alarm (60);
 
-  for (;;)
-    {
-      t = (time_t_max << 1) + 1;
-      if (t <= time_t_max)
-	break;
-      time_t_max = t;
-    }
-  time_t_min = - ((time_t) ~ (time_t) 0 == (time_t) -1) - time_t_max;
-
+  for (time_t_max = 1; 0 < time_t_max; time_t_max *= 2)
+    continue;
+  time_t_max--;
+  if ((time_t) -1 < 0)
+    for (time_t_min = -1; (time_t) (time_t_min * 2) < 0; time_t_min *= 2)
+      continue;
   delta = time_t_max / 997; /* a suitable prime number */
   for (i = 0; i < N_STRINGS; i++)
     {
@@ -12490,12 +12627,10 @@ main ()
 	     && mktime_test ((time_t) (60 * 60 * 24))))
 	return 1;
 
-      for (j = 1; ; j <<= 1)
+      for (j = 1; 0 < j; j *= 2)
 	if (! bigtime_test (j))
 	  return 1;
-	else if (INT_MAX / 2 < j)
-	  break;
-      if (! bigtime_test (INT_MAX))
+      if (! bigtime_test (j - 1))
 	return 1;
     }
   return ! (irix_6_4_bug () && spring_forward_gap () && year_2050_test ());
@@ -14758,14 +14893,12 @@ if test "$use_dvdcss" = "yes"; then
 echo "$as_me: $dvdcss_enabled" >&6;}
   final_message="$final_message\n  DVDCSS:\tYes"
   BUILD_DVDCSS=1
-  DVDNAV_CFLAGS="-D_XBOX -DHAVE_DVDCSS_DVDCSS_H"
   DVDREAD_CFLAGS="-D_XBMC -DHAVE_DVDCSS_DVDCSS_H"
 else
   { echo "$as_me:$LINENO: $dvdcss_disabled" >&5
 echo "$as_me: $dvdcss_disabled" >&6;}
   final_message="$final_message\n  DVDCSS:\tNo"
   BUILD_DVDCSS=0
-  DVDNAV_CFLAGS="-D_XBOX -UHAVE_DVDCSS_DVDCSS_H"
   DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
 fi
 if test "$use_avahi" = "yes"; then
@@ -16250,7 +16383,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
   if test "$host_vendor" = "apple" ; then
     ./configure \
       --extra-cflags="-w -D_DARWIN_C_SOURCE -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
-      --enable-static \
+      --disable-static \
       --disable-vhook \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
@@ -16259,7 +16392,7 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
-      --disable-shared \
+      --enable-shared \
       --disable-ipv6 \
       --disable-decoder=mpeg_xvmc \
       --enable-postproc \
@@ -16268,7 +16401,9 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
       --enable-protocol=http \
       --enable-pthreads &&
     sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak &&
-    sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
+    sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak &&
+    sed -i "" -e "s#libswscale_VERSION_MAJOR=0#libswscale_VERSION_MAJOR=0.7.1#" config.mak &&
+    sed -i "" -e "s#libavfilter_VERSION_MAJOR=0#libavfilter_VERSION_MAJOR=0.4.0#" config.mak
 
   else
     ./configure \

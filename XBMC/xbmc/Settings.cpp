@@ -119,7 +119,7 @@ void CSettings::Initialize()
   g_stSettings.m_fZoomAmount = 1.0f;
   g_stSettings.m_fPixelRatio = 1.0f;
 
-  g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef";
+  g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef|.cr2|.crw|.orf|.arw|.erf|.3fr|.dcr|.x3f|.mef|.raf|.mrw|.pef|.sr2";
   g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml";
   g_stSettings.m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml|.vc1|.h264|.rcv";
   // internal music extensions
@@ -232,7 +232,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
-  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+p{ar}?t[ _\\.-]*([0-9a-d]+)");
+  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+p(?:ar)?t[ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dis[ck][ _\\.-]*([0-9a-d]+)");
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\.....?)$"); // can anyone explain this one?  should this be ([0-9a-d]+) ?
   g_advancedSettings.m_videoStackRegExps.push_back("()cd([0-9a-d]+)(\\.....?)$");
@@ -240,13 +240,17 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoStackRegExps.push_back("()([a-c])(\\.....?)$");
 
   // foo_[s01]_[e01]
-  g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$");
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
   // foo.1x09* or just /1x09*
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$");
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.s01.e01, foo.s01_e01, S01E02 foo
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$");
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$"));
+  // foo.yyyy.mm.dd.* (byDate=true)
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})"));
+  // foo.mm.dd.yyyy.* (byDate=true)
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
   // foo.103*, 103 foo
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$");
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
   g_advancedSettings.m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+)";
 
@@ -296,6 +300,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_curlconnecttimeout = 10;
   g_advancedSettings.m_curllowspeedtime = 5;
+  g_advancedSettings.m_curlretries = 3;
 
 #ifdef HAS_SDL
   g_advancedSettings.m_fullScreen = g_advancedSettings.m_startFullScreen;
@@ -309,17 +314,23 @@ void CSettings::Initialize()
   g_advancedSettings.m_bVirtualShares = true;
   g_advancedSettings.m_bNavVKeyboard = false;
 
-#ifdef _WIN32
-  g_advancedSettings.m_ForcedSwapTime = 2.0;
-#else
+//caused lots of jerks
+//#ifdef _WIN32
+//  g_advancedSettings.m_ForcedSwapTime = 2.0;
+//#else
   g_advancedSettings.m_ForcedSwapTime = 0.0;
-#endif
+//#endif
   g_advancedSettings.m_externalPlayerFilename = "";
   g_advancedSettings.m_externalPlayerArgs = "";
 #ifdef _WIN32PC
   g_advancedSettings.m_externalPlayerFilenameReplacers.push_back("^smb:// , / , \\\\ , g");
   g_advancedSettings.m_externalPlayerFilenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
 #endif
+  g_advancedSettings.m_externalPlayerForceontop = false;
+  g_advancedSettings.m_externalPlayerHideconsole = false;
+  g_advancedSettings.m_externalPlayerHidecursor = false;
+  g_advancedSettings.m_externalPlayerHidexbmc = false;
+  g_advancedSettings.m_externalPlayerStartupTime = 5000;
 
   g_advancedSettings.m_cpuTempCmd = "";
   g_advancedSettings.m_gpuTempCmd = "";
@@ -946,12 +957,6 @@ bool CSettings::GetAddon(const AddonType &type, const TiXmlNode *node, CAddon &a
   return true;
 }
 
-bool CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue)
-{
-  CStdString defaultValue = strValue;
-  return GetString(pRootElement, tagName, strValue, defaultValue);
-}
-
 bool CSettings::GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue)
 {
   CStdString strDefault = strValue;
@@ -990,41 +995,19 @@ bool CSettings::GetString(const TiXmlElement* pRootElement, const char *tagName,
 
 bool CSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& iValue, const int iDefault, const int iMin, const int iMax)
 {
-  if (GetInteger(pRootElement, tagName, iValue, iMin, iMax))
+  if (XMLUtils::GetInt(pRootElement, tagName, iValue, iMin, iMax))
     return true;
   // default
   iValue = iDefault;
   return false;
 }
 
-bool CSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& iValue, const int iMin, const int iMax)
-{
-  if (XMLUtils::GetInt(pRootElement, tagName, iValue))
-  { // check range
-    if (iValue < iMin) iValue = iMin;
-    if (iValue > iMax) iValue = iMax;
-    return true;
-  }
-  return false;
-}
-
 bool CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, float& fValue, const float fDefault, const float fMin, const float fMax)
 {
-  if (GetFloat(pRootElement, tagName, fValue, fMin, fMax))
+  if (XMLUtils::GetFloat(pRootElement, tagName, fValue, fMin, fMax))
     return true;
   // default
   fValue = fDefault;
-  return false;
-}
-
-bool CSettings::GetFloat(const TiXmlElement* pRootElement, const char *tagName, float& fValue, const float fMin, const float fMax)
-{
-  if (XMLUtils::GetFloat(pRootElement, tagName, fValue))
-  { // check range
-    if (fValue < fMin) fValue = fMin;
-    if (fValue > fMax) fValue = fMax;
-    return true;
-  }
   return false;
 }
 
@@ -1380,23 +1363,23 @@ void CSettings::LoadAdvancedSettings()
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
-    GetFloat(pElement, "ac3downmixgain", g_advancedSettings.m_ac3Gain, 12.0f, -96.0f, 96.0f);
-    GetInteger(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
-    GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer, "paplayer");
-    GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_audioPlayCountMinimumPercent, 0.0f, 100.0f);
+    XMLUtils::GetFloat(pElement, "ac3downmixgain", g_advancedSettings.m_ac3Gain, -96.0f, 96.0f);
+    XMLUtils::GetInt(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
+    XMLUtils::GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer);
+    XMLUtils::GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_audioPlayCountMinimumPercent, 0.0f, 100.0f);
 
     XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);
-    GetInteger(pElement, "timeseekforward", g_advancedSettings.m_musicTimeSeekForward, 0, 6000);
-    GetInteger(pElement, "timeseekbackward", g_advancedSettings.m_musicTimeSeekBackward, -6000, 0);
-    GetInteger(pElement, "timeseekforwardbig", g_advancedSettings.m_musicTimeSeekForwardBig, 0, 6000);
-    GetInteger(pElement, "timeseekbackwardbig", g_advancedSettings.m_musicTimeSeekBackwardBig, -6000, 0);
+    XMLUtils::GetInt(pElement, "timeseekforward", g_advancedSettings.m_musicTimeSeekForward, 0, 6000);
+    XMLUtils::GetInt(pElement, "timeseekbackward", g_advancedSettings.m_musicTimeSeekBackward, -6000, 0);
+    XMLUtils::GetInt(pElement, "timeseekforwardbig", g_advancedSettings.m_musicTimeSeekForwardBig, 0, 6000);
+    XMLUtils::GetInt(pElement, "timeseekbackwardbig", g_advancedSettings.m_musicTimeSeekBackwardBig, -6000, 0);
 
-    GetInteger(pElement, "percentseekforward", g_advancedSettings.m_musicPercentSeekForward, 0, 100);
-    GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_musicPercentSeekBackward, -100, 0);
-    GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_musicPercentSeekForwardBig, 0, 100);
-    GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_musicPercentSeekBackwardBig, -100, 0);
+    XMLUtils::GetInt(pElement, "percentseekforward", g_advancedSettings.m_musicPercentSeekForward, 0, 100);
+    XMLUtils::GetInt(pElement, "percentseekbackward", g_advancedSettings.m_musicPercentSeekBackward, -100, 0);
+    XMLUtils::GetInt(pElement, "percentseekforwardbig", g_advancedSettings.m_musicPercentSeekForwardBig, 0, 100);
+    XMLUtils::GetInt(pElement, "percentseekbackwardbig", g_advancedSettings.m_musicPercentSeekBackwardBig, -100, 0);
 
-    GetInteger(pElement, "resample", g_advancedSettings.m_musicResample, 0, 192000);
+    XMLUtils::GetInt(pElement, "resample", g_advancedSettings.m_musicResample, 0, 192000);
 
     TiXmlElement* pAudioExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pAudioExcludes)
@@ -1406,17 +1389,17 @@ void CSettings::LoadAdvancedSettings()
     if (pAudioExcludes)
       GetCustomRegexps(pAudioExcludes, g_advancedSettings.m_audioExcludeFromScanRegExps);
 
-    GetString(pElement, "audiohost", g_advancedSettings.m_audioHost, "default");
+    XMLUtils::GetString(pElement, "audiohost", g_advancedSettings.m_audioHost);
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
   if (pElement)
   {
-    GetFloat(pElement, "syncdelaycdg", g_advancedSettings.m_karaokeSyncDelayCDG, -3.0f, 3.0f); // keep the old name for comp
-    GetFloat(pElement, "syncdelaylrc", g_advancedSettings.m_karaokeSyncDelayLRC, -3.0f, 3.0f);
+    XMLUtils::GetFloat(pElement, "syncdelaycdg", g_advancedSettings.m_karaokeSyncDelayCDG, -3.0f, 3.0f); // keep the old name for comp
+    XMLUtils::GetFloat(pElement, "syncdelaylrc", g_advancedSettings.m_karaokeSyncDelayLRC, -3.0f, 3.0f);
     XMLUtils::GetBoolean(pElement, "alwaysreplacegenre", g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs );
     XMLUtils::GetBoolean(pElement, "storedelay", g_advancedSettings.m_karaokeKeepDelay );
-    GetInteger(pElement, "autoassignstartfrom", g_advancedSettings.m_karaokeStartIndex, 1, 2000000000);
+    XMLUtils::GetInt(pElement, "autoassignstartfrom", g_advancedSettings.m_karaokeStartIndex, 1, 2000000000);
     XMLUtils::GetBoolean(pElement, "nocdgbackground", g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs );
     XMLUtils::GetBoolean(pElement, "lookupsongbackground", g_advancedSettings.m_karaokeUseSongSpecificBackground );
 
@@ -1436,29 +1419,29 @@ void CSettings::LoadAdvancedSettings()
   pElement = pRootElement->FirstChildElement("video");
   if (pElement)
   {
-    GetFloat(pElement, "subsdelayrange", g_advancedSettings.m_videoSubsDelayRange, 10, 600);
-    GetFloat(pElement, "audiodelayrange", g_advancedSettings.m_videoAudioDelayRange, 10, 600);
-    GetInteger(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
-    GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer, "dvdplayer");
-    GetString(pElement, "defaultdvdplayer", g_advancedSettings.m_videoDefaultDVDPlayer, "dvdplayer");
+    XMLUtils::GetFloat(pElement, "subsdelayrange", g_advancedSettings.m_videoSubsDelayRange, 10, 600);
+    XMLUtils::GetFloat(pElement, "audiodelayrange", g_advancedSettings.m_videoAudioDelayRange, 10, 600);
+    XMLUtils::GetInt(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
+    XMLUtils::GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer);
+    XMLUtils::GetString(pElement, "defaultdvdplayer", g_advancedSettings.m_videoDefaultDVDPlayer);
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
-    GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
-    GetInteger(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
+    XMLUtils::GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
+    XMLUtils::GetInt(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
 
-    GetInteger(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 1, INT_MAX);
-    GetInteger(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 1, 10);
-    GetInteger(pElement, "smallstepbackdelay", g_advancedSettings.m_videoSmallStepBackDelay, 100, 5000); //MS
+    XMLUtils::GetInt(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 1, INT_MAX);
+    XMLUtils::GetInt(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 1, 10);
+    XMLUtils::GetInt(pElement, "smallstepbackdelay", g_advancedSettings.m_videoSmallStepBackDelay, 100, 5000); //MS
 
     XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_videoUseTimeSeeking);
-    GetInteger(pElement, "timeseekforward", g_advancedSettings.m_videoTimeSeekForward, 0, 6000);
-    GetInteger(pElement, "timeseekbackward", g_advancedSettings.m_videoTimeSeekBackward, -6000, 0);
-    GetInteger(pElement, "timeseekforwardbig", g_advancedSettings.m_videoTimeSeekForwardBig, 0, 6000);
-    GetInteger(pElement, "timeseekbackwardbig", g_advancedSettings.m_videoTimeSeekBackwardBig, -6000, 0);
+    XMLUtils::GetInt(pElement, "timeseekforward", g_advancedSettings.m_videoTimeSeekForward, 0, 6000);
+    XMLUtils::GetInt(pElement, "timeseekbackward", g_advancedSettings.m_videoTimeSeekBackward, -6000, 0);
+    XMLUtils::GetInt(pElement, "timeseekforwardbig", g_advancedSettings.m_videoTimeSeekForwardBig, 0, 6000);
+    XMLUtils::GetInt(pElement, "timeseekbackwardbig", g_advancedSettings.m_videoTimeSeekBackwardBig, -6000, 0);
 
-    GetInteger(pElement, "percentseekforward", g_advancedSettings.m_videoPercentSeekForward, 0, 100);
-    GetInteger(pElement, "percentseekbackward", g_advancedSettings.m_videoPercentSeekBackward, -100, 0);
-    GetInteger(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 0, 100);
-    GetInteger(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -100, 0);
+    XMLUtils::GetInt(pElement, "percentseekforward", g_advancedSettings.m_videoPercentSeekForward, 0, 100);
+    XMLUtils::GetInt(pElement, "percentseekbackward", g_advancedSettings.m_videoPercentSeekBackward, -100, 0);
+    XMLUtils::GetInt(pElement, "percentseekforwardbig", g_advancedSettings.m_videoPercentSeekForwardBig, 0, 100);
+    XMLUtils::GetInt(pElement, "percentseekbackwardbig", g_advancedSettings.m_videoPercentSeekBackwardBig, -100, 0);
 
     TiXmlElement* pVideoExcludes = pElement->FirstChildElement("excludefromlisting");
     if (pVideoExcludes)
@@ -1476,7 +1459,7 @@ void CSettings::LoadAdvancedSettings()
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanRegExps);
 
-    GetString(pElement,"postprocessing",g_advancedSettings.m_videoPPFFmpegType, "linblenddeint");
+    XMLUtils::GetString(pElement,"postprocessing",g_advancedSettings.m_videoPPFFmpegType);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
@@ -1486,9 +1469,9 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "prioritiseapetags", g_advancedSettings.m_prioritiseAPEv2tags);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
-    GetString(pElement, "albumformat", g_advancedSettings.m_strMusicLibraryAlbumFormat);
-    GetString(pElement, "albumformatright", g_advancedSettings.m_strMusicLibraryAlbumFormatRight);
-    GetString(pElement, "itemseparator", g_advancedSettings.m_musicItemSeparator);
+    XMLUtils::GetString(pElement, "albumformat", g_advancedSettings.m_strMusicLibraryAlbumFormat);
+    XMLUtils::GetString(pElement, "albumformatright", g_advancedSettings.m_strMusicLibraryAlbumFormatRight);
+    XMLUtils::GetString(pElement, "itemseparator", g_advancedSettings.m_musicItemSeparator);
   }
 
   pElement = pRootElement->FirstChildElement("videolibrary");
@@ -1499,19 +1482,19 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "hiderecentlyaddeditems", g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems);
     XMLUtils::GetBoolean(pElement, "hideemptyseries", g_advancedSettings.m_bVideoLibraryHideEmptySeries);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
-    GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
+    XMLUtils::GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
   }
   pElement = pRootElement->FirstChildElement("externalplayer");
   if (pElement)
   {
-    GetString(pElement, "filename", g_advancedSettings.m_externalPlayerFilename);
+    XMLUtils::GetString(pElement, "filename", g_advancedSettings.m_externalPlayerFilename);
     CLog::Log(LOGNOTICE, "ExternalPlayer Filename: %s", g_advancedSettings.m_externalPlayerFilename.c_str());
-    GetString(pElement, "args", g_advancedSettings.m_externalPlayerArgs);
+    XMLUtils::GetString(pElement, "args", g_advancedSettings.m_externalPlayerArgs);
     XMLUtils::GetBoolean(pElement, "forceontop", g_advancedSettings.m_externalPlayerForceontop);
     XMLUtils::GetBoolean(pElement, "hideconsole", g_advancedSettings.m_externalPlayerHideconsole);
     XMLUtils::GetBoolean(pElement, "hidecursor", g_advancedSettings.m_externalPlayerHidecursor);
     XMLUtils::GetBoolean(pElement, "hidexbmc", g_advancedSettings.m_externalPlayerHidexbmc);
-    GetInteger(pElement, "startuptime", g_advancedSettings.m_externalPlayerStartupTime, 5000, 0, INT_MAX);
+    XMLUtils::GetInt(pElement, "startuptime", g_advancedSettings.m_externalPlayerStartupTime, 0, INT_MAX);
     TiXmlElement* pReplacers = pElement->FirstChildElement("replacers");
     while (pReplacers)
     {
@@ -1529,36 +1512,37 @@ void CSettings::LoadAdvancedSettings()
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
   {
-    GetFloat(pElement, "panamount", g_advancedSettings.m_slideshowPanAmount, 0.0f, 20.0f);
-    GetFloat(pElement, "zoomamount", g_advancedSettings.m_slideshowZoomAmount, 0.0f, 20.0f);
-    GetFloat(pElement, "blackbarcompensation", g_advancedSettings.m_slideshowBlackBarCompensation, 0.0f, 50.0f);
+    XMLUtils::GetFloat(pElement, "panamount", g_advancedSettings.m_slideshowPanAmount, 0.0f, 20.0f);
+    XMLUtils::GetFloat(pElement, "zoomamount", g_advancedSettings.m_slideshowZoomAmount, 0.0f, 20.0f);
+    XMLUtils::GetFloat(pElement, "blackbarcompensation", g_advancedSettings.m_slideshowBlackBarCompensation, 0.0f, 50.0f);
   }
 
   pElement = pRootElement->FirstChildElement("lcd");
   if (pElement)
   {
-    GetInteger(pElement, "rows", g_advancedSettings.m_lcdRows, 1, 4);
-    GetInteger(pElement, "columns", g_advancedSettings.m_lcdColumns, 1, 40);
-    GetInteger(pElement, "address1", g_advancedSettings.m_lcdAddress1, 0, 0x100);
-    GetInteger(pElement, "address2", g_advancedSettings.m_lcdAddress2, 0, 0x100);
-    GetInteger(pElement, "address3", g_advancedSettings.m_lcdAddress3, 0, 0x100);
-    GetInteger(pElement, "address4", g_advancedSettings.m_lcdAddress4, 0, 0x100);
+    XMLUtils::GetInt(pElement, "rows", g_advancedSettings.m_lcdRows, 1, 4);
+    XMLUtils::GetInt(pElement, "columns", g_advancedSettings.m_lcdColumns, 1, 40);
+    XMLUtils::GetInt(pElement, "address1", g_advancedSettings.m_lcdAddress1, 0, 0x100);
+    XMLUtils::GetInt(pElement, "address2", g_advancedSettings.m_lcdAddress2, 0, 0x100);
+    XMLUtils::GetInt(pElement, "address3", g_advancedSettings.m_lcdAddress3, 0, 0x100);
+    XMLUtils::GetInt(pElement, "address4", g_advancedSettings.m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", g_advancedSettings.m_lcdHeartbeat);
-    GetInteger(pElement, "scrolldelay", g_advancedSettings.m_lcdScrolldelay, 1, 1, 8);
+    XMLUtils::GetInt(pElement, "scrolldelay", g_advancedSettings.m_lcdScrolldelay, 1, 8);
   }
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
   {
-    GetInteger(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 1, 240);
-    GetInteger(pElement, "curlclienttimeout", g_advancedSettings.m_curlconnecttimeout, 1, 1000);
-    GetInteger(pElement, "curllowspeedtime", g_advancedSettings.m_curllowspeedtime, 1, 1000);
+    XMLUtils::GetInt(pElement, "autodetectpingtime", g_advancedSettings.m_autoDetectPingTime, 1, 240);
+    XMLUtils::GetInt(pElement, "curlclienttimeout", g_advancedSettings.m_curlconnecttimeout, 1, 1000);
+    XMLUtils::GetInt(pElement, "curllowspeedtime", g_advancedSettings.m_curllowspeedtime, 1, 1000);
+    XMLUtils::GetInt(pElement, "curlretries", g_advancedSettings.m_curlretries, 0, 10);
   }
 
   pElement = pRootElement->FirstChildElement("samba");
   if (pElement)
   {
-    GetString(pElement,  "doscodepage",   g_advancedSettings.m_sambadoscodepage);
-    GetInteger(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 5, 100);
+    XMLUtils::GetString(pElement,  "doscodepage",   g_advancedSettings.m_sambadoscodepage);
+    XMLUtils::GetInt(pElement, "clienttimeout", g_advancedSettings.m_sambaclienttimeout, 5, 100);
     XMLUtils::GetBoolean(pElement, "statfiles", g_advancedSettings.m_sambastatfiles);
   }
 
@@ -1566,7 +1550,7 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
     XMLUtils::GetBoolean(pElement, "statfilesize", g_advancedSettings.m_bHTTPDirectoryStatFilesize);
 
-  if (GetInteger(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
+  if (XMLUtils::GetInt(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
     CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("system.debuglogging");
@@ -1576,7 +1560,7 @@ void CSettings::LoadAdvancedSettings()
       setting->SetAdvanced();
     }
   }
-  GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress);
+  XMLUtils::GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress);
 #ifdef HAS_HAL
   XMLUtils::GetBoolean(pRootElement, "usehalmount", g_advancedSettings.m_useHalMount);
 #endif
@@ -1587,15 +1571,15 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "fullscreen", g_advancedSettings.m_startFullScreen);
 #endif
 
-  GetInteger(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 0, INT_MAX);
-  GetInteger(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 0, 5000);
-  GetInteger(pRootElement, "playlistretries", g_advancedSettings.m_playlistRetries, -1, 5000);
-  GetInteger(pRootElement, "playlisttimeout", g_advancedSettings.m_playlistTimeout, 0, 5000);
+  XMLUtils::GetInt(pRootElement, "songinfoduration", g_advancedSettings.m_songInfoDuration, 0, INT_MAX);
+  XMLUtils::GetInt(pRootElement, "busydialogdelay", g_advancedSettings.m_busyDialogDelay, 0, 5000);
+  XMLUtils::GetInt(pRootElement, "playlistretries", g_advancedSettings.m_playlistRetries, -1, 5000);
+  XMLUtils::GetInt(pRootElement, "playlisttimeout", g_advancedSettings.m_playlistTimeout, 0, 5000);
 
   XMLUtils::GetBoolean(pRootElement,"rootovershoot",g_advancedSettings.m_bUseEvilB);
   XMLUtils::GetBoolean(pRootElement,"glrectanglehack", g_advancedSettings.m_GLRectangleHack);
-  GetInteger(pRootElement,"skiploopfilter", g_advancedSettings.m_iSkipLoopFilter, 0, -16, 48);
-  GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
+  XMLUtils::GetInt(pRootElement,"skiploopfilter", g_advancedSettings.m_iSkipLoopFilter, -16, 48);
+  XMLUtils::GetFloat(pRootElement, "forcedswaptime", g_advancedSettings.m_ForcedSwapTime, 0.0, 100.0);
   XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", g_advancedSettings.m_osx_GLFullScreen);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", g_advancedSettings.m_bVirtualShares);
   XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", g_advancedSettings.m_bNavVKeyboard);
@@ -1608,11 +1592,10 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "submenuselection", g_advancedSettings.m_bTuxBoxSubMenuSelection);
     XMLUtils::GetBoolean(pElement, "pictureicon", g_advancedSettings.m_bTuxBoxPictureIcon);
     XMLUtils::GetBoolean(pElement, "sendallaudiopids", g_advancedSettings.m_bTuxBoxSendAllAPids);
-    GetInteger(pElement, "epgrequesttime", g_advancedSettings.m_iTuxBoxEpgRequestTime, 0, 3600);
-    GetInteger(pElement, "defaultsubmenu", g_advancedSettings.m_iTuxBoxDefaultSubMenu, 1, 4);
-    GetInteger(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 4);
-    GetInteger(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 120);
-
+    XMLUtils::GetInt(pElement, "epgrequesttime", g_advancedSettings.m_iTuxBoxEpgRequestTime, 0, 3600);
+    XMLUtils::GetInt(pElement, "defaultsubmenu", g_advancedSettings.m_iTuxBoxDefaultSubMenu, 1, 4);
+    XMLUtils::GetInt(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 4);
+    XMLUtils::GetInt(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 120);
   }
 
   // PVRClient
@@ -1678,7 +1661,7 @@ void CSettings::LoadAdvancedSettings()
   //tv stacking regexps
   TiXmlElement* pTVStacking = pRootElement->FirstChildElement("tvshowmatching");
   if (pTVStacking)
-    GetCustomRegexps(pTVStacking, g_advancedSettings.m_tvshowStackRegExps);
+    GetCustomTVRegexps(pTVStacking, g_advancedSettings.m_tvshowStackRegExps);
 
   // path substitutions
   TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
@@ -1721,9 +1704,9 @@ void CSettings::LoadAdvancedSettings()
     }
   }
 
-  GetInteger(pRootElement, "remoterepeat", g_advancedSettings.m_remoteRepeat, 1, INT_MAX);
-  GetFloat(pRootElement, "controllerdeadzone", g_advancedSettings.m_controllerDeadzone, 0.0f, 1.0f);
-  GetInteger(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, 64, 1024);
+  XMLUtils::GetInt(pRootElement, "remoterepeat", g_advancedSettings.m_remoteRepeat, 1, INT_MAX);
+  XMLUtils::GetFloat(pRootElement, "controllerdeadzone", g_advancedSettings.m_controllerDeadzone, 0.0f, 1.0f);
+  XMLUtils::GetInt(pRootElement, "thumbsize", g_advancedSettings.m_thumbSize, 64, 1024);
 
   XMLUtils::GetBoolean(pRootElement, "playlistasfolders", g_advancedSettings.m_playlistAsFolders);
   XMLUtils::GetBoolean(pRootElement, "detectasudf", g_advancedSettings.m_detectAsUdf);
@@ -1815,11 +1798,56 @@ void CSettings::LoadAdvancedSettings()
     }
   }
 
-  GetString(pRootElement, "cputempcommand", g_advancedSettings.m_cpuTempCmd);
-  GetString(pRootElement, "gputempcommand", g_advancedSettings.m_gpuTempCmd);
+  XMLUtils::GetString(pRootElement, "cputempcommand", g_advancedSettings.m_cpuTempCmd);
+  XMLUtils::GetString(pRootElement, "gputempcommand", g_advancedSettings.m_gpuTempCmd);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
+}
+
+void CSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings)
+{
+  int iAction = 0; // overwrite
+  // for backward compatibility
+  const char* szAppend = pRootElement->Attribute("append");
+  if ((szAppend && stricmp(szAppend, "yes") == 0))
+    iAction = 1;
+  // action takes precedence if both attributes exist
+  const char* szAction = pRootElement->Attribute("action");
+  if (szAction)
+  {
+    iAction = 0; // overwrite
+    if (stricmp(szAction, "append") == 0)
+      iAction = 1; // append
+    else if (stricmp(szAction, "prepend") == 0)
+      iAction = 2; // prepend
+  }
+  if (iAction == 0)
+    settings.clear();
+  TiXmlNode* pRegExp = pRootElement->FirstChild("regexp");
+  int i = 0;
+  while (pRegExp)
+  {
+    if (pRegExp->FirstChild())
+    {
+      bool bByDate = false;
+      if (pRegExp->ToElement())
+      {
+        CStdString byDate = pRegExp->ToElement()->Attribute("byDate");
+        if(byDate && stricmp(byDate, "true") == 0)
+        {
+          bByDate = true;
+        }
+      }
+      CStdString regExp = pRegExp->FirstChild()->Value();
+      regExp.MakeLower();
+      if (iAction == 2)
+        settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp));
+      else
+        settings.push_back(TVShowRegexp(bByDate,regExp));
+    }
+    pRegExp = pRegExp->NextSibling("regexp");
+  }
 }
 
 void CSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings)

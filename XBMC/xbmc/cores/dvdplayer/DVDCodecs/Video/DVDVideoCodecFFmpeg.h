@@ -33,7 +33,7 @@ class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 public:
   CDVDVideoCodecFFmpeg();
   virtual ~CDVDVideoCodecFFmpeg();
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);  
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
   virtual int Decode(BYTE* pData, int iSize, double pts);
   virtual void Reset();
@@ -44,7 +44,7 @@ public:
 #ifdef HAVE_LIBVDPAU
   CVDPAU* GetContextVDPAU();
 #endif
-  
+
 protected:
 
   void GetVideoAspect(AVCodecContext* CodecContext, unsigned int& iWidth, unsigned int& iHeight);

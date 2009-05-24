@@ -25,9 +25,6 @@
 #include "Util.h"
 #include "FileSystem/FileCurl.h"
 #include "tinyXML/tinyxml.h"
-#ifdef _WIN32PC
-extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
-#endif
 
 using namespace std;
 

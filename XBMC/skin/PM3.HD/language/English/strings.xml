@@ -75,9 +75,11 @@
   <string id="31107">Remove scan lines from background</string>
   <string id="31108">Remove scan lines from background during video playback</string>
   <string id="31109">Home screen backgrounds</string>
-  <string id="31110">button - Enable custom backgrounds</string>
+  <string id="31110">button - Custom backgrounds</string>
   <string id="31111">Always show music info during lyrics</string>
   <string id="31112">Show media titles in "Wide icons" view</string>
+  <string id="31113">Single Image</string>
+  <string id="31114">Multi Image</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Custom script options</string>

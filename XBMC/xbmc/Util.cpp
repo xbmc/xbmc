@@ -2368,9 +2368,7 @@ const BUILT_IN commands[] = {
   { "Dialog.Close",               true,   "Close a dialog" },
   { "System.LogOff",              false,  "Log off current user" },
   { "System.Exec",                true,   "Execute shell commands" },
-#ifdef _WIN32PC
   { "System.ExecWait",            true,   "Execute shell commands and freezes XBMC until shell is closed" },
-#endif
   { "Resolution",                 true,   "Change XBMC's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
@@ -2568,7 +2566,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (iWindow != WINDOW_INVALID)
     {
       // disable the screensaver
-      g_application.ResetScreenSaverWindow();
+      g_application.WakeUpScreenSaverAndDPMS();
       if (execute.Equals("activatewindow"))
         m_gWindowManager.ActivateWindow(iWindow, strPath);
       else  // ReplaceWindow
@@ -2618,21 +2616,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_pythonParser.evalFile(strParameterCaseIntact.c_str());
   }
 #endif
-#if defined(_LINUX) && !defined(__APPLE__)
   else if (execute.Equals("system.exec"))
   {
-    system(strParameterCaseIntact.c_str());
-  }
-#elif defined(_WIN32PC)
-  else if (execute.Equals("system.exec"))
-  {
-    CWIN32Util::XBMCShellExecute(strParameterCaseIntact, false);
+    g_application.getApplicationMessenger().Minimize();
+    g_application.getApplicationMessenger().ExecOS(strParameterCaseIntact, false);
   }
   else if (execute.Equals("system.execwait"))
   {
-    CWIN32Util::XBMCShellExecute(strParameterCaseIntact, true);
+    g_application.getApplicationMessenger().Minimize();
+    g_application.getApplicationMessenger().ExecOS(strParameterCaseIntact, true);
   }
-#endif
   else if (execute.Equals("resolution"))
   {
     RESOLUTION res = PAL_4x3;
@@ -2726,7 +2719,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     // reset screensaver
     g_application.ResetScreenSaver();
-    g_application.ResetScreenSaverWindow();
+    g_application.WakeUpScreenSaverAndDPMS();
 
     // set fullscreen or windowed
     if (params2.size() == 2 && params2[1] == "1")
@@ -2814,7 +2807,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("playercontrol"))
   {
     g_application.ResetScreenSaver();
-    g_application.ResetScreenSaverWindow();
+    g_application.WakeUpScreenSaverAndDPMS();
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
@@ -2905,8 +2898,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
+#ifdef HAS_WEB_SERVER
         if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
           g_application.getApplicationMessenger().HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
+#endif
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
@@ -4577,10 +4572,39 @@ CStdString CUtil::CreateUUID()
 
 #ifdef _LINUX
 
+bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
+{
+  CStdStringArray args;
+
+  StringUtils::SplitString(cmdLine, ",", args);
+
+  // Strip quotes and whitespace around the arguments, or exec will fail.
+  // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
+  // But it's still limited, for example quotes inside the strings are not expanded, etc.
+  // TODO: Maybe some python library routine can parse this more properly ?
+  for (size_t i=0; i<args.size(); i++)
+  {
+    CStdString &s = args[i];
+    CStdString stripd = s.Trim();
+    if (stripd[0] == '"' || stripd[0] == '\'')
+    {
+      s = s.TrimLeft();
+      s = s.Right(s.size() - 1);
+    }
+    if (stripd[stripd.size() - 1] == '"' || stripd[stripd.size() - 1] == '\'')
+    {
+      s = s.TrimRight();
+      s = s.Left(s.size() - 1);
+    }
+  }
+
+  return Command(args, waitExit);
+}
+
 //
 // FIXME, this should be merged with the function below.
 //
-bool CUtil::Command(const CStdStringArray& arrArgs)
+bool CUtil::Command(const CStdStringArray& arrArgs, bool waitExit)
 {
 #ifdef _DEBUG
   printf("Executing: ");
@@ -4607,10 +4631,10 @@ bool CUtil::Command(const CStdStringArray& arrArgs)
   }
   else
   {
-    waitpid(child, &n, 0);
+    if (waitExit) waitpid(child, &n, 0);
   }
 
-  return WEXITSTATUS(n) == 0;
+  return (waitExit) ? (WEXITSTATUS(n) == 0) : true;
 }
 
 bool CUtil::SudoCommand(const CStdString &strCommand)

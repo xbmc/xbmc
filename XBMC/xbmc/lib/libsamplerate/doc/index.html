@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+
+<HEAD>
+	<TITLE>
+	Secret Rabbit Code (aka libsamplerate)
+	</TITLE>
+	<META NAME="Author"      CONTENT="Erik de Castro Lopo (erikd AT mega-nerd DOT com)">
+    <META NAME="Version"     CONTENT="libsamplerate-0.1.7">
+	<META NAME="Description" CONTENT="The Secret Rabbit Code Home Page">
+	<META NAME="Keywords"    CONTENT="libsamplerate sound resample audio dsp Linux">
+	<LINK REL=StyleSheet HREF="SRC.css" TYPE="text/css" MEDIA="all">
+</HEAD>
+
+<BODY TEXT="#FFFFFF" BGCOLOR="#000000" LINK="#FB1465" VLINK="#FB1465" ALINK="#FB1465">
+<!-- pepper -->
+<CENTER>
+	<IMG SRC="SRC.png" HEIGHT=100 WIDTH=760 ALT="SRC.png">
+</CENTER>
+<!-- pepper -->
+<BR>
+<!-- pepper -->
+<TABLE ALIGN="center" WIDTH="98%">
+<TR>
+<TD VALIGN="top">
+<BR>
+<DIV CLASS="nav">
+	<BR>
+	<A HREF="index.html">Home</A><BR>
+	<A HREF="license.html">License</A><BR>
+	<A HREF="history.html">History</A><BR>
+	<A HREF="download.html">Download</A><BR>
+	<A HREF="quality.html">Quality</A><BR>
+	<A HREF="api.html">API</A><BR>
+	<A HREF="bugs.html">Bug Reporting</A><BR>
+	<A HREF="win32.html">On Win32</A><BR>
+	<A HREF="faq.html">FAQ</A><BR>
+	<A HREF="lists.html">Mailing Lists</A><BR>
+	<A HREF="ChangeLog">ChangeLog</A><BR>
+	<A HREF="fb2k.html">Foobar 2k</A><BR>
+<BR>
+<DIV CLASS="block">
+Author :<BR>Erik de Castro Lopo
+<!-- pepper -->
+<BR><BR>
+<!-- pepper -->
+
+</DIV>
+	<IMG SRC=
+	"/cgi-bin/Count.cgi?ft=6|frgb=55;55;55|tr=0|md=6|dd=B|st=1|sh=1|df=src.dat"
+	HEIGHT=30 WIDTH=100 ALT="counter.gif">
+</DIV>
+
+</TD>
+<!-- pepper -->
+<!-- ######################################################################## -->
+<!-- pepper -->
+<TD VALIGN="top">
+<DIV CLASS="block">
+<BR>
+
+<TABLE ALIGN="center" WIDTH="80%">
+<TR><TD>
+<P>
+	<I>
+	"Choosing a sample rate coverter wasn't easy. We ran numerous tests with
+	Secret Rabbit Code and other sample rate converters, then compared them all.
+	In the end, SRC outperformed the others, including some extremely well known
+	and popular software. We had one issue with SRC, but after emailing Erik, he
+	got back to us immediately with an answer. Choosing SRC was a no brainer."
+	</I><BR>
+	   Ryan Smith, International Marketing Manager, <BR>
+	   <A HREF="http://emersys.co.kr/">Emersys Corp.</A>, South Korea.<BR>
+	   Product : <A HREF="http://maven3d.com">Maven3D</A>
+
+</P>
+</TD></TR>
+</TABLE>
+<P>
+	<B>S</B>ecret <B>R</B>abbit <B>C</B>ode (aka libsamplerate) is a
+	<B>S</B>ample <B>R</B>ate <B>C</B>onverter for audio.
+	One example of where such a thing would be useful is converting audio
+	from the CD sample rate of 44.1kHz to the 48kHz sample rate used by
+	DAT players.
+</P>
+<!-- pepper -->
+<P>
+	<B>SRC</B> is capable of arbitrary and time varying conversions ; from
+	downsampling by a factor of 256 to upsampling by the same factor.
+	Arbitrary in this case means that the ratio of input and output
+	sample rates can be an irrational number.
+	The conversion ratio can also vary with time for speeding up and slowing
+	down effects.
+</P>
+<!-- pepper -->
+<P>
+	<B>SRC</B> provides a small set of converters to allow quality to
+	be traded off against computation cost.
+	The current best converter provides a signal-to-noise ratio of 145dB
+	with -3dB passband extending from DC to 96&#37; of the theoretical
+	best bandwidth for a given pair of input and output sample rates.
+</P>
+<!-- pepper -->
+<P>
+	Since the library has few dependencies beyond that provided by the
+	standard C library, it should compile and work on just about any
+	operating system.
+	It is known to work on Linux, MacOSX,
+		<A HREF="win32.html">Win32</A>
+	and Solaris.
+	With some relatively minor hacking it should also be relatively easy
+	to port it to embedded systems and digital signal processors.
+</P>
+<!-- pepper -->
+<P>
+	In addition, the library comes with a comprehensive test suite which
+	can validate the performance of the library on new platforms.
+</P>
+
+<!-- pepper -->
+<!-- <A HREF="mailto:aldel0305@mega-nerd.com">For the spam bots</A> -->
+<!-- pepper -->
+
+</DIV>
+</TD></TR>
+</TABLE>
+
+</BODY>
+</HTML>
+

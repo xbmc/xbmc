@@ -26,6 +26,7 @@
 #include "SDL/SDL_syswm.h"
 #include "GUIWindowManager.h"
 #include "WIN32Util.h"
+#include "VideoReferenceClock.h"
 extern HWND g_hWnd;
 #endif
 
@@ -377,7 +378,7 @@ void CXBApplicationEx::ReadInput()
           g_settings.DeleteSource("pictures",strName,strDrive);
           g_settings.DeleteSource("music",strName,strDrive);
           g_settings.DeleteSource("programs",strName,strDrive);
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
+          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           m_gWindowManager.SendThreadMessage( msg );
         }
         if(event.syswm.msg->msg == WM_POWERBROADCAST && (event.syswm.msg->wParam == PBT_APMRESUMESUSPEND || event.syswm.msg->wParam == PBT_APMRESUMEAUTOMATIC))
@@ -391,6 +392,20 @@ void CXBApplicationEx::ReadInput()
             SetForegroundWindow(g_hWnd);
             LockSetForegroundWindow(LSFW_LOCK);
           }
+        }
+        if (event.syswm.msg->msg == WM_MOVE) //we moved
+        {
+          RECT rBounds;
+          HMONITOR hMonitor;
+          MONITORINFOEX mi;
+          
+          //get the monitor the main window is on
+          GetWindowRect(g_hWnd, &rBounds);
+          hMonitor = MonitorFromRect(&rBounds, MONITOR_DEFAULTTONEAREST);
+          mi.cbSize = sizeof(mi);
+          GetMonitorInfo(hMonitor, &mi);
+
+          g_VideoReferenceClock.SetMonitor(mi); //let the videoreferenceclock know which monitor we're on
         }
       }
       break;
@@ -438,6 +453,7 @@ void CXBApplicationEx::ReadInput()
       if( event.active.state & SDL_APPACTIVE )
       {
         m_AppActive = event.active.gain != 0;
+        if (m_AppActive) g_application.Minimize(false);
       }
       if (event.active.state & SDL_APPINPUTFOCUS)
       {
@@ -556,6 +572,22 @@ bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
 
 bool CXBApplicationEx::ProcessLinuxShortcuts(SDL_Event& event)
 {
+  bool alt = false;
+
+  alt = !!(SDL_GetModState() & (KMOD_LALT  | KMOD_RALT));
+
+  if (alt && event.key.type == SDL_KEYDOWN)
+  {
+    switch(event.key.keysym.sym)
+    {
+      case SDLK_TAB:  // ALT+TAB to minimize/hide
+        g_application.Minimize();
+        return true;
+      default:
+        break;
+    }
+  }
+
   return false;
 }
 

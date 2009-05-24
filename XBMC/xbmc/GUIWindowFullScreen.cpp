@@ -41,6 +41,7 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "PVRManager.h"
+#include "VideoReferenceClock.h"
 
 #include <stdio.h>
 
@@ -724,7 +725,16 @@ void CGUIWindowFullScreen::RenderFullScreen()
 #else
       CStdString strCores = g_cpuInfo.GetCoresUsageString();
 #endif
-      strGeneralFPS.Format("fps: %02.2f %s\n%s", g_infoManager.GetFPS(), strCores.c_str(), strGeneral.c_str() );
+      int missedvblanks;
+      double clockspeed;
+      CStdString strClock;
+      
+      if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed))
+        strClock.Format("VBlanks missed: %i Clock speed: %.3f%%", missedvblanks, clockspeed);
+      
+      strGeneralFPS.Format("fps: %02.2f %s %s\n%s", g_infoManager.GetFPS(),
+                           strCores.c_str(), strClock.c_str(), strGeneral.c_str() );
+       
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strGeneralFPS);
       OnMessage(msg);
@@ -932,12 +942,12 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
   slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
   if (data && g_application.m_pPlayer)
   {
-    if (*(DWORD *)data = ACTION_AUDIO_DELAY)
+    if (*(DWORD *)data == ACTION_AUDIO_DELAY)
     {
       g_stSettings.m_currentVideoSettings.m_AudioDelay = slider->GetFloatValue();
       g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
     }
-    else if (*(DWORD *)data = ACTION_SUBTITLE_DELAY)
+    else if (*(DWORD *)data == ACTION_SUBTITLE_DELAY)
     {
       g_stSettings.m_currentVideoSettings.m_SubtitleDelay = slider->GetFloatValue();
       g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);

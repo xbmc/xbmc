@@ -18,10 +18,12 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDClock.h"
+#include "VideoReferenceClock.h"
 #include <math.h>
+#include "../../Util.h"
 
 #if defined(_WIN32)
 static void TimeGetTimeFrequency(LARGE_INTEGER* freq){ freq->QuadPart = 1000; }
@@ -32,18 +34,22 @@ static void TimeGetTimeCounter(LARGE_INTEGER* val)   { val->QuadPart = timeGetTi
 
 LARGE_INTEGER CDVDClock::m_systemOffset;
 LARGE_INTEGER CDVDClock::m_systemFrequency;
+CCriticalSection CDVDClock::m_systemsection;
+
 CDVDClock::CDVDClock()
 {
   if(!m_systemFrequency.QuadPart)
-    QueryPerformanceFrequency(&m_systemFrequency);
+    g_VideoReferenceClock.GetFrequency(&m_systemFrequency);
 
   if(!m_systemOffset.QuadPart)
-    QueryPerformanceCounter(&m_systemOffset);
+    g_VideoReferenceClock.GetTime(&m_systemOffset);
 
   m_systemUsed = m_systemFrequency;
   m_pauseClock.QuadPart = 0;
   m_bReset = true;
   m_iDisc = 0;
+  m_maxspeedadjust = 0.0;
+  m_playingvideo = false;
 }
 
 CDVDClock::~CDVDClock()
@@ -52,17 +58,16 @@ CDVDClock::~CDVDClock()
 // Returns the current absolute clock in units of DVD_TIME_BASE (usually microseconds).
 double CDVDClock::GetAbsoluteClock()
 {
-  static CCriticalSection section;
-  CSingleLock lock(section);
+  CSingleLock lock(m_systemsection);
 
   if(!m_systemFrequency.QuadPart)
-    QueryPerformanceFrequency(&m_systemFrequency);
+    g_VideoReferenceClock.GetFrequency(&m_systemFrequency);
 
   if(!m_systemOffset.QuadPart)
-    QueryPerformanceCounter(&m_systemOffset);
+    g_VideoReferenceClock.GetTime(&m_systemOffset);
 
   LARGE_INTEGER current;
-  QueryPerformanceCounter(&current);
+  g_VideoReferenceClock.GetTime(&current);
   current.QuadPart -= m_systemOffset.QuadPart;
 
 #if _DEBUG
@@ -75,14 +80,34 @@ double CDVDClock::GetAbsoluteClock()
   return DVD_TIME_BASE * (double)current.QuadPart / m_systemFrequency.QuadPart;
 }
 
+void CDVDClock::WaitAbsoluteClock(double target)
+{
+  CSingleLock lock(m_systemsection);
+
+  __int64 systemtarget;
+
+  if(!m_systemFrequency.QuadPart)
+    g_VideoReferenceClock.GetFrequency(&m_systemFrequency);
+
+  if(!m_systemOffset.QuadPart)
+    g_VideoReferenceClock.GetTime(&m_systemOffset);
+
+  systemtarget = (__int64)(target / DVD_TIME_BASE * (double)m_systemFrequency.QuadPart);
+  systemtarget += m_systemOffset.QuadPart;
+
+  lock.Leave();
+
+  g_VideoReferenceClock.Wait(systemtarget);
+}
+
 double CDVDClock::GetClock()
 {
   CSharedLock lock(m_critSection);
   LARGE_INTEGER current;
-    
+
   if (m_bReset)
   {
-    QueryPerformanceCounter(&m_startClock);
+    g_VideoReferenceClock.GetTime(&m_startClock);
     m_systemUsed = m_systemFrequency;
     m_pauseClock.QuadPart = 0;
     m_iDisc = 0;
@@ -92,7 +117,7 @@ double CDVDClock::GetClock()
   if (m_pauseClock.QuadPart)
     current = m_pauseClock;
   else
-    QueryPerformanceCounter(&current);
+    g_VideoReferenceClock.GetTime(&current);
 
   current.QuadPart -= m_startClock.QuadPart;
   return DVD_TIME_BASE * (double)current.QuadPart / m_systemUsed.QuadPart + m_iDisc;
@@ -106,14 +131,14 @@ void CDVDClock::SetSpeed(int iSpeed)
   if(iSpeed == DVD_PLAYSPEED_PAUSE)
   {
     if(!m_pauseClock.QuadPart)
-      QueryPerformanceCounter(&m_pauseClock);
+      g_VideoReferenceClock.GetTime(&m_pauseClock);
     return;
   }
-  
+
   LARGE_INTEGER current;
   __int64 newfreq = m_systemFrequency.QuadPart * DVD_PLAYSPEED_NORMAL / iSpeed;
-  
-  QueryPerformanceCounter(&current);
+
+  g_VideoReferenceClock.GetTime(&current);
   if( m_pauseClock.QuadPart )
   {
     m_startClock.QuadPart += current.QuadPart - m_pauseClock.QuadPart;
@@ -121,7 +146,7 @@ void CDVDClock::SetSpeed(int iSpeed)
   }
 
   m_startClock.QuadPart = current.QuadPart - ( newfreq * (current.QuadPart - m_startClock.QuadPart) ) / m_systemUsed.QuadPart;
-  m_systemUsed.QuadPart = newfreq;    
+  m_systemUsed.QuadPart = newfreq;
 }
 
 void CDVDClock::Discontinuity(ClockDiscontinuityType type, double currentPts, double delay)
@@ -136,7 +161,7 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, double currentPts, do
     }
   case CLOCK_DISC_NORMAL:
     {
-      QueryPerformanceCounter(&m_startClock);
+      g_VideoReferenceClock.GetTime(&m_startClock);
       m_startClock.QuadPart += (__int64)(delay * m_systemUsed.QuadPart / DVD_TIME_BASE);
       m_iDisc = currentPts;
       m_bReset = false;
@@ -149,7 +174,7 @@ void CDVDClock::Pause()
 {
   CExclusiveLock lock(m_critSection);
   if(!m_pauseClock.QuadPart)
-    QueryPerformanceCounter(&m_pauseClock);
+    g_VideoReferenceClock.GetTime(&m_pauseClock);
 }
 
 void CDVDClock::Resume()
@@ -158,15 +183,67 @@ void CDVDClock::Resume()
   if( m_pauseClock.QuadPart )
   {
     LARGE_INTEGER current;
-    QueryPerformanceCounter(&current);
+    g_VideoReferenceClock.GetTime(&current);
 
     m_startClock.QuadPart += current.QuadPart - m_pauseClock.QuadPart;
     m_pauseClock.QuadPart = 0;
-  }  
+  }
 }
 
 double CDVDClock::DistanceToDisc()
 {
   // GetClock will lock. if we lock the shared lock here there's potentialy a chance that another thread will try exclusive lock on the section and we'll deadlock
   return GetClock() - m_iDisc;
+}
+
+double CDVDClock::GetMaxSpeedAdjust(bool playingvideo)
+{
+  CSingleLock lock(m_speedsection);
+
+  m_playingvideo = playingvideo;
+  return m_maxspeedadjust;
+}
+
+bool CDVDClock::SetMaxSpeedAdjust(double speed)
+{
+  CSingleLock lock(m_speedsection);
+
+  m_maxspeedadjust = speed;
+  return m_playingvideo;
+}
+
+void CDVDClock::UpdateFramerate(double fps)
+{
+  //sent with fps of 0 means we are not playing video
+  if(fps == 0.0)
+  {
+    CSingleLock lock(m_speedsection);
+    m_playingvideo = false;
+    return;
+  }
+
+  //check if the videoreferenceclock is running, will return -1 if not
+  int rate = g_VideoReferenceClock.GetRefreshRate();
+
+  // lock section after checking refreshrate as it locks things internally too
+  CSingleLock lock(m_speedsection);
+  m_playingvideo = true;
+
+  if (rate > 0)
+  {
+    double weight = (double)rate / (double)MathUtils::round_int(fps);
+
+    //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
+    if (m_maxspeedadjust > 0.05)
+    {
+      if (weight / MathUtils::round_int(weight) < 1.0 + m_maxspeedadjust / 100.0 
+      &&  weight / MathUtils::round_int(weight) > 1.0 - m_maxspeedadjust / 100.0)
+        weight = MathUtils::round_int(weight);
+    }
+    double speed = (double)rate / (fps * weight);
+    lock.Leave();
+
+    g_VideoReferenceClock.SetSpeed(speed);
+  }
+
 }

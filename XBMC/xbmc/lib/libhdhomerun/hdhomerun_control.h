@@ -43,12 +43,13 @@ struct hdhomerun_control_sock_t;
  *
  * uint32_t device_id = 32-bit device id of device. Set to HDHOMERUN_DEVICE_ID_WILDCARD to match any device ID.
  * uint32_t device_ip = IP address of device. Set to 0 to auto-detect.
+ * struct hdhomerun_debug_t *dbg: Pointer to debug logging object. May be NULL.
  *
  * Returns a pointer to the newly created control socket.
  *
  * When no longer needed, the socket should be destroyed by calling hdhomerun_control_destroy.
  */
-extern LIBTYPE struct hdhomerun_control_sock_t *hdhomerun_control_create(uint32_t device_id, uint32_t device_ip);
+extern LIBTYPE struct hdhomerun_control_sock_t *hdhomerun_control_create(uint32_t device_id, uint32_t device_ip, struct hdhomerun_debug_t *dbg);
 extern LIBTYPE void hdhomerun_control_destroy(struct hdhomerun_control_sock_t *cs);
 
 /*
@@ -108,11 +109,6 @@ extern LIBTYPE int hdhomerun_control_set_with_lockkey(struct hdhomerun_control_s
  * Returns -1 if an error occurs.
  */
 extern LIBTYPE int hdhomerun_control_upgrade(struct hdhomerun_control_sock_t *cs, FILE *upgrade_file);
-
-/*
- * Debug logging.
- */
-extern LIBTYPE void hdhomerun_control_set_debug(struct hdhomerun_control_sock_t *cs, struct hdhomerun_debug_t *dbg);
 
 #ifdef __cplusplus
 }

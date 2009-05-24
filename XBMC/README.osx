@@ -139,16 +139,22 @@ Then install the following port packages (order is very important):
 
  $ sudo port install glew +universal
  $ sudo port install libcdio +universal
- $ sudo port install portaudio +universal
  $ sudo port install openssl +universal
  $ sudo port install samba3 macosx_deployment_target=10.4
  $ sudo port install mysql5 +universal
  $ sudo port install sqlite3 +universal
+ $ sudo port install libsamplerate +universal
 
  $ sudo port install libsdl +no_x11 +universal
  $ sudo port install smpeg +universal
  $ sudo port install libsdl_mixer +universal
  $ sudo port install libsdl_image +universal
+
+If you understand the following two lines, you can run it to automate
+the installation of the ports in the above order:
+
+  sudo bash
+  cat README.osx | perl -ne 'print `port install $1` if /^ \$ sudo port install (.*)$/;'
 
 Finally, fix the mysql package default install location with this symlink:
 
@@ -164,7 +170,7 @@ first. This is a simple step and involves the following:
  $ autoconf
  $ ./configure
  $ make clean
- $ make externals more_libs
+ $ make xcode_depends
 
 The configure operation will setup the build environment for codecs and
 internal libraries that are used by XBMC. This step is required for both Xcode
@@ -227,13 +233,12 @@ construction).
  a)
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
- $ make externals more_libs
+ $ make xcode_depends
  $ xcodebuild -sdk macosx10.4 -project XBMC.xcodeproj -target XBMC.app -configuration Release build
 
  b)
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
- $ make externals more_libs
  $ make xbmc
  $ ./xbmc.bin
 

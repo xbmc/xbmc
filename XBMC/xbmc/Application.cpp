@@ -27,8 +27,6 @@
 #include "cores/PlayerCoreFactory.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "PlayListPlayer.h"
-#include "MusicDatabase.h"
-#include "VideoDatabase.h"
 #include "Autorun.h"
 #include "ActionManager.h"
 #ifdef HAS_LCD
@@ -49,7 +47,8 @@
 #endif
 #include "ButtonTranslator.h"
 #include "GUIAudioManager.h"
-#include "lib/libscrobbler/scrobbler.h"
+#include "lib/libscrobbler/lastfmscrobbler.h"
+#include "lib/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
 #include "ApplicationMessenger.h"
 #include "SectionLoader.h"
@@ -78,6 +77,7 @@
 #include "PlayList.h"
 #include "Surface.h"
 #include "PowerManager.h"
+#include "DPMSSupport.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
@@ -282,6 +282,7 @@ using namespace DBUSSERVER;
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconvd.lib")
   #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidid.lib")
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcred.lib")
+  #pragma comment (lib,"../../xbmc/lib/libsamplerate/libsamplerate_win32d.lib")
  #else
   #ifdef HAS_FILESYSTEM
     #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMS.lib")
@@ -295,7 +296,9 @@ using namespace DBUSSERVER;
   #pragma comment (lib,"../../xbmc/lib/libiconv/libiconv.lib")
   #pragma comment (lib,"../../xbmc/lib/libfribidi/libfribidi.lib")
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
+  #pragma comment (lib,"../../xbmc/lib/libsamplerate/libsamplerate_win32.lib")
  #endif
+ #pragma comment (lib,"d3d9.lib")
 #endif
 
 #define MAX_FFWD_SPEED 5
@@ -314,15 +317,19 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_pFileZilla = NULL;
   m_pPlayer = NULL;
   m_bScreenSave = false;
+  m_dpms = NULL;
+  m_dpmsIsActive = false;
   m_iScreenSaveLock = 0;
   m_dwSkinTime = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
-  m_playCountUpdated = false;
   m_bPlaybackStarting = false;
-  m_updateFileStateCounter = 0;
+  m_lastGetTime = 0;
+  m_lastGetPercentage = 0;
+  m_lastFileName = "";
+  VideoResumeBookmark.timeInSeconds = 0;
 
 #ifdef HAS_GLX
   XInitThreads();
@@ -330,6 +337,8 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 
   //true while we in IsPaused mode! Workaround for OnPaused, which must be add. after v2.0
   m_bIsPaused = false;
+
+  m_bWasFullScreenBeforeMinimize = false;
 
   /* for now always keep this around */
 #ifdef HAS_KARAOKE
@@ -370,6 +379,8 @@ CApplication::~CApplication(void)
 
   if (m_frameCond)
     SDL_DestroyCond(m_frameCond);
+
+  delete m_dpms;
 
 #ifdef _WIN32PC
   if( m_SSysParam )
@@ -933,7 +944,7 @@ HRESULT CApplication::Create(HWND hWnd)
     }
   }
   int iResolution = g_graphicsContext.GetVideoResolution();
-  CLog::Log(LOGINFO, " GUI format %ix%i %s",
+  CLog::Log(LOGINFO, "GUI format %ix%i %s",
             g_settings.m_ResInfo[iResolution].iWidth,
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode);
@@ -1300,10 +1311,9 @@ HRESULT CApplication::Initialize()
 
   CLog::Log(LOGINFO, "creating subdirectories");
 
-  //CLog::Log(LOGINFO, "userdata folder: %s", g_stSettings.m_userDataFolder.c_str());
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "  recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "  screenshots folder:%s", g_guiSettings.GetString("pictures.screenshotpath",false).c_str());
+  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("mymusic.recordingpath",false).c_str());
+  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("pictures.screenshotpath",false).c_str());
 
   // UserData folder layout:
   // UserData/
@@ -1360,6 +1370,13 @@ HRESULT CApplication::Initialize()
   }
 
   StartServices();
+
+  // Init DPMS, before creating the corresponding setting control.
+  m_dpms = new DPMSSupport(g_graphicsContext.getScreenSurface());
+  g_guiSettings.GetSetting("screensaver.sep_powersaving")->SetVisible(
+      m_dpms->IsSupported());
+  g_guiSettings.GetSetting("screensaver.powersavingtime")->SetVisible(
+      m_dpms->IsSupported());
 
   m_gWindowManager.Add(new CGUIWindowHome);                     // window id = 0
 
@@ -1473,7 +1490,7 @@ HRESULT CApplication::Initialize()
   else
   {
     RESOLUTION res = INVALID;
-    CStdString startupPath = g_SkinInfo.GetSkinPath("startup.xml", &res);
+    CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
     int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
     // test for a startup window, and activate that instead of home
     if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
@@ -2503,7 +2520,10 @@ void CApplication::Render()
     static unsigned int lastFrameTime = 0;
     unsigned int currentTime = timeGetTime();
     int nDelayTime = 0;
-    bool lowfps = m_bScreenSave && (m_screenSaverMode == "Black") && (screenSaverFadeAmount >= 100);
+    // Less fps in DPMS or Black screensaver
+    bool lowfps = (m_dpmsIsActive
+                   || (m_bScreenSave && (m_screenSaverMode == "Black")
+                       && (screenSaverFadeAmount >= 100)));
     unsigned int singleFrameTime = 10; // default limit 100 fps
 
 
@@ -2528,7 +2548,7 @@ void CApplication::Render()
       if (g_videoConfig.GetVSyncMode() != VSYNC_ALWAYS || lowfps)
       {
         if(lowfps)
-          singleFrameTime *= 10;
+          singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
 
         if (lastFrameTime + singleFrameTime > currentTime)
           nDelayTime = lastFrameTime + singleFrameTime - currentTime;
@@ -2636,7 +2656,7 @@ bool CApplication::OnKey(CKey& key)
     ResetScreenSaver();
 
     // allow some keys to be processed while the screensaver is active
-    if (ResetScreenSaverWindow() && !processKey)
+    if (WakeUpScreenSaverAndDPMS() && !processKey)
     {
       g_Keyboard.Reset();
       return true;
@@ -3078,7 +3098,6 @@ bool CApplication::OnAction(CAction &action)
   if (IsPlaying() && action.fAmount1 && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
   {
     if (!m_pPlayer->CanSeek()) return false;
-    CScrobbler::GetInstance()->SetSubmitSong(false);  // Do not submit songs to Audioscrobbler when seeking, see CheckAudioScrobblerStatus()
     m_guiDialogSeekBar.OnAction(action);
     return true;
   }
@@ -3411,7 +3430,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     m_idleTimer.StartZero();
 
     ResetScreenSaver();
-    if (ResetScreenSaverWindow())
+    if (WakeUpScreenSaverAndDPMS())
     {
       g_Joystick.Reset(true);
       return true;
@@ -3441,6 +3460,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 
     string jname = g_Joystick.GetJoystick();
     action.fAmount1 = g_Joystick.GetAmount();
+
     if (action.fAmount1<0)
     {
       bid = -bid;
@@ -3448,7 +3468,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.wID, action.strAction, fullrange))
     {
       ResetScreenSaver();
-      if (ResetScreenSaverWindow())
+      if (WakeUpScreenSaverAndDPMS())
       {
         return true;
       }
@@ -3471,6 +3491,25 @@ bool CApplication::ProcessGamepad(float frameTime)
     else
     {
       g_Joystick.ResetAxis(abs(bid));
+    }
+  }
+  int position;
+  if (g_Joystick.GetHat(bid, position))
+  {
+    CAction action;
+    bool fullrange;
+
+    string jname = g_Joystick.GetJoystick();
+    bid = position<<16|bid;
+
+    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
+    {
+      action.fAmount1 = 1.0f;
+      action.fRepeat = 0.0f;
+      g_audioManager.PlayActionSound(action);
+      g_Joystick.Reset();
+      g_Mouse.SetInactive();
+      return OnAction(action);
     }
   }
 #endif
@@ -3509,9 +3548,14 @@ bool CApplication::ProcessRemote(float frameTime)
     return OnKey(key);
   }
 #endif
-#if defined(_LINUX) && !defined(__APPLE__)
+#ifdef HAS_LCD
   if (m_restartLCD) {
     CLog::Log(LOGDEBUG, "g_application.m_restartLCD is true - restarting LCDd");
+#ifdef _LINUX
+    g_lcd->SetBackLight(1);
+#else
+    g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
+#endif
     g_lcd->Stop();
     g_lcd->Initialize();
     m_restartLCD = false;
@@ -3530,7 +3574,7 @@ bool CApplication::ProcessMouse()
   // Reset the screensaver and idle timers
   m_idleTimer.StartZero();
   ResetScreenSaver();
-  if (ResetScreenSaverWindow())
+  if (WakeUpScreenSaverAndDPMS())
     return true;
 
   // call OnAction with ACTION_MOUSE
@@ -3544,6 +3588,7 @@ bool CApplication::ProcessMouse()
 
 void  CApplication::CheckForTitleChange()
 {
+#ifdef HAS_WEB_SERVER
   if (g_stSettings.m_HttpApiBroadcastLevel>=1)
   {
     if (IsPlayingVideo())
@@ -3577,6 +3622,7 @@ void  CApplication::CheckForTitleChange()
       }
     }
   }
+#endif
 }
 
 bool CApplication::ProcessHTTPApiButtons()
@@ -3625,7 +3671,7 @@ bool CApplication::ProcessEventServer(float frameTime)
     // reset idle timers
     m_idleTimer.StartZero();
     ResetScreenSaver();
-    ResetScreenSaverWindow();
+    WakeUpScreenSaverAndDPMS();
   }
 
   // now handle any buttons or axis
@@ -3712,7 +3758,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
 
    // Make sure to reset screen saver, mouse.
    ResetScreenSaver();
-   if (ResetScreenSaverWindow())
+   if (WakeUpScreenSaverAndDPMS())
      return true;
 
 #ifdef HAS_SDL_JOYSTICK
@@ -3945,7 +3991,8 @@ HRESULT CApplication::Cleanup()
     g_charsetConverter.clear();
     g_directoryCache.Clear();
     g_buttonTranslator.Clear();
-    CScrobbler::RemoveInstance();
+    CLastfmScrobbler::RemoveInstance();
+    CLibrefmScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
 	//StopPVRManager();
 #ifdef HAS_EVENT_SERVER
@@ -4251,7 +4298,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
-    m_updateFileStateCounter = 0;
   }
 
   if (item.IsPlayList())
@@ -4411,6 +4457,13 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
   }
 
+  // Workaround for bug/quirk in SDL_Mixer on OSX.
+  // TODO: Remove after GUI Sounds redux
+#if defined(__APPLE__)
+  if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
+    g_audioManager.Enable(false);
+#endif   
+  
   bool bResult;
   if (m_pPlayer)
     bResult = m_pPlayer->OpenFile(item, options);
@@ -4439,8 +4492,10 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     }
 #endif
 
+#if !defined(__APPLE__)
     if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
       g_audioManager.Enable(false);
+#endif    
   }
   m_bPlaybackStarting = false;
   if(bResult)
@@ -4478,6 +4533,11 @@ void CApplication::OnPlayBackEnded()
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
+  if (IsPlayingAudio())
+  {
+    CLastfmScrobbler::GetInstance()->SubmitQueue();
+    CLibrefmScrobbler::GetInstance()->SubmitQueue();
+  }
 
   CLog::Log(LOGDEBUG, "Playback has finished");
 
@@ -4523,6 +4583,12 @@ void CApplication::OnQueueNextItem()
 #endif
   CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
+  if(IsPlayingAudio())
+  {
+    CLastfmScrobbler::GetInstance()->SubmitQueue();
+    CLibrefmScrobbler::GetInstance()->SubmitQueue();
+  }
+
   CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
 }
@@ -4543,11 +4609,28 @@ void CApplication::OnPlayBackStopped()
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
+  CLastfmScrobbler::GetInstance()->SubmitQueue();
+  CLibrefmScrobbler::GetInstance()->SubmitQueue();
 
   CLog::Log(LOGDEBUG, "Playback was stopped\n");
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   m_gWindowManager.SendThreadMessage(msg);
+}
+
+void CApplication::OnFileClosed()
+{
+  if (!m_lastFileName.IsEmpty())
+  {
+    if (IsPlayingVideo())
+      UpdateVideoFileState();
+
+    if (IsPlayingAudio())
+      UpdateAudioFileState();
+
+    // Reset filename
+    m_lastFileName="";
+  }
 }
 
 bool CApplication::IsPlaying() const
@@ -4607,31 +4690,18 @@ void CApplication::UpdateVideoFileState()
   {
     // mark as watched if we are passed the usual amount
     if (g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-        GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent)
+        m_lastGetPercentage >= g_advancedSettings.m_videoPlayCountMinimumPercent)
     {
-      if (!m_playCountUpdated) // no need to update more than once:
-      {
-        CLog::Log(LOGDEBUG, "%s - Marking current video file as watched", __FUNCTION__);
-        // consider this item as played
-        m_playCountUpdated=true;
+      CLog::Log(LOGDEBUG, "%s - Marking current video file as watched", __FUNCTION__);
 
-        dbs.MarkAsWatched(*m_itemCurrentFile);
-      }
+      // consider this item as played
+      dbs.MarkAsWatched(m_lastFileName);
+      CUtil::DeleteVideoDatabaseDirectoryCache();
     }
-    else
-      m_playCountUpdated=false;
 
-    double current = GetTime();
-    // ignore x seconds at the start
-    if (current > g_advancedSettings.m_videoIgnoreAtStart)
+    if (VideoResumeBookmark.timeInSeconds > 0 && m_lastGetTime > g_advancedSettings.m_videoIgnoreAtStart)
     {
-      CBookmark bookmark;
-      bookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-      bookmark.playerState = m_pPlayer->GetPlayerState();
-      bookmark.timeInSeconds = current;
-      bookmark.thumbNailImage.Empty();
-
-      dbs.AddBookMarkToFile(CurrentFile(), bookmark, CBookmark::RESUME);
+      dbs.AddBookMarkToFile(m_lastFileName, VideoResumeBookmark, CBookmark::RESUME);
     }
     dbs.Close();
   }
@@ -4640,30 +4710,23 @@ void CApplication::UpdateVideoFileState()
 void CApplication::UpdateAudioFileState()
 {
   if (g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-      GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent)
+      m_lastGetPercentage >= g_advancedSettings.m_audioPlayCountMinimumPercent)
   {
-    if (!m_playCountUpdated) // no need to update more than once
+    // Can't write to the musicdatabase while scanning for music info
+    CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (dialog && !dialog->IsDialogRunning())
     {
-      CLog::Log(LOGDEBUG, "%s - Marking current audio file as watched", __FUNCTION__);
-
       // consider this item as played
-      m_playCountUpdated = true;
+      CLog::Log(LOGDEBUG, "%s - Marking current audio file as listened", __FUNCTION__);
 
-      // Can't write to the musicdatabase while scanning for music info
-      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (dialog && !dialog->IsDialogRunning())
+      CMusicDatabase musicdatabase;
+      if (musicdatabase.Open())
       {
-        CMusicDatabase musicdatabase;
-        if (musicdatabase.Open())
-        {
-          musicdatabase.IncrTop100CounterByFileName(m_itemCurrentFile->m_strPath);
-          musicdatabase.Close();
-        }
+        musicdatabase.IncrTop100CounterByFileName(m_lastFileName);
+        musicdatabase.Close();
       }
     }
   }
-  else
-    m_playCountUpdated = false;
 }
 
 void CApplication::StopPlaying()
@@ -4679,18 +4742,6 @@ void CApplication::StopPlaying()
     // turn off visualisation window when stopping
     if (iWin == WINDOW_VISUALISATION)
       m_gWindowManager.PreviousWindow();
-
-    // Save resume point & update watched status
-    if (IsPlayingVideo())
-    {
-      UpdateVideoFileState();
-
-      if (m_playCountUpdated)
-        CUtil::DeleteVideoDatabaseDirectoryCache();
-    }
-
-    if (IsPlayingAudio())
-      UpdateAudioFileState();
 
     if (m_pPlayer)
       m_pPlayer->CloseFile();
@@ -4753,8 +4804,9 @@ void CApplication::ResetScreenSaver()
   // reset our timers
   m_shutdownTimer.StartZero();
 
-  // screen saver timer is reset only if we're not already in screensaver mode
-  if (!m_bScreenSave && m_iScreenSaveLock == 0)
+  // screen saver timer is reset only if we're not already in screensaver or
+  // DPMS mode
+  if ((!m_bScreenSave && m_iScreenSaveLock == 0) && !m_dpmsIsActive)
     ResetScreenSaverTimer();
 }
 
@@ -4766,7 +4818,23 @@ void CApplication::ResetScreenSaverTimer()
   m_screenSaverTimer.StartZero();
 }
 
-bool CApplication::ResetScreenSaverWindow()
+bool CApplication::WakeUpScreenSaverAndDPMS()
+{
+  // First reset DPMS, if active
+  if (m_dpmsIsActive)
+  {
+    // TODO: if screensaver lock is specified but screensaver is not active
+    // (DPMS came first), activate screensaver now.
+    m_dpms->DisablePowerSaving();
+    m_dpmsIsActive = false;
+    ResetScreenSaverTimer();
+    return !m_bScreenSave || WakeUpScreenSaver();
+  } 
+  else
+    return WakeUpScreenSaver();
+}
+
+bool CApplication::WakeUpScreenSaver()
 {
   if (m_iScreenSaveLock == 2)
     return false;
@@ -4817,33 +4885,49 @@ bool CApplication::ResetScreenSaverWindow()
     return false;
 }
 
-void CApplication::CheckScreenSaver()
+void CApplication::CheckScreenSaverAndDPMS()
 {
-  // if the screen saver window is active, then clearly we are already active
-  if (m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER))
+  bool maybeScreensaver =
+      !m_dpmsIsActive && !m_bScreenSave
+      && g_guiSettings.GetString("screensaver.mode") != "None";
+  bool maybeDPMS =
+      !m_dpmsIsActive && m_dpms->IsSupported()
+      && g_guiSettings.GetInt("screensaver.powersavingtime") > 0;
+
+  // Has the screen saver window become active?
+  if (maybeScreensaver && m_gWindowManager.IsWindowActive(WINDOW_SCREENSAVER))
   {
     m_bScreenSave = true;
-    return;
+    maybeScreensaver = false;
   }
 
-  bool resetTimer = false;
-  if (IsPlayingVideo() && !m_pPlayer->IsPaused()) // are we playing a video and it is not paused?
-    resetTimer = true;
+  if (!maybeScreensaver && !maybeDPMS) return;  // Nothing to do.
 
-  if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION) // are we playing some music in fullscreen vis?
-    resetTimer = true;
-
-  if (resetTimer)
+  // See if we need to reset timer.
+  // * Are we playing a video and it is not paused?
+  if ((IsPlayingVideo() && !m_pPlayer->IsPaused())
+      // * Are we playing some music in fullscreen vis?
+      || (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION))
   {
     ResetScreenSaverTimer();
     return;
   }
 
-  if (m_bScreenSave) // already running the screensaver
-    return;
+  float elapsed = m_screenSaverTimer.GetElapsedSeconds();
 
-  if ( m_screenSaverTimer.GetElapsedSeconds() > g_guiSettings.GetInt("screensaver.time") * 60 )
+  // DPMS has priority (it makes the screensaver not needed)
+  if (maybeDPMS
+      && elapsed > g_guiSettings.GetInt("screensaver.powersavingtime") * 60)
+  {
+    m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]);
+    m_dpmsIsActive = true;
+    WakeUpScreenSaver();
+  } 
+  else if (maybeScreensaver
+           && elapsed > g_guiSettings.GetInt("screensaver.time") * 60)
+  {
     ActivateScreenSaver();
+  }
 }
 
 // activate the screensaver.
@@ -4879,12 +4963,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   else if (m_screenSaverMode == "Dim")
     return;
   else if (m_screenSaverMode == "Black")
-  {
-#ifdef __APPLE__
-    // if fading to black, power off display on OSX
-    Cocoa_IdleDisplays();
-#endif
-  }
+    return;
   else if (m_screenSaverMode != "None")
     m_gWindowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
@@ -4922,7 +5001,7 @@ void CApplication::CheckShutdown()
   if ( m_shutdownTimer.GetElapsedSeconds() > g_guiSettings.GetInt("system.shutdowntime") * 60 )
   {
     // Since it is a sleep instead of a shutdown, let's set everything to reset when we wake up.
-    m_shutdownTimer.StartZero();
+    m_shutdownTimer.Stop();
 
     // Sleep the box
     getApplicationMessenger().Shutdown();
@@ -4992,14 +5071,13 @@ bool CApplication::OnMessage(CGUIMessage& message)
             m_pKaraokeMgr->Start(m_itemCurrentFile->m_strPath);
         }
 #endif
-        //  Activate audio scrobbler
-        if (CLastFmManager::GetInstance()->CanScrobble(*m_itemCurrentFile))
+        // Let scrobbler know about the track
+        const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
+        if (tag)
         {
-          CScrobbler::GetInstance()->SetSongStartTime();
-          CScrobbler::GetInstance()->SetSubmitSong(true);
+          CLastfmScrobbler::GetInstance()->AddSong(*tag, CLastFmManager::GetInstance()->IsRadioEnabled());
+          CLibrefmScrobbler::GetInstance()->AddSong(*tag, CLastFmManager::GetInstance()->IsRadioEnabled());
         }
-        else
-          CScrobbler::GetInstance()->SetSubmitSong(false);
       }
       return true;
     }
@@ -5067,9 +5145,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       g_infoManager.ResetCurrentItem();
       m_currentStack->Clear();
 
-      // Reset audioscrobbler submit status
-      CScrobbler::GetInstance()->SetSubmitSong(false);
-
       // stop lastfm
       if (CLastFmManager::GetInstance()->IsRadioEnabled())
         CLastFmManager::GetInstance()->StopRadio();
@@ -5104,7 +5179,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (!IsPlayingAudio() && g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_NONE && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         g_settings.Save();  // save vis settings
-        ResetScreenSaverWindow();
+        WakeUpScreenSaverAndDPMS();
         m_gWindowManager.PreviousWindow();
       }
 
@@ -5121,7 +5196,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings
-        ResetScreenSaverWindow();
+        WakeUpScreenSaverAndDPMS();
         m_gWindowManager.PreviousWindow();
       }
       return true;
@@ -5234,28 +5309,31 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
-  //disabled for now, because it can cause jerks and framedrops
-  // Update video file state every minute
-  /*if (IsPlayingVideo())
+  // Make sure we don't pick the wrong file when ie. crossfading
+  if (IsPlaying() && (m_lastFileName.IsEmpty() || m_lastFileName == CurrentFile()))
   {
-    if (m_updateFileStateCounter++>120)
-    {
-      m_updateFileStateCounter=0;
+    m_lastGetPercentage=GetPercentage();
+    m_lastGetTime=GetTime();
+    m_lastFileName=CurrentFile();
 
-      UpdateVideoFileState();
+    // Update bookmark for save
+    if (IsPlayingVideo())
+    {
+      VideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+      VideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+      VideoResumeBookmark.timeInSeconds = GetTime();
+      VideoResumeBookmark.thumbNailImage.Empty();
     }
-  }*/
+  }
 
   if (IsPlayingAudio())
   {
-    CheckAudioScrobblerStatus();
-    // Update audio file state every 0.5 second
-    UpdateAudioFileState();
+    CLastfmScrobbler::GetInstance()->UpdateStatus();
+    CLibrefmScrobbler::GetInstance()->UpdateStatus();
   }
 
-  // Check if we need to activate the screensaver (if enabled).
-  if (g_guiSettings.GetString("screensaver.mode") != "None")
-    CheckScreenSaver();
+  // Check if we need to activate the screensaver / DPMS.
+  CheckScreenSaverAndDPMS();
 
   // Check if we need to shutdown (if enabled).
 #ifdef __APPLE__
@@ -5691,13 +5769,20 @@ bool CApplication::SwitchToFullScreen()
   return false;
 }
 
-bool CApplication::Minimize()
+void CApplication::Minimize(bool minimize)
 {
+  if (minimize)
+  {
+    m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
+    if (m_bWasFullScreenBeforeMinimize) g_graphicsContext.SetFullScreenRoot(false);
 #ifdef HAS_SDL
-  return (SDL_WM_IconifyWindow() != 0);
-#else
-  return false;
+    SDL_WM_IconifyWindow();
 #endif
+  }
+  else
+  {
+    if (m_bWasFullScreenBeforeMinimize) g_graphicsContext.SetFullScreenRoot(true);
+  }
 }
 
 EPLAYERCORES CApplication::GetCurrentPlayer()
@@ -5741,54 +5826,6 @@ void CApplication::CheckPlayingProgress()
         g_application.SeekTime(0);
       }
     }
-  }
-}
-
-void CApplication::CheckAudioScrobblerStatus()
-{
-  if (IsPlayingAudio() && CLastFmManager::GetInstance()->CanScrobble(*m_itemCurrentFile) &&
-      !CScrobbler::GetInstance()->ShouldSubmit() && GetTime()==0.0)
-  {
-    //  We seeked to the beginning of the file
-    //  reinit audio scrobbler
-    CScrobbler::GetInstance()->SetSongStartTime();
-    CScrobbler::GetInstance()->SetSubmitSong(true);
-    return;
-  }
-
-  if (!IsPlayingAudio() || !CScrobbler::GetInstance()->ShouldSubmit())
-    return;
-
-  //  Don't submit songs to audioscrobber when the user seeks.
-  //  Rule from audioscrobbler:
-  //  http://www.audioscrobbler.com/development/protocol.php
-  if (GetPlaySpeed()!=1)
-  {
-    CScrobbler::GetInstance()->SetSubmitSong(false);
-    return;
-  }
-
-  //  Submit the song if 50% or 240 seconds are played
-  double dTime=(double)g_infoManager.GetPlayTime()/1000.0;
-  const CMusicInfoTag* tag=g_infoManager.GetCurrentSongTag();
-  double dLength=0.f;
-  if (tag)
-    dLength=(tag->GetDuration()>0) ? (tag->GetDuration()/2.0f) : (GetTotalTime()/2.0f);
-
-  if (!tag || !tag->Loaded() || dLength==0.0f)
-  {
-    CScrobbler::GetInstance()->SetSubmitSong(false);
-    return;
-  }
-  if ((dLength)>240.0f)
-    dLength=240.0f;
-  int iTimeTillSubmit=(int)(dLength-dTime);
-  CScrobbler::GetInstance()->SetSecsTillSubmit(iTimeTillSubmit);
-
-  if (dTime>dLength)
-  {
-    CScrobbler::GetInstance()->AddSong(*tag);
-    CScrobbler::GetInstance()->SetSubmitSong(false);
   }
 }
 

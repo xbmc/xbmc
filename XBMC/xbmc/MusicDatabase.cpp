@@ -4055,18 +4055,30 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     if (!m_pDS->eof())
     {
       info.strContent = m_pDS->fv("content.strContent").get_asString();
-      info.strPath = m_pDS->fv("content.strScraperPath").get_asString();
       info.settings.LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
-    }
-    if (info.strPath.IsEmpty()) // default fallback
-    {
-      ADDON::CAddon addon;
-      if (!g_settings.GetAddonFromNameAndType(g_guiSettings.GetString("musiclibrary.defaultscraper"), ADDON::ADDON_SCRAPER_MUSIC, addon))
-        return false;
 
-      info.strPath = addon.m_strPath + addon.m_strLibName;
-      info.strTitle = addon.m_strName;
-      info.strContent = "albums";
+      ADDON::CAddon addon;
+      CScraperParser parser;
+      if (g_settings.GetAddonFromNameAndType(m_pDS->fv("content.strScraperPath").get_asString(), ADDON::ADDON_SCRAPER_MUSIC, addon))
+      {
+        info.strPath = addon.m_strPath + addon.m_strLibName;
+        info.strTitle = addon.m_strName;
+        parser.Load(info.strPath);
+        info.strDate = parser.GetDate();
+        info.strFramework = parser.GetFramework();
+      }
+      else
+      {
+        if (!g_settings.GetAddonFromNameAndType(g_guiSettings.GetString("musiclibrary.defaultscraper"), ADDON::ADDON_SCRAPER_MUSIC, addon))
+          return false;
+
+        info.strPath = addon.m_strPath + addon.m_strLibName;
+        info.strTitle = addon.m_strName;
+        parser.Load(info.strPath);
+        info.strContent = parser.GetContent();
+        info.strDate = parser.GetDate();
+        info.strFramework = parser.GetFramework();
+      }
     }
 
     m_pDS->close();

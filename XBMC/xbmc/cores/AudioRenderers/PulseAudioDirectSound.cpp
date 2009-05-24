@@ -348,8 +348,8 @@ HRESULT CPulseAudioDirectSound::Deinitialize()
 
 inline bool CPulseAudioDirectSound::WaitForOperation(pa_operation *op, const char *LogEntry = "")
 {
-	if (op == NULL)
-		return false;
+  if (op == NULL)
+    return false;
 
   bool sucess = true;
 
@@ -483,7 +483,7 @@ DWORD CPulseAudioDirectSound::GetSpace()
   return l;
 }
 
-DWORD CPulseAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
+DWORD CPulseAudioDirectSound::AddPackets(const void* data, DWORD len)
 {
   if (!m_bIsAllocated)
     return len;

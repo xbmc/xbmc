@@ -80,23 +80,6 @@
 			<control type="group" id="14">
 				<width>80</width>
 				<defaultcontrol always="true">35</defaultcontrol>
-				<control type="button" id="35">
-					<description>Shutdown button</description>
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>80</width>
-					<height>81</height>
-					<texturefocus>-</texturefocus>
-					<texturenofocus>sub-shutdown-nofocus.png</texturenofocus>
-					<onclick>XBMC.Shutdown()</onclick>
-					<pulseonselect>no</pulseonselect>
-					<onleft>13</onleft>
-					<onright>15</onright>
-					<onup>30</onup>
-					<ondown>34</ondown>
-					<font>-</font>
-					<label>13005</label>
-				</control>
 				<control type="button" id="30">
 					<description>30min ShutdownTimer button</description>
 					<posx>0</posx>
@@ -182,6 +165,23 @@
 					<ondown>33</ondown>
 					<font>-</font>
 					<label>20151</label>
+				</control>
+				<control type="button" id="35">
+					<description>Shutdown button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>80</width>
+					<height>81</height>
+					<texturefocus>-</texturefocus>
+					<texturenofocus>sub-shutdown-nofocus.png</texturenofocus>
+					<onclick>XBMC.Shutdown()</onclick>
+					<pulseonselect>no</pulseonselect>
+					<onleft>13</onleft>
+					<onright>15</onright>
+					<onup>30</onup>
+					<ondown>34</ondown>
+					<font>-</font>
+					<label>13005</label>
 				</control>
 				<control type="image">
 					<description>Shutdown focus image</description>

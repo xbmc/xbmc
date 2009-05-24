@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "Settings.h"
 #include "DVDAudioCodecLibDts.h"
@@ -161,7 +161,7 @@ bool CDVDAudioCodecLibDts::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
 
   SetDefault();
-  
+
   m_pState = m_dll.dts_init(0);
   if (!m_pState)
   {
@@ -173,7 +173,7 @@ bool CDVDAudioCodecLibDts::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   // Output will be decided once we query the stream.
   m_iOutputChannels = 0;
-  
+
   return true;
 }
 
@@ -204,7 +204,7 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
   else
     m_iOutputChannels = m_iSourceChannels;
 
-  if (m_iOutputChannels == 1) 
+  if (m_iOutputChannels == 1)
     m_iOutputFlags = DTS_MONO;
   else if (m_iOutputChannels == 2)
     m_iOutputFlags = DTS_STEREO;
@@ -249,7 +249,7 @@ int CDVDAudioCodecLibDts::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
   }
 
   // attempt to fill up to 7 bytes
-  if(m_inputSize < HEADER_SIZE) 
+  if(m_inputSize < HEADER_SIZE)
   {
     len = HEADER_SIZE-m_inputSize;
     if(len > size)
@@ -260,7 +260,7 @@ int CDVDAudioCodecLibDts::ParseFrame(BYTE* data, int size, BYTE** frame, int* fr
     size        -= len;
   }
 
-  if(m_inputSize < HEADER_SIZE) 
+  if(m_inputSize < HEADER_SIZE)
     return data - orig;
 
   // attempt to sync by shifting bytes
@@ -311,15 +311,15 @@ int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
   len = ParseFrame(pData, iSize, &frame, &framesize);
   if(!frame)
     return len;
-  
+
   level_t  level = 1.0f;
   sample_t bias  = 384;
   int      flags = m_iOutputFlags;
-  
+
   m_dll.dts_frame(m_pState, frame, &flags, &level, bias);
 
   //m_dll.dts_dynrng(m_pState, NULL, NULL);
-        
+
   int blocks = m_dll.dts_blocks_num(m_pState);
   for (int i = 0; i < blocks; i++)
   {
@@ -331,7 +331,7 @@ int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
     convert2s16_multi(m_fSamples, (int16_t*)(m_decodedData + m_decodedSize), flags & (DTS_CHANNEL_MASK | DTS_LFE));
     m_decodedSize += 2 * 256 * m_iOutputChannels;
   }
-        
+
   return len;
 }
 

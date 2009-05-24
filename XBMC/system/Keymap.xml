@@ -204,8 +204,8 @@
       <!-- menu       	--> <button id="6">ContextMenu</button>
       <!-- hold play  	--> <button id="7">Fullscreen</button>
       <!-- hold menu  	--> <button id="8">ContextMenu</button>
-      <!-- hold left  	--> <button id="9">Left</button>
-      <!-- hold right 	--> <button id="10">Right</button>
+      <!-- hold right 	--> <button id="9">Right</button>
+      <!-- hold left  	--> <button id="10">Left</button>
       
       <!-- Stop       	--> <button id="15">Stop</button>
       <!-- Stop Hold   	--> <button id="17"></button>
@@ -524,6 +524,19 @@
       <button id="6">ParentDir</button>
     </joystick>
 
+    <joystick name="Harmony">
+      <!-- * clear 		--> <button id="45">Delete</button>
+      <!-- 1 			--> <button id="11">JumpSMS1</button>
+      <!-- 2 			--> <button id="12">JumpSMS2</button>
+      <!-- 3 			--> <button id="13">JumpSMS3</button>
+      <!-- 4 			--> <button id="14">JumpSMS4</button>
+      <!-- 5 			--> <button id="23">JumpSMS5</button>
+      <!-- 6 			--> <button id="24">JumpSMS6</button>
+      <!-- 7 			--> <button id="33">JumpSMS7</button>
+      <!-- 8 			--> <button id="34">JumpSMS8</button>
+      <!-- 9 			--> <button id="43">JumpSMS9</button>
+    </joystick>
+    
      <remote>
       <zero>Queue</zero>
       <star>Queue</star>
@@ -561,7 +574,19 @@
       <button id="6">ParentDir</button>
     </joystick>
 
-     <remote>
+    <joystick name="Harmony">
+      <!-- 1 			--> <button id="11">JumpSMS1</button>
+      <!-- 2 			--> <button id="12">JumpSMS2</button>
+      <!-- 3 			--> <button id="13">JumpSMS3</button>
+      <!-- 4 			--> <button id="14">JumpSMS4</button>
+      <!-- 5 			--> <button id="23">JumpSMS5</button>
+      <!-- 6 			--> <button id="24">JumpSMS6</button>
+      <!-- 7 			--> <button id="33">JumpSMS7</button>
+      <!-- 8 			--> <button id="34">JumpSMS8</button>
+      <!-- 9 			--> <button id="43">JumpSMS9</button>
+    </joystick>
+    
+    <remote>
       <zero>Queue</zero>
       <star>Queue</star>
       <three>VolumeUp</three>
@@ -1559,6 +1584,15 @@
     <joystick name="Harmony">
       <!-- * clear 		--> <button id="45">Delete</button>
       <!-- # enter 		--> <button id="36">ToggleWatched</button>
+      <!-- 1 			--> <button id="11">JumpSMS1</button>
+      <!-- 2 			--> <button id="12">JumpSMS2</button>
+      <!-- 3 			--> <button id="13">JumpSMS3</button>
+      <!-- 4 			--> <button id="14">JumpSMS4</button>
+      <!-- 5 			--> <button id="23">JumpSMS5</button>
+      <!-- 6 			--> <button id="24">JumpSMS6</button>
+      <!-- 7 			--> <button id="33">JumpSMS7</button>
+      <!-- 8 			--> <button id="34">JumpSMS8</button>
+      <!-- 9 			--> <button id="43">JumpSMS9</button>
     </joystick>
 
     <remote>
@@ -1600,7 +1634,16 @@
     </joystick>
 
     <joystick name="Harmony">
-    <!-- * clear 		--> <button id="45">Delete</button>
+      <!-- * clear 		--> <button id="45">Delete</button>
+      <!-- 1 			--> <button id="11">JumpSMS1</button>
+      <!-- 2 			--> <button id="12">JumpSMS2</button>
+      <!-- 3 			--> <button id="13">JumpSMS3</button>
+      <!-- 4 			--> <button id="14">JumpSMS4</button>
+      <!-- 5 			--> <button id="23">JumpSMS5</button>
+      <!-- 6 			--> <button id="24">JumpSMS6</button>
+      <!-- 7 			--> <button id="33">JumpSMS7</button>
+      <!-- 8 			--> <button id="34">JumpSMS8</button>
+      <!-- 9 			--> <button id="43">JumpSMS9</button>
     </joystick>
 
     <remote>
@@ -2549,6 +2592,7 @@
       <period>NextPicture</period>
       <comma>PreviousPicture</comma>
       <i>Close</i>
+      <o>Close</o>
       <backspace>Close</backspace>
       <space>Pause</space>
     </keyboard>

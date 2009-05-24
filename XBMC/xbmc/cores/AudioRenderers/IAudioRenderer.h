@@ -43,7 +43,7 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
   virtual FLOAT GetDelay() = 0;
 
-  virtual DWORD AddPackets(unsigned char* data, DWORD len) = 0;
+  virtual DWORD AddPackets(const void* data, DWORD len) = 0;
   virtual bool IsResampling() { return false;};
   virtual DWORD GetSpace() = 0;
   virtual HRESULT Deinitialize() = 0;

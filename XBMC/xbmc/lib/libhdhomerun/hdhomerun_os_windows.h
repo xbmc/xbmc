@@ -34,7 +34,6 @@
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <wspiapi.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -43,6 +42,24 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
+
+#ifdef __MINGW__
+extern 
+int WSAAPI getaddrinfo(
+  const char *nodename,
+  const char *servname,
+  const struct addrinfo *hints,
+  struct addrinfo **res
+);
+
+extern
+void WSAAPI freeaddrinfo(
+  struct addrinfo *ai
+);
+#else
+#include <wspiapi.h>
+#endif
+
 
 #if defined(DLL_IMPORT)
 #define LIBTYPE __declspec( dllexport )
@@ -80,15 +97,15 @@ typedef HANDLE pthread_mutex_t;
 #define THREAD_FUNC_PREFIX DWORD WINAPI
 #define SIGPIPE SIGABRT
 
-static inline int usleep(unsigned int us)
+static inline int msleep(unsigned int ms)
 {
-	Sleep((us)/1000);
+	Sleep(ms);
 	return 0;
 }
 
 static inline int sleep(unsigned int sec)
 {
-	Sleep((sec)*1000);
+	Sleep(sec * 1000);
 	return 0;
 }
 

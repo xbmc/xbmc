@@ -126,8 +126,8 @@ bool CLastFmManager::RadioHandShake()
   CFileCurl http;
   CStdString html;
 
-  CStdString strPassword = g_guiSettings.GetString("lastfm.password");
-  CStdString strUserName = g_guiSettings.GetString("lastfm.username");
+  CStdString strPassword = g_guiSettings.GetString("scrobbler.lastfmpassword");
+  CStdString strUserName = g_guiSettings.GetString("scrobbler.lastfmusername");
   if (strUserName.IsEmpty() || strPassword.IsEmpty())
   {
     CLog::Log(LOGERROR, "Last.fm stream selected but no username or password set.");
@@ -392,6 +392,18 @@ bool CLastFmManager::RequestRadioTracks()
         }
       }
     }
+    //trackauth is needed for validating the track when scrobbling
+    pElement = pTrackElement->FirstChildElement("lastfm:trackauth");
+    if (pElement)
+    {
+      TiXmlNode* child = pElement->FirstChild();
+      if (child)
+      {
+        CStdString trackAuth = child->Value();
+        //abuse comment field for the track authcode
+        newItem->GetMusicInfoTag()->SetComment(trackAuth);
+      }
+    }
 
     {
       CSingleLock lock(m_lockCache);
@@ -645,20 +657,10 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
 
 void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash)
 {
-  unsigned char md5pword[16];
   XBMC::MD5 md5state;
   md5state.append(bufferToHash);
-  md5state.getDigest(md5pword);
-  char tmp[33];
-  strncpy(tmp, "\0", sizeof(tmp));
-  for (int j = 0;j < 16;j++)
-  {
-    char a[3];
-    sprintf(a, "%02x", md5pword[j]);
-    tmp[2*j] = a[0];
-    tmp[2*j+1] = a[1];
-  }
-  hash = tmp;
+  md5state.getDigest(hash);
+  hash.ToLower();
 }
 
 /*
@@ -676,8 +678,8 @@ void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& h
 */
 bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& artist, const CStdString& title)
 {
-  CStdString strUserName = g_guiSettings.GetString("lastfm.username");
-  CStdString strPassword = g_guiSettings.GetString("lastfm.password");
+  CStdString strUserName = g_guiSettings.GetString("scrobbler.lastfmusername");
+  CStdString strPassword = g_guiSettings.GetString("scrobbler.lastfmpassword");
   if (strUserName.IsEmpty() || strPassword.IsEmpty())
   {
     CLog::Log(LOGERROR, "Last.fm CallXmlRpc no username or password set.");
@@ -1002,8 +1004,8 @@ bool CLastFmManager::Unban(const CMusicInfoTag& musicinfotag, bool askConfirmati
 bool CLastFmManager::IsLastFmEnabled()
 {
   return (
-    !g_guiSettings.GetString("lastfm.username").IsEmpty() &&
-    !g_guiSettings.GetString("lastfm.password").IsEmpty()
+    !g_guiSettings.GetString("scrobbler.lastfmusername").IsEmpty() &&
+    !g_guiSettings.GetString("scrobbler.lastfmpassword").IsEmpty()
   );
 }
 
@@ -1031,7 +1033,7 @@ bool CLastFmManager::CanBan()
 bool CLastFmManager::CanScrobble(const CFileItem &fileitem)
 {
   return (
-    (!fileitem.IsInternetStream() && g_guiSettings.GetBool("lastfm.enable")) ||
-    (fileitem.IsLastFM() && g_guiSettings.GetBool("lastfm.recordtoprofile"))
+    (!fileitem.IsInternetStream() && g_guiSettings.GetBool("scrobbler.lastfmsubmit")) ||
+    (fileitem.IsLastFM() && g_guiSettings.GetBool("scrobbler.lastfmsubmitradio"))
   );
 }

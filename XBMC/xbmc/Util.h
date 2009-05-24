@@ -350,7 +350,12 @@ public:
   //
   // Forks to execute a shell command.
   //
-  static bool Command(const CStdStringArray& arrArgs);
+  static bool Command(const CStdStringArray& arrArgs, bool waitExit = false);
+
+  //
+  // Forks to execute an unparsed shell command line.
+  //
+  static bool RunCommandLine(const CStdString& cmdLine, bool waitExit = false);
 #endif
 
 private:

@@ -38,19 +38,19 @@ class CDVDPerformanceCounter
 public:
   CDVDPerformanceCounter();
   ~CDVDPerformanceCounter();
-  
+
   bool Initialize();
   void DeInitialize();
-  
+
   void Lock()                                       { EnterCriticalSection(&m_critSection); }
   void Unlock()                                     { LeaveCriticalSection(&m_critSection); }
-  
+
   void EnableAudioQueue(CDVDMessageQueue* pQueue)   { Lock(); m_pAudioQueue = pQueue; Unlock(); }
   void DisableAudioQueue()                          { Lock(); m_pAudioQueue = NULL; Unlock(); }
 
   void EnableVideoQueue(CDVDMessageQueue* pQueue)   { Lock(); m_pVideoQueue = pQueue; Unlock(); }
   void DisableVideoQueue()                          { Lock(); m_pVideoQueue = NULL; Unlock(); }
-  
+
   void EnableVideoDecodePerformance(HANDLE hThread) { Lock(); m_videoDecodePerformance.hThread = hThread; Unlock(); }
   void DisableVideoDecodePerformance()              { Lock(); m_videoDecodePerformance.hThread = NULL; Unlock(); }
 
@@ -62,11 +62,11 @@ public:
 
   CDVDMessageQueue*         m_pAudioQueue;
   CDVDMessageQueue*         m_pVideoQueue;
-  
+
   ProcessPerformance        m_videoDecodePerformance;
   ProcessPerformance        m_audioDecodePerformance;
   ProcessPerformance        m_mainPerformance;
-  
+
 private:
   CRITICAL_SECTION m_critSection;
 };

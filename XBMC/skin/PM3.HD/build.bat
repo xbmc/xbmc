@@ -26,12 +26,8 @@ ECHO ----------------------------------------
 ECHO XPR Texture Files Created...
 ECHO Building Skin Directory...
 xcopy "720p" "BUILD\PM3.HD\720p" /E /Q /I /Y /EXCLUDE:exclude.txt
-xcopy "1080i" "BUILD\PM3.HD\1080i" /E /Q /I /Y /EXCLUDE:exclude.txt
 xcopy "fonts" "BUILD\PM3.HD\fonts" /E /Q /I /Y /EXCLUDE:exclude.txt
-xcopy "NTSC" "BUILD\PM3.HD\NTSC" /E /Q /I /Y /EXCLUDE:exclude.txt
-xcopy "NTSC16x9" "BUILD\PM3.HD\NTSC16x9" /E /Q /I /Y /EXCLUDE:exclude.txt
-xcopy "PAL" "BUILD\PM3.HD\PAL" /E /Q /I /Y /EXCLUDE:exclude.txt
-xcopy "PAL16x9" "BUILD\PM3.HD\PAL16x9" /E /Q /I /Y /EXCLUDE:exclude.txt
+xcopy "backgrounds" "BUILD\PM3.HD\backgrounds" /E /Q /I /Y /EXCLUDE:exclude.txt
 xcopy "sounds\*.*" "BUILD\PM3.HD\sounds\" /Q /I /Y /EXCLUDE:exclude.txt
 xcopy "colors\*.*" "BUILD\PM3.HD\colors\" /Q /I /Y /EXCLUDE:exclude.txt
 xcopy "language" "BUILD\PM3.HD\language" /E /Q /I /Y /EXCLUDE:exclude.txt

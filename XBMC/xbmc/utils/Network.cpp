@@ -22,7 +22,8 @@
 #include "stdafx.h"
 #include "Network.h"
 #include "../Application.h"
-#include "../lib/libscrobbler/scrobbler.h"
+#include "../lib/libscrobbler/lastfmscrobbler.h"
+#include "../lib/libscrobbler/librefmscrobbler.h"
 #include "RssReader.h"
 
 using namespace std;
@@ -132,7 +133,8 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #ifdef HAS_ZEROCONF
       g_application.StartZeroconf();
 #endif
-      CScrobbler::GetInstance()->Init();
+      CLastfmScrobbler::GetInstance()->Init();
+      CLibrefmScrobbler::GetInstance()->Init();
       g_rssManager.Start();
     }
     break;
@@ -160,7 +162,8 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
 #ifdef HAS_ZEROCONF
       g_application.StopZeroconf();
 #endif      
-      CScrobbler::GetInstance()->Term();
+      CLastfmScrobbler::GetInstance()->Term();
+      CLibrefmScrobbler::GetInstance()->Term();
       // smb.Deinit(); if any file is open over samba this will break.
 
       g_rssManager.Stop();

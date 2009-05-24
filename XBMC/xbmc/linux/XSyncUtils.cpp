@@ -198,27 +198,20 @@ static DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
   DWORD dwRet = 0;
   int   nRet = 0;
 
-  if (dwMilliseconds == 0)
+  if (hHandle->m_bEventSet == false)
   {
-    if (hHandle->m_bEventSet == true)
-      nRet = 0;
-    else
+    if (dwMilliseconds == 0)
       nRet = SDL_MUTEX_TIMEDOUT;
-  }
-  else if (dwMilliseconds == INFINITE)
-  {
-    if (hHandle->m_bEventSet == false)
+
+    else if (dwMilliseconds == INFINITE)
       nRet = SDL_CondWait(hHandle->m_hCond, hHandle->m_hMutex);
-    if (hHandle->m_bManualEvent == false)
-      hHandle->m_bEventSet = false;
-  }
-  else
-  {
-    if (hHandle->m_bEventSet == false)
+
+    else
       nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwMilliseconds);
-    if (hHandle->m_bManualEvent == false && nRet != SDL_MUTEX_TIMEDOUT)
-      hHandle->m_bEventSet = false;
   }
+
+  if (hHandle->m_bManualEvent == false && nRet == 0)
+    hHandle->m_bEventSet = false;
 
   // Translate return code.
   if (nRet == 0)
@@ -318,12 +311,16 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
           }
         }
         else if (dwWaitRC == WAIT_FAILED) {
+          dwRet = WAIT_FAILED;
           bWaitEnded = TRUE;
           break;
         }
       }
 
     }
+
+    if (bWaitEnded)
+      break;
 
     DWORD dwElapsed = SDL_GetTicks() - dwStartTime;
     if (dwMilliseconds != INFINITE && dwElapsed >= dwMilliseconds) {

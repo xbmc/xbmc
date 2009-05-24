@@ -55,6 +55,7 @@ SRCS=Addon.cpp \
      AsyncFileCopy.cpp \
      DbusServer.cpp \
      Atomics.cpp \
+     LockFree.cpp \
      EPG.cpp \
      TVChannelInfoTag.cpp \
      TVEPGInfoTag.cpp \

@@ -99,6 +99,7 @@ namespace XFILE
           bool            m_cancelled;
           __int64         m_fileSize;
           __int64         m_filePos;
+          bool            m_bFirstLoop;
 
           /* returned http header */
           CHttpHeader m_httpheader;
