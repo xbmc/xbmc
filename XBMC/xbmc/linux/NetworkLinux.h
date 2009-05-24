@@ -27,8 +27,12 @@
 #include "utils/Network.h"
 #include <dbus/dbus.h>
 #include <NetworkManager/NetworkManager.h>
+#include <map>
 
 class CNetworkLinux;
+
+typedef std::map<CStdString,  CStdString> TStrStrMap;
+typedef std::pair<CStdString, CStdString> TStrStrPair;
 
 class CNetworkInterfaceLinux : public CNetworkInterface
 {
@@ -57,7 +61,7 @@ public:
 private:
   void WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
   void Update();
-  void Update(const char *interface);
+  void GetAll(TStrStrMap& properties, const char *interface);
   CStdString      m_objectPath;
   CStdString      m_interface;
   CStdString      m_IP;

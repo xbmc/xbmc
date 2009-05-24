@@ -74,17 +74,22 @@ void CNetworkInterfaceLinux::Update()
     return;
 //dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/Hal/devices/net_00_1a_92_e9_d8_0a org.freedesktop.DBus.Properties.GetAll string:'org.freedesktop.NetworkManager.Device'
 //Second call uses 'org.freedesktop.NetworkManager.Device.[WIRELESS|WIRED]'
-
-  Update(NM_DBUS_INTERFACE_DEVICE);
+  TStrStrMap properties;
+  
+  GetAll(properties, NM_DBUS_INTERFACE_DEVICE);
   if (IsWireless())
-    Update(NM_DBUS_INTERFACE_DEVICE_WIRELESS);
+    GetAll(properties, NM_DBUS_INTERFACE_DEVICE_WIRELESS);
   else
-    Update(NM_DBUS_INTERFACE_DEVICE_WIRED);
+    GetAll(properties, NM_DBUS_INTERFACE_DEVICE_WIRED);
+
+  m_interface = properties["Interface"];
+  m_MAC = properties["HwAddress"];
+  m_ConnectionState = (NMDeviceState)atoi(properties["State"].c_str());
 
   m_lastUpdate = timeGetTime();
 }
 
-void CNetworkInterfaceLinux::Update(const char *interface)
+void CNetworkInterfaceLinux::GetAll(TStrStrMap& properties, const char *interface)
 {
   DBusError error;
   dbus_error_init (&error);
@@ -117,46 +122,38 @@ void CNetworkInterfaceLinux::Update(const char *interface)
                   dbus_message_iter_recurse(&sub, &dict);
                   do
                   {
+                    const char *    key     = NULL;
+                    CStdString      value;
                     const char *    string  = NULL;
                     dbus_int32_t    int32   = 0;
                     bool            boolean = false;
-                    dbus_message_iter_get_basic(&dict, &string);
+                    dbus_message_iter_get_basic(&dict, &key);
                     dbus_message_iter_next(&dict);
 
                     DBusMessageIter variant;
                     dbus_message_iter_recurse(&dict, &variant);
                     int type = dbus_message_iter_get_arg_type(&variant);
+                    
+                    switch (type)
+                    {
+                      case DBUS_TYPE_STRING:
+                        dbus_message_iter_get_basic(&variant, &string);
+                        value.Format("%s", string);
+                        break;
 
-                    if (strcmp(string, "Interface") == 0 && type == DBUS_TYPE_STRING)
-                    {
-                      dbus_message_iter_get_basic(&variant, &string);
-                      m_interface.Format("%s", string);
+                      case DBUS_TYPE_INT32:
+                        dbus_message_iter_get_basic(&variant, &int32);
+                        value.Format("%i", int32);
+                        break;
+                        
+                      case DBUS_TYPE_OBJECT_PATH:
+                        dbus_message_iter_get_basic(&variant, &string);
+                        value.Format("%s", string);
+                        break;
                     }
-                    else if (strcmp(string, "Ip4Address") == 0 && DBUS_TYPE_INT32)
-                    {
-                      dbus_message_iter_get_basic(&variant, &int32);
-                      m_IP.Format("%i", int32);
-                    }
-                    else if (strcmp(string, "State") == 0 && DBUS_TYPE_INT32)
-                    {
-                      dbus_message_iter_get_basic(&variant, &int32);
-                      m_ConnectionState = (NMDeviceState)int32;
-                    }
-                    else if (strcmp(string, "DeviceType") == 0 && DBUS_TYPE_INT32)
-                    {
-                      dbus_message_iter_get_basic(&variant, &int32);
-                      m_DeviceType = (NMDeviceType)int32;
-                    }
-                    else if (strcmp(string, "HwAddress") == 0 && type == DBUS_TYPE_STRING)
-                    {
-                      dbus_message_iter_get_basic(&variant, &string);
-                      m_MAC.Format("%s", string);
-                    }
-                    else if (strcmp(string, "ActiveAccessPoint") && type == DBUS_TYPE_OBJECT_PATH)
-                    {
-                      dbus_message_iter_get_basic(&variant, &string);
-                      m_ESSID.Format("%s", string);
-                    }
+                    if (value.length() > 0)
+                      properties.insert(TStrStrPair(key, value));
+
                   } while (dbus_message_iter_next(&dict));
 
                 } while (dbus_message_iter_next(&sub));
@@ -506,6 +503,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 
 void CNetworkInterfaceLinux::AddNetworkAccessPoint(std::vector<NetworkAccessPoint> &apv, const char *NetworkPath, DBusConnection *con)
 {
+//dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/NetworkManager/AccessPoint/24 org.freedesktop.DBus.Properties.GetAll string:'org.freedesktop.NetworkManager.AccessPoint'
   DBusError error;
   dbus_error_init (&error);
   DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, NetworkPath, NM_DBUS_INTERFACE, "getProperties");
