@@ -6130,7 +6130,7 @@ fi
 echo "${ECHO_T}$ac_cv_lib_ossp_uuidpp_main" >&6; }
 if test $ac_cv_lib_ossp_uuidpp_main = yes; then
   cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBOSSP_UUID__ 1
+#define HAVE_LIBLIBOSSP_UUID__ 1
 _ACEOF
 
   LIBS="-lossp-uuid++ $LIBS"

@@ -107,7 +107,7 @@
 #include "Crc32.h"
 #ifdef _WIN32
 #include <objbase.h>
-#elif HAVE_LIBOSSP_UUID__
+#elif HAVE_LIBLIBOSSP_UUID__
 #include <ossp/uuid++.hh>
 #elif HAVE_LIBUUID__
 #include <uuid++.hh>
@@ -4572,7 +4572,7 @@ bool CUtil::CreateGUID(CStdString &guidStr)
                               guid.Data4[6], guid.Data4[7]);
   CoUninitialize();
   guidStr = guidStrTmp;
-#elif defined (HAVE_LIBOSSP_UUID__) || defined(HAVE_LIBUUID__)
+#elif defined (HAVE_LIBLIBOSSP_UUID__) || defined(HAVE_LIBUUID__)
   uuid id;
   id.make(UUID_MAKE_V1);
   guidStr = id.string();
