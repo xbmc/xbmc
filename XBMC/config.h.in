@@ -103,6 +103,9 @@
 /* Define to 1 if you have the `cdio' library (-lcdio). */
 #undef HAVE_LIBCDIO
 
+/* Define to 1 if you have the `libossp-uuid++' library (-lossp-uuid++). */
+#undef HAVE_LIBOSSP_UUID__
+
 /* Define to 1 if you have the `libuuid++' library (-luuid++). */
 #undef HAVE_LIBUUID__
 

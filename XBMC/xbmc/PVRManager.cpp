@@ -294,7 +294,7 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
             m_infoToggleCurrent = 0;
 
           CLIENTMAPITR itr = m_clients.begin();
-          for (int i = 0; i < m_infoToggleCurrent; i++)
+          for (unsigned int i = 0; i < m_infoToggleCurrent; i++)
             itr++;
 
           long long kBTotal = 0;

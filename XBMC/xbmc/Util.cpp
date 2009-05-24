@@ -107,6 +107,8 @@
 #include "Crc32.h"
 #ifdef _WIN32
 #include <objbase.h>
+#elif HAVE_LIBOSSP_UUID__
+#include <ossp/uuid++.hh>
 #elif HAVE_LIBUUID__
 #include <uuid++.hh>
 #endif
@@ -4540,44 +4542,6 @@ void CUtil::ClearFileItemCache()
   }
 }
 
-#ifdef _LINUX
-
-//
-// FIXME, this should be merged with the function below.
-//
-bool CUtil::Command(const CStdStringArray& arrArgs)
-{
-#ifdef _DEBUG
-  printf("Executing: ");
-  for (size_t i=0; i<arrArgs.size(); i++)
-    printf("%s ", arrArgs[i].c_str());
-  printf("\n");
-#endif
-
-  pid_t child = fork();
-  int n = 0;
-  if (child == 0)
-  {
-    close(0);
-    close(1);
-    close(2);
-    if (arrArgs.size() > 0)
-    {
-      char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
-      memset(args, 0, (sizeof(char *) * (arrArgs.size() + 3)));
-      for (size_t i=0; i<arrArgs.size(); i++)
-        args[i] = (char *)arrArgs[i].c_str();
-      execvp(args[0], args);
-    }
-  }
-  else
-  {
-    waitpid(child, &n, 0);
-  }
-
-  return WEXITSTATUS(n) == 0;
-}
-
 bool CUtil::CreateGUID(CStdString &guidStr)
 {
   char guidStrTmp[40];
@@ -4599,7 +4563,7 @@ bool CUtil::CreateGUID(CStdString &guidStr)
     return false;
   }
 
-  const char *strfmt = "%08lX-%04X-%04x-%02X%02X-%02X%02X%02X%02X%02X%02X";
+  const char *strfmt = "%08lX-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X";
   sprintf(guidStrTmp, strfmt, guid.Data1,    guid.Data2,    guid.Data3,    guid.Data4[0],
                               guid.Data4[1], guid.Data4[2], guid.Data4[3], guid.Data4[4],
                               guid.Data4[5], guid.Data4[6], guid.Data4[7], guid.Data1,
@@ -4608,7 +4572,7 @@ bool CUtil::CreateGUID(CStdString &guidStr)
                               guid.Data4[6], guid.Data4[7]);
   CoUninitialize();
   guidStr = guidStrTmp;
-#elif HAVE_LIBUUID__
+#elif defined (HAVE_LIBOSSP_UUID__) || defined(HAVE_LIBUUID__)
   uuid id;
   id.make(UUID_MAKE_V1);
   guidStr = id.string();
@@ -4647,6 +4611,44 @@ bool CUtil::CreateGUID(CStdString &guidStr)
   guidStr = guidStrTmp;
 #endif
   return true;
+}
+
+#ifdef _LINUX
+
+//
+// FIXME, this should be merged with the function below.
+//
+bool CUtil::Command(const CStdStringArray& arrArgs)
+{
+#ifdef _DEBUG
+  printf("Executing: ");
+  for (size_t i=0; i<arrArgs.size(); i++)
+    printf("%s ", arrArgs[i].c_str());
+  printf("\n");
+#endif
+
+  pid_t child = fork();
+  int n = 0;
+  if (child == 0)
+  {
+    close(0);
+    close(1);
+    close(2);
+    if (arrArgs.size() > 0)
+    {
+      char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
+      memset(args, 0, (sizeof(char *) * (arrArgs.size() + 3)));
+      for (size_t i=0; i<arrArgs.size(); i++)
+        args[i] = (char *)arrArgs[i].c_str();
+      execvp(args[0], args);
+    }
+  }
+  else
+  {
+    waitpid(child, &n, 0);
+  }
+
+  return WEXITSTATUS(n) == 0;
 }
 
 bool CUtil::SudoCommand(const CStdString &strCommand)

@@ -2598,6 +2598,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\AddonHelpers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonHelpers.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\AlarmClock.cpp"
 					>
 				</File>
