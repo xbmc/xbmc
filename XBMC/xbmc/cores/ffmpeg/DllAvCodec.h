@@ -237,6 +237,7 @@ public:
     }
 };
 
+#endif
 
 // calback used for logging
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va);
@@ -260,7 +261,7 @@ public:
   || (defined __APPLE__)
 
 // Use direct layer
-class DllAvUtil : public DllDynamic, DllAvUtilInterface
+class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
 {
 public:
   
@@ -317,6 +318,8 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_rescale_rnd)
   END_METHOD_RESOLVE()
 };
+
+#endif
 
 class DllAvUtil : public DllAvUtilBase
 {

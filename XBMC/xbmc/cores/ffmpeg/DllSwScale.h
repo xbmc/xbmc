@@ -109,3 +109,5 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
     RESOLVE_METHOD(sws_freeContext)
   END_METHOD_RESOLVE()
 };
+
+#endif

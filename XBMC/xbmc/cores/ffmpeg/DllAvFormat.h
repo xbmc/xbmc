@@ -204,3 +204,5 @@ public:
     return(av_find_stream_info_dont_call(ic));
   }
 };
+
+#endif
