@@ -134,7 +134,6 @@
 				<control type="button" id="108">
 					<description>Startup Playlist Path</description>
 					<width>950</width>
-					<height>35</height>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<label>15311</label>

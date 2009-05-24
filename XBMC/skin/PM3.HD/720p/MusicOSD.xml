@@ -269,7 +269,7 @@
 			<posx>460</posx>
 			<posy>15</posy>
 			<description>Visualisation Select Button</description>
-			<texturebg border="5">Barground2.png</texturebg>
+			<texturebg border="5">barground2.png</texturebg>
 			<onleft>503</onleft>
 			<onright>503</onright>
 			<onup>500</onup>
