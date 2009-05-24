@@ -53,6 +53,8 @@ CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, CStdStrin
   m_network = network;
   m_objectPath = objectPath;
   m_lastUpdate = 0;
+  m_DeviceType = NM_DEVICE_TYPE_UNKNOWN;
+  m_ConnectionState = NM_DEVICE_STATE_UNKNOWN;
 
   Update();
 }
@@ -139,7 +141,12 @@ void CNetworkInterfaceLinux::GetAll(const char *interface)
                     else if (strcmp(string, "State") == 0 && DBUS_TYPE_INT32)
                     {
                       dbus_message_iter_get_basic(&variant, &int32);
-                      m_isConnected = (int32 == NM_STATE_CONNECTED);
+                      m_ConnectionState = (NMDeviceState)int32;
+                    }
+                    else if (strcmp(string, "DeviceType") == 0 && DBUS_TYPE_INT32)
+                    {
+                      dbus_message_iter_get_basic(&variant, &int32);
+                      m_DeviceType = (NMDeviceType)int32;
                     }
                   } while (dbus_message_iter_next(&dict));
 
@@ -173,10 +180,7 @@ bool CNetworkInterfaceLinux::IsWireless()
 #ifdef __APPLE__
   return false;
 #else
-  struct iwreq wrq;
-   strcpy(wrq.ifr_name, m_interface.c_str());
-   if (ioctl(m_network->GetSocket(), SIOCGIWNAME, &wrq) < 0)
-      return false;
+  return m_DeviceType == NM_DEVICE_TYPE_WIFI;
 #endif
 
    return true;
@@ -194,7 +198,7 @@ bool CNetworkInterfaceLinux::IsEnabled()
 
 bool CNetworkInterfaceLinux::IsConnected()
 {
-  return m_isConnected;
+  return m_ConnectionState == NM_DEVICE_STATE_ACTIVATED;
 }
 
 CStdString CNetworkInterfaceLinux::GetMacAddress()

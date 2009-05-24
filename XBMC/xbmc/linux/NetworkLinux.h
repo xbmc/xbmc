@@ -66,7 +66,8 @@ private:
   CStdString      m_ESSID;
   CNetworkLinux*  m_network;
   int             m_lastUpdate;
-  bool            m_isConnected;
+  NMDeviceState   m_ConnectionState;
+  NMDeviceType    m_DeviceType;
   void AddNetworkAccessPoint(std::vector<NetworkAccessPoint> &apv, const char *NetworkPath, DBusConnection *con);
 };
 
