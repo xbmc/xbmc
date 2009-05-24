@@ -76,11 +76,11 @@ void CNetworkInterfaceLinux::Update()
 //Second call uses 'org.freedesktop.NetworkManager.Device.[WIRELESS|WIRED]'
   TStrStrMap properties;
   
-  GetAll(properties, NM_DBUS_INTERFACE_DEVICE);
+  GetAll(properties, m_objectPath.c_str(), NM_DBUS_INTERFACE_DEVICE);
   if (IsWireless())
-    GetAll(properties, NM_DBUS_INTERFACE_DEVICE_WIRELESS);
+    GetAll(properties, m_objectPath.c_str(), NM_DBUS_INTERFACE_DEVICE_WIRELESS);
   else
-    GetAll(properties, NM_DBUS_INTERFACE_DEVICE_WIRED);
+    GetAll(properties, m_objectPath.c_str(), NM_DBUS_INTERFACE_DEVICE_WIRED);
 
   m_interface = properties["Interface"];
   m_MAC = properties["HwAddress"];
@@ -89,7 +89,7 @@ void CNetworkInterfaceLinux::Update()
   m_lastUpdate = timeGetTime();
 }
 
-void CNetworkInterfaceLinux::GetAll(TStrStrMap& properties, const char *interface)
+void CNetworkInterfaceLinux::GetAll(TStrStrMap& properties, const char *object, const char *interface)
 {
   DBusError error;
   dbus_error_init (&error);
@@ -97,7 +97,7 @@ void CNetworkInterfaceLinux::GetAll(TStrStrMap& properties, const char *interfac
 
   if (con != NULL)
   {
-    DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, m_objectPath.c_str(), "org.freedesktop.DBus.Properties", "GetAll");
+    DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, object, "org.freedesktop.DBus.Properties", "GetAll");
 	  if (msg)
     {
       if (dbus_message_append_args(msg, DBUS_TYPE_STRING, &interface, DBUS_TYPE_INVALID))
@@ -459,7 +459,7 @@ void CNetworkLinux::SetNameServers(std::vector<CStdString> nameServers)
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 {
-// dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/Hal/devices/net_00_1a_92_e9_d8_0a org.freedesktop.NetworkManager.Device.Wireless.GetAccessPoints
+// dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call /org/freedesktop/Hal/devices/net_00_13_46_74_37_1c org.freedesktop.NetworkManager.Device.Wireless.GetAccessPoints
   std::vector<NetworkAccessPoint> result;
 
   if (!IsWireless())
@@ -503,55 +503,19 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 
 void CNetworkInterfaceLinux::AddNetworkAccessPoint(std::vector<NetworkAccessPoint> &apv, const char *NetworkPath, DBusConnection *con)
 {
-//dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/NetworkManager/AccessPoint/24 org.freedesktop.DBus.Properties.GetAll string:'org.freedesktop.NetworkManager.AccessPoint'
-  DBusError error;
-  dbus_error_init (&error);
-  DBusMessage *msg = dbus_message_new_method_call (NM_DBUS_SERVICE, NetworkPath, NM_DBUS_INTERFACE, "getProperties");
-  if (msg)
-  {
-    DBusMessage *reply = dbus_connection_send_with_reply_and_block(con, msg, -1, &error);
-    if (reply)
-    {
-      const char*  obj_path     = NULL;
-      const char*  essid        = NULL;
-      const char*  hw_address   = NULL;
-      dbus_int32_t strength     = -1;
-      double       freq         = 0;
-      dbus_int32_t rate         = 0;
-      dbus_int32_t mode         = 0;
-      dbus_int32_t capabilities = NM_WIFI_DEVICE_CAP_NONE;
-      dbus_bool_t  broadcast    = true;
+//dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/NetworkManager/AccessPoint/27 org.freedesktop.DBus.Properties.GetAll string:'org.freedesktop.NetworkManager.AccessPoint'
+  TStrStrMap properties;
+  
+  GetAll(properties, NetworkPath, NM_DBUS_INTERFACE_ACCESS_POINT);
 
-      if (dbus_message_get_args (reply, NULL, 
-              DBUS_TYPE_OBJECT_PATH, &obj_path,
-              DBUS_TYPE_STRING,      &essid,
-              DBUS_TYPE_STRING,      &hw_address,
-              DBUS_TYPE_INT32,       &strength,
-              DBUS_TYPE_DOUBLE,      &freq,
-              DBUS_TYPE_INT32,       &rate,
-              DBUS_TYPE_INT32,       &mode,
-              DBUS_TYPE_INT32,       &capabilities,
-              DBUS_TYPE_BOOLEAN,     &broadcast, DBUS_TYPE_INVALID))
-      {
-        CLog::Log(LOGERROR, "DBus: Failed to get getProperties of Network on %s", NetworkPath);
-      }
+// CStdString essId = properties["Ssid"]; //Doesn't work atm.
+  CStdString essId = NetworkPath;
+//  int strength = atoi(properties["Strength"]; // Doesn't work atm
+  int strength = 100;
+  EncMode encryption = ENC_NONE;
 
-      EncMode encryption = ENC_NONE;
-      if (capabilities & NM_WIFI_DEVICE_CAP_CIPHER_WEP40 || capabilities & NM_WIFI_DEVICE_CAP_CIPHER_WEP104)
-        encryption = ENC_WEP;
-      else if (capabilities & NM_WIFI_DEVICE_CAP_WPA)
-        encryption = ENC_WPA;
-/*      else if (capabilities & NM_802_11_CAP_PROTO_WPA2)
-        encryption = ENC_WPA2;*/
-
-      CStdString essId = essid;
-      NetworkAccessPoint ap(essId, (int)strength, encryption);
-      apv.push_back(ap);
-
-      dbus_message_unref(reply);
-    }
-    dbus_message_unref(msg);
-  }
+  NetworkAccessPoint ap(essId, (int)strength, encryption);
+  apv.push_back(ap);
 }
 
 void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
