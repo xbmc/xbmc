@@ -708,7 +708,7 @@ int main(void)
   std::vector<CNetworkInterface*>& ifaces = x.GetInterfaceList();
   CNetworkInterface* i1 = ifaces[0];
   
-  CNetworkInterface *wlan;
+  CNetworkInterface *wlan = NULL;
   
   for (int i = 0; i < ifaces.size(); i++)
   {
@@ -719,10 +719,13 @@ int main(void)
       wlan = i1;
   }
 
-  std::vector<NetworkAccessPoint> aps = wlan->GetAccessPoints();
-  for (int i = 0; i < aps.size(); i++)
+  if (wlan)
   {
-    printf("%s\n", aps[i].getEssId().c_str());
+    std::vector<NetworkAccessPoint> aps = wlan->GetAccessPoints();
+    for (int i = 0; i < aps.size(); i++)
+    {
+      printf("%s\n", aps[i].getEssId().c_str());
+    }
   }
   return 0;
 }
