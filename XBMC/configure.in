@@ -656,7 +656,14 @@ fi
 
 # External Python
 if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"; then
-  AC_CHECK_LIB([python2.4], [main],, [AC_MSG_ERROR($missing_library)] )
+  AC_CHECK_LIB([python2.5], [main],,
+  [AC_CHECK_LIB([python2.4], [main],,
+  [AC_MSG_ERROR($missing_library)] )] )
+
+  # Test again, but this time just set some variables we need in Makefiles
+  AC_CHECK_LIB([python2.5], [main],[USE_PYTHON2_5=1],
+  [AC_CHECK_LIB([python2.4], [main],[USE_PYTHON2_4=1],
+  [AC_MSG_ERROR($missing_library)] )] )
 
   AC_MSG_NOTICE($external_python_enabled)
   USE_EXTERNAL_PYTHON=1
@@ -1032,6 +1039,8 @@ AC_SUBST(USE_EXTERNAL_LIBMPCDEC)
 AC_SUBST(USE_EXTERNAL_LIBFLAC)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
+AC_SUBST(USE_PYTHON2_5)
+AC_SUBST(USE_PYTHON2_4)
 AC_SUBST(INTERNAL_LIBS)
 AC_SUBST(USE_STATIC_LIBRARIES)
 AC_SUBST(USE_STATIC_LIBDVDNAV)

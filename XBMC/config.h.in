@@ -243,6 +243,9 @@
 /* Define to 1 if you have the `python2.4' library (-lpython2.4). */
 #undef HAVE_LIBPYTHON2_4
 
+/* Define to 1 if you have the `python2.5' library (-lpython2.5). */
+#undef HAVE_LIBPYTHON2_5
+
 /* Define to 1 if you have the `resolv' library (-lresolv). */
 #undef HAVE_LIBRESOLV
 

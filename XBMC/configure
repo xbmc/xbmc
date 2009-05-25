@@ -642,6 +642,8 @@ ac_subst_vars='LTLIBOBJS
 USE_STATIC_LIBDVDNAV
 USE_STATIC_LIBRARIES
 INTERNAL_LIBS
+USE_PYTHON2_4
+USE_PYTHON2_5
 USE_EXTERNAL_PYTHON
 USE_EXTERNAL_LIBWAVPACK
 USE_EXTERNAL_LIBFLAC
@@ -11023,6 +11025,74 @@ fi
 # External Python
 if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"; then
 
+{ $as_echo "$as_me:$LINENO: checking for main in -lpython2.5" >&5
+$as_echo_n "checking for main in -lpython2.5... " >&6; }
+if test "${ac_cv_lib_python2_5_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpython2.5  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_python2_5_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_python2_5_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_python2_5_main" >&5
+$as_echo "$ac_cv_lib_python2_5_main" >&6; }
+if test "x$ac_cv_lib_python2_5_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPYTHON2_5 1
+_ACEOF
+
+  LIBS="-lpython2.5 $LIBS"
+
+else
+
 { $as_echo "$as_me:$LINENO: checking for main in -lpython2.4" >&5
 $as_echo_n "checking for main in -lpython2.4... " >&6; }
 if test "${ac_cv_lib_python2_4_main+set}" = set; then
@@ -11093,6 +11163,141 @@ else
   { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
 $as_echo "$as_me: error: $missing_library" >&2;}
    { (exit 1); exit 1; }; }
+fi
+
+fi
+
+
+  # Test again, but this time just set some variables we need in Makefiles
+  { $as_echo "$as_me:$LINENO: checking for main in -lpython2.5" >&5
+$as_echo_n "checking for main in -lpython2.5... " >&6; }
+if test "${ac_cv_lib_python2_5_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpython2.5  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_python2_5_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_python2_5_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_python2_5_main" >&5
+$as_echo "$ac_cv_lib_python2_5_main" >&6; }
+if test "x$ac_cv_lib_python2_5_main" = x""yes; then
+  USE_PYTHON2_5=1
+else
+  { $as_echo "$as_me:$LINENO: checking for main in -lpython2.4" >&5
+$as_echo_n "checking for main in -lpython2.4... " >&6; }
+if test "${ac_cv_lib_python2_4_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpython2.4  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_python2_4_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_python2_4_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_python2_4_main" >&5
+$as_echo "$ac_cv_lib_python2_4_main" >&6; }
+if test "x$ac_cv_lib_python2_4_main" = x""yes; then
+  USE_PYTHON2_4=1
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
 fi
 
 
@@ -18492,6 +18697,8 @@ else
     final_message="$final_message\n  Static libdvdnav:\tNo"
   fi
 fi
+
+
 
 
 

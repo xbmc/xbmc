@@ -2,7 +2,13 @@ ARCH=@ARCH@
 
 SHELL=/bin/bash
 SYSDIR=../../../../system/python
-SO=python24-$(ARCH).so
+ifeq (@USE_PYTHON2_5@,1)
+    PYVERSION=python2.5
+    SO=python25-$(ARCH).so
+else ifeq (@USE_PYTHON2_4@,1)
+    PYVERSION=python2.4
+    SO=python24-$(ARCH).so
+endif
 SLIB=$(SYSDIR)/$(SO)
 ZIP=$(SYSDIR)/python24.zip  ##Should probably add arch here too
 DIRS=../Python
@@ -86,7 +92,7 @@ $(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.
 		../../../cores/DllLoader/exports/wrapper.o
 else
 $(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF)
-	$(CC) -shared -o $@ -lpython2.4 \
+	$(CC) -shared -o $@ -l$(PYVERSION) \
 		`cat wrapper_python.def` wrapper_python.o \
 		`cat ../../../cores/DllLoader/exports/wrapper.def` \
 		../../../cores/DllLoader/exports/wrapper.o
