@@ -5413,7 +5413,8 @@ void CApplication::Mute(void)
   if (g_stSettings.m_bMute)
   { // muted - unmute.
     // check so we don't get stuck in some muted state
-    if( g_stSettings.m_iPreMuteVolumeLevel == 0 ) g_stSettings.m_iPreMuteVolumeLevel = 1;
+    if( g_stSettings.m_iPreMuteVolumeLevel == 0 )
+      g_stSettings.m_iPreMuteVolumeLevel = 1;
     SetVolume(g_stSettings.m_iPreMuteVolumeLevel);
   }
   else
