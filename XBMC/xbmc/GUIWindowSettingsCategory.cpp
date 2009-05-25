@@ -1138,7 +1138,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
     {
 #ifdef _LINUX
-      bool enabled = (geteuid() == 0);
+      bool enabled = true;
 #else
       bool enabled = false;
 #endif
@@ -1155,7 +1155,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
 #ifdef HAS_LINUX_NETWORK
       if (pControl1)
-         pControl1->SetEnabled(geteuid() == 0);
+         pControl1->SetEnabled(true);
 #endif
     }
     else if (strSetting.Equals("network.essid") || strSetting.Equals("network.enc") || strSetting.Equals("network.key"))
@@ -1166,11 +1166,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
       bool bIsWireless = iface->IsWireless();
 
-#ifdef HAS_LINUX_NETWORK
-      bool enabled = bIsWireless && (geteuid() == 0);
-#else
       bool enabled = bIsWireless;
-#endif
+
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1)
          enabled &= (pControl1->GetValue() != NETWORK_DISABLED);
@@ -1202,7 +1199,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("network.save"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(geteuid() == 0);
+      pControl->SetEnabled(true);
     }
 #endif
     else if (strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
