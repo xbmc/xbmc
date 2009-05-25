@@ -31,8 +31,7 @@
 class CDSPFilter : public IDSPFilter
 {
 public:
-  CDSPFilter();
-  CDSPFilter(unsigned int inputBusses, unsigned int outputBusses);
+  CDSPFilter(unsigned int inputBusses = 1, unsigned int outputBusses = 1);
   virtual ~CDSPFilter();
 
   // IAudioSink
@@ -61,8 +60,6 @@ protected:
     int m_StreamFormat;            //MA_ATT_TYPE_STREAM_FORMAT
   };
 
-  virtual MA_RESULT RenderOutput(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
-  
   MA_RESULT GetInputData(ma_audio_container* pInput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
   
   inline const StreamAttributes* GetInputAttributes(unsigned int bus = 0)
@@ -81,9 +78,6 @@ protected:
 
   virtual void ClearInputFormat(unsigned int bus = 0);
   virtual void ClearOutputFormat(unsigned int bus = 0);
-
-  virtual void Create(unsigned int inputBusses, unsigned int outputBusses);
-  virtual void Destroy();
 
   unsigned int m_InputBusses;
   unsigned int m_OutputBusses;

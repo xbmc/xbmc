@@ -89,7 +89,8 @@ enum
  MA_NOT_SUPPORTED     = 7,
  MA_MISSING_ATTRIBUTE = 8,
  MA_INVALID_BUS       = 9,
- MA_NO_SOURCE         =10
+ MA_NO_SOURCE         = 10,
+ MA_BUF_TOO_SMALL     = 11
 };
 
 #define MA_STREAM_NONE        0
@@ -115,18 +116,19 @@ typedef unsigned int MA_ATTRIB_ID;
 enum
 {
   // Each AudioStream must have the following attibutes set to be considered valid.
-  MA_ATT_TYPE_STREAM_FLAGS,     // type: int (bitfield) 
+  MA_ATT_TYPE_STREAM_FLAGS,     // type: bitfield
   MA_ATT_TYPE_BYTES_PER_SEC,    // type: uint
   MA_ATT_TYPE_BYTES_PER_FRAME,  // type: uint
   MA_ATT_TYPE_STREAM_FORMAT,    // type: int (The value of the this attribute defines what other attibutes are valid/required)
   
   // Linear PCM Format Attributes
-  MA_ATT_TYPE_LPCM_FLAGS,       // type: int (bitfield)
+  MA_ATT_TYPE_LPCM_FLAGS,       // type: bitfield
   MA_ATT_TYPE_SAMPLE_TYPE,      // type: int
   MA_ATT_TYPE_BITDEPTH,         // type: uint
   MA_ATT_TYPE_SAMPLERATE,       // type: uint
   MA_ATT_TYPE_CHANNEL_COUNT,    // type: uint
-  
+  MA_ATT_TYPE_CHANNEL_LAYOUT,   // type: array:int
+ 
   // IEC61937(AC3/DTS over S/PDIF) Format Attributes
   MA_ATT_TYPE_ENCODING          // type: int
 };
@@ -170,18 +172,23 @@ enum
 };
 
 // Audio Channel Locations
-#define MA_CHANNEL_FRONT_LEFT     0x0
-#define MA_CHANNEL_FRONT_RIGHT    0x1
-#define MA_CHANNEL_REAR_LEFT      0x2
-#define MA_CHANNEL_REAR_RIGHT     0x3
-#define MA_CHANNEL_FRONT_CENTER   0x4
-#define MA_CHANNEL_LFE            0x5
-#define MA_CHANNEL_SIDE_LEFT      0x6
-#define MA_CHANNEL_SIDE_RIGHT     0x7
-#define MA_CHANNEL_REAR_CENTER    0x8
-#define MA_CHANNEL_FRONT_LOC      MA_CHANNEL_SIDE_LEFT // Front Left of Center (7.1 Variant)
-#define MA_CHANNEL_FRONT_ROC      MA_CHANNEL_SIDE_RIGHT // Front Right of Center (7.1 Variant)
-#define MA_MAX_CHANNELS           0x9
+enum
+{
+  MA_CHANNEL_NONE         = -1,
+  MA_CHANNEL_FRONT_LEFT   =  0,
+  MA_CHANNEL_FRONT_RIGHT  =  1,
+  MA_CHANNEL_REAR_LEFT    =  2,
+  MA_CHANNEL_REAR_RIGHT   =  3,
+  MA_CHANNEL_FRONT_CENTER =  4,
+  MA_CHANNEL_LFE          =  5,
+  MA_CHANNEL_SIDE_LEFT    =  6,
+  MA_CHANNEL_SIDE_RIGHT   =  7,
+  MA_CHANNEL_REAR_CENTER  =  8,
+  MA_CHANNEL_FRONT_LOC     = MA_CHANNEL_SIDE_LEFT, // Front Left of Center (7.1 Variant)
+  MA_CHANNEL_FRONT_ROC     = MA_CHANNEL_SIDE_RIGHT // Front Right of Center (7.1 Variant)
+};
+
+#define MA_MAX_CHANNELS 9
 
 enum stream_attribute_type
 {
@@ -191,7 +198,9 @@ enum stream_attribute_type
   stream_attribute_float,
   stream_attribute_string,
   stream_attribute_ptr,
-  stream_attribute_bool
+  stream_attribute_bool,
+  stream_attribute_blob,
+  stream_attribute_array   = (1L << 31) // Used as a flag to indicate an array of values
 };
 
 struct stream_attribute
@@ -199,13 +208,20 @@ struct stream_attribute
   stream_attribute_type type;
   union
   {
-    unsigned int bitfieldVal;
-    bool boolVal;
-    int intVal;
-    __int64 int64Val;
-    float floatVal;
-    char* stringVal;
-    void* ptrVal;
+    struct
+    {
+      void* ptrVal;
+      unsigned int dataLen;
+    };
+    union
+    {
+      unsigned int bitfieldVal;
+      bool boolVal;
+      int intVal;
+      __int64 int64Val;
+      float floatVal;
+      char* stringVal;
+    };
   };
 };
 
@@ -269,6 +285,10 @@ public:
   MA_RESULT GetPtr(MA_ATTRIB_ID id, void** pVal);
   MA_RESULT GetBool(MA_ATTRIB_ID id, bool* pVal);
   MA_RESULT GetFlag(MA_ATTRIB_ID id, int flag, bool* pVal);
+  MA_RESULT GetBlob(MA_ATTRIB_ID id, void* pBuf, unsigned int bufLen);
+  MA_RESULT GetBlobLen(MA_ATTRIB_ID id, unsigned int* pLen);
+  MA_RESULT GetArray(MA_ATTRIB_ID id, int elementType, void* pBuf, unsigned int bufLen);
+  MA_RESULT GetArraySize(MA_ATTRIB_ID id, stream_attribute_type elementType, unsigned int* pSize);
 
   MA_RESULT SetInt(MA_ATTRIB_ID id, int val);
   MA_RESULT SetInt64(MA_ATTRIB_ID id, __int64 val);
@@ -279,6 +299,11 @@ public:
   MA_RESULT SetPtr(MA_ATTRIB_ID id, void* val);
   MA_RESULT SetBool(MA_ATTRIB_ID id, bool val);
   MA_RESULT SetFlag(MA_ATTRIB_ID id, int flag, bool val);
+  MA_RESULT SetBlob(MA_ATTRIB_ID id, void* pBuf, unsigned int bufLen);
+  MA_RESULT SetArray(MA_ATTRIB_ID id, stream_attribute_type elementType, unsigned int elementCount, void* pElements);
+
+  void Remove(MA_ATTRIB_ID id);
+
 protected:
   std::map<MA_ATTRIB_ID,stream_attribute> m_Attributes;
   stream_attribute* FindAttribute(MA_ATTRIB_ID id);

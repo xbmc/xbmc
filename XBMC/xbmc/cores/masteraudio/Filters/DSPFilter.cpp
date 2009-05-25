@@ -21,22 +21,7 @@
 #include "stdafx.h"
 #include "DSPFilter.h"
 
-CDSPFilter::CDSPFilter()
-{
-  Create(1,1);
-}
-
-CDSPFilter::CDSPFilter(unsigned int inputBusses, unsigned int outputBusses)
-{
-  Create(inputBusses,outputBusses);
-}
-
-CDSPFilter::~CDSPFilter()
-{
-  Destroy();
-}
-
-void CDSPFilter::Create(unsigned int inputBusses, unsigned int outputBusses)
+CDSPFilter::CDSPFilter(unsigned int inputBusses /* = 1*/, unsigned int outputBusses /* = 1*/)
 {
   m_InputBusses = inputBusses;
   m_OutputBusses = outputBusses;
@@ -46,7 +31,7 @@ void CDSPFilter::Create(unsigned int inputBusses, unsigned int outputBusses)
   m_pInput = (InputBus*)calloc(inputBusses, sizeof(InputBus));
 }
 
-void CDSPFilter::Destroy()
+CDSPFilter::~CDSPFilter()
 {
   free(m_pInputDescriptor);
   free(m_pOutputDescriptor);
@@ -83,7 +68,7 @@ MA_RESULT CDSPFilter::SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus 
   // Fetch and store the required stream attributes
   if (
     (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS, MA_STREAM_FLAG_LOCKED, &m_pInputDescriptor[bus].m_Locked) != MA_SUCCESS) ||
-    (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS, MA_STREAM_FLAG_LOCKED, &m_pInputDescriptor[bus].m_VariableBitrate) != MA_SUCCESS) ||
+    (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS, MA_STREAM_FLAG_VBR, &m_pInputDescriptor[bus].m_VariableBitrate) != MA_SUCCESS) ||
     (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_SEC, (int*)&m_pInputDescriptor[bus].m_BytesPerSecond) != MA_SUCCESS) ||
     (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_FRAME, (int*)&m_pInputDescriptor[bus].m_FrameSize) != MA_SUCCESS) ||
     (pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT , &m_pInputDescriptor[bus].m_StreamFormat) != MA_SUCCESS)) 
@@ -166,7 +151,10 @@ MA_RESULT CDSPFilter::SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus
 
 MA_RESULT CDSPFilter::Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
 {
-  return RenderOutput(pOutput, frameCount, renderTime, renderFlags, bus);
+  if (bus >= m_OutputBusses)
+    return MA_INVALID_BUS;
+
+  return GetInputData(pOutput, frameCount, renderTime, renderFlags, bus);
 }
 
 // IDSPFilter
@@ -185,12 +173,6 @@ MA_RESULT CDSPFilter::GetInputData(ma_audio_container* pInput, unsigned int fram
     return m_pInput[bus].source->Render(pInput, frameCount, renderTime, renderFlags, m_pInput[bus].bus);
   
   return MA_INVALID_BUS;
-}
-
-MA_RESULT CDSPFilter::RenderOutput(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
-{
-  // Just pass the data on through
-  return GetInputData(pOutput, frameCount, renderTime, renderFlags, bus);
 }
 
 void CDSPFilter::ClearInputFormat(unsigned int bus /* = 0 */)

@@ -10,7 +10,10 @@ SRCS = \
   DSPChain.cpp \
   Util/SimpleBuffer.cpp	\
   Util/WaveFileRenderer.cpp \
-  Filters/DSPFilter.cpp
+  Filters/DSPFilter.cpp \
+  Filters/DSPFilterLPCM.cpp \
+  Filters/DSPFilterMatrixMixer.cpp \
+  Filters/DSPFilterResampler.cpp
   
 LIB=masteraudio.a
 

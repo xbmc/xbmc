@@ -45,7 +45,7 @@ public:
 
   // Base class overrides
   MA_RESULT SetSource(IAudioSource* pSource, unsigned int sourceBus = 0, unsigned int sinkBus = 0);
-  MA_RESULT RenderOutput(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
+  MA_RESULT Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
   void Close();
   float GetMaxLatency();
   void Flush();
@@ -54,6 +54,8 @@ protected:
   void DisposeGraph();
   dsp_filter_node* m_pHead;
   dsp_filter_node* m_pTail;
+  void Create(unsigned int inputBusses, unsigned int outputBusses);
+  void Destroy();
 };
 
 #endif // __DSP_CHAIN_H__

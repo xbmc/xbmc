@@ -124,6 +124,8 @@ MA_RESULT CStreamInput::Render(ma_audio_container* pOutput, unsigned int frameCo
   unsigned int bytesToRender = (m_BytesPerFrame * frameCount);
   if ((unsigned int)m_Cache.GetMaxReadSize() >= bytesToRender)
   {
+    if (pOutput->buffer[0].allocated_len < bytesToRender)
+      return MA_BUF_TOO_SMALL;
     if (m_Cache.ReadBinary((char*)pOutput->buffer[0].data, bytesToRender))
     {
       pOutput->buffer[0].data_len = bytesToRender;
@@ -287,6 +289,7 @@ CStreamAttributeCollection::CStreamAttributeCollection()
 
 CStreamAttributeCollection::~CStreamAttributeCollection()
 {
+  // TODO: Free BLOB and Array data
 
 }
 
@@ -398,6 +401,125 @@ MA_RESULT CStreamAttributeCollection::GetFlag(MA_ATTRIB_ID id, int flag, bool* p
   return MA_SUCCESS;
 }
 
+MA_RESULT CStreamAttributeCollection::GetBlob(MA_ATTRIB_ID id, void* pBuf, unsigned int bufLen)
+{
+  stream_attribute* pAtt = FindAttribute(id);
+  if (!pAtt)
+    return MA_NOTFOUND;
+  
+  if (pAtt->type != stream_attribute_blob)
+    return MA_TYPE_MISMATCH;
+
+  if (pBuf)
+  {
+    if (bufLen < pAtt->dataLen)
+      return MA_BUF_TOO_SMALL;
+    memcpy(pBuf, pAtt->ptrVal, pAtt->dataLen);
+  }
+
+  return MA_SUCCESS;
+}
+
+MA_RESULT CStreamAttributeCollection::GetBlobLen(MA_ATTRIB_ID id, unsigned int* pLen)
+{
+  if (!pLen)
+    return MA_ERROR;
+
+  stream_attribute* pAtt = FindAttribute(id);
+  if (!pAtt)
+    return MA_NOTFOUND;
+  
+  if (pAtt->type != stream_attribute_blob)
+    return MA_TYPE_MISMATCH;
+
+  *pLen = pAtt->dataLen;
+  return MA_SUCCESS;
+}
+
+MA_RESULT CStreamAttributeCollection::GetArray(MA_ATTRIB_ID id, int elementType, void* pBuf, unsigned int bufLen)
+{
+  stream_attribute* pAtt = FindAttribute(id);
+  if (!pAtt)
+    return MA_NOTFOUND;
+  
+  int attType = pAtt->type ^ stream_attribute_array;
+  if (attType != elementType || !(pAtt->type & stream_attribute_array) || !pAtt->dataLen)
+    return MA_TYPE_MISMATCH;
+
+  if (!pBuf)
+    return MA_SUCCESS;
+
+  unsigned int elementSize = 0;
+  switch(attType)
+  {
+  case stream_attribute_bitfield:
+  case stream_attribute_int:
+    elementSize = sizeof(int);
+    break;
+  case stream_attribute_int64:
+    elementSize = sizeof(__int64);
+    break;
+  case stream_attribute_float:
+    elementSize = sizeof(float);
+    break;
+  case stream_attribute_bool:
+    elementSize = sizeof(bool);
+    break;
+  case stream_attribute_ptr:
+  case stream_attribute_string:
+  case stream_attribute_blob:
+    elementSize = sizeof(void*);
+  default:
+    return MA_TYPE_MISMATCH;
+  }
+  if (bufLen < pAtt->dataLen)
+    return MA_BUF_TOO_SMALL;
+
+  memcpy(pBuf, pAtt->ptrVal, pAtt->dataLen);
+  return MA_SUCCESS;
+}
+
+MA_RESULT CStreamAttributeCollection::GetArraySize(MA_ATTRIB_ID id, stream_attribute_type elementType, unsigned int* pSize)
+{
+  if (!pSize)
+    return MA_ERROR;
+
+  stream_attribute* pAtt = FindAttribute(id);
+  if (!pAtt)
+    return MA_NOTFOUND;
+  
+  int attType = pAtt->type ^ stream_attribute_array;
+  if (attType != elementType || !(pAtt->type & stream_attribute_array) || !pAtt->dataLen)
+    return MA_TYPE_MISMATCH;
+
+  unsigned int elementSize = 0;
+  switch(attType)
+  {
+  case stream_attribute_bitfield:
+  case stream_attribute_int:
+    elementSize = sizeof(int);
+    break;
+  case stream_attribute_int64:
+    elementSize = sizeof(__int64);
+    break;
+  case stream_attribute_float:
+    elementSize = sizeof(float);
+    break;
+  case stream_attribute_bool:
+    elementSize = sizeof(bool);
+    break;
+  case stream_attribute_ptr:
+  case stream_attribute_string:
+  case stream_attribute_blob:
+    elementSize = sizeof(void*);
+  default:
+    return MA_TYPE_MISMATCH;
+  }
+  
+  *pSize = pAtt->dataLen * elementSize;
+  return MA_SUCCESS;
+}
+
 MA_RESULT CStreamAttributeCollection::SetInt(MA_ATTRIB_ID id, int val)
 {
   stream_attribute att;
@@ -468,9 +590,9 @@ MA_RESULT CStreamAttributeCollection::SetFlag(MA_ATTRIB_ID id, int flag, bool va
   stream_attribute* pAtt = FindAttribute(id);
   if (pAtt)
   {
-    att = *pAtt;
     if (pAtt->type != stream_attribute_bitfield)
       return MA_TYPE_MISMATCH;
+    att = *pAtt;
   }
   else
     att.type = stream_attribute_bitfield;
@@ -482,6 +604,99 @@ MA_RESULT CStreamAttributeCollection::SetFlag(MA_ATTRIB_ID id, int flag, bool va
   m_Attributes[id] = att;
   
   return MA_SUCCESS;
+}
+
+MA_RESULT CStreamAttributeCollection::SetBlob(MA_ATTRIB_ID id, void* pBuf, unsigned int bufLen)
+{
+  if (!pBuf || !bufLen)
+    return MA_ERROR;
+
+  stream_attribute* pAtt = FindAttribute(id);
+  if (pAtt) // Already exists. 
+  {
+    if (pAtt->type != stream_attribute_blob)
+      return MA_TYPE_MISMATCH;
+    if (pAtt->dataLen != bufLen) // If sizes don't match, need to release data from previous value.
+    {
+      free(pAtt->ptrVal);
+      pAtt->ptrVal = malloc(bufLen);
+      pAtt->dataLen = bufLen;
+    }
+    memcpy(pAtt->ptrVal, pBuf, bufLen);
+  }
+  else
+  {
+    stream_attribute att;
+    att.type = stream_attribute_blob;
+    att.ptrVal = malloc(bufLen);
+    att.dataLen = bufLen;
+    memcpy(att.ptrVal, pBuf, bufLen);
+    m_Attributes[id] = att;
+  }
+  return MA_SUCCESS;
+}
+
+MA_RESULT CStreamAttributeCollection::SetArray(MA_ATTRIB_ID id, stream_attribute_type elementType, unsigned int elementCount, void* pElements)
+{
+  if (!pElements || !elementCount)
+    return MA_ERROR;
+
+  unsigned int elementSize = 0;
+  switch(elementType)
+  {
+  case stream_attribute_bitfield:
+  case stream_attribute_int:
+    elementSize = sizeof(int);
+    break;
+  case stream_attribute_int64:
+    elementSize = sizeof(__int64);
+    break;
+  case stream_attribute_float:
+    elementSize = sizeof(float);
+    break;
+  case stream_attribute_bool:
+    elementSize = sizeof(bool);
+    break;
+  case stream_attribute_ptr:
+  case stream_attribute_string:
+  case stream_attribute_blob:
+    elementSize = sizeof(void*);
+  default:
+    return MA_TYPE_MISMATCH;
+  }
+
+  unsigned int bufLen = elementSize * elementCount;
+
+  stream_attribute* pAtt = FindAttribute(id);
+  if (pAtt) // Already exists. 
+  {
+    int attType = pAtt->type ^ stream_attribute_array;
+    if (attType != elementType || !(pAtt->type & stream_attribute_array))
+      return MA_TYPE_MISMATCH;
+
+    if (pAtt->dataLen != bufLen) // If sizes don't match, need to release data from previous value.
+    {
+      free(pAtt->ptrVal);
+      pAtt->ptrVal = malloc(bufLen);
+      pAtt->dataLen = bufLen;
+    }
+    memcpy(pAtt->ptrVal, pElements, bufLen);
+  }
+  else
+  {
+    stream_attribute att;
+    att.type = (stream_attribute_type)(elementType | stream_attribute_array);
+    att.ptrVal = malloc(bufLen);
+    att.dataLen = bufLen;
+    memcpy(att.ptrVal, pElements, bufLen);
+    m_Attributes[id] = att;
+  }
+  return MA_SUCCESS;
+}
+
+void CStreamAttributeCollection::Remove(MA_ATTRIB_ID id)
+{
+  // TODO: Implement
 }
 
 stream_attribute* CStreamAttributeCollection::FindAttribute(MA_ATTRIB_ID id)

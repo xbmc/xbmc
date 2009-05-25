@@ -42,6 +42,12 @@ bool CPCMAudioClient::OpenStream(int channels, int bitsPerSample, int samplesPer
   pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,samplesPerSecond);
   pAtts->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT,channels);
 
+  if (channels == 6)
+  {
+    int channelLayout[6] = {MA_CHANNEL_FRONT_LEFT, MA_CHANNEL_FRONT_RIGHT, MA_CHANNEL_REAR_LEFT, MA_CHANNEL_REAR_RIGHT, MA_CHANNEL_FRONT_CENTER, MA_CHANNEL_LFE};
+    pAtts->SetArray(MA_ATT_TYPE_CHANNEL_LAYOUT, stream_attribute_int, 6, channelLayout);
+  }
+
   // Invoke the base class member
   return CAudioManagerClient::OpenStream(&desc);
 }

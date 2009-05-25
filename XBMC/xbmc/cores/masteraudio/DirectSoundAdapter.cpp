@@ -159,7 +159,7 @@ void CDirectSoundAdapter::Render()
   if (m_ChunkLen % m_BytesPerFrame)
     frames++;
 
-  ma_audio_container* pCont = ma_alloc_container(1, 4, frames);
+  ma_audio_container* pCont = ma_alloc_container(1, m_BytesPerFrame, frames);
 
   while (m_pRenderer->GetSpace() >= m_ChunkLen)
   {

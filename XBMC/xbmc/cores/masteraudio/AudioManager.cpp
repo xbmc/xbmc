@@ -51,9 +51,8 @@ bool CAudioStream::Initialize(CStreamInput* pInput, CDSPChain* pDSPChain, int mi
   m_MixerChannel = mixerChannel;
   m_pMixerSink = pMixerSink;
 
-  // Hook-up interconnections: Input <-DSPChain, DSPChain <- Mixer
+  // Hook-up interconnections: Input <-DSPChain <- Mixer
   // It is assumed at this point that the input/output stream formats are compatible
-
   m_pDSPChain->SetSource(m_pInput);
   m_pMixerSink->SetSource(m_pDSPChain);
 
@@ -90,10 +89,11 @@ int CAudioStream::GetMixerChannel()
 bool CAudioStream::ProcessStream()
 {
   m_IntervalTimer.lap_end();
-  // TODO: Consider multiple calls to fill downstream buffers
   bool ret = true;
   
   m_ProcessTimer.lap_start();
+
+
 
   m_ProcessTimer.lap_end();
 
@@ -103,15 +103,8 @@ bool CAudioStream::ProcessStream()
 
 float CAudioStream::GetMaxLatency()
 {
-  // Latency has 4 parts
-  //  1. Input/Output buffer (TODO: no interface)
-  //  2. DSPChain
-  //  3. Mixer Channel(renderer)
-  //  4. Interconnect buffers (TODO: currently cannot reliably convert bytes to time)
-
-  // TODO: Periodically cache this value and provide average as opposed to re-calculating each time. It's only
-  //     so accurate anyway, since the latency now may not equal the latency experienced by any given byte
-  return m_pDSPChain->GetMaxLatency() + m_pMixerSink->GetMaxLatency();
+  // TODO: Implement
+  return 0.0f;
 }
 
 void CAudioStream::Flush()
@@ -424,24 +417,27 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
     pAtts = g_AudioProfileStereo.output_descriptor.GetAttributes();
     pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,false);
     pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_LPCM);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,176400);
+    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,192000);
     pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,4);
     pAtts->SetFlag(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED,true);
     pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
     pAtts->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT,2);
     pAtts->SetUInt(MA_ATT_TYPE_BITDEPTH,16);
-    pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,44100);
+    pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,48000);
 
     // Global 6-Ch Output Profile
     pAtts = g_AudioProfile6Ch.output_descriptor.GetAttributes();
+    pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,false);
     pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_LPCM);
-    pAtts->SetInt(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED);
+    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,192000);
+    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,12);
+    pAtts->SetFlag(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED,true);
     pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
-    pAtts->SetInt(MA_ATT_TYPE_CHANNEL_COUNT,6);
-    pAtts->SetInt(MA_ATT_TYPE_BITDEPTH,16);
+    pAtts->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT,6);
+    pAtts->SetUInt(MA_ATT_TYPE_BITDEPTH,16);
     pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,48000);
 
     g_AudioProfileInit = true;
  }
- return &g_AudioProfileAC3;
+ return &g_AudioProfile6Ch;
 }

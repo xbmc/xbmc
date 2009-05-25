@@ -2104,6 +2104,30 @@
 						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilter.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterLPCM.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterLPCM.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterMatrixMixer.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterMatrixMixer.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterResampler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterResampler.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="RenderingAdapters"

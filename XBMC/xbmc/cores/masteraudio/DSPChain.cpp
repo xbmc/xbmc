@@ -20,6 +20,7 @@
 
 #include "stdafx.h"
 #include "DSPChain.h"
+#include "Filters/DSPFilterMatrixMixer.h"
 
 // CDSPChain
 //////////////////////////////////////////////////////////////////////////////////////
@@ -28,12 +29,22 @@ CDSPChain::CDSPChain() :
   m_pHead(NULL),
   m_pTail(NULL)
 {
-
+Create(1,1);
 }
 
 CDSPChain::~CDSPChain()
 {
   Close();
+}
+
+void CDSPChain::Create(unsigned int inputBusses, unsigned int outputBusses)
+{
+
+}
+
+void CDSPChain::Destroy()
+{
+
 }
 
 // TODO: Trigger graph creation on format change
@@ -56,6 +67,12 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
  
   // TODO: Dynamically create DSP Filter Graph 
 
+  dsp_filter_node* pNode = new dsp_filter_node();
+  pNode->filter = new CDSPFilterMatrixMixer();
+  pNode->filter->SetInputFormat(pInDesc);
+  pNode->filter->SetOutputFormat(pOutDesc);
+  m_pHead = m_pTail = pNode;
+
   CLog::Log(LOGINFO,"MasterAudio:CDSPChain: Creating dummy filter graph.");
 
   return MA_SUCCESS;
@@ -68,7 +85,7 @@ void CDSPChain::Close()
   CDSPFilter::Close(); // Call base class method
 }
 
-MA_RESULT CDSPChain::RenderOutput(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
+MA_RESULT CDSPChain::Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
 {
   if (!pOutput)
     return MA_ERROR;
@@ -83,7 +100,7 @@ MA_RESULT CDSPChain::RenderOutput(ma_audio_container* pOutput, unsigned int fram
   }
 
   // Maybe we are just passing data through (no filters in the graph). Use the default implementation and pass the data through
-  return CDSPFilter::RenderOutput(pOutput, frameCount, renderTime, renderFlags, bus);
+  return CDSPFilter::Render(pOutput, frameCount, renderTime, renderFlags, bus);
 }
 
 float CDSPChain::GetMaxLatency()
