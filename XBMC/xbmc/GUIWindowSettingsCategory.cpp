@@ -1164,9 +1164,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUISpinControlEx *ifaceControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
       CStdString ifaceName = ifaceControl->GetLabel();
       CNetworkInterface* iface = g_application.getNetwork().GetInterfaceByName(ifaceName);
-      bool bIsWireless = iface->IsWireless();
-
-      bool enabled = bIsWireless;
+      bool enabled = iface->IsWireless();
 
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
       if (pControl1)
