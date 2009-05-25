@@ -49,19 +49,17 @@ DWORD GetImageType(const char *file)
   if ( !file || ( 0 == *file ) ) // ensure file is not NULL and has non-zero length
     return CXIMAGE_FORMAT_UNKNOWN;
 
-  char *ext = (char *)file + strlen(file) - 1;
-  char *end = ext;
-  while (ext > file)
-  {
-    if (*ext == '.')
-    {
-      // if the file doesn't end with a '.' increment 'ext' so
-      // we only have the extension in 'ext'.
-      ext++;
-      break;
-    }
-    ext--;
-  }
+  // try to determine extension using '.' or use entire filename
+  // if '.' is absent.
+  char *ext = strchr(file, '.');
+  if (ext == NULL)
+    ext = (char*)file;
+  else
+    ext++;
+
+  if ( 0 == *ext ) // if filename ends in '.', we can't identify based on extension
+    return CXIMAGE_FORMAT_UNKNOWN;
+
   if ( 0 == strcmpi(ext, "bmp") ) return CXIMAGE_FORMAT_BMP;
   else if ( 0 == strcmpi(ext, "bitmap") ) return CXIMAGE_FORMAT_BMP;
   else if ( 0 == strcmpi(ext, "gif") )    return CXIMAGE_FORMAT_GIF;
