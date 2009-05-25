@@ -2997,6 +2997,9 @@ bool CApplication::OnAction(CAction &action)
       speed /= 50; //50 fps
     if (g_stSettings.m_bMute)
     {
+      // only unmute if volume is to be increased, otherwise leave muted
+      if (action.wID == ACTION_VOLUME_DOWN)
+        return true;
       Mute();
       return true;
     }
