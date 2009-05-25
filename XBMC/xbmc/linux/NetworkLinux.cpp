@@ -77,12 +77,14 @@ void CNetworkInterfaceLinux::Update()
   TStrStrMap properties;
   
   GetAll(properties, m_objectPath.c_str(), NM_DBUS_INTERFACE_DEVICE);
+  m_DeviceType      = (NMDeviceType)atoi(properties["DeviceType"].c_str());
+
+  m_interface = properties["Interface"];
   if (IsWireless())
     GetAll(properties, m_objectPath.c_str(), NM_DBUS_INTERFACE_DEVICE_WIRELESS);
   else
     GetAll(properties, m_objectPath.c_str(), NM_DBUS_INTERFACE_DEVICE_WIRED);
 
-  m_interface = properties["Interface"];
   m_MAC = properties["HwAddress"];
   m_ConnectionState = (NMDeviceState)atoi(properties["State"].c_str());
 
@@ -126,7 +128,6 @@ void CNetworkInterfaceLinux::GetAll(TStrStrMap& properties, const char *object, 
                     CStdString      value;
                     const char *    string  = NULL;
                     dbus_int32_t    int32   = 0;
-                    bool            boolean = false;
                     dbus_message_iter_get_basic(&dict, &key);
                     dbus_message_iter_next(&dict);
 
@@ -136,19 +137,17 @@ void CNetworkInterfaceLinux::GetAll(TStrStrMap& properties, const char *object, 
                     
                     switch (type)
                     {
+                      case DBUS_TYPE_OBJECT_PATH:
                       case DBUS_TYPE_STRING:
                         dbus_message_iter_get_basic(&variant, &string);
                         value.Format("%s", string);
                         break;
 
+                      case DBUS_TYPE_BYTE:
+                      case DBUS_TYPE_UINT32:
                       case DBUS_TYPE_INT32:
                         dbus_message_iter_get_basic(&variant, &int32);
-                        value.Format("%i", int32);
-                        break;
-                        
-                      case DBUS_TYPE_OBJECT_PATH:
-                        dbus_message_iter_get_basic(&variant, &string);
-                        value.Format("%s", string);
+                        value.Format("%i", (int)int32);
                         break;
                     }
                     if (value.length() > 0)
