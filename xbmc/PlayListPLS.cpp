@@ -273,18 +273,8 @@ bool CPlayListASX::LoadData(istream& stream)
   }
   else
   {
-    CStdString data;
-    // http://www.trollied.org/~blimey/blog.php?id=tag:blimey@trollied.org,2008:1203026794
-    while (stream.good())
-    {
-      CStdString line;
-      stream >> line;
-      data += line+" ";
-    }
-    data.Replace("&amp;","&");
-    data.Replace("&","&amp;");
     TiXmlDocument xmlDoc;
-    xmlDoc.Parse(data.c_str());
+    stream >> xmlDoc;
 
     if (xmlDoc.Error())
     {
