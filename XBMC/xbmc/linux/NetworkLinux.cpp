@@ -511,8 +511,15 @@ void CNetworkInterfaceLinux::AddNetworkAccessPoint(std::vector<NetworkAccessPoin
 // CStdString essId = properties["Ssid"]; //Doesn't work atm.
   CStdString essId = NetworkPath;
   int strength = atoi(properties["Strength"]);
-
+  int enc = atoi(properties["WpaFlags"].c_str());
   EncMode encryption = ENC_NONE;
+
+  if (enc & NM_802_11_AP_SEC_PAIR_TKIP && enc & NM_802_11_AP_SEC_PAIR_CCMP)
+    encryption = ENC_WPA2;
+  else if (enc & NM_802_11_AP_SEC_PAIR_TKIP)
+    encryption = ENC_WPA;
+  else if (enc & NM_802_11_AP_SEC_PAIR_WEP40 || enc & NM_802_11_AP_SEC_PAIR_WEP104  || atoi(properties["Flags"].c_str()))
+    encryption = ENC_WEP;
 
   if (!properties["Mode"].Equals("1")) // Skip AdHoc connections.
   {
@@ -701,7 +708,7 @@ int main(void)
     printf("WLAN: %s has %i networks\n", wlan->GetName().c_str(), aps.size());
     for (int i = 0; i < aps.size(); i++)
     {
-      printf("%s\n", aps[i].getEssId().c_str());
+      printf("%s %d\n", aps[i].getEssId().c_str(), aps[i].getEncryptionMode());
     }
   }
   return 0;
