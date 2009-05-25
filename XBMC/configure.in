@@ -655,7 +655,8 @@ else
 fi
 
 # External Python
-if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"; then
+if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes" || \
+  $(test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple"); then
   AC_CHECK_LIB([python2.5], [main],,
   [AC_CHECK_LIB([python2.4], [main],,
   [AC_MSG_ERROR($missing_library)] )] )
@@ -664,12 +665,6 @@ if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"
   AC_CHECK_LIB([python2.5], [main],[USE_PYTHON2_5=1],
   [AC_CHECK_LIB([python2.4], [main],[USE_PYTHON2_4=1],
   [AC_MSG_ERROR($missing_library)] )] )
-
-  AC_MSG_NOTICE($external_python_enabled)
-  USE_EXTERNAL_PYTHON=1
-  AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
-elif test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple" ; then
-  AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR($missing_library) )
 
   AC_MSG_NOTICE($external_python_enabled)
   USE_EXTERNAL_PYTHON=1
