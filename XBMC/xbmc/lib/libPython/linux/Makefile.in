@@ -8,6 +8,8 @@ ifeq (@USE_PYTHON2_5@,1)
 else ifeq (@USE_PYTHON2_4@,1)
     PYVERSION=python2.4
     SO=python24-$(ARCH).so
+else
+    SO=python24-$(ARCH).so
 endif
 SLIB=$(SYSDIR)/$(SO)
 ZIP=$(SYSDIR)/python24.zip  ##Should probably add arch here too

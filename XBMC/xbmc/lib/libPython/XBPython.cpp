@@ -67,18 +67,14 @@ XBPython g_pythonParser;
 #elif defined(__x86_64__)
 #if (defined HAVE_LIBPYTHON2_5)
 #define PYTHON_DLL "special://xbmc/system/python/python25-x86_64-linux.so"
-#elif (defined HAVE_LIBPYTHON2_4)
-#define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
 #else
-#error "Could not determine version of Python to use."
+#define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
 #endif
 #else /* !__x86_64__ */
 #if (defined HAVE_LIBPYTHON2_5)
 #define PYTHON_DLL "special://xbmc/system/python/python25-i486-linux.so"
-#elif (defined HAVE_LIBPYTHON2_4)
-#define PYTHON_DLL "special://xbmc/system/python/python24-i486-linux.so"
 #else
-#error "Could not determine version of Python to use."
+#define PYTHON_DLL "special://xbmc/system/python/python24-i486-linux.so"
 #endif
 #endif /* __x86_64__ */
 #endif /* _LINUX */
