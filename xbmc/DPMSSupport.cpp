@@ -179,7 +179,9 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   // window expose events (involving the window manager) that solves this
   // without fail.
   XUnmapWindow(dpy, m_surface->GetWindow());
+  XFlush(dpy);
   XMapWindow(dpy, m_surface->GetWindow());
+  XFlush(dpy);
   return true;
 }
 
