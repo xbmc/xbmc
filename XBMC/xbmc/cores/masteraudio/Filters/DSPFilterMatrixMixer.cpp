@@ -77,6 +77,8 @@ CDSPFilterMatrixMixer::~CDSPFilterMatrixMixer()
   ma_free_container(m_pInputContainer);
 }
 
+// TODO: Implement TestInputFormat
+
 MA_RESULT CDSPFilterMatrixMixer::SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
 {
   MA_RESULT res;
@@ -100,6 +102,8 @@ MA_RESULT CDSPFilterMatrixMixer::SetInputFormat(CStreamDescriptor* pDesc, unsign
 
   return MA_SUCCESS;
 }
+
+// TODO: Implement TestOutputFormat
 
 MA_RESULT CDSPFilterMatrixMixer::SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
 {

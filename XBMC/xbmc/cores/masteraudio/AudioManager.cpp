@@ -409,7 +409,7 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
     CStreamAttributeCollection* pAtts = g_AudioProfileAC3.output_descriptor.GetAttributes();
     pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,true);
     pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,192000);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,4);
+    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,6144);
     pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_IEC61937);
     pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_AC3);
 
@@ -439,5 +439,5 @@ audio_profile* CAudioManager::GetProfile(CStreamDescriptor* pInputDesc)
 
     g_AudioProfileInit = true;
  }
- return &g_AudioProfile6Ch;
+ return &g_AudioProfileStereo;
 }

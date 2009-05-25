@@ -21,6 +21,7 @@
 #include "stdafx.h"
 #include "DSPChain.h"
 #include "Filters/DSPFilterMatrixMixer.h"
+#include "Filters/DSPFilterResampler.h"
 
 // CDSPChain
 //////////////////////////////////////////////////////////////////////////////////////
@@ -67,11 +68,31 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
  
   // TODO: Dynamically create DSP Filter Graph 
 
-  dsp_filter_node* pNode = new dsp_filter_node();
-  pNode->filter = new CDSPFilterMatrixMixer();
-  pNode->filter->SetInputFormat(pInDesc);
-  pNode->filter->SetOutputFormat(pOutDesc);
-  m_pHead = m_pTail = pNode;
+  m_pHead = new dsp_filter_node();
+  m_pHead->filter = new CDSPFilterMatrixMixer();
+  m_pHead->filter->SetInputFormat(pInDesc);
+
+  unsigned int inputSampleRate, outputSampleRate;
+  pInDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_SAMPLERATE, &inputSampleRate);
+  pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_SAMPLERATE, &outputSampleRate);
+  if (inputSampleRate != outputSampleRate)
+  {
+    m_pTail = new dsp_filter_node();
+    m_pTail->filter = new CDSPFilterResampler();
+    unsigned int outputChannels;
+    unsigned int outputFrameSize;
+    pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, &outputChannels); // Get output channels
+    pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT, outputChannels); // Update to reflect conversion performed by filter
+    pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, &outputFrameSize); // Get output frame size
+    pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, outputFrameSize); // Update to reflect conversion performed by filter
+    m_pHead->filter->SetOutputFormat(pInDesc);
+    m_pTail->filter->SetInputFormat(pInDesc);
+    m_pTail->filter->SetSource(m_pHead->filter);
+  }
+  else
+    m_pTail = m_pHead;
+
+  m_pTail->filter->SetOutputFormat(pOutDesc);
 
   CLog::Log(LOGINFO,"MasterAudio:CDSPChain: Creating dummy filter graph.");
 

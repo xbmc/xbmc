@@ -68,7 +68,7 @@ protected:
 
   virtual void ClearInputFormat(unsigned int bus = 0);
   virtual void ClearOutputFormat(unsigned int bus = 0);
-
+  
 private:
   LPCMAttributes* m_pLPCMInputDescriptor;
   LPCMAttributes* m_pLPCMOutputDescriptor;

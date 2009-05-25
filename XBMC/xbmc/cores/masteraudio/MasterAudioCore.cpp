@@ -289,8 +289,11 @@ CStreamAttributeCollection::CStreamAttributeCollection()
 
 CStreamAttributeCollection::~CStreamAttributeCollection()
 {
-  // TODO: Free BLOB and Array data
-
+  // Free BLOB and Array data (we allocated it)
+  StreamAttributeIterator iter;
+  for (iter = m_Attributes.begin(); iter != m_Attributes.end(); ++iter)
+    if ((iter->second.type & stream_attribute_array) || (iter->second.type == stream_attribute_blob))
+      free(iter->second.ptrVal);
 }
 
 MA_RESULT CStreamAttributeCollection::GetInt(MA_ATTRIB_ID id, int* pVal)

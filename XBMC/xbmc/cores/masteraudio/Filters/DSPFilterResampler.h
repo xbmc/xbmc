@@ -26,13 +26,26 @@
 #endif // _MSC_VER > 1000
 
 #include "DSPFilterLPCM.h"
+#include <samplerate.h>
 
-class CDSPFilterResampler : CDSPFilterLPCM
+class CDSPFilterResampler : public CDSPFilterLPCM
 {
 public:
   CDSPFilterResampler();
   virtual ~CDSPFilterResampler();
+  virtual MA_RESULT SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
+  virtual MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
   virtual MA_RESULT Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
+protected:
+  SRC_STATE* m_Converter;
+  ma_audio_container* m_pInputContainer;
+  float* m_pInputData;
+  float* m_pOutputData;
+
+  double m_Ratio;
+
+  MA_RESULT Init();
+  void CleanUp();
 };
 
 #endif // __DSPFILTER_RESAMPLER_H__
