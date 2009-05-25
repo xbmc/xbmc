@@ -592,6 +592,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
 {
   CSingleLock lock(g_graphicsContext);
 
+/*
 #ifndef _LINUX
   MEMORYSTATUS stat;
   GlobalMemoryStatus(&stat);
@@ -603,6 +604,7 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
     //CLog::Log(LOGINFO, "release:%s", strTextureName.c_str());
   }
 #endif
+*/
 
   ivecTextures i;
   i = m_vecTextures.begin();
