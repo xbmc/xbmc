@@ -30,12 +30,12 @@
   #include <QuartzCore/CVDisplayLink.h>
   #include "CocoaInterface.h"
 #elif defined(_WIN32)
- #pragma comment (lib,"d3d9.lib")
- #if(DIRECT3D_VERSION > 0x0900)
-  #pragma comment (lib,"DxErr.lib")
- #else
-  #pragma comment (lib,"Dxerr9.lib")
- #endif
+  #pragma comment (lib,"d3d9.lib")
+  #if(DIRECT3D_VERSION > 0x0900)
+    #pragma comment (lib,"DxErr.lib")
+  #else
+    #pragma comment (lib,"Dxerr9.lib")
+  #endif
 #endif
 
 using namespace std;
