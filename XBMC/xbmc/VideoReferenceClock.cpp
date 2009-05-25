@@ -29,6 +29,13 @@
 #elif defined(__APPLE__)
   #include <QuartzCore/CVDisplayLink.h>
   #include "CocoaInterface.h"
+#elif defined(_WIN32)
+  #pragma comment (lib,"d3d9.lib")
+  #if(DIRECT3D_VERSION > 0x0900)
+    #pragma comment (lib,"DxErr.lib")
+  #else
+    #pragma comment (lib,"Dxerr9.lib")
+  #endif
 #endif
 
 using namespace std;
@@ -394,7 +401,8 @@ void CVideoReferenceClock::RunD3D()
     ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
     if (ReturnV != D3D_OK)
     {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i", ReturnV & 0xFFFF);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned returned %s: %s",
+                D3dClock::DXGetErrorString(ReturnV), D3dClock::DXGetErrorDescription(ReturnV));
       return;
     }
 
@@ -519,11 +527,8 @@ bool CVideoReferenceClock::SetupD3D()
 
   if (ReturnV != D3D_OK)
   {
-    if (ReturnV == D3DERR_DEVICELOST)
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned D3DERR_DEVICELOST");
-    else
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %i", ReturnV & 0xFFFF);
-    
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %s: %s",
+              D3dClock::DXGetErrorString(ReturnV), D3dClock::DXGetErrorDescription(ReturnV));
     return false;
   }
 
@@ -534,8 +539,8 @@ bool CVideoReferenceClock::SetupD3D()
   ReturnV = m_D3dDev->GetDeviceCaps(&DevCaps);
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDeviceCaps returned %i",
-              ReturnV & 0xFFFF);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDeviceCaps returned %s: %s",
+                         D3dClock::DXGetErrorString(ReturnV), D3dClock::DXGetErrorDescription(ReturnV));
     return false;
   }
 
@@ -548,16 +553,16 @@ bool CVideoReferenceClock::SetupD3D()
   ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned %i",
-              ReturnV & 0xFFFF);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned returned %s: %s",
+              D3dClock::DXGetErrorString(ReturnV), D3dClock::DXGetErrorDescription(ReturnV));
     return false;
   }
 
   ReturnV = m_D3d->GetAdapterDisplayMode(m_Adapter, &DisplayMode);
   if (ReturnV != D3D_OK)
   {
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetAdapterDisplayMode returned %i",
-              ReturnV & 0xFFFF);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetAdapterDisplayMode returned returned %s: %s",
+              D3dClock::DXGetErrorString(ReturnV), D3dClock::DXGetErrorDescription(ReturnV));
     return false;
   }
 
@@ -898,7 +903,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     CSingleLock SingleLock(m_CritSection);
     if (strncmp(m_Monitor.szDevice, m_PrevMonitor.szDevice, sizeof(m_Monitor.szDevice) - 1))
     {
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: monitor changed to %s", m_Monitor.szDevice);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: monitor changed to %0.31s", m_Monitor.szDevice);
       Changed = true;
     }
   }

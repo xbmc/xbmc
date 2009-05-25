@@ -291,7 +291,6 @@ using namespace DBUSSERVER;
   #pragma comment (lib,"../../xbmc/lib/libpcre/libpcre.lib")
   #pragma comment (lib,"../../xbmc/lib/libsamplerate/libsamplerate_win32.lib")
  #endif
- #pragma comment (lib,"d3d9.lib")
 #endif
 
 #define MAX_FFWD_SPEED 5
@@ -2998,6 +2997,9 @@ bool CApplication::OnAction(CAction &action)
       speed /= 50; //50 fps
     if (g_stSettings.m_bMute)
     {
+      // only unmute if volume is to be increased, otherwise leave muted
+      if (action.wID == ACTION_VOLUME_DOWN)
+        return true;
       Mute();
       return true;
     }
@@ -5411,7 +5413,8 @@ void CApplication::Mute(void)
   if (g_stSettings.m_bMute)
   { // muted - unmute.
     // check so we don't get stuck in some muted state
-    if( g_stSettings.m_iPreMuteVolumeLevel == 0 ) g_stSettings.m_iPreMuteVolumeLevel = 1;
+    if( g_stSettings.m_iPreMuteVolumeLevel == 0 )
+      g_stSettings.m_iPreMuteVolumeLevel = 1;
     SetVolume(g_stSettings.m_iPreMuteVolumeLevel);
   }
   else
