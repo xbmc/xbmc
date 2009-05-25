@@ -96,7 +96,7 @@ void CGUILargeTextureManager::Process()
     if (m_queued.size() == 0)
     { // hang around for a while as there may well be more images on the way (saves reloading the thread)
       lock.Leave();
-      m_listEvent.WaitMSec(1000);
+      m_listEvent.WaitMSec(5000);
       lock.Enter();
     }
   }
