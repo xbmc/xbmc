@@ -20,8 +20,21 @@
  */
 
 // python.h should always be included first before any other includes
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
 #include "stdafx.h"
-#include "Python/Include/Python.h"
+#if (defined USE_EXTERNAL_PYTHON)
+  #if (defined HAVE_LIBPYTHON2_5)
+    #include <python2.5/Python.h>
+  #elif (defined HAVE_LIBPYTHON2_4)
+    #include <python2.4/Python.h>
+  #else
+    #error "Could not determine version of Python to use."
+  #endif
+#else
+  #include "Python/Include/Python.h"
+#endif
 #include "Python/Include/osdefs.h"
 #include "XBPythonDll.h"
 #include "FileSystem/SpecialProtocol.h"

@@ -69,6 +69,8 @@ external_libflac_enabled="== Use of external libflac enabled. =="
 external_libflac_disabled="== Use of external libflac disabled. =="
 external_libwavpack_enabled="== Use of external libwavpack enabled. =="
 external_libwavpack_disabled="== Use of external libwavpack disabled. =="
+external_python_enabled="== Use of external python enabled. =="
+external_python_disabled="== Use of external python disabled. =="
 
 # Internal static library message strings
 static_libraries_enabled="== Use of all supported internal static libraries enabled. =="
@@ -260,6 +262,12 @@ AC_ARG_ENABLE([external-libwavpack],
                [enable use of external libwavpack library (default is no)])],
             [use_external_libwavpack=$enableval],
             [use_external_libwavpack=no])
+
+AC_ARG_ENABLE([external-python],
+            [AS_HELP_STRING([--enable-external-python],
+               [enable use of external python library (default is no)])],
+            [use_external_python=$enableval],
+            [use_external_python=no])
 
 ### Internal static libraries options
 AC_ARG_ENABLE([static-libraries],
@@ -646,6 +654,24 @@ else
   USE_EXTERNAL_LIBWAVPACK=0
 fi
 
+# External Python
+if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"; then
+  AC_CHECK_LIB([python2.4], [main],, [AC_MSG_ERROR($missing_library)] )
+
+  AC_MSG_NOTICE($external_python_enabled)
+  USE_EXTERNAL_PYTHON=1
+  AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
+elif test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple" ; then
+  AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR($missing_library) )
+
+  AC_MSG_NOTICE($external_python_enabled)
+  USE_EXTERNAL_PYTHON=1
+  AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
+else
+  AC_MSG_NOTICE($external_python_disabled)
+  USE_EXTERNAL_PYTHON=0
+fi
+
 ### Internal static libraries checks
 if test "$use_static_libraries" = "yes"; then
   AC_MSG_NOTICE($static_libraries_enabled)
@@ -669,11 +695,6 @@ if test "$use_static_libdvdnav" = "yes"; then
 else
   AC_MSG_NOTICE($static_libdvdnav_disabled)
   USE_STATIC_LIBDVDNAV=0
-fi
-
-# Python
-if test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple" ; then
-  AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR($missing_library) )
 fi
 
 # platform specific bin utilities
@@ -972,6 +993,11 @@ else
   else
     final_message="$final_message\n  External libwavpack:\tNo"
   fi
+  if test "$use_external_python" = "yes"; then
+    final_message="$final_message\n  External Python:\tYes"
+  else
+    final_message="$final_message\n  External Python:\tNo"
+  fi
 fi
 
 ### Internal static libraries messages
@@ -1005,6 +1031,7 @@ AC_SUBST(USE_EXTERNAL_LIBOGG)
 AC_SUBST(USE_EXTERNAL_LIBMPCDEC)
 AC_SUBST(USE_EXTERNAL_LIBFLAC)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
+AC_SUBST(USE_EXTERNAL_PYTHON)
 AC_SUBST(INTERNAL_LIBS)
 AC_SUBST(USE_STATIC_LIBRARIES)
 AC_SUBST(USE_STATIC_LIBDVDNAV)
@@ -1111,7 +1138,7 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
     sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
     cp pyconfig.h Include
   fi
-], [0])
+], [$USE_EXTERNAL_PYTHON])
 
 XB_CONFIG_MODULE([xbmc/cores/paplayer/MPCCodec], [
   if test "$host_vendor" = "apple" ; then

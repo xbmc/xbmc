@@ -74,13 +74,23 @@ $(PYWRAP): $(PYWRAP:.o=.c)
 
 else
 all: $(SLIB)
+ifneq (@USE_EXTERNAL_PYTHON@,1)
 	$(MAKE) $(ZIP)
+endif
 
+ifneq (@USE_EXTERNAL_PYTHON@,1)
 $(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.a
 	$(CC) -shared -o $@ -Wl,--whole-archive ../Python/libpython2.4.a \
 		-Wl,--no-whole-archive `cat wrapper_python.def` wrapper_python.o \
 		`cat ../../../cores/DllLoader/exports/wrapper.def` \
 		../../../cores/DllLoader/exports/wrapper.o
+else
+$(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF)
+	$(CC) -shared -o $@ -lpython2.4 \
+		`cat wrapper_python.def` wrapper_python.o \
+		`cat ../../../cores/DllLoader/exports/wrapper.def` \
+		../../../cores/DllLoader/exports/wrapper.o
+endif
 
 $(ZIP): $(PYC) $(PYO)
 	pushd ../Python/build/$(PYLIBDIR)/ && \

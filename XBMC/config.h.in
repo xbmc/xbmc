@@ -624,6 +624,9 @@
 /* Whether to use external libwavpack library. */
 #undef USE_EXTERNAL_LIBWAVPACK
 
+/* Whether to use external python library. */
+#undef USE_EXTERNAL_PYTHON
+
 /* Whether to use internal libdvdnav static library. */
 #undef USE_STATIC_LIBDVDNAV
 
