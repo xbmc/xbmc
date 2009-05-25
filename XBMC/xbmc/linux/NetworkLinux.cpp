@@ -203,6 +203,7 @@ bool CNetworkInterfaceLinux::IsEnabled()
 
 bool CNetworkInterfaceLinux::IsConnected()
 {
+  Update();
   return m_ConnectionState == NM_DEVICE_STATE_ACTIVATED;
 }
 
@@ -502,19 +503,22 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
 
 void CNetworkInterfaceLinux::AddNetworkAccessPoint(std::vector<NetworkAccessPoint> &apv, const char *NetworkPath, DBusConnection *con)
 {
-//dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/NetworkManager/AccessPoint/27 org.freedesktop.DBus.Properties.GetAll string:'org.freedesktop.NetworkManager.AccessPoint'
+//dbus-send --print-reply --system --dest=org.freedesktop.NetworkManager --type=method_call  /org/freedesktop/NetworkManager/AccessPoint/5 org.freedesktop.DBus.Properties.GetAll string:'org.freedesktop.NetworkManager.AccessPoint'
   TStrStrMap properties;
   
   GetAll(properties, NetworkPath, NM_DBUS_INTERFACE_ACCESS_POINT);
 
 // CStdString essId = properties["Ssid"]; //Doesn't work atm.
   CStdString essId = NetworkPath;
-//  int strength = atoi(properties["Strength"]; // Doesn't work atm
-  int strength = 100;
+  int strength = atoi(properties["Strength"]);
+
   EncMode encryption = ENC_NONE;
 
-  NetworkAccessPoint ap(essId, (int)strength, encryption);
-  apv.push_back(ap);
+  if (!properties["Mode"].Equals("1")) // Skip AdHoc connections.
+  {
+    NetworkAccessPoint ap(essId, (int)strength, encryption);
+    apv.push_back(ap);
+  }
 }
 
 void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode)
