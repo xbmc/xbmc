@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
   "XBMC Live" installer
-  V0.995 - 20090525
+  V0.996 - 20090526
   Luigi Capriotti @2009
 
 """ 
@@ -207,7 +207,7 @@ def partitionFormatDisk(device, bIsRemovableDisk, bootPartSize, swapPartSize):
 	runSilent("sync")
 
 	if bIsRemovableDisk:
-		strFdiskCommands = ["o","n","p","1","","","t","b","a","1","w"]
+		strFdiskCommands = ["o","n","p","1","","","t","c","a","1","w"]
 
 		stdInFile = tempfile.NamedTemporaryFile()
 		for line in strFdiskCommands:
@@ -412,7 +412,10 @@ def installGrub(bootDevice, dstDirectory):
 def modifyGrubMenu(menuFName, isaRemovableDrive, bootPartition):
 	if isaRemovableDrive:
 		content = readFile(menuFName)
-		content = re.sub("boot=[a-z]*", "boot=usb", content)
+		if isaRemovableDrive == 1:
+			content = re.sub("boot=[a-z]*", "boot=usb", content)
+		else:
+			content = re.sub("boot=[a-z]*", "boot=disk", content)
 	else:
 		content = ("default 0" + "\n")
 		content += ("hiddenmenu" + "\n")
@@ -618,7 +621,7 @@ def main():
 			if userChoice("Do you want the installer to handle it as a removable disk instead (Y/N)? ","Yy","Nn") == 0:
 				minSizeMB = gFixedDiskMinSizeMB
 			else:
-				removableDiskSelected = 1
+				removableDiskSelected = 10
 
 		if diskSizeMB < minSizeMB:
 			print ""
