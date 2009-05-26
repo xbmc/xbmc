@@ -4532,7 +4532,7 @@ void CApplication::OnFileClosed()
     // Reset some stuff
     m_progressTrackingFile = "";
     m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
-    m_bProgressTrackingPlayCountUpdate = false;
+    m_progressTrackingPlayCountUpdate = false;
   }
 }
 
@@ -4586,13 +4586,13 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState(const CStdString& strFileName)
 {
-  if (m_bProgressTrackingIsVideo)
+  if (m_progressTrackingIsVideo)
   {
     CVideoDatabase videodatabase;
     if (videodatabase.Open())
     {
       // mark as watched if we are passed the usual amount
-      if (m_bProgressTrackingPlayCountUpdate)
+      if (m_progressTrackingPlayCountUpdate)
       {
         CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, strFileName.c_str());
 
@@ -4621,7 +4621,7 @@ void CApplication::SaveFileState(const CStdString& strFileName)
   }
   else
   {
-    if (m_bProgressTrackingPlayCountUpdate)
+    if (m_progressTrackingPlayCountUpdate)
     {
       // Can't write to the musicdatabase while scanning for music info
       CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
@@ -4655,13 +4655,13 @@ void CApplication::UpdateFileState()
           (IsPlayingVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
           GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
       {
-        m_bProgressTrackingPlayCountUpdate = true;
+        m_progressTrackingPlayCountUpdate = true;
       }
 
       // Update bookmark for save
       if (IsPlayingVideo())
       {
-        m_bProgressTrackingIsVideo = true;
+        m_progressTrackingIsVideo = true;
         m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
         m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
@@ -4686,7 +4686,7 @@ void CApplication::UpdateFileState()
       }
       else
       {
-        m_bProgressTrackingIsVideo = false;
+        m_progressTrackingIsVideo = false;
       }
     }
   }
