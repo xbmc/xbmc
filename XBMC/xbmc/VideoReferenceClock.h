@@ -35,7 +35,7 @@
   {
     #include <d3d9.h>
     #if(DIRECT3D_VERSION > 0x0900)
-	    #include <Dxerr.h>
+      #include <Dxerr.h>
     #else
       #include <dxerr9.h>
       #define DXGetErrorString(hr)      DXGetErrorString9(hr)

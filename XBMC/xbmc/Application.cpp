@@ -2324,15 +2324,6 @@ void CApplication::DoRender()
   }
 
   {
-    // free memory if we got les then 10megs free ram
-    MEMORYSTATUS stat;
-    GlobalMemoryStatus(&stat);
-    DWORD dwMegFree = (DWORD)(stat.dwAvailPhys / (1024 * 1024));
-    if (dwMegFree <= 10)
-    {
-      g_TextureManager.Flush();
-    }
-
     // reset image scaling and effect states
     g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
 
@@ -5675,14 +5666,12 @@ bool CApplication::SwitchToFullScreen()
 
     // then switch to fullscreen mode
     m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
-    g_TextureManager.Flush();
     return true;
   }
   // special case for switching between GUI & visualisation mode. (only if we're playing an audio song)
   if (IsPlayingAudio() && m_gWindowManager.GetActiveWindow() != WINDOW_VISUALISATION)
   { // then switch to visualisation
     m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
-    g_TextureManager.Flush();
     return true;
   }
   return false;
