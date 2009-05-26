@@ -166,7 +166,11 @@ void XBPyThread::Process()
   strcpy(sourcedir, _P(source));
 
   char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
+#if (defined __APPLE__) || (defined _WIN32PC)
   *p = PY_PATH_SEP;
+#else
+  *p = ':';
+#endif
   *++p = 0;
 
   strcpy(path, sourcedir);
