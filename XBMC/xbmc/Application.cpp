@@ -1,4 +1,4 @@
-/*
+ /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://xbmc.org
  *
@@ -318,10 +318,9 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
   m_bPlaybackStarting = false;
-  m_lastGetTime = 0;
-  m_lastGetPercentage = 0;
-  m_lastFileName = "";
-  VideoResumeBookmark.timeInSeconds = 0;
+  m_progressTrackingFile = "";
+  PlayCountUpdate = false;
+  VideoResumeBookmark.timeInSeconds = 0.0f;
 
 #ifdef HAS_GLX
   XInitThreads();
@@ -375,7 +374,7 @@ CApplication::~CApplication(void)
   delete m_dpms;
 
 #ifdef _WIN32PC
-  if( m_SSysParam ) 
+  if( m_SSysParam )
     delete m_SSysParam;
 #endif
 }
@@ -551,7 +550,7 @@ void CApplication::Preflight()
   // run any platform preflight scripts.
 #ifdef __APPLE__
   CStdString install_path;
-  
+
   CUtil::GetHomePath(install_path);
   setenv("XBMC_HOME", install_path.c_str(), 0);
   install_path += "/tools/osx/preflight";
@@ -563,11 +562,11 @@ HRESULT CApplication::Create(HWND hWnd)
 {
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
-  
+
 #ifdef _WIN32PC
   CWIN32Util::SystemParams::GetDefaults( m_SSysParam );
   CWIN32Util::SystemParams::SetCustomParams();
-#endif  
+#endif
 
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
@@ -817,7 +816,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(true, true, true);
   }
 #endif
-  
+
   //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
   CheckForDebugButtonCombo();
 
@@ -1009,7 +1008,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
-    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp"); 
+    CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
 
     CUtil::AddDirectorySeperator(strTempPath);
@@ -1048,7 +1047,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp"); 
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
@@ -1151,7 +1150,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp"); 
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
@@ -1557,7 +1556,7 @@ void CApplication::StartWebServer()
     m_pWebServer = new CWebServer();
     m_pWebServer->Start(m_network.m_networkinfo.ip, webPort, "special://xbmc/web", false);
 #endif
-    if (m_pWebServer) 
+    if (m_pWebServer)
     {
       m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());
       m_pWebServer->SetPassword(g_guiSettings.GetString("servers.webserverpassword").c_str());
@@ -2836,7 +2835,6 @@ bool CApplication::OnAction(CAction &action)
     }
     else
     {
-      SaveCurrentFileSettings();
       g_playlistPlayer.PlayPrevious();
     }
     return true;
@@ -2848,7 +2846,6 @@ bool CApplication::OnAction(CAction &action)
     if (IsPlaying() && m_pPlayer->SkipNext())
       return true;
 
-    SaveCurrentFileSettings();
     g_playlistPlayer.PlayNext();
 
     return true;
@@ -4371,8 +4368,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #if defined(__APPLE__)
   if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
     g_audioManager.Enable(false);
-#endif   
-  
+#endif
+
   bool bResult;
   if (m_pPlayer)
     bResult = m_pPlayer->OpenFile(item, options);
@@ -4404,7 +4401,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #if !defined(__APPLE__)
     if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
       g_audioManager.Enable(false);
-#endif    
+#endif
   }
   m_bPlaybackStarting = false;
   if(bResult)
@@ -4418,7 +4415,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     // we send this if it isn't playlistplayer that is doing this
     int next = g_playlistPlayer.GetNextSong();
     int size = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist()).size();
-    if(next < 0 
+    if(next < 0
     || next >= size)
       OnPlayBackStopped();
   }
@@ -4529,16 +4526,16 @@ void CApplication::OnPlayBackStopped()
 
 void CApplication::OnFileClosed()
 {
-  if (!m_lastFileName.IsEmpty())
+  CLog::Log(LOGDEBUG, "%s - File was closed\n", __FUNCTION__);
+
+  if (m_progressTrackingFile != "")
   {
-    if (IsPlayingVideo())
-      UpdateVideoFileState();
+    SaveFileState(m_progressTrackingFile);
 
-    if (IsPlayingAudio())
-      UpdateAudioFileState();
-
-    // Reset filename
-    m_lastFileName="";
+    // Reset some stuff
+    m_progressTrackingFile = "";
+    PlayCountUpdate = false;
+    VideoResumeBookmark.timeInSeconds = 0.0f;
   }
 }
 
@@ -4590,49 +4587,119 @@ bool CApplication::IsPlayingFullScreenVideo() const
   return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
 }
 
-void CApplication::UpdateVideoFileState()
+void CApplication::SaveFileState(const CStdString& strFileName)
 {
-  // TODO: Add saving of watched status in here
-  // save our position for resuming at a later date
-  CVideoDatabase dbs;
-  if (dbs.Open())
+  if (m_bProgressTrackingIsVideo)
   {
-    // mark as watched if we are passed the usual amount
-    if (g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-        m_lastGetPercentage >= g_advancedSettings.m_videoPlayCountMinimumPercent)
+    CVideoDatabase videodatabase;
+    if (videodatabase.Open())
     {
-      CLog::Log(LOGDEBUG, "%s - Marking current video file as watched", __FUNCTION__);
+      // mark as watched if we are passed the usual amount
+      if (PlayCountUpdate)
+      {
+        CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, strFileName.c_str());
 
-      // consider this item as played
-      dbs.MarkAsWatched(m_lastFileName);
-      CUtil::DeleteVideoDatabaseDirectoryCache();
+        // consider this item as played
+        videodatabase.MarkAsWatched(strFileName);
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+      }
+
+      if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+      {
+        videodatabase.SetVideoSettings(strFileName, g_stSettings.m_currentVideoSettings);
+      }
+
+      if (VideoResumeBookmark.timeInSeconds < 0.0f)
+      {
+        videodatabase.ClearBookMarksOfFile(strFileName, CBookmark::RESUME);
+      }
+      else
+      if (VideoResumeBookmark.timeInSeconds > 0.0f)
+      {
+        videodatabase.AddBookMarkToFile(strFileName, VideoResumeBookmark, CBookmark::RESUME);
+      }
+
+      videodatabase.Close();
     }
+  }
 
-    if (VideoResumeBookmark.timeInSeconds > 0 && m_lastGetTime > g_advancedSettings.m_videoIgnoreAtStart)
+  if (m_bProgressTrackingIsAudio)
+  {
+    if (PlayCountUpdate)
     {
-      dbs.AddBookMarkToFile(m_lastFileName, VideoResumeBookmark, CBookmark::RESUME);
+      // Can't write to the musicdatabase while scanning for music info
+      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+      if (dialog && !dialog->IsDialogRunning())
+      {
+        // consider this item as played
+        CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, strFileName.c_str());
+
+        CMusicDatabase musicdatabase;
+        if (musicdatabase.Open())
+        {
+          musicdatabase.IncrTop100CounterByFileName(strFileName);
+          musicdatabase.Close();
+        }
+      }
     }
-    dbs.Close();
   }
 }
 
-void CApplication::UpdateAudioFileState()
+void CApplication::UpdateFileState()
 {
-  if (g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-      m_lastGetPercentage >= g_advancedSettings.m_audioPlayCountMinimumPercent)
+  if (IsPlaying())
   {
-    // Can't write to the musicdatabase while scanning for music info
-    CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (dialog && !dialog->IsDialogRunning())
+    // Make sure we don't pick the wrong file when ie. crossfading
+    if (m_progressTrackingFile == "" || m_progressTrackingFile == CurrentFile());
     {
-      // consider this item as played
-      CLog::Log(LOGDEBUG, "%s - Marking current audio file as listened", __FUNCTION__);
+      m_progressTrackingFile = CurrentFile();
 
-      CMusicDatabase musicdatabase;
-      if (musicdatabase.Open())
+      if ((IsPlayingAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+          GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
+          (IsPlayingVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+          GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
       {
-        musicdatabase.IncrTop100CounterByFileName(m_lastFileName);
-        musicdatabase.Close();
+        PlayCountUpdate = true;
+      }
+
+      // Update bookmark for save
+      if (IsPlayingVideo())
+      {
+        m_bProgressTrackingIsVideo = true;
+        VideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+        VideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+        VideoResumeBookmark.thumbNailImage.Empty();
+
+        if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
+            GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+        {
+          // Delete the bookmark
+          VideoResumeBookmark.timeInSeconds = -1.0f;
+        }
+        else
+        if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+        {
+          // Update the bookmark
+          VideoResumeBookmark.timeInSeconds = GetTime();
+        }
+        else
+        {
+          // Do nothing
+          VideoResumeBookmark.timeInSeconds = 0.0f;
+        }
+      }
+      else
+      {
+        m_bProgressTrackingIsVideo = false;
+      }
+
+      if (IsPlayingAudio())
+      {
+        m_bProgressTrackingIsAudio = true;
+      }
+      else
+      {
+        m_bProgressTrackingIsAudio = false;
       }
     }
   }
@@ -4738,7 +4805,7 @@ bool CApplication::WakeUpScreenSaverAndDPMS()
     m_dpmsIsActive = false;
     ResetScreenSaverTimer();
     return !m_bScreenSave || WakeUpScreenSaver();
-  } 
+  }
   else
     return WakeUpScreenSaver();
 }
@@ -4831,7 +4898,7 @@ void CApplication::CheckScreenSaverAndDPMS()
     m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]);
     m_dpmsIsActive = true;
     WakeUpScreenSaver();
-  } 
+  }
   else if (maybeScreensaver
            && elapsed > g_guiSettings.GetInt("screensaver.time") * 60)
   {
@@ -5037,18 +5104,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       m_bNetworkSpinDown = false;
       m_bSpinDown = false;
 
-      // Save our settings for the current file for next time
-      SaveCurrentFileSettings();
-      if (m_itemCurrentFile->IsVideo() && message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
-      {
-        CVideoDatabase dbs;
-        dbs.Open();
-        dbs.MarkAsWatched(*m_itemCurrentFile);
-        CUtil::DeleteVideoDatabaseDirectoryCache();
-        dbs.ClearBookMarksOfFile(m_itemCurrentFile->m_strPath, CBookmark::RESUME);
-        dbs.Close();
-      }
-
       // reset the current playing file
       m_itemCurrentFile->Reset();
       g_infoManager.ResetCurrentItem();
@@ -5207,6 +5262,9 @@ void CApplication::Process()
   if (m_pPlayer)
     m_pPlayer->DoAudioWork();
 
+  // Store our file state for use on close()
+  UpdateFileState();
+
   // do any processing that isn't needed on each run
   if( m_slowTimer.GetElapsedMilliseconds() > 500 )
   {
@@ -5218,23 +5276,6 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
-  // Make sure we don't pick the wrong file when ie. crossfading
-  if (IsPlaying() && (m_lastFileName.IsEmpty() || m_lastFileName == CurrentFile()))
-  {
-    m_lastGetPercentage=GetPercentage();
-    m_lastGetTime=GetTime();
-    m_lastFileName=CurrentFile();
-
-    // Update bookmark for save
-    if (IsPlayingVideo())
-    {
-      VideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-      VideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-      VideoResumeBookmark.timeInSeconds = GetTime();
-      VideoResumeBookmark.thumbNailImage.Empty();
-    }
-  }
-
   if (IsPlayingAudio())
   {
     CLastfmScrobbler::GetInstance()->UpdateStatus();
@@ -5822,7 +5863,8 @@ void CApplication::StartFtpEmergencyRecoveryMode()
 void CApplication::SaveCurrentFileSettings()
 {
   if (m_itemCurrentFile->IsVideo())
-  { // save video settings
+  {
+    // save video settings
     if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
     {
       CVideoDatabase dbs;

@@ -183,12 +183,13 @@ public:
     int m_musicResample;
     int m_videoBlackBarColour;
     int m_videoIgnoreAtStart;
+    int m_videoIgnoreAtEnd;
     CStdString m_audioHost;
-    
+
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;
-        
+
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;

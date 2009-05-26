@@ -48,6 +48,7 @@ class CFileItemList;
 #include "utils/Network.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
+#include "FileItem.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
@@ -136,8 +137,8 @@ public:
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
-  void UpdateVideoFileState();
-  void UpdateAudioFileState();
+  void SaveFileState(const CStdString& strFileName);
+  void UpdateFileState();
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -312,10 +313,12 @@ protected:
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
   bool m_bPlatformDirectories;
+
   CBookmark VideoResumeBookmark;
-  __int64 m_lastGetTime;
-  __int64 m_lastGetPercentage;
-  CStdString m_lastFileName;
+  bool PlayCountUpdate;
+  bool m_bProgressTrackingIsVideo;
+  bool m_bProgressTrackingIsAudio;
+  CStdString m_progressTrackingFile;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
