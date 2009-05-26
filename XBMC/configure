@@ -10230,7 +10230,7 @@ $as_echo "$as_me: $external_libdts_disabled" >&6;}
 fi
 
 # External libfaad
-if test "$use_external_libraries" = "yes" || test "$use_external_libfaad" = "yes"; then
+if test "$use_external_libfaad" = "yes"; then
 
 { $as_echo "$as_me:$LINENO: checking for main in -lfaad" >&5
 $as_echo_n "checking for main in -lfaad... " >&6; }
@@ -10304,6 +10304,8 @@ $as_echo "$as_me: error: $missing_library" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+  # mp4ff is not included in Gentoo packages, which is why external libfaad
+  # support has to be explicitely enabled
 
 { $as_echo "$as_me:$LINENO: checking for main in -lmp4ff" >&5
 $as_echo_n "checking for main in -lmp4ff... " >&6; }

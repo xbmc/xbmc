@@ -557,8 +557,10 @@ else
 fi
 
 # External libfaad
-if test "$use_external_libraries" = "yes" || test "$use_external_libfaad" = "yes"; then
+if test "$use_external_libfaad" = "yes"; then
   AC_CHECK_LIB([faad],          [main],, AC_MSG_ERROR($missing_library))
+  # mp4ff is not included in Gentoo packages, which is why external libfaad
+  # support has to be explicitely enabled
   AC_CHECK_LIB([mp4ff],          [main],, AC_MSG_ERROR($missing_library))
 
   # Test for the NeAACDecInitDRM function in libfaad as well
