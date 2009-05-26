@@ -48,7 +48,6 @@ class CFileItemList;
 #include "utils/Network.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
-#include "FileItem.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
@@ -314,11 +313,10 @@ protected:
   bool m_bInitializing;
   bool m_bPlatformDirectories;
 
-  CBookmark VideoResumeBookmark;
-  bool PlayCountUpdate;
-  bool m_bProgressTrackingIsVideo;
-  bool m_bProgressTrackingIsAudio;
+  CBookmark m_progressTrackingVideoResumeBookmark;
   CStdString m_progressTrackingFile;
+  bool m_bProgressTrackingPlayCountUpdate;
+  bool m_bProgressTrackingIsVideo;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
