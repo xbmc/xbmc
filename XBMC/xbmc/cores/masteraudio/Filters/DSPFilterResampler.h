@@ -40,12 +40,17 @@ protected:
   SRC_STATE* m_Converter;
   ma_audio_container* m_pInputContainer;
   float* m_pInputData;
+  unsigned int m_InputDataFrames;
   float* m_pOutputData;
+  unsigned int m_OutputDataFrames;
+
+  unsigned int m_RemainingFrames;
 
   double m_Ratio;
 
   MA_RESULT Init();
   void CleanUp();
+  MA_RESULT GetFrames(int* pOutputFrames, float* pOutputData, unsigned int channels, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
 };
 
 #endif // __DSPFILTER_RESAMPLER_H__
