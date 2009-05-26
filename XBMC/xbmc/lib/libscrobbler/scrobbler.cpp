@@ -154,9 +154,11 @@ void CScrobbler::UpdateStatus()
       (m_submissionTimer > m_CurrentTrack.length || 
        m_submissionTimer >= 480))
   {
-    CSingleLock lock(m_queueLock);
-    m_bSubmitted = true;
-    m_vecSubmissionQueue.push_back(m_CurrentTrack);
+    {
+      CSingleLock lock(m_queueLock);
+      m_bSubmitted = true;
+      m_vecSubmissionQueue.push_back(m_CurrentTrack);
+    }
     SaveJournal();
     CLog::Log(LOGDEBUG, "%s: Queued track for submission", m_strLogPrefix.c_str());
   }
