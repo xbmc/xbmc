@@ -178,7 +178,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoDefaultPlayer = "dvdplayer";
   g_advancedSettings.m_videoDefaultDVDPlayer = "dvdplayer";
   g_advancedSettings.m_videoIgnoreAtStart = 15;
-  g_advancedSettings.m_videoIgnoreAtEnd = 1; 
+  g_advancedSettings.m_videoIgnoreAtEnd = 5; 
   g_advancedSettings.m_videoPlayCountMinimumPercent = 90.0f;
 
   g_advancedSettings.m_musicUseTimeSeeking = true;
