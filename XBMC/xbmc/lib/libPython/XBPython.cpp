@@ -314,6 +314,7 @@ void XBPython::Initialize()
       }
 #endif        
 
+#if (!defined USE_EXTERNAL_PYTHON)
 #ifdef _LINUX
       // Required for python to find optimized code (pyo) files
       setenv("PYTHONOPTIMIZE", "1", 1);
@@ -323,12 +324,18 @@ void XBPython::Initialize()
       setenv("PYTHONPATH", _P("special://xbmc/system/python/Lib").c_str(), 1);
 #else
       setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip").c_str(), 1);
-#endif
+#endif /* __APPLE__ */
       //setenv("PYTHONDEBUG", "1", 1);
       //setenv("PYTHONINSPECT", "1", 1);
       //setenv("PYTHONVERBOSE", "1", 1);
       setenv("PYTHONCASEOK", "1", 1);
-#endif
+#endif /* _LINUX */
+#else
+      //setenv("PYTHONDEBUG", "1", 1);
+      //setenv("PYTHONINSPECT", "1", 1);
+      //setenv("PYTHONVERBOSE", "1", 1);
+      setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
+#endif /* USE_EXTERNAL_PYTHON */
 
       Py_Initialize();
       PyEval_InitThreads();
