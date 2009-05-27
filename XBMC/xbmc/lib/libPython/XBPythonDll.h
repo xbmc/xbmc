@@ -21,6 +21,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H)
+  #include "config.h"
+#endif
 #if !defined(_LINUX) && !defined(_WIN32PC)
 #define DATA_OBJECT(data) unsigned long pointer_##data
 #else
@@ -46,6 +49,14 @@
 #define PyExc_KeyboardInterrupt ((PyObject*)(*(long*)pointer_PyExc_KeyboardInterrupt))
 #define PyExc_RuntimeError ((PyObject*)(*(long*)pointer_PyExc_RuntimeError))
 #define PyExc_ReferenceError ((PyObject*)(*(long*)pointer_PyExc_ReferenceError))
+
+#if (defined USE_EXTERNAL_PYTHON) && (!defined HAVE_LIBPYTHON2_4)
+  /* Upstream Python rename Py_InitModule4 for 64-bit systems for Python
+   versions higher than 2.4 */
+  #if SIZEOF_SIZE_T != SIZEOF_INT
+  #define Py_InitModule4 Py_InitModule4_64
+  #endif
+#endif
 
 #ifdef __cplusplus
 extern "C"
