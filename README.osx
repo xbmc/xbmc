@@ -230,6 +230,10 @@ You can specify "Release" instead of "Debug" as a configuration.
 There are two methods, a) make/Xcode and b) make (which might fail as it's under
 construction).
 
+If you want to build a cross-compiled version that can run under 10.5/10.4/AppleTV, 
+then you'll need to follow the additional steps listed in $HOME/XBMC/tools/XBMCTex/README.osx
+before running xcodebuild from the command-line.
+
  a)
  $ cd $HOME/XBMC
  $ export XBMC_HOME=`pwd`
