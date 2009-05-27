@@ -48,6 +48,21 @@ void CDSPFilterLPCM::ClearOutputFormat(unsigned int bus /* = 0 */)
     memset(&m_pLPCMOutputDescriptor[bus], 0, sizeof(LPCMAttributes));
 }
 
+MA_RESULT CDSPFilterLPCM::ReadLPCMAttributes(CStreamDescriptor *pDesc, LPCMAttributes *pLPCM)
+{
+  CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
+  if (
+    (pAttribs->GetFlag (MA_ATT_TYPE_LPCM_FLAGS    , MA_LPCM_FLAG_INTERLEAVED, &pLPCM->m_IsInterleaved) != MA_SUCCESS) ||
+    (pAttribs->GetInt  (MA_ATT_TYPE_SAMPLE_TYPE   , &pLPCM->m_SampleType   ) != MA_SUCCESS) ||
+    (pAttribs->GetUInt (MA_ATT_TYPE_BITDEPTH      , &pLPCM->m_BitDepth     ) != MA_SUCCESS) ||
+    (pAttribs->GetUInt (MA_ATT_TYPE_SAMPLERATE    , &pLPCM->m_SampleRate   ) != MA_SUCCESS) ||
+    (pAttribs->GetUInt (MA_ATT_TYPE_CHANNEL_COUNT , &pLPCM->m_ChannelCount ) != MA_SUCCESS) ||
+    (pAttribs->GetArray(MA_ATT_TYPE_CHANNEL_LAYOUT, stream_attribute_int, &pLPCM->m_ChannelLayout, sizeof(pLPCM->m_ChannelLayout)) != MA_SUCCESS))
+    return MA_MISSING_ATTRIBUTE;
+
+  return MA_SUCCESS;
+}
+
 // IAudioSink
 MA_RESULT CDSPFilterLPCM::TestInputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
 {
@@ -62,15 +77,8 @@ MA_RESULT CDSPFilterLPCM::TestInputFormat(CStreamDescriptor* pDesc, unsigned int
     return MA_NOT_SUPPORTED;
 
   // Verify that the required attributes are present and of the correct type
-  if (
-    (pAttribs->GetInt (MA_ATT_TYPE_LPCM_FLAGS   , NULL) != MA_SUCCESS) ||
-    (pAttribs->GetInt (MA_ATT_TYPE_SAMPLE_TYPE  , NULL) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_BITDEPTH     , NULL) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_SAMPLERATE   , NULL) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, NULL) != MA_SUCCESS))
-    return MA_MISSING_ATTRIBUTE;
-
-  return MA_SUCCESS;
+  LPCMAttributes LPCM;
+  return ReadLPCMAttributes(pDesc, &LPCM);
 }
 
 MA_RESULT CDSPFilterLPCM::SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
@@ -79,20 +87,13 @@ MA_RESULT CDSPFilterLPCM::SetInputFormat(CStreamDescriptor* pDesc, unsigned int 
   if ((ret = CDSPFilter::SetInputFormat(pDesc, bus)) != MA_SUCCESS)
     return ret;
 
-  CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
-  LPCMAttributes *pLPCM = &m_pLPCMInputDescriptor[bus];
   // Fetch and store the required stream attributes
-  if (
-    (pAttribs->GetFlag(MA_ATT_TYPE_LPCM_FLAGS   , MA_LPCM_FLAG_INTERLEAVED, &pLPCM->m_IsInterleaved) != MA_SUCCESS) ||
-    (pAttribs->GetInt (MA_ATT_TYPE_SAMPLE_TYPE  , &pLPCM->m_SampleType  ) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_BITDEPTH     , &pLPCM->m_BitDepth    ) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_SAMPLERATE   , &pLPCM->m_SampleRate  ) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, &pLPCM->m_ChannelCount) != MA_SUCCESS))
+  if ((ret = ReadLPCMAttributes(pDesc, &m_pLPCMInputDescriptor[bus])) != MA_SUCCESS)
   {
     ClearInputFormat(bus);
-    return MA_MISSING_ATTRIBUTE;
+    return ret;
   }
-
+ 
   return MA_SUCCESS;
 }
 
@@ -109,16 +110,8 @@ MA_RESULT CDSPFilterLPCM::TestOutputFormat(CStreamDescriptor* pDesc, unsigned in
       (streamFormat != MA_STREAM_FORMAT_LPCM))
     return MA_NOT_SUPPORTED;
 
-  // Verify that the required attributes are present and of the correct type
-  if (
-    (pAttribs->GetInt (MA_ATT_TYPE_LPCM_FLAGS   , NULL) != MA_SUCCESS) ||
-    (pAttribs->GetInt (MA_ATT_TYPE_SAMPLE_TYPE  , NULL) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_BITDEPTH     , NULL) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_SAMPLERATE   , NULL) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, NULL) != MA_SUCCESS))
-    return MA_MISSING_ATTRIBUTE;
-
-  return MA_SUCCESS;
+  LPCMAttributes LPCM;
+  return ReadLPCMAttributes(pDesc, &LPCM);
 }
 
 MA_RESULT CDSPFilterLPCM::SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus /* = 0*/)
@@ -127,18 +120,11 @@ MA_RESULT CDSPFilterLPCM::SetOutputFormat(CStreamDescriptor* pDesc, unsigned int
   if ((ret = CDSPFilter::SetOutputFormat(pDesc, bus)) != MA_SUCCESS)
     return ret;
 
-  CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
-  LPCMAttributes *pLPCM = &m_pLPCMOutputDescriptor[bus];
   // Fetch and store the required stream attributes
-  if (
-    (pAttribs->GetFlag(MA_ATT_TYPE_LPCM_FLAGS   , MA_LPCM_FLAG_INTERLEAVED, &pLPCM->m_IsInterleaved) != MA_SUCCESS) ||
-    (pAttribs->GetInt (MA_ATT_TYPE_SAMPLE_TYPE  , &pLPCM->m_SampleType  ) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_BITDEPTH     , &pLPCM->m_BitDepth    ) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_SAMPLERATE   , &pLPCM->m_SampleRate  ) != MA_SUCCESS) ||
-    (pAttribs->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, &pLPCM->m_ChannelCount) != MA_SUCCESS))
+  if ((ret = ReadLPCMAttributes(pDesc, &m_pLPCMOutputDescriptor[bus])) != MA_SUCCESS)
   {
     ClearOutputFormat(bus);
-    return MA_MISSING_ATTRIBUTE;
+    return ret;
   }
 
   return MA_SUCCESS;

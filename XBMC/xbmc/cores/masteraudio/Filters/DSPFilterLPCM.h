@@ -45,11 +45,12 @@ public:
 protected:
   struct LPCMAttributes
   {
-    bool         m_IsInterleaved;  //MA_ATT_TYPE_LPCM_FLAGS
-    int          m_SampleType;     //MA_ATT_TYPE_SAMPLE_TYPE
-    unsigned int m_BitDepth;       //MA_ATT_TYPE_BITDEPTH
-    unsigned int m_SampleRate;     //MA_ATT_TYPE_SAMPLERATE
-    unsigned int m_ChannelCount;   //MA_ATT_TYPE_CHANNEL_COUNT
+    bool         m_IsInterleaved;                  //MA_ATT_TYPE_LPCM_FLAGS
+    int          m_SampleType;                     //MA_ATT_TYPE_SAMPLE_TYPE
+    unsigned int m_BitDepth;                       //MA_ATT_TYPE_BITDEPTH
+    unsigned int m_SampleRate;                     //MA_ATT_TYPE_SAMPLERATE
+    unsigned int m_ChannelCount;                   //MA_ATT_TYPE_CHANNEL_COUNT
+    int          m_ChannelLayout[MA_MAX_CHANNELS]; //MA_ATT_TYPE_CHANNEL_LAYOUT
   };
 
   inline const LPCMAttributes* GetLPCMInputAttributes(unsigned int bus = 0)
@@ -68,7 +69,8 @@ protected:
 
   virtual void ClearInputFormat(unsigned int bus = 0);
   virtual void ClearOutputFormat(unsigned int bus = 0);
-  
+
+  MA_RESULT ReadLPCMAttributes(CStreamDescriptor *pDesc, LPCMAttributes *pLPCM);
 private:
   LPCMAttributes* m_pLPCMInputDescriptor;
   LPCMAttributes* m_pLPCMOutputDescriptor;
