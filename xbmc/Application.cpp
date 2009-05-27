@@ -4646,7 +4646,7 @@ void CApplication::UpdateFileState()
   if (IsPlaying())
   {
     // Make sure we don't pick the wrong file when ie. crossfading
-    if (m_progressTrackingFile == "" || m_progressTrackingFile == CurrentFile());
+    if (m_progressTrackingFile == "" || m_progressTrackingFile == CurrentFile())
     {
       m_progressTrackingFile = CurrentFile();
 
