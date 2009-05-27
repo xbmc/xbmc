@@ -782,6 +782,7 @@ void CSurface::Flip()
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
 
       glXSwapBuffers(s_dpy, m_glWindow);
+      glFinish();
 
       if(_glXGetVideoSyncSGI(&after) != 0)
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
