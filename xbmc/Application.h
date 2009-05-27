@@ -316,7 +316,6 @@ protected:
   CBookmark m_progressTrackingVideoResumeBookmark;
   CStdString m_progressTrackingFile;
   bool m_progressTrackingPlayCountUpdate;
-  bool m_progressTrackingIsVideo;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
