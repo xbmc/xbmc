@@ -4523,14 +4523,11 @@ void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& str
 {
   if (!CDirectory::Exists(strSrcPath)) return;
 
-  printf("srcPath=%s, dest=%s\n", strSrcPath.c_str(), strDstPath.c_str());
-
   // create root first
   CStdString destPath;
 
   destPath = strDstPath;
   AddSlashAtEnd(destPath);
-  printf("CreateDirectory: %s\n", destPath.c_str());
   CDirectory::Create(destPath);
 
   CFileItemList items;
@@ -4540,7 +4537,6 @@ void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& str
     destPath = items[i]->m_strPath;
     destPath.Replace(strSrcPath,"");
     destPath = CUtil::AddFileToFolder(strDstPath, destPath);
-    printf("item#%d=%s, CreateDirectory: %s\n", i, items[i]->m_strPath.c_str(), destPath.c_str());
     CDirectory::Create(destPath);
   }
   items.Clear();
@@ -4550,7 +4546,6 @@ void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& str
     destPath = items[i]->m_strPath;
     destPath.Replace(strSrcPath,"");
     destPath = CUtil::AddFileToFolder(strDstPath, destPath);
-    printf("item#%d: %s - dest=%s\n", i, items[i]->m_strPath.c_str(), destPath.c_str());
     CFile::Cache(items[i]->m_strPath, destPath);
   }
 }
