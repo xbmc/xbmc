@@ -1,4 +1,4 @@
- /*
+/*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://xbmc.org
  *
@@ -318,9 +318,6 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
   m_strPlayListFile = "";
   m_nextPlaylistItem = -1;
   m_bPlaybackStarting = false;
-  m_progressTrackingFile = "";
-  PlayCountUpdate = false;
-  VideoResumeBookmark.timeInSeconds = 0.0f;
 
 #ifdef HAS_GLX
   XInitThreads();
@@ -4534,8 +4531,8 @@ void CApplication::OnFileClosed()
 
     // Reset some stuff
     m_progressTrackingFile = "";
-    PlayCountUpdate = false;
-    VideoResumeBookmark.timeInSeconds = 0.0f;
+    m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+    m_progressTrackingPlayCountUpdate = false;
   }
 }
 
@@ -4589,13 +4586,13 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState(const CStdString& strFileName)
 {
-  if (m_bProgressTrackingIsVideo)
+  if (m_progressTrackingIsVideo)
   {
     CVideoDatabase videodatabase;
     if (videodatabase.Open())
     {
       // mark as watched if we are passed the usual amount
-      if (PlayCountUpdate)
+      if (m_progressTrackingPlayCountUpdate)
       {
         CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, strFileName.c_str());
 
@@ -4609,23 +4606,22 @@ void CApplication::SaveFileState(const CStdString& strFileName)
         videodatabase.SetVideoSettings(strFileName, g_stSettings.m_currentVideoSettings);
       }
 
-      if (VideoResumeBookmark.timeInSeconds < 0.0f)
+      if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
       {
         videodatabase.ClearBookMarksOfFile(strFileName, CBookmark::RESUME);
       }
       else
-      if (VideoResumeBookmark.timeInSeconds > 0.0f)
+      if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
       {
-        videodatabase.AddBookMarkToFile(strFileName, VideoResumeBookmark, CBookmark::RESUME);
+        videodatabase.AddBookMarkToFile(strFileName, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
       }
 
       videodatabase.Close();
     }
   }
-
-  if (m_bProgressTrackingIsAudio)
+  else
   {
-    if (PlayCountUpdate)
+    if (m_progressTrackingPlayCountUpdate)
     {
       // Can't write to the musicdatabase while scanning for music info
       CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
@@ -4650,7 +4646,7 @@ void CApplication::UpdateFileState()
   if (IsPlaying())
   {
     // Make sure we don't pick the wrong file when ie. crossfading
-    if (m_progressTrackingFile == "" || m_progressTrackingFile == CurrentFile());
+    if (m_progressTrackingFile == "" || m_progressTrackingFile == CurrentFile())
     {
       m_progressTrackingFile = CurrentFile();
 
@@ -4659,47 +4655,38 @@ void CApplication::UpdateFileState()
           (IsPlayingVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
           GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
       {
-        PlayCountUpdate = true;
+        m_progressTrackingPlayCountUpdate = true;
       }
 
       // Update bookmark for save
       if (IsPlayingVideo())
       {
-        m_bProgressTrackingIsVideo = true;
-        VideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-        VideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-        VideoResumeBookmark.thumbNailImage.Empty();
+        m_progressTrackingIsVideo = true;
+        m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+        m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+        m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
         if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
             GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
         {
           // Delete the bookmark
-          VideoResumeBookmark.timeInSeconds = -1.0f;
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
         }
         else
         if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
         {
           // Update the bookmark
-          VideoResumeBookmark.timeInSeconds = GetTime();
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
         }
         else
         {
           // Do nothing
-          VideoResumeBookmark.timeInSeconds = 0.0f;
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
         }
       }
       else
       {
-        m_bProgressTrackingIsVideo = false;
-      }
-
-      if (IsPlayingAudio())
-      {
-        m_bProgressTrackingIsAudio = true;
-      }
-      else
-      {
-        m_bProgressTrackingIsAudio = false;
+        m_progressTrackingIsVideo = false;
       }
     }
   }
@@ -5262,9 +5249,6 @@ void CApplication::Process()
   if (m_pPlayer)
     m_pPlayer->DoAudioWork();
 
-  // Store our file state for use on close()
-  UpdateFileState();
-
   // do any processing that isn't needed on each run
   if( m_slowTimer.GetElapsedMilliseconds() > 500 )
   {
@@ -5276,6 +5260,9 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
+  // Store our file state for use on close()
+  UpdateFileState();
+
   if (IsPlayingAudio())
   {
     CLastfmScrobbler::GetInstance()->UpdateStatus();
