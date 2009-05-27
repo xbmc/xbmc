@@ -602,8 +602,9 @@ void CSurface::EnableVSync(bool enable)
   strRenderer.ToLower();
 
   m_iVSyncMode = 0;
-  m_iSwapRate = 0;
-  m_bVSync=enable;
+  m_iSwapRate  = 0;
+  m_bVSync     = enable;
+  m_bVsyncInit = true;
 
 #ifdef HAS_GLX
   // Obtain function pointers
@@ -625,8 +626,6 @@ void CSurface::EnableVSync(bool enable)
   if (!_wglGetSwapIntervalEXT )
     _wglGetSwapIntervalEXT = (int (APIENTRY *)())wglGetProcAddress("wglGetSwapIntervalEXT");
 #endif
-
-  m_bVsyncInit = true;
 
 #ifdef HAS_GLX
   if (_glXSwapIntervalSGI)
