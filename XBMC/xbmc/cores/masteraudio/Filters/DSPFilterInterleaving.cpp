@@ -19,7 +19,7 @@
  */
 
 #include "stdafx.h"
-#include "DSPFilterInterleave.h"
+#include "DSPFilterInterleaving.h"
 
 CDSPFilterInterleaving::CDSPFilterInterleaving(unsigned int inputBusses /* = 1*/, unsigned int outputBusses /* = 1*/) :
   CDSPFilterLPCM(inputBusses, outputBusses),
