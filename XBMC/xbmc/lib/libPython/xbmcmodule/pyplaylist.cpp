@@ -322,7 +322,7 @@ namespace PYXBMC
     return Py_BuildValue((char*)"i", self->pPlayList->size());
   }
 
-  int PlayList_Length(PyObject *self)
+  Py_ssize_t PlayList_Length(PyObject *self)
   {
     return ((PlayList*)self)->pPlayList->size();
   }

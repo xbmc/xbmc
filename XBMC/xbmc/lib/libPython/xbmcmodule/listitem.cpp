@@ -371,7 +371,7 @@ namespace PYXBMC
     PyGUILock();
 
     CStdString tmp;
-    while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
+    while (PyDict_Next(pInfoLabels, (Py_ssize_t*)&pos, &key, &value)) {
       if (strcmpi(cType, "video") == 0)
       {
         // TODO: add the rest of the infolabels
