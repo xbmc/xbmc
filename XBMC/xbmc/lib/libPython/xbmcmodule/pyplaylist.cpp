@@ -27,8 +27,10 @@
 #include "Util.h"
 #include "pyplaylist.h"
 #if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/structmember.h>
+  #if (defined HAVE_LIBPYTHON2_6)
+    #include <python2.6/Python.h>
+  #elif (defined HAVE_LIBPYTHON2_5)
+    #include <python2.5/Python.h>
   #elif (defined HAVE_LIBPYTHON2_4)
     #include <python2.4/structmember.h>
   #else

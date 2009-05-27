@@ -32,7 +32,9 @@
 #endif
 #include "stdafx.h"
 #if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_5)
+  #if (defined HAVE_LIBPYTHON2_6)
+    #include <python2.6/Python.h>
+  #elif (defined HAVE_LIBPYTHON2_5)
     #include <python2.5/Python.h>
   #elif (defined HAVE_LIBPYTHON2_4)
     #include <python2.4/Python.h>
@@ -65,13 +67,17 @@ XBPython g_pythonParser;
 #define PYTHON_DLL "special://xbmc/system/python/python24-x86-osx.so"
 #endif
 #elif defined(__x86_64__)
-#if (defined HAVE_LIBPYTHON2_5)
+#if (defined HAVE_LIBPYTHON2_6)
+#define PYTHON_DLL "special://xbmc/system/python/python26-x86_64-linux.so"
+#elif (defined HAVE_LIBPYTHON2_5)
 #define PYTHON_DLL "special://xbmc/system/python/python25-x86_64-linux.so"
 #else
 #define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
 #endif
 #else /* !__x86_64__ */
-#if (defined HAVE_LIBPYTHON2_5)
+#if (defined HAVE_LIBPYTHON2_6)
+#define PYTHON_DLL "special://xbmc/system/python/python26-i486-linux.so"
+#elif (defined HAVE_LIBPYTHON2_5)
 #define PYTHON_DLL "special://xbmc/system/python/python25-i486-linux.so"
 #else
 #define PYTHON_DLL "special://xbmc/system/python/python24-i486-linux.so"

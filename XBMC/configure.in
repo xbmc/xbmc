@@ -659,16 +659,21 @@ fi
 # External Python
 if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes" || \
   $(test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple"); then
-  AC_CHECK_LIB([python2.5], [main],,
+  AC_CHECK_LIB([python2.6], [main],,
+  [AC_CHECK_LIB([python2.5], [main],,
   [AC_CHECK_LIB([python2.4], [main],,
-  [AC_MSG_ERROR($missing_library)] )] )
+  [AC_MSG_ERROR($missing_library)] )] )] )
 
   # Test again, but this time just set some variables we need in Makefiles
-  AC_CHECK_LIB([python2.5], [main],[USE_PYTHON2_5=1],
+  AC_CHECK_LIB([python2.6], [main],[USE_PYTHON2_6=1],
+  [AC_CHECK_LIB([python2.5], [main],[USE_PYTHON2_5=1],
   [AC_CHECK_LIB([python2.4], [main],[USE_PYTHON2_4=1],
-  [AC_MSG_ERROR($missing_library)] )] )
+  [AC_MSG_ERROR($missing_library)] )] )] )
 
   AC_MSG_NOTICE($external_python_enabled)
+  test "$USE_PYTHON2_6" && AC_MSG_NOTICE([Using Python 2.6])
+  test "$USE_PYTHON2_5" && AC_MSG_NOTICE([Using Python 2.5])
+  test "$USE_PYTHON2_4" && AC_MSG_NOTICE([Using Python 2.4])
   USE_EXTERNAL_PYTHON=1
   AC_DEFINE([USE_EXTERNAL_PYTHON], [1], [Whether to use external python library.])
 else
@@ -1040,6 +1045,7 @@ AC_SUBST(USE_EXTERNAL_LIBMPCDEC)
 AC_SUBST(USE_EXTERNAL_LIBFLAC)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
+AC_SUBST(USE_PYTHON2_6)
 AC_SUBST(USE_PYTHON2_5)
 AC_SUBST(USE_PYTHON2_4)
 AC_SUBST(INTERNAL_LIBS)

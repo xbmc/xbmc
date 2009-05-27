@@ -2,7 +2,10 @@ ARCH=@ARCH@
 
 SHELL=/bin/bash
 SYSDIR=../../../../system/python
-ifeq (@USE_PYTHON2_5@,1)
+ifeq (@USE_PYTHON2_6@,1)
+    PYVERSION=python2.6
+    SO=python26-$(ARCH).so
+else ifeq (@USE_PYTHON2_5@,1)
     PYVERSION=python2.5
     SO=python25-$(ARCH).so
 else ifeq (@USE_PYTHON2_4@,1)
