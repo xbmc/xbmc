@@ -13,7 +13,8 @@ SRCS = \
   Filters/DSPFilter.cpp \
   Filters/DSPFilterLPCM.cpp \
   Filters/DSPFilterMatrixMixer.cpp \
-  Filters/DSPFilterResampler.cpp
+  Filters/DSPFilterResampler.cpp \
+  Filters/DSPFilterInterleaving.cpp
   
 LIB=masteraudio.a
 
