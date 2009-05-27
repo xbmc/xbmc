@@ -279,9 +279,6 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
   m_bStopPlaying = true;
   m_bStop = true;
 
-  // Call the FileClosed-callback to store resume point etc.
-  m_callback.OnFileClosed();
-
   m_visBufferLength = 0;
   StopThread();
 
