@@ -62,8 +62,7 @@ public:
    virtual void sws_freeContext(struct SwsContext *context)=0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG) \
-  || (defined __APPLE__)
+#if (defined USE_EXTERNAL_FFMPEG)
 
 // We call into this library directly.
 class DllSwScale : public DllDynamic, public DllSwScaleInterface

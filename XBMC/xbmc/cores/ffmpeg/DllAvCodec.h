@@ -74,8 +74,7 @@ public:
 
 };
 
-#if (defined USE_EXTERNAL_FFMPEG) \
-  || (defined __APPLE__)
+#if (defined USE_EXTERNAL_FFMPEG)
 
 extern "C" { AVOption* av_set_string(void *obj, const char *name, const char *val); }  
 
@@ -258,8 +257,7 @@ public:
   virtual int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding)=0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG) \
-  || (defined __APPLE__)
+#if (defined USE_EXTERNAL_FFMPEG)
 
 // Use direct layer
 class DllAvUtilBase : public DllDynamic, DllAvUtilInterface

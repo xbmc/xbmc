@@ -46,8 +46,7 @@ public:
   virtual void pp_free_context(pp_context_t *ppContext)=0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG) \
-  || (defined __APPLE__)
+#if (defined USE_EXTERNAL_FFMPEG)
 
 // We call directly.
 class DllPostProc : public DllDynamic, DllPostProcInterface

@@ -64,8 +64,7 @@ public:
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
 };
 
-#if (defined USE_EXTERNAL_FFMPEG) \
-  || (defined __APPLE__)
+#if (defined USE_EXTERNAL_FFMPEG)
 
 extern "C" { void av_read_frame_flush(AVFormatContext *s); }
 
