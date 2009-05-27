@@ -4586,18 +4586,17 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState(const CStdString& strFileName)
 {
-  if (m_progressTrackingIsVideo)
+  if (m_itemCurrentFile && m_itemCurrentFile->IsVideo())
   {
     CVideoDatabase videodatabase;
     if (videodatabase.Open())
     {
-      // mark as watched if we are passed the usual amount
       if (m_progressTrackingPlayCountUpdate)
       {
-        CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, strFileName.c_str());
+        CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, m_itemCurrentFile->m_strPath.c_str());
 
         // consider this item as played
-        videodatabase.MarkAsWatched(strFileName);
+        videodatabase.MarkAsWatched(*m_itemCurrentFile);
         CUtil::DeleteVideoDatabaseDirectoryCache();
       }
 
@@ -4661,7 +4660,6 @@ void CApplication::UpdateFileState()
       // Update bookmark for save
       if (IsPlayingVideo())
       {
-        m_progressTrackingIsVideo = true;
         m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
         m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
@@ -4683,10 +4681,6 @@ void CApplication::UpdateFileState()
           // Do nothing
           m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
         }
-      }
-      else
-      {
-        m_progressTrackingIsVideo = false;
       }
     }
   }
