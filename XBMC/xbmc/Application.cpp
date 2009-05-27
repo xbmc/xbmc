@@ -4422,6 +4422,9 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
 void CApplication::OnPlayBackEnded()
 {
+  // Save status of the file ended
+  SaveFileState();
+
   if(m_bPlaybackStarting)
     return;
 
@@ -4442,7 +4445,7 @@ void CApplication::OnPlayBackEnded()
     CLibrefmScrobbler::GetInstance()->SubmitQueue();
   }
 
-  CLog::Log(LOGDEBUG, "Playback has finished");
+  CLog::Log(LOGDEBUG, "%s - Playback has finished", __FUNCTION__);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
@@ -4450,6 +4453,9 @@ void CApplication::OnPlayBackEnded()
 
 void CApplication::OnPlayBackStarted()
 {
+  // Make sure the state for the previous file was saved
+  SaveFileState();
+
   if(m_bPlaybackStarting)
     return;
 
@@ -4465,7 +4471,7 @@ void CApplication::OnPlayBackStarted()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
-  CLog::Log(LOGDEBUG, "Playback has started");
+  CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
@@ -4498,6 +4504,9 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
+  // Save state of the file stopped
+  SaveFileState();
+
   if(m_bPlaybackStarting)
     return;
 
@@ -4515,25 +4524,10 @@ void CApplication::OnPlayBackStopped()
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
 
-  CLog::Log(LOGDEBUG, "Playback was stopped\n");
+  CLog::Log(LOGDEBUG, "%s - Playback was stopped", __FUNCTION__);
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   m_gWindowManager.SendThreadMessage(msg);
-}
-
-void CApplication::OnFileClosed()
-{
-  CLog::Log(LOGDEBUG, "%s - File was closed\n", __FUNCTION__);
-
-  if (m_progressTrackingFile != "")
-  {
-    SaveFileState(m_progressTrackingFile);
-
-    // Reset some stuff
-    m_progressTrackingFile = "";
-    m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
-    m_progressTrackingPlayCountUpdate = false;
-  }
 }
 
 bool CApplication::IsPlaying() const
@@ -4584,59 +4578,71 @@ bool CApplication::IsPlayingFullScreenVideo() const
   return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
 }
 
-void CApplication::SaveFileState(const CStdString& strFileName)
+void CApplication::SaveFileState()
 {
-  if (m_itemCurrentFile && m_itemCurrentFile->IsVideo())
+  if (m_progressTrackingFile != "")
   {
-    CVideoDatabase videodatabase;
-    if (videodatabase.Open())
+    if (m_itemCurrentFile && m_itemCurrentFile->IsVideo())
     {
+      CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, m_itemCurrentFile->m_strPath.c_str());
+
+      CVideoDatabase videodatabase;
+      if (videodatabase.Open())
+      {
+        if (m_progressTrackingPlayCountUpdate)
+        {
+          CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, m_itemCurrentFile->m_strPath.c_str());
+
+          // consider this item as played
+          videodatabase.MarkAsWatched(*m_itemCurrentFile);
+          CUtil::DeleteVideoDatabaseDirectoryCache();
+        }
+
+        if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+        {
+          videodatabase.SetVideoSettings(m_itemCurrentFile->m_strPath, g_stSettings.m_currentVideoSettings);
+        }
+
+        if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
+        {
+          videodatabase.ClearBookMarksOfFile(m_itemCurrentFile->m_strPath, CBookmark::RESUME);
+        }
+        else
+        if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
+        {
+          videodatabase.AddBookMarkToFile(m_itemCurrentFile->m_strPath, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
+        }
+
+        videodatabase.Close();
+      }
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "%s - Saving file state for audio file %s", __FUNCTION__, m_itemCurrentFile->m_strPath.c_str());
+
       if (m_progressTrackingPlayCountUpdate)
       {
-        CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, m_itemCurrentFile->m_strPath.c_str());
-
-        // consider this item as played
-        videodatabase.MarkAsWatched(*m_itemCurrentFile);
-        CUtil::DeleteVideoDatabaseDirectoryCache();
-      }
-
-      if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-      {
-        videodatabase.SetVideoSettings(strFileName, g_stSettings.m_currentVideoSettings);
-      }
-
-      if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
-      {
-        videodatabase.ClearBookMarksOfFile(strFileName, CBookmark::RESUME);
-      }
-      else
-      if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
-      {
-        videodatabase.AddBookMarkToFile(strFileName, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
-      }
-
-      videodatabase.Close();
-    }
-  }
-  else
-  {
-    if (m_progressTrackingPlayCountUpdate)
-    {
-      // Can't write to the musicdatabase while scanning for music info
-      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (dialog && !dialog->IsDialogRunning())
-      {
-        // consider this item as played
-        CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, strFileName.c_str());
-
-        CMusicDatabase musicdatabase;
-        if (musicdatabase.Open())
+        // Can't write to the musicdatabase while scanning for music info
+        CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+        if (dialog && !dialog->IsDialogRunning())
         {
-          musicdatabase.IncrTop100CounterByFileName(strFileName);
-          musicdatabase.Close();
+          // consider this item as played
+          CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, m_progressTrackingFile.c_str());
+
+          CMusicDatabase musicdatabase;
+          if (musicdatabase.Open())
+          {
+            musicdatabase.IncrTop100CounterByFileName(m_progressTrackingFile);
+            musicdatabase.Close();
+          }
         }
       }
     }
+
+    // Reset some stuff
+    m_progressTrackingFile = "";
+    m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+    m_progressTrackingPlayCountUpdate = false;
   }
 }
 
