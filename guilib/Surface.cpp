@@ -671,9 +671,6 @@ void CSurface::EnableVSync(bool enable)
       else
         CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
     }
-#endif
-
-#ifdef HAS_GLX
     if (_glXSwapIntervalSGI && !m_iVSyncMode)
     {
       if(_glXSwapIntervalSGI(1) == 0)
