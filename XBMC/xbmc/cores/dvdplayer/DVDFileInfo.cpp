@@ -36,6 +36,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodec.h"
+#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
 #include "../ffmpeg/DllAvFormat.h"
 #include "../ffmpeg/DllAvCodec.h"
@@ -126,9 +127,22 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   bool bOk = false;
   if (nVideoStream != -1)
   {
+    CDVDVideoCodec *pVideoCodec;
+    
     CDVDStreamInfo hint(*pStream, true);
     hint.software = true;
-    CDVDVideoCodec *pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
+    
+    if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
+    {
+      // libmpeg2 is not thread safe so use ffmepg for mpeg2/mpeg1 thumb extraction 
+      CDVDCodecOptions dvdOptions;
+      pVideoCodec = CDVDFactoryCodec::OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions);
+    }
+    else
+    {
+      pVideoCodec = CDVDFactoryCodec::CreateVideoCodec( hint );
+    }
+
     if (pVideoCodec)
     {
       int nTotalLen = pDemuxer->GetStreamLength();

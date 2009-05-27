@@ -58,6 +58,12 @@ typedef int bool_t;
 #define console_printf printf
 #define THREAD_FUNC_PREFIX void *
 
+static inline int msleep(unsigned int ms)
+{
+	usleep(ms * 1000);
+	return 0;
+}
+
 static inline uint64_t getcurrenttime(void)
 {
 	struct timeval t;
@@ -72,3 +78,7 @@ static inline int setsocktimeout(int s, int level, int optname, uint64_t timeout
 	t.tv_usec = (timeout % 1000) * 1000;
 	return setsockopt(s, level, optname, (char *)&t, sizeof(t));
 }
+
+#define min(a,b) (((a)<(b))?(a):(b))
+#define max(a,b) (((a)>(b))?(a):(b))
+

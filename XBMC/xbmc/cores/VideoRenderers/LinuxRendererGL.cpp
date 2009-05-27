@@ -1435,6 +1435,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
 
 void CLinuxRendererGL::UnInit()
 {
+  CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
 
   if (m_pBuffer)
@@ -1448,14 +1449,7 @@ void CLinuxRendererGL::UnInit()
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
-}
 
-
-// called from GUI thread after playback has finished to release GL resources
-void CLinuxRendererGL::OnClose()
-{
-  CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
-  CSingleLock lock(g_graphicsContext);
 #ifdef HAVE_LIBVDPAU
   if (g_VDPAU)
     g_VDPAU->ReleasePixmap();
@@ -1471,6 +1465,7 @@ void CLinuxRendererGL::OnClose()
   m_fbo.Cleanup();
   m_bValidated = false;
   m_bImageReady = false;
+  m_bConfigured = false;
 }
 
 void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)

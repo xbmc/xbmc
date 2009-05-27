@@ -1,10 +1,10 @@
 /*
-  libdcr version 0.1.8.81 15/Dec/2007
+  libdcr version 0.1.8.89 11/Jan/2009
 
-  libdcr : copyright (C) 2007, Davide Pizzolato
+  libdcr : copyright (C) 2007-2009, Davide Pizzolato
 
   based on dcraw.c -- Dave Coffin's raw photo decoder
-  Copyright 1997-2007 by Dave Coffin, dcoffin a cybercom o net
+  Copyright 1997-2009 by Dave Coffin, dcoffin a cybercom o net
 
   Covered code is provided under this license on an "as is" basis, without warranty
   of any kind, either expressed or implied, including, without limitation, warranties
@@ -22,12 +22,14 @@
   containing RESTRICTED functions, (b) distribute this code under
   the GPL Version 2 or later, (c) remove all RESTRICTED functions,
   re-implement them, or copy them from an earlier, unrestricted
-  Revision of dcraw.c, or (d) purchase a license from the author of dcraw.c.
+  revision of dcraw.c, or (d) purchase a license from the author
+  of dcraw.c.
 
   --------------------------------------------------------------------------------
 
-  Other information about libdcr, and the latest version, can be found at the
-  libdcr home page: http://www.xdp.it/libdcr/
+  dcraw.c home page: http://cybercom.net/~dcoffin/dcraw/
+  libdcr  home page: http://www.xdp.it/libdcr/
+
  */
 
 #ifndef __LIBDCR
@@ -42,12 +44,15 @@
 #if defined(_LINUX) || defined(__APPLE__)
 #include <setjmp.h>
 #include <sys/types.h>
+#define _swab   swab
+#define _getcwd getcwd
 #endif
+#include <time.h>
 
-#define DCR_VERSION "8.81"
+#define DCR_VERSION "8.91"
 
 // read dcraw.c and libdcr.c license before enabling RESTRICTED code
-#define RESTRICTED 1
+#define RESTRICTED 0
 
 #define NO_JPEG
 #define NO_LCMS
@@ -56,26 +61,26 @@
 //#define COLORCHECK
 
 #ifndef LONG_BIT
-#define LONG_BIT (8 * sizeof (long))
+  #define LONG_BIT (8 * sizeof (long))
 #endif
 
 #ifndef uchar
-typedef unsigned char uchar;
+  typedef unsigned char uchar;
 #endif
 
 #ifndef ushort
-typedef unsigned short ushort;
+  typedef unsigned short ushort;
 #endif
 
-//#define fgetc getc_unlocked
-
 #ifdef DJGPP
-#define fseeko fseek
-#define ftello ftell
+  #define fseeko fseek
+  #define ftello ftell
+#else
+//#define fgetc getc_unlocked
 #endif
 
 #ifndef M_PI
-#define M_PI 3.14159265358979323846
+  #define M_PI 3.14159265358979323846
 #endif
 
 // file object.
@@ -105,8 +110,8 @@ typedef struct {
 #define dcr_fscanf (*p->ops_->scanf_)
 
 typedef struct {
-	char *dark_frame;
-	int user_flip, user_black, user_qual;
+	char *dark_frame, *bpfile;
+	int user_flip, user_black, user_qual, user_sat;
 	int timestamp_only, thumbnail_only, identify_only;
 	int use_fuji_rotate, write_to_stdout;
 	float threshold, bright, user_mul[4];
@@ -143,25 +148,28 @@ struct dcr_ph {
 struct dcr_tiff_tag {
 	ushort tag, type;
 	int count;
-	union { short s0, s1; int i0; } val;
+	union { char c[4]; short s[2]; int i; } val;
 };
 
 struct dcr_tiff_hdr {
 	ushort order, magic;
 	int ifd;
 	ushort pad, ntag;
-	struct dcr_tiff_tag tag[22];
+	struct dcr_tiff_tag tag[23];
 	int nextifd;
 	ushort pad2, nexif;
 	struct dcr_tiff_tag exif[4];
+	ushort pad3, ngps;
+	struct dcr_tiff_tag gpst[10];
 	short bps[4];
 	int rat[10];
+	unsigned gps[26];
 	char desc[512], make[64], model[64], soft[32], date[20], artist[64];
 };
 
 struct dcr_jhead {
-	int bits, high, wide, clrs, psv, restart, vpred[4];
-	struct dcr_decode *huff[4];
+	int bits, high, wide, clrs, sraw, psv, restart, vpred[6];
+	struct dcr_decode *huff[6];
 	ushort *row;
 };
 
@@ -196,7 +204,7 @@ struct dcr_DCRAW {
 	unsigned tiff_nifds, tiff_samples, tiff_bps, tiff_compress;
 	unsigned black, maximum, mix_green, raw_color, use_gamma, zero_is_bad;
 	unsigned zero_after_ff, is_raw, dng_version, is_foveon, data_error;
-	unsigned tile_width, tile_length;
+	unsigned tile_width, tile_length, gpsdata[32], load_flags;
 	ushort raw_height, raw_width, height, width, top_margin, left_margin;
 	ushort shrink, iheight, iwidth, fuji_width, thumb_width, thumb_height;
 	int flip, tiff_flip, colors, quality;
@@ -204,8 +212,10 @@ struct dcr_DCRAW {
 	ushort (*image)[4], white[8][8], curve[0x4001], cr2_slice[3], sraw_mul[4];
 	float cam_mul[4], pre_mul[4], cmatrix[3][4], rgb_cam[3][4];
 	int histogram[4][0x2000];
-	void (*write_thumb)(DCRAW *, FILE *), (*write_fun)(DCRAW *, FILE *);
-	void (*load_raw)(DCRAW *), (*thumb_load_raw)(DCRAW *);
+	void (*write_thumb)(DCRAW *, FILE *);
+	void (*write_fun)(DCRAW *, FILE *);
+	void (*load_raw)(DCRAW *);
+	void (*thumb_load_raw)(DCRAW *);
 	jmp_buf failure;
 	char *sz_error;
 };
@@ -213,9 +223,10 @@ struct dcr_DCRAW {
 
 #define DCR_CLASS
 
-#define FORC3    for (c=0; c < 3; c++)
-#define FORC4    for (c=0; c < 4; c++)
-#define FORCC(p) for (c=0; c < p->colors; c++)
+#define FORC(cnt) for (c=0; c < cnt; c++)
+#define FORC3     FORC(3)
+#define FORC4     FORC(4)
+#define FORCC(p)  FORC(p->colors)
 
 #define SQR(x) ((x)*(x))
 #define ABS(x) (((int)(x) ^ ((int)(x) >> 31)) - ((int)(x) >> 31))
@@ -236,6 +247,7 @@ unsigned DCR_CLASS dcr_get4(DCRAW* p);
 unsigned DCR_CLASS dcr_getint (DCRAW* p,int type);
 double	DCR_CLASS dcr_getreal (DCRAW* p,int type);
 void	DCR_CLASS dcr_read_shorts (DCRAW* p,ushort *pixel, int count);
+void	DCR_CLASS dcr_canon_black (DCRAW* p, double dark[2]);
 void	DCR_CLASS dcr_canon_600_fixed_wb (DCRAW* p,int temp);
 int		DCR_CLASS dcr_canon_600_color (DCRAW* p,int ratio[2], int mar);
 void	DCR_CLASS dcr_canon_600_auto_wb(DCRAW* p);
@@ -259,14 +271,12 @@ void	DCR_CLASS dcr_adobe_dng_load_raw_lj(DCRAW* p);
 void	DCR_CLASS dcr_adobe_dng_load_raw_nc(DCRAW* p);
 void	DCR_CLASS dcr_pentax_k10_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_nikon_compressed_load_raw(DCRAW* p);
-void	DCR_CLASS dcr_nikon_load_raw(DCRAW* p);
 int		DCR_CLASS dcr_nikon_is_compressed(DCRAW* p);
 int		DCR_CLASS dcr_nikon_e995(DCRAW* p);
 int		DCR_CLASS dcr_nikon_e2100(DCRAW* p);
 void	DCR_CLASS dcr_nikon_3700(DCRAW* p);
 int		DCR_CLASS dcr_minolta_z2(DCRAW* p);
 void	DCR_CLASS dcr_nikon_e900_load_raw(DCRAW* p);
-void	DCR_CLASS dcr_nikon_e2100_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_fuji_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_jpeg_thumb (DCRAW* p, FILE *tfp);
 void	DCR_CLASS dcr_ppm_thumb (DCRAW* p, FILE *tfp);
@@ -282,6 +292,7 @@ void	DCR_CLASS dcr_phase_one_load_raw_c(DCRAW* p);
 void	DCR_CLASS dcr_hasselblad_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_leaf_hdr_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_unpacked_load_raw(DCRAW* p);
+void	DCR_CLASS nokia_load_raw(DCRAW* p);
 unsigned DCR_CLASS dcr_pana_bits (DCRAW* p,int nbits);
 void	DCR_CLASS dcr_panasonic_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_sinar_4shot_load_raw(DCRAW* p);
@@ -289,7 +300,6 @@ void	DCR_CLASS dcr_imacon_full_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_packed_12_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_olympus_e300_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_olympus_e410_load_raw(DCRAW* p);
-void	DCR_CLASS dcr_olympus_cseries_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_minolta_rd175_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_casio_qv5700_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_quicktake_100_load_raw(DCRAW* p);
@@ -299,6 +309,7 @@ void	DCR_CLASS dcr_kodak_jpeg_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_kodak_jpeg_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_kodak_dc120_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_eight_bit_load_raw(DCRAW* p);
+void	DCR_CLASS dcr_kodak_yrgb_load_raw(DCRAW* p);
 void	DCR_CLASS dcr_kodak_262_load_raw(DCRAW* p);
 int		DCR_CLASS dcr_kodak_65000_decode (DCRAW* p, short *out, int bsize);
 void	DCR_CLASS dcr_kodak_65000_load_raw(DCRAW* p);
@@ -326,7 +337,7 @@ void	DCR_CLASS dcr_foveon_make_curves(DCRAW* p, short **curvep, float dq[3], flo
 void	DCR_CLASS dcr_foveon_interpolate(DCRAW* p);
 #endif //RESTRICTED
 
-void	DCR_CLASS dcr_bad_pixels(DCRAW* p);
+void	DCR_CLASS dcr_bad_pixels(DCRAW* p, char *fname);
 void	DCR_CLASS dcr_subtract (DCRAW* p,char *fname);
 void	DCR_CLASS dcr_cam_xyz_coeff (DCRAW* p, double cam_xyz[4][3]);
 void	DCR_CLASS dcr_colorcheck(DCRAW* p);
@@ -347,6 +358,7 @@ int		DCR_CLASS dcr_parse_tiff_ifd (DCRAW* p, int base);
 void	DCR_CLASS dcr_parse_makernote (DCRAW* p, int base, int uptag);
 void	DCR_CLASS dcr_get_timestamp (DCRAW* p, int reversed);
 void	DCR_CLASS dcr_parse_exif (DCRAW* p, int base);
+void	DCR_CLASS dcr_parse_gps (DCRAW* p, int base);
 void	DCR_CLASS dcr_romm_coeff (DCRAW* p, float romm_cam[3][3]);
 void	DCR_CLASS dcr_parse_mos (DCRAW* p, int offset);
 void	DCR_CLASS dcr_linear_table (DCRAW* p, unsigned len);
@@ -385,6 +397,5 @@ void	DCR_CLASS dcr_init_dcraw(DCRAW* p);
 void	DCR_CLASS dcr_cleanup_dcraw(DCRAW* p);
 void	DCR_CLASS dcr_print_manual(int argc, char **argv);
 int 	DCR_CLASS dcr_parse_command_line_options(DCRAW* p, int argc, char **argv, int *arg);
-
 
 #endif

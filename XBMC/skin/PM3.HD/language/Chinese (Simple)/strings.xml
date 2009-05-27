@@ -75,9 +75,11 @@
   <string id="31107">除掉背景中的扫描线</string>
   <string id="31108">视频播放时除掉背景中的扫描线</string>
   <string id="31109">主屏幕背景</string>
-  <string id="31110">按键 - 使用定制背景</string>
+  <string id="31110">按键 - 定制背景</string>
   <string id="31111">歌词中始终显示音乐信息</string>
   <string id="31112">在宽屏图标中显示媒体标题</string>
+  <string id="31113">单个图片</string>
+  <string id="31114">多个图片</string>
 
   <!-- Script Settings labels -->
   <string id="31200">定制脚本程序选项选项</string>

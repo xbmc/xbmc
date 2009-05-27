@@ -223,7 +223,7 @@ void hdhomerun_debug_flush(struct hdhomerun_debug_t *dbg, uint64_t timeout)
 			return;
 		}
 
-		usleep(10*1000);
+		msleep(10);
 	}
 }
 
@@ -329,7 +329,7 @@ static bool_t hdhomerun_debug_output_message_file(struct hdhomerun_debug_t *dbg,
 		if (current_time < dbg->connect_delay) {
 			return FALSE;
 		}
-		dbg->connect_delay = current_time + 60*1000;
+		dbg->connect_delay = current_time + 30*1000;
 
 		dbg->file_fp = fopen(dbg->file_name, "a");
 		if (!dbg->file_fp) {
@@ -357,7 +357,7 @@ static bool_t hdhomerun_debug_output_message_sock(struct hdhomerun_debug_t *dbg,
 		if (current_time < dbg->connect_delay) {
 			return FALSE;
 		}
-		dbg->connect_delay = current_time + 60*1000;
+		dbg->connect_delay = current_time + 30*1000;
 
 		dbg->sock = (int)socket(AF_INET, SOCK_STREAM, 0);
 		if (dbg->sock == -1) {
@@ -443,7 +443,7 @@ static THREAD_FUNC_PREFIX hdhomerun_debug_thread_execute(void *arg)
 		pthread_mutex_unlock(&dbg->queue_lock);
 
 		if (!message) {
-			sleep(1);
+			msleep(250);
 			continue;
 		}
 
@@ -453,7 +453,7 @@ static THREAD_FUNC_PREFIX hdhomerun_debug_thread_execute(void *arg)
 		}
 
 		if (!hdhomerun_debug_output_message(dbg, message)) {
-			sleep(1);
+			msleep(250);
 			continue;
 		}
 

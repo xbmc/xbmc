@@ -657,20 +657,10 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
 
 void CLastFmManager::CreateMD5Hash(const CStdString& bufferToHash, CStdString& hash)
 {
-  unsigned char md5pword[16];
   XBMC::MD5 md5state;
   md5state.append(bufferToHash);
-  md5state.getDigest(md5pword);
-  char tmp[33];
-  strncpy(tmp, "\0", sizeof(tmp));
-  for (int j = 0;j < 16;j++)
-  {
-    char a[3];
-    sprintf(a, "%02x", md5pword[j]);
-    tmp[2*j] = a[0];
-    tmp[2*j+1] = a[1];
-  }
-  hash = tmp;
+  md5state.getDigest(hash);
+  hash.ToLower();
 }
 
 /*

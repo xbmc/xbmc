@@ -235,11 +235,27 @@ CStdString CSysInfo::GetKernelVersion()
       else
         strKernel.append("Server 2008");
 
-      if ( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64 )
-        strKernel.append(", 64-bit");
+      if ( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64 || si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64)
+        strKernel.append(", 64-bit Native");
       else if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_INTEL )
-        strKernel.append(", 32-bit");
-
+      {
+        BOOL bIsWow = FALSE;;
+        if(IsWow64Process(GetCurrentProcess(), &bIsWow))
+        {
+          if (bIsWow)
+          {
+            GetNativeSystemInfo(&si);
+            if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+             strKernel.append(", 64-bit (WoW)");
+          }
+          else 
+          {
+            strKernel.append(", 32-bit");
+          }
+        }
+        else
+          strKernel.append(", 32-bit");
+      }
     }
     else if ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
     {

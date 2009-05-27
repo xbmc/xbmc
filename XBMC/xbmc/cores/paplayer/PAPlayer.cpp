@@ -69,7 +69,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
     m_channelCount[i]   = 0;
     m_sampleRate[i]     = 0;
     m_bitsPerSample[i]  = 0;
-    
+
     m_pAudioClient[0] = new CPCMAudioClient(&g_AudioLibManager);
     m_pAudioClient[1] = new CPCMAudioClient(&g_AudioLibManager);
   }
@@ -280,6 +280,9 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
   m_bStopPlaying = true;
   m_bStop = true;
 
+  // Call the FileClosed-callback to store resume point etc.
+  m_callback.OnFileClosed();
+
   m_visBufferLength = 0;
   StopThread();
 
@@ -296,6 +299,8 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
 
   if(bAudioDevice)
     g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+  else
+    FlushStreams();
 
   return true;
 }
@@ -335,13 +340,11 @@ void PAPlayer::DrainStream(int stream)
 
 bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int samplerate, unsigned int bitspersample, CStdString codec)
 {
-  int outputSampleRate = (channels <= 2 && g_advancedSettings.m_musicResample) ? g_advancedSettings.m_musicResample : samplerate;
+  unsigned int outputSampleRate = (channels <= 2 && g_advancedSettings.m_musicResample) ? g_advancedSettings.m_musicResample : samplerate;
 
   if (m_pAudioClient[num]->IsStreamOpen() && m_channelCount[num] == channels && m_sampleRate[num] == outputSampleRate /* && m_bitsPerSample[num] == bitspersample */)
   {
-    CLog::Log(LOGDEBUG, "PAPlayer: Using existing audio client");
-    m_pAudioClient[num]->Stop();
-    m_pAudioClient[num]->Resume();
+    CLog::Log(LOGDEBUG, "PAPlayer: Using existing audio renderer");
   }
   else
   {
@@ -359,10 +362,10 @@ bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int sampler
     m_packet[num][0].packet = (BYTE*)malloc(PACKET_SIZE * PACKET_COUNT);
     for (int i = 1; i < PACKET_COUNT ; i++)
       m_packet[num][i].packet = m_packet[num][i - 1].packet + PACKET_SIZE;
-
-    // set initial volume
-    SetStreamVolume(num, g_stSettings.m_nVolumeLevel);
   }
+  
+  // set initial volume
+  SetStreamVolume(num, g_stSettings.m_nVolumeLevel);
 
   m_resampler[num].InitConverter(samplerate, bitspersample, channels, outputSampleRate, m_bitsPerSample[num], PACKET_SIZE);
 

@@ -49,8 +49,8 @@ void XBMC::MD5::getDigest(CStdString& digest)
 {
   unsigned char szBuf[16] = {'\0'};
   getDigest(szBuf);
-  digest.Format("%02x%02x%02x%02x%02x%02x%02x%02x"\
-      "%02x%02x%02x%02x%02x%02x%02x%02x", szBuf[0], szBuf[1], szBuf[2],
+  digest.Format("%02X%02X%02X%02X%02X%02X%02X%02X"\
+      "%02X%02X%02X%02X%02X%02X%02X%02X", szBuf[0], szBuf[1], szBuf[2],
       szBuf[3], szBuf[4], szBuf[5], szBuf[6], szBuf[7], szBuf[8],
       szBuf[9], szBuf[10], szBuf[11], szBuf[12], szBuf[13], szBuf[14],
       szBuf[15]);

@@ -352,6 +352,9 @@ bool CDVDPlayer::CloseFile()
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
 
+  // Call the FileClosed-callback to store resume point etc.
+  m_callback.OnFileClosed();
+
   // tell demuxer to abort
   if(m_pDemuxer)
     m_pDemuxer->Abort();
@@ -369,13 +372,13 @@ bool CDVDPlayer::CloseFile()
   m_Edl.Reset();
 
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
-#if defined(_LINUX) && defined(HAS_VIDEO_PLAYBACK)
-  g_renderManager.OnClose();
+#if defined(HAS_VIDEO_PLAYBACK)
+  g_renderManager.UnInit();
+#endif
 #ifdef HAVE_LIBVDPAU
   if (g_VDPAU)
     CloseVideoStream(!m_bAbortRequest);
 #endif //HAVE_LIBVDPAU
-#endif
   return true;
 }
 
@@ -932,6 +935,11 @@ void CDVDPlayer::Process()
             }
           }
         }
+        
+        // if playing a main title DVD/ISO rip, there is no menu structure so 
+        // dvdnav will tell us it's done by setting EOF on the stream.
+        if (pStream->IsEOF())
+          break;
 
         // always continue on dvd's
         Sleep(100);

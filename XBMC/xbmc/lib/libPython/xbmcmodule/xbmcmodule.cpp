@@ -274,6 +274,7 @@ namespace PYXBMC
 
    PyObject* XBMC_ExecuteHttpApi(PyObject *self, PyObject *args)
   {
+#ifdef HAS_WEB_SERVER
     char *cLine = NULL;
     CStdString ret;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
@@ -291,6 +292,7 @@ namespace PYXBMC
     ret=pXbmcHttpShim->xbmcExternalCall(cLine);
 
     return PyString_FromString(ret.c_str());
+#endif
   }
 
   // sleep() method

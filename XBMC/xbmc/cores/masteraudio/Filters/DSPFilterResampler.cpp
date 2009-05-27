@@ -127,7 +127,7 @@ MA_RESULT CDSPFilterResampler::Render(ma_audio_container* pOutput, unsigned int 
   short* pRenderBuffer = (short*)pOutput->buffer[0].data;
   float* pOutputBuffer = m_pOutputData;
 
-  // TODO: Determine if we already have a partially-complete render job
+  // Determine if we already have a partially-complete render job
   if (m_RemainingFrames)
   {
     renderedFrames = m_RemainingFrames;
@@ -142,8 +142,8 @@ MA_RESULT CDSPFilterResampler::Render(ma_audio_container* pOutput, unsigned int 
     int outputFrames = frameCount - renderedFrames; // Remaining frames to render. This should either be 0 or > 1, since GetFrames handles off-by-one.
     if ((res = GetFrames(&outputFrames, pOutputBuffer, channels, renderTime, renderFlags, bus)) != MA_SUCCESS)
     {
-      m_RemainingFrames = renderedFrames;
-      return res; // TODO: We shouldn't just dump the input/output data, should we? Probably need to store/flag partially-completed render jobs (already stored in input/output buffers).
+      m_RemainingFrames = renderedFrames; // Store unused frames for the next call
+      return res;
     }
     renderedFrames += outputFrames; // Update render counter
     src_float_to_short_array(pOutputBuffer, pRenderBuffer, outputFrames * channels); // Convert float output data into short render data

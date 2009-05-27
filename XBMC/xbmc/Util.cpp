@@ -2898,8 +2898,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
+#ifdef HAS_WEB_SERVER
         if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
           g_application.getApplicationMessenger().HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
+#endif
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
@@ -4556,7 +4558,7 @@ bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
     }
   }
 
-  Command(args, waitExit);
+  return Command(args, waitExit);
 }
 
 //

@@ -30,7 +30,7 @@ public:
   virtual int av_read_play(AVFormatContext *s)=0;
   virtual int av_read_pause(AVFormatContext *s)=0;
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
-  virtual int av_find_stream_info(AVFormatContext *ic)=0;
+  virtual int av_find_stream_info_dont_call(AVFormatContext *ic)=0;
   virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap)=0;
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb)=0;
   virtual int av_dup_packet(AVPacket *pkt)=0;
@@ -51,57 +51,6 @@ public:
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
 };
 
-#ifdef __APPLE__
-
-extern "C" { void av_read_frame_flush(AVFormatContext *s); }
-
-// Use direct mapping, because we statically link.
-class DllAvFormat : public DllDynamic, DllAvFormatInterface
-{
-public:
-  virtual ~DllAvFormat() {}
-  virtual void av_register_all() 
-  { 
-    CSingleLock lock(DllAvCodec::m_critSection);
-    ::av_register_all();
-  } 
-  virtual void av_register_all_dont_call() { *(int* )0x0 = 0; } 
-  virtual AVInputFormat *av_find_input_format(const char *short_name) { return ::av_find_input_format(short_name); }
-  virtual int url_feof(ByteIOContext *s) { return ::url_feof(s); }
-  virtual void av_close_input_file(AVFormatContext *s) { ::av_close_input_file(s); }
-  virtual void av_close_input_stream(AVFormatContext *s) { ::av_close_input_stream(s); }
-  virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt) { return ::av_read_frame(s, pkt); }
-  virtual int av_read_play(AVFormatContext *s) { return ::av_read_play(s); }
-  virtual int av_read_pause(AVFormatContext *s) { return ::av_read_pause(s); }
-  virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags) { return ::av_seek_frame(s, stream_index, timestamp, flags); }
-  virtual int av_find_stream_info(AVFormatContext *ic) { return ::av_find_stream_info(ic); }
-  virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap) { return ::av_open_input_file(ic_ptr, filename, fmt, buf_size, ap); }
-  virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb) { ::url_set_interrupt_cb(interrupt_cb); }
-  virtual int av_dup_packet(AVPacket *pkt) { return ::av_dup_packet(pkt); }
-  virtual int av_open_input_stream(AVFormatContext **ic_ptr, ByteIOContext *pb, const char *filename, AVInputFormat *fmt, AVFormatParameters *ap) { return ::av_open_input_stream(ic_ptr, pb, filename, fmt, ap); }
-  virtual int init_put_byte(ByteIOContext *s, unsigned char *buffer, int buffer_size, int write_flag, void *opaque, 
-                            int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
-                            int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
-                            offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::init_put_byte(s, buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek); }
-  virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened) {return ::av_probe_input_format(pd, is_opened); }
-  virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output) { ::dump_format(ic, index, url, is_output); }
-  virtual void av_destruct_packet_nofree(AVPacket *pkt) { ::av_destruct_packet_nofree(pkt); }
-  virtual int url_fdopen(ByteIOContext **s, URLContext *h) { return ::url_fdopen(s, h); }
-  virtual int url_fopen(ByteIOContext **s, const char *filename, int flags) { return ::url_fopen(s, filename, flags); }
-  virtual int url_fclose(ByteIOContext *s) { return ::url_fclose(s); }
-  virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence) { return ::url_fseek(s, offset, whence); }
-  virtual void av_read_frame_flush(AVFormatContext *s) { ::av_read_frame_flush(s); }
-  virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_buffer(s, buf, size); }
-  virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_partial_buffer(s, buf, size); }
-  
-  // DLL faking.
-  virtual bool ResolveExports() { return true; }
-  virtual bool Load() { return true; }
-  virtual void Unload() {}
-};
-
-#else
-
 class DllAvFormat : public DllDynamic, DllAvFormatInterface
 {
   DECLARE_DLL_WRAPPER(DllAvFormat, DLL_PATH_LIBAVFORMAT)
@@ -118,7 +67,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
 #ifndef _LINUX
   DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, av_seek_frame, AVFormatContext*, int, int64_t, int)
-  DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info, AVFormatContext*)
+  DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info_dont_call, AVFormatContext*)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, av_open_input_file, AVFormatContext**, const char *, AVInputFormat *, int, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED5(int,__cdecl, av_open_input_stream, AVFormatContext **, ByteIOContext *, const char *, AVInputFormat *, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
@@ -128,7 +77,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
 #else
   DEFINE_METHOD2(int, av_read_frame, (AVFormatContext *p1, AVPacket *p2))
   DEFINE_METHOD4(int, av_seek_frame, (AVFormatContext *p1, int p2, int64_t p3, int p4))
-  DEFINE_METHOD1(int, av_find_stream_info, (AVFormatContext *p1))
+  DEFINE_METHOD1(int, av_find_stream_info_dont_call, (AVFormatContext *p1))
   DEFINE_METHOD5(int, av_open_input_file, (AVFormatContext **p1, const char *p2, AVInputFormat *p3, int p4, AVFormatParameters *p5))
   DEFINE_METHOD5(int, av_open_input_stream, (AVFormatContext **p1, ByteIOContext *p2, const char *p3, AVInputFormat *p4, AVFormatParameters *p5))
   DEFINE_METHOD2(AVInputFormat*, av_probe_input_format, (AVProbeData* p1 , int p2))
@@ -158,7 +107,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_play)
     RESOLVE_METHOD(av_read_pause)
     RESOLVE_METHOD(av_seek_frame)
-    RESOLVE_METHOD(av_find_stream_info)
+    RESOLVE_METHOD_RENAME(av_find_stream_info, av_find_stream_info_dont_call)
     RESOLVE_METHOD(av_open_input_file)
     RESOLVE_METHOD(url_set_interrupt_cb)
     RESOLVE_METHOD(av_dup_packet)
@@ -181,6 +130,9 @@ public:
     CSingleLock lock(DllAvCodec::m_critSection);
     av_register_all_dont_call();
   }
+  int av_find_stream_info(AVFormatContext *ic)
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    return(av_find_stream_info_dont_call(ic));
+  }
 };
-
-#endif

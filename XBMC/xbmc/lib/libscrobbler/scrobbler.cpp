@@ -129,7 +129,7 @@ void CScrobbler::UpdateStatus()
   // Called from CApp::ProcessSlow() every ~500ms.
   if (!CanScrobble())
     return;
-  if (g_application.IsPaused())
+  if (g_application.IsPaused() || (g_application.GetPlaySpeed() != 1))
     return;
 
   m_submissionTimer++;
@@ -154,9 +154,11 @@ void CScrobbler::UpdateStatus()
       (m_submissionTimer > m_CurrentTrack.length || 
        m_submissionTimer >= 480))
   {
-    CSingleLock lock(m_queueLock);
-    m_bSubmitted = true;
-    m_vecSubmissionQueue.push_back(m_CurrentTrack);
+    {
+      CSingleLock lock(m_queueLock);
+      m_bSubmitted = true;
+      m_vecSubmissionQueue.push_back(m_CurrentTrack);
+    }
     SaveJournal();
     CLog::Log(LOGDEBUG, "%s: Queued track for submission", m_strLogPrefix.c_str());
   }
@@ -191,6 +193,7 @@ void CScrobbler::SetPassword(const CStdString& strPass)
   XBMC::MD5 md5state;
   md5state.append(strPass);
   md5state.getDigest(m_strPasswordHash);
+  m_strPasswordHash.ToLower();
   m_bBadAuth = false;
 }
 
@@ -208,7 +211,8 @@ CStdString CScrobbler::GetSubmitInterval()
   if (!CanScrobble())
     return strInterval;
   CStdString strFormat = g_localizeStrings.Get(15209);
-  strInterval.Format(strFormat, m_failedHandshakeDelay);
+  int seconds = m_CurrentTrack.length - m_submissionTimer/2;
+  strInterval.Format(strFormat, std::max(seconds, m_failedHandshakeDelay));
   return strInterval;
 }
 
@@ -231,14 +235,13 @@ CStdString CScrobbler::GetSubmitState()
     return strState;
   if (m_bSubmitting)
     strState = g_localizeStrings.Get(15211);
-  else if (m_bBadAuth || m_bBanned)
+  else if (!g_application.IsPlayingAudio() || m_bBadAuth || m_bBanned)
     strState.Format(strFormat, 0);
   else if (m_strSessionID.IsEmpty())
     strState.Format(strFormat, m_failedHandshakeDelay);
   else
   {
-    int seconds = m_CurrentTrack.length;
-    seconds -= time(NULL) - atoi(m_CurrentTrack.strStartTime.c_str());
+    int seconds = m_CurrentTrack.length - m_submissionTimer/2;
     strState.Format(strFormat, std::max(0, seconds));
   }
   return strState;
@@ -408,6 +411,7 @@ bool CScrobbler::DoHandshake(time_t now)
   strTimeStamp.Format("%d", now);
   authToken.append(m_strPasswordHash + strTimeStamp);
   authToken.getDigest(strAuthToken);
+  strAuthToken.ToLower();
   
   // Construct handshake URL.
   strHandshakeRequest.Format("http://%s/?hs=true"\

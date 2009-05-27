@@ -166,7 +166,7 @@ void CGUIWindowSlideShow::Reset()
   m_iCurrentPic = 0;
   CSingleLock lock(m_slideSection);
   m_slides->Clear();
-  m_Resolution = INVALID;
+  m_Resolution = g_graphicsContext.GetVideoResolution();
 }
 
 void CGUIWindowSlideShow::FreeResources()
@@ -599,8 +599,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       if (g_application.IsPlayingVideo())
         g_application.StopPlaying();
-      // clear as much memory as possible
-      g_TextureManager.Flush();
       if (message.GetParam1() != WINDOW_PICTURES)
       {
         m_ImageLib.Load();

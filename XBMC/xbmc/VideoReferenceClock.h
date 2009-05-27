@@ -28,9 +28,19 @@
   #include <X11/Xlib.h>
   #include <GL/glx.h>
 #elif defined(_WIN32)
+  #ifdef _DEBUG
+    #define D3D_DEBUG_INFO
+  #endif
   namespace D3dClock
   {
     #include <d3d9.h>
+    #if(DIRECT3D_VERSION > 0x0900)
+      #include <Dxerr.h>
+    #else
+      #include <dxerr9.h>
+      #define DXGetErrorString(hr)      DXGetErrorString9(hr)
+      #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
+    #endif
   }
 #endif
 
@@ -46,10 +56,11 @@ class CVideoReferenceClock : public CThread
     int    GetRefreshRate();
     void   Wait(__int64 Target);
     void   WaitStarted(int MSecs);
-    bool   UseVblank();
-    int    GetMissedVblanks();
+    bool   GetClockInfo(int& MissedVblanks, double& ClockSpeed);
 
-#ifdef __APPLE__
+#ifdef _WIN32
+    void SetMonitor(MONITORINFOEX &Monitor);
+#elif defined(__APPLE__)
     void VblankHandler(__int64 nowtime, double fps);
 #endif
     
@@ -104,12 +115,14 @@ class CVideoReferenceClock : public CThread
     D3dClock::LPDIRECT3D9       m_D3d;
     D3dClock::LPDIRECT3DDEVICE9 m_D3dDev;
 
-    HWND         m_Hwnd;
-    WNDCLASSEX   m_WinCl;
-    bool         m_HasWinCl;
-    unsigned int m_Width;
-    unsigned int m_Height;
-    unsigned int m_Adapter;
+    HWND          m_Hwnd;
+    WNDCLASSEX    m_WinCl;
+    bool          m_HasWinCl;
+    unsigned int  m_Width;
+    unsigned int  m_Height;
+    unsigned int  m_Adapter;
+    MONITORINFOEX m_Monitor;
+    MONITORINFOEX m_PrevMonitor;
 
 #elif defined(__APPLE__)
     bool SetupCocoa();

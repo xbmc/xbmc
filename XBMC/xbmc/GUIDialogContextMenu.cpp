@@ -351,6 +351,8 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   case CONTEXT_BUTTON_EJECT_DRIVE:
 #ifdef HAS_HAL
     return g_HalManager.Eject(item->m_strPath);
+#elif defined(_WIN32PC)
+    return CWIN32Util::EjectDrive(item->m_strPath[0]);
 #else
     return false;
 #endif

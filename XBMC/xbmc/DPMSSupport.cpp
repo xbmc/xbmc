@@ -179,7 +179,9 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   // window expose events (involving the window manager) that solves this
   // without fail.
   XUnmapWindow(dpy, m_surface->GetWindow());
+  XFlush(dpy);
   XMapWindow(dpy, m_surface->GetWindow());
+  XFlush(dpy);
   return true;
 }
 
@@ -221,22 +223,17 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 
 void DPMSSupport::PlatformSpecificInit()
 {
-#if defined(__POWERPC__)
-  CLog::Log(LOGINFO, "DPMS: not supported on this platform");
-#else
   m_supportedModes.push_back(OFF);
   m_supportedModes.push_back(STANDBY);
-#endif
 }
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
-#if defined(__POWERPC__)
-  return false;
-#else
   bool status;
   // http://lists.apple.com/archives/Cocoa-dev/2007/Nov/msg00267.html
-  // This is an unsupported system call that kernel panics on PPC boxes
+  // This is an unsupported system call that might kernel panic on PPC boxes
+  // The reported OSX-PPC panic is unverified so we are going to enable this until
+  // we find out which OSX-PPC boxes have problems, then add detect/disable for those boxes.
   io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
   if(!r) return false;
 
@@ -252,22 +249,19 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
     break;
   }
   return status;
-#endif
 }
 
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
-#if defined(__POWERPC__)
-  return false;
-#else
   // http://lists.apple.com/archives/Cocoa-dev/2007/Nov/msg00267.html
-  // This is an unsupported system call that kernel panics on PPC boxes
+  // This is an unsupported system call that might kernel panic on PPC boxes
+  // The reported OSX-PPC panic is unverified so we are going to enable this until
+  // we find out which OSX-PPC boxes have problems, then add detect/disable for those boxes.
   io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
   if(!r) return false;
 
   // Turn display on
   return (IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanFalse) == 0);
-#endif
 }
 
 #else

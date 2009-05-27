@@ -72,6 +72,19 @@
    like special://masterprofile/ */
 #define PROFILES_FILE "special://masterprofile/profiles.xml"
 
+struct TVShowRegexp
+{
+  bool byDate;
+  CStdString regexp;
+  TVShowRegexp(bool d, const CStdString& r)
+  {
+    byDate = d;
+    regexp = r;
+  }
+};
+
+typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
+
 class CSkinString
 {
 public:
@@ -170,12 +183,13 @@ public:
     int m_musicResample;
     int m_videoBlackBarColour;
     int m_videoIgnoreAtStart;
+    int m_videoIgnoreAtEnd;
     CStdString m_audioHost;
-    
+
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;
-        
+
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
@@ -210,7 +224,7 @@ public:
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
-    CStdStringArray m_tvshowStackRegExps;
+    SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
@@ -259,8 +273,10 @@ public:
     int m_iTuxBoxZapWaitTime;
     bool m_bTuxBoxSendAllAPids;
 
+    bool m_bFirstLoop;
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
+    int m_curlretries;
 
 #ifdef HAS_SDL
     bool m_fullScreen;
@@ -442,6 +458,7 @@ public:
 
 protected:
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
+  void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
   void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 

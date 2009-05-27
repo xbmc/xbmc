@@ -85,6 +85,9 @@ bool CxImageRAW::Decode(CxFile *hFile)
 		memcpy (dcr.rgb_cam, dcr.cmatrix, sizeof dcr.cmatrix);
 		dcr.raw_color = 0;
 	}
+    else {
+      dcr.opt.use_camera_wb = 1;
+    }
 
 	// allocate memory for the image
 	dcr.image = (ushort (*)[4]) calloc (dcr.iheight*dcr.iwidth, sizeof *dcr.image);
@@ -102,7 +105,7 @@ bool CxImageRAW::Decode(CxFile *hFile)
 	// post processing
 	if (dcr.zero_is_bad) dcr_remove_zeroes(&dcr);
 
-	dcr_bad_pixels(&dcr);
+	dcr_bad_pixels(&dcr, NULL);
 
 	if (dcr.opt.dark_frame) dcr_subtract (&dcr,dcr.opt.dark_frame);
 
