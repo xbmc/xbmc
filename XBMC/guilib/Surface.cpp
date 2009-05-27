@@ -585,25 +585,9 @@ bool CSurface::glxIsSupported(const char* extension)
 void CSurface::EnableVSync(bool enable)
 {
 #ifdef HAS_SDL_OPENGL
-#ifndef __APPLE__
   if (m_bVSync==enable && m_bVsyncInit == true)
     return;
-#endif
 
-#ifdef __APPLE__
-  if (enable == true && m_bVSync == false)
-  {
-    CLog::Log(LOGINFO, "GL: Enabling VSYNC");
-    Cocoa_GL_EnableVSync(true);
-  }
-  else if (enable == false && m_bVSync == true)
-  {
-    CLog::Log(LOGINFO, "GL: Disabling VSYNC");
-    Cocoa_GL_EnableVSync(false);
-  }
-  m_bVSync = enable;
-  return;
-#else
   if (enable)
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
   else
@@ -649,6 +633,8 @@ void CSurface::EnableVSync(bool enable)
 #elif defined (_WIN32)
   if (_wglSwapIntervalEXT)
     _wglSwapIntervalEXT(0);
+#elif defined (__APPLE__)
+  Cocoa_GL_EnableVSync(false);
 #endif
 
   if (IsValid() && enable)
@@ -698,6 +684,12 @@ void CSurface::EnableVSync(bool enable)
       else
         CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed", __FUNCTION__);
     }
+#elif defined (__APPLE__)
+    if (!m_iVSyncMode)
+    {
+      Cocoa_GL_EnableVSync(true);
+      m_iVSyncMode = 10;
+    }
 #endif
 
     if(g_advancedSettings.m_ForcedSwapTime != 0.0)
@@ -727,7 +719,6 @@ void CSurface::EnableVSync(bool enable)
     else
       CLog::Log(LOGINFO, "GL: Selected vsync mode %d", m_iVSyncMode);
   }
-#endif
 #endif
 }
 
