@@ -588,6 +588,9 @@ void CSurface::EnableVSync(bool enable)
   if (m_bVSync==enable && m_bVsyncInit == true)
     return;
 
+  if (!m_bOK)
+    return;
+
   if (enable)
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
   else
@@ -637,7 +640,7 @@ void CSurface::EnableVSync(bool enable)
   Cocoa_GL_EnableVSync(false);
 #endif
 
-  if (IsValid() && enable)
+  if (enable)
   {
 #ifdef HAS_GLX
     // now let's see if we have some system to do specific vsync handling
