@@ -1034,6 +1034,9 @@ CProfile* CApplication::InitDirectoriesLinux()
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+    
+    // copy system-wide plugins into userprofile
+    CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
   }
   else
   {
@@ -1137,6 +1140,9 @@ CProfile* CApplication::InitDirectoriesOSX()
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+
+    // copy system-wide plugins into userprofile
+    CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
   }
   else
   {
@@ -1223,6 +1229,9 @@ CProfile* CApplication::InitDirectoriesWin32()
     CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+
+    // copy system-wide plugins into userprofile
+    CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
 
     // create user/app data/XBMC/cache
     CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
