@@ -1013,7 +1013,7 @@ CProfile* CApplication::InitDirectoriesLinux()
 
     bool bCopySystemPlugins = false;
     if (!CDirectory::Exists("special://home/plugins") )
-       bCopySystemPlugins = true:
+       bCopySystemPlugins = true;
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
