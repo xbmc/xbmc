@@ -17,7 +17,8 @@ make distclean
 --disable-muxers \
 --disable-encoders \
 --disable-ipv6 \
---disable-debug && 
+--disable-debug \
+--enable-encoder=ac3 && 
  
 make -j3 && 
 strip lib*/*.dll &&

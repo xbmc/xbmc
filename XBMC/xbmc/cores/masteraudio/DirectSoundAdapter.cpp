@@ -155,18 +155,32 @@ bool CDirectSoundAdapter::Drain(unsigned int timeout)
 
 void CDirectSoundAdapter::Render()
 {
-  unsigned int frames = m_ChunkLen / m_BytesPerFrame;
-  if (m_ChunkLen % m_BytesPerFrame)
+static char remainder[12384];
+static unsigned int remainderLen = 0;
+
+  unsigned int frames = (m_ChunkLen - remainderLen) / m_BytesPerFrame;
+  if ((m_ChunkLen - remainderLen) % m_BytesPerFrame)
     frames++;
 
   ma_audio_container* pCont = ma_alloc_container(1, m_BytesPerFrame, frames);
-
+  //if (remainderLen)
+  //{
+  //  pCont->buffer[0].data = (char*)pCont->buffer[0].data + remainderLen;
+  //  frames--;
+  //}
   while (m_pRenderer->GetSpace() >= m_ChunkLen)
   {
     if (MA_SUCCESS == m_pSource->Render(pCont, frames, 0, 0, m_SourceBus))
     {
-      // TODO: What if this fails?
-      m_pRenderer->AddPackets(pCont->buffer[0].data, pCont->buffer[0].data_len);
+      //pCont->buffer[0].data_len += remainderLen;
+      unsigned long bytesUsed = m_pRenderer->AddPackets(pCont->buffer[0].data, pCont->buffer[0].data_len);
+      //if (bytesUsed < pCont->buffer[0].data_len)
+      //{
+      //  remainderLen = pCont->buffer[0].data_len - bytesUsed;
+      //  memcpy(remainder, (char*)pCont->buffer[0].data + bytesUsed, remainderLen);
+      //}
+      //else
+      //  remainderLen = 0;
     }
     else
       break;

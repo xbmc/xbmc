@@ -56,9 +56,11 @@ MA_RESULT CDSPFilterLPCM::ReadLPCMAttributes(CStreamDescriptor *pDesc, LPCMAttri
     (pAttribs->GetInt  (MA_ATT_TYPE_SAMPLE_TYPE   , &pLPCM->m_SampleType   ) != MA_SUCCESS) ||
     (pAttribs->GetUInt (MA_ATT_TYPE_BITDEPTH      , &pLPCM->m_BitDepth     ) != MA_SUCCESS) ||
     (pAttribs->GetUInt (MA_ATT_TYPE_SAMPLERATE    , &pLPCM->m_SampleRate   ) != MA_SUCCESS) ||
-    (pAttribs->GetUInt (MA_ATT_TYPE_CHANNEL_COUNT , &pLPCM->m_ChannelCount ) != MA_SUCCESS) ||
-    (pAttribs->GetArray(MA_ATT_TYPE_CHANNEL_LAYOUT, stream_attribute_int, &pLPCM->m_ChannelLayout, sizeof(pLPCM->m_ChannelLayout)) != MA_SUCCESS))
+    (pAttribs->GetUInt (MA_ATT_TYPE_CHANNEL_COUNT , &pLPCM->m_ChannelCount ) != MA_SUCCESS))
     return MA_MISSING_ATTRIBUTE;
+
+  // A missing channel layout is non-fatal
+  pAttribs->GetArray(MA_ATT_TYPE_CHANNEL_LAYOUT, stream_attribute_int, &pLPCM->m_ChannelLayout, sizeof(pLPCM->m_ChannelLayout));
 
   return MA_SUCCESS;
 }

@@ -2105,6 +2105,22 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterAC3Encoder.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterAC3Encoder.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterInterleaving.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterInterleaving.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterLPCM.cpp"
 						>
 					</File>

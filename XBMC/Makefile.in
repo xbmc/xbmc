@@ -21,6 +21,8 @@ BIN_DIRS=	\
 	xbmc/cores/VideoRenderers \
 	xbmc/cores/VideoRenderers/VideoShaders \
 	xbmc/cores/ExternalPlayer \
+	xbmc/cores/masteraudio \
+	xbmc/cores/masteraudio/Filters \
 	xbmc/FileSystem \
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
