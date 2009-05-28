@@ -28,7 +28,11 @@
 #define DEFAULT_THUMB_SIZE  256
 #else  // MID
 #define DEFAULT_SKIN        "PM3.HD"
+#ifdef __APPLE__
+#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#else
 #define DEFAULT_VSYNC       VSYNC_DRIVER
+#endif
 #define DEFAULT_THUMB_SIZE  512
 #endif // MID
 
