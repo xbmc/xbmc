@@ -2468,7 +2468,9 @@ void CApplication::Render()
     else
     {
       // only "limit frames" if we are not using vsync.
-      if (g_videoConfig.GetVSyncMode() == VSYNC_DISABLED || lowfps)
+      if (g_videoConfig.GetVSyncMode() == VSYNC_DISABLED
+      ||  g_videoConfig.GetVSyncMode() == VSYNC_VIDEO  
+      ||  lowfps)
       {
         if(lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
