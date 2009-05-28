@@ -72,12 +72,6 @@ external_libwavpack_disabled="== Use of external libwavpack disabled. =="
 external_python_enabled="== Use of external python enabled. =="
 external_python_disabled="== Use of external python disabled. =="
 
-# Internal static library message strings
-static_libraries_enabled="== Use of all supported internal static libraries enabled. =="
-static_libraries_disabled="== Use of all supported internal static libraries disabled. =="
-static_libdvdnav_enabled="== Use of internal libdvdnav static library enabled. =="
-static_libdvdnav_disabled="== Use of internal libdvdnav static library disabled. =="
-
 case $host in
     i*86*-linux-gnu*)
        ARCH="i486-linux"
@@ -187,100 +181,89 @@ AC_ARG_ENABLE([avahi],
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
             [AS_HELP_STRING([--enable-external-libraries],
-               [enable use of all supported external libraries (default is no)])],
+            [enable use of all supported external libraries (default is no) 'Linux only'])],
             [use_external_libraries=$enableval],
             [use_external_libraries=no])
 
 AC_ARG_ENABLE([external-ffmpeg],
             [AS_HELP_STRING([--enable-external-ffmpeg],
-               [enable use of external ffmpeg libraries (default is no)])],
+            [enable use of external ffmpeg libraries (default is no) 'Linux only'])],
             [use_external_ffmpeg=$enableval],
             [use_external_ffmpeg=no])
 
 AC_ARG_ENABLE([external-libmad],
             [AS_HELP_STRING([--enable-external-libmad],
-               [enable use of external libmad library (default is no)])],
+            [enable use of external libmad library (default is no) 'Linux only'])],
             [use_external_libmad=$enableval],
             [use_external_libmad=no])
 
 AC_ARG_ENABLE([external-liba52],
             [AS_HELP_STRING([--enable-external-liba52],
-               [enable use of external liba52 library (default is no)])],
+            [enable use of external liba52 library (default is no) 'Linux only'])],
             [use_external_liba52=$enableval],
             [use_external_liba52=no])
 
 AC_ARG_ENABLE([external-libdts],
             [AS_HELP_STRING([--enable-external-libdts],
-               [enable use of external libdts library (default is no)])],
+            [enable use of external libdts library (default is no) 'Linux only'])],
             [use_external_libdts=$enableval],
             [use_external_libdts=no])
 
 AC_ARG_ENABLE([external-libfaad],
             [AS_HELP_STRING([--enable-external-libfaad],
-               [enable use of external libfaad library (default is no)])],
+            [enable use of external libfaad library (default is no) 'Linux only'])],
             [use_external_libfaad=$enableval],
             [use_external_libfaad=no])
 
 AC_ARG_ENABLE([external-libmpeg2],
             [AS_HELP_STRING([--enable-external-libmpeg2],
-               [enable use of external libmpeg2 library (default is no)])],
+            [enable use of external libmpeg2 library (default is no) 'Linux only'])],
             [use_external_libmpeg2=$enableval],
             [use_external_libmpeg2=no])
 
 AC_ARG_ENABLE([external-libass],
             [AS_HELP_STRING([--enable-external-libass],
-               [enable use of external libass library (default is no)])],
+            [enable use of external libass library (default is no) 'Linux only'])],
             [use_external_libass=$enableval],
             [use_external_libass=no])
 
 AC_ARG_ENABLE([external-libvorbis],
             [AS_HELP_STRING([--enable-external-libvorbis],
-               [enable use of external libvorbis library (default is no)])],
+            [enable use of external libvorbis library (default is no) 'Linux only'])],
             [use_external_libvorbis=$enableval],
             [use_external_libvorbis=no])
 
 AC_ARG_ENABLE([external-libogg],
             [AS_HELP_STRING([--enable-external-libogg],
-               [enable use of external libogg library (default is no)])],
+            [enable use of external libogg library (default is no) 'Linux only'])],
             [use_external_libogg=$enableval],
             [use_external_libogg=no])
 
 AC_ARG_ENABLE([external-libmpcdec],
             [AS_HELP_STRING([--enable-external-libmpcdec],
-               [enable use of external libmpcdec library (default is no)])],
+            [enable use of external libmpcdec library (default is no) 'Linux only'])],
             [use_external_libmpcdec=$enableval],
             [use_external_libmpcdec=no])
 
 AC_ARG_ENABLE([external-libflac],
             [AS_HELP_STRING([--enable-external-libflac],
-               [enable use of external libflac library (default is no)])],
+            [enable use of external libflac library (default is no) 'Linux only'])],
             [use_external_libflac=$enableval],
             [use_external_libflac=no])
 
 AC_ARG_ENABLE([external-libwavpack],
             [AS_HELP_STRING([--enable-external-libwavpack],
-               [enable use of external libwavpack library (default is no)])],
+            [enable use of external libwavpack library (default is no) 'Linux only'])],
             [use_external_libwavpack=$enableval],
             [use_external_libwavpack=no])
 
 AC_ARG_ENABLE([external-python],
             [AS_HELP_STRING([--enable-external-python],
-               [enable use of external python library (default is no)])],
+            [enable use of external python library (default is no) 'Linux only'])],
             [use_external_python=$enableval],
             [use_external_python=no])
 
-### Internal static libraries options
-AC_ARG_ENABLE([static-libraries],
-            [AS_HELP_STRING([--enable-static-libraries],
-               [enable use of all supported internal static libraries (default is no)])],
-            [use_static_libraries=$enableval],
-            [use_static_libraries=no])
-
-AC_ARG_ENABLE([static-libdvdnav],
-            [AS_HELP_STRING([--enable-static-libdvdnav],
-               [enable use of internal libdvdnav static library (default is no)])],
-            [use_static_libdvdnav=$enableval],
-            [use_static_libdvdnav=no])
+### End of external library options
 
 # PCRE is a requirement
 use_pcre="yes"
@@ -368,8 +351,8 @@ AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mad],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ogg],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([vorbis],      [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([vorbisenc],      [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([vorbisfile],      [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([vorbisenc],   [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([vorbisfile],  [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([freetype],    [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([fontconfig],  [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
@@ -681,31 +664,6 @@ else
   USE_EXTERNAL_PYTHON=0
 fi
 
-### Internal static libraries checks
-if test "$use_static_libraries" = "yes"; then
-  AC_MSG_NOTICE($static_libraries_enabled)
-  USE_STATIC_LIBRARIES=1
-  AC_DEFINE([USE_STATIC_LIBRARIES], [1], [Whether to use internal static libraries.])
-else
-  AC_MSG_NOTICE($static_libraries_disabled)
-  USE_STATIC_LIBRARIES=0
-fi
-
-# Static libdvdnav
-if test "$use_static_libdvdnav" = "yes"; then
-  AC_MSG_ERROR([Use of static libdvdnav is currently unsupported.])
-
-  AC_MSG_NOTICE($static_libdvdnav_enabled)
-
-  INTERNAL_LIBS="-l:xbmc/cores/dvdplayer/Codecs/libdvdnav/src/.libs/libdvdnav.a $INTERNAL_LIBS"
-
-  USE_STATIC_LIBDVDNAV=1
-  AC_DEFINE([USE_STATIC_LIBDVDNAV], [1], [Whether to use internal libdvdnav static library.])
-else
-  AC_MSG_NOTICE($static_libdvdnav_disabled)
-  USE_STATIC_LIBDVDNAV=0
-fi
-
 # platform specific bin utilities
 if test "$host_vendor" != "apple" ; then
   AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
@@ -911,14 +869,12 @@ if test "$use_dvdcss" = "yes"; then
   BUILD_DVDCSS=1
   SKIP_CONFIG_DVDCSS=0
   DVDREAD_CFLAGS="-D_XBMC -DHAVE_DVDCSS_DVDCSS_H"
-  DVDREAD_EXTRA_CFLAGS="$DVDREAD_CFLAGS -fPIC -DPIC"
 else
   AC_MSG_NOTICE($dvdcss_disabled)
   final_message="$final_message\n  DVDCSS:\tNo"
   BUILD_DVDCSS=0
   SKIP_CONFIG_DVDCSS=1
   DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
-  DVDREAD_EXTRA_CFLAGS="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src"
 fi
 if test "$use_avahi" = "yes"; then
   final_message="$final_message\n  Avahi:\tYes"
@@ -1013,17 +969,6 @@ else
   fi
 fi
 
-### Internal static libraries messages
-if test "$use_static_libraries" = "yes"; then
-  final_message="$final_message\n  Static Libraries:\tYes"
-else
-  if test "$use_static_libdvdnav" = "yes"; then
-    final_message="$final_message\n  Static libdvdnav:\tYes"
-  else
-    final_message="$final_message\n  Static libdvdnav:\tNo"
-  fi
-fi
-
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
@@ -1048,9 +993,6 @@ AC_SUBST(USE_EXTERNAL_PYTHON)
 AC_SUBST(USE_PYTHON2_6)
 AC_SUBST(USE_PYTHON2_5)
 AC_SUBST(USE_PYTHON2_4)
-AC_SUBST(INTERNAL_LIBS)
-AC_SUBST(USE_STATIC_LIBRARIES)
-AC_SUBST(USE_STATIC_LIBDVDNAV)
 AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/dvdplayer/Codecs/Makefile]
                 [xbmc/cores/dvdplayer/Codecs/libdvd/Makefile]
@@ -1279,7 +1221,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
   if test "$host_vendor" = "apple" ; then
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
-      CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
       --disable-doc \
       --enable-static \
       --with-pic
@@ -1294,7 +1236,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
   if test "$host_vendor" = "apple" ; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --extra-cflags="$DVDREAD_EXTRA_CFLAGS -D__DARWIN__ -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      --extra-cflags="$DVDREAD_CFLAGS -D__DARWIN__ -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../libdvdcss/src" \
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
@@ -1302,7 +1244,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   else
     ./configure2 \
-      --extra-cflags="$DVDREAD_EXTRA_CFLAGS" \
+      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
