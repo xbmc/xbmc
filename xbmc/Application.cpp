@@ -1011,6 +1011,10 @@ CProfile* CApplication::InitDirectoriesLinux()
     CUtil::AddDirectorySeperator(strTempPath);
     g_stSettings.m_logFolder = strTempPath;
 
+    bool bCopySystemPlugins = false;
+    if (!CDirectory::Exists("special://home/plugins") )
+       bCopySystemPlugins = true:
+
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
@@ -1036,7 +1040,8 @@ CProfile* CApplication::InitDirectoriesLinux()
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
     
     // copy system-wide plugins into userprofile
-    CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
+    if ( bCopySystemPlugins )
+       CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
   }
   else
   {
@@ -1112,6 +1117,10 @@ CProfile* CApplication::InitDirectoriesOSX()
     CUtil::AddDirectorySeperator(strTempPath);
     g_stSettings.m_logFolder = strTempPath;
 
+    bool bCopySystemPlugins = false;
+    if (!CDirectory::Exists("special://home/plugins") )
+       bCopySystemPlugins = true:
+
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
@@ -1142,7 +1151,8 @@ CProfile* CApplication::InitDirectoriesOSX()
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
 
     // copy system-wide plugins into userprofile
-    CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
+    if ( bCopySystemPlugins )
+       CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
   }
   else
   {
@@ -1208,6 +1218,10 @@ CProfile* CApplication::InitDirectoriesWin32()
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
+    bool bCopySystemPlugins = false;
+    if (!CDirectory::Exists("special://home/plugins") )
+       bCopySystemPlugins = true:
+
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/visualisations");
@@ -1231,7 +1245,8 @@ CProfile* CApplication::InitDirectoriesWin32()
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
 
     // copy system-wide plugins into userprofile
-    CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
+    if ( bCopySystemPlugins )
+       CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
 
     // create user/app data/XBMC/cache
     CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
