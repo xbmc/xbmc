@@ -160,7 +160,7 @@ pascal OSStatus appSwitchedEventHandler(EventHandlerCallRef nextHandler,
     if ((*(p_this->hidDeviceInterface))->open(p_this->hidDeviceInterface, kIOHIDOptionsTypeSeizeDevice) != KERN_SUCCESS)
       ELOG("failed opening Apple Remote device\n");
   }  
-  DLOG("Reopened Apple Remote in exclusive mode\n");  
+  //DLOG("Reopened Apple Remote in exclusive mode\n");  
   return 0;
 }  
 
