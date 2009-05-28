@@ -1027,6 +1027,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/plugins/music");
     CDirectory::Create("special://home/plugins/pictures");
     CDirectory::Create("special://home/plugins/programs");
+    CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
     symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
@@ -1133,6 +1134,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/plugins/music");
     CDirectory::Create("special://home/plugins/pictures");
     CDirectory::Create("special://home/plugins/programs");
+    CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
 #ifdef __APPLE__
@@ -1228,6 +1230,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CDirectory::Create("special://home/plugins/music");
     CDirectory::Create("special://home/plugins/pictures");
     CDirectory::Create("special://home/plugins/programs");
+    CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
 
     CDirectory::Create("special://masterprofile");
@@ -1318,6 +1321,7 @@ HRESULT CApplication::Initialize()
     CDirectory::Create("special://xbmc/plugins/video");
     CDirectory::Create("special://xbmc/plugins/pictures");
     CDirectory::Create("special://xbmc/plugins/programs");
+    CDirectory::Create("special://xbmc/plugins/weather");
     CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/visualisations");
     CDirectory::Create("special://xbmc/sounds");
