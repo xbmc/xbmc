@@ -736,6 +736,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
+      --enable-encoder=ac3 \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \
@@ -763,6 +764,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
+      --enable-encoder=ac3 \
       --disable-decoder=mpeg_xvmc \
       --disable-devices \
       --disable-ffplay \

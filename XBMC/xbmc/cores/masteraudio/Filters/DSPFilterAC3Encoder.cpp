@@ -257,7 +257,7 @@ MA_RESULT CDSPFilterAC3Encoder::Render(ma_audio_container* pOutput, unsigned int
 
   // encode the data
   uint8_t* pOutFrame = (uint8_t*)pOutput->buffer[0].data;
-  short* pInFrame  = (short*)pInput ->buffer[0].data;
+  short* pInFrame = (short*)pInput ->buffer[0].data;
   unsigned int channelCount = GetLPCMInputAttributes(bus)->m_ChannelCount;
   pOutput->buffer[0].data_len = 0;
   for(unsigned int frame = 0; frame < frameCount; ++frame)
@@ -290,7 +290,7 @@ MA_RESULT CDSPFilterAC3Encoder::Render(ma_audio_container* pOutput, unsigned int
 #endif
 
     // Advance to the next set of frames
-    pInFrame  += AC3_SAMPLES_PER_FRAME * channelCount;
+    pInFrame += AC3_SAMPLES_PER_FRAME * channelCount;
     pOutFrame += AC3_FRAME_SIZE * 4;
     pOutput->buffer[0].data_len += AC3_FRAME_SIZE * 4;
   }

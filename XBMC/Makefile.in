@@ -166,6 +166,8 @@ xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a: force
 	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders
 xbmc/cores/ExternalPlayer/ExternalPlayer.a: force
 	$(MAKE) -C xbmc/cores/ExternalPlayer
+xbmc/cores/masteraudio/masteraudio.a: force
+	$(MAKE) -C xbmc/cores/masteraudio
 xbmc/FileSystem/filesystem.a: force
 	$(MAKE) -C xbmc/FileSystem
 xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a: force
@@ -323,6 +325,7 @@ OBJSXBMC=	\
 	xbmc/cores/VideoRenderers/VideoRenderer.a \
 	xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a \
 	xbmc/cores/ExternalPlayer/ExternalPlayer.a \
+	xbmc/cores/masteraudio/masteraudio.a \
 	xbmc/FileSystem/filesystem.a \
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \

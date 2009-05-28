@@ -25,13 +25,13 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../MasterAudioCore.h"
 #include "DSPFilterLPCM.h"
 #include "cores/ffmpeg/DllAvCodec.h"
 #include "cores/ffmpeg/DllAvFormat.h"
 #include "cores/ffmpeg/ac3.h"
 
-#define AC3_SAMPLES_PER_FRAME		1536  // Audio samples per AC3 frame
+// The AC3 spec defines a frame as a header + 6 coded audio blocks, each containing 256 input samples
+#define AC3_SAMPLES_PER_FRAME AC3_FRAME_SIZE // Audio samples per AC3 frame. 
 
 // Base class for LPCM DSPFilters
 class CDSPFilterAC3Encoder : public CDSPFilterLPCM
