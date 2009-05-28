@@ -2250,11 +2250,14 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
+#ifdef HAS_SDL
+  int vsync_mode = g_videoConfig.GetVSyncMode();
+#endif
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
 #ifdef HAS_SDL
-    if (g_videoConfig.GetVSyncMode()==VSYNC_VIDEO)
+    if (vsync_mode==VSYNC_VIDEO)
       g_graphicsContext.getScreenSurface()->EnableVSync(true);
 #endif
     if (m_bPresentFrame)
@@ -2270,9 +2273,9 @@ void CApplication::RenderNoPresent()
   g_graphicsContext.AcquireCurrentContext();
 
 #ifdef HAS_SDL
-  if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
+  if (vsync_mode==VSYNC_ALWAYS)
     g_graphicsContext.getScreenSurface()->EnableVSync(true);
-  else if (g_videoConfig.GetVSyncMode()!=VSYNC_DRIVER)
+  else if (vsync_mode!=VSYNC_DRIVER)
     g_graphicsContext.getScreenSurface()->EnableVSync(false);
 #endif
 
