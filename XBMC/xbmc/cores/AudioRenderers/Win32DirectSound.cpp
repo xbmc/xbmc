@@ -400,13 +400,23 @@ DWORD CWin32DirectSound::GetSpace()
 //***********************************************************************************************
 FLOAT CWin32DirectSound::GetDelay()
 {
+  // Make sure we know how much data is in the cache
+  UpdateCacheStatus();
+
+  CSingleLock lock (m_critSection);
+  FLOAT delay  = 0.008f; // WTF?
+  delay += (FLOAT)m_CacheLen / (FLOAT)m_AvgBytesPerSec;
+  return delay;
+}
+
+//***********************************************************************************************
+FLOAT CWin32DirectSound::GetCacheTime()
+{
   CSingleLock lock (m_critSection);
   // Make sure we know how much data is in the cache
   UpdateCacheStatus();
 
-  FLOAT delay  = 0.008f; // WTF?
-  delay += (FLOAT)m_CacheLen / (FLOAT)m_AvgBytesPerSec;
-  return delay;
+  return (FLOAT)m_CacheLen / (FLOAT)m_AvgBytesPerSec;
 }
 
 //***********************************************************************************************
