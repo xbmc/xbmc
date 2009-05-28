@@ -570,6 +570,11 @@ FLOAT CCoreAudioRenderer::GetDelay()
   return delay;
 }
 
+FLOAT CCoreAudioRenderer::GetCacheTime()
+{
+  return GetDelay();
+}
+
 DWORD CCoreAudioRenderer::GetChunkLen()
 {
   return m_ChunkLen;
