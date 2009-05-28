@@ -4611,14 +4611,16 @@ void CApplication::SaveFileState()
 {
   if (m_progressTrackingFile != "")
   {
-    if (m_itemCurrentFile && m_itemCurrentFile->IsVideo())
+    if (m_progressTrackingIsVideo)
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, m_itemCurrentFile->m_strPath.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, m_progressTrackingFile.c_str());
 
       CVideoDatabase videodatabase;
       if (videodatabase.Open())
       {
-        if (m_progressTrackingPlayCountUpdate)
+        // FIXME: Currently we can't reliably check m_itemCurrentFile, as it may already
+        // point to the next file in queue thus we make sure it's the same as the our tracking filename
+        if (m_progressTrackingPlayCountUpdate && m_itemCurrentFile && m_itemCurrentFile->m_strPath == m_progressTrackingFile) 
         {
           CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, m_itemCurrentFile->m_strPath.c_str());
 
@@ -4629,17 +4631,17 @@ void CApplication::SaveFileState()
 
         if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
         {
-          videodatabase.SetVideoSettings(m_itemCurrentFile->m_strPath, g_stSettings.m_currentVideoSettings);
+          videodatabase.SetVideoSettings(m_progressTrackingFile, g_stSettings.m_currentVideoSettings);
         }
 
         if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
         {
-          videodatabase.ClearBookMarksOfFile(m_itemCurrentFile->m_strPath, CBookmark::RESUME);
+          videodatabase.ClearBookMarksOfFile(m_progressTrackingFile, CBookmark::RESUME);
         }
         else
         if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
         {
-          videodatabase.AddBookMarkToFile(m_itemCurrentFile->m_strPath, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
+          videodatabase.AddBookMarkToFile(m_progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
         }
 
         videodatabase.Close();
@@ -4647,7 +4649,7 @@ void CApplication::SaveFileState()
     }
     else
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for audio file %s", __FUNCTION__, m_itemCurrentFile->m_strPath.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for audio file %s", __FUNCTION__, m_progressTrackingFile.c_str());
 
       if (m_progressTrackingPlayCountUpdate)
       {
@@ -4695,6 +4697,7 @@ void CApplication::UpdateFileState()
       // Update bookmark for save
       if (IsPlayingVideo())
       {
+        m_progressTrackingIsVideo = true;
         m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
         m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
@@ -4717,6 +4720,8 @@ void CApplication::UpdateFileState()
           m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
         }
       }
+      else
+        m_progressTrackingIsVideo = false;
     }
   }
 }
