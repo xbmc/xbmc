@@ -169,12 +169,14 @@ static int dvd_file_close(URLContext *h)
 
 URLProtocol dvd_file_protocol = {
                                   "CDVDInputStream",
-                                  NULL,
-                                  dvd_file_read,
-                                  NULL,
-                                  dvd_file_seek,
-                                  dvd_file_close,
-                                  NULL
+                                  NULL,                 /*url_open*/
+                                  dvd_file_read,        /*url_read*/
+                                  NULL,                 /*url_write*/
+                                  dvd_file_seek,        /*url_seek*/
+                                  dvd_file_close,       /*url_close*/
+                                  NULL,                 /*URLProtocol*/
+                                  NULL,                 /*url_read_pause*/
+                                  NULL                  /*url_read_seek*/
                                 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
