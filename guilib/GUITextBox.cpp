@@ -319,7 +319,7 @@ unsigned int CGUITextBox::GetRows() const
 
 int CGUITextBox::GetCurrentPage() const
 {
-  if (m_offset + m_itemsPerPage >= (int)GetRows())  // last page
+  if (m_offset + m_itemsPerPage >= GetRows())  // last page
     return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
   return m_offset / m_itemsPerPage + 1;
 }
