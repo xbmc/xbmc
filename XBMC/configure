@@ -639,9 +639,6 @@ ac_includes_default="\
 ac_header_list=
 ac_func_list=
 ac_subst_vars='LTLIBOBJS
-USE_STATIC_LIBDVDNAV
-USE_STATIC_LIBRARIES
-INTERNAL_LIBS
 USE_PYTHON2_4
 USE_PYTHON2_5
 USE_PYTHON2_6
@@ -768,8 +765,6 @@ enable_external_libmpcdec
 enable_external_libflac
 enable_external_libwavpack
 enable_external_python
-enable_static_libraries
-enable_static_libdvdnav
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1426,52 +1421,46 @@ Optional Features:
                           libavahi-common and libavahi-client is found)
   --enable-external-libraries
                           enable use of all supported external libraries
-                          (default is no)
+                          (default is no) 'Linux only'
   --enable-external-ffmpeg
                           enable use of external ffmpeg libraries (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-libmad
                           enable use of external libmad library (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-liba52
                           enable use of external liba52 library (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-libdts
                           enable use of external libdts library (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-libfaad
                           enable use of external libfaad library (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-libmpeg2
                           enable use of external libmpeg2 library (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-libass
                           enable use of external libass library (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-libvorbis
                           enable use of external libvorbis library (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-libogg
                           enable use of external libogg library (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-libmpcdec
                           enable use of external libmpcdec library (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-libflac
                           enable use of external libflac library (default is
-                          no)
+                          no) 'Linux only'
   --enable-external-libwavpack
                           enable use of external libwavpack library (default
-                          is no)
+                          is no) 'Linux only'
   --enable-external-python
                           enable use of external python library (default is
-                          no)
-  --enable-static-libraries
-                          enable use of all supported internal static
-                          libraries (default is no)
-  --enable-static-libdvdnav
-                          enable use of internal libdvdnav static library
-                          (default is no)
+                          no) 'Linux only'
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -2123,12 +2112,6 @@ external_libwavpack_disabled="== Use of external libwavpack disabled. =="
 external_python_enabled="== Use of external python enabled. =="
 external_python_disabled="== Use of external python disabled. =="
 
-# Internal static library message strings
-static_libraries_enabled="== Use of all supported internal static libraries enabled. =="
-static_libraries_disabled="== Use of all supported internal static libraries disabled. =="
-static_libdvdnav_enabled="== Use of internal libdvdnav static library enabled. =="
-static_libdvdnav_disabled="== Use of internal libdvdnav static library disabled. =="
-
 case $host in
     i*86*-linux-gnu*)
        ARCH="i486-linux"
@@ -2420,22 +2403,7 @@ else
 fi
 
 
-### Internal static libraries options
-# Check whether --enable-static-libraries was given.
-if test "${enable_static_libraries+set}" = set; then
-  enableval=$enable_static_libraries; use_static_libraries=$enableval
-else
-  use_static_libraries=no
-fi
-
-
-# Check whether --enable-static-libdvdnav was given.
-if test "${enable_static_libdvdnav+set}" = set; then
-  enableval=$enable_static_libdvdnav; use_static_libdvdnav=$enableval
-else
-  use_static_libdvdnav=no
-fi
-
+### End of external library options
 
 # PCRE is a requirement
 use_pcre="yes"
@@ -11459,45 +11427,6 @@ $as_echo "$as_me: $external_python_disabled" >&6;}
   USE_EXTERNAL_PYTHON=0
 fi
 
-### Internal static libraries checks
-if test "$use_static_libraries" = "yes"; then
-  { $as_echo "$as_me:$LINENO: $static_libraries_enabled" >&5
-$as_echo "$as_me: $static_libraries_enabled" >&6;}
-  USE_STATIC_LIBRARIES=1
-
-cat >>confdefs.h <<\_ACEOF
-#define USE_STATIC_LIBRARIES 1
-_ACEOF
-
-else
-  { $as_echo "$as_me:$LINENO: $static_libraries_disabled" >&5
-$as_echo "$as_me: $static_libraries_disabled" >&6;}
-  USE_STATIC_LIBRARIES=0
-fi
-
-# Static libdvdnav
-if test "$use_static_libdvdnav" = "yes"; then
-  { { $as_echo "$as_me:$LINENO: error: Use of static libdvdnav is currently unsupported." >&5
-$as_echo "$as_me: error: Use of static libdvdnav is currently unsupported." >&2;}
-   { (exit 1); exit 1; }; }
-
-  { $as_echo "$as_me:$LINENO: $static_libdvdnav_enabled" >&5
-$as_echo "$as_me: $static_libdvdnav_enabled" >&6;}
-
-  INTERNAL_LIBS="-l:xbmc/cores/dvdplayer/Codecs/libdvdnav/src/.libs/libdvdnav.a $INTERNAL_LIBS"
-
-  USE_STATIC_LIBDVDNAV=1
-
-cat >>confdefs.h <<\_ACEOF
-#define USE_STATIC_LIBDVDNAV 1
-_ACEOF
-
-else
-  { $as_echo "$as_me:$LINENO: $static_libdvdnav_disabled" >&5
-$as_echo "$as_me: $static_libdvdnav_disabled" >&6;}
-  USE_STATIC_LIBDVDNAV=0
-fi
-
 # platform specific bin utilities
 if test "$host_vendor" != "apple" ; then
   # Extract the first word of "gawk", so it can be a program name with args.
@@ -19327,7 +19256,6 @@ $as_echo "$as_me: $dvdcss_enabled" >&6;}
   BUILD_DVDCSS=1
   SKIP_CONFIG_DVDCSS=0
   DVDREAD_CFLAGS="-D_XBMC -DHAVE_DVDCSS_DVDCSS_H"
-  DVDREAD_EXTRA_CFLAGS="$DVDREAD_CFLAGS -fPIC -DPIC"
 else
   { $as_echo "$as_me:$LINENO: $dvdcss_disabled" >&5
 $as_echo "$as_me: $dvdcss_disabled" >&6;}
@@ -19335,7 +19263,6 @@ $as_echo "$as_me: $dvdcss_disabled" >&6;}
   BUILD_DVDCSS=0
   SKIP_CONFIG_DVDCSS=1
   DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
-  DVDREAD_EXTRA_CFLAGS="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src"
 fi
 if test "$use_avahi" = "yes"; then
   final_message="$final_message\n  Avahi:\tYes"
@@ -19467,20 +19394,6 @@ else
     final_message="$final_message\n  External Python:\tNo"
   fi
 fi
-
-### Internal static libraries messages
-if test "$use_static_libraries" = "yes"; then
-  final_message="$final_message\n  Static Libraries:\tYes"
-else
-  if test "$use_static_libdvdnav" = "yes"; then
-    final_message="$final_message\n  Static libdvdnav:\tYes"
-  else
-    final_message="$final_message\n  Static libdvdnav:\tNo"
-  fi
-fi
-
-
-
 
 
 
@@ -21160,7 +21073,7 @@ if [ $SKIP_CONFIG_DVDCSS != "1" ]; then
 
   if test "$host_vendor" = "apple" ; then
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
-      CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
       --disable-doc \
       --enable-static \
       --with-pic
@@ -21196,7 +21109,7 @@ if [ 0 != "1" ]; then
 
   if test "$host_vendor" = "apple" ; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --extra-cflags="$DVDREAD_EXTRA_CFLAGS -D__DARWIN__ -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      --extra-cflags="$DVDREAD_CFLAGS -D__DARWIN__ -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../libdvdcss/src" \
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
@@ -21204,7 +21117,7 @@ if [ 0 != "1" ]; then
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   else
     ./configure2 \
-      --extra-cflags="$DVDREAD_EXTRA_CFLAGS" \
+      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
       --enable-static \
       --disable-shared &&
     make dvdread-config &&
