@@ -482,17 +482,27 @@ CStdString CWIN32Util::GetProfilePath()
 {
   CStdString strProfilePath;
   WCHAR szPath[MAX_PATH];
-  bool bpDirs = g_application.PlatformDirectoriesEnabled();
 
-  if(bpDirs && SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
+  if(SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
   {
     g_charsetConverter.wToUTF8(szPath, strProfilePath);
-    CUtil::AddFileToFolder(strProfilePath, "XBMC\\", strProfilePath);
+    strProfilePath = UncToSmb(strProfilePath);
   }  
   else
     CUtil::GetHomePath(strProfilePath);
 
   return strProfilePath;
+}
+
+CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
+{
+  CStdString strRetPath(strPath);
+  if(strRetPath.Left(2).Equals("\\\\"))
+  {
+    strRetPath = "smb:" + strPath;
+    strRetPath.Replace("\\","/");
+  }
+  return strRetPath;
 }
 
 void CWIN32Util::ExtendDllPath()
