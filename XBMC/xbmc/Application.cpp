@@ -1197,13 +1197,8 @@ CProfile* CApplication::InitDirectoriesWin32()
 
   if (m_bPlatformDirectories)
   {
-    WCHAR szPath[MAX_PATH];
 
-    CStdString strWin32UserFolder;
-    if(SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
-      g_charsetConverter.wToUTF8(szPath, strWin32UserFolder);
-    else
-      strWin32UserFolder = strExecutablePath;
+    CStdString strWin32UserFolder = CWIN32Util::GetProfilePath();
 
     // create user/app data/XBMC
     CStdString homePath = CUtil::AddFileToFolder(strWin32UserFolder, "XBMC");
@@ -1220,7 +1215,7 @@ CProfile* CApplication::InitDirectoriesWin32()
 
     bool bCopySystemPlugins = false;
     if (!CDirectory::Exists("special://home/plugins") )
-       bCopySystemPlugins = true:
+       bCopySystemPlugins = true;
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
