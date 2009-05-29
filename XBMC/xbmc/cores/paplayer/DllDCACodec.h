@@ -25,7 +25,7 @@
   #include "config.h"
 #endif
 extern "C" {
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBDTS)
+#if (defined USE_EXTERNAL_LIBDTS)
   #include <dts.h>
 #else
   #include "../dvdplayer/DVDCodecs/Audio/libdts/dts.h"
@@ -63,7 +63,7 @@ public:
   virtual void dts_free (dts_state_t * state)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBDTS)
+#if (defined USE_EXTERNAL_LIBDTS)
 
 class DllDCACodec : public DllDynamic, DllDCACodecInterface
 {
@@ -117,6 +117,6 @@ class DllDCACodec : public DllDynamic, DllDCACodecInterface
   END_METHOD_RESOLVE()
 };
 
-#endif /* (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBDTS) */
+#endif /* (defined USE_EXTERNAL_LIBDTS) */
 
 #endif /* HAS_DTS_CODEC */

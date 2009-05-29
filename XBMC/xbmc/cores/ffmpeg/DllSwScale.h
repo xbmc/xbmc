@@ -53,7 +53,7 @@ public:
 
    virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
                          int srcSliceH, uint8_t* dst[], int dstStride[])=0;
-    #if (! defined USE_EXTERNAL_LIBRARIES) && (! defined USE_EXTERNAL_FFMPEG)
+    #if (! defined USE_EXTERNAL_FFMPEG)
       virtual void sws_rgb2rgb_init(int flags)=0;
     #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
       virtual void sws_rgb2rgb_init(int flags)=0;
@@ -76,7 +76,7 @@ public:
   virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
                 int srcSliceH, uint8_t* dst[], int dstStride[])  
     { return ::sws_scale(context, src, srcStride, srcSliceY, srcSliceH, dst, dstStride); }
-  #if (! defined USE_EXTERNAL_LIBRARIES) && (! defined USE_EXTERNAL_FFMPEG)
+  #if (! defined USE_EXTERNAL_FFMPEG)
     virtual void sws_rgb2rgb_init(int flags) { ::sws_rgb2rgb_init(flags); }
   #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
     virtual void sws_rgb2rgb_init(int flags) { ::sws_rgb2rgb_init(flags); }

@@ -25,7 +25,7 @@
 #endif
 /* undefine byte from PlatformDefs.h since it's used in mad.h */
 #undef byte
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBMAD)
+#if (defined USE_EXTERNAL_LIBMAD)
   #include <mad.h>
 #else
   #include "libmad/mad.h"
@@ -46,7 +46,7 @@ public:
   virtual int mad_frame_decode(struct mad_frame *, struct mad_stream *)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBMAD)
+#if (defined USE_EXTERNAL_LIBMAD)
 
 class DllLibMad : public DllDynamic, DllLibMadInterface
 {

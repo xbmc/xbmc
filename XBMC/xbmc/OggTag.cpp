@@ -65,7 +65,7 @@ bool COggTag::Read(const CStdString& strFile1)
     CUtil::RemoveSlashAtEnd(strFile);   // we want the filename
   }
 
-  #if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+  #if (defined USE_EXTERNAL_LIBVORBIS)
   // Call fopen() directly if we're using external libraries
   FILE* file=fopen(strFile.c_str(), "r");
   #else
@@ -110,7 +110,7 @@ int COggTag::GetStreamCount(const CStdString& strFile)
   if (!m_dll.Load())
     return 0;
 
-  #if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+  #if (defined USE_EXTERNAL_LIBVORBIS)
   // Call fopen() directly if we're using external libraries
   FILE* file=fopen(strFile.c_str(), "r");
   #else

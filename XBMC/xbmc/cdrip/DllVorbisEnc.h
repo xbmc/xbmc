@@ -24,7 +24,7 @@
 #if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+#if (defined USE_EXTERNAL_LIBVORBIS)
   #include <vorbis/vorbisenc.h>
 #else
   #include "cdrip/oggvorbis/vorbisenc.h"
@@ -39,7 +39,7 @@ public:
   virtual ~DllVorbisEncInterface() {}
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+#if (defined USE_EXTERNAL_LIBVORBIS)
 
 class DllVorbisEnc : public DllDynamic, DllVorbisEncInterface
 {

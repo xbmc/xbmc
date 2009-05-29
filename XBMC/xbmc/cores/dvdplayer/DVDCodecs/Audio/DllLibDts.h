@@ -25,7 +25,7 @@
   #include "config.h"
 #endif
 extern "C" {
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBDTS)
+#if (defined USE_EXTERNAL_LIBDTS)
   #include <dts.h>
 #else
   #include "libdts/dts.h"
@@ -60,7 +60,7 @@ public:
   virtual void dts_free (dts_state_t * state)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBDTS)
+#if (defined USE_EXTERNAL_LIBDTS)
 
 class DllLibDts : public DllDynamic, DllLibDtsInterface
 {

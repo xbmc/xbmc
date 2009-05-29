@@ -24,7 +24,7 @@
 #if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+#if (defined USE_EXTERNAL_LIBVORBIS)
   #include <vorbis/vorbisfile.h>
 #else
   #include "ogg/vorbisfile.h"
@@ -67,7 +67,7 @@ public:
                          int bigendianp,int word,int sgned,int *bitstream)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+#if (defined USE_EXTERNAL_LIBVORBIS)
 
 class DllVorbisfile : public DllDynamic, DllVorbisfileInterface
 {

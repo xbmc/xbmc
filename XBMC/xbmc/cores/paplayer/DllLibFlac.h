@@ -24,7 +24,7 @@
 #if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBFLAC)
+#if (defined USE_EXTERNAL_LIBFLAC)
   #include <FLAC/stream_decoder.h>
 #else
   #include "flac-1.2.1/include/FLAC/stream_decoder.h"
@@ -76,7 +76,7 @@ public:
     virtual FLAC__bool FLAC__stream_decoder_seek_absolute(FLAC__StreamDecoder *decoder, FLAC__uint64 sample)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBFLAC)
+#if (defined USE_EXTERNAL_LIBFLAC)
 
 class DllLibFlac : public DllDynamic, DllLibFlacInterface
 {

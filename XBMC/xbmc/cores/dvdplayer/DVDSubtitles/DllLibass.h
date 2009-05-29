@@ -25,7 +25,7 @@
   #include "config.h"
 #endif
 extern "C" {
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBASS)
+#if (defined USE_EXTERNAL_LIBASS)
   #include <ass/ass.h>
 #else
   #include "../../../lib/libass/libass/ass.h"
@@ -57,7 +57,7 @@ public:
   virtual void ass_process_codec_private(ass_track_t* track, char *data, int size)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBASS)
+#if (defined USE_EXTERNAL_LIBASS)
 
 class DllLibass : public DllDynamic, DllLibassInterface
 {

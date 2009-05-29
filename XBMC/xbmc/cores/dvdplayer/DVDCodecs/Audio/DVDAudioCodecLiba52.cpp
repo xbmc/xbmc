@@ -295,7 +295,7 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
   if(!frame)
     return len;
 
-  #if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBA52)
+  #if (defined USE_EXTERNAL_LIBA52)
   sample_t level = 1.0f;
   #else
   level_t level = 1.0f;

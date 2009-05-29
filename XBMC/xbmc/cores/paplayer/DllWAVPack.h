@@ -24,14 +24,14 @@
 #if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBWAVPACK)
+#if (defined USE_EXTERNAL_LIBWAVPACK)
   #include <wavpack/wavpack.h>
 #else
   #include "WavPackCodec/wavpack.h"
 #endif
 #include "DynamicDll.h"
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBWAVPACK)
+#if (defined USE_EXTERNAL_LIBWAVPACK)
 
 class DllWavPackInterface
 {

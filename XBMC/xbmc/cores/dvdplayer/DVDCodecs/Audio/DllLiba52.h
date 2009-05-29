@@ -25,7 +25,7 @@
   #include "config.h"
 #endif
 extern "C" {
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBA52)
+#if (defined USE_EXTERNAL_LIBA52)
   #include <a52dec/a52.h>
   #include <a52dec/mm_accel.h>
 #else
@@ -39,7 +39,7 @@ typedef unsigned __int8 uint8_t;
 typedef __int16 int16_t;
 #endif
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBA52)
+#if (defined USE_EXTERNAL_LIBA52)
 
 class DllLiba52Interface
 {

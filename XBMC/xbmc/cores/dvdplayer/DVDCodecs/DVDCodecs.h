@@ -39,7 +39,7 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG)
+#if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
   #elif (defined HAVE_FFMPEG_AVCODEC_H)

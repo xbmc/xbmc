@@ -24,14 +24,14 @@
 #if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBFAAD)
+#if (defined USE_EXTERNAL_LIBFAAD)
   #include <neaacdec.h>
 #else
   #include "libfaad/neaacdec.h"
 #endif
 #include "DynamicDll.h"
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBFAAD)
+#if (defined USE_EXTERNAL_LIBFAAD)
 
 class DllLibFaadInterface
 {

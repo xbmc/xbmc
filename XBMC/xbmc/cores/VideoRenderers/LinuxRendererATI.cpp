@@ -259,8 +259,7 @@ unsigned int CLinuxRendererATI::PreInit()
 #endif
     CLog::Log(LOGERROR,"CLinuxRendererATI::PreInit - failed to load rescale libraries!");
 
-  #if ((! defined USE_EXTERNAL_LIBRARIES) && (! defined USE_EXTERNAL_FFMPEG)) \
-    && (defined HAS_DVD_SWSCALE)
+  #if (! defined USE_EXTERNAL_FFMPEG) && (defined HAS_DVD_SWSCALE)
     m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   #elif ((defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)) && (defined HAS_DVD_SWSCALE)
     m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);

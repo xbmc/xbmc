@@ -26,7 +26,7 @@
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h"
 extern "C" {
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_FFMPEG)
+#if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
   #elif (defined HAVE_FFMPEG_AVCODEC_H)

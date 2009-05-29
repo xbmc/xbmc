@@ -25,7 +25,7 @@
   #include "config.h"
 #endif
 extern "C" {
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBA52)
+#if (defined USE_EXTERNAL_LIBA52)
   #include <a52dec/a52.h>
   #include <a52dec/mm_accel.h>
 #else
@@ -48,7 +48,7 @@ typedef float convert_t;
 typedef sample_t convert_t;
 #endif
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBA52)
+#if (defined USE_EXTERNAL_LIBA52)
 
 class DllAc3CodecInterface
 {
@@ -130,6 +130,6 @@ class DllAc3Codec : public DllDynamic, DllAc3CodecInterface
   END_METHOD_RESOLVE()
 };
 
-#endif /* (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBA52) */
+#endif /* (defined USE_EXTERNAL_LIBA52) */
 
 #endif /* HAS_AC3_CODEC */

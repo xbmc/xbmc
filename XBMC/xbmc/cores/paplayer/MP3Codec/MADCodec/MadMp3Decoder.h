@@ -10,7 +10,7 @@
 #define __cdecl
 #endif
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBMAD)
+#if (defined USE_EXTERNAL_LIBMAD)
   #include <mad.h>
 #else
   #include "mad.h"

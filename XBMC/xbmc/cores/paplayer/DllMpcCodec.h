@@ -24,7 +24,7 @@
 #if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBMPCDEC)
+#if (defined USE_EXTERNAL_LIBMPCDEC)
   #include <mpcdec/config_types.h>
   #include <mpcdec/reader.h>
   #include <mpcdec/streaminfo.h>
@@ -49,7 +49,7 @@ public:
     virtual int Seek(mpc_decoder *decoder, double timeinseconds)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBVORBIS)
+#if (defined USE_EXTERNAL_LIBVORBIS)
 
 class DllMPCCodec : public DllDynamic, DllMPCCodecInterface
 {

@@ -24,7 +24,7 @@
 #if (defined HAVE_CONFIG_H)
   #include "config.h"
 #endif
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBOGG)
+#if (defined USE_EXTERNAL_LIBOGG)
   #include <ogg/ogg.h>
 #else
   #include "oggvorbis/ogg.h"
@@ -43,7 +43,7 @@ public:
   virtual ~DllOggInterface() {}
 };
 
-#if (defined USE_EXTERNAL_LIBRARIES) || (defined USE_EXTERNAL_LIBOGG)
+#if (defined USE_EXTERNAL_LIBOGG)
 
 class DllOgg : public DllDynamic, DllOggInterface
 {
