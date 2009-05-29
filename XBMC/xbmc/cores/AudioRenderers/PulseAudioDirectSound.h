@@ -78,6 +78,7 @@ private:
   
   bool m_bIsAllocated;
 
+  unsigned int m_uiBytesPerSecond;
   unsigned int m_uiBufferSize;
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
