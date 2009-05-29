@@ -4,7 +4,14 @@
 #endif
 
 extern "C" {
-#include "../include/mpcdec/mpcdec.h"
+#if (defined HAVE_CONFIG_H) && (!defined _WIN32PC)
+  #include "config.h"
+#endif
+#if (defined USE_EXTERNAL_LIBMPCDEC)
+  #include <mpcdec/mpcdec.h>
+#else
+  #include "../include/mpcdec/mpcdec.h"
+#endif
 
 bool __declspec(dllexport) Open(mpc_decoder **decoder, mpc_reader *reader,
     mpc_streaminfo *info, double *timeinseconds);
