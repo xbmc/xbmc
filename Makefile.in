@@ -99,7 +99,6 @@ PM3HD_MEDIA=skin/PM3.HD/media
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
 	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS)
 
-DEBUG_FLAGS=@DEBUG_FLAGS@
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
 CXXFLAGS=@CXXFLAGS@
@@ -361,9 +360,9 @@ endif
 
 xbmc.bin: $(OBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
+	$(CXX) $(CXXFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 else
-	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin -Wl,--whole-archive $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) $(LDFLAGS) -rdynamic
+	$(CXX) $(CXXFLAGS) -o xbmc.bin -Wl,--whole-archive $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) $(LDFLAGS) -rdynamic
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
@@ -372,7 +371,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	#  so only exclude it for osx builds
 	@echo "excluding xbmc-xrandr"
 else
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
+	$(CC) $(CFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
 endif
 
 tools/XBMCTex/XBMCTex:
