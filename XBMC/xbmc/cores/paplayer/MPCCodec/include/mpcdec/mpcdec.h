@@ -49,7 +49,7 @@ extern "C" {
 #ifndef WIN32
 #include "mpcdec/config_types.h"
 #else
-#include "mpcdec/config_win32.h"
+#include "config_win32.h"
 #endif
 
 #include "decoder.h"

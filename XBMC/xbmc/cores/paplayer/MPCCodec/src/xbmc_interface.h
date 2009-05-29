@@ -4,7 +4,7 @@
 #endif
 
 extern "C" {
-#include "mpcdec/mpcdec.h"
+#include "../include/mpcdec/mpcdec.h"
 
 bool __declspec(dllexport) Open(mpc_decoder **decoder, mpc_reader *reader,
     mpc_streaminfo *info, double *timeinseconds);
