@@ -218,12 +218,6 @@ xbmc/osx/osx.a: force
 #xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a: force
 #xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a: force
 #	$(MAKE) -C xbmc/lib/libSDL-OSX
-system/players/dvdplayer/avutil-49-@ARCH@.a: force
-system/players/dvdplayer/avcodec-52-@ARCH@.a: force
-system/players/dvdplayer/swscale-0.6.1-@ARCH@.a: force
-system/players/dvdplayer/avformat-52-@ARCH@.a: force
-system/players/dvdplayer/postproc-51-@ARCH@.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -353,11 +347,6 @@ OBJSXBMC += \
 	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a \
-	system/players/dvdplayer/avutil-49-@ARCH@.a \
-	system/players/dvdplayer/avcodec-52-@ARCH@.a \
-	system/players/dvdplayer/swscale-0.6.1-@ARCH@.a \
-	system/players/dvdplayer/avformat-52-@ARCH@.a \
-	system/players/dvdplayer/postproc-51-@ARCH@.a
 else
 OBJSXBMC += \
 	xbmc/lib/libsmb/libsmbclient-@ARCH@.a
