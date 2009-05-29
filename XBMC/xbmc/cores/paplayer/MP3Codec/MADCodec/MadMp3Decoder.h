@@ -1,7 +1,7 @@
 #ifndef _MadMp3Decoder_H_
 #define _MadMp3Decoder_H_
 
-#if (defined HAVE_CONFIG_H)
+#if (defined HAVE_CONFIG_H) && (!defined _WIN32PC)
   #include "config.h"
 #endif
 #ifdef _LINUX

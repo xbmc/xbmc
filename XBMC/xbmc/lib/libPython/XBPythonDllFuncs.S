@@ -1,4 +1,4 @@
-#if (defined HAVE_CONFIG_H)
+#if (defined HAVE_CONFIG_H) && (!defined _WIN32PC)
   #include "config.h"
 #endif
 
