@@ -887,8 +887,8 @@ void CLinuxRendererGL::LoadTextures(int source)
                      (g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_AUTO)) && (m_renderQuality != RQ_MULTIPASS);
   }
 
-  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
-  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
 
   if (imaging==-1)
   {
@@ -1736,8 +1736,8 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
 
-  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
-  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
 
   // Y
   glActiveTextureARB(GL_TEXTURE0);
@@ -1868,8 +1868,8 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
 
-  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
-  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
 
   // Y
   glEnable(m_textureTarget);

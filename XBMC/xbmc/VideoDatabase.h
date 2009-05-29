@@ -413,6 +413,7 @@ public:
   void GetMusicVideosByName(const CStdString& strSearch, CFileItemList& items);
 
   void GetEpisodesByPlot(const CStdString& strSearch, CFileItemList& items);
+  void GetMoviesByPlot(const CStdString& strSearch, CFileItemList& items);
 
   bool LinkMovieToTvshow(long idMovie, long idShow, bool bRemove);
   bool IsLinkedToTvshow(long idMovie);
