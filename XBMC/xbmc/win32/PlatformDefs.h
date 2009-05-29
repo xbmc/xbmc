@@ -33,6 +33,7 @@ typedef __int64 __off64_t;
 typedef long    __off_t;
 
 #define ssize_t int
+typedef ssize_t Py_ssize_t;
 
 #define snprintf _snprintf
 #define ftello64 _ftelli64
