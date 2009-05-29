@@ -445,8 +445,6 @@ void PAPlayer::Process()
   {
     m_startEvent.Reset();
 
-    m_callback.OnPlayBackStarted();
-
     do
     {
       if (!m_bPaused)
