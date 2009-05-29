@@ -20,8 +20,12 @@
  *
  */
 
-#include "utils/Addon.h"
 #include "Visualisation.h"
+
+namespace ADDON
+{
+  class CAddon;
+}
 
 class CVisualisationFactory
 {

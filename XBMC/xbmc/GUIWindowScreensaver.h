@@ -22,12 +22,16 @@
  */
 
 #include "GUIWindow.h"
-#include "utils/Addon.h"
 #ifdef HAS_SCREENSAVER
 #include "screensavers/ScreenSaver.h"
 #endif
 
 #include "utils/CriticalSection.h"
+
+namespace ADDON
+{
+  class CAddon;
+}
 
 #define SCREENSAVER_FADE   1
 #define SCREENSAVER_BLACK  2

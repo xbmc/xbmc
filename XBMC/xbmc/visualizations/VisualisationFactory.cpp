@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "VisualisationFactory.h"
 #include "DllVisualisation.h"
+#include "utils/Addon.h"
 
 using namespace ADDON;
 

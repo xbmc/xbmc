@@ -441,22 +441,22 @@ void CAddonStatusHandler::Process()
  *
  */
 
-IAddonCallback *CAddon::m_cbMultitye = NULL;
-IAddonCallback *CAddon::m_cbViz = NULL;
-IAddonCallback *CAddon::m_cbSkin = NULL;
-IAddonCallback *CAddon::m_cbPVR = NULL;
-IAddonCallback *CAddon::m_cbScript = NULL;
-IAddonCallback *CAddon::m_cbScraperPVR = NULL;
-IAddonCallback *CAddon::m_cbScraperVideo = NULL;
-IAddonCallback *CAddon::m_cbScraperMusic = NULL;
-IAddonCallback *CAddon::m_cbScraperProgram = NULL;
-IAddonCallback *CAddon::m_cbScreensaver = NULL;
-IAddonCallback *CAddon::m_cbPluginPVR = NULL;
-IAddonCallback *CAddon::m_cbPluginVideo = NULL;
-IAddonCallback *CAddon::m_cbPluginMusic = NULL;
-IAddonCallback *CAddon::m_cbPluginProgram = NULL;
-IAddonCallback *CAddon::m_cbPluginPictures = NULL;
-IAddonCallback *CAddon::m_cbDSPAudio = NULL;
+IAddonCallback *CAddon::m_cbMultitye        = NULL;
+IAddonCallback *CAddon::m_cbViz             = NULL;
+IAddonCallback *CAddon::m_cbSkin            = NULL;
+IAddonCallback *CAddon::m_cbPVR             = NULL;
+IAddonCallback *CAddon::m_cbScript          = NULL;
+IAddonCallback *CAddon::m_cbScraperPVR      = NULL;
+IAddonCallback *CAddon::m_cbScraperVideo    = NULL;
+IAddonCallback *CAddon::m_cbScraperMusic    = NULL;
+IAddonCallback *CAddon::m_cbScraperProgram  = NULL;
+IAddonCallback *CAddon::m_cbScreensaver     = NULL;
+IAddonCallback *CAddon::m_cbPluginPVR       = NULL;
+IAddonCallback *CAddon::m_cbPluginVideo     = NULL;
+IAddonCallback *CAddon::m_cbPluginMusic     = NULL;
+IAddonCallback *CAddon::m_cbPluginProgram   = NULL;
+IAddonCallback *CAddon::m_cbPluginPictures  = NULL;
+IAddonCallback *CAddon::m_cbDSPAudio        = NULL;
 
 CAddon::CAddon()
 {
@@ -686,7 +686,6 @@ void CAddon::ClearAddonStrings()
   // Unload temporary language strings
   g_localizeStringsTemp.Clear();
 }
-
 
 bool CAddon::CreateChildAddon(const CAddon &parent, CAddon &child)
 {

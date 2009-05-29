@@ -121,7 +121,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   if (url.GetProtocol().Equals("hdhomerun")
   ||  url.GetProtocol().Equals("myth")
   ||  url.GetProtocol().Equals("cmyth")
-  ||  url.GetProtocol().Equals("rtmp"))
+  ||  url.GetProtocol().Equals("rtmp")
+  ||  url.GetProtocol().Equals("pvr"))
   {
     vecCores.push_back(EPC_DVDPLAYER);
   }

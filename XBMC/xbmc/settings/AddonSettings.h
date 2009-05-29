@@ -26,7 +26,6 @@
 #include "tinyXML/tinyxml.h"
 #include "URL.h"
 #include "Settings.h"
-#include "utils/Addon.h"
 
 class CAddonSettings
 {

@@ -53,6 +53,7 @@ public:
 
   virtual bool           NextChannel();
   virtual bool           PrevChannel();
+  virtual bool           SelectChannel(unsigned int channel) { return false; }
 
   virtual int            GetTotalTime()              { return 0; }
   virtual int            GetStartTime()              { return 0; }

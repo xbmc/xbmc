@@ -20,8 +20,12 @@
  *
  */
 
-#include "utils/Addon.h"
 #include "PVRClient.h"
+
+namespace ADDON
+{
+  class CAddon;
+}
 
 class CPVRClientFactory
 {

@@ -37,6 +37,7 @@ enum DVDStreamType
   DVDSTREAM_TYPE_TV     = 6,
   DVDSTREAM_TYPE_RTMP   = 7,
   DVDSTREAM_TYPE_HTSP   = 8,
+  DVDSTREAM_TYPE_PVR    = 9,
 };
 
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
@@ -51,6 +52,7 @@ public:
     virtual ~IChannel() {};
     virtual bool NextChannel() = 0;
     virtual bool PrevChannel() = 0;
+    virtual bool SelectChannel(unsigned int channel) = 0;
     virtual bool UpdateItem(CFileItem& item) = 0;
   };
 

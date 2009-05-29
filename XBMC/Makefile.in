@@ -45,6 +45,7 @@ BIN_DIRS=	\
 	xbmc/lib/UnrarXLib \
 	xbmc/visualizations \
 	xbmc/screensavers \
+	xbmc/pvrclients \
 	xbmc/utils \
 	xbmc/settings \
 	xbmc/linux \
@@ -218,6 +219,8 @@ xbmc/utils/utils.a: force
 	$(MAKE) -C xbmc/utils
 xbmc/visualizations/visualization.a: force
 	$(MAKE) -C xbmc/visualizations
+xbmc/pvrclients/pvrclient.a: force
+	$(MAKE) -C xbmc/pvrclients
 xbmc/xbox/xbox.a: force
 	$(MAKE) -C xbmc/xbox
 xbmc/osx/osx.a: force

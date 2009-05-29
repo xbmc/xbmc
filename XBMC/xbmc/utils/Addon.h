@@ -149,6 +149,7 @@ public:
   static void LoadAddonStrings(const CURL &url);
   static void ClearAddonStrings();
 
+  /* Copy existing add-on and reuse it again with another GUID */
   static bool CreateChildAddon(const CAddon &parent, CAddon &child);
 
   /* Beginning of Add-on data fields (readed from info.xml) */

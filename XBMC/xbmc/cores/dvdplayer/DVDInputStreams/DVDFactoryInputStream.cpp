@@ -35,6 +35,9 @@
 #ifdef ENABLE_DVDINPUTSTREAM_STACK
 #include "DVDInputStreamStack.h"
 #endif
+#ifdef HAS_PVRCLIENTS
+#include "DVDInputStreamPVR.h"
+#endif
 #include "FileItem.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
@@ -70,7 +73,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   else if(file.substr(0, 7) == "htsp://")
     return new CDVDInputStreamHTSP();
 #endif
-
+#ifdef HAS_PVRCLIENTS
+  else if(file.substr(0, 6) == "pvr://")
+    return new CDVDInputStreamPVR(pPlayer);
+#endif
   //else if (item.IsShoutCast())
   //  /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */
   //  /* currently ffmpeg isn't able to detect that */

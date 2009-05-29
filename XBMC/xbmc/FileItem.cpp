@@ -1011,6 +1011,11 @@ bool CFileItem::IsVTP() const
   return CUtil::IsVTP(m_strPath);
 }
 
+bool CFileItem::IsPVR() const
+{
+  return CUtil::IsPVR(m_strPath);
+}
+
 bool CFileItem::IsTV() const
 {
   return CUtil::IsTV(m_strPath);

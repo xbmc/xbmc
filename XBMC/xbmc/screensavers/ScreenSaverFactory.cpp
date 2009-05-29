@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "ScreenSaverFactory.h"
 #include "DllScreenSaver.h"
+#include "utils/Addon.h"
 
 using namespace ADDON;
 

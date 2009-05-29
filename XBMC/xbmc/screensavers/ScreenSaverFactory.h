@@ -20,8 +20,12 @@
  *
  */
 
-#include "utils/Addon.h"
 #include "ScreenSaver.h"
+
+namespace ADDON
+{
+  class CAddon;
+}
 
 class CScreenSaverFactory
 {

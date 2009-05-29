@@ -28,6 +28,7 @@
 #include "GUIPassword.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
+#include "utils/Addon.h"
 
 using namespace ADDON;
 

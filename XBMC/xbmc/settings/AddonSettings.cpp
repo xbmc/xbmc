@@ -25,6 +25,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/PluginDirectory.h"
+#include "utils/Addon.h"
 
 using namespace DIRECTORY;
 using namespace ADDON;

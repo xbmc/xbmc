@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -29,13 +28,15 @@ class ILiveTVInterface;
 class IRecordable;
 }
 
-class CDVDInputStreamTV
+class IDVDPlayer;
+
+class CDVDInputStreamPVR
   : public CDVDInputStream
   , public CDVDInputStream::IChannel
 {
 public:
-  CDVDInputStreamTV();
-  virtual ~CDVDInputStreamTV();
+  CDVDInputStreamPVR(IDVDPlayer* pPlayer);
+  virtual ~CDVDInputStreamPVR();
   virtual bool    Open(const char* strFile, const std::string &content);
   virtual void    Close();
   virtual int     Read(BYTE* buf, int buf_size);
@@ -45,10 +46,9 @@ public:
 
   virtual bool    NextStream();
 
-
   bool            NextChannel();
   bool            PrevChannel();
-  bool            SelectChannel(unsigned int channel) { return false; }
+  bool            SelectChannel(unsigned int channel);
 
   int             GetTotalTime();
   int             GetStartTime();
@@ -62,9 +62,10 @@ public:
   bool            UpdateItem(CFileItem& item);
 
 protected:
-  XFILE::IFile*            m_pFile;
-  XFILE::ILiveTVInterface* m_pLiveTV;
-  XFILE::IRecordable*      m_pRecordable;
+  IDVDPlayer*               m_pPlayer;
+  CDVDInputStream*          m_pOtherStream;
+  XFILE::IFile*             m_pFile;
+  XFILE::ILiveTVInterface*  m_pLiveTV;
+  XFILE::IRecordable*       m_pRecordable;
   bool m_eof;
 };
-

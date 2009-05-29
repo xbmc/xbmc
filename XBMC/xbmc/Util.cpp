@@ -1036,6 +1036,11 @@ bool CUtil::IsMythTV(const CStdString& strFile)
   return strFile.Left(5).Equals("myth:");
 }
 
+bool CUtil::IsPVR(const CStdString& strFile)
+{
+  return strFile.Left(4).Equals("pvr:");
+}
+
 bool CUtil::IsHDHomeRun(const CStdString& strFile)
 {
   return strFile.Left(10).Equals("hdhomerun:");
@@ -1057,7 +1062,8 @@ bool CUtil::IsTV(const CStdString& strFile)
       || IsTuxBox(strFile)
       || IsVTP(strFile)
       || IsHDHomeRun(strFile)
-      || IsHTSP(strFile);
+      || IsHTSP(strFile)
+      || IsPVR(strFile);
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
