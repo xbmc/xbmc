@@ -346,7 +346,7 @@ OBJSXBMC += \
 	xbmc/osx/osx.a \
 	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a \
-	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a \
+	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
 else
 OBJSXBMC += \
 	xbmc/lib/libsmb/libsmbclient-@ARCH@.a
