@@ -480,8 +480,6 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 {
   // XBMC couldn't start for some reason...
   // g_LoadErrorStr should contain the reason
-  CLog::Log(LOGWARNING, "Emergency recovery console starting...");
-
   fprintf(stderr, "Fatal error encountered, aborting\n");
   fprintf(stderr, "Error log at %sxbmc.log\n", g_stSettings.m_logFolder.c_str());
   abort();
