@@ -46,7 +46,7 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef WIN32
+#if (!defined _WIN32PC) && (!defined __APPLE__)
 #include "mpcdec/config_types.h"
 #else
 #include "config_win32.h"
