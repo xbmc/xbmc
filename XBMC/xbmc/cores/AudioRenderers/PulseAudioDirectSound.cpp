@@ -497,6 +497,11 @@ DWORD CPulseAudioDirectSound::AddPackets(const void* data, DWORD len)
   return length - rtn;
 }
 
+FLOAT CPulseAudioDirectSound::GetCacheTime()
+{
+  return 0.0f;
+}
+
 FLOAT CPulseAudioDirectSound::GetDelay()
 {
   if (!m_bIsAllocated)

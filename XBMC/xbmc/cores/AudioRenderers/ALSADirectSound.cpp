@@ -508,6 +508,11 @@ FLOAT CALSADirectSound::GetDelay()
   return (double)frames / m_uiSamplesPerSec;
 }
 
+FLOAT CALSADirectSound::GetCacheTime()
+{
+  return 0.0f;
+}
+
 //***********************************************************************************************
 DWORD CALSADirectSound::GetChunkLen()
 {
