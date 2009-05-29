@@ -58,7 +58,7 @@ If you dont succeed, or want to do it manually, follow the next step instead.
 		deb http://scratchbox.org/debian legacy main
 		
 	Now enter the following command:
-		$ sudo apt-get install scratchbox-core scratchbox-libs scratchbox-devkit-cputransp scratchbox-devkit-git scratchbox-devkit-mtd scratchbox-devkit-perl scratchbox-devkit-doctools scratchbox-toolchain-arm-linux-cs2007q3-51sb3 scratchbox-toolchain-host-gcc
+		$ sudo apt-get install scratchbox-core scratchbox-libs scratchbox-devkit-cputransp scratchbox-devkit-git scratchbox-devkit-mtd scratchbox-devkit-perl scratchbox-devkit-doctools scratchbox-toolchain-arm-linux-cs2007q3-51sb3 scratchbox-toolchain-host-gcc scratchbox-devkit-debian
 
 	-----------------------------------------------------------------------------
 	2.2 Manual Installation:
@@ -76,6 +76,7 @@ If you dont succeed, or want to do it manually, follow the next step instead.
 	- perl
 	- toolchain (cs2007q3-51sb3)
 	- host-gcc
+	- debian
 
 	To install
 		$ cd /
