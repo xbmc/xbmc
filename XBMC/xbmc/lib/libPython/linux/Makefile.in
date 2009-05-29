@@ -137,14 +137,14 @@ endif
 
 
 clean:
-	for d in $(DIRS); do make -C $$d clean; done
+	for d in $(DIRS); do [ ! -f $$d/Makefile ] || make -C $$d clean; done
 	rm -f $(SLIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	rm -rf $(SYSDIR)/Lib
 endif
 
 distclean:
-	for d in $(DIRS); do make -C $$d distclean; done
+	for d in $(DIRS); do [ ! -f $$d/Makefile ] || make -C $$d distclean; done
 	rm -f $(SLIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	rm -rf $(SYSDIR)/Lib
