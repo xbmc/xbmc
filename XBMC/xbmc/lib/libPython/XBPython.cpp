@@ -337,6 +337,11 @@ void XBPython::Initialize()
       setenv("PYTHONCASEOK", "1", 1);
 #endif /* _LINUX */
 #else
+      /* PYTHONOPTIMIZE is set off intentionally when using external Python.
+         Reason for this is because we cannot be sure what version of Python
+         was used to compile the various Python object files (i.e. .pyo,
+         .pyc, etc.). */
+      //setenv("PYTHONOPTIMIZE", "1", 1);
       //setenv("PYTHONDEBUG", "1", 1);
       //setenv("PYTHONINSPECT", "1", 1);
       //setenv("PYTHONVERBOSE", "1", 1);
