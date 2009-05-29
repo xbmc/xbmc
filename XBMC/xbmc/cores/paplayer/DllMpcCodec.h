@@ -29,7 +29,11 @@
   #include <mpcdec/reader.h>
   #include <mpcdec/streaminfo.h>
 #else
-  #include "MPCCodec/include/mpcdec/config_types.h"
+  #if (defined _WIN32PC)
+    #include "MPCCodec/include/mpcdec/config_win32.h"
+  #else
+    #include "MPCCodec/include/mpcdec/config_types.h"
+  #endif
   #include "MPCCodec/include/mpcdec/reader.h"
   #include "MPCCodec/include/mpcdec/streaminfo.h"
 #endif
