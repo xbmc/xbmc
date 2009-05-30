@@ -286,6 +286,7 @@ public:
     bool m_fullScreen;
     bool m_startFullScreen;
 #endif
+    bool m_alwaysOnTop;  /* makes xbmc to run always on top .. win32 only .. */
     int m_playlistRetries;
     int m_playlistTimeout;
     bool m_GLRectangleHack;

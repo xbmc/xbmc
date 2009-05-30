@@ -333,6 +333,8 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_cpuTempCmd = "";
   g_advancedSettings.m_gpuTempCmd = "";
+
+  g_advancedSettings.m_alwaysOnTop = false;
 }
 
 CSettings::~CSettings(void)
@@ -1539,6 +1541,8 @@ void CSettings::LoadAdvancedSettings()
 
   XMLUtils::GetString(pRootElement, "cputempcommand", g_advancedSettings.m_cpuTempCmd);
   XMLUtils::GetString(pRootElement, "gputempcommand", g_advancedSettings.m_gpuTempCmd);
+
+  XMLUtils::GetBoolean(pRootElement, "alwaysontop", g_advancedSettings.m_alwaysOnTop);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
