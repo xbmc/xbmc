@@ -51,7 +51,7 @@ DWORD GetImageType(const char *file)
 
   // try to determine extension using '.' or use entire filename
   // if '.' is absent.
-  char *ext = strrchr(file, '.');
+  const char *ext = strrchr(file, '.');
   if (ext == NULL)
     ext = (char*)file;
   else
