@@ -21,7 +21,7 @@
 
 #pragma once
 
-#if (defined HAVE_CONFIG_H) && (!defined _WIN32PC)
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
 #ifndef _LINUX

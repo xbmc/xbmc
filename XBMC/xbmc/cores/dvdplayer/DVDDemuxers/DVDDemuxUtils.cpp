@@ -19,14 +19,14 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined _WIN32PC)
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
 #include "stdafx.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h"
 extern "C" {
-#if (defined USE_EXTERNAL_FFMPEG) || (defined _WIN32PC)
+#if (defined USE_EXTERNAL_FFMPEG) || (defined WIN32)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
   #else

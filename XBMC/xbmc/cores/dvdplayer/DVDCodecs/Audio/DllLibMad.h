@@ -20,7 +20,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#if (defined HAVE_CONFIG_H) && (!defined _WIN32PC)
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
 /* undefine byte from PlatformDefs.h since it's used in mad.h */

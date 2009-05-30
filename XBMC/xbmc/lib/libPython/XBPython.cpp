@@ -27,7 +27,7 @@
 #endif
 
 // python.h should always be included first before any other includes
-#if (defined HAVE_CONFIG_H) && (!defined _WIN32PC)
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
 #include "stdafx.h"

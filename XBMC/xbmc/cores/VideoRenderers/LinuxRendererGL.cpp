@@ -20,7 +20,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#if (defined HAVE_CONFIG_H) && (!defined _WIN32PC)
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
 #include "stdafx.h"
