@@ -134,6 +134,7 @@
 				<control type="button" id="108">
 					<description>Startup Playlist Path</description>
 					<width>950</width>
+					<height>35</height>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<label>15311</label>
@@ -385,7 +386,7 @@
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
 						</item>
 						<item id="7">
-							<label>13000</label>
+							<label>5</label>
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/settings.jpg</icon>
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Settings_Folder)]</thumb>

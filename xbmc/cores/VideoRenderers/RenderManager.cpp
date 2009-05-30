@@ -180,12 +180,11 @@ void CXBoxRenderManager::UnInit()
   RestoreCriticalSection(g_graphicsContext, locks);
 
   m_bIsStarted = false;
+
+  // free renderer resources.
+  // TODO: we may also want to release the renderer here.
   if (m_pRenderer)
-  {
     m_pRenderer->UnInit();
-    delete m_pRenderer;
-    m_pRenderer = NULL;
-  }
 }
 
 void CXBoxRenderManager::SetupScreenshot()

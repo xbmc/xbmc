@@ -5,7 +5,7 @@
 		<posx>0</posx>
 		<posy>320</posy>
 	</coordinates>
-	<animation effect="zoom" start="600" center="640,290" time="700">WindowOpen</animation>
+	<animation effect="zoom" start="400" center="680,290" time="400">WindowOpen</animation>
 	<animation effect="fade" time="200">WindowClose</animation>
 	<controls>
 		<control type="image">

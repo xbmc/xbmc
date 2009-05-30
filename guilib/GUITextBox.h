@@ -58,11 +58,16 @@ public:
   void SetInfo(const CGUIInfoLabel &info);
   void SetAutoScrolling(const TiXmlNode *node);
   void ResetAutoScrolling();
+  CStdString GetLabel(int info) const;
+
+  void Scroll(unsigned int offset);
 
 protected:
   virtual void UpdateColors();
   void UpdatePageControl();
   void ScrollToOffset(int offset, bool autoScroll = false);
+  unsigned int GetRows() const;
+  int GetCurrentPage() const;
 
   // offset of text in the control for scrolling
   unsigned int m_offset;

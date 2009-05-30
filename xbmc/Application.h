@@ -44,6 +44,8 @@ class CFileItemList;
 #include "Autorun.h"
 #include "utils/Splash.h"
 #include "utils/Stopwatch.h"
+#include "MusicDatabase.h"
+#include "VideoDatabase.h"
 
 class CWebServer;
 class CXBFileZilla;
@@ -110,8 +112,8 @@ public:
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
-  void UpdateVideoFileState();
-  void UpdateAudioFileState();
+  void SaveFileState();
+  void UpdateFileState();
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -224,8 +226,11 @@ protected:
   bool m_bSettingsLoaded;
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
-  bool m_playCountUpdated;
-  int m_updateFileStateCounter;
+
+  CBookmark m_progressTrackingVideoResumeBookmark;
+  CStdString m_progressTrackingFile;
+  bool m_progressTrackingPlayCountUpdate;
+  bool m_progressTrackingIsVideo;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;

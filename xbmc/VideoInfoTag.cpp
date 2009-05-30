@@ -489,26 +489,33 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
 
 void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
 {
-  XMLUtils::GetString(movie, "LocalTitle", m_strTitle); 
-  XMLUtils::GetString(movie, "OriginalTitle", m_strOriginalTitle); 
-  XMLUtils::GetInt(movie, "ProductionYear", m_iYear); 
-  int runtime = 0; 
-  XMLUtils::GetInt(movie, "RunningTime", runtime); 
+  XMLUtils::GetString(movie, "LocalTitle", m_strTitle);
+  XMLUtils::GetString(movie, "OriginalTitle", m_strOriginalTitle);
+  XMLUtils::GetFloat(movie, "Rating", m_fRating);
+  XMLUtils::GetString(movie, "IMDB", m_strIMDBNumber);
+  XMLUtils::GetInt(movie, "ProductionYear", m_iYear);
+  int runtime = 0;
+  XMLUtils::GetInt(movie, "RunningTime", runtime);
   m_strRuntime.Format("%i:%02d", runtime/60, runtime%60); // convert from minutes to hh:mm
-  XMLUtils::GetString(movie, "TagLine", m_strTagLine); 
-  XMLUtils::GetString(movie, "Description", m_strPlot); 
-  if (m_strTagLine.IsEmpty()) 
-    m_strPlotOutline = m_strPlot; 
+  XMLUtils::GetString(movie, "TagLine", m_strTagLine);
+  XMLUtils::GetString(movie, "Description", m_strPlot);
+  if (m_strTagLine.IsEmpty())
+  {
+    if (m_strPlot.find("\r\n") > 0)
+      m_strPlotOutline = m_strPlot.substr(0, m_strPlot.find("\r\n") - 1);
+    else
+      m_strPlotOutline = m_strPlot;
+  }
 
-  // thumb 
-  CStdString strTemp; 
-  const TiXmlNode *node = movie->FirstChild("Covers"); 
-  while (node) 
-  { 
-    const TiXmlNode *front = node->FirstChild("Front"); 
-    if (front) 
-    { 
-      strTemp = front->FirstChild()->Value(); 
+  // thumb
+  CStdString strTemp;
+  const TiXmlNode *node = movie->FirstChild("Covers");
+  while (node)
+  {
+    const TiXmlNode *front = node->FirstChild("Front");
+    if (front && front->FirstChild())
+    {
+      strTemp = front->FirstChild()->Value();
       if (!strTemp.IsEmpty())
         m_strPictureURL.ParseString(strTemp); 
     }

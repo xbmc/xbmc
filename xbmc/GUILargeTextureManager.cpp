@@ -90,7 +90,7 @@ void CGUILargeTextureManager::Process()
     if (m_queued.size() == 0)
     { // hang around for a while as there may well be more images on the way (saves reloading the thread)
       lock.Leave();
-      m_listEvent.WaitMSec(1000);
+      m_listEvent.WaitMSec(5000);
       lock.Enter();
     }
   }
@@ -110,7 +110,6 @@ void CGUILargeTextureManager::CleanupUnusedImages()
     else
       ++it;
   }
-  m_listEvent.Set();
 }
 
 // if available, increment reference count, and return the image.
@@ -179,10 +178,12 @@ void CGUILargeTextureManager::QueueImage(const CStdString &path)
   // queue the item
   CLargeTexture *image = new CLargeTexture(path);
   m_queued.push_back(image);
-  m_listEvent.Set();
   
   if(m_running)
+  {
+    m_listEvent.Set();
     return;
+  }
 
   lock.Leave(); // done with our lock
 

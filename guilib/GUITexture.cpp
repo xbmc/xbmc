@@ -48,6 +48,8 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
 
   m_texCoordsScaleU = 1.0f;
   m_texCoordsScaleV = 1.0f;
+  m_diffuseU = 1.0f;
+  m_diffuseV = 1.0f;
   m_diffuseScaleU = 1.0f;
   m_diffuseScaleV = 1.0f;
   m_largeOrientation = 0;
@@ -85,6 +87,8 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
 
   m_texCoordsScaleU = 1.0f;
   m_texCoordsScaleV = 1.0f;
+  m_diffuseU = 1.0f;
+  m_diffuseV = 1.0f;
   m_diffuseScaleU = 1.0f;
   m_diffuseScaleV = 1.0f;
 
@@ -206,6 +210,9 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
   CRect vertex(left, top, right, bottom);
   g_graphicsContext.ClipRect(vertex, texture, m_diffuse.size() ? &diffuse : NULL);
 
+  if (vertex.IsEmpty())
+    return; // nothing to render
+
   int orientation = GetOrientation();
   OrientateTexture(texture, u3, v3, orientation);
 
@@ -216,11 +223,8 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
     diffuse.x1 *= m_diffuseScaleU / u3; diffuse.x2 *= m_diffuseScaleU / u3;
     diffuse.y1 *= m_diffuseScaleV / v3; diffuse.y2 *= m_diffuseScaleV / v3;
     diffuse += m_diffuseOffset;
-    OrientateTexture(diffuse, m_diffuseScaleU, m_diffuseScaleV, m_info.orientation);
+    OrientateTexture(diffuse, m_diffuseU, m_diffuseV, m_info.orientation);
   }
-
-  if (vertex.IsEmpty())
-    return; // nothing to render
 
   float x[4], y[4], z[4];
 
@@ -386,23 +390,29 @@ void CGUITextureBase::CalculateSize()
   { // calculate scaling for the texcoords
     if (m_diffuse.m_texCoordsArePixels)
     {
-      m_diffuseScaleU = float(m_diffuse.m_width);
-      m_diffuseScaleV = float(m_diffuse.m_height);
+      m_diffuseU = float(m_diffuse.m_width);
+      m_diffuseV = float(m_diffuse.m_height);
     }
     else
     {
-      m_diffuseScaleU = float(m_diffuse.m_width) / float(m_diffuse.m_texWidth);
-      m_diffuseScaleV = float(m_diffuse.m_height) / float(m_diffuse.m_texHeight);
+      m_diffuseU = float(m_diffuse.m_width) / float(m_diffuse.m_texWidth);
+      m_diffuseV = float(m_diffuse.m_height) / float(m_diffuse.m_texHeight);
     }
 
-    if (!m_aspect.scaleDiffuse) // stretch'ing diffuse
+    if (m_aspect.scaleDiffuse)
+    {
+      m_diffuseScaleU = m_diffuseU;
+      m_diffuseScaleV = m_diffuseV;
+      m_diffuseOffset = CPoint(0,0);
+    }
+    else // stretch'ing diffuse
     { // scale diffuse up or down to match output rect size, rather than image size
       //(m_fX, mfY) -> (m_fX + m_fNW, m_fY + m_fNH)
       //(0,0) -> (m_fU*m_diffuseScaleU, m_fV*m_diffuseScaleV)
       // x = u/(m_fU*m_diffuseScaleU)*m_fNW + m_fX
       // -> u = (m_posX - m_fX) * m_fU * m_diffuseScaleU / m_fNW
-      m_diffuseScaleU *= m_vertex.Width() / m_width;
-      m_diffuseScaleV *= m_vertex.Height() / m_height;
+      m_diffuseScaleU = m_diffuseU * m_vertex.Width() / m_width;
+      m_diffuseScaleV = m_diffuseV * m_vertex.Height() / m_height;
       m_diffuseOffset = CPoint((m_vertex.x1 - m_posX) / m_vertex.Width() * m_diffuseScaleU, (m_vertex.y1 - m_posY) / m_vertex.Height() * m_diffuseScaleV);
     }
   }
