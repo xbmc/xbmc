@@ -1485,8 +1485,8 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20203">Gefüllte Gläser (videos)</string>
   <string id="20300">Web-Server Verzeichnis (HTTP)</string>
   <string id="20301">Web-Server Verzeichnis (HTTPS)</string>
-  <string id="20302"></string>
-  <string id="20303"></string>
+  <string id="20302">Ordner ist nicht schreibbar:</string>
+  <string id="20303">Export Überspringen und fortsetzen?</string>
   <string id="20304"></string>
   <string id="20305"></string>
   <string id="20306">Unbekannt. Bitte MD5-Prüfsumme von xbmc.log zu BiosIDs.ini hinzufügen.</string>
