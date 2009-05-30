@@ -109,7 +109,10 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_glDC = NULL;
   m_glContext = NULL;
   m_bCoversScreen = false;
-  m_iOnTop = ONTOP_AUTO;
+  if ( !g_advancedSettings.m_alwaysOnTop )
+    m_iOnTop = ONTOP_AUTO;
+  else
+    m_iOnTop = ONTOP_ALWAYS;
 
   timeBeginPeriod(1);
 #endif
