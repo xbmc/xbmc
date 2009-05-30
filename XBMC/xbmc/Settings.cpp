@@ -180,6 +180,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoDefaultPlayer = "dvdplayer";
   g_advancedSettings.m_videoDefaultDVDPlayer = "dvdplayer";
   g_advancedSettings.m_videoIgnoreAtStart = 15;
+  g_advancedSettings.m_videoIgnoreAtEnd = 5; 
   g_advancedSettings.m_videoPlayCountMinimumPercent = 90.0f;
 
   g_advancedSettings.m_musicUseTimeSeeking = true;
@@ -1286,6 +1287,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     int interlaceMethod;
     GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_INVERSE_TELECINE);
     g_stSettings.m_defaultVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD)interlaceMethod;
+    int scalingMethod;
+    GetInteger(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_LINEAR, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_CUBIC);
+    g_stSettings.m_defaultVideoSettings.m_ScalingMethod = (ESCALINGMETHOD)scalingMethod;
 
     GetFloat(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 0, 10);
     GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
@@ -1433,6 +1437,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", g_advancedSettings.m_fullScreenOnMovieStart);
     XMLUtils::GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
     XMLUtils::GetInt(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
+    XMLUtils::GetInt(pElement, "ignoreatend", g_advancedSettings.m_videoIgnoreAtEnd, 0, 900);
 
     XMLUtils::GetInt(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 1, INT_MAX);
     XMLUtils::GetInt(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 1, 10);
@@ -2074,6 +2079,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   pNode = pRoot->InsertEndChild(videoSettingsNode);
   if (!pNode) return false;
   XMLUtils::SetInt(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
+  XMLUtils::SetInt(pNode, "scalingmethod", g_stSettings.m_defaultVideoSettings.m_ScalingMethod);
   XMLUtils::SetFloat(pNode, "noisereduction", g_stSettings.m_defaultVideoSettings.m_NoiseReduction);
   XMLUtils::SetFloat(pNode, "sharpness", g_stSettings.m_defaultVideoSettings.m_Sharpness);
   XMLUtils::SetFloat(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);

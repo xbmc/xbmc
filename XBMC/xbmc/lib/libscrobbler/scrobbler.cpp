@@ -154,9 +154,11 @@ void CScrobbler::UpdateStatus()
       (m_submissionTimer > m_CurrentTrack.length || 
        m_submissionTimer >= 480))
   {
-    CSingleLock lock(m_queueLock);
-    m_bSubmitted = true;
-    m_vecSubmissionQueue.push_back(m_CurrentTrack);
+    {
+      CSingleLock lock(m_queueLock);
+      m_bSubmitted = true;
+      m_vecSubmissionQueue.push_back(m_CurrentTrack);
+    }
     SaveJournal();
     CLog::Log(LOGDEBUG, "%s: Queued track for submission", m_strLogPrefix.c_str());
   }
@@ -555,33 +557,36 @@ bool CScrobbler::DoSubmission()
   CStdString        strSubmissionRequest;
   CStdString        strSubmission;
   CStdString        strResponse;
-  CSingleLock lock(m_queueLock);
-
-  // Construct submission URL.
-  numSubmissions = 
-    std::min((size_t)SCROBBLER_MAX_SUBMISSIONS, m_vecSubmissionQueue.size());
-  if (numSubmissions == 0)
-    return true;
-  strSubmissionRequest.Format("s=%s", m_strSessionID.c_str());
-  SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
-  for (i = 0; it != m_vecSubmissionQueue.end() && i < numSubmissions; i++,it++)
   {
-    strSubmission.Format("&a[%d]=%s&t[%d]=%s&i[%d]=%s&o[%d]=%s&r[%d]=%s",
-        i, it->strArtist.c_str(),     i, it->strTitle.c_str(),
-        i, it->strStartTime.c_str(),  i, it->strSource.c_str(),
-        i, it->strRating.c_str());
-    // Too many params, must be split (or hack CStdString)
-    strSubmission.Format("%s&l[%d]=%s&b[%d]=%s&n[%d]=%s&m[%d]=%s",
-        strSubmission.c_str(),        i, it->strLength.c_str(),
-        i, it->strAlbum.c_str(),      i, it->strTrackNum.c_str(),
-        i, it->strMusicBrainzID.c_str());
-    strSubmissionRequest += strSubmission;
+    CSingleLock lock(m_queueLock);
+
+    // Construct submission URL.
+    numSubmissions = 
+      std::min((size_t)SCROBBLER_MAX_SUBMISSIONS, m_vecSubmissionQueue.size());
+    if (numSubmissions == 0)
+      return true;
+    strSubmissionRequest.Format("s=%s", m_strSessionID.c_str());
+    SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
+    for (i = 0; it != m_vecSubmissionQueue.end() && i < numSubmissions; i++,it++)
+    {
+      strSubmission.Format("&a[%d]=%s&t[%d]=%s&i[%d]=%s&o[%d]=%s&r[%d]=%s",
+          i, it->strArtist.c_str(),     i, it->strTitle.c_str(),
+          i, it->strStartTime.c_str(),  i, it->strSource.c_str(),
+          i, it->strRating.c_str());
+      // Too many params, must be split (or hack CStdString)
+      strSubmission.Format("%s&l[%d]=%s&b[%d]=%s&n[%d]=%s&m[%d]=%s",
+          strSubmission.c_str(),        i, it->strLength.c_str(),
+          i, it->strAlbum.c_str(),      i, it->strTrackNum.c_str(),
+          i, it->strMusicBrainzID.c_str());
+      strSubmissionRequest += strSubmission;
+    }
   }
 
   // Make and handle request
   if (m_pHttp->Post(m_strSubmissionURL, strSubmissionRequest, strResponse) &&
       HandleSubmission(strResponse))
   {
+    CSingleLock lock(m_queueLock);
     SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
     m_vecSubmissionQueue.erase(it, it + i); // Remove submitted entries
     SaveJournal();

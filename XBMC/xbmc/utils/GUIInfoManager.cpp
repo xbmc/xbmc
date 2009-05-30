@@ -3486,12 +3486,14 @@ void CGUIInfoManager::Clear()
 void CGUIInfoManager::UpdateFPS()
 {
   m_frameCounter++;
-  float fTimeSpan = (float)(timeGetTime() - m_lastFPSTime);
+  unsigned int curTime = timeGetTime();
+
+  float fTimeSpan = (float)(curTime - m_lastFPSTime);
   if (fTimeSpan >= 1000.0f)
   {
     fTimeSpan /= 1000.0f;
     m_fps = m_frameCounter / fTimeSpan;
-    m_lastFPSTime = timeGetTime();
+    m_lastFPSTime = curTime;
     m_frameCounter = 0;
   }
 }

@@ -7,6 +7,13 @@ Prerequisites for building an XBMC for Windows installer:
 Usage:
 1) Copy the microsoft runtime dlls msvcp71.dll and msvcr71.dll into dependencies\
 2) Copy all plugins, skins and scripts you wish to include into the Add_* folders
+   Currently the following items are included:
+   - The Apple Movie Trailers script
+   - The Apple Movie Trailers Lite video plugin
+   - The SVN Repo Installer program plugin
+   - A favourites.xml pointing to the SVN Repo Installer
+   - The MediaStream skin
+
 3) Run BuildSetup.bat in project\Win32BuildSetup
 4) Watch the screen, maybe you're asked for input
 5) Wait... Wait... Wait...

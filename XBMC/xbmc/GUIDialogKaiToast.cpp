@@ -86,13 +86,12 @@ void CGUIDialogKaiToast::QueueNotification(const CStdString& aImageFile, const C
   m_notifications.push(toast);
 }
 
-
 bool CGUIDialogKaiToast::DoWork()
 {
   CSingleLock lock(m_critical);
 
-  bool bPending = m_notifications.size() > 0;
-  if (bPending && timeGetTime() - m_dwTimer > TOAST_MESSAGE_TIME)
+  if (m_notifications.size() > 0 && 
+      timeGetTime() - m_dwTimer > TOAST_MESSAGE_TIME)
   {
     Notification toast = m_notifications.front();
     m_notifications.pop();
@@ -122,9 +121,10 @@ bool CGUIDialogKaiToast::DoWork()
     g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
 
     ResetTimer();
+    return true;
   }
 
-  return bPending;
+  return false;
 }
 
 

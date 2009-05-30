@@ -20,7 +20,6 @@ make distclean
 --disable-debug && 
  
 make -j3 && 
-strip lib*/*.dll &&
 mkdir .libs &&
 cp lib*/*.dll .libs/ &&
 mv .libs/swscale-0.dll .libs/swscale-0.6.1.dll

@@ -416,15 +416,15 @@ namespace VIDEO
       if (info2.strContent.Equals("None")) // skip
         continue;
 
-    if (!info2.settings.GetAddonRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
-    {
-      CScraperParser parser;
-      if (parser.Load(info2.strPath) && parser.HasFunction("GetSettings"))
+      if (!info2.settings.GetAddonRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
       {
-        info2.settings.LoadSettingsXML(info2.strPath);
-        info2.settings.SaveFromDefault();
+        CScraperParser parser;
+        if (parser.Load(info2.strPath) && parser.HasFunction("GetSettings"))
+        {
+          info2.settings.LoadSettingsXML(info2.strPath);
+          info2.settings.SaveFromDefault();
+        }
       }
-    }
 
       // we might override scraper
       if (info2.strContent == info.strContent)

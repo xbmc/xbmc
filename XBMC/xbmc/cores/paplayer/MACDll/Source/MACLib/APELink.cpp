@@ -55,10 +55,10 @@ void CAPELink::ParseData(const char * pData, const str_utf16 * pFilename)
     if (pData != NULL)
     {
         // parse out the information
-        char * pHeader = strstr(pData, APE_LINK_HEADER);
-        char * pImageFile = strstr(pData, APE_LINK_IMAGE_FILE_TAG);
-        char * pStartBlock = strstr(pData, APE_LINK_START_BLOCK_TAG);
-        char * pFinishBlock = strstr(pData, APE_LINK_FINISH_BLOCK_TAG);
+        const char * pHeader = strstr(pData, APE_LINK_HEADER);
+        const char * pImageFile = strstr(pData, APE_LINK_IMAGE_FILE_TAG);
+        const char * pStartBlock = strstr(pData, APE_LINK_START_BLOCK_TAG);
+        const char * pFinishBlock = strstr(pData, APE_LINK_FINISH_BLOCK_TAG);
 
         if (pHeader && pImageFile && pStartBlock && pFinishBlock)
         {
@@ -73,7 +73,7 @@ void CAPELink::ParseData(const char * pData, const str_utf16 * pFilename)
                 
                 // get the path
                 char cImageFile[MAX_PATH + 1]; int nIndex = 0;
-                char * pImageCharacter = &pImageFile[strlen(APE_LINK_IMAGE_FILE_TAG)];
+                const char * pImageCharacter = &pImageFile[strlen(APE_LINK_IMAGE_FILE_TAG)];
                 while ((*pImageCharacter != 0) && (*pImageCharacter != '\r') && (*pImageCharacter != '\n'))
                     cImageFile[nIndex++] = *pImageCharacter++;
                 cImageFile[nIndex] = 0;

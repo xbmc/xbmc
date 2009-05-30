@@ -108,7 +108,6 @@ PM3HD_MEDIA=skin/PM3.HD/media
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
 	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) 
 
-DEBUG_FLAGS=@DEBUG_FLAGS@
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
 CXXFLAGS=@CXXFLAGS@
@@ -229,12 +228,6 @@ xbmc/osx/osx.a: force
 #xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a: force
 #xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a: force
 #	$(MAKE) -C xbmc/lib/libSDL-OSX
-system/players/dvdplayer/avutil-49-@ARCH@.a: force
-system/players/dvdplayer/avcodec-52-@ARCH@.a: force
-system/players/dvdplayer/swscale-0.6.1-@ARCH@.a: force
-system/players/dvdplayer/avformat-52-@ARCH@.a: force
-system/players/dvdplayer/postproc-51-@ARCH@.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -369,12 +362,7 @@ OBJSXBMC += \
 	xbmc/osx/osx.a \
 	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a \
-	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a \
-	system/players/dvdplayer/avutil-49-@ARCH@.a \
-	system/players/dvdplayer/avcodec-52-@ARCH@.a \
-	system/players/dvdplayer/swscale-0.6.1-@ARCH@.a \
-	system/players/dvdplayer/avformat-52-@ARCH@.a \
-	system/players/dvdplayer/postproc-51-@ARCH@.a
+	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
 else
 OBJSXBMC += \
 	xbmc/lib/libsmb/libsmbclient-@ARCH@.a
@@ -389,9 +377,9 @@ endif
 
 xbmc.bin: $(OBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
+	$(CXX) $(CXXFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 else
-	$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) -o xbmc.bin -Wl,--whole-archive $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) $(LDFLAGS) -rdynamic
+	$(CXX) $(CXXFLAGS) -o xbmc.bin -Wl,--whole-archive $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) $(LDFLAGS) -rdynamic
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
@@ -400,7 +388,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	#  so only exclude it for osx builds
 	@echo "excluding xbmc-xrandr"
 else
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
+	$(CC) $(CFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
 endif
 
 tools/XBMCTex/XBMCTex:

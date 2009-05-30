@@ -579,18 +579,22 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, g_stSettings.m_bMyVideoNavFlatten);
 }
 
-/// \brief Search for genres, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
+/// \brief Search for genres, artists, directors, names, and plots with search string \e strSearch in the
+/// \brief video databases and return the found \e items
 /// \param strSearch The search string
 /// \param items Items Found
 void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
 {
-  // get matching genres
   CFileItemList tempItems;
+  CStdString strGenre = g_localizeStrings.Get(515); // Genre
+  CStdString strActor = g_localizeStrings.Get(20337); // Actor
+  CStdString strDirector = g_localizeStrings.Get(20339); // Director
+  CStdString strMovie = g_localizeStrings.Get(20338); // Movie
 
+  // get matching genres
   m_database.GetMovieGenresByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strGenre = g_localizeStrings.Get(515); // Genre
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
@@ -602,7 +606,6 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetTvShowGenresByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strGenre = g_localizeStrings.Get(515); // Genre
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
@@ -614,19 +617,6 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetMusicVideoGenresByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strGenre = g_localizeStrings.Get(515); // Genre
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMusicVideoGenresByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    CStdString strGenre = g_localizeStrings.Get(515); // Genre
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
@@ -638,7 +628,6 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetMovieActorsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strActor = g_localizeStrings.Get(20337); // Actor
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
@@ -650,7 +639,6 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetTvShowsActorsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strActor = g_localizeStrings.Get(20337); // Actor
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
@@ -662,7 +650,6 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetMusicVideoArtistsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strActor = g_localizeStrings.Get(557); // Artist
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
@@ -674,10 +661,9 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetMovieDirectorsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strMovie = g_localizeStrings.Get(20339); // Director
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + strMovie + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
@@ -689,7 +675,7 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     CStdString strMovie = g_localizeStrings.Get(20339); // Director
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + strMovie + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
@@ -701,7 +687,7 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     CStdString strMovie = g_localizeStrings.Get(20339); // Director
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + strMovie + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
@@ -774,6 +760,19 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + g_localizeStrings.Get(20365) + "] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+
+  m_database.GetMoviesByPlot(strSearch, tempItems);
+
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strMovie + " " + g_localizeStrings.Get(207) + "] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }

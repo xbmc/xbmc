@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
   <!-- guid: unique identifier of this addon 	!-->
-  <guid>F0B735CA-F693-48e6-99DA-B3A66AE56E88</guid>
+  <guid>098791FA-87F1-4a8a-8EBB-030B47FE55F2</guid>
 
   <!-- 	type:
     1:  visualization
@@ -21,13 +21,13 @@
   <type>6</type>
 
   <!-- name: name of the addon !-->
-  <name>Amazon UK</name>
+  <name>SpeedAllocineV2</name>
 
   <!-- library: file name of the library !-->
-  <library>amazonuk.xml</library>
+  <library>speedallocinev2.xml</library>
 
   <!-- icon: icon name of the library !-->
-  <icon>amazonuk.png</icon>
+  <icon></icon>
 
   <!-- version:  version number in the following format major[.minor[.release[.build]]] !-->
   <version>1.0.0</version>
@@ -42,10 +42,10 @@
   </minversion>
 
   <!-- summary: short summary of addon !-->
-  <summary>Amazon Movie Scraper</summary>
+  <summary>Allocine Movie Scraper</summary>
 
   <!-- description: more verbose description of addon !-->
-  <description>Download Movie information from www.amazon.uk</description>
+  <description>Download French Movie information</description>
 
   <!-- creator: name of devloper/organisation !-->
   <creator>TEAMXBMC</creator>

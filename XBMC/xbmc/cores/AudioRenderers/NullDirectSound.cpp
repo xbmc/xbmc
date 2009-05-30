@@ -158,6 +158,11 @@ FLOAT CNullDirectSound::GetDelay()
   return m_timePerPacket * (float)m_packetsSent;
 }
 
+FLOAT CNullDirectSound::GetCacheTime()
+{
+  return GetDelay();
+}
+
 //***********************************************************************************************
 DWORD CNullDirectSound::GetChunkLen()
 {

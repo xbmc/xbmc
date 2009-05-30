@@ -87,6 +87,7 @@
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "File.h"
 
 #include "Zeroconf.h"
 #include "PowerManager.h"
@@ -904,6 +905,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("weather.plugin"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInWeatherPlugins(pControl, g_guiSettings.GetString("weather.plugin", false));
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -1312,6 +1318,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetLabel2(g_weatherManager.GetAreaCity(pSetting->GetData()));
     }
+    else if (strSetting.Equals("weather.plugin"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+      g_guiSettings.SetString("weather.plugin", pControl->GetCurrentLabel());
+    }
     else if (strSetting.Equals("system.leddisableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
@@ -1481,6 +1492,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
         ((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
       g_weatherManager.ResetTimer();
     }
+  }
+
+  if (strSetting.Equals("weather.plugin"))
+  {
+    g_weatherManager.ResetTimer();
   }
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
@@ -1844,6 +1860,19 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("weather.jumptolocale"))
   {
     JumpToSection(WINDOW_SETTINGS_APPEARANCE, "locale");
+  }
+  else if (strSetting.Equals("weather.manageplugins"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN_WEATHER, true))
+    {
+      CSetting *pSetting = g_guiSettings.GetSetting("weather.plugin");
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInWeatherPlugins(pControl, pControl->GetCurrentLabel());
+    
+      // save the new list
+      g_settings.SaveAddons();
+    }
   }
   else if (strSetting.Equals("scrobbler.lastfmsubmit") || strSetting.Equals("scrobbler.lastfmsubmitradio") || strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
   {
@@ -3396,8 +3425,9 @@ void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-
+#ifndef __APPLE__
   pControl->AddLabel(g_localizeStrings.Get(13101) , VSYNC_DRIVER);
+#endif
   pControl->AddLabel(g_localizeStrings.Get(13106) , VSYNC_DISABLED);
   pControl->AddLabel(g_localizeStrings.Get(13107) , VSYNC_VIDEO);
   pControl->AddLabel(g_localizeStrings.Get(13108) , VSYNC_ALWAYS);
@@ -3997,6 +4027,39 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
     ++iter;
   }
 #endif
+}
+
+void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)
+{
+  int j=0;
+  int k=0;
+  pControl->Clear();
+  // add our disable option
+  pControl->AddLabel(g_localizeStrings.Get(1223), j++);
+
+  //find weather plugins....
+  VECADDONS *addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_WEATHER);
+
+  /* Make sure addon's are loaded */
+  if (addons != NULL || !addons->empty())
+  {
+    for (unsigned int i = 0; i < addons->size(); i++)
+    {
+      const CAddon& addon = addons->at(i);
+
+      // create the full path to the plugin
+      CStdString strFileName = addon.m_strPath + addon.m_strLibName;
+      if (XFILE::CFile::Exists(strFileName))
+      {
+        // is this the users choice
+        if (addon.m_strName.Equals(strSelected))
+          k = j;
+        // we want to use the plugins folder as name
+        pControl->AddLabel(addon.m_strName, j++);
+      }
+    }
+  }
+  pControl->SetValue(k);
 }
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)

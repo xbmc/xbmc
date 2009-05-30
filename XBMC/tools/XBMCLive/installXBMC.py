@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
   "XBMC Live" installer
-  V0.993 - 20090430
+  V0.996 - 20090526
   Luigi Capriotti @2009
 
 """ 
@@ -412,7 +412,10 @@ def installGrub(bootDevice, dstDirectory):
 def modifyGrubMenu(menuFName, isaRemovableDrive, bootPartition):
 	if isaRemovableDrive:
 		content = readFile(menuFName)
-		content = re.sub("boot=[a-z]*", "boot=usb", content)
+		if isaRemovableDrive == 1:
+			content = re.sub("boot=[a-z]*", "boot=usb", content)
+		else:
+			content = re.sub("boot=[a-z]*", "boot=disk", content)
 	else:
 		content = ("default 0" + "\n")
 		content += ("hiddenmenu" + "\n")
@@ -605,18 +608,27 @@ def main():
 		if diskIndex == 0:
 			continue
 		diskIndex = int(diskIndex) - 1
+		removableDiskSelected = isRemovableDisk(availableDisks[diskIndex])
 
 		diskSizeMB = diskSizeKB(availableDisks[diskIndex])/1024
 		minSizeMB = gMinSizeMB
-		if not isRemovableDisk(availableDisks[diskIndex]):
-			minSizeMB = gFixedDiskMinSizeMB
+		if not removableDiskSelected:
+			print ""
+			print ""
+			print "The selected disk appears to be a fixed disk."
+			print ""
+
+			if userChoice("Do you want the installer to handle it as a removable disk instead (Y/N)? ","Yy","Nn") == 0:
+				minSizeMB = gFixedDiskMinSizeMB
+			else:
+				removableDiskSelected = 10
 
 		if diskSizeMB < minSizeMB:
 			print ""
 			print ""
 			print "The selected disk is too small."
-			if isRemovableDisk(availableDisks[diskIndex]):
-				print "The miminum requirements for USB flash disks are: " + str(gMinSizeMB) + " MB of disk size"
+			if removableDiskSelected:
+				print "The miminum requirements for removable disks are: " + str(gMinSizeMB) + " MB of disk size"
 			else:
 				print "The miminum requirements for fixed disks are: " + str(gFixedDiskMinSizeMB) + " MB of disk size"
 			print
@@ -632,7 +644,7 @@ def main():
 
 		print "Partitioning & formatting disk..."
 
-		partitionFormatDisk(availableDisks[diskIndex], isRemovableDisk(availableDisks[diskIndex]), gBootPartitionSizeMB, gSwapPartitionSizeMB)
+		partitionFormatDisk(availableDisks[diskIndex], removableDiskSelected, gBootPartitionSizeMB, gSwapPartitionSizeMB)
 
 		print "Copying system files - please wait..."
 
@@ -647,7 +659,7 @@ def main():
 		else:
 			mountDevice(cmdLineOptions.isoFileName, "-o loop", gBootPartMountPoint)
 
-		copySystemFiles(gBootPartMountPoint, gLivePartMountPoint, isRemovableDisk(availableDisks[diskIndex]), cmdLineOptions.skipFileCopy)
+		copySystemFiles(gBootPartMountPoint, gLivePartMountPoint, removableDiskSelected, cmdLineOptions.skipFileCopy)
 
 		umountDevice(gBootPartMountPoint)
 
@@ -656,7 +668,7 @@ def main():
 		installGrub(availableDisks[diskIndex], gLivePartMountPoint)
 
 		if not gDebugMode > 10:
-			if isRemovableDisk(availableDisks[diskIndex]):
+			if removableDiskSelected:
 				print ""
 				print " XBMC Live saves all system changes into a file, if available."
 				print " If such a file, called 'permanent storage file' does not exist,"
@@ -670,9 +682,9 @@ def main():
 					print "Permanent system storage size = " + str(storageSize) + " MB, Please wait..."
 					createPermanentStorageFile(gLivePartMountPoint + "/" + gPermStorageFilename, storageSize)
 
-		modifyGrubMenu(gLivePartMountPoint + "/boot/grub/menu.lst", isRemovableDisk(availableDisks[diskIndex]), availableDisks[diskIndex] + "1")
+		modifyGrubMenu(gLivePartMountPoint + "/boot/grub/menu.lst", removableDiskSelected, availableDisks[diskIndex] + "1")
 
-		if not isRemovableDisk(availableDisks[diskIndex]):
+		if not removableDiskSelected:
 			print "Applying system changes..."
 			prepareFstab(gLivePartMountPoint, availableDisks[diskIndex], gSwapPartitionSizeMB)
 			changePasswords(gLivePartMountPoint)

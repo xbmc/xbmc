@@ -1891,12 +1891,12 @@ void CUtil::RestoreBrightnessContrastGamma()
 
 void CUtil::SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate)
 {
-  if (brightness < 0) brightness = 0;
-  if (brightness > 100) brightness = 100;
-  if (contrast < 0) contrast = 0;
-  if (contrast > 100) contrast = 100;
-  if (gamma < 0) gamma = 0;
-  if (gamma > 100) gamma = 100;
+  if (brightness < 0.0f) brightness = 0.0f;
+  if (brightness > 100.0f) brightness = 100.0f;
+  if (contrast < 0.0f) contrast = 0.0f;
+  if (contrast > 100.0f) contrast = 100.0f;
+  if (gamma < 0.0f) gamma = 0.0f;
+  if (gamma > 100.0f) gamma = 100.0f;
 
   float fBrightNess = brightness / 50.0f - 1.0f; // -1..1    Default: 0
   float fContrast = contrast / 50.0f;            // 0..2     Default: 1
@@ -4523,6 +4523,37 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   CStdString tmpPath = strPath;
   AddSlashAtEnd(tmpPath);
   CDirectory::Remove(tmpPath);
+}
+
+void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& strDstPath)
+{
+  if (!CDirectory::Exists(strSrcPath)) return;
+
+  // create root first
+  CStdString destPath;
+
+  destPath = strDstPath;
+  AddSlashAtEnd(destPath);
+  CDirectory::Create(destPath);
+
+  CFileItemList items;
+  CUtil::GetRecursiveDirsListing(strSrcPath,items);
+  for (int i=0;i<items.Size();++i)
+  {
+    destPath = items[i]->m_strPath;
+    destPath.Replace(strSrcPath,"");
+    destPath = CUtil::AddFileToFolder(strDstPath, destPath);
+    CDirectory::Create(destPath);
+  }
+  items.Clear();
+  CUtil::GetRecursiveListing(strSrcPath,items,"");
+  for (int i=0;i<items.Size();i++)
+  {
+    destPath = items[i]->m_strPath;
+    destPath.Replace(strSrcPath,"");
+    destPath = CUtil::AddFileToFolder(strDstPath, destPath);
+    CFile::Cache(items[i]->m_strPath, destPath);
+  }
 }
 
 void CUtil::ClearFileItemCache()

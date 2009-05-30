@@ -279,9 +279,6 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
   m_bStopPlaying = true;
   m_bStop = true;
 
-  // Call the FileClosed-callback to store resume point etc.
-  m_callback.OnFileClosed();
-
   m_visBufferLength = 0;
   StopThread();
 
@@ -447,8 +444,6 @@ void PAPlayer::Process()
   if (m_startEvent.WaitMSec(100))
   {
     m_startEvent.Reset();
-
-    m_callback.OnPlayBackStarted();
 
     do
     {
@@ -730,7 +725,16 @@ bool PAPlayer::ProcessPAP()
         retVal = RET_SUCCESS;
 
       if (retVal == RET_SLEEP && retVal2 == RET_SLEEP)
-        Sleep(1);
+      {
+        float maximumSleepTime = m_pAudioDecoder[m_currentStream]->GetCacheTime();
+        
+        if (m_pAudioDecoder[1 - m_currentStream])
+          maximumSleepTime = std::min(maximumSleepTime, m_pAudioDecoder[1 - m_currentStream]->GetCacheTime());
+
+        int sleep = std::max((int)((maximumSleepTime / 2.0f) * 1000.0f), 1);
+
+        Sleep(std::min(sleep, 15));
+      }
     }
     else
       Sleep(100);

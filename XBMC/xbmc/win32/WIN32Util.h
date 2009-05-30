@@ -48,6 +48,7 @@ public:
   static CStdString GetResInfoString();
   static int GetDesktopColorDepth();
   static CStdString GetProfilePath();
+  static CStdString UncToSmb(const CStdString &strPath);
   static void ExtendDllPath();
   static HRESULT ToggleTray(const char cDriveLetter='\0');
   static HRESULT EjectTray(const char cDriveLetter='\0');

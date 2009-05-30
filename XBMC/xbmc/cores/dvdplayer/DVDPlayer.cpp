@@ -352,9 +352,6 @@ bool CDVDPlayer::CloseFile()
   // set the abort request so that other threads can finish up
   m_bAbortRequest = true;
 
-  // Call the FileClosed-callback to store resume point etc.
-  m_callback.OnFileClosed();
-
   // tell demuxer to abort
   if(m_pDemuxer)
     m_pDemuxer->Abort();

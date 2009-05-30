@@ -133,13 +133,12 @@ public:
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
-  virtual void OnFileClosed();
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
-  void UpdateVideoFileState();
-  void UpdateAudioFileState();
+  void SaveFileState();
+  void UpdateFileState();
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -314,10 +313,11 @@ protected:
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
   bool m_bPlatformDirectories;
-  CBookmark VideoResumeBookmark;
-  __int64 m_lastGetTime;
-  __int64 m_lastGetPercentage;
-  CStdString m_lastFileName;
+
+  CBookmark m_progressTrackingVideoResumeBookmark;
+  CStdString m_progressTrackingFile;
+  bool m_progressTrackingPlayCountUpdate;
+  bool m_progressTrackingIsVideo;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;

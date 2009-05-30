@@ -132,8 +132,10 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
   m_bIsAllocated = false;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
+  m_uiBufferSize = 0;
   m_uiBitsPerSample = uiBitsPerSample;
   m_bPassthrough = bPassthrough;
+  m_uiBytesPerSecond * uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
 
@@ -280,7 +282,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
     pa_buffer_attr b;
     b.prebuf = a->minreq * 10;
     b.minreq = a->minreq;
-    b.tlength = a->tlength;
+    b.tlength = m_uiBufferSize = a->tlength;
     b.maxlength = a->maxlength;
     b.fragsize = a->fragsize;
 
@@ -292,6 +294,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
     else
     {
       m_dwPacketSize = a->minreq;
+      m_uiBufferSize = a->tlength;
       CLog::Log(LOGDEBUG, "PulseAudio: Choosen buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
     }
   }
@@ -495,6 +498,11 @@ DWORD CPulseAudioDirectSound::AddPackets(const void* data, DWORD len)
 
   pa_threaded_mainloop_unlock(m_MainLoop);
   return length - rtn;
+}
+
+FLOAT CPulseAudioDirectSound::GetCacheTime()
+{
+  return (float)(m_uiBufferSize - GetSpace()) / (float)m_uiBytesPerSecond;
 }
 
 FLOAT CPulseAudioDirectSound::GetDelay()

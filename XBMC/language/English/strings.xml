@@ -1923,8 +1923,8 @@
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
-  <string id="20302"></string>
-  <string id="20303"></string>
+  <string id="20302">Unable to write to folder:</string>
+  <string id="20303">Do you want to skip and proceed?</string>
   <string id="20304"></string>
   <string id="20305"></string>
 
@@ -2354,17 +2354,4 @@
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
-
-  <!-- strings 33000 thru 33499 reserved for the add-on framework -->
-  <string id="33000">Add-ons</string>
-  <string id="33001">Get Add-ons</string>
-  <string id="33002">Available Add-ons</string>
-  <string id="33003">Add-on Type</string>
-  <string id="33004">Recommended</string>
-  <string id="33005">Search Add-ons</string>
-  <string id="33006">Searching..</string>
-  <string id="33007">New search</string>
-  <string id="33008">Configure Add-on</string>
-  <string id="33009">Remove Add-on</string>
-  <string id="33010">Are you sure you want to disable this add-on?</string>
 </strings>

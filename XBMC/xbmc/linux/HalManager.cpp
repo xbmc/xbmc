@@ -505,6 +505,7 @@ void CHalManager::AddDevice(const char *udi)
       // Reload joysticks
       if(strcmp(*ptr, "input.joystick") == 0)
       {
+        CLog::Log(LOGINFO, "HAL: Joystick plugged in");
         CHalDevice dev = CHalDevice(udi);
         dev.FriendlyName = libhal_device_get_property_string(m_Context, udi, "info.product", &m_Error);
         m_Joysticks.push_back(dev);
@@ -525,7 +526,8 @@ void CHalManager::AddDevice(const char *udi)
           }
           
           g_Joystick.Initialize(NULL);
-          g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13024), dev.FriendlyName.c_str());
+          if (m_Notifications)
+            g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13024), dev.FriendlyName.c_str());
         }
       }
     }
