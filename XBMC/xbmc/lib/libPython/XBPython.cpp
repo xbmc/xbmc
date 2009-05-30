@@ -335,6 +335,7 @@ void XBPython::Initialize()
       //setenv("PYTHONINSPECT", "1", 1);
       //setenv("PYTHONVERBOSE", "1", 1);
       setenv("PYTHONCASEOK", "1", 1);
+      CLog::Log(LOGDEBUG, "Python wrapper library linked with internal Python library");
 #endif /* _LINUX */
 #else
       /* PYTHONOPTIMIZE is set off intentionally when using external Python.
@@ -346,6 +347,7 @@ void XBPython::Initialize()
       //setenv("PYTHONINSPECT", "1", 1);
       //setenv("PYTHONVERBOSE", "1", 1);
       setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
+      CLog::Log(LOGDEBUG, "Python wrapper library linked with system Python library");
 #endif /* USE_EXTERNAL_PYTHON */
 
       Py_Initialize();
