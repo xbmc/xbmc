@@ -19,10 +19,10 @@
  *
  */
 
+#include "stdafx.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#include "stdafx.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "pyplaylist.h"
