@@ -1424,6 +1424,11 @@ void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
 void CGraphicContext::DeleteThreadContext() {
 #ifdef HAS_SDL_OPENGL
   CSingleLock aLock(m_surfaceLock);
+  // FIXME?: DeleteThreadContext get called from different threads and
+  // produces an acces_violation from time to time when doing the find
+  // on an empty m_surfaces
+  if(m_surfaces.empty())
+    return;
   map<Uint32, CSurface*>::iterator iter;
   Uint32 tid = SDL_ThreadID();
   iter = m_surfaces.find(tid);
