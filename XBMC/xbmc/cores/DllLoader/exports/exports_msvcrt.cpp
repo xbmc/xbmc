@@ -307,6 +307,14 @@ extern "C" void* track_fclose();
 extern "C" void* track_fopen();
 extern "C" void* track_freopen();
 
+#if (__GNUC__ >= 4 && __GNUC_MINOR__ >= 4)
+#define strchr __builtin_strchr
+#define strrchr __builtin_strrchr
+#define strpbrk __builtin_strpbrk
+#define strstr __builtin_strstr
+#define memchr __builtin_memchr
+#endif
+
 Export export_msvcrt[] =
 {
   { "_close",                     -1, (void*)dll_close,                     (void*)track_close},
