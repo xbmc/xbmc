@@ -779,7 +779,6 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   {
     LARGE_INTEGER Now;
     __int64       Diff;
-    int           NrVblanks;
     
     //get the difference in time between now and the last clock update
     QueryPerformanceCounter(&Now);
