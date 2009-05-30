@@ -1,6 +1,8 @@
 
 #ifdef _LINUX
+#ifndef __declspec
 #define __declspec(x)
+#endif
 #endif
 
 extern "C" {
