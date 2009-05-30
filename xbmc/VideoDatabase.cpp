@@ -35,6 +35,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "GUIDialogProgress.h"
+#include "GUIDialogYesNo.h"
 #include "FileItem.h"
 
 using namespace std;
@@ -6427,10 +6428,14 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       TiXmlElement xmlMainElement("videodb");
       pMain = xmlDoc.InsertEndChild(xmlMainElement);
     }
+
     while (!m_pDS->eof())
     {
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS, true);
       movie.Save(pMain, "movie", !singleFiles);
+    
+      // reset old skip state          
+      bool bSkip = false;
 
       if (progress)
       {
@@ -6459,7 +6464,23 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             if (CFile::Cache(tempFile,nfoFile))
               CFile::Delete(tempFile);
             else
-              CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+            {
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
+              {
+                if (progress)
+                {
+                  progress->Close();
+                  m_pDS->close();
+                  return;
+                }
+              }
+            }
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "%s: Movie nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+            bSkip = true;
           }
         }
 
@@ -6467,7 +6488,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
 
-        if (images)
+        if (images && !bSkip)
         {
           if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetTBNFile())))
             if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetTBNFile()))
@@ -6500,6 +6521,9 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS);
       movie.Save(pMain, "musicvideo", !singleFiles);
 
+      // reset old skip state          
+      bool bSkip = false;
+
       if (progress)
       {
         progress->SetLine(1, movie.m_strTitle);
@@ -6527,7 +6551,23 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             if (CFile::Cache(tempFile,nfoFile))
               CFile::Delete(tempFile);
             else
-              CLog::Log(LOGERROR, "%s: Musicvideo nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+            {
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
+              {
+                if (progress)
+                {
+                  progress->Close();
+                  m_pDS->close();
+                  return;
+                }
+              }
+            }
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "%s: Musicvideo nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+            bSkip = true;
           }
         }
 
@@ -6535,7 +6575,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
 
-        if (images)
+        if (images && !bSkip)
         {
           if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetTBNFile())))
             if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetTBNFile()))
@@ -6559,6 +6599,9 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
     {
       CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, true);
       tvshow.Save(pMain, "tvshow", !singleFiles);
+
+      // reset old skip state          
+      bool bSkip = false;
 
       if (progress)
       {
@@ -6587,7 +6630,23 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             if (CFile::Cache(tempFile,nfoFile))
               CFile::Delete(tempFile);
             else
-              CLog::Log(LOGERROR, "%s: TVshow nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+            {
+              bSkip = ExportSkipEntry(nfoFile);
+              if (!bSkip)
+              {
+                if (progress)
+                {
+                  progress->Close();
+                  m_pDS->close();
+                  return;
+                }
+              }
+            }
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "%s: TVShow nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+            bSkip = true;
           }
         }
 
@@ -6595,7 +6654,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
 
-        if (images)
+        if (images && !bSkip)
         {
           if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetFolderThumb())))
             if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetFolderThumb()))
@@ -6657,7 +6716,6 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
               if (!CFile::Cache(items[i]->GetCachedSeasonThumb(),strDest))
                 CLog::Log(LOGERROR, "%s: TVShow season thumb export failed! ('%s' -> '%s')", __FUNCTION__, items[i]->GetCachedSeasonThumb().c_str(), strDest.c_str());
           }
-
         }
       }
 
@@ -6673,6 +6731,9 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         else
           episode.Save(pMain->LastChild(), "episodedetails", !singleFiles);
 
+        // reset old skip state          
+        bool bSkip = false;
+
         if (singleFiles)
         {
           CStdString tempFile, nfoFile;
@@ -6687,7 +6748,23 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
               if (CFile::Cache(tempFile,nfoFile))
                 CFile::Delete(tempFile);
               else
-                CLog::Log(LOGERROR, "%s: Episode nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              {
+                bSkip = ExportSkipEntry(nfoFile);
+                if (!bSkip)
+                {
+                  if (progress)
+                  {
+                    progress->Close();
+                    m_pDS->close();
+                    return;
+                  }
+                }
+              }
+            }
+            else
+            {
+              CLog::Log(LOGERROR, "%s: Episode nfo export failed! ('%s')", __FUNCTION__, nfoFile.c_str());
+              bSkip = true;
             }
           }
 
@@ -6695,7 +6772,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           TiXmlDeclaration decl("1.0", "UTF-8", "yes");
           xmlDoc.InsertEndChild(decl);
 
-          if (images)
+          if (images && !bSkip)
           {
             if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetTBNFile())))
               if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetTBNFile()))
@@ -6748,6 +6825,22 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
   if (progress)
     progress->Close();
+}
+
+bool CVideoDatabase::ExportSkipEntry(const CStdString &nfoFile)
+{
+  CStdString strParent;
+  CUtil::GetParentPath(nfoFile,strParent);
+  CLog::Log(LOGERROR, "%s: Unable to write to '%s'!", __FUNCTION__, strParent.c_str());
+
+  bool bSkip = CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(647), g_localizeStrings.Get(20302), strParent.c_str(), g_localizeStrings.Get(20303));
+
+  if (bSkip)
+    CLog::Log(LOGERROR, "%s: Skipping export of '%s' as requested", __FUNCTION__, nfoFile.c_str());
+  else
+    CLog::Log(LOGERROR, "%s: Export failed! Canceling as requested", __FUNCTION__);
+
+  return bSkip;
 }
 
 void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
