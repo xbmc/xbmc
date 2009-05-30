@@ -1626,10 +1626,8 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20252">Titel werden hinzugefügt...</string>
   <string id="20300">Web-Server Verzeichnis (HTTP)</string>
   <string id="20301">Web-Server Verzeichnis (HTTPS)</string>
-  <string id="20302">
-  </string>
-  <string id="20303">
-  </string>
+  <string id="20302">Ordner ist nicht schreibbar:</string>
+  <string id="20303">Export Überspringen und fortsetzen?</string>
   <string id="20304">
   </string>
   <string id="20305">

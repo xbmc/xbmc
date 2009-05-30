@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 05/15/2009-->
+<!--Date of translation: 05/29/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20309-->
+<!--Based on english strings version 20734-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1124,7 +1124,7 @@
   <string id="13613">Multifjärr (Harmony)</string>
   <string id="13620">Apple fjärrkontrollsfel</string>
   <string id="13621">Apple fjärrkontroll kunde inte aktiveras.</string>
-  <string id="14000">Stapling: På</string>
+  <string id="14000">Stapling</string>
   <string id="14001">Stapling: Av</string>
   <string id="14003">Laddar ner spellista...</string>
   <string id="14004">Laddar ner strömlista...</string>
@@ -1869,6 +1869,7 @@
   <string id="22041">vit/röd</string>
   <string id="22042">vit/blå</string>
   <string id="22043">svart/vit</string>
+  <string id="23000">Vädertillägg</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>

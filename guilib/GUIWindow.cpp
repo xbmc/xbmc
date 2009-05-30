@@ -206,11 +206,6 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
         {
           LoadControl(pControl, NULL);
         }
-        else if (strcmpi(pControl->Value(), "controlgroup") == 0)
-        {
-          // backward compatibility...
-          LoadControl(pControl, NULL);
-        }
         pControl = pControl->NextSiblingElement();
       }
     }

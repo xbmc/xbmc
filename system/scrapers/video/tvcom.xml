@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper name="TV.com" content="tvshows" thumb="tvcom.png" language="en">
+<scraper framework="1.0" date="2009-05-22" name="TV.com" content="tvshows" thumb="tvcom.png" language="en">
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.tv.com/search.php?type=Search&amp;amp;stype=ajax_search&amp;amp;qs=\1&amp;amp;search_type=program&amp;amp;pg_results=0&amp;amp;sort=&lt;/url&gt;" dest="3">
 			<expression></expression>	

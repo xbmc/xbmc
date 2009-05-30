@@ -389,6 +389,11 @@ void CGUIDialogPluginSettings::CreateControls()
     else
       label = setting->Attribute("label");
 
+    bool bSort=false;
+    const char *sort = setting->Attribute("sort");
+    if (sort && (strcmp(sort, "yes") == 0))
+      bSort=true;
+
     if (type)
     {
       if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
@@ -438,6 +443,10 @@ void CGUIDialogPluginSettings::CreateControls()
           CUtil::Tokenize(values, valuesVec, "|");
         if (!entries.IsEmpty())
           CUtil::Tokenize(entries, entryVec, "|");
+
+        if(bSort && strcmpi(type, "labelenum") == 0)
+          std::sort(valuesVec.begin(), valuesVec.end(), sortstringbyname());
+
         for (unsigned int i = 0; i < valuesVec.size(); i++)
         {
           int iAdd = i;

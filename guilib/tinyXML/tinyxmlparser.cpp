@@ -440,7 +440,6 @@ const char* TiXmlBase::GetEntity( const char* p, char* value, int* length, TiXml
 	// Presume an entity, and pull it out.
     TIXML_STRING ent;
 	int i;
-	*length = 0;
 
 	if ( *(p+1) && *(p+1) == '#' && *(p+2) )
 	{

@@ -129,6 +129,13 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 4);
         Resize(idx);
+
+        if (idx == 0)
+        {
+          CLog::Log(LOGWARNING, "%s - Not a valid PLS playlist, location of first file is not permitted (File0 should be File1)",__FUNCTION__);
+          return false;
+        }
+
         if (m_vecItems[idx - 1]->GetLabel().empty())
           m_vecItems[idx - 1]->SetLabel(CUtil::GetFileName(strValue));
         CFileItem item(strValue, false);

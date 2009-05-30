@@ -97,7 +97,7 @@ void CSettings::Initialize()
   g_stSettings.m_fZoomAmount = 1.0f;
   g_stSettings.m_fPixelRatio = 1.0f;
 
-  g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u";
+  g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef|.cr2|.crw|.orf|.arw|.erf|.3fr|.dcr|.x3f|.mef|.raf|.mrw|.pef|.sr2";
   g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml";
   g_stSettings.m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml";
   // internal music extensions
@@ -143,6 +143,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoPPFFmpegType = "linblenddeint";
   g_advancedSettings.m_videoDefaultPlayer = "mplayer";
   g_advancedSettings.m_videoIgnoreAtStart = 15;
+  g_advancedSettings.m_videoIgnoreAtEnd = 5; 
   g_advancedSettings.m_videoPlayCountMinimumPercent = 90.0f;
 
   g_advancedSettings.m_musicUseTimeSeeking = true;
@@ -196,13 +197,17 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoStackRegExps.push_back("()([a-c])(\\.....?)$");
 
   // foo_[s01]_[e01]
-  g_advancedSettings.m_tvshowStackRegExps.push_back("\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$");
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
   // foo.1x09* or just /1x09*
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$");
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.s01.e01, foo.s01_e01, S01E02 foo
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$");
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[Ss]([0-9]+)[\\.-]?[Ee]([0-9]+)([^\\\\/]*)$"));
+  // foo.yyyy.mm.dd.* (byDate=true)
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})"));
+  // foo.mm.dd.yyyy.* (byDate=true)
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
   // foo.103*, 103 foo
-  g_advancedSettings.m_tvshowStackRegExps.push_back("[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$");
+  g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
 
   g_advancedSettings.m_tvshowMultiPartStackRegExp = "^[-EeXx]+([0-9]+)";
 
@@ -1075,7 +1080,8 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer);
     XMLUtils::GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
     XMLUtils::GetInt(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
-    
+    XMLUtils::GetInt(pElement, "ignoreatend", g_advancedSettings.m_videoIgnoreAtEnd, 0, 900);
+
     XMLUtils::GetInt(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 1, INT_MAX);
     XMLUtils::GetInt(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 1, 10);
     XMLUtils::GetInt(pElement, "smallstepbackdelay", g_advancedSettings.m_videoSmallStepBackDelay, 100, 5000); //MS
@@ -1280,7 +1286,7 @@ void CSettings::LoadAdvancedSettings()
   //tv stacking regexps
   TiXmlElement* pTVStacking = pRootElement->FirstChildElement("tvshowmatching");
   if (pTVStacking)
-    GetCustomRegexps(pTVStacking, g_advancedSettings.m_tvshowStackRegExps);
+    GetCustomTVRegexps(pTVStacking, g_advancedSettings.m_tvshowStackRegExps);
 
   // path substitutions
   TiXmlElement* pPathSubstitution = pRootElement->FirstChildElement("pathsubstitution");
@@ -1419,6 +1425,51 @@ void CSettings::LoadAdvancedSettings()
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
+}
+
+void CSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings)
+{
+  int iAction = 0; // overwrite
+  // for backward compatibility
+  const char* szAppend = pRootElement->Attribute("append");
+  if ((szAppend && stricmp(szAppend, "yes") == 0))
+    iAction = 1;
+  // action takes precedence if both attributes exist
+  const char* szAction = pRootElement->Attribute("action");
+  if (szAction)
+  {
+    iAction = 0; // overwrite
+    if (stricmp(szAction, "append") == 0)
+      iAction = 1; // append
+    else if (stricmp(szAction, "prepend") == 0)
+      iAction = 2; // prepend
+  }
+  if (iAction == 0)
+    settings.clear();
+  TiXmlNode* pRegExp = pRootElement->FirstChild("regexp");
+  int i = 0;
+  while (pRegExp)
+  {
+    if (pRegExp->FirstChild())
+    {
+      bool bByDate = false;
+      if (pRegExp->ToElement())
+      {
+        CStdString byDate = pRegExp->ToElement()->Attribute("byDate");
+        if(byDate && stricmp(byDate, "true") == 0)
+        {
+          bByDate = true;
+        }
+      }
+      CStdString regExp = pRegExp->FirstChild()->Value();
+      regExp.MakeLower();
+      if (iAction == 2)
+        settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp));
+      else
+        settings.push_back(TVShowRegexp(bByDate,regExp));
+    }
+    pRegExp = pRegExp->NextSibling("regexp");
+  }
 }
 
 bool CSettings::LoadAvpackXML()

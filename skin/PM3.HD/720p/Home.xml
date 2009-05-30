@@ -472,12 +472,28 @@
 					<onclick>ActivateWindow(Videos)</onclick>
 					<icon>special://skin/backgrounds/videos.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
+					<visible>Library.HasContent(Video)</visible>
+				</item>
+				<item id="1">
+					<label>3</label>
+					<onclick>ActivateWindow(VideoFiles)</onclick>
+					<icon>special://skin/backgrounds/videos.jpg</icon>
+					<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
+					<visible>!Library.HasContent(Video)</visible>
 				</item>
 				<item id="2">
 					<label>2</label>
 					<onclick>ActivateWindow(Music)</onclick>
 					<icon>special://skin/backgrounds/music.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
+					<visible>Library.HasContent(Music)</visible>
+				</item>
+				<item id="2">
+					<label>2</label>
+					<onclick>ActivateWindow(MusicFiles)</onclick>
+					<icon>special://skin/backgrounds/music.jpg</icon>
+					<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
+					<visible>!Library.HasContent(Music)</visible>
 				</item>
 				<item id="3">
 					<label>1</label>
@@ -505,7 +521,7 @@
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
 				</item>
 				<item id="7">
-					<label>13000</label>
+					<label>5</label>
 					<onclick>ActivateWindow(Settings)</onclick>
 					<icon>special://skin/backgrounds/settings.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Settings_Folder)]</thumb>

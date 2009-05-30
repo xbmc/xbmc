@@ -4062,11 +4062,23 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       info.strContent = m_pDS->fv("content.strContent").get_asString();
       info.strPath = m_pDS->fv("content.strScraperPath").get_asString();
       info.settings.LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
+
+      CScraperParser parser;
+      parser.Load("special://xbmc/system/scrapers/music/" + info.strPath);
+      info.strTitle = parser.GetName();
+      info.strDate = parser.GetDate();
+      info.strFramework = parser.GetFramework();
+
     }
     if (info.strPath.IsEmpty()) // default fallback
     {
+      CScraperParser parser;
       info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
-      info.strContent = "albums";
+      parser.Load("special://xbmc/system/scrapers/music/" + info.strPath);
+      info.strContent = parser.GetContent();
+      info.strTitle = parser.GetName();
+      info.strDate = parser.GetDate();
+      info.strFramework = parser.GetFramework();
     }
 
     m_pDS->close();

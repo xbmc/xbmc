@@ -114,7 +114,15 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     }
     else if (strPathUpper.Left(11) == "SOUNDTRACK:")
       strIcon = "DefaultHardDisk.png";
-    else if (pItem->IsLastFM() || pItem->IsShoutCast())
+    else if (pItem->IsLastFM()
+          || pItem->IsShoutCast()
+          || pItem->IsVideoDb()
+          || pItem->IsMusicDb()
+          || pItem->IsPlugin()
+          || pItem->IsPluginRoot()
+          || pItem->m_strPath == "special://musicplaylists/"
+          || pItem->m_strPath == "special://videoplaylists/"
+          || pItem->m_strPath == "musicsearch://")
       strIcon = "DefaultFolder.png";
     else if (pItem->IsRemote())
       strIcon = "DefaultNetwork.png";

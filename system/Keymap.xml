@@ -2056,6 +2056,7 @@
       <period>NextPicture</period>
       <comma>PreviousPicture</comma>
       <i>Close</i>
+      <o>Close</o>
       <backspace>Close</backspace>
       <space>Pause</space>
     </keyboard>

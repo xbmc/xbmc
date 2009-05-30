@@ -43,6 +43,8 @@ struct SScraperInfo
   CStdString strThumb;
   CStdString strContent;
   CStdString strLanguage;
+  CStdString strFramework;
+  CStdString strDate;
   CScraperSettings settings;
   void Reset()
   {

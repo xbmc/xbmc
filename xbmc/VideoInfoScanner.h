@@ -24,6 +24,8 @@
 #include "ScraperSettings.h"
 #include "NfoFile.h"
 #include "utils/IMDB.h"
+#include "DateTime.h"
+#include "FileItem.h"
 
 class CIMDB;
 
@@ -42,6 +44,7 @@ namespace VIDEO
     CStdString strPath;
     int iSeason;
     int iEpisode;
+    CDateTime cDate;
   } SEpisode;
 
   typedef std::vector<SEpisode> EPISODES;
@@ -72,6 +75,8 @@ namespace VIDEO
     void SetObserver(IVideoInfoScannerObserver* pObserver);
 
     void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
+    bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
+    bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
     long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
     bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, long lShowId, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);

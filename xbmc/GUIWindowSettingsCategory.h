@@ -65,6 +65,8 @@ protected:
   void FillInSkinColors(CSetting *pSetting);
   void FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent);
 
+  void FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected);
+
   virtual void SetupControls();
   void CreateSettings();
   void UpdateSettings();
