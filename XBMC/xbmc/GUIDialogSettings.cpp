@@ -253,11 +253,6 @@ void CGUIDialogSettings::OnClick(int iID)
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(iID);
     if (setting.data) *(int *)setting.data = pControl->GetValue();
   }
-  else if (setting.type == SettingInfo::BUTTON)
-  {
-    CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(iID);
-    if (setting.data) *(CStdString *)setting.data = pControl->GetLabel2();
-  }
   else if (setting.type == SettingInfo::EDIT)
   {
     CGUIEditControl *pControl = (CGUIEditControl *)GetControl(iID);
@@ -293,6 +288,11 @@ void CGUIDialogSettings::OnClick(int iID)
     if (setting.formatFunction)
       SET_CONTROL_LABEL2(iID, setting.formatFunction(*(float *)setting.data, setting.interval));
   }
+  else if (setting.type == SettingInfo::BUTTON && !m_usePopupSliders && setting.data)
+  {
+    CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(iID);
+    if (setting.data) *(CStdString *)setting.data = pControl->GetLabel2();
+  }
   OnSettingChanged(setting);
 }
 
@@ -310,16 +310,15 @@ void CGUIDialogSettings::FreeControls()
 void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iControlID)
 {
   CGUIControl *pControl = NULL;
-  if (setting.type == SettingInfo::BUTTON && m_pOriginalSettingsButton)
-  {
-    pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
-    if (!pControl) return ;
-    ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
-    if (setting.formatFunction)
-      ((CGUIButtonControl *)pControl)->SetLabel2(setting.formatFunction(*(float *)setting.data, setting.interval));
-    pControl->SetWidth(width);
-	if (setting.data) ((CGUIButtonControl *)pControl)->SetLabel2(*(CStdString *)setting.data);
-  }
+  if (setting.type == SettingInfo::BUTTON && m_pOriginalSettingsButton) 
+  { 
+    pControl = new CGUIButtonControl(*m_pOriginalSettingsButton); 
+    if (!pControl) return ; 
+    ((CGUIButtonControl *)pControl)->SetLabel(setting.name); 
+    if (setting.formatFunction) 
+      ((CGUIButtonControl *)pControl)->SetLabel2(setting.formatFunction(*(float *)setting.data, setting.interval)); 
+    pControl->SetWidth(width); 
+  } 
   else if (setting.type == SettingInfo::EDIT && m_pOriginalEdit)
   {
     pControl = new CGUIEditControl(*m_pOriginalEdit);
