@@ -176,9 +176,6 @@ void CAddonUtils::OpenAddonSettings(void *addonData)
 
     CURL cUrl(addon->m_strPath);
     CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
-
-    g_currentAddonSettings.Load(*addon);
-    CAddon::LoadAddonStrings(cUrl);
   }
   catch (std::exception &e)
   {

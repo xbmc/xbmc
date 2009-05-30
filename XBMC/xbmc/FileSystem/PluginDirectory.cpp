@@ -95,7 +95,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
 
   // Load the plugin settings
   CLog::Log(LOGDEBUG, "%s - URL for plugin settings: %s", __FUNCTION__, url.GetFileName().c_str() );
-  g_currentAddonSettings.Load(url);
+  g_currentPluginSettings.Load(url);
 
   // Load language strings
   ADDON::CAddon::LoadAddonStrings(url);
@@ -393,7 +393,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
     return false;
 
   // Load the settings incase they changed while in the plugins directory
-  g_currentAddonSettings.Load(url);
+  g_currentPluginSettings.Load(url);
 
   // Load language strings
   ADDON::CAddon::LoadAddonStrings(url);

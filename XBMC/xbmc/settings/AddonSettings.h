@@ -58,6 +58,6 @@ private:
   CStdString      m_userFileName;
 };
 
-extern CAddonSettings g_currentAddonSettings;
+extern CAddonSettings g_currentPluginSettings;
 
 #endif /* ADDONSETTINGS_H_ */

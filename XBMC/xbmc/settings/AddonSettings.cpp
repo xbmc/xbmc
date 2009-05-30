@@ -275,4 +275,4 @@ CStdString CAddonSettings::GetUserDirectory(const CURL& url)
   return addonUserName;
 }
 
-CAddonSettings g_currentAddonSettings;
+CAddonSettings g_currentPluginSettings;

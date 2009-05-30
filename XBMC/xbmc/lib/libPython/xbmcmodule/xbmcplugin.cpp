@@ -318,7 +318,7 @@ namespace PYXBMC
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", g_currentAddonSettings.Get(id).c_str());
+    return Py_BuildValue((char*)"s", g_currentPluginSettings.Get(id).c_str());
   }
 
   PyDoc_STRVAR(setSetting__doc__,
@@ -357,8 +357,8 @@ namespace PYXBMC
       return NULL;
     }
     
-    g_currentAddonSettings.Set(id, value);
-    g_currentAddonSettings.Save();
+    g_currentPluginSettings.Set(id, value);
+    g_currentPluginSettings.Save();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -582,7 +582,7 @@ namespace PYXBMC
     // reload plugin settings & strings
     if (bReload)
     {
-      g_currentAddonSettings.Load(cUrl);
+      g_currentPluginSettings.Load(cUrl);
       ADDON::CAddon::LoadAddonStrings(cUrl);
     }
 
