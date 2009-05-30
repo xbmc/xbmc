@@ -770,8 +770,6 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
     m_CurrTime += (__int64)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
 }
 
-#define MAXDELAY 1200
-
 //called from dvdclock to get the time
 void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
 {
@@ -947,6 +945,8 @@ int CVideoReferenceClock::GetRefreshRate()
   else
     return -1;
 }
+
+#define MAXDELAY 1200
 
 //this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBoxRenderManager::WaitPresentTime
 //it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
