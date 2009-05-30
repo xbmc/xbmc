@@ -23,7 +23,7 @@
 #include "StdString.h"
 #include "utils/Thread.h"
 #include "FileSystem/Directory.h"
-#include "../../addons/xbmc_addon_types.h"
+#include "../addons/IndependentHeaders/xbmc_addon_types.h"
 #include <vector>
 
 class CURL;

@@ -28,7 +28,7 @@
 #include "../utils/Addon.h"
 #include "../utils/TVChannelInfoTag.h"
 #include "../utils/TVTimerInfoTag.h"
-#include "../../addons/xbmc_pvr_types.h"
+#include "../addons/IndependentHeaders/xbmc_pvr_types.h"
 
 class CPVRManager;
 class CEPG;

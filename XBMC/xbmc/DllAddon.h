@@ -21,7 +21,7 @@
 */
 
 #include "DynamicDll.h"
-#include "../addons/xbmc_addon_types.h"
+#include "addons/IndependentHeaders/xbmc_addon_types.h"
 
 template <typename T>
 class DllAddonInterface

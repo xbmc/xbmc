@@ -3,7 +3,7 @@
 include $(srcdir)/../Makefile.common
 
 rs_helios_SOURCES = $(COMMON) $(COLOR) $(VECTOR) $(IMAGE) $(IMPLICIT) \
-	helios.cc helios.hh particle.cc particle.hh sphere.hh ../../../../../addons/xbmc_addon_lib++.a
+	helios.cc helios.hh particle.cc particle.hh sphere.hh ../../../../addons/IndependentHeaders/xbmc_addon_lib++.a
 
 AM_CPPFLAGS += $(IMAGE_CPPFLAGS)
 AM_CXXFLAGS += $(IMAGE_CXXFLAGS)

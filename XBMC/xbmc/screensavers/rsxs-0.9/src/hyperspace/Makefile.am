@@ -6,7 +6,7 @@ rs_hyperspace_SOURCES = $(COMMON) $(COLOR) $(VECTOR) $(IMPLICIT) $(IMAGE) \
 	caustic.cc caustic.hh cubemaps.cc cubemaps.hh extensions.cc extensions.hh \
 	flares.cc flares.hh goo.cc goo.hh hyperspace.cc hyperspace.hh nebula.cc \
 	nebula.hh particle.cc particle.hh starburst.cc starburst.hh shaders.cc \
-	shaders.hh spline.cc spline.hh tunnel.cc tunnel.hh ../../../../../addons/xbmc_addon_lib++.a
+	shaders.hh spline.cc spline.hh tunnel.cc tunnel.hh ../../../../addons/IndependentHeaders/xbmc_addon_lib++.a
 
 AM_CPPFLAGS += $(IMAGE_CPPFLAGS)
 AM_CXXFLAGS += $(IMAGE_CXXFLAGS)

@@ -9,7 +9,7 @@ rs_skyrocket_SOURCES = $(COMMON) $(COLOR) $(VECTOR) $(IMAGE) $(SOUND) $(DLOPEN) 
 	rocket.cc rocket.hh shockwave.cc shockwave.hh skyrocket.cc skyrocket.hh \
 	smoke.cc smoke.hh spinner.cc spinner.hh star.cc star.hh streamer.cc \
 	streamer.hh stretcher.cc stretcher.hh sucker.cc sucker.hh world.cc world.hh \
-	../../../../../addons/xbmc_addon_lib++.a
+	../../../../addons/IndependentHeaders/xbmc_addon_lib++.a
 
 AM_CPPFLAGS += $(LIBLTDL_CPPFLAGS) $(IMAGE_CPPFLAGS) $(SOUND_CPPFLAGS)
 AM_CXXFLAGS += $(IMAGE_CXXFLAGS) $(SOUND_CXXFLAGS)

@@ -290,7 +290,7 @@ AM_LDFLAGS = $(IMAGE_LDFLAGS)
 AM_CXXFLAGS = -Wall -funroll-loops $(IMAGE_CXXFLAGS)
 AM_ETAGSFLAGS = --extra=fq
 rs_lattice_SOURCES = $(COMMON) $(VECTOR) $(IMAGE) camera.hh lattice.cc \
-	lattice.hh resources.cc resources.hh ../../../../../addons/xbmc_addon_lib++.a
+	lattice.hh resources.cc resources.hh ../../../../addons/IndependentHeaders/xbmc_addon_lib++.a
 
 rs_lattice_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS) $(IMAGE_LIBS)
 latticedatadir = $(pkgdatadir)/lattice

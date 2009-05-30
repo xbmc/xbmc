@@ -4,8 +4,8 @@
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #endif
-#include "../../../addons/xbmc_addon_lib++.h"
-#include "../../../addons/xbmc_vis_dll.h"
+#include "../../addons/IndependentHeaders/xbmc_addon_lib++.h"
+#include "../../addons/IndependentHeaders/xbmc_vis_dll.h"
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
 #endif

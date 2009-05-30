@@ -796,8 +796,8 @@ void Hack::pointerEnter() {}
 void Hack::pointerLeave() {}
 
 #define _LINUX
-#include "../../../../../addons/xbmc_addon_lib++.h"
-#include "../../../../../addons/xbmc_scr_dll.h"
+#include "../../../../addons/IndependentHeaders/xbmc_addon_lib++.h"
+#include "../../../../addons/IndependentHeaders/xbmc_scr_dll.h"
 
 extern "C" {
 

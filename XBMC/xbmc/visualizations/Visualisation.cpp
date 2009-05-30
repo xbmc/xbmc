@@ -24,7 +24,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "Visualisation.h"
-#include "../../addons/xbmc_vis_types.h"
+#include "../addons/IndependentHeaders/xbmc_vis_types.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"
 #include "URL.h"

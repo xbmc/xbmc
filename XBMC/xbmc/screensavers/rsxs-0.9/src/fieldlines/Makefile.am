@@ -3,7 +3,7 @@
 include $(srcdir)/../Makefile.common
 
 rs_fieldlines_SOURCES = $(COMMON) $(COLOR) $(VECTOR) fieldlines.cc \
-	fieldlines.hh ion.hh ../../../../../addons/xbmc_addon_lib++.a
+	fieldlines.hh ion.hh ../../../../addons/IndependentHeaders/xbmc_addon_lib++.a
 rs_fieldlines_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
 
 hack_PROGRAMS = rs-fieldlines

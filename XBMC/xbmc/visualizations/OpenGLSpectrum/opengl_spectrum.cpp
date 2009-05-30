@@ -35,8 +35,8 @@
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #endif
-#include "../../../addons/xbmc_addon_lib++.h"
-#include "../../../addons/xbmc_vis_dll.h"
+#include "../../addons/IndependentHeaders/xbmc_addon_lib++.h"
+#include "../../addons/IndependentHeaders/xbmc_vis_dll.h"
 #include <math.h>
 #include <GL/glew.h>
 #include <string>

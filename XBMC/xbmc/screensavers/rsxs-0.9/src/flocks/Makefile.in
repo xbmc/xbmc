@@ -280,7 +280,7 @@ AM_LDFLAGS =
 AM_CXXFLAGS = -Wall -funroll-loops
 AM_ETAGSFLAGS = --extra=fq
 rs_flocks_SOURCES = $(COMMON) $(COLOR) $(VECTOR) bug.cc bug.hh flocks.cc \
-	flocks.hh ../../../../../addons/xbmc_addon_lib++.a
+	flocks.hh ../../../../addons/IndependentHeaders/xbmc_addon_lib++.a
 
 rs_flocks_LDADD = $(LIBMISC) $(X_LIBS) $(OPENGL_LIBS)
 all: all-am

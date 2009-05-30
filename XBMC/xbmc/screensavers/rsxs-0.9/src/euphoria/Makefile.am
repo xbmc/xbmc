@@ -3,7 +3,7 @@
 include $(srcdir)/../Makefile.common
 
 rs_euphoria_SOURCES = $(COMMON) $(COLOR) $(VECTOR) $(IMAGE) euphoria.cc \
-	euphoria.hh wisp.cc wisp.hh ../../../../../addons/xbmc_addon_lib++.a
+	euphoria.hh wisp.cc wisp.hh ../../../../addons/IndependentHeaders/xbmc_addon_lib++.a
 
 AM_CPPFLAGS += $(IMAGE_CPPFLAGS)
 AM_CXXFLAGS += $(IMAGE_CXXFLAGS)
