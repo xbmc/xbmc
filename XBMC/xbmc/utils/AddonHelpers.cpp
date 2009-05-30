@@ -982,6 +982,8 @@ CStdString CAddonUtils::GetAddonTypeName(AddonType type)
       return "PLUGIN_PROGRAM";
     case ADDON_PLUGIN_PICTURES:
       return "PLUGIN_PICTURES";
+    case ADDON_PLUGIN_WEATHER:
+      return "PLUGIN_WEATHER";
     case ADDON_DSP_AUDIO:
       return "DSP_AUDIO";
     case ADDON_UNKNOWN:

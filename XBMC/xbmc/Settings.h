@@ -422,6 +422,7 @@ public:
   ADDON::VECADDONS  m_pluginVideoAddons;
   ADDON::VECADDONS  m_pluginProgramAddons;
   ADDON::VECADDONS  m_pluginPictureAddons;
+  ADDON::VECADDONS  m_pluginWeatherAddons;
   ADDON::VECADDONS  m_DSPAudioAddons;
 
   CStdString m_defaultProgramSource;

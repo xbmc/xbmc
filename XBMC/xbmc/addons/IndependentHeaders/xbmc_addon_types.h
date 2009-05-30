@@ -47,7 +47,8 @@
  * ADDON_PLUGIN_VIDEO       12  Video plugin extension
  * ADDON_PLUGIN_PROGRAM     13  Program plugin extension
  * ADDON_PLUGIN_PICTURES    14  Pictures plugin extension
- * ADDON_DSP_AUDIO          15  Audio DSP like Surround decoders
+ * ADDON_PLUGIN_WEATHER     15  Weather plugin extension
+ * ADDON_DSP_AUDIO          16  Audio DSP like Surround decoders
  *
  */
 

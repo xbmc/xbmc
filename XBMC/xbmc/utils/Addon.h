@@ -51,7 +51,8 @@ enum AddonType
   ADDON_PLUGIN_MUSIC      = 12,
   ADDON_PLUGIN_PROGRAM    = 13,
   ADDON_PLUGIN_PICTURES   = 14,
-  ADDON_DSP_AUDIO         = 15
+  ADDON_PLUGIN_WEATHER    = 16,
+  ADDON_DSP_AUDIO         = 17
 };
 
 const CStdString ADDON_MULTITYPE_EXT        = "*.add";
@@ -66,6 +67,7 @@ const CStdString ADDON_PLUGIN_MUSIC_EXT     = "*.py|*.plmus";
 const CStdString ADDON_PLUGIN_VIDEO_EXT     = "*.py|*.plvid";
 const CStdString ADDON_PLUGIN_PROGRAM_EXT   = "*.py|*.plpro";
 const CStdString ADDON_PLUGIN_PICTURES_EXT  = "*.py|*.plpic";
+const CStdString ADDON_PLUGIN_WEATHER_EXT   = "*.py|*.plwea";
 const CStdString ADDON_DSP_AUDIO_EXT        = "*.adsp";
 const CStdString ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
 const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
@@ -185,6 +187,7 @@ private:
   static IAddonCallback *m_cbPluginMusic;
   static IAddonCallback *m_cbPluginProgram;
   static IAddonCallback *m_cbPluginPictures;
+  static IAddonCallback *m_cbPluginWeather;
   static IAddonCallback *m_cbDSPAudio;
 };
 

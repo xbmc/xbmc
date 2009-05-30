@@ -550,6 +550,8 @@ VECADDONS *CSettings::GetAddonsFromType(const AddonType &type)
     return &g_settings.m_pluginProgramAddons;
   case ADDON_PLUGIN_PICTURES:
     return &g_settings.m_pluginPictureAddons;
+  case ADDON_PLUGIN_WEATHER:
+    return &g_settings.m_pluginWeatherAddons;
   case ADDON_DSP_AUDIO:
     return &g_settings.m_DSPAudioAddons;
   default:
@@ -594,6 +596,7 @@ void CSettings::LoadAddons()
     GetAddons(pRootElement, ADDON_PLUGIN_VIDEO);
     GetAddons(pRootElement, ADDON_PLUGIN_PROGRAM);
     GetAddons(pRootElement, ADDON_PLUGIN_PICTURES);
+    GetAddons(pRootElement, ADDON_PLUGIN_WEATHER);
     GetAddons(pRootElement, ADDON_DSP_AUDIO);
     // and so on
   }
@@ -865,6 +868,9 @@ void CSettings::GetAddons(const TiXmlElement* pRootElement, const AddonType &typ
       break;
   case ADDON_PLUGIN_PICTURES:
       strTagName = "pluginpictures";
+      break;
+  case ADDON_PLUGIN_WEATHER:
+      strTagName = "pluginweather";
       break;
   case ADDON_DSP_AUDIO:
       strTagName = "dspaudio";
@@ -2681,6 +2687,7 @@ bool CSettings::SaveAddons()
   SetAddons(pRoot, ADDON_PLUGIN_VIDEO, g_settings.m_pluginVideoAddons);
   SetAddons(pRoot, ADDON_PLUGIN_PROGRAM, g_settings.m_pluginProgramAddons);
   SetAddons(pRoot, ADDON_PLUGIN_PICTURES, g_settings.m_pluginPictureAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_WEATHER, g_settings.m_pluginWeatherAddons);
   SetAddons(pRoot, ADDON_DSP_AUDIO, g_settings.m_DSPAudioAddons);
 
   return doc.SaveFile(g_settings.GetAddonsFile());
@@ -2725,6 +2732,7 @@ void CSettings::GetAllAddons()
   CDirectory::GetDirectory("special://home/addons/plugins/video", items, ADDON_PLUGIN_VIDEO_EXT, false);
   CDirectory::GetDirectory("special://home/addons/plugins/programs", items, ADDON_PLUGIN_PROGRAM_EXT, false);
   CDirectory::GetDirectory("special://home/addons/plugins/pictures", items, ADDON_PLUGIN_PICTURES_EXT, false);
+  CDirectory::GetDirectory("special://home/addons/plugins/weather", items, ADDON_PLUGIN_WEATHER_EXT, false);
 
   if (items.Size() == 0)
     return;
@@ -3050,6 +3058,9 @@ bool CSettings::SetAddons(TiXmlNode *root, const AddonType &type, const VECADDON
       break;
   case ADDON_PLUGIN_PICTURES:
       strType = "pluginpictures";
+      break;
+  case ADDON_PLUGIN_WEATHER:
+      strType = "pluginweather";
       break;
   case ADDON_DSP_AUDIO:
       strType = "dspaudio";

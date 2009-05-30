@@ -447,6 +447,8 @@ bool CPluginDirectory::HasPlugins(const CStdString &type)
     addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PICTURES);
   else if (type == "programs")
     addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
+  else if (type == "weather")
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_WEATHER);
 
   if (addons && addons->size() > 0)
     return true;
@@ -468,6 +470,8 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
     addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PICTURES);
   else if (type == "programs")
     addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
+  else if (type == "weather")
+    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_WEATHER);
 
   if (!addons || addons->size() == 0)
     return false;

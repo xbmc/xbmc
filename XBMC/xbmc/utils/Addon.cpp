@@ -456,6 +456,7 @@ IAddonCallback *CAddon::m_cbPluginVideo     = NULL;
 IAddonCallback *CAddon::m_cbPluginMusic     = NULL;
 IAddonCallback *CAddon::m_cbPluginProgram   = NULL;
 IAddonCallback *CAddon::m_cbPluginPictures  = NULL;
+IAddonCallback *CAddon::m_cbPluginWeather   = NULL;
 IAddonCallback *CAddon::m_cbDSPAudio        = NULL;
 
 CAddon::CAddon()
@@ -536,6 +537,9 @@ IAddonCallback* CAddon::GetCallbackForType(AddonType type)
     case ADDON_PLUGIN_PICTURES:
       cb_tmp = m_cbPluginPictures;
       break;
+    case ADDON_PLUGIN_WEATHER:
+      cb_tmp = m_cbPluginWeather;
+      break;
     case ADDON_DSP_AUDIO:
       cb_tmp = m_cbDSPAudio;
       break;
@@ -586,6 +590,8 @@ bool CAddon::RegisterAddonCallback(AddonType type, IAddonCallback* cb)
     m_cbPluginProgram = cb;
   else if (type == ADDON_PLUGIN_PICTURES && m_cbPluginPictures == NULL)
     m_cbPluginPictures = cb;
+  else if (type == ADDON_PLUGIN_WEATHER && m_cbPluginWeather == NULL)
+    m_cbPluginWeather = cb;
   else if (type == ADDON_DSP_AUDIO && m_cbDSPAudio == NULL)
     m_cbDSPAudio = cb;
   else
@@ -642,6 +648,9 @@ void CAddon::UnregisterAddonCallback(AddonType type)
       return;
     case ADDON_PLUGIN_PICTURES:
       m_cbPluginPictures = NULL;
+      return;
+    case ADDON_PLUGIN_WEATHER:
+      m_cbPluginWeather = NULL;
       return;
     case ADDON_DSP_AUDIO:
       m_cbDSPAudio = NULL;

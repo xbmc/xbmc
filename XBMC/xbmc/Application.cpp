@@ -1043,6 +1043,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/addons/plugins/video");
     CDirectory::Create("special://home/addons/plugins/programs");
     CDirectory::Create("special://home/addons/plugins/pictures");
+    CDirectory::Create("special://home/addons/plugins/weather");
     CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
@@ -1152,6 +1153,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/addons/plugins/video");
     CDirectory::Create("special://home/addons/plugins/programs");
     CDirectory::Create("special://home/addons/plugins/pictures");
+    CDirectory::Create("special://home/addons/plugins/weather");
     CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
@@ -1255,6 +1257,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CDirectory::Create("special://home/addons/plugins/video");
     CDirectory::Create("special://home/addons/plugins/programs");
     CDirectory::Create("special://home/addons/plugins/pictures");
+    CDirectory::Create("special://home/addons/plugins/weather");
     CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
