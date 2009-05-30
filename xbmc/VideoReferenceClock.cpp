@@ -779,13 +779,19 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   {
     LARGE_INTEGER Now;
     __int64       Diff;
+    //store the variables we need so we can call QueryPerformanceCounter outside the lock
+    __int64       VblankTime = m_VblankTime;
+    __int64       CurrTime   = m_CurrTime;
+    __int64       AdjustedFrequency = m_AdjustedFrequency;
+    
+    SingleLock.Leave();
     
     //get the difference in time between now and the last clock update
     QueryPerformanceCounter(&Now);
-    Diff = (Now.QuadPart - m_VblankTime);
+    Diff = (Now.QuadPart - VblankTime);
     
     //add the difference to the clock timestamp
-    ptime->QuadPart = m_CurrTime + (Diff * m_AdjustedFrequency / m_SystemFrequency);
+    ptime->QuadPart = CurrTime + (Diff * AdjustedFrequency / m_SystemFrequency);
   }
   else
   {
