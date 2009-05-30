@@ -35,8 +35,8 @@ public:
   };
   ~CButton()
   {
-    if (imageFocus) delete imageFocus;
-    if (imageNoFocus) delete imageNoFocus;
+    delete imageFocus;
+    delete imageNoFocus;
   }
   int id;
   int info;

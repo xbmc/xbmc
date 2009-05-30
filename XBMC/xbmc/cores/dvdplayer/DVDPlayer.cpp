@@ -913,6 +913,11 @@ void CDVDPlayer::Process()
             }
           }
         }
+        
+        // if playing a main title DVD/ISO rip, there is no menu structure so 
+        // dvdnav will tell us it's done by setting EOF on the stream.
+        if (pStream->IsEOF())
+          break;
 
         // always continue on dvd's
         Sleep(100);

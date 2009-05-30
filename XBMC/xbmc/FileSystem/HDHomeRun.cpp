@@ -121,7 +121,7 @@ bool CDirectoryHomeRun::GetDirectory(const CStdString& strPath, CFileItemList &i
     m_dll.device_set_tuner_from_str(device, url.GetFileName().c_str());
 
     hdhomerun_tuner_status_t status;
-    if(!m_dll.device_get_tuner_status(device, &status))
+    if(!m_dll.device_get_tuner_status(device, NULL, &status))
     {
       m_dll.device_destroy(device);
       return true;

@@ -214,7 +214,7 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
     // flip the texture as necessary.  Diffuse just gets flipped according to m_info.orientation.
     // Main texture gets flipped according to GetOrientation().
     diffuse.x1 *= m_diffuseScaleU / u3; diffuse.x2 *= m_diffuseScaleU / u3;
-    diffuse.y1 *= m_diffuseScaleU / v3; diffuse.y2 *= m_diffuseScaleV / v3;
+    diffuse.y1 *= m_diffuseScaleV / v3; diffuse.y2 *= m_diffuseScaleV / v3;
     diffuse += m_diffuseOffset;
     OrientateTexture(diffuse, m_diffuseScaleU, m_diffuseScaleV, m_info.orientation);
   }

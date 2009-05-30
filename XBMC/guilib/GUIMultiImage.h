@@ -1,5 +1,5 @@
 /*!
-\file guiImage.h
+\file GUIMultiImage.h
 \brief 
 */
 
@@ -29,7 +29,7 @@
  *
  */
 
-#include "guiImage.h"
+#include "GUIImage.h"
 #include "utils/Stopwatch.h"
 
 /*!
@@ -48,7 +48,6 @@ public:
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
@@ -60,23 +59,20 @@ public:
 
 protected:
   void LoadDirectory();
-  void LoadImage(int image);
-  CTextureInfo  m_textureInfo;
+
   CGUIInfoLabel m_texturePath;
   CStdString m_currentPath;
   unsigned int m_currentImage;
   CStopWatch m_imageTimer;
-  CStopWatch m_fadeTimer;
   DWORD m_timePerImage;
-  DWORD m_fadeTime;
   DWORD m_timeToPauseAtEnd;
   bool m_randomized;
   bool m_loop;
-  CAspectRatio m_aspect;
-  std::vector <CGUITexture *> m_images;
 
   bool m_bDynamicResourceAlloc;
   bool m_directoryLoaded;
   std::vector<CStdString> m_files;
+
+  CGUIImage m_image;
 };
 #endif

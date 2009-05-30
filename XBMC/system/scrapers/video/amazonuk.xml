@@ -3,7 +3,7 @@
 <!-- Then updated by John Lockwood to scrape Title, Year, MPAA, Runtime, Rating, Votes, Plot, Actors, Directors -->
 <!-- This version 1.1 dated 12/01/09 includes fix by C-Quel for processing results from Amazon to match recent change -->
 <!-- Version 1.1 also now supports the Writers field and fixes an issue to do with film titles -->
-<scraper content="movies" name="Amazon UK" thumb="amazonuk.gif" language="en">
+<scraper framework="1.0" date="2009-05-22" content="movies" name="Amazon UK" thumb="amazonuk.gif" language="en">
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.amazon.co.uk/s/ref=nb_ss_d_h_?url=search-alias%3Ddvd&amp;amp;field-keywords=\1&lt;/url&gt;" dest="3">
 			<expression noclean="1"></expression>

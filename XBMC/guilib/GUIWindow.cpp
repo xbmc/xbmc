@@ -25,7 +25,7 @@
 #include "LocalizeStrings.h"
 #include "TextureManager.h"
 #include "Settings.h"
-#include "GuiControlFactory.h"
+#include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
 #include "GUIEditControl.h"
@@ -75,6 +75,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   TiXmlDocument xmlDoc;
   // Find appropriate skin folder + resolution to load from
   CStdString strPath;
+  CStdString strLowerPath;
   if (bContainsPath)
     strPath = strFileName;
   else
@@ -83,7 +84,6 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   if (!bContainsPath)
     m_coordsRes = resToUse;
 
-  CStdString strLowerPath = "";
   bool ret = LoadXML(strPath.c_str(), strLowerPath.c_str());
 
   LARGE_INTEGER end, freq;
@@ -634,6 +634,8 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
 void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
+  CSingleLock lock(g_graphicsContext);
+
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 
@@ -801,7 +803,8 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
   if (!control) control = GetControl(fromControl);
   if (!control)
   { // no current control??
-    CLog::Log(LOGERROR, "Unable to find control %i in window %lu", fromControl, GetID());
+    CLog::Log(LOGERROR, "Unable to find control %i in window %u",
+              fromControl, GetID());
     return false;
   }
   vector<int> moveHistory;
@@ -871,7 +874,7 @@ bool CGUIWindow::SendMessage(DWORD message, DWORD id, DWORD param1 /* = 0*/, DWO
 #ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "%s for window %lu", __FUNCTION__, GetID());
+  CLog::Log(LOGDEBUG, "%s for window %u", __FUNCTION__, GetID());
   CGUIControlGroup::DumpTextureUse();
 }
 #endif

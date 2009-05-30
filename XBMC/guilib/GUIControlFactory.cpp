@@ -1200,6 +1200,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 #endif
     ((CGUIImage *)control)->SetInfo(textureFile);
     ((CGUIImage *)control)->SetAspectRatio(aspect);
+    ((CGUIImage *)control)->SetCrossFade(fadeTime);
   }
   else if (strType == "multiimage")
   {
