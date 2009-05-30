@@ -71,7 +71,10 @@ public:
 
     // DLL faking.
     virtual bool ResolveExports() { return true; }
-    virtual bool Load() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllLibMad: Using libmad system library");
+        return true;
+    }
     virtual void Unload() {}
 };
 

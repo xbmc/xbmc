@@ -94,7 +94,10 @@ public:
 
     // DLL faking.
     virtual bool ResolveExports() { return true; }
-    virtual bool Load() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllVorbis: Using libvorbis system library");
+        return true;
+    }
     virtual void Unload() {}
 };
 

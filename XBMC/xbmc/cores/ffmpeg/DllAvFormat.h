@@ -113,7 +113,10 @@ public:
   
   // DLL faking.
   virtual bool ResolveExports() { return true; }
-  virtual bool Load() { return true; }
+  virtual bool Load() {
+    CLog::Log(LOGDEBUG, "DllAvFormat: Using libavformat system library");
+    return true;
+  }
   virtual void Unload() {}
 };
 

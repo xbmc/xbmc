@@ -25,7 +25,7 @@
   #include "config.h"
 #endif
 extern "C" {
-#if (defined USE_EXTERNAL_LIBFAAD)
+#if (defined USE_EXTERNAL_LIBMPEG2)
   #include <mpeg2dec/mpeg2.h>
   #include <mpeg2dec/mpeg2convert.h>
 #else
@@ -52,7 +52,7 @@ public:
   virtual void mpeg2_skip(mpeg2dec_t * mpeg2dec, int skip)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBFAAD)
+#if (defined USE_EXTERNAL_LIBMPEG2)
 
 class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
 {
@@ -83,7 +83,10 @@ public:
 
     // DLL faking.
     virtual bool ResolveExports() { return true; }
-    virtual bool Load() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllLibMpeg2: Using libmpeg2 system library");
+        return true;
+    }
     virtual void Unload() {}
 };
 

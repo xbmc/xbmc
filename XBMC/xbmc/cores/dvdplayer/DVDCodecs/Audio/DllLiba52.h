@@ -81,7 +81,10 @@ public:
 
     // DLL faking.
     virtual bool ResolveExports() { return true; }
-    virtual bool Load() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllLiba52: Using liba52 system library");
+        return true;
+    }
     virtual void Unload() {}
 };
 

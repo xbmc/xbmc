@@ -53,7 +53,7 @@ public:
     virtual int Seek(mpc_decoder *decoder, double timeinseconds)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBVORBIS)
+#if (defined USE_EXTERNAL_LIBMPCDEC)
 
 class DllMPCCodec : public DllDynamic, DllMPCCodecInterface
 {
@@ -71,7 +71,10 @@ public:
 
     // DLL faking.
     virtual bool ResolveExports() { return true; }
-    virtual bool Load() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllMPCCodec: Using libmpcdec system library");
+        return true;
+    }
     virtual void Unload() {}
 };
 
