@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001 Håkan Hjort
+ * Copyright (C) 2000, 2001 Hï¿½kan Hjort
  * Copyright (C) 2001 Rich Wareham <richwareham@users.sourceforge.net>
  * 
  * This file is part of libdvdnav, a DVD navigation library. It is modified
@@ -177,5 +177,11 @@ subp_attr_t  vm_get_subp_attr(vm_t *vm, int streamN);
 void vm_position_print(vm_t *vm, vm_position_t *position);
 #endif
 
+/* XBMC added functions */
+vm_t* dvdnav_get_vm(dvdnav_t *self);
+
+dvdnav_status_t dvdnav_get_state(dvdnav_t *self, dvd_state_t *save_state);
+
+dvdnav_status_t dvdnav_set_state(dvdnav_t *self, dvd_state_t *save_state);
 
 #endif /* VM_HV_INCLUDED */

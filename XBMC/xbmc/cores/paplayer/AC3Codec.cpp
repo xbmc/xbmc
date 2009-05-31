@@ -331,7 +331,7 @@ int AC3Codec::Decode(BYTE* pData, int iSize)
         for (int u = 0; u <= HEADER_SIZEAC3; u++) m_pInputBuffer[u] = pData[u];
 
         int flags;
-        iLen = m_dll.a52_syncinfo(m_pState, m_inputBuffer, &flags, &m_iSourceSampleRate, &m_iSourceBitrate);
+        iLen = m_dll.a52_syncinfo(m_inputBuffer, &flags, &m_iSourceSampleRate, &m_iSourceBitrate);
         if (iLen > 0)
         {
           if(flags != m_iFlags)

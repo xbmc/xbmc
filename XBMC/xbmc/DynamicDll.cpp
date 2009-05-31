@@ -58,6 +58,7 @@ bool DllDynamic::Load()
     return false;
   }
 
+  CLog::Log(LOGDEBUG, "Loaded library %s", m_strDllName.c_str());
   return true;
 }
 

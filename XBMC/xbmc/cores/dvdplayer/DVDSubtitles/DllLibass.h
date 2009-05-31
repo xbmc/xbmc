@@ -21,17 +21,17 @@
  *
  */
 
-#include "DynamicDll.h"
-
-#ifdef __cplusplus
-extern "C"
-{
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
 #endif
+extern "C" {
+#if (defined USE_EXTERNAL_LIBASS)
+  #include <ass/ass.h>
+#else
   #include "../../../lib/libass/libass/ass.h"
-#ifdef __cplusplus
-}
 #endif
-
+}
+#include "DynamicDll.h"
 
 class DllLibassInterface
 {
@@ -56,6 +56,60 @@ public:
   virtual void ass_process_chunk(ass_track_t* track, char *data, int size, long long timecode, long long duration)=0;
   virtual void ass_process_codec_private(ass_track_t* track, char *data, int size)=0;
 };
+
+#if (defined USE_EXTERNAL_LIBASS)
+
+class DllLibass : public DllDynamic, DllLibassInterface
+{
+public:
+    virtual ~DllLibass() {}
+    virtual void ass_set_extract_fonts(ass_library_t* priv, int extract)
+        { return ::ass_set_extract_fonts(priv, extract); }
+    virtual void ass_set_fonts_dir(ass_library_t* priv, const char* fonts_dir)
+        { return ::ass_set_fonts_dir(priv, fonts_dir); }
+    virtual ass_library_t* ass_library_init(void)
+        { return ::ass_library_init(); }
+    virtual ass_renderer_t* ass_renderer_init(ass_library_t* library)
+        { return ::ass_renderer_init(library); }
+    virtual void ass_set_frame_size(ass_renderer_t* priv, int w, int h)
+        { return ::ass_set_frame_size(priv, w, h); }
+    virtual void ass_set_margins(ass_renderer_t* priv, int t, int b, int l, int r)
+        { return ::ass_set_margins(priv, t, b, l, r); }
+    virtual void ass_set_use_margins(ass_renderer_t* priv, int use)
+        { return ::ass_set_use_margins(priv, use); }
+    virtual void ass_set_font_scale(ass_renderer_t* priv, double font_scale)
+        { return ::ass_set_font_scale(priv, font_scale); }
+    virtual ass_image_t* ass_render_frame(ass_renderer_t *priv, ass_track_t* track, long long now, int* detect_change)
+        { return ::ass_render_frame(priv, track, now, detect_change); }
+    virtual ass_track_t* ass_new_track(ass_library_t* library)
+        { return ::ass_new_track(library); }
+    virtual ass_track_t* ass_read_file(ass_library_t* library, char* fname, char* codepage)
+        { return ::ass_read_file(library, fname, codepage); }
+    virtual void ass_free_track(ass_track_t* track)
+        { return ::ass_free_track(track); }
+    virtual int  ass_set_fonts(ass_renderer_t* priv, const char* default_font, const char* default_family)
+        { return ::ass_set_fonts(priv, default_font, default_family); }
+    virtual void ass_set_style_overrides(ass_library_t* priv, char** list)
+        { return ::ass_set_style_overrides(priv, list); }
+    virtual void ass_library_done(ass_library_t* library)
+        { return ::ass_library_done(library); }
+    virtual void ass_renderer_done(ass_renderer_t* renderer)
+        { return ::ass_renderer_done(renderer); }
+    virtual void ass_process_chunk(ass_track_t* track, char *data, int size, long long timecode, long long duration)
+        { return ::ass_process_chunk(track, data, size, timecode, duration); }
+    virtual void ass_process_codec_private(ass_track_t* track, char *data, int size)
+        { return ::ass_process_codec_private(track, data, size); }
+
+    // DLL faking.
+    virtual bool ResolveExports() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllLibass: Using libass system library");
+        return true;
+    }
+    virtual void Unload() {}
+};
+
+#else
 
 class DllLibass : public DllDynamic, DllLibassInterface
 {
@@ -100,3 +154,4 @@ class DllLibass : public DllDynamic, DllLibassInterface
   END_METHOD_RESOLVE()
 };
 
+#endif
