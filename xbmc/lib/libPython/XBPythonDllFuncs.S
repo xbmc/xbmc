@@ -1,3 +1,7 @@
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
 #if !defined(_POWERPC) && !defined(_POWERPC64)
 
 #ifndef __APPLE__
@@ -69,7 +73,17 @@
   FUNCTION(PyLong_FromLong)
   FUNCTION(PyModule_AddStringConstant)
   FUNCTION(PyModule_AddObject)
+#if (defined USE_EXTERNAL_PYTHON) && (!defined HAVE_LIBPYTHON2_4)
+  /* Upstream Python rename Py_InitModule4 for 64-bit systems, for Python
+   versions higher than 2.4 */
+  #if SIZEOF_SIZE_T != SIZEOF_INT
+  FUNCTION(Py_InitModule4_64)
+  #else
   FUNCTION(Py_InitModule4)
+  #endif
+#else
+  FUNCTION(Py_InitModule4)
+#endif
   FUNCTION(PyInt_AsLong)
   FUNCTION(PyFloat_AsDouble)
   FUNCTION(PyString_FromString)

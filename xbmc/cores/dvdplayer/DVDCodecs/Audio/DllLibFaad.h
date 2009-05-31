@@ -21,8 +21,118 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+#if (defined USE_EXTERNAL_LIBFAAD)
+  #include <neaacdec.h>
+#else
+  #include "libfaad/neaacdec.h"
+#endif
 #include "DynamicDll.h"
-#include "libfaad/neaacdec.h"
+
+#if (defined USE_EXTERNAL_LIBFAAD)
+
+class DllLibFaadInterface
+{
+public:
+    virtual ~DllLibFaadInterface() {}
+    virtual int8_t* NeAACDecGetErrorMessage(uint8_t errcode)=0;
+    virtual uint32_t NeAACDecGetCapabilities(void)=0;
+    virtual NeAACDecHandle NeAACDecOpen(void)=0;
+    virtual NeAACDecConfigurationPtr NeAACDecGetCurrentConfiguration(NeAACDecHandle hDecoder)=0;
+    virtual uint8_t NeAACDecSetConfiguration(NeAACDecHandle hDecoder,
+                                                   NeAACDecConfigurationPtr config)=0;
+    virtual int32_t NeAACDecInit(NeAACDecHandle hDecoder,
+                              uint8_t *buffer,
+                              uint32_t buffer_size,
+                              uint32_t *samplerate,
+                              uint8_t *channels)=0;
+    virtual int8_t NeAACDecInit2(NeAACDecHandle hDecoder, unsigned char *pBuffer,
+                               uint32_t SizeOfDecoderSpecificInfo,
+                               uint32_t *samplerate, uint8_t *channels)=0;
+    virtual void NeAACDecPostSeekReset(NeAACDecHandle hDecoder, int32_t frame)=0;
+    virtual void NeAACDecClose(NeAACDecHandle hDecoder)=0;
+    virtual void* NeAACDecDecode(NeAACDecHandle hDecoder,
+                                 NeAACDecFrameInfo *hInfo,
+                                 uint8_t *buffer,
+                                 uint32_t buffer_size)=0;
+    virtual void* NeAACDecDecode2(NeAACDecHandle hDecoder,
+                                  NeAACDecFrameInfo *hInfo,
+                                  uint8_t *buffer,
+                                  uint32_t buffer_size,
+                                  void **sample_buffer,
+                                  uint32_t sample_buffer_size)=0;
+    virtual int8_t NeAACDecAudioSpecificConfig(uint8_t *pBuffer,
+                                             uint32_t buffer_size,
+                                             mp4AudioSpecificConfig *mp4ASC)=0;
+    #if (defined HAVE_LIBFAAD_NEAACDECINITDRM)
+    virtual int8_t NeAACDecInitDRM(NeAACDecHandle *hDecoder, uint32_t samplerate,
+                                 uint8_t channels)=0;
+    #endif
+};
+
+class DllLibFaad : public DllDynamic, DllLibFaadInterface
+{
+public:
+    virtual ~DllLibFaad() {}
+    virtual int8_t* NeAACDecGetErrorMessage(uint8_t errcode)
+        { return ::NeAACDecGetErrorMessage(errcode); }
+    virtual uint32_t NeAACDecGetCapabilities(void)
+        { return ::NeAACDecGetCapabilities(); }
+    virtual NeAACDecHandle NeAACDecOpen(void)
+        { return ::NeAACDecOpen(); }
+    virtual NeAACDecConfigurationPtr NeAACDecGetCurrentConfiguration(NeAACDecHandle hDecoder)
+        { return ::NeAACDecGetCurrentConfiguration(hDecoder); }
+    virtual uint8_t NeAACDecSetConfiguration(NeAACDecHandle hDecoder,
+                                                   NeAACDecConfigurationPtr config)
+        { return ::NeAACDecSetConfiguration(hDecoder, config); }
+    virtual int32_t NeAACDecInit(NeAACDecHandle hDecoder,
+                              uint8_t *buffer,
+                              uint32_t buffer_size,
+                              uint32_t *samplerate,
+                              uint8_t *channels)
+        { return ::NeAACDecInit(hDecoder, buffer, buffer_size, samplerate, channels); }
+    virtual int8_t NeAACDecInit2(NeAACDecHandle hDecoder, unsigned char *pBuffer,
+                               uint32_t SizeOfDecoderSpecificInfo,
+                               uint32_t *samplerate, uint8_t *channels)
+        { return ::NeAACDecInit2(hDecoder, pBuffer, SizeOfDecoderSpecificInfo, samplerate, channels); }
+    virtual void NeAACDecPostSeekReset(NeAACDecHandle hDecoder, int32_t frame)
+        { return ::NeAACDecPostSeekReset(hDecoder, frame); }
+    virtual void NeAACDecClose(NeAACDecHandle hDecoder)
+        { return ::NeAACDecClose(hDecoder); }
+    virtual void* NeAACDecDecode(NeAACDecHandle hDecoder,
+                                 NeAACDecFrameInfo *hInfo,
+                                 uint8_t *buffer,
+                                 uint32_t buffer_size)
+        { return ::NeAACDecDecode(hDecoder, hInfo, buffer, buffer_size); }
+    virtual void* NeAACDecDecode2(NeAACDecHandle hDecoder,
+                                  NeAACDecFrameInfo *hInfo,
+                                  uint8_t *buffer,
+                                  uint32_t buffer_size,
+                                  void **sample_buffer,
+                                  uint32_t sample_buffer_size)
+        { return ::NeAACDecDecode2(hDecoder, hInfo, buffer, buffer_size, sample_buffer, sample_buffer_size); }
+    virtual int8_t NeAACDecAudioSpecificConfig(uint8_t *pBuffer,
+                                             uint32_t buffer_size,
+                                             mp4AudioSpecificConfig *mp4ASC)
+        { return ::NeAACDecAudioSpecificConfig(pBuffer, buffer_size, mp4ASC); }
+    #if (defined HAVE_LIBFAAD_NEAACDECINITDRM)
+    virtual int8_t NeAACDecInitDRM(NeAACDecHandle *hDecoder, uint32_t samplerate,
+                                 uint8_t channels)
+        { return ::NeAACDecInitDRM(hDecoder, samplerate, channels); }
+    #endif
+
+    // DLL faking.
+    virtual bool ResolveExports() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllLibFaad: Using libfaad system library");
+        return true;
+    }
+    virtual void Unload() {}
+};
+
+#else
 
 class DllLibFaadInterface
 {
@@ -63,3 +173,5 @@ class DllLibFaad : public DllDynamic, DllLibFaadInterface
     RESOLVE_METHOD(NeAACDecPostSeekReset)
   END_METHOD_RESOLVE()
 };
+
+#endif

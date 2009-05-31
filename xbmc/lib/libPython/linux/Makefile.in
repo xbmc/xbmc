@@ -2,7 +2,18 @@ ARCH=@ARCH@
 
 SHELL=/bin/bash
 SYSDIR=../../../../system/python
-SO=python24-$(ARCH).so
+ifeq (@USE_PYTHON2_6@,1)
+    PYVERSION=python2.6
+    SO=python26-$(ARCH).so
+else ifeq (@USE_PYTHON2_5@,1)
+    PYVERSION=python2.5
+    SO=python25-$(ARCH).so
+else ifeq (@USE_PYTHON2_4@,1)
+    PYVERSION=python2.4
+    SO=python24-$(ARCH).so
+else
+    SO=python24-$(ARCH).so
+endif
 SLIB=$(SYSDIR)/$(SO)
 ZIP=$(SYSDIR)/python24.zip  ##Should probably add arch here too
 DIRS=../Python
@@ -74,13 +85,23 @@ $(PYWRAP): $(PYWRAP:.o=.c)
 
 else
 all: $(SLIB)
+ifneq (@USE_EXTERNAL_PYTHON@,1)
 	$(MAKE) $(ZIP)
+endif
 
+ifneq (@USE_EXTERNAL_PYTHON@,1)
 $(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.a
 	$(CC) -shared -o $@ -Wl,--whole-archive ../Python/libpython2.4.a \
 		-Wl,--no-whole-archive `cat wrapper_python.def` wrapper_python.o \
 		`cat ../../../cores/DllLoader/exports/wrapper.def` \
 		../../../cores/DllLoader/exports/wrapper.o
+else
+$(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF)
+	$(CC) -shared -o $@ -l$(PYVERSION) \
+		`cat wrapper_python.def` wrapper_python.o \
+		`cat ../../../cores/DllLoader/exports/wrapper.def` \
+		../../../cores/DllLoader/exports/wrapper.o
+endif
 
 $(ZIP): $(PYC) $(PYO)
 	pushd ../Python/build/$(PYLIBDIR)/ && \
@@ -116,14 +137,14 @@ endif
 
 
 clean:
-	for d in $(DIRS); do make -C $$d clean; done
+	for d in $(DIRS); do [ ! -f $$d/Makefile ] || make -C $$d clean; done
 	rm -f $(SLIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	rm -rf $(SYSDIR)/Lib
 endif
 
 distclean:
-	for d in $(DIRS); do make -C $$d distclean; done
+	for d in $(DIRS); do [ ! -f $$d/Makefile ] || make -C $$d distclean; done
 	rm -f $(SLIB) $(ZIP) $(PYC) $(PYO) ../Python/libpython2.4.a $(PYWRAP) $(PYWRAPDEF)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	rm -rf $(SYSDIR)/Lib

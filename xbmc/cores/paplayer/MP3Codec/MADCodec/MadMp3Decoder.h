@@ -1,13 +1,20 @@
 #ifndef _MadMp3Decoder_H_
 #define _MadMp3Decoder_H_
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #ifdef _LINUX
 #include <unistd.h>
 #define __declspec(x)
 #define __cdecl
 #endif
 
-#include "mad.h"
+#if (defined USE_EXTERNAL_LIBMAD)
+  #include <mad.h>
+#else
+  #include "mad.h"
+#endif
 #include "dec_if.h"
 
 enum madx_sig {
