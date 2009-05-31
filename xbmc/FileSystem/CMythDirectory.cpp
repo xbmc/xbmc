@@ -199,14 +199,10 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, int ChanNum, CF
       if(tag->m_strShowTitle.length() > 0)
         tag->m_strTitle += " : " + tag->m_strShowTitle;
 
-      CDateTimeSpan span(endtime.GetDay() - starttime.GetDay(),
-                         endtime.GetHour() - starttime.GetHour(),
-                         endtime.GetMinute() - starttime.GetMinute(),
-                         endtime.GetSecond() - starttime.GetSecond());
-
-      StringUtils::SecondsToTimeString( span.GetSeconds()
-                                      + span.GetMinutes() * 60
-                                      + span.GetHours() * 3600, tag->m_strRuntime, TIME_FORMAT_GUESS);
+      CDateTimeSpan runtime = endtime - starttime;
+      StringUtils::SecondsToTimeString( runtime.GetSeconds()
+                                      + runtime.GetMinutes() * 60
+                                      + runtime.GetHours() * 3600, tag->m_strRuntime);
 
       tag->m_iSeason  = 0; /* set this so xbmc knows it's a tv show */
       tag->m_iEpisode = 0;
