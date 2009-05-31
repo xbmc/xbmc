@@ -6490,9 +6490,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (images && !bSkip)
         {
-          if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetTBNFile())))
-            if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetTBNFile()))
-              CLog::Log(LOGERROR, "%s: Movie thumb export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedVideoThumb().c_str(), item.GetTBNFile().c_str());
+          CStdString cachedThumb(GetCachedThumb(item));
+          if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile())))
+            if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
+              CLog::Log(LOGERROR, "%s: Movie thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
 
           CStdString strFanart;
           CUtil::ReplaceExtension(item.GetTBNFile(), "-fanart.jpg", strFanart);
@@ -6577,9 +6578,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (images && !bSkip)
         {
-          if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetTBNFile())))
-            if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetTBNFile()))
-              CLog::Log(LOGERROR, "%s: Musicvideo thumb export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedVideoThumb().c_str(), item.GetTBNFile().c_str());
+          CStdString cachedThumb(GetCachedThumb(item));
+          if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile())))
+            if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
+              CLog::Log(LOGERROR, "%s: Musicvideo thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
 
         }
       }
@@ -6656,9 +6658,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (images && !bSkip)
         {
-          if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetFolderThumb())))
-            if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetFolderThumb()))
-              CLog::Log(LOGERROR, "%s: TVShow thumb export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedVideoThumb().c_str(), item.GetFolderThumb().c_str());
+          CStdString cachedThumb(GetCachedThumb(item));
+          if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetFolderThumb())))
+            if (!CFile::Cache(cachedThumb,item.GetFolderThumb()))
+              CLog::Log(LOGERROR, "%s: TVShow thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetFolderThumb().c_str());
 
           if (CFile::Exists(item.GetCachedFanart()) && (overwrite || !CFile::Exists(item.GetFolderThumb("fanart.jpg"))))
             if (!CFile::Cache(item.GetCachedFanart(),item.GetFolderThumb("fanart.jpg")))
@@ -6774,9 +6777,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
           if (images && !bSkip)
           {
-            if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetTBNFile())))
-              if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetTBNFile()))
-                CLog::Log(LOGERROR, "%s: Episode thumb export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedVideoThumb().c_str(), item.GetTBNFile().c_str());
+            CStdString cachedThumb(GetCachedThumb(item));
+            if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile())))
+              if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
+                CLog::Log(LOGERROR, "%s: Episode thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
           }
         }
         pDS->next();
@@ -6825,6 +6829,22 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
   if (progress)
     progress->Close();
+}
+
+CStdString CVideoDatabase::GetCachedThumb(const CFileItem& item) const
+{
+  CStdString cachedThumb(item.GetCachedVideoThumb());
+  if (!CFile::Exists(cachedThumb))
+  {
+    CStdString strPath, strFileName;
+    CUtil::Split(cachedThumb, strPath, strFileName);
+    cachedThumb = strPath + "auto-" + strFileName;
+  }
+
+  if (CFile::Exists(cachedThumb))
+    return cachedThumb;
+  else
+    return "";
 }
 
 bool CVideoDatabase::ExportSkipEntry(const CStdString &nfoFile)
