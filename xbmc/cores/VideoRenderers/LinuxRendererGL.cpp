@@ -21,6 +21,9 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 #include "stdafx.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #ifndef HAS_SDL_2D
 #include <locale.h>
 #include "LinuxRendererGL.h"
@@ -1232,7 +1235,12 @@ unsigned int CLinuxRendererGL::PreInit()
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
-  m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #if (! defined USE_EXTERNAL_FFMPEG)
+    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
+    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #endif
+
   return true;
 }
 

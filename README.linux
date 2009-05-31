@@ -123,7 +123,7 @@ permission to the install directory) from your source tree.  If you would like
 to also remove any settings and 3rd party addons (skins, scripts, etc) you 
 should also run "rm -rf ~/.xbmc/".
 
-NOTE: If you have rerun configure with a different prefix, you will need to 
+NOTE: If you have rerun configure with a different prefix, you will need to
 rerun configure with the correct prefix for this step to work correctly.
 
 -----------------------------------------------------------------------------

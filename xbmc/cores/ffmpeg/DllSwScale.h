@@ -1,4 +1,7 @@
 #pragma once
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "DynamicDll.h"
 
 extern "C" {
@@ -18,9 +21,27 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
 
-#include "avutil.h"
-#include "swscale.h"
-#include "rgb2rgb.h"
+#if (defined USE_EXTERNAL_FFMPEG)
+  #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
+    #include <libavutil/avutil.h>
+  #elif (defined HAVE_FFMPEG_AVUTIL_H)
+    #include <ffmpeg/avutil.h>
+  #endif
+  #if (defined HAVE_LIBSWSCALE_SWSCALE_H)
+    #include <libswscale/swscale.h>
+  #elif (defined HAVE_FFMPEG_SWSCALE_H)
+    #include <ffmpeg/swscale.h>
+  #endif
+  #if (defined HAVE_LIBSWSCALE_RGB2RGB_H)
+    #include <libswscale/rgb2rgb.h>
+  #elif (defined HAVE_FFMPEG_RGB2RGB_H)
+    #include <ffmpeg/rgb2rgb.h>
+  #endif
+#else
+  #include "avutil.h"
+  #include "swscale.h"
+  #include "rgb2rgb.h"
+#endif
 }
 
 class DllSwScaleInterface
@@ -32,11 +53,46 @@ public:
 
    virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
                          int srcSliceH, uint8_t* dst[], int dstStride[])=0;
-
-   virtual void sws_rgb2rgb_init(int flags)=0;
+    #if (! defined USE_EXTERNAL_FFMPEG)
+      virtual void sws_rgb2rgb_init(int flags)=0;
+    #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
+      virtual void sws_rgb2rgb_init(int flags)=0;
+    #endif
 
    virtual void sws_freeContext(struct SwsContext *context)=0;
 };
+
+#if (defined USE_EXTERNAL_FFMPEG)
+
+// We call into this library directly.
+class DllSwScale : public DllDynamic, public DllSwScaleInterface
+{
+public:
+  virtual ~DllSwScale() {}
+  virtual struct SwsContext *sws_getContext(int srcW, int srcH, int srcFormat, int dstW, int dstH, int dstFormat, int flags,
+                               SwsFilter *srcFilter, SwsFilter *dstFilter, double *param) 
+    { return ::sws_getContext(srcW, srcH, (enum PixelFormat)srcFormat, dstW, dstH, (enum PixelFormat)dstFormat, flags, srcFilter, dstFilter, param); }
+
+  virtual int sws_scale(struct SwsContext *context, uint8_t* src[], int srcStride[], int srcSliceY,
+                int srcSliceH, uint8_t* dst[], int dstStride[])  
+    { return ::sws_scale(context, src, srcStride, srcSliceY, srcSliceH, dst, dstStride); }
+  #if (! defined USE_EXTERNAL_FFMPEG)
+    virtual void sws_rgb2rgb_init(int flags) { ::sws_rgb2rgb_init(flags); }
+  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
+    virtual void sws_rgb2rgb_init(int flags) { ::sws_rgb2rgb_init(flags); }
+  #endif
+  virtual void sws_freeContext(struct SwsContext *context) { ::sws_freeContext(context); }
+  
+  // DLL faking.
+  virtual bool ResolveExports() { return true; }
+  virtual bool Load() {
+    CLog::Log(LOGDEBUG, "DllSwScale: Using libswscale system library");
+    return true;
+  }
+  virtual void Unload() {}
+};
+
+#else
 
 class DllSwScale : public DllDynamic, public DllSwScaleInterface
 {
@@ -54,3 +110,5 @@ class DllSwScale : public DllDynamic, public DllSwScaleInterface
     RESOLVE_METHOD(sws_freeContext)
   END_METHOD_RESOLVE()
 };
+
+#endif

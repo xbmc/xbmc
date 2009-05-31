@@ -25,3 +25,13 @@ libprojectM/libprojectM.so:
 endif
 
 include ../../../Makefile.include
+
+clean:
+	for d in $(DIRS); do make -C $$d $@; done
+	make -f ../../../Makefile.include $@
+
+distclean:
+	rm -rf libprojectM/CMakeFiles/ libprojectM/CMakeCache.txt \
+		libprojectM/Makefile libprojectM/cmake_install.cmake \
+		libprojectM/config.inp libprojectM/libprojectM.pc
+	make -f ../../../Makefile.include $@

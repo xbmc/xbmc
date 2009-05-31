@@ -1038,7 +1038,11 @@ int CDVDDemuxFFmpeg::GetChapterCount()
 
   if(m_pFormatContext == NULL)
     return 0;
-  return m_pFormatContext->nb_chapters;
+  #if (LIBAVFORMAT_VERSION_MAJOR == 52) && (LIBAVFORMAT_VERSION_MINOR >= 14)
+    return m_pFormatContext->nb_chapters;
+  #else
+    return 0;
+  #endif
 }
 
 int CDVDDemuxFFmpeg::GetChapter()
@@ -1050,13 +1054,15 @@ int CDVDDemuxFFmpeg::GetChapter()
   || m_iCurrentPts == DVD_NOPTS_VALUE)
     return 0;
 
-  for(unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
-  {
-    AVChapter *chapter = m_pFormatContext->chapters[i];
-    if(m_iCurrentPts >= ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num)
-    && m_iCurrentPts <  ConvertTimestamp(chapter->end,   chapter->time_base.den, chapter->time_base.num))
-      return i + 1;
-  }
+  #if (LIBAVFORMAT_VERSION_MAJOR == 52) && (LIBAVFORMAT_VERSION_MINOR >= 14)
+    for(unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
+    {
+      AVChapter *chapter = m_pFormatContext->chapters[i];
+      if(m_iCurrentPts >= ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num)
+      && m_iCurrentPts <  ConvertTimestamp(chapter->end,   chapter->time_base.den, chapter->time_base.num))
+        return i + 1;
+    }
+  #endif
   return 0;
 }
 
@@ -1066,9 +1072,11 @@ void CDVDDemuxFFmpeg::GetChapterName(std::string& strChapterName)
     return;
   else
   {
-    int chapterIdx = GetChapter();
-    if(chapterIdx > 0 && m_pFormatContext->chapters[chapterIdx-1]->title)
-      strChapterName = m_pFormatContext->chapters[chapterIdx-1]->title;
+    #if (LIBAVFORMAT_VERSION_MAJOR == 52) && (LIBAVFORMAT_VERSION_MINOR >= 14)
+      int chapterIdx = GetChapter();
+      if(chapterIdx > 0 && m_pFormatContext->chapters[chapterIdx-1]->title)
+        strChapterName = m_pFormatContext->chapters[chapterIdx-1]->title;
+    #endif
   }
 }
 
@@ -1094,11 +1102,14 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   if(m_pFormatContext == NULL)
     return false;
 
-  if(chapter < 1 || chapter > (int)m_pFormatContext->nb_chapters)
-    return false;
+    #if (LIBAVFORMAT_VERSION_MAJOR == 52) && (LIBAVFORMAT_VERSION_MINOR >= 14)
+        if(chapter < 1 || chapter > (int)m_pFormatContext->nb_chapters)
+            return false;
 
-  AVChapter *ch = m_pFormatContext->chapters[chapter-1];
-  double dts = ConvertTimestamp(ch->start, ch->time_base.den, ch->time_base.num);
-  return SeekTime(DVD_TIME_TO_MSEC(dts), false, startpts);
+        AVChapter *ch = m_pFormatContext->chapters[chapter-1];
+        double dts = ConvertTimestamp(ch->start, ch->time_base.den, ch->time_base.num);
+        return SeekTime(DVD_TIME_TO_MSEC(dts), false, startpts);
+    #else
+        return false;
+    #endif
 }
-
