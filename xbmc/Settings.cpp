@@ -297,6 +297,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
+  g_advancedSettings.m_iMythMovieLength = 0; // 0 == Off
+
   g_advancedSettings.m_curlconnecttimeout = 10;
   g_advancedSettings.m_curllowspeedtime = 5;
   g_advancedSettings.m_curlretries = 3;
@@ -1344,6 +1346,13 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetInt(pElement, "defaultsubmenu", g_advancedSettings.m_iTuxBoxDefaultSubMenu, 1, 4);
     XMLUtils::GetInt(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 4);
     XMLUtils::GetInt(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 120);
+  }
+  
+  // Myth TV
+  pElement = pRootElement->FirstChildElement("myth");
+  if (pElement)
+  {
+    XMLUtils::GetInt(pElement, "movielength", g_advancedSettings.m_iMythMovieLength);
   }
 
   // picture exclude regexps
