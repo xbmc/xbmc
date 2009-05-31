@@ -366,70 +366,6 @@ bool CCMythDirectory::GetRecordingGroups(const CStdString& base, CFileItemList &
   return true;
 }
 
-
-
-bool CCMythDirectory::GetChannelsDb(const CStdString& base, CFileItemList &items)
-{
-  cmyth_database_t db = m_session->GetDatabase();
-  if(!db)
-    return false;
-
-  cmyth_chanlist_t list = m_dll->mysql_get_chanlist(db);
-  if(!list)
-  {
-    CLog::Log(LOGERROR, "%s - unable to get list of channels with url %s", __FUNCTION__, base.c_str());
-    return false;
-  }
-  CURL url(base);
-
-  int count = m_dll->chanlist_get_count(list);
-  for(int i = 0; i < count; i++)
-  {
-    cmyth_channel_t channel = m_dll->chanlist_get_item(list, i);
-    if(channel)
-    {
-      CStdString name, path, icon;
-
-      int num = m_dll->channel_channum(channel);
-      char* str;
-      if((str = m_dll->channel_name(channel)))
-      {
-        name.Format("%d - %s", num, str);
-        m_dll->ref_release(str);
-      }
-      else
-        name.Format("%d");
-
-      icon = GetValue(m_dll->channel_icon(channel));
-
-      if(num <= 0)
-      {
-        CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s' - Skipped", __FUNCTION__, name.c_str(), icon.c_str());
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s'", __FUNCTION__, name.c_str(), icon.c_str());
-        path.Format("channels/%d.ts", num);
-        url.SetFileName(path);
-        url.GetURL(path);
-        CFileItemPtr item(new CFileItem(path, false));
-        item->SetLabel(name);
-        item->SetLabelPreformated(true);
-        if(icon.length() > 0)
-        {
-          url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
-          url.GetURL(icon);
-          item->SetThumbnailImage(icon);
-        }
-        items.Add(item);
-      }
-      m_dll->ref_release(channel);
-    }
-  }
-  m_dll->ref_release(list);
-  return true;
-}
-
 bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
 {
   cmyth_conn_t control = m_session->GetControl();
@@ -570,9 +506,6 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   }
   else if(url.GetFileName() == "channels/")
     return GetChannels(base, items);
-
-  else if(url.GetFileName() == "channelsdb/")
-    return GetChannelsDb(base, items);
 
 /*  This section should never be reached, as we cannot get to the recordings folder by itself
  *  It was removed as it extra remote clicks to browse, but is in if this decision is to be

@@ -55,7 +55,6 @@ private:
   bool GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type, const CStdString& filter);
   bool GetRecordingGroups(const CStdString& base, CFileItemList &items, enum FilterType type);
   bool GetChannels  (const CStdString& base, CFileItemList &items);
-  bool GetChannelsDb(const CStdString& base, CFileItemList &items);
 
   CStdString GetValue(char* str)           { return m_session->GetValue(str); }
   CDateTime  GetValue(cmyth_timestamp_t t);
