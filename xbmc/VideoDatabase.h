@@ -452,6 +452,7 @@ public:
   bool ExportSkipEntry(const CStdString &nfoFile);
   void ImportFromXML(const CStdString &xmlFile);
   void DumpToDummyFiles(const CStdString &path);
+  CStdString GetCachedThumb(const CFileItem& item) const;
 
   // smart playlists and main retrieval work in these functions
   bool GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
