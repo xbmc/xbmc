@@ -3003,7 +3003,10 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   element = NULL;
   element = xmlDoc.RootElement()->FirstChildElement("icon");
   if (element)
-    addon.m_icon = path + element->GetText();
+  {
+    CStdString iconPath = element->GetText();
+    addon.m_icon = path + iconPath;
+  }
 
   /*** end of optional fields ***/
 
