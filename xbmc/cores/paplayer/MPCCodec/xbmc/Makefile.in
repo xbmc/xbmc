@@ -3,6 +3,12 @@ CFLAGS += -I../include -D_LINUX -fPIC
 CXXFLAGS += -I../include -D_LINUX -fPIC
 DIRS= ..
 
+# Don't use includes from internal library
+ifeq (@USE_EXTERNAL_LIBMPCDEC@,1)
+CFLAGS := $(filter-out -I../include,$(CFLAGS))
+CXXFLAGS := $(filter-out -I../include,$(CXXFLAGS))
+endif
+
 ARCH=@ARCH@
 SYSDIR=../../../../../system/players/paplayer
 SO=libmpcdec-$(ARCH).so
