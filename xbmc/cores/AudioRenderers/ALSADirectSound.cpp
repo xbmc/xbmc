@@ -64,7 +64,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
   m_bPassthrough = bPassthrough;
-  m_uiBytesPerSecond * uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
+  m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
   if (!m_bPassthrough)
