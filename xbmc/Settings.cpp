@@ -285,6 +285,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems = false;
   g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
   g_advancedSettings.m_bVideoLibraryCleanOnUpdate = false;
+  g_advancedSettings.m_bVideoLibraryExportAutoThumbs = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
@@ -1233,6 +1234,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "hideemptyseries", g_advancedSettings.m_bVideoLibraryHideEmptySeries);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
+    XMLUtils::GetBoolean(pElement, "exportautothumbs", g_advancedSettings.m_bVideoLibraryExportAutoThumbs);
   }
   pElement = pRootElement->FirstChildElement("externalplayer");
   if (pElement)
