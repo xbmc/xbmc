@@ -456,19 +456,6 @@ else
   fi
 fi
 
-# VDPAU
-if test "$host_vendor" = "apple" ; then
-  use_vdpau="no"
-  AC_MSG_NOTICE($vdpau_disabled)
-else
-  if test "$use_vdpau" = "yes"; then
-    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the `vdpau' library (-lvdpau).]),
-      use_vdpau=no;AC_MSG_RESULT($vdpau_not_found))
-  else
-    AC_MSG_NOTICE($vdpau_disabled)
-  fi
-fi
-
 ### External libraries checks
 if test "$use_external_libraries" = "yes"; then
   AC_MSG_NOTICE($external_libraries_enabled)
@@ -667,6 +654,19 @@ if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"
 else
   AC_MSG_NOTICE($external_python_disabled)
   USE_EXTERNAL_PYTHON=0
+fi
+
+# VDPAU
+if test "$host_vendor" = "apple" ; then
+  use_vdpau="no"
+  AC_MSG_NOTICE($vdpau_disabled)
+else
+  if test "$use_vdpau" = "yes"; then
+    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the `vdpau' library (-lvdpau).]),
+      use_vdpau=no;AC_MSG_RESULT($vdpau_not_found))
+  else
+    AC_MSG_NOTICE($vdpau_disabled)
+  fi
 fi
 
 # platform specific bin utilities
