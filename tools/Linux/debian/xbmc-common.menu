@@ -1,0 +1,2 @@
+?package(xbmc):needs="X11|wm" section="Applications/Video"\
+  title="xbmc" command="/usr/bin/xbmc"
