@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 05/17/2009-->
+<!--Date of translation: 05/30/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20327-->
+<!--Based on english strings version 20801-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1591,8 +1591,8 @@
   <string id="20252">Γεμίζοντας τα ποτήρια (βίντεο)</string>
   <string id="20300">Κατάλογος διακομιστή ιστού (HTTP)</string>
   <string id="20301">Κατάλογος διακομιστή ιστού (HTTPS)</string>
-  <string id="20302">Εντοπισμός BIOS</string>
-  <string id="20303">Εντοπισμός ταχύτητας CPU</string>
+  <string id="20302">Αδυναμία εγγραφής στο φάκελλο:</string>
+  <string id="20303">Θέλετε να παραλειφθεί και να συνεχίσετε;</string>
   <string id="20304">Εντοπισμός ημ/νίας κατασκευής</string>
   <string id="20305">Εντοπισμός συνδεδεμένων συσκευών</string>
   <string id="20306">Άγνωστο. Προσθέστε το MD5 από το xbmc.log στο BiosIDs.ini.</string>
@@ -1922,6 +1922,7 @@
   <string id="22041">άσπρο/κόκκινο</string>
   <string id="22042">άσπρο/μπλε</string>
   <string id="22043">μαύρο/άσπρο</string>
+  <string id="23000">Επέκταση καιρού</string>
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
   <string id="29999">Εφαρμογή ρυθμίσεων φίλτρου Flicker</string>
