@@ -6834,7 +6834,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 CStdString CVideoDatabase::GetCachedThumb(const CFileItem& item) const
 {
   CStdString cachedThumb(item.GetCachedVideoThumb());
-  if (!CFile::Exists(cachedThumb))
+  if (!CFile::Exists(cachedThumb) && g_advancedSettings.m_bVideoLibraryExportAutoThumbs)
   {
     CStdString strPath, strFileName;
     CUtil::Split(cachedThumb, strPath, strFileName);
