@@ -12,6 +12,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libPlatinum", "libPlatinum.vcproj", "{B2975495-FBE4-4F94-AAC5-B21A9842BF50}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrarXLib", "UnrarXLib.vcproj", "{FE0A91C0-E30A-47CD-8A92-A508C9292452}"
+	ProjectSection(ProjectDependencies) = postProject
+		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4} = {510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
