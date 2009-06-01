@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 05/16/2009-->
+<!--Date of translation: 05/31/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20327-->
+<!--Based on english strings version 20801 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1731,14 +1731,14 @@
 
   <string id="20300">WEB服务器目录(HTTP)</string>
   <string id="20301">WEB服务器目录(HTTPS)</string>
-  <string id="20302"></string>
-  <string id="20303"></string>
+  <string id="20302">无法写入文件夹：</string>
+  <string id="20303">你要跳过并继续吗？</string>
   <string id="20304"></string>
   <string id="20305"></string>
 
   <string id="20306">未知 BIOS，请把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
   <string id="20307">备用 DNS 服务器地址</string>
-  <string id="20308">DHCP 服务器:</string>
+  <string id="20308">DHCP 服务器：</string>
   <string id="20309">新建文件夹</string>
   <string id="20310">播放时关闭 LCD 背光</string>
   <string id="20311">未知或板载(保护状态)</string>
@@ -2078,6 +2078,8 @@
   <string id="22041">白/红</string>
   <string id="22042">白/兰</string>
   <string id="22043">黑/白</string>
+
+  <string id="23000">天气插件</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>
