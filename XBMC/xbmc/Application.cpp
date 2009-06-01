@@ -4667,34 +4667,38 @@ void CApplication::SaveFileState()
       }
     }
 
-    // Reset some stuff
+    // Reset tracking filename
     m_progressTrackingFile = "";
-    m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
-    m_progressTrackingPlayCountUpdate = false;
   }
 }
 
 void CApplication::UpdateFileState()
 {
-  if (IsPlaying())
+  if (IsPlayingVideo() || IsPlayingAudio())
   {
-    // Make sure we don't pick the wrong file when ie. crossfading
-    if (m_progressTrackingFile == "" || m_progressTrackingFile == CurrentFile())
+    if (m_progressTrackingFile == "")
     {
+      // Init some stuff
+      m_progressTrackingIsVideo = IsPlayingVideo();
       m_progressTrackingFile = CurrentFile();
+      m_progressTrackingPlayCountUpdate = false;
+    }
 
-      if ((IsPlayingAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+    // Only update when our filestate is stable so we don't pick the wrong file when ie. crossfading
+    if (m_progressTrackingFile == CurrentFile() && m_progressTrackingIsVideo == IsPlayingVideo())
+    {
+
+      if ((!m_progressTrackingIsVideo && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
           GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
-          (IsPlayingVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+          (m_progressTrackingIsVideo && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
           GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
       {
         m_progressTrackingPlayCountUpdate = true;
       }
 
       // Update bookmark for save
-      if (IsPlayingVideo())
+      if (m_progressTrackingIsVideo)
       {
-        m_progressTrackingIsVideo = true;
         m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
         m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
         m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
@@ -4717,8 +4721,6 @@ void CApplication::UpdateFileState()
           m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
         }
       }
-      else
-        m_progressTrackingIsVideo = false;
     }
   }
 }
