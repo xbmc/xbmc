@@ -1,0 +1,444 @@
+E: xbmc source: magic-arch-in-arch-list
+N: 
+N:    The special architecture values "all" and "any" only make sense if they
+N:    occur alone.
+N:    
+N:    Refer to Debian Policy Manual section 5.6.8 (Architecture) for details.
+N:    
+N:    Severity: serious, Certainty: certain
+N: 
+W: xbmc source: virtual-package-depends-without-real-package-depends build-depends: libgl-dev
+N: 
+N:    The package declares a depends on a virtual package without listing a
+N:    real package as an alternative first.
+N:    
+N:    If this package could ever be a build dependency, it should list a real
+N:    package as the first alternative to any virtual package in its Depends.
+N:    Otherwise, the build daemons will not be able to provide a consistent
+N:    build environment.
+N:    
+N:    If it will never be a build dependency, this isn't necessary, but you
+N:    may want to consider doing so anyway if there is a real package
+N:    providing that virtual package that most users will want to use.
+N:    
+N:    Severity: normal, Certainty: possible
+N: 
+W: xbmc source: virtual-package-depends-without-real-package-depends build-depends: libcurl-dev
+W: xbmc source: ancient-libtool xbmc/lib/libid3tag/libid3tag/ltmain.sh 1.5.2
+N: 
+N:    The referenced file seems to be from a libtool version older than
+N:    1.5.2-2. This might lead to build errors on some newer architectures not
+N:    known to this libtool.
+N:    
+N:    Please ask your upstream maintainer to re-libtoolize the package or do
+N:    it yourself in case there is no active upstream anymore. Beware that
+N:    might mean you need to update autoconf, too, if you use a very old
+N:    version there as well.
+N:    
+N:    If you have not updated the file but fixed architecture-specific issues
+N:    with minimal patches and verified that it builds correctly please
+N:    override this tag. lintian will not be able to verify that.
+N:    
+N:    Severity: normal, Certainty: possible
+N: 
+W: xbmc source: configure-generated-file-in-source xbmc/lib/cximage-6.0/zlib/config.log
+N: 
+N:    Leaving config.cache/status causes autobuilders problems. config.cache
+N:    and config.status are produced by GNU autoconf's configure scripts. If
+N:    they are left in the source package, autobuilders may pick up settings
+N:    for the wrong architecture.
+N:    
+N:    The clean rule in debian/rules should remove this file. This should
+N:    ideally be done by fixing the upstream build system to do it when you
+N:    run the appropriate cleaning command (and don't forget to forward the
+N:    fix to the upstream authors so it doesn't happen in the next release).
+N:    If that is already implemented, then make sure you are indeed cleaning
+N:    it in the clean rule. If all else fails, a simple rm -f should work.
+N:    
+N:    Note that Lintian cannot reliably detect the removal in the clean rule,
+N:    so once you fix this, please ignore or override this warning.
+N:    
+N:    Severity: normal, Certainty: certain
+N: 
+W: xbmc source: ancient-libtool xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b/ltmain.sh 1.5.2
+W: xbmc source: ancient-libtool xbmc/cores/dvdplayer/Codecs/libmad/ltmain.sh 1.5.2
+W: xbmc source: ancient-libtool xbmc/cores/dvdplayer/Codecs/liba52/autotools/ltmain.sh 1.4.2
+W: xbmc-scripts-example: executable-not-elf-or-script ./usr/share/xbmc/scripts/autoexec.py
+N: 
+N:    This executable file is not an ELF format binary, and does not start
+N:    with the #! sequence that marks interpreted scripts. It might be a sh
+N:    script that fails to name /bin/sh as its shell.
+N:    
+N:    Refer to Debian Policy Manual section 10.4 (Scripts) for details.
+N:    
+N:    Severity: normal, Certainty: certain
+N: 
+W: xbmc-scripts-example: copyright-lists-upstream-authors-with-dh_make-boilerplate
+N: 
+N:    There is "Upstream Author(s)" in your copyright file. This was most
+N:    likely a remnant from the dh_make template.
+N:    
+N:    There's either one upstream author, in which case you should remove the
+N:    "(s)", or there are several upstream authors, in which case you should
+N:    remove the "(" and ")".
+N:    
+N:    o/~ join us now and carefully edit debian/copyright files! o/~
+N:    
+N:    Severity: normal, Certainty: certain
+N: 
+W: xbmc-scripts-example: copyright-contains-dh_make-todo-boilerplate
+N: 
+N:    The string "Please also look if..." appears in the copyright file, which
+N:    indicates that you either didn't check the whole source to find
+N:    additional copyright/license, or that you didn't remove that paragraph
+N:    after having done so.
+N:    
+N:    Refer to Debian Policy Manual section 12.5 (Copyright information) for
+N:    details.
+N:    
+N:    Severity: normal, Certainty: certain
+N: 
+W: xbmc-standalone: binary-without-manpage usr/bin/xbmc-standalone
+N: 
+N:    Each binary in /usr/bin, /usr/sbin, /bin, /sbin or /usr/games should
+N:    have a manual page
+N:    
+N:    Note that though the man program has the capability to check for several
+N:    program names in the NAMES section, each of these programs should have
+N:    its own manual page (a symbolic link to the appropriate manual page is
+N:    sufficient) because other manual page viewers such as xman or tkman
+N:    don't support this.
+N:    
+N:    If the name of the man page differs from the binary by case, man may be
+N:    able to find it anyway; however, it is still best practice to make the
+N:    case of the man page match the case of the binary.
+N:    
+N:    If the man pages are provided by another package on which this package
+N:    depends, lintian may not be able to determine that man pages are
+N:    available. In this case, after confirming that all binaries do have man
+N:    pages after this package and its dependencies are installed, please add
+N:    a lintian override.
+N:    
+N:    Refer to Debian Policy Manual section 12.1 (Manual pages) for details.
+N:    
+N:    Severity: normal, Certainty: possible
+N: 
+W: xbmc-standalone: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-standalone: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-eventclients-wiiremote: binary-without-manpage usr/bin/xbmc-wiiremote
+W: xbmc-eventclients-wiiremote: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-eventclients-wiiremote: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-eventclients-j2me: binary-without-manpage usr/bin/xbmc-j2meremote
+W: xbmc-eventclients-j2me: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-eventclients-j2me: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-web-pm: windows-thumbnail-database-in-package usr/share/xbmc/web/styles/Project Mayhem/images/Thumbs.db
+N: 
+N:    There is a file in the package named Thumbs.db or Thumbs.db.gz, which is
+N:    normally a Windows image thumbnail database. Such databases are
+N:    generally useless in Debian packages and were usually accidentally
+N:    included by copying complete directories from the source tarball.
+N:    
+N:    Severity: normal, Certainty: certain
+N: 
+W: xbmc-web-pm: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-web-pm: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-common: binary-without-manpage usr/bin/xbmc
+W: xbmc-common: extra-license-file usr/share/xbmc/system/python/spyce/LICENCE
+N: 
+N:    All license information should be collected in the debian/copyright
+N:    file. This usually makes it unnecessary for the package to install this
+N:    information in other places as well.
+N:    
+N:    Refer to Debian Policy Manual section 12.5 (Copyright information) for
+N:    details.
+N:    
+N:    Severity: normal, Certainty: possible
+N: 
+E: xbmc-common: shlib-with-non-pic-code usr/share/xbmc/system/players/paplayer/adplug-i486-linux.so
+N: 
+N:    The listed shared libraries contain object code that was compiled
+N:    without -fPIC. All object code in shared libraries should be recompiled
+N:    separately from the static libraries with the -fPIC option.
+N:    
+N:    Another common mistake that causes this problem is linking with gcc
+N:    -Wl,-shared instead of gcc -shared.
+N:    
+N:    In some cases, exceptions to this rule are warranted. If this is such a
+N:    case, follow the procedure outlined in Policy and then please document
+N:    the exception by adding a lintian override to this package.
+N:    
+N:    To check whether a shared library has this problem, run readelf -d on
+N:    the shared library. If a tag of type TEXTREL is present, the shared
+N:    library contains non-PIC code.
+N:    
+N:    Refer to Debian Policy Manual section 10.2 (Libraries) for details.
+N:    
+N:    Severity: serious, Certainty: certain
+N: 
+W: xbmc-common: postinst-has-useless-call-to-ldconfig
+N: 
+N:    The postinst script calls ldconfig even though no shared libraries are
+N:    installed in a directory controlled by the dynamic library loader.
+N:    
+N:    Refer to Debian Policy Manual section 8.1.1 (ldconfig) for details.
+N:    
+N:    Severity: minor, Certainty: certain
+N: 
+W: xbmc-common: postrm-has-useless-call-to-ldconfig
+N: 
+N:    The postrm script calls ldconfig even though no shared libraries are
+N:    installed in a directory controlled by the dynamic library loader.
+N:    
+N:    Refer to Debian Policy Manual section 8.1.1 (ldconfig) for details.
+N:    
+N:    Severity: minor, Certainty: certain
+N: 
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceTag.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/taglib.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/compress.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/visualisations/projectM/Geiss & Sperl - Cruzin' (Moody).prjm
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceUtil.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceXbmc.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceApache.conf
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/response.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/transform.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceLock.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyce.conf
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceModule.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/cookie.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/error.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/spylambda.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/template.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceCompile.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/tree.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceWWW.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyce.nsi.in
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/request.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/redirect.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/installHelper.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/DLLs/_socket.pyd
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/DLLs/select.pyd
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/visualisations/projectM/Rovastar & Sperl - Tuxflower.prjm
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/DLLs/pyexpat.pyd
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/Cookie.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceCache.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/DLLs/bz2.pyd
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/include.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/DLLs/_ssl.pyd
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyce.nsi
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/fcgi.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/language/Spanish (Mexico)/langinfo.xml
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/stdout.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/pool.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceModpy.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/DLLs/zlib.pyd
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceConfig.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyce.mime
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/toc.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/automaton.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/modules/session.py
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/DLLs/unicodedata.pyd
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyce.spec.in
+W: xbmc-common: executable-not-elf-or-script ./usr/share/xbmc/system/python/spyce/spyceException.py
+W: xbmc-common: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-common: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-common: pkg-not-in-package-test xbmc /usr/share/menu/xbmc-common
+N: 
+N:    This menu item doesn't test to see if the package containing it is
+N:    installed. The start of any menu item is a conditional testing whether
+N:    the required packages are installed. Normally this conditional should
+N:    always check at least the package containing it, since menu items should
+N:    be included in the package that provides the application the menu refers
+N:    to.
+N:    
+N:    This error usually indicates a misspelling of the package name in the
+N:    menu entry or a copied menu entry from another package that doesn't
+N:    apply to this one.
+N:    
+N:    Refer to Debian Menu System section 3.2 (Syntax) for details.
+N:    
+N:    Severity: normal, Certainty: possible
+N: 
+W: xbmc-common: menu-item-needs-tag-has-unknown-value x11|wm /usr/share/menu/xbmc-common:2
+N: 
+N:    The menu item has a line that has a needs= field with a strange value.
+N:    This may be intentional, but it's probably a typo that will make menu
+N:    ignore the line.
+N:    
+N:    Severity: minor, Certainty: certain
+N: 
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/screensavers/Euphoria.xbs
+N: 
+N:    This package installs an ELF binary in the /usr/share hierarchy, which
+N:    is reserved for architecture-independent files.
+N:    
+N:    Refer to Filesystem Hierarchy Standard (/usr/share :
+N:    Architecture-independent data) for details.
+N:    
+N:    Severity: important, Certainty: certain
+N: 
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/screensavers/Plasma.xbs
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/screensavers/Solarwinds.xbs
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/ImageLib-i486-linux.so
+E: xbmc-common: embedded-zlib ./usr/share/xbmc/system/ImageLib-i486-linux.so
+N: 
+N:    The given ELF object appears to have been statically linked to zlib.
+N:    Doing this is discouraged due to the extra work needed by the security
+N:    team to fix all the extra embedded copies or trigger the package
+N:    rebuilds, as appropriate.
+N:    
+N:    Severity: important, Certainty: certain
+N: 
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/cdrip/lame_enc-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/cdrip/ogg-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/cdrip/vorbis-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/cdrip/vorbisenc-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/hdhomerun-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/libexif-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/libid3tag-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/dvdplayer/libdvdnav-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/AACCodec-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/MACDll-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/MADCodec-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/SNESAPU-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/ac3codec-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/adpcm-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/adplug-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/gensapu-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/libmpcdec-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/libsidplay2-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/nosefart-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/stsoundlibrary-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/timidity-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/vgmstream-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/vorbisfile-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/wma-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/players/paplayer/xbmc_asap-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/system/python/python25-i486-linux.so
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/visualisations/Goom.vis
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/visualisations/ProjectM.vis
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/visualisations/Waveform.vis
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/visualisations/opengl_spectrum.vis
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/xbmc-xrandr
+E: xbmc-common: arch-dependent-file-in-usr-share ./usr/share/xbmc/xbmc.bin
+E: xbmc-eventclients-dev: nested-examples-directory usr/share/doc/xbmc-eventclients-dev/examples/examples/
+N: 
+N:    Package contains a usr/share/doc/something/examples/examples directory.
+N:    It was most likely installed by accident, since one examples/ directory
+N:    should be enough for everybody(tm).
+N:    
+N:    Severity: important, Certainty: certain
+N: 
+W: xbmc-eventclients-dev: executable-not-elf-or-script ./usr/share/doc/xbmc-eventclients-dev/examples/examples/java/XBMCDemoClient1.java
+W: xbmc-eventclients-dev: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-eventclients-dev: copyright-contains-dh_make-todo-boilerplate
+W: xbmc: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-skin-pm3-hd: extra-license-file usr/share/xbmc/skin/PM3.HD/HomeSystemIcon Licence.txt
+W: xbmc-skin-pm3-hd: extra-license-file usr/share/xbmc/skin/PM3.HD/fonts/Liberation-Font-License.txt
+W: xbmc-skin-pm3-hd: duplicate-font-file usr/share/xbmc/skin/PM3.HD/fonts/LiberationSans-Regular.ttf also in ttf-liberation
+N: 
+N:    This package appears to include a font file that is already provided by
+N:    another package in Debian. Ideally should instead depend on the relevant
+N:    font package. If the application in this package loads the font file by
+N:    name, you may need to include a symlink pointing to the file name of the
+N:    font in its Debian package.
+N:    
+N:    Sometimes the font package containing the font is huge and you only need
+N:    one font. In that case, you have a few options: modify the package (in
+N:    conjunction with upstream) to use libfontconfig to find the font that
+N:    you prefer but fall back on whatever installed font is available, ask
+N:    that the font package be split apart into packages of a more reasonable
+N:    size, or add an override and be aware of the duplication when new
+N:    versions of the font are released.
+N:    
+N:    Severity: normal, Certainty: possible
+N: 
+W: xbmc-skin-pm3-hd: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-skin-pm3-hd: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-web-eflexweb: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-web-eflexweb: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-web-pm3: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-web-pm3: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-dbg: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-dbg: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-eventclients-common: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-eventclients-common: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-skin-pm3: executable-not-elf-or-script ./usr/share/xbmc/skin/Project Mayhem III/sounds/start.wav
+W: xbmc-skin-pm3: executable-not-elf-or-script ./usr/share/xbmc/skin/Project Mayhem III/sounds/shutter.wav
+W: xbmc-skin-pm3: executable-not-elf-or-script ./usr/share/xbmc/skin/Project Mayhem III/sounds/notify.wav
+W: xbmc-skin-pm3: executable-not-elf-or-script ./usr/share/xbmc/skin/Project Mayhem III/sounds/cursor.wav
+W: xbmc-skin-pm3: executable-not-elf-or-script ./usr/share/xbmc/skin/Project Mayhem III/sounds/back.wav
+W: xbmc-skin-pm3: executable-not-elf-or-script ./usr/share/xbmc/skin/Project Mayhem III/sounds/click.wav
+W: xbmc-skin-pm3: executable-not-elf-or-script ./usr/share/xbmc/skin/Project Mayhem III/sounds/out.wav
+W: xbmc-skin-pm3: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-skin-pm3: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-live: binary-without-manpage usr/bin/diskmounter
+W: xbmc-live: binary-without-manpage usr/bin/installXBMC.py
+W: xbmc-live: binary-without-manpage usr/bin/runXBMC.sh
+W: xbmc-live: binary-without-manpage usr/bin/setAlsaVolumes.py
+W: xbmc-live: script-with-language-extension usr/bin/installXBMC.py
+N: 
+N:    When scripts are installed into a directory in the system PATH, the
+N:    script name should not include an extension such as .sh or .pl that
+N:    denotes the scripting language currently used to implement it. The
+N:    implementation language may change; if it does, leaving the name the
+N:    same would be confusing and changing it would be disruptive.
+N:    
+N:    Refer to Debian Policy Manual section 10.4 (Scripts) for details.
+N:    
+N:    Severity: normal, Certainty: certain
+N: 
+W: xbmc-live: script-with-language-extension usr/bin/runXBMC.sh
+W: xbmc-live: script-with-language-extension usr/bin/setAlsaVolumes.py
+W: xbmc-live: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-live: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-live: init.d-script-missing-lsb-section /etc/init.d/xbmc-live
+N: 
+N:    This /etc/init.d script does not have an LSB keyword section (or the ###
+N:    BEGIN INIT INFO tag is incorrect). This section provides description and
+N:    runlevel information in a standard format and provides dependency
+N:    information that can be used to parallelize the boot process. Please
+N:    consider adding it.
+N:    
+N:    Refer to http://wiki.debian.org/LSBInitScripts for details.
+N:    
+N:    Severity: normal, Certainty: certain
+N: 
+E: xbmc-live: init.d-script-does-not-implement-required-option /etc/init.d/xbmc-live restart
+N: 
+N:    The /etc/init.d scripts have to support the following command line
+N:    arguments: start, stop, restart, force-reload.
+N:    
+N:    Refer to Debian Policy Manual section 9.3.2 (Writing the scripts) for
+N:    details.
+N:    
+N:    Severity: important, Certainty: certain
+N: 
+E: xbmc-live: init.d-script-does-not-implement-required-option /etc/init.d/xbmc-live force-reload
+W: xbmc-web-iphone-tlrobinson: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-web-iphone-tlrobinson: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-web-iphone-tlrobinson: copyright-without-copyright-notice
+N: 
+N:    The copyright file for this package does not appear to contain a
+N:    copyright notice. You should copy the copyright notice from the upstream
+N:    source (or add one of your own for a native package). A copyright notice
+N:    must consist of Copyright, Copr., or the Unicode symbol of C in a circle
+N:    followed by the years and the copyright holder. A copyright notice is
+N:    not required for a work to be copyrighted, but Debian requires the
+N:    copyright file include the authors and years of copyright, and including
+N:    a valid copyright notice is the best way to do that.
+N:    
+N:    If the package is in the public domain rather than copyrighted, be sure
+N:    to mention "public domain" in the copyright file. Please be aware that
+N:    this is very rare and not the same as a DFSG-free license. True public
+N:    domain software is generally limited to such special cases as a work
+N:    product of a United States government agency.
+N:    
+N:    Refer to http://ftp-master.debian.org/REJECT-FAQ.html for details.
+N:    
+N:    Severity: normal, Certainty: certain
+N: 
+W: xbmc-eventclients-ps3: binary-without-manpage usr/bin/xbmc-ps3remote
+W: xbmc-eventclients-ps3: copyright-lists-upstream-authors-with-dh_make-boilerplate
+W: xbmc-eventclients-ps3: copyright-contains-dh_make-todo-boilerplate

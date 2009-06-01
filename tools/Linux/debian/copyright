@@ -1,0 +1,37 @@
+This package was debianized by Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com> on
+Thu, 27 Mar 2008 11:52:48 +0100.
+
+It was downloaded from https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC/
+
+Upstream Author(s): 
+
+    Team XBMC <team@xbmc.org>
+
+Copyright: 
+
+    <Copyright (C) 2008 Team XBMC>
+
+License:
+
+    This package is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2 of the License, or (at your option) any later version.
+
+    This package is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this package; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+
+On Debian systems, the complete text of the GNU Lesser General
+Public License can be found in `/usr/share/common-licenses/LGPL'.
+
+The Debian packaging is (C) 2008, Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com> and
+is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+
+# Please also look if there are files or directories which have a
+# different copyright/license attached and list them here.
