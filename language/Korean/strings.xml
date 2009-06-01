@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 05/29/2009-->
+<!--Date of translation: 06/01/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -561,7 +561,7 @@
   <string id="723">저장 &amp; 재시작</string>
   <string id="724">잘못된 주소를 지정했음. 0과 255사이의 숫자를 사용하여</string>
   <string id="725">AAA.BBB.CCC.DDD 값 이어야 합니다.</string>
-  <string id="726">변경값이 저장되지 않음. 저장하지 않고 계속 하시겠습니까?</string>
+  <string id="726">변경이 저장되지 않음. 저장않고 계속 하시겠습니까?</string>
   <string id="727">웹 서버</string>
   <string id="728">FTP 서버</string>
   <string id="729">인터넷 시간</string>
@@ -927,9 +927,9 @@
   <string id="13141">진행할경우, XBMC 제어를 할수 없음</string>
   <string id="13142">사용안함. 이벤트 서버를 중지 하시겠습니까?</string>
   <string id="13144">애플 리모트 모드를 변경 하시겠습니까?</string>
-  <string id="13145">만약 XMBC를 제어하는데 애플 리모트를</string>
-  <string id="13146">사용한다면 설정변경이 영향을</string>
-  <string id="13147">주게됩니다. 계속 하시겠습니까?</string>
+  <string id="13145">만약 현재 XMBC 를 제어하는데 애플 리모트를</string>
+  <string id="13146">사용한다면, 이 설정의 변경은  XBMC 를 제어하는데</string>
+  <string id="13147">영향을 주게됩니다. 진행 하시겠습니까?</string>
   <string id="13150">HDD 키:</string>
   <string id="13151">HDD 온도:</string>
   <string id="13152">DVD 모델:</string>
@@ -1073,9 +1073,9 @@
   <string id="13386">시간 기반 검색 사용</string>
   <string id="13387">트랙 이름 템플릿 오른쪽</string>
   <string id="13388">사전설정</string>
-  <string id="13389">현재 시각화에 사용가능한
+  <string id="13389">이 시각화에 사용가능한
 사전설정이 없습니다</string>
-  <string id="13390">현재 시각화에 사용가능한
+  <string id="13390">이 시각화에 사용가능한
 설정이 없습니다</string>
   <string id="13391">꺼내기/읽기</string>
   <string id="13392">오디오 재생중이면 시각화 사용</string>
@@ -1233,7 +1233,7 @@
   <string id="15211">전송중...</string>
   <string id="15212">%i 초 후 전송</string>
   <string id="15213">다른 플레이어로 재생...</string>
-  <string id="15214">자동 A/V 싱크 사용</string>
+  <string id="15214">부드러운 A/V 싱크 사용</string>
   <string id="15215">미리보기에서 파일 이름 숨김</string>
   <string id="15216">파티 모드로 재생</string>
   <string id="15217">노래를 Libre.fm 에 전송</string>
@@ -1550,6 +1550,8 @@
   <string id="20252">컵 채우기 (비디오)</string>
   <string id="20300">웹 서버 디렉토리 (HTTP)</string>
   <string id="20301">웹 서버 디렉토리 (HTTPS)</string>
+  <string id="20302">폴더에 쓸수 없음:</string>
+  <string id="20303">건너뛰고 진행 하시겠습니까?</string>
   <string id="20306">알수없음. xbmc.log 의 MD5 를 BiosIDs.ini 에 추가해 주세요.</string>
   <string id="20307">보조 DNS 서버</string>
   <string id="20308">DHCP 서버:</string>
