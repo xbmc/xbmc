@@ -3272,11 +3272,6 @@ unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<
   return 0;
 }
 
-int CMusicDatabase::GetSongsCount()
-{
-  return GetSongsCount((CStdString)"");
-}
-
 int CMusicDatabase::GetSongsCount(const CStdString& strWhere)
 {
   try
@@ -3982,7 +3977,7 @@ bool CMusicDatabase::CommitTransaction()
 {
   if (CDatabase::CommitTransaction())
   { // number of items in the db has likely changed, so reset the infomanager cache
-    g_infoManager.ResetPersistentCache();
+    g_infoManager.SetLibraryBool(LIBRARY_HAS_MUSIC, GetSongsCount("") > 0);
     return true;
   }
   return false;

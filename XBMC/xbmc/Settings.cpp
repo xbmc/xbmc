@@ -1909,6 +1909,7 @@ bool CSettings::LoadProfile(int index)
     g_localizeStrings.Load(strLanguagePath);
 
     g_infoManager.ResetCache();
+    g_infoManager.ResetLibraryBools();
 
     // always reload the skin - we need it for the new language strings
     g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
