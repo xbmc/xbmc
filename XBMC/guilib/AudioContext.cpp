@@ -57,7 +57,6 @@ void CAudioContext::SetActiveDevice(int iDevice)
   /* if device is the same, no need to bother */
   if(m_iDevice == iDevice)
     return;
-    return;
 
   if (iDevice==DEFAULT_DEVICE)
   {
