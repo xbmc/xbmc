@@ -323,7 +323,7 @@ void Cocoa_GL_UnblankDisplays(void)
 
 static NSOpenGLContext* lastOwnedContext = 0;
 
-void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays, bool gl_FullScreen)
+void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays, bool gl_FullScreen, bool alwaysOnTop)
 {
   static NSView* lastView = NULL;
   static CGDirectDisplayID fullScreenDisplayID = 0;
@@ -337,7 +337,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
   // If we're already fullscreen then we must be moving to a different display.
   // Recurse to reset fullscreen mode and then continue.
   if (fs == true && lastScreen != NULL)
-    Cocoa_GL_SetFullScreen(0, 0, false, blankOtherDisplays, gl_FullScreen);
+    Cocoa_GL_SetFullScreen(0, 0, false, blankOtherDisplays, gl_FullScreen, alwaysOnTop);
   
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   
@@ -424,9 +424,15 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       [mainWindow makeKeyAndOrderFront:nil];
       
       // Own'ed, Everything is below our window...
-      [mainWindow setLevel:CGShieldingWindowLevel()];
-      // Uncomment this to debug fullscreen on a one display system
-      //[mainWindow setLevel:NSNormalWindowLevel];
+      if (alwaysOnTop)
+      {
+        // Uncomment this to debug fullscreen on a one display system
+        //[mainWindow setLevel:NSNormalWindowLevel];
+        [mainWindow setLevel:CGShieldingWindowLevel()];
+      }
+      else
+        [mainWindow setLevel:NSNormalWindowLevel];
+
 
       // ...and the original one beneath it and on the same screen.
       view_size = [lastView frame].size;
