@@ -3411,15 +3411,15 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       int controlID = atoi(params[0].c_str());
       int windowID = (params.size() == 3) ? g_buttonTranslator.TranslateWindowString(params[2].c_str()) : m_gWindowManager.GetActiveWindow();
       if (params[1] == "moveup")
-        g_graphicsContext.SendMessage(CGUIMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1));
+        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
       else if (params[1] == "movedown")
-        g_graphicsContext.SendMessage(CGUIMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1));
+        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
       else if (params[1] == "pageup")
-        g_graphicsContext.SendMessage(CGUIMessage(GUI_MSG_PAGE_UP, windowID, controlID));
+        g_graphicsContext.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
       else if (params[1] == "pagedown")
-        g_graphicsContext.SendMessage(CGUIMessage(GUI_MSG_PAGE_DOWN, windowID, controlID));
+        g_graphicsContext.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
       else if (params[1] == "click")
-        g_graphicsContext.SendMessage(CGUIMessage(GUI_MSG_CLICKED, controlID, windowID));
+        g_graphicsContext.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
     }
   }
   else if (execute.Equals("sendclick"))
