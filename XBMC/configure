@@ -10199,7 +10199,7 @@ $as_echo "$as_me: $external_libdts_disabled" >&6;}
 fi
 
 # External libfaad
-if test "$use_external_libfaad" = "yes"; then
+if test "$use_external_libraries" = "yes" || test "$use_external_libfaad" = "yes"; then
 
 { $as_echo "$as_me:$LINENO: checking for main in -lfaad" >&5
 $as_echo_n "checking for main in -lfaad... " >&6; }
