@@ -71,6 +71,7 @@ external_libwavpack_enabled="== Use of external libwavpack enabled. =="
 external_libwavpack_disabled="== Use of external libwavpack disabled. =="
 external_python_enabled="== Use of external python enabled. =="
 external_python_disabled="== Use of external python disabled. =="
+ffmpeg_vdpau_not_supported="== External ffmpeg doesn't support VDPAU. VDPAU support disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -498,6 +499,10 @@ if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"
   AC_MSG_NOTICE($external_ffmpeg_enabled)
   USE_EXTERNAL_FFMPEG=1
   AC_DEFINE([USE_EXTERNAL_FFMPEG], [1], [Whether to use external FFmpeg libraries.])
+
+  # Disable vdpau support if external libavcodec doesn't have it
+  AC_CHECK_LIB([avcodec], [ff_vdpau_vc1_decode_picture],,
+    use_vdpau=no;AC_MSG_RESULT($ffmpeg_vdpau_not_supported))
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
