@@ -134,15 +134,17 @@ DWORD CNullDirectSound::GetSpace()
 {
   Update();
 
-  return (int)BUFFER - m_packetsSent;
+  if(BUFFER > m_packetsSent)
+    return (int)BUFFER - m_packetsSent;
+  else
+    return 0;
 }
 
 //***********************************************************************************************
 DWORD CNullDirectSound::AddPackets(const void* data, DWORD len)
 {
-  if (m_paused)
+  if (m_paused || GetSpace() == 0)
     return 0;
-  Update();
 
   int add = ( len / GetChunkLen() ) * GetChunkLen();
   m_packetsSent += add;
