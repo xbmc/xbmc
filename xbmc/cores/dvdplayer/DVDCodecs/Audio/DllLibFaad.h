@@ -37,20 +37,22 @@ class DllLibFaadInterface
 {
 public:
     virtual ~DllLibFaadInterface() {}
-    virtual int8_t* NeAACDecGetErrorMessage(uint8_t errcode)=0;
+    virtual char* NeAACDecGetErrorMessage(unsigned char errcode)=0;
     virtual uint32_t NeAACDecGetCapabilities(void)=0;
     virtual NeAACDecHandle NeAACDecOpen(void)=0;
     virtual NeAACDecConfigurationPtr NeAACDecGetCurrentConfiguration(NeAACDecHandle hDecoder)=0;
     virtual uint8_t NeAACDecSetConfiguration(NeAACDecHandle hDecoder,
                                                    NeAACDecConfigurationPtr config)=0;
-    virtual int32_t NeAACDecInit(NeAACDecHandle hDecoder,
-                              uint8_t *buffer,
-                              uint32_t buffer_size,
-                              uint32_t *samplerate,
-                              uint8_t *channels)=0;
-    virtual int8_t NeAACDecInit2(NeAACDecHandle hDecoder, unsigned char *pBuffer,
-                               uint32_t SizeOfDecoderSpecificInfo,
-                               uint32_t *samplerate, uint8_t *channels)=0;
+    virtual long NeAACDecInit(NeAACDecHandle hDecoder,
+                              unsigned char *buffer,
+                              unsigned long buffer_size,
+                              unsigned long *samplerate,
+                              unsigned char *channels)=0;
+    virtual char NeAACDecInit2(NeAACDecHandle hDecoder,
+                               unsigned char *pBuffer,
+                               unsigned long SizeOfDecoderSpecificInfo,
+                               unsigned long *samplerate,
+                               unsigned char *channels)=0;
     virtual void NeAACDecPostSeekReset(NeAACDecHandle hDecoder, int32_t frame)=0;
     virtual void NeAACDecClose(NeAACDecHandle hDecoder)=0;
     virtual void* NeAACDecDecode(NeAACDecHandle hDecoder,
@@ -76,7 +78,7 @@ class DllLibFaad : public DllDynamic, DllLibFaadInterface
 {
 public:
     virtual ~DllLibFaad() {}
-    virtual int8_t* NeAACDecGetErrorMessage(uint8_t errcode)
+    virtual char* NeAACDecGetErrorMessage(unsigned char errcode)
         { return ::NeAACDecGetErrorMessage(errcode); }
     virtual uint32_t NeAACDecGetCapabilities(void)
         { return ::NeAACDecGetCapabilities(); }
@@ -87,15 +89,17 @@ public:
     virtual uint8_t NeAACDecSetConfiguration(NeAACDecHandle hDecoder,
                                                    NeAACDecConfigurationPtr config)
         { return ::NeAACDecSetConfiguration(hDecoder, config); }
-    virtual int32_t NeAACDecInit(NeAACDecHandle hDecoder,
-                              uint8_t *buffer,
-                              uint32_t buffer_size,
-                              uint32_t *samplerate,
-                              uint8_t *channels)
+    virtual long NeAACDecInit(NeAACDecHandle hDecoder,
+                              unsigned char *buffer,
+                              unsigned long buffer_size,
+                              unsigned long *samplerate,
+                              unsigned char *channels)
         { return ::NeAACDecInit(hDecoder, buffer, buffer_size, samplerate, channels); }
-    virtual int8_t NeAACDecInit2(NeAACDecHandle hDecoder, unsigned char *pBuffer,
-                               uint32_t SizeOfDecoderSpecificInfo,
-                               uint32_t *samplerate, uint8_t *channels)
+    virtual char NeAACDecInit2(NeAACDecHandle hDecoder,
+                               unsigned char *pBuffer,
+                               unsigned long SizeOfDecoderSpecificInfo,
+                               unsigned long *samplerate,
+                               unsigned char *channels)
         { return ::NeAACDecInit2(hDecoder, pBuffer, SizeOfDecoderSpecificInfo, samplerate, channels); }
     virtual void NeAACDecPostSeekReset(NeAACDecHandle hDecoder, int32_t frame)
         { return ::NeAACDecPostSeekReset(hDecoder, frame); }
