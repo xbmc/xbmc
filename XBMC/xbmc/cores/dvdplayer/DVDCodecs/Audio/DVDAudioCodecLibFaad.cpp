@@ -54,11 +54,7 @@ bool CDVDAudioCodecLibFaad::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
   {
     m_bRawAACStream = false;
 
-    #if (defined USE_EXTERNAL_LIBFAAD)
-    uint32_t samplerate;
-    #else
     unsigned long samplerate;
-    #endif
     unsigned char channels;
 
     int res = m_dll.faacDecInit2(m_pHandle, (unsigned char*)hints.extradata, hints.extrasize, &samplerate, &channels);
@@ -130,11 +126,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
     // initialize decoder if needed
     if (!m_bInitializedDecoder)
     {
-      #if (defined USE_EXTERNAL_LIBFAAD)
-      uint32_t samplerate;
-      #else
       unsigned long samplerate;
-      #endif
       unsigned char channels;
 
       int res = m_dll.faacDecInit(m_pHandle, m_InputBuffer, m_InputBufferSize, &samplerate, &channels);
@@ -158,11 +150,7 @@ int CDVDAudioCodecLibFaad::Decode(BYTE* pData, int iSize)
 
   if (m_frameInfo.error)
   {
-    #if (defined USE_EXTERNAL_LIBFAAD)
-    int8_t* strError = m_dll.faacDecGetErrorMessage(m_frameInfo.error);
-    #else
     char* strError = m_dll.faacDecGetErrorMessage(m_frameInfo.error);
-    #endif
     m_dll.faacDecPostSeekReset(m_pHandle, 0);
     CLog::Log(LOGERROR, "CDVDAudioCodecLibFaad() : %s", strError);
     m_InputBufferSize = 0;
