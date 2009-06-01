@@ -1565,7 +1565,8 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     SDL_ShowCursor(SDL_ENABLE);
 #endif
 #if defined(__APPLE__)
-    Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+    Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays,
+      g_advancedSettings.m_osx_GLFullScreen, g_advancedSettings.m_alwaysOnTop);
 #elif defined(_WIN32PC)
     DEVMODE settings;
     settings.dmSize = sizeof(settings);
@@ -1598,7 +1599,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     Cocoa_GL_SetFullScreen(
       g_settings.m_ResInfo[m_Resolution].iWidth,
       g_settings.m_ResInfo[m_Resolution].iHeight,
-      false, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+      false, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen, g_advancedSettings.m_alwaysOnTop);
 #elif defined(_WIN32PC)
     ChangeDisplaySettings(NULL, 0);
 #else

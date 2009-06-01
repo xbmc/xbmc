@@ -336,8 +336,13 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_cpuTempCmd = "";
   g_advancedSettings.m_gpuTempCmd = "";
-
+#ifdef __APPLE__
+  // default for osx is fullscreen always on top
+  g_advancedSettings.m_alwaysOnTop = true;
+#else
+  // default for windows is not always on top
   g_advancedSettings.m_alwaysOnTop = false;
+#endif
 }
 
 CSettings::~CSettings(void)
