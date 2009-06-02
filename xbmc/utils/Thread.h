@@ -35,9 +35,6 @@
 #include "PlatformInclude.h"
 #endif
 #include "Event.h"
-#ifdef __APPLE__
-#include <mach/mach.h>
-#endif
 
 class IRunnable
 {
