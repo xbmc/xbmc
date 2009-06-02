@@ -418,7 +418,7 @@ endif
 install-datas:
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find language media screensavers scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*win32\.vis|.*osx\.vis" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@find language media screensavers scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*win32\.vis|.*osx\.vis" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Arch dependent files
 	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Skins
