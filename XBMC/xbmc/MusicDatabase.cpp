@@ -216,8 +216,6 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     CStdStringArray vecGenres; CStdString extraGenres;
     SplitString(song.strGenre, vecGenres, extraGenres);
 
-    BeginTransaction();
-    
     // add the primary artist/genre
     // SplitString returns >= 1 so no worries referencing the first item here
     long lArtistId = AddArtist(vecArtists[0]);
@@ -251,10 +249,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
                     lAlbumId, crc, song.strTitle.c_str());
       
       if (!m_pDS->query(strSQL.c_str()))
-      {
-        CommitTransaction();
         return;
-      }
       
       if (m_pDS->num_rows() != 0)
       {
@@ -306,7 +301,6 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
       mysong.idSong = lSongId;
       AddKaraokeData( mysong );
     }
-    CommitTransaction();
   }
   catch (...)
   {
