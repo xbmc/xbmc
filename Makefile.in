@@ -396,21 +396,21 @@ else
 endif
 
 install-bin: xbmc.bin # developement convenience target
-	sudo install -D -m 0755 xbmc.bin $(prefix)/share/xbmc
+	sudo install -D xbmc.bin $(prefix)/share/xbmc
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
 else
 install: install-datas install-web
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
-	@install -D -m 0755 xbmc.bin $(prefix)/share/xbmc/xbmc.bin
-	@install -D -m 0755 tools/Linux/xbmc.sh $(prefix)/bin/xbmc
-	@install -D -m 0755 tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
-	@install -D tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
-	@install -D tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
+	@install -D xbmc.bin $(prefix)/share/xbmc/xbmc.bin
+	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
+	@install -D tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
+	@install -D -m 0644 tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
+	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
 	@echo "Copying support and legal files,,,"
 	@for FILE in `ls README.linux LICENSE.GPL *.txt xbmc-xrandr`; do \
-		install -D "$$FILE" $(prefix)/share/xbmc/; done
+		install -D -m 0644 "$$FILE" $(prefix)/share/xbmc/; done
 	@echo "Done!"
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
@@ -418,11 +418,11 @@ endif
 install-datas:
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find language media screensavers scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*win32\.vis|.*osx\.vis" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@find language media screensavers scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*win32\.vis|.*osx\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Arch dependent files
 	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Skins
-	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
+	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
 
 install-livedatas:
 	@echo "Install Live CD datas in $(prefix) ..."
