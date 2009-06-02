@@ -269,7 +269,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   uint8_t* buf = m_lastblock;
   iNavresult = -1;
 
-  if(m_holdmode == 1)
+  if(m_holdmode == HOLDMODE_HELD)
     return NAVRESULT_HOLD;
 
   try
@@ -308,7 +308,7 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
       {
         // We have received a regular block of the currently playing MPEG stream.
         // buf contains the data and len its length (obviously!) (which is always 2048 bytes btw)
-        m_holdmode = 0;
+        m_holdmode = HOLDMODE_NONE;
         memcpy(dest_buffer, buf, len);
         *read = len;
         iNavresult = NAVRESULT_DATA;
@@ -792,7 +792,7 @@ void CDVDInputStreamNavigator::SkipWait()
 void CDVDInputStreamNavigator::SkipHold()
 {
   if(IsHeld())
-    m_holdmode = 2;
+    m_holdmode = HOLDMODE_SKIP;
 }
 
 bool CDVDInputStreamNavigator::IsHeld()
