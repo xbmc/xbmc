@@ -49,7 +49,7 @@ CDVDClock::CDVDClock()
   m_bReset = true;
   m_iDisc = 0;
   m_maxspeedadjust = 0.0;
-  m_playingvideo = false;
+  m_speedadjust = false;
 }
 
 CDVDClock::~CDVDClock()
@@ -200,7 +200,7 @@ double CDVDClock::GetMaxSpeedAdjust(bool playingvideo)
 {
   CSingleLock lock(m_speedsection);
 
-  m_playingvideo = playingvideo;
+  m_speedadjust = playingvideo;
   return m_maxspeedadjust;
 }
 
@@ -209,7 +209,7 @@ bool CDVDClock::SetMaxSpeedAdjust(double speed)
   CSingleLock lock(m_speedsection);
 
   m_maxspeedadjust = speed;
-  return m_playingvideo;
+  return m_speedadjust;
 }
 
 void CDVDClock::UpdateFramerate(double fps)
@@ -218,7 +218,7 @@ void CDVDClock::UpdateFramerate(double fps)
   if(fps == 0.0)
   {
     CSingleLock lock(m_speedsection);
-    m_playingvideo = false;
+    m_speedadjust = false;
     return;
   }
 
@@ -229,7 +229,7 @@ void CDVDClock::UpdateFramerate(double fps)
   {
     CSingleLock lock(m_speedsection);
     
-    m_playingvideo = true;
+    m_speedadjust = true;
     
     double weight = (double)rate / (double)MathUtils::round_int(fps);
 
