@@ -27,17 +27,20 @@
 #if (defined USE_EXTERNAL_PYTHON)
   #if (defined HAVE_LIBPYTHON2_6)
     #include <python2.6/Python.h>
+    #include <python2.6/osdefs.h>
   #elif (defined HAVE_LIBPYTHON2_5)
     #include <python2.5/Python.h>
+    #include <python2.5/osdefs.h>
   #elif (defined HAVE_LIBPYTHON2_4)
     #include <python2.4/Python.h>
+    #include <python2.4/osdefs.h>
   #else
     #error "Could not determine version of Python to use."
   #endif
 #else
   #include "Python/Include/Python.h"
+  #include "Python/Include/osdefs.h"
 #endif
-#include "Python/Include/osdefs.h"
 #include "XBPythonDll.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "GUIWindowManager.h"
@@ -168,11 +171,7 @@ void XBPyThread::Process()
   strcpy(sourcedir, _P(source));
 
   char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
-#if (defined __APPLE__) || (defined _WIN32PC)
   *p = PY_PATH_SEP;
-#else
-  *p = ':';
-#endif
   *++p = 0;
 
   strcpy(path, sourcedir);
