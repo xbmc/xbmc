@@ -5346,8 +5346,10 @@ void CApplication::ProcessSlow()
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
   if(IsPaused() != m_bIsPaused)
   {
+#ifdef HAS_LCD
     if(g_guiSettings.GetBool("lcd.enableonpaused"))
       DimLCDOnPlayback(m_bIsPaused);
+#endif
     m_bIsPaused = IsPaused();
   }
 
