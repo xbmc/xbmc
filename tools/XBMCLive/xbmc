@@ -1,4 +1,17 @@
-#!/bin/bash
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          xbmc
+# Required-Start:    $local_fs $network $remote_fs
+# Required-Stop:     $local_fs $network $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: start and stop XBMC Live
+# Description: XBMC Live is the XBMC media center software bundled with an
+#              embedded operating-system, for that set-top-box felling.
+### END INIT INFO
+
+# Do NOT "set -e"
+
 #/etc/init.d/xbmc
 
 . /lib/lsb/init-functions
@@ -30,8 +43,8 @@ if [ "$XBMC_BOOTTORAM" != "" ]; then
 	eject /dev/scd2 &> /dev/null
 fi
 
-case "$1" in
-start)
+do_start()
+{
 	log_action_begin_msg "Configuring system and starting XBMC"
 	INSTALL="$( echo $XBMC_PARAMS | grep "install" )"
 	if [ "$INSTALL" != "" ]; then
@@ -105,12 +118,27 @@ start)
 		fi
 	fi
 	log_action_end_msg 0
+}
+
+do_stop() {
+	killall Xorg xbmc
+}
+
+case "$1" in
+start)
+	do_start
 	;;
 stop)
-	killall Xorg xbmc
+	do_stop
 	;;
-
+restart|force-reload)
+	do_stop
+	do_start
+	;;
+*)
+	echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
+	exit 3
+	;;
 esac
 
 exit 0
-
