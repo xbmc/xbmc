@@ -404,12 +404,13 @@ else
 install: install-datas install-web
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
 	@install -D xbmc.bin $(prefix)/share/xbmc/xbmc.bin
+	@install -D xbmc-xrandr $(prefix)/share/xbmc/xbmc-xrandr
 	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
 	@install -D tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
 	@install -D -m 0644 tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
 	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
 	@echo "Copying support and legal files,,,"
-	@for FILE in `ls README.linux LICENSE.GPL *.txt xbmc-xrandr`; do \
+	@for FILE in `ls README.linux LICENSE.GPL *.txt`; do \
 		install -D -m 0644 "$$FILE" $(prefix)/share/xbmc/; done
 	@echo "Done!"
 	@echo "You can run XBMC with the command 'xbmc'"
