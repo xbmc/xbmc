@@ -83,6 +83,6 @@ protected:
   static CCriticalSection m_systemsection;
 
   double           m_maxspeedadjust;
-  bool             m_playingvideo;
+  bool             m_speedadjust;
   CCriticalSection m_speedsection;
 };
