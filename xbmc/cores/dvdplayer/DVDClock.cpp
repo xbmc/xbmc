@@ -225,12 +225,12 @@ void CDVDClock::UpdateFramerate(double fps)
   //check if the videoreferenceclock is running, will return -1 if not
   int rate = g_VideoReferenceClock.GetRefreshRate();
 
-  // lock section after checking refreshrate as it locks things internally too
-  CSingleLock lock(m_speedsection);
-  m_playingvideo = true;
-
   if (rate > 0)
   {
+    CSingleLock lock(m_speedsection);
+    
+    m_playingvideo = true;
+    
     double weight = (double)rate / (double)MathUtils::round_int(fps);
 
     //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
