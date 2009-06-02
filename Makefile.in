@@ -434,7 +434,7 @@ install-livedatas:
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
 	@unzip -oq web/Project_Mayhem_III_webserver_v1.0.zip \
-		-d $(prefix)/share/xbmc/web
+		-d $(prefix)/share/xbmc/web -x "*/Thumbs.db"
 
 uninstall:
 	@echo "Removing XBMC..."
