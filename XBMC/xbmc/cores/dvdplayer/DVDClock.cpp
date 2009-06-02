@@ -196,14 +196,6 @@ double CDVDClock::DistanceToDisc()
   return GetClock() - m_iDisc;
 }
 
-double CDVDClock::GetMaxSpeedAdjust(bool playingvideo)
-{
-  CSingleLock lock(m_speedsection);
-
-  m_speedadjust = playingvideo;
-  return m_maxspeedadjust;
-}
-
 bool CDVDClock::SetMaxSpeedAdjust(double speed)
 {
   CSingleLock lock(m_speedsection);
