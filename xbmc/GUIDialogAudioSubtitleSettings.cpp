@@ -302,15 +302,6 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
       strPath = share.strPath;
       CUtil::AddSlashAtEnd(strPath);
     }
-    else // add source pointing to movie path
-    {
-      CMediaSource share;
-      share.strName = g_localizeStrings.Get(20338);
-      CUtil::GetParentPath(strPath,share.strPath);
-      g_settings.m_videoSources.push_back(share);
-      strPath = share.strPath;
-      CUtil::AddSlashAtEnd(strPath);
-    }
     if (CGUIDialogFileBrowser::ShowAndGetFile(g_settings.m_videoSources,strMask,g_localizeStrings.Get(293),strPath,false,true)) // "subtitles"
     {
       CStdString strExt;
