@@ -1182,8 +1182,8 @@ void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, 
 
   // check fanart
   CFileItem item2(artistPath, true);
-  item.GetMusicInfoTag()->SetArtist(artist.strArtist);
+  item2.GetMusicInfoTag()->SetArtist(artistName);
   if (!CFile::Exists(item2.GetCachedFanart()))
-    if (!artist.fanart.m_xml.IsEmpty() && artist.fanart.DownloadImage(item2.GetCachedFanart()))
+    if (!artist.fanart.m_xml.IsEmpty() && !artist.fanart.DownloadImage(item2.GetCachedFanart()))
       CLog::Log(LOGERROR, "Failed to download fanart %s to %s", artist.fanart.GetImageURL().c_str(), item2.GetCachedFanart().c_str());
 }
