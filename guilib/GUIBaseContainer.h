@@ -149,6 +149,7 @@ protected:
   CStdString m_label;
 
   bool m_staticContent;
+  DWORD m_staticUpdateTime;
   std::vector<CGUIListItemPtr> m_staticItems;
   bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
                     // us to make sure we don't tell the infomanager that we've been moving when
