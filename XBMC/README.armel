@@ -111,20 +111,24 @@ If you dont succeed, or want to do it manually, follow the next step instead.
 	2.4 Setup Scratchbox:
 	-----------------------------------------------------------------------------
 	
+	Before setting up your target, you need a rootstrap. Obtain the latest rootstrap from:
+		http://linux.onarm.com/download/images/generic-2/
+	You want to download the file 'beagleboard-<date>-rootstrap.tar.gz'.
+
 	Do this every time you want to access scratchbox:
 		$ /scratchbox/login
 	
-	Time to setup your environment:
+	Time to setup your target:
 		> sb-menu
 	
 	A GUI will appear for the setup procedure.
 
 	- Choose Setup
 	- Create a NEW target, give it any name
-	- Select the compiler you downloaded (arm-linux-cs2007q1-21)
+	- Select the compiler you downloaded (arm-linux-cs2007q3-51sb3)
 	- Select all development kits listed by highlighting each one and pressing enter, then Done and enter
 	- Select CPU transparency (qemu-arm-cvs-m)
-	- No to rootstrap
+	- Yes to rootstrap. Locate the previously downloaded rootstrap to install.
 	- Yes to install files
 	- Only select DEVKIT and ETC. Remove all other files in list, then continue
 	- And finally Yes to selecting target.
@@ -157,6 +161,12 @@ There is a simple shell script that downloads a list of packages that are requir
   > ./install-pkgs.sh
   
 Please check the output files for any possible errors that may have occured.
+
+Although not using OpenGL, still need to header files in place so that certain files can build successfully.
+These are usually standard include files so use any.
+Easiest way is to copy the folder /usr/include/GL from your linux machine, into your scratchbox target:
+/scratchbox/users/<name>/targets/<targetname>/usr/include/
+If you dont have these header files, get them via installing your graphics card drivers.
 
 
 -----------------------------------------------------------------------------
