@@ -5,6 +5,7 @@ AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile adplugdb/Makefile test/Makef
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 AM_PROG_LIBTOOL
+AC_SUBST(LIBTOOL_DEPS)
 AC_LANG(C++)
 
 # Check for a sane C/C++ build environment.
