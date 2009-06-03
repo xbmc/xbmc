@@ -9,7 +9,7 @@ EXTRA_DIST = adplugdb.1.in
 MOSTLYCLEANFILES = stamp-vti libadplug.info libadplug.info-1 \
 	libadplug.info-2
 
-CLEANFILES = libadplug.cps libadplug.fns libadplug.vrs version.texi
+CLEANFILES = libadplug.cps libadplug.fns libadplug.vrs
 
 DISTCLEANFILES = adplugdb.1
 
