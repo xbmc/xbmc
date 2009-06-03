@@ -1,9 +1,10 @@
 #! /bin/sh
 # depcomp - compile a program generating dependencies as side-effects
 
-scriptversion=2005-02-09.22
+scriptversion=2007-03-29.01
 
-# Copyright (C) 1999, 2000, 2003, 2004, 2005 Free Software Foundation, Inc.
+# Copyright (C) 1999, 2000, 2003, 2004, 2005, 2006, 2007 Free Software
+# Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,8 +18,8 @@ scriptversion=2005-02-09.22
 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
 
 # As a special exception to the GNU General Public License, if you
 # distribute this file as part of a program that contains a
@@ -91,7 +92,20 @@ gcc3)
 ## gcc 3 implements dependency tracking that does exactly what
 ## we want.  Yay!  Note: for some reason libtool 1.4 doesn't like
 ## it if -MD -MP comes after the -MF stuff.  Hmm.
-  "$@" -MT "$object" -MD -MP -MF "$tmpdepfile"
+## Unfortunately, FreeBSD c89 acceptance of flags depends upon
+## the command line argument order; so add the flags where they
+## appear in depend2.am.  Note that the slowdown incurred here
+## affects only configure: in makefiles, %FASTDEP% shortcuts this.
+  for arg
+  do
+    case $arg in
+    -c) set fnord "$@" -MT "$object" -MD -MP -MF "$tmpdepfile" "$arg" ;;
+    *)  set fnord "$@" "$arg" ;;
+    esac
+    shift # fnord
+    shift # $arg
+  done
+  "$@"
   stat=$?
   if test $stat -eq 0; then :
   else
@@ -201,34 +215,39 @@ aix)
   # current directory.  Also, the AIX compiler puts `$object:' at the
   # start of each line; $object doesn't have directory information.
   # Version 6 uses the directory in both cases.
-  stripped=`echo "$object" | sed 's/\(.*\)\..*$/\1/'`
-  tmpdepfile="$stripped.u"
+  dir=`echo "$object" | sed -e 's|/[^/]*$|/|'`
+  test "x$dir" = "x$object" && dir=
+  base=`echo "$object" | sed -e 's|^.*/||' -e 's/\.o$//' -e 's/\.lo$//'`
   if test "$libtool" = yes; then
+    tmpdepfile1=$dir$base.u
+    tmpdepfile2=$base.u
+    tmpdepfile3=$dir.libs/$base.u
     "$@" -Wc,-M
   else
+    tmpdepfile1=$dir$base.u
+    tmpdepfile2=$dir$base.u
+    tmpdepfile3=$dir$base.u
     "$@" -M
   fi
   stat=$?
 
-  if test -f "$tmpdepfile"; then :
-  else
-    stripped=`echo "$stripped" | sed 's,^.*/,,'`
-    tmpdepfile="$stripped.u"
-  fi
-
   if test $stat -eq 0; then :
   else
-    rm -f "$tmpdepfile"
+    rm -f "$tmpdepfile1" "$tmpdepfile2" "$tmpdepfile3"
     exit $stat
   fi
 
+  for tmpdepfile in "$tmpdepfile1" "$tmpdepfile2" "$tmpdepfile3"
+  do
+    test -f "$tmpdepfile" && break
+  done
   if test -f "$tmpdepfile"; then
-    outname="$stripped.o"
     # Each line is of the form `foo.o: dependent.h'.
     # Do two passes, one to just change these to
     # `$object: dependent.h' and one to simply `dependent.h:'.
-    sed -e "s,^$outname:,$object :," < "$tmpdepfile" > "$depfile"
-    sed -e "s,^$outname: \(.*\)$,\1:," < "$tmpdepfile" >> "$depfile"
+    sed -e "s,^.*\.[a-z]*:,$object:," < "$tmpdepfile" > "$depfile"
+    # That's a tab and a space in the [].
+    sed -e 's,^.*\.[a-z]*:[	 ]*,,' -e 's,$,:,' < "$tmpdepfile" >> "$depfile"
   else
     # The sourcefile does not contain any dependencies, so just
     # store a dummy comment line, to avoid errors with the Makefile
@@ -276,6 +295,46 @@ icc)
   rm -f "$tmpdepfile"
   ;;
 
+hp2)
+  # The "hp" stanza above does not work with aCC (C++) and HP's ia64
+  # compilers, which have integrated preprocessors.  The correct option
+  # to use with these is +Maked; it writes dependencies to a file named
+  # 'foo.d', which lands next to the object file, wherever that
+  # happens to be.
+  # Much of this is similar to the tru64 case; see comments there.
+  dir=`echo "$object" | sed -e 's|/[^/]*$|/|'`
+  test "x$dir" = "x$object" && dir=
+  base=`echo "$object" | sed -e 's|^.*/||' -e 's/\.o$//' -e 's/\.lo$//'`
+  if test "$libtool" = yes; then
+    tmpdepfile1=$dir$base.d
+    tmpdepfile2=$dir.libs/$base.d
+    "$@" -Wc,+Maked
+  else
+    tmpdepfile1=$dir$base.d
+    tmpdepfile2=$dir$base.d
+    "$@" +Maked
+  fi
+  stat=$?
+  if test $stat -eq 0; then :
+  else
+     rm -f "$tmpdepfile1" "$tmpdepfile2"
+     exit $stat
+  fi
+
+  for tmpdepfile in "$tmpdepfile1" "$tmpdepfile2"
+  do
+    test -f "$tmpdepfile" && break
+  done
+  if test -f "$tmpdepfile"; then
+    sed -e "s,^.*\.[a-z]*:,$object:," "$tmpdepfile" > "$depfile"
+    # Add `dependent.h:' lines.
+    sed -ne '2,${; s/^ *//; s/ \\*$//; s/$/:/; p;}' "$tmpdepfile" >> "$depfile"
+  else
+    echo "#dummy" > "$depfile"
+  fi
+  rm -f "$tmpdepfile" "$tmpdepfile2"
+  ;;
+
 tru64)
    # The Tru64 compiler uses -MD to generate dependencies as a side
    # effect.  `cc -MD -o foo.o ...' puts the dependencies into `foo.o.d'.
@@ -288,13 +347,13 @@ tru64)
 
    if test "$libtool" = yes; then
       # With Tru64 cc, shared objects can also be used to make a
-      # static library.  This mecanism is used in libtool 1.4 series to
+      # static library.  This mechanism is used in libtool 1.4 series to
       # handle both shared and static libraries in a single compilation.
       # With libtool 1.4, dependencies were output in $dir.libs/$base.lo.d.
       #
       # With libtool 1.5 this exception was removed, and libtool now
       # generates 2 separate objects for the 2 libraries.  These two
-      # compilations output dependencies in in $dir.libs/$base.o.d and
+      # compilations output dependencies in $dir.libs/$base.o.d and
       # in $dir$base.o.d.  We have to check for both files, because
       # one of the two compilations can be disabled.  We should prefer
       # $dir$base.o.d over $dir.libs/$base.o.d because the latter is
@@ -467,7 +526,8 @@ cpp)
   done
 
   "$@" -E |
-    sed -n '/^# [0-9][0-9]* "\([^"]*\)".*/ s:: \1 \\:p' |
+    sed -n -e '/^# [0-9][0-9]* "\([^"]*\)".*/ s:: \1 \\:p' \
+       -e '/^#line [0-9][0-9]* "\([^"]*\)".*/ s:: \1 \\:p' |
     sed '$ s: \\$::' > "$tmpdepfile"
   rm -f "$depfile"
   echo "$object : \\" > "$depfile"

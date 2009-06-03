@@ -1,9 +1,9 @@
 #! /bin/sh
 # Common stub for a few missing GNU programs while installing.
 
-scriptversion=2005-02-08.22
+scriptversion=2006-05-10.23
 
-# Copyright (C) 1996, 1997, 1999, 2000, 2002, 2003, 2004, 2005
+# Copyright (C) 1996, 1997, 1999, 2000, 2002, 2003, 2004, 2005, 2006
 #   Free Software Foundation, Inc.
 # Originally by Fran,cois Pinard <pinard@iro.umontreal.ca>, 1996.
 
@@ -19,8 +19,8 @@ scriptversion=2005-02-08.22
 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
 
 # As a special exception to the GNU General Public License, if you
 # distribute this file as part of a program that contains a
@@ -33,6 +33,8 @@ if test $# -eq 0; then
 fi
 
 run=:
+sed_output='s/.* --output[ =]\([^ ]*\).*/\1/p'
+sed_minuso='s/.* -o \([^ ]*\).*/\1/p'
 
 # In the cases where this matters, `missing' is being run in the
 # srcdir already.
@@ -44,7 +46,7 @@ fi
 
 msg="missing on your system"
 
-case "$1" in
+case $1 in
 --run)
   # Try to run requested program, and just exit if it succeeds.
   run=
@@ -77,6 +79,7 @@ Supported PROGRAM values:
   aclocal      touch file \`aclocal.m4'
   autoconf     touch file \`configure'
   autoheader   touch file \`config.h.in'
+  autom4te     touch the output file, or create a stub one
   automake     touch all \`Makefile.in' files
   bison        create \`y.tab.[ch]', if possible, from existing .[ch]
   flex         create \`lex.yy.c', if possible, from existing .c
@@ -106,7 +109,7 @@ esac
 # Now exit if we have it, but it failed.  Also exit now if we
 # don't have it and --version was passed (most likely to detect
 # the program).
-case "$1" in
+case $1 in
   lex|yacc)
     # Not GNU programs, they don't have --version.
     ;;
@@ -135,7 +138,7 @@ esac
 
 # If it does not exist, or fails to run (possibly an outdated version),
 # try to emulate it.
-case "$1" in
+case $1 in
   aclocal*)
     echo 1>&2 "\
 WARNING: \`$1' is $msg.  You should only need it if
@@ -164,7 +167,7 @@ WARNING: \`$1' is $msg.  You should only need it if
     test -z "$files" && files="config.h"
     touch_files=
     for f in $files; do
-      case "$f" in
+      case $f in
       *:*) touch_files="$touch_files "`echo "$f" |
 				       sed -e 's/^[^:]*://' -e 's/:.*//'`;;
       *) touch_files="$touch_files $f.in";;
@@ -192,8 +195,8 @@ WARNING: \`$1' is needed, but is $msg.
          You can get \`$1' as part of \`Autoconf' from any GNU
          archive site."
 
-    file=`echo "$*" | sed -n 's/.*--output[ =]*\([^ ]*\).*/\1/p'`
-    test -z "$file" && file=`echo "$*" | sed -n 's/.*-o[ ]*\([^ ]*\).*/\1/p'`
+    file=`echo "$*" | sed -n "$sed_output"`
+    test -z "$file" && file=`echo "$*" | sed -n "$sed_minuso"`
     if test -f "$file"; then
 	touch $file
     else
@@ -214,25 +217,25 @@ WARNING: \`$1' $msg.  You should only need it if
          in order for those modifications to take effect.  You can get
          \`Bison' from any GNU archive site."
     rm -f y.tab.c y.tab.h
-    if [ $# -ne 1 ]; then
+    if test $# -ne 1; then
         eval LASTARG="\${$#}"
-	case "$LASTARG" in
+	case $LASTARG in
 	*.y)
 	    SRCFILE=`echo "$LASTARG" | sed 's/y$/c/'`
-	    if [ -f "$SRCFILE" ]; then
+	    if test -f "$SRCFILE"; then
 	         cp "$SRCFILE" y.tab.c
 	    fi
 	    SRCFILE=`echo "$LASTARG" | sed 's/y$/h/'`
-	    if [ -f "$SRCFILE" ]; then
+	    if test -f "$SRCFILE"; then
 	         cp "$SRCFILE" y.tab.h
 	    fi
 	  ;;
 	esac
     fi
-    if [ ! -f y.tab.h ]; then
+    if test ! -f y.tab.h; then
 	echo >y.tab.h
     fi
-    if [ ! -f y.tab.c ]; then
+    if test ! -f y.tab.c; then
 	echo 'main() { return 0; }' >y.tab.c
     fi
     ;;
@@ -244,18 +247,18 @@ WARNING: \`$1' is $msg.  You should only need it if
          in order for those modifications to take effect.  You can get
          \`Flex' from any GNU archive site."
     rm -f lex.yy.c
-    if [ $# -ne 1 ]; then
+    if test $# -ne 1; then
         eval LASTARG="\${$#}"
-	case "$LASTARG" in
+	case $LASTARG in
 	*.l)
 	    SRCFILE=`echo "$LASTARG" | sed 's/l$/c/'`
-	    if [ -f "$SRCFILE" ]; then
+	    if test -f "$SRCFILE"; then
 	         cp "$SRCFILE" lex.yy.c
 	    fi
 	  ;;
 	esac
     fi
-    if [ ! -f lex.yy.c ]; then
+    if test ! -f lex.yy.c; then
 	echo 'main() { return 0; }' >lex.yy.c
     fi
     ;;
@@ -267,11 +270,9 @@ WARNING: \`$1' is $msg.  You should only need it if
 	 \`Help2man' package in order for those modifications to take
 	 effect.  You can get \`Help2man' from any GNU archive site."
 
-    file=`echo "$*" | sed -n 's/.*-o \([^ ]*\).*/\1/p'`
-    if test -z "$file"; then
-	file=`echo "$*" | sed -n 's/.*--output=\([^ ]*\).*/\1/p'`
-    fi
-    if [ -f "$file" ]; then
+    file=`echo "$*" | sed -n "$sed_output"`
+    test -z "$file" && file=`echo "$*" | sed -n "$sed_minuso"`
+    if test -f "$file"; then
 	touch $file
     else
 	test -z "$file" || exec >$file
@@ -289,14 +290,23 @@ WARNING: \`$1' is $msg.  You should only need it if
          DU, IRIX).  You might want to install the \`Texinfo' package or
          the \`GNU make' package.  Grab either from any GNU archive site."
     # The file to touch is that specified with -o ...
-    file=`echo "$*" | sed -n 's/.*-o \([^ ]*\).*/\1/p'`
+    file=`echo "$*" | sed -n "$sed_output"`
+    test -z "$file" && file=`echo "$*" | sed -n "$sed_minuso"`
     if test -z "$file"; then
       # ... or it is the one specified with @setfilename ...
       infile=`echo "$*" | sed 's/.* \([^ ]*\) *$/\1/'`
-      file=`sed -n '/^@setfilename/ { s/.* \([^ ]*\) *$/\1/; p; q; }' $infile`
+      file=`sed -n '
+	/^@setfilename/{
+	  s/.* \([^ ]*\) *$/\1/
+	  p
+	  q
+	}' $infile`
       # ... or it is derived from the source name (dir/f.texi becomes f.info)
       test -z "$file" && file=`echo "$infile" | sed 's,.*/,,;s,.[^.]*$,,'`.info
     fi
+    # If the file does not exist, the user really needs makeinfo;
+    # let's fail without touching anything.
+    test -f $file || exit 1
     touch $file
     ;;
 
@@ -314,13 +324,13 @@ WARNING: \`$1' is $msg.  You should only need it if
     fi
     firstarg="$1"
     if shift; then
-	case "$firstarg" in
+	case $firstarg in
 	*o*)
 	    firstarg=`echo "$firstarg" | sed s/o//`
 	    tar "$firstarg" "$@" && exit 0
 	    ;;
 	esac
-	case "$firstarg" in
+	case $firstarg in
 	*h*)
 	    firstarg=`echo "$firstarg" | sed s/h//`
 	    tar "$firstarg" "$@" && exit 0

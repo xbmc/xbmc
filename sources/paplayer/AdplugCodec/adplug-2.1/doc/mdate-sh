@@ -1,9 +1,9 @@
 #!/bin/sh
 # Get modification time of a file or directory and pretty-print it.
 
-scriptversion=2005-02-07.09
+scriptversion=2007-03-30.02
 
-# Copyright (C) 1995, 1996, 1997, 2003, 2004, 2005 Free Software
+# Copyright (C) 1995, 1996, 1997, 2003, 2004, 2005, 2007 Free Software
 # Foundation, Inc.
 # written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, June 1995
 #
@@ -19,7 +19,7 @@ scriptversion=2005-02-07.09
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software Foundation,
-# Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 # As a special exception to the GNU General Public License, if you
 # distribute this file as part of a program that contains a
@@ -59,13 +59,25 @@ export LC_ALL
 LC_TIME=C
 export LC_TIME
 
-save_arg1="$1"
+# GNU ls changes its time format in response to the TIME_STYLE
+# variable.  Since we cannot assume `unset' works, revert this
+# variable to its documented default.
+if test "${TIME_STYLE+set}" = set; then
+  TIME_STYLE=posix-long-iso
+  export TIME_STYLE
+fi
+
+save_arg1=$1
 
 # Find out how to get the extended ls output of a file or directory.
 if ls -L /dev/null 1>/dev/null 2>&1; then
   ls_command='ls -L -l -d'
 else
   ls_command='ls -l -d'
+fi
+# Avoid user/group names that might have spaces, when possible.
+if ls -n /dev/null 1>/dev/null 2>&1; then
+  ls_command="$ls_command -n"
 fi
 
 # A `ls -l' line looks as follows on OS/2.
@@ -81,7 +93,7 @@ fi
 # words should be skipped to get the date.
 
 # On HPUX /bin/sh, "set" interprets "-rw-r--r--" as options, so the "x" below.
-set x`ls -l -d /`
+set x`$ls_command /`
 
 # Find which argument is the month.
 month=
