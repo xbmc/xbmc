@@ -23,7 +23,9 @@
 
 #include "URL.h"
 #include "GUISettings.h"
+#if _MSC_VER > 1400
 #include "Cfgmgr32.h"
+#endif
 
 
 class CWIN32Util
@@ -73,5 +75,7 @@ public:
 
 private:
   static DWORD dwDriveMask;
+#if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
+#endif
 };

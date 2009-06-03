@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7,10"
+	Version="7.10"
 	Name="XBMC_PC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -134,7 +134,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;../../xbmc/Filesystem;../../xbmc/cores/dvdplayer;../../xbmc/Win32;../../xbmc/cores;../../xbmc/;../../xbmc/utils;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/lib/libRTMP;../../xbmc/lib/boost;..\..\xbmc\lib\libPython\Python\PC;&quot;../../xbmc/lib/libSDL-WIN32/include&quot;"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;../../xbmc/Filesystem;../../xbmc/cores/dvdplayer;../../xbmc/Win32;../../xbmc/cores;../../xbmc/;../../xbmc/utils;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/lib/libRTMP;../../xbmc/lib/boost;..\..\xbmc\lib\libPython\Python\PC;&quot;../../xbmc/lib/libSDL-WIN32/include&quot;;..\..\xbmc\lib\libsamplerate\src"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX"
 				MinimalRebuild="TRUE"
 				ExceptionHandling="FALSE"
@@ -197,7 +197,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="TRUE"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;../../xbmc/Filesystem;../../xbmc/cores/dvdplayer;../../xbmc/Win32;../../xbmc/cores;../../xbmc/;../../xbmc/utils;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/lib/libRTMP;../../xbmc/lib/boost;..\..\xbmc\lib\libPython\Python\PC;&quot;../../xbmc/lib/libSDL-WIN32/include&quot;"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;../../xbmc/Filesystem;../../xbmc/cores/dvdplayer;../../xbmc/Win32;../../xbmc/cores;../../xbmc/;../../xbmc/utils;../../guilib/;../..;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaConnect;../../xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer;../../xbmc/lib/libUPnP/Platinum/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/Core;../../xbmc/lib/libUPnP/Platinum/Thirdparty/Neptune/Source/System/Win32;../../xbmc/lib/libRTMP;../../xbmc/lib/boost;..\..\xbmc\lib\libPython\Python\PC;&quot;../../xbmc/lib/libSDL-WIN32/include&quot;;..\..\xbmc\lib\libsamplerate\src"
 				PreprocessorDefinitions="_MSVC;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX"
 				StringPooling="FALSE"
 				MinimalRebuild="FALSE"
@@ -442,6 +442,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDPlayerAudio.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDPlayerAudioResampler.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDPlayerAudioResampler.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDPlayerSubtitle.cpp">
@@ -1054,10 +1060,10 @@
 					RelativePath="..\..\xbmc\cores\paplayer\OGGcodec.h">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer.h">
+					RelativePath="..\..\xbmc\cores\paplayer\PAPlayer.cpp">
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\paplayer_linux.cpp">
+					RelativePath="..\..\xbmc\cores\paplayer\paplayer.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\ReplayGain.cpp">
@@ -1887,11 +1893,11 @@
 					RelativePath="..\..\xbmc\utils\AsyncFileCopy.h">
 				</File>
 				<File
- 	                                RelativePath="..\..\xbmc\utils\Atomics.cpp">
-                                </File>
-                                <File
-                                        RelativePath="..\..\xbmc\utils\Atomics.h">
-                                </File>
+					RelativePath="..\..\xbmc\utils\Atomics.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Atomics.h">
+				</File>
 				<File
 					RelativePath="..\..\xbmc\AutoPtrHandle.cpp">
 				</File>
@@ -1942,6 +1948,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\DownloadQueueManager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\DPMSSupport.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\DPMSSupport.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\DynamicDll.cpp">
@@ -2206,6 +2218,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\VideoInfoTag.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\VideoReferenceClock.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\VideoReferenceClock.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\Weather.cpp">
@@ -4456,6 +4474,18 @@
 			<Filter
 				Name="libScrobbler"
 				Filter="">
+				<File
+					RelativePath="..\..\xbmc\lib\libscrobbler\lastfmscrobbler.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libscrobbler\lastfmscrobbler.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libscrobbler\librefmscrobbler.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libscrobbler\librefmscrobbler.h">
+				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libscrobbler\scrobbler.cpp">
 				</File>

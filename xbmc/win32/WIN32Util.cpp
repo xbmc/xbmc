@@ -31,7 +31,9 @@
 #include "SpecialProtocol.h"
 #include "my_ntddscsi.h"
 #include "Surface.h"
+#if _MSC_VER > 1400
 #include "Setupapi.h"
+#endif
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -594,6 +596,7 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
 // http://www.codeproject.com/KB/system/RemoveDriveByLetter.aspx
 // http://www.techtalkz.com/microsoft-device-drivers/250734-remove-usb-device-c-3.html
 
+#if _MSC_VER > 1400
 DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber) 
 {
 
@@ -669,9 +672,11 @@ DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
   SetupDiDestroyDeviceInfoList(hDevInfo);
   return 0;
 }
+#endif
 
 bool CWIN32Util::EjectDrive(const char cDriveLetter)
 {
+#if _MSC_VER > 1400
   if( !cDriveLetter )
     return false;
 
@@ -716,6 +721,9 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   }
 
   return bSuccess;
+#else
+  return false;
+#endif
 }
 // safe removal
 
