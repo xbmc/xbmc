@@ -20,6 +20,7 @@
  */
 
 #include <assert.h>
+#include <cstring>
 
 #include "mkj.h"
 #include "debug.h"

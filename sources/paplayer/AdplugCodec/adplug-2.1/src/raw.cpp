@@ -19,6 +19,7 @@
  * raw.c - RAW Player by Simon Peter <dn.tlp@gmx.net>
  */
 
+#include <cstring>
 #include "raw.h"
 
 /*** public methods *************************************/

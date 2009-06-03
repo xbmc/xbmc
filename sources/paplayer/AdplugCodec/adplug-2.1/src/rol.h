@@ -24,7 +24,7 @@
 #define H_ROLPLAYER
 
 #include <vector>
-#include <string>
+#include <cstring>
 
 #include "player.h"
 

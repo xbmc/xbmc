@@ -20,6 +20,7 @@
  */
 
 #include <stdio.h>
+#include <cstring>
 
 #include "msc.h"
 #include "debug.h"

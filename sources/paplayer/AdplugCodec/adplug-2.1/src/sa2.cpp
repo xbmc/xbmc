@@ -21,6 +21,7 @@
  */
 
 #include <stdio.h>
+#include <cstring>
 
 #include "sa2.h"
 #include "debug.h"

@@ -19,6 +19,7 @@
   fmc.cpp - FMC Loader by Riven the Mage <riven@ok.ru>
 */
 
+#include <cstring>
 #include "fmc.h"
 
 /* -------- Public Methods -------------------------------- */

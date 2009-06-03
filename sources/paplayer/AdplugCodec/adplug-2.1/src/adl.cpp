@@ -51,6 +51,7 @@
 #include <inttypes.h>
 #include <stdarg.h>
 #include <assert.h>
+#include <cstring>
 
 #include "adl.h"
 #include "debug.h"

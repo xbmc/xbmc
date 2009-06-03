@@ -22,6 +22,7 @@
  * Extra Fine Slides (EEx, FEx) & Fine Vibrato (Uxy) are inaccurate
  */
 
+#include <cstring>
 #include "s3m.h"
 
 const char Cs3mPlayer::chnresolv[] =	// S3M -> adlib channel conversion

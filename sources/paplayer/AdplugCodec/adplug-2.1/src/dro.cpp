@@ -24,6 +24,7 @@
  */
 
 #include <stdio.h>
+#include <cstring>
 
 #include "dro.h"
 

@@ -19,6 +19,7 @@
  * sng.cpp - SNG Player by Simon Peter <dn.tlp@gmx.net>
  */
 
+#include <cstring>
 #include "sng.h"
 
 CPlayer *CsngPlayer::factory(Copl *newopl)

@@ -29,6 +29,7 @@
  * Following commands are ignored: Gxy, Hxy, Kxy - &xy
  */
 
+#include <cstring>
 #include "a2m.h"
 
 const unsigned int Ca2mLoader::MAXFREQ = 2000,

@@ -25,6 +25,7 @@
 */
 
 #include <stdlib.h>
+#include <cstring>
 
 #include "cff.h"
 
