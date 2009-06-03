@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Based on english strings version 15704-->
+<!--Based on english strings version 19506-->
 <strings>
   <string id="0">Programmes</string>
   <string id="1">Images</string>
@@ -105,7 +105,7 @@
   <string id="167">Activer le serveur FTP</string>
   <string id="168">Synchroniser le temps avec Internet</string>
   <string id="169">Résolution</string>
-  <string id="170"></string>
+  <string id="170">Ajuster le taux de rafraîchissement</string>
   <string id="171"></string>
   <string id="172">Version datée du:</string>
   <string id="173"></string>
@@ -360,7 +360,7 @@
   <string id="434"></string>
   <string id="435"></string>
   <string id="436"></string>
-  <string id="437"></string>
+  <string id="437">Disque ammovible</string>
   <string id="438">Ouverture du fichier</string>
   <string id="439">Cache</string>
   <string id="440">Disque dur</string>
@@ -464,6 +464,7 @@
   <string id="545">Périphérique de Sortie Audio</string>
   <string id="546">Passer par le Périphérique de Sortie</string>
   <string id="547">Pas de biographie pour cet artiste</string>
+  <string id="548">Dé-multiplexer l'audio multi-canal en stéréo</string>
   
   <string id="550">Lister par: %s</string>
   <string id="551">Nom</string>
@@ -561,6 +562,8 @@
   <string id="659"></string>
   <string id="660">Amplification Sonore</string>
   <string id="661">Choisissez le dossier d'export</string>
+  <string id="662">Ce fichier n'est plus disponible.</string>
+  <string id="663">Souhaitez-vous le supprimer de la bibliothèque ?</string>
 
   <string id="700">Optimisation de la bibliothèque</string>
   <string id="701">Suppression des anciens morceaux de la bibliothèque</string>
@@ -778,6 +781,7 @@
   <string id="1414">Orageux</string>
   <string id="1415">Drizzle</string>
   <string id="1416">Brumeux</string>
+  <string id="1417">Grains</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -957,9 +961,13 @@
   <string id="13012">Sortir</string>
   <string id="13013">Redémarrer</string>
   <string id="13014">Minimiser</string>
-  
-  <string id="13024">Manette branché</string>
-  <string id="13025">Manette débranché</string>
+
+  <string id="13020">Une autre session est en cours, peut être à travers ssh ?</string>
+  <string id="13021">Disque dur externe monté</string>
+  <string id="13022">Déconnexion non sécurisé du périphérique</string>
+  <string id="13023">Périphérique déconnecté avec succès</string>
+  <string id="13024">Manette connecté</string>
+  <string id="13025">Manette déconnecté</string>
   
   <string id="13100">Filtre de scintillement</string>
   <string id="13105">Sync. Verticale</string>
@@ -979,6 +987,7 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">Strict Pixmap-Texture Binding (nécessite un re-démarrage)</string>
 
   <string id="13130">Blanking Affichage</string>
   <string id="13131">Désactivé</string>
@@ -1174,6 +1183,20 @@
   <string id="13417">Basic Shaders (ARB)</string>
   <string id="13418">Advanced Shaders (GLSL)</string>
   <string id="13419">Logiciel</string>
+  <string id="13421">VDPAU</string>
+  <string id="13420">Remove safely</string>
+  
+  <string id="13500">Méthode sync A/V</string>
+  <string id="13501">Audio clock</string>
+  <string id="13502">Video clock (Drop/Dupe audio)</string>
+  <string id="13503">Video clock (Resample audio)</string>
+  <string id="13504">Maximum resample amount (%)</string>
+  <string id="13505">Qualitée du resample</string>
+  <string id="13506">Faible</string>
+  <string id="13507">Moyenne</string>
+  <string id="13508">Haute</string>
+  <string id="13509">Très haute</string>
+  <string id="13510">Sync lecture avec affichage</string>
   
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>
@@ -1183,7 +1206,8 @@
   <string id="13610">Désactiver</string>
   <string id="13611">Standard</string>
   <string id="13612">Télécommande Universelle</string>
-  
+  <string id="13613">Télécommande multiple (Harmony)</string>
+
   <string id="13620">Erreur Apple Remote.</string>
   <string id="13621">Le support de la télécommande Apple ne peut être activé.</string>
   
@@ -1342,7 +1366,7 @@
   <string id="15112">Thème par défaut</string>
   
   <string id="15200">Last.FM</string>
-  <string id="15201">Envoyer les stats des chansons à Last.FM</string>
+  <string id="15201">Diffuser les stats des chansons à Last.FM</string>
   <string id="15202">Compte Last.FM</string>
   <string id="15203">Mot de passe Last.FM</string>
   <string id="15204">Impossible de contacter le serveur: En attente...</string>
@@ -1358,8 +1382,13 @@
   <string id="15214">Utiliser une synchronisation A/V lissée</string>
   <string id="15215">Masquer Nom quand Vue Vignettes</string>
   <string id="15216">Jouer lors du mix de soirée</string>
+  <string id="15217">Envoyer les chansons vers Libre.fm</string>
+  <string id="15218">Libre.fm identifiant</string>
+  <string id="15219">Libre.fm mot de passe</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
   
-  <string id="15250">Envoyer les stats Last.FM Radio à Last.FM</string>
+  <string id="15250">Diffuser les stats Last.FM Radio à Last.FM</string>
   <string id="15251">Connexion à Last.FM...</string>
   <string id="15252">Sélection des stations...</string>
   <string id="15253">Chercher Artistes Similaires...</string>
@@ -1484,6 +1513,11 @@
   <string id="16308">Lanczos (logiciel)</string>  
   <string id="16309">Sinc (logiciel)</string>
 
+  <string id="16310">(VDPAU)Temporel</string>
+  <string id="16311">(VDPAU)Temporel/Spatial</string>
+  <string id="16312">(VDPAU)Réduction bruit</string>
+  <string id="16313">(VDPAU)Sharpness</string>
+  <string id="16314">Inverse Telecine</string>
   <string id="17500">Afficher temps avant la mise en veille</string> 
 
   <string id="20000">Dossier Rip CDDA</string>
@@ -1523,11 +1557,11 @@
   <string id="20041">Sécuriser Programmes, Sauvegardes et Scripts</string>
   <string id="20042">Sécuriser le gestionnaire de fichiers</string>
   <string id="20043">Sécuriser les Paramètres</string>
-  <string id="20044">Démarrer à neuf</string>
+  <string id="20044">Nouvelle configuration</string>
   <string id="20045">Entrer en mode Admin.</string>
   <string id="20046">Sortir du mode Admin.</string>
   <string id="20047">Créer le profil '%s' ?</string>
-  <string id="20048">Démarrer avec de nouveaux paramètrages</string>
+  <string id="20048">Démarrer avec une nouvelle configuration</string>
   <string id="20049">La meilleure disponible</string>
   <string id="20050">Bascule auto. entre 16x9 et 4x3</string>
   <string id="20051">Traiter les fichiers empilés comme un seul fichier</string>
@@ -1581,7 +1615,7 @@
   <string id="20099">Impossible d'importer le CD ou le morceau pendant la lecture</string>
   <string id="20100">Codes et paramètres Admin.</string>
   <string id="20101">Entrer le code Admin. active toujours le mode Admin.</string>
-  <string id="20102">ou copier ceux définis par défaut ?</string>
+  <string id="20102">ou copier celle(s) définie(s) par défaut ?</string>
   <string id="20103">Enregistrer les changements du profil ?</string>
   <string id="20104">Anciens paramètres trouvés.</string>
   <string id="20105">Voulez-vous les utiliser ?</string>
@@ -1685,10 +1719,10 @@
   <string id="20251">Barman au shaker (videos)</string>
   <string id="20252">Remplissage des verres (videos)</string>
 
-  <string id="20300"></string>
-  <string id="20301"></string>
-  <string id="20302"></string>
-  <string id="20303"></string>
+  <string id="20300">Dossier Server Web (HTTP)</string>
+  <string id="20301">Dossier Server Web (HTTPS)</string>
+  <string id="20302">Impossible d'ecrire dans le dossier</string>
+  <string id="20303">Voulez-vous passer et continuer ?</string>
   <string id="20304"></string>
   <string id="20305"></string>
 
@@ -1829,7 +1863,7 @@
   <string id="21333">Le flux sera arrêté !</string>
   <string id="21334">Le zap du canal: %s a échoué!</string>
   <string id="21335">Êtes-vous sûr de débuter le flux ?</string>
-  <string id="21336">Connection à: %s</string>
+  <string id="21336">Connexion à: %s</string>
   <string id="21337">Dispositif TuxBox</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
   
@@ -2033,6 +2067,8 @@
   <string id="22041">blanc/rouge</string>
   <string id="22042">blanc/bleu</string>
   <string id="22043">noir/blanc</string>
+  
+  <string id="23000">Plug-in Météo</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Mode Bibliothèque</string>
