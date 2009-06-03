@@ -1,5 +1,6 @@
 #include "adplug.h"
 #include "emuopl.h"
+#include <cstring>
 
 struct ADLSong
 {
@@ -90,7 +91,7 @@ extern "C"
      ADLSong* song = (ADLSong*)adl;
 
      printf("title %s",song->player->gettitle());
-     return song->player->gettitle();
+     return song->player->gettitle().c_str();
   }
 
   const char __declspec(dllexport) *DLL_GetArtist(int adl)
@@ -98,7 +99,7 @@ extern "C"
      ADLSong* song = (ADLSong*)adl;
 
      printf("artist %s",song->player->getauthor());
-     return (const char*)song->player->getauthor();
+     return (const char*)song->player->getauthor().c_str();
   }
 
   unsigned long __declspec(dllexport) DLL_GetLength(int adl)
