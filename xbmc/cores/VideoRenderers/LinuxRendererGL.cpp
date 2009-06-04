@@ -803,6 +803,17 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   m_bImageReady = true;
 }
 
+void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type
+                                , int width, int height
+                                , int stride, void* data )
+{
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+  glBindTexture(m_textureTarget, plane.id);
+  glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, data);
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+  glBindTexture(m_textureTarget, 0);
+}
+
 void CLinuxRendererGL::LoadTextures(int source)
 {
   YV12Image* im = &m_image[source];
@@ -936,25 +947,19 @@ void CLinuxRendererGL::LoadTextures(int source)
     // Load RGB image
     if (deinterlacing)
     {
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[0]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_ODD][0].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, (im->height>>1), GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0].id);
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->stride[0]);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, (im->height>>1), GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
+      LoadPlane( fields[FIELD_ODD][0] , GL_BGRA
+               , im->width, im->height >> 1
+               , m_iSourceWidth*2, m_rgbBuffer );
 
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-      VerifyGLState();
+      LoadPlane( fields[FIELD_EVEN][0], GL_BGRA
+               , im->width, im->height >> 1
+               , m_iSourceWidth*2, m_rgbBuffer + m_iSourceWidth*4);      
     }
     else
     {
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[0]);
-      glBindTexture(m_textureTarget, fields[FIELD_FULL][0].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
-
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-      VerifyGLState();
+      LoadPlane( fields[FIELD_FULL][0], GL_BGRA
+               , im->width, im->height
+               , m_iSourceWidth, m_rgbBuffer );
     }
   }
   else
@@ -964,25 +969,20 @@ void CLinuxRendererGL::LoadTextures(int source)
     if (deinterlacing)
     {
       // Load Y fields
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[0]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_ODD][0].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, (im->height>>1), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[0]);
+      LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE
+               , im->width, im->height >> 1
+               , im->stride[0]*2, im->plane[0] );
 
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->stride[0]);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, (im->height>>1), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[0]);
-
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+      LoadPlane( fields[FIELD_EVEN][0], GL_LUMINANCE
+               , im->width, im->height >> 1
+               , im->stride[0]*2, im->plane[0] + im->stride[0]) ;     
     }
     else
     {
       // Load Y plane
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[0]);
-      glBindTexture(m_textureTarget, fields[FIELD_FULL][0].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[0]);
-
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+      LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE
+               , im->width, im->height
+               , im->stride[0], im->plane[0] );
     }
   }
 
@@ -1007,42 +1007,33 @@ void CLinuxRendererGL::LoadTextures(int source)
     if (deinterlacing)
     {
       // Load Even U & V Fields
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[1]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_ODD][1].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> (im->cshift_y+1)), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[1]);
+      LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE
+               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+               , im->stride[1]*2, im->plane[1] );
 
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[2]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_ODD][2].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> (im->cshift_y+1)), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[2]);
-
+      LoadPlane( fields[FIELD_ODD][2], GL_LUMINANCE
+               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+               , im->stride[2]*2, im->plane[2] );
+      
       // Load Odd U & V Fields
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->stride[1]);
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[1]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][1].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> (im->cshift_y+1)), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[1]);
+      LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE
+               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+               , im->stride[1]*2, im->plane[1] + im->stride[1] );
 
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->stride[2]);
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[2]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][2].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> (im->cshift_y+1)), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[2]);
-      VerifyGLState();
-
-      glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+      LoadPlane( fields[FIELD_EVEN][2], GL_LUMINANCE
+               , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+               , im->stride[2]*2, im->plane[2] + im->stride[2] );
+      
     }
     else
     {
-      glPixelStorei(GL_UNPACK_ROW_LENGTH,im->stride[1]);
-      glBindTexture(m_textureTarget, fields[FIELD_FULL][1].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> im->cshift_y), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[1]);
-      VerifyGLState();
+      LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE
+               , im->width >> im->cshift_x, im->height >> im->cshift_y
+               , im->stride[1], im->plane[1] );
 
-      glPixelStorei(GL_UNPACK_ROW_LENGTH,im->stride[2]);
-      glBindTexture(m_textureTarget, fields[FIELD_FULL][2].id);
-      glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> im->cshift_y), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[2]);
-      VerifyGLState();
-
-      glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
+      LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE
+               , im->width >> im->cshift_x, im->height >> im->cshift_y
+               , im->stride[2], im->plane[2] );
     }
   }
   SetEvent(m_eventTexturesDone[source]);
