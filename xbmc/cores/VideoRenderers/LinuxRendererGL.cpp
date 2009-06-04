@@ -810,6 +810,20 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type
   glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
   glBindTexture(m_textureTarget, plane.id);
   glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, data);
+
+  /* check if we need to load any border pixels */
+  if(height < plane.texheight)
+    glTexSubImage2D( m_textureTarget, 0
+                   , 0, height, width, 1
+                   , type, GL_UNSIGNED_BYTE
+                   , (unsigned char*)data + stride * (height-1));
+
+  if(width  < plane.texwidth)
+    glTexSubImage2D( m_textureTarget, 0
+                   , width, 0, 1, height
+                   , type, GL_UNSIGNED_BYTE
+                   , (unsigned char*)data + stride - 1);
+
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   glBindTexture(m_textureTarget, 0);
 }
