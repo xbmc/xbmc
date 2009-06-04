@@ -936,9 +936,9 @@ void CLinuxRendererGL::LoadTextures(int source)
     if (deinterlacing)
     {
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[0]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_ODD][0]);
+      glBindTexture(m_textureTarget, fields[FIELD_ODD][0].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, (im->height>>1), GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0]);
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0].id);
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->stride[0]);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, (im->height>>1), GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
 
@@ -949,7 +949,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     else
     {
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[0]);
-      glBindTexture(m_textureTarget, fields[FIELD_FULL][0]);
+      glBindTexture(m_textureTarget, fields[FIELD_FULL][0].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height, GL_BGRA, GL_UNSIGNED_BYTE, m_rgbBuffer);
 
       glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -964,11 +964,11 @@ void CLinuxRendererGL::LoadTextures(int source)
     {
       // Load Y fields
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[0]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_ODD][0]);
+      glBindTexture(m_textureTarget, fields[FIELD_ODD][0].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, (im->height>>1), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[0]);
 
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->stride[0]);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0]);
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][0].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, (im->height>>1), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[0]);
 
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
@@ -978,7 +978,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     {
       // Load Y plane
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[0]);
-      glBindTexture(m_textureTarget, fields[FIELD_FULL][0]);
+      glBindTexture(m_textureTarget, fields[FIELD_FULL][0].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, im->width, im->height, GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[0]);
 
       glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -1007,22 +1007,22 @@ void CLinuxRendererGL::LoadTextures(int source)
     {
       // Load Even U & V Fields
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[1]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_ODD][1]);
+      glBindTexture(m_textureTarget, fields[FIELD_ODD][1].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> (im->cshift_y+1)), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[1]);
 
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[2]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_ODD][2]);
+      glBindTexture(m_textureTarget, fields[FIELD_ODD][2].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> (im->cshift_y+1)), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[2]);
 
       // Load Odd U & V Fields
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->stride[1]);
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[1]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][1]);
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][1].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> (im->cshift_y+1)), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[1]);
 
       glPixelStorei(GL_UNPACK_SKIP_PIXELS, im->stride[2]);
       glPixelStorei(GL_UNPACK_ROW_LENGTH, im->stride[2]*2);
-      glBindTexture(m_textureTarget, fields[FIELD_EVEN][2]);
+      glBindTexture(m_textureTarget, fields[FIELD_EVEN][2].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> (im->cshift_y+1)), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[2]);
       VerifyGLState();
 
@@ -1032,12 +1032,12 @@ void CLinuxRendererGL::LoadTextures(int source)
     else
     {
       glPixelStorei(GL_UNPACK_ROW_LENGTH,im->stride[1]);
-      glBindTexture(m_textureTarget, fields[FIELD_FULL][1]);
+      glBindTexture(m_textureTarget, fields[FIELD_FULL][1].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> im->cshift_y), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[1]);
       VerifyGLState();
 
       glPixelStorei(GL_UNPACK_ROW_LENGTH,im->stride[2]);
-      glBindTexture(m_textureTarget, fields[FIELD_FULL][2]);
+      glBindTexture(m_textureTarget, fields[FIELD_FULL][2].id);
       glTexSubImage2D(m_textureTarget, 0, 0, 0, (im->width >> im->cshift_x), (im->height >> im->cshift_y), GL_LUMINANCE, GL_UNSIGNED_BYTE, im->plane[2]);
       VerifyGLState();
 
@@ -1080,7 +1080,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   int index = m_iYV12RenderBuffer;
 
-  if (!m_YUVTexture[index][FIELD_FULL][0]) return ;
+  if (!m_YUVTexture[index][FIELD_FULL][0].id) return ;
 
   if (m_image[index].flags==0)
     return;
@@ -1686,7 +1686,7 @@ void CLinuxRendererGL::SetViewMode(int iViewMode)
 
 void CLinuxRendererGL::AutoCrop(bool bCrop)
 {
-  if (!m_YUVTexture[0][FIELD_FULL][PLANE_Y]) return ;
+  if (!m_YUVTexture[0][FIELD_FULL][PLANE_Y].id) return ;
   // FIXME: no cropping for now
   { // reset to defaults
     g_stSettings.m_currentVideoSettings.m_CropLeft = 0;
@@ -1718,7 +1718,8 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
     }
   }
 
-  YV12Image im = m_image[index];
+  YV12Image &im     = m_image[index];
+  YUVFIELDS &fields = m_YUVTexture[index];
   if (IsSoftwareUpscaling())
     im = m_imScaled;
 
@@ -1742,18 +1743,18 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   // Y
   glActiveTextureARB(GL_TEXTURE0);
   glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][field][0]);
+  glBindTexture(m_textureTarget, fields[field][0].id);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   // U
   glActiveTextureARB(GL_TEXTURE1);
   glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][field][1]);
+  glBindTexture(m_textureTarget, fields[field][1].id);
 
   // V
   glActiveTextureARB(GL_TEXTURE2);
   glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][field][2]);
+  glBindTexture(m_textureTarget, fields[field][2].id);
 
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
@@ -1852,6 +1853,7 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
 void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 {
   YV12Image &im = m_image[index];
+  YUVPLANES &planes = m_YUVTexture[index][m_currentField];
 
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
@@ -1874,20 +1876,20 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   // Y
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
+  glBindTexture(m_textureTarget, planes[0].id);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
   VerifyGLState();
 
   // U
   glActiveTextureARB(GL_TEXTURE1);
   glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][1]);
+  glBindTexture(m_textureTarget, planes[1].id);
   VerifyGLState();
 
   // V
   glActiveTextureARB(GL_TEXTURE2);
   glEnable(m_textureTarget);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][2]);
+  glBindTexture(m_textureTarget, planes[2].id);
   VerifyGLState();
 
   glActiveTextureARB(GL_TEXTURE0);
@@ -2184,7 +2186,7 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
   // Y
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
-  glBindTexture(m_textureTarget, m_YUVTexture[index][field][0]);
+  glBindTexture(m_textureTarget, m_YUVTexture[index][field][0].id);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   glBegin(GL_QUADS);
@@ -2278,7 +2280,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
   YV12Image &im = m_image[index];
   YUVFIELDS &fields = m_YUVTexture[index];
 
-  if( fields[FIELD_FULL][0] == 0 ) return;
+  if( fields[FIELD_FULL][0].id == 0 ) return;
 
   CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
   /* finish up all textures, and delete them */
@@ -2287,14 +2289,14 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
   {
     for(int p = 0;p<MAX_PLANES;p++)
     {
-      if( fields[f][p] )
+      if( fields[f][p].id )
       {
-        if (glIsTexture(fields[f][p]))
+        if (glIsTexture(fields[f][p].id))
         {
-          glDeleteTextures(1, &fields[f][p]);
+          glDeleteTextures(1, &fields[f][p].id);
           CLog::Log(LOGDEBUG, "GL: Deleting texture field %d plane %d", f+1, p+1);
         }
-        fields[f][p] = 0;
+        fields[f][p].id = 0;
       }
     }
   }
@@ -2365,9 +2367,9 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
   {
     for(p = 0;p<MAX_PLANES;p++)
     {
-      if (!glIsTexture(fields[f][p]))
+      if (!glIsTexture(fields[f][p].id))
       {
-        glGenTextures(1, &fields[f][p]);
+        glGenTextures(1, &fields[f][p].id);
         VerifyGLState();
       }
     }
@@ -2381,7 +2383,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     np2x = NP2(im.width);
     np2y = NP2((im.height / divfactor));
 
-    glBindTexture(m_textureTarget, fields[f][0]);
+    glBindTexture(m_textureTarget, fields[f][0].id);
     if (m_renderMethod & RENDER_SW)
     {
       // require Power Of Two textures?
@@ -2426,7 +2428,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
     if (!(m_renderMethod & RENDER_SW))
     {
-      glBindTexture(m_textureTarget, fields[f][1]);
+      glBindTexture(m_textureTarget, fields[f][1].id);
 
       // require Power Of Two textures?
       if (m_renderMethod & RENDER_POT)
@@ -2450,7 +2452,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       VerifyGLState();
 
       CLog::Log(LOGDEBUG, "GL: Creating V NPOT texture of size %d x %d", im.width/2, im.height/2/divfactor);
-      glBindTexture(m_textureTarget, fields[f][2]);
+      glBindTexture(m_textureTarget, fields[f][2].id);
 
       if (m_renderMethod & RENDER_POT)
       {
@@ -2484,19 +2486,19 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 
     for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
     {
-      glBindTexture(m_textureTarget, fields[f][0]);
+      glBindTexture(m_textureTarget, fields[f][0].id);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
       VerifyGLState();
 
       if (!(m_renderMethod & RENDER_SW))
       {
-        glBindTexture(m_textureTarget, fields[f][1]);
+        glBindTexture(m_textureTarget, fields[f][1].id);
         glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
         glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
         VerifyGLState();
 
-        glBindTexture(m_textureTarget, fields[f][2]);
+        glBindTexture(m_textureTarget, fields[f][2].id);
         glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
         glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
         VerifyGLState();
