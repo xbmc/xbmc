@@ -235,6 +235,13 @@ protected:
   typedef struct
   {
     GLuint id;
+    CRect  rect;
+
+    float  width;
+    float  height;
+
+    unsigned texwidth;
+    unsigned texheight;
   } YUVPLANE;
 
   typedef YUVPLANE           YUVPLANES[MAX_PLANES];
