@@ -229,7 +229,10 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
         continue;
       }
 
+      CURL url(base);
+      CStdString path = CUtil::GetFileName(GetValue(m_dll->proginfo_pathname(program)));
       CStdString name = GetValue(m_dll->proginfo_title(program));
+      
       switch (type)
       {
         case MOVIES:
@@ -238,6 +241,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
           m_dll->ref_release(program);
           continue;
         }
+        url.SetFileName("movies/" + path);
         break;
         case TV_SHOWS:
         if (filter != name)
@@ -245,19 +249,15 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
           m_dll->ref_release(program);
           continue;
         }
+        url.SetFileName("tvshows/" + path);
         break;
         case NONE:
+        url.SetFileName("recordings/" + path);
         break;
       }
 
       CFileItemPtr item(new CFileItem("", false));
       m_session->UpdateItem(*item, program);
-
-      CStdString path = GetValue(m_dll->proginfo_pathname(program));
-      path = CUtil::GetFileName(path);
-
-      CURL url(base);
-      url.SetFileName("recordings/" + path);
       url.GetURL(item->m_strPath);
 
       url.SetFileName("files/" + path +  ".png");
