@@ -232,7 +232,12 @@ protected:
   int m_currentField;
   int m_reloadShaders;
 
-  typedef GLuint YUVPLANES[MAX_PLANES];
+  typedef struct
+  {
+    GLuint id;
+  } YUVPLANE;
+
+  typedef YUVPLANE           YUVPLANES[MAX_PLANES];
   typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
   typedef YUVFIELDS          YUVBUFFERS[NUM_BUFFERS];
 
