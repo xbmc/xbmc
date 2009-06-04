@@ -2353,7 +2353,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     if(m_isSoftwareUpscaling)
     {
       planes[0].texwidth  = m_upscalingWidth;
-      planes[0].texheight = m_upscalingHeight;
+      planes[0].texheight = m_upscalingHeight >> fieldshift;
     }
     else
     {
