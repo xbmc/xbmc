@@ -1058,9 +1058,19 @@ void CLinuxRendererGL::LoadTextures(int source)
       p.width  = im->width;
       p.height = im->height;
 
-      /* half the height if this is a field */
       if(field != FIELD_FULL)
       {
+        /* correct for field offsets and chroma offsets */
+        float offset_y = 0.5;
+        if(plane != 0)
+          offset_y += 0.5;
+        if(field == FIELD_EVEN)
+          offset_y *= -1;
+
+        p.rect.y1 += offset_y;
+        p.rect.y2 += offset_y;
+
+        /* half the height if this is a field */
         p.height  *= 0.5f;
         p.rect.y1 *= 0.5f; 
         p.rect.y2 *= 0.5f;
