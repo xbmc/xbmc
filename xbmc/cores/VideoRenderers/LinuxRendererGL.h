@@ -252,6 +252,10 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   YUVBUFFERS m_YUVTexture;
 
+  void LoadPlane( YUVPLANE& plane, int type
+                , int width,  int height
+                , int stride, void* data );
+
   //BaseYUV2RGBGLSLShader     *m_pYUVShaderGLSL;
   //BaseYUV2RGBARBShader      *m_pYUVShaderARB;
   CShaderProgram        *m_pYUVShader;
