@@ -1054,7 +1054,12 @@ void CLinuxRendererGL::LoadTextures(int source)
     {
       YUVPLANE& p = fields[field][plane];
 
-      p.rect.SetRect(rs.left, rs.top, rs.right, rs.bottom);
+      /* software upscaling is precropped */
+      if(IsSoftwareUpscaling())
+        p.rect.SetRect(0, 0, im->width, im->height);
+      else      
+        p.rect.SetRect(rs.left, rs.top, rs.right, rs.bottom);
+
       p.width  = im->width;
       p.height = im->height;
 
