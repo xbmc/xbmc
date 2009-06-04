@@ -22,6 +22,9 @@ xbmc (1:9.04.1+svn20842-1) experimental; urgency=low
     packages.
   * Rewrite the Build-Depends field, modeling it in order from what is needed
     by configure scripts.
+  * Fix --prefix option when calling make install* in debian/rules.
+  * Ensure no 'Thumbs.db' files are installed.
+  * Do not use cp -a, just cp.
   * Various fixes for lintian warnings and errors.
     + Fix not-binnmuable-all-depends-any lintian errors.
     + Fix not-binnmuable-any-depends-all lintian errors.
@@ -32,6 +35,10 @@ xbmc (1:9.04.1+svn20842-1) experimental; urgency=low
     + Don't install License information as documentation. It will go in
       debian/copyright.
     + Make sure the menu file is installed in xbmc-common package.
+    + Fix "needs" variable in menu file.
+    + Install the subdirectories of tools/EventClients/examples/ in examples for
+      xbmc-eventclients-dev package.
+    + Create a symlink to LiberationSans-Regular.ttf.
 
  -- Andres Mejia <mcitadel@gmail.com>  Thu, 28 May 2009 00:33:46 -0400
 

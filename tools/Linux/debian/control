@@ -6,18 +6,19 @@ Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>,
            Andres Mejia <mcitadel@gmail.com>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
- autotools-dev, autoconf, automake, unzip, libboost-dev, libgl-dev, libglu-dev,
- libglew-dev, libmad0-dev, libjpeg-dev, libsamplerate-dev, libogg-dev,
- libvorbis-dev, libfreetype6-dev, libfontconfig-dev, libbz2-dev, libfribidi-dev,
- libsqlite3-dev, libmysqlclient-dev, libasound-dev, libpng-dev, libpcre3-dev,
- liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
- libenca-dev, libjasper-dev, libxt-dev, libxmu-dev, libxinerama-dev,
- libcurl-dev, libdbus-1-dev, libhal-storage-dev, libhal-dev, libpulse-dev,
- libavahi-common-dev, libavahi-client-dev, libxrandr-dev, libavcodec-dev,
- libavformat-dev, libavutil-dev, libpostproc-dev, libswscale-dev, liba52-dev,
- libdts-dev, libfaad-dev, libmp4ff-dev, libmpeg2-4-dev, libass-dev,
- libmpcdec-dev, libflac-dev, libwavpack-dev, python-dev, gawk, gperf,
- nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
+ autotools-dev, autoconf, automake, unzip, libboost-dev,
+ libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev, libjpeg-dev,
+ libsamplerate-dev, libogg-dev, libvorbis-dev, libfreetype6-dev,
+ libfontconfig-dev, libbz2-dev, libfribidi-dev, libsqlite3-dev,
+ libmysqlclient-dev, libasound-dev, libpng-dev, libpcre3-dev, liblzo2-dev,
+ libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev, libenca-dev,
+ libjasper-dev, libxt-dev, libxmu-dev, libxinerama-dev,
+ libcurl4-gnutls-dev | libcurl-dev, libdbus-1-dev, libhal-storage-dev,
+ libhal-dev, libpulse-dev, libavahi-common-dev, libavahi-client-dev,
+ libxrandr-dev, libavcodec-dev, libavformat-dev, libavutil-dev, libpostproc-dev,
+ libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
+ libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
+ python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
 Standards-Version: 3.8.1
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/xbmc.git
@@ -107,6 +108,7 @@ Description: XBMC Project Mahem III skin package
 Package: xbmc-skin-pm3-hd
 Architecture: all
 Depends: xbmc-common (>= ${source:Version}),
+         ttf-liberation,
          ${misc:Depends}
 Description: XBMC PM3 HD skin package
  The XBMC PM3 HD Skin package (aka Project Mahem III High Definition).

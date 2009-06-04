@@ -6,8 +6,8 @@ usr/share/xbmc/userdata
 usr/share/xbmc/visualisations
 usr/share/xbmc/screensavers
 usr/share/xbmc/system
-usr/share/xbmc/xbmc.bin
-usr/share/xbmc/xbmc-xrandr
 usr/share/pixmaps/xbmc.png
 usr/share/applications
 usr/share/xbmc/FEH.py
+usr/share/xbmc/xbmc.bin
+usr/share/xbmc/xbmc-xrandr
