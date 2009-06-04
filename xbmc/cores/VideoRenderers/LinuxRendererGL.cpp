@@ -1545,17 +1545,13 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   if( flags & RENDER_FLAG_ODD)
   {
     if (m_currentField == FIELD_FULL)
-    {
       m_reloadShaders = 1;
-    }
     m_currentField = FIELD_ODD;
   } // even field
   else if (flags & RENDER_FLAG_EVEN)
   {
     if (m_currentField == FIELD_FULL)
-    {
       m_reloadShaders = 1;
-    }
     m_currentField = FIELD_EVEN;
   }
   else if (flags & RENDER_FLAG_LAST)
@@ -1574,9 +1570,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   else
   {
     if (m_currentField != FIELD_FULL)
-    {
       m_reloadShaders = 1;
-    }
     m_currentField = FIELD_FULL;
   }
 
@@ -1621,9 +1615,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   /* general stuff */
 
   if( flags & RENDER_FLAG_NOOSD )
-  {
     return;
-  }
 
   RenderOSD();
 
@@ -1768,17 +1760,11 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   if (fieldmask)
   {
     if (fieldmask == RENDER_FLAG_BOTH)
-    {
       field = FIELD_FULL;
-    }
     else if (fieldmask == RENDER_FLAG_EVEN)
-    {
       field = FIELD_EVEN;
-    }
     else
-    {
       field = FIELD_ODD;
-    }
   }
 
   YUVFIELDS &fields = m_YUVTexture[index];
@@ -1786,9 +1772,7 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
 
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-  {
     g_graphicsContext.ClipToViewWindow();
-  }
 
   glDisable(GL_DEPTH_TEST);
 
@@ -1890,9 +1874,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-  {
     g_graphicsContext.ClipToViewWindow();
-  }
 
   glDisable(GL_DEPTH_TEST);
   VerifyGLState();
@@ -2062,9 +2044,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
     m_pVideoFilterShader->Enable();
   }
   else
-  {
     m_fbo.SetFiltering(GL_TEXTURE_2D, GL_LINEAR);
-  }
 
   VerifyGLState();
 
@@ -2090,9 +2070,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   VerifyGLState();
 
   if (m_pVideoFilterShader)
-  {
     m_pVideoFilterShader->Disable();
-  }
 
   VerifyGLState();
 
@@ -2167,27 +2145,18 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
   if (fieldmask)
   {
     if (fieldmask == RENDER_FLAG_BOTH)
-    {
       field = FIELD_FULL;
-    }
     else if (fieldmask == RENDER_FLAG_EVEN)
-    {
       field = FIELD_EVEN;
-    }
     else
-    {
       field = FIELD_ODD;
-    }
   }
 
-  YV12Image &im     = m_image[index];
   YUVPLANES &planes = m_YUVTexture[index][field];
 
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-  {
     g_graphicsContext.ClipToViewWindow();
-  }
 
   glDisable(GL_DEPTH_TEST);
 
