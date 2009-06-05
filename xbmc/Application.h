@@ -313,9 +313,8 @@ protected:
   bool m_bPlatformDirectories;
 
   CBookmark m_progressTrackingVideoResumeBookmark;
-  CStdString m_progressTrackingFile;
+  CFileItemPtr m_progressTrackingItem;
   bool m_progressTrackingPlayCountUpdate;
-  bool m_progressTrackingIsVideo;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
