@@ -370,9 +370,9 @@ AC_CHECK_LIB([lzo2],        [main],,
   )
 AC_CHECK_LIB([cdio],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([samplerate],  [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
-  AC_CHECK_LIB([z],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
 else
@@ -1351,9 +1351,6 @@ XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [
   if test "$host_vendor" = "apple" ; then
     export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    ./configure
-  else
-    CFLAGS=-fPIC \
     ./configure
   fi
 ], [0])
