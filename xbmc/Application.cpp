@@ -298,7 +298,7 @@ using namespace DBUSSERVER;
 CStdString g_LoadErrorStr;
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
-CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem)
+CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
 {
   m_iPlaySpeed = 1;
 #ifdef HAS_WEB_SERVER
@@ -4448,9 +4448,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
 void CApplication::OnPlayBackEnded()
 {
-  // Save status of the file ended
-  SaveFileState();
-
   if(m_bPlaybackStarting)
     return;
 
@@ -4479,9 +4476,6 @@ void CApplication::OnPlayBackEnded()
 
 void CApplication::OnPlayBackStarted()
 {
-  // Make sure the state for the previous file was saved
-  SaveFileState();
-
   if(m_bPlaybackStarting)
     return;
 
@@ -4530,9 +4524,6 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
-  // Save state of the file stopped
-  SaveFileState();
-
   if(m_bPlaybackStarting)
     return;
 
@@ -4606,23 +4597,23 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState()
 {
+  CStdString m_progressTrackingFile = m_progressTrackingItem->m_strPath;
+  
   if (m_progressTrackingFile != "")
   {
-    if (m_progressTrackingIsVideo)
+    if (m_progressTrackingItem->IsVideo())
     {
       CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, m_progressTrackingFile.c_str());
 
       CVideoDatabase videodatabase;
       if (videodatabase.Open())
       {
-        // FIXME: Currently we can't reliably check m_itemCurrentFile, as it may already
-        // point to the next file in queue thus we make sure it's the same as the our tracking filename
-        if (m_progressTrackingPlayCountUpdate && m_itemCurrentFile && m_itemCurrentFile->m_strPath == m_progressTrackingFile) 
+        if (m_progressTrackingPlayCountUpdate)
         {
-          CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, m_itemCurrentFile->m_strPath.c_str());
+          CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, m_progressTrackingItem->m_strPath.c_str());
 
           // consider this item as played
-          videodatabase.MarkAsWatched(*m_itemCurrentFile);
+          videodatabase.MarkAsWatched(*m_progressTrackingItem);
           CUtil::DeleteVideoDatabaseDirectoryCache();
         }
 
@@ -4666,60 +4657,60 @@ void CApplication::SaveFileState()
         }
       }
     }
-
-    // Reset tracking filename
-    m_progressTrackingFile = "";
   }
 }
 
 void CApplication::UpdateFileState()
 {
+  // Did the file change?
+  if (m_progressTrackingItem->m_strPath != "" && m_progressTrackingItem->m_strPath != CurrentFile())
+  {
+    SaveFileState();
+
+    // Reset tracking item
+    m_progressTrackingItem->Reset();
+  }
+  else
   if (IsPlayingVideo() || IsPlayingAudio())
   {
-    if (m_progressTrackingFile == "")
+    if (m_progressTrackingItem->m_strPath == "")
     {
       // Init some stuff
-      m_progressTrackingIsVideo = IsPlayingVideo();
-      m_progressTrackingFile = CurrentFile();
+      *m_progressTrackingItem = CurrentFileItem();
       m_progressTrackingPlayCountUpdate = false;
     }
 
-    // Only update when our filestate is stable so we don't pick the wrong file when ie. crossfading
-    if (m_progressTrackingFile == CurrentFile() && m_progressTrackingIsVideo == IsPlayingVideo())
+    if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+        GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
+        (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+        GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
     {
+      m_progressTrackingPlayCountUpdate = true;
+    }
 
-      if ((!m_progressTrackingIsVideo && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-          GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
-          (m_progressTrackingIsVideo && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-          GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
-      {
-        m_progressTrackingPlayCountUpdate = true;
-      }
-
+    if (m_progressTrackingItem->IsVideo())
+    {
       // Update bookmark for save
-      if (m_progressTrackingIsVideo)
-      {
-        m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-        m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-        m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
+      m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+      m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+      m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
-        if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
-            GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
-        {
-          // Delete the bookmark
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
-        }
-        else
-        if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
-        {
-          // Update the bookmark
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
-        }
-        else
-        {
-          // Do nothing
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
-        }
+      if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
+          GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+      {
+        // Delete the bookmark
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+      }
+      else
+      if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+      {
+        // Update the bookmark
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+      }
+      else
+      {
+        // Do nothing
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
       }
     }
   }
