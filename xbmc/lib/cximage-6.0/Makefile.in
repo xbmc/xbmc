@@ -14,9 +14,6 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	CXXFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 	DIRS+=jasper jpeg
 	SLIBS+=jasper/jasper.a jpeg/jpeg.a
-else
-	DIRS+=zlib
-	SLIBS+=zlib/libz.a
 endif
 
 .PHONY: compile
@@ -28,9 +25,9 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 		CxImage/*.o jasper/*/*.o jbig/*.o jpeg/*.o raw/*.o tiff/*.o
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
-else 
+else
 	$(CXX) -shared -o $(SLIB) -Wl,--whole-archive -lpng -ljasper -ljpeg \
-		$(SLIBS) -Wl,--no-whole-archive \
+		-lz $(SLIBS) -Wl,--no-whole-archive \
 		`cat ../../cores/DllLoader/exports/wrapper.def` \
 		../../cores/DllLoader/exports/wrapper.o
 endif
