@@ -7,7 +7,7 @@
 # Default-Stop:      0 1 6
 # Short-Description: start and stop XBMC Live
 # Description: XBMC Live is the XBMC media center software bundled with an
-#              embedded operating-system, for that set-top-box felling.
+#              embedded operating-system, for that set-top-box feeling.
 ### END INIT INFO
 
 # Do NOT "set -e"
