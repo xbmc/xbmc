@@ -7114,8 +7114,6 @@ $as_echo "$as_me: error: $missing_library" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
-# platform dependent libraries
-if test "$host_vendor" = "apple" ; then
 
 { $as_echo "$as_me:$LINENO: checking for main in -lz" >&5
 $as_echo_n "checking for main in -lz... " >&6; }
@@ -7189,6 +7187,8 @@ $as_echo "$as_me: error: $missing_library" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+# platform dependent libraries
+if test "$host_vendor" = "apple" ; then
 
 { $as_echo "$as_me:$LINENO: checking for main in -liconv" >&5
 $as_echo_n "checking for main in -liconv... " >&6; }
@@ -21426,9 +21426,6 @@ if [ 0 != "1" ]; then
   if test "$host_vendor" = "apple" ; then
     export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-    ./configure
-  else
-    CFLAGS=-fPIC \
     ./configure
   fi
 
