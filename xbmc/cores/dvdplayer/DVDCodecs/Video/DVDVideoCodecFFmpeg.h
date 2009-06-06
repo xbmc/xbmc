@@ -37,7 +37,7 @@ public:
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
-  virtual const char* GetName() { return "FFmpeg"; };
+  virtual const char* GetName() { return m_name.c_str(); }; // m_name is never changed after open
 
 protected:
   friend int my_get_buffer(struct AVCodecContext *, AVFrame *);
@@ -59,5 +59,6 @@ protected:
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
+  std::string m_name;
 };
 

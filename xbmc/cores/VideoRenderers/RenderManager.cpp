@@ -98,6 +98,13 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
   return result;
 }
 
+bool CXBoxRenderManager::IsConfigured()
+{
+  if (!m_pRenderer)
+    return false;
+  return m_pRenderer->IsConfigured();
+}
+
 void CXBoxRenderManager::Update(bool bPauseDrawing)
 {
   DWORD locks = ExitCriticalSection(g_graphicsContext);

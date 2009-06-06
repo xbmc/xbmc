@@ -67,6 +67,7 @@ DVDVideoUserData;
 #define DVP_FLAG_NOSKIP             0x00000010 // indicate this picture should never be dropped
 #define DVP_FLAG_DROPPED            0x00000020 // indicate that this picture has been dropped in decoder stage, will have no data
 #define DVP_FLAG_NOAUTOSYNC         0x00000040 // disregard any smooth syncing on this picture
+#define DVP_FLAG_NONIMAGE           0x00000080 // data in picture is not a YUV image
 
 // DVP_FLAG 0x00000100 - 0x00000f00 is in use by libmpeg2!
 

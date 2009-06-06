@@ -77,13 +77,14 @@ public:
 private:
 
   HANDLE m_hEvent;
-  CRITICAL_SECTION m_critSection;
+  mutable CRITICAL_SECTION m_critSection;
   
   DVDMessageListItem* m_pFirstMessage;
   DVDMessageListItem* m_pLastMessage;
   
   bool m_bAbortRequest;
   bool m_bInitialized;
+  bool m_bCaching;
 
   int m_iDataSize;
   int m_iMaxDataSize;

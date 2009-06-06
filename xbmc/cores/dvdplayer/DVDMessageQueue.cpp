@@ -33,6 +33,7 @@ CDVDMessageQueue::CDVDMessageQueue(const string &owner)
   m_iDataSize     = 0;
   m_bAbortRequest = false;
   m_bInitialized  = false;
+  m_bCaching      = false;
   m_bEmptied      = true;
   
   InitializeCriticalSection(&m_critSection);
@@ -211,7 +212,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
   while (!m_bAbortRequest)
   {
     msgItem = m_pFirstMessage;
-    if (msgItem && msgItem->priority >= priority)
+    if (msgItem && msgItem->priority >= priority && !m_bCaching)
     {
       m_pFirstMessage = msgItem->pNext;
       

@@ -59,12 +59,13 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // avcodec_get_context_defaults(m_pCodecContext);
 
   pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
-  if (!pCodec)
+  if(pCodec == NULL)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to find codec %d", hints.codec);
     return false;
   }
 
+  CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using codec: %s",pCodec->long_name ? pCodec->long_name : pCodec->name);
   m_pCodecContext->opaque = (void*)this;
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
@@ -117,6 +118,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
   if (!m_pFrame) return false;
+
+  if(pCodec->name)
+    m_name = CStdString("ff-") + pCodec->name;
+  else
+    m_name = "ffmpeg";
 
   return true;
 }
@@ -202,7 +208,7 @@ static double pts_itod(int64_t pts)
 
 int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 {
-  int iGotPicture = 0, len = 0;
+  int iGotPicture = 0, len = 0, result = 0;
 
   if (!m_pCodecContext) 
     return VC_ERROR;
@@ -230,7 +236,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
   if (!iGotPicture)
     return VC_BUFFER;
 
-  if (m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
+  if(m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
    && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P)
   {
     if (!m_dllSwScale.IsLoaded())
@@ -283,7 +289,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     }
   }
 
-  return VC_PICTURE | VC_BUFFER;
+  result = VC_PICTURE | VC_BUFFER;
+  return result;
 }
 
 void CDVDVideoCodecFFmpeg::Reset()
