@@ -247,7 +247,6 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
     return 0;
 
   CStdString name = Normalize(Filename);
-  CLog::Log(LOGDEBUG, "%s, loading %s", __FUNCTION__, name.c_str());
 
   std::map<CStdString, FileHeader_t>::iterator file = m_FileHeaders.find(name);
   if (file == m_FileHeaders.end())
