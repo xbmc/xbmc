@@ -86,6 +86,13 @@ void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
   m_pd3dParams = p3dParams;
 }
 
+bool CGraphicContext::SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1, DWORD param2)
+{
+  if (!m_pCallback) return false;
+  CGUIMessage msg(message, senderID, destID, param1, param2);
+  return m_pCallback->SendMessage(msg);
+}
+
 bool CGraphicContext::SendMessage(CGUIMessage& message)
 {
   if (!m_pCallback) return false;

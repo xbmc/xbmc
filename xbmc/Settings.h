@@ -249,6 +249,7 @@ public:
     bool m_bVideoLibraryHideRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
+    bool m_bVideoLibraryExportAutoThumbs;
 
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
@@ -262,6 +263,7 @@ public:
     int m_iTuxBoxZapWaitTime;
     bool m_bTuxBoxSendAllAPids;
 
+    int m_iMythMovieLength;         // minutes
     bool m_bFirstLoop;
     int m_curlconnecttimeout;
     int m_curllowspeedtime;

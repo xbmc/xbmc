@@ -607,6 +607,10 @@ public:
   void SetLaunchingXBEName(const CStdString &name) { m_launchingXBE = name; };
   void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
 
+  void SetLibraryBool(int condition, bool value);
+  bool GetLibraryBool(int condition);
+  void ResetLibraryBools();
+
 protected:
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
@@ -692,6 +696,10 @@ protected:
 
   // persistent cache
   std::map<int, bool> m_persistentBoolCache;
+  int m_libraryHasMusic;
+  int m_libraryHasMovies;
+  int m_libraryHasTVShows;
+  int m_libraryHasMusicVideos;
 
   CCriticalSection m_critInfo;
 };

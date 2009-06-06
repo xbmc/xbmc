@@ -51,6 +51,7 @@ CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_analogScrollCount = 0;
   m_lastItem = NULL;
   m_staticContent = false;
+  m_staticUpdateTime = 0;
   m_wasReset = false;
   m_layout = NULL;
   m_focusedLayout = NULL;
@@ -756,13 +757,12 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     // be visible.  Save the previous item and keep it if we are adding that one.
     CGUIListItem *lastItem = m_lastItem;
     Reset();
-    static DWORD lastUpdateTime = 0;
     bool updateItems = false;
-    if (!lastUpdateTime)
-      lastUpdateTime = timeGetTime();
-    if (timeGetTime() - lastUpdateTime > 1000)
+    if (!m_staticUpdateTime)
+      m_staticUpdateTime = timeGetTime();
+    if (timeGetTime() - m_staticUpdateTime > 1000)
     {
-      lastUpdateTime = timeGetTime();
+      m_staticUpdateTime = timeGetTime();
       updateItems = true;
     }
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
@@ -997,6 +997,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
 void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
 {
   m_staticContent = true;
+  m_staticUpdateTime = 0;
   m_staticItems.clear();
   m_staticItems.assign(items.begin(), items.end());
   UpdateVisibility();
