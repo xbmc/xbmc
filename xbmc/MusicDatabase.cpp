@@ -215,8 +215,6 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     CStdStringArray vecGenres; CStdString extraGenres;
     SplitString(song.strGenre, vecGenres, extraGenres);
 
-    BeginTransaction();
-    
     // add the primary artist/genre
     // SplitString returns >= 1 so no worries referencing the first item here
     long lArtistId = AddArtist(vecArtists[0]);
@@ -251,10 +249,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
                     lAlbumId, crc, song.strTitle.c_str());
       
       if (!m_pDS->query(strSQL.c_str()))
-      {
-        CommitTransaction();
         return;
-      }
       
       if (m_pDS->num_rows() != 0)
       {
@@ -307,7 +302,6 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
       AddKaraokeData( mysong );
     }
 #endif
-    CommitTransaction();
   }
   catch (...)
   {
@@ -3277,11 +3271,6 @@ unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<
   return 0;
 }
 
-int CMusicDatabase::GetSongsCount()
-{
-  return GetSongsCount((CStdString)"");
-}
-
 int CMusicDatabase::GetSongsCount(const CStdString& strWhere)
 {
   try
@@ -3987,7 +3976,7 @@ bool CMusicDatabase::CommitTransaction()
 {
   if (CDatabase::CommitTransaction())
   { // number of items in the db has likely changed, so reset the infomanager cache
-    g_infoManager.ResetPersistentCache();
+    g_infoManager.SetLibraryBool(LIBRARY_HAS_MUSIC, GetSongsCount("") > 0);
     return true;
   }
   return false;

@@ -4102,14 +4102,14 @@ bool CVideoDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
       CStdString group;
       if (idContent == VIDEODB_CONTENT_MOVIES)
       {
-        strSQL = FormatSQL("select movie.c%02d,count(1),count(files.playCount) from movie join files on files.idFile=movie.idFile group by movie.c%02d", VIDEODB_ID_YEAR, VIDEODB_ID_YEAR);
+        strSQL = FormatSQL("select movie.c%02d,count(1),count(files.playCount) from movie join files on files.idFile=movie.idFile", VIDEODB_ID_YEAR);
         group = FormatSQL(" group by movie.c%02d", VIDEODB_ID_YEAR);
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
         strSQL = FormatSQL("select distinct tvshow.c%02d from tvshow", VIDEODB_ID_TV_PREMIERED);
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
-        strSQL = FormatSQL("select musicvideo.c%02d,count(1),count(files.playCount) from musicvideo join files on files.idFile=musicvideo.idFile group by musicvideo.c%02d", VIDEODB_ID_MUSICVIDEO_YEAR, VIDEODB_ID_MUSICVIDEO_YEAR);
+        strSQL = FormatSQL("select musicvideo.c%02d,count(1),count(files.playCount) from musicvideo join files on files.idFile=musicvideo.idFile", VIDEODB_ID_MUSICVIDEO_YEAR);
         group = FormatSQL(" group by musicvideo.c%02d", VIDEODB_ID_MUSICVIDEO_YEAR);
       }
       strSQL += group;
@@ -4950,8 +4950,8 @@ bool CVideoDatabase::HasContent(VIDEODB_CONTENT_TYPE type)
   bool result = false;
   try
   {
-    if (NULL == m_pDB.get()) return 0;
-    if (NULL == m_pDS.get()) return 0;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
 
     CStdString sql;
     if (type == VIDEODB_CONTENT_MOVIES)
@@ -6488,9 +6488,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (images && !bSkip)
         {
-          if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetTBNFile())))
-            if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetTBNFile()))
-              CLog::Log(LOGERROR, "%s: Movie thumb export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedVideoThumb().c_str(), item.GetTBNFile().c_str());
+          CStdString cachedThumb(GetCachedThumb(item));
+          if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile())))
+            if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
+              CLog::Log(LOGERROR, "%s: Movie thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
 
           CStdString strFanart;
           CUtil::ReplaceExtension(item.GetTBNFile(), "-fanart.jpg", strFanart);
@@ -6575,9 +6576,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (images && !bSkip)
         {
-          if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetTBNFile())))
-            if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetTBNFile()))
-              CLog::Log(LOGERROR, "%s: Musicvideo thumb export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedVideoThumb().c_str(), item.GetTBNFile().c_str());
+          CStdString cachedThumb(GetCachedThumb(item));
+          if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile())))
+            if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
+              CLog::Log(LOGERROR, "%s: Musicvideo thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
 
         }
       }
@@ -6654,9 +6656,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
         if (images && !bSkip)
         {
-          if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetFolderThumb())))
-            if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetFolderThumb()))
-              CLog::Log(LOGERROR, "%s: TVShow thumb export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedVideoThumb().c_str(), item.GetFolderThumb().c_str());
+          CStdString cachedThumb(GetCachedThumb(item));
+          if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetFolderThumb())))
+            if (!CFile::Cache(cachedThumb,item.GetFolderThumb()))
+              CLog::Log(LOGERROR, "%s: TVShow thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetFolderThumb().c_str());
 
           if (CFile::Exists(item.GetCachedFanart()) && (overwrite || !CFile::Exists(item.GetFolderThumb("fanart.jpg"))))
             if (!CFile::Cache(item.GetCachedFanart(),item.GetFolderThumb("fanart.jpg")))
@@ -6772,9 +6775,10 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
           if (images && !bSkip)
           {
-            if (CFile::Exists(item.GetCachedVideoThumb()) && (overwrite || !CFile::Exists(item.GetTBNFile())))
-              if (!CFile::Cache(item.GetCachedVideoThumb(),item.GetTBNFile()))
-                CLog::Log(LOGERROR, "%s: Episode thumb export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedVideoThumb().c_str(), item.GetTBNFile().c_str());
+            CStdString cachedThumb(GetCachedThumb(item));
+            if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile())))
+              if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
+                CLog::Log(LOGERROR, "%s: Episode thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
           }
         }
         pDS->next();
@@ -6823,6 +6827,22 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
   if (progress)
     progress->Close();
+}
+
+CStdString CVideoDatabase::GetCachedThumb(const CFileItem& item) const
+{
+  CStdString cachedThumb(item.GetCachedVideoThumb());
+  if (!CFile::Exists(cachedThumb) && g_advancedSettings.m_bVideoLibraryExportAutoThumbs)
+  {
+    CStdString strPath, strFileName;
+    CUtil::Split(cachedThumb, strPath, strFileName);
+    cachedThumb = strPath + "auto-" + strFileName;
+  }
+
+  if (CFile::Exists(cachedThumb))
+    return cachedThumb;
+  else
+    return "";
 }
 
 bool CVideoDatabase::ExportSkipEntry(const CStdString &nfoFile)
@@ -7066,8 +7086,10 @@ void CVideoDatabase::InvalidatePathHash(const CStdString& strPath)
 bool CVideoDatabase::CommitTransaction()
 {
   if (CDatabase::CommitTransaction())
-  { // number of items in the db has likely changed, so reset the infomanager cache
-    g_infoManager.ResetPersistentCache();
+  { // number of items in the db has likely changed, so recalculate
+    g_infoManager.SetLibraryBool(LIBRARY_HAS_MOVIES, HasContent(VIDEODB_CONTENT_MOVIES));
+    g_infoManager.SetLibraryBool(LIBRARY_HAS_TVSHOWS, HasContent(VIDEODB_CONTENT_TVSHOWS));
+    g_infoManager.SetLibraryBool(LIBRARY_HAS_MUSICVIDEOS, HasContent(VIDEODB_CONTENT_MUSICVIDEOS));
     return true;
   }
   return false;

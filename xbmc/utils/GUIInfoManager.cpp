@@ -104,6 +104,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_stringParameters.push_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
   m_currentFile = new CFileItem;
   m_currentSlide = new CFileItem;
+  ResetLibraryBools();
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -1665,42 +1666,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   }
   else if (condition == PLAYER_MUTED)
     bReturn = g_stSettings.m_bMute;
-  else if (condition == LIBRARY_HAS_MUSIC)
-  {
-    CMusicDatabase database;
-    database.Open();
-    bReturn = (database.GetSongsCount() > 0);
-    database.Close();
-    if (condition1 < 0) bReturn = !bReturn;
-    CacheBool(condition1,dwContextWindow,bReturn,true);
-  }
-  else if (condition >= LIBRARY_HAS_VIDEO &&
-      condition <= LIBRARY_HAS_MUSICVIDEOS)
-  {
-    CVideoDatabase database;
-    database.Open();
-    switch (condition)
-    {
-      case LIBRARY_HAS_VIDEO:
-        bReturn = database.HasContent();
-        break;
-      case LIBRARY_HAS_MOVIES:
-        bReturn = database.HasContent(VIDEODB_CONTENT_MOVIES);
-        break;
-      case LIBRARY_HAS_TVSHOWS:
-        bReturn = database.HasContent(VIDEODB_CONTENT_TVSHOWS);
-        break;
-      case LIBRARY_HAS_MUSICVIDEOS:
-        bReturn = database.HasContent(VIDEODB_CONTENT_MUSICVIDEOS);
-        break;
-      default: // should never get here
-        bReturn = false;
-    }
-    database.Close();
-    // persistently cache return value
-    if (condition1 < 0) bReturn = !bReturn;
-    CacheBool(condition1,dwContextWindow,bReturn,true);
-  }
+  else if (condition >= LIBRARY_HAS_MUSIC && condition <= LIBRARY_HAS_MUSICVIDEOS)
+    bReturn = GetLibraryBool(condition);
   else if (condition == LIBRARY_IS_SCANNING)
   {
     CGUIDialogMusicScan *musicScanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
@@ -4097,4 +4064,96 @@ uint32_t GUIInfo::GetData1() const
 int GUIInfo::GetData2() const
 {
   return m_data2;
+}
+
+void CGUIInfoManager::SetLibraryBool(int condition, bool value)
+{
+  switch (condition)
+  {
+    case LIBRARY_HAS_MUSIC:
+      m_libraryHasMusic = value ? 1 : 0;
+      break;
+    case LIBRARY_HAS_MOVIES:
+      m_libraryHasMovies = value ? 1 : 0;
+      break;
+    case LIBRARY_HAS_TVSHOWS:
+      m_libraryHasTVShows = value ? 1 : 0;
+      break;
+    case LIBRARY_HAS_MUSICVIDEOS:
+      m_libraryHasMusicVideos = value ? 1 : 0;
+      break;
+    default:
+      break;
+  }
+}
+
+void CGUIInfoManager::ResetLibraryBools()
+{
+  m_libraryHasMusic = -1;
+  m_libraryHasMovies = -1;
+  m_libraryHasTVShows = -1;
+  m_libraryHasMusicVideos = -1;
+}
+
+bool CGUIInfoManager::GetLibraryBool(int condition)
+{
+  if (condition == LIBRARY_HAS_MUSIC)
+  {
+    if (m_libraryHasMusic < 0)
+    { // query
+      CMusicDatabase db;
+      if (db.Open())
+      {
+        m_libraryHasMusic = (db.GetSongsCount() > 0) ? 1 : 0;
+        db.Close();
+      }
+    }
+    return m_libraryHasMusic > 0;
+  }
+  else if (condition == LIBRARY_HAS_MOVIES)
+  {
+    if (m_libraryHasMovies < 0)
+    {
+      CVideoDatabase db;
+      if (db.Open())
+      {
+        m_libraryHasMovies = db.HasContent(VIDEODB_CONTENT_MOVIES) ? 1 : 0;
+        db.Close();
+      }
+    }
+    return m_libraryHasMovies > 0;
+  }
+  else if (condition == LIBRARY_HAS_TVSHOWS)
+  {
+    if (m_libraryHasTVShows < 0)
+    {
+      CVideoDatabase db;
+      if (db.Open())
+      {
+        m_libraryHasTVShows = db.HasContent(VIDEODB_CONTENT_TVSHOWS) ? 1 : 0;
+        db.Close();
+      }
+    }
+    return m_libraryHasTVShows > 0;
+  }
+  else if (condition == LIBRARY_HAS_MUSICVIDEOS)
+  {
+    if (m_libraryHasMusicVideos < 0)
+    {
+      CVideoDatabase db;
+      if (db.Open())
+      {
+        m_libraryHasMusicVideos = db.HasContent(VIDEODB_CONTENT_MUSICVIDEOS) ? 1 : 0;
+        db.Close();
+      }
+    }
+    return m_libraryHasMusicVideos > 0;
+  }
+  else if (condition == LIBRARY_HAS_VIDEO)
+  {
+    return (GetLibraryBool(LIBRARY_HAS_MOVIES) ||
+            GetLibraryBool(LIBRARY_HAS_TVSHOWS) || 
+            GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS));
+  }
+  return false;
 }

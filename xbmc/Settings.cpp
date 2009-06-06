@@ -244,6 +244,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems = false;
   g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
   g_advancedSettings.m_bVideoLibraryCleanOnUpdate = false;
+  g_advancedSettings.m_bVideoLibraryExportAutoThumbs = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
@@ -255,6 +256,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_iTuxBoxDefaultSubMenu = 4;
   g_advancedSettings.m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
+
+  g_advancedSettings.m_iMythMovieLength = 0; // 0 == Off
 
   g_advancedSettings.m_curlconnecttimeout = 10;
   g_advancedSettings.m_curllowspeedtime = 5;
@@ -1046,7 +1049,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetInt(pElement, "headroom", g_advancedSettings.m_audioHeadRoom, 0, 12);
     XMLUtils::GetFloat(pElement, "karaokesyncdelay", g_advancedSettings.m_karaokeSyncDelay, -3.0f, 3.0f);
     XMLUtils::GetString(pElement, "defaultplayer", g_advancedSettings.m_audioDefaultPlayer);
-    XMLUtils::GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_audioPlayCountMinimumPercent, 0.0f, 100.0f);
+    XMLUtils::GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_audioPlayCountMinimumPercent, 0.0f, 100.0f);
     
     XMLUtils::GetBoolean(pElement, "usetimeseeking", g_advancedSettings.m_musicUseTimeSeeking);
     XMLUtils::GetInt(pElement, "timeseekforward", g_advancedSettings.m_musicTimeSeekForward, 0, 6000);
@@ -1078,7 +1081,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetFloat(pElement, "audiodelayrange", g_advancedSettings.m_videoAudioDelayRange, 10, 600);
     XMLUtils::GetInt(pElement, "blackbarcolour", g_advancedSettings.m_videoBlackBarColour, 0, 255);
     XMLUtils::GetString(pElement, "defaultplayer", g_advancedSettings.m_videoDefaultPlayer);
-    XMLUtils::GetFloat(pRootElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
+    XMLUtils::GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
     XMLUtils::GetInt(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
     XMLUtils::GetInt(pElement, "ignoreatend", g_advancedSettings.m_videoIgnoreAtEnd, 0, 900);
 
@@ -1137,6 +1140,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "hideemptyseries", g_advancedSettings.m_bVideoLibraryHideEmptySeries);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
+    XMLUtils::GetBoolean(pElement, "exportautothumbs", g_advancedSettings.m_bVideoLibraryExportAutoThumbs);
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");
@@ -1226,6 +1230,13 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetInt(pElement, "defaultrootmenu", g_advancedSettings.m_iTuxBoxDefaultRootMenu, 0, 4);
     XMLUtils::GetInt(pElement, "zapwaittime", g_advancedSettings.m_iTuxBoxZapWaitTime, 0, 120);
 
+  }
+  
+  // Myth TV
+  pElement = pRootElement->FirstChildElement("myth");
+  if (pElement)
+  {
+    XMLUtils::GetInt(pElement, "movielength", g_advancedSettings.m_iMythMovieLength);
   }
 
   // picture exclude regexps
@@ -1875,6 +1886,7 @@ bool CSettings::LoadProfile(int index)
     g_localizeStrings.Load(strLanguagePath);
 
     g_infoManager.ResetCache();
+    g_infoManager.ResetLibraryBools();
 
     // always reload the skin - we need it for the new language strings
     g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
