@@ -1592,7 +1592,7 @@ void CSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLI
       bool bByDate = false;
       if (pRegExp->ToElement())
       {
-        CStdString byDate = pRegExp->ToElement()->Attribute("byDate");
+        CStdString byDate = pRegExp->ToElement()->Attribute("bydate");
         if(byDate && stricmp(byDate, "true") == 0)
         {
           bByDate = true;
