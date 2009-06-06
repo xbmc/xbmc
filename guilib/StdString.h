@@ -1716,6 +1716,14 @@ inline void ssupr(CT* pT, size_t nLen, const std::locale& loc=std::locale())
   {
     return ::LoadStringW(hInst, uId, pBuf, nMax);
   }
+  inline int ssload(HMODULE hInst, UINT uId, uint16_t *pBuf, int nMax)
+  {
+    return 0;
+  }
+  inline int ssload(HMODULE hInst, UINT uId, uint32_t *pBuf, int nMax)
+  {
+    return 0;
+  }
 #endif
 
 
