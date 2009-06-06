@@ -126,11 +126,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   { // non halfres mode, we can use other decoders
     if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
     {
-      if( pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, CDVDCodecOptions()) ) return pCodec;
+      CDVDCodecOptions dvdOptions;
+
+      if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, dvdOptions)) ) return pCodec;
     }
   }
 
-  if( pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, CDVDCodecOptions()) ) return pCodec;
+  CDVDCodecOptions dvdOptions;
+  if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
 
   return NULL;
 }

@@ -356,6 +356,9 @@ bool CDVDPlayer::CloseFile()
   m_Edl.Reset();
 
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
+#if defined(HAS_VIDEO_PLAYBACK)
+  g_renderManager.UnInit();
+#endif
 
   return true;
 }
@@ -788,11 +791,12 @@ void CDVDPlayer::Process()
   if (m_pDlgCache)
     m_pDlgCache->SetMessage(g_localizeStrings.Get(10213));
 
-//#if 1 // disable this until our queues are time based
+  // We keep this in place as Xbox will suffer from A/V desync
+  // at start otherwise
   if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
   && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
     SetCaching(true);
-//#endif
+
 
   while (!m_bAbortRequest)
   {

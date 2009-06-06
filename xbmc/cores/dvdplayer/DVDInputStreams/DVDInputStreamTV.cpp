@@ -49,7 +49,6 @@ bool CDVDInputStreamTV::Open(const char* strFile, const std::string& content)
   if (!CDVDInputStream::Open(strFile, content)) return false;
 
   m_pFile = new CCMythFile();
-  if (!m_pFile) return false;
   m_pLiveTV = ((CCMythFile*)m_pFile)->GetLiveTV();
   m_pRecordable = ((CCMythFile*)m_pFile)->GetRecordable();
 

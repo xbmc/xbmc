@@ -52,6 +52,7 @@ public:
 
   // Functions called from mplayer
   bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  bool IsConfigured();
 
   // a call to GetImage must be followed by a call to releaseimage if getimage was successfull
   // failure to do so will result in deadlock

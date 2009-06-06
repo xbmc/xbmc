@@ -27,7 +27,7 @@
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
 #include "Settings.h"
-#include "FileSystem/IFile.h"
+#include "FileSystem/File.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -132,7 +132,7 @@ static int dvd_file_write(URLContext *h, BYTE* buf, int size)
   return -1;
 }
 */
-static __int64 dvd_file_seek(URLContext *h, __int64 pos, int whence)
+static offset_t dvd_file_seek(URLContext *h, offset_t pos, int whence)
 {
   if(interrupt_cb())
     return -1;
@@ -653,7 +653,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
             pkt.pts = AV_NOPTS_VALUE;
         }
 
-        //we need to get duration slightly different for matroska embedded text subtitels
+        // we need to get duration slightly different for matroska embedded text subtitels
         if(m_bMatroska && stream->codec->codec_id == CODEC_ID_TEXT && pkt.convergence_duration != 0)
             pkt.duration = pkt.convergence_duration;
 
@@ -925,6 +925,23 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         m_streams[iId] = st;
         if(pStream->codec)
           st->identifier = pStream->codec->sub_id;
+        break;
+      }
+    case CODEC_TYPE_ATTACHMENT:
+      { //mkv attachments. Only bothering with fonts for now.
+        if(pStream->codec->codec_id == CODEC_ID_TTF)
+        {
+          XFILE::CFile file;
+          std::string fileName = "special://temp/";
+          fileName += pStream->filename;
+          if(file.OpenForWrite(fileName) && pStream->codec->extradata)
+          {
+            file.Write(pStream->codec->extradata, pStream->codec->extradata_size);
+            file.Close();
+          }
+        }
+        m_streams[iId] = new CDemuxStream();
+        m_streams[iId]->type = STREAM_NONE;
         break;
       }
     default:
