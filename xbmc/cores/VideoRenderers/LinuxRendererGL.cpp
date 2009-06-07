@@ -73,6 +73,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_iFlags = 0;
 
   m_iYV12RenderBuffer = 0;
+  m_flipindex = 0;
   m_pOSDYBuffer = NULL;
   m_pOSDABuffer = NULL;
   m_currentField = FIELD_FULL;
@@ -787,10 +788,13 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   m_bImageReady = true;
 }
 
-void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type
+void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                                 , int width, int height
                                 , int stride, void* data )
 {
+  if(plane.flipindex == flipindex)
+    return;
+
   glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
   glBindTexture(m_textureTarget, plane.id);
   glTexSubImage2D(m_textureTarget, 0, 0, 0, width, height, type, GL_UNSIGNED_BYTE, data);
@@ -810,6 +814,8 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   glBindTexture(m_textureTarget, 0);
+
+  plane.flipindex = flipindex;
 }
 
 void CLinuxRendererGL::LoadTextures(int source)
@@ -945,17 +951,17 @@ void CLinuxRendererGL::LoadTextures(int source)
     // Load RGB image
     if (deinterlacing)
     {
-      LoadPlane( fields[FIELD_ODD][0] , GL_BGRA
+      LoadPlane( fields[FIELD_ODD][0] , GL_BGRA, im->flipindex
                , im->width, im->height >> 1
                , m_iSourceWidth*2, m_rgbBuffer );
 
-      LoadPlane( fields[FIELD_EVEN][0], GL_BGRA
+      LoadPlane( fields[FIELD_EVEN][0], GL_BGRA, im->flipindex
                , im->width, im->height >> 1
                , m_iSourceWidth*2, m_rgbBuffer + m_iSourceWidth*4);      
     }
     else
     {
-      LoadPlane( fields[FIELD_FULL][0], GL_BGRA
+      LoadPlane( fields[FIELD_FULL][0], GL_BGRA, im->flipindex
                , im->width, im->height
                , m_iSourceWidth, m_rgbBuffer );
     }
@@ -967,18 +973,18 @@ void CLinuxRendererGL::LoadTextures(int source)
     if (deinterlacing)
     {
       // Load Y fields
-      LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE
+      LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE, im->flipindex
                , im->width, im->height >> 1
                , im->stride[0]*2, im->plane[0] );
 
-      LoadPlane( fields[FIELD_EVEN][0], GL_LUMINANCE
+      LoadPlane( fields[FIELD_EVEN][0], GL_LUMINANCE, im->flipindex
                , im->width, im->height >> 1
                , im->stride[0]*2, im->plane[0] + im->stride[0]) ;     
     }
     else
     {
       // Load Y plane
-      LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE
+      LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, im->flipindex
                , im->width, im->height
                , im->stride[0], im->plane[0] );
     }
@@ -1005,31 +1011,31 @@ void CLinuxRendererGL::LoadTextures(int source)
     if (deinterlacing)
     {
       // Load Even U & V Fields
-      LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE
+      LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE, im->flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[1]*2, im->plane[1] );
 
-      LoadPlane( fields[FIELD_ODD][2], GL_LUMINANCE
+      LoadPlane( fields[FIELD_ODD][2], GL_LUMINANCE, im->flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] );
       
       // Load Odd U & V Fields
-      LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE
+      LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE, im->flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[1]*2, im->plane[1] + im->stride[1] );
 
-      LoadPlane( fields[FIELD_EVEN][2], GL_LUMINANCE
+      LoadPlane( fields[FIELD_EVEN][2], GL_LUMINANCE, im->flipindex
                , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
                , im->stride[2]*2, im->plane[2] + im->stride[2] );
       
     }
     else
     {
-      LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE
+      LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, im->flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[1], im->plane[1] );
 
-      LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE
+      LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE, im->flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[2], im->plane[2] );
     }
@@ -1191,6 +1197,8 @@ void CLinuxRendererGL::FlipPage(int source)
     m_iYV12RenderBuffer = source;
   else
     m_iYV12RenderBuffer = NextYV12Texture();
+
+  m_image[m_iYV12RenderBuffer].flipindex = ++m_flipindex;
 
   /* we always decode into to the next buffer */
   //++m_iOSDRenderBuffer %= m_NumOSDBuffers;
