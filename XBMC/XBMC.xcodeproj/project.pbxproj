@@ -105,7 +105,6 @@
 		88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6580DE013C4003396A7 /* DiskArbitration.framework */; };
 		88ECB6E70DE07BA6003396A7 /* libfontconfig.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */; };
 		88ECB6EA0DE07BEE003396A7 /* libogg.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */; };
-		88ECB6EC0DE07C56003396A7 /* libmysqlclient.15.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6EB0DE07C56003396A7 /* libmysqlclient.15.dylib */; };
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
@@ -839,6 +838,8 @@
 		E46465180E7E4D20003CB291 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465160E7E4D20003CB291 /* NptPosixFile.cpp */; };
 		E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
 		E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */; };
+		E4907BF80FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
+		E4907BF90FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
@@ -1719,7 +1720,6 @@
 		F5A1CBBB0F6B06CF00A96ABD /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6580DE013C4003396A7 /* DiskArbitration.framework */; };
 		F5A1CBBC0F6B06CF00A96ABD /* libfontconfig.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */; };
 		F5A1CBBD0F6B06CF00A96ABD /* libogg.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */; };
-		F5A1CBBE0F6B06CF00A96ABD /* libmysqlclient.15.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6EB0DE07C56003396A7 /* libmysqlclient.15.dylib */; };
 		F5A1CBBF0F6B06CF00A96ABD /* libbz2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 889693360DF0B72500F1DA75 /* libbz2.1.0.dylib */; };
 		F5A1CBC00F6B06CF00A96ABD /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F5A1CBC10F6B06CF00A96ABD /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
@@ -1904,7 +1904,6 @@
 		88ECB6580DE013C4003396A7 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = /System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<absolute>"; };
 		88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfontconfig.1.dylib; path = /opt/local/lib/libfontconfig.1.dylib; sourceTree = "<absolute>"; };
 		88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.dylib; path = /opt/local/lib/libogg.0.dylib; sourceTree = "<absolute>"; };
-		88ECB6EB0DE07C56003396A7 /* libmysqlclient.15.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.15.dylib; path = /opt/local/lib/mysql5/mysql/libmysqlclient.15.dylib; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
@@ -3576,6 +3575,7 @@
 		E46F7C290F77217400C25D29 /* Zeroconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zeroconf.h; sourceTree = "<group>"; };
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZeroconfOSX.mm; sourceTree = "<group>"; };
+		E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = /opt/local/lib/mysql5/mysql/libmysqlclient.dylib; sourceTree = "<absolute>"; };
 		E4DF6CD80EFF85EB00C28243 /* CHANGELOG.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.txt; sourceTree = "<group>"; };
 		E4DF6CD90EFF85EB00C28243 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E4DF6CDA0EFF85EB00C28243 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
@@ -3750,7 +3750,6 @@
 				88ECB6590DE013C4003396A7 /* DiskArbitration.framework in Frameworks */,
 				88ECB6E70DE07BA6003396A7 /* libfontconfig.1.dylib in Frameworks */,
 				88ECB6EA0DE07BEE003396A7 /* libogg.0.dylib in Frameworks */,
-				88ECB6EC0DE07C56003396A7 /* libmysqlclient.15.dylib in Frameworks */,
 				889693370DF0B72500F1DA75 /* libbz2.1.0.dylib in Frameworks */,
 				F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */,
 				F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */,
@@ -3764,6 +3763,7 @@
 				F5AAC9CF0FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */,
 				F59876C40FBA3569008EF4FB /* libsamplerate.dylib in Frameworks */,
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
+				E4907BF80FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3793,7 +3793,6 @@
 				F5A1CBBB0F6B06CF00A96ABD /* DiskArbitration.framework in Frameworks */,
 				F5A1CBBC0F6B06CF00A96ABD /* libfontconfig.1.dylib in Frameworks */,
 				F5A1CBBD0F6B06CF00A96ABD /* libogg.0.dylib in Frameworks */,
-				F5A1CBBE0F6B06CF00A96ABD /* libmysqlclient.15.dylib in Frameworks */,
 				F5A1CBBF0F6B06CF00A96ABD /* libbz2.1.0.dylib in Frameworks */,
 				F5A1CBC00F6B06CF00A96ABD /* libiconv.dylib in Frameworks */,
 				F5A1CBC10F6B06CF00A96ABD /* libz.dylib in Frameworks */,
@@ -3811,6 +3810,7 @@
 				F5AAC9D00FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */,
 				F59876C50FBA3569008EF4FB /* libsamplerate.dylib in Frameworks */,
 				F59879090FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
+				E4907BF90FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6762,6 +6762,7 @@
 		F57E1ED30E36E96B00700C9D /* macport libs */ = {
 			isa = PBXGroup;
 			children = (
+				E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */,
 				E38E24270D26317D00618676 /* liblzo.dylib */,
 				E38E24250D26317D00618676 /* libGLEW.dylib */,
 				E3BBB7A10D7EA8B200CAAFD3 /* libpcre.0.0.1.dylib */,
@@ -6776,7 +6777,6 @@
 				F59876C30FBA3569008EF4FB /* libsamplerate.dylib */,
 				E3D547950D723EFD00F36320 /* libsmbclient.dylib */,
 				F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */,
-				88ECB6EB0DE07C56003396A7 /* libmysqlclient.15.dylib */,
 				88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */,
 			);
 			name = "macport libs";
