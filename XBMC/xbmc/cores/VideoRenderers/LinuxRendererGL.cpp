@@ -640,28 +640,28 @@ void CLinuxRendererGL::LoadTextures(int source)
     }
   }
 
-  if (imaging==1 &&
-      ((g_stSettings.m_currentVideoSettings.m_Brightness!=50) ||
-       (g_stSettings.m_currentVideoSettings.m_Contrast!=50)))
-  {
-    GLfloat brightness = ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;;
-    GLfloat contrast   = ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
-
-    glPixelTransferf(GL_RED_SCALE, contrast);
-    glPixelTransferf(GL_GREEN_SCALE, contrast);
-    glPixelTransferf(GL_BLUE_SCALE, contrast);
-    glPixelTransferf(GL_RED_BIAS, brightness);
-    glPixelTransferf(GL_GREEN_BIAS, brightness);
-    glPixelTransferf(GL_BLUE_BIAS, brightness);
-    VerifyGLState();
-    imaging++;
-  }
-
   glEnable(m_textureTarget);
   VerifyGLState();
 
   if (m_renderMethod & RENDER_SW)
   {
+    if (imaging==1 &&
+        ((g_stSettings.m_currentVideoSettings.m_Brightness!=50) ||
+         (g_stSettings.m_currentVideoSettings.m_Contrast!=50)))
+    {
+      GLfloat brightness = ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;;
+      GLfloat contrast   = ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
+
+      glPixelTransferf(GL_RED_SCALE  , contrast);
+      glPixelTransferf(GL_GREEN_SCALE, contrast);
+      glPixelTransferf(GL_BLUE_SCALE , contrast);
+      glPixelTransferf(GL_RED_BIAS   , brightness);
+      glPixelTransferf(GL_GREEN_BIAS , brightness);
+      glPixelTransferf(GL_BLUE_BIAS  , brightness);
+      VerifyGLState();
+      imaging++;
+    }
+
     // Load RGB image
     if (deinterlacing)
     {
@@ -678,6 +678,18 @@ void CLinuxRendererGL::LoadTextures(int source)
       LoadPlane( fields[FIELD_FULL][0], GL_BGRA, im->flipindex
                , im->width, im->height
                , m_iSourceWidth, m_rgbBuffer );
+    }
+
+    if (imaging==2)
+    {
+      imaging--;
+      glPixelTransferf(GL_RED_SCALE, 1.0);
+      glPixelTransferf(GL_GREEN_SCALE, 1.0);
+      glPixelTransferf(GL_BLUE_SCALE, 1.0);
+      glPixelTransferf(GL_RED_BIAS, 0.0);
+      glPixelTransferf(GL_GREEN_BIAS, 0.0);
+      glPixelTransferf(GL_BLUE_BIAS, 0.0);
+      VerifyGLState();
     }
   }
   else
@@ -705,18 +717,6 @@ void CLinuxRendererGL::LoadTextures(int source)
   }
 
   VerifyGLState();
-
-  if (imaging==2)
-  {
-    imaging--;
-    glPixelTransferf(GL_RED_SCALE, 1.0);
-    glPixelTransferf(GL_GREEN_SCALE, 1.0);
-    glPixelTransferf(GL_BLUE_SCALE, 1.0);
-    glPixelTransferf(GL_RED_BIAS, 0.0);
-    glPixelTransferf(GL_GREEN_BIAS, 0.0);
-    glPixelTransferf(GL_BLUE_BIAS, 0.0);
-    VerifyGLState();
-  }
 
   if (!(m_renderMethod & RENDER_SW))
   {
