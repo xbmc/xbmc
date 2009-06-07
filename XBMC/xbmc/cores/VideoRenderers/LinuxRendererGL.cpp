@@ -611,16 +611,11 @@ void CLinuxRendererGL::LoadTextures(int source)
   }
 
   static int imaging = -1;
-  static GLfloat brightness = 0;
-  static GLfloat contrast   = 0;
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
   else
     deinterlacing = false;
-
-  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
-  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
 
   if (imaging==-1)
   {
@@ -649,6 +644,9 @@ void CLinuxRendererGL::LoadTextures(int source)
       ((g_stSettings.m_currentVideoSettings.m_Brightness!=50) ||
        (g_stSettings.m_currentVideoSettings.m_Contrast!=50)))
   {
+    GLfloat brightness = ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;;
+    GLfloat contrast   = ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
+
     glPixelTransferf(GL_RED_SCALE, contrast);
     glPixelTransferf(GL_GREEN_SCALE, contrast);
     glPixelTransferf(GL_BLUE_SCALE, contrast);
@@ -1458,12 +1456,6 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   //See RGB renderer for comment on this
 #define CHROMAOFFSET_HORIZ 0.25f
 
-  static GLfloat brightness = 0;
-  static GLfloat contrast   = 0;
-
-  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
-  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
-
   // Y
   glActiveTextureARB(GL_TEXTURE0);
   glEnable(m_textureTarget);
@@ -1559,12 +1551,6 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 
   //See RGB renderer for comment on this
 #define CHROMAOFFSET_HORIZ 0.25f
-
-  static GLfloat brightness = 0;
-  static GLfloat contrast   = 0;
-
-  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
-  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
 
   // Y
   glEnable(m_textureTarget);
