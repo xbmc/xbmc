@@ -235,7 +235,7 @@ protected:
   YUVBUFFERS m_YUVTexture;
 
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
-                , int width,  int height
+                , unsigned width,  unsigned height
                 , int stride, void* data );
 
   //BaseYUV2RGBGLSLShader     *m_pYUVShaderGLSL;
