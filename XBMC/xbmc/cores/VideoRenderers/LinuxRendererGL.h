@@ -160,7 +160,6 @@ protected:
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void DeleteOSDTextures(int index);
-  void Setup_Y8A8Render();
   void RenderOSD();
   void DeleteYV12Texture(int index);
   void ClearYV12Texture(int index);
@@ -261,17 +260,8 @@ protected:
   ESCALINGMETHOD m_scalingMethod;
 
 //  /*
-  GLuint m_fragmentShader;
-  GLuint m_vertexShader;
-//  */
-  GLint m_yTex;
-  GLint m_uTex;
-  GLint m_vTex;
-//  /*
   GLint m_brightness;
   GLint m_contrast;
-  GLint m_stepX;
-  GLint m_stepY;
   GLint m_shaderField;
 //  */
 
@@ -284,8 +274,6 @@ protected:
   DllSwScale  m_dllSwScale;
   BYTE	     *m_rgbBuffer;  // if software scale is used, this will hold the result image
   int	      m_rgbBufferSize;
-
-  static void TextureCallback(DWORD dwContext);
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
   HANDLE m_eventOSDDone[NUM_BUFFERS];
