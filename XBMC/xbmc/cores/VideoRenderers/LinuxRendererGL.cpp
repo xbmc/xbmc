@@ -615,17 +615,9 @@ void CLinuxRendererGL::LoadTextures(int source)
   static GLfloat contrast   = 0;
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
-  {
     deinterlacing = false;
-  }
   else
-  {
-    // FIXME: we need a better/more efficient way to detect deinterlacing?
-    deinterlacing = (g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_RENDER_BOB ||
-                     g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_RENDER_BOB_INVERTED ||
-                     g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_RENDER_BLEND ||
-                     g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_AUTO);
-  }
+    deinterlacing = false;
 
   brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
   contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
