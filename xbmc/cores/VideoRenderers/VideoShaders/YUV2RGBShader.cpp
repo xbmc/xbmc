@@ -425,7 +425,7 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
       "MAD R1.xyz, R0.z, c[0], R0.x;\n"
       "ADD R0.x, R0.y, c[0].w;\n"
       "MAD result.color.xyz, R0.x, c[1], R1;\n"
-      "MOV result.color.w, c[0];\n"
+      "MOV result.color.w, fragment.color.w;\n"
       "END\n";
   }
   else
@@ -448,7 +448,7 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
       "MAD R1.xyz, R0.z, c[1].yzww, R0.x;\n"
       "ADD R0.x, R0.y, c[3];\n"
       "MAD result.color.xyz, R0.x, c[2], R1;\n"
-      "MOV result.color.w, c[0].x;\n"
+      "MOV result.color.w, fragment.color.w;\n"
       "END\n";
   }
   SetPixelShaderSource(source);
