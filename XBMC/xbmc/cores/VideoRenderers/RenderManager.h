@@ -85,12 +85,6 @@ public:
   unsigned int PreInit();
   void UnInit();
 
-  inline void DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->DrawAlpha(x0, y0, w, h, src, srca, stride);
-  }
   inline void Reset()
   {
     CSharedLock lock(m_sharedSection);
