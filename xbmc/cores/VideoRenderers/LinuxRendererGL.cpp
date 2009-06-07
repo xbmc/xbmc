@@ -68,12 +68,8 @@ CLinuxRendererGL::CLinuxRendererGL()
     //m_eventOSDDone[i] = CreateEvent(NULL,TRUE,TRUE,NULL);
   }
 
-  m_fragmentShader = 0;
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
-  m_yTex = 0;
-  m_uTex = 0;
-  m_vTex = 0;
   m_iFlags = 0;
 
   m_iYV12RenderBuffer = 0;
@@ -172,11 +168,6 @@ void CLinuxRendererGL::DeleteOSDTextures(int index)
     m_pOSDABuffer = NULL;
   }
   m_iOSDTextureHeight[index] = 0;
-}
-
-void CLinuxRendererGL::Setup_Y8A8Render()
-{
-
 }
 
 //***************************************************************************************
@@ -434,10 +425,6 @@ void CLinuxRendererGL::RenderOSD()
   DRAWRECT osdRect = m_OSDRect;
   //  if (!viewportRect.bottom && !viewportRect.right)
   //    return;
-
-  // Set state to render the image
-
-  Setup_Y8A8Render();
 
   // clip the output if we are not in FSV so that zoomed subs don't go all over the GUI
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
@@ -2421,11 +2408,6 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
       }
     }
   }
-}
-
-void CLinuxRendererGL::TextureCallback(DWORD dwContext)
-{
-  SetEvent((HANDLE)dwContext);
 }
 
 bool CLinuxRendererGL::SupportsBrightness()
