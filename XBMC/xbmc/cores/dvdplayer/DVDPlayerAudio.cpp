@@ -633,7 +633,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
       if(m_speed == DVD_PLAYSPEED_NORMAL)
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+m_error, m_error);
     }
-    else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0)
+    else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 && fabs(m_error) > DVD_MSEC_TO_TIME(10))
     {
       //check how many packets to skip/duplicate
       m_skipdupcount = (int)(m_error / duration);
