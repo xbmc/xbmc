@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 19/4/2009  -->
-<!--Finnish strings based on English strings revision 19415 -->
+<!--Date of translation: 3/6/2009  -->
+<!--Finnish strings based on English strings revision 20801 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -136,7 +136,7 @@
   <string id="195">Elokuvan tietoja ei löytynyt!</string>
   <string id="196">Valitse elokuva:</string>
   <string id="197">Haetaan tietoja %s:sta</string>
-  <string id="198">Haetaan elokuvan tietoja</string>
+  <string id="198">Noudetaan elokuvan tietoja</string>
   <string id="199"></string>
   <string id="200"></string>
   <string id="201"></string>
@@ -358,7 +358,7 @@
   <string id="429">Aseta seuraava CD/DVD-levy</string>
   <string id="430">Järjestä: DVD nro</string>
   <string id="431">Ei välimuistia</string>
-  <string id="432">Poista elokuva tietokannasta</string>
+  <string id="432">Poista elokuva kirjastosta</string>
   <string id="433">Haluatko varmasti poistaa '%s:n'?</string>
   <string id="434"></string>
   <string id="435"></string>
@@ -399,7 +399,7 @@
   <string id="471">Mod-piiri</string>
   <string id="474">Ei käytössä</string>
   <string id="475">Vain musiikilla</string>
-  <string id="476">Musiikki ja Videot</string>
+  <string id="476">Musiikki ja videot</string>
   <string id="477">Soittolistaa ei voitu ladata</string>
   <string id="478">Kuvaruutuvalikko</string>
   <string id="479">Skini- ja kielivalinnat</string>
@@ -422,12 +422,12 @@
   <string id="497">Piilota tiedostojen päätteet</string>
   <string id="498">Järjestä: Tyyppi</string>
   <string id="499">Tietojen hakuosoitteeseen&#10;ei saada yhteyttä</string>
-  <string id="500">Albumin tietojen lataus ei onnistunut</string>
+  <string id="500">Albumin tietojen nouto epäonnistui</string>
   <string id="501">Etsitään albumin nimellä...</string>
   <string id="502">Avoinna</string>
   <string id="503">Varattu</string>
   <string id="504">Ei levyä</string>
-  <string id="505">Luetaan mediatiedot...</string>
+  <string id="505">Luetaan tiedostojen mediatiedot...</string>
   <string id="507">Järjestä: Käyttö</string>
   <string id="510">Visualisoinnit käytössä</string>
   <string id="511">Salli videojärjestelmän vaihto</string>
@@ -497,7 +497,7 @@
   <string id="580">Järjestelyn suunta</string>
   <string id="581">Järjestelyn peruste</string>
   <string id="582">Näyttötapa</string>
-  <string id="583">Muista eri kansioiden näyttötapa</string>
+  <string id="583">Muista jokaisen kansion näyttötapa</string>
   <string id="584">Nouseva</string>
   <string id="585">Laskeva</string>
   <string id="586">Muokkaa soittolistaa</string>
@@ -613,7 +613,7 @@
   <string id="744">Tiedostot</string>
   <string id="745">Tälle tilalle ei ole luettu mediatietoja,</string>
   <string id="746">siirry pois kirjastotilasta</string>
-  <string id="747">Kuvan lataus ei onnistu</string>
+  <string id="747">Kuvan lataus epäonnistui</string>
   <string id="748">Muokkaa tallennuspolkua</string>
   <string id="749">Peilikuva</string>
   <string id="750">Oletko varma asiasta?</string>
@@ -671,7 +671,7 @@
   <string id="1000">Näytönsäästäjän esikatselu</string>
   <string id="1001">Ei saada yhteyttä</string>
   <string id="1002">XBMC ei saanut yhteyttä verkko-osoitteeseen.</string>
-  <string id="1003">Saattaa olla ettei verkkoyhteyttä ole.</string>
+  <string id="1003">Saattaa olla, ettei verkkoyhteyttä ole.</string>
   <string id="1004">Haluatko silti lisätä sijainnin?</string>
   <string id="1005"></string>
   <string id="1006">IP-osoite</string>
@@ -705,17 +705,17 @@
   <string id="1034">Alivalikko</string>
   <string id="1035">Alivalikon painikkeet käytössä</string>
   <string id="1036">Suosikit</string>
-  <string id="1037">Video-lisäkkeet</string>
-  <string id="1038">Musiikki-lisäkkeet</string>
-  <string id="1039">Kuva-lisäkkeet</string>
-  <string id="1040">Ladataan kansioita</string>
+  <string id="1037">Video lisäosat</string>
+  <string id="1038">Musiikki lisäosat</string>
+  <string id="1039">Kuva lisäosat</string>
+  <string id="1040">Hakemiston lataus</string>
   <string id="1041">Noudettu %i kohdetta</string>
-  <string id="1042">Noudettu %i/%i kohdetta</string>
-  <string id="1043">Ohjelma-lisäkkeet</string>
-  <string id="1044">Lisäkkeen pienoiskuvake</string>
-  <string id="1045">Lisäkkeen asetukset</string>
+  <string id="1042">Noudettu %i / %i kohdetta</string>
+  <string id="1043">Ohjelma lisäosat</string>
+  <string id="1044">Lisäosan pienoiskuvake</string>
+  <string id="1045">Lisäosan asetukset</string>
   <string id="1046">Yhteyspisteet</string>
-  <string id="1047">Muita...</string>
+  <string id="1047">Jokin muu...</string>
   <string id="1048">Web-palvelimen käyttäjätunnus</string> 
 
   <string id="1200">SMB-asiakas</string>
@@ -731,25 +731,25 @@
   <string id="1212">Videot</string>
   <string id="1213">Kuvat</string>
   <string id="1214">Tiedostot</string>
-  <string id="1215">Musiikki ja Videot</string>
-  <string id="1216">Musiikki ja Kuvat</string>
-  <string id="1217">Musiikki ja Tiedostot</string>
-  <string id="1218">Videot ja Kuvat</string>
-  <string id="1219">Videot ja Tiedostot</string>
-  <string id="1220">Kuvat ja Tiedostot</string>
-  <string id="1221">Musiikki ja Videot ja Kuvat</string>
-  <string id="1222">Musiikki ja Videot ja Kuvat ja Tiedostot</string>
+  <string id="1215">Musiikki ja videot</string>
+  <string id="1216">Musiikki ja kuvat</string>
+  <string id="1217">Musiikki ja tiedostot</string>
+  <string id="1218">Videot ja kuvat</string>
+  <string id="1219">Videot ja tiedostot</string>
+  <string id="1220">Kuvat ja tiedostot</string>
+  <string id="1221">Musiikki ja videot ja kuvat</string>
+  <string id="1222">Musiikki ja videot ja kuvat ja tiedostot</string>
   <string id="1223">Pois käytöstä</string>
-  <string id="1226">Tiedostot ja Musiikki ja Videot</string>
-  <string id="1227">Tiedostot ja Kuvat ja Musiikki</string>
-  <string id="1228">Tiedostot ja Kuvat ja Videot</string>
-  <string id="1229">Musiikki ja Ohjelmat</string>
-  <string id="1230">Videot ja Ohjelmat</string>
-  <string id="1231">Kuvat ja Ohjelmat</string>
-  <string id="1232">Musiikki ja Videot ja Kuvat ja Ohjelmat</string>
-  <string id="1233">Ohjelmat ja Videot ja Musiikki</string>
-  <string id="1234">Ohjelmat ja Kuvat ja Musiikki</string>
-  <string id="1235">Ohjelmat ja Kuvat ja Videot</string>
+  <string id="1226">Tiedostot ja musiikki ja videot</string>
+  <string id="1227">Tiedostot ja kuvat ja musiikki</string>
+  <string id="1228">Tiedostot ja kuvat ja videot</string>
+  <string id="1229">Musiikki ja ohjelmat</string>
+  <string id="1230">Videot ja ohjelmat</string>
+  <string id="1231">Kuvat ja ohjelmat</string>
+  <string id="1232">Musiikki ja videot ja kuvat ja ohjelmat</string>
+  <string id="1233">Ohjelmat ja videot ja musiikki</string>
+  <string id="1234">Ohjelmat ja kuvat ja musiikki</string>
+  <string id="1235">Ohjelmat ja kuvat ja videot</string>
 
   <string id="1245">FTP-käyttäjätunnus</string>
   <string id="1246">FTP-salasana</string>
@@ -791,10 +791,13 @@
 
   <!-- strings through to 1450 reserved for weather translation -->
 
+  <string id="1450">Toimettomana virransäästö käytössä</string>
+  <!-- strings through to 1470 reserved for power-saving -->
+
   <string id="2050">Kesto</string>
- 
+
   <string id="4501">LCD:n tyyppi</string>
- 
+
   <string id="10000">Päävalikko</string>
   <string id="10001">Ohjelmat</string>
   <string id="10002">Kuvat</string>
@@ -835,26 +838,26 @@
   <string id="10500">Musiikki/Soittolista</string>
   <string id="10501">Musiikki/Tiedostot</string>
   <string id="10502">Musiikki/Kirjasto</string>
-  <string id="10503">Soittolistojen hallinta</string>
+  <string id="10503">Soittolistojen muokkaus</string>
   <string id="10504">100 suosituinta kappaletta</string>
   <string id="10505">100 suosituinta albumia</string>
   <string id="10506">Ohjelmat</string>
   <string id="10507">Asetukset</string>
-  <string id="10508">Säätila</string>
+  <string id="10508">Sääennuste</string>
   <string id="10509">Verkkopelaaminen</string>
-  <string id="10510">Skriptit</string>
+  <string id="10510">Lisäosat</string>
   <string id="10511">Järjestelmän tiedot</string>
   <string id="10512"></string>
   <string id="10513"></string>
   <string id="10514"></string>
   <string id="10515"></string>
   <string id="10516">Musiikki - Kirjasto</string>
-  <string id="10517">Musiikki - Toistetaan</string>
+  <string id="10517">Musiikki - Nyt soitossa</string>
   <string id="10518"></string>
   <string id="10519"></string>
   <string id="10520"></string>
   <string id="10521"></string>
-  <string id="10522">Videot - Toistetaan</string>
+  <string id="10522">Videot - Nyt soitossa</string>
   <string id="10523">Albumin tiedot</string>
   <string id="10524">Elokuvan tiedot</string>
 
@@ -925,7 +928,7 @@
   <string id="12357">Sijainnin lukitus</string>
   <string id="12358">Salasana oli tyhjä. Yritä uudelleen.</string>
   <string id="12360">Pääkäyttäjän lukitus</string>
-  <string id="12362">Lukituksen poisto yritysten jälkeen sammuta laite</string>
+  <string id="12362">Sammuta laite lukituksen poistoyritysten maksimimäärän jälkeen</string>
   <string id="12367">Pääkäyttäjän koodi ei ole oikea!</string>
   <string id="12368">Anna oikea pääkäyttäjän koodi!</string>
   <string id="12373">Asetukset ja tiedostonhallinta</string>
@@ -960,7 +963,7 @@
   <string id="13005">Sammuta laite</string>
   <string id="13006">Käynnistä dashboard</string>
   <string id="13007">Vaihtoehtoinen dashboardin polku</string>
-  <string id="13008">Oletus sammutusmuoto</string>
+  <string id="13008">Sammutusmuoto</string>
   <string id="13009">Poistu</string>
   <string id="13010">Horrostila</string>
   <string id="13011">Valmiustila</string>
@@ -1024,13 +1027,13 @@
   <string id="13161">Ensisijainen DNS</string>
   <string id="13162">Alustus epäonnistui</string>
 
-  <string id="13163">Ohjain</string>
+  <string id="13163">Peliohjain</string>
   <string id="13164">Näppäimistö</string>
   <string id="13165">Hiiri</string>
   <string id="13166">Kuuloke-mikrofoni</string>
   <string id="13167">Muistikortti</string>
   <string id="13168">Kaukosäädin</string>
-  <string id="13169">Liitäntä</string>
+  <string id="13169">Ohjaimen liitäntä</string>
 
 
   <string id="13170">Ei koskaan</string>
@@ -1046,7 +1049,7 @@
   <string id="13206">Korvaa</string>
   <string id="13208">Herätyskello</string>
   <string id="13209">Hälytysväli (minuuttia)</string>
-  <string id="13210">Käynnistetty, hälytys %imin kuluttua</string>
+  <string id="13210">Käynnistetty, hälytys %i minuutin kuluttua</string>
   <string id="13211">Hälytys!</string>
   <string id="13212">peruutettu, %im%is jäljellä</string>
 
@@ -1083,7 +1086,7 @@
   <string id="13295">Internet:</string>
   <string id="13296">Yhdistetty</string>
   <string id="13297">Ei ole yhdistetty. Tarkista verkkoasetukset.</string>
-  <string id="13298">Xbox Live-avain:</string>
+  <string id="13298">Xbox Live- avain:</string>
   <string id="13299">Tavoitelämpötila</string>
   <string id="13300">Tuulettimen pyörintänopeus</string>
   <string id="13301">Automaattinen lämmönhallinta</string>
@@ -1113,9 +1116,9 @@
   <string id="13325">Edustan läpinäkyvyys</string>
   <string id="13326">Äänen viive</string>
   <string id="13327">Karaoke</string>
-  <string id="13328">%sia ei löytynyt</string>
-  <string id="13329">Virhe avattaessa: %s</string>
-  <string id="13330">%saa ei voitu ladata</string>
+  <string id="13328">%s ei löydy</string>
+  <string id="13329">%s:n avaus ei onnistu</string>
+  <string id="13330">%s:n lataus ei onnistu</string>
   <string id="13331">Virhe: muisti ei riitä</string>
   <string id="13332">Siirrä ylöspäin</string>
   <string id="13333">Siirrä alaspäin</string>
@@ -1192,7 +1195,19 @@
   <string id="13418">Advanced Shaders (GLSL)</string>
   <string id="13419">Ohjelmallinen</string>
   <string id="13421">VDPAU</string>
-  <string id="13420">Poista</string> 
+  <string id="13420">Poista turvallisesti</string>
+
+  <string id="13500">A/V tahdistus menetelmä</string>
+  <string id="13501">Äänen kello</string>
+  <string id="13502">Videon kello (Poista/lisää ääntä)</string>
+  <string id="13503">Videon kello (Äänen uudelleennäytteistys)</string>
+  <string id="13504">Maksimi uudelleennäytteistys (%)</string>
+  <string id="13505">Uudellennäytteistyksen laatu</string>
+  <string id="13506">Matala</string>
+  <string id="13507">Keski</string>
+  <string id="13508">Korkea</string>
+  <string id="13509">Todellan korkea</string>
+  <string id="13510">Tahdista toisto näyttöön</string>
 
   <string id="13600">Apple kauko-ohjaus</string>
   <string id="13601">Toimintatapa</string>
@@ -1201,7 +1216,8 @@
 
   <string id="13610">Ei käytössä</string>
   <string id="13611">Vakio</string>
-  <string id="13612">Yleiskauko-ohjaus</string>
+  <string id="13612">Yleiskauko-ohjain</string>
+  <string id="13613">Yleiskauko-ohjain (Harmony)</string>
 
   <string id="13620">Apple kauko-ohjain virhe</string>
   <string id="13621">Apple kauko-ohjaus voidaan ottaa käyttöön.</string>
@@ -1361,7 +1377,7 @@
   <string id="15112">Oletusteema</string>
 
   <string id="15200">Last.fm</string>
-  <string id="15201">Last.fm kappaleiden lähetys käytössä</string>
+  <string id="15201">Lähetä kappaletiedot Last.fm-palveluun</string>
   <string id="15202">Last.fm-käyttäjätunnus</string>
   <string id="15203">Last.fm-salasana</string>
   <string id="15204">Ei saatu yhteyttä: odotetaan...</string>
@@ -1377,7 +1393,12 @@
   <string id="15214">Käytä pehmennettyä A/V-tahdistusta</string>
   <string id="15215">Piilota tiedostonimet pienoiskuvakkeissa</string>
   <string id="15216">Toista jukeboksissa</string>
-  
+  <string id="15217">Lähetä kappaletiedot Libre.fm-palveluun</string>
+  <string id="15218">Libre.fm-käyttäjätunnus</string>
+  <string id="15219">Libre.fm-salasana</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
+
   <string id="15250">Last.fm-radion lähetys käytössä</string>
   <string id="15251">Yhdistetään Last.fm palveluun...</string>
   <string id="15252">Valitaan radioasema...</string>
@@ -1461,11 +1482,11 @@
   <string id="16024">Peruutetaan...</string>
   <string id="16025">Anna esittäjän nimi</string>
   <string id="16026">Soittolistan toisto keskeytettiin</string>
-  <string id="16027">Liian monta peräkkäistä lukuvirhettä</string>
+  <string id="16027">Liian monta peräkkäistä virhettä</string>
   <string id="16028">Anna arvo</string>
 
   <string id="16030">Jukeboksi keskeytettiin.</string>
-  <string id="16031">Kappaleita ei löytynyt kirjastosta.</string>
+  <string id="16031">Kirjastosta ei löytynyt sopivia kappaleita.</string>
   <string id="16032">Tietokantaa ei voida valmistella.</string>
   <string id="16033">Tietokantaa ei voida avata.</string>
   <string id="16034">Tietokannasta ei voitu hakea kappaleita.</string>
@@ -1540,7 +1561,7 @@
   <string id="20026">Kielialue</string>
 
   <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
-  <string id="20037">Sää-lisäkkeen polku</string> 
+
   <string id="20038">Lukitse musiikki</string>
   <string id="20039">Lukitse videot</string>
   <string id="20040">Lukitse kuvat</string>
@@ -1574,7 +1595,7 @@
   <string id="20068">Profiilin lukitus</string>
   <string id="20069">Kansion luonti ei onnistu</string>
   <string id="20070">Profiilin tallennuskansio</string>
-  <string id="20071">Käynnistä uuden mediasijainnin kanssa</string>
+  <string id="20071">Aloita käyttämällä uutta mediasijaintia</string>
   <string id="20072">varmista, että valittu kansio on kirjoitettava</string>
   <string id="20073">ja kansion nimi on käyttökelpoinen</string>
   <string id="20074">MPAA-luokitus</string>
@@ -1605,7 +1626,7 @@
   <string id="20099">Siirtoa ei voida aloittaa kun toisto on käynnissä</string>
   <string id="20100">Pääkäyttäjän lukituskoodi ja asetukset</string>
   <string id="20101">Lukituskoodi antamalla siirrytään pääkäyttäjä-tilaan</string>
-  <string id="20102">tai Käytä oletuksia</string>
+  <string id="20102">tai käytä oletuksia</string>
   <string id="20103">Tallennetaanko muutokset profiiliin?</string>
   <string id="20104">Vanhat asetukset löydetty.</string>
   <string id="20105">Haluatko käyttää niitä?</string>
@@ -1623,7 +1644,7 @@
   <string id="20117">Lukituskoodi on väärä.</string>
   <string id="20118">Tähän täytyy olla pääkäyttäjän lukitus asetettuna.</string>
   <string id="20119">Haluatko asettaa sen nyt?</string>
-  <string id="20120">Luetaan ohjelmien tiedot</string>
+  <string id="20120">Noudetaan ohjelman tiedot</string>
   <string id="20121">Musiikin soitto alkaa</string>
   <string id="20122">Nyt voit rentoutua</string>
   <string id="20123">Arvotaan kuunneltavia kappaleita</string>
@@ -1648,7 +1669,7 @@
   <string id="20143">Anna salasana</string>
   <string id="20144">Sammutusajastin</string>
   <string id="20145">Sammutusajastus (minuuttia)</string>
-  <string id="20146">Käynnistetty, sammutetaan %imin kuluttua</string>
+  <string id="20146">Käynnistetty, sammutetaan %i minuutin kuluttua</string>
   <string id="20147">Sammuta 30 minuutin kuluttua</string>
   <string id="20148">Sammuta 60 minuutin kuluttua</string>
   <string id="20149">Sammuta 120 minuutin kuluttua</string>
@@ -1701,9 +1722,9 @@
   <string id="20196">Vie musiikkikirjasto</string>
   <string id="20197">Tuo musiikkikirjasto</string>
   <string id="20198">Esittäjää ei löydy!</string>
-  <string id="20199">Esittäjän tietojen lataus epäonnistui</string>
+  <string id="20199">Esittäjän tietojen nouto epäonnistui</string>
 
-  <!-- string id's 20200 thru 20211 are reserved for speedstrings -->	
+  <!-- string id's 20200 thru 20211 are reserved for speedstrings -->
 
   <string id="20250">Videoesitys alkaa</string>
   <string id="20251">Arvotaan katseltavia videoita</string>
@@ -1711,9 +1732,8 @@
 
   <string id="20300">Web-palvelimen hakemisto (HTTP)</string>
   <string id="20301">Web-palvelimen hakemisto (HTTPS)</string>
-
-  <string id="20302"></string>
-  <string id="20303"></string>
+  <string id="20302">Kansioon kirjoitus epäonnistui:</string>
+  <string id="20303">Ohitetaanko ja jatketaanko suoritusta?</string>
   <string id="20304"></string>
   <string id="20305"></string>
 
@@ -1764,7 +1784,7 @@
   <string id="20350">äänestystä</string>
   <string id="20351">TV-ohjelman tiedot</string>
   <string id="20352">Jakson tiedot</string>
-  <string id="20353">Luetaan TV-ohjelman tietoja</string>
+  <string id="20353">Noudetaan TV-ohjelmatietoja</string>
   <string id="20354">Noudetaan jaksojen tietoja</string>
   <string id="20355">Luetaan jaksojen tietoja hakemistosta</string>
   <string id="20356">Valitse TV-ohjelma:</string>
@@ -1772,7 +1792,7 @@
   <string id="20358">Tuotantokausi %i</string>
   <string id="20359">Jakso</string>
   <string id="20360">Jaksot</string>
-  <string id="20361">Luetaan jakson tietoja</string>
+  <string id="20361">Noudetaan jakson tietoja</string>
   <string id="20362">Poista jakso kirjastosta</string>
   <string id="20363">Poista TV-ohjelma kirjastosta</string>
   <string id="20364">TV-ohjelma</string>
@@ -1785,7 +1805,7 @@
   <string id="20371">Aseta tuotantokauden kuvake</string>
   <string id="20372">Tuotantokauden kuva</string>
   <string id="20373">Tuotantokausi</string>
-  <string id="20374">Noudetaan tiedot elokuvista</string>
+  <string id="20374">Noudetaan elokuvan tiedot</string>
   <string id="20375">Määrittelemätön sisältö</string>
   <string id="20376"></string>
   <string id="20377">Päivitä TV-ohjelman tiedot</string>
@@ -1819,8 +1839,8 @@
   <string id="20405">Poista jakson kirjanmerkki</string>
   <string id="20406">Aseta jakson kirjanmerkki</string>
   <string id="20407">Hakupaikan asetukset</string>
-  <string id="20408">Luetaan tiedot musiikkivideosta</string>
-  <string id="20409">Luetaan tiedot TV-ohjelmasta</string>
+  <string id="20408">Noudetaan musiikkivideon tietoja</string>
+  <string id="20409">Noudetaan TV-ohjelman tietoja</string>
   <string id="20410">Esittely</string>
   <string id="20411">Tiivistä</string>
   <string id="20412">Tiivistä TV-ohjelmat</string>
@@ -1829,7 +1849,7 @@
   <string id="20415">Haetaan uusien sisältö</string>
   <string id="20416">Ensimmäinen esitys</string>
   <string id="20417">Käsikirjoittaja</string>
-  <string id="20418">Siivoa tiedosto- ja kansionimet</string>
+  <string id="20418">Siivoa tiedostojen ja kansioiden nimet</string>
   <string id="20419">Pinoa TV-ohjelmien kaksoiskappaleet</string>
   <string id="20420">Ei koskaan</string>
   <string id="20421">Jos samalta tuotantokaudelta</string>
@@ -1837,13 +1857,13 @@
   <string id="20423">On esittely</string>
   <string id="20424">Ei ole</string>
   <string id="20425">Fanikuvien kuvaesitys</string> 
-  <string id="20426">Tallennetaan yhdistettynä tiedostona tai erillisinä</string>
-  <string id="20427">Valitse tallennusmuoto</string>
-  <string id="20428">Yhdistetyt tiedostot</string>
-  <string id="20429">Erilliset tiedostot</string>
+  <string id="20426">Tallennetaanko yhdistettynä tiedostona tai erillisinä</string>
+  <string id="20427">tiedostoina? Valitse tallennusmuoto.</string>
+  <string id="20428">Yhdistettynä</string>
+  <string id="20429">Erillisinä</string>
   <string id="20430">Tallennetaanko pienoiskuvat ja fanitaide?</string>
   <string id="20431">Kirjoitetaanko vanhojen päälle?</string>
-  <string id="20432">Ohita polku kirjastoja päivitettäessä</string>  
+  <string id="20432">Ohita polku kirjastoja päivitettäessä</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1872,7 +1892,7 @@
 
   <string id="21369">Hiiri käytössä</string>
   <string id="21370">Ohjauspainikkeiden äänitehosteet käytössä</string>
-  <string id="21371">Pienoiskuvake</string>  
+  <string id="21371">Pienoiskuvake</string>
   <string id="21372">Pakotettu DVD-aluekoodi</string>
   <string id="21373">Videolaitteisto</string>
   <string id="21374">Kuvasuhde</string>
@@ -1885,7 +1905,7 @@
   <string id="21381">Anna soittolistalle nimi</string>
   <string id="21382">Piilota "Lisää sijainti" -painikkeet tiedostolistoista</string>
   <string id="21383">Vierityspalkit käytössä</string>
-  <string id="21384">Piilota 'katsotut'-valinta videokirjastossa</string> 
+  <string id="21384">Tee katsotut suodatus vaihdettaessa videokirjastoon</string>
   <string id="21385">Avaa</string> 
   <string id="21386">Äänekkyyden säädöt</string>
   <string id="21387">Nopea</string>
@@ -1899,7 +1919,7 @@
   <string id="21395">Yli 4GB:n tiedostoja ei voida välimuistittaa</string>
   <string id="21396">Luku</string> 
   <string id="21397">Pixel Shader V2 (korkea laatu)</string>
-  <string id="21398">Käynnistyessä soittolista käytössä</string>  
+  <string id="21398">Käynnistyessä soittolista käytössä</string>
   <string id="21399">Tween-animointi käytössä</string>
   <string id="21400">sisältää</string>
   <string id="21401">ei sisällä</string>
@@ -1913,11 +1933,11 @@
   <string id="21409">aiemmin</string>
   <string id="21410">viimeisenä</string>
   <string id="21411">ei viimeisenä</string>
-  <string id="21412">Hakupaikat</string> 
-  <string id="21413">Elokuvan tietojen hakupaikka</string> 
-  <string id="21414">TV-ohjelman tietojen hakupaikka</string> 
-  <string id="21415">Musiikkivideon tietojen hakupaikka</string> 
-  <string id="21416">Palaute pohjautuu hakupaikan kieleen</string> 
+  <string id="21412">Hakupaikat</string>
+  <string id="21413">Elokuvan tietojen hakupaikka</string>
+  <string id="21414">TV-ohjelman tietojen hakupaikka</string>
+  <string id="21415">Musiikkivideon tietojen hakupaikka</string>
+  <string id="21416">Palaute pohjautuu hakupaikan kieleen</string>
 
   <string id="21420">Ehtoihin sopiva</string>
   <string id="21421">Valikoivan soittolistan ehdot</string>
@@ -1937,7 +1957,7 @@
   <string id="21435">Muokkaa</string>
   <string id="21436">%i kohdetta</string>
   <string id="21437">Valikoiva soittolista...</string>
-  <string id="21438">%c:-asema</string>
+  <string id="21438">%c-asema</string>
   <string id="21439">Jukeboksin asetukset</string>
   <string id="21440">Kotikansio</string>
   <string id="21441">Katselumäärä</string>
@@ -2003,8 +2023,8 @@
   <string id="21882">Ohita ennen DVD-valikkoa olevat esittelyt</string>
   <string id="21883">Kiintolevylle siirretyt CD:t</string>
   <string id="21884">Hae kaikkien esittäjien tiedot</string>
-  <string id="21885">Ladataan albumin tiedot</string>
-  <string id="21886">Ladataan esittäjän tiedot</string>
+  <string id="21885">Noudetaan albumin tiedot</string>
+  <string id="21886">Noudetaan esittäjän tiedot</string>
   <string id="21887">Henkilökuvaus</string>
   <string id="21888">Levytykset</string>
   <string id="21889">Etsitään esittäjää</string>
@@ -2054,14 +2074,16 @@
   <string id="22036">Tuo karaoke-kappaleet...</string>
   <string id="22037">Näytä kappaleenvalintaikkuna</string>
   <string id="22038">Vie karaoke-kappaleet...</string>
-  <string id="22039">Anna kappaleen numero</string> 
+  <string id="22039">Anna kappaleen numero</string>
   <string id="22040">valkoinen/vihreä</string>
   <string id="22041">valkoinen/punanen</string>
   <string id="22042">valkoinen/sininen</string>
   <string id="22043">musta/valkoinen</string>
 
+  <string id="23000">Sää lisäosa</string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
-  <string id="29800">Kirjastomuoto</string> 
+  <string id="29800">Kirjasto-tila</string> 
   <string id="29801">QWERTY-näppäimistö</string>
 
   <string id="29999">Näytön välkynnän poisto</string>
