@@ -52,7 +52,6 @@ using namespace Shaders;
 
 CLinuxRendererGL::CLinuxRendererGL()
 {
-  m_pBuffer = NULL;
   m_textureTarget = GL_TEXTURE_2D;
   m_fSourceFrameRatio = 1.0f;
   m_iResolution = PAL_4x3;
@@ -93,10 +92,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
   for (int i = 0; i < NUM_BUFFERS; i++)
     CloseHandle(m_eventTexturesDone[i]);
 
-  if (m_pBuffer)
-  {
-    delete m_pBuffer;
-  }
   if (m_rgbBuffer != NULL) {
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
@@ -1211,12 +1206,6 @@ void CLinuxRendererGL::UnInit()
 {
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
-
-  if (m_pBuffer)
-  {
-    delete m_pBuffer;
-    m_pBuffer = 0;
-  }
 
   if (m_rgbBuffer != NULL)
   {
