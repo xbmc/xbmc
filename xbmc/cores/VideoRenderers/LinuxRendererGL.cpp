@@ -606,6 +606,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     m_dllSwScale.sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
     m_dllSwScale.sws_freeContext(ctx);
 
+    m_imScaled.flipindex = im->flipindex;
     im = &m_imScaled;
     im->flags = IMAGE_FLAG_READY;
   }
