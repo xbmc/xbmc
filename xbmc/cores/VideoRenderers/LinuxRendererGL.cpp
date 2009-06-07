@@ -693,7 +693,6 @@ void CLinuxRendererGL::InitializeSoftwareUpscaling()
 {
   // Allocate a new destination image.
   m_imScaled.cshift_x = m_imScaled.cshift_y = 1;
-  m_imScaled.texcoord_x = m_imScaled.texcoord_y = 1;
 
   // Free the old planes if they exist.
   for (int i=0; i<3; i++)
@@ -779,8 +778,6 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
     image->flags = m_image[source].flags;
     image->cshift_x = m_image[source].cshift_x;
     image->cshift_y = m_image[source].cshift_y;
-    image->texcoord_x = m_image[source].texcoord_x;
-    image->texcoord_y = m_image[source].texcoord_y;
 
     return source;
   }
@@ -2304,8 +2301,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
 
     im.cshift_x = 1;
     im.cshift_y = 1;
-    im.texcoord_x = 1.0;
-    im.texcoord_y = 1.0;
   }
 
   glEnable(m_textureTarget);
