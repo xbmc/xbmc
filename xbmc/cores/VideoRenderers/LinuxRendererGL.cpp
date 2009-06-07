@@ -2290,17 +2290,16 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     DeleteYV12Texture(index);
 
     im.height = m_iSourceHeight;
-    im.width = m_iSourceWidth;
-
-    im.stride[0] = im.width;
-    im.stride[1] = im.width/2;
-    im.stride[2] = im.width/2;
-    im.plane[0] = new BYTE[im.width * m_iSourceHeight];
-    im.plane[1] = new BYTE[(im.width/2) * (m_iSourceHeight/2)];
-    im.plane[2] = new BYTE[(im.width/2) * (m_iSourceHeight/2)];
-
+    im.width  = m_iSourceWidth;
     im.cshift_x = 1;
     im.cshift_y = 1;
+
+    im.stride[0] = im.width;
+    im.stride[1] = im.width >> im.cshift_x;
+    im.stride[2] = im.width >> im.cshift_x;
+    im.plane[0] = new BYTE[im.stride[0] * im.height];
+    im.plane[1] = new BYTE[im.stride[1] * ( im.height << im.cshift_y )];
+    im.plane[2] = new BYTE[im.stride[2] * ( im.height << im.cshift_y )];
   }
 
   glEnable(m_textureTarget);
