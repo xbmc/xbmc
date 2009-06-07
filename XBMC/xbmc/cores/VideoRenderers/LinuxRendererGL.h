@@ -34,8 +34,6 @@ typedef struct YV12Image
   unsigned width;
   unsigned height;
   unsigned flags;
-  float texcoord_x;
-  float texcoord_y;
 
   unsigned cshift_x; /* this is the chroma shift used */
   unsigned cshift_y;
