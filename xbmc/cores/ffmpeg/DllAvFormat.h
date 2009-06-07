@@ -30,7 +30,9 @@ public:
   virtual int av_read_play(AVFormatContext *s)=0;
   virtual int av_read_pause(AVFormatContext *s)=0;
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
+#if (!defined USE_EXTERNAL_FFMPEG)
   virtual int av_find_stream_info_dont_call(AVFormatContext *ic)=0;
+#endif
   virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap)=0;
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb)=0;
   virtual int av_dup_packet(AVPacket *pkt)=0;
@@ -51,11 +53,11 @@ public:
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
 };
 
-#ifdef __APPLE__
+#if (defined USE_EXTERNAL_FFMPEG)
 
 extern "C" { void av_read_frame_flush(AVFormatContext *s); }
 
-// Use direct mapping, because we statically link.
+// Use direct mapping
 class DllAvFormat : public DllDynamic, DllAvFormatInterface
 {
 public:
@@ -90,13 +92,20 @@ public:
   virtual int url_fopen(ByteIOContext **s, const char *filename, int flags) { return ::url_fopen(s, filename, flags); }
   virtual int url_fclose(ByteIOContext *s) { return ::url_fclose(s); }
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence) { return ::url_fseek(s, offset, whence); }
+  #if (! defined __LINUX__)
   virtual void av_read_frame_flush(AVFormatContext *s) { ::av_read_frame_flush(s); }
+  #else
+  virtual void av_read_frame_flush(AVFormatContext *s) { /* Do nothing. This isn't defined in any of ffmpeg's public headers */ }
+  #endif
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_buffer(s, buf, size); }
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_partial_buffer(s, buf, size); }
   
   // DLL faking.
   virtual bool ResolveExports() { return true; }
-  virtual bool Load() { return true; }
+  virtual bool Load() {
+    CLog::Log(LOGDEBUG, "DllAvFormat: Using libavformat system library");
+    return true;
+  }
   virtual void Unload() {}
 };
 

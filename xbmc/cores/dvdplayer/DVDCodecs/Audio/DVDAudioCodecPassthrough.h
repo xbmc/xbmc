@@ -22,8 +22,8 @@
  */
 
 #include "DVDAudioCodec.h"
-#include "DllLibDts.h"
 #include "DllLiba52.h"
+#include "DllLibDts.h"
 
 class CDVDAudioCodecPassthrough : public CDVDAudioCodec
 {
