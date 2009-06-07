@@ -1184,7 +1184,10 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glColor4f(1.0f, 1.0f, 1.0f, alpha / 255.0f);
   }
   else
+  {
     glDisable(GL_BLEND);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  }
 
   Render(flags, index);
   VerifyGLState();
@@ -2101,9 +2104,7 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL | GL_REPLACE);
-
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   VerifyGLState();
 
   glBegin(GL_QUADS);
