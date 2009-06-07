@@ -430,11 +430,23 @@ void CXBoxRenderManager::PresentBob()
 {
   CSingleLock lock(g_graphicsContext);
 
-  if( m_presentfield == FS_EVEN )
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+  if(m_presentstep == 0)
+  {
+    if( m_presentfield == FS_EVEN)
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    else
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+    m_presentstep = 1;
+    g_application.NewFrame();
+  }
   else
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
-
+  {
+    if( m_presentfield == FS_ODD)
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    else
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+    m_presentstep = 0;
+  }
 #ifndef HAS_SDL
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
