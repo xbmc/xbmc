@@ -350,10 +350,7 @@ void CXBoxRenderManager::Present()
 #ifdef HAVE_LIBVDPAU
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
-  {
-    m_presentevent.Set();
     WaitPresentTime(m_presenttime);
-  }
 #endif
 
   if (!m_pRenderer)
@@ -405,11 +402,11 @@ void CXBoxRenderManager::Present()
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
   {
+    m_presentevent.Set();
 #ifdef HAVE_LIBVDPAU
     if (!g_VDPAU)
 #endif
     {
-      m_presentevent.Set();
       WaitPresentTime(m_presenttime);
     }
   }
