@@ -107,6 +107,7 @@ CXBoxRenderManager::CXBoxRenderManager()
 
   m_presentfield = FS_NONE;
   m_presenttime = 0;
+  m_presentstep = 0;
   m_rendermethod = 0;
 }
 
@@ -283,6 +284,7 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
     m_presenttime  = timestamp;
     m_presentfield = sync;
+    m_presentstep  = 0;
 
     m_pRenderer->FlipPage(source);
   }
@@ -402,7 +404,9 @@ void CXBoxRenderManager::Present()
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
   {
-    m_presentevent.Set();
+    /* we are not done until present step has reverted to 0 */
+    if(m_presentstep == 0)
+      m_presentevent.Set();
 #ifdef HAVE_LIBVDPAU
     if (!g_VDPAU)
 #endif
