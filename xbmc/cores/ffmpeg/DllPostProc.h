@@ -30,7 +30,7 @@ public:
   virtual void pp_free_context(pp_context_t *ppContext)=0;
 };
 
-#ifdef __APPLE__
+#if (defined USE_EXTERNAL_FFMPEG)
 
 // We call directly.
 class DllPostProc : public DllDynamic, DllPostProcInterface
@@ -48,7 +48,10 @@ public:
   
   // DLL faking.
   virtual bool ResolveExports() { return true; }
-  virtual bool Load() { return true; }
+  virtual bool Load() {
+    CLog::Log(LOGDEBUG, "DllPostProc: Using libpostproc system library");
+    return true;
+  }
   virtual void Unload() {}
 };
 
@@ -72,4 +75,5 @@ class DllPostProc : public DllDynamic, DllPostProcInterface
     RESOLVE_METHOD(pp_free_context)
   END_METHOD_RESOLVE()
 };
+
 #endif

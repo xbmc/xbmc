@@ -77,6 +77,14 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
   StopThread();
   g_dvdPerformanceCounter.DisableVideoQueue();
   DeleteCriticalSection(&m_critCodecSection);
+  
+#ifdef HAS_VIDEO_PLAYBACK 
+  if(m_output.inited) 
+  { 
+    CLog::Log(LOGNOTICE, "%s - uninitting video device", __FUNCTION__); 
+    g_renderManager.UnInit(); 
+  } 
+#endif 
 }
 
 double CDVDPlayerVideo::GetOutputDelay()
