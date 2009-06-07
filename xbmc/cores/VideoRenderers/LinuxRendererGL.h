@@ -132,7 +132,6 @@ public:
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void         DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
@@ -159,10 +158,7 @@ protected:
   void InitializeSoftwareUpscaling();
 
   virtual void ManageDisplay();
-  void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
-  void DeleteOSDTextures(int index);
-  void RenderOSD();
   void DeleteYV12Texture(int index);
   void ClearYV12Texture(int index);
   virtual bool CreateYV12Texture(int index, bool clear=true);
@@ -211,21 +207,6 @@ protected:
   int m_upscalingHeight;
   YV12Image m_imScaled;
   bool m_isSoftwareUpscaling;
-
-  // OSD stuff
-  GLuint m_pOSDYTexture[NUM_BUFFERS];
-  GLuint m_pOSDATexture[NUM_BUFFERS];
-  GLubyte* m_pOSDYBuffer;
-  GLubyte* m_pOSDABuffer;
-
-  float m_OSDWidth;
-  float m_OSDHeight;
-  DRAWRECT m_OSDRect;
-  int m_iOSDRenderBuffer;
-  int m_iOSDTextureWidth;
-  int m_iOSDTextureHeight[NUM_BUFFERS];
-  int m_NumOSDBuffers;
-  bool m_OSDRendered;
 
   // Raw data used by renderer
   YV12Image m_image[NUM_BUFFERS];
@@ -281,7 +262,6 @@ protected:
   int	      m_rgbBufferSize;
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
-  HANDLE m_eventOSDDone[NUM_BUFFERS];
 
 };
 
