@@ -513,7 +513,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
 }
 
 void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
-                                , int width, int height
+                                , unsigned width, unsigned height
                                 , int stride, void* data )
 {
   if(plane.flipindex == flipindex)
