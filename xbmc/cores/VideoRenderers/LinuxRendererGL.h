@@ -37,6 +37,8 @@ typedef struct YV12Image
 
   unsigned cshift_x; /* this is the chroma shift used */
   unsigned cshift_y;
+
+  unsigned flipindex; /* used to decide if this has been uploaded */
 } YV12Image;
 
 #define AUTOSOURCE -1
@@ -201,6 +203,7 @@ protected:
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
+  unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   bool m_StrictBinding;
 
   // Software upscaling.
@@ -239,6 +242,8 @@ protected:
 
     unsigned texwidth;
     unsigned texheight;
+
+    unsigned flipindex;
   } YUVPLANE;
 
   typedef YUVPLANE           YUVPLANES[MAX_PLANES];
@@ -249,7 +254,7 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   YUVBUFFERS m_YUVTexture;
 
-  void LoadPlane( YUVPLANE& plane, int type
+  void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , int width,  int height
                 , int stride, void* data );
 
