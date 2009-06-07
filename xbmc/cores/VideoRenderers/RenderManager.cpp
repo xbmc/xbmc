@@ -109,6 +109,7 @@ CXBoxRenderManager::CXBoxRenderManager()
   m_presenttime = 0;
   m_presentstep = 0;
   m_rendermethod = 0;
+  m_presentmethod = VS_INTERLACEMETHOD_NONE;
 }
 
 CXBoxRenderManager::~CXBoxRenderManager()
@@ -285,6 +286,30 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_presenttime  = timestamp;
     m_presentfield = sync;
     m_presentstep  = 0;
+    m_presentmethod = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+
+    /* select render method for auto */
+    if(m_presentmethod == VS_INTERLACEMETHOD_AUTO)
+    {
+      if(m_presentfield == FS_NONE)
+        m_presentmethod = VS_INTERLACEMETHOD_NONE;
+      else
+        m_presentmethod = VS_INTERLACEMETHOD_RENDER_BOB;
+    }
+
+    /* default to odd field if we want to deinterlace and don't know better */
+    if(m_presentfield == FS_NONE && m_presentmethod != VS_INTERLACEMETHOD_NONE)
+      m_presentfield = FS_ODD;
+
+    /* invert present field if we have one of those methods */
+    if( m_presentfield == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED 
+     || m_presentfield == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
+    {
+      if( m_presentfield == FS_EVEN )
+        m_presentfield = FS_ODD;
+      else
+        m_presentfield = FS_EVEN;
+    }
 
     m_pRenderer->FlipPage(source);
   }
@@ -360,43 +385,14 @@ void CXBoxRenderManager::Present()
     CLog::Log(LOGERROR, "%s called without valid Renderer object", __FUNCTION__);
     return;
   }
-  
-  EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
 
-  /* check for forced fields */
-  if( mInt == VS_INTERLACEMETHOD_AUTO && m_presentfield != FS_NONE )
-  {
-    /* this is uggly to do on each frame, should only need be done once */
-    int mResolution = g_graphicsContext.GetVideoResolution();
-#if defined (HAS_SDL)
-    if (1)
-#else
-    if( m_rendermethod == RENDER_HQ_RGB_SHADER 
-     || m_rendermethod == RENDER_HQ_RGB_SHADERV2 )
-#endif
-      mInt = VS_INTERLACEMETHOD_RENDER_BOB;
-    else if( mResolution == HDTV_480p_16x9 
-          || mResolution == HDTV_480p_4x3 
-          || mResolution == HDTV_720p 
-          || mResolution == HDTV_1080i )
-      mInt = VS_INTERLACEMETHOD_RENDER_BLEND;
-    else
-      mInt = VS_INTERLACEMETHOD_RENDER_BOB;
-  }
-  else if( mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
-  {
-    /* all methods should default to odd if nothing is specified */
-    if( m_presentfield == FS_EVEN )
-      m_presentfield = FS_ODD;
-    else
-      m_presentfield = FS_EVEN;
-  }
-
-  if( mInt == VS_INTERLACEMETHOD_RENDER_BOB || mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+  if     ( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB
+        || m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
     PresentBob();
-  else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
+  else if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
+        || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
     PresentWeave();
-  else if( mInt == VS_INTERLACEMETHOD_RENDER_BLEND )
+  else if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BLEND )
     PresentBlend();
   else
     PresentSingle();
