@@ -786,6 +786,8 @@
   
   <!-- strings through to 1450 reserved for weather translation -->
   
+  <string id="1450">Aktivér strømsparing i ventemodus</string>  
+
   <string id="2050">Spilletid</string>
   
   <string id="4501">LCD-type</string>
@@ -955,7 +957,7 @@
   <string id="13005">Slå av</string>
   <string id="13006">Dashbord</string>
   <string id="13007">Bruk egen sti til dashbord</string>
-  <string id="13008">Standardinnstilling for avslutning</string>
+  <string id="13008">Avslutningsfunksjon</string>
   <string id="13009">Avslutt</string>
   <string id="13010">Dvalemodus</string>
   <string id="13011">Ventemodus</string>
@@ -1185,7 +1187,19 @@
   <string id="13419">Programvare</string>
   <string id="13420">Løs ut</string>
   <string id="13421">VDPAU</string>
-  
+
+  <string id="13500">A/V synkmetode</string>
+  <string id="13501">Lydklokke</string>
+  <string id="13502">Videoklokke (dropp/duplisér lyd)</string>
+  <string id="13503">Videoklokke (resamplet lyd)</string>
+  <string id="13504">Maksimal resampling (%)</string>
+  <string id="13505">Resamplingskvalitet</string>
+  <string id="13506">Lav</string>
+  <string id="13507">Medium</string>
+  <string id="13508">Høy</string>
+  <string id="13509">Veldig høy</string>
+  <string id="13510">Synkronisér avspilling til bilde</string>
+
   <string id="13600">Apple fjernkontroll</string>
   <string id="13601">Modus</string>
   <string id="13602">Alltid på</string>
@@ -1194,6 +1208,7 @@
   <string id="13610">Deaktivert</string>
   <string id="13611">Standard</string>
   <string id="13612">Universal fjernkontroll</string>
+  <string id="13613">Multifjernkontroll (Harmony)</string>
   
   <string id="13620">Feil med Apple fjernkontroll</string>
   <string id="13621">Apple fjernkontroll kan aktiveres</string>
@@ -1353,7 +1368,7 @@
   <string id="15112">Standardtema</string>
   
   <string id="15200">Last.fm</string>
-  <string id="15201">Send sanger til Last.fm</string>
+  <string id="15201">Send inn sanger til Last.fm</string>
   <string id="15202">Last.fm brukernavn</string>
   <string id="15203">Last.fm passord</string>
   <string id="15204">Kunne ikke koble til: i dvale...</string>
@@ -1369,6 +1384,12 @@
   <string id="15214">Bruk utjevnet A/V synkronisering</string>
   <string id="15215">Skjul filnavn i miniatyrvisning</string>
   <string id="15216">Spill i partymodus</string>
+  <string id="15217">Send inn sanger til Libre.fm</string> 
+  <string id="15218">Libre.fm brukernavn</string> 
+  <string id="15219">Libre.fm passord</string> 
+  <string id="15220">Libre.fm</string> 
+  <string id="15221">Scrobbler</string> 
+
   
   <string id="15250">Send inn Last.fm-radio til Last.fm</string>
   <string id="15251">Kobler til Last.fm...</string>
@@ -1701,10 +1722,10 @@
   <string id="20251">Mikser drinker (videoer)</string>
   <string id="20252">Fyller glassene (videoer)</string>
   
-  <string id="20300"></string>
-  <string id="20301">Webserverkatalog (HTTP)</string>
-  <string id="20302">Webserverkatalog (HTTPS)</string>
-  <string id="20303"></string>
+  <string id="20300">Webserverkatalog (HTTP)</string>
+  <string id="20301">Webserverkatalog (HTTPS)</string>
+  <string id="20302">Kunne ikke skrive til katalog:</string>
+  <string id="20303">Vil du ignorere problemet og fortsette?</string>
   <string id="20304"></string>
   <string id="20305"></string>
   
@@ -2052,7 +2073,8 @@
   <string id="22042">hvitt/blått</string>
   <string id="22043">svart/hvitt</string>
 
-  
+  <string id="23000">Værtillegg</string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Biblioteksmodus</string>
   <string id="29801">QWERTY-tastatur</string>
