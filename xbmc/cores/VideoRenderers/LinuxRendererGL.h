@@ -178,7 +178,6 @@ protected:
   void RenderVDPAU(DWORD flags, int renderBuffer);      // render using vdpau hardware
 
   CFrameBufferObject m_fbo;
-  CSurface *m_pBuffer;
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
