@@ -1175,17 +1175,17 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     glClearColor(m_clearColour, m_clearColour, m_clearColour, 0);
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0,0,0,0);
-    if (alpha<255)
-    {
-      //FIXME: Alpha blending currently disabled
-      //glDisable(GL_BLEND);
-    }
-    else
-    {
-      //glDisable(GL_BLEND);
-    }
   }
-  glDisable(GL_BLEND);
+
+  if (alpha<255)
+  {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(1.0f, 1.0f, 1.0f, alpha / 255.0f);
+  }
+  else
+    glDisable(GL_BLEND);
+
   Render(flags, index);
   VerifyGLState();
   glEnable(GL_BLEND);
@@ -1789,7 +1789,6 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   glActiveTextureARB(GL_TEXTURE0);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[0].id);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   // U
   glActiveTextureARB(GL_TEXTURE1);
@@ -1892,7 +1891,6 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, planes[0].id);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
   VerifyGLState();
 
   // U
@@ -2164,10 +2162,9 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, planes[0].id);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   glBegin(GL_QUADS);
-
   glTexCoord2f(planes[0].rect.x1, planes[0].rect.y1);
   glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
 
