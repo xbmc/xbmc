@@ -124,6 +124,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
       "gl_TexCoord[2] = gl_TextureMatrix[2] * gl_MultiTexCoord2;"
       "gl_TexCoord[3] = gl_TextureMatrix[3] * gl_MultiTexCoord3;"
       "gl_Position = ftransform();"
+      "gl_FrontColor = gl_Color;"
       "}";
   }
   else
@@ -135,6 +136,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
       "gl_TexCoord[1] = gl_TextureMatrix[1] * gl_MultiTexCoord1;"
       "gl_TexCoord[2] = gl_TextureMatrix[2] * gl_MultiTexCoord2;"
       "gl_TexCoord[3] = gl_TextureMatrix[3] * gl_MultiTexCoord3;"
+      "gl_FrontColor = gl_Color;"
       "gl_Position = ftransform();"
       "}";
   }
@@ -245,7 +247,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
   }
   shaderf +=
     "rgb = yuvmat * yuv;\n"
-    "rgb.a = 1.0;\n"
+    "rgb.a = gl_Color.a;\n"
     "gl_FragColor = rgb;\n"
     "}";
   SetPixelShaderSource(shaderf);
@@ -330,8 +332,8 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
     }
     shaderf +=
       "rgb = yuvmat * yuv;"
-      "rgb.a = 1.0;"
-      "gl_FragColor = rgb;"
+      "rgb.a = gl_Color.a;\n"
+      "gl_FragColor = rgb;\n"
       "}";
   SetPixelShaderSource(shaderf);  
 }
