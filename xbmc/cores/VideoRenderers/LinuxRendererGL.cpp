@@ -616,7 +616,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   if (m_currentField == FIELD_FULL)
     deinterlacing = false;
   else
-    deinterlacing = false;
+    deinterlacing = true;
 
   if (imaging==-1)
   {
