@@ -898,6 +898,14 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   VerifyGLState();
   glEnable(GL_BLEND);
   glFlush();
+
+  if (g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused() && !(flags & RENDER_FLAG_NOOSD))
+  {
+    if (g_application.NeedRenderFullScreen())
+      g_application.RenderFullScreen();
+    g_application.RenderMemoryStatus();
+  }
+
   g_graphicsContext.EndPaint();
 }
 
@@ -1289,22 +1297,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   else
   {
     RenderSoftware(flags, renderBuffer);
-    VerifyGLState();
-  }
-
-  /* general stuff */
-
-  if( flags & RENDER_FLAG_NOOSD )
-    return;
-
-  if (g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused())
-  {
-    if (g_application.NeedRenderFullScreen())
-    { // render our subtitles and osd
-      g_application.RenderFullScreen();
-      VerifyGLState();
-    }
-    g_application.RenderMemoryStatus();
     VerifyGLState();
   }
 }
