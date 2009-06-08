@@ -179,9 +179,14 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
 void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   CSharedLock lock(m_sharedSection);
+  if (!m_pRenderer)
+    return;
 
-#ifdef HAS_SDL_OPENGL  
-  if (m_pRenderer)
+#ifdef HAS_SDL_OPENGL
+  if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
+   || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
+    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOTH, alpha);
+  else
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
 #endif
 }
