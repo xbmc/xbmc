@@ -408,7 +408,7 @@ struct timidity_file *open_file(char *name, int decompress, int noise_mode)
     }
 
   /* First try the given name */
-  strncpy(current_filename, url_unexpand_home_dir(name), 1023);
+  strncpy(current_filename, name, 1023);
   current_filename[1023]='\0';
 
   if(noise_mode)
