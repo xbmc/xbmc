@@ -107,7 +107,7 @@ BicubicFilterShader::BicubicFilterShader(float B, float C)
     "texture2D(img, gl_TexCoord[0].xy + vec2(2.0*stepx, 2.0*stepy)));"
     
     "gl_FragColor = cubicFilter(f.y, t0, t1, t2, t3) ;"    
-    "gl_FragColor.a = g_Color.a;"
+    "gl_FragColor.a = gl_Color.a;"
     "}";
   SetPixelShaderSource(shaderf);
   m_kernelTex1 = 0;
