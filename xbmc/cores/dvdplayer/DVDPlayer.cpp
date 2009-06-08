@@ -2665,7 +2665,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
           return pStream->OnMouseMove(pt);
         }
         break;
-      case ACTION_SHOW_OSD:
       case ACTION_SELECT_ITEM:
         {
           THREAD_ACTION(action);
