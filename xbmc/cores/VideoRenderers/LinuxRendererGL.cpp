@@ -1964,8 +1964,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.stride[1] = im.width >> im.cshift_x;
     im.stride[2] = im.width >> im.cshift_x;
     im.plane[0] = new BYTE[im.stride[0] * im.height];
-    im.plane[1] = new BYTE[im.stride[1] * ( im.height << im.cshift_y )];
-    im.plane[2] = new BYTE[im.stride[2] * ( im.height << im.cshift_y )];
+    im.plane[1] = new BYTE[im.stride[1] * ( im.height >> im.cshift_y )];
+    im.plane[2] = new BYTE[im.stride[2] * ( im.height >> im.cshift_y )];
   }
 
   glEnable(m_textureTarget);
