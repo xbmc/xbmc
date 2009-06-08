@@ -53,7 +53,7 @@ MA_RESULT CDSPFilter::TestInputFormat(CStreamDescriptor* pDesc, unsigned int bus
     (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS , MA_STREAM_FLAG_LOCKED, NULL) != MA_SUCCESS) ||
     (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_SEC , NULL) != MA_SUCCESS) ||
     (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_FRAME, NULL) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT , NULL) != MA_SUCCESS)) 
+    (pDesc->GetFormat() == MA_STREAM_FORMAT_UNKNOWN))
     return MA_MISSING_ATTRIBUTE;
 
   return MA_SUCCESS;
@@ -64,14 +64,14 @@ MA_RESULT CDSPFilter::SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus 
   if (bus >= m_InputBusses)
     return MA_INVALID_BUS;
 
+  m_pInputDescriptor[bus].m_StreamFormat = pDesc->GetFormat();
   CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
   // Fetch and store the required stream attributes
   if (
     (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS, MA_STREAM_FLAG_LOCKED, &m_pInputDescriptor[bus].m_Locked) != MA_SUCCESS) ||
     (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS, MA_STREAM_FLAG_VBR, &m_pInputDescriptor[bus].m_VariableBitrate) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_SEC, (int*)&m_pInputDescriptor[bus].m_BytesPerSecond) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_FRAME, (int*)&m_pInputDescriptor[bus].m_FrameSize) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT , &m_pInputDescriptor[bus].m_StreamFormat) != MA_SUCCESS)) 
+    (pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_SEC, &m_pInputDescriptor[bus].m_BytesPerSecond) != MA_SUCCESS) ||
+    (pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, &m_pInputDescriptor[bus].m_FrameSize) != MA_SUCCESS)) 
   {
     ClearInputFormat(bus);
     return MA_MISSING_ATTRIBUTE;
@@ -116,7 +116,7 @@ MA_RESULT CDSPFilter::TestOutputFormat(CStreamDescriptor* pDesc, unsigned int bu
     (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS , MA_STREAM_FLAG_LOCKED, NULL) != MA_SUCCESS) || // If one flag exists, then the bitfield exists
     (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_SEC , NULL) != MA_SUCCESS) ||
     (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_FRAME, NULL) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT , NULL) != MA_SUCCESS)) 
+    (pDesc->GetFormat() == MA_STREAM_FORMAT_UNKNOWN))
     return MA_MISSING_ATTRIBUTE;
 
   return MA_SUCCESS;
@@ -133,14 +133,14 @@ MA_RESULT CDSPFilter::SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus
     return MA_SUCCESS;
   }
 
+  m_pOutputDescriptor[bus].m_StreamFormat = pDesc->GetFormat();
   CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
   // Fetch and store the required stream attributes
   if (
     (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS, MA_STREAM_FLAG_LOCKED, &m_pOutputDescriptor[bus].m_Locked) != MA_SUCCESS) ||
     (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS, MA_STREAM_FLAG_LOCKED, &m_pOutputDescriptor[bus].m_VariableBitrate) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_SEC, (int*)&m_pOutputDescriptor[bus].m_BytesPerSecond) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_BYTES_PER_FRAME, (int*)&m_pOutputDescriptor[bus].m_FrameSize) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT , &m_pOutputDescriptor[bus].m_StreamFormat) != MA_SUCCESS)) 
+    (pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_SEC, &m_pOutputDescriptor[bus].m_BytesPerSecond) != MA_SUCCESS) ||
+    (pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, &m_pOutputDescriptor[bus].m_FrameSize) != MA_SUCCESS)) 
   {
     ClearOutputFormat(bus);
     return MA_MISSING_ATTRIBUTE;

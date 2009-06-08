@@ -382,13 +382,19 @@ void CGUISettings::Initialize()
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
   AddBool(7, "audiooutput.downmixmultichannel", 548, true);
+  AddBool(8, "audiooutput.upmix", 33000, false);
+  AddBool(9, "audiooutput.ac3encode", 33001, false);
 #elif defined(_LINUX)
   AddString(6, "audiooutput.audiodevice", 545, "default", EDIT_CONTROL_INPUT);
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", EDIT_CONTROL_INPUT);
   AddBool(8, "audiooutput.downmixmultichannel", 548, true);
+  AddBool(9, "audiooutput.upmix", 33000, false);
+  AddBool(10, "audiooutput.ac3encode", 33001, false);
 #elif defined(_WIN32PC)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   AddBool(7, "audiooutput.downmixmultichannel", 548, true);
+  AddBool(8, "audiooutput.upmix", 33000, false);
+  AddBool(9, "audiooutput.ac3encode", 33001, false);
 #endif
 
   AddCategory(4, "masterlock", 12360);

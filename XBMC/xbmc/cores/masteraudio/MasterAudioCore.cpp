@@ -95,7 +95,7 @@ MA_RESULT CStreamInput::TestOutputFormat(CStreamDescriptor* pDesc, unsigned int 
     (pAttribs->GetFlag(MA_ATT_TYPE_STREAM_FLAGS, MA_STREAM_FLAG_LOCKED, NULL) != MA_SUCCESS) ||
     (pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_SEC, NULL) != MA_SUCCESS) ||
     (pAttribs->GetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, NULL) != MA_SUCCESS) ||
-    (pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT, NULL) != MA_SUCCESS)) 
+    (pDesc->GetFormat() == MA_STREAM_FORMAT_UNKNOWN))
     return MA_MISSING_ATTRIBUTE;
 
   return MA_SUCCESS;
@@ -178,7 +178,11 @@ int CHardwareMixer::OpenChannel(CStreamDescriptor* pDesc)
     if (m_pChannel[c]->IsIdle())
     {
       channel = c + 1;
-      m_pChannel[c]->SetInputFormat(pDesc);
+      if (MA_SUCCESS != m_pChannel[c]->SetInputFormat(pDesc))
+      {
+        CLog::Log(LOGERROR, "MasterAudio:HardwareMixer: There was a problem initiailizing the output adapter (channel = %d).", channel);
+        return 0; // We could not initialize the output adapter
+      }
       m_ActiveChannels++;
       break;
     }
@@ -598,8 +602,10 @@ MA_RESULT CStreamAttributeCollection::SetFlag(MA_ATTRIB_ID id, int flag, bool va
     att = *pAtt;
   }
   else
+  {
     att.type = stream_attribute_bitfield;
-
+    att.bitfieldVal = 0;
+  }
   if (val)
    att.bitfieldVal |= flag;
   else

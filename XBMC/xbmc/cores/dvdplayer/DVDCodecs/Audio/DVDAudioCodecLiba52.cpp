@@ -182,16 +182,6 @@ void CDVDAudioCodecLiba52::SetupChannels(int flags)
   m_iOutputChannels = m_iSourceChannels;
   m_iOutputFlags    = m_iSourceFlags;
 
-  // If we can't support multichannel output downmix
-  if (g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
-  {
-    m_iOutputChannels = 2;
-    m_iOutputMapping = 0x21;
-    m_iOutputFlags = A52_STEREO;
-    if (m_iSourceChannels > 2)
-      m_Gain = pow(2.0f, g_advancedSettings.m_ac3Gain/6.0f); // Hack for downmix attenuation
-  }
-
   /* adjust level should always be set, to keep samples in proper range */
   /* after any downmixing has been done */
   m_iOutputFlags |= A52_ADJUST_LEVEL;

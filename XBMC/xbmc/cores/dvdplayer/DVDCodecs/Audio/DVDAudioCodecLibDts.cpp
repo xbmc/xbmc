@@ -199,10 +199,7 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
 {
   m_iSourceFlags    = flags;
   m_iSourceChannels = GetNrOfChannels(flags);
-  if (g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
-    m_iOutputChannels = 2;
-  else
-    m_iOutputChannels = m_iSourceChannels;
+  m_iOutputChannels = m_iSourceChannels;
 
   if (m_iOutputChannels == 1)
     m_iOutputFlags = DTS_MONO;

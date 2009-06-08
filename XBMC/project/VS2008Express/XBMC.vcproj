@@ -2144,6 +2144,14 @@
 						RelativePath="..\..\xbmc\cores\masteraudio\Filters\DSPFilterResampler.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\TestFilter.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\masteraudio\Filters\TestFilter.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="RenderingAdapters"

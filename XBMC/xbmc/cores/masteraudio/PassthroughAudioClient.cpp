@@ -25,6 +25,7 @@
 bool CPassthroughAudioClient::OpenAC3Stream()
 {
   CStreamDescriptor desc;
+  desc.SetFormat(MA_STREAM_FORMAT_IEC61937);
   CStreamAttributeCollection* pAtts = desc.GetAttributes();
   if(!pAtts)
     return false;
@@ -32,8 +33,8 @@ bool CPassthroughAudioClient::OpenAC3Stream()
   pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,true);
   pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,192000);
   pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,6144);
-  pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_IEC61937);
   pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_AC3);
+  pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,48000);
 
   return CAudioManagerClient::OpenStream(&desc);
 }
@@ -41,13 +42,16 @@ bool CPassthroughAudioClient::OpenAC3Stream()
 bool CPassthroughAudioClient::OpenDTSStream()
 {
   CStreamDescriptor desc;
+  desc.SetFormat(MA_STREAM_FORMAT_IEC61937);
   CStreamAttributeCollection* pAtts = desc.GetAttributes();
   if(!pAtts)
     return false;
 
-  pAtts->SetInt(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED);
-  pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_IEC61937);
+  pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED, true);
+  pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,192000);
+  pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,6144);
   pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_DTS);
+  pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,48000);
 
   return CAudioManagerClient::OpenStream(&desc);
 }

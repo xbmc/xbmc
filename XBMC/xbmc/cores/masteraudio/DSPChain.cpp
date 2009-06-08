@@ -23,6 +23,7 @@
 #include "Filters/DSPFilterMatrixMixer.h"
 #include "Filters/DSPFilterResampler.h"
 #include "Filters/DSPFilterAC3Encoder.h"
+#include "Filters/TestFilter.h"
 
 // CDSPChain
 //////////////////////////////////////////////////////////////////////////////////////
@@ -73,10 +74,25 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
   {
     // TODO: Dynamically create DSP Filter Graph 
     // TODO: Link elements properly and link at end
-    unsigned int outputFormat = MA_STREAM_FORMAT_UNKNOWN;
-    unsigned int inputFormat = MA_STREAM_FORMAT_UNKNOWN;
-    pInDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_STREAM_FORMAT, &inputFormat);
-    pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_STREAM_FORMAT, &outputFormat);
+    bool installTest = false;
+
+    // Install DSP Transform Test Container. Who knows what this does today?
+    if (installTest)
+    {
+      dsp_filter_node* pPrev = m_pTail;
+      m_pTail = new dsp_filter_node();
+      m_pTail->filter = new CDSPFilterTest();
+      m_pTail->filter->SetInputFormat(pInDesc);
+      m_pTail->filter->SetOutputFormat(pInDesc); // This filter will not alter the format
+      filterChainText += " -> TestFilter";
+      if (pPrev)
+        m_pTail->filter->SetSource(pPrev->filter);
+      if (!m_pHead)
+        m_pHead = m_pTail;
+    }
+
+    unsigned int outputFormat = pOutDesc->GetFormat();
+    unsigned int inputFormat = pInDesc->GetFormat();
 
     // See if we need up/down-mixing or channel re-mapping
     unsigned int inChannels = 0;
@@ -91,7 +107,8 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
     pInDesc->GetAttributes()->GetArray(MA_ATT_TYPE_CHANNEL_LAYOUT, stream_attribute_int, inLayout, sizeof(int) * MA_MAX_CHANNELS);
     pOutDesc->GetAttributes()->GetArray(MA_ATT_TYPE_CHANNEL_LAYOUT, stream_attribute_int, outLayout, sizeof(int) * MA_MAX_CHANNELS);
 
-    if ((inChannels != outChannels) || (memcmp(inLayout, outLayout, sizeof(int) * MA_MAX_CHANNELS)))
+    if (((inChannels != outChannels || memcmp(inLayout, outLayout, sizeof(int) * MA_MAX_CHANNELS)) && outputFormat != MA_STREAM_FORMAT_IEC61937) ||
+       (outputFormat == MA_STREAM_FORMAT_IEC61937 && inChannels < 6))
     {
       dsp_filter_node* pPrev = m_pTail;
       m_pTail = new dsp_filter_node();
@@ -101,8 +118,9 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
       // Update input format to reflect conversion performed by filter
       if (outputFormat == MA_STREAM_FORMAT_IEC61937)
       {
-        pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT, 6); // Update to reflect conversion performed by filter
-        pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, 12); 
+        unsigned int ac3Channels = 6;
+        pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT, ac3Channels); // Update to reflect conversion performed by filter
+        pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, ac3Channels * 2); 
       }
       else
       {
@@ -134,7 +152,6 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
       m_pTail->filter->SetInputFormat(pInDesc);
       pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_SAMPLERATE, outputSampleRate); // Update to reflect conversion performed by filter
       m_pTail->filter->SetOutputFormat(pInDesc);
-      m_pTail->filter->SetSource(pPrev->filter);
       filterChainText += " -> Resampler";
       if (pPrev)
         m_pTail->filter->SetSource(pPrev->filter);
@@ -150,15 +167,14 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
       m_pTail->filter = new CDSPFilterAC3Encoder();
       m_pTail->filter->SetInputFormat(pInDesc);
       m_pTail->filter->SetOutputFormat(pOutDesc);    
-      m_pTail->filter->SetSource(pPrev->filter);
       filterChainText += " -> AC3Encoder";
       if (pPrev)
         m_pTail->filter->SetSource(pPrev->filter);
       if (!m_pHead)
         m_pHead = m_pTail;
     }
-    filterChainText += " -> Output";
   }
+  filterChainText += " -> Output";
   CLog::Log(LOGINFO,"MasterAudio:CDSPChain: Created filter graph: %s", filterChainText.c_str());
 
   return MA_SUCCESS;

@@ -73,9 +73,7 @@ MA_RESULT CDSPFilterLPCM::TestInputFormat(CStreamDescriptor* pDesc, unsigned int
     return ret;
 
   CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
-  int streamFormat = MA_STREAM_FORMAT_UNKNOWN;
-  if ((pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT, &streamFormat) != MA_SUCCESS) || 
-      (streamFormat != MA_STREAM_FORMAT_LPCM))
+  if (pDesc->GetFormat() != MA_STREAM_FORMAT_LPCM)
     return MA_NOT_SUPPORTED;
 
   // Verify that the required attributes are present and of the correct type
@@ -107,9 +105,7 @@ MA_RESULT CDSPFilterLPCM::TestOutputFormat(CStreamDescriptor* pDesc, unsigned in
     return ret;
 
   CStreamAttributeCollection *pAttribs = pDesc->GetAttributes();
-  int streamFormat = MA_STREAM_FORMAT_UNKNOWN;
-  if ((pAttribs->GetInt(MA_ATT_TYPE_STREAM_FORMAT, &streamFormat) != MA_SUCCESS) || 
-      (streamFormat != MA_STREAM_FORMAT_LPCM))
+  if (pDesc->GetFormat() != MA_STREAM_FORMAT_LPCM)
     return MA_NOT_SUPPORTED;
 
   LPCMAttributes LPCM;

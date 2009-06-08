@@ -25,13 +25,13 @@
 bool CPCMAudioClient::OpenStream(int channels, int bitsPerSample, int samplesPerSecond)
 {
   CStreamDescriptor desc;
+  desc.SetFormat(MA_STREAM_FORMAT_LPCM);
   CStreamAttributeCollection* pAtts = desc.GetAttributes();
   if(!pAtts)
     return false;
   
   // Required Attributes
   pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_NONE,false);
-  pAtts->SetInt(MA_ATT_TYPE_STREAM_FORMAT,MA_STREAM_FORMAT_LPCM);
   pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,channels * (bitsPerSample >> 3));
   pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC, samplesPerSecond * channels * (bitsPerSample >> 3));
   

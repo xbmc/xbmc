@@ -212,7 +212,7 @@ MA_RESULT CDSPFilterAC3Encoder::InitCodec(CStreamDescriptor *pDesc, unsigned int
 
   // Set-up the context used when interacting with the encoder
   pEncoderAtt->m_CodecContext              = m_AvCodec.avcodec_alloc_context();           // Allocate the context
-  pEncoderAtt->m_CodecContext->bit_rate    = 640000;
+  pEncoderAtt->m_CodecContext->bit_rate    = 448000;
   pEncoderAtt->m_CodecContext->sample_rate = pEncoderAtt->m_SampleRate;
   pEncoderAtt->m_CodecContext->channels    = GetLPCMInputAttributes(bus)->m_ChannelCount; // Channel Count
   pEncoderAtt->m_CodecContext->sample_fmt  = SAMPLE_FMT_S16;                              // Currently support only 16-bit Signed Integer

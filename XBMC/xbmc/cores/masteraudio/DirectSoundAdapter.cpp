@@ -71,20 +71,18 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc, unsigned
   if (!pAtts)
     return MA_ERROR;
 
-  unsigned int format = 0;
   unsigned int channels = 0;
   unsigned int bitsPerSample = 0;
   unsigned int samplesPerSecond = 0;
   unsigned int encoding = 0;
  
   // TODO: Write helper method to fetch attributes
-  if ((MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_STREAM_FORMAT,(int*)&format))||
-      (MA_SUCCESS != pAtts->GetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, &m_BytesPerFrame)))
+  if (MA_SUCCESS != pAtts->GetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, &m_BytesPerFrame))
      return MA_MISSING_ATTRIBUTE;
 
   // TODO: Find a more elegant way to configure the renderer
   m_pRenderer = NULL;
-  switch (format)
+  switch (pDesc->GetFormat())
   {
   case MA_STREAM_FORMAT_LPCM:
     if ((MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_CHANNEL_COUNT,(int*)&channels)) ||

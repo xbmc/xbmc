@@ -119,8 +119,8 @@ enum
   MA_ATT_TYPE_STREAM_FLAGS,     // type: bitfield
   MA_ATT_TYPE_BYTES_PER_SEC,    // type: uint
   MA_ATT_TYPE_BYTES_PER_FRAME,  // type: uint
-  MA_ATT_TYPE_STREAM_FORMAT,    // type: int (The value of the this attribute defines what other attibutes are valid/required)
-  
+  // The stream format defines what other attibutes are valid/required
+
   // Linear PCM Format Attributes
   MA_ATT_TYPE_LPCM_FLAGS,       // type: bitfield
   MA_ATT_TYPE_SAMPLE_TYPE,      // type: int
@@ -159,6 +159,7 @@ enum
 // MA_ATT_TYPE_SAMPLE_TYPE Values
 enum
 {
+  MA_SAMPLE_TYPE_UNKNOWN,
   MA_SAMPLE_TYPE_SINT,
   MA_SAMPLE_TYPE_UINT,
   MA_SAMPLE_TYPE_FLOAT
@@ -167,6 +168,7 @@ enum
 // MA_ATT_TYPE_ENCODING Values
 enum
 {
+  MA_STREAM_ENCODING_UNKNOWN,
   MA_STREAM_ENCODING_AC3,
   MA_STREAM_ENCODING_DTS
 };
@@ -312,8 +314,12 @@ protected:
 class CStreamDescriptor
 {
 public:
+  CStreamDescriptor() : m_Format(MA_STREAM_FORMAT_UNKNOWN) {}
+  int GetFormat() {return m_Format;}
+  void SetFormat(int format){m_Format = format;} // TODO: Clear all non-required attributes
   CStreamAttributeCollection* GetAttributes() {return &m_Attributes;}
 protected:
+  int m_Format;
   CStreamAttributeCollection m_Attributes;
 };
 

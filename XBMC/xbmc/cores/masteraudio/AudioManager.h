@@ -29,15 +29,27 @@
 #include "MasterAudioCore.h"
 #include "DSPChain.h"
 #include <vector>
+#include "Thread.h"
 
 typedef void* MA_STREAM_ID;
 
 #define MA_MIXER_HARDWARE 1
 #define MA_MIXER_SOFTWARE 2
 
-struct audio_profile
+typedef std::vector<CStreamDescriptor*> StreamDescriptorList;
+
+class CAudioProfile
 {
-  CStreamDescriptor output_descriptor;
+public:
+  CAudioProfile();
+  virtual ~CAudioProfile();
+  void Clear();
+  unsigned int GetDescriptorCount();
+  CStreamDescriptor* GetDescriptor(unsigned int index);
+  bool GetDescriptors(int format, StreamDescriptorList* pList); // TODO: Also allow a list of attributes and values to refine the search
+  void AddDescriptor(CStreamDescriptor* pDesc);
+protected:
+  StreamDescriptorList m_DescriptorList; 
 };
 
 class CAudioStream
@@ -66,6 +78,67 @@ private:
 
 typedef std::map<MA_STREAM_ID,CAudioStream*>::iterator StreamIterator;
 
+// Public interface for audio clients (thread-safe)
+class IAudioService
+{
+public:
+  // Data Interface
+// AddData
+
+  // Command Interface (Methods with no return value)
+// Drain (Sync)
+// Flush (sync)
+// TransportControl (ASync)
+
+  // Query Interface (Methods with return values)
+// GetDelay
+// GetStreamParameter
+// SetStreamParameter
+
+  // Management Interface
+// OpenStream
+// CloseStream
+};
+
+class CAudioManagerMessage
+{
+public:
+  enum
+  {
+  // ASync
+    ADD_DATA,
+    DRAIN_STREAM,
+    FLUSH_STREAM,
+    CONTROL_STREAM,
+  // Sync
+    GET_STREAM_DELAY, // TODO: This needs to be synchronous, but cannot use a wait event as it is called too frequently
+    GET_STREAM_PARAMETER,
+    SET_STREAM_PARAMETER,
+    OPEN_STREAM,
+    CLOSE_STREAM
+  };
+  
+  bool IsAsync();
+
+protected:
+
+};
+
+class CAudioManagerMessageQueue
+{
+public:
+  void PostMessage(CAudioManagerMessage* pMsg);
+  CAudioManagerMessage* GetMessage();
+private:
+
+};
+
+class CAudioClientData
+{
+public:
+  HANDLE m_SyncWaitEvent;
+};
+
 class CAudioManager
 {
 public:
@@ -87,12 +160,27 @@ protected:
   std::map<MA_STREAM_ID,CAudioStream*> m_StreamList;
   IAudioMixer* m_pMixer;
   unsigned int m_MaxStreams;
+  CAudioProfile m_DefaultProfile;
 
+  void LoadAudioProfiles();
   CAudioStream* GetInputStream(MA_STREAM_ID streamId);
   MA_STREAM_ID GetStreamId(CAudioStream* pStream);
   int GetOpenStreamCount();
   void CleanupStreamResources(CAudioStream* pStream);
-  audio_profile* GetProfile(CStreamDescriptor* pInputDesc);
+  bool FindOutputDescriptors(CStreamDescriptor* pInputDesc, StreamDescriptorList* pList);
+
+  bool CallMethodAsync(CAudioManagerMessage* pMsg);
+  bool CallMethodSync(CAudioManagerMessage* pMsg);
+
+  // This class encapsulates the AudioManager processing thread
+  friend class CAudioManagerThread;
+  class CAudioManagerThread : public CThread
+  {
+  protected:
+    virtual void OnStartup(){};
+    virtual void OnExit(){};
+    virtual void Process();
+  };
 };
 
 extern CAudioManager g_AudioLibManager;
