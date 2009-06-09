@@ -493,8 +493,6 @@ void CDVDDemuxFFmpeg::Flush()
 
   if (m_pFormatContext)
   {
-    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
-
     // reset any dts interpolation
     for(int i=0;i<MAX_STREAMS;i++)
     {
@@ -774,11 +772,8 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     if (!((CDVDInputStreamNavigator*)m_pInput)->SeekTime(time))
       return false;
 
-    Lock();
-    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
-    Unlock();
     return true;
   }
 
@@ -1091,11 +1086,8 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
     if(!((CDVDInputStreamNavigator*)m_pInput)->SeekChapter(chapter))
       return false;
 
-    Lock();
-    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
-    Unlock();
     return true;
   }
 

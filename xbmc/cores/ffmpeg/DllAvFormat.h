@@ -59,14 +59,11 @@ public:
   virtual int url_fopen(ByteIOContext **s, const char *filename, int flags)=0;
   virtual int url_fclose(ByteIOContext *s)=0;
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence)=0;
-  virtual void av_read_frame_flush(AVFormatContext *s)=0;
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
-
-extern "C" { void av_read_frame_flush(AVFormatContext *s); }
 
 // Use direct mapping
 class DllAvFormat : public DllDynamic, DllAvFormatInterface
@@ -103,11 +100,6 @@ public:
   virtual int url_fopen(ByteIOContext **s, const char *filename, int flags) { return ::url_fopen(s, filename, flags); }
   virtual int url_fclose(ByteIOContext *s) { return ::url_fclose(s); }
   virtual offset_t url_fseek(ByteIOContext *s, offset_t offset, int whence) { return ::url_fseek(s, offset, whence); }
-  #if (! defined __LINUX__)
-  virtual void av_read_frame_flush(AVFormatContext *s) { ::av_read_frame_flush(s); }
-  #else
-  virtual void av_read_frame_flush(AVFormatContext *s) { /* Do nothing. This isn't defined in any of ffmpeg's public headers */ }
-  #endif
   virtual int get_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_buffer(s, buf, size); }
   virtual int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size) { return ::get_partial_buffer(s, buf, size); }
   
@@ -142,7 +134,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED5(int, __cdecl, av_open_input_file, AVFormatContext**, const char *, AVInputFormat *, int, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED5(int,__cdecl, av_open_input_stream, AVFormatContext **, ByteIOContext *, const char *, AVInputFormat *, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
-  DEFINE_FUNC_ALIGNED1(void, __cdecl, av_read_frame_flush, AVFormatContext*)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_buffer, ByteIOContext*, unsigned char *, int)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_partial_buffer, ByteIOContext*, unsigned char *, int)
 #else
@@ -152,7 +143,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD5(int, av_open_input_file, (AVFormatContext **p1, const char *p2, AVInputFormat *p3, int p4, AVFormatParameters *p5))
   DEFINE_METHOD5(int, av_open_input_stream, (AVFormatContext **p1, ByteIOContext *p2, const char *p3, AVInputFormat *p4, AVFormatParameters *p5))
   DEFINE_METHOD2(AVInputFormat*, av_probe_input_format, (AVProbeData* p1 , int p2))
-  DEFINE_METHOD1(void, av_read_frame_flush, (AVFormatContext* p1))
   DEFINE_METHOD3(int, get_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
   DEFINE_METHOD3(int, get_partial_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
 #endif
@@ -191,7 +181,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(url_fopen)
     RESOLVE_METHOD(url_fclose)
     RESOLVE_METHOD(url_fseek)
-    RESOLVE_METHOD(av_read_frame_flush)
     RESOLVE_METHOD(get_buffer)
     RESOLVE_METHOD(get_partial_buffer)
   END_METHOD_RESOLVE()
