@@ -923,6 +923,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           return false;
         }
         bestRelevance = relevance;
+        bestMatch = 0;
       }
 
       iSelectedAlbum = bestMatch;
