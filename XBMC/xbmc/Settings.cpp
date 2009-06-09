@@ -53,6 +53,7 @@
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
 #include "FileSystem/SMBDirectory.h"
 #endif
+#include "PlayerCoreFactory.h"
 
 using namespace std;
 using namespace XFILE;
@@ -322,17 +323,6 @@ void CSettings::Initialize()
 //#else
   g_advancedSettings.m_ForcedSwapTime = 0.0;
 //#endif
-  g_advancedSettings.m_externalPlayerFilename = "";
-  g_advancedSettings.m_externalPlayerArgs = "";
-#ifdef _WIN32PC
-  g_advancedSettings.m_externalPlayerFilenameReplacers.push_back("^smb:// , / , \\\\ , g");
-  g_advancedSettings.m_externalPlayerFilenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
-#endif
-  g_advancedSettings.m_externalPlayerForceontop = false;
-  g_advancedSettings.m_externalPlayerHideconsole = false;
-  g_advancedSettings.m_externalPlayerHidecursor = false;
-  g_advancedSettings.m_externalPlayerHidexbmc = false;
-  g_advancedSettings.m_externalPlayerStartupTime = 5000;
 
   g_advancedSettings.m_cpuTempCmd = "";
   g_advancedSettings.m_gpuTempCmd = "";
@@ -1075,8 +1065,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   g_guiSettings.LoadXML(pRootElement);
   LoadSkinSettings(pRootElement);
 
+  // Configure the PlayerCoreFactory
+  LoadPlayerCoreFactorySettings("special://xbmc/system/playercorefactory.xml", true);
+  LoadPlayerCoreFactorySettings(g_settings.GetUserDataItem("playercorefactory.xml"), false);
+
   // Advanced settings
   LoadAdvancedSettings();
+
   // Default players?
   CLog::Log(LOGNOTICE, "Default DVD Player: %s", g_advancedSettings.m_videoDefaultDVDPlayer.c_str());
   CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
@@ -1241,30 +1236,24 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", g_advancedSettings.m_bVideoLibraryExportAutoThumbs);
   }
+  // Backward-compatibility of ExternalPlayer config
   pElement = pRootElement->FirstChildElement("externalplayer");
   if (pElement)
   {
-    XMLUtils::GetString(pElement, "filename", g_advancedSettings.m_externalPlayerFilename);
-    CLog::Log(LOGNOTICE, "ExternalPlayer Filename: %s", g_advancedSettings.m_externalPlayerFilename.c_str());
-    XMLUtils::GetString(pElement, "args", g_advancedSettings.m_externalPlayerArgs);
-    XMLUtils::GetBoolean(pElement, "forceontop", g_advancedSettings.m_externalPlayerForceontop);
-    XMLUtils::GetBoolean(pElement, "hideconsole", g_advancedSettings.m_externalPlayerHideconsole);
-    XMLUtils::GetBoolean(pElement, "hidecursor", g_advancedSettings.m_externalPlayerHidecursor);
-    XMLUtils::GetBoolean(pElement, "hidexbmc", g_advancedSettings.m_externalPlayerHidexbmc);
-    XMLUtils::GetInt(pElement, "startuptime", g_advancedSettings.m_externalPlayerStartupTime, 0, INT_MAX);
-    TiXmlElement* pReplacers = pElement->FirstChildElement("replacers");
-    while (pReplacers) 
-    {
-      GetCustomRegexpReplacers(pReplacers, g_advancedSettings.m_externalPlayerFilenameReplacers);
-      pReplacers = pReplacers->NextSiblingElement("replacers");
-    }
+    TiXmlElement* player = new TiXmlElement(*pElement);
+    player->SetValue("player");
+    player->SetAttribute("name", "ExternalPlayer");
+    player->SetAttribute("type", "ExternalPlayer");
+    player->SetAttribute("audio", "true");
+    player->SetAttribute("video", "true");
+ 
+    TiXmlElement* players = new TiXmlElement("players");
+    players->LinkEndChild(player);
 
-    CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s), Hidexbmc (%s), StartupTime (%d)", 
-              g_advancedSettings.m_externalPlayerForceontop ? "true" : "false",
-              g_advancedSettings.m_externalPlayerHideconsole ? "true" : "false",
-              g_advancedSettings.m_externalPlayerHidecursor ? "true" : "false",
-              g_advancedSettings.m_externalPlayerHidexbmc ? "true" : "false",
-              g_advancedSettings.m_externalPlayerStartupTime);
+    TiXmlElement playercorefactory("playercorefactory");
+    playercorefactory.LinkEndChild(players);
+
+    CPlayerCoreFactory::LoadConfiguration(&playercorefactory, false);
   }
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
@@ -1609,6 +1598,24 @@ void CSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLI
   }
 }
 
+bool CSettings::LoadPlayerCoreFactorySettings(CStdString fileStr, bool clear)
+{
+  if (!CFile::Exists(fileStr))
+  { // tell the user it doesn't exist
+    CLog::Log(LOGNOTICE, "No playercorefactory.xml to load (%s)", fileStr.c_str());
+    return false;
+  }
+
+  TiXmlDocument playerCoreFactoryXML;
+  if (!playerCoreFactoryXML.LoadFile(fileStr))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", fileStr.c_str(), playerCoreFactoryXML.ErrorRow(), playerCoreFactoryXML.ErrorDesc());
+    return false;
+  }
+
+  return CPlayerCoreFactory::LoadConfiguration(playerCoreFactoryXML.RootElement(), clear);
+}
+
 void CSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings)
 {
   int iAction = 0; // overwrite
@@ -1644,76 +1651,6 @@ void CSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& se
     pRegExp = pRegExp->NextSibling("regexp");
   }
 }
-
-void CSettings::GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings)
-{
-  int iAction = 0; // overwrite
-  // for backward compatibility
-  const char* szAppend = pRootElement->Attribute("append");
-  if ((szAppend && stricmp(szAppend, "yes") == 0))
-    iAction = 1;
-  // action takes precedence if both attributes exist
-  const char* szAction = pRootElement->Attribute("action");
-  if (szAction)
-  {
-    iAction = 0; // overwrite
-    if (stricmp(szAction, "append") == 0)
-      iAction = 1; // append
-    else if (stricmp(szAction, "prepend") == 0)
-      iAction = 2; // prepend
-  }
-  if (iAction == 0)
-    settings.clear();
-
-  TiXmlElement* pReplacer = pRootElement->FirstChildElement("replacer");
-  int i = 0;
-  while (pReplacer)
-  {
-    if (pReplacer->FirstChild())
-    {
-      const char* szGlobal = pReplacer->Attribute("global");
-      const char* szStop = pReplacer->Attribute("stop");
-      bool bGlobal = szGlobal && stricmp(szGlobal, "true") == 0;
-      bool bStop = szStop && stricmp(szStop, "true") == 0;
-
-      CStdString strMatch;
-      CStdString strPat;
-      CStdString strRep;
-      GetString(pReplacer,"match",strMatch,"");
-      GetString(pReplacer,"pat",strPat,"");
-      GetString(pReplacer,"rep",strRep,"");
-
-      if (!strPat.IsEmpty() && !strRep.IsEmpty())
-      {
-        CLog::Log(LOGDEBUG,"  Registering replacer:");
-        CLog::Log(LOGDEBUG,"    Match:[%s] Pattern:[%s] Replacement:[%s]", strMatch.c_str(), strPat.c_str(), strRep.c_str());
-        CLog::Log(LOGDEBUG,"    Global:[%s] Stop:[%s]", bGlobal?"true":"false", bStop?"true":"false");
-        // keep literal commas since we use comma as a seperator
-        strMatch.Replace(",",",,");
-        strPat.Replace(",",",,");
-        strRep.Replace(",",",,");
-        
-        CStdString strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
-        if (iAction == 2)
-          settings.insert(settings.begin() + i++, 1, strReplacer);
-        else
-          settings.push_back(strReplacer);
-      }
-      else
-      {
-        // error message about missing tag
-        if (strPat.IsEmpty())
-          CLog::Log(LOGERROR,"  Missing <Pat> tag");
-        else
-          CLog::Log(LOGERROR,"  Missing <Rep> tag");
-      }
-    }
-
-    pReplacer = pReplacer->NextSiblingElement("replacer");
-  }
-}
-
-
 
 void CSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions)
 {

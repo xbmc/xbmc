@@ -24,6 +24,8 @@
 #include "IAudioCallback.h"
 #include "Key.h"
 
+class TiXmlElement;
+
 class IPlayerCallback
 {
 public:
@@ -57,6 +59,7 @@ class IPlayer
 public:
   IPlayer(IPlayerCallback& callback): m_callback(callback){};
   virtual ~IPlayer(){};
+  virtual bool Initialize(TiXmlElement* pConfig) { return true; };
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
   virtual void UnRegisterAudioCallback() = 0;
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
