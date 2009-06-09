@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 05/29/2009-->
+<!--Date of translation: 06/09/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20734-->
+<!--Based on english strings version 20801-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -545,7 +545,7 @@
   <string id="706">HTTP proxy värd</string>
   <string id="707">HTTP proxy port</string>
   <string id="708">Aktivera HTTP proxy</string>
-  <string id="709">HTTP Proxy  användarnamn</string>
+  <string id="709">HTTP Proxy användarnamn</string>
   <string id="710">HTTP Proxy lösenord</string>
   <string id="711">Internet protokoll (IP)</string>
   <string id="712">Felaktig port angiven. Värde måste vara mellan 1 och 65535.</string>
@@ -689,7 +689,7 @@
   <string id="1212">Film</string>
   <string id="1213">Bilder</string>
   <string id="1214">Filer</string>
-  <string id="1215">Musik &amp; Film </string>
+  <string id="1215">Musik &amp; Film</string>
   <string id="1216">Musik &amp; Bilder</string>
   <string id="1217">Musik &amp; Filer</string>
   <string id="1218">Film &amp; Bilder</string>
@@ -832,19 +832,19 @@
   <string id="12327">Ange huvudkod</string>
   <string id="12328">Ange låskod</string>
   <string id="12329">eller tryck C för att avbryta</string>
-  <string id="12330">Ange knappkombination på spelkontrollen och </string>
+  <string id="12330">Ange knappkombination på spelkontrollen och</string>
   <string id="12331">tryck Start, eller Back för att avbryta</string>
   <string id="12332">Ange lås</string>
   <string id="12333">Lås upp</string>
   <string id="12334">Återställ lås</string>
   <string id="12335">Ta bort låset</string>
   <string id="12337">Sifferlösen</string>
-  <string id="12338">Knappar på spelkontroll </string>
+  <string id="12338">Knappar på spelkontroll</string>
   <string id="12339">Textlösen</string>
   <string id="12340">Ange nytt lösenord</string>
   <string id="12341">Ange nytt lösenord igen</string>
   <string id="12342">Felaktigt lösenord,</string>
-  <string id="12343">försök kvar </string>
+  <string id="12343">försök kvar</string>
   <string id="12344">Lösenordet som angavs matchade inte.</string>
   <string id="12345">Åtkomst nekad</string>
   <string id="12346">Antal lösenordsförsök har överstigits.</string>
@@ -1545,6 +1545,8 @@
   <string id="20252">Fyller glasen (filmer)</string>
   <string id="20300">Webbserver-mapp (HTTP)</string>
   <string id="20301">Webbserver-mapp (HTTPS)</string>
+  <string id="20302">Kunde inte skriva till mapp:</string>
+  <string id="20303">Vill du hoppa över och fortsätta?</string>
   <string id="20306">Okänd. Lägg till MD5 från xbmc.log till BiosIDs.ini.</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
@@ -1725,7 +1727,7 @@
   <string id="21402">är</string>
   <string id="21403">är inte</string>
   <string id="21404">börjar med</string>
-  <string id="21405">slutar med </string>
+  <string id="21405">slutar med</string>
   <string id="21406">större än</string>
   <string id="21407">mindre än</string>
   <string id="21408">efter</string>
