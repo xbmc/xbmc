@@ -720,6 +720,7 @@ bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned 
   m_iSourceWidth = width;
   m_iSourceHeight = height;
   m_iFlags = flags;
+  m_bConfigured = true;
   
   // setup what colorspace we live in
   if(flags & CONF_FLAGS_YUV_FULLRANGE)
@@ -799,7 +800,7 @@ int CXBoxRenderer::GetImage(YV12Image *image, int source, bool readonly)
     else
     {
       if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
-        CLog::Log(LOGWARNING, CStdString(__FUNCTION__) + " - Timeout waiting for texture %d", source);
+        CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, source);
 
       m_image[source].flags |= IMAGE_FLAG_WRITING;
     }
@@ -844,6 +845,8 @@ void CXBoxRenderer::Update(bool bPauseDrawing)
 
 void CXBoxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  if (!m_bConfigured) return;
+
   if (!m_YUVTexture[m_iYV12RenderBuffer][FIELD_FULL][0]) return ;
 
   CSingleLock lock(g_graphicsContext);
@@ -898,7 +901,7 @@ unsigned int CXBoxRenderer::DrawSlice(unsigned char *src[], int stride[], int w,
   BYTE *s;
   BYTE *d;
   int i, p;
-  
+
   int index = NextYV12Texture();
   if( index < 0 )
     return -1;
@@ -1005,6 +1008,7 @@ unsigned int CXBoxRenderer::PreInit()
 
 void CXBoxRenderer::UnInit()
 {
+  CLog::Log(LOGDEBUG, "%s - Cleaning up resources", __FUNCTION__);
   CSingleLock lock(g_graphicsContext);
 
   // YV12 textures, subtitle and osd stuff
@@ -1019,6 +1023,8 @@ void CXBoxRenderer::UnInit()
     m_pD3DDevice->DeletePixelShader(m_hLowMemShader);
     m_hLowMemShader = 0;
   }
+
+  m_bConfigured = false;
 }
 
 void CXBoxRenderer::Render(DWORD flags)

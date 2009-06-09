@@ -148,7 +148,8 @@ unsigned int CXBoxRenderManager::PreInit()
   m_bPauseDrawing = false;
   m_presentdelay = 5;
   if (!m_pRenderer)
-  { // no renderer
+  { 
+    // no renderer
     m_rendermethod = g_guiSettings.GetInt("videoplayer.rendermethod");
     if (m_rendermethod == RENDER_OVERLAYS)
     {
@@ -277,6 +278,12 @@ float CXBoxRenderManager::GetMaximumFPS()
 
 void CXBoxRenderManager::Present()
 {
+  if (!m_pRenderer)
+  {
+    CLog::Log(LOGERROR, "%s called without valid Renderer object", __FUNCTION__);
+    return;
+  }
+
   EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
 
   /* check for forced fields */

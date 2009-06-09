@@ -41,7 +41,7 @@ using namespace std;
 
 CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
                                 , CDVDOverlayContainer* pOverlayContainer
-                                , CDVDMessageQueue& parent) 
+                                , CDVDMessageQueue& parent)
 : CThread()
 , m_messageQueue("video")
 , m_messageParent(parent)
@@ -216,7 +216,7 @@ void CDVDPlayerVideo::Process()
   double frametime = (double)DVD_TIME_BASE / m_fFrameRate;
 
   int iDropped = 0; //frames dropped in a row
-  bool bRequestDrop = false;  
+  bool bRequestDrop = false;
 
   m_videoStats.Start();
 
@@ -273,7 +273,7 @@ void CDVDPlayerVideo::Process()
       continue;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESYNC))
-    {      
+    {
       CDVDMsgGeneralResync* pMsgGeneralResync = (CDVDMsgGeneralResync*)pMsg;
 
       if(pMsgGeneralResync->m_timestamp != DVD_NOPTS_VALUE)
@@ -447,7 +447,7 @@ void CDVDPlayerVideo::Process()
               mDeinterlace.GetPicture(&picture);
             }
             else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
-            { 
+            {
               /* if we are syncing frames, dvdplayer will be forced to play at a given framerate */
               /* unless we directly sync to the correct pts, we won't get a/v sync as video can never catch up */
               picture.iFlags |= DVP_FLAG_NOAUTOSYNC;

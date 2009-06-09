@@ -56,7 +56,7 @@ typedef struct YV12Image
 #define IMAGE_FLAG_READING   0x02 /* image is in use after a call to GetImage, caller is only reading */
 #define IMAGE_FLAG_DYNAMIC   0x04 /* image was allocated due to a call to GetImage */
 #define IMAGE_FLAG_RESERVED  0x08 /* image is reserved, must be asked for specifically used to preserve images */
-
+#define IMAGE_FLAG_READY     0x16 /* image is ready to be uploaded to texture memory */
 #define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
 
 
@@ -90,14 +90,13 @@ struct DRAWRECT
   float bottom;
 };
 
-static enum EFIELDSYNC
+enum EFIELDSYNC
 {
   FS_NONE,
   FS_ODD,
   FS_EVEN,
-  FS_BOTH,
+  FS_BOTH
 };
-
 
 struct YUVRANGE
 {
@@ -138,7 +137,7 @@ public:
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
-  virtual bool IsConfigured() { return m_bConfigured; } 
+  virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
