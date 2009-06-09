@@ -984,11 +984,13 @@ void CDVDPlayer::Process()
         if (m_dvd.iSelectedAudioStream < 0 && m_CurrentAudio.id >= 0) CloseAudioStream( true );
         if (m_dvd.iSelectedSPUStream < 0 && m_CurrentVideo.id >= 0)   CloseSubtitleStream( true );
       }
-
-      // check so that none of our streams has become invalid
-      if (!IsValidStream(m_CurrentAudio))    CloseAudioStream(true);
-      if (!IsValidStream(m_CurrentVideo))    CloseVideoStream(true);
-      if (!IsValidStream(m_CurrentSubtitle)) CloseSubtitleStream(true);
+      else
+      {
+        // check so that none of our streams has become invalid
+        if (!IsValidStream(m_CurrentAudio))    CloseAudioStream(true);
+        if (!IsValidStream(m_CurrentVideo))    CloseVideoStream(true);
+        if (!IsValidStream(m_CurrentSubtitle)) CloseSubtitleStream(true);
+      }
 
       // check if there is any better stream to use (normally for dvd's)
       if ( !m_PlayerOptions.video_only )
