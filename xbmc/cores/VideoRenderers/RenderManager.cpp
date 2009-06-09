@@ -307,8 +307,8 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
       m_presentfield = FS_ODD;
 
     /* invert present field if we have one of those methods */
-    if( m_presentfield == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED 
-     || m_presentfield == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
+    if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED 
+     || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
     {
       if( m_presentfield == FS_EVEN )
         m_presentfield = FS_ODD;
