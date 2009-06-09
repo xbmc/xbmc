@@ -4276,7 +4276,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   CPlayerOptions options;
-  EPLAYERCORES eNewCore = EPC_NONE;
+  PLAYERCOREID eNewCore = EPC_NONE;
   if( bRestart )
   {
     // have to be set here due to playstack using this for starting the file
@@ -5748,7 +5748,7 @@ void CApplication::Minimize(bool minimize)
   }
 }
 
-EPLAYERCORES CApplication::GetCurrentPlayer()
+PLAYERCOREID CApplication::GetCurrentPlayer()
 {
   return m_eCurrentPlayer;
 }
