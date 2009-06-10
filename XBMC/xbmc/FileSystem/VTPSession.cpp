@@ -245,7 +245,7 @@ bool CVTPSession::ReadResponse(int &code, vector<string> &lines)
       continue;
     }
 
-    result = recv(m_socket, buffer, sizeof(buffer), 0);
+    result = recv(m_socket, buffer, sizeof(buffer)-1, 0);
     if(result < 0)
     {
       CLog::Log(LOGDEBUG, "CVTPSession::ReadResponse - recv failed");
