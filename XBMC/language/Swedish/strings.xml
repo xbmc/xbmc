@@ -281,7 +281,7 @@
   <string id="367">Sort: Betyg</string>
   <string id="368">IMDb</string>
   <string id="369">Titel</string>
-  <string id="370">Åska</string>
+  <string id="370">Åskstormar</string>
   <string id="371">Delvis</string>
   <string id="372">Mest</string>
   <string id="373">Soligt</string>
@@ -724,7 +724,7 @@
   <string id="1398">Nollgradigt</string>
   <string id="1399">Sent</string>
   <string id="1400">Isolerade</string>
-  <string id="1401">Åskväder</string>
+  <string id="1401">Åskskurar</string>
   <string id="1402">Åska</string>
   <string id="1403">Sol</string>
   <string id="1404">Tunga</string>
@@ -740,6 +740,8 @@
   <string id="1415">Duggar</string>
   <string id="1416">Disigt</string>
   <string id="1417">Grynigt</string>
+  <string id="1418">Åskstorm</string>
+  <string id="1419">Åskskurar</string>
   <string id="1450">Aktivera strömspar under inaktivitet</string>
   <string id="2050">Speltid</string>
   <string id="4501">LCD typ</string>
