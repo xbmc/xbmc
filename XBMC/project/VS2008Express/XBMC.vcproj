@@ -331,6 +331,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\cores\ssrc.cpp"
 				>
 			</File>
@@ -5260,10 +5272,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Picture.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.h"
 				>
 			</File>
 			<File
