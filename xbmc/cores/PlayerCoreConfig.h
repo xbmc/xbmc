@@ -60,7 +60,7 @@ public:
     SAFE_DELETE(m_config);
   }
 
-  CStdString GetName() const
+  const CStdString& GetName() const
   {
     return m_name;
   }
