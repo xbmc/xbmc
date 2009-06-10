@@ -37,7 +37,7 @@ typedef CStdString (*FORMATFUNCTION) (float value, float min);
 class SettingInfo
 {
 public:
-  enum SETTING_TYPE { NONE=0, EDIT, EDIT_NUM, BUTTON, CHECK, CHECK_UCHAR, SPIN, SLIDER, SEPARATOR };
+  enum SETTING_TYPE { NONE=0, EDIT, EDIT_NUM, BUTTON, BUTTON_DIALOG, CHECK, CHECK_UCHAR, SPIN, SLIDER, SEPARATOR };
   SettingInfo()
   {
     id = 0;
