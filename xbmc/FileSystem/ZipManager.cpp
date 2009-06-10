@@ -53,33 +53,6 @@ CZipManager::~CZipManager()
 
 }
 
-bool CZipManager::HasMultipleEntries(const CStdString& strPath)
-{
-  // no comments ;D
-  CFile mFile;
-  if (mFile.Open(strPath.c_str()))
-  {
-    char buffer[23];
-    for (int i=22;i<1024;++i)
-    {
-      mFile.Seek(mFile.GetLength()-i,SEEK_SET);
-      mFile.Read(buffer,4);
-      if (SDL_SwapLE32(*((unsigned int*)buffer)) == ZIP_END_CENTRAL_HEADER)
-      {
-        mFile.Seek(6,SEEK_CUR);
-        short iEntries;
-        mFile.Read(&iEntries,2);
-        iEntries = SDL_SwapLE16(iEntries);
-        mFile.Close();
-        return iEntries > 1;
-      }
-    }
-    mFile.Close();
-  }
-
-  return true;
-}
-
 bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items)
 {
   CLog::Log(LOGDEBUG, "%s - Processing %s", __FUNCTION__, strPath.c_str());
