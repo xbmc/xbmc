@@ -53,6 +53,7 @@ public:
                             int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
                             offset_t (*seek)(void *opaque, offset_t offset, int whence))=0;
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened)=0;
+  virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)=0;
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output)=0;
   virtual void av_destruct_packet_nofree(AVPacket *pkt)=0;
   virtual int url_fdopen(ByteIOContext **s, URLContext *h)=0;
@@ -94,6 +95,7 @@ public:
                             int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
                             offset_t (*seek)(void *opaque, offset_t offset, int whence)) { return ::init_put_byte(s, buffer, buffer_size, write_flag, opaque, read_packet, write_packet, seek); }
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened) {return ::av_probe_input_format(pd, is_opened); }
+  virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max) {*score_max = 100; return ::av_probe_input_format(pd, is_opened); } // Use av_probe_input_format, this is not exported by ffmpeg's headers
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output) { ::dump_format(ic, index, url, is_output); }
   virtual void av_destruct_packet_nofree(AVPacket *pkt) { ::av_destruct_packet_nofree(pkt); }
   virtual int url_fdopen(ByteIOContext **s, URLContext *h) { return ::url_fdopen(s, h); }
@@ -134,6 +136,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED5(int, __cdecl, av_open_input_file, AVFormatContext**, const char *, AVInputFormat *, int, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED5(int,__cdecl, av_open_input_stream, AVFormatContext **, ByteIOContext *, const char *, AVInputFormat *, AVFormatParameters *)
   DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
+  DEFINE_FUNC_ALIGNED3(AVInputFormat*, __cdecl, av_probe_input_format2, AVProbeData*, int, int*)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_buffer, ByteIOContext*, unsigned char *, int)
   DEFINE_FUNC_ALIGNED3(int, __cdecl, get_partial_buffer, ByteIOContext*, unsigned char *, int)
 #else
@@ -143,6 +146,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD5(int, av_open_input_file, (AVFormatContext **p1, const char *p2, AVInputFormat *p3, int p4, AVFormatParameters *p5))
   DEFINE_METHOD5(int, av_open_input_stream, (AVFormatContext **p1, ByteIOContext *p2, const char *p3, AVInputFormat *p4, AVFormatParameters *p5))
   DEFINE_METHOD2(AVInputFormat*, av_probe_input_format, (AVProbeData* p1 , int p2))
+  DEFINE_METHOD3(AVInputFormat*, av_probe_input_format2, (AVProbeData* p1 , int p2, int *p3))
   DEFINE_METHOD3(int, get_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
   DEFINE_METHOD3(int, get_partial_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
 #endif
@@ -175,6 +179,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_open_input_stream)
     RESOLVE_METHOD(init_put_byte)
     RESOLVE_METHOD(av_probe_input_format)
+    RESOLVE_METHOD(av_probe_input_format2)
     RESOLVE_METHOD(dump_format)
     RESOLVE_METHOD(av_destruct_packet_nofree)
     RESOLVE_METHOD(url_fdopen)
