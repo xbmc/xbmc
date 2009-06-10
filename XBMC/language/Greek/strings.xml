@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 05/30/2009-->
+<!--Date of translation: 06/10/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20801-->
+<!--Based on english strings version 20992-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -751,7 +751,7 @@
   <string id="1398">Παγωνιά</string>
   <string id="1399">Το βράδυ</string>
   <string id="1400">Τοπικά</string>
-  <string id="1401">Έντονες βροχοπτώσεις</string>
+  <string id="1401">Μπόρες (με κεραυνούς)</string>
   <string id="1402">Κεραυνοί</string>
   <string id="1403">Ήλιος</string>
   <string id="1404">Έντονη</string>
@@ -768,6 +768,8 @@
   <string id="1415">Ασθενής βροχή</string>
   <string id="1416">Ομιχλώδης</string>
   <string id="1417">Κόκκοι</string>
+  <string id="1418">Καταιγίδες (με κεραυνούς) </string>
+  <string id="1419">Μπόρες (με κεραυνούς)</string>
   <string id="1450">Εξοικονόμηση ενέργειας κατά την αναμονή</string>
   <string id="2050">Εκτέλεση</string>
   <string id="4501">Τύπος LCD</string>
