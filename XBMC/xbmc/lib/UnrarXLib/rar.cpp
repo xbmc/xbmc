@@ -446,16 +446,6 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
   return FileCount;
 }
 
-bool urarlib_hasmultiple(const char *rarfile, char *libpassword)
-{
-  ArchiveList_struct* pplist = NULL;
-  urarlib_list(const_cast<char*>(rarfile),&pplist,libpassword,true);
-  bool bResult = (pplist && pplist->next);
-  urarlib_freelist(pplist);
-
-  return bResult;
-}
-
 /*-------------------------------------------------------------------------*\
   Free the file list returned by urarlib_list()
   list - The output from urarlib_list()

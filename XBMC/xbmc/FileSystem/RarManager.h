@@ -74,7 +74,6 @@ public:
                        const CStdString& strDir =RAR_DEFAULT_CACHE, const __int64 iSize=-1);
   bool GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath,
                       const CStdString& strPathInRar = "");
-  bool HasMultipleEntries(const CStdString& strPath);
   bool GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath,
                      bool bMask=true, const CStdString& strPathInRar="");
   CFileInfo* GetFileInRar(const CStdString& strRarPath, const CStdString& strPathInRar);
