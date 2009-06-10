@@ -267,14 +267,15 @@ bool CVTPSession::ReadResponse(int &code, vector<string> &lines)
 
 bool CVTPSession::SendCommand(const string &command)
 {
-  char buffer[1024];
+  string buffer;
   int  len;
 
-  len = sprintf(buffer, "%s\r\n", command.c_str());
+  buffer  = command;
+  buffer += "\r\n";
 #ifdef DEBUG
   CLog::Log(LOGERROR, "CVTPSession::SendCommand - sending '%s'", command.c_str());
 #endif
-  if(send(m_socket, buffer, len, 0) != len)
+  if(send(m_socket, buffer.c_str(), buffer.length(), 0) != len)
   {
     CLog::Log(LOGERROR, "CVTPSession::SendCommand - failed to send data");
     return false;
