@@ -24,7 +24,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "Visualisation.h"
-#include "../addons/IndependentHeaders/xbmc_vis_types.h"
+#include "../addons/include/xbmc_vis_types.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"
 #include "URL.h"
@@ -233,6 +233,33 @@ ADDON_STATUS CVisualisation::GetStatus()
   }
   return STATUS_UNKNOWN;
 }
+
+bool CVisualisation::HasSettings()
+{
+  try
+  {
+    return m_pDll->HasSettings();
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "Visualisation: %s - exception '%s' during HasSettings occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
+    return false;
+  }
+}
+
+addon_settings_t CVisualisation::GetSettings()
+{
+  try
+  {
+    return m_pDll->GetSettings();
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "Visualisation: %s - exception '%s' during GetSettings occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
+    return NULL;
+  }
+}
+
 
 ADDON_STATUS CVisualisation::SetSetting(const char *settingName, const void *settingValue)
 {

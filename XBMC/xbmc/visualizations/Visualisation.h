@@ -28,6 +28,7 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+#include "stdafx.h"
 #include "Key.h"
 #include "DllVisualisation.h"
 #include "../utils/Addon.h"
@@ -53,6 +54,8 @@ public:
 
   virtual void Remove();
   virtual ADDON_STATUS GetStatus();
+  virtual bool HasSettings();
+  virtual addon_settings_t GetSettings();
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
 
   void Create(int posx, int posy, int width, int height);

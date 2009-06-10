@@ -35,8 +35,8 @@
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #endif
-#include "../../addons/IndependentHeaders/xbmc_addon_lib++.h"
-#include "../../addons/IndependentHeaders/xbmc_vis_dll.h"
+#include "../../addons/include/xbmc_addon_lib++.h"
+#include "../../addons/include/xbmc_vis_dll.h"
 #include <math.h>
 #include <GL/glew.h>
 #include <string>
@@ -344,6 +344,16 @@ bool HasSettings()
 ADDON_STATUS GetStatus()
 {
   return STATUS_OK;
+}
+
+//-- HasSettings --------------------------------------------------------------
+// Returns true if this add-on use settings
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+addon_settings_t GetSettings()
+{
+  addon_settings_t settings = addon_settings_create();
+  return settings;
 }
 
 //-- SetSetting ---------------------------------------------------------------

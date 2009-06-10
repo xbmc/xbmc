@@ -34,8 +34,8 @@ d4rk@xbmc.org
 
 */
 
-#include "../../addons/IndependentHeaders/xbmc_addon_lib++.h"
-#include "../../addons/IndependentHeaders/xbmc_vis_dll.h"
+#include "../../addons/include/xbmc_addon_lib++.h"
+#include "../../addons/include/xbmc_vis_dll.h"
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
 #include "libprojectM/projectM.hpp"
