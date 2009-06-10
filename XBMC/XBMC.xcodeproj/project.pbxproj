@@ -854,6 +854,12 @@
 		F5390F7A0F2BB7080081BAE0 /* Cdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D879D10EF4BE53007C68A9 /* Cdg.cpp */; };
 		F54877690FDF702B00E506FD /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54877680FDF702B00E506FD /* PlayerSelectionRule.cpp */; };
 		F548776A0FDF702B00E506FD /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54877680FDF702B00E506FD /* PlayerSelectionRule.cpp */; };
+		F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
+		F548786E0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
+		F54878770FE0614F00E506FD /* ScriptSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54878750FE0614F00E506FD /* ScriptSettings.cpp */; };
+		F54878780FE0614F00E506FD /* ScriptSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54878750FE0614F00E506FD /* ScriptSettings.cpp */; };
+		F548787A0FE0619800E506FD /* PythonSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54878790FE0619800E506FD /* PythonSettings.cpp */; };
+		F548787B0FE0619800E506FD /* PythonSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54878790FE0619800E506FD /* PythonSettings.cpp */; };
 		F54C51D20F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */; };
 		F54C51D50F1E784800D46E3C /* karaokelyricscdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D40F1E784800D46E3C /* karaokelyricscdg.cpp */; };
 		F54C51D80F1E785700D46E3C /* karaokelyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F54C51D60F1E785700D46E3C /* karaokelyrics.cpp */; };
@@ -3601,6 +3607,12 @@
 		F54877670FDF702B00E506FD /* PlayerSelectionRule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerSelectionRule.h; sourceTree = "<group>"; };
 		F54877680FDF702B00E506FD /* PlayerSelectionRule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerSelectionRule.cpp; sourceTree = "<group>"; };
 		F548776B0FDF705800E506FD /* PlayerCoreConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerCoreConfig.h; sourceTree = "<group>"; };
+		F548786B0FE060FF00E506FD /* DVDSubtitleParserMPL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMPL2.h; sourceTree = "<group>"; };
+		F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleParserMPL2.cpp; sourceTree = "<group>"; };
+		F54878750FE0614F00E506FD /* ScriptSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScriptSettings.cpp; sourceTree = "<group>"; };
+		F54878760FE0614F00E506FD /* ScriptSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScriptSettings.h; sourceTree = "<group>"; };
+		F54878790FE0619800E506FD /* PythonSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PythonSettings.cpp; sourceTree = "<group>"; };
+		F54878840FE061CA00E506FD /* PythonSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PythonSettings.h; sourceTree = "<group>"; };
 		F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIDialogKaraokeSongSelector.cpp; path = xbmc/karaoke/GUIDialogKaraokeSongSelector.cpp; sourceTree = SOURCE_ROOT; };
 		F54C51D10F1E783200D46E3C /* GUIDialogKaraokeSongSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIDialogKaraokeSongSelector.h; path = xbmc/karaoke/GUIDialogKaraokeSongSelector.h; sourceTree = SOURCE_ROOT; };
 		F54C51D30F1E784800D46E3C /* karaokelyricscdg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyricscdg.h; path = xbmc/karaoke/karaokelyricscdg.h; sourceTree = SOURCE_ROOT; };
@@ -4553,6 +4565,8 @@
 				E38E1DF30D25F9FD00618676 /* ProgramDatabase.cpp */,
 				E38E1DF40D25F9FD00618676 /* ProgramDatabase.h */,
 				E38E1DF60D25F9FD00618676 /* screensavers */,
+				F54878750FE0614F00E506FD /* ScriptSettings.cpp */,
+				F54878760FE0614F00E506FD /* ScriptSettings.h */,
 				E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */,
 				E38E1DFF0D25F9FD00618676 /* SectionLoader.h */,
 				E38E1E000D25F9FD00618676 /* settings */,
@@ -5048,6 +5062,8 @@
 				E36C29E50DA72442001F0C9D /* DVDSubtitleParserSami.cpp */,
 				E3B53E7A0D97B08100021A96 /* DVDSubtitleParserMicroDVD.cpp */,
 				E3B53E7B0D97B08100021A96 /* DVDSubtitleParserMicroDVD.h */,
+				F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */,
+				F548786B0FE060FF00E506FD /* DVDSubtitleParserMPL2.h */,
 				E38E158F0D25F9FA00618676 /* DVDFactorySubtitle.cpp */,
 				E38E15900D25F9FA00618676 /* DVDFactorySubtitle.h */,
 				E38E15910D25F9FA00618676 /* DVDSubtitleLineCollection.cpp */,
@@ -5667,7 +5683,9 @@
 			children = (
 				E354EF030D99EDC900B55311 /* controlradiobutton.cpp */,
 				E38E257E0D263CE000618676 /* action.cpp */,
+				E38E19DC0D25F9FB00618676 /* action.h */,
 				E38E257F0D263CE000618676 /* control.cpp */,
+				E38E19DE0D25F9FB00618676 /* control.h */,
 				E38E25800D263CE000618676 /* controlbutton.cpp */,
 				E38E25810D263CE000618676 /* controlcheckmark.cpp */,
 				E38E25820D263CE000618676 /* controlfadelabel.cpp */,
@@ -5679,42 +5697,42 @@
 				E38E25880D263CE000618676 /* controlspin.cpp */,
 				E38E25890D263CE000618676 /* controltextbox.cpp */,
 				E38E258A0D263CE000618676 /* dialog.cpp */,
+				E38E19EA0D25F9FB00618676 /* dialog.h */,
 				E38E258B0D263CE000618676 /* GUIPythonWindow.cpp */,
+				E38E19EC0D25F9FB00618676 /* GUIPythonWindow.h */,
 				E38E258C0D263CE000618676 /* GUIPythonWindowDialog.cpp */,
+				E38E19EE0D25F9FB00618676 /* GUIPythonWindowDialog.h */,
 				E38E258D0D263CE000618676 /* GUIPythonWindowXML.cpp */,
+				E38E19F00D25F9FB00618676 /* GUIPythonWindowXML.h */,
 				E38E258E0D263CE000618676 /* GUIPythonWindowXMLDialog.cpp */,
+				E38E19F20D25F9FB00618676 /* GUIPythonWindowXMLDialog.h */,
 				E38E258F0D263CE000618676 /* infotagmusic.cpp */,
+				E38E19F40D25F9FB00618676 /* infotagmusic.h */,
 				E38E25900D263CE000618676 /* infotagvideo.cpp */,
+				E38E19F60D25F9FB00618676 /* infotagvideo.h */,
 				E38E25910D263CE000618676 /* keyboard.cpp */,
+				E38E19F80D25F9FB00618676 /* keyboard.h */,
 				F5F95DAD0E4E220900C3FA5C /* language.cpp */,
 				E38E25920D263CE000618676 /* listitem.cpp */,
+				E38E19FA0D25F9FB00618676 /* listitem.h */,
 				E38E25930D263CE000618676 /* player.cpp */,
+				E38E19FE0D25F9FB00618676 /* player.h */,
 				E38E25940D263CE000618676 /* pyplaylist.cpp */,
+				E38E1A000D25F9FB00618676 /* pyplaylist.h */,
 				E38E25950D263CE000618676 /* PythonPlayer.cpp */,
+				E38E1A020D25F9FB00618676 /* PythonPlayer.h */,
+				F54878790FE0619800E506FD /* PythonSettings.cpp */,
+				F54878840FE061CA00E506FD /* PythonSettings.h */,
 				E38E25960D263CE000618676 /* pyutil.cpp */,
+				E38E1A040D25F9FB00618676 /* pyutil.h */,
 				E38E25970D263CE000618676 /* window.cpp */,
+				E38E1A060D25F9FB00618676 /* window.h */,
 				E38E25980D263CE000618676 /* winxml.cpp */,
+				E38E1A080D25F9FB00618676 /* winxml.h */,
 				E38E25990D263CE000618676 /* winxmldialog.cpp */,
 				E38E259A0D263CE000618676 /* xbmcguimodule.cpp */,
 				E38E259B0D263CE000618676 /* xbmcmodule.cpp */,
 				E38E259C0D263CE000618676 /* xbmcplugin.cpp */,
-				E38E19DC0D25F9FB00618676 /* action.h */,
-				E38E19DE0D25F9FB00618676 /* control.h */,
-				E38E19EA0D25F9FB00618676 /* dialog.h */,
-				E38E19EC0D25F9FB00618676 /* GUIPythonWindow.h */,
-				E38E19EE0D25F9FB00618676 /* GUIPythonWindowDialog.h */,
-				E38E19F00D25F9FB00618676 /* GUIPythonWindowXML.h */,
-				E38E19F20D25F9FB00618676 /* GUIPythonWindowXMLDialog.h */,
-				E38E19F40D25F9FB00618676 /* infotagmusic.h */,
-				E38E19F60D25F9FB00618676 /* infotagvideo.h */,
-				E38E19F80D25F9FB00618676 /* keyboard.h */,
-				E38E19FA0D25F9FB00618676 /* listitem.h */,
-				E38E19FE0D25F9FB00618676 /* player.h */,
-				E38E1A000D25F9FB00618676 /* pyplaylist.h */,
-				E38E1A020D25F9FB00618676 /* PythonPlayer.h */,
-				E38E1A040D25F9FB00618676 /* pyutil.h */,
-				E38E1A060D25F9FB00618676 /* window.h */,
-				E38E1A080D25F9FB00618676 /* winxml.h */,
 			);
 			path = xbmcmodule;
 			sourceTree = "<group>";
@@ -7842,6 +7860,9 @@
 				F5987FDB0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */,
 				F5ACB5380FC3DF3D00AAA056 /* eprintf.cpp in Sources */,
 				F54877690FDF702B00E506FD /* PlayerSelectionRule.cpp in Sources */,
+				F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */,
+				F54878770FE0614F00E506FD /* ScriptSettings.cpp in Sources */,
+				F548787A0FE0619800E506FD /* PythonSettings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8675,6 +8696,9 @@
 				F5987FDC0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */,
 				F5ACB5390FC3DF3D00AAA056 /* eprintf.cpp in Sources */,
 				F548776A0FDF702B00E506FD /* PlayerSelectionRule.cpp in Sources */,
+				F548786E0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */,
+				F54878780FE0614F00E506FD /* ScriptSettings.cpp in Sources */,
+				F548787B0FE0619800E506FD /* PythonSettings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
