@@ -349,8 +349,22 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
       if (!iformat)
       {
-        CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());
-        return false;
+        int buf_size = pd.buf_size;
+        // for mpeg-ps content (vob), av_probe_input_format is sensitive to probed buffer size. 
+        // some DVD/ISO files will not be probed correctly so try again with increasing buffer sizes.
+        CLog::Log(LOGDEBUG, "%s - probing failed, re-probing with variable buffer sizes", __FUNCTION__);
+        for (int probe_size=32; probe_size < buf_size; probe_size<<=1) 
+        {
+          pd.buf_size = probe_size;
+          iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+          if (iformat)
+            break;
+        }
+        if (!iformat)
+        {
+          CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());
+          return false;
+        }
       }
       else if(iformat->name)
         CLog::Log(LOGDEBUG, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
