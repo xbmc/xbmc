@@ -1,6 +1,6 @@
-<window id="0">
+<window id="0">mine
 	<defaultcontrol>9000</defaultcontrol>
-	<allowoverlay>no</allowoverlay>	
+	<allowoverlay>no</allowoverlay>
 	<controls>
 		<control type="videowindow">
 			<posx>356</posx>
@@ -387,6 +387,167 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 		</control>
+		<!-- TV Info -->
+		<control type="group">
+			<control type="group">
+				<description>NextRecordingInfo</description>
+				<posx>600r</posx>
+				<posy>140</posy>
+				<visible>Container(9000).HasFocus(2) + !PVR.IsRecording + PVR.HasTimer + !Skin.HasSetting(homepagePVRinfo)</visible>
+				<include>homestatsinfo</include>
+				<control type="image">
+					<description>gradient</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>600</width>
+					<height>130</height>
+					<texture>gradient.png</texture>
+				</control>
+				<control type="image">
+					<description>back image</description>
+					<posx>160r</posx>
+					<posy>0</posy>
+					<width>130</width>
+					<height>130</height>
+					<texture>homeinfo-blank.png</texture>
+				</control>
+				<control type="image">
+					<description>Weather image</description>
+					<posx>150r</posx>
+					<posy>10</posy>
+					<width>110</width>
+					<height>110</height>
+					<texture>icon_schedule.png</texture>
+				</control>
+				<control type="label">
+					<description>Timer label</description>
+					<posx>170r</posx>
+					<posy>5</posy>
+					<height>30</height>
+					<width>500</width>
+					<label>[B]$LOCALIZE[18088][/B]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>NextRecordingTitle</description>
+					<posx>170r</posx>
+					<posy>37</posy>
+					<height>30</height>
+					<width>500</width>
+					<label>$INFO[PVR.NextRecordingTitle]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font18</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>NextRecordingChannel</description>
+					<posx>170r</posx>
+					<posy>70</posy>
+					<height>30</height>
+					<width>500</width>
+					<label>$INFO[PVR.NextRecordingChannel]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>NextRecordingDateTime</description>
+					<posx>170r</posx>
+					<posy>95</posy>
+					<height>30</height>
+					<width>500</width>
+					<label>$INFO[PVR.NextRecordingDateTime]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+			<control type="group">
+				<description>NowRecordingInfo</description>
+				<posx>600r</posx>
+				<posy>140</posy>
+				<visible>Control.HasFocus(2) + PVR.IsRecording</visible>
+				<include>homestatsinfo</include>
+				<control type="image">
+					<description>gradient</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>600</width>
+					<height>130</height>
+					<texture>gradient.png</texture>
+				</control>
+				<control type="image">
+					<description>back image</description>
+					<posx>160r</posx>
+					<posy>0</posy>
+					<width>130</width>
+					<height>130</height>
+					<texture>homeinfo-blank.png</texture>
+				</control>
+				<control type="image">
+					<description>Weather image</description>
+					<posx>150r</posx>
+					<posy>10</posy>
+					<width>110</width>
+					<height>110</height>
+					<texture>icon_record.png</texture>
+				</control>
+				<control type="label">
+					<description>Recording label</description>
+					<posx>170r</posx>
+					<posy>5</posy>
+					<height>30</height>
+					<width>500</width>
+					<label>[B]$LOCALIZE[18089][/B]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>NowRecordingTitle</description>
+					<posx>170r</posx>
+					<posy>37</posy>
+					<height>30</height>
+					<width>500</width>
+					<label>$INFO[PVR.NowRecordingTitle]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font18</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>NowRecordingChannel</description>
+					<posx>170r</posx>
+					<posy>70</posy>
+					<height>30</height>
+					<width>500</width>
+					<label>$INFO[PVR.NowRecordingChannel]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>NowRecordingDateTime</description>
+					<posx>170r</posx>
+					<posy>95</posy>
+					<height>30</height>
+					<width>500</width>
+					<label>$INFO[PVR.NowRecordingDateTime]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+		</control>
 		<control type="image">
 			<posx>70</posx>
 			<posy>170</posy>
@@ -403,7 +564,16 @@
 			<height>455</height>
 			<texture>Home-Menu-Back-2.png</texture>
 			<include>Window_OpenClose_Home_Panel_Animation</include>
-			<visible>Skin.HasSetting(ProgramsInHome)</visible>
+			<visible>[Skin.HasSetting(ProgramsInHome) + !System.GetBool(pvrmanager.enabled)] | [!Skin.HasSetting(ProgramsInHome) + System.GetBool(pvrmanager.enabled)]</visible>
+		</control>
+		<control type="image">
+			<posx>70</posx>
+			<posy>102</posy>
+			<width>450</width>
+			<height>520</height>
+			<texture>Home-Menu-Back-3.png</texture>
+			<include>Window_OpenClose_Home_Panel_Animation</include>
+			<visible>Skin.HasSetting(ProgramsInHome) + System.GetBool(pvrmanager.enabled)</visible>
 		</control>
 		<control type="list" id="9000">
 			<posx>130</posx>
@@ -418,6 +588,7 @@
 			<scrolltime>0</scrolltime>
 			<include>Window_OpenClose_Home_Panel_Animation</include>
 			<animation effect="slide" end="0,-28" time="0" condition="Skin.HasSetting(ProgramsInHome)">Conditional</animation>
+			<animation effect="slide" end="0,-28" time="0" condition="System.GetBool(pvrmanager.enabled)">Conditional</animation>
 			<itemlayout height="57" width="345">
 				<control type="image">
 					<posx>0</posx>
@@ -468,59 +639,66 @@
 			</focusedlayout>
 			<content>
 				<item id="1">
+					<label>18000</label>
+					<onclick>ActivateWindow(TV)</onclick>
+					<icon>special://skin/backgrounds/tv.png</icon>
+					<thumb>$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</thumb>
+					<visible>System.GetBool(pvrmanager.enabled)</visible>
+				</item>
+				<item id="2">
 					<label>3</label>
 					<onclick>ActivateWindow(Videos)</onclick>
 					<icon>special://skin/backgrounds/videos.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
 					<visible>Library.HasContent(Video)</visible>
 				</item>
-				<item id="1">
+				<item id="2">
 					<label>3</label>
 					<onclick>ActivateWindow(VideoFiles)</onclick>
 					<icon>special://skin/backgrounds/videos.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
 					<visible>!Library.HasContent(Video)</visible>
 				</item>
-				<item id="2">
+				<item id="3">
 					<label>2</label>
 					<onclick>ActivateWindow(Music)</onclick>
 					<icon>special://skin/backgrounds/music.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
 					<visible>Library.HasContent(Music)</visible>
 				</item>
-				<item id="2">
+				<item id="3">
 					<label>2</label>
 					<onclick>ActivateWindow(MusicFiles)</onclick>
 					<icon>special://skin/backgrounds/music.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
 					<visible>!Library.HasContent(Music)</visible>
 				</item>
-				<item id="3">
+				<item id="4">
 					<label>1</label>
 					<onclick>ActivateWindow(Pictures)</onclick>
 					<icon>special://skin/backgrounds/pictures.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
 				</item>
-				<item id="4">
+				<item id="5">
 					<label>0</label>
 					<onclick>ActivateWindow(Programs)</onclick>
 					<icon>special://skin/backgrounds/programs.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
 					<visible>Skin.HasSetting(ProgramsInHome)</visible>
 				</item>
-				<item id="5">
+				<item id="6">
 					<label>8</label>
 					<onclick>ActivateWindow(Weather)</onclick>
 					<icon>special://skin/backgrounds/weather.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
 				</item>
-				<item id="6">
+				<item id="7">
 					<label>247</label>
 					<onclick>ActivateWindow(Scripts)</onclick>
 					<icon>special://skin/backgrounds/scripts.jpg</icon>
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
 				</item>
-				<item id="7">
+				<item id="8">
 					<label>5</label>
 					<onclick>ActivateWindow(Settings)</onclick>
 					<icon>special://skin/backgrounds/settings.jpg</icon>
@@ -658,5 +836,5 @@
 			<visible>system.getbool(lookandfeel.enablerssfeeds)</visible>
 			<include>Window_OpenClose_Animation</include>
 		</control>
-	</controls>	
+	</controls>
 </window>

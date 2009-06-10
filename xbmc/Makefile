@@ -115,6 +115,7 @@ SRCS=Application.cpp \
      VideoDatabase.cpp \
      ViewDatabase.cpp \
      GUIDialogAudioSubtitleSettings.cpp \
+     GUIDialogAddonBrowser.cpp \
      GUIDialogBoxBase.cpp \
      GUIDialogButtonMenu.cpp \
      GUIDialogContentSettings.cpp \
@@ -137,6 +138,7 @@ SRCS=Application.cpp \
      GUIDialogSelect.cpp \
      GUIDialogSettings.cpp \
      GUIDialogSubMenu.cpp \
+     GUIDialogTVGuide.cpp \
      GUIDialogVideoBookmarks.cpp \
      GUIDialogVideoSettings.cpp \
      GUIDialogVisualisationPresetList.cpp \
@@ -157,6 +159,7 @@ SRCS=Application.cpp \
      GUIWindowScripts.cpp \
      GUIWindowScriptsInfo.cpp \
      GUIWindowSystemInfo.cpp \
+     GUIWindowTV.cpp \
      GUIWindowVisualisation.cpp \
      GUIWindowWeather.cpp \
      BackgroundInfoLoader.cpp \
@@ -186,8 +189,7 @@ SRCS=Application.cpp \
      GUIDialogKaiToast.cpp \
      KeyboardLayoutConfiguration.cpp \
      Edl.cpp \
-     GUIDialogPluginSettings.cpp \
-     PluginSettings.cpp \
+     GUIDialogAddonSettings.cpp \
      GUIDialogAccessPoints.cpp \
      ScraperSettings.cpp \
      Artist.cpp \
@@ -203,6 +205,13 @@ SRCS=Application.cpp \
      Zeroconf.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
+     GUIDialogTVEPGProgInfo.cpp \
+     GUIDialogTVRecordingInfo.cpp \
+     GUIDialogTVTimerSettings.cpp \
+     GUIDialogTVChannels.cpp \
+     GUIDialogTVGroupManager.cpp \
+     PVRManager.cpp \
+     TVDatabase.cpp \
 
 LIB=xbmc.a
 

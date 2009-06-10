@@ -164,12 +164,14 @@ CURL::CURL(const CStdString& strURL1)
   int iEnd = strURL.length();
   const char* sep = NULL;
 
+  //TODO fix all Addon paths
   if(m_strProtocol.Equals("http")
     || m_strProtocol.Equals("https")
     || m_strProtocol.Equals("shout")
     || m_strProtocol.Equals("tuxbox")
     || m_strProtocol.Equals("daap")
     || m_strProtocol.Equals("plugin")
+    || m_strProtocol.Equals("addon")
     || m_strProtocol.Equals("hdhomerun")
     || m_strProtocol.Equals("rtsp")
     || m_strProtocol.Equals("zip"))
@@ -287,6 +289,10 @@ CURL::CURL(const CStdString& strURL1)
     || m_strProtocol.CompareNoCase("musicdb") == 0
     || m_strProtocol.CompareNoCase("videodb") == 0
     || m_strProtocol.CompareNoCase("lastfm") == 0
+    || m_strProtocol.CompareNoCase("tv") == 0
+    || m_strProtocol.CompareNoCase("radio") == 0
+    || m_strProtocol.CompareNoCase("record") == 0
+    || m_strProtocol.CompareNoCase("timer") == 0
     || m_strProtocol.Left(3).CompareNoCase("mem") == 0)
   {
     if (m_strHostName != "" && m_strFileName != "")

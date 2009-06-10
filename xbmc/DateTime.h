@@ -147,6 +147,7 @@ public:
   void SetDate(int year, int month, int day);
   void SetTime(int hour, int minute, int second);
   void SetFromDBDate(const CStdString &date);
+  void SetFromDBDateTime(const CStdString &dateTime);
 
   void GetAsSystemTime(SYSTEMTIME& time) const;
   void GetAsTime(time_t& time) const;

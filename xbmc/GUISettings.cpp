@@ -38,11 +38,14 @@
 using namespace std;
 
 // String id's of the masks
+#define MASK_DAYS   17999
+#define MASK_HOURS  17998
 #define MASK_MINS   14044
 #define MASK_SECS   14045
 #define MASK_MS    14046
 #define MASK_PERCENT 14047
 #define MASK_KBPS   14048
+#define MASK_MB    17997
 #define MASK_KB    14049
 #define MASK_DB    14050
 
@@ -431,6 +434,11 @@ void CGUISettings::Initialize()
   AddString(12, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(13, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
 
+  AddCategory(5, "pvrmanager", 18000);
+  AddBool(1, "pvrmanager.enabled", 449  , false);
+  AddString(2, "pvrmanager.pvrsources", 18001, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(3, "pvrmanager.sep1");
+
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -679,6 +687,36 @@ void CGUISettings::Initialize()
   AddBool(11, "screensaver.slideshowshuffle", 13319, false);
 
   AddPath(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+
+  // tv settings (access over TV menu from home window)
+  AddGroup(8, 18000);
+  AddCategory(8,"pvrmenu", 18004);
+  AddInt(1, "pvrmenu.daystodisplay", 18005, 2, 1, 1, 4, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(2, "pvrmenu.lingertime", 18006, 0, 0, 30, 960, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddBool(3, "pvrmenu.showradio", 18008, true);
+  AddBool(4, "pvrmenu.infoswitch", 18010, true);
+  AddBool(5, "pvrmenu.infotimeout", 18011, true);
+  AddInt(6, "pvrmenu.infotime", 18009, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddBool(7, "pvrmenu.hidevideolength", 18024, true);
+  AddString(8, "pvrmenu.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddSeparator(9, "pvrmenu.sep1");
+  AddInt(10, "pvrmenu.scantime", 18025, 5, 1, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+
+  AddCategory(8,"pvrepg", 18013);
+  AddInt(1, "pvrepg.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
+  AddInt(2, "pvrepg.epgupdate", 18015, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(3, "pvrepg.daystosave", 18016, 7, 1, 1, 180, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+
+  AddCategory(8,"pvrrecord", 18017);
+  AddInt(1, "pvrrecord.instantrecordtime", 18018, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(2, "pvrrecord.defaultpriority", 18019, 50, 1, 1, 100, SPIN_CONTROL_INT_PLUS);
+  AddInt(3, "pvrrecord.defaultlifetime", 18020, 99, 1, 1, 365, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  AddInt(4, "pvrrecord.marginstart", 18021, 2, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddInt(5, "pvrrecord.marginstop", 18022, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddSeparator(6, "pvrrecord.sep1");
+  AddBool(7, "pvrrecord.timeshift", 18107, false);
+  AddInt(8, "pvrrecord.timeshiftcache", 18108, 512, 0, 16, 2048, SPIN_CONTROL_INT_PLUS, MASK_MB, TEXT_OFF);
+  AddString(9, "pvrrecord.timeshiftpath", 18123, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 }
 
 CGUISettings::~CGUISettings(void)

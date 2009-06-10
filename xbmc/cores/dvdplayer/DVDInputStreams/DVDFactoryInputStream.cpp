@@ -27,6 +27,7 @@
 #include "DVDInputStreamHttp.h"
 #include "DVDInputStreamFFmpeg.h"
 #include "../../../FileSystem/cdioSupport.h"
+#include "DVDInputStreamPVRManager.h"
 #include "DVDInputStreamTV.h"
 #include "DVDInputStreamRTMP.h"
 #ifdef HAS_FILESYSTEM_HTSP
@@ -49,6 +50,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   {
     return (new CDVDInputStreamNavigator(pPlayer));
   }
+  else if(file.substr(0, 5) == "tv://"
+       || file.substr(0, 8) == "radio://"
+       || file.substr(0, 9) == "record://")
+    return new CDVDInputStreamPVRManager();
   else if(file.substr(0, 6) == "rtp://"
        || file.substr(0, 7) == "rtsp://"
        || file.substr(0, 6) == "sdp://"

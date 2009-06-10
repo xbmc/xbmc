@@ -20,8 +20,8 @@
  */
 
 #include "stdafx.h"
-#include "GUIDialogPluginSettings.h"
-#include "FileSystem/PluginDirectory.h"
+#include "GUIDialogAddonSettings.h"
+#include "utils/Addon.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIControlGroupList.h"
@@ -53,14 +53,16 @@ using namespace DIRECTORY;
 #define CONTROL_HEADING_LABEL           20
 #define CONTROL_START_CONTROL           100
 
-CGUIDialogPluginSettings::CGUIDialogPluginSettings()
-   : CGUIDialogBoxBase(WINDOW_DIALOG_PLUGIN_SETTINGS, "DialogPluginSettings.xml")
+using namespace ADDON;
+
+CGUIDialogAddonSettings::CGUIDialogAddonSettings()
+   : CGUIDialogBoxBase(WINDOW_DIALOG_ADDON_SETTINGS, "DialogAddonSettings.xml")
 {}
 
-CGUIDialogPluginSettings::~CGUIDialogPluginSettings(void)
+CGUIDialogAddonSettings::~CGUIDialogAddonSettings(void)
 {}
 
-bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
+bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
@@ -97,21 +99,30 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
+void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
 {
   m_url = url;
 
   // Load language strings temporarily
-  DIRECTORY::CPluginDirectory::LoadPluginStrings(url);
+  CAddon::LoadAddonStrings(url);
 
   // Create the dialog
-  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
-  pDialog->m_strHeading = m_url.GetFileName();
-  CUtil::RemoveSlashAtEnd(pDialog->m_strHeading);
-  pDialog->m_strHeading.Format("$LOCALIZE[1045] - %s", pDialog->m_strHeading.c_str());
+  CStdString heading;
+  heading = m_url.GetFileName();
+  CUtil::RemoveSlashAtEnd(heading);
 
-  CPluginSettings settings;
+  //TODO Fix all Addon paths & strings
+  if (url.GetProtocol() == "plugin")
+    heading.Format("$LOCALIZE[1045] - %s", heading.c_str());
+  else
+    heading.Format("$LOCALIZE[33000] - %s", heading.c_str());
+
+  // Set the heading
+  pDialog->m_strHeading = heading;
+
+  CAddonSettings settings;
   settings.Load(m_url);
   pDialog->m_settings = settings;
 
@@ -120,14 +131,17 @@ void CGUIDialogPluginSettings::ShowAndGetInput(CURL& url)
   settings = pDialog->m_settings;
   settings.Save();
 
+  // Unload temporary language strings
+  CAddon::ClearAddonStrings();
+
   return;
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
+void CGUIDialogAddonSettings::ShowAndGetInput(SScraperInfo& info)
 {
   // Create the dialog
-  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
+  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
   pDialog->m_settings = info.settings;
   pDialog->m_strHeading.Format("$LOCALIZE[20407] - %s", info.strTitle.c_str());
@@ -138,12 +152,12 @@ void CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
   return;
 }
 
-bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
+bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
 {
   int controlId = CONTROL_START_CONTROL;
   bool bCloseDialog = false;
 
-  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  TiXmlElement *setting = m_settings.GetAddonRoot()->FirstChildElement("setting");
   while (setting)
   {
     if (controlId == iControl)
@@ -151,11 +165,10 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
       const CGUIControl* control = GetControl(controlId);
       if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       {
-        const char *id = setting->Attribute("id");
         const char *type = setting->Attribute("type");
         const char *option = setting->Attribute("option");
         const char *source = setting->Attribute("source");
-        CStdString value = m_buttonValues[id];
+        CStdString value = ((CGUIButtonControl*) control)->GetLabel2();
 
         if (strcmp(type, "text") == 0)
         {
@@ -165,18 +178,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             bHidden = (strcmp(option, "hidden") == 0);
 
           if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
-          {
-            m_buttonValues[id] = value;
-            // if hidden hide input
-            if (bHidden)
-            {
-              CStdString hiddenText;
-              hiddenText.append(value.size(), L'*');
-              ((CGUIButtonControl *)control)->SetLabel2(hiddenText);
-            }
-            else
-              ((CGUIButtonControl*) control)->SetLabel2(value);
-          }
+            ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmp(type, "integer") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
@@ -259,14 +261,9 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
         {
           if (setting->Attribute("default"))
           {
-            CStdString action = setting->Attribute("default");
-            CStdString url;
-            m_url.GetURL(url);
-            // replace $CWD with the url of plugin
-            action.Replace("$CWD", url);
             if (option)
               bCloseDialog = (strcmpi(option, "close") == 0);
-            g_application.getApplicationMessenger().ExecBuiltIn(action);
+            g_application.getApplicationMessenger().ExecBuiltIn(setting->Attribute("default"));
           }
         }
         break;
@@ -280,11 +277,11 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
 }
 
 // Go over all the settings and set their values according to the values of the GUI components
-bool CGUIDialogPluginSettings::SaveSettings(void)
+bool CGUIDialogAddonSettings::SaveSettings(void)
 {
   // Retrieve all the values from the GUI components and put them in the model
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  TiXmlElement *setting = m_settings.GetAddonRoot()->FirstChildElement("setting");
   while (setting)
   {
     CStdString id;
@@ -301,7 +298,7 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          value = m_buttonValues[id];
+          value = ((CGUIButtonControl*) control)->GetLabel2();
           break;
         case CGUIControl::GUICONTROL_RADIO:
           value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
@@ -323,7 +320,7 @@ bool CGUIDialogPluginSettings::SaveSettings(void)
   return true;
 }
 
-void CGUIDialogPluginSettings::FreeControls()
+void CGUIDialogAddonSettings::FreeControls()
 {
   // clear the category group
   CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CONTROL_AREA);
@@ -334,7 +331,7 @@ void CGUIDialogPluginSettings::FreeControls()
   }
 }
 
-void CGUIDialogPluginSettings::CreateControls()
+void CGUIDialogAddonSettings::CreateControls()
 {
   CGUISpinControlEx *pOriginalSpin = (CGUISpinControlEx*)GetControl(CONTROL_DEFAULT_SPIN);
   CGUIRadioButtonControl *pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
@@ -361,13 +358,19 @@ void CGUIDialogPluginSettings::CreateControls()
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, m_strHeading);
 
   // Create our base path, used for type "fileenum" settings
-  CStdString basepath = "special://home/plugins/";
+  //TODO Fix all Addon paths
+  CStdString basepath;
+  if (m_url.GetProtocol() == "plugin")
+    basepath = "special://home/plugins/";
+  else
+    basepath = "special://xbmc/";
+
   CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
   CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  TiXmlElement *setting = m_settings.GetAddonRoot()->FirstChildElement("setting");
   while (setting)
   {
     const char *type = setting->Attribute("type");
@@ -387,11 +390,6 @@ void CGUIDialogPluginSettings::CreateControls()
     else
       label = setting->Attribute("label");
 
-    bool bSort=false;
-    const char *sort = setting->Attribute("sort");
-    if (sort && (strcmp(sort, "yes") == 0))
-      bSort=true;
-
     if (type)
     {
       if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
@@ -405,19 +403,7 @@ void CGUIDialogPluginSettings::CreateControls()
         ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
         ((CGUIButtonControl *)pControl)->SetLabel(label);
         if (id)
-        {
-          m_buttonValues[id] = m_settings.Get(id);
-          // get any option to test for hidden
-          const char *option = setting->Attribute("option");
-          if (option && (strcmp(option, "hidden") == 0))
-          {
-            CStdString hiddenText;
-            hiddenText.append(m_settings.Get(id).size(), L'*');
-            ((CGUIButtonControl *)pControl)->SetLabel2(hiddenText);
-          }
-          else
-            ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
-        }
+          ((CGUIButtonControl *)pControl)->SetLabel2(m_settings.Get(id));
       }
       else if (strcmpi(type, "bool") == 0)
       {
@@ -441,10 +427,6 @@ void CGUIDialogPluginSettings::CreateControls()
           CUtil::Tokenize(values, valuesVec, "|");
         if (!entries.IsEmpty())
           CUtil::Tokenize(entries, entryVec, "|");
-
-        if(bSort && strcmpi(type, "labelenum") == 0)
-          std::sort(valuesVec.begin(), valuesVec.end(), sortstringbyname());
-
         for (unsigned int i = 0; i < valuesVec.size(); i++)
         {
           int iAdd = i;
@@ -526,10 +508,10 @@ void CGUIDialogPluginSettings::CreateControls()
 }
 
 // Go over all the settings and set their enabled condition according to the values of the enabled attribute
-void CGUIDialogPluginSettings::EnableControls()
+void CGUIDialogAddonSettings::EnableControls()
 {
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  TiXmlElement *setting = m_settings.GetAddonRoot()->FirstChildElement("setting");
   while (setting)
   {
     const CGUIControl* control = GetControl(controlId);
@@ -551,7 +533,7 @@ void CGUIDialogPluginSettings::EnableControls()
   }
 }
 
-bool CGUIDialogPluginSettings::GetCondition(const CStdString &condition, const int controlId)
+bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const int controlId)
 {
   if (condition.IsEmpty()) return true;
 
@@ -622,7 +604,7 @@ bool CGUIDialogPluginSettings::GetCondition(const CStdString &condition, const i
   return bCondition;
 }
 
-bool CGUIDialogPluginSettings::TranslateSingleString(const CStdString &strCondition, vector<CStdString> &condVec)
+bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strCondition, vector<CStdString> &condVec)
 {
   CStdString strTest = strCondition;
   strTest.ToLower();
@@ -643,10 +625,10 @@ bool CGUIDialogPluginSettings::TranslateSingleString(const CStdString &strCondit
 }
 
 // Go over all the settings and set their default values
-void CGUIDialogPluginSettings::SetDefaults()
+void CGUIDialogAddonSettings::SetDefaults()
 {
   int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_settings.GetPluginRoot()->FirstChildElement("setting");
+  TiXmlElement *setting = m_settings.GetAddonRoot()->FirstChildElement("setting");
   while (setting)
   {
     const CGUIControl* control = GetControl(controlId);
@@ -692,5 +674,5 @@ void CGUIDialogPluginSettings::SetDefaults()
   EnableControls();
 }
 
-CURL CGUIDialogPluginSettings::m_url;
+CURL CGUIDialogAddonSettings::m_url;
 

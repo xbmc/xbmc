@@ -22,15 +22,17 @@
 #include "stdafx.h"
 #include "FileSystem/PluginDirectory.h"
 #include "listitem.h"
-#include "PluginSettings.h"
+#include "settings/AddonSettings.h"
+#include "utils/Addon.h"
 #include "FileItem.h"
-#include "GUIDialogPluginSettings.h"
+#include "GUIDialogAddonSettings.h"
 
 // include for constants
 #include "pyutil.h"
 
 using namespace std;
 using namespace XFILE;
+using namespace ADDON;
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -317,7 +319,7 @@ namespace PYXBMC
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", g_currentPluginSettings.Get(id).c_str());
+    return Py_BuildValue((char*)"s", g_currentAddonSettings.Get(id).c_str());
   }
 
   PyDoc_STRVAR(setSetting__doc__,
@@ -356,8 +358,8 @@ namespace PYXBMC
       return NULL;
     }
     
-    g_currentPluginSettings.Set(id, value);
-    g_currentPluginSettings.Save();
+    g_currentAddonSettings.Set(id, value);
+    g_currentAddonSettings.Save();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -569,20 +571,20 @@ namespace PYXBMC
     if (!pUrl || (pUrl && !PyGetUnicodeString(url, pUrl, 1)))
       return NULL;
 
-    if (!CPluginSettings::SettingsExist(url))
+    if (!CAddonSettings::SettingsExist(url))
     {
       PyErr_SetString(PyExc_Exception, "No settings.xml file could be found!");
       return NULL;
     }
 
     CURL cUrl(url);
-    CGUIDialogPluginSettings::ShowAndGetInput(cUrl);
+    CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
 
     // reload plugin settings & strings
     if (bReload)
     {
-      g_currentPluginSettings.Load(cUrl);
-      DIRECTORY::CPluginDirectory::LoadPluginStrings(cUrl);
+      g_currentAddonSettings.Load(cUrl);
+      CAddon::LoadAddonStrings(cUrl);
     }
 
     Py_INCREF(Py_None);

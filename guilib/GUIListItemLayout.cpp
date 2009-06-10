@@ -102,6 +102,19 @@ unsigned int CGUIListItemLayout::GetFocusedItem() const
   return m_group.GetFocusedItem();
 }
 
+void CGUIListItemLayout::SetWidth(float width)
+{
+  m_group.EnlargeWidth(width - m_width);
+  m_width = width;
+  SetInvalid();
+}
+
+void CGUIListItemLayout::SetVisible(int id)
+{
+  m_group.ShowIdOnly(id);
+  SetInvalid();
+}
+
 void CGUIListItemLayout::SelectItemFromPoint(const CPoint &point)
 {
   m_group.SelectItemFromPoint(point);

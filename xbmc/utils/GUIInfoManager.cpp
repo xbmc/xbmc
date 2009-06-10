@@ -29,6 +29,7 @@
 #include "Util.h"
 #include "lib/libscrobbler/lastfmscrobbler.h"
 #include "Weather.h"
+#include "PVRManager.h"
 #include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 #include "visualizations/Visualisation.h"
@@ -48,6 +49,8 @@
 #include "LastFmManager.h"
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
+#include "TVEPGInfoTag.h"
+#include "TVChannelInfoTag.h"
 #include "VideoDatabase.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogVideoScan.h"
@@ -225,6 +228,25 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
     else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
     else if (strTest.Equals("weather.fanartcode")) ret = WEATHER_FANART_CODE;
+  }
+  else if (strCategory.Equals("pvr"))
+  {
+    if (strTest.Equals("pvr.isconnected")) ret = PVR_IS_CONNECTED;
+    else if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
+    else if (strTest.Equals("pvr.hastimer")) ret = PVR_HAS_TIMER;
+    else if (strTest.Equals("pvr.nowrecordingtitle")) ret = PVR_NOW_RECORDING_TITLE;
+    else if (strTest.Equals("pvr.nowrecordingdatetime")) ret = PVR_NOW_RECORDING_DATETIME;
+    else if (strTest.Equals("pvr.nowrecordingchannel")) ret = PVR_NOW_RECORDING_CHANNEL;
+    else if (strTest.Equals("pvr.nextrecordingtitle")) ret = PVR_NEXT_RECORDING_TITLE;
+    else if (strTest.Equals("pvr.nextrecordingdatetime")) ret = PVR_NEXT_RECORDING_DATETIME;
+    else if (strTest.Equals("pvr.nextrecordingchannel")) ret = PVR_NEXT_RECORDING_CHANNEL;
+    else if (strTest.Equals("pvr.hasepg")) ret = PVR_HAS_EPG;
+    else if (strTest.Equals("pvr.hastxt")) ret = PVR_HAS_TXT;
+    else if (strTest.Equals("pvr.hasdirector")) ret = PVR_HAS_DIRECTOR;
+  }
+  else if (strCategory.Equals("addon"))
+  {
+    if (strTest.Equals("addon.rating")) ret = ADDON_STAR_RATING;
   }
   else if (strCategory.Equals("bar"))
   {
@@ -518,6 +540,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
     else if (strTest.Equals("videoplayer.hasinfo")) return VIDEOPLAYER_HAS_INFO;
     else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
+    else if (strTest.Equals("videoplayer.next")) return VIDEOPLAYER_NEXT;
+    else if (strTest.Equals("videoplayer.group")) return VIDEOPLAYER_GROUP;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -936,6 +960,14 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 
   switch (info)
   {
+  case PVR_NOW_RECORDING_CHANNEL:
+  case PVR_NOW_RECORDING_DATETIME:
+  case PVR_NOW_RECORDING_TITLE:
+  case PVR_NEXT_RECORDING_CHANNEL:
+  case PVR_NEXT_RECORDING_DATETIME:
+  case PVR_NEXT_RECORDING_TITLE:
+    strLabel = CPVRManager::GetInstance()->TranslateInfo(info);
+    break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
     strLabel = strLabel.Trim();
@@ -1031,6 +1063,8 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case VIDEOPLAYER_WRITER:
   case VIDEOPLAYER_TAGLINE:
   case VIDEOPLAYER_TRAILER:
+  case VIDEOPLAYER_NEXT:
+  case VIDEOPLAYER_GROUP:
     strLabel = GetVideoLabel(info);
   break;
   case PLAYLIST_LENGTH:
@@ -1694,6 +1728,18 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = g_settings.bUseLoginScreen;
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
+  else if (condition == PVR_IS_CONNECTED)
+    bReturn = CPVRManager::GetInstance()->IsConnected();
+  else if (condition == PVR_IS_RECORDING)
+    bReturn = CPVRManager::GetInstance()->IsRecording();
+  else if (condition == PVR_HAS_TIMER)
+    bReturn = CPVRManager::GetInstance()->HasTimer();
+  else if (condition == PVR_HAS_EPG)
+    bReturn = CPVRManager::GetInstance()->SupportEPG();
+  else if (condition == PVR_HAS_TXT)
+    bReturn = CPVRManager::GetInstance()->SupportTeletext();
+  else if (condition == PVR_HAS_DIRECTOR)
+    bReturn = CPVRManager::GetInstance()->SupportDirector();
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
@@ -2183,6 +2229,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strArtist.IsEmpty())
             strContent = "musicvideos";
           if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_strStatus == "livetv")
+            strContent = "livetv";
+          if (m_currentFile->HasTVChannelInfoTag())
             strContent = "livetv";
           bReturn = m_stringParameters[info.GetData1()].Equals(strContent);
         }
@@ -2865,6 +2913,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
 
   if (item == VIDEOPLAYER_TITLE)
   {
+    if (m_currentFile->HasTVChannelInfoTag() && !m_currentFile->GetTVChannelInfoTag()->m_strTitle.IsEmpty())
+      return m_currentFile->GetTVChannelInfoTag()->m_strTitle;
     if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
       return m_currentFile->GetVideoInfoTag()->m_strTitle;
     // don't have the title, so use label, or drop down to title from path
@@ -2881,6 +2931,52 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   {
     if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_VIDEO)
       return GetPlaylistLabel(PLAYLIST_POSITION);
+  }
+  else if (m_currentFile->HasTVChannelInfoTag())
+  {
+    switch (item)
+    {
+    case VIDEOPLAYER_ORIGINALTITLE:
+      return m_currentFile->GetTVChannelInfoTag()->m_strOriginalTitle;
+      break;
+    case VIDEOPLAYER_GENRE:
+      return m_currentFile->GetTVChannelInfoTag()->m_strGenre;
+      break;
+    case VIDEOPLAYER_PLOT:
+      return m_currentFile->GetTVChannelInfoTag()->m_strPlot;
+    case VIDEOPLAYER_PLOT_OUTLINE:
+      return m_currentFile->GetTVChannelInfoTag()->m_strPlotOutline;
+    case VIDEOPLAYER_EPISODE:
+      if (m_currentFile->GetTVChannelInfoTag()->m_iEpisode > 0)
+      {
+        CStdString strYear;
+        if (m_currentFile->GetTVChannelInfoTag()->m_iSpecialSortEpisode > 0)
+          strYear.Format("S%i", m_currentFile->GetTVChannelInfoTag()->m_iEpisode);
+        else
+          strYear.Format("%i", m_currentFile->GetTVChannelInfoTag()->m_iEpisode);
+        return strYear;
+      }
+      break;
+    case VIDEOPLAYER_SEASON:
+      if (m_currentFile->GetTVChannelInfoTag()->m_iSeason > -1)
+      {
+        CStdString strYear;
+        if (m_currentFile->GetTVChannelInfoTag()->m_iSpecialSortSeason > 0)
+          strYear.Format("%i", m_currentFile->GetTVChannelInfoTag()->m_iSpecialSortSeason);
+        else
+          strYear.Format("%i", m_currentFile->GetTVChannelInfoTag()->m_iSeason);
+        return strYear;
+      }
+      break;
+    case VIDEOPLAYER_TVSHOW:
+      return m_currentFile->GetTVChannelInfoTag()->m_strShowTitle;
+    case VIDEOPLAYER_ALBUM:
+      return m_currentFile->GetTVChannelInfoTag()->m_strAlbum;
+    case VIDEOPLAYER_NEXT:
+      return m_currentFile->GetTVChannelInfoTag()->m_strNextTitle;
+    case VIDEOPLAYER_GROUP:
+      return CPVRManager::GetInstance()->GetGroupName(CPVRManager::GetInstance()->GetPlayingGroup());
+    }
   }
   else if (m_currentFile->HasVideoInfoTag())
   {
@@ -3790,6 +3886,13 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
     { // song rating.
       rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
     }
+    return rating;
+  }
+  else if (info == ADDON_STAR_RATING)
+  {
+    CStdString rating;
+    //TODO need to check item is an addon
+    rating.Format("rating%d.png", item->GetPropertyInt("Addon.Rating"));
     return rating;
   }
   return GetItemLabel(item, info);

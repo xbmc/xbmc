@@ -46,7 +46,11 @@ void CGUIWindowOSD::Render()
     // check for movement of mouse or a submenu open
     if (g_Mouse.HasMoved() || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
                            || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
-                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS))
+                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS)
+						   || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_TV_OSD_CHANNELS)
+						   || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_TV_OSD_GUIDE)
+						   || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_TV_OSD_TELETEXT)
+                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_TV_OSD_DIRECTOR))
       SetAutoClose(3000);
   }
   CGUIDialog::Render();
@@ -97,6 +101,14 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
       pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);
+      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_TV_OSD_CHANNELS);
+      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_TV_OSD_GUIDE);
+      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_TV_OSD_TELETEXT);
+      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_TV_OSD_DIRECTOR);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
     }
     break;

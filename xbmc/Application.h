@@ -106,6 +106,8 @@ public:
   void StopUPnPClient();
   void StartUPnPServer();
   void StopUPnPServer();
+  void StartPVRManager();
+  void StopPVRManager();
   void StartEventServer();
   bool StopEventServer(bool promptuser=false);
   void RefreshEventServer();
