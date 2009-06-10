@@ -774,9 +774,11 @@ void CWIN32Util::CheckGLVersion()
 
 bool CWIN32Util::HasGLDefaultDrivers()
 {
+  int a=0,b=0;
   CStdString strVendor = Surface::CSurface::GetGLVendor();
+  Surface::CSurface::GetGLVersion(a, b);
 
-  if(strVendor.find("Microsoft")!= strVendor.npos)
+  if(strVendor.find("Microsoft")!=strVendor.npos && a==1 && b==1)
     return true;
   else
     return false;
