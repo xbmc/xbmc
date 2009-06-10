@@ -164,7 +164,7 @@ PVR_ERROR PVRClientVDR::Connect()
 void PVRClientVDR::Disconnect()
 {
   m_bStop = true;
-  pthread_join(m_thread, NULL);
+//  pthread_join(m_thread, NULL);
 
   m_bConnected = false;
 
