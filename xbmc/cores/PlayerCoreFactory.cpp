@@ -69,7 +69,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCall
 
 IPlayer* CPlayerCoreFactory::CreatePlayer(const PLAYERCOREID eCore, IPlayerCallback& callback)
 {
-  if (eCore-1 > s_vecCoreConfigs.size()-1)
+  if (!s_vecCoreConfigs.size() || eCore-1 > s_vecCoreConfigs.size()-1)
     return NULL;
 
   return s_vecCoreConfigs[eCore-1]->CreatePlayer(callback);
