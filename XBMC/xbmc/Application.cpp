@@ -1426,7 +1426,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
   m_gWindowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
   m_gWindowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
+#ifdef HAS_KARAOKE
   m_gWindowManager.Add(new CGUIWindowKaraokeLyrics);      // window id = 2009
+#endif
 
   m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
   m_gWindowManager.Add(new CGUIWindowMusicOverlay);       // window id = 2903
