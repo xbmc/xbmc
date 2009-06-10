@@ -1598,7 +1598,7 @@ void CSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLI
   }
 }
 
-bool CSettings::LoadPlayerCoreFactorySettings(CStdString fileStr, bool clear)
+bool CSettings::LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear)
 {
   if (!CFile::Exists(fileStr))
   { // tell the user it doesn't exist
