@@ -59,6 +59,8 @@
 extern "C" {
 #endif
 
+#include "stdbool.h"
+
 typedef void* ADDON_HANDLE;
 
 typedef enum addon_log {
@@ -87,14 +89,10 @@ typedef enum addon_setting_type {
 
 typedef enum addon_status {
   STATUS_OK,                 /* Normally not returned (everything is ok) */
-  STATUS_INVALID_HOST,       /* AddOn want to connect to unknown host (for ones that use Network) */
-  STATUS_INVALID_USER,       /* Invalid or unknown user */
-  STATUS_WRONG_PASS,         /* Invalid or wrong password */
   STATUS_LOST_CONNECTION,    /* AddOn lost connection to his backend (for ones that use Network) */
   STATUS_NEED_RESTART,       /* Request to restart the AddOn and data structures need updated */
   STATUS_NEED_EMER_RESTART,  /* Request to restart XBMC (hope no AddOn need or do this) */
-  STATUS_MISSING_SETTINGS,   /* Some required settings are missing */
-  STATUS_BAD_SETTINGS,       /* A setting value is invalid */
+  STATUS_NEED_SETTINGS,       /* A setting value is needed/invalid */
   STATUS_MISSING_FILE,       /* A AddOn file is missing (check log's for missing data) */
   STATUS_UNKNOWN             /* A unknown event is occurred */
 } addon_status_t;
@@ -111,6 +109,64 @@ typedef struct addon_setting *addon_setting_t;
 /* A list of settings */
 struct addon_settings;
 typedef struct addon_settings *addon_settings_t;
+
+/*
+ * AddOn Setting Operations
+ */
+
+/**
+ * Create a new settings list structure
+ * \return settings handle
+ */
+extern addon_settings_t addon_settings_create(void);
+
+/**
+ * Create a new setting structure
+ * \return setting handle
+ */
+extern addon_setting_t addon_setting_create(void);
+
+/**
+ * Retrieve the 'ID' field of a setting
+ * \param set setting handle
+ * \return null-terminated string
+ */
+extern char *addon_setting_id(addon_setting_t set);
+
+/**
+ * Retrieve the 'label' field of a setting
+ * \param set setting handle
+ * \return null-terminated string
+ */
+extern char *addon_setting_label(addon_setting_t set);
+
+/**
+ * Retrieve the 'enable' field of a setting
+ * \param set setting handle
+ * \return null-terminated string
+ */
+extern char *addon_setting_enable(addon_setting_t set);
+
+/**
+ * Retrieve the 'lvalues' field of a setting
+ * \param set setting handle
+ * \return null-terminated string
+ */
+extern char *addon_setting_lvalues(addon_setting_t set);
+
+/**
+ * Retrieve the type of a setting
+ * \param set setting handle
+ * \return settingtype handle
+ */
+extern addon_setting_type_t addon_setting_type(addon_setting_t set);
+
+/**
+ * Retrieve the 'valid' field of a setting
+ * \param set setting handle
+ * \return signed integer
+ */
+extern int addon_setting_valid(addon_setting_t set);
 
 #ifdef __cplusplus
 }
