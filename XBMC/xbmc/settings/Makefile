@@ -1,6 +1,6 @@
 INCLUDES=-I../ -I../../guilib -I../linux
 
-SRCS=VideoSettings.cpp
+SRCS=VideoSettings.cpp AddonSettings.cpp
 
 LIB=settings.a
 

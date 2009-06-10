@@ -776,10 +776,16 @@ void CDateTime::GetAsSystemTime(SYSTEMTIME& time) const
 
 void CDateTime::GetAsTime(time_t& time) const
 {
+#ifdef _WIN32
+  LONGLONG ll;    
+  ll = ((LONGLONG)m_time.dwHighDateTime << 32) + m_time.dwLowDateTime;    
+  time=(time_t)((ll - 116444736000000000) / 10000000);
+#else
   ULARGE_INTEGER filetime;
   ToULargeInt(filetime);
 
   time=(time_t)(filetime.QuadPart-0x19DB1DED53E8000LL)/10000000UL;
+#endif
 }
 
 void CDateTime::GetAsTm(tm& time) const
@@ -820,9 +826,25 @@ CStdString CDateTime::GetAsDBDateTime() const
   GetAsSystemTime(st);
 
   CStdString date;
-  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMilliseconds, st.wSecond);
+  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+
 
   return date;
+}
+
+void CDateTime::SetFromDBDateTime(const CStdString &dateTime)
+{
+  // assumes format:
+  // YYYY-MM-DD HH:MM:SS
+  int year = 0, month = 0, day = 0,
+      hour = 0, minute = 0, second = 0;
+  year = atoi(dateTime.Mid(0,4).c_str());
+  month = atoi(dateTime.Mid(5,2).c_str());
+  day = atoi(dateTime.Mid(8,2).c_str());
+  hour = atoi(dateTime.Mid(11,2).c_str());
+  minute = atoi(dateTime.Mid(14,2).c_str());
+  second = atoi(dateTime.Mid(17,2).c_str());
+  SetDateTime(year, month, day, hour, minute, second);
 }
 
 void CDateTime::SetFromDBDate(const CStdString &date)

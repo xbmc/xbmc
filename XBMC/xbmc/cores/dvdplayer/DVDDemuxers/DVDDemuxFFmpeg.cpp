@@ -288,7 +288,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
       context->is_streamed = 1;
     }
-    else if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
+    else if ((m_pInput->IsStreamType(DVDSTREAM_TYPE_TV)) ||
+             (m_pInput->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)))
     {
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
         context->is_streamed = 1;
@@ -381,7 +382,12 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
         m_pFormatContext->max_analyze_duration = 500000;
     }
-
+    else if (m_pInput->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    {
+      /* too speed up livetv channel changes, only analyse very short */
+      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+        m_pFormatContext->max_analyze_duration = 5000;
+    }
 
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);

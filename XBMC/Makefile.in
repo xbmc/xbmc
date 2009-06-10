@@ -41,6 +41,7 @@ BIN_DIRS=	\
 	xbmc/lib/UnrarXLib \
 	xbmc/visualizations \
 	xbmc/screensavers \
+	xbmc/pvrclients \
 	xbmc/utils \
 	xbmc/settings \
 	xbmc/linux \
@@ -95,11 +96,14 @@ VIS_DIRS=\
 	xbmc/visualizations/XBMCProjectM \
 	xbmc/visualizations/Goom
 
+PVR_DIRS=\
+	xbmc/pvrclients/vdr
+
 PM3_MEDIA=skin/Project\ Mayhem\ III/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS)
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS)
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -113,7 +117,7 @@ all : externals xbmc.bin xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Te
 
 include Makefile.include
 
-.PHONY : dllloader exports visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force
+.PHONY : dllloader exports pvrclients visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force
 
 $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
@@ -211,6 +215,8 @@ xbmc/utils/utils.a: force
 	$(MAKE) -C xbmc/utils
 xbmc/visualizations/visualization.a: force
 	$(MAKE) -C xbmc/visualizations
+xbmc/pvrclients/pvrclient.a: force
+	$(MAKE) -C xbmc/pvrclients
 xbmc/xbox/xbox.a: force
 	$(MAKE) -C xbmc/xbox
 xbmc/osx/osx.a: force
@@ -231,6 +237,8 @@ visualizations: exports
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
 	$(MAKE) -C xbmc/visualizations/Goom
+pvrclients: exports
+	$(MAKE) -C xbmc/pvrclients/vdr
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 libpython: dllloader
@@ -287,10 +295,10 @@ imagelib: dllloader
 
 codecs: papcodecs dvdpcodecs
 libs: libhdhomerun libid3tag imagelib libexif python
-externals: codecs libs python visualizations screensavers
+externals: codecs libs python pvrclients visualizations screensavers
 
 xcode_depends: \
-	codecs libs python visualizations screensavers \
+	codecs libs python pvrclients visualizations screensavers \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
@@ -341,6 +349,7 @@ OBJSXBMC=	\
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/UnrarXLib/UnrarXLib.a \
 	xbmc/linux/linux.a \
+	xbmc/pvrclients/pvrclient.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
 	xbmc/utils/utils.a \
@@ -419,9 +428,9 @@ endif
 install-datas:
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@find language media scripts sounds userdata visualisations pvrclients system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Arch dependent files
-	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32\.vis|.*osx\.vis" -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@find system screensavers visualisations pvrclients -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32\.vis|.*osx\.vis" -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
 
@@ -488,9 +497,11 @@ clean-screensavers:
 	for d in $(SS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-visualisations:
 	for d in $(VIS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-pvrclients:
+	for d in $(PVR_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 
 clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
-	clean-screensavers clean-visualisations
+	clean-pvrclients clean-screensavers clean-visualisations clean-pvrclients
 

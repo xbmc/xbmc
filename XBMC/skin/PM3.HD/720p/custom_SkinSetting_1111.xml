@@ -219,6 +219,20 @@
 					<texture>separator.png</texture>
 				</control>
 				<control type="radiobutton" id="206">
+					<description>enable tv info</description>
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>18024</label>
+					<onclick>Skin.ToggleSetting(homepagePVRinfo)</onclick>
+					<selected>!Skin.HasSetting(homepagePVRinfo)</selected>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+				</control>
+				<control type="radiobutton" id="207">
 					<description>enable video info</description>
 					<width>950</width>
 					<height>35</height>
@@ -232,7 +246,7 @@
 					<texturenofocus>-</texturenofocus>
 					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
 				</control>
-				<control type="radiobutton" id="207">
+				<control type="radiobutton" id="208">
 					<description>enable music info</description>
 					<width>950</width>
 					<height>35</height>
@@ -246,7 +260,7 @@
 					<texturenofocus>-</texturenofocus>
 					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
 				</control>
-				<control type="radiobutton" id="208">
+				<control type="radiobutton" id="209">
 					<description>enable weather info</description>
 					<width>950</width>
 					<height>35</height>
@@ -260,7 +274,7 @@
 					<texturenofocus>-</texturenofocus>
 					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
 				</control>
-				<control type="radiobutton" id="209">
+				<control type="radiobutton" id="210">
 					<description>enable System info</description>
 					<width>950</width>
 					<height>35</height>
@@ -349,43 +363,49 @@
 					</focusedlayout>
 					<content>
 						<item id="1">
+							<label>18000</label>
+							<onclick>-</onclick>
+							<icon>special://skin/backgrounds/tv.png</icon>
+							<thumb>$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</thumb>
+						</item>
+						<item id="2">
 							<label>3</label>
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/videos.jpg</icon>
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
 						</item>
-						<item id="2">
+						<item id="3">
 							<label>2</label>
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/music.jpg</icon>
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
 						</item>
-						<item id="3">
+						<item id="4">
 							<label>1</label>
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/pictures.jpg</icon>
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
 						</item>
-						<item id="4">
+						<item id="5">
 							<label>0</label>
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/programs.jpg</icon>
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
 							<visible>Skin.HasSetting(ProgramsInHome)</visible>
 						</item>
-						<item id="5">
+						<item id="6">
 							<label>8</label>
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/weather.jpg</icon>
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
 						</item>
-						<item id="6">
+						<item id="7">
 							<label>247</label>
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/scripts.jpg</icon>
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
 						</item>
-						<item id="7">
+						<item id="8">
 							<label>5</label>
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/settings.jpg</icon>

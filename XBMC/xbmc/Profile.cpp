@@ -30,6 +30,7 @@ CProfile::CProfile(void)
   _bCanWrite = true;
   _bSources = true;
   _bCanWriteSources = true;
+  _bAddons = true;
   _bLockPrograms = false;
   _bLockPictures = false;
   _bLockFiles = false;

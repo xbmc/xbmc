@@ -71,6 +71,7 @@
 #include "ApplicationRenderer.h"
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
+#include "PVRManager.h"
 #include "SmartPlaylist.h"
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
@@ -147,6 +148,7 @@
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowScripts.h"
+#include "GUIWindowTV.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVisualisation.h"
@@ -193,11 +195,17 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogPictureInfo.h"
-#include "GUIDialogPluginSettings.h"
+#include "GUIDialogAddonSettings.h"
 #ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
+#include "GUIDialogTVEPGProgInfo.h"
+#include "GUIDialogTVRecordingInfo.h"
+#include "GUIDialogTVTimerSettings.h"
+#include "GUIDialogTVChannels.h"
+#include "GUIDialogTVGuide.h"
+#include "GUIDialogTVGroupManager.h"
 #include "GUIDialogSlider.h"
 #include "cores/dlgcache.h"
 
@@ -1323,6 +1331,7 @@ HRESULT CApplication::Initialize()
     CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/visualisations");
     CDirectory::Create("special://xbmc/sounds");
+	CDirectory::Create("special://xbmc/pvrclients");
     CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
   }
 
@@ -1358,6 +1367,13 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowFileManager);      // window id = 3
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
+  m_gWindowManager.Add(new CGUIWindowTV);                       // window id = 9
+  m_gWindowManager.Add(new CGUIDialogTVEPGProgInfo);            // window id = 600
+  m_gWindowManager.Add(new CGUIDialogTVTimerSettings);          // window id = 602
+  m_gWindowManager.Add(new CGUIDialogTVChannels);               // window id = 603
+  m_gWindowManager.Add(new CGUIDialogTVGuide);                  // window id = 603
+  m_gWindowManager.Add(new CGUIDialogTVRecordingInfo);          // window id = 603
+  m_gWindowManager.Add(new CGUIDialogTVGroupManager);           // window id = 603
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
   m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
@@ -1402,7 +1418,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
   m_gWindowManager.Add(new CGUIDialogBusy);      // window id = 138
   m_gWindowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
-  m_gWindowManager.Add(new CGUIDialogPluginSettings);      // window id = 140
+  m_gWindowManager.Add(new CGUIDialogAddonSettings);      // window id = 140
 #ifdef HAS_LINUX_NETWORK
   m_gWindowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
@@ -1527,6 +1543,11 @@ HRESULT CApplication::Initialize()
     CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (scanner && !scanner->IsScanning())
       scanner->StartScanning("");
+  }
+
+  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  {
+    StartPVRManager();
   }
 
   m_slowTimer.StartZero();
@@ -1888,6 +1909,21 @@ void CApplication::StopZeroconf()
   CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
   CZeroconf::GetInstance()->Stop();
 #endif
+}
+
+void CApplication::StartPVRManager()
+{
+  if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  {
+    CLog::Log(LOGINFO, "starting PVRManager");
+    CPVRManager::GetInstance()->Start();
+  }
+}
+
+void CApplication::StopPVRManager()
+{
+  CLog::Log(LOGINFO, "stopping PVRManager");
+  CPVRManager::GetInstance()->Stop();
 }
 
 void CApplication::DimLCDOnPlayback(bool dim)
@@ -3812,6 +3848,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST);
     m_gWindowManager.Delete(WINDOW_MUSIC_PLAYLIST_EDITOR);
     m_gWindowManager.Delete(WINDOW_MUSIC_FILES);
+	m_gWindowManager.Delete(WINDOW_TV);
     m_gWindowManager.Delete(WINDOW_MUSIC_NAV);
     m_gWindowManager.Delete(WINDOW_MUSIC_INFO);
     m_gWindowManager.Delete(WINDOW_VIDEO_INFO);
@@ -3855,9 +3892,20 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
     m_gWindowManager.Delete(WINDOW_DIALOG_BUSY);
     m_gWindowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
-    m_gWindowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_ADDON_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
     m_gWindowManager.Delete(WINDOW_DIALOG_SLIDER);
+
+    m_gWindowManager.Delete(WINDOW_DIALOG_PVRCLIENT_SETTINGS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_GUIDE_INFO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_RECORDING_INFO);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_TIMER_SETTING);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_GROUP_MANAGER);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_CHANNEL_MANAGER);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_CHANNELS);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_GUIDE);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_TELETEXT);
+    m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_DIRECTOR);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_LOGIN_SCREEN);
@@ -3890,6 +3938,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Remove(WINDOW_SETTINGS_MYVIDEOS);
     m_gWindowManager.Remove(WINDOW_SETTINGS_NETWORK);
     m_gWindowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
+	m_gWindowManager.Remove(WINDOW_SETTINGS_MYTV);
     m_gWindowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
 
     m_gWindowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
@@ -3924,6 +3973,7 @@ HRESULT CApplication::Cleanup()
     CLastfmScrobbler::RemoveInstance();
     CLibrefmScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
+	//StopPVRManager();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif

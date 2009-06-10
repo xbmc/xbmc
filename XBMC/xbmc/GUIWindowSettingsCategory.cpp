@@ -53,6 +53,7 @@
 #include "GUIDialogGamepad.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIDialogAddonBrowser.h"
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogKeyboard.h"
@@ -125,7 +126,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalImage = NULL;
   m_pOriginalEdit = NULL;
   // set the correct ID range...
-  m_dwIDRange = 8;
+  m_dwIDRange = 9;
   m_iScreen = 0;
   // set the network settings so that we don't reset them unnecessarily
   m_iNetworkAssignment = -1;
@@ -1058,6 +1059,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
     }
+	else if (!strSetting.Equals("pvrmanager.enabled")
+      && strSetting.Left(4).Equals("pvrmanager."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
+    }
     else if (!strSetting.Equals("remoteevents.enabled")
              && strSetting.Left(13).Equals("remoteevents."))
     {
@@ -1449,6 +1456,21 @@ void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
       CSettingString *pSettingString = (CSettingString*)pSettingControl->GetSetting();
       pSettingString->SetData(time);
       pSettingControl->Update();
+    }
+    else if (strSetting.Equals("pvrrecord.timeshiftcache") || strSetting.Equals("pvrrecord.timeshiftpath"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrrecord.timeshift"));
+    }
+    else if (strSetting.Equals("pvrmenu.infotimeout"))
+    { // only visible if infoswitch is enabled
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmenu.infoswitch"));
+    }
+    else if (strSetting.Equals("pvrmenu.infotime"))
+    { // only visible if infoswitch is enabled
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmenu.infoswitch") && g_guiSettings.GetBool("pvrmenu.infotimeout"));
     }
   }
 }
@@ -2157,7 +2179,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-  else if (strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
+  else if ((strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath")) || strSetting.Equals("pvrmenu.iconpath") || strSetting.Equals("pvrrecord.timeshiftpath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);
@@ -2169,7 +2191,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     UpdateSettings();
     bool bWriteOnly = true;
 
-    if (strSetting.Equals("subtitles.custompath"))
+    if (strSetting.Equals("pvrmenu.iconpath"))
+    {
+      bWriteOnly = false;
+    }
+    else if (strSetting.Equals("subtitles.custompath"))
     {
       bWriteOnly = false;
       shares = g_settings.m_videoSources;
@@ -2347,6 +2373,26 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_settings.SaveUPnPXml(filename);
     else
       g_settings.LoadUPnPXml(filename);
+  }
+  else if (strSetting.Equals("pvrmanager.enabled"))
+  {
+    if (g_guiSettings.GetBool("pvrmanager.enabled"))
+      g_application.StartPVRManager();
+    else
+      g_application.StopPVRManager();
+  }
+  else if (strSetting.Equals("pvrmanager.pvrsources"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PVRDLL, true))
+    { // save the new list
+      g_settings.SaveAddons();
+      g_application.StopPVRManager();
+      g_application.StartPVRManager();
+    }
+    else
+    { // reload the existing list
+      g_settings.LoadAddons();
+    }
   }
   else if (strSetting.Equals("masterlock.lockcode"))
   {

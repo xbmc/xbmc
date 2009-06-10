@@ -41,6 +41,10 @@ namespace MUSIC_INFO
   class CMusicInfoTag;
 }
 class CVideoInfoTag;
+class CTVEPGInfoTag;
+class CTVChannelInfoTag;
+class CTVRecordingInfoTag;
+class CTVTimerInfoTag;
 class CPictureInfoTag;
 
 class CAlbum;
@@ -73,6 +77,10 @@ public:
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
   CFileItem(const CVideoInfoTag& movie);
+  CFileItem(const CTVEPGInfoTag& programme);
+  CFileItem(const CTVChannelInfoTag& channel);
+  CFileItem(const CTVRecordingInfoTag& record);
+  CFileItem(const CTVTimerInfoTag& timer);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
 
@@ -118,6 +126,10 @@ public:
   bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsVideoDb() const;
+  bool IsTVEPG() const;
+  bool IsTVChannel() const;
+  bool IsTVRecording() const;
+  bool IsTVTimer() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
@@ -139,6 +151,7 @@ public:
   void SetMusicThumb(bool alwaysCheckRemote = false);
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
+  virtual void SetLabel2(const CStdString &strLabel);
   CURL GetAsUrl() const;
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
@@ -165,6 +178,54 @@ public:
   inline const CVideoInfoTag* GetVideoInfoTag() const
   {
     return m_videoInfoTag;
+  }
+
+  bool HasTVEPGInfoTag() const
+  {
+    return m_tvepgInfoTag != NULL;
+  }
+
+  CTVEPGInfoTag* GetTVEPGInfoTag();
+
+  inline const CTVEPGInfoTag* GetTVEPGInfoTag() const
+  {
+    return m_tvepgInfoTag;
+  }
+
+  bool HasTVChannelInfoTag() const
+  {
+    return m_tvchannelInfoTag != NULL;
+  }
+
+  CTVChannelInfoTag* GetTVChannelInfoTag();
+
+  inline const CTVChannelInfoTag* GetTVChannelInfoTag() const
+  {
+    return m_tvchannelInfoTag;
+  }
+
+  bool HasTVRecordingInfoTag() const
+  {
+    return m_tvrecordingInfoTag != NULL;
+  }
+
+  CTVRecordingInfoTag* GetTVRecordingInfoTag();
+
+  inline const CTVRecordingInfoTag* GetTVRecordingInfoTag() const
+  {
+    return m_tvrecordingInfoTag;
+  }
+
+  bool HasTVTimerInfoTag() const
+  {
+    return m_tvtimerInfoTag != NULL;
+  }
+
+  CTVTimerInfoTag* GetTVTimerInfoTag();
+
+  inline const CTVTimerInfoTag* GetTVTimerInfoTag() const
+  {
+    return m_tvtimerInfoTag;
   }
 
   bool HasPictureInfoTag() const
@@ -264,6 +325,10 @@ private:
   CStdString m_extrainfo;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
+  CTVEPGInfoTag* m_tvepgInfoTag;
+  CTVChannelInfoTag* m_tvchannelInfoTag;
+  CTVRecordingInfoTag* m_tvrecordingInfoTag;
+  CTVTimerInfoTag * m_tvtimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
 };
 

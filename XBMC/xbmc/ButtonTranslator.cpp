@@ -847,6 +847,11 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videofiles")) wWindowID = WINDOW_VIDEO_FILES;
   else if (strWindow.Equals("videolibrary")) wWindowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("videoplaylist")) wWindowID = WINDOW_VIDEO_PLAYLIST;
+  else if (strWindow.Equals("tv")) wWindowID = WINDOW_TV;
+  else if (strWindow.Equals("tvosdchannels")) wWindowID = WINDOW_DIALOG_TV_OSD_CHANNELS;
+  else if (strWindow.Equals("tvosdguide")) wWindowID = WINDOW_DIALOG_TV_OSD_GUIDE;
+  else if (strWindow.Equals("tvosdteletext")) wWindowID = WINDOW_DIALOG_TV_OSD_TELETEXT;
+  else if (strWindow.Equals("tvosddirector")) wWindowID = WINDOW_DIALOG_TV_OSD_DIRECTOR;
   else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("guicalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
   else if (strWindow.Equals("screencalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
@@ -857,6 +862,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("musicsettings")) wWindowID = WINDOW_SETTINGS_MYMUSIC;
   else if (strWindow.Equals("systemsettings")) wWindowID = WINDOW_SETTINGS_SYSTEM;
   else if (strWindow.Equals("videossettings")) wWindowID = WINDOW_SETTINGS_MYVIDEOS;
+  else if (strWindow.Equals("tvsettings")) wWindowID = WINDOW_SETTINGS_MYTV;
   else if (strWindow.Equals("networksettings")) wWindowID = WINDOW_SETTINGS_NETWORK;
   else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
   else if (strWindow.Equals("scripts")) wWindowID = WINDOW_SCRIPTS;
@@ -908,7 +914,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("musicoverlay")) wWindowID = WINDOW_MUSIC_OVERLAY;
   else if (strWindow.Equals("videooverlay")) wWindowID = WINDOW_VIDEO_OVERLAY;
   else if (strWindow.Equals("pictureinfo")) wWindowID = WINDOW_DIALOG_PICTURE_INFO;
-  else if (strWindow.Equals("pluginsettings")) wWindowID = WINDOW_DIALOG_PLUGIN_SETTINGS;
+  else if (strWindow.Equals("pluginsettings") || strWindow.Equals("addonsettings")) wWindowID = WINDOW_DIALOG_ADDON_SETTINGS;
   else if (strWindow.Equals("fullscreeninfo")) wWindowID = WINDOW_DIALOG_FULLSCREEN_INFO;
   else if (strWindow.Equals("karaokeselector")) wWindowID = WINDOW_DIALOG_KARAOKE_SONGSELECT;
   else if (strWindow.Equals("karaokelargeselector")) wWindowID = WINDOW_DIALOG_KARAOKE_SELECTOR;

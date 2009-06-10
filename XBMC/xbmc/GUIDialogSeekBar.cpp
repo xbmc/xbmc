@@ -24,6 +24,7 @@
 #include "GUISliderControl.h"
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
+#include "FileItem.h"
 
 #define SEEK_BAR_DISPLAY_TIME 2000L
 #define SEEK_BAR_SEEK_TIME     500L
@@ -121,6 +122,13 @@ void CGUIDialogSeekBar::ResetTimer()
 void CGUIDialogSeekBar::Render()
 {
   if (!g_application.m_pPlayer)
+  {
+    Close(true);
+    return;
+  }
+
+  CFileItem item(g_application.CurrentFileItem());
+  if (item.HasTVChannelInfoTag() && g_guiSettings.GetBool("pvrmenu.hidevideolength"))
   {
     Close(true);
     return;

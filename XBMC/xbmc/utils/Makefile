@@ -1,6 +1,7 @@
 INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib
 
-SRCS=AlarmClock.cpp \
+SRCS=Addon.cpp \
+     AlarmClock.cpp \
      Archive.cpp \
      CharsetConverter.cpp \
      CriticalSection.cpp \
@@ -53,7 +54,11 @@ SRCS=AlarmClock.cpp \
      AsyncFileCopy.cpp \
      DbusServer.cpp \
      Atomics.cpp \
-     LockFree.cpp
+     LockFree.cpp \
+     TVEPGInfoTag.cpp \
+     TVTimerInfoTag.cpp \
+     TVChannelInfoTag.cpp \
+     TVRecordInfoTag.cpp \
 
 LIB=utils.a
 

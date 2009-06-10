@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">VDR Hostname oder IP</string>
+    <string id="30001">Streamdev Port</string>
+    <string id="30002">Nur frei empfangbare Kanäle</string>
+    <string id="30003">Zeige Radiokanäle</string>
+    <string id="30004">Textkonvertierung (UTF-8)</string>
+</strings>

@@ -21,11 +21,11 @@
  *
  */
 
-#include "PluginSettings.h"
+#include "settings/AddonSettings.h"
 
 class CScraperUrl;
 
-class CScraperSettings : public CBasicSettings
+class CScraperSettings : public CAddonSettings
 {
 public:
   CScraperSettings();

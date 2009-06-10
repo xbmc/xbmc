@@ -265,10 +265,13 @@
 #define ACTION_AUDIO_DELAY            161
 #define ACTION_SUBTITLE_DELAY         162
 
+#define ACTION_RECORD                 170
+
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 #define ACTION_TOGGLE_WATCHED         200 // Toggle watched status (videos)
 #define ACTION_SCAN_ITEM              201 // scan item
 #define ACTION_TOGGLE_DIGITAL_ANALOG  202 // switch digital <-> analog
+#define ACTION_CHANNEL_SWITCH         203
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
@@ -291,8 +294,8 @@
 #define WINDOW_SETTINGS_MYVIDEOS          10017
 #define WINDOW_SETTINGS_NETWORK           10018
 #define WINDOW_SETTINGS_APPEARANCE        10019
+#define WINDOW_SETTINGS_MYTV              10020
 
-#define WINDOW_SCRIPTS                    10020
 #define WINDOW_VIDEO_GENRE                10021
 #define WINDOW_VIDEO_ACTOR                10022
 #define WINDOW_VIDEO_YEAR                 10023
@@ -301,7 +304,10 @@
 #define WINDOW_VIDEO_PLAYLIST             10028
 
 #define WINDOW_LOGIN_SCREEN               10029
+#define WINDOW_SCRIPTS                    10030
 #define WINDOW_SETTINGS_PROFILES          10034
+
+#define WINDOW_TV                         10040
 
 #define WINDOW_DIALOG_YES_NO              10100
 #define WINDOW_DIALOG_PROGRESS            10101
@@ -336,17 +342,30 @@
 #define WINDOW_DIALOG_SMART_PLAYLIST_RULE   10137
 #define WINDOW_DIALOG_BUSY                10138
 #define WINDOW_DIALOG_PICTURE_INFO        10139
-#define WINDOW_DIALOG_PLUGIN_SETTINGS     10140
+#define WINDOW_DIALOG_ADDON_SETTINGS      10140
 #define WINDOW_DIALOG_ACCESS_POINTS       10141
 #define WINDOW_DIALOG_FULLSCREEN_INFO     10142
 #define WINDOW_DIALOG_KARAOKE_SONGSELECT  10143
 #define WINDOW_DIALOG_KARAOKE_SELECTOR    10144
 #define WINDOW_DIALOG_SLIDER              10145
 
+#define WINDOW_DIALOG_ADDON_BROWSER       10160
+
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501
 #define WINDOW_MUSIC_NAV                  10502
 #define WINDOW_MUSIC_PLAYLIST_EDITOR      10503
+
+#define WINDOW_DIALOG_PVRCLIENT_SETTINGS  10600
+#define WINDOW_DIALOG_TV_GUIDE_INFO       10601
+#define WINDOW_DIALOG_TV_RECORDING_INFO   10602
+#define WINDOW_DIALOG_TV_TIMER_SETTING    10603
+#define WINDOW_DIALOG_TV_GROUP_MANAGER    10604
+#define WINDOW_DIALOG_TV_CHANNEL_MANAGER  10605
+#define WINDOW_DIALOG_TV_OSD_CHANNELS     10606
+#define WINDOW_DIALOG_TV_OSD_GUIDE        10607
+#define WINDOW_DIALOG_TV_OSD_TELETEXT     10608
+#define WINDOW_DIALOG_TV_OSD_DIRECTOR     10609
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000

@@ -1,5 +1,4 @@
-#ifndef GUIDIALOG_PLUGIN_SETTINGS_
-#define GUIDIALOG_PLUGIN_SETTINGS_
+#pragma once
 
 /*
  *      Copyright (C) 2005-2008 Team XBMC
@@ -22,35 +21,29 @@
  *
  */
 
-#include "GUIDialogBoxBase.h"
-#include "PluginSettings.h"
+#include "GUIDialogSettings.h"
+#include "GUIListItem.h"
+#include "DateTime.h"
 
-struct SScraperInfo;
+#include "GUIDialog.h"
+#include "GUIListItem.h"
 
-class CGUIDialogPluginSettings : public CGUIDialogBoxBase
+class CFileItem;
+
+class CGUIDialogTVRecordingInfo : public CGUIDialog
 {
 public:
-  CGUIDialogPluginSettings(void);
-  virtual ~CGUIDialogPluginSettings(void);
+  CGUIDialogTVRecordingInfo(void);
+  virtual ~CGUIDialogTVRecordingInfo(void);
   virtual bool OnMessage(CGUIMessage& message);
-  static void ShowAndGetInput(CURL& url);
-  static void ShowAndGetInput(SScraperInfo& info);
+  void SetRecording(const CFileItem *item);
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_recordItem; }
+  virtual bool HasListItems() const { return true; };
 
-private:
-  void CreateControls();
-  void FreeControls();
-  void EnableControls();
-  void SetDefaults();
-  bool GetCondition(const CStdString &condition, const int controlId);
+protected:
+  void Update();
+  void SetLabel(int iControl, const CStdString& strLabel);
 
-  bool SaveSettings(void);
-  bool ShowVirtualKeyboard(int iControl);
-  static CURL m_url;
-  bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
-  CBasicSettings m_settings;
-  CStdString m_strHeading;
-  std::map<CStdString,CStdString> m_buttonValues;
+  CFileItemPtr        m_recordItem;
 };
-
-#endif
 

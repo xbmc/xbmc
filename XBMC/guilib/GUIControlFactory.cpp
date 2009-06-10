@@ -51,6 +51,8 @@
 #include "GUIListContainer.h"
 #include "GUIFixedListContainer.h"
 #include "GUIWrappingListContainer.h"
+#include "GUIEPGGridContainer.h"
+#include "GUIEPGGridContainer.h"
 #include "GUIPanelContainer.h"
 #include "GUIMultiSelectText.h"
 #include "GUIListLabel.h"
@@ -653,6 +655,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
 
   int focusPosition = 0;
   int scrollTime = 200;
+  int timeBlocks = 36;
+  int rulerUnit = 12;
   bool useControlCoords = false;
   bool renderFocusedLast = false;
 
@@ -903,6 +907,8 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetAspectRatio(pControlNode, "aspectratio", aspect);
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
+  XMLUtils::GetInt(pControlNode, "timeblocks", timeBlocks);
+  XMLUtils::GetInt(pControlNode, "rulerunit", rulerUnit);
 
   GetInfoTexture(pControlNode, "imagepath", texture, texturePath);
 
@@ -1220,6 +1226,12 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     ((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
+  }
+  else if (strType == "epggrid")
+  {
+    control = new CGUIEPGGridContainer(dwParentId, id, posX, posY, width, height, scrollTime, timeBlocks, rulerUnit);
+    ((CGUIEPGGridContainer *)control)->LoadLayout(pControlNode);
+//    ((CGUIEPGGridContainer *)control)->LoadContent(pControlNode); ///
   }
   else if (strType == "fixedlist")
   {

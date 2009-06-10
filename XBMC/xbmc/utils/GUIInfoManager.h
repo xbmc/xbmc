@@ -241,6 +241,8 @@ class CDateTime;
 #define VIDEOPLAYER_TOP250            283
 #define VIDEOPLAYER_RATING_AND_VOTES  284
 #define VIDEOPLAYER_TRAILER           285
+#define VIDEOPLAYER_NEXT              286
+#define VIDEOPLAYER_GROUP             287
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -392,6 +394,21 @@ class CDateTime;
 #define FANART_COLOR2               1001
 #define FANART_COLOR3               1002
 #define FANART_IMAGE                1003
+
+#define PVR_IS_CONNECTED            1100
+#define PVR_IS_RECORDING            1101
+#define PVR_HAS_TIMER               1102
+#define PVR_NEXT_RECORDING_CHANNEL  1103
+#define PVR_NEXT_RECORDING_DATETIME 1104
+#define PVR_NEXT_RECORDING_TITLE    1105
+#define PVR_NOW_RECORDING_CHANNEL   1106
+#define PVR_NOW_RECORDING_DATETIME  1107
+#define PVR_NOW_RECORDING_TITLE     1108
+#define PVR_HAS_EPG                 1109
+#define PVR_HAS_TXT                 1110
+#define PVR_HAS_DIRECTOR            1111
+
+#define ADDON_STAR_RATING           1200
 
 #define WINDOW_PROPERTY             9993
 #define WINDOW_IS_TOPMOST           9994
