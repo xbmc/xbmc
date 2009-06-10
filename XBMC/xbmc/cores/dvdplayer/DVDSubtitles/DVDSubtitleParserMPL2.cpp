@@ -18,9 +18,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+ 
 #include "stdafx.h"
-#include "DVDSubtitleParserMicroDVD.h"
+#include "DVDSubtitleParserMPL2.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
 #include "utils/RegExp.h"
@@ -28,35 +28,29 @@
 
 using namespace std;
 
-CDVDSubtitleParserMicroDVD::CDVDSubtitleParserMicroDVD(CDVDSubtitleStream* stream, const string& filename)
+CDVDSubtitleParserMPL2::CDVDSubtitleParserMPL2(CDVDSubtitleStream* stream, const string& filename)
     : CDVDSubtitleParserText(stream, filename)
 {
 
 }
 
-CDVDSubtitleParserMicroDVD::~CDVDSubtitleParserMicroDVD()
+CDVDSubtitleParserMPL2::~CDVDSubtitleParserMPL2()
 {
   Dispose();
 }
 
-bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
+bool CDVDSubtitleParserMPL2::Open(CDVDStreamInfo &hints)
 {
   if (!CDVDSubtitleParserText::Open())
     return false;
 
-  CLog::Log(LOGDEBUG, "%s - framerate %d:%d", __FUNCTION__, hints.fpsrate, hints.fpsscale);
-  if (hints.fpsscale > 0 && hints.fpsrate > 0)
-  {
-    m_framerate = (double)hints.fpsscale / (double)hints.fpsrate;
-    m_framerate *= DVD_TIME_BASE;
-  }
-  else
-    m_framerate = DVD_TIME_BASE / 25.0;
+  // MPL2 is time-based, with 0.1s accuracy
+  m_framerate = DVD_TIME_BASE / 10.0;
 
   char line[1024];
 
   CRegExp reg;
-  if (!reg.RegComp("\\{([0-9]+)\\}\\{([0-9]+)\\}([^|]*?)(\\|([^|]*?))?$"))//(\\|([^|]*?))?$"))
+  if (!reg.RegComp("\\[([0-9]+)\\]\\[([0-9]+)\\](\\{C:\\$[0-9a-f]+\\})?/?([^|]*?)(\\|/?([^|]*?))?$"))
   {
     m_pStream->Close();
     return false;
@@ -72,9 +66,9 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
       char* startFrame = reg.GetReplaceString("\\1");
       char* endFrame   = reg.GetReplaceString("\\2");
       char* lines[3];
-      lines[0] = reg.GetReplaceString("\\3");
-      lines[1] = reg.GetReplaceString("\\5");
-      lines[2] = reg.GetReplaceString("\\7");
+      lines[0] = reg.GetReplaceString("\\4");
+      lines[1] = reg.GetReplaceString("\\6");
+      lines[2] = reg.GetReplaceString("\\8");
       CDVDOverlayText* pOverlay = new CDVDOverlayText();
       pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
 
