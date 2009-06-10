@@ -37,7 +37,7 @@ public:
 
 protected:
   virtual void CreateSettings();
-  virtual void OnSettingChanged(unsigned int setting);
+  virtual void OnSettingChanged(SettingInfo &setting);
   virtual void OnOkay() { m_cancelled = false; }
   virtual void OnCancel() { m_cancelled = true; }
 

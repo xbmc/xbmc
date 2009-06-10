@@ -263,13 +263,8 @@ void CGUIDialogTVTimerSettings::CreateSettings()
   }
 }
 
-void CGUIDialogTVTimerSettings::OnSettingChanged(unsigned int num)
+void CGUIDialogTVTimerSettings::OnSettingChanged(SettingInfo &setting)
 {
-  // setting has changed - update anything that needs it
-  if (num >= m_settings.size()) return;
-
-  SettingInfo &setting = m_settings.at(num);
-
   CTVTimerInfoTag* tag = m_timerItem->GetTVTimerInfoTag();
 
   if (setting.id == CONTROL_TMR_NAME)

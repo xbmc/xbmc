@@ -189,7 +189,7 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
       if (setting.formatFunction) pControl->SetTextValue(setting.formatFunction(value, setting.interval));
     }
   }
-  else if (setting.type == SettingInfo::BUTTON)
+  else if (setting.type == SettingInfo::BUTTON_DIALOG)
   {
     SET_CONTROL_LABEL(controlID,setting.name);
     if (m_usePopupSliders && setting.data && setting.formatFunction)
@@ -254,7 +254,7 @@ void CGUIDialogSettings::OnClick(int iID)
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(iID);
     if (setting.data) *(int *)setting.data = pControl->GetValue();
   }
-  else if (setting.type == SettingInfo::BUTTON)
+  else if (setting.type == SettingInfo::BUTTON_DIALOG)
   {
     CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(iID);
     if (setting.data) *(CStdString *)setting.data = pControl->GetLabel2();
@@ -311,7 +311,15 @@ void CGUIDialogSettings::FreeControls()
 void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iControlID)
 {
   CGUIControl *pControl = NULL;
-  if (setting.type == SettingInfo::BUTTON && m_pOriginalSettingsButton)
+  if (setting.type == SettingInfo::BUTTON_DIALOG && m_pOriginalSettingsButton)
+  {
+    pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
+    if (!pControl) return ;
+    ((CGUIButtonControl *)pControl)->SetLabel(setting.name);
+    pControl->SetWidth(width);
+	if (setting.data) ((CGUIButtonControl *)pControl)->SetLabel2(*(CStdString *)setting.data);
+  }
+  else if (setting.type == SettingInfo::BUTTON && m_pOriginalSettingsButton)
   {
     pControl = new CGUIButtonControl(*m_pOriginalSettingsButton);
     if (!pControl) return ;
@@ -319,7 +327,6 @@ void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iCont
     if (setting.formatFunction)
       ((CGUIButtonControl *)pControl)->SetLabel2(setting.formatFunction(*(float *)setting.data, setting.interval));
     pControl->SetWidth(width);
-	if (setting.data) ((CGUIButtonControl *)pControl)->SetLabel2(*(CStdString *)setting.data);
   }
   else if (setting.type == SettingInfo::EDIT && m_pOriginalEdit)
   {
@@ -438,7 +445,7 @@ void CGUIDialogSettings::AddButton(unsigned int id, int label, CStdString *str, 
   SettingInfo setting;
   setting.id = id;
   setting.name = g_localizeStrings.Get(label);
-  setting.type = SettingInfo::BUTTON;
+  setting.type = SettingInfo::BUTTON_DIALOG;
   setting.enabled  = bOn;
   setting.data = str;
   m_settings.push_back(setting);
