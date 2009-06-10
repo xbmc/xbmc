@@ -29,7 +29,6 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   m_playerCoreId = 0;
 
   TiXmlElement* pSubRule = pRule->FirstChildElement("rule");
-  int i = 0;
   while (pSubRule) 
   {
     vecSubRules.push_back(new CPlayerSelectionRule(pSubRule));
