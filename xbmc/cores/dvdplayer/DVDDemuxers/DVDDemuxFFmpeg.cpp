@@ -341,7 +341,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
-      memset(pd.buf+context->max_packet_size, 0, AVPROBE_PADDING_SIZE);
+      memset(pd.buf+pd.buf_size, 0, AVPROBE_PADDING_SIZE);
 
       // restore position again
       m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
