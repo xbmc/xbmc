@@ -30,17 +30,24 @@ namespace ADDON
 
 CAddon::CAddon()
 {
-  m_guid = "";
-  m_addonType = ADDON_UNKNOWN;
-  m_strPath = "";
-  m_disabled = false;
-  m_stars = -1;
-  m_strVersion = "";
-  m_strName = "";
-  m_summary = "";
-  m_strDesc = "";
-  m_disclaimer = "";
-  m_strLibName = "";
+  Reset();
+}
+
+void CAddon::Reset()
+{
+  m_guid        = "";
+  m_guid_parent = "";
+  m_addonType   = ADDON_UNKNOWN;
+  m_strPath     = "";
+  m_disabled    = false;
+  m_stars       = -1;
+  m_strVersion  = "";
+  m_strName     = "";
+  m_summary     = "";
+  m_strDesc     = "";
+  m_disclaimer  = "";
+  m_strLibName  = "";
+  m_childs      = 0;
 }
 
 bool CAddon::operator==(const CAddon &rhs) const {

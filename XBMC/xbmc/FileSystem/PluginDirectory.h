@@ -56,6 +56,7 @@ public:
   static void SetContent(int handle, const CStdString &strContent);
   static void SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue);
   static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
+  static CStdString TranslatePluginDirectory(const CStdString &strPath);
 
 private:
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);

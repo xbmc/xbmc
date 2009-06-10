@@ -69,7 +69,7 @@ extern "C"
   __int64 LengthRecordedStream(void);
 
   // function to export the above structure to XBMC
-  void __declspec(dllexport) get_module(struct PVRClient* pClient)
+  void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
     pClient->Create = Create;
     pClient->GetProperties = GetProperties;

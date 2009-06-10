@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
@@ -19,6 +20,9 @@
  *
  */
 
+#ifndef PVRCLIENT_VDR_OS_H
+#define PVRCLIENT_VDR_OS_H
+
 #if defined(_WIN32) || defined(_WIN64)
 #define __WINDOWS__
 #endif
@@ -35,4 +39,6 @@
 
 #if !defined(FALSE)
 #define FALSE 0
+#endif
+
 #endif

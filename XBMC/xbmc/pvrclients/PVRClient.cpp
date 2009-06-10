@@ -28,14 +28,16 @@
 #include "../utils/log.h"
 #include "LocalizeStrings.h"
 
+using namespace std;
+using namespace ADDON;
+
 CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
-                       const CStdString& strPVRClientName, IPVRClientCallback* cb)
-                              : IPVRClient(clientID, cb)
+                       const ADDON::CAddon& addon, IPVRClientCallback* pvrCB)
+                              : IPVRClient(clientID, pvrCB)
                               , m_clientID(clientID)
                               , m_pClient(pClient)
                               , m_pDll(pDll)
-                              , m_clientName(strPVRClientName)
-                              , m_manager(cb)
+                              , m_manager(pvrCB)
 {
 
 }
@@ -280,7 +282,7 @@ void CPVRClient::PVRLogCallback(void *userData, const PVR_LOG loglevel, const ch
 
   CStdString message;
   message.reserve(16384);
-  message.Format("PVR: %s/%s:", client->m_clientName, client->m_hostName);
+  message.Format("PVR: %s:", client->m_hostName);
 
   va_list va;
   va_start(va, format);

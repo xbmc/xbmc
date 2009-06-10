@@ -620,5 +620,21 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
   dir->m_listItems->SetProperty(strProperty, strValue);
 }
 
+CStdString CPluginDirectory::TranslatePluginDirectory(const CStdString &strPath)
+{
+  CStdString addonFileName;
+  CURL url(strPath);
+  if (url.GetProtocol() == "plugin")
+  {
+    addonFileName = "special://home/plugins/";
+    CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
+    CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
+  }
+  else
+  {
+    addonFileName = strPath;
+  }
+  return addonFileName;
+}
 
 

@@ -1,29 +1,34 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
-*      http://www.xbmc.org
-*
-*  This Program is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2, or (at your option)
-*  any later version.
-*
-*  This Program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*  GNU General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
-*
-*/
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "stdafx.h"
 #include "AddonSettings.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/PluginDirectory.h"
+#include "utils/Addon.h"
 
+using namespace DIRECTORY;
+using namespace ADDON;
 
 bool CAddonSettings::SaveFromDefault(void)
 {
@@ -119,37 +124,15 @@ bool CAddonSettings::Load(const CURL& url)
 {
   m_url = url;
 
-  // create the users filepath  
-  //TODO remove this specialization
-  CStdString addonData;
-  if (url.GetProtocol() == "plugin")
-    addonData = "plugin_data";
-  else if (url.GetProtocol() == "addon")
-    addonData = "addon_data";
-  else
-    return false;
-
-  m_userFileName.Format("special://profile/%s/%s/%s", addonData.c_str(), url.GetHostName().c_str(), url.GetFileName().c_str());
-  CUtil::RemoveSlashAtEnd(m_userFileName);
+  // create the users filepath
+  m_userFileName = GetUserDirectory(url);
   CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
 
-  // Create our final path
-  //TODO remove this specialization
   CStdString addonFileName;
-  if (url.GetProtocol() == "plugin")
-    addonFileName = "special://home/plugins/";
-  else if (url.GetProtocol() == "addon")
-    addonFileName = "special://xbmc/";
-  else
-    return false;
-
-  CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
-  CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
-
+  url.GetURL(addonFileName);
+  addonFileName = CPluginDirectory::TranslatePluginDirectory(addonFileName);
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
-
-  addonFileName = addonFileName;
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
@@ -184,6 +167,53 @@ bool CAddonSettings::Load(const CURL& url)
   return true;
 }
 
+bool CAddonSettings::Load(const CAddon& addon)
+{
+  // create the users filepath
+  m_userFileName = GetUserDirectory(addon.m_strPath);
+
+  // If it is a virtual child add-on add the guid to the path
+  if (!addon.m_guid_parent.IsEmpty())
+    m_userFileName += "-" + addon.m_guid;
+
+  CUtil::AddFileToFolder(m_userFileName, "settings.xml", m_userFileName);
+
+  CStdString addonFileName = addon.m_strPath;
+  CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
+  CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
+
+  if (!m_addonXmlDoc.LoadFile(addonFileName))
+  {
+    CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
+    return false;
+  }
+
+  // Make sure that the addon XML has the settings element
+  TiXmlElement *setting = m_addonXmlDoc.RootElement();
+  if (!setting || strcmpi(setting->Value(), "settings") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading Settings %s: cannot find root element 'settings'", addonFileName.c_str());
+    return false;
+  }
+
+  // Load the user saved settings. If it does not exist, create it
+  if (!m_userXmlDoc.LoadFile(m_userFileName))
+  {
+    TiXmlDocument doc;
+    TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+    doc.InsertEndChild(decl);
+
+    TiXmlElement xmlRootElement("settings");
+    doc.InsertEndChild(xmlRootElement);
+
+    m_userXmlDoc = doc;
+
+    // Don't worry about the actual settings, they will be set when the user clicks "Ok"
+    // in the settings dialog
+  }
+  return true;
+}
+
 bool CAddonSettings::Save(void)
 {
   // break down the path into directories
@@ -213,21 +243,7 @@ TiXmlElement* CAddonSettings::GetAddonRoot()
 
 bool CAddonSettings::SettingsExist(const CStdString& strPath)
 {
-  CURL url(strPath);
-
-  //TODO fix all Addon paths
-  CStdString addonFileName;
-  if (url.GetProtocol() == "plugin")
-    addonFileName = "special://home/plugins/";
-  else if (url.GetProtocol() == "addon")
-    addonFileName = "special://xbmc/";
-  else
-    return false;
-
-  // Create our final path
-  CUtil::AddFileToFolder(addonFileName, url.GetHostName(), addonFileName);
-  CUtil::AddFileToFolder(addonFileName, url.GetFileName(), addonFileName);
-
+  CStdString addonFileName = CPluginDirectory::TranslatePluginDirectory(strPath);
   CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
   CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
 
@@ -242,6 +258,21 @@ bool CAddonSettings::SettingsExist(const CStdString& strPath)
     return false;
 
   return true;
+}
+
+CStdString CAddonSettings::GetUserDirectory(const CURL& url)
+{
+  CStdString addonUserName;
+  url.GetURL(addonUserName);
+  addonUserName = CPluginDirectory::TranslatePluginDirectory(addonUserName);
+  // Remove the special path
+  addonUserName.Replace("special://home/addons/", "");
+  addonUserName.Replace("special://xbmc/addons/", "");
+
+  // and create the users filepath
+  addonUserName.Format("special://profile/addon_data/%s", addonUserName.c_str());
+  CUtil::RemoveSlashAtEnd(addonUserName);
+  return addonUserName;
 }
 
 CAddonSettings g_currentAddonSettings;

@@ -542,7 +542,7 @@ void CSettings::LoadAddons()
 {
   CStdString strXMLFile;
   TiXmlDocument xmlDoc;
-  TiXmlElement *pRootElement;
+  TiXmlElement *pRootElement = NULL;
   strXMLFile = GetAddonsFile();
   CLog::Log(LOGNOTICE, "%s", strXMLFile.c_str());
   if ( xmlDoc.LoadFile( strXMLFile ) )
@@ -2579,10 +2579,8 @@ void CSettings::GetAllAddons()
   m_allAddons.clear();
 
   CFileItemList items;
-  if (!CDirectory::GetDirectory("special://xbmc/pvrclients/", items, ADDON_PVRDLL_EXT, false))
+  if (!CDirectory::GetDirectory("special://xbmc/addons/pvr", items, ADDON_PVRDLL_EXT, false))
     return;
-
-  items.m_strPath.Replace("special://xbmc/", "addon://");
 
   // for each folder found
   for (int i = 0; i < items.Size(); ++i)
@@ -2616,8 +2614,6 @@ void CSettings::GetAllAddons()
       }
     }
 
-    //TODO fix all addon paths
-    item->m_strPath.Replace("special://xbmc/", "addon://");
     addon.m_strPath = item->m_strPath;
 
     // everything ok, add to available addons
@@ -2630,9 +2626,6 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   // First check that we can load info.xml
   CStdString strPath(path);
   CUtil::AddFileToFolder(strPath, "info.xml", strPath);
-
-  //TODO fix all Addon paths
-  strPath.Replace("addon://", "special://xbmc/");
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strPath))

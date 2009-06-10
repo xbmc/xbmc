@@ -23,7 +23,7 @@
 #endif
 
 #include "pvrclient-vdr_os.h"
-#include "../../../pvrclients/xbmc_pvr.h"
+#include "../../addons/include/xbmc_pvr.h"
 #include "pvrclient-vdr.h"
 
 // global callback for logging via XBMC
