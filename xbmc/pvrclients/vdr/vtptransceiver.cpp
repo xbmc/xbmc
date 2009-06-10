@@ -103,46 +103,150 @@ void CVTPTransceiver::Close()
 
 bool CVTPTransceiver::Open(const string &host, int port)
 {
-  m_socket = socket(AF_INET, SOCK_STREAM, 0);
+  socklen_t       len;
+  struct hostent *hp;
 
-  if(m_socket == INVALID_SOCKET)
-    return false;
-
-  struct sockaddr_in sa;
-  struct hostent    *hp;
-
-  hp = gethostbyname(host.c_str());
-  if (hp == NULL)
+  if ((m_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_IP)) == INVALID_SOCKET)
   {
-    //log Failed to resolve hostname
+//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't open socket '%s:%u'", host.c_str(), port);
+    return false;
+  }
+
+#ifdef _LINUX
+  int flags = fcntl(m_socket, F_GETFL);
+  if (fcntl(m_socket, F_SETFL, O_NONBLOCK) == -1)
+#elif defined(_WIN32) || defined(_WIN64)
+  u_long iMode = 1;
+  if (ioctlsocket(m_socket, FIONBIO, &iMode) == -1)
+#endif
+  {
+//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't set socket to non blocking mode");
     Close();
     return false;
   }
 
-  memset(&sa, 0, sizeof(sa));
-  memcpy(&sa.sin_addr, hp->h_addr_list[0], hp->h_length);
-
-  sa.sin_family = hp->h_addrtype;
-  sa.sin_port = htons((u_short)port);
-  /*sa.sin_port = port;*/
-
-  if (connect(m_socket, (struct sockaddr *)&sa, sizeof(sa)) < 0)
+  if ((hp = gethostbyname(host.c_str())) == NULL)
   {
-    //log failed to connect to server
+//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - failed to resolve hostname: %s", host.c_str());
     Close();
     return false;
   }
 
+  m_LocalAddr.sin_family = AF_INET;
+  m_LocalAddr.sin_port   = 0;
+  m_LocalAddr.sin_addr.s_addr = INADDR_ANY;
+  if (bind(m_socket, (struct sockaddr*)&m_LocalAddr, sizeof(m_LocalAddr)) == -1)
+  {
+//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't bind requested socket '%s:%u'", host.c_str(), port);
+    Close();
+    return false;
+  }
+
+  m_RemoteAddr.sin_family = AF_INET;
+  m_RemoteAddr.sin_port   = htons(port);
+  memcpy(&m_RemoteAddr.sin_addr.s_addr, hp->h_addr_list[0], hp->h_length);
+  if (connect(m_socket, (struct sockaddr*)&m_RemoteAddr, sizeof(m_RemoteAddr)) < 0)
+  {
+    fd_set         set_r, set_w, set_e;
+    timeval        timeout;
+
+    timeout.tv_sec  = 5;//m_iConnectTimeout;
+    timeout.tv_usec = 0;
+
+    // fill with new data
+    FD_ZERO(&set_r);
+    FD_ZERO(&set_w);
+    FD_ZERO(&set_e);
+    FD_SET(m_socket, &set_r);
+    FD_SET(m_socket, &set_w);
+    FD_SET(m_socket, &set_e);
+    int result = select(FD_SETSIZE, &set_r, &set_w, &set_e, &timeout);
+    if (result < 0)
+    {
+//      XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - select failed '%s:%u'", host.c_str(), port);
+      Close();
+      return false;
+    }
+    else if (result == 0)
+    {
+//      XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - connect timed out '%s:%u'", host.c_str(), port);
+      Close();
+      return false;
+    }
+    else if (!IsConnected(m_socket, &set_r, &set_w, &set_e))
+    {
+//      XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - failed to connect to IP '%d.%d.%d.%d",
+//                        (ntohl(m_RemoteAddr.sin_addr.s_addr) >> 24) & 0xff,
+//                        (ntohl(m_RemoteAddr.sin_addr.s_addr) >> 16) & 0xff,
+//                        (ntohl(m_RemoteAddr.sin_addr.s_addr) >> 8) & 0xff,
+//                        (ntohl(m_RemoteAddr.sin_addr.s_addr) & 0xff));
+      Close();
+      return false;
+    }
+  }
+
+#ifdef _LINUX
+  if (fcntl(m_socket, F_SETFL, flags) == -1)
+#elif defined(_WIN32) || defined(_WIN64)
+  iMode = 0;
+  if (ioctlsocket(m_socket, FIONBIO, &iMode) == -1)
+#endif
+  {
+//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't set socket initial condition");
+    Close();
+    return false;
+  }
+
+  len = sizeof(struct sockaddr_in);
+  if (getpeername(m_socket, (struct sockaddr*)&m_RemoteAddr, &len) == -1)
+  {
+//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't get the name of the peer socket '%s:%u'", host.c_str(), port);
+    Close();
+    return false;
+  }
+
+  len = sizeof(struct sockaddr_in);
+  if (getsockname(m_socket, (struct sockaddr*)&m_LocalAddr, &len) == -1)
+  {
+//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't get the socket name '%s:%u'", host.c_str(), port);
+    Close();
+    return false;
+  }
 
   // VTP Server will send a greeting
   string line;
   int    code;
   ReadResponse(code, line);
 
-  /*CLog::Log(LOGERROR, "CVTPTransceiver::Open - server greeting: %s", line.c_str());*/
-
+//  XBMC_log(LOG_INFO, "CVTPTransceiver::Open - server greeting: %s", line.c_str());
   return true;
 }
+
+#if defined(_WIN32) || defined(_WIN64)
+bool CVTPTransceiver::IsConnected(SOCKET socket, fd_set *rd, fd_set *wr, fd_set *ex)
+{
+  WSASetLastError(0);
+  if (!FD_ISSET(socket, rd) && !FD_ISSET(socket, wr))
+    return false;
+  if (FD_ISSET(socket, ex))
+    return false;
+  return true;
+}
+#else
+bool CVTPTransceiver::IsConnected(SOCKET socket, fd_set *rd, fd_set *wr, fd_set *ex)
+{
+  int err;
+  socklen_t len = sizeof(err);
+
+  errno = 0;             /* assume no error */
+  if (!FD_ISSET(socket, rd ) && !FD_ISSET(socket, wr))
+    return false;
+  if (getsockopt(socket, SOL_SOCKET, SO_ERROR, &err, &len) < 0)
+    return false;
+  errno = err;           /* in case we're not connected */
+  return err == 0;
+}
+#endif
 
 bool CVTPTransceiver::IsOpen()
 {
