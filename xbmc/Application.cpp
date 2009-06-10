@@ -1024,6 +1024,25 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/multitype");
+    CDirectory::Create("special://home/addons/visualisations");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/scripts");
+    CDirectory::Create("special://home/addons/scrapers");
+    CDirectory::Create("special://home/addons/scrapers/pvr");
+    CDirectory::Create("special://home/addons/scrapers/video");
+    CDirectory::Create("special://home/addons/scrapers/music");
+    CDirectory::Create("special://home/addons/scrapers/programs");
+    CDirectory::Create("special://home/addons/screensavers");
+    CDirectory::Create("special://home/addons/plugins");
+    CDirectory::Create("special://home/addons/plugins/pvr");
+    CDirectory::Create("special://home/addons/plugins/music");
+    CDirectory::Create("special://home/addons/plugins/video");
+    CDirectory::Create("special://home/addons/plugins/programs");
+    CDirectory::Create("special://home/addons/plugins/pictures");
+    CDirectory::Create("special://home/addons/plugins/weather");
+    CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1131,6 +1150,25 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/multitype");
+    CDirectory::Create("special://home/addons/visualisations");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/scripts");
+    CDirectory::Create("special://home/addons/scrapers");
+    CDirectory::Create("special://home/addons/scrapers/pvr");
+    CDirectory::Create("special://home/addons/scrapers/video");
+    CDirectory::Create("special://home/addons/scrapers/music");
+    CDirectory::Create("special://home/addons/scrapers/programs");
+    CDirectory::Create("special://home/addons/screensavers");
+    CDirectory::Create("special://home/addons/plugins");
+    CDirectory::Create("special://home/addons/plugins/pvr");
+    CDirectory::Create("special://home/addons/plugins/music");
+    CDirectory::Create("special://home/addons/plugins/video");
+    CDirectory::Create("special://home/addons/plugins/programs");
+    CDirectory::Create("special://home/addons/plugins/pictures");
+    CDirectory::Create("special://home/addons/plugins/weather");
+    CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1227,6 +1265,25 @@ CProfile* CApplication::InitDirectoriesWin32()
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/multitype");
+    CDirectory::Create("special://home/addons/visualisations");
+    CDirectory::Create("special://home/addons/pvr");
+    CDirectory::Create("special://home/addons/scripts");
+    CDirectory::Create("special://home/addons/scrapers");
+    CDirectory::Create("special://home/addons/scrapers/pvr");
+    CDirectory::Create("special://home/addons/scrapers/video");
+    CDirectory::Create("special://home/addons/scrapers/music");
+    CDirectory::Create("special://home/addons/scrapers/programs");
+    CDirectory::Create("special://home/addons/screensavers");
+    CDirectory::Create("special://home/addons/plugins");
+    CDirectory::Create("special://home/addons/plugins/pvr");
+    CDirectory::Create("special://home/addons/plugins/music");
+    CDirectory::Create("special://home/addons/plugins/video");
+    CDirectory::Create("special://home/addons/plugins/programs");
+    CDirectory::Create("special://home/addons/plugins/pictures");
+    CDirectory::Create("special://home/addons/plugins/weather");
+    CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1322,6 +1379,19 @@ HRESULT CApplication::Initialize()
 #endif
   {
     CDirectory::Create("special://xbmc/scripts");
+    CDirectory::Create("special://xbmc/addons");
+    CDirectory::Create("special://xbmc/addons/multitype");
+    CDirectory::Create("special://xbmc/addons/visualisations");
+    CDirectory::Create("special://xbmc/addons/pvr");
+    CDirectory::Create("special://xbmc/addons/scripts");
+    CDirectory::Create("special://xbmc/addons/scrapers");
+    CDirectory::Create("special://xbmc/addons/screensavers");
+    CDirectory::Create("special://xbmc/addons/plugin-pvr");
+    CDirectory::Create("special://xbmc/addons/plugin-music");
+    CDirectory::Create("special://xbmc/addons/plugin-video");
+    CDirectory::Create("special://xbmc/addons/plugin-program");
+    CDirectory::Create("special://xbmc/addons/plugin-pictures");
+    CDirectory::Create("special://xbmc/addons/dsp-audio");
     CDirectory::Create("special://xbmc/plugins");
     CDirectory::Create("special://xbmc/plugins/music");
     CDirectory::Create("special://xbmc/plugins/video");
@@ -1331,7 +1401,6 @@ HRESULT CApplication::Initialize()
     CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/visualisations");
     CDirectory::Create("special://xbmc/sounds");
-	CDirectory::Create("special://xbmc/pvrclients");
     CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
   }
 

@@ -195,10 +195,10 @@ void CPVRManager::Stop()
 IPVRClient* CPVRManager::LoadClient()
 {
   VECADDONS *addons;
-
-  /* call update */
+  // call update
   addons = g_settings.GetAddonsFromType(ADDON_PVRDLL);
 
+  /* Make sure addon's are loaded */
   if (addons == NULL || addons->empty())
     return false;
 
@@ -210,8 +210,11 @@ IPVRClient* CPVRManager::LoadClient()
     if (clientAddon.m_disabled) // ignore disabled addons
       continue;
 
+    /* Load the Client library's and inside them into Client list if
+     * success. Client initialization is also performed during loading.
+     */
     IPVRClient *client = NULL;
-    client = factory.LoadPVRClient((clientAddon.m_strPath + clientAddon.m_strLibName), i, this);
+    client = factory.LoadPVRClient(clientAddon, i, this);
     if (client)
     {
       /* Transmit current unified user settings to the PVR Addon */

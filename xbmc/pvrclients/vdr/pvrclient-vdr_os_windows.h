@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
@@ -19,11 +20,15 @@
  *
  */
 
-#define _WINSOCKAPI_
+
+#ifndef PVRCLIENT_VDR_OS_WIN_H
+#define PVRCLIENT_VDR_OS_WIN_H
+
+//#define _WINSOCKAPI_
+//#include <winsock2.h>
 #include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <wspiapi.h>
+//#include <ws2tcpip.h>
+//#include <wspiapi.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -151,3 +156,5 @@ static inline void console_printf(const char *fmt, ...)
 	console_vprintf(fmt, ap);
 	va_end(ap);
 }
+
+#endif

@@ -1,29 +1,34 @@
-#include "pvrclient-vdr_os.h"
+/*
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #include "vtptransceiver.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory.h>
-#include <string>
-#include <vector>
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#else
-#ifdef _LINUX
-#include "../xbmc/linux/PlatformInclude.h"
-#ifndef __APPLE__
-#include <sys/sysinfo.h>
-#endif
-#else
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <windows.h>
-#endif
-#include "../xbmc/utils/log.h"
-#include "../xbmc/pvrclients/PVRClientTypes.h"
-#include <sys/stat.h>
-#include <errno.h>
+
+#if defined(_LINUX)
+#include <unistd.h>
+#elif defined(_WIN32)
+extern "C" int inet_pton(int af, const char *src, void *dst);
 #endif
 
 using namespace std;
@@ -418,7 +423,6 @@ bool CVTPTransceiver::SendCommand(const string &command, int &code, vector<strin
 
 SOCKET CVTPTransceiver::GetStreamLive(int channel)
 {
-
   sockaddr_in address;
   SOCKET      sock;
   socklen_t   len = sizeof(address);

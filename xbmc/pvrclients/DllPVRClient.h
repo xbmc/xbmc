@@ -25,14 +25,14 @@
 class DllPVRClientInterface
 {
 public:
-  void GetModule(struct PVRClient *pClient);
+  void GetAddon(struct PVRClient *pClient);
 };
 
 class DllPVRClient : public DllDynamic, DllPVRClientInterface
 {
   DECLARE_DLL_WRAPPER_TEMPLATE(DllPVRClient)
-  DEFINE_METHOD1(void, GetModule, (struct PVRClient* p1))
+  DEFINE_METHOD1(void, GetAddon, (struct PVRClient* p1))
   BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD_RENAME(get_module,GetModule)
+    RESOLVE_METHOD_RENAME(get_addon,GetAddon)
   END_METHOD_RESOLVE()
 };

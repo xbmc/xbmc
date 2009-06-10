@@ -37,19 +37,36 @@ enum AddonType
   ADDON_SKIN              = 2,
   ADDON_PVRDLL            = 3,
   ADDON_SCRIPT            = 4,
-  ADDON_SCRAPER           = 5,
-  ADDON_SCREENSAVER       = 6,
-  ADDON_PLUGIN_PVR        = 7,
-  ADDON_PLUGIN_MUSIC      = 8,
-  ADDON_PLUGIN_VIDEO      = 9,
-  ADDON_PLUGIN_PROGRAM    = 10,
-  ADDON_PLUGIN_PICTURES   = 11
+  ADDON_SCRAPER_PVR       = 5,
+  ADDON_SCRAPER_VIDEO     = 6,
+  ADDON_SCRAPER_MUSIC     = 7,
+  ADDON_SCRAPER_PROGRAM   = 8,
+  ADDON_SCREENSAVER       = 9,
+  ADDON_PLUGIN_PVR        = 10,
+  ADDON_PLUGIN_VIDEO      = 11,
+  ADDON_PLUGIN_MUSIC      = 12,
+  ADDON_PLUGIN_PROGRAM    = 13,
+  ADDON_PLUGIN_PICTURES   = 14,
+  ADDON_PLUGIN_WEATHER    = 16,
+  ADDON_DSP_AUDIO         = 17
 };
 
-const CStdString ADDON_PVRDLL_EXT = "*.pvr";
+const CStdString ADDON_MULTITYPE_EXT        = "*.add";
+const CStdString ADDON_VIZ_EXT              = "*.vis";
+const CStdString ADDON_SKIN_EXT             = "*.skin";
+const CStdString ADDON_PVRDLL_EXT           = "*.pvr";
+const CStdString ADDON_SCRIPT_EXT           = "*.py";
+const CStdString ADDON_SCRAPER_EXT          = "*.xml|*.idl";
+const CStdString ADDON_SCREENSAVER_EXT      = "*.xbs";
+const CStdString ADDON_PLUGIN_PVR_EXT       = "*.py|*.plpvr";
+const CStdString ADDON_PLUGIN_MUSIC_EXT     = "*.py|*.plmus";
+const CStdString ADDON_PLUGIN_VIDEO_EXT     = "*.py|*.plvid";
+const CStdString ADDON_PLUGIN_PROGRAM_EXT   = "*.py|*.plpro";
+const CStdString ADDON_PLUGIN_PICTURES_EXT  = "*.py|*.plpic";
+const CStdString ADDON_PLUGIN_WEATHER_EXT   = "*.py|*.plwea";
+const CStdString ADDON_DSP_AUDIO_EXT        = "*.adsp";
 const CStdString ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
 const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
-
 
 /*!
 \ingroup windows
@@ -61,12 +78,15 @@ class CAddon
 public:
   CAddon(void);
   ~CAddon() {};
+  void Reset();
   bool operator==(const CAddon &rhs) const;
 
   static void LoadAddonStrings(const CURL &url);
   static void ClearAddonStrings();
 
+  /* Beginning of Add-on data fields (readed from info.xml) */
   CStdString m_guid;       ///< Unique identifier for this addon, chosen by developer
+  CStdString m_guid_parent;///< Unique identifier of the parent for this child addon, chosen by developer
   CStdString m_strName;    ///< Name of the addon, can be chosen freely.
   CStdString m_strVersion; ///< Version of the addon, must be in form
   CStdString m_summary;    ///< Short summary of addon
@@ -78,10 +98,8 @@ public:
   int        m_stars;      ///< Rating
   CStdString m_disclaimer; ///< if exists, user needs to confirm before installation
   bool       m_disabled;   ///< Is this addon disabled?
-
-  AddonType m_addonType;
-
-
+  AddonType  m_addonType;  ///< Type identifier of this Add-on
+  int        m_childs;     ///< How many child add-on's are present
 };
 
 /*!

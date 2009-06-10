@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
@@ -19,6 +20,9 @@
  *
  */
 
+#ifndef PVRCLIENT_VDR_OS_POSIX_H
+#define PVRCLIENT_VDR_OS_POSIX_H
+
 #define _FILE_OFFSET_BITS 64
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,6 +33,8 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include <sys/time.h>
 #include <sys/timeb.h>
 #include <sys/wait.h>
@@ -39,6 +45,14 @@
 #include <pthread.h>
 
 typedef int bool_t;
+typedef int SOCKET;
+
+#define closesocket(a) close(a)
+#define SOCKET_ERROR   (-1)
+#define INVALID_SOCKET (-1)
+
+#define __cdecl
+#define __declspec(x)
 
 #define LIBTYPE
 #define sock_getlasterror errno
@@ -61,3 +75,5 @@ static inline int setsocktimeout(int s, int level, int optname, uint64_t timeout
 	t.tv_usec = (timeout % 1000) * 1000;
 	return setsockopt(s, level, optname, (char *)&t, sizeof(t));
 }
+
+#endif
