@@ -788,7 +788,9 @@
   <string id="1415">毛毛雨</string>
   <string id="1416">雾</string> 
   <string id="1417">悬浮物</string>
-  
+  <string id="1418">雷雨</string>
+  <string id="1419">雷阵雨</string>
+ 
   <!-- strings through to 1450 reserved for weather translation -->
 
   <string id="1450">启用空闲省电模式</string>
