@@ -26,6 +26,7 @@ public:
   ~CVTPTransceiver();
   bool Open(const std::string &host, int port);
   void Close();
+  bool IsConnected(SOCKET socket, fd_set *rd, fd_set *wr, fd_set *ex);
 
   bool ReadResponse(int &code, std::string &line);
   bool ReadResponse(int &code, std::vector<std::string> &lines);
@@ -46,6 +47,9 @@ public:
   bool   Quit();
 
 private:
+  struct sockaddr_in m_LocalAddr;
+  struct sockaddr_in m_RemoteAddr;
+
   bool   OpenStreamSocket(SOCKET& socket, struct sockaddr_in& address);
   bool   AcceptStreamSocket(SOCKET& socket);
 
