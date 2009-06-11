@@ -335,11 +335,8 @@ int av_filename_number_test(const char *filename)
     char buf[1024];
     return filename && (av_get_frame_filename(buf, sizeof(buf), filename, 1)>=0);
 }
-#ifdef _XBOX
+
 AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)
-#else
-static AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)
-#endif
 {
     AVInputFormat *fmt1, *fmt;
     int score;
