@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 06/09/2009-->
+<!--Date of translation: 06/11/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20801-->
+<!--Based on english strings version 21010-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -678,6 +678,7 @@
   <string id="1046">Accesspunkter</string>
   <string id="1047">Annan...</string>
   <string id="1048">Webbserver användarnamn</string>
+  <string id="1049">Skriptinställningar</string>
   <string id="1200">SMB utdelning</string>
   <string id="1202">SMB arbetsgrupp</string>
   <string id="1203">SMB användarnamn</string>
