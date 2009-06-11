@@ -362,16 +362,19 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
           pd.buf_size = probe_size;
           iformat = m_dllAvFormat.av_probe_input_format2(&pd, 1, &score);
         }
-        if (!iformat)
-        {
-          CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());
-          return false;
-        }
       }
-      else if(iformat->name)
-        CLog::Log(LOGDEBUG, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
+      if (!iformat)
+      {
+        CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());
+        return false;
+      }
       else
-        CLog::Log(LOGDEBUG, "%s - probing detected unnamed format", __FUNCTION__);
+      {
+        if (iformat->name)
+          CLog::Log(LOGDEBUG, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
+        else
+          CLog::Log(LOGDEBUG, "%s - probing detected unnamed format", __FUNCTION__);
+      }
     }
 
 
