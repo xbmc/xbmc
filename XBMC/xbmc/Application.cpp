@@ -2485,10 +2485,15 @@ void CApplication::Render()
     }
     else
     {
-      // only "limit frames" if we are not using vsync.
-      if (g_videoConfig.GetVSyncMode() == VSYNC_DISABLED
-      ||  g_videoConfig.GetVSyncMode() == VSYNC_VIDEO  
-      ||  lowfps)
+      // engage the frame limiter as needed
+      bool limitFrames = lowfps;
+      if (g_videoConfig.GetVSyncMode() == VSYNC_DISABLED ||
+          g_videoConfig.GetVSyncMode() == VSYNC_VIDEO)
+        limitFrames = true; // not using vsync.
+      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
+        limitFrames = true; // using vsync, but it isn't working.
+
+      if (limitFrames)
       {
         if(lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
@@ -2496,12 +2501,6 @@ void CApplication::Render()
         if (lastFrameTime + singleFrameTime > currentTime)
           nDelayTime = lastFrameTime + singleFrameTime - currentTime;
         Sleep(nDelayTime);
-      }
-      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
-      {
-        //The driver is ignoring vsync. Was set to ALWAYS, set to VIDEO. Framerate will be limited from next render.
-        CLog::Log(LOGWARNING, "VSYNC ignored by driver, enabling framerate limiter.");
-        g_videoConfig.SetVSyncMode(VSYNC_DISABLED);
       }
     }
 
