@@ -2,12 +2,11 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 05/19/2009-->
+<!--Date of translation: 06/11/2009-->
 <!--$Revision$-->
 <strings>
-  <string id="31000">음소거됨</string>
-  <string id="31001">
-  </string>
+  <string id="31000">소리꺼짐</string>
+  <string id="31001">동작중...</string>
   <string id="31002">
   </string>
   <string id="31003">

@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 06/01/2009-->
+<!--Date of translation: 06/11/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -169,11 +169,11 @@
   <string id="245">음악 자동실행</string>
   <string id="246">사진 자동실행</string>
   <string id="247">스크립트</string>
-  <string id="248">언어 설정</string>
+  <string id="248">언어</string>
   <string id="249">음악</string>
   <string id="250">시각화</string>
   <string id="251">대상 디렉토리 선택</string>
-  <string id="252">스테레오 출력을 모든 스피커에 출력</string>
+  <string id="252">모든 스피커에 스테레오 출력</string>
   <string id="253">채널수</string>
   <string id="254">- DTS 지원 리시버</string>
   <string id="255">CDDB</string>
@@ -184,7 +184,7 @@
   <string id="260">샤우트캐스트</string>
   <string id="261">시작 대기중....</string>
   <string id="262">스크립트 출력</string>
-  <string id="263">웹 서버 사용</string>
+  <string id="263">웹서버 사용</string>
   <string id="264">녹음</string>
   <string id="265">녹음 중지</string>
   <string id="266">정렬: 트랙</string>
@@ -331,13 +331,13 @@
   <string id="417">보기: 큰 아이콘</string>
   <string id="418">라이브러리 사용</string>
   <string id="422">앨범 정보 삭제</string>
-  <string id="423">CDDB 정보 삭제</string>
+  <string id="423">CD 정보 삭제</string>
   <string id="424">선택</string>
   <string id="425">앨범 정보 찾지 못함</string>
   <string id="426">CD 정보 찾지 못함</string>
   <string id="427">디스크</string>
-  <string id="428">올바른 CD/DVD를 넣어 주세요</string>
-  <string id="429">다음 CD/DVD를 넣어 주세요</string>
+  <string id="428">올바른 CD/DVD 를 넣어 주세요</string>
+  <string id="429">다음 CD/DVD 를 넣어 주세요</string>
   <string id="430">정렬: DVD번호</string>
   <string id="431">캐시 없음</string>
   <string id="432">라이브러리에서 영화 제거</string>
@@ -678,6 +678,7 @@
   <string id="1046">액세스 포인트</string>
   <string id="1047">다른...</string>
   <string id="1048">웹 서버 사용자명</string>
+  <string id="1049">스크립트 설정</string>
   <string id="1200">SMB 클라이언트</string>
   <string id="1202">작업그룹</string>
   <string id="1203">기본 사용자명</string>
@@ -743,6 +744,8 @@
   <string id="1415">이슬비</string>
   <string id="1416">안개</string>
   <string id="1417">싸래기눈</string>
+  <string id="1418">뇌우</string>
+  <string id="1419">뇌우</string>
   <string id="1450">대기일때 절전 사용</string>
   <string id="2050">상영시간</string>
   <string id="4501">LCD 형식</string>
