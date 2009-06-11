@@ -319,7 +319,9 @@ OBJSXBMC=	\
 	xbmc/settings/settings.a \
 	xbmc/utils/utils.a \
 	xbmc/visualizations/visualization.a \
-	xbmc/xbox/xbox.a
+	xbmc/xbox/xbox.a \
+	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
+	xbmc/lib/libsmb/libsmbclient-@ARCH@.a
 
 # platform dependend objects
 ifeq ($(findstring osx,$(ARCH)), osx)
@@ -333,11 +335,6 @@ OBJSXBMC += \
 	system/players/dvdplayer/swscale-0.6.1-@ARCH@.a \
 	system/players/dvdplayer/avformat-52-@ARCH@.a \
 	system/players/dvdplayer/postproc-51-@ARCH@.a
-
-else ifneq ($(ARCH), arm)
-OBJSXBMC += \
-	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
-	xbmc/lib/libsmb/libsmbclient-@ARCH@.a
 
 endif
 
