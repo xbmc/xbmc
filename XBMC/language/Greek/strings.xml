@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/10/2009-->
+<!--Date of translation: 06/11/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20992-->
+<!--Based on english strings version 21010-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -422,8 +422,8 @@
   <string id="500">Απέτυχε η λήψη των πληροφοριών άλμπουμ</string>
   <string id="501">Αναζήτηση για ονόματα άλμπουμ...</string>
   <string id="502">Άνοιγμα</string>
-  <string id="503">Απασχολημένος</string>
-  <string id="504">Άδειος</string>
+  <string id="503">Απασχολημένο</string>
+  <string id="504">Άδειο</string>
   <string id="505">Φόρτωση πληροφοριών πολυμέσων...</string>
   <string id="507">Ταξιν: Χρήση</string>
   <string id="510">Ενεργοποίηση απεικονίσεων</string>
@@ -704,6 +704,7 @@
   <string id="1046">Σημεία πρόσβασης</string>
   <string id="1047">Άλλα...</string>
   <string id="1048">Όνομα χρήστη διακομιστή ιστού</string>
+  <string id="1049">Ρυθμίσεις script</string>
   <string id="1200">Πελάτης SMB</string>
   <string id="1202">Ομάδα Εργασίας</string>
   <string id="1203">Προεπιλεγμένο όνομα χρήστη</string>
