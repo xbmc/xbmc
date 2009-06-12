@@ -774,9 +774,11 @@ void CWIN32Util::CheckGLVersion()
 
 bool CWIN32Util::HasGLDefaultDrivers()
 {
+  int a=0,b=0;
   CStdString strVendor = Surface::CSurface::GetGLVendor();
+  Surface::CSurface::GetGLVersion(a, b);
 
-  if(strVendor.find("Microsoft")!= strVendor.npos)
+  if(strVendor.find("Microsoft")!=strVendor.npos && a==1 && b==1)
     return true;
   else
     return false;
@@ -790,6 +792,30 @@ bool CWIN32Util::HasReqGLVersion()
     return true;
   else
     return false;
+}
+
+BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
+{
+  BOOL b;
+  SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
+  PSID AdministratorsGroup; 
+  b = AllocateAndInitializeSid(
+      &NtAuthority,
+      2,
+      SECURITY_BUILTIN_DOMAIN_RID,
+      DOMAIN_ALIAS_RID_ADMINS,
+      0, 0, 0, 0, 0, 0,
+      &AdministratorsGroup); 
+  if(b)
+  {
+    if (!CheckTokenMembership( NULL, AdministratorsGroup, &b)) 
+    {
+         b = FALSE;
+    } 
+    FreeSid(AdministratorsGroup); 
+  }
+
+  return(b);
 }
 
 extern "C"

@@ -59,6 +59,7 @@ public:
   static void CheckGLVersion();
   static bool HasGLDefaultDrivers();
   static bool HasReqGLVersion();
+  static BOOL IsCurrentUserLocalAdministrator();
   
   class SystemParams
   {

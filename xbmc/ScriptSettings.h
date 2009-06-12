@@ -1,5 +1,5 @@
-#ifndef PLUGINSETTINGS_H_
-#define PLUGINSETTINGS_H_
+#ifndef SCRIPTSETTINGS_H_
+#define SCRIPTSETTINGS_H_
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,46 +21,23 @@
  *
  */
 
-#include "tinyXML/tinyxml.h"
-#include "URL.h"
-#include "Settings.h"
+#include "settings/AddonSettings.h"
 
-class CBasicSettings
+class CScriptSettings : public CAddonSettings
 {
 public:
-  CBasicSettings();
-  virtual ~CBasicSettings();
-
-  bool SaveFromDefault(void);
-  virtual bool Load(const CURL& url)  { return false; }
-  virtual bool Save(void) { return false; }
-  void Clear();
-
-  void Set(const CStdString& key, const CStdString& value);
-  CStdString Get(const CStdString& key);
-
-  TiXmlElement* GetPluginRoot();
-protected:
-  TiXmlDocument   m_userXmlDoc;
-  TiXmlDocument   m_pluginXmlDoc;
-};
-
-class CPluginSettings : public CBasicSettings
-{
-public:
-  CPluginSettings();
-  virtual ~CPluginSettings();
-  bool Load(const CURL& url);
+  CScriptSettings();
+  virtual ~CScriptSettings();
+  bool Load(const CStdString& strPath);
   bool Save(void);
-  static bool SettingsExist(const CStdString &strPath);
+  static bool SettingsExist(const CStdString& strPath);
+  virtual CStdString getPath() { return m_scriptPath; }
 
-  CPluginSettings& operator =(const CBasicSettings&);
+  CScriptSettings& operator =(const CAddonSettings&);
 private:
   CStdString      m_id;
-  CURL            m_url;
+  CStdString      m_scriptPath;
   CStdString      m_userFileName;
 };
-
-extern CPluginSettings g_currentPluginSettings;
 
 #endif

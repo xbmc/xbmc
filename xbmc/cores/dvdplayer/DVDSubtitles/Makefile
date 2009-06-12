@@ -5,6 +5,7 @@ SRCS=	DVDFactorySubtitle.cpp \
 	DVDSubtitleParserSubrip.cpp \
 	DVDSubtitleStream.cpp \
 	DVDSubtitleParserMicroDVD.cpp \
+	DVDSubtitleParserMPL2.cpp \
 	DVDSubtitleParserSami.cpp \
 	DVDSubtitlesLibass.cpp \
 	DVDSubtitleParserSSA.cpp \

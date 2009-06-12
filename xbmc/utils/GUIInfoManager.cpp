@@ -228,6 +228,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
     else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
     else if (strTest.Equals("weather.fanartcode")) ret = WEATHER_FANART_CODE;
+    else if (strTest.Equals("weather.plugin")) ret = WEATHER_PLUGIN;
   }
   else if (strCategory.Equals("pvr"))
   {
@@ -981,6 +982,9 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case WEATHER_FANART_CODE:
     strLabel = CUtil::GetFileName(g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
     CUtil::RemoveExtension(strLabel);
+    break;
+  case WEATHER_PLUGIN:
+    strLabel = g_guiSettings.GetString("weather.plugin");
     break;
   case SYSTEM_DATE:
     strLabel = GetDate();
@@ -3777,7 +3781,12 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       if (item->IsMusicDb() && item->HasMusicInfoTag())
         CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetURL()), path);
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
-        CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
+      {
+        if( item->m_bIsFolder )
+	  path = item->GetVideoInfoTag()->m_strPath;
+        else
+          CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
+      }
       else
         CUtil::GetDirectory(item->m_strPath, path);
       CURL url(path);
