@@ -2720,9 +2720,11 @@ PVR_ERROR PVRClientVDR::GetAllRecordings(VECRECORDINGS *results)
 
     /* Get recording ID */
     broadcast.m_Index = atol(str_result.c_str());
-    str_result.erase(0, 18);
 
     /* Get recording name */
+
+    str_result.erase(0, str_result.find(":", 0) + 4); //find : between hour and minutes, go to first char after minutes
+    str_result.erase(0, str_result.find(" ", 0) + 1); //now go to last blank before title starts and skip unicode garbage (if present)
     broadcast.m_strTitle = str_result.c_str();
 
     /* Set file string for replay devices */
