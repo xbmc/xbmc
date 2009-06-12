@@ -167,7 +167,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
-				GenerateDebugInformation="false"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
 				LargeAddressAware="2"

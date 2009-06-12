@@ -332,8 +332,6 @@ protected:
   SDL_cond*  m_frameCond;
 #endif
 
-  static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
-
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
   void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
