@@ -123,7 +123,7 @@ MA_RESULT CDirectSoundAdapter::SetSource(IAudioSource* pSource, unsigned int sou
   return MA_SUCCESS;
 }
 
-float CDirectSoundAdapter::GetMaxLatency()
+float CDirectSoundAdapter::GetDelay()
 {
   if (!m_pRenderer)
     return 0;
@@ -232,9 +232,4 @@ void CDirectSoundAdapter::Close()
 
   delete m_pRenderer;
   m_pRenderer = NULL;
-}
-
-bool CDirectSoundAdapter::IsIdle()
-{
-  return (m_pRenderer == NULL);
 }

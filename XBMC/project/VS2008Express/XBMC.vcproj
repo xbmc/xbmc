@@ -2050,6 +2050,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\masteraudio\AudioStream.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\masteraudio\AudioStream.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\masteraudio\DSPChain.cpp"
 					>
 				</File>

@@ -51,7 +51,7 @@ public:
   virtual void Play();
   virtual void Pause();
   virtual void Resume();
-  virtual bool SetVolume(long vol);
+  virtual void SetVolume(long vol);
 
   // Stream Interface
   virtual void CloseStream();

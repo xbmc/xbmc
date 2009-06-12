@@ -55,12 +55,10 @@ void CAudioManagerClient::Resume()
   TRY_CONTROL_STREAM(MA_CONTROL_RESUME);    
 }
 
-bool CAudioManagerClient::SetVolume(long vol)
+void CAudioManagerClient::SetVolume(long vol)
 {
   if (m_pManager)
-    return m_pManager->SetStreamVolume(m_StreamId ,vol);
-
-  return false;
+    m_pManager->SetStreamVolume(m_StreamId ,vol);
 }
 
 void CAudioManagerClient::CloseStream()
@@ -74,7 +72,7 @@ float CAudioManagerClient::GetDelay()
 {
   if (!m_pManager)
     return 0.0f;
-  return m_pManager->GetMaxStreamLatency(m_StreamId);
+  return m_pManager->GetStreamDelay(m_StreamId);
 }
 
 size_t CAudioManagerClient::AddDataToStream(void* pData, size_t len)

@@ -78,129 +78,23 @@ void CAudioProfile::AddDescriptor(CStreamDescriptor* pDesc)
   m_DescriptorList.push_back(pDesc);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// CAudioStream
-///////////////////////////////////////////////////////////////////////////////
-CAudioStream::CAudioStream() :
-  m_pInput(NULL),
-  m_pDSPChain(NULL),
-  m_MixerChannel(0),
-  m_pMixerSink(NULL), // DO NOT 'delete' the sink!
-  m_Open(false)
-{
-  m_ProcessTimer.reset();
-  m_IntervalTimer.reset();
-}
 
-CAudioStream::~CAudioStream()
-{
-    Close();
-}
-
-bool CAudioStream::Initialize(CStreamInput* pInput, CDSPChain* pDSPChain, int mixerChannel, IAudioSink* pMixerSink)
-{
-  if (m_Open || !pInput || !pDSPChain || !mixerChannel || !pMixerSink)
-    return false;
-
-  m_pInput = pInput;
-  m_pDSPChain = pDSPChain;
-  m_MixerChannel = mixerChannel;
-  m_pMixerSink = pMixerSink;
-
-  // Hook-up interconnections: Input <- DSPChain <- Mixer
-  // It is assumed at this point that the input/output stream formats are compatible
-  m_pDSPChain->SetSource(m_pInput);
-  m_pMixerSink->SetSource(m_pDSPChain);
-
-  m_Open = true;
-  return m_Open;
-}
-
-void CAudioStream::Close()
-{
-  if (!m_Open)
-    return;
-
-  // TODO: Break down any data connections
-  m_Open = false;
-
-  CLog::Log(LOGINFO,"MasterAudio:AudioStream: Closing. Average time to process = %0.2fms / %0.2fms (%0.2f%% duty cycle)", m_ProcessTimer.average_time/1000.0f, m_IntervalTimer.average_time/1000.0f, (m_ProcessTimer.average_time / m_IntervalTimer.average_time) * 100);
-}
-
-CStreamInput* CAudioStream::GetInput()
-{
-  return m_pInput;
-}
-
-CDSPChain* CAudioStream::GetDSPChain()
-{
-  return m_pDSPChain;
-}
-
-int CAudioStream::GetMixerChannel()
-{
-  return m_MixerChannel;
-}
-
-bool CAudioStream::ProcessStream()
-{
-  m_IntervalTimer.lap_end();
-  bool ret = true;
-  
-  m_ProcessTimer.lap_start();
-
-
-
-  m_ProcessTimer.lap_end();
-
-  m_IntervalTimer.lap_start(); // Time between calls
-  return ret;
-}
-
-float CAudioStream::GetMaxLatency()
-{
-  // TODO: Implement
-  return 0.0f;
-}
-
-void CAudioStream::Flush()
-{
-  // Empty the input buffer
-  if (m_pInput)
-    m_pInput->Reset();
-
-  // TODO: Flush data from end
-  
-  CLog::Log(LOGINFO,"MasterAudio:AudioStream: Flushed stream.");
-}
-
-bool CAudioStream::Drain(unsigned int timeout)
-{
-  // TODO: Make sure this doesn't leave any data behind
-  lap_timer timer;
-  timer.lap_start();
-  while (timer.elapsed_time()/1000 < timeout)
-  {
-    // TODO: Pull any remaining data through
-    break;
-  }
-
-  Flush();  // Abandon any remaining data
-  return false; // We ran out of time
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // CAudioManager
 ///////////////////////////////////////////////////////////////////////////////
 CAudioManager::CAudioManager() :
   m_pMixer(NULL),
-  m_MaxStreams(MA_MAX_INPUT_STREAMS)
+  m_MaxStreams(MA_MAX_INPUT_STREAMS),
+  m_Initialized(false)
 {
 
 }
 
 CAudioManager::~CAudioManager()
 {
+  m_ProcessThread.StopThread();
+
   // Clean up any streams that were not closed by a client
   if (m_StreamList.size())
   {
@@ -215,201 +109,15 @@ CAudioManager::~CAudioManager()
   delete m_pMixer;
 }
 
-MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc)
+// TODO: This is not thread-safe, but will be OK until final integration
+bool CAudioManager::Initialize()
 {
-  // TODO: Move to global initialization
-  LoadAudioProfiles();
-
-  // Find out if we can handle an additional input stream, if not, give up
-  if (!pDesc || m_StreamList.size() >= m_MaxStreams)
+  if (!m_Initialized)
   {
-    CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to open new stream. Too many active streams. (active_stream = %d, max_streams = %d).", GetOpenStreamCount(), m_MaxStreams);
-    return MA_STREAM_NONE;
+    m_ProcessThread.Create(this);
+    m_Initialized = true;
   }
-
-  // Create components for a new AudioStream
-  CAudioStream* pStream = new CAudioStream();
-  CStreamInput* pInput = new CStreamInput();        // Input Handler
-  CDSPChain* pChain = new CDSPChain();              // DSP Handling Chain
-  if (!m_pMixer)
-    SetMixerType(MA_MIXER_HARDWARE);
-  int mixerChannel = 0;
-  while (m_pMixer)
-  {
-    // No need to test the StreamInput output format, as it treats all data the same. Provide it with the descriptor anyway.
-    if (MA_SUCCESS != pInput->SetOutputFormat(pDesc))
-      break;
-
-    StreamDescriptorList outputDescriptors;
-    if (!FindOutputDescriptors(pDesc, &outputDescriptors))
-      break; // We don't know what to do with this stream
-
-    CStreamDescriptor* pOutputDesc = NULL;
-    for (StreamDescriptorList::iterator iter = outputDescriptors.begin(); iter != outputDescriptors.end(); iter++)
-    {
-      // Open a mixer channel using the preferred format
-      mixerChannel = m_pMixer->OpenChannel(*iter);  // Virtual Mixer Channel
-      if (!mixerChannel)
-        continue; // TODO: Keep trying until a working format is found or we run out of options
-
-      // Attempt to create the DSP Filter Graph using the identified formats (TODO: Can this be updated on the fly?)
-      if (MA_SUCCESS != pChain->CreateFilterGraph(pDesc, *iter))
-        continue; // We cannot convert from the input format to the output format
-
-      pOutputDesc = *iter;
-      break;
-    }
-
-    if (!pOutputDesc)
-      break; // We were not able to find a usable output descriptor
-
-    // We should be good to go. Wrap everything up in a new Stream object
-    if (MA_SUCCESS != pStream->Initialize(pInput, pChain, mixerChannel, m_pMixer->GetChannelSink(mixerChannel)))
-      break;
-    
-    // Add the new stream to our collection
-    MA_STREAM_ID streamId = GetStreamId(pStream);
-    m_StreamList[streamId] = pStream;
-
-    CLog::Log(LOGINFO,"MasterAudio:AudioManager: Opened stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), m_MaxStreams);
-    return streamId;
-  }
-
-  // Something went wrong.  Clean up and return.
-  pStream->Close();
-  if (m_pMixer)
-    m_pMixer->CloseChannel(mixerChannel);
-  delete pStream;
-  delete pChain;
-  delete pInput;
-  
-  CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to open new stream (active_stream = %d, max_streams = %d).", GetOpenStreamCount(), m_MaxStreams);
-  return MA_STREAM_NONE;
-}
-
-size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t len)
-{
-  size_t bytesAdded = 0;
-
-  CAudioStream* pStream = GetInputStream(streamId);
-  if (!pStream)
-    return 0;
-
-  CStreamInput* pInput = pStream->GetInput();
-  if (!pInput)
-    return 0;
-
-  // Add the data to the stream
-  if(MA_SUCCESS == pInput->AddData(pData,len))
-    bytesAdded = len;
-  else
-    bytesAdded = 0;
-
-  try {
-  // 'Pull' data through the stream
-  m_pMixer->Render(pStream->GetMixerChannel());
-  }
-  catch (...) {
-  CLog::Log(LOGERROR,"MasterAudio:AudioManager: Exception while rendering");
-  }
-  return bytesAdded;
-}
-
-bool CAudioManager::ControlStream(MA_STREAM_ID streamId, int controlCode)
-{
-  CAudioStream* pStream = GetInputStream(streamId);
-  if(!pStream)
-    return false;
-
-  int mixerChannel = pStream->GetMixerChannel();
-  if(!mixerChannel)
-    return false;
-
-  return (MA_SUCCESS == m_pMixer->ControlChannel(mixerChannel, controlCode));
-}
-
-bool CAudioManager::SetStreamVolume(MA_STREAM_ID streamId, long vol)
-{
-  CAudioStream* pStream = GetInputStream(streamId);
-  if(!pStream)
-    return false;
-
-  int mixerChannel = pStream->GetMixerChannel();
-  if(!mixerChannel)
-    return false;
-
-  return (MA_SUCCESS == m_pMixer->SetChannelVolume(mixerChannel, vol));  
-}
-
-bool CAudioManager::SetStreamProp(MA_STREAM_ID streamId, int propId, const void* pVal)
-{
-  // TODO: Implement
-  CAudioStream* pStream = GetInputStream(streamId);
-  if(!pStream)
-    return false;
-
-  return false;
-}
-
-bool CAudioManager::GetStreamProp(MA_STREAM_ID streamId, int propId, void* pVal)
-{
-  // TODO: Implement
-  CAudioStream* pStream = GetInputStream(streamId);
-  if(!pStream)
-    return false;
-
-  return false;
-}
-
-float CAudioManager::GetMaxStreamLatency(MA_STREAM_ID streamId)
-{
-  CAudioStream* pStream = GetInputStream(streamId);
-  if (!pStream)
-    return 0.0f;  // No delay from here to nowhere...
-
-  return pStream->GetMaxLatency();
-}
-
-bool CAudioManager::DrainStream(MA_STREAM_ID streamId, unsigned int timeout)
-{
-  // TODO: There must be a cleaner way to do this (why can't the AudioStream drain the mixer channel?)
-  CAudioStream* pStream = GetInputStream(streamId);
-  if (!pStream)
-    return true; // Nothing to drain
-
-  lap_timer timer;
-  timer.lap_start();
-  if (pStream->Drain(timeout))
-  {
-    unsigned __int64 elapsed = timer.elapsed_time()/1000;
-    if (elapsed < timeout)
-      return m_pMixer->DrainChannel(pStream->GetMixerChannel(), timeout - (unsigned int)elapsed);
-    else
-      m_pMixer->FlushChannel(pStream->GetMixerChannel());
-  }
-  return false; // Out of time
-}
-
-void CAudioManager::FlushStream(MA_STREAM_ID streamId)
-{
-  CAudioStream* pStream = GetInputStream(streamId);
-  if (!pStream)
-    return;
-
-  pStream->Flush();
-}
-
-void CAudioManager::CloseStream(MA_STREAM_ID streamId)
-{
-  StreamIterator iter = m_StreamList.find(streamId);
-  if (iter == m_StreamList.end())
-    return;
-  CAudioStream* pStream = iter->second;
-  m_StreamList.erase(iter);
-  CleanupStreamResources(pStream);
-  delete pStream;
-
-  CLog::Log(LOGINFO,"MasterAudio:AudioManager: Closed stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), m_MaxStreams);
+  return m_Initialized;
 }
 
 bool CAudioManager::SetMixerType(int mixerType)
@@ -428,6 +136,150 @@ bool CAudioManager::SetMixerType(int mixerType)
   default:
     return false;
   }
+}
+
+// Thread-Safe Client Interface
+//////////////////////////////////////////////////////////////////////////////////////////
+MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc)
+{
+  if (!m_Initialized)
+    Initialize();
+
+  // TODO: Move to global initialization. Keep here for now to pick-up changes to settings
+  LoadAudioProfiles();
+
+  // Find out if we can handle an additional input stream, if not, give up
+  if (!pDesc || m_StreamList.size() >= m_MaxStreams)
+  {
+    CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to open new stream. Too many active streams. (active_stream = %d, max_streams = %d).", GetOpenStreamCount(), m_MaxStreams);
+    return MA_STREAM_NONE;
+  }
+
+  // TODO: RenderingAdapter should be provided TO the mixer, not come FROM it...
+  // Create components for a new AudioStream
+  CAudioStream* pStream = new CAudioStream();
+  CStreamInput* pInput = new CStreamInput();        // Input Handler
+  CDSPChain* pChain = new CDSPChain();              // DSP Handling Chain
+  if (!m_pMixer)
+    SetMixerType(MA_MIXER_HARDWARE);
+  IRenderingAdapter* renderAdapter = NULL;
+  while (m_pMixer)
+  {
+    // No need to test the StreamInput output format, as it treats all data the same. Provide it with the descriptor anyway.
+    if (MA_SUCCESS != pInput->SetOutputFormat(pDesc))
+      break;
+
+    StreamDescriptorList outputDescriptors;
+    if (!FindOutputDescriptors(pDesc, &outputDescriptors))
+      break; // We don't know what to do with this stream
+
+    CStreamDescriptor* pOutputDesc = NULL;
+    for (StreamDescriptorList::iterator iter = outputDescriptors.begin(); iter != outputDescriptors.end(); iter++)
+    {
+      // Open a mixer channel using the preferred format
+      renderAdapter = m_pMixer->OpenChannel(*iter);  // Virtual Mixer Channel
+      if (!renderAdapter)
+        continue; // TODO: Keep trying until a working format is found or we run out of options
+
+      // Attempt to create the DSP Filter Graph using the identified formats (TODO: Can this be updated on the fly?)
+      if (MA_SUCCESS != pChain->CreateFilterGraph(pDesc, *iter))
+        continue; // We cannot convert from the input format to the output format
+
+      pOutputDesc = *iter;
+      break;
+    }
+
+    if (!pOutputDesc)
+      break; // We were not able to find a usable output descriptor
+
+    // We should be good to go. Wrap everything up in a new Stream object
+    if (MA_SUCCESS != pStream->Initialize(pInput, pChain, renderAdapter))
+      break;
+    
+    // Call into the service thread to add the new stream to our collection
+    MA_STREAM_ID streamId = GetStreamId(pStream);
+    CAudioManagerMessagePtr msg(streamId, CAudioManagerMessage::ADD_STREAM, pStream);
+    if (!CallMethodSync(&msg) || !msg.GetSyncData()->m_SyncResult.boolVal)
+      break;
+
+    CLog::Log(LOGINFO,"MasterAudio:AudioManager: Opened stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), m_MaxStreams);
+    return streamId;
+  }
+
+  // Something went wrong.  Clean up and return.
+  pStream->Destroy();
+  if (m_pMixer)
+    m_pMixer->CloseChannel(pStream->GetRenderingAdapter());
+  delete pStream;
+  delete pChain;
+  delete pInput;
+  
+  CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to open new stream (active_stream = %d, max_streams = %d).", GetOpenStreamCount(), m_MaxStreams);
+  return MA_STREAM_NONE;
+}
+
+size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t len)
+{
+  CAddStreamDataMessage msg(streamId, pData, len);  
+  if (CallMethodSync(&msg))
+    return msg.GetSyncData()->m_SyncResult.uint32Val;
+
+  return 0;
+}
+
+void CAudioManager::ControlStream(MA_STREAM_ID streamId, int controlCode)
+{
+  CTransportControlMessage* pMsg = new CTransportControlMessage(streamId, controlCode);
+  CallMethodAsync(pMsg);
+}
+
+void CAudioManager::SetStreamVolume(MA_STREAM_ID streamId, long vol)
+{
+  CAudioManagerMessageLong* pMsg = new CAudioManagerMessageLong(streamId, CAudioManagerMessage::SET_STREAM_VOLUME, vol);
+  CallMethodAsync(pMsg);
+}
+
+float CAudioManager::GetStreamDelay(MA_STREAM_ID streamId)
+{
+  CAudioManagerMessage msg(streamId, CAudioManagerMessage::GET_STREAM_DELAY);  
+  if (CallMethodSync(&msg))
+    return msg.GetSyncData()->m_SyncResult.floatVal;
+
+  return 0.0f;
+}
+
+bool CAudioManager::DrainStream(MA_STREAM_ID streamId, unsigned int timeout)
+{
+  CAudioManagerMessageLong msg(streamId, CAudioManagerMessage::DRAIN_STREAM, timeout);
+
+  if (CallMethodSync(&msg))
+    return msg.GetSyncData()->m_SyncResult.boolVal;
+
+  return false;
+}
+
+void CAudioManager::FlushStream(MA_STREAM_ID streamId)
+{
+  CAudioManagerMessage* pMsg = new CAudioManagerMessage(streamId, CAudioManagerMessage::FLUSH_STREAM);  
+  CallMethodAsync(pMsg);
+}
+
+void CAudioManager::CloseStream(MA_STREAM_ID streamId)
+{
+  CAudioManagerMessage* pMsg = new CAudioManagerMessage(streamId, CAudioManagerMessage::CLOSE_STREAM);  
+  CallMethodAsync(pMsg);
+}
+
+bool CAudioManager::SetStreamProp(MA_STREAM_ID streamId, int propId, const void* pVal)
+{
+  // TODO: Implement
+  return false;
+}
+
+bool CAudioManager::GetStreamProp(MA_STREAM_ID streamId, int propId, void* pVal)
+{
+  // TODO: Implement
+  return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -451,10 +303,8 @@ int CAudioManager::GetOpenStreamCount()
 void CAudioManager::CleanupStreamResources(CAudioStream* pStream)
 {
   // Clean up any resources created for the stream
-  delete pStream->GetInput();
-  delete pStream->GetDSPChain();
-  m_pMixer->CloseChannel(pStream->GetMixerChannel());
-  pStream->Close();
+  m_pMixer->CloseChannel(pStream->GetRenderingAdapter());
+  pStream->Destroy();
 }
 
 // Audio Profiles are used to define specific audio scenarios based on user configuration, available hardware, and source stream characteristics
@@ -503,6 +353,7 @@ bool CAudioManager::FindOutputDescriptors(CStreamDescriptor* pInputDesc, StreamD
   {
     bool ac3Encode = g_guiSettings.GetBool("audiooutput.ac3encode");
     bool upmix = g_guiSettings.GetBool("audiooutput.upmix");
+    bool downmix = g_guiSettings.GetBool("audiooutput.downmixmultichannel");
 
     unsigned int inputSampleRate = 0;
     unsigned int inputChannels = 0;
@@ -555,6 +406,9 @@ bool CAudioManager::FindOutputDescriptors(CStreamDescriptor* pInputDesc, StreamD
         pList->push_back(pMaxOut);
       if (pMatchingOut)
         pList->push_back(pMatchingOut); // TODO: Add case to create a matching descriptor using the max_out descriptor (for 3 or 4 channel streams etc...)
+      else if (!upmix)
+        pList->push_back(pMaxOut); // Fall back to whatever we have for now
+
     }
   }
   
@@ -684,58 +538,258 @@ void CAudioManager::LoadAudioProfiles()
   }
 }
 
-// Thread-Safe Client Interface
+// Message Queue-Based Procedure call mechanism 
+__declspec (thread) CSyncCallData t_AudioClient;
 
-__declspec (thread) CAudioClientData t_AudioClient;
+void CAudioManager::PostMessage(CAudioManagerMessage* pMsg)
+{
+  m_Queue.PushBack(pMsg);
+  m_ProcessThread.Wake();
+}
 
-bool CAudioManager::CallMethodAsync(CAudioManagerMessage* pMsg)
+void CAudioManager::CallMethodAsync(CAudioManagerMessage* pMsg)
 {
   // This just posts a message to the queue and returns
-  //return PostMessage(pMsg);
-
-  return false;
+  return PostMessage(pMsg);
 }
 
 bool CAudioManager::CallMethodSync(CAudioManagerMessage* pMsg)
 {
   // We need a wait event to sync with the processing thread on the other side of the 'wall'
-  // This is stored in thread-local storage for each calling thread
-
-  // For now we will use a map to store the locations.
-  // TODO: Need a way to ensure cleanup of events when client threads exit
-
+  // This is kept in thread-local storage for each calling thread
+  // TODO: !!Need a way to ensure cleanup of events when client threads exit!!
   if (!t_AudioClient.m_SyncWaitEvent)
-  {
     t_AudioClient.m_SyncWaitEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-  }
+  else
+    ResetEvent(t_AudioClient.m_SyncWaitEvent);
 
-  // Associate the thread's sync event with the current message
-  //pMsg->SetWaitEvent(t_AudioClient.m_SyncWaitEvent);
+  t_AudioClient.m_SyncResult.int64Val = 0;
+  pMsg->SetSyncData(&t_AudioClient); // Associate the thread's sync event with the current message
 
   // Post the message to the queue. This will signal the processing thread.
-  //PostMessage(pMsg);
+  PostMessage(pMsg);
 
   // Wait for the message to be processed
   // TODO: Allow the client to specify a timeout? 
   WaitForSingleObject(t_AudioClient.m_SyncWaitEvent, INFINITE);
 
-  // Fetch the result of the operation
-  //pMsg->GetSyncResult();
-
-  return false;
+  return true;
 }
 
 // AudioManager Processing Thread
+///////////////////////////////////////////////////////////////////////////////
+
+// External interface
+CAudioManager::CAudioManagerThread::CAudioManagerThread() : 
+  CThread()
+{
+  m_ProcessEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+}
+
+CAudioManager::CAudioManagerThread::~CAudioManagerThread()
+{
+  CloseHandle(m_ProcessEvent);
+}
+
+void CAudioManager::CAudioManagerThread::Wake()
+{
+  // Poke the thread and force it to run if it is not already
+  PulseEvent(m_ProcessEvent);
+}
+
+void CAudioManager::CAudioManagerThread::Create(CAudioManager* pMgr)
+{
+  CLog::Log(LOGDEBUG, "%s: Creating Audio Service Processing Thread...", __FUNCTION__);
+  m_pManager = pMgr;
+  CThread::Create();
+}
+
 void CAudioManager::CAudioManagerThread::Process()
 {
+  CLog::Log(LOGDEBUG, "%s: Audio Service Processing Thread Started.", __FUNCTION__);
 
-  // Message handling and processing loop
-  while (!m_bStop)
+  try 
   {
-    // Fetch the next message from the queue
+    // Message handling and processing loop
+    while (!m_bStop)
+    {
+      // Process pending client requests
+      CAudioManagerMessage* pMsg = NULL;
+      while ((pMsg = m_pManager->m_Queue.PopFront()) != NULL)
+      {
+        if (pMsg->IsAsync())
+          HandleMethodAsync(pMsg);
+        else
+          HandleMethodSync(pMsg);
+      }
 
-    // Dispatch the message to the appropriate handler
+      // Perform primary processing
+      RenderStreams();
 
-    // If there are no more messages, wait to be signaled or time-out
+      // If there are no more messages, wait to be signaled or time-out.
+      WaitForSingleObject(m_ProcessEvent, 20);
+    }
   }
+  catch (...)
+  {
+    CLog::Log(LOGDEBUG, "%s: There was an exception in the Audio Service Processing Thread.", __FUNCTION__);
+  }
+  CLog::Log(LOGDEBUG, "%s: Audio Service Processing Thread Stopped.", __FUNCTION__);
+}
+
+void CAudioManager::CAudioManagerThread::RenderStreams()
+{
+  // TODO: This needs to be more efficient. Possibly stopping if processing takes too long
+  if (m_pManager->m_StreamList.size())
+  {
+    for (StreamIterator iter = m_pManager->m_StreamList.begin();iter != m_pManager->m_StreamList.end();iter++)
+    {
+      CAudioStream* pStream = (CAudioStream*)iter->second;
+      pStream->Render();    
+    }
+  }
+}
+
+void CAudioManager::CAudioManagerThread::HandleMethodAsync(CAudioManagerMessage* pMsg)
+{
+  // Dispatch an incoming asynchronous procedure-call message to the appropriate handler
+  MA_STREAM_ID streamId = pMsg->GetStreamId();
+  switch(pMsg->GetClass())
+  {
+  case CAudioManagerMessage::CONTROL_STREAM:
+    ControlStream(streamId,((CTransportControlMessage*)pMsg)->GetCommand());
+    break;
+  case CAudioManagerMessage::FLUSH_STREAM:
+    FlushStream(streamId);
+    break;
+  case CAudioManagerMessage::SET_STREAM_VOLUME:
+    SetStreamVolume(streamId, ((CAudioManagerMessageLong*)pMsg)->GetParam());
+    break;
+  case CAudioManagerMessage::CLOSE_STREAM:
+    CloseStream(streamId);
+    break;
+  default:
+    CLog::Log(LOGDEBUG, "%s: Caller provided an invalid MessageClass.", __FUNCTION__);
+    break;
+  }
+  delete pMsg;
+}
+
+bool CAudioManager::CAudioManagerThread::HandleMethodSync(CAudioManagerMessage* pMsg)
+{
+  // Dispatch an incoming synchronous procedure-call message to the appropriate handler,
+  // store the result, and notify the waiting caller
+  MA_STREAM_ID streamId = pMsg->GetStreamId();
+  CSyncCallData* pSync = pMsg->GetSyncData();
+  switch(pMsg->GetClass())
+  {
+  case CAudioManagerMessage::ADD_STREAM:
+    pSync->m_SyncResult.boolVal = AddStream(streamId, (CAudioStream*)((CAudioManagerMessagePtr*)pMsg)->GetParam());
+    break;
+  case CAudioManagerMessage::ADD_DATA:
+    pSync->m_SyncResult.uint32Val = AddDataToStream(streamId, ((CAddStreamDataMessage*)pMsg)->GetData(), ((CAddStreamDataMessage*)pMsg)->GetDataLen());
+    break;
+  case CAudioManagerMessage::GET_STREAM_DELAY:
+    pSync->m_SyncResult.floatVal = GetStreamDelay(streamId);
+    break;
+  case CAudioManagerMessage::DRAIN_STREAM:
+    DrainStream(streamId, (int)((CAudioManagerMessageLong*)pMsg)->GetParam());
+    break;
+  default:
+    CLog::Log(LOGDEBUG, "%s: Caller provided an invalid MessageClass.", __FUNCTION__);
+    return false;
+  }
+
+  SetEvent(pSync->m_SyncWaitEvent); // Signal that the call is complete
+  return true;
+}
+
+// Procedure Call Handlers
+////////////////////////////////////////////////
+bool CAudioManager::CAudioManagerThread::AddStream(MA_STREAM_ID streamId, CAudioStream* pStream)
+{
+  // Add the new stream to our collection
+  m_pManager->m_StreamList[streamId] = pStream;
+
+  return true;
+}
+
+void CAudioManager::CAudioManagerThread::ControlStream(MA_STREAM_ID streamId, int command)
+{
+  CAudioStream* pStream = m_pManager->GetInputStream(streamId);
+  if(pStream)
+    pStream->SendCommand(command);
+}
+
+void CAudioManager::CAudioManagerThread::SetStreamVolume(MA_STREAM_ID streamId, long volume)
+{
+  CAudioStream* pStream = m_pManager->GetInputStream(streamId);
+  if(pStream)
+    pStream->SetLevel(((float)volume + 6000.0f)/6000.0f);
+}
+
+float CAudioManager::CAudioManagerThread::GetStreamDelay(MA_STREAM_ID streamId)
+{
+  CAudioStream* pStream = m_pManager->GetInputStream(streamId);
+  if (!pStream)
+    return 0.0f;
+
+  return pStream->GetDelay();
+}
+
+unsigned int CAudioManager::CAudioManagerThread::AddDataToStream(MA_STREAM_ID streamId, void* pData, unsigned int len)
+{
+  unsigned int bytesAdded = 0;
+
+  CAudioStream* pStream = m_pManager->GetInputStream(streamId);
+  if (!pStream)
+    return 0;
+
+  // Add the data to the stream
+  if(MA_SUCCESS == pStream->AddData(pData,len))
+    bytesAdded = len;
+  else
+    bytesAdded = 0;
+
+  return bytesAdded;
+}
+
+bool CAudioManager::CAudioManagerThread::DrainStream(MA_STREAM_ID streamId, int timeout)
+{
+  // TODO: There must be a cleaner way to do this (why can't the AudioStream drain the mixer channel?)
+  CAudioStream* pStream = m_pManager->GetInputStream(streamId);
+  if (!pStream)
+    return true; // Nothing to drain
+
+  lap_timer timer;
+  timer.lap_start();
+  if (pStream->Drain(timeout))
+  {
+    unsigned __int64 elapsed = timer.elapsed_time()/1000;
+    if (elapsed < timeout)
+      return pStream->Drain(timeout - (unsigned int)elapsed);
+    else
+      pStream->Flush();
+  }
+  return false; // Out of time
+}
+
+void CAudioManager::CAudioManagerThread::FlushStream(MA_STREAM_ID streamId)
+{
+  CAudioStream* pStream = m_pManager->GetInputStream(streamId);
+  if (pStream)
+    pStream->Flush();
+}
+
+void CAudioManager::CAudioManagerThread::CloseStream(MA_STREAM_ID streamId)
+{
+  StreamIterator iter = m_pManager->m_StreamList.find(streamId);
+  if (iter == m_pManager->m_StreamList.end())
+    return;
+  CAudioStream* pStream = iter->second;
+  m_pManager->m_StreamList.erase(iter);
+  m_pManager->CleanupStreamResources(pStream);
+  delete pStream;
+
+  CLog::Log(LOGINFO,"MasterAudio:AudioManager: Closed stream %d (active_stream = %d, max_streams = %d).", streamId, m_pManager->GetOpenStreamCount(), m_pManager->m_MaxStreams);
 }

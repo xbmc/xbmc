@@ -205,7 +205,7 @@ MA_RESULT CDSPChain::Render(ma_audio_container* pOutput, unsigned int frameCount
   return CDSPFilter::Render(pOutput, frameCount, renderTime, renderFlags, bus);
 }
 
-float CDSPChain::GetMaxLatency()
+float CDSPChain::GetDelay()
 {
   // TODO: Calculate and return the actual latency through the filter graph
   return 0.0f;
@@ -222,8 +222,6 @@ MA_RESULT CDSPChain::SetSource(IAudioSource* pSource, unsigned int sourceBus /* 
 void CDSPChain::Flush()
 {
   // TODO: Implement
-
-  CDSPFilter::Flush();
 }
 
 // Private Methods

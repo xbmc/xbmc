@@ -136,152 +136,54 @@ MA_RESULT CStreamInput::Render(ma_audio_container* pOutput, unsigned int frameCo
   return MA_NEED_DATA;
 }
 
+float CStreamInput::GetDelay()
+{
+  return (float)m_Cache.GetMaxReadSize() / (float)m_BytesPerSecond;
+}
+
 // CHardwareMixer
 //////////////////////////////////////////////////////////////////////////////////////
 
 CHardwareMixer::CHardwareMixer(int maxChannels) :
   m_MaxChannels(maxChannels),
-  m_ActiveChannels(0),
-  m_pChannel(NULL)
+  m_ActiveChannels(0)
 {
-  // Create channel objects
-  // TODO: Use channel factory
-  m_pChannel = new IMixerChannel*[m_MaxChannels];
-  for (int c=0;c<m_MaxChannels;c++)
-    m_pChannel[c] = (IMixerChannel*)new CDirectSoundAdapter();
+
 }
 
 CHardwareMixer::~CHardwareMixer()
 {
-  // Clean-up channel objects
-  if (m_pChannel)
-  {
-    for (int c=0;c<m_MaxChannels;c++)
-      delete m_pChannel[c];
-    delete[] m_pChannel;
-  }
+
 }
 
-int CHardwareMixer::OpenChannel(CStreamDescriptor* pDesc)
+IRenderingAdapter* CHardwareMixer::OpenChannel(CStreamDescriptor* pDesc)
 {
   // Make sure we have a channel to open
   if (m_ActiveChannels >= m_MaxChannels)
   {
     CLog::Log(LOGWARNING,"MasterAudio:HardwareMixer: New channel requested, but none available (active_channels = %d, max_channels = %d).", m_ActiveChannels, m_MaxChannels);
-    return 0;
-  }  
-  int channel = 0;
-
-  // Find a free(idle) channel (there should be one since we are under max channels)
-  for(int c = 0; c < m_MaxChannels; c++)
-  {
-    if (m_pChannel[c]->IsIdle())
-    {
-      channel = c + 1;
-      if (MA_SUCCESS != m_pChannel[c]->SetInputFormat(pDesc))
-      {
-        CLog::Log(LOGERROR, "MasterAudio:HardwareMixer: There was a problem initiailizing the output adapter (channel = %d).", channel);
-        return 0; // We could not initialize the output adapter
-      }
-      m_ActiveChannels++;
-      break;
-    }
-  }
-  CLog::Log(LOGINFO,"MasterAudio:HardwareMixer: Opened channel %d (active_channels = %d, max_channels = %d).", channel, m_ActiveChannels, m_MaxChannels);
-  return channel;
-}
-
-void CHardwareMixer::CloseChannel(int channel)
-{
-  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
-    return;
-
-  CLog::Log(LOGINFO,"MasterAudio:HardwareMixer: Closing channel %d.", channel);
-
-  m_pChannel[channel - 1]->Close();
-
-  m_ActiveChannels--;
-}
-
-MA_RESULT CHardwareMixer::ControlChannel(int channel, int controlCode)
-{
-  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
-    return MA_ERROR;
-
-  int channelIndex = channel - 1;
-
-  CLog::Log(LOGDEBUG,"MasterAudio:HardwareMixer: Control channel %d, code = %d", channel, controlCode);
-
-  switch(controlCode)
-  {
-  case MA_CONTROL_STOP:
-    m_pChannel[channelIndex]->Stop();
-    break;
-  case MA_CONTROL_PLAY:
-    m_pChannel[channelIndex]->Play();
-    break;
-  case MA_CONTROL_PAUSE:
-    m_pChannel[channelIndex]->Pause();
-    break;
-  case MA_CONTROL_RESUME:
-    m_pChannel[channelIndex]->Resume();
-    break;
-  default:
-    return MA_ERROR;
-  }
-  return MA_SUCCESS;
-}
-
-// TODO: Check channel state before controlling
-
-MA_RESULT CHardwareMixer::SetChannelVolume(int channel, long vol)
-{
-  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
-    return MA_ERROR;
-  
-  m_pChannel[channel-1]->SetVolume(vol);
-  return MA_SUCCESS;
-}
-
-IAudioSink* CHardwareMixer::GetChannelSink(int channel)
-{
-  if (!channel || channel > m_MaxChannels)
     return NULL;
+  }  
 
-  return m_pChannel[channel-1];
+  CDirectSoundAdapter* pAdapter = new CDirectSoundAdapter();
+  if (MA_SUCCESS != pAdapter->SetInputFormat(pDesc))
+  {
+    delete pAdapter;
+    return NULL;
+  }
+
+  m_ActiveChannels++;
+  CLog::Log(LOGINFO,"MasterAudio:HardwareMixer: Opened channel (active_channels = %d, max_channels = %d).", m_ActiveChannels, m_MaxChannels);
+  return pAdapter;
 }
 
-float CHardwareMixer::GetMaxChannelLatency(int channel)
+void CHardwareMixer::CloseChannel(IRenderingAdapter* pChannel)
 {
-  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
-    return 0.0f;  // Not going to render anything anyway
-  
-  return m_pChannel[channel-1]->GetMaxLatency();
-}
-
-void CHardwareMixer::FlushChannel(int channel)
-{
-  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
-    return; // Nothing to flush
-  
-  m_pChannel[channel-1]->Flush();
-}
-
-bool CHardwareMixer::DrainChannel(int channel, unsigned int timeout)
-{
-  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
-    return true; // Nothing to drain
-  
-  return m_pChannel[channel-1]->Drain(timeout);
-}
-
-// TODO: Improve this method's usefulness 
-void CHardwareMixer::Render(int channel)
-{
-  if (!channel || !m_ActiveChannels || channel > m_MaxChannels)
+  if (!pChannel || !m_ActiveChannels)
     return;
 
-  m_pChannel[channel-1]->Render();
+  pChannel->Close();  
+  delete pChannel;
 }
 
 // CStreamAttributeCollection

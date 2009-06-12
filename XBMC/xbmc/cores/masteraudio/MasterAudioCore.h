@@ -331,6 +331,7 @@ public:
   virtual MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0) = 0;
   virtual MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0) = 0;
   virtual MA_RESULT Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0) = 0;
+  virtual float GetDelay() = 0;
 protected:
   IAudioSource() {}
 };
@@ -341,8 +342,6 @@ public:
   virtual MA_RESULT TestInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0) = 0;
   virtual MA_RESULT SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0) = 0;
   virtual MA_RESULT SetSource(IAudioSource* pSource, unsigned int sourceBus = 0, unsigned int sinkBus = 0) = 0;
-  virtual float GetMaxLatency() = 0; // TODO: This is the wrong place for this
-  virtual void Flush() = 0; // TODO: This is the wrong place for this
 protected:
   IAudioSink() {}
 };
@@ -359,31 +358,25 @@ protected:
   IRenderingControl() {}
 };
 
-class IMixerChannel : public IAudioSink, public IRenderingControl
+class IRenderingAdapter : public IAudioSink, public IRenderingControl
 {
 public:
   virtual void Close() = 0;
-  virtual bool IsIdle() = 0;
+  virtual void Flush() = 0;
   virtual bool Drain(unsigned int timeout) = 0;
   virtual void Render() = 0;
+  virtual float GetDelay() = 0;
 protected:
-  IMixerChannel() {};
+  IRenderingAdapter() {};
 };
 
 class IAudioMixer
 {
 public:
-  virtual int OpenChannel(CStreamDescriptor* pDesc) = 0;
-  virtual void CloseChannel(int channel) = 0;
-  virtual MA_RESULT ControlChannel(int channel, int controlCode) = 0;
-  virtual MA_RESULT SetChannelVolume(int channel, long vol) = 0;
-  virtual int GetActiveChannels() = 0;
+  virtual IRenderingAdapter* OpenChannel(CStreamDescriptor* pDesc) = 0;
+  virtual void CloseChannel(IRenderingAdapter* pChannel) = 0;
+  virtual int GetChannelCount() = 0;
   virtual int GetMaxChannels() = 0;
-  virtual IAudioSink* GetChannelSink(int channel) = 0;
-  virtual float GetMaxChannelLatency(int channel) = 0;
-  virtual void FlushChannel(int channel) = 0;
-  virtual bool DrainChannel(int channel, unsigned int timeout) = 0;
-  virtual void Render(int channel) = 0;
 protected:
   IAudioMixer() {}
 };
@@ -423,8 +416,8 @@ public:
   MA_RESULT TestOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
   MA_RESULT SetOutputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
   MA_RESULT Render(ma_audio_container* pOutput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus = 0);
-
   MA_RESULT AddData(void* pBuffer, size_t bufLen);  // Writes all or nothing
+  float GetDelay();
   void Reset();
 protected:
   unsigned int m_BytesPerFrame;
@@ -449,21 +442,13 @@ class CHardwareMixer : public IAudioMixer
 public:
   CHardwareMixer(int maxChannels);
   virtual ~CHardwareMixer();
-  int OpenChannel(CStreamDescriptor* pDesc);
-  void CloseChannel(int channel);
-  MA_RESULT ControlChannel(int channel, int controlCode);
-  MA_RESULT SetChannelVolume(int channel, long vol);
-  IAudioSink* GetChannelSink(int channel);
-  int GetActiveChannels() {return m_ActiveChannels;}
+  IRenderingAdapter* OpenChannel(CStreamDescriptor* pDesc);
+  void CloseChannel(IRenderingAdapter* pChannel);
+  int GetChannelCount() {return m_ActiveChannels;}
   int GetMaxChannels() {return m_MaxChannels;}
-  float GetMaxChannelLatency(int channel);
-  void FlushChannel(int channel);
-  bool DrainChannel(int channel, unsigned int timeout);
-  void Render(int channel);
 protected:
   int m_MaxChannels;
   int m_ActiveChannels;
-  IMixerChannel** m_pChannel;
 };
 
 

@@ -29,7 +29,7 @@
 #include "MasterAudioCore.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
 
-class CDirectSoundAdapter : public IMixerChannel
+class CDirectSoundAdapter : public IRenderingAdapter
 {
 public:
   CDirectSoundAdapter();
@@ -39,7 +39,7 @@ public:
   MA_RESULT TestInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
   MA_RESULT SetInputFormat(CStreamDescriptor* pDesc, unsigned int bus = 0);
   MA_RESULT SetSource(IAudioSource* pSource, unsigned int sourceBus, unsigned int sinkBus = 0);
-  float GetMaxLatency();
+  float GetDelay();
   void Flush();
 
   // IRenderingControl
@@ -49,9 +49,8 @@ public:
   void Resume();
   void SetVolume(long vol);
 
-  // IMixerChannel
+  // IRenderingAdapter
   void Close();
-  bool IsIdle();
   bool Drain(unsigned int timeout);
   void Render();
   

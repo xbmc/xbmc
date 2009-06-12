@@ -91,14 +91,9 @@ MA_RESULT CDSPFilter::SetSource(IAudioSource* pSource, unsigned int sourceBus /*
   return MA_SUCCESS;
 }
 
-float CDSPFilter::GetMaxLatency()
+float CDSPFilter::GetDelay()
 {
   return 0.0f;
-}
-
-void CDSPFilter::Flush()
-{
-
 }
 
 // IAudioSource
@@ -160,7 +155,7 @@ MA_RESULT CDSPFilter::Render(ma_audio_container* pOutput, unsigned int frameCoun
 // IDSPFilter
 void CDSPFilter::Close()
 {
-  Flush();
+  
 }
 
 MA_RESULT CDSPFilter::GetInputData(ma_audio_container* pInput, unsigned int frameCount, ma_timestamp renderTime, unsigned int renderFlags, unsigned int bus /* = 0*/)
