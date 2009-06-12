@@ -485,43 +485,6 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   abort();
 }
 
-#ifndef _LINUX
-LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
-{
-  PCSTR pExceptionString = "Unknown exception code";
-
-#define STRINGIFY_EXCEPTION(code) case code: pExceptionString = #code; break
-
-  switch (ExceptionInfo->ExceptionRecord->ExceptionCode)
-  {
-    STRINGIFY_EXCEPTION(EXCEPTION_ACCESS_VIOLATION);
-    STRINGIFY_EXCEPTION(EXCEPTION_ARRAY_BOUNDS_EXCEEDED);
-    STRINGIFY_EXCEPTION(EXCEPTION_BREAKPOINT);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_DENORMAL_OPERAND);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_DIVIDE_BY_ZERO);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_INEXACT_RESULT);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_INVALID_OPERATION);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_OVERFLOW);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_STACK_CHECK);
-    STRINGIFY_EXCEPTION(EXCEPTION_ILLEGAL_INSTRUCTION);
-    STRINGIFY_EXCEPTION(EXCEPTION_INT_DIVIDE_BY_ZERO);
-    STRINGIFY_EXCEPTION(EXCEPTION_INT_OVERFLOW);
-    STRINGIFY_EXCEPTION(EXCEPTION_INVALID_DISPOSITION);
-    STRINGIFY_EXCEPTION(EXCEPTION_NONCONTINUABLE_EXCEPTION);
-    STRINGIFY_EXCEPTION(EXCEPTION_SINGLE_STEP);
-  }
-#undef STRINGIFY_EXCEPTION
-
-  g_LoadErrorStr.Format("%s (0x%08x)\n at 0x%08x",
-                        pExceptionString, ExceptionInfo->ExceptionRecord->ExceptionCode,
-                        ExceptionInfo->ExceptionRecord->ExceptionAddress);
-
-  CLog::Log(LOGFATAL, "%s", g_LoadErrorStr.c_str());
-
-  return ExceptionInfo->ExceptionRecord->ExceptionCode;
-}
-#endif
-
 extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 
@@ -939,12 +902,6 @@ HRESULT CApplication::Create(HWND hWnd)
 
 #ifdef HAS_PYTHON
   g_actionManager.SetScriptActionCallback(&g_pythonParser);
-#endif
-
-  // show recovery console on fatal error instead of freezing
-  CLog::Log(LOGINFO, "install unhandled exception filter");
-#ifndef _LINUX
-  SetUnhandledExceptionFilter(UnhandledExceptionFilter);
 #endif
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
