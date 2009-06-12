@@ -44,6 +44,13 @@ CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
   m_speed = 1;
   m_filename = "";
   m_args = "";
+  m_launchFilename = "";
+
+  m_forceontop = false;
+  m_hideconsole = false;
+  m_hidecursor = false;
+  m_hidexbmc = false;
+  m_startupTime = 2000;
 }
 
 CExternalPlayer::~CExternalPlayer()
