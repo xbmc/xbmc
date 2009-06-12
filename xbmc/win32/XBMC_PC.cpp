@@ -19,15 +19,6 @@
  *
  */
 
-//-----------------------------------------------------------------------------
-// File: XBMC_PC.cpp
-//
-// Desc: This is the first tutorial for using Direct3D. In this tutorial, all
-//       we are doing is creating a Direct3D device and using it to clear the
-//       window.
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
 #include "stdafx.h"
 #include "XBMC_PC.h"
 #ifndef HAS_SDL
