@@ -409,9 +409,9 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
   return true;
 }
 
-HRESULT CCoreAudioRenderer::Deinitialize()
+bool CCoreAudioRenderer::Deinitialize()
 {
-  VERIFY_INIT(S_OK); // Not really a failure if we weren't initialized
+  VERIFY_INIT(true); // Not really a failure if we weren't initialized
 
   // Stop rendering
   Stop();
@@ -432,15 +432,15 @@ HRESULT CCoreAudioRenderer::Deinitialize()
   
   CLog::Log(LOGINFO, "CoreAudioRenderer::Deinitialize: Renderer has been shut down.");
   
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
 // Transport control methods
 //***********************************************************************************************
-HRESULT CCoreAudioRenderer::Pause()
+bool CCoreAudioRenderer::Pause()
 {
-  VERIFY_INIT(E_FAIL);
+  VERIFY_INIT(false);
   
   if (!m_Pause)
   {
@@ -452,12 +452,12 @@ HRESULT CCoreAudioRenderer::Pause()
     m_Pause = true;
   }
   m_PerfMon.EnableWatchdog(false); // Stop monitoring, we're paused
-  return S_OK;
+  return true;
 }
 
-HRESULT CCoreAudioRenderer::Resume()
+bool CCoreAudioRenderer::Resume()
 {
-  VERIFY_INIT(E_FAIL);
+  VERIFY_INIT(false);
 
   if (m_Pause)
   {
@@ -469,12 +469,12 @@ HRESULT CCoreAudioRenderer::Resume()
     m_Pause = false;
   }
   m_PerfMon.EnableWatchdog(true); // Resume monitoring
-  return S_OK;
+  return true;
 }
 
-HRESULT CCoreAudioRenderer::Stop()
+bool CCoreAudioRenderer::Stop()
 {
-  VERIFY_INIT(E_FAIL);
+  VERIFY_INIT(false);
 
   if (m_Passthrough)
     m_AudioDevice.Stop();
@@ -485,7 +485,7 @@ HRESULT CCoreAudioRenderer::Stop()
   m_PerfMon.EnableWatchdog(false);
   m_pCache->Clear();
 
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
@@ -514,9 +514,9 @@ void CCoreAudioRenderer::Mute(bool bMute)
     SetCurrentVolume(m_CurrentVolume);
 }
 
-HRESULT CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
+bool CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
 {  
-  VERIFY_INIT(E_FAIL);
+  VERIFY_INIT(false);
 
   if (m_EnableVolumeControl) // Don't change actual volume for encoded streams
   {  
@@ -525,10 +525,10 @@ HRESULT CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
     
     // Try to set the volume. If it fails there is not a lot to be done.
     if (!m_AudioUnit.SetCurrentVolume(volPct))
-      return E_FAIL;
+      return false;
   }
   m_CurrentVolume = nVolume; // Store the volume setpoint. We need this to check for 'mute'
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
@@ -561,7 +561,7 @@ DWORD CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
   return bytesUsed; // Number of bytes added to cache;
 }
 
-FLOAT CCoreAudioRenderer::GetDelay()
+float CCoreAudioRenderer::GetDelay()
 {
   VERIFY_INIT(0);
   // Calculate the duration of the data in the cache
@@ -570,7 +570,7 @@ FLOAT CCoreAudioRenderer::GetDelay()
   return delay;
 }
 
-FLOAT CCoreAudioRenderer::GetCacheTime()
+float CCoreAudioRenderer::GetCacheTime()
 {
   return GetDelay();
 }

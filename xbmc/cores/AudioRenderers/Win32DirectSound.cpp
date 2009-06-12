@@ -180,7 +180,7 @@ CWin32DirectSound::~CWin32DirectSound()
 }
 
 //***********************************************************************************************
-HRESULT CWin32DirectSound::Deinitialize()
+bool CWin32DirectSound::Deinitialize()
 {
   if (m_bIsAllocated)
   {
@@ -201,36 +201,36 @@ HRESULT CWin32DirectSound::Deinitialize()
 
     g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
   }
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
-HRESULT CWin32DirectSound::Pause()
+bool CWin32DirectSound::Pause()
 {
   CSingleLock lock (m_critSection);
   if (m_bPause) // Already paused
-    return S_OK;
+    return true;
   m_bPause = true;
   m_pBuffer->Stop();
 
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
-HRESULT CWin32DirectSound::Resume()
+bool CWin32DirectSound::Resume()
 {
   CSingleLock lock (m_critSection);
   if (!m_bPause) // Already playing
-    return S_OK;
+    return true;
   m_bPause = false;
   if (m_CacheLen > m_PreCacheSize) // Make sure we have some data to play (if not, playback will start when we add some)
     m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
 
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
-HRESULT CWin32DirectSound::Stop()
+bool CWin32DirectSound::Stop()
 {
   CSingleLock lock (m_critSection);
   // Stop and reset DirectSound buffer
@@ -242,23 +242,23 @@ HRESULT CWin32DirectSound::Stop()
   m_CacheLen = 0;
   m_bPause = false;
 
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
-LONG CWin32DirectSound::GetMinimumVolume() const
+long CWin32DirectSound::GetMinimumVolume() const
 {
   return DSBVOLUME_MIN;
 }
 
 //***********************************************************************************************
-LONG CWin32DirectSound::GetMaximumVolume() const
+long CWin32DirectSound::GetMaximumVolume() const
 {
   return DSBVOLUME_MAX;
 }
 
 //***********************************************************************************************
-LONG CWin32DirectSound::GetCurrentVolume() const
+long CWin32DirectSound::GetCurrentVolume() const
 {
   return m_nCurrentVolume;
 }
@@ -275,16 +275,16 @@ void CWin32DirectSound::Mute(bool bMute)
 }
 
 //***********************************************************************************************
-HRESULT CWin32DirectSound::SetCurrentVolume(LONG nVolume)
+bool CWin32DirectSound::SetCurrentVolume(long nVolume)
 {
   CSingleLock lock (m_critSection);
-  if (!m_bIsAllocated) return -1;
+  if (!m_bIsAllocated) return false;
   m_nCurrentVolume = nVolume;
-  return m_pBuffer->SetVolume( m_nCurrentVolume );
+  return m_pBuffer->SetVolume( m_nCurrentVolume ) == S_OK;
 }
 
 //***********************************************************************************************
-DWORD CWin32DirectSound::AddPackets(const void* data, DWORD len)
+unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
 {
   CSingleLock lock (m_critSection);
   DWORD total = len;
@@ -293,7 +293,7 @@ DWORD CWin32DirectSound::AddPackets(const void* data, DWORD len)
   while (len >= m_dwChunkSize && GetSpace() >= m_dwChunkSize) // We want to write at least one chunk at a time
   {
     LPVOID start = NULL, startWrap = NULL;
-    DWORD  size = 0, sizeWrap = 0;
+    DWORD size = 0, sizeWrap = 0;
 
     if (m_BufferOffset >= m_dwBufferLen) // Wrap-around manually
       m_BufferOffset = 0;
@@ -389,7 +389,7 @@ void CWin32DirectSound::CheckPlayStatus()
   }
 }
 
-DWORD CWin32DirectSound::GetSpace()
+unsigned int CWin32DirectSound::GetSpace()
 {
   CSingleLock lock (m_critSection);
   UpdateCacheStatus();
@@ -398,29 +398,29 @@ DWORD CWin32DirectSound::GetSpace()
 }
 
 //***********************************************************************************************
-FLOAT CWin32DirectSound::GetDelay()
+float CWin32DirectSound::GetDelay()
 {
   // Make sure we know how much data is in the cache
   UpdateCacheStatus();
 
   CSingleLock lock (m_critSection);
-  FLOAT delay  = 0.008f; // WTF?
-  delay += (FLOAT)m_CacheLen / (FLOAT)m_AvgBytesPerSec;
+  float delay  = 0.008f; // WTF?
+  delay += (float)m_CacheLen / (float)m_AvgBytesPerSec;
   return delay;
 }
 
 //***********************************************************************************************
-FLOAT CWin32DirectSound::GetCacheTime()
+float CWin32DirectSound::GetCacheTime()
 {
   CSingleLock lock (m_critSection);
   // Make sure we know how much data is in the cache
   UpdateCacheStatus();
 
-  return (FLOAT)m_CacheLen / (FLOAT)m_AvgBytesPerSec;
+  return (float)m_CacheLen / (float)m_AvgBytesPerSec;
 }
 
 //***********************************************************************************************
-DWORD CWin32DirectSound::GetChunkLen()
+unsigned int CWin32DirectSound::GetChunkLen()
 {
   return m_dwChunkSize;
 }
@@ -492,7 +492,7 @@ void CWin32DirectSound::WaitCompletion()
   m_pBuffer->Stop();
 }
 
-void CWin32DirectSound::MapDataIntoBuffer(unsigned char* pData, DWORD len, unsigned char* pOut)
+void CWin32DirectSound::MapDataIntoBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut)
 {
   // TODO: Add support for 8, 24, and 32-bit audio
   if (m_pChannelMap && !m_Passthrough && m_uiBitsPerSample == 16)
