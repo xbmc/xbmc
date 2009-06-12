@@ -35,6 +35,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   static void ShowAndGetInput(CURL& url);
   static void ShowAndGetInput(SScraperInfo& info);
+  static void ShowAndGetInput(CStdString& path);
 
 private:
   void CreateControls();
@@ -49,6 +50,7 @@ private:
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
   CAddonSettings m_settings;
   CStdString m_strHeading;
+  std::map<CStdString,CStdString> m_buttonValues; 
 };
 
 #endif

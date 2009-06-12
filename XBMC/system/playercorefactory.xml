@@ -1,0 +1,34 @@
+<playercorefactory>
+  <players>
+    <!-- These are compiled-in as re-ordering them would break scripts
+    The following aliases may also be used:
+      audiodefaultplayer, videodefaultplayer, videodefaultdvdplayer
+    <player name="DVDPlayer" audio="true" video="true" />
+    <player name="DVDPlayer" /> placeholder for MPlayer
+    <player name="PAPlayer" audio="true" />
+    -->
+  </players>
+
+  <rules>
+    <rule protocols="rtv" player="DVDPlayer" />
+    <rule protocols="hdhomerun|myth|cmyth|rtmp" player="DVDPlayer" />
+    <rule protocols="lastfm|shout" player="PAPlayer" />
+
+    <!-- dvdplayer can play standard rtsp streams -->
+    <rule protocols="rtsp" filetypes="!(rm|ra)"  player="PAPlayer" />
+
+    <!-- Internet streams -->
+    <rule internetstream="true">
+      <rule mimetypes="video/x-flv|video-flv|audio/aacp|application/sdp" player="DVDPlayer" />
+      <rule mimetypes="application/octet-stream" filetypes="mp2" player="PAPlayer" />
+    </rule>
+
+    <!-- DVDs -->
+    <rule dvd="true" player="videodefaultdvdplayer" />
+    <rule dvdfile="true" player="videodefaultdvdplayer" />
+    <rule dvdimage="true" player="videodefaultdvdplayer" />
+
+    <!-- Only dvdplayer can handle these normally -->
+    <rule filetypes="sdp|asf" player="DVDPlayer" />
+  </rules>
+</playercorefactory>

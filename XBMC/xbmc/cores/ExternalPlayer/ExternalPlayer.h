@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -27,6 +29,7 @@ class CExternalPlayer : public IPlayer, public CThread
 public:
   CExternalPlayer(IPlayerCallback& callback);
   virtual ~CExternalPlayer();
+  virtual bool Initialize(TiXmlElement* pConfig);
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) {}
   virtual void UnRegisterAudioCallback()                        {}
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions &options);
@@ -86,6 +89,7 @@ public:
 #endif
 
 private:
+  void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
   virtual void Process();
 
   bool m_paused;
@@ -99,5 +103,13 @@ private:
 #endif 
   int m_xPos;
   int m_yPos;
+  CStdString m_filename;
+  CStdString m_args;
+  bool m_forceontop;
+  bool m_hideconsole;
+  bool m_hidecursor;
+  bool m_hidexbmc;
+  int m_startupTime; // time in ms between launching player and locking the graphicscontext
+  CStdStringArray m_filenameReplacers;
 };
 

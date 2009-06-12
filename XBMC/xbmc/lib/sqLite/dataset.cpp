@@ -256,9 +256,11 @@ bool Dataset::goto_rec(int pos) {
 
 
 void Dataset::insert() {
+   edit_object->resize(field_count());
    for (int i=0; i<field_count(); i++) {
      (*fields_object)[i].val = "";
      (*edit_object)[i].val = "";
+     (*edit_object)[i].props = (*fields_object)[i].props;
    }
   ds_state = dsInsert;
 }
@@ -268,7 +270,9 @@ void Dataset::edit() {
   if (ds_state != dsSelect) {
     throw DbErrors("Editing is possible only when query exists!");
   }
+  edit_object->resize(field_count());
   for (unsigned int i=0; i<fields_object->size(); i++) {
+       (*edit_object)[i].props = (*fields_object)[i].props;
        (*edit_object)[i].val = (*fields_object)[i].val; 
   }
   ds_state = dsEdit;

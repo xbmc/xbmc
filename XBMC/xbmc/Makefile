@@ -212,6 +212,7 @@ SRCS=Application.cpp \
      GUIDialogTVGroupManager.cpp \
      PVRManager.cpp \
      TVDatabase.cpp \
+     ScriptSettings.cpp \
 
 LIB=xbmc.a
 

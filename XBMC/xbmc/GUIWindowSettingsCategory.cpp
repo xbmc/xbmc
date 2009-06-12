@@ -896,7 +896,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("weather.plugin"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInWeatherPlugins(pControl, g_guiSettings.GetString("weather.plugin", false));
+      FillInWeatherPlugins(pControl, g_guiSettings.GetString("weather.plugin"));
     }
   }
 
@@ -1303,7 +1303,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("weather.plugin"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-      g_guiSettings.SetString("weather.plugin", pControl->GetCurrentLabel());
+      if (pControl->GetCurrentLabel().Equals(g_localizeStrings.Get(13611)))
+        g_guiSettings.SetString("weather.plugin", "");
+      else
+        g_guiSettings.SetString("weather.plugin", pControl->GetCurrentLabel());
     }
     else if (strSetting.Equals("system.leddisableonplayback"))
     {
@@ -3910,7 +3913,7 @@ void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pContro
   int k=0;
   pControl->Clear();
   // add our disable option
-  pControl->AddLabel("weather.com", j++);
+  pControl->AddLabel(g_localizeStrings.Get(13611), j++);
 
   CFileItemList items;
   if (CDirectory::GetDirectory("special://home/plugins/weather/", items, "/", false))

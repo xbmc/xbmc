@@ -66,10 +66,10 @@ CNullDirectSound::~CNullDirectSound()
 
 
 //***********************************************************************************************
-HRESULT CNullDirectSound::Deinitialize()
+bool CNullDirectSound::Deinitialize()
 {
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-  return S_OK;
+  return true;
 }
 
 void CNullDirectSound::Flush()
@@ -79,39 +79,39 @@ void CNullDirectSound::Flush()
 }
 
 //***********************************************************************************************
-HRESULT CNullDirectSound::Pause()
+bool CNullDirectSound::Pause()
 {
   m_paused = true;
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
-HRESULT CNullDirectSound::Resume()
+bool CNullDirectSound::Resume()
 {
   m_paused = false;
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
-HRESULT CNullDirectSound::Stop()
+bool CNullDirectSound::Stop()
 {
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
-LONG CNullDirectSound::GetMinimumVolume() const
+long CNullDirectSound::GetMinimumVolume() const
 {
   return -60;
 }
 
 //***********************************************************************************************
-LONG CNullDirectSound::GetMaximumVolume() const
+long CNullDirectSound::GetMaximumVolume() const
 {
   return 60;
 }
 
 //***********************************************************************************************
-LONG CNullDirectSound::GetCurrentVolume() const
+long CNullDirectSound::GetCurrentVolume() const
 {
   return m_nCurrentVolume;
 }
@@ -122,15 +122,15 @@ void CNullDirectSound::Mute(bool bMute)
 }
 
 //***********************************************************************************************
-HRESULT CNullDirectSound::SetCurrentVolume(LONG nVolume)
+bool CNullDirectSound::SetCurrentVolume(long nVolume)
 {
   m_nCurrentVolume = nVolume;
-  return S_OK;
+  return true;
 }
 
 
 //***********************************************************************************************
-DWORD CNullDirectSound::GetSpace()
+unsigned int CNullDirectSound::GetSpace()
 {
   Update();
 
@@ -141,7 +141,7 @@ DWORD CNullDirectSound::GetSpace()
 }
 
 //***********************************************************************************************
-DWORD CNullDirectSound::AddPackets(const void* data, DWORD len)
+unsigned int CNullDirectSound::AddPackets(const void* data, unsigned int len)
 {
   if (m_paused || GetSpace() == 0)
     return 0;
@@ -153,20 +153,20 @@ DWORD CNullDirectSound::AddPackets(const void* data, DWORD len)
 }
 
 //***********************************************************************************************
-FLOAT CNullDirectSound::GetDelay()
+float CNullDirectSound::GetDelay()
 {
   Update();
 
   return m_timePerPacket * (float)m_packetsSent;
 }
 
-FLOAT CNullDirectSound::GetCacheTime()
+float CNullDirectSound::GetCacheTime()
 {
   return GetDelay();
 }
 
 //***********************************************************************************************
-DWORD CNullDirectSound::GetChunkLen()
+unsigned int CNullDirectSound::GetChunkLen()
 {
   return (int)CHUNKLEN;
 }

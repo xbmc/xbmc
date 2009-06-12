@@ -302,15 +302,6 @@ public:
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
 
-    CStdString m_externalPlayerFilename;
-    CStdString m_externalPlayerArgs;
-    bool m_externalPlayerForceontop;
-    bool m_externalPlayerHideconsole;
-    bool m_externalPlayerHidecursor;
-    bool m_externalPlayerHidexbmc;
-    int m_externalPlayerStartupTime; // time in ms between launching player and locking the graphicscontext
-    CStdStringArray m_externalPlayerFilenameReplacers;
-
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares;
     bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
@@ -505,6 +496,8 @@ protected:
 
   bool LoadSettings(const CStdString& strSettingsFile);
 //  bool SaveSettings(const CStdString& strSettingsFile) const;
+
+  bool LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear);
 
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);

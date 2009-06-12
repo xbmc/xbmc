@@ -336,7 +336,7 @@ int av_filename_number_test(const char *filename)
     return filename && (av_get_frame_filename(buf, sizeof(buf), filename, 1)>=0);
 }
 
-static AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)
+AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)
 {
     AVInputFormat *fmt1, *fmt;
     int score;
@@ -1002,6 +1002,8 @@ static int av_read_frame_internal(AVFormatContext *s, AVPacket *pkt)
             if (ret < 0) {
                 if (ret == AVERROR(EAGAIN))
                     return ret;
+                if (ret == AVERROR_IO)
+                    return ret;
                 /* return the last frames, if any */
                 for(i = 0; i < s->nb_streams; i++) {
                     st = s->streams[i];
@@ -1163,11 +1165,7 @@ int av_find_default_stream_index(AVFormatContext *s)
 /**
  * Flush the frame reader.
  */
-#ifdef _XBOX
-void av_read_frame_flush(AVFormatContext *s)
-#else
 static void av_read_frame_flush(AVFormatContext *s)
-#endif
 {
     AVStream *st;
     int i;
