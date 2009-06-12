@@ -103,22 +103,22 @@ class CCoreAudioRenderer : public IAudioRenderer
   public:
     CCoreAudioRenderer();
     virtual ~CCoreAudioRenderer();
-    virtual DWORD GetChunkLen();
-    virtual FLOAT GetDelay();
+    virtual unsigned int GetChunkLen();
+    virtual float GetDelay();
     virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
-    virtual HRESULT Deinitialize();
-    virtual DWORD AddPackets(const void* data, DWORD len);
-    virtual DWORD GetSpace();
-    virtual FLOAT GetCacheTime();
-    virtual HRESULT Pause();
-    virtual HRESULT Stop();
-    virtual HRESULT Resume();
+    virtual bool Deinitialize();
+    virtual unsigned int AddPackets(const void* data, unsigned int len);
+    virtual unsigned int GetSpace();
+    virtual float GetCacheTime();
+    virtual bool Pause();
+    virtual bool Stop();
+    virtual bool Resume();
     
-    virtual LONG GetMinimumVolume() const;
-    virtual LONG GetMaximumVolume() const;
-    virtual LONG GetCurrentVolume() const;
+    virtual long GetMinimumVolume() const;
+    virtual long GetMaximumVolume() const;
+    virtual long GetCurrentVolume() const;
     virtual void Mute(bool bMute);
-    virtual HRESULT SetCurrentVolume(LONG nVolume);
+    virtual bool SetCurrentVolume(long nVolume);
     virtual void WaitCompletion();
 
     // Unimplemented IAudioRenderer methods
@@ -137,8 +137,8 @@ class CCoreAudioRenderer : public IAudioRenderer
     bool m_Pause;
     bool m_Initialized; // Prevent multiple init/deinit
    
-    LONG m_CurrentVolume; // Courtesy of the jerk that made GetCurrentVolume a const...
-    DWORD m_ChunkLen; // Minimum amount of data accepted by AddPackets
+    long m_CurrentVolume; // Courtesy of the jerk that made GetCurrentVolume a const...
+    unsigned int m_ChunkLen; // Minimum amount of data accepted by AddPackets
     CSliceQueue* m_pCache;
     size_t m_MaxCacheLen; // Maximum number of bytes to be cached by the renderer.
         
