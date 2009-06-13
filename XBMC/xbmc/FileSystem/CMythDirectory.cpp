@@ -251,7 +251,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
         }
         url.SetFileName("tvshows/" + path);
         break;
-        case NONE:
+        case ALL:
         url.SetFileName("recordings/" + path);
         break;
       }
@@ -338,7 +338,7 @@ bool CCMythDirectory::GetRecordingFolders(const CStdString& base, CFileItemList 
         itemName = GetValue(m_dll->proginfo_title(program));
       else
       {
-        // MOVIES and NONE don't use folder groupings.
+        // MOVIES and ALL don't use folder groupings.
         m_dll->ref_release(program);
         continue;
       }
