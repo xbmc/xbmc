@@ -376,8 +376,8 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
 
   pMenu->Initialize();
 
-  int iSettingsLabel = 33008;
-  int iRemoveLabel = 33009;
+  int iSettingsLabel = 23008;
+  int iRemoveLabel = 23009;
 
   int btn_Settings = pMenu->AddButton(iSettingsLabel);
   int btn_Remove = -1;
