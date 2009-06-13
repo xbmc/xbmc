@@ -509,7 +509,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   else if (fileName == "guide")
     return GetGuide(base, items);
   else if (fileName.Left(6) == "guide/")
-    return GetGuideForChannel(base, items, atoi(fileName.Right(fileName.length() - 6)));
+    return GetGuideForChannel(base, items, atoi(fileName.Mid(6)));
   else if (fileName == "movies")
     return GetRecordings(base, items, MOVIES);
   else if (fileName == "recordings")
@@ -517,7 +517,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   else if (fileName == "tvshows")
     return GetRecordingFolders(base, items, TV_SHOWS);
   else if (fileName.Left(8) == "tvshows/")
-    return GetRecordings(base, items, TV_SHOWS, fileName.Right(fileName.length() - 8));
+    return GetRecordings(base, items, TV_SHOWS, fileName.Mid(8));
   return false;
 }
 
