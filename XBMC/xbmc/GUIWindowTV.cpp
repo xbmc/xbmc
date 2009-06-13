@@ -918,7 +918,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
       }
       else
       {
-        buttons.Add(CONTEXT_BUTTON_INFO, 658);          /* Channel info button */
+        buttons.Add(CONTEXT_BUTTON_INFO, 18163);          /* Channel info button */
         buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 18109);   /* switch to channel */
         buttons.Add(CONTEXT_BUTTON_SET_THUMB, 18161);   /* Set icon */
         buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 18126);       /* Group managment */
@@ -938,7 +938,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)           /* Add recordings context buttons */
     {
-      buttons.Add(CONTEXT_BUTTON_INFO, 658);
+      buttons.Add(CONTEXT_BUTTON_INFO, 18073);
       buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021);
 //            buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 12022);
       buttons.Add(CONTEXT_BUTTON_RENAME, 118);

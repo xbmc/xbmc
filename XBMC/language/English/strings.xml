@@ -1661,7 +1661,7 @@
 
   <string id="18161">Set Channel Icon</string>
   <string id="18162">Timer still recording - really delete?</string>
-  <string id="18163">Title-Information</string>
+  <string id="18163">Programme info</string>
 
   <string id="18190">Next timer on</string>
   <string id="18191">at</string>
@@ -2276,7 +2276,36 @@
   <string id="22042">white/blue</string>
   <string id="22043">black/white</string>
 
-  <string id="23000">Weather plug-in</string>
+  <string id="23000">Add-ons</string>
+  <string id="23001">Get Add-ons</string>
+  <string id="23002">Available Add-ons</string>
+  <string id="23003">Add-on Type</string>
+  <string id="23004">Recommended</string>
+  <string id="23005">Search Add-ons</string>
+  <string id="23006">Searching..</string>
+  <string id="23007">New search</string>
+  <string id="23008">Configure Add-on</string>
+  <string id="23009">Remove Add-on</string>
+  <string id="23010">Are you sure you want to disable this add-on?</string>
+  <string id="23011">Unknown Add-on</string>
+  <string id="23012">Multitype Add-on</string>
+  <string id="23013">Visualisation</string>
+  <string id="23014">Skin Add-on</string>
+  <string id="23015">PVR-Client</string>
+  <string id="23016">Python Script</string>
+  <string id="23017">PVR Scraper</string>
+  <string id="23018">Video Scraper</string>
+  <string id="23019">Music Scraper</string>
+  <string id="23020">Program Scraper</string>
+  <string id="23021">Screensaver</string>
+  <string id="23022">PVR Add-on</string>
+  <string id="23023">Video Add-on</string>
+  <string id="23024">Music Add-on</string>
+  <string id="23025">Program Add-on</string>
+  <string id="23026">Pictures Add-on</string>
+  <string id="23027">Weather Add-on</string>
+  <string id="23028">Audio DSP Add-on</string>
+
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
