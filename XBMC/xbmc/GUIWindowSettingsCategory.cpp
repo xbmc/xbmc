@@ -95,6 +95,8 @@
 #include "WINDirectSound.h"
 #endif
 #include <map>
+#include "ScriptSettings.h"
+#include "GUIDialogPluginSettings.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -1426,7 +1428,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
-    }      
+    }
+    else if (strSetting.Equals("weather.pluginsettings"))
+    {
+      // Create our base path
+      CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
+    }
   }
 }
 
@@ -1471,9 +1480,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_weatherManager.ResetTimer();
     }
   }
-
-  if (strSetting.Equals("weather.plugin"))
+  else if (strSetting.Equals("weather.plugin"))
   {
+    g_weatherManager.ResetTimer();
+  }
+  else if (strSetting.Equals("weather.pluginsettings"))
+  {
+    // Create our base path
+    CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
+    CGUIDialogPluginSettings::ShowAndGetInput(basepath);
+    // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
     g_weatherManager.ResetTimer();
   }
 
