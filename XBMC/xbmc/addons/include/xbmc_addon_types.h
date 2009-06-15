@@ -92,7 +92,7 @@ typedef enum addon_status {
   STATUS_LOST_CONNECTION,    /* AddOn lost connection to his backend (for ones that use Network) */
   STATUS_NEED_RESTART,       /* Request to restart the AddOn and data structures need updated */
   STATUS_NEED_EMER_RESTART,  /* Request to restart XBMC (hope no AddOn need or do this) */
-  STATUS_NEED_SETTINGS,      /* A setting value is needed/invalid */
+  STATUS_NEED_SETTINGS,       /* A setting value is needed/invalid */
   STATUS_MISSING_FILE,       /* A AddOn file is missing (check log's for missing data) */
   STATUS_UNKNOWN             /* A unknown event is occurred */
 } addon_status_t;
