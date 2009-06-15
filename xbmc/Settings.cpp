@@ -275,6 +275,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear = false;
+  g_advancedSettings.m_iMusicLibraryRecentlyAddedItems = 25;
   g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
   g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
   g_advancedSettings.m_prioritiseAPEv2tags = false;
@@ -283,6 +284,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
+  g_advancedSettings.m_iVideoLibraryRecentlyAddedItems = 25;
   g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems = false;
   g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
   g_advancedSettings.m_bVideoLibraryCleanOnUpdate = false;
@@ -1217,6 +1219,7 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bMusicLibraryHideAllItems);
+    XMLUtils::GetInt(pElement, "recentlyaddeditems", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems, 1, INT_MAX);
     XMLUtils::GetBoolean(pElement, "prioritiseapetags", g_advancedSettings.m_prioritiseAPEv2tags);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
@@ -1230,6 +1233,7 @@ void CSettings::LoadAdvancedSettings()
   {
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bVideoLibraryHideAllItems);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bVideoLibraryAllItemsOnBottom);
+    XMLUtils::GetInt(pElement, "recentlyaddeditems", g_advancedSettings.m_iVideoLibraryRecentlyAddedItems, 1, INT_MAX);
     XMLUtils::GetBoolean(pElement, "hiderecentlyaddeditems", g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems);
     XMLUtils::GetBoolean(pElement, "hideemptyseries", g_advancedSettings.m_bVideoLibraryHideEmptySeries);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
