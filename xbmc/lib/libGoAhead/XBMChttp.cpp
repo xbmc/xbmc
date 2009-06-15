@@ -3288,7 +3288,7 @@ CStdString CXbmcHttpShim::flushResult(int eid, webs_t wp, const CStdString &outp
   return "";
 }
 
-CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
+CStdString CXbmcHttpShim::xbmcExternalCall(const char *command)
 {
   if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
       return "";

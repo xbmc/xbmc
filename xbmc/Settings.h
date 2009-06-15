@@ -139,6 +139,8 @@ public:
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
   bool GetAddonFromGUID(const CStdString &guid, ADDON::CAddon &addon);
+  bool GetAddonFromNameAndType(const CStdString &name, const ADDON::AddonType &type, ADDON::CAddon &addon);
+  bool AddonFromInfoXML(const CStdString &path, ADDON::CAddon &addon);
   ADDON::VECADDONS *GetAddonsFromType(const ADDON::AddonType &type);
   bool DisableAddon(const CStdString &addon, const ADDON::AddonType &type);
 
@@ -402,7 +404,25 @@ public:
   VECSOURCES m_videoSources;
 
   ADDON::VECADDONS  m_allAddons;
+  ADDON::VECADDONS  m_virtualAddons;
+
+  ADDON::VECADDONS  m_multitypeAddons;
+  ADDON::VECADDONS  m_visualisationAddons;
+  ADDON::VECADDONS  m_skinAddons;
   ADDON::VECADDONS  m_pvrAddons;
+  ADDON::VECADDONS  m_scriptAddons;
+  ADDON::VECADDONS  m_scraperPVRAddons;
+  ADDON::VECADDONS  m_scraperVideoAddons;
+  ADDON::VECADDONS  m_scraperMusicAddons;
+  ADDON::VECADDONS  m_scraperProgramAddons;
+  ADDON::VECADDONS  m_screensaverAddons;
+  ADDON::VECADDONS  m_pluginPvrAddons;
+  ADDON::VECADDONS  m_pluginMusicAddons;
+  ADDON::VECADDONS  m_pluginVideoAddons;
+  ADDON::VECADDONS  m_pluginProgramAddons;
+  ADDON::VECADDONS  m_pluginPictureAddons;
+  ADDON::VECADDONS  m_pluginWeatherAddons;
+  ADDON::VECADDONS  m_DSPAudioAddons;
 
   CStdString m_defaultProgramSource;
   CStdString m_defaultMusicSource;
@@ -450,6 +470,7 @@ public:
   CStdString GetSkinFolder() const;
   CStdString GetSkinFolder(const CStdString& skinName) const;
   CStdString GetScriptsFolder() const;
+  CStdString GetAddonsFolder() const;
   CStdString GetVideoFanartFolder() const;
   CStdString GetMusicFanartFolder() const;
 
@@ -502,8 +523,6 @@ protected:
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;
-
-  bool AddonFromInfoXML(const CStdString &path, ADDON::CAddon &addon);
 
   // Advanced settings
   void LoadAdvancedSettings();

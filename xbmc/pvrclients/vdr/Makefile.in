@@ -4,7 +4,7 @@ DEFINES+=
 CXXFLAGS=-fPIC
 OBJS=client.o pvrclient-vdr.o vtptransceiver.o
 
-SLIB=../../../addons/pvr/VDR/vdr.pvr
+SLIB=../../../addons/pvr/VDR/XBMC_VDR.pvr
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)

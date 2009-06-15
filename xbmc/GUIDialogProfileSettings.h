@@ -60,6 +60,7 @@ protected:
   bool m_bLockFiles;
   bool m_bLockPictures;
   bool m_bLockPrograms;
+  bool m_bLockAddOnManager;
 
   CStdString m_strDefaultImage;
 };

@@ -521,8 +521,40 @@ VECADDONS *CSettings::GetAddonsFromType(const AddonType &type)
 {
   switch (type)
   {
+  case ADDON_MULTITYPE:
+    return &g_settings.m_multitypeAddons;
+  case ADDON_VIZ:
+    return &g_settings.m_visualisationAddons;
+  case ADDON_SKIN:
+    return &g_settings.m_skinAddons;
   case ADDON_PVRDLL:
     return &g_settings.m_pvrAddons;
+  case ADDON_SCRIPT:
+    return &g_settings.m_scriptAddons;
+  case ADDON_SCRAPER_PVR:
+    return &g_settings.m_scraperPVRAddons;
+  case ADDON_SCRAPER_VIDEO:
+    return &g_settings.m_scraperVideoAddons;
+  case ADDON_SCRAPER_MUSIC:
+    return &g_settings.m_scraperMusicAddons;
+  case ADDON_SCRAPER_PROGRAM:
+    return &g_settings.m_scraperProgramAddons;
+  case ADDON_SCREENSAVER:
+    return &g_settings.m_screensaverAddons;
+  case ADDON_PLUGIN_PVR:
+    return &g_settings.m_pluginPvrAddons;
+  case ADDON_PLUGIN_MUSIC:
+    return &g_settings.m_pluginMusicAddons;
+  case ADDON_PLUGIN_VIDEO:
+    return &g_settings.m_pluginVideoAddons;
+  case ADDON_PLUGIN_PROGRAM:
+    return &g_settings.m_pluginProgramAddons;
+  case ADDON_PLUGIN_PICTURES:
+    return &g_settings.m_pluginPictureAddons;
+  case ADDON_PLUGIN_WEATHER:
+    return &g_settings.m_pluginWeatherAddons;
+  case ADDON_DSP_AUDIO:
+    return &g_settings.m_DSPAudioAddons;
   default:
     return NULL;
   }
@@ -549,18 +581,52 @@ void CSettings::LoadAddons()
 
   if (pRootElement)
   { // parse addons...
+    m_virtualAddons.clear();
+    GetAddons(pRootElement, ADDON_MULTITYPE);
+    GetAddons(pRootElement, ADDON_VIZ);
+    GetAddons(pRootElement, ADDON_SKIN);
     GetAddons(pRootElement, ADDON_PVRDLL);
+    GetAddons(pRootElement, ADDON_SCRIPT);
+    GetAddons(pRootElement, ADDON_SCRAPER_PVR);
+    GetAddons(pRootElement, ADDON_SCRAPER_VIDEO);
+    GetAddons(pRootElement, ADDON_SCRAPER_MUSIC);
+    GetAddons(pRootElement, ADDON_SCRAPER_PROGRAM);
+    GetAddons(pRootElement, ADDON_SCREENSAVER);
+    GetAddons(pRootElement, ADDON_PLUGIN_PVR);
+    GetAddons(pRootElement, ADDON_PLUGIN_MUSIC);
+    GetAddons(pRootElement, ADDON_PLUGIN_VIDEO);
+    GetAddons(pRootElement, ADDON_PLUGIN_PROGRAM);
+    GetAddons(pRootElement, ADDON_PLUGIN_PICTURES);
+    GetAddons(pRootElement, ADDON_PLUGIN_WEATHER);
+    GetAddons(pRootElement, ADDON_DSP_AUDIO);
     // and so on
   }
 }
+
 bool CSettings::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
 {
   /* iterate through alladdons vec and return matched Addon */
-  for (int i = 0; i < m_allAddons.size(); i++)
+  for (unsigned int i = 0; i < m_allAddons.size(); i++)
   {
-    if (m_allAddons[i].m_guid = guid)
+    if (m_allAddons[i].m_guid == guid)
     {
       addon = m_allAddons[i];
+      return true;
+    }
+  }
+  return false;
+}
+
+bool CSettings::GetAddonFromNameAndType(const CStdString &name, const AddonType &type, CAddon &addon)
+{
+  VECADDONS *addons = GetAddonsFromType(type);
+  if (!addons) return false;
+
+  for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+  {
+    if ((*it).m_strName == name)
+    {
+      addon = (*it);
       return true;
     }
   }
@@ -773,10 +839,57 @@ void CSettings::GetAddons(const TiXmlElement* pRootElement, const AddonType &typ
   CStdString strTagName;
   switch (type)
   {
+  case ADDON_MULTITYPE:
+      strTagName = "multitype";
+      break;
+  case ADDON_VIZ:
+      strTagName = "visualistation";
+      break;
+  case ADDON_SKIN:
+      strTagName = "skin";
+      break;
   case ADDON_PVRDLL:
-     strTagName = "pvr";
-     break;
-
+      strTagName = "pvr";
+      break;
+  case ADDON_SCRIPT:
+      strTagName = "script";
+      break;
+  case ADDON_SCRAPER_PVR:
+      strTagName = "scraperpvr";
+      break;
+  case ADDON_SCRAPER_VIDEO:
+      strTagName = "scrapervideo";
+      break;
+  case ADDON_SCRAPER_MUSIC:
+      strTagName = "scrapermusic";
+      break;
+  case ADDON_SCRAPER_PROGRAM:
+      strTagName = "scraperprogram";
+      break;
+  case ADDON_SCREENSAVER:
+      strTagName = "screensaver";
+      break;
+  case ADDON_PLUGIN_PVR:
+      strTagName = "pluginpvr";
+      break;
+  case ADDON_PLUGIN_MUSIC:
+      strTagName = "pluginmusic";
+      break;
+  case ADDON_PLUGIN_VIDEO:
+      strTagName = "pluginvideo";
+      break;
+  case ADDON_PLUGIN_PROGRAM:
+      strTagName = "pluginprogram";
+      break;
+  case ADDON_PLUGIN_PICTURES:
+      strTagName = "pluginpictures";
+      break;
+  case ADDON_PLUGIN_WEATHER:
+      strTagName = "pluginweather";
+      break;
+  case ADDON_DSP_AUDIO:
+      strTagName = "dspaudio";
+      break;
   default:
     return;
   }
@@ -797,6 +910,11 @@ void CSettings::GetAddons(const TiXmlElement* pRootElement, const AddonType &typ
         if (GetAddon(type, pChild, addon))
         {
           addons->push_back(addon);
+          /* If it is a virtual child add-on push it also to the m_virtualAddons list */
+          if (!addon.m_guid_parent.IsEmpty())
+          {
+            m_virtualAddons.push_back(addon);
+          }
         }
       }
       pChild = pChild->NextSibling();
@@ -828,6 +946,13 @@ bool CSettings::GetAddon(const AddonType &type, const TiXmlNode *node, CAddon &a
   }
   else
     return false;
+
+  // childguid if present
+  const TiXmlNode *pNodeChildGUID = node->FirstChild("childguid");
+  if (pNodeChildGUID && pNodeChildGUID->FirstChild())
+  {
+    addon.m_guid = pNodeChildGUID->FirstChild()->Value();
+  }
 
   // validate path and addon package
   if (!AddonFromInfoXML(addon.m_strPath, addon))
@@ -2145,6 +2270,10 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     profile.setWriteSources(bHas);
 
     bHas = false;
+    XMLUtils::GetBoolean(pProfile, "lockaddonmanager", bHas);
+    profile.setAddonManagerLocked(bHas);
+
+    bHas = false;
     XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
     profile.setSettingsLocked(bHas);
 
@@ -2221,6 +2350,7 @@ bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
       XMLUtils::SetBoolean(pNode,"lockpictures",g_settings.m_vecProfiles[iProfile].picturesLocked());
       XMLUtils::SetBoolean(pNode,"lockprograms",g_settings.m_vecProfiles[iProfile].programsLocked());
       XMLUtils::SetBoolean(pNode,"locksettings",g_settings.m_vecProfiles[iProfile].settingsLocked());
+      XMLUtils::SetBoolean(pNode,"lockaddonmanager",g_settings.m_vecProfiles[iProfile].addonmanagerLocked());
       XMLUtils::SetBoolean(pNode,"lockfiles",g_settings.m_vecProfiles[iProfile].filesLocked());
     }
 
@@ -2506,17 +2636,69 @@ bool CSettings::SaveAddons()
   if (!pRoot) return false;
 
   // ok, now run through and save each addons section
+  SetAddons(pRoot, ADDON_MULTITYPE, g_settings.m_multitypeAddons);
+  SetAddons(pRoot, ADDON_VIZ, g_settings.m_visualisationAddons);
+  SetAddons(pRoot, ADDON_SKIN, g_settings.m_skinAddons);
   SetAddons(pRoot, ADDON_PVRDLL, g_settings.m_pvrAddons);
+  SetAddons(pRoot, ADDON_SCRIPT, g_settings.m_scriptAddons);
+  SetAddons(pRoot, ADDON_SCRAPER_PVR, g_settings.m_scraperPVRAddons);
+  SetAddons(pRoot, ADDON_SCRAPER_VIDEO, g_settings.m_scraperVideoAddons);
+  SetAddons(pRoot, ADDON_SCRAPER_MUSIC, g_settings.m_scraperMusicAddons);
+  SetAddons(pRoot, ADDON_SCRAPER_PROGRAM, g_settings.m_scraperProgramAddons);
+  SetAddons(pRoot, ADDON_SCREENSAVER, g_settings.m_screensaverAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_PVR, g_settings.m_pluginPvrAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_MUSIC, g_settings.m_pluginMusicAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_VIDEO, g_settings.m_pluginVideoAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_PROGRAM, g_settings.m_pluginProgramAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_PICTURES, g_settings.m_pluginPictureAddons);
+  SetAddons(pRoot, ADDON_PLUGIN_WEATHER, g_settings.m_pluginWeatherAddons);
+  SetAddons(pRoot, ADDON_DSP_AUDIO, g_settings.m_DSPAudioAddons);
+
   return doc.SaveFile(g_settings.GetAddonsFile());
 }
 
 void CSettings::GetAllAddons()
 {
-  //TODO only currently scans for pvr dlls & only caches packaged icon thumbnail
+  //TODO: only caches packaged icon thumbnail
   m_allAddons.clear();
 
+  // Go thru all addon directorys in xbmc and if present in user directory
   CFileItemList items;
-  if (!CDirectory::GetDirectory("special://xbmc/addons/pvr", items, ADDON_PVRDLL_EXT, false))
+  // User add-on's have priority over application add-on's
+  if (!CSpecialProtocol::XBMCIsHome())
+  {
+    CDirectory::GetDirectory("special://home/addons/multitype", items, ADDON_MULTITYPE_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/visualisations", items, ADDON_VIZ_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/pvr", items, ADDON_PVRDLL_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/scripts", items, ADDON_SCRIPT_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/scrapers/pvr", items, ADDON_SCRAPER_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/scrapers/video", items, ADDON_SCRAPER_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/scrapers/music", items, ADDON_SCRAPER_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/scrapers/programs", items, ADDON_SCRAPER_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
+    CDirectory::GetDirectory("special://home/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
+  }
+  // Now load the add-on's located in the application directory
+  CDirectory::GetDirectory("special://xbmc/addons/multitype", items, ADDON_MULTITYPE_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/visualisations", items, ADDON_VIZ_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/pvr", items, ADDON_PVRDLL_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scripts", items, ADDON_SCRIPT_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scrapers/pvr", items, ADDON_SCRAPER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scrapers/video", items, ADDON_SCRAPER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scrapers/music", items, ADDON_SCRAPER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/scrapers/programs", items, ADDON_SCRAPER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
+  CDirectory::GetDirectory("special://xbmc/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
+
+  // Plugin Directory currently only located in Home
+  CDirectory::GetDirectory("special://home/addons/plugins/pvr", items, ADDON_PLUGIN_PVR_EXT, false);
+  CDirectory::GetDirectory("special://home/addons/plugins/music", items, ADDON_PLUGIN_MUSIC_EXT, false);
+  CDirectory::GetDirectory("special://home/addons/plugins/video", items, ADDON_PLUGIN_VIDEO_EXT, false);
+  CDirectory::GetDirectory("special://home/addons/plugins/programs", items, ADDON_PLUGIN_PROGRAM_EXT, false);
+  CDirectory::GetDirectory("special://home/addons/plugins/pictures", items, ADDON_PLUGIN_PICTURES_EXT, false);
+  CDirectory::GetDirectory("special://home/addons/plugins/weather", items, ADDON_PLUGIN_WEATHER_EXT, false);
+
+  if (items.Size() == 0)
     return;
 
   // for each folder found
@@ -2528,8 +2710,18 @@ void CSettings::GetAllAddons()
     CAddon addon;
     if (!AddonFromInfoXML(item->m_strPath, addon))
     {
-      CLog::Log(LOGERROR, "PVR: Error reading %s/info.xml, bypassing package", item->m_strPath.c_str());
+      CLog::Log(LOGERROR, "Addon: Error reading %s/info.xml, bypassing package", item->m_strPath.c_str());
       continue;
+    }
+
+    // iterate through current alladdons vec and skip if guid is already present
+    for (unsigned int i = 0; i < m_allAddons.size(); i++)
+    {
+      if (m_allAddons[i].m_guid == addon.m_guid)
+      {
+        CLog::Log(LOGNOTICE, "Addon: GUID=%s, Name=%s already present in %s, ignoring package", addon.m_guid.c_str(), addon.m_strName.c_str(), m_allAddons[i].m_strPath.c_str());
+        continue;
+      }
     }
 
     // check for/cache icon thumbnail
@@ -2539,23 +2731,29 @@ void CSettings::GetAllAddons()
       item->SetUserProgramThumb();
     if (!item->HasThumbnail())
     {
-      CFileItem item2(item->m_strPath);
-      CUtil::AddFileToFolder(item->m_strPath, "default" + ADDON_PVRDLL_EXT, item2.m_strPath);
+      CFileItem item2(addon.m_strPath);
+      CUtil::AddFileToFolder(addon.m_strPath, addon.m_strLibName, item2.m_strPath);
       item2.m_bIsFolder = false;
       item2.SetCachedProgramThumb();
       if (!item2.HasThumbnail())
         item2.SetUserProgramThumb();
+      if (!item2.HasThumbnail())
+        item2.SetThumbnailImage(addon.m_icon);
       if (item2.HasThumbnail())
       {
-        XFILE::CFile::Cache(item2.GetThumbnailImage(), item->GetCachedProgramThumb());
+        XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
+        item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
-
     addon.m_strPath = item->m_strPath;
 
     // everything ok, add to available addons
     m_allAddons.push_back(addon);
   }
+
+  /* Copy also virtual child add-on's to the list */
+  for (unsigned int i = 0; i < m_virtualAddons.size(); i++)
+    m_allAddons.push_back(m_virtualAddons[i]);
 }
 
 bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
@@ -2582,8 +2780,9 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
    * 1. guid exists and is valid
    * 2. type exists and is valid
    * 3. version exists
-   * 4. operating system matches ours //TODO
-   * 5. summary exists */
+   * 4. operating system matches ours
+   * 5. summary exists
+   */
 
   /* Read guid */
   CStdString guid;
@@ -2595,6 +2794,16 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   }
   guid = element->GetText(); // grab guid
 
+  /* Validate type */
+  element = xmlDoc.RootElement()->FirstChildElement("type");
+  int type = atoi(element->GetText());
+  if (type < ADDON_MULTITYPE || type > ADDON_DSP_AUDIO)
+  {
+    CLog::Log(LOGERROR, "Addon: %s has invalid type identifier: %d", strPath.c_str(), type);
+    return false;
+  }
+  addon.m_addonType = (AddonType) type; // type was validated //TODO this cast to AddonType
+
   /* Validate guid*/
   CRegExp guidRE;
   guidRE.RegComp(ADDON_GUID_RE.c_str());
@@ -2603,17 +2812,24 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
     CLog::Log(LOGERROR, "Addon: %s has invalid <guid> element, ignoring", strPath.c_str());
     return false;
   }
-  addon.m_guid = guid; // guid was validated
-
-  /* Validate type */
-  element = xmlDoc.RootElement()->FirstChildElement("type");
-  int type = atoi(element->GetText());
-  if (type != 3)
+  if (addon.m_guid.IsEmpty())
+    addon.m_guid = guid; // guid was validated
+  else
   {
-    CLog::Log(LOGERROR, "Addon: %s has invalid type identifier: %d", strPath.c_str(), type);
-    return false;
+    addon.m_guid_parent = guid; // guid was validated and is part of a child addon
+
+    VECADDONS *addons = GetAddonsFromType(addon.m_addonType);
+    if (!addons) return false;
+
+    for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+    {
+      if ((*it).m_guid == addon.m_guid_parent)
+      {
+        (*it).m_childs++;
+        break;
+      }
+    }
   }
-  addon.m_addonType = (AddonType) type; // type was validated //TODO this cast to AddonType
 
   /* Retrieve Name */
   CStdString name;
@@ -2646,6 +2862,47 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   }
   addon.m_strVersion = version; // guid was validated
 
+  /* Retrieve platform which is supported */
+  CStdString platform;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("platform");
+  if (!element)
+  {
+    CLog::Log(LOGERROR, "Addon: %s missing <platform> element, ignoring", strPath.c_str());
+    return false;
+  }
+
+  /* Validate platform */
+  platform = element->GetText();
+  size_t found = platform.Find("all");
+  if (platform.Find("all") < 0)
+  {
+#if defined(_LINUX)
+    if (platform.Find("linux") < 0)
+    {
+      CLog::Log(LOGERROR, "Addon: %s is not supported under Linux, ignoring", strPath.c_str());
+      return false;
+    }
+#elif defined(_WIN32PC)
+    if (platform.Find("windows") < 0)
+    {
+      CLog::Log(LOGERROR, "Addon: %s is not supported under Windows, ignoring", strPath.c_str());
+      return false;
+    }
+#elif defined(__APPLE__)
+    if (platform.Find("osx") < 0)
+    {
+      CLog::Log(LOGERROR, "Addon: %s is not supported under OSX, ignoring", strPath.c_str());
+      return false;
+    }
+#elif defined(_XBOX)
+    if (platform.Find("xbox") < 0)
+    {
+      CLog::Log(LOGERROR, "Addon: %s is not supported under XBOX, ignoring", strPath.c_str());
+      return false;
+    }
+#endif
+  }
   /* Retrieve summary */
   CStdString summary;
   element = NULL;
@@ -2686,12 +2943,27 @@ bool CSettings::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   if (element)
     addon.m_strLibName = element->GetText();
 
-  /* Retrieve library file name */
+#ifdef _WIN32PC
+  /* Retrieve WIN32 library file name in case it is present
+   * This is required for no overwrite to the fixed WIN32 add-on's
+   * during compile time
+   */
+  CStdString library_win32;
+  element = NULL;
+  element = xmlDoc.RootElement()->FirstChildElement("librarywin32");
+  if (element) // If it is found overwrite standart library name
+    addon.m_strLibName = element->GetText();
+#endif
+
+  /* Retrieve thumbnail file name */
   CStdString icon;
   element = NULL;
   element = xmlDoc.RootElement()->FirstChildElement("icon");
   if (element)
-    addon.m_icon = path + element->GetText();
+  {
+    CStdString iconPath = element->GetText();
+    addon.m_icon = path + iconPath;
+  }
 
   /*** end of optional fields ***/
 
@@ -2708,10 +2980,57 @@ bool CSettings::SetAddons(TiXmlNode *root, const AddonType &type, const VECADDON
   CStdString strType;
   switch (type)
   {
-  case ADDON_PVRDLL: {
+  case ADDON_MULTITYPE:
+      strType = "multitype";
+      break;
+  case ADDON_VIZ:
+      strType = "visualistation";
+      break;
+  case ADDON_SKIN:
+      strType = "skin";
+      break;
+  case ADDON_PVRDLL:
       strType = "pvr";
       break;
-    }
+  case ADDON_SCRIPT:
+      strType = "script";
+      break;
+  case ADDON_SCRAPER_PVR:
+      strType = "scraperpvr";
+      break;
+  case ADDON_SCRAPER_VIDEO:
+      strType = "scrapervideo";
+      break;
+  case ADDON_SCRAPER_MUSIC:
+      strType = "scrapermusic";
+      break;
+  case ADDON_SCRAPER_PROGRAM:
+      strType = "scraperprogram";
+      break;
+  case ADDON_SCREENSAVER:
+      strType = "screensaver";
+      break;
+  case ADDON_PLUGIN_PVR:
+      strType = "pluginpvr";
+      break;
+  case ADDON_PLUGIN_MUSIC:
+      strType = "pluginmusic";
+      break;
+  case ADDON_PLUGIN_VIDEO:
+      strType = "pluginvideo";
+      break;
+  case ADDON_PLUGIN_PROGRAM:
+      strType = "pluginprogram";
+      break;
+  case ADDON_PLUGIN_PICTURES:
+      strType = "pluginpictures";
+      break;
+  case ADDON_PLUGIN_WEATHER:
+      strType = "pluginweather";
+      break;
+  case ADDON_DSP_AUDIO:
+      strType = "dspaudio";
+      break;
   default:
     return false;
   }
@@ -2727,6 +3046,8 @@ bool CSettings::SetAddons(TiXmlNode *root, const AddonType &type, const VECADDON
 
       XMLUtils::SetString(&element, "name", addon.m_strName);
       XMLUtils::SetPath(&element, "path", addon.m_strPath);
+      if (!addon.m_guid_parent.IsEmpty())
+        XMLUtils::SetString(&element, "childguid", addon.m_guid);
 
       if (!addon.m_icon.IsEmpty())
         XMLUtils::SetPath(&element, "thumbnail", addon.m_icon);
@@ -3210,6 +3531,17 @@ CStdString CSettings::GetScriptsFolder() const
     return folder;
 
   folder = "special://xbmc/scripts";
+  return folder;
+}
+
+CStdString CSettings::GetAddonsFolder() const
+{
+  CStdString folder = "special://home/addons";
+
+  if ( CDirectory::Exists(folder) )
+    return folder;
+
+  folder = "special://xbmc/addons";
   return folder;
 }
 

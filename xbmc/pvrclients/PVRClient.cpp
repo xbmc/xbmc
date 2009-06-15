@@ -274,7 +274,7 @@ void CPVRClient::PVREventCallback(void *userData, const PVR_EVENT pvrevent, cons
   client->m_manager->OnClientMessage(client->m_clientID, pvrevent, msg);
 }
 
-void CPVRClient::PVRLogCallback(void *userData, const PVR_LOG loglevel, const char *format, ... )
+void CPVRClient::PVRLogCallback(void *userData, const addon_log loglevel, const char *format, ... )
 {
   CPVRClient* client=(CPVRClient*) userData;
   if (!client)
