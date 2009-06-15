@@ -21,7 +21,7 @@
   <name>VDRClient</name>
 
   <!-- library: file name of the library !-->
-  <library>vdr.pvr</library>
+  <library>XBMC_VDR.pvr</library>
 
   <!-- icon: icon name of the library !-->
   <icon>vdr.tbn</icon>
@@ -31,7 +31,7 @@
 
   <!-- platform: xbmc platform this addon is compatible with: 
     atv|osx|xbox|windows|linux|all !-->
-  <platform>linux</platform>
+  <platform>linux|windows</platform>
 
   <!-- minversion: earliest xbmc revision that this addon supports !-->
   <minversion>
