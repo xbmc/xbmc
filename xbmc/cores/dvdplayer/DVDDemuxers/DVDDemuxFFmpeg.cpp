@@ -398,7 +398,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
 
     // open the demuxer
-printf("opening demuxer\n");
     if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
     {
       CLog::Log(LOGERROR, "%s - Error, could not open file %s", __FUNCTION__, strFile.c_str());
