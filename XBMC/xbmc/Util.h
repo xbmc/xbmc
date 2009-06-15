@@ -338,6 +338,8 @@ public:
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
   static void ClearFileItemCache();
 
+  static CStdString CreateUUID();
+
 #ifdef _LINUX
   // this will run the command using sudo in a new process.
   // the user that runs xbmc should be allowed to issue the given sudo command.

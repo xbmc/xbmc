@@ -1,6 +1,7 @@
 INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib
 
 SRCS=Addon.cpp \
+     AddonHelpers.cpp \
      AlarmClock.cpp \
      Archive.cpp \
      CharsetConverter.cpp \

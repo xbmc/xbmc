@@ -32,18 +32,11 @@
 #include "utils/TVChannelInfoTag.h"
 #include "utils/TVRecordInfoTag.h"
 #include "utils/TVTimerInfoTag.h"
+#include "../addons/include/xbmc_addon_types.h"
 
 extern "C"
 {
 
-  /**
-  * XBMC logging levels
-  */
-  enum PVR_LOG {
-    LOG_DEBUG,
-    LOG_INFO,
-    LOG_ERROR
-  };
 
   /**
   * PVR Client Error Codes
@@ -100,7 +93,7 @@ extern "C"
   * XBMC callbacks
   */
   typedef void (*PVREventCallback)(void *userData, const PVR_EVENT, const char*);
-  typedef void (*PVRLogCallback)(void *userData, const PVR_LOG loglevel, const char *format, ... );
+  typedef void (*PVRLogCallback)(void *userData, const addon_log loglevel, const char *format, ... );
   typedef void (*PVRCharConv)(CStdStringA &sourceDest);
   typedef const char* (*PVRLocStrings)(DWORD dwCode);
 

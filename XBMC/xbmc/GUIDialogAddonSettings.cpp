@@ -22,15 +22,18 @@
 #include "stdafx.h"
 #include "GUIDialogAddonSettings.h"
 #include "utils/Addon.h"
+#include "utils/AddonHelpers.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIControlGroupList.h"
+#include "GUIDialogOK.h"
 #include "Util.h"
 #include "MediaManager.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
 #include "GUIImage.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/PluginDirectory.h"
 #include "VideoInfoScanner.h"
 #include "ScraperSettings.h"
 #include "GUIWindowManager.h"
@@ -87,7 +90,13 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
       else
         bCloseDialog = ShowVirtualKeyboard(iControl);
 
-      if (iControl == ID_BUTTON_OK || iControl == ID_BUTTON_CANCEL || bCloseDialog)
+      if (iControl == ID_BUTTON_CANCEL || bCloseDialog)
+      {
+        m_bConfirmed = false;
+        Close();
+        return true;
+      }
+      else if (iControl == ID_BUTTON_OK)
       {
         m_bConfirmed = true;
         Close();
@@ -118,19 +127,67 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
   if (url.GetProtocol() == "plugin")
     heading.Format("$LOCALIZE[1045] - %s", heading.c_str());
   else
-    heading.Format("$LOCALIZE[33000] - %s", heading.c_str());
+    heading.Format("$LOCALIZE[23000] - %s", heading.c_str());
 
   // Set the heading
-  pDialog->m_strHeading = heading;
+  pDialog->SetHeading(heading);
 
   CAddonSettings settings;
-  settings.Load(m_url);
-  pDialog->m_settings = settings;
+  if (settings.Load(m_url))
+  {
+    pDialog->m_settings = settings;
 
-  pDialog->DoModal();
+    pDialog->DoModal();
 
-  settings = pDialog->m_settings;
-  settings.Save();
+    settings = pDialog->m_settings;
+
+    if (pDialog->m_bConfirmed)
+      settings.Save();
+  }
+  else
+  {
+    CGUIDialogOK::ShowAndGetInput(18100,0,23081,0);
+  }
+
+  // Unload temporary language strings
+  CAddon::ClearAddonStrings();
+
+  return;
+}
+
+// \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
+void CGUIDialogAddonSettings::ShowAndGetInput(CAddon& addon)
+{
+  m_url = addon.m_strPath;
+
+  // Load language strings temporarily
+  CAddon::LoadAddonStrings(m_url);
+
+  // Create the dialog
+  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+
+  // Set the heading
+  CStdString heading;
+  heading.Format("$LOCALIZE[23000] - %s", addon.m_strName.c_str());
+  pDialog->SetHeading(heading);
+
+  CAddonSettings settings;
+  if (settings.Load(addon))
+  {
+    pDialog->m_settings = settings;
+    pDialog->DoModal();
+    settings = pDialog->m_settings;
+
+    if (pDialog->m_bConfirmed)
+    {
+      settings.Save();
+//      CAddonUtils::TransferAddonSettings(addon);
+    }
+  }
+  else
+  {
+    CGUIDialogOK::ShowAndGetInput(18100,0,23081,0);
+  }
 
   // Unload temporary language strings
   CAddon::ClearAddonStrings();
@@ -145,7 +202,9 @@ void CGUIDialogAddonSettings::ShowAndGetInput(SScraperInfo& info)
   CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
   pDialog->m_settings = info.settings;
-  pDialog->m_strHeading.Format("$LOCALIZE[20407] - %s", info.strTitle.c_str());
+  CStdString heading;
+  heading.Format("$LOCALIZE[20407] - %s", info.strTitle.c_str());
+  pDialog->SetHeading(heading);
 
   pDialog->DoModal();
   info.settings.LoadUserXML(static_cast<CScraperSettings&>(pDialog->m_settings).GetSettings());
@@ -204,7 +263,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
       const CGUIControl* control = GetControl(controlId);
       if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
       {
-        const char *id = setting->Attribute("id"); 
+        const char *id = setting->Attribute("id");
         const char *type = setting->Attribute("type");
         const char *option = setting->Attribute("option");
         const char *source = setting->Attribute("source");
@@ -229,14 +288,17 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             else
               ((CGUIButtonControl*) control)->SetLabel2(value);
           }
+          m_buttonValues[id] = value;
         }
         else if (strcmp(type, "integer") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
           ((CGUIButtonControl*) control)->SetLabel2(value);
+          m_buttonValues[id] = value;
         }
         else if (strcmp(type, "ipaddress") == 0 && CGUIDialogNumeric::ShowAndGetIPAddress(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
           ((CGUIButtonControl*) control)->SetLabel2(value);
+          m_buttonValues[id] = value;
         }
         else if (strcmpi(type, "video") == 0 || strcmpi(type, "music") == 0 ||
           strcmpi(type, "pictures") == 0 || strcmpi(type, "programs") == 0 ||
@@ -267,12 +329,16 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               bWriteOnly = (strcmpi(option, "writeable") == 0);
 
             if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, ((CGUIButtonControl*) control)->GetLabel(), value, bWriteOnly))
+            {
               ((CGUIButtonControl*) control)->SetLabel2(value);
+            }
           }
           else if (strcmpi(type, "pictures") == 0)
           {
             if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, ((CGUIButtonControl*) control)->GetLabel(), value))
+            {
               ((CGUIButtonControl*) control)->SetLabel2(value);
+            }
           }
           else
           {
@@ -304,7 +370,9 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             }
 
             if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, ((CGUIButtonControl*) control)->GetLabel(), value))
+            {
               ((CGUIButtonControl*) control)->SetLabel2(value);
+            }
           }
           m_buttonValues[id] = value;
         }
@@ -330,6 +398,11 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
   }
   EnableControls();
   return bCloseDialog;
+}
+
+void CGUIDialogAddonSettings::SetHeading(const CStdString& strHeading)
+{
+  m_strHeading = strHeading;
 }
 
 // Go over all the settings and set their values according to the values of the GUI components
@@ -414,15 +487,9 @@ void CGUIDialogAddonSettings::CreateControls()
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, m_strHeading);
 
   // Create our base path, used for type "fileenum" settings
-  //TODO Fix all Addon paths
   CStdString basepath;
-  if (m_url.GetProtocol() == "plugin")
-    basepath = "special://home/plugins/";
-  else
-    basepath = "special://xbmc/";
-
-  CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
-  CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
+  m_url.GetURL(basepath);
+  basepath = CPluginDirectory::TranslatePluginDirectory(basepath);
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
@@ -445,11 +512,11 @@ void CGUIDialogAddonSettings::CreateControls()
       label.Format("$LOCALIZE[%s]", setting->Attribute("label"));
     else
       label = setting->Attribute("label");
-
-    bool bSort=false;
-    const char *sort = setting->Attribute("sort");
-    if (sort && (strcmp(sort, "yes") == 0))
-      bSort=true;
+    
+    bool bSort=false;  
+    const char *sort = setting->Attribute("sort");  
+    if (sort && (strcmp(sort, "yes") == 0))  
+      bSort=true; 
 
     if (type)
     {
@@ -501,8 +568,8 @@ void CGUIDialogAddonSettings::CreateControls()
         if (!entries.IsEmpty())
           CUtil::Tokenize(entries, entryVec, "|");
 
-        if(bSort && strcmpi(type, "labelenum") == 0)
-          std::sort(valuesVec.begin(), valuesVec.end(), sortstringbyname());
+        if(bSort && strcmpi(type, "labelenum") == 0)  
+          std::sort(valuesVec.begin(), valuesVec.end(), sortstringbyname());  
 
         for (unsigned int i = 0; i < valuesVec.size(); i++)
         {

@@ -36,6 +36,10 @@ public:
   static void ShowAndGetInput(CURL& url);
   static void ShowAndGetInput(SScraperInfo& info);
   static void ShowAndGetInput(CStdString& path);
+  static void ShowAndGetInput(ADDON::CAddon& addon);
+  void SetHeading(const CStdString &strHeading);
+  void SetSettings(CAddonSettings settings) { m_settings = settings; };
+  CAddonSettings GetSettings() { return m_settings; };
 
 private:
   void CreateControls();
@@ -50,7 +54,7 @@ private:
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
   CAddonSettings m_settings;
   CStdString m_strHeading;
-  std::map<CStdString,CStdString> m_buttonValues; 
+  std::map<CStdString,CStdString> m_buttonValues;
 };
 
 #endif

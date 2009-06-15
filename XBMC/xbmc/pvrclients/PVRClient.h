@@ -98,7 +98,7 @@ protected:
 
 private:
   static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);
-  static void PVRLogCallback(void *userData, const PVR_LOG loglevel, const char *format, ... );
+  static void PVRLogCallback(void *userData, const addon_log loglevel, const char *format, ... );
   static void PVRUnknownToUTF8(CStdStringA &sourceDest);
   static const char* PVRLocStrings(DWORD dwCode);
 };

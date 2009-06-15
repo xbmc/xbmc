@@ -1,23 +1,23 @@
 /*
-*      Copyright (C) 2005-2008 Team XBMC
-*      http://www.xbmc.org
-*
-*  This Program is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2, or (at your option)
-*  any later version.
-*
-*  This Program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*  GNU General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
-*
-*/
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
 #include "stdafx.h"
 #include "utils/Addon.h"
@@ -33,14 +33,14 @@
 #include "Util.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "ScraperSettings.h"
 
 #define CONTROL_LIST            450
 #define CONTROL_HEADING_LABEL   411
 #define CONTROL_LABEL_PATH      412
 #define CONTROL_OK              413
-#define CONTROL_REMOVE_ADDONS   414
+#define CONTROL_CANCEL          414
 #define CONTROL_ADDONS          415
-#define CONTROL_CONFIG_ADDONS   416
 
 using namespace ADDON;
 
@@ -104,35 +104,17 @@ bool CGUIDialogAddonBrowser::OnMessage(CGUIMessage& message)
           return true;
         }
       }
-      else if (message.GetSenderId() == CONTROL_REMOVE_ADDONS)
+      else if (message.GetSenderId() == CONTROL_CANCEL)
       {
-        if (m_vecItems->Size() > 0)
-        {
-          int iItem = m_viewControl.GetSelectedItem();
-          CFileItemPtr pItem = m_vecItems->Get(iItem);
-          CGUIDialogYesNo* pDialog = new CGUIDialogYesNo();
-          if (pDialog->ShowAndGetInput(g_localizeStrings.Get(33009), pItem->GetProperty("Addon.Name"), "", g_localizeStrings.Get(33010)))
-          {
-            g_settings.DisableAddon(pItem->GetProperty("Addon.GUID"), m_type);
-            m_changed = true;
-            Update();
-          }
-        }
-        return true;
-      }
-      else if (message.GetSenderId() == CONTROL_CONFIG_ADDONS)
-      {
-        if (m_vecItems->Size() > 0)
-        {
-          int iItem = m_viewControl.GetSelectedItem();
-          CFileItemPtr pItem = m_vecItems->Get(iItem);
-          CURL url(pItem->m_strPath);
-          CGUIDialogAddonSettings::ShowAndGetInput(url);
-        }
+        Close();
         return true;
       }
       else if (message.GetSenderId() == CONTROL_ADDONS)
       {
+        // check if user is allowed to open this window
+        if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+          if (!g_passwordManager.IsMasterLockUnlocked(true))
+            return false;
         OnGetAddons(m_type);
         return true;
       }
@@ -187,7 +169,10 @@ void CGUIDialogAddonBrowser::Update()
 
   for (unsigned i=0; i < addons->size(); i++)
   {
-    CAddon addon = addons->at(i);
+    CAddon &addon = (*addons)[i];
+
+    if (addon.m_addonType != m_type)
+        continue;
 
     if (m_getAddons)
     { // don't show addons that are enabled
@@ -196,21 +181,22 @@ void CGUIDialogAddonBrowser::Update()
       VECADDONS *addons = g_settings.GetAddonsFromType(m_type);
       for (unsigned i = 0; i < addons->size(); i++)
       {
-        CAddon found = addons->at(i);
-        if (found.m_guid == addon.m_guid)
+        if ((*addons)[i].m_guid == addon.m_guid)
           skip = true;
       }
       if (skip)
-        break;
+        continue;
     }
 
     CFileItemPtr pItem(new CFileItem(addon.m_strPath, false));
     pItem->SetProperty("Addon.GUID", addon.m_guid);
+    pItem->SetProperty("Addon.parentGUID", addon.m_guid_parent);
     pItem->SetProperty("Addon.Name", addon.m_strName);
     pItem->SetProperty("Addon.Summary", addon.m_summary);
     pItem->SetProperty("Addon.Description", addon.m_strDesc);
     pItem->SetProperty("Addon.Creator", addon.m_strCreator);
     pItem->SetProperty("Addon.Disclaimer", addon.m_disclaimer);
+    pItem->SetProperty("Addon.m_strLibName", addon.m_disclaimer);
     pItem->SetProperty("Addon.Rating", addon.m_stars);
     pItem->SetThumbnailImage(addon.m_icon);
     m_vecItems->Add(pItem);
@@ -226,9 +212,7 @@ void CGUIDialogAddonBrowser::Update()
 void CGUIDialogAddonBrowser::Render()
 {
   CONTROL_ENABLE_ON_CONDITION(CONTROL_ADDONS, !m_getAddons);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_CONFIG_ADDONS, !m_getAddons && m_vecItems->Size() != 0);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOVE_ADDONS, !m_getAddons && m_vecItems->Size() != 0);
-  //CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, m_changed && !m_getAddons);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, m_changed && !m_getAddons);
 
   CGUIDialog::Render();
 }
@@ -246,6 +230,14 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
     CAddon addon;
     if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
     {
+      CStdString disclaimer = pItem->GetProperty("Addon.Disclaimer");
+      if (disclaimer.size() > 0)
+      {
+         CGUIDialogYesNo* pDialog = new CGUIDialogYesNo();
+         if (!pDialog->ShowAndGetInput(g_localizeStrings.Get(23058), pItem->GetProperty("Addon.Name"), disclaimer, g_localizeStrings.Get(23059)))
+           return;
+      }
+
       // add the addon to g_settings, not saving to addons.xml until parent dialog is confirmed
       addons->push_back(addon);
       m_confirmed = true;
@@ -259,8 +251,19 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
   }
   else
   {
-    /* open up settings dialog */
+    // check if user is allowed to open this window
+    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+      if (!g_passwordManager.IsMasterLockUnlocked(true))
+        return;
 
+    if (m_type != ADDON_SCRAPER_PVR && m_type != ADDON_SCRAPER_VIDEO &&
+        m_type != ADDON_SCRAPER_MUSIC && m_type != ADDON_SCRAPER_PROGRAM)
+    {
+      /* open up settings dialog */
+      CAddon addon;
+      if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+        CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    }
   }
 }
 
@@ -275,6 +278,9 @@ void CGUIDialogAddonBrowser::OnWindowLoaded()
   CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LIST + 5000);
   if (spin) spin->SetVisible(false);
 #endif
+
+  // request available addons update
+  g_settings.GetAllAddons();
 }
 
 void CGUIDialogAddonBrowser::OnWindowUnload()
@@ -301,20 +307,13 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool 
   // determine the correct heading
   CStdString heading;
   if (!viewActive)
-    heading = g_localizeStrings.Get(33002); // "Available Add-ons"
+    heading = g_localizeStrings.Get(23002); // "Available Add-ons"
   else
-  {
-    // set according to addon type
-    switch (type)
-    {
-    case ADDON_PVRDLL:
-      heading = g_localizeStrings.Get(18028); // "Manage PVR clients"
-      break;
+    heading = g_localizeStrings.Get(23060 + type); // Name is calculated by type!
 
-    default:
-      break;
-    }
-  }
+  // check if user is allowed to open this window
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    heading = heading + " (" + g_localizeStrings.Get(20166) + ")";
 
   // finalize the window and display
   browser->SetHeading(heading);
@@ -343,9 +342,6 @@ void CGUIDialogAddonBrowser::OnGetAddons(const AddonType &type)
   // Add it to our window manager
   m_gWindowManager.AddUniqueInstance(browser);
 
-  // request available addons update
-  g_settings.GetAllAddons();
-
   // present dialog with available addons
   if (ShowAndGetAddons(type, false))
   {
@@ -358,6 +354,11 @@ void CGUIDialogAddonBrowser::OnGetAddons(const AddonType &type)
 
 bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
 {
+  // check if user is allowed to open this window
+  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (!g_passwordManager.IsMasterLockUnlocked(true))
+      return false;
+
   // disable context menu for available addons for now
   if (m_getAddons)
     return true;
@@ -366,48 +367,67 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
   if (!pMenu)
     return false;
 
-  float posX = 200, posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_LIST);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
-
   pMenu->Initialize();
+  CFileItemPtr pItem = m_vecItems->Get(iItem);
 
   int iSettingsLabel = 23008;
+  int iReUseLabel = 23083;
   int iRemoveLabel = 23009;
 
-  int btn_Settings = pMenu->AddButton(iSettingsLabel);
-  int btn_Remove = -1;
-  if (m_vecItems->Size() > 0)
-    btn_Remove = pMenu->AddButton(iRemoveLabel);
+  int btn_Settings = -1;
+  int btn_ReUse = -1;
+  if (m_type != ADDON_SCRAPER_PVR && m_type != ADDON_SCRAPER_VIDEO &&
+      m_type != ADDON_SCRAPER_MUSIC && m_type != ADDON_SCRAPER_PROGRAM)
+    btn_Settings = pMenu->AddButton(iSettingsLabel);
+  if (m_type == ADDON_PVRDLL && pItem->GetProperty("Addon.parentGUID").IsEmpty())
+    btn_ReUse = pMenu->AddButton(iReUseLabel);
+  int btn_Remove = pMenu->AddButton(iRemoveLabel);
 
-  pMenu->SetPosition(posX, posY);
+  pMenu->CenterWindow();
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
-
-  CFileItemPtr pItem = m_vecItems->Get(iItem);
-
   if (btnid == btn_Settings)
   { // present addon settings dialog
-    CURL url(pItem->m_strPath);
-    CGUIDialogAddonSettings::ShowAndGetInput(url);
+    CAddon addon;
+    if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
     return true;
+  }
+  else if (btnid == btn_ReUse)
+  {
+    /* need to determine which addon from allAddons this and add to AddonType specific vector */
+    VECADDONS *addons = g_settings.GetAddonsFromType(m_type);
+    CAddon addon_parent;
+    if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon_parent))
+    {
+      CAddon addon_child;
+      if (CAddon::CreateChildAddon(addon_parent, addon_child))
+      {
+        // add the addon to g_settings, not saving to addons.xml until parent dialog is confirmed
+        addons->push_back(addon_child);
+        g_settings.m_virtualAddons.push_back(addon_child);
+        m_changed = true;
+        Update();
+        return true;
+      }
+    }
   }
   else if (btnid == btn_Remove)
   { // request confirmation
     CGUIDialogYesNo* pDialog = new CGUIDialogYesNo();
-    if (pDialog->ShowAndGetInput(g_localizeStrings.Get(33009), pItem->GetProperty("Addon.Name"), "", g_localizeStrings.Get(33010)))
+    if (pDialog->ShowAndGetInput(g_localizeStrings.Get(23009), pItem->GetProperty("Addon.Name"), "", g_localizeStrings.Get(23010)))
     {
-      g_settings.DisableAddon(pItem->GetProperty("Addon.GUID"), m_type);
-      m_changed = true;
-      Update();
+      CAddon addon;
+      if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+      {
+        CAddon::GetCallbackForType(m_type)->RequestRemoval(&addon);
+        g_settings.DisableAddon(addon.m_guid, m_type);
+        m_changed = true;
+        Update();
+        return true;
+      }
     }
-
-    return true;
   }
   return false;
 }
