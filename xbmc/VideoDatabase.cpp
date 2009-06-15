@@ -3567,7 +3567,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     if (iVersion < 28)
     {
       m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
-        "strVideoCodec text, fVideoAspect read, iVideoWidth integer, iVideoHeight integer, "
+        "strVideoCodec text, fVideoAspect real, iVideoWidth integer, iVideoHeight integer, "
         "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, strSubtitleLanguage text)");
       m_pDS->exec("CREATE INDEX ix_streamdetails ON streamdetails (idFile)");
     }
