@@ -55,7 +55,7 @@ class CVideoReferenceClock : public CThread
     double GetSpeed();
     int    GetRefreshRate();
     void   Wait(__int64 Target);
-    void   WaitStarted(int MSecs);
+    bool   WaitStarted(int MSecs);
     bool   GetClockInfo(int& MissedVblanks, double& ClockSpeed);
 
 #ifdef _WIN32

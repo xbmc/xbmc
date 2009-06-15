@@ -125,9 +125,13 @@ void CVideoReferenceClock::Process()
   }
 }
 
-void CVideoReferenceClock::WaitStarted(int MSecs)
+bool CVideoReferenceClock::WaitStarted(int MSecs)
 {
-  m_Started.WaitMSec(MSecs);
+#ifdef _WIN32
+  return true; //direct3d can't get an exclusive lock on vista if we wait here
+#else
+  return m_Started.WaitMSec(MSecs);
+#endif
 }
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
