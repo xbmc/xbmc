@@ -1715,6 +1715,9 @@ int CPVRManager::GetAllTimers(CFileItemList* results)
     CFileItemPtr timer(new CFileItem(m_timers[i]));
     results->Add(timer);
   }
+  
+  /* Syncronize Timer Info labels */
+  SyncInfo();
 
   LeaveCriticalSection(&m_critSection);
 
@@ -2758,12 +2761,17 @@ void CPVRManager::SyncInfo()
 
   if (m_hasTimers && m_clientProps.SupportTimers)
   {
-    CDateTime nextRec;
+    CDateTime nextRec = CDateTime(2030, 11, 30, 0, 0, 0); //future...
 
     for (unsigned int i = 0; i < m_timers.size(); ++i)
     {
+      CLog::Log(LOGDEBUG, "%s - PVR: nextRec is '%s' current timer starts at %s ", __FUNCTION__,
+                nextRec.GetAsLocalizedDateTime(false, false).c_str(),
+                m_timers[i].m_StartTime.GetAsLocalizedDateTime(false, false).c_str());
+
       if (nextRec > m_timers[i].m_StartTime)
       {
+        CLog::Log(LOGDEBUG, "%s - PVR: found earlier timer: timer %i GOOD!", __FUNCTION__, i);
         nextRec = m_timers[i].m_StartTime;
 
         m_nextRecordingTitle    = m_timers[i].m_strTitle;
@@ -2773,11 +2781,16 @@ void CPVRManager::SyncInfo()
         if (m_timers[i].m_recStatus == true)
         {
           m_isRecording = true;
+          CLog::Log(LOGDEBUG, "%s - PVR: next timer is currently recording", __FUNCTION__);
         }
         else
         {
           m_isRecording = false;
         }
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG, "%s - PVR: trying to find next timer: timer %i is starting later than others.", __FUNCTION__, i);
       }
     }
   }
@@ -2787,6 +2800,10 @@ void CPVRManager::SyncInfo()
     m_nowRecordingTitle = m_nextRecordingTitle;
     m_nowRecordingDateTime = m_nextRecordingDateTime;
     m_nowRecordingChannel = m_nextRecordingChannel;
+    CLog::Log(LOGDEBUG, "%s - PVR: data of active recording is used: '%s', '%s', '%s'", __FUNCTION__,
+                        m_nowRecordingTitle.c_str(),
+                        m_nextRecordingDateTime.c_str(),
+                        m_nextRecordingChannel.c_str());
   }
   else
   {
