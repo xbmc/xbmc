@@ -1,4 +1,4 @@
-<window id="160">
+<window id="126">
 	<defaultcontrol always="true">450</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<coordinates>
@@ -56,7 +56,7 @@
 				<posx>40</posx>
 				<posy>120</posy>
 				<width>560</width>
-				<height>396</height>
+				<height>440</height>
 				<onleft>9000</onleft>
 				<onright>9000</onright>
 				<onup>450</onup>
@@ -110,12 +110,12 @@
 						<info>Addon.Rating</info>
 					</control>
 				</itemlayout>
-				<focusedlayout height="120">
+				<focusedlayout height="64">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>560</width>
-						<height>115</height>
+						<height>60</height>
 						<visible>!Control.HasFocus(450)</visible>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
@@ -123,7 +123,7 @@
 						<posx>0</posx>
 						<posy>0</posy>
 						<width>560</width>
-						<height>115</height>
+						<height>60</height>
 						<visible>Control.HasFocus(450)</visible>
 						<texture border="5">button-focus.png</texture>
 					</control>
@@ -168,7 +168,7 @@
 			<control type="label">
 				<description>Page label</description>
 				<posx>40</posx>
-				<posy>526</posy>
+				<posy>570</posy>
 				<width>560</width>
 				<height>30</height>
 				<align>center</align>
@@ -180,7 +180,7 @@
 			<control type="label">
 				<description>Page label</description>
 				<posx>40</posx>
-				<posy>526</posy>
+				<posy>570</posy>
 				<width>560</width>
 				<height>30</height>
 				<align>center</align>
@@ -194,61 +194,46 @@
 					<description>OK button</description>
 					<posx>40</posx>
 					<posy>615</posy>
-					<width>556</width>
+					<width>184</width>
 					<height>40</height>
 					<align>center</align>
 					<label>186</label>
 					<texturenofocus border="3">button-nofocus.png</texturenofocus>
 					<texturefocus border="3">button-focus2.png</texturefocus>
-					<onleft>413</onleft>
-					<onright>413</onright>
-					<onup>415</onup>
-					<ondown>450</ondown>
-				</control>
-				<control type="button" id="414">
-					<description>Delete button</description>
-					<posx>40</posx>
-					<posy>573</posy>
-					<width>184</width>
-					<height>40</height>
-					<align>center</align>
-					<label>15015</label>
-					<texturenofocus border="3">button-nofocus.png</texturenofocus>
-					<texturefocus border="3">button-focus2.png</texturefocus>
-					<onleft>415</onleft>
-					<onright>416</onright>
-					<onup>450</onup>
-					<ondown>413</ondown>
-				</control>
-				<control type="button" id="415">
-					<description>Add Add-ons button</description>
-					<posx>412</posx>
-					<posy>573</posy>
-					<width>184</width>
-					<height>40</height>
-					<align>center</align>
-					<label>15019</label>
-					<texturenofocus border="3">button-nofocus.png</texturenofocus>
-					<texturefocus border="3">button-focus2.png</texturefocus>
 					<onleft>416</onleft>
 					<onright>414</onright>
 					<onup>450</onup>
-					<ondown>413</ondown>
+					<ondown>450</ondown>
 				</control>
-				<control type="button" id="416">
-					<description>Config button</description>
+				<control type="button" id="414">
+					<description>Cancel button</description>
 					<posx>226</posx>
-					<posy>573</posy>
+					<posy>615</posy>
 					<width>184</width>
 					<height>40</height>
 					<align>center</align>
-					<label>10507</label>
+					<label>222</label>
+					<texturenofocus border="3">button-nofocus.png</texturenofocus>
+					<texturefocus border="3">button-focus2.png</texturefocus>
+					<onleft>413</onleft>
+					<onright>415</onright>
+					<onup>450</onup>
+					<ondown>450</ondown>
+				</control>
+				<control type="button" id="415">
+					<description>Add-ons button</description>
+					<posx>412</posx>
+					<posy>615</posy>
+					<width>184</width>
+					<height>40</height>
+					<align>center</align>
+					<label>23000</label>
 					<texturenofocus border="3">button-nofocus.png</texturenofocus>
 					<texturefocus border="3">button-focus2.png</texturefocus>
 					<onleft>414</onleft>
-					<onright>415</onright>
+					<onright>416</onright>
 					<onup>450</onup>
-					<ondown>413</ondown>
+					<ondown>450</ondown>
 				</control>
 			</control>
 			<control type="image">
