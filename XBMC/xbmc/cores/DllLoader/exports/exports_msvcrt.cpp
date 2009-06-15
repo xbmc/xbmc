@@ -307,14 +307,6 @@ extern "C" void* track_fclose();
 extern "C" void* track_fopen();
 extern "C" void* track_freopen();
 
-#if (__GNUC__ >= 4 && __GNUC_MINOR__ >= 4)
-#define strchr __builtin_strchr
-#define strrchr __builtin_strrchr
-#define strpbrk __builtin_strpbrk
-#define strstr __builtin_strstr
-#define memchr __builtin_memchr
-#endif
-
 Export export_msvcrt[] =
 {
   { "_close",                     -1, (void*)dll_close,                     (void*)track_close},
@@ -380,12 +372,12 @@ Export export_msvcrt[] =
   { "sprintf",                    -1, (void*)sprintf,                       NULL },
   { "sqrt",                       -1, (void*)sqrt,                          NULL },
   { "sscanf",                     -1, (void*)sscanf,                        NULL },
-  { "strchr",                     -1, (void*)::strchr,                      NULL },
+  { "strchr",                     -1, (void*)(char* (*)(char*,int))strchr,  NULL },
   { "strcmp",                     -1, (void*)strcmp,                        NULL },
   { "strcpy",                     -1, (void*)strcpy,                        NULL },
   { "strlen",                     -1, (void*)strlen,                        NULL },
   { "strncpy",                    -1, (void*)strncpy,                       NULL },
-  { "strrchr",                    -1, (void*)::strrchr,                     NULL },
+  { "strrchr",                    -1, (void*)(char* (*)(char*,int))strrchr, NULL },
   { "strtod",                     -1, (void*)strtod,                        NULL },
   { "strtok",                     -1, (void*)strtok,                        NULL },
   { "strtol",                     -1, (void*)strtol,                        NULL },
@@ -393,7 +385,7 @@ Export export_msvcrt[] =
   { "tan",                        -1, (void*)tan,                           NULL },
   { "tanh",                       -1, (void*)tanh,                          NULL },
   { "time",                       -1, (void*)time,                          NULL },
-  { "toupper",                    -1, (void*)::toupper,                     NULL },
+  { "toupper",                    -1, (void*)toupper,                       NULL },
 #ifndef _LINUX
   { "_memccpy",                   -1, (void*)_memccpy,                      NULL },
 #endif
@@ -431,7 +423,7 @@ Export export_msvcrt[] =
   { "getc",                       -1, (void*)dll_getc,                      NULL },
   { "getenv",                     -1, (void*)dll_getenv,                    NULL },
   { "rand",                       -1, (void*)rand,                          NULL },
-  { "remove",                     -1, (void*)::remove,                      NULL },
+  { "remove",                     -1, (void*)remove,                        NULL },
   { "rewind",                     -1, (void*)dll_rewind,                    NULL },
   { "setlocale",                  -1, (void*)setlocale,                     NULL },
   { "signal",                     -1, (void*)dll_signal,                    NULL },
@@ -441,12 +433,12 @@ Export export_msvcrt[] =
   { "strerror",                   -1, (void*)dllstrerror,                   NULL },
   { "strncat",                    -1, (void*)strncat,                       NULL },
   { "strncmp",                    -1, (void*)strncmp,                       NULL },
-  { "strpbrk",                    -1, (void*)::strpbrk,                     NULL },
-  { "strstr",                     -1, (void*)::strstr,                      NULL },
-  { "tolower",                    -1, (void*)::tolower,                     NULL },
+  { "strpbrk",                    -1, (void*)(char* (*)(char*,const char*))strpbrk, NULL },
+  { "strstr",                     -1, (void*)(char* (*)(char*,const char*))strstr,  NULL },
+  { "tolower",                    -1, (void*)tolower,                       NULL },
   { "acos",                       -1, (void*)acos,                          NULL },
   { "atan",                       -1, (void*)atan,                          NULL },
-  { "memchr",                     -1, (void*)::memchr,                      NULL },
+  { "memchr",                     -1, (void*)(void*(*)(void*,int,size_t))memchr,    NULL },
   { "fgetc",                      -1, (void*)dll_getc,                      NULL },
 #ifndef _LINUX
   { "_CIpow",                     -1, (void*)_CIpow,                        NULL },
@@ -505,9 +497,9 @@ Export export_msvcrt[] =
   { "_fdopen",                    -1, (void*)dll_fdopen,                    NULL },
   { "system",                     -1, (void*)dll_system,                    NULL },
   { "_flsbuf",                    -1, (void*)dll_flsbuf,                    NULL },
-  { "isdigit",                    -1, (void*)::isdigit,                     NULL },
-  { "isalnum",                    -1, (void*)::isalnum,                     NULL },
-  { "isxdigit",                   -1, (void*)::isxdigit,                    NULL },
+  { "isdigit",                    -1, (void*)isdigit,                       NULL },
+  { "isalnum",                    -1, (void*)isalnum,                       NULL },
+  { "isxdigit",                   -1, (void*)isxdigit,                      NULL },
   { "pow",                        -1, (void*)pow,                           NULL },
   { "_onexit",                    -1, (void*)dll_onexit,                    NULL },
   { "modf",                       -1, (void*)modf,                          NULL },
@@ -594,12 +586,12 @@ Export export_msvcr71[] =
   { "sprintf",                    -1, (void*)sprintf,                       NULL },
   { "sqrt",                       -1, (void*)sqrt,                          NULL },
   { "sscanf",                     -1, (void*)sscanf,                        NULL },
-  { "strchr",                     -1, (void*)::strchr,                      NULL },
+  { "strchr",                     -1, (void*)(char* (*)(char*,int))strchr,  NULL },
   { "strcmp",                     -1, (void*)strcmp,                        NULL },
   { "strcpy",                     -1, (void*)strcpy,                        NULL },
   { "strlen",                     -1, (void*)strlen,                        NULL },
   { "strncpy",                    -1, (void*)strncpy,                       NULL },
-  { "strrchr",                    -1, (void*)::strrchr,                     NULL },
+  { "strrchr",                    -1, (void*)(char* (*)(char*,int))strrchr, NULL },
   { "strtod",                     -1, (void*)strtod,                        NULL },
   { "strtok",                     -1, (void*)strtok,                        NULL },
   { "strtol",                     -1, (void*)strtol,                        NULL },
@@ -607,7 +599,7 @@ Export export_msvcr71[] =
   { "tan",                        -1, (void*)tan,                           NULL },
   { "tanh",                       -1, (void*)tanh,                          NULL },
   { "time",                       -1, (void*)time,                          NULL },
-  { "toupper",                    -1, (void*)::toupper,                       NULL },
+  { "toupper",                    -1, (void*)toupper,                       NULL },
   { "_fstat",                     -1, (void*)dll_fstat,                     NULL },
   { "_mkdir",                     -1, (void*)dll_mkdir,                     NULL },
   { "_pclose",                    -1, (void*)dll_pclose,                    NULL },
@@ -645,7 +637,7 @@ Export export_msvcr71[] =
   { "getc",                       -1, (void*)dll_getc,                      NULL },
   { "getenv",                     -1, (void*)dll_getenv,                    NULL },
   { "rand",                       -1, (void*)rand,                          NULL },
-  { "remove",                     -1, (void*)::remove,                      NULL },
+  { "remove",                     -1, (void*)remove,                        NULL },
   { "rewind",                     -1, (void*)dll_rewind,                    NULL },
   { "setlocale",                  -1, (void*)setlocale,                     NULL },
   { "signal",                     -1, (void*)dll_signal,                    NULL },
@@ -655,13 +647,13 @@ Export export_msvcr71[] =
   { "strerror",                   -1, (void*)strerror,                      NULL },
   { "strncat",                    -1, (void*)strncat,                       NULL },
   { "strncmp",                    -1, (void*)strncmp,                       NULL },
-  { "strpbrk",                    -1, (void*)::strpbrk,                     NULL },
-  { "strstr",                     -1, (void*)::strstr,                        NULL },
-  { "tolower",                    -1, (void*)::tolower,                     NULL },
+  { "strpbrk",                    -1, (void*)(char* (*)(char*,const char*))strpbrk, NULL },
+  { "strstr",                     -1, (void*)(char* (*)(char*,const char*))strstr,  NULL },
+  { "tolower",                    -1, (void*)tolower,                       NULL },
   { "acos",                       -1, (void*)acos,                          NULL },
   { "atan",                       -1, (void*)atan,                          NULL },
-  { "memchr",                     -1, (void*)::memchr,                      NULL },
-  { "isdigit",                    -1, (void*)::isdigit,                     NULL },
+  { "memchr",                     -1, (void*)(void* (*)(void*,int,size_t))memchr,   NULL },
+  { "isdigit",                    -1, (void*)isdigit,                       NULL },
   { "_strcmpi",                   -1, (void*)strcmpi,                       NULL },
 #ifndef _LINUX
   { "_CIpow",                     -1, (void*)_CIpow,                        NULL },
@@ -672,7 +664,7 @@ Export export_msvcr71[] =
   { "??2@YAPAXI@Z",               -1, (void*)dllmalloc,                     (void*)track_malloc },
   { "??3@YAXPAX@Z",               -1, (void*)dllfree,                       (void*)track_free },
 #ifndef _LINUX
-  { "??_U@YAPAXI@Z",              -1, (void*)(::operator new),              NULL },
+  { "??_U@YAPAXI@Z",              -1, (void*)(operator new),                NULL },
 #endif
   { "_beginthreadex",             -1, (void*)dll_beginthreadex,             NULL },
   { "_fdopen",                    -1, (void*)dll_fdopen,                    NULL },
@@ -710,7 +702,7 @@ Export export_msvcr71[] =
 #endif
   { "fgetpos",                    -1, (void*)dll_fgetpos,                   NULL },
   { "??_V@YAXPAX@Z",              -1, (void*)dllfree,                       (void*)track_free},
-  { "isalpha",                    -1, (void*)::isalpha,                       NULL },
+  { "isalpha",                    -1, (void*)isalpha,                       NULL },
 #ifndef _LINUX
   { "_CIacos",                    -1, (void*)_CIacos,                       NULL },
   { "_CIasin",                    -1, (void*)_CIasin,                       NULL },
@@ -726,12 +718,12 @@ Export export_msvcr71[] =
 #endif
   { "memcmp",                     -1, (void*)memcmp,                        NULL },
   { "fsetpos",                    -1, (void*)dll_fsetpos,                   NULL },
-  { "isprint",                    -1, (void*)::isprint,                     NULL },
+  { "isprint",                    -1, (void*)isprint,                       NULL },
   { "vsprintf",                   -1, (void*)vsprintf,                      NULL },
-  { "abs",                        -1, (void*)::abs,                         NULL },
-  { "labs",                       -1, (void*)::labs,                        NULL },
-  { "islower",                    -1, (void*)::islower,                     NULL },
-  { "isupper",                    -1, (void*)::isupper,                     NULL },
+  { "abs",                        -1, (void*)abs,                           NULL },
+  { "labs",                       -1, (void*)labs,                          NULL },
+  { "islower",                    -1, (void*)islower,                       NULL },
+  { "isupper",                    -1, (void*)isupper,                       NULL },
   { "wcscoll",                    -1, (void*)wcscoll,                       NULL },
   { "modf",                       -1, (void*)modf,                          NULL },
 #ifndef _LINUX
@@ -753,7 +745,7 @@ Export export_msvcr71[] =
 #endif
   { "atan2",                      -1, (void*)atan2,                         NULL },
   { "fmod",                       -1, (void*)fmod,                          NULL },
-  { "isxdigit",                   -1, (void*)::isxdigit,                      NULL },
+  { "isxdigit",                   -1, (void*)isxdigit,                      NULL },
   { "clock",                      -1, (void*)clock,                         NULL },
   { "asctime",                    -1, (void*)asctime,                       NULL },
   { "_beginthread",               -1, (void*)dll_beginthread,               NULL },
@@ -789,8 +781,8 @@ Export export_msvcr71[] =
   { "_daylight",                  -1, (void*)&daylight,                    NULL },
   { "_timezone",                  -1, (void*)&timezone,                    NULL },
 #endif
-  { "isalnum",                    -1, (void*)::isalnum,                       NULL },
-  { "isspace",                    -1, (void*)::isspace,                       NULL },
+  { "isalnum",                    -1, (void*)isalnum,                       NULL },
+  { "isspace",                    -1, (void*)isspace,                       NULL },
   { "_stati64",                   -1, (void*)dll_stati64,                   NULL },
   { "_fstati64",                  -1, (void*)dll_fstati64,                  NULL },
   { "clearerr",                   -1, (void*)dll_clearerr,                  NULL },
