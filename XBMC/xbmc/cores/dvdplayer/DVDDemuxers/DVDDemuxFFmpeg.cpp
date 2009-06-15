@@ -69,10 +69,13 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
 // these need to be put somewhere that are compiled, we should have some better place for it
 
 CCriticalSection DllAvCodec::m_critSection;
+std::map<DWORD, CStdString> g_logbuffer;
 
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 {
-  static CStdString buffer;
+  CSingleLock lock(DllAvCodec::m_critSection);
+  DWORD threadId = GetCurrentThreadId();
+  CStdString &buffer = g_logbuffer[threadId];
 
   AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
 
@@ -93,7 +96,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   CStdString message, prefix;
   message.FormatV(format, va);
 
-  prefix = "ffmpeg: ";
+  prefix.Format("ffmpeg[%X]: ", threadId);
   if(avc)
   {
     if(avc->item_name)
@@ -111,6 +114,21 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
     start = pos+1;
   }
   buffer.erase(0, start);
+}
+
+static void ff_flush_avutil_log_buffers(void)
+{
+  CSingleLock lock(DllAvCodec::m_critSection);
+
+  /* Loop through the logbuffer list and remove any blank buffers
+     If the thread using the buffer is still active, it will just
+     add a new buffer next time it writes to the log */
+  std::map<DWORD, CStdString>::iterator it;
+  for (it = g_logbuffer.begin(); it != g_logbuffer.end(); )
+    if ((*it).second.IsEmpty())
+      g_logbuffer.erase(it++);
+    else
+      ++it;
 }
 
 #ifdef _MSC_VER
@@ -196,6 +214,7 @@ CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
 {
   Dispose();
   DeleteCriticalSection(&m_critSection);
+  ff_flush_avutil_log_buffers();
 }
 
 bool CDVDDemuxFFmpeg::Aborted()
@@ -379,6 +398,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
 
     // open the demuxer
+printf("opening demuxer\n");
     if (m_dllAvFormat.av_open_input_stream(&m_pFormatContext, m_ioContext, strFile.c_str(), iformat, NULL) < 0)
     {
       CLog::Log(LOGERROR, "%s - Error, could not open file %s", __FUNCTION__, strFile.c_str());
@@ -988,6 +1008,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     if (pStream->duration != (int64_t)AV_NOPTS_VALUE) m_streams[iId]->iDuration = (int)((pStream->duration / AV_TIME_BASE) & 0xFFFFFFFF);
 
     m_streams[iId]->codec = pStream->codec->codec_id;
+    m_streams[iId]->codec_fourcc = pStream->codec->codec_tag;
     m_streams[iId]->iId = iId;
     m_streams[iId]->source = STREAM_SOURCE_DEMUX;
     m_streams[iId]->pPrivate = pStream;
@@ -1123,4 +1144,35 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
     #else
         return false;
     #endif
+}
+
+void CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId, CStdString &strName)
+{
+  CDemuxStream *stream = GetStream(iStreamId);
+  if (stream)
+  {
+    unsigned int in = stream->codec_fourcc;
+    // audio codecs have 2 byte IDs that don't make much sense so only use FourCC for video
+    if (stream->type == STREAM_VIDEO && in != 0)
+    {
+      char fourcc[5];
+#if defined(__powerpc__)
+      fourcc[0] = in & 0xff;
+      fourcc[1] = (in >> 8) & 0xff;
+      fourcc[2] = (in >> 16) & 0xff;
+      fourcc[3] = (in >> 24) & 0xff;
+#else
+      *(unsigned int*)fourcc = in;
+#endif
+      fourcc[4] = 0;
+      strName = fourcc;
+      strName.MakeLower();
+    }
+    else if (m_dllAvCodec.IsLoaded())
+    {
+      AVCodec *codec = m_dllAvCodec.avcodec_find_decoder(stream->codec);
+      if (codec)
+        strName = codec->name;
+    }
+  }
 }

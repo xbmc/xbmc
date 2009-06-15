@@ -53,7 +53,8 @@ SRCS=AlarmClock.cpp \
      AsyncFileCopy.cpp \
      DbusServer.cpp \
      Atomics.cpp \
-     LockFree.cpp
+     LockFree.cpp \
+     StreamDetails.cpp
 
 LIB=utils.a
 
