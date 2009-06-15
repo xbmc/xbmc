@@ -2306,6 +2306,48 @@
   <string id="23027">Weather Add-on</string>
   <string id="23028">Audio DSP Add-on</string>
 
+  <string id="23040">Add-on can not connect</string>
+  <string id="23041">Please check your Settings or the Backend</string>
+  <string id="23042">Unknown Username for the Add-on</string>
+  <string id="23043">Do you want to open settings and try again?</string>
+  <string id="23044">Unknown Username</string>
+  <string id="23045">Wrong password for the Add-on</string>
+  <string id="23046">Wrong password</string>
+  <string id="23047">Add-on lost connection</string>
+  <string id="23048">Try to reconnect?</string>
+  <string id="23049">Add-on restarts</string>
+  <string id="23050">Add-on request restart</string>
+  <string id="23051">XBMC requires to restart</string>
+  <string id="23052">Would you like to restart now?</string>
+  <string id="23053">Missing settings</string>
+  <string id="23054">Wrong settings</string>
+  <string id="23055">Missing Files in Add-on</string>
+  <string id="23056">Add-on can not used</string>
+  <string id="23057">A unknown error is occurred</string>
+  <string id="23058">Disclaimer</string>
+  <string id="23059">Would you still use the Add-on?</string>
+  <string id="23060">Manage Multitype Add-on's</string>
+  <string id="23061">Manage Visualization</string>
+  <string id="23062">Manage Skin Add-on's</string>
+  <string id="23063">Manage PVR clients</string>
+  <string id="23064">Manage Scripts</string>
+  <string id="23065">Manage PVR Scrapers</string>
+  <string id="23066">Manage Video Scrapers</string>
+  <string id="23067">Manage Music Scrapers</string>
+  <string id="23068">Manage Program Scrapers</string>
+  <string id="23069">Manage Screensaver</string>
+  <string id="23070">Manage PVR plugins</string>
+  <string id="23071">Manage Video plugins</string>
+  <string id="23072">Manage Music plugins</string>
+  <string id="23073">Manage Program plugins</string>
+  <string id="23074">Manage Picture plugins</string>
+  <string id="23075">Manage Weather plugins</string>
+  <string id="23076">Manage Audio DSP's</string>
+
+  <string id="23080">Manage external Screensaver</string>
+  <string id="23081">This Add-on don't have settings</string>
+  <string id="23082">Lock Add-on manager</string>
+  <string id="23083">Use this Add-on again</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
