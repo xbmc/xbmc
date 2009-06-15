@@ -47,7 +47,6 @@ using namespace VIDEO;
 #define VIDEO_DATABASE_VERSION 27
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
-#define RECENTLY_ADDED_LIMIT  25
 
 CBookmark::CBookmark()
 {
@@ -4886,19 +4885,19 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
 
 bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items)
 {
-  CStdString where = FormatSQL("order by idMovie desc limit %u",RECENTLY_ADDED_LIMIT);
+  CStdString where = FormatSQL("order by idMovie desc limit %u", g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   return GetMoviesByWhere(strBaseDir, where, items);
 }
 
 bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items)
 {
-  CStdString where = FormatSQL("order by idepisode desc limit %u",RECENTLY_ADDED_LIMIT);
+  CStdString where = FormatSQL("order by idepisode desc limit %u", g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   return GetEpisodesByWhere(strBaseDir, where, items, false);
 }
 
 bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items)
 {
-  CStdString where = FormatSQL("order by idmvideo desc limit %u",RECENTLY_ADDED_LIMIT);
+  CStdString where = FormatSQL("order by idmvideo desc limit %u", g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 
