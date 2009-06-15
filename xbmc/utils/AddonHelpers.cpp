@@ -58,56 +58,56 @@ int CAddonUtils::m_iGUILockRef = 0;
 extern "C"
 {
 
-//void CAddonUtils::CreateAddOnCallbacks(AddonCB *cbTable)
-//{
-//  /* AddOn Helper functions */
-//  cbTable->AddOn.Log                = CAddonUtils::AddOnLog;
-//  cbTable->AddOn.ReportStatus       = CAddonUtils::AddonStatusHandler;
-//  cbTable->AddOn.GetSetting         = CAddonUtils::GetAddonSetting;
-//  cbTable->AddOn.OpenSettings       = CAddonUtils::OpenAddonSettings;
-//  cbTable->AddOn.GetAddonDirectory  = CAddonUtils::GetAddonDirectory;
-//  cbTable->AddOn.GetUserDirectory   = CAddonUtils::GetUserDirectory;
-//
-//  /* Utilities Helper functions */
-//  cbTable->Utils.Shutdown           = CAddonUtils::Shutdown;
-//  cbTable->Utils.Restart            = CAddonUtils::Restart;
-//  cbTable->Utils.Dashboard          = CAddonUtils::Dashboard;
-//  cbTable->Utils.ExecuteScript      = CAddonUtils::ExecuteScript;
-//  cbTable->Utils.ExecuteBuiltIn     = CAddonUtils::ExecuteBuiltIn;
-//  cbTable->Utils.ExecuteHttpApi     = CAddonUtils::ExecuteHttpApi;
-//  cbTable->Utils.UnknownToUTF8      = CAddonUtils::UnknownToUTF8;
-//  cbTable->Utils.GetSkinDir         = CAddonUtils::GetSkinDir;
-//  cbTable->Utils.GetLanguage        = CAddonUtils::GetLanguage;
-//  cbTable->Utils.GetIPAddress       = CAddonUtils::GetIPAddress;
-//  cbTable->Utils.GetInfoLabel       = CAddonUtils::GetInfoLabel;
-//  cbTable->Utils.GetInfoImage       = CAddonUtils::GetInfoImage;
-//  cbTable->Utils.GetCondVisibility  = CAddonUtils::GetCondVisibility;
-//  cbTable->Utils.PlaySFX            = CAddonUtils::PlaySFX;
-//  cbTable->Utils.EnableNavSounds    = CAddonUtils::EnableNavSounds;
-//  cbTable->Utils.GetCacheThumbName  = CAddonUtils::GetCacheThumbName;
-//  cbTable->Utils.GetDVDState        = CAddonUtils::GetDVDState;
-//  cbTable->Utils.GetFreeMem         = CAddonUtils::GetFreeMem;
-//  cbTable->Utils.GetGlobalIdleTime  = CAddonUtils::GetGlobalIdleTime;
-//  cbTable->Utils.LocalizedString    = CAddonUtils::GetLocalizedString;
-//  cbTable->Utils.GetRegion          = CAddonUtils::GetRegion;
-//  cbTable->Utils.GetSupportedMedia  = CAddonUtils::GetSupportedMedia;
-//  cbTable->Utils.MakeLegalFilename  = CAddonUtils::MakeLegalFilename;
-//  cbTable->Utils.SkinHasImage       = CAddonUtils::SkinHasImage;
-//  cbTable->Utils.TranslatePath      = CAddonUtils::TranslatePath;
-//  cbTable->Utils.UnknownToUTF8      = CAddonUtils::UnknownToUTF8;
-//
-//  /* GUI Dialog Helper functions */
-//  cbTable->Dialog.OpenOK            = CAddonUtils::OpenDialogOK;
-//  cbTable->Dialog.OpenYesNo         = CAddonUtils::OpenDialogYesNo;
-//  cbTable->Dialog.OpenBrowse        = CAddonUtils::OpenDialogBrowse;
-//  cbTable->Dialog.OpenNumeric       = CAddonUtils::OpenDialogNumeric;
-//  cbTable->Dialog.OpenKeyboard      = CAddonUtils::OpenDialogKeyboard;
-//  cbTable->Dialog.OpenSelect        = CAddonUtils::OpenDialogSelect;
-//  cbTable->Dialog.ProgressCreate    = CAddonUtils::ProgressDialogCreate;
-//  cbTable->Dialog.ProgressUpdate    = CAddonUtils::ProgressDialogUpdate;
-//  cbTable->Dialog.ProgressIsCanceled= CAddonUtils::ProgressDialogIsCanceled;
-//  cbTable->Dialog.ProgressClose     = CAddonUtils::ProgressDialogClose;
-//}
+void CAddonUtils::CreateAddOnCallbacks(AddonCB *cbTable)
+{
+  /* AddOn Helper functions */
+  cbTable->AddOn.Log                = CAddonUtils::AddOnLog;
+  cbTable->AddOn.ReportStatus       = CAddonUtils::AddonStatusHandler;
+  cbTable->AddOn.GetSetting         = CAddonUtils::GetAddonSetting;
+  cbTable->AddOn.OpenSettings       = CAddonUtils::OpenAddonSettings;
+  cbTable->AddOn.GetAddonDirectory  = CAddonUtils::GetAddonDirectory;
+  cbTable->AddOn.GetUserDirectory   = CAddonUtils::GetUserDirectory;
+
+  /* Utilities Helper functions */
+  cbTable->Utils.Shutdown           = CAddonUtils::Shutdown;
+  cbTable->Utils.Restart            = CAddonUtils::Restart;
+  cbTable->Utils.Dashboard          = CAddonUtils::Dashboard;
+  cbTable->Utils.ExecuteScript      = CAddonUtils::ExecuteScript;
+  cbTable->Utils.ExecuteBuiltIn     = CAddonUtils::ExecuteBuiltIn;
+  cbTable->Utils.ExecuteHttpApi     = CAddonUtils::ExecuteHttpApi;
+  cbTable->Utils.UnknownToUTF8      = CAddonUtils::UnknownToUTF8;
+  cbTable->Utils.GetSkinDir         = CAddonUtils::GetSkinDir;
+  cbTable->Utils.GetLanguage        = CAddonUtils::GetLanguage;
+  cbTable->Utils.GetIPAddress       = CAddonUtils::GetIPAddress;
+  cbTable->Utils.GetInfoLabel       = CAddonUtils::GetInfoLabel;
+  cbTable->Utils.GetInfoImage       = CAddonUtils::GetInfoImage;
+  cbTable->Utils.GetCondVisibility  = CAddonUtils::GetCondVisibility;
+  cbTable->Utils.PlaySFX            = CAddonUtils::PlaySFX;
+  cbTable->Utils.EnableNavSounds    = CAddonUtils::EnableNavSounds;
+  cbTable->Utils.GetCacheThumbName  = CAddonUtils::GetCacheThumbName;
+  cbTable->Utils.GetDVDState        = CAddonUtils::GetDVDState;
+  cbTable->Utils.GetFreeMem         = CAddonUtils::GetFreeMem;
+  cbTable->Utils.GetGlobalIdleTime  = CAddonUtils::GetGlobalIdleTime;
+  cbTable->Utils.LocalizedString    = CAddonUtils::GetLocalizedString;
+  cbTable->Utils.GetRegion          = CAddonUtils::GetRegion;
+  cbTable->Utils.GetSupportedMedia  = CAddonUtils::GetSupportedMedia;
+  cbTable->Utils.MakeLegalFilename  = CAddonUtils::MakeLegalFilename;
+  cbTable->Utils.SkinHasImage       = CAddonUtils::SkinHasImage;
+  cbTable->Utils.TranslatePath      = CAddonUtils::TranslatePath;
+  cbTable->Utils.UnknownToUTF8      = CAddonUtils::UnknownToUTF8;
+
+  /* GUI Dialog Helper functions */
+  cbTable->Dialog.OpenOK            = CAddonUtils::OpenDialogOK;
+  cbTable->Dialog.OpenYesNo         = CAddonUtils::OpenDialogYesNo;
+  cbTable->Dialog.OpenBrowse        = CAddonUtils::OpenDialogBrowse;
+  cbTable->Dialog.OpenNumeric       = CAddonUtils::OpenDialogNumeric;
+  cbTable->Dialog.OpenKeyboard      = CAddonUtils::OpenDialogKeyboard;
+  cbTable->Dialog.OpenSelect        = CAddonUtils::OpenDialogSelect;
+  cbTable->Dialog.ProgressCreate    = CAddonUtils::ProgressDialogCreate;
+  cbTable->Dialog.ProgressUpdate    = CAddonUtils::ProgressDialogUpdate;
+  cbTable->Dialog.ProgressIsCanceled= CAddonUtils::ProgressDialogIsCanceled;
+  cbTable->Dialog.ProgressClose     = CAddonUtils::ProgressDialogClose;
+}
 
 void CAddonUtils::AddOnLog(void *addonData, const addon_log_t loglevel, const char *msg)
 {

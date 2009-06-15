@@ -25,6 +25,10 @@ BIN_DIRS=	\
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/karaoke \
+	xbmc/addons/lib/addonlib \
+	xbmc/addons/lib/addonlib++ \
+	xbmc/addons/lib/pvrlib \
+	xbmc/addons/lib/pvrlib++ \
 	xbmc/lib/libcmyth \
 	xbmc/lib/libhts \
 	xbmc/lib/libGoAhead \
@@ -99,11 +103,17 @@ VIS_DIRS=\
 PVR_DIRS=\
 	xbmc/pvrclients/vdr
 
+LIBADDON_DIRS=\
+	xbmc/addons/lib/addonlib \
+	xbmc/addons/lib/addonlib++ \
+	xbmc/addons/lib/pvrlib \
+	xbmc/addons/lib/pvrlib++ \
+
 PM3_MEDIA=skin/Project\ Mayhem\ III/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS)
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS) $(LIBADDON_DIRS)
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -117,7 +127,7 @@ all : externals xbmc.bin xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Te
 
 include Makefile.include
 
-.PHONY : dllloader exports pvrclients visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force
+.PHONY : dllloader exports pvrclients visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force libaddon
 
 $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
@@ -241,6 +251,11 @@ pvrclients: exports
 	$(MAKE) -C xbmc/pvrclients/vdr
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
+libaddon: exports
+	$(MAKE) -C xbmc/addons/lib/addonlib
+	$(MAKE) -C xbmc/addons/lib/addonlib++
+	$(MAKE) -C xbmc/addons/lib/pvrlib
+	$(MAKE) -C xbmc/addons/lib/pvrlib++
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
@@ -295,7 +310,7 @@ imagelib: dllloader
 
 codecs: papcodecs dvdpcodecs
 libs: libhdhomerun libid3tag imagelib libexif python
-externals: codecs libs python pvrclients visualizations screensavers
+externals: libaddon codecs libs python pvrclients visualizations screensavers
 
 xcode_depends: \
 	codecs libs python pvrclients visualizations screensavers \
@@ -499,6 +514,8 @@ clean-visualisations:
 	for d in $(VIS_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-pvrclients:
 	for d in $(PVR_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+clean-libaddons:
+	for d in $(LIBADDON_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 
 clean-codecs: clean-dvdpcodecs clean-papcodecs
 

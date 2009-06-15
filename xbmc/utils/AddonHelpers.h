@@ -21,7 +21,7 @@
  */
 
 #include "Addon.h"
-//#include "../lib/libaddon/addon_local.h"
+#include "../addons/lib/addon_local.h"
 
 namespace ADDON
 {
@@ -32,7 +32,7 @@ public:
   CAddonUtils(void) {};
   ~CAddonUtils() {};
 
-//  static void CreateAddOnCallbacks(AddonCB *cbTable);
+  static void CreateAddOnCallbacks(AddonCB *cbTable);
 
   /* General Functions */
   static void AddOnLog(void *addonData, const addon_log_t loglevel, const char *msg);
