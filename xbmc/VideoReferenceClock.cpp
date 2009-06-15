@@ -54,6 +54,15 @@ CVideoReferenceClock::CVideoReferenceClock()
 #ifdef _WIN32
   ZeroMemory(&m_Monitor, sizeof(m_Monitor));
   ZeroMemory(&m_PrevMonitor, sizeof(m_PrevMonitor));
+  
+  m_IsVista = false;
+  OSVERSIONINFO WindowsVersion;
+  WindowsVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+  if (GetVersionEx(&WindowsVersion))
+  {
+    if (WindowsVersion.dwMajorVersion == 6 && WindowsVersion.dwMinorVersion == 0)
+      m_IsVista = true;
+  }
 #endif
 }
 
@@ -128,10 +137,10 @@ void CVideoReferenceClock::Process()
 bool CVideoReferenceClock::WaitStarted(int MSecs)
 {
 #ifdef _WIN32
-  return true; //direct3d can't get an exclusive lock on vista if we wait here
-#else
-  return m_Started.WaitMSec(MSecs);
+  if (m_IsVista)
+    return true; //direct3d can't get an exclusive lock on vista if we wait here
 #endif
+  return m_Started.WaitMSec(MSecs);
 }
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
@@ -521,12 +530,18 @@ bool CVideoReferenceClock::SetupD3D()
   if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: SetThreadPriority failed");
 
-  //put the window on top because direct3d wants exclusive access for some reason
-  LockSetForegroundWindow(LSFW_UNLOCK);
-  SetForegroundWindow(m_Hwnd);
+  if (m_IsVista)
+  {
+    //put the window on top because direct3d wants exclusive access for some reason
+    LockSetForegroundWindow(LSFW_UNLOCK);
+    SetForegroundWindow(m_Hwnd);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: exclusive lock workaround for Vista enabled");
+  }
+
   HandleWindowMessages();
 
-  Sleep(500); //direct3d has better luck getting an exclusive lock this way
+  if (m_IsVista)
+    Sleep(500); //direct3d has better luck getting an exclusive lock this way
   
   ReturnV = m_D3d->CreateDevice(m_Adapter, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
