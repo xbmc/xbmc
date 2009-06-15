@@ -393,7 +393,7 @@
 				<description>NextRecordingInfo</description>
 				<posx>600r</posx>
 				<posy>140</posy>
-				<visible>Container(9000).HasFocus(2) + !PVR.IsRecording + PVR.HasTimer + !Skin.HasSetting(homepagePVRinfo)</visible>
+				<visible>Container(9000).HasFocus(1) + !PVR.IsRecording + PVR.HasTimer</visible>
 				<include>homestatsinfo</include>
 				<control type="image">
 					<description>gradient</description>
@@ -472,7 +472,7 @@
 				<description>NowRecordingInfo</description>
 				<posx>600r</posx>
 				<posy>140</posy>
-				<visible>Control.HasFocus(2) + PVR.IsRecording</visible>
+				<visible>Container(9000).HasFocus(1) + PVR.IsRecording</visible>
 				<include>homestatsinfo</include>
 				<control type="image">
 					<description>gradient</description>
