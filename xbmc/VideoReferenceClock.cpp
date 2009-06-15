@@ -526,6 +526,8 @@ bool CVideoReferenceClock::SetupD3D()
   SetForegroundWindow(m_Hwnd);
   HandleWindowMessages();
 
+  Sleep(500); //direct3d has better luck getting an exclusive lock this way
+  
   ReturnV = m_D3d->CreateDevice(m_Adapter, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
 
