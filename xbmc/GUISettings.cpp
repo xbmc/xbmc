@@ -411,9 +411,10 @@ void CGUISettings::Initialize()
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
   AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
   AddBool(3, "myvideos.autothumb",12024, false);
-  AddBool(4, "myvideos.cleanfilenames", 20418, false);
-  AddSeparator(5, "myvideos.sep1");
-  AddBool(8, "myvideos.savefolderviews", 583, true);
+  AddBool(4, "myvideos.extractflags",20433,false);
+  AddBool(5, "myvideos.cleanfilenames", 20418, false);
+  AddSeparator(6, "myvideos.sep1");
+  AddBool(7, "myvideos.savefolderviews", 583, true);
 
   AddCategory(5, "videolibrary", 14022);
 
