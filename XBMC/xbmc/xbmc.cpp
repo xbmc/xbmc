@@ -54,6 +54,8 @@ int main(int argc, char* argv[])
 #endif
   // Prevent child processes from becoming zombies on exit if not waited upon. See also Util::Command
   struct sigaction sa;
+  memset(&sa, 0, sizeof(sa));
+
   sa.sa_flags = SA_NOCLDWAIT;
   sa.sa_handler = SIG_IGN;
   sigaction(SIGCHLD, &sa, NULL);
