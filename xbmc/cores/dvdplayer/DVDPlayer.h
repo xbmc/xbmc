@@ -192,6 +192,11 @@ public:
   virtual int GetAudioBitrate();
   virtual int GetVideoBitrate();
   virtual int GetSourceBitrate();
+  virtual int GetChannels();
+  virtual CStdString GetAudioCodecName();
+  virtual CStdString GetVideoCodecName();
+  virtual int GetPictureWidth();
+  virtual bool GetStreamDetails(CStreamDetails &details);
 
   virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
 
