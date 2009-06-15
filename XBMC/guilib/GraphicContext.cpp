@@ -723,7 +723,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       // attach a GLX surface to the root window
-      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, false, false, false, g_advancedSettings.m_fullScreen);
+      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, (bool)g_advancedSettings.m_fullScreen);
       if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
         m_screenSurface->EnableVSync();
 
