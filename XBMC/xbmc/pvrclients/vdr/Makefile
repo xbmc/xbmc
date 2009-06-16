@@ -1,19 +1,63 @@
-ARCH=x86_64-linux
-INCLUDES=-I. -I../../linux -I../../ -I ../../../guilib
-DEFINES+=
-CXXFLAGS=-fPIC
-OBJS=client.o pvrclient-vdr.o vtptransceiver.o
-LIBS=../../addons/include/xbmc_addon_lib++.a ../../addons/include/xbmc_pvr_lib++.a
+#
+# Makefile for the XBMC Video Disk Recorder PVR AddOn
+#
+# See the README for copyright information and
+# how to reach the author.
+#
 
-SLIB=../../../addons/pvr/VDR/XBMC_VDR.pvr
+.DELETE_ON_ERROR:
 
-$(SLIB): $(OBJS)
-ifeq ($(findstring osx,$(ARCH)), osx)
-	@export MACOSX_DEPLOYMENT_TARGET=10.4
-	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $(SLIB) $(OBJS) $(LIBS)
-	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
-else
-	$(CXX) $(CFLAGS) -shared -g -o $(SLIB) $(OBJS) $(LIBS)
-endif
+CC       ?= gcc
+CFLAGS   ?= -g -O2 -Wall
 
-include ../../../Makefile.include
+CXX      ?= g++
+CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
+
+ARCH     = x86_64-linux
+DESTDIR ?=
+PREFIX  ?= /usr/local
+ADDONDIR = $(PREFIX)/share/xbmc/addons
+LIBS     = ../../addons/include/xbmc_addon_lib++.a ../../addons/include/xbmc_pvr_lib++.a
+INCLUDES = -I. -I../../linux -I../../ -I ../../../guilib
+DEFINES += -D_LINUX -fPIC
+LIBDIR   = ../../../addons/pvr/VDR
+LIB      = ../../../addons/pvr/VDR/XBMC_VDR.pvr
+
+-include Make.config
+
+OBJS = client.o pvrclient-vdr.o vtptransceiver.o
+
+all: pvrVDR
+
+# Implicit rules:
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
+
+# Dependencies:
+
+MAKEDEP = $(CXX) -MM -MG
+DEPFILE = .dependencies
+$(DEPFILE): Makefile
+	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.cpp) > $@
+
+-include $(DEPFILE)
+
+# The main library:
+
+pvrVDR: $(OBJS) $(SILIB)
+	$(CXX) $(CXXFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
+
+# Install the files:
+
+install: install-lib
+
+# PVR library:
+
+install-lib: pvrVDR
+	@mkdir -p $(DESTDIR)$(ADDONDIR)
+	@cp --remove-destination -r $(LIBDIR) $(DESTDIR)$(ADDONDIR)
+
+clean:
+	-rm -f $(OBJS) $(DEPFILE) $(LIB) *~
+CLEAN: clean

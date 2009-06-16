@@ -31,7 +31,9 @@ ADDON_STATUS curStatus  = STATUS_UNKNOWN;
 int g_clientID          = -1;
 
 /* User adjustable settings are saved here.
-   Default values are defined inside client.h */
+ * Default values are defined inside client.h 
+ * and exported to the other source files.
+ */
 std::string m_sHostname = DEFAULT_HOST;
 int m_iPort             = DEFAULT_PORT;
 bool m_bOnlyFTA         = DEFAULT_FTA_ONLY;
@@ -40,7 +42,10 @@ bool m_bCharsetConv     = DEFAULT_CHARCONV;
 int m_iConnectTimeout   = DEFAULT_TIMEOUT;
 
 
-//////////////////////////////////////////////////////////////////////////////
+//-- Create -------------------------------------------------------------------
+// Called after loading of the dll, all steps to become Client functional
+// must be performed here.
+//-----------------------------------------------------------------------------
 extern "C" ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID)
 {
   XBMC_register_me(hdl);
@@ -135,11 +140,17 @@ extern "C" void Destroy()
   curStatus = STATUS_UNKNOWN;
 }
 
+//-- Remove -------------------------------------------------------------------
+// Called before unloading of this Add-On
+//-----------------------------------------------------------------------------
 extern "C" void Remove()
 {
   Destroy();
 }
 
+//-- GetStatus ----------------------------------------------------------------
+// Report the current Add-On Status to XBMC
+//-----------------------------------------------------------------------------
 extern "C" ADDON_STATUS GetStatus()
 {
   return curStatus;
@@ -202,7 +213,7 @@ extern "C" ADDON_STATUS SetSetting(const char *settingName, const void *settingV
   return STATUS_OK;
 }
 
-//-- GetProperties ------------------------------------------------------------------
+//-- GetProperties ------------------------------------------------------------
 // Tell XBMC our requirements
 //-----------------------------------------------------------------------------
 extern "C" PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
@@ -210,21 +221,33 @@ extern "C" PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
   return g_client->GetProperties(props);
 }
 
+//-- GetBackendName -----------------------------------------------------------
+// Return the Name of the Backend
+//-----------------------------------------------------------------------------
 extern "C" const char * GetBackendName()
 {
   return g_client->GetBackendName();
 }
 
+//-- GetBackendVersion --------------------------------------------------------
+// Return the Version of the Backend as String
+//-----------------------------------------------------------------------------
 extern "C" const char * GetBackendVersion()
 {
   return g_client->GetBackendVersion();
 }
 
+//-- GetConnectionString ------------------------------------------------------
+// Return a String with connection info, if available
+//-----------------------------------------------------------------------------
 extern "C" const char * GetConnectionString()
 {
   return g_client->GetConnectionString();
 }
 
+//-- GetDriveSpace ------------------------------------------------------------
+// Return the Total and Free Drive space on the PVR Backend
+//-----------------------------------------------------------------------------
 extern "C" PVR_ERROR GetDriveSpace(long long *total, long long *used)
 {
   return g_client->GetDriveSpace(total, used);
