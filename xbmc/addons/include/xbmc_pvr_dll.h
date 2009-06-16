@@ -1,18 +1,6 @@
 #ifndef __XBMC_PVR_H__
 #define __XBMC_PVR_H__
 
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#else
-#ifndef _LINUX
-#include <windows.h>
-#else
-#define __cdecl
-#define __declspec(x)
-#include <time.h>
-#endif
-#endif
-
 #include "xbmc_addon_dll.h"               /* Dll related functions available to all AddOn's */
 #include "xbmc_pvr_types.h"
 

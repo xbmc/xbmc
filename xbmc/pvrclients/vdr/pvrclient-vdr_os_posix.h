@@ -47,12 +47,12 @@
 typedef int bool_t;
 typedef int SOCKET;
 
-#define closesocket(a) close(a)
+//#define closesocket(a) close(a)
 #define SOCKET_ERROR   (-1)
-#define INVALID_SOCKET (-1)
+//#define INVALID_SOCKET (-1)
 
-#define __cdecl
-#define __declspec(x)
+//#define __cdecl
+//#define __declspec(x)
 
 #define LIBTYPE
 #define sock_getlasterror errno

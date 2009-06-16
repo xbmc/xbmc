@@ -26,15 +26,7 @@
 #include <stdio.h>
 #include <memory.h>
 
-#if defined(_LINUX)
-#include <unistd.h>
-#elif defined(_WIN32)
-extern "C" int inet_pton(int af, const char *src, void *dst);
-#endif
-
 using namespace std;
-
-//#define DEBUG
 
 CVTPTransceiver::CVTPTransceiver()
   : m_socket(INVALID_SOCKET)
@@ -42,8 +34,8 @@ CVTPTransceiver::CVTPTransceiver()
 
 CVTPTransceiver::~CVTPTransceiver()
 {
-  Close();
   Quit();
+  Close();
 }
 
 bool CVTPTransceiver::OpenStreamSocket(SOCKET& sock, struct sockaddr_in& address2)
@@ -224,7 +216,7 @@ bool CVTPTransceiver::Open(const string &host, int port)
   int    code;
   ReadResponse(code, line);
 
-    XBMC_log(LOG_INFO, "CVTPTransceiver::Open - server greeting: %s", line.c_str());
+  XBMC_log(LOG_INFO, "CVTPTransceiver::Open - server greeting: %s", line.c_str());
   return true;
 }
 

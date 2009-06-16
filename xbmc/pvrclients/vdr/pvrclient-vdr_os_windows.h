@@ -74,6 +74,8 @@ typedef HANDLE pthread_mutex_t;
 #define THREAD_FUNC_PREFIX DWORD WINAPI
 #define SIGPIPE SIGABRT
 
+extern "C" int inet_pton(int af, const char *src, void *dst);
+
 static inline int usleep(unsigned int us)
 {
 	Sleep((us)/1000);
