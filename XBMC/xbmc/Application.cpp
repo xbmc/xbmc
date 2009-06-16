@@ -2479,6 +2479,7 @@ void CApplication::Render()
   g_graphicsContext.Lock();
   RenderNoPresent();
   g_graphicsContext.Flip();
+  g_infoManager.UpdateFPS();
   g_graphicsContext.Unlock();
 
 #ifdef HAS_SDL
@@ -2494,7 +2495,6 @@ void CApplication::RenderMemoryStatus()
 {
   MEASURE_FUNCTION;
 
-  g_infoManager.UpdateFPS();
   g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
 
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
