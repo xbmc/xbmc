@@ -3,16 +3,17 @@ INCLUDES=-I. -I../../linux -I../../ -I ../../../guilib
 DEFINES+=
 CXXFLAGS=-fPIC
 OBJS=client.o pvrclient-vdr.o vtptransceiver.o
+LIBS=../../addons/include/xbmc_addon_lib++.a ../../addons/include/xbmc_pvr_lib++.a
 
 SLIB=../../../addons/pvr/VDR/XBMC_VDR.pvr
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	@export MACOSX_DEPLOYMENT_TARGET=10.4
-	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $(SLIB) $(OBJS)
+	$(CXX) -bundle -shared -flat_namespace -undefined suppress -o $(SLIB) $(OBJS) $(LIBS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
-	$(CXX) $(CFLAGS) -shared -g -o $(SLIB) $(OBJS)
+	$(CXX) $(CFLAGS) -shared -g -o $(SLIB) $(OBJS) $(LIBS)
 endif
 
 include ../../../Makefile.include

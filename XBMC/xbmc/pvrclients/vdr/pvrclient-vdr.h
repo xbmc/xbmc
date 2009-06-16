@@ -33,14 +33,14 @@
 #include <vector>
 
 /* Master defines for client control */
-#include "../xbmc/pvrclients/PVRClientTypes.h"
+#include "../../addons/include/xbmc_pvr_types.h"
 
 
 class PVRClientVDR
 {
 public:
   /* Class interface */
-  PVRClientVDR(PVRCallbacks *callback);
+  PVRClientVDR();
   ~PVRClientVDR();
 
   /* VTP Listening Thread */
@@ -48,15 +48,15 @@ public:
 
   /* Server handling */
   PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
-  PVR_ERROR SetUserSetting(const char *settingName, const void *settingValue);
 
-  PVR_ERROR Connect();
+  bool Connect();
   void Disconnect();
   bool IsUp();
 
   /* General handling */
   const char* GetBackendName();
   const char* GetBackendVersion();
+  const char* GetConnectionString();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
   PVR_ERROR GetClientTime(time_t *time, int *diff_from_gmt);
 
@@ -112,16 +112,9 @@ protected:
 private:
   int                     m_iCurrentChannel;
   static bool             m_bConnected;
-  bool                    m_bCharsetConv;
   pthread_mutex_t         m_critSection;
   pthread_t               m_thread;
-  CStdString              m_sHostname;
-  int                     m_iPort;
-  bool                    m_bRadioEnabled;
-  bool                    m_bOnlyFTA;
   static bool             m_bStop;
-
-  static PVRCallbacks    *m_xbmc;
 
   /* Following is for recordings streams */
   uint64_t                currentPlayingRecordBytes;

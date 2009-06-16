@@ -19,9 +19,7 @@
  *
  */
 
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#endif
+#include "client.h"
 #include "pvrclient-vdr.h"
 #include "pvrclient-vdr_os.h"
 
@@ -58,23 +56,16 @@ bool PVRClientVDR::m_bStop						= true;
 SOCKET PVRClientVDR::m_socket_data				= INVALID_SOCKET;
 SOCKET PVRClientVDR::m_socket_video				= INVALID_SOCKET;
 CVTPTransceiver *PVRClientVDR::m_transceiver    = NULL;
-PVRCallbacks *PVRClientVDR::m_xbmc				= NULL;
 bool PVRClientVDR::m_bConnected					= false;
 
 /************************************************************/
 /** Class interface */
 
-PVRClientVDR::PVRClientVDR(PVRCallbacks *callback)
+PVRClientVDR::PVRClientVDR()
 {
-  m_xbmc              = callback;
   m_iCurrentChannel   = 1;
   m_transceiver       = new CVTPTransceiver();
   m_bConnected        = false;
-  m_bCharsetConv      = false;
-  m_sHostname         = "127.0.0.1";
-  m_iPort             = 2004;
-  m_bRadioEnabled     = true;
-  m_bOnlyFTA          = true;
   m_socket_video      = INVALID_SOCKET;
   m_socket_data       = INVALID_SOCKET;
   m_bStop             = true;
@@ -91,54 +82,33 @@ PVRClientVDR::~PVRClientVDR()
 /************************************************************/
 /** Server handling */
 
-PVR_ERROR PVRClientVDR::GetProperties(PVR_SERVERPROPS* pProps)
+PVR_ERROR PVRClientVDR::GetProperties(PVR_SERVERPROPS *props)
 {
-  pProps->Name                      = "VDR";
-  pProps->Hostname                  = m_sHostname.c_str();
-  pProps->Port                      = m_iPort;
-  pProps->DefaultUser               = "";
-  pProps->DefaultPassword           = "";
-  pProps->SupportChannelLogo        = false;
-  pProps->SupportTimeShift          = false;
-  pProps->SupportEPG                = true;
-  pProps->SupportRecordings         = true;
-  pProps->SupportTimers             = true;
-  pProps->SupportRadio              = m_bRadioEnabled;
-  pProps->SupportChannelSettings    = true;
-  pProps->SupportTeletext           = false;
-  pProps->SupportDirector           = false;
-  pProps->SupportBouquets           = false;
-  return PVR_ERROR_NO_ERROR;
-}
-
-PVR_ERROR PVRClientVDR::SetUserSetting(const char *settingName, const void *settingValue)
-{
-  string str = settingName;
-  if (str == "host")
-    m_sHostname = (const char*) settingValue;
-  else if (str == "port")
-    m_iPort = *(int*) settingValue;
-  else if (str == "ftaonly")
-    m_bOnlyFTA = *(bool*) settingValue;
-  else if (str == "useradio")
-    m_bRadioEnabled = *(bool*) settingValue;
-  else if (str == "convertchar")
-    m_bCharsetConv = *(bool*) settingValue;
+  props->SupportChannelLogo        = false;
+  props->SupportTimeShift          = false;
+  props->SupportEPG                = true;
+  props->SupportRecordings         = true;
+  props->SupportTimers             = true;
+  props->SupportRadio              = true;
+  props->SupportChannelSettings    = true;
+  props->SupportTeletext           = false;
+  props->SupportDirector           = false;
+  props->SupportBouquets           = false;
 
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::Connect()
+bool PVRClientVDR::Connect()
 {
   /* Open Streamdev-Server VTP-Connection to VDR Backend Server */
   if (!m_transceiver->Open(m_sHostname, m_iPort))
-    return PVR_ERROR_SERVER_ERROR;
+    return false;
 
   /* Check VDR streamdev is patched by calling a newly added command */
   if (GetNumChannels() == -1)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PCRClient-vdr: Detected unsupported Streamdev-Version");
-    return PVR_ERROR_SERVER_WRONG_VERSION;
+    XBMC_log(LOG_ERROR, "PCRClient-vdr: Detected unsupported Streamdev-Version");
+    return false;
   }
 
   /* Get Data socket from VDR Backend */
@@ -147,18 +117,18 @@ PVR_ERROR PVRClientVDR::Connect()
   /* If received socket is invalid, return */
   if (m_socket_data == INVALID_SOCKET)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PCRClient-vdr: Couldn't get socket for data response");
-    return PVR_ERROR_SERVER_ERROR;
+    XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get socket for data response");
+    return false;
   }
 
   /* Start VTP Listening Thread */
 //  m_bStop = false;
 //  if (pthread_create(&m_thread, NULL, &Process, (void *)"PVRClientVDR VTP-Listener") != 0) {
-//    return PVR_ERROR_SERVER_ERROR;
+//    return false;
 //  }
 
   m_bConnected = true;
-  return PVR_ERROR_NO_ERROR;
+  return true;
 }
 
 void PVRClientVDR::Disconnect()
@@ -207,7 +177,7 @@ void* PVRClientVDR::Process(void*)
   {
 	if ((!m_transceiver->IsOpen()) || (m_socket_data == INVALID_SOCKET))
 	{
-	  m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::Process - Loosed connectio to VDR");
+	  XBMC_log(LOG_ERROR, "PVRClientVDR::Process - Loosed connectio to VDR");
 	  m_bConnected = false;
 	  return NULL;
 	}
@@ -222,7 +192,7 @@ void* PVRClientVDR::Process(void*)
 	res = select(FD_SETSIZE, &set_r, NULL, &set_e, &tv);
 	if (res < 0)
 	{
-	  m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::Process - select failed");
+	  XBMC_log(LOG_ERROR, "PVRClientVDR::Process - select failed");
 	  continue;
 	}
 
@@ -232,7 +202,7 @@ void* PVRClientVDR::Process(void*)
 	res = recv(m_socket_data, (char*)data, sizeof(data), 0);
 	if (res < 0)
 	{
-	  m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::Process - failed");
+	  XBMC_log(LOG_ERROR, "PVRClientVDR::Process - failed");
 	  continue;
 	}
 
@@ -242,31 +212,31 @@ void* PVRClientVDR::Process(void*)
 	CStdString respStr = data;
 	if (respStr.find("MODT", 0) == 0)
 	{
-	  m_xbmc->Event(m_xbmc->userData, PVR_EVENT_TIMERS_CHANGE, "");
+	  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
 	}
 	else if (respStr.find("DELT", 0) == 0)
 	{
-	  m_xbmc->Event(m_xbmc->userData, PVR_EVENT_TIMERS_CHANGE, "");
+	  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
 	}
 	else if (respStr.find("ADDT", 0) == 0)
 	{
-	  m_xbmc->Event(m_xbmc->userData, PVR_EVENT_TIMERS_CHANGE, "");
+	  PVR_event_callback(PVR_EVENT_TIMERS_CHANGE, "");
 	}
 	else if (respStr.find("MODC", 0) == 0)
 	{
-	  m_xbmc->Event(m_xbmc->userData, PVR_EVENT_CHANNELS_CHANGE, "");
+	  PVR_event_callback(PVR_EVENT_CHANNELS_CHANGE, "");
 	}
 	else if (respStr.find("DELC", 0) == 0)
 	{
-	  m_xbmc->Event(m_xbmc->userData, PVR_EVENT_CHANNELS_CHANGE, "");
+	  PVR_event_callback(PVR_EVENT_CHANNELS_CHANGE, "");
 	}
 	else if (respStr.find("ADDC", 0) == 0)
 	{
-	  m_xbmc->Event(m_xbmc->userData, PVR_EVENT_CHANNELS_CHANGE, "");
+	  PVR_event_callback(PVR_EVENT_CHANNELS_CHANGE, "");
 	}
 	else
 	{
-	  m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::Process - Unkown respond command %s", respStr.c_str());
+	  XBMC_log(LOG_ERROR, "PVRClientVDR::Process - Unkown respond command %s", respStr.c_str());
 	}
   }
   return NULL;
@@ -321,6 +291,14 @@ const char* PVRClientVDR::GetBackendVersion()
 
   pthread_mutex_unlock(&m_critSection);
   return data.c_str();
+}
+
+const char* PVRClientVDR::GetConnectionString()
+{
+  char buffer[1024];
+  sprintf(buffer, "%s:%i", m_sHostname.c_str(), m_iPort);
+  string s_tmp = buffer;
+  return s_tmp.c_str();
 }
 
 PVR_ERROR PVRClientVDR::GetDriveSpace(long long *total, long long *used)
@@ -393,7 +371,7 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(unsigned int number, EPG_DATA &epg, tim
     CStdString str_result = data;
 
     if (m_bCharsetConv)
-      m_xbmc->CharConv(str_result);
+      XBMC_unknown_to_utf8(str_result);
 
     /** Get Channelname **/
     found = str_result.find("C", 0);
@@ -535,7 +513,7 @@ PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result
     CStdString str_result = data;
 
     if (m_bCharsetConv)
-      m_xbmc->CharConv(str_result);
+      XBMC_unknown_to_utf8(str_result);
 
     /** Get Channelname **/
     found = str_result.find("C", 0);
@@ -660,7 +638,7 @@ PVR_ERROR PVRClientVDR::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *resul
     CStdString str_result = data;
 
     if (m_bCharsetConv)
-      m_xbmc->CharConv(str_result);
+      XBMC_unknown_to_utf8(str_result);
 
     /** Get Channelname **/
     found = str_result.find("C", 0);
@@ -824,7 +802,7 @@ PVR_ERROR PVRClientVDR::GetChannelList(VECCHANNELS *channels, bool radio)
     int id;
 
     if (m_bCharsetConv)
-      m_xbmc->CharConv(str_result);
+      XBMC_unknown_to_utf8(str_result);
 
     // Channel number
     broadcast.m_iClientNum = atol(str_result.c_str());
@@ -1047,7 +1025,7 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
     int id;
 
     if (m_bCharsetConv)
-      m_xbmc->CharConv(str_result);
+      XBMC_unknown_to_utf8(str_result);
 
     // Skip Channel number
     str_result.erase(0, str_result.find(" ", 0) + 1);
@@ -2677,7 +2655,7 @@ int PVRClientVDR::GetNumRecordings(void)
 
   if (!m_transceiver->SendCommand("STAT records", code, lines))
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PCRClient-vdr: Couldn't get recordings count");
+    XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get recordings count");
     pthread_mutex_unlock(&m_critSection);
     return -1;
   }
@@ -2716,7 +2694,7 @@ PVR_ERROR PVRClientVDR::GetAllRecordings(VECRECORDINGS *results)
 
     /* Convert to UTF8 string format */
     if (m_bCharsetConv)
-      m_xbmc->CharConv(str_result);
+      XBMC_unknown_to_utf8(str_result);
 
     /* Get recording ID */
     broadcast.m_Index = atol(str_result.c_str());
@@ -2756,7 +2734,7 @@ PVR_ERROR PVRClientVDR::GetAllRecordings(VECRECORDINGS *results)
 
       /* Convert to UTF8 string format */
 	  if (m_bCharsetConv)
-        m_xbmc->CharConv(str_result);
+        XBMC_unknown_to_utf8(str_result);
 
       /* Get Channelname */
       if (str_result.find("C", 0) == 0)
@@ -2927,7 +2905,7 @@ int PVRClientVDR::GetNumTimers(void)
 
   if (!m_transceiver->SendCommand("STAT timers", code, lines))
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PCRClient-vdr: Couldn't get timers count");
+    XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get timers count");
     pthread_mutex_unlock(&m_critSection);
     return -1;
   }
@@ -2971,7 +2949,7 @@ PVR_ERROR PVRClientVDR::GetAllTimers(VECTVTIMERS *results)
      */
 
     if (m_bCharsetConv)
-      m_xbmc->CharConv(str_result);
+      XBMC_unknown_to_utf8(str_result);
 
     /* Id */
     timerinfo.m_Index = atol(str_result.c_str());
@@ -3107,42 +3085,42 @@ PVR_ERROR PVRClientVDR::GetAllTimers(VECTVTIMERS *results)
     if (!timerinfo.m_Repeat)
     {
       timerinfo.m_Summary.Format("%s %s %s %s %s", timerinfo.m_StartTime.GetAsLocalizedDate()
-                                 , m_xbmc->LocStrings(18078)
+                                 , XBMC_get_localized_string(18078)
                                  , timerinfo.m_StartTime.GetAsLocalizedTime("", false)
-                                 , m_xbmc->LocStrings(18079)
+                                 , XBMC_get_localized_string(18079)
                                  , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
     }
     else
       if (timerinfo.m_FirstDay != NULL)
       {
         timerinfo.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
-                                   , timerinfo.m_Repeat_Mon ? m_xbmc->LocStrings(18080) : "__"
-                                   , timerinfo.m_Repeat_Tue ? m_xbmc->LocStrings(18081) : "__"
-                                   , timerinfo.m_Repeat_Wed ? m_xbmc->LocStrings(18082) : "__"
-                                   , timerinfo.m_Repeat_Thu ? m_xbmc->LocStrings(18083) : "__"
-                                   , timerinfo.m_Repeat_Fri ? m_xbmc->LocStrings(18084) : "__"
-                                   , timerinfo.m_Repeat_Sat ? m_xbmc->LocStrings(18085) : "__"
-                                   , timerinfo.m_Repeat_Sun ? m_xbmc->LocStrings(18086) : "__"
-                                   , m_xbmc->LocStrings(18087)
+                                   , timerinfo.m_Repeat_Mon ? XBMC_get_localized_string(18080) : "__"
+                                   , timerinfo.m_Repeat_Tue ? XBMC_get_localized_string(18081) : "__"
+                                   , timerinfo.m_Repeat_Wed ? XBMC_get_localized_string(18082) : "__"
+                                   , timerinfo.m_Repeat_Thu ? XBMC_get_localized_string(18083) : "__"
+                                   , timerinfo.m_Repeat_Fri ? XBMC_get_localized_string(18084) : "__"
+                                   , timerinfo.m_Repeat_Sat ? XBMC_get_localized_string(18085) : "__"
+                                   , timerinfo.m_Repeat_Sun ? XBMC_get_localized_string(18086) : "__"
+                                   , XBMC_get_localized_string(18087)
                                    , timerinfo.m_FirstDay.GetAsLocalizedDate(false)
-                                   , m_xbmc->LocStrings(18078)
+                                   , XBMC_get_localized_string(18078)
                                    , timerinfo.m_StartTime.GetAsLocalizedTime("", false)
-                                   , m_xbmc->LocStrings(18079)
+                                   , XBMC_get_localized_string(18079)
                                    , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
       }
       else
       {
         timerinfo.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
-                                   , timerinfo.m_Repeat_Mon ? m_xbmc->LocStrings(18080) : "__"
-                                   , timerinfo.m_Repeat_Tue ? m_xbmc->LocStrings(18081) : "__"
-                                   , timerinfo.m_Repeat_Wed ? m_xbmc->LocStrings(18082) : "__"
-                                   , timerinfo.m_Repeat_Thu ? m_xbmc->LocStrings(18083) : "__"
-                                   , timerinfo.m_Repeat_Fri ? m_xbmc->LocStrings(18084) : "__"
-                                   , timerinfo.m_Repeat_Sat ? m_xbmc->LocStrings(18085) : "__"
-                                   , timerinfo.m_Repeat_Sun ? m_xbmc->LocStrings(18086) : "__"
-                                   , m_xbmc->LocStrings(18078)
+                                   , timerinfo.m_Repeat_Mon ? XBMC_get_localized_string(18080) : "__"
+                                   , timerinfo.m_Repeat_Tue ? XBMC_get_localized_string(18081) : "__"
+                                   , timerinfo.m_Repeat_Wed ? XBMC_get_localized_string(18082) : "__"
+                                   , timerinfo.m_Repeat_Thu ? XBMC_get_localized_string(18083) : "__"
+                                   , timerinfo.m_Repeat_Fri ? XBMC_get_localized_string(18084) : "__"
+                                   , timerinfo.m_Repeat_Sat ? XBMC_get_localized_string(18085) : "__"
+                                   , timerinfo.m_Repeat_Sun ? XBMC_get_localized_string(18086) : "__"
+                                   , XBMC_get_localized_string(18078)
                                    , timerinfo.m_StartTime.GetAsLocalizedTime("", false)
-                                   , m_xbmc->LocStrings(18079)
+                                   , XBMC_get_localized_string(18079)
                                    , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
       }
 
@@ -3192,7 +3170,7 @@ PVR_ERROR PVRClientVDR::GetTimerInfo(unsigned int timernumber, CTVTimerInfoTag &
   CStdString str_result = data;
 
   if (m_bCharsetConv)
-    m_xbmc->CharConv(str_result);
+    XBMC_unknown_to_utf8(str_result);
 
   /* Id */
   timerinfo.m_Index = atol(str_result.c_str());
@@ -3692,7 +3670,7 @@ bool PVRClientVDR::OpenLiveStream(unsigned int channel)
   /* If received socket is invalid, return */
   if (m_socket_video == INVALID_SOCKET)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PCRClient-vdr: Couldn't get socket for live tv");
+    XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get socket for live tv");
     pthread_mutex_unlock(&m_critSection);
     return false;
   }
@@ -3745,13 +3723,13 @@ int PVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
 
   if (res < 0)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::Read - select failed");
+    XBMC_log(LOG_ERROR, "PVRClientVDR::Read - select failed");
     return 0;
   }
 
   if (res == 0)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::Read - timeout waiting for data");
+    XBMC_log(LOG_ERROR, "PVRClientVDR::Read - timeout waiting for data");
     return 0;
   }
 
@@ -3759,13 +3737,13 @@ int PVRClientVDR::ReadLiveStream(BYTE* buf, int buf_size)
 
   if (res < 0)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::Read - failed");
+    XBMC_log(LOG_ERROR, "PVRClientVDR::Read - failed");
     return 0;
   }
 
   if (res == 0)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::Read - eof");
+    XBMC_log(LOG_ERROR, "PVRClientVDR::Read - eof");
     return 0;
   }
 
@@ -3801,7 +3779,7 @@ bool PVRClientVDR::SwitchChannel(unsigned int channel)
 
   if (m_socket_video == INVALID_SOCKET)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PCRClient-vdr: Couldn't get socket for live tv");
+    XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get socket for live tv");
     pthread_mutex_unlock(&m_critSection);
     return false;
   }
@@ -3852,7 +3830,7 @@ bool PVRClientVDR::OpenRecordedStream(const CTVRecordingInfoTag &recinfo)
   /* If received socket is invalid, return */
   if (m_socket_video == INVALID_SOCKET)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PCRClient-vdr: Couldn't get socket for recording");
+    XBMC_log(LOG_ERROR, "PCRClient-vdr: Couldn't get socket for recording");
     return false;
   }
 
@@ -3923,13 +3901,13 @@ int PVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
 
   if (res < 0)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::ReadRecordedStream - select failed");
+    XBMC_log(LOG_ERROR, "PVRClientVDR::ReadRecordedStream - select failed");
     return 0;
   }
 
   if (res == 0)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::ReadRecordedStream - timeout waiting for data");
+    XBMC_log(LOG_ERROR, "PVRClientVDR::ReadRecordedStream - timeout waiting for data");
     return 0;
   }
 
@@ -3937,13 +3915,13 @@ int PVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
 
   if (res < 0)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::ReadRecordedStream - failed");
+    XBMC_log(LOG_ERROR, "PVRClientVDR::ReadRecordedStream - failed");
     return 0;
   }
 
   if (res == 0)
   {
-    m_xbmc->Log(m_xbmc->userData, LOG_ERROR, "PVRClientVDR::ReadRecordedStream - eof");
+    XBMC_log(LOG_ERROR, "PVRClientVDR::ReadRecordedStream - eof");
     return 0;
   }
 
