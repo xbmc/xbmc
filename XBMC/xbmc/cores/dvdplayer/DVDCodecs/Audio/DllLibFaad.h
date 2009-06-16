@@ -31,13 +31,21 @@
 #endif
 #include "DynamicDll.h"
 
+#if (defined HAVE_LIBFAAD_DEBIAN_ABI)
+  #define FAAD_SAMPLERATE_TYPE uint32_t
+  #define FAAD_GETERROR_TYPE int8_t
+#else
+  #define FAAD_SAMPLERATE_TYPE unsigned long
+  #define FAAD_GETERROR_TYPE char
+#endif
+
 #if (defined USE_EXTERNAL_LIBFAAD)
 
 class DllLibFaadInterface
 {
 public:
     virtual ~DllLibFaadInterface() {}
-    virtual char* NeAACDecGetErrorMessage(unsigned char errcode)=0;
+    virtual FAAD_GETERROR_TYPE* NeAACDecGetErrorMessage(unsigned char errcode)=0;
     virtual uint32_t NeAACDecGetCapabilities(void)=0;
     virtual NeAACDecHandle NeAACDecOpen(void)=0;
     virtual NeAACDecConfigurationPtr NeAACDecGetCurrentConfiguration(NeAACDecHandle hDecoder)=0;
@@ -46,12 +54,12 @@ public:
     virtual long NeAACDecInit(NeAACDecHandle hDecoder,
                               unsigned char *buffer,
                               unsigned long buffer_size,
-                              unsigned long *samplerate,
+                              FAAD_SAMPLERATE_TYPE *samplerate,
                               unsigned char *channels)=0;
     virtual char NeAACDecInit2(NeAACDecHandle hDecoder,
                                unsigned char *pBuffer,
                                unsigned long SizeOfDecoderSpecificInfo,
-                               unsigned long *samplerate,
+                               FAAD_SAMPLERATE_TYPE *samplerate,
                                unsigned char *channels)=0;
     virtual void NeAACDecPostSeekReset(NeAACDecHandle hDecoder, int32_t frame)=0;
     virtual void NeAACDecClose(NeAACDecHandle hDecoder)=0;
@@ -78,7 +86,7 @@ class DllLibFaad : public DllDynamic, DllLibFaadInterface
 {
 public:
     virtual ~DllLibFaad() {}
-    virtual char* NeAACDecGetErrorMessage(unsigned char errcode)
+    virtual FAAD_GETERROR_TYPE* NeAACDecGetErrorMessage(unsigned char errcode)
         { return ::NeAACDecGetErrorMessage(errcode); }
     virtual uint32_t NeAACDecGetCapabilities(void)
         { return ::NeAACDecGetCapabilities(); }
@@ -92,13 +100,13 @@ public:
     virtual long NeAACDecInit(NeAACDecHandle hDecoder,
                               unsigned char *buffer,
                               unsigned long buffer_size,
-                              unsigned long *samplerate,
+                              FAAD_SAMPLERATE_TYPE *samplerate,
                               unsigned char *channels)
         { return ::NeAACDecInit(hDecoder, buffer, buffer_size, samplerate, channels); }
     virtual char NeAACDecInit2(NeAACDecHandle hDecoder,
                                unsigned char *pBuffer,
                                unsigned long SizeOfDecoderSpecificInfo,
-                               unsigned long *samplerate,
+                               FAAD_SAMPLERATE_TYPE *samplerate,
                                unsigned char *channels)
         { return ::NeAACDecInit2(hDecoder, pBuffer, SizeOfDecoderSpecificInfo, samplerate, channels); }
     virtual void NeAACDecPostSeekReset(NeAACDecHandle hDecoder, int32_t frame)
