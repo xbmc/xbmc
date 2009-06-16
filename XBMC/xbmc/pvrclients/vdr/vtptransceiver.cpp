@@ -20,6 +20,7 @@
  */
 
 #include "vtptransceiver.h"
+#include "client.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -53,7 +54,7 @@ bool CVTPTransceiver::OpenStreamSocket(SOCKET& sock, struct sockaddr_in& address
 
   if(sock == INVALID_SOCKET)
   {
-    /*Log::Log(LOG_ERROR, "CVTPTransceiver::OpenStreamSocket - invalid socket");*/
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::OpenStreamSocket - invalid socket");
     return false;
   }
 
@@ -62,26 +63,26 @@ bool CVTPTransceiver::OpenStreamSocket(SOCKET& sock, struct sockaddr_in& address
 
   if(bind(sock, (struct sockaddr*) &address, sizeof(address)) == SOCKET_ERROR)
   {
-    /*Log::Log(LOG_ERROR, "CVTPTransceiver::OpenStreamSocket - bind failed");*/
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::OpenStreamSocket - bind failed");
     return false;
   }
 
   socklen_t len = sizeof(address);
   if(getsockname(sock, (struct sockaddr*) &address, &len) == SOCKET_ERROR)
   {
-    /*Log::Log(LOG_ERROR, "CVTPTransceiver::OpenStreamSocket - bind failed");*/
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::OpenStreamSocket - bind failed");
     return false;
   }
 
   if(listen(sock, 1) == SOCKET_ERROR)
   {
-    /*Log::Log(LOG_ERROR, "CVTPTransceiver::OpenStreamSocket - listen failed");*/
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::OpenStreamSocket - listen failed");
     return false;
   }
 
   address2.sin_port = address.sin_port;
 
-  /*Log::Log(LOG_DEBUG, "CVTPTransceiver::OpenStreamSocket - listening on %s:%d", inet_ntoa(address.sin_addr), address.sin_port);*/
+  XBMC_log(LOG_DEBUG, "CVTPTransceiver::OpenStreamSocket - listening on %s:%d", inet_ntoa(address.sin_addr), address.sin_port);
   return true;
 }
 
@@ -91,7 +92,7 @@ bool CVTPTransceiver::AcceptStreamSocket(SOCKET& sock2)
   sock = accept(sock2, NULL, NULL);
   if(sock == INVALID_SOCKET)
   {
-    /*Log::Log(LOG_ERROR, "CVTPStream::Accept - failed to accept incomming connection");*/
+    XBMC_log(LOG_ERROR, "CVTPStream::Accept - failed to accept incomming connection");
     return false;
   }
 
@@ -113,7 +114,7 @@ bool CVTPTransceiver::Open(const string &host, int port)
 
   if ((m_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_IP)) == INVALID_SOCKET)
   {
-//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't open socket '%s:%u'", host.c_str(), port);
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't open socket '%s:%u'", host.c_str(), port);
     return false;
   }
 
@@ -125,14 +126,14 @@ bool CVTPTransceiver::Open(const string &host, int port)
   if (ioctlsocket(m_socket, FIONBIO, &iMode) == -1)
 #endif
   {
-//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't set socket to non blocking mode");
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't set socket to non blocking mode");
     Close();
     return false;
   }
 
   if ((hp = gethostbyname(host.c_str())) == NULL)
   {
-//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - failed to resolve hostname: %s", host.c_str());
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - failed to resolve hostname: %s", host.c_str());
     Close();
     return false;
   }
@@ -142,7 +143,7 @@ bool CVTPTransceiver::Open(const string &host, int port)
   m_LocalAddr.sin_addr.s_addr = INADDR_ANY;
   if (bind(m_socket, (struct sockaddr*)&m_LocalAddr, sizeof(m_LocalAddr)) == -1)
   {
-//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't bind requested socket '%s:%u'", host.c_str(), port);
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't bind requested socket '%s:%u'", host.c_str(), port);
     Close();
     return false;
   }
@@ -155,7 +156,7 @@ bool CVTPTransceiver::Open(const string &host, int port)
     fd_set         set_r, set_w, set_e;
     timeval        timeout;
 
-    timeout.tv_sec  = 5;//m_iConnectTimeout;
+    timeout.tv_sec  = m_iConnectTimeout;
     timeout.tv_usec = 0;
 
     // fill with new data
@@ -168,23 +169,23 @@ bool CVTPTransceiver::Open(const string &host, int port)
     int result = select(FD_SETSIZE, &set_r, &set_w, &set_e, &timeout);
     if (result < 0)
     {
-//      XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - select failed '%s:%u'", host.c_str(), port);
+      XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - select failed '%s:%u'", host.c_str(), port);
       Close();
       return false;
     }
     else if (result == 0)
     {
-//      XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - connect timed out '%s:%u'", host.c_str(), port);
+      XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - connect timed out '%s:%u'", host.c_str(), port);
       Close();
       return false;
     }
     else if (!IsConnected(m_socket, &set_r, &set_w, &set_e))
     {
-//      XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - failed to connect to IP '%d.%d.%d.%d",
-//                        (ntohl(m_RemoteAddr.sin_addr.s_addr) >> 24) & 0xff,
-//                        (ntohl(m_RemoteAddr.sin_addr.s_addr) >> 16) & 0xff,
-//                        (ntohl(m_RemoteAddr.sin_addr.s_addr) >> 8) & 0xff,
-//                        (ntohl(m_RemoteAddr.sin_addr.s_addr) & 0xff));
+      XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - failed to connect to IP '%d.%d.%d.%d",
+                        (ntohl(m_RemoteAddr.sin_addr.s_addr) >> 24) & 0xff,
+                        (ntohl(m_RemoteAddr.sin_addr.s_addr) >> 16) & 0xff,
+                        (ntohl(m_RemoteAddr.sin_addr.s_addr) >> 8) & 0xff,
+                        (ntohl(m_RemoteAddr.sin_addr.s_addr) & 0xff));
       Close();
       return false;
     }
@@ -197,7 +198,7 @@ bool CVTPTransceiver::Open(const string &host, int port)
   if (ioctlsocket(m_socket, FIONBIO, &iMode) == -1)
 #endif
   {
-//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't set socket initial condition");
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't set socket initial condition");
     Close();
     return false;
   }
@@ -205,7 +206,7 @@ bool CVTPTransceiver::Open(const string &host, int port)
   len = sizeof(struct sockaddr_in);
   if (getpeername(m_socket, (struct sockaddr*)&m_RemoteAddr, &len) == -1)
   {
-//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't get the name of the peer socket '%s:%u'", host.c_str(), port);
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't get the name of the peer socket '%s:%u'", host.c_str(), port);
     Close();
     return false;
   }
@@ -213,7 +214,7 @@ bool CVTPTransceiver::Open(const string &host, int port)
   len = sizeof(struct sockaddr_in);
   if (getsockname(m_socket, (struct sockaddr*)&m_LocalAddr, &len) == -1)
   {
-//    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't get the socket name '%s:%u'", host.c_str(), port);
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::Open - Can't get the socket name '%s:%u'", host.c_str(), port);
     Close();
     return false;
   }
@@ -223,7 +224,7 @@ bool CVTPTransceiver::Open(const string &host, int port)
   int    code;
   ReadResponse(code, line);
 
-//  XBMC_log(LOG_INFO, "CVTPTransceiver::Open - server greeting: %s", line.c_str());
+    XBMC_log(LOG_INFO, "CVTPTransceiver::Open - server greeting: %s", line.c_str());
   return true;
 }
 
@@ -286,7 +287,7 @@ bool CVTPTransceiver::ReadResponse(int &code, vector<string> &lines)
     {
       if(sscanf(line.c_str(), "%d%c", &code, &cont) != 2)
       {
-        /*Log::Log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - unknown line format: %s", line.c_str());*/
+        XBMC_log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - unknown line format: %s", line.c_str());
         line.erase(0, pos1 + 2);
         continue;
       }
@@ -320,14 +321,14 @@ bool CVTPTransceiver::ReadResponse(int &code, vector<string> &lines)
     result = select(FD_SETSIZE, &set_r, NULL, &set_e, &timeout);
     if(result < 0)
     {
-      /*Log::Log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - select failed");*/
+      XBMC_log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - select failed");
       m_socket = INVALID_SOCKET;
       return false;
     }
 
     if(result == 0)
     {
-      /*Log::Log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - timeout waiting for response, retrying...");*/
+      XBMC_log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - timeout waiting for response, retrying...");
       if (retries != 0) {
           retries--;
       continue;
@@ -341,7 +342,7 @@ bool CVTPTransceiver::ReadResponse(int &code, vector<string> &lines)
     result = recv(m_socket, buffer, sizeof(buffer) - 1, 0);
     if(result < 0)
     {
-      /*Log::Log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - recv failed");*/
+      XBMC_log(LOG_DEBUG, "CVTPTransceiver::ReadResponse - recv failed");
       m_socket = INVALID_SOCKET;
       return false;
     }
@@ -374,19 +375,19 @@ bool CVTPTransceiver::SendCommand(const string &command)
   result = select(FD_SETSIZE, &set_w, NULL, &set_e, &tv);
   if(result < 0)
   {
-    /*Log::Log(LOG_ERROR, "CVTPTransceiver::SendCommand - select failed");*/
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::SendCommand - select failed");
     m_socket = INVALID_SOCKET;
     return false;
   }
   if (FD_ISSET(m_socket, &set_w))
   {
-    /*Log::Log(LOG_ERROR, "CVTPTransceiver::SendCommand - failed to send data");*/
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::SendCommand - failed to send data");
     m_socket = INVALID_SOCKET;
     return false;
   }
   if(send(m_socket, buffer, len, 0) != len)
   {
-    /*Log::Log(LOG_ERROR, "CVTPTransceiver::SendCommand - failed to send data");*/
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::SendCommand - failed to send data");
     m_socket = INVALID_SOCKET;
     return false;
   }
@@ -414,7 +415,7 @@ bool CVTPTransceiver::SendCommand(const string &command, int &code, vector<strin
 
   if(code < 200 || code > 299)
   {
-    //Log::Log(LOG_ERROR, "CVTPTransceiver::SendCommand - Failed with code: %d (%s)", code, lines[lines.size()-1].c_str());
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::SendCommand - Failed with code: %d (%s)", code, lines[lines.size()-1].c_str());
     return false;
   }
 
@@ -432,31 +433,31 @@ SOCKET CVTPTransceiver::GetStreamLive(int channel)
 
   if(!SendCommand("CAPS TS", code, result))
   {
-    //Log::Log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to provide mpeg-ts");
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to provide mpeg-ts");
     return INVALID_SOCKET;
   }
 
   sprintf(buffer, "PROV %d %d", 100, channel);
   if(!SendCommand(buffer, code, result))
   {
-    //Log::Log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to provide channel");
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to provide channel");
     return INVALID_SOCKET;
   }
 
   sprintf(buffer, "TUNE %d", channel);
   if(!SendCommand(buffer, code, result))
   {
-    //Log::Log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to tune to said channel");
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - server is unable to tune to said channel");
     return INVALID_SOCKET;
   }
 
   if(getsockname(m_socket, (struct sockaddr*) &address, &len) == SOCKET_ERROR)
   {
-    //Log::Log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - getsockname failed");
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::GetStreamLive - getsockname failed");
     return INVALID_SOCKET;
   }
 
-  //Log::Log(LOG_DEBUG, "CVTPTransceiver::GetStreamLive - local address %s:%d", inet_ntoa(address.sin_addr), ntohs(address.sin_port) );
+  XBMC_log(LOG_DEBUG, "CVTPTransceiver::GetStreamLive - local address %s:%d", inet_ntoa(address.sin_addr), ntohs(address.sin_port) );
 
   if(!OpenStreamSocket(sock, address))
     return INVALID_SOCKET;
@@ -508,11 +509,11 @@ SOCKET CVTPTransceiver::GetStreamRecording(int recording, uint64_t *size, uint32
 
     if(getsockname(m_socket, (struct sockaddr*) &address, &len) == SOCKET_ERROR)
     {
-      //Log::Log(LOG_ERROR, "CVTPTransceiver::GetStreamRecording - getsockname failed");
+      XBMC_log(LOG_ERROR, "CVTPTransceiver::GetStreamRecording - getsockname failed");
       return INVALID_SOCKET;
     }
 
-    //Log::Log(LOG_DEBUG, "CVTPTransceiver::GetStreamRecording - local address %s:%d", inet_ntoa(address.sin_addr), ntohs(address.sin_port) );
+    XBMC_log(LOG_DEBUG, "CVTPTransceiver::GetStreamRecording - local address %s:%d", inet_ntoa(address.sin_addr), ntohs(address.sin_port) );
 
     if(!OpenStreamSocket(sock, address))
       return INVALID_SOCKET;
@@ -551,11 +552,11 @@ SOCKET CVTPTransceiver::GetStreamData()
 
   if(getsockname(m_socket, (struct sockaddr*) &address, &len) == SOCKET_ERROR)
   {
- //   CLog::Log(LOGERROR, "VTPTransceiver::GetStreamData - getsockname failed");
+    XBMC_log(LOG_ERROR, "VTPTransceiver::GetStreamData - getsockname failed");
     return INVALID_SOCKET;
   }
 
-//  CLog::Log(LOGDEBUG, "VTPTransceiver::GetStreamData - local address %s:%d", inet_ntoa(address.sin_addr), ntohs(address.sin_port) );
+  XBMC_log(LOG_DEBUG, "VTPTransceiver::GetStreamData - local address %s:%d", inet_ntoa(address.sin_addr), ntohs(address.sin_port) );
 
   if(!OpenStreamSocket(sock, address))
     return INVALID_SOCKET;
@@ -591,7 +592,7 @@ void CVTPTransceiver::AbortStreamLive()
   int    code;
   if(!SendCommand("ABRT 0", code, line))
     return;
-    //Log::Log(LOG_ERROR, "CVTPTransceiver::AbortStreamLive - failed");
+  XBMC_log(LOG_ERROR, "CVTPTransceiver::AbortStreamLive - failed");
 }
 
 void CVTPTransceiver::AbortStreamRecording()
@@ -603,7 +604,7 @@ void CVTPTransceiver::AbortStreamRecording()
   int    code;
   if(!SendCommand("ABRT 1", code, line))
     return;
-    //Log::Log(LOG_ERROR, "CVTPTransceiver::AbortStreamRecording - failed");
+  XBMC_log(LOG_ERROR, "CVTPTransceiver::AbortStreamRecording - failed");
 }
 
 void CVTPTransceiver::AbortStreamData()
@@ -615,7 +616,7 @@ void CVTPTransceiver::AbortStreamData()
   int    code;
   if(!SendCommand("ABRT 3", code, line))
     return;
-    //CLog::Log(LOGERROR, "VTPTransceiver::AbortStreamData - failed");
+  XBMC_log(LOG_ERROR, "VTPTransceiver::AbortStreamData - failed");
 }
 
 bool CVTPTransceiver::CanStreamLive(int channel)
@@ -630,7 +631,7 @@ bool CVTPTransceiver::CanStreamLive(int channel)
   sprintf(buffer, "PROV %d %d", -1, channel);
   if(!SendCommand(buffer, code, line))
   {
-    //Log::Log(LOG_ERROR, "CVTPTransceiver::CanStreamLive - server is unable to provide channel %d", channel);
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::CanStreamLive - server is unable to provide channel %d", channel);
     return false;
   }
   return true;
@@ -646,7 +647,7 @@ bool CVTPTransceiver::SuspendServer()
 
   if (!ret || code != 220)
   {
-    //Log::Log(LOG_ERROR, "CVTPTransceiver::SuspendServer: Couldn't suspend server");
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::SuspendServer: Couldn't suspend server");
     return false;
   }
   return true;
@@ -662,7 +663,7 @@ bool CVTPTransceiver::Quit()
 
   if (!ret || code != 221)
   {
-    //Log::Log(LOG_ERROR, "CVTPTransceiver::Quit: Couldn't quit command connection");
+    XBMC_log(LOG_ERROR, "CVTPTransceiver::Quit: Couldn't quit command connection");
     return false;
   }
   return true;
