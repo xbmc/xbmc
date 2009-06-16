@@ -104,9 +104,7 @@ PVR_DIRS=\
 	xbmc/pvrclients/vdr
 
 LIBADDON_DIRS=\
-	xbmc/addons/lib/addonlib \
 	xbmc/addons/lib/addonlib++ \
-	xbmc/addons/lib/pvrlib \
 	xbmc/addons/lib/pvrlib++ \
 
 PM3_MEDIA=skin/Project\ Mayhem\ III/media
@@ -252,9 +250,7 @@ pvrclients: exports
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 libaddon: exports
-	$(MAKE) -C xbmc/addons/lib/addonlib
 	$(MAKE) -C xbmc/addons/lib/addonlib++
-	$(MAKE) -C xbmc/addons/lib/pvrlib
 	$(MAKE) -C xbmc/addons/lib/pvrlib++
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython

@@ -60,6 +60,24 @@ extern "C" {
 #endif
 
 #include "stdbool.h"
+#include <vector>
+#ifdef HAS_XBOX_HARDWARE
+#include <xtl.h>
+#else
+#ifdef _LINUX
+#include "linux/PlatformInclude.h"
+#ifndef __APPLE__
+#include <sys/sysinfo.h>
+#endif
+#else
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#endif
+#include <sys/stat.h>
+#include <errno.h>
+#endif
 
 typedef void* ADDON_HANDLE;
 

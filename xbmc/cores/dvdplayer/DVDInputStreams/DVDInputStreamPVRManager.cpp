@@ -123,12 +123,6 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
     m_isPlayRecording = true;
   }
 
-  /* Check if PVRManager is connected to a tv backend */
-  if (!CPVRManager::GetInstance()->IsConnected())
-  {
-    return false;
-  }
-
   /* Open the stream from PVRManager to DVDPlayer */
   if (!m_isPlayRecording)
   {

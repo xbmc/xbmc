@@ -20,7 +20,15 @@
  *
  */
 
-#include "pvrclients/PVRClientTypes.h"
+#include "../utils/Addon.h"
+#include "../utils/TVEPGInfoTag.h"
+#include "../utils/TVChannelInfoTag.h"
+#include "../utils/TVTimerInfoTag.h"
+#include "../utils/TVRecordInfoTag.h"
+#include "../addons/include/xbmc_pvr_types.h"
+
+class CPVRManager;
+class CEPG;
 
 /**
 * IPVRClientCallback Class
@@ -35,20 +43,21 @@ public:
 /**
 * IPVRClient PVR Client control class
 */
-class IPVRClient
+class IPVRClient : public ADDON::CAddon
 {
 public:
-  IPVRClient(long clientID, IPVRClientCallback *callback){};
+  IPVRClient(long clientID, const ADDON::CAddon& addon, IPVRClientCallback *pvrCB)
+    : CAddon(addon) {};
   virtual ~IPVRClient(){};
 
+  virtual long GetID(void)=0;
   virtual PVR_ERROR GetProperties(PVR_SERVERPROPS *props)=0;
-  virtual PVR_ERROR SetUserSetting(const char *settingName, const void *settingValue)=0;
-  virtual PVR_ERROR Connect()=0;
-  virtual void Disconnect()=0;
-  virtual bool IsUp()=0;
-
-  virtual const std::string GetBackendName()=0;
-  virtual const std::string GetBackendVersion()=0;
+  virtual ADDON_STATUS GetStatus(void)=0;
+  virtual void ReInit()=0;
+  
+  virtual const std::string GetBackendName(void)=0;
+  virtual const std::string GetBackendVersion(void)=0;
+  virtual const std::string GetConnectionString()=0;
   virtual PVR_ERROR GetDriveSpace(long long *total, long long *used)=0;
 
   virtual PVR_ERROR GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start = NULL, time_t end = NULL)=0;
@@ -88,4 +97,3 @@ public:
   virtual __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET)=0;
   virtual __int64 LengthRecordedStream(void)=0;
 };
-

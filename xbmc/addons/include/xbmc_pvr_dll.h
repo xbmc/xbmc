@@ -19,7 +19,7 @@
 extern "C"
 {
   // Functions that your PVR client must implement, also you must implement the functions from
-  // xbmc_addon.h
+  // xbmc_addon_dll.h
   ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID);
   void Destroy();
   PVR_ERROR GetProperties(PVR_SERVERPROPS* pProps);
@@ -27,38 +27,80 @@ extern "C"
   const char* GetBackendVersion();
   const char* GetConnectionString();
   PVR_ERROR GetDriveSpace(long long *total, long long *used);
+  PVR_ERROR GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start, time_t end);
+  PVR_ERROR GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result);
+  PVR_ERROR GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result);
   int GetNumBouquets();
   int GetNumChannels();
   int GetNumRecordings();
   int GetNumTimers();
-//  PVR_ERROR GetBouquetInfo(const unsigned number, PVR_BOUQUET *info);
-  PVR_ERROR RequestChannelList(PVRHANDLE handle);
-//  PVR_ERROR GetEPGForChannel(const unsigned channel, PVR_PROGLIST **epg, time_t start, time_t end);
-//  PVR_ERROR GetEPGNowInfo(const unsigned channel, PVR_PROGINFO *result);
-//  PVR_ERROR GetEPGNextInfo(const unsigned channel, PVR_PROGINFO *result);
-//  PVR_ERROR GetEPGDataEnd(time_t *end);
+  PVR_ERROR GetChannelList(VECCHANNELS *channels, bool radio);
+  PVR_ERROR GetChannelSettings(CTVChannelInfoTag *result);
+  PVR_ERROR UpdateChannelSettings(const CTVChannelInfoTag &chaninfo);
+  PVR_ERROR AddChannel(const CTVChannelInfoTag &info);
+  PVR_ERROR DeleteChannel(unsigned int number);
+  PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
+  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
+  PVR_ERROR GetAllRecordings(VECRECORDINGS *results);
+  PVR_ERROR DeleteRecording(const CTVRecordingInfoTag &recinfo);
+  PVR_ERROR RenameRecording(const CTVRecordingInfoTag &recinfo, CStdString &newname);
+  PVR_ERROR GetAllTimers(VECTVTIMERS *results);
+  PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo);
+  PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force);
+  PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname);
+  PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo);
+  bool OpenLiveStream(unsigned int channel);
+  void CloseLiveStream();
+  int ReadLiveStream(BYTE* buf, int buf_size);
+  int GetCurrentClientChannel();
+  bool SwitchChannel(unsigned int channel);
+  bool OpenRecordedStream(const CTVRecordingInfoTag &recinfo);
+  void CloseRecordedStream(void);
+  int ReadRecordedStream(BYTE* buf, int buf_size);
+  __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
+  __int64 LengthRecordedStream(void);
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
-    pClient->Create = Create;
-    pClient->Destroy = Destroy;
-    pClient->GetProperties = GetProperties;
-    pClient->GetBackendName = GetBackendName;
-    pClient->GetBackendVersion = GetBackendVersion;
-    pClient->GetConnectionString = GetConnectionString;
-    pClient->GetDriveSpace = GetDriveSpace;
-    pClient->GetNumBouquets = GetNumBouquets;
-    pClient->GetNumChannels = GetNumChannels;
-    pClient->GetNumRecordings = GetNumRecordings;
-    pClient->GetNumTimers = GetNumTimers;
-    pClient->RequestChannelList = RequestChannelList;
-//    pClient->GetBouquetInfo = GetBouquetInfo;
-//    pClient->GetChannelList = GetChannelList;
-//    pClient->GetEPGForChannel = GetEPGForChannel;
-//    pClient->GetEPGNowInfo = GetEPGNowInfo;
-//    pClient->GetEPGNextInfo = GetEPGNextInfo;
-//    pClient->GetEPGDataEnd = GetEPGDataEnd;
+    pClient->Create                 = Create;
+    pClient->GetProperties          = GetProperties;
+    pClient->GetConnectionString    = GetConnectionString;
+    pClient->GetBackendName         = GetBackendName;
+    pClient->GetBackendVersion      = GetBackendVersion;
+    pClient->GetDriveSpace          = GetDriveSpace;
+    pClient->GetNumBouquets         = GetNumBouquets;
+    pClient->GetNumChannels         = GetNumChannels;
+    pClient->GetNumRecordings       = GetNumRecordings;
+    pClient->GetNumTimers           = GetNumTimers;
+    pClient->GetEPGForChannel       = GetEPGForChannel;
+    pClient->GetEPGNowInfo          = GetEPGNowInfo;
+    pClient->GetEPGNextInfo         = GetEPGNextInfo;
+    pClient->GetChannelList         = GetChannelList;
+    pClient->GetChannelSettings     = GetChannelSettings;
+    pClient->UpdateChannelSettings  = UpdateChannelSettings;
+    pClient->AddChannel             = AddChannel;
+    pClient->DeleteChannel          = DeleteChannel;
+    pClient->RenameChannel          = RenameChannel;
+    pClient->MoveChannel            = MoveChannel;
+    pClient->GetAllRecordings       = GetAllRecordings;
+    pClient->DeleteRecording        = DeleteRecording;
+    pClient->RenameRecording        = RenameRecording;
+    pClient->GetAllTimers           = GetAllTimers;
+    pClient->AddTimer               = AddTimer;
+    pClient->DeleteTimer            = DeleteTimer;
+    pClient->RenameTimer            = RenameTimer;
+    pClient->UpdateTimer            = UpdateTimer;
+    pClient->OpenLiveStream         = OpenLiveStream;
+    pClient->CloseLiveStream        = CloseLiveStream;
+    pClient->ReadLiveStream         = ReadLiveStream;
+    pClient->GetCurrentClientChannel= GetCurrentClientChannel;
+    pClient->SwitchChannel          = SwitchChannel;
+    pClient->OpenRecordedStream     = OpenRecordedStream;
+    pClient->CloseRecordedStream    = CloseRecordedStream;
+    pClient->ReadRecordedStream     = ReadRecordedStream;
+    pClient->SeekRecordedStream     = SeekRecordedStream;
+    pClient->LengthRecordedStream   = LengthRecordedStream;
   };
 };
 

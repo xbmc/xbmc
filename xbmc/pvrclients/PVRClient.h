@@ -23,6 +23,7 @@
 #include "IPVRClient.h"
 #include "../utils/Addon.h"
 #include "DllPVRClient.h"
+#include "../addons/lib/addon_local.h"
 
 class CPVRClient : public IPVRClient
 {
@@ -33,19 +34,20 @@ public:
 
   /* DLL related */
   bool Init();
-  void OnClientMessage(PVR_EVENT event);
+  void DeInit();
+  void ReInit();
+  virtual void Remove();
+  virtual ADDON_STATUS GetStatus();
+  virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
 
   /* Server */
   virtual long GetID();
   virtual PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
-  virtual PVR_ERROR SetUserSetting(const char *settingName, const void *settingValue);
-  virtual PVR_ERROR Connect();
-  virtual void Disconnect();
-  virtual bool IsUp();
 
   /* General */
   virtual const std::string GetBackendName();
   virtual const std::string GetBackendVersion();
+  virtual const std::string GetConnectionString();
   virtual PVR_ERROR GetDriveSpace(long long *total, long long *used);
 
   /* TV Guide */
@@ -90,17 +92,16 @@ public:
   virtual __int64 LengthRecordedStream(void);
 
 protected:
-  const long m_clientID;
   std::auto_ptr<struct PVRClient> m_pClient;
   std::auto_ptr<DllPVRClient> m_pDll;
-  CStdString m_hostName;
-  IPVRClientCallback* m_manager;
+  const                 long m_clientID;
+  bool                  m_ReadyToUse;
+  IPVRClientCallback   *m_manager;
+  AddonCB              *m_callbacks;
+  CStdString            m_hostName;
 
 private:
   static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);
-  static void PVRLogCallback(void *userData, const addon_log loglevel, const char *format, ... );
-  static void PVRUnknownToUTF8(CStdStringA &sourceDest);
-  static const char* PVRLocStrings(DWORD dwCode);
 };
 
 typedef std::vector<CPVRClient*> VECCLIENTS;

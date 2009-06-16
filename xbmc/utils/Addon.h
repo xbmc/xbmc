@@ -83,7 +83,7 @@ class IAddonCallback
 {
 public:
   virtual bool RequestRestart(const CAddon* addon, bool datachanged)=0;
-  virtual bool RequestRemoval(const CAddon* addon)=0;
+//  virtual bool RequestRemoval(const CAddon* addon)=0;
   virtual ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)=0;
 };
 
@@ -97,7 +97,7 @@ public:
   CAddonDummyCallback() {}
   ~CAddonDummyCallback() {}
   bool RequestRestart(const CAddon* addon, bool datachanged) { return false; }
-  bool RequestRemoval(const CAddon* addon) { return false; }
+//  bool RequestRemoval(const CAddon* addon) { return false; }
   ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; }
 };
 

@@ -19,46 +19,135 @@
  *
  */
 
+/*
+ * Description:
+ *
+ * Class CPVRClient is used as a specific interface between the PVR-Client
+ * library and the PVRManager. Every loaded Client have his own CPVRClient
+ * Class, it handle default data for the Manager in the case the Client
+ * can't provide the data and it act as exception handler for all function
+ * called inside client. Further it translate the "C" compatible data
+ * strucures to classes that can easily used by the PVRManager.
+ *
+ * It generate also a callback table with pointers to useful helper
+ * functions, that can be used inside the client to access XBMC
+ * internals.
+ */
+
 #include "stdafx.h"
 #include <vector>
 
 #include "PVRClient.h"
-#include "pvrclients/PVRClientTypes.h"
-#include "../utils/CharsetConverter.h"
+#include "URL.h"
 #include "../utils/log.h"
-#include "LocalizeStrings.h"
+#include "../utils/AddonHelpers.h"
 
 using namespace std;
 using namespace ADDON;
 
 CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
                        const ADDON::CAddon& addon, IPVRClientCallback* pvrCB)
-                              : IPVRClient(clientID, pvrCB)
+                              : IPVRClient(clientID, addon, pvrCB)
                               , m_clientID(clientID)
                               , m_pClient(pClient)
                               , m_pDll(pDll)
                               , m_manager(pvrCB)
+                              , m_ReadyToUse(false)
+                              , m_hostName("unknown")
+                              , m_callbacks(NULL)
 {
 
 }
 
 CPVRClient::~CPVRClient()
 {
-  // tell the plugin to disconnect and prepare for destruction
-  Disconnect();
+  /* tell the AddOn to deinitialize */
+  DeInit();
 }
 
 bool CPVRClient::Init()
 {
-  PVRCallbacks *callbacks = new PVRCallbacks;
-  callbacks->userData     = this;
-  callbacks->Event        = PVREventCallback;
-  callbacks->Log          = PVRLogCallback;
-  callbacks->CharConv     = PVRUnknownToUTF8;
-  callbacks->LocStrings   = PVRLocStrings;
+  CLog::Log(LOGDEBUG, "PVR: %s - Initializing PVR-Client AddOn", m_strName.c_str());
 
-  m_pClient->Create(callbacks);
-  return true;
+  /* Allocate the callback table to save all the pointers
+     to the helper callback functions */
+  m_callbacks = new AddonCB;
+
+  /* PVR Helper functions */
+  m_callbacks->userData     = this;
+  m_callbacks->addonData    = (CAddon*) this;
+
+  /* Write XBMC Global Add-on function addresses to callback table */
+  CAddonUtils::CreateAddOnCallbacks(m_callbacks);
+
+  /* Write XBMC PVR specific Add-on function addresses to callback table */
+  m_callbacks->PVR.EventCallback        = PVREventCallback;
+
+  /* Call Create to make connections, initializing data or whatever is
+     needed to become the AddOn running */
+  try
+  {
+    ADDON_STATUS status = m_pClient->Create(m_callbacks, m_clientID);
+    if (status != STATUS_OK)
+      throw status;
+    m_ReadyToUse = true;
+    m_hostName   = m_pClient->GetConnectionString();
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during Create occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    m_ReadyToUse = false;
+  }
+  catch (ADDON_STATUS status)
+  {
+    CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad status (%i) after Create and is not usable", m_strName.c_str(), m_hostName.c_str(), status);
+    m_ReadyToUse = false;
+
+    /* Delete is performed by the calling class */
+    new CAddonStatusHandler(this, status, "", false);
+  }
+  
+  return m_ReadyToUse;
+}
+
+void CPVRClient::DeInit()
+{
+  /* tell the AddOn to disconnect and prepare for destruction */
+  try
+  {
+    CLog::Log(LOGDEBUG, "PVR: %s/%s - Destroying PVR-Client AddOn", m_strName.c_str(), m_hostName.c_str());
+    m_ReadyToUse = false;
+
+    /* Tell the client to destroy */
+    m_pClient->Destroy();
+
+    /* Release Callback table in memory */
+    delete m_callbacks;
+    m_callbacks = NULL;
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during destruction of AddOn occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+  }
+}
+
+void CPVRClient::ReInit()
+{
+  DeInit();
+  Init();
+}
+
+ADDON_STATUS CPVRClient::GetStatus()
+{
+  try
+  {
+    return m_pDll->GetStatus();
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetStatus occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+  }
+  return STATUS_UNKNOWN;
 }
 
 long CPVRClient::GetID()
@@ -68,44 +157,106 @@ long CPVRClient::GetID()
 
 PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
 {
-  // get info from client
-  return m_pClient->GetProperties(props);
+  try
+  {
+    return m_pClient->GetProperties(props);
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetProperties occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+
+    /* Set all properties in a case of exception to not supported */
+    props->SupportChannelLogo        = false;
+    props->SupportTimeShift          = false;
+    props->SupportEPG                = false;
+    props->SupportRecordings         = false;
+    props->SupportTimers             = false;
+    props->SupportRadio              = false;
+    props->SupportChannelSettings    = false;
+    props->SupportTeletext           = false;
+    props->SupportDirector           = false;
+    props->SupportBouquets           = false;
+  }
+  return PVR_ERROR_UNKOWN;
 }
 
-PVR_ERROR CPVRClient::SetUserSetting(const char *settingName, const void *settingValue)
-{
-  return m_pClient->SetUserSetting(settingName, settingValue);
-}
-
-PVR_ERROR CPVRClient::Connect()
-{
-  return m_pClient->Connect();
-}
-
-void CPVRClient::Disconnect()
-{
-  m_pClient->Disconnect();
-}
-
-bool CPVRClient::IsUp()
-{
-  return m_pClient->IsUp();
-}
+/**********************************************************
+ * General PVR Functions
+ */
 
 const std::string CPVRClient::GetBackendName()
 {
-  return m_pClient->GetBackendName();
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      return m_pClient->GetBackendName();
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetBackendName occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  /* return string "Unavailable" as fallback */
+  return g_localizeStrings.Get(161);
 }
 
 const std::string CPVRClient::GetBackendVersion()
 {
-  return m_pClient->GetBackendVersion();
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      return m_pClient->GetBackendVersion();
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetBackendVersion occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  /* return string "Unavailable" as fallback */
+  return g_localizeStrings.Get(161);
+}
+
+const std::string CPVRClient::GetConnectionString()
+{
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      return m_pClient->GetConnectionString();
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetConnectionString occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  /* return string "Unavailable" as fallback */
+  return g_localizeStrings.Get(161);
 }
 
 PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
 {
-  return m_pClient->GetDriveSpace(total, used);
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      return m_pClient->GetDriveSpace(total, used);
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetDriveSpace occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  *total = 0;
+  *used  = 0;
+  return PVR_ERROR_NOT_IMPLEMENTED;
 }
+
+
+/**********************************************************
+ * EPG PVR Functions
+ */
 
 PVR_ERROR CPVRClient::GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start, time_t end)
 {
@@ -122,6 +273,11 @@ PVR_ERROR CPVRClient::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result)
   return m_pClient->GetEPGNextInfo(number, result);
 }
 
+
+/**********************************************************
+ * Channels PVR Functions
+ */
+ 
 int CPVRClient::GetNumChannels()
 {
   return m_pClient->GetNumChannels();
@@ -162,6 +318,11 @@ PVR_ERROR CPVRClient::MoveChannel(unsigned int number, unsigned int newnumber)
   return m_pClient->MoveChannel(number, newnumber);
 }
 
+
+/**********************************************************
+ * Recordings PVR Functions
+ */
+
 int CPVRClient::GetNumRecordings(void)
 {
   return m_pClient->GetNumRecordings();
@@ -181,6 +342,11 @@ PVR_ERROR CPVRClient::RenameRecording(const CTVRecordingInfoTag &recinfo, CStdSt
 {
   return m_pClient->RenameRecording(recinfo, newname);
 }
+
+
+/**********************************************************
+ * Timers PVR Functions
+ */
 
 int CPVRClient::GetNumTimers(void)
 {
@@ -211,6 +377,11 @@ PVR_ERROR CPVRClient::UpdateTimer(const CTVTimerInfoTag &timerinfo)
 {
   return m_pClient->UpdateTimer(timerinfo);
 }
+
+
+/**********************************************************
+ * Stream PVR Functions
+ */
 
 bool CPVRClient::OpenLiveStream(unsigned int channel)
 {
@@ -262,9 +433,39 @@ __int64 CPVRClient::LengthRecordedStream(void)
   return m_pClient->LengthRecordedStream();
 }
 
-/**
-* XBMC callbacks
-*/
+
+/**********************************************************
+ * Addon specific functions
+ * Are used for every type of AddOn
+ */
+void CPVRClient::Remove()
+{
+  DeInit();
+
+  /* Unload library file */
+  m_pDll->Unload();
+}
+
+ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *settingValue)
+{
+  try
+  {
+    return m_pDll->SetSetting(settingName, settingValue);
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SetSetting occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    return STATUS_UNKNOWN;
+  }
+}
+
+
+/**********************************************************
+ * Client specific Callbacks
+ * Are independent and can be different for every type of
+ * AddOn
+ */
+
 void CPVRClient::PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg)
 {
   CPVRClient* client=(CPVRClient*) userData;
@@ -272,47 +473,4 @@ void CPVRClient::PVREventCallback(void *userData, const PVR_EVENT pvrevent, cons
     return;
 
   client->m_manager->OnClientMessage(client->m_clientID, pvrevent, msg);
-}
-
-void CPVRClient::PVRLogCallback(void *userData, const addon_log loglevel, const char *format, ... )
-{
-  CPVRClient* client=(CPVRClient*) userData;
-  if (!client)
-    return;
-
-  CStdString message;
-  message.reserve(16384);
-  message.Format("PVR: %s:", client->m_hostName);
-
-  va_list va;
-  va_start(va, format);
-  message.FormatV(format, va);
-  va_end(va);
-
-  int xbmclog;
-  switch (loglevel)
-  {
-    case LOG_ERROR:
-      xbmclog = LOGERROR;
-      break;
-    case LOG_INFO:
-      xbmclog = LOGINFO;
-      break;
-    case LOG_DEBUG:
-    default:
-      xbmclog = LOGDEBUG;
-      break;
-  }
-
-  CLog::Log(xbmclog, message);
-}
-
-void CPVRClient::PVRUnknownToUTF8(CStdStringA &sourceDest)
-{
-  g_charsetConverter.unknownToUTF8(sourceDest);
-}
-
-const char* CPVRClient::PVRLocStrings(DWORD dwCode)
-{
-  return g_localizeStrings.Get(dwCode).c_str();
 }

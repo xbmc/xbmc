@@ -33,6 +33,7 @@
 #endif
 #endif
 
+#include "stdafx.h"
 #include <stdarg.h>
 #include "xbmc_pvr_lib++.h"
 #include "addon_local.h"

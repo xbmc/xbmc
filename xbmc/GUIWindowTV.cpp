@@ -170,15 +170,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
   if (iMessage == GUI_MSG_WINDOW_INIT)
   {
-    /* Check for connected PVR backend server, if no connection is present
-       show message window and go back */
-    if (!CPVRManager::GetInstance()->IsConnected())
-    {
-      m_gWindowManager.PreviousWindow();
-      CGUIDialogOK::ShowAndGetInput(18090,18091,0,18092);
-      return true;
-    }
-
     if (!CPVRManager::GetInstance()->IsSynchronized())
     {
       m_gWindowManager.PreviousWindow();
@@ -372,7 +363,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       m_iCurrSubTVWindow = TV_WINDOW_SETTINGS;
 
       CStdString strLabel;
-      CURL m_connString = CPVRManager::GetInstance()->GetConnString();
+//      CURL m_connString = CPVRManager::GetInstance()->GetConnString();
 
       strLabel = CPVRManager::GetInstance()->GetBackendName();
       SET_CONTROL_LABEL(CONTROL_INFO_BACKEND, strLabel);
@@ -380,8 +371,8 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       strLabel = CPVRManager::GetInstance()->GetBackendVersion();
       SET_CONTROL_LABEL(CONTROL_INFO_VERSION, strLabel);
 
-      strLabel.Format("%s:%d", (const char*)m_connString.GetHostName(), m_connString.GetPort());
-      SET_CONTROL_LABEL(CONTROL_INFO_ADDRESS, strLabel);
+//      strLabel.Format("%s:%d", (const char*)m_connString.GetHostName(), m_connString.GetPort());
+//      SET_CONTROL_LABEL(CONTROL_INFO_ADDRESS, strLabel);
 
       long long m_iDisktotal = 1024;
       long long m_iDiskused  = 1024;
