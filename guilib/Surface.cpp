@@ -790,14 +790,15 @@ void CSurface::Flip()
     else if (m_iVSyncMode == 4)
     {
       glFinish();
-      unsigned int before = 0, after = 0;
-      if(_glXGetVideoSyncSGI(&before) == 0)
-        _glXWaitVideoSyncSGI(2, (before+1)%2, &before);
-      else
+      unsigned int before = 0, swap = 0, after = 0;
+      if(_glXGetVideoSyncSGI(&before) != 0)
       {
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
         EnableVSync(true);
       }
+
+      if(_glXWaitVideoSyncSGI(2, (before+1)%2, &swap) != 0)
+        CLog::Log(LOGERROR, "%s - glXWaitVideoSyncSGI - Returned error", __FUNCTION__);
 
       glXSwapBuffers(s_dpy, m_glWindow);
       glFinish();
@@ -805,7 +806,10 @@ void CSurface::Flip()
       if(_glXGetVideoSyncSGI(&after) != 0)
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
 
-      if(after == before + 1)
+      if(after == before)
+        CLog::Log(LOGERROR, "%s - glXWaitVideoSyncSGI - Woke up early", __FUNCTION__);
+
+      if(after > before + 1)
         m_iVSyncErrors++;
       else
         m_iVSyncErrors = 0;
