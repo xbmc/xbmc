@@ -1057,29 +1057,26 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
       result->m_Settings.m_satellite = "Cable";
       str_result.erase(0, 3);
     }
-    else
-      if (str_result.compare(0, 2, ":T") == 0)
-      {
-        result->m_Settings.m_SourceType = src_DVBT;
-        result->m_Settings.m_satellite = "Terrestrial";
-        str_result.erase(0, 3);
-      }
-      else
-        if (str_result.compare(0, 2, ":S") == 0)
-        {
-          result->m_Settings.m_SourceType = src_DVBS;
-          str_result.erase(0, 2);
-          found = str_result.find(":", 0);
-          result->m_Settings.m_satellite.assign(str_result, found);
-          str_result.erase(0, found + 1);
-        }
-        else
-          if (str_result.compare(0, 2, ":P") == 0)
-          {
-            result->m_Settings.m_SourceType = srcAnalog;
-            result->m_Settings.m_satellite = "Analog";
-            str_result.erase(0, 3);
-          }
+    else if (str_result.compare(0, 2, ":T") == 0)
+    {
+      result->m_Settings.m_SourceType = src_DVBT;
+      result->m_Settings.m_satellite = "Terrestrial";
+      str_result.erase(0, 3);
+    }
+    else if (str_result.compare(0, 2, ":S") == 0)
+    {
+      result->m_Settings.m_SourceType = src_DVBS;
+      str_result.erase(0, 2);
+      found = str_result.find(":", 0);
+      result->m_Settings.m_satellite.assign(str_result, found);
+      str_result.erase(0, found + 1);
+    }
+    else if (str_result.compare(0, 2, ":P") == 0)
+    {
+      result->m_Settings.m_SourceType = srcAnalog;
+      result->m_Settings.m_satellite = "Analog";
+      str_result.erase(0, 3);
+    }
 
     // Channel symbolrate
     result->m_Settings.m_Symbolrate = atol(str_result.c_str());
@@ -1267,56 +1264,46 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
         {
           result->m_Settings.m_CoderateL = Coderate_None;
         }
-        else
-          if (i_tmp == 12)
-          {
-            result->m_Settings.m_CoderateL = Coderate_1_2;
-          }
-          else
-            if (i_tmp == 23)
-            {
-              result->m_Settings.m_CoderateL = Coderate_2_3;
-            }
-            else
-              if (i_tmp == 34)
-              {
-                result->m_Settings.m_CoderateL = Coderate_3_4;
-              }
-              else
-                if (i_tmp == 45)
-                {
-                  result->m_Settings.m_CoderateL = Coderate_4_5;
-                }
-                else
-                  if (i_tmp == 56)
-                  {
-                    result->m_Settings.m_CoderateL = Coderate_5_6;
-                  }
-                  else
-                    if (i_tmp == 67)
-                    {
-                      result->m_Settings.m_CoderateL = Coderate_6_7;
-                    }
-                    else
-                      if (i_tmp == 78)
-                      {
-                        result->m_Settings.m_CoderateL = Coderate_7_8;
-                      }
-                      else
-                        if (i_tmp == 89)
-                        {
-                          result->m_Settings.m_CoderateL = Coderate_8_9;
-                        }
-                        else
-                          if (i_tmp == 910)
-                          {
-                            result->m_Settings.m_CoderateL = Coderate_9_10;
-                          }
-                          else
-                            if (i_tmp == 999 || i_tmp == 910)
-                            {
-                              result->m_Settings.m_CoderateL = Coderate_Auto;
-                            }
+        else if (i_tmp == 12)
+        {
+          result->m_Settings.m_CoderateL = Coderate_1_2;
+        }
+        else if (i_tmp == 23)
+        {
+          result->m_Settings.m_CoderateL = Coderate_2_3;
+        }
+        else if (i_tmp == 34)
+        {
+          result->m_Settings.m_CoderateL = Coderate_3_4;
+        }
+        else if (i_tmp == 45)
+        {
+          result->m_Settings.m_CoderateL = Coderate_4_5;
+        }
+        else if (i_tmp == 56)
+        {
+          result->m_Settings.m_CoderateL = Coderate_5_6;
+        }
+        else if (i_tmp == 67)
+        {
+          result->m_Settings.m_CoderateL = Coderate_6_7;
+        }
+        else if (i_tmp == 78)
+        {
+          result->m_Settings.m_CoderateL = Coderate_7_8;
+        }
+        else if (i_tmp == 89)
+        {
+          result->m_Settings.m_CoderateL = Coderate_8_9;
+        }
+        else if (i_tmp == 910)
+        {
+          result->m_Settings.m_CoderateL = Coderate_9_10;
+        }
+        else if (i_tmp == 999 || i_tmp == 910)
+        {
+          result->m_Settings.m_CoderateL = Coderate_Auto;
+        }
       }
       else
       {
@@ -1342,56 +1329,46 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
       {
         result->m_Settings.m_CoderateH = Coderate_None;
       }
-      else
-        if (i_tmp == 12)
-        {
-          result->m_Settings.m_CoderateH = Coderate_1_2;
-        }
-        else
-          if (i_tmp == 23)
-          {
-            result->m_Settings.m_CoderateH = Coderate_2_3;
-          }
-          else
-            if (i_tmp == 34)
-            {
-              result->m_Settings.m_CoderateH = Coderate_3_4;
-            }
-            else
-              if (i_tmp == 45)
-              {
-                result->m_Settings.m_CoderateH = Coderate_4_5;
-              }
-              else
-                if (i_tmp == 56)
-                {
-                  result->m_Settings.m_CoderateH = Coderate_5_6;
-                }
-                else
-                  if (i_tmp == 67)
-                  {
-                    result->m_Settings.m_CoderateH = Coderate_6_7;
-                  }
-                  else
-                    if (i_tmp == 78)
-                    {
-                      result->m_Settings.m_CoderateH = Coderate_7_8;
-                    }
-                    else
-                      if (i_tmp == 89)
-                      {
-                        result->m_Settings.m_CoderateH = Coderate_8_9;
-                      }
-                      else
-                        if (i_tmp == 910)
-                        {
-                          result->m_Settings.m_CoderateL = Coderate_9_10;
-                        }
-                        else
-                          if (i_tmp == 999 || i_tmp == 910)
-                          {
-                            result->m_Settings.m_CoderateH = Coderate_Auto;
-                          }
+      else if (i_tmp == 12)
+      {
+        result->m_Settings.m_CoderateH = Coderate_1_2;
+      }
+      else if (i_tmp == 23)
+      {
+        result->m_Settings.m_CoderateH = Coderate_2_3;
+      }
+      else if (i_tmp == 34)
+      {
+        result->m_Settings.m_CoderateH = Coderate_3_4;
+      }
+      else if (i_tmp == 45)
+      {
+        result->m_Settings.m_CoderateH = Coderate_4_5;
+      }
+      else if (i_tmp == 56)
+      {
+        result->m_Settings.m_CoderateH = Coderate_5_6;
+      }
+      else if (i_tmp == 67)
+      {
+        result->m_Settings.m_CoderateH = Coderate_6_7;
+      }
+      else if (i_tmp == 78)
+      {
+        result->m_Settings.m_CoderateH = Coderate_7_8;
+      }
+      else if (i_tmp == 89)
+      {
+        result->m_Settings.m_CoderateH = Coderate_8_9;
+      }
+      else if (i_tmp == 910)
+      {
+        result->m_Settings.m_CoderateL = Coderate_9_10;
+      }
+      else if (i_tmp == 999 || i_tmp == 910)
+      {
+        result->m_Settings.m_CoderateH = Coderate_Auto;
+      }
     }
     else
     {
@@ -1412,101 +1389,82 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
       {
         result->m_Settings.m_Modulation = modNone;
       }
-      else
-        if (i_tmp == 4)
-        {
-          result->m_Settings.m_Modulation = modQAM4;
-        }
-        else
-          if (i_tmp == 16)
-          {
-            result->m_Settings.m_Modulation = modQAM16;
-          }
-          else
-            if (i_tmp == 32)
-            {
-              result->m_Settings.m_Modulation = modQAM32;
-            }
-            else
-              if (i_tmp == 64)
-              {
-                result->m_Settings.m_Modulation = modQAM64;
-              }
-              else
-                if (i_tmp == 128)
-                {
-                  result->m_Settings.m_Modulation = modQAM128;
-                }
-                else
-                  if (i_tmp == 256)
-                  {
-                    result->m_Settings.m_Modulation = modQAM256;
-                  }
-                  else
-                    if (i_tmp == 512)
-                    {
-                      result->m_Settings.m_Modulation = modQAM512;
-                    }
-                    else
-                      if (i_tmp == 1024)
-                      {
-                        result->m_Settings.m_Modulation = modQAM1024;
-                      }
-                      else
-                        if (i_tmp == 998)
-                        {
-                          result->m_Settings.m_Modulation = modQAMAuto;
-                        }
-                        else
-                          if (i_tmp == 1)
-                          {
-                            result->m_Settings.m_Modulation = modBPSK;
-                          }
-                          else
-                            if (i_tmp == 2)
-                            {
-                              result->m_Settings.m_Modulation = modQPSK;
-                            }
-                            else
-                              if (i_tmp == 3)
-                              {
-                                result->m_Settings.m_Modulation = modOQPSK;
-                              }
-                              else
-                                if (i_tmp == 5)
-                                {
-                                  result->m_Settings.m_Modulation = mod8PSK;
-                                }
-                                else
-                                  if (i_tmp == 6)
-                                  {
-                                    result->m_Settings.m_Modulation = mod16APSK;
-                                  }
-                                  else
-                                    if (i_tmp == 7)
-                                    {
-                                      result->m_Settings.m_Modulation = mod32APSK;
-                                    }
-                                    else
-                                      if (i_tmp == 8)
-                                      {
-                                        result->m_Settings.m_Modulation = modOFDM;
-                                      }
-                                      else
-                                        if (i_tmp == 9)
-                                        {
-                                          result->m_Settings.m_Modulation = modCOFDM;
-                                        }
-                                        else
-                                          if (i_tmp == 10)
-                                          {
-                                            result->m_Settings.m_Modulation = modVSB8;
-                                          }
-                                          else
-                                            if (i_tmp == 11)
-                                            {
-                                              result->m_Settings.m_Modulation = modVSB16;
-                                            }
+      else if (i_tmp == 4)
+      {
+        result->m_Settings.m_Modulation = modQAM4;
+      }
+      else if (i_tmp == 16)
+      {
+        result->m_Settings.m_Modulation = modQAM16;
+      }
+      else if (i_tmp == 32)
+      {
+        result->m_Settings.m_Modulation = modQAM32;
+      }
+      else if (i_tmp == 64)
+      {
+        result->m_Settings.m_Modulation = modQAM64;
+      }
+      else if (i_tmp == 128)
+      {
+        result->m_Settings.m_Modulation = modQAM128;
+      }
+      else if (i_tmp == 256)
+      {
+        result->m_Settings.m_Modulation = modQAM256;
+      }
+      else if (i_tmp == 512)
+      {
+        result->m_Settings.m_Modulation = modQAM512;
+      }
+      else if (i_tmp == 1024)
+      {
+        result->m_Settings.m_Modulation = modQAM1024;
+      }
+      else if (i_tmp == 998)
+      {
+        result->m_Settings.m_Modulation = modQAMAuto;
+      }
+      else if (i_tmp == 1)
+      {
+        result->m_Settings.m_Modulation = modBPSK;
+      }
+      else if (i_tmp == 2)
+      {
+        result->m_Settings.m_Modulation = modQPSK;
+      }
+      else if (i_tmp == 3)
+      {
+        result->m_Settings.m_Modulation = modOQPSK;
+      }
+      else if (i_tmp == 5)
+      {
+        result->m_Settings.m_Modulation = mod8PSK;
+      }
+      else if (i_tmp == 6)
+      {
+        result->m_Settings.m_Modulation = mod16APSK;
+      }
+      else if (i_tmp == 7)
+      {
+        result->m_Settings.m_Modulation = mod32APSK;
+      }
+      else if (i_tmp == 8)
+      {
+        result->m_Settings.m_Modulation = modOFDM;
+      }
+      else if (i_tmp == 9)
+      {
+        result->m_Settings.m_Modulation = modCOFDM;
+      }
+      else if (i_tmp == 10)
+      {
+        result->m_Settings.m_Modulation = modVSB8;
+      }
+      else if (i_tmp == 11)
+      {
+        result->m_Settings.m_Modulation = modVSB16;
+      }
     }
     else
     {
@@ -1527,26 +1485,22 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
       {
         result->m_Settings.m_Bandwidth = bw_5MHz;
       }
-      else
-        if (i_tmp == 6)
-        {
-          result->m_Settings.m_Bandwidth = bw_6MHz;
-        }
-        else
-          if (i_tmp == 7)
-          {
-            result->m_Settings.m_Bandwidth = bw_7MHz;
-          }
-          else
-            if (i_tmp == 8)
-            {
-              result->m_Settings.m_Bandwidth = bw_8MHz;
-            }
-            else
-              if (i_tmp == 999)
-              {
-                result->m_Settings.m_Bandwidth = bw_Auto;
-              }
+      else if (i_tmp == 6)
+      {
+        result->m_Settings.m_Bandwidth = bw_6MHz;
+      }
+      else if (i_tmp == 7)
+      {
+        result->m_Settings.m_Bandwidth = bw_7MHz;
+      }
+      else if (i_tmp == 8)
+      {
+        result->m_Settings.m_Bandwidth = bw_8MHz;
+      }
+      else if (i_tmp == 999)
+      {
+        result->m_Settings.m_Bandwidth = bw_Auto;
+      }
     }
     else
     {
@@ -1567,11 +1521,10 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
       {
         result->m_Settings.m_Hierarchie = false;
       }
-      else
-        if (i_tmp == 1)
-        {
-          result->m_Settings.m_Hierarchie = true;
-        }
+      else if (i_tmp == 1)
+      {
+        result->m_Settings.m_Hierarchie = true;
+      }
     }
     else
     {
@@ -1592,21 +1545,18 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
       {
         result->m_Settings.m_Alpha = alpha_0;
       }
-      else
-        if (i_tmp == 1)
-        {
-          result->m_Settings.m_Alpha = alpha_1;
-        }
-        else
-          if (i_tmp == 2)
-          {
-            result->m_Settings.m_Alpha = alpha_2;
-          }
-          else
-            if (i_tmp == 4)
-            {
-              result->m_Settings.m_Alpha = alpha_4;
-            }
+      else if (i_tmp == 1)
+      {
+        result->m_Settings.m_Alpha = alpha_1;
+      }
+      else if (i_tmp == 2)
+      {
+        result->m_Settings.m_Alpha = alpha_2;
+      }
+      else if (i_tmp == 4)
+      {
+        result->m_Settings.m_Alpha = alpha_4;
+      }
     }
     else
     {
@@ -1627,26 +1577,22 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
       {
         result->m_Settings.m_Guard = guard_1_4;
       }
-      else
-        if (i_tmp == 8)
-        {
-          result->m_Settings.m_Guard = guard_1_8;
-        }
-        else
-          if (i_tmp == 16)
-          {
-            result->m_Settings.m_Guard = guard_1_16;
-          }
-          else
-            if (i_tmp == 32)
-            {
-              result->m_Settings.m_Guard = guard_1_32;
-            }
-            else
-              if (i_tmp == 999)
-              {
-                result->m_Settings.m_Guard = guard_Auto;
-              }
+      else if (i_tmp == 8)
+      {
+        result->m_Settings.m_Guard = guard_1_8;
+      }
+      else if (i_tmp == 16)
+      {
+        result->m_Settings.m_Guard = guard_1_16;
+      }
+      else if (i_tmp == 32)
+      {
+        result->m_Settings.m_Guard = guard_1_32;
+      }
+      else if (i_tmp == 999)
+      {
+        result->m_Settings.m_Guard = guard_Auto;
+      }
     }
     else
     {
@@ -1667,21 +1613,18 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
       {
         result->m_Settings.m_Transmission = transmission_2K;
       }
-      else
-        if (i_tmp == 4)
-        {
-          result->m_Settings.m_Transmission = transmission_4K;
-        }
-        else
-          if (i_tmp == 8)
-          {
-            result->m_Settings.m_Transmission = transmission_8K;
-          }
-          else
-            if (i_tmp == 999)
-            {
-              result->m_Settings.m_Transmission = transmission_Auto;
-            }
+      else if (i_tmp == 4)
+      {
+        result->m_Settings.m_Transmission = transmission_4K;
+      }
+      else if (i_tmp == 8)
+      {
+        result->m_Settings.m_Transmission = transmission_8K;
+      }
+      else if (i_tmp == 999)
+      {
+        result->m_Settings.m_Transmission = transmission_Auto;
+      }
     }
     else
     {
@@ -1702,11 +1645,10 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
       {
         result->m_Settings.m_Priority = false;
       }
-      else
-        if (i_tmp == 1)
-        {
-          result->m_Settings.m_Priority = true;
-        }
+      else if (i_tmp == 1)
+      {
+        result->m_Settings.m_Priority = true;
+      }
     }
     else
     {
@@ -1727,21 +1669,18 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
       {
         result->m_Settings.m_Rolloff = rolloff_Unknown;
       }
-      else
-        if (i_tmp == 20)
-        {
-          result->m_Settings.m_Rolloff = rolloff_20;
-        }
-        else
-          if (i_tmp == 25)
-          {
-            result->m_Settings.m_Rolloff = rolloff_25;
-          }
-          else
-            if (i_tmp == 35)
-            {
-              result->m_Settings.m_Rolloff = rolloff_35;
-            }
+      else if (i_tmp == 20)
+      {
+        result->m_Settings.m_Rolloff = rolloff_20;
+      }
+      else if (i_tmp == 25)
+      {
+        result->m_Settings.m_Rolloff = rolloff_25;
+      }
+      else if (i_tmp == 35)
+      {
+        result->m_Settings.m_Rolloff = rolloff_35;
+      }
     }
     else
     {
@@ -1783,8 +1722,6 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
 
 PVR_ERROR PVRClientVDR::UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)
 {
-
-
   CStdString     m_Summary;
   CStdString     m_Summary_2;
   vector<string> lines;
@@ -1810,204 +1747,149 @@ PVR_ERROR PVRClientVDR::UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)
   {
     if      (chaninfo.m_Settings.m_Polarization == pol_H)
       m_Summary += "h";
-    else
-      if (chaninfo.m_Settings.m_Polarization == pol_V)
-        m_Summary += "v";
-      else
-        if (chaninfo.m_Settings.m_Polarization == pol_L)
-          m_Summary += "l";
-        else
-          if (chaninfo.m_Settings.m_Polarization == pol_R)
-            m_Summary += "r";
+    else if (chaninfo.m_Settings.m_Polarization == pol_V)
+      m_Summary += "v";
+    else if (chaninfo.m_Settings.m_Polarization == pol_L)
+      m_Summary += "l";
+    else if (chaninfo.m_Settings.m_Polarization == pol_R)
+      m_Summary += "r";
   }
 
   if (chaninfo.m_Settings.m_SourceType == src_DVBT)
   {
     if      (chaninfo.m_Settings.m_Inversion == InvOff)
       m_Summary += "I0";
-    else
-      if (chaninfo.m_Settings.m_Inversion == InvOn)
-        m_Summary += "I1";
-      else
-        if (chaninfo.m_Settings.m_Inversion == InvAuto)
-          m_Summary += "I999";
+    else if (chaninfo.m_Settings.m_Inversion == InvOn)
+      m_Summary += "I1";
+    else if (chaninfo.m_Settings.m_Inversion == InvAuto)
+      m_Summary += "I999";
   }
 
   if (chaninfo.m_Settings.m_SourceType == src_DVBT)
   {
     if      (chaninfo.m_Settings.m_Bandwidth == bw_5MHz)
       m_Summary += "B5";
-    else
-      if (chaninfo.m_Settings.m_Bandwidth == bw_6MHz)
-        m_Summary += "B6";
-      else
-        if (chaninfo.m_Settings.m_Bandwidth == bw_7MHz)
-          m_Summary += "B7";
-        else
-          if (chaninfo.m_Settings.m_Bandwidth == bw_8MHz)
-            m_Summary += "B8";
-          else
-            if (chaninfo.m_Settings.m_Bandwidth == bw_Auto)
-              m_Summary += "B999";
+    else if (chaninfo.m_Settings.m_Bandwidth == bw_6MHz)
+      m_Summary += "B6";
+    else if (chaninfo.m_Settings.m_Bandwidth == bw_7MHz)
+      m_Summary += "B7";
+    else if (chaninfo.m_Settings.m_Bandwidth == bw_8MHz)
+      m_Summary += "B8";
+    else if (chaninfo.m_Settings.m_Bandwidth == bw_Auto)
+      m_Summary += "B999";
   }
 
   if      (chaninfo.m_Settings.m_CoderateH == Coderate_None)
     m_Summary += "C0";
-  else
-    if (chaninfo.m_Settings.m_CoderateH == Coderate_1_2)
-      m_Summary += "C12";
-    else
-      if (chaninfo.m_Settings.m_CoderateH == Coderate_2_3)
-        m_Summary += "C23";
-      else
-        if (chaninfo.m_Settings.m_CoderateH == Coderate_3_4)
-          m_Summary += "C34";
-        else
-          if (chaninfo.m_Settings.m_CoderateH == Coderate_4_5)
-            m_Summary += "C45";
-          else
-            if (chaninfo.m_Settings.m_CoderateH == Coderate_5_6)
-              m_Summary += "C56";
-            else
-              if (chaninfo.m_Settings.m_CoderateH == Coderate_6_7)
-                m_Summary += "C67";
-              else
-                if (chaninfo.m_Settings.m_CoderateH == Coderate_7_8)
-                  m_Summary += "C78";
-                else
-                  if (chaninfo.m_Settings.m_CoderateH == Coderate_8_9)
-                    m_Summary += "C89";
-                  else
-                    if (chaninfo.m_Settings.m_CoderateH == Coderate_9_10)
-                      m_Summary += "C910";
-                    else
-                      if (chaninfo.m_Settings.m_CoderateH == Coderate_Auto)
-                        m_Summary += "C999";
+  else if (chaninfo.m_Settings.m_CoderateH == Coderate_1_2)
+    m_Summary += "C12";
+  else if (chaninfo.m_Settings.m_CoderateH == Coderate_2_3)
+    m_Summary += "C23";
+  else if (chaninfo.m_Settings.m_CoderateH == Coderate_3_4)
+    m_Summary += "C34";
+  else if (chaninfo.m_Settings.m_CoderateH == Coderate_4_5)
+    m_Summary += "C45";
+  else if (chaninfo.m_Settings.m_CoderateH == Coderate_5_6)
+    m_Summary += "C56";
+  else if (chaninfo.m_Settings.m_CoderateH == Coderate_6_7)
+    m_Summary += "C67";
+  else if (chaninfo.m_Settings.m_CoderateH == Coderate_7_8)
+    m_Summary += "C78";
+  else if (chaninfo.m_Settings.m_CoderateH == Coderate_8_9)
+    m_Summary += "C89";
+  else if (chaninfo.m_Settings.m_CoderateH == Coderate_9_10)
+    m_Summary += "C910";
+  else if (chaninfo.m_Settings.m_CoderateH == Coderate_Auto)
+    m_Summary += "C999";
 
   if (chaninfo.m_Settings.m_SourceType == src_DVBT)
   {
     if      (chaninfo.m_Settings.m_CoderateL == Coderate_None)
       m_Summary += "D0";
-    else
-      if (chaninfo.m_Settings.m_CoderateL == Coderate_1_2)
-        m_Summary += "D12";
-      else
-        if (chaninfo.m_Settings.m_CoderateL == Coderate_2_3)
-          m_Summary += "D23";
-        else
-          if (chaninfo.m_Settings.m_CoderateL == Coderate_3_4)
-            m_Summary += "D34";
-          else
-            if (chaninfo.m_Settings.m_CoderateL == Coderate_4_5)
-              m_Summary += "D45";
-            else
-              if (chaninfo.m_Settings.m_CoderateL == Coderate_5_6)
-                m_Summary += "D56";
-              else
-                if (chaninfo.m_Settings.m_CoderateL == Coderate_6_7)
-                  m_Summary += "D67";
-                else
-                  if (chaninfo.m_Settings.m_CoderateL == Coderate_7_8)
-                    m_Summary += "D78";
-                  else
-                    if (chaninfo.m_Settings.m_CoderateL == Coderate_8_9)
-                      m_Summary += "D89";
-                    else
-                      if (chaninfo.m_Settings.m_CoderateL == Coderate_9_10)
-                        m_Summary += "D910";
-                      else
-                        if (chaninfo.m_Settings.m_CoderateL == Coderate_Auto)
-                          m_Summary += "D999";
+    else if (chaninfo.m_Settings.m_CoderateL == Coderate_1_2)
+      m_Summary += "D12";
+    else if (chaninfo.m_Settings.m_CoderateL == Coderate_2_3)
+      m_Summary += "D23";
+    else if (chaninfo.m_Settings.m_CoderateL == Coderate_3_4)
+      m_Summary += "D34";
+    else if (chaninfo.m_Settings.m_CoderateL == Coderate_4_5)
+      m_Summary += "D45";
+    else if (chaninfo.m_Settings.m_CoderateL == Coderate_5_6)
+      m_Summary += "D56";
+    else if (chaninfo.m_Settings.m_CoderateL == Coderate_6_7)
+      m_Summary += "D67";
+    else if (chaninfo.m_Settings.m_CoderateL == Coderate_7_8)
+      m_Summary += "D78";
+    else if (chaninfo.m_Settings.m_CoderateL == Coderate_8_9)
+      m_Summary += "D89";
+    else if (chaninfo.m_Settings.m_CoderateL == Coderate_9_10)
+      m_Summary += "D910";
+    else if (chaninfo.m_Settings.m_CoderateL == Coderate_Auto)
+      m_Summary += "D999";
   }
 
   if      (chaninfo.m_Settings.m_Modulation == modNone)
     m_Summary += "M0";
-  else
-    if (chaninfo.m_Settings.m_Modulation == modQAM4)
-      m_Summary += "M4";
-    else
-      if (chaninfo.m_Settings.m_Modulation == modQAM16)
-        m_Summary += "M16";
-      else
-        if (chaninfo.m_Settings.m_Modulation == modQAM32)
-          m_Summary += "M32";
-        else
-          if (chaninfo.m_Settings.m_Modulation == modQAM64)
-            m_Summary += "M64";
-          else
-            if (chaninfo.m_Settings.m_Modulation == modQAM128)
-              m_Summary += "M128";
-            else
-              if (chaninfo.m_Settings.m_Modulation == modQAM256)
-                m_Summary += "M256";
-              else
-                if (chaninfo.m_Settings.m_Modulation == modQAM512)
-                  m_Summary += "M512";
-                else
-                  if (chaninfo.m_Settings.m_Modulation == modQAM1024)
-                    m_Summary += "M1024";
-                  else
-                    if (chaninfo.m_Settings.m_Modulation == modQAMAuto)
-                      m_Summary += "M998";
-                    else
-                      if (chaninfo.m_Settings.m_Modulation == modBPSK)
-                        m_Summary += "M1";
-                      else
-                        if (chaninfo.m_Settings.m_Modulation == modQPSK)
-                          m_Summary += "M2";
-                        else
-                          if (chaninfo.m_Settings.m_Modulation == modOQPSK)
-                            m_Summary += "M3";
-                          else
-                            if (chaninfo.m_Settings.m_Modulation == mod8PSK)
-                              m_Summary += "M5";
-                            else
-                              if (chaninfo.m_Settings.m_Modulation == mod16APSK)
-                                m_Summary += "M6";
-                              else
-                                if (chaninfo.m_Settings.m_Modulation == mod32APSK)
-                                  m_Summary += "M7";
-                                else
-                                  if (chaninfo.m_Settings.m_Modulation == modOFDM)
-                                    m_Summary += "M8";
-                                  else
-                                    if (chaninfo.m_Settings.m_Modulation == modCOFDM)
-                                      m_Summary += "M9";
-                                    else
-                                      if (chaninfo.m_Settings.m_Modulation == modVSB8)
-                                        m_Summary += "M10";
-                                      else
-                                        if (chaninfo.m_Settings.m_Modulation == modVSB16)
-                                          m_Summary += "M11";
+  else if (chaninfo.m_Settings.m_Modulation == modQAM4)
+    m_Summary += "M4";
+  else if (chaninfo.m_Settings.m_Modulation == modQAM16)
+    m_Summary += "M16";
+  else if (chaninfo.m_Settings.m_Modulation == modQAM32)
+    m_Summary += "M32";
+  else if (chaninfo.m_Settings.m_Modulation == modQAM64)
+    m_Summary += "M64";
+  else if (chaninfo.m_Settings.m_Modulation == modQAM128)
+    m_Summary += "M128";
+  else if (chaninfo.m_Settings.m_Modulation == modQAM256)
+    m_Summary += "M256";
+  else if (chaninfo.m_Settings.m_Modulation == modQAM512)
+    m_Summary += "M512";
+  else if (chaninfo.m_Settings.m_Modulation == modQAM1024)
+    m_Summary += "M1024";
+  else if (chaninfo.m_Settings.m_Modulation == modQAMAuto)
+    m_Summary += "M998";
+  else if (chaninfo.m_Settings.m_Modulation == modBPSK)
+    m_Summary += "M1";
+  else if (chaninfo.m_Settings.m_Modulation == modQPSK)
+    m_Summary += "M2";
+  else if (chaninfo.m_Settings.m_Modulation == modOQPSK)
+    m_Summary += "M3";
+  else if (chaninfo.m_Settings.m_Modulation == mod8PSK)
+    m_Summary += "M5";
+  else if (chaninfo.m_Settings.m_Modulation == mod16APSK)
+    m_Summary += "M6";
+  else if (chaninfo.m_Settings.m_Modulation == mod32APSK)
+    m_Summary += "M7";
+  else if (chaninfo.m_Settings.m_Modulation == modOFDM)
+    m_Summary += "M8";
+  else if (chaninfo.m_Settings.m_Modulation == modCOFDM)
+    m_Summary += "M9";
+  else if (chaninfo.m_Settings.m_Modulation == modVSB8)
+    m_Summary += "M10";
+  else if (chaninfo.m_Settings.m_Modulation == modVSB16)
+    m_Summary += "M11";
 
   if (chaninfo.m_Settings.m_SourceType == src_DVBT)
   {
     if      (chaninfo.m_Settings.m_Transmission == transmission_2K)
       m_Summary += "T2";
-    else
-      if (chaninfo.m_Settings.m_Transmission == transmission_4K)
-        m_Summary += "T4";
-      else
-        if (chaninfo.m_Settings.m_Transmission == transmission_8K)
-          m_Summary += "T8";
-        else
-          if (chaninfo.m_Settings.m_Transmission == transmission_Auto)
-            m_Summary += "T999";
+    else if (chaninfo.m_Settings.m_Transmission == transmission_4K)
+      m_Summary += "T4";
+    else if (chaninfo.m_Settings.m_Transmission == transmission_8K)
+      m_Summary += "T8";
+    else if (chaninfo.m_Settings.m_Transmission == transmission_Auto)
+      m_Summary += "T999";
 
     if      (chaninfo.m_Settings.m_Guard == guard_1_4)
       m_Summary += "G4";
-    else
-      if (chaninfo.m_Settings.m_Guard == guard_1_8)
-        m_Summary += "G8";
-      else
-        if (chaninfo.m_Settings.m_Guard == guard_1_16)
-          m_Summary += "G16";
-        else
-          if (chaninfo.m_Settings.m_Guard == guard_1_32)
-            m_Summary += "G32";
-          else
-            if (chaninfo.m_Settings.m_Guard == guard_Auto)
-              m_Summary += "G999";
+    else if (chaninfo.m_Settings.m_Guard == guard_1_8)
+      m_Summary += "G8";
+    else if (chaninfo.m_Settings.m_Guard == guard_1_16)
+      m_Summary += "G16";
+    else if (chaninfo.m_Settings.m_Guard == guard_1_32)
+      m_Summary += "G32";
+    else if (chaninfo.m_Settings.m_Guard == guard_Auto)
+      m_Summary += "G999";
 
     if      (chaninfo.m_Settings.m_Hierarchie)
       m_Summary += "Y1";
@@ -2016,15 +1898,12 @@ PVR_ERROR PVRClientVDR::UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)
 
     if      (chaninfo.m_Settings.m_Alpha == alpha_0)
       m_Summary += "A0";
-    else
-      if (chaninfo.m_Settings.m_Alpha == alpha_1)
-        m_Summary += "A1";
-      else
-        if (chaninfo.m_Settings.m_Alpha == alpha_2)
-          m_Summary += "A2";
-        else
-          if (chaninfo.m_Settings.m_Alpha == alpha_4)
-            m_Summary += "A4";
+    else if (chaninfo.m_Settings.m_Alpha == alpha_1)
+      m_Summary += "A1";
+    else if (chaninfo.m_Settings.m_Alpha == alpha_2)
+      m_Summary += "A2";
+    else if (chaninfo.m_Settings.m_Alpha == alpha_4)
+      m_Summary += "A4";
 
     if      (chaninfo.m_Settings.m_Priority)
       m_Summary += "P1";
@@ -2036,28 +1915,22 @@ PVR_ERROR PVRClientVDR::UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)
   {
     if      (chaninfo.m_Settings.m_Rolloff == rolloff_Unknown)
       m_Summary += "O0";
-    else
-      if (chaninfo.m_Settings.m_Rolloff == rolloff_20)
-        m_Summary += "O20";
-      else
-        if (chaninfo.m_Settings.m_Rolloff == rolloff_25)
-          m_Summary += "O25";
-        else
-          if (chaninfo.m_Settings.m_Rolloff == rolloff_25)
-            m_Summary += "O35";
+    else if (chaninfo.m_Settings.m_Rolloff == rolloff_20)
+      m_Summary += "O20";
+    else if (chaninfo.m_Settings.m_Rolloff == rolloff_25)
+      m_Summary += "O25";
+    else if (chaninfo.m_Settings.m_Rolloff == rolloff_25)
+      m_Summary += "O35";
   }
 
   if      (chaninfo.m_Settings.m_SourceType == src_DVBS)
     m_Summary += "O35S0:S";
-  else
-    if (chaninfo.m_Settings.m_SourceType == src_DVBS2)
-      m_Summary += "S1:S";
-    else
-      if (chaninfo.m_Settings.m_SourceType == src_DVBC)
-        m_Summary += ":C";
-      else
-        if (chaninfo.m_Settings.m_SourceType == src_DVBT)
-          m_Summary += ":T";
+  else if (chaninfo.m_Settings.m_SourceType == src_DVBS2)
+    m_Summary += "S1:S";
+  else if (chaninfo.m_Settings.m_SourceType == src_DVBC)
+    m_Summary += ":C";
+  else if (chaninfo.m_Settings.m_SourceType == src_DVBT)
+    m_Summary += ":T";
 
   m_Summary_2.Format(":%i:%i:%i,%i;%i,%i:%i:%i:%i:%i:%i:%i" , chaninfo.m_Settings.m_Symbolrate
                      , chaninfo.m_Settings.m_VPID
@@ -2150,223 +2023,165 @@ PVR_ERROR PVRClientVDR::AddChannel(const CTVChannelInfoTag &info)
   {
     if      (info.m_Settings.m_Polarization == pol_H)
       m_Summary += "h";
-    else
-      if (info.m_Settings.m_Polarization == pol_V)
-        m_Summary += "v";
-      else
-        if (info.m_Settings.m_Polarization == pol_L)
-          m_Summary += "l";
-        else
-          if (info.m_Settings.m_Polarization == pol_R)
-            m_Summary += "r";
+    else if (info.m_Settings.m_Polarization == pol_V)
+      m_Summary += "v";
+    else if (info.m_Settings.m_Polarization == pol_L)
+      m_Summary += "l";
+    else if (info.m_Settings.m_Polarization == pol_R)
+      m_Summary += "r";
   }
 
   if (info.m_Settings.m_SourceType == src_DVBT)
   {
     if      (info.m_Settings.m_Inversion == InvOff)
       m_Summary += "I0";
-    else
-      if (info.m_Settings.m_Inversion == InvOn)
-        m_Summary += "I1";
-      else
-        if (info.m_Settings.m_Inversion == InvAuto)
-          m_Summary += "I999";
+    else if (info.m_Settings.m_Inversion == InvOn)
+      m_Summary += "I1";
+    else if (info.m_Settings.m_Inversion == InvAuto)
+      m_Summary += "I999";
   }
 
   if (info.m_Settings.m_SourceType == src_DVBT)
   {
     if      (info.m_Settings.m_Bandwidth == bw_5MHz)
       m_Summary += "B5";
-    else
-      if (info.m_Settings.m_Bandwidth == bw_6MHz)
-        m_Summary += "B6";
-      else
-        if (info.m_Settings.m_Bandwidth == bw_7MHz)
-          m_Summary += "B7";
-        else
-          if (info.m_Settings.m_Bandwidth == bw_8MHz)
-            m_Summary += "B8";
-          else
-            if (info.m_Settings.m_Bandwidth == bw_Auto)
-              m_Summary += "B999";
+    else if (info.m_Settings.m_Bandwidth == bw_6MHz)
+      m_Summary += "B6";
+    else if (info.m_Settings.m_Bandwidth == bw_7MHz)
+      m_Summary += "B7";
+    else if (info.m_Settings.m_Bandwidth == bw_8MHz)
+      m_Summary += "B8";
+    else if (info.m_Settings.m_Bandwidth == bw_Auto)
+      m_Summary += "B999";
   }
 
   if      (info.m_Settings.m_CoderateH == Coderate_None)
     m_Summary += "C0";
-  else
-    if (info.m_Settings.m_CoderateH == Coderate_1_2)
-      m_Summary += "C12";
-    else
-      if (info.m_Settings.m_CoderateH == Coderate_2_3)
-        m_Summary += "C23";
-      else
-        if (info.m_Settings.m_CoderateH == Coderate_3_4)
-          m_Summary += "C34";
-        else
-          if (info.m_Settings.m_CoderateH == Coderate_4_5)
-            m_Summary += "C45";
-          else
-            if (info.m_Settings.m_CoderateH == Coderate_5_6)
-              m_Summary += "C56";
-            else
-              if (info.m_Settings.m_CoderateH == Coderate_6_7)
-                m_Summary += "C67";
-              else
-                if (info.m_Settings.m_CoderateH == Coderate_7_8)
-                  m_Summary += "C78";
-                else
-                  if (info.m_Settings.m_CoderateH == Coderate_8_9)
-                    m_Summary += "C89";
-                  else
-                    if (info.m_Settings.m_CoderateH == Coderate_9_10)
-                      m_Summary += "C910";
-                    else
-                      if (info.m_Settings.m_CoderateH == Coderate_Auto)
-                        m_Summary += "C999";
+  else if (info.m_Settings.m_CoderateH == Coderate_1_2)
+    m_Summary += "C12";
+  else if (info.m_Settings.m_CoderateH == Coderate_2_3)
+    m_Summary += "C23";
+  else if (info.m_Settings.m_CoderateH == Coderate_3_4)
+    m_Summary += "C34";
+  else if (info.m_Settings.m_CoderateH == Coderate_4_5)
+    m_Summary += "C45";
+  else if (info.m_Settings.m_CoderateH == Coderate_5_6)
+    m_Summary += "C56";
+  else if (info.m_Settings.m_CoderateH == Coderate_6_7)
+    m_Summary += "C67";
+  else if (info.m_Settings.m_CoderateH == Coderate_7_8)
+    m_Summary += "C78";
+  else if (info.m_Settings.m_CoderateH == Coderate_8_9)
+    m_Summary += "C89";
+  else if (info.m_Settings.m_CoderateH == Coderate_9_10)
+    m_Summary += "C910";
+  else if (info.m_Settings.m_CoderateH == Coderate_Auto)
+    m_Summary += "C999";
 
   if (info.m_Settings.m_SourceType == src_DVBT)
   {
     if      (info.m_Settings.m_CoderateL == Coderate_None)
       m_Summary += "D0";
-    else
-      if (info.m_Settings.m_CoderateL == Coderate_1_2)
-        m_Summary += "D12";
-      else
-        if (info.m_Settings.m_CoderateL == Coderate_2_3)
-          m_Summary += "D23";
-        else
-          if (info.m_Settings.m_CoderateL == Coderate_3_4)
-            m_Summary += "D34";
-          else
-            if (info.m_Settings.m_CoderateL == Coderate_4_5)
-              m_Summary += "D45";
-            else
-              if (info.m_Settings.m_CoderateL == Coderate_5_6)
-                m_Summary += "D56";
-              else
-                if (info.m_Settings.m_CoderateL == Coderate_6_7)
-                  m_Summary += "D67";
-                else
-                  if (info.m_Settings.m_CoderateL == Coderate_7_8)
-                    m_Summary += "D78";
-                  else
-                    if (info.m_Settings.m_CoderateL == Coderate_8_9)
-                      m_Summary += "D89";
-                    else
-                      if (info.m_Settings.m_CoderateL == Coderate_9_10)
-                        m_Summary += "D910";
-                      else
-                        if (info.m_Settings.m_CoderateL == Coderate_Auto)
-                          m_Summary += "D999";
+    else if (info.m_Settings.m_CoderateL == Coderate_1_2)
+      m_Summary += "D12";
+    else if (info.m_Settings.m_CoderateL == Coderate_2_3)
+      m_Summary += "D23";
+    else if (info.m_Settings.m_CoderateL == Coderate_3_4)
+      m_Summary += "D34";
+    else if (info.m_Settings.m_CoderateL == Coderate_4_5)
+      m_Summary += "D45";
+    else if (info.m_Settings.m_CoderateL == Coderate_5_6)
+      m_Summary += "D56";
+    else if (info.m_Settings.m_CoderateL == Coderate_6_7)
+      m_Summary += "D67";
+    else if (info.m_Settings.m_CoderateL == Coderate_7_8)
+      m_Summary += "D78";
+    else if (info.m_Settings.m_CoderateL == Coderate_8_9)
+      m_Summary += "D89";
+    else if (info.m_Settings.m_CoderateL == Coderate_9_10)
+      m_Summary += "D910";
+    else if (info.m_Settings.m_CoderateL == Coderate_Auto)
+      m_Summary += "D999";
   }
 
   if      (info.m_Settings.m_Modulation == modNone)
     m_Summary += "M0";
-  else
-    if (info.m_Settings.m_Modulation == modQAM4)
-      m_Summary += "M4";
-    else
-      if (info.m_Settings.m_Modulation == modQAM16)
-        m_Summary += "M16";
-      else
-        if (info.m_Settings.m_Modulation == modQAM32)
-          m_Summary += "M32";
-        else
-          if (info.m_Settings.m_Modulation == modQAM64)
-            m_Summary += "M64";
-          else
-            if (info.m_Settings.m_Modulation == modQAM128)
-              m_Summary += "M128";
-            else
-              if (info.m_Settings.m_Modulation == modQAM256)
-                m_Summary += "M256";
-              else
-                if (info.m_Settings.m_Modulation == modQAM512)
-                  m_Summary += "M512";
-                else
-                  if (info.m_Settings.m_Modulation == modQAM1024)
-                    m_Summary += "M1024";
-                  else
-                    if (info.m_Settings.m_Modulation == modQAMAuto)
-                      m_Summary += "M998";
-                    else
-                      if (info.m_Settings.m_Modulation == modBPSK)
-                        m_Summary += "M1";
-                      else
-                        if (info.m_Settings.m_Modulation == modQPSK)
-                          m_Summary += "M2";
-                        else
-                          if (info.m_Settings.m_Modulation == modOQPSK)
-                            m_Summary += "M3";
-                          else
-                            if (info.m_Settings.m_Modulation == mod8PSK)
-                              m_Summary += "M5";
-                            else
-                              if (info.m_Settings.m_Modulation == mod16APSK)
-                                m_Summary += "M6";
-                              else
-                                if (info.m_Settings.m_Modulation == mod32APSK)
-                                  m_Summary += "M7";
-                                else
-                                  if (info.m_Settings.m_Modulation == modOFDM)
-                                    m_Summary += "M8";
-                                  else
-                                    if (info.m_Settings.m_Modulation == modCOFDM)
-                                      m_Summary += "M9";
-                                    else
-                                      if (info.m_Settings.m_Modulation == modVSB8)
-                                        m_Summary += "M10";
-                                      else
-                                        if (info.m_Settings.m_Modulation == modVSB16)
-                                          m_Summary += "M11";
+  else if (info.m_Settings.m_Modulation == modQAM4)
+    m_Summary += "M4";
+  else if (info.m_Settings.m_Modulation == modQAM16)
+    m_Summary += "M16";
+  else if (info.m_Settings.m_Modulation == modQAM32)
+    m_Summary += "M32";
+  else if (info.m_Settings.m_Modulation == modQAM64)
+    m_Summary += "M64";
+  else if (info.m_Settings.m_Modulation == modQAM128)
+    m_Summary += "M128";
+  else if (info.m_Settings.m_Modulation == modQAM256)
+    m_Summary += "M256";
+  else if (info.m_Settings.m_Modulation == modQAM512)
+    m_Summary += "M512";
+  else if (info.m_Settings.m_Modulation == modQAM1024)
+    m_Summary += "M1024";
+  else if (info.m_Settings.m_Modulation == modQAMAuto)
+    m_Summary += "M998";
+  else if (info.m_Settings.m_Modulation == modBPSK)
+    m_Summary += "M1";
+  else if (info.m_Settings.m_Modulation == modQPSK)
+    m_Summary += "M2";
+  else if (info.m_Settings.m_Modulation == modOQPSK)
+    m_Summary += "M3";
+  else if (info.m_Settings.m_Modulation == mod8PSK)
+    m_Summary += "M5";
+  else if (info.m_Settings.m_Modulation == mod16APSK)
+    m_Summary += "M6";
+  else if (info.m_Settings.m_Modulation == mod32APSK)
+    m_Summary += "M7";
+  else if (info.m_Settings.m_Modulation == modOFDM)
+    m_Summary += "M8";
+  else if (info.m_Settings.m_Modulation == modCOFDM)
+    m_Summary += "M9";
+  else if (info.m_Settings.m_Modulation == modVSB8)
+    m_Summary += "M10";
+  else if (info.m_Settings.m_Modulation == modVSB16)
+    m_Summary += "M11";
 
   if (info.m_Settings.m_SourceType == src_DVBT)
   {
     if      (info.m_Settings.m_Transmission == transmission_2K)
       m_Summary += "T2";
-    else
-      if (info.m_Settings.m_Transmission == transmission_4K)
-        m_Summary += "T4";
-      else
-        if (info.m_Settings.m_Transmission == transmission_8K)
-          m_Summary += "T8";
-        else
-          if (info.m_Settings.m_Transmission == transmission_Auto)
-            m_Summary += "T999";
+    else if (info.m_Settings.m_Transmission == transmission_4K)
+      m_Summary += "T4";
+    else if (info.m_Settings.m_Transmission == transmission_8K)
+      m_Summary += "T8";
+    else if (info.m_Settings.m_Transmission == transmission_Auto)
+      m_Summary += "T999";
 
     if      (info.m_Settings.m_Guard == guard_1_4)
       m_Summary += "G4";
-    else
-      if (info.m_Settings.m_Guard == guard_1_8)
-        m_Summary += "G8";
-      else
-        if (info.m_Settings.m_Guard == guard_1_16)
-          m_Summary += "G16";
-        else
-          if (info.m_Settings.m_Guard == guard_1_32)
-            m_Summary += "G32";
-          else
-            if (info.m_Settings.m_Guard == guard_Auto)
-              m_Summary += "G999";
+    else if (info.m_Settings.m_Guard == guard_1_8)
+      m_Summary += "G8";
+    else if (info.m_Settings.m_Guard == guard_1_16)
+      m_Summary += "G16";
+    else if (info.m_Settings.m_Guard == guard_1_32)
+      m_Summary += "G32";
+    else if (info.m_Settings.m_Guard == guard_Auto)
+      m_Summary += "G999";
 
-    if      (info.m_Settings.m_Hierarchie)
+    if (info.m_Settings.m_Hierarchie)
       m_Summary += "Y1";
     else
       m_Summary += "Y0";
 
     if      (info.m_Settings.m_Alpha == alpha_0)
       m_Summary += "A0";
-    else
-      if (info.m_Settings.m_Alpha == alpha_1)
-        m_Summary += "A1";
-      else
-        if (info.m_Settings.m_Alpha == alpha_2)
-          m_Summary += "A2";
-        else
-          if (info.m_Settings.m_Alpha == alpha_4)
-            m_Summary += "A4";
+    else if (info.m_Settings.m_Alpha == alpha_1)
+      m_Summary += "A1";
+    else if (info.m_Settings.m_Alpha == alpha_2)
+      m_Summary += "A2";
+    else if (info.m_Settings.m_Alpha == alpha_4)
+      m_Summary += "A4";
 
-    if      (info.m_Settings.m_Priority)
+    if (info.m_Settings.m_Priority)
       m_Summary += "P1";
     else
       m_Summary += "P0";
@@ -2376,28 +2191,22 @@ PVR_ERROR PVRClientVDR::AddChannel(const CTVChannelInfoTag &info)
   {
     if      (info.m_Settings.m_Rolloff == rolloff_Unknown)
       m_Summary += "O0";
-    else
-      if (info.m_Settings.m_Rolloff == rolloff_20)
-        m_Summary += "O20";
-      else
-        if (info.m_Settings.m_Rolloff == rolloff_25)
-          m_Summary += "O25";
-        else
-          if (info.m_Settings.m_Rolloff == rolloff_25)
-            m_Summary += "O35";
+    else if (info.m_Settings.m_Rolloff == rolloff_20)
+      m_Summary += "O20";
+    else if (info.m_Settings.m_Rolloff == rolloff_25)
+      m_Summary += "O25";
+    else if (info.m_Settings.m_Rolloff == rolloff_25)
+      m_Summary += "O35";
   }
 
   if      (info.m_Settings.m_SourceType == src_DVBS)
     m_Summary += "O35S0:S";
-  else
-    if (info.m_Settings.m_SourceType == src_DVBS2)
-      m_Summary += "S1:S";
-    else
-      if (info.m_Settings.m_SourceType == src_DVBC)
-        m_Summary += ":C";
-      else
-        if (info.m_Settings.m_SourceType == src_DVBT)
-          m_Summary += ":T";
+  else if (info.m_Settings.m_SourceType == src_DVBS2)
+    m_Summary += "S1:S";
+  else if (info.m_Settings.m_SourceType == src_DVBC)
+    m_Summary += ":C";
+  else if (info.m_Settings.m_SourceType == src_DVBT)
+    m_Summary += ":T";
 
   m_Summary_2.Format(":%i:%i:%i,%i;%i,%i:%i:%i:%i:%i:%i:%i" , info.m_Settings.m_Symbolrate
                      , info.m_Settings.m_VPID
@@ -2413,8 +2222,6 @@ PVR_ERROR PVRClientVDR::AddChannel(const CTVChannelInfoTag &info)
                      , info.m_Settings.m_RID);
 
   m_Summary += m_Summary_2;
-
-  fprintf(stderr, "<<<<<<<<<<< '%s' \n", m_Summary.c_str());
 
   vector<string> lines;
 
@@ -2958,7 +2765,7 @@ PVR_ERROR PVRClientVDR::GetAllTimers(VECTVTIMERS *results)
 
     /* Active */
     timerinfo.m_Active = (bool) atoi(str_result.c_str());
-	found = str_result.find(":", 0);
+	  found = str_result.find(":", 0);
     str_result.erase(0, found + 1);
 
     /* Channel number */
@@ -3048,24 +2855,23 @@ PVR_ERROR PVRClientVDR::GetAllTimers(VECTVTIMERS *results)
       timerinfo.m_StartTime = CDateTime(year, month, day, start_hour, start_minute, 0);
       timerinfo.m_StopTime = CDateTime(year, month, end_day, end_hour, end_minute, 0);
     }
+    else if (year != 0)
+    {
+      timerinfo.m_FirstDay = CDateTime(year, month, day, start_hour, start_minute, 0);
+      timerinfo.m_StartTime = CDateTime(year, month, day, start_hour, start_minute, 0);
+      timerinfo.m_StopTime = CDateTime(year, month, day, end_hour, end_minute, 0);
+    }
     else
-      if (year != 0)
-      {
-        timerinfo.m_FirstDay = CDateTime(year, month, day, start_hour, start_minute, 0);
-        timerinfo.m_StartTime = CDateTime(year, month, day, start_hour, start_minute, 0);
-        timerinfo.m_StopTime = CDateTime(year, month, day, end_hour, end_minute, 0);
-      }
-      else
-      {
-        timerinfo.m_StartTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
-                                          CDateTime::GetCurrentDateTime().GetMonth(),
-                                          CDateTime::GetCurrentDateTime().GetDay(),
-                                          start_hour, start_minute, 0);
-        timerinfo.m_StopTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
-                                         CDateTime::GetCurrentDateTime().GetMonth(),
-                                         CDateTime::GetCurrentDateTime().GetDay(),
-                                         end_hour, end_minute, 0);
-      }
+    {
+      timerinfo.m_StartTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
+                                        CDateTime::GetCurrentDateTime().GetMonth(),
+                                        CDateTime::GetCurrentDateTime().GetDay(),
+                                        start_hour, start_minute, 0);
+      timerinfo.m_StopTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
+                                       CDateTime::GetCurrentDateTime().GetMonth(),
+                                       CDateTime::GetCurrentDateTime().GetDay(),
+                                       end_hour, end_minute, 0);
+    }
 
     /* Priority */
     timerinfo.m_Priority = atol(str_result.c_str());
@@ -3090,39 +2896,38 @@ PVR_ERROR PVRClientVDR::GetAllTimers(VECTVTIMERS *results)
                                  , XBMC_get_localized_string(18079)
                                  , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
     }
+    else if (timerinfo.m_FirstDay != NULL)
+    {
+      timerinfo.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
+                                 , timerinfo.m_Repeat_Mon ? XBMC_get_localized_string(18080) : "__"
+                                 , timerinfo.m_Repeat_Tue ? XBMC_get_localized_string(18081) : "__"
+                                 , timerinfo.m_Repeat_Wed ? XBMC_get_localized_string(18082) : "__"
+                                 , timerinfo.m_Repeat_Thu ? XBMC_get_localized_string(18083) : "__"
+                                 , timerinfo.m_Repeat_Fri ? XBMC_get_localized_string(18084) : "__"
+                                 , timerinfo.m_Repeat_Sat ? XBMC_get_localized_string(18085) : "__"
+                                 , timerinfo.m_Repeat_Sun ? XBMC_get_localized_string(18086) : "__"
+                                 , XBMC_get_localized_string(18087)
+                                 , timerinfo.m_FirstDay.GetAsLocalizedDate(false)
+                                 , XBMC_get_localized_string(18078)
+                                 , timerinfo.m_StartTime.GetAsLocalizedTime("", false)
+                                 , XBMC_get_localized_string(18079)
+                                 , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
+    }
     else
-      if (timerinfo.m_FirstDay != NULL)
-      {
-        timerinfo.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
-                                   , timerinfo.m_Repeat_Mon ? XBMC_get_localized_string(18080) : "__"
-                                   , timerinfo.m_Repeat_Tue ? XBMC_get_localized_string(18081) : "__"
-                                   , timerinfo.m_Repeat_Wed ? XBMC_get_localized_string(18082) : "__"
-                                   , timerinfo.m_Repeat_Thu ? XBMC_get_localized_string(18083) : "__"
-                                   , timerinfo.m_Repeat_Fri ? XBMC_get_localized_string(18084) : "__"
-                                   , timerinfo.m_Repeat_Sat ? XBMC_get_localized_string(18085) : "__"
-                                   , timerinfo.m_Repeat_Sun ? XBMC_get_localized_string(18086) : "__"
-                                   , XBMC_get_localized_string(18087)
-                                   , timerinfo.m_FirstDay.GetAsLocalizedDate(false)
-                                   , XBMC_get_localized_string(18078)
-                                   , timerinfo.m_StartTime.GetAsLocalizedTime("", false)
-                                   , XBMC_get_localized_string(18079)
-                                   , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
-      }
-      else
-      {
-        timerinfo.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
-                                   , timerinfo.m_Repeat_Mon ? XBMC_get_localized_string(18080) : "__"
-                                   , timerinfo.m_Repeat_Tue ? XBMC_get_localized_string(18081) : "__"
-                                   , timerinfo.m_Repeat_Wed ? XBMC_get_localized_string(18082) : "__"
-                                   , timerinfo.m_Repeat_Thu ? XBMC_get_localized_string(18083) : "__"
-                                   , timerinfo.m_Repeat_Fri ? XBMC_get_localized_string(18084) : "__"
-                                   , timerinfo.m_Repeat_Sat ? XBMC_get_localized_string(18085) : "__"
-                                   , timerinfo.m_Repeat_Sun ? XBMC_get_localized_string(18086) : "__"
-                                   , XBMC_get_localized_string(18078)
-                                   , timerinfo.m_StartTime.GetAsLocalizedTime("", false)
-                                   , XBMC_get_localized_string(18079)
-                                   , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
-      }
+    {
+      timerinfo.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
+                                 , timerinfo.m_Repeat_Mon ? XBMC_get_localized_string(18080) : "__"
+                                 , timerinfo.m_Repeat_Tue ? XBMC_get_localized_string(18081) : "__"
+                                 , timerinfo.m_Repeat_Wed ? XBMC_get_localized_string(18082) : "__"
+                                 , timerinfo.m_Repeat_Thu ? XBMC_get_localized_string(18083) : "__"
+                                 , timerinfo.m_Repeat_Fri ? XBMC_get_localized_string(18084) : "__"
+                                 , timerinfo.m_Repeat_Sat ? XBMC_get_localized_string(18085) : "__"
+                                 , timerinfo.m_Repeat_Sun ? XBMC_get_localized_string(18086) : "__"
+                                 , XBMC_get_localized_string(18078)
+                                 , timerinfo.m_StartTime.GetAsLocalizedTime("", false)
+                                 , XBMC_get_localized_string(18079)
+                                 , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
+    }
 
     if ((timerinfo.m_StartTime <= CDateTime::GetCurrentDateTime()) &&
         (timerinfo.m_Active == true))
@@ -3268,24 +3073,23 @@ PVR_ERROR PVRClientVDR::GetTimerInfo(unsigned int timernumber, CTVTimerInfoTag &
     timerinfo.m_StartTime = CDateTime(year, month, day, start_hour, start_minute, 0);
     timerinfo.m_StopTime = CDateTime(year, month, end_day, end_hour, end_minute, 0);
   }
+  else if (year != 0)
+  {
+    timerinfo.m_FirstDay = CDateTime(year, month, day, start_hour, start_minute, 0);
+    timerinfo.m_StartTime = CDateTime(year, month, day, start_hour, start_minute, 0);
+    timerinfo.m_StopTime = CDateTime(year, month, day, end_hour, end_minute, 0);
+  }
   else
-    if (year != 0)
-    {
-      timerinfo.m_FirstDay = CDateTime(year, month, day, start_hour, start_minute, 0);
-      timerinfo.m_StartTime = CDateTime(year, month, day, start_hour, start_minute, 0);
-      timerinfo.m_StopTime = CDateTime(year, month, day, end_hour, end_minute, 0);
-    }
-    else
-    {
-      timerinfo.m_StartTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
-                                        CDateTime::GetCurrentDateTime().GetMonth(),
-                                        CDateTime::GetCurrentDateTime().GetDay(),
-                                        start_hour, start_minute, 0);
-      timerinfo.m_StopTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
-                                       CDateTime::GetCurrentDateTime().GetMonth(),
-                                       CDateTime::GetCurrentDateTime().GetDay(),
-                                       end_hour, end_minute, 0);
-    }
+  {
+    timerinfo.m_StartTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
+                                      CDateTime::GetCurrentDateTime().GetMonth(),
+                                      CDateTime::GetCurrentDateTime().GetDay(),
+                                      start_hour, start_minute, 0);
+    timerinfo.m_StopTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
+                                     CDateTime::GetCurrentDateTime().GetMonth(),
+                                     CDateTime::GetCurrentDateTime().GetDay(),
+                                     end_hour, end_minute, 0);
+  }
 
   /* Priority */
   timerinfo.m_Priority = atol(str_result.c_str());
@@ -3335,44 +3139,22 @@ PVR_ERROR PVRClientVDR::AddTimer(const CTVTimerInfoTag &timerinfo)
                      , timerinfo.m_Lifetime
                      , timerinfo.m_strTitle.c_str());
   }
-  else
-    if (timerinfo.m_FirstDay != NULL)
-    {
-      m_Summary.Format("%d:%d:%c%c%c%c%c%c%c@"
-                       , timerinfo.m_Active
-                       , timerinfo.m_clientNum
-                       , timerinfo.m_Repeat_Mon ? 'M' : '-'
-                       , timerinfo.m_Repeat_Tue ? 'T' : '-'
-                       , timerinfo.m_Repeat_Wed ? 'W' : '-'
-                       , timerinfo.m_Repeat_Thu ? 'T' : '-'
-                       , timerinfo.m_Repeat_Fri ? 'F' : '-'
-                       , timerinfo.m_Repeat_Sat ? 'S' : '-'
-                       , timerinfo.m_Repeat_Sun ? 'S' : '-');
-      m_Summary_2.Format("%04d-%02d-%02d:%02d%02d:%02d%02d:%d:%d:%s"
-                         , timerinfo.m_FirstDay.GetYear()
-                         , timerinfo.m_FirstDay.GetMonth()
-                         , timerinfo.m_FirstDay.GetDay()
-                         , timerinfo.m_StartTime.GetHour()
-                         , timerinfo.m_StartTime.GetMinute()
-                         , timerinfo.m_StopTime.GetHour()
-                         , timerinfo.m_StopTime.GetMinute()
-                         , timerinfo.m_Priority
-                         , timerinfo.m_Lifetime
-                         , timerinfo.m_strTitle.c_str());
-      m_Summary = m_Summary + m_Summary_2;
-    }
-    else
-    {
-      m_Summary.Format("%d:%d:%c%c%c%c%c%c%c:%02d%02d:%02d%02d:%d:%d:%s"
-                       , timerinfo.m_Active
-                       , timerinfo.m_clientNum
-                       , timerinfo.m_Repeat_Mon ? 'M' : '-'
-                       , timerinfo.m_Repeat_Tue ? 'T' : '-'
-                       , timerinfo.m_Repeat_Wed ? 'W' : '-'
-                       , timerinfo.m_Repeat_Thu ? 'T' : '-'
-                       , timerinfo.m_Repeat_Fri ? 'F' : '-'
-                       , timerinfo.m_Repeat_Sat ? 'S' : '-'
-                       , timerinfo.m_Repeat_Sun ? 'S' : '-'
+  else if (timerinfo.m_FirstDay != NULL)
+  {
+    m_Summary.Format("%d:%d:%c%c%c%c%c%c%c@"
+                     , timerinfo.m_Active
+                     , timerinfo.m_clientNum
+                     , timerinfo.m_Repeat_Mon ? 'M' : '-'
+                     , timerinfo.m_Repeat_Tue ? 'T' : '-'
+                     , timerinfo.m_Repeat_Wed ? 'W' : '-'
+                     , timerinfo.m_Repeat_Thu ? 'T' : '-'
+                     , timerinfo.m_Repeat_Fri ? 'F' : '-'
+                     , timerinfo.m_Repeat_Sat ? 'S' : '-'
+                     , timerinfo.m_Repeat_Sun ? 'S' : '-');
+    m_Summary_2.Format("%04d-%02d-%02d:%02d%02d:%02d%02d:%d:%d:%s"
+                       , timerinfo.m_FirstDay.GetYear()
+                       , timerinfo.m_FirstDay.GetMonth()
+                       , timerinfo.m_FirstDay.GetDay()
                        , timerinfo.m_StartTime.GetHour()
                        , timerinfo.m_StartTime.GetMinute()
                        , timerinfo.m_StopTime.GetHour()
@@ -3380,7 +3162,28 @@ PVR_ERROR PVRClientVDR::AddTimer(const CTVTimerInfoTag &timerinfo)
                        , timerinfo.m_Priority
                        , timerinfo.m_Lifetime
                        , timerinfo.m_strTitle.c_str());
-    }
+    m_Summary = m_Summary + m_Summary_2;
+  }
+  else
+  {
+    m_Summary.Format("%d:%d:%c%c%c%c%c%c%c:%02d%02d:%02d%02d:%d:%d:%s"
+                     , timerinfo.m_Active
+                     , timerinfo.m_clientNum
+                     , timerinfo.m_Repeat_Mon ? 'M' : '-'
+                     , timerinfo.m_Repeat_Tue ? 'T' : '-'
+                     , timerinfo.m_Repeat_Wed ? 'W' : '-'
+                     , timerinfo.m_Repeat_Thu ? 'T' : '-'
+                     , timerinfo.m_Repeat_Fri ? 'F' : '-'
+                     , timerinfo.m_Repeat_Sat ? 'S' : '-'
+                     , timerinfo.m_Repeat_Sun ? 'S' : '-'
+                     , timerinfo.m_StartTime.GetHour()
+                     , timerinfo.m_StartTime.GetMinute()
+                     , timerinfo.m_StopTime.GetHour()
+                     , timerinfo.m_StopTime.GetMinute()
+                     , timerinfo.m_Priority
+                     , timerinfo.m_Lifetime
+                     , timerinfo.m_strTitle.c_str());
+  }
 
   pthread_mutex_lock(&m_critSection);
 
@@ -3554,44 +3357,22 @@ PVR_ERROR PVRClientVDR::UpdateTimer(const CTVTimerInfoTag &timerinfo)
                      , timerinfo.m_Lifetime
                      , timerinfo.m_strTitle.c_str());
   }
-  else
-    if (timerinfo.m_FirstDay != NULL)
-    {
-      m_Summary.Format("%d:%d:%c%c%c%c%c%c%c@"
-                       , timerinfo.m_Active
-                       , timerinfo.m_clientNum
-                       , timerinfo.m_Repeat_Mon ? 'M' : '-'
-                       , timerinfo.m_Repeat_Tue ? 'T' : '-'
-                       , timerinfo.m_Repeat_Wed ? 'W' : '-'
-                       , timerinfo.m_Repeat_Thu ? 'T' : '-'
-                       , timerinfo.m_Repeat_Fri ? 'F' : '-'
-                       , timerinfo.m_Repeat_Sat ? 'S' : '-'
-                       , timerinfo.m_Repeat_Sun ? 'S' : '-');
-      m_Summary_2.Format("%04d-%02d-%02d:%02d%02d:%02d%02d:%d:%d:%s"
-                         , timerinfo.m_FirstDay.GetYear()
-                         , timerinfo.m_FirstDay.GetMonth()
-                         , timerinfo.m_FirstDay.GetDay()
-                         , timerinfo.m_StartTime.GetHour()
-                         , timerinfo.m_StartTime.GetMinute()
-                         , timerinfo.m_StopTime.GetHour()
-                         , timerinfo.m_StopTime.GetMinute()
-                         , timerinfo.m_Priority
-                         , timerinfo.m_Lifetime
-                         , timerinfo.m_strTitle.c_str());
-      m_Summary = m_Summary + m_Summary_2;
-    }
-    else
-    {
-      m_Summary.Format("%d:%d:%c%c%c%c%c%c%c:%02d%02d:%02d%02d:%d:%d:%s"
-                       , timerinfo.m_Active
-                       , timerinfo.m_clientNum
-                       , timerinfo.m_Repeat_Mon ? 'M' : '-'
-                       , timerinfo.m_Repeat_Tue ? 'T' : '-'
-                       , timerinfo.m_Repeat_Wed ? 'W' : '-'
-                       , timerinfo.m_Repeat_Thu ? 'T' : '-'
-                       , timerinfo.m_Repeat_Fri ? 'F' : '-'
-                       , timerinfo.m_Repeat_Sat ? 'S' : '-'
-                       , timerinfo.m_Repeat_Sun ? 'S' : '-'
+  else if (timerinfo.m_FirstDay != NULL)
+  {
+    m_Summary.Format("%d:%d:%c%c%c%c%c%c%c@"
+                     , timerinfo.m_Active
+                     , timerinfo.m_clientNum
+                     , timerinfo.m_Repeat_Mon ? 'M' : '-'
+                     , timerinfo.m_Repeat_Tue ? 'T' : '-'
+                     , timerinfo.m_Repeat_Wed ? 'W' : '-'
+                     , timerinfo.m_Repeat_Thu ? 'T' : '-'
+                     , timerinfo.m_Repeat_Fri ? 'F' : '-'
+                     , timerinfo.m_Repeat_Sat ? 'S' : '-'
+                     , timerinfo.m_Repeat_Sun ? 'S' : '-');
+    m_Summary_2.Format("%04d-%02d-%02d:%02d%02d:%02d%02d:%d:%d:%s"
+                       , timerinfo.m_FirstDay.GetYear()
+                       , timerinfo.m_FirstDay.GetMonth()
+                       , timerinfo.m_FirstDay.GetDay()
                        , timerinfo.m_StartTime.GetHour()
                        , timerinfo.m_StartTime.GetMinute()
                        , timerinfo.m_StopTime.GetHour()
@@ -3599,7 +3380,28 @@ PVR_ERROR PVRClientVDR::UpdateTimer(const CTVTimerInfoTag &timerinfo)
                        , timerinfo.m_Priority
                        , timerinfo.m_Lifetime
                        , timerinfo.m_strTitle.c_str());
-    }
+    m_Summary = m_Summary + m_Summary_2;
+  }
+  else
+  {
+    m_Summary.Format("%d:%d:%c%c%c%c%c%c%c:%02d%02d:%02d%02d:%d:%d:%s"
+                     , timerinfo.m_Active
+                     , timerinfo.m_clientNum
+                     , timerinfo.m_Repeat_Mon ? 'M' : '-'
+                     , timerinfo.m_Repeat_Tue ? 'T' : '-'
+                     , timerinfo.m_Repeat_Wed ? 'W' : '-'
+                     , timerinfo.m_Repeat_Thu ? 'T' : '-'
+                     , timerinfo.m_Repeat_Fri ? 'F' : '-'
+                     , timerinfo.m_Repeat_Sat ? 'S' : '-'
+                     , timerinfo.m_Repeat_Sun ? 'S' : '-'
+                     , timerinfo.m_StartTime.GetHour()
+                     , timerinfo.m_StartTime.GetMinute()
+                     , timerinfo.m_StopTime.GetHour()
+                     , timerinfo.m_StopTime.GetMinute()
+                     , timerinfo.m_Priority
+                     , timerinfo.m_Lifetime
+                     , timerinfo.m_strTitle.c_str());
+  }
 
   pthread_mutex_lock(&m_critSection);
 
