@@ -1,0 +1,100 @@
+<includes>
+	<include name="CodecFlaggingConditions">
+		<control type="image">
+			<description>1080 rez Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/1080.png</texture>
+			<visible>substring(ListItem.VideoResolution,1080)</visible>
+		</control>
+		<control type="image">
+			<description>720 rez Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/720.png</texture>
+			<visible>substring(ListItem.VideoResolution,720)</visible>
+		</control>
+		<control type="image">
+			<description>Xvid Codec Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/xvid.png</texture>
+			<visible>substring(ListItem.VideoCodec,xvid)</visible>
+		</control>
+		<control type="image">
+			<description>Divx Codec Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/divx.png</texture>
+			<visible>substring(ListItem.VideoCodec,divx)</visible>
+		</control>
+		<control type="image">
+			<description>h264 Codec Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/h264.png</texture>
+			<visible>substring(ListItem.VideoCodec,h264)</visible>
+		</control>
+		<control type="image">
+			<description>mp3 Codec Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/audio/mp3.png</texture>
+			<visible>substring(ListItem.AudioCodec,mp3)</visible>
+		</control>
+		<control type="image">
+			<description>dts Codec Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/audio/dts.png</texture>
+			<visible>substring(ListItem.AudioCodec,dca)</visible>
+		</control>
+		<control type="image">
+			<description>ac3 Image</description>
+			<width>45</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/audio/ac3.png</texture>
+			<visible>substring(ListItem.AudioCodec,ac3) + !substring(ListItem.AudioChannels,6)</visible>
+		</control>
+		<control type="image">
+			<description>Dolby Digital Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/audio/dolbydigital.png</texture>
+			<visible>substring(ListItem.AudioCodec,ac3) + substring(ListItem.AudioChannels,6)</visible>
+		</control>
+		<control type="image">
+			<description>Audio 2.0 Image</description>
+			<width>45</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/audio/2_0.png</texture>
+			<visible>substring(ListItem.AudioChannels,2)</visible>
+		</control>
+		<control type="image">
+			<description>Audio 5.1 Image</description>
+			<width>45</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/audio/5_1.png</texture>
+			<visible>substring(ListItem.AudioChannels,6)</visible>
+		</control>
+		<control type="image">
+			<description>Audio 7.1 Image</description>
+			<width>45</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/audio/7_1.png</texture>
+			<visible>substring(ListItem.AudioChannels,8)</visible>
+		</control>
+	</include>
+</includes>
