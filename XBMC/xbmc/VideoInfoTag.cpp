@@ -514,7 +514,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
     if (nodeStreamDetails)
     {
       const TiXmlNode *nodeDetail = NULL;
-      while (nodeDetail = nodeStreamDetails->IterateChildren("audio", nodeDetail))
+      while ((nodeDetail = nodeStreamDetails->IterateChildren("audio", nodeDetail)))
       {
         CStreamDetailAudio *p = new CStreamDetailAudio();
         XMLUtils::GetString(nodeDetail, "codec", p->m_strCodec);
@@ -525,7 +525,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
         m_streamDetails.AddStream(p);
       }
       nodeDetail = NULL;
-      while (nodeDetail = nodeStreamDetails->IterateChildren("video", nodeDetail))
+      while ((nodeDetail = nodeStreamDetails->IterateChildren("video", nodeDetail)))
       {
         CStreamDetailVideo *p = new CStreamDetailVideo();
         XMLUtils::GetString(nodeDetail, "codec", p->m_strCodec);
@@ -536,7 +536,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
         m_streamDetails.AddStream(p);
       }
       nodeDetail = NULL;
-      while (nodeDetail = nodeStreamDetails->IterateChildren("subtitle", nodeDetail))
+      while ((nodeDetail = nodeStreamDetails->IterateChildren("subtitle", nodeDetail)))
       {
         CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
         XMLUtils::GetString(nodeDetail, "language", p->m_strLanguage);

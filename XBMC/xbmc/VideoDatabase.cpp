@@ -1868,10 +1868,12 @@ long CVideoDatabase::SetDetailsForEpisode(const CStdString& strFilenameAndPath, 
     }
 
     if (details.HasStreamDetails())
+    {
       if (details.m_iFileId != -1)
         SetStreamDetailsForFileId(details.m_streamDetails, details.m_iFileId);
       else
         SetStreamDetailsForFile(details.m_streamDetails, strFilenameAndPath);
+    }
 
     // and insert the new row
     CStdString sql = "update episode set " + GetValueString(details, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets);
@@ -2010,7 +2012,7 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, lo
   catch (...)
   {
     RollbackTransaction();
-    CLog::Log(LOGERROR, "%s (%u) failed", __FUNCTION__, lFileId);
+    CLog::Log(LOGERROR, "%s (%lu) failed", __FUNCTION__, lFileId);
   }
 }
 

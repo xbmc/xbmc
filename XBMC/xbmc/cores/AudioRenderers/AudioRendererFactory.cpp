@@ -63,7 +63,7 @@ IAudioRenderer* CAudioRendererFactory::CreateAudioRenderer(IAudioCallback* pCall
 #ifdef HAS_PULSEAUDIO
   audioSink = new CPulseAudioDirectSound();
   ReturnOnValidInitialize();
-#endif*/
+#endif
 
 /* incase none in the first pass was able to be created, fall back to os specific */
 
