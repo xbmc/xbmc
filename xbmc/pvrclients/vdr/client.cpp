@@ -1,89 +1,238 @@
 /*
-*      Copyright (C) 2005-2009 Team XBMC
-*      http://xbmc.org
-*
-*  This Program is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2, or (at your option)
-*  any later version.
-*
-*  This Program is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*  GNU General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, write to
-*  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
-*  http://www.gnu.org/copyleft/gpl.html
-*
-*/
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#endif
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
 
-#include "pvrclient-vdr_os.h"
-#include "../../addons/include/xbmc_pvr.h"
+#include "client.h"
+#include "../../addons/include/xbmc_pvr_dll.h"
 #include "pvrclient-vdr.h"
 
-// global callback for logging via XBMC
-PVRClientVDR *g_client;
-static PVREventCallback OnEvent;
-static PVRLogCallback OnLog;
-static void *Wrapper;
-static bool created = false;
+using namespace std;
+
+PVRClientVDR *g_client  = NULL;
+bool m_bCreated         = false;
+ADDON_STATUS curStatus  = STATUS_UNKNOWN;
+int g_clientID          = -1;
+
+/* User adjustable settings are saved here.
+   Default values are defined inside client.h */
+std::string m_sHostname = DEFAULT_HOST;
+int m_iPort             = DEFAULT_PORT;
+bool m_bOnlyFTA         = DEFAULT_FTA_ONLY;
+bool m_bRadioEnabled    = DEFAULT_RADIO;
+bool m_bCharsetConv     = DEFAULT_CHARCONV;
+int m_iConnectTimeout   = DEFAULT_TIMEOUT;
+
 
 //////////////////////////////////////////////////////////////////////////////
-extern "C" PVR_ERROR Create(PVRCallbacks *callbacks)
+extern "C" ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID)
 {
-  OnEvent   = callbacks->Event;
-  OnLog     = callbacks->Log;
-  Wrapper   = callbacks->userData;
+  XBMC_register_me(hdl);
+  PVR_register_me(hdl);
 
-  g_client  = new PVRClientVDR(callbacks);
-  created   = true;
+  XBMC_log(LOG_DEBUG, "Creating VDR PVR-Client");
 
-  return PVR_ERROR_NO_ERROR;
+  curStatus     = STATUS_UNKNOWN;
+  g_client      = new PVRClientVDR();
+  g_clientID    = ClientID;
+
+  /* Read setting "host" from settings.xml */
+  char * buffer;
+  buffer = (char*) malloc (1024);
+  buffer[0] = 0; /* Set the end of string */
+
+  if (XBMC_get_setting("host", buffer))
+    m_sHostname = buffer;
+  else
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'host' setting, falling back to '127.0.0.1' as default");
+    m_sHostname = DEFAULT_HOST;
+  }
+  free (buffer);
+
+  /* Read setting "port" from settings.xml */
+  if (!XBMC_get_setting("port", &m_iPort))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'port' setting, falling back to '2004' as default");
+    m_iPort = DEFAULT_PORT;
+  }
+
+  /* Read setting "ftaonly" from settings.xml */
+  if (!XBMC_get_setting("ftaonly", &m_bOnlyFTA))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'ftaonly' setting, falling back to 'false' as default");
+    m_bOnlyFTA = DEFAULT_FTA_ONLY;
+  }
+
+  /* Read setting "useradio" from settings.xml */
+  if (!XBMC_get_setting("useradio", &m_bRadioEnabled))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'useradio' setting, falling back to 'true' as default");
+    m_bRadioEnabled = DEFAULT_RADIO;
+  }
+
+  /* Read setting "convertchar" from settings.xml */
+  if (!XBMC_get_setting("convertchar", &m_bCharsetConv))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'convertchar' setting, falling back to 'false' as default");
+    m_bCharsetConv = DEFAULT_CHARCONV;
+  }
+
+  /* Read setting "timeout" from settings.xml */
+  if (!XBMC_get_setting("timeout", &m_iConnectTimeout))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
+    m_iConnectTimeout = DEFAULT_TIMEOUT;
+  }
+
+  /* Create connection to streamdev-server */
+  if (!g_client->Connect())
+    curStatus = STATUS_LOST_CONNECTION;
+  else
+    curStatus = STATUS_OK;
+
+  m_bCreated = true;
+  return curStatus;
 }
 
-extern "C" PVR_ERROR GetProperties(PVR_SERVERPROPS* pProps)
+//-- Destroy ------------------------------------------------------------------
+// Used during destruction of the client, all steps to do clean and safe Create
+// again must be done.
+//-----------------------------------------------------------------------------
+extern "C" void Destroy()
 {
-  return g_client->GetProperties(pProps);
+  if (m_bCreated)
+  {
+    g_client->Disconnect();
+
+    delete g_client;
+    g_client = NULL;
+
+    m_bCreated = false;
+  }
+  curStatus = STATUS_UNKNOWN;
 }
 
-extern "C" PVR_ERROR SetUserSetting(const char *settingName, const void *settingValue)
+extern "C" void Remove()
 {
-  return g_client->SetUserSetting(settingName, settingValue);
+  Destroy();
 }
 
-extern "C" PVR_ERROR Connect()
+extern "C" ADDON_STATUS GetStatus()
 {
-  return g_client->Connect();
+  return curStatus;
 }
 
-extern "C" void Disconnect()
+//-- HasSettings --------------------------------------------------------------
+// Report "true", yes this AddOn have settings
+//-----------------------------------------------------------------------------
+extern "C" bool HasSettings()
 {
-  return g_client->Disconnect();
+  return true;
 }
 
-extern "C" bool IsUp()
+//-- SetSetting ---------------------------------------------------------------
+// Called everytime a setting is changed by the user and to inform AddOn about
+// new setting and to do required stuff to apply it.
+//-----------------------------------------------------------------------------
+extern "C" ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
 {
-  return g_client->IsUp();
+  string str = settingName;
+  if (str == "host")
+  {
+    string tmp_sHostname;
+    XBMC_log(LOG_INFO, "Changed Setting 'host' from %s to %s", m_sHostname.c_str(), (const char*) settingValue);
+    tmp_sHostname = m_sHostname;
+    m_sHostname = (const char*) settingValue;
+    if (tmp_sHostname != m_sHostname)
+      return STATUS_NEED_RESTART;
+  }
+  else if (str == "port")
+  {
+    XBMC_log(LOG_INFO, "Changed Setting 'port' from %u to %u", m_iPort, *(int*) settingValue);
+    if (m_iPort != *(int*) settingValue)
+    {
+      m_iPort = *(int*) settingValue;
+      return STATUS_NEED_RESTART;
+    }
+  }
+  else if (str == "ftaonly")
+  {
+    XBMC_log(LOG_INFO, "Changed Setting 'ftaonly' from %u to %u", m_bOnlyFTA, *(bool*) settingValue);
+    m_bOnlyFTA = *(bool*) settingValue;
+  }
+  else if (str == "useradio")
+  {
+    XBMC_log(LOG_INFO, "Changed Setting 'useradio' from %u to %u", m_bRadioEnabled, *(bool*) settingValue);
+    m_bRadioEnabled = *(bool*) settingValue;
+  }
+  else if (str == "convertchar")
+  {
+    XBMC_log(LOG_INFO, "Changed Setting 'convertchar' from %u to %u", m_bCharsetConv, *(bool*) settingValue);
+    m_bCharsetConv = *(bool*) settingValue;
+  }
+  else if (str == "timeout")
+  {
+    XBMC_log(LOG_INFO, "Changed Setting 'timeout' from %u to %u", m_iConnectTimeout, *(int*) settingValue);
+    m_iConnectTimeout = *(int*) settingValue;
+  }
+
+  return STATUS_OK;
 }
 
-extern "C" const char* GetBackendName()
+//-- GetProperties ------------------------------------------------------------------
+// Tell XBMC our requirements
+//-----------------------------------------------------------------------------
+extern "C" PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
+{
+  return g_client->GetProperties(props);
+}
+
+extern "C" const char * GetBackendName()
 {
   return g_client->GetBackendName();
 }
 
-extern "C" const char* GetBackendVersion()
+extern "C" const char * GetBackendVersion()
 {
   return g_client->GetBackendVersion();
+}
+
+extern "C" const char * GetConnectionString()
+{
+  return g_client->GetConnectionString();
 }
 
 extern "C" PVR_ERROR GetDriveSpace(long long *total, long long *used)
 {
   return g_client->GetDriveSpace(total, used);
+}
+
+extern "C" int GetNumBouquets()
+{
+  return 0;
 }
 
 extern "C" PVR_ERROR GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start, time_t end)
