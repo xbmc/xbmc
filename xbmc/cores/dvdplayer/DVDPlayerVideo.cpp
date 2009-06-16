@@ -204,6 +204,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
   {
     g_VideoReferenceClock.Create();
+    //we have to wait for the clock to start otherwise alsa can cause trouble
     if (!g_VideoReferenceClock.WaitStarted(2000))
       CLog::Log(LOGDEBUG, "g_VideoReferenceClock didn't start in time");
   }
