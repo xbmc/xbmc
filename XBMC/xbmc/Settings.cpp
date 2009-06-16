@@ -1622,37 +1622,43 @@ bool CSettings::LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool cl
 
 void CSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings)
 {
-  int iAction = 0; // overwrite
-  // for backward compatibility
-  const char* szAppend = pRootElement->Attribute("append");
-  if ((szAppend && stricmp(szAppend, "yes") == 0))
-    iAction = 1;
-  // action takes precedence if both attributes exist
-  const char* szAction = pRootElement->Attribute("action");
-  if (szAction)
+  TiXmlElement *pElement = pRootElement;
+  while (pElement)
   {
-    iAction = 0; // overwrite
-    if (stricmp(szAction, "append") == 0)
-      iAction = 1; // append
-    else if (stricmp(szAction, "prepend") == 0)
-      iAction = 2; // prepend
-  }
-  if (iAction == 0)
-    settings.clear();
-  TiXmlNode* pRegExp = pRootElement->FirstChild("regexp");
-  int i = 0;
-  while (pRegExp)
-  {
-    if (pRegExp->FirstChild())
+    int iAction = 0; // overwrite
+    // for backward compatibility
+    const char* szAppend = pElement->Attribute("append");
+    if ((szAppend && stricmp(szAppend, "yes") == 0))
+      iAction = 1;
+    // action takes precedence if both attributes exist
+    const char* szAction = pElement->Attribute("action");
+    if (szAction)
     {
-      CStdString regExp = pRegExp->FirstChild()->Value();
-      regExp.MakeLower();
-      if (iAction == 2)
-        settings.insert(settings.begin() + i++, 1, regExp);
-      else
-        settings.push_back(regExp);
+      iAction = 0; // overwrite
+      if (stricmp(szAction, "append") == 0)
+        iAction = 1; // append
+      else if (stricmp(szAction, "prepend") == 0)
+        iAction = 2; // prepend
     }
-    pRegExp = pRegExp->NextSibling("regexp");
+    if (iAction == 0)
+      settings.clear();
+    TiXmlNode* pRegExp = pElement->FirstChild("regexp");
+    int i = 0;
+    while (pRegExp)
+    {
+      if (pRegExp->FirstChild())
+      {
+        CStdString regExp = pRegExp->FirstChild()->Value();
+        regExp.MakeLower();
+        if (iAction == 2)
+          settings.insert(settings.begin() + i++, 1, regExp);
+        else
+          settings.push_back(regExp);
+      }
+      pRegExp = pRegExp->NextSibling("regexp");
+    }
+
+    pElement = pElement->NextSiblingElement(pRootElement->Value());
   }
 }
 
