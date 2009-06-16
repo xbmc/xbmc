@@ -542,6 +542,19 @@ if test "$use_external_libraries" = "yes" || test "$use_external_libfaad" = "yes
   AC_CHECK_LIB([faad],          [NeAACDecInitDRM],
     [AC_DEFINE([HAVE_LIBFAAD_NEAACDECINITDRM], [1], [Whether NeAACDecInitDRM function exists in libfaad library.])],)
 
+  AC_LANG_PUSH(C++)
+  AC_MSG_CHECKING([whether we have the Debian or Ubuntu < 2.7 FAAD ABI])
+  AC_COMPILE_IFELSE(
+    AC_LANG_PROGRAM([#include <neaacdec.h>], [char* x = NeAACDecGetErrorMessage(0)]),
+    AC_MSG_RESULT(no),
+    [
+      AC_DEFINE([HAVE_LIBFAAD_DEBIAN_ABI], [1],
+        [Whether we have the Debian or Ubuntu < 2.7 FAAD ABI])
+      AC_MSG_RESULT(yes)
+    ]
+  )
+  AC_LANG_POP()
+
   AC_MSG_NOTICE($external_libfaad_enabled)
   USE_EXTERNAL_LIBFAAD=1
   AC_DEFINE([USE_EXTERNAL_LIBFAAD], [1], [Whether to use external libfaad library.])

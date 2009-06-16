@@ -165,6 +165,9 @@
 /* Define to 1 if you have the `faad' library (-lfaad). */
 #undef HAVE_LIBFAAD
 
+/* Whether we have the Debian or Ubuntu < 2.7 FAAD ABI */
+#undef HAVE_LIBFAAD_DEBIAN_ABI
+
 /* Whether NeAACDecInitDRM function exists in libfaad library. */
 #undef HAVE_LIBFAAD_NEAACDECINITDRM
 
