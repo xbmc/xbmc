@@ -418,7 +418,7 @@
 				<posx>40</posx>
 				<posy>600</posy>
 				<width>785</width>
-				<height>100</height>
+				<height>70</height>
 				<font>font11</font>
 				<align>justify</align>
 				<textcolor>white</textcolor>
@@ -544,20 +544,7 @@
 				<scroll>true</scroll>
 				<align>left</align>
 				<aligny>center</aligny>
-				<label>$INFO[ListItem.Duration,$LOCALIZE[2050] : ]</label>
-			</control>
-			<control type="label">
-				<posx>280</posx>
-				<posy>670</posy>
-				<width>550</width>
-				<height>30</height>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scroll>true</scroll>
-				<align>left</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Year,$LOCALIZE[345] : ]</label>
+				<label>$INFO[ListItem.Year,$LOCALIZE[345] : ]$INFO[ListItem.Duration, - $LOCALIZE[2050] : ]</label>
 			</control>
 		</control>
 		<control type="group">
