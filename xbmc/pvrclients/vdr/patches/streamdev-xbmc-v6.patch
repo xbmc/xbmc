@@ -1,0 +1,1480 @@
+diff -NaurwB streamdev/common.h streamdev2/common.h
+--- streamdev/common.h	2009-01-16 12:35:43.000000000 +0100
++++ streamdev2/common.h	2009-06-13 00:58:46.000000000 +0200
+@@ -74,9 +74,12 @@
+ 	siLive,
+ 	siReplay,
+ 	siLiveFilter,
++	siDataRespond,
+ 	si_Count
+ };
+ 
++#define MAX_RESPONSE_SIZE   1024
++
+ extern const char *VERSION;
+ extern const char *StreamTypes[st_Count];
+ extern const char *SuspendModes[sm_Count];
+diff -NaurwB streamdev/Makefile streamdev2/Makefile
+--- streamdev/Makefile	2009-02-13 11:39:20.000000000 +0100
++++ streamdev2/Makefile	2009-06-13 00:58:46.000000000 +0200
+@@ -61,7 +61,7 @@
+ 	server/componentVTP.o server/componentHTTP.o server/componentIGMP.o \
+ 	server/connectionVTP.o server/connectionHTTP.o server/connectionIGMP.o \
+ 	server/streamer.o server/livestreamer.o server/livefilter.o \
+-	server/suspend.o server/setup.o server/menuHTTP.o \
++	server/suspend.o server/setup.o server/menuHTTP.o server/recplayer.o \
+ 	remux/tsremux.o remux/ts2ps.o remux/ts2es.o remux/extern.o
+ 	
+ ifdef DEBUG
+diff -NaurwB streamdev/server/connectionVTP.c streamdev2/server/connectionVTP.c
+--- streamdev/server/connectionVTP.c	2009-01-16 12:35:44.000000000 +0100
++++ streamdev2/server/connectionVTP.c	2009-06-13 01:04:40.000000000 +0200
+@@ -8,11 +8,16 @@
+ #include "setup.h"
+ 
+ #include <vdr/tools.h>
++#include <vdr/videodir.h>
++#include <vdr/menu.h>
++#include <vdr/epg.h>
+ #include <tools/select.h>
+ #include <string.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdarg.h>
++#include <stdio.h>
++#include <stdlib.h>
+ 
+ /* VTP Response codes:
+ 	220: Service ready
+@@ -28,13 +33,20 @@
+ 	563: Recording not available (currently?)
+ */
+ 
++enum eDumpModeStreamdev { dmsdAll, dmsdPresent, dmsdFollowing, dmsdAtTime, dmsdFromToTime };
++
+ // --- cLSTEHandler -----------------------------------------------------------
+ 
+ class cLSTEHandler 
+ {
+ private:
++#ifdef USE_PARENTALRATING
++	enum eStates { Channel, Event, Title, Subtitle, Description, Vps, Content,
++	               EndEvent, EndChannel, EndEPG };
++#else
+ 	enum eStates { Channel, Event, Title, Subtitle, Description, Vps, 
+ 	               EndEvent, EndChannel, EndEPG };
++#endif /* PARENTALRATING */
+ 	cConnectionVTP    *m_Client;
+ 	cSchedulesLock    *m_SchedulesLock;
+ 	const cSchedules  *m_Schedules;
+@@ -44,6 +56,7 @@
+ 	char              *m_Error;
+ 	eStates            m_State;
+ 	bool               m_Traverse;
++	time_t             m_ToTime;
+ public:
+ 	cLSTEHandler(cConnectionVTP *Client, const char *Option);
+ 	~cLSTEHandler();
+@@ -59,10 +72,12 @@
+ 		m_Errno(0),
+ 		m_Error(NULL),
+ 		m_State(Channel),
+-		m_Traverse(false)
++		m_Traverse(false),
++		m_ToTime(0)
+ {
+-	eDumpMode dumpmode = dmAll;
++	eDumpModeStreamdev dumpmode = dmsdAll;
+ 	time_t attime = 0;
++	time_t fromtime = 0;
+ 
+ 	if (m_Schedules != NULL && *Option) {
+ 		char buf[strlen(Option) + 1];
+@@ -70,13 +85,13 @@
+ 		const char *delim = " \t";
+ 		char *strtok_next;
+ 		char *p = strtok_r(buf, delim, &strtok_next);
+-		while (p && dumpmode == dmAll) {
++		while (p && dumpmode == dmsdAll) {
+ 			if (strcasecmp(p, "NOW") == 0)
+-				dumpmode = dmPresent;
++				dumpmode = dmsdPresent;
+ 			else if (strcasecmp(p, "NEXT") == 0)
+-				dumpmode = dmFollowing;
++				dumpmode = dmsdFollowing;
+ 			else if (strcasecmp(p, "AT") == 0) {
+-				dumpmode = dmAtTime;
++				dumpmode = dmsdAtTime;
+ 				if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
+ 					if (isnumber(p))
+ 						attime = strtol(p, NULL, 10);
+@@ -90,6 +105,39 @@
+ 					m_Error = strdup("Missing time");
+ 					break;
+ 				}
++			}
++			else if (strcasecmp(p, "FROM") == 0) {
++				dumpmode = dmsdFromToTime;
++				if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
++					if (isnumber(p))
++						fromtime = strtol(p, NULL, 10);
++					else {
++						m_Errno = 501;
++						m_Error = strdup("Invalid time");
++						break;
++					}
++					if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
++					  if (strcasecmp(p, "TO") == 0) {
++					    if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
++                if (isnumber(p))
++                  m_ToTime = strtol(p, NULL, 10);
++                else {
++                  m_Errno = 501;
++                  m_Error = strdup("Invalid time");
++                  break;
++                }
++              } else {
++                m_Errno = 501;
++                m_Error = strdup("Missing time");
++                break;
++              }
++					  }
++					}
++				} else {
++					m_Errno = 501;
++					m_Error = strdup("Missing time");
++					break;
++				}
+ 			} else if (!m_Schedule) {
+ 				cChannel* Channel = NULL;
+ 				if (isnumber(p))
+@@ -129,16 +177,29 @@
+ 
+ 		if (m_Schedule != NULL && m_Schedule->Events() != NULL) {
+ 			switch (dumpmode) {
+-			case dmAll:       m_Event = m_Schedule->Events()->First();
++			case dmsdAll:       m_Event = m_Schedule->Events()->First();
+ 							  m_Traverse = true;
+ 							  break;
+-			case dmPresent:   m_Event = m_Schedule->GetPresentEvent();
++			case dmsdPresent:   m_Event = m_Schedule->GetPresentEvent();
+ 							  break;
+-			case dmFollowing: m_Event = m_Schedule->GetFollowingEvent();
++			case dmsdFollowing: m_Event = m_Schedule->GetFollowingEvent();
+ 							  break;
+-			case dmAtTime:    m_Event = m_Schedule->GetEventAround(attime);
++			case dmsdAtTime:    m_Event = m_Schedule->GetEventAround(attime);
++							  break;
++			case dmsdFromToTime:
++                if (m_Schedule->Events()->Count() <= 1) {
++                  m_Event = m_Schedule->Events()->First();
++                  break;
++                }
++			          if (fromtime < m_Schedule->Events()->First()->StartTime()) {
++			            fromtime = m_Schedule->Events()->First()->StartTime();
++			          }
++                if (m_ToTime > m_Schedule->Events()->Last()->EndTime()) {
++                  m_ToTime = m_Schedule->Events()->Last()->EndTime();
++                }
++			          m_Event = m_Schedule->GetEventAround(fromtime);
++			          m_Traverse = true;
+ 							  break;
+-
+ 			}
+ 		}
+ 	}
+@@ -227,7 +288,11 @@
+ 		break;
+ 
+ 	case Vps:
++#ifdef USE_PARENTALRATING
++		m_State = Content;
++#else
+ 		m_State = EndEvent;
++#endif /* PARENTALRATING */
+ 		if (m_Event->Vps())
+ #ifdef __FreeBSD__
+ 			return m_Client->Respond(-215, "V %d", m_Event->Vps());
+@@ -238,9 +303,26 @@
+ 			return Next(Last);
+ 		break;
+ 
++#ifdef USE_PARENTALRATING
++    case Content:
++		m_State = EndEvent;
++		if (!isempty(m_Event->GetContentsString())) {
++			char *copy = strdup(m_Event->GetContentsString());
++			cString cpy(copy, true);
++			strreplace(copy, '\n', '|');
++			return m_Client->Respond(-215, "G %i %i %s", m_Event->Contents() & 0xF0, m_Event->Contents() & 0x0F, copy);
++		} else
++			return Next(Last);
++		break;
++#endif
++
+ 	case EndEvent:
+-		if (m_Traverse)
++		if (m_Traverse) {
+ 			m_Event = m_Schedule->Events()->Next(m_Event);
++			if ((m_Event != NULL) && (m_ToTime != 0) && (m_Event->StartTime() > m_ToTime)) {
++			  m_Event = NULL;
++			}
++		}
+ 		else
+ 			m_Event = NULL;
+ 
+@@ -377,7 +459,7 @@
+ 			}
+ 		}
+ 
+-		if (i < Channels.MaxNumber())
++		if (i < Channels.MaxNumber() + 1)
+ 			Last = false;
+ 	}
+ 
+@@ -476,9 +558,12 @@
+ 		m_LiveStreamer(NULL),
+ 		m_FilterSocket(NULL),
+ 		m_FilterStreamer(NULL),
++		m_RecSocket(NULL),
++		m_DataSocket(NULL),
+ 		m_LastCommand(NULL),
+ 		m_StreamType(stTSPIDS),
+ 		m_FiltersSupport(false),
++		m_RecPlayer(NULL),
+ 		m_LSTEHandler(NULL),
+ 		m_LSTCHandler(NULL),
+ 		m_LSTTHandler(NULL)
+@@ -491,11 +576,14 @@
+ 		free(m_LastCommand);
+ 	delete m_LiveStreamer;
+ 	delete m_LiveSocket;
++	delete m_RecSocket;
+ 	delete m_FilterStreamer;
+ 	delete m_FilterSocket;
++	delete m_DataSocket;
+ 	delete m_LSTTHandler;
+ 	delete m_LSTCHandler;
+ 	delete m_LSTEHandler;
++	delete m_RecPlayer;
+ }
+ 
+ inline bool cConnectionVTP::Abort(void) const
+@@ -548,7 +636,7 @@
+ 	}
+ 	
+ 	if      (strcasecmp(Cmd, "LSTE") == 0) return CmdLSTE(param);
+-	//else if (strcasecmp(Cmd, "LSTR") == 0) return CmdLSTR(param);
++	else if (strcasecmp(Cmd, "LSTR") == 0) return CmdLSTR(param);
+ 	else if (strcasecmp(Cmd, "LSTT") == 0) return CmdLSTT(param);
+ 	else if (strcasecmp(Cmd, "LSTC") == 0) return CmdLSTC(param);
+ 
+@@ -561,7 +649,9 @@
+ 	if      (strcasecmp(Cmd, "CAPS") == 0) return CmdCAPS(param);
+ 	else if (strcasecmp(Cmd, "PROV") == 0) return CmdPROV(param);
+ 	else if (strcasecmp(Cmd, "PORT") == 0) return CmdPORT(param);
++	else if (strcasecmp(Cmd, "READ") == 0) return CmdREAD(param);
+ 	else if (strcasecmp(Cmd, "TUNE") == 0) return CmdTUNE(param);
++	else if (strcasecmp(Cmd, "PLAY") == 0) return CmdPLAY(param);
+ 	else if (strcasecmp(Cmd, "ADDP") == 0) return CmdADDP(param);
+ 	else if (strcasecmp(Cmd, "DELP") == 0) return CmdDELP(param);
+ 	else if (strcasecmp(Cmd, "ADDF") == 0) return CmdADDF(param);
+@@ -570,10 +660,21 @@
+ 	else if (strcasecmp(Cmd, "QUIT") == 0) return CmdQUIT();
+ 	else if (strcasecmp(Cmd, "SUSP") == 0) return CmdSUSP();
+ 	// Commands adopted from SVDRP
+-	//else if (strcasecmp(Cmd, "DELR") == 0) return CmdDELR(param);
++	else if (strcasecmp(Cmd, "DELR") == 0) return CmdDELR(param);
++#if defined(USE_LIEMIKUUTIO) || defined(USE_LIEMIEXT)
++	else if (strcasecmp(Cmd, "RENR") == 0) return CmdRENR(param);
++#endif /* LIEMIKUUTIO */
++	else if (strcasecmp(Cmd, "STAT") == 0) return CmdSTAT(param);
+ 	else if (strcasecmp(Cmd, "MODT") == 0) return CmdMODT(param);
+ 	else if (strcasecmp(Cmd, "NEWT") == 0) return CmdNEWT(param);
+ 	else if (strcasecmp(Cmd, "DELT") == 0) return CmdDELT(param);
++	else if (strcasecmp(Cmd, "NEXT") == 0) return CmdNEXT(param);
++	else if (strcasecmp(Cmd, "NEWC") == 0) return CmdNEWC(param);
++	else if (strcasecmp(Cmd, "MODC") == 0) return CmdMODC(param);
++	else if (strcasecmp(Cmd, "MOVC") == 0) return CmdMOVC(param);
++	else if (strcasecmp(Cmd, "DELC") == 0) return CmdDELC(param);
++	else if (strcasecmp(Cmd, "MARK") == 0) return CmdMARK(param);
++	else if (strcasecmp(Cmd, "FRAM") == 0) return CmdFRAM(param);
+ 	else
+ 		return Respond(500, "Unknown Command \"%s\"", Cmd);
+ }
+@@ -648,7 +749,7 @@
+ 	if (ep == Opts || !isspace(*ep))
+ 		return Respond(500, "Use: PORT Id Destination");
+ 	
+-	if (id != siLive && id != siLiveFilter)
++	if (id != siLive && id != siLiveFilter && id != siReplay && id != siDataRespond)
+ 		return Respond(501, "Wrong connection id %d", id);
+ 	
+ 	Opts = skipspace(ep);
+@@ -698,6 +799,7 @@
+ 		return Respond(220, "Port command ok, data connection opened");
+ 	}
+ 
++    if (id == siLive) {
+ 	if(m_LiveSocket && m_LiveStreamer)
+ 		m_LiveStreamer->Stop();
+ 	delete m_LiveSocket;
+@@ -718,6 +820,71 @@
+ 	return Respond(220, "Port command ok, data connection opened");
+ }
+ 
++    if (id == siReplay) {
++        delete m_RecSocket;
++
++        m_RecSocket = new cTBSocket(SOCK_STREAM);
++        if (!m_RecSocket->Connect(dataip, dataport)) {
++            esyslog("ERROR: Streamdev: Couldn't open data connection to %s:%d: %s",
++                    dataip, dataport, strerror(errno));
++            DELETENULL(m_RecSocket);
++            return Respond(551, "Couldn't open data connection");
++        }
++
++        if (!m_RecSocket->SetDSCP())
++            LOG_ERROR_STR("unable to set DSCP sockopt");
++
++        return Respond(220, "Port command ok, data connection opened");
++    }
++
++    if (id == siDataRespond) {
++        delete m_DataSocket;
++
++        m_DataSocket = new cTBSocket(SOCK_STREAM);
++        if (!m_DataSocket->Connect(dataip, dataport)) {
++            esyslog("ERROR: Streamdev: Couldn't open data connection to %s:%d: %s",
++                    dataip, dataport, strerror(errno));
++            DELETENULL(m_DataSocket);
++            return Respond(551, "Couldn't open data connection");
++        }
++
++        if (!m_DataSocket->SetDSCP())
++            LOG_ERROR_STR("unable to set DSCP sockopt");
++
++        return Respond(220, "Port command ok, data connection opened");
++    }
++    return Respond(551, "Couldn't open data connection");
++}
++
++bool cConnectionVTP::CmdREAD(char *Opts)
++{
++    if (*Opts) {
++        char *tail;
++        uint64_t position = strtoll(Opts, &tail, 10);
++        if (tail && tail != Opts) {
++            tail = skipspace(tail);
++            if (tail && tail != Opts) {
++                int size = strtol(tail, NULL, 10);
++                uint8_t* data = (uint8_t*)malloc(size+4);
++                unsigned long count_readed = m_RecPlayer->getBlock(data, position, size);
++                unsigned long count_written = m_RecSocket->SysWrite(data, count_readed);
++
++                free(data);
++                return Respond(220, "%lu Bytes submitted", count_written);
++            }
++            else {
++                return Respond(501, "Missing position");
++            }
++        }
++        else {
++            return Respond(501, "Missing size");
++        }
++    }
++    else {
++        return Respond(501, "Missing position");
++    }
++}
++
+ bool cConnectionVTP::CmdTUNE(char *Opts) 
+ {
+ 	const cChannel *chan;
+@@ -749,6 +916,32 @@
+ 	return Respond(220, "Channel tuned");
+ }
+ 
++bool cConnectionVTP::CmdPLAY(char *Opts)
++{
++    Recordings.Update(true);
++    if (*Opts) {
++        if (isnumber(Opts)) {
++            cRecording *recording = Recordings.Get(strtol(Opts, NULL, 10) - 1);
++            if (recording) {
++                if (m_RecPlayer) {
++                    delete m_RecPlayer;
++                }
++                m_RecPlayer = new RecPlayer(recording);
++                return Respond(220, "%llu (Bytes), %u (Frames)", (long long unsigned int) m_RecPlayer->getLengthBytes(), (unsigned int) m_RecPlayer->getLengthFrames());
++            }
++            else {
++                return Respond(550, "Recording \"%s\" not found", Opts);
++            }
++          }
++        else {
++            return Respond(500, "Use: PLAY record");
++        }
++    }
++    else {
++        return Respond(500, "Use: PLAY record");
++    }
++}
++
+ bool cConnectionVTP::CmdADDP(char *Opts) 
+ {
+ 	int pid;
+@@ -844,6 +1037,13 @@
+ 		DELETENULL(m_FilterStreamer);
+ 		DELETENULL(m_FilterSocket);
+ 		break;
++    case siReplay:
++        DELETENULL(m_RecPlayer);
++        DELETENULL(m_RecSocket);
++        break;
++    case siDataRespond:
++        DELETENULL(m_DataSocket);
++        break;
+ 	default:
+ 		return Respond(501, "Wrong connection id %d", id);
+ 		break;
+@@ -912,6 +1112,56 @@
+ #define Reply(c,m...) _res = Respond(c,m)
+ #define EXIT_WRAPPER() return _res
+ 
++bool cConnectionVTP::CmdSTAT(const char *Option)
++{
++    INIT_WRAPPER();
++    if (*Option) {
++        if (strcasecmp(Option, "DISK") == 0) {
++            int FreeMB, UsedMB;
++            int Percent = VideoDiskSpace(&FreeMB, &UsedMB);
++            Reply(250, "%dMB %dMB %d%%", FreeMB + UsedMB, FreeMB, Percent);
++        }
++        else if (strcasecmp(Option, "NAME") == 0) {
++            Reply(250, "vdr - The Video Disk Recorder with Streamdev-Server");
++        }
++        else if (strcasecmp(Option, "VERSION") == 0) {
++            Reply(250, "VDR: %s | Streamdev: %s", VDRVERSION, VERSION);
++        }
++        else if (strcasecmp(Option, "RECORDS") == 0) {
++            bool recordings = Recordings.Load();
++            Recordings.Sort();
++            if (recordings) {
++                cRecording *recording = Recordings.Last();
++                Reply(250, "%d", recording->Index() + 1);
++            }
++            else {
++                Reply(250, "0");
++            }
++        }
++        else if (strcasecmp(Option, "CHANNELS") == 0) {
++            Reply(250, "%d", Channels.MaxNumber());
++        }
++        else if (strcasecmp(Option, "TIMERS") == 0) {
++            Reply(250, "%d", Timers.Count());
++        }
++        else if (strcasecmp(Option, "CHARSET") == 0) {
++            Reply(250, "%s", cCharSetConv::SystemCharacterTable());
++        }
++        else if (strcasecmp(Option, "TIME") == 0) {
++            time_t timeNow = time(NULL);
++            struct tm* timeStruct = localtime(&timeNow);
++            int timeOffset = timeStruct->tm_gmtoff;
++
++            Reply(250, "%u %i", timeNow, timeOffset);
++        }
++        else
++            Reply(501, "Invalid Option \"%s\"", Option);
++    }
++    else
++    Reply(501, "No option given");
++    EXIT_WRAPPER();
++}
++
+ bool cConnectionVTP::CmdMODT(const char *Option)
+ {
+ 	INIT_WRAPPER();
+@@ -973,40 +1223,114 @@
+ {
+ 	INIT_WRAPPER();
+ 	if (*Option) {
+-		if (isnumber(Option)) {
+-			cTimer *timer = Timers.Get(strtol(Option, NULL, 10) - 1);
++	    int number = 0;
++	    bool force = false;
++	    char buf[strlen(Option) + 1];
++	    strcpy(buf, Option);
++	    const char *delim = " \t";
++	    char *strtok_next;
++	    char *p = strtok_r(buf, delim, &strtok_next);
++
++	    if (isnumber(p)) {
++	        number = strtol(p, NULL, 10) - 1;
++	    }
++	    else if (strcasecmp(p, "FORCE") == 0) {
++	        force = true;
++	    }
++	    if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
++            if (isnumber(p)) {
++                number = strtol(p, NULL, 10) - 1;
++            }
++            else if (strcasecmp(p, "FORCE") == 0) {
++                force = true;
++            }
++            else {
++                Reply(501, "Timer not found or wrong syntax");
++            }
++	    }
++
++	    cTimer *timer = Timers.Get(number);
+ 			if (timer) {
+-				if (!timer->Recording()) {
++            if (timer->Recording()) {
++                if (force) {
++                    timer->Skip();
++                    cRecordControls::Process(time(NULL));
++                }
++                else {
++                    Reply(550, "Timer \"%i\" is recording", number);
++                    EXIT_WRAPPER();
++                }
++            }
+ 					isyslog("deleting timer %s", *timer->ToDescr());
+ 					Timers.Del(timer);
+ 					Timers.SetModified();
+-					Reply(250, "Timer \"%s\" deleted", Option);
+-				} else
+-					Reply(550, "Timer \"%s\" is recording", Option);
+-			} else
+-				Reply(501, "Timer \"%s\" not defined", Option);
++            Reply(250, "Timer \"%i\" deleted", number);
+ 		} else
+-			Reply(501, "Error in timer number \"%s\"", Option);
++            Reply(501, "Timer \"%i\" not defined", number);
+ 	} else
+-		Reply(501, "Missing timer number");
++		Reply(501, "Missing timer option");
+ 	EXIT_WRAPPER();
+ }
+ 
+-/*bool cConnectionVTP::CmdLSTR(char *Option) {
++bool cConnectionVTP::CmdNEXT(const char *Option)
++{
+ 	INIT_WRAPPER();
+-  bool recordings = Recordings.Load();
+-	Recordings.Sort();
++    cTimer *t = Timers.GetNextActiveTimer();
++    if (t) {
++        time_t Start = t->StartTime();
++        int Number = t->Index() + 1;
++        if (!*Option)
++            Reply(250, "%d %s", Number, *TimeToString(Start));
++        else if (strcasecmp(Option, "ABS") == 0)
++            Reply(250, "%d %ld", Number, Start);
++        else if (strcasecmp(Option, "REL") == 0)
++            Reply(250, "%d %ld", Number, Start - time(NULL));
++        else
++            Reply(501, "Unknown option: \"%s\"", Option);
++    }
++    else
++        Reply(550, "No active timers");
++    EXIT_WRAPPER();
++}
++
++bool cConnectionVTP::CmdLSTR(char *Option)
++{
++    INIT_WRAPPER();
++    bool recordings = Recordings.Update(true);
+   if (*Option) {
+      if (isnumber(Option)) {
+         cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
+         if (recording) {
+-           if (recording->Summary()) {
+-              char *summary = strdup(recording->Summary());
+-              Reply(250, "%s", strreplace(summary,'\n','|'));
+-              free(summary);
++
++                Reply(-215, "C %s%s%s", *recording->Info()->ChannelID().ToString(), recording->Info()->ChannelName() ? " " : "", recording->Info()->ChannelName() ? recording->Info()->ChannelName() : "");
++#ifdef USE_STREAMDEVEXT
++                const cEvent* event = recording->Info()->GetEvent();
++                Reply(-215, "E %u %ld %d %X", (unsigned int) event->EventID(), event->StartTime(), event->Duration(), event->TableID(), event->Version());
++#endif
++                Reply(-215, "T %s", recording->Info()->Title());
++                if (!isempty(recording->Info()->ShortText())) {
++                    Reply(-215, "S %s", recording->Info()->ShortText());
+               }
+-           else
+-              Reply(550, "No summary availabe");
++                if (!isempty(recording->Info()->Description())) {
++                    char *copy = strdup(recording->Info()->Description());
++                    cString cpy(copy, true);
++                    strreplace(copy, '\n', '|');
++                    Reply(-215, "D %s", copy);
++                }
++                if (recording->Info()->Components()) {
++                    for (int i = 0; i < recording->Info()->Components()->NumComponents(); i++) {
++                        tComponent *p = recording->Info()->Components()->Component(i);
++                        if (!Setup.UseDolbyDigital && p->stream == 0x02 && p->type == 0x05)
++                            continue;
++                        Reply(-215, "X %s", *p->ToString());
++              }
++                }
++#ifdef USE_STREAMDEVEXT
++                if (event->Vps())
++                    Reply(-215, "V %ld", event->Vps());
++#endif
++
++                Reply(215, "End of recording information");
+            }
+         else
+            Reply(550, "Recording \"%s\" not found", Option);
+@@ -1016,28 +1340,36 @@
+      }
+   else if (recordings) {
+      cRecording *recording = Recordings.First();
+-     while (recording) {
++     do {
+            Reply(recording == Recordings.Last() ? 250 : -250, "%d %s", recording->Index() + 1, recording->Title(' ', true));
+            recording = Recordings.Next(recording);
+-           }
++           } while (recording);
+      }
+   else
+      Reply(550, "No recordings available");
+ 	EXIT_WRAPPER();
+ }
+ 
+-bool cConnectionVTP::CmdDELR(char *Option) {
++bool cConnectionVTP::CmdDELR(char *Option)
++{
+ 	INIT_WRAPPER();
+   if (*Option) {
+      if (isnumber(Option)) {
+         cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
+         if (recording) {
+-           if (recording->Delete())
++                cRecordControl *rc = cRecordControls::GetRecordControl(recording->FileName());
++                if (!rc) {
++                    if (recording->Delete()) {
+               Reply(250, "Recording \"%s\" deleted", Option);
++                        ::Recordings.DelByName(recording->FileName());
++                    }
+            else
+               Reply(554, "Error while deleting recording!");
+            }
+         else
++                    Reply(550, "Recording \"%s\" is in use by timer %d", Option, rc->Timer()->Index() + 1);
++            }
++            else
+            Reply(550, "Recording \"%s\" not found%s", Option, Recordings.Count() ? "" : " (use LSTR before deleting)");
+         }
+      else
+@@ -1046,7 +1378,320 @@
+   else
+      Reply(501, "Missing recording number");
+ 	EXIT_WRAPPER();
+-}*/
++}
++
++#if defined(USE_LIEMIKUUTIO) || defined(USE_LIEMIEXT)
++bool cConnectionVTP::CmdRENR(char *Option)
++{
++    INIT_WRAPPER();
++    bool recordings = Recordings.Update(true);
++    if (recordings) {
++        if (*Option) {
++            char *tail;
++            int n = strtol(Option, &tail, 10);
++            cRecording *recording = Recordings.Get(n - 1);
++            if (recording && tail && tail != Option) {
++#if APIVERSNUM < 10704
++                int priority = recording->priority;
++                int lifetime = recording->lifetime;
++#endif
++                char *oldName = strdup(recording->Name());
++                tail = skipspace(tail);
++#if APIVERSNUM < 10704
++                if (recording->Rename(tail, &priority, &lifetime)) {
++#else
++                if (recording->Rename(tail)) {
++#endif
++                    Reply(250, "Renamed \"%s\" to \"%s\"", oldName, recording->Name());
++                    Recordings.ChangeState();
++                    Recordings.TouchUpdate();
++                }
++                else {
++                    Reply(501, "Renaming \"%s\" to \"%s\" failed", oldName, tail);
++                }
++                free(oldName);
++            }
++            else {
++                Reply(501, "Recording not found or wrong syntax");
++            }
++        }
++        else {
++            Reply(501, "Missing Input settings");
++        }
++    }
++    else {
++        Reply(550, "No recordings available");
++    }
++    EXIT_WRAPPER();
++}
++#endif /* LIEMIKUUTIO */
++
++bool cConnectionVTP::CmdNEWC(const char *Option)
++{
++    INIT_WRAPPER();
++    if (*Option) {
++        cChannel ch;
++        if (ch.Parse(Option)) {
++            if (Channels.HasUniqueChannelID(&ch)) {
++                cChannel *channel = new cChannel;
++                *channel = ch;
++                Channels.Add(channel);
++                Channels.ReNumber();
++                Channels.SetModified(true);
++#ifdef USE_STREAMDEVEXT
++                cStatus::MsgChannelChange(channel, scAdd);
++#endif
++                isyslog("new channel %d %s", channel->Number(), *channel->ToText());
++                Reply(250, "%d %s", channel->Number(), *channel->ToText());
++            }
++            else {
++                Reply(501, "Channel settings are not unique");
++            }
++        }
++        else {
++            Reply(501, "Error in channel settings");
++        }
++    }
++    else {
++        Reply(501, "Missing channel settings");
++    }
++    EXIT_WRAPPER();
++}
++
++bool cConnectionVTP::CmdMODC(const char *Option)
++{
++    INIT_WRAPPER();
++    if (*Option) {
++        char *tail;
++        int n = strtol(Option, &tail, 10);
++        if (tail && tail != Option) {
++            tail = skipspace(tail);
++            if (!Channels.BeingEdited()) {
++                cChannel *channel = Channels.GetByNumber(n);
++                if (channel) {
++                    cChannel ch;
++                    if (ch.Parse(tail)) {
++                        if (Channels.HasUniqueChannelID(&ch, channel)) {
++                            *channel = ch;
++                            Channels.ReNumber();
++                            Channels.SetModified(true);
++                            isyslog("modifed channel %d %s", channel->Number(), *channel->ToText());
++                            Reply(250, "%d %s", channel->Number(), *channel->ToText());
++                        }
++                        else {
++                            Reply(501, "Channel settings are not unique");
++                        }
++                    }
++                    else {
++                        Reply(501, "Error in channel settings");
++                    }
++                }
++                else {
++                    Reply(501, "Channel \"%d\" not defined", n);
++                }
++            }
++            else {
++                Reply(550, "Channels are being edited - try again later");
++            }
++        }
++        else {
++            Reply(501, "Error in channel number");
++        }
++    }
++    else {
++        Reply(501, "Missing channel settings");
++    }
++    EXIT_WRAPPER();
++}
++
++bool cConnectionVTP::CmdMOVC(const char *Option)
++{
++    INIT_WRAPPER();
++    if (*Option) {
++        if (!Channels.BeingEdited() && !Timers.BeingEdited()) {
++            char *tail;
++            int From = strtol(Option, &tail, 10);
++            if (tail && tail != Option) {
++                tail = skipspace(tail);
++                if (tail && tail != Option) {
++                    int To = strtol(tail, NULL, 10);
++                    int CurrentChannelNr = cDevice::CurrentChannel();
++                    cChannel *CurrentChannel = Channels.GetByNumber(CurrentChannelNr);
++                    cChannel *FromChannel = Channels.GetByNumber(From);
++                    if (FromChannel) {
++                        cChannel *ToChannel = Channels.GetByNumber(To);
++                        if (ToChannel) {
++                            int FromNumber = FromChannel->Number();
++                            int ToNumber = ToChannel->Number();
++                            if (FromNumber != ToNumber) {
++                                Channels.Move(FromChannel, ToChannel);
++                                Channels.ReNumber();
++                                Channels.SetModified(true);
++                                if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
++                                    if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring()) {
++                                        Channels.SwitchTo(CurrentChannel->Number());
++                                    }
++                                    else {
++                                        cDevice::SetCurrentChannel(CurrentChannel);
++                                    }
++                                }
++#ifdef USE_STREAMDEVEXT
++                               cStatus::MsgChannelChange(ToChannel, scMod);
++#endif
++                               isyslog("channel %d moved to %d", FromNumber, ToNumber);
++                               Reply(250,"Channel \"%d\" moved to \"%d\"", From, To);
++                            }
++                            else {
++                                Reply(501, "Can't move channel to same postion");
++                            }
++                        }
++                        else {
++                            Reply(501, "Channel \"%d\" not defined", To);
++                        }
++                    }
++                    else {
++                        Reply(501, "Channel \"%d\" not defined", From);
++                    }
++                }
++                else {
++                    Reply(501, "Error in channel number");
++                }
++            }
++            else {
++                Reply(501, "Error in channel number");
++            }
++        }
++        else {
++            Reply(550, "Channels or timers are being edited - try again later");
++        }
++    }
++    else {
++        Reply(501, "Missing channel number");
++    }
++    EXIT_WRAPPER();
++}
++
++bool cConnectionVTP::CmdDELC(const char *Option)
++{
++    INIT_WRAPPER();
++    if (*Option) {
++     if (isnumber(Option)) {
++        if (!Channels.BeingEdited()) {
++           cChannel *channel = Channels.GetByNumber(strtol(Option, NULL, 10));
++           if (channel) {
++              for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer)) {
++                  if (timer->Channel() == channel) {
++                     Reply(550, "Channel \"%s\" is in use by timer %d", Option, timer->Index() + 1);
++                     return false;
++                     }
++                  }
++              int CurrentChannelNr = cDevice::CurrentChannel();
++              cChannel *CurrentChannel = Channels.GetByNumber(CurrentChannelNr);
++              if (CurrentChannel && channel == CurrentChannel) {
++                 int n = Channels.GetNextNormal(CurrentChannel->Index());
++                 if (n < 0)
++                    n = Channels.GetPrevNormal(CurrentChannel->Index());
++                 CurrentChannel = Channels.Get(n);
++                 CurrentChannelNr = 0; // triggers channel switch below
++                 }
++              Channels.Del(channel);
++              Channels.ReNumber();
++              Channels.SetModified(true);
++              isyslog("channel %s deleted", Option);
++#ifdef USE_STREAMDEVEXT
++              cStatus::MsgChannelChange(NULL, scDel);
++#endif
++              if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
++                 if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
++                    Channels.SwitchTo(CurrentChannel->Number());
++                 else
++                    cDevice::SetCurrentChannel(CurrentChannel);
++                 }
++              Reply(250, "Channel \"%s\" deleted", Option);
++              }
++           else
++              Reply(501, "Channel \"%s\" not defined", Option);
++           }
++        else
++           Reply(550, "Channels are being edited - try again later");
++        }
++     else
++        Reply(501, "Error in channel number \"%s\"", Option);
++    }
++    else {
++        Reply(501, "Missing channel number");
++    }
++    EXIT_WRAPPER();
++}
++
++bool cConnectionVTP::CmdMARK(const char *Option)
++{
++    INIT_WRAPPER();
++    if (*Option) {
++        if (isnumber(Option)) {
++            cMarks Marks;
++            Recordings.Load();
++            cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
++            if (recording) {
++                Marks.Load(recording->FileName());
++                if (Marks.Count()) {
++                  const cMark *m = Marks.First();
++                  do
++                  {
++                    Reply(Marks.Next(m) ? -250 : 250, "%i frame position", m->position);
++                    m = Marks.Next(m);
++                   } while (m);
++                }
++                else {
++                    Reply(550, "No cutting marks defined");
++                }
++            }
++            else {
++                Reply(550, "Recording \"%s\" not found%s", Option, Recordings.Count() ? "" : " (use LSTR before deleting)");
++            }
++        }
++        else {
++            Reply(501, "Error in channel number \"%s\"", Option);
++        }
++    }
++    else {
++        Reply(501, "Missing recording number");
++    }
++    EXIT_WRAPPER();
++}
++
++bool cConnectionVTP::CmdFRAM(const char *Option)
++{
++    INIT_WRAPPER();
++    if (*Option) {
++        char *tail;
++        int recording = strtol(Option, &tail, 10);
++        if (tail && tail != Option) {
++            tail = skipspace(tail);
++            if (tail && tail != Option) {
++                uint64_t position = strtoll(tail, NULL, 10);
++
++                if (m_RecPlayer) {
++                    long retval = m_RecPlayer->frameNumberFromPosition(position);
++                    Reply(250,"Frame %lu", retval);
++                }
++                else {
++                    Reply(501, "No recording running");
++                }
++            }
++            else {
++                Reply(501, "Error in recording number");
++            }
++        }
++        else {
++            Reply(501, "Error in recording number");
++        }
++    }
++    else {
++        Reply(501, "Missing recording number");
++    }
++    EXIT_WRAPPER();
++}
+ 
+ bool cConnectionVTP::Respond(int Code, const char *Message, ...)
+ {
+@@ -1066,3 +1711,41 @@
+ 	                                  Code < 0 ? -Code : Code,
+ 									  Code < 0 ? '-' : ' ', buffer);
+ }
++/*
++void cConnectionVTP::TimerChange(const cTimer *Timer, eTimerChange Change)
++{
++    if (m_DataSocket) {
++        char buf[MAX_RESPONSE_SIZE];
++        if (Change == tcMod) {
++            snprintf(buf, MAX_RESPONSE_SIZE, "MODT %s\0", Timer ? *Timer->ToText(true) : "-");
++        }
++        if (Change == tcAdd) {
++            snprintf(buf, MAX_RESPONSE_SIZE, "ADDT %s\0", Timer ? *Timer->ToText(true) : "-");
++        }
++        if (Change == tcDel) {
++            snprintf(buf, MAX_RESPONSE_SIZE, "DELT %s\0", Timer ? *Timer->ToText(true) : "-");
++        }
++
++        m_DataSocket->SysWrite(buf, strlen(buf));
++    }
++}
++*/
++#ifdef USE_STREAMDEVEXT
++void cConnectionVTP::ChannelChange(const cChannel *Channel, eStatusChange Change)
++{
++    if (m_DataSocket) {
++        char buf[MAX_RESPONSE_SIZE];
++        if (Change == scMod) {
++            snprintf(buf, MAX_RESPONSE_SIZE, "MODC %s\0", Channel ? *Channel->ToText() : "-");
++        }
++        if (Change == scAdd) {
++            snprintf(buf, MAX_RESPONSE_SIZE, "ADDC %s\0", Channel ? *Channel->ToText() : "-");
++        }
++        if (Change == scDel) {
++            snprintf(buf, MAX_RESPONSE_SIZE, "DELC %s\0", Channel ? *Channel->ToText() : "-");
++        }
++
++        m_DataSocket->SysWrite(buf, strlen(buf));
++    }
++}
++#endif /* STREAMDEVEXT */
+diff -NaurwB streamdev/server/connectionVTP.h streamdev2/server/connectionVTP.h
+--- streamdev/server/connectionVTP.h	2008-07-16 08:00:48.000000000 +0200
++++ streamdev2/server/connectionVTP.h	2009-06-13 01:04:50.000000000 +0200
+@@ -2,6 +2,8 @@
+ #define VDR_STREAMDEV_SERVERS_CONNECTIONVTP_H
+ 
+ #include "server/connection.h"
++#include "server/recplayer.h"
++#include <vdr/status.h>
+ 
+ class cTBSocket;
+ class cStreamdevLiveStreamer;
+@@ -10,7 +12,8 @@
+ class cLSTCHandler;
+ class cLSTTHandler;
+ 
+-class cConnectionVTP: public cServerConnection {
++class cConnectionVTP: public cServerConnection
++                    , public cStatus {
+ 	friend class cLSTEHandler;
+ #if !defined __GNUC__ || __GNUC__ >= 3
+ 	using cServerConnection::Respond;
+@@ -21,10 +24,13 @@
+ 	cStreamdevLiveStreamer   *m_LiveStreamer;
+ 	cTBSocket                *m_FilterSocket;
+ 	cStreamdevFilterStreamer *m_FilterStreamer;
++	cTBSocket                *m_RecSocket;
++	cTBSocket                *m_DataSocket;
+ 
+ 	char                   *m_LastCommand;
+ 	eStreamType             m_StreamType;
+ 	bool                    m_FiltersSupport;
++	RecPlayer              *m_RecPlayer;
+ 
+ 	// Members adopted for SVDRP
+ 	cRecordings Recordings;
+@@ -36,6 +42,11 @@
+ 	template<class cHandler>
+ 	bool CmdLSTX(cHandler *&Handler, char *Option);
+ 
++//	virtual void TimerChange(const cTimer *Timer, eTimerChange Change);
++#ifdef USE_STREAMDEVEXT
++    virtual void ChannelChange(const cChannel *Channel, eStatusChange Change);
++#endif /* STREAMDEVEXT */
++
+ public:
+ 	cConnectionVTP(void);
+ 	virtual ~cConnectionVTP();
+@@ -51,7 +62,9 @@
+ 	bool CmdCAPS(char *Opts);
+ 	bool CmdPROV(char *Opts);
+ 	bool CmdPORT(char *Opts);
++	bool CmdREAD(char *Opts);
+ 	bool CmdTUNE(char *Opts);
++	bool CmdPLAY(char *Opts);
+ 	bool CmdADDP(char *Opts);
+ 	bool CmdDELP(char *Opts);
+ 	bool CmdADDF(char *Opts);
+@@ -66,12 +79,23 @@
+ 	bool CmdLSTT(char *Opts);
+ 
+ 	// Commands adopted from SVDRP
++	bool CmdSTAT(const char *Option);
+ 	bool CmdMODT(const char *Option);
+ 	bool CmdNEWT(const char *Option);
+ 	bool CmdDELT(const char *Option);
+-
+-	//bool CmdLSTR(char *Opts);
+-	//bool CmdDELR(char *Opts);
++	bool CmdNEXT(const char *Option);
++	bool CmdNEWC(const char *Option);
++	bool CmdMODC(const char *Option);
++	bool CmdMOVC(const char *Option);
++	bool CmdDELC(const char *Option);
++	bool CmdMARK(const char *Option);
++	bool CmdFRAM(const char *Option);
++
++    bool CmdLSTR(char *Opts);
++    bool CmdDELR(char *Opts);
++#if defined(USE_LIEMIKUUTIO) || defined(USE_LIEMIEXT)
++    bool CmdRENR(char *Opts);
++#endif
+ 
+ 	bool Respond(int Code, const char *Message, ...)
+ 			__attribute__ ((format (printf, 3, 4)));
+diff -NaurwB streamdev/server/recplayer.c streamdev2/server/recplayer.c
+--- streamdev/server/recplayer.c	1970-01-01 01:00:00.000000000 +0100
++++ streamdev2/server/recplayer.c	2009-06-13 00:58:46.000000000 +0200
+@@ -0,0 +1,288 @@
++/*
++    Copyright 2004-2005 Chris Tallon
++
++    This file is part of VOMP.
++    and adopted for streamdev to play recordings
++
++    VOMP is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    VOMP is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with VOMP; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
++*/
++
++#include "recplayer.h"
++
++#define _XOPEN_SOURCE 600
++#include <fcntl.h>
++
++RecPlayer::RecPlayer(cRecording* rec)
++{
++  file = NULL;
++  fileOpen = 0;
++  lastPosition = 0;
++  recording = rec;
++  for(int i = 1; i < 1000; i++) segments[i] = NULL;
++
++  // FIXME find out max file path / name lengths
++
++#if VDRVERSNUM >= 10703
++  indexFile = new cIndexFile(recording->FileName(), false, rec->IsPesRecording());
++#else
++  indexFile = new cIndexFile(recording->FileName(), false);
++#endif
++  if (!indexFile) esyslog("ERROR: Streamdev: Failed to create indexfile!");
++
++  scan();
++}
++
++void RecPlayer::scan()
++{
++  if (file) fclose(file);
++  totalLength = 0;
++  fileOpen = 0;
++  totalFrames = 0;
++
++  int i = 1;
++  while(segments[i++]) delete segments[i];
++
++  char fileName[2048];
++  for(i = 1; i < 1000; i++)
++  {
++
++#if APIVERSNUM < 10703
++    snprintf(fileName, 2047, "%s/%03i.vdr", recording->FileName(), i);
++    //log->log("RecPlayer", Log::DEBUG, "FILENAME: %s", fileName);
++    file = fopen(fileName, "r");
++#else
++    snprintf(fileName, 2047, "%s/%05i.ts", recording->FileName(), i);
++    file = fopen(fileName, "r");
++    if (!file) {
++      snprintf(fileName, 2047, "%s/%03i.vdr", recording->FileName(), i);
++      file = fopen(fileName, "r");
++    }
++#endif
++    if (!file) break;
++
++    segments[i] = new Segment();
++    segments[i]->start = totalLength;
++    fseek(file, 0, SEEK_END);
++    totalLength += ftell(file);
++    totalFrames = indexFile->Last();
++    //log->log("RecPlayer", Log::DEBUG, "File %i found, totalLength now %llu, numFrames = %lu", i, totalLength, totalFrames);
++    segments[i]->end = totalLength;
++    fclose(file);
++  }
++
++  file = NULL;
++}
++
++RecPlayer::~RecPlayer()
++{
++  //log->log("RecPlayer", Log::DEBUG, "destructor");
++  int i = 1;
++  while(segments[i++]) delete segments[i];
++  if (file) fclose(file);
++}
++
++int RecPlayer::openFile(int index)
++{
++  if (file) fclose(file);
++
++  char fileName[2048];
++
++#if APIVERSNUM >= 10703
++  snprintf(fileName, 2047, "%s/%05i.ts", recording->FileName(), index);
++  isyslog("openFile called for index %i string:%s", index, fileName);
++
++  file = fopen(fileName, "r");
++  if (file)
++  {
++    fileOpen = index;
++    return 1;
++  }
++#endif
++
++  snprintf(fileName, 2047, "%s/%03i.vdr", recording->FileName(), index);
++  isyslog("openFile called for index %i string:%s", index, fileName);
++  //log->log("RecPlayer", Log::DEBUG, "openFile called for index %i string:%s", index, fileName);
++
++  file = fopen(fileName, "r");
++  if (file)
++  {
++    fileOpen = index;
++    return 1;
++  }
++
++  //log->log("RecPlayer", Log::DEBUG, "file failed to open");
++  fileOpen = 0;
++  return 0;
++}
++
++uint64_t RecPlayer::getLengthBytes()
++{
++  return totalLength;
++}
++
++uint32_t RecPlayer::getLengthFrames()
++{
++  return totalFrames;
++}
++
++unsigned long RecPlayer::getBlock(unsigned char* buffer, uint64_t position, unsigned long amount)
++{
++  if ((amount > totalLength) || (amount > 500000))
++  {
++    //log->log("RecPlayer", Log::DEBUG, "Amount %lu requested and rejected", amount);
++    return 0;
++  }
++
++  if (position >= totalLength)
++  {
++    //log->log("RecPlayer", Log::DEBUG, "Client asked for data starting past end of recording!");
++    return 0;
++  }
++
++  if ((position + amount) > totalLength)
++  {
++    //log->log("RecPlayer", Log::DEBUG, "Client asked for some data past the end of recording, adjusting amount");
++    amount = totalLength - position;
++  }
++
++  // work out what block position is in
++  int segmentNumber;
++  for(segmentNumber = 1; segmentNumber < 1000; segmentNumber++)
++  {
++    if ((position >= segments[segmentNumber]->start) && (position < segments[segmentNumber]->end)) break;
++    // position is in this block
++  }
++
++  // we could be seeking around
++  if (segmentNumber != fileOpen)
++  {
++    if (!openFile(segmentNumber)) return 0;
++  }
++
++  uint64_t currentPosition = position;
++  uint32_t yetToGet = amount;
++  uint32_t got = 0;
++  uint32_t getFromThisSegment = 0;
++  uint32_t filePosition;
++
++  while(got < amount)
++  {
++    if (got)
++    {
++      // if(got) then we have already got some and we are back around
++      // advance the file pointer to the next file
++      if (!openFile(++segmentNumber)) return 0;
++    }
++
++    // is the request completely in this block?
++    if ((currentPosition + yetToGet) <= segments[segmentNumber]->end)
++      getFromThisSegment = yetToGet;
++    else
++      getFromThisSegment = segments[segmentNumber]->end - currentPosition;
++
++    filePosition = currentPosition - segments[segmentNumber]->start;
++    fseek(file, filePosition, SEEK_SET);
++    if (fread(&buffer[got], getFromThisSegment, 1, file) != 1) return 0; // umm, big problem.
++
++    // Tell linux not to bother keeping the data in the FS cache
++    posix_fadvise(file->_fileno, filePosition, getFromThisSegment, POSIX_FADV_DONTNEED);
++
++    got += getFromThisSegment;
++    currentPosition += getFromThisSegment;
++    yetToGet -= getFromThisSegment;
++  }
++
++  lastPosition = position;
++  return got;
++}
++
++uint64_t RecPlayer::getLastPosition()
++{
++  return lastPosition;
++}
++
++cRecording* RecPlayer::getCurrentRecording()
++{
++  return recording;
++}
++
++uint64_t RecPlayer::positionFromFrameNumber(uint32_t frameNumber)
++{
++  if (!indexFile) return 0;
++
++#if VDRVERSNUM >= 10703
++  uint16_t retFileNumber;
++  off_t retFileOffset;
++#else
++  uchar retFileNumber;
++  int retFileOffset;
++#endif
++
++  if (!indexFile->Get((int)frameNumber, &retFileNumber, &retFileOffset))
++  {
++    return 0;
++  }
++
++//  log->log("RecPlayer", Log::DEBUG, "FN: %u FO: %i", retFileNumber, retFileOffset);
++  if (!segments[retFileNumber]) return 0;
++  uint64_t position = segments[retFileNumber]->start + retFileOffset;
++//  log->log("RecPlayer", Log::DEBUG, "Pos: %llu", position);
++
++  return position;
++}
++
++uint32_t RecPlayer::frameNumberFromPosition(uint64_t position)
++{
++  if (!indexFile) return 0;
++
++  if (position >= totalLength)
++  {
++    //log->log("RecPlayer", Log::DEBUG, "Client asked for data starting past end of recording!");
++    return 0;
++  }
++
++  uint8_t segmentNumber;
++  for(segmentNumber = 1; segmentNumber < 255; segmentNumber++)
++  {
++    if ((position >= segments[segmentNumber]->start) && (position < segments[segmentNumber]->end)) break;
++    // position is in this block
++  }
++  uint32_t askposition = position - segments[segmentNumber]->start;
++  return indexFile->Get((int)segmentNumber, askposition);
++
++}
++
++
++bool RecPlayer::getNextIFrame(uint32_t frameNumber, uint32_t direction, uint64_t* rfilePosition, uint32_t* rframeNumber, uint32_t* rframeLength)
++{
++  // 0 = backwards
++  // 1 = forwards
++
++  if (!indexFile) return false;
++
++  int iframeLength;
++  int indexReturnFrameNumber;
++
++  indexReturnFrameNumber = (uint32_t)indexFile->GetNextIFrame(frameNumber, (direction==1 ? true : false), NULL, NULL, &iframeLength);
++  //log->log("RecPlayer", Log::DEBUG, "GNIF input framenumber:%lu, direction=%lu, output:framenumber=%i, framelength=%i", frameNumber, direction, indexReturnFrameNumber, iframeLength);
++
++  if (indexReturnFrameNumber == -1) return false;
++
++  *rfilePosition = positionFromFrameNumber(indexReturnFrameNumber);
++  *rframeNumber = (uint32_t)indexReturnFrameNumber;
++  *rframeLength = (uint32_t)iframeLength;
++
++  return true;
++}
+diff -NaurwB streamdev/server/recplayer.h streamdev2/server/recplayer.h
+--- streamdev/server/recplayer.h	1970-01-01 01:00:00.000000000 +0100
++++ streamdev2/server/recplayer.h	2009-06-13 00:58:46.000000000 +0200
+@@ -0,0 +1,63 @@
++/*
++    Copyright 2004-2005 Chris Tallon
++
++    This file is part of VOMP.
++
++    VOMP is free software; you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++    the Free Software Foundation; either version 2 of the License, or
++    (at your option) any later version.
++
++    VOMP is distributed in the hope that it will be useful,
++    but WITHOUT ANY WARRANTY; without even the implied warranty of
++    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++    GNU General Public License for more details.
++
++    You should have received a copy of the GNU General Public License
++    along with VOMP; if not, write to the Free Software
++    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
++*/
++
++#ifndef RECPLAYER_H
++#define RECPLAYER_H
++
++#include <stdio.h>
++#include <vdr/recording.h>
++
++#include "server/streamer.h"
++
++class Segment
++{
++  public:
++    uint64_t start;
++    uint64_t end;
++};
++
++class RecPlayer
++{
++  public:
++    RecPlayer(cRecording* rec);
++    ~RecPlayer();
++    uint64_t getLengthBytes();
++    uint32_t getLengthFrames();
++    unsigned long getBlock(unsigned char* buffer, uint64_t position, unsigned long amount);
++    int openFile(int index);
++    uint64_t getLastPosition();
++    cRecording* getCurrentRecording();
++    void scan();
++    uint64_t positionFromFrameNumber(uint32_t frameNumber);
++    uint32_t frameNumberFromPosition(uint64_t position);
++    bool getNextIFrame(uint32_t frameNumber, uint32_t direction, uint64_t* rfilePosition, uint32_t* rframeNumber, uint32_t* rframeLength);
++
++  private:
++    cRecording* recording;
++    cIndexFile* indexFile;
++    FILE* file;
++    int fileOpen;
++    Segment* segments[1000];
++    uint64_t totalLength;
++    uint64_t lastPosition;
++    uint32_t totalFrames;
++};
++
++#endif
