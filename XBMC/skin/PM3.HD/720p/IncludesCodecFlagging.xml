@@ -41,6 +41,14 @@
 			<visible>substring(ListItem.VideoCodec,h264)</visible>
 		</control>
 		<control type="image">
+			<description>avc1 Codec Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/avc1.png</texture>
+			<visible>substring(ListItem.VideoCodec,avc1)</visible>
+		</control>
+		<control type="image">
 			<description>mp3 Codec Image</description>
 			<width>90</width>
 			<height>33</height>
@@ -63,6 +71,14 @@
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/audio/ac3.png</texture>
 			<visible>substring(ListItem.AudioCodec,ac3) + !substring(ListItem.AudioChannels,6)</visible>
+		</control>
+		<control type="image">
+			<description>aac Image</description>
+			<width>45</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/audio/aac.png</texture>
+			<visible>substring(ListItem.AudioCodec,aac)</visible>
 		</control>
 		<control type="image">
 			<description>Dolby Digital Image</description>
@@ -95,6 +111,13 @@
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/audio/7_1.png</texture>
 			<visible>substring(ListItem.AudioChannels,8)</visible>
+		</control>
+		<control type="image">
+			<description>Aspectratio Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>$INFO[ListItem.VideoAspect,flagging/aspectratio/,.png]</texture>
 		</control>
 	</include>
 </includes>
