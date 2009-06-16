@@ -396,7 +396,6 @@ class CDateTime;
 #define FANART_COLOR3               1002
 #define FANART_IMAGE                1003
 
-#define PVR_IS_CONNECTED            1100
 #define PVR_IS_RECORDING            1101
 #define PVR_HAS_TIMER               1102
 #define PVR_NEXT_RECORDING_CHANNEL  1103

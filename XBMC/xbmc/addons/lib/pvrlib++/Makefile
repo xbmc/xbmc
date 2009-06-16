@@ -1,4 +1,4 @@
-INCLUDES=-I.  -I../../.. -I../../include -I../../../utils -I..
+INCLUDES=-I.  -I../../.. -I../../include -I../../../utils -I.. -I../../../linux -I../../../../guilib
 CFLAGS+= -fPIC
 CXXFLAGS+= -fPIC
 SRCS = xbmc_pvr_lib++.cpp \

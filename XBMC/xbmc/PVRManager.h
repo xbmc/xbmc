@@ -21,6 +21,7 @@
  */
 
 #include "utils/Thread.h"
+#include "utils/Addon.h"
 #include "FileItem.h"
 #include "TVDatabase.h"
 #include "pvrclients/IPVRClient.h"
@@ -31,7 +32,8 @@
 #include <vector>
 
 class CPVRManager : IPVRClientCallback
-                  , private CThread
+                  , public ADDON::IAddonCallback
+                  , private CThread 
 {
 public:
   CPVRManager();
@@ -52,10 +54,9 @@ public:
   static CPVRManager* GetInstance();
   unsigned long GetCurrentClientID() { return m_currentClientID; }
 
-  /* Server handling */
-  bool IsConnected();
-  bool IsSynchronized() { return m_synchronized; }
-  CURL GetConnString();
+  /* addon specific */
+  bool RequestRestart(const ADDON::CAddon* addon, bool datachanged);
+  ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
 
   /* Feature flags */
   bool SupportEPG();
@@ -65,9 +66,10 @@ public:
   bool SupportChannelSettings();
   bool SupportTeletext();
   bool SupportDirector();
+  
+  bool IsSynchronized() { return m_synchronized; }
 
   /* Event handling */
-  void        ConnectionLost() { LostConnection(); }
   void	      OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
   const char* TranslateInfo(DWORD dwInfo);
   static bool HasTimer() { return m_hasTimers;  }
@@ -157,9 +159,6 @@ public:
   bool RecordChannel(unsigned int channel, bool bOnOff, bool radio = false);
 
 protected:
-  bool ConnectClient();
-  void DisconnectClient();
-  void LostConnection();
 
 private:
   static CPVRManager   *m_instance;
@@ -167,7 +166,6 @@ private:
   PVR_SERVERPROPS       m_clientProps;  // store the properties of each client locally
   CTVDatabase           m_database;
   unsigned long         m_currentClientID;
-  bool                  m_bConnectionLost;
   bool                  m_synchronized;
 
   static bool         m_isPlayingTV;

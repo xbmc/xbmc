@@ -60,7 +60,6 @@ bool CPVRManager::m_hasTimers           = false;
 CPVRManager::CPVRManager()
 {
   /* Initialize Member variables */
-  m_bConnectionLost       = false;
   m_CurrentTVChannel      = 1;
   m_CurrentRadioChannel   = 1;
   m_CurrentChannelID      = -1;
@@ -91,37 +90,22 @@ void CPVRManager::Start()
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager starting");
 
-  /* Discover and load chosen client */
+  /* Discover, load and create chosen Client add-on's. */
+  CAddon::RegisterAddonCallback(ADDON_PVRDLL, this);
   m_client = LoadClient();
   if (!m_client)
   {
-    CLog::Log(LOGERROR, "PVR: couldn't load client");
+    CLog::Log(LOGERROR, "PVR: couldn't load clients");
     return;
   }
-
-  /* now that client have been initialized, we check connectivity */
-  if (!ConnectClient())
-  {
-    CLog::Log(LOGERROR, "PVR: couldn't connect client");
-    return;
-  }
-
-  /* Add client to TV-Database to identify different backend servers,
-   * if client is already added his id is given.
-   * Backend name have the following format: "NAME-IP:PORT", as example "VDR-192.168.0.120:2004"
-   */
-  m_database.Open();
-  CStdString ClientName;
-  ClientName.Format("%s-%s:%u", m_clientProps.Name, m_clientProps.Hostname, m_clientProps.Port);
-  m_currentClientID = m_database.AddClient(ClientName);
 
   /* Get channels if present from Database, otherwise load it from client
    * and add it to database
    */
   if (m_database.GetNumChannels(m_currentClientID) > 0)
   {
-    m_database.GetChannelList(m_currentClientID, &m_channels_tv, false);
-    m_database.GetChannelList(m_currentClientID, &m_channels_radio, true);
+    m_database.GetChannelList(m_currentClientID, m_channels_tv, false);
+    m_database.GetChannelList(m_currentClientID, m_channels_radio, true);
     m_HiddenChannels = m_database.GetNumHiddenChannels(m_currentClientID);
   }
   else
@@ -165,7 +149,7 @@ void CPVRManager::Start()
   SetName("PVRManager Updater");
   SetPriority(-15);
 
-  CLog::Log(LOGNOTICE, "PVR: PVRManager started. Client '%s' loaded with Id: %i", ClientName.c_str(), m_currentClientID);
+  CLog::Log(LOGNOTICE, "PVR: PVRManager started.");
   return;
 }
 
@@ -176,12 +160,10 @@ void CPVRManager::Stop()
 
   if (m_client)
   {
-    DisconnectClient();
     delete m_client;
     m_client = NULL;
   }
 
-  m_bConnectionLost       = false;
   m_CurrentTVChannel      = 1;
   m_CurrentRadioChannel   = 1;
   m_CurrentChannelID      = -1;
@@ -202,52 +184,34 @@ IPVRClient* CPVRManager::LoadClient()
   if (addons == NULL || addons->empty())
     return false;
 
+  m_database.Open();
+
+  /* load the clients */
   CPVRClientFactory factory;
   for (unsigned i=0; i<addons->size(); i++)
   {
-    CAddon &clientAddon = addons->at(i);
+    const CAddon& clientAddon = addons->at(i);
 
     if (clientAddon.m_disabled) // ignore disabled addons
       continue;
 
+    /* Add client to TV-Database to identify different backend types,
+     * if client is already added his id is given.
+     */
+    long clientID = m_database.AddClient(clientAddon.m_strName, clientAddon.m_guid);
+    if (clientID == -1)
+    {
+      CLog::Log(LOGERROR, "PVR: Can't Add/Get PVR Client '%s' to to TV Database", clientAddon.m_strName.c_str());
+      continue;
+    }
+
     /* Load the Client library's and inside them into Client list if
      * success. Client initialization is also performed during loading.
      */
-    IPVRClient *client = NULL;
-    client = factory.LoadPVRClient(clientAddon, i, this);
+    IPVRClient *client;
+    client = factory.LoadPVRClient(clientAddon, clientID, this);
     if (client)
     {
-      /* Transmit current unified user settings to the PVR Addon */
-      CAddonSettings settings;
-      settings.Load(clientAddon.m_strPath);
-
-      TiXmlElement *setting = settings.GetAddonRoot()->FirstChildElement("setting");
-      while (setting)
-      {
-        const char *type = setting->Attribute("type");
-        const char *id = setting->Attribute("id");
-        const char *value = settings.Get(id).c_str();
-
-        if (type)
-        {
-          if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0)
-          {
-            client->SetUserSetting(id, value);
-          }
-          else if (strcmpi(type, "integer") == 0)
-          {
-            int tmp = atoi(settings.Get(id));
-            client->SetUserSetting(id, (int*) &tmp);
-          }
-          if (strcmpi(type, "bool") == 0)
-          {
-            bool tmp = settings.Get(id) == "true" ? true : false;
-            client->SetUserSetting(id, (bool*) &tmp);
-          }
-        }
-        setting = setting->NextSiblingElement("setting");
-      }
-
       /* Get Standart client settings and features */
       if (client->GetProperties(&m_clientProps) != PVR_ERROR_NO_ERROR)
       {
@@ -393,95 +357,6 @@ void CPVRManager::RemoveInstance()
 
 
 /************************************************************/
-/** Server access */
-
-bool CPVRManager::ConnectClient()
-{
-  /* signal client to connect to backend */
-  PVR_ERROR err = m_client->Connect();
-  if (err == PVR_ERROR_NO_ERROR)
-    return true;
-  else if (err == PVR_ERROR_SERVER_WRONG_VERSION)
-    CGUIDialogOK::ShowAndGetInput(18100, 18091, 18106, 18092);
-  else
-    CGUIDialogOK::ShowAndGetInput(18100, 18091, 0, 18092);
-
-  CLog::Log(LOGERROR, "PVR: Could't connect client to backend server");
-  Stop();
-  return false;
-}
-
-void CPVRManager::DisconnectClient()
-{
-  /* signal client to disconnect from backend */
-  m_client->Disconnect();
-
-  return;
-}
-
-bool CPVRManager::IsConnected()
-{
-  if (m_client)
-  {
-    if (m_client->IsUp())
-    {
-      return true;
-    }
-  }
-
-//
-//  if (m_bConnectionLost)
-//  {
-//    /* If connection was lost, ask user to reconnect to backend */
-//    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-//
-//    if (pDialog)
-//    {
-//      pDialog->SetHeading(18090);
-//      pDialog->SetLine(0, 18093);
-//      pDialog->SetLine(1, "");
-//      pDialog->SetLine(2, 18094);
-//      pDialog->DoModal();
-//
-//      if (!pDialog->IsConfirmed())
-//      {
-//        return false;
-//      }
-//    }
-//  }
-//
-//  /* Try to reconnect */
-//  Stop();
-//
-//  Start();
-//
-//  /* If connection is ok, clear lost flag */
-//  if (m_client && m_client->IsUp())
-//  {
-//    m_bConnectionLost = false;
-//    return true;
-//  }
-
-  return false;
-}
-
-CURL CPVRManager::GetConnString()
-{
-  CURL connString;
-
-  /* set client connection string, for password and username
-   * only default values are given
-   */
-  connString.SetHostName(m_clientProps.Hostname);
-  connString.SetUserName(m_clientProps.DefaultUser);
-  connString.SetPassword(m_clientProps.DefaultPassword);
-  connString.SetPort(m_clientProps.Port);
-
-  return connString;
-}
-
-
-/************************************************************/
 /** Event handling */
 
 const char* CPVRManager::TranslateInfo(DWORD dwInfo)
@@ -545,6 +420,26 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     default:
       break;
   }
+}
+
+ADDON_STATUS CPVRManager::SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)
+{
+  if (!addon)
+    return STATUS_UNKNOWN;
+
+  CLog::Log(LOGINFO, "PVR: set setting of clientName: %s, settingName: %s", addon->m_strName.c_str(), settingName);
+  return m_client->SetSetting(settingName, settingValue);
+}
+
+bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
+{
+  if (!addon)
+    return false;
+
+  CLog::Log(LOGINFO, "PVR: requested restart of clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
+
+  m_client->ReInit();
+  return true;
 }
 
 
@@ -1186,7 +1081,6 @@ void CPVRManager::HideChannel(unsigned int number, bool radio)
       m_channels_tv[number-1].m_hide = true;
       m_channels_tv[number-1].m_EPG.erase(m_channels_tv[number-1].m_EPG.begin(), m_channels_tv[number-1].m_EPG.end());
       m_database.Open();
-      m_database.RemoveEPGEntries(m_currentClientID, m_channels_tv[number-1].m_iIdChannel, NULL, NULL);
       m_database.UpdateChannel(m_currentClientID, m_channels_tv[number-1]);
       m_HiddenChannels = m_database.GetNumHiddenChannels(m_currentClientID);
       m_database.Close();
@@ -1219,7 +1113,6 @@ void CPVRManager::HideChannel(unsigned int number, bool radio)
       m_channels_radio[number-1].m_hide = true;
       m_channels_radio[number-1].m_EPG.erase(m_channels_radio[number-1].m_EPG.begin(), m_channels_tv[number-1].m_EPG.end());
       m_database.Open();
-      m_database.RemoveEPGEntries(m_currentClientID, m_channels_radio[number-1].m_iIdChannel, NULL, NULL);
       m_database.UpdateChannel(m_currentClientID, m_channels_radio[number-1]);
       m_HiddenChannels = m_database.GetNumHiddenChannels(m_currentClientID);
       m_database.Close();
@@ -1637,7 +1530,6 @@ bool CPVRManager::DeleteRecording(unsigned int index)
     {
       /* print info dialog "Server error!" */
       CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0);
-      LostConnection();
     }
     else if (err == PVR_ERROR_NOT_SYNC)
     {
@@ -1673,7 +1565,6 @@ bool CPVRManager::RenameRecording(unsigned int index, CStdString &newname)
     {
       /* print info dialog "Server error!" */
       CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0);
-      LostConnection();
     }
     else if (err == PVR_ERROR_NOT_SYNC)
     {
@@ -1745,7 +1636,6 @@ bool CPVRManager::AddTimer(const CFileItem &item)
     {
       /* print info dialog "Server error!" */
       CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0);
-      LostConnection();
       return false;
     }
     else if (err == PVR_ERROR_NOT_SYNC)
@@ -1816,7 +1706,6 @@ bool CPVRManager::DeleteTimer(unsigned int index, bool force)
     {
       // print info dialog "Server error!"
       CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0);
-      LostConnection();
       return false;
     }
     else if (err == PVR_ERROR_NOT_SYNC)
@@ -1864,7 +1753,6 @@ bool CPVRManager::RenameTimer(unsigned int index, CStdString &newname)
     {
       /* print info dialog "Server error!" */
       CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0);
-      LostConnection();
       return false;
     }
     else if (err == PVR_ERROR_NOT_SYNC)
@@ -1913,7 +1801,6 @@ bool CPVRManager::UpdateTimer(const CFileItem &item)
     {
       /* print info dialog "Server error!" */
       CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0);
-      LostConnection();
       return false;
     }
     else if (err == PVR_ERROR_NOT_SYNC)
@@ -2811,16 +2698,6 @@ void CPVRManager::SyncInfo()
     m_nowRecordingDateTime.clear();
     m_nowRecordingChannel.clear();
   }
-}
-
-void CPVRManager::LostConnection()
-{
-  /* Set lost flag */
-  m_bConnectionLost = true;
-
-  /* And inform the user about the lost connection */
-  CGUIDialogOK::ShowAndGetInput(18090,0,18093,0);
-  return;
 }
 
 CTVChannelInfoTag *CPVRManager::GetChannelByNumber(int Number, bool radio, int SkipGap)

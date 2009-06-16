@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,20 +19,12 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "DynamicDll.h"
-#include "pvrclients/PVRClientTypes.h"
 
-class DllPVRClientInterface
+#include "../DllAddon.h"
+#include "../addons/include/xbmc_pvr_types.h"
+
+class DllPVRClient : public DllAddon<PVRClient>
 {
-public:
-  void GetAddon(struct PVRClient *pClient);
+  // this is populated via Macro calls in DllAddon.h
 };
 
-class DllPVRClient : public DllDynamic, DllPVRClientInterface
-{
-  DECLARE_DLL_WRAPPER_TEMPLATE(DllPVRClient)
-  DEFINE_METHOD1(void, GetAddon, (struct PVRClient* p1))
-  BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD_RENAME(get_addon,GetAddon)
-  END_METHOD_RESOLVE()
-};

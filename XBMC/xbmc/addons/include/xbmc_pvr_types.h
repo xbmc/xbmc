@@ -32,6 +32,10 @@
 //#define __declspec(x)
 #include <string.h>
 #include <time.h>
+#include "utils/TVEPGInfoTag.h"
+#include "utils/TVChannelInfoTag.h"
+#include "utils/TVRecordInfoTag.h"
+#include "utils/TVTimerInfoTag.h"
 #include "xbmc_addon_types.h"
 
 #ifdef __cplusplus
@@ -171,18 +175,38 @@ extern "C" {
     const char* (__cdecl* GetBackendVersion)();
     const char* (__cdecl* GetConnectionString)();
     PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
+    PVR_ERROR (__cdecl* GetEPGForChannel)(unsigned int number, EPG_DATA &epg, time_t start, time_t end);
+    PVR_ERROR (__cdecl* GetEPGNowInfo)(unsigned int number, CTVEPGInfoTag *result);
+    PVR_ERROR (__cdecl* GetEPGNextInfo)(unsigned int number, CTVEPGInfoTag *result);
     int (__cdecl* GetNumBouquets)();
     int (__cdecl* GetNumChannels)();
     int (__cdecl* GetNumRecordings)();
     int (__cdecl* GetNumTimers)();
-    PVR_ERROR (__cdecl* RequestChannelList)(PVRHANDLE handle);
-//    PVR_ERROR (__cdecl* GetBouquetInfo)(const unsigned number, PVR_BOUQUET *info);
-//    unsigned int (__cdecl* GetChannelList)(PVR_CHANNEL ***channels);
-//    PVR_ERROR (__cdecl* GetTimers)(PVR_ ***timers);
-//    PVR_ERROR (__cdecl* GetEPGForChannel)(const unsigned channel, PVR_PROGLIST **epg, time_t start, time_t end);
-//    PVR_ERROR (__cdecl* GetEPGNowInfo)(const unsigned channel, PVR_PROGINFO *result);
-//    PVR_ERROR (__cdecl* GetEPGNextInfo)(const unsigned channel, PVR_PROGINFO *result);
-//    PVR_ERROR (__cdecl* GetEPGDataEnd)(time_t *end);
+    PVR_ERROR (__cdecl* GetChannelList)(VECCHANNELS *channels, bool radio);
+    PVR_ERROR (__cdecl* GetChannelSettings)(CTVChannelInfoTag *result);
+    PVR_ERROR (__cdecl* UpdateChannelSettings)(const CTVChannelInfoTag &chaninfo);
+    PVR_ERROR (__cdecl* AddChannel)(const CTVChannelInfoTag &info);
+    PVR_ERROR (__cdecl* DeleteChannel)(unsigned int number);
+    PVR_ERROR (__cdecl* RenameChannel)(unsigned int number, CStdString &newname);
+    PVR_ERROR (__cdecl* MoveChannel)(unsigned int number, unsigned int newnumber);
+    PVR_ERROR (__cdecl* GetAllRecordings)(VECRECORDINGS *results);
+    PVR_ERROR (__cdecl* DeleteRecording)(const CTVRecordingInfoTag &recinfo);
+    PVR_ERROR (__cdecl* RenameRecording)(const CTVRecordingInfoTag &recinfo, CStdString &newname);
+    PVR_ERROR (__cdecl* GetAllTimers)(VECTVTIMERS *results);
+    PVR_ERROR (__cdecl* AddTimer)(const CTVTimerInfoTag &timerinfo);
+    PVR_ERROR (__cdecl* DeleteTimer)(const CTVTimerInfoTag &timerinfo, bool force);
+    PVR_ERROR (__cdecl* RenameTimer)(const CTVTimerInfoTag &timerinfo, CStdString &newname);
+    PVR_ERROR (__cdecl* UpdateTimer)(const CTVTimerInfoTag &timerinfo);
+    bool (__cdecl* OpenLiveStream)(unsigned int channel);
+    void (__cdecl* CloseLiveStream)();
+    int (__cdecl* ReadLiveStream)(BYTE* buf, int buf_size);
+    int (__cdecl* GetCurrentClientChannel)();
+    bool (__cdecl* SwitchChannel)(unsigned int channel);
+    bool (__cdecl* OpenRecordedStream)(const CTVRecordingInfoTag &recinfo);
+    void (__cdecl* CloseRecordedStream)(void);
+    int (__cdecl* ReadRecordedStream)(BYTE* buf, int buf_size);
+    __int64 (__cdecl* SeekRecordedStream)(__int64 pos, int whence);
+    __int64 (__cdecl* LengthRecordedStream)(void);
   } PVRClient;
 
 #ifdef __cplusplus

@@ -90,6 +90,7 @@ void CTVChannelInfoTag::Reset()
   m_endTime               = NULL;
   m_strFileNameAndPath    = "";
   m_strNextTitle          = "";
+  m_clientID              = -1;
 
   m_EPG.clear();
 

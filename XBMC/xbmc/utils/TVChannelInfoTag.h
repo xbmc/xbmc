@@ -217,6 +217,7 @@ public:
   int                 m_iChannelNum;          /// Channel number for channels on XBMC
   int                 m_iClientNum;           /// Channel number on client
   int                 m_iGroupID;             /// Channel group identfier
+  int                 m_clientID;
 
   CStdString          m_strChannel;           /// Channel name
 

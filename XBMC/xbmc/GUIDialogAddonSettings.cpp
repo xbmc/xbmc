@@ -181,7 +181,7 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CAddon& addon)
     if (pDialog->m_bConfirmed)
     {
       settings.Save();
-//      CAddonUtils::TransferAddonSettings(addon);
+      CAddonUtils::TransferAddonSettings(addon);
     }
   }
   else
