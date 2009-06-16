@@ -2399,7 +2399,7 @@ void CApplication::NewFrame()
   m_frameCount++;
   SDL_mutexV(m_frameMutex);
 
-  SDL_CondSignal(m_frameCond);
+  SDL_CondBroadcast(m_frameCond);
 #endif
 }
 
@@ -2473,7 +2473,7 @@ void CApplication::Render()
   if(m_frameCount > 0)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
-  SDL_CondSignal(m_frameCond);
+  SDL_CondBroadcast(m_frameCond);
 #endif
 }
 
