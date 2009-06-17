@@ -49,6 +49,22 @@
 			<visible>substring(ListItem.VideoCodec,avc1)</visible>
 		</control>
 		<control type="image">
+			<description>wvc1 Codec Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/wvc1.png</texture>
+			<visible>substring(ListItem.VideoCodec,wvc1)</visible>
+		</control>
+		<control type="image">
+			<description>mpeg1video Codec Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/mpeg1video.png</texture>
+			<visible>substring(ListItem.VideoCodec,mpeg1video)</visible>
+		</control>
+		<control type="image">
 			<description>mp3 Codec Image</description>
 			<width>90</width>
 			<height>33</height>
@@ -89,28 +105,19 @@
 			<visible>substring(ListItem.AudioCodec,ac3) + substring(ListItem.AudioChannels,6)</visible>
 		</control>
 		<control type="image">
-			<description>Audio 2.0 Image</description>
-			<width>45</width>
+			<description>WMA Pro Codec Image</description>
+			<width>90</width>
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
-			<texture>flagging/audio/2_0.png</texture>
-			<visible>substring(ListItem.AudioChannels,2)</visible>
+			<texture>flagging/audio/wmapro.png</texture>
+			<visible>substring(ListItem.AudioCodec,wmapro)</visible>
 		</control>
 		<control type="image">
-			<description>Audio 5.1 Image</description>
+			<description>Audio Channels Image</description>
 			<width>45</width>
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
-			<texture>flagging/audio/5_1.png</texture>
-			<visible>substring(ListItem.AudioChannels,6)</visible>
-		</control>
-		<control type="image">
-			<description>Audio 7.1 Image</description>
-			<width>45</width>
-			<height>33</height>
-			<aspectratio>keep</aspectratio>
-			<texture>flagging/audio/7_1.png</texture>
-			<visible>substring(ListItem.AudioChannels,8)</visible>
+			<texture>$INFO[ListItem.AudioChannels,flagging/audio/,.png]</texture>
 		</control>
 		<control type="image">
 			<description>Aspectratio Image</description>
