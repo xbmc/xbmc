@@ -2786,17 +2786,8 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 
 CStdString CDVDPlayer::GetPlayerState()
 {
-  if (!m_pInputStream) return "";
-
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-
-    std::string buffer;
-    if( pStream->GetNavigatorState(buffer) ) return buffer;
-  }
-
-  return "";
+  CSingleLock lock(m_StateSection);
+  return m_State.player_state;
 }
 
 bool CDVDPlayer::SetPlayerState(CStdString state)
@@ -2948,9 +2939,14 @@ void CDVDPlayer::UpdatePlayState(double timeout)
         m_State.time       = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime();
         m_State.time_total = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime();
       }
+      if(!((CDVDInputStreamNavigator*)m_pInputStream)->GetNavigatorState(m_State.player_state))
+        m_State.player_state = "";
     }
+    else
+        m_State.player_state = "";
 
-    else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
     {
       if(((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime() > 0)
       {

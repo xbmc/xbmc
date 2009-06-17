@@ -327,6 +327,7 @@ protected:
       timestamp     = 0;
       time          = 0;
       time_total    = 0;
+      player_state  = "";
       chapter       = 0;
       chapter_count = 0;
       canrecord     = false;
@@ -339,6 +340,8 @@ protected:
 
     double time;              // current playback time
     double time_total;        // total playback time
+
+    std::string player_state;  // full player state
 
     int         chapter;      // current chapter
     std::string chapter_name; // name of current chapter
