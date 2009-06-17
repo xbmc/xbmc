@@ -25,6 +25,7 @@
  
 #include "Addon.h"
 #include "../DllAddon.h"
+#include "log.h"
 
 namespace ADDON
 {
@@ -45,6 +46,76 @@ namespace ADDON
     T* m_pDll;
   };
 
-};
+template<class T>
+inline void CAddonDll<T>::Remove()
+{
+  /* Unload library file */
+  try
+  {
+    m_pDll->Unload();
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "ADDON: %s - exception '%s' during Remove occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
+  }
+}
 
+template<typename T>
+ADDON_STATUS CAddonDll<T>::GetStatus()
+{
+  try
+  {
+    return m_pDll->GetStatus();
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "ADDON: %s - exception '%s' during GetStatus occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
+  }
+  return STATUS_UNKNOWN;
+}
+
+template<typename T>
+bool CAddonDll<T>::HasSettings()
+{
+  try
+  {
+    return m_pDll->HasSettings();
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "ADDON:: %s - exception '%s' during HasSettings occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
+    return false;
+  }
+}
+
+template<typename T>
+bool CAddonDll<T>::GetSettings()
+{
+  try
+  {
+    return m_pDll->GetSettings();
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "ADDON:: %s - exception '%s' during GetSettings occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
+    return NULL;
+  }
+}
+
+template<typename T>
+ADDON_STATUS CAddonDll<T>::SetSetting(const char *settingName, const void *settingValue)
+{
+  try
+  {
+    return m_pDll->SetSetting(settingName, settingValue);
+  }
+  catch (std::exception &e)
+  {
+    CLog::Log(LOGERROR, "ADDON:: %s - exception '%s' during SetSetting occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
+    return STATUS_UNKNOWN;
+  }
+}
+
+}; /* namespace ADDON */
 #endif /* ADDON_DLL_H */
+
