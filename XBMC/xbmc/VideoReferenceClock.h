@@ -49,14 +49,14 @@ class CVideoReferenceClock : public CThread
   public:
     CVideoReferenceClock();
 
-    void   GetTime(LARGE_INTEGER *ptime);
-    void   GetFrequency(LARGE_INTEGER *pfreq);
-    void   SetSpeed(double Speed);
-    double GetSpeed();
-    int    GetRefreshRate();
-    void   Wait(int64_t Target);
-    bool   WaitStarted(int MSecs);
-    bool   GetClockInfo(int& MissedVblanks, double& ClockSpeed);
+    void    GetTime(LARGE_INTEGER *ptime);
+    void    GetFrequency(LARGE_INTEGER *pfreq);
+    void    SetSpeed(double Speed);
+    double  GetSpeed();
+    int     GetRefreshRate();
+    int64_t Wait(int64_t Target);
+    bool    WaitStarted(int MSecs);
+    bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed);
 
 #ifdef _WIN32
     void SetMonitor(MONITORINFOEX &Monitor);
