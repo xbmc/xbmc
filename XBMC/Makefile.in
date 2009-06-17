@@ -117,7 +117,8 @@ all : externals xbmc.bin xbmc-xrandr pm3tex pm3hdtex
 
 include Makefile.include
 
-.PHONY : dllloader exports visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force
+.PHONY : dllloader exports visualizations screensavers eventclients papcodecs \
+	dvdpcodecs imagelib codecs externals force pm3tex pm3hdtex
 
 # skin textures
 pm3tex: force
