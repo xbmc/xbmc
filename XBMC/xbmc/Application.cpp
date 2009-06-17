@@ -4677,7 +4677,7 @@ void CApplication::UpdateFileState()
       m_progressTrackingPlayCountUpdate = true;
     }
 
-    if (m_progressTrackingItem->IsVideo() && !m_progressTrackingItem->IsDVD() && !m_progressTrackingItem->IsDVDImage())
+    if (m_progressTrackingItem->IsVideo())
     {
       // Update bookmark for save
       m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
