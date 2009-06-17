@@ -1566,6 +1566,9 @@
 
   <string id="18028">Manage PVR clients</string>
 
+  <string id="18030">PVR information</string>
+  <string id="18031">PVR service</string>
+
   <string id="18048">Edit Channel Settings</string>
   <string id="18049">New Channel</string>
   <string id="18050">TV Guide</string>
@@ -1681,6 +1684,7 @@
   <string id="18205">Recordings:</string>
   <string id="18206">Timers:</string>
   <string id="18207">Enter the Timer Name</string>
+  <string id="18208">Client number:</string>
 
   <string id="18300">Mo-__-__-__-__-__-__</string>
   <string id="18301">__-Tu-__-__-__-__-__</string>

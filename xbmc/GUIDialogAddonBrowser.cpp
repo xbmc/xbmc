@@ -421,7 +421,7 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
       CAddon addon;
       if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
       {
-        //CAddon::GetCallbackForType(m_type)->RequestRemoval(&addon);
+        CAddon::GetCallbackForType(m_type)->RequestRemoval(&addon);
         g_settings.DisableAddon(addon.m_guid, m_type);
         m_changed = true;
         Update();

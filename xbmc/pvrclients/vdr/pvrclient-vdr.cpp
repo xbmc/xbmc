@@ -2530,7 +2530,7 @@ PVR_ERROR PVRClientVDR::GetAllRecordings(VECRECORDINGS *results)
     sprintf(buffer, "LSTR %d", (*it).m_Index);
     if (!m_transceiver->SendCommand(buffer, code, lines))
     {
-//      pthread_mutex_unlock(&m_critSection);
+      pthread_mutex_unlock(&m_critSection);
       return PVR_ERROR_SERVER_ERROR;
     }
 

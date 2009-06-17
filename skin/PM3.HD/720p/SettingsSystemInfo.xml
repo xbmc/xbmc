@@ -49,6 +49,12 @@
 					<include>ButtonCommonValues</include>
 					<label>13281</label>
 				</control>
+				<control type="button" id="99">
+					<description>Button PVR</description>
+					<include>ButtonCommonValues</include>
+					<label>18031</label>
+					<visible>System.GetBool(pvrmanager.enabled)</visible>
+				</control>
 			</control>
 		</control>
 		<control type="group">
