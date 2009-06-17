@@ -30,7 +30,7 @@
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/video/divx.png</texture>
-			<visible>substring(ListItem.VideoCodec,divx)</visible>
+			<visible>substring(ListItem.VideoCodec,divx) | substring(ListItem.VideoCodec,div3) |substring(ListItem.VideoCodec,div4) | substring(ListItem.VideoCodec,div5)</visible>
 		</control>
 		<control type="image">
 			<description>h264 Codec Image</description>
