@@ -34,9 +34,11 @@ CDirectSoundAdapter::CDirectSoundAdapter() :
   m_pRenderer(NULL),
   m_TotalBytesReceived(0),
   m_ChunkLen(0),
-  m_BytesPerFrame(0)
+  m_BytesPerFrame(0),
+  m_CurrentContainer(0)
 {
-
+  m_pContainer[0] = NULL;
+  m_pContainer[1] = NULL;
 }
 
 CDirectSoundAdapter::~CDirectSoundAdapter()
@@ -94,7 +96,9 @@ MA_RESULT CDirectSoundAdapter::SetInputFormat(CStreamDescriptor* pDesc, unsigned
   case MA_STREAM_FORMAT_IEC61937:
     if ((MA_SUCCESS == pAtts->GetInt(MA_ATT_TYPE_ENCODING,(int*)&encoding)) && (encoding == MA_STREAM_ENCODING_AC3 || encoding == MA_STREAM_ENCODING_DTS))
     {
-      m_pRenderer = CAudioRendererFactory::Create(NULL, 2, 48000, 16, false, "", false, true);
+      if (MA_SUCCESS != pAtts->GetInt(MA_ATT_TYPE_SAMPLERATE,(int*)&samplesPerSecond))
+        return MA_MISSING_ATTRIBUTE;
+      m_pRenderer = CAudioRendererFactory::Create(NULL, 2, samplesPerSecond, 16, false, "", false, true);
       break;
     }
   default:
@@ -153,37 +157,38 @@ bool CDirectSoundAdapter::Drain(unsigned int timeout)
 
 void CDirectSoundAdapter::Render()
 {
-static char remainder[12384];
-static unsigned int remainderLen = 0;
+  unsigned int frames = m_ChunkLen / m_BytesPerFrame;
+  if (m_ChunkLen % m_BytesPerFrame) // TODO: Check at init and error if not frame-aligned
+    frames++; // This should not happen. The renderer should know what the frame size is and honor it.
 
-  unsigned int frames = (m_ChunkLen - remainderLen) / m_BytesPerFrame;
-  if ((m_ChunkLen - remainderLen) % m_BytesPerFrame)
-    frames++;
-
-  ma_audio_container* pCont = ma_alloc_container(1, m_BytesPerFrame, frames);
-  //if (remainderLen)
-  //{
-  //  pCont->buffer[0].data = (char*)pCont->buffer[0].data + remainderLen;
-  //  frames--;
-  //}
+  unsigned int bytesToRender = frames * m_BytesPerFrame;
+  if (!m_pContainer[0] || m_pContainer[m_CurrentContainer]->buffer[0].allocated_len < bytesToRender)
+    ResizeContainers(1, m_BytesPerFrame, frames); // TODO: Do we need to copy remainder data first?
+  
   while (m_pRenderer->GetSpace() >= m_ChunkLen)
   {
-    if (MA_SUCCESS == m_pSource->Render(pCont, frames, 0, 0, m_SourceBus))
+    if (m_pContainer[m_CurrentContainer]->buffer[0].data_len) // There is data left from the last call
     {
-      //pCont->buffer[0].data_len += remainderLen;
-      unsigned long bytesUsed = m_pRenderer->AddPackets(pCont->buffer[0].data, pCont->buffer[0].data_len);
-      //if (bytesUsed < pCont->buffer[0].data_len)
-      //{
-      //  remainderLen = pCont->buffer[0].data_len - bytesUsed;
-      //  memcpy(remainder, (char*)pCont->buffer[0].data + bytesUsed, remainderLen);
-      //}
-      //else
-      //  remainderLen = 0;
+      unsigned int bytesNeeded = bytesToRender - m_pContainer[m_CurrentContainer]->buffer[0].data_len;
+      if (bytesNeeded)
+      {
+        if (MA_SUCCESS != m_pSource->Render(m_pContainer[1-m_CurrentContainer], bytesNeeded / m_BytesPerFrame, 0, 0, m_SourceBus)) // Read data into the 'other' container
+          break;
+        memcpy((unsigned char*)m_pContainer[m_CurrentContainer]->buffer[0].data + m_pContainer[m_CurrentContainer]->buffer[0].data_len, m_pContainer[1-m_CurrentContainer]->buffer[0].data, bytesNeeded);
+        m_pContainer[m_CurrentContainer]->buffer[0].data_len += m_pContainer[1-m_CurrentContainer]->buffer[0].data_len;
+        m_pContainer[1-m_CurrentContainer]->buffer[0].data_len = 0; // All done with this data
+      }
     }
-    else
+    else if (MA_SUCCESS != m_pSource->Render(m_pContainer[m_CurrentContainer], frames, 0, 0, m_SourceBus))
       break;
+
+    // Try to feed some data to the renderer
+    unsigned long bytesUsed = m_pRenderer->AddPackets(m_pContainer[m_CurrentContainer]->buffer[0].data, m_pContainer[m_CurrentContainer]->buffer[0].data_len);
+    if (bytesUsed < m_pContainer[m_CurrentContainer]->buffer[0].data_len) // Not all data was consumed by the renderer
+      ShiftData(bytesUsed);
+    else
+      m_pContainer[m_CurrentContainer]->buffer[0].data_len = 0; // All the data has been consumed
   }
-  ma_free_container(pCont);
 }
 
 // IRenderingControl
@@ -222,7 +227,6 @@ void CDirectSoundAdapter::SetVolume(long vol)
     m_pRenderer->SetCurrentVolume(vol);
 }
 
-// IMixerChannel
 void CDirectSoundAdapter::Close()
 {
   Flush();
@@ -232,4 +236,35 @@ void CDirectSoundAdapter::Close()
 
   delete m_pRenderer;
   m_pRenderer = NULL;
+
+  ma_free_container(m_pContainer[0]);
+  ma_free_container(m_pContainer[1]);
 }
+
+void CDirectSoundAdapter::ResizeContainers(unsigned int buffers, unsigned int bytesPerFrame, unsigned int framesPerBuffer)
+{
+  for (int i = 0; i < 2; i++)
+  {
+    ma_free_container(m_pContainer[i]);
+    m_pContainer[i] = ma_alloc_container(buffers, bytesPerFrame, framesPerBuffer);
+  }
+}
+
+void CDirectSoundAdapter::ShiftData(unsigned int shiftBytes)
+{
+  unsigned int newLen = m_pContainer[m_CurrentContainer]->buffer[0].data_len - shiftBytes;
+
+  unsigned char* pSrc = ((unsigned char*)m_pContainer[m_CurrentContainer]->buffer[0].data) + shiftBytes; 
+  if (newLen <= m_pContainer[m_CurrentContainer]->buffer[0].data_len/2) // See if the src and destination overlap
+  {
+    memcpy(m_pContainer[m_CurrentContainer]->buffer[0].data, pSrc, newLen); //  keep using the same container
+  }
+  else // Swap containers to improve shift speed
+  {
+    memcpy(m_pContainer[1-m_CurrentContainer]->buffer[0].data, pSrc, newLen); // Copy everything into the other container
+    m_pContainer[m_CurrentContainer]->buffer[0].data_len = 0;
+    m_CurrentContainer = 1 - m_CurrentContainer; // Flip the 'current container' index
+  } 
+  m_pContainer[m_CurrentContainer]->buffer[0].data_len = newLen;
+}
+

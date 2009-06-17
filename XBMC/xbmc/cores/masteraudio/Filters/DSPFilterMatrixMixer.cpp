@@ -49,6 +49,21 @@ int ma_layout_6ch[] = {MA_CHANNEL_FRONT_LEFT,    // 5.1
                        MA_CHANNEL_LFE,
                        MA_CHANNEL_REAR_LEFT,
                        MA_CHANNEL_REAR_RIGHT};
+int ma_layout_7ch[] = {MA_CHANNEL_FRONT_LEFT,    // 6.1
+                       MA_CHANNEL_FRONT_RIGHT,
+                       MA_CHANNEL_FRONT_CENTER,
+                       MA_CHANNEL_LFE,
+                       MA_CHANNEL_REAR_LEFT,
+                       MA_CHANNEL_REAR_RIGHT,
+                       MA_CHANNEL_REAR_CENTER};
+int ma_layout_8ch[] = {MA_CHANNEL_FRONT_LEFT,    // 7.1
+                       MA_CHANNEL_FRONT_RIGHT,
+                       MA_CHANNEL_FRONT_CENTER,
+                       MA_CHANNEL_LFE,
+                       MA_CHANNEL_REAR_LEFT,
+                       MA_CHANNEL_REAR_RIGHT,
+                       MA_CHANNEL_FRONT_LOC,
+                       MA_CHANNEL_FRONT_ROC};
 
 int* ma_default_layout[] = {NULL,
                             ma_layout_1ch,
@@ -56,7 +71,9 @@ int* ma_default_layout[] = {NULL,
                             ma_layout_3ch,
                             ma_layout_4ch,
                             ma_layout_5ch,
-                            ma_layout_6ch};
+                            ma_layout_6ch,
+                            ma_layout_7ch,
+                            ma_layout_8ch};
 
 CDSPFilterMatrixMixer::CDSPFilterMatrixMixer() :
   CDSPFilterLPCM(1,1),
@@ -89,7 +106,7 @@ MA_RESULT CDSPFilterMatrixMixer::SetInputFormat(CStreamDescriptor* pDesc, unsign
   if (!pAttribs->m_IsInterleaved ||
      (pAttribs->m_SampleType != MA_SAMPLE_TYPE_SINT) ||
      (pAttribs->m_BitDepth != 16) ||
-     (pAttribs->m_ChannelCount > 6))
+     (pAttribs->m_ChannelCount > 8))
      return MA_NOT_SUPPORTED;
 
   if (m_pInputLayout)
@@ -115,7 +132,7 @@ MA_RESULT CDSPFilterMatrixMixer::SetOutputFormat(CStreamDescriptor* pDesc, unsig
   if (!pAttribs->m_IsInterleaved ||
      (pAttribs->m_SampleType != MA_SAMPLE_TYPE_SINT) ||
      (pAttribs->m_BitDepth != 16) ||
-     (pAttribs->m_ChannelCount > 6))
+     (pAttribs->m_ChannelCount > MA_MAX_CHANNELS))
      return MA_NOT_SUPPORTED;
 
    if (m_pOutputLayout)
@@ -331,15 +348,15 @@ void CDSPFilterMatrixMixer::UpdateRouteList()
         break;
       case MA_CHANNEL_SIDE_LEFT:
         if (outMap[MA_CHANNEL_FRONT_LEFT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_FRONT_LEFT,chan,0.25f); routeCount++;}
-        if (outMap[MA_CHANNEL_REAR_LEFT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_FRONT_LEFT,chan,0.25f); routeCount++;}
+        if (outMap[MA_CHANNEL_REAR_LEFT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_REAR_LEFT,chan,0.25f); routeCount++;}
         break;
       case MA_CHANNEL_SIDE_RIGHT:
-        if (outMap[MA_CHANNEL_FRONT_RIGHT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_FRONT_LEFT,chan,0.25f); routeCount++;}
-        if (outMap[MA_CHANNEL_REAR_RIGHT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_FRONT_LEFT,chan,0.25f); routeCount++;}
+        if (outMap[MA_CHANNEL_FRONT_RIGHT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_FRONT_RIGHT,chan,0.25f); routeCount++;}
+        if (outMap[MA_CHANNEL_REAR_RIGHT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_REAR_RIGHT,chan,0.25f); routeCount++;}
         break;
       case MA_CHANNEL_REAR_CENTER:
-        if (outMap[MA_CHANNEL_REAR_LEFT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_FRONT_LEFT,chan,0.25f); routeCount++;}
-        if (outMap[MA_CHANNEL_REAR_RIGHT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_FRONT_LEFT,chan,0.25f); routeCount++;}
+        if (outMap[MA_CHANNEL_FRONT_LEFT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_FRONT_LEFT,chan,0.25f); routeCount++;}
+        if (outMap[MA_CHANNEL_FRONT_RIGHT] != MA_CHANNEL_NONE) {SET_COEFF(MA_CHANNEL_FRONT_RIGHT,chan,0.25f); routeCount++;}
         break;
       }
     }

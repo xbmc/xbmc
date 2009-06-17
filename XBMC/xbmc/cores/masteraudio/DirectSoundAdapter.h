@@ -55,12 +55,16 @@ public:
   void Render();
   
 protected:
+  void ResizeContainers(unsigned int buffers, unsigned int bytesPerFrame, unsigned int framesPerBuffer);
+  void ShiftData(unsigned int shiftBytes);
   IAudioSource* m_pSource;
   unsigned int m_SourceBus;
   size_t m_ChunkLen;
   IAudioRenderer* m_pRenderer;
   unsigned __int64 m_TotalBytesReceived;
   unsigned int m_BytesPerFrame;
+  ma_audio_container* m_pContainer[2];
+  int m_CurrentContainer;
 };
 
 #endif // __DIRECT_SOUND_ADAPTER_H__

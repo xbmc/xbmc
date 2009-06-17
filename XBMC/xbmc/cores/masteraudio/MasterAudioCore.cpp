@@ -182,7 +182,8 @@ void CHardwareMixer::CloseChannel(IRenderingAdapter* pChannel)
   if (!pChannel || !m_ActiveChannels)
     return;
 
-  pChannel->Close();  
+  m_ActiveChannels--;
+  pChannel->Close();
   delete pChannel;
 }
 
@@ -193,6 +194,25 @@ CStreamAttributeCollection::CStreamAttributeCollection()
 
 }
 
+CStreamAttributeCollection::CStreamAttributeCollection(const CStreamAttributeCollection& in)
+{
+  // Copy the attributes from the source object
+
+  // TODO: There has to be a better way to do this
+  std::map<MA_ATTRIB_ID,stream_attribute>::const_iterator iter;
+  for (iter = in.m_Attributes.begin(); iter != in.m_Attributes.end(); ++iter)
+  {
+    stream_attribute att = iter->second;
+    // Handle array and blob entries
+    if ((iter->second.type & stream_attribute_array) || (iter->second.type == stream_attribute_blob))
+    {
+      att.ptrVal = malloc(iter->second.dataLen); // Allocate the necessary space
+      memcpy(att.ptrVal, iter->second.ptrVal, iter->second.dataLen); // Copy the contained data
+    }
+    m_Attributes[iter->first] = att;
+  }
+}
+
 CStreamAttributeCollection::~CStreamAttributeCollection()
 {
   // Free BLOB and Array data (we allocated it)
@@ -200,6 +220,12 @@ CStreamAttributeCollection::~CStreamAttributeCollection()
   for (iter = m_Attributes.begin(); iter != m_Attributes.end(); ++iter)
     if ((iter->second.type & stream_attribute_array) || (iter->second.type == stream_attribute_blob))
       free(iter->second.ptrVal);
+}
+
+void CStreamAttributeCollection::FreeAttributeData(stream_attribute* pAtt)
+{
+  if ((pAtt->type & stream_attribute_array) || (pAtt->type == stream_attribute_blob))
+    free(pAtt->ptrVal);
 }
 
 MA_RESULT CStreamAttributeCollection::GetInt(MA_ATTRIB_ID id, int* pVal)
@@ -607,7 +633,12 @@ MA_RESULT CStreamAttributeCollection::SetArray(MA_ATTRIB_ID id, stream_attribute
 
 void CStreamAttributeCollection::Remove(MA_ATTRIB_ID id)
 {
-  // TODO: Implement
+  stream_attribute* pAtt = FindAttribute(id);
+  if (pAtt)
+  {
+    FreeAttributeData(pAtt);
+    m_Attributes.erase(id);
+  }
 }
 
 stream_attribute* CStreamAttributeCollection::FindAttribute(MA_ATTRIB_ID id)

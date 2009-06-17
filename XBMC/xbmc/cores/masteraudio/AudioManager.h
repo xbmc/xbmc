@@ -30,6 +30,7 @@
 #include "DSPChain.h"
 #include "AudioStream.h"
 #include <vector>
+#include <stack>
 #include "Thread.h"
 
 typedef void* MA_STREAM_ID;
@@ -52,8 +53,6 @@ public:
 protected:
   StreamDescriptorList m_DescriptorList; 
 };
-
-
 
 typedef std::map<MA_STREAM_ID,CAudioStream*>::iterator StreamIterator;
 
@@ -79,14 +78,14 @@ public:
   enum MessageClass
   {
   // ASync
-    ADD_DATA,
     FLUSH_STREAM,
     CONTROL_STREAM,
     CLOSE_STREAM,
     SET_STREAM_VOLUME,
     SET_STREAM_PARAMETER,
   // Sync
-    GET_STREAM_DELAY, // TODO: This needs to be synchronous, but cannot use a wait event as it is called too frequently
+    ADD_DATA,
+    GET_STREAM_DELAY, // TODO: This needs to be synchronous, but would rather not use a wait event as it is called too frequently
     GET_STREAM_PARAMETER,
     DRAIN_STREAM,
     ADD_STREAM
@@ -180,6 +179,16 @@ private:
   CCriticalSection m_Section;
 };
 
+class CAudioStreamFactory
+{
+public:
+  CAudioStreamFactory(IAudioMixer* pMixer);
+  virtual ~CAudioStreamFactory();
+  CAudioStream* Create(CStreamDescriptor* pInDesc);
+protected:
+  IAudioMixer* m_pMixer;
+};
+
 class CAudioManager
 {
 public:
@@ -202,15 +211,18 @@ protected:
   std::map<MA_STREAM_ID,CAudioStream*> m_StreamList;
   IAudioMixer* m_pMixer;
   unsigned int m_MaxStreams;
-  CAudioProfile m_DefaultProfile;
   bool m_Initialized;
+  CAudioStreamFactory* m_pStreamFactory;
 
-  void LoadAudioProfiles();
+  // Syncronization Event Queue
+  // TODO: Use a wait-free pool or thread-local storage
+  CCriticalSection m_SyncPoolLock;
+  std::stack<HANDLE> m_SyncHandlePool;
+
   CAudioStream* GetInputStream(MA_STREAM_ID streamId);
   MA_STREAM_ID GetStreamId(CAudioStream* pStream);
   int GetOpenStreamCount();
   void CleanupStreamResources(CAudioStream* pStream);
-  bool FindOutputDescriptors(CStreamDescriptor* pInputDesc, StreamDescriptorList* pList);
 
   CAudioManagerMessageQueue m_Queue;
   void PostMessage(CAudioManagerMessage* pMsg);

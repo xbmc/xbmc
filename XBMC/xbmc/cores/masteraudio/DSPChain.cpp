@@ -72,6 +72,8 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
   }
   else
   {
+    CStreamDescriptor workingDesc = *pInDesc;
+
     // TODO: Dynamically create DSP Filter Graph 
     // TODO: Link elements properly and link at end
     bool installTest = false;
@@ -82,8 +84,8 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
       dsp_filter_node* pPrev = m_pTail;
       m_pTail = new dsp_filter_node();
       m_pTail->filter = new CDSPFilterTest();
-      m_pTail->filter->SetInputFormat(pInDesc);
-      m_pTail->filter->SetOutputFormat(pInDesc); // This filter will not alter the format
+      m_pTail->filter->SetInputFormat(&workingDesc);
+      m_pTail->filter->SetOutputFormat(&workingDesc); // This filter will not alter the format
       filterChainText += " -> TestFilter";
       if (pPrev)
         m_pTail->filter->SetSource(pPrev->filter);
@@ -92,19 +94,19 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
     }
 
     unsigned int outputFormat = pOutDesc->GetFormat();
-    unsigned int inputFormat = pInDesc->GetFormat();
+    unsigned int inputFormat = workingDesc.GetFormat();
 
     // See if we need up/down-mixing or channel re-mapping
     unsigned int inChannels = 0;
     unsigned int outChannels = 0;
-    pInDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, &inChannels);
+    workingDesc.GetAttributes()->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, &inChannels);
     pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, &outChannels);
 
     int inLayout[MA_MAX_CHANNELS];
     int outLayout[MA_MAX_CHANNELS];
     memset(inLayout, 0, sizeof(int) * MA_MAX_CHANNELS);
     memset(outLayout, 0, sizeof(int) * MA_MAX_CHANNELS);
-    pInDesc->GetAttributes()->GetArray(MA_ATT_TYPE_CHANNEL_LAYOUT, stream_attribute_int, inLayout, sizeof(int) * MA_MAX_CHANNELS);
+    workingDesc.GetAttributes()->GetArray(MA_ATT_TYPE_CHANNEL_LAYOUT, stream_attribute_int, inLayout, sizeof(int) * MA_MAX_CHANNELS);
     pOutDesc->GetAttributes()->GetArray(MA_ATT_TYPE_CHANNEL_LAYOUT, stream_attribute_int, outLayout, sizeof(int) * MA_MAX_CHANNELS);
 
     if (((inChannels != outChannels || memcmp(inLayout, outLayout, sizeof(int) * MA_MAX_CHANNELS)) && outputFormat != MA_STREAM_FORMAT_IEC61937) ||
@@ -113,14 +115,14 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
       dsp_filter_node* pPrev = m_pTail;
       m_pTail = new dsp_filter_node();
       m_pTail->filter = new CDSPFilterMatrixMixer();
-      m_pTail->filter->SetInputFormat(pInDesc);
+      m_pTail->filter->SetInputFormat(&workingDesc);
 
       // Update input format to reflect conversion performed by filter
       if (outputFormat == MA_STREAM_FORMAT_IEC61937)
       {
         unsigned int ac3Channels = 6;
-        pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT, ac3Channels); // Update to reflect conversion performed by filter
-        pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, ac3Channels * 2); 
+        workingDesc.GetAttributes()->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT, ac3Channels); // Update to reflect conversion performed by filter
+        workingDesc.GetAttributes()->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, ac3Channels * 2); 
       }
       else
       {
@@ -128,10 +130,11 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
         unsigned int outputFrameSize = 0;
         pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, &outputChannels); // Get output channels
         pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, &outputFrameSize); // Get output frame size
-        pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT, outputChannels); // Update to reflect conversion performed by filter
-        pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, outputFrameSize); // Update to reflect conversion performed by filter
+        workingDesc.GetAttributes()->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT, outputChannels); // Update to reflect conversion performed by filter
+        workingDesc.GetAttributes()->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, outputFrameSize); // Update to reflect conversion performed by filter
+        workingDesc.GetAttributes()->Remove(MA_ATT_TYPE_CHANNEL_LAYOUT); // TODO: This is a bad way to handle this
       }
-      m_pTail->filter->SetOutputFormat(pInDesc);
+      m_pTail->filter->SetOutputFormat(&workingDesc);
       if (pPrev)
         m_pTail->filter->SetSource(pPrev->filter);
       if (!m_pHead)
@@ -142,16 +145,16 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
     // Resample if neccessary
     unsigned int inputSampleRate = 0;
     unsigned int outputSampleRate = 0;
-    pInDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_SAMPLERATE, &inputSampleRate);
+    workingDesc.GetAttributes()->GetUInt(MA_ATT_TYPE_SAMPLERATE, &inputSampleRate);
     pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_SAMPLERATE, &outputSampleRate);
     if (inputSampleRate != outputSampleRate)
     {
       dsp_filter_node* pPrev = m_pTail;
       m_pTail = new dsp_filter_node();
       m_pTail->filter = new CDSPFilterResampler();
-      m_pTail->filter->SetInputFormat(pInDesc);
-      pInDesc->GetAttributes()->SetUInt(MA_ATT_TYPE_SAMPLERATE, outputSampleRate); // Update to reflect conversion performed by filter
-      m_pTail->filter->SetOutputFormat(pInDesc);
+      m_pTail->filter->SetInputFormat(&workingDesc);
+      workingDesc.GetAttributes()->SetUInt(MA_ATT_TYPE_SAMPLERATE, outputSampleRate); // Update to reflect conversion performed by filter
+      m_pTail->filter->SetOutputFormat(&workingDesc);
       filterChainText += " -> Resampler";
       if (pPrev)
         m_pTail->filter->SetSource(pPrev->filter);
@@ -165,7 +168,7 @@ MA_RESULT CDSPChain::CreateFilterGraph(CStreamDescriptor* pInDesc, CStreamDescri
       dsp_filter_node* pPrev = m_pTail;
       m_pTail = new dsp_filter_node();
       m_pTail->filter = new CDSPFilterAC3Encoder();
-      m_pTail->filter->SetInputFormat(pInDesc);
+      m_pTail->filter->SetInputFormat(&workingDesc);
       m_pTail->filter->SetOutputFormat(pOutDesc);    
       filterChainText += " -> AC3Encoder";
       if (pPrev)

@@ -106,14 +106,13 @@ enum
   MA_CONTROL_RESUME  = 0x0004
 };
 
-typedef unsigned int MA_ATTRIB_ID;
 
 // TODO: Document Attributes and points of use
 
 ////////////////////////////////////////////////////////////////////////////////
 // Attribute Types
 ////////////////////////////////////////////////////////////////////////////////
-enum
+enum ma_attribute_type
 {
   // Each AudioStream must have the following attibutes set to be considered valid.
   MA_ATT_TYPE_STREAM_FLAGS,     // type: bitfield
@@ -132,6 +131,8 @@ enum
   // IEC61937(AC3/DTS over S/PDIF) Format Attributes
   MA_ATT_TYPE_ENCODING          // type: int
 };
+
+typedef unsigned int MA_ATTRIB_ID;
 
 // MA_ATT_TYPE_STREAM_FORMAT Values
 enum
@@ -277,7 +278,9 @@ class CStreamAttributeCollection
 {
 public:
   CStreamAttributeCollection();
+  CStreamAttributeCollection(const CStreamAttributeCollection& in);
   virtual ~CStreamAttributeCollection();
+
   MA_RESULT GetInt(MA_ATTRIB_ID id, int* pVal);
   MA_RESULT GetInt64(MA_ATTRIB_ID id, __int64* pVal);
   MA_RESULT GetUInt(MA_ATTRIB_ID id, unsigned int* pVal);
@@ -309,6 +312,7 @@ public:
 protected:
   std::map<MA_ATTRIB_ID,stream_attribute> m_Attributes;
   stream_attribute* FindAttribute(MA_ATTRIB_ID id);
+  void FreeAttributeData(stream_attribute* pAtt);
 };
 
 class CStreamDescriptor

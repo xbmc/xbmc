@@ -26,59 +26,107 @@
 // Global (ick) Instance
 CAudioManager g_AudioLibManager;
 
-
-///////////////////////////////////////////////////////////////////////////////
-// CAudioProfile
-///////////////////////////////////////////////////////////////////////////////
-CAudioProfile::CAudioProfile()
+// CAudioStreamFactory
+//////////////////////////////////////////////////////////////////////////////////
+CAudioStreamFactory::CAudioStreamFactory(IAudioMixer* pMixer) :
+  m_pMixer(pMixer)
 {
 
 }
 
-CAudioProfile::~CAudioProfile()
+CAudioStreamFactory::~CAudioStreamFactory()
 {
-  Clear();
+
 }
 
-void CAudioProfile::Clear()
+CAudioStream* CAudioStreamFactory::Create(CStreamDescriptor* pInDesc)
 {
-  for (StreamDescriptorList::iterator iter = m_DescriptorList.begin(); iter != m_DescriptorList.end(); iter++)
-    delete *iter; 
-  m_DescriptorList.clear();
-}
+  // This is all about identifying the output format. Input format is fixed.
+  CStreamDescriptor outputDesc = *pInDesc; // Start with a copy of the input descriptor
+  CStreamAttributeCollection* pOutAttribs = outputDesc.GetAttributes();
 
-unsigned int CAudioProfile::GetDescriptorCount()
-{
-  return m_DescriptorList.size();
-}
-
-CStreamDescriptor* CAudioProfile::GetDescriptor(unsigned int index)
-{
-  return m_DescriptorList[index];
-}
-
-bool CAudioProfile::GetDescriptors(int format, StreamDescriptorList* pList)
-{
-  if (!pList)
-    return false;
-
-  pList->clear();
-
-  // TODO: A map is probably better for this, but the list will likely be short anyway
-  for (StreamDescriptorList::iterator iter = m_DescriptorList.begin(); iter != m_DescriptorList.end(); iter++)
+  // For MA_STREAM_FORMAT_IEC61937, we can only pass-through
+  // For MA_STREAM_FORMAT_LPCM, we have a number of explicit changes. 
+  // We update the output format, and then see if the Transform Chain can handle it 
+  // TODO: Probe configuration for user-defined transforms for the given input format.
+  //  Define sets of transforms as modes or features
+  // TODO: Need a database-type format query mechanism.
+  if (pInDesc->GetFormat() == MA_STREAM_FORMAT_LPCM)
   {
-    if ((*iter)->GetFormat() == format)
-      pList->push_back(*iter);
+    bool ac3Encode = g_guiSettings.GetBool("audiooutput.ac3encode");
+    bool upmix = g_guiSettings.GetBool("audiooutput.upmix");
+    bool downmix = g_guiSettings.GetBool("audiooutput.downmixmultichannel");
+
+    // Resampling changes sample rate and may affect available channels, so handle it first
+    if (g_advancedSettings.m_musicResample && !ac3Encode)
+      pOutAttribs->SetUInt(MA_ATT_TYPE_SAMPLERATE, g_advancedSettings.m_musicResample);
+
+    // TODO: How many channels shoud we mix to?
+    unsigned int maxChannels = 8;
+    unsigned int bytesPerSample = 0;
+    if (MA_SUCCESS != pInDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_BITDEPTH, &bytesPerSample))
+      return NULL;
+
+    bytesPerSample /= 8;
+
+    // Downmixing decreases channel count
+    // TODO: How many channels shoud we mix to?
+    if (downmix) // Downmix takes precedence over upmix
+    {
+      int channelLayout[2] = {MA_CHANNEL_FRONT_LEFT, MA_CHANNEL_FRONT_RIGHT};
+      pOutAttribs->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT, 2);
+      pOutAttribs->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, bytesPerSample * 2);
+      pOutAttribs->SetArray(MA_ATT_TYPE_CHANNEL_LAYOUT, stream_attribute_int, 2, channelLayout);
+    }
+    // Upmixing increases channel count
+    // TODO: How many channels shoud we mix to?
+    else if (upmix)
+    {
+      pOutAttribs->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT, maxChannels);
+      pOutAttribs->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, bytesPerSample * maxChannels);
+    }
+
+    // Encoding changes the output format
+    if (ac3Encode)
+    {
+      // TODO: This only supports 48KHz
+      outputDesc.SetFormat(MA_STREAM_FORMAT_IEC61937);
+      pOutAttribs->SetUInt(MA_ATT_TYPE_ENCODING, MA_STREAM_ENCODING_AC3);
+      pOutAttribs->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME, 6144);
+      pOutAttribs->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC, 192000);
+      pOutAttribs->SetUInt(MA_ATT_TYPE_SAMPLERATE, 48000);
+    }
   }
-  return (pList->size() > 0);
+
+  // Open a mixer channel using the pre-constructed output format
+  // TODO: At the moment, if it is not supported, we simply fail
+  IRenderingAdapter* pRenderAdapter = m_pMixer->OpenChannel(&outputDesc);  // Virtual Mixer Channel
+  if (!pRenderAdapter)
+    return NULL;
+
+  CDSPChain* pChain = new CDSPChain();
+  // Attempt to create a compound Transform using the identified formats
+  if (MA_SUCCESS != pChain->CreateFilterGraph(pInDesc, &outputDesc))
+  {
+    m_pMixer->CloseChannel(pRenderAdapter);
+    delete pChain;
+    return NULL;
+  }
+
+  // We should be good to go. Wrap everything up in a new Stream object
+  CStreamInput* pInput = new CStreamInput();
+  CAudioStream* pStream = new CAudioStream();
+  if ((MA_SUCCESS != pInput->SetOutputFormat(pInDesc)) || (MA_SUCCESS != pStream->Initialize(pInput, pChain, pRenderAdapter)))
+  {
+    m_pMixer->CloseChannel(pRenderAdapter);
+    delete pChain;
+    delete pInput;
+    delete pStream;
+    return NULL;
+  }
+
+  return pStream;
 }
-
-void CAudioProfile::AddDescriptor(CStreamDescriptor* pDesc)
-{
-  m_DescriptorList.push_back(pDesc);
-}
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // CAudioManager
@@ -107,6 +155,13 @@ CAudioManager::~CAudioManager()
     }
   }
   delete m_pMixer;
+
+  // Clean up sync event pool
+  while (m_SyncHandlePool.size())
+  {
+    CloseHandle(m_SyncHandlePool.top());
+    m_SyncHandlePool.pop();
+  }
 }
 
 // TODO: This is not thread-safe, but will be OK until final integration
@@ -122,20 +177,23 @@ bool CAudioManager::Initialize()
 
 bool CAudioManager::SetMixerType(int mixerType)
 {
-  if (m_pMixer)
-    delete m_pMixer;
+  delete m_pMixer;
+  delete m_pStreamFactory;
 
   m_pMixer = NULL;
+  m_pStreamFactory = NULL;
 
   switch(mixerType)
   {
   case MA_MIXER_HARDWARE:
     m_pMixer = new CHardwareMixer(m_MaxStreams);
-    return true;
-  case MA_MIXER_SOFTWARE:
-  default:
-    return false;
+    break;
   }
+
+  if (m_pMixer)
+    m_pStreamFactory = new CAudioStreamFactory(m_pMixer);
+
+  return (m_pMixer != NULL);
 }
 
 // Thread-Safe Client Interface
@@ -145,9 +203,6 @@ MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc)
   if (!m_Initialized)
     Initialize();
 
-  // TODO: Move to global initialization. Keep here for now to pick-up changes to settings
-  LoadAudioProfiles();
-
   // Find out if we can handle an additional input stream, if not, give up
   if (!pDesc || m_StreamList.size() >= m_MaxStreams)
   {
@@ -155,67 +210,23 @@ MA_STREAM_ID CAudioManager::OpenStream(CStreamDescriptor* pDesc)
     return MA_STREAM_NONE;
   }
 
-  // TODO: RenderingAdapter should be provided TO the mixer, not come FROM it...
-  // Create components for a new AudioStream
-  CAudioStream* pStream = new CAudioStream();
-  CStreamInput* pInput = new CStreamInput();        // Input Handler
-  CDSPChain* pChain = new CDSPChain();              // DSP Handling Chain
   if (!m_pMixer)
     SetMixerType(MA_MIXER_HARDWARE);
-  IRenderingAdapter* renderAdapter = NULL;
-  while (m_pMixer)
-  {
-    // No need to test the StreamInput output format, as it treats all data the same. Provide it with the descriptor anyway.
-    if (MA_SUCCESS != pInput->SetOutputFormat(pDesc))
-      break;
 
-    StreamDescriptorList outputDescriptors;
-    if (!FindOutputDescriptors(pDesc, &outputDescriptors))
-      break; // We don't know what to do with this stream
-
-    CStreamDescriptor* pOutputDesc = NULL;
-    for (StreamDescriptorList::iterator iter = outputDescriptors.begin(); iter != outputDescriptors.end(); iter++)
-    {
-      // Open a mixer channel using the preferred format
-      renderAdapter = m_pMixer->OpenChannel(*iter);  // Virtual Mixer Channel
-      if (!renderAdapter)
-        continue; // TODO: Keep trying until a working format is found or we run out of options
-
-      // Attempt to create the DSP Filter Graph using the identified formats (TODO: Can this be updated on the fly?)
-      if (MA_SUCCESS != pChain->CreateFilterGraph(pDesc, *iter))
-        continue; // We cannot convert from the input format to the output format
-
-      pOutputDesc = *iter;
-      break;
-    }
-
-    if (!pOutputDesc)
-      break; // We were not able to find a usable output descriptor
-
-    // We should be good to go. Wrap everything up in a new Stream object
-    if (MA_SUCCESS != pStream->Initialize(pInput, pChain, renderAdapter))
-      break;
+  CAudioStream* pStream = m_pStreamFactory->Create(pDesc);
     
-    // Call into the service thread to add the new stream to our collection
-    MA_STREAM_ID streamId = GetStreamId(pStream);
-    CAudioManagerMessagePtr msg(streamId, CAudioManagerMessage::ADD_STREAM, pStream);
-    if (!CallMethodSync(&msg) || !msg.GetSyncData()->m_SyncResult.boolVal)
-      break;
-
-    CLog::Log(LOGINFO,"MasterAudio:AudioManager: Opened stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), m_MaxStreams);
-    return streamId;
+  // Call into the service thread to add the new stream to our collection
+  MA_STREAM_ID streamId = GetStreamId(pStream);
+  CAudioManagerMessagePtr msg(streamId, CAudioManagerMessage::ADD_STREAM, pStream);
+  if (!CallMethodSync(&msg) || !msg.GetSyncData()->m_SyncResult.boolVal)
+  {
+    delete pStream;
+    CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to open new stream (active_stream = %d, max_streams = %d).", GetOpenStreamCount(), m_MaxStreams);
+    return MA_STREAM_NONE;
   }
-
-  // Something went wrong.  Clean up and return.
-  pStream->Destroy();
-  if (m_pMixer)
-    m_pMixer->CloseChannel(pStream->GetRenderingAdapter());
-  delete pStream;
-  delete pChain;
-  delete pInput;
   
-  CLog::Log(LOGERROR,"MasterAudio:AudioManager: Unable to open new stream (active_stream = %d, max_streams = %d).", GetOpenStreamCount(), m_MaxStreams);
-  return MA_STREAM_NONE;
+  CLog::Log(LOGINFO,"MasterAudio:AudioManager: Opened stream %d (active_stream = %d, max_streams = %d).", streamId, GetOpenStreamCount(), m_MaxStreams);
+  return streamId;
 }
 
 size_t CAudioManager::AddDataToStream(MA_STREAM_ID streamId, void* pData, size_t len)
@@ -307,240 +318,7 @@ void CAudioManager::CleanupStreamResources(CAudioStream* pStream)
   pStream->Destroy();
 }
 
-// Audio Profiles are used to define specific audio scenarios based on user configuration, available hardware, and source stream characteristics
-// Returns a prioritized list of descriptors
-bool CAudioManager::FindOutputDescriptors(CStreamDescriptor* pInputDesc, StreamDescriptorList* pList)
-{
-  // TODO: Need to find a more flexible/intelligent way to handle this for N possible input/output formats
-  // Preference, unless overridden, is an exact match to the input descriptor
-
-  if (!pInputDesc)
-    return false;
-
-  StreamDescriptorList matchList;
-  pList->clear();
-  int inputFormat = pInputDesc->GetFormat();
-
-  // So-Called 'passthrough' formats. Currently we can only pass them along to the output
-  if (inputFormat == MA_STREAM_FORMAT_IEC61937)
-  {
-    // Fetch any output descriptors that support this format
-    if (m_DefaultProfile.GetDescriptors(inputFormat, &matchList))
-    {
-      // Find one that has the correct encoding and sample rate
-      int inputEncoding = MA_STREAM_ENCODING_UNKNOWN;
-      unsigned int inputSampleRate = 0;
-      pInputDesc->GetAttributes()->GetInt(MA_ATT_TYPE_ENCODING, &inputEncoding);
-      pInputDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_SAMPLERATE, &inputSampleRate);
-      for (StreamDescriptorList::iterator iter = matchList.begin(); iter != matchList.end(); iter++)
-      {
-        CStreamDescriptor* pOutDesc = *iter;
-        int outputEncoding = MA_STREAM_ENCODING_UNKNOWN;
-        unsigned int outputSampleRate = 0;
-        pOutDesc->GetAttributes()->GetInt(MA_ATT_TYPE_ENCODING, &outputEncoding);
-        pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_SAMPLERATE, &outputSampleRate);
-        if (inputEncoding == outputEncoding && inputSampleRate == outputSampleRate)
-        {
-          pList->push_back(pOutDesc);
-          return true; // We only need one, since there will be no processing performed
-        }
-      }
-    }
-    return false; // Nothing we can do. The output does not support this format, and we can't convert it.
-  }
-
-  if (inputFormat == MA_STREAM_FORMAT_LPCM)
-  {
-    bool ac3Encode = g_guiSettings.GetBool("audiooutput.ac3encode");
-    bool upmix = g_guiSettings.GetBool("audiooutput.upmix");
-    bool downmix = g_guiSettings.GetBool("audiooutput.downmixmultichannel");
-
-    unsigned int inputSampleRate = 0;
-    unsigned int inputChannels = 0;
-    pInputDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_SAMPLERATE, &inputSampleRate);
-    pInputDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, &inputChannels);
-
-    // Check for explicit transforms
-    if (ac3Encode && (inputChannels > 2 || upmix)) // Use the AC3 encoder only if there are greater than 2 input channels or we are upmixing
-    {
-        // Try and find an output descriptor that is compatible with the ac3 encoder
-      if (m_DefaultProfile.GetDescriptors(MA_STREAM_FORMAT_IEC61937, &matchList))
-      {
-        for (StreamDescriptorList::iterator iter = matchList.begin(); iter != matchList.end(); iter++)
-        {
-          CStreamDescriptor* pOutDesc = *iter;
-          int outputEncoding = MA_STREAM_ENCODING_UNKNOWN;
-          unsigned int outputSampleRate = 0;
-          pOutDesc->GetAttributes()->GetInt(MA_ATT_TYPE_ENCODING, &outputEncoding);
-          pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_SAMPLERATE, &outputSampleRate);
-          if (outputEncoding == MA_STREAM_ENCODING_AC3 && inputSampleRate == outputSampleRate)
-            pList->push_back(pOutDesc);
-        }
-      }
-    }
-
-    if (m_DefaultProfile.GetDescriptors(inputFormat, &matchList))
-    {
-      unsigned int maxChannels = 0;
-      CStreamDescriptor* pMaxOut = NULL;
-      CStreamDescriptor* pMatchingOut = NULL;
-      for (StreamDescriptorList::iterator iter = matchList.begin(); iter != matchList.end(); iter++)
-      {
-        CStreamDescriptor* pOutDesc = *iter;
-        unsigned int outputChannels = 0;
-        unsigned int outputSampleRate = 0;
-        pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_CHANNEL_COUNT, &outputChannels);
-        pOutDesc->GetAttributes()->GetUInt(MA_ATT_TYPE_SAMPLERATE, &outputSampleRate);
-        if (outputSampleRate == inputSampleRate)
-        {
-          if (outputChannels > maxChannels)
-          {
-            maxChannels = outputChannels;
-            pMaxOut = pOutDesc;
-          }
-          if (outputChannels == inputChannels)
-            pMatchingOut = pOutDesc; // Save for later so we add in the right order
-        }
-      }
-      if (upmix && pMaxOut) // If we are upmixing, add the matching output with the most channels
-        pList->push_back(pMaxOut);
-      if (pMatchingOut)
-        pList->push_back(pMatchingOut); // TODO: Add case to create a matching descriptor using the max_out descriptor (for 3 or 4 channel streams etc...)
-      else if (!upmix)
-        pList->push_back(pMaxOut); // Fall back to whatever we have for now
-
-    }
-  }
-  
-  return (pList->size() > 0);
-}
-
-void CAudioManager::LoadAudioProfiles()
-{
-  // TODO: Implement user configuration and multiple profiles
-
-  m_DefaultProfile.Clear();
-
-  // Load descriptors into the default profile based on guisettings
-  CStreamDescriptor* pDesc;
-  CStreamAttributeCollection* pAtts;
-  bool downMix = g_guiSettings.GetBool("audiooutput.downmixmultichannel");
-  bool ac3Enabled = g_guiSettings.GetBool("audiooutput.ac3passthrough");
-  bool dtsEnabled = g_guiSettings.GetBool("audiooutput.dtspassthrough");
-
-  // 2-channel PCM @ 48kHz, 16-bit Signed Int, Interleaved
-  pDesc = new CStreamDescriptor();
-  pDesc->SetFormat(MA_STREAM_FORMAT_LPCM);
-  pAtts = pDesc->GetAttributes();
-  pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,false);
-  pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,192000);
-  pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,4);
-  pAtts->SetFlag(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED,true);
-  pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
-  pAtts->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT,2);
-  pAtts->SetUInt(MA_ATT_TYPE_BITDEPTH,16);
-  pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,48000);
-  m_DefaultProfile.AddDescriptor(pDesc);
-
-   // 2-channel PCM @ 44.1kHz, 16-bit Signed Int, Interleaved
-  pDesc = new CStreamDescriptor();
-  pDesc->SetFormat(MA_STREAM_FORMAT_LPCM);
-  pAtts = pDesc->GetAttributes();
-  pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,false);
-  pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,176400);
-  pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,4);
-  pAtts->SetFlag(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED,true);
-  pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
-  pAtts->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT,2);
-  pAtts->SetUInt(MA_ATT_TYPE_BITDEPTH,16);
-  pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,44100);
-  m_DefaultProfile.AddDescriptor(pDesc);
-
-  if (!downMix) // Use this as a way for the user to say that they do not support > 2 channel PCM
-  {
-    // 6-Channel PCM @ 48kHz, 16-bit Signed Int, Interleaved
-    pDesc = new CStreamDescriptor();
-    pDesc->SetFormat(MA_STREAM_FORMAT_LPCM);
-    pAtts = pDesc->GetAttributes();
-    pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,false);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,576000);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,12);
-    pAtts->SetFlag(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED,true);
-    pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
-    pAtts->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT,6);
-    pAtts->SetUInt(MA_ATT_TYPE_BITDEPTH,16);
-    pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,48000);
-    m_DefaultProfile.AddDescriptor(pDesc);
-
-    // 6-Channel PCM @ 44.1kHz, 16-bit Signed Int, Interleaved
-    pDesc = new CStreamDescriptor();
-    pDesc->SetFormat(MA_STREAM_FORMAT_LPCM);
-    pAtts = pDesc->GetAttributes();
-    pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,false);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,529200);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,12);
-    pAtts->SetFlag(MA_ATT_TYPE_LPCM_FLAGS,MA_LPCM_FLAG_INTERLEAVED,true);
-    pAtts->SetInt(MA_ATT_TYPE_SAMPLE_TYPE,MA_SAMPLE_TYPE_SINT);
-    pAtts->SetUInt(MA_ATT_TYPE_CHANNEL_COUNT,6);
-    pAtts->SetUInt(MA_ATT_TYPE_BITDEPTH,16);
-    pAtts->SetInt(MA_ATT_TYPE_SAMPLERATE,44100);
-    m_DefaultProfile.AddDescriptor(pDesc);
-  }
-
-  if (ac3Enabled)
-  {
-    // AC3 @ 48kHz
-    pDesc = new CStreamDescriptor();
-    pDesc->SetFormat(MA_STREAM_FORMAT_IEC61937);
-    pAtts = pDesc->GetAttributes();
-    pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,true);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,192000);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,6144);
-    pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_AC3);
-    pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,48000);
-    m_DefaultProfile.AddDescriptor(pDesc);
-
-    // AC3 @ 44.1kHz
-    pDesc = new CStreamDescriptor();
-    pDesc->SetFormat(MA_STREAM_FORMAT_IEC61937);
-    pAtts = pDesc->GetAttributes();
-    pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,true);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,192000);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,6144);
-    pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_AC3);
-    pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,44100);
-    m_DefaultProfile.AddDescriptor(pDesc);
-  }
-
-  if (dtsEnabled)
-  {
-    // DTS @ 48kHz
-    pDesc = new CStreamDescriptor();
-    pDesc->SetFormat(MA_STREAM_FORMAT_IEC61937);
-    pAtts = pDesc->GetAttributes();
-    pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,true);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,192000);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,6144);
-    pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_DTS);
-    pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,48000);
-    m_DefaultProfile.AddDescriptor(pDesc);
-
-    // DTS @ 44.1kHz
-    pDesc = new CStreamDescriptor();
-    pDesc->SetFormat(MA_STREAM_FORMAT_IEC61937);
-    pAtts = pDesc->GetAttributes();
-    pAtts->SetFlag(MA_ATT_TYPE_STREAM_FLAGS,MA_STREAM_FLAG_LOCKED,true);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_SEC,176400);
-    pAtts->SetUInt(MA_ATT_TYPE_BYTES_PER_FRAME,6144);
-    pAtts->SetInt(MA_ATT_TYPE_ENCODING,MA_STREAM_ENCODING_DTS);
-    pAtts->SetUInt(MA_ATT_TYPE_SAMPLERATE,44100);
-    m_DefaultProfile.AddDescriptor(pDesc);
-  }
-}
-
 // Message Queue-Based Procedure call mechanism 
-__declspec (thread) CSyncCallData t_AudioClient;
-
 void CAudioManager::PostMessage(CAudioManagerMessage* pMsg)
 {
   m_Queue.PushBack(pMsg);
@@ -555,23 +333,33 @@ void CAudioManager::CallMethodAsync(CAudioManagerMessage* pMsg)
 
 bool CAudioManager::CallMethodSync(CAudioManagerMessage* pMsg)
 {
-  // We need a wait event to sync with the processing thread on the other side of the 'wall'
-  // This is kept in thread-local storage for each calling thread
-  // TODO: !!Need a way to ensure cleanup of events when client threads exit!!
-  if (!t_AudioClient.m_SyncWaitEvent)
-    t_AudioClient.m_SyncWaitEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-  else
-    ResetEvent(t_AudioClient.m_SyncWaitEvent);
+  CSyncCallData syncCall;
 
-  t_AudioClient.m_SyncResult.int64Val = 0;
-  pMsg->SetSyncData(&t_AudioClient); // Associate the thread's sync event with the current message
+  // We need a wait event to sync with the processing thread on the other side of the 'wall'
+  if (!m_SyncHandlePool.size())
+    syncCall.m_SyncWaitEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+  else
+  {
+    CSingleLock lock(m_SyncPoolLock);
+    syncCall.m_SyncWaitEvent = m_SyncHandlePool.top();
+    m_SyncHandlePool.pop();
+    lock.Leave();
+    ResetEvent(syncCall.m_SyncWaitEvent);
+  }
+
+  syncCall.m_SyncResult.int64Val = 0; // This should set all members to 0
+  pMsg->SetSyncData(&syncCall); // Associate the thread's sync event with the current message
 
   // Post the message to the queue. This will signal the processing thread.
   PostMessage(pMsg);
 
   // Wait for the message to be processed
   // TODO: Allow the client to specify a timeout? 
-  WaitForSingleObject(t_AudioClient.m_SyncWaitEvent, INFINITE);
+  WaitForSingleObject(syncCall.m_SyncWaitEvent, INFINITE);
+
+  // Return the sync event to the pool
+  CSingleLock lock(m_SyncPoolLock);
+  m_SyncHandlePool.push(syncCall.m_SyncWaitEvent);
 
   return true;
 }
@@ -594,7 +382,7 @@ CAudioManager::CAudioManagerThread::~CAudioManagerThread()
 void CAudioManager::CAudioManagerThread::Wake()
 {
   // Poke the thread and force it to run if it is not already
-  PulseEvent(m_ProcessEvent);
+  SetEvent(m_ProcessEvent);
 }
 
 void CAudioManager::CAudioManagerThread::Create(CAudioManager* pMgr)
@@ -606,7 +394,7 @@ void CAudioManager::CAudioManagerThread::Create(CAudioManager* pMgr)
 
 void CAudioManager::CAudioManagerThread::Process()
 {
-  CLog::Log(LOGDEBUG, "%s: Audio Service Processing Thread Started.", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s: Audio Service Processing Thread Started. ThreadId = %d", __FUNCTION__, ThreadId());
 
   try 
   {
@@ -626,8 +414,12 @@ void CAudioManager::CAudioManagerThread::Process()
       // Perform primary processing
       RenderStreams();
 
+      ResetEvent(m_ProcessEvent);
       // If there are no more messages, wait to be signaled or time-out.
-      WaitForSingleObject(m_ProcessEvent, 20);
+      if (m_pManager->GetOpenStreamCount())
+        WaitForSingleObject(m_ProcessEvent, 5);
+      else // Wait for someone to wake us if there are no streams to process
+        WaitForSingleObject(m_ProcessEvent, INFINITE);
     }
   }
   catch (...)
@@ -756,22 +548,11 @@ unsigned int CAudioManager::CAudioManagerThread::AddDataToStream(MA_STREAM_ID st
 
 bool CAudioManager::CAudioManagerThread::DrainStream(MA_STREAM_ID streamId, int timeout)
 {
-  // TODO: There must be a cleaner way to do this (why can't the AudioStream drain the mixer channel?)
   CAudioStream* pStream = m_pManager->GetInputStream(streamId);
   if (!pStream)
     return true; // Nothing to drain
 
-  lap_timer timer;
-  timer.lap_start();
-  if (pStream->Drain(timeout))
-  {
-    unsigned __int64 elapsed = timer.elapsed_time()/1000;
-    if (elapsed < timeout)
-      return pStream->Drain(timeout - (unsigned int)elapsed);
-    else
-      pStream->Flush();
-  }
-  return false; // Out of time
+  return pStream->Drain(timeout);
 }
 
 void CAudioManager::CAudioManagerThread::FlushStream(MA_STREAM_ID streamId)
