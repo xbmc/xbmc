@@ -390,7 +390,7 @@ void CVideoReferenceClock::RunD3D()
   D3dClock::D3DRASTER_STATUS RasterStatus;
 
   LARGE_INTEGER Now;
-  __int64       LastVBlankTime;
+  int64_t       LastVBlankTime;
   unsigned int  LastLine;
   int           NrVBlanks;
   double        VBlankTime;
@@ -743,7 +743,7 @@ void CVideoReferenceClock::CleanupCocoa()
   Cocoa_CVDisplayLinkRelease();
 }    
 
-void CVideoReferenceClock::VblankHandler(__int64 nowtime, double fps)
+void CVideoReferenceClock::VblankHandler(int64_t nowtime, double fps)
 {
   int           NrVBlanks;
   double        VBlankTime;
@@ -788,7 +788,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
   }
 
   if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
-    m_CurrTime += (__int64)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
+    m_CurrTime += (int64_t)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
 }
 
 //called from dvdclock to get the time
@@ -802,7 +802,7 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   }
   else
   {
-    __int64 ClockOffset = m_ClockOffset;
+    int64_t ClockOffset = m_ClockOffset;
     SingleLock.Leave();
     QueryPerformanceCounter(ptime);
     ptime->QuadPart += ClockOffset;
@@ -821,7 +821,7 @@ void CVideoReferenceClock::SetSpeed(double Speed)
   //dvdplayer can change the speed to fit the rereshrate
   if (m_UseVblank)
   {
-    __int64 Frequency = (__int64)((double)m_SystemFrequency * Speed);
+    int64_t Frequency = (int64_t)((double)m_SystemFrequency * Speed);
     if (Frequency != m_AdjustedFrequency)
     {
       m_AdjustedFrequency = Frequency;
@@ -962,11 +962,11 @@ int CVideoReferenceClock::GetRefreshRate()
 
 //this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBoxRenderManager::WaitPresentTime
 //it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
-void CVideoReferenceClock::Wait(__int64 Target)
+void CVideoReferenceClock::Wait(int64_t Target)
 {
   LARGE_INTEGER Now;
   int           SleepTime;
-  __int64       NextVblank;
+  int64_t       NextVblank;
   bool          Late;
 
   CSingleLock SingleLock(m_CritSection);
@@ -1011,7 +1011,7 @@ void CVideoReferenceClock::Wait(__int64 Target)
   }
   else
   {
-    __int64 ClockOffset = m_ClockOffset;
+    int64_t ClockOffset = m_ClockOffset;
     SingleLock.Leave();
     QueryPerformanceCounter(&Now);
     //sleep until the timestamp has passed
