@@ -5,16 +5,7 @@
 			<width>90</width>
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
-			<texture>flagging/video/1080.png</texture>
-			<visible>substring(ListItem.VideoResolution,1080)</visible>
-		</control>
-		<control type="image">
-			<description>720 rez Image</description>
-			<width>90</width>
-			<height>33</height>
-			<aspectratio>keep</aspectratio>
-			<texture>flagging/video/720.png</texture>
-			<visible>substring(ListItem.VideoResolution,720)</visible>
+			<texture>$INFO[ListItem.VideoResolution,flagging/video/,.png]</texture>
 		</control>
 		<control type="image">
 			<description>Xvid Codec Image</description>
@@ -82,7 +73,7 @@
 		</control>
 		<control type="image">
 			<description>ac3 Image</description>
-			<width>45</width>
+			<width>90</width>
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/audio/ac3.png</texture>
@@ -90,7 +81,7 @@
 		</control>
 		<control type="image">
 			<description>aac Image</description>
-			<width>45</width>
+			<width>90</width>
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/audio/aac.png</texture>
