@@ -962,7 +962,7 @@ int CVideoReferenceClock::GetRefreshRate()
 
 //this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBoxRenderManager::WaitPresentTime
 //it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
-void CVideoReferenceClock::Wait(int64_t Target)
+int64_t CVideoReferenceClock::Wait(int64_t Target)
 {
   LARGE_INTEGER Now;
   int           SleepTime;
@@ -1008,6 +1008,7 @@ void CVideoReferenceClock::Wait(int64_t Target)
         UpdateClock(1, false); //update the clock by 1 vblank
       }
     }
+    return m_CurrTime;
   }
   else
   {
@@ -1018,6 +1019,9 @@ void CVideoReferenceClock::Wait(int64_t Target)
     SleepTime = (int)((Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency);
     if (SleepTime > 0)
       ::Sleep(SleepTime);
+    
+    QueryPerformanceCounter(&Now);
+    return Now.QuadPart + ClockOffset;
   }
 }
 
