@@ -24,10 +24,11 @@
  */
  
 #include "Addon.h"
-#include "DllAddon.h"
+#include "../DllAddon.h"
 
 namespace ADDON
 {
+  template<class T>
   class CAddonDll : public CAddon
   {
   public:
@@ -41,8 +42,7 @@ namespace ADDON
     virtual ADDON_STATUS GetStatus();
 
   private:
-    friend CAddonManager;
-    DllAddon* m_pDll;
+    T* m_pDll;
   };
 
 };
