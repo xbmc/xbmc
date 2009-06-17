@@ -295,7 +295,7 @@ libs: libhdhomerun libid3tag imagelib libexif python
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
-	codecs libs python visualizations screensavers pm3tex pm3hdtex \
+	codecs libs python visualizations screensavers eventclients pm3tex pm3hdtex \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \

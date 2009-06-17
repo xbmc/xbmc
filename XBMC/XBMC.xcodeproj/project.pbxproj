@@ -6865,7 +6865,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB924708733DCA0010E9CD /* Build configuration list for PBXNativeTarget "XBMC" */;
 			buildPhases = (
-				F584E19E0F26D22200DB26A5 /* ShellScript */,
 				8DD76F760486A8DE00D96B5E /* Sources */,
 				8DD76F780486A8DE00D96B5E /* Frameworks */,
 			);
@@ -6883,7 +6882,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F5A1CBCF0F6B06CF00A96ABD /* Build configuration list for PBXNativeTarget "XBMC_ppc" */;
 			buildPhases = (
-				F5A1C8720F6B06CF00A96ABD /* ShellScript */,
 				F5A1C8730F6B06CF00A96ABD /* Sources */,
 				F5A1CBA10F6B06CF00A96ABD /* Frameworks */,
 			);
@@ -6946,34 +6944,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Update version in Info.plist with SVN revision\nSVN_REVISION=\"Unknown\"\nBUNDLE_NAME=\"XBMC\"\n\nif test `which svnversion` ; then\n\tSVN_REVISION=\"SVN-\"$(svnversion -n \"$TARGET_BUILD_DIR/../../\")\nfi\nperl -p -i -e \"s/r####/$SVN_REVISION/\" \"$TARGET_BUILD_DIR/$BUNDLE_NAME.app/Contents/Info.plist\"\n";
-		};
-		F584E19E0F26D22200DB26A5 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
-			showEnvVarsInLog = 0;
-		};
-		F5A1C8720F6B06CF00A96ABD /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"$ACTION\" = build ] ; then\n\tmake eventclients\nfi\nif [ \"$ACTION\" = clean ] ; then\n\techo \"I should be cleaning\"\n\nfi";
-			showEnvVarsInLog = 0;
 		};
 		F5A1CBDE0F6B0B4700A96ABD /* copy root files */ = {
 			isa = PBXShellScriptBuildPhase;
