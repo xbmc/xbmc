@@ -404,9 +404,17 @@ class CDateTime;
 #define PVR_NOW_RECORDING_CHANNEL   1106
 #define PVR_NOW_RECORDING_DATETIME  1107
 #define PVR_NOW_RECORDING_TITLE     1108
-#define PVR_HAS_EPG                 1109
-#define PVR_HAS_TXT                 1110
-#define PVR_HAS_DIRECTOR            1111
+#define PVR_BACKEND_NAME            1109
+#define PVR_BACKEND_VERSION         1110
+#define PVR_BACKEND_HOST            1111
+#define PVR_BACKEND_DISKSPACE       1112
+#define PVR_BACKEND_CHANNELS        1113
+#define PVR_BACKEND_TIMERS          1114
+#define PVR_BACKEND_RECORDINGS      1115
+#define PVR_BACKEND_NUMBER          1116
+#define PVR_HAS_EPG                 1117
+#define PVR_HAS_TXT                 1118
+#define PVR_HAS_DIRECTOR            1119
 
 #define ADDON_STAR_RATING           1200
 

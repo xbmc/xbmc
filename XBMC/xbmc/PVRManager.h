@@ -31,6 +31,9 @@
 
 #include <vector>
 
+typedef std::map< long, IPVRClient* >           CLIENTMAP;
+typedef std::map< long, IPVRClient* >::iterator CLIENTMAPITR;
+
 class CPVRManager : IPVRClientCallback
                   , public ADDON::IAddonCallback
                   , private CThread 
@@ -41,7 +44,9 @@ public:
 
   void Start();
   void Stop();
-  IPVRClient *LoadClient();
+  bool LoadClients();
+  void GetClientProperties(); // call GetClientProperties(long clientID) for each client connected
+  void GetClientProperties(long clientID); // request the PVR_SERVERPROPS struct from each client
 
   /* Synchronize Thread */
   virtual void Process();
@@ -53,9 +58,11 @@ public:
 
   static CPVRManager* GetInstance();
   unsigned long GetCurrentClientID() { return m_currentClientID; }
+  static CLIENTMAP* Clients() { return &m_clients; }
 
   /* addon specific */
   bool RequestRestart(const ADDON::CAddon* addon, bool datachanged);
+  bool RequestRemoval(const ADDON::CAddon* addon);
   ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
 
   /* Feature flags */
@@ -162,9 +169,14 @@ protected:
 
 private:
   static CPVRManager   *m_instance;
+  static CLIENTMAP      m_clients; // pointer to each enabled client's interface
+  std::map< long, PVR_SERVERPROPS > m_clientsProps; // store the properties of each client locally
+  DWORD                 m_infoToggleStart;
+  unsigned int          m_infoToggleCurrent;
+  CTVDatabase           m_database;
+
   IPVRClient*           m_client;       // pointer to enabled client interface
   PVR_SERVERPROPS       m_clientProps;  // store the properties of each client locally
-  CTVDatabase           m_database;
   unsigned long         m_currentClientID;
   bool                  m_synchronized;
 
@@ -181,6 +193,13 @@ private:
   CStdString          m_nowRecordingDateTime;
   CStdString          m_nowRecordingChannel;
   CStdString          m_nowRecordingTitle;
+  CStdString          m_backendName;
+  CStdString          m_backendVersion;
+  CStdString          m_backendHost;
+  CStdString          m_backendDiskspace;
+  CStdString          m_backendTimers;
+  CStdString          m_backendRecordings;
+  CStdString          m_backendChannels;
 
   int                 m_CurrentRadioChannel;
   int                 m_CurrentTVChannel;
