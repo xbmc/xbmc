@@ -157,30 +157,33 @@ void CGUIDialogAddonSettings::ShowAndGetInput(CURL& url)
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
 void CGUIDialogAddonSettings::ShowAndGetInput(CAddon& addon)
 {
-  m_url = addon.m_strPath;
-
-  // Load language strings temporarily
-  CAddon::LoadAddonStrings(m_url);
-
-  // Create the dialog
-  CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
-
-  // Set the heading
-  CStdString heading;
-  heading.Format("$LOCALIZE[23000] - %s", addon.m_strName.c_str());
-  pDialog->SetHeading(heading);
-
-  CAddonSettings settings;
-  if (settings.Load(addon))
+  if (addon.HasSettings())
   {
-    pDialog->m_settings = settings;
-    pDialog->DoModal();
-    settings = pDialog->m_settings;
+    m_url = addon.m_strPath;
 
-    if (pDialog->m_bConfirmed)
+    // Load language strings temporarily
+    CAddon::LoadAddonStrings(m_url);
+
+    // Create the dialog
+    CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+
+    // Set the heading
+    CStdString heading;
+    heading.Format("$LOCALIZE[23000] - %s", addon.m_strName.c_str());
+    pDialog->SetHeading(heading);
+
+    CAddonSettings settings;
+    if (settings.Load(addon))
     {
-      settings.Save();
-      CAddonUtils::TransferAddonSettings(addon);
+      pDialog->m_settings = settings;
+      pDialog->DoModal();
+      settings = pDialog->m_settings;
+
+      if (pDialog->m_bConfirmed)
+      {
+        settings.Save();
+        CAddonUtils::TransferAddonSettings(addon);
+      }
     }
   }
   else

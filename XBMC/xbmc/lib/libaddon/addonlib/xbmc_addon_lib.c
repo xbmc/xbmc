@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdarg.h>
-#include "xbmc_addon_lib.h"
+#include <xbmc_addon_lib.h>
 #include "addon_local.h"
 
 AddonCB *m_cb = NULL;

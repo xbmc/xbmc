@@ -31,7 +31,9 @@
 #include "DetectDVDType.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
+#include "AddonManager.h"
 #include "ScraperSettings.h"
+#include "Addon.h"
 #include "Util.h"
 #include "Artist.h"
 #include "Album.h"
@@ -4059,7 +4061,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
 
       ADDON::CAddon addon;
       CScraperParser parser;
-      if (g_settings.GetAddonFromNameAndType(m_pDS->fv("content.strScraperPath").get_asString(), ADDON::ADDON_SCRAPER_MUSIC, addon))
+      if (ADDON::CAddonManager::Get()->GetAddonFromNameAndType(m_pDS->fv("content.strScraperPath").get_asString(), ADDON::ADDON_SCRAPER_MUSIC, addon))
       {
         info.strPath = addon.m_strPath + addon.m_strLibName;
         info.strTitle = addon.m_strName;
@@ -4069,7 +4071,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       }
       else
       {
-        if (!g_settings.GetAddonFromNameAndType(g_guiSettings.GetString("musiclibrary.defaultscraper"), ADDON::ADDON_SCRAPER_MUSIC, addon))
+        if (!ADDON::CAddonManager::Get()->GetAddonFromNameAndType(g_guiSettings.GetString("musiclibrary.defaultscraper"), ADDON::ADDON_SCRAPER_MUSIC, addon))
           return false;
 
         info.strPath = addon.m_strPath + addon.m_strLibName;

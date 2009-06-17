@@ -169,6 +169,60 @@ bool CAddonSettings::Load(const CURL& url)
 
 bool CAddonSettings::Load(const CAddon& addon)
 {
+  // load settings from xml or via dll interface
+  switch (addon.m_addonType)
+  {
+    case ADDON_PVRDLL:
+    case ADDON_SCREENSAVER:
+    case ADDON_VIZ:
+    case ADDON_DSP_AUDIO:
+    {
+      if(!LoadDll(addon))
+        return false;
+      break;
+    }
+
+    default:
+    {
+      if(!LoadXML(addon))
+        return false;
+      break;
+    }
+  }
+
+  // Load the user saved settings. If it does not exist, create it
+  if (!m_userXmlDoc.LoadFile(m_userFileName))
+  {
+    TiXmlDocument doc;
+    TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+    doc.InsertEndChild(decl);
+
+    TiXmlElement xmlRootElement("settings");
+    doc.InsertEndChild(xmlRootElement);
+
+    m_userXmlDoc = doc;
+
+    // Don't worry about the actual settings, they will be set when the user clicks "Ok"
+    // in the settings dialog
+  }
+  return true;
+}
+
+bool CAddonSettings::LoadDll(const CAddon& addon)
+{
+  IAddonCallback* cb = NULL;
+  cb = ADDON::CAddonManager::Get()->GetCallbackForType(addon.m_addonType);
+  if(!cb)
+  {
+    return false;
+  }
+//   addon_settings_t settings = cb->GetSettings(addon);
+
+  return false;
+}
+
+bool CAddonSettings::LoadXML(const CAddon& addon)
+{
   // create the users filepath
   m_userFileName = GetUserDirectory(addon.m_strPath);
 
@@ -196,22 +250,6 @@ bool CAddonSettings::Load(const CAddon& addon)
     return false;
   }
 
-  // Load the user saved settings. If it does not exist, create it
-  if (!m_userXmlDoc.LoadFile(m_userFileName))
-  {
-    TiXmlDocument doc;
-    TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-    doc.InsertEndChild(decl);
-
-    TiXmlElement xmlRootElement("settings");
-    doc.InsertEndChild(xmlRootElement);
-
-    m_userXmlDoc = doc;
-
-    // Don't worry about the actual settings, they will be set when the user clicks "Ok"
-    // in the settings dialog
-  }
-  return true;
 }
 
 bool CAddonSettings::Save(void)
@@ -258,6 +296,11 @@ bool CAddonSettings::SettingsExist(const CStdString& strPath)
     return false;
 
   return true;
+}
+
+bool CAddonSettings::SettingsExist(const CAddon& addon)
+{
+  return false;
 }
 
 CStdString CAddonSettings::GetUserDirectory(const CURL& url)

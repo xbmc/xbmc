@@ -41,8 +41,8 @@
 #endif
 #endif
 
-#include "addons/IndependentHeaders/xbmc_addon_types.h"
-#include "addons/IndependentHeaders/xbmc_pvr_types.h"
+#include "addons/include/xbmc_addon_types.h"
+#include "addons/include/xbmc_pvr_types.h"
 
 /* An individual setting */
 struct addon_setting {
@@ -51,6 +51,7 @@ struct addon_setting {
   char *label;
   char *enable;
   char *lvalues;
+  int valid;
 };
 
 /* A list of settings */

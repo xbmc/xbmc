@@ -149,7 +149,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 
       // Setup new screensaver instance
       CScreenSaverFactory factory;
-      if (!g_settings.GetAddonFromNameAndType(g_guiSettings.GetString("screensaver.mode"), ADDON_SCREENSAVER, m_addon))
+      if (!CAddonManager::Get()->GetAddonFromNameAndType(g_guiSettings.GetString("screensaver.mode"), ADDON_SCREENSAVER, m_addon))
         return false;
 
       OutputDebugString("Load Screensaver\n");

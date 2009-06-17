@@ -1,4 +1,7 @@
 #pragma once
+#ifndef ADDON_DLL_H
+#define ADDON_DLL_H
+
 /*
  *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
@@ -19,12 +22,29 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+ 
+#include "Addon.h"
+#include "DllAddon.h"
 
-#include "../DllAddon.h"
-#include "../addons/include/xbmc_pvr_types.h"
-
-class DllPVRClient : public DllAddon<PVRClient>
+namespace ADDON
 {
-  // this is populated via Macro calls in DllAddon.h
+  class CAddonDll : public CAddon
+  {
+  public:
+    CAddonDll();
+    virtual ~CAddonDll() {}
+
+    virtual void Remove();
+    virtual bool HasSettings();
+    virtual bool GetSettings();
+    virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
+    virtual ADDON_STATUS GetStatus();
+
+  private:
+    friend CAddonManager;
+    DllAddon* m_pDll;
+  };
+
 };
 
+#endif /* ADDON_DLL_H */

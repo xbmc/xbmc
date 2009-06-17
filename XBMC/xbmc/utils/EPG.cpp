@@ -133,14 +133,12 @@ CEPG::CEPG(CPVRManager* manager)
   m_isRunning = false;
   m_manager = manager;
   CEPGTaskQueue queue(this);
-  CEPGTask t1, t2, t3;
+  CEPGTask t1, t2;
   t1.m_task = CEPGTask::GET_EPG_FOR_CHANNEL;
   t2.m_task = CEPGTask::UPDATE_CLIENT_CHANNELS;
   queue.Add(t1);
   queue.Add(t2);
   CEPGTask first = queue.Get();
-  //delete queue;
-  int i = 3;
 }
 
 CEPG::~CEPG()
@@ -155,7 +153,6 @@ void CEPG::OnStartup()
 
 void CEPG::OnExit()
 {
-  int problem = 0;
 }
 
 void CEPG::Attach(IEPGObserver* obs)
@@ -170,7 +167,7 @@ void CEPG::Detach(IEPGObserver* obs)
   std::vector<IEPGObserver*>::iterator itr = m_observers.begin();
   while (itr != m_observers.end())
   {
-    if (*itr = obs)
+    if (*itr == obs)
       itr = m_observers.erase(itr);
     else
       itr++;
@@ -233,7 +230,7 @@ void CEPG::UpdateChannelsTask(long clientID)
   VECCHANNELS channels;
   VECCHANNELS dbChannels;
 
-  CLog::Log(LOGDEBUG, "PVR: client_%u starting channel update", clientID);
+  CLog::Log(LOGDEBUG, "PVR: client_%lu starting channel update", clientID);
 
   /* grab any known channels for this client from the db*/
   CSingleLock dbLock(m_dbSection);
@@ -325,7 +322,7 @@ void CEPG::UpdateChannelsTask(long clientID)
   /* notify observers entire channel list has been updated */
   NotifyObs(0);
 
-  CLog::Log(LOGDEBUG, "PVR: client_%u finished channel update", clientID);
+  CLog::Log(LOGDEBUG, "PVR: client_%lu finished channel update", clientID);
   CLog::Log(LOGDEBUG, "PVR: channels: %u", m_grid.size());
 }
 

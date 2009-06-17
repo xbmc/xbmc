@@ -23,6 +23,7 @@
 #ifndef ADDONSETTINGS_H_
 #define ADDONSETTINGS_H_
 
+#include "AddonManager.h"
 #include "tinyXML/tinyxml.h"
 #include "URL.h"
 #include "Settings.h"
@@ -34,6 +35,7 @@ public:
   virtual ~CAddonSettings() {}
 
   static bool SettingsExist(const CStdString &strPath);
+  static bool SettingsExist(const ADDON::CAddon &addon);
 
   bool SaveFromDefault(void);
   virtual bool Load(const CURL& url);
@@ -52,6 +54,8 @@ protected:
 
 private:
   CStdString GetUserDirectory(const CURL& url);
+  bool LoadDll(const ADDON::CAddon& addon);
+  bool LoadXML(const ADDON::CAddon& addon);
 
   CStdString      m_id;
   CURL            m_url;

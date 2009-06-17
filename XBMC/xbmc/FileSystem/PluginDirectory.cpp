@@ -23,6 +23,7 @@
 #include "stdafx.h"
 #include "PluginDirectory.h"
 #include "Util.h"
+#include "utils/AddonManager.h"
 #include "utils/Addon.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
@@ -201,7 +202,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   dir->m_listItems->SetReplaceListing(replaceListing);
 
   // Unload temporary language strings
-  ADDON::CAddon::ClearAddonStrings();
+  CAddon::ClearAddonStrings();
 
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);
@@ -396,7 +397,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   g_currentPluginSettings.Load(url);
 
   // Load language strings
-  ADDON::CAddon::LoadAddonStrings(url);
+  CAddon::LoadAddonStrings(url);
 
   // path is special://home/addons/plugins/<path from here>
   CStdString pathToScript = "special://home/addons/plugins/";
@@ -435,20 +436,20 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
 bool CPluginDirectory::HasPlugins(const CStdString &type)
 {
-  VECADDONS *addons;
+  VECADDONS *addons = NULL;
 
   if (type == "pvr")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PVR);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PVR);
   else if (type == "video")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_VIDEO);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_VIDEO);
   else if (type == "music")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_MUSIC);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_MUSIC);
   else if (type == "pictures")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PICTURES);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PICTURES);
   else if (type == "programs")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
   else if (type == "weather")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_WEATHER);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_WEATHER);
 
   if (addons && addons->size() > 0)
     return true;
@@ -461,17 +462,17 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
   VECADDONS *addons = NULL;
 
   if (type == "pvr")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PVR);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PVR);
   else if (type == "video")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_VIDEO);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_VIDEO);
   else if (type == "music")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_MUSIC);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_MUSIC);
   else if (type == "pictures")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PICTURES);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PICTURES);
   else if (type == "programs")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
   else if (type == "weather")
-    addons = g_settings.GetAddonsFromType(ADDON_PLUGIN_WEATHER);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_WEATHER);
 
   if (!addons || addons->size() == 0)
     return false;

@@ -3,7 +3,7 @@
 #include "GUIUserMessages.h"
 #include "Application.h"
 #include "visualizations/Visualisation.h"
-#include "visualizations/VisualisationFactory.h"
+#include "utils/AddonManager.h"
 #include "visualizations/fft.h"
 #include "Util.h"
 #include "utils/CriticalSection.h"
@@ -143,11 +143,10 @@ void CGUIVisualisationControl::LoadVisualisation()
     return;
 
   m_currentVis = g_guiSettings.GetString("mymusic.visualisation");
-  CVisualisationFactory factory;
-  if (!g_settings.GetAddonFromNameAndType(m_currentVis, ADDON_VIZ, m_addon))
+  if (!CAddonManager::Get()->GetAddonFromNameAndType(m_currentVis, ADDON_VIZ, m_addon))
     return;
 
-  m_pVisualisation = factory.LoadVisualisation(m_addon);
+  m_pVisualisation = (CVisualisation*) ADDON::CAddonManager::Get()->LoadDll(m_addon);
   if (m_pVisualisation)
   {
     g_graphicsContext.CaptureStateBlock();

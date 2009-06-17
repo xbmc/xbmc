@@ -34,8 +34,7 @@ typedef std::map< long, IPVRClient* >           CLIENTMAP;
 typedef std::map< long, IPVRClient* >::iterator CLIENTMAPITR;
 
 class CPVRManager : public IPVRClientCallback
-                  , public ADDON::IAddonCallback
-                  , private CThread 
+                  , private CThread
 {
 public:
   ~CPVRManager();
@@ -47,11 +46,12 @@ public:
   static void RemoveInstance();
   static void ReleaseInstance();
   static CPVRManager* GetInstance();
-  
+
   /* addon specific */
   bool RequestRestart(const ADDON::CAddon* addon, bool datachanged);
   bool RequestRemoval(const ADDON::CAddon* addon);
   ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
+  addon_settings_t GetSettings(const ADDON::CAddon* addon);
 
   /* Event Handling */
   bool LoadClients();
@@ -106,7 +106,7 @@ private:
 
   static CLIENTMAP m_clients; // pointer to each enabled client's interface
   std::map< long, PVR_SERVERPROPS > m_clientProps; // store the properties of each client locally
-  
+
   static CCriticalSection m_timersSection;
   static CCriticalSection m_epgSection;
   static CCriticalSection m_clientsSection;
@@ -123,10 +123,10 @@ private:
   static bool m_hasRecordings;
   static bool m_hasTimer;
   static bool m_hasTimers;
-  
+
   DWORD m_infoToggleStart;
   unsigned int m_infoToggleCurrent;
-  
+
 
   std::map< long, VECTVTIMERS > m_timers;
 

@@ -143,7 +143,6 @@ SRCS=Application.cpp \
      GUIDialogVideoBookmarks.cpp \
      GUIDialogVideoSettings.cpp \
      GUIDialogVisualisationPresetList.cpp \
-     GUIDialogVisualisationSettings.cpp \
      GUIDialogVolumeBar.cpp \
      GUIDialogSlider.cpp \
      GUIDialogYesNo.cpp \

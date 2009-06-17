@@ -30,6 +30,8 @@
 #include "utils/MusicInfoScraper.h"
 #include "MusicDatabase.h"
 #include "GUIWindowSlideShow.h"
+#include "AddonManager.h"
+#include "Addon.h"
 #include "GUIMediaWindow.h"
 #include "GUIWindowFileManager.h"
 #include "GUIButtonScroller.h"
@@ -2236,7 +2238,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   double relevance;
   bool rel = false;
   ADDON::CAddon addon;
-  if (!g_settings.GetAddonFromNameAndType(g_guiSettings.GetString("musiclibrary.defaultscraper"), ADDON::ADDON_SCRAPER_MUSIC, addon))
+  if (!ADDON::CAddonManager::Get()->GetAddonFromNameAndType(g_guiSettings.GetString("musiclibrary.defaultscraper"), ADDON::ADDON_SCRAPER_MUSIC, addon))
     SetResponse(openTag+"Error");
 
   SScraperInfo info;

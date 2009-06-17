@@ -21,27 +21,24 @@
  */
 
 #include "IPVRClient.h"
+#include "AddonDll.h"
 #include "DllPVRClient.h"
-#include "Thread.h"
 #include "../lib/libaddon/addon_local.h"
 
-class CPVRClient : public IPVRClient
+class CPVRClient : public IPVRClient,
+                   public ADDON::CAddonDll<DllPVRClient>
 {
 public:
-  CPVRClient(const long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
-             const ADDON::CAddon& addon, IPVRClientCallback *pvrCB);
+  CPVRClient(const long clientID, struct PVRClient* pClient,
+             IPVRClientCallback *pvrCB);
   ~CPVRClient();
 
   // DLL related
-  bool Init();
-  void DeInit();
-  void ReInit();
-  virtual void Remove();
-  virtual ADDON_STATUS GetStatus();
-  virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
+  virtual bool Init();
+  virtual void DeInit();
+  virtual void ReInit();
 
   // IPVRClient //////////////////////////////////////////////////////////////
-  virtual CCriticalSection* GetLock() { return &m_critSection; }
   /* Server */
   virtual long GetID();
   virtual PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
@@ -75,7 +72,6 @@ protected:
   const long m_clientID;
   bool m_ReadyToUse;
   std::auto_ptr<struct PVRClient> m_pClient;
-  std::auto_ptr<DllPVRClient> m_pDll;
   CStdString m_hostName;
   CStdString m_backendName;
   CStdString m_backendVersion;

@@ -227,7 +227,7 @@
 					<width>184</width>
 					<height>40</height>
 					<align>center</align>
-					<label>33000</label>
+					<label>23000</label>
 					<texturenofocus border="3">button-nofocus.png</texturenofocus>
 					<texturefocus border="3">button-focus2.png</texturefocus>
 					<onleft>414</onleft>

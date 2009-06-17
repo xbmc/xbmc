@@ -257,7 +257,7 @@
 			<usealttexture>Window.IsActive(121)</usealttexture>
 			<alttexturefocus>osd_button_vizsettingsSELNF.png</alttexturefocus>
 			<alttexturenofocus>-</alttexturenofocus>
-			<onclick>XBMC.ActivateWindow(121)</onclick>
+			<onclick>XBMC.ActivateWindow(10140)</onclick>
 			<label>-</label>
 			<font>-</font>
 			<onleft>210</onleft>

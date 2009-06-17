@@ -26,6 +26,7 @@
 #include "NfoFile.h"
 #include "VideoDatabase.h"
 #include "utils/IMDB.h"
+#include "utils/AddonManager.h"
 #include "utils/Addon.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
@@ -68,7 +69,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
     CAlbum album;
     bNfo                = GetDetails(album);
     strDefault          = g_guiSettings.GetString("musiclibrary.defaultscraper");
-    VECADDONS *addons   = g_settings.GetAddonsFromType(ADDON_SCRAPER_MUSIC);
+    VECADDONS *addons   = CAddonManager::Get()->GetAddonsFromType(ADDON_SCRAPER_MUSIC);
     if (addons || addons->size() == 0)
       return NO_NFO;
 
@@ -84,7 +85,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
     CArtist artist;
     bNfo                = GetDetails(artist);
     strDefault          = g_guiSettings.GetString("musiclibrary.defaultscraper");
-    VECADDONS *addons   = g_settings.GetAddonsFromType(ADDON_SCRAPER_MUSIC);
+    VECADDONS *addons   = CAddonManager::Get()->GetAddonsFromType(ADDON_SCRAPER_MUSIC);
 
     if (addons || addons->size() == 0)
       return NO_NFO;
@@ -107,7 +108,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CStdString
       strDefault = g_guiSettings.GetString("scrapers.tvshowdefault");
     else if (m_strContent.Equals("musicvideos"))
       strDefault = g_guiSettings.GetString("scrapers.musicvideodefault");
-    VECADDONS *addons = g_settings.GetAddonsFromType(ADDON_SCRAPER_VIDEO);
+    VECADDONS *addons = CAddonManager::Get()->GetAddonsFromType(ADDON_SCRAPER_VIDEO);
 
     if (addons || addons->size() == 0)
       return NO_NFO;

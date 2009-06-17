@@ -49,15 +49,14 @@ using namespace ADDON;
  * CPVRClient Class constructor/destructor
  */
 
-CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient, DllPVRClient* pDll,
-                       const ADDON::CAddon& addon, IPVRClientCallback* pvrCB)
-                              : IPVRClient(clientID, addon, pvrCB)
+CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient,
+                       IPVRClientCallback* pvrCB)
+                              : IPVRClient(clientID, pvrCB)
                               , m_clientID(clientID)
-                              , m_pClient(pClient)
-                              , m_pDll(pDll)
-                              , m_manager(pvrCB)
                               , m_ReadyToUse(false)
                               , m_hostName("unknown")
+                              , m_pClient(pClient)
+                              , m_manager(pvrCB)
                               , m_callbacks(NULL)
 {
   InitializeCriticalSection(&m_critSection);
@@ -157,19 +156,6 @@ void CPVRClient::ReInit()
 {
   DeInit();
   Init();
-}
-
-ADDON_STATUS CPVRClient::GetStatus()
-{
-  try
-  {
-    return m_pDll->GetStatus();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetStatus occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-  }
-  return STATUS_UNKNOWN;
 }
 
 long CPVRClient::GetID()
@@ -477,29 +463,6 @@ PVR_ERROR CPVRClient::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force /
 {
   return PVR_ERROR_NO_ERROR;
 }
-
-// Addon specific functions //////////////////////////////////////////////////
-void CPVRClient::Remove()
-{
-  DeInit();
-
-  /* Unload library file */
-  m_pDll->Unload();
-}
-
-ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *settingValue)
-{
-  try
-  {
-    return m_pDll->SetSetting(settingName, settingValue);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SetSetting occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    return STATUS_UNKNOWN;
-  }
-}
-
 
 /**********************************************************
  * Client specific Callbacks

@@ -138,12 +138,6 @@ public:
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
-  bool GetAddonFromGUID(const CStdString &guid, ADDON::CAddon &addon);
-  bool GetAddonFromNameAndType(const CStdString &name, const ADDON::AddonType &type, ADDON::CAddon &addon);
-  bool AddonFromInfoXML(const CStdString &path, ADDON::CAddon &addon);
-  ADDON::VECADDONS *GetAddonsFromType(const ADDON::AddonType &type);
-  bool DisableAddon(const CStdString &addon, const ADDON::AddonType &type);
-
   int TranslateSkinString(const CStdString &setting);
   const CStdString &GetSkinString(int setting) const;
   void SetSkinString(int setting, const CStdString &label);
@@ -409,27 +403,6 @@ public:
   VECSOURCES m_musicSources;
   VECSOURCES m_videoSources;
 
-  ADDON::VECADDONS  m_allAddons;
-  ADDON::VECADDONS  m_virtualAddons;
-
-  ADDON::VECADDONS  m_multitypeAddons;
-  ADDON::VECADDONS  m_visualisationAddons;
-  ADDON::VECADDONS  m_skinAddons;
-  ADDON::VECADDONS  m_pvrAddons;
-  ADDON::VECADDONS  m_scriptAddons;
-  ADDON::VECADDONS  m_scraperPVRAddons;
-  ADDON::VECADDONS  m_scraperVideoAddons;
-  ADDON::VECADDONS  m_scraperMusicAddons;
-  ADDON::VECADDONS  m_scraperProgramAddons;
-  ADDON::VECADDONS  m_screensaverAddons;
-  ADDON::VECADDONS  m_pluginPvrAddons;
-  ADDON::VECADDONS  m_pluginMusicAddons;
-  ADDON::VECADDONS  m_pluginVideoAddons;
-  ADDON::VECADDONS  m_pluginProgramAddons;
-  ADDON::VECADDONS  m_pluginPictureAddons;
-  ADDON::VECADDONS  m_pluginWeatherAddons;
-  ADDON::VECADDONS  m_DSPAudioAddons;
-
   CStdString m_defaultProgramSource;
   CStdString m_defaultMusicSource;
   CStdString m_defaultPictureSource;
@@ -490,11 +463,9 @@ public:
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
-  void LoadAddons();
+  bool ParseAddonsXML(const ADDON::AddonType& type, ADDON::VECADDONS& addons);
+  bool SaveAddons(const ADDON::AddonType &type, const ADDON::VECADDONS &addons);
   bool SaveSources();
-  bool SaveAddons();
-
-  void GetAllAddons();
 
 protected:
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
@@ -511,9 +482,10 @@ protected:
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
   bool SetAddons(TiXmlNode *root, const ADDON::AddonType &type, const ADDON::VECADDONS &addons);
-  void GetAddons(const TiXmlElement* pRootElement, const ADDON::AddonType &type);
+  void GetAddons(const TiXmlElement* pRootElement, const ADDON::AddonType &type, ADDON::VECADDONS &addons);
   bool GetAddon(const ADDON::AddonType &type, const TiXmlNode *node, ADDON::CAddon &addon);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
+  void AddonTypeString(const ADDON::AddonType &type, CStdString &strElement);
 
   // functions for writing xml files
   void SetViewState(TiXmlNode* pRootNode, const CStdString& strTagName, const CViewState &viewState) const;

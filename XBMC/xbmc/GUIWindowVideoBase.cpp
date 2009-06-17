@@ -25,6 +25,8 @@
 #include "utils/IMDB.h"
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/AddonManager.h"
+#include "utils/Addon.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowVideoNav.h"
 #include "GUIDialogFileBrowser.h"
@@ -691,7 +693,7 @@ void CGUIWindowVideoBase::OnManualIMDB()
   CFile::Delete(item.GetCachedVideoThumb().c_str());
 
   ADDON::CAddon addon;
-  if (!g_settings.GetAddonFromNameAndType("IMDb", ADDON::ADDON_SCRAPER_VIDEO, addon))
+  if (!ADDON::CAddonManager::Get()->GetAddonFromNameAndType("IMDb", ADDON::ADDON_SCRAPER_VIDEO, addon))
     return;
 
   SScraperInfo info;

@@ -164,9 +164,9 @@ void CGUIDialogContentSettings::OnWindowLoaded()
   CFileItemList items;
 
   if (m_info.strContent.Equals("albums"))
-    addons = g_settings.GetAddonsFromType(ADDON_SCRAPER_MUSIC);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_SCRAPER_MUSIC);
   else
-    addons = g_settings.GetAddonsFromType(ADDON_SCRAPER_VIDEO);
+    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_SCRAPER_VIDEO);
 
   if (!addons || addons->size() == 0)
   {

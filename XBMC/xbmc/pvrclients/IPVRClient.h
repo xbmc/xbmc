@@ -25,10 +25,10 @@
 
 #include <vector>
 
-#include "../utils/Addon.h"
+#include "../utils/AddonDll.h"
 #include "../utils/TVChannelInfoTag.h"
 #include "../utils/TVTimerInfoTag.h"
-#include "../addons/IndependentHeaders/xbmc_pvr_types.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
 class CPVRManager;
 class CEPG;
@@ -46,7 +46,7 @@ public:
 /**
 * IPVRClient PVR Client control class
 */
-class IPVRClient : public ADDON::CAddon
+class IPVRClient
 {
 public:
 /***************************************/
@@ -58,22 +58,12 @@ public:
   * \param *addonCB         = IAddonCallback callback to the PVRManager
   * \param *pvrCB           = IPVRClientCallback callback to the PVRManager
   */
-  IPVRClient(long clientID, const ADDON::CAddon& addon, IPVRClientCallback *pvrCB)
-    : CAddon(addon) {};
+  IPVRClient(long clientID, IPVRClientCallback *pvrCB);
 
   /**
   * Destructor
   */
   virtual ~IPVRClient(){};
-
-  /**
-  * Return pointer to this client's critical section
-  * \return CCriticalSection*
-  */
-  virtual CCriticalSection* GetLock(void)=0;
-
-
-  virtual void ReInit()=0;
 
 /***************************************/
 /**_SERVER INTERFACE__________________**/
@@ -89,13 +79,6 @@ public:
   * \return PVR_SERVERPROPS      = pointer to client properties struct
   */
   virtual PVR_ERROR GetProperties(PVR_SERVERPROPS *props)=0;
-
-  /**
-  * Get the current status of the PVR AddOn dll related to "ADDON_STATUS"
-  * defined inside "xbmc_addon_types.h"
-  * \return ADDON_STATUS         = the current status of the PVR AddOn
-  */
-  virtual ADDON_STATUS GetStatus(void)=0;
 
 /****************************************/
 /**_GENERAL INTERFACE__________________**/

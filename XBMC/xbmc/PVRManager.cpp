@@ -33,7 +33,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
-#include "pvrclients/PVRClientFactory.h"
+#include "utils/AddonManager.h"
 
 /* GUI Messages includes */
 //TODO move to GUIWindow*
@@ -44,7 +44,7 @@
 using namespace ADDON;
 
 
-/*****************************************/
+/************************************************************/
 
 #define XBMC_PVRMANAGER_VERSION "0.2"
 
@@ -97,7 +97,7 @@ void CPVRManager::Start()
   epgLock.Leave();
 
   /* Discover, load and create chosen Client add-on's. */
-  CAddon::RegisterAddonCallback(ADDON_PVRDLL, this);
+  //TODO CAddonManager::Get()->RegisterAddonCallback(ADDON_PVRDLL, this);
   if (!LoadClients())
   {
     CLog::Log(LOGERROR, "PVR: couldn't load clients");
@@ -116,7 +116,7 @@ void CPVRManager::Stop()
 {
   CSingleLock lock(m_clientsSection);
 
-  CAddon::UnregisterAddonCallback(ADDON_PVRDLL);
+  CAddonManager::Get()->UnregisterAddonCallback(ADDON_PVRDLL);
   StopThread();
 
   m_infoToggleStart = NULL;
@@ -145,7 +145,11 @@ CPVRManager* CPVRManager::GetInstance()
 
 void CPVRManager::ReleaseInstance()
 {
-  m_instance = NULL; //TODO check is this enough?
+  if (m_instance)
+  {
+    delete m_instance;
+    m_instance = NULL;
+  }
 }
 
 void CPVRManager::RemoveInstance()
@@ -193,7 +197,7 @@ bool CPVRManager::LoadClients()
 {
   VECADDONS *addons;
   // call update
-  addons = g_settings.GetAddonsFromType(ADDON_PVRDLL);
+  addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PVRDLL);
 
   /* Make sure addon's are loaded */
   if (addons == NULL || addons->empty())
@@ -202,7 +206,6 @@ bool CPVRManager::LoadClients()
   m_database.Open();
 
   /* load the clients */
-  CPVRClientFactory factory;
   for (unsigned i=0; i<addons->size(); i++)
   {
     const CAddon& clientAddon = addons->at(i);
@@ -224,7 +227,7 @@ bool CPVRManager::LoadClients()
      * success. Client initialization is also performed during loading.
      */
     IPVRClient *client;
-    client = factory.LoadPVRClient(clientAddon, clientID, this);
+    client = (IPVRClient*) CAddonManager::Get()->LoadDll(clientAddon);
     if (client)
     {
       m_clients.insert(std::make_pair(client->GetID(), client));
@@ -252,6 +255,9 @@ void CPVRManager::GetClientProperties()
 
 void CPVRManager::GetClientProperties(long clientID)
 {
+  if (!m_clients[clientID])
+    return;
+
   PVR_SERVERPROPS props;
   if (m_clients[clientID]->GetProperties(&props) == PVR_ERROR_NO_ERROR)
   {
@@ -382,79 +388,6 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
       break;
   }
 }
-
-ADDON_STATUS CPVRManager::SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)
-{
-  if (!addon)
-    return STATUS_UNKNOWN;
-
-  CLog::Log(LOGINFO, "PVR: set setting of clientName: %s, settingName: %s", addon->m_strName.c_str(), settingName);
-  CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    if (m_clients[(*itr).first]->m_guid == addon->m_guid)
-    {
-      if (m_clients[(*itr).first]->m_strName == addon->m_strName)
-      {
-        return m_clients[(*itr).first]->SetSetting(settingName, settingValue);
-      }
-    }
-    itr++;
-  }
-  return STATUS_UNKNOWN;
-}
-
-bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
-{
-  if (!addon)
-    return false;
-
-  CLog::Log(LOGINFO, "PVR: requested restart of clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
-  CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    if (m_clients[(*itr).first]->m_guid == addon->m_guid)
-    {
-      if (m_clients[(*itr).first]->m_strName == addon->m_strName)
-      {
-        CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
-        m_clients[(*itr).first]->ReInit();
-        if (datachanged)
-        {
-
-        }
-      }
-    }
-    itr++;
-  }
-  return true;
-}
-
-bool CPVRManager::RequestRemoval(const CAddon* addon)
-{
-  if (!addon)
-    return false;
-
-  CLog::Log(LOGINFO, "PVR: requested removal of clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
-  CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    if (m_clients[(*itr).first]->m_guid == addon->m_guid)
-    {
-      if (m_clients[(*itr).first]->m_strName == addon->m_strName)
-      {
-        CLog::Log(LOGINFO, "PVR: removing clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
-        m_clients[(*itr).first]->Remove();
-        m_clients.erase((*itr).first);
-        return true;
-      }
-    }
-    itr++;
-  }
-
-  return false;
-}
-
 
 /************************************************************/
 /** Timer handling **/

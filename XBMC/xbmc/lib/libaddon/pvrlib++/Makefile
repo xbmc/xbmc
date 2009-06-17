@@ -1,9 +1,9 @@
-INCLUDES=-I.  -I../../.. -I../../../addons/IndependentHeaders -I../../../utils -I..
+INCLUDES=-I.  -I../../.. -I../../../addons/include -I../../../utils -I..
 CFLAGS+= -fPIC
 CXXFLAGS+= -fPIC
 SRCS = xbmc_pvr_lib++.cpp \
 
-LIB=../../../addons/IndependentHeaders/xbmc_pvr_lib++.a
+LIB=../../../addons/include/xbmc_pvr_lib++.a
 
 include ../../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

@@ -28,7 +28,7 @@
 #endif
 #include <errno.h>
 #include <mvp_refmem.h>
-#include <addon.h>
+#include <xbmc_addon_lib.h>
 #include "../addon_local.h"
 
 /*
@@ -138,6 +138,13 @@ addon_settings_get_item(addon_settings_t list, int index)
   ref_hold(list->settings_list[index]);
   return list->settings_list[index];
 }
+
+/*
+ * addon_settings_add_item(addon_setting_t item)
+ *
+ * Scope: PUBLIC
+ *
+ * Description */
 
 /*
  * addon_settings_get_count(addon_settings_t list)
