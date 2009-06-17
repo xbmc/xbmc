@@ -463,6 +463,9 @@ bool CFileItem::IsVideo() const
   if (m_strPath.Left(10).Equals("hdhomerun:"))
     return true;
 
+  if (m_strPath.Left(4).Equals("dvd:"))
+    return true;
+
   CStdString extension;
   if( m_contenttype.Left(12).Equals("application/") )
   { /* check for some standard types */
