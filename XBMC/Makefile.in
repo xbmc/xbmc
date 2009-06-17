@@ -98,8 +98,12 @@ VIS_DIRS=\
 PM3_MEDIA=skin/Project\ Mayhem\ III/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
+SKIN_DIRS=\
+	$(PM3_MEDIA)\
+	$(PM3HD_MEDIA)
+
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS)
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(SKIN_DIRS)
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -109,17 +113,17 @@ INCLUDES=@INCLUDES@
 
 CLEAN_FILES=xbmc.bin xbmc-xrandr
 
-all : externals xbmc.bin xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Textures.xpr
+all : externals xbmc.bin xbmc-xrandr pm3tex pm3hdtex
 
 include Makefile.include
 
 .PHONY : dllloader exports visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force
 
-$(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
-	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
-
-$(PM3HD_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3HD_MEDIA)/*.png $(PM3HD_MEDIA)/*/*.png
-	 tools/XBMCTex/XBMCTex -input \"$(PM3HD_MEDIA)\" -output \"$(PM3HD_MEDIA)/Textures.xpr\"
+# skin textures
+pm3tex: force
+	 $(MAKE) -C $(PM3_MEDIA)
+pm3hdtex: force
+	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force
 	$(MAKE) -C guilib
