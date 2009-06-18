@@ -23,7 +23,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../../include"
+				AdditionalIncludeDirectories="dumb/include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;DUMB_DECLARE_DEPRECATED"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -74,7 +74,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../include"
+				AdditionalIncludeDirectories="dumb/include"
 				PreprocessorDefinitions="_DEBUG;WIN32;_LIB;DUMB_DECLARE_DEPRECATED;DEBUGMODE=1"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -124,7 +124,7 @@
 				Name="core"
 				Filter="">
 				<File
-					RelativePath="..\..\src\core\atexit.c">
+					RelativePath="dumb\src\core\atexit.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -144,7 +144,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\duhlen.c">
+					RelativePath="dumb\src\core\duhlen.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -164,7 +164,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\duhtag.c">
+					RelativePath="dumb\src\core\duhtag.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -184,7 +184,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\dumbfile.c">
+					RelativePath="dumb\src\core\dumbfile.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -204,7 +204,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\loadduh.c">
+					RelativePath="dumb\src\core\loadduh.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -224,7 +224,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\makeduh.c">
+					RelativePath="dumb\src\core\makeduh.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -244,7 +244,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\rawsig.c">
+					RelativePath="dumb\src\core\rawsig.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -264,7 +264,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\readduh.c">
+					RelativePath="dumb\src\core\readduh.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -284,7 +284,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\register.c">
+					RelativePath="dumb\src\core\register.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -304,7 +304,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\rendduh.c">
+					RelativePath="dumb\src\core\rendduh.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -324,7 +324,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\rendsig.c">
+					RelativePath="dumb\src\core\rendsig.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -344,7 +344,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\core\unload.c">
+					RelativePath="dumb\src\core\unload.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -368,7 +368,7 @@
 				Name="helpers"
 				Filter="">
 				<File
-					RelativePath="..\..\src\helpers\clickrem.c">
+					RelativePath="dumb\src\helpers\clickrem.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -388,7 +388,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\helpers\memfile.c">
+					RelativePath="dumb\src\helpers\memfile.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -408,7 +408,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\helpers\resample.c">
+					RelativePath="dumb\src\helpers\resample.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -428,7 +428,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\helpers\sampbuf.c">
+					RelativePath="dumb\src\helpers\sampbuf.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -448,7 +448,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\helpers\silence.c">
+					RelativePath="dumb\src\helpers\silence.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -468,7 +468,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\helpers\stdfile.c">
+					RelativePath="dumb\src\helpers\stdfile.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -492,7 +492,7 @@
 				Name="it"
 				Filter="">
 				<File
-					RelativePath="..\..\src\it\itload.c">
+					RelativePath="dumb\src\it\itload.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -512,7 +512,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\itload2.c">
+					RelativePath="dumb\src\it\itload2.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -532,7 +532,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\itmisc.c">
+					RelativePath="dumb\src\it\itmisc.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -552,7 +552,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\itorder.c">
+					RelativePath="dumb\src\it\itorder.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -572,7 +572,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\itread.c">
+					RelativePath="dumb\src\it\itread.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -592,7 +592,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\itread2.c">
+					RelativePath="dumb\src\it\itread2.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -612,7 +612,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\itrender.c">
+					RelativePath="dumb\src\it\itrender.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -632,7 +632,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\itunload.c">
+					RelativePath="dumb\src\it\itunload.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -652,7 +652,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\loadmod.c">
+					RelativePath="dumb\src\it\loadmod.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -672,7 +672,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\loadmod2.c">
+					RelativePath="dumb\src\it\loadmod2.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -692,7 +692,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\loads3m.c">
+					RelativePath="dumb\src\it\loads3m.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -712,7 +712,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\loads3m2.c">
+					RelativePath="dumb\src\it\loads3m2.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -732,7 +732,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\loadxm.c">
+					RelativePath="dumb\src\it\loadxm.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -752,7 +752,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\loadxm2.c">
+					RelativePath="dumb\src\it\loadxm2.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -772,7 +772,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\readmod.c">
+					RelativePath="dumb\src\it\readmod.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -792,7 +792,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\readmod2.c">
+					RelativePath="dumb\src\it\readmod2.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -812,7 +812,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\reads3m.c">
+					RelativePath="dumb\src\it\reads3m.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -832,7 +832,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\reads3m2.c">
+					RelativePath="dumb\src\it\reads3m2.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -852,7 +852,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\readxm.c">
+					RelativePath="dumb\src\it\readxm.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -872,7 +872,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\readxm2.c">
+					RelativePath="dumb\src\it\readxm2.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -892,7 +892,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\src\it\xmeffect.c">
+					RelativePath="dumb\src\it\xmeffect.c">
 					<FileConfiguration
 						Name="Release|Win32">
 						<Tool
@@ -917,16 +917,16 @@
 			Name="include"
 			Filter="">
 			<File
-				RelativePath="..\..\include\dumb.h">
+				RelativePath="dumb\include\dumb.h">
 			</File>
 			<Filter
 				Name="internal"
 				Filter="">
 				<File
-					RelativePath="..\..\include\internal\dumb.h">
+					RelativePath="dumb\include\internal\dumb.h">
 				</File>
 				<File
-					RelativePath="..\..\include\internal\it.h">
+					RelativePath="dumb\include\internal\it.h">
 				</File>
 			</Filter>
 		</Filter>
