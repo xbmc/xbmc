@@ -80,24 +80,27 @@ double CDVDClock::GetAbsoluteClock()
   return DVD_TIME_BASE * (double)current.QuadPart / m_systemFrequency.QuadPart;
 }
 
-void CDVDClock::WaitAbsoluteClock(double target)
+double CDVDClock::WaitAbsoluteClock(double target)
 {
   CSingleLock lock(m_systemsection);
 
-  __int64 systemtarget;
-
+  __int64 systemtarget, freq, offset;
   if(!m_systemFrequency.QuadPart)
     g_VideoReferenceClock.GetFrequency(&m_systemFrequency);
 
   if(!m_systemOffset.QuadPart)
     g_VideoReferenceClock.GetTime(&m_systemOffset);
 
-  systemtarget = (__int64)(target / DVD_TIME_BASE * (double)m_systemFrequency.QuadPart);
-  systemtarget += m_systemOffset.QuadPart;
+  freq   = m_systemFrequency.QuadPart;
+  offset = m_systemOffset.QuadPart;
 
   lock.Leave();
 
-  g_VideoReferenceClock.Wait(systemtarget);
+  systemtarget = (__int64)(target / DVD_TIME_BASE * (double)freq);
+  systemtarget += offset;
+  systemtarget = g_VideoReferenceClock.Wait(systemtarget);
+  systemtarget -= offset;
+  return (double)systemtarget / freq * DVD_TIME_BASE;
 }
 
 double CDVDClock::GetClock()
