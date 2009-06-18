@@ -1,5 +1,5 @@
 /*
-THIS FILE IS NOT A PART OF THE ORIGINAL DUMB PACKAGE. 
+THIS FILE IS NOT A PART OF THE ORIGINAL DUMB PACKAGE.
 The addition of this file (and only this file) is the only change done to
 the dumb source code. The project was modified to have a dll as target.
 */
@@ -10,26 +10,26 @@ the dumb source code. The project was modified to have a dll as target.
 #define __declspec(x)
 #endif
 
-extern "C" 
+extern "C"
 {
-  int __declspec(dllexport) DLL_LoadModule(const char* szFileName)
+  DUH * __declspec(dllexport) DLL_LoadModule(const char *szFileName)
   {
     dumb_register_stdfiles();
     DUH* duh;
     duh = load_duh(szFileName);
-    if (!duh) 
+    if (!duh)
     {
       duh = dumb_load_it(szFileName);
-      if (!duh) 
+      if (!duh)
       {
         duh = dumb_load_xm(szFileName);
-        if (!duh) 
+        if (!duh)
         {
           duh = dumb_load_s3m(szFileName);
-          if (!duh) 
+          if (!duh)
           {
             duh = dumb_load_mod(szFileName);
-            if (!duh) 
+            if (!duh)
             {
               return 0;
             }
@@ -37,36 +37,36 @@ extern "C"
         }
       }
     }
-    return (int)duh;
-  }
-  
-  void __declspec(dllexport) DLL_FreeModule(int duh)
-  {
-    unload_duh((DUH*)duh);
+    return duh;
   }
 
-  int __declspec(dllexport) DLL_GetModuleLength(int duh)
+  void __declspec(dllexport) DLL_FreeModule(DUH *duh)
   {
-    return duh_get_length((DUH*)duh);
+    unload_duh(duh);
   }
 
-  int __declspec(dllexport) DLL_GetModulePosition(int sic)
+  long __declspec(dllexport) DLL_GetModuleLength(DUH *duh)
   {
-    return duh_sigrenderer_get_position((DUH_SIGRENDERER*)sic);
+    return duh_get_length(duh);
   }
 
-  int __declspec(dllexport) DLL_StartPlayback(int duh, long pos)
+  long __declspec(dllexport) DLL_GetModulePosition(DUH_SIGRENDERER *sig)
   {
-    return (int)duh_start_sigrenderer((DUH*)duh, 0, 2, pos);
+    return duh_sigrenderer_get_position(sig);
   }
 
-  void __declspec(dllexport) DLL_StopPlayback(int sic)
+  DUH_SIGRENDERER * __declspec(dllexport) DLL_StartPlayback(DUH *duh, long pos)
   {
-    duh_end_sigrenderer((DUH_SIGRENDERER*)sic);
+    return duh_start_sigrenderer(duh, 0, 2, pos);
   }
 
-  long __declspec(dllexport) DLL_FillBuffer(int duh, int sic, char* buffer, int size, float volume)
+  void __declspec(dllexport) DLL_StopPlayback(DUH_SIGRENDERER *sig)
   {
-    return duh_render((DUH_SIGRENDERER*)sic,16,0,volume,65536.f/48000.f,size/4,buffer);
+    duh_end_sigrenderer(sig);
+  }
+
+  long __declspec(dllexport) DLL_FillBuffer(DUH_SIGRENDERER *sig, char *buffer, int size, float volume)
+  {
+    return duh_render(sig, 16, 0, volume, 65536.0/48000.0, size/4, buffer);
   }
 }
