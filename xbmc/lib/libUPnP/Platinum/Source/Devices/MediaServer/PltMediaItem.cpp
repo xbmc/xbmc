@@ -213,6 +213,7 @@ PLT_MediaObject::GetUPnPClassFromExt(const char* ext)
                extension.Compare(".asf", true)  == 0) {
         ret = "object.item.videoItem.movie";
     } else if (extension.Compare(".jpg", true) == 0 || 
+               extension.Compare(".jpeg",true) == 0 ||
                extension.Compare(".bmp", true) == 0 || 
                extension.Compare(".gif", true) == 0 || 
                extension.Compare(".tif", true) == 0 || 

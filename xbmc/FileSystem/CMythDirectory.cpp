@@ -251,7 +251,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
         }
         url.SetFileName("tvshows/" + path);
         break;
-        case NONE:
+        case ALL:
         url.SetFileName("recordings/" + path);
         break;
       }
@@ -279,7 +279,14 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       }
 
       item->SetLabel(name);
-      item->SetLabelPreformated(true);
+      /*
+       * Set the label as preformated for MOVIES so any scraper lookup will use
+       * the label rather than the filename. Don't set as preformated for other
+       * filter types as this prevents the display of the title changing 
+       * depending on what the list is being sorted by.
+       */
+      if (type == MOVIES)
+        item->SetLabelPreformated(true);
 
       items.Add(item);
       m_dll->ref_release(program);
@@ -331,7 +338,7 @@ bool CCMythDirectory::GetRecordingFolders(const CStdString& base, CFileItemList 
         itemName = GetValue(m_dll->proginfo_title(program));
       else
       {
-        // MOVIES and NONE don't use folder groupings.
+        // MOVIES and ALL don't use folder groupings.
         m_dll->ref_release(program);
         continue;
       }
@@ -502,7 +509,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   else if (fileName == "guide")
     return GetGuide(base, items);
   else if (fileName.Left(6) == "guide/")
-    return GetGuideForChannel(base, items, atoi(fileName.Right(fileName.length() - 6)));
+    return GetGuideForChannel(base, items, atoi(fileName.Mid(6)));
   else if (fileName == "movies")
     return GetRecordings(base, items, MOVIES);
   else if (fileName == "recordings")
@@ -510,7 +517,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   else if (fileName == "tvshows")
     return GetRecordingFolders(base, items, TV_SHOWS);
   else if (fileName.Left(8) == "tvshows/")
-    return GetRecordings(base, items, TV_SHOWS, fileName.Right(fileName.length() - 8));
+    return GetRecordings(base, items, TV_SHOWS, fileName.Mid(8));
   return false;
 }
 

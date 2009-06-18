@@ -969,11 +969,13 @@ void CDVDPlayer::Process()
         if (m_dvd.iSelectedAudioStream < 0 && m_CurrentAudio.id >= 0) CloseAudioStream( true );
         if (m_dvd.iSelectedSPUStream < 0 && m_CurrentVideo.id >= 0)   CloseSubtitleStream( true );
       }
-
-      // check so that none of our streams has become invalid
-      if (!IsValidStream(m_CurrentAudio))    CloseAudioStream(true);
-      if (!IsValidStream(m_CurrentVideo))    CloseVideoStream(true);
-      if (!IsValidStream(m_CurrentSubtitle)) CloseSubtitleStream(true);
+      else
+      {
+        // check so that none of our streams has become invalid
+        if (!IsValidStream(m_CurrentAudio))    CloseAudioStream(true);
+        if (!IsValidStream(m_CurrentVideo))    CloseVideoStream(true);
+        if (!IsValidStream(m_CurrentSubtitle)) CloseSubtitleStream(true);
+      }
 
       // check if there is any better stream to use (normally for dvd's)
       if ( !m_PlayerOptions.video_only )
@@ -2647,7 +2649,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
           return pStream->OnMouseMove(pt);
         }
         break;
-      case ACTION_SHOW_OSD:
       case ACTION_SELECT_ITEM:
         {
           THREAD_ACTION(action);
@@ -2765,17 +2766,8 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 
 CStdString CDVDPlayer::GetPlayerState()
 {
-  if (!m_pInputStream) return "";
-
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-
-    std::string buffer;
-    if( pStream->GetNavigatorState(buffer) ) return buffer;
-  }
-
-  return "";
+  CSingleLock lock(m_StateSection);
+  return m_State.player_state;
 }
 
 bool CDVDPlayer::SetPlayerState(CStdString state)
@@ -2927,9 +2919,14 @@ void CDVDPlayer::UpdatePlayState(double timeout)
         m_State.time       = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime();
         m_State.time_total = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime();
       }
+      if(!((CDVDInputStreamNavigator*)m_pInputStream)->GetNavigatorState(m_State.player_state))
+        m_State.player_state = "";
     }
+    else
+        m_State.player_state = "";
 
-    else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
     {
       if(((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime() > 0)
       {

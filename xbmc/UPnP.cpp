@@ -35,6 +35,7 @@
 #include "FileSystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "FileSystem/VideoDatabaseDirectory/QueryParams.h"
 #include "FileSystem/File.h"
+#include "NptStrings.h"
 #include "Platinum.h"
 #include "PltMediaConnect.h"
 #include "PltMediaRenderer.h"
@@ -1862,6 +1863,7 @@ CUPnPRenderer::GetProtocolInfo(NPT_String& info, NPT_String& proto, NPT_String& 
 NPT_Result
 CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
 {
+    bool bImageFile = false;
     PLT_Service* service;
     NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
 
@@ -1911,10 +1913,15 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
             if(NPT_SUCCEEDED(CUPnP::PopulateTagFromObject(*item.GetVideoInfoTag(), *object, res)))
                 item.SetLabelPreformated(false);
         } else if(object->m_ObjectClass.type.StartsWith("object.item.imageItem")) {
+            bImageFile = true;
         }
-        g_applicationMessenger.MediaPlay(item);
+        bImageFile?g_applicationMessenger.PictureShow(item.m_strPath)
+                  :g_applicationMessenger.MediaPlay(item);
     } else {
-        g_applicationMessenger.MediaPlay((const char*)uri);
+        bImageFile = NPT_String(PLT_MediaObject::GetUPnPClassFromExt(NPT_FilePath::FileExtension(uri))).StartsWith("object.item.imageItem", true);
+
+        bImageFile?g_applicationMessenger.PictureShow((const char*)uri)
+                  :g_applicationMessenger.MediaPlay((const char*)uri);
     }
 
     if (!g_application.IsPlaying()) {

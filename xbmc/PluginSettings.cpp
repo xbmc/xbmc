@@ -149,8 +149,6 @@ bool CPluginSettings::Load(const CURL& url)
   CUtil::AddFileToFolder(pluginFileName, "resources", pluginFileName);
   CUtil::AddFileToFolder(pluginFileName, "settings.xml", pluginFileName);
 
-  pluginFileName = pluginFileName;
-
   if (!m_pluginXmlDoc.LoadFile(pluginFileName))
   {
     CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", pluginFileName.c_str(), m_pluginXmlDoc.ErrorRow(), m_pluginXmlDoc.ErrorDesc());

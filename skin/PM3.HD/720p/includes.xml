@@ -1,5 +1,6 @@
 <includes>
 	<include file="defaults.xml" />
+	<include file="IncludesCodecFlagging.xml" />
 	<include file="ViewsVideoLibrary.xml" />
 	<include file="ViewsMusicLibrary.xml" />
 	<include file="ViewsFileMode.xml" />

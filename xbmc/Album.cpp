@@ -135,16 +135,26 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
   if (node)
     songs.clear();  // this means that the tracks can't be spread over separate pages
                     // but this is probably a reasonable limitation
+  bool bIncrement = false;
   while (node)
   {
     if (node->FirstChild())
     {
+
       CSong song;
       XMLUtils::GetInt(node,"position",song.iTrack);
+
+      if (song.iTrack == 0)
+        bIncrement = true;
+
       XMLUtils::GetString(node,"title",song.strTitle);
       CStdString strDur;
       XMLUtils::GetString(node,"duration",strDur);
       song.iDuration = StringUtils::TimeStringToSeconds(strDur);
+  
+      if (bIncrement)
+        song.iTrack = song.iTrack + 1;
+     
       songs.push_back(song);
     }
     node = node->NextSibling("track");

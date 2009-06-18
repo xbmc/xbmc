@@ -68,6 +68,8 @@ private:
   // Member variables
   CStdString m_strArtist;  // album artist
   CStdString m_strAlbum;  // album title
+  CStdString m_strGenre;  // album genre
+  int m_iYear;            //album year
   int m_iTrack;   // current track
   int m_iTotalTracks;  // total tracks
   float m_replayGainAlbumGain;

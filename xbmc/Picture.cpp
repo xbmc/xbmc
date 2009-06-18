@@ -54,7 +54,6 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, 
   g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture);
   if (pTexture)
   {
-    CLog::Log(LOGDEBUG,"PICTURE: loaded image and created texture. height: %u, width: %u", m_info.height, m_info.width);
     D3DLOCKED_RECT lr;
     if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
     {
@@ -78,6 +77,8 @@ IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, 
       pTexture->UnlockRect( 0 );
     }
   }
+  else
+    CLog::Log(LOGERROR, "%s - failed to create texture while loading image %s", __FUNCTION__, strFileName.c_str());
   m_dll.ReleaseImage(&m_info);
   return pTexture;
 }

@@ -2335,13 +2335,13 @@ void CApplication::Render()
   RenderNoPresent();
   // Present the backbuffer contents to the display
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+  g_infoManager.UpdateFPS();
   g_graphicsContext.Unlock();
 }
 #endif
 
 void CApplication::RenderMemoryStatus()
 {
-  g_infoManager.UpdateFPS();
 #if !defined(_DEBUG) && !defined(PROFILE)
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
 #endif
@@ -4163,20 +4163,20 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState()
 {
-  CStdString m_progressTrackingFile = m_progressTrackingItem->m_strPath;
-  
-  if (m_progressTrackingFile != "")
+  CStdString progressTrackingFile = m_progressTrackingItem->m_strPath;
+
+  if (progressTrackingFile != "")
   {
     if (m_progressTrackingItem->IsVideo())
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, m_progressTrackingFile.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, progressTrackingFile.c_str());
 
       CVideoDatabase videodatabase;
       if (videodatabase.Open())
       {
         if (m_progressTrackingPlayCountUpdate)
         {
-          CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, m_progressTrackingItem->m_strPath.c_str());
+          CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, progressTrackingFile.c_str());
 
           // consider this item as played
           videodatabase.MarkAsWatched(*m_progressTrackingItem);
@@ -4185,17 +4185,17 @@ void CApplication::SaveFileState()
 
         if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
         {
-          videodatabase.SetVideoSettings(m_progressTrackingFile, g_stSettings.m_currentVideoSettings);
+          videodatabase.SetVideoSettings(progressTrackingFile, g_stSettings.m_currentVideoSettings);
         }
 
         if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
         {
-          videodatabase.ClearBookMarksOfFile(m_progressTrackingFile, CBookmark::RESUME);
+          videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
         }
         else
         if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
         {
-          videodatabase.AddBookMarkToFile(m_progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
+          videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
         }
 
         videodatabase.Close();
@@ -4203,7 +4203,7 @@ void CApplication::SaveFileState()
     }
     else
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for audio file %s", __FUNCTION__, m_progressTrackingFile.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for audio file %s", __FUNCTION__, progressTrackingFile.c_str());
 
       if (m_progressTrackingPlayCountUpdate)
       {
@@ -4212,12 +4212,12 @@ void CApplication::SaveFileState()
         if (dialog && !dialog->IsDialogRunning())
         {
           // consider this item as played
-          CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, m_progressTrackingFile.c_str());
+          CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, progressTrackingFile.c_str());
 
           CMusicDatabase musicdatabase;
           if (musicdatabase.Open())
           {
-            musicdatabase.IncrTop100CounterByFileName(m_progressTrackingFile);
+            musicdatabase.IncrTop100CounterByFileName(progressTrackingFile);
             musicdatabase.Close();
           }
         }

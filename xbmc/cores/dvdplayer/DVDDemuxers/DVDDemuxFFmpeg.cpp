@@ -323,7 +323,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
         CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
-      memset(pd.buf+context->max_packet_size, 0, AVPROBE_PADDING_SIZE);
+      memset(pd.buf+pd.buf_size, 0, AVPROBE_PADDING_SIZE);
 
       // restore position again
       m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
@@ -331,13 +331,32 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
       if (!iformat)
       {
+        // av_probe_input_format failed, re-probe the ffmpeg/ffplay method.
+        // av_open_input_file uses av_probe_input_format2 for probing format, 
+        // starting at 2048, up to max buffer size of 1048576. We just probe to 
+        // the buffer size allocated above so as to avoid seeks on content that 
+        // might not be seekable.
+        int max_buf_size = pd.buf_size;
+        for (int probe_size=std::min(2048, pd.buf_size); probe_size <= max_buf_size && !iformat; probe_size<<=1) 
+        {
+          CLog::Log(LOGDEBUG, "%s - probing failed, re-probing with probe size [%d]", __FUNCTION__, probe_size); 
+          int score= probe_size < max_buf_size ? AVPROBE_SCORE_MAX/4 : 0;
+          pd.buf_size = probe_size;
+          iformat = m_dllAvFormat.av_probe_input_format2(&pd, 1, &score);
+        }
+      }
+      if (!iformat)
+      {
         CLog::Log(LOGERROR, "%s - error probing input format, %s", __FUNCTION__, strFile.c_str());
         return false;
       }
-      else if(iformat->name)
-        CLog::Log(LOGDEBUG, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
       else
-        CLog::Log(LOGDEBUG, "%s - probing detected unnamed format", __FUNCTION__);
+      {
+        if (iformat->name)
+          CLog::Log(LOGDEBUG, "%s - probing detected format [%s]", __FUNCTION__, iformat->name);
+        else
+          CLog::Log(LOGDEBUG, "%s - probing detected unnamed format", __FUNCTION__);
+      }
     }
 
 
@@ -475,8 +494,6 @@ void CDVDDemuxFFmpeg::Flush()
 
   if (m_pFormatContext)
   {
-    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
-
     // reset any dts interpolation      
     for(int i=0;i<MAX_STREAMS;i++)
     {
@@ -756,11 +773,8 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     if (!((CDVDInputStreamNavigator*)m_pInput)->SeekTime(time))
       return false;
 
-    Lock();
-    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
-    Unlock();
     return true;
   }
 
@@ -1065,11 +1079,8 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
     if(!((CDVDInputStreamNavigator*)m_pInput)->SeekChapter(chapter))
       return false;
 
-    Lock();
-    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
-    Unlock();
     return true;
   }
 

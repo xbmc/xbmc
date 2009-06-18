@@ -187,14 +187,9 @@ void CSettings::Initialize()
   g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
   g_advancedSettings.m_tvshowExcludeFromScanRegExps.push_back("[-\\._ ]sample[-\\._ ]");
 
-  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+cd[ _\\.-]*([0-9a-d]+)");
-  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dvd[ _\\.-]*([0-9a-d]+)");
-  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+p(?:ar)?t[ _\\.-]*([0-9a-d]+)");
-  g_advancedSettings.m_videoStackRegExps.push_back("[ _\\.-]+dis[ck][ _\\.-]*([0-9a-d]+)");
-  g_advancedSettings.m_videoStackRegExps.push_back("()[ _\\.-]+([0-9]*[abcd]+)(\\.....?)$"); // can anyone explain this one?  should this be ([0-9a-d]+) ?
-  g_advancedSettings.m_videoStackRegExps.push_back("()cd([0-9a-d]+)(\\.....?)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("([a-z])([0-9]+)(\\.....?)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("()([a-c])(\\.....?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()[ _.-]?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]?([0-9a-d]+).*(\\.....?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()[ ._-]?([a-c0-3]+)(\\.....?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()[ ._-](0?[a-c1-3])[ ._-].*?(\\.....?)$");
 
   // foo_[s01]_[e01]
   g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
@@ -233,6 +228,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_bMusicLibraryHideAllItems = false;
   g_advancedSettings.m_bMusicLibraryAllItemsOnBottom = false;
   g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear = false;
+  g_advancedSettings.m_iMusicLibraryRecentlyAddedItems = 25;
   g_advancedSettings.m_strMusicLibraryAlbumFormat = "";
   g_advancedSettings.m_strMusicLibraryAlbumFormatRight = "";
   g_advancedSettings.m_prioritiseAPEv2tags = false;
@@ -241,6 +237,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_bVideoLibraryHideAllItems = false;
   g_advancedSettings.m_bVideoLibraryAllItemsOnBottom = false;
+  g_advancedSettings.m_iVideoLibraryRecentlyAddedItems = 25;
   g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems = false;
   g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
   g_advancedSettings.m_bVideoLibraryCleanOnUpdate = false;
@@ -1123,6 +1120,7 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bMusicLibraryHideAllItems);
+    XMLUtils::GetInt(pElement, "recentlyaddeditems", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems, 1, INT_MAX);
     XMLUtils::GetBoolean(pElement, "prioritiseapetags", g_advancedSettings.m_prioritiseAPEv2tags);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bMusicLibraryAllItemsOnBottom);
     XMLUtils::GetBoolean(pElement, "albumssortbyartistthenyear", g_advancedSettings.m_bMusicLibraryAlbumsSortByArtistThenYear);
@@ -1136,6 +1134,7 @@ void CSettings::LoadAdvancedSettings()
   {
     XMLUtils::GetBoolean(pElement, "hideallitems", g_advancedSettings.m_bVideoLibraryHideAllItems);
     XMLUtils::GetBoolean(pElement, "allitemsonbottom", g_advancedSettings.m_bVideoLibraryAllItemsOnBottom);
+    XMLUtils::GetInt(pElement, "recentlyaddeditems", g_advancedSettings.m_iVideoLibraryRecentlyAddedItems, 1, INT_MAX);
     XMLUtils::GetBoolean(pElement, "hiderecentlyaddeditems", g_advancedSettings.m_bVideoLibraryHideRecentlyAddedItems);
     XMLUtils::GetBoolean(pElement, "hideemptyseries", g_advancedSettings.m_bVideoLibraryHideEmptySeries);
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
@@ -1466,7 +1465,7 @@ void CSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLI
       bool bByDate = false;
       if (pRegExp->ToElement())
       {
-        CStdString byDate = pRegExp->ToElement()->Attribute("byDate");
+        CStdString byDate = pRegExp->ToElement()->Attribute("bydate");
         if(byDate && stricmp(byDate, "true") == 0)
         {
           bByDate = true;
@@ -1654,37 +1653,43 @@ bool CSettings::SaveAvpackSettings(TiXmlNode *io_pRoot) const
 
 void CSettings::GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings)
 {
-  int iAction = 0; // overwrite
-  // for backward compatibility
-  const char* szAppend = pRootElement->Attribute("append");
-  if ((szAppend && stricmp(szAppend, "yes") == 0))
-    iAction = 1;
-  // action takes precedence if both attributes exist
-  const char* szAction = pRootElement->Attribute("action");
-  if (szAction)
+  TiXmlElement *pElement = pRootElement;
+  while (pElement)
   {
-    iAction = 0; // overwrite
-    if (stricmp(szAction, "append") == 0)
-      iAction = 1; // append
-    else if (stricmp(szAction, "prepend") == 0)
-      iAction = 2; // prepend
-  }
-  if (iAction == 0)
-    settings.clear();
-  TiXmlNode* pRegExp = pRootElement->FirstChild("regexp");
-  int i = 0;
-  while (pRegExp)
-  {
-    if (pRegExp->FirstChild())
+    int iAction = 0; // overwrite
+    // for backward compatibility
+    const char* szAppend = pElement->Attribute("append");
+    if ((szAppend && stricmp(szAppend, "yes") == 0))
+      iAction = 1;
+    // action takes precedence if both attributes exist
+    const char* szAction = pElement->Attribute("action");
+    if (szAction)
     {
-      CStdString regExp = pRegExp->FirstChild()->Value();
-      regExp.MakeLower();
-      if (iAction == 2)
-        settings.insert(settings.begin() + i++, 1, regExp);
-      else
-        settings.push_back(regExp);
+      iAction = 0; // overwrite
+      if (stricmp(szAction, "append") == 0)
+        iAction = 1; // append
+      else if (stricmp(szAction, "prepend") == 0)
+        iAction = 2; // prepend
     }
-    pRegExp = pRegExp->NextSibling("regexp");
+    if (iAction == 0)
+      settings.clear();
+    TiXmlNode* pRegExp = pElement->FirstChild("regexp");
+    int i = 0;
+    while (pRegExp)
+    {
+      if (pRegExp->FirstChild())
+      {
+        CStdString regExp = pRegExp->FirstChild()->Value();
+        regExp.MakeLower();
+        if (iAction == 2)
+          settings.insert(settings.begin() + i++, 1, regExp);
+        else
+          settings.push_back(regExp);
+      }
+      pRegExp = pRegExp->NextSibling("regexp");
+    }
+
+    pElement = pElement->NextSiblingElement(pRootElement->Value());
   }
 }
 

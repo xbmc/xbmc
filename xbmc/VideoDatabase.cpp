@@ -44,10 +44,9 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 26
+#define VIDEO_DATABASE_VERSION 27
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
-#define RECENTLY_ADDED_LIMIT  25
 
 CBookmark::CBookmark()
 {
@@ -288,12 +287,12 @@ bool CVideoDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create episodeview");
     CStdString episodeview = FormatSQL("create view episodeview as select episode.*,files.strFileName as strFileName,"
-                                       "path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,tvshow.c%02d as strTitle,tvshow.idShow as idShow,"
+                                       "path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,tvshow.c%02d as strTitle,tvshow.c%02d as strStudio,tvshow.idShow as idShow,"
                                        "tvshow.c%02d as premiered from episode "
                                        "join files on files.idFile=episode.idFile "
                                        "join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode "
                                        "join tvshow on tvshow.idshow=tvshowlinkepisode.idshow "
-                                       "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED);
+                                       "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED);
     m_pDS->exec(episodeview.c_str());
 
     CLog::Log(LOGINFO, "create musicvideoview");
@@ -2649,6 +2648,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   movieTime += timeGetTime() - time; time = timeGetTime();
 
   details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
+  details.m_strStudio = pDS->fv(VIDEODB_DETAILS_EPISODE_STUDIO).get_asString();
 
   if (needsCast)
   {
@@ -3394,6 +3394,25 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("CREATE TABLE studiolinktvshow ( idStudio integer, idShow integer)\n");
       m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinktvshow_1 ON studiolinktvshow ( idStudio, idShow)\n");
       m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinktvshow_2 ON studiolinktvshow ( idShow, idStudio)\n");
+    }
+    if (iVersion < 27)
+    {
+      m_pDS->exec("drop view episodeview");
+      CStdString episodeview = FormatSQL("create view episodeview as select episode.*,files.strFileName as strFileName,"
+                                         "path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,tvshow.c%02d as strTitle,tvshow.c%02d as strStudio,tvshow.idShow as idShow,"
+                                         "tvshow.c%02d as premiered from episode "
+                                         "join files on files.idFile=episode.idFile "
+                                         "join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode "
+                                         "join tvshow on tvshow.idshow=tvshowlinkepisode.idshow "
+                                         "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED);
+      m_pDS->exec(episodeview.c_str());
+    }
+    if (iVersion < 28)
+    {
+      m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
+        "strVideoCodec text, fVideoAspect real, iVideoWidth integer, iVideoHeight integer, "
+        "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, strSubtitleLanguage text)");
+      m_pDS->exec("CREATE INDEX ix_streamdetails ON streamdetails (idFile)");
     }
   }
   catch (...)
@@ -4871,19 +4890,19 @@ bool CVideoDatabase::GetMusicVideosNav(const CStdString& strBaseDir, CFileItemLi
 
 bool CVideoDatabase::GetRecentlyAddedMoviesNav(const CStdString& strBaseDir, CFileItemList& items)
 {
-  CStdString where = FormatSQL("order by idMovie desc limit %u",RECENTLY_ADDED_LIMIT);
+  CStdString where = FormatSQL("order by idMovie desc limit %u", g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   return GetMoviesByWhere(strBaseDir, where, items);
 }
 
 bool CVideoDatabase::GetRecentlyAddedEpisodesNav(const CStdString& strBaseDir, CFileItemList& items)
 {
-  CStdString where = FormatSQL("order by idepisode desc limit %u",RECENTLY_ADDED_LIMIT);
+  CStdString where = FormatSQL("order by idepisode desc limit %u", g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   return GetEpisodesByWhere(strBaseDir, where, items, false);
 }
 
 bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items)
 {
-  CStdString where = FormatSQL("order by idmvideo desc limit %u",RECENTLY_ADDED_LIMIT);
+  CStdString where = FormatSQL("order by idmvideo desc limit %u", g_advancedSettings.m_iVideoLibraryRecentlyAddedItems);
   return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 
