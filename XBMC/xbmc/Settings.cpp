@@ -233,7 +233,6 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoStackRegExps.push_back("()[ _.-]?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]?([0-9a-d]+).*(\\.....?)$");
   g_advancedSettings.m_videoStackRegExps.push_back("()[ ._-]?([a-c0-3]+)(\\.....?)$");
   g_advancedSettings.m_videoStackRegExps.push_back("()[ ._-](0?[a-c1-3])[ ._-].*?(\\.....?)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("(.*?)([a-c0-3])[ ._-].*(\\.....?)$");  // This is pretty greedy, feel free to kill it if problems arise.
 
   // foo_[s01]_[e01]
   g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
