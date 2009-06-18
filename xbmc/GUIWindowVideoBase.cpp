@@ -644,8 +644,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         // now show the imdb info
         OutputDebugString("show info\n");
 
-        // remove directory caches
+        // remove directory caches and reload images
         CUtil::DeleteVideoDatabaseDirectoryCache();
+        CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+        OnMessage(reload);
 
         *item->GetVideoInfoTag() = movieDetails;
         pDlgInfo->SetMovie(item);
