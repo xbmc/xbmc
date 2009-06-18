@@ -70,7 +70,7 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/WavPackCodec \
 	xbmc/cores/paplayer/GYMCodec \
 	xbmc/cores/paplayer/YMCodec/StSoundLibrary \
-	xbmc/cores/paplayer/ModuleCodec/vc6/dumb \
+	xbmc/cores/paplayer/ModuleCodec \
 	xbmc/cores/paplayer/MPCCodec/xbmc \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
@@ -276,6 +276,7 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/vorbisfile
+	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
@@ -284,7 +285,6 @@ ifneq ($(ARCH), powerpc-osx)
 	$(MAKE) -C xbmc/cores/paplayer/MACDll
 endif
 ifneq ($(ARCH), x86_64-linux)
-	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
 imagelib: dllloader

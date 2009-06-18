@@ -10,8 +10,8 @@ ALLEGRO_OBJECTS := $(addprefix $(OBJDIR)/, $(notdir $(patsubst %.c, %.o, $(ALLEG
 # accurately, create a local copy of the current CFLAGS variable. This is
 # necessary because Make doesn't expand variables in commands until they are
 # executed.
-$(CORE_LIB_FILE): CFLAGS := $(CFLAGS)
-$(ALLEGRO_LIB_FILE): CFLAGS := $(CFLAGS)
+$(CORE_LIB_FILE): CFLAGS := -fPIC $(CFLAGS)
+$(ALLEGRO_LIB_FILE): CFLAGS := -fPIC $(CFLAGS)
 
 
 $(OBJDIR)/%.o: src/core/%.c include/dumb.h include/internal/dumb.h
