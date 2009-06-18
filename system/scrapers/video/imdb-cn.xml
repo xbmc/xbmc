@@ -1,5 +1,5 @@
-ï»¿ï»¿<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.0" date="2009-05-22" name="IMDb-CN(Chinese)" content="movies" thumb="imdb-cn.gif" language="cn">
+<?xml version="1.0" encoding="gb2312"?>
+<scraper framework="1.0" date="2009-06-09" name="IMDb-CN(Chinese)" content="movies" thumb="imdb-cn.gif" language="zh">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
@@ -12,8 +12,14 @@
 		</RegExp>
 	</GetSettings>
 	<NfoUrl dest="3">
-		<RegExp input="$$1" output="&lt;url&gt;\1&lt;/url&gt;" dest="3">
-			<expression clear="yes" noclean="1">(http://www.imdb.cn/title/tt[0-9]*)</expression>
+		<RegExp input="$$1" output="&lt;url&gt;http://www.imdb.cn/title/tt\1&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;"  dest="3">
+			<expression clear="yes" noclean="1">imdb.cn/title/tt([0-9]*)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;url&gt;http://www.imdb.cn/title/tt\1&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;"  dest="3+">
+			<expression clear="yes" noclean="1">imdb.com/Title\?([0-9]*)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;url&gt;http://www.imdb.cn/title/tt\1&lt;/url&gt;&lt;id&gt;tt\1&lt;/id&gt;"  dest="3+">
+			<expression clear="yes" noclean="1">imdb.com/title/tt([0-9]*)</expression>
 		</RegExp>
 	</NfoUrl>
 	<CreateSearchUrl dest="3" SearchStringEncoding="gb2312">
@@ -22,7 +28,7 @@
 		</RegExp>
 	</CreateSearchUrl>
 	<GetSearchResults dest="8">
-		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;gb2312&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="\1" dest="7">
 				<expression clear="yes">/title/([t0-9]*)/ratings</expression>
 			</RegExp>
@@ -70,11 +76,8 @@
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
 				<expression>&lt;div id=imdbjqbody&gt;&lt;h2&gt;[^&lt;]*&lt;/h2&gt;&lt;br&gt;(.*?)&lt;/div</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
-				<expression repeat="yes">&lt;A href=http://www.imdb.cn/name/nm[0-9]+&gt;([^&lt;]*)&lt;/a&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
-				<expression repeat="yes">&lt;td  height=27 &gt;&lt;a href=/name/nm[0-9]+&gt;([^&lt;]*)&lt;/a&gt; &lt;/td&gt;&lt;td &gt; ....&lt;/td&gt;&lt;td&gt;([^&lt;]*)&lt;/td&gt;</expression>
+			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetFullcredits&quot;&gt;$$3/fulldredits&lt;/url&gt;" dest="5+">
+				<expression></expression>
 			</RegExp>
 			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?title=\1&lt;/url&gt;" dest="5+">
 				<expression>/title/tt([0-9]*)/ratings</expression>
@@ -89,6 +92,29 @@
 		</RegExp>
 	</GetDetails>	
 
+	<GetFullcredits clearbuffers="no" dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression clear="yes" noclean="1">ÑÝÔ±         &lt;table(.*?)&lt;/table&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="2">
+				<expression repeat="yes" trim="1,2">href=&apos;/name/nm[0-9]+&apos;&gt;([^&lt;]*)&lt;/a&gt;[^\.]*\.\.\.\.\.\.([^&lt;]*)&lt;/td&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="7">
+				<expression clear="yes" noclean="1">µ¼ÑÝ         &lt;table(.*?)&lt;/table&gt;</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
+				<expression repeat="yes">href=&apos;/name/nm[0-9]+&apos;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression clear="yes" noclean="1">±à¾ç         &lt;table(.*?)&lt;/table&gt;</expression>
+			</RegExp>
+			<RegExp input="$$8" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
+				<expression repeat="yes">href=&apos;/name/nm[0-9]+&apos;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetFullcredits>
 	<GetMoviePosterDBLink dest="6" clearbuffers="no">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetMoviePosterDB&quot;&gt;\1&lt;/url&gt;&lt;/details&gt;" dest="6">
 			<expression>(http://www.movieposterdb.com/movie/[^&quot;]*)&quot;</expression>

@@ -35,7 +35,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   static void ShowAndGetInput(CURL& url);
   static void ShowAndGetInput(SScraperInfo& info);
-    
+  static void ShowAndGetInput(CStdString& path);
+
 private:
   void CreateControls();
   void FreeControls();

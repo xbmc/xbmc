@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="7,10"
 	Name="xbmc"
 	ProjectGUID="{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}"
 	RootNamespace="xbmc"
@@ -471,6 +471,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\ScraperSettings.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\ScriptSettings.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\ScriptSettings.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\Settings.cpp">
@@ -3775,6 +3781,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.h">
 					</File>
 					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMPL2.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMPL2.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSami.cpp">
 					</File>
 					<File
@@ -4544,6 +4556,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\PythonPlayer.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\PythonSettings.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\lib\libPython\xbmcmodule\PythonSettings.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\lib\libPython\xbmcmodule\pyutil.cpp">

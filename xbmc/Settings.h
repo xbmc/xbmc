@@ -235,6 +235,7 @@ public:
     CStdString m_dvdThumbs;
 
     bool m_bMusicLibraryHideAllItems;
+    int m_iMusicLibraryRecentlyAddedItems;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
     CStdString m_strMusicLibraryAlbumFormat;
@@ -246,6 +247,7 @@ public:
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
+    int m_iVideoLibraryRecentlyAddedItems;
     bool m_bVideoLibraryHideRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;

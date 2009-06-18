@@ -81,7 +81,7 @@ CMusicInfoTagLoaderWMA::~CMusicInfoTagLoaderWMA()
 {}
 
 // Based on MediaInfo
-// by Jérôme Martinez, Zen@MediaArea.net
+// by Jï¿½rï¿½me Martinez, Zen@MediaArea.net
 // http://sourceforge.net/projects/mediainfo/
 bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& tag)
 {

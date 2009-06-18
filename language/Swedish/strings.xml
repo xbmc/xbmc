@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 05/29/2009-->
+<!--Date of translation: 06/16/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20734-->
+<!--Based on english strings version 21081-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -281,7 +281,7 @@
   <string id="367">Sort: Betyg</string>
   <string id="368">IMDb</string>
   <string id="369">Titel</string>
-  <string id="370">Åska</string>
+  <string id="370">Åskstormar</string>
   <string id="371">Delvis</string>
   <string id="372">Mest</string>
   <string id="373">Soligt</string>
@@ -545,7 +545,7 @@
   <string id="706">HTTP proxy värd</string>
   <string id="707">HTTP proxy port</string>
   <string id="708">Aktivera HTTP proxy</string>
-  <string id="709">HTTP Proxy  användarnamn</string>
+  <string id="709">HTTP Proxy användarnamn</string>
   <string id="710">HTTP Proxy lösenord</string>
   <string id="711">Internet protokoll (IP)</string>
   <string id="712">Felaktig port angiven. Värde måste vara mellan 1 och 65535.</string>
@@ -678,6 +678,7 @@
   <string id="1046">Accesspunkter</string>
   <string id="1047">Annan...</string>
   <string id="1048">Webbserver användarnamn</string>
+  <string id="1049">Skriptinställningar</string>
   <string id="1200">SMB utdelning</string>
   <string id="1202">SMB arbetsgrupp</string>
   <string id="1203">SMB användarnamn</string>
@@ -689,7 +690,7 @@
   <string id="1212">Film</string>
   <string id="1213">Bilder</string>
   <string id="1214">Filer</string>
-  <string id="1215">Musik &amp; Film </string>
+  <string id="1215">Musik &amp; Film</string>
   <string id="1216">Musik &amp; Bilder</string>
   <string id="1217">Musik &amp; Filer</string>
   <string id="1218">Film &amp; Bilder</string>
@@ -724,7 +725,7 @@
   <string id="1398">Nollgradigt</string>
   <string id="1399">Sent</string>
   <string id="1400">Isolerade</string>
-  <string id="1401">Åskväder</string>
+  <string id="1401">Åskskurar</string>
   <string id="1402">Åska</string>
   <string id="1403">Sol</string>
   <string id="1404">Tunga</string>
@@ -740,6 +741,8 @@
   <string id="1415">Duggar</string>
   <string id="1416">Disigt</string>
   <string id="1417">Grynigt</string>
+  <string id="1418">Åskstorm</string>
+  <string id="1419">Åskskurar</string>
   <string id="1450">Aktivera strömspar under inaktivitet</string>
   <string id="2050">Speltid</string>
   <string id="4501">LCD typ</string>
@@ -832,19 +835,19 @@
   <string id="12327">Ange huvudkod</string>
   <string id="12328">Ange låskod</string>
   <string id="12329">eller tryck C för att avbryta</string>
-  <string id="12330">Ange knappkombination på spelkontrollen och </string>
+  <string id="12330">Ange knappkombination på spelkontrollen och</string>
   <string id="12331">tryck Start, eller Back för att avbryta</string>
   <string id="12332">Ange lås</string>
   <string id="12333">Lås upp</string>
   <string id="12334">Återställ lås</string>
   <string id="12335">Ta bort låset</string>
   <string id="12337">Sifferlösen</string>
-  <string id="12338">Knappar på spelkontroll </string>
+  <string id="12338">Knappar på spelkontroll</string>
   <string id="12339">Textlösen</string>
   <string id="12340">Ange nytt lösenord</string>
   <string id="12341">Ange nytt lösenord igen</string>
   <string id="12342">Felaktigt lösenord,</string>
-  <string id="12343">försök kvar </string>
+  <string id="12343">försök kvar</string>
   <string id="12344">Lösenordet som angavs matchade inte.</string>
   <string id="12345">Åtkomst nekad</string>
   <string id="12346">Antal lösenordsförsök har överstigits.</string>
@@ -1545,6 +1548,8 @@
   <string id="20252">Fyller glasen (filmer)</string>
   <string id="20300">Webbserver-mapp (HTTP)</string>
   <string id="20301">Webbserver-mapp (HTTPS)</string>
+  <string id="20302">Kunde inte skriva till mapp:</string>
+  <string id="20303">Vill du hoppa över och fortsätta?</string>
   <string id="20306">Okänd. Lägg till MD5 från xbmc.log till BiosIDs.ini.</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
@@ -1669,6 +1674,7 @@
   <string id="20430">Exportera miniatyrer och fan-konst?</string>
   <string id="20431">Skriva över äldre filer?</string>
   <string id="20432">Uteslut sökväg från biblioteksuppdateringar</string>
+  <string id="20433">Utvinn media metadatainformation</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1725,7 +1731,7 @@
   <string id="21402">är</string>
   <string id="21403">är inte</string>
   <string id="21404">börjar med</string>
-  <string id="21405">slutar med </string>
+  <string id="21405">slutar med</string>
   <string id="21406">större än</string>
   <string id="21407">mindre än</string>
   <string id="21408">efter</string>
@@ -1870,6 +1876,7 @@
   <string id="22042">vit/blå</string>
   <string id="22043">svart/vit</string>
   <string id="23000">Vädertillägg</string>
+  <string id="23001">- Tilläggsinställningar</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
