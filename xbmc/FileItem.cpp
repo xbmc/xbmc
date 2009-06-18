@@ -117,6 +117,8 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
     m_bIsFolder = false;
   }
   *GetVideoInfoTag() = movie;
+  FillInDefaultIcon();
+  SetCachedVideoThumb();
 }
 
 CFileItem::CFileItem(const CArtist& artist)
