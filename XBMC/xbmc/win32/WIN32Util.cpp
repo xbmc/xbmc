@@ -31,7 +31,9 @@
 #include "SpecialProtocol.h"
 #include "my_ntddscsi.h"
 #include "Surface.h"
+#if _MSC_VER > 1400
 #include "Setupapi.h"
+#endif
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -482,17 +484,27 @@ CStdString CWIN32Util::GetProfilePath()
 {
   CStdString strProfilePath;
   WCHAR szPath[MAX_PATH];
-  bool bpDirs = g_application.PlatformDirectoriesEnabled();
 
-  if(bpDirs && SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
+  if(SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
   {
     g_charsetConverter.wToUTF8(szPath, strProfilePath);
-    CUtil::AddFileToFolder(strProfilePath, "XBMC\\", strProfilePath);
+    strProfilePath = UncToSmb(strProfilePath);
   }  
   else
     CUtil::GetHomePath(strProfilePath);
 
   return strProfilePath;
+}
+
+CStdString CWIN32Util::UncToSmb(const CStdString &strPath)
+{
+  CStdString strRetPath(strPath);
+  if(strRetPath.Left(2).Equals("\\\\"))
+  {
+    strRetPath = "smb:" + strPath;
+    strRetPath.Replace("\\","/");
+  }
+  return strRetPath;
 }
 
 void CWIN32Util::ExtendDllPath()
@@ -584,6 +596,7 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
 // http://www.codeproject.com/KB/system/RemoveDriveByLetter.aspx
 // http://www.techtalkz.com/microsoft-device-drivers/250734-remove-usb-device-c-3.html
 
+#if _MSC_VER > 1400
 DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber) 
 {
 
@@ -659,9 +672,11 @@ DEVINST CWIN32Util::GetDrivesDevInstByDiskNumber(long DiskNumber)
   SetupDiDestroyDeviceInfoList(hDevInfo);
   return 0;
 }
+#endif
 
 bool CWIN32Util::EjectDrive(const char cDriveLetter)
 {
+#if _MSC_VER > 1400
   if( !cDriveLetter )
     return false;
 
@@ -706,6 +721,9 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   }
 
   return bSuccess;
+#else
+  return false;
+#endif
 }
 // safe removal
 
@@ -756,9 +774,11 @@ void CWIN32Util::CheckGLVersion()
 
 bool CWIN32Util::HasGLDefaultDrivers()
 {
+  int a=0,b=0;
   CStdString strVendor = Surface::CSurface::GetGLVendor();
+  Surface::CSurface::GetGLVersion(a, b);
 
-  if(strVendor.find("Microsoft")!= strVendor.npos)
+  if(strVendor.find("Microsoft")!=strVendor.npos && a==1 && b==1)
     return true;
   else
     return false;
@@ -772,6 +792,30 @@ bool CWIN32Util::HasReqGLVersion()
     return true;
   else
     return false;
+}
+
+BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
+{
+  BOOL b;
+  SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
+  PSID AdministratorsGroup; 
+  b = AllocateAndInitializeSid(
+      &NtAuthority,
+      2,
+      SECURITY_BUILTIN_DOMAIN_RID,
+      DOMAIN_ALIAS_RID_ADMINS,
+      0, 0, 0, 0, 0, 0,
+      &AdministratorsGroup); 
+  if(b)
+  {
+    if (!CheckTokenMembership( NULL, AdministratorsGroup, &b)) 
+    {
+         b = FALSE;
+    } 
+    FreeSid(AdministratorsGroup); 
+  }
+
+  return(b);
 }
 
 extern "C"

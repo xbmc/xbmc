@@ -98,8 +98,8 @@ void CGUIRadioButtonControl::DynamicResourceAlloc(bool bOnOff)
 void CGUIRadioButtonControl::SetPosition(float posX, float posY)
 {
   CGUIButtonControl::SetPosition(posX, posY);
-  float radioPosX = m_radioPosX ? m_radioPosX : (m_posX + m_width - 8) - m_imgRadioFocus.GetWidth();
-  float radioPosY = m_radioPosY ? m_radioPosY : m_posY + (m_height - m_imgRadioFocus.GetHeight()) / 2;
+  float radioPosX = m_radioPosX ? m_posX + m_radioPosX : (m_posX + m_width - 8) - m_imgRadioFocus.GetWidth();
+  float radioPosY = m_radioPosY ? m_posY + m_radioPosY : m_posY + (m_height - m_imgRadioFocus.GetHeight()) / 2;
   m_imgRadioFocus.SetPosition(radioPosX, radioPosY);
   m_imgRadioNoFocus.SetPosition(radioPosX, radioPosY);
 }

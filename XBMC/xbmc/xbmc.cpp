@@ -33,6 +33,7 @@
 #include "PlayListPlayer.h"
 #ifdef _LINUX
 #include <sys/resource.h>
+#include <signal.h>
 #endif
 #ifdef __APPLE__
 #include "Util.h"
@@ -44,13 +45,19 @@ CApplication g_application;
 int main(int argc, char* argv[])
 {
   CFileItemList playlist;
-#if defined(_LINUX) && defined(DEBUG) && !defined(__APPLE__)
+#ifdef _LINUX
+#if defined(DEBUG)
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
-  setrlimit(RLIMIT_CORE, &rlim);
-
+  if (setrlimit(RLIMIT_CORE, &rlim) == -1)
+    CLog::Log(LOGDEBUG, "Failed to set core size limit (%s)", strerror(errno));
+#endif
   // Prevent child processes from becoming zombies on exit if not waited upon. See also Util::Command
-  struct sigaction sa = {.sa_handler = SIG_IGN};
+  struct sigaction sa;
+  memset(&sa, 0, sizeof(sa));
+
+  sa.sa_flags = SA_NOCLDWAIT;
+  sa.sa_handler = SIG_IGN;
   sigaction(SIGCHLD, &sa, NULL);
 #endif
   if (argc > 1)

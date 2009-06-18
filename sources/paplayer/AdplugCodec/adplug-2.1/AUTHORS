@@ -1,0 +1,76 @@
+AdPlug is copyright (C) 1999 - 2007 Simon Peter <dn.tlp@gmx.net>, et al.
+All library code is written by Simon Peter, except the parts listed below.
+
+Additional Credits:
+-------------------
+Phil Hassey <philhassey@hotmail.com>:
+  - Player development for the following formats:
+    - MID: MIDI Audio File Format
+    - CMF: Creative Music File Format
+    - SCI: Sierra's AdLib Audio File Format
+    - LAA: LucasArts AdLib Audio File Format
+
+Marc Winterrowd <remove space and vowels from "marc winterrowd" and append
+                 "at yahoo" plus "dot com">:
+  - M: Origin Music player development
+
+Tatsuyuki Satoh <tatuyuki@tky.3web.ne.jp>:
+  - First YM3812 emulator development
+
+Ken Silverman <kjs@lems.brown.edu>:
+  - Second YM3812 emulator development
+
+Death Adder <death-adder@juno.com>:
+  - provided many file format specifications
+  - moral support ;)
+
+Mamiya <mamiya@users.sourceforge.net>:
+  - support for .SAT (early Surprise! Adlib Tracker) files
+
+Akintunde Omitowoju <oplx@yahoo.com>:
+  - ROL: AdLib Visual Composer player development
+
+Nikita V. Kalaganov <riven@ok.ru>:
+  - Player development:
+    - XAD: shell player and custom module formats
+  - Protracker loader development:
+    - SNG: Faust Music Creator
+    - MAD: Mlat Adlib Tracker
+    - CFF: BoomTracker 4.0
+    - DTM: DeFy Adlib Tracker
+  - Scream Tracker 3 loader development:
+    - DMO: Twin TrackPlayer
+  - XMS-Tracker detection support in AMD loader
+
+Sjoerd van der Berg <harekiet@zophar.net>:
+  - DRO: DOSBox Raw OPL player development
+
+Goetz Waschk <waschk@informatik.uni-rostock.de>:
+  - Mandrake Linux packages
+  - Red Hat RPM spec files
+
+Mike Gorchak <mike@malva.ua>:
+  - QNX packages
+  - QNX qpg file
+
+Tyler Montbriand <tsm@accesscomm.ca>:
+  - AMD64 (x86_64) fixes
+  - ROL: Added pitch handling
+
+Borg Number One [ Borg No. One ] <borg_no.one@gmx.net>:
+  - Many thanks for the huge amount of work to find the original
+    author (Andras Molnar) of the LOUDNESS Sound System and managing
+    to get the sources from him.
+
+Matthew Gambrell <mgambrell@gmail.com>:
+  - Enhancements to the DRO (DOSBox Raw OPL) format
+  - Added dual OPL2 and OPL3 support
+
+BSPAL <bspal.ys168.com>,
+Palxex <palxex@163.com>:
+  - RIX: Softstar RIX OPL Music Format player development
+
+Torbjorn Andersson,
+Johannes Schickel 'lordhoto' <lordhoto at scummvm dot org>:
+  - Development of original ADL (Westwood ADL File Format) player in
+    ScummVM, which has been adapted for AdPlug.

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.0" date="2009-05-22" name="IMDb" content="movies" thumb="imdb.gif" language="en">
+<scraper framework="1.0" date="2009-05-22" name="IMDb" content="movies" thumb="imdb.png" language="en">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Full Cast Credits&quot; type=&quot;bool&quot; id=&quot;fullcredits&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
@@ -164,7 +164,7 @@
 	<GetMovieDirectors clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp conditional="!fullcredits" input="$$1" output="\1" dest="6">
-				<expression clear="yes" noclean="1">Director.*?&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
+				<expression clear="yes" noclean="1">&gt;Director.*?&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
 				<expression clear="yes" noclean="1">Directed by(.*?)name=&quot;</expression>
@@ -178,7 +178,7 @@
 	<GetMovieWriters clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp conditional="!fullcredits" input="$$1" output="\1" dest="6">
-				<expression clear="yes" noclean="1">Writers.*?:&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
+				<expression clear="yes" noclean="1">&gt;Writer.*?:&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
 				<expression clear="yes" noclean="1">Writing credits(.*?)name=&quot;</expression>

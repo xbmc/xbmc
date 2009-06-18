@@ -714,6 +714,7 @@
   <string id="1046">Access points</string>
   <string id="1047">Other...</string>
   <string id="1048">Web server username</string>
+  <string id="1049">Script settings</string>
 
   <string id="1200">SMB client</string>
   <string id="1202">Workgroup</string>
@@ -785,6 +786,8 @@
   <string id="1415">Drizzle</string>
   <string id="1416">Foggy</string>
   <string id="1417">Grains</string>
+  <string id="1418">T-Storms</string>
+  <string id="1419">T-Showers</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -1729,8 +1732,8 @@
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
-  <string id="20302"></string>
-  <string id="20303"></string>
+  <string id="20302">Unable to write to folder:</string>
+  <string id="20303">Do you want to skip and proceed?</string>
   <string id="20304"></string>
   <string id="20305"></string>
 
@@ -1861,6 +1864,7 @@
   <string id="20430">Export thumbs and fanart?</string>
   <string id="20431">Overwrite old files?</string>
   <string id="20432">Exclude path from library updates</string> 
+  <string id="20433">Extract media metadata information</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2076,6 +2080,9 @@
   <string id="22041">white/red</string>
   <string id="22042">white/blue</string>
   <string id="22043">black/white</string>
+
+  <string id="23000">Weather plugin</string>
+  <string id="23001">- Plugin settings</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

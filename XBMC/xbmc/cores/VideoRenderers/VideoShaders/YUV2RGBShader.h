@@ -10,7 +10,7 @@ namespace Shaders {
   class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
   {
   public:
-    BaseYUV2RGBGLSLShader(unsigned flags);
+    BaseYUV2RGBGLSLShader(bool rect, unsigned flags);
     virtual void SetYTexture(GLint ytex) { m_yTexUnit = ytex; }
     virtual void SetUTexture(GLint utex) { m_uTexUnit = utex; }
     virtual void SetVTexture(GLint vtex) { m_vTexUnit = vtex; }

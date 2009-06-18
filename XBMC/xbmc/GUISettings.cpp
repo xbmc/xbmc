@@ -226,7 +226,10 @@ void CGUISettings::Initialize()
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(3, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
-  AddString(5, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "weather.plugin", 23000, "", SPIN_CONTROL_TEXT, true);
+  AddString(6, "weather.pluginsettings", 23001, "", BUTTON_CONTROL_STANDARD, true);
+  AddSeparator(7, "weather.sep2");
+  AddString(8, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
@@ -414,9 +417,10 @@ void CGUISettings::Initialize()
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
   AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
   AddBool(3, "myvideos.autothumb",12024, false);
-  AddBool(4, "myvideos.cleanfilenames", 20418, false);
-  AddSeparator(5, "myvideos.sep1");
-  AddBool(8, "myvideos.savefolderviews", 583, true);
+  AddBool(4, "myvideos.extractflags",20433,false);
+  AddBool(5, "myvideos.cleanfilenames", 20418, false);
+  AddSeparator(6, "myvideos.sep1");
+  AddBool(7, "myvideos.savefolderviews", 583, true);
 
   AddCategory(5, "videolibrary", 14022);
 
@@ -649,8 +653,12 @@ void CGUISettings::Initialize()
 
   AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
   AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+#ifdef __APPLE__
+  // OSX does not use a driver set vsync
+  AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_ALWAYS, SPIN_CONTROL_TEXT);
+#else
   AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
-
+#endif
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
   AddBool(2, "filelists.hideextensions", 497, false);
@@ -1018,6 +1026,13 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
 
   g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
+#ifdef __APPLE__
+  // trap any previous vsync by driver setting, does not exist on OSX
+  if (GetInt("videoscreen.vsync") == VSYNC_DRIVER)
+  {
+    SetInt("videoscreen.vsync", VSYNC_ALWAYS);
+  }
+#endif
   g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
   g_videoConfig.PrintInfo();

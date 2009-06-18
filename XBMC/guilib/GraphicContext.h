@@ -173,6 +173,7 @@ public:
   int GetHeight() const { return m_iScreenHeight; }
   float GetFPS() const;
   bool SendMessage(CGUIMessage& message);
+  bool SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1 = 0, DWORD param2 = 0);
   void setMessageSender(IMsgSenderCallback* pCallback);
   DWORD GetNewID();
   const CStdString& GetMediaDir() const { return m_strMediaDir; }

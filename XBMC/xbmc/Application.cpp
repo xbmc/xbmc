@@ -298,7 +298,7 @@ using namespace DBUSSERVER;
 CStdString g_LoadErrorStr;
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
-CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem)
+CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
 {
   m_iPlaySpeed = 1;
 #ifdef HAS_WEB_SERVER
@@ -480,49 +480,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 {
   // XBMC couldn't start for some reason...
   // g_LoadErrorStr should contain the reason
-  CLog::Log(LOGWARNING, "Emergency recovery console starting...");
-
   fprintf(stderr, "Fatal error encountered, aborting\n");
   fprintf(stderr, "Error log at %sxbmc.log\n", g_stSettings.m_logFolder.c_str());
   abort();
 }
-
-#ifndef _LINUX
-LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
-{
-  PCSTR pExceptionString = "Unknown exception code";
-
-#define STRINGIFY_EXCEPTION(code) case code: pExceptionString = #code; break
-
-  switch (ExceptionInfo->ExceptionRecord->ExceptionCode)
-  {
-    STRINGIFY_EXCEPTION(EXCEPTION_ACCESS_VIOLATION);
-    STRINGIFY_EXCEPTION(EXCEPTION_ARRAY_BOUNDS_EXCEEDED);
-    STRINGIFY_EXCEPTION(EXCEPTION_BREAKPOINT);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_DENORMAL_OPERAND);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_DIVIDE_BY_ZERO);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_INEXACT_RESULT);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_INVALID_OPERATION);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_OVERFLOW);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_STACK_CHECK);
-    STRINGIFY_EXCEPTION(EXCEPTION_ILLEGAL_INSTRUCTION);
-    STRINGIFY_EXCEPTION(EXCEPTION_INT_DIVIDE_BY_ZERO);
-    STRINGIFY_EXCEPTION(EXCEPTION_INT_OVERFLOW);
-    STRINGIFY_EXCEPTION(EXCEPTION_INVALID_DISPOSITION);
-    STRINGIFY_EXCEPTION(EXCEPTION_NONCONTINUABLE_EXCEPTION);
-    STRINGIFY_EXCEPTION(EXCEPTION_SINGLE_STEP);
-  }
-#undef STRINGIFY_EXCEPTION
-
-  g_LoadErrorStr.Format("%s (0x%08x)\n at 0x%08x",
-                        pExceptionString, ExceptionInfo->ExceptionRecord->ExceptionCode,
-                        ExceptionInfo->ExceptionRecord->ExceptionAddress);
-
-  CLog::Log(LOGFATAL, "%s", g_LoadErrorStr.c_str());
-
-  return ExceptionInfo->ExceptionRecord->ExceptionCode;
-}
-#endif
 
 extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
@@ -617,6 +578,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (SVN:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, SVN_REV, _MSC_VER);
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
+  CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
 #endif
   CSpecialProtocol::LogPaths();
 
@@ -942,12 +904,6 @@ HRESULT CApplication::Create(HWND hWnd)
   g_actionManager.SetScriptActionCallback(&g_pythonParser);
 #endif
 
-  // show recovery console on fatal error instead of freezing
-  CLog::Log(LOGINFO, "install unhandled exception filter");
-#ifndef _LINUX
-  SetUnhandledExceptionFilter(UnhandledExceptionFilter);
-#endif
-
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
   // Load random seed
@@ -1011,6 +967,10 @@ CProfile* CApplication::InitDirectoriesLinux()
     CUtil::AddDirectorySeperator(strTempPath);
     g_stSettings.m_logFolder = strTempPath;
 
+    bool bCopySystemPlugins = false;
+    if (!CDirectory::Exists("special://home/plugins") )
+       bCopySystemPlugins = true;
+
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
@@ -1023,6 +983,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/plugins/music");
     CDirectory::Create("special://home/plugins/pictures");
     CDirectory::Create("special://home/plugins/programs");
+    CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
     symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
@@ -1034,6 +995,10 @@ CProfile* CApplication::InitDirectoriesLinux()
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+    
+    // copy system-wide plugins into userprofile
+    if ( bCopySystemPlugins )
+       CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
   }
   else
   {
@@ -1109,6 +1074,10 @@ CProfile* CApplication::InitDirectoriesOSX()
     CUtil::AddDirectorySeperator(strTempPath);
     g_stSettings.m_logFolder = strTempPath;
 
+    bool bCopySystemPlugins = false;
+    if (!CDirectory::Exists("special://home/plugins") )
+       bCopySystemPlugins = true;
+
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
@@ -1121,6 +1090,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/plugins/music");
     CDirectory::Create("special://home/plugins/pictures");
     CDirectory::Create("special://home/plugins/programs");
+    CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
 #ifdef __APPLE__
@@ -1137,6 +1107,10 @@ CProfile* CApplication::InitDirectoriesOSX()
     CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+
+    // copy system-wide plugins into userprofile
+    if ( bCopySystemPlugins )
+       CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
   }
   else
   {
@@ -1181,13 +1155,8 @@ CProfile* CApplication::InitDirectoriesWin32()
 
   if (m_bPlatformDirectories)
   {
-    WCHAR szPath[MAX_PATH];
 
-    CStdString strWin32UserFolder;
-    if(SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
-      g_charsetConverter.wToUTF8(szPath, strWin32UserFolder);
-    else
-      strWin32UserFolder = strExecutablePath;
+    CStdString strWin32UserFolder = CWIN32Util::GetProfilePath();
 
     // create user/app data/XBMC
     CStdString homePath = CUtil::AddFileToFolder(strWin32UserFolder, "XBMC");
@@ -1202,6 +1171,10 @@ CProfile* CApplication::InitDirectoriesWin32()
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
+    bool bCopySystemPlugins = false;
+    if (!CDirectory::Exists("special://home/plugins") )
+       bCopySystemPlugins = true;
+
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/visualisations");
@@ -1213,6 +1186,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CDirectory::Create("special://home/plugins/music");
     CDirectory::Create("special://home/plugins/pictures");
     CDirectory::Create("special://home/plugins/programs");
+    CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
 
     CDirectory::Create("special://masterprofile");
@@ -1223,6 +1197,10 @@ CProfile* CApplication::InitDirectoriesWin32()
     CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
+
+    // copy system-wide plugins into userprofile
+    if ( bCopySystemPlugins )
+       CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
 
     // create user/app data/XBMC/cache
     CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
@@ -1299,6 +1277,7 @@ HRESULT CApplication::Initialize()
     CDirectory::Create("special://xbmc/plugins/video");
     CDirectory::Create("special://xbmc/plugins/pictures");
     CDirectory::Create("special://xbmc/plugins/programs");
+    CDirectory::Create("special://xbmc/plugins/weather");
     CDirectory::Create("special://xbmc/language");
     CDirectory::Create("special://xbmc/visualisations");
     CDirectory::Create("special://xbmc/sounds");
@@ -1404,7 +1383,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
   m_gWindowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
   m_gWindowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
+#ifdef HAS_KARAOKE
   m_gWindowManager.Add(new CGUIWindowKaraokeLyrics);      // window id = 2009
+#endif
 
   m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
   m_gWindowManager.Add(new CGUIWindowMusicOverlay);       // window id = 2903
@@ -2241,11 +2222,14 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
+#ifdef HAS_SDL
+  int vsync_mode = g_videoConfig.GetVSyncMode();
+#endif
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
 #ifdef HAS_SDL
-    if (g_videoConfig.GetVSyncMode()==VSYNC_VIDEO)
+    if (vsync_mode==VSYNC_VIDEO)
       g_graphicsContext.getScreenSurface()->EnableVSync(true);
 #endif
     if (m_bPresentFrame)
@@ -2261,9 +2245,9 @@ void CApplication::RenderNoPresent()
   g_graphicsContext.AcquireCurrentContext();
 
 #ifdef HAS_SDL
-  if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
+  if (vsync_mode==VSYNC_ALWAYS)
     g_graphicsContext.getScreenSurface()->EnableVSync(true);
-  else if (g_videoConfig.GetVSyncMode()!=VSYNC_DRIVER)
+  else if (vsync_mode!=VSYNC_DRIVER)
     g_graphicsContext.getScreenSurface()->EnableVSync(false);
 #endif
 
@@ -2399,8 +2383,14 @@ bool CApplication::WaitFrame(DWORD timeout)
 #ifdef HAS_SDL
   // Wait for all other frames to be presented
   SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0)
-    SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+  while(m_frameCount > 0)
+  {
+    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+    if(result == SDL_MUTEX_TIMEDOUT)
+      break;
+    if(result < 0)
+      CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
+  }  
   done = m_frameCount == 0;
   SDL_mutexV(m_frameMutex);
 #endif
@@ -2415,7 +2405,7 @@ void CApplication::NewFrame()
   m_frameCount++;
   SDL_mutexV(m_frameMutex);
 
-  SDL_CondSignal(m_frameCond);
+  SDL_CondBroadcast(m_frameCond);
 #endif
 }
 
@@ -2448,9 +2438,16 @@ void CApplication::Render()
       SDL_mutexP(m_frameMutex);
 
       // If we have frames or if we get notified of one, consume it.
-      if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100) == 0)
-        m_bPresentFrame = true;
+      while(m_frameCount == 0)
+      {
+        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100);
+        if(result == SDL_MUTEX_TIMEDOUT)
+          break;
+        if(result < 0)
+          CLog::Log(LOGWARNING, "CApplication::Render - error from conditional wait");
+      }
 
+      m_bPresentFrame = m_frameCount > 0;
       SDL_mutexV(m_frameMutex);
 #else
       m_bPresentFrame = true;
@@ -2458,8 +2455,15 @@ void CApplication::Render()
     }
     else
     {
-      // only "limit frames" if we are not using vsync.
-      if (g_videoConfig.GetVSyncMode() != VSYNC_ALWAYS || lowfps)
+      // engage the frame limiter as needed
+      bool limitFrames = lowfps;
+      if (g_videoConfig.GetVSyncMode() == VSYNC_DISABLED ||
+          g_videoConfig.GetVSyncMode() == VSYNC_VIDEO)
+        limitFrames = true; // not using vsync.
+      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
+        limitFrames = true; // using vsync, but it isn't working.
+
+      if (limitFrames)
       {
         if(lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
@@ -2468,12 +2472,6 @@ void CApplication::Render()
           nDelayTime = lastFrameTime + singleFrameTime - currentTime;
         Sleep(nDelayTime);
       }
-      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
-      {
-        //The driver is ignoring vsync. Was set to ALWAYS, set to VIDEO. Framerate will be limited from next render.
-        CLog::Log(LOGWARNING, "VSYNC ignored by driver, enabling framerate limiter.");
-        g_videoConfig.SetVSyncMode(VSYNC_VIDEO);
-      }
     }
 
     lastFrameTime = timeGetTime();
@@ -2481,6 +2479,7 @@ void CApplication::Render()
   g_graphicsContext.Lock();
   RenderNoPresent();
   g_graphicsContext.Flip();
+  g_infoManager.UpdateFPS();
   g_graphicsContext.Unlock();
 
 #ifdef HAS_SDL
@@ -2488,7 +2487,7 @@ void CApplication::Render()
   if(m_frameCount > 0)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
-  SDL_CondSignal(m_frameCond);
+  SDL_CondBroadcast(m_frameCond);
 #endif
 }
 
@@ -2496,7 +2495,6 @@ void CApplication::RenderMemoryStatus()
 {
   MEASURE_FUNCTION;
 
-  g_infoManager.UpdateFPS();
   g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
 
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
@@ -4249,7 +4247,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   CPlayerOptions options;
-  EPLAYERCORES eNewCore = EPC_NONE;
+  PLAYERCOREID eNewCore = EPC_NONE;
   if( bRestart )
   {
     // have to be set here due to playstack using this for starting the file
@@ -4392,6 +4390,23 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       if( options.fullscreen && g_renderManager.IsStarted()
        && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
        SwitchToFullScreen();
+
+      // Save information about the stream if we currently have no data
+      if (item.HasVideoInfoTag())
+      {
+        CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
+        if (!details->HasStreamDetails())
+        {
+          if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())
+          {
+            CVideoDatabase dbs;
+            dbs.Open();
+            dbs.SetStreamDetailsForFileId(details->m_streamDetails, details->m_iFileId);
+            dbs.Close();
+            CUtil::DeleteVideoDatabaseDirectoryCache();
+          }
+        }
+      }
     }
 #endif
 
@@ -4442,7 +4457,7 @@ void CApplication::OnPlayBackEnded()
     CLibrefmScrobbler::GetInstance()->SubmitQueue();
   }
 
-  CLog::Log(LOGDEBUG, "Playback has finished");
+  CLog::Log(LOGDEBUG, "%s - Playback has finished", __FUNCTION__);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
@@ -4465,7 +4480,7 @@ void CApplication::OnPlayBackStarted()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
-  CLog::Log(LOGDEBUG, "Playback has started");
+  CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   m_gWindowManager.SendThreadMessage(msg);
@@ -4515,25 +4530,10 @@ void CApplication::OnPlayBackStopped()
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
 
-  CLog::Log(LOGDEBUG, "Playback was stopped\n");
+  CLog::Log(LOGDEBUG, "%s - Playback was stopped", __FUNCTION__);
 
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   m_gWindowManager.SendThreadMessage(msg);
-}
-
-void CApplication::OnFileClosed()
-{
-  CLog::Log(LOGDEBUG, "%s - File was closed\n", __FUNCTION__);
-
-  if (m_progressTrackingFile != "")
-  {
-    SaveFileState(m_progressTrackingFile);
-
-    // Reset some stuff
-    m_progressTrackingFile = "";
-    m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
-    m_progressTrackingPlayCountUpdate = false;
-  }
 }
 
 bool CApplication::IsPlaying() const
@@ -4584,57 +4584,65 @@ bool CApplication::IsPlayingFullScreenVideo() const
   return IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
 }
 
-void CApplication::SaveFileState(const CStdString& strFileName)
+void CApplication::SaveFileState()
 {
-  if (m_progressTrackingIsVideo)
+  CStdString progressTrackingFile = m_progressTrackingItem->m_strPath;
+
+  if (progressTrackingFile != "")
   {
-    CVideoDatabase videodatabase;
-    if (videodatabase.Open())
+    if (m_progressTrackingItem->IsVideo())
     {
-      // mark as watched if we are passed the usual amount
+      CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, progressTrackingFile.c_str());
+
+      CVideoDatabase videodatabase;
+      if (videodatabase.Open())
+      {
+        if (m_progressTrackingPlayCountUpdate)
+        {
+          CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, progressTrackingFile.c_str());
+
+          // consider this item as played
+          videodatabase.MarkAsWatched(*m_progressTrackingItem);
+          CUtil::DeleteVideoDatabaseDirectoryCache();
+        }
+
+        if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
+        {
+          videodatabase.SetVideoSettings(progressTrackingFile, g_stSettings.m_currentVideoSettings);
+        }
+
+        if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
+        {
+          videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
+        }
+        else
+        if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
+        {
+          videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
+        }
+
+        videodatabase.Close();
+      }
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "%s - Saving file state for audio file %s", __FUNCTION__, progressTrackingFile.c_str());
+
       if (m_progressTrackingPlayCountUpdate)
       {
-        CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, strFileName.c_str());
-
-        // consider this item as played
-        videodatabase.MarkAsWatched(strFileName);
-        CUtil::DeleteVideoDatabaseDirectoryCache();
-      }
-
-      if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
-      {
-        videodatabase.SetVideoSettings(strFileName, g_stSettings.m_currentVideoSettings);
-      }
-
-      if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
-      {
-        videodatabase.ClearBookMarksOfFile(strFileName, CBookmark::RESUME);
-      }
-      else
-      if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
-      {
-        videodatabase.AddBookMarkToFile(strFileName, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
-      }
-
-      videodatabase.Close();
-    }
-  }
-  else
-  {
-    if (m_progressTrackingPlayCountUpdate)
-    {
-      // Can't write to the musicdatabase while scanning for music info
-      CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-      if (dialog && !dialog->IsDialogRunning())
-      {
-        // consider this item as played
-        CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, strFileName.c_str());
-
-        CMusicDatabase musicdatabase;
-        if (musicdatabase.Open())
+        // Can't write to the musicdatabase while scanning for music info
+        CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+        if (dialog && !dialog->IsDialogRunning())
         {
-          musicdatabase.IncrTop100CounterByFileName(strFileName);
-          musicdatabase.Close();
+          // consider this item as played
+          CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, progressTrackingFile.c_str());
+
+          CMusicDatabase musicdatabase;
+          if (musicdatabase.Open())
+          {
+            musicdatabase.IncrTop100CounterByFileName(progressTrackingFile);
+            musicdatabase.Close();
+          }
         }
       }
     }
@@ -4643,50 +4651,55 @@ void CApplication::SaveFileState(const CStdString& strFileName)
 
 void CApplication::UpdateFileState()
 {
-  if (IsPlaying())
+  // Did the file change?
+  if (m_progressTrackingItem->m_strPath != "" && m_progressTrackingItem->m_strPath != CurrentFile())
   {
-    // Make sure we don't pick the wrong file when ie. crossfading
-    if (m_progressTrackingFile == "" || m_progressTrackingFile == CurrentFile())
+    SaveFileState();
+
+    // Reset tracking item
+    m_progressTrackingItem->Reset();
+  }
+  else
+  if (IsPlayingVideo() || IsPlayingAudio())
+  {
+    if (m_progressTrackingItem->m_strPath == "")
     {
-      m_progressTrackingFile = CurrentFile();
+      // Init some stuff
+      *m_progressTrackingItem = CurrentFileItem();
+      m_progressTrackingPlayCountUpdate = false;
+    }
 
-      if ((IsPlayingAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-          GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
-          (IsPlayingVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-          GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
-      {
-        m_progressTrackingPlayCountUpdate = true;
-      }
+    if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+        GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
+        (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+        GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
+    {
+      m_progressTrackingPlayCountUpdate = true;
+    }
 
+    if (m_progressTrackingItem->IsVideo())
+    {
       // Update bookmark for save
-      if (IsPlayingVideo())
-      {
-        m_progressTrackingIsVideo = true;
-        m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-        m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-        m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
+      m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+      m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+      m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
-        if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
-            GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
-        {
-          // Delete the bookmark
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
-        }
-        else
-        if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
-        {
-          // Update the bookmark
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
-        }
-        else
-        {
-          // Do nothing
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
-        }
+      if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
+          GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+      {
+        // Delete the bookmark
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+      }
+      else
+      if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+      {
+        // Update the bookmark
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
       }
       else
       {
-        m_progressTrackingIsVideo = false;
+        // Do nothing
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
       }
     }
   }
@@ -5313,8 +5326,10 @@ void CApplication::ProcessSlow()
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
   if(IsPaused() != m_bIsPaused)
   {
+#ifdef HAS_LCD
     if(g_guiSettings.GetBool("lcd.enableonpaused"))
       DimLCDOnPlayback(m_bIsPaused);
+#endif
     m_bIsPaused = IsPaused();
   }
 
@@ -5721,7 +5736,7 @@ void CApplication::Minimize(bool minimize)
   }
 }
 
-EPLAYERCORES CApplication::GetCurrentPlayer()
+PLAYERCOREID CApplication::GetCurrentPlayer()
 {
   return m_eCurrentPlayer;
 }

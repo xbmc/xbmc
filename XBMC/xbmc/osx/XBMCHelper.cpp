@@ -211,7 +211,7 @@ void XBMCHelper::Install()
 
       // Replace ARG1 with a single argument, additional args 
       // will need ARG2, ARG3 added to plist.
-      launchd_args = " -x";
+      launchd_args = "-x";
       start = plistData.find("${ARG1}");
       plistData.replace(start, 7, launchd_args.c_str(), launchd_args.length());
 

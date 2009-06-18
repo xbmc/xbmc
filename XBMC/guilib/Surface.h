@@ -122,6 +122,7 @@ public:
   bool m_bOK;
   bool m_bVSync;
   int m_iVSyncMode;
+  int m_iVSyncErrors;
   __int64 m_iSwapStamp;
   __int64 m_iSwapRate;
   __int64 m_iSwapTime;

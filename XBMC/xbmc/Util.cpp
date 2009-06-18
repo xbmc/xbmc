@@ -1885,12 +1885,12 @@ void CUtil::RestoreBrightnessContrastGamma()
 
 void CUtil::SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate)
 {
-  if (brightness < 0) brightness = 0;
-  if (brightness > 100) brightness = 100;
-  if (contrast < 0) contrast = 0;
-  if (contrast > 100) contrast = 100;
-  if (gamma < 0) gamma = 0;
-  if (gamma > 100) gamma = 100;
+  if (brightness < 0.0f) brightness = 0.0f;
+  if (brightness > 100.0f) brightness = 100.0f;
+  if (contrast < 0.0f) contrast = 0.0f;
+  if (contrast > 100.0f) contrast = 100.0f;
+  if (gamma < 0.0f) gamma = 0.0f;
+  if (gamma > 100.0f) gamma = 100.0f;
 
   float fBrightNess = brightness / 50.0f - 1.0f; // -1..1    Default: 0
   float fContrast = contrast / 50.0f;            // 0..2     Default: 1
@@ -2387,6 +2387,7 @@ const BUILT_IN commands[] = {
   { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
   { "Control.SetFocus",           true,   "Change current focus to a different control id" },
+  { "Control.Message",            true,   "Send a given message to a control within a given window" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
@@ -3400,6 +3401,26 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, m_gWindowManager.GetActiveWindow(), 0, 0);
     g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("control.message"))
+  {
+    CStdStringArray params;
+    StringUtils::SplitString(parameter, ",", params);
+    if (params.size() >= 2)
+    {
+      int controlID = atoi(params[0].c_str());
+      int windowID = (params.size() == 3) ? g_buttonTranslator.TranslateWindowString(params[2].c_str()) : m_gWindowManager.GetActiveWindow();
+      if (params[1] == "moveup")
+        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
+      else if (params[1] == "movedown")
+        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
+      else if (params[1] == "pageup")
+        g_graphicsContext.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
+      else if (params[1] == "pagedown")
+        g_graphicsContext.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
+      else if (params[1] == "click")
+        g_graphicsContext.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
+    }
   }
   else if (execute.Equals("sendclick"))
   {
@@ -4517,6 +4538,37 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   CStdString tmpPath = strPath;
   AddSlashAtEnd(tmpPath);
   CDirectory::Remove(tmpPath);
+}
+
+void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& strDstPath)
+{
+  if (!CDirectory::Exists(strSrcPath)) return;
+
+  // create root first
+  CStdString destPath;
+
+  destPath = strDstPath;
+  AddSlashAtEnd(destPath);
+  CDirectory::Create(destPath);
+
+  CFileItemList items;
+  CUtil::GetRecursiveDirsListing(strSrcPath,items);
+  for (int i=0;i<items.Size();++i)
+  {
+    destPath = items[i]->m_strPath;
+    destPath.Replace(strSrcPath,"");
+    destPath = CUtil::AddFileToFolder(strDstPath, destPath);
+    CDirectory::Create(destPath);
+  }
+  items.Clear();
+  CUtil::GetRecursiveListing(strSrcPath,items,"");
+  for (int i=0;i<items.Size();i++)
+  {
+    destPath = items[i]->m_strPath;
+    destPath.Replace(strSrcPath,"");
+    destPath = CUtil::AddFileToFolder(strDstPath, destPath);
+    CFile::Cache(items[i]->m_strPath, destPath);
+  }
 }
 
 void CUtil::ClearFileItemCache()

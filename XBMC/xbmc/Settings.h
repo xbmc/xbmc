@@ -28,7 +28,11 @@
 #define DEFAULT_THUMB_SIZE  256
 #else  // MID
 #define DEFAULT_SKIN        "PM3.HD"
+#ifdef __APPLE__
+#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#else
 #define DEFAULT_VSYNC       VSYNC_DRIVER
+#endif
 #define DEFAULT_THUMB_SIZE  512
 #endif // MID
 
@@ -246,6 +250,7 @@ public:
     CStdString m_dvdThumbs;
 
     bool m_bMusicLibraryHideAllItems;
+    int m_iMusicLibraryRecentlyAddedItems;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
     CStdString m_strMusicLibraryAlbumFormat;
@@ -257,9 +262,11 @@ public:
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
+    int m_iVideoLibraryRecentlyAddedItems;
     bool m_bVideoLibraryHideRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
+    bool m_bVideoLibraryExportAutoThumbs;
 
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
@@ -273,6 +280,7 @@ public:
     int m_iTuxBoxZapWaitTime;
     bool m_bTuxBoxSendAllAPids;
 
+    int m_iMythMovieLength;         // minutes
     bool m_bFirstLoop;
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
@@ -282,20 +290,12 @@ public:
     bool m_fullScreen;
     bool m_startFullScreen;
 #endif
+    bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;
     int m_playlistTimeout;
     bool m_GLRectangleHack;
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
-
-    CStdString m_externalPlayerFilename;
-    CStdString m_externalPlayerArgs;
-    bool m_externalPlayerForceontop;
-    bool m_externalPlayerHideconsole;
-    bool m_externalPlayerHidecursor;
-    bool m_externalPlayerHidexbmc;
-    int m_externalPlayerStartupTime; // time in ms between launching player and locking the graphicscontext
-    CStdStringArray m_externalPlayerFilenameReplacers;
 
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares;
@@ -480,6 +480,8 @@ protected:
 
   bool LoadSettings(const CStdString& strSettingsFile);
 //  bool SaveSettings(const CStdString& strSettingsFile) const;
+
+  bool LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear);
 
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);

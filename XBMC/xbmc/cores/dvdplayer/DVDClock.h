@@ -64,7 +64,6 @@ public:
    * allow it to adjust speed for a better match */
   void UpdateFramerate(double fps);
 
-  double GetMaxSpeedAdjust(bool playingvideo);
   bool   SetMaxSpeedAdjust(double speed);
 
   static double GetAbsoluteClock();
@@ -83,6 +82,6 @@ protected:
   static CCriticalSection m_systemsection;
 
   double           m_maxspeedadjust;
-  bool             m_playingvideo;
+  bool             m_speedadjust;
   CCriticalSection m_speedsection;
 };

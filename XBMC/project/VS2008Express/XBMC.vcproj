@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -167,7 +167,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
-				GenerateDebugInformation="false"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
 				LargeAddressAware="2"
@@ -328,6 +328,18 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.h"
 				>
 			</File>
 			<File
@@ -1006,6 +1018,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMPL2.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMPL2.h"
 						>
 					</File>
 					<File
@@ -2306,6 +2326,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\ScriptSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ScriptSettings.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Settings.cpp"
 					>
 				</File>
@@ -3175,6 +3203,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\Stopwatch.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\StreamDetails.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\StreamDetails.h"
 					>
 				</File>
 				<File
@@ -5419,10 +5455,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\PlayList.h"
 				>
 			</File>
@@ -5774,6 +5806,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonPlayer.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonSettings.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonSettings.h"
 						>
 					</File>
 					<File

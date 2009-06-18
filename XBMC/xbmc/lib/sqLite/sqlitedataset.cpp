@@ -357,12 +357,8 @@ void SqliteDataset::fill_fields() {
   {
     const unsigned int ncols = result.record_header.size();
     fields_object->resize(ncols);
-    edit_object->resize(ncols);
     for (unsigned int i = 0; i < ncols; i++)
-    {
       (*fields_object)[i].props = result.record_header[i];
-      (*edit_object)[i].props = result.record_header[i];
-    }
   }
 
   //Filling result
@@ -373,23 +369,15 @@ void SqliteDataset::fill_fields() {
     {
       const unsigned int ncols = row->size();
       fields_object->resize(ncols);
-      edit_object->resize(ncols);
       for (unsigned int i = 0; i < ncols; i++)
-      {
         (*fields_object)[i].val = row->at(i);
-        (*edit_object)[i].val = row->at(i);
-      }
       return;
     }
   }
   const unsigned int ncols = result.record_header.size();
   fields_object->resize(ncols);
-  edit_object->resize(ncols);
   for (unsigned int i = 0; i < ncols; i++)
-  {
     (*fields_object)[i].val = "";
-    (*edit_object)[i].val = "";
-  }    
 }
 
 

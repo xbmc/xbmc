@@ -109,7 +109,10 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   m_glDC = NULL;
   m_glContext = NULL;
   m_bCoversScreen = false;
-  m_iOnTop = ONTOP_AUTO;
+  if ( !g_advancedSettings.m_alwaysOnTop )
+    m_iOnTop = ONTOP_AUTO;
+  else
+    m_iOnTop = ONTOP_ALWAYS;
 
   timeBeginPeriod(1);
 #endif
@@ -585,25 +588,12 @@ bool CSurface::glxIsSupported(const char* extension)
 void CSurface::EnableVSync(bool enable)
 {
 #ifdef HAS_SDL_OPENGL
-#ifndef __APPLE__
   if (m_bVSync==enable && m_bVsyncInit == true)
     return;
-#endif
 
-#ifdef __APPLE__
-  if (enable == true && m_bVSync == false)
-  {
-    CLog::Log(LOGINFO, "GL: Enabling VSYNC");
-    Cocoa_GL_EnableVSync(true);
-  }
-  else if (enable == false && m_bVSync == true)
-  {
-    CLog::Log(LOGINFO, "GL: Disabling VSYNC");
-    Cocoa_GL_EnableVSync(false);
-  }
-  m_bVSync = enable;
-  return;
-#else
+  if (!m_bOK)
+    return;
+
   if (enable)
     CLog::Log(LOGINFO, "GL: Enabling VSYNC");
   else
@@ -615,8 +605,10 @@ void CSurface::EnableVSync(bool enable)
   strRenderer.ToLower();
 
   m_iVSyncMode = 0;
-  m_iSwapRate = 0;
-  m_bVSync=enable;
+  m_iVSyncErrors = 0;
+  m_iSwapRate  = 0;
+  m_bVSync     = enable;
+  m_bVsyncInit = true;
 
 #ifdef HAS_GLX
   // Obtain function pointers
@@ -639,8 +631,6 @@ void CSurface::EnableVSync(bool enable)
     _wglGetSwapIntervalEXT = (int (APIENTRY *)())wglGetProcAddress("wglGetSwapIntervalEXT");
 #endif
 
-  m_bVsyncInit = true;
-
 #ifdef HAS_GLX
   if (_glXSwapIntervalSGI)
     _glXSwapIntervalSGI(0);
@@ -649,9 +639,11 @@ void CSurface::EnableVSync(bool enable)
 #elif defined (_WIN32)
   if (_wglSwapIntervalEXT)
     _wglSwapIntervalEXT(0);
+#elif defined (__APPLE__)
+  Cocoa_GL_EnableVSync(false);
 #endif
 
-  if (IsValid() && enable)
+  if (enable)
   {
 #ifdef HAS_GLX
     // now let's see if we have some system to do specific vsync handling
@@ -671,9 +663,6 @@ void CSurface::EnableVSync(bool enable)
       else
         CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
     }
-#endif
-
-#ifdef HAS_GLX
     if (_glXSwapIntervalSGI && !m_iVSyncMode)
     {
       if(_glXSwapIntervalSGI(1) == 0)
@@ -700,6 +689,12 @@ void CSurface::EnableVSync(bool enable)
       }
       else
         CLog::Log(LOGWARNING, "%s - wglSwapIntervalEXT failed", __FUNCTION__);
+    }
+#elif defined (__APPLE__)
+    if (!m_iVSyncMode)
+    {
+      Cocoa_GL_EnableVSync(true);
+      m_iVSyncMode = 10;
     }
 #endif
 
@@ -730,7 +725,6 @@ void CSurface::EnableVSync(bool enable)
     else
       CLog::Log(LOGINFO, "GL: Selected vsync mode %d", m_iVSyncMode);
   }
-#endif
 #endif
 }
 
@@ -777,11 +771,12 @@ void CSurface::Flip()
     if (m_iVSyncMode == 3)
     {
       glFinish();
-      unsigned int before, after;
+      unsigned int before = 0, after = 0;
       if(_glXGetVideoSyncSGI(&before) != 0)
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
 
       glXSwapBuffers(s_dpy, m_glWindow);
+      glFinish();
 
       if(_glXGetVideoSyncSGI(&after) != 0)
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
@@ -795,15 +790,35 @@ void CSurface::Flip()
     else if (m_iVSyncMode == 4)
     {
       glFinish();
-      unsigned int vCount;
-      if(_glXGetVideoSyncSGI(&vCount) == 0)
-        _glXWaitVideoSyncSGI(2, (vCount+1)%2, &vCount);
-      else
+      unsigned int before = 0, swap = 0, after = 0;
+      if(_glXGetVideoSyncSGI(&before) != 0)
       {
         CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
         EnableVSync(true);
       }
+
+      if(_glXWaitVideoSyncSGI(2, (before+1)%2, &swap) != 0)
+        CLog::Log(LOGERROR, "%s - glXWaitVideoSyncSGI - Returned error", __FUNCTION__);
+
       glXSwapBuffers(s_dpy, m_glWindow);
+      glFinish();
+
+      if(_glXGetVideoSyncSGI(&after) != 0)
+        CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
+
+      if(after == before)
+        CLog::Log(LOGERROR, "%s - glXWaitVideoSyncSGI - Woke up early", __FUNCTION__);
+
+      if(after > before + 1)
+        m_iVSyncErrors++;
+      else
+        m_iVSyncErrors = 0;
+
+      if(m_iVSyncErrors > 30)
+      {
+        CLog::Log(LOGINFO, "GL: retrace count seems to be changing due to the swapbuffers call, switching to vsync mode 3");
+        m_iVSyncMode = 3;
+      }
     }
     else if (m_iVSyncMode == 5)
     {

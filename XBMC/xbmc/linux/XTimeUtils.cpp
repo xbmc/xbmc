@@ -29,10 +29,7 @@
 #include <sys/times.h>
 
 #ifdef __APPLE__
-#include <mach/mach.h>
-#include <mach/clock.h>
-#include <mach/mach_error.h>
-#include "Thread.h"
+#include <CoreVideo/CVHostTime.h>
 #endif
 
 #define WIN32_TIME_OFFSET ((unsigned long long)(369 * 365 + 89) * 24 * 3600 * 10000000)
@@ -89,29 +86,7 @@ BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
     return false;
 
 #ifdef __APPLE__
-
-  kern_return_t   ret;
-  clock_serv_t    aClock;
-  mach_timespec_t aTime;
-
-  // Get the clock.
-  ret = host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &aClock);
-  if (ret != KERN_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "host_get_clock_service() failed: %s", mach_error_string(ret));
-    return false;
-  }
-
-  // Query it for the time.
-  ret = clock_get_time(aClock, &aTime);
-  if (ret != KERN_SUCCESS)
-  {
-    CLog::Log(LOGERROR, "clock_get_time() failed: %s", mach_error_string(ret));
-    return false;
-  }
-
-  lpPerformanceCount->QuadPart = ((__int64)aTime.tv_sec * 1000000000L) + aTime.tv_nsec;
-
+  lpPerformanceCount->QuadPart = CVGetCurrentHostTime();
 #else
   struct timespec now;
   if (clock_gettime(CLOCK_MONOTONIC, &now) != 0) {

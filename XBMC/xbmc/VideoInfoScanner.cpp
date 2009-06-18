@@ -419,15 +419,15 @@ namespace VIDEO
       if (info2.strContent.Equals("None")) // skip
         continue;
 
-    if (!info2.settings.GetPluginRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
-    {
-      CScraperParser parser;
-      if (parser.Load("special://xbmc/system/scrapers/video/"+info2.strPath) && parser.HasFunction("GetSettings"))
+      if (!info2.settings.GetPluginRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
       {
-        info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath);
-        info2.settings.SaveFromDefault();
+        CScraperParser parser;
+        if (parser.Load("special://xbmc/system/scrapers/video/"+info2.strPath) && parser.HasFunction("GetSettings"))
+        {
+          info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath);
+          info2.settings.SaveFromDefault();
+        }
       }
-    }
 
       // we might override scraper
       if (info2.strContent == info.strContent)
@@ -1137,6 +1137,12 @@ namespace VIDEO
       if (result == CNfoFile::FULL_NFO)
       {
         m_nfoReader.GetDetails(episodeDetails);
+        if (m_pObserver)
+        {
+          CStdString strTitle;
+          strTitle.Format("%s - %ix%i - %s",strShowTitle.c_str(),episodeDetails.m_iSeason,episodeDetails.m_iEpisode,episodeDetails.m_strTitle.c_str());
+          m_pObserver->OnSetTitle(strTitle);
+        }
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
         continue;
       }

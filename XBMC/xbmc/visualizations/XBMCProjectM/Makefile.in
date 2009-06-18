@@ -24,4 +24,13 @@ libprojectM/libprojectM.so:
 	$(MAKE) -C libprojectM
 endif
 
+DISTCLEAN_FILES=	\
+	libprojectM/CMakeFiles/ \
+	libprojectM/CMakeCache.txt \
+	libprojectM/Makefile \
+	libprojectM/cmake_install.cmake \
+	libprojectM/config.inp \
+	libprojectM/libprojectM.pc
+
 include ../../../Makefile.include
+

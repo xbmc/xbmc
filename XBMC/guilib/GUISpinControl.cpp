@@ -284,6 +284,22 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
         MoveDown();
       return true;
 
+    case GUI_MSG_MOVE_OFFSET:
+      {
+        int count = (int)message.GetParam1();
+        while (count < 0)
+        {
+          MoveUp();
+          count++;
+        }
+        while (count > 0)
+        {
+          MoveDown();
+          count--;
+        }
+        return true;
+      }
+
     }
   }
   return false;

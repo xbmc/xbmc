@@ -21,17 +21,19 @@
  *
  */
 
-#include "DynamicDll.h"
-
-#ifdef __cplusplus
-extern "C"
-{
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
 #endif
- #include "libmpeg2/mpeg2.h"
- #include "libmpeg2/mpeg2convert.h"
-#ifdef __cplusplus
+extern "C" {
+#if (defined USE_EXTERNAL_LIBMPEG2)
+  #include <mpeg2dec/mpeg2.h>
+  #include <mpeg2dec/mpeg2convert.h>
+#else
+  #include "libmpeg2/mpeg2.h"
+  #include "libmpeg2/mpeg2convert.h"
+#endif
 }
-#endif
+#include "DynamicDll.h"
 
 class DllLibMpeg2Interface
 {
@@ -49,6 +51,46 @@ public:
   virtual int mpeg2_convert (mpeg2dec_t * mpeg2dec, mpeg2_convert_t convert, void * arg)=0;
   virtual void mpeg2_skip(mpeg2dec_t * mpeg2dec, int skip)=0;
 };
+
+#if (defined USE_EXTERNAL_LIBMPEG2)
+
+class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
+{
+public:
+    virtual ~DllLibMpeg2() {}
+    virtual uint32_t mpeg2_accel (uint32_t accel)
+        { return ::mpeg2_accel (accel); }
+    virtual mpeg2dec_t * mpeg2_init (void)
+        { return ::mpeg2_init (); }
+    virtual const mpeg2_info_t * mpeg2_info (mpeg2dec_t * mpeg2dec)
+        { return ::mpeg2_info (mpeg2dec); }
+    virtual void mpeg2_close (mpeg2dec_t * mpeg2dec)
+        { return ::mpeg2_close (mpeg2dec); }
+    virtual void mpeg2_buffer (mpeg2dec_t * mpeg2dec, uint8_t * start, uint8_t * end)
+        { return ::mpeg2_buffer (mpeg2dec, start, end); }
+    virtual mpeg2_state_t mpeg2_parse (mpeg2dec_t * mpeg2dec)
+        { return ::mpeg2_parse (mpeg2dec); }
+    virtual void mpeg2_reset (mpeg2dec_t * mpeg2dec, int full_reset)
+        { return ::mpeg2_reset (mpeg2dec, full_reset); }
+    virtual void mpeg2_set_buf (mpeg2dec_t * mpeg2dec, uint8_t * buf[3], void * id)
+        { return ::mpeg2_set_buf (mpeg2dec, buf, id); }
+    virtual void mpeg2_custom_fbuf (mpeg2dec_t * mpeg2dec, int custom_fbuf)
+        { return ::mpeg2_custom_fbuf (mpeg2dec, custom_fbuf); }
+    virtual int mpeg2_convert (mpeg2dec_t * mpeg2dec, mpeg2_convert_t convert, void * arg)
+        { return ::mpeg2_convert (mpeg2dec, convert, arg); }
+    virtual void mpeg2_skip(mpeg2dec_t * mpeg2dec, int skip)
+        { return ::mpeg2_skip(mpeg2dec, skip); }
+
+    // DLL faking.
+    virtual bool ResolveExports() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllLibMpeg2: Using libmpeg2 system library");
+        return true;
+    }
+    virtual void Unload() {}
+};
+
+#else
 
 class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
 {
@@ -79,3 +121,4 @@ class DllLibMpeg2 : public DllDynamic, DllLibMpeg2Interface
   END_METHOD_RESOLVE()
 };
 
+#endif

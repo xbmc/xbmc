@@ -280,9 +280,6 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
   m_bStopPlaying = true;
   m_bStop = true;
 
-  // Call the FileClosed-callback to store resume point etc.
-  m_callback.OnFileClosed();
-
   m_visBufferLength = 0;
   StopThread();
 
@@ -423,8 +420,6 @@ void PAPlayer::Process()
   if (m_startEvent.WaitMSec(100))
   {
     m_startEvent.Reset();
-
-    m_callback.OnPlayBackStarted();
 
     do
     {
@@ -706,7 +701,7 @@ bool PAPlayer::ProcessPAP()
         retVal = RET_SUCCESS;
 
       if (retVal == RET_SLEEP && retVal2 == RET_SLEEP)
-        Sleep(1);
+      Sleep(15);
     }
     else
       Sleep(100);
@@ -775,7 +770,7 @@ int PAPlayer::GetSampleRate()
   return 0;
 }
 
-CStdString PAPlayer::GetCodecName()
+CStdString PAPlayer::GetAudioCodecName()
 {
   ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
   if (codec)

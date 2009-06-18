@@ -417,7 +417,7 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
   iconv_close(iconvString);
 }
 
-void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int16_t>& strDest)
+void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdString16& strDest)
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
@@ -426,7 +426,7 @@ void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStri
   iconv_close(iconvString);
 }
 
-void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int32_t>& strDest)
+void CCharsetConverter::utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdString32& strDest)
 {
   iconv_t iconvString;
   ICONV_PREPARE(iconvString);
@@ -459,29 +459,33 @@ void CCharsetConverter::wToUTF8(const CStdStringW& strSource, CStdStringA &strDe
   convert(m_iconvWtoUtf8,UTF8_DEST_MULTIPLIER,WCHAR_CHARSET,"UTF-8",strSource,strDest);
 }
 
-void CCharsetConverter::utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest)
+void CCharsetConverter::utf16BEtoUTF8(const CStdString16& strSource, CStdStringA &strDest)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUtf16BEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16BE","UTF-8",strSource,strDest);
+  if(!convert_checked(m_iconvUtf16BEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16BE","UTF-8",strSource,strDest))
+    strDest.empty();
 }
 
-void CCharsetConverter::utf16LEtoUTF8(const CStdStringW& strSource,
+void CCharsetConverter::utf16LEtoUTF8(const CStdString16& strSource,
                                       CStdStringA &strDest)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUtf16LEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16LE","UTF-8",strSource,strDest);
+  if(!convert_checked(m_iconvUtf16LEtoUtf8,UTF8_DEST_MULTIPLIER,"UTF-16LE","UTF-8",strSource,strDest))
+    strDest.empty();
 }
 
-void CCharsetConverter::ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest)
+void CCharsetConverter::ucs2ToUTF8(const CStdString16& strSource, CStdStringA& strDest)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUcs2CharsetToUtf8,UTF8_DEST_MULTIPLIER,"UCS-2LE","UTF-8",strSource,strDest);
+  if(!convert_checked(m_iconvUcs2CharsetToUtf8,UTF8_DEST_MULTIPLIER,"UCS-2LE","UTF-8",strSource,strDest))
+    strDest.empty();
 }
 
-void CCharsetConverter::utf16LEtoW(const CStdStringW& strSource, CStdStringW &strDest)
+void CCharsetConverter::utf16LEtoW(const CStdString16& strSource, CStdStringW &strDest)
 {
   CSingleLock lock(m_critSection);
-  convert(m_iconvUtf16LEtoW,sizeof(wchar_t),"UTF-16LE",WCHAR_CHARSET,strSource,strDest);
+  if(!convert_checked(m_iconvUtf16LEtoW,sizeof(wchar_t),"UTF-16LE",WCHAR_CHARSET,strSource,strDest))
+    strDest.empty();
 }
 
 void CCharsetConverter::ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap)

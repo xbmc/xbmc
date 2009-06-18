@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../linux -I../../guilib
+INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib
 
 SRCS=AlarmClock.cpp \
      Archive.cpp \
@@ -53,7 +53,8 @@ SRCS=AlarmClock.cpp \
      AsyncFileCopy.cpp \
      DbusServer.cpp \
      Atomics.cpp \
-     LockFree.cpp
+     LockFree.cpp \
+     StreamDetails.cpp
 
 LIB=utils.a
 

@@ -49,7 +49,7 @@ CDVDClock::CDVDClock()
   m_bReset = true;
   m_iDisc = 0;
   m_maxspeedadjust = 0.0;
-  m_playingvideo = false;
+  m_speedadjust = false;
 }
 
 CDVDClock::~CDVDClock()
@@ -196,20 +196,12 @@ double CDVDClock::DistanceToDisc()
   return GetClock() - m_iDisc;
 }
 
-double CDVDClock::GetMaxSpeedAdjust(bool playingvideo)
-{
-  CSingleLock lock(m_speedsection);
-
-  m_playingvideo = playingvideo;
-  return m_maxspeedadjust;
-}
-
 bool CDVDClock::SetMaxSpeedAdjust(double speed)
 {
   CSingleLock lock(m_speedsection);
 
   m_maxspeedadjust = speed;
-  return m_playingvideo;
+  return m_speedadjust;
 }
 
 void CDVDClock::UpdateFramerate(double fps)
@@ -218,19 +210,19 @@ void CDVDClock::UpdateFramerate(double fps)
   if(fps == 0.0)
   {
     CSingleLock lock(m_speedsection);
-    m_playingvideo = false;
+    m_speedadjust = false;
     return;
   }
 
   //check if the videoreferenceclock is running, will return -1 if not
   int rate = g_VideoReferenceClock.GetRefreshRate();
 
-  // lock section after checking refreshrate as it locks things internally too
-  CSingleLock lock(m_speedsection);
-  m_playingvideo = true;
-
   if (rate > 0)
   {
+    CSingleLock lock(m_speedsection);
+    
+    m_speedadjust = true;
+    
     double weight = (double)rate / (double)MathUtils::round_int(fps);
 
     //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user

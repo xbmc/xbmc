@@ -23,7 +23,9 @@
 
 #include "URL.h"
 #include "GUISettings.h"
+#if _MSC_VER > 1400
 #include "Cfgmgr32.h"
+#endif
 
 
 class CWIN32Util
@@ -48,6 +50,7 @@ public:
   static CStdString GetResInfoString();
   static int GetDesktopColorDepth();
   static CStdString GetProfilePath();
+  static CStdString UncToSmb(const CStdString &strPath);
   static void ExtendDllPath();
   static HRESULT ToggleTray(const char cDriveLetter='\0');
   static HRESULT EjectTray(const char cDriveLetter='\0');
@@ -56,6 +59,7 @@ public:
   static void CheckGLVersion();
   static bool HasGLDefaultDrivers();
   static bool HasReqGLVersion();
+  static BOOL IsCurrentUserLocalAdministrator();
   
   class SystemParams
   {
@@ -72,5 +76,7 @@ public:
 
 private:
   static DWORD dwDriveMask;
+#if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
+#endif
 };

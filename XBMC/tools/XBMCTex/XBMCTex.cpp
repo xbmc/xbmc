@@ -659,7 +659,7 @@ int main(int argc, char* argv[])
 			valid = true;
 #ifdef _LINUX
       char *c = NULL;
-      while ((c = strchr(OutputFilename, '\\')) != NULL) *c = '/';
+      while ((c = (char *)strchr(OutputFilename, '\\')) != NULL) *c = '/';
 #endif
 		}
     else if (!stricmp(args[i], "-noprotect") || !stricmp(args[i], "-p"))
