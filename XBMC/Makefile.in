@@ -113,17 +113,16 @@ INCLUDES=@INCLUDES@
 
 CLEAN_FILES=xbmc.bin xbmc-xrandr
 
-all : externals xbmc.bin xbmc-xrandr pm3tex pm3hdtex
+all : externals xbmc.bin xbmc-xrandr skins
 
 include Makefile.include
 
 .PHONY : dllloader exports visualizations screensavers eventclients papcodecs \
-	dvdpcodecs imagelib codecs externals force pm3tex pm3hdtex
+	dvdpcodecs imagelib codecs externals force skins
 
 # skin textures
-pm3tex: force
+skins: tools/XBMCTex/XBMCTex force
 	 $(MAKE) -C $(PM3_MEDIA)
-pm3hdtex: force
 	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force
