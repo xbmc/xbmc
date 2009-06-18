@@ -100,6 +100,8 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_stringParameters.push_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
   m_currentFile = new CFileItem;
   m_currentSlide = new CFileItem;
+  m_frameCounter = 0;
+  m_lastFPSTime = 0;
   ResetLibraryBools();
 }
 
