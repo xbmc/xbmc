@@ -93,7 +93,7 @@ do_start()
 					# Relies on init scripts to mount boot device on a specified directory
 					BOOTMEDIADIRECTORY="bootMedia"
 					BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
-					if [ !-n "$BMMP" ]; then
+					if [ ! -n "$BMMP" ]; then
 						BOOTMEDIADIRECTORY="image"
 						BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
 					fi
