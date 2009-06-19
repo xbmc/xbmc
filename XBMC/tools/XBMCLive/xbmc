@@ -91,7 +91,12 @@ do_start()
 					log_warning_msg "Redirect XBMC home folder and logfile to usb flash..."
 
 					# Relies on init scripts to mount boot device on a specified directory
-					BOOTMEDIAMOUNTPOINT=`mount | grep bootMedia | cut -f 3 -d " "`
+					BOOTMEDIADIRECTORY="bootMedia"
+					BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
+					if [ !-n "$BMMP" ]; then
+						BOOTMEDIADIRECTORY="image"
+						BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
+					fi
 
 					if [ ! -d $BOOTMEDIAMOUNTPOINT/dotXBMC ]; then
 						mkdir $BOOTMEDIAMOUNTPOINT/dotXBMC
