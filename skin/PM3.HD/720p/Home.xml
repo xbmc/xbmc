@@ -47,7 +47,7 @@
 		<control type="group">
 			<posx>600r</posx>
 			<posy>450</posy>
-			<visible>Container(9000).HasFocus(5) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
+			<visible>Container(9000).HasFocus(6) + Weather.IsFetched + !Skin.HasSetting(homepageWeatherinfo)</visible>
 			<include>homestatsinfo</include>
 			<control type="image">
 				<description>gradient</description>
