@@ -77,15 +77,8 @@ do_start()
 				rm /home/xbmc/.xsession
 			fi
 		else
-			NOMOUNT="$(echo $XBMC_PARAMS | grep nodiskmount)"
-			if [ ! -n "$NOMOUNT" ]; then
-				log_warning_msg "Mounting local disks..."
-				/usr/bin/diskmounter &
-			fi
-
-			# Redirect XBMC home folder and logfile to usb flash
-			SRCMEDIA="$(echo $CMDLINE | grep boot=usb)"
-			if [ -n "$SRCMEDIA" ]; then
+			BOOTFROMCD="$(mount | grep iso9660)"
+			if [ ! -n "$BOOTFROMCD" ]; then
 				NOREDIR="$(echo $XBMC_PARAMS | grep noredir)"
 				if [ ! -n "$NOREDIR" ]; then
 					log_warning_msg "Redirect XBMC home folder and logfile to usb flash..."
@@ -94,6 +87,7 @@ do_start()
 					BOOTMEDIADIRECTORY="bootMedia"
 					BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
 					if [ ! -n "$BOOTMEDIAMOUNTPOINT" ]; then
+						# live-initramfs compatibility
 						BOOTMEDIADIRECTORY="image"
 						BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
 					fi
@@ -111,17 +105,23 @@ do_start()
 				fi
 			fi
 
-			XBMC_SETVOLUME="$(echo $XBMC_PARAMS | grep setvolume)"
-			if [ -n "$XBMC_SETVOLUME" ]; then
-				/usr/bin/setAlsaVolumes.py
-			fi
-
 			# if usplash is running, make sure to stop it now, yes "start" kills it.
 			if pidof usplash > /dev/null; then
 				DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
 			fi
 
 			/usr/bin/runXBMC.sh &
+
+			XBMC_SETVOLUME="$(echo $XBMC_PARAMS | grep setvolume)"
+			if [ -n "$XBMC_SETVOLUME" ]; then
+				/usr/bin/setAlsaVolumes.py &
+			fi
+
+			NOMOUNT="$(echo $XBMC_PARAMS | grep nodiskmount)"
+			if [ ! -n "$NOMOUNT" ]; then
+				log_warning_msg "Mounting local disks..."
+				/usr/bin/diskmounter &
+			fi
 		fi
 	fi
 	log_action_end_msg 0
