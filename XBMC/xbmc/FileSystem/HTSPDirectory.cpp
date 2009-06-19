@@ -386,7 +386,7 @@ bool CHTSPDirectory::GetChannels( const CURL &base
   else
     items.AddSortMethod(SORT_METHOD_LABEL, 20364, LABEL_MASKS("%Z", "%B", "%L", ""));
 
-  return channels.size() > 0;
+  return !channels.empty();
 
 }
 
@@ -397,7 +397,7 @@ bool CHTSPDirectory::GetTag(const CURL &base, CFileItemList &items)
   int id = atoi(url.GetFileName().Mid(5));
 
   SChannels channels = m_session->GetChannels(id);
-  if(channels.size() == 0)
+  if(channels.empty())
     return false;
 
   return GetChannels(base, items, channels, id);
