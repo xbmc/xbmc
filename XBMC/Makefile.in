@@ -75,7 +75,7 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/WavPackCodec \
 	xbmc/cores/paplayer/GYMCodec \
 	xbmc/cores/paplayer/YMCodec/StSoundLibrary \
-	xbmc/cores/paplayer/ModuleCodec/vc6/dumb \
+	xbmc/cores/paplayer/ModuleCodec \
 	xbmc/cores/paplayer/MPCCodec/xbmc \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
@@ -110,8 +110,12 @@ LIBADDON_DIRS=\
 PM3_MEDIA=skin/Project\ Mayhem\ III/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
+SKIN_DIRS=\
+	$(PM3_MEDIA)\
+	$(PM3HD_MEDIA)
+
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS) $(LIBADDON_DIRS)
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS)
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -121,17 +125,17 @@ INCLUDES=@INCLUDES@
 
 CLEAN_FILES=xbmc.bin xbmc-xrandr
 
-all : externals xbmc.bin xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Textures.xpr
+all : externals xbmc.bin xbmc-xrandr skins
 
 include Makefile.include
 
-.PHONY : dllloader exports pvrclients visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force libaddon
+.PHONY : dllloader exports pvrclients visualizations screensavers eventclients \
+	papcodecs dvdpcodecs imagelib codecs externals force libaddon skins
 
-$(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
-	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
-
-$(PM3HD_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3HD_MEDIA)/*.png $(PM3HD_MEDIA)/*/*.png
-	 tools/XBMCTex/XBMCTex -input \"$(PM3HD_MEDIA)\" -output \"$(PM3HD_MEDIA)/Textures.xpr\"
+# skin textures
+skins: tools/XBMCTex/XBMCTex force
+	 $(MAKE) -C $(PM3_MEDIA)
+	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force
 	$(MAKE) -C guilib
@@ -290,6 +294,7 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/vorbisfile
+	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
@@ -298,7 +303,6 @@ ifneq ($(ARCH), powerpc-osx)
 	$(MAKE) -C xbmc/cores/paplayer/MACDll
 endif
 ifneq ($(ARCH), x86_64-linux)
-	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
 imagelib: dllloader
@@ -309,7 +313,7 @@ libs: libhdhomerun libid3tag imagelib libexif python
 externals: libaddon codecs libs python pvrclients visualizations screensavers
 
 xcode_depends: \
-	codecs libs python pvrclients visualizations screensavers \
+	codecs libs python pvrclients visualizations screensavers eventclients skins \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \

@@ -32,7 +32,7 @@ enum FilterType
 {
   MOVIES,
   TV_SHOWS,
-  NONE
+  ALL
 };
 
 class CCMythDirectory
@@ -49,7 +49,7 @@ private:
   void Release();
   bool GetGuide(const CStdString& base, CFileItemList &items);
   bool GetGuideForChannel(const CStdString& base, CFileItemList &items, const int channelNumber);
-  bool GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type = NONE, const CStdString& filter = "");
+  bool GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type = ALL, const CStdString& filter = "");
   bool GetRecordingFolders(const CStdString& base, CFileItemList &items, enum FilterType type);
   bool GetChannels(const CStdString& base, CFileItemList &items);
 

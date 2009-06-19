@@ -55,11 +55,11 @@ SRCS=Addon.cpp \
      AsyncFileCopy.cpp \
      DbusServer.cpp \
      Atomics.cpp \
-     LockFree.cpp \
      TVEPGInfoTag.cpp \
      TVTimerInfoTag.cpp \
      TVChannelInfoTag.cpp \
      TVRecordInfoTag.cpp \
+     StreamDetails.cpp
 
 LIB=utils.a
 

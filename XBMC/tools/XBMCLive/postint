@@ -47,18 +47,28 @@ case "$1" in
 	if ! groups xbmc|grep fuse > /dev/null; then
 		adduser xbmc fuse
 	fi
-	if ! groups xbmc|grep sudo > /dev/null; then
-		adduser xbmc sudo
+
+	if ! grep xbmc /etc/sudoers > /dev/null; then
+		echo "xbmc    ALL=(ALL) ALL" >> /etc/sudoers
 	fi
 
-	polkit-auth --user xbmc --grant --explicit org.freedesktop.hal.power-management.shutdown
-	polkit-auth --user xbmc --grant --explicit org.freedesktop.hal.power-management.shutdown-multiple-sessions
-	polkit-auth --user xbmc --grant --explicit org.freedesktop.hal.power-management.reboot
-	polkit-auth --user xbmc --grant --explicit org.freedesktop.hal.power-management.reboot-multiple-sessions
-	polkit-auth --user xbmc --grant --explicit org.freedesktop.hal.power-management.set-powersave
-	polkit-auth --user xbmc --grant --explicit org.freedesktop.hal.power-management.suspend
-	polkit-auth --user xbmc --grant --explicit org.freedesktop.hal.power-management.hibernate
-	polkit-auth --user xbmc --grant --explicit org.freedesktop.hal.storage.mount-removable
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.shutdown
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.shutdown-multiple-sessions
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.reboot
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.reboot-multiple-sessions
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.set-powersave
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.suspend
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.hibernate
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.storage.mount-removable
+
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.shutdown
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.shutdown-multiple-sessions
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.reboot
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.reboot-multiple-sessions
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.set-powersave
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.suspend
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.hibernate
+	polkit-auth --user xbmc --grant org.freedesktop.hal.storage.mount-removable
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

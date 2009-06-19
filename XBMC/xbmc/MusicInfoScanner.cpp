@@ -107,7 +107,14 @@ void CMusicInfoScanner::Process()
       bool cancelled = false;
       while (!cancelled && m_pathsToScan.size())
       {
-        if (!DoScan(*m_pathsToScan.begin()))
+        /*
+         * A copy of the directory path is used because the path supplied is
+         * immediately removed from the m_pathsToScan set in DoScan(). If the
+         * reference points to the entry in the set a null reference error 
+         * occurs.
+         */
+        CStdString directory = *m_pathsToScan.begin();
+        if (!DoScan(directory))
           cancelled = true;
         commit = !cancelled;
       }
@@ -325,6 +332,15 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   if (m_pObserver)
     m_pObserver->OnDirectoryChanged(strDirectory);
 
+  /*
+   * remove this path from the list we're processing. This must be done prior to
+   * the check for file or folder exclusion to prevent an infinite while loop 
+   * in Process().
+   */
+  set<CStdString>::const_iterator it = m_pathsToScan.find(strDirectory);
+  if (it != m_pathsToScan.end())
+    m_pathsToScan.erase(it);
+
   // Discard all excluded files defined by m_musicExcludeRegExps
 
   CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
@@ -382,11 +398,6 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
       m_pObserver->OnDirectoryScanned(strDirectory);
     }
   }
-
-  // remove this path from the list we're processing
-  set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
-  if (it != m_pathsToScan.end())
-    m_pathsToScan.erase(it);
 
   // now scan the subfolders
   for (int i = 0; i < items.Size(); ++i)

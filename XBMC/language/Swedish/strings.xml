@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 06/11/2009-->
+<!--Date of translation: 06/16/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21010-->
+<!--Based on english strings version 21081-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1674,6 +1674,7 @@
   <string id="20430">Exportera miniatyrer och fan-konst?</string>
   <string id="20431">Skriva över äldre filer?</string>
   <string id="20432">Uteslut sökväg från biblioteksuppdateringar</string>
+  <string id="20433">Utvinn media metadatainformation</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1875,6 +1876,7 @@
   <string id="22042">vit/blå</string>
   <string id="22043">svart/vit</string>
   <string id="23000">Vädertillägg</string>
+  <string id="23001">- Tilläggsinställningar</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>

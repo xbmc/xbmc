@@ -156,7 +156,7 @@ public:
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
 
-  bool HasMusicInfoTag() const
+  inline bool HasMusicInfoTag() const
   {
     return m_musicInfoTag != NULL;
   }
@@ -168,7 +168,7 @@ public:
     return m_musicInfoTag;
   }
 
-  bool HasVideoInfoTag() const
+  inline bool HasVideoInfoTag() const
   {
     return m_videoInfoTag != NULL;
   }
@@ -180,7 +180,7 @@ public:
     return m_videoInfoTag;
   }
 
-  bool HasTVEPGInfoTag() const
+  inline bool HasTVEPGInfoTag() const
   {
     return m_tvepgInfoTag != NULL;
   }
@@ -192,7 +192,7 @@ public:
     return m_tvepgInfoTag;
   }
 
-  bool HasTVChannelInfoTag() const
+  inline bool HasTVChannelInfoTag() const
   {
     return m_tvchannelInfoTag != NULL;
   }
@@ -204,7 +204,7 @@ public:
     return m_tvchannelInfoTag;
   }
 
-  bool HasTVRecordingInfoTag() const
+  inline bool HasTVRecordingInfoTag() const
   {
     return m_tvrecordingInfoTag != NULL;
   }
@@ -216,7 +216,7 @@ public:
     return m_tvrecordingInfoTag;
   }
 
-  bool HasTVTimerInfoTag() const
+  inline bool HasTVTimerInfoTag() const
   {
     return m_tvtimerInfoTag != NULL;
   }
@@ -228,7 +228,7 @@ public:
     return m_tvtimerInfoTag;
   }
 
-  bool HasPictureInfoTag() const
+  inline bool HasPictureInfoTag() const
   {
     return m_pictureInfoTag != NULL;
   }

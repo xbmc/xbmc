@@ -669,6 +669,7 @@ HAVE_UNZIP
 HAVE_GPERF
 HAVE_CMAKE
 HAVE_GAWK
+HAVE_ZIP
 CPP
 EGREP
 GREP
@@ -10348,6 +10349,73 @@ _ACEOF
 fi
 
 
+  ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+  { $as_echo "$as_me:$LINENO: checking whether we have the Debian or Ubuntu < 2.7 FAAD ABI" >&5
+$as_echo_n "checking whether we have the Debian or Ubuntu < 2.7 FAAD ABI... " >&6; }
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <neaacdec.h>
+int
+main ()
+{
+char* x = NeAACDecGetErrorMessage(0)
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBFAAD_DEBIAN_ABI 1
+_ACEOF
+
+      { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
   { $as_echo "$as_me:$LINENO: $external_libfaad_enabled" >&5
 $as_echo "$as_me: $external_libfaad_enabled" >&6;}
   USE_EXTERNAL_LIBFAAD=1
@@ -11349,6 +11417,51 @@ else
   { $as_echo "$as_me:$LINENO: $external_python_disabled" >&5
 $as_echo "$as_me: $external_python_disabled" >&6;}
   USE_EXTERNAL_PYTHON=0
+
+  # We'll need zip in this case.
+  # Extract the first word of "zip", so it can be a program name with args.
+set dummy zip; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_prog_HAVE_ZIP+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$HAVE_ZIP"; then
+  ac_cv_prog_HAVE_ZIP="$HAVE_ZIP" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_HAVE_ZIP=""yes""
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_HAVE_ZIP" && ac_cv_prog_HAVE_ZIP=""no""
+fi
+fi
+HAVE_ZIP=$ac_cv_prog_HAVE_ZIP
+if test -n "$HAVE_ZIP"; then
+  { $as_echo "$as_me:$LINENO: result: $HAVE_ZIP" >&5
+$as_echo "$HAVE_ZIP" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  if test "$HAVE_ZIP" = "no" ; then
+    { { $as_echo "$as_me:$LINENO: error: $missing_program" >&5
+$as_echo "$as_me: error: $missing_program" >&2;}
+   { (exit 1); exit 1; }; }
+  fi
 fi
 
 # VDPAU
@@ -19500,7 +19613,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/Codecs/libdvd/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile xbmc/screensavers/rsxs-0.9/xbmc/Makefile xbmc/visualizations/XBMCProjectM/Makefile xbmc/visualizations/Goom/Makefile xbmc/visualizations/OpenGLSpectrum/Makefile xbmc/visualizations/WaveForm/Makefile xbmc/visualizations/iTunes/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile tools/EventClients/Clients/OSXRemote/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/Codecs/libdvd/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile xbmc/screensavers/rsxs-0.9/xbmc/Makefile xbmc/visualizations/XBMCProjectM/Makefile xbmc/visualizations/Goom/Makefile xbmc/visualizations/OpenGLSpectrum/Makefile xbmc/visualizations/WaveForm/Makefile xbmc/visualizations/iTunes/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile tools/EventClients/Clients/OSXRemote/Makefile"
 
 
 # Function to run the configure scripts in our submodules
@@ -20195,7 +20308,7 @@ do
     "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
     "xbmc/cores/paplayer/AC3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AC3Codec/Makefile" ;;
     "xbmc/cores/paplayer/ADPCMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ADPCMCodec/Makefile" ;;
-    "xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile" ;;
+    "xbmc/cores/paplayer/ModuleCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ModuleCodec/Makefile" ;;
     "xbmc/cores/paplayer/GYMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/GYMCodec/Makefile" ;;
     "xbmc/cores/paplayer/MP3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MP3Codec/Makefile" ;;
     "xbmc/cores/paplayer/MPCCodec/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MPCCodec/xbmc/Makefile" ;;
@@ -21085,6 +21198,7 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       --enable-gpl \
       --enable-swscale \
       `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
+      `if test "$use_external_libfaad" = "yes"; then echo --enable-libfaad; fi` \
       --enable-protocol=http \
       --enable-pthreads
   fi

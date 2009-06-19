@@ -242,8 +242,12 @@ class CDateTime;
 #define VIDEOPLAYER_TOP250            283
 #define VIDEOPLAYER_RATING_AND_VOTES  284
 #define VIDEOPLAYER_TRAILER           285
-#define VIDEOPLAYER_NEXT              286
-#define VIDEOPLAYER_GROUP             287
+#define VIDEOPLAYER_VIDEO_CODEC       286
+#define VIDEOPLAYER_VIDEO_RESOLUTION  287
+#define VIDEOPLAYER_AUDIO_CODEC       288
+#define VIDEOPLAYER_AUDIO_CHANNELS    289
+#define VIDEOPLAYER_NEXT              290
+#define VIDEOPLAYER_GROUP             291
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -489,6 +493,13 @@ class CDateTime;
 #define LISTITEM_SORT_LETTER        (LISTITEM_START + 43)
 #define LISTITEM_ALBUM_ARTIST       (LISTITEM_START + 44)
 #define LISTITEM_FOLDERNAME         (LISTITEM_START + 45)
+#define LISTITEM_VIDEO_CODEC        (LISTITEM_START + 46)
+#define LISTITEM_VIDEO_RESOLUTION   (LISTITEM_START + 47)
+#define LISTITEM_VIDEO_ASPECT       (LISTITEM_START + 48)
+#define LISTITEM_AUDIO_CODEC        (LISTITEM_START + 49)
+#define LISTITEM_AUDIO_CHANNELS     (LISTITEM_START + 50)
+#define LISTITEM_AUDIO_LANGUAGE     (LISTITEM_START + 51)
+#define LISTITEM_SUBTITLE_LANGUAGE  (LISTITEM_START + 52)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -640,6 +651,8 @@ protected:
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
   bool GetItemBool(const CGUIListItem *item, int condition) const;
+  CStdString VideoWidthToResolutionDescription(int iWidth) const;
+  CStdString VideoAspectToAspectDescription(float fAspect) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.

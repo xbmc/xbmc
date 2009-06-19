@@ -542,6 +542,19 @@ if test "$use_external_libraries" = "yes" || test "$use_external_libfaad" = "yes
   AC_CHECK_LIB([faad],          [NeAACDecInitDRM],
     [AC_DEFINE([HAVE_LIBFAAD_NEAACDECINITDRM], [1], [Whether NeAACDecInitDRM function exists in libfaad library.])],)
 
+  AC_LANG_PUSH(C++)
+  AC_MSG_CHECKING([whether we have the Debian or Ubuntu < 2.7 FAAD ABI])
+  AC_COMPILE_IFELSE(
+    AC_LANG_PROGRAM([#include <neaacdec.h>], [char* x = NeAACDecGetErrorMessage(0)]),
+    AC_MSG_RESULT(no),
+    [
+      AC_DEFINE([HAVE_LIBFAAD_DEBIAN_ABI], [1],
+        [Whether we have the Debian or Ubuntu < 2.7 FAAD ABI])
+      AC_MSG_RESULT(yes)
+    ]
+  )
+  AC_LANG_POP()
+
   AC_MSG_NOTICE($external_libfaad_enabled)
   USE_EXTERNAL_LIBFAAD=1
   AC_DEFINE([USE_EXTERNAL_LIBFAAD], [1], [Whether to use external libfaad library.])
@@ -654,6 +667,12 @@ if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"
 else
   AC_MSG_NOTICE($external_python_disabled)
   USE_EXTERNAL_PYTHON=0
+
+  # We'll need zip in this case.
+  AC_CHECK_PROG(HAVE_ZIP,zip,"yes","no",)
+  if test "$HAVE_ZIP" = "no" ; then
+    AC_MSG_ERROR($missing_program)
+  fi
 fi
 
 # VDPAU
@@ -1008,7 +1027,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/paplayer/AACCodec/Makefile]
                 [xbmc/cores/paplayer/AC3Codec/Makefile]
                 [xbmc/cores/paplayer/ADPCMCodec/Makefile]
-                [xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile]
+                [xbmc/cores/paplayer/ModuleCodec/Makefile]
                 [xbmc/cores/paplayer/GYMCodec/Makefile]
                 [xbmc/cores/paplayer/MP3Codec/Makefile]
                 [xbmc/cores/paplayer/MPCCodec/xbmc/Makefile]
@@ -1199,6 +1218,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-gpl \
       --enable-swscale \
       `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
+      `if test "$use_external_libfaad" = "yes"; then echo --enable-libfaad; fi` \
       --enable-protocol=http \
       --enable-pthreads
   fi
