@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "DVDAudioCodecLibFaad.h"
 #include "DVDStreamInfo.h"
+#include "Settings.h"
 
 CDVDAudioCodecLibFaad::CDVDAudioCodecLibFaad() : CDVDAudioCodec()
 {
@@ -216,7 +217,7 @@ bool CDVDAudioCodecLibFaad::OpenDecoder()
 
     // modify some stuff here
     pConfiguration->outputFormat = FAAD_FMT_16BIT; // already default
-    pConfiguration->downMatrix = 1;
+    pConfiguration->downMatrix = g_guiSettings.GetBool("audiooutput.downmixmultichannel");
 
     m_dll.faacDecSetConfiguration(m_pHandle, pConfiguration);
 
