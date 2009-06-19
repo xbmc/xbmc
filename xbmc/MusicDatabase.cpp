@@ -59,7 +59,6 @@ using namespace MEDIA_DETECT;
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
 #define MUSIC_DATABASE_VERSION        13
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
-#define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
 
@@ -1413,7 +1412,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", RECENTLY_ADDED_LIMIT);
+    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1454,7 +1453,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from albumview order by idAlbum desc limit %i", RECENTLY_ADDED_LIMIT);
+    strSQL.Format("select * from albumview order by idAlbum desc limit %i", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -1490,7 +1489,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select songview.* from albumview join songview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in ( select idAlbum from albumview order by idAlbum desc limit %i)", RECENTLY_ADDED_LIMIT);
+    strSQL.Format("select songview.* from albumview join songview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in ( select idAlbum from albumview order by idAlbum desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyAddedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 

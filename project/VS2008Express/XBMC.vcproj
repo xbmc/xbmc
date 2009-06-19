@@ -3070,6 +3070,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\StreamDetails.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\StreamDetails.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\StringUtils.cpp"
 					>
 				</File>

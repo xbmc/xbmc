@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 06/11/2009-->
+<!--Date of translation: 06/16/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -566,11 +566,11 @@
   <string id="728">FTP 서버</string>
   <string id="729">인터넷 시간</string>
   <string id="730">웹 서버 포트</string>
-  <string id="731">시간서버 주소</string>
+  <string id="731">시간 서버 주소</string>
   <string id="732">저장 &amp;  적용</string>
   <string id="733">웹 서버 비밀번호</string>
   <string id="734">암호 없음</string>
-  <string id="735">- 문자셋</string>
+  <string id="735">- 문자집합</string>
   <string id="736">- 형식</string>
   <string id="737">- 색깔</string>
   <string id="738">보통</string>
@@ -645,7 +645,7 @@
   <string id="1013">포트</string>
   <string id="1014">사용자명</string>
   <string id="1015">네트워크 서버 찾기</string>
-  <string id="1016">서버 네트워크 주소 입력</string>
+  <string id="1016">서버의 네트워크 주소 입력</string>
   <string id="1017">서버상의 경로 입력</string>
   <string id="1018">포트 번호 입력</string>
   <string id="1019">사용자명 입력</string>
@@ -1679,6 +1679,7 @@
   <string id="20430">미리보기 및 팬아트 내보내기</string>
   <string id="20431">기존 파일에 덮어쓰겠습니까?</string>
   <string id="20432">라이브러리 업데이트 제외 경로</string>
+  <string id="20433">미디어 메타데이터 정보 추출</string>
   <string id="21330">숨김 파일 및 디렉토리 보기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-상태!</string>
@@ -1868,7 +1869,7 @@
   <string id="22030">글꼴</string>
   <string id="22031">- 크기</string>
   <string id="22032">- 색깔</string>
-  <string id="22033">- 문자셋</string>
+  <string id="22033">- 문자집합</string>
   <string id="22034">노래방 제목 HTML 로 내보내기</string>
   <string id="22035">노래방 제목 CSV 로 내보내기</string>
   <string id="22036">노래방 제목 가져오기...</string>
@@ -1880,7 +1881,8 @@
   <string id="22042">하양/파랑</string>
   <string id="22043">검정/하양</string>
   <string id="23000">날씨 플러그인</string>
+  <string id="23001">- 플러그인 설정</string>
   <string id="29800">라이브러리 모드</string>
-  <string id="29801">QWERTY 자판</string>
+  <string id="29801">쿼티 키보드</string>
   <string id="29999">게임에 깜박임 필터 설정 적용</string>
 </strings>

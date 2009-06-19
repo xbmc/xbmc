@@ -37,6 +37,8 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 
+#include "DVDFileInfo.h"
+
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
@@ -2916,17 +2918,8 @@ bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)
 
 CStdString CDVDPlayer::GetPlayerState()
 {
-  if (!m_pInputStream) return "";
-
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-  {
-    CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
-
-    std::string buffer;
-    if( pStream->GetNavigatorState(buffer) ) return buffer;
-  }
-
-  return "";
+  CSingleLock lock(m_StateSection);
+  return m_State.player_state;
 }
 
 bool CDVDPlayer::SetPlayerState(CStdString state)
@@ -3072,8 +3065,13 @@ void CDVDPlayer::UpdatePlayState(double timeout)
         m_State.time       = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime();
         m_State.time_total = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime();
       }
+      if(!((CDVDInputStreamNavigator*)m_pInputStream)->GetNavigatorState(m_State.player_state))
+        m_State.player_state = "";
     }
-    else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    else
+        m_State.player_state = "";
+
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
     {
       m_State.canrecord = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->CanRecord();
       m_State.recording = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->IsRecording();
@@ -3084,7 +3082,8 @@ void CDVDPlayer::UpdatePlayState(double timeout)
         m_State.time_total = ((CDVDInputStreamPVRManager*)m_pInputStream)->GetTotalTime();
       }
     }
-    else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
     {
       m_State.canrecord = static_cast<CDVDInputStreamTV*>(m_pInputStream)->CanRecord();
       m_State.recording = static_cast<CDVDInputStreamTV*>(m_pInputStream)->IsRecording();
@@ -3180,6 +3179,52 @@ bool CDVDPlayer::Record(bool bOnOff)
     return true;
   }
   return false;
+}
+
+int CDVDPlayer::GetChannels()
+{
+  if (m_pDemuxer && (m_CurrentAudio.id != -1))
+  {
+    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStream(m_CurrentAudio.id));
+    if (stream)
+      return stream->iChannels;
+  }
+  return -1;
+}
+
+CStdString CDVDPlayer::GetAudioCodecName()
+{
+  CStdString retVal;
+  if (m_pDemuxer && (m_CurrentAudio.id != -1))
+    m_pDemuxer->GetStreamCodecName(m_CurrentAudio.id, retVal);
+  return retVal;
+}
+
+CStdString CDVDPlayer::GetVideoCodecName()
+{
+  CStdString retVal;
+  if (m_pDemuxer && (m_CurrentVideo.id != -1))
+    m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
+  return retVal;
+}
+
+int CDVDPlayer::GetPictureWidth()
+{
+  if (m_pDemuxer && (m_CurrentVideo.id != -1))
+  {
+    CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(m_pDemuxer->GetStream(m_CurrentVideo.id));
+    if (stream)
+      return stream->iHeight;
+  }
+  return 0;
+}
+
+bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
+{
+  if (m_pDemuxer)
+    return CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+  else
+    return false;
 }
 
 CDVDPlayer::CPlayerSeek::CPlayerSeek(CDVDPlayer* player)

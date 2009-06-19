@@ -135,7 +135,6 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   *GetVideoInfoTag() = movie;
   FillInDefaultIcon();
   SetCachedVideoThumb();
-  SetInvalid();
 }
 
 CFileItem::CFileItem(const CTVEPGInfoTag& programme)
@@ -655,6 +654,10 @@ bool CFileItem::Exists() const
 
 bool CFileItem::IsVideo() const
 {
+  if (HasVideoInfoTag()) return true;
+  if (HasMusicInfoTag()) return false;
+  if (HasPictureInfoTag()) return false;
+
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
@@ -663,6 +666,9 @@ bool CFileItem::IsVideo() const
     return true;
 
   if (m_strPath.Left(10).Equals("hdhomerun:"))
+    return true;
+
+  if (m_strPath.Left(4).Equals("dvd:"))
     return true;
 
   CStdString extension;
@@ -714,6 +720,9 @@ bool CFileItem::IsTVTimer() const
 
 bool CFileItem::IsAudio() const
 {
+  if (HasMusicInfoTag()) return true;
+  if (HasVideoInfoTag()) return false;
+  if (HasPictureInfoTag()) return false;
   if (IsCDDA()) return true;
   if (IsShoutCast() && !m_bIsFolder) return true;
   if (IsLastFM() && !m_bIsFolder) return true;
@@ -746,6 +755,10 @@ bool CFileItem::IsAudio() const
 
 bool CFileItem::IsPicture() const
 {
+  if (HasPictureInfoTag()) return true;
+  if (HasMusicInfoTag()) return false;
+  if (HasVideoInfoTag()) return false;
+
   if( m_contenttype.Left(6).Equals("image/") )
     return true;
 
@@ -1077,21 +1090,12 @@ void CFileItem::FillInDefaultIcon()
   {
     if (!m_bIsFolder)
     {
-      if ( IsPlayList() )
-      {
-        SetIconImage("DefaultPlaylist.png");
-      }
-      else if ( IsPicture() )
-      {
-        // picture
-        SetIconImage("DefaultPicture.png");
-      }
-      else if ( IsXBE() )
-      {
-        // xbe
-        SetIconImage("DefaultProgram.png");
-      }
-      else if ( IsAudio() )
+      /* To reduce the average runtime of this code, this list should
+       * be ordered with most frequently seen types first.  Also bear
+       * in mind the complexity of the code behind the check in the
+       * case of IsWhatater() returns false.
+       */
+      if ( IsAudio() )
       {
         // audio
         SetIconImage("DefaultAudio.png");
@@ -1100,6 +1104,20 @@ void CFileItem::FillInDefaultIcon()
       {
         // video
         SetIconImage("DefaultVideo.png");
+      }
+      else if ( IsPicture() )
+      {
+        // picture
+        SetIconImage("DefaultPicture.png");
+      }
+      else if ( IsPlayList() )
+      {
+        SetIconImage("DefaultPlaylist.png");
+      }
+      else if ( IsXBE() )
+      {
+        // xbe
+        SetIconImage("DefaultProgram.png");
       }
       else if ( IsShortCut() && !IsLabelPreformated() )
       {

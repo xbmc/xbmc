@@ -2488,8 +2488,14 @@ bool CApplication::WaitFrame(DWORD timeout)
 #ifdef HAS_SDL
   // Wait for all other frames to be presented
   SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0)
-    SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+  while(m_frameCount > 0)
+  {
+    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+    if(result == SDL_MUTEX_TIMEDOUT)
+      break;
+    if(result < 0)
+      CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
+  }  
   done = m_frameCount == 0;
   SDL_mutexV(m_frameMutex);
 #endif
@@ -2504,7 +2510,7 @@ void CApplication::NewFrame()
   m_frameCount++;
   SDL_mutexV(m_frameMutex);
 
-  SDL_CondSignal(m_frameCond);
+  SDL_CondBroadcast(m_frameCond);
 #endif
 }
 
@@ -2537,9 +2543,16 @@ void CApplication::Render()
       SDL_mutexP(m_frameMutex);
 
       // If we have frames or if we get notified of one, consume it.
-      if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100) == 0)
-        m_bPresentFrame = true;
+      while(m_frameCount == 0)
+      {
+        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100);
+        if(result == SDL_MUTEX_TIMEDOUT)
+          break;
+        if(result < 0)
+          CLog::Log(LOGWARNING, "CApplication::Render - error from conditional wait");
+      }
 
+      m_bPresentFrame = m_frameCount > 0;
       SDL_mutexV(m_frameMutex);
 #else
       m_bPresentFrame = true;
@@ -2571,6 +2584,7 @@ void CApplication::Render()
   g_graphicsContext.Lock();
   RenderNoPresent();
   g_graphicsContext.Flip();
+  g_infoManager.UpdateFPS();
   g_graphicsContext.Unlock();
 
 #ifdef HAS_SDL
@@ -2578,7 +2592,7 @@ void CApplication::Render()
   if(m_frameCount > 0)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
-  SDL_CondSignal(m_frameCond);
+  SDL_CondBroadcast(m_frameCond);
 #endif
 }
 
@@ -2586,7 +2600,6 @@ void CApplication::RenderMemoryStatus()
 {
   MEASURE_FUNCTION;
 
-  g_infoManager.UpdateFPS();
   g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
 
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
@@ -4496,6 +4509,23 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       if( options.fullscreen && g_renderManager.IsStarted()
        && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
        SwitchToFullScreen();
+
+      // Save information about the stream if we currently have no data
+      if (item.HasVideoInfoTag())
+      {
+        CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
+        if (!details->HasStreamDetails())
+        {
+          if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())
+          {
+            CVideoDatabase dbs;
+            dbs.Open();
+            dbs.SetStreamDetailsForFileId(details->m_streamDetails, details->m_iFileId);
+            dbs.Close();
+            CUtil::DeleteVideoDatabaseDirectoryCache();
+          }
+        }
+      }
     }
 #endif
 

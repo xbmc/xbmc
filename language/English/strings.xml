@@ -2064,6 +2064,7 @@
   <string id="20430">Export thumbs and fanart?</string>
   <string id="20431">Overwrite old files?</string>
   <string id="20432">Exclude path from library updates</string> 
+  <string id="20433">Extract media metadata information</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2309,6 +2310,9 @@
   <string id="23026">Pictures Add-on</string>
   <string id="23027">Weather Add-on</string>
   <string id="23028">Audio DSP Add-on</string>
+
+  <string id="23030">Weather plugin</string>
+  <string id="23031">- Plugin settings</string>
 
   <string id="23040">Add-on can not connect</string>
   <string id="23041">Please check your Settings or the Backend</string>

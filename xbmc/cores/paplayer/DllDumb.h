@@ -32,25 +32,25 @@
 class DllDumbInterface
 {
 public:
-    int LoadModule(const char* szFileName);
-    void FreeModule(int);
-    int GetModuleLength(int duh);
-    int GetModulePosition(int sic);
-    int StartPlayback(int duh, long pos);
-    void StopPlayback(int sic);
-    long FillBuffer(int, int sig, char* buffer, int size, float volume);
+    struct DUH * LoadModule(const char *szFileName);
+    void FreeModule(struct DUH *duh);
+    long GetModuleLength(struct DUH *duh);
+    long GetModulePosition(struct DUH_SIGRENDERER *sig);
+    struct DUH_SIGRENDERER * StartPlayback(struct DUH *duh, long pos);
+    void StopPlayback(struct DUH_SIGRENDERER *sig);
+    long FillBuffer(struct DUH_SIGRENDERER *sig, char *buffer, int size, float volume);
 };
 
 class DllDumb : public DllDynamic, DllDumbInterface
 {
   DECLARE_DLL_WRAPPER(DllDumb, DLL_PATH_MODULE_CODEC)
-  DEFINE_METHOD1(int, LoadModule, (const char* p1))
-  DEFINE_METHOD1(void, FreeModule, (int p1))
-  DEFINE_METHOD1(int, GetModuleLength, (int p1))
-  DEFINE_METHOD1(int, GetModulePosition, (int p1))
-  DEFINE_METHOD2(int, StartPlayback, (int p1, long p2))
-  DEFINE_METHOD1(void, StopPlayback, (int p1))
-  DEFINE_METHOD5(long, FillBuffer, (int p1, int p2, char* p3, int p4, float p5))
+  DEFINE_METHOD1(struct DUH *, LoadModule, (const char *p1))
+  DEFINE_METHOD1(void, FreeModule, (struct DUH *p1))
+  DEFINE_METHOD1(long, GetModuleLength, (struct DUH *p1))
+  DEFINE_METHOD1(long, GetModulePosition, (struct DUH_SIGRENDERER *p1))
+  DEFINE_METHOD2(struct DUH_SIGRENDERER *, StartPlayback, (struct DUH *p1, long p2))
+  DEFINE_METHOD1(void, StopPlayback, (struct DUH_SIGRENDERER *p1))
+  DEFINE_METHOD4(long, FillBuffer, (struct DUH_SIGRENDERER *p1, char* p2, int p3, float p4))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(DLL_LoadModule, LoadModule)

@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/11/2009-->
+<!--Date of translation: 06/17/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21010-->
+<!--Based on english strings version 21081-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -214,7 +214,7 @@
   <string id="277">Μετακινήστε την μπάρα για να αλλάξει η θέση των υποτίτλων</string>
   <string id="278">Αλλάξτε το σχήμα ώστε να είναι τέλειο τετράγωνο</string>
   <string id="279">Αδυναμία φόρτωσης των ρυθμίσεων</string>
-  <string id="280">Χρησιμοποίηση προεπιλεγμένων fallbacks</string>
+  <string id="280">Χρησιμοποίηση προεπιλεγμένων ρυθμίσεων</string>
   <string id="281">Παρακαλώ, ελέγξτε τα αρχεία .xml</string>
   <string id="282">Βρέθηκαν %i αντικείμενα</string>
   <string id="283">Αποτελέσματα αναζήτησης</string>
@@ -281,7 +281,7 @@
   <string id="354">Ίχνη πλέγματος</string>
   <string id="355">Προφύλαξη οθόνης μετά από</string>
   <string id="356">Λειτουργία προφύλαξης οθόνης</string>
-  <string id="357">Χρονοδιακόπτης λειτουργίας τερματισμού</string>
+  <string id="357">Λειτουργία χρονοδιακόπτη τερματισμού</string>
   <string id="358">Όλα τα άλμπουμ</string>
   <string id="359">Πρόσφατα άλμπουμ</string>
   <string id="360">Προφύλαξη οθόνης</string>
@@ -366,7 +366,7 @@
   <string id="440">Σκληρός δίσκος</string>
   <string id="441">UDF</string>
   <string id="442">Τοπικό δίκτυο</string>
-  <string id="443">Διαδίκτυο</string>
+  <string id="443">Internet</string>
   <string id="444">Βίντεο</string>
   <string id="445">Ήχος</string>
   <string id="446">DVD</string>
@@ -416,7 +416,7 @@
   <string id="494">Εύρος στάθμης γενικού ήχου</string>
   <string id="495">Αύξηση δειγματοληψίας ανάλυσης σε γραφικό περιβάλλον (GUI)</string>
   <string id="496">Βαθμονόμηση</string>
-  <string id="497">Απόκρυψη επεκτάσεων των πολυμέσων</string>
+  <string id="497">Απόκρυψη επεκτάσεων πολυμέσων</string>
   <string id="498">Ταξιν: Τύπος</string>
   <string id="499">Αδυναμία σύνδεσης στην υπηρεσία έρευνας</string>
   <string id="500">Απέτυχε η λήψη των πληροφοριών άλμπουμ</string>
@@ -438,7 +438,7 @@
   <string id="519">Εκκίνηση σε...</string>
   <string id="520">Επεξεργασία τίτλου XBE </string>
   <string id="521">Συλλογές</string>
-  <string id="522">Διαγραφή πηγής</string>
+  <string id="522">Απομάκρυνση πηγής</string>
   <string id="523">Εναλλαγή πολυμέσων</string>
   <string id="524">Επιλογή λίστας αναπαραγωγής</string>
   <string id="525">Νέα λίστα αναπαραγωγής...</string>
@@ -586,7 +586,7 @@
   <string id="726">Οι αλλαγές δεν αποθηκεύτηκαν. Συνέχιση χωρίς αποθήκευση;</string>
   <string id="727">Διακομιστής Ιστού</string>
   <string id="728">Διακομιστής FTP</string>
-  <string id="729">Συγχρονισμός ώρας Ιντερνετ</string>
+  <string id="729">Συγχρονισμός ώρας από το Internet</string>
   <string id="730">Θύρα διακομιστή ιστού</string>
   <string id="731">Διακομιστές συγχρονισμού ώρας</string>
   <string id="732">Αποθήκευση &amp; εφαρμογή</string>
@@ -608,7 +608,7 @@
   <string id="748">Επεξεργασία διαδρομής</string>
   <string id="749">Kατοπτρική εικόνα</string>
   <string id="750">Είστε σίγουρος;</string>
-  <string id="751">Απομάκρυνση προέλευσης</string>
+  <string id="751">Απομάκρυνση πηγής</string>
   <string id="752">Επεξεργασία διαδρομής κοινόχρηστων</string>
   <string id="753">Επεξεργασία ονόματος κοινοχρήστων</string>
   <string id="754">Προσθήκη συνδέσμου εφαρμογής</string>
@@ -677,7 +677,7 @@
   <string id="1019">Εισαγωγή του ονόματος χρήστη</string>
   <string id="1020">Προσθήκη πηγής %s</string>
   <string id="1021">Εισαγωγή διαδρομών ή αναζήτηση τοποθεσιών πολυμέσων.</string>
-  <string id="1022">Εισαγωγή ετικέτας για την πηγή πολυμέσων.</string>
+  <string id="1022">Εισαγωγή ετικέτας για τη πηγή πολυμέσων.</string>
   <string id="1023">Αναζήτηση νέου κοινόχρηστου πόρου</string>
   <string id="1024">Αναζήτηση</string>
   <string id="1025">Δεν ήταν δυνατόν να ανακτηθούν οι πληροφορίες καταλόγου.</string>
@@ -700,7 +700,7 @@
   <string id="1042">Ανακτήθηκαν %i από %i αντικείμενα</string>
   <string id="1043">Επεκτάσεις εφαρμογής</string>
   <string id="1044">Ορισμός πρόσθετου σελιδοδείκτη</string>
-  <string id="1045">Ρύθμιση επεκτάσεων</string>
+  <string id="1045">Ρυθμίσεις επέκτασης</string>
   <string id="1046">Σημεία πρόσβασης</string>
   <string id="1047">Άλλα...</string>
   <string id="1048">Όνομα χρήστη διακομιστή ιστού</string>
@@ -903,7 +903,7 @@
   <string id="12367">Ο κεντρικός κωδικός δεν είναι έγκυρος!</string>
   <string id="12368">Παρακαλώ, εισάγετε έναν έγκυρο κεντρικό κωδικό!</string>
   <string id="12373">Ρυθμίσεις &amp;  διαχείριση αρχείων</string>
-  <string id="12376">Ως προεπιλογή για όλες τις ταινίες</string>
+  <string id="12376">Ορισμός ως προεπιλογή για όλες τις ταινίες</string>
   <string id="12377">Διαγράφει όλες τις προηγούμενες αποθηκευμένες τιμές</string>
   <string id="12378">Προβολή κάθε εικόνας για</string>
   <string id="12379">Χρήση εφέ Pan και Zoom</string>
@@ -1035,7 +1035,7 @@
   <string id="13292">Καλώδιο A/V</string>
   <string id="13293">Περιοχή βίντεο &amp; XBE</string>
   <string id="13294">Περιοχή DVD</string>
-  <string id="13295">Διαδίκτυο</string>
+  <string id="13295">Internet</string>
   <string id="13296">Συνδέθηκε</string>
   <string id="13297">Δε συνδέθηκε. Ελέγξτε τις ρυθμίσεις δικτύου.</string>
   <string id="13298">Κλειδί Xbox Live:</string>
@@ -1131,7 +1131,7 @@
   <string id="13400">Βαθμιαία εξασθένιση κομματιών</string>
   <string id="13401">Αναζήτηση για %s</string>
   <string id="13402">Εμφάνιση της θέσης του κομματιού</string>
-  <string id="13403">Απαλοιφή προκαθορισμένων</string>
+  <string id="13403">Απαλοιφή προεπιλογών</string>
   <string id="13404">Συνέχεια</string>
   <string id="13405">Μικρογραφία</string>
   <string id="13406">Πληροφορίες εικόνας</string>
@@ -1197,10 +1197,10 @@
   <string id="14025">Συνολική λανθάνουσα μνήμη - Σκληρός δίσκος</string>
   <string id="14026">Λανθάνουσα μνήμη βίντεο - DVDRom</string>
   <string id="14027">- Τοπικό δίκτυο</string>
-  <string id="14028">- Διαδίκτυο</string>
+  <string id="14028">- Internet</string>
   <string id="14030">Λανθάνουσα μνήμη ήχου - DVDRom</string>
   <string id="14031">- Τοπικό δίκτυο</string>
-  <string id="14032">- Διαδίκτυο</string>
+  <string id="14032">- Internet</string>
   <string id="14034">Λανθάνουσα μνήμη DVD - DVDRom</string>
   <string id="14035">- Τοπικό δίκτυο</string>
   <string id="14036">Διακομιστές</string>
@@ -1220,10 +1220,10 @@
   <string id="14051">Διαμόρφωση Ώρας</string>
   <string id="14052">Διαμόρφωση Ημ/νίας</string>
   <string id="14053">Φίλτρα γραφικού περιβάλλοντος (GUI)</string>
-  <string id="14054">Ενεργοποίηση αναζητήσεων στο διαδίκτυο</string>
+  <string id="14054">Ενεργοποίηση αναζητήσεων στο Internet</string>
   <string id="14055">Σάρωση στο παρασκήνιο</string>
   <string id="14056">Διακοπή σάρωσης</string>
-  <string id="14057">Δεν είναι δυνατό κατά την σάρωση πληροφοριών αρχείων</string>
+  <string id="14057">Δεν είναι εφικτό κατά τη σάρωση πληροφοριών αρχείων</string>
   <string id="14058">Εφέ Film Grain</string>
   <string id="14059">Έρευνα στους κοινόχρηστους πόρους για μικρογραφίες </string>
   <string id="14060">Άγνωστος τύπος λανθάνουσας μνήμης - Internet</string>
@@ -1336,7 +1336,7 @@
   <string id="15301">Απέτυχε η σύνδεση με τον διακομιστή δικτύου</string>
   <string id="15302">Δεν βρέθηκαν διακομιστές</string>
   <string id="15303">Δεν βρέθηκαν ομάδες εργασίας</string>
-  <string id="15310">Άνοιγμα multi-path σελιδοδείκτη</string>
+  <string id="15310">Άνοιγμα πηγής multi-path</string>
   <string id="15311">Διαδρομή:</string>
   <string id="16000">Γενικά</string>
   <string id="16001">Διαμόρφωση υλικού ήχου...</string>
@@ -1461,7 +1461,7 @@
   <string id="20068">Κλείδωμα προφίλ</string>
   <string id="20069">Αδύνατη η δημιουργία φακέλου</string>
   <string id="20070">Φάκελος προφίλ</string>
-  <string id="20071">Ξεκίνησε με νέες πηγές πολυμέσων</string>
+  <string id="20071">Έναρξη με νέες πηγές πολυμέσων</string>
   <string id="20072">Σιγουρευτείτε ότι ο επιλεγμένος φάκελος μπορεί να εγγραφεί</string>
   <string id="20073">και ότι το όνομα του είναι έγκυρο</string>
   <string id="20074">Αξιολόγηση MPAA</string>
@@ -1491,8 +1491,8 @@
   <string id="20098">Λαμβάνει πληροφορίες για το άλμπουμ</string>
   <string id="20099">Αδυναμία εγγραφής του CD ή του κομματιού κατά την αναπαραγωγή δίσκου</string>
   <string id="20100">Κεντρικό κλείδωμα και επιλογές</string>
-  <string id="20101">Ενεργοποίηση γενικής διαχείριση πάντα με κωδικό</string>
-  <string id="20102">ή αντιγραφή από το προκαθορισμένο;</string>
+  <string id="20101">Εισαγωγή κωδικού για την ενεργοποίηση της γενικής διαχείρισης</string>
+  <string id="20102">ή αντιγραφή του κωδικού όπως αυτός έχει προκαθοριστεί;</string>
   <string id="20103">Αποθήκευση αλλαγών στο προφίλ;</string>
   <string id="20104">Βρέθηκαν παλιές ρυθμίσεις.</string>
   <string id="20105">Θέλετε να τις χρησιμοποιήσετε;</string>
@@ -1595,7 +1595,7 @@
   <string id="20300">Κατάλογος διακομιστή ιστού (HTTP)</string>
   <string id="20301">Κατάλογος διακομιστή ιστού (HTTPS)</string>
   <string id="20302">Αδυναμία εγγραφής στο φάκελλο:</string>
-  <string id="20303">Θέλετε να παραλειφθεί και να συνεχίσετε;</string>
+  <string id="20303">Θέλετε να παραβλεφθεί και να συνεχίσετε;</string>
   <string id="20304">Εντοπισμός ημ/νίας κατασκευής</string>
   <string id="20305">Εντοπισμός συνδεδεμένων συσκευών</string>
   <string id="20306">Άγνωστο. Προσθέστε το MD5 από το xbmc.log στο BiosIDs.ini.</string>
@@ -1619,7 +1619,7 @@
   <string id="20324">Αναπαραγωγή κομματιού...</string>
   <string id="20325">Επαναφορά βαθμονόμησης</string>
   <string id="20326">Επαναφορά των τιμών βαθμονόμησης για %s</string>
-  <string id="20327">στις αρχικές τιμές.</string>
+  <string id="20327">στις προκαθορισμένες τιμές.</string>
   <string id="20328">Αναζήτηση προορισμού</string>
   <string id="20329">τοποθεσία για την μεταφορά του αποθηκευμένου αρχείου</string>
   <string id="20330">Χρήση ονόματος φακέλου για αναζητήσεις</string>
@@ -1725,6 +1725,7 @@
   <string id="20430">Εξαγωγή μικρογραφιών και fanart;</string>
   <string id="20431">Αντικατάσταση παλιών αρχείων;</string>
   <string id="20432">Εξαίρεση διαδρομής από τις ενημερώσεις συλλογής</string>
+  <string id="20433">Εξαγωγή πληροφοριών</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε κατάσταση εγγραφής!</string>
@@ -1926,6 +1927,7 @@
   <string id="22042">άσπρο/μπλε</string>
   <string id="22043">μαύρο/άσπρο</string>
   <string id="23000">Επέκταση καιρού</string>
+  <string id="23001">- Ρυθμίσεις επέκτασης</string>
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
   <string id="29999">Εφαρμογή ρυθμίσεων φίλτρου Flicker</string>

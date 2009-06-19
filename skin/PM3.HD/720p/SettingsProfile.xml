@@ -7,7 +7,6 @@
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<include>ContentPanel</include>
 			<control type="panel" id="2">
-				<visible>!Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Songs)</visible>
 				<posx>300</posx>
 				<posy>130</posy>
 				<width>910</width>
@@ -106,7 +105,7 @@
 				<posy>525</posy>
 				<width>128</width>
 				<height>128</height>
-				<aspectratrio>keep</aspectratrio>
+				<aspectratio>keep</aspectratio>
 				<texture>$INFO[Container(2).Listitem.Icon]</texture>
 			</control>
 			<control type="label">
