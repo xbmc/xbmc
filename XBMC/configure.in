@@ -667,6 +667,12 @@ if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"
 else
   AC_MSG_NOTICE($external_python_disabled)
   USE_EXTERNAL_PYTHON=0
+
+  # We'll need zip in this case.
+  AC_CHECK_PROG(HAVE_ZIP,zip,"yes","no",)
+  if test "$HAVE_ZIP" = "no" ; then
+    AC_MSG_ERROR($missing_program)
+  fi
 fi
 
 # VDPAU
