@@ -97,23 +97,23 @@ do_start()
 							mkdir $BOOTMEDIAMOUNTPOINT/dotXBMC
 						fi
 
-						if [ ! -L /home/xbmc/.xbmc ]; then
-							mv /home/xbmc/.xbmc /home/xbmc/.xbmc.previous
-							ln -s $BOOTMEDIAMOUNTPOINT/dotXBMC /home/xbmc/.xbmc
+						if [ -d /home/xbmc/.xbmc ]; then
+							if [ -L /home/xbmc/.xbmc ]; then
+								rm .xbmc
+							else
+								mv /home/xbmc/.xbmc /home/xbmc/.xbmc.previous
+							fi
 						fi
+						ln -s $BOOTMEDIAMOUNTPOINT/dotXBMC /home/xbmc/.xbmc
 					fi
 				fi
-			fi
-
-			# if usplash is running, make sure to stop it now, yes "start" kills it.
-			if pidof usplash > /dev/null; then
-				DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
 			fi
 
 			/usr/bin/runXBMC.sh &
 
 			XBMC_SETVOLUME="$(echo $XBMC_PARAMS | grep setvolume)"
 			if [ -n "$XBMC_SETVOLUME" ]; then
+				log_warning_msg "Increasing ALSA volumes..."
 				/usr/bin/setAlsaVolumes.py &
 			fi
 
@@ -121,6 +121,11 @@ do_start()
 			if [ ! -n "$NOMOUNT" ]; then
 				log_warning_msg "Mounting local disks..."
 				/usr/bin/diskmounter &
+			fi
+
+			# if usplash is running, make sure to stop it now, yes "start" kills it.
+			if pidof usplash > /dev/null; then
+				DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
 			fi
 		fi
 	fi
