@@ -1334,7 +1334,7 @@
 					<textcolor>white</textcolor>
 					<label>$INFO[Container(13).NumItems] $LOCALIZE[18066] - $LOCALIZE[18060] ($INFO[Container(13).CurrentPage]/$INFO[Container(13).NumPages])</label>
 				</control>
-				<control type="label" id="20">
+				<control type="label">
 					<description>recording disk size / free space</description>
 					<posx>10</posx>
 					<posy>535</posy>
@@ -1345,7 +1345,7 @@
 					<aligny>center</aligny>
 					<scroll>true</scroll>
 					<textcolor>white</textcolor>
-					<label>-</label>
+					<label>$INFO[PVR.TotalDiscSpace]</label>
 					<visible>!Player.Playing</visible>
 				</control>
 			</control>
@@ -1539,174 +1539,6 @@
 				<description>Settings group</description>
 				<posx>317</posx>
 				<posy>135</posy>
-				<control type="label">
-					<description>Backend name</description>
-					<posx>10</posx>
-					<posy>0</posy>
-					<width>280</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>18200</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label" id="40">
-					<description>Disksize</description>
-					<posx>930</posx>
-					<posy>0</posy>
-					<width>-930</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>-</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label">
-					<description>Backend version</description>
-					<posx>10</posx>
-					<posy>40</posy>
-					<width>280</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>18201</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label" id="41">
-					<description>Disksize</description>
-					<posx>930</posx>
-					<posy>40</posy>
-					<width>-930</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>-</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label">
-					<description>Backend ip:port</description>
-					<posx>10</posx>
-					<posy>80</posy>
-					<width>280</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>18202</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label" id="42">
-					<description>Disksize</description>
-					<posx>930</posx>
-					<posy>80</posy>
-					<width>-930</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>-</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label">
-					<description>Disksize</description>
-					<posx>10</posx>
-					<posy>120</posy>
-					<width>280</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>18203</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label" id="43">
-					<description>Disksize</description>
-					<posx>930</posx>
-					<posy>120</posy>
-					<width>-930</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>-</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label">
-					<description>Disksize</description>
-					<posx>10</posx>
-					<posy>160</posy>
-					<width>280</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>18204</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label" id="44">
-					<description>Disksize</description>
-					<posx>930</posx>
-					<posy>160</posy>
-					<width>-930</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>-</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label">
-					<description>Disksize</description>
-					<posx>10</posx>
-					<posy>200</posy>
-					<width>280</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>18205</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label" id="45">
-					<description>Disksize</description>
-					<posx>930</posx>
-					<posy>200</posy>
-					<width>-930</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>-</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label">
-					<description>Timer counts</description>
-					<posx>10</posx>
-					<posy>240</posy>
-					<width>280</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>18206</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
-				<control type="label" id="46">
-					<description>Timer counts value</description>
-					<posx>930</posx>
-					<posy>240</posy>
-					<width>-930</width>
-					<height>35</height>
-					<font>font14</font>
-					<label>-</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>white</textcolor>
-				</control>
 				<control type="label">
 					<description>Info</description>
 					<posx>0</posx>

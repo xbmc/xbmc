@@ -85,11 +85,6 @@ public:
   static bool IsPlayingTV() { return m_isPlayingTV; }
   static bool IsPlayingRadio() { return m_isPlayingRadio; }
 
-  /* General handling */
-  CStdString GetBackendName();
-  CStdString GetBackendVersion();
-  bool GetDriveSpace(long long *total, long long *used, int *percent);
-
   bool GetEPGInfo(unsigned int number, CFileItem& now, CFileItem& next, bool radio = false);
   int GetEPGAll(CFileItemList* results, bool radio = false);
   int GetEPGNow(CFileItemList* results, bool radio = false);
@@ -200,6 +195,7 @@ private:
   CStdString          m_backendTimers;
   CStdString          m_backendRecordings;
   CStdString          m_backendChannels;
+  CStdString          m_totalDiskspace;
 
   int                 m_CurrentRadioChannel;
   int                 m_CurrentTVChannel;

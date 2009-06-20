@@ -55,7 +55,6 @@ using namespace std;
 #define CONTROL_LIST_GUIDE_CHANNEL   15
 #define CONTROL_LIST_GUIDE_NOW_NEXT  16
 
-#define CONTROL_DISKSIZE             20
 #define CONTROL_NEXTTIMER            21
 
 #define CONTROL_LABELHEADER          29
@@ -67,14 +66,6 @@ using namespace std;
 #define CONTROL_BTNRECORDINGS        34
 #define CONTROL_BTNTIMERS            35
 #define CONTROL_BTNSETTINGS          36
-
-#define CONTROL_INFO_BACKEND         40
-#define CONTROL_INFO_VERSION         41
-#define CONTROL_INFO_ADDRESS         42
-#define CONTROL_INFO_DISKSIZE        43
-#define CONTROL_INFO_CHANNELS        44
-#define CONTROL_INFO_RECORDINGS      45
-#define CONTROL_INFO_TIMERS          46
 
 #define CONTROL_AREA_GUIDE           9001
 #define CONTROL_AREA_CHANNELS_TV     9002
@@ -363,41 +354,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       m_iCurrSubTVWindow = TV_WINDOW_SETTINGS;
 
       CStdString strLabel;
-//      CURL m_connString = CPVRManager::GetInstance()->GetConnString();
-
-      strLabel = CPVRManager::GetInstance()->GetBackendName();
-      SET_CONTROL_LABEL(CONTROL_INFO_BACKEND, strLabel);
-
-      strLabel = CPVRManager::GetInstance()->GetBackendVersion();
-      SET_CONTROL_LABEL(CONTROL_INFO_VERSION, strLabel);
-
-//      strLabel.Format("%s:%d", (const char*)m_connString.GetHostName(), m_connString.GetPort());
-//      SET_CONTROL_LABEL(CONTROL_INFO_ADDRESS, strLabel);
-
-      long long m_iDisktotal = 1024;
-      long long m_iDiskused  = 1024;
-      int       m_iPercent   = -1;
-      CPVRManager::GetInstance()->GetDriveSpace(&m_iDisktotal, &m_iDiskused, &m_iPercent);
-      m_iDisktotal /= 1024; // Convert to MBytes
-      m_iDiskused /= 1024;  // Convert to MBytes
-
-#ifdef _LINUX
-      if (m_iPercent >= 0 && m_iPercent <= 100)
-		strLabel.Format("%s %0.f GByte - %s: %0.f GByte (%i %)", g_localizeStrings.Get(18055), (float) m_iDisktotal / 1024, g_localizeStrings.Get(156), (float) m_iDiskused / 1024, m_iPercent);
-      else
-#endif
-		strLabel.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) m_iDisktotal / 1024, g_localizeStrings.Get(156), (float) m_iDiskused / 1024);
-
-      SET_CONTROL_LABEL(CONTROL_INFO_DISKSIZE, strLabel);
-
-      strLabel.Format("%i", CPVRManager::GetInstance()->GetNumChannels());
-      SET_CONTROL_LABEL(CONTROL_INFO_CHANNELS, strLabel);
-
-      strLabel.Format("%i", CPVRManager::GetInstance()->GetNumRecordings());
-      SET_CONTROL_LABEL(CONTROL_INFO_RECORDINGS, strLabel);
-
-      strLabel.Format("%i", CPVRManager::GetInstance()->GetNumTimers());
-      SET_CONTROL_LABEL(CONTROL_INFO_TIMERS, strLabel);
 
       strLabel.Format("%s - %s", g_localizeStrings.Get(9), g_localizeStrings.Get(5));
       SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
@@ -1754,24 +1710,6 @@ void CGUIWindowTV::UpdateRecordings()
 {
   SET_CONTROL_HIDDEN(CONTROL_LIST_RECORDINGS);
 
-  /* Disksize */
-  CStdString strLabel;
-  long long m_iDisktotal = 1024;
-  long long m_iDiskused  = 1024;
-  int       m_iPercent   = -1;
-  CPVRManager::GetInstance()->GetDriveSpace(&m_iDisktotal, &m_iDiskused, &m_iPercent);
-  m_iDisktotal /= 1024; // Convert to MBytes
-  m_iDiskused /= 1024;  // Convert to MBytes
-
-#ifdef _LINUX
-  if (m_iPercent >= 0 && m_iPercent <= 100)
-	strLabel.Format("%s %0.f GByte - %s: %0.f GByte (%i %)", g_localizeStrings.Get(18055), (float) m_iDisktotal / 1024, g_localizeStrings.Get(156), (float) m_iDiskused / 1024, m_iPercent);
-  else
-#endif
-	strLabel.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) m_iDisktotal / 1024, g_localizeStrings.Get(156), (float) m_iDiskused / 1024);
-
-  SET_CONTROL_LABEL(CONTROL_DISKSIZE, strLabel);
-
   m_vecItems->Clear();
   CPVRManager::GetInstance()->GetAllRecordings(m_vecItems);
 
@@ -1786,6 +1724,7 @@ void CGUIWindowTV::UpdateRecordings()
     g_graphicsContext.SendMessage(msg);
   }
 
+  CStdString strLabel;
   strLabel.Format("%s - %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18066));
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
 
