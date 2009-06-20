@@ -1243,7 +1243,9 @@ HRESULT CApplication::Initialize()
   StartServices();
 
   // Init random seed
-  unsigned int seed = ((unsigned int) time(NULL) + timeGetTime() + g_stSettings.m_iSystemTimeTotalUp);
+  LARGE_INTEGER now;
+  QueryPerformanceCounter(&now);
+  unsigned int seed = ((unsigned int) time(NULL) + (unsigned int) now.LowPart + g_stSettings.m_iSystemTimeTotalUp);
   CLog::Log(LOGDEBUG, "%s - Initializing random seed to %u", __FUNCTION__, seed);
   srand(seed);
 
