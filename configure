@@ -21172,7 +21172,8 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       --enable-gpl \
       --enable-swscale \
       --enable-protocol=http \
-      --enable-pthreads &&
+      --enable-pthreads \
+      --cc="$CC" &&
     sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak &&
     sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak &&
     sed -i "" -e "s#libswscale_VERSION_MAJOR=0#libswscale_VERSION_MAJOR=0.7.1#" config.mak &&
@@ -21200,7 +21201,8 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
       `if test "$use_external_libfaad" = "yes"; then echo --enable-libfaad; fi` \
       --enable-protocol=http \
-      --enable-pthreads
+      --enable-pthreads \
+      --cc="$CC"
   fi
 
         if [ $? -ne 0 ]; then
@@ -21306,7 +21308,8 @@ if [ 0 != "1" ]; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
       --extra-cflags="$DVDREAD_CFLAGS -D__DARWIN__ -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../libdvdcss/src" \
       --enable-static \
-      --disable-shared &&
+      --disable-shared \
+      --cc="$CC" &&
     make dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
@@ -21314,7 +21317,8 @@ if [ 0 != "1" ]; then
     ./configure2 \
       --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
       --enable-static \
-      --disable-shared &&
+      --disable-shared \
+      --cc="$CC" &&
     make dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
@@ -21350,14 +21354,16 @@ if [ 0 != "1" ]; then
       --extra-ldflags="-L`pwd`/../libdvdread/obj" \
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
       --enable-static \
-      --disable-shared
+      --disable-shared \
+      --cc="$CC"
   else
     ./configure2 \
       --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../includes" \
       --extra-ldflags="-L`pwd`/../libdvdread/obj" \
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
       --enable-static \
-      --disable-shared
+      --disable-shared \
+      --cc="$CC"
   fi
 
         if [ $? -ne 0 ]; then
