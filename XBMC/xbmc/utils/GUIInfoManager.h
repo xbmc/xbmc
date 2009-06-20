@@ -419,6 +419,7 @@ class CDateTime;
 #define PVR_HAS_EPG                 1117
 #define PVR_HAS_TXT                 1118
 #define PVR_HAS_DIRECTOR            1119
+#define PVR_TOTAL_DISKSPACE         1120
 
 #define ADDON_STAR_RATING           1200
 

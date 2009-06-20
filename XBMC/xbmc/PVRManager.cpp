@@ -482,7 +482,28 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
 
     return backendClients;
   }
-  return "";
+  else if (dwInfo == PVR_TOTAL_DISKSPACE)
+  {
+    long long kBTotal = 0;
+    long long kBUsed  = 0;
+    CLIENTMAPITR itr = m_clients.begin();
+    while (itr != m_clients.end())
+    {
+      long long clientKBTotal = 0;
+      long long clientKBUsed  = 0;
+
+      if (m_clients[(*itr).first]->GetDriveSpace(&clientKBTotal, &clientKBUsed) == PVR_ERROR_NO_ERROR)
+      {
+        kBTotal += clientKBTotal;
+        kBUsed += clientKBUsed;
+      }
+      itr++;
+    }
+    kBTotal /= 1024; // Convert to MBytes
+    kBUsed /= 1024;  // Convert to MBytes
+    m_totalDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
+    return m_totalDiskspace;
+  }
   return "";
 }
 
@@ -657,44 +678,6 @@ bool CPVRManager::SupportDirector()
 {
   return m_clientProps.SupportDirector;
 }
-
-
-/************************************************************/
-/** General handling */
-
-CStdString CPVRManager::GetBackendName()
-{
-  if (m_client)
-    return m_client->GetBackendName();
-
-  return "";
-}
-
-CStdString CPVRManager::GetBackendVersion()
-{
-  if (m_client)
-    return m_client->GetBackendVersion();
-
-  return "";
-}
-
-bool CPVRManager::GetDriveSpace(long long *total, long long *used, int *percent)
-{
-  if (m_client && m_clientProps.SupportRecordings)
-  {
-    if (m_client->GetDriveSpace(total, used) == PVR_ERROR_NO_ERROR)
-    {
-      *percent = (int)(((float) * used / (float) * total) * 100);
-      return true;
-    }
-  }
-
-  *total = 1024;
-  *used = 1024;
-  *percent = 100;
-  return false;
-}
-
 
 /************************************************************/
 /** EPG handling */
