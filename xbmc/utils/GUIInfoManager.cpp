@@ -254,6 +254,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.hastxt")) ret = PVR_HAS_TXT;
     else if (strTest.Equals("pvr.hasdirector")) ret = PVR_HAS_DIRECTOR;
     else if (strTest.Equals("pvr.totaldiscspace")) ret = PVR_TOTAL_DISKSPACE;
+    else if (strTest.Equals("pvr.nexttimer")) ret = PVR_NEXT_TIMER;
   }
   else if (strCategory.Equals("addon"))
   {
@@ -998,6 +999,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case PVR_BACKEND_RECORDINGS:
   case PVR_BACKEND_NUMBER:
   case PVR_TOTAL_DISKSPACE:
+  case PVR_NEXT_TIMER:
     strLabel = CPVRManager::GetInstance()->TranslateInfo(info);
     break;
   case WEATHER_CONDITIONS:
