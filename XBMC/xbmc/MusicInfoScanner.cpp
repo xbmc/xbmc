@@ -337,7 +337,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
    * the check for file or folder exclusion to prevent an infinite while loop 
    * in Process().
    */
-  set<CStdString>::const_iterator it = m_pathsToScan.find(strDirectory);
+  set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
   if (it != m_pathsToScan.end())
     m_pathsToScan.erase(it);
 
