@@ -2335,13 +2335,13 @@ void CApplication::Render()
   RenderNoPresent();
   // Present the backbuffer contents to the display
   if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-  g_infoManager.UpdateFPS();
   g_graphicsContext.Unlock();
 }
 #endif
 
 void CApplication::RenderMemoryStatus()
 {
+  g_infoManager.UpdateFPS();
 #if !defined(_DEBUG) && !defined(PROFILE)
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
 #endif
