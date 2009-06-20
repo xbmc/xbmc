@@ -217,7 +217,7 @@ bool CDVDAudioCodecLibFaad::OpenDecoder()
 
     // modify some stuff here
     pConfiguration->outputFormat = FAAD_FMT_16BIT; // already default
-    pConfiguration->downMatrix = g_guiSettings.GetBool("audiooutput.downmixmultichannel");
+    pConfiguration->downMatrix = g_guiSettings.GetBool("audiooutput.downmixmultichannel") ? 1 : 0;
 
     m_dll.faacDecSetConfiguration(m_pHandle, pConfiguration);
 
