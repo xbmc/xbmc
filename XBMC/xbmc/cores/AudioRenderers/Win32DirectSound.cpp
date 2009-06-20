@@ -290,17 +290,24 @@ unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
   DWORD total = len;
   unsigned char* pBuffer = (unsigned char*)data;
 
+  DWORD bufferStatus = 0;
+  m_pBuffer->GetStatus(&bufferStatus);
+  if (bufferStatus & DSBSTATUS_BUFFERLOST)
+  {
+    CLog::Log(LOGDEBUG, __FUNCTION__ ": Buffer allocation was lost. Restoring buffer.");
+    m_pBuffer->Restore();
+  }
+
   while (len >= m_dwChunkSize && GetSpace() >= m_dwChunkSize) // We want to write at least one chunk at a time
   {
     LPVOID start = NULL, startWrap = NULL;
     DWORD size = 0, sizeWrap = 0;
-
     if (m_BufferOffset >= m_dwBufferLen) // Wrap-around manually
       m_BufferOffset = 0;
-
-    if (FAILED(m_pBuffer->Lock(m_BufferOffset, m_dwChunkSize, &start, &size, &startWrap, &sizeWrap, 0)))
+    HRESULT res = m_pBuffer->Lock(m_BufferOffset, m_dwChunkSize, &start, &size, &startWrap, &sizeWrap, 0);
+    if (DS_OK != res)
     { 
-      CLog::Log(LOGERROR, __FUNCTION__ ": Unable to lock buffer at offset %u.", m_BufferOffset);
+      CLog::Log(LOGERROR, __FUNCTION__ ": Unable to lock buffer at offset %u. HRESULT: 0x%08x", m_BufferOffset, res);
       break;
     }
 
@@ -335,9 +342,10 @@ void CWin32DirectSound::UpdateCacheStatus()
     return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
   DWORD playCursor = 0, writeCursor = 0;
-  if (FAILED(m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor))) // Get the current playback and safe write positions
+  HRESULT res = m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor); // Get the current playback and safe write positions
+  if (DS_OK != res)
   {
-    CLog::Log(LOGERROR,__FUNCTION__ ": GetCurrentPosition failed. Unable to determine buffer status");
+    CLog::Log(LOGERROR,__FUNCTION__ ": GetCurrentPosition failed. Unable to determine buffer status. HRESULT = 0x%08x", res);
     return;
   }
 
