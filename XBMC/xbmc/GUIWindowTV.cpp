@@ -55,8 +55,6 @@ using namespace std;
 #define CONTROL_LIST_GUIDE_CHANNEL   15
 #define CONTROL_LIST_GUIDE_NOW_NEXT  16
 
-#define CONTROL_NEXTTIMER            21
-
 #define CONTROL_LABELHEADER          29
 #define CONTROL_LABELEMPTY           30
 
@@ -1742,23 +1740,6 @@ void CGUIWindowTV::UpdateTimers()
 
   if (CPVRManager::GetInstance()->GetAllTimers(m_vecItems) > 0)
   {
-    /* Update next timer window data */
-    CDateTime next = CPVRManager::GetInstance()->NextTimerDate();
-    CStdString strLabel;
-    strLabel.Format("%s %s %s %s", g_localizeStrings.Get(18190)
-                    , next.GetAsLocalizedDate(true)
-                    , g_localizeStrings.Get(18191)
-                    , next.GetAsLocalizedTime("HH:mm", false));
-
-    if (next == NULL)
-    {
-      SET_CONTROL_HIDDEN(CONTROL_NEXTTIMER);
-    }
-    else
-    {
-      SET_CONTROL_LABEL(CONTROL_NEXTTIMER, strLabel);
-      SET_CONTROL_VISIBLE(CONTROL_NEXTTIMER);
-    }
     CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_TIMERS, 0, 0, m_vecItems);
     g_graphicsContext.SendMessage(msg);
   }
@@ -1772,8 +1753,6 @@ void CGUIWindowTV::UpdateTimers()
 
     CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_TIMERS, 0, 0, m_vecItems);
     g_graphicsContext.SendMessage(msg);
-
-    SET_CONTROL_HIDDEN(CONTROL_NEXTTIMER);
   }
 
   /* Set Selected item inside list */

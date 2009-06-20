@@ -196,6 +196,7 @@ private:
   CStdString          m_backendRecordings;
   CStdString          m_backendChannels;
   CStdString          m_totalDiskspace;
+  CStdString          m_nextTimer;
 
   int                 m_CurrentRadioChannel;
   int                 m_CurrentTVChannel;

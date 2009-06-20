@@ -504,6 +504,15 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
     m_totalDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
     return m_totalDiskspace;
   }
+  else if (dwInfo == PVR_NEXT_TIMER)
+  {
+    CDateTime next = NextTimerDate();
+    m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(18190)
+                       , next.GetAsLocalizedDate(true)
+                       , g_localizeStrings.Get(18191)
+                       , next.GetAsLocalizedTime("HH:mm", false));
+    return m_nextTimer;
+  }
   return "";
 }
 

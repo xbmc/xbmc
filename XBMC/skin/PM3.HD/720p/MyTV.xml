@@ -1519,7 +1519,7 @@
 					<visible>PVR.HasTimer</visible>
 					<label>$INFO[Container(14).NumItems] $LOCALIZE[18076] - $LOCALIZE[18060] ($INFO[Container(14).CurrentPage]/$INFO[Container(14).NumPages])</label>
 				</control>
-				<control type="label" id="21">
+				<control type="label">
 					<description>Next timer date</description>
 					<posx>10</posx>
 					<posy>535</posy>
@@ -1530,8 +1530,8 @@
 					<aligny>center</aligny>
 					<scroll>true</scroll>
 					<textcolor>white</textcolor>
-					<label>-</label>
-					<visible>!Player.Playing</visible>
+					<label>$INFO[PVR.NextTimer]</label>
+					<visible>!Player.Playing + PVR.HasTimer</visible>
 				</control>
 			</control>
 			<!-- Settings group -->
