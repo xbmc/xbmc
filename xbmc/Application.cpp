@@ -1184,11 +1184,6 @@ HRESULT CApplication::Create(HWND hWnd)
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
-  // Load random seed
-  time_t seconds;
-  time(&seconds);
-  srand((unsigned int)seconds);
-
   return CXBApplicationEx::Create(hWnd);
 }
 
@@ -1246,6 +1241,11 @@ HRESULT CApplication::Initialize()
   g_network.SetupNetwork();
 
   StartServices();
+
+  // Init random seed
+  unsigned int seed = ((unsigned int) time(NULL) + timeGetTime() + g_stSettings.m_iSystemTimeTotalUp);
+  CLog::Log(LOGDEBUG, "%s - Initializing random seed to %u", __FUNCTION__, seed);
+  srand(seed);
 
   m_gWindowManager.Add(new CGUIWindowHome);                     // window id = 0
 
@@ -1841,7 +1841,7 @@ void CApplication::CheckDate()
   SYSTEMTIME NewTime;
   GetLocalTime(&CurTime);
   GetLocalTime(&NewTime);
-  CLog::Log(LOGINFO, "- Current Date is: %i-%i-%i",CurTime.wDay, CurTime.wMonth, CurTime.wYear);
+  CLog::Log(LOGINFO, "Current Date is: %i-%i-%i", CurTime.wDay, CurTime.wMonth, CurTime.wYear);
   if ((CurTime.wYear > 2099) || (CurTime.wYear < 2001) )        // XBOX MS Dashboard also uses min/max DateYear 2001/2099 !!
   {
     CLog::Log(LOGNOTICE, "- The Date is Wrong: Setting New Date!");
