@@ -356,9 +356,6 @@ bool CDVDPlayer::CloseFile()
   m_Edl.Reset();
 
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
-#if defined(HAS_VIDEO_PLAYBACK)
-  g_renderManager.UnInit();
-#endif
 
   return true;
 }

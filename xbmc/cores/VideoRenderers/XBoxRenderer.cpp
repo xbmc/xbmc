@@ -72,8 +72,8 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
   m_iYV12RenderBuffer = 0;
 
   memset(m_image, 0, sizeof(m_image));
-
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
+
   m_yuvcoef = yuv_coef_bt709;
   m_yuvrange = yuv_range_lim;
 }

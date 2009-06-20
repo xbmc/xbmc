@@ -467,4 +467,3 @@ void CXBoxRenderManager::Process()
     actualdelay = ( actualdelay * (TC-1) + (GetTickCount() - dwTimeStamp) ) / TC;
   }
 }
-
