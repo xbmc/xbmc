@@ -292,7 +292,6 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, ((CGUIButtonControl*) control)->GetLabel(), value))
               ((CGUIButtonControl*) control)->SetLabel2(value);
           }
-          m_buttonValues[id] = value;
         }
         else if (strcmpi(type, "action") == 0)
         {
@@ -308,6 +307,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             g_application.getApplicationMessenger().ExecBuiltIn(action);
           }
         }
+        m_buttonValues[id] = value;
         break;
       }
     }
