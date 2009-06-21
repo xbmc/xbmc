@@ -143,7 +143,7 @@ void CPVRManager::Start()
 
   /* Get Timers from Backend */
   if (m_clientProps.SupportTimers)
-    GetTimers();
+    ReceiveAllTimers();
 
   SyncInfo();
   m_database.Close();
@@ -527,7 +527,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     case PVR_EVENT_TIMERS_CHANGE:
 	  {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld timers changed", __FUNCTION__, clientID);
-	    GetTimers();
+	    ReceiveAllTimers();
         SyncInfo();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)m_gWindowManager.GetWindow(WINDOW_TV);
@@ -1143,7 +1143,7 @@ void CPVRManager::MoveChannel(unsigned int oldindex, unsigned int newindex, bool
     if (m_isPlayingTV && m_channels_tv[m_CurrentTVChannel].m_iIdChannel != CurrentChannelID)
     {
       /* Perform Channel switch with new number, if played channelnumber is modified */
-      GetFrontendChannelNumber(CurrentClientChannel, &m_CurrentTVChannel, NULL);
+      GetFrontendChannelNumber(CurrentClientChannel, m_currentClientID, &m_CurrentTVChannel, NULL);
       CFileItemPtr channel(new CFileItem(m_channels_tv[m_CurrentTVChannel]));
       g_application.PlayFile(*channel);
     }
@@ -1175,7 +1175,7 @@ void CPVRManager::MoveChannel(unsigned int oldindex, unsigned int newindex, bool
     if (m_isPlayingTV && m_channels_radio[m_CurrentRadioChannel].m_iIdChannel != CurrentChannelID)
     {
       /* Perform Channel switch with new number, if played channelnumber is modified */
-      GetFrontendChannelNumber(CurrentClientChannel, &m_CurrentRadioChannel, NULL);
+      GetFrontendChannelNumber(CurrentClientChannel, m_currentClientID, &m_CurrentRadioChannel, NULL);
       CFileItemPtr channel(new CFileItem(m_channels_radio[m_CurrentRadioChannel]));
       g_application.PlayFile(*channel);
     }
@@ -1185,7 +1185,7 @@ void CPVRManager::MoveChannel(unsigned int oldindex, unsigned int newindex, bool
   /* Synchronize channel numbers inside timers */
   for (unsigned int i = 0; i < m_timers.size(); i++)
   {
-    GetFrontendChannelNumber(m_timers[i].m_clientNum, &m_timers[i].m_channelNum, &m_timers[i].m_Radio);
+    GetFrontendChannelNumber(m_timers[i].m_clientNum, m_currentClientID, &m_timers[i].m_channelNum, &m_timers[i].m_Radio);
   }
 
   LeaveCriticalSection(&m_critSection);
@@ -1346,11 +1346,11 @@ CStdString CPVRManager::GetNameForChannel(unsigned int number, bool radio)
   return "";
 }
 
-bool CPVRManager::GetFrontendChannelNumber(unsigned int client_no, int *frontend_no, bool *isRadio)
+bool CPVRManager::GetFrontendChannelNumber(unsigned int client_no, unsigned int client_id, int *frontend_no, bool *isRadio)
 {
   for (unsigned int i = 0; i < m_channels_tv.size(); i++)
   {
-    if (m_channels_tv[i].m_iClientNum == client_no)
+    if (m_channels_tv[i].m_iClientNum == client_no && m_channels_tv[i].m_clientID == client_id)
     {
       if (frontend_no != NULL)
         *frontend_no = m_channels_tv[i].m_iChannelNum;
@@ -1758,7 +1758,7 @@ int CPVRManager::GetAllTimers(CFileItemList* results)
 {
   EnterCriticalSection(&m_critSection);
 
-  GetTimers();
+  ReceiveAllTimers();
 
   for (unsigned int i = 0; i < m_timers.size(); ++i)
   {
@@ -1947,9 +1947,11 @@ bool CPVRManager::UpdateTimer(const CFileItem &item)
       CLog::Log(LOGERROR, "CPVRManager: UpdateTimer no TVInfoTag given!");
       return false;
     }
+    
+    const CTVTimerInfoTag* tag = item.GetTVTimerInfoTag();
 
     /* and write it to the backend */
-    PVR_ERROR err = m_client->UpdateTimer(*item.GetTVTimerInfoTag());
+    PVR_ERROR err = m_clients[tag->m_clientID]->UpdateTimer(tag);
 
     /* Check for errors and inform the user */
     if (err == PVR_ERROR_NO_ERROR)
@@ -2007,6 +2009,37 @@ CDateTime CPVRManager::NextTimerDate(void)
   }
 
   return NULL;
+}
+
+void CPVRManager::ReceiveAllTimers()
+{
+  EnterCriticalSection(&m_critSection);
+  
+  /* Clear all current present Timers inside list */
+  m_timers.erase(m_timers.begin(), m_timers.end());
+
+  /* Go thru all clients and receive there timers */
+  CLIENTMAPITR itr = m_clients.begin();
+  while (itr != m_clients.end())
+  {
+    /* Load only if the client have timers */
+    if (m_clients[(*itr).first]->GetNumTimers() > 0)
+    {
+      m_clients[(*itr).first]->GetAllTimers(&m_timers);
+    }
+    itr++;
+  }
+
+  /* Set the XBMC Channel number and Channel Name for the timers */
+  for (unsigned int i = 0; i < m_timers.size(); i++)
+  {
+    GetFrontendChannelNumber(m_timers[i].m_clientNum, m_timers[i].m_clientID, &m_timers[i].m_channelNum, &m_timers[i].m_Radio);
+    m_timers[i].m_strChannel = GetNameForChannel(m_timers[i].m_channelNum, m_timers[i].m_Radio);
+  }
+
+  LeaveCriticalSection(&m_critSection);
+
+  return;
 }
 
 
@@ -2754,30 +2787,6 @@ void CPVRManager::GetChannels()
 
   m_database.Close();
   LeaveCriticalSection(&m_critSection);
-  return;
-}
-
-void CPVRManager::GetTimers()
-{
-  if (m_client)
-  {
-    EnterCriticalSection(&m_critSection);
-    m_timers.erase(m_timers.begin(), m_timers.end());
-
-    if (m_client->GetNumTimers() > 0)
-    {
-      m_client->GetAllTimers(&m_timers);
-
-      for (unsigned int i = 0; i < m_timers.size(); i++)
-      {
-        GetFrontendChannelNumber(m_timers[i].m_clientNum, &m_timers[i].m_channelNum, &m_timers[i].m_Radio);
-        m_timers[i].m_strChannel = GetNameForChannel(m_timers[i].m_channelNum, m_timers[i].m_Radio);
-      }
-    }
-
-    LeaveCriticalSection(&m_critSection);
-  }
-
   return;
 }
 

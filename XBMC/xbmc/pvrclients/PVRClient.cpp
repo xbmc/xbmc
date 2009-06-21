@@ -355,7 +355,13 @@ int CPVRClient::GetNumTimers(void)
 
 PVR_ERROR CPVRClient::GetAllTimers(VECTVTIMERS *results)
 {
-  return m_pClient->GetAllTimers(results);
+  PVR_ERROR ret = m_pClient->GetAllTimers(results);
+
+  for (unsigned int i = 0; i < results->size(); i++)
+  {
+    results->at(i).m_clientID = m_clientID;
+  }
+  return ret;
 }
 
 PVR_ERROR CPVRClient::AddTimer(const CTVTimerInfoTag &timerinfo)

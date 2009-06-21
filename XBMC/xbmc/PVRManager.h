@@ -101,7 +101,7 @@ public:
   void SetChannelIcon(unsigned int number, CStdString icon, bool radio = false);
   CStdString GetChannelIcon(unsigned int number, bool radio = false);
   CStdString GetNameForChannel(unsigned int number, bool radio = false);
-  bool GetFrontendChannelNumber(unsigned int client_no, int *frontend_no, bool *isRadio);
+  bool GetFrontendChannelNumber(unsigned int client_no, unsigned int client_id, int *frontend_no, bool *isRadio);
   int GetClientChannelNumber(unsigned int frontend_no, bool radio = false);
   int GetChannelID(unsigned int frontend_no, bool radio = false);
   int GetGroupList(CFileItemList* results);
@@ -216,7 +216,7 @@ private:
 
   void                SyncInfo(); // synchronize InfoManager related stuff
   void                GetChannels();
-  void                GetTimers();
+  void                ReceiveAllTimers();
   void                GetRecordings();
   CTVChannelInfoTag  *GetChannelByNumber(int Number, bool radio, int SkipGap = 0);
   CTVChannelInfoTag  *GetChannelByID(int Id, bool radio, int SkipGap = 0);
