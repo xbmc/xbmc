@@ -332,6 +332,7 @@ IMAGES= \
 	sub-suspend-focus.gif \
 	sub-suspend-nofocus.png \
 	thumb-back.png \
+	tv-background.png \
 	unknown-user.png \
 	VeticalLight.png \
 	VolumeIcon-Mute.png \

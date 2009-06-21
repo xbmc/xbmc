@@ -269,7 +269,7 @@ void CPVRManager::Process()
     time_t end;
     CDateTime::GetCurrentDateTime().GetAsTime(start);
     CDateTime::GetCurrentDateTime().GetAsTime(end);
-	start -= g_guiSettings.GetInt("pvrmenu.lingertime")*60;
+    start -= g_guiSettings.GetInt("pvrmenu.lingertime")*60;
     end   += g_guiSettings.GetInt("pvrmenu.daystodisplay")*24*60*60;
 
     for (unsigned int i = 0; i < m_channels_tv.size(); i++)
@@ -1030,6 +1030,10 @@ int CPVRManager::GetTVChannels(CFileItemList* results, int group_id, bool hidden
     m_channels_tv[i].m_strShowTitle.Format("%i", m_channels_tv[i].m_iChannelNum);
 
     CFileItemPtr channel(new CFileItem(m_channels_tv[i]));
+    
+    channel->SetProperty("start_time", m_channels_tv[i].m_startTime.GetAsLocalizedTime("", false));
+    channel->SetProperty("end_time", m_channels_tv[i].m_endTime.GetAsLocalizedTime("", false));
+
 
     results->Add(channel);
     cnt++;

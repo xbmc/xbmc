@@ -214,6 +214,11 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     delete codec;
     return new DVDPlayerCodec();
   }
+  else if (strFile.substr(0, 8) == "radio://")
+  {
+    return new DVDPlayerCodec();
+  }
+
   //default
   return CreateCodec(urlFile.GetFileType());
 }
