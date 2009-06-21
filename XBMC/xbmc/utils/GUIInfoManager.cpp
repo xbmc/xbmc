@@ -3643,6 +3643,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_TITLE:
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetTitle());
+    if (item->HasTVChannelInfoTag())
+      return CorrectAllItemsSortHack(item->GetTVChannelInfoTag()->m_strTitle);
     if (item->HasVideoInfoTag())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strTitle);
     break;
@@ -3698,6 +3700,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_GENRE:
     if (item->HasMusicInfoTag())
       return CorrectAllItemsSortHack(item->GetMusicInfoTag()->GetGenre());
+    if (item->HasTVChannelInfoTag())
+      return CorrectAllItemsSortHack(item->GetTVChannelInfoTag()->m_strGenre);
     if (item->HasVideoInfoTag())
       return CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strGenre);
     break;
@@ -3750,6 +3754,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         if (item->GetMusicInfoTag()->GetDuration() > 0)
           StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration(), duration);
       }
+      if (item->HasTVChannelInfoTag())
+      {
+        if (item->GetTVChannelInfoTag()->GetDuration() > 0)
+          StringUtils::SecondsToTimeString(item->GetTVChannelInfoTag()->GetDuration(), duration);
+      }
       if (item->HasVideoInfoTag())
       {
         duration = item->GetVideoInfoTag()->m_strRuntime;
@@ -3758,6 +3767,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return duration;
     }
   case LISTITEM_PLOT:
+    if (item->HasTVChannelInfoTag())
+      return item->GetTVChannelInfoTag()->m_strPlot;
     if (item->HasVideoInfoTag())
     {
       if (!(!item->GetVideoInfoTag()->m_strShowTitle.IsEmpty() && item->GetVideoInfoTag()->m_iSeason == -1)) // dont apply to tvshows
@@ -3768,6 +3779,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     }
     break;
   case LISTITEM_PLOT_OUTLINE:
+    if (item->HasTVChannelInfoTag())
+      return item->GetTVChannelInfoTag()->m_strPlotOutline;
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strPlotOutline;
     break;

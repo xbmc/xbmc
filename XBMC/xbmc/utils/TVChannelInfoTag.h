@@ -209,6 +209,7 @@ public:
   bool GetEPGNextInfo(CTVEPGInfoTag *result);
   bool GetEPGLastEntry(CTVEPGInfoTag *result);
   void CleanupEPG();
+  int GetDuration() const;
 
   bool operator ==(const CTVChannelInfoTag &right) const;
   bool operator !=(const CTVChannelInfoTag &right) const;

@@ -217,3 +217,14 @@ void CTVChannelInfoTag::CleanupEPG()
 
   return;
 }
+
+int CTVChannelInfoTag::GetDuration() const
+{
+  int duration;
+  duration =  m_duration.GetDays()*60*60*24;
+  duration += m_duration.GetHours()*60*60;
+  duration += m_duration.GetMinutes()*60;
+  duration += m_duration.GetSeconds();
+  duration /= 60;
+  return duration;
+}

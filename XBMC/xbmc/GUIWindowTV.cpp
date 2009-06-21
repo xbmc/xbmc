@@ -519,6 +519,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             CPVRManager::GetInstance()->SetPlayingGroup(m_iCurrentRadioGroup);
 
           /* Open tv channel by Player and return */
+          //g_stSettings.m_bStartVideoWindowed = true;
           if (!g_application.PlayFile(*pItem))
           {
             CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
