@@ -101,10 +101,20 @@ void XLCDproc::Initialize()
   cmd = "screen_add xbmc\n";
   if (!g_advancedSettings.m_lcdHeartbeat)
     cmd.append("screen_set xbmc -heartbeat off\n");
-  cmd.append("widget_add xbmc line1 scroller\n");
-  cmd.append("widget_add xbmc line2 scroller\n");
-  cmd.append("widget_add xbmc line3 scroller\n");
-  cmd.append("widget_add xbmc line4 scroller\n");
+  if (g_advancedSettings.m_lcdScrolldelay != 0)
+  {
+    cmd.append("widget_add xbmc line1 scroller\n");
+    cmd.append("widget_add xbmc line2 scroller\n");
+    cmd.append("widget_add xbmc line3 scroller\n");
+    cmd.append("widget_add xbmc line4 scroller\n");
+  }
+  else
+  {
+    cmd.append("widget_add xbmc line1 string\n");
+    cmd.append("widget_add xbmc line2 string\n");
+    cmd.append("widget_add xbmc line3 string\n");
+    cmd.append("widget_add xbmc line4 string\n");
+  }
 
   //Send to server
   if (write(sockfd,cmd.c_str(),cmd.size()) < 0)
@@ -128,11 +138,21 @@ void XLCDproc::SetBackLight(int iLight)
     }
     if (iLight > 0) {
       m_bStop = false;
-      cmd = "screen_set xbmc -backlight on\n"; 
-      cmd.append("widget_add xbmc line1 scroller\n");
-      cmd.append("widget_add xbmc line2 scroller\n");
-      cmd.append("widget_add xbmc line3 scroller\n");
-      cmd.append("widget_add xbmc line4 scroller\n");
+      cmd = "screen_set xbmc -backlight on\n";
+      if (g_advancedSettings.m_lcdScrolldelay != 0)
+      {
+        cmd.append("widget_add xbmc line1 scroller\n");
+        cmd.append("widget_add xbmc line2 scroller\n");
+        cmd.append("widget_add xbmc line3 scroller\n");
+        cmd.append("widget_add xbmc line4 scroller\n");
+      }
+      else
+      {
+        cmd.append("widget_add xbmc line1 string\n");
+        cmd.append("widget_add xbmc line2 string\n");
+        cmd.append("widget_add xbmc line3 string\n");
+        cmd.append("widget_add xbmc line4 string\n");
+      }
     }
  
     //Send to server 
@@ -206,8 +226,12 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
   if (strLineLong != m_strLine[iLine])
   {
     int ln = iLine + 1;
-    sprintf(cmd, "widget_set xbmc line%i 1 %i %i %i m %i \"%s\"\n", ln, ln, m_iColumns, ln, g_advancedSettings.m_lcdScrolldelay, strLineLong.c_str());
-    //CLog::Log(LOGINFO, "XLCDproc::%s - Sending command: %s", __FUNCTION__, cmd);
+
+    if (g_advancedSettings.m_lcdScrolldelay != 0)
+      sprintf(cmd, "widget_set xbmc line%i 1 %i %i %i m %i \"%s\"\n", ln, ln, m_iColumns, ln, g_advancedSettings.m_lcdScrolldelay, strLineLong.c_str());
+    else
+      sprintf(cmd, "widget_set xbmc line%i 1 %i \"%s\"\n", ln, ln, strLineLong.c_str());
+
     if (write(sockfd, cmd, strlen(cmd)) < 0)
     {
         m_bStop = true;

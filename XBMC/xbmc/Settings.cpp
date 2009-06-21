@@ -1272,7 +1272,7 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetInt(pElement, "address3", g_advancedSettings.m_lcdAddress3, 0, 0x100);
     XMLUtils::GetInt(pElement, "address4", g_advancedSettings.m_lcdAddress4, 0, 0x100);
     XMLUtils::GetBoolean(pElement, "heartbeat", g_advancedSettings.m_lcdHeartbeat);
-    XMLUtils::GetInt(pElement, "scrolldelay", g_advancedSettings.m_lcdScrolldelay, 1, 8);
+    XMLUtils::GetInt(pElement, "scrolldelay", g_advancedSettings.m_lcdScrolldelay, -8, 8);
   }
   pElement = pRootElement->FirstChildElement("network");
   if (pElement)
