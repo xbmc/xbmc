@@ -277,7 +277,8 @@ bool CTVTimerInfoTag::operator ==(const CTVTimerInfoTag& right) const
           m_Priority              == right.m_Priority &&
           m_Lifetime              == right.m_Lifetime &&
           m_strFileNameAndPath    == right.m_strFileNameAndPath &&
-          m_strTitle              == right.m_strTitle);
+          m_strTitle              == right.m_strTitle &&
+          m_clientID              == right.m_clientID);
 }
 
 bool CTVTimerInfoTag::operator !=(const CTVTimerInfoTag& right) const
@@ -307,7 +308,8 @@ bool CTVTimerInfoTag::operator !=(const CTVTimerInfoTag& right) const
           m_Priority              != right.m_Priority &&
           m_Lifetime              != right.m_Lifetime &&
           m_strFileNameAndPath    != right.m_strFileNameAndPath &&
-          m_strTitle              != right.m_strTitle);
+          m_strTitle              != right.m_strTitle &&
+          m_clientID              != right.m_clientID);
 }
 
 /**
@@ -321,6 +323,7 @@ void CTVTimerInfoTag::Reset()
 
   m_Summary       = "";
 
+  m_clientID      = -1;
   m_channelNum    = -1;
   m_clientNum     = -1;
   m_Radio         = false;
