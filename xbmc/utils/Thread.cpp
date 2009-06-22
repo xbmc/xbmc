@@ -90,6 +90,11 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     CLog::Log(LOGERROR,"%s, sanity failed. thread is NULL.",__FUNCTION__);
     return 1;
   }
+    // Init random seed
+  LARGE_INTEGER now;
+  QueryPerformanceCounter(&now);
+  unsigned int seed = (now.LowPart);
+  srand(seed);
 
 //  CLog::Log(LOGDEBUG,"thread start, auto delete: %d",pThread->IsAutoDelete());
 
