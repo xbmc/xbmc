@@ -1464,6 +1464,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18023">Wiedergabe</string>
   <string id="18024">Infobox für Videolänge verbergen</string>
   <string id="18025">Suchüberlauf vor Kanalwiedergabe</string>
+  <string id="18026">Wiedergabe minimiert starten</string>
 
   <string id="18028">PVR Klienten verwalten</string>
   
@@ -1556,7 +1557,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="18131">Alle Kanäle</string>
   <string id="18132">Gruppe</string>
   <string id="18133">XBMC synchronisiert TV-Daten mit Backend-Server</string>
-  <string id="18134">Kanal blockiert oder verschlüsselt</string>
+  <string id="18134">Kanal nicht verfügbar</string>
   <string id="18135">Keine Gruppen definiert</string>
   <string id="18136">Bitte erstellen Sie zuerst eine</string>
 
