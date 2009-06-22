@@ -702,7 +702,8 @@ void CGUISettings::Initialize()
   AddBool(7, "pvrmenu.hidevideolength", 18024, true);
   AddString(8, "pvrmenu.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddSeparator(9, "pvrmenu.sep1");
-  AddInt(10, "pvrmenu.scantime", 18025, 5, 1, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddBool(10, "pvrmenu.playminimized", 18026, true);
+  AddInt(11, "pvrmenu.scantime", 18025, 5, 1, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
   AddCategory(8,"pvrepg", 18013);
   AddInt(1, "pvrepg.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);

@@ -1563,6 +1563,7 @@
   <string id="18023">Replay</string>
   <string id="18024">Hide Video-Length info box</string>
   <string id="18025">Scan Timeout before channel playback</string>
+  <string id="18026">Start playback Minimized</string>
 
   <string id="18028">Manage PVR clients</string>
 
@@ -1655,7 +1656,7 @@
   <string id="18131">All Channels</string>
   <string id="18132">Group</string>
   <string id="18133">XBMC synchronize TV-Data with Backend-Server</string>
-  <string id="18134">Channel blocked or encrypted</string>
+  <string id="18134">Channel Unavailable</string>
   <string id="18135">No Groups defined</string>
   <string id="18136">Please create first one</string>
 
