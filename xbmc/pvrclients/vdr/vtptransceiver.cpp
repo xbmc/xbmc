@@ -495,7 +495,7 @@ SOCKET CVTPTransceiver::GetStreamRecording(int recording, uint64_t *size, uint32
     vector<string>::iterator it = lines.begin();
     string& data(*it);
 
-    sscanf(data.c_str(), "%I64u", size);
+    *size = atoll(data.c_str());
     data.erase(0,data.find(" ", 0)+1);
     *frames = atol(data.c_str());
 
