@@ -274,16 +274,16 @@ void CPVRManager::Process()
 
     for (unsigned int i = 0; i < m_channels_tv.size(); i++)
     {
-	  EnterCriticalSection(&m_critSection);
+      EnterCriticalSection(&m_critSection);
       m_client->GetEPGForChannel(m_channels_tv[i].m_iClientNum, m_channels_tv[i].m_EPG, start, end);
-	  LeaveCriticalSection(&m_critSection);
+      LeaveCriticalSection(&m_critSection);
     }
 
     for (unsigned int i = 0; i < m_channels_radio.size(); i++)
     {
-	  EnterCriticalSection(&m_critSection);
+      EnterCriticalSection(&m_critSection);
       m_client->GetEPGForChannel(m_channels_radio[i].m_iClientNum, m_channels_radio[i].m_EPG, start, end);
-	  LeaveCriticalSection(&m_critSection);
+      LeaveCriticalSection(&m_critSection);
     }
   }
 
@@ -2573,7 +2573,10 @@ int CPVRManager::ReadRecordedStream(BYTE* buf, int buf_size)
 {
   if (m_client)
   {
-    return m_client->ReadRecordedStream(buf, buf_size);
+    EnterCriticalSection(&m_critSection);
+    int ret = m_client->ReadRecordedStream(buf, buf_size);
+    LeaveCriticalSection(&m_critSection);
+    return ret;
   }
 
   return 0;

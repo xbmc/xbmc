@@ -3668,7 +3668,7 @@ int PVRClientVDR::ReadRecordedStream(BYTE* buf, int buf_size)
   vector<string> lines;
   int            code;
   char           buffer[1024];
-  unsigned int   amountReceived;
+  unsigned long  amountReceived;
 
   if (!m_transceiver->IsOpen() || m_socket_video == INVALID_SOCKET)
     return 0;
