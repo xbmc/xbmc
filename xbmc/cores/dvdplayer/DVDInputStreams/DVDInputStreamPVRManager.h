@@ -28,10 +28,18 @@
 #include "DVDInputStream.h"
 #include "FileItem.h"
 
-class CDVDInputStreamPVRManager : public CDVDInputStream
+namespace XFILE {
+class IFile;
+class ILiveTVInterface;
+class IRecordable;
+}
+
+class CDVDInputStreamPVRManager
+  : public CDVDInputStream
+  , public CDVDInputStream::IChannel
 {
 public:
-  CDVDInputStreamPVRManager();
+  CDVDInputStreamPVRManager(IDVDPlayer* pPlayer);
   virtual ~CDVDInputStreamPVRManager();
   virtual bool Open(const char* strFile, const std::string &content);
   virtual void Close();
@@ -42,7 +50,7 @@ public:
 
   virtual bool    NextStream();
 
-  bool            Channel(int iChannel);
+  bool            SelectChannel(unsigned int iChannel);
   bool            NextChannel();
   bool            PrevChannel();
 
@@ -55,12 +63,13 @@ public:
   bool            IsRecording();
   bool            Record(bool bOnOff);
 
-  void            Pause(bool OnOff);
-
   bool            UpdateItem(CFileItem& item);
 
 protected:
-  bool            m_eof;
-  bool            m_isPlayRecording;
-  int             m_playingItem;
+  IDVDPlayer*               m_pPlayer;
+  CDVDInputStream*          m_pOtherStream;
+  XFILE::IFile*             m_pFile;
+  XFILE::ILiveTVInterface*  m_pLiveTV;
+  XFILE::IRecordable*       m_pRecordable;
+  bool                      m_eof;
 };

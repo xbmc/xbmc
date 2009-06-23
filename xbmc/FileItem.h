@@ -143,6 +143,7 @@ public:
   bool IsMythTV() const;
   bool IsHDHomeRun() const;
   bool IsVTP() const;
+  bool IsPVR() const;
   bool IsTV() const;
 
   void RemoveExtension();

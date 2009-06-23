@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,31 +20,23 @@
  *
  */
 
-namespace XFILE
-{
-class ILiveTVInterface
-{
-public:
-  virtual ~ILiveTVInterface() {}
-  virtual bool           NextChannel() = 0;
-  virtual bool           PrevChannel() = 0;
-  virtual bool           SelectChannel(unsigned int channel) = 0;
+#include "IDirectory.h"
 
-  virtual int            GetTotalTime() = 0;
-  virtual int            GetStartTime() = 0;
+class CPVRSession;
 
-  virtual bool           UpdateItem(CFileItem& item)=0;
-};
+namespace DIRECTORY {
 
-class IRecordable
+class CPVRDirectory
+  : public IDirectory
 {
 public:
-  virtual ~IRecordable() {}
+  CPVRDirectory();
+  virtual ~CPVRDirectory();
 
-  virtual bool CanRecord() = 0;
-  virtual bool IsRecording() = 0;
-  virtual bool Record(bool bOnOff) = 0;
+  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  virtual bool IsAllowed(const CStdString &strFile) const { return true; };
+
+private:
 };
 
 }
-

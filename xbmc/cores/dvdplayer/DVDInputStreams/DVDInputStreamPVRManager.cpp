@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,46 +19,26 @@
  *
  */
 
-/*
- * DESCRIPTION:
- *
- * DVDPlayer input stream interface to PVRManager to play live tv and
- * recorded streams from pvr/tv server backend on the local machine
- * or from the network inside XBMC.
- *
- * Channel zapping and switching is also supported by numeric keys
- * and the channel up/down button on the remote.
- *
- * Streams are directly readed from PVRManager class over the control
- * class of the selected type of backend.
- *
- * Input file string must be in the following format.
- * For live tv:
- * "tv://1" or "pvr://1" where the number is the channel number to open.
- * For recordings:
- * "record://1" where the number is recording number stored by the
- * backend.
- *
- */
-
 #include "stdafx.h"
+#include "DVDFactoryInputStream.h"
 #include "DVDInputStreamPVRManager.h"
-#include "FileItem.h"
-#include "FileSystem/File.h"
-#include "PVRManager.h"
-#include "GUIWindowManager.h"
-#include "GUIDialogFullScreenInfo.h"
-#include "Application.h"
+#include "FileSystem/PVRFile.h"
+#include "URL.h"
+
+using namespace XFILE;
 
 /************************************************************************
  * Description: Class constructor, initialize member variables
  *              public class is CDVDInputStream
  */
-CDVDInputStreamPVRManager::CDVDInputStreamPVRManager() : CDVDInputStream(DVDSTREAM_TYPE_PVRMANAGER)
+CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IDVDPlayer* pPlayer) : CDVDInputStream(DVDSTREAM_TYPE_PVRMANAGER)
 {
-  m_eof               = true;
-  m_isPlayRecording   = false;
-  m_playingItem       = NULL;
+  m_pPlayer         = pPlayer;
+  m_pFile           = NULL;
+  m_pRecordable     = NULL;
+  m_pLiveTV         = NULL;
+  m_pOtherStream    = NULL;
+  m_eof             = true;
 }
 
 /************************************************************************
@@ -69,314 +49,177 @@ CDVDInputStreamPVRManager::~CDVDInputStreamPVRManager()
   Close();
 }
 
-/************************************************************************
- * Description: Get the end of file flag
- * \return bool                     = true means end of file
- */
 bool CDVDInputStreamPVRManager::IsEOF()
 {
-  return m_eof;
+  if (m_pOtherStream)
+    return m_pOtherStream->IsEOF();
+  else
+    return !m_pFile || m_eof;
 }
 
-/************************************************************************
- * Description: Open a stream over PVRManager from the backend
- * \param const char* strFile       = URL of the stream, see note
- * \param const std::string& content=
- * \return bool                     = false if open fails
- *
- * Note:
- * Input file string must be in the following format.
- * For live tv:
- * "tv://1" where the number is the channel number to open.
- * For recordings:
- * "record://1" where the number is recording number stored by the
- * backend.
- */
 bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& content)
 {
-  bool isRadio = false;
+  /* Open PVR File for both cases, to have access to ILiveTVInterface and
+   * IRecordable
+   */
+  m_pFile       = new CPVRFile();
+  m_pLiveTV     = ((CPVRFile*)m_pFile)->GetLiveTV();
+  m_pRecordable = ((CPVRFile*)m_pFile)->GetRecordable();
 
-  if (!CDVDInputStream::Open(strFile, content)) return false;
-
-  /* Find out which type of pvr data must be played
-     and get its id for recordings or channelnumber
-     for live tv or radio */
-  std::string filename = strFile;
-
-  if (filename.substr(0, 5) == "tv://")              /* Live TV */
+  /*
+   * Translate the "pvr://....." entry.
+   * The PVR Client can use http or whatever else is supported by DVDPlayer.
+   * to access streams.
+   * If after translation the file protocol is still "pvr://" use this class
+   * to read the stream data over the CPVRFile class and the PVR Library itself.
+   * Otherwise call CreateInputStream again with the translated filename and looks again
+   * for the right protocol stream handler and swap every call to this input stream
+   * handler.
+   */
+  std::string transFile = XFILE::CPVRFile::TranslatePVRFilename(strFile);
+  if(transFile.substr(0, 6) != "pvr://")
   {
-    filename.erase(0, 5);
-    m_playingItem = atoi(filename.c_str());
-    m_isPlayRecording = false;
-  }
-  else if (filename.substr(0, 8) == "radio://")     /* Live Radio */
-  {
-    filename.erase(0, 8);
-    m_playingItem = atoi(filename.c_str());
-    m_isPlayRecording = false;
-    isRadio = true;
-  }
-  else if (filename.substr(0, 9) == "record://")     /* Recorded TV */
-  {
-    filename.erase(0, 9);
-    m_playingItem = atoi(filename.c_str());
-    m_isPlayRecording = true;
-  }
-
-  /* Open the stream from PVRManager to DVDPlayer */
-  if (!m_isPlayRecording)
-  {
-    if (!CPVRManager::GetInstance()->OpenLiveStream(m_playingItem, isRadio))
+    m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, transFile, content);
+    if (!m_pOtherStream->Open(transFile.c_str(), content))
     {
+      delete m_pFile;
+      m_pFile = NULL;
+      delete m_pOtherStream;
+      m_pOtherStream = NULL;
       return false;
     }
   }
   else
   {
-    if (!CPVRManager::GetInstance()->OpenRecordedStream(m_playingItem))
+    if (!CDVDInputStream::Open(transFile.c_str(), content)) return false;
+
+    CURL url(transFile);
+    if (!m_pFile->Open(url))
     {
+      delete m_pFile;
+      m_pFile = NULL;
       return false;
     }
+    m_eof = false;
   }
-
-  m_eof = false;
-
   return true;
 }
 
-/************************************************************************
- * Description: Close opened stream and reset everyting
- */
+// close file and reset everyting
 void CDVDInputStreamPVRManager::Close()
 {
-  /* Close the stream from PVRManager to DVDPlayer */
-  if (!m_isPlayRecording)
+  if (m_pFile)
   {
-    CPVRManager::GetInstance()->CloseLiveStream();
+    m_pFile->Close();
+    delete m_pFile;
+  }
+
+  if (m_pOtherStream)
+  {
+    m_pOtherStream->Close();
+    delete m_pOtherStream;
   }
   else
   {
-    CPVRManager::GetInstance()->CloseRecordedStream();
+    CDVDInputStream::Close();
   }
 
-  CDVDInputStream::Close();
-
-  m_eof = true;
+  m_pPlayer         = NULL;
+  m_pFile           = NULL;
+  m_pLiveTV         = NULL;
+  m_pRecordable     = NULL;
+  m_pOtherStream    = NULL;
+  m_eof             = true;
 }
 
-/************************************************************************
- * Description: Read stream from PVRManager into buffer
- * \param BYTE* buf                 = pointer to buffer
- * \param int buf_size              = size of buffer
- * \return int                      = Bytes readen (-1 for fail)
- *
- * Note:
- * The end of file flag is set if a failure occours and result by
- * stopping stream
- */
 int CDVDInputStreamPVRManager::Read(BYTE* buf, int buf_size)
 {
-  unsigned int ret;
+  if(!m_pFile) return -1;
 
-  /* Read the stream from PVRManager to DVDPlayer */
-
-  if (!m_isPlayRecording)
+  if (m_pOtherStream)
   {
-    ret = CPVRManager::GetInstance()->ReadLiveStream(buf, buf_size);
+    return m_pOtherStream->Read(buf, buf_size);
   }
   else
   {
-    ret = CPVRManager::GetInstance()->ReadRecordedStream(buf, buf_size);
+    unsigned int ret = m_pFile->Read(buf, buf_size);
+
+    /* we currently don't support non completing reads */
+    if( ret <= 0 ) m_eof = true;
+
+    return (int)(ret & 0xFFFFFFFF);
   }
-
-  /* we currently don't support non completing reads */
-  if (ret < 0) m_eof = true;
-
-  return (int)(ret & 0xFFFFFFFF);
 }
 
 __int64 CDVDInputStreamPVRManager::Seek(__int64 offset, int whence)
 {
-  if (m_isPlayRecording)
-  {
-    if (whence == SEEK_POSSIBLE)
-    {
-      __int64 ret = CPVRManager::GetInstance()->SeekRecordedStream(offset, whence);
+  if(!m_pFile) return -1;
 
-      if (ret >= 0)
-      {
-        return ret;
-      }
-      else
-      {
-        if (CPVRManager::GetInstance()->LengthRecordedStream() && CPVRManager::GetInstance()->SeekRecordedStream(0, SEEK_CUR) >= 0)
-          return 1;
-        else
-          return 0;
-      }
-    }
-    else
-    {
-      return CPVRManager::GetInstance()->SeekRecordedStream(offset, whence);
-    }
+  if (m_pOtherStream)
+  {
+    return m_pOtherStream->Seek(offset, whence);
   }
   else
   {
-    if (g_guiSettings.GetBool("pvrrecord.timeshift"))
-    {
-      return CPVRManager::GetInstance()->SeekLiveStream(offset, whence);
-    }
+    __int64 ret = m_pFile->Seek(offset, whence);
 
-    return 0;
+    /* if we succeed, we are not eof anymore */
+    if( ret >= 0 ) m_eof = false;
+
+    return ret;
   }
 }
 
 __int64 CDVDInputStreamPVRManager::GetLength()
 {
-  if (m_isPlayRecording)
-  {
-    return CPVRManager::GetInstance()->LengthRecordedStream();
-  }
+  if(!m_pFile) return -1;
 
-  return 0;
+  if (m_pOtherStream)
+    return m_pOtherStream->GetLength();
+  else
+    return m_pFile->GetLength();
 }
 
-/************************************************************************
- * Description: Get the total time of the current played stream
- * \return int                  = Total time of the stream in milliseconds
- * Note:
- * Total time = unix total time * 1000
- */
 int CDVDInputStreamPVRManager::GetTotalTime()
 {
-  return CPVRManager::GetInstance()->GetTotalTime();
+  if (m_pLiveTV)
+    return m_pLiveTV->GetTotalTime();
+  return false;
 }
 
-/************************************************************************
- * Description: Get the start time of the current played stream
- * \return int                  = Start time of the stream in milliseconds
- *
- * Note:
- * Start time = (unix start time - unix current time) * 1000
- * Must be a negative value
- */
 int CDVDInputStreamPVRManager::GetStartTime()
 {
-  return CPVRManager::GetInstance()->GetStartTime();
+  if (m_pLiveTV)
+    return m_pLiveTV->GetStartTime();
+  return false;
 }
 
-/************************************************************************
- * Description: Do a channel switch by enter numbers by numeric
- *              keys on the remote or keyboard.
- * \param int iChannel          = integer value of first channelnumber
- *                                (next numbers are entered by
- *                                CGUIDialogNumeric)
- * \return bool                 = true if ok, false if error
- *
- * Note:
- * Not all type of errors give "false" on return, a stream is normally
- * always played and if the switch fails in case of a invalid channel
- * the current tuned channel continue to play.
- *
- * Errors like this opens a DialogWindow to inform the user for the fault.
- */
-bool CDVDInputStreamPVRManager::Channel(int iChannel)
-{
-  if (m_isPlayRecording)
-  {
-    /* We are inside a recording, skip channelswitch */
-    /** TODO:
-     ** Add support for cutting keys (functions becomes the numeric keys as integer)
-     **/
-    return true;
-  }
-
-  if (CPVRManager::GetInstance()->ChannelSwitch(iChannel))
-  {
-    m_playingItem = iChannel;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-/************************************************************************
- * Description: Do a channel switch to next available channel in list
- * \return bool                 = true if ok, false if error
- *
- * Note:
- * Not all type of errors give "false" on return, a stream is normally
- * always played and if the switch fails in case of a invalid channel
- * the current tuned channel continue to play.
- *
- * Errors like this opens a DialogWindow to inform the user for the fault.
- */
 bool CDVDInputStreamPVRManager::NextChannel()
 {
-  unsigned int newchannel;
-
-  if (m_isPlayRecording)
-  {
-    /* We are inside a recording, skip channelswitch */
-    return true;
-  }
-
-  /* Do channel switch and save new channel number, it is not always
-   * increased by one in a case if next channel is encrypted or we
-   * on the beginning or end of the channel list!
-   */
-  if (CPVRManager::GetInstance()->ChannelUp(&newchannel))
-  {
-    m_playingItem = newchannel;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  if (m_pLiveTV)
+    return m_pLiveTV->NextChannel();
+  return false;
 }
 
-/************************************************************************
- * Description: Do a channel switch to previous available channel in list
- * \return bool                 = true if ok, false if error
- *
- * Note:
- * Not all type of errors give "false" on return, a stream is normally
- * always played and if the switch fails in case of a invalid channel
- * the current tuned channel continue to play.
- *
- * Errors like this opens a DialogWindow to inform the user for the fault.
- */
 bool CDVDInputStreamPVRManager::PrevChannel()
 {
-  unsigned int newchannel;
+  if (m_pLiveTV)
+    return m_pLiveTV->PrevChannel();
+  return false;
+}
 
-  if (m_isPlayRecording)
-  {
-    /* We are inside a recording, skip channelswitch */
-    return true;
-  }
-
-  /* Do channel switch and save new channel number, it is not always
-   * increased by one in a case if next channel is encrypted or we
-   * on the beginning or end of the channel list!
-   */
-  if (CPVRManager::GetInstance()->ChannelDown(&newchannel))
-  {
-    m_playingItem = newchannel;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+bool CDVDInputStreamPVRManager::SelectChannel(unsigned int channel)
+{
+  if (m_pLiveTV)
+    m_pLiveTV->SelectChannel(channel);
+  return false;
 }
 
 bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)
 {
-  return CPVRManager::GetInstance()->UpdateItem(item);
+  if (m_pLiveTV)
+    m_pLiveTV->UpdateItem(item);
+  return false;
 }
 
 bool CDVDInputStreamPVRManager::SeekTime(int iTimeInMsec)
@@ -386,31 +229,32 @@ bool CDVDInputStreamPVRManager::SeekTime(int iTimeInMsec)
 
 bool CDVDInputStreamPVRManager::NextStream()
 {
+//  if(!m_pFile) return false;
+//  if(m_pFile->SkipNext())
+//  {
+//    m_eof = false;
+//    return true;
+//  }
   return false;
 }
 
 bool CDVDInputStreamPVRManager::CanRecord()
 {
-  if (m_isPlayRecording)
-  {
-    return false;
-  }
-
-  return false;//CPVRManager::GetInstance()->SupportRecording();
+  if (m_pRecordable)
+    return m_pRecordable->CanRecord();
+  return false;
 }
 
 bool CDVDInputStreamPVRManager::IsRecording()
 {
-  return CPVRManager::GetInstance()->IsRecording(m_playingItem);
+  if (m_pRecordable)
+    return m_pRecordable->IsRecording();
+  return false;
 }
 
 bool CDVDInputStreamPVRManager::Record(bool bOnOff)
 {
-  return CPVRManager::GetInstance()->RecordChannel(m_playingItem, bOnOff);
-}
-
-void CDVDInputStreamPVRManager::Pause(bool OnOff)
-{
-  CPVRManager::GetInstance()->PauseLiveStream(OnOff);
-  return;
+  if (m_pRecordable)
+    return m_pRecordable->Record(bOnOff);
+  return false;
 }
