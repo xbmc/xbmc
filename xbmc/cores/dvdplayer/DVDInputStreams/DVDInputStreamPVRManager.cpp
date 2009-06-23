@@ -211,7 +211,7 @@ bool CDVDInputStreamPVRManager::PrevChannel()
 bool CDVDInputStreamPVRManager::SelectChannel(unsigned int channel)
 {
   if (m_pLiveTV)
-    m_pLiveTV->SelectChannel(channel);
+    return m_pLiveTV->SelectChannel(channel);
   return false;
 }
 

@@ -1737,20 +1737,18 @@ void CDVDPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL))
       {
         CPlayerSeek m_pause(this);
-
-        if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) )
+        
+        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        if(input)
         {
-          int channel = static_cast<CDVDMsgInt*>(pMsg)->m_value;
-          bool result = ((CDVDInputStreamPVRManager*)m_pInputStream)->SelectChannel(channel);
+          bool result = input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value);
           if(result)
           {
-            m_UpdateApplication = 0;
             FlushBuffers(false);
             CloseVideoStream(false);
             CloseAudioStream(false);
             CloseSubtitleStream(false);
             SAFE_DELETE(m_pDemuxer);
-            m_dvdPlayerVideo.SendMessage(new CDVDMsgDouble(CDVDMsg::VIDEO_SET_ASPECT, NULL));
           }
         }
       }
@@ -1758,41 +1756,22 @@ void CDVDPlayer::HandleMessages()
       {
         CPlayerSeek m_pause(this);
 
-        if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) )
+        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        if(input)
         {
           bool result;
           if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
-            result = ((CDVDInputStreamPVRManager*)m_pInputStream)->NextChannel();
+            result = input->NextChannel();
           else
-            result = ((CDVDInputStreamPVRManager*)m_pInputStream)->PrevChannel();
+            result = input->PrevChannel();
 
           if(result)
           {
-            m_UpdateApplication = 0;
             FlushBuffers(false);
             CloseVideoStream(false);
             CloseAudioStream(false);
             CloseSubtitleStream(false);
             SAFE_DELETE(m_pDemuxer);
-            m_dvdPlayerVideo.SendMessage(new CDVDMsgDouble(CDVDMsg::VIDEO_SET_ASPECT, NULL));
-          }
-        }
-        else
-        {
-          CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-          if(input)
-          {
-            bool result;
-            if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
-              result = input->NextChannel();
-            else
-              result = input->PrevChannel();
-
-            if(result)
-            {
-              FlushBuffers(false);
-              SAFE_DELETE(m_pDemuxer);
-            }
           }
         }
       }
@@ -2754,7 +2733,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
   }
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  if (dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream))
   {
     switch (action.wID)
     {
@@ -2762,6 +2741,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_NEXT_ITEM:
       case ACTION_PAGE_UP:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
+        g_infoManager.SetDisplayAfterSeek();
         if (g_guiSettings.GetBool("pvrmenu.infoswitch"))
         {
           CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
@@ -2774,14 +2754,14 @@ bool CDVDPlayer::OnAction(const CAction &action)
             pDialog->DoModal();
           }
         }
-        g_infoManager.SetDisplayAfterSeek();
         return true;
-        break;
+      break;
 
       case ACTION_MOVE_DOWN:
       case ACTION_PREV_ITEM:
       case ACTION_PAGE_DOWN:
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
+        g_infoManager.SetDisplayAfterSeek();
         if (g_guiSettings.GetBool("pvrmenu.infoswitch"))
         {
           CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
@@ -2794,7 +2774,6 @@ bool CDVDPlayer::OnAction(const CAction &action)
             pDialog->DoModal();
           }
         }
-        g_infoManager.SetDisplayAfterSeek();
         return true;
       break;
 
@@ -2803,6 +2782,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         // Offset from key codes back to button number
         int channel = action.fAmount1;
         m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL, channel));
+        g_infoManager.SetDisplayAfterSeek();
         if (g_guiSettings.GetBool("pvrmenu.infoswitch"))
         {
           CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
@@ -2815,39 +2795,8 @@ bool CDVDPlayer::OnAction(const CAction &action)
             pDialog->DoModal();
           }
         }
-        g_infoManager.SetDisplayAfterSeek();
         return true;
       }
-      break;
-
-/*
-      case ACTION_RECORD:
-        m_messenger.Put(new CDVDMsgBool(CDVDMsg::PLAYER_SET_RECORD, true));
-        g_infoManager.SetDisplayAfterSeek();
-        return true;
-        break;
-*/
-      default:
-        return false;
-        break;
-    }
-  }
-  else if (dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream))
-  {
-    switch (action.wID)
-    {
-      case ACTION_NEXT_ITEM:
-      case ACTION_PAGE_UP:
-        m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_NEXT));
-        g_infoManager.SetDisplayAfterSeek();
-        return true;
-      break;
-
-      case ACTION_PREV_ITEM:
-      case ACTION_PAGE_DOWN:
-        m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
-        g_infoManager.SetDisplayAfterSeek();
-        return true;
       break;
     }
   }
