@@ -1705,11 +1705,6 @@ void CDVDPlayer::HandleMessages()
       {
         int speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
 
-        if (g_guiSettings.GetBool("pvrrecord.timeshift") && m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) )
-        {
-          ((CDVDInputStreamPVRManager*)m_pInputStream)->Pause(speed == DVD_PLAYSPEED_PAUSE ? true : false);
-        }
-
         // correct our current clock, as it would start going wrong otherwise
         if(m_State.timestamp > 0)
         {
@@ -1746,7 +1741,7 @@ void CDVDPlayer::HandleMessages()
         if( m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) )
         {
           int channel = static_cast<CDVDMsgInt*>(pMsg)->m_value;
-          bool result = ((CDVDInputStreamPVRManager*)m_pInputStream)->Channel(channel);
+          bool result = ((CDVDInputStreamPVRManager*)m_pInputStream)->SelectChannel(channel);
           if(result)
           {
             m_UpdateApplication = 0;
