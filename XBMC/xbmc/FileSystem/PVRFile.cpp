@@ -56,7 +56,7 @@ bool CPVRFile::Open(const CURL& url)
 
   CStdString strURL;
   url.GetURL(strURL);
-    fprintf(stderr, ">>>>>>>>>> %s\n", strURL.c_str());
+
   if (strURL.Left(17) == "pvr://channelstv/")
   {
     CStdString channel = strURL.Mid(17);

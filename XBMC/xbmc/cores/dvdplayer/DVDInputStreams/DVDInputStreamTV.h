@@ -48,6 +48,7 @@ public:
 
   bool            NextChannel();
   bool            PrevChannel();
+  bool            SelectChannel(unsigned int channel) { return false; }
 
   int             GetTotalTime();
   int             GetStartTime();

@@ -42,6 +42,7 @@ public:
 
   bool            NextChannel();
   bool            PrevChannel();
+  bool            SelectChannel(unsigned int channel) { return false; }
   bool            UpdateItem(CFileItem& item);
 
   htsmsg_t* ReadStream();
