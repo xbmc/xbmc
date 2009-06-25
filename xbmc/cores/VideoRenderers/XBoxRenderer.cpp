@@ -80,7 +80,7 @@ CXBoxRenderer::CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice)
 
 CXBoxRenderer::~CXBoxRenderer()
 {
-  UnInit();
+//  UnInit();
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
     CloseHandle(m_eventTexturesDone[i]);
@@ -954,7 +954,7 @@ unsigned int CXBoxRenderer::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
-  UnInit();
+//  UnInit();
   m_iResolution = PAL_4x3;
 
   m_iOSDRenderBuffer = 0;
