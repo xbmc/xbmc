@@ -27,6 +27,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
 #include "SkinInfo.h"
+#include "GUIControlFactory.h"
 
 using namespace std;
 
@@ -114,12 +115,12 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
   if (action.wID == ACTION_SELECT_ITEM)
   {
     // send the appropriate message to the parent window
-    vector<CStdString> actions = m_vecButtons[GetActiveButton()]->clickActions;
+    vector<CGUIActionDescriptor> actions = m_vecButtons[GetActiveButton()]->clickActions;
     for (unsigned int i = 0; i < actions.size(); i++)
     {
       CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
       // find our currently highlighted item
-      message.SetStringParam(actions[i]);
+      message.SetAction(actions[i]);
       g_graphicsContext.SendMessage(message);
     }
     return true;
@@ -227,14 +228,22 @@ void CGUIButtonScroller::LoadButtons(TiXmlNode *node)
     // get info
     childNode = buttonNode->FirstChild("info");
     if (childNode && childNode->FirstChild())
+    {
       button->info = g_infoManager.TranslateString(childNode->FirstChild()->Value());
+    }
     childNode = buttonNode->FirstChild("execute");
     if (childNode && childNode->FirstChild())
-      button->clickActions.push_back(childNode->FirstChild()->Value());
+    {
+      CGUIActionDescriptor action;
+      CGUIControlFactory::GetAction((const TiXmlElement*) childNode, action);
+      button->clickActions.push_back(action);
+    }
     childNode = buttonNode->FirstChild("onclick");
     while (childNode && childNode->FirstChild())
     {
-      button->clickActions.push_back(childNode->FirstChild()->Value());
+      CGUIActionDescriptor action;
+      CGUIControlFactory::GetAction((const TiXmlElement*) childNode, action);
+      button->clickActions.push_back(action);
       childNode = childNode->NextSibling("onclick");
     }
     childNode = buttonNode->FirstChild("texturefocus");
