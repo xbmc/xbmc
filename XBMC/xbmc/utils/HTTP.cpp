@@ -829,7 +829,7 @@ bool CHTTP::Recv(int iLen)
 
     char *buf = &m_RecvBuffer[m_RecvBytes];
 
-    while (!m_cancelled)
+    while (!m_cancelled && !g_application.m_bStop)
     {
       n = -1;
 
@@ -865,7 +865,7 @@ bool CHTTP::Recv(int iLen)
       shutdown(m_socket, SHUT_RDWR);
 #endif
       WSASetLastError(0);
-      return true; // graceful close
+      return false; // make caller know we are done otherwise it keeps calling us
     }
 
     m_RecvBytes += n;
