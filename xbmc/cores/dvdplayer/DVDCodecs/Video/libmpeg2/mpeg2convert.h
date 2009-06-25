@@ -21,8 +21,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef LIBMPEG2_MPEG2CONVERT_H
-#define LIBMPEG2_MPEG2CONVERT_H
+#ifndef MPEG2CONVERT_H
+#define MPEG2CONVERT_H
 
 mpeg2_convert_t mpeg2convert_rgb32;
 mpeg2_convert_t mpeg2convert_rgb24;
@@ -45,4 +45,4 @@ mpeg2_convert_t * mpeg2convert_rgb (mpeg2convert_rgb_order_t order,
 
 mpeg2_convert_t mpeg2convert_uyvy;
 
-#endif /* LIBMPEG2_MPEG2CONVERT_H */
+#endif /* MPEG2CONVERT_H */
