@@ -25,6 +25,8 @@
 #include "Settings.h"
 #include <math.h>
 
+#include "utils/SingleLock.h"
+
 /////////////////////////////////////////////////////////////////////////////////
 // CAtomicAllocator: Wrapper class for lf_heap.
 ////////////////////////////////////////////////////////////////////////////////
@@ -125,8 +127,8 @@ size_t CSliceQueue::AddData(void* pBuf, size_t bufLen)
 
 size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
 {
-  if (GetTotalBytes() < bufLen || !pBuf || !bufLen)
-    return NULL;
+  if (!pBuf || !bufLen)
+    return 0;
   
   size_t bytesUsed = 0;
   size_t remainder = 0;
@@ -137,6 +139,7 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
   {
     memcpy(pBuf, m_pPartialSlice->get_data() + m_pPartialSlice->header.data_len - m_RemainderSize , bufLen);
     m_RemainderSize -= bufLen;
+    bytesUsed = bufLen;
   }
   else // Pull what we can from the partial slice and get the rest from complete slices
   {
@@ -153,15 +156,13 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
     {
       pNext = Pop();
       if (!pNext)
-      {
-        CLog::Log(LOGERROR,"CSliceQueue::GetData: Popped NULL from queue. Length: %u", m_TotalBytes);
         break;
-      }
+
       size_t nextLen = pNext->header.data_len;
       if (bytesUsed + nextLen > bufLen) // Check for a partial slice
         remainder = nextLen - (bufLen - bytesUsed);
       memcpy((BYTE*)pBuf + bytesUsed, pNext->get_data(), nextLen - remainder);
-      bytesUsed += nextLen; // Increment output size (remainder will be captured separately)
+      bytesUsed += (nextLen - remainder); // Increment output size (remainder will be captured separately)
       if (!remainder)
         m_pAllocator->Free(pNext); // Free the copied slice
     } while (bytesUsed < bufLen);    
@@ -181,7 +182,13 @@ size_t CSliceQueue::GetData(void* pBuf, size_t bufLen)
     m_RemainderSize = remainder;
   }
   
-  return bufLen;
+  if (m_RemainderSize == 0 && m_pPartialSlice)
+  {
+    m_pAllocator->Free(m_pPartialSlice);
+    m_pPartialSlice = NULL;
+  }
+  
+  return bytesUsed;
 }
 
 size_t CSliceQueue::GetTotalBytes() 
@@ -250,7 +257,7 @@ void CCoreAudioPerformance::ReportData(UInt32 bytesIn, UInt32 bytesOut)
     {
       // Check outgoing bitrate
       if (m_ActualBytesPerSec < m_WatchdogBitrateSensitivity * m_ExpectedBytesPerSec) 
-        CLog::Log(LOGWARNING, "CCoreAudioPerformance: Outgoing bitrate is lagging. Target: %u, Actual: %u. deltaTime was %u", m_ExpectedBytesPerSec, m_ActualBytesPerSec, deltaTime);
+        CLog::Log(LOGWARNING, "CCoreAudioPerformance: Outgoing bitrate is lagging. Target: %lu, Actual: %lu. deltaTime was %lu", m_ExpectedBytesPerSec, m_ActualBytesPerSec, deltaTime);
     }
     m_LastWatchdogCheck = time;
     m_LastWatchdogBytesIn = m_TotalBytesIn;
@@ -290,23 +297,25 @@ void CCoreAudioPerformance::Reset()
 //***********************************************************************************************
 CCoreAudioRenderer::CCoreAudioRenderer() :
   m_Pause(false),
-  m_ChunkLen(0),
-  m_MaxCacheLen(0),
-  m_AvgBytesPerSec(0),
-  m_CurrentVolume(0),
   m_Initialized(false),
+  m_CurrentVolume(0),
+  m_ChunkLen(0),
+  m_pCache(NULL),
+  m_MaxCacheLen(0),
+  m_OutputBufferIndex(0),
   m_Passthrough(false),
   m_EnableVolumeControl(true),
-  m_OutputBufferIndex(0),
-  m_pCache(NULL),
-  m_RunoutEvent(NULL)
+  m_AvgBytesPerSec(0) 
 {
-  
+  m_RunoutEvent = ::CreateEvent(NULL, true, false, NULL);
 }
 
 CCoreAudioRenderer::~CCoreAudioRenderer()
 {
-    Deinitialize();
+  Deinitialize();
+  
+  if (m_RunoutEvent)
+    ::CloseHandle(m_RunoutEvent);
 }
 
 //***********************************************************************************************
@@ -392,11 +401,10 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
     m_AudioUnit.GetInputFormat(&inputDesc_end);
     m_AudioUnit.GetOutputFormat(&outputDesc_end);
     CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Input Stream Format %s", StreamDescriptionToString(inputDesc_end, formatString));
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Output Stream Format % s", StreamDescriptionToString(outputDesc_end, formatString));    
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Output Stream Format %s", StreamDescriptionToString(outputDesc_end, formatString));    
   }
   
-  m_MaxCacheLen = m_AvgBytesPerSec;     // Set the max cache size to 1 second of data. TODO: Make this more intelligent
-  m_Pause = true;                       // Suspend rendering. We will start once we have some data.
+  m_MaxCacheLen = m_AvgBytesPerSec;     // Set the max cache size to 1 seconds of data. TODO: Make this more intelligent
   m_pCache = new CSliceQueue(m_ChunkLen); // Initialize our incoming data cache
   m_PerfMon.Init(m_AvgBytesPerSec, 1000, CCoreAudioPerformance::FlagDefault); // Set up the performance monitor
   m_PerfMon.SetPreroll(2.0f); // Disable underrun detection for the first 2 seconds (after start and after resume)
@@ -404,7 +412,9 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
   
   SetCurrentVolume(g_stSettings.m_nVolumeLevel);
   
-  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %u (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
+  m_AudioUnit.Start();
+  
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %lu (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
   CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");  
   return true;
 }
@@ -427,7 +437,6 @@ bool CCoreAudioRenderer::Deinitialize()
   delete m_pCache;
   m_pCache = NULL;
   m_Initialized = false;
-  m_RunoutEvent = NULL;
   m_EnableVolumeControl = true;
   
   CLog::Log(LOGINFO, "CoreAudioRenderer::Deinitialize: Renderer has been shut down.");
@@ -493,12 +502,12 @@ bool CCoreAudioRenderer::Stop()
 //***********************************************************************************************
 LONG CCoreAudioRenderer::GetMinimumVolume() const
 {
-  return -6000;
+  return VOLUME_MINIMUM;
 }
 
 LONG CCoreAudioRenderer::GetMaximumVolume() const
 {
-  return 0;
+  return VOLUME_MAXIMUM;
 }
 
 LONG CCoreAudioRenderer::GetCurrentVolume() const
@@ -534,21 +543,25 @@ bool CCoreAudioRenderer::SetCurrentVolume(LONG nVolume)
 //***********************************************************************************************
 // Data management methods
 //***********************************************************************************************
-DWORD CCoreAudioRenderer::GetSpace()
+unsigned int CCoreAudioRenderer::GetSpace()
 {
   VERIFY_INIT(0);
+  CSingleLock aLock(m_lock);
+
   return m_MaxCacheLen - m_pCache->GetTotalBytes(); // This is just an estimate, since the driver is asynchonously pulling data.
 }
 
-DWORD CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
+unsigned int CCoreAudioRenderer::AddPackets(const void* data, unsigned int len)
 {  
   VERIFY_INIT(0);
-  
+
+  CSingleLock aLock(m_lock);
+
   // Require at least one 'chunk'. This allows us at least some measure of control over efficiency
   if (len < m_ChunkLen || m_pCache->GetTotalBytes() >= m_MaxCacheLen)
     return 0;
 
-  DWORD cacheSpace = GetSpace();  
+  unsigned int cacheSpace = GetSpace();  
   if (len > cacheSpace)
     return 0; // Wait until we can accept all of it
   
@@ -556,7 +569,6 @@ DWORD CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
   
   // Update tracking variable
   m_PerfMon.ReportData(bytesUsed, 0);
-  Resume();  // We have some data. Attmept to resume playback
   
   return bytesUsed; // Number of bytes added to cache;
 }
@@ -564,6 +576,9 @@ DWORD CCoreAudioRenderer::AddPackets(const void* data, DWORD len)
 float CCoreAudioRenderer::GetDelay()
 {
   VERIFY_INIT(0);
+
+  CSingleLock aLock(m_lock);
+
   // Calculate the duration of the data in the cache
   float delay = (float)m_pCache->GetTotalBytes()/(float)m_AvgBytesPerSec;
   // TODO: Obtain hardware/os latency for better accuracy
@@ -575,7 +590,7 @@ float CCoreAudioRenderer::GetCacheTime()
   return GetDelay();
 }
 
-DWORD CCoreAudioRenderer::GetChunkLen()
+unsigned int CCoreAudioRenderer::GetChunkLen()
 {
   return m_ChunkLen;
 }
@@ -583,29 +598,16 @@ DWORD CCoreAudioRenderer::GetChunkLen()
 void CCoreAudioRenderer::WaitCompletion()
 {
   VERIFY_INIT();
-  OSStatus ret =  MPCreateEvent(&m_RunoutEvent);
-  if (!ret)
+  
+  CSingleLock aLock(m_lock);
+  
+  UInt32 delay =  (UInt32)(GetDelay() * 1000.0f); 
+  if (delay > 0)
   {
-    UInt32 delay =  GetDelay()/1000.0f + 10; // This is how much time 'should' be in the cache ( plus 10ms for preemption hedge)
-    // TODO: How should we really determiine the wait time 'padding'?
-    ret = MPWaitForEvent(m_RunoutEvent, NULL, kDurationMillisecond * delay); // Wait for the callback thread to process the whole cache, but only wait as long as we expect it to take
-    switch (ret)
-    {
-      case kMPTimeoutErr:
-        if (m_pCache->GetTotalBytes()) // Make sure there is still some data left in the cache that didn't get played
-          CLog::Log(LOGERROR, "CCoreAudioRenderer::WaitCompletion: Timed-out waiting for runout. Remaining data will be truncated.");
-        break;
-      case noErr:
-        break;
-      default:
-        CLog::Log(LOGERROR, "CCoreAudioRenderer::WaitCompletion: An error occurred while waiting for runout. Remaining data will be truncated. Error = 0x%08X [%4.4s]", ret, UInt32ToFourCC((UInt32*)&ret));
-    }
-    MPDeleteEvent(m_RunoutEvent);
-    m_RunoutEvent = NULL;
+    ::ResetEvent(m_RunoutEvent);
+    aLock.Leave();
+    WaitForSingleObject(m_RunoutEvent, delay);
   }
-  else
-    CLog::Log(LOGERROR, "CCoreAudioRenderer::WaitCompletion: Unable to create runout event. Remaining data will be truncated. Error = 0x%08X [%4.4s]", ret, UInt32ToFourCC((UInt32*)&ret));
-  Stop();
 }
 
 //***********************************************************************************************
@@ -613,39 +615,25 @@ void CCoreAudioRenderer::WaitCompletion()
 //***********************************************************************************************
 OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {  
-  // TODO: May need to remove all logging from this method since it is called from a realtime thread
-  if (!m_Initialized)
-    CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Callback to de/unitialized renderer.");
-  
+  CSingleLock aLock(m_lock);
+
   UInt32 bytesRequested = m_BytesPerFrame * inNumberFrames; // Data length requested, based on the input data format
   
-  // Process the request
-  if (m_pCache->GetTotalBytes() < bytesRequested) // Not enough data to satisfy the request
-  {
-    Pause(); // Stop further requests until we have more data.  The AddPackets method will resume playback
-    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0; // Let the caller know there is no data...
-    if (m_RunoutEvent) // We were waiting for a runout. This is not an error. drop any remaining data and set the completion flag
-    {
-      m_pCache->Clear(); // TODO: Find a clean way to provide the rest of the requested data...      
-      MPSetEvent(m_RunoutEvent, 0); // Tell the waiting thread we are done
-      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Runout complete");
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Buffer underrun.");
-    }
-  }
-  else // Fetch some data for the caller
-  {
-    m_pCache->GetData(ioData->mBuffers[m_OutputBufferIndex].mData, bytesRequested);
+  size_t bytes = m_pCache->GetData(ioData->mBuffers[m_OutputBufferIndex].mData, bytesRequested);
     
-    // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
-    if (!m_EnableVolumeControl && m_CurrentVolume == -6000) 
-      ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+  // Hard mute for formats that do not allow standard volume control. Throw away any actual data to keep the stream moving.
+  if (!m_EnableVolumeControl && m_CurrentVolume == VOLUME_MINIMUM) 
+    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = 0;
+  else
+    ioData->mBuffers[m_OutputBufferIndex].mDataByteSize = bytes;
     
-    // Calculate stats and perform a sanity check
-    m_PerfMon.ReportData(0, bytesRequested); // TODO: Should we check the result?
+  m_PerfMon.ReportData(0, bytes); 
+
+  if (bytes == 0)
+  {
+    ::SetEvent(m_RunoutEvent);
   }
+  
   return noErr;
 }
 
@@ -726,7 +714,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
     stream.Open(streams.front());
     streams.pop_front(); // We copied it, now we are done with it
     
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Found %s stream - id: 0x%04X, Terminal Type: 0x%04X", 
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Found %s stream - id: %p, Terminal Type: %p", 
               stream.GetDirection() ? "Input" : "Output", 
               stream.GetId(), 
               stream.GetTerminalType());
@@ -763,7 +751,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
   m_ChunkLen = outputFormat.mBytesPerPacket; // 1 Chunk == 1 Packet
   m_AvgBytesPerSec = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3) * outputFormat.mSampleRate; // mBytesPerFrame is 0 for a cac3 stream
   m_BytesPerFrame = outputFormat.mChannelsPerFrame * (outputFormat.mBitsPerChannel>>3);
-  CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Selected stream[%u] - id: 0x%04X, Physical Format: %s (%u Bytes/sec.)", streamIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_AvgBytesPerSec);  
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Selected stream[%lu] - id: %p, Physical Format: %s (%lu Bytes/sec.)", streamIndex, outputStream, StreamDescriptionToString(outputFormat, formatString), m_AvgBytesPerSec);  
   
   // TODO: Auto hogging sets this for us. Figure out how/when to turn it off or use it
   // It appears that leaving this set will aslo restore the previous stream format when the
@@ -785,7 +773,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
   m_OutputStream.Open(outputStream); // This is the one we will keep
   AudioStreamBasicDescription previousFormat;
   m_OutputStream.GetPhysicalFormat(&previousFormat);
-  CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Previous Physical Format: %s (%u Bytes/sec.)", StreamDescriptionToString(previousFormat, formatString), m_AvgBytesPerSec);
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Previous Physical Format: %s (%lu Bytes/sec.)", StreamDescriptionToString(previousFormat, formatString), m_AvgBytesPerSec);
   m_OutputStream.SetPhysicalFormat(&outputFormat); // Set the active format (the old one will be reverted when we close)
   
   // Register for data request callbacks from the driver
