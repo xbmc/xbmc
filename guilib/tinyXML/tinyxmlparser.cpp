@@ -649,7 +649,7 @@ void TiXmlBase::ConvertToUtf8(TiXmlDocument* document, TIXML_STRING* text)
   char* obuf = output;
   size_t ilen = text->size() + 1;
 #ifdef _LINUX
-  char* ibuf = (char*) text->c_str();
+  const char* ibuf = (const char*) text->c_str();
 #else
   const char* ibuf = (const char*) text->c_str();
 #endif
