@@ -21,11 +21,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef LIBMPEG2_MPEG2_H
-#define LIBMPEG2_MPEG2_H
+#ifndef MPEG2_H
+#define MPEG2_H
 
 #define MPEG2_VERSION(a,b,c) (((a)<<16)|((b)<<8)|(c))
-#define MPEG2_RELEASE MPEG2_VERSION (0, 5, 1)	/* 0.5.1 */
+#define MPEG2_RELEASE MPEG2_VERSION (0, 4, 1)	/* 0.4.1 */
 
 #define SEQ_FLAG_MPEG2 1
 #define SEQ_FLAG_CONSTRAINED_PARAMETERS 2
@@ -82,7 +82,6 @@ typedef struct mpeg2_gop_s {
 #define PIC_FLAG_COMPOSITE_DISPLAY 32
 #define PIC_FLAG_SKIP 64
 #define PIC_FLAG_TAGS 128
-#define PIC_FLAG_REPEAT_FIRST_FIELD 256
 #define PIC_MASK_COMPOSITE_DISPLAY 0xfffff000
 
 typedef struct mpeg2_picture_s {
@@ -121,15 +120,15 @@ typedef enum {
     STATE_BUFFER = 0,
     STATE_SEQUENCE = 1,
     STATE_SEQUENCE_REPEATED = 2,
-    STATE_GOP = 3,
-    STATE_PICTURE = 4,
-    STATE_SLICE_1ST = 5,
-    STATE_PICTURE_2ND = 6,
-    STATE_SLICE = 7,
-    STATE_END = 8,
-    STATE_INVALID = 9,
-    STATE_INVALID_END = 10,
-    STATE_SEQUENCE_MODIFIED = 11
+    STATE_SEQUENCE_MODIFIED = 3,
+    STATE_GOP = 4,
+    STATE_PICTURE = 5,
+    STATE_SLICE_1ST = 6,
+    STATE_PICTURE_2ND = 7,
+    STATE_SLICE = 8,
+    STATE_END = 9,
+    STATE_INVALID = 10,
+    STATE_INVALID_END = 11
 } mpeg2_state_t;
 
 typedef struct mpeg2_convert_init_s {
@@ -163,7 +162,6 @@ void mpeg2_custom_fbuf (mpeg2dec_t * mpeg2dec, int custom_fbuf);
 #define MPEG2_ACCEL_ALPHA_MVI 2
 #define MPEG2_ACCEL_SPARC_VIS 1
 #define MPEG2_ACCEL_SPARC_VIS2 2
-#define MPEG2_ACCEL_ARM 1
 #define MPEG2_ACCEL_DETECT 0x80000000
 
 uint32_t mpeg2_accel (uint32_t accel);
@@ -198,7 +196,7 @@ typedef enum {
 
 void * mpeg2_malloc (unsigned size, mpeg2_alloc_t reason);
 void mpeg2_free (void * buf);
-void mpeg2_malloc_hooks (void * malloc (unsigned, mpeg2_alloc_t),
-			 int free (void *));
+void mpeg2_malloc_hooks (void * (*malloc) (unsigned, mpeg2_alloc_t),
+			 int (*free) (void *));
 
-#endif /* LIBMPEG2_MPEG2_H */
+#endif /* MPEG2_H */
