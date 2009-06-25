@@ -439,6 +439,8 @@ void CGUISettings::Initialize()
   AddSeparator(9, "videoplayer.sep2");
   AddString(10, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(11, "videoplayer.sep3");
+  AddBool(12, "videoplayer.useexternaldvdplayer", 20001, false);
+  AddString(13, "videoplayer.externaldvdplayer", 20002, "",  BUTTON_CONTROL_PATH_INPUT, true, 655);
   AddInt(14, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(15, "videoplayer.dvdautomenu", 21882, false);
   AddBool(16, "videoplayer.editdecision", 22003, false);
