@@ -648,8 +648,8 @@ void TiXmlBase::ConvertToUtf8(TiXmlDocument* document, TIXML_STRING* text)
   char* output = new char[olen]; 
   char* obuf = output;
   size_t ilen = text->size() + 1;
-#ifdef _LINUX
-  const char* ibuf = (const char*) text->c_str();
+#if defined(_LINUX) and !defined(__APPLE__)
+  char* ibuf = (char*) text->c_str();
 #else
   const char* ibuf = (const char*) text->c_str();
 #endif
