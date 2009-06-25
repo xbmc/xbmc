@@ -383,8 +383,9 @@ void CGUISettings::Initialize()
   AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
   AddBool(4, "audiooutput.ac3passthrough", 364, true);
   AddBool(5, "audiooutput.dtspassthrough", 254, true);
-  AddBool(6, "audiooutput.downmixmultichannel", 548, true);
-
+#ifdef _XBOX
+  AddBool(6, "audiooutput.downmixmultichannel", 548, false);
+#endif
   AddCategory(4, "videooutput", 21373);
   AddInt(1, "videooutput.aspect", 21374, VIDEO_NORMAL, VIDEO_NORMAL, 1, VIDEO_WIDESCREEN, SPIN_CONTROL_TEXT);
   AddBool(2,  "videooutput.hd480p", 21378, true);
