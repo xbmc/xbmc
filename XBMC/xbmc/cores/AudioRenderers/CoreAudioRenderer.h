@@ -26,6 +26,8 @@
 #include "IAudioRenderer.h"
 #include <utils/LockFree.h>
 
+#include "utils/CriticalSection.h"
+
 struct audio_slice
 {
   struct _tag_header{
@@ -106,7 +108,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual unsigned int GetChunkLen();
     virtual float GetDelay();
     virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
-    virtual bool Deinitialize();
+    virtual bool  Deinitialize();
     virtual unsigned int AddPackets(const void* data, unsigned int len);
     virtual unsigned int GetSpace();
     virtual float GetCacheTime();
@@ -158,7 +160,8 @@ class CCoreAudioRenderer : public IAudioRenderer
     CCoreAudioPerformance m_PerfMon;
     
     // Thread synchronization
-    MPEventID m_RunoutEvent;
+    HANDLE           m_RunoutEvent;
+    CCriticalSection m_lock;
   };
 
 #endif 
