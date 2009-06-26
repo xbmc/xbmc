@@ -64,7 +64,7 @@ public:
 
   virtual bool           UpdateItem(CFileItem& item);
 
-  virtual IRecordable*   GetRecordable() {return (IRecordable*)this;}
+  virtual IRecordable* GetRecordable() {return (IRecordable*)this;}
 
   virtual bool           CanRecord();
   virtual bool           IsRecording();
