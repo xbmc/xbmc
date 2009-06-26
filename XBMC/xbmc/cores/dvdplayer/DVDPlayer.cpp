@@ -1692,10 +1692,9 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_SET_RECORD))
       {
-        if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-          static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->Record(*(CDVDMsgBool*)pMsg);
-        else if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
-          static_cast<CDVDInputStreamTV*>(m_pInputStream)->Record(*(CDVDMsgBool*)pMsg);
+        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+        if(input)
+          input->Record(*(CDVDMsgBool*)pMsg);
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
       {
@@ -3021,27 +3020,16 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     else
         m_State.player_state = "";
 
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
+    if(input)
     {
-      m_State.canrecord = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->CanRecord();
-      m_State.recording = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->IsRecording();
+      m_State.canrecord = input->CanRecord();
+      m_State.recording = input->IsRecording();
 
-      if(((CDVDInputStreamPVRManager*)m_pInputStream)->GetTotalTime() > 0)
+      if(input->GetTotalTime() > 0)
       {
-        m_State.time      -= ((CDVDInputStreamPVRManager*)m_pInputStream)->GetStartTime();
-        m_State.time_total = ((CDVDInputStreamPVRManager*)m_pInputStream)->GetTotalTime();
-      }
-    }
-
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
-    {
-      m_State.canrecord = static_cast<CDVDInputStreamTV*>(m_pInputStream)->CanRecord();
-      m_State.recording = static_cast<CDVDInputStreamTV*>(m_pInputStream)->IsRecording();
-
-      if(((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime() > 0)
-      {
-        m_State.time      -= ((CDVDInputStreamTV*)m_pInputStream)->GetStartTime();
-        m_State.time_total = ((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime();
+        m_State.time      -= input->GetStartTime();
+        m_State.time_total = input->GetTotalTime();
       }
     }
   }
