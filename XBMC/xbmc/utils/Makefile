@@ -27,7 +27,6 @@ SRCS=AlarmClock.cpp \
      UdpClient.cpp \
      Weather.cpp \
      Thread.cpp \
-     HTTP.cpp \
      SharedSection.cpp \
      Win32Exception.cpp \
      CPUInfo.cpp \

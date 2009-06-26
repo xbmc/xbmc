@@ -34,7 +34,6 @@
   #include <netinet/in.h>
 #endif
 
-#include "utils/HTTP.h"
 #include "Application.h"
 
 using namespace XFILE;
