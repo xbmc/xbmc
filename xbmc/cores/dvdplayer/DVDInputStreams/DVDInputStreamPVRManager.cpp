@@ -229,12 +229,18 @@ bool CDVDInputStreamPVRManager::SeekTime(int iTimeInMsec)
 
 bool CDVDInputStreamPVRManager::NextStream()
 {
-//  if(!m_pFile) return false;
-//  if(m_pFile->SkipNext())
-//  {
-//    m_eof = false;
-//    return true;
-//  }
+  if(!m_pFile) return -1;
+
+  if (m_pOtherStream)
+    return m_pOtherStream->NextStream();
+  else
+  {
+    if(m_pFile->SkipNext())
+    {
+      m_eof = false;
+      return true;
+    }
+  }
   return false;
 }
 
