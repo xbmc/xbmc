@@ -6826,9 +6826,9 @@ $as_echo "$as_me: error: $missing_library" >&2;}
 fi
 
 
-{ $as_echo "$as_me:$LINENO: checking for __lzo_init2 in -llzo2" >&5
-$as_echo_n "checking for __lzo_init2 in -llzo2... " >&6; }
-if test "${ac_cv_lib_lzo2___lzo_init2+set}" = set; then
+{ $as_echo "$as_me:$LINENO: checking for __lzo_init_v2 in -llzo2" >&5
+$as_echo_n "checking for __lzo_init_v2 in -llzo2... " >&6; }
+if test "${ac_cv_lib_lzo2___lzo_init_v2+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -6846,11 +6846,11 @@ cat >>conftest.$ac_ext <<_ACEOF
 #ifdef __cplusplus
 extern "C"
 #endif
-char __lzo_init2 ();
+char __lzo_init_v2 ();
 int
 main ()
 {
-return __lzo_init2 ();
+return __lzo_init_v2 ();
   ;
   return 0;
 }
@@ -6876,12 +6876,12 @@ $as_echo "$ac_try_echo") >&5
 	 test "$cross_compiling" = yes ||
 	 $as_test_x conftest$ac_exeext
        }; then
-  ac_cv_lib_lzo2___lzo_init2=yes
+  ac_cv_lib_lzo2___lzo_init_v2=yes
 else
   $as_echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_lzo2___lzo_init2=no
+	ac_cv_lib_lzo2___lzo_init_v2=no
 fi
 
 rm -rf conftest.dSYM
@@ -6889,9 +6889,9 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_lzo2___lzo_init2" >&5
-$as_echo "$ac_cv_lib_lzo2___lzo_init2" >&6; }
-if test "x$ac_cv_lib_lzo2___lzo_init2" = x""yes; then
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_lzo2___lzo_init_v2" >&5
+$as_echo "$ac_cv_lib_lzo2___lzo_init_v2" >&6; }
+if test "x$ac_cv_lib_lzo2___lzo_init_v2" = x""yes; then
   cat >>confdefs.h <<_ACEOF
 #define HAVE_LIBLZO2 1
 _ACEOF
