@@ -14,9 +14,9 @@
 			</control>
 			<control type="visualisation">
 				<posx>0</posx>
-				<posy>105</posy>
-				<width>850</width>
-				<height>540</height>
+				<posy>85</posy>
+				<width>870</width>
+				<height>560</height>
 				<visible>Player.HasAudio</visible>
 			</control>
 			<control type="largeimage">

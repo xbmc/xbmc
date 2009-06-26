@@ -838,7 +838,7 @@ void CDVDPlayer::Process()
     // should we open a new demuxer?
     if(!m_pDemuxer)
     {
-      if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && m_pInputStream->NextStream() == false)
+      if (m_pInputStream->NextStream() == false)
         break;
 
       if (m_pInputStream->IsEOF())
@@ -1745,6 +1745,9 @@ void CDVDPlayer::HandleMessages()
           if(result)
           {
             FlushBuffers(false);
+#ifdef HAVE_LIBVDPAU
+            if (!g_VDPAU)
+#endif
             CloseVideoStream(false);
             CloseAudioStream(false);
             CloseSubtitleStream(false);
@@ -1768,6 +1771,9 @@ void CDVDPlayer::HandleMessages()
           if(result)
           {
             FlushBuffers(false);
+#ifdef HAVE_LIBVDPAU
+            if (!g_VDPAU)
+#endif
             CloseVideoStream(false);
             CloseAudioStream(false);
             CloseSubtitleStream(false);
@@ -3073,21 +3079,6 @@ void CDVDPlayer::UpdateApplication(double timeout)
   && m_UpdateApplication + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
     return;
 
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-  {
-    CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-
-    CFileItem item(g_application.CurrentFileItem());
-    if(pStream->UpdateItem(item))
-    {
-      g_application.CurrentFileItem() = item;
-      g_infoManager.SetCurrentItem(item);
-      /* Correct aspect ratio for next programm */
-      m_dvdPlayerVideo.SendMessage(new CDVDMsgDouble(CDVDMsg::VIDEO_SET_ASPECT, NULL));
-    }
-  }
-  else
-  {
   CDVDInputStream::IChannel* pStream = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
   if(pStream)
   {
@@ -3097,7 +3088,6 @@ void CDVDPlayer::UpdateApplication(double timeout)
       g_application.CurrentFileItem() = item;
       g_infoManager.SetCurrentItem(item);
     }
-  }
   }
   m_UpdateApplication = CDVDClock::GetAbsoluteClock();
 }

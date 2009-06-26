@@ -523,7 +523,8 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
           {
             if (pItem->GetTVChannelInfoTag()->m_strFileNameAndPath == g_application.CurrentFileItem().m_strPath)
             {
-              m_gWindowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+              CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, GetID());
+              g_graphicsContext.SendMessage(msg);
               return true;
             }
             else

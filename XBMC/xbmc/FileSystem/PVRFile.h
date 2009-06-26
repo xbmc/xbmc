@@ -45,7 +45,7 @@ public:
   virtual void          Close();
   virtual unsigned int  Read(void* buffer, __int64 size);
   virtual CStdString    GetContent()                                   { return ""; }
-  virtual bool          SkipNext()                                     { return false; }
+  virtual bool          SkipNext()                                     { return true; }
 
   virtual bool          Delete(const CURL& url)                        { return false; }
   virtual bool          Exists(const CURL& url)                        { return false; }
