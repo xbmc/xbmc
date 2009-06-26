@@ -2826,10 +2826,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\HTTP.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\utils\HttpHeader.cpp"
 					>
 				</File>
@@ -5184,10 +5180,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\utils\HTMLUtil.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\HTTP.h"
 				>
 			</File>
 			<File
