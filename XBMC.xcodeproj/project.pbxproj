@@ -713,7 +713,6 @@
 		E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
-		E38E22D40D25F9FE00618676 /* HTTP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E440D25F9FD00618676 /* HTTP.cpp */; };
 		E38E22D50D25F9FE00618676 /* HttpHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E460D25F9FD00618676 /* HttpHeader.cpp */; };
 		E38E22D70D25F9FE00618676 /* IMDB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4A0D25F9FD00618676 /* IMDB.cpp */; };
 		E38E22D80D25F9FE00618676 /* InfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */; };
@@ -1491,7 +1490,6 @@
 		F5A1CACC0F6B06CF00A96ABD /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		F5A1CACD0F6B06CF00A96ABD /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		F5A1CACE0F6B06CF00A96ABD /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
-		F5A1CACF0F6B06CF00A96ABD /* HTTP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E440D25F9FD00618676 /* HTTP.cpp */; };
 		F5A1CAD00F6B06CF00A96ABD /* HttpHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E460D25F9FD00618676 /* HttpHeader.cpp */; };
 		F5A1CAD10F6B06CF00A96ABD /* IMDB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4A0D25F9FD00618676 /* IMDB.cpp */; };
 		F5A1CAD20F6B06CF00A96ABD /* InfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */; };
@@ -3398,8 +3396,6 @@
 		E38E1E410D25F9FD00618676 /* HTMLTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLTable.h; sourceTree = "<group>"; };
 		E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTMLUtil.cpp; sourceTree = "<group>"; };
 		E38E1E430D25F9FD00618676 /* HTMLUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLUtil.h; sourceTree = "<group>"; };
-		E38E1E440D25F9FD00618676 /* HTTP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTP.cpp; sourceTree = "<group>"; };
-		E38E1E450D25F9FD00618676 /* HTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTP.h; sourceTree = "<group>"; };
 		E38E1E460D25F9FD00618676 /* HttpHeader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpHeader.cpp; sourceTree = "<group>"; };
 		E38E1E470D25F9FD00618676 /* HttpHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpHeader.h; sourceTree = "<group>"; };
 		E38E1E4A0D25F9FD00618676 /* IMDB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IMDB.cpp; sourceTree = "<group>"; };
@@ -6608,8 +6604,6 @@
 				E38E1E410D25F9FD00618676 /* HTMLTable.h */,
 				E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */,
 				E38E1E430D25F9FD00618676 /* HTMLUtil.h */,
-				E38E1E440D25F9FD00618676 /* HTTP.cpp */,
-				E38E1E450D25F9FD00618676 /* HTTP.h */,
 				E38E1E460D25F9FD00618676 /* HttpHeader.cpp */,
 				E38E1E470D25F9FD00618676 /* HttpHeader.h */,
 				E38E1E4A0D25F9FD00618676 /* IMDB.cpp */,
@@ -7582,7 +7576,6 @@
 				E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */,
 				E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */,
 				E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */,
-				E38E22D40D25F9FE00618676 /* HTTP.cpp in Sources */,
 				E38E22D50D25F9FE00618676 /* HttpHeader.cpp in Sources */,
 				E38E22D70D25F9FE00618676 /* IMDB.cpp in Sources */,
 				E38E22D80D25F9FE00618676 /* InfoLoader.cpp in Sources */,
@@ -8414,7 +8407,6 @@
 				F5A1CACC0F6B06CF00A96ABD /* GUIInfoManager.cpp in Sources */,
 				F5A1CACD0F6B06CF00A96ABD /* HTMLTable.cpp in Sources */,
 				F5A1CACE0F6B06CF00A96ABD /* HTMLUtil.cpp in Sources */,
-				F5A1CACF0F6B06CF00A96ABD /* HTTP.cpp in Sources */,
 				F5A1CAD00F6B06CF00A96ABD /* HttpHeader.cpp in Sources */,
 				F5A1CAD10F6B06CF00A96ABD /* IMDB.cpp in Sources */,
 				F5A1CAD20F6B06CF00A96ABD /* InfoLoader.cpp in Sources */,
