@@ -701,14 +701,17 @@ void CGUISettings::Initialize()
   AddInt(6, "pvrmenu.infotime", 18009, 5, 1, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(7, "pvrmenu.hidevideolength", 18024, true);
   AddString(8, "pvrmenu.iconpath", 18012, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddSeparator(9, "pvrmenu.sep1");
-  AddBool(10, "pvrmenu.playminimized", 18026, true);
-  AddInt(11, "pvrmenu.scantime", 18025, 5, 1, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
   AddCategory(8,"pvrepg", 18013);
   AddInt(1, "pvrepg.epgscan", 18014, 5, 1, 1, 24, SPIN_CONTROL_INT_PLUS, MASK_HOURS);
   AddInt(2, "pvrepg.epgupdate", 18015, 60, 15, 15, 240, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddInt(3, "pvrepg.daystosave", 18016, 7, 1, 1, 180, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
+  
+  AddCategory(8,"pvrplayback", 18023);
+  AddBool(1, "pvrplayback.playminimized", 18026, true);
+  AddInt(2, "pvrplayback.scantime", 18025, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
+  AddBool(3, "pvrplayback.sddeinterlace", 18027, false);
+  AddInt(4, "pvrplayback.deinterlacemethod", 16023, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_INVERSE_TELECINE, SPIN_CONTROL_TEXT);
 
   AddCategory(8,"pvrrecord", 18017);
   AddInt(1, "pvrrecord.instantrecordtime", 18018, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);

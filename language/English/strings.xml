@@ -1564,6 +1564,7 @@
   <string id="18024">Hide Video-Length info box</string>
   <string id="18025">Scan Timeout before channel playback</string>
   <string id="18026">Start playback Minimized</string>
+  <string id="18027">Force Deinterlace for SD-Channels</string>
 
   <string id="18028">Manage PVR clients</string>
 

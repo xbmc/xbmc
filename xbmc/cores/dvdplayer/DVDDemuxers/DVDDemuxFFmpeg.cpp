@@ -961,6 +961,13 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           st->fAspect = 0.0;
         else
           st->fAspect = av_q2d(pStream->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
+        
+        if (m_pInput->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
+            g_guiSettings.GetBool("pvrplayback.sddeinterlace") &&
+            st->iHeight < 720)
+        {
+          g_stSettings.m_currentVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD) g_guiSettings.GetInt("pvrplayback.deinterlacemethod");
+        }
 
         break;
       }
