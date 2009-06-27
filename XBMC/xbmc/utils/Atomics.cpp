@@ -136,7 +136,7 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
 // Hack to allow compilation on x86_64
 long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
 {
-  return 0;
+  throw "cas2 is not implemented on x86_64!";
 }
 #endif // !defined (__x86_64)
 #endif
