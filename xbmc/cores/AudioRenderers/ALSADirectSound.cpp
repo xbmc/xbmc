@@ -376,18 +376,6 @@ bool CALSADirectSound::Stop()
 }
 
 //***********************************************************************************************
-long CALSADirectSound::GetMinimumVolume() const
-{
-  return -60;
-}
-
-//***********************************************************************************************
-long CALSADirectSound::GetMaximumVolume() const
-{
-  return 60;
-}
-
-//***********************************************************************************************
 long CALSADirectSound::GetCurrentVolume() const
 {
   return m_nCurrentVolume;
