@@ -159,6 +159,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     
     // Thread synchronization
     MPEventID m_RunoutEvent;
+    long m_DoRunout;
   };
 
 #endif 
