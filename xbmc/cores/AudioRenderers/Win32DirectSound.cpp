@@ -257,7 +257,7 @@ void CWin32DirectSound::Mute(bool bMute)
   CSingleLock lock (m_critSection);
   if (!m_bIsAllocated) return;
   if (bMute)
-    m_pBuffer->SetVolume(GetMinimumVolume());
+    m_pBuffer->SetVolume(VOLUME_MINIMUM);
   else
     m_pBuffer->SetVolume(m_nCurrentVolume);
 }
