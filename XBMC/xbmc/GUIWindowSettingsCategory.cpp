@@ -918,6 +918,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 #else
       pControl->AddLabel(g_localizeStrings.Get(16314), VS_INTERLACEMETHOD_INVERSE_TELECINE);
 #endif
+      pControl->SetValue(pSettingInt->GetData());
     }
   }
 
