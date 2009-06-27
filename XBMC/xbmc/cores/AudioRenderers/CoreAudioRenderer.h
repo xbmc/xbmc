@@ -114,8 +114,6 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual bool Stop();
     virtual bool Resume();
     
-    virtual long GetMinimumVolume() const;
-    virtual long GetMaximumVolume() const;
     virtual long GetCurrentVolume() const;
     virtual void Mute(bool bMute);
     virtual bool SetCurrentVolume(long nVolume);
