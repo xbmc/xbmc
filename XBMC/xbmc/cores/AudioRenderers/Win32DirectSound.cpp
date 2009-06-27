@@ -246,18 +246,6 @@ bool CWin32DirectSound::Stop()
 }
 
 //***********************************************************************************************
-long CWin32DirectSound::GetMinimumVolume() const
-{
-  return DSBVOLUME_MIN;
-}
-
-//***********************************************************************************************
-long CWin32DirectSound::GetMaximumVolume() const
-{
-  return DSBVOLUME_MAX;
-}
-
-//***********************************************************************************************
 long CWin32DirectSound::GetCurrentVolume() const
 {
   return m_nCurrentVolume;
