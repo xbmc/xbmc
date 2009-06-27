@@ -3486,6 +3486,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIWindowProgramNav.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowProgramNav.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIWindowPrograms.cpp"
 					>
 				</File>
