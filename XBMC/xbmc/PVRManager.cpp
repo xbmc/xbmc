@@ -101,6 +101,8 @@ void CPVRManager::Start()
     CLog::Log(LOGERROR, "PVR: couldn't load clients");
     return;
   }
+  
+  m_database.Open();
 
   /* Get channels if present from Database, otherwise load it from client
    * and add it to database
@@ -231,6 +233,7 @@ bool CPVRManager::LoadClients()
     CLIENTMAPITR itr = m_clients.begin();
     m_client = m_clients[(*itr).first];
     m_client->GetProperties(&m_clientProps);
+    m_currentClientID = m_client->GetID();
   }
 
   return !m_clients.empty();
