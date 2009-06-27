@@ -437,7 +437,7 @@ void CPulseAudioDirectSound::Mute(bool bMute)
     return;
 
   if (bMute)
-    SetCurrentVolume(GetMinimumVolume());
+    SetCurrentVolume(VOLUME_MINIMUM);
   else
     SetCurrentVolume(m_nCurrentVolume);
 }
