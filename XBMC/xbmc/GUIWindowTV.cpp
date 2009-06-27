@@ -519,7 +519,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             CPVRManager::GetInstance()->SetPlayingGroup(m_iCurrentRadioGroup);
 
           /* Open tv channel by Player and return */
-          if (g_guiSettings.GetBool("pvrmenu.playminimized"))
+          if (g_guiSettings.GetBool("pvrplayback.playminimized"))
           {
             if (pItem->GetTVChannelInfoTag()->m_strFileNameAndPath == g_application.CurrentFileItem().m_strPath)
             {

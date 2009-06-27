@@ -2131,7 +2131,7 @@ int CPVRManager::ReadLiveStream(BYTE* buf, int buf_size)
   {
     if (m_scanStart)
     {
-      if (timeGetTime() - m_scanStart > g_guiSettings.GetInt("pvrmenu.scantime")*1000)
+      if (timeGetTime() - m_scanStart > g_guiSettings.GetInt("pvrplayback.scantime")*1000)
         return 0;
       else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
         m_scanStart = NULL;
