@@ -57,6 +57,7 @@ public:
   int GetMarkNext(int position);
 
   int           m_Index;              /// Index number of the tag, given by the backend, -1 for unknown
+  int           m_clientID;            /// ID of the backend
   int           m_channelNum;         /// Channel number where recording from
   CStdString    m_strChannel;         /// Channel name where recording from
   CStdString    m_strFileNameAndPath; /// Filename for PVRManager to open and read stream

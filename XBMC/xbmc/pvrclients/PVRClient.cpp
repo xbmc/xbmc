@@ -330,7 +330,13 @@ int CPVRClient::GetNumRecordings(void)
 
 PVR_ERROR CPVRClient::GetAllRecordings(VECRECORDINGS *results)
 {
-  return m_pClient->GetAllRecordings(results);
+  PVR_ERROR ret = m_pClient->GetAllRecordings(results);
+
+  for (unsigned int i = 0; i < results->size(); i++)
+  {
+    results->at(i).m_clientID = m_clientID;
+  }
+  return ret;
 }
 
 PVR_ERROR CPVRClient::DeleteRecording(const CTVRecordingInfoTag &recinfo)

@@ -141,7 +141,7 @@ void CPVRManager::Start()
 
   /* Get Recordings from Backend */
   if (m_clientProps.SupportRecordings)
-    GetRecordings();
+    ReceiveAllRecordings();
 
   /* Get Timers from Backend */
   if (m_clientProps.SupportTimers)
@@ -542,7 +542,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     case PVR_EVENT_RECORDINGS_CHANGE:
 	  {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld recording list changed", __FUNCTION__, clientID);
-	    GetRecordings();
+	    ReceiveAllRecordings();
         SyncInfo();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)m_gWindowManager.GetWindow(WINDOW_TV);
@@ -1654,7 +1654,7 @@ int CPVRManager::GetNumRecordings()
 int CPVRManager::GetAllRecordings(CFileItemList* results)
 {
   EnterCriticalSection(&m_critSection);
-  GetRecordings();
+  ReceiveAllRecordings();
 
   for (unsigned int i = 0; i < m_recordings.size(); ++i)
   {
@@ -1682,74 +1682,102 @@ int CPVRManager::GetAllRecordings(CFileItemList* results)
   return m_recordings.size();
 }
 
-bool CPVRManager::DeleteRecording(unsigned int index)
+bool CPVRManager::DeleteRecording(const CFileItem &item)
 {
-  if (m_client && m_clientProps.SupportRecordings)
+  /* Check if a CTVRecordingInfoTag is inside file item */
+  if (!item.IsTVRecording())
   {
-    PVR_ERROR err = m_client->DeleteRecording(m_recordings[index-1]);
+    CLog::Log(LOGERROR, "CPVRManager: DeleteRecording no RecordingInfoTag given!");
+    return false;
+  }
 
-    if (err == PVR_ERROR_NO_ERROR)
-    {
-      return true;
-    }
-    else if (err == PVR_ERROR_SERVER_ERROR)
-    {
-      /* print info dialog "Server error!" */
-      CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0);
-    }
+  const CTVRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
+
+  try
+  {
+    /* and write it to the backend */
+    PVR_ERROR err = m_clients[tag->m_clientID]->DeleteRecording(*tag);
+  
+    if (err != PVR_ERROR_NO_ERROR)
+      throw err;
+
+    /* Update Recordings List */
+    ReceiveAllRecordings();
+    return true;
+  }
+  catch (PVR_ERROR err)
+  {
+    if (err == PVR_ERROR_SERVER_ERROR)
+      CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0); /* print info dialog "Server error!" */
     else if (err == PVR_ERROR_NOT_SYNC)
-    {
-      /* print info dialog "Recordings not in sync!" */
-      CGUIDialogOK::ShowAndGetInput(18100,18810,18803,0);
-    }
+      CGUIDialogOK::ShowAndGetInput(18100,18810,18803,0); /* print info dialog "Recordings not in sync!" */
     else if (err == PVR_ERROR_NOT_DELETED)
-    {
-      /* print info dialog "Couldn't delete recording!" */
-      CGUIDialogOK::ShowAndGetInput(18100,18811,18803,0);
-    }
+      CGUIDialogOK::ShowAndGetInput(18100,18811,18803,0); /* print info dialog "Couldn't delete recording!" */
     else
-    {
-      /* print info dialog "Unknown error!" */
-      CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0);
-    }
+      CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
   }
 
   return false;
 }
 
-bool CPVRManager::RenameRecording(unsigned int index, CStdString &newname)
+bool CPVRManager::RenameRecording(const CFileItem &item, CStdString &newname)
 {
-  if (m_client && m_clientProps.SupportRecordings)
+  /* Check if a CTVRecordingInfoTag is inside file item */
+  if (!item.IsTVRecording())
   {
-    PVR_ERROR err = m_client->RenameRecording(m_recordings[index-1], newname);
-
-    if (err == PVR_ERROR_NO_ERROR)
-    {
-      return true;
-    }
-    else if (err == PVR_ERROR_SERVER_ERROR)
-    {
-      /* print info dialog "Server error!" */
-      CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0);
-    }
-    else if (err == PVR_ERROR_NOT_SYNC)
-    {
-      /* print info dialog "Recordings not in sync!" */
-      CGUIDialogOK::ShowAndGetInput(18100,18810,18803,0);
-    }
-    else if (err == PVR_ERROR_NOT_SAVED)
-    {
-      /* print info dialog "Couldn't delete recording!" */
-      CGUIDialogOK::ShowAndGetInput(18100,18811,18803,0);
-    }
-    else
-    {
-      /* print info dialog "Unknown error!" */
-      CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0);
-    }
+    CLog::Log(LOGERROR, "CPVRManager: RenameRecording no RecordingInfoTag given!");
+    return false;
   }
 
+  const CTVRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
+
+  try
+  {
+    /* and write it to the backend */
+    PVR_ERROR err = m_clients[tag->m_clientID]->RenameRecording(*tag, newname);
+  
+    if (err != PVR_ERROR_NO_ERROR)
+      throw err;
+
+    /* Update Recordings List */
+    ReceiveAllRecordings();
+    return true;
+  }
+  catch (PVR_ERROR err)
+  {
+    if (err == PVR_ERROR_SERVER_ERROR)
+      CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0); /* print info dialog "Server error!" */
+    else if (err == PVR_ERROR_NOT_SYNC)
+      CGUIDialogOK::ShowAndGetInput(18100,18810,18803,0); /* print info dialog "Recordings not in sync!" */
+    else if (err == PVR_ERROR_NOT_SAVED)
+      CGUIDialogOK::ShowAndGetInput(18100,18811,18803,0); /* print info dialog "Couldn't delete recording!" */
+    else
+      CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
+  }
   return false;
+}
+
+void CPVRManager::ReceiveAllRecordings()
+{
+  EnterCriticalSection(&m_critSection);
+  
+  /* Clear all current present Recordings inside list */
+  m_recordings.erase(m_recordings.begin(), m_recordings.end());
+
+  /* Go thru all clients and receive there Recordings */
+  CLIENTMAPITR itr = m_clients.begin();
+  while (itr != m_clients.end())
+  {
+    /* Load only if the client have Recordings */
+    if (m_clients[(*itr).first]->GetNumRecordings() > 0)
+    {
+      m_clients[(*itr).first]->GetAllRecordings(&m_recordings);
+    }
+    itr++;
+  }
+
+  LeaveCriticalSection(&m_critSection);
+  return;
 }
 
 
@@ -2736,24 +2764,6 @@ void CPVRManager::GetChannels()
 
   m_database.Close();
   LeaveCriticalSection(&m_critSection);
-  return;
-}
-
-void CPVRManager::GetRecordings()
-{
-  if (m_client)
-  {
-    EnterCriticalSection(&m_critSection);
-    m_recordings.erase(m_recordings.begin(), m_recordings.end());
-
-    if (m_client->GetNumRecordings() > 0)
-    {
-      m_client->GetAllRecordings(&m_recordings);
-    }
-
-    LeaveCriticalSection(&m_critSection);
-  }
-
   return;
 }
 
