@@ -45,7 +45,13 @@ distribution.
 #endif
 #endif
 
+#ifndef TIXML_USE_STL
 #define TIXML_USE_STL
+#endif
+
+#ifndef HAS_ICONV
+#define HAS_ICONV
+#endif
 
 #ifdef TIXML_USE_STL
 	#include <string>
@@ -55,6 +61,14 @@ distribution.
 #else
 	#include "tinystr.h"
 	#define TIXML_STRING		TiXmlString
+#endif
+
+#ifdef HAS_ICONV
+#if defined( _WIN32PC) || defined( _WIN32 ) || defined(WIN32)
+#include "lib/libiconv/iconv.h"
+#else
+#include <iconv.h>
+#endif
 #endif
 
 // Deprecated library function hell. Compilers want to use the
@@ -291,6 +305,10 @@ public:
 
 protected:
 
+#ifdef HAS_ICONV  
+  static void ConvertToUtf8(TiXmlDocument* document, TIXML_STRING* text);
+#endif
+  
 	static const char* SkipWhiteSpace( const char*, TiXmlEncoding encoding );
 	inline static bool IsWhiteSpace( char c )		
 	{ 
@@ -323,7 +341,7 @@ protected:
 									const char* endTag,			// what ends this text
 									bool ignoreCase,			// whether to ignore case in the end tag
 									TiXmlEncoding encoding );	// the current encoding
-
+	
 	// If an entity has been found, transform it into a character.
 	static const char* GetEntity( const char* in, char* value, int* length, TiXmlEncoding encoding );
 
@@ -767,7 +785,7 @@ protected:
 
 	TiXmlNode*		prev;
 	TiXmlNode*		next;
-
+	
 private:
 	TiXmlNode( const TiXmlNode& );				// not implemented.
 	void operator=( const TiXmlNode& base );	// not allowed.
@@ -1402,8 +1420,8 @@ public:
 	TiXmlDocument( const TiXmlDocument& copy );
 	void operator=( const TiXmlDocument& copy );
 
-	virtual ~TiXmlDocument() {}
-
+	virtual ~TiXmlDocument();
+	
 	/** Load a file using the current document value.
 		Returns true if successful. Will delete any existing
 		document data before loading.
@@ -1536,13 +1554,19 @@ public:
 	*/
 	virtual bool Accept( TiXmlVisitor* content ) const;
 
+#ifdef HAS_ICONV	
+	void SetConvertToUtf8(bool convert) { convertToUtf8 = convert; }
+  bool convertToUtf8;
+  iconv_t iconvContext;
+#endif
+	
 protected :
 	// [internal use]
 	virtual TiXmlNode* Clone() const;
 	#ifdef TIXML_USE_STL
 	virtual void StreamIn( std::istream * in, TIXML_STRING * tag );
 	#endif
-
+	
 private:
 	void CopyTo( TiXmlDocument* target ) const;
 

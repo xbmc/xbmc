@@ -509,11 +509,6 @@
 		E38E20D60D25F9FD00618676 /* LangCodeExpander.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18560D25F9FA00618676 /* LangCodeExpander.cpp */; };
 		E38E20D70D25F9FD00618676 /* LangInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18580D25F9FA00618676 /* LangInfo.cpp */; };
 		E38E20D80D25F9FD00618676 /* LastFmManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E185A0D25F9FA00618676 /* LastFmManager.cpp */; };
-		E38E21330D25F9FD00618676 /* SpyceModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E195D0D25F9FB00618676 /* SpyceModule.cpp */; };
-		E38E21340D25F9FD00618676 /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E19630D25F9FB00618676 /* WebServer.cpp */; };
-		E38E21350D25F9FD00618676 /* XBMCConfiguration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E19670D25F9FB00618676 /* XBMCConfiguration.cpp */; };
-		E38E21360D25F9FD00618676 /* XBMChttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E19690D25F9FB00618676 /* XBMChttp.cpp */; };
-		E38E21370D25F9FD00618676 /* XBMCweb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E196B0D25F9FB00618676 /* XBMCweb.cpp */; };
 		E38E21600D25F9FD00618676 /* XBPython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1A0D0D25F9FB00618676 /* XBPython.cpp */; };
 		E38E21610D25F9FD00618676 /* XBPythonDll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1A0F0D25F9FB00618676 /* XBPythonDll.cpp */; };
 		E38E21620D25F9FD00618676 /* XBPyThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1A110D25F9FB00618676 /* XBPyThread.cpp */; };
@@ -718,7 +713,6 @@
 		E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
-		E38E22D40D25F9FE00618676 /* HTTP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E440D25F9FD00618676 /* HTTP.cpp */; };
 		E38E22D50D25F9FE00618676 /* HttpHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E460D25F9FD00618676 /* HttpHeader.cpp */; };
 		E38E22D70D25F9FE00618676 /* IMDB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4A0D25F9FD00618676 /* IMDB.cpp */; };
 		E38E22D80D25F9FE00618676 /* InfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */; };
@@ -1292,11 +1286,6 @@
 		F5A1C9F90F6B06CF00A96ABD /* LangCodeExpander.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18560D25F9FA00618676 /* LangCodeExpander.cpp */; };
 		F5A1C9FA0F6B06CF00A96ABD /* LangInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E18580D25F9FA00618676 /* LangInfo.cpp */; };
 		F5A1C9FB0F6B06CF00A96ABD /* LastFmManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E185A0D25F9FA00618676 /* LastFmManager.cpp */; };
-		F5A1C9FC0F6B06CF00A96ABD /* SpyceModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E195D0D25F9FB00618676 /* SpyceModule.cpp */; };
-		F5A1C9FD0F6B06CF00A96ABD /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E19630D25F9FB00618676 /* WebServer.cpp */; };
-		F5A1C9FE0F6B06CF00A96ABD /* XBMCConfiguration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E19670D25F9FB00618676 /* XBMCConfiguration.cpp */; };
-		F5A1C9FF0F6B06CF00A96ABD /* XBMChttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E19690D25F9FB00618676 /* XBMChttp.cpp */; };
-		F5A1CA000F6B06CF00A96ABD /* XBMCweb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E196B0D25F9FB00618676 /* XBMCweb.cpp */; };
 		F5A1CA010F6B06CF00A96ABD /* XBPython.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1A0D0D25F9FB00618676 /* XBPython.cpp */; };
 		F5A1CA020F6B06CF00A96ABD /* XBPythonDll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1A0F0D25F9FB00618676 /* XBPythonDll.cpp */; };
 		F5A1CA030F6B06CF00A96ABD /* XBPyThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1A110D25F9FB00618676 /* XBPyThread.cpp */; };
@@ -1501,7 +1490,6 @@
 		F5A1CACC0F6B06CF00A96ABD /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		F5A1CACD0F6B06CF00A96ABD /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		F5A1CACE0F6B06CF00A96ABD /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
-		F5A1CACF0F6B06CF00A96ABD /* HTTP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E440D25F9FD00618676 /* HTTP.cpp */; };
 		F5A1CAD00F6B06CF00A96ABD /* HttpHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E460D25F9FD00618676 /* HttpHeader.cpp */; };
 		F5A1CAD10F6B06CF00A96ABD /* IMDB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4A0D25F9FD00618676 /* IMDB.cpp */; };
 		F5A1CAD20F6B06CF00A96ABD /* InfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */; };
@@ -2882,15 +2870,10 @@
 		E38E18810D25F9FA00618676 /* ICDAudioCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICDAudioCallback.h; sourceTree = "<group>"; };
 		E38E18830D25F9FA00618676 /* libexif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libexif.h; sourceTree = "<group>"; };
 		E38E19530D25F9FB00618676 /* includes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = includes.h; sourceTree = "<group>"; };
-		E38E195D0D25F9FB00618676 /* SpyceModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpyceModule.cpp; sourceTree = "<group>"; };
 		E38E195E0D25F9FB00618676 /* SpyceModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpyceModule.h; sourceTree = "<group>"; };
-		E38E19630D25F9FB00618676 /* WebServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebServer.cpp; sourceTree = "<group>"; };
 		E38E19640D25F9FB00618676 /* WebServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebServer.h; sourceTree = "<group>"; };
-		E38E19670D25F9FB00618676 /* XBMCConfiguration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCConfiguration.cpp; sourceTree = "<group>"; };
 		E38E19680D25F9FB00618676 /* XBMCConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCConfiguration.h; sourceTree = "<group>"; };
-		E38E19690D25F9FB00618676 /* XBMChttp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMChttp.cpp; sourceTree = "<group>"; };
 		E38E196A0D25F9FB00618676 /* XBMChttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMChttp.h; sourceTree = "<group>"; };
-		E38E196B0D25F9FB00618676 /* XBMCweb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCweb.cpp; sourceTree = "<group>"; };
 		E38E196C0D25F9FB00618676 /* XBMCweb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCweb.h; sourceTree = "<group>"; };
 		E38E196E0D25F9FB00618676 /* hdhomerun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun.h; sourceTree = "<group>"; };
 		E38E196F0D25F9FB00618676 /* hdhomerun_channelscan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hdhomerun_channelscan.h; sourceTree = "<group>"; };
@@ -3413,8 +3396,6 @@
 		E38E1E410D25F9FD00618676 /* HTMLTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLTable.h; sourceTree = "<group>"; };
 		E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTMLUtil.cpp; sourceTree = "<group>"; };
 		E38E1E430D25F9FD00618676 /* HTMLUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLUtil.h; sourceTree = "<group>"; };
-		E38E1E440D25F9FD00618676 /* HTTP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTP.cpp; sourceTree = "<group>"; };
-		E38E1E450D25F9FD00618676 /* HTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTP.h; sourceTree = "<group>"; };
 		E38E1E460D25F9FD00618676 /* HttpHeader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpHeader.cpp; sourceTree = "<group>"; };
 		E38E1E470D25F9FD00618676 /* HttpHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpHeader.h; sourceTree = "<group>"; };
 		E38E1E4A0D25F9FD00618676 /* IMDB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IMDB.cpp; sourceTree = "<group>"; };
@@ -5622,15 +5603,10 @@
 			isa = PBXGroup;
 			children = (
 				E38E19530D25F9FB00618676 /* includes.h */,
-				E38E195D0D25F9FB00618676 /* SpyceModule.cpp */,
 				E38E195E0D25F9FB00618676 /* SpyceModule.h */,
-				E38E19630D25F9FB00618676 /* WebServer.cpp */,
 				E38E19640D25F9FB00618676 /* WebServer.h */,
-				E38E19670D25F9FB00618676 /* XBMCConfiguration.cpp */,
 				E38E19680D25F9FB00618676 /* XBMCConfiguration.h */,
-				E38E19690D25F9FB00618676 /* XBMChttp.cpp */,
 				E38E196A0D25F9FB00618676 /* XBMChttp.h */,
-				E38E196B0D25F9FB00618676 /* XBMCweb.cpp */,
 				E38E196C0D25F9FB00618676 /* XBMCweb.h */,
 			);
 			path = libGoAhead;
@@ -6628,8 +6604,6 @@
 				E38E1E410D25F9FD00618676 /* HTMLTable.h */,
 				E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */,
 				E38E1E430D25F9FD00618676 /* HTMLUtil.h */,
-				E38E1E440D25F9FD00618676 /* HTTP.cpp */,
-				E38E1E450D25F9FD00618676 /* HTTP.h */,
 				E38E1E460D25F9FD00618676 /* HttpHeader.cpp */,
 				E38E1E470D25F9FD00618676 /* HttpHeader.h */,
 				E38E1E4A0D25F9FD00618676 /* IMDB.cpp */,
@@ -7398,11 +7372,6 @@
 				E38E20D60D25F9FD00618676 /* LangCodeExpander.cpp in Sources */,
 				E38E20D70D25F9FD00618676 /* LangInfo.cpp in Sources */,
 				E38E20D80D25F9FD00618676 /* LastFmManager.cpp in Sources */,
-				E38E21330D25F9FD00618676 /* SpyceModule.cpp in Sources */,
-				E38E21340D25F9FD00618676 /* WebServer.cpp in Sources */,
-				E38E21350D25F9FD00618676 /* XBMCConfiguration.cpp in Sources */,
-				E38E21360D25F9FD00618676 /* XBMChttp.cpp in Sources */,
-				E38E21370D25F9FD00618676 /* XBMCweb.cpp in Sources */,
 				E38E21600D25F9FD00618676 /* XBPython.cpp in Sources */,
 				E38E21610D25F9FD00618676 /* XBPythonDll.cpp in Sources */,
 				E38E21620D25F9FD00618676 /* XBPyThread.cpp in Sources */,
@@ -7607,7 +7576,6 @@
 				E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */,
 				E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */,
 				E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */,
-				E38E22D40D25F9FE00618676 /* HTTP.cpp in Sources */,
 				E38E22D50D25F9FE00618676 /* HttpHeader.cpp in Sources */,
 				E38E22D70D25F9FE00618676 /* IMDB.cpp in Sources */,
 				E38E22D80D25F9FE00618676 /* InfoLoader.cpp in Sources */,
@@ -8235,11 +8203,6 @@
 				F5A1C9F90F6B06CF00A96ABD /* LangCodeExpander.cpp in Sources */,
 				F5A1C9FA0F6B06CF00A96ABD /* LangInfo.cpp in Sources */,
 				F5A1C9FB0F6B06CF00A96ABD /* LastFmManager.cpp in Sources */,
-				F5A1C9FC0F6B06CF00A96ABD /* SpyceModule.cpp in Sources */,
-				F5A1C9FD0F6B06CF00A96ABD /* WebServer.cpp in Sources */,
-				F5A1C9FE0F6B06CF00A96ABD /* XBMCConfiguration.cpp in Sources */,
-				F5A1C9FF0F6B06CF00A96ABD /* XBMChttp.cpp in Sources */,
-				F5A1CA000F6B06CF00A96ABD /* XBMCweb.cpp in Sources */,
 				F5A1CA010F6B06CF00A96ABD /* XBPython.cpp in Sources */,
 				F5A1CA020F6B06CF00A96ABD /* XBPythonDll.cpp in Sources */,
 				F5A1CA030F6B06CF00A96ABD /* XBPyThread.cpp in Sources */,
@@ -8444,7 +8407,6 @@
 				F5A1CACC0F6B06CF00A96ABD /* GUIInfoManager.cpp in Sources */,
 				F5A1CACD0F6B06CF00A96ABD /* HTMLTable.cpp in Sources */,
 				F5A1CACE0F6B06CF00A96ABD /* HTMLUtil.cpp in Sources */,
-				F5A1CACF0F6B06CF00A96ABD /* HTTP.cpp in Sources */,
 				F5A1CAD00F6B06CF00A96ABD /* HttpHeader.cpp in Sources */,
 				F5A1CAD10F6B06CF00A96ABD /* IMDB.cpp in Sources */,
 				F5A1CAD20F6B06CF00A96ABD /* InfoLoader.cpp in Sources */,

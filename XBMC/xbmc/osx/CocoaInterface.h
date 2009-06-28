@@ -48,6 +48,7 @@
   void  Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplay, bool GL_FullScreen, bool alwaysOnTop);
   void  Cocoa_GL_EnableVSync(bool enable);
 
+  //
   // SDL Hack
   //
   void* Cocoa_GL_ReplaceSDLWindowContext(void);
@@ -71,4 +72,25 @@
   // Devices
   //
   void Cocoa_MountPoint2DeviceName(char* path);
+  
+  //
+  // Mouse.
+  //
+  void Cocoa_HideMouse();
+
+  //
+  // Smart folders.
+  //
+  void Cocoa_GetSmartFolderResults(const char* strFile, void (*)(void* userData, void* userData2, const char* path), void* userData, void* userData2);
+
+  //
+  // Version.
+  //
+  const char* Cocoa_GetAppVersion();
+  
+  void  Cocoa_MakeChildWindow();
+  void  Cocoa_DestroyChildWindow();
+
+  const char *Cocoa_Paste() ;  
+
 #endif

@@ -72,11 +72,15 @@ bool WINAPI SetEvent(HANDLE hEvent)
     CloseHandle(*it);
   }
 
+  DuplicateHandle(GetCurrentProcess(), hEvent, GetCurrentProcess(), NULL, 0, FALSE, DUPLICATE_SAME_ACCESS);
+
   if (hEvent->m_bManualEvent == true)
     SDL_CondBroadcast(hEvent->m_hCond);
   else
     SDL_CondSignal(hEvent->m_hCond);
 
+  CloseHandle(hEvent);
+  
   return true;
 }
 

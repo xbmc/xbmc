@@ -189,6 +189,9 @@ public:
   void RestoreMusicScanSettings();
   void CheckMusicPlaylist();
 
+  bool ExecuteXBMCAction(std::string action);
+  bool ExecuteAction(CGUIActionDescriptor action);
+
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux& getNetwork();

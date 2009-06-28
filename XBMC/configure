@@ -6826,9 +6826,9 @@ $as_echo "$as_me: error: $missing_library" >&2;}
 fi
 
 
-{ $as_echo "$as_me:$LINENO: checking for main in -llzo2" >&5
-$as_echo_n "checking for main in -llzo2... " >&6; }
-if test "${ac_cv_lib_lzo2_main+set}" = set; then
+{ $as_echo "$as_me:$LINENO: checking for __lzo_init_v2 in -llzo2" >&5
+$as_echo_n "checking for __lzo_init_v2 in -llzo2... " >&6; }
+if test "${ac_cv_lib_lzo2___lzo_init_v2+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -6840,11 +6840,17 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
-
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char __lzo_init_v2 ();
 int
 main ()
 {
-return main ();
+return __lzo_init_v2 ();
   ;
   return 0;
 }
@@ -6870,12 +6876,12 @@ $as_echo "$ac_try_echo") >&5
 	 test "$cross_compiling" = yes ||
 	 $as_test_x conftest$ac_exeext
        }; then
-  ac_cv_lib_lzo2_main=yes
+  ac_cv_lib_lzo2___lzo_init_v2=yes
 else
   $as_echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_lzo2_main=no
+	ac_cv_lib_lzo2___lzo_init_v2=no
 fi
 
 rm -rf conftest.dSYM
@@ -6883,9 +6889,9 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_lzo2_main" >&5
-$as_echo "$ac_cv_lib_lzo2_main" >&6; }
-if test "x$ac_cv_lib_lzo2_main" = x""yes; then
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_lzo2___lzo_init_v2" >&5
+$as_echo "$ac_cv_lib_lzo2___lzo_init_v2" >&6; }
+if test "x$ac_cv_lib_lzo2___lzo_init_v2" = x""yes; then
   cat >>confdefs.h <<_ACEOF
 #define HAVE_LIBLZO2 1
 _ACEOF
@@ -6894,9 +6900,9 @@ _ACEOF
 
 else
 
-{ $as_echo "$as_me:$LINENO: checking for main in -llzo" >&5
-$as_echo_n "checking for main in -llzo... " >&6; }
-if test "${ac_cv_lib_lzo_main+set}" = set; then
+{ $as_echo "$as_me:$LINENO: checking for __lzo_init2 in -llzo" >&5
+$as_echo_n "checking for __lzo_init2 in -llzo... " >&6; }
+if test "${ac_cv_lib_lzo___lzo_init2+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -6908,11 +6914,17 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
-
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char __lzo_init2 ();
 int
 main ()
 {
-return main ();
+return __lzo_init2 ();
   ;
   return 0;
 }
@@ -6938,12 +6950,12 @@ $as_echo "$ac_try_echo") >&5
 	 test "$cross_compiling" = yes ||
 	 $as_test_x conftest$ac_exeext
        }; then
-  ac_cv_lib_lzo_main=yes
+  ac_cv_lib_lzo___lzo_init2=yes
 else
   $as_echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_lzo_main=no
+	ac_cv_lib_lzo___lzo_init2=no
 fi
 
 rm -rf conftest.dSYM
@@ -6951,9 +6963,9 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_lzo_main" >&5
-$as_echo "$ac_cv_lib_lzo_main" >&6; }
-if test "x$ac_cv_lib_lzo_main" = x""yes; then
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_lzo___lzo_init2" >&5
+$as_echo "$ac_cv_lib_lzo___lzo_init2" >&6; }
+if test "x$ac_cv_lib_lzo___lzo_init2" = x""yes; then
   cat >>confdefs.h <<_ACEOF
 #define HAVE_LIBLZO 1
 _ACEOF
@@ -21172,7 +21184,8 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       --enable-gpl \
       --enable-swscale \
       --enable-protocol=http \
-      --enable-pthreads &&
+      --enable-pthreads \
+      --cc="$CC" &&
     sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak &&
     sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak &&
     sed -i "" -e "s#libswscale_VERSION_MAJOR=0#libswscale_VERSION_MAJOR=0.7.1#" config.mak &&
@@ -21200,7 +21213,8 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
       `if test "$use_external_libfaad" = "yes"; then echo --enable-libfaad; fi` \
       --enable-protocol=http \
-      --enable-pthreads
+      --enable-pthreads \
+      --cc="$CC"
   fi
 
         if [ $? -ne 0 ]; then
@@ -21306,7 +21320,8 @@ if [ 0 != "1" ]; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
       --extra-cflags="$DVDREAD_CFLAGS -D__DARWIN__ -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../libdvdcss/src" \
       --enable-static \
-      --disable-shared &&
+      --disable-shared \
+      --cc="$CC" &&
     make dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
@@ -21314,7 +21329,8 @@ if [ 0 != "1" ]; then
     ./configure2 \
       --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
       --enable-static \
-      --disable-shared &&
+      --disable-shared \
+      --cc="$CC" &&
     make dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
@@ -21350,14 +21366,16 @@ if [ 0 != "1" ]; then
       --extra-ldflags="-L`pwd`/../libdvdread/obj" \
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
       --enable-static \
-      --disable-shared
+      --disable-shared \
+      --cc="$CC"
   else
     ./configure2 \
       --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../includes" \
       --extra-ldflags="-L`pwd`/../libdvdread/obj" \
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
       --enable-static \
-      --disable-shared
+      --disable-shared \
+      --cc="$CC"
   fi
 
         if [ $? -ne 0 ]; then

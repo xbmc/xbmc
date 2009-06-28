@@ -49,6 +49,8 @@ CGUIControl::CGUIControl()
   m_dwControlRight = 0;
   m_dwControlUp = 0;
   m_dwControlDown = 0;
+  m_dwControlNext = 0;
+  m_dwControlPrev = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -79,6 +81,8 @@ CGUIControl::CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float 
   m_dwControlRight = 0;
   m_dwControlUp = 0;
   m_dwControlDown = 0;
+  m_dwControlNext = 0;
+  m_dwControlPrev = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -174,6 +178,18 @@ bool CGUIControl::OnAction(const CAction &action)
     OnRight();
     return true;
     break;
+    
+  case ACTION_NEXT_CONTROL:
+      if (!HasFocus()) return false;
+      OnNextControl();
+      return true;
+      break;
+      
+  case ACTION_PREV_CONTROL:
+      if (!HasFocus()) return false;
+      OnPrevControl();
+      return true;
+      break;
   }
   return false;
 }
@@ -236,6 +252,26 @@ void CGUIControl::OnRight()
       CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_RIGHT);
       SendWindowMessage(msg);
     }
+  }
+}
+
+void CGUIControl::OnNextControl()
+{
+  if (m_dwControlID != m_dwControlNext)
+  {
+    // Send a message to the window with the sender set as the window
+    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_NEXT_CONTROL, m_dwControlNext);
+    SendWindowMessage(msg);
+  }
+}
+
+void CGUIControl::OnPrevControl()
+{
+  if (m_dwControlID != m_dwControlPrev)
+  {
+    // Send a message to the window with the sender set as the window
+    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_PREV_CONTROL, m_dwControlPrev);
+    SendWindowMessage(msg);
   }
 }
 
@@ -412,8 +448,14 @@ void CGUIControl::SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dw
   m_dwControlRight = dwRight;
 }
 
-void CGUIControl::SetNavigationActions(const vector<CStdString> &up, const vector<CStdString> &down,
-                                       const vector<CStdString> &left, const vector<CStdString> &right)
+void CGUIControl::SetTabNavigation(DWORD dwNext, DWORD dwPrev)
+{
+  m_dwControlNext = dwNext;
+  m_dwControlPrev = dwPrev;
+}
+
+void CGUIControl::SetNavigationActions(const vector<CGUIActionDescriptor> &up, const vector<CGUIActionDescriptor> &down,
+                                       const vector<CGUIActionDescriptor> &left, const vector<CGUIActionDescriptor> &right)
 {
   m_leftActions = left;
   m_rightActions = right;
@@ -809,17 +851,17 @@ void CGUIControl::SetCamera(const CPoint &camera)
   m_hasCamera = true;
 }
 
-void CGUIControl::ExecuteActions(const vector<CStdString> &actions)
+void CGUIControl::ExecuteActions(const vector<CGUIActionDescriptor> &actions)
 {
   // we should really save anything we need, as the action may cause the window to close
   DWORD savedID = GetID();
   DWORD savedParent = GetParentID();
-  vector<CStdString> savedActions = actions;
+  vector<CGUIActionDescriptor> savedActions = actions;
 
   for (unsigned int i = 0; i < savedActions.size(); i++)
   {
     CGUIMessage message(GUI_MSG_EXECUTE, savedID, savedParent);
-    message.SetStringParam(savedActions[i]);
+    message.SetAction(savedActions[i]);
     g_graphicsContext.SendMessage(message);
   }
 }

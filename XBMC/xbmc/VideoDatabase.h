@@ -303,6 +303,7 @@ public:
   {
   public:
     CStdString path;
+    CStdString genre;
     int numEpisodes;
     int numWatched;
   };

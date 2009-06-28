@@ -956,11 +956,18 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
         newItem.reset(new CFileItem(CGUIInfoLabel::GetLabel(label)));
         // multiple action strings are concat'd together, separated with " , "
-        vector<CStdString> actions;
+        vector<CGUIActionDescriptor> actions;
         CGUIControlFactory::GetMultipleString(item, "onclick", actions);
-        for (vector<CStdString>::iterator it = actions.begin(); it != actions.end(); ++it)
-          (*it).Replace(",", ",,");
-        StringUtils::JoinString(actions, " , ", newItem->m_strPath);
+        newItem->m_strPath = "";
+        for (vector<CGUIActionDescriptor>::iterator it = actions.begin(); it != actions.end(); ++it)
+        {
+          (*it).m_action.Replace(",", ",,");
+          if (newItem->m_strPath.length() > 0)
+          {
+            newItem->m_strPath   += " , ";
+          }
+          newItem->m_strPath += (*it).m_action;          
+        }
         newItem->SetLabel2(CGUIInfoLabel::GetLabel(label2));
         newItem->SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, true));
         newItem->SetIconImage(CGUIInfoLabel::GetLabel(icon, true));
