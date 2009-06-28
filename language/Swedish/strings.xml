@@ -908,7 +908,7 @@
   <string id="13106">Inaktiverad</string>
   <string id="13107">Aktiverad under videouppspelning</string>
   <string id="13108">Alltid aktiverad</string>
-  <string id="13109">Prova upplösning</string>
+  <string id="13109">Prova och ange upplösning</string>
   <string id="13110">Spara upplösning?</string>
   <string id="13111">Vill du behålla denna upplösning?</string>
   <string id="13112">Högkvalitets mjukvaruuppskalning</string>
@@ -1880,4 +1880,21 @@
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
+  <string id="33001">Trailer kvalitet</string>
+  <string id="33002">Strömma</string>
+  <string id="33003">Ladda ner</string>
+  <string id="33004">ladda ner &amp; spela</string>
+  <string id="33005">Ladda ner &amp; spara</string>
+  <string id="33006">Idag</string>
+  <string id="33007">Imorgon</string>
+  <string id="33008">Sparar</string>
+  <string id="33009">Kopierar</string>
+  <string id="33010">Ange nedladdningsmapp</string>
+  <string id="30011">Söklängd</string>
+  <string id="33012">Kort</string>
+  <string id="33013">Lång</string>
+  <string id="33014">Använd DVD spelare istället för den vaniga spelaren</string>
+  <string id="33015">Fråga om nedladdning innan uppspelning</string>
+  <string id="33016">Klipp</string>
+  <string id="33017">Starta om tillägg för att aktivera</string>
 </strings>

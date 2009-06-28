@@ -984,7 +984,7 @@
   <string id="13106">Disabled</string>
   <string id="13107">Enabled during video playback</string>
   <string id="13108">Always enabled</string>
-  <string id="13109">Test resolution</string>
+  <string id="13109">Test &amp; apply resolution</string>
   <string id="13110">Save resolution?</string>
   <string id="13111">Would you like to keep this resolution?</string>
   
@@ -2093,4 +2093,23 @@
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
+  <string id="33001">Trailer quality</string>
+  <string id="33002">Stream</string>
+  <string id="33003">Download</string>
+  <string id="33004">Download &amp; play</string>
+  <string id="33005">Download &amp; save</string>
+  <string id="33006">Today</string>
+  <string id="33007">Tomorrow</string>
+  <string id="33008">Saving</string>
+  <string id="33009">Copying</string>
+  <string id="33010">Set download directory</string>
+  <string id="30011">Search duration</string>
+  <string id="33012">Short</string>
+  <string id="33013">Long</string>
+  <string id="33014">Use DVD player instead of regular player</string>
+  <string id="33015">Ask for download before playing video</string>
+  <string id="33016">Clips</string>
+  <string id="33017">Restart plugin to enable</string>
+  <string id="33018">Clips</string>
 </strings>
