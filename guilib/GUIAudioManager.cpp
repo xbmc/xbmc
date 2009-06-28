@@ -61,7 +61,7 @@ void CGUIAudioManager::Initialize(int iDevice)
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
     CSingleLock lock(m_cs);
-    CLog::Log(LOGERROR, "CGUIAudioManager::Initialize");
+    CLog::Log(LOGDEBUG, "CGUIAudioManager::Initialize");
 #ifndef HAS_SDL_AUDIO
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
@@ -83,7 +83,7 @@ void CGUIAudioManager::DeInitialize(int iDevice)
     return;
 
   CSingleLock lock(m_cs);
-  CLog::Log(LOGERROR, "CGUIAudioManager::DeInitialize");
+  CLog::Log(LOGDEBUG, "CGUIAudioManager::DeInitialize");
 
   if (m_actionSound) //  Wait for finish when an action sound is playing
     while(m_actionSound->IsPlaying()) {}

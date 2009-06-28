@@ -34,6 +34,7 @@
 #include "GUIFont.h"        // needed for the CAngle member (CLabelInfo) among other stuff
 #include "VisibleEffect.h"  // needed for the CAnimation members
 #include "GUIInfoColor.h"   // needed for CGuiInfoColor to handle infolabel'ed colors
+#include "GUIActionDescriptor.h"
 
 class CGUIListItem; // forward
 
@@ -114,6 +115,8 @@ public:
   virtual void OnDown();
   virtual void OnLeft();
   virtual void OnRight();
+  virtual void OnNextControl();
+  virtual void OnPrevControl();
   virtual void OnFocus() {};
   virtual void OnUnFocus() {};
 
@@ -159,9 +162,10 @@ public:
   virtual float GetWidth() const;
   virtual float GetHeight() const;
   virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
-  virtual void SetNavigationActions(const std::vector<CStdString> &up, const std::vector<CStdString> &down,
-                                    const std::vector<CStdString> &left, const std::vector<CStdString> &right);
-  void ExecuteActions(const std::vector<CStdString> &actions);
+  virtual void SetTabNavigation(DWORD dwNext, DWORD dwPrev);
+  virtual void SetNavigationActions(const std::vector<CGUIActionDescriptor> &up, const std::vector<CGUIActionDescriptor> &down,
+                                    const std::vector<CGUIActionDescriptor> &left, const std::vector<CGUIActionDescriptor> &right);
+  void ExecuteActions(const std::vector<CGUIActionDescriptor> &actions);
   DWORD GetControlIdUp() const { return m_dwControlUp;};
   DWORD GetControlIdDown() const { return m_dwControlDown;};
   DWORD GetControlIdLeft() const { return m_dwControlLeft;};
@@ -264,10 +268,15 @@ protected:
   DWORD m_dwControlRight;
   DWORD m_dwControlUp;
   DWORD m_dwControlDown;
-  std::vector<CStdString> m_leftActions;
-  std::vector<CStdString> m_rightActions;
-  std::vector<CStdString> m_upActions;
-  std::vector<CStdString> m_downActions;
+  DWORD m_dwControlNext;
+  DWORD m_dwControlPrev;
+  
+  std::vector<CGUIActionDescriptor> m_leftActions;
+  std::vector<CGUIActionDescriptor> m_rightActions;
+  std::vector<CGUIActionDescriptor> m_upActions;
+  std::vector<CGUIActionDescriptor> m_downActions;
+  std::vector<CGUIActionDescriptor> m_nextActions;
+  std::vector<CGUIActionDescriptor> m_prevActions;
 
   float m_posX;
   float m_posY;

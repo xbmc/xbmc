@@ -376,18 +376,6 @@ bool CALSADirectSound::Stop()
 }
 
 //***********************************************************************************************
-long CALSADirectSound::GetMinimumVolume() const
-{
-  return -60;
-}
-
-//***********************************************************************************************
-long CALSADirectSound::GetMaximumVolume() const
-{
-  return 60;
-}
-
-//***********************************************************************************************
 long CALSADirectSound::GetCurrentVolume() const
 {
   return m_nCurrentVolume;
@@ -400,7 +388,7 @@ void CALSADirectSound::Mute(bool bMute)
     return;
 
   if (bMute)
-    SetCurrentVolume(GetMinimumVolume());
+    SetCurrentVolume(VOLUME_MINIMUM);
   else
     SetCurrentVolume(m_nCurrentVolume);
 

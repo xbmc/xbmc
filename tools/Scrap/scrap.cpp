@@ -4,8 +4,6 @@
 #include "ScraperParser.h"
 #include "Scraper.h"
 
-//#include "../../xbmc/utils/HTTP.h"
-
 
 using namespace std;
 
