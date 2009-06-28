@@ -39,6 +39,7 @@
 
 #include "stdafx.h"
 #include "TVRecordInfoTag.h"
+#include "PVRManager.h"
 
 
 /**
@@ -68,7 +69,8 @@ bool CTVRecordingInfoTag::operator ==(const CTVRecordingInfoTag& right) const
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_strClient     == right.m_strClient &&
           m_resumePoint   == right.m_resumePoint &&
-          m_strTitle      == right.m_strTitle);
+          m_strTitle      == right.m_strTitle &&
+          m_clientID      == right.m_clientID);
 }
 
 bool CTVRecordingInfoTag::operator !=(const CTVRecordingInfoTag& right) const
@@ -91,6 +93,7 @@ bool CTVRecordingInfoTag::operator !=(const CTVRecordingInfoTag& right) const
   if (m_strTitle      != right.m_strTitle) return true;
   if (m_strClient     != right.m_strClient) return true;
   if (m_resumePoint   != right.m_resumePoint) return true;
+  if (m_clientID      != right.m_clientID) return true;
 
   return false;
 }
@@ -214,6 +217,7 @@ void CTVRecordingInfoTag::SortMarks(void)
 void CTVRecordingInfoTag::Reset(void)
 {
   m_Index                 = -1;
+  m_clientID              = CPVRManager::GetInstance()->GetCurrentClientID(); // Temporary until we support multiple backends
   m_channelNum            = -1;
   m_strChannel            = "";
   m_seriesID              = "";

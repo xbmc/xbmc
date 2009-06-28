@@ -624,9 +624,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       else if (iAction == ACTION_DELETE_ITEM)
       {
         /* Check if entry is a valid deleteable record */
-        int iRecordIdx = pItem->GetTVRecordingInfoTag()->m_Index;
-
-        if (iRecordIdx != -1)
+        if (pItem->GetTVRecordingInfoTag()->m_Index != -1)
         {
           // prompt user for confirmation of record deletion
           CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -641,7 +639,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
             if (pDialog->IsConfirmed())
             {
-              CPVRManager::GetInstance()->DeleteRecording(iRecordIdx);
+              CPVRManager::GetInstance()->DeleteRecording(*pItem);
               UpdateRecordings();
             }
           }
@@ -1193,12 +1191,10 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)
     {
-      CStdString strDescription;
-      strDescription = pItem->GetTVRecordingInfoTag()->m_strTitle;
-
-      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(18399), false))
+      CStdString strNewName = pItem->GetTVRecordingInfoTag()->m_strTitle;
+      if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, g_localizeStrings.Get(18399), false))
       {
-        CPVRManager::GetInstance()->RenameRecording(pItem->GetTVRecordingInfoTag()->m_Index, strDescription);
+        CPVRManager::GetInstance()->RenameRecording(*pItem, strNewName);
         UpdateRecordings();
       }
     }
@@ -1241,7 +1237,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
         if (!pDialog->IsConfirmed()) return false;
 
-        CPVRManager::GetInstance()->DeleteRecording(pItem->GetTVRecordingInfoTag()->m_Index);
+        CPVRManager::GetInstance()->DeleteRecording(*pItem);
 
         UpdateRecordings();
       }

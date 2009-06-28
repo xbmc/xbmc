@@ -124,8 +124,8 @@ public:
   /* Record handling **/
   int GetNumRecordings();
   int GetAllRecordings(CFileItemList* results);
-  bool DeleteRecording(unsigned int index);
-  bool RenameRecording(unsigned int index, CStdString &newname);
+  bool DeleteRecording(const CFileItem &item);
+  bool RenameRecording(const CFileItem &item, CStdString &newname);
 
   /* Timer handling */
   int GetNumTimers();
@@ -217,7 +217,7 @@ private:
   void                SyncInfo(); // synchronize InfoManager related stuff
   void                GetChannels();
   void                ReceiveAllTimers();
-  void                GetRecordings();
+  void                ReceiveAllRecordings();
   CTVChannelInfoTag  *GetChannelByNumber(int Number, bool radio, int SkipGap = 0);
   CTVChannelInfoTag  *GetChannelByID(int Id, bool radio, int SkipGap = 0);
   void                SetMusicInfoTag(CFileItem& item, unsigned int channel);
