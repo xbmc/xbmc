@@ -131,8 +131,8 @@ public:
   int GetNumTimers();
   int GetAllTimers(CFileItemList* results);
   bool AddTimer(const CFileItem &item);
-  bool DeleteTimer(unsigned int index, bool force = false);
-  bool RenameTimer(unsigned int index, CStdString &newname);
+  bool DeleteTimer(const CFileItem &item, bool force = false);
+  bool RenameTimer(const CFileItem &item, CStdString &newname);
   bool UpdateTimer(const CFileItem &item);
   CDateTime NextTimerDate(void);
 

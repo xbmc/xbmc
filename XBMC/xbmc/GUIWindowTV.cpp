@@ -707,9 +707,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       else if (iAction == ACTION_DELETE_ITEM)
       {
         /* Check if entry is a valid deleteable timer */
-        int iTimerIdx = pItem->GetTVTimerInfoTag()->m_Index;
-
-        if (iTimerIdx != -1)
+        if (pItem->GetTVTimerInfoTag()->m_Index != -1)
         {
           // prompt user for confirmation of timer deletion
           CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -724,7 +722,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
             if (pDialog->IsConfirmed())
             {
-              CPVRManager::GetInstance()->DeleteTimer(iTimerIdx);
+              CPVRManager::GetInstance()->DeleteTimer(*pItem);
               UpdateTimers();
             }
           }
@@ -1184,12 +1182,10 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)
     {
-      CStdString strDescription;
-      strDescription = pItem->GetTVTimerInfoTag()->m_strTitle;
-
-      if (CGUIDialogKeyboard::ShowAndGetInput(strDescription, g_localizeStrings.Get(18400), false))
+      CStdString strNewName = pItem->GetTVTimerInfoTag()->m_strTitle;
+      if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, g_localizeStrings.Get(18400), false))
       {
-        CPVRManager::GetInstance()->RenameTimer(pItem->GetTVTimerInfoTag()->m_Index, strDescription);
+        CPVRManager::GetInstance()->RenameTimer(*pItem, strNewName);
         UpdateTimers();
       }
 
@@ -1224,7 +1220,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
         if (!pDialog->IsConfirmed()) return false;
 
-        CPVRManager::GetInstance()->DeleteTimer(pItem->GetTVTimerInfoTag()->m_Index);
+        CPVRManager::GetInstance()->DeleteTimer(*pItem);
 
         UpdateTimers();
       }
@@ -1337,7 +1333,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
                   (timerlist[i]->GetTVTimerInfoTag()->m_StopTime   >= pItem->GetTVEPGInfoTag()->m_endTime) &&
                   (timerlist[i]->GetTVTimerInfoTag()->m_Repeat != true))
               {
-                CPVRManager::GetInstance()->DeleteTimer(timerlist[i]->GetTVTimerInfoTag()->m_Index);
+                CPVRManager::GetInstance()->DeleteTimer(*timerlist[i]);
               }
             }
           }
