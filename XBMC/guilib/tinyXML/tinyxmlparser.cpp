@@ -650,6 +650,13 @@ void TiXmlBase::ConvertToUtf8(TiXmlDocument* document, TIXML_STRING* text)
   size_t ilen = text->size() + 1;
 #if defined(_LINUX) and !defined(__APPLE__)
   char* ibuf = (char*) text->c_str();
+#elif defined(__APPLE__)
+// do not mess with this, _LIBICONV_VERSION might not be defined on other platforms
+#if (_LIBICONV_VERSION > 0x010B)
+  char* ibuf = (char*) text->c_str();
+#else
+  const char* ibuf = (const char*) text->c_str();
+#endif
 #else
   const char* ibuf = (const char*) text->c_str();
 #endif
