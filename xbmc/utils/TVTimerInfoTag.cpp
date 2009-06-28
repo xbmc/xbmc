@@ -323,7 +323,7 @@ void CTVTimerInfoTag::Reset()
 
   m_Summary       = "";
 
-  m_clientID      = -1;
+  m_clientID      = CPVRManager::GetInstance()->GetCurrentClientID(); // Temporary until we support multiple backends
   m_channelNum    = -1;
   m_clientNum     = -1;
   m_Radio         = false;
