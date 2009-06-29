@@ -395,9 +395,6 @@ else
     AC_MSG_ERROR($missing_library))
 fi
 
-AM_ICONV
-echo "$ICONV_CONST"
-
 # PulseAudio
 if test "$host_vendor" = "apple" ; then
   use_pulse="no"
