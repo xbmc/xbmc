@@ -6,7 +6,7 @@ LIB=libshout-@ARCH@.a
 
 include ../../../Makefile.include
 # Don't use -DHAVE_CONFIG_H for osx
-ifeq (osx,$(findstring osx, $(@ARCH@)))
+ifeq (osx,$(findstring osx, @ARCH@))
 	DEFINES := $(filter-out -DHAVE_CONFIG_H,$(DEFINES))
 endif
 

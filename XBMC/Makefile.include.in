@@ -23,11 +23,6 @@ DEFINES+= \
 	@ARCH_DEFINES@ \
 	@DEFS@ \
 
-# Don't use @DEFS@ for osx
-ifeq (osx,$(findstring osx, $(ARCH)))
-	DEFINES := $(filter-out @DEFS@,$(DEFINES))
-endif
-
 ifeq (linux,$(findstring linux, $(ARCH)))
 ifeq ($(ARCH), x86_64-linux)
 	DEFINES+=-DDLL_PATH_LIBCURL="\"/usr/lib64/libcurl.so.4\""
