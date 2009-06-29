@@ -986,7 +986,8 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
-    symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
+    if (symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() ) != 0)
+      CLog::Log(LOGERROR, "Failed to create common scripts symlink.");
 
     CDirectory::Create("special://masterprofile");
 

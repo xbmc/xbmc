@@ -28,7 +28,7 @@ void CStreamDetail::Serialize(CArchive &ar)
 }
 
 CStreamDetailVideo::CStreamDetailVideo() :
-  m_iWidth(0), m_iHeight(0), m_fAspect(0.0), CStreamDetail(CStreamDetail::VIDEO)
+  CStreamDetail(CStreamDetail::VIDEO), m_iWidth(0), m_iHeight(0), m_fAspect(0.0)
 {
 }
 
@@ -62,7 +62,7 @@ bool CStreamDetailVideo::IsWorseThan(CStreamDetail *that)
 }
 
 CStreamDetailAudio::CStreamDetailAudio() :
-  m_iChannels(-1), CStreamDetail(CStreamDetail::AUDIO)
+  CStreamDetail(CStreamDetail::AUDIO), m_iChannels(-1)
 {
 }
 
@@ -135,10 +135,12 @@ bool CStreamDetailSubtitle::IsWorseThan(CStreamDetail *that)
 
   // the preferred subtitle should be the one in the user's language
   if (m_pParent)
+  {
     if (m_pParent->m_strLanguage == m_strLanguage)
       return false;  // already the best
     else
       return (m_pParent->m_strLanguage == ((CStreamDetailSubtitle *)that)->m_strLanguage);
+  }
   return false;
 }
 
@@ -368,11 +370,11 @@ void CStreamDetails::Serialize(CArchive& ar)
     Reset();
     for (int i=0; i<count; i++)
     {
-      CStreamDetail::StreamType type;
+      int type;
       CStreamDetail *p = NULL;
 
-      ar >> (int &)type;
-      p = NewStream(type);
+      ar >> type;
+      p = NewStream(CStreamDetail::StreamType(type));
       if (p)
         ar >> (*p);
     }

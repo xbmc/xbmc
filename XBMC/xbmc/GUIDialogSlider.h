@@ -28,6 +28,7 @@ class CGUISliderControl;
 class ISliderCallback
 {
 public:
+  virtual ~ISliderCallback() {}
   virtual void OnSliderChange(void *data, CGUISliderControl *slider)=0;
 };
 

@@ -401,7 +401,9 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_idepth;
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;
-    ar >> (int&)m_iLockMode;
+    int lockmode;
+    ar >> (int &)lockmode;
+    m_iLockMode = (LockType)lockmode;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
 
@@ -1639,16 +1641,21 @@ void CFileItemList::Serialize(CArchive& ar)
     bool fastLookup=false;
     ar >> fastLookup;
 
-    ar >> (int&)m_sortMethod;
-    ar >> (int&)m_sortOrder;
-    ar >> (int&)m_cacheToDisc;
+    int tempint;
+    ar >> (int&)tempint;
+    m_sortMethod = SORT_METHOD(tempint);
+    ar >> (int&)tempint;
+    m_sortOrder = SORT_ORDER(tempint);
+    ar >> (int&)tempint;
+    m_cacheToDisc = CACHE_TYPE(tempint);
 
     unsigned int detailSize = 0;
     ar >> detailSize;
     for (unsigned int j = 0; j < detailSize; ++j)
     {
       SORT_METHOD_DETAILS details;
-      ar >> (int&)details.m_sortMethod;
+      ar >> (int&)tempint;
+      details.m_sortMethod = SORT_METHOD(tempint);
       ar >> details.m_buttonLabel;
       ar >> details.m_labelMasks.m_strLabelFile;
       ar >> details.m_labelMasks.m_strLabelFolder;
