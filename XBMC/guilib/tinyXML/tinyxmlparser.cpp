@@ -27,6 +27,10 @@ distribution.
 
 #include "tinyxml.h"
 
+#if defined(HAVE_CONFIG_H) && !defined(_WIN32PC)
+#include "../../config.h"
+#endif
+
 //#define DEBUG_PARSER
 #if defined( DEBUG_PARSER )
 #	if defined( DEBUG ) && defined( _MSC_VER )
@@ -648,15 +652,8 @@ void TiXmlBase::ConvertToUtf8(TiXmlDocument* document, TIXML_STRING* text)
   char* output = new char[olen]; 
   char* obuf = output;
   size_t ilen = text->size() + 1;
-#if defined(_LINUX) and !defined(__APPLE__)
-  char* ibuf = (char*) text->c_str();
-#elif defined(__APPLE__)
-// do not mess with this, _LIBICONV_VERSION might not be defined on other platforms
-#if (_LIBICONV_VERSION > 0x010B)
-  char* ibuf = (char*) text->c_str();
-#else
-  const char* ibuf = (const char*) text->c_str();
-#endif
+#if defined(_LINUX)
+  ICONV_CONST char* ibuf = (ICONV_CONST char*) text->c_str();
 #else
   const char* ibuf = (const char*) text->c_str();
 #endif
