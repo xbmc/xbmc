@@ -685,6 +685,7 @@ HRESULT CApplication::Create(HWND hWnd)
   SDL_VERSION(&wmInfo.version)
   int te = SDL_GetWMInfo( &wmInfo );
   g_hWnd = wmInfo.window;
+  m_messageHandler.Initialize();
 #endif
 
   // Create the Mouse and Keyboard devices

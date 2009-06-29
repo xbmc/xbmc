@@ -55,7 +55,8 @@ class CFileItemList;
 #include "linux/LinuxResourceCounter.h"
 #endif
 #ifdef _WIN32PC
-  #include "WIN32Util.h"
+#include "WIN32Util.h"
+#include "WINMessageHandler.h"
 #endif
 
 class CWebServer;
@@ -383,6 +384,7 @@ protected:
 #endif
 #ifdef _WIN32PC
   CWIN32Util::SystemParams::SysParam *m_SSysParam;
+  CWINMessageHandler  m_messageHandler;
 #endif
 };
 
