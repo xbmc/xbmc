@@ -131,6 +131,9 @@ protected:
 #ifdef HAS_SDL_OPENGL
   bool m_glTextureLoaded;
   GLuint m_glTexture;
+
+  float    m_textureScaleX;
+  float    m_textureScaleY;
 #endif
 
   static int justification_word_weight;
