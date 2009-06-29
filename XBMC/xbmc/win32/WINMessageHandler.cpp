@@ -30,6 +30,7 @@
 
 extern HWND g_hWnd;
 WNDPROC g_lpOriginalWndProc=NULL;
+UINT g_uQueryCancelAutoPlay = 0;
 LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
 CWINMessageHandler::CWINMessageHandler()
@@ -50,6 +51,8 @@ bool CWINMessageHandler::Initialize()
   
   if(g_lpOriginalWndProc == NULL)
     return false;
+
+  g_uQueryCancelAutoPlay = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
 
   return m_bHooked = true;
 }
@@ -155,6 +158,10 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
     }
     break;
   }
+
+  // disable windows autoplay
+  if(Message == g_uQueryCancelAutoPlay)
+    return 1;
 
 
   return CallWindowProc(g_lpOriginalWndProc, hWnd, Message, wParam, lParam);
