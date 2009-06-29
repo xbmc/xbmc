@@ -483,7 +483,7 @@ htsmsg_print0(htsmsg_t *msg, int indent)
 
     for(i = 0; i < indent; i++) printf("\t");
     
-    printf("%s (", f->hmf_name ?: "");
+    printf("%s (", f->hmf_name ? f->hmf_name : "");
     
     switch(f->hmf_type) {
 
