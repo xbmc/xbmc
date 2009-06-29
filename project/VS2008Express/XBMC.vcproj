@@ -271,6 +271,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\WINMessageHandler.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINMessageHandler.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\WINSMBDirectory.cpp"
 				>
 			</File>
