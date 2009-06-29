@@ -77,7 +77,7 @@ htsbuf_queue_flush(htsbuf_queue_t *hq)
  *
  */
 void
-htsbuf_append(htsbuf_queue_t *hq, const void *buf, size_t len)
+htsbuf_append(htsbuf_queue_t *hq, const char *buf, size_t len)
 {
   htsbuf_data_t *hd = TAILQ_LAST(&hq->hq_q, htsbuf_data_queue);
   int c;
@@ -110,7 +110,7 @@ htsbuf_append(htsbuf_queue_t *hq, const void *buf, size_t len)
  *
  */
 void
-htsbuf_append_prealloc(htsbuf_queue_t *hq, const void *buf, size_t len)
+htsbuf_append_prealloc(htsbuf_queue_t *hq, const char *buf, size_t len)
 {
   htsbuf_data_t *hd;
 
@@ -129,7 +129,7 @@ htsbuf_append_prealloc(htsbuf_queue_t *hq, const void *buf, size_t len)
  *
  */
 size_t
-htsbuf_read(htsbuf_queue_t *hq, void *buf, size_t len)
+htsbuf_read(htsbuf_queue_t *hq, char *buf, size_t len)
 {
   size_t r = 0;
   int c;
@@ -181,7 +181,7 @@ htsbuf_find(htsbuf_queue_t *hq, uint8_t v)
  *
  */
 size_t
-htsbuf_peek(htsbuf_queue_t *hq, void *buf, size_t len)
+htsbuf_peek(htsbuf_queue_t *hq, char *buf, size_t len)
 {
   size_t r = 0;
   int c;
