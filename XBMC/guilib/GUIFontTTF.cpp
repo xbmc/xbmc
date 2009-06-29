@@ -170,6 +170,7 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_numChars = 0;
   m_posX = m_posY = 0;
   m_textureHeight = m_textureWidth = 0;
+  m_textureScaleX = m_textureScaleY = 0.0;
   m_ellipsesWidth = m_height = 0.0f;
 }
 
@@ -759,6 +760,9 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   }
   m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
   m_numChars++;
+  
+  m_textureScaleX = 1.0 / m_textureWidth;
+  m_textureScaleY = 1.0 / m_textureHeight;
 
   // free the glyph
   FT_Done_Glyph(glyph);
@@ -929,10 +933,10 @@ struct CUSTOMVERTEX {
   };
 
   // tex coords converted to 0..1 range
-  float tl = texture.x1 / m_textureWidth;
-  float tr = texture.x2 / m_textureWidth;
-  float tt = texture.y1 / m_textureHeight;
-  float tb = texture.y2 / m_textureHeight;
+  float tl = texture.x1 * m_textureScaleX;
+  float tr = texture.x2 * m_textureScaleX;
+  float tt = texture.y1 * m_textureScaleY;
+  float tb = texture.y2 * m_textureScaleY;
 
   CUSTOMVERTEX verts[4] =  {
     { x[0], y1, z1, dwColor, tl, tt},
@@ -980,10 +984,10 @@ struct CUSTOMVERTEX {
   SDL_FreeSurface(tempSurface);
 #elif defined(HAS_SDL_OPENGL)
   // tex coords converted to 0..1 range
-  float tl = texture.x1 / m_textureWidth;
-  float tr = texture.x2 / m_textureWidth;
-  float tt = texture.y1 / m_textureHeight;
-  float tb = texture.y2 / m_textureHeight;
+  float tl = texture.x1 * m_textureScaleX;
+  float tr = texture.x2 * m_textureScaleX;
+  float tt = texture.y1 * m_textureScaleY;
+  float tb = texture.y2 * m_textureScaleY;
 
   GLubyte colors[4] = { (GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24) };
 
