@@ -160,7 +160,7 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
   }
 
   // disable windows autoplay
-  if(Message == g_uQueryCancelAutoPlay)
+  if(g_uQueryCancelAutoPlay != 0 && Message == g_uQueryCancelAutoPlay)
     return 1;
 
 
