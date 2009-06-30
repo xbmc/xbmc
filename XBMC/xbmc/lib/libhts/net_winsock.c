@@ -162,16 +162,16 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
 
       r = poll(&pfd, 1, timeout);
       if(r == 0) {
-	/* Timeout */
-	snprintf(errbuf, errbufsize, "Connection attempt timed out");
-	closesocket(fd);
-	return -1;
+        /* Timeout */
+        snprintf(errbuf, errbufsize, "Connection attempt timed out");
+        closesocket(fd);
+        return -1;
       }
 
       if(r == -1) {
-	snprintf(errbuf, errbufsize, "poll() error: %s", strerror(errno));
-	closesocket(fd);
-	return -1;
+        snprintf(errbuf, errbufsize, "poll() error: %s", strerror(errno));
+        closesocket(fd);
+        return -1;
       }
 
       getsockopt(fd, SOL_SOCKET, SO_ERROR, (void *)&err, &errlen);
