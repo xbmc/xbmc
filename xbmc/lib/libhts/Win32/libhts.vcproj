@@ -227,7 +227,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\net_posix.c"
+				RelativePath="..\net_winsock.c"
 				>
 			</File>
 			<File
