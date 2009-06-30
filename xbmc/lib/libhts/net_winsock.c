@@ -112,7 +112,8 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
   /**
    * Switch to nonblocking
    */
-  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
+  val = 1;
+  ioctlsocket(fd, FIONBIO, &val);
 
   switch(hp->h_addrtype) {
   case AF_INET:
@@ -175,10 +176,11 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
     return -1;
   }
 
-  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) & ~O_NONBLOCK);
+  val = 0;
+  ioctlsocket(fd, FIONBIO, &val);
 
   val = 1;
-  setsockopt(fd, SOL_TCP, TCP_NODELAY, &val, sizeof(val));
+  setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const char*)&val, sizeof(val));
 
   return fd;
 }
