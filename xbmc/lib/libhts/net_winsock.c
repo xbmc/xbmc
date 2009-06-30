@@ -53,6 +53,32 @@ static int gethostbyname_r(const char *name,
   return 0;
 }
 
+#ifndef MSG_WAITALL
+#define MSG_WAITALL 0x8
+
+static int recv_fixed (SOCKET s, char * buf, int len, int flags)
+{
+  char* org = buf;
+  int   res = 1;
+
+  if((flags & MSG_WAITALL) == 0)
+    return recv(s, buf, len, flags);
+
+  flags &= ~MSG_WAITALL;
+  while(len > 0 && res > 0)
+  {
+    res = recv(s, buf, len, flags);
+    if(res < 0)
+      return res;
+
+    buf += res;
+    len -= res;
+  }
+  return buf - org;
+}
+#define recv(s, buf, len, flags) recv_fixed(s, buf, len, flags)
+#endif
+
 
 /**
  *
