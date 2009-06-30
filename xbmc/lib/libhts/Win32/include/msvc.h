@@ -6,6 +6,21 @@
 #define strncasecmp strnicmp
 #define strdup _strdup
 
+static char * strndup(const char* str, size_t len)
+{
+  size_t i = 0;
+  char*  p = (char*)str;
+  while(*p != 0 && i < len)
+  {
+    p++;
+    i++;
+  }
+  p = malloc(len+1);
+  memcpy(p, str, len);
+  p[len] = 0;
+  return p;
+}
+
 #ifndef M_PI
 #define M_PI 3.1415926535897932384626433832795
 #endif
