@@ -25,8 +25,13 @@
 #include "VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#ifdef _MSC_VER
+#include <winsock2.h>
+#define SHUT_RDWR SD_BOTH
+#else
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#endif
 
 extern "C" {
 #include "lib/libhts/net.h"
@@ -197,7 +202,7 @@ bool CHTSPSession::SendMessage(htsmsg_t* m)
   }
   htsmsg_destroy(m);
 
-  if(send(m_fd, buf, len, 0) < 0)
+  if(send(m_fd, (char*)buf, len, 0) < 0)
   {
     free(buf);
     return false;
