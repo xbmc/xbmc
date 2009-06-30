@@ -379,7 +379,7 @@ void CHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
     {
       if(f->hmf_type != HMF_S64)
         continue;
-      channel.tags.push_back(f->hmf_s64);
+      channel.tags.push_back((int)f->hmf_s64);
     }
   }
 
@@ -432,7 +432,7 @@ void CHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
     {
       if(f->hmf_type != HMF_S64)
         continue;
-      tag.channels.push_back(f->hmf_s64);
+      tag.channels.push_back((int)f->hmf_s64);
     }
   }
 
