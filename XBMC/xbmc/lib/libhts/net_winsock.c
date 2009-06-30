@@ -290,7 +290,7 @@ htsp_tcp_read_line(socket_t fd, char *buf, const size_t bufsize, htsbuf_queue_t 
       continue;
     }
 
-    if(len >= bufsize - 1)
+    if(len >= (int)bufsize - 1)
       return -1;
 
     htsbuf_read(spill, buf, len);
