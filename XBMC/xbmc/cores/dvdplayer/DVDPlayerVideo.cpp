@@ -124,7 +124,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
 
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
-  m_bDropFrames = true;
   m_fFrameRate = 25;
   m_bAllowFullscreen = false;
   memset(&m_output, 0, sizeof(m_output));
@@ -425,7 +424,6 @@ void CDVDPlayerVideo::Process()
 #else
       if (m_iNrOfPicturesNotToSkip > 0) bRequestDrop = false;
       if (m_speed < 0)                  bRequestDrop = false;
-      if (m_bDropFrames == false)       bRequestDrop = false;
 #endif
 
       // if player want's us to drop this packet, do so nomatter what
