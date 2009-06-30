@@ -142,7 +142,6 @@ public:
   virtual bool IsPaused() const;
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
-  virtual void ToggleFrameDrop();
   virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep);
   virtual bool SeekScene(bool bPlus = true);

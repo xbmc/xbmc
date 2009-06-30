@@ -67,9 +67,6 @@ public:
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled()                          { return m_bRenderSubs; }
 
-  void EnableFrameDrop(bool bEnabled)               { m_bDropFrames = bEnabled; }
-  bool IsFrameDropEnabled()                         { return m_bDropFrames; }
-
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -129,7 +126,6 @@ protected:
   double m_FlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
 
   int m_iDroppedFrames;
-  bool m_bDropFrames;
 
   float m_fFrameRate;
 
