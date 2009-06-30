@@ -151,13 +151,13 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
       if(r == 0) {
 	/* Timeout */
 	snprintf(errbuf, errbufsize, "Connection attempt timed out");
-	close(fd);
+	closesocket(fd);
 	return -1;
       }
 
       if(r == -1) {
 	snprintf(errbuf, errbufsize, "poll() error: %s", strerror(errno));
-	close(fd);
+	closesocket(fd);
 	return -1;
       }
 
@@ -171,7 +171,7 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
 
   if(err != 0) {
     snprintf(errbuf, errbufsize, "%s", strerror(err));
-    close(fd);
+    closesocket(fd);
     return -1;
   }
 
@@ -356,5 +356,5 @@ htsp_tcp_read_timeout(socket_t fd, char *buf, size_t len, int timeout)
 void
 htsp_tcp_close(socket_t fd)
 {
-  close(fd);
+  closesocket(fd);
 }
