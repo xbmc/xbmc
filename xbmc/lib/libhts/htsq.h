@@ -5,7 +5,11 @@
 #ifndef HTSQ_H
 #define HTSQ_H
 
+#ifdef _MSC_VER
+#include "Win32/include/sys/queue.h"
+#else
 #include <sys/queue.h>
+#endif
 
 /*
  * Complete missing LIST-ops
