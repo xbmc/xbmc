@@ -68,7 +68,7 @@ class const_circular_iter
       return(*this);
     }
 
-    const reference operator*()  const { return (*iter);  }
+          reference operator*()  const { return (*iter);  }
     const pointer   operator->() const { return &(*iter); }
     bool operator==(const const_circular_iter<T>&  rhs) const { return (iter == rhs.iter); }
     bool operator==(const T&                       rhs) const { return (iter == rhs); }
