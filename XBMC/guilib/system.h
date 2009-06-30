@@ -133,9 +133,6 @@
 #ifndef __APPLE__
 #define HAS_LIRC
 #endif
-#ifdef __APPLE__
-#define HAS_SPC_CODEC
-#endif
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
 #define HAS_CDDA_RIPPER
