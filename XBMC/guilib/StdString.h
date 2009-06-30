@@ -2,7 +2,8 @@
 #include <string>
 #if !defined(_LINUX)
 #include <windows.h>
-#include "stdint.h"
+#include <stdint.h>
+#include "win32/PlatformDefs.h"
 #endif
 
 // =============================================================================
