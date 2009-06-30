@@ -16,31 +16,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <netdb.h>
-#ifdef __APPLE__
-/* Needed on Mac OS/X */
-#ifndef SOL_TCP
-#define SOL_TCP IPPROTO_TCP
-#endif
-#include "OSXGNUReplacements.h"
-#else
-#include <sys/epoll.h>
-#endif
-#include <poll.h>
 #include <assert.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <arpa/inet.h>
 
+#include <winsock2.h>
+#include <Ws2tcpip.h>
+#include "msvc.h"
 #include "net.h"
 
+#define EINPROGRESS WSAEINPROGRESS
+#define ECONNRESET  WSAECONNRESET
+#define ETIMEDOUT   WSAETIMEDOUT
+#define EAGAIN      WSAEWOULDBLOCK
 
 /**
  *

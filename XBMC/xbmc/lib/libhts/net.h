@@ -23,7 +23,11 @@
 #include <stdint.h>
 #include "htsbuf.h"
 
+#ifdef _MSC_VER
+typedef SOCKET socket_t;
+#else
 typedef int socket_t;
+#endif
 
 socket_t htsp_tcp_connect(const char *hostname, int port, char *errbuf,
 		size_t errbufsize, int timeout);
