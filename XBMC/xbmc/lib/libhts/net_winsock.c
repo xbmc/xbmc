@@ -154,7 +154,8 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
   free(tmphstbuf);
 
   if(r == -1) {
-    if(WSAGetLastError() == EINPROGRESS) {
+    if(WSAGetLastError() == EINPROGRESS ||
+       WSAGetLastError() == EAGAIN) {
       fd_set fd_write, fd_except;
       struct timeval tv;
 
