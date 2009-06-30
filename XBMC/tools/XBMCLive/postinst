@@ -22,34 +22,47 @@ case "$1" in
     configure)
 	sed -i.bak-xbmc-live s/allowed_users=console/allowed_users=anybody/ /etc/X11/Xwrapper.config
 
-	if ! grep xbmc /etc/passwd > /dev/null; then
-		adduser xbmc
+	if ! getent passwd xbmc >/dev/null; then
+            adduser \
+                --gecos "XBMC Live User" \
+                --disabled-password \
+                xbmc >/dev/null
 	fi
-
-	if ! groups xbmc|grep adm > /dev/null; then
+	# For reading system logs (still not sure why xbmc needs this though)
+	if ! getent group adm | grep xbmc > /dev/null; then
 		adduser xbmc adm
 	fi
-	if ! groups xbmc|grep cdrom > /dev/null; then
+	# For optical disc drive access
+	if ! getent group cdrom | grep xbmc > /dev/null; then
 		adduser xbmc cdrom
 	fi
-	if ! groups xbmc|grep floppy > /dev/null; then
+	# For floppy drive access
+	if ! getent group floppy | grep xbmc > /dev/null; then
 		adduser xbmc floppy
 	fi
-	if ! groups xbmc|grep audio > /dev/null; then
+	# For audio device access
+	if ! getent group audio | grep xbmc > /dev/null; then
 		adduser xbmc audio
 	fi
-	if ! groups xbmc|grep video > /dev/null; then
+	# For video device access
+	if ! getent group video | grep xbmc > /dev/null; then
 		adduser xbmc video
 	fi
-	if ! groups xbmc|grep plugdev > /dev/null; then
+	# To enable automatic notifications of new devices
+	if ! getent group plugdev | grep xbmc > /dev/null; then
 		adduser xbmc plugdev
 	fi
-	if ! groups xbmc|grep fuse > /dev/null; then
-		adduser xbmc fuse
+	# For managing network connections via NetworkManager
+	if ! getent group netdev | grep xbmc > /dev/null; then
+		adduser xbmc netdev
 	fi
-
-	if ! grep xbmc /etc/sudoers > /dev/null; then
-		echo "xbmc    ALL=(ALL) ALL" >> /etc/sudoers
+	# To be able to hibernate/suspend
+	if ! getent group powerdev | grep xbmc > /dev/null; then
+		adduser xbmc powerdev
+	fi
+	# To be able to mount filesystems as normal user
+	if ! getent group fuse | grep xbmc > /dev/null; then
+		adduser xbmc fuse
 	fi
 
 	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.shutdown
@@ -93,7 +106,6 @@ if [ -x "/etc/init.d/xbmc-live" ]; then
 	fi
 fi
 # End automatically added section
-
 
 exit 0
 
