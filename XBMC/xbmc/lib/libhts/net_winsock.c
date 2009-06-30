@@ -65,7 +65,8 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
   struct hostent hostbuf, *hp;
   char *tmphstbuf;
   size_t hstbuflen;
-  int herr, fd, r, res, err, val;
+  socket_t fd;
+  int herr, r, res, err, val;
   struct sockaddr_in6 in6;
   struct sockaddr_in in;
   socklen_t errlen = sizeof(int);
@@ -116,7 +117,7 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
   fd = socket(hp->h_addrtype, SOCK_STREAM, 0);
   if(fd == -1) {
     snprintf(errbuf, errbufsize, "Unable to create socket: %s",
-	     strerror(errno));
+	     strerror(WSAGetLastError()));
     free(tmphstbuf);
     return -1;
   }
@@ -153,7 +154,7 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
   free(tmphstbuf);
 
   if(r == -1) {
-    if(errno == EINPROGRESS) {
+    if(WSAGetLastError() == EINPROGRESS) {
       fd_set fd_write, fd_except;
       struct timeval tv;
 
@@ -176,14 +177,14 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
       }
 
       if(r == -1) {
-        snprintf(errbuf, errbufsize, "select() error: %s", strerror(errno));
+        snprintf(errbuf, errbufsize, "select() error: %s", strerror(WSAGetLastError()));
         closesocket(fd);
         return -1;
       }
 
       getsockopt(fd, SOL_SOCKET, SO_ERROR, (void *)&err, &errlen);
     } else {
-      err = errno;
+      err = WSAGetLastError();
     }
   } else {
     err = 0;
@@ -328,7 +329,7 @@ htsp_tcp_read(socket_t fd, void *buf, size_t len)
   int x = recv(fd, buf, len, MSG_WAITALL);
 
   if(x == -1)
-    return errno;
+    return WSAGetLastError();
   if(x != len)
     return ECONNRESET;
   return 0;
@@ -361,20 +362,16 @@ htsp_tcp_read_timeout(socket_t fd, char *buf, size_t len, int timeout)
       return ETIMEDOUT;
 
     x = recv(fd, buf + tot, len - tot, MSG_PEEK);
-    if(x == 0) {
-      errno = EAGAIN;
-      x = -1;
-    } else
-      x = recv(fd, buf + tot, len - tot, 0);
+    if(x == 0)
+      continue;
+    else if(x == -1)
+      return WSAGetLastError();
 
-    if(x == -1) {
-      if(errno == EAGAIN)
-	continue;
-      return errno;
-    }
-
+    x = recv(fd, buf + tot, len - tot, 0);
     if(x == 0)
       return ECONNRESET;
+    else if(x == -1)
+      return WSAGetLastError();
 
     tot += x;
   }
