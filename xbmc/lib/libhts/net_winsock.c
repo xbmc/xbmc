@@ -32,6 +32,28 @@
 #define ETIMEDOUT   WSAETIMEDOUT
 #define EAGAIN      WSAEWOULDBLOCK
 
+#define ERANGE 34
+
+static int gethostbyname_r(const char *name,
+                           struct hostent *ret, char *buf, size_t buflen,
+                           struct hostent **result, int *h_errnop)
+{
+  memset(buf, 0, buflen);
+
+  *result = gethostbyname(name);
+  if(*result)
+  {
+    memcpy(ret, *result, sizeof(struct hostent));
+    *result = ret;
+    *h_errnop = 0;
+  }
+  else
+    *h_errnop = HOST_NOT_FOUND;
+
+  return 0;
+}
+
+
 /**
  *
  */
