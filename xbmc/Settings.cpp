@@ -1203,7 +1203,7 @@ void CSettings::LoadAdvancedSettings()
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_tvshowExcludeFromScanRegExps);
 
-    pVideoExcludes = pElement->FirstChildElement("cleanfilenames");
+    pVideoExcludes = pElement->FirstChildElement("cleanstrings");
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanRegExps);
 
