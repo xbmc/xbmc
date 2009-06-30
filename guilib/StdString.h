@@ -2,6 +2,7 @@
 #include <string>
 #if !defined(_LINUX)
 #include <windows.h>
+#include "stdint.h"
 #endif
 
 // =============================================================================
