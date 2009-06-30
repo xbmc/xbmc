@@ -86,9 +86,10 @@ bool CGUIEditControl::OnAction(const CAction &action)
 {
   ValidateCursor();
 
-  if (action.wID == ACTION_BACKSPACE
-      || action.wID == ACTION_PARENT_DIR
-      )
+  // TODO: We shouldn't really need to test for ACTION_PARENT_DIR here
+  //       but it may currently be useful as we can't map specific to an
+  //       edit control other than the keyboard (which doesn't use this block)
+  if (action.wID == ACTION_BACKSPACE || action.wID == ACTION_PARENT_DIR)
   {
     // backspace
     if (m_cursorPos)
@@ -100,7 +101,8 @@ bool CGUIEditControl::OnAction(const CAction &action)
   }
   else if (action.wID == ACTION_MOVE_LEFT)
   {
-    if (m_cursorPos > 0) {
+    if (m_cursorPos > 0)
+    {
       m_cursorPos--;
       OnTextChanged();
       return true;
@@ -122,28 +124,28 @@ bool CGUIEditControl::OnAction(const CAction &action)
     if (szStr)
     {
       m_text2 += szStr;
-      m_cursorPos+=strlen(szStr);    
-      OnTextChanged();      
+      m_cursorPos+=strlen(szStr);
+      OnTextChanged();
     }
 #elif defined _WIN32
     HGLOBAL   hglb;
-    LPTSTR    lptstr; 
-    if (OpenClipboard(g_hWnd)) 
+    LPTSTR    lptstr;
+    if (OpenClipboard(g_hWnd))
     {
-      hglb = GetClipboardData(CF_TEXT); 
-      if (hglb != NULL) 
+      hglb = GetClipboardData(CF_TEXT);
+      if (hglb != NULL)
       { 
-          lptstr = (LPTSTR)GlobalLock(hglb); 
-          if (lptstr != NULL) 
-          { 
-			m_text2 = (char*)lptstr;
-            GlobalUnlock(hglb); 
-          } 
-      } 
-      CloseClipboard(); 
-	  OnTextChanged();
+        lptstr = (LPTSTR)GlobalLock(hglb);
+        if (lptstr != NULL)
+        { 
+          m_text2 = (char*)lptstr;
+          GlobalUnlock(hglb);
+        } 
+      }
+      CloseClipboard();
+      OnTextChanged();
     }
-#endif    
+#endif
   }
   else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
   {
@@ -164,12 +166,12 @@ bool CGUIEditControl::OnAction(const CAction &action)
     if (b == 0x2e)
     {
       if (m_cursorPos < m_text2.length())
-    { // delete
-      m_text2.erase(m_cursorPos, 1);
-      OnTextChanged();
-      return true;
+      { // delete
+        m_text2.erase(m_cursorPos, 1);
+        OnTextChanged();
+        return true;
+      }
     }
-  }
     if (b == 0x8)
     {
       if (m_cursorPos > 0)
