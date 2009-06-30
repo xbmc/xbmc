@@ -42,8 +42,6 @@ extern HWND g_hWnd;
 using namespace std;
 using namespace MEDIA_DETECT;
 
-DWORD CWIN32Util::dwDriveMask = 0;
-
 CWIN32Util::CWIN32Util(void)
 {
 }

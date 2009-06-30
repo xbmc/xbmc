@@ -73,7 +73,6 @@ public:
   };
 
 private:
-  static DWORD dwDriveMask;
 #if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
 #endif
