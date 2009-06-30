@@ -335,7 +335,13 @@ htsp_tcp_read_timeout(socket_t fd, char *buf, size_t len, int timeout)
     if(x == 0)
       return ETIMEDOUT;
 
-    x = recv(fd, buf + tot, len - tot, MSG_DONTWAIT);
+    x = recv(fd, buf + tot, len - tot, MSG_PEEK);
+    if(x == 0) {
+      errno = EAGAIN;
+      x = -1;
+    } else
+      x = recv(fd, buf + tot, len - tot, 0);
+
     if(x == -1) {
       if(errno == EAGAIN)
 	continue;
