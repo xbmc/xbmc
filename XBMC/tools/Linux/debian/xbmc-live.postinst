@@ -20,32 +20,68 @@ set -e
 
 case "$1" in
     configure)
-        sed -i.bak-xbmc-live s/allowed_users=console/allowed_users=anybody/ /etc/X11/Xwrapper.config
-        USER=xbmc
-        USER_EXISTS=`grep $USER /etc/passwd|awk -F : '{print $1}'`
-        if [ ! "$USER_EXISTS" = "$USER" ]; then
-            adduser $USER
-        fi 
-        adduser xbmc admin
-        adduser xbmc adm
-        adduser xbmc dialout
-        adduser xbmc cdrom
-        adduser xbmc floppy
-        adduser xbmc audio
-        adduser xbmc dip
-        adduser xbmc video
-        adduser xbmc plugdev
-        adduser xbmc fuse
-        adduser xbmc sudo
+	sed -i.bak-xbmc-live s/allowed_users=console/allowed_users=anybody/ /etc/X11/Xwrapper.config
 
-        polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.shutdown
-        polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.shutdown-multiple-sessions
-        polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.reboot
-        polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.reboot-multiple-sessions
-        polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.set-powersave
-        polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.suspend
-        polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.hibernate
-        polkit-auth --user xbmc --grant org.freedesktop.hal.storage.mount-removable
+	if ! getent passwd xbmc >/dev/null; then
+            adduser \
+                --gecos "XBMC Live User" \
+                --disabled-password \
+                xbmc >/dev/null
+	fi
+	# For reading system logs (still not sure why xbmc needs this though)
+	if ! getent group adm | grep xbmc > /dev/null; then
+		adduser xbmc adm
+	fi
+	# For optical disc drive access
+	if ! getent group cdrom | grep xbmc > /dev/null; then
+		adduser xbmc cdrom
+	fi
+	# For floppy drive access
+	if ! getent group floppy | grep xbmc > /dev/null; then
+		adduser xbmc floppy
+	fi
+	# For audio device access
+	if ! getent group audio | grep xbmc > /dev/null; then
+		adduser xbmc audio
+	fi
+	# For video device access
+	if ! getent group video | grep xbmc > /dev/null; then
+		adduser xbmc video
+	fi
+	# To enable automatic notifications of new devices
+	if ! getent group plugdev | grep xbmc > /dev/null; then
+		adduser xbmc plugdev
+	fi
+	# For managing network connections via NetworkManager
+	if ! getent group netdev | grep xbmc > /dev/null; then
+		adduser xbmc netdev
+	fi
+	# To be able to hibernate/suspend
+	if ! getent group powerdev | grep xbmc > /dev/null; then
+		adduser xbmc powerdev
+	fi
+	# To be able to mount filesystems as normal user
+	if ! getent group fuse | grep xbmc > /dev/null; then
+		adduser xbmc fuse
+	fi
+
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.shutdown
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.shutdown-multiple-sessions
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.reboot
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.reboot-multiple-sessions
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.set-powersave
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.suspend
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.power-management.hibernate
+	polkit-auth --user xbmc --revoke org.freedesktop.hal.storage.mount-removable
+
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.shutdown
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.shutdown-multiple-sessions
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.reboot
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.reboot-multiple-sessions
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.set-powersave
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.suspend
+	polkit-auth --user xbmc --grant org.freedesktop.hal.power-management.hibernate
+	polkit-auth --user xbmc --grant org.freedesktop.hal.storage.mount-removable
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
@@ -63,3 +99,4 @@ esac
 #DEBHELPER#
 
 exit 0
+
