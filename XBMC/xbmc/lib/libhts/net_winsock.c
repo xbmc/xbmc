@@ -154,13 +154,20 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
 
   if(r == -1) {
     if(errno == EINPROGRESS) {
-      struct pollfd pfd;
+      fd_set fd_write, fd_except;
+      struct timeval tv;
 
-      pfd.fd = fd;
-      pfd.events = POLLOUT;
-      pfd.revents = 0;
+      tv.tv_sec  =         timeout / 1000;
+      tv.tv_usec = 1000 * (timeout % 1000);
 
-      r = poll(&pfd, 1, timeout);
+      FD_ZERO(&fd_write);
+      FD_ZERO(&fd_except);
+
+      FD_SET(fd, &fd_write);
+      FD_SET(fd, &fd_except);
+
+      r = select((int)fd+1, NULL, &fd_write, &fd_except, &tv);
+
       if(r == 0) {
         /* Timeout */
         snprintf(errbuf, errbufsize, "Connection attempt timed out");
@@ -169,7 +176,7 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
       }
 
       if(r == -1) {
-        snprintf(errbuf, errbufsize, "poll() error: %s", strerror(errno));
+        snprintf(errbuf, errbufsize, "select() error: %s", strerror(errno));
         closesocket(fd);
         return -1;
       }
@@ -335,17 +342,21 @@ int
 htsp_tcp_read_timeout(socket_t fd, char *buf, size_t len, int timeout)
 {
   int x, tot = 0;
-  struct pollfd fds;
+  fd_set fd_read;
+  struct timeval tv;
 
   assert(timeout > 0);
 
-  fds.fd = fd;
-  fds.events = POLLIN;
-  fds.revents = 0;
-
   while(tot != len) {
 
-    x = poll(&fds, 1, timeout);
+    tv.tv_sec  =         timeout / 1000;
+    tv.tv_usec = 1000 * (timeout % 1000);
+
+    FD_ZERO(&fd_read);
+    FD_SET(fd, &fd_read);
+
+    x = select((int)fd+1, &fd_read, NULL, NULL, &tv);
+
     if(x == 0)
       return ETIMEDOUT;
 
