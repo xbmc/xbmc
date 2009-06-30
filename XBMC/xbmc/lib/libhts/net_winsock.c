@@ -199,7 +199,7 @@ htsp_tcp_write_queue(socket_t fd, htsbuf_queue_t *q)
     TAILQ_REMOVE(&q->hq_q, hd, hd_link);
 
     l = hd->hd_data_len - hd->hd_data_off;
-    r = write(fd, hd->hd_data + hd->hd_data_off, l);
+    r = send(fd, hd->hd_data + hd->hd_data_off, l, 0);
     free(hd->hd_data);
     free(hd);
   }
@@ -223,7 +223,7 @@ tcp_fill_htsbuf_from_fd(socket_t fd, htsbuf_queue_t *hq)
 
     if(c > 0) {
 
-      c = read(fd, hd->hd_data + hd->hd_data_len, c);
+      c = recv(fd, hd->hd_data + hd->hd_data_len, c, MSG_WAITALL);
       if(c < 1)
 	return -1;
 
@@ -238,7 +238,7 @@ tcp_fill_htsbuf_from_fd(socket_t fd, htsbuf_queue_t *hq)
   hd->hd_data_size = 1000;
   hd->hd_data = malloc(hd->hd_data_size);
 
-  c = read(fd, hd->hd_data, hd->hd_data_size);
+  c = recv(fd, hd->hd_data, hd->hd_data_size, MSG_WAITALL);
   if(c < 1) {
     free(hd->hd_data);
     free(hd);
