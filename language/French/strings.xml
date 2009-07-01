@@ -65,12 +65,12 @@
   <string id="31067">Informations sur votre</string>
 
 <!--  Power  --> 
-  <string id="31071">ETEINDRE</string>
-  <string id="31072">REDEMARRER</string>
-  <string id="31073">RELANCER XBMC</string>
+  <string id="31071">Éteindre</string>
+  <string id="31072">Redémarrer</string>
+  <string id="31073">Relancer Plex</string>
   <string id="31074">DASHBOARD</string>
-  <string id="31075">RAFRAÎCHIR</string>
-  <string id="31075">Rafraîchir la Skin</string>
+  <string id="31075">Rafraîchir</string>
+  <string id="31075">Rafraîchir le Skin</string>
 
 <!--  Video  -->
   <string id="31111">Films</string>
@@ -106,7 +106,7 @@
   <string id="31601">Apparence</string>
   <string id="31602">Réseau</string>
   <string id="31603">Skin</string>
-  <string id="31604">GÉNÉRAL</string>
+  <string id="31604">Général</string>
   <string id="31605">Accueil</string>
   <string id="31606">CHANGEZ VOS PARAMÈTRES POUR</string>
   <string id="31607">Actuel</string>
@@ -124,7 +124,7 @@
   <string id="31653">Voir</string>
   <string id="31654">Cacher le texte des vignettes sur la fenêtre fichier</string>
   <string id="31655">Afficher la vignette saison dans la vue Épisode</string>
-  <string id="31656">ARRIÈRE-PLAN</string>
+  <string id="31656">Arrière-plan</string>
   <string id="31657">Image</string>
   <string id="31658">Dossier</string>
   <string id="31659">Ré-initialiser</string>
@@ -164,7 +164,8 @@
   <string id="31693">Cacher les vignettes du menu Options</string>
   <string id="31694">Afficher le cadre Lecture en cours sur la gauche</string>
   <string id="31695">Afficher AM/PM sur l'horloge</string>
-
+  <string id="31697">Cacher la déscription des photos pendant le diaporama</string>
+  
 <!--  Options Menu  -->
   <string id="31701">Setup</string>
   <string id="31702">Showcase</string>
