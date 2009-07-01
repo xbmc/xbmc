@@ -4,16 +4,13 @@ set -e
 
 case "$1" in
     configure)
-	# TODO: What's the purpose of this line? As I see it, if 'xbmc' can't
-	# get a console session going, we're in trouble anyway. ceros
 	sed -i.bak-xbmc-live s/allowed_users=console/allowed_users=anybody/ /etc/X11/Xwrapper.config
 
 	# Add the 'xbmc' user
 	if ! getent passwd xbmc >/dev/null; then
             adduser \
                 --gecos "XBMC Live User" \
-                --disabled-password \
-                xbmc >/dev/null
+                xbmc
 	fi
 	# Add 'xbmc' user to the appropriate groups
 	# TODO: this probably isn't necessary anymore as PolicyKit is now being
@@ -42,14 +39,7 @@ case "$1" in
 	if ! getent group plugdev | grep xbmc > /dev/null; then
 		adduser xbmc plugdev || true
 	fi
-	# For managing network connections via NetworkManager
-	if ! getent group netdev | grep xbmc > /dev/null; then
-		adduser xbmc netdev || true
-	fi
-	# To be able to hibernate/suspend
-	if ! getent group powerdev | grep xbmc > /dev/null; then
-		adduser xbmc powerdev || true
-	fi
+
 	# To be able to mount filesystems as normal user
 	if ! getent group fuse | grep xbmc > /dev/null; then
 		adduser xbmc fuse || true
