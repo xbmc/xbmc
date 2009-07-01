@@ -46,9 +46,7 @@ using namespace ADDON;
 
 std::map< long, IPVRClient* > CPVRManager::m_clients;
 CPVRManager* CPVRManager::m_instance    = NULL;
-bool CPVRManager::m_isPlayingTV         = false;
-bool CPVRManager::m_isPlayingRadio      = false;
-bool CPVRManager::m_isPlayingRecording  = false;
+CFileItem* CPVRManager::m_currentPlayingChannel = NULL;
 bool CPVRManager::m_hasRecordings       = false;
 bool CPVRManager::m_isRecording         = false;
 bool CPVRManager::m_hasTimers           = false;
@@ -679,6 +677,22 @@ bool CPVRManager::SupportDirector()
   return m_clientProps.SupportDirector;
 }
 
+bool CPVRManager::IsPlayingTV()
+{ 
+  if (!m_currentPlayingChannel)
+    return false;
+
+  return !m_currentPlayingChannel->GetTVChannelInfoTag()->m_radio;
+}
+
+bool CPVRManager::IsPlayingRadio()
+{ 
+  if (!m_currentPlayingChannel)
+    return false;
+
+  return m_currentPlayingChannel->GetTVChannelInfoTag()->m_radio;
+}
+
 /************************************************************/
 /** EPG handling */
 
@@ -1135,7 +1149,7 @@ void CPVRManager::MoveChannel(unsigned int oldindex, unsigned int newindex, bool
 
     CLog::Log(LOGNOTICE, "PVR: TV Channel %d moved to %d", oldindex, newindex);
 
-    if (m_isPlayingTV && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iIdChannel != CurrentChannelID)
+    if (IsPlayingTV() && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iIdChannel != CurrentChannelID)
     {
       /* Perform Channel switch with new number, if played channelnumber is modified */
      // GetFrontendChannelNumber(CurrentClientChannel, m_currentClientID, &m_CurrentTVChannel, NULL);
@@ -1167,7 +1181,7 @@ void CPVRManager::MoveChannel(unsigned int oldindex, unsigned int newindex, bool
 
     CLog::Log(LOGNOTICE, "PVR: TV Channel %d moved to %d", oldindex, newindex);
 
-    if (m_isPlayingTV && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iIdChannel != CurrentChannelID)
+    if (IsPlayingTV() && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iIdChannel != CurrentChannelID)
     {
       /* Perform Channel switch with new number, if played channelnumber is modified */
      // GetFrontendChannelNumber(CurrentClientChannel, m_currentClientID, &m_CurrentRadioChannel, NULL);
@@ -1213,7 +1227,7 @@ void CPVRManager::HideChannel(unsigned int number, bool radio)
 
   if (!radio)
   {
-    if (m_isPlayingTV && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum == number)
+    if (IsPlayingTV() && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum == number)
     {
       CGUIDialogOK::ShowAndGetInput(18090,18097,0,18098);
       return;
@@ -1244,7 +1258,7 @@ void CPVRManager::HideChannel(unsigned int number, bool radio)
   }
   else
   {
-    if (m_isPlayingRadio && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum == number)
+    if (IsPlayingRadio() && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum == number)
     {
       CGUIDialogOK::ShowAndGetInput(18090,18097,0,18098);
       return;
@@ -2332,9 +2346,6 @@ bool CPVRManager::OpenRecordedStream(unsigned int record)
   {
     if (m_client->OpenRecordedStream(m_recordings[record-1]))
     {
-      m_isPlayingRecording    = true;
-      m_isPlayingTV           = false;
-      m_isPlayingRadio        = false;
       LeaveCriticalSection(&m_critSection);
       return true;
     }
@@ -2350,9 +2361,6 @@ void CPVRManager::CloseRecordedStream(void)
   {
     EnterCriticalSection(&m_critSection);
     m_client->CloseRecordedStream();
-    m_isPlayingRecording    = false;
-    m_isPlayingTV           = false;
-    m_isPlayingRadio        = false;
     LeaveCriticalSection(&m_critSection);
   }
   return;
