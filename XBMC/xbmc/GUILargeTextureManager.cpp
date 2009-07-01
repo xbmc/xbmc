@@ -49,6 +49,7 @@ CGUILargeTextureManager::~CGUILargeTextureManager()
 // Once there's nothing queued or allocated, end the thread.
 void CGUILargeTextureManager::Process()
 {
+  SetName("CGUILargeTextureManager");
   // lock item list
   CSingleLock lock(m_listSection);
   m_running = true;
