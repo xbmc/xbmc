@@ -30,9 +30,9 @@
     <rule dvdimage="true" player="DVDPlayer" />
 
     <!-- Only mplayer can handle these properly -->
-    <rule filetypes="flv|ts|asf" player="MPlayer" />
+    <rule filetypes="asf" player="MPlayer" />
 
-    <!-- Only dvdplayer can handle these normally -->
+    <!-- dvdplayer generally plays these better -->
     <rule filetypes="mp4" player="DVDPlayer" />
   </rules>
 </playercorefactory>
