@@ -2,9 +2,9 @@
   <players>
     <!-- These are compiled-in as re-ordering them would break scripts
     The following aliases may also be used:
-      audiodefaultplayer, videodefaultplayer, videodefaultdvdplayer
+      audiodefaultplayer, videodefaultplayer
     <player name="DVDPlayer" audio="true" video="true" />
-    <player name="DVDPlayer" /> placeholder for MPlayer
+    <player name="MPlayer" audio="true" video="true" />
     <player name="PAPlayer" audio="true" />
     -->
   </players>
