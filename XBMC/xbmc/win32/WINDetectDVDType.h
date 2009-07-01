@@ -43,6 +43,9 @@ public:
   CCdInfo* GetCdInfo(CStdString& strDrive);
   bool IsAudio(CStdString strDrive="");
   bool IsDiscInDrive(CStdString strDrive="");
+  void WaitMediaReady();
+  CStdString GetDVDLabel(CStdString strDrive="");
+  CStdString GetDVDPath(CStdString strDrive="");
   DWORD GetTrayState(CStdString strDrive="");
 
 private:
