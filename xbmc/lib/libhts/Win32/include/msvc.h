@@ -1,10 +1,13 @@
-#ifdef WIN32
+#if defined(WIN32) || defined(_XBOX)
 
 #define strtoll(p, e, b) _strtoi64(p, e, b)
 #define snprintf _snprintf
 #define strcasecmp stricmp
 #define strncasecmp strnicmp
 #define strdup _strdup
+#ifdef _XBOX
+# define vsnprintf _vsnprintf
+#endif
 
 static char * strndup(const char* str, size_t len)
 {

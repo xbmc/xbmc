@@ -22,8 +22,21 @@
 #include <string.h>
 #include <stdarg.h>
 
+#ifdef _XBOX
+#include <xtl.h>
+#include <winsockx.h>
+#include "..\..\cores\DllLoader\exports\emu_socket\emu_socket.h"
+
+struct mphostent* __stdcall dllgethostbyname(const char* name);
+
+#define gethostbyname(name) dllgethostbyname(name)
+#define hostent mphostent
+typedef int socklen_t;
+
+#else
 #include <winsock2.h>
 #include <Ws2tcpip.h>
+#endif
 #include "msvc.h"
 #include "net.h"
 
@@ -93,7 +106,9 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
   size_t hstbuflen;
   socket_t fd;
   int herr, r, res, err, val;
+#ifndef _XBOX
   struct sockaddr_in6 in6;
+#endif
   struct sockaddr_in in;
   socklen_t errlen = sizeof(int);
 
@@ -163,6 +178,7 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
     r = connect(fd, (struct sockaddr *)&in, sizeof(struct sockaddr_in));
     break;
 
+#ifndef _XBOX
   case AF_INET6:
     memset(&in6, 0, sizeof(in6));
     in6.sin6_family = AF_INET6;
@@ -170,6 +186,7 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
     memcpy(&in6.sin6_addr, hp->h_addr_list[0], sizeof(struct in6_addr));
     r = connect(fd, (struct sockaddr *)&in, sizeof(struct sockaddr_in6));
     break;
+#endif
 
   default:
     snprintf(errbuf, errbufsize, "Invalid protocol family");
@@ -209,7 +226,11 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
         return -1;
       }
 
+#ifdef _XBOX
+      err = 0;
+#else
       getsockopt(fd, SOL_SOCKET, SO_ERROR, (void *)&err, &errlen);
+#endif
     } else {
       err = WSAGetLastError();
     }
@@ -388,11 +409,13 @@ htsp_tcp_read_timeout(socket_t fd, char *buf, size_t len, int timeout)
     if(x == 0)
       return ETIMEDOUT;
 
+#ifndef _XBOX
     x = recv(fd, buf + tot, len - tot, MSG_PEEK);
     if(x == 0)
       continue;
     else if(x == -1)
       return WSAGetLastError();
+#endif
 
     x = recv(fd, buf + tot, len - tot, 0);
     if(x == 0)

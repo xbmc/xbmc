@@ -60,6 +60,7 @@
 #include "SndtrkDirectory.h"
 #include "DAAPDirectory.h"
 #include "MemUnitDirectory.h"
+#include "HTSPDirectory.h"
 #endif
 #ifdef HAS_UPNP
 #include "UPnPDirectory.h"
@@ -140,6 +141,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "myth") return new CCMythDirectory();
     if (strProtocol == "cmyth") return new CCMythDirectory();
     if (strProtocol == "rss") return new CRSSDirectory();
+    if (strProtocol == "htsp") return new CHTSPDirectory();
   }
 
  return NULL;

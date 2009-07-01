@@ -26,7 +26,11 @@
 #include "FileItem.h"
 #include "utils/log.h"
 #ifdef _MSC_VER
+#ifdef _XBOX
+#include <winsockx.h>
+#else
 #include <winsock2.h>
+#endif
 #define SHUT_RDWR SD_BOTH
 #else
 #include <netinet/in.h>

@@ -4,6 +4,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xbmc", "xbmc.vcproj", "{311
 		{5AAA4F63-3B62-4C93-9BFE-76A42A935262} = {5AAA4F63-3B62-4C93-9BFE-76A42A935262}
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17} = {9B28366B-79F0-4361-B5C5-4608DFA8CF17}
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452} = {FE0A91C0-E30A-47CD-8A92-A508C9292452}
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3} = {870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}
 		{D33D36E6-6E4B-4C1B-A820-A12C94CB1411} = {D33D36E6-6E4B-4C1B-A820-A12C94CB1411}
 	EndProjectSection
 EndProject
@@ -22,6 +23,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrarXLib", "xbmc\lib\UnrarXLib\UnrarXLib.vcproj", "{FE0A91C0-E30A-47CD-8A92-A508C9292452}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9B28366B-79F0-4361-B5C5-4608DFA8CF17} = {9B28366B-79F0-4361-B5C5-4608DFA8CF17}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhts_2003", "xbmc\lib\libhts\Win32\libhts_2003.vcproj", "{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}"
+	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
 Global
@@ -156,6 +161,30 @@ Global
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release Xbox  Debugging.Build.0 = Release|Xbox
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Debug.ActiveCfg = Debug|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Debug.Build.0 = Debug|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Debug (Win32) Win32.ActiveCfg = Debug|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Debug (Win32) Win32.Build.0 = Debug|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Debug (Win32) Xbox.ActiveCfg = Debug|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Debug (Win32) Xbox.Build.0 = Debug|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Debug No Memory Tracking Xbox.ActiveCfg = Debug|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Debug No Memory Tracking Xbox.Build.0 = Debug|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Debug Xbox No Memory Tracking.ActiveCfg = Debug|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Debug Xbox No Memory Tracking.Build.0 = Debug|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Profile.ActiveCfg = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Profile.Build.0 = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Profile_FastCap.ActiveCfg = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Profile_FastCap.Build.0 = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Release.ActiveCfg = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Release.Build.0 = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Release (Win32) Win32.ActiveCfg = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Release (Win32) Win32.Build.0 = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Release (Win32) Xbox.ActiveCfg = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Release (Win32) Xbox.Build.0 = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Release Xbox  Debugging.ActiveCfg = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Release Xbox  Debugging.Build.0 = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Release_LTCG.ActiveCfg = Release|Xbox
+		{870DE8D3-B710-4CEF-9C73-36B37A9AF8A3}.Release_LTCG.Build.0 = Release|Xbox
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

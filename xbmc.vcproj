@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7,10"
+	Version="7.10"
 	Name="xbmc"
 	ProjectGUID="{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}"
 	RootNamespace="xbmc"
@@ -1712,6 +1712,18 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\HDHomeRun.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\HTSPDirectory.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\HTSPDirectory.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\HTSPSession.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\FileSystem\HTSPSession.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\FileSystem\HTTPDirectory.cpp">
@@ -3628,6 +3640,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxFFmpeg.h">
 					</File>
 					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxHTSP.cpp">
+					</File>
+					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxShoutcast.cpp">
 					</File>
 					<File
@@ -3681,6 +3696,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFile.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHTSP.cpp">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHttp.cpp">
