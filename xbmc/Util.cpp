@@ -4582,8 +4582,17 @@ void CUtil::ClearFileItemCache()
   }
 }
 
-#ifdef _LINUX
+void CUtil::InitRandomSeed()
+{
+  // Init random seed 
+  LARGE_INTEGER now; 
+  QueryPerformanceCounter(&now); 
+  unsigned int seed = (now.LowPart);
+//  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
+  srand(seed);
+}
 
+#ifdef _LINUX
 bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
 {
   CStdStringArray args;
