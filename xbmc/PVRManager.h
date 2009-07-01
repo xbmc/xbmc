@@ -82,8 +82,8 @@ public:
   static bool HasTimer() { return m_hasTimers;  }
   static bool IsRecording() { return m_isRecording; }
   bool        IsRecording(unsigned int channel, bool radio = false);
-  static bool IsPlayingTV() { return m_isPlayingTV; }
-  static bool IsPlayingRadio() { return m_isPlayingRadio; }
+  static bool IsPlayingTV();
+  static bool IsPlayingRadio();
 
   bool GetEPGInfo(unsigned int number, CFileItem& now, CFileItem& next, bool radio = false);
   int GetEPGAll(CFileItemList* results, bool radio = false);
@@ -175,9 +175,6 @@ private:
   unsigned long         m_currentClientID;
   bool                  m_synchronized;
 
-  static bool         m_isPlayingTV;
-  static bool         m_isPlayingRadio;
-  static bool         m_isPlayingRecording;
   static bool         m_isRecording;
   static bool         m_hasRecordings;
   static bool         m_hasTimers;
@@ -198,7 +195,7 @@ private:
   CStdString          m_totalDiskspace;
   CStdString          m_nextTimer;
 
-  CFileItem          *m_currentPlayingChannel;
+  static CFileItem   *m_currentPlayingChannel;
 
   int                 m_CurrentChannelID;
   int                 m_CurrentGroupID;
