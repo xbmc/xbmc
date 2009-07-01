@@ -73,6 +73,7 @@
 #ifdef HAS_FILESYSTEM_SAP
 #include "FileSystem/SAPDirectory.h"
 #endif
+#include "FileSystem/HTSPDirectory.h"
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
 #include "ApplicationRenderer.h"
@@ -5068,6 +5069,9 @@ void CApplication::ProcessSlow()
 
   // check for any idle myth sessions
   CCMythSession::CheckIdle();
+
+  // check for any idle htsp sessions
+  HTSP::CHTSPDirectorySession::CheckIdle();
 
 #ifdef HAS_TIME_SERVER
   // check for any needed sntp update

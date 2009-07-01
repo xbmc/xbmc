@@ -417,7 +417,8 @@ bool CDVDPlayer::OpenInputStream()
 
   // find any available external subtitles for non dvd files
   if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
-  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
+  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
   {
     if(g_stSettings.m_currentVideoSettings.m_SubtitleOn)
     {
@@ -792,7 +793,8 @@ void CDVDPlayer::Process()
   // We keep this in place as Xbox will suffer from A/V desync
   // at start otherwise
   if(!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) 
-  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV)
+  && !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_HTSP))
     SetCaching(true);
 
 
