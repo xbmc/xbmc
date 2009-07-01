@@ -198,8 +198,8 @@ private:
   CStdString          m_totalDiskspace;
   CStdString          m_nextTimer;
 
-  int                 m_CurrentRadioChannel;
-  int                 m_CurrentTVChannel;
+  CFileItem          *m_currentPlayingChannel;
+
   int                 m_CurrentChannelID;
   int                 m_CurrentGroupID;
   unsigned int        m_HiddenChannels;
@@ -221,7 +221,7 @@ private:
   CTVChannelInfoTag  *GetChannelByNumber(int Number, bool radio, int SkipGap = 0);
   CTVChannelInfoTag  *GetChannelByID(int Id, bool radio, int SkipGap = 0);
   void                SetMusicInfoTag(CFileItem& item, unsigned int channel);
-  void                SetCurrentPlayingProgram();
+  void                SetCurrentPlayingProgram(CTVChannelInfoTag *tag);
   void                LoadVideoSettings(unsigned int channel_id, bool update = true);
   void                SaveVideoSettings(unsigned int channel_id);
 };

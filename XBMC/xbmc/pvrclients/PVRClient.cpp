@@ -285,7 +285,13 @@ int CPVRClient::GetNumChannels()
 
 PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels, bool radio)
 {
-  return m_pClient->GetChannelList(&channels, radio);
+  PVR_ERROR ret = m_pClient->GetChannelList(&channels, radio);
+
+  for (unsigned int i = 0; i < channels.size(); i++)
+  {
+    channels[i].m_clientID = m_clientID;
+  }
+  return ret;
 }
 
 PVR_ERROR CPVRClient::GetChannelSettings(CTVChannelInfoTag *result)
