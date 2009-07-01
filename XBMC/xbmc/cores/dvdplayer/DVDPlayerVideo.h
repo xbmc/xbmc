@@ -27,6 +27,7 @@
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
+#include "DVDTSCorrection.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -170,5 +171,7 @@ protected:
   DVDVideoPicture* m_pTempOverlayPicture;
 
   CRITICAL_SECTION m_critCodecSection;
+  
+  CPullupCorrection m_pullupCorrection;
 };
 
