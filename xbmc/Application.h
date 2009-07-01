@@ -104,7 +104,7 @@ public:
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
   virtual bool OnMessage(CGUIMessage& message);
-  EPLAYERCORES GetCurrentPlayer();
+  PLAYERCOREID GetCurrentPlayer();
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
@@ -191,7 +191,7 @@ public:
 
   CCdgParser* m_pCdgParser;
 
-  EPLAYERCORES m_eForcedNextPlayer;
+  PLAYERCOREID m_eForcedNextPlayer;
   CStdString m_strPlayListFile;
 
   int GlobalIdleTime();
@@ -221,7 +221,7 @@ protected:
   CStdString m_prevMedia;
   CSplash* m_splash;
   DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
-  EPLAYERCORES m_eCurrentPlayer;
+  PLAYERCOREID m_eCurrentPlayer;
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
   bool m_bAllSettingsLoaded;

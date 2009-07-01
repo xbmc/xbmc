@@ -226,9 +226,9 @@ public:
     int m_thumbSize;
 
     int m_sambaclienttimeout;
-    bool m_sambastatfiles;
     CStdString m_sambadoscodepage;
-    bool m_bHTTPDirectoryLocalMode;
+    bool m_sambastatfiles;
+   
     bool m_bHTTPDirectoryStatFilesize;
 
     CStdString m_musicThumbs;
@@ -446,6 +446,8 @@ protected:
   bool LoadSettings(const CStdString& strSettingsFile);
 //  bool SaveSettings(const CStdString& strSettingsFile) const;
 
+  bool LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear);
+  
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;
