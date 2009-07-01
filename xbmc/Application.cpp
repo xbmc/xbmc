@@ -1184,6 +1184,8 @@ HRESULT CApplication::Create(HWND hWnd)
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
+  CUtil::InitRandomSeed();
+
   return CXBApplicationEx::Create(hWnd);
 }
 
@@ -1241,7 +1243,6 @@ HRESULT CApplication::Initialize()
   g_network.SetupNetwork();
 
   StartServices();
-
 
   m_gWindowManager.Add(new CGUIWindowHome);                     // window id = 0
 

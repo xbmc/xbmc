@@ -5896,3 +5896,13 @@ void CUtil::BootToDash()
   XLaunchNewImage(0, (PLAUNCH_DATA)&ld);
 #endif
 }
+
+void CUtil::InitRandomSeed()
+{
+  // Init random seed 
+  LARGE_INTEGER now; 
+  QueryPerformanceCounter(&now); 
+  unsigned int seed = (now.LowPart);
+//  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
+  srand(seed);
+}

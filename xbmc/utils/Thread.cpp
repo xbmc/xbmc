@@ -22,6 +22,7 @@
 #include <process.h>
 #include "win32exception.h"
 #include "Log.h"
+#include "Util.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -90,11 +91,10 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     CLog::Log(LOGERROR,"%s, sanity failed. thread is NULL.",__FUNCTION__);
     return 1;
   }
-    // Init random seed
-  LARGE_INTEGER now;
-  QueryPerformanceCounter(&now);
-  unsigned int seed = (now.LowPart);
-  srand(seed);
+  
+#ifdef _XBOX
+  CUtil::InitRandomSeed();
+#endif
 
 //  CLog::Log(LOGDEBUG,"thread start, auto delete: %d",pThread->IsAutoDelete());
 
