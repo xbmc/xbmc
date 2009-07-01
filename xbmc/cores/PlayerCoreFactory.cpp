@@ -41,8 +41,13 @@
 #include "GUIWindowManager.h"
 #include "FileItem.h"
 #include "Settings.h"
+#include "PlayerCoreConfig.h"
+#include "PlayerSelectionRule.h"
 
 using namespace AUTOPTR;
+
+std::vector<CPlayerCoreConfig *> CPlayerCoreFactory::s_vecCoreConfigs;
+std::vector<CPlayerSelectionRule *> CPlayerCoreFactory::s_vecCoreSelectionRules;
 
 CPlayerCoreFactory::CPlayerCoreFactory()
 {}
@@ -68,56 +73,54 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const CStdString& strCore, IPlayerCall
   return CreatePlayer( GetPlayerCore(strCore), callback ); 
 }
 
-IPlayer* CPlayerCoreFactory::CreatePlayer(const EPLAYERCORES eCore, IPlayerCallback& callback)
+IPlayer* CPlayerCoreFactory::CreatePlayer(const PLAYERCOREID eCore, IPlayerCallback& callback)
 {
-  switch( eCore )
-  {
-    case EPC_DVDPLAYER: return new CDVDPlayer(callback);
-#ifdef HAS_XBOX_HARDWARE
-    case EPC_MPLAYER: return new CMPlayer(callback);
-#else
-    case EPC_MPLAYER: return new CDVDPlayer(callback);
-#endif
-#ifdef HAS_MODPLAYER
-    case EPC_MODPLAYER: return new ModPlayer(callback);
-#endif
-    case EPC_PAPLAYER: return new PAPlayer(callback); // added by dataratt
+  if (!s_vecCoreConfigs.size() || eCore-1 > s_vecCoreConfigs.size()-1)
+    return NULL;
 
-    default:
-       return NULL; 
+  return s_vecCoreConfigs[eCore-1]->CreatePlayer(callback);
+}
+
+PLAYERCOREID CPlayerCoreFactory::GetPlayerCore(const CStdString& strCoreName)
+{
+  // Dereference "*default*player" aliases
+  CStdString strRealCoreName;
+  if (strCoreName.Equals("audiodefaultplayer", false)) strRealCoreName = g_advancedSettings.m_audioDefaultPlayer;
+  else if (strCoreName.Equals("videodefaultplayer", false)) strRealCoreName = g_advancedSettings.m_videoDefaultPlayer;
+  else strRealCoreName = strCoreName;
+
+  for(PLAYERCOREID i = 0; i < s_vecCoreConfigs.size(); i++)
+  {
+    if (s_vecCoreConfigs[i]->GetName().Equals(strRealCoreName, false))
+      return i+1;
   }  
+  return 0;
 }
 
-EPLAYERCORES CPlayerCoreFactory::GetPlayerCore(const CStdString& strCore)
+CStdString CPlayerCoreFactory::GetPlayerName(const PLAYERCOREID eCore)
 {
-  CStdString strCoreLower = strCore;
-  strCoreLower.ToLower();
-
-  if (strCoreLower == "dvdplayer") return EPC_DVDPLAYER;
-  if (strCoreLower == "mplayer") return EPC_MPLAYER;
-  if (strCoreLower == "mod") return EPC_MODPLAYER;
-  if (strCoreLower == "paplayer" ) return EPC_PAPLAYER;
-  return EPC_NONE;
+  return s_vecCoreConfigs[eCore-1]->GetName();
 }
 
-CStdString CPlayerCoreFactory::GetPlayerName(const EPLAYERCORES eCore)
+CPlayerCoreConfig* CPlayerCoreFactory::GetPlayerConfig(const CStdString& strCoreName)
 {
-  switch( eCore )
-  {
-    case EPC_DVDPLAYER: return "DVDPlayer";
-    case EPC_MPLAYER: return "MPlayer";
-    case EPC_MODPLAYER: return "MODPlayer";
-    case EPC_PAPLAYER: return "PAPlayer";
-    default: return "";
-  }
+  PLAYERCOREID id = GetPlayerCore(strCoreName);
+  if (id != EPC_NONE) return s_vecCoreConfigs[id-1];
+  else return NULL;
 }
 
 void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores )
 {
-  vecCores.push_back(EPC_MPLAYER);
-  vecCores.push_back(EPC_DVDPLAYER);
-  vecCores.push_back(EPC_MODPLAYER);
-  vecCores.push_back(EPC_PAPLAYER);
+  for(unsigned int i = 0; i < s_vecCoreConfigs.size(); i++)
+    if (s_vecCoreConfigs[i]->m_bPlaysAudio || s_vecCoreConfigs[i]->m_bPlaysVideo)
+      vecCores.push_back(i+1);
+}
+
+void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores, const bool audio, const bool video )
+{
+  for(unsigned int i = 0; i < s_vecCoreConfigs.size(); i++)
+    if (audio == s_vecCoreConfigs[i]->m_bPlaysAudio && video == s_vecCoreConfigs[i]->m_bPlaysVideo)
+      vecCores.push_back(i+1);
 }
 
 void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecCores)
@@ -126,107 +129,9 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
 
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", item.m_strPath.c_str());
 
-  // ugly hack for ReplayTV. our filesystem is broken against real ReplayTV's (not the psuevdo DVArchive)
-  // it breaks down for small requests. As we can't allow truncated reads for all emulated dll file functions
-  // we are often forced to do small reads to fill up the full buffer size wich seems gives garbage back
-  if (url.GetProtocol().Equals("rtv"))
-  {
-    vecCores.push_back(EPC_MPLAYER); // vecCores.push_back(EPC_DVDPLAYER);
-  }
-  
-
-  if (url.GetProtocol().Equals("hdhomerun")
-/*  ||  url.GetProtocol().Equals("myth")
-  ||  url.GetProtocol().Equals("cmyth")*/
-  ||  url.GetProtocol().Equals("rtmp"))
-  {
-    vecCores.push_back(EPC_DVDPLAYER);
-  }
-
-  if (url.GetProtocol().Equals("lastfm"))
-  {
-    vecCores.push_back(EPC_PAPLAYER);    
-  }
-
-  // DVDPlayer (+ our MMS FS) doesn't fully support MMS (yet) so use MPlayer
-  if (url.GetProtocol().Equals("mms"))
-  {
-    vecCores.push_back(EPC_MPLAYER);
-  }
-  
-  // dvdplayer can play standard rtsp streams, mplayer can't
-  if (url.GetProtocol().Equals("rtsp") 
-  && !url.GetFileType().Equals("rm") 
-  && !url.GetFileType().Equals("ra"))
-  {
-    vecCores.push_back(EPC_DVDPLAYER);
-  }
-
-  // Special care in case it's an internet stream
-  if (item.IsInternetStream())
-  {
-    CStdString content = item.GetContentType();
-    CLog::Log(LOGDEBUG, "%s - Item is an internet stream, content-type=%s", __FUNCTION__, content.c_str());
-
-    if (content == "video/x-flv" // mplayer fails on these
-    ||  content == "video/flv")
-    {
-      vecCores.push_back(EPC_DVDPLAYER);
-    }
-    else if (content == "audio/aacp") // mplayer has no support for AAC+
-    {         
-      vecCores.push_back(EPC_DVDPLAYER);
-    }
-    else if (content == "application/octet-stream")
-    {
-      // unknown contenttype, send mp2 to pap, mplayer fails
-      if (url.GetFileType().Equals("mp2"))
-        vecCores.push_back(EPC_PAPLAYER);
-    }
-
-    // add mplayer as a high prio player for some internet streams
-    if (url.GetFileType().Equals("wmv"))
-    {
-      vecCores.push_back(EPC_MPLAYER);
-    }
-  }
-
-  if (item.IsDVD() || item.IsDVDFile() || item.IsDVDImage())
-  {
-    vecCores.push_back(EPC_DVDPLAYER);
-  }
-
-  // These types only work (properly) with MPlayer
-  // force flv files to mplayer due to weak http streaming in dvdplayer
-  if (url.GetFileType().Equals("flv")
-  ||  url.GetFileType().Equals("ts")
-  ||  url.GetFileType().Equals("asf")
-  ||  url.GetFileType().Equals(""))
-  {
-    vecCores.push_back(EPC_MPLAYER);
-  }
-
-  // .mp4 doesn't seem to work properly with MPlayer so force DVDPlayer
-  if (url.GetFileType().Equals("mp4"))
-  {
-    vecCores.push_back(EPC_DVDPLAYER);
-  }
-
-  // Set video default player. Check whether it's video first (overrule audio check)
-  // Also push these players in case it is NOT audio either
-  if (item.IsVideo() || !item.IsAudio()) 
-  {
-    if ( g_advancedSettings.m_videoDefaultPlayer == "dvdplayer" )
-    {
-      vecCores.push_back(EPC_DVDPLAYER);
-      vecCores.push_back(EPC_MPLAYER);
-    }
-    else
-    {
-      vecCores.push_back(EPC_MPLAYER);
-      vecCores.push_back(EPC_DVDPLAYER);
-    }
-  }
+  // Process rules
+  for(unsigned int i = 0; i < s_vecCoreSelectionRules.size(); i++)
+    s_vecCoreSelectionRules[i]->GetPlayers(item, vecCores);
 
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
@@ -268,34 +173,31 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   }
 #endif
 
-  // Set audio default player
-  if( item.IsAudio())
+  // Process defaults
+
+  // Set video default player. Check whether it's video first (overrule audio check)
+  // Also push these players in case it is NOT audio either
+  if (item.IsVideo() || !item.IsAudio()) 
   {
-    if ( g_advancedSettings.m_audioDefaultPlayer == "dvdplayer" )
-    {
-      vecCores.push_back(EPC_DVDPLAYER);
-      vecCores.push_back(EPC_PAPLAYER);
-      vecCores.push_back(EPC_MPLAYER);
+    vecCores.push_back(GetPlayerCore("videodefaultplayer"));
+    GetPlayers(vecCores, false, true);  // Video-only players
+    GetPlayers(vecCores, true, true);   // Audio & video players
     }
-    else if ( g_advancedSettings.m_audioDefaultPlayer == "mplayer" )
-    {
-      vecCores.push_back(EPC_MPLAYER);
-      vecCores.push_back(EPC_PAPLAYER);
-      vecCores.push_back(EPC_DVDPLAYER);
-    }
-    else
-    {
-      vecCores.push_back(EPC_PAPLAYER);
-      vecCores.push_back(EPC_DVDPLAYER);
-      vecCores.push_back(EPC_MPLAYER);
-    }
+
+  // Set audio default player
+  // Pushback all audio players in case we don't know the type
+  if (item.IsAudio())
+  {
+      vecCores.push_back(GetPlayerCore("audiodefaultplayer"));
+      GetPlayers(vecCores, true, false); // Audio-only players
+      GetPlayers(vecCores, true, true);  // Audio & video players
   }
 
   /* make our list unique, preserving first added players */
   unique(vecCores);
 }
 
-EPLAYERCORES CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item )
+PLAYERCOREID CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item )
 {
   VECPLAYERCORES vecCores;
   GetPlayers(item, vecCores);
@@ -306,7 +208,7 @@ EPLAYERCORES CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item )
   return EPC_NONE;
 }
 
-EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX, float posY)
+PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, float posX, float posY)
 {
 
   CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
@@ -358,9 +260,98 @@ EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(VECPLAYERCORES &vecCores, fl
   return EPC_NONE;
 }
 
-EPLAYERCORES CPlayerCoreFactory::SelectPlayerDialog(float posX, float posY)
+PLAYERCOREID CPlayerCoreFactory::SelectPlayerDialog(float posX, float posY)
 {
   VECPLAYERCORES vecCores;
   GetPlayers(vecCores);
   return SelectPlayerDialog(vecCores, posX, posY);
+}
+
+bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
+{
+  if (clear)
+  {
+    s_vecCoreConfigs.clear();
+    // Builtin players; hard-coded because re-ordering them would break scripts
+    CPlayerCoreConfig* dvdplayer = new CPlayerCoreConfig("DVDPlayer", EPC_DVDPLAYER, NULL);
+    dvdplayer->m_bPlaysAudio = dvdplayer->m_bPlaysVideo = true;
+    s_vecCoreConfigs.push_back(dvdplayer);
+
+    CPlayerCoreConfig* mplayer = new CPlayerCoreConfig("MPlayer", EPC_MPLAYER, NULL);
+    s_vecCoreConfigs.push_back(mplayer);
+
+    CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", EPC_PAPLAYER, NULL);
+    paplayer->m_bPlaysAudio = true;
+    s_vecCoreConfigs.push_back(paplayer);
+
+    s_vecCoreSelectionRules.clear();
+  }
+
+  if (!pConfig || strcmpi(pConfig->Value(),"playercorefactory") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading configuration, no <playercorefactory> node");
+    return false;
+  }
+  
+  CStdString xml;
+  xml<<*pConfig;
+  CLog::Log(LOGNOTICE, "Loading playercorefactory configuration from %s", xml.c_str());
+
+  TiXmlElement *pPlayers = pConfig->FirstChildElement("players");
+  if (pPlayers)
+  {
+    TiXmlElement* pPlayer = pPlayers->FirstChildElement("player");
+    while (pPlayer)
+    {
+      CStdString name = pPlayer->Attribute("name");
+      CStdString type = pPlayer->Attribute("type");
+      if (type.length() == 0) type = name;
+      type.ToLower();
+
+      EPLAYERCORES eCore = EPC_NONE;
+      if (type == "dvdplayer") eCore = EPC_DVDPLAYER;
+      if (type == "mplayer" ) eCore = EPC_MPLAYER;
+      if (type == "paplayer" ) eCore = EPC_PAPLAYER;
+
+      if (eCore != EPC_NONE)
+      {
+        s_vecCoreConfigs.push_back(new CPlayerCoreConfig(name, eCore, pPlayer));
+      }
+
+      pPlayer = pPlayer->NextSiblingElement("player");
+    }
+  }
+
+  TiXmlElement *pRule = pConfig->FirstChildElement("rules");
+  while (pRule)
+  {
+    const char* szAction = pRule->Attribute("action");
+    if (szAction)
+    {
+      if (stricmp(szAction, "append") == 0)
+      {
+        s_vecCoreSelectionRules.push_back(new CPlayerSelectionRule(pRule));
+      }
+      else if (stricmp(szAction, "prepend") == 0)
+      {
+        s_vecCoreSelectionRules.insert(s_vecCoreSelectionRules.begin(), 1, new CPlayerSelectionRule(pRule));
+      }
+      else
+      {
+        s_vecCoreSelectionRules.clear();
+        s_vecCoreSelectionRules.push_back(new CPlayerSelectionRule(pRule));
+      }
+    }
+    else
+    {
+      s_vecCoreSelectionRules.push_back(new CPlayerSelectionRule(pRule));
+    }
+
+    pRule = pRule->NextSiblingElement("rules");
+  }
+
+  // succeeded - tell the user it worked
+  CLog::Log(LOGNOTICE, "Loaded playercorefactory configuration");
+
+  return true;
 }

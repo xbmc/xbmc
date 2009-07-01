@@ -3066,6 +3066,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				RelativePath=".\xbmc\cores\PlayerCoreFactory.h">
 			</File>
 			<File
+				RelativePath=".\xbmc\cores\PlayerSelectionRule.h">
+			</File>
+			<File
 				RelativePath=".\xbmc\PlayList.h">
 			</File>
 			<File
@@ -3296,6 +3299,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories="xbmc/lib/libsidplay/libsidplay/include,xbmc/lib/libsidplay/libsidutils/include,xbmc\lib\libsidplay\builders\resid-builder\include"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\xbmc\cores\PlayerSelectionRule.cpp">
 			</File>
 			<File
 				RelativePath=".\xbmc\cores\ssrc.cpp">

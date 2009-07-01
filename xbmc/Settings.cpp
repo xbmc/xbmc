@@ -51,6 +51,7 @@
 #ifdef HAS_XBOX_HARDWARE
 #include "utils/MemoryUnitManager.h"
 #endif
+#include "cores/PlayerCoreFactory.h"
 
 using namespace std;
 using namespace XFILE;
@@ -219,7 +220,6 @@ void CSettings::Initialize()
   g_advancedSettings.m_sambadoscodepage = "";
   g_advancedSettings.m_sambastatfiles = true;
 
-  g_advancedSettings.m_bHTTPDirectoryLocalMode = false;
   g_advancedSettings.m_bHTTPDirectoryStatFilesize = false;
 
   g_advancedSettings.m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
@@ -991,8 +991,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   g_guiSettings.LoadXML(pRootElement);
   LoadSkinSettings(pRootElement);
 
+  // Configure the PlayerCoreFactory 
+  LoadPlayerCoreFactorySettings("special://xbmc/system/playercorefactory.xml", true); 
+  LoadPlayerCoreFactorySettings(g_settings.GetUserDataItem("playercorefactory.xml"), false); 
+
   // Advanced settings
   LoadAdvancedSettings();
+
   // Default players?
   CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
   CLog::Log(LOGNOTICE, "Default Audio Player: %s", g_advancedSettings.m_audioDefaultPlayer.c_str());
@@ -1180,10 +1185,7 @@ void CSettings::LoadAdvancedSettings()
 
   pElement = pRootElement->FirstChildElement("httpdirectory");
   if (pElement)
-  {
-    XMLUtils::GetBoolean(pElement, "localmode", g_advancedSettings.m_bHTTPDirectoryLocalMode);
     XMLUtils::GetBoolean(pElement, "statfilesize", g_advancedSettings.m_bHTTPDirectoryStatFilesize);
-  }
 
   if (XMLUtils::GetInt(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
@@ -1480,6 +1482,24 @@ void CSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLI
     }
     pRegExp = pRegExp->NextSibling("regexp");
   }
+}
+
+bool CSettings::LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear)
+{
+  if (!CFile::Exists(fileStr))
+  { // tell the user it doesn't exist
+    CLog::Log(LOGNOTICE, "No playercorefactory.xml to load (%s)", fileStr.c_str());
+    return false;
+  }
+
+  TiXmlDocument playerCoreFactoryXML;
+  if (!playerCoreFactoryXML.LoadFile(fileStr))
+  {
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", fileStr.c_str(), playerCoreFactoryXML.ErrorRow(), playerCoreFactoryXML.ErrorDesc());
+    return false;
+  }
+
+  return CPlayerCoreFactory::LoadConfiguration(playerCoreFactoryXML.RootElement(), clear);
 }
 
 bool CSettings::LoadAvpackXML()
