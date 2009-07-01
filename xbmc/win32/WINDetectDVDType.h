@@ -41,7 +41,9 @@ public:
   void AddMedia(CStdString& strDrive);
   void RemoveMedia(CStdString& strDrive);
   CCdInfo* GetCdInfo(CStdString& strDrive);
-  bool IsAudio(CStdString& strDrive);
+  bool IsAudio(CStdString strDrive="");
+  bool IsDiscInDrive(CStdString strDrive="");
+  DWORD GetTrayState(CStdString strDrive="");
 
 private:
   static CWINDetectDVDMedia* m_instance;
@@ -50,6 +52,8 @@ private:
   ~CWINDetectDVDMedia();
 
   void RemoveAllMedia();
+  CStdString GetDrive(CStdString strDrive="");
+  CStdString GetDevice(CStdString strDrive="");
 
   std::map<char,CCdInfo*> m_mapCdInfo;
   CCriticalSection m_critsec;
