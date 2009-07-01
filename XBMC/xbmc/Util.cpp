@@ -4587,7 +4587,7 @@ void CUtil::InitRandomSeed()
   // Init random seed 
   LARGE_INTEGER now; 
   QueryPerformanceCounter(&now); 
-  unsigned int seed = (now.LowPart);
+  unsigned int seed = (now.u.LowPart);
 //  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
   srand(seed);
 }
