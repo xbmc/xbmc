@@ -278,6 +278,7 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
     s_vecCoreConfigs.push_back(dvdplayer);
 
     CPlayerCoreConfig* mplayer = new CPlayerCoreConfig("MPlayer", EPC_MPLAYER, NULL);
+    mplayer->m_bPlaysAudio = mplayer->m_bPlaysVideo = true;
     s_vecCoreConfigs.push_back(mplayer);
 
     CPlayerCoreConfig* paplayer = new CPlayerCoreConfig("PAPlayer", EPC_PAPLAYER, NULL);
