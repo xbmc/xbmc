@@ -38,15 +38,15 @@ public:
   static CWINDetectDVDMedia* GetInstance();
   static void Destroy();
 
-  void AddMedia(CStdString& strDrive);
-  void RemoveMedia(CStdString& strDrive);
-  CCdInfo* GetCdInfo(CStdString& strDrive);
-  bool IsAudio(CStdString strDrive="");
-  bool IsDiscInDrive(CStdString strDrive="");
+  void AddMedia(const CStdString& strDrive);
+  void RemoveMedia(const CStdString& strDrive);
+  CCdInfo* GetCdInfo(const CStdString& strDrive);
+  bool IsAudio(const CStdString& strDrive="");
+  bool IsDiscInDrive(const CStdString& strDrive="");
   void WaitMediaReady();
-  CStdString GetDVDLabel(CStdString strDrive="");
-  CStdString GetDVDPath(CStdString strDrive="");
-  DWORD GetTrayState(CStdString strDrive="");
+  CStdString GetDVDLabel(const CStdString& strDrive="");
+  CStdString GetDVDPath(const CStdString& strDrive="");
+  DWORD GetTrayState(const CStdString& strDrive="");
 
 private:
   static CWINDetectDVDMedia* m_instance;
@@ -55,8 +55,8 @@ private:
   ~CWINDetectDVDMedia();
 
   void RemoveAllMedia();
-  CStdString GetDrive(CStdString strDrive="");
-  CStdString GetDevice(CStdString strDrive="");
+  CStdString GetDrive(const CStdString& strDrive="");
+  CStdString GetDevice(const CStdString& strDrive="");
 
   std::map<char,CCdInfo*> m_mapCdInfo;
   CCriticalSection m_critsec;
