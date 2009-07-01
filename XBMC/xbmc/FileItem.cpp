@@ -213,7 +213,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_strPath = share.strPath;
   CUtil::AddSlashAtEnd(m_strPath);
   CStdString label = share.strName;
-  if (share.strStatus.size())
+  if (!share.strStatus.IsEmpty())
     label.Format("%s (%s)", share.strName.c_str(), share.strStatus.c_str());
   SetLabel(label);
   m_iLockMode = share.m_iLockMode;
@@ -585,7 +585,7 @@ bool CFileItem::IsInternetStream() const
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
 
-  if (strProtocol.size() == 0 || HasProperty("IsHTTPDirectory"))
+  if (strProtocol.IsEmpty() || HasProperty("IsHTTPDirectory"))
     return false;
 
   // there's nothing to stop internet streams from being stacked
@@ -860,9 +860,7 @@ void CFileItem::FillInDefaultIcon()
   //   for .. folders the default picture for parent folder
   //   for other folders the defaultFolder.png
 
-  CStdString strThumb;
-  CStdString strExtension;
-  if (GetIconImage() == "")
+  if (GetIconImage().IsEmpty())
   {
     if (!m_bIsFolder)
     {
@@ -898,12 +896,9 @@ void CFileItem::FillInDefaultIcon()
       else if ( IsShortCut() && !IsLabelPreformated() )
       {
         // shortcut
-        CStdString strDescription;
-        CStdString strFName;
-        strFName = CUtil::GetFileName(m_strPath);
-
+        CStdString strFName = CUtil::GetFileName(m_strPath);
         int iPos = strFName.ReverseFind(".");
-        strDescription = strFName.Left(iPos);
+        CStdString strDescription = strFName.Left(iPos);
         SetLabel(strDescription);
         SetIconImage("DefaultShortcut.png");
       }
@@ -974,7 +969,6 @@ void CFileItem::SetCachedArtistThumb()
   {
     // found it, we are finished.
     SetThumbnailImage(thumb);
-//    SetIconImage(strThumb);
   }
 }
 
@@ -982,6 +976,7 @@ void CFileItem::SetCachedArtistThumb()
 void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
 {
   if (HasThumbnail()) return;
+  
   SetCachedMusicThumb();
   if (!HasThumbnail())
     SetUserMusicThumb(alwaysCheckRemote);
@@ -1000,7 +995,7 @@ void CFileItem::SetCachedSeasonThumb()
 void CFileItem::RemoveExtension()
 {
   if (m_bIsFolder)
-    return ;
+    return;
   CStdString strLabel = GetLabel();
   CUtil::RemoveExtension(strLabel);
   SetLabel(strLabel);
