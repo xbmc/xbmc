@@ -76,6 +76,7 @@ bool CRemoteControl::Initialize()
 {
   //trying to connect when there is nothing to connect to is kinda slow so kick it off in a thread.
   Create();
+  SetName("CRemoteControl");
   return true;
 }
 
