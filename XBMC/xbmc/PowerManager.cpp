@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "PowerManager.h"
 #include "Application.h"
+#include "common/Keyboard.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -115,6 +116,7 @@ bool CPowerManager::Suspend()
 #ifdef HAS_LCD
     g_lcd->SetBackLight(0);
 #endif
+    g_Keyboard.ResetState();
     return m_instance->Suspend();
   }
   
@@ -126,6 +128,7 @@ bool CPowerManager::Hibernate()
   {
     g_application.m_restartLirc = true;
     g_application.m_restartLCD = true;
+    g_Keyboard.ResetState();
     return m_instance->Hibernate();
   }
 
