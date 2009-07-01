@@ -82,12 +82,15 @@ CStdString CWINDetectDVDMedia::GetDevice(CStdString strDrive)
 
 void CWINDetectDVDMedia::AddMedia(CStdString& strDrive)
 {
+  CSingleLock waitLock(m_critsec);
   CStdString strPath = GetDrive(strDrive);
   std::map<char,CCdInfo*>::iterator it;
   it = m_mapCdInfo.find(strPath[0]);
   if(it == m_mapCdInfo.end())
   {
+    CStdString strNewUrl;
     CCdIoSupport cdio;
+    CLog::Log(LOGINFO, "Detecting DVD-ROM media filesystem...");
     CCdInfo* pCdInfo = cdio.GetCdInfo((char*)strPath.c_str());
     if (pCdInfo == NULL)
     {
@@ -96,11 +99,35 @@ void CWINDetectDVDMedia::AddMedia(CStdString& strDrive)
     }
     else
       m_mapCdInfo.insert(std::pair<char,CCdInfo*>(strPath[0],pCdInfo));
+
+    CLog::Log(LOGINFO, "Tracks overall:%i; Audio tracks:%i; Data tracks:%i",
+              pCdInfo->GetTrackCount(),
+              pCdInfo->GetAudioTrackCount(),
+              pCdInfo->GetDataTrackCount() );
+
+    if(pCdInfo->IsAudio(1))
+      strNewUrl = "cdda://local/"; // we need to extend the cdda: protocol to support other drives (dvd:// as well?)
+    else
+      strNewUrl = strPath;
+
+    CLog::Log(LOGINFO, "Using protocol %s", strNewUrl.c_str());
+
+    if (pCdInfo->IsValidFs())
+    {
+      if (!pCdInfo->IsAudio(1))
+        CLog::Log(LOGINFO, "Disc label: %s", pCdInfo->GetDiscLabel().c_str());
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "Filesystem is not supported");
+    }
+
   }
 }
 
 void CWINDetectDVDMedia::RemoveMedia(CStdString& strDrive)
 {
+  CSingleLock waitLock(m_critsec);
   CStdString strPath = GetDrive(strDrive);
   std::map<char,CCdInfo*>::iterator it;
   it = m_mapCdInfo.find(strPath[0]);
@@ -138,6 +165,7 @@ CCdInfo* CWINDetectDVDMedia::GetCdInfo(CStdString& strDrive)
 
 bool CWINDetectDVDMedia::IsAudio(CStdString strDrive)
 {
+  CSingleLock waitLock(m_critsec);
   CCdInfo* pCdInfo = GetCdInfo(strDrive);
   if(pCdInfo != NULL)
     return pCdInfo->IsAudio(1);
@@ -148,6 +176,46 @@ bool CWINDetectDVDMedia::IsAudio(CStdString strDrive)
 bool CWINDetectDVDMedia::IsDiscInDrive(CStdString strDrive)
 {
   return GetTrayState(strDrive) == DRIVE_CLOSED_MEDIA_PRESENT;
+}
+
+void CWINDetectDVDMedia::WaitMediaReady()
+{
+  CSingleLock waitLock(m_critsec);
+}
+
+CStdString CWINDetectDVDMedia::GetDVDLabel(CStdString strDrive)
+{
+  CSingleLock waitLock(m_critsec);
+  CStdString strPath = GetDrive(strDrive);
+  std::map<char,CCdInfo*>::iterator it;
+  it = m_mapCdInfo.find(strPath[0]);
+  if(it == m_mapCdInfo.end())
+    return "";
+  
+  CStdString strLabel;
+  if(it->second->IsAudio(1))
+    strLabel = "Audio-CD";
+  else
+  {
+    strLabel = it->second->GetDiscLabel();
+    strLabel.TrimRight(" ");
+  }
+
+  return strLabel;
+}
+
+CStdString CWINDetectDVDMedia::GetDVDPath(CStdString strDrive)
+{
+  CSingleLock waitLock(m_critsec);
+  CStdString strPath = GetDrive(strDrive);
+  std::map<char,CCdInfo*>::iterator it;
+  it = m_mapCdInfo.find(strPath[0]);
+  if(it != m_mapCdInfo.end())
+  {
+    if(it->second->IsAudio(1))
+      strPath = "cdda://local/";
+  }
+  return strPath;
 }
 
 DWORD CWINDetectDVDMedia::GetTrayState(CStdString strDrive)
