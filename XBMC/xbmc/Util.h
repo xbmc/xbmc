@@ -337,6 +337,8 @@ public:
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
   static void ClearFileItemCache();
+  
+  static void InitRandomSeed();
 
 #ifdef _LINUX
   // this will run the command using sudo in a new process.
