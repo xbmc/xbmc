@@ -251,7 +251,8 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
     
     if (!MatchDiff(diff, m_pattern[i]))
     {
-      Flush(); //if the current pattern doesn't match the saved pattern, flush the ringbuffer
+      m_pattern = pattern; //save the current pattern
+      m_patternpos = 0;    //reset the position
       return false;
     }
     //we save the pattern, in case it changes very slowly
