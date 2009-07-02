@@ -514,6 +514,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDTSCorrection.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDTSCorrection.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\IDVDPlayer.h"
 					>
 				</File>
