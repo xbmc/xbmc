@@ -848,6 +848,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     m_pullupCorrection.Add(pts);
     pts += m_pullupCorrection.Correction();
   }
+  else
+  {
+    m_pullupCorrection.Flush();
+  }
   
   //User set delay
   pts += m_iVideoDelay;

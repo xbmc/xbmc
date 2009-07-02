@@ -29,9 +29,11 @@ class CPullupCorrection
 {
   public:
     CPullupCorrection();
-    void Add(double pts);
+    void   Add(double pts);
     double Correction() {return m_ptscorrection;}
-    void Flush(); //flush the saved pattern and the ringbuffer
+    void   Flush(); //flush the saved pattern and the ringbuffer
+    
+    int    GetPatternLength() {return m_patternlength;}
     
   private:
     double m_prevpts;                //last pts added
@@ -42,17 +44,19 @@ class CPullupCorrection
     
     std::vector<double> GetPattern();           //gets the current pattern
     std::vector<double> GetDifftypes();         //gets the difftypes from the ringbuffer
+    
     bool MatchDiff(double diff1, double diff2); //checks if two diffs match by MAXERR
     bool MatchDifftype(int* diffs1, int* diffs2, int nrdiffs); //checks if the difftypes match
-    bool m_haspattern; //for the log
-    
-    std::vector<double> m_pattern; //the last saved pattern
-    int m_patternpos;              //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
     
     std::vector<double> BuildPattern(int patternlength); //builds a pattern of timestamps in the ringbuffer
     bool CheckPattern(std::vector<double>& pattern); //checks if the current pattern matches with the saved m_pattern
                                                      //with offset m_patternpos
     
     double CalcFrameDuration(); //calculates the frame duration from m_pattern
-    double m_ptscorrection;     //the correction needed for the last added pts
+
+    std::vector<double> m_pattern; //the last saved pattern
+    int    m_patternpos;           //the position of the pattern in the ringbuffer, moves one to the past each time a pts is added
+    double m_ptscorrection;        //the correction needed for the last added pts
+    bool   m_haspattern;           //for the log
+    int    m_patternlength;        //for the codec info
 };

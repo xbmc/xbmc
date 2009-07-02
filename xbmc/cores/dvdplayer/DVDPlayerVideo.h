@@ -91,6 +91,7 @@ public:
   bool InitializedOutputDevice();
 
   double GetCurrentPts()                           { return m_iCurrentPts; }
+  int    GetPullupCorrection()                     { return m_pullupCorrection.GetPatternLength(); }
 
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo();
