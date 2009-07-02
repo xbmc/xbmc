@@ -5,6 +5,9 @@
 #define strcasecmp stricmp
 #define strncasecmp strnicmp
 #define strdup _strdup
+#if _MSC_VER < 1500
+#define vsnprintf _vsnprintf
+#endif
 
 static char * strndup(const char* str, size_t len)
 {

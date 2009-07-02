@@ -23,6 +23,9 @@
 #include <string.h>
 #include <stdarg.h>
 #include "htsbuf.h"
+#ifdef _MSC_VER
+#include "msvc.h"
+#endif
 
 #ifndef MIN
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
