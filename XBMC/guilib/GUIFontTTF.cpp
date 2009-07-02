@@ -252,6 +252,10 @@ void CGUIFontTTF::Clear()
   if (m_face)
     g_freeTypeLibrary.ReleaseFont(m_face);
   m_face = NULL;
+  
+  free(m_vertex);
+  m_vertex = NULL;
+  m_vertex_count = 0;
 }
 
 bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing)
@@ -1006,7 +1010,7 @@ struct CUSTOMVERTEX {
   if(m_vertex_count >= m_vertex_size)
   {
     m_vertex_size *= 2;
-    m_vertex       = (SVertex*)realloc(m_vertex, m_vertex_size);
+    m_vertex       = (SVertex*)realloc(m_vertex, m_vertex_size * sizeof(SVertex));
   }
 
   SVertex* v = m_vertex + m_vertex_count;
