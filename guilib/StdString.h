@@ -1718,6 +1718,7 @@ inline void ssupr(CT* pT, size_t nLen, const std::locale& loc=std::locale())
   {
     return ::LoadStringW(hInst, uId, pBuf, nMax);
   }
+#if defined ( _MSC_VER ) && ( _MSC_VER >= 1500 )
   inline int ssload(HMODULE hInst, UINT uId, uint16_t *pBuf, int nMax)
   {
     return 0;
@@ -1726,6 +1727,7 @@ inline void ssupr(CT* pT, size_t nLen, const std::locale& loc=std::locale())
   {
     return 0;
   }
+#endif
 #endif
 
 
