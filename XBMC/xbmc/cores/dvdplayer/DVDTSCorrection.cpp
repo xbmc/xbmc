@@ -39,6 +39,7 @@ void CPullupCorrection::Flush()
   m_ringfill = 0;
   m_pattern.clear();
   m_haspattern = false;
+  m_patternlength = 0;
 }
 
 void CPullupCorrection::Add(double pts)
@@ -75,6 +76,7 @@ void CPullupCorrection::Add(double pts)
     if (m_haspattern)
     {
       m_haspattern = false;
+      m_patternlength = 0;
       CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost");
     }
     return;
@@ -82,6 +84,7 @@ void CPullupCorrection::Add(double pts)
   else if (!m_haspattern)
   {
     m_haspattern = true;
+    m_patternlength = m_pattern.size();
     CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i", pattern.size());
   }
   
