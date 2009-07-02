@@ -459,6 +459,7 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
             framesToWrite);
     Flush();
+    return 0;
   }
   else if (writeResult != framesToWrite) {
     CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
