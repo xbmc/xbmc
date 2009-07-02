@@ -2725,6 +2725,8 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // set fullscreen or windowed
     if (params2.size() == 2 && params2[1] == "1")
       g_stSettings.m_bStartVideoWindowed = true;
+    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
+      item.m_lStartOffset = STARTOFFSET_RESUME;
 
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
