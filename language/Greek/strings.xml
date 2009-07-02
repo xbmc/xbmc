@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/17/2009-->
+<!--Date of translation: 06/29/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21081-->
+<!--Based on english strings version 21246-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -152,7 +152,7 @@
   <string id="214">Βαθμονόμηση βίντεο…</string>
   <string id="215">Απάλυνση εικόνας</string>
   <string id="216">Ποσοστό μεγέθυνσης</string>
-  <string id="217">Αναλογία εικονοστοιχείων</string>
+  <string id="217">Λόγος εικονοστοιχείων</string>
   <string id="218">Μονάδα DVD</string>
   <string id="219">Παρακαλώ, εισάγετε δίσκο</string>
   <string id="220">Απομακρυσμένος κοινόχρηστος πόρος</string>
@@ -206,10 +206,10 @@
   <string id="269">Ταξιν.: Καλλιτέχνης</string>
   <string id="270">Ταξιν.: Άλμπουμ</string>
   <string id="271">100 κορυφαία</string>
-  <string id="272">Η επάνω αριστερή προσαρμογή του ορατού πλαισίου</string>
-  <string id="273">Η κάτω δεξιά προσαρμογή του ορατού πλαισίου</string>
+  <string id="272">Επάνω αριστερή προσαρμογή του ορατού πλαισίου</string>
+  <string id="273">Κάτω δεξιά προσαρμογή του ορατού πλαισίου</string>
   <string id="274">Θέση υποτίτλων</string>
-  <string id="275">Ρύθμιση αναλογίας εικονοστοιχείων</string>
+  <string id="275">Ρύθμιση λόγου εικονοστοιχείων</string>
   <string id="276">Μετακινήστε το βέλος για να αλλάξετε το μέγεθος του ορατού πλαισίου</string>
   <string id="277">Μετακινήστε την μπάρα για να αλλάξει η θέση των υποτίτλων</string>
   <string id="278">Αλλάξτε το σχήμα ώστε να είναι τέλειο τετράγωνο</string>
@@ -388,7 +388,7 @@
   <string id="463">Οπίσθιος φωτισμός</string>
   <string id="464">Φωτεινότητα</string>
   <string id="465">Αντίθεση</string>
-  <string id="466">Gamma</string>
+  <string id="466">Συντελεστής γάμα</string>
   <string id="467">Τύπος</string>
   <string id="468">Μετακίνηση της μπάρας για την αλλαγή της θέσης των απεικονίσεων οθόνης (OSD)</string>
   <string id="469">Θέση απεικονίσεων οθόνης (OSD)</string>
@@ -540,7 +540,7 @@
   <string id="641">Ένταση Προενισχυτή - Στα ήδη ενισχυμένα αρχεία</string>
   <string id="642">Ένταση Προενισχυτή - Στα μη ενισχυμένα αρχεία</string>
   <string id="643">Αποφυγή μείωσης της έντασης ενίσχυσης</string>
-  <string id="644">Κόψιμο των μαύρων μπαρών</string>
+  <string id="644">Αποκοπή μαύρων μπαρών</string>
   <string id="645">Μεγάλο αρχείο προς αποσυμπίεση. Να συνεχίσει;</string>
   <string id="646">Αφαίρεση από τη συλλογή</string>
   <string id="647">Εξαγωγή συλλογής βίντεο</string>
@@ -906,7 +906,7 @@
   <string id="12376">Ορισμός ως προεπιλογή για όλες τις ταινίες</string>
   <string id="12377">Διαγράφει όλες τις προηγούμενες αποθηκευμένες τιμές</string>
   <string id="12378">Προβολή κάθε εικόνας για</string>
-  <string id="12379">Χρήση εφέ Pan και Zoom</string>
+  <string id="12379">Εφέ προσαρμογης αναλογιών σήματος (pan &amp; zoom)</string>
   <string id="12380">Αναπαραγωγή NTSC βίντεο σε PAL</string>
   <string id="12381">Αναπαραγωγή PAL βίντεο σε NTSC</string>
   <string id="12382">Αναπαραγωγή NTSC βίντεο σε PAL60</string>
@@ -944,7 +944,7 @@
   <string id="13023">Η συσκευή αφαιρέθηκε επιτυχώς</string>
   <string id="13024">Συνδέθηκε χειριστήριο</string>
   <string id="13025">Αποσυνδέθηκε χειριστήριο</string>
-  <string id="13100">Φίλτρο Flicker</string>
+  <string id="13100">Φίλτρο Flicker (τρεμόπαιγμα οθόνης)</string>
   <string id="13101">Αφήστε τον οδηγό να επιλέξει (απαιτεί επανεκκίνηση)</string>
   <string id="13105">Κατακόρυφος χρονισμός</string>
   <string id="13106">Ανενεργός</string>
@@ -953,11 +953,11 @@
   <string id="13109">Δοκιμή ανάλυσης</string>
   <string id="13110">Αποθήκευση ανάλυσης;</string>
   <string id="13111">Θέλετε να διατηρήσετε αυτή την ανάλυση;</string>
-  <string id="13112">Λογισμικό βελτίωσης της κλιμάκωσης (Υψηλή Ποιότητα)</string>
+  <string id="13112">Λογισμικό βελτιωμένης κλιμάκωσης (Υψηλή Ποιότητα)</string>
   <string id="13113">Ανενεργό</string>
   <string id="13114">Ενεργό για περιεχόμενο SD </string>
   <string id="13115">Πάντα ενεργό</string>
-  <string id="13116">Μέθοδος βελτίωσης της κλιμάκωσης</string>
+  <string id="13116">Μέθοδος προσαρμογής ανάλυσης</string>
   <string id="13117">Δικυβική</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
@@ -1106,7 +1106,7 @@
   <string id="13377">Προεπιλεγμένη κατάσταση προβολής</string>
   <string id="13378">Προεπιλεγμένη φωτεινότητα</string>
   <string id="13379">Προεπιλεγμένη αντίθεση</string>
-  <string id="13380">Προεπιλεγμένο gamma</string>
+  <string id="13380">Προεπιλεγμένος συντελεστής γάμα</string>
   <string id="13381">Συνέχιση βίντεο</string>
   <string id="13382">Μάσκα φωνής - Θύρα 1</string>
   <string id="13383">Μάσκα φωνής - Θύρα 2</string>
@@ -1192,7 +1192,7 @@
   <string id="14020">Αλλαγή κωδικού 2ης περιοχής</string>
   <string id="14021">Αλλαγή κωδικού 3ης περιοχής</string>
   <string id="14022">Συλλογή</string>
-  <string id="14023">Όχι Τηλεόραση</string>
+  <string id="14023">Χωρίς τηλεόραση</string>
   <string id="14024">Εισαγωγή της κοντινότερης μεγάλης πόλης ή ταχυδρομικού κωδικού (US)</string>
   <string id="14025">Συνολική λανθάνουσα μνήμη - Σκληρός δίσκος</string>
   <string id="14026">Λανθάνουσα μνήμη βίντεο - DVDRom</string>
@@ -1388,7 +1388,7 @@
   <string id="16204">Απέτυχε η μετακίνηση τουλάχιστον ενός αρχείου</string>
   <string id="16205">Η διαγραφή απέτυχε</string>
   <string id="16206">Απέτυχε η διαγραφή τουλάχιστον ενός αρχείου</string>
-  <string id="16300">Μέθοδος κλιμάκωσης βίντεο</string>
+  <string id="16300">Μέθοδος προσαρμογής ανάλυσης βίντεο</string>
   <string id="16301">Εγγύτερη προσέγγιση</string>
   <string id="16302">Διγραμμική</string>
   <string id="16303">Δικυβική</string>
@@ -1931,4 +1931,22 @@
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
   <string id="29999">Εφαρμογή ρυθμίσεων φίλτρου Flicker</string>
+  <string id="30011">Αναζήτηση διάρκειας</string>
+  <string id="33001">Ποιότητα διαφημιστικού</string>
+  <string id="33002">Ροή πολυμέσων</string>
+  <string id="33003">Λήψη</string>
+  <string id="33004">Λήψη και εκτέλεση</string>
+  <string id="33005">Λήψη και αποθήκευση</string>
+  <string id="33006">Σήμερα</string>
+  <string id="33007">Αύριο</string>
+  <string id="33008">Αποθήκευση</string>
+  <string id="33009">Αντιγραφή</string>
+  <string id="33010">Ορισμός φακέλου αποθήκευσης</string>
+  <string id="33012">Σύντομος</string>
+  <string id="33013">Εκτεταμένος</string>
+  <string id="33014">Ορισμός αναπαραγωγέα DVD αντί του κανονικού</string>
+  <string id="33015">Επιβεβαίωση λήψης πριν την αναπαραγωγή του βίντεο</string>
+  <string id="33016">Clips</string>
+  <string id="33017">Επανεκκίνηση plugin για την ενεργοποίηση του</string>
+  <string id="33018">Clips</string>
 </strings>

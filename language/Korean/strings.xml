@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 06/16/2009-->
+<!--Date of translation: 06/29/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -147,7 +147,7 @@
   <string id="222">취소</string>
   <string id="224">속도</string>
   <string id="225">전환 시간</string>
-  <string id="226">유형 검사...</string>
+  <string id="226">패턴 테스트...</string>
   <string id="227">인터넷에서 오디오 CD 검색</string>
   <string id="228">읽을때 재생목록 섞기</string>
   <string id="229">하드디스크 끄기 시간</string>
@@ -911,7 +911,7 @@
   <string id="13106">사용안함</string>
   <string id="13107">비디오 재생중 사용함</string>
   <string id="13108">항상 사용함</string>
-  <string id="13109">해상도 검사</string>
+  <string id="13109">해상도 테스트 &amp; 적용</string>
   <string id="13110">해상도를 저장 하시겠습니까?</string>
   <string id="13111">현재 해상도를 유지 하시겠습니까?</string>
   <string id="13112">고화질 소프트웨어 업스케일링</string>
@@ -1243,7 +1243,7 @@
   <string id="15218">Libre.fm 사용자명</string>
   <string id="15219">Libre.fm 비밀번호</string>
   <string id="15220">Libre.fm</string>
-  <string id="15221">통계기</string>
+  <string id="15221">음악통계기</string>
   <string id="15250">Last.fm 라디오를 Last.fm 에 전송</string>
   <string id="15251">Last.fm 연결중...</string>
   <string id="15252">방송국 선택중...</string>
@@ -1885,4 +1885,22 @@
   <string id="29800">라이브러리 모드</string>
   <string id="29801">쿼티 키보드</string>
   <string id="29999">게임에 깜박임 필터 설정 적용</string>
+  <string id="30011">재생시간 찾기</string>
+  <string id="33001">예고편 품질</string>
+  <string id="33002">스트림</string>
+  <string id="33003">다운로드</string>
+  <string id="33004">다운로드 &amp; 재생</string>
+  <string id="33005">다운로드 &amp; 저장</string>
+  <string id="33006">오늘</string>
+  <string id="33007">내일</string>
+  <string id="33008">저장</string>
+  <string id="33009">복사</string>
+  <string id="33010">다운로드 디렉토리 설정</string>
+  <string id="33012">짧은</string>
+  <string id="33013">긴</string>
+  <string id="33014">정규 플레이어 대신 DVD 플레이어 사용</string>
+  <string id="33015">비디오 재생전에 다운로드 묻기</string>
+  <string id="33016">클립</string>
+  <string id="33017">작동하기위해 플러그인 재시작</string>
+  <string id="33018">클립</string>
 </strings>
