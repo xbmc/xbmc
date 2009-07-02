@@ -182,15 +182,15 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     vecCores.push_back(GetPlayerCore("videodefaultplayer"));
     GetPlayers(vecCores, false, true);  // Video-only players
     GetPlayers(vecCores, true, true);   // Audio & video players
-    }
+  }
 
   // Set audio default player
   // Pushback all audio players in case we don't know the type
   if (item.IsAudio())
   {
-      vecCores.push_back(GetPlayerCore("audiodefaultplayer"));
-      GetPlayers(vecCores, true, false); // Audio-only players
-      GetPlayers(vecCores, true, true);  // Audio & video players
+    vecCores.push_back(GetPlayerCore("audiodefaultplayer"));
+    GetPlayers(vecCores, true, false); // Audio-only players
+    GetPlayers(vecCores, true, true);  // Audio & video players
   }
 
   /* make our list unique, preserving first added players */
@@ -285,6 +285,10 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
     paplayer->m_bPlaysAudio = true;
     s_vecCoreConfigs.push_back(paplayer);
 
+    CPlayerCoreConfig* modplayer = new CPlayerCoreConfig("MODPlayer", EPC_MODPLAYER, NULL);
+    modplayer->m_bPlaysAudio = true;
+    s_vecCoreConfigs.push_back(modplayer);
+
     s_vecCoreSelectionRules.clear();
   }
 
@@ -313,6 +317,7 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
       if (type == "dvdplayer") eCore = EPC_DVDPLAYER;
       if (type == "mplayer" ) eCore = EPC_MPLAYER;
       if (type == "paplayer" ) eCore = EPC_PAPLAYER;
+      if (type == "modplayer" ) eCore = EPC_MODPLAYER;
 
       if (eCore != EPC_NONE)
       {
