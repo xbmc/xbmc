@@ -836,6 +836,10 @@
 		E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */; };
 		E4907BF80FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
 		E4907BF90FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
+		E4DC97540FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
+		E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
+		E4DC97560FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
+		E4DC97570FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
@@ -3571,6 +3575,10 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZeroconfOSX.mm; sourceTree = "<group>"; };
 		E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = /opt/local/lib/mysql5/mysql/libmysqlclient.dylib; sourceTree = "<absolute>"; };
+		E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPDirectory.cpp; sourceTree = "<group>"; };
+		E4DC97510FFE5BA8008E0C07 /* SAPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAPDirectory.h; sourceTree = "<group>"; };
+		E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPFile.cpp; sourceTree = "<group>"; };
+		E4DC97530FFE5BA8008E0C07 /* SAPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAPFile.h; sourceTree = "<group>"; };
 		E4DF6CD80EFF85EB00C28243 /* CHANGELOG.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.txt; sourceTree = "<group>"; };
 		E4DF6CD90EFF85EB00C28243 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E4DF6CDA0EFF85EB00C28243 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
@@ -5376,6 +5384,10 @@
 				E38E174A0D25F9FA00618676 /* RingBuffer.h */,
 				E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */,
 				E38E174C0D25F9FA00618676 /* RTVDirectory.h */,
+				E4DC97510FFE5BA8008E0C07 /* SAPDirectory.h */,
+				E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */,
+				E4DC97530FFE5BA8008E0C07 /* SAPFile.h */,
+				E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */,
 				E38E174D0D25F9FA00618676 /* ShoutcastDirectory.cpp */,
 				E38E174E0D25F9FA00618676 /* ShoutcastDirectory.h */,
 				E38E174F0D25F9FA00618676 /* ShoutcastRipFile.cpp */,
@@ -7815,6 +7827,8 @@
 				F548787A0FE0619800E506FD /* PythonSettings.cpp in Sources */,
 				F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */,
 				7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */,
+				E4DC97540FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */,
+				E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8647,6 +8661,8 @@
 				F548787B0FE0619800E506FD /* PythonSettings.cpp in Sources */,
 				F5487B4D0FE6F02700E506FD /* StreamDetails.cpp in Sources */,
 				7CDAE9060FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */,
+				E4DC97560FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */,
+				E4DC97570FFE5BA8008E0C07 /* SAPFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
