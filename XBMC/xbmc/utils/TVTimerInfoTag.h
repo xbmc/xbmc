@@ -39,6 +39,7 @@ public:
   bool operator !=(const CTVTimerInfoTag& right) const;
 
   void Reset();
+  const CStdString GetStatus() const;
 
   int             m_Index;                /// Index number of the tag, given by the backend, -1 for new
   bool            m_Active;               /// Active flag, if it is false backend ignore the timer
