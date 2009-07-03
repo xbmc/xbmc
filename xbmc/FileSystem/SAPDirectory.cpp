@@ -335,7 +335,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   sdp_desc_origin origin;
   if(parse_sdp_origin(desc.origin.c_str(), &origin) < 0)
   {
-    CLog::Log(LOGERROR, "%s - failed to parse origin '%'", __FUNCTION__, desc.origin.c_str());
+    CLog::Log(LOGERROR, "%s - failed to parse origin '%s'", __FUNCTION__, desc.origin.c_str());
     return false;
   }
 
@@ -343,7 +343,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   CStdString path, user;
   user = origin.username;
   CUtil::URLEncode(user);
-  path.Format("sap://%s@%s/%s/%s/0x%x.sdp", user, origin.address, origin.nettype, origin.addrtype, origin.sessionid);
+  path.Format("sap://%s@%s/%s/%s/0x%x.sdp", user.c_str(), origin.address.c_str(), origin.nettype.c_str(), origin.addrtype.c_str(), origin.sessionid);
   CSession session;
   session.path           = path;
   session.origin         = header.origin;
@@ -468,13 +468,13 @@ namespace DIRECTORY
 
       if(it->payload_type != "application/sdp")
       {
-        CLog::Log(LOGDEBUG, "%s - unknown sdp payload type [%s]", __FUNCTION__, it->payload_type);
+        CLog::Log(LOGDEBUG, "%s - unknown sdp payload type [%s]", __FUNCTION__, it->payload_type.c_str());
         continue;
       }
       struct sdp_desc desc;
       if(parse_sdp(it->payload.c_str(), &desc) <= 0)
       {
-        CLog::Log(LOGDEBUG, "%s - invalid sdp payload [ --->\n%s\n<--- ]", __FUNCTION__, it->payload);
+        CLog::Log(LOGDEBUG, "%s - invalid sdp payload [ --->\n%s\n<--- ]", __FUNCTION__, it->payload.c_str());
         continue;
       }
 
