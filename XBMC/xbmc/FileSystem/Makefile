@@ -67,6 +67,8 @@ SRCS=ASAPFileDirectory.cpp \
      RarManager.cpp \
      RSSDirectory.cpp \
      RTVDirectory.cpp \
+     SAPDirectory.cpp \
+     SAPFile.cpp \
      ShoutcastDirectory.cpp \
      ShoutcastRipFile.cpp \
      SIDFileDirectory.cpp \
