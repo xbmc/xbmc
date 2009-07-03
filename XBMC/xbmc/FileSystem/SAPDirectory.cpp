@@ -351,7 +351,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   CStdString path, user;
   user = origin.username;
   CUtil::URLEncode(user);
-  path.Format("sap://%s@%s/%s/%s/0x%x.sdp", user.c_str(), origin.address.c_str(), origin.nettype.c_str(), origin.addrtype.c_str(), origin.sessionid);
+  path.Format("sap://%s/%s/0x%x.sdp", header.origin.c_str(), desc.origin.c_str(), header.msgid);
   CSession session;
   session.path           = path;
   session.origin         = header.origin;
