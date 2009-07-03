@@ -58,9 +58,14 @@ bool CDVDDemuxHTSP::Open(CDVDInputStream* input)
   m_StatusCount = 0;
 
   while(m_Streams.size() == 0 && m_StatusCount < 2)
-    CDVDDemuxUtils::FreeDemuxPacket(Read());
+  {
+    DemuxPacket* pkg = Read();
+    if(!pkg)
+      return false;
+    CDVDDemuxUtils::FreeDemuxPacket(pkg);
+  }
 
-  return m_Streams.size() > 0;
+  return true;
 }
 
 void CDVDDemuxHTSP::Dispose()
