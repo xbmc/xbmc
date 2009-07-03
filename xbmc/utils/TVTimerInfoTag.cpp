@@ -353,3 +353,13 @@ void CTVTimerInfoTag::Reset()
 
   CVideoInfoTag::Reset();
 }
+
+const CStdString CTVTimerInfoTag::GetStatus() const
+{
+  if (!m_Active)
+    return g_localizeStrings.Get(13106);
+  else if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
+    return g_localizeStrings.Get(18069);
+  else
+    return g_localizeStrings.Get(305);
+}

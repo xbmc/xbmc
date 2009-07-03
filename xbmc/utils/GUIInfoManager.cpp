@@ -3712,6 +3712,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath));
     return CUtil::GetFileName(item->m_strPath);
   case LISTITEM_DATE:
+    if (item->HasTVTimerInfoTag())
+      return item->GetTVTimerInfoTag()->m_Summary;
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate();
     break;
@@ -3811,6 +3813,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return item->GetVideoInfoTag()->m_strShowTitle;
     break;
   case LISTITEM_COMMENT:
+    if (item->HasTVTimerInfoTag())
+      return item->GetTVTimerInfoTag()->GetStatus();
     if (item->HasMusicInfoTag())
       return item->GetMusicInfoTag()->GetComment();
     break;

@@ -638,6 +638,7 @@ bool CPVRManager::RequestRemoval(const CAddon* addon)
 
 /************************************************************/
 /** Feature flags */
+
 bool CPVRManager::SupportEPG()
 {
   return m_clientProps.SupportEPG;
@@ -692,6 +693,7 @@ bool CPVRManager::IsPlayingRadio()
 
   return m_currentPlayingChannel->GetTVChannelInfoTag()->m_radio;
 }
+
 
 /************************************************************/
 /** EPG handling */
@@ -1032,7 +1034,6 @@ int CPVRManager::GetRadioChannels(CFileItemList* results, int group_id, bool hid
 
   return cnt;
 }
-
 
 void CPVRManager::MoveChannel(unsigned int oldindex, unsigned int newindex, bool radio)
 {
@@ -1925,7 +1926,6 @@ void CPVRManager::ReceiveAllTimers()
 
 bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
 {
-  bool ret = false;
   m_scanStart = timeGetTime();
 
   EnterCriticalSection(&m_critSection);
@@ -1955,16 +1955,16 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
 
 void CPVRManager::CloseLiveStream()
 {
-  if (m_currentPlayingChannel)
-  {
-    EnterCriticalSection(&m_critSection);
+  if (!m_currentPlayingChannel)
+    return;
 
-    m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->m_clientID]->CloseLiveStream();
-    delete m_currentPlayingChannel;
-    m_currentPlayingChannel = NULL;
+  EnterCriticalSection(&m_critSection);
 
-    LeaveCriticalSection(&m_critSection);
-  }
+  m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->m_clientID]->CloseLiveStream();
+  delete m_currentPlayingChannel;
+  m_currentPlayingChannel = NULL;
+
+  LeaveCriticalSection(&m_critSection);
   return;
 }
 
@@ -1975,20 +1975,17 @@ void CPVRManager::PauseLiveStream(bool OnOff)
 
 int CPVRManager::ReadLiveStream(BYTE* buf, int buf_size)
 {
-  if (m_currentPlayingChannel)
+  if (!m_currentPlayingChannel)
+    return 0;
+
+  if (m_scanStart)
   {
-    if (m_scanStart)
-    {
-      if (timeGetTime() - m_scanStart > g_guiSettings.GetInt("pvrplayback.scantime")*1000)
-        return 0;
-      else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
-        m_scanStart = NULL;
-    }
-
-    return m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->m_clientID]->ReadLiveStream(buf, buf_size);
+    if (timeGetTime() - m_scanStart > g_guiSettings.GetInt("pvrplayback.scantime")*1000)
+      return 0;
+    else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
+      m_scanStart = NULL;
   }
-
-  return 0;
+  return m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->m_clientID]->ReadLiveStream(buf, buf_size);
 }
 
 __int64 CPVRManager::SeekLiveStream(__int64 pos, int whence)
@@ -2006,38 +2003,36 @@ int CPVRManager::GetCurrentChannel(bool radio)
 
 bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 {
-  if (m_currentPlayingChannel)
+  if (!m_currentPlayingChannel)
+    return false;
+
+  VECCHANNELS *channels;
+  if (!m_currentPlayingChannel->GetTVChannelInfoTag()->m_radio)
+    channels = &m_channels_tv;
+  else
+    channels = &m_channels_radio;
+
+  if (iChannel > channels->size()+1)
   {
-    VECCHANNELS *channels;
-    if (!m_currentPlayingChannel->GetTVChannelInfoTag()->m_radio)
-      channels = &m_channels_tv;
-    else
-      channels = &m_channels_radio;
+    CGUIDialogOK::ShowAndGetInput(18100,18105,0,0);
+    return false;
+  }
+  
+  EnterCriticalSection(&m_critSection);
 
-    if (iChannel > channels->size()+1)
-    {
-      CGUIDialogOK::ShowAndGetInput(18100,18105,0,0);
-      return false;
-    }
-    
-    EnterCriticalSection(&m_critSection);
-
-    if (!m_clients[channels->at(iChannel-1).m_clientID]->SwitchChannel(channels->at(iChannel-1).m_iClientNum))
-    {
-      CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
-      LeaveCriticalSection(&m_critSection);
-      return false;
-    }
-
-    delete m_currentPlayingChannel;
-    m_currentPlayingChannel = new CFileItem(channels->at(iChannel-1));
-    SetCurrentPlayingProgram(*m_currentPlayingChannel);
-
+  if (!m_clients[channels->at(iChannel-1).m_clientID]->SwitchChannel(channels->at(iChannel-1).m_iClientNum))
+  {
+    CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
     LeaveCriticalSection(&m_critSection);
-    return true;
+    return false;
   }
 
-  return false;
+  delete m_currentPlayingChannel;
+  m_currentPlayingChannel = new CFileItem(channels->at(iChannel-1));
+  SetCurrentPlayingProgram(*m_currentPlayingChannel);
+
+  LeaveCriticalSection(&m_critSection);
+  return true;
 }
 
 bool CPVRManager::ChannelUp(unsigned int *newchannel)
