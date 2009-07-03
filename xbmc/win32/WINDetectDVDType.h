@@ -54,6 +54,7 @@ private:
   CWINDetectDVDMedia(const CWINDetectDVDMedia& cc);
   ~CWINDetectDVDMedia();
 
+  void DetectInsertedMedia();
   void RemoveAllMedia();
   CStdString GetDrive(const CStdString& strDrive="");
   CStdString GetDevice(const CStdString& strDrive="");
