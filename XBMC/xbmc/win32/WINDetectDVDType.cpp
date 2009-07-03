@@ -87,8 +87,8 @@ CStdString CWINDetectDVDMedia::GetDrive(const CStdString& strDrive)
   CStdString strPath;
   if(!strDrive.empty() && strDrive[1]==':')
     strPath = strDrive.substr(0,2);
-  else if(strDrive.Left(5).Equals("cdda:") && strDrive[8]==':')
-    strPath = strDrive.substr(7,2);
+  else if(strDrive.Left(5).Equals("cdda:") && !strDrive.Left(12).Equals("cdda://local"))
+    strPath.Format("%c:", strDrive[7]);
   else
     strPath = GetDevice(strDrive).c_str()+4;
 
@@ -102,7 +102,7 @@ CStdString CWINDetectDVDMedia::GetDevice(const CStdString& strDrive)
   CStdString strDevice;
   if(!strDrive.empty() && strDrive[1]==':')
     strDevice.Format("\\\\.\\%c:", strDrive[0]);
-  else if(strDrive.Left(5).Equals("cdda:") && strDrive[8]==':')
+  else if(strDrive.Left(5).Equals("cdda:") && !strDrive.Left(12).Equals("cdda://local"))
     strDevice.Format("\\\\.\\%c:", strDrive[7]);
   else
     strDevice = CLibcdio::GetInstance()->GetDeviceFileName();
@@ -138,7 +138,7 @@ void CWINDetectDVDMedia::AddMedia(const CStdString& strDrive)
               pCdInfo->GetDataTrackCount() );
 
     if(pCdInfo->IsAudio(1))
-      strNewUrl.Format("cdda://%c:/", strPath[0]); // we need to extend the cdda: protocol to support other drives (dvd:// as well?)
+      strNewUrl.Format("cdda://%c/", strPath[0]); // we need to extend the cdda: protocol to support other drives (dvd:// as well?)
     else
       strNewUrl = strPath;
 
