@@ -103,7 +103,6 @@ public:
   CStdString GetNameForChannel(unsigned int number, bool radio = false);
   bool GetFrontendChannelNumber(unsigned int client_no, unsigned int client_id, int *frontend_no, bool *isRadio);
   int GetClientChannelNumber(unsigned int frontend_no, bool radio = false);
-  int GetChannelID(unsigned int frontend_no, bool radio = false);
   int GetGroupList(CFileItemList* results);
   void AddGroup(const CStdString &newname);
   bool RenameGroup(unsigned int GroupId, const CStdString &newname);
@@ -215,10 +214,5 @@ private:
   void                GetChannels();
   void                ReceiveAllTimers();
   void                ReceiveAllRecordings();
-  CTVChannelInfoTag  *GetChannelByNumber(int Number, bool radio, int SkipGap = 0);
-  CTVChannelInfoTag  *GetChannelByID(int Id, bool radio, int SkipGap = 0);
-  void                SetMusicInfoTag(CFileItem& item, unsigned int channel);
-  void                SetCurrentPlayingProgram(CTVChannelInfoTag *tag);
-  void                LoadVideoSettings(unsigned int channel_id, bool update = true);
-  void                SaveVideoSettings(unsigned int channel_id);
+  void                SetCurrentPlayingProgram(CFileItem& item);
 };
