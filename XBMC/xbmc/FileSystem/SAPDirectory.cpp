@@ -18,6 +18,7 @@
 */
 
 #include "stdafx.h"
+#include "GUIWindowManager.h"
 #include <string.h>
 #include "SAPDirectory.h"
 #include "Util.h"
@@ -327,6 +328,9 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
     {
       if(header.msgtype == 1)
       {
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+        message.SetStringParam("sap://");
+        m_gWindowManager.SendThreadMessage(message);
         m_sessions.erase(it);
         return true;
       }
@@ -361,6 +365,11 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   session.payload.assign(data, len);
   session.timeout = GetTickCount() + 60*60*1000;
   m_sessions.push_back(session);
+  
+  CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+  message.SetStringParam("sap://");
+  m_gWindowManager.SendThreadMessage(message);
+  
   return true;
 }
 
