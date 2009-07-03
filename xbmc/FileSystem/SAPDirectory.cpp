@@ -21,7 +21,12 @@
 #include "SAPDirectory.h"
 #include "Util.h"
 #include "FileItem.h"
+#ifdef _MSC_VER
 #include <Ws2tcpip.h>
+#else
+#include <sys/socket.h>
+#define SD_BOTH SHUT_RDWR
+#endif
 #include <vector>
 
 using namespace std;
@@ -364,8 +369,12 @@ void CSAPSessions::Process()
   if(m_socket == INVALID_SOCKET)
     return;
 
+#ifdef _MSC_VER
   unsigned long nonblocking = 1;
   ioctlsocket(m_socket, FIONBIO, &nonblocking);
+#else
+  fcntl(m_socket, F_SETFL, fcntl(m_socket, F_GETFL) | O_NONBLOCK);
+#endif
 
   const char one = 1;
   setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
@@ -373,7 +382,7 @@ void CSAPSessions::Process()
   /* bind to SAP port */
   struct sockaddr_in addr;
   addr.sin_family           = AF_INET;
-  addr.sin_addr.S_un.S_addr = INADDR_ANY;
+  addr.sin_addr.s_addr      = INADDR_ANY;
   addr.sin_port             = htons(SAP_PORT);
   if(bind(m_socket, (const sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
     closesocket(m_socket);
@@ -382,24 +391,24 @@ void CSAPSessions::Process()
   }
 
   /* subscribe to all SAP multicast addresses */
-  mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_GLOBAL_ADDRESS);
-  mreq.imr_interface.S_un.S_addr = INADDR_ANY;
+  mreq.imr_multiaddr.s_addr = inet_addr(SAP_V4_GLOBAL_ADDRESS);
+  mreq.imr_interface.s_addr = INADDR_ANY;
   setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
-  mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_ORG_ADDRESS);
-  mreq.imr_interface.S_un.S_addr = INADDR_ANY;
+  mreq.imr_multiaddr.s_addr = inet_addr(SAP_V4_ORG_ADDRESS);
+  mreq.imr_interface.s_addr = INADDR_ANY;
   setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
-  mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_LOCAL_ADDRESS);
-  mreq.imr_interface.S_un.S_addr = INADDR_ANY;
+  mreq.imr_multiaddr.s_addr = inet_addr(SAP_V4_LOCAL_ADDRESS);
+  mreq.imr_interface.s_addr = INADDR_ANY;
   setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
-  mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_LINK_ADDRESS);
-  mreq.imr_interface.S_un.S_addr = INADDR_ANY;
+  mreq.imr_multiaddr.s_addr = inet_addr(SAP_V4_LINK_ADDRESS);
+  mreq.imr_interface.s_addr = INADDR_ANY;
   setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
   /* start listening for announces */
-  struct fd_set  readfds, expfds;
+  fd_set         readfds, expfds;
   struct timeval timeout;
   int count;
 
