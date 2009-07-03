@@ -129,30 +129,31 @@ class Main:
             for repo in repos:
                 cm = []
                 if ( os.path.isdir( os.path.join( os.getcwd(), "resources", "repositories", repo ) ) ):
-                    # create the url
-                    url = "%s?category='root'&repo=%s&title=%s" % ( sys.argv[ 0 ], repr( urllib.quote_plus( repo ) ), repr( urllib.quote_plus( repo ) ), )
-                    # set thumbnail
-                    thumbnail = os.path.join( os.getcwd(), "resources", "media", "svn_repo.png" )
-                    # create our listitem, fixing title
-                    listitem = xbmcgui.ListItem( repo, iconImage=icon, thumbnailImage=thumbnail )
-                    # set the title
-                    listitem.setInfo( type="Video", infoLabels={ "Title": repo } )
-                    # grab the log for this repo
-                    if ( "(tagged)" not in repo ):
-                        #parser = xbmcplugin_logviewer.ChangelogParser( repo, parse=False )
-                        #parser.fetch_changelog()
-                        # clear logs on first run
-                        self._clear_log( repo )
-                        # add view log context menu item
-                        cm += [ ( xbmc.getLocalizedString( 30600 ), "XBMC.RunPlugin(%s?showlog=True&repo=%s&category=None&revision=None&parse=True)" % ( sys.argv[ 0 ], urllib.quote_plus( repr( repo ) ), ), ) ]
-                    # add view readme context menu item
-                    cm += [ ( xbmc.getLocalizedString( 30610 ), "XBMC.RunPlugin(%s?showreadme=True&repo=None&readme=None)" % ( sys.argv[ 0 ], ), ) ]
-                    # add context menu items
-                    listitem.addContextMenuItems( cm, replaceItems=True )
-                    # add the item to the media list
-                    ok = xbmcplugin.addDirectoryItem( handle=int( sys.argv[ 1 ] ), url=url, listitem=listitem, isFolder=True )
-                    # if user cancels, call raise to exit loop
-                    if ( not ok ): raise
+                    if ( not repo.startswith( "." ) ):
+                        # create the url
+                        url = "%s?category='root'&repo=%s&title=%s" % ( sys.argv[ 0 ], repr( urllib.quote_plus( repo ) ), repr( urllib.quote_plus( repo ) ), )
+                        # set thumbnail
+                        thumbnail = os.path.join( os.getcwd(), "resources", "media", "svn_repo.png" )
+                        # create our listitem, fixing title
+                        listitem = xbmcgui.ListItem( repo, iconImage=icon, thumbnailImage=thumbnail )
+                        # set the title
+                        listitem.setInfo( type="Video", infoLabels={ "Title": repo } )
+                        # grab the log for this repo
+                        if ( "(tagged)" not in repo ):
+                            #parser = xbmcplugin_logviewer.ChangelogParser( repo, parse=False )
+                            #parser.fetch_changelog()
+                            # clear logs on first run
+                            self._clear_log( repo )
+                            # add view log context menu item
+                            cm += [ ( xbmc.getLocalizedString( 30600 ), "XBMC.RunPlugin(%s?showlog=True&repo=%s&category=None&revision=None&parse=True)" % ( sys.argv[ 0 ], urllib.quote_plus( repr( repo ) ), ), ) ]
+                        # add view readme context menu item
+                        cm += [ ( xbmc.getLocalizedString( 30610 ), "XBMC.RunPlugin(%s?showreadme=True&repo=None&readme=None)" % ( sys.argv[ 0 ], ), ) ]
+                        # add context menu items
+                        listitem.addContextMenuItems( cm, replaceItems=True )
+                        # add the item to the media list
+                        ok = xbmcplugin.addDirectoryItem( handle=int( sys.argv[ 1 ] ), url=url, listitem=listitem, isFolder=True )
+                        # if user cancels, call raise to exit loop
+                        if ( not ok ): raise
         except:
             # user cancelled dialog or an error occurred
             print "ERROR: %s::%s (%d) - %s" % ( self.__class__.__name__, sys.exc_info()[ 2 ].tb_frame.f_code.co_name, sys.exc_info()[ 2 ].tb_lineno, sys.exc_info()[ 1 ], )
