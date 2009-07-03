@@ -2378,7 +2378,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("addons.manager"))
   {
-    CStdString execute("ActivateWindow(10001,plugin://programs/XBMC Offical Addons/)");
+    CStdString execute("ActivateWindow(10001,plugin://programs/XBMC Official Addons/)");
     CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
     message.SetStringParam(execute);
     g_graphicsContext.SendMessage(message);
