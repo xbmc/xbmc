@@ -18,6 +18,7 @@
 */
 
 #include "stdafx.h"
+#include <string.h>
 #include "SAPDirectory.h"
 #include "Util.h"
 #include "FileItem.h"
@@ -106,7 +107,10 @@ namespace SDP
     }
 
     /* read payload type */
-    int payload_size = strnlen(data, len);
+    //no strnlen on non linux/win32 platforms, use handcrafted version
+    const char *end = (const char*)memchr (data, '\0', len);
+    int payload_size = (end) ? (int) (end - data) : len;
+
     if (payload_size == len)
       return -1;
     h->payload_type.assign(data, payload_size);
