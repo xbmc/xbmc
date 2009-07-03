@@ -32,7 +32,7 @@
                 <record>Record</record>
                 <volumeplus>Vol+</volumeplus>
                 <volumeminus>Vol-</volumeminus>
-                <mute>Radio</mute>
+                <mute>Mute</mute>
                 <power>Power</power>
                 <myvideo>Source</myvideo>
                 <mymusic>EPG</mymusic>
@@ -52,6 +52,7 @@
                 <mymusic>Green</mymusic>
                 <mypictures>Yellow</mypictures>
                 <myvideo>Blue</myvideo>
+                <playlist>TV</playlist>
         </remote>
 
         <remote device="Hauppauge_350">

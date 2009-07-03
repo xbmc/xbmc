@@ -461,7 +461,18 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     return true;
     break;
+  case ACTION_SHOW_PLAYLIST:
+    {
+      CFileItem item(g_application.CurrentFileItem());
+      if (item.HasTVChannelInfoTag())
+        m_gWindowManager.ActivateWindow(WINDOW_DIALOG_TV_OSD_CHANNELS);
+      else
+        m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+    }
+    return true;
+    break;
   }
+
   return CGUIWindow::OnAction(action);
 }
 

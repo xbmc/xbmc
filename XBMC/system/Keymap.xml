@@ -614,6 +614,7 @@
       <info>Info</info>
       <enter>AspectRatio</enter>
       <select>AspectRatio</select>
+      <playlist>Playlist</playlist>
    </remote>
 
     <gamepad>
@@ -705,6 +706,7 @@
       <down>BigStepBack</down>
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
+      <c>Playlist</c>
     </keyboard>
   </FullscreenVideo>
 
@@ -1761,11 +1763,13 @@
       <back>Close</back>
       <menu>Close</menu>
       <start>Close</start>
+      <playlist>Close</playlist>
     </remote>
 
     <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
+      <c>Close</c>
     </keyboard>
   </TVOSDChannels>
 
