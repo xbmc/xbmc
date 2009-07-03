@@ -82,8 +82,9 @@ class Main:
 			repos = os.listdir( os.path.join( os.getcwd(), "resources", "repositories" ) )
 			# enumerate through the list of categories and add the item to the media list
 			for repo in repos:
-				if ( os.path.isdir( os.path.join( os.getcwd(), "resources", "repositories", repo ) ) and "(tagged)" not in repo ):
-					repo_list += [ repo ]
+				if ( not repo.startswith ( "." ) ):
+					if ( os.path.isdir( os.path.join( os.getcwd(), "resources", "repositories", repo ) ) and "(tagged)" not in repo ):
+						repo_list += [ repo ]
 			return repo_list
 
 	def _get_xbmc_revision( self ):
