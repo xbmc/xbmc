@@ -55,6 +55,7 @@
 #define XINPUT_IR_REMOTE_STAR           40
 #define XINPUT_IR_REMOTE_HASH           41
 #define XINPUT_IR_REMOTE_CLEAR          249
+#define XINPUT_IR_REMOTE_PLAYLIST       250
 
 typedef struct _XINPUT_IR_REMOTE
 {

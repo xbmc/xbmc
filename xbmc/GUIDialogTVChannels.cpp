@@ -134,6 +134,12 @@ void CGUIDialogTVChannels::GotoChannel(int item)
 
   CFileItemPtr pItem = m_vecItems->Get(item);
 
+  if (pItem->m_strPath == g_application.CurrentFile())
+  {
+    Close();
+    return;
+  }
+
   if (!g_application.PlayFile(*pItem))
   {
     CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
