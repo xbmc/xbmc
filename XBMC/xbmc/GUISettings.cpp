@@ -405,6 +405,10 @@ void CGUISettings::Initialize()
   // hidden masterlock settings
   AddInt(0,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
 
+  AddCategory(4, "addons", 12361);
+  AddString(1, "addons.manager", 20500, "-", BUTTON_CONTROL_STANDARD);
+  AddSeparator(2, "addons.sep1");
+
   // video settings
   AddGroup(5, 3);
   AddCategory(5, "myvideos", 16000);

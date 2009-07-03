@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: smuto-->
+<!--Email: smuto.promyk@gmail.com-->
+<!--Date of translation: 12/19/2007-->
+<!--$Revision$-->
+<strings>
+  <string id="30000">Chcesz zainstalować tą pozycję?</string>
+  <string id="30001">
+  </string>
+  <string id="30002">Przetwarzanie zapytania...</string>
+  <string id="30003">Proszę czekać...</string>
+  <string id="30004">
+  </string>
+  <string id="30005">Pobieram:</string>
+  <string id="30006">Ścieżka:</string>
+  <string id="30007">Plik:</string>
+  <string id="30008">Nowa pozycja zastała zainstalowana do:</string>
+  <string id="30020">Pomiń</string>
+  <string id="30021">Instaluj</string>
+  <string id="30030">Niestety wystąpił błąd podczas instalowania!</string>
+</strings>

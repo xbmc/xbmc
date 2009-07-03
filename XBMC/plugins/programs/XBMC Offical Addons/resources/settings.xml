@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting id="show_no_svn" type="bool" label="30510" default="false" />
+    <setting id="show_no_ver" type="bool" label="30520" default="false" />
+    <setting type="sep" />
+    <setting type="action" label="30530" option="close" default="RunPlugin(plugin://Programs/SVN Repo Installer/?showreadme=True&amp;repo=None&amp;readme=None)" />
+    <setting type="action" label="30540" option="close" default="RunPlugin(plugin://Programs/SVN Repo Installer/?showlog=True&amp;repo='xbmc-addons'&amp;category='SVN Repo Installer'&amp;revision=True&amp;parse=True)" />
+</settings>

@@ -2376,6 +2376,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       // Nothing todo here
     }
   }
+  else if (strSetting.Equals("addons.manager"))
+  {
+    CStdString execute("ActivateWindow(10001,plugin://programs/XBMC Offical Addons/)");
+    CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
+    message.SetStringParam(execute);
+    g_graphicsContext.SendMessage(message);
+  }
   else if (strSetting.Equals("musicfiles.savefolderviews"))
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_MUSIC_FILES);

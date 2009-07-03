@@ -928,6 +928,7 @@
   <string id="12357">Source lock</string>
   <string id="12358">Password entry was blank. Try again.</string>
   <string id="12360">Master lock</string>
+  <string id="12361">Addons Manager</string>
   <string id="12362">Shutdown system if Master Lock retries exceeded</string>
   <string id="12367">Master code is not valid!</string>
   <string id="12368">Please enter a valid master code!</string>
@@ -1866,6 +1867,8 @@
   <string id="20432">Exclude path from library updates</string> 
   <string id="20433">Extract media metadata information</string>
   <!-- up to 21329 is reserved for the video db !! !-->
+  
+  <string id="20500">Launch Addon Manager</string>
 
   <string id="21330">Show hidden files and directories</string>
   
