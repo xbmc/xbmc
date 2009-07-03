@@ -584,7 +584,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<visible>IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="label">
 							<posx>50</posx>
@@ -597,7 +597,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<visible>!IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="image">
 						<posx>330</posx>
@@ -652,7 +652,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<visible>IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="label">
 							<posx>50</posx>
@@ -665,7 +665,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<visible>!IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="image">
 							<posx>330</posx>
@@ -800,7 +800,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<visible>IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="label">
 							<posx>50</posx>
@@ -813,7 +813,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<visible>!IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="image">
 							<posx>330</posx>
@@ -868,7 +868,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<visible>IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="label">
 							<posx>50</posx>
@@ -881,7 +881,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<visible>!IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="image">
 							<posx>330</posx>

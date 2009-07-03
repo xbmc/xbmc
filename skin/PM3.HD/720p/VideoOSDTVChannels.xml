@@ -117,7 +117,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
-					<info>ListItem.Label2</info>
+					<info>ListItem.Title</info>
 				</control>
 			</itemlayout>
 			<focusedlayout height="40" width="720">
@@ -167,7 +167,7 @@
 					<align>right</align>
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
-					<info>ListItem.Label2</info>
+					<info>ListItem.Title</info>
 				</control>
 			</focusedlayout>
 		</control>
