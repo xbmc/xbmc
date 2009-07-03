@@ -25,8 +25,6 @@
 #include "VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
-#include <netinet/in.h>
-#include <netinet/tcp.h>
 
 extern "C" {
 #include "lib/libhts/net.h"

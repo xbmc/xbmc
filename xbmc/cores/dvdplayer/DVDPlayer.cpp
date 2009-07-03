@@ -1922,11 +1922,6 @@ bool CDVDPlayer::SeekScene(bool bPlus)
   return false;
 }
 
-void CDVDPlayer::ToggleFrameDrop()
-{
-  m_dvdPlayerVideo.EnableFrameDrop( !m_dvdPlayerVideo.IsFrameDropEnabled() );
-}
-
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
@@ -1957,8 +1952,15 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 
     int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
     cEdlStatus = m_Edl.GetEdlStatus();
+    
+    CStdString strPC;
+    int pullupCorrection = m_dvdPlayerVideo.GetPullupCorrection();
+    if (pullupCorrection > 0)
+      strPC.Format("%i", pullupCorrection);
+    else
+      strPC.Format("none");
 
-    strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%. edl: %c source bitrate: %4.2f MBit/s", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus, (double)GetSourceBitrate() / (1024.0*1024.0));
+    strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%. edl: %c source bitrate: %4.2f MBit/s, PC: %s", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus, (double)GetSourceBitrate() / (1024.0*1024.0), strPC.c_str());
   }
 }
 

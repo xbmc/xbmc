@@ -201,9 +201,6 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     return 0;
   }
 
-  // update the current drive mask
-  CWIN32Util::UpdateDriveMask();
-
   if (FAILED(myApp.Create(hInst, commandLine)))
     return 1;
 

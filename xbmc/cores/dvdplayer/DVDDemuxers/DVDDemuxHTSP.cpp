@@ -191,6 +191,9 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     } else if(!strcmp(type, "MPEG2AUDIO")) {
       st.a = new CDemuxStreamAudio();
       st.a->codec = CODEC_ID_MP2;
+    } else if(!strcmp(type, "AAC")) {
+      st.a = new CDemuxStreamAudio();
+      st.a->codec = CODEC_ID_AAC;
     } else if(!strcmp(type, "MPEG2VIDEO")) {
       st.v = new CDemuxStreamVideo();
       st.v->codec = CODEC_ID_MPEG2VIDEO;

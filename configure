@@ -21588,7 +21588,7 @@ if [ $USE_EXTERNAL_LIBASS != "1" ]; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4
   else
-    CFLAGS=-fPIC \
+    CFLAGS="$CFLAGS -fPIC" \
     ./configure
   fi
 

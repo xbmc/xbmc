@@ -206,6 +206,7 @@
 #include "GUIDialogTVChannels.h"
 #include "GUIDialogTVGuide.h"
 #include "GUIDialogTVGroupManager.h"
+#include "GUIDialogTVTeletext.h"
 #include "GUIDialogSlider.h"
 #include "cores/dlgcache.h"
 
@@ -693,6 +694,7 @@ HRESULT CApplication::Create(HWND hWnd)
   SDL_VERSION(&wmInfo.version)
   int te = SDL_GetWMInfo( &wmInfo );
   g_hWnd = wmInfo.window;
+  m_messageHandler.Initialize();
 #endif
 
   // Create the Mouse and Keyboard devices
@@ -914,10 +916,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
-  // Load random seed
-  time_t seconds;
-  time(&seconds);
-  srand((unsigned int)seconds);
+  CUtil::InitRandomSeed();
 
   return CXBApplicationEx::Create(hWnd);
 }
@@ -1013,7 +1012,8 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
-    symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
+    if (symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() ) != 0)
+      CLog::Log(LOGERROR, "Failed to create common scripts symlink.");
 
     CDirectory::Create("special://masterprofile");
 
@@ -1401,6 +1401,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogTVGuide);                  // window id = 603
   m_gWindowManager.Add(new CGUIDialogTVRecordingInfo);          // window id = 603
   m_gWindowManager.Add(new CGUIDialogTVGroupManager);           // window id = 603
+  m_gWindowManager.Add(new CGUIDialogTVTeletext);               // window id =
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
   m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
@@ -4723,6 +4724,8 @@ void CApplication::SaveFileState()
           // consider this item as played
           videodatabase.MarkAsWatched(*m_progressTrackingItem);
           CUtil::DeleteVideoDatabaseDirectoryCache();
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+          g_graphicsContext.SendMessage(message);
         }
 
         if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)

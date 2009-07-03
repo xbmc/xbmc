@@ -23,6 +23,7 @@
  */
 
 #include "CriticalSection.h"
+#include "StdString.h"
 
 #include <vector>
 

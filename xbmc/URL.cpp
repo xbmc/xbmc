@@ -180,6 +180,8 @@ CURL::CURL(const CStdString& strURL1)
        || m_strProtocol.Equals("ftps")
        || m_strProtocol.Equals("ftpx"))
     sep = "?;";
+  else if(m_strProtocol.Equals("rss"))
+    sep = "?";
 
   if(sep)
   {
