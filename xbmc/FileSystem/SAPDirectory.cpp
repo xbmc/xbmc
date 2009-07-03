@@ -59,8 +59,7 @@ namespace SDP
     if(len < 4)
       return -1;
 
-    memset(h, 0, sizeof(sap_desc));
-
+    h->clear();
     h->version    = (data[0] >> 5) & 0x7;
     h->addrtype   = (data[0] >> 4) & 0x1;
     h->msgtype    = (data[0] >> 2) & 0x1;
@@ -389,6 +388,7 @@ void CSAPSessions::Process()
   addr.sin_addr.s_addr      = INADDR_ANY;
   addr.sin_port             = htons(SAP_PORT);
   if(bind(m_socket, (const sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
+    CLog::Log(LOGERROR, "CSAPSessions::Process - failed to bind to SAP port");
     closesocket(m_socket);
     m_socket = INVALID_SOCKET;
     return;
@@ -428,7 +428,7 @@ void CSAPSessions::Process()
     FD_SET(m_socket, &readfds);
     FD_SET(m_socket, &expfds);
 
-    count = select(0, &readfds, NULL, &expfds, &timeout);
+    count = select((int)m_socket+1, &readfds, NULL, &expfds, &timeout);
     if(count == SOCKET_ERROR) {
       CLog::Log(LOGERROR, "%s - select returned error", __FUNCTION__);
       break;
