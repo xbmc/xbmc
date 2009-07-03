@@ -27,6 +27,7 @@
 #include "DVDDemuxHTSP.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h"
+#include "Application.h"
 
 extern "C" {
 #include "lib/libhts/net.h"
@@ -231,6 +232,10 @@ void CDVDDemuxHTSP::SubscriptionStatus(htsmsg_t *m)
     m_StatusCount++;
     m_Status = status;
     CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStatus - %s", status);
+
+    /* always ignore first status, as that can happen on channel change */
+    if(m_StatusCount > 1)
+      g_application.m_guiDialogKaiToast.QueueNotification("TVHeadend Status", status);
   }
 }
 
