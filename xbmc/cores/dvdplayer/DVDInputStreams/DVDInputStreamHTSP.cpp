@@ -42,6 +42,10 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
 {
   htsmsg_t* msg;
 
+  /* after anything has started reading, *
+   * we can guarantee a new stream       */
+  m_startup = false;
+
   while((msg = m_session.ReadMessage()))
   {
     const char* method;
@@ -61,10 +65,6 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
       htsmsg_destroy(msg);
       continue;
     }
-
-    // after we get the first subscriptionStart, no demuxer can start
-    if(m_startup && strstr(method, "subscriptionStart"))
-      m_startup = false;
 
     return msg;
   }
