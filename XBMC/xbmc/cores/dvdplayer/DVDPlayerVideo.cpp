@@ -124,7 +124,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
 
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
-  m_bDropFrames = true;
   m_fFrameRate = 25;
   m_bAllowFullscreen = false;
   memset(&m_output, 0, sizeof(m_output));
@@ -383,6 +382,8 @@ void CDVDPlayerVideo::Process()
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
       LeaveCriticalSection(&m_critCodecSection);
+      
+      m_pullupCorrection.Flush();
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -425,7 +426,6 @@ void CDVDPlayerVideo::Process()
 #else
       if (m_iNrOfPicturesNotToSkip > 0) bRequestDrop = false;
       if (m_speed < 0)                  bRequestDrop = false;
-      if (m_bDropFrames == false)       bRequestDrop = false;
 #endif
 
       // if player want's us to drop this packet, do so nomatter what
@@ -838,6 +838,21 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
     limited = true;
 
+  // signal to clock what our framerate is, it may want to adjust it's
+  // speed to better match with our video renderer's output speed
+  // TODO - this should be based on m_fFrameRate, as the timestamps
+  //        in the stream matches that better, durations can vary
+  if (m_pClock->UpdateFramerate(1.0 / (pPicture->iDuration / DVD_TIME_BASE)))
+  {
+    //correct any pattern in the timestamps if the videoreferenceclock is running
+    m_pullupCorrection.Add(pts);
+    pts += m_pullupCorrection.Correction();
+  }
+  else
+  {
+    m_pullupCorrection.Flush();
+  }
+  
   //User set delay
   pts += m_iVideoDelay;
 
@@ -848,12 +863,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   iClockSleep = pts - m_pClock->GetClock();  //sleep calculated by pts to clock comparison
   iFrameSleep = m_FlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
   iFrameDuration = pPicture->iDuration;
-
-  // signal to clock what our framerate is, it may want to adjust it's
-  // speed to better match with our video renderer's output speed
-  // TODO - this should be based on m_fFrameRate, as the timestamps
-  //        in the stream matches that better, durations can vary
-  m_pClock->UpdateFramerate(1.0 / (iFrameDuration / DVD_TIME_BASE));
 
   // correct sleep times based on speed
   if(m_speed)

@@ -274,7 +274,7 @@ bool CVTPSession::SendCommand(const string &command)
 #ifdef DEBUG
   CLog::Log(LOGERROR, "CVTPSession::SendCommand - sending '%s'", command.c_str());
 #endif
-  if(send(m_socket, buffer.c_str(), buffer.length(), 0) != buffer.length())
+  if(send(m_socket, buffer.c_str(), buffer.length(), 0) != (int)buffer.length())
   {
     CLog::Log(LOGERROR, "CVTPSession::SendCommand - failed to send data");
     return false;

@@ -2729,8 +2729,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_application.WakeUpScreenSaverAndDPMS();
 
     // set fullscreen or windowed
-    if (params2.size() == 2 && params2[1] == "1")
+    if (params2.size() >= 2 && params2[1] == "1")
       g_stSettings.m_bStartVideoWindowed = true;
+    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
+      item.m_lStartOffset = STARTOFFSET_RESUME;
 
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
@@ -4628,8 +4630,17 @@ CStdString CUtil::CreateUUID()
   return UuidStrTmp;
 }
 
-#ifdef _LINUX
+void CUtil::InitRandomSeed()
+{
+  // Init random seed 
+  LARGE_INTEGER now; 
+  QueryPerformanceCounter(&now); 
+  unsigned int seed = (now.u.LowPart);
+//  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
+  srand(seed);
+}
 
+#ifdef _LINUX
 bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
 {
   CStdStringArray args;

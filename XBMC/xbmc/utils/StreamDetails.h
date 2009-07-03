@@ -128,5 +128,6 @@ private:
 class IStreamDetailsObserver
 {
 public:
+  virtual ~IStreamDetailsObserver() {}
   virtual void OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId) = 0;
 };

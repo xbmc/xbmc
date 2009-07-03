@@ -302,6 +302,12 @@
 				RelativePath="..\..\xbmc\win32\WINFileSMB.h">
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\WINMessageHandler.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\WINMessageHandler.h">
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\WINSMBDirectory.cpp">
 			</File>
 			<File
@@ -343,6 +349,12 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.cpp">
+			</File>
+			<File
+				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.h">
 			</File>
 			<File
 				RelativePath="..\..\xbmc\cores\ssrc.cpp">
@@ -466,6 +478,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDStreamInfo.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDTSCorrection.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\DVDTSCorrection.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\IDVDPlayer.h">
@@ -662,6 +680,12 @@
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxFFmpeg.h">
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxHTSP.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxHTSP.h">
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxShoutcast.cpp">
 					</File>
 					<File
@@ -709,6 +733,12 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamFile.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHTSP.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHTSP.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamHttp.cpp">
@@ -831,6 +861,12 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMicroDVD.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMPL2.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserMPL2.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSami.cpp">
@@ -1524,6 +1560,12 @@
 					RelativePath="..\..\xbmc\ScraperSettings.h">
 				</File>
 				<File
+					RelativePath="..\..\xbmc\ScriptSettings.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ScriptSettings.h">
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Settings.cpp">
 				</File>
 				<File
@@ -2176,6 +2218,12 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\Stopwatch.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\StreamDetails.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\StreamDetails.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\StringUtils.cpp">
@@ -2868,6 +2916,18 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\HDHomeRun.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTSPDirectory.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTSPDirectory.h">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTSPSession.cpp">
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\HTSPSession.h">
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\HTTPDirectory.cpp">
@@ -4138,6 +4198,12 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonPlayer.h">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonSettings.cpp">
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonSettings.h">
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\pyutil.cpp">

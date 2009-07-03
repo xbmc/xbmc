@@ -281,13 +281,18 @@ void CGUITextureBase::AllocResources()
     }
     if (m_isAllocated != NORMAL)
     { // use our large image background loader
-      CTexture texture = g_largeTextureManager.GetImage(m_info.filename, m_largeOrientation, !IsAllocated());
-      m_isAllocated = LARGE;
+      CTexture texture;
+      if (g_largeTextureManager.GetImage(m_info.filename, texture, m_largeOrientation, !IsAllocated()))
+      {
+        m_isAllocated = LARGE;
+        
+        if (!texture.size()) // not ready as yet
+          return;
 
-      if (!texture.size()) // not ready as yet
-        return;
-
-      m_texture = texture;
+        m_texture = texture;
+      }
+      else
+        m_isAllocated = FAILED;
     }
   }
   else if (!IsAllocated())
@@ -296,7 +301,7 @@ void CGUITextureBase::AllocResources()
 
     // set allocated to true even if we couldn't load the image to save
     // us hitting the disk every frame
-    m_isAllocated = NORMAL;
+    m_isAllocated = images ? NORMAL : FAILED;
     if (!images)
       return;
 

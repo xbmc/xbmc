@@ -220,7 +220,7 @@ void XBPyThread::Process()
           pDlgOK->DoModal();
         }
       }
-      else CLog::Log(LOGINFO, "Scriptresult: Succes\n");
+      else CLog::Log(LOGINFO, "Scriptresult: Success\n");
       fclose(fp);
     }
     else CLog::Log(LOGERROR, "%s not found!\n", source);

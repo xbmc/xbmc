@@ -142,8 +142,26 @@
 				<onup>208</onup>
 				<ondown>919</ondown>
 			</control>
+			<control type="button" id="210">
+				<description>Teletext</description>
+				<visible>VideoPlayer.Content(LiveTV)</visible>
+				<posx>32</posx>
+				<posy>158</posy>
+				<width>77</width>
+				<height>79</height>
+				<texturefocus>osd_button_txt.png</texturefocus>
+				<texturenofocus>-</texturenofocus>
+				<onclick>XBMC.ActivateWindow(608)</onclick>
+				<label>-</label>
+				<font>-</font>
+				<onleft>215</onleft>
+				<onright>211</onright>
+				<onup>208</onup>
+				<ondown>919</ondown>
+			</control>
 			<control type="togglebutton" id="211">
 				<description>Rewind</description>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
 				<posx>95</posx>
 				<posy>149</posy>
 				<width>71</width>

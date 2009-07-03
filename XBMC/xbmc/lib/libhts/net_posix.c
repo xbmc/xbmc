@@ -45,7 +45,7 @@
 /**
  *
  */
-int
+socket_t
 htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize,
 	    int timeout)
 {
@@ -188,7 +188,7 @@ htsp_tcp_connect(const char *hostname, int port, char *errbuf, size_t errbufsize
  *
  */
 int
-htsp_tcp_write_queue(int fd, htsbuf_queue_t *q)
+htsp_tcp_write_queue(socket_t fd, htsbuf_queue_t *q)
 {
   htsbuf_data_t *hd;
   int l, r;
@@ -210,7 +210,7 @@ htsp_tcp_write_queue(int fd, htsbuf_queue_t *q)
  *
  */
 static int
-tcp_fill_htsbuf_from_fd(int fd, htsbuf_queue_t *hq)
+tcp_fill_htsbuf_from_fd(socket_t fd, htsbuf_queue_t *hq)
 {
   htsbuf_data_t *hd = TAILQ_LAST(&hq->hq_q, htsbuf_data_queue);
   int c;
@@ -254,7 +254,7 @@ tcp_fill_htsbuf_from_fd(int fd, htsbuf_queue_t *hq)
  *
  */
 int
-htsp_tcp_read_line(int fd, char *buf, const size_t bufsize, htsbuf_queue_t *spill)
+htsp_tcp_read_line(socket_t fd, char *buf, const size_t bufsize, htsbuf_queue_t *spill)
 {
   int len;
 
@@ -284,7 +284,7 @@ htsp_tcp_read_line(int fd, char *buf, const size_t bufsize, htsbuf_queue_t *spil
  *
  */
 int
-htsp_tcp_read_data(int fd, char *buf, const size_t bufsize, htsbuf_queue_t *spill)
+htsp_tcp_read_data(socket_t fd, char *buf, const size_t bufsize, htsbuf_queue_t *spill)
 {
   int x, tot = htsbuf_read(spill, buf, bufsize);
 
@@ -302,7 +302,7 @@ htsp_tcp_read_data(int fd, char *buf, const size_t bufsize, htsbuf_queue_t *spil
  *
  */
 int
-htsp_tcp_read(int fd, void *buf, size_t len)
+htsp_tcp_read(socket_t fd, void *buf, size_t len)
 {
   int x = recv(fd, buf, len, MSG_WAITALL);
 
@@ -318,7 +318,7 @@ htsp_tcp_read(int fd, void *buf, size_t len)
  *
  */
 int
-htsp_tcp_read_timeout(int fd, void *buf, size_t len, int timeout)
+htsp_tcp_read_timeout(socket_t fd, void *buf, size_t len, int timeout)
 {
   int x, tot = 0;
   struct pollfd fds;
@@ -354,7 +354,7 @@ htsp_tcp_read_timeout(int fd, void *buf, size_t len, int timeout)
  *
  */
 void
-htsp_tcp_close(int fd)
+htsp_tcp_close(socket_t fd)
 {
   close(fd);
 }

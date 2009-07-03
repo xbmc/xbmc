@@ -155,7 +155,7 @@
 				Name="VCCLCompilerTool"
 				GlobalOptimizations="TRUE"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="../guilib;../xbmc/win32;../xbmc;freetype2\include;../xbmc/lib/boost;../xbmc/utils"
+				AdditionalIncludeDirectories="../guilib;../xbmc/win32;../xbmc;freetype2\include;../xbmc/lib/boost;../xbmc/utils;&quot;../xbmc/lib/libSDL-WIN32/include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX;_WIN32_WINNT=0x0501;WINVER=0x0500"
 				MinimalRebuild="FALSE"
 				RuntimeLibrary="0"
@@ -587,6 +587,9 @@
 				RelativePath=".\GUITextBox.h">
 			</File>
 			<File
+				RelativePath=".\GUITextLayout.h">
+			</File>
+			<File
 				RelativePath=".\GUITexture.h">
 			</File>
 			<File
@@ -597,9 +600,6 @@
 			</File>
 			<File
 				RelativePath=".\GUITextureSDL.h">
-			</File>
-			<File
-				RelativePath=".\GUITextLayout.h">
 			</File>
 			<File
 				RelativePath=".\GUIToggleButtonControl.h">

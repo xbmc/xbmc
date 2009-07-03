@@ -276,7 +276,8 @@ void CCMythSession::Process()
     next = m_dll->event_get(m_event, buf, sizeof(buf));
     buf[sizeof(buf) - 1] = 0;
 
-    switch (next) {
+    switch (next)
+    {
     case CMYTH_EVENT_UNKNOWN:
       CLog::Log(LOGDEBUG, "%s - MythTV unknown event (error?)", __FUNCTION__);
       break;

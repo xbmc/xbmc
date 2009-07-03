@@ -338,6 +338,8 @@ public:
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
   static void ClearFileItemCache();
+  
+  static void InitRandomSeed();
 
   static CStdString CreateUUID();
 

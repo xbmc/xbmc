@@ -41,6 +41,8 @@ public:
   WCHAR GetUnicode() { return GetAscii();}; // FIXME HELPME is there any unicode feature available?
   BYTE GetKey() { return m_VKey;};
 
+  void ResetState() {}; // for API compatibility with SDL keyboard
+
 private:
   inline bool KeyDown(unsigned char key) const { return (m_keystate[key] & 0x80) ? true : false; };
   LPDIRECTINPUTDEVICE m_keyboard;
