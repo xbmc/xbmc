@@ -345,8 +345,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
-  m_restartLirc = false;
-  m_restartLCD = false;
+  m_bRunResumeJobs = false;
   m_lastActionCode = 0;
 #ifdef _WIN32PC
   m_SSysParam = new CWIN32Util::SystemParams::SysParam;
@@ -3445,14 +3444,12 @@ bool CApplication::ProcessRemote(float frameTime)
     return OnKey(key);
   }
 #endif
-#ifdef HAS_LIRC
-  if (m_restartLirc) {
-    CLog::Log(LOGDEBUG, "g_application.m_restartLirc is true - restarting lirc");
-    g_RemoteControl.Disconnect();
-    g_RemoteControl.Initialize();
-    m_restartLirc = false;
-  }
 
+  // run resume jobs if we are coming from suspend/hibernate
+  if (m_bRunResumeJobs)
+    g_powerManager.Resume(); 
+
+#ifdef HAS_LIRC
   if (g_RemoteControl.GetButton())
   {
     // time depends on whether the movement is repeated (held down) or not.
@@ -3462,19 +3459,6 @@ bool CApplication::ProcessRemote(float frameTime)
     CKey key(g_RemoteControl.GetButton(), 0, 0, 0, 0, 0, 0, time);
     g_RemoteControl.Reset();
     return OnKey(key);
-  }
-#endif
-#ifdef HAS_LCD
-  if (m_restartLCD) {
-    CLog::Log(LOGDEBUG, "g_application.m_restartLCD is true - restarting LCDd");
-#ifdef _LINUX
-    g_lcd->SetBackLight(1);
-#else
-    g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
-#endif
-    g_lcd->Stop();
-    g_lcd->Initialize();
-    m_restartLCD = false;
   }
 #endif
   return false;
