@@ -714,9 +714,6 @@ void CUtil::GetHomePath(CStdString& strPath)
   }
   else
   {
-#ifdef _DEBUG
-    printf("The XBMC_HOME environment variable is not set.\n");
-#endif
 #ifdef __APPLE__
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
