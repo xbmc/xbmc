@@ -1239,20 +1239,7 @@ void CSettings::LoadAdvancedSettings()
   pElement = pRootElement->FirstChildElement("externalplayer");
   if (pElement)
   {
-    TiXmlElement* player = new TiXmlElement(*pElement);
-    player->SetValue("player");
-    player->SetAttribute("name", "ExternalPlayer");
-    player->SetAttribute("type", "ExternalPlayer");
-    player->SetAttribute("audio", "true");
-    player->SetAttribute("video", "true");
- 
-    TiXmlElement* players = new TiXmlElement("players");
-    players->LinkEndChild(player);
-
-    TiXmlElement playercorefactory("playercorefactory");
-    playercorefactory.LinkEndChild(players);
-
-    CPlayerCoreFactory::LoadConfiguration(&playercorefactory, false);
+    CLog::Log(LOGWARNING, "External player configuration has been removed from advancedsettings.xml.  It can now be configed in userdata/playercorefactory.xml");
   }
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
@@ -1599,16 +1586,17 @@ void CSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLI
 
 bool CSettings::LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear)
 {
+  CLog::Log(LOGNOTICE, "Loading player core factory settings from %s.", fileStr.c_str());
   if (!CFile::Exists(fileStr))
   { // tell the user it doesn't exist
-    CLog::Log(LOGNOTICE, "No playercorefactory.xml to load (%s)", fileStr.c_str());
+    CLog::Log(LOGNOTICE, "%s does not exist. Skipping.", fileStr.c_str());
     return false;
   }
 
   TiXmlDocument playerCoreFactoryXML;
   if (!playerCoreFactoryXML.LoadFile(fileStr))
   {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", fileStr.c_str(), playerCoreFactoryXML.ErrorRow(), playerCoreFactoryXML.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading %s, Line %d (%s)", fileStr.c_str(), playerCoreFactoryXML.ErrorRow(), playerCoreFactoryXML.ErrorDesc());
     return false;
   }
 
