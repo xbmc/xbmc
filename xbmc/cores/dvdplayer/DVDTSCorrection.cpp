@@ -126,7 +126,7 @@ std::vector<double> CPullupCorrection::GetPattern()
   //mark each diff with what difftype it is
   for (int i = 0; i < DIFFRINGSIZE; i++)
   {
-    for (int j = 0; j < difftypes.size(); j++)
+    for (unsigned int j = 0; j < difftypes.size(); j++)
     {
       if (MatchDiff(GetDiff(i), difftypes[j]))
       {
@@ -176,7 +176,7 @@ vector<double> CPullupCorrection::GetDifftypes()
   for (int i = 0; i < DIFFRINGSIZE; i++)
   {
     bool hasmatch = false;
-    for (int j = 0; j < difftypes.size(); j++)
+    for (unsigned int j = 0; j < difftypes.size(); j++)
     {
       if (MatchDiff(GetDiff(i), difftypes[j]))
       {
@@ -245,7 +245,7 @@ bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
   m_patternpos = (m_patternpos + 1) % m_pattern.size();
   
   //check if the current pattern matches the saved pattern, with an offset of 1
-  for (int i = 0; i < m_pattern.size(); i++)
+  for (unsigned int i = 0; i < m_pattern.size(); i++)
   {
     double diff = pattern[(m_patternpos + i) % pattern.size()];
     
@@ -267,7 +267,7 @@ double CPullupCorrection::CalcFrameDuration()
 {
   double frameduration = 0.0;
   
-  for (int i = 0; i < m_pattern.size(); i++)
+  for (unsigned int i = 0; i < m_pattern.size(); i++)
   {
     frameduration += m_pattern[i];
   }
