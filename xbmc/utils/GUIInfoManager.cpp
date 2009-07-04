@@ -1057,7 +1057,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
-      return VideoWidthToResolutionDescription(g_application.m_pPlayer->GetPictureWidth());
+      return CStreamDetails::VideoWidthToResolutionDescription(g_application.m_pPlayer->GetPictureWidth());
     break;
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
@@ -3809,11 +3809,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_VIDEO_RESOLUTION:
     if (item->HasVideoInfoTag())
-      return VideoWidthToResolutionDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoWidth());
+      return CStreamDetails::VideoWidthToResolutionDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoWidth());
     break;
   case LISTITEM_VIDEO_ASPECT:
     if (item->HasVideoInfoTag())
-      return VideoAspectToAspectDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoAspect());
+      return CStreamDetails::VideoAspectToAspectDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoAspect());
     break;
   case LISTITEM_AUDIO_CODEC:
     if (item->HasVideoInfoTag())
@@ -4081,60 +4081,6 @@ void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
   //CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
   *m_currentFile->GetMusicInfoTag() = tag;
   m_currentFile->m_lStartOffset = 0;
-}
-
-CStdString CGUIInfoManager::VideoWidthToResolutionDescription(int iWidth) const
-{
-  if (iWidth == 0)
-    return "";
-
-  else if (iWidth < 721)
-    return "480";
-  // 960x540
-  else if (iWidth < 961)
-    return "540";
-  // 1280x720
-  else if (iWidth < 1281)
-    return "720";
-  // 1920x1080
-  else 
-    return "1080";
-}
-
-CStdString CGUIInfoManager::VideoAspectToAspectDescription(float fAspect) const
-{
-  const float VIDEOASPECT_EPSILON = 0.025f;
-  if (fAspect == 0.0f)
-    return "";
-
-  // With the epsilon method some of the ranges slightly overlap
-  // so go in increasing size order to minimize the impact
-  // of a growing tolerance value
-  float fTolerance = (fAspect * VIDEOASPECT_EPSILON);
-
-  // 4:3 video standard
-  if (fabs(fAspect - 1.33f) < fTolerance)
-    return "1.33";
-  // 1.66:1 35mm European flat
-  if (fabs(fAspect - 1.66f) < fTolerance)
-    return "1.66";
-  // 16:9 video widescreen 
-  if (fabs(fAspect - 1.77f) < fTolerance)
-    return "1.78";
-  // 1.85:1 35mm US flat (theatrical widescreen)
-  if (fabs(fAspect - 1.85f) < fTolerance)
-    return "1.85";
-  // 2.20:1 70m standard
-  if (fabs(fAspect - 2.20f) < fTolerance)
-    return "2.20";
-  // 2.35:1 anamorphic wide - included are both true 2.35 (pre 1970s) and new
-  // 2.39 as the industry convetion is to call the new standard 2.35 anyway
-  if (fabs(fAspect - 2.35f) < fTolerance)
-    return "2.35";
-  if (fabs(fAspect - 2.39f) < fTolerance)
-    return "2.35";
-
-  return "";
 }
 
 const CFileItem& CGUIInfoManager::GetCurrentSlide() const

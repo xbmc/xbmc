@@ -627,8 +627,6 @@ protected:
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
   bool GetItemBool(const CGUIListItem *item, int condition) const;
-  CStdString VideoWidthToResolutionDescription(int iWidth) const;
-  CStdString VideoAspectToAspectDescription(float fAspect) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
