@@ -3255,8 +3255,7 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
     return CTemperature::CreateFromCelsius(value);
   if (scale == 'F' || scale == 'f')
     return CTemperature::CreateFromFahrenheit(value);
-  else
-    return CTemperature();
+  return CTemperature();
 }
 
 CStdString CGUIInfoManager::GetVersion()
