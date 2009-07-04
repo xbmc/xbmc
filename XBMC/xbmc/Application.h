@@ -271,8 +271,7 @@ public:
 
   void Minimize(bool minimize = true);
 
-  bool m_restartLirc;
-  bool m_restartLCD;
+  bool m_bRunResumeJobs;
 
 protected:
   void RenderScreenSaver();
