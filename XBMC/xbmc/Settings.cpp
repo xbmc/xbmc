@@ -1108,6 +1108,14 @@ void CSettings::LoadAdvancedSettings()
   // succeeded - tell the user it worked
   CLog::Log(LOGNOTICE, "Loaded advancedsettings.xml from %s", advancedSettingsXML.c_str());
 
+  // Dump contents of AS.xml to debug log
+  TiXmlPrinter printer;
+  printer.SetLineBreak("\n");
+  printer.SetIndent("  ");
+  advancedXML.Accept(&printer);
+  CStdString strASXMLContents(printer.CStr());
+  CLog::Log(LOGDEBUG, "Contents of %s are...\n%s", advancedSettingsXML.c_str(), strASXMLContents.c_str());
+
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
