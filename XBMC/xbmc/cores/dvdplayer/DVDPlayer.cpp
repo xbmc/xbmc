@@ -3059,7 +3059,7 @@ int CDVDPlayer::GetPictureWidth()
   {
     CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(m_pDemuxer->GetStream(m_CurrentVideo.id));
     if (stream)
-      return stream->iHeight;
+      return stream->iWidth;
   }
   return 0;
 }
