@@ -47,7 +47,7 @@
   <string id="109">Abbild erstellen</string>
   <string id="110">Abbild wird erstellt</string>
   <string id="111">Verknüpfungen</string>
-  <string id="112">PAUSE</string>
+  <string id="112">Pause</string>
   <string id="115">Kopieren</string>
   <string id="116">Verschieben</string>
   <string id="117">Löschen</string>
@@ -63,7 +63,7 @@
   <string id="127">Objekte</string>
   <string id="128">Allgemein</string>
   <string id="129">Diaschau</string>
-  <string id="130">System-Informationen</string>
+  <string id="130">Informationen</string>
   <string id="131">Bildschirm</string>
   <string id="132">Alben</string>
   <string id="133">Interpreten</string>
@@ -156,7 +156,7 @@
   <string id="222">Abbrechen</string>
   <string id="224">Abfolgezeit</string>
   <string id="225">Übergangszeit zwischen den Bildern</string>
-  <string id="226">Test Patterns...</string>
+  <string id="226">Testbilder...</string>
   <string id="227">freedb-Anfragen aktivieren</string>
   <string id="228">Zufällige Reihenfolge der Playlist nach dem Laden</string>
   <string id="229">Festplatte abschalten</string>
@@ -763,7 +763,8 @@
   <string id="1415">Niesel</string>
   <string id="1416">Neblig</string>
   <string id="1417">Körnung</string>
-  <string id="2050">Spieldauer:</string>
+  <string id="1450">Aktiviere Energiesparmodus bei Leerlauf</string>
+  <string id="2050">Länge</string>
   <string id="4501">LCD-Typ</string>
   <string id="10000">Hauptmenü</string>
   <string id="10001">Programme</string>
@@ -910,9 +911,9 @@
   <string id="13006">Dashboard</string>
   <string id="13007">Individuellen Dashboard-Pfad verwenden</string>
   <string id="13008">Standard Ausschalte- / Energiesparmodus</string>
-  <string id="13009">Beenden</string>
+  <string id="13009">Ausschalten</string>
   <string id="13010">Ruhezustand</string>
-  <string id="13011">Ruhezustand</string>
+  <string id="13011">Bereitschaft</string>
   <string id="13012">Beenden</string>
   <string id="13013">Neustart</string>
   <string id="13014">Minimieren</string>
@@ -1289,8 +1290,8 @@
   <string id="15112">Standardschema</string>
   <string id="15200">Last.fm</string>
   <string id="15201">Abgespielte Musiktitel an Last.fm übermitteln</string>
-  <string id="15202">Benutzername</string>
-  <string id="15203">Passwort</string>
+  <string id="15202">Last.fm Benutzername</string>
+  <string id="15203">Last.fm Passwort</string>
   <string id="15204">Verbindung fehlgeschlagen.</string>
   <string id="15205">Bitte installieren Sie eine neuere Version von XBMC!</string>
   <string id="15206">Authorisierung fehlgeschlagen: Bitte Benutzerdaten prüfen!</string>
@@ -1304,6 +1305,9 @@
   <string id="15214">Weiche Audio/Video-Synchronisation verwenden</string>
   <string id="15215">Keine Dateinamen in der Symbolansicht anzeigen</string>
   <string id="15216">Play-in-Party-Modus</string>
+  <string id="15217">Abgespielte Musiktitel an Libre.fm übermitteln</string>
+  <string id="15218">Libre.fm Benutzername</string>
+  <string id="15219">Libre.fm Passwort</string>
   <string id="15250">Last.fm Radio an Last.fm übermitteln</string>
   <string id="15251">Verbindung mit Last.fm herstellen...</string>
   <string id="15252">Station wird ausgewählt...</string>
@@ -1486,10 +1490,10 @@
   <string id="20071">Möchten Sie mit neuen Medien-Quellen beginnen</string>
   <string id="20072">Bitte stellen Sie sicher, dass der selektierte Ordner beschreibbar</string>
   <string id="20073">und der neue Ordnername gültig ist.</string>
-  <string id="20074">MPAA Stufe:</string>
+  <string id="20074">Freigabe</string>
   <string id="20075">Bitte geben Sie das Master-Passwort ein</string>
   <string id="20076">Master-Passwort beim Start abfragen</string>
-  <string id="20077">Skin-Einstellungen</string>
+  <string id="20077">Skin-Optionen</string>
   <string id="20078">- nicht gesetzt -</string>
   <string id="20079">Animationen aktivieren</string>
   <string id="20080">RSS während der Musikwiedergabe deaktivieren</string>
@@ -1746,6 +1750,7 @@
   <string id="20430">Sollen Bilder und Fanart exportiert werden?</string>
   <string id="20431">Alte Dateien überschreiben?</string>
   <string id="20432">Pfad von Aktualisierungen der Bibliothek ausschließen</string>
+  <string id="20433">Meta-Informationen aus Medien Dateien extrahieren</string>
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>
   <string id="21332">WARNUNG: Ziel-TuxBox-Laufwerk ist im Aufnahme-Modus!</string>
@@ -1946,6 +1951,8 @@
   <string id="22041">weiß/rot</string>
   <string id="22042">weiß/blau</string>
   <string id="22043">schwarz/weiß</string>
+  <string id="23000">Wetter-Plugin</string>
+  <string id="23001">- Plugin Einstellungen</string>
   <string id="29800">Datenbankmodus</string>
   <string id="29801">QWERTY Tastatur</string>
   <string id="29999">Automatische Videofilter-Korrektur für Spiele</string>
