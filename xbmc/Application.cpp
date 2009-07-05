@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "Util.h"
+#include "Picture.h"
 #include "TextureManager.h"
 #include "cores/PlayerCoreFactory.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
@@ -656,10 +657,12 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef __APPLE__
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
+  CPicture pic;
+  SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
 #else
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon32x32.png")), NULL);
+  CPicture pic;
+  SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon32x32.png")), NULL);
 #endif
 #endif
 
