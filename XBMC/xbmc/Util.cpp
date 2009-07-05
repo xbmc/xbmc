@@ -2208,55 +2208,42 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // Function to create all directories at once instead
   // of calling CreateDirectory for every subdir.
   // Creates the directory and subdirectories if needed.
-  vector<string> strArray;
-  CURL url(strPath);
-  string path = url.GetFileName().c_str();
-  int iSize = path.size();
-  char cSep = CUtil::GetDirectorySeperator(strPath);
-  if (path.at(iSize - 1) == cSep) path.erase(iSize - 1, iSize - 1); // remove slash at end
-  CStdString strTemp;
 
   // return true if directory already exist
   if (CDirectory::Exists(strPath)) return true;
-
-  // split strPath up into an array
-  // music\album\ will result in
-  // music
-  // music\album
-  //
-
-  int i = 0;
-  CFileItem item(strPath,true);
-  if (item.IsHD())
+  
+  // we currently only allow HD and smb paths
+  if (!CUtil::IsHD(strPath) && !CUtil::IsSmb(strPath))
   {
-    // remove the root drive from the filename
-    if (CUtil::IsDOSPath(item.m_strPath))
-      i = 2;
-  }
-  else if (!item.IsSmb())
-  {
-    CLog::Log(LOGERROR,"CUtil::CreateDirectoryEx called with an unsupported path: %s",strPath.c_str());
+    CLog::Log(LOGERROR,"%s called with an unsupported path: %s", __FUNCTION__, strPath.c_str());
     return false;
   }
-
-  int s = i;
-  while (i < iSize)
-  {
-    i = path.find(cSep, i + 1);
-    if (i < 0) i = iSize; // get remaining chars
-    strArray.push_back(path.substr(s, i - s));
+  
+  CURL url(strPath);
+  // silly CStdString can't take a char in the constructor
+  CStdString sep(1, url.GetDirectorySeparator());
+  
+  // split the filename portion of the URL up into separate dirs
+  CStdStringArray dirs;
+  StringUtils::SplitString(url.GetFileName(), sep, dirs);
+  
+  // we start with the root path
+  CStdString dir;
+  url.GetURLWithoutFilename(dir);
+  unsigned int i = 0;
+  if (dir.IsEmpty())
+  { // local directory - start with the first dirs member so that
+    // we ensure CUtil::AddFileToFolder() below has something to work with
+    dir = dirs[i++] + sep;
   }
-
-  // create the directories
-  url.GetURLWithoutFilename(strTemp);
-  for (unsigned int i = 0; i < strArray.size(); i++)
+  // and append the rest of the directories successively, creating each dir
+  // as we go
+  for (; i < dirs.size(); i++)
   {
-    CStdString strTemp1;
-    CUtil::AddFileToFolder(strTemp,strArray[i],strTemp1);
-    CDirectory::Create(strTemp1);
+    dir = CUtil::AddFileToFolder(dir, dirs[i]);
+    CDirectory::Create(dir);
   }
-  strArray.clear();
-
+  
   // was the final destination directory successfully created ?
   if (!CDirectory::Exists(strPath)) return false;
   return true;
