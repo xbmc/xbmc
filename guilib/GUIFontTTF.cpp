@@ -767,8 +767,8 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
   m_numChars++;
   
-  m_textureScaleX = 1.0 / m_textureWidth;
-  m_textureScaleY = 1.0 / m_textureHeight;
+  m_textureScaleX = 1.0f / m_textureWidth;
+  m_textureScaleY = 1.0f / m_textureHeight;
 
   // free the glyph
   FT_Done_Glyph(glyph);

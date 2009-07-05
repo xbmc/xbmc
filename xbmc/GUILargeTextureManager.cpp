@@ -134,7 +134,7 @@ bool CGUILargeTextureManager::GetImage(const CStdString &path, CTexture &texture
         image->AddRef();
       orientation = image->GetOrientation();
       texture = image->GetTexture();
-      return texture.size();
+      return texture.size() > 0;
     }
   }
   lock.Leave();
