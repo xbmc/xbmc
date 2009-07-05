@@ -150,7 +150,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="SDL.lib SDL_image.lib DSound.lib opengl32.lib winmm.lib ws2_32.lib Mpr.lib glew32.lib glu32.lib Iphlpapi.lib PowrProf.lib"
+				AdditionalDependencies="SDL.lib DSound.lib opengl32.lib winmm.lib ws2_32.lib Mpr.lib glew32.lib glu32.lib Iphlpapi.lib PowrProf.lib"
 				OutputFile="$(OutDir)/../../../XBMC.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../xbmc/lib/libSDL-WIN32/lib"
@@ -217,7 +217,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="FALSE"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089"
-				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib"
+				AdditionalDependencies="SDL.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib"
 				OutputFile="$(OutDir)/../../../XBMC.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="../../xbmc/lib/libSDL-WIN32/lib"
