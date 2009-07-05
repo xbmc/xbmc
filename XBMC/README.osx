@@ -148,6 +148,7 @@ Then install the following port packages (order is very important):
  $ sudo port install libsdl +no_x11 +universal
  $ sudo port install smpeg +universal
  $ sudo port install libsdl_mixer +universal
+ $ sudo port install libsdl_image +universal
 
 If you understand the following two lines, you can run it to automate
 the installation of the ports in the above order:
