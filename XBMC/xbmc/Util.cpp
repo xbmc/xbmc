@@ -3002,6 +3002,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if( execute.Equals("alarmclock") )
   {
+    bool bSilent = false;
     float fSecs = -1.f;
     CStdString strCommand;
     CStdString strName;
@@ -3021,8 +3022,15 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         szParam = reg.GetReplaceString("\\4");
         if (szParam)
         {
-          if (strlen(szParam))
-            fSecs = static_cast<float>(atoi(szParam)*60);
+          vector<CStdString> arSplit;
+          StringUtils::SplitString(szParam, ",", arSplit);
+
+          if (strlen(arSplit[0]))
+            fSecs = static_cast<float>(atoi(arSplit[0])*60);
+
+          if (arSplit[1].Equals("silent"))
+            bSilent = true;
+
           free(szParam);
         }
         szParam = reg.GetReplaceString("\\1");
@@ -3050,7 +3058,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if( g_alarmClock.isRunning() )
       g_alarmClock.stop(strName);
 
-    g_alarmClock.start(strName,fSecs,strCommand);
+    g_alarmClock.start(strName,fSecs,strCommand,bSilent);
   }
   else if (execute.Equals("notification"))
   {
