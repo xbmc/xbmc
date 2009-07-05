@@ -3028,7 +3028,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           if (strlen(arSplit[0]))
             fSecs = static_cast<float>(atoi(arSplit[0])*60);
 
-          if (arSplit[1].Equals("silent"))
+          if (arSplit[1].Equals("true"))
             bSilent = true;
 
           free(szParam);
