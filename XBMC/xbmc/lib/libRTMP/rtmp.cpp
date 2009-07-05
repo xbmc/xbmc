@@ -55,6 +55,7 @@ CRTMP::CRTMP() : m_socket(INVALID_SOCKET)
   m_strPlayer = "file:///xbmc.flv";
   m_pBuffer = new char[RTMP_BUFFER_CACHE_SIZE];
   m_nBufferMS = 300;
+  m_dStartPoint = 0;
 }
 
 CRTMP::~CRTMP()
@@ -83,8 +84,10 @@ void CRTMP::SetBufferMS(int size)
   m_nBufferMS = size;
 }
 
-bool CRTMP::Connect(const std::string &strRTMPLink)
+bool CRTMP::Connect(const std::string &strRTMPLink, double dTime)
 {
+  m_dStartPoint = dTime;
+
   Close();
 
   CURL url(strRTMPLink.c_str());
@@ -371,7 +374,27 @@ bool CRTMP::SendCreateStream(double dStreamId)
   return SendRTMP(packet);
 }
 
-bool CRTMP::SendPause()
+bool CRTMP::SendDeleteStream(double dStreamId)
+{
+  RTMPPacket packet;
+  packet.m_nChannel = 0x03;   // control channel (invoke)
+  packet.m_headerType = RTMP_PACKET_SIZE_MEDIUM;
+  packet.m_packetType = 0x14; // INVOKE
+
+  packet.AllocPacket(256); // should be enough
+  char *enc = packet.m_body;
+  enc += EncodeString(enc, "deleteStream");
+  enc += EncodeNumber(enc, 0.0);
+  *enc = 0x05; // NULL
+  enc++;
+  enc += EncodeNumber(enc, dStreamId);
+
+  packet.m_nBodySize = enc - packet.m_body;
+
+  return SendRTMP(packet);
+}
+
+bool CRTMP::SendPause(bool DoPause, double dTime)
 {
   RTMPPacket packet;
   packet.m_nChannel = 0x08;   // video channel 
@@ -384,8 +407,8 @@ bool CRTMP::SendPause()
   enc += EncodeNumber(enc, 0);
   *enc = 0x05; // NULL
   enc++;
-  enc += EncodeBoolean(enc, true);
-  enc += EncodeNumber(enc, 0);
+  enc += EncodeBoolean(enc, DoPause);
+  enc += EncodeNumber(enc, (double)dTime/1000);
 
   packet.m_nBodySize = enc - packet.m_body;
 
@@ -526,7 +549,8 @@ bool CRTMP::SendPlay()
   CLog::Log(LOGDEBUG,"%s, invoking play '%s'", __FUNCTION__, strPlay.c_str() );
 
   enc += EncodeString(enc, strPlay.c_str());
-  enc += EncodeNumber(enc, 0.0);
+  enc += EncodeNumber(enc, (m_dStartPoint/1000));
+  //enc += EncodeNumber(enc, 10000.0);
 
   packet.m_nBodySize = enc - packet.m_body;
 
@@ -600,11 +624,12 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
     }
     else if (methodInvoked == "play")
     {
+      SendPlay();
     }
   }
   else if (method == "onBWDone")
   {
-    //SendCheckBW();
+    SendCheckBW();
   }
   else if (method == "_onbwcheck")
   {
@@ -1069,7 +1094,10 @@ bool CRTMP::SendRTMP(RTMPPacket &packet)
 void CRTMP::Close()
 {
   if (IsConnected())
+  {
+    //SendDeleteStream(m_stream_id);
     closesocket(m_socket);
+  }
 
   m_socket = INVALID_SOCKET;
   m_chunkSize = 128;
