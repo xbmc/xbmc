@@ -3025,11 +3025,19 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           vector<CStdString> arSplit;
           StringUtils::SplitString(szParam, ",", arSplit);
 
-          if (strlen(arSplit[0]))
-            fSecs = static_cast<float>(atoi(arSplit[0])*60);
+          if (arSplit.size() == 2)
+          {
+            if (strlen(arSplit[0]))
+              fSecs = static_cast<float>(atoi(arSplit[0])*60);
 
-          if (arSplit[1].Equals("true"))
-            bSilent = true;
+            if (arSplit[1].Equals("true"))
+              bSilent = true;
+          }
+          else
+          {
+            if (strlen(szParam))
+              fSecs = static_cast<float>(atoi(szParam)*60);
+          }
 
           free(szParam);
         }
