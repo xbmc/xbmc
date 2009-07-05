@@ -2283,13 +2283,8 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)
 {
-  strPath += GetDirectorySeperator(strPath);
-}
-
-char CUtil::GetDirectorySeperator(const CStdString &strFilename)
-{
-  CURL url(strFilename);
-  return url.GetDirectorySeparator();
+  CURL url(strPath);
+  strPath += url.GetDirectorySeparator();
 }
 
 bool CUtil::IsUsingTTFSubtitles()
@@ -3399,7 +3394,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       if (params[1] == "moveup")
         g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
       else if (params[1] == "movedown")
-        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
+        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, (DWORD)-1);
       else if (params[1] == "pageup")
         g_graphicsContext.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
       else if (params[1] == "pagedown")
