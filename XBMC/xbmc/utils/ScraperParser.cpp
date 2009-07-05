@@ -46,6 +46,8 @@ CScraperParser::CScraperParser()
   m_document = NULL;
   m_settings = NULL;
   m_language = NULL;
+  m_framework = NULL;
+  m_date = NULL;
   m_SearchStringEncoding = "UTF-8";
 }
 
@@ -81,7 +83,7 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_name = m_content = m_language = NULL;
+  m_name = m_content = m_language = m_framework = m_date = NULL;
   m_settings = NULL;
 }
 
@@ -114,6 +116,8 @@ bool CScraperParser::LoadFromXML()
     m_name = m_pRootElement->Attribute("name");
     m_content = m_pRootElement->Attribute("content");
     m_language = m_pRootElement->Attribute("language");
+    m_framework = m_pRootElement->Attribute("framework");
+    m_date = m_pRootElement->Attribute("date");
 
     if (m_name && m_content) // FIXME
     {
@@ -176,7 +180,13 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
   TiXmlElement* pExpression = element->FirstChildElement("expression");
   if (pExpression)
   {
-    CRegExp reg;
+    bool bInsensitive=true;
+    const char* sensitive = pExpression->Attribute("cs");
+    if (sensitive)
+      if (stricmp(sensitive,"yes") == 0)
+        bInsensitive=false; // match case sensitive
+    
+    CRegExp reg(bInsensitive);
     CStdString strExpression;
     if (pExpression->FirstChild())
       strExpression = pExpression->FirstChild()->Value();

@@ -22,6 +22,7 @@
 #import <sys/mount.h>
 
 #import <Cocoa/Cocoa.h>
+#import <QuartzCore/QuartzCore.h>
 #import <Carbon/Carbon.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
@@ -34,13 +35,19 @@ extern "C" void SDL_SetWidthHeight(int w, int h);
 #define MAX_DISPLAYS 32
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
+//display link for display managment
+static CVDisplayLinkRef displayLink = NULL; 
+
 // Display Blanking
 void Cocoa_GL_BlankOtherDisplays(int screen_index);
 void Cocoa_GL_UnblankDisplays(void);
+CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
 
-void* Cocoa_Create_AutoReleasePool()
+
+void* Cocoa_Create_AutoReleasePool(void)
 {
   // Original Author: Elan Feingold
+	// Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   return pool;
 }
@@ -74,7 +81,7 @@ void Cocoa_GL_SwapBuffers(void* theContext)
   [ (NSOpenGLContext*)theContext flushBuffer ];
 }
 
-int Cocoa_GetNumDisplays()
+int Cocoa_GetNumDisplays(void)
 {
   return [[NSScreen screens] count];
 }
@@ -87,6 +94,31 @@ int Cocoa_GetDisplayID(int screen_index)
   // Get the list of displays.
   CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
   return( (int)displayArray[screen_index]);
+}
+
+int Cocoa_GL_GetCurrentDisplayID(void)
+{
+  // Find which display we are on from the current context (default to main display)
+  CGDirectDisplayID display_id = kCGDirectMainDisplay;
+  
+  NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+  if (context)
+  {
+    NSView* view;
+  
+    view = [context view];
+    if (view)
+    {
+      NSWindow* window;
+      window = [view window];
+      if (window)
+      {
+        display_id = Cocoa_GetDisplayIDFromScreen( [window screen] );      
+      }
+    }
+  }
+  
+  return((int)display_id);
 }
 
 CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen)
@@ -291,7 +323,7 @@ void Cocoa_GL_UnblankDisplays(void)
 
 static NSOpenGLContext* lastOwnedContext = 0;
 
-void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays, bool gl_FullScreen)
+void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays, bool gl_FullScreen, bool alwaysOnTop)
 {
   static NSView* lastView = NULL;
   static CGDirectDisplayID fullScreenDisplayID = 0;
@@ -305,7 +337,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
   // If we're already fullscreen then we must be moving to a different display.
   // Recurse to reset fullscreen mode and then continue.
   if (fs == true && lastScreen != NULL)
-    Cocoa_GL_SetFullScreen(0, 0, false, blankOtherDisplays, gl_FullScreen);
+    Cocoa_GL_SetFullScreen(0, 0, false, blankOtherDisplays, gl_FullScreen, alwaysOnTop);
   
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   
@@ -392,9 +424,15 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       [mainWindow makeKeyAndOrderFront:nil];
       
       // Own'ed, Everything is below our window...
-      [mainWindow setLevel:CGShieldingWindowLevel()];
-      // Uncomment this to debug fullscreen on a one display system
-      //[mainWindow setLevel:NSNormalWindowLevel];
+      if (alwaysOnTop)
+      {
+        // Uncomment this to debug fullscreen on a one display system
+        //[mainWindow setLevel:NSNormalWindowLevel];
+        [mainWindow setLevel:CGShieldingWindowLevel()];
+      }
+      else
+        [mainWindow setLevel:NSNormalWindowLevel];
+
 
       // ...and the original one beneath it and on the same screen.
       view_size = [lastView frame].size;
@@ -537,7 +575,7 @@ void Cocoa_GL_EnableVSync(bool enable)
   [[NSOpenGLContext currentContext] setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
 }
 
-void* Cocoa_GL_GetWindowPixelFormat()
+void* Cocoa_GL_GetWindowPixelFormat(void)
 {
   NSOpenGLPixelFormatAttribute wattrs[] =
   {
@@ -568,7 +606,7 @@ void* Cocoa_GL_GetFullScreenPixelFormat(int screen)
   return (void*)pixFmt;
 }
 
-void* Cocoa_GL_GetCurrentContext()
+void* Cocoa_GL_GetCurrentContext(void)
 {
   NSOpenGLContext* context = [NSOpenGLContext currentContext];
   return (void*)context;
@@ -584,7 +622,7 @@ void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx)
   return newContext;
 }
 
-void* Cocoa_GL_ReplaceSDLWindowContext()
+void* Cocoa_GL_ReplaceSDLWindowContext(void)
 {
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   NSView* view = [context view];
@@ -618,21 +656,6 @@ void* Cocoa_GL_ReplaceSDLWindowContext()
   return newContext;
 }
 
-int Cocoa_IdleDisplays()
-{
-#if !defined(__POWERPC__)
-  // http://lists.apple.com/archives/Cocoa-dev/2007/Nov/msg00267.html
-  // This is an unsupported system call that kernel panics on PPC boxes
-  io_registry_entry_t r = IORegistryEntryFromPath(kIOMasterPortDefault, "IOService:/IOResources/IODisplayWrangler");
-  if(!r) return 1;
-  int err = IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue);
-  IOObjectRelease(r);
-  return err;
-#else
-  return 0;
-#endif
-}
-
 /* 10.5 only
 void Cocoa_SetSystemSleep(bool enable)
 {
@@ -661,13 +684,13 @@ void Cocoa_SetDisplaySleep(bool enable)
 }
 */
 
-void Cocoa_UpdateSystemActivity()
+void Cocoa_UpdateSystemActivity(void)
 {
   // Original Author: Elan Feingold
   UpdateSystemActivity(UsrActivity);   
 }
 
-void Cocoa_DisableOSXScreenSaver()
+void Cocoa_DisableOSXScreenSaver(void)
 {
   // If we don't call this, the screen saver will just stop and then start up again.
   UpdateSystemActivity(UsrActivity);      
@@ -678,6 +701,94 @@ void Cocoa_DisableOSXScreenSaver()
     @"tell application \"ScreenSaverEngine\" to quit"];
   returnDescriptor = [scriptObject executeAndReturnError: &errorDict];
   [scriptObject release];
+}
+
+bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext)
+{
+  CVReturn status = kCVReturnError;
+  CGDirectDisplayID display_id;
+    
+  Cocoa_GL_EnableVSync(true);
+  display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
+  if (!displayLink)
+  {
+    // Create a display link capable of being used with all active displays
+    status = CVDisplayLinkCreateWithActiveCGDisplays(&displayLink);
+
+    // Set the renderer output callback function
+    status = CVDisplayLinkSetOutputCallback(displayLink, (CVDisplayLinkOutputCallback)displayLinkcallback, displayLinkContext);
+  }
+
+  if (status == kCVReturnSuccess)
+  {
+    // Set the display link for the current display
+    status = CVDisplayLinkSetCurrentCGDisplay(displayLink, display_id);
+
+    // Activate the display link
+    status = CVDisplayLinkStart(displayLink);
+  }
+  
+  return(status == kCVReturnSuccess);
+}
+
+void Cocoa_CVDisplayLinkRelease(void)
+{
+  if (displayLink)
+  {
+    if (CVDisplayLinkIsRunning(displayLink))
+      CVDisplayLinkStop(displayLink);
+    // Release the display link
+    CVDisplayLinkRelease(displayLink);
+    displayLink = NULL;
+  }
+}
+
+void Cocoa_CVDisplayLinkUpdate(void)
+{
+  if (displayLink)
+  {
+    CGDirectDisplayID display_id;
+    
+    display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
+    // Set the display link to the current display
+    CVDisplayLinkSetCurrentCGDisplay(displayLink, display_id);
+  }
+}
+
+double Cocoa_GetCVDisplayLinkRefreshPeriod(void)
+{
+  double fps = 60.0;
+
+  if (displayLink && CVDisplayLinkIsRunning(displayLink) )
+  {
+    CVTime cvtime;
+    cvtime = CVDisplayLinkGetNominalOutputVideoRefreshPeriod(displayLink);
+    if (cvtime.timeValue > 0)
+      fps = (double)cvtime.timeScale / (double)cvtime.timeValue;
+    
+    fps = CVDisplayLinkGetActualOutputVideoRefreshPeriod(displayLink);
+    if (fps > 0.0)
+      fps = 1.0 / fps;
+    else
+      fps = 60.0;
+  }
+  else
+  {
+    // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
+    CGDirectDisplayID display_id;
+    CFDictionaryRef mode;
+  
+    display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
+    mode = CGDisplayCurrentMode(display_id);
+    if (mode)
+    {
+      CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayRefreshRate), kCFNumberDoubleType, &fps);
+      if (fps <= 0.0)
+        fps = 60.0;
+    }
+  }
+  
+  return(fps);
 }
 
 void Cocoa_DoAppleScript(const char* scriptSource)
@@ -721,57 +832,15 @@ void Cocoa_MountPoint2DeviceName(char* path)
 }
 
 /*
-@interface MyView : NSOpenGLView
-{
-    CVDisplayLinkRef displayLink; //display link for managing rendering thread
+void SetPIDFrontProcess(pid_t pid) {
+    ProcessSerialNumber psn;
+
+    GetProcessForPID(pid, &psn );
+    SetFrontProcess(&psn);
 }
-@end
+*/
 
-- (void)prepareOpenGL
-{
-    // Synchronize buffer swaps with vertical refresh rate
-    GLint swapInt = 1;
-    [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; 
-
-    // Create a display link capable of being used with all active displays
-    CVDisplayLinkCreateWithActiveCGDisplays(&displayLink);
-
-    // Set the renderer output callback function
-    CVDisplayLinkSetOutputCallback(displayLink, &MyViewDisplayLinkCallback, self);
-
-    // Set the display link for the current renderer
-    CGLContextObj cglContext = [[self openGLContext] CGLContextObj];
-    CGLPixelFormatObj cglPixelFormat = [[self pixelFormat] CGLPixelFormatObj];
-    CVDisplayLinkSetCurrentCGDisplayFromOpenGLContext(displayLink, cglContext, cglPixelFormat);
-
-    // Activate the display link
-    CVDisplayLinkStart(displayLink);
-}
-
-// This is the renderer output callback function
-static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp* now, const CVTimeStamp* outputTime, CVOptionFlags flagsIn, CVOptionFlags* flagsOut, void* displayLinkContext)
-{
-    CVReturn result = [(MyView*)displayLinkContext getFrameForTime:outputTime];
-    return result;
-}
-
-- (CVReturn)getFrameForTime:(const CVTimeStamp*)outputTime
-{
-    // Add your drawing codes here
-
-    return kCVReturnSuccess;
-}
-
-- (void)dealloc
-{
-    // Release the display link
-    CVDisplayLinkRelease(displayLink);
-
-    [super dealloc];
-}
-
-//888888888888888888
-
+/*
 // Synchronize buffer swaps with vertical refresh rate (NSTimer)
 - (void)prepareOpenGL
 {
@@ -802,4 +871,143 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     // All we do here is tell the display it needs a refresh
     [self setNeedsDisplay:YES];
 }
+
+[newWindow setFrameAutosaveName:@"some name"] 
+
+and the window's frame is automatically saved for you in the application 
+defaults each time its location changes. 
 */
+
+
+void Cocoa_HideMouse()
+{
+  [NSCursor hide];
+}
+
+void Cocoa_GetSmartFolderResults(const char* strFile, void (*CallbackFunc)(void* userData, void* userData2, const char* path), void* userData, void* userData2)
+{
+  NSString*     filePath = [[NSString alloc] initWithUTF8String:strFile];
+  NSDictionary* doc = [[NSDictionary alloc] initWithContentsOfFile:filePath];
+  NSString*     raw = [doc objectForKey:@"RawQuery"];
+  NSArray*      searchPaths = [[doc objectForKey:@"SearchCriteria"] objectForKey:@"FXScopeArrayOfPaths"];
+
+  if (raw == 0)
+    return;
+
+  // Ugh, Carbon from now on...
+  MDQueryRef query = MDQueryCreate(kCFAllocatorDefault, (CFStringRef)raw, NULL, NULL);
+  if (query)
+  {
+  	if (searchPaths)
+  	  MDQuerySetSearchScope(query, (CFArrayRef)searchPaths, 0);
+  	  
+    MDQueryExecute(query, 0);
+
+	// Keep track of when we started.
+	CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent(); 
+    for (;;)
+    {
+      CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, YES);
+    
+      // If we're done or we timed out.
+      if (MDQueryIsGatheringComplete(query) == true ||
+      	  CFAbsoluteTimeGetCurrent() - startTime >= 5)
+      {
+        // Stop the query.
+        MDQueryStop(query);
+      
+    	CFIndex count = MDQueryGetResultCount(query);
+    	char title[BUFSIZ];
+    	int i;
+  
+    	for (i = 0; i < count; ++i) 
+   		{
+      	  MDItemRef resultItem = (MDItemRef)MDQueryGetResultAtIndex(query, i);
+      	  CFStringRef titleRef = (CFStringRef)MDItemCopyAttribute(resultItem, kMDItemPath);
+      
+      	  CFStringGetCString(titleRef, title, BUFSIZ, kCFStringEncodingUTF8);
+      	  CallbackFunc(userData, userData2, title);
+      	  CFRelease(titleRef);
+    	}  
+    
+        CFRelease(query);
+    	break;
+      }
+    }
+  }
+  
+  // Freeing these causes a crash when scanning for new content.
+  CFRelease(filePath);
+  CFRelease(doc);
+}
+
+static char strVersion[32];
+
+const char* Cocoa_GetAppVersion()
+{
+  // Get the main bundle for the app and return the version.
+  CFBundleRef mainBundle = CFBundleGetMainBundle();
+  CFStringRef versStr = (CFStringRef)CFBundleGetValueForInfoDictionaryKey(mainBundle, kCFBundleVersionKey);
+  
+  memset(strVersion,0,32);
+  
+  if (versStr != NULL && CFGetTypeID(versStr) == CFStringGetTypeID())
+  {
+    bool res = CFStringGetCString(versStr, strVersion, 32,kCFStringEncodingUTF8);
+    if (!res)
+    {
+      printf("Error converting version string\n");      
+      strcpy(strVersion, "SVN");
+    }
+  }
+  else
+    strcpy(strVersion, "SVN");
+  
+  return strVersion;
+}
+
+NSWindow* childWindow = nil;
+NSWindow* mainWindow = nil;
+
+
+void Cocoa_MakeChildWindow()
+{
+  NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+  NSView* view = [context view];
+  NSWindow* window = [view window];
+
+  // Create a child window.
+  childWindow = [[NSWindow alloc] initWithContentRect:[window frame]
+                                            styleMask:NSBorderlessWindowMask
+                                              backing:NSBackingStoreBuffered
+                                                defer:NO];
+                                          
+  [childWindow setContentSize:[view frame].size];
+  [childWindow setBackgroundColor:[NSColor blackColor]];
+  [window addChildWindow:childWindow ordered:NSWindowAbove];
+  mainWindow = window;
+  //childWindow.alphaValue = 0.5; 
+}
+
+void Cocoa_DestroyChildWindow()
+{
+  if (childWindow != nil)
+  {
+    [mainWindow removeChildWindow:childWindow];
+    [childWindow close];
+    childWindow = nil;
+  }
+}
+const char *Cocoa_Paste() 
+{
+  NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+  NSString *type = [pasteboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]];
+  if (type != nil) {
+    NSString *contents = [pasteboard stringForType:type];
+    if (contents != nil) {
+      return [contents UTF8String];
+    }
+  }
+  
+  return NULL;
+}

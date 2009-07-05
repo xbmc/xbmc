@@ -190,6 +190,12 @@ CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, co
   m_postfix.Replace("$LBRACKET", "["); m_postfix.Replace("$RBRACKET", "]");
 }
 
+CStdString CGUIInfoLabel::GetLabel(const CStdString &label, bool preferImage)
+{ // translate the label
+  CGUIInfoLabel info(label, "");
+  return info.GetLabel(0, preferImage);
+}
+
 CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height), m_textLayout(labelInfo.font, wrapMultiLine)
 {

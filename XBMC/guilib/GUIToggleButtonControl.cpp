@@ -71,12 +71,6 @@ bool CGUIToggleButtonControl::OnAction(const CAction &action)
   return CGUIButtonControl::OnAction(action);
 }
 
-void CGUIToggleButtonControl::PreAllocResources()
-{
-  CGUIButtonControl::PreAllocResources();
-  m_selectButton.PreAllocResources();
-}
-
 void CGUIToggleButtonControl::AllocResources()
 {
   CGUIButtonControl::AllocResources();
@@ -144,7 +138,7 @@ CStdString CGUIToggleButtonControl::GetLabel() const
   return CGUIButtonControl::GetLabel();
 }
 
-void CGUIToggleButtonControl::SetAltClickActions(const vector<CStdString> &clickActions)
+void CGUIToggleButtonControl::SetAltClickActions(const vector<CGUIActionDescriptor> &clickActions)
 {
   m_selectButton.SetClickActions(clickActions);
 }

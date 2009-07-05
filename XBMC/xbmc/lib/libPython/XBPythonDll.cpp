@@ -84,7 +84,17 @@ extern "C"
   FUNCTION(PyLong_FromLong)
   FUNCTION(PyModule_AddStringConstant)
   FUNCTION(PyModule_AddObject)
+#if (defined USE_EXTERNAL_PYTHON) && (!defined HAVE_LIBPYTHON2_4)
+  /* Upstream Python rename Py_InitModule4 for 64-bit systems, for Python
+   versions higher than 2.4 */
+  #if SIZEOF_SIZE_T != SIZEOF_INT
+  FUNCTION(Py_InitModule4_64)
+  #else
   FUNCTION(Py_InitModule4)
+  #endif
+#else
+  FUNCTION(Py_InitModule4)
+#endif
   FUNCTION(PyInt_AsLong)
   FUNCTION(PyFloat_AsDouble)
   FUNCTION(PyString_FromString)
@@ -175,7 +185,17 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyLong_FromLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyModule_AddStringConstant)) &&
       dll.ResolveExport(DLL_FUNCTION(PyModule_AddObject)) &&
+#if (defined USE_EXTERNAL_PYTHON) && (!defined HAVE_LIBPYTHON2_4)
+/* Upstream Python rename Py_InitModule4 for 64-bit systems, for Python versions
+ higher than 2.4 */
+#if SIZEOF_SIZE_T != SIZEOF_INT
+      dll.ResolveExport(DLL_FUNCTION(Py_InitModule4_64)) &&
+#else
       dll.ResolveExport(DLL_FUNCTION(Py_InitModule4)) &&
+#endif
+#else
+      dll.ResolveExport(DLL_FUNCTION(Py_InitModule4)) &&
+#endif
       dll.ResolveExport(DLL_FUNCTION(PyInt_AsLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyFloat_AsDouble)) &&
       dll.ResolveExport(DLL_FUNCTION(PyString_FromString)) &&

@@ -27,7 +27,7 @@ typedef struct stListElement
 {
   CDVDOverlay* pOverlay;
   struct stListElement* pNext;
-  
+
 } ListElement;
 
 class CDVDSubtitleLineCollection
@@ -40,20 +40,20 @@ public:
   //void Unlock() { LeaveCriticalSection(&m_critSection); }
 
   void Add(CDVDOverlay* pSubtitle);
-  
+
   CDVDOverlay* Get(double iPts = 0LL); // get the first overlay in this fifo
 
   void Reset();
-  
+
   void Remove();
   void Clear();
   int GetSize() { return m_iSize; }
-  
+
 private:
   ListElement* m_pHead;
   ListElement* m_pCurrent;
   ListElement* m_pTail;
-  
+
   int m_iSize;
   double m_fLastPts;
   //CRITICAL_SECTION m_critSection;

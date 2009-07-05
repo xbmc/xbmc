@@ -393,6 +393,19 @@ CStdString CGUIWindowVideoNav::GetQuickpathName(const CStdString& strPath) const
   }
 }
 
+void CGUIWindowVideoNav::OnItemLoaded(CFileItem* pItem)
+{
+  /* even though the background loader is running multiple threads and we could,
+     be acting on someone else's flag, we don't care who invalidates the cache
+     only that it is done.  We also don't care if it is done multiple times due
+     to a race between multiple threads here at the same time */
+  if (m_bStreamDetailsChanged)
+  {
+    m_bStreamDetailsChanged = false;
+    CUtil::DeleteVideoDatabaseDirectoryCache();
+  }
+}
+
 bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemList &items)
 {
   if (m_bDisplayEmptyDatabaseMessage)
@@ -579,18 +592,22 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, g_stSettings.m_bMyVideoNavFlatten);
 }
 
-/// \brief Search for genres, artists and albums with search string \e strSearch in the musicdatabase and return the found \e items
+/// \brief Search for genres, artists, directors, names, and plots with search string \e strSearch in the
+/// \brief video databases and return the found \e items
 /// \param strSearch The search string
 /// \param items Items Found
 void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& items)
 {
-  // get matching genres
   CFileItemList tempItems;
+  CStdString strGenre = g_localizeStrings.Get(515); // Genre
+  CStdString strActor = g_localizeStrings.Get(20337); // Actor
+  CStdString strDirector = g_localizeStrings.Get(20339); // Director
+  CStdString strMovie = g_localizeStrings.Get(20338); // Movie
 
+  // get matching genres
   m_database.GetMovieGenresByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strGenre = g_localizeStrings.Get(515); // Genre
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
@@ -602,7 +619,6 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetTvShowGenresByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strGenre = g_localizeStrings.Get(515); // Genre
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
@@ -614,19 +630,6 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetMusicVideoGenresByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strGenre = g_localizeStrings.Get(515); // Genre
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMusicVideoGenresByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    CStdString strGenre = g_localizeStrings.Get(515); // Genre
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
@@ -638,7 +641,6 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetMovieActorsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strActor = g_localizeStrings.Get(20337); // Actor
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
@@ -650,7 +652,6 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetTvShowsActorsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strActor = g_localizeStrings.Get(20337); // Actor
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
@@ -662,7 +663,6 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetMusicVideoArtistsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strActor = g_localizeStrings.Get(557); // Artist
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
@@ -674,10 +674,9 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   m_database.GetMovieDirectorsByName(strSearch, tempItems);
   if (tempItems.Size())
   {
-    CStdString strMovie = g_localizeStrings.Get(20339); // Director
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + strMovie + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
@@ -689,7 +688,7 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     CStdString strMovie = g_localizeStrings.Get(20339); // Director
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + strMovie + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
@@ -701,7 +700,7 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     CStdString strMovie = g_localizeStrings.Get(20339); // Director
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
-      tempItems[i]->SetLabel("[" + strMovie + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
@@ -774,6 +773,19 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     for (int i = 0; i < (int)tempItems.Size(); i++)
     {
       tempItems[i]->SetLabel("[" + g_localizeStrings.Get(20365) + "] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+
+  m_database.GetMoviesByPlot(strSearch, tempItems);
+
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strMovie + " " + g_localizeStrings.Get(207) + "] " + tempItems[i]->GetLabel());
     }
     items.Append(tempItems);
   }
@@ -1219,7 +1231,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       }
 
       if ((CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) == NODE_TYPE_TITLE_MOVIES ||
-           CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) ==NODE_TYPE_TITLE_MUSICVIDEOS ||
+           CVideoDatabaseDirectory::GetDirectoryChildType(item->m_strPath) == NODE_TYPE_TITLE_MUSICVIDEOS ||
            item->m_strPath.Equals("videodb://1/") ||
            item->m_strPath.Equals("videodb://4/") ||
            item->m_strPath.Equals("videodb://6/")) &&
@@ -1316,7 +1328,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           strItemPath.Format("thumb://Remote%i",i++);
           CFileItemPtr item(new CFileItem(strItemPath, false));
           item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
-          item->SetIconImage("defaultPicture.png");
+          item->SetIconImage("DefaultPicture.png");
           item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(*iter);
           item->SetLabel(g_localizeStrings.Get(415));
           item->SetProperty("labelonthumbload",g_localizeStrings.Get(20015));
@@ -1354,7 +1366,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
             }
           }
         }
-        noneitem->SetThumbnailImage("DefaultFolderBig.png");
+        noneitem->SetIconImage("DefaultFolder.png");
         noneitem->SetLabel(g_localizeStrings.Get(20018));
       }
       if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
@@ -1373,7 +1385,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       else
       {
-        noneitem->SetThumbnailImage("DefaultFolderBig.png");
+        noneitem->SetIconImage("DefaultFolder.png");
         noneitem->SetLabel(g_localizeStrings.Get(20018));
       }
 
@@ -1392,7 +1404,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           }
           else
           {
-            noneitem->SetThumbnailImage("DefaultFolderBig.png");
+            noneitem->SetIconImage("DefaultFolder.png");
             noneitem->SetLabel(g_localizeStrings.Get(20018));
           }
         }
@@ -1407,7 +1419,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
         else
         {
-          noneitem->SetThumbnailImage("DefaultFolderBig.png");
+          noneitem->SetIconImage("DefaultFolder.png");
           noneitem->SetLabel(g_localizeStrings.Get(20018));
         }
         CUtil::AddFileToFolder(strPath,"default.tbn",strThumb);
@@ -1420,7 +1432,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
         else
         {
-          noneitem->SetThumbnailImage("DefaultFolderBig.png");
+          noneitem->SetIconImage("DefaultFolder.png");
           noneitem->SetLabel(g_localizeStrings.Get(20018));
         }
       }
@@ -1455,7 +1467,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
         else
         {
-          noneitem->SetThumbnailImage("DefaultArtistBig.png");
+          noneitem->SetIconImage("DefaultArtist.png");
           noneitem->SetLabel(g_localizeStrings.Get(20018));
         }
       }
@@ -1474,7 +1486,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
         else
         {
-          noneitem->SetThumbnailImage("DefaultActorBig.png");
+          noneitem->SetIconImage("DefaultActor.png");
           noneitem->SetLabel(g_localizeStrings.Get(20018));
         }
       }
@@ -1510,8 +1522,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         CFile::Delete(cachedThumb);
         if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
         {
-          CPicture picture;
-          picture.CacheSkinImage("DefaultFolderBig.png",cachedThumb);
           CFileItem item2(strPath,false);
           CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
           CFile::Delete(item2.GetCachedProgramThumb());

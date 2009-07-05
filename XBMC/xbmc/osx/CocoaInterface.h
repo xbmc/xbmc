@@ -22,7 +22,7 @@
 #define _OSX_INTERFACE_H_
   // Pools.
   //
-  void* Cocoa_Create_AutoReleasePool();
+  void* Cocoa_Create_AutoReleasePool(void);
   void Cocoa_Destroy_AutoReleasePool(void* pool);
   
   // Graphics.
@@ -31,32 +31,40 @@
   void Cocoa_GetScreenResolution(int* w, int* h);
   double Cocoa_GetScreenRefreshRate(int screen_index);
   void Cocoa_GetScreenResolutionOfAnotherScreen(int screen_index, int* w, int* h);
-  int  Cocoa_GetNumDisplays();
+  int  Cocoa_GetNumDisplays(void);
   int  Cocoa_GetDisplayID(int screen_index);
+  int Cocoa_GL_GetCurrentDisplayID(void);
   
   // Open GL.
   //
   void  Cocoa_GL_MakeCurrentContext(void* theContext);
   void  Cocoa_GL_ReleaseContext(void* context);
   void  Cocoa_GL_SwapBuffers(void* theContext);
-  void* Cocoa_GL_GetWindowPixelFormat();
+  void* Cocoa_GL_GetWindowPixelFormat(void);
   void* Cocoa_GL_GetFullScreenPixelFormat(int screen_index);
-  void* Cocoa_GL_GetCurrentContext();
+  void* Cocoa_GL_GetCurrentContext(void);
   void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx);
   void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h);
-  void  Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplay, bool GL_FullScreen);
+  void  Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplay, bool GL_FullScreen, bool alwaysOnTop);
   void  Cocoa_GL_EnableVSync(bool enable);
 
+  //
   // SDL Hack
   //
-  void* Cocoa_GL_ReplaceSDLWindowContext();
+  void* Cocoa_GL_ReplaceSDLWindowContext(void);
   
   // Power and Screen
   //
-  int  Cocoa_IdleDisplays();
-  void Cocoa_UpdateSystemActivity();
-  void Cocoa_DisableOSXScreenSaver();
+  void Cocoa_UpdateSystemActivity(void);
+  void Cocoa_DisableOSXScreenSaver(void);
   
+  // DisplayLink
+  //
+  bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext);
+  void Cocoa_CVDisplayLinkRelease(void);
+  void Cocoa_CVDisplayLinkUpdate(void);
+  double Cocoa_GetCVDisplayLinkRefreshPeriod(void);
+
   // AppleScript
   //
   void Cocoa_DoAppleScript(const char* scriptSource);
@@ -64,4 +72,25 @@
   // Devices
   //
   void Cocoa_MountPoint2DeviceName(char* path);
+  
+  //
+  // Mouse.
+  //
+  void Cocoa_HideMouse();
+
+  //
+  // Smart folders.
+  //
+  void Cocoa_GetSmartFolderResults(const char* strFile, void (*)(void* userData, void* userData2, const char* path), void* userData, void* userData2);
+
+  //
+  // Version.
+  //
+  const char* Cocoa_GetAppVersion();
+  
+  void  Cocoa_MakeChildWindow();
+  void  Cocoa_DestroyChildWindow();
+
+  const char *Cocoa_Paste() ;  
+
 #endif

@@ -23,6 +23,7 @@
 
 #include "GUIControl.h"
 #include "GUITexture.h"
+#include "GUIActionDescriptor.h"
 
 class CButton
 {
@@ -41,7 +42,7 @@ public:
   int id;
   int info;
   std::string strLabel;
-  std::vector<CStdString> clickActions;
+  std::vector<CGUIActionDescriptor> clickActions;
   CGUITexture *imageFocus;
   CGUITexture *imageNoFocus;
 };
@@ -65,7 +66,6 @@ public:
   virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual void Render();
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);

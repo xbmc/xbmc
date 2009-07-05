@@ -31,7 +31,7 @@
 using namespace std;
 using namespace XFILE;
 
-#define SKIN_MIN_VERSION 2.0
+#define SKIN_MIN_VERSION 2.1
 
 CSkinInfo g_SkinInfo; // global
 
@@ -262,6 +262,12 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   // check if we don't have any subdirectories
   if (*res == INVALID) *res = PAL_4x3;
   return strPath;
+}
+
+bool CSkinInfo::HasSkinFile(const CStdString &strFile)
+{
+  RESOLUTION res = INVALID;
+  return CFile::Exists(GetSkinPath(strFile, &res));
 }
 
 CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)

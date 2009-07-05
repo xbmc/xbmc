@@ -34,7 +34,7 @@
 #endif
 #endif
 #ifdef _WIN32PC
-#include "ntddcdrm.h"
+#include "my_ntddcdrm.h"
 #include "WIN32Util.h"
 #endif
 #if defined (_LINUX) && !defined(__APPLE__)
@@ -62,6 +62,9 @@
 #include "../FileSystem/cdioSupport.h"
 #include "../DetectDVDType.h"
 #include "FileSystem/iso9660.h"
+#ifdef _LINUX
+#include "XHandle.h"
+#endif
 
 using namespace MEDIA_DETECT;
 

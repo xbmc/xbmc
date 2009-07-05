@@ -86,13 +86,10 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     m_bConfirmed = false;
     m_bCanceled = false;
 
-    unsigned char md5pword[16];
-    char md5pword2[33];
+    CStdString md5pword2;
     XBMC::MD5 md5state;
     md5state.append(m_strUserInput);
-    md5state.getDigest(md5pword);
-
-    XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
+    md5state.getDigest(md5pword2);
 
     if (!m_strPassword.Equals(md5pword2))
     {
@@ -284,13 +281,9 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(CStdString& strToVerify, const CStdSt
 
   if (bGetUserInput && !pDialog->IsCanceled())
   {
-    unsigned char md5pword[16];
-    char md5pword2[33];
     XBMC::MD5 md5state;
     md5state.append(pDialog->m_strUserInput);
-    md5state.getDigest(md5pword);
-    XKGeneral::BytesToHexStr(md5pword,16,md5pword2);
-    strToVerify = md5pword2;
+    md5state.getDigest(strToVerify);
     strToVerify.ToLower();
     pDialog->m_strUserInput = "";
   }

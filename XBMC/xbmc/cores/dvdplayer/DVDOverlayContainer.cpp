@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDOverlayContainer.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
@@ -67,7 +67,7 @@ void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
   }
 
   m_overlays.push_back(pOverlay);
-  
+
   LeaveCriticalSection(&m_critSection);
 }
 
@@ -84,7 +84,7 @@ VecOverlaysIter CDVDOverlayContainer::Remove(VecOverlaysIter itOverlay)
   EnterCriticalSection(&m_critSection);
   itNext = m_overlays.erase(itOverlay);
   LeaveCriticalSection(&m_critSection);
-  
+
 #ifdef DVDDEBUG_OVERLAY_TRACKER
   pOverlay->m_bTrackerReference--;
 #endif
@@ -97,14 +97,14 @@ VecOverlaysIter CDVDOverlayContainer::Remove(VecOverlaysIter itOverlay)
 void CDVDOverlayContainer::CleanUp(double pts)
 {
   CDVDOverlay* pOverlay = NULL;
-  
+
   EnterCriticalSection(&m_critSection);
-  
+
   VecOverlaysIter it = m_overlays.begin();
   while (it != m_overlays.end())
   {
     pOverlay = *it;
-    
+
     // never delete forced overlays, they are used in menu's
     // clear takes care of removing them
     // also if stoptime = 0, it means the next subtitles will use its starttime as the stoptime
@@ -136,7 +136,7 @@ void CDVDOverlayContainer::CleanUp(double pts)
     }
     it++;
   }
-  
+
   LeaveCriticalSection(&m_critSection);
 }
 
@@ -147,10 +147,10 @@ void CDVDOverlayContainer::Remove()
     CDVDOverlay* pOverlay;
 
     EnterCriticalSection(&m_critSection);
-    
+
     pOverlay = m_overlays.front();
     m_overlays.erase(m_overlays.begin());
-    
+
     LeaveCriticalSection(&m_critSection);
 
 #ifdef DVDDEBUG_OVERLAY_TRACKER
@@ -174,18 +174,18 @@ int CDVDOverlayContainer::GetSize()
 bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
 {
   bool result = false;
-  
+
   EnterCriticalSection(&m_critSection);
-  
+
   VecOverlaysIter it = m_overlays.begin();
   while (!result && it != m_overlays.end())
   {
     if (((CDVDOverlay*)*it)->IsOverlayType(type)) result = true;
     it++;
   }
-  
+
   LeaveCriticalSection(&m_critSection);
-  
+
   return result;
 }
 
@@ -197,7 +197,7 @@ void CDVDOverlayContainer::UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, 
   EnterCriticalSection(&m_critSection);
 
   //Update any forced overlays.
-  for(VecOverlays::iterator it = m_overlays.begin(); it != m_overlays.end(); it++ )     
+  for(VecOverlays::iterator it = m_overlays.begin(); it != m_overlays.end(); it++ )
   {
     if ((*it)->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     {

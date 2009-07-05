@@ -57,12 +57,34 @@ bool XMLUtils::GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntV
   return true;
 }
 
+bool XMLUtils::GetInt(const TiXmlNode* pRootNode, const char* strTag, int &value, const int min, const int max)
+{
+  if (GetInt(pRootNode, strTag, value))
+  {
+    if (value < min) value = min;
+    if (value > max) value = max;
+    return true;
+  }
+  return false;
+}
+
 bool XMLUtils::GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
   value = (float)atof(pNode->FirstChild()->Value());
   return true;
+}
+
+bool XMLUtils::GetFloat(const TiXmlNode* pRootElement, const char *tagName, float& fValue, const float fMin, const float fMax)
+{
+  if (GetFloat(pRootElement, tagName, fValue))
+  { // check range
+    if (fValue < fMin) fValue = fMin;
+    if (fValue > fMax) fValue = fMax;
+    return true;
+  }
+  return false;
 }
 
 bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue)
@@ -167,6 +189,13 @@ void XMLUtils::SetInt(TiXmlNode* pRootNode, const char *strTag, int value)
 {
   CStdString strValue;
   strValue.Format("%i", value);
+  SetString(pRootNode, strTag, strValue);
+}
+
+void XMLUtils::SetLong(TiXmlNode* pRootNode, const char *strTag, long value)
+{
+  CStdString strValue;
+  strValue.Format("%l", value);
   SetString(pRootNode, strTag, strValue);
 }
 

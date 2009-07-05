@@ -20,7 +20,22 @@
  */
 
 #include "stdafx.h"
-#include "lib/libPython/Python/Include/Python.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+#if (defined USE_EXTERNAL_PYTHON)
+  #if (defined HAVE_LIBPYTHON2_6)
+    #include <python2.6/Python.h>
+  #elif (defined HAVE_LIBPYTHON2_5)
+    #include <python2.5/Python.h>
+  #elif (defined HAVE_LIBPYTHON2_4)
+    #include <python2.4/Python.h>
+  #else
+    #error "Could not determine version of Python to use."
+  #endif
+#else
+  #include "lib/libPython/Python/Include/Python.h"
+#endif
 #include "../XBPythonDll.h"
 #include "GUITextBox.h"
 #include "GUIFontManager.h"
@@ -138,6 +153,27 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // scroll() Method
+  PyDoc_STRVAR(Scroll__doc__,
+    "scroll(position) -- Scrolls to the given position.\n"
+    "\n"
+    "id           : integer - position to scroll to.\n"
+    "\n"
+    "example:\n"
+    "  - self.textbox.scroll(10)");
+
+  PyObject* ControlTextBox_Scroll(ControlTextBox *self, PyObject *args)
+  {
+    int position = 0;
+    if (!PyArg_ParseTuple(args, (char*)"l", &position))
+      return NULL;
+
+    ControlTextBox *pControl = (ControlTextBox*)self;
+    static_cast<CGUITextBox*>(pControl->pGUIControl)->Scroll(position);
+
+    return Py_None;
+  }
+
   // reset() Method
   PyDoc_STRVAR(reset__doc__,
     "reset() -- Clear's this textbox.\n"
@@ -163,6 +199,7 @@ namespace PYXBMC
   PyMethodDef ControlTextBox_methods[] = {
     {(char*)"setText", (PyCFunction)ControlTextBox_SetText, METH_VARARGS, setText__doc__},
     {(char*)"reset", (PyCFunction)ControlTextBox_Reset, METH_VARARGS, reset__doc__},
+    {(char*)"scroll",(PyCFunction)ControlTextBox_Scroll, METH_VARARGS, Scroll__doc__},
     {NULL, NULL, 0, NULL}
   };
 

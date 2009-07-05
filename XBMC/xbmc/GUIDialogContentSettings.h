@@ -50,6 +50,7 @@ protected:
   virtual void CreateSettings();
   void FillListControl();
   void OnSettingChanged(unsigned int setting);
+  virtual void OnSettingChanged(SettingInfo &setting);
   SScraperInfo FindDefault(const CStdString& strType, const CStdString& strDefault);
 
   bool m_bNeedSave;

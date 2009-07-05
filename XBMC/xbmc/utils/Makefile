@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../linux -I../../guilib
+INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib
 
 SRCS=AlarmClock.cpp \
      Archive.cpp \
@@ -27,7 +27,6 @@ SRCS=AlarmClock.cpp \
      UdpClient.cpp \
      Weather.cpp \
      Thread.cpp \
-     HTTP.cpp \
      SharedSection.cpp \
      Win32Exception.cpp \
      CPUInfo.cpp \
@@ -52,7 +51,9 @@ SRCS=AlarmClock.cpp \
      ArabicShaping.cpp \
      AsyncFileCopy.cpp \
      DbusServer.cpp \
-     Atomics.cpp
+     Atomics.cpp \
+     LockFree.cpp \
+     StreamDetails.cpp
 
 LIB=utils.a
 

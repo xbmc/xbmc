@@ -2,6 +2,7 @@
 #define LIRC_H
 
 #include "../system.h"
+#include "StdString.h"
 
 class CRemoteControl
 {

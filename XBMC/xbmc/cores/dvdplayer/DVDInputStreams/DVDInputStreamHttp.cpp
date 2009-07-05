@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDInputStreamHttp.h"
 #include "URL.h"
@@ -37,7 +37,7 @@ CDVDInputStreamHttp::~CDVDInputStreamHttp()
 }
 
 bool CDVDInputStreamHttp::IsEOF()
-{  
+{
   if(m_pFile && !m_eof)
   {
     __int64 size = m_pFile->GetLength();
@@ -63,9 +63,9 @@ bool CDVDInputStreamHttp::Open(const char* strFile, const std::string& content)
   // shout protocol is same thing as http, but curl doesn't know what it is
   if( filename.substr(0, 8) == "shout://" )
     filename.replace(0, 8, "http://");
-  
+
   // this should go to the demuxer
-  m_pFile->SetUserAgent("WinampMPEG/5.09");  
+  m_pFile->SetUserAgent("WinampMPEG/5.09");
   m_pFile->SetRequestHeader("Icy-MetaData", "1");
   m_eof = false;
 
@@ -114,7 +114,7 @@ __int64 CDVDInputStreamHttp::Seek(__int64 offset, int whence)
   return ret;
 }
 
-CHttpHeader* CDVDInputStreamHttp::GetHttpHeader() 
+CHttpHeader* CDVDInputStreamHttp::GetHttpHeader()
 {
   if (m_pFile) return (CHttpHeader*)&m_pFile->GetHttpHeader();
   else return NULL;

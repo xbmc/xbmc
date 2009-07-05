@@ -707,15 +707,19 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, CStdStri
       return;
    }
 
-   CLog::Log(LOGINFO, "Stopping interface %s", GetName().c_str());
    std::string cmd = "/sbin/ifdown " + GetName();
-   system(cmd.c_str());
+   if (system(cmd.c_str()) != 0)
+     CLog::Log(LOGERROR, "Unable to stop interface %s", GetName().c_str());
+   else
+     CLog::Log(LOGINFO, "Stopped interface %s", GetName().c_str());
 
    if (assignment != NETWORK_DISABLED)
    {
-      CLog::Log(LOGINFO, "Starting interface %s", GetName().c_str());
       cmd = "/sbin/ifup " + GetName();
-      system(cmd.c_str());
+      if (system(cmd.c_str()) != 0)
+        CLog::Log(LOGERROR, "Unable to start interface %s", GetName().c_str());
+      else
+        CLog::Log(LOGINFO, "Started interface %s", GetName().c_str());
    }
 #endif
 }

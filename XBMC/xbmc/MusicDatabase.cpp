@@ -45,7 +45,9 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "Application.h"
+#ifdef HAS_KARAOKE
 #include "karaoke/karaokelyricsfactory.h"
+#endif
 
 using namespace std;
 using namespace AUTOPTR;
@@ -57,7 +59,6 @@ using namespace MEDIA_DETECT;
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
 #define MUSIC_DATABASE_VERSION        13
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
-#define RECENTLY_ADDED_LIMIT  25
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
 
@@ -237,7 +238,10 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
     bool bInsert = true;
     int lSongId = -1;
-    bool bHasKaraoke = CKaraokeLyricsFactory::HasLyrics( song.strFileName );
+    bool bHasKaraoke = false;
+#ifdef HAS_KARAOKE
+    bHasKaraoke = CKaraokeLyricsFactory::HasLyrics( song.strFileName );
+#endif
 
     // If this is karaoke song, change the genre to 'Karaoke' (and add it if it's not there)
     if ( bHasKaraoke && g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs )
@@ -247,7 +251,10 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
     {
       strSQL=FormatSQL("select * from song where idAlbum=%i and dwFileNameCRC='%ul' and strTitle='%s'",
                     lAlbumId, crc, song.strTitle.c_str());
-      if (!m_pDS->query(strSQL.c_str())) return ;
+      
+      if (!m_pDS->query(strSQL.c_str()))
+        return;
+      
       if (m_pDS->num_rows() != 0)
       {
         lSongId = m_pDS->fv("idSong").get_asLong();
@@ -1405,7 +1412,7 @@ bool CMusicDatabase::GetRecentlyPlayedAlbumSongs(const CStdString& strBaseDir, C
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", RECENTLY_ADDED_LIMIT);
+    strSQL.Format("select * from songview join albumview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in (select distinct albumview.idalbum from albumview join song on albumview.idAlbum=song.idAlbum where song.lastplayed NOT NULL order by song.lastplayed desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyPlayedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1446,7 +1453,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select * from albumview order by idAlbum desc limit %i", RECENTLY_ADDED_LIMIT);
+    strSQL.Format("select * from albumview order by idAlbum desc limit %i", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -1482,7 +1489,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const CStdString& strBaseDir, CF
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL.Format("select songview.* from albumview join songview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in ( select idAlbum from albumview order by idAlbum desc limit %i)", RECENTLY_ADDED_LIMIT);
+    strSQL.Format("select songview.* from albumview join songview on (songview.idAlbum = albumview.idAlbum) where albumview.idalbum in ( select idAlbum from albumview order by idAlbum desc limit %i)", g_advancedSettings.m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG,"GetRecentlyAddedAlbumSongs() query: %s", strSQL.c_str());
     if (!m_pDS->query(strSQL.c_str())) return false;
 
@@ -1522,8 +1529,6 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
     if (NULL == m_pDS.get()) return false;
 
     long songID = GetSongIDFromPath(strFileName);
-
-    m_pDS->close();
 
     CStdString sql=FormatSQL("UPDATE song SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idSong=%ld", songID);
     m_pDS->exec(sql.c_str());
@@ -2714,8 +2719,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       pItem->m_bIsFolder=true;
       if (CFile::Exists(pItem->GetCachedArtistThumb()))
         pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
-      else
-        pItem->SetThumbnailImage("DefaultArtistBig.png");
+      pItem->SetIconImage("DefaultArtist.png");
       CStdString strFanart = pItem->GetCachedFanart();
       if (CFile::Exists(strFanart))
         pItem->SetProperty("fanart_image",strFanart);
@@ -3264,11 +3268,6 @@ unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<
     CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strWhere.c_str());
   }
   return 0;
-}
-
-int CMusicDatabase::GetSongsCount()
-{
-  return GetSongsCount((CStdString)"");
 }
 
 int CMusicDatabase::GetSongsCount(const CStdString& strWhere)
@@ -3976,7 +3975,7 @@ bool CMusicDatabase::CommitTransaction()
 {
   if (CDatabase::CommitTransaction())
   { // number of items in the db has likely changed, so reset the infomanager cache
-    g_infoManager.ResetPersistentCache();
+    g_infoManager.SetLibraryBool(LIBRARY_HAS_MUSIC, GetSongsCount("") > 0);
     return true;
   }
   return false;
@@ -4051,11 +4050,23 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       info.strContent = m_pDS->fv("content.strContent").get_asString();
       info.strPath = m_pDS->fv("content.strScraperPath").get_asString();
       info.settings.LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
+
+      CScraperParser parser;
+      parser.Load("special://xbmc/system/scrapers/music/" + info.strPath);
+      info.strTitle = parser.GetName();
+      info.strDate = parser.GetDate();
+      info.strFramework = parser.GetFramework();
+
     }
     if (info.strPath.IsEmpty()) // default fallback
     {
+      CScraperParser parser;
       info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
-      info.strContent = "albums";
+      parser.Load("special://xbmc/system/scrapers/music/" + info.strPath);
+      info.strContent = parser.GetContent();
+      info.strTitle = parser.GetName();
+      info.strDate = parser.GetDate();
+      info.strFramework = parser.GetFramework();
     }
 
     m_pDS->close();
@@ -4629,10 +4640,8 @@ bool CMusicDatabase::SetKaraokeSongDelay(long idSong, int delay)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    BeginTransaction();
     CStdString strSQL = FormatSQL("UPDATE karaokedata SET iKaraDelay=%i WHERE idSong=%i", delay, idSong);
     m_pDS->exec(strSQL.c_str());
-    CommitTransaction();
 
     return true;
   }

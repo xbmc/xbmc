@@ -47,6 +47,7 @@
 #endif
 #include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
+#include "StdString.h"
 
 namespace Surface { class CSurface; }
 
@@ -172,6 +173,7 @@ public:
   int GetHeight() const { return m_iScreenHeight; }
   float GetFPS() const;
   bool SendMessage(CGUIMessage& message);
+  bool SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1 = 0, DWORD param2 = 0);
   void setMessageSender(IMsgSenderCallback* pCallback);
   DWORD GetNewID();
   const CStdString& GetMediaDir() const { return m_strMediaDir; }
@@ -182,6 +184,7 @@ public:
   const RECT& GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
   void SetFullScreenViewWindow(RESOLUTION &res);
+  bool IsFullScreenRoot() const;
   bool ToggleFullScreenRoot();
   void SetFullScreenRoot(bool fs = true);
   void ClipToViewWindow();

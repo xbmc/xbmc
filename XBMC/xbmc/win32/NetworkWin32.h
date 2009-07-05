@@ -26,6 +26,8 @@
 #include "StdString.h"
 #include "utils/Network.h"
 #include "Iphlpapi.h"
+#include "stopwatch.h"
+#include "utils/CriticalSection.h"
 
 class CNetworkWin32;
 
@@ -79,8 +81,11 @@ public:
 private:
    int GetSocket() { return m_sock; }
    void queryInterfaceList();
+   void CleanInterfaceList();
    std::vector<CNetworkInterface*> m_interfaces;
    int m_sock;
+   CStopWatch m_netrefreshTimer;
+   CCriticalSection m_critSection;
 };
 
 #endif

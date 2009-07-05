@@ -2,21 +2,21 @@
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
+ *  This file is part of libRTMP.
  *
- *  This Program is distributed in the hope that it will be useful,
+ *  libRTMP is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  libRTMP is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
- *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with libRTMP; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include "stdafx.h"
@@ -684,11 +684,15 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
   packet.m_nChannel = (type & 0x3f);
 
   int nSize = packetSize[packet.m_headerType];
-  
-//  CLog::Log(LOGDEBUG, "%s, reading RTMP packet chunk on channel %x, headersz %i", __FUNCTION__, packet.m_nChannel, nSize);
+ 
+  if (nSize == RTMP_LARGE_HEADER_SIZE)
+    packet.m_hasAbsTimestamp = true;
 
   if (nSize < RTMP_LARGE_HEADER_SIZE) // using values from the last message of this channel
+  {
+    packet.FreePacketHeader();
     packet = m_vecChannelsIn[packet.m_nChannel];
+  }
   
   nSize--;
 
@@ -701,6 +705,9 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
 
   if (nSize >= 3)
     packet.m_nInfoField1 = ReadInt24(header);
+
+  //!!debug
+  //CLog::Log(LOGDEBUG, "%s, reading RTMP packet chunk on channel %x, headersz %i, timestamp %i, abs timestamp %i", __FUNCTION__, packet.m_nChannel, nSize, packet.m_nInfoField1, packet.m_hasAbsTimestamp);
 
   if (nSize >= 6)
   {
@@ -740,10 +747,17 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
 
   if (packet.IsReady())
   {
+    // make packet's timestamp absolute
+    if (!packet.m_hasAbsTimestamp)
+      packet.m_nInfoField1 += m_channelTimestamp[packet.m_nChannel];
+    
+    m_channelTimestamp[packet.m_nChannel] = packet.m_nInfoField1;
+    
     // reset the data from the stored packet. we keep the header since we may use it later if a new packet for this channel
     // arrives and requests to re-use some info (small packet header)
     m_vecChannelsIn[packet.m_nChannel].m_body = NULL;
     m_vecChannelsIn[packet.m_nChannel].m_nBytesRead = 0;
+    m_vecChannelsIn[packet.m_nChannel].m_hasAbsTimestamp = false;
   }
   else
     packet.m_body = NULL; // so it wont be erased on "free"

@@ -226,7 +226,10 @@ void CGUISettings::Initialize()
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(3, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
-  AddString(5, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "weather.plugin", 23000, "", SPIN_CONTROL_TEXT, true);
+  AddString(6, "weather.pluginsettings", 23001, "", BUTTON_CONTROL_STANDARD, true);
+  AddSeparator(7, "weather.sep2");
+  AddString(8, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
 
   // My Music Settings
   AddGroup(3, 2);
@@ -251,6 +254,7 @@ void CGUISettings::Initialize()
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
   AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
   AddBool(7, "musiclibrary.updateonstartup", 22000, false);
+  AddBool(0, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(8,"musiclibrary.sep2");
   AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(10, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
@@ -285,11 +289,15 @@ void CGUISettings::Initialize()
   AddBool(10, "musicfiles.usecddb", 227, true);
   AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
-  AddCategory(3, "lastfm", 15200);
-  AddBool(1, "lastfm.enable", 15201, false);
-  AddBool(2, "lastfm.recordtoprofile", 15250, false);
-  AddString(3,"lastfm.username", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
-  AddString(4,"lastfm.password", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
+  AddCategory(3, "scrobbler", 15221);
+  AddBool(1, "scrobbler.lastfmsubmit", 15201, false);
+  AddBool(2, "scrobbler.lastfmsubmitradio", 15250, false);
+  AddString(3,"scrobbler.lastfmusername", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
+  AddString(4,"scrobbler.lastfmpassword", 15203, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15203);
+  AddSeparator(5, "scrobbler.sep1");
+  AddBool(6, "scrobbler.librefmsubmit", 15217, false);
+  AddString(7, "scrobbler.librefmusername", 15218, "", EDIT_CONTROL_INPUT, false, 15218);
+  AddString(8, "scrobbler.librefmpassword", 15219, "", EDIT_CONTROL_HIDDEN_INPUT, false, 15219);
 
   AddCategory(3, "cddaripper", 620);
   AddPath(1, "cddaripper.path", 20000, "select writable folder", BUTTON_CONTROL_PATH_INPUT, false, 657);
@@ -341,7 +349,7 @@ void CGUISettings::Initialize()
 
 #ifdef __APPLE__
   AddCategory(4, "appleremote", 13600);
-  AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_UNIVERSAL, SPIN_CONTROL_TEXT);
+  AddInt(1, "appleremote.mode", 13601, APPLE_REMOTE_STANDARD, APPLE_REMOTE_DISABLED, 1, APPLE_REMOTE_MULTIREMOTE, SPIN_CONTROL_TEXT);
   AddBool(2, "appleremote.alwayson", 13602, false);
   AddInt(3, "appleremote.sequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
 #endif
@@ -354,21 +362,21 @@ void CGUISettings::Initialize()
   AddBool(6, "autorun.music", 245, true);
   AddBool(7, "autorun.pictures", 246, true);
 
-  AddCategory(0, "cache", 439);
-  AddInt(1, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
-  AddSeparator(2, "cache.sep1");
-  AddInt(3, "cachevideo.dvdrom", 14026, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
-  AddInt(4, "cachevideo.lan", 14027, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
-  AddInt(5, "cachevideo.internet", 14028, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
-  AddSeparator(6, "cache.sep2");
-  AddInt(7, "cacheaudio.dvdrom", 14030, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
-  AddInt(8, "cacheaudio.lan", 14031, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
-  AddInt(9, "cacheaudio.internet", 14032, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
-  AddSeparator(10, "cache.sep3");
-  AddInt(11, "cachedvd.dvdrom", 14034, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
-  AddInt(12, "cachedvd.lan", 14035, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
-  AddSeparator(13, "cache.sep4");
-  AddInt(14, "cacheunknown.internet", 14060, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+  AddCategory(4, "cache", 439);
+  AddInt(0, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+  AddSeparator(0, "cache.sep1");
+  AddInt(0, "cachevideo.dvdrom", 14026, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+  AddInt(0, "cachevideo.lan", 14027, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+  AddInt(0, "cachevideo.internet", 14028, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+  AddSeparator(0, "cache.sep2");
+  AddInt(0, "cacheaudio.dvdrom", 14030, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+  AddInt(0, "cacheaudio.lan", 14031, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+  AddInt(0, "cacheaudio.internet", 14032, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+  AddSeparator(0, "cache.sep3");
+  AddInt(0, "cachedvd.dvdrom", 14034, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+  AddInt(0, "cachedvd.lan", 14035, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
+  AddSeparator(0, "cache.sep4");
+  AddInt(0, "cacheunknown.internet", 14060, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
 
   AddCategory(4, "audiooutput", 772);
   AddInt(3, "audiooutput.mode", 337, AUDIO_ANALOG, AUDIO_ANALOG, 1, AUDIO_DIGITAL, SPIN_CONTROL_TEXT);
@@ -404,9 +412,10 @@ void CGUISettings::Initialize()
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
   AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
   AddBool(3, "myvideos.autothumb",12024, false);
-  AddBool(4, "myvideos.cleanfilenames", 20418, false);
-  AddSeparator(5, "myvideos.sep1");
-  AddBool(8, "myvideos.savefolderviews", 583, true);
+  AddBool(4, "myvideos.extractflags",20433,false);
+  AddBool(5, "myvideos.cleanstrings", 20418, false);
+  AddSeparator(6, "myvideos.sep1");
+  AddBool(7, "myvideos.savefolderviews", 583, true);
 
   AddCategory(5, "videolibrary", 14022);
 
@@ -462,6 +471,12 @@ void CGUISettings::Initialize()
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
   AddBool(17, "videoplayer.editdecision", 22003, false);
+
+  AddSeparator(18, "videoplayer.sep4");
+  AddBool(19, "videoplayer.usedisplayasclock", 13510, false);
+  AddInt(20, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+  AddFloat(21, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
+  AddInt(22, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "arial.ttf", SPIN_CONTROL_TEXT);
@@ -633,9 +648,12 @@ void CGUISettings::Initialize()
 
   AddString(3, "videoscreen.guicalibration",214,"", BUTTON_CONTROL_STANDARD);
   AddString(4, "videoscreen.testpattern",226,"", BUTTON_CONTROL_STANDARD);
+#ifdef __APPLE__
+  // OSX does not use a driver set vsync
+  AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_ALWAYS, SPIN_CONTROL_TEXT);
+#else
   AddInt(6, "videoscreen.vsync", 13105, DEFAULT_VSYNC, VSYNC_DISABLED, 1, VSYNC_DRIVER, SPIN_CONTROL_TEXT);
-  AddBool(7, "videoscreen.safefull", 13121, false);
-
+#endif
   AddCategory(7, "filelists", 14018);
   AddBool(1, "filelists.hideparentdiritems", 13306, false);
   AddBool(2, "filelists.hideextensions", 497, false);
@@ -655,10 +673,13 @@ void CGUISettings::Initialize()
   AddBool(4, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(4, "screensaver.usedimonpause", 22014, true);
   AddBool(5, "screensaver.uselock",20140,false);
-  AddSeparator(6, "screensaver.sep1");
-  AddInt(7, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(8, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddBool(9, "screensaver.slideshowshuffle", 13319, false);
+  // Note: Application.cpp might hide powersaving settings if not supported.
+  AddSeparator(6, "screensaver.sep_powersaving");
+  AddInt(7, "screensaver.powersavingtime", 1450, 0, 0, 5, 4 * 60, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddSeparator(8, "screensaver.sep1");
+  AddInt(9, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
+  AddPath(10, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddBool(11, "screensaver.slideshowshuffle", 13319, false);
 
   AddPath(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }
@@ -1000,6 +1021,13 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "DTS pass through is %s", GetBool("audiooutput.dtspassthrough") ? "enabled" : "disabled");
 
   g_guiSettings.m_LookAndFeelResolution = (RESOLUTION)GetInt("videoscreen.resolution");
+#ifdef __APPLE__
+  // trap any previous vsync by driver setting, does not exist on OSX
+  if (GetInt("videoscreen.vsync") == VSYNC_DRIVER)
+  {
+    SetInt("videoscreen.vsync", VSYNC_ALWAYS);
+  }
+#endif
   g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
   g_videoConfig.PrintInfo();

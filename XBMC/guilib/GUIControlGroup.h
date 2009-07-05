@@ -46,7 +46,6 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool SendControlMessage(CGUIMessage& message);
   virtual bool HasFocus() const;
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
@@ -78,7 +77,7 @@ public:
   bool InsertControl(CGUIControl *control, const CGUIControl *insertPoint);
   virtual bool RemoveControl(const CGUIControl *control);
   virtual void ClearAll();
-  void SetDefaultControl(DWORD id) { m_defaultControl = id; };
+  void SetDefaultControl(DWORD id, bool always) { m_defaultControl = id; m_defaultAlways = always; };
   void SetRenderFocusedLast(bool renderLast) { m_renderFocusedLast = renderLast; };
 
   virtual void SaveStates(std::vector<CControlState> &states);
@@ -102,7 +101,8 @@ protected:
   const LookupMap &GetLookup() { return m_lookup; };
   LookupMap m_lookup;
 
-  int m_defaultControl;
+  int  m_defaultControl;
+  bool m_defaultAlways;
   int m_focusedControl;
   bool m_renderFocusedLast;
 

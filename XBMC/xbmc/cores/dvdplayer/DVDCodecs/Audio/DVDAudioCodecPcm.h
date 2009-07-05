@@ -53,6 +53,6 @@ protected:
   int m_iSourceBitrate;
 
   int m_iOutputChannels;
-  
+
   short table[256];
 };

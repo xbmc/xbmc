@@ -25,6 +25,7 @@
 //#include "DVDSubtitleParserSpu.h"
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDSubtitleParserMicroDVD.h"
+#include "DVDSubtitleParserMPL2.h"
 #include "DVDSubtitleParserSami.h"
 #include "DVDSubtitleParserSSA.h"
 #include "Util.h"
@@ -77,17 +78,24 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
     if (pStream->ReadLine(line, sizeof(line)))
     {
       if ((sscanf (line, "{%d}{}", &i)==1) ||
-          (sscanf (line, "{%d}{%d}", &i, &i)==2)) 
+          (sscanf (line, "{%d}{%d}", &i, &i)==2))
       {
         pParser = new CDVDSubtitleParserMicroDVD(pStream, strFile.c_str());
+        pStream = NULL;
+      }
+      else if (sscanf(line, "[%d][%d]", &i, &i) == 2)
+      {
+        pParser = new CDVDSubtitleParserMPL2(pStream, strFile.c_str());
+        pStream = NULL;
       }
       else if (sscanf(line, "%d:%d:%d,%d --> %d:%d:%d,%d", &i, &i, &i, &i, &i, &i, &i, &i) == 8)
       {
         pParser = new CDVDSubtitleParserSubrip(pStream, strFile.c_str());
+        pStream = NULL;
       }
       else if ((!memcmp(line, "Dialogue: Marked", 16)) || (!memcmp(line, "Dialogue: ", 10)))
       {
-        pParser =  new CDVDSubtitleParserSSA(pStream, strFile.c_str());
+        pParser =  new CDVDSubtitleParserSSA(strFile.c_str());
       }
       //   if (sscanf (line, "%d:%d:%d.%d,%d:%d:%d.%d",     &i, &i, &i, &i, &i, &i, &i, &i)==8){
       //     this->uses_time=1;
@@ -101,9 +109,10 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
       //     return FORMAT_SUBVIEWER;
       //   }
 
-      else if (strstr (line, "<SAMI>")) 
+      else if (strstr (line, "<SAMI>"))
       {
         pParser = new CDVDSubtitleParserSami(pStream, strFile.c_str());
+        pStream = NULL;
       }
       //   if (sscanf (line, "%d:%d:%d:",     &i, &i, &i )==3) {
       //     this->uses_time=1;
@@ -120,7 +129,7 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
       //     return FORMAT_RT;
       //   }
       //   if ((!memcmp(line, "Dialogue: Marked", 16)) || (!memcmp(line, "Dialogue: ", 10))) {
-      //     this->uses_time=1; 
+      //     this->uses_time=1;
       //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "ssa subtitle format detected\n");
       //     return FORMAT_SSA;
       //   }
@@ -130,17 +139,17 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
       //     return FORMAT_PJS;
       //   }
       //   if (sscanf (line, "FORMAT=%d", &i) == 1) {
-      //     this->uses_time=0; 
+      //     this->uses_time=0;
       //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "mpsub subtitle format detected\n");
       //     return FORMAT_MPSUB;
       //   }
       //   if (sscanf (line, "FORMAT=TIM%c", &p)==1 && p=='E') {
-      //     this->uses_time=1; 
+      //     this->uses_time=1;
       //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "mpsub subtitle format detected\n");
       //     return FORMAT_MPSUB;
       //   }
       //   if (strstr (line, "-->>")) {
-      //     this->uses_time=0; 
+      //     this->uses_time=0;
       //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "aqtitle subtitle format detected\n");
       //     return FORMAT_AQTITLE;
       //   }
@@ -160,21 +169,14 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
       //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "subrip 0.9 subtitle format detected\n");
       //     return FORMAT_SUBRIP09;
       //   }
-      // 
-      //   if (sscanf (line, "[%d][%d]", &i, &i) == 2) {
-      //     this->uses_time = 1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "mpl2 subtitle format detected\n");
-      //     return FORMAT_MPL2;
-      //   }
     }
     else
     {
       break;
     }
   }
-  pStream->Close();
-  if (!pParser)
-    delete pStream; 
+  if (pStream)
+    delete pStream;
   return pParser;
 }
 

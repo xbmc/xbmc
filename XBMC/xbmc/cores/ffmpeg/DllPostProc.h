@@ -1,4 +1,7 @@
 #pragma once
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "DynamicDll.h"
 
 extern "C" {
@@ -13,8 +16,21 @@ extern "C" {
 #pragma warning(disable:4244)
 #endif
   
-#include "avutil.h"
-#include "postprocess.h"
+#if (defined USE_EXTERNAL_FFMPEG)
+  #if (defined HAVE_LIBAVUTIL_AVUTIL_H)
+    #include <libavutil/avutil.h>
+  #elif (defined HAVE_FFMPEG_AVUTIL_H)
+    #include <ffmpeg/avutil.h>
+  #endif
+  #if (defined HAVE_LIBPOSTPROC_POSTPROCESS_H)
+    #include <libpostproc/postprocess.h>
+  #elif (defined HAVE_POSTPROC_POSTPROCESS_H)
+    #include <postproc/postprocess.h>
+  #endif
+#else
+  #include "avutil.h"
+  #include "postprocess.h"
+#endif
 }
 
 class DllPostProcInterface
@@ -30,7 +46,7 @@ public:
   virtual void pp_free_context(pp_context_t *ppContext)=0;
 };
 
-#ifdef __APPLE__
+#if (defined USE_EXTERNAL_FFMPEG)
 
 // We call directly.
 class DllPostProc : public DllDynamic, DllPostProcInterface
@@ -48,7 +64,10 @@ public:
   
   // DLL faking.
   virtual bool ResolveExports() { return true; }
-  virtual bool Load() { return true; }
+  virtual bool Load() {
+    CLog::Log(LOGDEBUG, "DllPostProc: Using libpostproc system library");
+    return true;
+  }
   virtual void Unload() {}
 };
 
@@ -72,4 +91,5 @@ class DllPostProc : public DllDynamic, DllPostProcInterface
     RESOLVE_METHOD(pp_free_context)
   END_METHOD_RESOLVE()
 };
+
 #endif

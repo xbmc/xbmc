@@ -21,8 +21,26 @@
 
 // python.h should always be included first before any other includes
 #include "stdafx.h"
-#include "Python/Include/Python.h"
-#include "Python/Include/osdefs.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+#if (defined USE_EXTERNAL_PYTHON)
+  #if (defined HAVE_LIBPYTHON2_6)
+    #include <python2.6/Python.h>
+    #include <python2.6/osdefs.h>
+  #elif (defined HAVE_LIBPYTHON2_5)
+    #include <python2.5/Python.h>
+    #include <python2.5/osdefs.h>
+  #elif (defined HAVE_LIBPYTHON2_4)
+    #include <python2.4/Python.h>
+    #include <python2.4/osdefs.h>
+  #else
+    #error "Could not determine version of Python to use."
+  #endif
+#else
+  #include "Python/Include/Python.h"
+  #include "Python/Include/osdefs.h"
+#endif
 #include "XBPythonDll.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "GUIWindowManager.h"
@@ -130,6 +148,8 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
 
   m_threadState = Py_NewInterpreter();
+  
+  PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 
   if (!m_threadState) {
@@ -200,7 +220,7 @@ void XBPyThread::Process()
           pDlgOK->DoModal();
         }
       }
-      else CLog::Log(LOGINFO, "Scriptresult: Succes\n");
+      else CLog::Log(LOGINFO, "Scriptresult: Success\n");
       fclose(fp);
     }
     else CLog::Log(LOGERROR, "%s not found!\n", source);
@@ -227,6 +247,7 @@ void XBPyThread::Process()
     else CLog::Log(LOGINFO, "Scriptresult: Success\n");
   }
 
+  PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
 
   // when a script uses threads or timers - we have to wait for them to be over before we terminate the interpreter.

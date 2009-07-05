@@ -119,7 +119,6 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   *GetVideoInfoTag() = movie;
   FillInDefaultIcon();
   SetCachedVideoThumb();
-  SetInvalid();
 }
 
 CFileItem::CFileItem(const CArtist& artist)
@@ -214,7 +213,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_strPath = share.strPath;
   CUtil::AddSlashAtEnd(m_strPath);
   CStdString label = share.strName;
-  if (share.strStatus.size())
+  if (!share.strStatus.IsEmpty())
     label.Format("%s (%s)", share.strName.c_str(), share.strStatus.c_str());
   SetLabel(label);
   m_iLockMode = share.m_iLockMode;
@@ -402,7 +401,9 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_idepth;
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;
-    ar >> (int&)m_iLockMode;
+    int lockmode;
+    ar >> (int &)lockmode;
+    m_iLockMode = (LockType)lockmode;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
 
@@ -453,6 +454,10 @@ bool CFileItem::Exists() const
 
 bool CFileItem::IsVideo() const
 {
+  if (HasVideoInfoTag()) return true;
+  if (HasMusicInfoTag()) return false;
+  if (HasPictureInfoTag()) return false;
+
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
@@ -461,6 +466,9 @@ bool CFileItem::IsVideo() const
     return true;
 
   if (m_strPath.Left(10).Equals("hdhomerun:"))
+    return true;
+
+  if (m_strPath.Left(4).Equals("dvd:"))
     return true;
 
   CStdString extension;
@@ -488,6 +496,9 @@ bool CFileItem::IsVideo() const
 
 bool CFileItem::IsAudio() const
 {
+  if (HasMusicInfoTag()) return true;
+  if (HasVideoInfoTag()) return false;
+  if (HasPictureInfoTag()) return false;
   if (IsCDDA()) return true;
   if (IsShoutCast() && !m_bIsFolder) return true;
   if (IsLastFM() && !m_bIsFolder) return true;
@@ -520,6 +531,10 @@ bool CFileItem::IsAudio() const
 
 bool CFileItem::IsPicture() const
 {
+  if (HasPictureInfoTag()) return true;
+  if (HasMusicInfoTag()) return false;
+  if (HasVideoInfoTag()) return false;
+
   if( m_contenttype.Left(6).Equals("image/") )
     return true;
 
@@ -570,7 +585,7 @@ bool CFileItem::IsInternetStream() const
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
 
-  if (strProtocol.size() == 0 || HasProperty("IsHTTPDirectory"))
+  if (strProtocol.IsEmpty() || HasProperty("IsHTTPDirectory"))
     return false;
 
   // there's nothing to stop internet streams from being stacked
@@ -774,6 +789,11 @@ bool CFileItem::IsMythTV() const
   return CUtil::IsMythTV(m_strPath);
 }
 
+bool CFileItem::IsHDHomeRun() const
+{
+  return CUtil::IsHDHomeRun(m_strPath);
+}
+
 bool CFileItem::IsVTP() const
 {
   return CUtil::IsVTP(m_strPath);
@@ -840,47 +860,47 @@ void CFileItem::FillInDefaultIcon()
   //   for .. folders the default picture for parent folder
   //   for other folders the defaultFolder.png
 
-  CStdString strThumb;
-  CStdString strExtension;
-  if (GetIconImage() == "")
+  if (GetIconImage().IsEmpty())
   {
     if (!m_bIsFolder)
     {
-      if ( IsPlayList() )
-      {
-        SetIconImage("defaultPlaylist.png");
-      }
-      else if ( IsPicture() )
-      {
-        // picture
-        SetIconImage("defaultPicture.png");
-      }
-      else if ( IsXBE() )
-      {
-        // xbe
-        SetIconImage("defaultProgram.png");
-      }
-      else if ( IsAudio() )
+      /* To reduce the average runtime of this code, this list should
+       * be ordered with most frequently seen types first.  Also bear
+       * in mind the complexity of the code behind the check in the
+       * case of IsWhatater() returns false.
+       */
+      if ( IsAudio() )
       {
         // audio
-        SetIconImage("defaultAudio.png");
+        SetIconImage("DefaultAudio.png");
       }
       else if ( IsVideo() )
       {
         // video
-        SetIconImage("defaultVideo.png");
+        SetIconImage("DefaultVideo.png");
+      }
+      else if ( IsPicture() )
+      {
+        // picture
+        SetIconImage("DefaultPicture.png");
+      }
+      else if ( IsPlayList() )
+      {
+        SetIconImage("DefaultPlaylist.png");
+      }
+      else if ( IsXBE() )
+      {
+        // xbe
+        SetIconImage("DefaultProgram.png");
       }
       else if ( IsShortCut() && !IsLabelPreformated() )
       {
         // shortcut
-        CStdString strDescription;
-        CStdString strFName;
-        strFName = CUtil::GetFileName(m_strPath);
-
+        CStdString strFName = CUtil::GetFileName(m_strPath);
         int iPos = strFName.ReverseFind(".");
-        strDescription = strFName.Left(iPos);
+        CStdString strDescription = strFName.Left(iPos);
         SetLabel(strDescription);
-        SetIconImage("defaultShortcut.png");
+        SetIconImage("DefaultShortcut.png");
       }
       else if ( IsPythonScript() )
       {
@@ -889,22 +909,22 @@ void CFileItem::FillInDefaultIcon()
       else
       {
         // default icon for unknown file type
-        SetIconImage("defaultFile.png");
+        SetIconImage("DefaultFile.png");
       }
     }
     else
     {
       if ( IsPlayList() )
       {
-        SetIconImage("defaultPlaylist.png");
+        SetIconImage("DefaultPlaylist.png");
       }
       else if (IsParentFolder())
       {
-        SetIconImage("defaultFolderBack.png");
+        SetIconImage("DefaultFolderBack.png");
       }
       else
       {
-        SetIconImage("defaultFolder.png");
+        SetIconImage("DefaultFolder.png");
       }
     }
   }
@@ -949,7 +969,6 @@ void CFileItem::SetCachedArtistThumb()
   {
     // found it, we are finished.
     SetThumbnailImage(thumb);
-//    SetIconImage(strThumb);
   }
 }
 
@@ -957,6 +976,7 @@ void CFileItem::SetCachedArtistThumb()
 void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
 {
   if (HasThumbnail()) return;
+  
   SetCachedMusicThumb();
   if (!HasThumbnail())
     SetUserMusicThumb(alwaysCheckRemote);
@@ -975,7 +995,7 @@ void CFileItem::SetCachedSeasonThumb()
 void CFileItem::RemoveExtension()
 {
   if (m_bIsFolder)
-    return ;
+    return;
   CStdString strLabel = GetLabel();
   CUtil::RemoveExtension(strLabel);
   SetLabel(strLabel);
@@ -1616,16 +1636,21 @@ void CFileItemList::Serialize(CArchive& ar)
     bool fastLookup=false;
     ar >> fastLookup;
 
-    ar >> (int&)m_sortMethod;
-    ar >> (int&)m_sortOrder;
-    ar >> (int&)m_cacheToDisc;
+    int tempint;
+    ar >> (int&)tempint;
+    m_sortMethod = SORT_METHOD(tempint);
+    ar >> (int&)tempint;
+    m_sortOrder = SORT_ORDER(tempint);
+    ar >> (int&)tempint;
+    m_cacheToDisc = CACHE_TYPE(tempint);
 
     unsigned int detailSize = 0;
     ar >> detailSize;
     for (unsigned int j = 0; j < detailSize; ++j)
     {
       SORT_METHOD_DETAILS details;
-      ar >> (int&)details.m_sortMethod;
+      ar >> (int&)tempint;
+      details.m_sortMethod = SORT_METHOD(tempint);
       ar >> details.m_buttonLabel;
       ar >> details.m_labelMasks.m_strLabelFile;
       ar >> details.m_labelMasks.m_strLabelFolder;
@@ -1878,6 +1903,8 @@ void CFileItemList::Stack()
   // not allowed here
   if (IsVirtualDirectoryRoot() || IsTV())
     return;
+
+  SetProperty("isstacked", "1");
 
   // items needs to be sorted for stuff below to work properly
   Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -2376,11 +2403,12 @@ CStdString CFileItem::GetTBNFile() const
   if (m_bIsFolder && !IsFileFolder())
     CUtil::RemoveSlashAtEnd(strFile);
 
-  if(strFile.IsEmpty())
-    thumbFile = "";
-  else
+  if (!strFile.IsEmpty())
   {
-    CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
+    if (m_bIsFolder && !IsFileFolder())
+      thumbFile = strFile + ".tbn"; // folder, so just add ".tbn"
+    else
+      CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
     url.SetFileName(thumbFile);
     url.GetURL(thumbFile);
   }
@@ -2540,35 +2568,50 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsFTP(strFile))
     return "";
 
-  // we don't have a cached image, so let's see if the user has a local image ..
-  CStdString strDir;
-  CUtil::GetDirectory(strFile, strDir);
-  if (strDir.IsEmpty()) return "";
-
-  bool bFoundFanart = false;
   CStdString localFanart;
-  CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
-  CUtil::RemoveExtension(strFile);
-  strFile += "-fanart";
-  CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
 
-  for (int i = 0; i < items.Size(); i++)
+  // special checks for subfolders
+  if(m_bIsFolder)
   {
-    CStdString strCandidate = items[i]->m_strPath;
-    CUtil::RemoveExtension(strCandidate);
-    if (strCandidate.CompareNoCase(strFile) == 0 ||
-        strCandidate.CompareNoCase(strFile2) == 0 ||
-        strCandidate.CompareNoCase(strFile3) == 0)
+    CStdString strArt;
+    CUtil::AddFileToFolder(strFile, "fanart.jpg", strArt);
+    if(CFile::Exists(strArt))
+      localFanart = strArt;
+
+    CUtil::AddFileToFolder(strFile, "fanart.png", strArt);
+    if(localFanart.IsEmpty() && CFile::Exists(strArt))
+      localFanart = strArt;
+  }
+
+  // we don't have a cached image, so let's see if the user has a local image ..
+  if (localFanart.IsEmpty())
+  {
+    CStdString strDir;
+    CUtil::GetDirectory(strFile, strDir);
+    if (strDir.IsEmpty()) return "";
+    
+    CFileItemList items;
+    CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
+    CUtil::RemoveExtension(strFile);
+    strFile += "-fanart";
+    CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
+
+    for (int i = 0; i < items.Size(); i++)
     {
-      bFoundFanart = true;
-      localFanart = items[i]->m_strPath;
-      break;
+      CStdString strCandidate = items[i]->m_strPath;
+      CUtil::RemoveExtension(strCandidate);
+      if (strCandidate.CompareNoCase(strFile) == 0 ||
+          strCandidate.CompareNoCase(strFile2) == 0 ||
+          strCandidate.CompareNoCase(strFile3) == 0)
+      {
+        localFanart = items[i]->m_strPath;
+        break;
+      }
     }
   }
 
   // no local fanart found
-  if(!bFoundFanart)
+  if(localFanart.IsEmpty())
     return "";
 
   if (!probe)

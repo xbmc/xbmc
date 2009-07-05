@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDSubtitleStream.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
@@ -75,17 +75,17 @@ bool CDVDSubtitleStream::Open(const string& strFile)
     // set up our buffers
     int iBlockSize = m_pInputStream->GetBlockSize();
     m_buffer = new BYTE[iBlockSize];
-    
+
     if (m_buffer)
     {
       m_iMaxBufferSize = iBlockSize;
       m_iBufferSize = 0;
       m_iBufferPos = 0;
-      
+
       return true;
     }
   }
-  
+
   return false;
 }
 
@@ -93,9 +93,9 @@ void CDVDSubtitleStream::Close()
 {
   if (m_pInputStream)
     SAFE_DELETE(m_pInputStream);
-  if (m_buffer) 
+  if (m_buffer)
     SAFE_DELETE_ARRAY(m_buffer);
-  
+
   m_iMaxBufferSize = 0;
 }
 
@@ -108,7 +108,7 @@ int CDVDSubtitleStream::Read(BYTE* buf, int buf_size)
       // need to read more data, buffer is empty
       m_iBufferPos = 0;
       m_iBufferSize = 0;
-      
+
       int iRes = m_pInputStream->Read(m_buffer, m_iMaxBufferSize);
       if (iRes > 0)
       {
@@ -120,19 +120,19 @@ int CDVDSubtitleStream::Read(BYTE* buf, int buf_size)
         return iRes;
       }
     }
-    
+
     int iBytesLeft = m_iBufferSize - m_iBufferPos;
     int iBytesToRead = buf_size;
-    
+
     if (iBytesToRead > iBytesLeft) iBytesToRead = iBytesLeft;
-    
+
     memcpy(buf, m_buffer + m_iBufferPos, iBytesToRead);
     m_iBufferPos += iBytesToRead;
     m_iBufferSize -= iBytesToRead;
-    
+
     return iBytesToRead;
   }
-  
+
   return 0;
 }
 
@@ -141,7 +141,7 @@ __int64 CDVDSubtitleStream::Seek(__int64 offset, int whence)
   if (m_pInputStream)
   {
     __int64 iPos = m_pInputStream->Seek(0LL, SEEK_CUR);
-    
+
     switch (whence)
     {
       case SEEK_CUR:
@@ -151,7 +151,7 @@ __int64 CDVDSubtitleStream::Seek(__int64 offset, int whence)
         {
           m_iBufferPos = 0;
           m_iBufferSize = 0;
-          
+
           return m_pInputStream->Seek(offset, whence);
         }
         else
@@ -168,7 +168,7 @@ __int64 CDVDSubtitleStream::Seek(__int64 offset, int whence)
         // just drop buffer
         m_iBufferPos = 0;
         m_iBufferSize = 0;
-        
+
         return m_pInputStream->Seek(offset, whence);
       }
       case SEEK_SET:
@@ -198,10 +198,10 @@ __int64 CDVDSubtitleStream::Seek(__int64 offset, int whence)
 char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
 {
   char* pBuffer = buf;
-  
+
   pBuffer[0] = '\0';
   int residualBytes = 0;
-  
+
   if (m_buffer)
   {
     while (iLen > 0)
@@ -211,7 +211,7 @@ char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
         // need to read more data, buffer is empty
         m_iBufferPos = 0;
         m_iBufferSize = 0;
-        
+
         int iRes = m_pInputStream->Read(m_buffer+residualBytes, m_iMaxBufferSize-residualBytes);
         if (iRes > 0)
         {
@@ -223,15 +223,15 @@ char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
           return NULL;
         }
       }
-      
+
       int iBytesToRead = min(iLen,m_iBufferSize);
-      
+
       // now find end of string
       char* pLineStart = (char*)(m_buffer + m_iBufferPos);
       char* pLineEnd = strnchr(pLineStart, iBytesToRead, '\n');
       if (pLineEnd)
       {
-        
+
         // we have a line
         int iStringLength = pLineEnd - pLineStart;
         if (iStringLength > iLen)
@@ -256,7 +256,7 @@ char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
           // buffer is to small
           return NULL;
         }
-        
+
         memcpy(m_buffer, m_buffer + m_iBufferPos, m_iBufferSize);
         residualBytes = m_iBufferSize;
         m_iBufferSize = 0;

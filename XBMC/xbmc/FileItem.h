@@ -129,6 +129,7 @@ public:
   bool IsRemovable() const;
   bool IsTuxBox() const;
   bool IsMythTV() const;
+  bool IsHDHomeRun() const;
   bool IsVTP() const;
   bool IsTV() const;
 
@@ -142,7 +143,7 @@ public:
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }
 
-  bool HasMusicInfoTag() const
+  inline bool HasMusicInfoTag() const
   {
     return m_musicInfoTag != NULL;
   }
@@ -154,7 +155,7 @@ public:
     return m_musicInfoTag;
   }
 
-  bool HasVideoInfoTag() const
+  inline bool HasVideoInfoTag() const
   {
     return m_videoInfoTag != NULL;
   }
@@ -166,7 +167,7 @@ public:
     return m_videoInfoTag;
   }
 
-  bool HasPictureInfoTag() const
+  inline bool HasPictureInfoTag() const
   {
     return m_pictureInfoTag != NULL;
   }

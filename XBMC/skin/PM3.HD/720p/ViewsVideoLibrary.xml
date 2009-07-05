@@ -192,6 +192,7 @@
 				<focusposition>2</focusposition>
 				<orientation>horizontal</orientation>
 				<hitrect x="376" y="0" w="218" h="310" />
+				<preloaditems>4</preloaditems>
 				<itemlayout height="310" width="218">
 					<control type="image">
 						<posx>2</posx>
@@ -201,7 +202,7 @@
 						<aspectratio>stretch</aspectratio>
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<texture>$INFO[ListItem.Icon]</texture>
+						<texture background="true">$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="image">
 						<posx>2</posx>
@@ -211,7 +212,7 @@
 						<aspectratio>stretch</aspectratio>
 						<bordertexture border="5" flipy="true" diffuse="diffuse_mirror2.png">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
+						<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="image">
 						<posx>180</posx>
@@ -231,7 +232,7 @@
 						<aspectratio>stretch</aspectratio>
 						<bordertexture border="5">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<texture>$INFO[ListItem.Icon]</texture>
+						<texture background="true">$INFO[ListItem.Icon]</texture>
 						<animation reversible="false" effect="zoom" start="2,0,214,310" end="-8,-10,234,330" time="200">focus</animation>
 						<animation reversible="false" effect="zoom" end="2,0,214,310" start="-8,-10,234,330" time="200">unfocus</animation>
 					</control>
@@ -243,7 +244,7 @@
 						<aspectratio>stretch</aspectratio>
 						<bordertexture border="5" flipy="true" diffuse="diffuse_mirror2.png">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
+						<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
 						<animation reversible="false" effect="zoom" start="2,310,214,310" end="-8,320,234,330" time="200">focus</animation>
 						<animation reversible="false" effect="zoom" end="2,310,214,310" start="-8,320,234,330" time="200">unfocus</animation>
 					</control>
@@ -417,7 +418,7 @@
 				<posx>40</posx>
 				<posy>600</posy>
 				<width>785</width>
-				<height>100</height>
+				<height>70</height>
 				<font>font11</font>
 				<align>justify</align>
 				<textcolor>white</textcolor>
@@ -543,20 +544,7 @@
 				<scroll>true</scroll>
 				<align>left</align>
 				<aligny>center</aligny>
-				<label>$INFO[ListItem.Duration,$LOCALIZE[2050] : ]</label>
-			</control>
-			<control type="label">
-				<posx>280</posx>
-				<posy>670</posy>
-				<width>550</width>
-				<height>30</height>
-				<font>font12</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<scroll>true</scroll>
-				<align>left</align>
-				<aligny>center</aligny>
-				<label>$INFO[ListItem.Year,$LOCALIZE[345] : ]</label>
+				<label>$INFO[ListItem.Year,$LOCALIZE[345] : ]$INFO[ListItem.Duration, - $LOCALIZE[2050] : ]</label>
 			</control>
 		</control>
 		<control type="group">

@@ -135,6 +135,7 @@ namespace DIRECTORY
         pFileItem->m_dwSize = ze->usize;
       pFileItem->m_strPath = strBuffer;
       pFileItem->m_bIsFolder = bIsFolder;
+      pFileItem->m_idepth = ze->method;
       if (bIsFolder)
         CUtil::AddSlashAtEnd(pFileItem->m_strPath);
       items.Add(pFileItem);

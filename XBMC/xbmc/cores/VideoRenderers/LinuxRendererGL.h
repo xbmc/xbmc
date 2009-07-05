@@ -34,11 +34,11 @@ typedef struct YV12Image
   unsigned width;
   unsigned height;
   unsigned flags;
-  float texcoord_x;
-  float texcoord_y;
 
   unsigned cshift_x; /* this is the chroma shift used */
   unsigned cshift_y;
+
+  unsigned flipindex; /* used to decide if this has been uploaded */
 } YV12Image;
 
 #define AUTOSOURCE -1
@@ -128,14 +128,13 @@ public:
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void         DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
-  virtual void         OnClose(); // called from main GUI thread
   virtual void         Reset(); /* resets renderer after seek for example */
 
   void AutoCrop(bool bCrop);
@@ -153,17 +152,13 @@ protected:
   virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
   void CalculateFrameAspectRatio(int desired_width, int desired_height);
   void ChooseBestResolution(float fps);
-  
+
   ESCALINGMETHOD GetDefaultUpscalingMethod();
   bool IsSoftwareUpscaling();
   void InitializeSoftwareUpscaling();
-  
+
   virtual void ManageDisplay();
-  void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
-  void DeleteOSDTextures(int index);
-  void Setup_Y8A8Render();
-  void RenderOSD();
   void DeleteYV12Texture(int index);
   void ClearYV12Texture(int index);
   virtual bool CreateYV12Texture(int index, bool clear=true);
@@ -183,7 +178,6 @@ protected:
   void RenderVDPAU(DWORD flags, int renderBuffer);      // render using vdpau hardware
 
   CFrameBufferObject m_fbo;
-  CSurface *m_pBuffer;
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
@@ -204,6 +198,7 @@ protected:
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
+  unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   bool m_StrictBinding;
 
   // Software upscaling.
@@ -211,34 +206,37 @@ protected:
   int m_upscalingHeight;
   YV12Image m_imScaled;
   bool m_isSoftwareUpscaling;
-  
-  // OSD stuff
-  GLuint m_pOSDYTexture[NUM_BUFFERS];
-  GLuint m_pOSDATexture[NUM_BUFFERS];
-  GLubyte* m_pOSDYBuffer;
-  GLubyte* m_pOSDABuffer;
-
-  float m_OSDWidth;
-  float m_OSDHeight;
-  DRAWRECT m_OSDRect;
-  int m_iOSDRenderBuffer;
-  int m_iOSDTextureWidth;
-  int m_iOSDTextureHeight[NUM_BUFFERS];
-  int m_NumOSDBuffers;
-  bool m_OSDRendered;
 
   // Raw data used by renderer
   YV12Image m_image[NUM_BUFFERS];
   int m_currentField;
   int m_reloadShaders;
 
-  typedef GLuint YUVPLANES[MAX_PLANES];
+  typedef struct
+  {
+    GLuint id;
+    CRect  rect;
+
+    float  width;
+    float  height;
+
+    unsigned texwidth;
+    unsigned texheight;
+
+    unsigned flipindex;
+  } YUVPLANE;
+
+  typedef YUVPLANE           YUVPLANES[MAX_PLANES];
   typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
   typedef YUVFIELDS          YUVBUFFERS[NUM_BUFFERS];
 
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   YUVBUFFERS m_YUVTexture;
+
+  void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
+                , unsigned width,  unsigned height
+                , int stride, void* data );
 
   //BaseYUV2RGBGLSLShader     *m_pYUVShaderGLSL;
   //BaseYUV2RGBARBShader      *m_pYUVShaderARB;
@@ -247,17 +245,8 @@ protected:
   ESCALINGMETHOD m_scalingMethod;
 
 //  /*
-  GLuint m_fragmentShader;
-  GLuint m_vertexShader;
-//  */
-  GLint m_yTex;
-  GLint m_uTex;
-  GLint m_vTex;
-//  /*
   GLint m_brightness;
   GLint m_contrast;
-  GLint m_stepX;
-  GLint m_stepY;
   GLint m_shaderField;
 //  */
 
@@ -271,10 +260,7 @@ protected:
   BYTE	     *m_rgbBuffer;  // if software scale is used, this will hold the result image
   int	      m_rgbBufferSize;
 
-  static void TextureCallback(DWORD dwContext);
-
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
-  HANDLE m_eventOSDDone[NUM_BUFFERS];
 
 };
 

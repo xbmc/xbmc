@@ -28,7 +28,11 @@
 #define DEFAULT_THUMB_SIZE  256
 #else  // MID
 #define DEFAULT_SKIN        "PM3.HD"
+#ifdef __APPLE__
+#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#else
 #define DEFAULT_VSYNC       VSYNC_DRIVER
+#endif
 #define DEFAULT_THUMB_SIZE  512
 #endif // MID
 
@@ -71,6 +75,19 @@
    makes sense to leave all the profile settings in a user writeable location
    like special://masterprofile/ */
 #define PROFILES_FILE "special://masterprofile/profiles.xml"
+
+struct TVShowRegexp
+{
+  bool byDate;
+  CStdString regexp;
+  TVShowRegexp(bool d, const CStdString& r)
+  {
+    byDate = d;
+    regexp = r;
+  }
+};
+
+typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
 class CSkinString
 {
@@ -170,12 +187,13 @@ public:
     int m_musicResample;
     int m_videoBlackBarColour;
     int m_videoIgnoreAtStart;
+    int m_videoIgnoreAtEnd;
     CStdString m_audioHost;
-    
+
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;
-        
+
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
@@ -210,7 +228,7 @@ public:
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
-    CStdStringArray m_tvshowStackRegExps;
+    SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
@@ -232,6 +250,7 @@ public:
     CStdString m_dvdThumbs;
 
     bool m_bMusicLibraryHideAllItems;
+    int m_iMusicLibraryRecentlyAddedItems;
     bool m_bMusicLibraryAllItemsOnBottom;
     bool m_bMusicLibraryAlbumsSortByArtistThenYear;
     CStdString m_strMusicLibraryAlbumFormat;
@@ -243,9 +262,11 @@ public:
 
     bool m_bVideoLibraryHideAllItems;
     bool m_bVideoLibraryAllItemsOnBottom;
+    int m_iVideoLibraryRecentlyAddedItems;
     bool m_bVideoLibraryHideRecentlyAddedItems;
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
+    bool m_bVideoLibraryExportAutoThumbs;
 
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
@@ -259,27 +280,22 @@ public:
     int m_iTuxBoxZapWaitTime;
     bool m_bTuxBoxSendAllAPids;
 
+    int m_iMythMovieLength;         // minutes
+    bool m_bFirstLoop;
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
+    int m_curlretries;
 
 #ifdef HAS_SDL
     bool m_fullScreen;
     bool m_startFullScreen;
 #endif
+    bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;
     int m_playlistTimeout;
     bool m_GLRectangleHack;
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
-
-    CStdString m_externalPlayerFilename;
-    CStdString m_externalPlayerArgs;
-    bool m_externalPlayerForceontop;
-    bool m_externalPlayerHideconsole;
-    bool m_externalPlayerHidecursor;
-    bool m_externalPlayerHidexbmc;
-    int m_externalPlayerStartupTime; // time in ms between launching player and locking the graphicscontext
-    CStdStringArray m_externalPlayerFilenameReplacers;
 
     bool m_osx_GLFullScreen;
     bool m_bVirtualShares;
@@ -441,12 +457,8 @@ public:
   bool SaveSources();
 
 protected:
-  // these 3 don't have a default - used for advancedsettings.xml
-  bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iMin, const int iMax);
-  bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fMin, const float fMax);
-  bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue);
-
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
+  void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
   void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
@@ -468,6 +480,8 @@ protected:
 
   bool LoadSettings(const CStdString& strSettingsFile);
 //  bool SaveSettings(const CStdString& strSettingsFile) const;
+
+  bool LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear);
 
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);

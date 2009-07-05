@@ -1,5 +1,6 @@
 #include "adplug.h"
 #include "emuopl.h"
+#include <cstring>
 
 struct ADLSong
 {
@@ -26,7 +27,7 @@ extern "C"
     ADLSong* result = new ADLSong;
     result->opl = new CEmuopl(48000,true,true);
     result->opl->init();
-    if (result->player = CAdPlug::factory(szFileName,result->opl))
+    if ((result->player = CAdPlug::factory(szFileName,result->opl)))
     {
       result->bufLen = 48000/result->player->getrefresh()*4;
       result->szBuf = new char[result->bufLen];
@@ -89,16 +90,16 @@ extern "C"
   {
      ADLSong* song = (ADLSong*)adl;
 
-     printf("title %s",song->player->gettitle());
-     return song->player->gettitle();
+     printf("title %s",song->player->gettitle().c_str());
+     return song->player->gettitle().c_str();
   }
 
   const char __declspec(dllexport) *DLL_GetArtist(int adl)
   {
      ADLSong* song = (ADLSong*)adl;
 
-     printf("artist %s",song->player->getauthor());
-     return (const char*)song->player->getauthor();
+     printf("artist %s",song->player->getauthor().c_str());
+     return (const char*)song->player->getauthor().c_str();
   }
 
   unsigned long __declspec(dllexport) DLL_GetLength(int adl)

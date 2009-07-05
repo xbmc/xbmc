@@ -56,6 +56,7 @@ public:
 
   // Functions called from mplayer
   bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  bool IsConfigured();
 
   // a call to GetImage must be followed by a call to releaseimage if getimage was successfull
   // failure to do so will result in deadlock
@@ -80,28 +81,10 @@ public:
     return 0;
   }
 
-#ifdef _LINUX
-  // should be called from the GUI thread after playback has finished
-  void OnClose()
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-    {
-      m_pRenderer->OnClose();
-    }
-  }
-#endif
-
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
 
-  inline void DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->DrawAlpha(x0, y0, w, h, src, srca, stride);
-  }
   inline void Reset()
   {
     CSharedLock lock(m_sharedSection);
@@ -156,6 +139,9 @@ protected:
 
   double     m_presenttime;
   EFIELDSYNC m_presentfield;
+  EINTERLACEMETHOD m_presentmethod;
+  int        m_presentstep;
+  CEvent     m_presentevent;
 
 };
 

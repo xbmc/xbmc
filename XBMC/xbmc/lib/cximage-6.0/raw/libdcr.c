@@ -1,10 +1,10 @@
 /*
-  libdcr version 0.1.8.81 15/Dec/2007
+  libdcr version 0.1.8.89 11/Jan/2009
 
-  libdcr : copyright (C) 2007, Davide Pizzolato
+  libdcr : copyright (C) 2007-2009, Davide Pizzolato
 
   based on dcraw.c -- Dave Coffin's raw photo decoder
-  Copyright 1997-2007 by Dave Coffin, dcoffin a cybercom o net
+  Copyright 1997-2009 by Dave Coffin, dcoffin a cybercom o net
 
   Covered code is provided under this license on an "as is" basis, without warranty
   of any kind, either expressed or implied, including, without limitation, warranties
@@ -22,12 +22,14 @@
   containing RESTRICTED functions, (b) distribute this code under
   the GPL Version 2 or later, (c) remove all RESTRICTED functions,
   re-implement them, or copy them from an earlier, unrestricted
-  Revision of dcraw.c, or (d) purchase a license from the author of dcraw.c.
+  revision of dcraw.c, or (d) purchase a license from the author
+  of dcraw.c.
 
   --------------------------------------------------------------------------------
 
-  Other information about libdcr, and the latest version, can be found at the
-  libdcr home page: http://www.xdp.it/libdcr/
+  dcraw.c home page: http://cybercom.net/~dcoffin/dcraw/
+  libdcr  home page: http://www.xdp.it/libdcr/
+
  */
 
 #define _GNU_SOURCE
@@ -102,13 +104,6 @@ static dcr_stream_ops dcr_stream_fileops = {
 #define _(String) gettext(String)
 #else
 #define _(String) (String)
-#endif
-
-	//#define fgetc getc_unlocked
-
-#ifdef DJGPP
-#define fseeko fseek
-#define ftello ftell
 #endif
 
 #ifdef __CYGWIN__
@@ -317,7 +312,21 @@ void DCR_CLASS dcr_read_shorts (DCRAW* p,ushort *pixel, int count)
 {
 	if ((int)dcr_fread(p->obj_, pixel, 2, count) < count) dcr_derror(p);
 	if ((p->order == 0x4949) == (ntohs(0x1234) == 0x1234))
-		swab ((char*)pixel, (char*)pixel, count*2);
+		_swab ((char*)pixel, (char*)pixel, count*2);
+}
+
+void DCR_CLASS dcr_canon_black (DCRAW* p, double dark[2])
+{
+  int c, diff, row, col;
+
+  if (p->raw_width < p->width+4) return;
+  FORC(2) dark[c] /= (p->raw_width-p->width-2) * p->height >> 1;
+  if ((diff = (int)(dark[0] - dark[1])))
+    for (row=0; row < p->height; row++)
+      for (col=1; col < p->width; col+=2)
+	BAYER(row,col) += diff;
+  dark[1] += diff;
+  p->black = (unsigned int)((dark[0] + dark[1] + 1) / 2);
 }
 
 void DCR_CLASS dcr_canon_600_fixed_wb (DCRAW* p,int temp)
@@ -507,16 +516,16 @@ int DCR_CLASS dcr_canon_s2is(DCRAW* p)
 
 void DCR_CLASS dcr_canon_a5_load_raw(DCRAW* p)
 {
-	ushort data[2335], *dp, pixel;
+	ushort data[2565], *dp, pixel;
 	int vbits=0, buf=0, row, col, bc=0;
 
 	p->order = 0x4949;
 	for (row=-p->top_margin; row < p->raw_height-p->top_margin; row++) {
 		dcr_read_shorts (p,dp=data, p->raw_width * 10 / 16);
 		for (col=-p->left_margin; col < p->raw_width-p->left_margin; col++) {
-			if (vbits < 10)
+			if ((vbits -= 10) < 0)
 				buf = (vbits += 16, (buf << 16) + *dp++);
-			pixel = buf >> (vbits -= 10) & 0x3ff;
+			pixel = buf >> vbits & 0x3ff;
 			if ((unsigned) row < p->height && (unsigned) col < p->width)
 				BAYER(row,col) = pixel;
 			else if (col > 1-p->left_margin && col != p->width)
@@ -701,6 +710,7 @@ void DCR_CLASS dcr_canon_compressed_load_raw(DCRAW* p)
 	unsigned irow, icol;
 	struct dcr_decode *decode, *dindex;
 	int block, diffbuf[64], leaf, len, diff, carry=0, pnum=0, base[2];
+	double dark[2] = { 0,0 };
 	uchar c;
 
 	dcr_crw_init_tables (p, p->tiff_compress);
@@ -760,14 +770,13 @@ void DCR_CLASS dcr_canon_compressed_load_raw(DCRAW* p)
 				icol = col - p->left_margin;
 				if (icol < p->width)
 					BAYER(irow,icol) = pixel[r*p->raw_width+col];
-				else
-					p->black += pixel[r*p->raw_width+col];
+				else if (col > 1)
+					dark[icol & 1] += pixel[r*p->raw_width+col];
 			}
 		}
 	}
 	free (pixel);
-	if (p->raw_width > p->width)
-		p->black /= (p->raw_width - p->width) * p->height;
+	dcr_canon_black (p, dark);
 }
 
 /*
@@ -777,13 +786,12 @@ enough to decode Canon, Kodak and Adobe DNG images.
 
 int DCR_CLASS dcr_ljpeg_start (DCRAW* p, struct dcr_jhead *jh, int info_only)
 {
-	int i, tag, len;
+	int c, tag, len;
 	uchar data[0x10000], *dp;
 
 	dcr_init_decoder(p);
 	memset (jh, 0, sizeof *jh);
-	for (i=0; i < 4; i++)
-		jh->huff[i] = p->free_decode;
+	FORC(6) jh->huff[c] = p->free_decode;
 	jh->restart = INT_MAX;
 	dcr_fread(p->obj_, data, 2, 1);
 	if (data[1] != 0xd8) return 0;
@@ -794,12 +802,13 @@ int DCR_CLASS dcr_ljpeg_start (DCRAW* p, struct dcr_jhead *jh, int info_only)
 		if (tag <= 0xff00) return 0;
 		dcr_fread(p->obj_, data, 1, len);
 		switch (tag) {
-		case 0xffc0: data[7] = 0;
 		case 0xffc3:
+			jh->sraw = ((data[7] >> 4) * (data[7] & 15) - 1) & 3;
+		case 0xffc0:
 			jh->bits = data[0];
 			jh->high = data[1] << 8 | data[2];
 			jh->wide = data[3] << 8 | data[4];
-			jh->clrs = data[5] + (data[7] == 0x21);
+			jh->clrs = data[5] + jh->sraw;
 			if (len == 9 && !p->dng_version) dcr_fgetc(p->obj_);
 			break;
 		case 0xffc4:
@@ -811,15 +820,16 @@ int DCR_CLASS dcr_ljpeg_start (DCRAW* p, struct dcr_jhead *jh, int info_only)
 			break;
 		case 0xffda:
 			jh->psv = data[1+data[0]*2];
+			jh->bits -= data[3+data[0]*2] & 15;
 			break;
 		case 0xffdd:
 			jh->restart = data[0] << 8 | data[1];
 		}
 	} while (tag != 0xffda);
 	if (info_only) return 1;
-	if (jh->clrs == 4) {
-		jh->huff[3] = jh->huff[2] = jh->huff[1];
-		jh->huff[1] = jh->huff[0];
+	if (jh->sraw) {
+		FORC(4)        jh->huff[2+c] = jh->huff[1];
+		FORC(jh->sraw) jh->huff[1+c] = jh->huff[0];
 	}
 	jh->row = (ushort *) calloc (jh->wide*jh->clrs, 4);
 	dcr_merror (p, jh->row, "dcr_ljpeg_start()");
@@ -843,11 +853,11 @@ int DCR_CLASS dcr_ljpeg_diff (DCRAW* p, struct dcr_decode *dindex)
 
 ushort * DCR_CLASS dcr_ljpeg_row (DCRAW* p, int jrow, struct dcr_jhead *jh)
 {
-	int col, c, diff, pred;
+	int col, c, diff, pred, spred=0;
 	ushort mark=0, *row[3];
 
 	if (jrow * jh->wide % jh->restart == 0) {
-		FORC4 jh->vpred[c] = 1 << (jh->bits-1);
+		FORC(6) jh->vpred[c] = 1 << (jh->bits-1);
 		if (jrow)
 			do mark = (mark << 8) + (c = dcr_fgetc(p->obj_));
 			while (c != EOF && mark >> 4 != 0xffd);
@@ -855,23 +865,24 @@ ushort * DCR_CLASS dcr_ljpeg_row (DCRAW* p, int jrow, struct dcr_jhead *jh)
 	}
 	FORC3 row[c] = jh->row + jh->wide*jh->clrs*((jrow+c) & 1);
 	for (col=0; col < jh->wide; col++)
-		for (c=0; c < jh->clrs; c++) {
+		FORC(jh->clrs) {
 			diff = dcr_ljpeg_diff (p, jh->huff[c]);
-			if (jh->clrs == 4 && c < 2 && (col | c))
-				pred = row[0][(c << 1)-3];
+			if (jh->sraw && c <= jh->sraw && (col | c))
+				pred = spred;
 			else if (col) pred = row[0][-jh->clrs];
 			else	    pred = (jh->vpred[c] += diff) - diff;
 			if (jrow && col) switch (jh->psv) {
-case 1:	break;
-case 2: pred = row[1][0];					break;
-case 3: pred = row[1][-jh->clrs];				break;
-case 4: pred = pred +   row[1][0] - row[1][-jh->clrs];		break;
-case 5: pred = pred + ((row[1][0] - row[1][-jh->clrs]) >> 1);	break;
-case 6: pred = row[1][0] + ((pred - row[1][-jh->clrs]) >> 1);	break;
-case 7: pred = (pred + row[1][0]) >> 1;				break;
-default: pred = 0;
+				case 1:	break;
+				case 2: pred = row[1][0];					break;
+				case 3: pred = row[1][-jh->clrs];				break;
+				case 4: pred = pred +   row[1][0] - row[1][-jh->clrs];		break;
+				case 5: pred = pred + ((row[1][0] - row[1][-jh->clrs]) >> 1);	break;
+				case 6: pred = row[1][0] + ((pred - row[1][-jh->clrs]) >> 1);	break;
+				case 7: pred = (pred + row[1][0]) >> 1;				break;
+				default: pred = 0;
 			}
 			if ((**row = pred + diff) >> jh->bits) dcr_derror(p);
+			if (c <= jh->sraw) spred = **row;
 			row[0]++; row[1]++;
 		}
 		return row[2];
@@ -880,6 +891,7 @@ default: pred = 0;
 void DCR_CLASS dcr_lossless_jpeg_load_raw(DCRAW* p)
 {
 	int jwide, jrow, jcol, val, jidx, i, j, row=0, col=0;
+	double dark[2] = { 0,0 };
 	struct dcr_jhead jh;
 	int min=INT_MAX;
 	ushort *rp;
@@ -892,7 +904,7 @@ void DCR_CLASS dcr_lossless_jpeg_load_raw(DCRAW* p)
 		for (jcol=0; jcol < jwide; jcol++) {
 			val = *rp++;
 			if (jh.bits <= 12)
-				val = p->curve[val];
+				val = p->curve[val & 0xfff];
 			if (p->cr2_slice[0]) {
 				jidx = jrow*jwide + jcol;
 				i = jidx / (p->cr2_slice[1]*jh.high);
@@ -908,15 +920,15 @@ void DCR_CLASS dcr_lossless_jpeg_load_raw(DCRAW* p)
 				if ((unsigned) (col-p->left_margin) < p->width) {
 					BAYER(row-p->top_margin,col-p->left_margin) = val;
 					if (min > val) min = val;
-				} else p->black += val;
+				} else if (col > 1)
+					dark[(col-p->left_margin) & 1] += val;
 			}
 			if (++col >= p->raw_width)
 				col = (row++,0);
 		}
 	}
 	free (jh.row);
-	if (p->raw_width > p->width)
-		p->black /= (p->raw_width - p->width) * p->height;
+	dcr_canon_black (p, dark);
 	if (!strcasecmp(p->make,"KODAK"))
 		p->black = min;
 }
@@ -924,42 +936,57 @@ void DCR_CLASS dcr_lossless_jpeg_load_raw(DCRAW* p)
 void DCR_CLASS dcr_canon_sraw_load_raw(DCRAW* p)
 {
 	struct dcr_jhead jh;
-	short *rp=0, *ip;
+	short *rp=0, (*ip)[4];
 	int jwide, slice, scol, ecol, row, col, jrow=0, jcol=0, pix[3], c;
-
-	if (!dcr_ljpeg_start (p,&jh, 0)) return;
-	jwide = (jh.wide >>= 1) * 4;
-
+	
+	if (!dcr_ljpeg_start (p, &jh, 0)) return;
+	jwide = (jh.wide >>= 1) * jh.clrs;
+	
 	for (ecol=slice=0; slice <= p->cr2_slice[0]; slice++) {
 		scol = ecol;
-		ecol += p->cr2_slice[1] >> 1;
-		if (!p->cr2_slice[0] || ecol > p->width-1) ecol = p->width & -2;
-		for (row=0; row < p->height; row++) {
-			ip = (short *) p->image[row*p->width+scol];
-			for (col=scol; col < ecol; col+=2, jcol+=4, ip+=8) {
+		ecol += p->cr2_slice[1] * 2 / jh.clrs;
+		if (!p->cr2_slice[0] || ecol > p->raw_width-1) ecol = p->raw_width & -2;
+		for (row=0; row < p->height; row += (jh.clrs >> 1) - 1) {
+			ip = (short (*)[4]) p->image + row*p->width;
+			for (col=scol; col < ecol; col+=2, jcol+=jh.clrs) {
 				if ((jcol %= jwide) == 0)
 					rp = (short *) dcr_ljpeg_row (p, jrow++, &jh);
-				ip[0] = rp[jcol];
-				ip[4] = rp[jcol+1];
-				ip[1] = (short) (rp[jcol+2] << 2) >> 2;
-				ip[2] = (short) (rp[jcol+3] << 2) >> 2;
+				if (col >= p->width) continue;
+				FORC (jh.clrs-2)
+					ip[col + (c >> 1)*p->width + (c & 1)][0] = rp[jcol+c];
+				ip[col][1] = rp[jcol+jh.clrs-2] - 16384;
+				ip[col][2] = rp[jcol+jh.clrs-1] - 16384;
 			}
 		}
 	}
-	for (row=0; row < p->height; row++) {
-		ip = (short *) p->image[row*p->width+1];
-		for (col=1; col < p->width-1; col+=2, ip+=8) {
-			ip[1] = (ip[-3] + ip[5] + 1) >> 1;
-			ip[2] = (ip[-2] + ip[6] + 1) >> 1;
+	ip = (short (*)[4]) p->image;
+	rp = ip[0];
+	for (row=0; row < p->height; row++, ip+=p->width) {
+		if (row & (jh.sraw >> 1))
+			for (col=0; col < p->width; col+=2)
+				for (c=1; c < 3; c++)
+					if (row == p->height-1)
+						ip[col][c] =  ip[col-p->width][c];
+					else ip[col][c] = (ip[col-p->width][c] + ip[col+p->width][c] + 1) >> 1;
+					for (col=1; col < p->width; col+=2)
+						for (c=1; c < 3; c++)
+							if (col == p->width-1)
+								ip[col][c] =  ip[col-1][c];
+							else ip[col][c] = (ip[col-1][c] + ip[col+1][c] + 1) >> 1;
+	}
+	for ( ; rp < ip[0]; rp+=4) {
+		if (p->unique_id < 0x80000200) {
+			pix[0] = rp[0] + rp[2] - 512;
+			pix[2] = rp[0] + rp[1] - 512;
+			pix[1] = rp[0] + ((-778*rp[1] - (rp[2] << 11)) >> 12) - 512;
+		} else {
+			rp[1] += jh.sraw+1;
+			rp[2] += jh.sraw+1;
+			pix[0] = rp[0] + ((  200*rp[1] + 22929*rp[2]) >> 12);
+			pix[1] = rp[0] + ((-5640*rp[1] - 11751*rp[2]) >> 12);
+			pix[2] = rp[0] + ((29040*rp[1] -   101*rp[2]) >> 12);
 		}
-		if (col < p->width) { ip[1] = ip[-3]; ip[2] = ip[-2]; }
-		ip = (short *) p->image[row*p->width];
-		for (col=0; col < p->width; col++, ip+=4) {
-			pix[0] = ip[2] + ip[0];
-			pix[2] = ip[1] + ip[0];
-			pix[1] = ((ip[0] << 12) - ip[1]*778 - (ip[2] << 11)) >> 12;
-			FORC3 ip[c] = CLIP((pix[c] - 512) * p->sraw_mul[c] >> 10);
-		}
+		FORC3 rp[c] = CLIP(pix[c] * p->sraw_mul[c] >> 10);
 	}
 	free (jh.row);
 	p->maximum = 0x3fff;
@@ -982,7 +1009,7 @@ void DCR_CLASS dcr_adobe_copy_pixel (DCRAW* p, int row, int col, ushort **rp)
 		*rp += p->is_raw;
 	} else {
 		if (r < p->height && c < p->width)
-			for (c=0; c < p->tiff_samples; c++)
+			FORC(p->tiff_samples)
 				p->image[row*p->width+col][c] = (*rp)[c] < 0x1000 ? p->curve[(*rp)[c]]:(*rp)[c];
 			*rp += p->tiff_samples;
 	}
@@ -1078,7 +1105,7 @@ void DCR_CLASS dcr_nikon_compressed_load_raw(DCRAW* p)
 		7,6,8,5,9,4,10,3,11,12,2,0,1,13,14 } };
 	struct dcr_decode *dindex;
 	ushort ver0, ver1, vpred[2][2], hpred[2], csize;
-	int i, max, step=0, huff=0, split=0, row, col, len, shl, diff;
+	int i, min, max, step=0, huff=0, split=0, row, col, len, shl, diff;
 
 	dcr_fseek(p->obj_, p->meta_offset, SEEK_SET);
 	ver0 = dcr_fgetc(p->obj_);
@@ -1101,14 +1128,16 @@ void DCR_CLASS dcr_nikon_compressed_load_raw(DCRAW* p)
 		split = dcr_get2(p);
 	} else if (ver0 != 0x46 && csize <= 0x4001)
 		dcr_read_shorts (p, p->curve, max=csize);
+	while (p->curve[max-2] == p->curve[max-1]) max--;
 	dcr_init_decoder(p);
 	dcr_make_decoder (p, nikon_tree[huff], 0);
 	dcr_fseek(p->obj_, p->data_offset, SEEK_SET);
 	dcr_getbits(p, -1);
-	for (row=0; row < p->height; row++) {
+	for (min=row=0; row < p->height; row++) {
 		if (split && row == split) {
 			dcr_init_decoder(p);
 			dcr_make_decoder (p, nikon_tree[huff+1], 0);
+			max += (min = 16) << 1;
 		}
 		for (col=0; col < p->raw_width; col++) {
 			for (dindex=p->first_decode; dindex->branch[0]; )
@@ -1120,34 +1149,9 @@ void DCR_CLASS dcr_nikon_compressed_load_raw(DCRAW* p)
 				diff -= (1 << len) - !shl;
 			if (col < 2) hpred[col] = vpred[row & 1][col] += diff;
 			else	   hpred[col & 1] += diff;
-			if (hpred[col & 1] >= max) dcr_derror(p);
+			if ((ushort)(hpred[col & 1] + min) >= max) dcr_derror(p);
 			if ((unsigned) (col-p->left_margin) < p->width)
-				BAYER(row,col-p->left_margin) = p->curve[hpred[col & 1] & 0x3fff];
-		}
-	}
-}
-
-void DCR_CLASS dcr_nikon_load_raw(DCRAW* p)
-{
-	int irow, row, col, i;
-
-	dcr_getbits(p, -1);
-	for (irow=0; irow < p->height; irow++) {
-		row = irow;
-		if (p->make[0] == 'O' || p->model[0] == 'E') {
-			row = irow * 2 % p->height + irow / (p->height/2);
-			if (row == 1 && p->data_offset == 0) {
-				dcr_fseek(p->obj_, 0, SEEK_END);
-				dcr_fseek(p->obj_, dcr_ftell(p->obj_)/2, SEEK_SET);
-				dcr_getbits(p, -1);
-			}
-		}
-		for (col=0; col < p->raw_width; col++) {
-			i = dcr_getbits(p, 12);
-			if ((unsigned) (col-p->left_margin) < p->width)
-				BAYER(row,col-p->left_margin) = i;
-			if (p->tiff_compress > 32768 && (col % 10) == 9)
-				if (dcr_getbits(p, 8)) dcr_derror(p);
+				BAYER(row,col-p->left_margin) = p->curve[LIM((short)hpred[col & 1],0,0x3fff)];
 		}
 	}
 }
@@ -1233,14 +1237,14 @@ Separates a Minolta DiMAGE Z2 from a Nikon E4300.
 */
 int DCR_CLASS dcr_minolta_z2(DCRAW* p)
 {
-	int i;
+	int i, nz;
 	char tail[424];
 
 	dcr_fseek(p->obj_, -(long)(sizeof tail), SEEK_END);
 	dcr_fread(p->obj_, tail, 1, sizeof tail);
-	for (i=0; i < sizeof tail; i++)
-		if (tail[i]) return 1;
-		return 0;
+	for (nz=i=0; i < sizeof tail; i++)
+		if (tail[i]) nz++;
+	return nz > 20;
 }
 
 /* Here p->raw_width is in bytes, not pixels. */
@@ -1257,34 +1261,6 @@ void DCR_CLASS dcr_nikon_e900_load_raw(DCRAW* p)
 		dcr_getbits(p, -1);
 		for (col=0; col < p->width; col++)
 			BAYER(row,col) = dcr_getbits(p, 10);
-	}
-}
-
-void DCR_CLASS dcr_nikon_e2100_load_raw(DCRAW* p)
-{
-	uchar   data[4608], *dp;
-	ushort pixel[3072], *pix;
-	int row, col;
-
-	for (row=0; row <= p->height; row+=2) {
-		if (row == p->height) {
-			dcr_fseek(p->obj_, 0, SEEK_END);
-			dcr_fseek(p->obj_, dcr_ftell(p->obj_)/2, SEEK_SET);
-			row = 1;
-		}
-		dcr_fread(p->obj_, data, 1, p->width*3/2);
-		for (dp=data, pix=pixel; pix < pixel+p->width; dp+=12, pix+=8) {
-			pix[0] = (dp[2] >> 4) + (dp[ 3] << 4);
-			pix[1] = (dp[2] << 8) +  dp[ 1];
-			pix[2] = (dp[7] >> 4) + (dp[ 0] << 4);
-			pix[3] = (dp[7] << 8) +  dp[ 6];
-			pix[4] = (dp[4] >> 4) + (dp[ 5] << 4);
-			pix[5] = (dp[4] << 8) +  dp[11];
-			pix[6] = (dp[9] >> 4) + (dp[10] << 4);
-			pix[7] = (dp[9] << 8) +  dp[ 8];
-		}
-		for (col=0; col < p->width; col++)
-			BAYER(row,col) = (pixel[col] & 0xfff);
 	}
 }
 
@@ -1601,11 +1577,10 @@ unsigned DCR_CLASS dcr_ph1_bits (DCRAW* p,int nbits)
 	if (nbits == -1)
 		return (unsigned int)(bitbuf = vbits = 0);
 	if (nbits == 0) return 0;
-	if (vbits < nbits) {
+	if ((vbits -= nbits) < 0) {
 		bitbuf = bitbuf << 32 | dcr_get4(p);
 		vbits += 32;
 	}
-	vbits -= nbits;
 	return (unsigned int)(bitbuf << (64-nbits-vbits) >> (64-nbits));
 }
 
@@ -1668,6 +1643,7 @@ void DCR_CLASS dcr_hasselblad_load_raw(DCRAW* p)
 
 	if (!dcr_ljpeg_start (p,&jh, 0)) return;
 	free (jh.row);
+	p->order = 0x4949;
 	dcr_ph1_bits(p,-1);
 	for (row=-p->top_margin; row < p->height; row++) {
 		pred[0] = pred[1] = 0x8000;
@@ -1681,6 +1657,7 @@ void DCR_CLASS dcr_hasselblad_load_raw(DCRAW* p)
 				diff = dcr_ph1_bits(p,len[i]);
 				if ((diff & (1 << (len[i]-1))) == 0)
 					diff -= (1 << len[i]) - 1;
+				if (diff == 65535) diff = -32768;
 				pred[i] += diff;
 				if (row >= 0 && (unsigned)(col+i) < p->width)
 					BAYER(row,col+i) = pred[i];
@@ -1697,7 +1674,7 @@ void DCR_CLASS dcr_leaf_hdr_load_raw(DCRAW* p)
 
 	pixel = (ushort *) calloc (p->raw_width, sizeof *pixel);
 	dcr_merror (p, pixel, "leaf_hdr_load_raw()");
-	for (c=0; c < p->tiff_samples; c++) {
+	FORC(p->tiff_samples) {
 		for (r=0; r < p->raw_height; r++) {
 			if (r % p->tile_length == 0) {
 				dcr_fseek(p->obj_, p->data_offset + 4*tile++, SEEK_SET);
@@ -1764,19 +1741,40 @@ void DCR_CLASS dcr_imacon_full_load_raw(DCRAW* p)
 
 void DCR_CLASS dcr_packed_12_load_raw(DCRAW* p)
 {
-	int row, col;
+	int vbits=0, rbits=0, irow, row, col;
+	UINT64 bitbuf=0;
 
-	if (p->raw_width * 2 < p->width * 3)
-		p->raw_width = p->raw_width * 3 / 2;	/* Convert p->raw_width to bytes */
-	dcr_getbits(p, -1);
-	for (row=0; row < p->height; row++) {
-		for (col=0; col < p->left_margin; col++)
-			dcr_getbits(p, 12);
-		for (col=0; col < p->width; col++)
-			BAYER(row,col) = dcr_getbits(p, 12);
-		for (col = (p->width+p->left_margin)*3/2; col < p->raw_width; col++)
-			if (dcr_getbits(p, 8) && p->raw_width-col < 35 && p->width != 3896) dcr_derror(p);
+	if (p->raw_width * 2 >= p->width * 3) {	/* If raw_width is in bytes, */
+		rbits = p->raw_width * 8;
+		p->raw_width = p->raw_width * 2 / 3;	/* convert it to pixels and  */
+		rbits -= p->raw_width * 12;		/* save the remainder.       */
 	}
+	p->order = p->load_flags & 1 ? 0x4949 : 0x4d4d;
+	for (irow=0; irow < p->height; irow++) {
+		row = irow;
+		if (p->load_flags & 2 &&
+			(row = irow * 2 % p->height + irow / (p->height/2)) == 1 &&
+			p->load_flags & 4) {
+			if (vbits=0, p->tiff_compress)
+				dcr_fseek(p->obj_, p->data_offset - (-p->width*p->height*3/4 & -2048), SEEK_SET);
+			else {
+				dcr_fseek(p->obj_, 0, SEEK_END);
+				dcr_fseek(p->obj_, dcr_ftell(p->obj_)/2, SEEK_SET);
+			}
+		}
+		for (col=0; col < p->raw_width; col++) {
+			if ((vbits -= 12) < 0) {
+				bitbuf = bitbuf << 32 | dcr_get4(p);
+				vbits += 32;
+			}
+			if ((unsigned) (col-p->left_margin) < p->width)
+				BAYER(row,col-p->left_margin) = (unsigned short)(bitbuf << (52-vbits) >> 52);
+			if (p->load_flags & 8 && (col % 10) == 9)
+				if (vbits=0, bitbuf & 255) dcr_derror(p);
+		}
+		vbits -= rbits;
+	}
+	if (!strcmp(p->make,"OLYMPUS")) p->black >>= 4;
 }
 
 void DCR_CLASS dcr_unpacked_load_raw(DCRAW* p)
@@ -1797,39 +1795,67 @@ void DCR_CLASS dcr_unpacked_load_raw(DCRAW* p)
 	free (pixel);
 }
 
+void DCR_CLASS nokia_load_raw(DCRAW* p)
+{
+  uchar  *data,  *dp;
+  ushort *pixel, *pix;
+  int dwide, row, c;
+
+  dwide = p->raw_width * 5 / 4;
+  data = (uchar *) malloc (dwide + p->raw_width*2);
+  dcr_merror (p,data, "nokia_load_raw()");
+  pixel = (ushort *) (data + dwide);
+  for (row=0; row < p->raw_height; row++) {
+    if (dcr_fread(p->obj_, data, 1, dwide) < dwide) dcr_derror(p);
+    for (dp=data, pix=pixel; pix < pixel+p->raw_width; dp+=5, pix+=4)
+      FORC4 pix[c] = (dp[c] << 2) | (dp[4] >> (c << 1) & 3);
+    if (row < p->top_margin)
+      FORC(p->width) p->black += pixel[c];
+    else
+      FORC(p->width) BAYER(row-p->top_margin,c) = pixel[c];
+  }
+  free (data);
+  if (p->top_margin) p->black /= p->top_margin * p->width;
+  p->maximum = 0x3ff;
+}
+
 unsigned DCR_CLASS dcr_pana_bits (DCRAW* p,int nbits)
 {
-  static uchar buf[16], vbits=0;
+  static uchar buf[0x4000];
+  static int vbits;
+  int byte;
 
-  if (!vbits && dcr_fread(p->obj_, buf, 1, 16) < 16) dcr_derror(p);
-  vbits = (vbits - nbits) & 127;
-  return (buf[(vbits >> 3)+1] << 8 | buf[vbits >> 3])
-	>> (vbits & 7) & ~(-1 << nbits);
+  if (!nbits) return vbits=0;
+  if (!vbits) {
+    dcr_fread(p->obj_, buf+p->load_flags, 1, 0x4000-p->load_flags);
+    dcr_fread(p->obj_, buf, 1, p->load_flags);
+  }
+  vbits = (vbits - nbits) & 0x1ffff;
+  byte = vbits >> 3 ^ 0x3ff0;
+  return (buf[byte] | buf[byte+1] << 8) >> (vbits & 7) & ~(-1 << nbits);
 }
 
 void DCR_CLASS dcr_panasonic_load_raw(DCRAW* p)
 {
   int row, col, i, j, sh=0, pred[2], nonz[2];
 
-  p->raw_width = (p->raw_width+13)/14*14;
+  dcr_pana_bits(p,0);
   for (row=0; row < p->height; row++)
     for (col=0; col < p->raw_width; col++) {
-      if ((i = col % 14) < 2)
-	nonz[i] = pred[i] = dcr_pana_bits(p,12);
-      else {
-		if (i % 3 == 2) sh = 4 >> (3 - dcr_pana_bits(p,2));
-		if ((j = dcr_pana_bits(p,8))) {
-		  if ((pred[i & 1] -= 0x80 << sh) < 0 || sh == 4)
-			   pred[i & 1] &= ~(-1 << sh);
-		  pred[i & 1] += nonz[i & 1] ? j << sh : j;
-		  nonz[i & 1] = 1;
-		}
-      }
+      if ((i = col % 14) == 0)
+	pred[0] = pred[1] = nonz[0] = nonz[1] = 0;
+      if (i % 3 == 2) sh = 4 >> (3 - dcr_pana_bits(p,2));
+      if (nonz[i & 1]) {
+	if ((j = dcr_pana_bits(p,8))) {
+	  if ((pred[i & 1] -= 0x80 << sh) < 0 || sh == 4)
+	       pred[i & 1] &= ~(-1 << sh);
+	  pred[i & 1] += j << sh;
+	}
+      } else if ((nonz[i & 1] = dcr_pana_bits(p,8)) || i > 11)
+	pred[i & 1] = nonz[i & 1] << 4 | dcr_pana_bits(p,4);
       if (col < p->width)
-	if ((BAYER(row,col) = pred[col & 1]) >> 12) dcr_derror(p);
+	if ((BAYER(row,col) = pred[col & 1]) > 4098) dcr_derror(p);
     }
-  p->maximum = 0xf96;
-  p->black = 15;
 }
 
 void DCR_CLASS dcr_olympus_e300_load_raw(DCRAW* p)
@@ -1898,22 +1924,6 @@ void DCR_CLASS dcr_olympus_e410_load_raw(DCRAW* p)
 				if ((BAYER(row,col) = pred + ((diff << 2) | low)) >> 12) dcr_derror(p);
 		}
 	}
-}
-
-void DCR_CLASS dcr_olympus_cseries_load_raw(DCRAW* p)
-{
-	int irow, row, col;
-
-	for (irow=0; irow < p->height; irow++) {
-		row = irow * 2 % p->height + irow / (p->height/2);
-		if (row < 2) {
-			dcr_fseek(p->obj_, p->data_offset - row*(-p->width*p->height*3/4 & -2048), SEEK_SET);
-			dcr_getbits(p, -1);
-		}
-		for (col=0; col < p->width; col++)
-			BAYER(row,col) = dcr_getbits(p, 12);
-	}
-	p->black >>= 4;
 }
 
 void DCR_CLASS dcr_minolta_rd175_load_raw(DCRAW* p)
@@ -2174,7 +2184,7 @@ fill_input_buffer (j_decompress_ptr cinfo)
 
 	//nbytes = dcr_fread(p->obj_, jpeg_buffer, 1, 4096);
 	nbytes = fread (jpeg_buffer, 1, 4096, ifp);
-	swab (jpeg_buffer, jpeg_buffer, nbytes);
+	_swab (jpeg_buffer, jpeg_buffer, nbytes);
 	cinfo->src->next_input_byte = jpeg_buffer;
 	cinfo->src->bytes_in_buffer = nbytes;
 	return TRUE;
@@ -2260,6 +2270,30 @@ void DCR_CLASS dcr_eight_bit_load_raw(DCRAW* p)
 	if (!strncmp(p->model,"DC2",3))
 		p->black = 0;
 	p->maximum = p->curve[0xff];
+}
+
+void DCR_CLASS dcr_kodak_yrgb_load_raw(DCRAW* p)
+{
+  uchar *pixel;
+  int row, col, y, cb, cr, rgb[3], c;
+
+  pixel = (uchar *) calloc (p->raw_width, 3*sizeof *pixel);
+  dcr_merror (p, pixel, "kodak_yrgb_load_raw()");
+  for (row=0; row < p->height; row++) {
+    if (~row & 1)
+      if (dcr_fread(p->obj_, pixel, p->raw_width, 3) < 3) dcr_derror(p);
+    for (col=0; col < p->raw_width; col++) {
+      y  = pixel[p->width*2*(row & 1) + col];
+      cb = pixel[p->width + (col & -2)]   - 128;
+      cr = pixel[p->width + (col & -2)+1] - 128;
+      rgb[1] = y-((cb + cr + 2) >> 2);
+      rgb[2] = rgb[1] + cb;
+      rgb[0] = rgb[1] + cr;
+      FORC3 p->image[row*p->width+col][c] = LIM(rgb[c],0,255);
+    }
+  }
+  free (pixel);
+  p->use_gamma = 0;
 }
 
 void DCR_CLASS dcr_kodak_262_load_raw(DCRAW* p)
@@ -2532,7 +2566,6 @@ void DCR_CLASS dcr_sony_arw2_load_raw(DCRAW* p)
 			}
 	}
 	free (data);
-	p->maximum = 0x1fff;
 }
 
 #define HOLE(row) ((holes >> (((row) - p->raw_height) & 7)) & 1)
@@ -3324,39 +3357,39 @@ void DCR_CLASS dcr_foveon_interpolate(DCRAW* p)
 Seach from the current directory up to the root looking for
 a ".badpixels" file, and fix those pixels now.
 */
-void DCR_CLASS dcr_bad_pixels(DCRAW* p)
+void DCR_CLASS dcr_bad_pixels(DCRAW* p, char *fname)
 {
 	FILE *fp=0;
-	char *fname, *cp, line[128];
+	char *cp, line[128];
 	int len, time, row, col, r, c, rad, tot, n, fixed=0;
 
 	if (!p->filters) return;
-	for (len=32 ; ; len *= 2) {
-		fname = (char *) malloc (len);
-		if (!fname) return;
-#ifdef _LINUX
-		if (getcwd (fname, len-16)) break;
-#else
-		if (_getcwd (fname, len-16)) break;
-#endif
-		free (fname);
-		if (errno != ERANGE) return;
-	}
+	if (fname)
+		fp = fopen (fname, "r");
+	else {
+		for (len=32 ; ; len *= 2) {
+			fname = (char *) malloc (len);
+			if (!fname) return;
+			if (_getcwd (fname, len-16)) break;
+			free (fname);
+			if (errno != ERANGE) return;
+		}
 #if defined(WIN32) || defined(DJGPP)
-	if (fname[1] == ':')
-		memmove (fname, fname+2, len-2);
-	for (cp=fname; *cp; cp++)
-		if (*cp == '\\') *cp = '/';
+		if (fname[1] == ':')
+			memmove (fname, fname+2, len-2);
+		for (cp=fname; *cp; cp++)
+			if (*cp == '\\') *cp = '/';
 #endif
-	cp = fname + strlen(fname);
-	if (cp[-1] == '/') cp--;
-	while (*fname == '/') {
-		strcpy (cp, "/.badpixels");
-		if ((fp = fopen (fname, "r"))) break;
-		if (cp == fname) break;
-		while (*--cp != '/');
+		cp = fname + strlen(fname);
+		if (cp[-1] == '/') cp--;
+		while (*fname == '/') {
+			strcpy (cp, "/.badpixels");
+			if ((fp = fopen (fname, "r"))) break;
+			if (cp == fname) break;
+			while (*--cp != '/');
+		}
+		free (fname);
 	}
-	free (fname);
 	if (!fp) return;
 	while (fgets (line, 128, fp)) {
 		cp = strchr (line, '#');
@@ -3375,7 +3408,7 @@ void DCR_CLASS dcr_bad_pixels(DCRAW* p)
 					BAYER2(row,col) = tot/n;
 					if (p->opt.verbose) {
 						if (!fixed++)
-							fprintf (stderr,_("Fixed bad pixels at:"));
+							fprintf (stderr,_("Fixed dead pixels at:"));
 						fprintf (stderr, " %d,%d", col, row);
 					}
 	}
@@ -3599,9 +3632,9 @@ void DCR_CLASS dcr_wavelet_denoise(DCRAW* p)
 	dcr_merror (p, fimg, "wavelet_denoise()");
 	temp = fimg + size*3;
 	if ((nc = p->colors) == 3 && p->filters) nc++;
-	for (c=0; c < nc; c++) {	/* denoise R,G1,B,G3 individually */
+	FORC(nc) {	/* denoise R,G1,B,G3 individually */
 		for (i=0; i < size; i++)
-			fimg[i] = (float)sqrt((unsigned) (p->image[i][c] << (scale+16)));
+			fimg[i] = 256 * (float)sqrt(p->image[i][c] << scale);
 		for (hpass=lev=0; lev < 5; lev++) {
 			lpass = size*((lev & 1)+1);
 			for (row=0; row < p->iheight; row++) {
@@ -3659,7 +3692,7 @@ void DCR_CLASS dcr_wavelet_denoise(DCRAW* p)
 void DCR_CLASS dcr_scale_colors(DCRAW* p)
 {
 	unsigned bottom, right, size, row, col, ur, uc, i, x, y, c, sum[8];
-	int val, dblack;
+	int val, dark, sat;
 	double dsum[8], dmin, dmax;
 	float scale_mul[4], fr, fc;
 	ushort *img=0, *pix;
@@ -3687,7 +3720,7 @@ void DCR_CLASS dcr_scale_colors(DCRAW* p)
 						sum[c+4]++;
 						if (p->filters) break;
 					}
-					for (c=0; c < 8; c++) dsum[c] += sum[c];
+					FORC(8) dsum[c] += sum[c];
 skip_block: ;
 			}
 			FORC4 if (dsum[c]) p->pre_mul[c] = (float)(dsum[c+4] / dsum[c]);
@@ -3709,7 +3742,8 @@ skip_block: ;
 				fprintf (stderr,_("%s: Cannot use camera p->white balance.\n"), p->ifname);
 	}
 	if (p->pre_mul[3] == 0) p->pre_mul[3] = p->colors < 4 ? p->pre_mul[1] : 1;
-	dblack = p->black;
+	dark = p->black;
+	sat = p->maximum;
 	if (p->opt.threshold) dcr_wavelet_denoise(p);
 	p->maximum -= p->black;
 	for (dmin=DBL_MAX, dmax=c=0; c < 4; c++) {
@@ -3721,7 +3755,7 @@ skip_block: ;
 	if (!p->opt.highlight) dmax = dmin;
 	FORC4 scale_mul[c] = (float)((p->pre_mul[c] /= (float)dmax) * 65535.0f / p->maximum);
 	if (p->opt.verbose) {
-		fprintf (stderr,_("Scaling with p->black %d, multipliers"), dblack);
+		fprintf (stderr,_("Scaling with darkness %d, saturation %d, and\nmultipliers"), dark, sat);
 		FORC4 fprintf (stderr, " %f", p->pre_mul[c]);
 		fputc ('\n', stderr);
 	}
@@ -3774,7 +3808,7 @@ void DCR_CLASS dcr_pre_interpolate(DCRAW* p)
 			p->width  = p->iwidth;
 		} else {
 			img = (ushort (*)[4]) calloc (p->height*p->width, sizeof *img);
-			dcr_merror (p, img, "unshrink()");
+			dcr_merror (p, img, "pre_interpolate()");
 			for (row=0; row < p->height; row++)
 				for (col=0; col < p->width; col++) {
 					c = dcr_fc(p,row,col);
@@ -4002,9 +4036,8 @@ Patterned Pixel Grouping Interpolation by Alain Desbiolles
 */
 void DCR_CLASS dcr_ppg_interpolate(DCRAW* p)
 {
-	int gr[4], dir[5] = { 1, p->width, -1, -p->width, 1 };
-	int row, col, avg, diff[2], guess[2], c, d, i;
-	static const short sort[] = { 0,2,1,3,0,1,2,3 };
+	int dir[5] = { 1, p->width, -1, -p->width, 1 };
+	int row, col, diff[2], guess[2], c, d, i;
 	ushort (*pix)[4];
 
 	dcr_border_interpolate(p,3);
@@ -4014,20 +4047,6 @@ void DCR_CLASS dcr_ppg_interpolate(DCRAW* p)
 	for (row=3; row < p->height-3; row++)
 		for (col=3+(FC(row,3) & 1), c=FC(row,col); col < p->width-3; col+=2) {
 			pix = p->image + row*p->width+col;
-			for (avg=i=0; i < 4; i++)
-				avg += gr[i] = pix[dir[i]][1] << 2;
-			avg >>= 2;
-			for (i=0; i < 8; i+=2)
-				if (gr[sort[i]] > gr[sort[i+1]])
-					SWAP(gr[sort[i]],gr[sort[i+1]])
-			for (d=0; d < 4; d++) {
-				for (i=-2; i < 2; i++)
-					if (pix[i*dir[d] + (i+1)*dir[d+1]][1] <= avg) break;
-					if (i == 2) {
-						pix[0][1] = (gr[1]+gr[2]) >> 3;
-						goto next_pixel;
-					}
-			}
 			for (i=0; (d=dir[i]) > 0; i++) {
 				guess[i] = (pix[-d][1] + pix[0][c] + pix[d][1]) * 2
 					- pix[-2*d][c] - pix[2*d][c];
@@ -4039,7 +4058,6 @@ void DCR_CLASS dcr_ppg_interpolate(DCRAW* p)
 			}
 			d = dir[i = diff[0] > diff[1]];
 			pix[0][1] = ULIM(guess[i] >> 2, pix[d][1], pix[-d][1]);
-next_pixel: ;
 		}
 		/*  Calculate red and blue for each green pixel:		*/
 		for (row=1; row < p->height-1; row++)
@@ -4198,7 +4216,7 @@ void DCR_CLASS dcr_ahd_interpolate(DCRAW* p)
 }
 #undef TS
 
-void DCR_CLASS dcr_median_filter (DCRAW* p)
+void DCR_CLASS dcr_median_filter(DCRAW* p)
 {
 	ushort (*pix)[4];
 	int pass, c, i, j, k, med[9];
@@ -4463,10 +4481,11 @@ void DCR_CLASS dcr_parse_makernote (DCRAW* p, int base, int uptag)
 		if (tag == 2 && strstr(p->make,"NIKON"))
 			p->iso_speed = (dcr_get2(p),dcr_get2(p));
 		if (tag == 4 && len > 26 && len < 35) {
-			p->iso_speed = 50 * (float)pow (2, (dcr_get4(p),dcr_get2(p))/32.0 - 4);
-			if ((i=(dcr_get2(p),dcr_get2(p))) != 0x7fff)
+			if ((i=(dcr_get4(p),dcr_get2(p))) != 0x7fff && !p->iso_speed)
+				p->iso_speed = 50 * (float)pow (2, i/32.0 - 4);
+			if ((i=(dcr_get2(p),dcr_get2(p))) != 0x7fff && !p->aperture)
 				p->aperture = (float)pow (2, i/64.0);
-			if ((i=dcr_get2(p)) != 0xffff)
+			if ((i=dcr_get2(p)) != 0xffff && !p->shutter)
 				p->shutter = (float)pow (2, (short) i/-32.0);
 			wbi = (dcr_get2(p),dcr_get2(p));
 			p->shot_order = (dcr_get2(p),dcr_get2(p));
@@ -4524,21 +4543,21 @@ void DCR_CLASS dcr_parse_makernote (DCRAW* p, int base, int uptag)
 			p->meta_offset = dcr_ftell(p->obj_);
 		if (tag == 0x97) {
 			for (i=0; i < 4; i++)
-				ver97 = (ver97 << 4) + dcr_fgetc(p->obj_)-'0';
+				ver97 = ver97 * 10 + dcr_fgetc(p->obj_)-'0';
 			switch (ver97) {
-			case 0x100:
+			case 100:
 				dcr_fseek(p->obj_, 68, SEEK_CUR);
 				FORC4 p->cam_mul[(c >> 1) | ((c & 1) << 1)] = dcr_get2(p);
 				break;
-			case 0x102:
+			case 102:
 				dcr_fseek(p->obj_, 6, SEEK_CUR);
 				goto get2_rggb;
-			case 0x103:
+			case 103:
 				dcr_fseek(p->obj_, 16, SEEK_CUR);
 				FORC4 p->cam_mul[c] = dcr_get2(p);
 			}
-			if (ver97 >> 8 == 2) {
-				if (ver97 != 0x205) dcr_fseek(p->obj_, 280, SEEK_CUR);
+			if (ver97 >= 200) {
+				if (ver97 != 205) dcr_fseek(p->obj_, 280, SEEK_CUR);
 				dcr_fread(p->obj_, buf97, 324, 1);
 			}
 		}
@@ -4546,17 +4565,15 @@ void DCR_CLASS dcr_parse_makernote (DCRAW* p, int base, int uptag)
 			dcr_fseek(p->obj_, wbi*48, SEEK_CUR);
 			FORC3 p->cam_mul[c] = dcr_get2(p);
 		}
-		if (tag == 0xa7 && ver97 >> 8 == 2) {
+		if (tag == 0xa7 && (unsigned) (ver97-200) < 12 && !p->cam_mul[0]) {
 			ci = xlat[0][serial & 0xff];
 			cj = xlat[1][dcr_fgetc(p->obj_)^dcr_fgetc(p->obj_)^dcr_fgetc(p->obj_)^dcr_fgetc(p->obj_)];
 			ck = 0x60;
 			for (i=0; i < 324; i++)
 				buf97[i] ^= (cj += ci * ck++);
-			FORC4 p->cam_mul[c ^ (c >> 1)] =
-				dcr_sget2 (p, buf97 + (ver97 == 0x205 ? 14:6) + c*2);
-			if (ver97 == 0x209)
-				FORC4 p->cam_mul[c ^ (c >> 1) ^ 1] =
-				dcr_sget2 (p, buf97 + 10 + c*2);
+			i = "66666>666;6A"[ver97-200] - '0';
+			FORC4 p->cam_mul[c ^ (c >> 1) ^ (i & 1)] =
+				dcr_sget2 (p, buf97 + (i & -2) + c*2);
 		}
 		if (tag == 0x200 && len == 3)
 			p->shot_order = (dcr_get4(p),dcr_get4(p));
@@ -4609,6 +4626,10 @@ get2_256:
 		p->cam_mul[0] = dcr_get2(p) / 256.0f;
 		p->cam_mul[2] = dcr_get2(p) / 256.0f;
 		}
+		if ((tag | 0x70) == 0x2070 && type == 4)
+			dcr_fseek(p->obj_, dcr_get4(p)+base, SEEK_SET);
+		if (tag == 0x2010 && type != 7)
+			p->load_raw = &DCR_CLASS dcr_olympus_e410_load_raw;
 		if (tag == 0x2020)
 			dcr_parse_thumb_note (p, base, 257, 258);
 		if (tag == 0x2040)
@@ -4617,8 +4638,8 @@ get2_256:
 			dcr_fseek(p->obj_, dcr_get4(p), SEEK_SET);
 			dcr_parse_thumb_note (p, base, 136, 137);
 		}
-		if (tag == 0x4001 && type == 3) {
-			i = len == 582 ? 50 : len == 653 ? 68 : 126;
+		if (tag == 0x4001 && len > 500) {
+			i = len == 582 ? 50 : len == 653 ? 68 : len == 5120 ? 142 : 126;
 			dcr_fseek(p->obj_, i, SEEK_CUR);
 get2_rggb:
 			FORC4 p->cam_mul[c ^ (c >> 1)] = dcr_get2(p);
@@ -4688,6 +4709,27 @@ void DCR_CLASS dcr_parse_exif (DCRAW* p, int base)
 	}
 }
 
+void DCR_CLASS dcr_parse_gps (DCRAW* p, int base)
+{
+  unsigned entries, tag, type, len, save, c;
+
+  entries = dcr_get2(p);
+  while (entries--) {
+    dcr_tiff_get (p, base, &tag, &type, &len, &save);
+    switch (tag) {
+    case 1: case 3: case 5:
+	  p->gpsdata[29+tag/2] = dcr_fgetc(p->obj_);	break;
+    case 2: case 4: case 7:
+	  FORC(6) p->gpsdata[tag/3*6+c] = dcr_get4(p);	break;
+    case 6:
+	  FORC(2) p->gpsdata[18+c] = dcr_get4(p);		break;
+    case 18: case 29:
+	  dcr_fgets(p->obj_, (char *) (p->gpsdata+14+tag/3), MIN(len,12));
+    }
+    dcr_fseek(p->obj_, save, SEEK_SET);
+  }
+}
+
 void DCR_CLASS dcr_romm_coeff (DCRAW* p, float romm_cam[3][3])
 {
 	static const float rgb_romm[3][3] =	/* ROMM == Kodak ProPhoto */
@@ -4709,7 +4751,7 @@ void DCR_CLASS dcr_parse_mos (DCRAW* p, int offset)
 	static const char *mod[] =
 	{ "","DCB2","Volare","Cantare","CMost","Valeo 6","Valeo 11","Valeo 22",
     "Valeo 11p","Valeo 17","","Aptus 17","Aptus 22","Aptus 75","Aptus 65",
-    "Aptus 54S","Aptus 65S","Aptus 75S" };
+    "Aptus 54S","Aptus 65S","Aptus 75S","AFi 5","AFi 6","AFi 7" };
 	float romm_cam[3][3];
 
 	dcr_fseek(p->obj_, offset, SEEK_SET);
@@ -4878,6 +4920,10 @@ int DCR_CLASS dcr_parse_tiff_ifd (DCRAW* p, int base)
 		case 272:				/* Model */
 			dcr_fgets(p->obj_, p->model, 64);
 			break;
+		case 280:				/* Panasonic RW2 offset */
+			if (type != 4) break;
+			p->load_raw = &DCR_CLASS dcr_panasonic_load_raw;
+			p->load_flags = 0x2008;
 		case 273:				/* StripOffset */
 		case 513:
 			p->tiff_ifd[ifd].offset = dcr_get4(p)+base;
@@ -4902,10 +4948,11 @@ int DCR_CLASS dcr_parse_tiff_ifd (DCRAW* p, int base)
 		case 514:
 			p->tiff_ifd[ifd].bytes = dcr_get4(p);
 			break;
-		case 305:				/* Software */
+		case 305:  case 11:		/* Software */
 			dcr_fgets(p->obj_, software, 64);
 			if (!strncmp(software,"Adobe",5) ||
 				!strncmp(software,"dcraw",5) ||
+				!strncmp(software,"UFRaw",5) ||
 				!strncmp(software,"Bibble",6) ||
 				!strncmp(software,"Nikon Scan",10) ||
 				!strcmp (software,"Digital Photo Professional"))
@@ -4932,6 +4979,7 @@ int DCR_CLASS dcr_parse_tiff_ifd (DCRAW* p, int base)
 			break;
 		case 330:				/* SubIFDs */
 			if (!strcmp(p->model,"DSLR-A100") && p->tiff_ifd[ifd].width == 3872) {
+				p->load_raw = &DCR_CLASS dcr_sony_arw_load_raw;
 				p->data_offset = dcr_get4(p)+base;
 				ifd++;  break;
 			}
@@ -4961,6 +5009,9 @@ int DCR_CLASS dcr_parse_tiff_ifd (DCRAW* p, int base)
 			break;
 		case 29443:
 			FORC4 p->cam_mul[c ^ (c < 2)] = dcr_get2(p);
+			break;
+		case 29459:
+			FORC4 p->cam_mul[c ^ (c >> 1)] = dcr_get2(p);
 			break;
 		case 33405:			/* Model2 */
 			dcr_fgets(p->obj_, p->model2, 64);
@@ -5010,6 +5061,10 @@ int DCR_CLASS dcr_parse_tiff_ifd (DCRAW* p, int base)
 			dcr_fseek(p->obj_, dcr_get4(p)+base, SEEK_SET);
 			dcr_parse_exif (p,base);
 			break;
+		case 34853:			/* GPSInfo tag */
+			dcr_fseek(p->obj_, dcr_get4(p)+base, SEEK_SET);
+			dcr_parse_gps (p,base);
+			break;
 		case 34675:			/* InterColorProfile */
 		case 50831:			/* AsShotICCProfile */
 			p->profile_offset = dcr_ftell(p->obj_);
@@ -5036,6 +5091,7 @@ int DCR_CLASS dcr_parse_tiff_ifd (DCRAW* p, int base)
 			ima_len = len;
 			break;
 		case 46279:
+			if (!ima_len) break;
 			dcr_fseek(p->obj_, 78, SEEK_CUR);
 			p->raw_width  = dcr_get4(p);
 			p->raw_height = dcr_get4(p);
@@ -5071,8 +5127,11 @@ int DCR_CLASS dcr_parse_tiff_ifd (DCRAW* p, int base)
 			for (cp = cbuf-1; cp && cp < cbuf+len; cp = strchr(cp,'\n'))
 				if (!strncmp (++cp,"Neutral ",8))
 					sscanf (cp+8, "%f %f %f", p->cam_mul, p->cam_mul+1, p->cam_mul+2);
-				free (cbuf);
-				break;
+			free (cbuf);
+			break;
+		case 50458:
+			if (!p->make[0]) strcpy (p->make, "Hasselblad");
+			break;
 		case 50459:			/* Hasselblad tag */
 			i = p->order;
 			j = dcr_ftell(p->obj_);
@@ -5086,6 +5145,8 @@ int DCR_CLASS dcr_parse_tiff_ifd (DCRAW* p, int base)
 			break;
 		case 50706:			/* DNGVersion */
 			FORC4 p->dng_version = (p->dng_version << 8) + dcr_fgetc(p->obj_);
+			if (!p->make[0]) strcpy (p->make, "DNG");
+			p->is_raw = 1;
 			break;
 		case 50710:			/* CFAPlaneColor */
 			if (len > 4) len = 4;
@@ -5253,25 +5314,27 @@ void DCR_CLASS dcr_parse_tiff (DCRAW* p, int base)
 		switch (p->tiff_bps) {
 		case  8: p->load_raw = &DCR_CLASS dcr_eight_bit_load_raw;	break;
 		case 12: p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
-			if (!strncmp(p->make,"NIKON",5))
-				p->load_raw = &DCR_CLASS dcr_nikon_load_raw;
+			if (p->tiff_ifd[raw].phint == 2)
+				p->load_flags = 6;
 			if (strncmp(p->make,"PENTAX",6)) break;
 		case 14:
 		case 16: p->load_raw = &DCR_CLASS dcr_unpacked_load_raw;		break;
 		}
-		if (p->tiff_ifd[raw].bytes * 5 == p->raw_width * p->raw_height * 8)
+		if (p->tiff_ifd[raw].bytes*5 == p->raw_width*p->raw_height*8)
 			p->load_raw = &DCR_CLASS dcr_olympus_e300_load_raw;
-		if (p->tiff_bps == 12 && p->tiff_ifd[raw].phint == 2)
-			p->load_raw = &DCR_CLASS dcr_olympus_cseries_load_raw;
 		break;
 		case 6:  case 7:  case 99:
 			p->load_raw = &DCR_CLASS dcr_lossless_jpeg_load_raw;		break;
 		case 262:
 			p->load_raw = &DCR_CLASS dcr_kodak_262_load_raw;			break;
 		case 32767:
-			p->load_raw = &DCR_CLASS dcr_sony_arw2_load_raw;			break;
+			p->load_raw = &DCR_CLASS dcr_sony_arw2_load_raw;
+			if (p->tiff_ifd[raw].bytes*8 == (int)(p->raw_width*p->raw_height*p->tiff_bps))
+				break;
+			p->raw_height += 8;
+			p->load_raw = &DCR_CLASS dcr_sony_arw_load_raw;			break;
 		case 32769:
-			p->load_raw = &DCR_CLASS dcr_nikon_load_raw;			break;
+			p->load_flags = 8;
 		case 32773:
 			p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;			break;
 		case 34713:
@@ -5292,6 +5355,7 @@ void DCR_CLASS dcr_parse_tiff (DCRAW* p, int base)
 			p->is_raw = 0;
 	if (!p->dng_version && p->tiff_bps == 8 && p->tiff_compress == 1 &&
 		p->tiff_ifd[raw].phint == 1) p->is_raw = 0;
+	if (p->tiff_bps == 8 && p->tiff_samples == 4) p->is_raw = 0;
 	for (i=0; i < (int)p->tiff_nifds; i++)
 		if (i != raw && p->tiff_ifd[i].samples == max_samp &&
 			p->tiff_ifd[i].width * p->tiff_ifd[i].height / SQR(p->tiff_ifd[i].bps+1) >
@@ -5343,7 +5407,7 @@ void DCR_CLASS dcr_parse_minolta (DCRAW* p, int base)
 			break;
 		case 0x574247:				/* WBG */
 			dcr_get4(p);
-			i = strstr(p->model,"A200") ? 3:0;
+			i = strcmp(p->model,"DiMAGE A200") ? 0:3;
 			FORC4 p->cam_mul[c ^ (c >> 1) ^ i] = dcr_get2(p);
 			break;
 		case 0x545457:				/* TTW */
@@ -5375,14 +5439,16 @@ void DCR_CLASS dcr_parse_external_jpeg(DCRAW* p)
 	file++;
 	if (!ext || strlen(ext) != 4 || ext-file != 8) return;
 	jname = (char *) malloc (strlen(p->ifname) + 1);
-	dcr_merror (p, jname, "parse_external()");
+	dcr_merror (p, jname, "parse_external_jpeg()");
 	strcpy (jname, p->ifname);
 	jfile = file - p->ifname + jname;
 	jext  = ext  - p->ifname + jname;
 	if (strcasecmp (ext, ".jpg")) {
 		strcpy (jext, isupper(ext[1]) ? ".JPG":".jpg");
-		memcpy (jfile, file+4, 4);
-		memcpy (jfile+4, file, 4);
+		if (isdigit(*file)) {
+			memcpy (jfile, file+4, 4);
+			memcpy (jfile+4, file, 4);
+		}
 	} else
 		while (isdigit(*--jext)) {
 			if (*jext != '9') {
@@ -5627,7 +5693,7 @@ void DCR_CLASS dcr_parse_phase_one (DCRAW* p, int base)
 	dcr_fseek(p->obj_, base, SEEK_SET);
 	p->order = dcr_get4(p) & 0xffff;
 	if (dcr_get4(p) >> 8 != 0x526177) return;		/* "Raw" */
-	dcr_fseek(p->obj_, base+dcr_get4(p), SEEK_SET);
+	dcr_fseek(p->obj_, dcr_get4(p)+base, SEEK_SET);
 	entries = dcr_get4(p);
 	dcr_get4(p);
 	while (entries--) {
@@ -5748,18 +5814,26 @@ void DCR_CLASS dcr_parse_riff(DCRAW* p)
 	p->order = 0x4949;
 	dcr_fread(p->obj_, tag, 4, 1);
 	size = dcr_get4(p);
+	end = dcr_ftell(p->obj_) + size;
 	if (!memcmp(tag,"RIFF",4) || !memcmp(tag,"LIST",4)) {
-		end = dcr_ftell(p->obj_) + size;
 		dcr_get4(p);
-		while (dcr_ftell(p->obj_) < (long)end)
+		while (dcr_ftell(p->obj_)+7 < (long)end)
 			dcr_parse_riff(p);
+	} else if (!memcmp(tag,"nctg",4)) {
+		while (dcr_ftell(p->obj_)+7 < (long)end) {
+			i = dcr_get2(p);
+			size = dcr_get2(p);
+			if ((i+1) >> 1 == 10 && size == 20)
+				dcr_get_timestamp(p,0);
+			else dcr_fseek(p->obj_, size, SEEK_CUR);
+		}
 	} else if (!memcmp(tag,"IDIT",4) && size < 64) {
 		dcr_fread(p->obj_, date, 64, 1);
 		date[size] = 0;
 		memset (&t, 0, sizeof t);
 		if (sscanf (date, "%*s %s %d %d:%d:%d %d", month, &t.tm_mday,
 			&t.tm_hour, &t.tm_min, &t.tm_sec, &t.tm_year) == 6) {
-			for (i=0; i < 12 && strcmp(mon[i],month); i++);
+			for (i=0; i < 12 && strcasecmp(mon[i],month); i++);
 			t.tm_mon = i;
 			t.tm_year -= 1900;
 			if (mktime(&t) > 0)
@@ -5878,7 +5952,8 @@ void DCR_CLASS dcr_parse_foveon(DCRAW* p)
 				p->data_offset = off+24;
 			}
 			dcr_fseek(p->obj_, off+28, SEEK_SET);
-			if (dcr_fgetc(p->obj_) == 0xff && dcr_fgetc(p->obj_) == 0xd8) {
+			if (dcr_fgetc(p->obj_) == 0xff && dcr_fgetc(p->obj_) == 0xd8
+				&& (int)p->thumb_length < len-28) {
 				p->thumb_offset = off+28;
 				p->thumb_length = len-28;
 				p->write_thumb = &DCR_CLASS dcr_jpeg_thumb;
@@ -5941,366 +6016,428 @@ void DCR_CLASS dcr_adobe_coeff (DCRAW* p, char *make, char *model)
 {
 	static const struct {
 		const char *prefix;
-		short black, trans[12];
+		short black, maximum, trans[12];
 	} table[] = {
-		{ "Apple QuickTake", 0,	/* DJC */
-		{ 17576,-3191,-3318,5210,6733,-1942,9031,1280,-124 } },
-		{ "Canon EOS D2000", 0,
-		{ 24542,-10860,-3401,-1490,11370,-297,2858,-605,3225 } },
-		{ "Canon EOS D6000", 0,
-		{ 20482,-7172,-3125,-1033,10410,-285,2542,226,3136 } },
-		{ "Canon EOS D30", 0,
-		{ 9805,-2689,-1312,-5803,13064,3068,-2438,3075,8775 } },
-		{ "Canon EOS D60", 0,
-		{ 6188,-1341,-890,-7168,14489,2937,-2640,3228,8483 } },
-		{ "Canon EOS 5D", 0,
-		{ 6347,-479,-972,-8297,15954,2480,-1968,2131,7649 } },
-		{ "Canon EOS 20Da", 0,
-		{ 14155,-5065,-1382,-6550,14633,2039,-1623,1824,6561 } },
-		{ "Canon EOS 20D", 0,
-		{ 6599,-537,-891,-8071,15783,2424,-1983,2234,7462 } },
-		{ "Canon EOS 30D", 0,
-		{ 6257,-303,-1000,-7880,15621,2396,-1714,1904,7046 } },
-		{ "Canon EOS 40D", 0,
-		{ 6071,-747,-856,-7653,15365,2441,-2025,2553,7315 } },
-		{ "Canon EOS 350D", 0,
-		{ 6018,-617,-965,-8645,15881,2975,-1530,1719,7642 } },
-		{ "Canon EOS 400D", 0,
-		{ 7054,-1501,-990,-8156,15544,2812,-1278,1414,7796 } },
-		{ "Canon EOS-1Ds Mark III", 0,
-		{ 5859,-211,-930,-8255,16017,2353,-1732,1887,7448 } },
-		{ "Canon EOS-1Ds Mark II", 0,
-		{ 6517,-602,-867,-8180,15926,2378,-1618,1771,7633 } },
-		{ "Canon EOS-1D Mark II N", 0,
-		{ 6240,-466,-822,-8180,15825,2500,-1801,1938,8042 } },
-		{ "Canon EOS-1D Mark III", 0,
-		{ 6291,-540,-976,-8350,16145,2311,-1714,1858,7326 } },
-		{ "Canon EOS-1D Mark II", 0,
-		{ 6264,-582,-724,-8312,15948,2504,-1744,1919,8664 } },
-		{ "Canon EOS-1DS", 0,
-		{ 4374,3631,-1743,-7520,15212,2472,-2892,3632,8161 } },
-		{ "Canon EOS-1D", 0,
-		{ 6806,-179,-1020,-8097,16415,1687,-3267,4236,7690 } },
-		{ "Canon EOS", 0,
-		{ 8197,-2000,-1118,-6714,14335,2592,-2536,3178,8266 } },
-		{ "Canon PowerShot A50", 0,
-		{ -5300,9846,1776,3436,684,3939,-5540,9879,6200,-1404,11175,217 } },
-		{ "Canon PowerShot A5", 0,
-		{ -4801,9475,1952,2926,1611,4094,-5259,10164,5947,-1554,10883,547 } },
-		{ "Canon PowerShot G1", 0,
-		{ -4778,9467,2172,4743,-1141,4344,-5146,9908,6077,-1566,11051,557 } },
-		{ "Canon PowerShot G2", 0,
-		{ 9087,-2693,-1049,-6715,14382,2537,-2291,2819,7790 } },
-		{ "Canon PowerShot G3", 0,
-		{ 9212,-2781,-1073,-6573,14189,2605,-2300,2844,7664 } },
-		{ "Canon PowerShot G5", 0,
-		{ 9757,-2872,-933,-5972,13861,2301,-1622,2328,7212 } },
-		{ "Canon PowerShot G6", 0,
-		{ 9877,-3775,-871,-7613,14807,3072,-1448,1305,7485 } },
-		{ "Canon PowerShot G9", 0,
-		{ 7368,-2141,-598,-5621,13254,2625,-1418,1696,5743 } },
-		{ "Canon PowerShot Pro1", 0,
-		{ 10062,-3522,-999,-7643,15117,2730,-765,817,7323 } },
-		{ "Canon PowerShot Pro70", 34,
-		{ -4155,9818,1529,3939,-25,4522,-5521,9870,6610,-2238,10873,1342 } },
-		{ "Canon PowerShot Pro90", 0,
-		{ -4963,9896,2235,4642,-987,4294,-5162,10011,5859,-1770,11230,577 } },
-		{ "Canon PowerShot S30", 0,
-		{ 10566,-3652,-1129,-6552,14662,2006,-2197,2581,7670 } },
-		{ "Canon PowerShot S40", 0,
-		{ 8510,-2487,-940,-6869,14231,2900,-2318,2829,9013 } },
-		{ "Canon PowerShot S45", 0,
-		{ 8163,-2333,-955,-6682,14174,2751,-2077,2597,8041 } },
-		{ "Canon PowerShot S50", 0,
-		{ 8882,-2571,-863,-6348,14234,2288,-1516,2172,6569 } },
-		{ "Canon PowerShot S60", 0,
-		{ 8795,-2482,-797,-7804,15403,2573,-1422,1996,7082 } },
-		{ "Canon PowerShot S70", 0,
-		{ 9976,-3810,-832,-7115,14463,2906,-901,989,7889 } },
-		{ "Canon PowerShot A610", 0, /* DJC */
-		{ 15591,-6402,-1592,-5365,13198,2168,-1300,1824,5075 } },
-		{ "Canon PowerShot A620", 0, /* DJC */
-		{ 15265,-6193,-1558,-4125,12116,2010,-888,1639,5220 } },
-		{ "Canon PowerShot A640", 0, /* DJC */
-		{ 13124,-5329,-1390,-3602,11658,1944,-1612,2863,4885 } },
-		{ "Canon PowerShot S3 IS", 0, /* DJC */
-		{ 14062,-5199,-1446,-4712,12470,2243,-1286,2028,4836 } },
-		{ "CINE 650", 0,
-		{ 3390,480,-500,-800,3610,340,-550,2336,1192 } },
-		{ "CINE 660", 0,
-		{ 3390,480,-500,-800,3610,340,-550,2336,1192 } },
-		{ "CINE", 0,
-		{ 20183,-4295,-423,-3940,15330,3985,-280,4870,9800 } },
-		{ "Contax N Digital", 0,
-		{ 7777,1285,-1053,-9280,16543,2916,-3677,5679,7060 } },
-		{ "EPSON R-D1", 0,
-		{ 6827,-1878,-732,-8429,16012,2564,-704,592,7145 } },
-		{ "FUJIFILM FinePix E550", 0,
-		{ 11044,-3888,-1120,-7248,15168,2208,-1531,2277,8069 } },
-		{ "FUJIFILM FinePix E900", 0,
-		{ 9183,-2526,-1078,-7461,15071,2574,-2022,2440,8639 } },
-		{ "FUJIFILM FinePix F8", 0,
-		{ 11044,-3888,-1120,-7248,15168,2208,-1531,2277,8069 } },
-		{ "FUJIFILM FinePix F7", 0,
-		{ 10004,-3219,-1201,-7036,15047,2107,-1863,2565,7736 } },
-		{ "FUJIFILM FinePix S20Pro", 0,
-		{ 10004,-3219,-1201,-7036,15047,2107,-1863,2565,7736 } },
-		{ "FUJIFILM FinePix S2Pro", 128,
-		{ 12492,-4690,-1402,-7033,15423,1647,-1507,2111,7697 } },
-		{ "FUJIFILM FinePix S3Pro", 0,
-		{ 11807,-4612,-1294,-8927,16968,1988,-2120,2741,8006 } },
-		{ "FUJIFILM FinePix S5Pro", 0,
-		{ 12300,-5110,-1304,-9117,17143,1998,-1947,2448,8100 } },
-		{ "FUJIFILM FinePix S5000", 0,
-		{ 8754,-2732,-1019,-7204,15069,2276,-1702,2334,6982 } },
-		{ "FUJIFILM FinePix S5100", 0,
-		{ 11940,-4431,-1255,-6766,14428,2542,-993,1165,7421 } },
-		{ "FUJIFILM FinePix S5500", 0,
-		{ 11940,-4431,-1255,-6766,14428,2542,-993,1165,7421 } },
-		{ "FUJIFILM FinePix S5200", 0,
-		{ 9636,-2804,-988,-7442,15040,2589,-1803,2311,8621 } },
-		{ "FUJIFILM FinePix S5600", 0,
-		{ 9636,-2804,-988,-7442,15040,2589,-1803,2311,8621 } },
-		{ "FUJIFILM FinePix S6", 0,
-		{ 12628,-4887,-1401,-6861,14996,1962,-2198,2782,7091 } },
-		{ "FUJIFILM FinePix S7000", 0,
-		{ 10190,-3506,-1312,-7153,15051,2238,-2003,2399,7505 } },
-		{ "FUJIFILM FinePix S9000", 0,
-		{ 10491,-3423,-1145,-7385,15027,2538,-1809,2275,8692 } },
-		{ "FUJIFILM FinePix S9500", 0,
-		{ 10491,-3423,-1145,-7385,15027,2538,-1809,2275,8692 } },
-		{ "FUJIFILM FinePix S9100", 0,
-		{ 12343,-4515,-1285,-7165,14899,2435,-1895,2496,8800 } },
-		{ "FUJIFILM FinePix S9600", 0,
-		{ 12343,-4515,-1285,-7165,14899,2435,-1895,2496,8800 } },
-		{ "Imacon Ixpress", 0,	/* DJC */
-		{ 7025,-1415,-704,-5188,13765,1424,-1248,2742,6038 } },
-		{ "KODAK NC2000", 0,	/* DJC */
-		{ 16475,-6903,-1218,-851,10375,477,2505,-7,1020 } },
-		{ "Kodak DCS315C", 8,
-		{ 17523,-4827,-2510,756,8546,-137,6113,1649,2250 } },
-		{ "Kodak DCS330C", 8,
-		{ 20620,-7572,-2801,-103,10073,-396,3551,-233,2220 } },
-		{ "KODAK DCS420", 0,
-		{ 10868,-1852,-644,-1537,11083,484,2343,628,2216 } },
-		{ "KODAK DCS460", 0,
-		{ 10592,-2206,-967,-1944,11685,230,2206,670,1273 } },
-		{ "KODAK EOSDCS1", 0,
-		{ 10592,-2206,-967,-1944,11685,230,2206,670,1273 } },
-		{ "KODAK EOSDCS3B", 0,
-		{ 9898,-2700,-940,-2478,12219,206,1985,634,1031 } },
-		{ "Kodak DCS520C", 180,
-		{ 24542,-10860,-3401,-1490,11370,-297,2858,-605,3225 } },
-		{ "Kodak DCS560C", 188,
-		{ 20482,-7172,-3125,-1033,10410,-285,2542,226,3136 } },
-		{ "Kodak DCS620C", 180,
-		{ 23617,-10175,-3149,-2054,11749,-272,2586,-489,3453 } },
-		{ "Kodak DCS620X", 185,
-		{ 13095,-6231,154,12221,-21,-2137,895,4602,2258 } },
-		{ "Kodak DCS660C", 214,
-		{ 18244,-6351,-2739,-791,11193,-521,3711,-129,2802 } },
-		{ "Kodak DCS720X", 0,
-		{ 11775,-5884,950,9556,1846,-1286,-1019,6221,2728 } },
-		{ "Kodak DCS760C", 0,
-		{ 16623,-6309,-1411,-4344,13923,323,2285,274,2926 } },
-		{ "Kodak DCS Pro SLR", 0,
-		{ 5494,2393,-232,-6427,13850,2846,-1876,3997,5445 } },
-		{ "Kodak DCS Pro 14nx", 0,
-		{ 5494,2393,-232,-6427,13850,2846,-1876,3997,5445 } },
-		{ "Kodak DCS Pro 14", 0,
-		{ 7791,3128,-776,-8588,16458,2039,-2455,4006,6198 } },
-		{ "Kodak ProBack645", 0,
-		{ 16414,-6060,-1470,-3555,13037,473,2545,122,4948 } },
-		{ "Kodak ProBack", 0,
-		{ 21179,-8316,-2918,-915,11019,-165,3477,-180,4210 } },
-		{ "KODAK P712", 0,
-		{ 9658,-3314,-823,-5163,12695,2768,-1342,1843,6044 } },
-		{ "KODAK P850", 0,
-		{ 10511,-3836,-1102,-6946,14587,2558,-1481,1792,6246 } },
-		{ "KODAK P880", 0,
-		{ 12805,-4662,-1376,-7480,15267,2360,-1626,2194,7904 } },
-		{ "Leaf CMost", 0,
-		{ 3952,2189,449,-6701,14585,2275,-4536,7349,6536 } },
-		{ "Leaf Valeo 6", 0,
-		{ 3952,2189,449,-6701,14585,2275,-4536,7349,6536 } },
-		{ "Leaf Aptus 54S", 0,
-		{ 8236,1746,-1314,-8251,15953,2428,-3673,5786,5771 } },
-		{ "Leaf Aptus 65", 0,
-		{ 7914,1414,-1190,-8777,16582,2280,-2811,4605,5562 } },
-		{ "Leaf Aptus 75", 0,
-		{ 7914,1414,-1190,-8777,16582,2280,-2811,4605,5562 } },
-		{ "Leaf", 0,
-		{ 8236,1746,-1314,-8251,15953,2428,-3673,5786,5771 } },
-		{ "Mamiya ZD", 0,
-		{ 7645,2579,-1363,-8689,16717,2015,-3712,5941,5961 } },
-		{ "Micron 2010", 110,	/* DJC */
-		{ 16695,-3761,-2151,155,9682,163,3433,951,4904 } },
-		{ "Minolta DiMAGE 5", 0,
-		{ 8983,-2942,-963,-6556,14476,2237,-2426,2887,8014 } },
-		{ "Minolta DiMAGE 7Hi", 0,
-		{ 11368,-3894,-1242,-6521,14358,2339,-2475,3056,7285 } },
-		{ "Minolta DiMAGE 7", 0,
-		{ 9144,-2777,-998,-6676,14556,2281,-2470,3019,7744 } },
-		{ "Minolta DiMAGE A1", 0,
-		{ 9274,-2547,-1167,-8220,16323,1943,-2273,2720,8340 } },
-		{ "MINOLTA DiMAGE A200", 0,
-		{ 8560,-2487,-986,-8112,15535,2771,-1209,1324,7743 } },
-		{ "Minolta DiMAGE A2", 0,
-		{ 9097,-2726,-1053,-8073,15506,2762,-966,981,7763 } },
-		{ "Minolta DiMAGE Z2", 0,	/* DJC */
-		{ 11280,-3564,-1370,-4655,12374,2282,-1423,2168,5396 } },
-		{ "MINOLTA DYNAX 5", 0,
-		{ 10284,-3283,-1086,-7957,15762,2316,-829,882,6644 } },
-		{ "MINOLTA DYNAX 7", 0,
-		{ 10239,-3104,-1099,-8037,15727,2451,-927,925,6871 } },
-		{ "NIKON D100", 0,
-		{ 5902,-933,-782,-8983,16719,2354,-1402,1455,6464 } },
-		{ "NIKON D1H", 0,
-		{ 7577,-2166,-926,-7454,15592,1934,-2377,2808,8606 } },
-		{ "NIKON D1X", 0,
-		{ 7702,-2245,-975,-9114,17242,1875,-2679,3055,8521 } },
-		{ "NIKON D1", 0,	/* multiplied by 2.218750, 1.0, 1.148438 */
-		{ 16772,-4726,-2141,-7611,15713,1972,-2846,3494,9521 } },
-		{ "NIKON D2H", 0,
-		{ 5710,-901,-615,-8594,16617,2024,-2975,4120,6830 } },
-		{ "NIKON D2X", 0,
-		{ 10231,-2769,-1255,-8301,15900,2552,-797,680,7148 } },
-		{ "NIKON D40X", 0,
-		{ 8819,-2543,-911,-9025,16928,2151,-1329,1213,8449 } },
-		{ "NIKON D40", 0,
-		{ 6992,-1668,-806,-8138,15748,2543,-874,850,7897 } },
-		{ "NIKON D50", 0,
-		{ 7732,-2422,-789,-8238,15884,2498,-859,783,7330 } },
-		{ "NIKON D70", 0,
-		{ 7732,-2422,-789,-8238,15884,2498,-859,783,7330 } },
-		{ "NIKON D80", 0,
-		{ 8629,-2410,-883,-9055,16940,2171,-1490,1363,8520 } },
-		{ "NIKON D200", 0,
-		{ 8367,-2248,-763,-8758,16447,2422,-1527,1550,8053 } },
-		{ "NIKON D300", 0,
-		{ 9030,-1992,-715,-8465,16302,2255,-2689,3217,8069 } },
-		{ "NIKON D3", 0,
-		{ 8139,-2171,-663,-8747,16541,2295,-1925,2008,8093 } },
-		{ "NIKON E950", 0,		/* DJC */
-		{ -3746,10611,1665,9621,-1734,2114,-2389,7082,3064,3406,6116,-244 } },
-		{ "NIKON E995", 0,	/* copied from E5000 */
-		{ -5547,11762,2189,5814,-558,3342,-4924,9840,5949,688,9083,96 } },
-		{ "NIKON E2100", 0,	/* copied from Z2, new white balance */
-		{ 13142,-4152,-1596,-4655,12374,2282,-1769,2696,6711} },
-		{ "NIKON E2500", 0,
-		{ -5547,11762,2189,5814,-558,3342,-4924,9840,5949,688,9083,96 } },
-		{ "NIKON E4300", 0, /* copied from Minolta DiMAGE Z2 */
-		{ 11280,-3564,-1370,-4655,12374,2282,-1423,2168,5396 } },
-		{ "NIKON E4500", 0,
-		{ -5547,11762,2189,5814,-558,3342,-4924,9840,5949,688,9083,96 } },
-		{ "NIKON E5000", 0,
-		{ -5547,11762,2189,5814,-558,3342,-4924,9840,5949,688,9083,96 } },
-		{ "NIKON E5400", 0,
-		{ 9349,-2987,-1001,-7919,15766,2266,-2098,2680,6839 } },
-		{ "NIKON E5700", 0,
-		{ -5368,11478,2368,5537,-113,3148,-4969,10021,5782,778,9028,211 } },
-		{ "NIKON E8400", 0,
-		{ 7842,-2320,-992,-8154,15718,2599,-1098,1342,7560 } },
-		{ "NIKON E8700", 0,
-		{ 8489,-2583,-1036,-8051,15583,2643,-1307,1407,7354 } },
-		{ "NIKON E8800", 0,
-		{ 7971,-2314,-913,-8451,15762,2894,-1442,1520,7610 } },
-		{ "OLYMPUS C5050", 0,
-		{ 10508,-3124,-1273,-6079,14294,1901,-1653,2306,6237 } },
-		{ "OLYMPUS C5060", 0,
-		{ 10445,-3362,-1307,-7662,15690,2058,-1135,1176,7602 } },
-		{ "OLYMPUS C7070", 0,
-		{ 10252,-3531,-1095,-7114,14850,2436,-1451,1723,6365 } },
-		{ "OLYMPUS C70", 0,
-		{ 10793,-3791,-1146,-7498,15177,2488,-1390,1577,7321 } },
-		{ "OLYMPUS C80", 0,
-		{ 8606,-2509,-1014,-8238,15714,2703,-942,979,7760 } },
-		{ "OLYMPUS E-10", 0,
-		{ 12745,-4500,-1416,-6062,14542,1580,-1934,2256,6603 } },
-		{ "OLYMPUS E-1", 0,
-		{ 11846,-4767,-945,-7027,15878,1089,-2699,4122,8311 } },
-		{ "OLYMPUS E-20", 0,
-		{ 13173,-4732,-1499,-5807,14036,1895,-2045,2452,7142 } },
-		{ "OLYMPUS E-300", 0,
-		{ 7828,-1761,-348,-5788,14071,1830,-2853,4518,6557 } },
-		{ "OLYMPUS E-330", 0,
-		{ 8961,-2473,-1084,-7979,15990,2067,-2319,3035,8249 } },
-		{ "OLYMPUS E-3", 0,
-		{ 9487,-2875,-1115,-7533,15606,2010,-1618,2100,7389 } },
-		{ "OLYMPUS E-400", 0,
-		{ 6169,-1483,-21,-7107,14761,2536,-2904,3580,8568 } },
-		{ "OLYMPUS E-410", 0,
-		{ 8856,-2582,-1026,-7761,15766,2082,-2009,2575,7469 } },
-		{ "OLYMPUS E-500", 0,
-		{ 8136,-1968,-299,-5481,13742,1871,-2556,4205,6630 } },
-		{ "OLYMPUS E-510", 0,
-		{ 8785,-2529,-1033,-7639,15624,2112,-1783,2300,7817 } },
-		{ "OLYMPUS SP350", 0,
-		{ 12078,-4836,-1069,-6671,14306,2578,-786,939,7418 } },
-		{ "OLYMPUS SP3", 0,
-		{ 11766,-4445,-1067,-6901,14421,2707,-1029,1217,7572 } },
-		{ "OLYMPUS SP500UZ", 0,
-		{ 9493,-3415,-666,-5211,12334,3260,-1548,2262,6482 } },
-		{ "OLYMPUS SP510UZ", 0,
-		{ 10593,-3607,-1010,-5881,13127,3084,-1200,1805,6721 } },
-		{ "OLYMPUS SP550UZ", 0,
-		{ 11597,-4006,-1049,-5432,12799,2957,-1029,1750,6516 } },
-		{ "OLYMPUS SP560UZ", 0,
-		{ 10915,-3677,-982,-5587,12986,2911,-1168,1968,6223 } },
-		{ "PENTAX *ist DL2", 0,
-		{ 10504,-2438,-1189,-8603,16207,2531,-1022,863,12242 } },
-		{ "PENTAX *ist DL", 0,
-		{ 10829,-2838,-1115,-8339,15817,2696,-837,680,11939 } },
-		{ "PENTAX *ist DS2", 0,
-		{ 10504,-2438,-1189,-8603,16207,2531,-1022,863,12242 } },
-		{ "PENTAX *ist DS", 0,
-		{ 10371,-2333,-1206,-8688,16231,2602,-1230,1116,11282 } },
-		{ "PENTAX *ist D", 0,
-		{ 9651,-2059,-1189,-8881,16512,2487,-1460,1345,10687 } },
-		{ "PENTAX K10D", 0,
-		{ 9566,-2863,-803,-7170,15172,2112,-818,803,9705 } },
-		{ "PENTAX K1", 0,
-		{ 11095,-3157,-1324,-8377,15834,2720,-1108,947,11688 } },
-		{ "Panasonic DMC-FZ8", 0,
-		{ 8986,-2755,-802,-6341,13575,3077,-1476,2144,6379 } },
-		{ "Panasonic DMC-FZ18", 0,
-		{ 9932,-3060,-935,-5809,13331,2753,-1267,2155,5575 } },
-		{ "Panasonic DMC-FZ30", 0,
-		{ 10976,-4029,-1141,-7918,15491,2600,-1670,2071,8246 } },
-		{ "Panasonic DMC-FZ50", 0,	/* aka "LEICA V-LUX1" */
-		{ 7906,-2709,-594,-6231,13351,3220,-1922,2631,6537 } },
-		{ "Panasonic DMC-L10", 0,
-		{ 8025,-1942,-1050,-7920,15904,2100,-2456,3005,7039 } },
-		{ "Panasonic DMC-L1", 0,	/* aka "LEICA DIGILUX 3" */
-		{ 8054,-1885,-1025,-8349,16367,2040,-2805,3542,7629 } },
-		{ "Panasonic DMC-LC1", 0,	/* aka "LEICA DIGILUX 2" */
-		{ 11340,-4069,-1275,-7555,15266,2448,-2960,3426,7685 } },
-		{ "Panasonic DMC-LX1", 0,	/* aka "LEICA D-LUX2" */
-		{ 10704,-4187,-1230,-8314,15952,2501,-920,945,8927 } },
-		{ "Panasonic DMC-LX2", 0,	/* aka "LEICA D-LUX3" */
-		{ 8048,-2810,-623,-6450,13519,3272,-1700,2146,7049 } },
-		{ "Phase One H 20", 0,	/* DJC */
-		{ 1313,1855,-109,-6715,15908,808,-327,1840,6020 } },
-		{ "Phase One P 2", 0,
-		{ 2905,732,-237,-8134,16626,1476,-3038,4253,7517 } },
-		{ "Phase One P 30", 0,
-		{ 4516,-245,-37,-7020,14976,2173,-3206,4671,7087 } },
-		{ "Phase One P 45", 0,
-		{ 5053,-24,-117,-5684,14076,1702,-2619,4492,5849 } },
-		{ "SAMSUNG GX-1", 0,
-		{ 10504,-2438,-1189,-8603,16207,2531,-1022,863,12242 } },
-		{ "Sinar", 0,		/* DJC */
-		{ 16442,-2956,-2422,-2877,12128,750,-1136,6066,4559 } },
-		{ "SONY DSC-F828", 491,
-		{ 7924,-1910,-777,-8226,15459,2998,-1517,2199,6818,-7242,11401,3481 } },
-		{ "SONY DSC-R1", 512,
-		{ 8512,-2641,-694,-8042,15670,2526,-1821,2117,7414 } },
-		{ "SONY DSC-V3", 0,
-		{ 7511,-2571,-692,-7894,15088,3060,-948,1111,8128 } },
-		{ "SONY DSLR-A100", 0,
-		{ 9437,-2811,-774,-8405,16215,2290,-710,596,7181 } },
-		{ "SONY DSLR-A700", 254,
-		{ 5775,-805,-359,-8574,16295,2391,-1943,2341,7249 } }
+    { "Apple QuickTake", 0, 0,		/* DJC */
+	{ 17576,-3191,-3318,5210,6733,-1942,9031,1280,-124 } },
+    { "Canon EOS D2000", 0, 0,
+	{ 24542,-10860,-3401,-1490,11370,-297,2858,-605,3225 } },
+    { "Canon EOS D6000", 0, 0,
+	{ 20482,-7172,-3125,-1033,10410,-285,2542,226,3136 } },
+    { "Canon EOS D30", 0, 0,
+	{ 9805,-2689,-1312,-5803,13064,3068,-2438,3075,8775 } },
+    { "Canon EOS D60", 0, 0xfa0,
+	{ 6188,-1341,-890,-7168,14489,2937,-2640,3228,8483 } },
+    { "Canon EOS 5D Mark II", 0, 0x3cf0,
+	{ 4716,603,-830,-7798,15474,2480,-1496,1937,6651 } },
+    { "Canon EOS 5D", 0, 0xe6c,
+	{ 6347,-479,-972,-8297,15954,2480,-1968,2131,7649 } },
+    { "Canon EOS 10D", 0, 0xfa0,
+	{ 8197,-2000,-1118,-6714,14335,2592,-2536,3178,8266 } },
+    { "Canon EOS 20Da", 0, 0,
+	{ 14155,-5065,-1382,-6550,14633,2039,-1623,1824,6561 } },
+    { "Canon EOS 20D", 0, 0xfff,
+	{ 6599,-537,-891,-8071,15783,2424,-1983,2234,7462 } },
+    { "Canon EOS 30D", 0, 0,
+	{ 6257,-303,-1000,-7880,15621,2396,-1714,1904,7046 } },
+    { "Canon EOS 40D", 0, 0x3f60,
+	{ 6071,-747,-856,-7653,15365,2441,-2025,2553,7315 } },
+    { "Canon EOS 50D", 0, 0x3d93,
+	{ 4920,616,-593,-6493,13964,2784,-1774,3178,7005 } },
+    { "Canon EOS 300D", 0, 0xfa0,
+	{ 8197,-2000,-1118,-6714,14335,2592,-2536,3178,8266 } },
+    { "Canon EOS 350D", 0, 0xfff,
+	{ 6018,-617,-965,-8645,15881,2975,-1530,1719,7642 } },
+    { "Canon EOS 400D", 0, 0xe8e,
+	{ 7054,-1501,-990,-8156,15544,2812,-1278,1414,7796 } },
+    { "Canon EOS 450D", 0, 0x390d,
+	{ 5784,-262,-821,-7539,15064,2672,-1982,2681,7427 } },
+    { "Canon EOS 1000D", 0, 0xe43,
+	{ 6771,-1139,-977,-7818,15123,2928,-1244,1437,7533 } },
+    { "Canon EOS-1Ds Mark III", 0, 0x3bb0,
+	{ 5859,-211,-930,-8255,16017,2353,-1732,1887,7448 } },
+    { "Canon EOS-1Ds Mark II", 0, 0xe80,
+	{ 6517,-602,-867,-8180,15926,2378,-1618,1771,7633 } },
+    { "Canon EOS-1D Mark II N", 0, 0xe80,
+	{ 6240,-466,-822,-8180,15825,2500,-1801,1938,8042 } },
+    { "Canon EOS-1D Mark III", 0, 0x3bb0,
+	{ 6291,-540,-976,-8350,16145,2311,-1714,1858,7326 } },
+    { "Canon EOS-1D Mark II", 0, 0xe80,
+	{ 6264,-582,-724,-8312,15948,2504,-1744,1919,8664 } },
+    { "Canon EOS-1DS", 0, 0xe20,
+	{ 4374,3631,-1743,-7520,15212,2472,-2892,3632,8161 } },
+    { "Canon EOS-1D", 0, 0xe20,
+	{ 6806,-179,-1020,-8097,16415,1687,-3267,4236,7690 } },
+    { "Canon EOS", 0, 0,
+	{ 8197,-2000,-1118,-6714,14335,2592,-2536,3178,8266 } },
+    { "Canon PowerShot A50", 0, 0,
+	{ -5300,9846,1776,3436,684,3939,-5540,9879,6200,-1404,11175,217 } },
+    { "Canon PowerShot A5", 0, 0,
+	{ -4801,9475,1952,2926,1611,4094,-5259,10164,5947,-1554,10883,547 } },
+    { "Canon PowerShot G10", 0, 0,
+	{ 11093,-3906,-1028,-5047,12492,2879,-1003,1750,5561 } },
+    { "Canon PowerShot G1", 0, 0,
+	{ -4778,9467,2172,4743,-1141,4344,-5146,9908,6077,-1566,11051,557 } },
+    { "Canon PowerShot G2", 0, 0,
+	{ 9087,-2693,-1049,-6715,14382,2537,-2291,2819,7790 } },
+    { "Canon PowerShot G3", 0, 0,
+	{ 9212,-2781,-1073,-6573,14189,2605,-2300,2844,7664 } },
+    { "Canon PowerShot G5", 0, 0,
+	{ 9757,-2872,-933,-5972,13861,2301,-1622,2328,7212 } },
+    { "Canon PowerShot G6", 0, 0,
+	{ 9877,-3775,-871,-7613,14807,3072,-1448,1305,7485 } },
+    { "Canon PowerShot G9", 0, 0,
+	{ 7368,-2141,-598,-5621,13254,2625,-1418,1696,5743 } },
+    { "Canon PowerShot Pro1", 0, 0,
+	{ 10062,-3522,-999,-7643,15117,2730,-765,817,7323 } },
+    { "Canon PowerShot Pro70", 34, 0,
+	{ -4155,9818,1529,3939,-25,4522,-5521,9870,6610,-2238,10873,1342 } },
+    { "Canon PowerShot Pro90", 0, 0,
+	{ -4963,9896,2235,4642,-987,4294,-5162,10011,5859,-1770,11230,577 } },
+    { "Canon PowerShot S30", 0, 0,
+	{ 10566,-3652,-1129,-6552,14662,2006,-2197,2581,7670 } },
+    { "Canon PowerShot S40", 0, 0,
+	{ 8510,-2487,-940,-6869,14231,2900,-2318,2829,9013 } },
+    { "Canon PowerShot S45", 0, 0,
+	{ 8163,-2333,-955,-6682,14174,2751,-2077,2597,8041 } },
+    { "Canon PowerShot S50", 0, 0,
+	{ 8882,-2571,-863,-6348,14234,2288,-1516,2172,6569 } },
+    { "Canon PowerShot S60", 0, 0,
+	{ 8795,-2482,-797,-7804,15403,2573,-1422,1996,7082 } },
+    { "Canon PowerShot S70", 0, 0,
+	{ 9976,-3810,-832,-7115,14463,2906,-901,989,7889 } },
+    { "Canon PowerShot A610", 0, 0,	/* DJC */
+	{ 15591,-6402,-1592,-5365,13198,2168,-1300,1824,5075 } },
+    { "Canon PowerShot A620", 0, 0,	/* DJC */
+	{ 15265,-6193,-1558,-4125,12116,2010,-888,1639,5220 } },
+    { "Canon PowerShot A630", 0, 0,	/* DJC */
+	{ 14201,-5308,-1757,-6087,14472,1617,-2191,3105,5348 } },
+    { "Canon PowerShot A640", 0, 0,	/* DJC */
+	{ 13124,-5329,-1390,-3602,11658,1944,-1612,2863,4885 } },
+    { "Canon PowerShot A650", 0, 0,	/* DJC */
+	{ 9427,-3036,-959,-2581,10671,1911,-1039,1982,4430 } },
+    { "Canon PowerShot A720", 0, 0,	/* DJC */
+	{ 14573,-5482,-1546,-1266,9799,1468,-1040,1912,3810 } },
+    { "Canon PowerShot S3 IS", 0, 0,	/* DJC */
+	{ 14062,-5199,-1446,-4712,12470,2243,-1286,2028,4836 } },
+    { "CINE 650", 0, 0,
+	{ 3390,480,-500,-800,3610,340,-550,2336,1192 } },
+    { "CINE 660", 0, 0,
+	{ 3390,480,-500,-800,3610,340,-550,2336,1192 } },
+    { "CINE", 0, 0,
+	{ 20183,-4295,-423,-3940,15330,3985,-280,4870,9800 } },
+    { "Contax N Digital", 0, 0xf1e,
+	{ 7777,1285,-1053,-9280,16543,2916,-3677,5679,7060 } },
+    { "EPSON R-D1", 0, 0,
+	{ 6827,-1878,-732,-8429,16012,2564,-704,592,7145 } },
+    { "FUJIFILM FinePix E550", 0, 0,
+	{ 11044,-3888,-1120,-7248,15168,2208,-1531,2277,8069 } },
+    { "FUJIFILM FinePix E900", 0, 0,
+	{ 9183,-2526,-1078,-7461,15071,2574,-2022,2440,8639 } },
+    { "FUJIFILM FinePix F8", 0, 0,
+	{ 11044,-3888,-1120,-7248,15168,2208,-1531,2277,8069 } },
+    { "FUJIFILM FinePix F7", 0, 0,
+	{ 10004,-3219,-1201,-7036,15047,2107,-1863,2565,7736 } },
+    { "FUJIFILM FinePix S100FS", 514, 0,
+	{ 11521,-4355,-1065,-6524,13767,3058,-1466,1984,6045 } },
+    { "FUJIFILM FinePix S20Pro", 0, 0,
+	{ 10004,-3219,-1201,-7036,15047,2107,-1863,2565,7736 } },
+    { "FUJIFILM FinePix S2Pro", 128, 0,
+	{ 12492,-4690,-1402,-7033,15423,1647,-1507,2111,7697 } },
+    { "FUJIFILM FinePix S3Pro", 0, 0,
+	{ 11807,-4612,-1294,-8927,16968,1988,-2120,2741,8006 } },
+    { "FUJIFILM FinePix S5Pro", 0, 0,
+	{ 12300,-5110,-1304,-9117,17143,1998,-1947,2448,8100 } },
+    { "FUJIFILM FinePix S5000", 0, 0,
+	{ 8754,-2732,-1019,-7204,15069,2276,-1702,2334,6982 } },
+    { "FUJIFILM FinePix S5100", 0, 0x3e00,
+	{ 11940,-4431,-1255,-6766,14428,2542,-993,1165,7421 } },
+    { "FUJIFILM FinePix S5500", 0, 0x3e00,
+	{ 11940,-4431,-1255,-6766,14428,2542,-993,1165,7421 } },
+    { "FUJIFILM FinePix S5200", 0, 0,
+	{ 9636,-2804,-988,-7442,15040,2589,-1803,2311,8621 } },
+    { "FUJIFILM FinePix S5600", 0, 0,
+	{ 9636,-2804,-988,-7442,15040,2589,-1803,2311,8621 } },
+    { "FUJIFILM FinePix S6", 0, 0,
+	{ 12628,-4887,-1401,-6861,14996,1962,-2198,2782,7091 } },
+    { "FUJIFILM FinePix S7000", 0, 0,
+	{ 10190,-3506,-1312,-7153,15051,2238,-2003,2399,7505 } },
+    { "FUJIFILM FinePix S9000", 0, 0,
+	{ 10491,-3423,-1145,-7385,15027,2538,-1809,2275,8692 } },
+    { "FUJIFILM FinePix S9500", 0, 0,
+	{ 10491,-3423,-1145,-7385,15027,2538,-1809,2275,8692 } },
+    { "FUJIFILM FinePix S9100", 0, 0,
+	{ 12343,-4515,-1285,-7165,14899,2435,-1895,2496,8800 } },
+    { "FUJIFILM FinePix S9600", 0, 0,
+	{ 12343,-4515,-1285,-7165,14899,2435,-1895,2496,8800 } },
+    { "FUJIFILM IS-1", 0, 0,
+	{ 21461,-10807,-1441,-2332,10599,1999,289,875,7703 } },
+    { "FUJIFILM IS Pro", 0, 0,
+	{ 12300,-5110,-1304,-9117,17143,1998,-1947,2448,8100 } },
+    { "Imacon Ixpress", 0, 0,		/* DJC */
+	{ 7025,-1415,-704,-5188,13765,1424,-1248,2742,6038 } },
+    { "KODAK NC2000", 0, 0,
+	{ 13891,-6055,-803,-465,9919,642,2121,82,1291 } },
+    { "Kodak DCS315C", 8, 0,
+	{ 17523,-4827,-2510,756,8546,-137,6113,1649,2250 } },
+    { "Kodak DCS330C", 8, 0,
+	{ 20620,-7572,-2801,-103,10073,-396,3551,-233,2220 } },
+    { "KODAK DCS420", 0, 0,
+	{ 10868,-1852,-644,-1537,11083,484,2343,628,2216 } },
+    { "KODAK DCS460", 0, 0,
+	{ 10592,-2206,-967,-1944,11685,230,2206,670,1273 } },
+    { "KODAK EOSDCS1", 0, 0,
+	{ 10592,-2206,-967,-1944,11685,230,2206,670,1273 } },
+    { "KODAK EOSDCS3B", 0, 0,
+	{ 9898,-2700,-940,-2478,12219,206,1985,634,1031 } },
+    { "Kodak DCS520C", 180, 0,
+	{ 24542,-10860,-3401,-1490,11370,-297,2858,-605,3225 } },
+    { "Kodak DCS560C", 188, 0,
+	{ 20482,-7172,-3125,-1033,10410,-285,2542,226,3136 } },
+    { "Kodak DCS620C", 180, 0,
+	{ 23617,-10175,-3149,-2054,11749,-272,2586,-489,3453 } },
+    { "Kodak DCS620X", 185, 0,
+	{ 13095,-6231,154,12221,-21,-2137,895,4602,2258 } },
+    { "Kodak DCS660C", 214, 0,
+	{ 18244,-6351,-2739,-791,11193,-521,3711,-129,2802 } },
+    { "Kodak DCS720X", 0, 0,
+	{ 11775,-5884,950,9556,1846,-1286,-1019,6221,2728 } },
+    { "Kodak DCS760C", 0, 0,
+	{ 16623,-6309,-1411,-4344,13923,323,2285,274,2926 } },
+    { "Kodak DCS Pro SLR", 0, 0,
+	{ 5494,2393,-232,-6427,13850,2846,-1876,3997,5445 } },
+    { "Kodak DCS Pro 14nx", 0, 0,
+	{ 5494,2393,-232,-6427,13850,2846,-1876,3997,5445 } },
+    { "Kodak DCS Pro 14", 0, 0,
+	{ 7791,3128,-776,-8588,16458,2039,-2455,4006,6198 } },
+    { "Kodak ProBack645", 0, 0,
+	{ 16414,-6060,-1470,-3555,13037,473,2545,122,4948 } },
+    { "Kodak ProBack", 0, 0,
+	{ 21179,-8316,-2918,-915,11019,-165,3477,-180,4210 } },
+    { "KODAK P712", 0, 0,
+	{ 9658,-3314,-823,-5163,12695,2768,-1342,1843,6044 } },
+    { "KODAK P850", 0, 0xf7c,
+	{ 10511,-3836,-1102,-6946,14587,2558,-1481,1792,6246 } },
+    { "KODAK P880", 0, 0xfff,
+	{ 12805,-4662,-1376,-7480,15267,2360,-1626,2194,7904 } },
+    { "Leaf CMost", 0, 0,
+	{ 3952,2189,449,-6701,14585,2275,-4536,7349,6536 } },
+    { "Leaf Valeo 6", 0, 0,
+	{ 3952,2189,449,-6701,14585,2275,-4536,7349,6536 } },
+    { "Leaf Aptus 54S", 0, 0,
+	{ 8236,1746,-1314,-8251,15953,2428,-3673,5786,5771 } },
+    { "Leaf Aptus 65", 0, 0,
+	{ 7914,1414,-1190,-8777,16582,2280,-2811,4605,5562 } },
+    { "Leaf Aptus 75", 0, 0,
+	{ 7914,1414,-1190,-8777,16582,2280,-2811,4605,5562 } },
+    { "Leaf", 0, 0,
+	{ 8236,1746,-1314,-8251,15953,2428,-3673,5786,5771 } },
+    { "Mamiya ZD", 0, 0,
+	{ 7645,2579,-1363,-8689,16717,2015,-3712,5941,5961 } },
+    { "Micron 2010", 110, 0,		/* DJC */
+	{ 16695,-3761,-2151,155,9682,163,3433,951,4904 } },
+    { "Minolta DiMAGE 5", 0, 0xf7d,
+	{ 8983,-2942,-963,-6556,14476,2237,-2426,2887,8014 } },
+    { "Minolta DiMAGE 7Hi", 0, 0xf7d,
+	{ 11368,-3894,-1242,-6521,14358,2339,-2475,3056,7285 } },
+    { "Minolta DiMAGE 7", 0, 0xf7d,
+	{ 9144,-2777,-998,-6676,14556,2281,-2470,3019,7744 } },
+    { "Minolta DiMAGE A1", 0, 0xf8b,
+	{ 9274,-2547,-1167,-8220,16323,1943,-2273,2720,8340 } },
+    { "MINOLTA DiMAGE A200", 0, 0,
+	{ 8560,-2487,-986,-8112,15535,2771,-1209,1324,7743 } },
+    { "Minolta DiMAGE A2", 0, 0xf8f,
+	{ 9097,-2726,-1053,-8073,15506,2762,-966,981,7763 } },
+    { "Minolta DiMAGE Z2", 0, 0,	/* DJC */
+	{ 11280,-3564,-1370,-4655,12374,2282,-1423,2168,5396 } },
+    { "MINOLTA DYNAX 5", 0, 0xffb,
+	{ 10284,-3283,-1086,-7957,15762,2316,-829,882,6644 } },
+    { "MINOLTA DYNAX 7", 0, 0xffb,
+	{ 10239,-3104,-1099,-8037,15727,2451,-927,925,6871 } },
+    { "NIKON D100", 0, 0,
+	{ 5902,-933,-782,-8983,16719,2354,-1402,1455,6464 } },
+    { "NIKON D1H", 0, 0,
+	{ 7577,-2166,-926,-7454,15592,1934,-2377,2808,8606 } },
+    { "NIKON D1X", 0, 0,
+	{ 7702,-2245,-975,-9114,17242,1875,-2679,3055,8521 } },
+    { "NIKON D1", 0, 0, /* multiplied by 2.218750, 1.0, 1.148438 */
+	{ 16772,-4726,-2141,-7611,15713,1972,-2846,3494,9521 } },
+    { "NIKON D2H", 0, 0,
+	{ 5710,-901,-615,-8594,16617,2024,-2975,4120,6830 } },
+    { "NIKON D2X", 0, 0,
+	{ 10231,-2769,-1255,-8301,15900,2552,-797,680,7148 } },
+    { "NIKON D40X", 0, 0,
+	{ 8819,-2543,-911,-9025,16928,2151,-1329,1213,8449 } },
+    { "NIKON D40", 0, 0,
+	{ 6992,-1668,-806,-8138,15748,2543,-874,850,7897 } },
+    { "NIKON D50", 0, 0,
+	{ 7732,-2422,-789,-8238,15884,2498,-859,783,7330 } },
+    { "NIKON D60", 0, 0,
+	{ 8736,-2458,-935,-9075,16894,2251,-1354,1242,8263 } },
+    { "NIKON D700", 0, 0,
+	{ 8139,-2171,-663,-8747,16541,2295,-1925,2008,8093 } },
+    { "NIKON D70", 0, 0,
+	{ 7732,-2422,-789,-8238,15884,2498,-859,783,7330 } },
+    { "NIKON D80", 0, 0,
+	{ 8629,-2410,-883,-9055,16940,2171,-1490,1363,8520 } },
+    { "NIKON D90", 0, 0xf00,
+	{ 7309,-1403,-519,-8474,16008,2622,-2434,2826,8064 } },
+    { "NIKON D200", 0, 0xfbc,
+	{ 8367,-2248,-763,-8758,16447,2422,-1527,1550,8053 } },
+    { "NIKON D300", 0, 0,
+	{ 9030,-1992,-715,-8465,16302,2255,-2689,3217,8069 } },
+    { "NIKON D3", 0, 0,
+	{ 8139,-2171,-663,-8747,16541,2295,-1925,2008,8093 } },
+    { "NIKON E950", 0, 0x3dd,		/* DJC */
+	{ -3746,10611,1665,9621,-1734,2114,-2389,7082,3064,3406,6116,-244 } },
+    { "NIKON E995", 0, 0,	/* copied from E5000 */
+	{ -5547,11762,2189,5814,-558,3342,-4924,9840,5949,688,9083,96 } },
+    { "NIKON E2100", 0, 0,	/* copied from Z2, new white balance */
+	{ 13142,-4152,-1596,-4655,12374,2282,-1769,2696,6711} },
+    { "NIKON E2500", 0, 0,
+	{ -5547,11762,2189,5814,-558,3342,-4924,9840,5949,688,9083,96 } },
+    { "NIKON E4300", 0, 0,	/* copied from Minolta DiMAGE Z2 */
+	{ 11280,-3564,-1370,-4655,12374,2282,-1423,2168,5396 } },
+    { "NIKON E4500", 0, 0,
+	{ -5547,11762,2189,5814,-558,3342,-4924,9840,5949,688,9083,96 } },
+    { "NIKON E5000", 0, 0,
+	{ -5547,11762,2189,5814,-558,3342,-4924,9840,5949,688,9083,96 } },
+    { "NIKON E5400", 0, 0,
+	{ 9349,-2987,-1001,-7919,15766,2266,-2098,2680,6839 } },
+    { "NIKON E5700", 0, 0,
+	{ -5368,11478,2368,5537,-113,3148,-4969,10021,5782,778,9028,211 } },
+    { "NIKON E8400", 0, 0,
+	{ 7842,-2320,-992,-8154,15718,2599,-1098,1342,7560 } },
+    { "NIKON E8700", 0, 0,
+	{ 8489,-2583,-1036,-8051,15583,2643,-1307,1407,7354 } },
+    { "NIKON E8800", 0, 0,
+	{ 7971,-2314,-913,-8451,15762,2894,-1442,1520,7610 } },
+    { "NIKON COOLPIX P6000", 0, 0,
+	{ 9698,-3367,-914,-4706,12584,2368,-837,968,5801 } },
+    { "OLYMPUS C5050", 0, 0,
+	{ 10508,-3124,-1273,-6079,14294,1901,-1653,2306,6237 } },
+    { "OLYMPUS C5060", 0, 0,
+	{ 10445,-3362,-1307,-7662,15690,2058,-1135,1176,7602 } },
+    { "OLYMPUS C7070", 0, 0,
+	{ 10252,-3531,-1095,-7114,14850,2436,-1451,1723,6365 } },
+    { "OLYMPUS C70", 0, 0,
+	{ 10793,-3791,-1146,-7498,15177,2488,-1390,1577,7321 } },
+    { "OLYMPUS C80", 0, 0,
+	{ 8606,-2509,-1014,-8238,15714,2703,-942,979,7760 } },
+    { "OLYMPUS E-10", 0, (short)0xffc0,
+	{ 12745,-4500,-1416,-6062,14542,1580,-1934,2256,6603 } },
+    { "OLYMPUS E-1", 0, (short)0xfff0,
+	{ 11846,-4767,-945,-7027,15878,1089,-2699,4122,8311 } },
+    { "OLYMPUS E-20", 0, (short)0xffc0,
+	{ 13173,-4732,-1499,-5807,14036,1895,-2045,2452,7142 } },
+    { "OLYMPUS E-300", 0, 0,
+	{ 7828,-1761,-348,-5788,14071,1830,-2853,4518,6557 } },
+    { "OLYMPUS E-330", 0, 0,
+	{ 8961,-2473,-1084,-7979,15990,2067,-2319,3035,8249 } },
+    { "OLYMPUS E-3", 0, 0xf99,
+	{ 9487,-2875,-1115,-7533,15606,2010,-1618,2100,7389 } },
+    { "OLYMPUS E-400", 0, (short)0xfff0,
+	{ 6169,-1483,-21,-7107,14761,2536,-2904,3580,8568 } },
+    { "OLYMPUS E-410", 0, 0xf6a,
+	{ 8856,-2582,-1026,-7761,15766,2082,-2009,2575,7469 } },
+    { "OLYMPUS E-420", 0, 0xfd7,
+	{ 8746,-2425,-1095,-7594,15612,2073,-1780,2309,7416 } },
+    { "OLYMPUS E-500", 0, 0,
+	{ 8136,-1968,-299,-5481,13742,1871,-2556,4205,6630 } },
+    { "OLYMPUS E-510", 0, 0xf6a,
+	{ 8785,-2529,-1033,-7639,15624,2112,-1783,2300,7817 } },
+    { "OLYMPUS E-520", 0, 0xfd2,
+	{ 8344,-2322,-1020,-7596,15635,2048,-1748,2269,7287 } },
+    { "OLYMPUS SP350", 0, 0,
+	{ 12078,-4836,-1069,-6671,14306,2578,-786,939,7418 } },
+    { "OLYMPUS SP3", 0, 0,
+	{ 11766,-4445,-1067,-6901,14421,2707,-1029,1217,7572 } },
+    { "OLYMPUS SP500UZ", 0, 0xfff,
+	{ 9493,-3415,-666,-5211,12334,3260,-1548,2262,6482 } },
+    { "OLYMPUS SP510UZ", 0, 0xffe,
+	{ 10593,-3607,-1010,-5881,13127,3084,-1200,1805,6721 } },
+    { "OLYMPUS SP550UZ", 0, 0xffe,
+	{ 11597,-4006,-1049,-5432,12799,2957,-1029,1750,6516 } },
+    { "OLYMPUS SP560UZ", 0, 0xff9,
+	{ 10915,-3677,-982,-5587,12986,2911,-1168,1968,6223 } },
+    { "OLYMPUS SP570UZ", 0, 0,
+	{ 11522,-4044,-1146,-4736,12172,2904,-988,1829,6039 } },
+    { "PENTAX *ist DL2", 0, 0,
+	{ 10504,-2438,-1189,-8603,16207,2531,-1022,863,12242 } },
+    { "PENTAX *ist DL", 0, 0,
+	{ 10829,-2838,-1115,-8339,15817,2696,-837,680,11939 } },
+    { "PENTAX *ist DS2", 0, 0,
+	{ 10504,-2438,-1189,-8603,16207,2531,-1022,863,12242 } },
+    { "PENTAX *ist DS", 0, 0,
+	{ 10371,-2333,-1206,-8688,16231,2602,-1230,1116,11282 } },
+    { "PENTAX *ist D", 0, 0,
+	{ 9651,-2059,-1189,-8881,16512,2487,-1460,1345,10687 } },
+    { "PENTAX K10D", 0, 0,
+	{ 9566,-2863,-803,-7170,15172,2112,-818,803,9705 } },
+    { "PENTAX K1", 0, 0,
+	{ 11095,-3157,-1324,-8377,15834,2720,-1108,947,11688 } },
+    { "PENTAX K20D", 0, 0,
+	{ 9427,-2714,-868,-7493,16092,1373,-2199,3264,7180 } },
+    { "PENTAX K200D", 0, 0,
+	{ 9186,-2678,-907,-8693,16517,2260,-1129,1094,8524 } },
+    { "PENTAX K2000", 0, 0,
+	{ 11057,-3604,-1155,-5152,13046,2329,-282,375,8104 } },
+    { "Panasonic DMC-FZ8", 0, (short)0xf7f0,
+	{ 8986,-2755,-802,-6341,13575,3077,-1476,2144,6379 } },
+    { "Panasonic DMC-FZ18", 0, 0,
+	{ 9932,-3060,-935,-5809,13331,2753,-1267,2155,5575 } },
+    { "Panasonic DMC-FZ28", 15, 0xfff,
+	{ 10109,-3488,-993,-5412,12812,2916,-1305,2140,5543 } },
+    { "Panasonic DMC-FZ30", 0, (short)0xf94c,
+	{ 10976,-4029,-1141,-7918,15491,2600,-1670,2071,8246 } },
+    { "Panasonic DMC-FZ50", 0, (short)0xfff0,	/* aka "LEICA V-LUX1" */
+	{ 7906,-2709,-594,-6231,13351,3220,-1922,2631,6537 } },
+    { "Panasonic DMC-L10", 15, 0xf96,
+	{ 8025,-1942,-1050,-7920,15904,2100,-2456,3005,7039 } },
+    { "Panasonic DMC-L1", 0, (short)0xf7fc,	/* aka "LEICA DIGILUX 3" */
+	{ 8054,-1885,-1025,-8349,16367,2040,-2805,3542,7629 } },
+    { "Panasonic DMC-LC1", 0, 0,	/* aka "LEICA DIGILUX 2" */
+	{ 11340,-4069,-1275,-7555,15266,2448,-2960,3426,7685 } },
+    { "Panasonic DMC-LX1", 0, (short)0xf7f0,	/* aka "LEICA D-LUX2" */
+	{ 10704,-4187,-1230,-8314,15952,2501,-920,945,8927 } },
+    { "Panasonic DMC-LX2", 0, 0,	/* aka "LEICA D-LUX3" */
+	{ 8048,-2810,-623,-6450,13519,3272,-1700,2146,7049 } },
+    { "Panasonic DMC-LX3", 15, 0xfff,	/* aka "LEICA D-LUX4" */
+	{ 8128,-2668,-655,-6134,13307,3161,-1782,2568,6083 } },
+    { "Panasonic DMC-FX150", 15, 0xfff,
+	{ 9082,-2907,-925,-6119,13377,3058,-1797,2641,5609 } },
+    { "Panasonic DMC-G1", 15, 0xfff,
+	{ 8199,-2065,-1056,-8124,16156,2033,-2458,3022,7220 } },
+    { "Phase One H 20", 0, 0,		/* DJC */
+	{ 1313,1855,-109,-6715,15908,808,-327,1840,6020 } },
+    { "Phase One P 2", 0, 0,
+	{ 2905,732,-237,-8134,16626,1476,-3038,4253,7517 } },
+    { "Phase One P 30", 0, 0,
+	{ 4516,-245,-37,-7020,14976,2173,-3206,4671,7087 } },
+    { "Phase One P 45", 0, 0,
+	{ 5053,-24,-117,-5684,14076,1702,-2619,4492,5849 } },
+    { "SAMSUNG GX-1", 0, 0,
+	{ 10504,-2438,-1189,-8603,16207,2531,-1022,863,12242 } },
+    { "Sinar", 0, 0,			/* DJC */
+	{ 16442,-2956,-2422,-2877,12128,750,-1136,6066,4559 } },
+    { "SONY DSC-F828", 491, 0,
+	{ 7924,-1910,-777,-8226,15459,2998,-1517,2199,6818,-7242,11401,3481 } },
+    { "SONY DSC-R1", 512, 0,
+	{ 8512,-2641,-694,-8042,15670,2526,-1821,2117,7414 } },
+    { "SONY DSC-V3", 0, 0,
+	{ 7511,-2571,-692,-7894,15088,3060,-948,1111,8128 } },
+    { "SONY DSLR-A100", 0, 0xfeb,
+	{ 9437,-2811,-774,-8405,16215,2290,-710,596,7181 } },
+    { "SONY DSLR-A200", 0, 0,
+	{ 9847,-3091,-928,-8485,16345,2225,-715,595,7103 } },
+    { "SONY DSLR-A300", 0, 0,
+	{ 9847,-3091,-928,-8485,16345,2225,-715,595,7103 } },
+    { "SONY DSLR-A350", 0, 0xffc,
+	{ 6038,-1484,-578,-9146,16746,2513,-875,746,7217 } },
+    { "SONY DSLR-A700", 254, 0x1ffe,
+	{ 5775,-805,-359,-8574,16295,2391,-1943,2341,7249 } },
+    { "SONY DSLR-A900", 254, 0x1ffe,
+	{ 5209,-1072,-397,-8845,16120,2919,-1618,1803,8654 } }
   };
   double cam_xyz[4][3];
   char name[130];
@@ -6309,8 +6446,8 @@ void DCR_CLASS dcr_adobe_coeff (DCRAW* p, char *make, char *model)
   sprintf (name, "%s %s", make, model);
   for (i=0; i < sizeof table / sizeof *table; i++)
 	  if (!strncmp (name, table[i].prefix, strlen(table[i].prefix))) {
-		  if (table[i].black)
-			  p->black = table[i].black;
+		  if (table[i].black)   p->black = (ushort) table[i].black;
+		  if (table[i].maximum) p->maximum = (ushort) table[i].maximum;
 		  for (j=0; j < 12; j++)
 			  cam_xyz[0][j] = table[i].trans[j] / 10000.0;
 		  dcr_cam_xyz_coeff (p, cam_xyz);
@@ -6370,62 +6507,74 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 		int fsize;
 		char make[12], model[19], withjpeg;
 	} table[] = {
-		{    62464, "Kodak",    "DC20"       ,0 },
-		{   124928, "Kodak",    "DC20"       ,0 },
-		{  1652736, "Kodak",    "DCS200"     ,0 },
-		{  4159302, "Kodak",    "C330"       ,0 },
-		{  4162462, "Kodak",    "C330"       ,0 },
-		{   311696, "ST Micro", "STV680 VGA" ,0 },  /* SPYz */
-		{   614400, "Kodak",    "KAI-0340"   ,0 },
-		{   787456, "Creative", "PC-CAM 600" ,0 },
-		{  1138688, "Minolta",  "RD175"      ,0 },
-		{  3840000, "Foculus",  "531C"       ,0 },
-		{   786432, "AVT",      "F-080C"     ,0 },
-		{  1447680, "AVT",      "F-145C"     ,0 },
-		{  1920000, "AVT",      "F-201C"     ,0 },
-		{  5067304, "AVT",      "F-510C"     ,0 },
-		{ 10134608, "AVT",      "F-510C"     ,0 },
-		{ 16157136, "AVT",      "F-810C"     ,0 },
-		{  1409024, "Sony",     "XCD-SX910CR",0 },
-		{  2818048, "Sony",     "XCD-SX910CR",0 },
-		{  3884928, "Micron",   "2010"       ,0 },
-		{  6624000, "Pixelink", "A782"       ,0 },
-		{ 13248000, "Pixelink", "A782"       ,0 },
-		{  6291456, "RoverShot","3320AF"     ,0 },
-		{  6573120, "Canon",    "PowerShot A610",0 },
-		{  9219600, "Canon",    "PowerShot A620",0 },
-		{ 10383120, "Canon",    "PowerShot A630",0 },
-		{ 12945240, "Canon",    "PowerShot A640",0 },
-		{  7710960, "Canon",    "PowerShot S3 IS",0 },
-		{  5939200, "OLYMPUS",  "C770UZ"     ,0 },
-		{  1581060, "NIKON",    "E900"       ,1 },  /* or E900s,E910 */
-		{  2465792, "NIKON",    "E950"       ,1 },  /* or E800,E700 */
-		{  2940928, "NIKON",    "E2100"      ,1 },  /* or E2500 */
-		{  4771840, "NIKON",    "E990"       ,1 },  /* or E995, Oly C3030Z */
-		{  4775936, "NIKON",    "E3700"      ,1 },  /* or Optio 33WR */
-		{  5869568, "NIKON",    "E4300"      ,1 },  /* or DiMAGE Z2 */
-		{  5865472, "NIKON",    "E4500"      ,1 },
-		{  7438336, "NIKON",    "E5000"      ,1 },  /* or E5700 */
-		{  8998912, "NIKON",    "COOLPIX S6" ,1 },
-		{  1976352, "CASIO",    "QV-2000UX"  ,1 },
-		{  3217760, "CASIO",    "QV-3*00EX"  ,1 },
-		{  6218368, "CASIO",    "QV-5700"    ,1 },
-		{  6054400, "CASIO",    "QV-R41"     ,1 },
-		{  7530816, "CASIO",    "QV-R51"     ,1 },
-		{  7684000, "CASIO",    "QV-4000"    ,1 },
-		{  4948608, "CASIO",    "EX-S100"    ,1 },
-		{  7542528, "CASIO",    "EX-Z50"     ,1 },
-		{  7753344, "CASIO",    "EX-Z55"     ,1 },
-		{  7426656, "CASIO",    "EX-P505"    ,1 },
-		{  9313536, "CASIO",    "EX-P600"    ,1 },
-		{ 10979200, "CASIO",    "EX-P700"    ,1 },
-		{  3178560, "PENTAX",   "Optio S"    ,1 },
-		{  4841984, "PENTAX",   "Optio S"    ,1 },
-		{  6114240, "PENTAX",   "Optio S4"   ,1 },  /* or S4i, CASIO EX-Z4 */
-		{ 10702848, "PENTAX",   "Optio 750Z" ,1 },
-		{ 12582980, "Sinar",    ""           ,0 },
-		{ 33292868, "Sinar",    ""           ,0 },
-		{ 44390468, "Sinar",    ""           ,0 } };
+		{    62464, "Kodak",    "DC20"            ,0 },
+		{   124928, "Kodak",    "DC20"            ,0 },
+		{  1652736, "Kodak",    "DCS200"          ,0 },
+		{  4159302, "Kodak",    "C330"            ,0 },
+		{  4162462, "Kodak",    "C330"            ,0 },
+		{   460800, "Kodak",    "C603v"           ,0 },
+		{   614400, "Kodak",    "C603v"           ,0 },
+		{  6163328, "Kodak",    "C603"            ,0 },
+		{  6166488, "Kodak",    "C603"            ,0 },
+		{  9116448, "Kodak",    "C603y"           ,0 },
+		{   311696, "ST Micro", "STV680 VGA"      ,0 },  /* SPYz */
+		{   614400, "Kodak",    "KAI-0340"        ,0 },
+		{   787456, "Creative", "PC-CAM 600"      ,0 },
+		{  1138688, "Minolta",  "RD175"           ,0 },
+		{  3840000, "Foculus",  "531C"            ,0 },
+		{   786432, "AVT",      "F-080C"          ,0 },
+		{  1447680, "AVT",      "F-145C"          ,0 },
+		{  1920000, "AVT",      "F-201C"          ,0 },
+		{  5067304, "AVT",      "F-510C"          ,0 },
+		{ 10134608, "AVT",      "F-510C"          ,0 },
+		{ 16157136, "AVT",      "F-810C"          ,0 },
+		{  1409024, "Sony",     "XCD-SX910CR"     ,0 },
+		{  2818048, "Sony",     "XCD-SX910CR"     ,0 },
+		{  3884928, "Micron",   "2010"            ,0 },
+		{  6624000, "Pixelink", "A782"            ,0 },
+		{ 13248000, "Pixelink", "A782"            ,0 },
+		{  6291456, "RoverShot","3320AF"          ,0 },
+		{  6553440, "Canon",    "PowerShot A460"  ,0 },
+		{  6653280, "Canon",    "PowerShot A530"  ,0 },
+		{  6573120, "Canon",    "PowerShot A610"  ,0 },
+		{  9219600, "Canon",    "PowerShot A620"  ,0 },
+		{ 10341600, "Canon",    "PowerShot A720"  ,0 },
+		{ 10383120, "Canon",    "PowerShot A630"  ,0 },
+		{ 12945240, "Canon",    "PowerShot A640"  ,0 },
+		{ 15636240, "Canon",    "PowerShot A650"  ,0 },
+		{  5298000, "Canon",    "PowerShot SD300" ,0 },
+		{  7710960, "Canon",    "PowerShot S3 IS" ,0 },
+		{  5939200, "OLYMPUS",  "C770UZ"          ,0 },
+		{  1581060, "NIKON",    "E900"            ,1 },  /* or E900s,E910 */
+		{  2465792, "NIKON",    "E950"            ,1 },  /* or E800,E700 */
+		{  2940928, "NIKON",    "E2100"           ,1 },  /* or E2500 */
+		{  4771840, "NIKON",    "E990"            ,1 },  /* or E995, Oly C3030Z */
+		{  4775936, "NIKON",    "E3700"           ,1 },  /* or Optio 33WR */
+		{  5869568, "NIKON",    "E4300"           ,1 },  /* or DiMAGE Z2 */
+		{  5865472, "NIKON",    "E4500"           ,1 },
+		{  7438336, "NIKON",    "E5000"           ,1 },  /* or E5700 */
+		{  8998912, "NIKON",    "COOLPIX S6"      ,1 },
+		{  1976352, "CASIO",    "QV-2000UX"       ,1 },
+		{  3217760, "CASIO",    "QV-3*00EX"       ,1 },
+		{  6218368, "CASIO",    "QV-5700"         ,1 },
+		{  6054400, "CASIO",    "QV-R41"          ,1 },
+		{  7530816, "CASIO",    "QV-R51"          ,1 },
+		{  7684000, "CASIO",    "QV-4000"         ,1 },
+		{  4948608, "CASIO",    "EX-S100"         ,1 },
+		{  7542528, "CASIO",    "EX-Z50"          ,1 },
+		{  7753344, "CASIO",    "EX-Z55"          ,1 },
+		{  7426656, "CASIO",    "EX-P505"         ,1 },
+		{  9313536, "CASIO",    "EX-P600"         ,1 },
+		{ 10979200, "CASIO",    "EX-P700"         ,1 },
+		{  3178560, "PENTAX",   "Optio S"         ,1 },
+		{  4841984, "PENTAX",   "Optio S"         ,1 },
+		{  6114240, "PENTAX",   "Optio S4"        ,1 },  /* or S4i, CASIO EX-Z4 */
+		{ 10702848, "PENTAX",   "Optio 750Z"      ,1 },
+		{ 16098048, "SAMSUNG",  "S85"             ,1 },
+		{ 16215552, "SAMSUNG",  "S85"             ,1 },
+		{ 12582980, "Sinar",    ""                ,0 },
+		{ 33292868, "Sinar",    ""                ,0 },
+		{ 44390468, "Sinar",    ""                ,0 } };
 	static const char *corp[] =
 		{ "Canon", "NIKON", "EPSON", "KODAK", "Kodak", "OLYMPUS", "PENTAX",
 		"MINOLTA", "Minolta", "Konica", "CASIO", "Sinar", "Phase One",
@@ -6436,12 +6585,13 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 	p->maximum = p->height = p->width = p->top_margin = p->left_margin = 0;
 	p->cdesc[0] = p->desc[0] = p->artist[0] = p->make[0] = p->model[0] = p->model2[0] = 0;
 	p->iso_speed = p->shutter = p->aperture = p->focal_len = 0.0f; p->unique_id = 0;
+	memset (p->gpsdata, 0, sizeof p->gpsdata);
 	memset (p->white, 0, sizeof p->white);
 	p->thumb_offset = p->thumb_length = p->thumb_width = p->thumb_height = 0;
 	p->load_raw = p->thumb_load_raw = 0;
 	p->write_thumb = &DCR_CLASS dcr_jpeg_thumb;
 	p->data_offset = p->meta_length = p->tiff_bps = p->tiff_compress = 0;
-	p->kodak_cbpp = p->zero_after_ff = p->dng_version = 0;
+	p->kodak_cbpp = p->zero_after_ff = p->dng_version = p->load_flags = 0;
 	p->timestamp = p->shot_order = p->tiff_samples = p->black = p->is_foveon = 0;
 	p->mix_green = p->profile_length = p->data_error = p->zero_is_bad = 0;
 	p->pixel_aspect = p->is_raw = p->raw_color = p->use_gamma = 1;
@@ -6515,6 +6665,17 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 	} else if (!memcmp (head,"RIFF",4)) {
 		dcr_fseek(p->obj_, 0, SEEK_SET);
 		dcr_parse_riff(p);
+	} else if (!memcmp (head,"\0\001\0\001\0@",6)) {
+		dcr_fseek(p->obj_, 6, SEEK_SET);
+		dcr_fread(p->obj_, p->make, 1, 8);
+		dcr_fread(p->obj_, p->model, 1, 8);
+		dcr_fread(p->obj_, p->model2, 1, 16);
+		p->data_offset = dcr_get2(p);
+		dcr_get2(p);
+		p->raw_width = dcr_get2(p);
+		p->raw_height = dcr_get2(p);
+		p->load_raw = &DCR_CLASS nokia_load_raw;
+		p->filters = 0x61616161;
 	} else if (!memcmp (head,"DSC-Image",9))
 		dcr_parse_rollei(p);
 	else if (!memcmp (head,"PWAD",4))
@@ -6561,10 +6722,12 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 		p->height = p->width - 1;
 		p->pixel_aspect = 1;
 	}
-	if (p->height == 2624 && p->width == 3936) { /* Pentax K10D and Samsung GX10 */
-		p->height = 2616;
-		p->width  = 3896;
-	}
+	if (p->height == 2624 && p->width == 3936)  /* Pentax K10D and Samsung GX10 */
+	{   p->height  = 2616;   p->width  = 3896; }
+	if (p->height == 3136 && p->width == 4864)	/* Pentax K20D */
+	{   p->height  = 3124;   p->width  = 4688; }
+	if (p->height == 3014 && p->width == 4096)	/* Ricoh GX200 */
+		p->width  = 4014;
 	if (p->dng_version) {
 		if (p->filters == UINT_MAX) p->filters = 0;
 		if (p->filters) p->is_raw = p->tiff_samples;
@@ -6575,13 +6738,19 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 			p->load_raw = &DCR_CLASS dcr_adobe_dng_load_raw_lj;
 		goto dng_skip;
 	}
-	if ((is_canon = !strcmp(p->make,"Canon"))) {
+	if ((is_canon = !strcmp(p->make,"Canon")))
 		p->load_raw = memcmp (head+6,"HEAPCCDR",8) ?
 			&DCR_CLASS dcr_lossless_jpeg_load_raw : &DCR_CLASS dcr_canon_compressed_load_raw;
-		p->maximum = 0xfff;
+	if (!strcmp(p->make,"NIKON")) {
+		if (!p->load_raw)
+			p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
+		if (p->model[0] == 'E')
+			p->load_flags |= !p->data_offset << 2 | 2;
 	}
-	if (!strcmp(p->make,"NIKON") && !p->load_raw)
-		p->load_raw = &DCR_CLASS dcr_nikon_load_raw;
+	if (!strcmp(p->make,"CASIO")) {
+		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
+		p->maximum = 0xf7f;
+	}
 
 	/* Set parameters based on camera name (for non-DNG files). */
 
@@ -6593,7 +6762,11 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 		p->load_raw = &DCR_CLASS dcr_foveon_load_raw;
 		dcr_simple_coeff(p, 0);
 #endif //RESTRICTED
-	} else if (is_canon && p->tiff_samples == 4) {
+	} else if (is_canon && p->tiff_bps == 15) {
+		switch (p->width) {
+		case 3344: p->width -= 66;
+		case 3872: p->width -= 6;
+		}
 		p->filters = 0;
 		p->load_raw = &DCR_CLASS dcr_canon_sraw_load_raw;
 	} else if (!strcmp(p->model,"PowerShot 600")) {
@@ -6626,6 +6799,31 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 		p->colors = 4;
 		p->filters = 0x1e4b4e1b;
 		p->load_raw = &DCR_CLASS dcr_canon_a5_load_raw;
+	} else if (!strcmp(p->model,"PowerShot SD300")) {
+		p->height = 1752;
+		p->width  = 2344;
+		p->raw_height = 1766;
+		p->raw_width  = 2400;
+		p->top_margin  = 12;
+		p->left_margin = 12;
+		p->load_raw = &DCR_CLASS dcr_canon_a5_load_raw;
+	} else if (!strcmp(p->model,"PowerShot A460")) {
+		p->height = 1960;
+		p->width  = 2616;
+		p->raw_height = 1968;
+		p->raw_width  = 2664;
+		p->top_margin  = 4;
+		p->left_margin = 4;
+		p->load_raw = &DCR_CLASS dcr_canon_a5_load_raw;
+	} else if (!strcmp(p->model,"PowerShot A530")) {
+		p->height = 1984;
+		p->width  = 2620;
+		p->raw_height = 1992;
+		p->raw_width  = 2672;
+		p->top_margin  = 6;
+		p->left_margin = 10;
+		p->load_raw = &DCR_CLASS dcr_canon_a5_load_raw;
+		p->raw_color = 0;
 	} else if (!strcmp(p->model,"PowerShot A610")) {
 		if (dcr_canon_s2is(p)) strcpy (p->model+10, "S2 IS");
 		p->height = 1960;
@@ -6643,6 +6841,14 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 		p->top_margin  = 12;
 		p->left_margin = 36;
 		p->load_raw = &DCR_CLASS dcr_canon_a5_load_raw;
+	} else if (!strcmp(p->model,"PowerShot A720")) {
+		p->height = 2472;
+		p->width  = 3298;
+		p->raw_height = 2480;
+		p->raw_width  = 3336;
+		p->top_margin  = 5;
+		p->left_margin = 6;
+		p->load_raw = &DCR_CLASS dcr_canon_a5_load_raw;
 	} else if (!strcmp(p->model,"PowerShot A630")) {
 		p->height = 2472;
 		p->width  = 3288;
@@ -6658,6 +6864,14 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 		p->raw_width  = 3736;
 		p->top_margin  = 6;
 		p->left_margin = 12;
+		p->load_raw = &DCR_CLASS dcr_canon_a5_load_raw;
+	} else if (!strcmp(p->model,"PowerShot A650")) {
+		p->height = 3024;
+		p->width  = 4032;
+		p->raw_height = 3048;
+		p->raw_width  = 4104;
+		p->top_margin  = 12;
+		p->left_margin = 48;
 		p->load_raw = &DCR_CLASS dcr_canon_a5_load_raw;
 	} else if (!strcmp(p->model,"PowerShot S3 IS")) {
 		p->height = 2128;
@@ -6702,7 +6916,6 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 		p->left_margin = 64;
 		if (p->unique_id == 0x80000170)
 			dcr_adobe_coeff (p, "Canon","EOS 300D");
-		p->maximum = 0xfa0;
 	} else if (is_canon && p->raw_width == 3160) {
 		p->height = 2328;
 		p->width  = 3112;
@@ -6731,34 +6944,55 @@ void DCR_CLASS dcr_identify(DCRAW* p)
 		p->width  = 3908;
 		p->top_margin  = 18;
 		p->left_margin = 30;
-		p->maximum = 0x3f60;
 	} else if (is_canon && p->raw_width == 3948) {
 		p->top_margin  = 18;
 		p->left_margin = 42;
 		p->height -= 2;
 		if (p->unique_id == 0x80000236)
 			dcr_adobe_coeff (p, "Canon","EOS 400D");
+		if (p->unique_id == 0x80000254)
+			dcr_adobe_coeff (p, "Canon","EOS 1000D");
 		goto canon_cr2;
 	} else if (is_canon && p->raw_width == 3984) {
 		p->top_margin  = 20;
 		p->left_margin = 76;
 		p->height -= 2;
-		p->maximum = 0x3bb0;
 		goto canon_cr2;
 	} else if (is_canon && p->raw_width == 4104) {
 		p->height = 3024;
 		p->width  = 4032;
 		p->top_margin  = 12;
 		p->left_margin = 48;
+	} else if (is_canon && p->raw_width == 4312) {
+		p->top_margin  = 18;
+		p->left_margin = 22;
+		p->height -= 2;
+		if (p->unique_id == 0x80000176)
+			dcr_adobe_coeff (p, "Canon","EOS 450D");
+		goto canon_cr2;
 	} else if (is_canon && p->raw_width == 4476) {
 		p->top_margin  = 34;
 		p->left_margin = 90;
-		p->maximum = 0xe6c;
+		goto canon_cr2;
+	} else if (is_canon && p->raw_width == 4480) {
+		p->height = 3326;
+		p->width  = 4432;
+		p->top_margin  = 10;
+		p->left_margin = 12;
+		p->filters = 0x49494949;
+	} else if (is_canon && p->raw_width == 1208) {
+		p->top_margin  = 51;
+		p->left_margin = 62;
+		p->raw_width = p->width *= 4;
+		goto canon_cr2;
+	} else if (is_canon && p->raw_width == 1448) {
+		p->top_margin  = 51;
+		p->left_margin = 158;
+		p->raw_width = p->width *= 4;
 		goto canon_cr2;
 	} else if (is_canon && p->raw_width == 5108) {
 		p->top_margin  = 13;
 		p->left_margin = 98;
-		p->maximum = 0xe80;
 canon_cr2:
 		p->height -= p->top_margin;
 		p->width  -= p->left_margin;
@@ -6767,42 +7001,48 @@ canon_cr2:
 		p->width  = 5640;
 		p->top_margin  = 20;
 		p->left_margin = 62;
-		p->maximum = 0x3bb0;
 	} else if (!strcmp(p->model,"D1")) {
 		p->cam_mul[0] *= 256/527.0f;
 		p->cam_mul[2] *= 256/317.0f;
 	} else if (!strcmp(p->model,"D1X")) {
 		p->width -= 4;
 		p->pixel_aspect = 0.5;
+	} else if (!strcmp(p->model,"D40X") ||
+		!strcmp(p->model,"D60")  ||
+		!strcmp(p->model,"D80")) {
+		p->height -= 3;
+		p->width  -= 4;
+	} else if (!strcmp(p->model,"D3")   ||
+		!strcmp(p->model,"D700")) {
+		p->width -= 4;
+		p->left_margin = 2;
 	} else if (!strncmp(p->model,"D40",3) ||
 		!strncmp(p->model,"D50",3) ||
 		!strncmp(p->model,"D70",3)) {
 		p->width--;
-	} else if (!strcmp(p->model,"D80")) {
-		p->height -= 3;
-		p->width  -= 4;
+	} else if (!strcmp(p->model,"D90")) {
+		p->width -= 42;
 	} else if (!strcmp(p->model,"D100")) {
 		if (p->tiff_compress == 34713 && !dcr_nikon_is_compressed(p)) {
-			p->load_raw = &DCR_CLASS dcr_nikon_load_raw;
+			p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
+			p->load_flags |= 8;
 			p->raw_width = (p->width += 3) + 3;
 		}
-		p->maximum = 0xf44;
 	} else if (!strcmp(p->model,"D200")) {
 		p->left_margin = 1;
 		p->width -= 4;
-		p->maximum = 0xfbc;
 		p->filters = 0x94949494;
 	} else if (!strncmp(p->model,"D2H",3)) {
 		p->left_margin = 6;
 		p->width -= 14;
-	} else if (!strcmp(p->model,"D2X")) {
-		p->width -= 8;
-		p->maximum = 0xf35;
-	} else if (!strcmp(p->model,"D3")) {
-		p->width -= 4;
-		p->left_margin = 2;
+	} else if (!strncmp(p->model,"D2X",3)) {
+		if (p->width == 3264) p->width -= 32;
+		else p->width -= 8;
 	} else if (!strcmp(p->model,"D300")) {
 		p->width -= 32;
+	} else if (!strcmp(p->model,"COOLPIX P6000")) {
+		p->load_flags = 1;
+		p->filters = 0x94949494;
 	} else if (fsize == 1581060) {
 		p->height = 963;
 		p->width = 1287;
@@ -6820,7 +7060,6 @@ canon_cr2:
 		p->width  = 1616;
 		p->raw_width = 2048;
 		p->load_raw = &DCR_CLASS dcr_nikon_e900_load_raw;
-		p->maximum = 0x3dd;
 		p->colors = 4;
 		p->filters = 0x4b4b4b4b;
 		dcr_adobe_coeff (p, "NIKON","E950");
@@ -6829,7 +7068,8 @@ canon_cr2:
 		p->width  = 2064;
 		p->colors = 4;
 		p->filters = 0xe1e1e1e1;
-		p->load_raw = &DCR_CLASS dcr_nikon_load_raw;
+		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
+		p->load_flags = 6;
 		if (!p->timestamp && dcr_nikon_e995(p))
 			strcpy (p->model, "E995");
 		if (strcmp(p->model,"E995")) {
@@ -6843,7 +7083,7 @@ canon_cr2:
 		if (!p->timestamp && !dcr_nikon_e2100(p)) goto cp_e2500;
 		p->height = 1206;
 		p->width  = 1616;
-		p->load_raw = &DCR_CLASS dcr_nikon_e2100_load_raw;
+		p->load_flags = 7;
 	} else if (!strcmp(p->model,"E2500")) {
 cp_e2500:
 	strcpy (p->model, "E2500");
@@ -6854,7 +7094,8 @@ cp_e2500:
 	} else if (fsize == 4775936) {
 		p->height = 1542;
 		p->width  = 2064;
-		p->load_raw = &DCR_CLASS dcr_nikon_e2100_load_raw;
+		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
+		p->load_flags = 7;
 		p->pre_mul[0] = 1.818f;
 		p->pre_mul[2] = 1.618f;
 		if (!p->timestamp) dcr_nikon_3700(p);
@@ -6874,8 +7115,8 @@ cp_e2500:
 			strcpy (p->make, "Minolta");
 			strcpy (p->model,"DiMAGE Z2");
 		}
-		if (p->make[0] == 'M')
-			p->load_raw = &DCR_CLASS dcr_nikon_e2100_load_raw;
+		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
+		p->load_flags = 6 + (p->make[0] == 'M');
 	} else if (!strcmp(p->model,"E4500")) {
 		p->height = 1708;
 		p->width  = 2288;
@@ -6890,12 +7131,12 @@ cp_e2500:
 		p->height = 2118;
 		p->width  = 2832;
 		p->maximum = 0xf83;
-		p->load_raw = &DCR_CLASS dcr_nikon_e2100_load_raw;
+		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
+		p->load_flags = 7;
 	} else if (!strcmp(p->model,"FinePix S5100") ||
 		!strcmp(p->model,"FinePix S5500")) {
 		p->load_raw = &DCR_CLASS dcr_unpacked_load_raw;
-		p->maximum = 0x3e00;
-	} else if (!strncmp(p->model,"FinePix",7)) {
+	} else if (!strcmp(p->make,"FUJIFILM")) {
 		if (!strcmp(p->model+7,"S2Pro")) {
 			strcpy (p->model+7," S2Pro");
 			p->height = 2144;
@@ -6931,19 +7172,16 @@ cp_e2500:
 		goto konica_510z;
 	} else if (!strcasecmp(p->make,"MINOLTA")) {
 		p->load_raw = &DCR_CLASS dcr_unpacked_load_raw;
-		p->maximum = 0xf7d;
 		if (!strncmp(p->model,"DiMAGE A",8)) {
 			if (!strcmp(p->model,"DiMAGE A200"))
 				p->filters = 0x49494949;
 			p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
-			p->maximum = p->model[8] == '1' ? 0xf8b : 0xfff;
 		} else if (!strncmp(p->model,"ALPHA",5) ||
 			!strncmp(p->model,"DYNAX",5) ||
 			!strncmp(p->model,"MAXXUM",6)) {
 			sprintf (p->model+20, "DYNAX %-10s", p->model+6+(p->model[0]=='M'));
 			dcr_adobe_coeff (p, p->make, p->model+20);
 			p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
-			p->maximum = 0xffb;
 		} else if (!strncmp(p->model,"DiMAGE G",8)) {
 			if (p->model[8] == '4') {
 				p->height = 1716;
@@ -6966,6 +7204,8 @@ konica_400z:
 		}
 	} else if (!strcmp(p->model,"*ist DS")) {
 		p->height -= 2;
+	} else if (!strcmp(p->model,"K20D")) {
+		p->filters = 0x16161616;
 	} else if (!strcmp(p->model,"Optio S")) {
 		if (fsize == 3178560) {
 			p->height = 1540;
@@ -6995,7 +7235,15 @@ konica_400z:
 	} else if (!strcmp(p->model,"Optio 750Z")) {
 		p->height = 2302;
 		p->width  = 3072;
-		p->load_raw = &DCR_CLASS dcr_nikon_e2100_load_raw;
+		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
+		p->load_flags = 7;
+	} else if (!strcmp(p->model,"S85")) {
+		p->height = 2448;
+		p->width  = 3264;
+		p->raw_width = fsize/p->height/2;
+		p->order = 0x4d4d;
+		p->load_raw = &DCR_CLASS dcr_unpacked_load_raw;
+		p->maximum = 0xffff;
 	} else if (!strcmp(p->model,"STV680 VGA")) {
 		p->height = 484;
 		p->width  = 644;
@@ -7013,6 +7261,8 @@ konica_400z:
 		p->load_raw = &DCR_CLASS dcr_unpacked_load_raw;
 		p->pre_mul[0] = 1.561f;
 		p->pre_mul[2] = 2.454f;
+	} else if (!strcmp(p->model,"N95")) {
+		p->height = p->raw_height - (p->top_margin = 2);
 	} else if (!strcmp(p->model,"531C")) {
 		p->height = 1200;
 		p->width  = 1600;
@@ -7090,6 +7340,11 @@ konica_400z:
 			p->top_margin  = 4;
 			p->left_margin = 7;
 			p->filters = 0x61616161;
+		} else if (p->raw_width == 4090) {
+			strcpy (p->model, "V96C");
+			p->height -= (p->top_margin = 6);
+			p->width -= (p->left_margin = 3) + 7;
+			p->filters = 0x61616161;
 		}
 	} else if (!strcmp(p->make,"Sinar")) {
 		if (!memcmp(head,"8BPS",4)) {
@@ -7103,6 +7358,9 @@ konica_400z:
 		p->maximum = 0x3fff;
 	} else if (!strcmp(p->make,"Leaf")) {
 		p->maximum = 0x3fff;
+		dcr_fseek(p->obj_, p->data_offset, SEEK_SET);
+		if (dcr_ljpeg_start (p, &jh, 1) && jh.bits == 15)
+			p->maximum = 0x1fff;
 		if (p->tiff_samples > 1) p->filters = 0;
 		if (p->tiff_samples > 1 || p->tile_length < p->raw_height)
 			p->load_raw = &DCR_CLASS dcr_leaf_hdr_load_raw;
@@ -7156,55 +7414,67 @@ konica_400z:
 				p->top_margin = 13;
 				p->filters = 0x49494949;
 			}
-			p->maximum = 0xf7f0;
 			p->zero_is_bad = 1;
 			dcr_adobe_coeff (p, "Panasonic","DMC-FZ8");  break;
+		case 3213:
+			p->width -= 27;
 		case 3177:
 			p->width -= 10;
 			p->filters = 0x49494949;
-			p->maximum = 0xf7fc;
 			p->zero_is_bad = 1;
 			dcr_adobe_coeff (p, "Panasonic","DMC-L1");  break;
 		case 3304:
-			p->width -= 16;
-			p->maximum = 0xf94c;
+			p->width -= 17;
 			p->zero_is_bad = 1;
 			dcr_adobe_coeff (p, "Panasonic","DMC-FZ30");  break;
 		case 3330:
-			p->width = 3291;
-			p->left_margin = 9;
+			p->width += 43;
+			p->left_margin = -6;
 			p->maximum = 0xf7f0;
-			goto fz18;
 		case 3370:
-			p->width = 3288;
-			p->left_margin = 15;
-fz18:				if (p->height > 2480)
+			p->width -= 82;
+			p->left_margin += 15;
+			if (p->height > 2480)
 				p->height = 2480 - (p->top_margin = 10);
 			p->filters = 0x49494949;
 			p->zero_is_bad = 1;
-			break;
+			dcr_adobe_coeff (p, "Panasonic","DMC-FZ18");  break;
 		case 3690:
-			p->height += 36;
+			p->height -= 2;
 			p->left_margin = -14;
-			p->filters = 0x49494949;
 			p->maximum = 0xf7f0;
 		case 3770:
 			p->width = 3672;
-			if ((p->height -= 39) == 2760)
+			if (--p->height == 2798 && (p->height = 2760))
 				p->top_margin = 15;
+			else p->filters = 0x49494949;
 			p->left_margin += 17;
 			p->zero_is_bad = 1;
 			dcr_adobe_coeff (p, "Panasonic","DMC-FZ50");  break;
 		case 3710:
 			p->width = 3682;
 			p->filters = 0x49494949;
-			break;
+			dcr_adobe_coeff (p, "Panasonic","DMC-L10");  break;
+		case 3724:
+			p->width -= 14;
+		case 3836:
+			p->width -= 42;
+lx3:	p->filters = 0x16161616;
+		if (p->make[0] != 'P')
+			dcr_adobe_coeff (p, "Panasonic","DMC-LX3");
+		break;
 		case 3880:
 			p->width -= 22;
 			p->left_margin = 6;
-			p->maximum = 0xf7f0;
 			p->zero_is_bad = 1;
 			dcr_adobe_coeff (p, "Panasonic","DMC-LX1");  break;
+		case 4060:
+			p->width = 3982;
+			if (p->height == 2250) goto lx3;
+			p->width = 4018;
+			p->filters = 0x49494949;
+			p->zero_is_bad = 1;
+			dcr_adobe_coeff (p, "Panasonic","DMC-G1");  break;
 		case 4290:
 			p->height += 38;
 			p->left_margin = -14;
@@ -7215,21 +7485,25 @@ fz18:				if (p->height > 2480)
 				p->top_margin = 15;
 			p->left_margin += 17;
 			dcr_adobe_coeff (p, "Panasonic","DMC-LX2");  break;
+		case 4508:
+			p->height -= 6;
+			p->width = 4429;
+			p->filters = 0x16161616;
+			dcr_adobe_coeff (p, "Panasonic","DMC-FX150");  break;
 		}
 	} else if (!strcmp(p->model,"C770UZ")) {
 		p->height = 1718;
 		p->width  = 2304;
 		p->filters = 0x16161616;
-		p->load_raw = &DCR_CLASS dcr_nikon_e2100_load_raw;
+		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
+		p->load_flags = 7;
 	} else if (!strcmp(p->make,"OLYMPUS")) {
 		p->height += p->height & 1;
 		p->filters = p->exif_cfa;
-		if (!strcmp(p->model,"E-1") ||
-			!strcmp(p->model,"E-400")) {
-			p->maximum = 0xfff0;
+		if (p->load_raw == &DCR_CLASS dcr_olympus_e410_load_raw) {
+			p->black >>= 4;
 		} else if (!strcmp(p->model,"E-10") ||
 			!strncmp(p->model,"E-20",4)) {
-			p->maximum = 0xffc0;
 			p->black <<= 2;
 		} else if (!strcmp(p->model,"E-300") ||
 			!strcmp(p->model,"E-500")) {
@@ -7242,14 +7516,6 @@ fz18:				if (p->height > 2480)
 			p->width -= 30;
 			if (p->load_raw == &DCR_CLASS dcr_unpacked_load_raw)
 				p->maximum = 0xf790;
-		} else if (!strcmp(p->model,"E-3")) {
-			p->maximum = 0xf99;
-			goto e410;
-		} else if (!strcmp(p->model,"E-410") ||
-			!strcmp(p->model,"E-510")) {
-			p->maximum = 0xf6a;
-e410:				p->load_raw = &DCR_CLASS dcr_olympus_e410_load_raw;
-			p->black >>= 4;
 		} else if (!strcmp(p->model,"SP550UZ")) {
 			p->thumb_length = fsize - (p->thumb_offset = 0xa39800);
 			p->thumb_height = 480;
@@ -7261,7 +7527,6 @@ e410:				p->load_raw = &DCR_CLASS dcr_olympus_e410_load_raw;
 		p->filters = 0x61616161;
 		p->data_offset = 0x1a00;
 		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
-		p->maximum = 0xf1e;
 	} else if (!strcmp(p->model,"DSC-F828")) {
 		p->width = 3288;
 		p->left_margin = 5;
@@ -7281,10 +7546,22 @@ e410:				p->load_raw = &DCR_CLASS dcr_olympus_e410_load_raw;
 		p->order = 0x4d4d;
 	} else if (!strcmp(p->model,"DSLR-A100")) {
 		p->height--;
-		p->load_raw = &DCR_CLASS dcr_sony_arw_load_raw;
-		p->maximum = 0xfeb;
-	} else if (!strncmp(p->model,"P850",4)) {
-		p->maximum = 0xf7c;
+	} else if (!strcmp(p->model,"DSLR-A350")) {
+		p->height -= 4;
+	} else if (!strcmp(p->model,"C603v")) {
+		p->height = 480;
+		p->width  = 640;
+		goto c603v;
+	} else if (!strcmp(p->model,"C603y")) {
+		p->height = 2134;
+		p->width  = 2848;
+c603v:
+		p->filters = 0;
+		p->load_raw = &DCR_CLASS dcr_kodak_yrgb_load_raw;
+	} else if (!strcmp(p->model,"C603")) {
+		p->raw_height = p->height = 2152;
+		p->raw_width  = p->width  = 2864;
+		goto c603;
 	} else if (!strcmp(p->model,"C330")) {
 		p->height = 1744;
 		p->width  = 2336;
@@ -7292,6 +7569,7 @@ e410:				p->load_raw = &DCR_CLASS dcr_olympus_e410_load_raw;
 		p->raw_width  = 2338;
 		p->top_margin = 33;
 		p->left_margin = 1;
+c603:
 		p->order = 0x4949;
 		if ((p->data_offset = fsize - p->raw_height*p->raw_width)) {
 			dcr_fseek(p->obj_, 168, SEEK_SET);
@@ -7388,13 +7666,21 @@ e410:				p->load_raw = &DCR_CLASS dcr_olympus_e410_load_raw;
 		p->filters = 0x61616161;
 		dcr_simple_coeff(p, 2);
 	} else if (!strcmp(p->model,"QuickTake 100")) {
-		p->data_offset = 736;
+		dcr_fseek(p->obj_, 544, SEEK_SET);
+		p->height = dcr_get2(p);
+		p->width  = dcr_get2(p);
+		p->data_offset = (dcr_get4(p),dcr_get2(p)) == 30 ? 738:736;
+		if (p->height > p->width) {
+			SWAP(p->height,p->width);
+			dcr_fseek(p->obj_, p->data_offset-6, SEEK_SET);
+			p->flip = ~dcr_get2(p) & 3 ? 5:6;
+		}
 		p->load_raw = &DCR_CLASS dcr_quicktake_100_load_raw;
-		goto qt_common;
+		p->filters = 0x61616161;
 	} else if (!strcmp(p->model,"QuickTake 150")) {
-		p->data_offset = 738;
+		p->data_offset = 738 - head[5];
+		if (head[5]) strcpy (p->model+10, "200");
 		p->load_raw = &DCR_CLASS dcr_kodak_radc_load_raw;
-qt_common:
 		p->height = 480;
 		p->width  = 640;
 		p->filters = 0x61616161;
@@ -7447,60 +7733,47 @@ qt_common:
 		p->width  = 2312;
 		p->raw_width = 3520;
 		p->left_margin = 2;
-		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
-		p->maximum = 0xf7f;
 	} else if (!strcmp(p->model,"QV-R51")) {
 		p->height = 1926;
 		p->width  = 2580;
 		p->raw_width = 3904;
-		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
-		p->maximum = 0xf7f;
 		p->pre_mul[0] = 1.340f;
 		p->pre_mul[2] = 1.672f;
 	} else if (!strcmp(p->model,"EX-S100")) {
 		p->height = 1544;
 		p->width  = 2058;
 		p->raw_width = 3136;
-		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
 		p->pre_mul[0] = 1.631f;
 		p->pre_mul[2] = 1.106f;
 	} else if (!strcmp(p->model,"EX-Z50")) {
 		p->height = 1931;
 		p->width  = 2570;
 		p->raw_width = 3904;
-		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
-		p->maximum = 0xf7f;
 		p->pre_mul[0] = 2.529f;
 		p->pre_mul[2] = 1.185f;
 	} else if (!strcmp(p->model,"EX-Z55")) {
 		p->height = 1960;
 		p->width  = 2570;
 		p->raw_width = 3904;
-		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
-		p->maximum = 0xf7f;
 		p->pre_mul[0] = 1.520f;
 		p->pre_mul[2] = 1.316f;
 	} else if (!strcmp(p->model,"EX-P505")) {
 		p->height = 1928;
 		p->width  = 2568;
 		p->raw_width = 3852;
-		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
+		p->maximum = 0xfff;
 		p->pre_mul[0] = 2.07f;
 		p->pre_mul[2] = 1.88f;
 	} else if (fsize == 9313536) {	/* EX-P600 or QV-R61 */
 		p->height = 2142;
 		p->width  = 2844;
 		p->raw_width = 4288;
-		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
-		p->maximum = 0xf7f;
 		p->pre_mul[0] = 1.797f;
 		p->pre_mul[2] = 1.219f;
 	} else if (!strcmp(p->model,"EX-P700")) {
 		p->height = 2318;
 		p->width  = 3082;
 		p->raw_width = 4672;
-		p->load_raw = &DCR_CLASS dcr_packed_12_load_raw;
-		p->maximum = 0xf7f;
 		p->pre_mul[0] = 1.758f;
 		p->pre_mul[2] = 1.504f;
 	}
@@ -7518,7 +7791,7 @@ qt_common:
 dng_skip:
 	if (!p->load_raw || p->height < 22) p->is_raw = 0;
 #ifdef NO_JPEG
-	if (p->load_raw == dcr_kodak_jpeg_load_raw) {
+	if (p->load_raw == &DCR_CLASS dcr_kodak_jpeg_load_raw) {
 		fprintf (stderr,_("%s: You must link dcraw with libjpeg!!\n"), p->ifname);
 		p->is_raw = 0;
 	}
@@ -7674,7 +7947,7 @@ void DCR_CLASS dcr_convert_to_rgb(DCRAW* p)
 			strcpy ((char *)p->oprof+pbody[5]+12, name[p->opt.output_color-1]);
 			for (i=0; i < 3; i++)
 				for (j=0; j < p->colors; j++)
-					for (out_cam[i][j] = k = 0; k < 3; k++)
+					for (out_cam[i][j] = (float)(k=0); k < 3; k++)
 						out_cam[i][j] += (float)out_rgb[p->opt.output_color-1][i][k] * p->rgb_cam[k][j];
 	}
 	if (p->opt.verbose)
@@ -7817,14 +8090,17 @@ void DCR_CLASS dcr_tiff_set (ushort *ntag,
 							 ushort tag, ushort type, int count, int val)
 {
 	struct dcr_tiff_tag *tt;
+	int c;
 
 	tt = (struct dcr_tiff_tag *)(ntag+1) + (*ntag)++;
 	tt->tag = tag;
 	tt->type = type;
 	tt->count = count;
-	if (type == 3 && count == 1)
-		tt->val.s0 = val;
-	else tt->val.i0 = val;
+	if (type < 3 && count <= 4)
+		FORC(4) tt->val.c[c] = val >> (c << 3);
+	else if (type == 3 && count <= 2)
+		FORC(2) tt->val.s[c] = val >> (c << 4);
+	else tt->val.i = val;
 }
 
 #define TOFF(ptr) ((char *)(&(ptr)) - (char *)th)
@@ -7844,7 +8120,7 @@ void DCR_CLASS dcr_tiff_head (DCRAW* p, struct dcr_tiff_hdr *th, int full)
 		dcr_tiff_set (&th->ntag, 257, 4, 1, p->height);
 		dcr_tiff_set (&th->ntag, 258, 3, p->colors, p->opt.output_bps);
 		if (p->colors > 2)
-			th->tag[th->ntag-1].val.i0 = TOFF(th->bps);
+			th->tag[th->ntag-1].val.i = TOFF(th->bps);
 		FORC4 th->bps[c] = p->opt.output_bps;
 		dcr_tiff_set (&th->ntag, 259, 3, 1, 1);
 		dcr_tiff_set (&th->ntag, 262, 3, 1, 1 + (p->colors > 1));
@@ -7860,8 +8136,8 @@ void DCR_CLASS dcr_tiff_head (DCRAW* p, struct dcr_tiff_hdr *th, int full)
 		dcr_tiff_set (&th->ntag, 279, 4, 1, p->height*p->width*p->colors*p->opt.output_bps/8);
 	} else
 		dcr_tiff_set (&th->ntag, 274, 3, 1, "12435867"[p->flip]-'0');
-	dcr_tiff_set (&th->ntag, 282, 5, 1, TOFF(th->rat[6]));
-	dcr_tiff_set (&th->ntag, 283, 5, 1, TOFF(th->rat[8]));
+	dcr_tiff_set (&th->ntag, 282, 5, 1, TOFF(th->rat[0]));
+	dcr_tiff_set (&th->ntag, 283, 5, 1, TOFF(th->rat[2]));
 	dcr_tiff_set (&th->ntag, 284, 3, 1, 1);
 	dcr_tiff_set (&th->ntag, 296, 3, 1, 2);
 	dcr_tiff_set (&th->ntag, 305, 2, 32, TOFF(th->soft));
@@ -7869,16 +8145,30 @@ void DCR_CLASS dcr_tiff_head (DCRAW* p, struct dcr_tiff_hdr *th, int full)
 	dcr_tiff_set (&th->ntag, 315, 2, 64, TOFF(th->artist));
 	dcr_tiff_set (&th->ntag, 34665, 4, 1, TOFF(th->nexif));
 	if (psize) dcr_tiff_set (&th->ntag, 34675, 7, psize, sizeof *th);
-	dcr_tiff_set (&th->nexif, 33434, 5, 1, TOFF(th->rat[0]));
-	dcr_tiff_set (&th->nexif, 33437, 5, 1, TOFF(th->rat[2]));
+	dcr_tiff_set (&th->nexif, 33434, 5, 1, TOFF(th->rat[4]));
+	dcr_tiff_set (&th->nexif, 33437, 5, 1, TOFF(th->rat[6]));
 	dcr_tiff_set (&th->nexif, 34855, 3, 1, (int)p->iso_speed);
-	dcr_tiff_set (&th->nexif, 37386, 5, 1, TOFF(th->rat[4]));
-	for (c=0; c < 6; c++) th->rat[c] = 1000000;
-	th->rat[0] = (int)(th->rat[0]*p->shutter);
-	th->rat[2] = (int)(th->rat[2]*p->aperture);
-	th->rat[4] = (int)(th->rat[4]*p->focal_len);
-	th->rat[6] = th->rat[8] = 300;
-	th->rat[7] = th->rat[9] = 1;
+	dcr_tiff_set (&th->nexif, 37386, 5, 1, TOFF(th->rat[8]));
+	if (p->gpsdata[1]) {
+		dcr_tiff_set (&th->ntag, 34853, 4, 1, TOFF(th->ngps));
+		dcr_tiff_set (&th->ngps,  0, 1,  4, 0x202);
+		dcr_tiff_set (&th->ngps,  1, 2,  2, p->gpsdata[29]);
+		dcr_tiff_set (&th->ngps,  2, 5,  3, TOFF(th->gps[0]));
+		dcr_tiff_set (&th->ngps,  3, 2,  2, p->gpsdata[30]);
+		dcr_tiff_set (&th->ngps,  4, 5,  3, TOFF(th->gps[6]));
+		dcr_tiff_set (&th->ngps,  5, 1,  1, p->gpsdata[31]);
+		dcr_tiff_set (&th->ngps,  6, 5,  1, TOFF(th->gps[18]));
+		dcr_tiff_set (&th->ngps,  7, 5,  3, TOFF(th->gps[12]));
+		dcr_tiff_set (&th->ngps, 18, 2, 12, TOFF(th->gps[20]));
+		dcr_tiff_set (&th->ngps, 29, 2, 12, TOFF(th->gps[23]));
+		memcpy (th->gps, p->gpsdata, sizeof th->gps);
+	}
+	th->rat[0] = th->rat[2] = 300;
+	th->rat[1] = th->rat[3] = 1;
+	FORC(6) th->rat[4+c] = 1000000;
+	th->rat[4] = (int)(th->rat[4] * p->shutter);
+	th->rat[6] = (int)(th->rat[6] * p->aperture);
+	th->rat[8] = (int)(th->rat[8] * p->focal_len);
 	strncpy (th->desc, p->desc, 512);
 	strncpy (th->make, p->make, 64);
 	strncpy (th->model, p->model, 64);
@@ -7949,7 +8239,7 @@ void DCR_CLASS dcr_write_ppm_tiff (DCRAW* p, FILE *ofp)
 				FORCC(p) ppm2[col*p->colors+c] =     p->image[soff][c];
 		}
 		if (p->opt.output_bps == 16 && !p->opt.output_tiff && htons(0x55aa) != 0x55aa)
-			swab ((char*)ppm2, (char*)ppm2, p->width*p->colors*2);
+			_swab ((char*)ppm2, (char*)ppm2, p->width*p->colors*2);
 		fwrite (ppm, p->colors*p->opt.output_bps/8, p->width, ofp);
 	}
 	free (ppm);
@@ -8016,9 +8306,11 @@ void DCR_CLASS dcr_init_dcraw(DCRAW* p)
 	p->ops_ = &dcr_stream_fileops;
 
 	p->opt.dark_frame = NULL;
+	p->opt.bpfile     = NULL;
 	p->opt.user_flip  = -1;
 	p->opt.user_black = -1;
 	p->opt.user_qual  = -1;
+	p->opt.user_sat   = -1;
 	p->opt.timestamp_only = 0;
 	p->opt.thumbnail_only = 0;
 	p->opt.identify_only  = 0;
@@ -8058,10 +8350,11 @@ void DCR_CLASS dcr_print_manual(int argc, char **argv)
     puts(_("-r <r g b g> Set custom white balance"));
     puts(_("+M/-M     Use/don't use an embedded color matrix"));
     puts(_("-C <r b>  Correct chromatic aberration"));
-
-    puts(_("-n <num>  Set threshold for wavelet denoising"));
-    puts(_("-k <num>  Set the black level"));
+    puts(_("-P <file> Fix the dead pixels listed in this file"));
     puts(_("-K <file> Subtract dark frame (16-bit raw PGM)"));
+    puts(_("-k <num>  Set the darkness level"));
+    puts(_("-S <num>  Set the saturation level"));
+    puts(_("-n <num>  Set threshold for wavelet denoising"));
     puts(_("-H [0-9]  Highlight mode (0=clip, 1=unclip, 2=blend, 3+=rebuild)"));
     puts(_("-t [0-7]  Flip image (0=none, 3=180, 5=90CCW, 6=90CW)"));
     puts(_("-o [0-5]  Output colorspace (raw,sRGB,Adobe,Wide,ProPhoto,XYZ)"));
@@ -8094,8 +8387,8 @@ int DCR_CLASS dcr_parse_command_line_options(DCRAW* p, int argc, char **argv, in
 		for (*arg=1; (((opm = argv[*arg][0]) - 2) | 2) == '+'; ) {
 
 			opt = argv[(*arg)++][1];
-			if ((cp = strchr (sp="nbrktqmHAC", opt)))
-				for (i=0; i < "1141111142"[cp-sp]-'0'; i++)
+			if ((cp = strchr (sp="nbrkStqmHAC", opt)))
+				for (i=0;    i < "11411111142"[cp-sp]-'0'; i++)
 					if (!isdigit(argv[(*arg)+i][0])) {
 						fprintf (stderr,_("Non-numeric argument to \"-%c\"\n"), opt);
 						return 1;
@@ -8108,6 +8401,7 @@ int DCR_CLASS dcr_parse_command_line_options(DCRAW* p, int argc, char **argv, in
 			case 'C':  p->opt.aber[0] = 1 / atof(argv[(*arg)++]);
 					   p->opt.aber[2] = 1 / atof(argv[(*arg)++]);  break;
 			case 'k':  p->opt.user_black  = atoi(argv[(*arg)++]);  break;
+			case 'S':  p->opt.user_sat    = atoi(argv[(*arg)++]);  break;
 			case 't':  p->opt.user_flip   = atoi(argv[(*arg)++]);  break;
 			case 'q':  p->opt.user_qual   = atoi(argv[(*arg)++]);  break;
 			case 'm':  p->opt.med_passes  = atoi(argv[(*arg)++]);  break;
@@ -8125,7 +8419,8 @@ int DCR_CLASS dcr_parse_command_line_options(DCRAW* p, int argc, char **argv, in
 			case 'p':  p->opt.cam_profile = argv[(*arg)++];
 #endif
 					   break;
-			case 'K':  p->opt.dark_frame  = argv[(*arg)++];  break;
+			case 'P':  p->opt.bpfile     = argv[(*arg)++];  break;
+			case 'K':  p->opt.dark_frame = argv[(*arg)++];  break;
 			case 'z':  p->opt.timestamp_only    = 1;  break;
 			case 'e':  p->opt.thumbnail_only    = 1;  break;
 			case 'i':  p->opt.identify_only     = 1;  break;

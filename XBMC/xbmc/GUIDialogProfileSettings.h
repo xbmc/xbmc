@@ -39,6 +39,7 @@ protected:
   virtual void SetupPage();
   virtual void CreateSettings();
   void OnSettingChanged(unsigned int setting);
+  virtual void OnSettingChanged(SettingInfo &setting);
 
   bool m_bNeedSave;
   CStdString m_strName;

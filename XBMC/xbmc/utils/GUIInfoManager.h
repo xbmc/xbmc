@@ -97,12 +97,15 @@ class CDateTime;
 #define PLAYER_CACHELEVEL            39
 #define PLAYER_STAR_RATING           40
 #define PLAYER_CHAPTERNAME           41
+#define PLAYER_SUBTITLE_DELAY        42
+#define PLAYER_AUDIO_DELAY           43
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
 #define WEATHER_LOCATION            102
 #define WEATHER_IS_FETCHED          103
 #define WEATHER_FANART_CODE         104
+#define WEATHER_PLUGIN              105
 
 #define SYSTEM_TEMPERATURE_UNITS    106
 #define SYSTEM_PROGRESS_BAR         107
@@ -239,6 +242,10 @@ class CDateTime;
 #define VIDEOPLAYER_TOP250            283
 #define VIDEOPLAYER_RATING_AND_VOTES  284
 #define VIDEOPLAYER_TRAILER           285
+#define VIDEOPLAYER_VIDEO_CODEC       286
+#define VIDEOPLAYER_VIDEO_RESOLUTION  287
+#define VIDEOPLAYER_AUDIO_CODEC       288
+#define VIDEOPLAYER_AUDIO_CHANNELS    289
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -249,6 +256,9 @@ class CDateTime;
 #define LASTFM_CANLOVE              306
 #define LASTFM_CANBAN               307
 
+#define CONTAINER_HASFILES          351
+#define CONTAINER_HASFOLDERS        352
+#define CONTAINER_STACKED           353
 #define CONTAINER_FOLDERNAME        354
 #define CONTAINER_SCROLLING         355
 #define CONTAINER_PLUGINNAME        356
@@ -407,9 +417,9 @@ class CDateTime;
 #define BUTTON_SCROLLER_HAS_ICON    30001
 
 #ifdef SVN_REV
-#define VERSION_STRING "9.04-beta1 r"SVN_REV
+#define VERSION_STRING "pre-9.10 r"SVN_REV
 #else
-#define VERSION_STRING "9.04-beta1"
+#define VERSION_STRING "pre-9.10"
 #endif
 
 #define LISTITEM_START              35000
@@ -459,6 +469,13 @@ class CDateTime;
 #define LISTITEM_SORT_LETTER        (LISTITEM_START + 43)
 #define LISTITEM_ALBUM_ARTIST       (LISTITEM_START + 44)
 #define LISTITEM_FOLDERNAME         (LISTITEM_START + 45)
+#define LISTITEM_VIDEO_CODEC        (LISTITEM_START + 46)
+#define LISTITEM_VIDEO_RESOLUTION   (LISTITEM_START + 47)
+#define LISTITEM_VIDEO_ASPECT       (LISTITEM_START + 48)
+#define LISTITEM_AUDIO_CODEC        (LISTITEM_START + 49)
+#define LISTITEM_AUDIO_CHANNELS     (LISTITEM_START + 50)
+#define LISTITEM_AUDIO_LANGUAGE     (LISTITEM_START + 51)
+#define LISTITEM_SUBTITLE_LANGUAGE  (LISTITEM_START + 52)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -593,6 +610,10 @@ public:
 
   void SetContainerMoving(int id, int direction) { m_containerMoves[id] = direction; };
 
+  void SetLibraryBool(int condition, bool value);
+  bool GetLibraryBool(int condition);
+  void ResetLibraryBools();
+
 protected:
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
@@ -675,6 +696,10 @@ protected:
 
   // persistent cache
   std::map<int, bool> m_persistentBoolCache;
+  int m_libraryHasMusic;
+  int m_libraryHasMovies;
+  int m_libraryHasTVShows;
+  int m_libraryHasMusicVideos;
 
   CCriticalSection m_critInfo;
 };

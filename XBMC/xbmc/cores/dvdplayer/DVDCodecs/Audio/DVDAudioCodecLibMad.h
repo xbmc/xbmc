@@ -48,16 +48,16 @@ private:
   int m_iSourceSampleRate;
   int m_iSourceChannels;
   int m_iSourceBitrate;
-  
+
   bool m_bInitialized;
-  
-  struct mad_synth m_synth; 
+
+  struct mad_synth m_synth;
   struct mad_stream m_stream;
   struct mad_frame m_frame;
-  
+
   BYTE m_decodedData[MAD_DECODED_SIZE];
   int  m_iDecodedDataSize;
-  
+
   BYTE m_inputBuffer[MAD_INPUT_SIZE];
   int m_iInputBufferSize;
 

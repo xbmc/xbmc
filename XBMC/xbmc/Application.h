@@ -46,6 +46,8 @@ class CFileItemList;
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
 #include "utils/Network.h"
+#include "MusicDatabase.h"
+#include "VideoDatabase.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
@@ -53,7 +55,8 @@ class CFileItemList;
 #include "linux/LinuxResourceCounter.h"
 #endif
 #ifdef _WIN32PC
-  #include "WIN32Util.h"
+#include "WIN32Util.h"
+#include "WINMessageHandler.h"
 #endif
 
 class CWebServer;
@@ -61,6 +64,7 @@ class CXBFileZilla;
 class CSNTPClient;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
+class DPMSSupport;
 
 class CBackgroundPlayer : public CThread
 {
@@ -123,7 +127,7 @@ public:
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
   virtual bool OnMessage(CGUIMessage& message);
-  EPLAYERCORES GetCurrentPlayer();
+  PLAYERCOREID GetCurrentPlayer();
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
@@ -132,8 +136,8 @@ public:
   bool PlayMediaSync(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
   bool ProcessAndStartPlaylist(const CStdString& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist);
   bool PlayFile(const CFileItem& item, bool bRestart = false);
-  void UpdateVideoFileState();
-  void UpdateAudioFileState();
+  void SaveFileState();
+  void UpdateFileState();
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -151,7 +155,8 @@ public:
   bool OnAction(CAction &action);
   void RenderMemoryStatus();
   void CheckShutdown();
-  void CheckScreenSaver();   // CB: SCREENSAVER PATCH
+  // Checks whether the screensaver and / or DPMS should become active.
+  void CheckScreenSaverAndDPMS();
   void CheckPlayingProgress();
   void CheckAudioScrobblerStatus();
   void ActivateScreenSaver(bool forceType = false);
@@ -163,11 +168,15 @@ public:
   void SetVolume(int iPercent);
   void Mute(void);
   int GetPlaySpeed() const;
+  int GetSubtitleDelay() const;
+  int GetAudioDelay() const;
   void SetPlaySpeed(int iSpeed);
   bool IsButtonDown(DWORD code);
   bool AnyButtonDown();
   void ResetScreenSaverTimer();
-  bool ResetScreenSaverWindow();
+  // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
+  bool WakeUpScreenSaverAndDPMS();
+  bool WakeUpScreenSaver();
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;
@@ -178,6 +187,9 @@ public:
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
   void CheckMusicPlaylist();
+
+  bool ExecuteXBMCAction(std::string action);
+  bool ExecuteAction(CGUIActionDescriptor action);
 
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
@@ -218,7 +230,7 @@ public:
 
   CKaraokeLyricsManager* m_pKaraokeMgr;
 
-  EPLAYERCORES m_eForcedNextPlayer;
+  PLAYERCOREID m_eForcedNextPlayer;
   CStdString m_strPlayListFile;
 
   int GlobalIdleTime();
@@ -257,8 +269,9 @@ public:
 
   bool IsPresentFrame();
 
-  bool m_restartLirc;
-  bool m_restartLCD;
+  void Minimize(bool minimize = true);
+
+  bool m_bRunResumeJobs;
 
 protected:
   void RenderScreenSaver();
@@ -287,19 +300,24 @@ protected:
   DWORD      m_lastActionCode;
   CStopWatch m_lastActionTimer;
 
+  DPMSSupport* m_dpms;
+  bool m_dpmsIsActive;
+
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
   CSplash* m_splash;
   DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
-  EPLAYERCORES m_eCurrentPlayer;
+  PLAYERCOREID m_eCurrentPlayer;
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
   bool m_bAllSettingsLoaded;
   bool m_bInitializing;
-  bool m_playCountUpdated;
   bool m_bPlatformDirectories;
-  int m_updateFileStateCounter;
+
+  CBookmark m_progressTrackingVideoResumeBookmark;
+  CFileItemPtr m_progressTrackingItem;
+  bool m_progressTrackingPlayCountUpdate;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
@@ -309,14 +327,13 @@ protected:
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
+  bool m_bWasFullScreenBeforeMinimize;
 
 #ifdef HAS_SDL
   int        m_frameCount;
   SDL_mutex* m_frameMutex;
   SDL_cond*  m_frameCond;
 #endif
-
-  static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
 
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
@@ -325,7 +342,6 @@ protected:
 
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
-  bool Minimize();
   bool ProcessMouse();
   bool ProcessHTTPApiButtons();
   bool ProcessKeyboard();
@@ -367,6 +383,7 @@ protected:
 #endif
 #ifdef _WIN32PC
   CWIN32Util::SystemParams::SysParam *m_SSysParam;
+  CWINMessageHandler  m_messageHandler;
 #endif
 };
 

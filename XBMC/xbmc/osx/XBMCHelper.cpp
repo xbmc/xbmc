@@ -126,9 +126,19 @@ void XBMCHelper::Configure()
   {
     // Build a new config string.
     std::string strConfig;
-    if (m_mode == APPLE_REMOTE_UNIVERSAL)
-      strConfig = "--universal ";
-
+    switch (m_mode) {
+      case APPLE_REMOTE_UNIVERSAL:
+        strConfig = "--universal ";
+        break;
+      case APPLE_REMOTE_MULTIREMOTE:
+        strConfig = "--multiremote ";
+        break;
+      default:
+        break;
+    }
+#ifdef _DEBUG
+    strConfig += "--verbose ";
+#endif
     char strDelay[64];
     sprintf(strDelay, "--timeout %d ", m_sequenceDelay);
     strConfig += strDelay;
@@ -201,7 +211,7 @@ void XBMCHelper::Install()
 
       // Replace ARG1 with a single argument, additional args 
       // will need ARG2, ARG3 added to plist.
-      launchd_args = " -x";
+      launchd_args = "-x";
       start = plistData.find("${ARG1}");
       plistData.replace(start, 7, launchd_args.c_str(), launchd_args.length());
 
@@ -226,6 +236,10 @@ void XBMCHelper::Uninstall()
   std::string cmd = "/bin/launchctl unload ";
   cmd += m_launchAgentInstallFile;
   system(cmd.c_str());
+  
+  //this also stops the helper, so restart it here again, if not disabled
+  if(m_mode != APPLE_REMOTE_DISABLED)
+    Start();
 
   // Remove the plist file.
   DeleteFile(m_launchAgentInstallFile.c_str());
@@ -324,7 +338,7 @@ void XBMCHelper::WriteFile(const char* fileName, const std::string& data)
 /////////////////////////////////////////////////////////////////////////////
 int XBMCHelper::GetProcessPid(const char* strProgram)
 {
-  kinfo_proc* mylist = (kinfo_proc *)malloc(sizeof(kinfo_proc));
+  kinfo_proc* mylist = 0;
   size_t mycount = 0;
   int ret = -1;
 

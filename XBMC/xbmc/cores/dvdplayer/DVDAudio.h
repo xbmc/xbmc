@@ -21,6 +21,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "cores/AudioRenderers/IAudioRenderer.h"
 #include "cores/AudioRenderers/IAudioCallback.h"
 #include "utils/CriticalSection.h"
@@ -29,7 +32,15 @@
 enum CodecID;
 #else
 extern "C" {
-#include "ffmpeg/avcodec.h"
+#if (defined USE_EXTERNAL_FFMPEG)
+  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
+    #include <libavcodec/avcodec.h>
+  #elif (defined HAVE_FFMPEG_AVCODEC_H)
+    #include <ffmpeg/avcodec.h>
+  #endif
+#else
+  #include "avcodec.h"
+#endif
 }
 #endif
 typedef struct stDVDAudioFrame DVDAudioFrame;
@@ -75,5 +86,5 @@ protected:
 
   volatile bool& m_bStop;
   //counter that will go from 0 to m_iSpeed-1 and reset, data will only be output when speedstep is 0
-  //int m_iSpeedStep; 
+  //int m_iSpeedStep;
 };

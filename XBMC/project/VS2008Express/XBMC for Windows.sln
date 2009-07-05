@@ -2,6 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	ProjectSection(ProjectDependencies) = postProject
+		{00700E12-A63B-4E54-B962-4011A90584BD} = {00700E12-A63B-4E54-B962-4011A90584BD}
 		{B2975495-FBE4-4F94-AAC5-B21A9842BF50} = {B2975495-FBE4-4F94-AAC5-B21A9842BF50}
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4} = {510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452} = {FE0A91C0-E30A-47CD-8A92-A508C9292452}
@@ -15,6 +16,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrarXLib", "UnrarXLib.vcpr
 	ProjectSection(ProjectDependencies) = postProject
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4} = {510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libhts", "..\..\xbmc\lib\libhts\Win32\libhts_2008.vcproj", "{00700E12-A63B-4E54-B962-4011A90584BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +41,10 @@ Global
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug (SDL)|Win32.Build.0 = Debug (SDL)|Win32
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release (SDL)|Win32.ActiveCfg = Release (SDL)|Win32
 		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release (SDL)|Win32.Build.0 = Release (SDL)|Win32
+		{00700E12-A63B-4E54-B962-4011A90584BD}.Debug (SDL)|Win32.ActiveCfg = Debug|Win32
+		{00700E12-A63B-4E54-B962-4011A90584BD}.Debug (SDL)|Win32.Build.0 = Debug|Win32
+		{00700E12-A63B-4E54-B962-4011A90584BD}.Release (SDL)|Win32.ActiveCfg = Release|Win32
+		{00700E12-A63B-4E54-B962-4011A90584BD}.Release (SDL)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

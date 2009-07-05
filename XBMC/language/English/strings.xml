@@ -432,7 +432,7 @@
   <string id="513">Home window</string>
   <string id="514">Manual settings</string>
   <string id="515">Genre</string>
-  <string id="516">Make archives with one file transparent</string>
+  <string id="516">Make stored archives with one file transparent</string>
   <string id="517">Recently played albums</string>
   <string id="518">Launch</string>
   <string id="519">Launch in...</string>
@@ -714,6 +714,7 @@
   <string id="1046">Access points</string>
   <string id="1047">Other...</string>
   <string id="1048">Web server username</string>
+  <string id="1049">Script settings</string>
 
   <string id="1200">SMB client</string>
   <string id="1202">Workgroup</string>
@@ -785,8 +786,13 @@
   <string id="1415">Drizzle</string>
   <string id="1416">Foggy</string>
   <string id="1417">Grains</string>
+  <string id="1418">T-Storms</string>
+  <string id="1419">T-Showers</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
+
+  <string id="1450">Enable power saving when idle</string>
+  <!-- strings through to 1470 reserved for power-saving -->
 
   <string id="2050">Runtime</string>
 
@@ -978,7 +984,7 @@
   <string id="13106">Disabled</string>
   <string id="13107">Enabled during video playback</string>
   <string id="13108">Always enabled</string>
-  <string id="13109">Test resolution</string>
+  <string id="13109">Test &amp; apply resolution</string>
   <string id="13110">Save resolution?</string>
   <string id="13111">Would you like to keep this resolution?</string>
   
@@ -1191,6 +1197,18 @@
   <string id="13421">VDPAU</string>
   <string id="13420">Remove safely</string>
 
+  <string id="13500">A/V sync method</string>
+  <string id="13501">Audio clock</string>
+  <string id="13502">Video clock (Drop/Dupe audio)</string>
+  <string id="13503">Video clock (Resample audio)</string>
+  <string id="13504">Maximum resample amount (%)</string>
+  <string id="13505">Resample quality</string>
+  <string id="13506">Low</string>
+  <string id="13507">Medium</string>
+  <string id="13508">High</string>
+  <string id="13509">Really high</string>
+  <string id="13510">Sync playback to display</string>
+
   <string id="13600">Apple Remote</string>
   <string id="13601">Mode</string>
   <string id="13602">Always running</string>
@@ -1199,6 +1217,7 @@
   <string id="13610">Disabled</string>
   <string id="13611">Standard</string>
   <string id="13612">Universal Remote</string>
+  <string id="13613">Multi Remote (Harmony)</string>
   
   <string id="13620">Apple Remote Error</string>
   <string id="13621">Apple Remote support could be enabled.</string>
@@ -1374,6 +1393,11 @@
   <string id="15214">Use smoothed A/V synchronization</string>
   <string id="15215">Hide file names in thumbs view</string>
   <string id="15216">Play in party mode</string>
+  <string id="15217">Submit songs to Libre.fm</string>
+  <string id="15218">Libre.fm username</string>
+  <string id="15219">Libre.fm password</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
 
   <string id="15250">Submit Last.fm Radio to Last.fm</string>
   <string id="15251">Connecting to Last.fm...</string>
@@ -1708,8 +1732,8 @@
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
-  <string id="20302"></string>
-  <string id="20303"></string>
+  <string id="20302">Unable to write to folder:</string>
+  <string id="20303">Do you want to skip and proceed?</string>
   <string id="20304"></string>
   <string id="20305"></string>
 
@@ -1840,6 +1864,7 @@
   <string id="20430">Export thumbs and fanart?</string>
   <string id="20431">Overwrite old files?</string>
   <string id="20432">Exclude path from library updates</string> 
+  <string id="20433">Extract media metadata information</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -1938,6 +1963,12 @@
   <string id="21440">Home folder</string>
   <string id="21441">Watched count</string>
   <string id="21442">Episode title</string>
+  <string id="21443">Video resolution</string>
+  <string id="21444">Audio channels</string>
+  <string id="21445">Video codec</string>
+  <string id="21446">Audio codec</string>
+  <string id="21447">Audio language</string>
+  <string id="21448">Subtitle language</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>
@@ -2056,6 +2087,9 @@
   <string id="22042">white/blue</string>
   <string id="22043">black/white</string>
 
+  <string id="23000">Weather plugin</string>
+  <string id="23001">- Plugin settings</string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY keyboard</string>
@@ -2065,4 +2099,23 @@
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
+  <string id="33001">Trailer quality</string>
+  <string id="33002">Stream</string>
+  <string id="33003">Download</string>
+  <string id="33004">Download &amp; play</string>
+  <string id="33005">Download &amp; save</string>
+  <string id="33006">Today</string>
+  <string id="33007">Tomorrow</string>
+  <string id="33008">Saving</string>
+  <string id="33009">Copying</string>
+  <string id="33010">Set download directory</string>
+  <string id="30011">Search duration</string>
+  <string id="33012">Short</string>
+  <string id="33013">Long</string>
+  <string id="33014">Use DVD player instead of regular player</string>
+  <string id="33015">Ask for download before playing video</string>
+  <string id="33016">Clips</string>
+  <string id="33017">Restart plugin to enable</string>
+  <string id="33018">Clips</string>
 </strings>

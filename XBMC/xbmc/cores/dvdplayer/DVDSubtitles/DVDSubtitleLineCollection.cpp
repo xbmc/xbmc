@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDSubtitleLineCollection.h"
 #include "DVDClock.h"
@@ -29,7 +29,7 @@ CDVDSubtitleLineCollection::CDVDSubtitleLineCollection()
   m_pHead = NULL;
   m_pCurrent = NULL;
   m_pTail = NULL;
-  
+
   m_iSize = 0;
   m_fLastPts = DVD_NOPTS_VALUE;
 }
@@ -55,7 +55,7 @@ void CDVDSubtitleLineCollection::Add(CDVDOverlay* pOverlay)
     m_pTail->pNext = pElement;
     m_pTail = pElement;
   }
-  
+
   m_iSize++;
 }
 
@@ -65,14 +65,14 @@ CDVDOverlay* CDVDSubtitleLineCollection::Get(double iPts)
 
   if (iPts < m_fLastPts)
     Reset();
-  
+
   if (m_pCurrent)
   {
     while (m_pCurrent && m_pCurrent->pOverlay->iPTSStopTime < iPts)
     {
       m_pCurrent = m_pCurrent->pNext;
     }
-    
+
     if (m_pCurrent)
     {
       pOverlay = m_pCurrent->pOverlay;
@@ -93,7 +93,7 @@ void CDVDSubtitleLineCollection::Reset()
 void CDVDSubtitleLineCollection::Clear()
 {
   ListElement* pElement = NULL;
-  
+
   while (m_pHead)
   {
     pElement = m_pHead;
@@ -102,6 +102,6 @@ void CDVDSubtitleLineCollection::Clear()
     pElement->pOverlay->Release();
     delete pElement;
   }
-  
+
   m_iSize = 0;
 }

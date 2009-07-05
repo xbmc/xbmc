@@ -99,6 +99,10 @@ void CGUIImage::Render()
 {
   if (!IsVisible()) return;
 
+  // check whether our image failed to allocate, and if so drop back to the fallback image
+  if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
+    m_texture.SetFileName(m_info.GetFallback());
+  
   if (m_crossFadeTime)
   {
     // make sure our texture has started allocating
@@ -141,7 +145,7 @@ void CGUIImage::Render()
     if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
     { // fade the new one in
       m_currentFadeTime += frameTime;
-      if (m_currentFadeTime > m_crossFadeTime)
+      if (m_currentFadeTime > m_crossFadeTime || frameTime == 0) // for if we allocate straight away on creation
         m_currentFadeTime = m_crossFadeTime;
     }
     m_texture.SetAlpha(GetFadeLevel(m_currentFadeTime));
@@ -183,12 +187,6 @@ bool CGUIImage::OnMessage(CGUIMessage& message)
     return true;
   }
   return CGUIControl::OnMessage(message);
-}
-
-void CGUIImage::PreAllocResources()
-{
-  FreeResources();
-  m_texture.PreAllocResources();
 }
 
 void CGUIImage::AllocResources()
@@ -270,7 +268,7 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
   if (m_crossFadeTime)
   {
     // set filename on the next texture
-    if (m_texture.GetFileName().Equals(strFileName))
+    if (m_currentTexture.Equals(strFileName))
       return; // nothing to do - we already have this image
 
     if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
@@ -279,7 +277,12 @@ void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
     }
     m_currentFadeTime = 0;
   }
-  m_texture.SetFileName(strFileName);
+  if (!m_currentTexture.Equals(strFileName))
+  { // texture is changing - attempt to load it, and save the name in m_currentTexture.
+    // we'll check whether it loaded or not in Render()
+    m_currentTexture = strFileName;
+    m_texture.SetFileName(m_currentTexture);
+  }
 }
 
 #ifdef _DEBUG

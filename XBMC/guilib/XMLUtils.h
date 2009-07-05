@@ -39,6 +39,8 @@ public:
   static bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   static bool GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding);
   static bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
+  static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value, const float min, const float max);
+  static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue, const int min, const int max);
 
   static void SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
   static void SetInt(TiXmlNode* pRootNode, const char *strTag, int value);
@@ -46,5 +48,6 @@ public:
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
   static void SetHex(TiXmlNode* pRootNode, const char *strTag, DWORD value);
   static void SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
+  static void SetLong(TiXmlNode* pRootNode, const char *strTag, long iValue);
 };
 

@@ -22,6 +22,7 @@
  */
 
 #include "GUIWindow.h"
+#include "utils/Stopwatch.h"
 
 class CGUIWindowWeather : public CGUIWindow
 {
@@ -38,8 +39,10 @@ protected:
   void UpdateButtons();
   void UpdateLocations();
   void SetProperties();
+  void CallPlugin();
 
   void Refresh();
 
   unsigned int m_iCurWeather;
+  CStopWatch m_pluginTimer;
 };

@@ -72,7 +72,6 @@ public:
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);
@@ -110,6 +109,7 @@ protected:
 
   CGUITexture m_texture;
   std::vector<CFadingTexture *> m_fadingTextures;
+  CStdString m_currentTexture;
 
   unsigned int m_crossFadeTime;
   unsigned int m_currentFadeTime;

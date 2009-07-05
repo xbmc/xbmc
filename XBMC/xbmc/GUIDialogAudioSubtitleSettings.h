@@ -31,9 +31,12 @@ public:
   virtual ~CGUIDialogAudioSubtitleSettings(void);
   virtual void Render();
 
+  static CStdString FormatDelay(float value, float minimum);
+  static CStdString FormatDecibel(float value, float minimum);
+  
 protected:
   virtual void CreateSettings();
-  virtual void OnSettingChanged(unsigned int setting);
+  virtual void OnSettingChanged(SettingInfo &setting);
 
   void AddAudioStreams(unsigned int id);
   void AddSubtitleStreams(unsigned int id);

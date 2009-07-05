@@ -233,6 +233,7 @@ public:
   static bool IsMythTV(const CStdString& strFile);
   static bool IsHDHomeRun(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
+  static bool IsHTSP(const CStdString& strFile);
   static bool IsTV(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
@@ -279,7 +280,7 @@ public:
   static void TakeScreenshot();
   static void TakeScreenshot(const char* fn, bool flash);
   static void SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate);
-  static void SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate);
+  static void SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate);
   static void Tokenize(const CStdString& path, std::vector<CStdString>& tokens, const std::string& delimiters);
   static void FlashScreen(bool bImmediate, bool bOn);
   static void RestoreBrightnessContrastGamma();
@@ -300,7 +301,6 @@ public:
 #endif
   
   static void AddDirectorySeperator(CStdString& strPath);
-  static char GetDirectorySeperator(const CStdString& strFile);
 
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
@@ -325,6 +325,7 @@ public:
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);
   static void WipeDir(const CStdString& strPath);
+  static void CopyDirRecursive(const CStdString& strSrcPath, const CStdString& strDstPath);
   static void ForceForwardSlashes(CStdString& strPath);
 
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
@@ -335,6 +336,8 @@ public:
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
   static void ClearFileItemCache();
+  
+  static void InitRandomSeed();
 
 #ifdef _LINUX
   // this will run the command using sudo in a new process.
@@ -347,7 +350,12 @@ public:
   //
   // Forks to execute a shell command.
   //
-  static bool Command(const CStdStringArray& arrArgs);
+  static bool Command(const CStdStringArray& arrArgs, bool waitExit = false);
+
+  //
+  // Forks to execute an unparsed shell command line.
+  //
+  static bool RunCommandLine(const CStdString& cmdLine, bool waitExit = false);
 #endif
 
 private:

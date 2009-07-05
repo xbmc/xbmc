@@ -26,6 +26,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 //#define HAL_HANDLEMOUNT
 

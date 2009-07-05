@@ -110,19 +110,26 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     CStdString strUrl;
     CUtil::CreateArchivePath(strUrl, "zip", strPath, "");
 
-    if (!g_guiSettings.GetBool("filelists.unrollarchives") || g_ZipManager.HasMultipleEntries(strPath))
+    if (!g_guiSettings.GetBool("filelists.unrollarchives"))
     {
       pItem->m_strPath = strUrl;
       return new CZipDirectory;
     }
 
-    CFileItemList item;
-    CDirectory dir; dir.GetDirectory(strUrl,item,strMask);
-    if (item.Size())
-      *pItem = *item[0];
-    else
+    CFileItemList items;
+    CDirectory::GetDirectory(strUrl, items, strMask);
+    if (items.Size() == 0) // no files
       pItem->m_bIsFolder = true;
-
+    else if (items.Size() == 1 && items[0]->m_idepth == 0) 
+    {
+      // one STORED file - collapse it down
+      *pItem = *items[0]; 
+    }
+    else
+    { // compressed or more than one file -> create a zip dir
+      pItem->m_strPath = strUrl;
+      return new CZipDirectory;
+    }
     return NULL;
   }
   if (strExtension.Equals(".rar") || strExtension.Equals(".001"))
@@ -157,20 +164,27 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
         }
       }
     }
-
-    if (!g_guiSettings.GetBool("filelists.unrollarchives") || g_RarManager.HasMultipleEntries(strPath))
+    
+    if (!g_guiSettings.GetBool("filelists.unrollarchives"))
     {
       pItem->m_strPath = strUrl;
       return new CRarDirectory;
     }
 
-    CFileItemList item;
-    CDirectory dir; dir.GetDirectory(strUrl,item,strMask);
-    if (item.Size())
-      *pItem = *item[0];
-    else
+    CFileItemList items;
+    CDirectory::GetDirectory(strUrl, items, strMask);
+    if (items.Size() == 0) // no files - hide this
       pItem->m_bIsFolder = true;
-
+    else if (items.Size() == 1 && items[0]->m_idepth == 0x30)
+    {
+      // one STORED file - collapse it down
+      *pItem = *items[0];
+    }
+    else
+    { // compressed or more than one file -> create a rar dir
+      pItem->m_strPath = strUrl;
+      return new CRarDirectory;
+    }
     return NULL;
   }
   if (strExtension.Equals(".xsp"))

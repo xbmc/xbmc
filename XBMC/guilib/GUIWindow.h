@@ -138,6 +138,11 @@ public:
 
   virtual void ResetControlStates();
 
+  void       SetRunActionsManually();
+  void       RunLoadActions();
+  void       RunUnloadActions();
+  
+  bool HasProperty(const CStdString &strKey) const;
   void SetProperty(const CStdString &strKey, const char *strValue);
   void SetProperty(const CStdString &strKey, const CStdString &strValue);
   void SetProperty(const CStdString &strKey, int nVal);
@@ -156,7 +161,7 @@ public:
   void DumpTextureUse();
 #endif
 
-  bool HasSaveLastControl() const { return m_saveLastControl; };
+  bool HasSaveLastControl() const { return !m_defaultAlways; };
 
 protected:
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
@@ -196,6 +201,8 @@ protected:
   void ChangeButtonToEdit(int id, bool singleLabel = false);
 //#endif
 
+  void RunActions(std::vector<CGUIActionDescriptor>& actions);
+  
   DWORD m_dwIDRange;
   bool m_bRelativeCoords;
   OVERLAY_STATE m_overlayState;
@@ -212,7 +219,6 @@ protected:
   std::vector<COrigin> m_origins;  // positions of dialogs depending on base window
 
   // control states
-  bool m_saveLastControl;
   int m_lastControlID;
   std::vector<CControlState> m_controlStates;
   DWORD m_previousWindow;
@@ -228,6 +234,10 @@ protected:
 
   std::map<CStdString, CStdString, icompare> m_mapProperties;
 
+  std::vector<CGUIActionDescriptor> m_loadActions;
+  std::vector<CGUIActionDescriptor> m_unloadActions;
+  
+  bool m_manualRunActions;
 };
 
 #endif

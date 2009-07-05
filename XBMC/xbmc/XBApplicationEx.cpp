@@ -21,13 +21,6 @@
 #define MEASURE_FUNCTION
 #endif
 #include "GUIFontManager.h"
-#ifdef _WIN32PC
-#include <dbt.h>
-#include "SDL/SDL_syswm.h"
-#include "GUIWindowManager.h"
-#include "WIN32Util.h"
-extern HWND g_hWnd;
-#endif
 
 
 //-----------------------------------------------------------------------------
@@ -161,10 +154,6 @@ INT CXBApplicationEx::Run()
 
 #ifndef _DEBUG
   const BYTE MAX_EXCEPTION_COUNT = 10;
-#endif
-
-#ifdef _WIN32PC
-  SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
 
   // Run the game loop, animating and rendering frames
@@ -344,57 +333,6 @@ void CXBApplicationEx::ReadInput()
   {
     switch(event.type)
     {
-#ifdef _WIN32PC
-    case SDL_SYSWMEVENT:
-      {
-        if (event.syswm.msg->wParam == DBT_DEVICEARRIVAL)
-        {
-          CMediaSource share;
-          CStdString strDrive = CWIN32Util::GetChangedDrive();
-          if(strDrive == "")
-            break;
-          share.strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
-          share.strPath = strDrive;
-          share.m_ignore = true;
-          share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
-          g_settings.AddShare("files",share);
-          g_settings.AddShare("video",share);
-          g_settings.AddShare("pictures",share);
-          g_settings.AddShare("music",share);
-          g_settings.AddShare("programs",share);
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-          m_gWindowManager.SendThreadMessage( msg );
-        }
-        if (event.syswm.msg->wParam == DBT_DEVICEREMOVECOMPLETE)
-        {
-          CStdString strDrive = CWIN32Util::GetChangedDrive();
-          if(strDrive == "")
-            break;
-          CStdString strName;
-          strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
-          g_settings.DeleteSource("files",strName,strDrive);
-          g_settings.DeleteSource("video",strName,strDrive);
-          g_settings.DeleteSource("pictures",strName,strDrive);
-          g_settings.DeleteSource("music",strName,strDrive);
-          g_settings.DeleteSource("programs",strName,strDrive);
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
-          m_gWindowManager.SendThreadMessage( msg );
-        }
-        if(event.syswm.msg->msg == WM_POWERBROADCAST && event.syswm.msg->wParam == PBT_APMRESUMESUSPEND)
-        {
-          // TODO: reconnect shares/network, etc
-          CLog::Log(LOGINFO, "Resuming from suspend" );
-          if(g_advancedSettings.m_fullScreen)
-          {
-            ShowWindow(g_hWnd,SW_RESTORE);
-            SetForegroundWindow(g_hWnd);
-            LockSetForegroundWindow(LSFW_LOCK);
-          }
-        }
-      }
-      break;
-#endif
-
     case SDL_QUIT:
       if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
       break;
@@ -437,6 +375,7 @@ void CXBApplicationEx::ReadInput()
       if( event.active.state & SDL_APPACTIVE )
       {
         m_AppActive = event.active.gain != 0;
+        if (m_AppActive) g_application.Minimize(false);
       }
       if (event.active.state & SDL_APPINPUTFOCUS)
       {
@@ -555,6 +494,22 @@ bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
 
 bool CXBApplicationEx::ProcessLinuxShortcuts(SDL_Event& event)
 {
+  bool alt = false;
+
+  alt = !!(SDL_GetModState() & (KMOD_LALT  | KMOD_RALT));
+
+  if (alt && event.key.type == SDL_KEYDOWN)
+  {
+    switch(event.key.keysym.sym)
+    {
+      case SDLK_TAB:  // ALT+TAB to minimize/hide
+        g_application.Minimize();
+        return true;
+      default:
+        break;
+    }
+  }
+
   return false;
 }
 

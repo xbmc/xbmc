@@ -1,5 +1,5 @@
 #!/bin/bash
-# Hard Disk filesystem mounting	-*- shell-script -*-
+# Fixed Disk filesystem mounting	-*- shell-script -*-
 
 #Function for parsing command line options with "=" in them
 # get_opt("init=/sbin/init") will return "/sbin/init"
@@ -50,23 +50,6 @@ mountroot ()
         XBMC_AMD="$( echo $XBMC_PARAMS | grep "amd" )"
     fi
 
-    if [ "$XBMC_NVIDIA" != "" ]; then
-           if [ "$QUIET" = "" ]; then
-               echo "Mounting NVIDIA drivers..."
-           fi
-    else
-        if [ "$XBMC_AMD" != "" ]; then
-            if [ "$QUIET" = "" ]; then
-                echo "Mounting AMD drivers..."
-            fi
-        else
-           # No Ops for Intel as of today
-            if [ "$QUIET" = "" ]; then
-                echo "Defaulting to Xorg autodetect..."
-            fi
-        fi
-    fi
-
     BOOTMEDIAMNTPOINT=/bootmediamnt
     mkdir -p $BOOTMEDIAMNTPOINT
     mkdir -p /squashmnt1
@@ -78,13 +61,16 @@ mountroot ()
 	        echo "will mount root from ${ROOT}"
 	fi
 
-        mount -o rw ${ROOT} $BOOTMEDIAMNTPOINT 2> /dev/null
+	mount -t vfat -o rw,umask=000 $ROOT $BOOTMEDIAMNTPOINT 2> /dev/null
         while [ ! -e $BOOTMEDIAMNTPOINT/rootfs.img ]; do
-            /bin/sleep 0.5
-            mount -o rw ${ROOT} $BOOTMEDIAMNTPOINT 2> /dev/null
+            /bin/sleep 1
+            if [ "$QUIET" == "" ]; then
+                    echo "Trying again $ROOT ...."
+            fi
+	    mount -t vfat -o rw,umask=000 $ROOT $BOOTMEDIAMNTPOINT 2> /dev/null
         done
     else
-        # Find the USB flash drive
+        # Find the disk drive
         found="no"
 	while true
 	do
@@ -94,9 +80,9 @@ mountroot ()
 			fi
 			if [ -b /dev/${device} ]; then
 				if [ -e /sys/block/${device}/removable ]; then
-					if [ "$(cat /sys/block/${device}/removable)" = "1" ]; then
+					if [ "$(cat /sys/block/${device}/removable)" = "0" ]; then
 						if [ "$QUIET" == "" ]; then
-							echo "Found USB flash drive at /dev/${device}"
+							echo "Found disk drive at /dev/${device}"
 						fi
 						mount -t vfat -o rw,umask=0 /dev/${device}1 $BOOTMEDIAMNTPOINT 2> /dev/null
 						if [ -f $BOOTMEDIAMNTPOINT/rootfs.img ] ; then
@@ -121,14 +107,14 @@ mountroot ()
 		fi
 		/bin/sleep 5
 	done
-	if [ "$QUIET" = "" ]; then
+	if [ "$QUIET" == "" ]; then
 		echo "will mount root from /dev/${device}1"
 	fi
 
 	mount -t vfat -o rw,umask=000 /dev/${device}1 $BOOTMEDIAMNTPOINT 2> /dev/null
 
 	while [ ! -e $BOOTMEDIAMNTPOINT/rootfs.img ]; do
-		/bin/sleep 0.5
+		/bin/sleep 1
 		if [ "$QUIET" == "" ]; then
 			echo "Trying again /dev/${device} ...."
 		fi

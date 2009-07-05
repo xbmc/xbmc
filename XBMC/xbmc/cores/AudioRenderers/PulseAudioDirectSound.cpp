@@ -132,8 +132,10 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
   m_bIsAllocated = false;
   m_uiChannels = iChannels;
   m_uiSamplesPerSec = uiSamplesPerSec;
+  m_uiBufferSize = 0;
   m_uiBitsPerSample = uiBitsPerSample;
   m_bPassthrough = bPassthrough;
+  m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
 
@@ -280,7 +282,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
     pa_buffer_attr b;
     b.prebuf = a->minreq * 10;
     b.minreq = a->minreq;
-    b.tlength = a->tlength;
+    b.tlength = m_uiBufferSize = a->tlength;
     b.maxlength = a->maxlength;
     b.fragsize = a->fragsize;
 
@@ -292,6 +294,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
     else
     {
       m_dwPacketSize = a->minreq;
+      m_uiBufferSize = a->tlength;
       CLog::Log(LOGDEBUG, "PulseAudio: Choosen buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
     }
   }
@@ -310,7 +313,7 @@ CPulseAudioDirectSound::~CPulseAudioDirectSound()
   Deinitialize();
 }
 
-HRESULT CPulseAudioDirectSound::Deinitialize()
+bool CPulseAudioDirectSound::Deinitialize()
 {
   m_bIsAllocated = false;
   if (m_Context)
@@ -343,13 +346,16 @@ HRESULT CPulseAudioDirectSound::Deinitialize()
   }
 
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-  return S_OK;
+  return true;
 }
 
 inline bool CPulseAudioDirectSound::WaitForOperation(pa_operation *op, const char *LogEntry = "")
 {
+  if (op == NULL)
+    return false;
+
   bool sucess = true;
-  assert(op);
+
   while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
     pa_threaded_mainloop_wait(m_MainLoop);
 
@@ -385,30 +391,30 @@ bool CPulseAudioDirectSound::Cork(bool cork)
   return cork;
 }
 
-HRESULT CPulseAudioDirectSound::Pause()
+bool CPulseAudioDirectSound::Pause()
 {
   if (!m_bIsAllocated)
     return -1;
 
   if (m_bPause) 
-    return S_OK;
+    return true;
 
   m_bPause = Cork(true);
 
-  return m_bPause ? S_OK : E_FAIL;
+  return m_bPause;
 }
 
-HRESULT CPulseAudioDirectSound::Resume()
+bool CPulseAudioDirectSound::Resume()
 {
   if (!m_bIsAllocated)
      return -1;
   if(m_bPause)
     m_bPause = Cork(false);
 
-  return m_bPause == false ? S_OK : E_FAIL;
+  return !m_bPause;
 }
 
-HRESULT CPulseAudioDirectSound::Stop()
+bool CPulseAudioDirectSound::Stop()
 {
   if (!m_bIsAllocated)
     return -1;
@@ -417,20 +423,10 @@ HRESULT CPulseAudioDirectSound::Stop()
 
   m_bPause = false;
 
-  return S_OK;
+  return true;
 }
 
-LONG CPulseAudioDirectSound::GetMinimumVolume() const
-{
-  return -6000;
-}
-
-LONG CPulseAudioDirectSound::GetMaximumVolume() const
-{
-  return 0;
-}
-
-LONG CPulseAudioDirectSound::GetCurrentVolume() const
+long CPulseAudioDirectSound::GetCurrentVolume() const
 {
   return m_nCurrentVolume;
 }
@@ -441,12 +437,12 @@ void CPulseAudioDirectSound::Mute(bool bMute)
     return;
 
   if (bMute)
-    SetCurrentVolume(GetMinimumVolume());
+    SetCurrentVolume(VOLUME_MINIMUM);
   else
     SetCurrentVolume(m_nCurrentVolume);
 }
 
-HRESULT CPulseAudioDirectSound::SetCurrentVolume(LONG nVolume)
+bool CPulseAudioDirectSound::SetCurrentVolume(long nVolume)
 {
   if (!m_bIsAllocated || m_bPassthrough)
     return -1;
@@ -460,15 +456,15 @@ HRESULT CPulseAudioDirectSound::SetCurrentVolume(LONG nVolume)
   pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_Volume, NULL, NULL);
   if (op == NULL)
     CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
-
-  pa_operation_unref(op);
+  else
+    pa_operation_unref(op);
 
   pa_threaded_mainloop_unlock(m_MainLoop);
 
-  return S_OK;
+  return true;
 }
 
-DWORD CPulseAudioDirectSound::GetSpace()
+unsigned int CPulseAudioDirectSound::GetSpace()
 {
   if (!m_bIsAllocated)
     return 0;
@@ -480,7 +476,7 @@ DWORD CPulseAudioDirectSound::GetSpace()
   return l;
 }
 
-DWORD CPulseAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
+unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int len)
 {
   if (!m_bIsAllocated)
     return len;
@@ -494,7 +490,12 @@ DWORD CPulseAudioDirectSound::AddPackets(unsigned char *data, DWORD len)
   return length - rtn;
 }
 
-FLOAT CPulseAudioDirectSound::GetDelay()
+float CPulseAudioDirectSound::GetCacheTime()
+{
+  return (float)(m_uiBufferSize - GetSpace()) / (float)m_uiBytesPerSecond;
+}
+
+float CPulseAudioDirectSound::GetDelay()
 {
   if (!m_bIsAllocated)
     return 0;
@@ -515,7 +516,7 @@ FLOAT CPulseAudioDirectSound::GetDelay()
   return latency / 1000000.0;
 }
 
-DWORD CPulseAudioDirectSound::GetChunkLen()
+unsigned int CPulseAudioDirectSound::GetChunkLen()
 {
   return m_dwPacketSize;
 }

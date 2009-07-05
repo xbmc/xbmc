@@ -23,11 +23,22 @@
 
 class CDVDInputStream;
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #ifndef _LINUX
 enum CodecID;
 #else
 extern "C" {
-#include "../../ffmpeg/avcodec.h"
+#if (defined USE_EXTERNAL_FFMPEG)
+  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
+    #include <libavcodec/avcodec.h>
+  #elif (defined HAVE_FFMPEG_AVCODEC_H)
+    #include <ffmpeg/avcodec.h>
+  #endif
+#else
+  #include "avcodec.h"
+#endif
 }
 #endif
 enum AVDiscard;
@@ -43,7 +54,7 @@ enum StreamType
 
 enum StreamSource {
   STREAM_SOURCE_NONE          = 0x000,
-  STREAM_SOURCE_DEMUX         = 0x100, 
+  STREAM_SOURCE_DEMUX         = 0x100,
   STREAM_SOURCE_NAV           = 0x200,
   STREAM_SOURCE_DEMUX_SUB     = 0x300,
   STREAM_SOURCE_TEXT          = 0x400
@@ -63,6 +74,7 @@ public:
     iId = 0;
     iPhysicalId = 0;
     codec = (CodecID)0; // CODEC_ID_NONE
+    codec_fourcc = 0;
     type = STREAM_NONE;
     source = STREAM_SOURCE_NONE;
     iDuration = 0;
@@ -88,6 +100,7 @@ public:
   int iId;         // most of the time starting from 0
   int iPhysicalId; // id
   CodecID codec;
+  unsigned int codec_fourcc; // if available
   StreamType type;
   int source;
 
@@ -165,7 +178,7 @@ typedef struct DemuxPacket
   int iSize;     // data size
   int iStreamId; // integer representing the stream index
   int iGroupId;  // the group this data belongs to, used to group data from different streams together
-  
+
   double pts; // pts in DVD_TIME_BASE
   double dts; // dts in DVD_TIME_BASE
   double duration; // duration in DVD_TIME_BASE if available
@@ -178,13 +191,13 @@ public:
 
   CDVDDemux() {}
   virtual ~CDVDDemux() {}
-  
-  
+
+
   /*
    * Reset the entire demuxer (same result as closing and opening it)
    */
   virtual void Reset() = 0;
-  
+
   /*
    * Aborts any internal reading that might be stalling main thread
    * NOTICE - this can be called from another thread
@@ -195,13 +208,13 @@ public:
    * Flush the demuxer, if any data is kept in buffers, this should be freed now
    */
   virtual void Flush() = 0;
-  
+
   /*
    * Read a packet, returns NULL on error
-   * 
+   *
    */
   virtual DemuxPacket* Read() = 0;
-  
+
   /*
    * Seek, time in msec calculated from stream start
    */
@@ -209,7 +222,7 @@ public:
 
   /*
    * Seek to a specified chapter.
-   * startpts can be updated to the point where display should start 
+   * startpts can be updated to the point where display should start
    */
   virtual bool SeekChapter(int chapter, double* startpts = NULL) { return false; }
 
@@ -219,7 +232,7 @@ public:
   virtual int GetChapterCount() { return 0; }
 
   /*
-   * Get current chapter 
+   * Get current chapter
    */
   virtual int GetChapter() { return -1; }
 
@@ -238,17 +251,17 @@ public:
    * returns the total time in msec
    */
   virtual int GetStreamLength() = 0;
-  
+
   /*
    * returns the stream or NULL on error, starting from 0
    */
   virtual CDemuxStream* GetStream(int iStreamId) = 0;
-  
+
   /*
    * return nr of streams, 0 if none
    */
   virtual int GetNrOfStreams() = 0;
-  
+
   /*
    * returns opened filename
    */
@@ -257,12 +270,12 @@ public:
    * return nr of audio streams, 0 if none
    */
   int GetNrOfAudioStreams();
-  
+
   /*
    * return nr of video streams, 0 if none
    */
   int GetNrOfVideoStreams();
-  
+
   /*
    * return nr of subtitle streams, 0 if none
    */
@@ -277,10 +290,14 @@ public:
    * return the video stream, or NULL if it does not exist
    */
   CDemuxStreamVideo* GetStreamFromVideoId(int iVideoIndex);
-  
+
   /*
    * return the subtitle stream, or NULL if it does not exist
    */
   CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
-  
+
+  /*
+   * return a user-presentable codec name of the given stream
+   */
+  virtual void GetStreamCodecName(int iStreamId, CStdString &strName) {};
 };

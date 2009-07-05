@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDInputStreams/DVDInputStreamHttp.h"
@@ -60,18 +60,18 @@ CDVDDemuxShoutcast::~CDVDDemuxShoutcast()
 bool CDVDDemuxShoutcast::Open(CDVDInputStream* pInput)
 {
   Dispose();
-  
+
   m_pInput = pInput;
-  
+
   // the input stream should be a http stream
   if (!pInput->IsStreamType(DVDSTREAM_TYPE_HTTP)) return false;
   CDVDInputStreamHttp* pInputStreamHttp = (CDVDInputStreamHttp*)pInput;
-  
+
   CHttpHeader* pHeader = pInputStreamHttp->GetHttpHeader();
-  
+
   std::string strMetaInt = pHeader->GetValue(ICY_METAINTERVAL);
   std::string strContentType = pHeader->GetContentType();
-  
+
   // create new demuxer stream
   m_pDemuxStream = new CDemuxStreamAudioShoutcast();
   m_pDemuxStream->iId = 0;
@@ -79,10 +79,10 @@ bool CDVDDemuxShoutcast::Open(CDVDInputStream* pInput)
   m_pDemuxStream->iDuration = 0;
   m_pDemuxStream->iChannels = 2;
   m_pDemuxStream->iSampleRate = 0;
-  
+
   // set meta interval
   m_iMetaStreamInterval = atoi(strMetaInt.c_str());
-  
+
   if (stricmp(strContentType.c_str(), CONTENT_TYPE_AAC) == 0 ||
       stricmp(strContentType.c_str(), CONTENT_TYPE_AACPLUS) == 0)
   {
@@ -102,7 +102,7 @@ void CDVDDemuxShoutcast::Dispose()
 {
   if (m_pDemuxStream) delete m_pDemuxStream;
   m_pDemuxStream = NULL;
-  
+
   m_pInput = NULL;
 }
 
@@ -120,14 +120,14 @@ void CDVDDemuxShoutcast::Flush()
 DemuxPacket* CDVDDemuxShoutcast::Read()
 {
   int iRead = 0;
-  
+
   // XXX
   // if meta interval is greater than FileCurl's max read size (currently 64k)
   // it will simply fail becuse the meta-interval will get incorrect
-  
+
   int iDataToRead = SHOUTCAST_BUFFER_SIZE;
   if (m_iMetaStreamInterval > 0) iDataToRead = m_iMetaStreamInterval;
-  
+
   DemuxPacket* pPacket;
   pPacket = CDVDDemuxUtils::AllocateDemuxPacket(iDataToRead);
   if (pPacket)
@@ -135,19 +135,19 @@ DemuxPacket* CDVDDemuxShoutcast::Read()
     pPacket->dts = DVD_NOPTS_VALUE;
     pPacket->pts = DVD_NOPTS_VALUE;
     pPacket->iStreamId = 0;
-    
+
     // read the data
     int iRead = m_pInput->Read(pPacket->pData, iDataToRead);
-    
+
     pPacket->iSize = iRead;
-    
+
     if (iRead <= 0)
     {
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       pPacket = NULL;
     }
   }
-  
+
   if (m_iMetaStreamInterval > 0)
   {
     // we already have read m_iMetaStreamInterval bytes of streaming data
@@ -157,12 +157,12 @@ DemuxPacket* CDVDDemuxShoutcast::Read()
     if (iRead > 0)
     {
       int iMetaLength = l * 16;
-      
+
       if (iMetaLength > 0)
       {
         // iMetaLength cannot be larger then 16 * 255
         BYTE buffer[16 * 255];
-        
+
         // skip meta data for now
         m_pInput->Read(buffer, iMetaLength);
       }
@@ -195,8 +195,8 @@ int CDVDDemuxShoutcast::GetNrOfStreams()
 std::string CDVDDemuxShoutcast::GetFileName()
 {
   if(m_pInput)
-    return m_pInput->GetFileName(); 
-  else 
-    return ""; 
+    return m_pInput->GetFileName();
+  else
+    return "";
 }
 

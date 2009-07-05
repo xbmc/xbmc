@@ -116,7 +116,6 @@ public:
   void Render();
 
   void DynamicResourceAlloc(bool bOnOff);
-  void PreAllocResources();
   void AllocResources();
   void FreeResources(bool immediately = false);
 
@@ -142,6 +141,7 @@ public:
 
   bool HitTest(const CPoint &point) const { return CRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height).PtInRect(point); };
   bool IsAllocated() const { return m_isAllocated != NO; };
+  bool FailedToAlloc() const { return m_isAllocated == FAILED; };
   bool ReadyToRender() const;
 protected:
   void CalculateSize();
@@ -179,11 +179,12 @@ protected:
   unsigned int m_currentFrame;
   DWORD m_frameCounter;
 
-  float m_diffuseScaleU, m_diffuseScaleV; // scale factor of the diffuse frame (it's not always 1:1)
+  float m_diffuseU, m_diffuseV;           // size of the diffuse frame (in tex coords)
+  float m_diffuseScaleU, m_diffuseScaleV; // scale factor of the diffuse frame (from texture coords to diffuse tex coords)
   CPoint m_diffuseOffset;                 // offset into the diffuse frame (it's not always the origin)
 
   bool m_allocateDynamically;
-  enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE };
+  enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE, FAILED };
   ALLOCATE_TYPE m_isAllocated;
 
   CTextureInfo m_info;

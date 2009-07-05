@@ -162,10 +162,6 @@ void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 }
 
-void CDummyVideoPlayer::ToggleFrameDrop()
-{
-}
-
 void CDummyVideoPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   strAudioInfo = "DummyVideoPlayer - nothing to see here";

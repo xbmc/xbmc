@@ -15,12 +15,12 @@ eRemoteMode g_mode = DEFAULT_MODE;
 std::string g_server_address="localhost";
 std::string g_app_path = "";
 std::string g_app_home = "";
-double g_universal_timeout = 500;
+double g_universal_timeout = 0.500;
 bool g_verbose_mode = false;
 
 //
-const char* PROGNAME="OSXRemote";
-const char* PROGVERS="0.1";
+const char* PROGNAME="XBMCHelper";
+const char* PROGVERS="0.5";
 
 void ParseOptions(int argc, char** argv);
 void ReadConfig();
@@ -87,8 +87,13 @@ void ReadConfig()
 	int i = 0;
 	argv[i++] = "XBMCHelper";
   
-	for (vector<string>::iterator it = args.begin(); it != args.end(); )
+	for (vector<string>::iterator it = args.begin(); it != args.end(); ){
+    //fixup the arguments, here: remove '"' like bash would normally do
+    std::string::size_type j = 0;
+    while ((j = it->find("\"", j)) != std::string::npos )
+      it->replace(j, 1, "");
 		argv[i++] = (char* )(*it++).c_str();
+  }
 	
 	argv[i] = 0;
   
@@ -108,7 +113,7 @@ void ParseOptions(int argc, char** argv)
   g_mode = DEFAULT_MODE;
   g_app_path = "";
   g_app_home = "";
-  g_universal_timeout = 500;
+  g_universal_timeout = 0.5;
   g_verbose_mode = false;
   
   while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1) 
@@ -148,9 +153,13 @@ void ParseOptions(int argc, char** argv)
         break;
     }
   }
-	
+  //reset getopts state
+  optreset = 1;
+  optind = 0;
+  
 	if (readExternal == true)
 		ReadConfig();	
+    
 }
 
 //----------------------------------------------------------------------------
@@ -172,14 +181,16 @@ void Reconfigure(int nSignal)
 		ReadConfig();
     StartHelper();
   }
-	else
-    exit(0);
+	else {
+    QuitEventLoop(GetMainEventLoop());
+  }
 }
 
 //----------------------------------------------------------------------------
 int main (int argc,  char * argv[]) {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   
+  NSLog(@"%s %s starting up...", PROGNAME, PROGVERS);
   gp_xbmchelper = [[XBMCHelper alloc] init];  
   
   signal(SIGHUP, Reconfigure);
@@ -191,7 +202,7 @@ int main (int argc,  char * argv[]) {
   
   //run event loop in this thread
   RunCurrentEventLoop(kEventDurationForever);
-  
+  NSLog(@"%s %s exiting...", PROGNAME, PROGVERS);
   //cleanup
   [gp_xbmchelper release];
   [pool drain];

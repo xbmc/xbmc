@@ -83,7 +83,6 @@ void CMusicInfoScanner::Process()
     if (m_scanType == 0) // load info from files
     {
       CLog::Log(LOGDEBUG, "%s - Starting scan", __FUNCTION__);
-      //m_musicDatabase.BeginTransaction();
 
       if (m_pObserver)
         m_pObserver->OnStateChanged(READING_MUSIC_INFO);
@@ -108,14 +107,20 @@ void CMusicInfoScanner::Process()
       bool cancelled = false;
       while (!cancelled && m_pathsToScan.size())
       {
-        if (!DoScan(*m_pathsToScan.begin()))
+        /*
+         * A copy of the directory path is used because the path supplied is
+         * immediately removed from the m_pathsToScan set in DoScan(). If the
+         * reference points to the entry in the set a null reference error 
+         * occurs.
+         */
+        CStdString directory = *m_pathsToScan.begin();
+        if (!DoScan(directory))
           cancelled = true;
         commit = !cancelled;
       }
 
       if (commit)
       {
-        //m_musicDatabase.CommitTransaction();
         g_infoManager.ResetPersistentCache();
 
         if (m_needsCleanup)
@@ -131,8 +136,6 @@ void CMusicInfoScanner::Process()
           m_musicDatabase.Compress(false);
         }
       }
-      //else
-      //  m_musicDatabase.RollbackTransaction();
 
       fileCountReader.StopThread();
 
@@ -329,6 +332,15 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
   if (m_pObserver)
     m_pObserver->OnDirectoryChanged(strDirectory);
 
+  /*
+   * remove this path from the list we're processing. This must be done prior to
+   * the check for file or folder exclusion to prevent an infinite while loop 
+   * in Process().
+   */
+  set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
+  if (it != m_pathsToScan.end())
+    m_pathsToScan.erase(it);
+
   // Discard all excluded files defined by m_musicExcludeRegExps
 
   CStdStringArray regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
@@ -386,11 +398,6 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
       m_pObserver->OnDirectoryScanned(strDirectory);
     }
   }
-
-  // remove this path from the list we're processing
-  set<CStdString>::iterator it = m_pathsToScan.find(strDirectory);
-  if (it != m_pathsToScan.end())
-    m_pathsToScan.erase(it);
 
   // now scan the subfolders
   for (int i = 0; i < items.Size(); ++i)
@@ -505,19 +512,35 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     UpdateFolderThumb(songsToAdd, items.m_strPath);
 
   // finally, add these to the database
+  set<CStdString> artistsToScan;
+  set< pair<CStdString, CStdString> > albumsToScan;
+  m_musicDatabase.BeginTransaction();
   for (unsigned int i = 0; i < songsToAdd.size(); ++i)
   {
-    if (m_bStop) return i;
+    if (m_bStop)
+    {
+      m_musicDatabase.RollbackTransaction();
+      return i;
+    }
     CSong &song = songsToAdd[i];
     m_musicDatabase.AddSong(song, false);
-    long iArtist = m_musicDatabase.GetArtistByName(song.strArtist);
+    artistsToScan.insert(song.strArtist);
+    albumsToScan.insert(make_pair(song.strAlbum, song.strArtist));
+  }
+  m_musicDatabase.CommitTransaction();
+
+  for (set<CStdString>::iterator i = artistsToScan.begin(); i != artistsToScan.end(); ++i)
+  {
+    long iArtist = m_musicDatabase.GetArtistByName(*i);
     if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
     {
       m_artistsScanned.push_back(iArtist);
-      CFileItem item(song);
+      CFileItem item;
+      item.GetMusicInfoTag()->SetArtist(*i);
       CStdString strCached = item.GetCachedFanart();
       if (!XFILE::CFile::Exists(strCached) && m_musicDatabase.GetArtistPath(iArtist,item.m_strPath))
       {
+        item.m_bIsFolder = true;
         CStdString strFanart = item.CacheFanart(true);
         if (!strFanart.IsEmpty())
         {
@@ -529,29 +552,33 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       {
         CStdString strPath;
         strPath.Format("musicdb://2/%u/",iArtist);
-        if (!DownloadArtistInfo(strPath,song.strArtist)) // assume we want to retry
+        if (!DownloadArtistInfo(strPath,*i)) // assume we want to retry
           m_artistsScanned.pop_back();
-
-        if (m_pObserver)
-          m_pObserver->OnStateChanged(READING_MUSIC_INFO);
       }
     }
-    if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoalbuminfo"))
+  }
+
+  if (g_guiSettings.GetBool("musiclibrary.autoalbuminfo"))
+  {
+    for (set< pair<CStdString, CStdString> >::iterator i = albumsToScan.begin(); i != albumsToScan.end(); ++i)
     {
-      long iAlbum = m_musicDatabase.GetAlbumByName(song.strAlbum,song.strArtist);
+      if (m_bStop)
+        return songsToAdd.size();
+    
+      long iAlbum = m_musicDatabase.GetAlbumByName(i->first, i->second);
       CStdString strPath;
       strPath.Format("musicdb://3/%u/",iAlbum);
 
       CMusicAlbumInfo albumInfo;
       bool bCanceled;
-      if (find(m_albumsScanned.begin(),m_albumsScanned.end(),iAlbum) == m_albumsScanned.end())
-        if (DownloadAlbumInfo(strPath,song.strArtist,song.strAlbum,bCanceled,albumInfo))
+      if (find(m_albumsScanned.begin(), m_albumsScanned.end(), iAlbum) == m_albumsScanned.end())
+        if (DownloadAlbumInfo(strPath, i->second, i->first, bCanceled, albumInfo))
           m_albumsScanned.push_back(iAlbum);
-
-      if (m_pObserver)
-        m_pObserver->OnStateChanged(READING_MUSIC_INFO);
     }
   }
+  if (m_pObserver)
+    m_pObserver->OnStateChanged(READING_MUSIC_INFO);
+
   return songsToAdd.size();
 }
 
@@ -754,8 +781,6 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
 {
   // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
   if (0 == items.Size()) return 0;
-  unsigned char md5hash[16];
-  char md5HexString[33];
   XBMC::MD5 md5state;
   int count = 0;
   for (int i = 0; i < items.Size(); ++i)
@@ -768,9 +793,7 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
     if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
-  md5state.getDigest(md5hash);
-  XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
-  hash = md5HexString;
+  md5state.getDigest(hash);
   return count;
 }
 
@@ -827,6 +850,10 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     {
       CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
       CMusicAlbumInfo album("nfo",scrUrl);
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReader.m_strScraper.c_str());
+      CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
+      info.strPath = nfoReader.m_strScraper;
+      scraper.SetScraperInfo(info);
       scraper.GetAlbums().push_back(album);
     }
     else
@@ -907,6 +934,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           return false;
         }
         bestRelevance = relevance;
+        bestMatch = 0;
       }
 
       iSelectedAlbum = bestMatch;
@@ -1042,6 +1070,10 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     {
       CScraperUrl scrUrl(nfoReader.m_strImDbUrl);
       CMusicArtistInfo artist("nfo",scrUrl);
+      CLog::Log(LOGDEBUG,"-- nfo-scraper: %s",nfoReader.m_strScraper.c_str());
+      CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
+      info.strPath = nfoReader.m_strScraper;
+      scraper.SetScraperInfo(info);
       scraper.GetArtists().push_back(artist);
     }
     else
@@ -1162,8 +1194,8 @@ void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, 
 
   // check fanart
   CFileItem item2(artistPath, true);
-  item.GetMusicInfoTag()->SetArtist(artist.strArtist);
+  item2.GetMusicInfoTag()->SetArtist(artistName);
   if (!CFile::Exists(item2.GetCachedFanart()))
-    if (!artist.fanart.m_xml.IsEmpty() && artist.fanart.DownloadImage(item2.GetCachedFanart()))
+    if (!artist.fanart.m_xml.IsEmpty() && !artist.fanart.DownloadImage(item2.GetCachedFanart()))
       CLog::Log(LOGERROR, "Failed to download fanart %s to %s", artist.fanart.GetImageURL().c_str(), item2.GetCachedFanart().c_str());
 }

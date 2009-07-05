@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDSubtitleParserMicroDVD.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
@@ -29,7 +29,7 @@
 using namespace std;
 
 CDVDSubtitleParserMicroDVD::CDVDSubtitleParserMicroDVD(CDVDSubtitleStream* stream, const string& filename)
-    : CDVDSubtitleParser(stream, filename)
+    : CDVDSubtitleParserText(stream, filename)
 {
 
 }
@@ -41,15 +41,15 @@ CDVDSubtitleParserMicroDVD::~CDVDSubtitleParserMicroDVD()
 
 bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
 {
-  if (!m_pStream->Open(m_strFileName))
+  if (!CDVDSubtitleParserText::Open())
     return false;
 
-  CLog::Log(LOGERROR, "%s - framerate %d:%d", __FUNCTION__, hints.fpsrate, hints.fpsscale);
+  CLog::Log(LOGDEBUG, "%s - framerate %d:%d", __FUNCTION__, hints.fpsrate, hints.fpsscale);
   if (hints.fpsscale > 0 && hints.fpsrate > 0)
   {
     m_framerate = (double)hints.fpsscale / (double)hints.fpsrate;
     m_framerate *= DVD_TIME_BASE;
-  } 
+  }
   else
     m_framerate = DVD_TIME_BASE / 25.0;
 
@@ -58,10 +58,12 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
   CRegExp reg;
   if (!reg.RegComp("\\{([0-9]+)\\}\\{([0-9]+)\\}([^|]*?)(\\|([^|]*?))?$"))//(\\|([^|]*?))?$"))
   {
-    delete m_pStream;
-    m_pStream = NULL;
+    m_pStream->Close();
     return false;
   }
+
+  CStdStringW strUTF16;
+  CStdStringA strUTF8;
 
   while (m_pStream->ReadLine(line, sizeof(line)))
   {
@@ -79,18 +81,19 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
       pOverlay->iPTSStartTime = m_framerate * atoi(startFrame);
       pOverlay->iPTSStopTime  = m_framerate * atoi(endFrame);
 
-      for(int i=0;i<3 && lines[i];i++)
+      for(int i=0;i<3 && lines[i] && *lines[i];i++)
       {
-        CStdStringW strUTF16;
-        CStdStringA strUTF8;
-        g_charsetConverter.subtitleCharsetToW(lines[i], strUTF16);
-        g_charsetConverter.wToUTF8(strUTF16, strUTF8);
-        if (strUTF8.IsEmpty())
-          continue;
-        
-        CLog::Log(LOGDEBUG, "%s", strUTF8.c_str());
-        // add a new text element to our container
-        pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
+        if (g_charsetConverter.isValidUtf8(lines[i]))
+          // simply add UTF-8 valid text element to our container
+          pOverlay->AddElement(new CDVDOverlayText::CElementText(lines[i]));
+        else
+        {
+          g_charsetConverter.subtitleCharsetToW(lines[i], strUTF16);
+          g_charsetConverter.wToUTF8(strUTF16, strUTF8);
+          if (!strUTF8.IsEmpty())
+            // add a new text element to our container
+            pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
+        }
       }
       free(lines[0]);
       free(lines[1]);
@@ -101,25 +104,7 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
       m_collection.Add(pOverlay);
     }
   }
-  delete m_pStream;
-  m_pStream = NULL;
-
+  m_pStream->Close();
   return true;
-}
-
-void CDVDSubtitleParserMicroDVD::Dispose()
-{
-  m_collection.Clear();
-}
-
-void CDVDSubtitleParserMicroDVD::Reset()
-{
-  m_collection.Reset();
-}
-
-// parse exactly one subtitle
-CDVDOverlay* CDVDSubtitleParserMicroDVD::Parse(double iPts)
-{
-  return  m_collection.Get(iPts);;
 }
 

@@ -46,7 +46,8 @@
 #include "SkinInfo.h"
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
-#include "lib/libscrobbler/scrobbler.h"
+#include "lib/libscrobbler/lastfmscrobbler.h"
+#include "lib/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIDialogGamepad.h"
@@ -72,7 +73,7 @@
 #endif
 #endif
 #ifdef __APPLE__
-#include "CPortAudio.h"
+#include "CoreAudio.h"
 #include "XBMCHelper.h"
 #endif
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
@@ -84,6 +85,7 @@
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "File.h"
 
 #include "Zeroconf.h"
 #include "PowerManager.h"
@@ -93,6 +95,8 @@
 #include "WINDirectSound.h"
 #endif
 #include <map>
+#include "ScriptSettings.h"
+#include "GUIDialogPluginSettings.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -749,6 +753,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13610), APPLE_REMOTE_DISABLED);
       pControl->AddLabel(g_localizeStrings.Get(13611), APPLE_REMOTE_STANDARD);
       pControl->AddLabel(g_localizeStrings.Get(13612), APPLE_REMOTE_UNIVERSAL);
+      pControl->AddLabel(g_localizeStrings.Get(13613), APPLE_REMOTE_MULTIREMOTE);
       pControl->SetValue(pSettingInt->GetData());
     }
 #endif
@@ -870,6 +875,30 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(12020), RESUME_ASK);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("videoplayer.synctype"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13501), SYNC_DISCON);
+      pControl->AddLabel(g_localizeStrings.Get(13502), SYNC_SKIPDUP);
+      pControl->AddLabel(g_localizeStrings.Get(13503), SYNC_RESAMPLE);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("videoplayer.resamplequality"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(13506), RESAMPLE_LOW);
+      pControl->AddLabel(g_localizeStrings.Get(13507), RESAMPLE_MID);
+      pControl->AddLabel(g_localizeStrings.Get(13508), RESAMPLE_HIGH);
+      pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("weather.plugin"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInWeatherPlugins(pControl, g_guiSettings.GetString("weather.plugin"));
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -885,7 +914,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
 {
   for (unsigned int i = 0; i < m_vecSettings.size(); i++)
   {
-    CBaseSettingControl *pSettingControl = m_vecSettings[i];
+    CBaseSettingControl *pSettingControl = m_vecSettings[i];  
     pSettingControl->Update();
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
     if (strSetting.Equals("videoscreen.testresolution"))
@@ -1184,6 +1213,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       pControl->SetEnabled(geteuid() == 0);
     }
 #endif
+    else if (strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
+    {
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+        pControl->SetEnabled(g_guiSettings.GetBool("scrobbler.lastfmsubmit") | g_guiSettings.GetBool("scrobbler.lastfmsubmitradio"));
+    }
+    else if (strSetting.Equals("scrobbler.librefmusername") || strSetting.Equals("scrobbler.librefmpassword"))
+    {
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("scrobbler.librefmsubmit"));
+    }
     else if (strSetting.Equals("postprocessing.verticaldeblocklevel"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
@@ -1254,6 +1294,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetLabel2(g_weatherManager.GetAreaCity(pSetting->GetData()));
+    }
+    else if (strSetting.Equals("weather.plugin"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+      if (pControl->GetCurrentLabel().Equals(g_localizeStrings.Get(13611)))
+        g_guiSettings.SetString("weather.plugin", "");
+      else
+        g_guiSettings.SetString("weather.plugin", pControl->GetCurrentLabel());
     }
     else if (strSetting.Equals("system.leddisableonplayback"))
     {
@@ -1371,6 +1419,23 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
+    else if (strSetting.Equals("videoplayer.maxspeedadjust"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
+    }      
+    else if (strSetting.Equals("videoplayer.resamplequality"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
+    }
+    else if (strSetting.Equals("weather.pluginsettings"))
+    {
+      // Create our base path
+      CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
+    }
   }
 }
 
@@ -1414,6 +1479,18 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
         ((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
       g_weatherManager.ResetTimer();
     }
+  }
+  else if (strSetting.Equals("weather.plugin"))
+  {
+    g_weatherManager.ResetTimer();
+  }
+  else if (strSetting.Equals("weather.pluginsettings"))
+  {
+    // Create our base path
+    CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
+    CGUIDialogPluginSettings::ShowAndGetInput(basepath);
+    // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
+    g_weatherManager.ResetTimer();
   }
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
@@ -1567,7 +1644,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       thumbs = CGUIDialogYesNo::ShowAndGetInput(iHeading,20430,-1,-1,cancelled);
     if (cancelled)
       return;
-    overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
+    if (singleFile)
+      overwrite = CGUIDialogYesNo::ShowAndGetInput(iHeading,20431,-1,-1,cancelled);
     if (cancelled)
       return;
     if (singleFile || CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(661), path, true))
@@ -1675,18 +1753,34 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     JumpToSection(WINDOW_SETTINGS_APPEARANCE, "locale");
   }
-  else if (strSetting.Equals("lastfm.enable") || strSetting.Equals("lastfm.username") || strSetting.Equals("lastfm.password"))
+  else if (strSetting.Equals("scrobbler.lastfmsubmit") || strSetting.Equals("scrobbler.lastfmsubmitradio") || strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
   {
-    if (g_guiSettings.GetBool("lastfm.enable") || g_guiSettings.GetBool("lastfm.recordtoprofile"))
+    CStdString strPassword=g_guiSettings.GetString("scrobbler.lastfmpassword");
+    CStdString strUserName=g_guiSettings.GetString("scrobbler.lastfmusername");
+    if ((g_guiSettings.GetBool("scrobbler.lastfmsubmit") || 
+         g_guiSettings.GetBool("scrobbler.lastfmsubmitradio")) &&
+         !strUserName.IsEmpty() && !strPassword.IsEmpty())
     {
-      CStdString strPassword=g_guiSettings.GetString("lastfm.password");
-      CStdString strUserName=g_guiSettings.GetString("lastfm.username");
-      if (!strUserName.IsEmpty() || !strPassword.IsEmpty())
-        CScrobbler::GetInstance()->Init();
+      CLastfmScrobbler::GetInstance()->Init();
     }
     else
     {
-      CScrobbler::GetInstance()->Term();
+      CLastfmScrobbler::GetInstance()->Term();
+    }
+  }
+  else if (strSetting.Equals("scrobbler.librefmsubmit") || strSetting.Equals("scrobbler.librefmsubmitradio") || strSetting.Equals("scrobbler.librefmusername") || strSetting.Equals("scrobbler.librefmpassword"))
+  {
+    CStdString strPassword=g_guiSettings.GetString("scrobbler.librefmpassword");
+    CStdString strUserName=g_guiSettings.GetString("scrobbler.librefmusername");
+    if ((g_guiSettings.GetBool("scrobbler.librefmsubmit") || 
+         g_guiSettings.GetBool("scrobbler.librefmsubmitradio")) &&
+         !strUserName.IsEmpty() && !strPassword.IsEmpty())
+    {
+      CLibrefmScrobbler::GetInstance()->Init();
+    }
+    else
+    {
+      CLibrefmScrobbler::GetInstance()->Term();
     }
   }
   else if (strSetting.Equals("musicplayer.outputtoallspeakers"))
@@ -2452,6 +2546,7 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
 
 void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int &iControlID)
 {
+  if (!pSetting->IsVisible()) return;  // not displayed in current session
   CBaseSettingControl *pSettingControl = NULL;
   CGUIControl *pControl = NULL;
   if (pSetting->GetControlType() == CHECKMARK_CONTROL)
@@ -3184,8 +3279,9 @@ void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-
+#ifndef __APPLE__
   pControl->AddLabel(g_localizeStrings.Get(13101) , VSYNC_DRIVER);
+#endif
   pControl->AddLabel(g_localizeStrings.Get(13106) , VSYNC_DISABLED);
   pControl->AddLabel(g_localizeStrings.Get(13107) , VSYNC_VIDEO);
   pControl->AddLabel(g_localizeStrings.Get(13108) , VSYNC_ALWAYS);
@@ -3742,20 +3838,26 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
 #ifdef __APPLE__
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-
-  std::vector<PaDeviceInfo* > deviceList = CPortAudio::GetDeviceList();
-  std::vector<PaDeviceInfo* >::const_iterator iter = deviceList.begin();
-
-  for (int i=0; iter != deviceList.end(); i++)
+  
+  CoreAudioDeviceList deviceList;
+  CCoreAudioHardware::GetOutputDevices(&deviceList);
+  
+  if (CCoreAudioHardware::GetDefaultOutputDevice())
+    pControl->AddLabel("Default Output Device", 0); // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
+  int activeDevice = 0;
+  
+  CStdString deviceName;
+  for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
   {
-    PaDeviceInfo* dev = *iter;
-    pControl->AddLabel(dev->name, i);
-
-    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(dev->name))
-        pControl->SetValue(i);
-
-    ++iter;
+    CCoreAudioDevice device(deviceList.front());
+    pControl->AddLabel(device.GetName(deviceName), i);
+    
+    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
+      activeDevice = i; // Tag this one
+    
+    deviceList.pop_front();
   }
+  pControl->SetValue(activeDevice);
 #elif defined(_WIN32PC)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
@@ -3773,6 +3875,39 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
     ++iter;
   }
 #endif
+}
+
+void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)
+{
+  int j=0;
+  int k=0;
+  pControl->Clear();
+  // add our disable option
+  pControl->AddLabel(g_localizeStrings.Get(13611), j++);
+
+  CFileItemList items;
+  if (CDirectory::GetDirectory("special://home/plugins/weather/", items, "/", false))
+  {
+    for (int i=0; i<items.Size(); ++i)
+    {    
+      // create the full path to the plugin
+      CStdString plugin;
+      CStdString pluginPath = items[i]->m_strPath;
+      // remove slash at end so we can use the plugins folder as plugin name
+      CUtil::RemoveSlashAtEnd(pluginPath);
+      // add default.py to our plugin path to create the full path
+      CUtil::AddFileToFolder(pluginPath, "default.py", plugin);
+      if (XFILE::CFile::Exists(plugin))
+      {
+        // is this the users choice
+        if (CUtil::GetFileName(pluginPath).Equals(strSelected))
+          k = j;
+        // we want to use the plugins folder as name
+        pControl->AddLabel(CUtil::GetFileName(pluginPath), j++);
+      }
+    }
+  }
+  pControl->SetValue(k);
 }
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
@@ -3839,5 +3974,3 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
    }
 #endif
 }
-
-

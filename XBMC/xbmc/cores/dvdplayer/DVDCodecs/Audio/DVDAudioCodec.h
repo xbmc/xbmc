@@ -20,14 +20,24 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include <vector>
 #ifndef _LINUX
 
 enum CodecID;
 #else
 extern "C" {
-#include "ffmpeg/avcodec.h"
+#if (defined USE_EXTERNAL_FFMPEG)
+  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
+    #include <libavcodec/avcodec.h>
+  #elif (defined HAVE_FFMPEG_AVCODEC_H)
+    #include <ffmpeg/avcodec.h>
+  #endif
+#else
+  #include "avcodec.h"
+#endif
 }
 #endif
 
@@ -43,7 +53,7 @@ public:
 
   CDVDAudioCodec() {}
   virtual ~CDVDAudioCodec() {}
-   
+
   /*
    * Open the decoder, returns true on success
    */
@@ -53,39 +63,39 @@ public:
    * Dispose, Free all resources
    */
   virtual void Dispose() = 0;
-  
+
   /*
    * returns bytes used or -1 on error
-   * 
+   *
    */
   virtual int Decode(BYTE* pData, int iSize) = 0;
-  
+
   /*
    * returns nr of bytes used or -1 on error
    * the data is valid until the next Decode call
    */
   virtual int GetData(BYTE** dst) = 0;
-  
+
   /*
    * resets the decoder
    */
   virtual void Reset() = 0;
-  
+
   /*
    * returns the nr of channels for the decoded audio stream
    */
   virtual int GetChannels() = 0;
-  
+
   /*
    * returns the samplerate for the decoded audio stream
    */
   virtual int GetSampleRate() = 0;
-  
+
   /*
    * returns the bitspersample for the decoded audio stream (eg 16 bits)
    */
   virtual int GetBitsPerSample() = 0;
-  
+
   /*
    * returns if the codec requests to use passtrough
    */

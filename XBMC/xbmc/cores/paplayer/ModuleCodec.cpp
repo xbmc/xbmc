@@ -112,7 +112,7 @@ int ModuleCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   if (!m_renderID)
     m_renderID = m_dll.StartPlayback(m_module,0);
 
-  if ((*actualsize=m_dll.FillBuffer(m_module,m_renderID,(char*)pBuffer,size,1.f)*4) == size)
+  if ((*actualsize = m_dll.FillBuffer(m_renderID, (char *)pBuffer, size, 1.0) * 4) == size)
     return READ_SUCCESS;
 
   return READ_ERROR;

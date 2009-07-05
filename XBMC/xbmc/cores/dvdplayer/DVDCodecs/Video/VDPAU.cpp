@@ -49,30 +49,41 @@ const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Des
 
 CVDPAU::CVDPAU(int width, int height)
 {
+  glXBindTexImageEXT = NULL;
+  glXReleaseTexImageEXT = NULL;
   vdp_device = NULL;
   dl_handle  = NULL;
   dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
   if (!dl_handle) return;
   surfaceNum      = presentSurfaceNum = 0;
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
-  vdpauConfigured = false;
-  CSingleLock lock(g_graphicsContext);
-  m_Surface = new CSurface(g_graphicsContext.getScreenSurface());
-  m_Surface->MakePixmap(width,height);
-  m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
-  InitVDPAUProcs();
+  vdpauConfigured = vdpauInited = false;
   recover = VDPAURecovered = false;
+
+  m_glPixmap = 0;
+  m_glPixmapTexture = 0;
+  m_Pixmap = 0;
+  m_glContext = 0;
+  m_pixmapBound = false;
+  if (!glXBindTexImageEXT)
+    glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
+  if (!glXReleaseTexImageEXT)
+    glXReleaseTexImageEXT = (PFNGLXRELEASETEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXReleaseTexImageEXT");
+
   totalAvailableOutputSurfaces = outputSurface = presentSurface = 0;
   vid_width = vid_height = outWidth = outHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
+  m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
+
+  InitVDPAUProcs();
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
   interlaced     = false;
   VDPAUSwitching = false;
   max_references = 0;
- 
+
   if (vdp_device)
     InitCSCMatrix();
 
@@ -85,20 +96,174 @@ CVDPAU::CVDPAU(int width, int height)
 CVDPAU::~CVDPAU()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
-  m_Surface->ReleasePixmap();
-  FiniVDPAUOutput();
-  FiniVDPAUProcs();
-  if (m_Surface)
+  if (m_glPixmap)
   {
-    CLog::Log(LOGNOTICE,"Deleting m_Surface in CVDPAU");
-    delete m_Surface;
-    m_Surface = NULL;
+    CLog::Log(LOGINFO, "GLX: Destroying glPixmap");
+    glXDestroyPixmap(m_Display, m_glPixmap);
+    m_glPixmap = NULL;
+  }
+  if (m_Pixmap)
+  {
+    CLog::Log(LOGINFO, "GLX: Destroying XPixmap");
+    XFreePixmap(m_Display, m_Pixmap);
+    m_Pixmap = NULL;
+  }
+  if (vdpauInited)
+  {
+    FiniVDPAUOutput();
+    FiniVDPAUProcs();
+  }
+  if (m_glContext)
+  {
+    CLog::Log(LOGINFO, "GLX: Destroying glContext");
+    glXDestroyContext(m_Display, m_glContext);
+    m_glContext = NULL;
   }
   if (dl_handle)
   {
     dlclose(dl_handle);
     dl_handle = NULL;
   }
+}
+
+bool CVDPAU::MakePixmap(int width, int height)
+{
+  int num=0;
+  GLXFBConfig *fbConfigs=NULL;
+  int fbConfigIndex = 0;
+  XVisualInfo *visInfo=NULL;
+
+  bool status = false;
+
+  int doubleVisAttributes[] = {
+    GLX_RENDER_TYPE, GLX_RGBA_BIT,
+    GLX_RED_SIZE, 8,
+    GLX_GREEN_SIZE, 8,
+    GLX_BLUE_SIZE, 8,
+    GLX_ALPHA_SIZE, 8,
+    GLX_DEPTH_SIZE, 8,
+    GLX_DRAWABLE_TYPE, GLX_PIXMAP_BIT,
+    GLX_BIND_TO_TEXTURE_RGBA_EXT, True,
+    GLX_DOUBLEBUFFER, True,
+    GLX_Y_INVERTED_EXT, True,
+    GLX_X_RENDERABLE, True, // Added by Rob
+    None
+  };
+
+  int pixmapAttribs[] = {
+    GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
+    GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
+    None
+  };
+
+//  if (m_bDoublebuffer)
+    fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), doubleVisAttributes, &num);
+//  else
+//    fbConfigs = glXChooseFBConfig(m_Display, DefaultScreen(m_Display), singleVisAttributes, &num);
+
+  // Get our window attribs.
+  XWindowAttributes wndattribs;
+  XGetWindowAttributes(m_Display, DefaultRootWindow(m_Display), &wndattribs); // returns a status but I don't know what success is
+
+  CLog::Log(LOGDEBUG, "Found %d fbconfigs.", num);
+  fbConfigIndex = 0;
+
+  if (fbConfigs==NULL) 
+  {
+    CLog::Log(LOGERROR, "GLX Error: MakePixmap: No compatible framebuffers found");
+    XFree(fbConfigs);
+    return status;
+  }
+  CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
+  m_Pixmap = XCreatePixmap(m_Display,
+                           DefaultRootWindow(m_Display),
+                           width,
+                           height,
+                           wndattribs.depth);
+  if (!m_Pixmap)
+  {
+    CLog::Log(LOGERROR, "GLX Error: MakePixmap: Unable to create XPixmap");
+    XFree(fbConfigs);
+    return status;
+  }
+  m_glPixmap = glXCreatePixmap(m_Display, fbConfigs[fbConfigIndex], m_Pixmap, pixmapAttribs);
+
+  if (m_glPixmap)
+  {
+    visInfo = glXGetVisualFromFBConfig(m_Display, fbConfigs[fbConfigIndex]);
+    if (!visInfo)
+    {
+      CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
+      return false;
+    }
+    CLog::Log(LOGINFO, "GLX: Creating Pixmap context");
+    m_glContext = glXCreateContext(m_Display, visInfo, NULL, True);
+    XFree(visInfo);
+    if (glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
+    {
+      CLog::Log(LOGINFO, "GL: Initialised Pixmap");
+      GLenum glErr;
+      if (!m_glPixmapTexture)
+      {
+        CLog::Log(LOGINFO, "GL: Generated Pixmap Texture");
+        glGenTextures (1, &m_glPixmapTexture);
+        glErr = glGetError();
+        if ((glErr == GL_INVALID_VALUE) | (glErr == GL_INVALID_OPERATION))
+        {
+          CLog::Log(LOGINFO, "glGenTextures returned an error!");
+          status = false;
+        }
+      }
+    } 
+    else
+    {
+      CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
+      status = false;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "GLX Error: Could not create Pixmap");
+    status = false;
+  }
+  XFree(fbConfigs);
+  return status;
+}
+
+void CVDPAU::BindPixmap()
+{
+  if (!m_pixmapBound)
+  {
+    //CLog::Log(LOGDEBUG,"glXBindTexImageEXT");
+    CSingleLock lock(g_graphicsContext);
+    XLockDisplay(m_Display);
+    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
+    glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
+    VerifyGLState();
+    XUnlockDisplay(m_Display);
+    m_pixmapBound = true;
+  }
+}
+
+void CVDPAU::ReleasePixmap()
+{
+  if (m_pixmapBound)
+  {
+    //CLog::Log(LOGDEBUG,"glXReleaseTexImageEXT");
+    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
+    VerifyGLState();
+  }
+  m_pixmapBound = false;
+}
+
+void CVDPAU::Create(int width, int height)
+{
+  if (vdpauInited)
+    return;
+
+  CSingleLock lock(g_graphicsContext);
+  MakePixmap(width,height);
+  vdpauInited = true;
 }
 
 void CVDPAU::CheckRecover(bool force)
@@ -566,7 +731,7 @@ void CVDPAU::InitVDPAUOutput()
 {
   VdpStatus vdp_st;
   vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
-                                                    m_Surface->GetXPixmap(), //x_window,
+                                                    m_Pixmap, //x_window,
                                                     &vdp_flip_target);
   CheckStatus(vdp_st, __LINE__);
 
@@ -674,6 +839,7 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   past[1] = past[0] = current = future = VDP_INVALID_HANDLE;
   CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",g_graphicsContext.GetWidth(),vid_width);
+  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i",g_graphicsContext.GetHeight(),vid_height);
   ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type);
 
   if(avctx->pix_fmt == PIX_FMT_VDPAU_H264)
@@ -775,6 +941,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   vdpau_render_state * render = NULL;
 
+  vdp->Create(avctx->width,avctx->height);
   // make sure device is recovered
   vdp->CheckRecover();
 
@@ -932,8 +1099,8 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     future = render->surface;
   }
 
-  if (( (long)outRectVid.x1 != vid_width ) ||
-      ( (long)outRectVid.y1 != vid_height ))
+  if (( outRectVid.x1 != vid_width ) ||
+      ( outRectVid.y1 != vid_height ))
   {
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;

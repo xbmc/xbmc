@@ -1311,7 +1311,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
     if (!item.HasThumbnail())
 	{
       thumb = "[None] " + thumb;
-	  copyThumb("defaultPictureBig.png",thumbFn);
+	  copyThumb("DefaultPicture.png",thumbFn);
 	}
 	else
       copyThumb(thumb,thumbFn);
@@ -1416,7 +1416,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
 	  thumb=g_infoManager.GetImage(VIDEOPLAYER_COVER, (DWORD)-1);
 		
 		//CPicture pic;
-        //pic.CacheSkinImage("defaultAlbumCover.png", cachedThumb);
+        //pic.CacheSkinImage("DefaultAlbumCover.png", cachedThumb);
 
 	  copyThumb(thumb,thumbFn);
 	  output+=closeTag+openTag+"Thumb"+tag+":"+thumb;
@@ -1720,9 +1720,9 @@ int CXbmcHttp::xbmcGetGUIStatus()
         output += closeTag+openTag+"Type:Button";
         if (strTmp!="")
           output += closeTag+openTag+"Description:" + strTmp;
-        CStdStringArray actions = ((CGUIButtonControl *)pControl)->GetClickActions();
+        vector<CGUIActionDescriptor> actions = ((CGUIButtonControl *)pControl)->GetClickActions();
         if (actions.size())
-          output += closeTag+openTag+"Execution:" + actions[0];
+          output += closeTag+openTag+"Execution:" + actions[0].m_action;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
       {
@@ -1850,16 +1850,23 @@ int CXbmcHttp::xbmcSetCurrentPlayList(int numParas, CStdString paras[])
 
 int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
 {
-  // options = showindex
-  // index;path
+  // option = showindex -> index;path
+  // option = showtitle -> path;tracktitle
+  // option = showduration -> path;duration
 
   CStdString list="";
   int playList = g_playlistPlayer.GetCurrentPlaylist();
   bool bShowIndex = false;
+  bool bShowTitle = false;
+  bool bShowDuration = false;
   for (int i = 0; i < numParas; ++i)
   {
     if (paras[i].Equals("showindex"))
       bShowIndex = true;
+    else if (paras[i].Equals("showtitle"))
+      bShowTitle = true;
+    else if (paras[i].Equals("showduration"))
+      bShowDuration = true;
     else if (StringUtils::IsNaturalNumber(paras[i]))
       playList = atoi(paras[i]);
   }
@@ -1880,6 +1887,14 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
       strInfo += tagVal->GetURL();
     else
       strInfo += item->m_strPath;
+    if (bShowTitle && tagVal)
+      strInfo += ';' + tagVal->GetTitle();
+    if (bShowDuration && tagVal)
+    {
+      CStdString duration;
+      StringUtils::SecondsToTimeString(tagVal->GetDuration(), duration, TIME_FORMAT_GUESS);
+      strInfo += ';' + duration;
+    }
     list += closeTag + openTag + strInfo;
   }
   return SetResponse(list) ;

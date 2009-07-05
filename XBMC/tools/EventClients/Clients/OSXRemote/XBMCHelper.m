@@ -20,6 +20,7 @@
   mp_wrapper = nil;
   mp_remote_control = [[[AppleRemote alloc] initWithDelegate: self] retain];
   [mp_remote_control setProcessesBacklog:true];
+  [mp_remote_control setOpenInExclusiveMode:true];
   if( ! mp_remote_control ){
     NSException* myException = [NSException
                                 exceptionWithName:@"AppleRemoteInitExecption"
@@ -28,12 +29,16 @@
     @throw myException;
   }
   [mp_remote_control startListening: self];
+  if(![mp_remote_control isListeningToRemote]){
+    ELOG(@"Warning: XBMCHelper could not open the IR-Device in exclusive mode. Other remote control apps running?");
+  }
   return self;
 }
 
 - (void) dealloc{
   PRINT_SIGNATURE();
-  [mp_remote_control release];
+  [mp_remote_control stopListening: self];  
+  [mp_remote_control release];  
   [mp_wrapper release];
   [mp_app_path release];
   [mp_home_path release];
@@ -49,7 +54,7 @@
   }
   
   NSFileManager *fileManager = [NSFileManager defaultManager];
-  if(![fileManager fileExistsAtPath:mp_app_path isDirectory:NULL]){
+  if(![fileManager fileExistsAtPath:mp_app_path]){
     ELOG(@"Path does not exist: %@. Cannot launch executable", mp_app_path);
     return;
   }
@@ -83,7 +88,10 @@
         [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_RELEASE];
       break;
     case kRemoteButtonRight_Hold:
-      if(pressedDown) [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H];
+      if(pressedDown) 
+        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_H_RELEASE];
       break;
     case kRemoteButtonLeft:
       if(pressedDown) 
@@ -92,7 +100,10 @@
         [mp_wrapper handleEvent:ATV_BUTTON_LEFT_RELEASE];
       break;
     case kRemoteButtonLeft_Hold:
-      if(pressedDown) [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H];
+      if(pressedDown) 
+        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H];
+      else
+        [mp_wrapper handleEvent:ATV_BUTTON_LEFT_H_RELEASE];
       break;
     case kRemoteButtonPlus:
       if(pressedDown) 
@@ -147,7 +158,7 @@
 - (void) setApplicationPath:(NSString*) fp_app_path{
   if (mp_app_path != fp_app_path) {
     [mp_app_path release]; 
-    mp_app_path = [fp_app_path copy];
+    mp_app_path = [[fp_app_path stringByStandardizingPath] retain];
   }
 }
 
@@ -155,7 +166,7 @@
 - (void) setApplicationHome:(NSString*) fp_home_path{
   if (mp_home_path != fp_home_path) {
     [mp_home_path release]; 
-    mp_home_path = [fp_home_path copy];
+    mp_home_path = [[fp_home_path stringByStandardizingPath] retain];
   }
 }
 //   NSString* pressed;
@@ -207,6 +218,5 @@
 //    }
 //    NSLog(@"%@ %@", pressed, buttonName);
 //    }
-
 
 @end

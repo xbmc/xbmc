@@ -336,7 +336,7 @@ int av_filename_number_test(const char *filename)
     return filename && (av_get_frame_filename(buf, sizeof(buf), filename, 1)>=0);
 }
 
-static AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)
+AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)
 {
     AVInputFormat *fmt1, *fmt;
     int score;
@@ -815,7 +815,7 @@ static void compute_pkt_fields(AVFormatContext *s, AVStream *st,
     // we take the conservative approach and discard both
     // Note, if this is misbehaving for a H.264 file then possibly presentation_delayed is not set correctly.
     if(delay==1 && pkt->dts == pkt->pts && pkt->dts != AV_NOPTS_VALUE && presentation_delayed){
-        av_log(s, AV_LOG_WARNING, "invalid dts/pts combination\n");
+        av_log(s, AV_LOG_DEBUG, "invalid dts/pts combination\n");
         pkt->dts= pkt->pts= AV_NOPTS_VALUE;
     }
 
@@ -1002,6 +1002,8 @@ static int av_read_frame_internal(AVFormatContext *s, AVPacket *pkt)
             if (ret < 0) {
                 if (ret == AVERROR(EAGAIN))
                     return ret;
+                if (ret == AVERROR_IO)
+                    return ret;
                 /* return the last frames, if any */
                 for(i = 0; i < s->nb_streams; i++) {
                     st = s->streams[i];
@@ -1163,11 +1165,7 @@ int av_find_default_stream_index(AVFormatContext *s)
 /**
  * Flush the frame reader.
  */
-#ifdef _XBOX
-void av_read_frame_flush(AVFormatContext *s)
-#else
 static void av_read_frame_flush(AVFormatContext *s)
-#endif
 {
     AVStream *st;
     int i;

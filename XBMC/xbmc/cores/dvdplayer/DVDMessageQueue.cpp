@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
 #include "stdafx.h"
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -35,7 +35,7 @@ CDVDMessageQueue::CDVDMessageQueue(const string &owner)
   m_bInitialized  = false;
   m_bCaching      = false;
   m_bEmptied      = true;
-  
+
   InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
@@ -44,7 +44,7 @@ CDVDMessageQueue::~CDVDMessageQueue()
 {
   // remove all remaining messages
   Flush();
-  
+
   DeleteCriticalSection(&m_critSection);
   CloseHandle(m_hEvent);
 }
@@ -69,7 +69,7 @@ void CDVDMessageQueue::Flush(CDVDMsg::Message type)
     first.pNext = m_pFirstMessage;
 
     DVDMessageListItem *pLast = &first;
-    DVDMessageListItem *pCurr; 
+    DVDMessageListItem *pCurr;
     while ((pCurr = pLast->pNext))
     {
       if (pCurr->pMsg->IsType(type) ||  type == CDVDMsg::NONE)
@@ -112,15 +112,15 @@ void CDVDMessageQueue::Abort()
 void CDVDMessageQueue::End()
 {
   Flush();
-  
+
   EnterCriticalSection(&m_critSection);
-  
+
   m_bInitialized  = false;
   m_pFirstMessage = NULL;
   m_pLastMessage  = NULL;
   m_iDataSize     = 0;
   m_bAbortRequest = false;
-  
+
   LeaveCriticalSection(&m_critSection);
 }
 
@@ -190,14 +190,14 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
   SetEvent(m_hEvent); // inform waiter for new packet
 
   LeaveCriticalSection(&m_critSection);
-  
+
   return MSGQ_OK;
 }
 
 MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutInMilliSeconds, int priority)
 {
   *pMsg = NULL;
-  
+
   DVDMessageListItem* msgItem;
   int ret = 0;
 
@@ -215,7 +215,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     if (msgItem && msgItem->priority >= priority && !m_bCaching)
     {
       m_pFirstMessage = msgItem->pNext;
-      
+
       if (!m_pFirstMessage) m_pLastMessage = NULL;
 
       if (msgItem->pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
@@ -233,9 +233,9 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
       }
 
       *pMsg = msgItem->pMsg;
-      
+
       delete msgItem; // free the list item we allocated in ::Put()
-      
+
       ret = MSGQ_OK;
       break;
     }
@@ -248,7 +248,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     {
       ResetEvent(m_hEvent);
       LeaveCriticalSection(&m_critSection);
-      
+
       // wait for a new message
       if (WaitForSingleObject(m_hEvent, iTimeoutInMilliSeconds) == WAIT_TIMEOUT)
       {
@@ -259,20 +259,20 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     }
   }
   LeaveCriticalSection(&m_critSection);
-  
+
   if (m_bAbortRequest) return MSGQ_ABORT;
-  
+
   return (MsgQueueReturnCode)ret;
 }
 
 
 unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
-{    
+{
   if (!m_bInitialized)
     return 0;
 
   EnterCriticalSection(&m_critSection);
-  
+
   unsigned count = 0;
   DVDMessageListItem* msgItem = m_pFirstMessage;
   while(msgItem)
@@ -281,7 +281,7 @@ unsigned CDVDMessageQueue::GetPacketCount(CDVDMsg::Message type)
       count++;
     msgItem = msgItem->pNext;
   }
-  
+
   LeaveCriticalSection(&m_critSection);
   return count;
 }

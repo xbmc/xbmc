@@ -10,7 +10,7 @@
 			<width>850</width>
 			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png" fallback="background-music.jpg">$INFO[Fanart.Image]</texture>
+			<texture diffuse="Fanart_Diffuse.png" fallback="special://skin/backgrounds/music.jpg">$INFO[Fanart.Image]</texture>
 			<visible>Control.IsVisible(55)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
@@ -21,7 +21,7 @@
 			<width>850</width>
 			<height>540</height>
 			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png" fallback="background-music.jpg">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<texture diffuse="Fanart_Diffuse.png" fallback="special://skin/backgrounds/music.jpg">$INFO[ListItem.Property(Fanart_Image)]</texture>
 			<include>VisibleFadeEffect</include>
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>Control.IsVisible(56)</visible>

@@ -49,7 +49,6 @@ public:
   virtual void SetWidth(float width);
   virtual float GetHeight() const { return m_buttonControl.GetHeight();};
   virtual void SetHeight(float height);
-  virtual void PreAllocResources();
   virtual void AllocResources();
   virtual void FreeResources();
   virtual void DynamicResourceAlloc(bool bOnOff);

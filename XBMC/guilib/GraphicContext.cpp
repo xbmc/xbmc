@@ -76,13 +76,14 @@ CGraphicContext::CGraphicContext(void)
   m_maxTextureSize = 2048;
 #endif
   m_dwID = 0;
-  m_strMediaDir = "D:\\media";
+  m_strMediaDir = "";
   m_bCalibrating = false;
   m_Resolution = INVALID;
   m_pCallback = NULL;
   m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = INVALID;
   m_bFullScreenRoot = false;
+  m_screenSurface = NULL;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -108,6 +109,10 @@ CGraphicContext::~CGraphicContext(void)
     m_viewStack.pop();
     if (viewport) delete [] viewport;
   }
+
+  // do not delete m_screenSurface, SDL is already gone and we will
+  // crash on exit in Surface::CSurface::~CSurface at SDL_FreeSurface(m_SDLSurface)
+  //delete m_screenSurface;
 }
 
 #ifndef HAS_SDL
@@ -121,6 +126,13 @@ void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
   m_pd3dParams = p3dParams;
 }
 #endif
+
+bool CGraphicContext::SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1, DWORD param2)
+{
+  if (!m_pCallback) return false;
+  CGUIMessage msg(message, senderID, destID, param1, param2);
+  return m_pCallback->SendMessage(msg);
+}
 
 bool CGraphicContext::SendMessage(CGUIMessage& message)
 {
@@ -711,7 +723,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       // attach a GLX surface to the root window
-      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, false, false, false, g_advancedSettings.m_fullScreen);
+      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, (bool)g_advancedSettings.m_fullScreen);
       if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
         m_screenSurface->EnableVSync();
 
@@ -1419,6 +1431,11 @@ void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
 void CGraphicContext::DeleteThreadContext() {
 #ifdef HAS_SDL_OPENGL
   CSingleLock aLock(m_surfaceLock);
+  // FIXME?: DeleteThreadContext get called from different threads and
+  // produces an acces_violation from time to time when doing the find
+  // on an empty m_surfaces
+  if(m_surfaces.empty())
+    return;
   map<Uint32, CSurface*>::iterator iter;
   Uint32 tid = SDL_ThreadID();
   iter = m_surfaces.find(tid);
@@ -1473,6 +1490,11 @@ void CGraphicContext::EndPaint(CSurface *dest, bool lock)
   if (lock) Unlock();
   VerifyGLState();
 #endif
+}
+
+bool CGraphicContext::IsFullScreenRoot () const
+{
+  return m_bFullScreenRoot;
 }
 
 bool CGraphicContext::ToggleFullScreenRoot ()
@@ -1543,7 +1565,8 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     SDL_ShowCursor(SDL_ENABLE);
 #endif
 #if defined(__APPLE__)
-    Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+    Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays,
+      g_advancedSettings.m_osx_GLFullScreen, g_advancedSettings.m_alwaysOnTop);
 #elif defined(_WIN32PC)
     DEVMODE settings;
     settings.dmSize = sizeof(settings);
@@ -1576,7 +1599,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     Cocoa_GL_SetFullScreen(
       g_settings.m_ResInfo[m_Resolution].iWidth,
       g_settings.m_ResInfo[m_Resolution].iHeight,
-      false, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+      false, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen, g_advancedSettings.m_alwaysOnTop);
 #elif defined(_WIN32PC)
     ChangeDisplaySettings(NULL, 0);
 #else
@@ -1666,7 +1689,11 @@ void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
 
 void CGraphicContext::Flip()
 {
+#ifdef HAS_SDL
   m_screenSurface->Flip();
+#else
+  if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+#endif
 }
 
 void CGraphicContext::ApplyHardwareTransform()

@@ -52,7 +52,7 @@ public:
 
   /* delay should say how long in the future we expect to display this frame */
   void Discontinuity(ClockDiscontinuityType type, double currentPts = 0LL, double delay = 0LL);
-  
+
   /* will return how close we are to a discontinuity */
   double DistanceToDisc();
 
@@ -60,16 +60,28 @@ public:
   void Resume();
   void SetSpeed(int iSpeed);
 
+  /* tells clock at what framerate video is, to  *
+   * allow it to adjust speed for a better match */
+  bool UpdateFramerate(double fps);
+
+  bool   SetMaxSpeedAdjust(double speed);
+
   static double GetAbsoluteClock();
   static double GetFrequency() { return (double)m_systemFrequency.QuadPart ; }
+  static double WaitAbsoluteClock(double target);
 protected:
   CSharedSection m_critSection;
-  LARGE_INTEGER m_systemUsed;  
+  LARGE_INTEGER m_systemUsed;
   LARGE_INTEGER m_startClock;
   LARGE_INTEGER m_pauseClock;
   double m_iDisc;
   bool m_bReset;
-  
+
   static LARGE_INTEGER m_systemFrequency;
   static LARGE_INTEGER m_systemOffset;
+  static CCriticalSection m_systemsection;
+
+  double           m_maxspeedadjust;
+  bool             m_speedadjust;
+  CCriticalSection m_speedsection;
 };

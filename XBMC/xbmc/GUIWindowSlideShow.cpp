@@ -64,7 +64,10 @@ CBackgroundPicLoader::CBackgroundPicLoader()
 }
 
 CBackgroundPicLoader::~CBackgroundPicLoader()
-{}
+{
+  StopThread();
+  CloseHandle(m_loadPic);
+}
 
 void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
 {
@@ -131,6 +134,7 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
 {
   m_pBackgroundLoader = NULL;
   m_slides = new CFileItemList;
+  m_Resolution = INVALID;
   Reset();
 }
 
@@ -163,7 +167,7 @@ void CGUIWindowSlideShow::Reset()
   m_iCurrentPic = 0;
   CSingleLock lock(m_slideSection);
   m_slides->Clear();
-  m_Resolution = INVALID;
+  m_Resolution = g_graphicsContext.GetVideoResolution();
 }
 
 void CGUIWindowSlideShow::FreeResources()
@@ -596,8 +600,6 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       CGUIWindow::OnMessage(message);
       if (g_application.IsPlayingVideo())
         g_application.StopPlaying();
-      // clear as much memory as possible
-      g_TextureManager.Flush();
       if (message.GetParam1() != WINDOW_PICTURES)
       {
         m_ImageLib.Load();
@@ -778,11 +780,8 @@ int CGUIWindowSlideShow::CurrentSlide() const
   return m_iCurrentSlide + 1;
 }
 
-void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursive /* = false */, bool bRandom /* = false */, bool bNotRandom /* = false */)
+void CGUIWindowSlideShow::AddFromPath(const CStdString &strPath, bool bRecursive)
 {
-  // stop any video
-  if (g_application.IsPlayingVideo())
-    g_application.StopPlaying();
   if (strPath!="")
   {
     // reset the slideshow
@@ -794,8 +793,16 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
     }
     else
       AddItems(strPath, NULL);
-    // ok, now run the slideshow
   }
+}
+
+void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursive /* = false */, bool bRandom /* = false */, bool bNotRandom /* = false */)
+{
+  // stop any video
+  if (g_application.IsPlayingVideo())
+    g_application.StopPlaying();
+
+  AddFromPath(strPath, bRecursive);
 
   // mutually exclusive options
   // if both are set, clear both and use the gui setting

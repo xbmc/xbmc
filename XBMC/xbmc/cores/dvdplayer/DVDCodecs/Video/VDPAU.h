@@ -64,6 +64,18 @@ public:
   CVDPAU(int width, int height);
   virtual ~CVDPAU();
 
+  bool MakePixmap(int width, int height);
+  void ReleasePixmap();
+  void BindPixmap();
+
+  PFNGLXBINDTEXIMAGEEXTPROC    glXBindTexImageEXT;
+  PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT;
+  GLXPixmap  m_glPixmap;
+  Pixmap  m_Pixmap;
+  GLuint   m_glPixmapTexture;
+  GLXContext m_glContext;
+  bool m_pixmapBound;
+
   static void             FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
   static void             FFDrawSlice(struct AVCodecContext *s,
                                const AVFrame *src, int offset[4],
@@ -74,6 +86,7 @@ public:
 
   static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
+  void Create(int width, int height);
   void PrePresent(AVCodecContext *avctx, AVFrame *pFrame);
   void Present();
   int  ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
@@ -180,8 +193,8 @@ public:
   uint32_t vid_width, vid_height;
   uint32_t max_references;
   Display* m_Display;
-  Surface::CSurface *m_Surface;
   bool     vdpauConfigured;
+  bool     vdpauInited;
 
   static bool IsVDPAUFormat(PixelFormat fmt);
   static void ReadFormatOf( PixelFormat fmt

@@ -40,6 +40,7 @@ CMusicInfoScraper::CMusicInfoScraper(const SScraperInfo& info)
 
 CMusicInfoScraper::~CMusicInfoScraper(void)
 {
+  StopThread();
 }
 
 int CMusicInfoScraper::GetAlbumCount() const
@@ -100,6 +101,9 @@ void CMusicInfoScraper::FindAlbuminfo()
   parser.m_param[1] = m_strArtist;
   CUtil::URLEncode(parser.m_param[0]);
   CUtil::URLEncode(parser.m_param[1]);
+
+  CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper (file: '%s', content: '%s', date: '%s', framework: '%s')",
+    __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
 
   CScraperUrl scrURL;
   scrURL.ParseString(parser.Parse("CreateAlbumSearchUrl"));
@@ -204,6 +208,9 @@ void CMusicInfoScraper::FindArtistinfo()
 
   parser.m_param[0] = m_strArtist;
   CUtil::URLEncode(parser.m_param[0]);
+
+  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
+    __FUNCTION__, m_strArtist.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strLanguage.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
 
   CScraperUrl scrURL;
   scrURL.ParseString(parser.Parse("CreateArtistSearchUrl",&m_info.settings));

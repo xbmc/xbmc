@@ -92,7 +92,7 @@ static float** PickYUVConversionMatrix(unsigned flags)
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 
-BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(unsigned flags)
+BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
 {
   m_width      = 1;
   m_height     = 1;
@@ -113,15 +113,34 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(unsigned flags)
   m_hField = -1;
 
   // default passthrough vertex shader
-  string shaderv = 
-    "void main()"
-    "{"
-    "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
-    "gl_TexCoord[1] = gl_TextureMatrix[1] * gl_MultiTexCoord1;"
-    "gl_TexCoord[2] = gl_TextureMatrix[2] * gl_MultiTexCoord2;"
-    "gl_TexCoord[3] = gl_TextureMatrix[3] * gl_MultiTexCoord3;"
-    "gl_Position = ftransform();"
-    "}";
+  string shaderv;
+  if(rect && g_advancedSettings.m_GLRectangleHack)
+  {
+    shaderv = 
+      "void main()"
+      "{"
+      "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0 / 2;"
+      "gl_TexCoord[1] = gl_TextureMatrix[1] * gl_MultiTexCoord1 * 2;"
+      "gl_TexCoord[2] = gl_TextureMatrix[2] * gl_MultiTexCoord2;"
+      "gl_TexCoord[3] = gl_TextureMatrix[3] * gl_MultiTexCoord3;"
+      "gl_Position = ftransform();"
+      "gl_FrontColor = gl_Color;"
+      "}";
+  }
+  else
+  {
+    shaderv = 
+      "void main()"
+      "{"
+      "gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;"
+      "gl_TexCoord[1] = gl_TextureMatrix[1] * gl_MultiTexCoord1;"
+      "gl_TexCoord[2] = gl_TextureMatrix[2] * gl_MultiTexCoord2;"
+      "gl_TexCoord[3] = gl_TextureMatrix[3] * gl_MultiTexCoord3;"
+      "gl_FrontColor = gl_Color;"
+      "gl_Position = ftransform();"
+      "}";
+  }
+
   SetVertexShaderSource(shaderv);
 }
 
@@ -186,7 +205,7 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
 //////////////////////////////////////////////////////////////////////
 
 YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
-  : BaseYUV2RGBGLSLShader(flags)
+  : BaseYUV2RGBGLSLShader(rect, flags)
 {
   string shaderf;
   
@@ -197,19 +216,9 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
                "#define sampler2D sampler2DRect\n";
   }
 
-  // ati breaks down with sampler2DRect, but it seem to work without it
-  if(rect && g_advancedSettings.m_GLRectangleHack)
-  {
-    shaderf += "#define idY 2\n";
-    shaderf += "#define idU 0\n";
-    shaderf += "#define idV 1\n";
-  }
-  else
-  {
-    shaderf += "#define idY 0\n";
-    shaderf += "#define idU 1\n";
-    shaderf += "#define idV 2\n";
-  }
+  shaderf += "#define idY 0\n";
+  shaderf += "#define idU 1\n";
+  shaderf += "#define idV 2\n";
 
   shaderf += 
     "uniform sampler2D ytex;\n"
@@ -238,7 +247,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
   }
   shaderf +=
     "rgb = yuvmat * yuv;\n"
-    "rgb.a = 1.0;\n"
+    "rgb.a = gl_Color.a;\n"
     "gl_FragColor = rgb;\n"
     "}";
   SetPixelShaderSource(shaderf);
@@ -269,7 +278,7 @@ bool YUV2RGBProgressiveShader::OnEnabled()
 //////////////////////////////////////////////////////////////////////
 
 YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
-  : BaseYUV2RGBGLSLShader(flags)
+  : BaseYUV2RGBGLSLShader(rect, flags)
 {
   string shaderf;
   if (rect) 
@@ -279,19 +288,9 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
                "#define sampler2D sampler2DRect\n";
   }
 
-  // ati breaks down with sampler2DRect, but it seem to work without it
-  if(rect && g_advancedSettings.m_GLRectangleHack)
-  {
-    shaderf += "#define idY 2\n";
-    shaderf += "#define idU 0\n";
-    shaderf += "#define idV 1\n";
-  }
-  else
-  {
-    shaderf += "#define idY 0\n";
-    shaderf += "#define idU 1\n";
-    shaderf += "#define idV 2\n";
-  }
+  shaderf += "#define idY 0\n";
+  shaderf += "#define idU 1\n";
+  shaderf += "#define idV 2\n";
 
 
   shaderf += 
@@ -333,8 +332,8 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
     }
     shaderf +=
       "rgb = yuvmat * yuv;"
-      "rgb.a = 1.0;"
-      "gl_FragColor = rgb;"
+      "rgb.a = gl_Color.a;\n"
+      "gl_FragColor = rgb;\n"
       "}";
   SetPixelShaderSource(shaderf);  
 }
@@ -426,7 +425,7 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
       "MAD R1.xyz, R0.z, c[0], R0.x;\n"
       "ADD R0.x, R0.y, c[0].w;\n"
       "MAD result.color.xyz, R0.x, c[1], R1;\n"
-      "MOV result.color.w, c[0];\n"
+      "MOV result.color.w, fragment.color.w;\n"
       "END\n";
   }
   else
@@ -449,7 +448,7 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
       "MAD R1.xyz, R0.z, c[1].yzww, R0.x;\n"
       "ADD R0.x, R0.y, c[3];\n"
       "MAD result.color.xyz, R0.x, c[2], R1;\n"
-      "MOV result.color.w, c[0].x;\n"
+      "MOV result.color.w, fragment.color.w;\n"
       "END\n";
   }
   SetPixelShaderSource(source);

@@ -49,6 +49,7 @@ CGUILargeTextureManager::~CGUILargeTextureManager()
 // Once there's nothing queued or allocated, end the thread.
 void CGUILargeTextureManager::Process()
 {
+  SetName("CGUILargeTextureManager");
   // lock item list
   CSingleLock lock(m_listSection);
   m_running = true;
@@ -93,9 +94,12 @@ void CGUILargeTextureManager::Process()
       SDL_FreeSurface(texture);
       texture = NULL;
     }
-    lock.Leave();
-    m_listEvent.WaitMSec(1000);
-    lock.Enter();
+    if (m_queued.size() == 0)
+    { // hang around for a while as there may well be more images on the way (saves reloading the thread)
+      lock.Leave();
+      m_listEvent.WaitMSec(5000);
+      lock.Enter();
+    }
   }
   m_running = false;
 }
@@ -113,12 +117,11 @@ void CGUILargeTextureManager::CleanupUnusedImages()
     else
       ++it;
   }
-  m_listEvent.Set();
 }
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientation, bool firstRequest)
+bool CGUILargeTextureManager::GetImage(const CStdString &path, CTexture &texture, int &orientation, bool firstRequest)
 {
   // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
@@ -130,7 +133,8 @@ CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientat
       if (firstRequest)
         image->AddRef();
       orientation = image->GetOrientation();
-      return image->GetTexture();
+      texture = image->GetTexture();
+      return texture.size() > 0;
     }
   }
   lock.Leave();
@@ -138,7 +142,7 @@ CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientat
   if (firstRequest)
     QueueImage(path);
 
-  return CTexture();
+  return true;
 }
 
 void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediately)
@@ -182,10 +186,12 @@ void CGUILargeTextureManager::QueueImage(const CStdString &path)
   // queue the item
   CLargeTexture *image = new CLargeTexture(path);
   m_queued.push_back(image);
-  m_listEvent.Set();
 
   if(m_running)
+  {
+    m_listEvent.Set();
     return;
+  }
 
   lock.Leave(); // done with our lock
 

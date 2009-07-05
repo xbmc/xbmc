@@ -714,9 +714,6 @@ void CUtil::GetHomePath(CStdString& strPath)
   }
   else
   {
-#ifdef _DEBUG
-    printf("The XBMC_HOME environment variable is not set.\n");
-#endif
 #ifdef __APPLE__
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
@@ -1046,9 +1043,18 @@ bool CUtil::IsVTP(const CStdString& strFile)
   return strFile.Left(4).Equals("vtp:");
 }
 
+bool CUtil::IsHTSP(const CStdString& strFile)
+{
+  return strFile.Left(5).Equals("htsp:");
+}
+
 bool CUtil::IsTV(const CStdString& strFile)
 {
-  return IsMythTV(strFile) || IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile);
+  return IsMythTV(strFile)
+      || IsTuxBox(strFile)
+      || IsVTP(strFile)
+      || IsHDHomeRun(strFile)
+      || IsHTSP(strFile);
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -1192,7 +1198,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
   if ( !CDetectDVDMedia::IsDiscInDrive() )
   {
-    strIcon = "defaultDVDEmpty.png";
+    strIcon = "DefaultDVDEmpty.png";
     return ;
   }
 
@@ -1202,10 +1208,10 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
     //  xbox DVD
     if ( pInfo != NULL && pInfo->IsUDFX( 1 ) )
     {
-      strIcon = "defaultXBOXDVD.png";
+      strIcon = "DefaultXboxDVD.png";
       return ;
     }
-    strIcon = "defaultDVDRom.png";
+    strIcon = "DefaultDVDRom.png";
     return ;
   }
 
@@ -1214,16 +1220,16 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
     CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
-      strIcon = "defaultVCD.png";
+      strIcon = "DefaultVCD.png";
       return ;
     }
-    strIcon = "defaultDVDRom.png";
+    strIcon = "DefaultDVDRom.png";
     return ;
   }
 
   if ( IsCDDA(strPath) )
   {
-    strIcon = "defaultCDDA.png";
+    strIcon = "DefaultCDDA.png";
     return ;
   }
 }
@@ -1329,6 +1335,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   CFileItem item(strMovie, false);
   if (item.IsInternetStream()) return ;
+  if (item.IsHDHomeRun()) return ;
   if (item.IsPlayList()) return ;
   if (!item.IsVideo()) return ;
 
@@ -1659,7 +1666,8 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
   }
 
   strResult = strFolder;
-  AddSlashAtEnd(strResult);
+  if(!strResult.IsEmpty())
+    AddSlashAtEnd(strResult);
 
   // Remove any slash at the start of the file
   if (strFile.size() && (strFile[0] == '/' || strFile[0] == '\\'))
@@ -1872,19 +1880,19 @@ void CUtil::RestoreBrightnessContrastGamma()
   g_graphicsContext.Unlock();
 }
 
-void CUtil::SetBrightnessContrastGammaPercent(int iBrightNess, int iContrast, int iGamma, bool bImmediate)
+void CUtil::SetBrightnessContrastGammaPercent(float brightness, float contrast, float gamma, bool immediate)
 {
-  if (iBrightNess < 0) iBrightNess = 0;
-  if (iBrightNess > 100) iBrightNess = 100;
-  if (iContrast < 0) iContrast = 0;
-  if (iContrast > 100) iContrast = 100;
-  if (iGamma < 0) iGamma = 0;
-  if (iGamma > 100) iGamma = 100;
+  if (brightness < 0.0f) brightness = 0.0f;
+  if (brightness > 100.0f) brightness = 100.0f;
+  if (contrast < 0.0f) contrast = 0.0f;
+  if (contrast > 100.0f) contrast = 100.0f;
+  if (gamma < 0.0f) gamma = 0.0f;
+  if (gamma > 100.0f) gamma = 100.0f;
 
-  float fBrightNess = (((float)iBrightNess) / 50.0f) - 1.0f; // -1..1 Default: 0
-  float fContrast = (((float)iContrast) / 50.0f);      // 0..2  Default: 1
-  float fGamma = (((float)iGamma) / 40.0f) + 0.5f;      // 0.5..3.0 Default: 1
-  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, bImmediate);
+  float fBrightNess = brightness / 50.0f - 1.0f; // -1..1    Default: 0
+  float fContrast = contrast / 50.0f;            // 0..2     Default: 1
+  float fGamma = gamma / 40.0f + 0.5f;           // 0.5..3.0 Default: 1
+  CUtil::SetBrightnessContrastGamma(fBrightNess, fContrast, fGamma, immediate);
 }
 
 void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
@@ -2200,55 +2208,42 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // Function to create all directories at once instead
   // of calling CreateDirectory for every subdir.
   // Creates the directory and subdirectories if needed.
-  vector<string> strArray;
-  CURL url(strPath);
-  string path = url.GetFileName().c_str();
-  int iSize = path.size();
-  char cSep = CUtil::GetDirectorySeperator(strPath);
-  if (path.at(iSize - 1) == cSep) path.erase(iSize - 1, iSize - 1); // remove slash at end
-  CStdString strTemp;
 
   // return true if directory already exist
   if (CDirectory::Exists(strPath)) return true;
-
-  // split strPath up into an array
-  // music\album\ will result in
-  // music
-  // music\album
-  //
-
-  int i = 0;
-  CFileItem item(strPath,true);
-  if (item.IsHD())
+  
+  // we currently only allow HD and smb paths
+  if (!CUtil::IsHD(strPath) && !CUtil::IsSmb(strPath))
   {
-    // remove the root drive from the filename
-    if (CUtil::IsDOSPath(item.m_strPath))
-      i = 2;
-  }
-  else if (!item.IsSmb())
-  {
-    CLog::Log(LOGERROR,"CUtil::CreateDirectoryEx called with an unsupported path: %s",strPath.c_str());
+    CLog::Log(LOGERROR,"%s called with an unsupported path: %s", __FUNCTION__, strPath.c_str());
     return false;
   }
-
-  int s = i;
-  while (i < iSize)
-  {
-    i = path.find(cSep, i + 1);
-    if (i < 0) i = iSize; // get remaining chars
-    strArray.push_back(path.substr(s, i - s));
+  
+  CURL url(strPath);
+  // silly CStdString can't take a char in the constructor
+  CStdString sep(1, url.GetDirectorySeparator());
+  
+  // split the filename portion of the URL up into separate dirs
+  CStdStringArray dirs;
+  StringUtils::SplitString(url.GetFileName(), sep, dirs);
+  
+  // we start with the root path
+  CStdString dir;
+  url.GetURLWithoutFilename(dir);
+  unsigned int i = 0;
+  if (dir.IsEmpty())
+  { // local directory - start with the first dirs member so that
+    // we ensure CUtil::AddFileToFolder() below has something to work with
+    dir = dirs[i++] + sep;
   }
-
-  // create the directories
-  url.GetURLWithoutFilename(strTemp);
-  for (unsigned int i = 0; i < strArray.size(); i++)
+  // and append the rest of the directories successively, creating each dir
+  // as we go
+  for (; i < dirs.size(); i++)
   {
-    CStdString strTemp1;
-    CUtil::AddFileToFolder(strTemp,strArray[i],strTemp1);
-    CDirectory::Create(strTemp1);
+    dir = CUtil::AddFileToFolder(dir, dirs[i]);
+    CDirectory::Create(dir);
   }
-  strArray.clear();
-
+  
   // was the final destination directory successfully created ?
   if (!CDirectory::Exists(strPath)) return false;
   return true;
@@ -2262,7 +2257,7 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
   result.Replace('\\', '_');
   result.Replace('?', '_');
 
-  if (LegalType == LEGAL_WIN32_COMPAT) 
+  if (LegalType == LEGAL_WIN32_COMPAT)
   {
     // just filter out some illegal characters on windows
     result.Replace(':', '_');
@@ -2288,13 +2283,8 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)
 {
-  strPath += GetDirectorySeperator(strPath);
-}
-
-char CUtil::GetDirectorySeperator(const CStdString &strFilename)
-{
-  CURL url(strFilename);
-  return url.GetDirectorySeparator();
+  CURL url(strPath);
+  strPath += url.GetDirectorySeparator();
 }
 
 bool CUtil::IsUsingTTFSubtitles()
@@ -2357,9 +2347,7 @@ const BUILT_IN commands[] = {
   { "Dialog.Close",               true,   "Close a dialog" },
   { "System.LogOff",              false,  "Log off current user" },
   { "System.Exec",                true,   "Execute shell commands" },
-#ifdef _WIN32PC
   { "System.ExecWait",            true,   "Execute shell commands and freezes XBMC until shell is closed" },
-#endif
   { "Resolution",                 true,   "Change XBMC's Resolution" },
   { "SetFocus",                   true,   "Change current focus to a different control id" },
   { "UpdateLibrary",              true,   "Update the selected library (music or video)" },
@@ -2377,6 +2365,8 @@ const BUILT_IN commands[] = {
   { "Container.SetSortMethod",    true,   "Change to the specified sort method" },
   { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
+  { "Control.SetFocus",           true,   "Change current focus to a different control id" },
+  { "Control.Message",            true,   "Send a given message to a control within a given window" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
@@ -2556,7 +2546,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (iWindow != WINDOW_INVALID)
     {
       // disable the screensaver
-      g_application.ResetScreenSaverWindow();
+      g_application.WakeUpScreenSaverAndDPMS();
       if (execute.Equals("activatewindow"))
         m_gWindowManager.ActivateWindow(iWindow, strPath);
       else  // ReplaceWindow
@@ -2568,7 +2558,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       return false;
     }
   }
-  else if (execute.Equals("setfocus"))
+  else if (execute.Equals("setfocus") || execute.Equals("control.setfocus"))
   {
     // see whether we have more than one param
     vector<CStdString> params;
@@ -2606,21 +2596,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_pythonParser.evalFile(strParameterCaseIntact.c_str());
   }
 #endif
-#if defined(_LINUX) && !defined(__APPLE__)
   else if (execute.Equals("system.exec"))
   {
-    system(strParameterCaseIntact.c_str());
-  }
-#elif defined(_WIN32PC)
-  else if (execute.Equals("system.exec"))
-  {
-    CWIN32Util::XBMCShellExecute(strParameterCaseIntact, false);
+    g_application.getApplicationMessenger().Minimize();
+    g_application.getApplicationMessenger().ExecOS(strParameterCaseIntact, false);
   }
   else if (execute.Equals("system.execwait"))
   {
-    CWIN32Util::XBMCShellExecute(strParameterCaseIntact, true);
+    g_application.getApplicationMessenger().Minimize();
+    g_application.getApplicationMessenger().ExecOS(strParameterCaseIntact, true);
   }
-#endif
   else if (execute.Equals("resolution"))
   {
     RESOLUTION res = PAL_4x3;
@@ -2714,11 +2699,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     // reset screensaver
     g_application.ResetScreenSaver();
-    g_application.ResetScreenSaverWindow();
+    g_application.WakeUpScreenSaverAndDPMS();
 
     // set fullscreen or windowed
-    if (params2.size() == 2 && params2[1] == "1")
+    if (params2.size() >= 2 && params2[1] == "1")
       g_stSettings.m_bStartVideoWindowed = true;
+    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
+      item.m_lStartOffset = STARTOFFSET_RESUME;
 
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
@@ -2802,7 +2789,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("playercontrol"))
   {
     g_application.ResetScreenSaver();
-    g_application.ResetScreenSaverWindow();
+    g_application.WakeUpScreenSaverAndDPMS();
     if (parameter.IsEmpty())
     {
       CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
@@ -2893,8 +2880,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       if( g_application.IsPlaying() && g_application.m_pPlayer && g_application.m_pPlayer->CanRecord())
       {
+#ifdef HAS_WEB_SERVER
         if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=1)
           g_application.getApplicationMessenger().HttpApi(g_application.m_pPlayer->IsRecording()?"broadcastlevel; RecordStopping;1":"broadcastlevel; RecordStarting;1");
+#endif
         g_application.m_pPlayer->Record(!g_application.m_pPlayer->IsRecording());
       }
     }
@@ -2986,7 +2975,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       m_gWindowManager.SendThreadMessage(msg);
     }
   }
-  else if (execute.Equals("playwith")) 
+  else if (execute.Equals("playwith"))
   {
     g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetPlayerCore(parameter);
     CAction action;
@@ -3013,6 +3002,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if( execute.Equals("alarmclock") )
   {
+    bool bSilent = false;
     float fSecs = -1.f;
     CStdString strCommand;
     CStdString strName;
@@ -3032,8 +3022,23 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         szParam = reg.GetReplaceString("\\4");
         if (szParam)
         {
-          if (strlen(szParam))
-            fSecs = static_cast<float>(atoi(szParam)*60);
+          vector<CStdString> arSplit;
+          StringUtils::SplitString(szParam, ",", arSplit);
+
+          if (arSplit.size() == 2)
+          {
+            if (strlen(arSplit[0]))
+              fSecs = static_cast<float>(atoi(arSplit[0])*60);
+
+            if (arSplit[1].Equals("true"))
+              bSilent = true;
+          }
+          else
+          {
+            if (strlen(szParam))
+              fSecs = static_cast<float>(atoi(szParam)*60);
+          }
+
           free(szParam);
         }
         szParam = reg.GetReplaceString("\\1");
@@ -3061,7 +3066,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if( g_alarmClock.isRunning() )
       g_alarmClock.stop(strName);
 
-    g_alarmClock.start(strName,fSecs,strCommand);
+    g_alarmClock.start(strName,fSecs,strCommand,bSilent);
   }
   else if (execute.Equals("notification"))
   {
@@ -3293,7 +3298,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("updatelibrary"))
   {
-    if (parameter.Equals("music"))
+    CStdStringArray param_array;
+    // Use parameter with case intact
+    StringUtils::SplitString(strParameterCaseIntact,",", param_array);
+    if (param_array.size() < 1)
+      return -1;
+    if (param_array[0].Equals("music"))
     {
       CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
       if (scanner)
@@ -3304,7 +3314,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           scanner->StartScanning("");
       }
     }
-    if (parameter.Equals("video"))
+    if (param_array[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       SScraperInfo info;
@@ -3314,7 +3324,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan("",info,settings);
+          CGUIWindowVideoBase::OnScan(param_array.size() > 1 ? param_array[1] : "",info,settings);
       }
     }
   }
@@ -3341,7 +3351,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
     message.SetStringParam(strParameterCaseIntact);
     g_graphicsContext.SendMessage(message);
-  }  
+  }
   else if (execute.Equals("container.update"))
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
@@ -3388,6 +3398,26 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, m_gWindowManager.GetActiveWindow(), 0, 0);
     g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("control.message"))
+  {
+    CStdStringArray params;
+    StringUtils::SplitString(parameter, ",", params);
+    if (params.size() >= 2)
+    {
+      int controlID = atoi(params[0].c_str());
+      int windowID = (params.size() == 3) ? g_buttonTranslator.TranslateWindowString(params[2].c_str()) : m_gWindowManager.GetActiveWindow();
+      if (params[1] == "moveup")
+        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
+      else if (params[1] == "movedown")
+        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, (DWORD)-1);
+      else if (params[1] == "pageup")
+        g_graphicsContext.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
+      else if (params[1] == "pagedown")
+        g_graphicsContext.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
+      else if (params[1] == "click")
+        g_graphicsContext.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
+    }
   }
   else if (execute.Equals("sendclick"))
   {
@@ -4456,7 +4486,7 @@ CStdString CUtil::GetDefaultFolderThumb(const CStdString &folderThumb)
 {
   if (g_TextureManager.HasTexture(folderThumb))
     return folderThumb;
-  return "defaultFolderBig.png";
+  return "";
 }
 
 void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
@@ -4507,6 +4537,37 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   CDirectory::Remove(tmpPath);
 }
 
+void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& strDstPath)
+{
+  if (!CDirectory::Exists(strSrcPath)) return;
+
+  // create root first
+  CStdString destPath;
+
+  destPath = strDstPath;
+  AddSlashAtEnd(destPath);
+  CDirectory::Create(destPath);
+
+  CFileItemList items;
+  CUtil::GetRecursiveDirsListing(strSrcPath,items);
+  for (int i=0;i<items.Size();++i)
+  {
+    destPath = items[i]->m_strPath;
+    destPath.Replace(strSrcPath,"");
+    destPath = CUtil::AddFileToFolder(strDstPath, destPath);
+    CDirectory::Create(destPath);
+  }
+  items.Clear();
+  CUtil::GetRecursiveListing(strSrcPath,items,"");
+  for (int i=0;i<items.Size();i++)
+  {
+    destPath = items[i]->m_strPath;
+    destPath.Replace(strSrcPath,"");
+    destPath = CUtil::AddFileToFolder(strDstPath, destPath);
+    CFile::Cache(items[i]->m_strPath, destPath);
+  }
+}
+
 void CUtil::ClearFileItemCache()
 {
   CFileItemList items;
@@ -4518,12 +4579,50 @@ void CUtil::ClearFileItemCache()
   }
 }
 
+void CUtil::InitRandomSeed()
+{
+  // Init random seed 
+  LARGE_INTEGER now; 
+  QueryPerformanceCounter(&now); 
+  unsigned int seed = (now.u.LowPart);
+//  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
+  srand(seed);
+}
+
 #ifdef _LINUX
+bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
+{
+  CStdStringArray args;
+
+  StringUtils::SplitString(cmdLine, ",", args);
+
+  // Strip quotes and whitespace around the arguments, or exec will fail.
+  // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
+  // But it's still limited, for example quotes inside the strings are not expanded, etc.
+  // TODO: Maybe some python library routine can parse this more properly ?
+  for (size_t i=0; i<args.size(); i++)
+  {
+    CStdString &s = args[i];
+    CStdString stripd = s.Trim();
+    if (stripd[0] == '"' || stripd[0] == '\'')
+    {
+      s = s.TrimLeft();
+      s = s.Right(s.size() - 1);
+    }
+    if (stripd[stripd.size() - 1] == '"' || stripd[stripd.size() - 1] == '\'')
+    {
+      s = s.TrimRight();
+      s = s.Left(s.size() - 1);
+    }
+  }
+
+  return Command(args, waitExit);
+}
 
 //
 // FIXME, this should be merged with the function below.
 //
-bool CUtil::Command(const CStdStringArray& arrArgs)
+bool CUtil::Command(const CStdStringArray& arrArgs, bool waitExit)
 {
 #ifdef _DEBUG
   printf("Executing: ");
@@ -4550,10 +4649,10 @@ bool CUtil::Command(const CStdStringArray& arrArgs)
   }
   else
   {
-    waitpid(child, &n, 0);
+    if (waitExit) waitpid(child, &n, 0);
   }
 
-  return WEXITSTATUS(n) == 0;
+  return (waitExit) ? (WEXITSTATUS(n) == 0) : true;
 }
 
 bool CUtil::SudoCommand(const CStdString &strCommand)
