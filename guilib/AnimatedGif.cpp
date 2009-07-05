@@ -203,8 +203,10 @@ int CAnimatedGifSet::GetImageCount() const
 unsigned char CAnimatedGifSet::getbyte(FILE *fd)
 {
   unsigned char uchar;
-  fread(&uchar, 1, 1, fd);
-  return uchar;
+  if (fread(&uchar, 1, 1, fd) == 1)
+    return uchar;
+  else
+    return 0;
 }
 
 #ifndef _LINUX
@@ -335,8 +337,8 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
 
         case 0xF9:    // Graphic Control Extension
           {
-            fread((char*)&gifgce, 1, sizeof(gifgce), fd);
-            SWAP16(gifgce.Delay);
+            if (fread((char*)&gifgce, 1, sizeof(gifgce), fd) == sizeof(gifgce))
+              SWAP16(gifgce.Delay);
             //dllprintf("got Graphic Control Extension:%i/%i fields:%x",gifgce.BlockSize,sizeof(gifgce),gifgce.PackedFields);
             GraphicExtensionFound++;
             getbyte(fd); // Block Terminator (always 0)
@@ -365,9 +367,14 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
             if (nBlockLength == 0x0b)
             {
               struct GIFNetscapeTag tag;
-              fread((char*)&tag, 1, sizeof(gifnetscape), fd);
-              SWAP16(tag.iIterations);
-              nLoops = tag.iIterations;
+              if (fread((char*)&tag, 1, sizeof(gifnetscape), fd) == sizeof(gifnetscape))
+              {
+                SWAP16(tag.iIterations);
+                nLoops = tag.iIterations;
+              }
+              else
+                nLoops = 0;
+              
               if (nLoops) nLoops++;
               getbyte(fd);
             }
@@ -414,16 +421,20 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
         }
         gifid;
 
-        fread((char*)&gifid, 1, sizeof(gifid), fd);
+        memset(&gifid, 0, sizeof(gifid));
 
-        SWAP16(gifid.xPos);
-        SWAP16(gifid.yPos);
-        SWAP16(gifid.Width);
-        SWAP16(gifid.Height);
+        int LocalColorMap = 0;
+        if (fread((char*)&gifid, 1, sizeof(gifid), fd) == sizeof(gifid))
+        {
+          SWAP16(gifid.xPos);
+          SWAP16(gifid.yPos);
+          SWAP16(gifid.Width);
+          SWAP16(gifid.Height);
 
-        int LocalColorMap = (gifid.PackedFields & 0x08) ? 1 : 0;
+          LocalColorMap = (gifid.PackedFields & 0x08) ? 1 : 0;
+        }
 
-        NextImage->Init (gifid.Width, gifid.Height, LocalColorMap ? (gifid.PackedFields&7) + 1 : GlobalBPP);
+        NextImage->Init(gifid.Width, gifid.Height, LocalColorMap ? (gifid.PackedFields&7) + 1 : GlobalBPP);
 
         // Fill NextImage Data
         NextImage->xPos = gifid.xPos;
@@ -440,11 +451,15 @@ int CAnimatedGifSet::LoadGIF (const char * szFileName)
         else
           memset(NextImage->Raster, giflsd.Background, NextImage->BytesPerRow * NextImage->Height);
 
-        if (LocalColorMap)  // Read Color Map (if descriptor says so)
-          fread((char*)NextImage->Palette, 1, sizeof(COLOR)*(1 << NextImage->BPP), fd);
-
-        else     // Otherwise copy Global
-          memcpy(NextImage->Palette, GlobalColorMap, sizeof(COLOR)*(1 << NextImage->BPP));
+        // Read Color Map (if descriptor says so)
+        size_t palSize = sizeof(COLOR)*(1 << NextImage->BPP);
+        bool isPalRead = false;
+        if (LocalColorMap && fread((char*)NextImage->Palette, 1, palSize, fd) == palSize)
+          isPalRead = true;
+            
+        // Copy global, if no palette
+        if (!isPalRead)
+          memcpy(NextImage->Palette, GlobalColorMap, palSize);
 
         short firstbyte = getbyte(fd); // 1st byte of img block (CodeSize)
 
