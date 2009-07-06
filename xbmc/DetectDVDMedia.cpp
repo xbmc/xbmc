@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "WINDetectDVDType.h"
+#include "DetectDVDMedia.h"
 #ifdef _WIN32PC
 #include "WIN32Util.h"
 #endif
