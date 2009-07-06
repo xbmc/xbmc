@@ -523,9 +523,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
     else if (strTest.Equals("videoplayer.videocodec")) return VIDEOPLAYER_VIDEO_CODEC;
     else if (strTest.Equals("videoplayer.videoresolution")) return VIDEOPLAYER_VIDEO_RESOLUTION;
+    else if (strTest.Equals("videoplayer.videoaspect")) return VIDEOPLAYER_VIDEO_ASPECT;
     else if (strTest.Equals("videoplayer.audiocodec")) return VIDEOPLAYER_AUDIO_CODEC;
     else if (strTest.Equals("videoplayer.audiochannels")) return VIDEOPLAYER_AUDIO_CHANNELS;
-
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -1062,6 +1062,14 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       strLabel = g_application.m_pPlayer->GetAudioCodecName();
+    break;
+  case VIDEOPLAYER_VIDEO_ASPECT:
+    if (g_application.IsPlaying() && g_application.m_pPlayer)
+    {
+      float aspect;
+      g_application.m_pPlayer->GetVideoAspectRatio(aspect);
+      strLabel = CStreamDetails::VideoAspectToAspectDescription(aspect);
+    }
     break;
   case VIDEOPLAYER_AUDIO_CHANNELS:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
