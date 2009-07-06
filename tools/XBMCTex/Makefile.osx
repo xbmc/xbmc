@@ -25,7 +25,8 @@ OBJS = \
 	XFileUtils.o \
 	XHandle.o \
 	XTimeUtils.o \
-	sha.o
+	sha.o \
+	OSXGNUReplacements.o
 
 TARGET = XBMCTex
 
