@@ -245,6 +245,16 @@ static void setupWindowMenu(void)
       name:NSWindowDidMoveNotification
       object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(deviceDidMount:)
+      name:NSWorkspaceDidMountNotification
+      object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(deviceDidUnMount:)
+      name:NSWorkspaceDidUnmountNotification
+      object:nil];
+		
     // We're going to manually manage the screensaver.
     setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
 
@@ -279,6 +289,18 @@ static void setupWindowMenu(void)
 - (void) windowDidMove:(NSNotification*) note
 {
   Cocoa_CVDisplayLinkUpdate();
+}
+
+- (void) deviceDidMount:(NSNotification *) note 
+{
+  NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
+  //NSLog(@"Device did mount: %@", devicePath);
+}
+
+- (void) deviceDidUnMount:(NSNotification *) note 
+{
+  NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
+  //NSLog(@"Device did unmount: %@", devicePath);
 }
 @end
 
