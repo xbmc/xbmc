@@ -23,33 +23,35 @@
 #include "WINDetectDVDType.h"
 #ifdef _WIN32PC
 #include "WIN32Util.h"
+#endif
 
 using namespace MEDIA_DETECT;
 
-CEvent CWINDetectDVDMedia::m_evAutorun;
+CEvent CDetectDVDMedia::m_evAutorun;
 
-CWINDetectDVDMedia* CWINDetectDVDMedia::m_instance = NULL;
+CDetectDVDMedia* CDetectDVDMedia::m_instance = NULL;
 
 
-CWINDetectDVDMedia::CWINDetectDVDMedia()
+CDetectDVDMedia::CDetectDVDMedia()
 {
   DetectInsertedMedia();
 }
 
-CWINDetectDVDMedia::~CWINDetectDVDMedia()
+CDetectDVDMedia::~CDetectDVDMedia()
 {
   RemoveAllMedia();
 }
  
-CWINDetectDVDMedia* CWINDetectDVDMedia::GetInstance()
+CDetectDVDMedia* CDetectDVDMedia::GetInstance()
 {
   if( !m_instance )
-    m_instance = new CWINDetectDVDMedia();
+    m_instance = new CDetectDVDMedia();
   return m_instance;
 }
 
-void CWINDetectDVDMedia::DetectInsertedMedia()
+void CDetectDVDMedia::DetectInsertedMedia()
 {
+#ifdef _WIN32PC
   char* pcBuffer=NULL;
   DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
   if( dwStrLength != 0 )
@@ -72,10 +74,11 @@ void CWINDetectDVDMedia::DetectInsertedMedia()
     while( strlen( pcBuffer + iPos ) > 0 );
   }
   if(pcBuffer != NULL)
-    delete[] pcBuffer; 
+    delete[] pcBuffer;
+#endif
 }
 
-void CWINDetectDVDMedia::Destroy()
+void CDetectDVDMedia::Destroy()
 {
   if (m_instance)
   {
@@ -84,7 +87,7 @@ void CWINDetectDVDMedia::Destroy()
   }
 }
 
-CStdString CWINDetectDVDMedia::GetDrive(const CStdString& strDrive)
+CStdString CDetectDVDMedia::GetDrive(const CStdString& strDrive)
 {
   CStdString strPath;
   if(!strDrive.empty() && strDrive[1]==':')
@@ -99,7 +102,7 @@ CStdString CWINDetectDVDMedia::GetDrive(const CStdString& strDrive)
   return strPath;
 }
 
-CStdString CWINDetectDVDMedia::GetDevice(const CStdString& strDrive)
+CStdString CDetectDVDMedia::GetDevice(const CStdString& strDrive)
 {
   CStdString strDevice;
   if(!strDrive.empty() && strDrive[1]==':')
@@ -114,7 +117,7 @@ CStdString CWINDetectDVDMedia::GetDevice(const CStdString& strDrive)
   return strDevice;
 }
 
-void CWINDetectDVDMedia::AddMedia(const CStdString& strDrive)
+void CDetectDVDMedia::AddMedia(const CStdString& strDrive)
 {
   CSingleLock waitLock(m_critsec);
   CStdString strPath = GetDrive(strDrive);
@@ -163,7 +166,7 @@ void CWINDetectDVDMedia::AddMedia(const CStdString& strDrive)
   }
 }
 
-void CWINDetectDVDMedia::RemoveMedia(const CStdString& strDrive)
+void CDetectDVDMedia::RemoveMedia(const CStdString& strDrive)
 {
   CSingleLock waitLock(m_critsec);
   CStdString strPath = GetDrive(strDrive);
@@ -178,8 +181,9 @@ void CWINDetectDVDMedia::RemoveMedia(const CStdString& strDrive)
   }
 }
 
-void CWINDetectDVDMedia::RemoveAllMedia()
+void CDetectDVDMedia::RemoveAllMedia()
 {
+  CSingleLock waitLock(m_critsec);
   std::map<char,CCdInfo*>::iterator it;
   for (it=m_mapCdInfo.begin();it!=m_mapCdInfo.end();++it)
   {
@@ -189,7 +193,7 @@ void CWINDetectDVDMedia::RemoveAllMedia()
   m_mapCdInfo.clear();
 }
 
-CCdInfo* CWINDetectDVDMedia::GetCdInfo(const CStdString& strDrive)
+CCdInfo* CDetectDVDMedia::GetCdInfo(const CStdString& strDrive)
 {
   CSingleLock waitLock(m_critsec);
   CStdString strPath = GetDrive(strDrive);
@@ -201,7 +205,7 @@ CCdInfo* CWINDetectDVDMedia::GetCdInfo(const CStdString& strDrive)
     return NULL;
 }
 
-bool CWINDetectDVDMedia::IsAudio(const CStdString& strDrive)
+bool CDetectDVDMedia::IsAudio(const CStdString& strDrive)
 {
   CSingleLock waitLock(m_critsec);
   CCdInfo* pCdInfo = GetCdInfo(strDrive);
@@ -211,17 +215,17 @@ bool CWINDetectDVDMedia::IsAudio(const CStdString& strDrive)
     return false;
 }
 
-bool CWINDetectDVDMedia::IsDiscInDrive(const CStdString& strDrive)
+bool CDetectDVDMedia::IsDiscInDrive(const CStdString& strDrive)
 {
   return GetTrayState(strDrive) == DRIVE_CLOSED_MEDIA_PRESENT;
 }
 
-void CWINDetectDVDMedia::WaitMediaReady()
+void CDetectDVDMedia::WaitMediaReady()
 {
   CSingleLock waitLock(m_critsec);
 }
 
-CStdString CWINDetectDVDMedia::GetDVDLabel(const CStdString& strDrive)
+CStdString CDetectDVDMedia::GetDVDLabel(const CStdString& strDrive)
 {
   CSingleLock waitLock(m_critsec);
   CStdString strPath = GetDrive(strDrive);
@@ -242,7 +246,7 @@ CStdString CWINDetectDVDMedia::GetDVDLabel(const CStdString& strDrive)
   return strLabel;
 }
 
-CStdString CWINDetectDVDMedia::GetDVDPath(const CStdString& strDrive)
+CStdString CDetectDVDMedia::GetDVDPath(const CStdString& strDrive)
 {
   CSingleLock waitLock(m_critsec);
   CStdString strPath = GetDrive(strDrive);
@@ -256,7 +260,7 @@ CStdString CWINDetectDVDMedia::GetDVDPath(const CStdString& strDrive)
   return strPath;
 }
 
-DWORD CWINDetectDVDMedia::GetTrayState(const CStdString& strDrive)
+DWORD CDetectDVDMedia::GetTrayState(const CStdString& strDrive)
 {
   CSingleLock waitLock(m_critsec);
   
@@ -286,6 +290,3 @@ DWORD CWINDetectDVDMedia::GetTrayState(const CStdString& strDrive)
   return DRIVE_READY;
 #endif
 }
-
-
-#endif
