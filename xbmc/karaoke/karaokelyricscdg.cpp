@@ -336,3 +336,13 @@ bool CKaraokeLyricsCDG::HasBackground()
 {
   return true;
 }
+
+
+bool CKaraokeLyricsCDG::HasVideo()
+{
+  return false;
+}
+
+void CKaraokeLyricsCDG::GetVideoParameters(CStdString & path, __int64 & offset)
+{
+}
