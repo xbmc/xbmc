@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 06/29/2009-->
+<!--Date of translation: 07/06/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -412,7 +412,7 @@
   <string id="513">홈 윈도우</string>
   <string id="514">수동 설정</string>
   <string id="515">장르</string>
-  <string id="516">압축 파일들을 일반 단일 파일로 사용</string>
+  <string id="516">저장된 압축 파일들을 일반 단일 파일로 사용</string>
   <string id="517">최근 재생 앨범</string>
   <string id="518">실행</string>
   <string id="519">실행...</string>
@@ -1771,6 +1771,12 @@
   <string id="21440">홈 폴더</string>
   <string id="21441">시청 횟수</string>
   <string id="21442">에피소트 제목</string>
+  <string id="21443">비디오 해상도</string>
+  <string id="21444">오디오 채널</string>
+  <string id="21445">비디오 코덱</string>
+  <string id="21446">오디오 코덱</string>
+  <string id="21447">오디오 언어</string>
+  <string id="21448">자막 언어</string>
   <string id="21800">파일 이름</string>
   <string id="21801">파일 경로</string>
   <string id="21802">파일 크기</string>

@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 06/16/2009-->
+<!--Date of translation: 07/06/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21081-->
+<!--Based on english strings version 21415-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1766,6 +1766,12 @@
   <string id="21440">Hemmapp</string>
   <string id="21441">Visade-räkning</string>
   <string id="21442">Avsnittstitel</string>
+  <string id="21443">Videoupplösning</string>
+  <string id="21444">Ljudkanaler</string>
+  <string id="21445">Videocodec</string>
+  <string id="21446">Ljudcodec</string>
+  <string id="21447">Ljusdpråk</string>
+  <string id="21448">Undertextsspråk</string>
   <string id="21800">Filnamn</string>
   <string id="21801">Filsökväg</string>
   <string id="21802">Filstorlek</string>
@@ -1880,6 +1886,7 @@
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
+  <string id="30011">Söklängd</string>
   <string id="33001">Trailer kvalitet</string>
   <string id="33002">Strömma</string>
   <string id="33003">Ladda ner</string>
@@ -1890,11 +1897,11 @@
   <string id="33008">Sparar</string>
   <string id="33009">Kopierar</string>
   <string id="33010">Ange nedladdningsmapp</string>
-  <string id="30011">Söklängd</string>
   <string id="33012">Kort</string>
   <string id="33013">Lång</string>
   <string id="33014">Använd DVD spelare istället för den vaniga spelaren</string>
   <string id="33015">Fråga om nedladdning innan uppspelning</string>
   <string id="33016">Klipp</string>
   <string id="33017">Starta om tillägg för att aktivera</string>
+  <string id="33018">Klipp</string>
 </strings>
