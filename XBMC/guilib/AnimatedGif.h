@@ -161,4 +161,3 @@ protected:
   unsigned char getbyte(FILE *fd);
 };
 
-#pragma pack()
