@@ -1924,7 +1924,7 @@ class NPT_XmlNodeWriter
 public:
     NPT_XmlNodeWriter(NPT_XmlSerializer& serializer) : 
         m_Serializer(serializer), m_AttributeWriter(serializer) {
-        //m_Serializer.StartDocument();
+        m_Serializer.StartDocument();
     }
     void operator()(NPT_XmlNode*& node) const {
         if (NPT_XmlElementNode* element = node->AsElementNode()) {
@@ -1980,7 +1980,7 @@ public:
                                MapChainLink*      map_chain = NULL) : 
         m_MapChain(map_chain),
         m_Serializer(serializer) {
-        //m_Serializer.StartDocument();
+        m_Serializer.StartDocument();
     }
     void operator()(NPT_XmlNode*& node) const;
 
