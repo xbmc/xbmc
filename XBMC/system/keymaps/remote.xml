@@ -94,8 +94,7 @@
   </MyFiles>
   <MyMusicPlaylist>
     <remote>
-      <back>Playlist</back>
-      <!-- Close playlist -->
+      <back>Playlist</back>      <!-- Close playlist -->
       <clear>Delete</clear>
       <zero>Delete</zero>
       <two>MoveItemUp</two>
@@ -294,8 +293,7 @@
   </MyVideoFiles>
   <MyVideoPlaylist>
     <remote>
-      <back>Playlist</back>
-      <!-- Close playlist -->
+      <back>Playlist</back>      <!-- Close playlist -->
       <clear>Delete</clear>
       <zero>Delete</zero>
       <two>MoveItemUp</two>
@@ -342,8 +340,7 @@
   </Scripts>
   <ScriptsDebugInfo>
     <remote>
-      <info>Info</info>
-      <!-- clears debug python info -->
+      <info>Info</info>      <!-- clears debug python info -->
     </remote>
   </ScriptsDebugInfo>
   <NumericInput>

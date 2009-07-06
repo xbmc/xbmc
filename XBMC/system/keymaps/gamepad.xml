@@ -73,12 +73,9 @@
   <MyMusicPlaylist>
     <gamepad>
       <Y>Delete</Y>
-      <black>Playlist</black>
-      <!-- Close playlist -->
-      <back>Playlist</back>
-      <!-- Close playlist -->
-      <B>Playlist</B>
-      <!-- Close playlist -->
+      <black>Playlist</black>      <!-- Close playlist -->
+      <back>Playlist</back>      <!-- Close playlist -->
+      <B>Playlist</B>      <!-- Close playlist -->
     </gamepad>
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
@@ -291,10 +288,8 @@
   <MyVideoPlaylist>
     <gamepad>
       <Y>Delete</Y>
-      <black>Playlist</black>
-      <!-- Close playlist -->
-      <back>Playlist</back>
-      <!-- Close playlist -->
+      <black>Playlist</black>      <!-- Close playlist -->
+      <back>Playlist</back>      <!-- Close playlist -->
       <B>Playlist</B>
     </gamepad>
   </MyVideoPlaylist>
@@ -321,8 +316,7 @@
   </Scripts>
   <ScriptsDebugInfo>
     <gamepad>
-      <white>Info</white>
-      <!-- clears debug python info -->
+      <white>Info</white>      <!-- clears debug python info -->
     </gamepad>
   </ScriptsDebugInfo>
   <NumericInput>
@@ -335,8 +329,7 @@
   </NumericInput>
   <GamepadInput>
     <gamepad>
-      <start>Stop</start>
-      <!-- Enter Password -->
+      <start>Stop</start>      <!-- Enter Password -->
     </gamepad>
   </GamepadInput>
   <Weather>
