@@ -38,6 +38,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "Neptune.h"
+#include "PltHttp.h"
 
 /*----------------------------------------------------------------------
 |   forward declarations
@@ -164,9 +165,11 @@ public:
 
     bool IsContainer() { return m_ObjectClass.type.StartsWith("object.container"); }
 
-    static const char* GetExtFromFilePath(const NPT_String filepath, const char* dir_delimiter);
-    static const char* GetProtInfoFromExt(const char* ext);
-    static const char* GetUPnPClassFromExt(const char* ext);
+    static const char* GetMimeType(const NPT_String& filename, const PLT_HttpRequestContext* context = NULL);
+    static const char* GetMimeTypeFromExtension(const NPT_String& extension, const PLT_HttpRequestContext* context = NULL);
+    static NPT_String  GetProtInfo(const char* filename, const PLT_HttpRequestContext* context = NULL);
+    static const char* GetUPnPClass(const char* filename, const PLT_HttpRequestContext* context = NULL);
+    static const char* GetDlnaExtension(const char* mime_type, const PLT_HttpRequestContext* context = NULL);
 
     virtual NPT_Result Reset();
     virtual NPT_Result ToDidl(NPT_UInt32 mask, NPT_String& didl);

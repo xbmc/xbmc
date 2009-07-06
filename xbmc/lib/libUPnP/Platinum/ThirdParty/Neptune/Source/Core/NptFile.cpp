@@ -57,9 +57,9 @@ NPT_FilePath::BaseName(const char* path, bool with_extension /* = true */)
     } 
 
     if (!with_extension) {
-        int separator = result.ReverseFind('.');
-        if (separator >= 0) {
-            result.SetLength(separator);
+        int dot = result.ReverseFind('.');
+        if (dot >= 0) {
+            result.SetLength(dot);
         }
     }
 
@@ -67,10 +67,10 @@ NPT_FilePath::BaseName(const char* path, bool with_extension /* = true */)
 }
 
 /*----------------------------------------------------------------------
-|   NPT_FilePath::DirectoryName
+|   NPT_FilePath::DirName
 +---------------------------------------------------------------------*/
 NPT_String 
-NPT_FilePath::DirectoryName(const char* path)
+NPT_FilePath::DirName(const char* path)
 {
     NPT_String result = path;
     int separator = result.ReverseFind(Separator);
@@ -108,16 +108,18 @@ NPT_FilePath::FileExtension(const char* path)
 |   NPT_FilePath::Create
 +---------------------------------------------------------------------*/
 NPT_String 
-NPT_FilePath::Create(const char* directory, const char* base)
+NPT_FilePath::Create(const char* directory, const char* basename)
 {
-    if (!directory || NPT_StringLength(directory) == 0) return base;
+    if (!directory || NPT_StringLength(directory) == 0) return basename;
+    if (!basename || NPT_StringLength(basename) == 0) return directory;
 
     NPT_String result = directory;
-    result.TrimRight(Separator);
-    NPT_String _base = base;
-    _base.TrimLeft(Separator);
-    
-    return result + Separator + _base;
+    if (!result.EndsWith(Separator) && basename[0] != Separator[0]) {
+        result += Separator;
+    }
+    result += basename;
+
+    return result;
 }
 
 /*----------------------------------------------------------------------
@@ -128,6 +130,77 @@ NPT_File::GetCount(const char* path, NPT_Cardinal& count)
 {
     NPT_File file(path);
     return file.GetCount(count);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::CreateDir
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_File::CreateDir(const char* path, bool recursively)
+{
+    NPT_String fullpath = path;
+
+    // replace delimiters with the proper one for the platform
+    fullpath.Replace((NPT_FilePath::Separator[0] == '/')?'\\':'/',
+                     NPT_FilePath::Separator);
+    // remove excessive delimiters
+    fullpath.TrimRight(NPT_FilePath::Separator);
+
+    if (recursively) {
+        NPT_String parent_path;
+
+        // look for a delimiter from the beginning
+        int delimiter = fullpath.Find(NPT_FilePath::Separator, 1);
+        while (delimiter > 0) {
+            // copy the path up to the delimiter
+            parent_path = fullpath.SubString(0, delimiter);
+
+            // create the directory non recursively
+            NPT_CHECK(NPT_File::CreateDir(parent_path, false));
+
+            // look for the next delimiter
+            delimiter = fullpath.Find(NPT_FilePath::Separator, delimiter + 1);
+        }
+    }
+
+    // create directory
+    NPT_Result res = NPT_File::CreateDir(fullpath);
+
+    // return error only if file didn't exist
+    if (NPT_FAILED(res) && res != NPT_ERROR_FILE_ALREADY_EXISTS) {
+        NPT_CHECK_FATAL(res);
+    }
+    return NPT_SUCCESS;
+}
+
+
+/*----------------------------------------------------------------------
+|   NPT_DirectoryRemove
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_File::RemoveDir(const char* path, bool recursively)
+{
+    NPT_String root_path = path;
+
+    // replace delimiters with the proper one for the platform
+    root_path.Replace((NPT_FilePath::Separator[0] == '/')?'\\':'/', 
+                      NPT_FilePath::Separator);
+    // remove excessive delimiters
+    root_path.TrimRight(NPT_FilePath::Separator);
+
+    if (recursively) {
+        // enumerate all entries
+        NPT_File dir(root_path);
+        NPT_List<NPT_String> entries;
+        NPT_CHECK(dir.ListDir(entries));
+        for (NPT_List<NPT_String>::Iterator it = entries.GetFirstItem();
+             it;
+             ++it) {
+            NPT_File::Remove(NPT_FilePath::Create(root_path, *it), true);
+        }
+    }
+
+    return NPT_File::RemoveDir(root_path);
 }
 
 /*----------------------------------------------------------------------
@@ -234,7 +307,7 @@ NPT_File::Save(const NPT_DataBuffer& buffer)
     NPT_OutputStreamReference output;
 
     // get the output stream for the file
-    NPT_CHECK_FATAL(GetOutputStream(output));
+    NPT_CHECK_WARNING(GetOutputStream(output));
 
     // write to the stream
     return output->WriteFully(buffer.GetData(), buffer.GetDataSize());
@@ -246,22 +319,20 @@ NPT_File::Save(const NPT_DataBuffer& buffer)
 NPT_Result
 NPT_File::GetInfo(NPT_FileInfo& info)
 {
-    NPT_Result result = NPT_SUCCESS;
-    
-    // get the file info if we don't already have it
-    if (m_Info.m_Type == NPT_FileInfo::FILE_TYPE_NONE) {
-        result = GetInfo(m_Path.GetChars(), &m_Info);
+    if (m_IsSpecial) {
+        info.m_Type           = NPT_FileInfo::FILE_TYPE_SPECIAL;
+        info.m_Size           = 0;
+        info.m_Attributes     = 0;
+        info.m_AttributesMask = 0;
+        return NPT_SUCCESS;
     }
-    
-    info = m_Info;
-    
-    return result;
+    return GetInfo(m_Path.GetChars(), &info);
 }
 
 /*----------------------------------------------------------------------
 |   NPT_File::GetSize
 +---------------------------------------------------------------------*/
-/*NPT_Result
+NPT_Result
 NPT_File::GetSize(NPT_LargeSize& size)
 {
     // default value
@@ -270,17 +341,27 @@ NPT_File::GetSize(NPT_LargeSize& size)
     // get the size from the info (call GetInfo() in case it has not
     // yet been called)
     NPT_FileInfo info;
-    NPT_CHECK_FATAL(GetInfo(info));
+    GetInfo(info);
     size = info.m_Size;
     
     return NPT_SUCCESS;
-}*/
+}
 
 /*----------------------------------------------------------------------
-|   NPT_File::Delete
+|   NPT_File::GetSize
++---------------------------------------------------------------------*/
+NPT_Result        
+NPT_File::GetSize(const char* path, NPT_LargeSize& size)
+{
+	NPT_File file(path);
+	return file.GetSize(size);
+}
+
+/*----------------------------------------------------------------------
+|   NPT_File::Remove
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_File::Delete(const char* path)
+NPT_File::Remove(const char* path, bool recursively /* = false */)
 {
     NPT_FileInfo info;
 
@@ -288,9 +369,9 @@ NPT_File::Delete(const char* path)
     NPT_CHECK(GetInfo(path, &info));
 
     if (info.m_Type == NPT_FileInfo::FILE_TYPE_DIRECTORY) {
-        return DeleteDirectory(path);
+        return RemoveDir(path, recursively);
     } else {
-        return DeleteFile(path);
+        return RemoveFile(path);
     }
 }
 
@@ -308,13 +389,13 @@ NPT_File::Rename(const char* path)
 }
 
 /*----------------------------------------------------------------------
-|   NPT_File::ListDirectory
+|   NPT_File::ListDir
 +---------------------------------------------------------------------*/
 NPT_Result        
-NPT_File::ListDirectory(NPT_List<NPT_String>& entries)
+NPT_File::ListDir(NPT_List<NPT_String>& entries)
 {
     entries.Clear();
-    return ListDirectory(m_Path.GetChars(), entries);
+    return ListDir(m_Path.GetChars(), entries);
 }
 
 /*----------------------------------------------------------------------
@@ -327,7 +408,7 @@ NPT_File::GetCount(NPT_Cardinal& count)
     count = 0;
 
     NPT_List<NPT_String> entries;
-    NPT_CHECK(ListDirectory(entries));
+    NPT_CHECK(ListDir(entries));
     
     count = entries.GetItemCount();
     return NPT_SUCCESS;

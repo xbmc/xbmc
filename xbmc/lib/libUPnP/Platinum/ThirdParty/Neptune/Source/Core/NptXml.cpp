@@ -667,19 +667,19 @@ NPT_XmlAccumulator::AppendUTF8(unsigned int c)
     if (needed > m_Allocated) Allocate(needed);
 
     if (c <= 0x7F) {
-        // 000000–00007F -> 1 char = 0xxxxxxx
+        // 000000ï¾–00007F -> 1 char = 0xxxxxxx
         m_Buffer[m_Valid++] = (char)c;
     } else if (c <= 0x7FF) {
-        // 000080–0007FF -> 2 chars = 110zzzzx 10xxxxxx
+        // 000080ï¾–0007FF -> 2 chars = 110zzzzx 10xxxxxx
         m_Buffer[m_Valid++] = 0xC0|(c>>6  );
         m_Buffer[m_Valid++] = 0x80|(c&0x3F);
     } else if (c <= 0xFFFF) {
-        // 000800–00FFFF -> 3 chars = 1110zzzz 10zxxxxx 10xxxxxx
+        // 000800ï¾–00FFFF -> 3 chars = 1110zzzz 10zxxxxx 10xxxxxx
         m_Buffer[m_Valid++] = 0xE0| (c>>12      );
         m_Buffer[m_Valid++] = 0x80|((c&0xFC0)>>6);
         m_Buffer[m_Valid++] = 0x80| (c&0x3F     );
     } else if (c <= 0x10FFFF) {
-        // 010000–10FFFF -> 4 chars = 11110zzz 10zzxxxx 10xxxxxx 10xxxxxx
+        // 010000ï¾–10FFFF -> 4 chars = 11110zzz 10zzxxxx 10xxxxxx 10xxxxxx
         m_Buffer[m_Valid++] = 0xF0| (c>>18         );
         m_Buffer[m_Valid++] = 0x80|((c&0x3F000)>>12);
         m_Buffer[m_Valid++] = 0x80|((c&0xFC0  )>> 6);
@@ -1924,7 +1924,7 @@ class NPT_XmlNodeWriter
 public:
     NPT_XmlNodeWriter(NPT_XmlSerializer& serializer) : 
         m_Serializer(serializer), m_AttributeWriter(serializer) {
-        m_Serializer.StartDocument();
+        //m_Serializer.StartDocument();
     }
     void operator()(NPT_XmlNode*& node) const {
         if (NPT_XmlElementNode* element = node->AsElementNode()) {
@@ -1980,7 +1980,7 @@ public:
                                MapChainLink*      map_chain = NULL) : 
         m_MapChain(map_chain),
         m_Serializer(serializer) {
-        m_Serializer.StartDocument();
+        //m_Serializer.StartDocument();
     }
     void operator()(NPT_XmlNode*& node) const;
 

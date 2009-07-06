@@ -35,6 +35,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "Neptune.h"
+#include "PltVersion.h"
 #include "PltUPnP.h"
 #include "PltDeviceHost.h"
 #include "PltCtrlPoint.h"
@@ -127,6 +128,8 @@ PLT_UPnP::PLT_UPnP(NPT_UInt32 port, bool multicast /* = true */) :
     m_Multicast(multicast),
     m_SsdpListenTask(NULL)
 {
+    NPT_HttpClient::m_UserAgentHeader = "Platinum/" PLT_PLATINUM_VERSION_STRING ", DLNADOC/1.50";
+    NPT_HttpServer::m_ServerHeader    = "UPnP/1.0, DLNADOC/1.50, Platinum/" PLT_PLATINUM_VERSION_STRING;
 }
     
 /*----------------------------------------------------------------------
@@ -153,6 +156,12 @@ PLT_UPnP::Start()
     if (m_Started == true) return NPT_FAILURE;
 
     NPT_Socket* socket = m_Multicast?new NPT_UdpMulticastSocket(): new NPT_UdpSocket();
+
+    // try to bind harder
+    //NPT_List<NPT_IpAddress> ips;
+    //PLT_UPnPMessageHelper::GetIPAddresses(ips);
+    //NPT_CHECK_SEVERE(socket->Bind(NPT_SocketAddress(*ips.GetFirstItem(), m_Port)));
+
     NPT_CHECK_SEVERE(socket->Bind(NPT_SocketAddress(NPT_IpAddress::Any, m_Port)));
 
     /* create the ssdp listener */

@@ -49,8 +49,11 @@ int main(void)
     PLT_CtrlPointReference ctrlPoint(new PLT_CtrlPoint());
     upnp.AddCtrlPoint(ctrlPoint);
 
-    CMediaCrawler* crawler = new CMediaCrawler(ctrlPoint, "Sylvain: Platinum: Crawler");
-    CPassThroughStreamHandler* handler = new CPassThroughStreamHandler(crawler);
+    CMediaCrawler* crawler = 
+        new CMediaCrawler(ctrlPoint, 
+                          "Sylvain: Platinum: Crawler");
+    CPassThroughStreamHandler* handler = 
+        new CPassThroughStreamHandler(crawler);
     crawler->AddStreamHandler(handler);
     PLT_DeviceHostReference device(crawler);
     upnp.AddDevice(device);

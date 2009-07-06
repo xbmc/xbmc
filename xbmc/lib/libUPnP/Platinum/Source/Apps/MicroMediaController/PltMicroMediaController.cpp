@@ -44,15 +44,16 @@
 /*----------------------------------------------------------------------
 |   PLT_MicroMediaController::PLT_MicroMediaController
 +---------------------------------------------------------------------*/
-PLT_MicroMediaController::PLT_MicroMediaController(PLT_CtrlPointReference& ctrlPoint)
+PLT_MicroMediaController::PLT_MicroMediaController(PLT_CtrlPointReference& ctrlPoint) :
+    PLT_SyncMediaBrowser(ctrlPoint),
+    PLT_MediaController(ctrlPoint)
 {
     // create the stack that will be the directory where the
     // user is currently browsing. 
     // push the root directory onto the directory stack.
     m_CurBrowseDirectoryStack.Push("0");
 
-    m_MediaBrowser = new PLT_SyncMediaBrowser(ctrlPoint, true);
-    m_MediaController = new PLT_MediaController(ctrlPoint, this);
+    PLT_MediaController::SetDelegate(this);
 }
 
 /*----------------------------------------------------------------------
@@ -60,8 +61,6 @@ PLT_MicroMediaController::PLT_MicroMediaController(PLT_CtrlPointReference& ctrlP
 +---------------------------------------------------------------------*/
 PLT_MicroMediaController::~PLT_MicroMediaController()
 {
-    delete m_MediaBrowser;
-    delete m_MediaController;
 }
 
 /*
@@ -161,34 +160,42 @@ PLT_MicroMediaController::PopDirectoryStackToRoot(void)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MicroMediaController::OnMRAddedRemoved
+|   PLT_MicroMediaController::OnMRAdded
 +---------------------------------------------------------------------*/
-void
-PLT_MicroMediaController::OnMRAddedRemoved(PLT_DeviceDataReference& device, int added)
+bool
+PLT_MicroMediaController::OnMRAdded(PLT_DeviceDataReference& device)
 {
     NPT_String uuid = device->GetUUID();
 
-    if (added) {
+    // test if it's a media renderer
+    PLT_Service* service;
+    if (NPT_SUCCEEDED(device->FindServiceByType("urn:schemas-upnp-org:service:AVTransport:*", service))) {
         NPT_AutoLock lock(m_MediaRenderers);
+        m_MediaRenderers.Put(uuid, device);
+    }
+    
+    return true;
+}
 
-        // test if it's a media renderer
-        PLT_Service* service;
-        if (NPT_SUCCEEDED(device->FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service))) {
-            m_MediaRenderers.Put(uuid, device);
-        }
-    } else { /* removed */
-        {
-            NPT_AutoLock lock(m_MediaRenderers);
-            m_MediaRenderers.Erase(uuid);
-        }
+/*----------------------------------------------------------------------
+|   PLT_MicroMediaController::OnMRRemoved
++---------------------------------------------------------------------*/
+void
+PLT_MicroMediaController::OnMRRemoved(PLT_DeviceDataReference& device)
+{
+    NPT_String uuid = device->GetUUID();
 
-        {
-            NPT_AutoLock lock(m_CurMediaRendererLock);
+    {
+        NPT_AutoLock lock(m_MediaRenderers);
+        m_MediaRenderers.Erase(uuid);
+    }
 
-            // if it's the currently selected one, we have to get rid of it
-            if (!m_CurMediaRenderer.IsNull() && m_CurMediaRenderer == device) {
-                m_CurMediaRenderer = NULL;
-            }
+    {
+        NPT_AutoLock lock(m_CurMediaRendererLock);
+
+        // if it's the currently selected one, we have to get rid of it
+        if (!m_CurMediaRenderer.IsNull() && m_CurMediaRenderer == device) {
+            m_CurMediaRenderer = NULL;
         }
     }
 }
@@ -236,10 +243,8 @@ PLT_MicroMediaController::DoBrowse()
         NPT_String object_id;
         m_CurBrowseDirectoryStack.Peek(object_id);
 
-        // send off the browse packet.  Note that this will
-        // not block.  There is a call to WaitForResponse in order
-        // to block until the response comes back.
-        res = m_MediaBrowser->Browse(device, (const char*)object_id, m_MostRecentBrowseResults);		
+        // send off the browse packet and block
+        res = BrowseSync(device, (const char*)object_id, m_MostRecentBrowseResults);		
     }
 
     return res;
@@ -315,7 +320,7 @@ PLT_MicroMediaController::HandleCmd_setms()
     NPT_AutoLock lock(m_CurMediaServerLock);
 
     PopDirectoryStackToRoot();
-    m_CurMediaServer = ChooseDevice(m_MediaBrowser->GetMediaServers());
+    m_CurMediaServer = ChooseDevice(GetMediaServersMap());
 }
 
 /*----------------------------------------------------------------------
@@ -348,6 +353,59 @@ PLT_MicroMediaController::HandleCmd_ls()
                 printf("Item: %s (%s)\n", (*item)->m_Title.GetChars(), (*item)->m_ObjectID.GetChars());
             }
             ++item;
+        }
+
+        m_MostRecentBrowseResults = NULL;
+    }
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MicroMediaController::HandleCmd_info
++---------------------------------------------------------------------*/
+void
+PLT_MicroMediaController::HandleCmd_info()
+{
+    NPT_String              objID;
+    PLT_StringMap           tracks;
+    PLT_DeviceDataReference device;
+
+    // issue a browse
+    DoBrowse();
+
+    if (!m_MostRecentBrowseResults.IsNull()) {
+        // create a map item id -> item title
+        NPT_List<PLT_MediaObject*>::Iterator item = m_MostRecentBrowseResults->GetFirstItem();
+        while (item) {
+            if (!(*item)->IsContainer()) {
+                tracks.Put((*item)->m_ObjectID, (*item)->m_Title);
+            }
+            ++item;
+        }
+
+        // let the user choose which one
+        objID = ChooseIDFromTable(tracks);
+        if (objID.GetLength()) {
+            // look back for the PLT_MediaItem in the results
+            PLT_MediaObject* track = NULL;
+            if (NPT_SUCCEEDED(NPT_ContainerFind(*m_MostRecentBrowseResults, PLT_MediaItemIDFinder(objID), track))) {
+                // display info
+                printf("Title: %s \n", track->m_Title.GetChars());
+                printf("OjbectID: %s\n", track->m_ObjectID.GetChars());
+                printf("Class: %s\n", track->m_ObjectClass.type.GetChars());
+                printf("Creator: %s\n", track->m_Creator.GetChars());
+                printf("Date: %s\n", track->m_Date.GetChars());
+                printf("Art Uri: %s\n", track->m_ExtraInfo.album_art_uri.GetChars());
+                printf("Art Uri Dlna Profile: %s\n", track->m_ExtraInfo.album_art_uri_dlna_profile.GetChars());
+                for (NPT_Cardinal i=0;i<track->m_Resources.GetItemCount(); i++) {
+                    printf("\tResource[%d].uri: %s\n", i, track->m_Resources[i].m_Uri.GetChars());
+                    printf("\tResource[%d].profile: %s\n", i, track->m_Resources[i].m_ProtocolInfo.GetChars());
+                    printf("\tResource[%d].duration: %d\n", i, track->m_Resources[i].m_Duration);
+                    printf("\tResource[%d].size: %d\n", i, (int)track->m_Resources[i].m_Size);
+                    printf("\n");
+                }
+            } else {
+                printf("Couldn't find the track\n");
+            }
         }
 
         m_MostRecentBrowseResults = NULL;
@@ -456,8 +514,8 @@ PLT_MicroMediaController::HandleCmd_open()
                 if (NPT_SUCCEEDED(NPT_ContainerFind(*m_MostRecentBrowseResults, PLT_MediaItemIDFinder(objID), track))) {
                     if (track->m_Resources.GetItemCount() > 0) {
                         // invoke the setUri
-                        m_MediaController->SetAVTransportURI(device, 0, track->m_Resources[0].m_Uri, track->m_Didl, NULL);
-                        m_MediaController->Play(device, 0, "1", NULL);                        
+                        SetAVTransportURI(device, 0, track->m_Resources[0].m_Uri, track->m_Didl, NULL);
+                        Play(device, 0, "1", NULL);                        
                     } else {
                         printf("Couldn't find the proper resource\n");
                     }
@@ -481,7 +539,7 @@ PLT_MicroMediaController::HandleCmd_play()
     PLT_DeviceDataReference device;
     GetCurMediaRenderer(device);
     if (!device.IsNull()) {
-        m_MediaController->Play(device, 0, "1", NULL);
+        Play(device, 0, "1", NULL);
     }
 }
 
@@ -494,7 +552,33 @@ PLT_MicroMediaController::HandleCmd_stop()
     PLT_DeviceDataReference device;
     GetCurMediaRenderer(device);
     if (!device.IsNull()) {
-        m_MediaController->Stop(device, 0, NULL);
+        Stop(device, 0, NULL);
+    }
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MicroMediaController::HandleCmd_mute
++---------------------------------------------------------------------*/
+void
+PLT_MicroMediaController::HandleCmd_mute()
+{
+    PLT_DeviceDataReference device;
+    GetCurMediaRenderer(device);
+    if (!device.IsNull()) {
+        SetMute(device, 0, "Master", true, NULL);
+    }
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MicroMediaController::HandleCmd_unmute
++---------------------------------------------------------------------*/
+void
+PLT_MicroMediaController::HandleCmd_unmute()
+{
+    PLT_DeviceDataReference device;
+    GetCurMediaRenderer(device);
+    if (!device.IsNull()) {
+        SetMute(device, 0, "Master", false, NULL);
     }
 }
 
@@ -515,6 +599,7 @@ PLT_MicroMediaController::HandleCmd_help()
     printf(" getms   -   print the friendly name of the active media server\n");
     printf(" ls      -   list the contents of the current directory on the active \n");
     printf("             media server\n");
+    printf(" info    -   display media info\n");
     printf(" cd      - * traverse down one level in the content tree on the active\n");
     printf("             media server\n");
     printf(" cd ..   -   traverse up one level in the content tree on the active\n");
@@ -526,6 +611,8 @@ PLT_MicroMediaController::HandleCmd_help()
     printf(" open    -   set the uri on the active media renderer\n");
     printf(" play    -   play the active uri on the active media renderer\n");
     printf(" stop    -   stop the active uri on the active media renderer\n");
+    printf(" mute    -   mute the active media renderer\n");
+    printf(" unmute  -   unmute the active media renderer\n");
 
     printf(" help    -   print this help message\n\n");
 }
@@ -554,6 +641,8 @@ PLT_MicroMediaController::ProcessCommandLoop()
             HandleCmd_getms();
         } else if (0 == strcmp(command, "ls")) {
             HandleCmd_ls();
+        } else if (0 == strcmp(command, "info")) {
+            HandleCmd_info();
         } else if (0 == strcmp(command, "cd")) {
             HandleCmd_cd();
         } else if (0 == strcmp(command, "cd ..")) {
@@ -570,6 +659,10 @@ PLT_MicroMediaController::ProcessCommandLoop()
             HandleCmd_play();
         } else if (0 == strcmp(command, "stop")) {
             HandleCmd_stop();
+        } else if (0 == strcmp(command, "mute")) {
+            HandleCmd_mute();
+        } else if (0 == strcmp(command, "unmute")) {
+            HandleCmd_mute();
         } else if (0 == strcmp(command, "help")) {
             HandleCmd_help();
         } else if (0 == strcmp(command, "")) {

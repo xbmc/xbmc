@@ -57,6 +57,7 @@ class PLT_HttpServer : public PLT_HttpServerListener,
 
 public:
     PLT_HttpServer(unsigned int port = 0,
+                   bool         port_rebind = false,
                    NPT_Cardinal max_clients = 0,
                    bool         reuse_address = false);
     virtual ~PLT_HttpServer();
@@ -74,6 +75,7 @@ public:
 private:
     PLT_TaskManager*          m_TaskManager;
     unsigned int              m_Port;
+    bool                      m_PortRebind;
     bool                      m_ReuseAddress;
     PLT_HttpServerListenTask* m_HttpListenTask;
 };
@@ -86,10 +88,11 @@ class PLT_FileServer
 public:
     // class methods
     static NPT_Result ServeFile(NPT_HttpResponse& response, 
-                                const NPT_String& file_path, 
+                                NPT_String        file_path, 
                                 NPT_Position      start = (NPT_Position)-1, 
                                 NPT_Position      end = (NPT_Position)-1,
                                 bool              request_is_head = false);
+    static const char* GetMimeType(const NPT_String& filename);
 };
 
 #endif /* _PLT_HTTP_SERVER_H_ */

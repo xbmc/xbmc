@@ -127,7 +127,6 @@ public:
         return NPT_SUCCESS;
     }
 
-
     static NPT_Result GetAttribute(NPT_XmlElementNode* node, 
                                    const char*         name,
                                    NPT_String&         value,
@@ -139,6 +138,18 @@ public:
         if (!attribute) return NPT_FAILURE;
 
         value = attribute->GetValue();
+        return NPT_SUCCESS;
+    }
+
+    static NPT_Result SetAttribute(NPT_XmlElementNode* node, 
+                                   const char*         name,
+                                   NPT_String&         value,
+                                   const char*         namespc = "") {
+        NPT_XmlAttribute* attribute = NULL;
+        NPT_CHECK(GetAttribute(node, name, attribute, namespc));
+        if (!attribute) return NPT_FAILURE;
+
+        attribute->SetValue(value);
         return NPT_SUCCESS;
     }
 

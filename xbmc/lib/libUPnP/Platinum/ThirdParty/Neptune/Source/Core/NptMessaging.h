@@ -39,6 +39,7 @@
 #include "NptTypes.h"
 #include "NptResults.h"
 #include "NptList.h"
+#include "NptDynamicCast.h"
 
 /*----------------------------------------------------------------------
 |   forward references
@@ -50,7 +51,9 @@ class NPT_Message;
 +---------------------------------------------------------------------*/
 class NPT_MessageHandler
 {
- public:
+public:
+    NPT_IMPLEMENT_DYNAMIC_CAST(NPT_MessageHandler)
+    
     // methods
     virtual ~NPT_MessageHandler() {}
 
@@ -68,7 +71,7 @@ class NPT_MessageHandler
 +---------------------------------------------------------------------*/
 class NPT_Message
 {
- public:
+public:
     // types
     typedef const char* Type;
 
