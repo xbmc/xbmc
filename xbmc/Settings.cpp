@@ -1850,7 +1850,7 @@ bool CSettings::LoadProfile(int index)
     CStdString strLanguagePath;
     strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 
-    g_buttonTranslator.Load();
+    CButtonTranslator::GetInstance().Load();
     g_localizeStrings.Load(strLanguagePath);
 
     g_infoManager.ResetCache();

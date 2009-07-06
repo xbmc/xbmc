@@ -342,7 +342,7 @@ bool CEventServer::ExecuteNextAction()
         break;
 
       case AT_BUTTON:
-        g_buttonTranslator.TranslateActionString(actionEvent.actionName.c_str(), action.wID);
+        CButtonTranslator::TranslateActionString(actionEvent.actionName.c_str(), action.wID);
         action.strAction = actionEvent.actionName;
         action.fRepeat  = 0.0f;
         action.fAmount1 = 1.0f;

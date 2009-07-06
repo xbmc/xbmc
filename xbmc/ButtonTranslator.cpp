@@ -30,8 +30,13 @@
 using namespace std;
 using namespace XFILE;
 
-CButtonTranslator g_buttonTranslator;
 extern CStdString g_LoadErrorStr;
+
+CButtonTranslator& CButtonTranslator::GetInstance()
+{
+  static CButtonTranslator sl_instance;
+  return sl_instance;
+}
 
 CButtonTranslator::CButtonTranslator()
 {}
@@ -1161,6 +1166,14 @@ WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 void CButtonTranslator::Clear()
 {
   translatorMap.clear();
+#ifdef HAS_LIRC
+  lircRemotesMap.clear();
+#endif
 
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+  m_joystickButtonMap.clear();
+  m_joystickAxisMap.clear();
+  m_joystickHatMap.clear();
+#endif
 }
 
