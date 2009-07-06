@@ -46,7 +46,9 @@
 +---------------------------------------------------------------------*/
 class PLT_HttpTcpConnector : public NPT_HttpClient::Connector
 {
-    virtual ~PLT_HttpTcpConnector() {}
+public:
+    PLT_HttpTcpConnector();
+    virtual ~PLT_HttpTcpConnector();
     virtual NPT_Result Connect(const char*                   hostname, 
                                NPT_UInt16                    port, 
                                NPT_Timeout                   connection_timeout,
@@ -85,8 +87,10 @@ protected:
     virtual ~PLT_HttpClientSocketTask();
 
 protected:
+    virtual NPT_Result SetConnector(PLT_HttpTcpConnector* connector);
+    
     // PLT_ThreadTask methods
-    virtual void DoAbort() { if (m_Connector) m_Connector->Abort(); }
+    virtual void DoAbort();
     virtual void DoRun();
 
     virtual NPT_Result ProcessResponse(NPT_Result                    res, 
@@ -101,7 +105,8 @@ protected:
     NPT_HttpClient              m_Client;
     bool                        m_WaitForever;
     NPT_Queue<NPT_HttpRequest>  m_Requests;
-    PLT_HttpTcpConnector*       m_Connector; //TBD: we need a lock to be able to abort
+    NPT_Mutex                   m_ConnectorLock;
+    PLT_HttpTcpConnector*       m_Connector;
 };
 
 /*----------------------------------------------------------------------
@@ -112,7 +117,7 @@ class PLT_HttpClientTask : public PLT_HttpClientSocketTask
 {
 public:
     PLT_HttpClientTask<T>(const NPT_HttpUrl& url, T* data) : 
-        PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET")), 
+        PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET", NPT_HTTP_PROTOCOL_1_1)), 
                                  m_Data(data) {}
  protected:
     virtual ~PLT_HttpClientTask<T>() {}
@@ -137,7 +142,7 @@ class PLT_FileHttpClientTask : public PLT_HttpClientSocketTask
 {
 public:
     PLT_FileHttpClientTask(const NPT_HttpUrl& url) : 
-        PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET")) {}
+        PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET", NPT_HTTP_PROTOCOL_1_1)) {}
 
 protected:
     virtual ~PLT_FileHttpClientTask() {}

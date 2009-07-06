@@ -51,5 +51,6 @@
 |   NPT_Debug
 +---------------------------------------------------------------------*/
 extern void NPT_Debug(const char* format, ...);
+extern void NPT_DebugOutput(const char* message);
 
 #endif // _NPT_DEBUG_H_

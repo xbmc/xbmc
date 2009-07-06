@@ -51,11 +51,16 @@ extern NPT_UInt8 RDR_RenderingControlSCPD[];
 |   PLT_MediaRenderer::PLT_MediaRenderer
 +---------------------------------------------------------------------*/
 PLT_MediaRenderer::PLT_MediaRenderer(const char*  friendly_name, 
-                                     bool         show_ip, 
-                                     const char*  uuid, 
-                                     unsigned int port) :	
-    PLT_DeviceHost("/", uuid, "urn:schemas-upnp-org:device:MediaRenderer:1", friendly_name, show_ip, port)
+                                     bool         show_ip     /* = false */, 
+                                     const char*  uuid        /* = NULL */, 
+                                     unsigned int port        /* = 0 */,
+                                     bool         port_rebind /* = false */) :	
+    PLT_DeviceHost("/", uuid, "urn:schemas-upnp-org:device:MediaRenderer:1", friendly_name, show_ip, port, port_rebind)
 {
+    m_ModelDescription = "Plutinosoft AV Media Renderer Device";
+    m_ModelName        = "AV Renderer Device";
+    m_ModelURL         = "http://www.plutinosoft.com/blog/projects/platinum";
+    m_DlnaDoc          = "DMR-1.50";
 }
 
 /*----------------------------------------------------------------------
@@ -150,7 +155,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service->SetStateVariable("CurrentConnectionIDs", "0");
 
         // put all supported mime types here instead
-        service->SetStateVariable("SinkProtocolInfo", "http-get:*:*:*");
+        service->SetStateVariable("SinkProtocolInfo", "http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_PRO,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_SP_G726,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_MED,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_BASE,http-get:*:audio/L16;rate=44100;channels=1:DLNA.ORG_PN=LPCM,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_NTSC,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVHIGH_PRO,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMDRM_WMAFULL,http-get:*:audio/L16;rate=44100;channels=2:DLNA.ORG_PN=LPCM,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_SM,http-get:*:video/x-ms-asf:DLNA.ORG_PN=VC1_ASF_AP_L1_WMA,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMDRM_WMABASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVHIGH_FULL,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVHIGH_FULL,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVSPML_MP3,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVMED_FULL,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPLL_BASE,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_NTSC_XAC3,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVMED_BASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVSPLL_BASE,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVHIGH_PRO,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPML_BASE,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_ASP_L5_SO_G726,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVSPML_BASE,http-get:*:audio/mpeg:DLNA.ORG_PN=MP3,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL_XAC3,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMDRM_WMAPRO,http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAPRO,http-get:*:video/mpeg:DLNA.ORG_PN=MPEG1,http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN,http-get:*:video/x-ms-asf:DLNA.ORG_PN=MPEG4_P2_ASF_ASP_L4_SO_G726,http-get:*:audio/L16;rate=48000;channels=2:DLNA.ORG_PN=LPCM,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMDRM_WMVMED_PRO,http-get:*:audio/mpeg:DLNA.ORG_PN=MP3X,http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVSPML_MP3,http-get:*:image/x-ycbcr-yuv420:*,http-get:*:video/x-ms-wmv:*,http-get:*:video/wtv:*");
         service->SetStateVariable("SourceProtocolInfo", "");
     }
 
@@ -179,7 +184,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_MediaRenderer::OnAction(PLT_ActionReference&          action, 
-                            const NPT_HttpRequestContext& context)
+                            const PLT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 
@@ -187,18 +192,7 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
     NPT_String name = action->GetActionDesc()->GetName();
 
     /* Is it a ConnectionManager Service Action ? */
-    if (name.Compare("GetCurrentConnectionIDs", true) == 0) {
-        if (NPT_FAILED(action->SetArgumentsOutFromStateVariable())) {
-            return NPT_FAILURE;
-        }
-        return NPT_SUCCESS;
-    }
-    if (name.Compare("GetProtocolInfo", true) == 0) {
-        if (NPT_FAILED(action->SetArgumentsOutFromStateVariable())) {
-            return NPT_FAILURE;
-        }
-        return NPT_SUCCESS;
-    }    
+ 
     if (name.Compare("GetCurrentConnectionInfo", true) == 0) {
         return OnGetCurrentConnectionInfo(action);
     }  
@@ -215,42 +209,6 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
         }
     }
 
-    if (name.Compare("GetCurrentTransportActions", true) == 0) {
-        if (NPT_FAILED(action->SetArgumentsOutFromStateVariable())) {
-            return NPT_FAILURE;
-        }
-        return NPT_SUCCESS;
-    }
-    if (name.Compare("GetDeviceCapabilities", true) == 0) {
-        if (NPT_FAILED(action->SetArgumentsOutFromStateVariable())) {
-            return NPT_FAILURE;
-        }
-        return NPT_SUCCESS;
-    }
-    if (name.Compare("GetMediaInfo", true) == 0) {
-        if (NPT_FAILED(action->SetArgumentsOutFromStateVariable())) {
-            return NPT_FAILURE;
-        }
-        return NPT_SUCCESS;
-    }
-    if (name.Compare("GetPositionInfo", true) == 0) {
-        if (NPT_FAILED(action->SetArgumentsOutFromStateVariable())) {
-            return NPT_FAILURE;
-        }
-        return NPT_SUCCESS;
-    }
-    if (name.Compare("GetTransportInfo", true) == 0) {
-        if (NPT_FAILED(action->SetArgumentsOutFromStateVariable())) {
-            return NPT_FAILURE;
-        }
-        return NPT_SUCCESS;
-    }
-    if (name.Compare("GetTransportSettings", true) == 0) {
-        if (NPT_FAILED(action->SetArgumentsOutFromStateVariable())) {
-            return NPT_FAILURE;
-        }
-        return NPT_SUCCESS;
-    }
     if (name.Compare("Next", true) == 0) {
         return OnNext(action);
     }
@@ -277,32 +235,18 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
     }
 
     /* Is it a RendererControl Service Action ? */
-    if (serviceType.Compare("urn:schemas-upnp-org:service:RenderingControl:1", true) == 0) {
-        /* we only support master channel */
-        if (NPT_FAILED(action->VerifyArgumentValue("Channel", "Master"))) {
-            action->SetError(402,"Invalid Args.");
-            return NPT_FAILURE;
-        }
-    }
-
-    if (name.Compare("GetVolume", true) == 0) {
-        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
-        return NPT_SUCCESS;
-    }
-
-    if (name.Compare("GetMute", true) == 0) {
-        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
-        return NPT_SUCCESS;
-    }
-
     if (name.Compare("SetVolume", true) == 0) {
           return OnSetVolume(action);
     }
-
     if (name.Compare("SetMute", true) == 0) {
           return OnSetMute(action);
     }
 
+    // other actions rely on state variables
+    NPT_CHECK_LABEL_WARNING(action->SetArgumentsOutFromStateVariable(), failure);
+    return NPT_SUCCESS;
+
+failure:
     action->SetError(401,"No Such Action.");
     return NPT_FAILURE;
 }
@@ -401,8 +345,21 @@ PLT_MediaRenderer::OnStop(PLT_ActionReference& /* action */)
 |   PLT_MediaRenderer::OnSetAVTransportURI
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaRenderer::OnSetAVTransportURI(PLT_ActionReference& /* action */)
+PLT_MediaRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 {
+    NPT_String uri;
+    NPT_CHECK_WARNING(action->GetArgumentValue("CurrentURI", uri));
+
+    NPT_String metadata;
+    NPT_CHECK_WARNING(action->GetArgumentValue("CurrentURIMetaData", metadata));
+    
+    PLT_Service* serviceAVT;
+    NPT_CHECK_WARNING(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", serviceAVT));
+
+    // update service state variables
+    serviceAVT->SetStateVariable("AVTransportURI", uri);
+    serviceAVT->SetStateVariable("AVTransportURIMetaData", metadata);
+
     return NPT_SUCCESS;
 }
 

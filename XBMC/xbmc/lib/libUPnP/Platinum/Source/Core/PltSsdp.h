@@ -144,22 +144,10 @@ public:
     PLT_SsdpInitMulticastIterator(NPT_UdpMulticastSocket* socket) :
         m_Socket(socket) {}
 
-    NPT_Result operator()(NPT_NetworkInterface*& if_addr) const {
-        NPT_COMPILER_UNUSED(if_addr);
-
+    NPT_Result operator()(NPT_IpAddress& if_addr) const {
         NPT_IpAddress addr;
         addr.ResolveName("239.255.255.250");
-
-#if 0
-        NPT_List<NPT_NetworkInterfaceAddress>::Iterator niaddr = if_addr->GetAddresses().GetFirstItem();
-        if (!niaddr) return NPT_FAILURE;
-
-        //FIXME: Should we iterate through all addresses or at least check for disconnected ones ("0.0.0.0")?
-
-        return m_Socket->JoinGroup(addr, (*niaddr).GetPrimaryAddress());
-#else
-        return m_Socket->JoinGroup(addr, NPT_IpAddress::Any);
-#endif
+        return m_Socket->JoinGroup(addr, if_addr);
     }
 
 private:
@@ -238,9 +226,11 @@ private:
 class PLT_SsdpListenTask : public PLT_HttpServerSocketTask
 {
 public:
-    PLT_SsdpListenTask(NPT_Socket* socket, bool multicast = true) : 
+    PLT_SsdpListenTask(NPT_Socket* socket, 
+                       bool multicast = true,
+                       bool join_hard = false) : 
         PLT_HttpServerSocketTask(socket, true), 
-        m_IsMulticast(multicast) {}
+        m_Multicast(multicast), m_JoinHard(join_hard) {}
 
     NPT_Result AddListener(PLT_SsdpPacketListener* listener) {
         NPT_AutoLock lock(m_Mutex);
@@ -270,7 +260,8 @@ protected:
 
 protected:
     PLT_InputDatagramStreamReference  m_Datagram;
-    bool                              m_IsMulticast;
+    bool                              m_Multicast;
+    bool                              m_JoinHard;
     NPT_List<PLT_SsdpPacketListener*> m_Listeners;
     NPT_Mutex                         m_Mutex;
 };

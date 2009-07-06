@@ -51,19 +51,28 @@
 class PLT_MetadataHandler;
 
 /*----------------------------------------------------------------------
-|   PLT_MediaServer class
+|   PLT_FileMediaServer class
 +---------------------------------------------------------------------*/
 class PLT_FileMediaServer : public PLT_MediaServer
 {
 public:
+    // class methods
+    static NPT_String BuildSafeResourceUri(const NPT_HttpUrl& base_uri, 
+                                           const char*        host, 
+                                           const char*        file_path);
+
+    // constructor
     PLT_FileMediaServer(const char*  path, 
                         const char*  friendly_name,
                         bool         show_ip = false,
                         const char*  uuid = NULL,
-                        NPT_UInt16   port = 0);
+                        NPT_UInt16   port = 0,
+                        bool         port_rebind = false);
 
-    NPT_Result AddMetadataHandler(PLT_MetadataHandler* handler);
-    static NPT_String BuildResourceUri(const NPT_HttpUrl& base_uri, const char* host, const char* file_path);
+    // overridable
+    virtual NPT_Result AddMetadataHandler(PLT_MetadataHandler* handler);
+    virtual NPT_Result ExtractResourcePath(const NPT_HttpUrl& url, NPT_String& file_path);
+    virtual NPT_String BuildResourceUri(const NPT_HttpUrl& base_uri, const char* host, const char* file_path);
 
 protected:
     virtual ~PLT_FileMediaServer();
@@ -83,26 +92,41 @@ protected:
     // PLT_MediaServer methods
     virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
                                         const char*                   object_id, 
-                                        const NPT_HttpRequestContext& context);
+                                        const char*                   filter,
+                                        NPT_UInt32                    starting_index,
+                                        NPT_UInt32                    requested_count,
+                                        const NPT_List<NPT_String>&   sort_criteria,
+                                        const PLT_HttpRequestContext& context);
     virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
                                               const char*                   object_id, 
-                                              const NPT_HttpRequestContext& context);
+                                              const char*                   filter,
+                                              NPT_UInt32                    starting_index,
+                                              NPT_UInt32                    requested_count,
+                                              const NPT_List<NPT_String>&   sort_criteria,
+                                              const PLT_HttpRequestContext& context);
+    virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
+                                         const char*                   object_id, 
+                                         const char*                   search_criteria,
+                                         NPT_UInt32                    starting_index,
+                                         NPT_UInt32                    requested_count,
+                                         const NPT_List<NPT_String>&   sort_criteria, 
+                                         const PLT_HttpRequestContext& context);
+                                
     virtual NPT_Result ServeFile(NPT_HttpRequest&              request, 
                                  const NPT_HttpRequestContext& context,
                                  NPT_HttpResponse&             response,
-                                 const NPT_String&             uri_path,
                                  const NPT_String&             file_path);
     virtual NPT_Result OnAlbumArtRequest(NPT_HttpResponse& response, 
                                          NPT_String        file_path);
     virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
-
-    virtual PLT_MediaObject* BuildFromFilePath(const NPT_String&        filepath, 
-                                               bool                     with_count = true, 
-                                               const NPT_SocketAddress* req_local_address = NULL, 
-                                               bool                     keep_extension_in_title = false);
+    virtual bool       ProcessFile(const NPT_String&) { return true;}
+    virtual PLT_MediaObject* BuildFromFilePath(const NPT_String&             filepath, 
+                                               const PLT_HttpRequestContext& context,
+                                               bool                          with_count = true,
+                                               bool                          keep_extension_in_title = false);
 
 public:
-    NPT_UInt16                     m_FileServerPort;
+    NPT_UInt16 m_FileServerPort;
 
 protected:
     friend class PLT_MediaItem;

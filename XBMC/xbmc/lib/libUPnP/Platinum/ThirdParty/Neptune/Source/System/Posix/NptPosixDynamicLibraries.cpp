@@ -54,16 +54,19 @@ NPT_DynamicLibrary::Load(const char* name, NPT_Flags flags, NPT_DynamicLibrary*&
     // compute the mode
     int mode = 0;
     if (flags & NPT_DYANMIC_LIBRARY_LOAD_FLAG_NOW) {
-        mode &= RTLD_NOW;
+        mode |= RTLD_NOW;
     } else {
-        mode &= RTLD_LAZY;
+        mode |= RTLD_LAZY;
     }
-    
+
     // load the lib
-    NPT_LOG_FINE_2("loading library %s, flags=%x", name, flags);
+    NPT_LOG_FINE_3("loading library %s, flags=%x, mode=%x", name, flags, mode);
     void* handle = dlopen(name, mode);
     if (handle == NULL) {
-        NPT_LOG_FINE("library not found");
+#if defined(NPT_CONFIG_ENABLE_LOGGING)
+        const char* error = dlerror();
+        NPT_LOG_FINE_1("library cannot be loaded (%s)", error?error:"");
+#endif
         return NPT_FAILURE;
     }
     
