@@ -494,7 +494,7 @@ PLT_FileMediaServer::BuildSafeResourceUri(const NPT_HttpUrl& base_uri,
 
     NPT_String uri_path = uri.GetPath();
     if (!uri_path.EndsWith("/")) uri_path += "/";
-    uri_path += NPT_Uri::PercentEncode(file_path, " !\"<>\\^`{|}?#[]:", true);
+    uri_path += NPT_Uri::PercentEncode(file_path, " !\"<>\\^`{|}?#[]:/", true);
     uri.SetPath(uri_path);
 
     // 360 hack: force inclusion of port in case it's 80
