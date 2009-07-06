@@ -59,7 +59,7 @@ bool CButtonTranslator::Load()
     DIRECTORY::CDirectory::GetDirectory(systemKeymapDirPath, files, "*.xml");
     //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
     files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-    for(unsigned int i = 0; i<files.Size(); ++i)
+    for(int i = 0; i<files.Size(); ++i)
       success |= LoadKeymap(files[i]->m_strPath);
   }
   //load from user's keymaps/ directory
@@ -70,7 +70,7 @@ bool CButtonTranslator::Load()
     DIRECTORY::CDirectory::GetDirectory(userKeymapDirPath, files, "*.xml");
     //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
     files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-    for(unsigned int i = 0; i<files.Size(); ++i)
+    for(int i = 0; i<files.Size(); ++i)
       success |= LoadKeymap(files[i]->m_strPath);
   }
 
