@@ -206,7 +206,6 @@ int CWebServer::initWebs()
 	#ifdef USER_MANAGEMENT_SUPPORT
 		umOpen();
 		basicSetProductDir(m_szRootWeb);
-		umRestore((char*)"umconfig.txt"); // only change this if done in the go-ahead source too
 	#endif
 
   // set callbacks for spyce parser
@@ -374,7 +373,6 @@ void CWebServer::SetPassword(const char* strPassword)
   }
   
   // save new information in database
-  umCommit((char*)"umconfig.txt");
   umClose();
 }
 
