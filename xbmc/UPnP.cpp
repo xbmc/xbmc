@@ -2079,13 +2079,12 @@ CUPnP::CreateServer(int port /* = 0 */)
                     atoi(g_guiSettings.GetString("servers.webserverport")),
                     "/").ToString();
 
-    /*
     device->m_ModelName        = "XBMC Media Center";
     device->m_ModelNumber      = "1.0";
     device->m_ModelDescription = "XBMC Media Center - Media Server";
     device->m_ModelURL         = "http://www.xbmc.org/";
     device->m_Manufacturer     = "Team XBMC";
-    device->m_ManufacturerURL  = "http://www.xbmc.org/";*/
+    device->m_ManufacturerURL  = "http://www.xbmc.org/";
 
     return device;
 }
