@@ -54,7 +54,7 @@ int XbmcWebsHttpAPIConfigSetOption(CStdString& response, int argc, char_t **argv
 #endif 
 
 // group for default xbox user
-#define WEBSERVER_UM_GROUP "sys_xbox"
+#define WEBSERVER_UM_GROUP "sys_xbmc"
 
 class CWebServer : public CThread
 {
