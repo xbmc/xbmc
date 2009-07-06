@@ -442,32 +442,19 @@ CStdString CStreamDetails::VideoAspectToAspectDescription(float fAspect)
   if (fAspect == 0.0f)
     return "";
 
-  // With the epsilon method some of the ranges slightly overlap
-  // so go in increasing size order to minimize the impact
-  // of a growing tolerance value
-  float fTolerance = (fAspect * VIDEOASPECT_EPSILON);
-
-  // 4:3 video standard
-  if (fabs(fAspect - 1.33f) < fTolerance)
+  // Given that we're never going to be able to handle every single possibility in
+  // aspect ratios, particularly when cropping prior to video encoding is taken into account
+  // the best we can do is take the "common" aspect ratios, and return the closest one available.
+  // The cutoffs are the geometric mean of the two aspect ratios either side.
+  if (fAspect < 1.4859f) // sqrt(1.33*1.66)
     return "1.33";
-  // 1.66:1 35mm European flat
-  if (fabs(fAspect - 1.66f) < fTolerance)
+  else if (fAspect < 1.7190f) // sqrt(1.66*1.78)
     return "1.66";
-  // 16:9 video widescreen 
-  if (fabs(fAspect - 1.77f) < fTolerance)
+  else if (fAspect < 1.8147f) // sqrt(1.78*1.85)
     return "1.78";
-  // 1.85:1 35mm US flat (theatrical widescreen)
-  if (fabs(fAspect - 1.85f) < fTolerance)
+  else if (fAspect < 2.0174f) // sqrt(1.85*2.20)
     return "1.85";
-  // 2.20:1 70m standard
-  if (fabs(fAspect - 2.20f) < fTolerance)
+  else if (fAspect < 2.2738f) // sqrt(2.20*2.35)
     return "2.20";
-  // 2.35:1 anamorphic wide - included are both true 2.35 (pre 1970s) and new
-  // 2.39 as the industry convetion is to call the new standard 2.35 anyway
-  if (fabs(fAspect - 2.35f) < fTolerance)
-    return "2.35";
-  if (fabs(fAspect - 2.39f) < fTolerance)
-    return "2.35";
-
-  return "";
+  return "2.35";
 }
