@@ -23,19 +23,20 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#ifdef _WIN32PC
-#ifndef _WIN32_DETECT_DVD_TYPE_H_
-#define _WIN32_DETECT_DVD_TYPE_H_
+#ifndef _DETECT_DVD_TYPE_H_
+#define _DETECT_DVD_TYPE_H_
 
+#ifdef _WIN32PC
 #include "WIN32Util.h"
+#endif
 #include "FileSystem/cdioSupport.h"
 
 namespace MEDIA_DETECT
 {
-class CWINDetectDVDMedia
+class CDetectDVDMedia
 {
 public:
-  static CWINDetectDVDMedia* GetInstance();
+  static CDetectDVDMedia* GetInstance();
   static void Destroy();
 
   void AddMedia(const CStdString& strDrive);
@@ -52,10 +53,10 @@ public:
   static CEvent m_evAutorun;
 
 private:
-  static CWINDetectDVDMedia* m_instance;
-  CWINDetectDVDMedia();
-  CWINDetectDVDMedia(const CWINDetectDVDMedia& cc);
-  ~CWINDetectDVDMedia();
+  static CDetectDVDMedia* m_instance;
+  CDetectDVDMedia();
+  CDetectDVDMedia(const CDetectDVDMedia& cc);
+  ~CDetectDVDMedia();
 
   void DetectInsertedMedia();
   void RemoveAllMedia();
@@ -67,5 +68,4 @@ private:
 
 };
 }
-#endif
 #endif
