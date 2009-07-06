@@ -6,6 +6,9 @@
 #include <string.h>
 #include <errno.h>
 #include "xwinapi.h"
+#ifdef __APPLE__
+#include "OSXGNUReplacements.h"
+#endif
 
 // I hope this doesn't need to handle unicode...
 LPTSTR GetCommandLine() {
