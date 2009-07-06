@@ -253,3 +253,8 @@ getdelim (lineptr, n, terminator, stream)
   return p - *lineptr;
 }
 
+ssize_t
+getline (char **lineptr, size_t *n, FILE *stream)
+{
+  return getdelim (lineptr, n, '\n', stream);
+}
