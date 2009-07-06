@@ -23,6 +23,9 @@
 #include "SAPDirectory.h"
 #include "Util.h"
 #include "FileItem.h"
+#ifdef __APPLE__
+#include "OSXGNUReplacements.h" // strnlen
+#endif
 #ifdef _MSC_VER
 #include <Ws2tcpip.h>
 #else
@@ -108,8 +111,7 @@ namespace SDP
 
     /* read payload type */
     //no strnlen on non linux/win32 platforms, use handcrafted version
-    const char *end = (const char*)memchr (data, '\0', len);
-    int payload_size = (end) ? (int) (end - data) : len;
+    int payload_size = strnlen(data, len);
 
     if (payload_size == len)
       return -1;
