@@ -90,8 +90,7 @@
       <next_track>SkipNext</next_track>
       <prev_track>SkipPrevious</prev_track>
       <launch_mail/>
-      <key id='61620'/>
-      <!-- same as above, launch_mail, but using button code (based on vkey id) -->
+      <key id='61620'/>      <!-- same as above, launch_mail, but using button code (based on vkey id) -->
       <home>FirstPage</home>
       <end>LastPage</end>
       <key id='65446'>ParentDir</key>
@@ -114,13 +113,11 @@
   </MyFiles>
   <MyMusicPlaylist>
     <keyboard>
-      <space>Playlist</space>
-      <!-- Close playlist -->
+      <space>Playlist</space>      <!-- Close playlist -->
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
-      <backspace>Playlist</backspace>
-      <!-- Close playlist -->
+      <backspace>Playlist</backspace>      <!-- Close playlist -->
     </keyboard>
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
@@ -318,8 +315,7 @@
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
       <return>Select</return>
-      <enter>Select</enter>
-      <!-- backspace>Fullscreen</backspace -->
+      <enter>Select</enter>      <!-- backspace>Fullscreen</backspace -->
       <backspace>PreviousMenu</backspace>
     </keyboard>
   </VideoMenu>
@@ -360,10 +356,8 @@
   </MyVideoFiles>
   <MyVideoPlaylist>
     <keyboard>
-      <backspace>Playlist</backspace>
-      <!-- Close playlist -->
-      <space>Playlist</space>
-      <!-- Close playlist -->
+      <backspace>Playlist</backspace>      <!-- Close playlist -->
+      <space>Playlist</space>      <!-- Close playlist -->
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
@@ -388,8 +382,7 @@
   </Scripts>
   <ScriptsDebugInfo>
     <keyboard>
-      <i>Info</i>
-      <!-- clears debug python info -->
+      <i>Info</i>      <!-- clears debug python info -->
     </keyboard>
   </ScriptsDebugInfo>
   <Weather>
