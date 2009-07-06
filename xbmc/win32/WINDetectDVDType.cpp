@@ -26,6 +26,8 @@
 
 using namespace MEDIA_DETECT;
 
+CEvent CWINDetectDVDMedia::m_evAutorun;
+
 CWINDetectDVDMedia* CWINDetectDVDMedia::m_instance = NULL;
 
 
@@ -138,7 +140,8 @@ void CWINDetectDVDMedia::AddMedia(const CStdString& strDrive)
               pCdInfo->GetDataTrackCount() );
 
     if(pCdInfo->IsAudio(1))
-      strNewUrl.Format("cdda://%c/", strPath[0]); // we need to extend the cdda: protocol to support other drives (dvd:// as well?)
+      //strNewUrl.Format("cdda://%c/", strPath[0]); // we need to extend the cdda: protocol to support other drives (dvd:// as well?)
+      strNewUrl = "cdda://local/";
     else
       strNewUrl = strPath;
 
@@ -153,6 +156,9 @@ void CWINDetectDVDMedia::AddMedia(const CStdString& strDrive)
     {
       CLog::Log(LOGWARNING, "Filesystem is not supported");
     }
+
+    // workaround until we have support for multiple drives
+    m_evAutorun.Set();
 
   }
 }

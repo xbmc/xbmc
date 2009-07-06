@@ -40,13 +40,16 @@ public:
 
   void AddMedia(const CStdString& strDrive);
   void RemoveMedia(const CStdString& strDrive);
-  CCdInfo* GetCdInfo(const CStdString& strDrive);
+  CCdInfo* GetCdInfo(const CStdString& strDrive="");
   bool IsAudio(const CStdString& strDrive="");
   bool IsDiscInDrive(const CStdString& strDrive="");
   void WaitMediaReady();
   CStdString GetDVDLabel(const CStdString& strDrive="");
   CStdString GetDVDPath(const CStdString& strDrive="");
   DWORD GetTrayState(const CStdString& strDrive="");
+
+  // keep it until we support multiple drives
+  static CEvent m_evAutorun;
 
 private:
   static CWINDetectDVDMedia* m_instance;
