@@ -536,9 +536,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      OutputDebugString("------------------- GUI_MSG_WINDOW_INIT ");
-      OutputDebugString(g_localizeStrings.Get(GetID()).c_str());
-      OutputDebugString("------------------- \n");
+      CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", m_xmlFile.c_str());
       if (m_dynamicResourceAlloc || !m_bAllocated) AllocResources();
       OnInitWindow();
       return true;
@@ -547,9 +545,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_DEINIT:
     {
-      OutputDebugString("------------------- GUI_MSG_WINDOW_DEINIT ");
-      OutputDebugString(g_localizeStrings.Get(GetID()).c_str());
-      OutputDebugString("------------------- \n");
+      CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", m_xmlFile.c_str());
       OnDeinitWindow(message.GetParam1());
       // now free the window
       if (m_dynamicResourceAlloc) FreeResources();
