@@ -1374,13 +1374,10 @@ CUPnPServer::ServeFile(NPT_HttpRequest&              request,
 
         NPT_List<NPT_String>::Iterator url = files.GetFirstItem();
         for (;url;url++) {
-            NPT_HttpUrl uri = m_FileBaseUri;
-            NPT_HttpUrlQuery query;
-            query.AddField("path", *url);
-            uri.SetHost(context.GetLocalAddress().GetIpAddress().ToString());
-            uri.SetQuery(query.ToString());
-
-            output += uri.ToString();
+            output += PLT_FileMediaServer::BuildSafeResourceUri(
+                          m_FileBaseUri, 
+                          context.GetLocalAddress().GetIpAddress().ToString(),
+                          *url);
             output += "\n\r";
         }
 
