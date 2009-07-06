@@ -188,11 +188,7 @@ PLT_FileMediaServer::ProcessFileRequest(NPT_HttpRequest&              request,
                             
     // Serve file now
     if (request.GetUrl().GetPath().StartsWith(m_FileBaseUri.GetPath(), true)) {
-        NPT_String path = NPT_FilePath::Create(m_Path, file_path);
-        NPT_CHECK_WARNING(ServeFile(request, context, response, path));
-        NPT_HttpEntity* entity = response.GetEntity();
-        PLT_HttpRequestContext tmp_context(request, context);
-        if (entity) entity->SetContentType(PLT_MediaItem::GetMimeType(path, &tmp_context));
+        NPT_CHECK_WARNING(ServeFile(request, context, response, NPT_FilePath::Create(m_Path, file_path)));
         return NPT_SUCCESS;
     } else if (request.GetUrl().GetPath().StartsWith(m_AlbumArtBaseUri.GetPath(), true)) {
         NPT_CHECK_WARNING(OnAlbumArtRequest(response, NPT_FilePath::Create(m_Path, file_path)));
@@ -219,12 +215,17 @@ PLT_FileMediaServer::ServeFile(NPT_HttpRequest&              request,
 
     NPT_Position start, end;
     PLT_HttpHelper::GetRange(request, start, end);
-        
-    return PLT_FileServer::ServeFile(response,
-                                     file_path, 
-                                     start, 
-                                     end, 
-                                     !request.GetMethod().Compare("HEAD"));
+
+    NPT_CHECK_WARNING(PLT_FileServer::ServeFile(response,
+                                                file_path, 
+                                                start, 
+                                                end, 
+                                                !request.GetMethod().Compare("HEAD")));
+
+    NPT_HttpEntity* entity = response.GetEntity();
+    PLT_HttpRequestContext tmp_context(request, context);
+    if (entity) entity->SetContentType(PLT_MediaItem::GetMimeType(file_path, &tmp_context));
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
