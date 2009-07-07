@@ -142,6 +142,7 @@ public:
   int ReadLiveStream(BYTE* buf, int buf_size);
   __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
   int GetCurrentChannel(bool radio = false);
+  CFileItem *GetCurrentChannelItem();
   bool ChannelSwitch(unsigned int channel);
   bool ChannelUp(unsigned int *newchannel);
   bool ChannelDown(unsigned int *newchannel);
@@ -158,6 +159,9 @@ public:
   __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthRecordedStream(void);
   bool RecordChannel(unsigned int channel, bool bOnOff, bool radio = false);
+  
+  bool TeletextPagePresent(const CFileItem &item, int Page, int subPage);
+  bool GetTeletextPage(const CFileItem &item, int Page, int subPage, BYTE* buf);
 
 protected:
 

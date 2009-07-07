@@ -90,6 +90,9 @@ public:
   virtual int ReadRecordedStream(BYTE* buf, int buf_size);
   virtual __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   virtual __int64 LengthRecordedStream(void);
+  
+  virtual bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage);
+  virtual bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
 
 protected:
   std::auto_ptr<struct PVRClient> m_pClient;

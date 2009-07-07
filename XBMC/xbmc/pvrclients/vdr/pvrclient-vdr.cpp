@@ -792,12 +792,13 @@ PVR_ERROR PVRClientVDR::GetChannelList(VECCHANNELS *channels, bool radio)
     int found;
 
     CTVChannelInfoTag broadcast;
-    int m_VPID = 0;
-    int m_APID1 = 0;
-    int m_APID2 = 0;
-    int m_DPID1 = 0;
-    int m_DPID2 = 0;
-    int m_CAID = 0;
+    int idVPID = 0;
+    int idAPID1 = 0;
+    int idAPID2 = 0;
+    int idDPID1 = 0;
+    int idDPID2 = 0;
+    int idCAID = 0;
+    int idTPID = 0;
     CStdString name;
     int id;
 
@@ -856,7 +857,7 @@ PVR_ERROR PVRClientVDR::GetChannelList(VECCHANNELS *channels, bool radio)
     str_result.erase(0, found + 1);
 
     // Channel program id
-    m_VPID = atol(str_result.c_str());
+    idVPID = atol(str_result.c_str());
     found = str_result.find(":", 0);
     str_result.erase(0, found + 1);
 
@@ -872,28 +873,28 @@ PVR_ERROR PVRClientVDR::GetChannelList(VECCHANNELS *channels, bool radio)
 
       if (id == 0)
       {
-        m_APID1 = 0;
-        m_APID2 = 0;
-        m_DPID1 = 0;
-        m_DPID2 = 0;
+        idAPID1 = 0;
+        idAPID2 = 0;
+        idDPID1 = 0;
+        idDPID2 = 0;
       }
       else
       {
-        m_APID1 = id;
+        idAPID1 = id;
         found = name.find(",", 0);
 
         if (found == -1)
         {
-          m_APID2 = 0;
+          idAPID2 = 0;
         }
         else
         {
           name.erase(0, found + 1);
-          m_APID2 = atol(name.c_str());
+          idAPID2 = atol(name.c_str());
         }
 
-        m_DPID1 = 0;
-        m_DPID2 = 0;
+        idDPID1 = 0;
+        idDPID2 = 0;
       }
     }
     else
@@ -903,22 +904,22 @@ PVR_ERROR PVRClientVDR::GetChannelList(VECCHANNELS *channels, bool radio)
 
       if (id == 0)
       {
-        m_APID1 = 0;
-        m_APID2 = 0;
+        idAPID1 = 0;
+        idAPID2 = 0;
       }
       else
       {
-        m_APID1 = id;
+        idAPID1 = id;
         found = name.find(",", 0);
 
         if (found == -1)
         {
-          m_APID2 = 0;
+          idAPID2 = 0;
         }
         else
         {
           name.erase(0, found + 1);
-          m_APID2 = atol(name.c_str());
+          idAPID2 = atol(name.c_str());
         }
       }
 
@@ -926,40 +927,41 @@ PVR_ERROR PVRClientVDR::GetChannelList(VECCHANNELS *channels, bool radio)
       id = atoi(name.c_str());
       if (id == 0)
       {
-        m_DPID1 = 0;
-        m_DPID2 = 0;
+        idDPID1 = 0;
+        idDPID2 = 0;
       }
       else
       {
-        m_DPID1 = id;
+        idDPID1 = id;
         found = name.find(",", 0);
 
         if (found == -1)
         {
-          m_DPID2 = 0;
+          idDPID2 = 0;
         }
         else
         {
           name.erase(0, found + 1);
-          m_DPID2 = atol(name.c_str());
+          idDPID2 = atol(name.c_str());
         }
       }
     }
 
     // Teletext id
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
+    idTPID = atoi(str_result.c_str());
+    str_result.erase(0, str_result.find(":", 0) + 1);
+    broadcast.m_bTeletext = idTPID ? true : false;
 
     // CAID id
-    m_CAID = atoi(str_result.c_str());
+    idCAID = atoi(str_result.c_str());
     str_result.erase(0, str_result.find(":", 0) + 1);
 
-    if (m_CAID && m_bOnlyFTA)
+    if (idCAID && m_bOnlyFTA)
       continue;
 
-    broadcast.m_encrypted = m_CAID ? true : false;
+    broadcast.m_encrypted = idCAID ? true : false;
 
-    if ((m_VPID == 0) && (m_APID1 != 0))
+    if ((idVPID == 0) && (idAPID1 != 0))
     {
       broadcast.m_radio = true;
       broadcast.m_strFileNameAndPath.Format("radio://%i", number);
@@ -3782,4 +3784,55 @@ __int64 PVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
 __int64 PVRClientVDR::LengthRecordedStream(void)
 {
   return currentPlayingRecordBytes;
+}
+
+bool PVRClientVDR::TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage)
+{
+  vector<string> lines;
+  int            code;
+  char           buffer[1024];
+  unsigned long  amountReceived;
+
+  if (!m_transceiver->IsOpen() || m_socket_video == INVALID_SOCKET)
+    return 0;
+
+  sprintf(buffer, "LTXT PRESENT %u %u %u", channel, Page, subPage);
+  if (m_transceiver->SendCommand(buffer, code, lines))
+  {
+    vector<string>::iterator it = lines.begin();
+    string& data(*it);
+    if (code == 250 && data == "PAGEPRESENT")
+      return true;
+  }
+  
+  return false;
+}
+
+bool PVRClientVDR::ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage)
+{
+  vector<string> lines;
+  int            code;
+  char           buffer[1024];
+  unsigned long  amountReceived;
+
+  if (!m_transceiver->IsOpen() || m_socket_video == INVALID_SOCKET)
+    return 0;
+
+  sprintf(buffer, "LTXT GET %u %u %u", channel, Page, subPage);
+  if (!m_transceiver->SendCommand(buffer, code, lines))
+  {
+    return false;
+  }
+
+  vector<string>::iterator it = lines.begin();
+  string& data(*it);
+  
+  for (int i = 0; i < 40*24+12; i++)
+  {
+    buf[i] = atol(data.c_str());
+    data.erase(0, data.find(" ")+1);
+    if (data == "ENDDATA")
+      return false;
+  }
+  return true;
 }

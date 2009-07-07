@@ -1660,6 +1660,8 @@
   <string id="18134">Channel Unavailable</string>
   <string id="18135">No Groups defined</string>
   <string id="18136">Please create first one</string>
+  <string id="18137">Page %3x-%02x not found</string>
+  <string id="18138">Channel does not support Teletext</string>
 
   <string id="18150">Now</string>
   <string id="18151">Hidden</string>

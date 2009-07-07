@@ -103,6 +103,9 @@ public:
   int ReadRecordedStream(BYTE* buf, int buf_size);
   __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthRecordedStream(void);
+  
+  bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage);
+  bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
 
 protected:
   static CVTPTransceiver *m_transceiver;

@@ -207,6 +207,8 @@ extern "C" {
     int (__cdecl* ReadRecordedStream)(BYTE* buf, int buf_size);
     __int64 (__cdecl* SeekRecordedStream)(__int64 pos, int whence);
     __int64 (__cdecl* LengthRecordedStream)(void);
+    bool (__cdecl* TeletextPagePresent)(unsigned int channel, unsigned int Page, unsigned int subPage);
+    bool (__cdecl* ReadTeletextPage)(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
   } PVRClient;
 
 #ifdef __cplusplus

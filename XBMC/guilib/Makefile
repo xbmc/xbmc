@@ -44,6 +44,7 @@ SRCS=ActionManager.cpp \
      GUISpinControl.cpp \
      GUISpinControlEx.cpp \
      GUIStandardWindow.cpp \
+     GUITeletextBox.cpp \
      GUITextBox.cpp \
      GUITexture.cpp \
      GUITextureSDL.cpp \

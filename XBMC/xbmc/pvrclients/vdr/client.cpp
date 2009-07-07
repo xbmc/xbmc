@@ -413,3 +413,12 @@ extern "C" __int64 LengthRecordedStream(void)
   return g_client->LengthRecordedStream();
 }
 
+extern "C" bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage)
+{
+  return g_client->TeletextPagePresent(channel, Page, subPage);
+}
+
+extern "C" bool ReadTeletextPage(BYTE* buf, unsigned int channel, unsigned int Page, unsigned int subPage)
+{
+  return g_client->ReadTeletextPage(buf, channel, Page, subPage);
+}

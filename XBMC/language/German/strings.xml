@@ -1554,6 +1554,8 @@
   <string id="18134">Kanal nicht verfügbar</string>
   <string id="18135">Keine Gruppen definiert</string>
   <string id="18136">Bitte erstellen Sie zuerst eine</string>
+  <string id="18137">Seite %3x-%02x nicht gefunden</string>
+  <string id="18138">Kanal unterstützt kein Videotext</string>
 
   <string id="18150">Jetzt</string>
   <string id="18151">Versteckt</string>
