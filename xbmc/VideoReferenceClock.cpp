@@ -694,7 +694,7 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
   if (inNow->videoRefreshPeriod > 0)
     fps = (double)inOutputTime->videoTimeScale / (double)inOutputTime->videoRefreshPeriod;
 
-  // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
+  // Create an autorelease pool (necessary to call into non-Obj-C code from Obj-C code)
   void* pool = Cocoa_Create_AutoReleasePool();
   
   CVideoReferenceClock *VideoReferenceClock = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
