@@ -29,6 +29,8 @@
 #ifdef _WIN32PC
 #include "WIN32Util.h"
 #endif
+#include <map>
+#include "utils/Event.h"
 #include "FileSystem/cdioSupport.h"
 
 namespace MEDIA_DETECT
