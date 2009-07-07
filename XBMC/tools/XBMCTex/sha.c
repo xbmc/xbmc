@@ -5,7 +5,7 @@
 #include "stdint_win.h"
 #endif
 
-typedef unsigned int u32;
+typedef unsigned long u32;
 typedef unsigned char u8;
 
 #ifdef _LINUX
