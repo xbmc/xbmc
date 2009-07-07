@@ -15,6 +15,12 @@
 #import <unistd.h>
 
 #import "CocoaInterface.h"
+//hack around problem with xbmc's typedef int BOOL
+// and obj-c's typedef unsigned char BOOL
+#define BOOL XBMC_BOOL 
+#import "PlatformDefs.h"
+#undef BOOL
+#import "DetectDVDMedia.h"
 
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
  but the method still is there and works. To avoid warnings, we declare
@@ -293,14 +299,24 @@ static void setupWindowMenu(void)
 
 - (void) deviceDidMount:(NSNotification *) note 
 {
+  // calling into c++ code, need to use autorelease pools
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
   //NSLog(@"Device did mount: %@", devicePath);
+  const CStdString strDrive = [devicePath cString];
+  //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strDrive);
+  [pool release];
 }
 
 - (void) deviceDidUnMount:(NSNotification *) note 
 {
+  // calling into c++ code, need to use autorelease pools
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
   //NSLog(@"Device did unmount: %@", devicePath);
+  const CStdString strDrive = [devicePath cString];
+  //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strDrive);
+  [pool release];
 }
 @end
 
