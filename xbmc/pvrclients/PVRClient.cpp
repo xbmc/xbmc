@@ -451,6 +451,15 @@ __int64 CPVRClient::LengthRecordedStream(void)
   return m_pClient->LengthRecordedStream();
 }
 
+bool CPVRClient::TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage)
+{
+  return m_pClient->TeletextPagePresent(channel, Page, subPage);
+}
+
+bool CPVRClient::ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage)
+{
+  return m_pClient->ReadTeletextPage(buf, channel, Page, subPage);
+}
 
 /**********************************************************
  * Addon specific functions

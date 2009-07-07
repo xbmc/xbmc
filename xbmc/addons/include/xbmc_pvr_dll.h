@@ -47,6 +47,8 @@ extern "C"
   int ReadRecordedStream(BYTE* buf, int buf_size);
   __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthRecordedStream(void);
+  bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage);
+  bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
@@ -89,6 +91,8 @@ extern "C"
     pClient->ReadRecordedStream     = ReadRecordedStream;
     pClient->SeekRecordedStream     = SeekRecordedStream;
     pClient->LengthRecordedStream   = LengthRecordedStream;
+    pClient->TeletextPagePresent    = TeletextPagePresent;
+    pClient->ReadTeletextPage       = ReadTeletextPage;
   };
 };
 

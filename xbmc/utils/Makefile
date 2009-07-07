@@ -58,6 +58,7 @@ SRCS=Addon.cpp \
      TVTimerInfoTag.cpp \
      TVChannelInfoTag.cpp \
      TVRecordInfoTag.cpp \
+     TeletextRender.cpp \
      StreamDetails.cpp
 
 LIB=utils.a

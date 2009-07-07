@@ -68,6 +68,7 @@
 
 #include "GUILabelControl.h"  // for CInfoLabel
 #include "GUITextBox.h"
+#include "GUITeletextBox.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 #include "SkinInfo.h"
@@ -2454,6 +2455,8 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
         return ((CGUIBaseContainer *)control)->GetLabel(info.m_info);
       else if (control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
         return ((CGUITextBox *)control)->GetLabel(info.m_info);
+      else if (control->GetControlType() == CGUIControl::GUICONTROL_TELETEXTBOX)
+        return ((CGUITeletextBox *)control)->GetLabel(info.m_info);
     }
   }
   else if (info.m_info == SYSTEM_GET_CORE_USAGE)

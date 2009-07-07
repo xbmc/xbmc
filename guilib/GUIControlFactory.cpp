@@ -34,6 +34,7 @@
 #include "GUICheckMarkControl.h"
 #include "GUIToggleButtonControl.h"
 #include "GUITextBox.h"
+#include "GUITeletextBox.h"
 #include "GUIVideoControl.h"
 #include "GUIProgressControl.h"
 #include "GUISliderControl.h"
@@ -1290,6 +1291,15 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
     if (infoLabels.size())
       ((CGUITextBox *)control)->SetInfo(infoLabels[0]);
     ((CGUITextBox *)control)->SetAutoScrolling(pControlNode);
+  }
+  else if (strType == "teletextbox")
+  {
+    control = new CGUITeletextBox(
+    dwParentId, id, posX, posY, width, height, labelInfo);
+
+    ((CGUITeletextBox *)control)->SetPageControl(pageControl);
+    if (infoLabels.size())
+      ((CGUITeletextBox *)control)->SetInfo(infoLabels[0]);
   }
   else if (strType == "selectbutton")
   {

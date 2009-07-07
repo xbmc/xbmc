@@ -24,36 +24,46 @@
 			<height>610</height>
 			<texture border="40">DialogFront.png</texture>
 		</control>
-		<control type="label" id="11">
-			<description>curren page label</description>
-			<posx>50</posx>
-			<posy>40</posy>
+		<control type="teletextbox" id="11">
+			<description>Comment value</description>
+			<posx>45</posx>
+			<posy>47</posy>
+			<width>800</width>
+			<height>560</height>
+			<font>text12</font>
+			<pagecontrol>999999999</pagecontrol>
+			<label>NO DATA</label>
+		</control>
+		<control type="label" id="20">
+			<description>current page label</description>
+			<posx>55</posx>
+			<posy>41</posy>
 			<width>400</width>
 			<height>35</height>
 			<align>left</align>
 			<aligny>center</aligny>
 			<font>text12</font>
 			<textcolor>white</textcolor>
-			<label>100-00</label>
+			<label>-</label>
 			<include>Window_OpenClose_Animation</include>
 		</control>
-		<control type="label">
-			<description>date label</description>
-			<posx>620</posx>
-			<posy>40</posy>
-			<width>400</width>
+		<control type="label" id="21">
+			<description>status label</description>
+			<posx>45</posx>
+			<posy>290</posy>
+			<width>700</width>
 			<height>35</height>
-			<align>right</align>
+			<align>center</align>
 			<aligny>center</aligny>
-			<font>text12</font>
+			<font>font14</font>
 			<textcolor>white</textcolor>
-			<label>$INFO[System.Date]</label>
+			<label>-</label>
 			<include>Window_OpenClose_Animation</include>
 		</control>
 		<control type="label">
 			<description>time label</description>
 			<posx>740</posx>
-			<posy>40</posy>
+			<posy>41</posy>
 			<width>400</width>
 			<height>35</height>
 			<align>right</align>
@@ -63,321 +73,5 @@
 			<label>$INFO[System.Time(HH:mm:ss)]</label>
 			<include>Window_OpenClose_Animation</include>
 		</control>
-
-		<control type="label">
-			<description>line 2 label</description>
-			<posx>50</posx>
-			<posy>70</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 3 label</description>
-			<posx>50</posx>
-			<posy>90</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 4 label</description>
-			<posx>50</posx>
-			<posy>110</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 5 label</description>
-			<posx>50</posx>
-			<posy>130</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 6 label</description>
-			<posx>50</posx>
-			<posy>150</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 7 label</description>
-			<posx>50</posx>
-			<posy>170</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 8 label</description>
-			<posx>50</posx>
-			<posy>190</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 9 label</description>
-			<posx>50</posx>
-			<posy>210</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 10 label</description>
-			<posx>50</posx>
-			<posy>230</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 11 label</description>
-			<posx>50</posx>
-			<posy>250</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 12 label</description>
-			<posx>50</posx>
-			<posy>270</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 13 label</description>
-			<posx>50</posx>
-			<posy>290</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 14 label</description>
-			<posx>50</posx>
-			<posy>310</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 15 label</description>
-			<posx>50</posx>
-			<posy>330</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 16 label</description>
-			<posx>50</posx>
-			<posy>350</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 17 label</description>
-			<posx>50</posx>
-			<posy>370</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 18 label</description>
-			<posx>50</posx>
-			<posy>390</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 19 label</description>
-			<posx>50</posx>
-			<posy>410</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 20 label</description>
-			<posx>50</posx>
-			<posy>430</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 21 label</description>
-			<posx>50</posx>
-			<posy>450</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 22 label</description>
-			<posx>50</posx>
-			<posy>470</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 23 label</description>
-			<posx>50</posx>
-			<posy>490</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 24 label</description>
-			<posx>50</posx>
-			<posy>510</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-		<control type="label">
-			<description>line 25 label</description>
-			<posx>50</posx>
-			<posy>530</posy>
-			<width>800</width>
-			<height>35</height>
-			<align>left</align>
-			<aligny>center</aligny>
-			<font>text12</font>
-			<textcolor>white</textcolor>
-			<label>1234567890abcdefghijklmnopqrstuvwxyzABCD</label>
-			<include>Window_OpenClose_Animation</include>
-		</control>
-  </controls>
-
-
-
+	</controls>
 </window>

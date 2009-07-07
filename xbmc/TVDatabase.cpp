@@ -439,6 +439,7 @@ bool CTVDatabase::GetChannelList(DWORD clientID, VECCHANNELS& results, bool radi
       broadcast.m_strChannel          = m_pDS->fv("Name").get_asString();
       broadcast.m_strFileNameAndPath  = m_pDS->fv("strFileNameAndPath").get_asString();
       broadcast.m_encrypted           = m_pDS->fv("encrypted").get_asBool();
+      broadcast.m_bTeletext           = true;
       broadcast.m_radio               = m_pDS->fv("radio").get_asBool();
       broadcast.m_hide                = m_pDS->fv("hide").get_asBool();
       broadcast.m_iGroupID            = m_pDS->fv("GroupID").get_asInteger();

@@ -96,4 +96,7 @@ public:
   virtual int ReadRecordedStream(BYTE* buf, int buf_size)=0;
   virtual __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET)=0;
   virtual __int64 LengthRecordedStream(void)=0;
+  
+  virtual bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage)=0;
+  virtual bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage)=0;
 };
