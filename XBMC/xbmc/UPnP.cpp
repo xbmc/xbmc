@@ -1342,6 +1342,8 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
       items.Clear();
 
       return BuildResponse(action, itemsall, "*", starting_index, requested_count, sort_criteria, context, NULL);
+  } else if (NPT_String(search_criteria).Find("object.item.imageItem") >= 0) {
+      return NPT_SUCCESS;
   }
 
   return NPT_FAILURE;
