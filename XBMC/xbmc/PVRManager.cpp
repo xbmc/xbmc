@@ -1907,17 +1907,47 @@ void CPVRManager::ReceiveAllTimers()
     }
     itr++;
   }
-
-  /* Set the XBMC Channel number and Channel Name for the timers */
-  for (unsigned int i = 0; i < m_timers.size(); i++)
-  {
-    GetFrontendChannelNumber(m_timers[i].m_clientNum, m_timers[i].m_clientID, &m_timers[i].m_channelNum, &m_timers[i].m_Radio);
-    m_timers[i].m_strChannel = GetNameForChannel(m_timers[i].m_channelNum, m_timers[i].m_Radio);
-  }
-
   LeaveCriticalSection(&m_critSection);
 
   return;
+}
+
+
+/************************************************************/
+/** Teletext handling **/
+
+bool CPVRManager::TeletextPagePresent(const CFileItem &item, int Page, int subPage)
+{
+  /* Check if a CTVChannelInfoTag is inside file item */
+  if (!item.IsTVChannel())
+  {
+    CLog::Log(LOGERROR, "CPVRManager: TeletextPagePresent no TVChannelTag given!");
+    return false;
+  }
+
+  const CTVChannelInfoTag* tag = item.GetTVChannelInfoTag();
+
+  EnterCriticalSection(&m_critSection);
+  bool ret = m_clients[tag->m_clientID]->TeletextPagePresent(tag->m_iClientNum, Page, subPage);
+  LeaveCriticalSection(&m_critSection);
+  return ret;
+}
+
+bool CPVRManager::GetTeletextPage(const CFileItem &item, int Page, int subPage, BYTE* buf)
+{
+  /* Check if a CTVTimerInfoTag is inside file item */
+  if (!item.IsTVChannel())
+  {
+    CLog::Log(LOGERROR, "CPVRManager: GetTeletextPage no TVChannelTag given!");
+    return false;
+  }
+
+  const CTVChannelInfoTag* tag = item.GetTVChannelInfoTag();
+  
+  EnterCriticalSection(&m_critSection);
+  bool ret = m_clients[tag->m_clientID]->ReadTeletextPage(buf, tag->m_iClientNum, Page, subPage);
+  LeaveCriticalSection(&m_critSection);
+  return ret;
 }
 
 
@@ -2547,6 +2577,13 @@ void CPVRManager::SyncInfo()
 
 void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
 {
+  /* Check if a CTVChannelInfoTag is inside file item */
+  if (!item.IsTVChannel())
+  {
+    CLog::Log(LOGERROR, "CPVRManager: SetCurrentPlayingProgram no TVChannelTag given!");
+    return;
+  }
+
   CTVChannelInfoTag* tag = item.GetTVChannelInfoTag();
   if (tag != NULL)
   {
@@ -2554,7 +2591,6 @@ void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
     {
       CTVEPGInfoTag epgnow(NULL);
       CTVEPGInfoTag epgnext(NULL);
-      tag->GetEPGNextInfo(&epgnext);
 
       if (tag->GetEPGNowInfo(&epgnow))
       {
@@ -2566,7 +2602,10 @@ void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
         tag->m_startTime         = epgnow.m_startTime;
         tag->m_endTime           = epgnow.m_endTime;
         tag->m_duration          = epgnow.m_duration;
-        tag->m_strNextTitle      = epgnext.m_strTitle;
+        if (tag->GetEPGNextInfo(&epgnext))
+          tag->m_strNextTitle    = epgnext.m_strTitle;
+        else
+          tag->m_strNextTitle    = "";
 
         if (tag->m_strPlot.Left(tag->m_strPlotOutline.length()) != tag->m_strPlotOutline && !tag->m_strPlotOutline.IsEmpty())
           tag->m_strPlot = tag->m_strPlotOutline + '\n' + tag->m_strPlot;
@@ -2588,6 +2627,7 @@ void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
       tag->m_startTime         = CDateTime::GetCurrentDateTime()+CDateTimeSpan(0, 0, 0, 0)-CDateTimeSpan(0, 1, 0, 0);
       tag->m_endTime           = CDateTime::GetCurrentDateTime()+CDateTimeSpan(0, 23, 0, 0);
       tag->m_duration          = CDateTimeSpan(0, 1, 0, 0);
+      tag->m_strNextTitle      =  "";
     }
 
     if (tag->m_radio)
@@ -2616,38 +2656,3 @@ void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
     item.m_strPath  = tag->m_strFileNameAndPath;
   }
 }
-
-bool CPVRManager::TeletextPagePresent(const CFileItem &item, int Page, int subPage)
-{
-  /* Check if a CTVTimerInfoTag is inside file item */
-  if (!item.IsTVChannel())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: TeletextPagePresent no TVChannelTag given!");
-    return false;
-  }
-
-  const CTVChannelInfoTag* tag = item.GetTVChannelInfoTag();
-
-  EnterCriticalSection(&m_critSection);
-  bool ret = m_clients[tag->m_clientID]->TeletextPagePresent(tag->m_iClientNum, Page, subPage);
-  LeaveCriticalSection(&m_critSection);
-  return ret;
-}
-
-bool CPVRManager::GetTeletextPage(const CFileItem &item, int Page, int subPage, BYTE* buf)
-{
-  /* Check if a CTVTimerInfoTag is inside file item */
-  if (!item.IsTVChannel())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: TeletextPagePresent no TVChannelTag given!");
-    return false;
-  }
-
-  const CTVChannelInfoTag* tag = item.GetTVChannelInfoTag();
-  
-  EnterCriticalSection(&m_critSection);
-  bool ret = m_clients[tag->m_clientID]->ReadTeletextPage(buf, tag->m_iClientNum, Page, subPage);
-  LeaveCriticalSection(&m_critSection);
-  return ret;
-}
-

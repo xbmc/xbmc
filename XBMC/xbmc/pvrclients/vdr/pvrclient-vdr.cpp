@@ -2448,6 +2448,199 @@ PVR_ERROR PVRClientVDR::MoveChannel(unsigned int number, unsigned int newnumber)
   return PVR_ERROR_NO_ERROR;
 }
 
+bool PVRClientVDR::GetChannel(unsigned int number, PVR_CHANNEL &channeldata)
+{
+  vector<string> lines;
+  int            code;
+  char           buffer[1024];
+
+  if (!m_transceiver->IsOpen())
+    return false;
+
+  sprintf(buffer, "LSTC %d", number);
+  if (!m_transceiver->SendCommand(buffer, code, lines))
+  {
+    if (code != 451)
+    {
+      return false;
+    }
+    Sleep(750);
+  }
+
+  vector<string>::iterator it = lines.begin();
+  string& data(*it);
+
+  CStdString str_result = data;
+  int found;
+  int idVPID = 0;
+  int idAPID1 = 0;
+  int idAPID2 = 0;
+  int idDPID1 = 0;
+  int idDPID2 = 0;
+  int idCAID = 0;
+  int idTPID = 0;
+  CStdString name;
+  int id;
+
+  if (m_bCharsetConv)
+    XBMC_unknown_to_utf8(str_result);
+
+  // Channel number
+  channeldata.number = atol(str_result.c_str());
+  str_result.erase(0, str_result.find(" ", 0) + 1);
+
+  // Channel and provider name
+  found = str_result.find(":", 0);
+  name.assign(str_result, found);
+  str_result.erase(0, found + 1);
+  found = name.find(";", 0);
+
+  if (found == -1)
+  {
+    channeldata.name = name;
+  }
+  else
+  {
+    CStdString name2;
+    name2.assign(name, found);
+    channeldata.name = name2;
+  }
+
+  // Channel frequency
+  str_result.erase(0, str_result.find(":", 0) + 1);
+
+  // Source descriptor
+  str_result.erase(0, str_result.find(":", 0));
+
+  // Source Type
+  if (str_result.compare(0, 2, ":C") == 0)
+  {
+    str_result.erase(0, 3);
+  }
+  else if (str_result.compare(0, 2, ":T") == 0)
+  {
+    str_result.erase(0, 3);
+  }
+  else if (str_result.compare(0, 2, ":S") == 0)
+  {
+    str_result.erase(0, 2);
+    found = str_result.find(":", 0);
+    str_result.erase(0, found + 1);
+  }
+  else if (str_result.compare(0, 2, ":P") == 0)
+  {
+    str_result.erase(0, 3);
+  }
+
+  // Channel symbolrate
+  found = str_result.find(":", 0);
+  str_result.erase(0, found + 1);
+
+  // Channel program id
+  idVPID = atol(str_result.c_str());
+  found = str_result.find(":", 0);
+  str_result.erase(0, found + 1);
+
+  // Channel audio id's
+  found = str_result.find(":", 0);
+  name.assign(str_result, found);
+  str_result.erase(0, found + 1);
+  found = name.find(";", 0);
+
+  if (found == -1)
+  {
+    id = atol(name.c_str());
+
+    if (id == 0)
+    {
+      idAPID1 = 0;
+      idAPID2 = 0;
+      idDPID1 = 0;
+      idDPID2 = 0;
+    }
+    else
+    {
+      idAPID1 = id;
+      found = name.find(",", 0);
+
+      if (found == -1)
+      {
+        idAPID2 = 0;
+      }
+      else
+      {
+        name.erase(0, found + 1);
+        idAPID2 = atol(name.c_str());
+      }
+
+      idDPID1 = 0;
+      idDPID2 = 0;
+    }
+  }
+  else
+  {
+    int id;
+    id = atol(name.c_str());
+
+    if (id == 0)
+    {
+      idAPID1 = 0;
+      idAPID2 = 0;
+    }
+    else
+    {
+      idAPID1 = id;
+      found = name.find(",", 0);
+
+      if (found == -1)
+      {
+        idAPID2 = 0;
+      }
+      else
+      {
+        name.erase(0, found + 1);
+        idAPID2 = atol(name.c_str());
+      }
+    }
+
+    name.erase(0, name.find(";", 0) + 1);
+    id = atoi(name.c_str());
+    if (id == 0)
+    {
+      idDPID1 = 0;
+      idDPID2 = 0;
+    }
+    else
+    {
+      idDPID1 = id;
+      found = name.find(",", 0);
+
+      if (found == -1)
+      {
+        idDPID2 = 0;
+      }
+      else
+      {
+        name.erase(0, found + 1);
+        idDPID2 = atol(name.c_str());
+      }
+    }
+  }
+
+  // Teletext id
+  idTPID = atoi(str_result.c_str());
+  str_result.erase(0, str_result.find(":", 0) + 1);
+  channeldata.teletext = idTPID ? true : false;
+
+  // CAID id
+  idCAID = atoi(str_result.c_str());
+  str_result.erase(0, str_result.find(":", 0) + 1);
+  channeldata.encrypted = idCAID ? true : false;
+
+  channeldata.radio = (idVPID == 0) && (idAPID1 != 0) ? true : false;
+  return true;  
+}
+
 
 /************************************************************/
 /** Record handling **/
@@ -2942,6 +3135,11 @@ PVR_ERROR PVRClientVDR::GetAllTimers(VECTVTIMERS *results)
       timerinfo.m_strFileNameAndPath.Format("timer://%i %s", timerinfo.m_Index, timerinfo.m_Active ? "*" : " ");
       timerinfo.m_recStatus = false;
     }
+    
+    PVR_CHANNEL channeldata;
+    GetChannel(timerinfo.m_clientNum, channeldata);
+    timerinfo.m_strChannel = channeldata.name;
+    timerinfo.m_Radio = channeldata.radio;
 
     results->push_back(timerinfo);
   }
