@@ -33,6 +33,7 @@
 #include "ButtonTranslator.h"
 #include "SingleLock.h"
 #include "Zeroconf.h"
+#include "GUIAudioManager.h"
 #include <map>
 #include <queue>
 
@@ -347,6 +348,7 @@ bool CEventServer::ExecuteNextAction()
         action.fRepeat  = 0.0f;
         action.fAmount1 = 1.0f;
         action.fAmount2 = 1.0f;
+        g_audioManager.PlayActionSound(action);
         g_application.OnAction(action);
         break;
       }
