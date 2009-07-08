@@ -920,6 +920,8 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("audiochannels")) return LISTITEM_AUDIO_CHANNELS;
   else if (info.Equals("audiolanguage")) return LISTITEM_AUDIO_LANGUAGE;
   else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
+  else if (info.Equals("starttime")) return LISTITEM_STARTTIME;
+  else if (info.Equals("endtime")) return LISTITEM_ENDTIME;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -3977,6 +3979,14 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_SUBTITLE_LANGUAGE:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_streamDetails.GetSubtitleLanguage();
+    break;
+  case LISTITEM_STARTTIME:
+    if (item->HasTVChannelInfoTag())
+      return item->GetTVChannelInfoTag()->m_startTime.GetAsLocalizedTime("", false);
+    break;
+  case LISTITEM_ENDTIME:
+    if (item->HasTVChannelInfoTag())
+      return item->GetTVChannelInfoTag()->m_endTime.GetAsLocalizedTime("", false);
     break;
   }
   return "";
