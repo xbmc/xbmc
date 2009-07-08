@@ -251,12 +251,12 @@ static void setupWindowMenu(void)
       name:NSWindowDidMoveNotification
       object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
       selector:@selector(deviceDidMount:)
       name:NSWorkspaceDidMountNotification
       object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
       selector:@selector(deviceDidUnMount:)
       name:NSWorkspaceDidUnmountNotification
       object:nil];
@@ -303,8 +303,18 @@ static void setupWindowMenu(void)
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
   //NSLog(@"Device did mount: %@", devicePath);
-  const CStdString strDrive = [devicePath cString];
-  //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strDrive);
+  
+  // check for physical DVD with VIDEO_TS structure
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSString *video_tsFolder = [devicePath stringByAppendingString:@"/VIDEO_TS"];
+  // Check if the mounted volume is a DVD
+  NSArray *contents = [fileManager directoryContentsAtPath:video_tsFolder];
+  if (contents != nil)
+  {
+    const CStdString strDrive = [devicePath cString];
+    // TODO: might need to translate devicePath into what CDetectDVDMedia::AddMedia wants
+    //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strDrive);
+  }
   [pool release];
 }
 
