@@ -38,6 +38,7 @@
 #include <vector>
 
 #include "PVRClient.h"
+#include "PVRManager.h"
 #include "URL.h"
 #include "../utils/log.h"
 #include "../utils/AddonHelpers.h"
@@ -620,6 +621,8 @@ PVR_ERROR CPVRClient::GetAllTimers(VECTVTIMERS *results)
 
       for (unsigned int i = 0; i < results->size(); i++)
       {
+        CPVRManager::GetInstance()->GetFrontendChannelNumber(results->at(i).m_clientNum, m_clientID, &results->at(i).m_channelNum, &results->at(i).m_Radio);
+        results->at(i).m_strChannel = CPVRManager::GetInstance()->GetNameForChannel(results->at(i).m_channelNum, results->at(i).m_Radio);
         results->at(i).m_clientID = m_clientID;
       }
       return PVR_ERROR_NO_ERROR;

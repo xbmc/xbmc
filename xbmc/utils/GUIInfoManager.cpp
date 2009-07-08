@@ -555,6 +555,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
     else if (strTest.Equals("videoplayer.next")) return VIDEOPLAYER_NEXT;
     else if (strTest.Equals("videoplayer.group")) return VIDEOPLAYER_GROUP;
+    else if (strTest.Equals("videoplayer.starttime")) return VIDEOPLAYER_STARTTIME;
+    else if (strTest.Equals("videoplayer.endtime")) return VIDEOPLAYER_ENDTIME;
     else if (strTest.Equals("videoplayer.videocodec")) return VIDEOPLAYER_VIDEO_CODEC;
     else if (strTest.Equals("videoplayer.videoresolution")) return VIDEOPLAYER_VIDEO_RESOLUTION;
     else if (strTest.Equals("videoplayer.audiocodec")) return VIDEOPLAYER_AUDIO_CODEC;
@@ -3030,6 +3032,10 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return m_currentFile->GetTVChannelInfoTag()->m_strNextTitle;
     case VIDEOPLAYER_GROUP:
       return CPVRManager::GetInstance()->GetGroupName(CPVRManager::GetInstance()->GetPlayingGroup());
+    case VIDEOPLAYER_STARTTIME:
+      return m_currentFile->GetTVChannelInfoTag()->m_startTime.GetAsLocalizedTime("", false);
+    case VIDEOPLAYER_ENDTIME:
+      return m_currentFile->GetTVChannelInfoTag()->m_endTime.GetAsLocalizedTime("", false);
     }
   }
   else if (m_currentFile->HasVideoInfoTag())

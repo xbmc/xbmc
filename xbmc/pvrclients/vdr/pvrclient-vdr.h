@@ -113,6 +113,7 @@ protected:
   static SOCKET           m_socket_data;
 
 private:
+  bool GetChannel(unsigned int number, PVR_CHANNEL &channeldata);
   int                     m_iCurrentChannel;
   static bool             m_bConnected;
   pthread_mutex_t         m_critSection;
