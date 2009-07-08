@@ -2423,13 +2423,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON::ADDON_PVRDLL, true))
     { // save the new list
-      g_settings.SaveAddons();
+      ADDON::g_addonmanager.SaveAddons();
       g_application.StopPVRManager();
       g_application.StartPVRManager();
     }
     else
     { // reload the existing list
-      g_settings.LoadAddons();
+      ADDON::g_addonmanager.LoadAddons();
     }
   }
   else if (strSetting.Equals("masterlock.lockcode"))

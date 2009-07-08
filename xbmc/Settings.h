@@ -41,7 +41,6 @@
 #include "GUISettings.h"
 #include "Profile.h"
 #include "MediaSource.h"
-#include "utils/Addon.h"
 #include "XBVideoConfig.h"
 #include "ViewState.h"
 
@@ -137,12 +136,6 @@ public:
   bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath);
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
   bool AddShare(const CStdString &type, const CMediaSource &share);
-
-  bool GetAddonFromGUID(const CStdString &guid, ADDON::CAddon &addon);
-  bool GetAddonFromNameAndType(const CStdString &name, const ADDON::AddonType &type, ADDON::CAddon &addon);
-  bool AddonFromInfoXML(const CStdString &path, ADDON::CAddon &addon);
-  ADDON::VECADDONS *GetAddonsFromType(const ADDON::AddonType &type);
-  bool DisableAddon(const CStdString &addon, const ADDON::AddonType &type);
 
   int TranslateSkinString(const CStdString &setting);
   const CStdString &GetSkinString(int setting) const;
@@ -405,27 +398,6 @@ public:
   VECSOURCES m_musicSources;
   VECSOURCES m_videoSources;
 
-  ADDON::VECADDONS  m_allAddons;
-  ADDON::VECADDONS  m_virtualAddons;
-
-  ADDON::VECADDONS  m_multitypeAddons;
-  ADDON::VECADDONS  m_visualisationAddons;
-  ADDON::VECADDONS  m_skinAddons;
-  ADDON::VECADDONS  m_pvrAddons;
-  ADDON::VECADDONS  m_scriptAddons;
-  ADDON::VECADDONS  m_scraperPVRAddons;
-  ADDON::VECADDONS  m_scraperVideoAddons;
-  ADDON::VECADDONS  m_scraperMusicAddons;
-  ADDON::VECADDONS  m_scraperProgramAddons;
-  ADDON::VECADDONS  m_screensaverAddons;
-  ADDON::VECADDONS  m_pluginPvrAddons;
-  ADDON::VECADDONS  m_pluginMusicAddons;
-  ADDON::VECADDONS  m_pluginVideoAddons;
-  ADDON::VECADDONS  m_pluginProgramAddons;
-  ADDON::VECADDONS  m_pluginPictureAddons;
-  ADDON::VECADDONS  m_pluginWeatherAddons;
-  ADDON::VECADDONS  m_DSPAudioAddons;
-
   CStdString m_defaultProgramSource;
   CStdString m_defaultMusicSource;
   CStdString m_defaultPictureSource;
@@ -468,11 +440,9 @@ public:
   CStdString GetGameSaveThumbFolder() const;
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
-  CStdString GetAddonsFile() const;
   CStdString GetSkinFolder() const;
   CStdString GetSkinFolder(const CStdString& skinName) const;
   CStdString GetScriptsFolder() const;
-  CStdString GetAddonsFolder() const;
   CStdString GetVideoFanartFolder() const;
   CStdString GetMusicFanartFolder() const;
 
@@ -486,11 +456,7 @@ public:
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
-  void LoadAddons();
   bool SaveSources();
-  bool SaveAddons();
-
-  void GetAllAddons();
 
 protected:
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
@@ -506,9 +472,6 @@ protected:
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
-  bool SetAddons(TiXmlNode *root, const ADDON::AddonType &type, const ADDON::VECADDONS &addons);
-  void GetAddons(const TiXmlElement* pRootElement, const ADDON::AddonType &type);
-  bool GetAddon(const ADDON::AddonType &type, const TiXmlNode *node, ADDON::CAddon &addon);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
 
   // functions for writing xml files

@@ -158,11 +158,11 @@ void CGUIDialogAddonBrowser::Update()
   VECADDONS *addons;
   if (m_getAddons)
   {
-    addons = &g_settings.m_allAddons;
+    addons = g_addonmanager.GetAllAddons();
   }
   else
   {
-    addons = g_settings.GetAddonsFromType(m_type);
+    addons = g_addonmanager.GetAddonsFromType(m_type);
     if (addons == NULL)
       return;
   }
@@ -178,7 +178,7 @@ void CGUIDialogAddonBrowser::Update()
     { // don't show addons that are enabled
       //TODO add-on manager should do all this
       bool skip(false);
-      VECADDONS *addons = g_settings.GetAddonsFromType(m_type);
+      VECADDONS *addons = g_addonmanager.GetAddonsFromType(m_type);
       for (unsigned i = 0; i < addons->size(); i++)
       {
         if ((*addons)[i].m_guid == addon.m_guid)
@@ -226,9 +226,9 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
   if (m_getAddons)
   {
     /* need to determine which addon from allAddons this and add to AddonType specific vector */
-    VECADDONS *addons = g_settings.GetAddonsFromType(m_type);
+    VECADDONS *addons = g_addonmanager.GetAddonsFromType(m_type);
     CAddon addon;
-    if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+    if (g_addonmanager.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
     {
       CStdString disclaimer = pItem->GetProperty("Addon.Disclaimer");
       if (disclaimer.size() > 0)
@@ -261,7 +261,7 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
     {
       /* open up settings dialog */
       CAddon addon;
-      if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+      if (g_addonmanager.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
         CGUIDialogAddonSettings::ShowAndGetInput(addon);
     }
   }
@@ -280,7 +280,7 @@ void CGUIDialogAddonBrowser::OnWindowLoaded()
 #endif
 
   // request available addons update
-  g_settings.GetAllAddons();
+  g_addonmanager.UpdateAddons();
 }
 
 void CGUIDialogAddonBrowser::OnWindowUnload()
@@ -390,23 +390,23 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
   if (btnid == btn_Settings)
   { // present addon settings dialog
     CAddon addon;
-    if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+    if (g_addonmanager.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
     return true;
   }
   else if (btnid == btn_ReUse)
   {
     /* need to determine which addon from allAddons this and add to AddonType specific vector */
-    VECADDONS *addons = g_settings.GetAddonsFromType(m_type);
+    VECADDONS *addons = g_addonmanager.GetAddonsFromType(m_type);
     CAddon addon_parent;
-    if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon_parent))
+    if (g_addonmanager.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon_parent))
     {
       CAddon addon_child;
       if (CAddon::CreateChildAddon(addon_parent, addon_child))
       {
         // add the addon to g_settings, not saving to addons.xml until parent dialog is confirmed
         addons->push_back(addon_child);
-        g_settings.m_virtualAddons.push_back(addon_child);
+        g_addonmanager.SaveVirtualAddon(addon_child);
         m_changed = true;
         Update();
         return true;
@@ -419,10 +419,10 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
     if (pDialog->ShowAndGetInput(g_localizeStrings.Get(23009), pItem->GetProperty("Addon.Name"), "", g_localizeStrings.Get(23010)))
     {
       CAddon addon;
-      if (g_settings.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+      if (g_addonmanager.GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
       {
-        CAddon::GetCallbackForType(m_type)->RequestRemoval(&addon);
-        g_settings.DisableAddon(addon.m_guid, m_type);
+        g_addonmanager.GetCallbackForType(m_type)->RequestRemoval(&addon);
+        g_addonmanager.DisableAddon(addon.m_guid, m_type);
         m_changed = true;
         Update();
         return true;

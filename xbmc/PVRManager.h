@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "TVDatabase.h"
 #include "pvrclients/IPVRClient.h"
+#include "utils/AddonManager.h"
 #include "utils/TVChannelInfoTag.h"
 #include "utils/TVRecordInfoTag.h"
 #include "utils/TVTimerInfoTag.h"

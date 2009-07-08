@@ -24,6 +24,7 @@
 #include "GUITeletextBox.h"
 #include "GUIViewControl.h"
 #include "utils/TeletextRender.h"
+#include "utils/Thread.h"
 
 class CGUIDialogTVTeletext : public CGUIDialog
                            , public cRenderTTPage
