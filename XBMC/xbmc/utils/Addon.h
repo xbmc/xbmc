@@ -20,111 +20,13 @@
  *
  */
 
+#include "AddonManager.h"
 #include "StdString.h"
-#include "utils/Thread.h"
-#include "FileSystem/Directory.h"
-#include "../addons/include/xbmc_addon_types.h"
-#include <vector>
 
 class CURL;
 
 namespace ADDON
 {
-
-class CAddon;
-
-enum AddonType
-{
-  ADDON_UNKNOWN           = -1,
-  ADDON_MULTITYPE         = 0,
-  ADDON_VIZ               = 1,
-  ADDON_SKIN              = 2,
-  ADDON_PVRDLL            = 3,
-  ADDON_SCRIPT            = 4,
-  ADDON_SCRAPER_PVR       = 5,
-  ADDON_SCRAPER_VIDEO     = 6,
-  ADDON_SCRAPER_MUSIC     = 7,
-  ADDON_SCRAPER_PROGRAM   = 8,
-  ADDON_SCREENSAVER       = 9,
-  ADDON_PLUGIN_PVR        = 10,
-  ADDON_PLUGIN_VIDEO      = 11,
-  ADDON_PLUGIN_MUSIC      = 12,
-  ADDON_PLUGIN_PROGRAM    = 13,
-  ADDON_PLUGIN_PICTURES   = 14,
-  ADDON_PLUGIN_WEATHER    = 16,
-  ADDON_DSP_AUDIO         = 17
-};
-
-const CStdString ADDON_MULTITYPE_EXT        = "*.add";
-const CStdString ADDON_VIZ_EXT              = "*.vis";
-const CStdString ADDON_SKIN_EXT             = "*.skin";
-const CStdString ADDON_PVRDLL_EXT           = "*.pvr";
-const CStdString ADDON_SCRIPT_EXT           = "*.py";
-const CStdString ADDON_SCRAPER_EXT          = "*.xml|*.idl";
-const CStdString ADDON_SCREENSAVER_EXT      = "*.xbs";
-const CStdString ADDON_PLUGIN_PVR_EXT       = "*.py|*.plpvr";
-const CStdString ADDON_PLUGIN_MUSIC_EXT     = "*.py|*.plmus";
-const CStdString ADDON_PLUGIN_VIDEO_EXT     = "*.py|*.plvid";
-const CStdString ADDON_PLUGIN_PROGRAM_EXT   = "*.py|*.plpro";
-const CStdString ADDON_PLUGIN_PICTURES_EXT  = "*.py|*.plpic";
-const CStdString ADDON_PLUGIN_WEATHER_EXT   = "*.py|*.plwea";
-const CStdString ADDON_DSP_AUDIO_EXT        = "*.adsp";
-const CStdString ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
-const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
-
-/**
- * Class - IAddonCallback
- * Used to access Add-on internal functions
- * The callback is handled from the parent class which
- * handle this types of Add-on's, as example for PVR Clients
- * it is CPVRManager
- */
-class IAddonCallback
-{
-public:
-  virtual bool RequestRestart(const CAddon* addon, bool datachanged)=0;
-  virtual bool RequestRemoval(const CAddon* addon)=0;
-  virtual ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)=0;
-};
-
-/**
- * Class - CAddonDummyCallback
- * Used as fallback by unkown Add-on type
- */
-class CAddonDummyCallback : public IAddonCallback
-{
-public:
-  CAddonDummyCallback() {}
-  ~CAddonDummyCallback() {}
-  bool RequestRestart(const CAddon* addon, bool datachanged) { return false; }
-  bool RequestRemoval(const CAddon* addon) { return false; }
-  ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; }
-};
-
-/**
- * Class - CAddonStatusHandler
- * Used to informate the user about occurred errors and
- * changes inside Add-on's, and ask him what to do.
- * It can executed in the same thread as the calling
- * function or in a seperate thread.
- */
-class CAddonStatusHandler : private CThread
-{
-public:
-  CAddonStatusHandler(const CAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread = true);
-  ~CAddonStatusHandler();
-
-  /* Thread handling */
-  virtual void Process();
-  virtual void OnStartup();
-  virtual void OnExit();
-
-private:
-  static CCriticalSection   m_critSection;
-  const CAddon*             m_addon;
-  ADDON_STATUS              m_status;
-  CStdString                m_message;
-};
 
 /*!
 \ingroup windows
@@ -141,11 +43,6 @@ public:
 
   virtual void Remove() {};
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; };
-
-  /* Callback pointer return function */
-  static IAddonCallback* GetCallbackForType(AddonType type);
-  static bool RegisterAddonCallback(AddonType type, IAddonCallback* cb);
-  static void UnregisterAddonCallback(AddonType type);
 
   /* Add-on language functions */
   static void LoadAddonStrings(const CURL &url);
@@ -190,21 +87,6 @@ private:
   static IAddonCallback *m_cbPluginWeather;
   static IAddonCallback *m_cbDSPAudio;
 };
-
-
-/*!
-\ingroup windows
-\brief A vector to hold CAddon objects.
-\sa CAddon, IVECADDONS
-*/
-typedef std::vector<CAddon> VECADDONS;
-
-/*!
-\ingroup windows
-\brief Iterator of VECADDONS.
-\sa CAddon, VECADDONS
-*/
-typedef std::vector<CAddon>::iterator IVECADDONS;
 
 }; /* namespace ADDON */
 

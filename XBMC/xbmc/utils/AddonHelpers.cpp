@@ -191,7 +191,7 @@ void CAddonUtils::TransferAddonSettings(const CAddon &addon)
   CLog::Log(LOGDEBUG, "Calling TransferAddonSettings for: %s", addon.m_strName.c_str());
 
   /* Transmit current unified user settings to the PVR Addon */
-  ADDON::IAddonCallback* addonCB = CAddon::GetCallbackForType(addon.m_addonType);
+  ADDON::IAddonCallback* addonCB = g_addonmanager.GetCallbackForType(addon.m_addonType);
 
   CAddonSettings settings;
   if (!settings.Load(addon))
