@@ -51,7 +51,7 @@ extern "C" ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID)
   XBMC_register_me(hdl);
   PVR_register_me(hdl);
 
-  XBMC_log(LOG_DEBUG, "Creating VDR PVR-Client");
+  //XBMC_log(LOG_DEBUG, "Creating VDR PVR-Client");
 
   curStatus     = STATUS_UNKNOWN;
   g_client      = new PVRClientVDR();

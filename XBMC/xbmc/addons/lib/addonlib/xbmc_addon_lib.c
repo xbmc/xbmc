@@ -33,14 +33,10 @@ extern "C" {
 #endif
 
 
-int XBMC_register_me(ADDON_HANDLE hdl)
+void XBMC_register_me(ADDON_HANDLE hdl)
 {
-  if (hdl == NULL || m_cb != NULL)
-    return 0;
-
   m_cb = (AddonCB*) hdl;
-
-  return 1;
+  return;
 }
 
 void XBMC_log(const addon_log_t loglevel, const char *format, ... )

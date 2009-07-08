@@ -27,7 +27,7 @@
 #include <string>
 #include "xbmc_addon_types.h"
 
-bool XBMC_register_me(ADDON_HANDLE hdl);
+void XBMC_register_me(ADDON_HANDLE hdl);
 void XBMC_log(const addon_log_t loglevel, const char *format, ... );
 void XBMC_status_callback(const addon_status_t status, const char* msg);
 bool XBMC_get_setting(std::string settingName, void *settingValue);

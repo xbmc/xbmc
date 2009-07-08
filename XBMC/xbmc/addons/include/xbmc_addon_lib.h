@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-int XBMC_register_me(ADDON_HANDLE hdl);
+void XBMC_register_me(ADDON_HANDLE hdl);
 void XBMC_log(const addon_log_t loglevel, const char *format, ... );
 void XBMC_status_callback(const addon_status_t status, const char* msg);
 int XBMC_get_setting(const char *settingName, void *settingValue);

@@ -29,14 +29,11 @@ using namespace std;
 
 AddonCB *m_cb = NULL;
 
-bool XBMC_register_me(ADDON_HANDLE hdl)
+void XBMC_register_me(ADDON_HANDLE hdl)
 {
-  if (hdl == NULL || m_cb != NULL)
-    return false;
-
   m_cb = (AddonCB*) hdl;
 
-  return true;
+  return;
 }
 
 void XBMC_log(const addon_log_t loglevel, const char *format, ... )

@@ -42,14 +42,11 @@ using namespace std;
 
 AddonCB *m_pvr_cb = NULL;
 
-bool PVR_register_me(ADDON_HANDLE hdl)
+void PVR_register_me(ADDON_HANDLE hdl)
 {
-  if (hdl == NULL || m_pvr_cb != NULL)
-    return false;
-
   m_pvr_cb = (AddonCB*) hdl;
 
-  return true;
+  return;
 }
 
 void PVR_event_callback(const PVR_EVENT event, const char* msg)

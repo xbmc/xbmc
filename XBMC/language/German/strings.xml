@@ -1508,8 +1508,8 @@
   <string id="18088">Nächste Aufnahme</string>
   <string id="18089">Jetzige Aufnahme</string>
   <string id="18090">Warnung</string>
-  <string id="18091">Keine Verbindung zum PVR-Server</string>
-  <string id="18092">Überprüfen sie ihre Einstellungen oder den Backend-Server</string>
+  <string id="18091">Keine PVR Klienten verfügbar</string>
+  <string id="18092">Überprüfen sie ihre Einstellungen</string>
   <string id="18093">Verbindung zum PVR-Server verloren</string>
   <string id="18094">Versuchen wieder zu verbinden?</string>
   <string id="18095">Timer vorhanden</string>

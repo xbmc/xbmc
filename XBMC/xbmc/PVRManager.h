@@ -75,6 +75,7 @@ public:
   bool SupportTeletext();
   bool SupportDirector();
   
+  bool HaveClients() { return !m_clients.empty(); }
   bool IsSynchronized() { return m_synchronized; }
 
   /* Event handling */

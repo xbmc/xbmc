@@ -34,14 +34,11 @@ extern "C" {
 #endif
 
 
-int PVR_register_me(ADDON_HANDLE hdl)
+void PVR_register_me(ADDON_HANDLE hdl)
 {
-  if (hdl == NULL || m_pvr_cb != NULL)
-    return 0;
-
   m_pvr_cb = (AddonCB*) hdl;
 
-  return 1;
+  return;
 }
 
 void PVR_event_callback(const PVR_EVENT event, const char* msg)
