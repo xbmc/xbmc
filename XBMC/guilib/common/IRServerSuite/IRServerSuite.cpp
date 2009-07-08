@@ -76,6 +76,7 @@ bool CRemoteControl::Initialize()
 {
   //trying to connect when there is nothing to connect to is kinda slow so kick it off in a thread.
   Create();
+  SetName("CRemoteControl");
   return true;
 }
 
@@ -326,7 +327,7 @@ bool CRemoteControl::HandleRemoteEvent(CIrssMessage& message)
     deviceName[devicenamelength] = '\0';
     keycode[keycodelength] = '\0';
     //translate to a buttoncode xbmc understands
-    m_button = g_buttonTranslator.TranslateLircRemoteString(deviceName, keycode);
+    m_button = CButtonTranslator::GetInstance().TranslateLircRemoteString(deviceName, keycode);
     if (g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_FREEMEM)
     {
       CLog::Log(LOGINFO, "IRServerSuite, RemoteEvent: %s %s", deviceName, keycode);
