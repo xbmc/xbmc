@@ -31,7 +31,7 @@ public:
   virtual ADDON_STATUS GetStatus() =0;  /* For "ADDON_STATUS" see header "xbmc_addon_types.h" */
   virtual bool HasSettings() =0;
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue) =0;
-  virtual void Remove() =0;
+  virtual void Destroy() =0;
 };
 
 template <typename T>
@@ -42,14 +42,14 @@ public:
   DEFINE_METHOD0(ADDON_STATUS, GetStatus)
   DEFINE_METHOD0(bool, HasSettings)
   DEFINE_METHOD2(ADDON_STATUS, SetSetting, (const char *p1, const void *p2))
-  DEFINE_METHOD0(void, Remove)
+  DEFINE_METHOD0(void, Destroy)
   DEFINE_METHOD1(void, GetAddon, (T* p1))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(get_addon,GetAddon)
     RESOLVE_METHOD(GetStatus)
     RESOLVE_METHOD(SetSetting)
     RESOLVE_METHOD(HasSettings)
-    RESOLVE_METHOD(Remove)
+    RESOLVE_METHOD(Destroy)
   END_METHOD_RESOLVE()
 };
 

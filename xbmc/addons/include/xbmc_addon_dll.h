@@ -23,7 +23,7 @@ extern "C"
   bool __declspec(dllexport) HasSettings();
   addon_settings_t __declspec(dllexport) GetSettings();
   ADDON_STATUS __declspec(dllexport) SetSetting(const char *settingName, const void *settingValue);
-  void __declspec(dllexport) Remove();
+  void __declspec(dllexport) Destroy();
 };
 
 #endif

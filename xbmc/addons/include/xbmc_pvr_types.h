@@ -169,7 +169,6 @@ extern "C" {
   typedef struct PVRClient
   {
     ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, int ClientID);
-    void (__cdecl* Destroy)();
     PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);
     const char* (__cdecl* GetBackendName)();
     const char* (__cdecl* GetBackendVersion)();
