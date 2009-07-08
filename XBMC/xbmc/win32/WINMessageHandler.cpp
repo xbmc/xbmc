@@ -27,6 +27,7 @@
 #include "Settings.h"
 #include "VideoReferenceClock.h"
 #include "Application.h"
+//#include "DetectDVDMedia.h"
 
 extern HWND g_hWnd;
 WNDPROC g_lpOriginalWndProc=NULL;
@@ -60,7 +61,6 @@ bool CWINMessageHandler::Initialize()
 LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
 {
   PDEV_BROADCAST_HDR lpdb = (PDEV_BROADCAST_HDR)lParam;
-  char szMsg[80];
 
   switch(Message)
   {
@@ -75,8 +75,10 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
             // Check whether a CD or DVD was inserted into a drive.
             if (lpdbv -> dbcv_flags & DBTF_MEDIA)
             {
-               sprintf (szMsg, "Drive %c: Media has arrived.\n", CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-               OutputDebugString(szMsg);
+              CLog::Log(LOGDEBUG, "%s: Drive %c: Media has arrived.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              CStdString strPath;
+              strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strPath);
             }
             else
             {
@@ -107,8 +109,10 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
             // Check whether a CD or DVD was removed from a drive.
             if (lpdbv -> dbcv_flags & DBTF_MEDIA)
             {
-               sprintf (szMsg, "Drive %c: Media was removed.\n", CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-               OutputDebugString(szMsg);
+              CLog::Log(LOGDEBUG,"%s: Drive %c: Media was removed.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              CStdString strPath;
+              strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strPath);
             }
             else
             {
