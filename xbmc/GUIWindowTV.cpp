@@ -159,6 +159,13 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
   if (iMessage == GUI_MSG_WINDOW_INIT)
   {
+    if (!CPVRManager::GetInstance()->HaveClients())
+    {
+      m_gWindowManager.PreviousWindow();
+      CGUIDialogOK::ShowAndGetInput(18100,0,18091,18092);
+      return true;
+    }
+
     if (!CPVRManager::GetInstance()->IsSynchronized())
     {
       m_gWindowManager.PreviousWindow();

@@ -1614,8 +1614,8 @@
   <string id="18088">Next Recording</string>
   <string id="18089">Now Recording</string>
   <string id="18090">Warning</string>
-  <string id="18091">No connection to PVR-Server</string>
-  <string id="18092">Check your settings or Backend-Server</string>
+  <string id="18091">No PVR Clients available</string>
+  <string id="18092">Please check your settings</string>
   <string id="18093">Lost connection to PVR-Server</string>
   <string id="18094">Try to reconnect?</string>
   <string id="18095">Timer present</string>
