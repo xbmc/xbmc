@@ -94,16 +94,17 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
 }
 
 
-void CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
+bool CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
 {
-
-
   m_pSource =  pPicture;
+
+  if(m_pSource->format != DVDVideoPicture::FMT_YUV420P)
+    return false;
 
   if( !CheckInit(m_pSource->iWidth, m_pSource->iHeight) )
   {
     CLog::Log(LOGERROR, "Initialization of ffmpeg postprocessing failed");
-    return;
+    return false;
   }
 
   //If no target was set or we are using internal buffer, make sure it's correctly sized
@@ -114,7 +115,7 @@ void CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
     else
     {
       m_pTarget = NULL;
-      return;
+      return false;
     }
   }
 
@@ -134,8 +135,8 @@ void CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
   m_pTarget->iDisplayWidth = m_pSource->iDisplayWidth;
   m_pTarget->pts = m_pSource->pts;
   m_pTarget->iGroupId = m_pSource->iGroupId;
-
-
+  m_pTarget->format = DVDVideoPicture::FMT_YUV420P;
+  return true;
 }
 
 
