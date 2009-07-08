@@ -19,6 +19,7 @@ Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
  libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
  libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
  python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
+ zlib1g-dev
 Standards-Version: 3.8.1
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/xbmc.git
