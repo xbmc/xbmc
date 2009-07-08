@@ -30,7 +30,7 @@
 
 // video structure with PIX_FMT_YUV420P data
 // should be entirely filled by all codecs
-typedef struct stDVDVideoPicture
+struct DVDVideoPicture
 {
   double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
   BYTE* data[4];      // [4] = alpha channel, currently not used
@@ -49,15 +49,13 @@ typedef struct stDVDVideoPicture
   unsigned int iHeight;
   unsigned int iDisplayWidth;  // width of the picture without black bars
   unsigned int iDisplayHeight; // height of the picture without black bars
-}
-DVDVideoPicture;
+};
 
-typedef struct stDVDVideoUserData
+struct DVDVideoUserData
 {
   BYTE* data;
   int size;
-}
-DVDVideoUserData;
+};
 
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001
 #define DVP_FLAG_REPEAT_TOP_FIELD   0x00000002 //Set to indicate that the top field should be repeated
