@@ -9,7 +9,6 @@ extern "C"
   // Functions that your PVR client must implement, also you must implement the functions from
   // xbmc_addon_dll.h
   ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID);
-  void Destroy();
   PVR_ERROR GetProperties(PVR_SERVERPROPS* pProps);
   const char* GetBackendName();
   const char* GetBackendVersion();

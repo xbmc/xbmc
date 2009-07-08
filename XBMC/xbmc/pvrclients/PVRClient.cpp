@@ -119,7 +119,10 @@ void CPVRClient::DeInit()
     m_ReadyToUse = false;
 
     /* Tell the client to destroy */
-    m_pClient->Destroy();
+    m_pDll->Destroy();
+
+    /* Unload library file */
+    m_pDll->Unload();
 
     /* Release Callback table in memory */
     delete m_callbacks;
@@ -465,13 +468,6 @@ bool CPVRClient::ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int 
  * Addon specific functions
  * Are used for every type of AddOn
  */
-void CPVRClient::Remove()
-{
-  DeInit();
-
-  /* Unload library file */
-  m_pDll->Unload();
-}
 
 ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *settingValue)
 {
