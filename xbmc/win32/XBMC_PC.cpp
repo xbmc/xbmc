@@ -181,12 +181,16 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   SetUnhandledExceptionFilter( CreateMiniDump );
 
   // check if XBMC is already running
-  HWND m_hwnd = FindWindow("SDL_app","XBMC Media Center");
-  if(m_hwnd != NULL)
+  CreateMutex(NULL, FALSE, "XBMC Media Center");
+  if(GetLastError() == ERROR_ALREADY_EXISTS)
   {
-    // switch to the running instance
-    ShowWindow(m_hwnd,SW_RESTORE);
-    SetForegroundWindow(m_hwnd);
+    HWND m_hwnd = FindWindow("SDL_app","XBMC Media Center");
+    if(m_hwnd != NULL)
+    {
+      // switch to the running instance
+      ShowWindow(m_hwnd,SW_RESTORE);
+      SetForegroundWindow(m_hwnd);
+    }
     return 0;
   }
 
