@@ -509,7 +509,8 @@ void CDVDPlayerVideo::Process()
               mDeinterlace.Process(&picture);
               mDeinterlace.GetPicture(&picture);
             }
-            else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
+            else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE 
+                  || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
             {
               /* if we are syncing frames, dvdplayer will be forced to play at a given framerate */
               /* unless we directly sync to the correct pts, we won't get a/v sync as video can never catch up */
