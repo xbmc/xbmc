@@ -246,11 +246,6 @@ static void setupWindowMenu(void)
       name:NSWorkspaceWillSleepNotification
       object:nil];
       
-    [[NSNotificationCenter defaultCenter] addObserver:self
-      selector:@selector(windowDidMove:)
-      name:NSWindowDidMoveNotification
-      object:nil];
-
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
       selector:@selector(deviceDidMount:)
       name:NSWorkspaceDidMountNotification
@@ -261,6 +256,11 @@ static void setupWindowMenu(void)
       name:NSWorkspaceDidUnmountNotification
       object:nil];
 		
+    [[NSNotificationCenter defaultCenter] addObserver:self
+      selector:@selector(windowDidMove:)
+      name:NSWindowDidMoveNotification
+      object:nil];
+
     // We're going to manually manage the screensaver.
     setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
 
@@ -290,11 +290,6 @@ static void setupWindowMenu(void)
 
 - (void) workspaceWillSleep:(NSNotification *) note
 {
-}
-
-- (void) windowDidMove:(NSNotification*) note
-{
-  Cocoa_CVDisplayLinkUpdate();
 }
 
 - (void) deviceDidMount:(NSNotification *) note 
@@ -328,6 +323,12 @@ static void setupWindowMenu(void)
   //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strDrive);
   [pool release];
 }
+
+- (void) windowDidMove:(NSNotification*) note
+{
+  Cocoa_CVDisplayLinkUpdate();
+}
+
 @end
 
 #ifdef main
