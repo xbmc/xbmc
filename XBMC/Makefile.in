@@ -432,9 +432,9 @@ install-datas:
 install-livedatas:
 	@echo "Install Live CD datas in $(prefix) ..."
 	@install -D tools/XBMCLive/diskmounter $(prefix)/bin
-	@install -D tools/XBMCLive/installXBMC.py $(prefix)/bin
-	@install -D tools/XBMCLive/runXBMC.sh $(prefix)/bin
-	@install -D tools/XBMCLive/setAlsaVolumes.py $(prefix)/bin
+	@install -D tools/XBMCLive/installXBMC $(prefix)/bin
+	@install -D tools/XBMCLive/runXBMC $(prefix)/bin
+	@install -D tools/XBMCLive/setAlsaVolumes $(prefix)/bin
 
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
