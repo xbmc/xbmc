@@ -21,6 +21,9 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
+
+#ifdef HAS_SDL
+
 #include "LinuxRenderer.h"
 #include "../../Application.h"
 #include "../../Util.h"
@@ -1224,3 +1227,5 @@ void CLinuxRenderer::OnClose()
 }
 
 #endif // HAS_SDL_OPENGL
+
+#endif // HAS_SDL

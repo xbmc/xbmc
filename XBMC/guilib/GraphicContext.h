@@ -149,10 +149,9 @@ public:
   //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
   int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
-#else
+#endif
   inline void setScreenSurface(Surface::CSurface* surface) XBMC_FORCE_INLINE { m_screenSurface = surface; }
   inline Surface::CSurface* getScreenSurface() XBMC_FORCE_INLINE { return m_screenSurface; }
-#endif
 #ifdef HAS_SDL_2D
   int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect);
 #endif
@@ -271,9 +270,8 @@ protected:
   D3DPRESENT_PARAMETERS* m_pd3dParams;
   std::stack<D3DVIEWPORT8*> m_viewStack;
   DWORD m_stateBlock;
-#else
-  Surface::CSurface* m_screenSurface;
 #endif
+  Surface::CSurface* m_screenSurface;
 #ifdef HAS_SDL_2D
   std::stack<SDL_Rect*> m_viewStack;
 #endif

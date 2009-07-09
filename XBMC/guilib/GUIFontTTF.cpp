@@ -160,6 +160,8 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_dwNestedBeginCount = 0;
 #ifdef HAS_SDL_OPENGL
   m_glTextureLoaded = false;
+  m_vertex_size   = 4*1024;
+  m_vertex        = (SVertex*)malloc(m_vertex_size * sizeof(SVertex));
 #endif
   m_face = NULL;
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -172,8 +174,6 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_textureHeight = m_textureWidth = 0;
   m_textureScaleX = m_textureScaleY = 0.0;
   m_ellipsesWidth = m_height = 0.0f;
-  m_vertex_size   = 4*1024;
-  m_vertex        = (SVertex*)malloc(m_vertex_size * sizeof(SVertex));
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
@@ -253,9 +253,11 @@ void CGUIFontTTF::Clear()
     g_freeTypeLibrary.ReleaseFont(m_face);
   m_face = NULL;
   
+#ifdef HAS_SDL_OPENGL
   free(m_vertex);
   m_vertex = NULL;
   m_vertex_count = 0;
+#endif
 }
 
 bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing)
@@ -928,17 +930,14 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
   }
 
   float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
-
-#if defined(HAS_SDL_OPENGL)
-  float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
-
   float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
-  float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-
   float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
-  float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-
   float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+
+#ifndef HAS_SDL_2D
+  float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
   float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 #endif
 
