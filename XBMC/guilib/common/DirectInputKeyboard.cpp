@@ -73,7 +73,7 @@ void CLowLevelKeyboard::Reset()
 {
   // TODO:DIRECTX - implement this
 }
-|
+
 void CLowLevelKeyboard::Update()
 {
   m_cAscii = 0;

@@ -153,7 +153,7 @@ void DPMSSupport::PlatformSpecificInit()
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
-  if (m_surface == NULL) return;
+  if (m_surface == NULL) return false;
   Display* dpy = m_surface->GetDisplay();
   if (dpy == NULL) return false;
 
@@ -169,7 +169,7 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
-  if (m_surface == NULL) return;
+  if (m_surface == NULL) return false;
   Display* dpy = m_surface->GetDisplay();
   if (dpy == NULL) return false;
 
