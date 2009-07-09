@@ -2375,7 +2375,7 @@ void CApplication::RenderScreenSaver()
         screenSaverFadeAmount += 2;  // around a second to fade
 
       DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-      CGUITexture::DrawQuad(CRect(0,0,g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight()), color);
+      CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
     }
   }
   else
@@ -2637,7 +2637,7 @@ bool CApplication::OnKey(CKey& key)
       {
         if (key.GetButtonCode() != KEY_INVALID)
           action.wID = (WORD) key.GetButtonCode();
-        action.unicode = key.GetUnicode();
+        action.unicode = (WCHAR)key.GetUnicode();
       }
       else
       { // see if we've got an ascii key
