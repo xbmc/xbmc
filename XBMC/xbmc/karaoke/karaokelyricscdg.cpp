@@ -275,7 +275,7 @@ void CKaraokeLyricsCDG::Render()
     // Update DirectX structure
   D3DLOCKED_RECT LockedRect;
   m_pCdgTexture->LockRect(0, &LockedRect, NULL, 0L);
-  m_Lyrics->RenderIntoBuffer( (unsigned char *)LockedRect.pBits, WIDTH, HEIGHT, LockedRect.Pitch );
+  RenderIntoBuffer( (unsigned char *)LockedRect.pBits, WIDTH, HEIGHT, LockedRect.Pitch );
   m_pCdgTexture->UnlockRect(0);
 
   m_pd3dDevice->SetVertexShader( D3DFVF_CUSTOMVERTEX );
