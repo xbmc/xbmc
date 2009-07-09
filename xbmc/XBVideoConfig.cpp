@@ -99,7 +99,6 @@ bool XBVideoConfig::HasHDPack() const
   return true;
 }
 
-#ifdef HAS_SDL
 void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
 {
 #ifdef __APPLE__
@@ -107,16 +106,16 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
   res.fRefreshRate = Cocoa_GetScreenRefreshRate(res.iScreen);
 
 #elif defined(_WIN32PC)
-    DEVMODE devmode;
-    ZeroMemory(&devmode, sizeof(devmode));
-    devmode.dmSize = sizeof(devmode);
-    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-    res.iWidth = devmode.dmPelsWidth;
-    res.iHeight = devmode.dmPelsHeight;
-    if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
-      res.fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
-    else
-      res.fRefreshRate = (float)(devmode.dmDisplayFrequency);
+  DEVMODE devmode;
+  ZeroMemory(&devmode, sizeof(devmode));
+  devmode.dmSize = sizeof(devmode);
+  EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
+  res.iWidth = devmode.dmPelsWidth;
+  res.iHeight = devmode.dmPelsHeight;
+  if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
+    res.fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+  else
+    res.fRefreshRate = (float)(devmode.dmDisplayFrequency);
 
 #elif defined(HAS_GLX)
   Display * pRootDisplay = XOpenDisplay(NULL);
@@ -169,7 +168,6 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
 #endif
 #endif
 }
-#endif
 
 #ifndef HAS_SDL
 void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)

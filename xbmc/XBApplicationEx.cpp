@@ -450,6 +450,7 @@ void CXBApplicationEx::ReadInput()
 void CXBApplicationEx::Process()
 {}
 
+#ifdef HAS_SDL
 bool CXBApplicationEx::ProcessOSShortcuts(SDL_Event& event)
 {
 #ifdef __APPLE__
@@ -552,3 +553,4 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
   }
   return false;
 }
+#endif

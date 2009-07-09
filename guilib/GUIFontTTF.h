@@ -142,10 +142,10 @@ protected:
   SVertex* m_vertex;
   int      m_vertex_count;
   int      m_vertex_size;
+#endif
 
   float    m_textureScaleX;
   float    m_textureScaleY;
-#endif
 
   static int justification_word_weight;
   static unsigned int max_texture_size;

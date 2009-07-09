@@ -71,6 +71,8 @@ CGraphicContext::CGraphicContext(void)
   m_pd3dDevice = NULL;
   m_pd3dParams = NULL;
   m_stateBlock = 0xffffffff;
+#else
+  m_screenSurface = NULL;
 #endif
 #ifdef HAS_SDL_OPENGL
   m_maxTextureSize = 2048;
@@ -83,7 +85,6 @@ CGraphicContext::CGraphicContext(void)
   m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = INVALID;
   m_bFullScreenRoot = false;
-  m_screenSurface = NULL;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -588,7 +589,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     m_iScreenHeight = m_pd3dParams->BackBufferHeight;
     m_bWidescreen = (m_pd3dParams->Flags & D3DPRESENTFLAG_WIDESCREEN) != 0;
   }
-  if ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight))
+  if (m_Resolution != INVALID && ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) ||
+                                  (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight)))
   { // set the mouse resolution
     g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
     ResetOverscan(g_settings.m_ResInfo[res]);

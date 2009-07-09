@@ -35,13 +35,8 @@
 #undef HAS_DVD_DRIVE
 #undef HAS_XBOX_HARDWARE
 #undef HAS_XBOX_NETWORK
-#ifdef HAS_SDL
 #define HAS_VIDEO_PLAYBACK
 #define HAS_DVDPLAYER
-#else
-#undef HAS_VIDEO_PLAYBACK
-#undef HAS_DVDPLAYER
-#endif
 #undef HAS_MPLAYER
 #undef HAS_AC3_CODEC
 #undef HAS_DTS_CODEC
@@ -166,6 +161,12 @@
 #define HAS_GLX
 #endif
 #ifdef _WIN32
+#define HAS_SDL_JOYSTICK
+#undef HAS_SDL_AUDIO   // use dsound for audio on win32
+#endif
+#endif
+
+#ifdef _WIN32
 #define _WIN32PC       // precompiler definition for the windows build
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
@@ -188,15 +189,11 @@
 #define HAS_LIRC
 #define HAS_IRSERVERSUITE // depends on HAS_LIRC define
 #define HAS_SYSINFO
-#define HAS_SDL_JOYSTICK
 #define HAS_KARAOKE
-
-#undef HAS_SDL_AUDIO   // use dsound for audio on win32
 #undef HAS_PERFORMANCE_SAMPLE // no performance sampling
 #undef HAS_LINUX_NETWORK
 
 #include "../xbmc/win32/PlatformInclude.h"
-#endif
 #endif
 
 #ifdef __APPLE__
