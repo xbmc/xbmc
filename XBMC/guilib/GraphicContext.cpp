@@ -1289,6 +1289,31 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
   glFrustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   glMatrixMode(GL_MODELVIEW);
   EndPaint();
+#elif !defined(HAS_SDL)
+  // grab the viewport dimensions and location
+  D3DVIEWPORT8 viewport;
+  m_pd3dDevice->GetViewport(&viewport);
+  float w = viewport.Width*0.5f;
+  float h = viewport.Height*0.5f;
+
+  // world view.  Until this is moved onto the GPU (via a vertex shader for instance), we set it to the identity
+  // here.
+  D3DXMATRIX mtxWorld;
+  D3DXMatrixIdentity(&mtxWorld);
+  m_pd3dDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
+
+  // camera view.  Multiply the Y coord by -1 then translate so that everything is relative to the camera
+  // position.
+  D3DXMATRIX flipY, translate, mtxView;
+  D3DXMatrixScaling(&flipY, 1.0f, -1.0f, 1.0f);
+  D3DXMatrixTranslation(&translate, -(viewport.X + w + offset.x), -(viewport.Y + h + offset.y), 2*h);
+  D3DXMatrixMultiply(&mtxView, &translate, &flipY);
+  m_pd3dDevice->SetTransform(D3DTS_VIEW, &mtxView);
+
+  // projection onto screen space
+  D3DXMATRIX mtxProjection;
+  D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
+  m_pd3dDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
 #endif
 }
 
@@ -1585,8 +1610,11 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #else
     SDL_SetVideoMode(m_iFullScreenWidth, m_iFullScreenHeight, 0, SDL_FULLSCREEN);
 #endif
-    m_screenSurface->RefreshCurrentContext();
-    m_screenSurface->ResizeSurface(m_iFullScreenWidth, m_iFullScreenHeight);
+    if (m_screenSurface)
+    {
+      m_screenSurface->RefreshCurrentContext();
+      m_screenSurface->ResizeSurface(m_iFullScreenWidth, m_iFullScreenHeight);
+    }
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
     glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
@@ -1607,9 +1635,11 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
 #else
     SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
 #endif
-    m_screenSurface->RefreshCurrentContext();
-    m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
-
+    if (m_screenSurface)
+    {
+      m_screenSurface->RefreshCurrentContext();
+      m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+    }
 #ifdef HAS_SDL_OPENGL
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
     glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
