@@ -424,6 +424,53 @@ int XBMC_gui_get_current_window_dialog_id()
   return m_cb->GUI.GetCurrentWindowDialogId();
 }
 
+char *strreplace(char *s, const char *s1, const char *s2)
+{
+  char *p = strstr(s, s1);
+  if (p) 
+  {
+    int of = p - s;
+    int l  = strlen(s);
+    int l1 = strlen(s1);
+    int l2 = strlen(s2);
+    if (l2 > l1)
+      s = (char *)realloc(s, l + l2 - l1 + 1);
+    char *sof = s + of;
+    if (l2 != l1)
+      memmove(sof + l2, sof + l1, l - of - l1 + 1);
+    strncpy(sof, s2, l2);
+  }
+  return s;
+}
+
+char *strn0cpy(char *dest, const char *src, size_t n)
+{
+  char *s = dest;
+  for ( ; --n && (*dest = *src) != 0; dest++, src++) ;
+  *dest = 0;
+  return s;
+}
+
+char *strn0cpy(char *dest, const char *src, size_t n)
+{
+  char *s = dest;
+  for ( ; --n && (*dest = *src) != 0; dest++, src++) ;
+  *dest = 0;
+  return s;
+}
+
+bool isnumber(const char *s)
+{
+  if (!*s)
+    return false;
+  do 
+  {
+    if (!isdigit(*s))
+      return false;
+  } while (*++s);
+  return true;
+}
+
 #ifdef __cplusplus
 }
 #endif

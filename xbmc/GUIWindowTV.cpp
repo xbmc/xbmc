@@ -1332,8 +1332,8 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
             for (int i = 0; i < timerlist.Size(); ++i)
             {
               if ((timerlist[i]->GetTVTimerInfoTag()->m_channelNum == pItem->GetTVEPGInfoTag()->m_channelNum) &&
-                  (timerlist[i]->GetTVTimerInfoTag()->m_StartTime  <= pItem->GetTVEPGInfoTag()->m_startTime) &&
-                  (timerlist[i]->GetTVTimerInfoTag()->m_StopTime   >= pItem->GetTVEPGInfoTag()->m_endTime) &&
+                  (timerlist[i]->GetTVTimerInfoTag()->m_StartTime <= pItem->GetTVEPGInfoTag()->m_startTime) &&
+                  (timerlist[i]->GetTVTimerInfoTag()->m_StopTime >= pItem->GetTVEPGInfoTag()->m_endTime) &&
                   (timerlist[i]->GetTVTimerInfoTag()->m_Repeat != true))
               {
                 CPVRManager::GetInstance()->DeleteTimer(*timerlist[i]);

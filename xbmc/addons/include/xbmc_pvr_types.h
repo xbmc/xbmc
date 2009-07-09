@@ -165,6 +165,28 @@ extern "C" {
     int           length;
   } PVR_PROGLIST;
 
+  /**
+   * TV Timer Definition
+   */
+  typedef struct PVR_TIMERINFO {
+    int           index;
+    int           active;
+    const char   *title;
+    int           channelNum;
+    time_t        starttime;
+    time_t        endtime;
+    time_t        firstday;
+    int           recording;
+    int           priority;
+    int           lifetime;
+    int           repeat;
+    int           repeatflags;
+  } PVR_TIMERINFO;
+  typedef struct PVR_TIMERLIST {
+    PVR_TIMERINFO* timerInfo;
+    int           length;
+  } PVR_TIMERLIST;
+  
   // Structure to transfer the above functions to XBMC
   typedef struct PVRClient
   {
@@ -191,7 +213,7 @@ extern "C" {
     PVR_ERROR (__cdecl* GetAllRecordings)(VECRECORDINGS *results);
     PVR_ERROR (__cdecl* DeleteRecording)(const CTVRecordingInfoTag &recinfo);
     PVR_ERROR (__cdecl* RenameRecording)(const CTVRecordingInfoTag &recinfo, CStdString &newname);
-    PVR_ERROR (__cdecl* GetAllTimers)(VECTVTIMERS *results);
+    PVR_ERROR (__cdecl* RequestTimerList)(PVRHANDLE handle);
     PVR_ERROR (__cdecl* AddTimer)(const CTVTimerInfoTag &timerinfo);
     PVR_ERROR (__cdecl* DeleteTimer)(const CTVTimerInfoTag &timerinfo, bool force);
     PVR_ERROR (__cdecl* RenameTimer)(const CTVTimerInfoTag &timerinfo, CStdString &newname);

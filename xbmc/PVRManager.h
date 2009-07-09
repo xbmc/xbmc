@@ -114,6 +114,7 @@ public:
   int GetNextGroupID(int current_group_id);
   CStdString GetGroupName(int GroupId);
   int GetFirstChannelForGroupID(int GroupId, bool radio = false);
+  CTVChannelInfoTag *GetChannelByClientNumber(unsigned int client_no, unsigned int client_id); 
 
   /* Backend Channel handling */
   bool AddBackendChannel(const CFileItem &item);

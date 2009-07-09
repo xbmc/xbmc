@@ -31,7 +31,7 @@ extern "C"
   PVR_ERROR GetAllRecordings(VECRECORDINGS *results);
   PVR_ERROR DeleteRecording(const CTVRecordingInfoTag &recinfo);
   PVR_ERROR RenameRecording(const CTVRecordingInfoTag &recinfo, CStdString &newname);
-  PVR_ERROR GetAllTimers(VECTVTIMERS *results);
+  PVR_ERROR RequestTimerList(PVRHANDLE handle);
   PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo);
   PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force);
   PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname);
@@ -75,7 +75,7 @@ extern "C"
     pClient->GetAllRecordings       = GetAllRecordings;
     pClient->DeleteRecording        = DeleteRecording;
     pClient->RenameRecording        = RenameRecording;
-    pClient->GetAllTimers           = GetAllTimers;
+    pClient->RequestTimerList       = RequestTimerList;
     pClient->AddTimer               = AddTimer;
     pClient->DeleteTimer            = DeleteTimer;
     pClient->RenameTimer            = RenameTimer;

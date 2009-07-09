@@ -85,6 +85,7 @@ bool CPVRClient::Init()
 
   /* Write XBMC PVR specific Add-on function addresses to callback table */
   m_callbacks->PVR.EventCallback        = PVREventCallback;
+  m_callbacks->PVR.TransferTimerEntry   = PVRTransferTimerEntry;
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
@@ -615,16 +616,11 @@ PVR_ERROR CPVRClient::GetAllTimers(VECTVTIMERS *results)
   {
     try
     {
-      ret = m_pClient->GetAllTimers(results);
+      const PVRHANDLE handle = (VECTVTIMERS*) results;
+      ret = m_pClient->RequestTimerList(handle);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
-      for (unsigned int i = 0; i < results->size(); i++)
-      {
-        CPVRManager::GetInstance()->GetFrontendChannelNumber(results->at(i).m_clientNum, m_clientID, &results->at(i).m_channelNum, &results->at(i).m_Radio);
-        results->at(i).m_strChannel = CPVRManager::GetInstance()->GetNameForChannel(results->at(i).m_channelNum, results->at(i).m_Radio);
-        results->at(i).m_clientID = m_clientID;
-      }
       return PVR_ERROR_NO_ERROR;
     }
     catch (std::exception &e)
@@ -637,6 +633,105 @@ PVR_ERROR CPVRClient::GetAllTimers(VECTVTIMERS *results)
     }
   }
   return ret;
+}
+
+void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer)
+{
+  CPVRClient* client = (CPVRClient*) userData;
+  if (client == NULL || handle == NULL || timer == NULL)
+  {
+    CLog::Log(LOGERROR, "PVR: PVRTransferTimerEntry is called with NULL-Pointer!!!");
+    return;
+  }
+
+  VECTVTIMERS *xbmcTimers     = (VECTVTIMERS*) handle;
+  CTVChannelInfoTag *channel  = CPVRManager::GetInstance()->GetChannelByClientNumber(timer->channelNum, client->m_clientID);
+  
+  if (channel == NULL)
+  {
+    CLog::Log(LOGERROR, "PVR: PVRTransferTimerEntry is called with not present channel");
+    return;
+  }
+
+  CTVTimerInfoTag tag;
+  tag.m_clientID            = client->m_clientID;
+  tag.m_Index               = timer->index;
+  tag.m_Active              = timer->active;
+  tag.m_strTitle            = timer->title;
+  tag.m_clientNum           = timer->channelNum;
+  tag.m_StartTime           = (time_t) timer->starttime;
+  tag.m_StopTime            = (time_t) timer->endtime;
+  tag.m_FirstDay            = (time_t) timer->firstday;
+  tag.m_Priority            = timer->priority;
+  tag.m_Lifetime            = timer->lifetime;
+  tag.m_recStatus           = timer->recording;
+  tag.m_Repeat              = timer->repeat;
+  tag.m_channelNum          = channel->m_iChannelNum;
+  tag.m_strChannel          = channel->m_strChannel;
+  tag.m_Radio               = channel->m_radio;
+  tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_clientID, tag.m_Index);
+
+  if (tag.m_Repeat)
+  {
+    if (timer->repeatflags & 0x01)
+      tag.m_Repeat_Mon = true;
+    if (timer->repeatflags & 0x02)
+      tag.m_Repeat_Tue = true;
+    if (timer->repeatflags & 0x04)
+      tag.m_Repeat_Wed = true;
+    if (timer->repeatflags & 0x08)
+      tag.m_Repeat_Thu = true;
+    if (timer->repeatflags & 0x10)
+      tag.m_Repeat_Fri = true;
+    if (timer->repeatflags & 0x20)
+      tag.m_Repeat_Sat = true;
+    if (timer->repeatflags & 0x40)
+      tag.m_Repeat_Sun = true;
+  }
+
+  if (!tag.m_Repeat)
+  {
+    tag.m_Summary.Format("%s %s %s %s %s", tag.m_StartTime.GetAsLocalizedDate()
+                           , g_localizeStrings.Get(18078)
+                           , tag.m_StartTime.GetAsLocalizedTime("", false)
+                           , g_localizeStrings.Get(18079)
+                           , tag.m_StopTime.GetAsLocalizedTime("", false));
+  }
+  else if (tag.m_FirstDay != NULL)
+  {
+    tag.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
+                               , tag.m_Repeat_Mon ? g_localizeStrings.Get(18080) : "__"
+                               , tag.m_Repeat_Tue ? g_localizeStrings.Get(18081) : "__"
+                               , tag.m_Repeat_Wed ? g_localizeStrings.Get(18082) : "__"
+                               , tag.m_Repeat_Thu ? g_localizeStrings.Get(18083) : "__"
+                               , tag.m_Repeat_Fri ? g_localizeStrings.Get(18084) : "__"
+                               , tag.m_Repeat_Sat ? g_localizeStrings.Get(18085) : "__"
+                               , tag.m_Repeat_Sun ? g_localizeStrings.Get(18086) : "__"
+                               , g_localizeStrings.Get(18087)
+                               , tag.m_FirstDay.GetAsLocalizedDate(false)
+                               , g_localizeStrings.Get(18078)
+                               , tag.m_StartTime.GetAsLocalizedTime("", false)
+                               , g_localizeStrings.Get(18079)
+                               , tag.m_StopTime.GetAsLocalizedTime("", false));
+  }
+  else
+  {
+    tag.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
+                               , tag.m_Repeat_Mon ? g_localizeStrings.Get(18080) : "__"
+                               , tag.m_Repeat_Tue ? g_localizeStrings.Get(18081) : "__"
+                               , tag.m_Repeat_Wed ? g_localizeStrings.Get(18082) : "__"
+                               , tag.m_Repeat_Thu ? g_localizeStrings.Get(18083) : "__"
+                               , tag.m_Repeat_Fri ? g_localizeStrings.Get(18084) : "__"
+                               , tag.m_Repeat_Sat ? g_localizeStrings.Get(18085) : "__"
+                               , tag.m_Repeat_Sun ? g_localizeStrings.Get(18086) : "__"
+                               , g_localizeStrings.Get(18078)
+                               , tag.m_StartTime.GetAsLocalizedTime("", false)
+                               , g_localizeStrings.Get(18079)
+                               , tag.m_StopTime.GetAsLocalizedTime("", false));
+  }
+
+  xbmcTimers->push_back(tag);
+  return;
 }
 
 PVR_ERROR CPVRClient::AddTimer(const CTVTimerInfoTag &timerinfo)

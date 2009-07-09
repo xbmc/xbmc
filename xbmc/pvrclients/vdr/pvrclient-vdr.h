@@ -83,7 +83,7 @@ public:
 
   /* Timer handling */
   int GetNumTimers(void);
-  PVR_ERROR GetAllTimers(VECTVTIMERS *results);
+  PVR_ERROR RequestTimerList(PVRHANDLE handle);
   PVR_ERROR GetTimerInfo(unsigned int timernumber, CTVTimerInfoTag &timerinfo);
   PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo);
   PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force = false);

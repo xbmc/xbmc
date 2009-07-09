@@ -20,6 +20,7 @@
  */
 
 #include "client.h"
+#include "timers.h"
 #include "pvrclient-vdr.h"
 #include "pvrclient-vdr_os.h"
 
@@ -2919,11 +2920,11 @@ int PVRClientVDR::GetNumTimers(void)
   return atol(data.c_str());
 }
 
-PVR_ERROR PVRClientVDR::GetAllTimers(VECTVTIMERS *results)
+PVR_ERROR PVRClientVDR::RequestTimerList(PVRHANDLE handle)
 {
   vector<string> lines;
   int            code;
-  int            found;
+  int            index = 1;
 
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
@@ -2940,8 +2941,6 @@ PVR_ERROR PVRClientVDR::GetAllTimers(VECTVTIMERS *results)
   {
     string& data(*it);
     CStdString str_result = data;
-    CStdString name;
-    CTVTimerInfoTag timerinfo;
 
     /**
      * VDR Format given by LSTT:
@@ -2953,195 +2952,24 @@ PVR_ERROR PVRClientVDR::GetAllTimers(VECTVTIMERS *results)
     if (m_bCharsetConv)
       XBMC_unknown_to_utf8(str_result);
 
-    /* Id */
-    timerinfo.m_Index = atol(str_result.c_str());
-    found = str_result.find(" ", 0);
-    str_result.erase(0, found + 1);
+    cTimer timer;
+    timer.Parse(str_result.c_str());
 
-    /* Active */
-    timerinfo.m_Active = (bool) atoi(str_result.c_str());
-	  found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    /* Channel number */
-    timerinfo.m_clientNum = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    /* Start/end time */
-    int year  = atol(str_result.c_str());
-    int month = 0;
-    int day   = 0;
-    timerinfo.m_FirstDay = NULL;
-
-    if (year != 0)
-    {
-      timerinfo.m_Repeat = false;
-      found = str_result.find("-", 0);
-      str_result.erase(0, found + 1);
-      month = atol(str_result.c_str());
-      found = str_result.find("-", 0);
-      str_result.erase(0, found + 1);
-      day   = atol(str_result.c_str());
-      found = str_result.find(":", 0);
-      str_result.erase(0, found + 1);
-
-      timerinfo.m_Repeat_Mon = false;
-      timerinfo.m_Repeat_Tue = false;
-      timerinfo.m_Repeat_Wed = false;
-      timerinfo.m_Repeat_Thu = false;
-      timerinfo.m_Repeat_Fri = false;
-      timerinfo.m_Repeat_Sat = false;
-      timerinfo.m_Repeat_Sun = false;
-    }
-    else
-    {
-      timerinfo.m_Repeat = true;
-
-      timerinfo.m_Repeat_Mon = str_result.compare(0, 1, "-") ? true : false;
-      timerinfo.m_Repeat_Tue = str_result.compare(1, 1, "-") ? true : false;
-      timerinfo.m_Repeat_Wed = str_result.compare(2, 1, "-") ? true : false;
-      timerinfo.m_Repeat_Thu = str_result.compare(3, 1, "-") ? true : false;
-      timerinfo.m_Repeat_Fri = str_result.compare(4, 1, "-") ? true : false;
-      timerinfo.m_Repeat_Sat = str_result.compare(5, 1, "-") ? true : false;
-      timerinfo.m_Repeat_Sun = str_result.compare(6, 1, "-") ? true : false;
-
-      str_result.erase(0, 7);
-      found = str_result.find("@", 0);
-
-      if (found != -1)
-      {
-        str_result.erase(0, 1);
-        year  = atol(str_result.c_str());
-        found = str_result.find("-", 0);
-        str_result.erase(0, found + 1);
-
-        month = atol(str_result.c_str());
-        found = str_result.find("-", 0);
-        str_result.erase(0, found + 1);
-
-        day   = atol(str_result.c_str());
-      }
-
-      found = str_result.find(":", 0);
-      str_result.erase(0, found + 1);
-    }
-
-    name.assign(str_result, 2);
-
-    str_result.erase(0, 2);
-    int start_hour = atol(name.c_str());
-
-    name.assign(str_result, 2);
-    str_result.erase(0, 3);
-    int start_minute = atol(name.c_str());
-
-    name.assign(str_result, 2);
-    str_result.erase(0, 2);
-    int end_hour = atol(name.c_str());
-
-    name.assign(str_result, 2);
-    str_result.erase(0, 3);
-    int end_minute = atol(name.c_str());
-
-    if (!timerinfo.m_Repeat)
-    {
-      int end_day = (start_hour > end_hour ? day + 1 : day);
-      timerinfo.m_StartTime = CDateTime(year, month, day, start_hour, start_minute, 0);
-      timerinfo.m_StopTime = CDateTime(year, month, end_day, end_hour, end_minute, 0);
-    }
-    else if (year != 0)
-    {
-      timerinfo.m_FirstDay = CDateTime(year, month, day, start_hour, start_minute, 0);
-      timerinfo.m_StartTime = CDateTime(year, month, day, start_hour, start_minute, 0);
-      timerinfo.m_StopTime = CDateTime(year, month, day, end_hour, end_minute, 0);
-    }
-    else
-    {
-      timerinfo.m_StartTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
-                                        CDateTime::GetCurrentDateTime().GetMonth(),
-                                        CDateTime::GetCurrentDateTime().GetDay(),
-                                        start_hour, start_minute, 0);
-      timerinfo.m_StopTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
-                                       CDateTime::GetCurrentDateTime().GetMonth(),
-                                       CDateTime::GetCurrentDateTime().GetDay(),
-                                       end_hour, end_minute, 0);
-    }
-
-    /* Priority */
-    timerinfo.m_Priority = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    /* Lifetime */
-    timerinfo.m_Lifetime = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    /* Title */
-    found = str_result.find(":", 0);
-    str_result.erase(found, found + 1);
-    timerinfo.m_strTitle = str_result.c_str();
-
-    if (!timerinfo.m_Repeat)
-    {
-      timerinfo.m_Summary.Format("%s %s %s %s %s", timerinfo.m_StartTime.GetAsLocalizedDate()
-                                 , XBMC_get_localized_string(18078)
-                                 , timerinfo.m_StartTime.GetAsLocalizedTime("", false)
-                                 , XBMC_get_localized_string(18079)
-                                 , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
-    }
-    else if (timerinfo.m_FirstDay != NULL)
-    {
-      timerinfo.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
-                                 , timerinfo.m_Repeat_Mon ? XBMC_get_localized_string(18080) : "__"
-                                 , timerinfo.m_Repeat_Tue ? XBMC_get_localized_string(18081) : "__"
-                                 , timerinfo.m_Repeat_Wed ? XBMC_get_localized_string(18082) : "__"
-                                 , timerinfo.m_Repeat_Thu ? XBMC_get_localized_string(18083) : "__"
-                                 , timerinfo.m_Repeat_Fri ? XBMC_get_localized_string(18084) : "__"
-                                 , timerinfo.m_Repeat_Sat ? XBMC_get_localized_string(18085) : "__"
-                                 , timerinfo.m_Repeat_Sun ? XBMC_get_localized_string(18086) : "__"
-                                 , XBMC_get_localized_string(18087)
-                                 , timerinfo.m_FirstDay.GetAsLocalizedDate(false)
-                                 , XBMC_get_localized_string(18078)
-                                 , timerinfo.m_StartTime.GetAsLocalizedTime("", false)
-                                 , XBMC_get_localized_string(18079)
-                                 , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
-    }
-    else
-    {
-      timerinfo.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
-                                 , timerinfo.m_Repeat_Mon ? XBMC_get_localized_string(18080) : "__"
-                                 , timerinfo.m_Repeat_Tue ? XBMC_get_localized_string(18081) : "__"
-                                 , timerinfo.m_Repeat_Wed ? XBMC_get_localized_string(18082) : "__"
-                                 , timerinfo.m_Repeat_Thu ? XBMC_get_localized_string(18083) : "__"
-                                 , timerinfo.m_Repeat_Fri ? XBMC_get_localized_string(18084) : "__"
-                                 , timerinfo.m_Repeat_Sat ? XBMC_get_localized_string(18085) : "__"
-                                 , timerinfo.m_Repeat_Sun ? XBMC_get_localized_string(18086) : "__"
-                                 , XBMC_get_localized_string(18078)
-                                 , timerinfo.m_StartTime.GetAsLocalizedTime("", false)
-                                 , XBMC_get_localized_string(18079)
-                                 , timerinfo.m_StopTime.GetAsLocalizedTime("", false));
-    }
-
-    if ((timerinfo.m_StartTime <= CDateTime::GetCurrentDateTime()) &&
-        (timerinfo.m_Active == true))
-    {
-      timerinfo.m_recStatus = true;
-      timerinfo.m_strFileNameAndPath.Format("timer://%i #", timerinfo.m_Index);
-    }
-    else
-    {
-      timerinfo.m_strFileNameAndPath.Format("timer://%i %s", timerinfo.m_Index, timerinfo.m_Active ? "*" : " ");
-      timerinfo.m_recStatus = false;
-    }
+    PVR_TIMERINFO tag;
+    tag.index = timer.Index();
+    tag.active = timer.HasFlags(tfActive);
+    tag.channelNum = timer.Channel();
+    tag.firstday = timer.FirstDay();
+    tag.starttime = timer.StartTime();
+    tag.endtime = timer.StopTime();
+    tag.recording = timer.HasFlags(tfRecording) || timer.HasFlags(tfInstant);
+    tag.title = timer.File();
+    tag.priority = timer.Priority();
+    tag.lifetime = timer.Lifetime();
+    tag.repeat = timer.WeekDays() == 0 ? false : true;
+    tag.repeatflags = timer.WeekDays();
     
-    PVR_CHANNEL channeldata;
-    GetChannel(timerinfo.m_clientNum, channeldata);
-    timerinfo.m_strChannel = channeldata.name;
-    timerinfo.m_Radio = channeldata.radio;
-
-    results->push_back(timerinfo);
+    PVR_transfer_timer_entry(handle, &tag);
   }
 
   pthread_mutex_unlock(&m_critSection);
