@@ -362,12 +362,13 @@ CApplication::~CApplication(void)
     delete m_pKaraokeMgr;
 #endif
 
+#ifdef HAS_SDL
   if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
 
   if (m_frameCond)
     SDL_DestroyCond(m_frameCond);
-
+#endif
   delete m_dpms;
 
 #ifdef _WIN32PC
@@ -5931,11 +5932,15 @@ CApplicationMessenger& CApplication::getApplicationMessenger()
 
 bool CApplication::IsPresentFrame()
 {
+#ifdef HAS_SDL // TODO:DIRECTX
   SDL_mutexP(m_frameMutex);
   bool ret = m_bPresentFrame;
   SDL_mutexV(m_frameMutex);
 
   return ret;
+#else
+  return false;
+#endif
 }
 
 #if defined(HAS_LINUX_NETWORK)

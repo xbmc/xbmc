@@ -194,7 +194,11 @@ CStdString CSysInfo::GetMACAddress()
 
 CStdString CSysInfo::GetVideoEncoder()
 {
+#ifdef HAS_SDL_OPENGL
   return "GPU: " + g_graphicsContext.getScreenSurface()->GetGLRenderer();
+#else // TODO:DIRECTX
+  return "GPU: DIRECTX";
+#endif
 }
 
 CStdString CSysInfo::GetXBVerInfo()
