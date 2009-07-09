@@ -47,11 +47,7 @@ public:
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
 
-#ifndef HAS_SDL
-  void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
-#else
-  void CreateThumbnail(SDL_Surface *surface, unsigned int width, unsigned int height);
-#endif
+  void CreateThumbnail(SurfacePtr surface, unsigned int width, unsigned int height);
 
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 

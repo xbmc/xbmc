@@ -124,8 +124,6 @@
       };
   } D3DMATRIX;
 
-  typedef void DIRECT3DTEXTURE8;
-  typedef void* LPDIRECT3DTEXTURE8;
 #endif
 
 #define D3DPRESENTFLAG_INTERLACED 1
@@ -165,12 +163,19 @@ typedef D3DPalette* LPDIRECT3DPALETTE8;
 
 #ifdef HAS_SDL
 #include <SDL/SDL.h>
+typedef SDL_Surface* SurfacePtr;
+typedef SDL_Surface* TexturePtr;
+typedef SDL_Palette* PalettePtr;
 #ifdef HAS_SDL_OPENGL
 #if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
 #define GL_GLEXT_PROTOTYPES
 #endif
 #include <GL/glew.h>
 #endif
+#else
+typedef LPDIRECT3DSURFACE8 SurfacePtr;
+typedef LPDIRECT3DTEXTURE8 TexturePtr;
+typedef LPDIRECT3DPALETTE8 PalettePtr;
 #endif
 
 #endif

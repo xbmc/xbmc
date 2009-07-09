@@ -388,11 +388,7 @@ void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void 
   }
 }
 
-#ifndef HAS_SDL
-void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppTexture)
-#else
-void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture)
-#endif
+void GetTextureFromData(D3DTexture *pTex, void *texData, TexturePtr *ppTexture)
 {
   XB_D3DFORMAT fmt;
   DWORD width, height, pitch, offset;

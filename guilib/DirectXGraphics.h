@@ -171,11 +171,7 @@ void DXT1toARGB(const void *src, void *dest, unsigned int destWidth);
 void DXT4toARGB(const void *src, void *dest, unsigned int destWidth);
 void ConvertDXT1(const void *src, unsigned int width, unsigned int height, void *dest);
 void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void *dest);
-#ifndef HAS_SDL
-void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppTexture);
-#else
-void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture);
-#endif
+void GetTextureFromData(D3DTexture *pTex, void *texData, TexturePtr *ppTexture);
 
 #ifndef HAS_SDL
 class CXBPackedResource
