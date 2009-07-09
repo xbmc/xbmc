@@ -1,6 +1,6 @@
 AR=ar
 ARFLAGS=crus
-RM=rm -f
+RM=rm -rf
 SHELL=/bin/bash
 ARCH=@ARCH@
 abs_top_srcdir=@abs_top_srcdir@
