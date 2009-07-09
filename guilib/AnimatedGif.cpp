@@ -50,7 +50,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 // Use SDL macros to swap data endianness
 // This assumes that big endian systems use SDL
 // Macros do not do anything on little endian systems
-#ifdef USE_SDL
+#ifdef HAS_SDL
 #include <SDL/SDL_endian.h>
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN

@@ -5,7 +5,7 @@
 # "universal_archs         ppc i386"
 #UNIVERSAL = -arch ppc -arch i386
 
-DEFINES = -DUSE_SDL -D_LINUX
+DEFINES = -DHAS_SDL -D_LINUX
 INCLUDES = -I../../xbmc/linux -I../../guilib -I../../xbmc/ -I/opt/local/include
 # To build with shared MacPorts libs
 LIBS = -lSDL -lSDL_image -llzo
