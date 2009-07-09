@@ -54,9 +54,11 @@ public:
   static HRESULT EjectTray(const char cDriveLetter='\0');
   static HRESULT CloseTray(const char cDriveLetter='\0');
   static bool EjectDrive(const char cDriveLetter='\0');
+#ifdef HAS_SDL_OPENGL
   static void CheckGLVersion();
   static bool HasGLDefaultDrivers();
   static bool HasReqGLVersion();
+#endif
   static BOOL IsCurrentUserLocalAdministrator();
   
   class SystemParams
