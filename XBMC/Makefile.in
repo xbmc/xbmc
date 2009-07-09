@@ -113,6 +113,8 @@ INCLUDES=@INCLUDES@
 
 CLEAN_FILES=xbmc.bin xbmc-xrandr
 
+DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh
+
 all : externals xbmc.bin xbmc-xrandr skins
 
 include Makefile.include
