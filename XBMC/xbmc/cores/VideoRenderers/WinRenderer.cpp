@@ -20,6 +20,9 @@
  */
  
 #include "stdafx.h"
+
+#ifndef HAS_SDL
+
 #include "WinRenderer.h"
 #include "Application.h"
 #include "Util.h"
@@ -1295,3 +1298,5 @@ void CPixelShaderRenderer::Render(DWORD flags)
   CWinRenderer::RenderLowMem(flags);
   CWinRenderer::Render(flags);
 }
+
+#endif

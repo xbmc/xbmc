@@ -24,12 +24,6 @@
 #include "utils/CriticalSection.h"
 #include "VideoReferenceClock.h"
 
-#ifndef HAS_SDL
-#include "PixelShaderRenderer.h"
-#include "ComboRenderer.h"
-#include "RGBRenderer.h"
-#include "RGBRendererV2.h"
-#endif
 #include "Application.h"
 #include "Settings.h"
 
@@ -37,11 +31,17 @@
 #include "PlatformInclude.h"
 #endif
 
-#ifdef HAS_SDL_OPENGL
-#include "Application.h"
+#ifdef HAS_XBOX_D3D
+#include "PixelShaderRenderer.h"
+#include "ComboRenderer.h"
+#include "RGBRenderer.h"
+#include "RGBRendererV2.h"
+#elif defined(HAS_SDL_OPENGL)
 #include "LinuxRendererGL.h"
-#else 
+#elif defined(HAS_SDL)
 #include "LinuxRenderer.h"
+#else
+#include "WinRenderer.h"
 #endif
 
 #ifdef HAVE_LIBVDPAU
@@ -208,7 +208,7 @@ unsigned int CXBoxRenderManager::PreInit()
   m_bPauseDrawing = false;
   if (!m_pRenderer)
   { 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D
     // no renderer
     m_rendermethod = g_guiSettings.GetInt("videoplayer.rendermethod");
     if (m_rendermethod == RENDER_OVERLAYS)
@@ -233,8 +233,10 @@ unsigned int CXBoxRenderManager::PreInit()
     }
 #elif defined(HAS_SDL_OPENGL)
     m_pRenderer = new CLinuxRendererGL();
-#else
+#elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
+#else
+    m_pRenderer = new CWinRenderer(g_graphicsContext.Get3DDevice());
 #endif
   }
 
@@ -330,13 +332,13 @@ float CXBoxRenderManager::GetMaximumFPS()
 
   if (g_videoConfig.GetVSyncMode() != VSYNC_DISABLED)
   {
-    fps = g_VideoReferenceClock.GetRefreshRate();
+    fps = (float)g_VideoReferenceClock.GetRefreshRate();
     if (fps <= 0) fps = g_graphicsContext.GetFPS();
   }
   else
     fps = 1000.0f;
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D
   if( m_rendermethod == RENDER_HQ_RGB_SHADER
    || m_rendermethod == RENDER_HQ_RGB_SHADERV2)
   {

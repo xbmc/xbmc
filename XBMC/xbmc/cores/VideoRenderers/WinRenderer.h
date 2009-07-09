@@ -21,7 +21,7 @@
  *
  */
 
-#ifndef _LINUX
+#if !defined(_LINUX) && !defined(HAS_SDL)
 
 #include "GraphicContext.h"
 
@@ -144,6 +144,12 @@ public:
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
+
+  // TODO:DIRECTX - implement these
+  virtual bool         IsConfigured() { return false; } 
+  virtual bool         SupportsBrightness() { return false; }
+  virtual bool         SupportsContrast() { return false; }
+  virtual bool         SupportsGamma() { return false; }
 
   void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
