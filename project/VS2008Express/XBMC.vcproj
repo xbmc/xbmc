@@ -1589,14 +1589,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_dx8.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_dx8.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_kernel32.cpp"
 						>
 					</File>
@@ -1702,10 +1694,6 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_socket.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_xbox_dx8.cpp"
 						>
 					</File>
 					<Filter
