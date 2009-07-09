@@ -729,6 +729,7 @@ void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
   SetThreadExecutionState( sSysParam.dwEsFlags );
 }
 
+#ifdef HAS_SDL_OPENGL
 void CWIN32Util::CheckGLVersion()
 {
   if(CWIN32Util::HasGLDefaultDrivers())
@@ -767,6 +768,7 @@ bool CWIN32Util::HasReqGLVersion()
   else
     return false;
 }
+#endif
 
 BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
 {
