@@ -132,12 +132,12 @@ $(SYSDIR)/libmad-$(ARCH).so: $(WRAPPER_OSX) libmad/libmad.la
 
 $(SYSDIR)/liba52-$(ARCH).so: $(WRAPPER_OSX) liba52/liba52/liba52.la
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
-		liba52/liba52/*.o $(BUNDLE1_O)
+		liba52/liba52/.libs/*.o $(BUNDLE1_O)
 	$(WRAPPER_OSX) $@;mv output.so $@
 
 $(SYSDIR)/libao-$(ARCH).so: $(WRAPPER_OSX) liba52/libao/libao.a
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
-		liba52/libao/*.o $(BUNDLE1_O)
+		liba52/libao/libao.a $(BUNDLE1_O)
 	$(WRAPPER_OSX) $@;mv output.so $@
 
 $(SYSDIR)/libmpeg2-$(ARCH).so: $(WRAPPER_OSX) libmpeg2/libmpeg2/libmpeg2.la
@@ -210,11 +210,11 @@ $(SYSDIR)/libmad-$(ARCH).so: libmad/libmad.la
 	cp libmad/.libs/libmad.so $@
 
 $(SYSDIR)/liba52-$(ARCH).so: $(WRAPPER) liba52/liba52/liba52.la
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/liba52/*.o \
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/liba52/.libs/*.o \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libao-$(ARCH).so: $(WRAPPER) liba52/libao/libao.a
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/libao/*.o \
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/libao/libao.a \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/libmpeg2-$(ARCH).so: $(WRAPPER) libmpeg2/libmpeg2/libmpeg2.la
