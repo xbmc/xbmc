@@ -111,6 +111,8 @@ public:
   double GetPresentTime();
   void  WaitPresentTime(double presenttime);
 
+  CStdString GetVSyncState();
+
 #ifdef HAS_SDL_OPENGL
   CLinuxRendererGL *m_pRenderer;
 #elif defined(HAS_SDL)
@@ -141,11 +143,12 @@ protected:
   int m_rendermethod;
 
   double     m_presenttime;
+  double     m_presentcorr;
+  double     m_presenterr;
   EFIELDSYNC m_presentfield;
   EINTERLACEMETHOD m_presentmethod;
   int        m_presentstep;
   CEvent     m_presentevent;
-
 };
 
 extern CXBoxRenderManager g_renderManager;
