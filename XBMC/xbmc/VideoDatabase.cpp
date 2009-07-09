@@ -3636,7 +3636,7 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
 {
   // first grab the video's id
   CStdString path = item.m_strPath;
-  if (item.IsVideoDb())
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   long id = GetFileId(path);
   if (id < 0)
