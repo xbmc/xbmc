@@ -312,11 +312,7 @@ void CXBoxRenderManager::SetupScreenshot()
     m_pRenderer->SetupScreenshot();
 }
 
-#ifndef HAS_SDL
-void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
-#else
-void CXBoxRenderManager::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
-#endif
+void CXBoxRenderManager::CreateThumbnail(SurfacePtr surface, unsigned int width, unsigned int height)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)

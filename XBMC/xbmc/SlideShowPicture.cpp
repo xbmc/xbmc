@@ -78,11 +78,7 @@ void CSlideShowPic::Close()
   m_bTransistionImmediately = false;
 }
 
-#ifndef HAS_SDL
-void CSlideShowPic::SetTexture(int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
-#else
-void CSlideShowPic::SetTexture(int iSlideNumber, SDL_Surface* pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect )
-#endif
+void CSlideShowPic::SetTexture(int iSlideNumber, TexturePtr pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
 {
   CSingleLock lock(m_textureAccess);
   Close();
@@ -184,11 +180,7 @@ int CSlideShowPic::GetOriginalHeight()
     return m_iOriginalHeight;
 }
 
-#ifndef HAS_SDL
-void CSlideShowPic::UpdateTexture(IDirect3DTexture8 *pTexture, int iWidth, int iHeight)
-#else
-void CSlideShowPic::UpdateTexture(SDL_Surface *pTexture, int iWidth, int iHeight)
-#endif
+void CSlideShowPic::UpdateTexture(TexturePtr pTexture, int iWidth, int iHeight)
 {
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
@@ -643,14 +635,22 @@ void CSlideShowPic::Render()
 }
 
 #ifndef HAS_SDL
-void CSlideShowPic::Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
+void CSlideShowPic::Render(float *x, float *y, TexturePtr pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
 #elif defined(HAS_SDL_OPENGL)
 void CSlideShowPic::Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode)
 #else
-void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwColor)
+void CSlideShowPic::Render(float *x, float *y, TexturePtr pTexture, DWORD dwColor)
 #endif
 {
 #ifndef HAS_SDL
+  struct VERTEX
+  {
+    D3DXVECTOR4 p;
+    D3DCOLOR col;
+    FLOAT tu, tv;
+  };
+  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
+
   VERTEX vertex[4];
 
   for (int i = 0; i < 4; i++)

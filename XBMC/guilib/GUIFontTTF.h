@@ -102,10 +102,9 @@ protected:
 
 #ifndef HAS_SDL
   LPDIRECT3DDEVICE8 m_pD3DDevice;
-  LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
-#else
-  SDL_Surface* m_texture;
 #endif
+  TexturePtr m_texture;              // texture that holds our rendered characters (8bit alpha only)
+
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // heigth of our texture
   int m_posX;                        // current position in the texture
