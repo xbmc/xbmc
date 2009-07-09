@@ -391,8 +391,6 @@ void XBMC_dialog_progress_close()
   m_cb->Dialog.ProgressClose();
 }
 
-
-
 void XBMC_gui_lock()
 {
   if (m_cb == NULL)
@@ -400,6 +398,7 @@ void XBMC_gui_lock()
 
   m_cb->GUI.Lock();
 }
+
 void XBMC_gui_unlock()
 {
   if (m_cb == NULL)
@@ -422,6 +421,30 @@ int XBMC_gui_get_current_window_dialog_id()
     return 0;
 
   return m_cb->GUI.GetCurrentWindowDialogId();
+}
+
+bool isempty(const char *s)
+{
+  return !(s && *skipspace(s));
+}
+
+char *strcpyrealloc(char *dest, const char *src)
+{
+  if (src)
+  {
+    int l = max(dest ? strlen(dest) : 0, strlen(src)) + 1; // don't let the block get smaller!
+    dest = (char *)realloc(dest, l);
+    if (dest)
+      strcpy(dest, src);
+    else
+      XBMC_log(LOG_ERROR, "strcpyrealloc: out of memory");
+  }
+  else 
+  {
+    free(dest);
+    dest = NULL;
+  }
+  return dest;
 }
 
 char *strreplace(char *s, const char *s1, const char *s2)

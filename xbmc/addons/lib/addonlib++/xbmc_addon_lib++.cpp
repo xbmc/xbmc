@@ -473,6 +473,29 @@ int XBMC_gui_get_current_window_dialog_id()
   return m_cb->GUI.GetCurrentWindowDialogId();
 }
 
+bool isempty(const char *s)
+{
+  return !(s && *skipspace(s));
+}
+
+char *strcpyrealloc(char *dest, const char *src)
+{
+  if (src)
+  {
+    int l = max(dest ? strlen(dest) : 0, strlen(src)) + 1; // don't let the block get smaller!
+    dest = (char *)realloc(dest, l);
+    if (dest)
+      strcpy(dest, src);
+    else
+      XBMC_log(LOG_ERROR, "strcpyrealloc: out of memory");
+  }
+  else 
+  {
+    free(dest);
+    dest = NULL;
+  }
+  return dest;
+}
 
 char *strreplace(char *s, char c1, char c2)
 {
