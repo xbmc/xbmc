@@ -85,6 +85,7 @@ bool CPVRClient::Init()
 
   /* Write XBMC PVR specific Add-on function addresses to callback table */
   m_callbacks->PVR.EventCallback        = PVREventCallback;
+  m_callbacks->PVR.TransferChannelEntry = PVRTransferChannelEntry;
   m_callbacks->PVR.TransferTimerEntry   = PVRTransferTimerEntry;
 
   /* Call Create to make connections, initializing data or whatever is
@@ -269,12 +270,12 @@ PVR_ERROR CPVRClient::GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_
 
 PVR_ERROR CPVRClient::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result)
 {
-  return m_pClient->GetEPGNowInfo(number, result);
+  return m_pClient->GetEPGNowInfo(number, *result);
 }
 
 PVR_ERROR CPVRClient::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result)
 {
-  return m_pClient->GetEPGNextInfo(number, result);
+  return m_pClient->GetEPGNextInfo(number, *result);
 }
 
 
@@ -306,7 +307,8 @@ PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels, bool radio)
   {
     try
     {
-      ret = m_pClient->GetChannelList(&channels, radio);
+      const PVRHANDLE handle = (VECCHANNELS*) &channels;
+      ret = m_pClient->RequestChannelList(handle, radio);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -328,6 +330,37 @@ PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels, bool radio)
   return ret;
 }
 
+void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *channel)
+{
+  CPVRClient* client = (CPVRClient*) userData;
+  if (client == NULL || handle == NULL || channel == NULL)
+  {
+    CLog::Log(LOGERROR, "PVR: PVRTransferChannelEntry is called with NULL-Pointer!!!");
+    return;
+  }
+
+  VECCHANNELS *xbmcChannels = (VECCHANNELS*) handle;
+  CTVChannelInfoTag tag;
+
+  tag.m_iIdChannel          = -1;
+  tag.m_iChannelNum         = -1;
+  tag.m_iClientNum          = channel->number;
+  tag.m_iGroupID            = 0;
+  tag.m_clientID            = client->m_clientID;
+  tag.m_strChannel          = channel->name;
+  //= channel->callsign;
+  tag.m_IconPath            = channel->iconpath;
+  tag.m_encrypted           = channel->encrypted;
+  tag.m_bTeletext           = channel->teletext;
+  tag.m_radio               = channel->radio;
+  tag.m_hide                = channel->hide;
+  tag.m_isRecording         = channel->recording;
+  tag.m_strFileNameAndPath  = channel->stream_url;
+    
+  xbmcChannels->push_back(tag);
+  return;
+}
+
 PVR_ERROR CPVRClient::GetChannelSettings(CTVChannelInfoTag *result)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
@@ -336,7 +369,7 @@ PVR_ERROR CPVRClient::GetChannelSettings(CTVChannelInfoTag *result)
   {
     try
     {
-      ret = m_pClient->GetChannelSettings(result);
+//      ret = m_pClient->GetChannelSettings(result);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -362,7 +395,7 @@ PVR_ERROR CPVRClient::UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)
   {
     try
     {
-      ret = m_pClient->UpdateChannelSettings(chaninfo);
+//      ret = m_pClient->UpdateChannelSettings(chaninfo);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -388,7 +421,7 @@ PVR_ERROR CPVRClient::AddChannel(const CTVChannelInfoTag &info)
   {
     try
     {
-      ret = m_pClient->AddChannel(info);
+//      ret = m_pClient->AddChannel(info);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -414,7 +447,7 @@ PVR_ERROR CPVRClient::DeleteChannel(unsigned int number)
   {
     try
     {
-      ret = m_pClient->DeleteChannel(number);
+//      ret = m_pClient->DeleteChannel(number);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -440,7 +473,7 @@ PVR_ERROR CPVRClient::RenameChannel(unsigned int number, CStdString &newname)
   {
     try
     {
-      ret = m_pClient->RenameChannel(number, newname);
+//      ret = m_pClient->RenameChannel(number, newname);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -466,7 +499,7 @@ PVR_ERROR CPVRClient::MoveChannel(unsigned int number, unsigned int newnumber)
   {
     try
     {
-      ret = m_pClient->MoveChannel(number, newnumber);
+//      ret = m_pClient->MoveChannel(number, newnumber);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 

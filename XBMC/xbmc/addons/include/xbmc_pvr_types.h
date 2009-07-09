@@ -134,35 +134,29 @@ extern "C" {
     char*  Category;
     int    Number;
   } PVR_BOUQUET;
-  typedef struct PVR_BOUQUETLIST {
-    PVR_BOUQUET* bouquet;
-    int          length;
-  } PVR_BOUQUETLIST;
 
   /**
   * EPG Programme Definition
   * Used to signify an individual broadcast, whether it is also a recording, timer etc.
   */
-  typedef struct PVR_PROGINFO {
-    int           uid; // unique identifier, if supported will be used for
-    int           channum;
-    int           bouquet;
-    const char   *title;
-    const char   *subtitle;
-    const char   *description;
-    time_t        starttime;
-    time_t        endtime;
-    const char   *episodeid;
-    const char   *seriesid;
-    const char   *category;
-    int           recording;
-    int           rec_status;
-    int           event_flags;
-  } PVR_PROGINFO;
-  typedef struct PVR_PROGLIST {
-    PVR_PROGINFO* progInfo;
-    int           length;
-  } PVR_PROGLIST;
+//  typedef struct PVR_PROGINFO {
+//    int           uid; // unique identifier, if supported will be used for
+//    int           channum;
+//    int           bouquet;
+//    const char   *title;
+//    const char   *subtitle;
+//    const char   *description;
+//    time_t        starttime;
+//    time_t        endtime;
+//    const char   *episodeid;
+//    const char   *seriesid;
+//    const char   *category;
+//    int           recording;
+//    int           rec_status;
+//    int           event_flags;
+//  } PVR_PROGINFO;
+
+  typedef CTVEPGInfoTag         PVR_PROGINFO;
 
   /**
    * TV Timer Definition
@@ -181,54 +175,68 @@ extern "C" {
     int           repeat;
     int           repeatflags;
   } PVR_TIMERINFO;
-  typedef struct PVR_TIMERLIST {
-    PVR_TIMERINFO* timerInfo;
-    int           length;
-  } PVR_TIMERLIST;
   
   // Structure to transfer the above functions to XBMC
   typedef struct PVRClient
   {
     ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, int ClientID);
+
+    /** PVR General Functions **/
     PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);
     const char* (__cdecl* GetBackendName)();
     const char* (__cdecl* GetBackendVersion)();
     const char* (__cdecl* GetConnectionString)();
     PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
+
+    /** PVR EPG Functions **/
     PVR_ERROR (__cdecl* GetEPGForChannel)(unsigned int number, EPG_DATA &epg, time_t start, time_t end);
-    PVR_ERROR (__cdecl* GetEPGNowInfo)(unsigned int number, CTVEPGInfoTag *result);
-    PVR_ERROR (__cdecl* GetEPGNextInfo)(unsigned int number, CTVEPGInfoTag *result);
+    PVR_ERROR (__cdecl* GetEPGNowInfo)(unsigned int number, PVR_PROGINFO &result);
+    PVR_ERROR (__cdecl* GetEPGNextInfo)(unsigned int number, PVR_PROGINFO &result);
+  
+    /** PVR Bouquets Functions **/
     int (__cdecl* GetNumBouquets)();
+
+    /** PVR Channel Functions **/
     int (__cdecl* GetNumChannels)();
+    PVR_ERROR (__cdecl* RequestChannelList)(PVRHANDLE handle, int radio);
+//    PVR_ERROR (__cdecl* GetChannelSettings)(CTVChannelInfoTag *result);
+//    PVR_ERROR (__cdecl* UpdateChannelSettings)(const CTVChannelInfoTag &chaninfo);
+//    PVR_ERROR (__cdecl* AddChannel)(const PVR_CHANNEL &info);
+//    PVR_ERROR (__cdecl* DeleteChannel)(unsigned int number);
+//    PVR_ERROR (__cdecl* RenameChannel)(unsigned int number, CStdString &newname);
+//    PVR_ERROR (__cdecl* MoveChannel)(unsigned int number, unsigned int newnumber);
+
+    /** PVR Recording Functions **/
     int (__cdecl* GetNumRecordings)();
-    int (__cdecl* GetNumTimers)();
-    PVR_ERROR (__cdecl* GetChannelList)(VECCHANNELS *channels, bool radio);
-    PVR_ERROR (__cdecl* GetChannelSettings)(CTVChannelInfoTag *result);
-    PVR_ERROR (__cdecl* UpdateChannelSettings)(const CTVChannelInfoTag &chaninfo);
-    PVR_ERROR (__cdecl* AddChannel)(const CTVChannelInfoTag &info);
-    PVR_ERROR (__cdecl* DeleteChannel)(unsigned int number);
-    PVR_ERROR (__cdecl* RenameChannel)(unsigned int number, CStdString &newname);
-    PVR_ERROR (__cdecl* MoveChannel)(unsigned int number, unsigned int newnumber);
     PVR_ERROR (__cdecl* GetAllRecordings)(VECRECORDINGS *results);
     PVR_ERROR (__cdecl* DeleteRecording)(const CTVRecordingInfoTag &recinfo);
     PVR_ERROR (__cdecl* RenameRecording)(const CTVRecordingInfoTag &recinfo, CStdString &newname);
+
+    /** PVR Timer Functions **/
+    int (__cdecl* GetNumTimers)();
     PVR_ERROR (__cdecl* RequestTimerList)(PVRHANDLE handle);
     PVR_ERROR (__cdecl* AddTimer)(const PVR_TIMERINFO &timerinfo);
     PVR_ERROR (__cdecl* DeleteTimer)(const PVR_TIMERINFO &timerinfo, bool force);
     PVR_ERROR (__cdecl* RenameTimer)(const PVR_TIMERINFO &timerinfo, const char *newname);
     PVR_ERROR (__cdecl* UpdateTimer)(const PVR_TIMERINFO &timerinfo);
+
+    /** PVR Teletext Functions **/
+    bool (__cdecl* TeletextPagePresent)(unsigned int channel, unsigned int Page, unsigned int subPage);
+    bool (__cdecl* ReadTeletextPage)(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
+
+    /** PVR Live Stream Functions **/
     bool (__cdecl* OpenLiveStream)(unsigned int channel);
     void (__cdecl* CloseLiveStream)();
     int (__cdecl* ReadLiveStream)(BYTE* buf, int buf_size);
     int (__cdecl* GetCurrentClientChannel)();
     bool (__cdecl* SwitchChannel)(unsigned int channel);
+
+    /** PVR Recording Stream Functions **/
     bool (__cdecl* OpenRecordedStream)(const CTVRecordingInfoTag &recinfo);
     void (__cdecl* CloseRecordedStream)(void);
     int (__cdecl* ReadRecordedStream)(BYTE* buf, int buf_size);
     __int64 (__cdecl* SeekRecordedStream)(__int64 pos, int whence);
     __int64 (__cdecl* LengthRecordedStream)(void);
-    bool (__cdecl* TeletextPagePresent)(unsigned int channel, unsigned int Page, unsigned int subPage);
-    bool (__cdecl* ReadTeletextPage)(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
   } PVRClient;
 
 #ifdef __cplusplus
