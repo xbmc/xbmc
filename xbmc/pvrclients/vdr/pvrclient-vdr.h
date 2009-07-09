@@ -62,18 +62,18 @@ public:
 
   /* EPG handling */
   PVR_ERROR GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start = NULL, time_t end = NULL);
-  PVR_ERROR GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result);
-  PVR_ERROR GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result);
+  PVR_ERROR GetEPGNowInfo(unsigned int number, PVR_PROGINFO &result);
+  PVR_ERROR GetEPGNextInfo(unsigned int number, PVR_PROGINFO &result);
 
   /* Channel handling */
   int GetNumChannels(void);
-  PVR_ERROR GetChannelList(VECCHANNELS* results, bool radio = false);
-  PVR_ERROR GetChannelSettings(CTVChannelInfoTag *result);
-  PVR_ERROR UpdateChannelSettings(const CTVChannelInfoTag &chaninfo);
-  PVR_ERROR AddChannel(const CTVChannelInfoTag &info);
-  PVR_ERROR DeleteChannel(unsigned int number);
-  PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
-  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
+  PVR_ERROR RequestChannelList(PVRHANDLE handle, bool radio = false);
+//  PVR_ERROR GetChannelSettings(CTVChannelInfoTag *result);
+//  PVR_ERROR UpdateChannelSettings(const CTVChannelInfoTag &chaninfo);
+//  PVR_ERROR AddChannel(const CTVChannelInfoTag &info);
+//  PVR_ERROR DeleteChannel(unsigned int number);
+//  PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
+//  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
 
   /* Record handling **/
   int GetNumRecordings(void);

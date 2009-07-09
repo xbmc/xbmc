@@ -115,17 +115,21 @@ void CPVRManager::Start()
 
     m_client->GetChannelList(m_channels_tv, false);
     m_client->GetChannelList(m_channels_radio, true);
-
+    
     /* Fill Channels to Database */
     for (unsigned int i = 0; i < m_channels_tv.size(); i++)
     {
       m_channels_tv[i].m_strStatus = "livetv";
+      m_channels_tv[i].m_strFileNameAndPath.Format("tv://%i", i+1);
+      m_channels_tv[i].m_iChannelNum = i+1;
       m_channels_tv[i].m_iIdChannel = m_database.AddChannel(m_currentClientID, m_channels_tv[i]);
     }
 
     for (unsigned int i = 0; i < m_channels_radio.size(); i++)
     {
       m_channels_radio[i].m_strStatus = "livetv";
+      m_channels_radio[i].m_strFileNameAndPath.Format("radio://%i", i+1);
+      m_channels_radio[i].m_iChannelNum = i+1;
       m_channels_radio[i].m_iIdChannel = m_database.AddChannel(m_currentClientID, m_channels_radio[i]);
     }
 

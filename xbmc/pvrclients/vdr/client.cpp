@@ -255,12 +255,12 @@ extern "C" PVR_ERROR GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t
   return g_client->GetEPGForChannel(number, epg, start, end);
 }
 
-extern "C" PVR_ERROR GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result)
+extern "C" PVR_ERROR GetEPGNowInfo(unsigned int number, PVR_PROGINFO &result)
 {
   return g_client->GetEPGNowInfo(number, result);
 }
 
-extern "C" PVR_ERROR GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result)
+extern "C" PVR_ERROR GetEPGNextInfo(unsigned int number, PVR_PROGINFO &result)
 {
   return g_client->GetEPGNextInfo(number, result);
 }
@@ -270,11 +270,11 @@ extern "C" int GetNumChannels()
   return g_client->GetNumChannels();
 }
 
-extern "C" PVR_ERROR GetChannelList(VECCHANNELS *channels, bool radio)
+extern "C" PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
 {
-  return g_client->GetChannelList(channels, radio);
+  return g_client->RequestChannelList(handle, radio);
 }
-
+/*
 extern "C" PVR_ERROR GetChannelSettings(CTVChannelInfoTag *result)
 {
   return g_client->GetChannelSettings(result);
@@ -304,7 +304,7 @@ extern "C" PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber)
 {
   return g_client->MoveChannel(number, newnumber);
 }
-
+*/
 extern "C" int GetNumRecordings(void)
 {
   return g_client->GetNumRecordings();

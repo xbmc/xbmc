@@ -485,7 +485,7 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(unsigned int number, EPG_DATA &epg, tim
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result)
+PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, PVR_PROGINFO &result)
 {
 
   vector<string> lines;
@@ -524,7 +524,7 @@ PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result
       str_result.erase(0, 2);
       found = str_result.find(" ", 0);
       str_result.erase(0, found + 1);
-      result->m_strChannel = str_result.c_str();
+      result.m_strChannel = str_result.c_str();
       continue;
     }
 
@@ -533,7 +533,7 @@ PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result
     if (found == 0)
     {
       str_result.erase(0, 2);
-      result->m_strTitle = str_result.c_str();
+      result.m_strTitle = str_result.c_str();
       continue;
     }
 
@@ -542,7 +542,7 @@ PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result
     if (found == 0)
     {
       str_result.erase(0, 2);
-      result->m_strPlotOutline = str_result.c_str();
+      result.m_strPlotOutline = str_result.c_str();
       continue;
     }
 
@@ -563,7 +563,7 @@ PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result
         str_result.replace(pos, 1, 1, '\n');
       }
 
-      result->m_strPlot = str_result.c_str();
+      result.m_strPlot = str_result.c_str();
       continue;
     }
 
@@ -572,13 +572,13 @@ PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result
     if (found == 0)
     {
       str_result.erase(0, 2);
-      result->m_GenreType = atol(str_result.c_str());
+      result.m_GenreType = atol(str_result.c_str());
       found = str_result.find(" ", 0);
       str_result.erase(0, found + 1);
-      result->m_GenreSubType = atol(str_result.c_str());
+      result.m_GenreSubType = atol(str_result.c_str());
       found = str_result.find(" ", 0);
       str_result.erase(0, found + 1);
-      result->m_strGenre = str_result.c_str();
+      result.m_strGenre = str_result.c_str();
       continue;
     }
 
@@ -599,9 +599,9 @@ PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result
       str_result.erase(0, found + 1);
       duration = atol(str_result.c_str());
 
-      result->m_startTime = CDateTime((time_t)rec_time);
-      result->m_endTime = CDateTime((time_t)rec_time + duration);
-      result->m_duration = CDateTimeSpan(0, 0, duration / 60, duration % 60);
+      result.m_startTime = CDateTime((time_t)rec_time);
+      result.m_endTime = CDateTime((time_t)rec_time + duration);
+      result.m_duration = CDateTimeSpan(0, 0, duration / 60, duration % 60);
       continue;
     }
   }
@@ -611,7 +611,7 @@ PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result)
+PVR_ERROR PVRClientVDR::GetEPGNextInfo(unsigned int number, PVR_PROGINFO &result)
 {
   vector<string> lines;
   int            code;
@@ -649,7 +649,7 @@ PVR_ERROR PVRClientVDR::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *resul
       str_result.erase(0, 2);
       found = str_result.find(" ", 0);
       str_result.erase(0, found + 1);
-      result->m_strChannel = str_result.c_str();
+      result.m_strChannel = str_result.c_str();
       continue;
     }
 
@@ -658,7 +658,7 @@ PVR_ERROR PVRClientVDR::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *resul
     if (found == 0)
     {
       str_result.erase(0, 2);
-      result->m_strTitle = str_result.c_str();
+      result.m_strTitle = str_result.c_str();
       continue;
     }
 
@@ -667,7 +667,7 @@ PVR_ERROR PVRClientVDR::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *resul
     if (found == 0)
     {
       str_result.erase(0, 2);
-      result->m_strPlotOutline = str_result.c_str();
+      result.m_strPlotOutline = str_result.c_str();
       continue;
     }
 
@@ -689,7 +689,7 @@ PVR_ERROR PVRClientVDR::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *resul
         str_result.replace(pos, 1, 1, '\n');
       }
 
-      result->m_strPlot = str_result.c_str();
+      result.m_strPlot = str_result.c_str();
       continue;
     }
 
@@ -698,13 +698,13 @@ PVR_ERROR PVRClientVDR::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *resul
     if (found == 0)
     {
       str_result.erase(0, 2);
-      result->m_GenreType = atol(str_result.c_str());
+      result.m_GenreType = atol(str_result.c_str());
       found = str_result.find(" ", 0);
       str_result.erase(0, found + 1);
-      result->m_GenreSubType = atol(str_result.c_str());
+      result.m_GenreSubType = atol(str_result.c_str());
       found = str_result.find(" ", 0);
       str_result.erase(0, found + 1);
-      result->m_strGenre = str_result.c_str();
+      result.m_strGenre = str_result.c_str();
       continue;
     }
 
@@ -725,9 +725,9 @@ PVR_ERROR PVRClientVDR::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *resul
       str_result.erase(0, found + 1);
       duration = atol(str_result.c_str());
 
-      result->m_startTime = CDateTime((time_t)rec_time);
-      result->m_endTime = CDateTime((time_t)rec_time + duration);
-      result->m_duration = CDateTimeSpan(0, 0, duration / 60, duration % 60);
+      result.m_startTime = CDateTime((time_t)rec_time);
+      result.m_endTime = CDateTime((time_t)rec_time + duration);
+      result.m_duration = CDateTimeSpan(0, 0, duration / 60, duration % 60);
       continue;
     }
   }
@@ -764,19 +764,16 @@ int PVRClientVDR::GetNumChannels()
   return atol(data.c_str());
 }
 
-PVR_ERROR PVRClientVDR::GetChannelList(VECCHANNELS *channels, bool radio)
+PVR_ERROR PVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
 {
   vector<string> lines;
   int            code;
-  unsigned int   number = 1;
 
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
 
   pthread_mutex_lock(&m_critSection);
-
-  channels->erase(channels->begin(), channels->end());
-
+  
   while (!m_transceiver->SendCommand("LSTC", code, lines))
   {
     if (code != 451)
@@ -798,35 +795,29 @@ PVR_ERROR PVRClientVDR::GetChannelList(VECCHANNELS *channels, bool radio)
     cChannel channel;
     channel.Parse(str_result.c_str());
 
-    CTVChannelInfoTag broadcast;
-    broadcast.m_iClientNum = channel.Number();
-    broadcast.m_strChannel = channel.Name();
-    broadcast.m_bTeletext = channel.Tpid() ? true : false;
-    broadcast.m_encrypted = channel.Ca() ? true : false;
+    PVR_CHANNEL tag;
+    tag.uid = channel.Sid();
+    tag.number = channel.Number();
+    tag.name = channel.Name();
+    tag.callsign = "";
+    tag.iconpath = "";
+    tag.encrypted = channel.Ca() ? true : false;
+    tag.radio = (channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
+    tag.hide = false;
+    tag.recording = false;
+    tag.teletext = channel.Tpid() ? true : false;
+    tag.bouquet = 0;
+    tag.multifeed = false;
+    tag.stream_url = "";
 
-    if ((channel.Vpid() == 0) && (channel.Apid(0) != 0))
-    {
-      broadcast.m_radio = true;
-      broadcast.m_strFileNameAndPath.Format("radio://%i", number);
-    }
-    else
-    {
-      broadcast.m_radio = false;
-      broadcast.m_strFileNameAndPath.Format("tv://%i", number);
-    }
-
-    if (radio == broadcast.m_radio)
-    {
-      broadcast.m_iChannelNum = number;
-      channels->push_back(broadcast);
-      number++;
-    }
+    if (radio == tag.radio)
+      PVR_transfer_channel_entry(handle, &tag);
   }
 
   pthread_mutex_unlock(&m_critSection);
   return PVR_ERROR_NO_ERROR;
 }
-
+/*
 PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
 {
 
@@ -2312,178 +2303,29 @@ bool PVRClientVDR::GetChannel(unsigned int number, PVR_CHANNEL &channeldata)
 
   vector<string>::iterator it = lines.begin();
   string& data(*it);
-
   CStdString str_result = data;
-  int found;
-  int idVPID = 0;
-  int idAPID1 = 0;
-  int idAPID2 = 0;
-  int idDPID1 = 0;
-  int idDPID2 = 0;
-  int idCAID = 0;
-  int idTPID = 0;
-  CStdString name;
-  int id;
 
-  if (m_bCharsetConv)
-    XBMC_unknown_to_utf8(str_result);
+  cChannel channel;
+  channel.Parse(str_result.c_str());
 
-  // Channel number
-  channeldata.number = atol(str_result.c_str());
-  str_result.erase(0, str_result.find(" ", 0) + 1);
+  PVR_CHANNEL tag;
+  tag.uid = channel.Sid();
+  tag.number = channel.Number();
+  tag.name = channel.Name();
+  tag.callsign = "";
+  tag.iconpath = "";
+  tag.encrypted = channel.Ca() ? true : false;
+  tag.radio = (channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
+  tag.hide = false;
+  tag.recording = false;
+  tag.teletext = channel.Tpid() ? true : false;
+  tag.bouquet = 0;
+  tag.multifeed = false;
+  tag.stream_url = "";
 
-  // Channel and provider name
-  found = str_result.find(":", 0);
-  name.assign(str_result, found);
-  str_result.erase(0, found + 1);
-  found = name.find(";", 0);
-
-  if (found == -1)
-  {
-    channeldata.name = name;
-  }
-  else
-  {
-    CStdString name2;
-    name2.assign(name, found);
-    channeldata.name = name2;
-  }
-
-  // Channel frequency
-  str_result.erase(0, str_result.find(":", 0) + 1);
-
-  // Source descriptor
-  str_result.erase(0, str_result.find(":", 0));
-
-  // Source Type
-  if (str_result.compare(0, 2, ":C") == 0)
-  {
-    str_result.erase(0, 3);
-  }
-  else if (str_result.compare(0, 2, ":T") == 0)
-  {
-    str_result.erase(0, 3);
-  }
-  else if (str_result.compare(0, 2, ":S") == 0)
-  {
-    str_result.erase(0, 2);
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-  }
-  else if (str_result.compare(0, 2, ":P") == 0)
-  {
-    str_result.erase(0, 3);
-  }
-
-  // Channel symbolrate
-  found = str_result.find(":", 0);
-  str_result.erase(0, found + 1);
-
-  // Channel program id
-  idVPID = atol(str_result.c_str());
-  found = str_result.find(":", 0);
-  str_result.erase(0, found + 1);
-
-  // Channel audio id's
-  found = str_result.find(":", 0);
-  name.assign(str_result, found);
-  str_result.erase(0, found + 1);
-  found = name.find(";", 0);
-
-  if (found == -1)
-  {
-    id = atol(name.c_str());
-
-    if (id == 0)
-    {
-      idAPID1 = 0;
-      idAPID2 = 0;
-      idDPID1 = 0;
-      idDPID2 = 0;
-    }
-    else
-    {
-      idAPID1 = id;
-      found = name.find(",", 0);
-
-      if (found == -1)
-      {
-        idAPID2 = 0;
-      }
-      else
-      {
-        name.erase(0, found + 1);
-        idAPID2 = atol(name.c_str());
-      }
-
-      idDPID1 = 0;
-      idDPID2 = 0;
-    }
-  }
-  else
-  {
-    int id;
-    id = atol(name.c_str());
-
-    if (id == 0)
-    {
-      idAPID1 = 0;
-      idAPID2 = 0;
-    }
-    else
-    {
-      idAPID1 = id;
-      found = name.find(",", 0);
-
-      if (found == -1)
-      {
-        idAPID2 = 0;
-      }
-      else
-      {
-        name.erase(0, found + 1);
-        idAPID2 = atol(name.c_str());
-      }
-    }
-
-    name.erase(0, name.find(";", 0) + 1);
-    id = atoi(name.c_str());
-    if (id == 0)
-    {
-      idDPID1 = 0;
-      idDPID2 = 0;
-    }
-    else
-    {
-      idDPID1 = id;
-      found = name.find(",", 0);
-
-      if (found == -1)
-      {
-        idDPID2 = 0;
-      }
-      else
-      {
-        name.erase(0, found + 1);
-        idDPID2 = atol(name.c_str());
-      }
-    }
-  }
-
-  // Teletext id
-  idTPID = atoi(str_result.c_str());
-  str_result.erase(0, str_result.find(":", 0) + 1);
-  channeldata.teletext = idTPID ? true : false;
-
-  // CAID id
-  idCAID = atoi(str_result.c_str());
-  str_result.erase(0, str_result.find(":", 0) + 1);
-  channeldata.encrypted = idCAID ? true : false;
-
-  channeldata.radio = (idVPID == 0) && (idAPID1 != 0) ? true : false;
   return true;  
 }
-
+*/
 
 /************************************************************/
 /** Record handling **/
