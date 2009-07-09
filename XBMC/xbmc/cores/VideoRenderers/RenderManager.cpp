@@ -23,6 +23,7 @@
 #include "RenderManager.h"
 #include "utils/CriticalSection.h"
 #include "VideoReferenceClock.h"
+#include "Util.h"
 
 #include "Application.h"
 #include "Settings.h"
@@ -126,7 +127,53 @@ double CXBoxRenderManager::GetPresentTime()
 
 void CXBoxRenderManager::WaitPresentTime(double presenttime)
 {
-  CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+  int fps = g_VideoReferenceClock.GetRefreshRate();
+  if(fps <= 0)
+  {
+    /* smooth video not enabled */
+    CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+    return;
+  }
+
+  double frametime = g_VideoReferenceClock.GetSpeed() / fps;
+
+  presenttime     += m_presentcorr * frametime;
+
+  double clock     = CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
+  double target    = 0.5;
+  double error     = ( clock - presenttime ) / frametime - target;
+
+  m_presenterr   = error;
+
+  // if error is way of, don't use it
+  if(error > target
+  || error < target - 1.0)
+    return;
+
+  // scale the error used for correction, 
+  // based on how much buffer we have on
+  // that side of the target
+  if(error > 0)
+    error /= 2.0 * (1.0 - target);
+  if(error < 0)
+    error /= 2.0 * (0.0 + target);
+
+  m_presentcorr += error * 0.02;
+
+  // make sure we wrap correction properly
+  while(m_presentcorr > target)       m_presentcorr -= 1.0;
+  while(m_presentcorr < target - 1.0) m_presentcorr += 1.0;
+
+  //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
+}
+
+CStdString CXBoxRenderManager::GetVSyncState()
+{
+  CStdString state;
+  state.Format("sync:%+3d%% error:%2d%%"
+              ,     MathUtils::round_int(m_presentcorr * 100)
+              , abs(MathUtils::round_int(m_presenterr  * 100)));
+  return state;
 }
 
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
@@ -203,6 +250,9 @@ unsigned int CXBoxRenderManager::PreInit()
     D3DDevice::SetVerticalBlankCallback((D3DVBLANKCALLBACK)VBlankCallback);
   }
 #endif
+
+  m_presentcorr = 0.0;
+  m_presenterr  = 0.0;
 
   m_bIsStarted = false;
   m_bPauseDrawing = false;

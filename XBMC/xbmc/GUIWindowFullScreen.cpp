@@ -646,9 +646,10 @@ void CGUIWindowFullScreen::RenderFullScreen()
       CStdString strClock;
       
       if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed))
-        strClock.Format("S( missed:%i speed:%+.3f%% )"
+        strClock.Format("S( missed:%i speed:%+.3f%% %s )"
                        , missedvblanks
-                       , clockspeed - 100.0);
+                       , clockspeed - 100.0
+                       , g_renderManager.GetVSyncState().c_str());
 
       strGeneralFPS.Format("%s\nW( fps:%02.2f %s ) %s"
                          , strGeneral.c_str()
