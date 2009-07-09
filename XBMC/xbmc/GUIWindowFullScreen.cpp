@@ -637,7 +637,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       // We show CPU usage for the entire process, as it's arguably more useful.
       double dCPU = m_resourceCounter.GetCPUUsage();
       CStdString strCores;
-      strCores.Format("cpu: %.0f%%", dCPU);
+      strCores.Format("cpu:%.0f%%", dCPU);
 #else
       CStdString strCores = g_cpuInfo.GetCoresUsageString();
 #endif
@@ -646,11 +646,15 @@ void CGUIWindowFullScreen::RenderFullScreen()
       CStdString strClock;
       
       if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed))
-        strClock.Format("VBlanks missed: %i Clock speed: %.3f%%", missedvblanks, clockspeed);
-      
-      strGeneralFPS.Format("fps: %02.2f %s %s\n%s", g_infoManager.GetFPS(),
-                           strCores.c_str(), strClock.c_str(), strGeneral.c_str() );
-       
+        strClock.Format("S( missed:%i speed:%+.3f%% )"
+                       , missedvblanks
+                       , clockspeed - 100.0);
+
+      strGeneralFPS.Format("%s\nW( fps:%02.2f %s ) %s"
+                         , strGeneral.c_str()
+                         , g_infoManager.GetFPS()
+                         , strCores.c_str(), strClock.c_str() );
+
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strGeneralFPS);
       OnMessage(msg);
