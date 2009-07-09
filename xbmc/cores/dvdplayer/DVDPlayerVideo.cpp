@@ -1001,10 +1001,17 @@ void CDVDPlayerVideo::UpdateMenuPicture()
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:" << std::setw(3) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
-  s << ", dc: " << m_codecname;
-  s << ", cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
-  s << ", bitrate: " << std::setprecision(4) << (double)GetVideoBitrate() / (1024.0*1024.0) << " MBit/s";
+  s << "vq:"     << setw(2) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
+  s << ", dc:"   << m_codecname;
+  s << ", MB/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
+  s << ", drop:" << m_iDroppedFrames;
+
+  int pc = m_pullupCorrection.GetPatternLength();
+  if (pc > 0)
+    s << ", pc:" << pc;
+  else
+    s << ", pc:none";
+
   return s.str();
 }
 

@@ -1892,15 +1892,15 @@ bool CDVDPlayer::SeekScene(bool bPlus)
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
-  strAudioInfo.Format("D( %s ), P( %s )", m_State.demux_audio.c_str()
-                                        , m_dvdPlayerAudio.GetPlayerInfo().c_str());
+  strAudioInfo.Format("D( %s ) P( %s )", m_State.demux_audio.c_str()
+                                       , m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
   CSingleLock lock(m_StateSection);
-  strVideoInfo.Format("D( %s ), P( %s )", m_State.demux_video.c_str()
-                                        , m_dvdPlayerVideo.GetPlayerInfo().c_str());
+  strVideoInfo.Format("D( %s ) P( %s )", m_State.demux_video.c_str()
+                                       , m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
@@ -1912,22 +1912,22 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     double apts = m_dvdPlayerAudio.GetCurrentPts();
     double vpts = m_dvdPlayerVideo.GetCurrentPts();
     double dDiff = 0;
-    char cEdlStatus;
 
     if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
       dDiff = (apts - vpts) / DVD_TIME_BASE;
 
-    int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
-    cEdlStatus = m_Edl.GetEdlStatus();
-    
-    CStdString strPC;
-    int pullupCorrection = m_dvdPlayerVideo.GetPullupCorrection();
-    if (pullupCorrection > 0)
-      strPC.Format("%i", pullupCorrection);
-    else
-      strPC.Format("none");
+    CStdString strEDL;
 
-    strGeneralInfo.Format("DVD Player ad:%6.3f, a/v:%6.3f, dropped:%d, cpu: %i%%. edl: %c source bitrate: %4.2f MBit/s, pc: %s", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus, (double)GetSourceBitrate() / (1024.0*1024.0), strPC.c_str());
+    if(m_Edl.HaveCutpoints())
+      strEDL.Format(", edl:%c",  m_Edl.GetEdlStatus());
+
+    strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"
+                         , dDelay
+                         , dDiff
+                         , strEDL.c_str()                         
+                         , (int)(CThread::GetRelativeUsage()*100)
+                         , (int)(m_dvdPlayerAudio.GetRelativeUsage()*100)
+                         , (int)(m_dvdPlayerVideo.GetRelativeUsage()*100));
   }
 }
 
