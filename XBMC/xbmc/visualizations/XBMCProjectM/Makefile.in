@@ -24,6 +24,11 @@ libprojectM/libprojectM.so:
 	$(MAKE) -C libprojectM
 endif
 
+CLEAN_FILES = \
+	libprojectM/libprojectM.so \
+	libprojectM/libprojectM.so.2 \
+	libprojectM/libprojectM.so.2.00
+
 DISTCLEAN_FILES=	\
 	libprojectM/CMakeFiles/ \
 	libprojectM/CMakeCache.txt \
