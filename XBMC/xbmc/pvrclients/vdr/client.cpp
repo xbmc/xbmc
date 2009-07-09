@@ -330,9 +330,9 @@ extern "C" int GetNumTimers(void)
   return g_client->GetNumTimers();
 }
 
-extern "C" PVR_ERROR GetAllTimers(VECTVTIMERS *results)
+extern "C" PVR_ERROR RequestTimerList(PVRHANDLE handle)
 {
-  return g_client->GetAllTimers(results);
+  return g_client->RequestTimerList(handle);
 }
 
 extern "C" PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo)

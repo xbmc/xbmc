@@ -333,9 +333,6 @@ void CTVTimerInfoTag::Reset()
   m_StartTime     = NULL;
   m_StopTime      = NULL;
   m_FirstDay      = NULL;
-  m_iStartTime    = NULL;
-  m_iStopTime     = NULL;
-  m_iFirstDay     = NULL;
   m_Repeat_Mon    = false;
   m_Repeat_Tue    = false;
   m_Repeat_Wed    = false;

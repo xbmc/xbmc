@@ -55,11 +55,8 @@ public:
 
   bool            m_Repeat;               /// Repeating timer if true, use the m_FirstDay and repeat flags
   CDateTime       m_StartTime;            /// Start time
-  time_t          m_iStartTime;           /// as time_t (if you get time_t from CDateTime it is always different)
   CDateTime       m_StopTime;             /// Stop time
-  time_t          m_iStopTime;            /// as time_t (if you get time_t from CDateTime it is always different)
   CDateTime       m_FirstDay;             /// If it is a repeating timer the first date it starts
-  time_t          m_iFirstDay;            ///
   bool            m_Repeat_Mon;           /// Repeat sheduled recording every monday
   bool            m_Repeat_Tue;           /// Repeat sheduled recording every tuesday
   bool            m_Repeat_Wed;           /// Repeat sheduled recording every wednesday

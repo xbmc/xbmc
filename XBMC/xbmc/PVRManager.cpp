@@ -1309,6 +1309,23 @@ bool CPVRManager::GetFrontendChannelNumber(unsigned int client_no, unsigned int 
   return false;
 }
 
+CTVChannelInfoTag *CPVRManager::GetChannelByClientNumber(unsigned int client_no, unsigned int client_id)
+{
+  for (unsigned int i = 0; i < m_channels_tv.size(); i++)
+  {
+    if (m_channels_tv[i].m_iClientNum == client_no && m_channels_tv[i].m_clientID == client_id)
+      return &m_channels_tv[i];
+  }
+
+  for (unsigned int i = 0; i < m_channels_radio.size(); i++)
+  {
+    if (m_channels_radio[i].m_iClientNum == client_no && m_channels_tv[i].m_clientID == client_id)
+      return &m_channels_radio[i];
+  }
+
+  return NULL;
+}
+
 int CPVRManager::GetClientChannelNumber(unsigned int frontend_no, bool radio)
 {
   if (m_client)
@@ -2361,8 +2378,8 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
         for (unsigned int i = 0; i < m_timers.size(); ++i)
         {
           if ((m_timers[i].m_strChannel == m_channels_tv[channel-1].m_strChannel) &&
-              (m_timers[i].m_StartTime  <= CDateTime::GetCurrentDateTime()) &&
-              (m_timers[i].m_StopTime   >= CDateTime::GetCurrentDateTime()) &&
+              (m_timers[i].m_StartTime <= CDateTime::GetCurrentDateTime()) &&
+              (m_timers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
               (m_timers[i].m_Repeat != true) && (m_timers[i].m_Active == true))
           {
             DeleteTimer(m_timers[i], true);
@@ -2392,8 +2409,8 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
         for (unsigned int i = 0; i < m_timers.size(); ++i)
         {
           if ((m_timers[i].m_strChannel == m_channels_tv[channel-1].m_strChannel) &&
-              (m_timers[i].m_StartTime  <= CDateTime::GetCurrentDateTime()) &&
-              (m_timers[i].m_StopTime   >= CDateTime::GetCurrentDateTime()) &&
+              (m_timers[i].m_StartTime <= CDateTime::GetCurrentDateTime()) &&
+              (m_timers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
               (m_timers[i].m_Repeat != true) && (m_timers[i].m_Active == true))
           {
             DeleteTimer(m_timers[i], true);

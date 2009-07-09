@@ -57,6 +57,14 @@ void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan)
   m_pvr_cb->PVR.TransferChannelEntry(m_pvr_cb->userData, handle, chan);
 }
 
+void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer)
+{
+  if (m_pvr_cb == NULL)
+    return;
+
+  m_pvr_cb->PVR.TransferTimerEntry(m_pvr_cb->userData, handle, timer);
+}
+
 #ifdef __cplusplus
 }
 #endif
