@@ -246,8 +246,8 @@ endif
 
 clean:
 	rm -f $(addprefix $(SYSDIR)/, $(LIBS))
-	for i in $(DIRS); do $(MAKE) -C "$$i" clean; done
+	for d in $(DIRS); do (if test -f "$$d/Makefile"; then ($(MAKE) -C "$$d" clean); fi ); done
 
 distclean:
 	rm -f $(addprefix $(SYSDIR)/, $(LIBS))
-	for i in $(DIRS); do $(MAKE) -C "$$i" distclean; done
+	for d in $(DIRS); do (if test -f "$$d/Makefile"; then ($(MAKE) -C "$$d" distclean || $(MAKE) -C "$$d" clean); fi ); done
