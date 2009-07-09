@@ -21,6 +21,7 @@
 
 #include "client.h"
 #include "timers.h"
+#include "channels.h"
 #include "pvrclient-vdr.h"
 #include "pvrclient-vdr_os.h"
 
@@ -790,179 +791,20 @@ PVR_ERROR PVRClientVDR::GetChannelList(VECCHANNELS *channels, bool radio)
   {
     string& data(*it);
     CStdString str_result = data;
-    int found;
-
-    CTVChannelInfoTag broadcast;
-    int idVPID = 0;
-    int idAPID1 = 0;
-    int idAPID2 = 0;
-    int idDPID1 = 0;
-    int idDPID2 = 0;
-    int idCAID = 0;
-    int idTPID = 0;
-    CStdString name;
-    int id;
 
     if (m_bCharsetConv)
       XBMC_unknown_to_utf8(str_result);
 
-    // Channel number
-    broadcast.m_iClientNum = atol(str_result.c_str());
-    str_result.erase(0, str_result.find(" ", 0) + 1);
+    cChannel channel;
+    channel.Parse(str_result.c_str());
 
-    // Channel and provider name
-    found = str_result.find(":", 0);
-    name.assign(str_result, found);
-    str_result.erase(0, found + 1);
-    found = name.find(";", 0);
+    CTVChannelInfoTag broadcast;
+    broadcast.m_iClientNum = channel.Number();
+    broadcast.m_strChannel = channel.Name();
+    broadcast.m_bTeletext = channel.Tpid() ? true : false;
+    broadcast.m_encrypted = channel.Ca() ? true : false;
 
-    if (found == -1)
-    {
-      broadcast.m_strChannel = name;
-    }
-    else
-    {
-      broadcast.m_strChannel.assign(name, found);
-      name.erase(0, found + 1);
-    }
-
-    // Channel frequency
-    str_result.erase(0, str_result.find(":", 0) + 1);
-
-    // Source descriptor
-    str_result.erase(0, str_result.find(":", 0));
-
-    // Source Type
-    if (str_result.compare(0, 2, ":C") == 0)
-    {
-      str_result.erase(0, 3);
-    }
-    else if (str_result.compare(0, 2, ":T") == 0)
-    {
-      str_result.erase(0, 3);
-    }
-    else if (str_result.compare(0, 2, ":S") == 0)
-    {
-      str_result.erase(0, 2);
-      found = str_result.find(":", 0);
-      str_result.erase(0, found + 1);
-    }
-    else if (str_result.compare(0, 2, ":P") == 0)
-    {
-      str_result.erase(0, 3);
-    }
-
-
-    // Channel symbolrate
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    // Channel program id
-    idVPID = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    // Channel audio id's
-    found = str_result.find(":", 0);
-    name.assign(str_result, found);
-    str_result.erase(0, found + 1);
-    found = name.find(";", 0);
-
-    if (found == -1)
-    {
-      id = atol(name.c_str());
-
-      if (id == 0)
-      {
-        idAPID1 = 0;
-        idAPID2 = 0;
-        idDPID1 = 0;
-        idDPID2 = 0;
-      }
-      else
-      {
-        idAPID1 = id;
-        found = name.find(",", 0);
-
-        if (found == -1)
-        {
-          idAPID2 = 0;
-        }
-        else
-        {
-          name.erase(0, found + 1);
-          idAPID2 = atol(name.c_str());
-        }
-
-        idDPID1 = 0;
-        idDPID2 = 0;
-      }
-    }
-    else
-    {
-      int id;
-      id = atol(name.c_str());
-
-      if (id == 0)
-      {
-        idAPID1 = 0;
-        idAPID2 = 0;
-      }
-      else
-      {
-        idAPID1 = id;
-        found = name.find(",", 0);
-
-        if (found == -1)
-        {
-          idAPID2 = 0;
-        }
-        else
-        {
-          name.erase(0, found + 1);
-          idAPID2 = atol(name.c_str());
-        }
-      }
-
-      name.erase(0, name.find(";", 0) + 1);
-      id = atoi(name.c_str());
-      if (id == 0)
-      {
-        idDPID1 = 0;
-        idDPID2 = 0;
-      }
-      else
-      {
-        idDPID1 = id;
-        found = name.find(",", 0);
-
-        if (found == -1)
-        {
-          idDPID2 = 0;
-        }
-        else
-        {
-          name.erase(0, found + 1);
-          idDPID2 = atol(name.c_str());
-        }
-      }
-    }
-
-    // Teletext id
-    idTPID = atoi(str_result.c_str());
-    str_result.erase(0, str_result.find(":", 0) + 1);
-    broadcast.m_bTeletext = idTPID ? true : false;
-
-    // CAID id
-    idCAID = atoi(str_result.c_str());
-    str_result.erase(0, str_result.find(":", 0) + 1);
-
-    if (idCAID && m_bOnlyFTA)
-      continue;
-
-    broadcast.m_encrypted = idCAID ? true : false;
-
-    if ((idVPID == 0) && (idAPID1 != 0))
+    if ((channel.Vpid() == 0) && (channel.Apid(0) != 0))
     {
       broadcast.m_radio = true;
       broadcast.m_strFileNameAndPath.Format("radio://%i", number);
