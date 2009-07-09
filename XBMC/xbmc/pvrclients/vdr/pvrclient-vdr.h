@@ -84,11 +84,11 @@ public:
   /* Timer handling */
   int GetNumTimers(void);
   PVR_ERROR RequestTimerList(PVRHANDLE handle);
-  PVR_ERROR GetTimerInfo(unsigned int timernumber, CTVTimerInfoTag &timerinfo);
-  PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo);
-  PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force = false);
-  PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname);
-  PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo);
+  PVR_ERROR GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag);
+  PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo);
+  PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force = false);
+  PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname);
+  PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo);
 
   /* Live stream handling */
   bool OpenLiveStream(unsigned int channel);

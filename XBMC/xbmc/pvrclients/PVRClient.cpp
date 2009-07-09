@@ -742,7 +742,10 @@ PVR_ERROR CPVRClient::AddTimer(const CTVTimerInfoTag &timerinfo)
   {
     try
     {
-      ret = m_pClient->AddTimer(timerinfo);
+      PVR_TIMERINFO tag;
+      WriteClientTimerInfo(timerinfo, tag);
+
+      ret = m_pClient->AddTimer(tag);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -768,7 +771,10 @@ PVR_ERROR CPVRClient::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force)
   {
     try
     {
-      ret = m_pClient->DeleteTimer(timerinfo, force);
+      PVR_TIMERINFO tag;
+      WriteClientTimerInfo(timerinfo, tag);
+
+      ret = m_pClient->DeleteTimer(tag, force);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -794,7 +800,10 @@ PVR_ERROR CPVRClient::RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &
   {
     try
     {
-      ret = m_pClient->RenameTimer(timerinfo, newname);
+      PVR_TIMERINFO tag;
+      WriteClientTimerInfo(timerinfo, tag);
+      
+      ret = m_pClient->RenameTimer(tag, newname.c_str());
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -820,7 +829,10 @@ PVR_ERROR CPVRClient::UpdateTimer(const CTVTimerInfoTag &timerinfo)
   {
     try
     {
-      ret = m_pClient->UpdateTimer(timerinfo);
+      PVR_TIMERINFO tag;
+      WriteClientTimerInfo(timerinfo, tag);
+
+      ret = m_pClient->UpdateTimer(tag);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -838,6 +850,41 @@ PVR_ERROR CPVRClient::UpdateTimer(const CTVTimerInfoTag &timerinfo)
   return ret;
 }
 
+void CPVRClient::WriteClientTimerInfo(const CTVTimerInfoTag &timerinfo, PVR_TIMERINFO &tag)
+{
+  tag.index = timerinfo.m_Index;
+  tag.active = timerinfo.m_Active;
+  tag.channelNum = timerinfo.m_clientNum;
+  tag.recording = timerinfo.m_recStatus;
+  tag.title = timerinfo.m_strTitle;
+  tag.priority = timerinfo.m_Priority;
+  tag.lifetime = timerinfo.m_Lifetime;
+  tag.repeat = timerinfo.m_Repeat;
+  tag.repeatflags = 0;
+
+  if (tag.repeat)
+  {
+    if (timerinfo.m_Repeat_Mon)
+      tag.repeatflags |= 0x01;
+    if (timerinfo.m_Repeat_Tue)
+      tag.repeatflags |= 0x02;
+    if (timerinfo.m_Repeat_Wed)
+      tag.repeatflags |= 0x04;
+    if (timerinfo.m_Repeat_Thu)
+      tag.repeatflags |= 0x08;
+    if (timerinfo.m_Repeat_Fri)
+      tag.repeatflags |= 0x10;
+    if (timerinfo.m_Repeat_Sat)
+      tag.repeatflags |= 0x20;
+    if (timerinfo.m_Repeat_Sun)
+      tag.repeatflags |= 0x40;
+  }
+  
+  timerinfo.m_StartTime.GetAsTime(tag.starttime);
+  timerinfo.m_StopTime.GetAsTime(tag.endtime);
+  timerinfo.m_FirstDay.GetAsTime(tag.firstday);
+  return;
+}
 
 /**********************************************************
  * Stream PVR Functions

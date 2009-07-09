@@ -35,7 +35,6 @@
 #include "utils/TVEPGInfoTag.h"
 #include "utils/TVChannelInfoTag.h"
 #include "utils/TVRecordInfoTag.h"
-#include "utils/TVTimerInfoTag.h"
 #include "xbmc_addon_types.h"
 
 #ifdef __cplusplus
@@ -214,10 +213,10 @@ extern "C" {
     PVR_ERROR (__cdecl* DeleteRecording)(const CTVRecordingInfoTag &recinfo);
     PVR_ERROR (__cdecl* RenameRecording)(const CTVRecordingInfoTag &recinfo, CStdString &newname);
     PVR_ERROR (__cdecl* RequestTimerList)(PVRHANDLE handle);
-    PVR_ERROR (__cdecl* AddTimer)(const CTVTimerInfoTag &timerinfo);
-    PVR_ERROR (__cdecl* DeleteTimer)(const CTVTimerInfoTag &timerinfo, bool force);
-    PVR_ERROR (__cdecl* RenameTimer)(const CTVTimerInfoTag &timerinfo, CStdString &newname);
-    PVR_ERROR (__cdecl* UpdateTimer)(const CTVTimerInfoTag &timerinfo);
+    PVR_ERROR (__cdecl* AddTimer)(const PVR_TIMERINFO &timerinfo);
+    PVR_ERROR (__cdecl* DeleteTimer)(const PVR_TIMERINFO &timerinfo, bool force);
+    PVR_ERROR (__cdecl* RenameTimer)(const PVR_TIMERINFO &timerinfo, const char *newname);
+    PVR_ERROR (__cdecl* UpdateTimer)(const PVR_TIMERINFO &timerinfo);
     bool (__cdecl* OpenLiveStream)(unsigned int channel);
     void (__cdecl* CloseLiveStream)();
     int (__cdecl* ReadLiveStream)(BYTE* buf, int buf_size);

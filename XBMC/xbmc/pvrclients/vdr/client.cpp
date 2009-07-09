@@ -335,22 +335,22 @@ extern "C" PVR_ERROR RequestTimerList(PVRHANDLE handle)
   return g_client->RequestTimerList(handle);
 }
 
-extern "C" PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo)
+extern "C" PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo)
 {
   return g_client->AddTimer(timerinfo);
 }
 
-extern "C" PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force)
+extern "C" PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
 {
   return g_client->DeleteTimer(timerinfo, force);
 }
 
-extern "C" PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname)
+extern "C" PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname)
 {
   return g_client->RenameTimer(timerinfo, newname);
 }
 
-extern "C" PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo)
+extern "C" PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo)
 {
   return g_client->UpdateTimer(timerinfo);
 }

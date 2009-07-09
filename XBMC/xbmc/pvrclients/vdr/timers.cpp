@@ -19,6 +19,10 @@
  *
  */
 
+/*
+ * This code is taken from timers.c in the Video Disk Recorder ('VDR')
+ */
+
 #include "timers.h"
 #include "../../addons/include/xbmc_addon_lib++.h"
 
@@ -28,11 +32,47 @@ template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
 
 cTimer::cTimer()
 {
-  startTime = stopTime = index = 0;
-  recording = pending = inVpsMargin = false;
-  flags = tfActive;
-  weekdays = 0;
-  aux = NULL;
+  startTime   = 0;
+  stopTime    = 0;
+  index       = 0;
+  recording   = false;
+  pending     = false;
+  inVpsMargin = false;
+  flags       = tfActive;
+  weekdays    = 0;
+  aux         = NULL;
+}
+
+cTimer::cTimer(const PVR_TIMERINFO *Timer)
+{
+  aux       = NULL;
+
+  index     = Timer->index;
+  startTime = Timer->starttime;
+  stopTime  = Timer->endtime;
+  flags     = Timer->active;
+  if (Timer->repeat)
+  {
+    if (Timer->firstday)
+      day = Timer->firstday;
+    weekdays  = Timer->repeatflags;
+  }
+  else
+  {
+    day = 0;
+    weekdays = 0;
+  }
+  priority  = Timer->priority;
+  channel   = Timer->channelNum;
+  lifetime  = Timer->lifetime;
+  strn0cpy(file, Timer->title, 256);
+
+  struct tm tm_r;
+  struct tm *time = localtime_r(&startTime, &tm_r);
+  day = SetTime(startTime, 0);
+  start = time->tm_hour * 100 + time->tm_min;
+  time = localtime_r(&stopTime, &tm_r);
+  stop = time->tm_hour * 100 + time->tm_min;
 }
 
 cTimer::~cTimer()
@@ -51,7 +91,7 @@ bool cTimer::Parse(const char *s)
   char *s2 = NULL;
   int l2 = strlen(s);
   while (l2 > 0 && isspace(s[l2 - 1]))
-        l2--;
+    l2--;
 
   if (s[l2 - 1] == ':') 
   {
@@ -88,7 +128,6 @@ bool cTimer::Parse(const char *s)
   return result;
 }
 
-
 bool cTimer::ParseDay(const char *s, time_t &Day, int &WeekDays)
 {
   // possible formats are:
@@ -102,49 +141,58 @@ bool cTimer::ParseDay(const char *s, time_t &Day, int &WeekDays)
   WeekDays = 0;
   s = skipspace(s);
   if (!*s)
-     return false;
+    return false;
   const char *a = strchr(s, '@');
   const char *d = a ? a + 1 : isdigit(*s) ? s : NULL;
-  if (d) {
-     if (strlen(d) == 10) {
-        struct tm tm_r;
-        if (3 == sscanf(d, "%d-%d-%d", &tm_r.tm_year, &tm_r.tm_mon, &tm_r.tm_mday)) {
-           tm_r.tm_year -= 1900;
-           tm_r.tm_mon--;
-           tm_r.tm_hour = tm_r.tm_min = tm_r.tm_sec = 0;
-           tm_r.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
-           Day = mktime(&tm_r);
-           }
-        else
-           return false;
-        }
-     else {
-        // handle "day of month" for compatibility with older versions:
-        char *tail = NULL;
-        int day = strtol(d, &tail, 10);
-        if (tail && *tail || day < 1 || day > 31)
-           return false;
-        time_t t = time(NULL);
-        int DaysToCheck = 61; // 61 to handle months with 31/30/31
-        for (int i = -1; i <= DaysToCheck; i++) {
-            time_t t0 = IncDay(t, i);
-            if (GetMDay(t0) == day) {
-               Day = SetTime(t0, 0);
-               break;
-               }
-            }
-        }
-     }
-  if (a || !isdigit(*s)) {
-     if ((a && a - s == 7) || strlen(s) == 7) {
-        for (const char *p = s + 6; p >= s; p--) {
-            WeekDays <<= 1;
-            WeekDays |= (*p != '-');
-            }
-        }
-     else
+  if (d) 
+  {
+    if (strlen(d) == 10) 
+    {
+      struct tm tm_r;
+      if (3 == sscanf(d, "%d-%d-%d", &tm_r.tm_year, &tm_r.tm_mon, &tm_r.tm_mday))
+      {
+        tm_r.tm_year -= 1900;
+        tm_r.tm_mon--;
+        tm_r.tm_hour = tm_r.tm_min = tm_r.tm_sec = 0;
+        tm_r.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
+        Day = mktime(&tm_r);
+      }
+      else
         return false;
-     }
+    }
+    else 
+    {
+      // handle "day of month" for compatibility with older versions:
+      char *tail = NULL;
+      int day = strtol(d, &tail, 10);
+      if (tail && *tail || day < 1 || day > 31)
+      return false;
+      time_t t = time(NULL);
+      int DaysToCheck = 61; // 61 to handle months with 31/30/31
+      for (int i = -1; i <= DaysToCheck; i++) 
+      {
+        time_t t0 = IncDay(t, i);
+        if (GetMDay(t0) == day) 
+        {
+          Day = SetTime(t0, 0);
+          break;
+        }
+      }
+    }
+  }
+  if (a || !isdigit(*s))
+  {
+    if ((a && a - s == 7) || strlen(s) == 7)
+    {
+      for (const char *p = s + 6; p >= s; p--)
+      {
+        WeekDays <<= 1;
+        WeekDays |= (*p != '-');
+      }
+    }
+    else
+      return false;
+  }
   return true;
 }
 
@@ -213,35 +261,40 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
 {
   startTime = stopTime = 0;
   if (t == 0)
-     t = time(NULL);
+    t = time(NULL);
 
   int begin  = TimeToInt(start); // seconds from midnight
   int length = TimeToInt(stop) - begin;
   if (length < 0)
-     length += SECSINDAY;
+    length += SECSINDAY;
 
-  if (IsSingleEvent()) {
-     startTime = SetTime(day, begin);
-     stopTime = startTime + length;
-     }
-  else {
-     for (int i = -1; i <= 7; i++) {
-         time_t t0 = IncDay(day ? max(day, t) : t, i);
-         if (DayMatches(t0)) {
-            time_t a = SetTime(t0, begin);
-            time_t b = a + length;
-            if ((!day || a >= day) && t < b) {
-               startTime = a;
-               stopTime = b;
-               break;
-               }
-            }
-         }
-     if (!startTime)
-        startTime = IncDay(t, 7); // just to have something that's more than a week in the future
-     else if (!Directly && (t > startTime || t > day + SECSINDAY + 3600)) // +3600 in case of DST change
-        day = 0;
-     }
+  if (IsSingleEvent())
+  {
+    startTime = SetTime(day, begin);
+    stopTime = startTime + length;
+  }
+  else 
+  {
+    for (int i = -1; i <= 7; i++) 
+    {
+      time_t t0 = IncDay(day ? max(day, t) : t, i);
+      if (DayMatches(t0)) 
+      {
+        time_t a = SetTime(t0, begin);
+        time_t b = a + length;
+        if ((!day || a >= day) && t < b) 
+        {
+          startTime = a;
+          stopTime = b;
+          break;
+        }
+      }
+    }
+    if (!startTime)
+      startTime = IncDay(t, 7); // just to have something that's more than a week in the future
+    else if (!Directly && (t > startTime || t > day + SECSINDAY + 3600)) // +3600 in case of DST change
+      day = 0;
+  }
 
   if (HasFlags(tfActive)) 
   {
@@ -268,3 +321,42 @@ int cTimer::TimeToInt(int t)
 {
   return (t / 100 * 60 + t % 100) * 60;
 }
+
+CStdString cTimer::ToText() const
+{
+  strreplace(file, ':', '|');
+  CStdString buffer;
+  buffer.Format("%u:%u:%s:%04d:%04d:%d:%d:%s:%s", flags, channel, PrintDay(day, weekdays), start, stop, priority, lifetime, file, aux ? aux : "");
+  strreplace(file, '|', ':');
+  return buffer;
+}
+
+CStdString cTimer::PrintDay(time_t Day, int WeekDays)
+{
+#define DAYBUFFERSIZE 64
+  char buffer[DAYBUFFERSIZE];
+  char *b = buffer;
+  if (WeekDays) 
+  {
+    const char *w = "MTWTFSS";
+    for (int i = 0; i < 7; i++)
+    {
+      if (WeekDays & 1) 
+        *b++ = w[i];
+      else
+        *b++ = '-';
+      WeekDays >>= 1;
+    }
+    if (Day)
+      *b++ = '@';
+  }
+  if (Day) 
+  {
+    struct tm tm_r;
+    localtime_r(&Day, &tm_r);
+    b += strftime(b, DAYBUFFERSIZE - (b - buffer), "%Y-%m-%d", &tm_r);
+  }
+  *b = 0;
+  return buffer;
+}
+
