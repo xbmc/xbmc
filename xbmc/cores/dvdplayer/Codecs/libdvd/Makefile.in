@@ -25,6 +25,11 @@ endif
 
 SLIB=$(addprefix $(SYSDIR)/, $(SOS))
 
+DISTCLEAN_FILES=includes/dvdread/*.h \
+		includes/dvdcss/*.h \
+		libdvdnav/config.h \
+		libdvdread/config.h
+
 .PHONY: $(DIRS) compile
 
 all: $(SLIB)
