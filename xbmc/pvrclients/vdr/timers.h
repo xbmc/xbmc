@@ -23,19 +23,9 @@
 #ifndef __TIMERS_H
 #define __TIMERS_H
 
-//#include <dirent.h>
-//#include <errno.h>
-//#include <fcntl.h>
-//#include <iconv.h>
-//#include <poll.h>
-//#include <stddef.h>
-//#include <stdint.h>
-//#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <syslog.h>
-//#include <sys/stat.h>
-//#include <sys/types.h>
+#include "../../addons/include/xbmc_pvr_lib++.h"
 
 enum eTimerFlags { tfNone      = 0x0000,
                    tfActive    = 0x0001,
@@ -64,6 +54,7 @@ private:
   char *aux;
 
 public:
+  cTimer(const PVR_TIMERINFO *Timer);
   cTimer();
   virtual ~cTimer();
   
@@ -97,6 +88,8 @@ public:
   void InvFlags(unsigned int Flags);
   bool HasFlags(unsigned int Flags) const;
   static int TimeToInt(int t);
+  CStdString ToText() const;
+  static CStdString PrintDay(time_t Day, int WeekDays);
 };
 
 #endif //__TIMERS_H

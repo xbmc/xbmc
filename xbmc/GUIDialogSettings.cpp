@@ -192,14 +192,13 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
   else if (setting.type == SettingInfo::BUTTON_DIALOG)
   {
     SET_CONTROL_LABEL(controlID,setting.name);
-    if (m_usePopupSliders && setting.data && setting.formatFunction)
-      SET_CONTROL_LABEL2(controlID,setting.formatFunction(*(float *)setting.data, setting.interval));
+    CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(controlID);
+    if (pControl && setting.data) pControl->SetLabel2(*(CStdString *)setting.data);
   }
   else if (setting.type == SettingInfo::EDIT)
   {
     CGUIEditControl *pControl = (CGUIEditControl *)GetControl(controlID);
     if (pControl && setting.data) pControl->SetLabel2(*(CStdString *)setting.data);
-
   }
   else if (setting.type == SettingInfo::EDIT_NUM)
   {

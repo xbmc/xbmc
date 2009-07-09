@@ -2924,7 +2924,6 @@ PVR_ERROR PVRClientVDR::RequestTimerList(PVRHANDLE handle)
 {
   vector<string> lines;
   int            code;
-  int            index = 1;
 
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
@@ -2977,13 +2976,11 @@ PVR_ERROR PVRClientVDR::RequestTimerList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::GetTimerInfo(unsigned int timernumber, CTVTimerInfoTag &timerinfo)
+PVR_ERROR PVRClientVDR::GetTimerInfo(unsigned int timernumber, PVR_TIMERINFO &tag)
 {
   vector<string>  lines;
   int             code;
   char            buffer[1024];
-  CStdString      name;
-  int             found;
 
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
@@ -2998,152 +2995,35 @@ PVR_ERROR PVRClientVDR::GetTimerInfo(unsigned int timernumber, CTVTimerInfoTag &
   }
 
   vector<string>::iterator it = lines.begin();
-
   string& data(*it);
   CStdString str_result = data;
 
   if (m_bCharsetConv)
     XBMC_unknown_to_utf8(str_result);
 
-  /* Id */
-  timerinfo.m_Index = atol(str_result.c_str());
-  found = str_result.find(" ", 0);
-  str_result.erase(0, found + 1);
+  cTimer timer;
+  timer.Parse(str_result.c_str());
 
-  /* Active */
-  timerinfo.m_Active = (bool) atoi(str_result.c_str());
-  str_result.erase(0, 2);
-
-  /* Channel number */
-  timerinfo.m_clientNum = atol(str_result.c_str());
-  found = str_result.find(":", 0);
-  str_result.erase(0, found + 1);
-
-  /* Start/end time */
-  int year  = atol(str_result.c_str());
-  int month = 0;
-  int day   = 0;
-
-  timerinfo.m_FirstDay = NULL;
-
-  if (year != 0)
-  {
-    timerinfo.m_Repeat = false;
-    found = str_result.find("-", 0);
-    str_result.erase(0, found + 1);
-    month = atol(str_result.c_str());
-    found = str_result.find("-", 0);
-    str_result.erase(0, found + 1);
-    day   = atol(str_result.c_str());
-    found = str_result.find(":", 0);
-    str_result.erase(0, found + 1);
-
-    timerinfo.m_Repeat_Mon = false;
-    timerinfo.m_Repeat_Tue = false;
-    timerinfo.m_Repeat_Wed = false;
-    timerinfo.m_Repeat_Thu = false;
-    timerinfo.m_Repeat_Fri = false;
-    timerinfo.m_Repeat_Sat = false;
-    timerinfo.m_Repeat_Sun = false;
-  }
-  else
-  {
-    timerinfo.m_Repeat = true;
-    timerinfo.m_Repeat_Mon = str_result.compare(0, 1, "-") ? true : false;
-    timerinfo.m_Repeat_Tue = str_result.compare(1, 1, "-") ? true : false;
-    timerinfo.m_Repeat_Wed = str_result.compare(2, 1, "-") ? true : false;
-    timerinfo.m_Repeat_Thu = str_result.compare(3, 1, "-") ? true : false;
-    timerinfo.m_Repeat_Fri = str_result.compare(4, 1, "-") ? true : false;
-    timerinfo.m_Repeat_Sat = str_result.compare(5, 1, "-") ? true : false;
-    timerinfo.m_Repeat_Sun = str_result.compare(6, 1, "-") ? true : false;
-
-    str_result.erase(0, 7);
-    found = str_result.find("@", 0);
-
-    if (found != -1)
-    {
-      year  = atol(str_result.c_str());
-      found = str_result.find("-", 0);
-      str_result.erase(0, found + 1);
-
-      month = atol(str_result.c_str());
-      found = str_result.find("-", 0);
-      str_result.erase(0, found + 1);
-
-      day   = atol(str_result.c_str());
-    }
-
-    found = str_result.find(":", 0);
-
-    str_result.erase(0, found + 1);
-  }
-
-  name.assign(str_result, 2);
-
-  str_result.erase(0, 2);
-  int start_hour = atol(name.c_str());
-
-  name.assign(str_result, 2);
-  str_result.erase(0, 3);
-  int start_minute = atol(name.c_str());
-
-  name.assign(str_result, 2);
-  str_result.erase(0, 2);
-  int end_hour = atol(name.c_str());
-
-  name.assign(str_result, 2);
-  str_result.erase(0, 3);
-  int end_minute = atol(name.c_str());
-
-  if (!timerinfo.m_Repeat)
-  {
-    int end_day = (start_hour > end_hour ? day + 1 : day);
-    timerinfo.m_StartTime = CDateTime(year, month, day, start_hour, start_minute, 0);
-    timerinfo.m_StopTime = CDateTime(year, month, end_day, end_hour, end_minute, 0);
-  }
-  else if (year != 0)
-  {
-    timerinfo.m_FirstDay = CDateTime(year, month, day, start_hour, start_minute, 0);
-    timerinfo.m_StartTime = CDateTime(year, month, day, start_hour, start_minute, 0);
-    timerinfo.m_StopTime = CDateTime(year, month, day, end_hour, end_minute, 0);
-  }
-  else
-  {
-    timerinfo.m_StartTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
-                                      CDateTime::GetCurrentDateTime().GetMonth(),
-                                      CDateTime::GetCurrentDateTime().GetDay(),
-                                      start_hour, start_minute, 0);
-    timerinfo.m_StopTime = CDateTime(CDateTime::GetCurrentDateTime().GetYear(),
-                                     CDateTime::GetCurrentDateTime().GetMonth(),
-                                     CDateTime::GetCurrentDateTime().GetDay(),
-                                     end_hour, end_minute, 0);
-  }
-
-  /* Priority */
-  timerinfo.m_Priority = atol(str_result.c_str());
-  found = str_result.find(":", 0);
-  str_result.erase(0, found + 1);
-
-  /* Lifetime */
-  timerinfo.m_Lifetime = atol(str_result.c_str());
-  found = str_result.find(":", 0);
-  str_result.erase(0, found + 1);
-
-  /* Title */
-  found = str_result.find(":", 0);
-  str_result.erase(found, found + 1);
-  timerinfo.m_strTitle = str_result.c_str();
-  timerinfo.m_strPath.Format("timer://%i%s", timerinfo.m_Index, timerinfo.m_Active ? " *" : "");
+  tag.index = timer.Index();
+  tag.active = timer.HasFlags(tfActive);
+  tag.channelNum = timer.Channel();
+  tag.firstday = timer.FirstDay();
+  tag.starttime = timer.StartTime();
+  tag.endtime = timer.StopTime();
+  tag.recording = timer.HasFlags(tfRecording) || timer.HasFlags(tfInstant);
+  tag.title = timer.File();
+  tag.priority = timer.Priority();
+  tag.lifetime = timer.Lifetime();
+  tag.repeat = timer.WeekDays() == 0 ? false : true;
+  tag.repeatflags = timer.WeekDays();
 
   pthread_mutex_unlock(&m_critSection);
 
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::AddTimer(const CTVTimerInfoTag &timerinfo)
+PVR_ERROR PVRClientVDR::AddTimer(const PVR_TIMERINFO &timerinfo)
 {
-  CStdString     m_Summary;
-  CStdString     m_Summary_2;
   vector<string> lines;
   int            code;
   char           buffer[1024];
@@ -3151,73 +3031,13 @@ PVR_ERROR PVRClientVDR::AddTimer(const CTVTimerInfoTag &timerinfo)
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
 
-  if (!timerinfo.m_Repeat)
-  {
-    m_Summary.Format("%d:%d:%04d-%02d-%02d:%02d%02d:%02d%02d:%d:%d:%s"
-                     , timerinfo.m_Active
-                     , timerinfo.m_clientNum
-                     , timerinfo.m_StartTime.GetYear()
-                     , timerinfo.m_StartTime.GetMonth()
-                     , timerinfo.m_StartTime.GetDay()
-                     , timerinfo.m_StartTime.GetHour()
-                     , timerinfo.m_StartTime.GetMinute()
-                     , timerinfo.m_StopTime.GetHour()
-                     , timerinfo.m_StopTime.GetMinute()
-                     , timerinfo.m_Priority
-                     , timerinfo.m_Lifetime
-                     , timerinfo.m_strTitle.c_str());
-  }
-  else if (timerinfo.m_FirstDay != NULL)
-  {
-    m_Summary.Format("%d:%d:%c%c%c%c%c%c%c@"
-                     , timerinfo.m_Active
-                     , timerinfo.m_clientNum
-                     , timerinfo.m_Repeat_Mon ? 'M' : '-'
-                     , timerinfo.m_Repeat_Tue ? 'T' : '-'
-                     , timerinfo.m_Repeat_Wed ? 'W' : '-'
-                     , timerinfo.m_Repeat_Thu ? 'T' : '-'
-                     , timerinfo.m_Repeat_Fri ? 'F' : '-'
-                     , timerinfo.m_Repeat_Sat ? 'S' : '-'
-                     , timerinfo.m_Repeat_Sun ? 'S' : '-');
-    m_Summary_2.Format("%04d-%02d-%02d:%02d%02d:%02d%02d:%d:%d:%s"
-                       , timerinfo.m_FirstDay.GetYear()
-                       , timerinfo.m_FirstDay.GetMonth()
-                       , timerinfo.m_FirstDay.GetDay()
-                       , timerinfo.m_StartTime.GetHour()
-                       , timerinfo.m_StartTime.GetMinute()
-                       , timerinfo.m_StopTime.GetHour()
-                       , timerinfo.m_StopTime.GetMinute()
-                       , timerinfo.m_Priority
-                       , timerinfo.m_Lifetime
-                       , timerinfo.m_strTitle.c_str());
-    m_Summary = m_Summary + m_Summary_2;
-  }
-  else
-  {
-    m_Summary.Format("%d:%d:%c%c%c%c%c%c%c:%02d%02d:%02d%02d:%d:%d:%s"
-                     , timerinfo.m_Active
-                     , timerinfo.m_clientNum
-                     , timerinfo.m_Repeat_Mon ? 'M' : '-'
-                     , timerinfo.m_Repeat_Tue ? 'T' : '-'
-                     , timerinfo.m_Repeat_Wed ? 'W' : '-'
-                     , timerinfo.m_Repeat_Thu ? 'T' : '-'
-                     , timerinfo.m_Repeat_Fri ? 'F' : '-'
-                     , timerinfo.m_Repeat_Sat ? 'S' : '-'
-                     , timerinfo.m_Repeat_Sun ? 'S' : '-'
-                     , timerinfo.m_StartTime.GetHour()
-                     , timerinfo.m_StartTime.GetMinute()
-                     , timerinfo.m_StopTime.GetHour()
-                     , timerinfo.m_StopTime.GetMinute()
-                     , timerinfo.m_Priority
-                     , timerinfo.m_Lifetime
-                     , timerinfo.m_strTitle.c_str());
-  }
+  cTimer timer(&timerinfo);
 
   pthread_mutex_lock(&m_critSection);
 
-  if (timerinfo.m_Index == -1)
+  if (timerinfo.index == -1)
   {
-    sprintf(buffer, "NEWT %s", m_Summary.c_str());
+    sprintf(buffer, "NEWT %s", timer.ToText().c_str());
 
     if (!m_transceiver->SendCommand(buffer, code, lines))
     {
@@ -3234,8 +3054,7 @@ PVR_ERROR PVRClientVDR::AddTimer(const CTVTimerInfoTag &timerinfo)
   else
   {
     // Modified timer
-    sprintf(buffer, "LSTT %d", timerinfo.m_Index);
-
+    sprintf(buffer, "LSTT %d", timerinfo.index);
     if (!m_transceiver->SendCommand(buffer, code, lines))
     {
       pthread_mutex_unlock(&m_critSection);
@@ -3248,8 +3067,7 @@ PVR_ERROR PVRClientVDR::AddTimer(const CTVTimerInfoTag &timerinfo)
       return PVR_ERROR_NOT_SYNC;
     }
 
-    sprintf(buffer, "MODT %d %s", timerinfo.m_Index, m_Summary.c_str());
-
+    sprintf(buffer, "MODT %d %s", timerinfo.index, timer.ToText().c_str());
     if (!m_transceiver->SendCommand(buffer, code, lines))
     {
       pthread_mutex_unlock(&m_critSection);
@@ -3268,7 +3086,7 @@ PVR_ERROR PVRClientVDR::AddTimer(const CTVTimerInfoTag &timerinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force)
+PVR_ERROR PVRClientVDR::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
 {
   vector<string> lines;
   int            code;
@@ -3279,7 +3097,7 @@ PVR_ERROR PVRClientVDR::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force
 
   pthread_mutex_lock(&m_critSection);
 
-  sprintf(buffer, "LSTT %d", timerinfo.m_Index);
+  sprintf(buffer, "LSTT %d", timerinfo.index);
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
     pthread_mutex_unlock(&m_critSection);
@@ -3296,11 +3114,11 @@ PVR_ERROR PVRClientVDR::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force
 
   if (force)
   {
-    sprintf(buffer, "DELT %d FORCE", timerinfo.m_Index);
+    sprintf(buffer, "DELT %d FORCE", timerinfo.index);
   }
   else
   {
-    sprintf(buffer, "DELT %d", timerinfo.m_Index);
+    sprintf(buffer, "DELT %d", timerinfo.index);
   }
 
   if (!m_transceiver->SendCommand(buffer, code, lines))
@@ -3333,32 +3151,22 @@ PVR_ERROR PVRClientVDR::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname)
+PVR_ERROR PVRClientVDR::RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname)
 {
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
 
-  pthread_mutex_lock(&m_critSection);
-
-  CTVTimerInfoTag timerinfo1;
-  PVR_ERROR ret = GetTimerInfo(timerinfo.m_Index, timerinfo1);
-
+  PVR_TIMERINFO timerinfo1;
+  PVR_ERROR ret = GetTimerInfo(timerinfo.index, timerinfo1);
   if (ret != PVR_ERROR_NO_ERROR)
-  {
-    pthread_mutex_unlock(&m_critSection);
     return ret;
-  }
 
-  timerinfo1.m_strTitle = newname;
-
-  pthread_mutex_unlock(&m_critSection);
+  timerinfo1.title = newname;
   return UpdateTimer(timerinfo1);
 }
 
-PVR_ERROR PVRClientVDR::UpdateTimer(const CTVTimerInfoTag &timerinfo)
+PVR_ERROR PVRClientVDR::UpdateTimer(const PVR_TIMERINFO &timerinfo)
 {
-  CStdString     m_Summary;
-  CStdString     m_Summary_2;
   vector<string> lines;
   int            code;
   char           buffer[1024];
@@ -3366,74 +3174,14 @@ PVR_ERROR PVRClientVDR::UpdateTimer(const CTVTimerInfoTag &timerinfo)
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
 
-  if (timerinfo.m_Index == -1)
+  if (timerinfo.index == -1)
     return PVR_ERROR_NOT_SAVED;
 
-  if (!timerinfo.m_Repeat)
-  {
-    m_Summary.Format("%d:%d:%04d-%02d-%02d:%02d%02d:%02d%02d:%d:%d:%s"
-                     , timerinfo.m_Active
-                     , timerinfo.m_clientNum
-                     , timerinfo.m_StartTime.GetYear()
-                     , timerinfo.m_StartTime.GetMonth()
-                     , timerinfo.m_StartTime.GetDay()
-                     , timerinfo.m_StartTime.GetHour()
-                     , timerinfo.m_StartTime.GetMinute()
-                     , timerinfo.m_StopTime.GetHour()
-                     , timerinfo.m_StopTime.GetMinute()
-                     , timerinfo.m_Priority
-                     , timerinfo.m_Lifetime
-                     , timerinfo.m_strTitle.c_str());
-  }
-  else if (timerinfo.m_FirstDay != NULL)
-  {
-    m_Summary.Format("%d:%d:%c%c%c%c%c%c%c@"
-                     , timerinfo.m_Active
-                     , timerinfo.m_clientNum
-                     , timerinfo.m_Repeat_Mon ? 'M' : '-'
-                     , timerinfo.m_Repeat_Tue ? 'T' : '-'
-                     , timerinfo.m_Repeat_Wed ? 'W' : '-'
-                     , timerinfo.m_Repeat_Thu ? 'T' : '-'
-                     , timerinfo.m_Repeat_Fri ? 'F' : '-'
-                     , timerinfo.m_Repeat_Sat ? 'S' : '-'
-                     , timerinfo.m_Repeat_Sun ? 'S' : '-');
-    m_Summary_2.Format("%04d-%02d-%02d:%02d%02d:%02d%02d:%d:%d:%s"
-                       , timerinfo.m_FirstDay.GetYear()
-                       , timerinfo.m_FirstDay.GetMonth()
-                       , timerinfo.m_FirstDay.GetDay()
-                       , timerinfo.m_StartTime.GetHour()
-                       , timerinfo.m_StartTime.GetMinute()
-                       , timerinfo.m_StopTime.GetHour()
-                       , timerinfo.m_StopTime.GetMinute()
-                       , timerinfo.m_Priority
-                       , timerinfo.m_Lifetime
-                       , timerinfo.m_strTitle.c_str());
-    m_Summary = m_Summary + m_Summary_2;
-  }
-  else
-  {
-    m_Summary.Format("%d:%d:%c%c%c%c%c%c%c:%02d%02d:%02d%02d:%d:%d:%s"
-                     , timerinfo.m_Active
-                     , timerinfo.m_clientNum
-                     , timerinfo.m_Repeat_Mon ? 'M' : '-'
-                     , timerinfo.m_Repeat_Tue ? 'T' : '-'
-                     , timerinfo.m_Repeat_Wed ? 'W' : '-'
-                     , timerinfo.m_Repeat_Thu ? 'T' : '-'
-                     , timerinfo.m_Repeat_Fri ? 'F' : '-'
-                     , timerinfo.m_Repeat_Sat ? 'S' : '-'
-                     , timerinfo.m_Repeat_Sun ? 'S' : '-'
-                     , timerinfo.m_StartTime.GetHour()
-                     , timerinfo.m_StartTime.GetMinute()
-                     , timerinfo.m_StopTime.GetHour()
-                     , timerinfo.m_StopTime.GetMinute()
-                     , timerinfo.m_Priority
-                     , timerinfo.m_Lifetime
-                     , timerinfo.m_strTitle.c_str());
-  }
+  cTimer timer(&timerinfo);
 
   pthread_mutex_lock(&m_critSection);
 
-  sprintf(buffer, "LSTT %d", timerinfo.m_Index);
+  sprintf(buffer, "LSTT %d", timerinfo.index);
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
     pthread_mutex_unlock(&m_critSection);
@@ -3446,7 +3194,7 @@ PVR_ERROR PVRClientVDR::UpdateTimer(const CTVTimerInfoTag &timerinfo)
     return PVR_ERROR_NOT_SYNC;
   }
 
-  sprintf(buffer, "MODT %d %s", timerinfo.m_Index, m_Summary.c_str());
+  sprintf(buffer, "MODT %d %s", timerinfo.index, timer.ToText().c_str());
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
     pthread_mutex_unlock(&m_critSection);

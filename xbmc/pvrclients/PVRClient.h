@@ -103,6 +103,7 @@ protected:
   CStdString            m_hostName;
 
 private:
+  void WriteClientTimerInfo(const CTVTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
   static void PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
   static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);
 };
