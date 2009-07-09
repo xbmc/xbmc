@@ -25,12 +25,13 @@
 #include "LinuxRendererGL.h"
 #elif defined(HAS_SDL)
 #include "LinuxRenderer.h"
-#elif defined (WIN32)
-#include "WinRenderManager.h"
+#elif defined(WIN32)
+#include "WinRenderer.h"
 #endif
 
 #include "utils/SharedSection.h"
 #include "utils/Thread.h"
+#include "settings/VideoSettings.h"
 
 class CXBoxRenderManager
 {
@@ -114,8 +115,10 @@ public:
   CLinuxRendererGL *m_pRenderer;
 #elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
-#else
+#elif defined(HAS_XBOX_D3D)
   CXBoxRenderer *m_pRenderer;
+#else
+  CWinRenderer *m_pRenderer;
 #endif
 
   void Present();
