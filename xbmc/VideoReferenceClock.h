@@ -31,17 +31,14 @@
   #ifdef _DEBUG
     #define D3D_DEBUG_INFO
   #endif
-  namespace D3dClock
-  {
-    #include <d3d9.h>
-    #if(DIRECT3D_VERSION > 0x0900)
-      #include <Dxerr.h>
-    #else
-      #include <dxerr9.h>
-      #define DXGetErrorString(hr)      DXGetErrorString9(hr)
-      #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
-    #endif
-  }
+  #include <d3d9.h>
+  #if(DIRECT3D_VERSION > 0x0900)
+    #include <Dxerr.h>
+  #else
+    #include <dxerr9.h>
+    #define DXGetErrorString(hr)      DXGetErrorString9(hr)
+    #define DXGetErrorDescription(hr) DXGetErrorDescription9(hr)
+  #endif
 #endif
 
 class CVideoReferenceClock : public CThread
@@ -112,8 +109,8 @@ class CVideoReferenceClock : public CThread
     void CleanupD3D();
     void HandleWindowMessages();
 
-    D3dClock::LPDIRECT3D9       m_D3d;
-    D3dClock::LPDIRECT3DDEVICE9 m_D3dDev;
+    LPDIRECT3D9       m_D3d;
+    LPDIRECT3DDEVICE9 m_D3dDev;
 
     HWND          m_Hwnd;
     WNDCLASSEX    m_WinCl;
