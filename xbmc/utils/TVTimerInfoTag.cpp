@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -33,9 +33,8 @@
  * by the PVRManager function "bool AddTimer(const CFileItem &item)" to
  * the backend server.
  *
- * It is a also CVideoInfoTag but only used for information usage, the
- * filename inside the tag is for reference only and gives the index number
- * of the tag reported by the PVR backend and can not be played!
+ * The filename inside the tag is for reference only and gives the index
+ * number of the tag reported by the PVR backend and can not be played!
  *
  *
  * USED SETUP VARIABLES:
@@ -47,10 +46,6 @@
  * pvrmanager.marginstart          = Integer = 2       = Minutes to start record earlier
  * pvrmanager.marginstop           = Integer = 10      = Minutes to stop record later
  *
- *
- * TODO:
- * Nothing in the moment. Any ideas?
- *
  */
 
 #include "stdafx.h"
@@ -58,6 +53,7 @@
 #include "TVEPGInfoTag.h"
 #include "GUISettings.h"
 #include "PVRManager.h"
+#include "FileItem.h"
 #include "Util.h"
 
 
@@ -97,47 +93,36 @@ CTVTimerInfoTag::CTVTimerInfoTag(bool Init)
   int deflifetime = g_guiSettings.GetInt("pvrrecord.defaultlifetime");
 
   if (!rectime)
-  {
     rectime     = 180; /* Default 180 minutes */
-  }
 
   if (!defprio)
-  {
     defprio     = 50;  /* Default */
-  }
 
   if (!deflifetime)
-  {
     deflifetime = 99;  /* Default 99 days */
+
+  const CTVChannelInfoTag *channel = NULL;
+
+  CFileItem *curPlayingChannel = CPVRManager::GetInstance()->GetCurrentChannelItem();
+  if (curPlayingChannel)
+    channel = curPlayingChannel->GetTVChannelInfoTag();
+  else
+    channel = CPVRManager::GetInstance()->GetChannelByNumber(1, false);
+
+  if (channel == NULL)
+  {
+    CLog::Log(LOGERROR, "CTVTimerInfoTag: constructor can't get valid channel");
+    return;
   }
 
   /* Set default timer */
-  m_Index         = -1;
+  m_clientIndex   = -1;
   m_Active        = true;
-
-  if (CPVRManager::GetInstance()->IsPlayingTV())
-  {
-    m_Radio = false;
-    m_channelNum = CPVRManager::GetInstance()->GetCurrentChannel(false);
-    m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(m_channelNum, false);
-  }
-  else if (CPVRManager::GetInstance()->IsPlayingRadio())
-  {
-    m_Radio = true;
-    m_channelNum = CPVRManager::GetInstance()->GetCurrentChannel(true);
-    m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(m_channelNum, true);
-  }
-  else
-  {
-    m_Radio = false;
-    m_channelNum = 1;
-    m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(m_channelNum, false);
-  }
-
-  if (m_channelNum == -1) m_channelNum = 1;
-
-  m_strChannel    = CPVRManager::GetInstance()->GetNameForChannel(m_channelNum, m_Radio);
-  m_strTitle      = m_strChannel;
+  m_strTitle      = channel->m_strChannel;
+  m_channelNum    = channel->m_iChannelNum;
+  m_clientNum     = channel->m_iClientNum;
+  m_clientID      = channel->m_clientID;
+  m_Radio         = channel->m_radio;
 
   /* Calculate start/stop times */
   CDateTime time  = CDateTime::GetCurrentDateTime();
@@ -155,8 +140,7 @@ CTVTimerInfoTag::CTVTimerInfoTag(bool Init)
                    , g_localizeStrings.Get(18079)
                    , m_StopTime.GetAsLocalizedTime("",false));
 
-  m_strFileNameAndPath = "timer://new"; /* Unused only for reference */
-
+  m_strFileNameAndPath = "pvr://timers/new"; /* Unused only for reference */
   return;
 }
 
@@ -171,18 +155,21 @@ CTVTimerInfoTag::CTVTimerInfoTag(bool Init)
  */
 CTVTimerInfoTag::CTVTimerInfoTag(const CFileItem& item)
 {
-
   Reset();
 
-  /* Is file item a CTVEPGInfoTag ? */
-
-  if (!item.IsTVEPG())
+  const CTVEPGInfoTag* tag = item.GetTVEPGInfoTag();
+  if (tag == NULL)
   {
     CLog::Log(LOGERROR, "CTVTimerInfoTag: Can't initialize tag, no EPGInfoTag given!");
     return;
   }
 
-  const CTVEPGInfoTag* tag = item.GetTVEPGInfoTag();
+  const CTVChannelInfoTag *channel  = CPVRManager::GetInstance()->GetChannelByChannelID(tag->m_idChannel);
+  if (channel == NULL)
+  {
+    CLog::Log(LOGERROR, "CTVTimerInfoTag: constructor is called with not present channel");
+    return;
+  }
 
   /* Check epg end date is in the future */
   if (tag->m_endTime < CDateTime::GetCurrentDateTime())
@@ -198,37 +185,28 @@ CTVTimerInfoTag::CTVTimerInfoTag(const CFileItem& item)
   int marginstop  = g_guiSettings.GetInt("pvrrecord.marginstop");
 
   if (!defprio)
-  {
     defprio     = 50;  /* Default */
-  }
 
   if (!deflifetime)
-  {
     deflifetime = 99;  /* Default 99 days */
-  }
 
   if (!deflifetime)
-  {
     marginstart = 2;   /* Default start 2 minutes earlier */
-  }
 
   if (!deflifetime)
-  {
     marginstop  = 10;  /* Default stop 10 minutes later */
-  }
 
   /* Set timer based on EPG entry */
-  m_Index         = -1;
+  m_clientIndex   = -1;
   m_Active        = true;
-  m_channelNum    = tag->m_channelNum;
-  m_clientNum     = CPVRManager::GetInstance()->GetClientChannelNumber(m_channelNum, tag->m_isRadio);
-  m_strChannel    = CPVRManager::GetInstance()->GetNameForChannel(m_channelNum, tag->m_isRadio);
   m_strTitle      = tag->m_strTitle;
+  m_channelNum    = channel->m_iChannelNum;
+  m_clientNum     = channel->m_iClientNum;
+  m_clientID      = channel->m_clientID;
+  m_Radio         = channel->m_radio;
 
   if (m_strTitle.IsEmpty())
-  {
-    m_strTitle  = m_strChannel;
-  }
+    m_strTitle  = channel->m_strChannel;
 
   /* Calculate start/stop times */
   m_StartTime     = tag->m_startTime - CDateTimeSpan(0, marginstart / 60, marginstart % 60, 0);
@@ -245,23 +223,23 @@ CTVTimerInfoTag::CTVTimerInfoTag(const CFileItem& item)
                    , g_localizeStrings.Get(18079)
                    , m_StopTime.GetAsLocalizedTime("",false));
 
-  m_strFileNameAndPath = "timer://new"; /* Unused only for reference */
-
+  m_strFileNameAndPath = "pvr://timers/new"; /* Unused only for reference */
   return;
 }
 
+/**
+ * Compare equal for two CTVTimerInfoTag
+ */
 bool CTVTimerInfoTag::operator ==(const CTVTimerInfoTag& right) const
 {
-
   if (this == &right) return true;
 
-  return (m_Index                 == right.m_Index &&
+  return (m_clientIndex           == right.m_clientIndex &&
           m_Active                == right.m_Active &&
           m_Summary               == right.m_Summary &&
           m_channelNum            == right.m_channelNum &&
           m_clientNum             == right.m_clientNum &&
           m_Radio                 == right.m_Radio &&
-          m_strChannel            == right.m_strChannel &&
           m_Repeat                == right.m_Repeat &&
           m_StartTime             == right.m_StartTime &&
           m_StopTime              == right.m_StopTime &&
@@ -275,18 +253,19 @@ bool CTVTimerInfoTag::operator ==(const CTVTimerInfoTag& right) const
           m_clientID              == right.m_clientID);
 }
 
+/**
+ * Compare not equal for two CTVTimerInfoTag
+ */
 bool CTVTimerInfoTag::operator !=(const CTVTimerInfoTag& right) const
 {
-
   if (this == &right) return false;
 
-  return (m_Index                 != right.m_Index &&
+  return (m_clientIndex           != right.m_clientIndex &&
           m_Active                != right.m_Active &&
           m_Summary               != right.m_Summary &&
           m_channelNum            != right.m_channelNum &&
           m_clientNum             != right.m_clientNum &&
           m_Radio                 != right.m_Radio &&
-          m_strChannel            != right.m_strChannel &&
           m_Repeat                != right.m_Repeat &&
           m_StartTime             != right.m_StartTime &&
           m_StopTime              != right.m_StopTime &&
@@ -305,34 +284,33 @@ bool CTVTimerInfoTag::operator !=(const CTVTimerInfoTag& right) const
  */
 void CTVTimerInfoTag::Reset()
 {
-
-  m_Index         = -1;
-  m_Active        = false;
-
+  m_strTitle      = "";
   m_Summary       = "";
 
-  m_clientID      = CPVRManager::GetInstance()->GetCurrentClientID(); // Temporary until we support multiple backends
+  m_Active        = false;
   m_channelNum    = -1;
+  m_clientID      = CPVRManager::GetInstance()->GetFirstClientID();
+  m_clientIndex   = -1;
   m_clientNum     = -1;
   m_Radio         = false;
-  m_strChannel    = "";
+  m_recStatus     = false;
 
-  m_Repeat        = false;
   m_StartTime     = NULL;
   m_StopTime      = NULL;
+
+  m_Repeat        = false;
   m_FirstDay      = NULL;
   m_Weekdays      = 0;
-
-  m_recStatus     = false;
 
   m_Priority      = -1;
   m_Lifetime      = -1;
 
   m_strFileNameAndPath = "";
-
-  CVideoInfoTag::Reset();
 }
 
+/**
+ * Get the status string of this Timer, is used by the GUIInfoManager
+ */
 const CStdString CTVTimerInfoTag::GetStatus() const
 {
   if (!m_Active)

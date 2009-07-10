@@ -688,7 +688,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
 
   CTVTimerInfoTag tag;
   tag.m_clientID            = client->m_clientID;
-  tag.m_Index               = timer->index;
+  tag.m_clientIndex         = timer->index;
   tag.m_Active              = timer->active;
   tag.m_strTitle            = timer->title;
   tag.m_clientNum           = timer->channelNum;
@@ -701,9 +701,8 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   tag.m_Repeat              = timer->repeat;
   tag.m_Weekdays            = timer->repeatflags;
   tag.m_channelNum          = channel->m_iChannelNum;
-  tag.m_strChannel          = channel->m_strChannel;
   tag.m_Radio               = channel->m_radio;
-  tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_clientID, tag.m_Index);
+  tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_clientID, tag.m_clientIndex);
 
   if (!tag.m_Repeat)
   {
@@ -868,7 +867,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const CTVTimerInfoTag &timerinfo)
 
 void CPVRClient::WriteClientTimerInfo(const CTVTimerInfoTag &timerinfo, PVR_TIMERINFO &tag)
 {
-  tag.index = timerinfo.m_Index;
+  tag.index = timerinfo.m_clientIndex;
   tag.active = timerinfo.m_Active;
   tag.channelNum = timerinfo.m_clientNum;
   tag.recording = timerinfo.m_recStatus;

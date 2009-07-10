@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -24,11 +24,11 @@
  * for DESCRIPTION see 'TVTimerInfoTag.cpp'
  */
 
-#include "VideoInfoTag.h"
 #include "DateTime.h"
-#include "FileItem.h"
 
-class CTVTimerInfoTag : public CVideoInfoTag
+class CFileItem;
+
+class CTVTimerInfoTag
 {
 public:
   CTVTimerInfoTag();
@@ -41,25 +41,23 @@ public:
   void Reset();
   const CStdString GetStatus() const;
 
-  int             m_Index;                /// Index number of the tag, given by the backend, -1 for new
-  bool            m_Active;               /// Active flag, if it is false backend ignore the timer
-
+  CStdString      m_strTitle;             /// Name of this timer
   CStdString      m_Summary;              /// Summary string with the time to show inside a GUI list
-  /// see PVRManager.cpp for format.
 
-  int             m_clientID;             /// ID of the backend
+  bool            m_Active;               /// Active flag, if it is false backend ignore the timer
   int             m_channelNum;           /// Integer value of the channel number
+  int             m_clientID;             /// ID of the backend
+  int             m_clientIndex;          /// Index number of the tag, given by the backend, -1 for new
   int             m_clientNum;            /// Integer value of the client number
-  CStdString      m_strChannel;           /// String name of the channel
   bool            m_Radio;                /// Is Radio channel if set
+  bool            m_recStatus;            /// Is this timer recording?
 
-  bool            m_Repeat;               /// Repeating timer if true, use the m_FirstDay and repeat flags
   CDateTime       m_StartTime;            /// Start time
   CDateTime       m_StopTime;             /// Stop time
+
+  bool            m_Repeat;               /// Repeating timer if true, use the m_FirstDay and repeat flags
   CDateTime       m_FirstDay;             /// If it is a repeating timer the first date it starts
   int             m_Weekdays;             /// Bit based store of weekdays to repeat
-
-  bool            m_recStatus;
 
   int             m_Priority;             /// Priority of the timer
   int             m_Lifetime;             /// Lifetime of the timer in days

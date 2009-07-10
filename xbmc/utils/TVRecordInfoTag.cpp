@@ -217,7 +217,7 @@ void CTVRecordingInfoTag::SortMarks(void)
 void CTVRecordingInfoTag::Reset(void)
 {
   m_Index                 = -1;
-  m_clientID              = CPVRManager::GetInstance()->GetCurrentClientID(); // Temporary until we support multiple backends
+  m_clientID              = CPVRManager::GetInstance()->GetFirstClientID(); // Temporary until we support multiple backends
   m_channelNum            = -1;
   m_strChannel            = "";
   m_seriesID              = "";

@@ -712,7 +712,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       else if (iAction == ACTION_DELETE_ITEM)
       {
         /* Check if entry is a valid deleteable timer */
-        if (pItem->GetTVTimerInfoTag()->m_Index != -1)
+        if (pItem->GetTVTimerInfoTag()->m_clientIndex != -1)
         {
           // prompt user for confirmation of timer deletion
           CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
