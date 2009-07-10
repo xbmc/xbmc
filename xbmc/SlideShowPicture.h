@@ -79,7 +79,7 @@ private:
 #ifdef HAS_SDL_OPENGL
   void Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode = GL_FILL);
   CGLTexture *m_pImage;
-#elif HAS_SDL
+#elif defined(HAS_SDL)
   void Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor);
   XBMC::TexturePtr m_pImage;
 #else
