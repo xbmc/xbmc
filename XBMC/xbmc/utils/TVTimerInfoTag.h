@@ -27,19 +27,23 @@
 #include "DateTime.h"
 
 class CFileItem;
+class CTVEPGInfoTag;
 
-class CTVTimerInfoTag
+class cPVRTimerInfoTag
 {
 public:
-  CTVTimerInfoTag();
-  CTVTimerInfoTag(const CFileItem& item);
-  CTVTimerInfoTag(bool Init);
+  cPVRTimerInfoTag();
+  cPVRTimerInfoTag(const CFileItem& item);
+  cPVRTimerInfoTag(bool Init);
 
-  bool operator ==(const CTVTimerInfoTag& right) const;
-  bool operator !=(const CTVTimerInfoTag& right) const;
+  bool operator ==(const cPVRTimerInfoTag& right) const;
+  bool operator !=(const cPVRTimerInfoTag& right) const;
 
   void Reset();
   const CStdString GetStatus() const;
+  int Compare(const cPVRTimerInfoTag &timer) const;
+  time_t StartTime(void) const;
+  time_t StopTime(void) const;
 
   CStdString      m_strTitle;             /// Name of this timer
   CStdString      m_Summary;              /// Summary string with the time to show inside a GUI list
@@ -66,4 +70,20 @@ public:
 
 };
 
-typedef std::vector<CTVTimerInfoTag> VECTVTIMERS;
+typedef std::vector<cPVRTimerInfoTag> VECTVTIMERS;
+
+class cPVRTimers : public std::vector<cPVRTimerInfoTag> 
+{
+private:
+
+public:
+  cPVRTimers(void);
+  cPVRTimerInfoTag *GetTimer(cPVRTimerInfoTag *Timer);
+  cPVRTimerInfoTag *GetMatch(CDateTime t);
+  cPVRTimerInfoTag *GetMatch(time_t t);
+  cPVRTimerInfoTag *GetMatch(const CTVEPGInfoTag *Epg, int *Match = NULL);
+  cPVRTimerInfoTag *GetNextActiveTimer(void);
+  void Clear();
+};
+
+extern cPVRTimers PVRTimers;

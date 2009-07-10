@@ -23,7 +23,7 @@
 #include "../utils/Addon.h"
 #include "../utils/TVEPGInfoTag.h"
 #include "../utils/TVChannelInfoTag.h"
-#include "../utils/TVTimerInfoTag.h"
+#include "../utils/PVRTimers.h"
 #include "../utils/TVRecordInfoTag.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
@@ -79,11 +79,11 @@ public:
   virtual PVR_ERROR RenameRecording(const CTVRecordingInfoTag &recinfo, CStdString &newname)=0;
 
   virtual int GetNumTimers(void)=0;
-  virtual PVR_ERROR GetAllTimers(VECTVTIMERS *results)=0;
-  virtual PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo)=0;
-  virtual PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force = false)=0;
-  virtual PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname)=0;
-  virtual PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo)=0;
+  virtual PVR_ERROR GetAllTimers(cPVRTimers *results)=0;
+  virtual PVR_ERROR AddTimer(const cPVRTimerInfoTag &timerinfo)=0;
+  virtual PVR_ERROR DeleteTimer(const cPVRTimerInfoTag &timerinfo, bool force = false)=0;
+  virtual PVR_ERROR RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString &newname)=0;
+  virtual PVR_ERROR UpdateTimer(const cPVRTimerInfoTag &timerinfo)=0;
 
   virtual bool OpenLiveStream(unsigned int channel)=0;
   virtual void CloseLiveStream()=0;

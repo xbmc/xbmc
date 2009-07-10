@@ -22,7 +22,7 @@
 /*
  * DESCRIPTION:
  *
- * CTVTimerInfoTag is part of the PVRManager to support sheduled recordings.
+ * cPVRTimerInfoTag is part of the PVRManager to support sheduled recordings.
  *
  * The timer information tag holds data about current programmed timers for
  * the PVRManager. It is possible to create timers directly based upon
@@ -49,7 +49,7 @@
  */
 
 #include "stdafx.h"
-#include "TVTimerInfoTag.h"
+#include "PVRTimers.h"
 #include "TVEPGInfoTag.h"
 #include "GUISettings.h"
 #include "PVRManager.h"
@@ -60,14 +60,14 @@
 /**
  * Create a blank unmodified timer tag
  */
-CTVTimerInfoTag::CTVTimerInfoTag()
+cPVRTimerInfoTag::cPVRTimerInfoTag()
 {
   Reset();
 }
 
 /**
  * Creates a instant timer on current date and channel if "bool Init"
- * is set one hour later as now otherwise a blank CTVTimerInfoTag is
+ * is set one hour later as now otherwise a blank cPVRTimerInfoTag is
  * given.
  * \param bool Init             = Initialize as instant timer if set
  *
@@ -76,14 +76,14 @@ CTVTimerInfoTag::CTVTimerInfoTag()
  * is false something goes wrong during initialization!
  * See Log for errors.
  */
-CTVTimerInfoTag::CTVTimerInfoTag(bool Init)
+cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
 {
   Reset();
 
   /* Check if instant flag is set otherwise return */
   if (!Init)
   {
-    CLog::Log(LOGERROR, "CTVTimerInfoTag: Can't initialize tag, Init flag not set!");
+    CLog::Log(LOGERROR, "cPVRTimerInfoTag: Can't initialize tag, Init flag not set!");
     return;
   }
 
@@ -111,7 +111,7 @@ CTVTimerInfoTag::CTVTimerInfoTag(bool Init)
 
   if (channel == NULL)
   {
-    CLog::Log(LOGERROR, "CTVTimerInfoTag: constructor can't get valid channel");
+    CLog::Log(LOGERROR, "cPVRTimerInfoTag: constructor can't get valid channel");
     return;
   }
 
@@ -153,28 +153,28 @@ CTVTimerInfoTag::CTVTimerInfoTag(bool Init)
  * is false something goes wrong during initialization!
  * See Log for errors.
  */
-CTVTimerInfoTag::CTVTimerInfoTag(const CFileItem& item)
+cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
 {
   Reset();
 
   const CTVEPGInfoTag* tag = item.GetTVEPGInfoTag();
   if (tag == NULL)
   {
-    CLog::Log(LOGERROR, "CTVTimerInfoTag: Can't initialize tag, no EPGInfoTag given!");
+    CLog::Log(LOGERROR, "cPVRTimerInfoTag: Can't initialize tag, no EPGInfoTag given!");
     return;
   }
 
   const CTVChannelInfoTag *channel  = CPVRManager::GetInstance()->GetChannelByChannelID(tag->m_idChannel);
   if (channel == NULL)
   {
-    CLog::Log(LOGERROR, "CTVTimerInfoTag: constructor is called with not present channel");
+    CLog::Log(LOGERROR, "cPVRTimerInfoTag: constructor is called with not present channel");
     return;
   }
 
   /* Check epg end date is in the future */
   if (tag->m_endTime < CDateTime::GetCurrentDateTime())
   {
-    CLog::Log(LOGERROR, "CTVTimerInfoTag: Can't initialize tag, EPGInfoTag is in the past!");
+    CLog::Log(LOGERROR, "cPVRTimerInfoTag: Can't initialize tag, EPGInfoTag is in the past!");
     return;
   }
 
@@ -228,9 +228,9 @@ CTVTimerInfoTag::CTVTimerInfoTag(const CFileItem& item)
 }
 
 /**
- * Compare equal for two CTVTimerInfoTag
+ * Compare equal for two cPVRTimerInfoTag
  */
-bool CTVTimerInfoTag::operator ==(const CTVTimerInfoTag& right) const
+bool cPVRTimerInfoTag::operator ==(const cPVRTimerInfoTag& right) const
 {
   if (this == &right) return true;
 
@@ -254,9 +254,9 @@ bool CTVTimerInfoTag::operator ==(const CTVTimerInfoTag& right) const
 }
 
 /**
- * Compare not equal for two CTVTimerInfoTag
+ * Compare not equal for two cPVRTimerInfoTag
  */
-bool CTVTimerInfoTag::operator !=(const CTVTimerInfoTag& right) const
+bool cPVRTimerInfoTag::operator !=(const cPVRTimerInfoTag& right) const
 {
   if (this == &right) return false;
 
@@ -279,10 +279,34 @@ bool CTVTimerInfoTag::operator !=(const CTVTimerInfoTag& right) const
           m_clientID              != right.m_clientID);
 }
 
+time_t cPVRTimerInfoTag::StartTime(void) const
+{ 
+  time_t start;
+  m_StartTime.GetAsTime(start);
+  return start; 
+}
+
+time_t cPVRTimerInfoTag::StopTime(void) const
+{ 
+  time_t stop;
+  m_StopTime.GetAsTime(stop);
+  return stop; 
+}
+  
+int cPVRTimerInfoTag::Compare(const cPVRTimerInfoTag &timer) const
+{
+  time_t timer1 = StartTime();
+  time_t timer2 = timer.StartTime();
+  int r = timer1 - timer2;
+  if (r == 0)
+    r = timer.m_Priority - m_Priority;
+  return r;
+}
+
 /**
- * Initialize blank CTVTimerInfoTag
+ * Initialize blank cPVRTimerInfoTag
  */
-void CTVTimerInfoTag::Reset()
+void cPVRTimerInfoTag::Reset()
 {
   m_strTitle      = "";
   m_Summary       = "";
@@ -311,7 +335,7 @@ void CTVTimerInfoTag::Reset()
 /**
  * Get the status string of this Timer, is used by the GUIInfoManager
  */
-const CStdString CTVTimerInfoTag::GetStatus() const
+const CStdString cPVRTimerInfoTag::GetStatus() const
 {
   if (!m_Active)
     return g_localizeStrings.Get(13106);
@@ -319,4 +343,65 @@ const CStdString CTVTimerInfoTag::GetStatus() const
     return g_localizeStrings.Get(18069);
   else
     return g_localizeStrings.Get(305);
+}
+
+
+// --- cPVRTimers ---------------------------------------------------------------
+
+cPVRTimers PVRTimers;
+
+cPVRTimers::cPVRTimers(void)
+{
+
+}
+
+cPVRTimerInfoTag *cPVRTimers::GetTimer(cPVRTimerInfoTag *Timer)
+{
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).m_channelNum == Timer->m_channelNum &&
+        (at(i).m_Weekdays && at(i).m_Weekdays == Timer->m_Weekdays || !at(i).m_Weekdays && at(i).m_FirstDay == Timer->m_FirstDay) &&
+        at(i).m_StartTime == Timer->m_StartTime &&
+        at(i).m_StopTime == Timer->m_StopTime)
+      return &at(i);
+  }
+  return NULL;
+}
+
+cPVRTimerInfoTag *cPVRTimers::GetMatch(CDateTime t)
+{
+
+  return NULL;
+}
+
+cPVRTimerInfoTag *cPVRTimers::GetMatch(time_t t)
+{
+
+  return NULL;
+}
+
+cPVRTimerInfoTag *cPVRTimers::GetMatch(const CTVEPGInfoTag *Epg, int *Match)
+{
+
+  return NULL;
+}
+
+cPVRTimerInfoTag *cPVRTimers::GetNextActiveTimer(void)
+{
+  cPVRTimerInfoTag *t0 = NULL;
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if ((at(i).m_Active) && (!t0 || at(i).m_StopTime > CDateTime::GetCurrentDateTime() && at(i).Compare(*t0) < 0))
+    {
+      t0 = &at(i);
+    }
+  }
+  return t0;
+}
+
+void cPVRTimers::Clear()
+{
+  /* Clear all current present Timers inside list */
+  erase(begin(), end());
+  return;
 }

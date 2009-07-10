@@ -28,7 +28,7 @@
 #include "utils/AddonManager.h"
 #include "utils/TVChannelInfoTag.h"
 #include "utils/TVRecordInfoTag.h"
-#include "utils/TVTimerInfoTag.h"
+#include "utils/PVRTimers.h"
 
 #include <vector>
 
@@ -138,7 +138,6 @@ public:
   bool DeleteTimer(const CFileItem &item, bool force = false);
   bool RenameTimer(const CFileItem &item, CStdString &newname);
   bool UpdateTimer(const CFileItem &item);
-  CDateTime NextTimerDate(void);
 
   /* Live stream handling */
   bool OpenLiveStream(unsigned int channel, bool radio = false);
@@ -212,7 +211,6 @@ private:
   VECCHANNELS         m_channels_tv;
   VECCHANNELS         m_channels_radio;
   VECRECORDINGS       m_recordings;
-  VECTVTIMERS         m_timers;
   CHANNELGROUPS_DATA  m_channel_group;
 
   CRITICAL_SECTION    m_critSection;

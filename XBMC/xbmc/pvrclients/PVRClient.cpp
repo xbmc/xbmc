@@ -641,7 +641,7 @@ int CPVRClient::GetNumTimers(void)
   return -1;
 }
 
-PVR_ERROR CPVRClient::GetAllTimers(VECTVTIMERS *results)
+PVR_ERROR CPVRClient::GetAllTimers(cPVRTimers *results)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -649,7 +649,7 @@ PVR_ERROR CPVRClient::GetAllTimers(VECTVTIMERS *results)
   {
     try
     {
-      const PVRHANDLE handle = (VECTVTIMERS*) results;
+      const PVRHANDLE handle = (cPVRTimers*) results;
       ret = m_pClient->RequestTimerList(handle);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
@@ -677,7 +677,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
     return;
   }
 
-  VECTVTIMERS *xbmcTimers     = (VECTVTIMERS*) handle;
+  cPVRTimers *xbmcTimers     = (cPVRTimers*) handle;
   CTVChannelInfoTag *channel  = CPVRManager::GetInstance()->GetChannelByClientNumber(timer->channelNum, client->m_clientID);
   
   if (channel == NULL)
@@ -686,7 +686,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
     return;
   }
 
-  CTVTimerInfoTag tag;
+  cPVRTimerInfoTag tag;
   tag.m_clientID            = client->m_clientID;
   tag.m_clientIndex         = timer->index;
   tag.m_Active              = timer->active;
@@ -749,7 +749,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   return;
 }
 
-PVR_ERROR CPVRClient::AddTimer(const CTVTimerInfoTag &timerinfo)
+PVR_ERROR CPVRClient::AddTimer(const cPVRTimerInfoTag &timerinfo)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -778,7 +778,7 @@ PVR_ERROR CPVRClient::AddTimer(const CTVTimerInfoTag &timerinfo)
   return ret;
 }
 
-PVR_ERROR CPVRClient::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force)
+PVR_ERROR CPVRClient::DeleteTimer(const cPVRTimerInfoTag &timerinfo, bool force)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -807,7 +807,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force)
   return ret;
 }
 
-PVR_ERROR CPVRClient::RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname)
+PVR_ERROR CPVRClient::RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString &newname)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -836,7 +836,7 @@ PVR_ERROR CPVRClient::RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &
   return ret;
 }
 
-PVR_ERROR CPVRClient::UpdateTimer(const CTVTimerInfoTag &timerinfo)
+PVR_ERROR CPVRClient::UpdateTimer(const cPVRTimerInfoTag &timerinfo)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -865,7 +865,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const CTVTimerInfoTag &timerinfo)
   return ret;
 }
 
-void CPVRClient::WriteClientTimerInfo(const CTVTimerInfoTag &timerinfo, PVR_TIMERINFO &tag)
+void CPVRClient::WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag)
 {
   tag.index = timerinfo.m_clientIndex;
   tag.active = timerinfo.m_Active;
