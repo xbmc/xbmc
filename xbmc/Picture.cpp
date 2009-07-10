@@ -218,7 +218,6 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
 #endif
     XBMC::TexturePtr texture = NULL;
 #else
-    XBMC::PalettePtr palette = baseTexture.m_palette;
     XBMC::TexturePtr texture = baseTexture.m_textures[0];
 #endif
     if (texture)
