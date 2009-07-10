@@ -85,7 +85,8 @@ void CPullupCorrection::Add(double pts)
   {
     m_haspattern = true;
     m_patternlength = m_pattern.size();
-    CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i", pattern.size());
+    CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s",
+              pattern.size(), GetPatternStr().c_str());
   }
   
   //calculate where we are in the pattern
@@ -272,4 +273,19 @@ double CPullupCorrection::CalcFrameDuration()
     frameduration += m_pattern[i];
   }
   return frameduration / m_pattern.size();
+}
+
+//looks pretty in the log
+string CPullupCorrection::GetPatternStr()
+{
+  string patternstr;
+  CStdString diffstr;
+  
+  for (unsigned int i = 0; i < m_pattern.size(); i++)
+  {
+    diffstr.Format("%.2f ", m_pattern[i]);
+    patternstr += diffstr;
+  }
+  
+  return patternstr;
 }

@@ -22,6 +22,7 @@
  */
  
 #include <vector>
+#include <string>
  
 #define DIFFRINGSIZE 100
 
@@ -59,4 +60,5 @@ class CPullupCorrection
     double m_ptscorrection;        //the correction needed for the last added pts
     bool   m_haspattern;           //for the log
     int    m_patternlength;        //for the codec info
+    std::string GetPatternStr();   //also for the log
 };
