@@ -75,7 +75,7 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
 	xbmc/cores/paplayer/MP3Codec \
-	xbmc/cores/paplayer/flac-1.2.1/ \
+	xbmc/cores/paplayer/flac-1.2.1 \
 	xbmc/cores/paplayer/MACDll \
 	xbmc/cores/paplayer/vorbisfile
 
