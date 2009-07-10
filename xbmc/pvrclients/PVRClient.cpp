@@ -699,68 +699,51 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   tag.m_Lifetime            = timer->lifetime;
   tag.m_recStatus           = timer->recording;
   tag.m_Repeat              = timer->repeat;
+  tag.m_Weekdays            = timer->repeatflags;
   tag.m_channelNum          = channel->m_iChannelNum;
   tag.m_strChannel          = channel->m_strChannel;
   tag.m_Radio               = channel->m_radio;
   tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_clientID, tag.m_Index);
 
-  if (tag.m_Repeat)
-  {
-    if (timer->repeatflags & 0x01)
-      tag.m_Repeat_Mon = true;
-    if (timer->repeatflags & 0x02)
-      tag.m_Repeat_Tue = true;
-    if (timer->repeatflags & 0x04)
-      tag.m_Repeat_Wed = true;
-    if (timer->repeatflags & 0x08)
-      tag.m_Repeat_Thu = true;
-    if (timer->repeatflags & 0x10)
-      tag.m_Repeat_Fri = true;
-    if (timer->repeatflags & 0x20)
-      tag.m_Repeat_Sat = true;
-    if (timer->repeatflags & 0x40)
-      tag.m_Repeat_Sun = true;
-  }
-
   if (!tag.m_Repeat)
   {
     tag.m_Summary.Format("%s %s %s %s %s", tag.m_StartTime.GetAsLocalizedDate()
-                           , g_localizeStrings.Get(18078)
-                           , tag.m_StartTime.GetAsLocalizedTime("", false)
-                           , g_localizeStrings.Get(18079)
-                           , tag.m_StopTime.GetAsLocalizedTime("", false));
+                         , g_localizeStrings.Get(18078)
+                         , tag.m_StartTime.GetAsLocalizedTime("", false)
+                         , g_localizeStrings.Get(18079)
+                         , tag.m_StopTime.GetAsLocalizedTime("", false));
   }
   else if (tag.m_FirstDay != NULL)
   {
     tag.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
-                               , tag.m_Repeat_Mon ? g_localizeStrings.Get(18080) : "__"
-                               , tag.m_Repeat_Tue ? g_localizeStrings.Get(18081) : "__"
-                               , tag.m_Repeat_Wed ? g_localizeStrings.Get(18082) : "__"
-                               , tag.m_Repeat_Thu ? g_localizeStrings.Get(18083) : "__"
-                               , tag.m_Repeat_Fri ? g_localizeStrings.Get(18084) : "__"
-                               , tag.m_Repeat_Sat ? g_localizeStrings.Get(18085) : "__"
-                               , tag.m_Repeat_Sun ? g_localizeStrings.Get(18086) : "__"
-                               , g_localizeStrings.Get(18087)
-                               , tag.m_FirstDay.GetAsLocalizedDate(false)
-                               , g_localizeStrings.Get(18078)
-                               , tag.m_StartTime.GetAsLocalizedTime("", false)
-                               , g_localizeStrings.Get(18079)
-                               , tag.m_StopTime.GetAsLocalizedTime("", false));
+                         , tag.m_Weekdays & 0x01 ? g_localizeStrings.Get(18080) : "__"
+                         , tag.m_Weekdays & 0x02 ? g_localizeStrings.Get(18081) : "__"
+                         , tag.m_Weekdays & 0x04 ? g_localizeStrings.Get(18082) : "__"
+                         , tag.m_Weekdays & 0x08 ? g_localizeStrings.Get(18083) : "__"
+                         , tag.m_Weekdays & 0x10 ? g_localizeStrings.Get(18084) : "__"
+                         , tag.m_Weekdays & 0x20 ? g_localizeStrings.Get(18085) : "__"
+                         , tag.m_Weekdays & 0x40 ? g_localizeStrings.Get(18086) : "__"
+                         , g_localizeStrings.Get(18087)
+                         , tag.m_FirstDay.GetAsLocalizedDate(false)
+                         , g_localizeStrings.Get(18078)
+                         , tag.m_StartTime.GetAsLocalizedTime("", false)
+                         , g_localizeStrings.Get(18079)
+                         , tag.m_StopTime.GetAsLocalizedTime("", false));
   }
   else
   {
     tag.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
-                               , tag.m_Repeat_Mon ? g_localizeStrings.Get(18080) : "__"
-                               , tag.m_Repeat_Tue ? g_localizeStrings.Get(18081) : "__"
-                               , tag.m_Repeat_Wed ? g_localizeStrings.Get(18082) : "__"
-                               , tag.m_Repeat_Thu ? g_localizeStrings.Get(18083) : "__"
-                               , tag.m_Repeat_Fri ? g_localizeStrings.Get(18084) : "__"
-                               , tag.m_Repeat_Sat ? g_localizeStrings.Get(18085) : "__"
-                               , tag.m_Repeat_Sun ? g_localizeStrings.Get(18086) : "__"
-                               , g_localizeStrings.Get(18078)
-                               , tag.m_StartTime.GetAsLocalizedTime("", false)
-                               , g_localizeStrings.Get(18079)
-                               , tag.m_StopTime.GetAsLocalizedTime("", false));
+                         , tag.m_Weekdays & 0x01 ? g_localizeStrings.Get(18080) : "__"
+                         , tag.m_Weekdays & 0x02 ? g_localizeStrings.Get(18081) : "__"
+                         , tag.m_Weekdays & 0x04 ? g_localizeStrings.Get(18082) : "__"
+                         , tag.m_Weekdays & 0x08 ? g_localizeStrings.Get(18083) : "__"
+                         , tag.m_Weekdays & 0x10 ? g_localizeStrings.Get(18084) : "__"
+                         , tag.m_Weekdays & 0x20 ? g_localizeStrings.Get(18085) : "__"
+                         , tag.m_Weekdays & 0x40 ? g_localizeStrings.Get(18086) : "__"
+                         , g_localizeStrings.Get(18078)
+                         , tag.m_StartTime.GetAsLocalizedTime("", false)
+                         , g_localizeStrings.Get(18079)
+                         , tag.m_StopTime.GetAsLocalizedTime("", false));
   }
 
   xbmcTimers->push_back(tag);
@@ -893,26 +876,8 @@ void CPVRClient::WriteClientTimerInfo(const CTVTimerInfoTag &timerinfo, PVR_TIME
   tag.priority = timerinfo.m_Priority;
   tag.lifetime = timerinfo.m_Lifetime;
   tag.repeat = timerinfo.m_Repeat;
-  tag.repeatflags = 0;
+  tag.repeatflags = timerinfo.m_Weekdays;
 
-  if (tag.repeat)
-  {
-    if (timerinfo.m_Repeat_Mon)
-      tag.repeatflags |= 0x01;
-    if (timerinfo.m_Repeat_Tue)
-      tag.repeatflags |= 0x02;
-    if (timerinfo.m_Repeat_Wed)
-      tag.repeatflags |= 0x04;
-    if (timerinfo.m_Repeat_Thu)
-      tag.repeatflags |= 0x08;
-    if (timerinfo.m_Repeat_Fri)
-      tag.repeatflags |= 0x10;
-    if (timerinfo.m_Repeat_Sat)
-      tag.repeatflags |= 0x20;
-    if (timerinfo.m_Repeat_Sun)
-      tag.repeatflags |= 0x40;
-  }
-  
   timerinfo.m_StartTime.GetAsTime(tag.starttime);
   timerinfo.m_StopTime.GetAsTime(tag.endtime);
   timerinfo.m_FirstDay.GetAsTime(tag.firstday);

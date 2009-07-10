@@ -1330,6 +1330,23 @@ CTVChannelInfoTag *CPVRManager::GetChannelByClientNumber(unsigned int client_no,
   return NULL;
 }
 
+CTVChannelInfoTag *CPVRManager::GetChannelByChannelID(unsigned int id)
+{
+  for (unsigned int i = 0; i < m_channels_tv.size(); i++)
+  {
+    if (m_channels_tv[i].m_iIdChannel == id)
+      return &m_channels_tv[i];
+  }
+
+  for (unsigned int i = 0; i < m_channels_radio.size(); i++)
+  {
+    if (m_channels_radio[i].m_iIdChannel == id)
+      return &m_channels_radio[i];
+  }
+
+  return NULL;
+}
+
 int CPVRManager::GetClientChannelNumber(unsigned int frontend_no, bool radio)
 {
   if (m_client)

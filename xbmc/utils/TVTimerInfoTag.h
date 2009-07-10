@@ -57,13 +57,7 @@ public:
   CDateTime       m_StartTime;            /// Start time
   CDateTime       m_StopTime;             /// Stop time
   CDateTime       m_FirstDay;             /// If it is a repeating timer the first date it starts
-  bool            m_Repeat_Mon;           /// Repeat sheduled recording every monday
-  bool            m_Repeat_Tue;           /// Repeat sheduled recording every tuesday
-  bool            m_Repeat_Wed;           /// Repeat sheduled recording every wednesday
-  bool            m_Repeat_Thu;           /// Repeat sheduled recording every thursday
-  bool            m_Repeat_Fri;           /// Repeat sheduled recording every friday
-  bool            m_Repeat_Sat;           /// Repeat sheduled recording every saturday
-  bool            m_Repeat_Sun;           /// Repeat sheduled recording every sunday
+  int             m_Weekdays;             /// Bit based store of weekdays to repeat
 
   bool            m_recStatus;
 
