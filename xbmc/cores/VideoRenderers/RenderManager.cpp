@@ -312,7 +312,7 @@ void CXBoxRenderManager::SetupScreenshot()
     m_pRenderer->SetupScreenshot();
 }
 
-void CXBoxRenderManager::CreateThumbnail(SurfacePtr surface, unsigned int width, unsigned int height)
+void CXBoxRenderManager::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)

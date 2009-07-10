@@ -88,7 +88,7 @@ void CBackgroundPicLoader::Process()
       {
         CPicture pic;
         DWORD start = timeGetTime();
-        TexturePtr pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
+        XBMC::TexturePtr pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
         totalTime += timeGetTime() - start;
         count++;
         // tell our parent
@@ -692,7 +692,7 @@ void CGUIWindowSlideShow::Move(float fX, float fY)
   }
 }
 
-void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, TexturePtr pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize)
+void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, XBMC::TexturePtr pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize)
 {
   if (!g_guiSettings.GetBool("pictures.useexifrotation"))
     iRotate = 1;

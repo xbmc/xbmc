@@ -26,11 +26,11 @@ class CPicture
 public:
   CPicture(void);
   virtual ~CPicture(void);
-  TexturePtr Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128);
+  XBMC::TexturePtr Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128);
 
   bool CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
   bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
-  bool CreateThumbnailFromSwizzledTexture(TexturePtr &texture, int width, int height, const CStdString &thumb);
+  bool CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb);
   int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror=false);
 
   ImageInfo GetInfo() const { return m_info; };

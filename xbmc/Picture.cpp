@@ -40,7 +40,7 @@ CPicture::~CPicture(void)
 
 }
 
-TexturePtr CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
+XBMC::TexturePtr CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
 {
   if (!m_dll.Load()) return NULL;
 
@@ -50,7 +50,7 @@ TexturePtr CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMax
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
-  TexturePtr pTexture = NULL;
+  XBMC::TexturePtr pTexture = NULL;
 #ifndef HAS_SDL
   g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture, NULL);
 #else
@@ -216,10 +216,10 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
 #ifdef __GNUC__
 // TODO: fix this code to support OpenGL
 #endif
-    TexturePtr texture = NULL;
+    XBMC::TexturePtr texture = NULL;
 #else
-    PalettePtr palette = baseTexture.m_palette;
-    TexturePtr texture = baseTexture.m_textures[0];
+    XBMC::PalettePtr palette = baseTexture.m_palette;
+    XBMC::TexturePtr texture = baseTexture.m_textures[0];
 #endif
     if (texture)
     {
@@ -249,7 +249,7 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
   return false;
 }
 
-bool CPicture::CreateThumbnailFromSwizzledTexture(TexturePtr &texture, int width, int height, const CStdString &thumb)
+bool CPicture::CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb)
 {
 #ifndef HAS_SDL
   LPDIRECT3DTEXTURE9 linTexture = NULL;

@@ -25,7 +25,7 @@ extern "C" void dllprintf( const char *format, ... );
 
 CGUITextureManager g_TextureManager;
 
-CTexture::CTexture(int width, int height, int loops, PalettePtr palette, bool texCoordsArePixels)
+CTexture::CTexture(int width, int height, int loops,  XBMC::PalettePtr palette, bool texCoordsArePixels)
 {
   m_width = width;
   m_height = height;
@@ -44,7 +44,7 @@ unsigned int CTexture::size() const
 #ifdef HAS_SDL_OPENGL
 void CTexture::Add(CGLTexture *texture, int delay)
 #else
-void CTexture::Add(TexturePtr texture, int delay)
+void CTexture::Add(XBMC::TexturePtr texture, int delay)
 #endif
 {
   if (!texture)
@@ -74,7 +74,7 @@ void CTexture::Add(TexturePtr texture, int delay)
 #ifdef HAS_SDL_OPENGL
 void CTexture::Set(CGLTexture *texture, int width, int height)
 #else
-void CTexture::Set(TexturePtr texture, int width, int height)
+void CTexture::Set(XBMC::TexturePtr texture, int width, int height)
 #endif
 {
   assert(!m_textures.size()); // don't try and set a texture if we already have one!
@@ -112,7 +112,7 @@ CTextureMap::CTextureMap()
   m_memUsage = 0;
 }
 
-CTextureMap::CTextureMap(const CStdString& textureName, int width, int height, int loops, PalettePtr palette)
+CTextureMap::CTextureMap(const CStdString& textureName, int width, int height, int loops,  XBMC::PalettePtr palette)
 : m_texture(width, height, loops, palette)
 {
   m_textureName = textureName;
@@ -140,7 +140,7 @@ const CStdString& CTextureMap::GetName() const
   return m_textureName;
 }
 
-void CTextureMap::Add(TexturePtr pTexture, int delay)
+void CTextureMap::Add(XBMC::TexturePtr pTexture, int delay)
 {
 #ifdef HAS_SDL_OPENGL
   CGLTexture *glTexture = new CGLTexture(pTexture, false);
@@ -338,8 +338,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   //Lock here, we will do stuff that could break rendering
   CSingleLock lock(g_graphicsContext);
 
-  TexturePtr pTexture;
-  PalettePtr pPal = NULL;
+  XBMC::TexturePtr pTexture;
+  XBMC::PalettePtr pPal = NULL;
 
 #ifdef _DEBUG
   LARGE_INTEGER start;
@@ -354,7 +354,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 
     if (bundle >= 0)
     {
-      TexturePtr *pTextures;
+      XBMC::TexturePtr *pTextures;
       int nLoops = 0;
       int* Delay;
       int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &info, &pTextures, &pPal, nLoops, &Delay);

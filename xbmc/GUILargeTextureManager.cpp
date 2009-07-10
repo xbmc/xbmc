@@ -62,7 +62,7 @@ void CGUILargeTextureManager::Process()
     CStdString path = image->GetPath();
     lock.Leave();
     // load the image using our image lib
-    TexturePtr texture = NULL;
+    XBMC::TexturePtr texture = NULL;
     CPicture pic;
     CFileItem file(path, false);
     if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures

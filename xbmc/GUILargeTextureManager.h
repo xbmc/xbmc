@@ -87,7 +87,7 @@ protected:
       return false;
     };
 
-    void SetTexture(TexturePtr texture, int width, int height, int orientation)
+    void SetTexture(XBMC::TexturePtr texture, int width, int height, int orientation)
     {
       assert(!m_texture.size());
       if (texture)

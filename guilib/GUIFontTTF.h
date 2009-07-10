@@ -103,7 +103,7 @@ protected:
 #ifndef HAS_SDL
   LPDIRECT3DDEVICE9 m_pD3DDevice;
 #endif
-  TexturePtr m_texture;              // texture that holds our rendered characters (8bit alpha only)
+  XBMC::TexturePtr m_texture;        // texture that holds our rendered characters (8bit alpha only)
 
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // heigth of our texture
