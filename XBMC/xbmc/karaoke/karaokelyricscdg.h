@@ -70,10 +70,10 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
 #if defined(HAS_SDL_OPENGL)
     CGLTexture * m_pCdgTexture;
 #elif defined(HAS_SDL_2D)
-    TexturePtr m_pCdgTexture;
+    XBMC::TexturePtr m_pCdgTexture;
 #else
     LPDIRECT3DDEVICE9 m_pd3dDevice;
-    TexturePtr m_pCdgTexture;
+    XBMC::TexturePtr m_pCdgTexture;
 #endif
     DWORD  m_bgAlpha;  //!< background alpha
     DWORD  m_fgAlpha;  //!< foreground alpha
