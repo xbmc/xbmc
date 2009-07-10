@@ -256,7 +256,7 @@ void CLowLevelKeyboard::Update()
   }
 }
 
-bool CLowLevelKeyboard::KeyDown()
+bool CLowLevelKeyboard::KeyHeld()
 {
   // TODO:DIRECTX - implement this
   return false;
