@@ -1330,6 +1330,25 @@ CTVChannelInfoTag *CPVRManager::GetChannelByClientNumber(unsigned int client_no,
   return NULL;
 }
 
+CTVChannelInfoTag *CPVRManager::GetChannelByNumber(unsigned int frontend_no, bool radio)
+{
+  if (m_client)
+  {
+    if (!radio)
+    {
+      if (((int) frontend_no <= m_channels_tv.size()+1) && (frontend_no != 0))
+        return &m_channels_tv[frontend_no-1];
+    }
+    else
+    {
+      if (((int) frontend_no <= m_channels_radio.size()+1) && (frontend_no != 0))
+        return &m_channels_radio[frontend_no-1];
+    }
+  }
+
+  return NULL;
+}
+
 CTVChannelInfoTag *CPVRManager::GetChannelByChannelID(unsigned int id)
 {
   for (unsigned int i = 0; i < m_channels_tv.size(); i++)
@@ -1605,7 +1624,7 @@ int CPVRManager::GetAllRecordings(CFileItemList* results)
     {
       for (unsigned int j = 0; j < m_timers.size(); ++j)
       {
-        if ((m_timers[j].m_strChannel == m_recordings[i].m_strChannel)  &&
+        if ((m_timers[j].m_channelNum == m_recordings[i].m_channelNum)  &&
             (m_timers[j].m_StartTime  <= CDateTime::GetCurrentDateTime()) &&
             (m_timers[j].m_StopTime   >= CDateTime::GetCurrentDateTime()) &&
             (m_timers[j].m_Repeat != true) && (m_timers[j].m_Active == true))
@@ -2398,7 +2417,7 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
       {
         for (unsigned int i = 0; i < m_timers.size(); ++i)
         {
-          if ((m_timers[i].m_strChannel == m_channels_tv[channel-1].m_strChannel) &&
+          if ((m_timers[i].m_channelNum == m_channels_tv[channel-1].m_iChannelNum) &&
               (m_timers[i].m_StartTime <= CDateTime::GetCurrentDateTime()) &&
               (m_timers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
               (m_timers[i].m_Repeat != true) && (m_timers[i].m_Active == true))
@@ -2429,7 +2448,7 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
       {
         for (unsigned int i = 0; i < m_timers.size(); ++i)
         {
-          if ((m_timers[i].m_strChannel == m_channels_tv[channel-1].m_strChannel) &&
+          if ((m_timers[i].m_channelNum == m_channels_tv[channel-1].m_iChannelNum) &&
               (m_timers[i].m_StartTime <= CDateTime::GetCurrentDateTime()) &&
               (m_timers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
               (m_timers[i].m_Repeat != true) && (m_timers[i].m_Active == true))

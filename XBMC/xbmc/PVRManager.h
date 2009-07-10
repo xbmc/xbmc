@@ -58,7 +58,7 @@ public:
   static bool IsInstantiated() { return m_instance != NULL; }
 
   static CPVRManager* GetInstance();
-  unsigned long GetCurrentClientID() { return m_currentClientID; }
+  unsigned long GetFirstClientID() { return m_currentClientID; }
   static CLIENTMAP* Clients() { return &m_clients; }
 
   /* addon specific */
@@ -114,6 +114,7 @@ public:
   int GetNextGroupID(int current_group_id);
   CStdString GetGroupName(int GroupId);
   int GetFirstChannelForGroupID(int GroupId, bool radio = false);
+  CTVChannelInfoTag *GetChannelByNumber(unsigned int frontend_no, bool radio = false);
   CTVChannelInfoTag *GetChannelByChannelID(unsigned int id);
   CTVChannelInfoTag *GetChannelByClientNumber(unsigned int client_no, unsigned int client_id);
 

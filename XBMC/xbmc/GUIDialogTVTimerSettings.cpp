@@ -86,7 +86,7 @@ void CGUIDialogTVTimerSettings::CreateSettings()
     AddSpin(CONTROL_TMR_CHNAME_TV, 18402, &tag->m_channelNum, channelstrings_tv.size(), channelstrings_tv);
     EnableSettings(CONTROL_TMR_CHNAME_TV, !tag->m_Radio);
 
-	// For Radio
+    // For Radio
     CFileItemList channelslist_radio;
     SETTINGSTRINGS channelstrings_radio;
     CPVRManager::GetInstance()->GetRadioChannels(&channelslist_radio, -1, false);
@@ -234,19 +234,17 @@ void CGUIDialogTVTimerSettings::OnSettingChanged(SettingInfo &setting)
   {
     EnableSettings(CONTROL_TMR_CHNAME_TV, !tag->m_Radio);
     EnableSettings(CONTROL_TMR_CHNAME_RADIO, tag->m_Radio);
-    tag->m_strChannel = CPVRManager::GetInstance()->GetNameForChannel(tag->m_channelNum, tag->m_Radio);
     tag->m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(tag->m_channelNum, tag->m_Radio);
   }
   else if (setting.id == CONTROL_TMR_CHNAME_TV || setting.id == CONTROL_TMR_CHNAME_RADIO)
   {
-    tag->m_strChannel = CPVRManager::GetInstance()->GetNameForChannel(tag->m_channelNum, tag->m_Radio);
     tag->m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(tag->m_channelNum, tag->m_Radio);
   }
   else if (setting.id == CONTROL_TMR_DAY && m_tmp_day > 10)
   {
     CDateTime time = CDateTime::GetCurrentDateTime();
     CDateTime timestart = timerStartTime;
-	CDateTime timestop = timerEndTime;
+    CDateTime timestop = timerEndTime;
     int m_tmp_diff;
     tm time_cur;
     tm time_tmr;
@@ -310,15 +308,15 @@ void CGUIDialogTVTimerSettings::OnSettingChanged(SettingInfo &setting)
       int start_minute    = timestart.GetMinute();
       tag->m_StartTime.SetDateTime(start_year, start_month, start_day, start_hour, start_minute, 0);
 
-	  timerStartTimeStr = tag->m_StartTime.GetAsLocalizedTime("", false);
-	  UpdateSetting(CONTROL_TMR_BEGIN);
+      timerStartTimeStr = tag->m_StartTime.GetAsLocalizedTime("", false);
+      UpdateSetting(CONTROL_TMR_BEGIN);
     }
   }
   else if (setting.id == CONTROL_TMR_END)
   {
     if (CGUIDialogNumeric::ShowAndGetTime(timerEndTime, g_localizeStrings.Get(14066)))
     {
-	  CDateTime timestop = timerEndTime;
+      CDateTime timestop = timerEndTime;
       int start_day       = tag->m_StopTime.GetDay();
       int start_month     = tag->m_StopTime.GetMonth();
       int start_year      = tag->m_StopTime.GetYear();
@@ -327,7 +325,7 @@ void CGUIDialogTVTimerSettings::OnSettingChanged(SettingInfo &setting)
       tag->m_StopTime.SetDateTime(start_year, start_month, start_day, start_hour, start_minute, 0);
 
       timerEndTimeStr = tag->m_StopTime.GetAsLocalizedTime("", false);
-	  UpdateSetting(CONTROL_TMR_END);
+      UpdateSetting(CONTROL_TMR_END);
     }
   }
   else if (setting.id == CONTROL_TMR_FIRST_DAY && m_tmp_day <= 10)
