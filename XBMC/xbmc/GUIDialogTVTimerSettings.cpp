@@ -143,72 +143,28 @@ void CGUIDialogTVTimerSettings::CreateSettings()
 
     if (tag->m_Repeat)
     {
-      if (tag->m_Repeat_Mon && !tag->m_Repeat_Tue && !tag->m_Repeat_Wed &&
-          !tag->m_Repeat_Thu && !tag->m_Repeat_Fri && !tag->m_Repeat_Sat &&
-          !tag->m_Repeat_Sun)
-      {
+      if (tag->m_Weekdays == 0x01)
         m_tmp_day = 0;
-      }
-      else if (!tag->m_Repeat_Mon &&  tag->m_Repeat_Tue && !tag->m_Repeat_Wed &&
-               !tag->m_Repeat_Thu && !tag->m_Repeat_Fri && !tag->m_Repeat_Sat &&
-               !tag->m_Repeat_Sun)
-      {
+      else if (tag->m_Weekdays == 0x02)
         m_tmp_day = 1;
-      }
-      else if (!tag->m_Repeat_Mon && !tag->m_Repeat_Tue &&  tag->m_Repeat_Wed &&
-               !tag->m_Repeat_Thu && !tag->m_Repeat_Fri && !tag->m_Repeat_Sat &&
-               !tag->m_Repeat_Sun)
-      {
+      else if (tag->m_Weekdays == 0x04)
         m_tmp_day = 2;
-      }
-      else if (!tag->m_Repeat_Mon && !tag->m_Repeat_Tue && !tag->m_Repeat_Wed &&
-               tag->m_Repeat_Thu && !tag->m_Repeat_Fri && !tag->m_Repeat_Sat &&
-               !tag->m_Repeat_Sun)
-      {
+      else if (tag->m_Weekdays == 0x08)
         m_tmp_day = 3;
-      }
-      else if (!tag->m_Repeat_Mon && !tag->m_Repeat_Tue && !tag->m_Repeat_Wed &&
-               !tag->m_Repeat_Thu &&  tag->m_Repeat_Fri && !tag->m_Repeat_Sat &&
-               !tag->m_Repeat_Sun)
-      {
+      else if (tag->m_Weekdays == 0x10)
         m_tmp_day = 4;
-      }
-      else if (!tag->m_Repeat_Mon && !tag->m_Repeat_Tue && !tag->m_Repeat_Wed &&
-               !tag->m_Repeat_Thu && !tag->m_Repeat_Fri && tag->m_Repeat_Sat &&
-               !tag->m_Repeat_Sun)
-      {
+      else if (tag->m_Weekdays == 0x20)
         m_tmp_day = 5;
-      }
-      else if (!tag->m_Repeat_Mon && !tag->m_Repeat_Tue && !tag->m_Repeat_Wed &&
-               !tag->m_Repeat_Thu && !tag->m_Repeat_Fri && !tag->m_Repeat_Sat &&
-               tag->m_Repeat_Sun)
-      {
+      else if (tag->m_Weekdays == 0x40)
         m_tmp_day = 6;
-      }
-      else if (tag->m_Repeat_Mon && tag->m_Repeat_Tue && tag->m_Repeat_Wed &&
-               tag->m_Repeat_Thu && tag->m_Repeat_Fri && !tag->m_Repeat_Sat &&
-               !tag->m_Repeat_Sun)
-      {
+      else if (tag->m_Weekdays == 0x1F)
         m_tmp_day = 7;
-      }
-      else if (tag->m_Repeat_Mon && tag->m_Repeat_Tue && tag->m_Repeat_Wed &&
-               tag->m_Repeat_Thu && tag->m_Repeat_Fri && tag->m_Repeat_Sat &&
-               !tag->m_Repeat_Sun)
-      {
+      else if (tag->m_Weekdays == 0x3F)
         m_tmp_day = 8;
-      }
-      else if (tag->m_Repeat_Mon && tag->m_Repeat_Tue && tag->m_Repeat_Wed &&
-               tag->m_Repeat_Thu && tag->m_Repeat_Fri && tag->m_Repeat_Sat &&
-               tag->m_Repeat_Sun)
-      {
+      else if (tag->m_Weekdays == 0x7F)
         m_tmp_day = 9;
-      }
-      else if (!tag->m_Repeat_Mon && !tag->m_Repeat_Tue && !tag->m_Repeat_Wed &&
-               !tag->m_Repeat_Thu && !tag->m_Repeat_Fri &&  tag->m_Repeat_Sat &&
-               tag->m_Repeat_Sun)
-      {
+      else if (tag->m_Weekdays == 0x60)
         m_tmp_day = 10;
-      }
     }
 
     AddSpin(CONTROL_TMR_DAY, 18403, &m_tmp_day, daystrings.size(), daystrings);
@@ -307,89 +263,40 @@ void CGUIDialogTVTimerSettings::OnSettingChanged(SettingInfo &setting)
     tag->m_StartTime = timestart + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
     tag->m_StopTime  = timestop  + CDateTimeSpan(m_tmp_day-11-m_tmp_diff, 0, 0, 0);
 
-	EnableSettings(CONTROL_TMR_FIRST_DAY, false);
+    EnableSettings(CONTROL_TMR_FIRST_DAY, false);
 
-	tag->m_Repeat = false;
-    tag->m_Repeat_Mon = false;
-    tag->m_Repeat_Tue = false;
-    tag->m_Repeat_Wed = false;
-    tag->m_Repeat_Thu = false;
-    tag->m_Repeat_Fri = false;
-    tag->m_Repeat_Sat = false;
-    tag->m_Repeat_Sun = false;
+    tag->m_Repeat = false;
+    tag->m_Weekdays = 0;
   }
   else if (setting.id == CONTROL_TMR_DAY && m_tmp_day <= 10)
   {
     EnableSettings(CONTROL_TMR_FIRST_DAY, true);
     tag->m_Repeat = true;
-    tag->m_Repeat_Mon = false;
-    tag->m_Repeat_Tue = false;
-    tag->m_Repeat_Wed = false;
-    tag->m_Repeat_Thu = false;
-    tag->m_Repeat_Fri = false;
-    tag->m_Repeat_Sat = false;
-    tag->m_Repeat_Sun = false;
 
     if (m_tmp_day == 0)
-    {
-      tag->m_Repeat_Mon = true;
-    }
+      tag->m_Weekdays = 0x01;
     else if (m_tmp_day == 1)
-    {
-      tag->m_Repeat_Tue = true;
-    }
+      tag->m_Weekdays = 0x02;
     else if (m_tmp_day == 2)
-    {
-      tag->m_Repeat_Wed = true;
-    }
+      tag->m_Weekdays = 0x04;
     else if (m_tmp_day == 3)
-    {
-      tag->m_Repeat_Thu = true;
-    }
+      tag->m_Weekdays = 0x08;
     else if (m_tmp_day == 4)
-    {
-      tag->m_Repeat_Fri = true;
-    }
+      tag->m_Weekdays = 0x10;
     else if (m_tmp_day == 5)
-    {
-      tag->m_Repeat_Sat = true;
-    }
+      tag->m_Weekdays = 0x20;
     else if (m_tmp_day == 6)
-    {
-      tag->m_Repeat_Sun = true;
-    }
+      tag->m_Weekdays = 0x40;
     else if (m_tmp_day == 7)
-    {
-      tag->m_Repeat_Mon = true;
-      tag->m_Repeat_Tue = true;
-      tag->m_Repeat_Wed = true;
-      tag->m_Repeat_Thu = true;
-      tag->m_Repeat_Fri = true;
-    }
+      tag->m_Weekdays = 0x1F;
     else if (m_tmp_day == 8)
-    {
-      tag->m_Repeat_Mon = true;
-      tag->m_Repeat_Tue = true;
-      tag->m_Repeat_Wed = true;
-      tag->m_Repeat_Thu = true;
-      tag->m_Repeat_Fri = true;
-      tag->m_Repeat_Sat = true;
-    }
+      tag->m_Weekdays = 0x3F;
     else if (m_tmp_day == 9)
-    {
-      tag->m_Repeat_Mon = true;
-      tag->m_Repeat_Tue = true;
-      tag->m_Repeat_Wed = true;
-      tag->m_Repeat_Thu = true;
-      tag->m_Repeat_Fri = true;
-      tag->m_Repeat_Sat = true;
-      tag->m_Repeat_Sun = true;
-    }
+      tag->m_Weekdays = 0x7F;
     else if (m_tmp_day == 10)
-    {
-      tag->m_Repeat_Sat = true;
-      tag->m_Repeat_Sun = true;
-    }
+      tag->m_Weekdays = 0x60;
+    else
+      tag->m_Weekdays = 0;
   }
   else if (setting.id == CONTROL_TMR_BEGIN)
   {

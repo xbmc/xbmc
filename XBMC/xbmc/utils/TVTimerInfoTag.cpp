@@ -266,13 +266,7 @@ bool CTVTimerInfoTag::operator ==(const CTVTimerInfoTag& right) const
           m_StartTime             == right.m_StartTime &&
           m_StopTime              == right.m_StopTime &&
           m_FirstDay              == right.m_FirstDay &&
-          m_Repeat_Mon            == right.m_Repeat_Mon &&
-          m_Repeat_Tue            == right.m_Repeat_Tue &&
-          m_Repeat_Wed            == right.m_Repeat_Wed &&
-          m_Repeat_Thu            == right.m_Repeat_Thu &&
-          m_Repeat_Fri            == right.m_Repeat_Fri &&
-          m_Repeat_Sat            == right.m_Repeat_Sat &&
-          m_Repeat_Sun            == right.m_Repeat_Sun &&
+          m_Weekdays              == right.m_Weekdays &&
           m_recStatus             == right.m_recStatus &&
           m_Priority              == right.m_Priority &&
           m_Lifetime              == right.m_Lifetime &&
@@ -297,13 +291,7 @@ bool CTVTimerInfoTag::operator !=(const CTVTimerInfoTag& right) const
           m_StartTime             != right.m_StartTime &&
           m_StopTime              != right.m_StopTime &&
           m_FirstDay              != right.m_FirstDay &&
-          m_Repeat_Mon            != right.m_Repeat_Mon &&
-          m_Repeat_Tue            != right.m_Repeat_Tue &&
-          m_Repeat_Wed            != right.m_Repeat_Wed &&
-          m_Repeat_Thu            != right.m_Repeat_Thu &&
-          m_Repeat_Fri            != right.m_Repeat_Fri &&
-          m_Repeat_Sat            != right.m_Repeat_Sat &&
-          m_Repeat_Sun            != right.m_Repeat_Sun &&
+          m_Weekdays              != right.m_Weekdays &&
           m_recStatus             != right.m_recStatus &&
           m_Priority              != right.m_Priority &&
           m_Lifetime              != right.m_Lifetime &&
@@ -333,13 +321,7 @@ void CTVTimerInfoTag::Reset()
   m_StartTime     = NULL;
   m_StopTime      = NULL;
   m_FirstDay      = NULL;
-  m_Repeat_Mon    = false;
-  m_Repeat_Tue    = false;
-  m_Repeat_Wed    = false;
-  m_Repeat_Thu    = false;
-  m_Repeat_Fri    = false;
-  m_Repeat_Sat    = false;
-  m_Repeat_Sun    = false;
+  m_Weekdays      = 0;
 
   m_recStatus     = false;
 
