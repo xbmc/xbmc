@@ -52,7 +52,7 @@ TexturePtr CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMax
   }
   TexturePtr pTexture = NULL;
 #ifndef HAS_SDL
-  g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture);
+  g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture, NULL);
 #else
 #ifdef HAS_SDL_OPENGL
   pTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
@@ -252,11 +252,11 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
 bool CPicture::CreateThumbnailFromSwizzledTexture(TexturePtr &texture, int width, int height, const CStdString &thumb)
 {
 #ifndef HAS_SDL
-  LPDIRECT3DTEXTURE8 linTexture = NULL;
+  LPDIRECT3DTEXTURE9 linTexture = NULL;
   if (D3D_OK == D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &linTexture))
   {
-    LPDIRECT3DSURFACE8 source;
-    LPDIRECT3DSURFACE8 dest;
+    LPDIRECT3DSURFACE9 source;
+    LPDIRECT3DSURFACE9 dest;
     texture->GetSurfaceLevel(0, &source);
     linTexture->GetSurfaceLevel(0, &dest);
     D3DXLoadSurfaceFromSurface(dest, NULL, NULL, source, NULL, NULL, D3DX_FILTER_NONE, 0);

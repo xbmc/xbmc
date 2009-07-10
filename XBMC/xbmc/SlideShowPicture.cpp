@@ -675,10 +675,10 @@ void CSlideShowPic::Render(float *x, float *y, TexturePtr pTexture, DWORD dwColo
   g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
   g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
   g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
+  g_graphicsContext.Get3DDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+  g_graphicsContext.Get3DDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
+  g_graphicsContext.Get3DDevice()->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+  g_graphicsContext.Get3DDevice()->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE, FALSE );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE, FALSE );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
@@ -688,7 +688,7 @@ void CSlideShowPic::Render(float *x, float *y, TexturePtr pTexture, DWORD dwColo
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
   g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
-  g_graphicsContext.Get3DDevice()->SetVertexShader( FVF_VERTEX );
+  g_graphicsContext.Get3DDevice()->SetFVF( FVF_VERTEX );
   // Render the image
   g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
   if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);

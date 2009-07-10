@@ -419,11 +419,11 @@ void CApplication::InitBasicD3D()
   m_d3dpp.BackBufferCount = 1;
   m_d3dpp.EnableAutoDepthStencil = FALSE;
   m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
-  m_d3dpp.FullScreen_PresentationInterval = 0;
+  m_d3dpp.PresentationInterval = 0;
   m_d3dpp.Windowed = TRUE;
   m_d3dpp.hDeviceWindow = g_hWnd;
 
-  if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
+  if (!(m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
   {
     CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
     Sleep(INFINITE); // die
@@ -618,7 +618,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifndef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup DirectX");
   // Create the Direct3D object
-  if ( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
+  if ( NULL == ( m_pD3D = Direct3DCreate9(D3D_SDK_VERSION) ) )
   {
     CLog::Log(LOGFATAL, "XBAppEx: Unable to create Direct3D!" );
     return E_FAIL;
@@ -839,8 +839,8 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.SetD3DDevice(m_pd3dDevice);
   g_graphicsContext.CaptureStateBlock();
   // set filters
-  g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
+  g_graphicsContext.Get3DDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+  g_graphicsContext.Get3DDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   CUtil::InitGamma();
 #endif
 

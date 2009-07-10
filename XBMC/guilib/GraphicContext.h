@@ -144,8 +144,8 @@ public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
 #ifndef HAS_SDL
-  LPDIRECT3DDEVICE8 Get3DDevice() { return m_pd3dDevice; }
-  void SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice);
+  LPDIRECT3DDEVICE9 Get3DDevice() { return m_pd3dDevice; }
+  void SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice);
   //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
   void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
   int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
@@ -266,9 +266,9 @@ public:
 protected:
   IMsgSenderCallback* m_pCallback;
 #ifndef HAS_SDL
-  LPDIRECT3DDEVICE8 m_pd3dDevice;
+  LPDIRECT3DDEVICE9 m_pd3dDevice;
   D3DPRESENT_PARAMETERS* m_pd3dParams;
-  std::stack<D3DVIEWPORT8*> m_viewStack;
+  std::stack<D3DVIEWPORT9*> m_viewStack;
   DWORD m_stateBlock;
 #endif
   Surface::CSurface* m_screenSurface;

@@ -616,7 +616,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
       }
 
 #ifndef HAS_SDL
-      LPDIRECT3DTEXTURE8 newTexture;
+      LPDIRECT3DTEXTURE9 newTexture;
       if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8, D3DPOOL_MANAGED, &newTexture))
       {
         CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %f", m_height);
@@ -637,11 +637,12 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
 
       if (m_texture)
       { // copy across from our current one using gpu
-        LPDIRECT3DSURFACE8 pTarget, pSource;
+        LPDIRECT3DSURFACE9 pTarget, pSource;
         newTexture->GetSurfaceLevel(0, &pTarget);
         m_texture->GetSurfaceLevel(0, &pSource);
 
-        m_pD3DDevice->CopyRects(pSource, NULL, 0, pTarget, NULL);
+        // TODO:DIRECTX - this is probably really slow, but UpdateSurface() doesn't like rendering from non-system textures
+        D3DXLoadSurfaceFromSurface(pTarget, NULL, NULL, pSource, NULL, NULL, D3DX_FILTER_NONE, 0);
 
         SAFE_RELEASE(pTarget);
         SAFE_RELEASE(pSource);
@@ -708,7 +709,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   {
 #ifndef HAS_SDL
     // render this onto our normal texture using gpu
-    LPDIRECT3DSURFACE8 target;
+    LPDIRECT3DSURFACE9 target;
     m_texture->GetSurfaceLevel(0, &target);
 
     RECT sourcerect = { 0, 0, bitmap.width, bitmap.rows };
@@ -786,10 +787,10 @@ void CGUIFontTTF::Begin()
     // just have to blit from our texture.
     m_pD3DDevice->SetTexture( 0, m_texture );
 
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
+    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
+    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
     m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 ); // only use diffuse
     m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
     m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
@@ -808,7 +809,7 @@ void CGUIFontTTF::Begin()
     m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
 
-    m_pD3DDevice->SetVertexShader(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+    m_pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
 #elif defined(HAS_SDL_OPENGL)
     if (!m_glTextureLoaded)

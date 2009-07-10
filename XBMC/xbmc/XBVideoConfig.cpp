@@ -170,16 +170,16 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
 }
 
 #ifndef HAS_SDL
-void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)
+void XBVideoConfig::GetModes(LPDIRECT3D9 pD3D)
 {
   bHasPAL = false;
   bHasNTSC = false;
-  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT);
+  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT, D3DFMT_LIN_A8R8G8B8);
   D3DDISPLAYMODE mode;
   CLog::Log(LOGINFO, "Available videomodes:");
   for ( DWORD i = 0; i < numModes; i++ )
   {
-    pD3D->EnumAdapterModes( 0, i, &mode );
+    pD3D->EnumAdapterModes( 0, D3DFMT_LIN_A8R8G8B8, i, &mode );
 
     // Skip modes we don't care about
     if ( mode.Format != D3DFMT_LIN_A8R8G8B8 )
@@ -480,14 +480,14 @@ bool XBVideoConfig::IsValidResolution(RESOLUTION res) const
 
 #ifndef HAS_SDL
 //pre: XBVideoConfig::GetModes has been called before this function
-RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS *p3dParams)
+RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D9 pD3D, D3DPRESENT_PARAMETERS *p3dParams)
 {
   bool bHasPal = HasPAL();
-  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT);
+  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT, D3DFMT_LIN_A8R8G8B8);
   D3DDISPLAYMODE mode;
   for ( DWORD i = 0; i < numModes; i++ )
   {
-    pD3D->EnumAdapterModes( 0, i, &mode );
+    pD3D->EnumAdapterModes( 0, D3DFMT_LIN_A8R8G8B8, i, &mode );
 
     // ignore 640 wide modes
     if ( mode.Width < 720)

@@ -162,7 +162,7 @@ typedef struct {
 #pragma pack(pop)
 
 #ifndef HAS_SDL
-HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName);
+HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE9 pSurface, const char *fileName);
 #else
 HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fileName);
 #endif
@@ -182,7 +182,7 @@ public:
 
   HRESULT Create(const char *fileName, int unused, void *unusedVoid);
 
-  LPDIRECT3DTEXTURE8 GetTexture(UINT offset);
+  LPDIRECT3DTEXTURE9 GetTexture(UINT offset);
 
 private:
   BYTE *m_buffer;
