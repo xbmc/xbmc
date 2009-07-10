@@ -31,8 +31,8 @@
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 
 #ifndef HAS_SDL
- #include "D3D8.h"
- #include "D3DX8.h"
+ #include "D3D9.h"
+ #include "D3DX9.h"
 #elif !defined(_LINUX)  // TODO - this stuff is in PlatformDefs.h otherwise, but should be merged to some local file
   // Basic D3D stuff
   typedef DWORD D3DCOLOR;
@@ -173,8 +173,8 @@ typedef SDL_Palette* PalettePtr;
 #include <GL/glew.h>
 #endif
 #else
-typedef LPDIRECT3DSURFACE8 SurfacePtr;
-typedef LPDIRECT3DTEXTURE8 TexturePtr;
+typedef LPDIRECT3DSURFACE9 SurfacePtr;
+typedef LPDIRECT3DTEXTURE9 TexturePtr;
 typedef LPDIRECT3DPALETTE8 PalettePtr;
 #endif
 

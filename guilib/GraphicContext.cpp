@@ -91,15 +91,15 @@ CGraphicContext::~CGraphicContext(void)
 {
 #ifndef HAS_SDL
   if (m_stateBlock != 0xffffffff)
-  {
-    Get3DDevice()->DeleteStateBlock(m_stateBlock);
+  { // TODO:DIRECTX - replace this with IDirect3DStateBlock9 implementation
+//    Get3DDevice()->DeleteStateBlock(m_stateBlock);
   }
 #endif
 
   while (m_viewStack.size())
   {
 #ifndef HAS_SDL
-    D3DVIEWPORT8 *viewport = m_viewStack.top();
+    D3DVIEWPORT9 *viewport = m_viewStack.top();
 #elif defined(HAS_SDL_2D)
     SDL_Rect *viewport = m_viewStack.top();
 #elif defined(HAS_SDL_OPENGL)
@@ -117,7 +117,7 @@ CGraphicContext::~CGraphicContext(void)
 }
 
 #ifndef HAS_SDL
-void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE8 p3dDevice)
+void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice)
 {
   m_pd3dDevice = p3dDevice;
 }
@@ -234,8 +234,8 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
 #ifndef HAS_SDL
-  D3DVIEWPORT8 newviewport;
-  D3DVIEWPORT8 *oldviewport = new D3DVIEWPORT8;
+  D3DVIEWPORT9 newviewport;
+  D3DVIEWPORT9 *oldviewport = new D3DVIEWPORT9;
   Get3DDevice()->GetViewport(oldviewport);
 #elif defined(HAS_SDL_2D)
   SDL_Rect newviewport;
@@ -363,7 +363,7 @@ void CGraphicContext::RestoreViewPort()
 {
   if (!m_viewStack.size()) return;
 #ifndef HAS_SDL
-  D3DVIEWPORT8 *oldviewport = (D3DVIEWPORT8*)m_viewStack.top();
+  D3DVIEWPORT9 *oldviewport = (D3DVIEWPORT9*)m_viewStack.top();
   Get3DDevice()->SetViewport(oldviewport);
 #elif defined(HAS_SDL_2D)
   SDL_Rect *oldviewport = (SDL_Rect*)m_viewStack.top();
@@ -528,9 +528,9 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
   interval = 0;
 
-  if (interval != m_pd3dParams->FullScreen_PresentationInterval)
+  if (interval != m_pd3dParams->PresentationInterval)
   {
-    m_pd3dParams->FullScreen_PresentationInterval = interval;
+    m_pd3dParams->PresentationInterval = interval;
     NeedReset = true;
   }
 
@@ -1076,8 +1076,11 @@ void CGraphicContext::Clear()
 void CGraphicContext::CaptureStateBlock()
 {
 #ifndef HAS_SDL
+
+#if 0
+  // TODO:DIRECTX
   if (m_stateBlock != 0xffffffff)
-  {
+  { 
     Get3DDevice()->DeleteStateBlock(m_stateBlock);
   }
 
@@ -1086,6 +1089,7 @@ void CGraphicContext::CaptureStateBlock()
     // Creation failure
     m_stateBlock = 0xffffffff;
   }
+#endif
 #endif
 #ifdef HAS_SDL_OPENGL
   glMatrixMode(GL_PROJECTION);
@@ -1108,7 +1112,8 @@ void CGraphicContext::ApplyStateBlock()
 #ifndef HAS_SDL
   if (m_stateBlock != 0xffffffff)
   {
-    Get3DDevice()->ApplyStateBlock(m_stateBlock);
+    // TODO:DIRECTX
+    //Get3DDevice()->ApplyStateBlock(m_stateBlock);
   }
 #endif
 #ifdef HAS_SDL_OPENGL
@@ -1291,7 +1296,7 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
   EndPaint();
 #elif !defined(HAS_SDL)
   // grab the viewport dimensions and location
-  D3DVIEWPORT8 viewport;
+  D3DVIEWPORT9 viewport;
   m_pd3dDevice->GetViewport(&viewport);
   float w = viewport.Width*0.5f;
   float h = viewport.Height*0.5f;

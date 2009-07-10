@@ -101,7 +101,7 @@ protected:
   void ObliqueGlyph(FT_GlyphSlot slot);
 
 #ifndef HAS_SDL
-  LPDIRECT3DDEVICE8 m_pD3DDevice;
+  LPDIRECT3DDEVICE9 m_pD3DDevice;
 #endif
   TexturePtr m_texture;              // texture that holds our rendered characters (8bit alpha only)
 

@@ -59,7 +59,7 @@ void CSplash::Show()
 
 #ifndef HAS_SDL
   // Store the old gamma ramp
-  g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldRamp);
+  g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &oldRamp);
   fade = 0.5f;
   for (int i = 0; i < 256; i++)
   {
@@ -67,7 +67,7 @@ void CSplash::Show()
     newRamp.green[i] = (int)((float)oldRamp.red[i] * fade);
     newRamp.blue[i] = (int)((float)oldRamp.red[i] * fade);
   }
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &newRamp);
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &newRamp);
 #endif
 
   //render splash image
@@ -110,14 +110,14 @@ void CSplash::Hide()
       newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fadeout);
     }
     Sleep(1);
-    g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &newRamp);
+    g_graphicsContext.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &newRamp);
 #endif
   }
 
   //restore original gamma ramp
 #ifndef HAS_SDL
   g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, &oldRamp);
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, 0, &oldRamp);
   g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 #endif
   g_graphicsContext.Unlock();
@@ -141,7 +141,7 @@ void CSplash::Process()
         newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fade);
       }
       g_graphicsContext.Lock();
-      g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &newRamp);
+      g_graphicsContext.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &newRamp);
       g_graphicsContext.Unlock();
 #endif
       fade += 0.01f;

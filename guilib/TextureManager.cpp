@@ -152,7 +152,7 @@ void CTextureMap::Add(TexturePtr pTexture, int delay)
 #ifndef HAS_SDL
   D3DSURFACE_DESC desc;
   if (pTexture && D3D_OK == pTexture->GetLevelDesc(0, &desc))
-    m_memUsage += desc.Size;
+    m_memUsage += desc.Width * desc.Height * 4; // Not entirely accurate, but DX9 doesn't have desc.Size
 #elif defined(HAS_SDL_2D)
   if (pTexture)
     m_memUsage += sizeof(SDL_Surface) + (pTexture->w * pTexture->h * pTexture->format->BytesPerPixel);

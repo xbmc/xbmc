@@ -1864,7 +1864,7 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 void CUtil::InitGamma()
 {
 #ifndef HAS_SDL
-  g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldramp);
+  g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &oldramp);
 #elif defined(HAS_SDL_2D)
   SDL_GetGammaRamp(oldrampRed, oldrampGreen, oldrampBlue);
 #endif
@@ -1873,7 +1873,7 @@ void CUtil::RestoreBrightnessContrastGamma()
 {
   g_graphicsContext.Lock();
 #ifndef HAS_SDL
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &oldramp);
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &oldramp);
 #elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
 #endif
@@ -1924,7 +1924,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
   // set ramp next v sync
   g_graphicsContext.Lock();
 #ifndef HAS_SDL
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
 #elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(rampRed, rampGreen, rampBlue);
 #endif
@@ -1963,7 +1963,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   if (bOn)
   {
 #ifndef HAS_SDL
-    g_graphicsContext.Get3DDevice()->GetGammaRamp(&flashramp);
+    g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &flashramp);
 #elif defined(HAS_SDL_2D)
     SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
 #endif
@@ -1971,7 +1971,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   }
   else
 #ifndef HAS_SDL
-    g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
+    g_graphicsContext.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
 #elif defined(HAS_SDL_2D)
     SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
 #endif
@@ -1981,7 +1981,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
 void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 {
 #ifndef HAS_SDL
-    LPDIRECT3DSURFACE8 lpSurface = NULL;
+    LPDIRECT3DSURFACE9 lpSurface = NULL;
 
     g_graphicsContext.Lock();
     if (g_application.IsPlayingVideo())
@@ -2000,7 +2000,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     }
     // now take screenshot
     g_application.RenderNoPresent();
-    if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+    if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
     {
       if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
       {

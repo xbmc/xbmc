@@ -46,8 +46,8 @@ public:
   CStdString GetAVPack() const;
 
 #ifndef HAS_SDL
-  void GetModes(LPDIRECT3D8 pD3D);
-  RESOLUTION GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS *p3dParams);
+  void GetModes(LPDIRECT3D9 pD3D);
+  RESOLUTION GetInitialMode(LPDIRECT3D9 pD3D, D3DPRESENT_PARAMETERS *p3dParams);
 #else
   void GetModes();
   RESOLUTION GetInitialMode();

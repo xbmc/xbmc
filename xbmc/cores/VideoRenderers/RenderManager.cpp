@@ -62,7 +62,7 @@ CXBoxRenderManager g_renderManager;
 /* these two functions allow us to step out from that lock */
 /* and reaquire it after having the exclusive lock */
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
 //VBlank information
 HANDLE g_eventVBlank=NULL;
 void VBlankCallback(D3DVBLANKDATA *pData)
@@ -242,7 +242,7 @@ unsigned int CXBoxRenderManager::PreInit()
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   if(!g_eventVBlank)
   {
     //Only do this on first run
@@ -472,7 +472,7 @@ void CXBoxRenderManager::PresentSingle()
 
   m_pRenderer->RenderUpdate(true, 0, 255);
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
 }
@@ -500,7 +500,7 @@ void CXBoxRenderManager::PresentBob()
       m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
     m_presentstep = 0;
   }
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
 }
@@ -520,7 +520,7 @@ void CXBoxRenderManager::PresentBlend()
     m_pRenderer->RenderUpdate(false, RENDER_FLAG_EVEN, 128);
   }
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
 }
@@ -533,7 +533,7 @@ void CXBoxRenderManager::PresentWeave()
 
   m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOTH, 255);
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   //If we have interlaced video, we have to sync to only render on even fields
   D3DFIELD_STATUS mStatus;
   D3DDevice::GetDisplayFieldStatus(&mStatus);
