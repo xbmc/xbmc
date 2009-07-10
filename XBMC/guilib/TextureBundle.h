@@ -54,10 +54,10 @@ public:
   void GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures);
   static CStdString Normalize(const CStdString &name);
 
-  HRESULT LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, TexturePtr* ppTexture,
-                      PalettePtr* ppPalette);
+  HRESULT LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, XBMC::TexturePtr* ppTexture,
+                       XBMC::PalettePtr* ppPalette);
 
-  int LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, TexturePtr** ppTextures,
-               PalettePtr* ppPalette, int& nLoops, int** ppDelays);
+  int LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, XBMC::TexturePtr** ppTextures,
+                XBMC::PalettePtr* ppPalette, int& nLoops, int** ppDelays);
 };
 
