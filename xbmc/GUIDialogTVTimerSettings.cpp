@@ -25,7 +25,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUISettings.h"
 #include "PVRManager.h"
-#include "utils/TVTimerInfoTag.h"
+#include "utils/PVRTimers.h"
 
 using namespace std;
 
@@ -56,7 +56,7 @@ CGUIDialogTVTimerSettings::~CGUIDialogTVTimerSettings(void)
 
 void CGUIDialogTVTimerSettings::CreateSettings()
 {
-  CTVTimerInfoTag* tag = m_timerItem->GetTVTimerInfoTag();
+  cPVRTimerInfoTag* tag = m_timerItem->GetTVTimerInfoTag();
 
   // clear out any old settings
   m_settings.clear();
@@ -221,7 +221,7 @@ void CGUIDialogTVTimerSettings::CreateSettings()
 
 void CGUIDialogTVTimerSettings::OnSettingChanged(SettingInfo &setting)
 {
-  CTVTimerInfoTag* tag = m_timerItem->GetTVTimerInfoTag();
+  cPVRTimerInfoTag* tag = m_timerItem->GetTVTimerInfoTag();
 
   if (setting.id == CONTROL_TMR_NAME)
   {

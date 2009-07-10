@@ -466,7 +466,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
               if (pDialog->IsConfirmed())
               {
-                CTVTimerInfoTag newtimer(*pItem.get());
+                cPVRTimerInfoTag newtimer(*pItem.get());
                 CFileItem *item = new CFileItem(newtimer);
 
                 if (CPVRManager::GetInstance()->AddTimer(*item))
@@ -679,7 +679,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
            open settings for selected timer entry */
         if (pItem->m_strPath == g_localizeStrings.Get(18057))
         {
-          CTVTimerInfoTag newtimer(true);
+          cPVRTimerInfoTag newtimer(true);
           CFileItem *item = new CFileItem(newtimer);
 
           if (ShowTimerSettings(item))
@@ -1150,7 +1150,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)
     {
-      CTVTimerInfoTag newtimer(true);
+      cPVRTimerInfoTag newtimer(true);
       CFileItem *item = new CFileItem(newtimer);
 
       if (ShowTimerSettings(item))
@@ -1297,7 +1297,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
             if (pDialog->IsConfirmed())
             {
-              CTVTimerInfoTag newtimer(*pItem.get());
+              cPVRTimerInfoTag newtimer(*pItem.get());
               CFileItem *item = new CFileItem(newtimer);
 
               if (CPVRManager::GetInstance()->AddTimer(*item))
@@ -1453,7 +1453,7 @@ void CGUIWindowTV::ShowRecordingInfo(CFileItem *item)
 bool CGUIWindowTV::ShowTimerSettings(CFileItem *item)
 {
   /* Check item is TV timer information tag */
-  if (!item->IsTVTimer())
+  if (!item->IsPVRTimer())
   {
     CLog::Log(LOGERROR, "CGUIWindowTV: Can't open timer settings dialog, no timer info tag!");
     return false;

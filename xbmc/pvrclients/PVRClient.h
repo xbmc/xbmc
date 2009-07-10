@@ -72,11 +72,11 @@ public:
 
   /* Timers */
   virtual int GetNumTimers(void);
-  virtual PVR_ERROR GetAllTimers(VECTVTIMERS *results);
-  virtual PVR_ERROR AddTimer(const CTVTimerInfoTag &timerinfo);
-  virtual PVR_ERROR DeleteTimer(const CTVTimerInfoTag &timerinfo, bool force = false);
-  virtual PVR_ERROR RenameTimer(const CTVTimerInfoTag &timerinfo, CStdString &newname);
-  virtual PVR_ERROR UpdateTimer(const CTVTimerInfoTag &timerinfo);
+  virtual PVR_ERROR GetAllTimers(cPVRTimers *results);
+  virtual PVR_ERROR AddTimer(const cPVRTimerInfoTag &timerinfo);
+  virtual PVR_ERROR DeleteTimer(const cPVRTimerInfoTag &timerinfo, bool force = false);
+  virtual PVR_ERROR RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString &newname);
+  virtual PVR_ERROR UpdateTimer(const cPVRTimerInfoTag &timerinfo);
 
   virtual bool OpenLiveStream(unsigned int channel);
   virtual void CloseLiveStream();
@@ -103,7 +103,7 @@ protected:
   CStdString            m_hostName;
 
 private:
-  void WriteClientTimerInfo(const CTVTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
+  void WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
   static void PVRTransferChannelEntry(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *channel);
   static void PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
   static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);

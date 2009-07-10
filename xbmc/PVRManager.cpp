@@ -506,12 +506,15 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
   }
   else if (dwInfo == PVR_NEXT_TIMER)
   {
-    CDateTime next = NextTimerDate();
-    m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(18190)
-                       , next.GetAsLocalizedDate(true)
-                       , g_localizeStrings.Get(18191)
-                       , next.GetAsLocalizedTime("HH:mm", false));
-    return m_nextTimer;
+    cPVRTimerInfoTag *next = PVRTimers.GetNextActiveTimer();
+    if (next != NULL)
+    {
+      m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(18190)
+                         , next->m_StartTime.GetAsLocalizedDate(true)
+                         , g_localizeStrings.Get(18191)
+                         , next->m_StartTime.GetAsLocalizedTime("HH:mm", false));
+      return m_nextTimer;
+    }
   }
   return "";
 }
@@ -1117,9 +1120,9 @@ void CPVRManager::MoveChannel(unsigned int oldindex, unsigned int newindex, bool
   m_database.Close();
 
   /* Synchronize channel numbers inside timers */
-  for (unsigned int i = 0; i < m_timers.size(); i++)
+  for (unsigned int i = 0; i < PVRTimers.size(); i++)
   {
-    GetFrontendChannelNumber(m_timers[i].m_clientNum, m_currentClientID, &m_timers[i].m_channelNum, &m_timers[i].m_Radio);
+    GetFrontendChannelNumber(PVRTimers[i].m_clientNum, m_currentClientID, &PVRTimers[i].m_channelNum, &PVRTimers[i].m_Radio);
   }
 
   LeaveCriticalSection(&m_critSection);
@@ -1129,9 +1132,9 @@ void CPVRManager::MoveChannel(unsigned int oldindex, unsigned int newindex, bool
 
 void CPVRManager::HideChannel(unsigned int number, bool radio)
 {
-  for (unsigned int i = 0; i < m_timers.size(); i++)
+  for (unsigned int i = 0; i < PVRTimers.size(); i++)
   {
-    if ((m_timers[i].m_channelNum == number) && (m_timers[i].m_Radio == radio))
+    if ((PVRTimers[i].m_channelNum == number) && (PVRTimers[i].m_Radio == radio))
     {
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       if (!pDialog)
@@ -1146,7 +1149,7 @@ void CPVRManager::HideChannel(unsigned int number, bool radio)
       if (!pDialog->IsConfirmed())
         return;
 
-      DeleteTimer(m_timers[i], true);
+      DeleteTimer(PVRTimers[i], true);
     }
   }
 
@@ -1622,12 +1625,12 @@ int CPVRManager::GetAllRecordings(CFileItemList* results)
     if ((m_recordings[i].m_startTime < CDateTime::GetCurrentDateTime()) &&
         (m_recordings[i].m_endTime > CDateTime::GetCurrentDateTime()))
     {
-      for (unsigned int j = 0; j < m_timers.size(); ++j)
+      for (unsigned int j = 0; j < PVRTimers.size(); ++j)
       {
-        if ((m_timers[j].m_channelNum == m_recordings[i].m_channelNum)  &&
-            (m_timers[j].m_StartTime  <= CDateTime::GetCurrentDateTime()) &&
-            (m_timers[j].m_StopTime   >= CDateTime::GetCurrentDateTime()) &&
-            (m_timers[j].m_Repeat != true) && (m_timers[j].m_Active == true))
+        if ((PVRTimers[j].m_channelNum == m_recordings[i].m_channelNum)  &&
+            (PVRTimers[j].m_StartTime  <= CDateTime::GetCurrentDateTime()) &&
+            (PVRTimers[j].m_StopTime   >= CDateTime::GetCurrentDateTime()) &&
+            (PVRTimers[j].m_Repeat != true) && (PVRTimers[j].m_Active == true))
         {
           m_recordings[i].m_Summary.Format("%s", g_localizeStrings.Get(18069));
         }
@@ -1747,7 +1750,7 @@ void CPVRManager::ReceiveAllRecordings()
 
 int CPVRManager::GetNumTimers()
 {
-  return m_timers.size();
+  return PVRTimers.size();
 }
 
 int CPVRManager::GetAllTimers(CFileItemList* results)
@@ -1756,9 +1759,9 @@ int CPVRManager::GetAllTimers(CFileItemList* results)
 
   ReceiveAllTimers();
 
-  for (unsigned int i = 0; i < m_timers.size(); ++i)
+  for (unsigned int i = 0; i < PVRTimers.size(); ++i)
   {
-    CFileItemPtr timer(new CFileItem(m_timers[i]));
+    CFileItemPtr timer(new CFileItem(PVRTimers[i]));
     results->Add(timer);
   }
   
@@ -1767,19 +1770,19 @@ int CPVRManager::GetAllTimers(CFileItemList* results)
 
   LeaveCriticalSection(&m_critSection);
 
-  return m_timers.size();
+  return PVRTimers.size();
 }
 
 bool CPVRManager::AddTimer(const CFileItem &item)
 {
-  /* Check if a CTVTimerInfoTag is inside file item */
-  if (!item.IsTVTimer())
+  /* Check if a cPVRTimerInfoTag is inside file item */
+  if (!item.IsPVRTimer())
   {
     CLog::Log(LOGERROR, "CPVRManager: AddTimer no TVInfoTag given!");
     return false;
   }
 
-  const CTVTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
 
   try
   {
@@ -1811,14 +1814,14 @@ bool CPVRManager::AddTimer(const CFileItem &item)
 
 bool CPVRManager::DeleteTimer(const CFileItem &item, bool force)
 {
-  /* Check if a CTVTimerInfoTag is inside file item */
-  if (!item.IsTVTimer())
+  /* Check if a cPVRTimerInfoTag is inside file item */
+  if (!item.IsPVRTimer())
   {
     CLog::Log(LOGERROR, "CPVRManager: DeleteTimer no TVInfoTag given!");
     return false;
   }
 
-  const CTVTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
 
   try
   {
@@ -1854,14 +1857,14 @@ bool CPVRManager::DeleteTimer(const CFileItem &item, bool force)
 
 bool CPVRManager::RenameTimer(const CFileItem &item, CStdString &newname)
 {
-  /* Check if a CTVTimerInfoTag is inside file item */
-  if (!item.IsTVTimer())
+  /* Check if a cPVRTimerInfoTag is inside file item */
+  if (!item.IsPVRTimer())
   {
     CLog::Log(LOGERROR, "CPVRManager: RenameTimer no TVInfoTag given!");
     return false;
   }
 
-  const CTVTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
 
   try
   {
@@ -1895,14 +1898,14 @@ bool CPVRManager::RenameTimer(const CFileItem &item, CStdString &newname)
 
 bool CPVRManager::UpdateTimer(const CFileItem &item)
 {
-  /* Check if a CTVTimerInfoTag is inside file item */
-  if (!item.IsTVTimer())
+  /* Check if a cPVRTimerInfoTag is inside file item */
+  if (!item.IsPVRTimer())
   {
     CLog::Log(LOGERROR, "CPVRManager: UpdateTimer no TVInfoTag given!");
     return false;
   }
   
-  const CTVTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
 
   try
   {
@@ -1929,29 +1932,12 @@ bool CPVRManager::UpdateTimer(const CFileItem &item)
   return false;
 }
 
-CDateTime CPVRManager::NextTimerDate(void)
-{
-  CDateTime nextRec = NULL;
-
-  if (m_timers.size() == 0)
-    return NULL;
-
-  for (unsigned int i = 0; i < m_timers.size(); i++)
-  {
-    if (nextRec < m_timers[i].m_StartTime && m_timers[i].m_Active)
-    {
-      nextRec = m_timers[i].m_StartTime;
-    }
-  }
-  return nextRec;
-}
-
 void CPVRManager::ReceiveAllTimers()
 {
   EnterCriticalSection(&m_critSection);
   
   /* Clear all current present Timers inside list */
-  m_timers.erase(m_timers.begin(), m_timers.end());
+  PVRTimers.Clear();
 
   /* Go thru all clients and receive there timers */
   CLIENTMAPITR itr = m_clients.begin();
@@ -1960,7 +1946,7 @@ void CPVRManager::ReceiveAllTimers()
     /* Load only if the client have timers */
     if (m_clients[(*itr).first]->GetNumTimers() > 0)
     {
-      m_clients[(*itr).first]->GetAllTimers(&m_timers);
+      m_clients[(*itr).first]->GetAllTimers(&PVRTimers);
     }
     itr++;
   }
@@ -1992,7 +1978,7 @@ bool CPVRManager::TeletextPagePresent(const CFileItem &item, int Page, int subPa
 
 bool CPVRManager::GetTeletextPage(const CFileItem &item, int Page, int subPage, BYTE* buf)
 {
-  /* Check if a CTVTimerInfoTag is inside file item */
+  /* Check if a cPVRTimerInfoTag is inside file item */
   if (!item.IsTVChannel())
   {
     CLog::Log(LOGERROR, "CPVRManager: GetTeletextPage no TVChannelTag given!");
@@ -2402,7 +2388,7 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
     {
       if (bOnOff && m_channels_tv[channel-1].m_isRecording == false)
       {
-        CTVTimerInfoTag newtimer(true);
+        cPVRTimerInfoTag newtimer(true);
         CFileItem *item = new CFileItem(newtimer);
 
         if (!AddTimer(*item))
@@ -2415,14 +2401,14 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
       }
       else if (m_channels_tv[channel-1].m_isRecording == true)
       {
-        for (unsigned int i = 0; i < m_timers.size(); ++i)
+        for (unsigned int i = 0; i < PVRTimers.size(); ++i)
         {
-          if ((m_timers[i].m_channelNum == m_channels_tv[channel-1].m_iChannelNum) &&
-              (m_timers[i].m_StartTime <= CDateTime::GetCurrentDateTime()) &&
-              (m_timers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
-              (m_timers[i].m_Repeat != true) && (m_timers[i].m_Active == true))
+          if ((PVRTimers[i].m_channelNum == m_channels_tv[channel-1].m_iChannelNum) &&
+              (PVRTimers[i].m_StartTime <= CDateTime::GetCurrentDateTime()) &&
+              (PVRTimers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
+              (PVRTimers[i].m_Repeat != true) && (PVRTimers[i].m_Active == true))
           {
-            DeleteTimer(m_timers[i], true);
+            DeleteTimer(PVRTimers[i], true);
           }
         }
 
@@ -2433,7 +2419,7 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
     {
       if (bOnOff && m_channels_radio[channel-1].m_isRecording == false)
       {
-        CTVTimerInfoTag newtimer(true);
+        cPVRTimerInfoTag newtimer(true);
         CFileItem *item = new CFileItem(newtimer);
 
         if (!AddTimer(*item))
@@ -2446,14 +2432,14 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
       }
       else if (m_channels_radio[channel-1].m_isRecording == true)
       {
-        for (unsigned int i = 0; i < m_timers.size(); ++i)
+        for (unsigned int i = 0; i < PVRTimers.size(); ++i)
         {
-          if ((m_timers[i].m_channelNum == m_channels_tv[channel-1].m_iChannelNum) &&
-              (m_timers[i].m_StartTime <= CDateTime::GetCurrentDateTime()) &&
-              (m_timers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
-              (m_timers[i].m_Repeat != true) && (m_timers[i].m_Active == true))
+          if ((PVRTimers[i].m_channelNum == m_channels_tv[channel-1].m_iChannelNum) &&
+              (PVRTimers[i].m_StartTime <= CDateTime::GetCurrentDateTime()) &&
+              (PVRTimers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
+              (PVRTimers[i].m_Repeat != true) && (PVRTimers[i].m_Active == true))
           {
-            DeleteTimer(m_timers[i], true);
+            DeleteTimer(PVRTimers[i], true);
           }
         }
 
@@ -2580,37 +2566,20 @@ void CPVRManager::SyncInfo()
 
   if (m_hasTimers && m_clientProps.SupportTimers)
   {
-    CDateTime nextRec = CDateTime(2030, 11, 30, 0, 0, 0); //future...
+    cPVRTimerInfoTag *nextRec = PVRTimers.GetNextActiveTimer();
 
-    for (unsigned int i = 0; i < m_timers.size(); ++i)
+    m_nextRecordingTitle    = nextRec->m_strTitle;
+    m_nextRecordingChannel  = GetNameForChannel(nextRec->m_channelNum);
+    m_nextRecordingDateTime = nextRec->m_StartTime.GetAsLocalizedDateTime(false, false);
+
+    if (nextRec->m_recStatus == true)
     {
-      CLog::Log(LOGDEBUG, "%s - PVR: nextRec is '%s' current timer starts at %s ", __FUNCTION__,
-                nextRec.GetAsLocalizedDateTime(false, false).c_str(),
-                m_timers[i].m_StartTime.GetAsLocalizedDateTime(false, false).c_str());
-
-      if (nextRec > m_timers[i].m_StartTime)
-      {
-        CLog::Log(LOGDEBUG, "%s - PVR: found earlier timer: timer %i GOOD!", __FUNCTION__, i);
-        nextRec = m_timers[i].m_StartTime;
-
-        m_nextRecordingTitle    = m_timers[i].m_strTitle;
-        m_nextRecordingChannel  = GetNameForChannel(m_timers[i].m_channelNum);
-        m_nextRecordingDateTime = nextRec.GetAsLocalizedDateTime(false, false);
-
-        if (m_timers[i].m_recStatus == true)
-        {
-          m_isRecording = true;
-          CLog::Log(LOGDEBUG, "%s - PVR: next timer is currently recording", __FUNCTION__);
-        }
-        else
-        {
-          m_isRecording = false;
-        }
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, "%s - PVR: trying to find next timer: timer %i is starting later than others.", __FUNCTION__, i);
-      }
+      m_isRecording = true;
+      CLog::Log(LOGDEBUG, "%s - PVR: next timer is currently recording", __FUNCTION__);
+    }
+    else
+    {
+      m_isRecording = false;
     }
   }
 

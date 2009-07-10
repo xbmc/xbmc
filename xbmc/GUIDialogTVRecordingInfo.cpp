@@ -37,7 +37,7 @@
 #include "utils/TVEPGInfoTag.h"
 #include "utils/TVChannelInfoTag.h"
 #include "utils/TVRecordInfoTag.h"
-#include "utils/TVTimerInfoTag.h"
+#include "utils/PVRTimers.h"
 
 /* Dialog windows includes */
 #include "GUIDialogProgress.h"

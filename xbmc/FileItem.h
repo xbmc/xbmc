@@ -44,7 +44,7 @@ class CVideoInfoTag;
 class CTVEPGInfoTag;
 class CTVChannelInfoTag;
 class CTVRecordingInfoTag;
-class CTVTimerInfoTag;
+class cPVRTimerInfoTag;
 class CPictureInfoTag;
 
 class CAlbum;
@@ -80,7 +80,7 @@ public:
   CFileItem(const CTVEPGInfoTag& programme);
   CFileItem(const CTVChannelInfoTag& channel);
   CFileItem(const CTVRecordingInfoTag& record);
-  CFileItem(const CTVTimerInfoTag& timer);
+  CFileItem(const cPVRTimerInfoTag& timer);
   CFileItem(const CMediaSource& share);
   virtual ~CFileItem(void);
 
@@ -129,7 +129,7 @@ public:
   bool IsTVEPG() const;
   bool IsTVChannel() const;
   bool IsTVRecording() const;
-  bool IsTVTimer() const;
+  bool IsPVRTimer() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
@@ -219,14 +219,14 @@ public:
 
   inline bool HasTVTimerInfoTag() const
   {
-    return m_tvtimerInfoTag != NULL;
+    return m_pvrTimerInfoTag != NULL;
   }
 
-  CTVTimerInfoTag* GetTVTimerInfoTag();
+  cPVRTimerInfoTag* GetTVTimerInfoTag();
 
-  inline const CTVTimerInfoTag* GetTVTimerInfoTag() const
+  inline const cPVRTimerInfoTag* GetTVTimerInfoTag() const
   {
-    return m_tvtimerInfoTag;
+    return m_pvrTimerInfoTag;
   }
 
   inline bool HasPictureInfoTag() const
@@ -329,7 +329,7 @@ private:
   CTVEPGInfoTag* m_tvepgInfoTag;
   CTVChannelInfoTag* m_tvchannelInfoTag;
   CTVRecordingInfoTag* m_tvrecordingInfoTag;
-  CTVTimerInfoTag * m_tvtimerInfoTag;
+  cPVRTimerInfoTag * m_pvrTimerInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
 };
 

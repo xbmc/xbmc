@@ -38,7 +38,7 @@
 #include "utils/TVEPGInfoTag.h"
 #include "utils/TVChannelInfoTag.h"
 #include "utils/TVRecordInfoTag.h"
-#include "utils/TVTimerInfoTag.h"
+#include "utils/PVRTimers.h"
 
 /* Dialog windows includes */
 #include "GUIDialogProgress.h"
@@ -125,7 +125,7 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
 
               if (pDialog->IsConfirmed())
               {
-                CTVTimerInfoTag newtimer(*m_progItem.get());
+                cPVRTimerInfoTag newtimer(*m_progItem.get());
                 CFileItem *item = new CFileItem(newtimer);
 
                 if (CPVRManager::GetInstance()->AddTimer(*item))
