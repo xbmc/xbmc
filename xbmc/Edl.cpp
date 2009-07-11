@@ -109,7 +109,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
         if ( tmpCut.action==CUT || tmpCut.action==MUTE )
           tmpValid=AddCut(tmpCut);
         else if ( tmpCut.action==SCENE )
-          tmpValid=AddScene(tmpCut);
+          tmpValid=AddSceneMarker(tmpCut.end);
         else
           tmpValid=false;
       }
@@ -215,7 +215,7 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
           if (strncmp(szBuffer,VRSCENE,strlen(VRSCENE))==0)
           {
             if (sscanf(szBuffer+strlen(VRSCENE), " %i>%lf",&iScene, &dStartframe)==2)
-              tmpValid=AddScene(tmpCut);
+              tmpValid=AddSceneMarker(tmpCut.end);
             else
               tmpValid=false;
           }
@@ -335,14 +335,14 @@ bool CEdl::AddCut(const Cut& NewCut)
   return true;
 }
 
-bool CEdl::AddScene(const Cut& NewCut)
+bool CEdl::AddSceneMarker(const __int64 sceneMarker)
 {
   Cut TmpCut;
 
 
-  if (InCut(NewCut.end, &TmpCut) && TmpCut.action == CUT)// this only works for current cutpoints, no for cutpoints added later.
+  if (InCut(sceneMarker, &TmpCut) && TmpCut.action == CUT)// this only works for current cutpoints, no for cutpoints added later.
       return false;
-  m_vecSceneMarkers.push_back(NewCut.end); // Unsorted
+  m_vecSceneMarkers.push_back(sceneMarker); // Unsorted
 
   return true;
 }
