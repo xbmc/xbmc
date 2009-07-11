@@ -2267,6 +2267,8 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
     result.Replace('<', '_');
     result.Replace('>', '_');
     result.Replace('|', '_');
+    result.TrimRight(".");
+    result.TrimRight(" ");
   }
   return result;
 }
