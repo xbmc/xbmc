@@ -98,9 +98,10 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
   if ( CFile::Exists(m_strEdlFilename) && CutFile.Open(m_strEdlFilename) )
   {
     tmpValid=true;
-    while (tmpValid && CutFile.ReadString(m_szBuffer, 1023))
+    char szBuffer[1024];
+    while (tmpValid && CutFile.ReadString(szBuffer, 1023))
     {
-      if( sscanf( m_szBuffer, "%lf %lf %i", &dCutStart, &dCutEnd, (int*) &tmpCut.action ) == 3)
+      if( sscanf( szBuffer, "%lf %lf %i", &dCutStart, &dCutEnd, (int*) &tmpCut.action ) == 3)
       {
         tmpCut.start=(__int64)(dCutStart*1000);
         tmpCut.end=(__int64)(dCutEnd*1000);
@@ -140,15 +141,16 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
   if ( CFile::Exists(m_strEdlFilename) && CutFile.Open(m_strEdlFilename) )
   {
     tmpValid=true;
-    if (CutFile.ReadString(m_szBuffer, 1023) && (strncmp(m_szBuffer,COMSKIPSTR, strlen(COMSKIPSTR))==0))
+    char szBuffer[1024];
+    if (CutFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer,COMSKIPSTR, strlen(COMSKIPSTR))==0))
     {
-      if (sscanf(m_szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFramerate) == 2)
+      if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFramerate) == 2)
       {
         iFramerate=iFramerate/100;
-        CutFile.ReadString(m_szBuffer, 1023); // read away -------------
-        while (tmpValid && CutFile.ReadString(m_szBuffer, 1023))
+        CutFile.ReadString(szBuffer, 1023); // read away -------------
+        while (tmpValid && CutFile.ReadString(szBuffer, 1023))
         {
-          if (sscanf(m_szBuffer, "%lf %lf", &dStartframe, &dEndframe) == 2)
+          if (sscanf(szBuffer, "%lf %lf", &dStartframe, &dEndframe) == 2)
           {
             tmpCut.start=(__int64)(dStartframe/iFramerate*1000);
             tmpCut.end=(__int64)(dEndframe/iFramerate*1000);
@@ -189,14 +191,15 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
   if (CFile::Exists(m_strEdlFilename) && CutFile.Open(m_strEdlFilename))
   {
     tmpValid=true;
-    if (CutFile.ReadString(m_szBuffer, 1023) && (strncmp(m_szBuffer,VRSTR,strlen(VRSTR))==0))
+    char szBuffer[1024];
+    if (CutFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer,VRSTR,strlen(VRSTR))==0))
     {
-      CutFile.ReadString(m_szBuffer, 1023); // read away Filename
-      while (tmpValid && CutFile.ReadString(m_szBuffer, 1023))
+      CutFile.ReadString(szBuffer, 1023); // read away Filename
+      while (tmpValid && CutFile.ReadString(szBuffer, 1023))
       {
-        if(strncmp(m_szBuffer,VRCUT,strlen(VRCUT))==0)
+        if(strncmp(szBuffer,VRCUT,strlen(VRCUT))==0)
         {
-          if (sscanf( m_szBuffer+strlen(VRCUT), "%lf:%lf", &dStartframe, &dEndframe ) == 2)
+          if (sscanf( szBuffer+strlen(VRCUT), "%lf:%lf", &dStartframe, &dEndframe ) == 2)
           {
             tmpCut.start=(__int64)(dStartframe/10000);
             tmpCut.end=(__int64)(dEndframe/10000);
@@ -206,9 +209,9 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
         }
         else
         {
-          if (strncmp(m_szBuffer,VRSCENE,strlen(VRSCENE))==0)
+          if (strncmp(szBuffer,VRSCENE,strlen(VRSCENE))==0)
           {
-            if (sscanf(m_szBuffer+strlen(VRSCENE), " %i>%lf",&iScene, &dStartframe)==2)
+            if (sscanf(szBuffer+strlen(VRSCENE), " %i>%lf",&iScene, &dStartframe)==2)
               tmpValid=AddScene(tmpCut);
             else
               tmpValid=false;
