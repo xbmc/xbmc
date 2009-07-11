@@ -86,20 +86,21 @@ bool CEdl::ReadFiles(const CStdString& strMovie)
 
 bool CEdl::ReadEdl(const CStdString& strMovie)
 {
-  Cut cut;
-  CFile edlFile;
-  double dStart, dEnd;
-  bool bValid = false;
-
   Clear();
+
   CStdString edlFilename;
   CUtil::ReplaceExtension(strMovie, ".edl", edlFilename);
+
+  CFile edlFile;
+  bool bValid = false;
   if (CFile::Exists(edlFilename) && edlFile.Open(edlFilename))
   {
     bValid = true;
     char szBuffer[1024];
     while (bValid && edlFile.ReadString(szBuffer, 1023))
     {
+      double dStart, dEnd;
+      Cut cut;
       if (sscanf(szBuffer, "%lf %lf %i", &dStart, &dEnd, (int*)&cut.action) == 3)
       {
         cut.start = (__int64)(dStart * 1000);
@@ -126,32 +127,31 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
 
 bool CEdl::ReadComskip(const CStdString& strMovie)
 {
-  Cut cut;
-  CFile comskipFile;
-  int iFrameRate;
-  int iFrames;
-  double dStartFrame;
-  double dEndFrame;
-  bool bValid = false;
-
   Clear();
   CStdString comskipFilename;
   CUtil::ReplaceExtension(strMovie, ".txt", comskipFilename);
 
+  bool bValid = false;
+  CFile comskipFile;
   if (CFile::Exists(comskipFilename) && comskipFile.Open(comskipFilename))
   {
     bValid = true;
     char szBuffer[1024];
     if (comskipFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, COMSKIPSTR, strlen(COMSKIPSTR)) == 0))
     {
+      int iFrameRate;
+      int iFrames;
       if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFrameRate) == 2)
       {
         iFrameRate = iFrameRate / 100;
         comskipFile.ReadString(szBuffer, 1023); // read away -------------
         while (bValid && comskipFile.ReadString(szBuffer, 1023))
         {
+          double dStartFrame;
+          double dEndFrame;
           if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
           {
+            Cut cut;
             cut.start = (__int64)(dStartFrame / iFrameRate * 1000);
             cut.end = (__int64)(dEndFrame / iFrameRate * 1000);
             cut.action = CUT;
@@ -178,17 +178,12 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
 
 bool CEdl::ReadVideoRedo(const CStdString& strMovie)
 {
-  Cut cut;
-  CFile videoRedoFile;
-  int iScene;
-  double dStartFrame;
-  double dEndFrame;
-  bool bValid = false;
-
   Clear();
   CStdString videoRedoFilename;
   CUtil::ReplaceExtension(strMovie, ".VPrj", videoRedoFilename);
 
+  bool bValid = false;
+  CFile videoRedoFile;
   if (CFile::Exists(videoRedoFilename) && videoRedoFile.Open(videoRedoFilename))
   {
     bValid = true;
@@ -198,6 +193,9 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
       videoRedoFile.ReadString(szBuffer, 1023); // read away Filename
       while (bValid && videoRedoFile.ReadString(szBuffer, 1023))
       {
+        Cut cut;
+        double dStartFrame;
+        double dEndFrame;
         if (strncmp(szBuffer, VRCUT, strlen(VRCUT)) == 0)
         {
           if (sscanf(szBuffer + strlen(VRCUT), "%lf:%lf", &dStartFrame, &dEndFrame) == 2)
@@ -212,6 +210,7 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
         {
           if (strncmp(szBuffer, VRSCENE, strlen(VRSCENE)) == 0)
           {
+            int iScene;
             if (sscanf(szBuffer + strlen(VRSCENE), " %i>%lf", &iScene, &dStartFrame) == 2)
               bValid = AddSceneMarker(cut.end);
             else
