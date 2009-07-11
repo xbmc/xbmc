@@ -73,17 +73,16 @@ bool CEdl::ReadnCacheAny(const CStdString& strMovie)
 {
   // Try to read any available format until a valid edl is read
   Reset();
-  SetMovie(strMovie);
 
-  ReadVideoRedo();
+  ReadVideoRedo(strMovie);
   if (!HaveCutpoints() && !HaveScenes())
-    ReadEdl();
-
-  if (!HaveCutpoints() && !HaveScenes())
-    ReadComskip();
+    ReadEdl(strMovie);
 
   if (!HaveCutpoints() && !HaveScenes())
-    ReadBeyondTV();
+    ReadComskip(strMovie);
+
+  if (!HaveCutpoints() && !HaveScenes())
+    ReadBeyondTV(strMovie);
 
   if (HaveCutpoints() || HaveScenes())
     CacheEdl();
@@ -91,7 +90,7 @@ bool CEdl::ReadnCacheAny(const CStdString& strMovie)
   return IsCached();
 }
 
-bool CEdl::ReadEdl()
+bool CEdl::ReadEdl(const CStdString& strMovie)
 {
   Cut tmpCut;
   CFile CutFile;
@@ -99,7 +98,7 @@ bool CEdl::ReadEdl()
   bool tmpValid=false;
 
   Reset();
-  CUtil::ReplaceExtension(m_strMovie, ".edl", m_strEdlFilename);
+  CUtil::ReplaceExtension(strMovie, ".edl", m_strEdlFilename);
   if ( CFile::Exists(m_strEdlFilename) && CutFile.Open(m_strEdlFilename) )
   {
     tmpValid=true;
@@ -129,7 +128,7 @@ bool CEdl::ReadEdl()
   return tmpValid;
 }
 
-bool CEdl::ReadComskip()
+bool CEdl::ReadComskip(const CStdString& strMovie)
 {
   Cut tmpCut;
   CFile CutFile;
@@ -140,7 +139,7 @@ bool CEdl::ReadComskip()
   bool tmpValid=false;
 
   Reset();
-  CUtil::ReplaceExtension(m_strMovie, ".txt", m_strEdlFilename);
+  CUtil::ReplaceExtension(strMovie, ".txt", m_strEdlFilename);
 
   if ( CFile::Exists(m_strEdlFilename) && CutFile.Open(m_strEdlFilename) )
   {
@@ -179,7 +178,7 @@ bool CEdl::ReadComskip()
   return tmpValid;
 }
 
-bool CEdl::ReadVideoRedo()
+bool CEdl::ReadVideoRedo(const CStdString& strMovie)
 {
   Cut tmpCut;
   CFile CutFile;
@@ -189,7 +188,7 @@ bool CEdl::ReadVideoRedo()
   bool tmpValid=false;
 
   Reset();
-  CUtil::ReplaceExtension(m_strMovie, ".VPrj", m_strEdlFilename);
+  CUtil::ReplaceExtension(strMovie, ".VPrj", m_strEdlFilename);
 
   if (CFile::Exists(m_strEdlFilename) && CutFile.Open(m_strEdlFilename))
   {
@@ -232,10 +231,10 @@ bool CEdl::ReadVideoRedo()
   return tmpValid;
 }
 
-bool CEdl::ReadBeyondTV()
+bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
   Reset();
-  m_strEdlFilename=m_strMovie+".chapters.xml";
+  m_strEdlFilename=strMovie+".chapters.xml";
 
   if (!CFile::Exists(m_strEdlFilename))
     return false;
@@ -348,11 +347,6 @@ bool CEdl::AddScene(const Cut& NewCut)
 
   m_bScenes=true;
   return true;
-}
-
-void CEdl::SetMovie(const CStdString& strMovie)
-{
-  m_strMovie=strMovie;
 }
 
 bool CEdl::CacheEdl()

@@ -47,10 +47,10 @@ public:
   };
 
   bool ReadnCacheAny(const CStdString& strMovie);
-  bool ReadEdl();
-  bool ReadComskip();
-  bool ReadVideoRedo();
-  bool ReadBeyondTV();
+  bool ReadEdl(const CStdString& strMovie);
+  bool ReadComskip(const CStdString& strMovie);
+  bool ReadVideoRedo(const CStdString& strMovie);
+  bool ReadBeyondTV(const CStdString& strMovie);
   void Reset();
 
   bool AddCutpoint(const Cut& NewCut);
@@ -75,7 +75,6 @@ public:
 protected:
 private:
   CStdString m_strCachedEdl;
-  CStdString m_strMovie;
   CStdString m_strEdlFilename;
   bool m_bCutpoints;
   bool m_bCached;
