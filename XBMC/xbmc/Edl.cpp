@@ -161,44 +161,50 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
 bool CEdl::ReadComskip(const CStdString& strMovie)
 {
   Clear();
+
   CStdString comskipFilename;
   CUtil::ReplaceExtension(strMovie, ".txt", comskipFilename);
+  if (!CFile::Exists(comskipFilename))
+    return false;
 
-  bool bValid = false;
   CFile comskipFile;
-  if (CFile::Exists(comskipFilename) && comskipFile.Open(comskipFilename))
+  if (!comskipFile.Open(comskipFilename))
   {
-    bValid = true;
-    char szBuffer[1024];
-    if (comskipFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, COMSKIPSTR, strlen(COMSKIPSTR)) == 0))
-    {
-      int iFrameRate;
-      int iFrames;
-      if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFrameRate) == 2)
-      {
-        iFrameRate = iFrameRate / 100;
-        comskipFile.ReadString(szBuffer, 1023); // read away -------------
-        while (bValid && comskipFile.ReadString(szBuffer, 1023))
-        {
-          double dStartFrame;
-          double dEndFrame;
-          if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
-          {
-            Cut cut;
-            cut.start = (__int64)(dStartFrame / iFrameRate * 1000);
-            cut.end = (__int64)(dEndFrame / iFrameRate * 1000);
-            cut.action = CUT;
-            bValid = AddCut(cut);
-          }
-          else
-            bValid = false;
-        }
-      }
-      else
-        bValid = false;
-    }
-    comskipFile.Close();
+    CLog::Log(LOGERROR, "%s - Could not open Comskip file: %s", __FUNCTION__, comskipFilename.c_str());
+    return false;
   }
+  
+  bool bValid = true;
+  char szBuffer[1024];
+  if (comskipFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, COMSKIPSTR, strlen(COMSKIPSTR)) == 0))
+  {
+    int iFrameRate;
+    int iFrames;
+    if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFrameRate) == 2)
+    {
+      iFrameRate = iFrameRate / 100;
+      comskipFile.ReadString(szBuffer, 1023); // read away -------------
+      while (bValid && comskipFile.ReadString(szBuffer, 1023))
+      {
+        double dStartFrame;
+        double dEndFrame;
+        if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
+        {
+          Cut cut;
+          cut.start = (__int64)(dStartFrame / iFrameRate * 1000);
+          cut.end = (__int64)(dEndFrame / iFrameRate * 1000);
+          cut.action = CUT;
+          bValid = AddCut(cut);
+        }
+        else
+          bValid = false;
+      }
+    }
+    else
+      bValid = false;
+  }
+  comskipFile.Close();
+
   if (bValid && HasCut())
   {
     CLog::Log(LOGDEBUG, "CEdl: Read ComSkip.");
