@@ -1373,7 +1373,7 @@ bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
 {
   CEdl::Cut cut;
 
-  if(!m_Edl.HaveCutpoints())
+  if(!m_Edl.HasCut())
     return false;
 
   if(current.dts == DVD_NOPTS_VALUE)
@@ -1918,7 +1918,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 
     CStdString strEDL;
 
-    if(m_Edl.HaveCutpoints())
+    if(m_Edl.HasCut())
       strEDL.Format(", edl:%c",  m_Edl.GetEdlStatus());
 
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"
@@ -2958,7 +2958,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     }
   }
 
-  if (m_Edl.HaveCutpoints())
+  if (m_Edl.HasCut())
   {
     m_State.time        = m_Edl.RemoveCutTime(llrint(m_State.time));
     m_State.time_total -= m_Edl.TotalCutTime();

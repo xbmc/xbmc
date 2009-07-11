@@ -71,19 +71,19 @@ bool CEdl::ReadnCacheAny(const CStdString& strMovie)
   Reset();
 
   ReadVideoRedo(strMovie);
-  if (!HaveCutpoints() && !HaveScenes())
+  if (!HasCut() && !HaveScenes())
     ReadEdl(strMovie);
 
-  if (!HaveCutpoints() && !HaveScenes())
+  if (!HasCut() && !HaveScenes())
     ReadComskip(strMovie);
 
-  if (!HaveCutpoints() && !HaveScenes())
+  if (!HasCut() && !HaveScenes())
     ReadBeyondTV(strMovie);
 
-  if (HaveCutpoints() || HaveScenes())
+  if (HasCut() || HaveScenes())
     CacheEdl();
 
-  return HaveCutpoints() || HaveScenes();
+  return HasCut() || HaveScenes();
 }
 
 bool CEdl::ReadEdl(const CStdString& strMovie)
@@ -118,7 +118,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
     }
     CutFile.Close();
   }
-  if (tmpValid && (HaveCutpoints() || HaveScenes()))
+  if (tmpValid && (HasCut() || HaveScenes()))
     CLog::Log(LOGDEBUG, "CEdl: Read Edl.");
   else
     Reset();
@@ -168,7 +168,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
     }
     CutFile.Close();
   }
-  if (tmpValid && HaveCutpoints())
+  if (tmpValid && HasCut())
   {
     CLog::Log(LOGDEBUG, "CEdl: Read ComSkip.");
   }
@@ -226,7 +226,7 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
     CutFile.Close();
   }
 
-  if (tmpValid && (HaveCutpoints() || HaveScenes()))
+  if (tmpValid && (HasCut() || HaveScenes()))
     CLog::Log(LOGDEBUG, "CEdl: Read VidoRedo.");
   else
     Reset();
@@ -281,7 +281,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
     Region = Region->NextSiblingElement("Region");
   }
 
-  if (HaveCutpoints())
+  if (HasCut())
   {
     CLog::Log(LOGDEBUG, "CEdl: Read BeyondTV.");
     return true;
@@ -373,14 +373,14 @@ bool CEdl::CacheEdl()
   }
 }
 
-bool CEdl::HaveCutpoints()
+bool CEdl::HasCut()
 {
   return m_vecCutlist.size() > 0;
 }
 
 __int64 CEdl::TotalCutTime()
 {
-  if (!HaveCutpoints())
+  if (!HasCut())
     return 0;
   else
     return m_iTotalCutTime; //msec.
@@ -390,7 +390,7 @@ __int64 CEdl::RemoveCutTime(__int64 iTime)
 {
   __int64 iCutTime=0;
 
-  if (!HaveCutpoints())
+  if (!HasCut())
     return iTime;
   for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
   {
@@ -403,7 +403,7 @@ __int64 CEdl::RemoveCutTime(__int64 iTime)
 
 __int64 CEdl::RestoreCutTime(__int64 iTime)
 {
-  if (!HaveCutpoints())
+  if (!HasCut())
     return iTime;
   for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
   {
@@ -423,9 +423,9 @@ char CEdl::GetEdlStatus()
 {
   char cEdlStatus='n';
 
-  if (HaveCutpoints() && HaveScenes())
+  if (HasCut() && HaveScenes())
     cEdlStatus='b';
-  else if (HaveCutpoints())
+  else if (HasCut())
     cEdlStatus='e';
   else if (HaveScenes())
     cEdlStatus='s';
@@ -454,7 +454,7 @@ bool CEdl::InCutpoint(__int64 iAbsSeek, Cut *pCurCut)
 
 bool CEdl::SeekScene(bool bPlus, __int64 *iScenemarker)
 {
-  if (!HaveCutpoints())
+  if (!HasCut())
     return false;
 
   // Need absolute time.
