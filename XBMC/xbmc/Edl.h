@@ -54,7 +54,7 @@ public:
   void Reset();
 
   bool AddCut(const Cut& NewCut);
-  bool AddScene(const Cut& NewCut);
+  bool AddSceneMarker(const __int64 sceneMarker);
 
   bool CacheEdl();
 
