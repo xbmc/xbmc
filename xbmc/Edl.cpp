@@ -94,8 +94,9 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
   bool tmpValid=false;
 
   Reset();
-  CUtil::ReplaceExtension(strMovie, ".edl", m_strEdlFilename);
-  if ( CFile::Exists(m_strEdlFilename) && CutFile.Open(m_strEdlFilename) )
+  CStdString edlFilename;
+  CUtil::ReplaceExtension(strMovie, ".edl", edlFilename);
+  if ( CFile::Exists(edlFilename) && CutFile.Open(edlFilename) )
   {
     tmpValid=true;
     char szBuffer[1024];
@@ -136,9 +137,10 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
   bool tmpValid=false;
 
   Reset();
-  CUtil::ReplaceExtension(strMovie, ".txt", m_strEdlFilename);
+  CStdString comskipFilename;
+  CUtil::ReplaceExtension(strMovie, ".txt", comskipFilename);
 
-  if ( CFile::Exists(m_strEdlFilename) && CutFile.Open(m_strEdlFilename) )
+  if ( CFile::Exists(comskipFilename) && CutFile.Open(comskipFilename) )
   {
     tmpValid=true;
     char szBuffer[1024];
@@ -186,9 +188,10 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
   bool tmpValid=false;
 
   Reset();
-  CUtil::ReplaceExtension(strMovie, ".VPrj", m_strEdlFilename);
+  CStdString videoRedoFilename;
+  CUtil::ReplaceExtension(strMovie, ".VPrj", videoRedoFilename);
 
-  if (CFile::Exists(m_strEdlFilename) && CutFile.Open(m_strEdlFilename))
+  if (CFile::Exists(videoRedoFilename) && CutFile.Open(videoRedoFilename))
   {
     tmpValid=true;
     char szBuffer[1024];
@@ -233,15 +236,15 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
 bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
   Reset();
-  m_strEdlFilename=strMovie+".chapters.xml";
+  CStdString beyondTVFilename=strMovie+".chapters.xml";
 
-  if (!CFile::Exists(m_strEdlFilename))
+  if (!CFile::Exists(beyondTVFilename))
     return false;
 
   CFileStream file;
-  if (!file.Open(m_strEdlFilename))
+  if (!file.Open(beyondTVFilename))
   {
-    CLog::Log(LOGDEBUG, "%s failed to read file %s", __FUNCTION__, m_strEdlFilename.c_str());
+    CLog::Log(LOGDEBUG, "%s failed to read file %s", __FUNCTION__, beyondTVFilename.c_str());
     return false;
   }
 
