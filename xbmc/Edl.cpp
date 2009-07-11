@@ -59,7 +59,7 @@ void CEdl::Reset()
   if (CFile::Exists(CACHED_EDL_FILENAME))
     CFile::Delete(CACHED_EDL_FILENAME);
 
-  m_vecCutlist.clear();
+  m_vecCuts.clear();
   m_vecScenelist.clear();
   m_iTotalCutTime=0;
 }
@@ -309,22 +309,22 @@ bool CEdl::AddCutpoint(const Cut& NewCut)
   if (g_application.m_pPlayer->GetTotalTime() > 0
         && (NewCut.end > (g_application.m_pPlayer->GetTotalTime())*1000))
 
-  for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
+  for(int i = 0; i < (int)m_vecCuts.size(); i++ )
   {
-    if ( NewCut.start < m_vecCutlist[i].start && NewCut.end > m_vecCutlist[i].end)
+    if ( NewCut.start < m_vecCuts[i].start && NewCut.end > m_vecCuts[i].end)
       return false;
   }
 
   // Insert cutpoint in list.
-  if (m_vecCutlist.empty() || m_vecCutlist.back().start < NewCut.start)
-    m_vecCutlist.push_back(NewCut);
+  if (m_vecCuts.empty() || m_vecCuts.back().start < NewCut.start)
+    m_vecCuts.push_back(NewCut);
   else
   {
-    for (vitr=m_vecCutlist.begin(); vitr != m_vecCutlist.end(); ++vitr)
+    for (vitr=m_vecCuts.begin(); vitr != m_vecCuts.end(); ++vitr)
     {
       if (vitr->start > NewCut.start)
       {
-        m_vecCutlist.insert(vitr, NewCut);
+        m_vecCuts.insert(vitr, NewCut);
         break;
       }
     }
@@ -353,11 +353,11 @@ bool CEdl::CacheEdl()
   if (cacheFile.OpenForWrite(CACHED_EDL_FILENAME, true))
   {
     CStdString write;
-    for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
+    for(int i = 0; i < (int)m_vecCuts.size(); i++ )
     {
-      if ((m_vecCutlist[i].action==CUT) || (m_vecCutlist[i].action==MUTE))
+      if ((m_vecCuts[i].action==CUT) || (m_vecCuts[i].action==MUTE))
       {
-        write.AppendFormat("%.2f\t%.2f\t%i\n",((double)m_vecCutlist[i].start)/1000, ((double)m_vecCutlist[i].end)/1000, m_vecCutlist[i].action);
+        write.AppendFormat("%.2f\t%.2f\t%i\n",((double)m_vecCuts[i].start)/1000, ((double)m_vecCuts[i].end)/1000, m_vecCuts[i].action);
       }
     }
     cacheFile.Write(write.c_str(), write.size());
@@ -375,7 +375,7 @@ bool CEdl::CacheEdl()
 
 bool CEdl::HasCut()
 {
-  return m_vecCutlist.size() > 0;
+  return m_vecCuts.size() > 0;
 }
 
 __int64 CEdl::GetTotalCutTime()
@@ -392,10 +392,10 @@ __int64 CEdl::RemoveCutTime(__int64 iTime)
 
   if (!HasCut())
     return iTime;
-  for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
+  for(int i = 0; i < (int)m_vecCuts.size(); i++ )
   {
-    if (m_vecCutlist[i].action==CUT && m_vecCutlist[i].end <= iTime)
-      iCutTime += m_vecCutlist[i].end - m_vecCutlist[i].start;
+    if (m_vecCuts[i].action==CUT && m_vecCuts[i].end <= iTime)
+      iCutTime += m_vecCuts[i].end - m_vecCuts[i].start;
   }
 
   return iTime-iCutTime;
@@ -405,10 +405,10 @@ __int64 CEdl::RestoreCutTime(__int64 iTime)
 {
   if (!HasCut())
     return iTime;
-  for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
+  for(int i = 0; i < (int)m_vecCuts.size(); i++ )
   {
-    if (m_vecCutlist[i].action==CUT && m_vecCutlist[i].start <= iTime)
-      iTime += m_vecCutlist[i].end - m_vecCutlist[i].start;
+    if (m_vecCuts[i].action==CUT && m_vecCuts[i].start <= iTime)
+      iTime += m_vecCuts[i].end - m_vecCuts[i].start;
   }
 
   return iTime;
@@ -435,17 +435,17 @@ char CEdl::GetEdlStatus()
 
 bool CEdl::InCutpoint(__int64 iAbsSeek, Cut *pCurCut)
 {
-  for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
+  for(int i = 0; i < (int)m_vecCuts.size(); i++ )
   {
-    if (m_vecCutlist[i].start <= iAbsSeek && m_vecCutlist[i].end >= iAbsSeek)
+    if (m_vecCuts[i].start <= iAbsSeek && m_vecCuts[i].end >= iAbsSeek)
     {
       if (pCurCut)
-        *pCurCut=m_vecCutlist[i];
+        *pCurCut=m_vecCuts[i];
       return true;
     }
     else
     {
-      if (m_vecCutlist[i].start > iAbsSeek)
+      if (m_vecCuts[i].start > iAbsSeek)
         return false;
     }
   }
