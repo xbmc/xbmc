@@ -53,7 +53,7 @@ public:
   bool ReadBeyondTV(const CStdString& strMovie);
   void Reset();
 
-  bool AddCutpoint(const Cut& NewCut);
+  bool AddCut(const Cut& NewCut);
   bool AddScene(const Cut& NewCut);
 
   bool CacheEdl();
