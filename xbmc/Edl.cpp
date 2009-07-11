@@ -375,7 +375,7 @@ bool CEdl::CacheEdl()
 
 bool CEdl::HasCut()
 {
-  return m_vecCuts.size() > 0;
+  return !m_vecCuts.empty();
 }
 
 __int64 CEdl::GetTotalCutTime()
@@ -416,7 +416,7 @@ __int64 CEdl::RestoreCutTime(__int64 iTime)
 
 bool CEdl::HasSceneMarker()
 {
-  return m_vecSceneMarkers.size() > 0;
+  return !m_vecSceneMarkers.empty();
 }
 
 char CEdl::GetEdlStatus()
