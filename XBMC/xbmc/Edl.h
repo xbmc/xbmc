@@ -72,7 +72,7 @@ public:
 protected:
 private:
   __int64 m_iTotalCutTime; // msec
-  std::vector<Cut> m_vecCutlist;
+  std::vector<Cut> m_vecCuts;
   std::vector<__int64> m_vecScenelist;
 };
 
