@@ -302,7 +302,7 @@ bool CEdl::AddCutpoint(const Cut& NewCut)
   if (NewCut.start < 0)
     return false;
 
-  if (InCutpoint(NewCut.start) || InCutpoint(NewCut.end))
+  if (InCut(NewCut.start) || InCut(NewCut.end))
       return false;
 
   // Always returns 0 at this point?
@@ -340,7 +340,7 @@ bool CEdl::AddScene(const Cut& NewCut)
   Cut TmpCut;
 
 
-  if (InCutpoint(NewCut.end, &TmpCut) && TmpCut.action == CUT)// this only works for current cutpoints, no for cutpoints added later.
+  if (InCut(NewCut.end, &TmpCut) && TmpCut.action == CUT)// this only works for current cutpoints, no for cutpoints added later.
       return false;
   m_vecSceneMarkers.push_back(NewCut.end); // Unsorted
 
@@ -433,7 +433,7 @@ char CEdl::GetEdlStatus()
   return cEdlStatus;
 }
 
-bool CEdl::InCutpoint(__int64 iAbsSeek, Cut *pCurCut)
+bool CEdl::InCut(__int64 iAbsSeek, Cut *pCurCut)
 {
   for(int i = 0; i < (int)m_vecCuts.size(); i++ )
   {
@@ -490,7 +490,7 @@ bool CEdl::SeekScene(bool bPlus, __int64 *iScenemarker)
   }
 
   // extra check for incutpoint, we cannot filter this out reliable earlier.
-  if (InCutpoint(iNextScene, &TmpCut) && TmpCut.action == CUT)
+  if (InCut(iNextScene, &TmpCut) && TmpCut.action == CUT)
     return false;
 
   // Make sure scene is in movie.

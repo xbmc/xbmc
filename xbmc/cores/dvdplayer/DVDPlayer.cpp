@@ -1379,7 +1379,7 @@ bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
   if(current.dts == DVD_NOPTS_VALUE)
     return false;
 
-  if (m_Edl.InCutpoint(DVD_TIME_TO_MSEC(current.dts), &cut) && cut.action == CEdl::CUT)
+  if (m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts), &cut) && cut.action == CEdl::CUT)
   {
     // check if both streams are in cut position, if they are do the seek
     if (m_CurrentAudio.id >= 0 && m_CurrentAudio.dts != DVD_NOPTS_VALUE && m_CurrentAudio.dts > DVD_MSEC_TO_TIME(cut.start)
