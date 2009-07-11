@@ -66,7 +66,6 @@ public:
   __int64 RemoveCutTime(__int64 iTime);
   __int64 RestoreCutTime(__int64 iTime);
 
-  bool IsCached();
   bool InCutpoint(__int64 iAbsSeek, Cut *pCurCut = NULL);
 
   bool SeekScene(bool bPlus,__int64 *iScenemarker);
@@ -75,7 +74,6 @@ protected:
 private:
   CStdString m_strEdlFilename;
   bool m_bCutpoints;
-  bool m_bCached;
   bool m_bScenes;
   __int64 m_iTotalCutTime; // msec
   char m_szBuffer[1024]; // Buffer for file reading
