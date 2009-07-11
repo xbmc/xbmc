@@ -390,13 +390,42 @@
 	         <onclick>Skin.ToggleSetting(HideAppStore)</onclick>
 	         <selected>!Skin.HasSetting(HideAppStore)</selected>
         </control>
-        
-        <control type="radiobutton" id="308">
-	         <description>Show Quit Menu</description>
+       
+         <control type="radiobutton" id="308">
+  	         <description>Show Power Menu</description>
+  	         <include>GeneralSkinOption</include>
+  	         <label>$LOCALIZE[31956] $LOCALIZE[31962]</label>
+  	         <onclick>Skin.ToggleSetting(HidePower)</onclick>
+  	         <onclick>Skin.Reset(ShowShutDown)</onclick>
+  	         <onclick>Skin.Reset(ShowSleep)</onclick>
+  	         <selected>!Skin.HasSetting(HidePower)</selected>
+        </control> 
+        <control type="radiobutton" id="309">
+	         <description>Show Quit</description>
 	         <include>GeneralSkinOption</include>
-	         <label>$LOCALIZE[31956] $LOCALIZE[31007]</label>
-	         <onclick>Skin.ToggleSetting(HidePower)</onclick>
-	         <selected>!Skin.HasSetting(HidePower)</selected>
+	         <label> - $LOCALIZE[31962] $LOCALIZE[31963] $LOCALIZE[31007]</label>
+	         <onclick>Skin.Reset(ShowShutDown)</onclick>
+	         <onclick>Skin.Reset(ShowSleep)</onclick>
+	         <enable>!Skin.HasSetting(HidePower)</enable>
+	         <selected>!Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</selected>
+        </control>
+        <control type="radiobutton" id="310">
+	         <description>Show Sleep</description>
+	         <include>GeneralSkinOption</include>
+	         <label> - $LOCALIZE[31962] $LOCALIZE[31963] $LOCALIZE[31960]</label>
+	         <onclick>Skin.Reset(ShowShutDown)</onclick>
+	         <onclick>Skin.SetBool(ShowSleep)</onclick>
+	         <enable>!Skin.HasSetting(HidePower)</enable>
+	         <selected>Skin.HasSetting(ShowSleep)</selected>
+        </control>
+        <control type="radiobutton" id="311">
+	         <description>Show Shutdown</description>
+	         <include>GeneralSkinOption</include>
+	         <label> - $LOCALIZE[31962] $LOCALIZE[31963] $LOCALIZE[31961]</label>
+	         <onclick>Skin.SetBool(ShowShutDown)</onclick>
+	         <onclick>Skin.Reset(ShowSleep)</onclick>
+	         <enable>!Skin.HasSetting(HidePower)</enable>
+	         <selected>Skin.HasSetting(ShowShutDown)</selected>
         </control>
 	  </control>
 

@@ -70,7 +70,7 @@
   <string id="31072">Restart</string>
   <string id="31073">Reload XBMC</string>
   <string id="31074">Dashboard</string>
-  <string id="31075">Refresh skin</string>
+  <string id="31075">Refresh Skin</string>
 
 <!--  Video  -->
   <string id="31111">Movies</string>
@@ -184,6 +184,7 @@
   <string id="31715">Panel Stream</string>
   <string id="31716">Coverflow</string>
   <string id="31717">Options Menu</string>
+  <string id="31720">Grid</string>
 
 <!--  Credits  -->
   <string id="31800">Credits</string>
@@ -214,4 +215,9 @@
   <string id="31954">Help</string>
   <string id="31955">Preferences</string>
   <string id="31956">Show</string>
+  
+  <string id="31960">Sleep</string>
+  <string id="31961">Shut Down</string>
+  <string id="31962">Power Menu</string>
+  <string id="31963">displays</string>
 </strings>
