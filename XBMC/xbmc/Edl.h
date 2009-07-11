@@ -47,16 +47,7 @@ public:
   };
 
   bool ReadFiles(const CStdString& strMovie);
-  bool ReadEdl(const CStdString& strMovie);
-  bool ReadComskip(const CStdString& strMovie);
-  bool ReadVideoRedo(const CStdString& strMovie);
-  bool ReadBeyondTV(const CStdString& strMovie);
   void Reset();
-
-  bool AddCut(const Cut& NewCut);
-  bool AddSceneMarker(const __int64 sceneMarker);
-
-  bool WriteMPlayerEdl();
 
   bool HasCut();
   bool HasSceneMarker();
@@ -74,6 +65,17 @@ private:
   __int64 m_iTotalCutTime; // msec
   std::vector<Cut> m_vecCuts;
   std::vector<__int64> m_vecSceneMarkers;
+
+  bool ReadEdl(const CStdString& strMovie);
+  bool ReadComskip(const CStdString& strMovie);
+  bool ReadVideoRedo(const CStdString& strMovie);
+  bool ReadBeyondTV(const CStdString& strMovie);
+
+  bool AddCut(const Cut& NewCut);
+  bool AddSceneMarker(const __int64 sceneMarker);
+
+  bool WriteMPlayerEdl();
+
 };
 
 #endif // CEDL_H
