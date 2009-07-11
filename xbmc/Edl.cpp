@@ -60,7 +60,7 @@ void CEdl::Reset()
     CFile::Delete(CACHED_EDL_FILENAME);
 
   m_vecCuts.clear();
-  m_vecScenelist.clear();
+  m_vecSceneMarkers.clear();
   m_iTotalCutTime=0;
 }
 
@@ -342,7 +342,7 @@ bool CEdl::AddScene(const Cut& NewCut)
 
   if (InCutpoint(NewCut.end, &TmpCut) && TmpCut.action == CUT)// this only works for current cutpoints, no for cutpoints added later.
       return false;
-  m_vecScenelist.push_back(NewCut.end); // Unsorted
+  m_vecSceneMarkers.push_back(NewCut.end); // Unsorted
 
   return true;
 }
@@ -416,7 +416,7 @@ __int64 CEdl::RestoreCutTime(__int64 iTime)
 
 bool CEdl::HasSceneMarker()
 {
-  return m_vecScenelist.size() > 0;
+  return m_vecSceneMarkers.size() > 0;
 }
 
 char CEdl::GetEdlStatus()
@@ -466,12 +466,12 @@ bool CEdl::SeekScene(bool bPlus, __int64 *iScenemarker)
   if (bPlus)
   {
     iDiff=(__int64)99999999999999LL;
-    for(int i = 0; i < (int)m_vecScenelist.size(); i++ )
+    for(int i = 0; i < (int)m_vecSceneMarkers.size(); i++ )
     {
-      if ( (m_vecScenelist[i] > iCurSeek) && ((m_vecScenelist[i]-iCurSeek) < iDiff))
+      if ( (m_vecSceneMarkers[i] > iCurSeek) && ((m_vecSceneMarkers[i]-iCurSeek) < iDiff))
       {
-        iDiff=m_vecScenelist[i]-iCurSeek;
-        iNextScene=m_vecScenelist[i];
+        iDiff=m_vecSceneMarkers[i]-iCurSeek;
+        iNextScene=m_vecSceneMarkers[i];
       }
     }
   }
@@ -479,12 +479,12 @@ bool CEdl::SeekScene(bool bPlus, __int64 *iScenemarker)
   {
     iCurSeek = (iCurSeek>5000) ? iCurSeek-5000 : 0; // Jump over nearby scene to avoid getting stuck.
     iDiff=(__int64)99999999999999LL;
-    for(int i = 0; i < (int)m_vecScenelist.size(); i++ )
+    for(int i = 0; i < (int)m_vecSceneMarkers.size(); i++ )
     {
-      if ((m_vecScenelist[i] < iCurSeek) && ((iCurSeek-m_vecScenelist[i]) < iDiff))
+      if ((m_vecSceneMarkers[i] < iCurSeek) && ((iCurSeek-m_vecSceneMarkers[i]) < iDiff))
       {
-        iDiff=iCurSeek-m_vecScenelist[i];
-        iNextScene=m_vecScenelist[i];
+        iDiff=iCurSeek-m_vecSceneMarkers[i];
+        iNextScene=m_vecSceneMarkers[i];
       }
     }
   }
