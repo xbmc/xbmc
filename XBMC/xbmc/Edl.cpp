@@ -174,31 +174,44 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
     return false;
   }
   
-  bool bValid = true;
   char szBuffer[1024];
-  if (comskipFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, COMSKIPSTR, strlen(COMSKIPSTR)) == 0))
+  if (comskipFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, COMSKIPSTR, strlen(COMSKIPSTR)) != 0)) // Line 1.
   {
-    int iFrameRate;
-    int iFrames;
-    if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFrameRate) == 2)
+    CLog::Log(LOGERROR, "%s - Invalid Comskip file: %s. Error reading line 1 - expected '%s' at start.",
+              __FUNCTION__, comskipFilename.c_str(), COMSKIPSTR);
+    comskipFile.Close();
+    return false;
+  }
+  
+  int iFrames;
+  int iFrameRate;
+  if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFrameRate) != 2)
+  {
+    /*
+     * Not all generated Comskip files have the frame rate information.
+     */
+    CLog::Log(LOGERROR, "%s - Frame rate not found on line 1 in Comskip file. Only version 2 files and upwards are supported.",
+              __FUNCTION__);
+    comskipFile.Close();
+    return false;
+  }
+
+  iFrameRate /= 100; // Reduce by factor of 100 to get fps.
+
+  comskipFile.ReadString(szBuffer, 1023); // Line 2. Ignore "-------------"
+
+  bool bValid = true;
+  while (bValid && comskipFile.ReadString(szBuffer, 1023))
+  {
+    double dStartFrame;
+    double dEndFrame;
+    if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
     {
-      iFrameRate = iFrameRate / 100;
-      comskipFile.ReadString(szBuffer, 1023); // read away -------------
-      while (bValid && comskipFile.ReadString(szBuffer, 1023))
-      {
-        double dStartFrame;
-        double dEndFrame;
-        if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
-        {
-          Cut cut;
-          cut.start = (__int64)(dStartFrame / iFrameRate * 1000);
-          cut.end = (__int64)(dEndFrame / iFrameRate * 1000);
-          cut.action = CUT;
-          bValid = AddCut(cut);
-        }
-        else
-          bValid = false;
-      }
+      Cut cut;
+      cut.start = (__int64)(dStartFrame / iFrameRate * 1000);
+      cut.end = (__int64)(dEndFrame / iFrameRate * 1000);
+      cut.action = CUT;
+      bValid = AddCut(cut);
     }
     else
       bValid = false;
