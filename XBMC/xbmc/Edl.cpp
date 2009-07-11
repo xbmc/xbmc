@@ -201,10 +201,11 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
   comskipFile.ReadString(szBuffer, 1023); // Line 2. Ignore "-------------"
 
   bool bValid = true;
-  while (bValid && comskipFile.ReadString(szBuffer, 1023))
+  int iLine = 2;
+  while (bValid && comskipFile.ReadString(szBuffer, 1023)) // Line 3 and onwards.
   {
-    double dStartFrame;
-    double dEndFrame;
+    iLine++;
+    double dStartFrame, dEndFrame;
     if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
     {
       Cut cut;
@@ -218,14 +219,24 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
   }
   comskipFile.Close();
 
-  if (bValid && HasCut())
+  if (!bValid)
   {
-    CLog::Log(LOGDEBUG, "CEdl: Read ComSkip.");
+    CLog::Log(LOGERROR, "%s - Invalid Comskip file: %s. Error on line %i. Clearing any valid commercial breaks found.",
+              __FUNCTION__, comskipFilename.c_str(), iLine);
+    Clear();
+    return false;
+  }
+  else if (HasCut())
+  {
+    CLog::Log(LOGDEBUG, "%s - Read %i commercial breaks from Comskip file: %s", __FUNCTION__, m_vecCuts.size(),
+              comskipFilename.c_str());
+    return true;
   }
   else
-    Clear();
-
-  return bValid;
+  {
+    CLog::Log(LOGDEBUG, "%s - No commercial breaks found in Comskip file: %s", __FUNCTION__, comskipFilename.c_str());
+    return false;
+  }
 }
 
 bool CEdl::ReadVideoRedo(const CStdString& strMovie)
