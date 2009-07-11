@@ -62,7 +62,6 @@ void CEdl::Reset()
   m_vecCutlist.clear();
   m_vecScenelist.clear();
   m_bCutpoints=false;
-  m_bScenes=false;
   m_iTotalCutTime=0;
 }
 
@@ -337,13 +336,11 @@ bool CEdl::AddScene(const Cut& NewCut)
 {
   Cut TmpCut;
 
-  m_bScenes=false;
 
   if (InCutpoint(NewCut.end, &TmpCut) && TmpCut.action == CUT)// this only works for current cutpoints, no for cutpoints added later.
       return false;
   m_vecScenelist.push_back(NewCut.end); // Unsorted
 
-  m_bScenes=true;
   return true;
 }
 
@@ -416,7 +413,7 @@ __int64 CEdl::RestoreCutTime(__int64 iTime)
 
 bool CEdl::HaveScenes()
 {
-  return m_bScenes;
+  return m_vecScenelist.size() > 0;
 }
 
 char CEdl::GetEdlStatus()
