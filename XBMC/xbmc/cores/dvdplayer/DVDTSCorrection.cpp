@@ -276,15 +276,13 @@ double CPullupCorrection::CalcFrameDuration()
 }
 
 //looks pretty in the log
-string CPullupCorrection::GetPatternStr()
+CStdString CPullupCorrection::GetPatternStr()
 {
-  string patternstr;
-  CStdString diffstr;
+  CStdString patternstr;
   
   for (unsigned int i = 0; i < m_pattern.size(); i++)
   {
-    diffstr.Format("%.2f ", m_pattern[i]);
-    patternstr += diffstr;
+    patternstr.AppendFormat("%.2f ", m_pattern[i]);
   }
   
   return patternstr;
