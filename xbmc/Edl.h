@@ -59,7 +59,7 @@ public:
   void SetMovie(const CStdString& strMovie);
   bool CacheEdl();
 
-  bool HaveCutpoints();
+  bool HasCut();
   bool HaveScenes();
   char GetEdlStatus();
   __int64 TotalCutTime();
