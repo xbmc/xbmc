@@ -378,7 +378,7 @@ bool CEdl::HasCut()
   return m_vecCutlist.size() > 0;
 }
 
-__int64 CEdl::TotalCutTime()
+__int64 CEdl::GetTotalCutTime()
 {
   if (!HasCut())
     return 0;
@@ -494,7 +494,7 @@ bool CEdl::SeekScene(bool bPlus, __int64 *iScenemarker)
     return false;
 
   // Make sure scene is in movie.
-  if (iNextScene >= g_application.m_pPlayer->GetTotalTime()*1000+TotalCutTime())
+  if (iNextScene >= g_application.m_pPlayer->GetTotalTime()*1000+GetTotalCutTime())
     return false;
 
   *iScenemarker=iNextScene;

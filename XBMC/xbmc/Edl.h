@@ -61,7 +61,7 @@ public:
   bool HasCut();
   bool HasSceneMarker();
   char GetEdlStatus();
-  __int64 TotalCutTime();
+  __int64 GetTotalCutTime();
   __int64 RemoveCutTime(__int64 iTime);
   __int64 RestoreCutTime(__int64 iTime);
 
