@@ -81,7 +81,7 @@ bool CEdl::ReadnCacheAny(const CStdString& strMovie)
     ReadBeyondTV(strMovie);
 
   if (HasCut() || HasSceneMarker())
-    CacheEdl();
+    WriteMPlayerEdl();
 
   return HasCut() || HasSceneMarker();
 }
@@ -343,7 +343,7 @@ bool CEdl::AddSceneMarker(const __int64 sceneMarker)
   return true;
 }
 
-bool CEdl::CacheEdl()
+bool CEdl::WriteMPlayerEdl()
 {
   CFile cacheFile;
   if (cacheFile.OpenForWrite(CACHED_EDL_FILENAME, true))
