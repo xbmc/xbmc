@@ -107,7 +107,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
         tmpCut.start=(__int64)(dCutStart*1000);
         tmpCut.end=(__int64)(dCutEnd*1000);
         if ( tmpCut.action==CUT || tmpCut.action==MUTE )
-          tmpValid=AddCutpoint(tmpCut);
+          tmpValid=AddCut(tmpCut);
         else if ( tmpCut.action==SCENE )
           tmpValid=AddScene(tmpCut);
         else
@@ -157,7 +157,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
             tmpCut.start=(__int64)(dStartframe/iFramerate*1000);
             tmpCut.end=(__int64)(dEndframe/iFramerate*1000);
             tmpCut.action=CUT;
-            tmpValid=AddCutpoint(tmpCut);
+            tmpValid=AddCut(tmpCut);
           }
           else
             tmpValid=false;
@@ -207,7 +207,7 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
             tmpCut.start=(__int64)(dStartframe/10000);
             tmpCut.end=(__int64)(dEndframe/10000);
             tmpCut.action=CUT;
-            tmpValid=AddCutpoint(tmpCut);
+            tmpValid=AddCut(tmpCut);
           }
         }
         else
@@ -276,7 +276,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
       cut.start=(__int64)(dStartframe/10000);
       cut.end=(__int64)(dEndframe/10000);
       cut.action=CUT;
-      AddCutpoint(cut); // just ignore it if it fails
+      AddCut(cut); // just ignore it if it fails
     }
     Region = Region->NextSiblingElement("Region");
   }
@@ -292,7 +292,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 
 
 
-bool CEdl::AddCutpoint(const Cut& NewCut)
+bool CEdl::AddCut(const Cut& NewCut)
 {
   vector<Cut>::iterator vitr;
 
