@@ -41,9 +41,9 @@ public:
 
   struct Cut
   {
-    __int64 CutStart;
-    __int64 CutEnd;
-    Action CutAction;
+    __int64 start;
+    __int64 end;
+    Action action;
   };
 
   bool ReadnCacheAny(const CStdString& strMovie);
