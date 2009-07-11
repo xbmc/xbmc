@@ -74,7 +74,6 @@ protected:
 private:
   CStdString m_strEdlFilename;
   __int64 m_iTotalCutTime; // msec
-  char m_szBuffer[1024]; // Buffer for file reading
   std::vector<Cut> m_vecCutlist;
   std::vector<__int64> m_vecScenelist;
 };
