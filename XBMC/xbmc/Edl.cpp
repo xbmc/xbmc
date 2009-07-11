@@ -45,15 +45,15 @@ using namespace XFILE;
 
 CEdl::CEdl()
 {
-  Reset();
+  Clear();
 }
 
 CEdl::~CEdl()
 {
-  Reset();
+  Clear();
 }
 
-void CEdl::Reset()
+void CEdl::Clear()
 {
   if (CFile::Exists(CACHED_EDL_FILENAME))
     CFile::Delete(CACHED_EDL_FILENAME);
@@ -66,7 +66,7 @@ void CEdl::Reset()
 bool CEdl::ReadFiles(const CStdString& strMovie)
 {
   // Try to read any available format until a valid edl is read
-  Reset();
+  Clear();
 
   ReadVideoRedo(strMovie);
   if (!HasCut() && !HasSceneMarker())
@@ -91,7 +91,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
   double dCutStart, dCutEnd;
   bool tmpValid = false;
 
-  Reset();
+  Clear();
   CStdString edlFilename;
   CUtil::ReplaceExtension(strMovie, ".edl", edlFilename);
   if (CFile::Exists(edlFilename) && CutFile.Open(edlFilename))
@@ -119,7 +119,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
   if (tmpValid && (HasCut() || HasSceneMarker()))
     CLog::Log(LOGDEBUG, "CEdl: Read Edl.");
   else
-    Reset();
+    Clear();
 
   return tmpValid;
 }
@@ -134,7 +134,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
   double dEndframe;
   bool tmpValid = false;
 
-  Reset();
+  Clear();
   CStdString comskipFilename;
   CUtil::ReplaceExtension(strMovie, ".txt", comskipFilename);
 
@@ -171,7 +171,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
     CLog::Log(LOGDEBUG, "CEdl: Read ComSkip.");
   }
   else
-    Reset();
+    Clear();
 
   return tmpValid;
 }
@@ -185,7 +185,7 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
   double dEndframe;
   bool tmpValid = false;
 
-  Reset();
+  Clear();
   CStdString videoRedoFilename;
   CUtil::ReplaceExtension(strMovie, ".VPrj", videoRedoFilename);
 
@@ -227,13 +227,13 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
   if (tmpValid && (HasCut() || HasSceneMarker()))
     CLog::Log(LOGDEBUG, "CEdl: Read VidoRedo.");
   else
-    Reset();
+    Clear();
   return tmpValid;
 }
 
 bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
-  Reset();
+  Clear();
   CStdString beyondTVFilename = strMovie + ".chapters.xml";
 
   if (!CFile::Exists(beyondTVFilename))
@@ -360,7 +360,7 @@ bool CEdl::WriteMPlayerEdl()
   else
   {
     CLog::Log(LOGERROR, "CEdl: Error writing EDL to cache.");
-    Reset();
+    Clear();
     return false;
   }
 }
