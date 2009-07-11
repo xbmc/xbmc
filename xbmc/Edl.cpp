@@ -46,7 +46,6 @@ using namespace XFILE;
 
 CEdl::CEdl()
 {
-  m_bCached=false;
   Reset();
 }
 
@@ -57,13 +56,12 @@ CEdl::~CEdl()
 
 void CEdl::Reset()
 {
-  if (IsCached())
+  if (CFile::Exists(CACHED_EDL_FILENAME))
     CFile::Delete(CACHED_EDL_FILENAME);
 
   m_vecCutlist.clear();
   m_vecScenelist.clear();
   m_bCutpoints=false;
-  m_bCached=false;
   m_bScenes=false;
   m_iTotalCutTime=0;
 }
@@ -87,7 +85,7 @@ bool CEdl::ReadnCacheAny(const CStdString& strMovie)
   if (HaveCutpoints() || HaveScenes())
     CacheEdl();
 
-  return IsCached();
+  return HaveCutpoints() || HaveScenes();
 }
 
 bool CEdl::ReadEdl(const CStdString& strMovie)
@@ -351,7 +349,6 @@ bool CEdl::AddScene(const Cut& NewCut)
 
 bool CEdl::CacheEdl()
 {
-  m_bCached=false;
   CFile cacheFile;
   if (cacheFile.OpenForWrite(CACHED_EDL_FILENAME, true))
   {
@@ -365,15 +362,15 @@ bool CEdl::CacheEdl()
     }
     cacheFile.Write(write.c_str(), write.size());
     cacheFile.Close();
-    m_bCached=true;
     CLog::Log(LOGDEBUG, "CEdl: EDL Cached.");
+    return true;
   }
   else
   {
     CLog::Log(LOGERROR, "CEdl: Error writing EDL to cache.");
     Reset();
+    return false;
   }
-  return m_bCached;
 }
 
 bool CEdl::HaveCutpoints()
@@ -434,12 +431,6 @@ char CEdl::GetEdlStatus()
     cEdlStatus='s';
 
   return cEdlStatus;
-}
-
-
-bool CEdl::IsCached()
-{
-  return m_bCached;
 }
 
 bool CEdl::InCutpoint(__int64 iAbsSeek, Cut *pCurCut)
