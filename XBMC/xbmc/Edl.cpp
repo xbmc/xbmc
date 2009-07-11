@@ -448,7 +448,7 @@ bool CEdl::InCut(__int64 iAbsSeek, Cut *pCurCut)
   return false;
 }
 
-bool CEdl::SeekScene(bool bPlus, const __int64 clock, __int64 *iScenemarker)
+bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 clock, __int64 *iScenemarker)
 {
   if (!HasCut())
     return false;

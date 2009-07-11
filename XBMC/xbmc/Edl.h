@@ -67,7 +67,7 @@ public:
 
   bool InCut(__int64 iAbsSeek, Cut *pCurCut = NULL);
 
-  bool SeekScene(bool bPlus, const __int64 clock, __int64 *iScenemarker);
+  bool GetNextSceneMarker(bool bPlus, const __int64 clock, __int64 *iScenemarker);
 
 protected:
 private:
