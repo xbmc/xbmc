@@ -196,7 +196,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
     return false;
   }
 
-  iFrameRate /= 100; // Reduce by factor of 100 to get fps.
+  float fFrameRate = iFrameRate / 100; // Reduce by factor of 100 to get fps.
 
   comskipFile.ReadString(szBuffer, 1023); // Line 2. Ignore "-------------"
 
@@ -208,8 +208,8 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
     if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
     {
       Cut cut;
-      cut.start = (__int64)(dStartFrame / iFrameRate * 1000);
-      cut.end = (__int64)(dEndFrame / iFrameRate * 1000);
+      cut.start = (__int64)(dStartFrame / fFrameRate * 1000);
+      cut.end = (__int64)(dEndFrame / fFrameRate * 1000);
       cut.action = CUT;
       bValid = AddCut(cut);
     }
