@@ -73,7 +73,6 @@ public:
 protected:
 private:
   CStdString m_strEdlFilename;
-  bool m_bCutpoints;
   __int64 m_iTotalCutTime; // msec
   char m_szBuffer[1024]; // Buffer for file reading
   std::vector<Cut> m_vecCutlist;

@@ -61,7 +61,6 @@ void CEdl::Reset()
 
   m_vecCutlist.clear();
   m_vecScenelist.clear();
-  m_bCutpoints=false;
   m_iTotalCutTime=0;
 }
 
@@ -289,7 +288,6 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 
 bool CEdl::AddCutpoint(const Cut& NewCut)
 {
-  m_bCutpoints=false;
   vector<Cut>::iterator vitr;
 
   if (NewCut.start >= NewCut.end)
@@ -327,7 +325,6 @@ bool CEdl::AddCutpoint(const Cut& NewCut)
   }
   if (NewCut.action == CUT)
     m_iTotalCutTime+=NewCut.end-NewCut.start;
-  m_bCutpoints=true;
 
   return true;
 }
@@ -372,7 +369,7 @@ bool CEdl::CacheEdl()
 
 bool CEdl::HaveCutpoints()
 {
-  return m_bCutpoints;
+  return m_vecCutlist.size() > 0;
 }
 
 __int64 CEdl::TotalCutTime()
