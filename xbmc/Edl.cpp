@@ -71,19 +71,19 @@ bool CEdl::ReadnCacheAny(const CStdString& strMovie)
   Reset();
 
   ReadVideoRedo(strMovie);
-  if (!HasCut() && !HaveScenes())
+  if (!HasCut() && !HasSceneMarker())
     ReadEdl(strMovie);
 
-  if (!HasCut() && !HaveScenes())
+  if (!HasCut() && !HasSceneMarker())
     ReadComskip(strMovie);
 
-  if (!HasCut() && !HaveScenes())
+  if (!HasCut() && !HasSceneMarker())
     ReadBeyondTV(strMovie);
 
-  if (HasCut() || HaveScenes())
+  if (HasCut() || HasSceneMarker())
     CacheEdl();
 
-  return HasCut() || HaveScenes();
+  return HasCut() || HasSceneMarker();
 }
 
 bool CEdl::ReadEdl(const CStdString& strMovie)
@@ -118,7 +118,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
     }
     CutFile.Close();
   }
-  if (tmpValid && (HasCut() || HaveScenes()))
+  if (tmpValid && (HasCut() || HasSceneMarker()))
     CLog::Log(LOGDEBUG, "CEdl: Read Edl.");
   else
     Reset();
@@ -226,7 +226,7 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
     CutFile.Close();
   }
 
-  if (tmpValid && (HasCut() || HaveScenes()))
+  if (tmpValid && (HasCut() || HasSceneMarker()))
     CLog::Log(LOGDEBUG, "CEdl: Read VidoRedo.");
   else
     Reset();
@@ -414,7 +414,7 @@ __int64 CEdl::RestoreCutTime(__int64 iTime)
   return iTime;
 }
 
-bool CEdl::HaveScenes()
+bool CEdl::HasSceneMarker()
 {
   return m_vecScenelist.size() > 0;
 }
@@ -423,11 +423,11 @@ char CEdl::GetEdlStatus()
 {
   char cEdlStatus='n';
 
-  if (HasCut() && HaveScenes())
+  if (HasCut() && HasSceneMarker())
     cEdlStatus='b';
   else if (HasCut())
     cEdlStatus='e';
-  else if (HaveScenes())
+  else if (HasSceneMarker())
     cEdlStatus='s';
 
   return cEdlStatus;
