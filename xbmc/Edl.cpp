@@ -493,10 +493,6 @@ bool CEdl::SeekScene(bool bPlus, const __int64 clock, __int64 *iScenemarker)
   if (InCut(iNextScene, &TmpCut) && TmpCut.action == CUT)
     return false;
 
-  // Make sure scene is in movie.
-  if (iNextScene >= g_application.m_pPlayer->GetTotalTime()*1000+GetTotalCutTime())
-    return false;
-
   *iScenemarker=iNextScene;
 
   return (iNextScene != -1);
