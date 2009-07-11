@@ -1,5 +1,7 @@
 ARCH=@ARCH@
 
+.PHONY: compile
+
 INCLUDES=-I. -I../../ -I../../../ -I../../linux -I../../../guilib -I../../utils -I../dvdplayer -I..
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   INCLUDES+=-I../ffmpeg
@@ -45,6 +47,9 @@ $(FLAC_LIB):
 	`cat ../DllLoader/exports/wrapper.def` ../DllLoader/exports/wrapper.o
 endif
 endif
+
+flac-1.2.1/src/libFLAC/.libs/libFLAC.a: compile
+	$(MAKE) -C flac-1.2.1
 
 CLEAN_FILES=$(FLAC_LIB)
 
