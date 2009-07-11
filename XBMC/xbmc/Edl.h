@@ -58,7 +58,6 @@ public:
 
   void SetMovie(const CStdString& strMovie);
   bool CacheEdl();
-  CStdString GetCachedEdl();
 
   bool HaveCutpoints();
   bool HaveScenes();
@@ -74,7 +73,6 @@ public:
 
 protected:
 private:
-  CStdString m_strCachedEdl;
   CStdString m_strEdlFilename;
   bool m_bCutpoints;
   bool m_bCached;

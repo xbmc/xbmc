@@ -351,10 +351,9 @@ bool CEdl::AddScene(const Cut& NewCut)
 
 bool CEdl::CacheEdl()
 {
-  m_strCachedEdl=CACHED_EDL_FILENAME;
   m_bCached=false;
   CFile cacheFile;
-  if (cacheFile.OpenForWrite(m_strCachedEdl, true))
+  if (cacheFile.OpenForWrite(CACHED_EDL_FILENAME, true))
   {
     CStdString write;
     for(int i = 0; i < (int)m_vecCutlist.size(); i++ )
@@ -375,11 +374,6 @@ bool CEdl::CacheEdl()
     Reset();
   }
   return m_bCached;
-}
-
-CStdString CEdl::GetCachedEdl()
-{
-  return m_strCachedEdl;
 }
 
 bool CEdl::HaveCutpoints()
