@@ -56,7 +56,6 @@ public:
   bool AddCutpoint(const Cut& NewCut);
   bool AddScene(const Cut& NewCut);
 
-  void SetMovie(const CStdString& strMovie);
   bool CacheEdl();
 
   bool HasCut();
