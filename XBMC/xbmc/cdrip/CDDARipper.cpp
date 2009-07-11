@@ -264,7 +264,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   }
 
   // if album name is set, then we use this as the directory to place the new file in.
-  if (pItem->GetMusicInfoTag()->GetAlbum().size() > 0)
+  if (!pItem->GetMusicInfoTag()->GetAlbum().empty())
   {
     strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str(), LegalType);
     CUtil::AddDirectorySeperator(strDirectory);
@@ -329,7 +329,7 @@ bool CCDDARipper::RipCD()
   // if album name from first item is set,
   // then we use this as the directory to place the new file in.
   CStdString strAlbumDir;
-  if (vecItems[0]->GetMusicInfoTag()->GetAlbum().size() > 0)
+  if (!vecItems[0]->GetMusicInfoTag()->GetAlbum().empty())
   {
     int LegalType=LEGAL_NONE;
     if (ripPath.IsSmb())
