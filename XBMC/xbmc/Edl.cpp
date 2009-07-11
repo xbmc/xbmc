@@ -305,10 +305,6 @@ bool CEdl::AddCut(const Cut& NewCut)
   if (InCut(NewCut.start) || InCut(NewCut.end))
       return false;
 
-  // Always returns 0 at this point?
-  if (g_application.m_pPlayer->GetTotalTime() > 0
-        && (NewCut.end > (g_application.m_pPlayer->GetTotalTime())*1000))
-
   for(int i = 0; i < (int)m_vecCuts.size(); i++ )
   {
     if ( NewCut.start < m_vecCuts[i].start && NewCut.end > m_vecCuts[i].end)
