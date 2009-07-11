@@ -452,7 +452,7 @@ bool CDVDPlayer::OpenInputStream()
     // look for any edl files
     m_Edl.Reset();
     if (g_guiSettings.GetBool("videoplayer.editdecision") && !m_item.IsInternetStream())
-      m_Edl.ReadnCacheAny(m_filename);
+      m_Edl.ReadFiles(m_filename);
   }
 
   SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);

@@ -46,7 +46,7 @@ public:
     Action action;
   };
 
-  bool ReadnCacheAny(const CStdString& strMovie);
+  bool ReadFiles(const CStdString& strMovie);
   bool ReadEdl(const CStdString& strMovie);
   bool ReadComskip(const CStdString& strMovie);
   bool ReadVideoRedo(const CStdString& strMovie);

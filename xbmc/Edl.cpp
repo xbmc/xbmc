@@ -65,7 +65,7 @@ void CEdl::Reset()
 }
 
 
-bool CEdl::ReadnCacheAny(const CStdString& strMovie)
+bool CEdl::ReadFiles(const CStdString& strMovie)
 {
   // Try to read any available format until a valid edl is read
   Reset();
