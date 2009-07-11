@@ -60,7 +60,7 @@ public:
   bool CacheEdl();
 
   bool HasCut();
-  bool HaveScenes();
+  bool HasSceneMarker();
   char GetEdlStatus();
   __int64 TotalCutTime();
   __int64 RemoveCutTime(__int64 iTime);
