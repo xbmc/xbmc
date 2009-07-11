@@ -65,7 +65,7 @@ public:
   __int64 RemoveCutTime(__int64 iTime);
   __int64 RestoreCutTime(__int64 iTime);
 
-  bool InCutpoint(__int64 iAbsSeek, Cut *pCurCut = NULL);
+  bool InCut(__int64 iAbsSeek, Cut *pCurCut = NULL);
 
   bool SeekScene(bool bPlus,__int64 *iScenemarker);
 
