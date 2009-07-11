@@ -368,7 +368,7 @@ bool CDVDPlayer::CloseFile()
   // we are done after the StopThread call
   StopThread();
 
-  m_Edl.Reset();
+  m_Edl.Clear();
 
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
 #if defined(HAS_VIDEO_PLAYBACK)
@@ -450,7 +450,7 @@ bool CDVDPlayer::OpenInputStream()
     }
 
     // look for any edl files
-    m_Edl.Reset();
+    m_Edl.Clear();
     if (g_guiSettings.GetBool("videoplayer.editdecision") && !m_item.IsInternetStream())
       m_Edl.ReadFiles(m_filename);
   }

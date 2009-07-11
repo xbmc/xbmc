@@ -47,7 +47,7 @@ public:
   };
 
   bool ReadFiles(const CStdString& strMovie);
-  void Reset();
+  void Clear();
 
   bool HasCut();
   bool HasSceneMarker();
