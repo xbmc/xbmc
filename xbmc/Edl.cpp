@@ -90,39 +90,72 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
 
   CStdString edlFilename;
   CUtil::ReplaceExtension(strMovie, ".edl", edlFilename);
+  if (!CFile::Exists(edlFilename))
+    return false;
 
   CFile edlFile;
-  bool bValid = false;
-  if (CFile::Exists(edlFilename) && edlFile.Open(edlFilename))
+  if (!edlFile.Open(edlFilename))
   {
-    bValid = true;
-    char szBuffer[1024];
-    while (bValid && edlFile.ReadString(szBuffer, 1023))
-    {
-      double dStart, dEnd;
-      Cut cut;
-      if (sscanf(szBuffer, "%lf %lf %i", &dStart, &dEnd, (int*)&cut.action) == 3)
-      {
-        cut.start = (__int64)(dStart * 1000);
-        cut.end = (__int64)(dEnd * 1000);
-        if (cut.action == CUT || cut.action == MUTE)
-          bValid = AddCut(cut);
-        else if (cut.action == SCENE)
-          bValid = AddSceneMarker(cut.end);
-        else
-          bValid = false;
-      }
-      else
-        bValid = false;
-    }
-    edlFile.Close();
+    CLog::Log(LOGERROR, "%s - Could not open EDL file: %s", __FUNCTION__, edlFilename.c_str());
+    return false;
   }
-  if (bValid && (HasCut() || HasSceneMarker()))
-    CLog::Log(LOGDEBUG, "CEdl: Read Edl.");
-  else
-    Clear();
 
-  return bValid;
+  bool bValid = true;
+  char szBuffer[1024];
+  int iLine = 0;
+  while (bValid && edlFile.ReadString(szBuffer, 1023))
+  {
+    iLine++;
+
+    double dStart, dEnd;
+    int iAction;
+    if (sscanf(szBuffer, "%lf %lf %i", &dStart, &dEnd, &iAction) == 3)
+    {
+      Cut cut;
+      cut.start = (int)dStart * 1000; // ms to s
+      cut.end = (int)dEnd * 1000; // ms to s
+
+      switch (iAction)
+      {
+      case 0:
+        cut.action = CUT;
+        bValid = AddCut(cut);
+        break;
+      case 1:
+        cut.action = MUTE;
+        bValid = AddCut(cut);
+        break;
+      case 2:
+        bValid = AddSceneMarker(cut.end);
+        break;
+      default:
+        bValid = false;
+        continue;
+      }
+    }
+    else
+      bValid = false;
+  }
+  edlFile.Close();
+
+  if (!bValid)
+  {
+    CLog::Log(LOGERROR, "%s - Invalid EDL file: %s. Error in line %i. Clearing any valid cuts or scenes found.",
+              __FUNCTION__, edlFilename.c_str(), iLine);
+    Clear();
+    return false;
+  }
+  else if (HasCut() || HasSceneMarker())
+  {
+    CLog::Log(LOGDEBUG, "%s - Read %i cuts and %i scene markers in EDL file: %s", __FUNCTION__, m_vecCuts.size(),
+              m_vecSceneMarkers.size(), edlFilename.c_str());
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s - No cuts or scene markers found in EDL file: %s", __FUNCTION__, edlFilename.c_str());
+    return false;
+  }
 }
 
 bool CEdl::ReadComskip(const CStdString& strMovie)
