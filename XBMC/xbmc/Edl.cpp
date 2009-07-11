@@ -452,13 +452,13 @@ bool CEdl::InCut(__int64 iAbsSeek, Cut *pCurCut)
   return false;
 }
 
-bool CEdl::SeekScene(bool bPlus, __int64 *iScenemarker)
+bool CEdl::SeekScene(bool bPlus, const __int64 clock, __int64 *iScenemarker)
 {
   if (!HasCut())
     return false;
 
   // Need absolute time.
-  __int64 iCurSeek=RestoreCutTime(g_application.m_pPlayer->GetTime());
+  __int64 iCurSeek=RestoreCutTime(clock);
   __int64 iNextScene=-1;
   __int64 iDiff;
   Cut TmpCut;
