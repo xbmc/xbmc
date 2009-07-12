@@ -325,15 +325,13 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
-  CFileStream file;
-  if (!file.Open(beyondTVFilename))
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.LoadFile(beyondTVFilename))
   {
-    CLog::Log(LOGDEBUG, "%s failed to read file %s", __FUNCTION__, beyondTVFilename.c_str());
+    CLog::Log(LOGERROR, "%s - Could not load Beyond TV file: %s. %s", __FUNCTION__, beyondTVFilename.c_str(),
+              xmlDoc.ErrorDesc());
     return false;
   }
-
-  TiXmlDocument xmlDoc;
-  file >> xmlDoc;
 
   if (xmlDoc.Error())
   {
