@@ -41,8 +41,8 @@ public:
 
   struct Cut
   {
-    __int64 start;
-    __int64 end;
+    __int64 start; // ms
+    __int64 end;   // ms
     Action action;
   };
 
@@ -53,16 +53,16 @@ public:
   bool HasSceneMarker();
   char GetEdlStatus();
   __int64 GetTotalCutTime();
-  __int64 RemoveCutTime(__int64 iTime);
-  __int64 RestoreCutTime(__int64 iTime);
+  __int64 RemoveCutTime(__int64 iSeek);
+  __int64 RestoreCutTime(__int64 iClock);
 
-  bool InCut(__int64 iAbsSeek, Cut *pCurCut = NULL);
+  bool InCut(__int64 iSeek, Cut *pCut = NULL);
 
-  bool GetNextSceneMarker(bool bPlus, const __int64 clock, __int64 *iScenemarker);
+  bool GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneMarker);
 
 protected:
 private:
-  __int64 m_iTotalCutTime; // msec
+  __int64 m_iTotalCutTime; // ms
   std::vector<Cut> m_vecCuts;
   std::vector<__int64> m_vecSceneMarkers;
 
@@ -79,4 +79,4 @@ private:
   static CStdString MillisecondsToTimeString(const int iMilliseconds);
 };
 
-#endif // CEDL_H
+#endif

@@ -269,31 +269,38 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
   while (bValid && videoReDoFile.ReadString(szBuffer, 1023))
   {
     iLine++;
-    if (strncmp(szBuffer, VIDEOREDO_TAG_CUT, strlen(VIDEOREDO_TAG_CUT)) == 0)
+    if (strncmp(szBuffer, VIDEOREDO_TAG_CUT, strlen(VIDEOREDO_TAG_CUT)) == 0) // Found the <Cut> tag
     {
-      double dStartFrame;
-      double dEndFrame;
-      if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_CUT), "%lf:%lf", &dStartFrame, &dEndFrame) == 2)
+      /*
+       * double is used as 32 bit float would overflow.
+       */
+      double dStart, dEnd;
+      if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_CUT), "%lf:%lf", &dStart, &dEnd) == 2)
       {
+        /*
+         *  Times need adjusting by 1/10,000 to get ms.
+         */
         Cut cut;
-        cut.start = (__int64)(dStartFrame / 10000);
-        cut.end = (__int64)(dEndFrame / 10000);
+        cut.start = (__int64)(dStart / 10000);
+        cut.end = (__int64)(dEnd / 10000);
         cut.action = CUT;
         bValid = AddCut(cut);
       }
       else
         bValid = false;
     }
-    else if (strncmp(szBuffer, VIDEOREDO_TAG_SCENE, strlen(VIDEOREDO_TAG_SCENE)) == 0)
+    else if (strncmp(szBuffer, VIDEOREDO_TAG_SCENE, strlen(VIDEOREDO_TAG_SCENE)) == 0) // Found the <SceneMarker > tag
     {
       int iScene;
       double dSceneMarker;
       if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
-        bValid = AddSceneMarker(dSceneMarker / 10000);
+        bValid = AddSceneMarker(dSceneMarker / 10000); // Times need adjusting by 1/10,000 to get ms.
       else
         bValid = false;
     }
-    // Ignore any other tags.
+    /*
+     * Ignore any other tags.
+     */
   }
   videoReDoFile.Close();
 
@@ -321,8 +328,8 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
 bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
   Clear();
-  CStdString beyondTVFilename = strMovie + ".chapters.xml";
 
+  CStdString beyondTVFilename = strMovie + ".chapters.xml";
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
