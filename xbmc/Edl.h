@@ -76,6 +76,7 @@ private:
 
   bool WriteMPlayerEdl();
 
+  static CStdString MillisecondsToTimeString(const int iMilliseconds);
 };
 
 #endif // CEDL_H

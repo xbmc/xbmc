@@ -400,36 +400,74 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 
 bool CEdl::AddCut(const Cut& cut)
 {
-  if (cut.start >= cut.end)
+  if (cut.action != CUT && cut.action != MUTE)
+  {
+    CLog::Log(LOGERROR, "%s - Not a CUT or MUTE! [%s - %s], %d",
+              __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+              cut.action);
     return false;
+  }
 
   if (cut.start < 0)
+  {
+    CLog::Log(LOGERROR, "%s - Before start! [%s - %s], %d", __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
+              MillisecondsToTimeString(cut.end).c_str(), cut.action);
     return false;
+  }
+  
+  if (cut.start >= cut.end)
+  {
+    CLog::Log(LOGERROR, "%s - Times are around the wrong way or the same! [%s - %s], %d",
+              __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+              cut.action);
+    return false;
+  }
 
   if (InCut(cut.start) || InCut(cut.end))
+  {
+    CLog::Log(LOGERROR, "%s - Start or end is in an existing cut! [%s - %s], %d",
+              __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+              cut.action);
     return false;
+  }
 
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
     if (cut.start < m_vecCuts[i].start && cut.end > m_vecCuts[i].end)
+    {
+      CLog::Log(LOGERROR, "%s - Cut surrounds an existing cut! [%s - %s], %d",
+                __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+                cut.action);
       return false;
+    }
   }
 
-  // Insert cutpoint in list.
-  if (m_vecCuts.empty() || m_vecCuts.back().start < cut.start)
+  /*
+   * Insert cut in the list in the right position (ALL algorithms assume cuts are in ascending order)
+   */
+  if (m_vecCuts.empty() || cut.start > m_vecCuts.back().start)
+  {
+    CLog::Log(LOGDEBUG, "%s - Pushing new cut to back [%s - %s], %d", __FUNCTION__,
+              MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+              cut.action);
     m_vecCuts.push_back(cut);
+  }
   else
   {
     vector<Cut>::iterator vitr;
-    for (vitr = m_vecCuts.begin(); vitr != m_vecCuts.end(); ++vitr)
+    for (vitr = m_vecCuts.begin(); vitr != m_vecCuts.end(); vitr++)
     {
-      if (vitr->start > cut.start)
+      if (cut.start < vitr->start)
       {
+        CLog::Log(LOGDEBUG, "%s - Inserting new cut [%s - %s], %d", __FUNCTION__,
+                  MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+                  cut.action);
         m_vecCuts.insert(vitr, cut);
         break;
       }
     }
   }
+
   if (cut.action == CUT)
     m_iTotalCutTime += cut.end - cut.start;
 
@@ -598,3 +636,12 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneM
 
   return (iNextScene != -1);
 }
+
+CStdString CEdl::MillisecondsToTimeString(const int iMilliseconds)
+{
+  CStdString strTimeString = "";
+  StringUtils::SecondsToTimeString(iMilliseconds / 1000, strTimeString, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
+  strTimeString.AppendFormat(".%03i", iMilliseconds % 1000);
+  return strTimeString;
+}
+
