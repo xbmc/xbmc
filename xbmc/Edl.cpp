@@ -634,8 +634,8 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneM
    * picked up when scene markers are added.
    */
   Cut cut;
-  if (InCut(*iSceneMarker, &cut) && cut.action == CUT)
-    return false;
+  if (bFound && InCut(*iSceneMarker, &cut) && cut.action == CUT)
+    *iSceneMarker = cut.end;
 
   return bFound;
 }
