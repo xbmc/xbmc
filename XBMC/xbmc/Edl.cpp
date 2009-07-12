@@ -614,7 +614,7 @@ bool CEdl::InCut(const __int64 iSeek, Cut *pCut)
 
 bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneMarker)
 {
-  if (!HasCut())
+  if (!HasSceneMarker())
     return false;
 
   __int64 iSeek = RestoreCutTime(iClock);
