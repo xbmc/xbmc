@@ -27,7 +27,7 @@
 
 using namespace std;
 
-#define CACHED_EDL_FILENAME "special://temp/xbmc.edl"
+#define MPLAYER_EDL_FILENAME "special://temp/xbmc.edl"
 #define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
 #define VIDEOREDO_HEADER "<Version>2"
 #define VIDEOREDO_TAG_CUT "<Cut>"
@@ -47,8 +47,8 @@ CEdl::~CEdl()
 
 void CEdl::Clear()
 {
-  if (CFile::Exists(CACHED_EDL_FILENAME))
-    CFile::Delete(CACHED_EDL_FILENAME);
+  if (CFile::Exists(MPLAYER_EDL_FILENAME))
+    CFile::Delete(MPLAYER_EDL_FILENAME);
 
   m_vecCuts.clear();
   m_vecSceneMarkers.clear();
@@ -485,9 +485,9 @@ bool CEdl::WriteMPlayerEdl()
     return false;
 
   CFile mplayerEdlFile;
-  if (!mplayerEdlFile.OpenForWrite(CACHED_EDL_FILENAME, true))
+  if (!mplayerEdlFile.OpenForWrite(MPLAYER_EDL_FILENAME, true))
   {
-    CLog::Log(LOGERROR, "%s - Error opening MPlayer EDL file for writing: %s", __FUNCTION__, CACHED_EDL_FILENAME);
+    CLog::Log(LOGERROR, "%s - Error opening MPlayer EDL file for writing: %s", __FUNCTION__, MPLAYER_EDL_FILENAME);
     return false;
   }
 
@@ -500,7 +500,7 @@ bool CEdl::WriteMPlayerEdl()
   mplayerEdlFile.Write(write.c_str(), write.size());
   mplayerEdlFile.Close();
 
-  CLog::Log(LOGDEBUG, "%s - MPlayer EDL file written to: %s", __FUNCTION__, CACHED_EDL_FILENAME);
+  CLog::Log(LOGDEBUG, "%s - MPlayer EDL file written to: %s", __FUNCTION__, MPLAYER_EDL_FILENAME);
 
   return true;
 }
