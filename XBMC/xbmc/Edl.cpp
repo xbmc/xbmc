@@ -244,48 +244,52 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
   Clear();
   CStdString videoRedoFilename;
   CUtil::ReplaceExtension(strMovie, ".VPrj", videoRedoFilename);
+  if (!CFile::Exists(videoRedoFilename))
+    return false;
 
-  bool bValid = false;
   CFile videoRedoFile;
-  if (CFile::Exists(videoRedoFilename) && videoRedoFile.Open(videoRedoFilename))
+  if (!videoRedoFile.Open(videoRedoFilename))
   {
-    bValid = true;
-    char szBuffer[1024];
-    if (videoRedoFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, VRSTR, strlen(VRSTR)) == 0))
-    {
-      videoRedoFile.ReadString(szBuffer, 1023); // read away Filename
-      while (bValid && videoRedoFile.ReadString(szBuffer, 1023))
-      {
-        if (strncmp(szBuffer, VRCUT, strlen(VRCUT)) == 0)
-        {
-          double dStartFrame;
-          double dEndFrame;
-          if (sscanf(szBuffer + strlen(VRCUT), "%lf:%lf", &dStartFrame, &dEndFrame) == 2)
-          {
-            Cut cut;
-            cut.start = (__int64)(dStartFrame / 10000);
-            cut.end = (__int64)(dEndFrame / 10000);
-            cut.action = CUT;
-            bValid = AddCut(cut);
-          }
-        }
-        else
-        {
-          if (strncmp(szBuffer, VRSCENE, strlen(VRSCENE)) == 0)
-          {
-            int iScene;
-            double dSceneMarker;
-            if (sscanf(szBuffer + strlen(VRSCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
-              bValid = AddSceneMarker(dSceneMarker / 10000);
-            else
-              bValid = false;
-          }
-        }
-        // Ignore other tags.
-      }
-    }
-    videoRedoFile.Close();
+    CLog::Log(LOGERROR, "%s - Could not open VideoRedo file: %s", __FUNCTION__, videoRedoFilename.c_str());
+    return false;
   }
+
+  bool bValid = true;
+  char szBuffer[1024];
+  if (videoRedoFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, VRSTR, strlen(VRSTR)) == 0))
+  {
+    videoRedoFile.ReadString(szBuffer, 1023); // read away Filename
+    while (bValid && videoRedoFile.ReadString(szBuffer, 1023))
+    {
+      if (strncmp(szBuffer, VRCUT, strlen(VRCUT)) == 0)
+      {
+        double dStartFrame;
+        double dEndFrame;
+        if (sscanf(szBuffer + strlen(VRCUT), "%lf:%lf", &dStartFrame, &dEndFrame) == 2)
+        {
+          Cut cut;
+          cut.start = (__int64)(dStartFrame / 10000);
+          cut.end = (__int64)(dEndFrame / 10000);
+          cut.action = CUT;
+          bValid = AddCut(cut);
+        }
+      }
+      else
+      {
+        if (strncmp(szBuffer, VRSCENE, strlen(VRSCENE)) == 0)
+        {
+          int iScene;
+          double dSceneMarker;
+          if (sscanf(szBuffer + strlen(VRSCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
+            bValid = AddSceneMarker(dSceneMarker / 10000);
+          else
+            bValid = false;
+        }
+      }
+      // Ignore other tags.
+    }
+  }
+  videoRedoFile.Close();
 
   if (bValid && (HasCut() || HasSceneMarker()))
     CLog::Log(LOGDEBUG, "CEdl: Read VidoRedo.");
