@@ -480,6 +480,8 @@ bool CEdl::AddSceneMarker(const __int64 iSceneMarker)
 
   if (InCut(iSceneMarker, &cut) && cut.action == CUT)// this only works for current cutpoints, no for cutpoints added later.
     return false;
+
+  CLog::Log(LOGDEBUG, "%s - Inserting new scene marker: %s", __FUNCTION__, MillisecondsToTimeString(iSceneMarker).c_str());
   m_vecSceneMarkers.push_back(iSceneMarker); // Unsorted
 
   return true;
