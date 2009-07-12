@@ -28,7 +28,7 @@
 using namespace std;
 
 #define CACHED_EDL_FILENAME "special://temp/xbmc.edl"
-#define COMSKIPSTR "FILE PROCESSING COMPLETE"
+#define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
 #define VRSTR "<Version>2"
 #define VRCUT "<Cut>"
 #define VRSCENE "<SceneMarker "
@@ -170,10 +170,10 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
   }
   
   char szBuffer[1024];
-  if (comskipFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, COMSKIPSTR, strlen(COMSKIPSTR)) != 0)) // Line 1.
+  if (comskipFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, COMSKIP_HEADER, strlen(COMSKIP_HEADER)) != 0)) // Line 1.
   {
     CLog::Log(LOGERROR, "%s - Invalid Comskip file: %s. Error reading line 1 - expected '%s' at start.",
-              __FUNCTION__, comskipFilename.c_str(), COMSKIPSTR);
+              __FUNCTION__, comskipFilename.c_str(), COMSKIP_HEADER);
     comskipFile.Close();
     return false;
   }
