@@ -601,42 +601,43 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneM
 
   // Need absolute time.
   __int64 iSeek = RestoreCutTime(iClock);
-  __int64 iNextScene = -1;
-  __int64 iDiff;
-  Cut cut;
+  __int64 iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
+  bool bFound = false;
 
   if (bPlus)
   {
-    iDiff = (__int64 )99999999999999LL;
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
       if ((m_vecSceneMarkers[i] > iSeek) && ((m_vecSceneMarkers[i] - iSeek) < iDiff))
       {
         iDiff = m_vecSceneMarkers[i] - iSeek;
-        iNextScene = m_vecSceneMarkers[i];
+        *iSceneMarker = m_vecSceneMarkers[i];
+        bFound = true;
       }
     }
   }
   else
   {
-    iDiff = (__int64 )99999999999999LL;
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
       if ((m_vecSceneMarkers[i] < iSeek) && ((iSeek - m_vecSceneMarkers[i]) < iDiff))
       {
         iDiff = iSeek - m_vecSceneMarkers[i];
-        iNextScene = m_vecSceneMarkers[i];
+        *iSceneMarker = m_vecSceneMarkers[i];
+        bFound = true;
       }
     }
   }
 
-  // extra check for incutpoint, we cannot filter this out reliable earlier.
-  if (InCut(iNextScene, &cut) && cut.action == CUT)
+  /*
+   * If the scene marker is in a cut then return the end of the cut. Can't guarantee that this is
+   * picked up when scene markers are added.
+   */
+  Cut cut;
+  if (InCut(*iSceneMarker, &cut) && cut.action == CUT)
     return false;
 
-  *iSceneMarker = iNextScene;
-
-  return (iNextScene != -1);
+  return bFound;
 }
 
 CStdString CEdl::MillisecondsToTimeString(const int iMilliseconds)
