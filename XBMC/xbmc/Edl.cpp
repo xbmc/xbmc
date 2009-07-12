@@ -366,11 +366,9 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
        *
        * GetText() returns 0 if there were any problems and will subsequently be rejected in AddCut().
        */
-      double dStartFrame = atof(pStart->GetText());
-      double dEndFrame = atof(pEnd->GetText());
       Cut cut;
-      cut.start = (__int64)(dStartFrame / 10000);
-      cut.end = (__int64)(dEndFrame / 10000);
+      cut.start = (__int64)(atof(pStart->GetText()) / 10000);
+      cut.end = (__int64)(atof(pEnd->GetText()) / 10000);
       cut.action = CUT;
       bValid = AddCut(cut);
     }
