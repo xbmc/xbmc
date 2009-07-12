@@ -352,7 +352,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
   {
     TiXmlElement *pStart = pRegion->FirstChildElement("start");
     TiXmlElement *pEnd = pRegion->FirstChildElement("end");
-    if (pStart && pEnd)
+    if (pStart && pEnd && pStart->FirstChild() && pEnd->FirstChild())
     {
       /*
        * Need to divide the start and end times by a factor of 10,000 to get msec.
