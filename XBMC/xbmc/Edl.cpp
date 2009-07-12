@@ -32,9 +32,6 @@ using namespace std;
 #define VIDEOREDO_HEADER "<Version>2"
 #define VIDEOREDO_TAG_CUT "<Cut>"
 #define VIDEOREDO_TAG_SCENE "<SceneMarker "
-#define BTVSTR "<cutlist>"
-#define BTVCUT "<Region><start"
-#define BTVSTREND "</cutlist>"
 
 using namespace XFILE;
 
