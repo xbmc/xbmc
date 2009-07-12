@@ -182,7 +182,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
     /*
      * Not all generated Comskip files have the frame rate information.
      */
-    CLog::Log(LOGERROR, "%s - Frame rate not found on line 1 in Comskip file. Only version 2 files and upwards are supported.",
+    CLog::Log(LOGERROR, "%s - Frame rate not found on line 1 in Comskip file.",
               __FUNCTION__);
     comskipFile.Close();
     return false;
@@ -234,9 +234,11 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
 bool CEdl::ReadVideoReDo(const CStdString& strMovie)
 {
   /*
+   * VideoReDo file is strange. Tags are XML like, but it isn't an XML file.
+   *
    * http://www.videoredo.com/
    */
-  
+
   Clear();
   CStdString videoReDoFilename;
   CUtil::ReplaceExtension(strMovie, ".Vprj", videoReDoFilename);
@@ -331,19 +333,21 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 
   if (xmlDoc.Error())
   {
-    CLog::Log(LOGERROR, "Unable to parse chapters.xml file: %s", xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "%s - Could not parse Beyond TV file: %s. %s", __FUNCTION__, beyondTVFilename.c_str(),
+              xmlDoc.ErrorDesc());
     return false;
   }
 
-  TiXmlElement *root = xmlDoc.RootElement();
-  if (!root || strcmp(root->Value(), "cutlist"))
+  TiXmlElement *pRoot = xmlDoc.RootElement();
+  if (!pRoot || strcmp(pRoot->Value(), "cutlist"))
   {
-    CLog::Log(LOGERROR, "Unable to parse chapters.xml file: %s", xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "%s - Invalid Beyond TV file: %s. Expected root node to be <cutlist>", __FUNCTION__,
+              beyondTVFilename.c_str());
     return false;
   }
 
   bool bValid = true;
-  TiXmlElement *pRegion = root->FirstChildElement("Region");
+  TiXmlElement *pRegion = pRoot->FirstChildElement("Region");
   while (bValid && pRegion)
   {
     TiXmlElement *pStart = pRegion->FirstChildElement("start");
@@ -450,15 +454,15 @@ bool CEdl::AddCut(const Cut& cut)
   }
   else
   {
-    vector<Cut>::iterator vitr;
-    for (vitr = m_vecCuts.begin(); vitr != m_vecCuts.end(); vitr++)
+    vector<Cut>::iterator pCurrentCut;
+    for (pCurrentCut = m_vecCuts.begin(); pCurrentCut != m_vecCuts.end(); pCurrentCut++)
     {
-      if (cut.start < vitr->start)
+      if (cut.start < pCurrentCut->start)
       {
         CLog::Log(LOGDEBUG, "%s - Inserting new cut [%s - %s], %d", __FUNCTION__,
                   MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
                   cut.action);
-        m_vecCuts.insert(vitr, cut);
+        m_vecCuts.insert(pCurrentCut, cut);
         break;
       }
     }
@@ -474,7 +478,7 @@ bool CEdl::AddSceneMarker(const __int64 iSceneMarker)
 {
   Cut cut;
 
-  if (InCut(iSceneMarker, &cut) && cut.action == CUT)// this only works for current cutpoints, no for cutpoints added later.
+  if (InCut(iSceneMarker, &cut) && cut.action == CUT) // Only works for current cuts.
     return false;
 
   CLog::Log(LOGDEBUG, "%s - Inserting new scene marker: %s", __FUNCTION__, MillisecondsToTimeString(iSceneMarker).c_str());
@@ -495,13 +499,13 @@ bool CEdl::WriteMPlayerEdl()
     return false;
   }
 
-  CStdString write;
+  CStdString strBuffer;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    write.AppendFormat("%.2f\t%.2f\t%i\n", ((double)m_vecCuts[i].start) / 1000, ((double)m_vecCuts[i].end) / 1000,
-                       m_vecCuts[i].action);
+    strBuffer.AppendFormat("%.2f\t%.2f\t%i\n", ((double)m_vecCuts[i].start) / 1000, ((double)m_vecCuts[i].end) / 1000,
+                           m_vecCuts[i].action);
   }
-  mplayerEdlFile.Write(write.c_str(), write.size());
+  mplayerEdlFile.Write(strBuffer.c_str(), strBuffer.size());
   mplayerEdlFile.Close();
 
   CLog::Log(LOGDEBUG, "%s - MPlayer EDL file written to: %s", __FUNCTION__, MPLAYER_EDL_FILENAME);
@@ -516,7 +520,7 @@ bool CEdl::HasCut()
 
 __int64 CEdl::GetTotalCutTime()
 {
-  return m_iTotalCutTime; //msec.
+  return m_iTotalCutTime; // ms
 }
 
 __int64 CEdl::RemoveCutTime(__int64 iSeek)
@@ -595,12 +599,12 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneM
   if (!HasCut())
     return false;
 
-  // Need absolute time.
   __int64 iSeek = RestoreCutTime(iClock);
+
   __int64 iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
   bool bFound = false;
 
-  if (bPlus)
+  if (bPlus) // Find closest scene forwards
   {
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
@@ -612,7 +616,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneM
       }
     }
   }
-  else
+  else // Find closest scene backwards
   {
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
