@@ -619,7 +619,6 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneM
   }
   else
   {
-    iSeek = (iSeek > 5000) ? iSeek - 5000 : 0; // Jump over nearby scene to avoid getting stuck.
     iDiff = (__int64 )99999999999999LL;
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {

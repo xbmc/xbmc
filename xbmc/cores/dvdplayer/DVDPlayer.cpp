@@ -1879,8 +1879,16 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
 
 bool CDVDPlayer::SeekScene(bool bPlus)
 {
+  /*
+   * There is a 5 second grace period applied when seeking for scenes backwards. If there is no
+   * grace period applied it is impossible to go backwards past a scene marker.
+   */
+  __int64 clock = GetTime();
+  if (!bPlus && clock > 5 * 1000) // 5 seconds
+    clock -= 5 * 1000;
+
   __int64 iScenemarker;
-  if( m_Edl.HasSceneMarker() && m_Edl.GetNextSceneMarker(bPlus, GetTime(), &iScenemarker) )
+  if( m_Edl.HasSceneMarker() && m_Edl.GetNextSceneMarker(bPlus, clock, &iScenemarker) )
   {
     m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, false, false, true));
     SyncronizeDemuxer(100);
