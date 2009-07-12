@@ -542,17 +542,19 @@ __int64 CEdl::RemoveCutTime(__int64 iSeek)
   return iSeek - iCutTime;
 }
 
-__int64 CEdl::RestoreCutTime(__int64 iTime)
+__int64 CEdl::RestoreCutTime(__int64 iClock)
 {
   if (!HasCut())
-    return iTime;
+    return iClock;
+
+  __int64 iSeek = iClock;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    if (m_vecCuts[i].action == CUT && m_vecCuts[i].start <= iTime)
-      iTime += m_vecCuts[i].end - m_vecCuts[i].start;
+    if (m_vecCuts[i].action == CUT && iSeek >= m_vecCuts[i].start)
+      iSeek += m_vecCuts[i].end - m_vecCuts[i].start;
   }
 
-  return iTime;
+  return iSeek;
 }
 
 bool CEdl::HasSceneMarker()
