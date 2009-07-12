@@ -311,6 +311,10 @@ void CVDPAU::CheckFeatures()
       &vdp_chroma_type
     };
 
+    tmpBrightness = 0;
+    tmpContrast = 0;
+    tmpNoiseReduction = 0;
+    tmpSharpness = 0;
     int featuresCount = 0;
     VdpVideoMixerFeature features[5];
 
