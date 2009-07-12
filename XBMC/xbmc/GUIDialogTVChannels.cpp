@@ -108,11 +108,11 @@ void CGUIDialogTVChannels::Update()
 
   if (CPVRManager::GetInstance()->IsPlayingTV())
   {
-    CPVRManager::GetInstance()->GetTVChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup(), false);
+    PVRChannelsTV.GetChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup());
   }
   else if (CPVRManager::GetInstance()->IsPlayingRadio())
   {
-    CPVRManager::GetInstance()->GetRadioChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup(), false);
+    PVRChannelsRadio.GetChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup());
   }
 
   m_viewControl.SetItems(*m_vecItems);

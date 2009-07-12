@@ -65,7 +65,7 @@ public:
   virtual PVR_ERROR GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result)=0;
 
   virtual int GetNumChannels()=0;
-  virtual PVR_ERROR GetChannelList(VECCHANNELS &channels, bool radio)=0;
+  virtual PVR_ERROR GetChannelList(cPVRChannels &channels, bool radio)=0;
   virtual PVR_ERROR GetChannelSettings(CTVChannelInfoTag *result)=0;
   virtual PVR_ERROR UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)=0;
   virtual PVR_ERROR AddChannel(const CTVChannelInfoTag &info)=0;

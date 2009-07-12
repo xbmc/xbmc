@@ -214,7 +214,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     delete codec;
     return new DVDPlayerCodec();
   }
-  else if (strFile.substr(0, 8) == "radio://")
+  else if (strFile.substr(0, 6) == "pvr://")
   {
     return new DVDPlayerCodec();
   }

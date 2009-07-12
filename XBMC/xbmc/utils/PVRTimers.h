@@ -70,14 +70,14 @@ public:
 
 };
 
-typedef std::vector<cPVRTimerInfoTag> VECTVTIMERS;
-
 class cPVRTimers : public std::vector<cPVRTimerInfoTag> 
 {
 private:
 
 public:
   cPVRTimers(void);
+  bool Load();
+  bool Update();
   cPVRTimerInfoTag *GetTimer(cPVRTimerInfoTag *Timer);
   cPVRTimerInfoTag *GetMatch(CDateTime t);
   cPVRTimerInfoTag *GetMatch(time_t t);

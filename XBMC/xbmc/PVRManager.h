@@ -60,6 +60,7 @@ public:
   static CPVRManager* GetInstance();
   unsigned long GetFirstClientID() { return m_currentClientID; }
   static CLIENTMAP* Clients() { return &m_clients; }
+  CTVDatabase *GetTVDatabase() { return &m_database; }
 
   /* addon specific */
   bool RequestRestart(const ADDON::CAddon* addon, bool datachanged);
@@ -93,18 +94,7 @@ public:
   int GetEPGNext(CFileItemList* results, bool radio = false);
   int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);
 
-  /* Channel handling */
-  int GetNumChannels();
-  int GetNumHiddenChannels();
-  int GetTVChannels(CFileItemList* results, int group_id = -1, bool hidden = false);
-  int GetRadioChannels(CFileItemList* results, int group_id = -1, bool hidden = false);
-  void MoveChannel(unsigned int oldindex, unsigned int newindex, bool radio = false);
-  void HideChannel(unsigned int number, bool radio);
-  void SetChannelIcon(unsigned int number, CStdString icon, bool radio = false);
-  CStdString GetChannelIcon(unsigned int number, bool radio = false);
-  CStdString GetNameForChannel(unsigned int number, bool radio = false);
-  bool GetFrontendChannelNumber(unsigned int client_no, unsigned int client_id, int *frontend_no, bool *isRadio);
-  int GetClientChannelNumber(unsigned int frontend_no, bool radio = false);
+
   int GetGroupList(CFileItemList* results);
   void AddGroup(const CStdString &newname);
   bool RenameGroup(unsigned int GroupId, const CStdString &newname);
@@ -114,9 +104,6 @@ public:
   int GetNextGroupID(int current_group_id);
   CStdString GetGroupName(int GroupId);
   int GetFirstChannelForGroupID(int GroupId, bool radio = false);
-  CTVChannelInfoTag *GetChannelByNumber(unsigned int frontend_no, bool radio = false);
-  CTVChannelInfoTag *GetChannelByChannelID(unsigned int id);
-  CTVChannelInfoTag *GetChannelByClientNumber(unsigned int client_no, unsigned int client_id);
 
   /* Backend Channel handling */
   bool AddBackendChannel(const CFileItem &item);
@@ -166,6 +153,8 @@ public:
   
   bool TeletextPagePresent(const CFileItem &item, int Page, int subPage);
   bool GetTeletextPage(const CFileItem &item, int Page, int subPage, BYTE* buf);
+  
+  void                SetCurrentPlayingProgram(CFileItem& item);
 
 protected:
 
@@ -208,8 +197,6 @@ private:
   int                 m_CurrentGroupID;
   unsigned int        m_HiddenChannels;
 
-  VECCHANNELS         m_channels_tv;
-  VECCHANNELS         m_channels_radio;
   VECRECORDINGS       m_recordings;
   CHANNELGROUPS_DATA  m_channel_group;
 
@@ -221,5 +208,4 @@ private:
   void                GetChannels();
   void                ReceiveAllTimers();
   void                ReceiveAllRecordings();
-  void                SetCurrentPlayingProgram(CFileItem& item);
 };

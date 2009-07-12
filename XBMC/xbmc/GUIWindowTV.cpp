@@ -580,12 +580,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
             if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
             {
-              CPVRManager::GetInstance()->HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum, false);
+              PVRChannelsTV.HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum);
               UpdateChannelsTV();
             }
             else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
             {
-              CPVRManager::GetInstance()->HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum, true);
+              PVRChannelsRadio.HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum);
               UpdateChannelsRadio();
             }
           }
@@ -887,8 +887,10 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
 
         if (m_vecItems->Size() > 1 && !m_bShowHiddenChannels)
           buttons.Add(CONTEXT_BUTTON_MOVE, 116);          /* MOVE CHANNEL */
-
-        if (m_bShowHiddenChannels || CPVRManager::GetInstance()->GetNumHiddenChannels() > 0)
+        
+        if ((m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV && PVRChannelsTV.GetNumHiddenChannels() > 0) ||
+            (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO && PVRChannelsRadio.GetNumHiddenChannels() > 0) ||
+            m_bShowHiddenChannels)
           buttons.Add(CONTEXT_BUTTON_SHOW_HIDDEN, m_bShowHiddenChannels ? 18194 : 18195);  /* SHOW HIDDEN CHANNELS */
 
 //        if (CPVRManager::GetInstance()->SupportChannelSettings())
@@ -1007,11 +1009,11 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (!pItem->GetTVEPGInfoTag()->m_isRadio)
       {
-        ret_channels = CPVRManager::GetInstance()->GetTVChannels(&channelslist, m_iCurrentTVGroup, false);
+        ret_channels = PVRChannelsTV.GetChannels(&channelslist, m_iCurrentTVGroup);
       }
       else
       {
-        ret_channels = CPVRManager::GetInstance()->GetRadioChannels(&channelslist, m_iCurrentRadioGroup, false);
+        ret_channels = PVRChannelsRadio.GetChannels(&channelslist, m_iCurrentRadioGroup);
       }
 
       if (ret_channels > 0)
@@ -1043,12 +1045,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        CPVRManager::GetInstance()->MoveChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum, newIndex, false);
+        PVRChannelsTV.MoveChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum, newIndex);
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        CPVRManager::GetInstance()->MoveChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum, newIndex, true);
+        PVRChannelsRadio.MoveChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum, newIndex);
         UpdateChannelsRadio();
       }
     }
@@ -1070,12 +1072,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        CPVRManager::GetInstance()->HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum, false);
+        PVRChannelsTV.HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum);
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        CPVRManager::GetInstance()->HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum, true);
+        PVRChannelsRadio.HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum);
         UpdateChannelsRadio();
       }
     }
@@ -1109,12 +1111,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        CPVRManager::GetInstance()->SetChannelIcon(pItem->GetTVChannelInfoTag()->m_iChannelNum, strIcon, false);
+        PVRChannelsTV.SetChannelIcon(pItem->GetTVChannelInfoTag()->m_iChannelNum, strIcon);
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        CPVRManager::GetInstance()->SetChannelIcon(pItem->GetTVChannelInfoTag()->m_iChannelNum, strIcon, true);
+        PVRChannelsRadio.SetChannelIcon(pItem->GetTVChannelInfoTag()->m_iChannelNum, strIcon);
         UpdateChannelsRadio();
       }
     }
@@ -1516,15 +1518,20 @@ void CGUIWindowTV::UpdateGuide()
     SET_CONTROL_HIDDEN(8003);
     SET_CONTROL_VISIBLE(8001);
 
-    if (TVPlaying || RadioPlaying)
+    if (TVPlaying)
     {
       current_channel = CPVRManager::GetInstance()->GetCurrentChannel(RadioPlaying);
-      strChannel = CPVRManager::GetInstance()->GetNameForChannel(current_channel, RadioPlaying);
+      strChannel = PVRChannelsTV.GetNameForChannel(current_channel);
+    }
+    else if (RadioPlaying)
+    {
+      current_channel = CPVRManager::GetInstance()->GetCurrentChannel(RadioPlaying);
+      strChannel = PVRChannelsRadio.GetNameForChannel(current_channel);
     }
     else
     {
       current_channel = 1;
-      strChannel = CPVRManager::GetInstance()->GetNameForChannel(current_channel, false);
+      strChannel = PVRChannelsTV.GetNameForChannel(current_channel);
     }
 
     strLabel.Format("%s: %s", g_localizeStrings.Get(18050), strChannel.c_str());
@@ -1623,8 +1630,14 @@ void CGUIWindowTV::UpdateChannelsTV()
   SET_CONTROL_HIDDEN(CONTROL_LIST_CHANNELS_TV);
 
   m_vecItems->Clear();
+  
+  int channels;
+  if (!m_bShowHiddenChannels)
+    channels = PVRChannelsTV.GetChannels(m_vecItems, m_iCurrentTVGroup);
+  else
+    channels = PVRChannelsTV.GetHiddenChannels(m_vecItems);
 
-  if (CPVRManager::GetInstance()->GetTVChannels(m_vecItems, m_iCurrentTVGroup, m_bShowHiddenChannels) > 0)
+  if (channels > 0)
   {
     CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_CHANNELS_TV, 0, 0, m_vecItems);
     g_graphicsContext.SendMessage(msg);
@@ -1673,7 +1686,13 @@ void CGUIWindowTV::UpdateChannelsRadio()
 
   m_vecItems->Clear();
 
-  if (CPVRManager::GetInstance()->GetRadioChannels(m_vecItems, m_iCurrentRadioGroup, m_bShowHiddenChannels) > 0)
+  int channels;
+  if (!m_bShowHiddenChannels)
+    channels = PVRChannelsRadio.GetChannels(m_vecItems, m_iCurrentRadioGroup);
+  else
+    channels = PVRChannelsRadio.GetHiddenChannels(m_vecItems);
+
+  if (channels > 0)
   {
     CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_CHANNELS_RADIO, 0, 0, m_vecItems);
     g_graphicsContext.SendMessage(msg);
@@ -1792,15 +1811,20 @@ void CGUIWindowTV::UpdateButtons()
     bool TVPlaying = CPVRManager::GetInstance()->IsPlayingTV();
     bool RadioPlaying = CPVRManager::GetInstance()->IsPlayingRadio();
 
-    if (TVPlaying || RadioPlaying)
+    if (TVPlaying)
     {
       current_channel = CPVRManager::GetInstance()->GetCurrentChannel(RadioPlaying);
-      strChannel = CPVRManager::GetInstance()->GetNameForChannel(current_channel, RadioPlaying);
+      strChannel = PVRChannelsTV.GetNameForChannel(current_channel);
+    }
+    else if (RadioPlaying)
+    {
+      current_channel = CPVRManager::GetInstance()->GetCurrentChannel(RadioPlaying);
+      strChannel = PVRChannelsRadio.GetNameForChannel(current_channel);
     }
     else
     {
       current_channel = 1;
-      strChannel = CPVRManager::GetInstance()->GetNameForChannel(current_channel, false);
+      strChannel = PVRChannelsTV.GetNameForChannel(current_channel);
     }
 
     strLabel.Format("%s: %s", g_localizeStrings.Get(18050), strChannel.c_str());

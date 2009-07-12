@@ -299,7 +299,7 @@ int CPVRClient::GetNumChannels()
   return -1;
 }
 
-PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels, bool radio)
+PVR_ERROR CPVRClient::GetChannelList(cPVRChannels &channels, bool radio)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -307,7 +307,7 @@ PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels, bool radio)
   {
     try
     {
-      const PVRHANDLE handle = (VECCHANNELS*) &channels;
+      const PVRHANDLE handle = (cPVRChannels*) &channels;
       ret = m_pClient->RequestChannelList(handle, radio);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
@@ -339,7 +339,7 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
     return;
   }
 
-  VECCHANNELS *xbmcChannels = (VECCHANNELS*) handle;
+  cPVRChannels *xbmcChannels = (cPVRChannels*) handle;
   CTVChannelInfoTag tag;
 
   tag.m_iIdChannel          = -1;
@@ -678,7 +678,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   }
 
   cPVRTimers *xbmcTimers     = (cPVRTimers*) handle;
-  CTVChannelInfoTag *channel  = CPVRManager::GetInstance()->GetChannelByClientNumber(timer->channelNum, client->m_clientID);
+  CTVChannelInfoTag *channel  = cPVRChannels::GetByClientFromAll(timer->channelNum, client->m_clientID);
   
   if (channel == NULL)
   {

@@ -56,7 +56,7 @@ public:
 
   /* Channels */
   virtual int GetNumChannels();
-  virtual PVR_ERROR GetChannelList(VECCHANNELS &channels, bool radio);
+  virtual PVR_ERROR GetChannelList(cPVRChannels &channels, bool radio);
   virtual PVR_ERROR GetChannelSettings(CTVChannelInfoTag *result);
   virtual PVR_ERROR UpdateChannelSettings(const CTVChannelInfoTag &chaninfo);
   virtual PVR_ERROR AddChannel(const CTVChannelInfoTag &info);

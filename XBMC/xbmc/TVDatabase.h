@@ -40,14 +40,18 @@ public:
   bool UpdateLastChannel(DWORD clientID, unsigned int channelID, CStdString m_strChannel);
 
   /* Database Channel handling */
+  long AddDBChannel(const CTVChannelInfoTag &info);
   long AddChannel(DWORD clientID, const CTVChannelInfoTag &info);
   bool RemoveAllChannels(DWORD clientID);
   bool RemoveChannel(DWORD clientID, const CTVChannelInfoTag &info);
+  long UpdateDBChannel(const CTVChannelInfoTag &info);
   long UpdateChannel(DWORD clientID, const CTVChannelInfoTag &info);
+  int  GetDBNumChannels(bool radio);
   int  GetNumChannels(DWORD clientID);
   int  GetNumHiddenChannels(DWORD clientID);
   bool HasChannel(DWORD clientID, const CTVChannelInfoTag &info);
-  bool GetChannelList(DWORD clientID, VECCHANNELS &results, bool radio);
+  bool GetDBChannelList(cPVRChannels &results, bool radio);
+  bool GetChannelList(DWORD clientID, cPVRChannels &results, bool radio);
   bool GetChannelSettings(DWORD clientID, unsigned int channelID, CVideoSettings &settings);
   bool SetChannelSettings(DWORD clientID, unsigned int channelID, const CVideoSettings &settings);
 

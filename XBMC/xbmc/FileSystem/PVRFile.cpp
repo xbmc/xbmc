@@ -260,9 +260,13 @@ CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
 {
   int playingItem;
   CStdString ret;
-  
+
   CStdString FileName = pathFile;
 
+  if (FileName.substr(0, 6) == "pvr://")
+  {
+    ret = FileName;
+  }
   if (FileName.substr(0, 5) == "tv://")              /* Live TV */
   {
     FileName.erase(0, 5);

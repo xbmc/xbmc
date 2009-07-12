@@ -559,7 +559,7 @@
 							<aligny>center</aligny>
 							<textcolor>grey</textcolor>
 							<selectedcolor>grey</selectedcolor>
-							<info>ListItem.filename</info>
+							<info>ListItem.ChannelNumber</info>
 						</control>
 						<control type="label">
 							<posx>50</posx>
@@ -627,7 +627,7 @@
 							<aligny>center</aligny>
 							<textcolor>grey</textcolor>
 							<selectedcolor>grey</selectedcolor>
-							<info>ListItem.filename</info>
+							<info>ListItem.ChannelNumber</info>
 						</control>
 						<control type="label">
 							<posx>50</posx>
@@ -775,7 +775,7 @@
 							<aligny>center</aligny>
 							<textcolor>grey</textcolor>
 							<selectedcolor>grey</selectedcolor>
-							<info>ListItem.filename</info>
+							<info>ListItem.ChannelNumber</info>
 						</control>
 						<control type="label">
 							<posx>50</posx>
@@ -843,7 +843,7 @@
 							<aligny>center</aligny>
 							<textcolor>grey</textcolor>
 							<selectedcolor>grey</selectedcolor>
-							<info>ListItem.filename</info>
+							<info>ListItem.ChannelNumber</info>
 						</control>
 						<control type="label">
 							<posx>50</posx>

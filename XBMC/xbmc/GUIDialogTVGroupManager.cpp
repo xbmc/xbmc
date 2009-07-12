@@ -240,9 +240,9 @@ void CGUIDialogTVGroupManager::Update()
   m_viewControlGroup.SetSelectedItem(m_iSelectedGroup);
 
   if (!m_bIsRadio)
-    CPVRManager::GetInstance()->GetTVChannels(m_channelLeftItems, 0, false);
+    PVRChannelsTV.GetChannels(m_channelLeftItems, 0);
   else
-    CPVRManager::GetInstance()->GetRadioChannels(m_channelLeftItems, 0, false);
+    PVRChannelsRadio.GetChannels(m_channelLeftItems, 0);
   m_viewControlLeft.SetItems(*m_channelLeftItems);
   m_viewControlLeft.SetSelectedItem(m_iSelectedLeft);
 
@@ -253,9 +253,9 @@ void CGUIDialogTVGroupManager::Update()
     SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_CurrentGroupName);
 
     if (!m_bIsRadio)
-      CPVRManager::GetInstance()->GetTVChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()), false);
+      PVRChannelsTV.GetChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()));
     else
-      CPVRManager::GetInstance()->GetRadioChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()), false);
+      PVRChannelsRadio.GetChannels(m_channelRightItems, atoi(pItem->m_strPath.c_str()));
     m_viewControlRight.SetItems(*m_channelRightItems);
     m_viewControlRight.SetSelectedItem(m_iSelectedRight);
   }
