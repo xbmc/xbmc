@@ -27,10 +27,6 @@
 
 using namespace std;
 
-#ifndef WSAEVENT  //Needed for XBMC_PC somehow.
-#define WSAEVENT                HANDLE
-#endif
-
 #define CACHED_EDL_FILENAME "special://temp/xbmc.edl"
 #define COMSKIPSTR "FILE PROCESSING COMPLETE"
 #define VRSTR "<Version>2"
