@@ -57,23 +57,31 @@ void CEdl::Clear()
 
 bool CEdl::ReadFiles(const CStdString& strMovie)
 {
-  // Try to read any available format until a valid edl is read
-  Clear();
+  CLog::Log(LOGDEBUG, "%s - checking for any edit decision list (EDL) files for: %s", __FUNCTION__, strMovie.c_str());
 
-  ReadVideoReDo(strMovie);
-  if (!HasCut() && !HasSceneMarker())
-    ReadEdl(strMovie);
+  /*
+   * Read any available format until a valid EDL related file is found.
+   * 
+   * TODO: Surely there's a better way to do this bFound shenanigans.
+   */
+  bool bFound = false;
 
-  if (!HasCut() && !HasSceneMarker())
-    ReadComskip(strMovie);
+  if (!bFound)
+    bFound = ReadVideoReDo(strMovie);
 
-  if (!HasCut() && !HasSceneMarker())
-    ReadBeyondTV(strMovie);
+  if (!bFound)
+    bFound = ReadEdl(strMovie);
 
-  if (HasCut() || HasSceneMarker())
+  if (!bFound)
+    bFound = ReadComskip(strMovie);
+
+  if (!bFound)
+    bFound = ReadBeyondTV(strMovie);
+
+  if (bFound)
     WriteMPlayerEdl();
 
-  return HasCut() || HasSceneMarker();
+  return bFound;
 }
 
 bool CEdl::ReadEdl(const CStdString& strMovie)
