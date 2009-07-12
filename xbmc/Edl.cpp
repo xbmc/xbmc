@@ -235,7 +235,7 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
 {
   Clear();
   CStdString videoRedoFilename;
-  CUtil::ReplaceExtension(strMovie, ".VPrj", videoRedoFilename);
+  CUtil::ReplaceExtension(strMovie, ".Vprj", videoRedoFilename);
   if (!CFile::Exists(videoRedoFilename))
     return false;
 
