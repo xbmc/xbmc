@@ -29,9 +29,9 @@ using namespace std;
 
 #define CACHED_EDL_FILENAME "special://temp/xbmc.edl"
 #define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
-#define VRSTR "<Version>2"
-#define VRCUT "<Cut>"
-#define VRSCENE "<SceneMarker "
+#define VIDEOREDO_HEADER "<Version>2"
+#define VIDEOREDO_TAG_CUT "<Cut>"
+#define VIDEOREDO_TAG_SCENE "<SceneMarker "
 #define BTVSTR "<cutlist>"
 #define BTVCUT "<Region><start"
 #define BTVSTREND "</cutlist>"
@@ -250,10 +250,10 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
   }
 
   char szBuffer[1024];
-  if (videoRedoFile.ReadString(szBuffer, 1023) && strncmp(szBuffer, VRSTR, strlen(VRSTR)) != 0)
+  if (videoRedoFile.ReadString(szBuffer, 1023) && strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
   {
     CLog::Log(LOGERROR, "%s - Invalid VideoRedo file: %s. Error reading line 1 - expected %s. Only version 2 files are supported.",
-              __FUNCTION__, videoRedoFilename.c_str(), VRSTR);
+              __FUNCTION__, videoRedoFilename.c_str(), VIDEOREDO_HEADER);
     videoRedoFile.Close();
     return false;
   }
@@ -263,11 +263,11 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
   while (bValid && videoRedoFile.ReadString(szBuffer, 1023))
   {
     iLine++;
-    if (strncmp(szBuffer, VRCUT, strlen(VRCUT)) == 0)
+    if (strncmp(szBuffer, VIDEOREDO_TAG_CUT, strlen(VIDEOREDO_TAG_CUT)) == 0)
     {
       double dStartFrame;
       double dEndFrame;
-      if (sscanf(szBuffer + strlen(VRCUT), "%lf:%lf", &dStartFrame, &dEndFrame) == 2)
+      if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_CUT), "%lf:%lf", &dStartFrame, &dEndFrame) == 2)
       {
         Cut cut;
         cut.start = (__int64)(dStartFrame / 10000);
@@ -278,11 +278,11 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
       else
         bValid = false;
     }
-    else if (strncmp(szBuffer, VRSCENE, strlen(VRSCENE)) == 0)
+    else if (strncmp(szBuffer, VIDEOREDO_TAG_SCENE, strlen(VIDEOREDO_TAG_SCENE)) == 0)
     {
       int iScene;
       double dSceneMarker;
-      if (sscanf(szBuffer + strlen(VRSCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
+      if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
         bValid = AddSceneMarker(dSceneMarker / 10000);
       else
         bValid = false;
