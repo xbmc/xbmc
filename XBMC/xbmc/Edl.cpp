@@ -352,10 +352,22 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
   {
     TiXmlElement *pStart = pRegion->FirstChildElement("start");
     TiXmlElement *pEnd = pRegion->FirstChildElement("end");
-    if (pStart && pEnd && pStart->FirstChild() && pEnd->FirstChild())
+    if (pStart && pEnd)
     {
-      double dStartFrame = atof(pStart->FirstChild()->Value());
-      double dEndFrame = atof(pEnd->FirstChild()->Value());
+      /*
+       * Need to divide the start and end times by a factor of 10,000 to get msec.
+       * E.g. <start comment="00:02:44.9980867">1649980867</start>
+       *
+       * Use atof so doesn't overflow 32 bit float or integer / long.
+       * E.g. <end comment="0:26:49.0000009">16090090000</end>
+       *
+       * Don't use atoll even though it is more correct as it isn't natively supported by
+       * Visual Studio.
+       *
+       * GetText() returns 0 if there were any problems and will subsequently be rejected in AddCut().
+       */
+      double dStartFrame = atof(pStart->GetText());
+      double dEndFrame = atof(pEnd->GetText());
       Cut cut;
       cut.start = (__int64)(dStartFrame / 10000);
       cut.end = (__int64)(dEndFrame / 10000);
