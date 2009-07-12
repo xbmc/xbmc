@@ -26,6 +26,8 @@
 
 #include "VideoInfoTag.h"
 #include "DateTime.h"
+#include "FileItem.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
 enum chSrcType
 {
@@ -169,25 +171,25 @@ typedef struct
 
 } TVChannelSettings;
 
-typedef struct
-{
-  unsigned int  m_uniqueID;
-
-  CStdString    m_strTitle;
-  CStdString    m_strPlotOutline;
-  CStdString    m_strPlot;
-
-  CDateTime     m_startTime;
-  CDateTime     m_endTime;
-  CDateTimeSpan m_duration;
-
-  CStdString    m_strGenre;
-  int           m_GenreType;
-  int           m_GenreSubType;
-
-} TVEPGData;
-
-typedef std::vector<TVEPGData> EPG_DATA;
+//typedef struct
+//{
+//  unsigned int  m_uniqueID;
+//
+//  CStdString    m_strTitle;
+//  CStdString    m_strPlotOutline;
+//  CStdString    m_strPlot;
+//
+//  CDateTime     m_startTime;
+//  CDateTime     m_endTime;
+//  CDateTimeSpan m_duration;
+//
+//  CStdString    m_strGenre;
+//  int           m_GenreType;
+//  int           m_GenreSubType;
+//
+//} TVEPGData;
+//
+//typedef std::vector<TVEPGData> EPG_DATA;
 
 typedef struct
 {
@@ -216,9 +218,7 @@ public:
 
   int                 m_iIdChannel;           /// Database number
   int                 m_iChannelNum;          /// Channel number for channels on XBMC
-  int                 m_iClientNum;           /// Channel number on client
   int                 m_iGroupID;             /// Channel group identfier
-  int                 m_clientID;
 
   CStdString          m_strChannel;           /// Channel name
 
@@ -236,10 +236,71 @@ public:
   CDateTime           m_endTime;              /// End time
   CDateTimeSpan       m_duration;             /// Duration
 
-  CStdString          m_strFileNameAndPath;   /// Filename for PVRManager to open and read stream
-
   EPG_DATA            m_EPG;                  /// EPG Data for Channel
   TVChannelSettings   m_Settings;             /// Channel settings must be received manually
+
+
+  long                m_iIdUnique;            /// Unique Id for this channel
+  int                 m_clientID;             /// Id of client channel come from
+  int                 m_iClientNum;           /// Channel number on client
+
+  CStdString          m_strStreamURL;         /// URL of the stream, if empty use Client to read stream
+  CStdString          m_strFileNameAndPath;   /// Filename for PVRManager to open and read stream
+
+  CStdString Name(void) const { return m_strChannel; }
+  void SetName(CStdString name) { m_strChannel = name; }
+  int Number(void) const { return m_iChannelNum; }
+  void SetNumber(int Number) { m_iChannelNum = Number; }
+  int ClientNumber(void) const { return m_iClientNum; }
+  void SetClientNumber(int Number) { m_iClientNum = Number; }
+  long ClientID(void) const { return m_clientID; }
+  void SetClientID(int ClientId) { m_clientID = ClientId; }
+  long ChannelID(void) const { return m_iIdChannel; }
+  void SetChannelID(int ChannelID) { m_iIdChannel = ChannelID; }
+  long UniqueID(void) const { return m_iIdUnique; }
+  bool IsRadio(void) const { return m_radio; }
+  CStdString Stream(void) const { return m_strStreamURL; }
+  void SetStream(CStdString stream) { m_strStreamURL = stream; }
+  CStdString Path(void) const { return m_strFileNameAndPath; }
+  void SetPath(CStdString path) { m_strFileNameAndPath = path; }
+  CStdString Icon(void) const { return m_IconPath; }
+  void SetIcon(CStdString icon) { m_IconPath = icon; }
+  bool IsHidden(void) const { return m_hide; }
 };
 
 typedef std::vector<CTVChannelInfoTag> VECCHANNELS;
+
+class cPVRChannels : public std::vector<CTVChannelInfoTag> 
+{
+private:
+  bool m_bRadio;
+  int m_iHiddenChannels;
+
+public:
+  cPVRChannels(void);
+  bool Load(bool radio);
+  bool Update();
+  void ReNumberAndCheck(void);
+  int GetNumChannels() const { return size(); }
+  int GetNumHiddenChannels() const { return m_iHiddenChannels; }
+  int GetChannels(CFileItemList* results, int group_id = -1);
+  int GetHiddenChannels(CFileItemList* results);
+  void MoveChannel(unsigned int oldindex, unsigned int newindex);
+  void HideChannel(unsigned int number);
+  CTVChannelInfoTag *GetByNumber(int Number);
+  CTVChannelInfoTag *GetByClient(int Number, int ClientID);
+  CTVChannelInfoTag *GetByChannelID(long ChannelID);
+  CTVChannelInfoTag *GetByUniqueID(long UniqueID);
+  CStdString GetNameForChannel(int Number);
+  CStdString GetChannelIcon(int Number);
+  void SetChannelIcon(int Number, CStdString Icon);
+  void Clear();
+  
+  static int GetNumChannelsFromAll();
+  static CTVChannelInfoTag *GetByClientFromAll(int Number, int ClientID);
+  static CTVChannelInfoTag *GetByChannelIDFromAll(long ChannelID);
+  static CTVChannelInfoTag *GetByUniqueIDFromAll(long UniqueID);
+};
+
+extern cPVRChannels PVRChannelsTV;
+extern cPVRChannels PVRChannelsRadio;

@@ -107,7 +107,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
   if (curPlayingChannel)
     channel = curPlayingChannel->GetTVChannelInfoTag();
   else
-    channel = CPVRManager::GetInstance()->GetChannelByNumber(1, false);
+    channel = PVRChannelsTV.GetByNumber(1);
 
   if (channel == NULL)
   {
@@ -164,7 +164,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
     return;
   }
 
-  const CTVChannelInfoTag *channel  = CPVRManager::GetInstance()->GetChannelByChannelID(tag->m_idChannel);
+  const CTVChannelInfoTag *channel = cPVRChannels::GetByChannelIDFromAll(tag->m_idChannel);
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "cPVRTimerInfoTag: constructor is called with not present channel");
@@ -353,6 +353,32 @@ cPVRTimers PVRTimers;
 cPVRTimers::cPVRTimers(void)
 {
 
+}
+
+bool cPVRTimers::Load()
+{
+  CPVRManager *manager  = CPVRManager::GetInstance();
+  CLIENTMAP   *clients  = manager->Clients();
+  
+  Clear();
+
+  CLIENTMAPITR itr = clients->begin();
+  while (itr != clients->end())
+  {
+    IPVRClient* client = (*itr).second;
+    if (client->GetNumTimers() > 0)
+    {
+      client->GetAllTimers(this);
+    }
+    itr++;
+  }
+    
+  return true;
+}
+
+bool cPVRTimers::Update()
+{
+  Load();
 }
 
 cPVRTimerInfoTag *cPVRTimers::GetTimer(cPVRTimerInfoTag *Timer)

@@ -153,9 +153,9 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
           int ret_channels;
 
           if (!m_progItem->GetTVEPGInfoTag()->m_isRadio)
-            ret_channels = CPVRManager::GetInstance()->GetTVChannels(&channelslist, -1, false);
+            ret_channels = PVRChannelsTV.GetChannels(&channelslist, -1);
           else
-            ret_channels = CPVRManager::GetInstance()->GetRadioChannels(&channelslist, -1, false);
+            ret_channels = PVRChannelsRadio.GetChannels(&channelslist, -1);
 
           if (ret_channels > 0)
           {
@@ -202,7 +202,7 @@ void CGUIDialogTVEPGProgInfo::Update()
   strTemp = m_progItem->GetTVEPGInfoTag()->m_strGenre; strTemp.Trim();
   SetLabel(CONTROL_PROG_GENRE, strTemp);
 
-  strTemp = CPVRManager::GetInstance()->GetNameForChannel(m_progItem->GetTVEPGInfoTag()->m_channelNum);
+  strTemp = PVRChannelsTV.GetNameForChannel(m_progItem->GetTVEPGInfoTag()->m_channelNum);
   strTemp.Trim();
   SetLabel(CONTROL_PROG_CHANNEL, strTemp);
 

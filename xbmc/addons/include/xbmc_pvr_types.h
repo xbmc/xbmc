@@ -33,13 +33,35 @@
 #include <string.h>
 #include <time.h>
 #include "utils/TVEPGInfoTag.h"
-#include "utils/TVChannelInfoTag.h"
+//#include "utils/TVChannelInfoTag.h"
 #include "utils/TVRecordInfoTag.h"
 #include "xbmc_addon_types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
+typedef struct
+{
+  unsigned int  m_uniqueID;
+  
+  CStdString    m_strTitle;
+  CStdString    m_strPlotOutline;
+  CStdString    m_strPlot;
+
+  CDateTime     m_startTime;
+  CDateTime     m_endTime;
+  CDateTimeSpan m_duration;
+ 
+  CStdString    m_strGenre;
+  int           m_GenreType;
+  int           m_GenreSubType;
+
+} TVEPGData;
+
+typedef std::vector<TVEPGData> EPG_DATA;
+
 
   typedef void*         PVRHANDLE;
 

@@ -28,6 +28,8 @@
 #include "TVEPGInfoTag.h"
 #include "TVChannelInfoTag.h"
 #include "GUISettings.h"
+#include "TVDatabase.h"
+#include "PVRManager.h"
 
 /**
  * Create a blank unmodified channel tag
@@ -228,3 +230,412 @@ int CTVChannelInfoTag::GetDuration() const
   duration /= 60;
   return duration;
 }
+
+
+// --- cPVRChannels ---------------------------------------------------------------
+
+cPVRChannels PVRChannelsTV;
+cPVRChannels PVRChannelsRadio;
+
+cPVRChannels::cPVRChannels(void)
+{
+  m_bRadio = false;
+  m_iHiddenChannels = 0;
+}
+
+bool cPVRChannels::Load(bool radio)
+{
+  m_bRadio = radio;
+  CPVRManager *manager  = CPVRManager::GetInstance();
+  CTVDatabase *database = manager->GetTVDatabase();
+  CLIENTMAP   *clients  = manager->Clients();
+  
+  Clear();
+
+  database->Open();
+
+  if (database->GetDBNumChannels(m_bRadio) > 0)
+  {
+    database->GetDBChannelList(*this, m_bRadio);
+    database->Close();
+    Update();
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "cPVRChannels: TV Database holds no %s channels, reading channels from clients", m_bRadio ? "Radio" : "TV");
+
+    CLIENTMAPITR itr = clients->begin();
+    while (itr != clients->end())
+    {
+      IPVRClient* client = (*itr).second;
+      if (client->GetNumChannels() > 0)
+      {
+        client->GetChannelList(*this, m_bRadio);
+      }
+      itr++;
+    }
+    
+    ReNumberAndCheck();
+
+    for (unsigned int i = 0; i < size(); i++)
+      at(i).SetChannelID(database->AddDBChannel(at(i)));
+    
+    database->Compress(true);
+    database->Close();
+  }
+
+  return false;
+}
+
+bool cPVRChannels::Update()
+{
+  CPVRManager *manager  = CPVRManager::GetInstance();
+  CTVDatabase *database = manager->GetTVDatabase();
+  database->Open();
+  
+
+
+
+  database->Close();
+
+  m_iHiddenChannels = 0;
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).IsHidden())
+      m_iHiddenChannels++;
+      
+    
+    
+  }
+
+  return false;
+}
+
+void cPVRChannels::ReNumberAndCheck(void)
+{
+  int Number = 1;
+  m_iHiddenChannels = 0;
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).ClientNumber() <= 0)
+    {
+      CLog::Log(LOGERROR, "cPVRChannels: Channel '%s' from client '%i' is invalid, removing from list", at(i).Name().c_str(), at(i).ClientID());
+      erase(begin()+i);
+      i--;
+      break;
+    }
+
+    if (at(i).UniqueID() <= 0)
+      CLog::Log(LOGNOTICE, "cPVRChannels: Channel '%s' from client '%i' have no unique ID. Contact PVR Client developer.", at(i).Name().c_str(), at(i).ClientID());
+      
+    if (at(i).Name().IsEmpty())
+    {
+      CStdString name;
+      CLog::Log(LOGERROR, "cPVRChannels: Client channel '%i' from client '%i' have no channel name", at(i).ClientNumber(), at(i).ClientID());
+      name.Format(g_localizeStrings.Get(18029), at(i).ClientNumber());
+      at(i).SetName(name);
+    }
+
+    if (at(i).IsHidden())
+      m_iHiddenChannels++;
+
+    CStdString path;
+    at(i).SetNumber(Number);
+
+    if (!m_bRadio)
+      path.Format("pvr://channelstv/%i.ts", Number);
+    else
+      path.Format("pvr://channelsradio/%i.ts", Number);
+
+    at(i).SetPath(path);
+    at(i).m_strStatus = "livetv";
+    Number++;
+  }
+}
+
+int cPVRChannels::GetChannels(CFileItemList* results, int group_id)
+{
+  int cnt = 0;
+
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).IsHidden())
+      continue;
+
+    if ((group_id != -1) && (at(i).m_iGroupID != group_id))
+      continue;
+
+    CFileItemPtr channel(new CFileItem(at(i)));
+    CPVRManager::GetInstance()->SetCurrentPlayingProgram(*channel);
+
+    results->Add(channel);
+    cnt++;
+  }
+  return cnt;
+}
+
+int cPVRChannels::GetHiddenChannels(CFileItemList* results)
+{
+  int cnt = 0;
+
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (!at(i).IsHidden())
+      continue;
+
+    CFileItemPtr channel(new CFileItem(at(i)));
+    results->Add(channel);
+    cnt++;
+  }
+  return cnt;
+}
+
+void cPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
+{
+//  cPVRChannels m_channels_temp;
+//
+//  if ((newindex == oldindex) || (newindex == 0))
+//    return;
+//
+//  CPVRManager *manager  = CPVRManager::GetInstance();
+//  CTVDatabase *database = manager->GetTVDatabase();
+//  database->Open();
+//
+//  int CurrentChannelID = m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum;
+//  int CurrentClientChannel = m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum;
+//
+//  m_channels_temp.push_back(PVRChannelsTV[oldindex-1]);
+//  PVRChannelsTV.erase(PVRChannelsTV.begin()+oldindex-1);
+//  if (newindex < PVRChannelsTV.size())
+//    PVRChannelsTV.insert(PVRChannelsTV.begin()+newindex-1, m_channels_temp[0]);
+//  else
+//    PVRChannelsTV.push_back(m_channels_temp[0]);
+//
+//  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
+//  {
+//    if (at(i).m_iChannelNum != i+1)
+//    {
+//      at(i).m_iChannelNum = i+1;
+//      at(i).m_strFileNameAndPath.Format("tv://%i", at(i).m_iChannelNum);
+//      database->UpdateDBChannel(at(i));
+//    }
+//  }
+//
+//  CLog::Log(LOGNOTICE, "cPVRChannels: TV Channel %d moved to %d", oldindex, newindex);
+//
+//  if (IsPlayingTV() && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iIdChannel != CurrentChannelID)
+//  {
+//    /* Perform Channel switch with new number, if played channelnumber is modified */
+//   // GetFrontendChannelNumber(CurrentClientChannel, m_currentClientID, &m_CurrentTVChannel, NULL);
+//    CFileItemPtr channel(new CFileItem(m_currentPlayingChannel));
+//    g_application.PlayFile(*channel);
+//  }
+//
+//  database->Close();
+//
+//  /* Synchronize channel numbers inside timers */
+//  for (unsigned int i = 0; i < PVRTimers.size(); i++)
+//  {
+////    GetFrontendChannelNumber(PVRTimers[i].m_clientNum, m_currentClientID, &PVRTimers[i].m_channelNum, &PVRTimers[i].m_Radio);
+//  }
+
+  return;
+}
+
+void cPVRChannels::HideChannel(unsigned int number)
+{
+//  for (unsigned int i = 0; i < PVRTimers.size(); i++)
+//  {
+//    if ((PVRTimers[i].m_channelNum == number) && (PVRTimers[i].m_Radio == radio))
+//    {
+//      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+//      if (!pDialog)
+//        return;
+//
+//      pDialog->SetHeading(18090);
+//      pDialog->SetLine(0, 18095);
+//      pDialog->SetLine(1, "");
+//      pDialog->SetLine(2, 18096);
+//      pDialog->DoModal();
+//
+//      if (!pDialog->IsConfirmed())
+//        return;
+//
+//      DeleteTimer(PVRTimers[i], true);
+//    }
+//  }
+//
+//    if (IsPlayingTV() && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum == number)
+//    {
+//      CGUIDialogOK::ShowAndGetInput(18090,18097,0,18098);
+//      return;
+//    }
+//
+//    if (PVRChannelsTV[number-1].m_hide)
+//    {
+//      EnterCriticalSection(&m_critSection);
+//      PVRChannelsTV[number-1].m_hide = false;
+//      m_database.Open();
+//      m_database.UpdateChannel(m_currentClientID, PVRChannelsTV[number-1]);
+//      m_HiddenChannels = m_database.GetNumHiddenChannels(m_currentClientID);
+//      m_database.Close();
+//      LeaveCriticalSection(&m_critSection);
+//    }
+//    else
+//    {
+//      EnterCriticalSection(&m_critSection);
+//      PVRChannelsTV[number-1].m_hide = true;
+//      PVRChannelsTV[number-1].m_EPG.erase(PVRChannelsTV[number-1].m_EPG.begin(), PVRChannelsTV[number-1].m_EPG.end());
+//      m_database.Open();
+//      m_database.UpdateChannel(m_currentClientID, PVRChannelsTV[number-1]);
+//      m_HiddenChannels = m_database.GetNumHiddenChannels(m_currentClientID);
+//      m_database.Close();
+//      LeaveCriticalSection(&m_critSection);
+//      MoveChannel(number, PVRChannelsTV.size(), false);
+//    }
+}  
+
+CTVChannelInfoTag *cPVRChannels::GetByNumber(int Number)
+{
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).Number() == Number)
+      return &at(i);
+  }
+  return NULL;
+}
+
+CTVChannelInfoTag *cPVRChannels::GetByClient(int Number, int ClientID)
+{
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).ClientNumber() == Number && at(i).ClientID() == ClientID)
+      return &at(i);
+  }
+  return NULL;
+}
+
+CTVChannelInfoTag *cPVRChannels::GetByChannelID(long ChannelID)
+{
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).ChannelID() == ChannelID)
+      return &at(i);
+  }
+  return NULL;
+}
+
+CTVChannelInfoTag *cPVRChannels::GetByUniqueID(long UniqueID)
+{
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).UniqueID() != 0)
+    {
+      if (at(i).UniqueID() == UniqueID)
+        return &at(i);
+    }
+    else
+    {
+      if (at(i).ChannelID() == UniqueID)
+        return &at(i);
+    }
+  }
+  return NULL;
+}
+
+CStdString cPVRChannels::GetNameForChannel(int Number)
+{
+  if ((Number <= size()+1) && (Number > 0))
+  {
+    if (at(Number-1).Name() != NULL)
+      return at(Number-1).Name();
+    else
+      return g_localizeStrings.Get(13205);
+  }
+  return "";
+}
+
+CStdString cPVRChannels::GetChannelIcon(int Number)
+{
+  if (Number > 0 && Number <= size()+1)
+    return "";
+
+  return at(Number-1).Icon();
+}
+
+void cPVRChannels::SetChannelIcon(int Number, CStdString Icon)
+{
+  CPVRManager *manager  = CPVRManager::GetInstance();
+  CTVDatabase *database = manager->GetTVDatabase();
+
+  if (Number > 0 && Number <= size()+1)
+    return;
+
+  if (at(Number-1).Icon() != Icon)
+  {
+    CTVDatabase *database = manager->GetTVDatabase();
+    database->Open();
+    at(Number-1).SetIcon(Icon);
+    database->UpdateDBChannel(at(Number-1));
+    database->Close();
+  }
+}
+
+void cPVRChannels::Clear()
+{
+  /* Clear all current present Channels inside list */
+  erase(begin(), end());
+  return;
+}
+
+int cPVRChannels::GetNumChannelsFromAll()
+{
+  return PVRChannelsTV.GetNumChannels()+PVRChannelsRadio.GetNumChannels();
+}
+
+CTVChannelInfoTag *cPVRChannels::GetByClientFromAll(int Number, int ClientID)
+{
+  CTVChannelInfoTag *channel;
+
+  channel = PVRChannelsTV.GetByClient(Number, ClientID);
+  if (channel != NULL)
+    return channel;
+
+  channel = PVRChannelsRadio.GetByClient(Number, ClientID);
+  if (channel != NULL)
+    return channel;
+
+  return NULL;
+}
+
+CTVChannelInfoTag *cPVRChannels::GetByChannelIDFromAll(long ChannelID)
+{
+  CTVChannelInfoTag *channel;
+
+  channel = PVRChannelsTV.GetByChannelID(ChannelID);
+  if (channel != NULL)
+    return channel;
+
+  channel = PVRChannelsRadio.GetByChannelID(ChannelID);
+  if (channel != NULL)
+    return channel;
+
+  return NULL;
+}
+
+CTVChannelInfoTag *cPVRChannels::GetByUniqueIDFromAll(long UniqueID)
+{
+  CTVChannelInfoTag *channel;
+
+  channel = PVRChannelsTV.GetByUniqueID(UniqueID);
+  if (channel != NULL)
+    return channel;
+
+  channel = PVRChannelsRadio.GetByUniqueID(UniqueID);
+  if (channel != NULL)
+    return channel;
+
+  return NULL;
+}
+
+  
