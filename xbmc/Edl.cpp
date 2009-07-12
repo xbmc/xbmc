@@ -400,8 +400,6 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 
 bool CEdl::AddCut(const Cut& cut)
 {
-  vector<Cut>::iterator vitr;
-
   if (cut.start >= cut.end)
     return false;
 
@@ -422,6 +420,7 @@ bool CEdl::AddCut(const Cut& cut)
     m_vecCuts.push_back(cut);
   else
   {
+    vector<Cut>::iterator vitr;
     for (vitr = m_vecCuts.begin(); vitr != m_vecCuts.end(); ++vitr)
     {
       if (vitr->start > cut.start)
