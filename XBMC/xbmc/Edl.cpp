@@ -523,19 +523,23 @@ __int64 CEdl::GetTotalCutTime()
   return m_iTotalCutTime; //msec.
 }
 
-__int64 CEdl::RemoveCutTime(__int64 iTime)
+__int64 CEdl::RemoveCutTime(__int64 iSeek)
 {
-  __int64 iCutTime = 0;
-
   if (!HasCut())
-    return iTime;
+    return iSeek;
+
+  __int64 iCutTime = 0;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    if (m_vecCuts[i].action == CUT && m_vecCuts[i].end <= iTime)
-      iCutTime += m_vecCuts[i].end - m_vecCuts[i].start;
+    if (m_vecCuts[i].action == CUT)
+    {
+      if (iSeek >= m_vecCuts[i].start && iSeek <= m_vecCuts[i].end) // Inside cut
+        iCutTime += iSeek - m_vecCuts[i].start - 1; // Decrease cut length by 1ms to jump over end boundary.
+      else if (iSeek >= m_vecCuts[i].start) // Cut has already been passed over.
+        iCutTime += m_vecCuts[i].end - m_vecCuts[i].start;
+    }
   }
-
-  return iTime - iCutTime;
+  return iSeek - iCutTime;
 }
 
 __int64 CEdl::RestoreCutTime(__int64 iTime)
