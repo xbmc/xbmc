@@ -103,6 +103,9 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
     int iAction;
     if (sscanf(szBuffer, "%lf %lf %i", &dStart, &dEnd, &iAction) == 3)
     {
+      if (dStart == dEnd) // Ignore zero length cuts in generated EDL files
+        continue;
+
       Cut cut;
       cut.start = (int)dStart * 1000; // ms to s
       cut.end = (int)dEnd * 1000; // ms to s
