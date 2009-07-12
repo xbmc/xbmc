@@ -490,28 +490,25 @@ bool CEdl::AddSceneMarker(const __int64 iSceneMarker)
 bool CEdl::WriteMPlayerEdl()
 {
   CFile mplayerEdlFile;
-  if (mplayerEdlFile.OpenForWrite(CACHED_EDL_FILENAME, true))
+  if (!mplayerEdlFile.OpenForWrite(CACHED_EDL_FILENAME, true))
   {
-    CStdString write;
-    for (int i = 0; i < (int)m_vecCuts.size(); i++)
-    {
-      if ((m_vecCuts[i].action == CUT) || (m_vecCuts[i].action == MUTE))
-      {
-        write.AppendFormat("%.2f\t%.2f\t%i\n", ((double)m_vecCuts[i].start) / 1000, ((double)m_vecCuts[i].end) / 1000,
-                           m_vecCuts[i].action);
-      }
-    }
-    mplayerEdlFile.Write(write.c_str(), write.size());
-    mplayerEdlFile.Close();
-    CLog::Log(LOGDEBUG, "CEdl: EDL Cached.");
-    return true;
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "CEdl: Error writing EDL to cache.");
-    Clear();
+    CLog::Log(LOGERROR, "%s - Error opening MPlayer EDL file for writing: %s", __FUNCTION__, CACHED_EDL_FILENAME);
     return false;
   }
+
+  CStdString write;
+  for (int i = 0; i < (int)m_vecCuts.size(); i++)
+  {
+    if ((m_vecCuts[i].action == CUT) || (m_vecCuts[i].action == MUTE))
+    {
+      write.AppendFormat("%.2f\t%.2f\t%i\n", ((double)m_vecCuts[i].start) / 1000, ((double)m_vecCuts[i].end) / 1000,
+                         m_vecCuts[i].action);
+    }
+  }
+  mplayerEdlFile.Write(write.c_str(), write.size());
+  mplayerEdlFile.Close();
+  CLog::Log(LOGDEBUG, "CEdl: EDL Cached.");
+  return true;
 }
 
 bool CEdl::HasCut()
