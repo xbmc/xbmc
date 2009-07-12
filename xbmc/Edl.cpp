@@ -576,22 +576,21 @@ char CEdl::GetEdlStatus()
   return cEdlStatus;
 }
 
-bool CEdl::InCut(__int64 iAbsSeek, Cut *pCurCut)
+bool CEdl::InCut(const __int64 iSeek, Cut *pCut)
 {
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    if (m_vecCuts[i].start <= iAbsSeek && m_vecCuts[i].end >= iAbsSeek)
+    if (iSeek < m_vecCuts[i].start) // Early exit if not even up to the cut start time.
+      return false;
+
+    if (iSeek >= m_vecCuts[i].start && iSeek <= m_vecCuts[i].end) // Inside cut.
     {
-      if (pCurCut)
-        *pCurCut = m_vecCuts[i];
+      if (pCut)
+        *pCut = m_vecCuts[i];
       return true;
     }
-    else
-    {
-      if (m_vecCuts[i].start > iAbsSeek)
-        return false;
-    }
   }
+
   return false;
 }
 
