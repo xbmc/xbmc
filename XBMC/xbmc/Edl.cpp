@@ -263,9 +263,11 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
     return false;
   }
 
+  int iLine = 1;
   bool bValid = true;
   while (bValid && videoRedoFile.ReadString(szBuffer, 1023))
   {
+    iLine++;
     if (strncmp(szBuffer, VRCUT, strlen(VRCUT)) == 0)
     {
       double dStartFrame;
@@ -278,28 +280,41 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
         cut.action = CUT;
         bValid = AddCut(cut);
       }
+      else
+        bValid = false;
     }
-    else
+    else if (strncmp(szBuffer, VRSCENE, strlen(VRSCENE)) == 0)
     {
-      if (strncmp(szBuffer, VRSCENE, strlen(VRSCENE)) == 0)
-      {
-        int iScene;
-        double dSceneMarker;
-        if (sscanf(szBuffer + strlen(VRSCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
-          bValid = AddSceneMarker(dSceneMarker / 10000);
-        else
-          bValid = false;
-      }
+      int iScene;
+      double dSceneMarker;
+      if (sscanf(szBuffer + strlen(VRSCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
+        bValid = AddSceneMarker(dSceneMarker / 10000);
+      else
+        bValid = false;
     }
-    // Ignore other tags.
+    // Ignore any other tags.
   }
   videoRedoFile.Close();
 
-  if (bValid && (HasCut() || HasSceneMarker()))
-    CLog::Log(LOGDEBUG, "CEdl: Read VidoRedo.");
-  else
+  if (!bValid)
+  {
+    CLog::Log(LOGERROR, "%s - Invalid VideoRedo file: %s. Error in line %i. Clearing any valid cuts or scenes found.",
+              __FUNCTION__, videoRedoFilename.c_str(), iLine);
     Clear();
-  return bValid;
+    return false;
+  }
+  else if (HasCut() || HasSceneMarker())
+  {
+    CLog::Log(LOGDEBUG, "%s - Read %i cuts and %i scene markers in VideoRedo file: %s", __FUNCTION__,
+              m_vecCuts.size(), m_vecSceneMarkers.size(), videoRedoFilename.c_str());
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s - No cuts or scene markers found in VideoRedo file: %s", __FUNCTION__,
+              videoRedoFilename.c_str());
+    return false;
+  }
 }
 
 bool CEdl::ReadBeyondTV(const CStdString& strMovie)
