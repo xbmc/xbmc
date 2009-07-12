@@ -520,10 +520,7 @@ bool CEdl::HasCut()
 
 __int64 CEdl::GetTotalCutTime()
 {
-  if (!HasCut())
-    return 0;
-  else
-    return m_iTotalCutTime; //msec.
+  return m_iTotalCutTime; //msec.
 }
 
 __int64 CEdl::RemoveCutTime(__int64 iTime)
