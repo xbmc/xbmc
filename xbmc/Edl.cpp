@@ -345,8 +345,10 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
     CLog::Log(LOGERROR, "Unable to parse chapters.xml file: %s", xmlDoc.ErrorDesc());
     return false;
   }
+
+  bool bValid = true;
   TiXmlElement *pRegion = root->FirstChildElement("Region");
-  while (pRegion)
+  while (bValid && pRegion)
   {
     TiXmlElement *pStart = pRegion->FirstChildElement("start");
     TiXmlElement *pEnd = pRegion->FirstChildElement("end");
@@ -358,18 +360,32 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
       cut.start = (__int64)(dStartFrame / 10000);
       cut.end = (__int64)(dEndFrame / 10000);
       cut.action = CUT;
-      AddCut(cut); // just ignore it if it fails
+      bValid = AddCut(cut);
     }
+    else
+      bValid = false;
+
     pRegion = pRegion->NextSiblingElement("Region");
   }
-
-  if (HasCut())
+  if (!bValid)
   {
-    CLog::Log(LOGDEBUG, "CEdl: Read BeyondTV.");
+    CLog::Log(LOGERROR, "%s - Invalid Beyond TV file: %s. Clearing any valid commercial breaks found.", __FUNCTION__,
+              beyondTVFilename.c_str());
+    Clear();
+    return false;
+  }
+  else if (HasCut())
+  {
+    CLog::Log(LOGDEBUG, "%s - Read %i commercial breaks from Beyond TV file: %s", __FUNCTION__, m_vecCuts.size(),
+              beyondTVFilename.c_str());
     return true;
   }
-  CLog::Log(LOGDEBUG, "CEdl: Failed to get cutpoints in BeyondTV file.");
-  return false;
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s - No commercial breaks found in Beyond TV file: %s", __FUNCTION__,
+              beyondTVFilename.c_str());
+    return false;
+  }
 }
 
 bool CEdl::AddCut(const Cut& cut)
