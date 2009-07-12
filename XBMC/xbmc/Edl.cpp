@@ -489,6 +489,9 @@ bool CEdl::AddSceneMarker(const __int64 iSceneMarker)
 
 bool CEdl::WriteMPlayerEdl()
 {
+  if (!HasCut())
+    return false;
+
   CFile mplayerEdlFile;
   if (!mplayerEdlFile.OpenForWrite(CACHED_EDL_FILENAME, true))
   {
@@ -499,15 +502,14 @@ bool CEdl::WriteMPlayerEdl()
   CStdString write;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    if ((m_vecCuts[i].action == CUT) || (m_vecCuts[i].action == MUTE))
-    {
-      write.AppendFormat("%.2f\t%.2f\t%i\n", ((double)m_vecCuts[i].start) / 1000, ((double)m_vecCuts[i].end) / 1000,
-                         m_vecCuts[i].action);
-    }
+    write.AppendFormat("%.2f\t%.2f\t%i\n", ((double)m_vecCuts[i].start) / 1000, ((double)m_vecCuts[i].end) / 1000,
+                       m_vecCuts[i].action);
   }
   mplayerEdlFile.Write(write.c_str(), write.size());
   mplayerEdlFile.Close();
-  CLog::Log(LOGDEBUG, "CEdl: EDL Cached.");
+
+  CLog::Log(LOGDEBUG, "%s - MPlayer EDL file written to: %s", __FUNCTION__, CACHED_EDL_FILENAME);
+
   return true;
 }
 
