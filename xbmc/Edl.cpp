@@ -60,7 +60,7 @@ bool CEdl::ReadFiles(const CStdString& strMovie)
   // Try to read any available format until a valid edl is read
   Clear();
 
-  ReadVideoRedo(strMovie);
+  ReadVideoReDo(strMovie);
   if (!HasCut() && !HasSceneMarker())
     ReadEdl(strMovie);
 
@@ -231,33 +231,37 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
   }
 }
 
-bool CEdl::ReadVideoRedo(const CStdString& strMovie)
+bool CEdl::ReadVideoReDo(const CStdString& strMovie)
 {
+  /*
+   * http://www.videoredo.com/
+   */
+  
   Clear();
-  CStdString videoRedoFilename;
-  CUtil::ReplaceExtension(strMovie, ".Vprj", videoRedoFilename);
-  if (!CFile::Exists(videoRedoFilename))
+  CStdString videoReDoFilename;
+  CUtil::ReplaceExtension(strMovie, ".Vprj", videoReDoFilename);
+  if (!CFile::Exists(videoReDoFilename))
     return false;
 
-  CFile videoRedoFile;
-  if (!videoRedoFile.Open(videoRedoFilename))
+  CFile videoReDoFile;
+  if (!videoReDoFile.Open(videoReDoFilename))
   {
-    CLog::Log(LOGERROR, "%s - Could not open VideoRedo file: %s", __FUNCTION__, videoRedoFilename.c_str());
+    CLog::Log(LOGERROR, "%s - Could not open VideoReDo file: %s", __FUNCTION__, videoReDoFilename.c_str());
     return false;
   }
 
   char szBuffer[1024];
-  if (videoRedoFile.ReadString(szBuffer, 1023) && strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
+  if (videoReDoFile.ReadString(szBuffer, 1023) && strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
   {
-    CLog::Log(LOGERROR, "%s - Invalid VideoRedo file: %s. Error reading line 1 - expected %s. Only version 2 files are supported.",
-              __FUNCTION__, videoRedoFilename.c_str(), VIDEOREDO_HEADER);
-    videoRedoFile.Close();
+    CLog::Log(LOGERROR, "%s - Invalid VideoReDo file: %s. Error reading line 1 - expected %s. Only version 2 files are supported.",
+              __FUNCTION__, videoReDoFilename.c_str(), VIDEOREDO_HEADER);
+    videoReDoFile.Close();
     return false;
   }
 
   int iLine = 1;
   bool bValid = true;
-  while (bValid && videoRedoFile.ReadString(szBuffer, 1023))
+  while (bValid && videoReDoFile.ReadString(szBuffer, 1023))
   {
     iLine++;
     if (strncmp(szBuffer, VIDEOREDO_TAG_CUT, strlen(VIDEOREDO_TAG_CUT)) == 0)
@@ -286,25 +290,25 @@ bool CEdl::ReadVideoRedo(const CStdString& strMovie)
     }
     // Ignore any other tags.
   }
-  videoRedoFile.Close();
+  videoReDoFile.Close();
 
   if (!bValid)
   {
-    CLog::Log(LOGERROR, "%s - Invalid VideoRedo file: %s. Error in line %i. Clearing any valid cuts or scenes found.",
-              __FUNCTION__, videoRedoFilename.c_str(), iLine);
+    CLog::Log(LOGERROR, "%s - Invalid VideoReDo file: %s. Error in line %i. Clearing any valid cuts or scenes found.",
+              __FUNCTION__, videoReDoFilename.c_str(), iLine);
     Clear();
     return false;
   }
   else if (HasCut() || HasSceneMarker())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %i cuts and %i scene markers in VideoRedo file: %s", __FUNCTION__,
-              m_vecCuts.size(), m_vecSceneMarkers.size(), videoRedoFilename.c_str());
+    CLog::Log(LOGDEBUG, "%s - Read %i cuts and %i scene markers in VideoReDo file: %s", __FUNCTION__,
+              m_vecCuts.size(), m_vecSceneMarkers.size(), videoReDoFilename.c_str());
     return true;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "%s - No cuts or scene markers found in VideoRedo file: %s", __FUNCTION__,
-              videoRedoFilename.c_str());
+    CLog::Log(LOGDEBUG, "%s - No cuts or scene markers found in VideoReDo file: %s", __FUNCTION__,
+              videoReDoFilename.c_str());
     return false;
   }
 }

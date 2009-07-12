@@ -68,7 +68,7 @@ private:
 
   bool ReadEdl(const CStdString& strMovie);
   bool ReadComskip(const CStdString& strMovie);
-  bool ReadVideoRedo(const CStdString& strMovie);
+  bool ReadVideoReDo(const CStdString& strMovie);
   bool ReadBeyondTV(const CStdString& strMovie);
 
   bool AddCut(const Cut& NewCut);
