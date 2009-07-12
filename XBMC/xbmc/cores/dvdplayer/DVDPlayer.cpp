@@ -1891,7 +1891,7 @@ bool CDVDPlayer::SeekScene(bool bPlus)
   __int64 iScenemarker;
   if( m_Edl.HasSceneMarker() && m_Edl.GetNextSceneMarker(bPlus, clock, &iScenemarker) )
   {
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, false, false, true));
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, false, true));
     SyncronizeDemuxer(100);
     return true;
   }
