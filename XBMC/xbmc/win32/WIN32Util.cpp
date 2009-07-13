@@ -794,6 +794,83 @@ BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
   return(b);
 }
 
+void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType)
+{
+  CMediaSource share;
+  char* pcBuffer= NULL;
+  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
+  if( dwStrLength != 0 )
+  {
+    dwStrLength+= 1;
+    pcBuffer= new char [dwStrLength];
+    GetLogicalDriveStrings( dwStrLength, pcBuffer );
+
+    UINT uDriveType;
+    int iPos= 0, nResult;
+    char cVolumeName[100];
+    do{
+      cVolumeName[0]= '\0';
+      uDriveType= GetDriveType( pcBuffer + iPos  );
+      if(uDriveType != DRIVE_REMOVABLE)
+        nResult= GetVolumeInformation( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
+      share.strPath= share.strName= "";
+
+      bool bUseDCD= false;
+      if( uDriveType > DRIVE_UNKNOWN && 
+        (( eDriveType == ALL_DRIVES && (uDriveType == DRIVE_FIXED || uDriveType == DRIVE_REMOTE || uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOVABLE )) ||
+         ( eDriveType == LOCAL_DRIVES && (uDriveType == DRIVE_FIXED || uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOTE)) ||
+         ( eDriveType == REMOVABLE_DRIVES && (uDriveType == DRIVE_REMOVABLE ))))
+      {
+        share.strPath= pcBuffer + iPos;
+        if( cVolumeName[0] != '\0' ) share.strName= cVolumeName;
+        if( uDriveType == DRIVE_CDROM && nResult)
+        {
+          share.strName.Format( "%s %s (%s)",
+            share.strPath, g_localizeStrings.Get(218),share.strName );
+          share.m_iDriveType= CMediaSource::SOURCE_TYPE_LOCAL;
+          bUseDCD= true;
+        }
+        else
+        {
+          // Lets show it, like Windows explorer do... TODO: sorting should depend on driver letter
+          switch(uDriveType)
+          {
+          case DRIVE_CDROM:
+            share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(218));
+            break;
+          case DRIVE_REMOVABLE:
+            if(share.strName.IsEmpty())
+              share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(437));
+            break;
+          case DRIVE_UNKNOWN:
+            share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(13205));
+            break;
+          default:
+            share.strName.Format( "%s %s", share.strPath, share.strName);
+            break;
+          }
+        }
+        share.strName.Replace(":\\",":");
+        share.m_ignore= true;
+        if( !bUseDCD )
+        {
+          share.m_iDriveType= (
+           ( uDriveType == DRIVE_FIXED  )    ? CMediaSource::SOURCE_TYPE_LOCAL :
+           ( uDriveType == DRIVE_REMOTE )    ? CMediaSource::SOURCE_TYPE_REMOTE :
+           ( uDriveType == DRIVE_CDROM  )    ? CMediaSource::SOURCE_TYPE_DVD :
+           ( uDriveType == DRIVE_REMOVABLE ) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
+             CMediaSource::SOURCE_TYPE_UNKNOWN );
+        }
+
+        localDrives.push_back(share);
+      }
+      iPos += (strlen( pcBuffer + iPos) + 1 );
+    } while( strlen( pcBuffer + iPos ) > 0 );
+    if( pcBuffer != NULL)
+      delete[] pcBuffer;
+  }
+}
+
 extern "C"
 {
   FILE *fopen_utf8(const char *_Filename, const char *_Mode)

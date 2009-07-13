@@ -26,6 +26,15 @@
 #if _MSC_VER > 1400
 #include "Cfgmgr32.h"
 #endif
+#include "MediaSource.h"
+
+enum Drive_Types
+{
+  ALL_DRIVES = 0,
+  LOCAL_DRIVES,
+  REMOVABLE_DRIVES,
+  DVD_DRIVES
+};
 
 
 class CWIN32Util
@@ -60,6 +69,7 @@ public:
   static bool HasReqGLVersion();
 #endif
   static BOOL IsCurrentUserLocalAdministrator();
+  static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES);
   
   class SystemParams
   {
