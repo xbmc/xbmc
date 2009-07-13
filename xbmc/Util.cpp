@@ -439,12 +439,17 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   // spaces - one possibility of a mistake here could be something like:
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
   {
+    bool initialDots = true;
     bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0);
 
     for (int i = 0; i < (int)strFileNameTemp.size(); i++)
     {
       char c = strFileNameTemp.GetAt(i);
-      if ((c == '_') || ((!alreadyContainsSpace) && (c == '.')))
+
+      if (c != '.')
+        initialDots = false;
+
+      if ((c == '_') || ((!alreadyContainsSpace) && !initialDots && (c == '.')))
       {
         strFileNameTemp.SetAt(i, ' ');
       }
