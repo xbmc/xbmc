@@ -46,6 +46,10 @@ public:
   bool HasLocation(const CStdString& path) const;
   bool RemoveLocation(const CStdString& path);
   bool SetLocationPath(const CStdString& oldPath, const CStdString& newPath);
+
+  void AddAutoSource(const CMediaSource &share);
+  void RemoveAutoSource(const CMediaSource &share);
+
 protected:
   std::vector<CNetworkLocation> m_locations;
 };
