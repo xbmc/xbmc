@@ -2256,7 +2256,7 @@ bool CSettings::UpdateSource(const CStdString &strType, const CStdString strOldN
   return false;
 }
 
-bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath)
+bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource)
 {
   VECSOURCES *pShares = GetSourcesFromType(strType);
   if (!pShares) return false;
@@ -2274,7 +2274,7 @@ bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName
     }
   }
 
-  if (strType.Find("upnp") > -1)
+  if (virtualSource || strType.Find("upnp") > -1)
     return found;
 
   return SaveSources();
@@ -2308,7 +2308,7 @@ bool CSettings::AddShare(const CStdString &type, const CMediaSource &share)
   }
   pShares->push_back(shareToAdd);
 
-  if (type.Find("upnp") < 0)
+  if (!share.m_ignore || type.Find("upnp") < 0)
   {
     return SaveSources();
   }
