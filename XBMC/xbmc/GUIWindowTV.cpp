@@ -677,7 +677,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
         /* Check if "Add timer..." entry is pressed by OK, if yes
            create a new timer and open settings dialog, otherwise
            open settings for selected timer entry */
-        if (pItem->m_strPath == g_localizeStrings.Get(18057))
+        if (pItem->m_strPath == "pvr://timers/add.timer")
         {
           cPVRTimerInfoTag newtimer(true);
           CFileItem *item = new CFileItem(newtimer);
@@ -911,8 +911,7 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
     {
       /* Check for a empty file item list, means only a
           file item with the name "Add timer..." is present */
-
-      if (pItem->m_strPath == g_localizeStrings.Get(18057))
+      if (pItem->m_strPath == "pvr://timers/add.timer")
       {
         /* If yes show only "New Timer" on context menu */
         buttons.Add(CONTEXT_BUTTON_ADD, 18072); /* NEW TIMER */
@@ -1769,26 +1768,18 @@ void CGUIWindowTV::UpdateTimers()
 
   m_vecItems->Clear();
 
-  if (CPVRManager::GetInstance()->GetAllTimers(m_vecItems) > 0)
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_TIMERS, 0, 0, m_vecItems);
-    g_graphicsContext.SendMessage(msg);
-  }
-  else
-  {
-    /* Add blank item in list to add new timer */
-    CFileItem *item = new CFileItem();
-    item->m_strPath = g_localizeStrings.Get(18057); /* "Add timer..." */
-    CFileItemPtr addtimer(item);
-    m_vecItems->Add(addtimer);
+  cPVRTimerInfoTag newtimer;
+  newtimer.m_strFileNameAndPath = "pvr://timers/add.timer";
+  CFileItemPtr addtimer(new CFileItem(newtimer));
+  m_vecItems->Add(addtimer);
 
-    CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_TIMERS, 0, 0, m_vecItems);
-    g_graphicsContext.SendMessage(msg);
-  }
+  CPVRManager::GetInstance()->GetAllTimers(m_vecItems);
+  CGUIMessage msg1(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_TIMERS, 0, 0, m_vecItems);
+  g_graphicsContext.SendMessage(msg1);
 
   /* Set Selected item inside list */
-  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_LIST_TIMERS, m_iSelected_TIMERS);
-  g_graphicsContext.SendMessage(msg);
+  CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_LIST_TIMERS, m_iSelected_TIMERS);
+  g_graphicsContext.SendMessage(msg2);
 
   CStdString strLabel;
   strLabel.Format("%s - %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18054));

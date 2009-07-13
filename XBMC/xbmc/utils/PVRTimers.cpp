@@ -337,7 +337,9 @@ void cPVRTimerInfoTag::Reset()
  */
 const CStdString cPVRTimerInfoTag::GetStatus() const
 {
-  if (!m_Active)
+  if (m_strFileNameAndPath == "pvr://timers/add.timer")
+    return g_localizeStrings.Get(18057);
+  else if (!m_Active)
     return g_localizeStrings.Get(13106);
   else if (m_StartTime < CDateTime::GetCurrentDateTime() && m_StopTime > CDateTime::GetCurrentDateTime())
     return g_localizeStrings.Get(18069);
