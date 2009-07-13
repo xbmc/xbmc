@@ -473,6 +473,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
 
   tag->m_iSeason  = 0;
   tag->m_iEpisode = 0;
+  tag->m_iTrack       = channel.id;
   tag->m_strAlbum     = channel.name;
   tag->m_strShowTitle = event.title;
   tag->m_strPlot      = event.descs;
