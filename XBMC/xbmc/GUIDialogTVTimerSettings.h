@@ -38,7 +38,7 @@ public:
 protected:
   virtual void CreateSettings();
   virtual void OnSettingChanged(SettingInfo &setting);
-  virtual void OnOkay() { m_cancelled = false; }
+  virtual void OnOkay();
   virtual void OnCancel() { m_cancelled = true; }
 
   SYSTEMTIME	  timerStartTime;

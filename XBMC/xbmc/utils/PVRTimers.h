@@ -68,6 +68,16 @@ public:
 
   CStdString      m_strFileNameAndPath;   /// Filename is only for reference
 
+  CStdString Name(void) const { return m_strTitle; }
+  void SetName(CStdString name) { m_strTitle = name; }
+  int Number(void) const { return m_channelNum; }
+  void SetNumber(int Number) { m_channelNum = Number; }
+  bool IsRadio(void) const { return m_Radio; }
+  void SetRadio(int Radio) { m_Radio = Radio; }
+  int ClientNumber(void) const { return m_clientNum; }
+  void SetClientNumber(int Number) { m_clientNum = Number; }
+  long ClientID(void) const { return m_clientID; }
+  void SetClientID(int ClientId) { m_clientID = ClientId; }
 };
 
 class cPVRTimers : public std::vector<cPVRTimerInfoTag> 

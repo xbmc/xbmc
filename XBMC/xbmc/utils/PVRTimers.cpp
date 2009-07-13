@@ -118,11 +118,11 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
   /* Set default timer */
   m_clientIndex   = -1;
   m_Active        = true;
-  m_strTitle      = channel->m_strChannel;
-  m_channelNum    = channel->m_iChannelNum;
-  m_clientNum     = channel->m_iClientNum;
-  m_clientID      = channel->m_clientID;
-  m_Radio         = channel->m_radio;
+  m_strTitle      = g_localizeStrings.Get(18072);
+  m_channelNum    = channel->Number();
+  m_clientNum     = channel->ClientNumber();
+  m_clientID      = channel->ClientID();
+  m_Radio         = channel->IsRadio();
 
   /* Calculate start/stop times */
   CDateTime time  = CDateTime::GetCurrentDateTime();

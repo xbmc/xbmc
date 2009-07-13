@@ -185,7 +185,6 @@ void CGUIDialogTVTimerSettings::CreateSettings()
     CDateTime timestart = tag->m_FirstDay;
 
     /* get diffence of timer in days between today and timer start date */
-
     if (time < timestart)
     {
       time.GetAsTm(time_cur);
@@ -232,13 +231,43 @@ void CGUIDialogTVTimerSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == CONTROL_TMR_RADIO)
   {
-    EnableSettings(CONTROL_TMR_CHNAME_TV, !tag->m_Radio);
-    EnableSettings(CONTROL_TMR_CHNAME_RADIO, tag->m_Radio);
-//    tag->m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(tag->m_channelNum, tag->m_Radio);
+    CTVChannelInfoTag* channeltag = NULL;
+    if (!tag->IsRadio())
+    {
+      EnableSettings(CONTROL_TMR_CHNAME_TV, true);
+      EnableSettings(CONTROL_TMR_CHNAME_RADIO, false);
+      channeltag = PVRChannelsTV.GetByNumber(tag->Number());
+    }
+    else
+    {
+      EnableSettings(CONTROL_TMR_CHNAME_TV, false);
+      EnableSettings(CONTROL_TMR_CHNAME_RADIO, true);
+      channeltag = PVRChannelsRadio.GetByNumber(tag->Number());
+    }
+
+    if (channeltag)
+    {
+      tag->SetClientNumber(channeltag->ClientNumber());
+      tag->SetClientID(channeltag->ClientID());
+      tag->SetRadio(channeltag->IsRadio());
+      tag->SetNumber(channeltag->Number());
+    }
   }
   else if (setting.id == CONTROL_TMR_CHNAME_TV || setting.id == CONTROL_TMR_CHNAME_RADIO)
   {
-//    tag->m_clientNum = CPVRManager::GetInstance()->GetClientChannelNumber(tag->m_channelNum, tag->m_Radio);
+    CTVChannelInfoTag* channeltag = NULL;
+    if (!tag->IsRadio())
+      channeltag = PVRChannelsTV.GetByNumber(tag->Number());
+    else
+      channeltag = PVRChannelsRadio.GetByNumber(tag->Number());
+
+    if (channeltag)
+    {
+      tag->SetClientNumber(channeltag->ClientNumber());
+      tag->SetClientID(channeltag->ClientID());
+      tag->SetRadio(channeltag->IsRadio());
+      tag->SetNumber(channeltag->Number());
+    }
   }
   else if (setting.id == CONTROL_TMR_DAY && m_tmp_day > 10)
   {
@@ -351,4 +380,12 @@ void CGUIDialogTVTimerSettings::SetTimer(CFileItem *item)
   m_tmp_iStopTime     = 0;
   m_tmp_iFirstDay     = 0;
   m_tmp_day           = 11;
+}
+
+void CGUIDialogTVTimerSettings::OnOkay()
+{
+  m_cancelled = false;
+  cPVRTimerInfoTag* tag = m_timerItem->GetTVTimerInfoTag();
+  if (tag->Name() == g_localizeStrings.Get(18072))
+    tag->SetName(cPVRChannels::GetByClientFromAll(tag->ClientNumber(), tag->ClientID())->Name());
 }
