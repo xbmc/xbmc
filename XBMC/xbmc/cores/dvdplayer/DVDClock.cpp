@@ -207,41 +207,40 @@ bool CDVDClock::SetMaxSpeedAdjust(double speed)
   return m_speedadjust;
 }
 
-bool CDVDClock::UpdateFramerate(double fps)
+//returns the refreshrate if the videoreferenceclock is running, -1 otherwise
+int CDVDClock::UpdateFramerate(double fps)
 {
   //sent with fps of 0 means we are not playing video
   if(fps == 0.0)
   {
     CSingleLock lock(m_speedsection);
     m_speedadjust = false;
-    return false;
+    return -1;
   }
 
   //check if the videoreferenceclock is running, will return -1 if not
   int rate = g_VideoReferenceClock.GetRefreshRate();
 
-  if (rate > 0)
+  if (rate <= 0)
+    return -1;
+  
+  CSingleLock lock(m_speedsection);
+  
+  m_speedadjust = true;
+  
+  double weight = (double)rate / (double)MathUtils::round_int(fps);
+
+  //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
+  if (m_maxspeedadjust > 0.05)
   {
-    CSingleLock lock(m_speedsection);
-    
-    m_speedadjust = true;
-    
-    double weight = (double)rate / (double)MathUtils::round_int(fps);
-
-    //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
-    if (m_maxspeedadjust > 0.05)
-    {
-      if (weight / MathUtils::round_int(weight) < 1.0 + m_maxspeedadjust / 100.0 
-      &&  weight / MathUtils::round_int(weight) > 1.0 - m_maxspeedadjust / 100.0)
-        weight = MathUtils::round_int(weight);
-    }
-    double speed = (double)rate / (fps * weight);
-    lock.Leave();
-
-    g_VideoReferenceClock.SetSpeed(speed);
-    
-    return true;
+    if (weight / MathUtils::round_int(weight) < 1.0 + m_maxspeedadjust / 100.0 
+    &&  weight / MathUtils::round_int(weight) > 1.0 - m_maxspeedadjust / 100.0)
+      weight = MathUtils::round_int(weight);
   }
+  double speed = (double)rate / (fps * weight);
+  lock.Leave();
 
-  return false;
+  g_VideoReferenceClock.SetSpeed(speed);
+    
+  return rate;
 }

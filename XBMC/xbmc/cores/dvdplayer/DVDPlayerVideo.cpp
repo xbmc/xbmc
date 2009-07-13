@@ -843,11 +843,15 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // speed to better match with our video renderer's output speed
   // TODO - this should be based on m_fFrameRate, as the timestamps
   //        in the stream matches that better, durations can vary
-  if (m_pClock->UpdateFramerate(1.0 / (pPicture->iDuration / DVD_TIME_BASE)))
+  int refreshrate = m_pClock->UpdateFramerate(1.0 / (pPicture->iDuration / DVD_TIME_BASE));
+  if (refreshrate > 0) //refreshrate of -1 means the videoreferenceclock is not running
   {
     //correct any pattern in the timestamps if the videoreferenceclock is running
     m_pullupCorrection.Add(pts);
     pts += m_pullupCorrection.Correction();
+    
+    //when using the videoreferenceclock, a frame is always presented one vblank interval too late
+    pts -= (1.0 / refreshrate) * DVD_TIME_BASE; 
   }
   else
   {
