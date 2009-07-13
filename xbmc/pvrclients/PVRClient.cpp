@@ -867,15 +867,15 @@ PVR_ERROR CPVRClient::UpdateTimer(const cPVRTimerInfoTag &timerinfo)
 
 void CPVRClient::WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag)
 {
-  tag.index = timerinfo.m_clientIndex;
-  tag.active = timerinfo.m_Active;
-  tag.channelNum = timerinfo.m_clientNum;
-  tag.recording = timerinfo.m_recStatus;
-  tag.title = timerinfo.m_strTitle;
-  tag.priority = timerinfo.m_Priority;
-  tag.lifetime = timerinfo.m_Lifetime;
-  tag.repeat = timerinfo.m_Repeat;
-  tag.repeatflags = timerinfo.m_Weekdays;
+  tag.index         = timerinfo.m_clientIndex;
+  tag.active        = timerinfo.m_Active;
+  tag.channelNum    = timerinfo.m_clientNum;
+  tag.recording     = timerinfo.m_recStatus;
+  tag.title         = timerinfo.m_strTitle;
+  tag.priority      = timerinfo.m_Priority;
+  tag.lifetime      = timerinfo.m_Lifetime;
+  tag.repeat        = timerinfo.m_Repeat;
+  tag.repeatflags   = timerinfo.m_Weekdays;
 
   timerinfo.m_StartTime.GetAsTime(tag.starttime);
   timerinfo.m_StopTime.GetAsTime(tag.endtime);

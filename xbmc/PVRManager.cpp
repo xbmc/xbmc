@@ -1349,7 +1349,7 @@ bool CPVRManager::AddTimer(const CFileItem &item)
   try
   {
     /* and write it to the backend */
-    PVR_ERROR err = m_clients[tag->m_clientID]->AddTimer(*tag);
+    PVR_ERROR err = m_clients[tag->ClientID()]->AddTimer(*tag);
   
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
