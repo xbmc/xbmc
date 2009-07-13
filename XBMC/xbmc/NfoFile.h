@@ -63,10 +63,7 @@ public:
       g_charsetConverter.unknownToUTF8(strDoc);
 
     doc.Parse(strDoc.c_str());
-    if (details.Load(doc.RootElement(),true))
-      return true;
-    CLog::Log(LOGDEBUG, "Not a proper xml nfo file (%s, col %i, row %i)", doc.ErrorDesc(), doc.ErrorCol(), doc.ErrorRow());
-    return false;
+    return details.Load(doc.RootElement(),true)
   }
 
   CStdString m_strScraper;
