@@ -142,10 +142,7 @@ bool CxImageJPG::Decode(CxFile * hFile)
     size--;
   }
   if (failed)
-  {
-    printf("Error loading jpeg - no SOI marker found in first 4096 bytes\n");
     return false;
-  }
 #endif
 
 	bool is_exif = false;
