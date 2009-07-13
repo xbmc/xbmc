@@ -614,7 +614,8 @@ namespace VIDEO
           }
 
           IMDB_MOVIELIST movielist;
-          if (pURL || m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress))
+          int returncode=0;
+          if (pURL || (returncode=m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress)) > 0)
           {
             CScraperUrl url;
             int iMoviesFound=1;
@@ -659,6 +660,11 @@ namespace VIDEO
               }
               Return = true;
             }
+          }
+          else if (returncode == -1)
+          {
+            m_bStop = true;
+            return false;
           }
         }
       }
@@ -1426,7 +1432,7 @@ namespace VIDEO
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     if (!strNfoFile.IsEmpty() && CFile::Exists(strNfoFile))
     {
-      result = m_nfoReader.Create(strNfoFile,info.strContent,pItem->GetVideoInfoTag()->m_iEpisode);
+      result = m_nfoReader.Create(strNfoFile,info,pItem->GetVideoInfoTag()->m_iEpisode);
 
       CStdString type;
       switch(result)
