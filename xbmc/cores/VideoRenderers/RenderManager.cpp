@@ -143,6 +143,10 @@ void CXBoxRenderManager::WaitPresentTime(double presenttime)
   double target    = 0.5;
   double error     = ( clock - presenttime ) / frametime - target;
 
+  // a full frametime off doesn't matter
+  while(error >   1.0) error -= 1.0;
+  while(error < - 1.0) error += 1.0;
+
   m_presenterr   = error;
 
   // if error is way of, don't use it
