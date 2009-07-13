@@ -133,7 +133,7 @@ public:
   CStdString GetDefaultSourceFromType(const CStdString &type);
 
   bool UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
-  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath);
+  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource = false);
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
