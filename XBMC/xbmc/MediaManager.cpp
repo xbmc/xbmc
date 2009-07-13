@@ -27,6 +27,7 @@
 #ifdef _LINUX
 #include "LinuxFileSystem.h"
 #endif
+#include "GUIWindowManager.h"
 
 using namespace std;
 
@@ -310,3 +311,24 @@ bool CMediaManager::SetLocationPath(const CStdString& oldPath, const CStdString&
   return false;
 }
 
+void CMediaManager::AddAutoSource(const CMediaSource &share)
+{
+  g_settings.AddShare("files",share);
+  g_settings.AddShare("video",share);
+  g_settings.AddShare("pictures",share);
+  g_settings.AddShare("music",share);
+  g_settings.AddShare("programs",share);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+  m_gWindowManager.SendThreadMessage( msg );
+}
+
+void CMediaManager::RemoveAutoSource(const CMediaSource &share)
+{
+  g_settings.DeleteSource("files", share.strName, share.strPath);
+  g_settings.DeleteSource("video", share.strName, share.strPath);
+  g_settings.DeleteSource("pictures", share.strName, share.strPath);
+  g_settings.DeleteSource("music", share.strName, share.strPath);
+  g_settings.DeleteSource("programs", share.strName, share.strPath);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+  m_gWindowManager.SendThreadMessage( msg );
+}
