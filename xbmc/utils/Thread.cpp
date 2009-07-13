@@ -394,7 +394,9 @@ float CThread::GetRelativeUsage()
     iUsage += (((unsigned __int64)UserTime.dwHighDateTime) << 32) + ((unsigned __int64)UserTime.dwLowDateTime);
     iUsage += (((unsigned __int64)KernelTime.dwHighDateTime) << 32) + ((unsigned __int64)KernelTime.dwLowDateTime);
 
-    m_fLastUsage = (float)( iUsage - m_iLastUsage ) / (float)( iTime - m_iLastTime );
+    if(m_iLastUsage > 0 && m_iLastTime > 0)
+      m_fLastUsage = (float)( iUsage - m_iLastUsage ) / (float)( iTime - m_iLastTime );
+      
     m_iLastUsage = iUsage;
     m_iLastTime = iTime;
 
