@@ -1,7 +1,7 @@
 LIB=cximage.a
 DEFINES+=-D_DLL -DXBMC
 ifeq ($(findstring osx,$(ARCH)), osx)
-	INCLUDE+=-I../jasper/include -I../jpeg/
+	INCLUDES+=-I../jasper/include -I../jpeg/
 endif
 OBJS= \
 	DllInterface.o ximadsp.o ximage.o ximaico.o ximajas.o \
