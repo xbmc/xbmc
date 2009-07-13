@@ -63,7 +63,7 @@ public:
       g_charsetConverter.unknownToUTF8(strDoc);
 
     doc.Parse(strDoc.c_str());
-    return details.Load(doc.RootElement(),true)
+    return details.Load(doc.RootElement(),true);
   }
 
   CStdString m_strScraper;
