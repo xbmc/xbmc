@@ -1,8 +1,8 @@
 LIB=cximage.a
-CFLAGS+=-fPIC
+CXXFLAGS+=-fPIC
 DEFINES+=-D_DLL -DXBMC
 ifeq ($(findstring osx,$(ARCH)), osx)
-	CFLAGS+=-fno-common
+	CXXFLAGS+=-fno-common
 	INCLUDES+=-I../jasper/include -I../jpeg/
 endif
 OBJS= \
