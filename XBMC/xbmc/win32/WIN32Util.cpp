@@ -885,6 +885,28 @@ void CWIN32Util::AddRemovableDrives()
     g_mediaManager.AddAutoSource(*it);
 }
 
+bool CWIN32Util::IsAudioCD(const CStdString& strPath)
+{
+  CStdString strDrive = strPath;
+  char cVolumenName[256];
+  char cFSName[256];
+  CUtil::AddSlashAtEnd(strDrive);
+  if(GetVolumeInformation(strDrive.c_str(), cVolumenName, 255, NULL, NULL, NULL, cFSName, 255)==0)
+    return false;
+  return (strncmp(cFSName,"CDFS",4)==0 && strncmp(cVolumenName,"Audio CD",4)==0);
+}
+
+CStdString CWIN32Util::GetDiskLabel(const CStdString& strPath)
+{
+  CStdString strDrive = strPath;
+  char cVolumenName[128];
+  char cFSName[128];
+  CUtil::AddSlashAtEnd(strDrive);
+  if(GetVolumeInformation(strDrive.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
+    return "";
+  return CStdString(cVolumenName).TrimRight(" ");
+}
+
 extern "C"
 {
   FILE *fopen_utf8(const char *_Filename, const char *_Mode)
