@@ -34,6 +34,7 @@
 #if _MSC_VER > 1400
 #include "Setupapi.h"
 #endif
+#include "MediaManager.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -836,21 +837,25 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
           switch(uDriveType)
           {
           case DRIVE_CDROM:
-            share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(218));
+            share.strName.Format( "%s (%s)", share.strPath, g_localizeStrings.Get(218));
             break;
           case DRIVE_REMOVABLE:
             if(share.strName.IsEmpty())
-              share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(437));
+              share.strName.Format( "%s (%s)", g_localizeStrings.Get(437), share.strPath);
             break;
           case DRIVE_UNKNOWN:
-            share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(13205));
+            share.strName.Format( "%s (%s)", share.strPath, g_localizeStrings.Get(13205));
             break;
           default:
-            share.strName.Format( "%s %s", share.strPath, share.strName);
+            if(share.strName.empty())
+              share.strName = share.strPath;
+            else
+              share.strName.Format( "%s (%s)", share.strPath, share.strName);
             break;
           }
         }
         share.strName.Replace(":\\",":");
+        share.strPath.Replace(":\\",":");
         share.m_ignore= true;
         if( !bUseDCD )
         {
@@ -869,6 +874,15 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
     if( pcBuffer != NULL)
       delete[] pcBuffer;
   }
+}
+
+void CWIN32Util::AddRemovableDrives()
+{
+  VECSOURCES vShare;
+  VECSOURCES::const_iterator it;
+  GetDrivesByType(vShare, REMOVABLE_DRIVES);
+  for(it=vShare.begin();it!=vShare.end();++it)
+    g_mediaManager.AddAutoSource(*it);
 }
 
 extern "C"

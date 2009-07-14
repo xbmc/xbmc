@@ -70,6 +70,7 @@ public:
 #endif
   static BOOL IsCurrentUserLocalAdministrator();
   static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES);
+  static void AddRemovableDrives();
   
   class SystemParams
   {

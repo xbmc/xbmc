@@ -115,7 +115,7 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
     localDrives.push_back(share) ;
   }
 
-  CWIN32Util::GetDrivesByType(localDrives, ALL_DRIVES);
+  CWIN32Util::GetDrivesByType(localDrives, LOCAL_DRIVES);
 
 #else
 #ifndef _LINUX
