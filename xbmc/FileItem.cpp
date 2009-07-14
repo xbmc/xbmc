@@ -43,7 +43,7 @@
 #include "utils/TuxBoxUtil.h"
 #include "VideoInfoTag.h"
 #include "utils/TVEPGInfoTag.h"
-#include "utils/TVChannelInfoTag.h"
+#include "utils/PVRChannels.h"
 #include "utils/TVRecordInfoTag.h"
 #include "utils/PVRTimers.h"
 #include "utils/SingleLock.h"
@@ -158,7 +158,7 @@ CFileItem::CFileItem(const CTVEPGInfoTag& programme)
   SetInvalid();
 }
 
-CFileItem::CFileItem(const CTVChannelInfoTag& channel)
+CFileItem::CFileItem(const cPVRChannelInfoTag& channel)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -3158,10 +3158,10 @@ CTVEPGInfoTag* CFileItem::GetTVEPGInfoTag()
   return m_tvepgInfoTag;
 }
 
-CTVChannelInfoTag* CFileItem::GetTVChannelInfoTag()
+cPVRChannelInfoTag* CFileItem::GetTVChannelInfoTag()
 {
   if (!m_tvchannelInfoTag)
-    m_tvchannelInfoTag = new CTVChannelInfoTag;
+    m_tvchannelInfoTag = new cPVRChannelInfoTag;
 
   return m_tvchannelInfoTag;
 }

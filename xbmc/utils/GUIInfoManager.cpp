@@ -50,7 +50,7 @@
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
 #include "TVEPGInfoTag.h"
-#include "TVChannelInfoTag.h"
+#include "PVRChannels.h"
 #include "VideoDatabase.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIDialogVideoScan.h"

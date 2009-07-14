@@ -25,7 +25,7 @@
 #include "FileItem.h"
 #include "settings/VideoSettings.h"
 #include "utils/TVEPGInfoTag.h"
-#include "utils/TVChannelInfoTag.h"
+#include "utils/PVRChannels.h"
 
 class CTVDatabase : public CDatabase
 {
@@ -40,16 +40,16 @@ public:
   bool UpdateLastChannel(DWORD clientID, unsigned int channelID, CStdString m_strChannel);
 
   /* Database Channel handling */
-  long AddDBChannel(const CTVChannelInfoTag &info);
-  long AddChannel(DWORD clientID, const CTVChannelInfoTag &info);
+  long AddDBChannel(const cPVRChannelInfoTag &info);
+  long AddChannel(DWORD clientID, const cPVRChannelInfoTag &info);
   bool RemoveAllChannels(DWORD clientID);
-  bool RemoveChannel(DWORD clientID, const CTVChannelInfoTag &info);
-  long UpdateDBChannel(const CTVChannelInfoTag &info);
-  long UpdateChannel(DWORD clientID, const CTVChannelInfoTag &info);
+  bool RemoveChannel(DWORD clientID, const cPVRChannelInfoTag &info);
+  long UpdateDBChannel(const cPVRChannelInfoTag &info);
+  long UpdateChannel(DWORD clientID, const cPVRChannelInfoTag &info);
   int  GetDBNumChannels(bool radio);
   int  GetNumChannels(DWORD clientID);
   int  GetNumHiddenChannels(DWORD clientID);
-  bool HasChannel(DWORD clientID, const CTVChannelInfoTag &info);
+  bool HasChannel(DWORD clientID, const cPVRChannelInfoTag &info);
   bool GetDBChannelList(cPVRChannels &results, bool radio);
   bool GetChannelList(DWORD clientID, cPVRChannels &results, bool radio);
   bool GetChannelSettings(DWORD clientID, unsigned int channelID, CVideoSettings &settings);

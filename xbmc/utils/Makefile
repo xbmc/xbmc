@@ -57,7 +57,7 @@ SRCS=Addon.cpp \
      Atomics.cpp \
      TVEPGInfoTag.cpp \
      PVRTimers.cpp \
-     TVChannelInfoTag.cpp \
+     PVRChannels.cpp \
      TVRecordInfoTag.cpp \
      TeletextRender.cpp \
      StreamDetails.cpp

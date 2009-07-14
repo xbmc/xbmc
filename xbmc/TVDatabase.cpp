@@ -206,7 +206,7 @@ long CTVDatabase::AddClient(const CStdString &client, const CStdString &guid)
   return -1;
 }
 
-long CTVDatabase::AddDBChannel(const CTVChannelInfoTag &info)
+long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info)
 {
   try
   {
@@ -238,7 +238,7 @@ long CTVDatabase::AddDBChannel(const CTVChannelInfoTag &info)
   return -1;
 }
 
-long CTVDatabase::AddChannel(DWORD clientID, const CTVChannelInfoTag &info)
+long CTVDatabase::AddChannel(DWORD clientID, const cPVRChannelInfoTag &info)
 {
   try
   {
@@ -290,7 +290,7 @@ bool CTVDatabase::RemoveAllChannels(DWORD clientID)
   }
 }
 
-bool CTVDatabase::RemoveChannel(DWORD clientID, const CTVChannelInfoTag &info)
+bool CTVDatabase::RemoveChannel(DWORD clientID, const cPVRChannelInfoTag &info)
 {
   try
   {
@@ -316,7 +316,7 @@ bool CTVDatabase::RemoveChannel(DWORD clientID, const CTVChannelInfoTag &info)
   }
 }
 
-long CTVDatabase::UpdateDBChannel(const CTVChannelInfoTag &info)
+long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
 {
   try
   {
@@ -369,7 +369,7 @@ long CTVDatabase::UpdateDBChannel(const CTVChannelInfoTag &info)
   }
 }
 
-long CTVDatabase::UpdateChannel(DWORD clientID, const CTVChannelInfoTag &info)
+long CTVDatabase::UpdateChannel(DWORD clientID, const cPVRChannelInfoTag &info)
 {
   try
   {
@@ -422,7 +422,7 @@ long CTVDatabase::UpdateChannel(DWORD clientID, const CTVChannelInfoTag &info)
   }
 }
 
-bool CTVDatabase::HasChannel(DWORD clientID, const CTVChannelInfoTag &info)
+bool CTVDatabase::HasChannel(DWORD clientID, const cPVRChannelInfoTag &info)
 {
   try
   {
@@ -536,7 +536,7 @@ bool CTVDatabase::GetDBChannelList(cPVRChannels &results, bool radio)
 
     while (!m_pDS->eof())
     {
-      CTVChannelInfoTag broadcast;
+      cPVRChannelInfoTag broadcast;
 
       broadcast.m_clientID            = m_pDS->fv("idClient").get_asInteger();
       broadcast.m_iIdChannel          = m_pDS->fv("idChannel").get_asInteger();
@@ -583,7 +583,7 @@ bool CTVDatabase::GetChannelList(DWORD clientID, cPVRChannels& results, bool rad
 
     while (!m_pDS->eof())
     {
-      CTVChannelInfoTag broadcast;
+      cPVRChannelInfoTag broadcast;
 
       broadcast.m_clientID            = clientID;
       broadcast.m_iIdChannel          = m_pDS->fv("idChannel").get_asInteger();

@@ -21,7 +21,7 @@
  */
 
 /*
- * for DESCRIPTION see 'TVChannelInfoTag.cpp'
+ * for DESCRIPTION see 'PVRChannels.cpp'
  */
 
 #include "VideoInfoTag.h"
@@ -201,10 +201,10 @@ typedef struct
 typedef std::vector<TVGroupData> CHANNELGROUPS_DATA;
 
 
-class CTVChannelInfoTag : public CVideoInfoTag
+class cPVRChannelInfoTag : public CVideoInfoTag
 {
 public:
-  CTVChannelInfoTag();
+  cPVRChannelInfoTag();
   void Reset();
 
   bool GetEPGNowInfo(CTVEPGInfoTag *result);
@@ -213,8 +213,8 @@ public:
   void CleanupEPG();
   int GetDuration() const;
 
-  bool operator ==(const CTVChannelInfoTag &right) const;
-  bool operator !=(const CTVChannelInfoTag &right) const;
+  bool operator ==(const cPVRChannelInfoTag &right) const;
+  bool operator !=(const cPVRChannelInfoTag &right) const;
 
   int                 m_iIdChannel;           /// Database number
   int                 m_iChannelNum;          /// Channel number for channels on XBMC
@@ -268,9 +268,9 @@ public:
   bool IsHidden(void) const { return m_hide; }
 };
 
-typedef std::vector<CTVChannelInfoTag> VECCHANNELS;
+typedef std::vector<cPVRChannelInfoTag> VECCHANNELS;
 
-class cPVRChannels : public std::vector<CTVChannelInfoTag> 
+class cPVRChannels : public std::vector<cPVRChannelInfoTag> 
 {
 private:
   bool m_bRadio;
@@ -287,19 +287,19 @@ public:
   int GetHiddenChannels(CFileItemList* results);
   void MoveChannel(unsigned int oldindex, unsigned int newindex);
   void HideChannel(unsigned int number);
-  CTVChannelInfoTag *GetByNumber(int Number);
-  CTVChannelInfoTag *GetByClient(int Number, int ClientID);
-  CTVChannelInfoTag *GetByChannelID(long ChannelID);
-  CTVChannelInfoTag *GetByUniqueID(long UniqueID);
+  cPVRChannelInfoTag *GetByNumber(int Number);
+  cPVRChannelInfoTag *GetByClient(int Number, int ClientID);
+  cPVRChannelInfoTag *GetByChannelID(long ChannelID);
+  cPVRChannelInfoTag *GetByUniqueID(long UniqueID);
   CStdString GetNameForChannel(int Number);
   CStdString GetChannelIcon(int Number);
   void SetChannelIcon(int Number, CStdString Icon);
   void Clear();
   
   static int GetNumChannelsFromAll();
-  static CTVChannelInfoTag *GetByClientFromAll(int Number, int ClientID);
-  static CTVChannelInfoTag *GetByChannelIDFromAll(long ChannelID);
-  static CTVChannelInfoTag *GetByUniqueIDFromAll(long UniqueID);
+  static cPVRChannelInfoTag *GetByClientFromAll(int Number, int ClientID);
+  static cPVRChannelInfoTag *GetByChannelIDFromAll(long ChannelID);
+  static cPVRChannelInfoTag *GetByUniqueIDFromAll(long UniqueID);
 };
 
 extern cPVRChannels PVRChannelsTV;

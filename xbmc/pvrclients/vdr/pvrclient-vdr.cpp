@@ -818,7 +818,7 @@ PVR_ERROR PVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
   return PVR_ERROR_NO_ERROR;
 }
 /*
-PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
+PVR_ERROR PVRClientVDR::GetChannelSettings(cPVRChannelInfoTag *result)
 {
 
   vector<string> lines;
@@ -1556,7 +1556,7 @@ PVR_ERROR PVRClientVDR::GetChannelSettings(CTVChannelInfoTag *result)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)
+PVR_ERROR PVRClientVDR::UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
 {
   CStdString     m_Summary;
   CStdString     m_Summary_2;
@@ -1816,7 +1816,7 @@ PVR_ERROR PVRClientVDR::UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::AddChannel(const CTVChannelInfoTag &info)
+PVR_ERROR PVRClientVDR::AddChannel(const cPVRChannelInfoTag &info)
 {
 
   CStdString m_Summary;

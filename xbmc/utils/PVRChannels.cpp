@@ -26,7 +26,7 @@
 
 #include "stdafx.h"
 #include "TVEPGInfoTag.h"
-#include "TVChannelInfoTag.h"
+#include "PVRChannels.h"
 #include "GUISettings.h"
 #include "TVDatabase.h"
 #include "PVRManager.h"
@@ -34,12 +34,12 @@
 /**
  * Create a blank unmodified channel tag
  */
-CTVChannelInfoTag::CTVChannelInfoTag()
+cPVRChannelInfoTag::cPVRChannelInfoTag()
 {
   Reset();
 }
 
-bool CTVChannelInfoTag::operator==(const CTVChannelInfoTag& right) const
+bool cPVRChannelInfoTag::operator==(const cPVRChannelInfoTag& right) const
 {
   if (this == &right) return true;
 
@@ -55,7 +55,7 @@ bool CTVChannelInfoTag::operator==(const CTVChannelInfoTag& right) const
           m_strFileNameAndPath    == right.m_strFileNameAndPath);
 }
 
-bool CTVChannelInfoTag::operator!=(const CTVChannelInfoTag &right) const
+bool cPVRChannelInfoTag::operator!=(const cPVRChannelInfoTag &right) const
 {
   if (m_iIdChannel            != right.m_iIdChannel) return true;
   if (m_iChannelNum           != right.m_iChannelNum) return true;
@@ -73,9 +73,9 @@ bool CTVChannelInfoTag::operator!=(const CTVChannelInfoTag &right) const
 
 
 /**
- * Initialize blank CTVChannelInfoTag
+ * Initialize blank cPVRChannelInfoTag
  */
-void CTVChannelInfoTag::Reset()
+void cPVRChannelInfoTag::Reset()
 {
   m_iIdChannel            = -1;
   m_iChannelNum           = -1;
@@ -99,7 +99,7 @@ void CTVChannelInfoTag::Reset()
   CVideoInfoTag::Reset();
 }
 
-bool CTVChannelInfoTag::GetEPGNowInfo(CTVEPGInfoTag *result)
+bool cPVRChannelInfoTag::GetEPGNowInfo(CTVEPGInfoTag *result)
 {
   CDateTime now = CDateTime::GetCurrentDateTime();
 
@@ -131,7 +131,7 @@ bool CTVChannelInfoTag::GetEPGNowInfo(CTVEPGInfoTag *result)
 }
 
 
-bool CTVChannelInfoTag::GetEPGNextInfo(CTVEPGInfoTag *result)
+bool cPVRChannelInfoTag::GetEPGNextInfo(CTVEPGInfoTag *result)
 {
   CDateTime now = CDateTime::GetCurrentDateTime();
 
@@ -170,7 +170,7 @@ bool CTVChannelInfoTag::GetEPGNextInfo(CTVEPGInfoTag *result)
   return true;
 }
 
-bool CTVChannelInfoTag::GetEPGLastEntry(CTVEPGInfoTag *result)
+bool cPVRChannelInfoTag::GetEPGLastEntry(CTVEPGInfoTag *result)
 {
   CDateTime last = CDateTime::GetCurrentDateTime();
 
@@ -198,7 +198,7 @@ bool CTVChannelInfoTag::GetEPGLastEntry(CTVEPGInfoTag *result)
   return false;
 }
 
-void CTVChannelInfoTag::CleanupEPG()
+void cPVRChannelInfoTag::CleanupEPG()
 {
   CDateTime m_start = CDateTime::GetCurrentDateTime()-CDateTimeSpan(0, g_guiSettings.GetInt("pvrmenu.lingertime") / 60, g_guiSettings.GetInt("pvrmenu.lingertime") % 60, 0);
 
@@ -220,7 +220,7 @@ void CTVChannelInfoTag::CleanupEPG()
   return;
 }
 
-int CTVChannelInfoTag::GetDuration() const
+int cPVRChannelInfoTag::GetDuration() const
 {
   int duration;
   duration =  m_duration.GetDays()*60*60*24;
@@ -495,7 +495,7 @@ void cPVRChannels::HideChannel(unsigned int number)
 //    }
 }  
 
-CTVChannelInfoTag *cPVRChannels::GetByNumber(int Number)
+cPVRChannelInfoTag *cPVRChannels::GetByNumber(int Number)
 {
   for (unsigned int i = 0; i < size(); i++)
   {
@@ -505,7 +505,7 @@ CTVChannelInfoTag *cPVRChannels::GetByNumber(int Number)
   return NULL;
 }
 
-CTVChannelInfoTag *cPVRChannels::GetByClient(int Number, int ClientID)
+cPVRChannelInfoTag *cPVRChannels::GetByClient(int Number, int ClientID)
 {
   for (unsigned int i = 0; i < size(); i++)
   {
@@ -515,7 +515,7 @@ CTVChannelInfoTag *cPVRChannels::GetByClient(int Number, int ClientID)
   return NULL;
 }
 
-CTVChannelInfoTag *cPVRChannels::GetByChannelID(long ChannelID)
+cPVRChannelInfoTag *cPVRChannels::GetByChannelID(long ChannelID)
 {
   for (unsigned int i = 0; i < size(); i++)
   {
@@ -525,7 +525,7 @@ CTVChannelInfoTag *cPVRChannels::GetByChannelID(long ChannelID)
   return NULL;
 }
 
-CTVChannelInfoTag *cPVRChannels::GetByUniqueID(long UniqueID)
+cPVRChannelInfoTag *cPVRChannels::GetByUniqueID(long UniqueID)
 {
   for (unsigned int i = 0; i < size(); i++)
   {
@@ -593,9 +593,9 @@ int cPVRChannels::GetNumChannelsFromAll()
   return PVRChannelsTV.GetNumChannels()+PVRChannelsRadio.GetNumChannels();
 }
 
-CTVChannelInfoTag *cPVRChannels::GetByClientFromAll(int Number, int ClientID)
+cPVRChannelInfoTag *cPVRChannels::GetByClientFromAll(int Number, int ClientID)
 {
-  CTVChannelInfoTag *channel;
+  cPVRChannelInfoTag *channel;
 
   channel = PVRChannelsTV.GetByClient(Number, ClientID);
   if (channel != NULL)
@@ -608,9 +608,9 @@ CTVChannelInfoTag *cPVRChannels::GetByClientFromAll(int Number, int ClientID)
   return NULL;
 }
 
-CTVChannelInfoTag *cPVRChannels::GetByChannelIDFromAll(long ChannelID)
+cPVRChannelInfoTag *cPVRChannels::GetByChannelIDFromAll(long ChannelID)
 {
-  CTVChannelInfoTag *channel;
+  cPVRChannelInfoTag *channel;
 
   channel = PVRChannelsTV.GetByChannelID(ChannelID);
   if (channel != NULL)
@@ -623,9 +623,9 @@ CTVChannelInfoTag *cPVRChannels::GetByChannelIDFromAll(long ChannelID)
   return NULL;
 }
 
-CTVChannelInfoTag *cPVRChannels::GetByUniqueIDFromAll(long UniqueID)
+cPVRChannelInfoTag *cPVRChannels::GetByUniqueIDFromAll(long UniqueID)
 {
-  CTVChannelInfoTag *channel;
+  cPVRChannelInfoTag *channel;
 
   channel = PVRChannelsTV.GetByUniqueID(UniqueID);
   if (channel != NULL)

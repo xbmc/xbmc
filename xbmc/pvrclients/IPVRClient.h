@@ -22,7 +22,7 @@
 
 #include "../utils/Addon.h"
 #include "../utils/TVEPGInfoTag.h"
-#include "../utils/TVChannelInfoTag.h"
+#include "../utils/PVRChannels.h"
 #include "../utils/PVRTimers.h"
 #include "../utils/TVRecordInfoTag.h"
 #include "../addons/include/xbmc_pvr_types.h"
@@ -66,9 +66,9 @@ public:
 
   virtual int GetNumChannels()=0;
   virtual PVR_ERROR GetChannelList(cPVRChannels &channels, bool radio)=0;
-  virtual PVR_ERROR GetChannelSettings(CTVChannelInfoTag *result)=0;
-  virtual PVR_ERROR UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)=0;
-  virtual PVR_ERROR AddChannel(const CTVChannelInfoTag &info)=0;
+  virtual PVR_ERROR GetChannelSettings(cPVRChannelInfoTag *result)=0;
+  virtual PVR_ERROR UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)=0;
+  virtual PVR_ERROR AddChannel(const cPVRChannelInfoTag &info)=0;
   virtual PVR_ERROR DeleteChannel(unsigned int number)=0;
   virtual PVR_ERROR RenameChannel(unsigned int number, CStdString &newname)=0;
   virtual PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber)=0;
