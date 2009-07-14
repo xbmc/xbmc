@@ -37,7 +37,7 @@
 /* TV information tags */
 #include "utils/TVEPGInfoTag.h"
 #include "utils/PVRChannels.h"
-#include "utils/TVRecordInfoTag.h"
+#include "utils/PVRRecordings.h"
 #include "utils/PVRTimers.h"
 
 /* Dialog windows includes */

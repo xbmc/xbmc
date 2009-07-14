@@ -35,14 +35,14 @@ struct CutMark_t
   int         m_position;             /// Offset time from beginning in millisecond
 }; typedef std::vector< CutMark_t > CutMarks;
 
-class CTVRecordingInfoTag : public CVideoInfoTag
+class cPVRRecordingInfoTag : public CVideoInfoTag
 {
 public:
-  CTVRecordingInfoTag();
-  //CTVRecordingInfoTag(long uniqueRecordingID);
+  cPVRRecordingInfoTag();
+  //cPVRRecordingInfoTag(long uniqueRecordingID);
 
-  bool operator ==(const CTVRecordingInfoTag& right) const;
-  bool operator !=(const CTVRecordingInfoTag& right) const;
+  bool operator ==(const cPVRRecordingInfoTag& right) const;
+  bool operator !=(const cPVRRecordingInfoTag& right) const;
 
   const long GetDbID(void) const { return m_uniqueRecordingID; };
 
@@ -93,4 +93,17 @@ private:
   long          m_uniqueRecordingID;  /// db's unique identifier for this tag
 };
 
-typedef std::vector<CTVRecordingInfoTag> VECRECORDINGS;
+typedef std::vector<cPVRRecordingInfoTag> VECRECORDINGS;
+
+class cPVRRecordings : public std::vector<cPVRRecordingInfoTag> 
+{
+private:
+
+public:
+  cPVRRecordings(void);
+  bool Load();
+  bool Update();
+  void Clear();
+};
+
+extern cPVRRecordings PVRRecordings;

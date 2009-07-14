@@ -24,7 +24,7 @@
 #include "../utils/TVEPGInfoTag.h"
 #include "../utils/PVRChannels.h"
 #include "../utils/PVRTimers.h"
-#include "../utils/TVRecordInfoTag.h"
+#include "../utils/PVRRecordings.h"
 #include "../addons/include/xbmc_pvr_types.h"
 
 class CPVRManager;
@@ -75,8 +75,8 @@ public:
 
   virtual int GetNumRecordings(void)=0;
   virtual PVR_ERROR GetAllRecordings(VECRECORDINGS *results)=0;
-  virtual PVR_ERROR DeleteRecording(const CTVRecordingInfoTag &recinfo)=0;
-  virtual PVR_ERROR RenameRecording(const CTVRecordingInfoTag &recinfo, CStdString &newname)=0;
+  virtual PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo)=0;
+  virtual PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname)=0;
 
   virtual int GetNumTimers(void)=0;
   virtual PVR_ERROR GetAllTimers(cPVRTimers *results)=0;
@@ -91,7 +91,7 @@ public:
   virtual int GetCurrentClientChannel()=0;
   virtual bool SwitchChannel(unsigned int channel)=0;
 
-  virtual bool OpenRecordedStream(const CTVRecordingInfoTag &recinfo)=0;
+  virtual bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)=0;
   virtual void CloseRecordedStream(void)=0;
   virtual int ReadRecordedStream(BYTE* buf, int buf_size)=0;
   virtual __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET)=0;

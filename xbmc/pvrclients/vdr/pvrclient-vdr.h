@@ -78,8 +78,8 @@ public:
   /* Record handling **/
   int GetNumRecordings(void);
   PVR_ERROR GetAllRecordings(VECRECORDINGS *results);
-  PVR_ERROR DeleteRecording(const CTVRecordingInfoTag &recinfo);
-  PVR_ERROR RenameRecording(const CTVRecordingInfoTag &recinfo, CStdString &newname);
+  PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo);
+  PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname);
 
   /* Timer handling */
   int GetNumTimers(void);
@@ -98,7 +98,7 @@ public:
   bool SwitchChannel(unsigned int channel);
 
   /* Record stream handling */
-  bool OpenRecordedStream(const CTVRecordingInfoTag &recinfo);
+  bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo);
   void CloseRecordedStream(void);
   int ReadRecordedStream(BYTE* buf, int buf_size);
   __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);

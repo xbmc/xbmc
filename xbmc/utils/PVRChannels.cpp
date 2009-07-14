@@ -71,7 +71,6 @@ bool cPVRChannelInfoTag::operator!=(const cPVRChannelInfoTag &right) const
   return false;
 }
 
-
 /**
  * Initialize blank cPVRChannelInfoTag
  */
@@ -129,7 +128,6 @@ bool cPVRChannelInfoTag::GetEPGNowInfo(CTVEPGInfoTag *result)
 
   return false;
 }
-
 
 bool cPVRChannelInfoTag::GetEPGNextInfo(CTVEPGInfoTag *result)
 {

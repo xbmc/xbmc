@@ -315,12 +315,12 @@ extern "C" PVR_ERROR GetAllRecordings(VECRECORDINGS *results)
   return g_client->GetAllRecordings(results);
 }
 
-extern "C" PVR_ERROR DeleteRecording(const CTVRecordingInfoTag &recinfo)
+extern "C" PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo)
 {
   return g_client->DeleteRecording(recinfo);
 }
 
-extern "C" PVR_ERROR RenameRecording(const CTVRecordingInfoTag &recinfo, CStdString &newname)
+extern "C" PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname)
 {
   return g_client->RenameRecording(recinfo, newname);
 }
@@ -380,7 +380,7 @@ extern "C" bool SwitchChannel(unsigned int channel)
   return g_client->SwitchChannel(channel);
 }
 
-extern "C" bool OpenRecordedStream(const CTVRecordingInfoTag &recinfo)
+extern "C" bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
 {
   return g_client->OpenRecordedStream(recinfo);
 }

@@ -44,7 +44,7 @@
 #include "VideoInfoTag.h"
 #include "utils/TVEPGInfoTag.h"
 #include "utils/PVRChannels.h"
-#include "utils/TVRecordInfoTag.h"
+#include "utils/PVRRecordings.h"
 #include "utils/PVRTimers.h"
 #include "utils/SingleLock.h"
 #include "MusicInfoTag.h"
@@ -179,7 +179,7 @@ CFileItem::CFileItem(const cPVRChannelInfoTag& channel)
   SetInvalid();
 }
 
-CFileItem::CFileItem(const CTVRecordingInfoTag& record)
+CFileItem::CFileItem(const cPVRRecordingInfoTag& record)
 {
   m_musicInfoTag = NULL;
   m_videoInfoTag = NULL;
@@ -3166,10 +3166,10 @@ cPVRChannelInfoTag* CFileItem::GetTVChannelInfoTag()
   return m_tvchannelInfoTag;
 }
 
-CTVRecordingInfoTag* CFileItem::GetTVRecordingInfoTag()
+cPVRRecordingInfoTag* CFileItem::GetTVRecordingInfoTag()
 {
   if (!m_tvrecordingInfoTag)
-    m_tvrecordingInfoTag = new CTVRecordingInfoTag;
+    m_tvrecordingInfoTag = new cPVRRecordingInfoTag;
 
   return m_tvrecordingInfoTag;
 }

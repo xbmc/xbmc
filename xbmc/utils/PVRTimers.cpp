@@ -383,6 +383,11 @@ bool cPVRTimers::Update()
   Load();
 }
 
+int cPVRTimers::GetNumTimers()
+{
+  return size();
+}
+
 cPVRTimerInfoTag *cPVRTimers::GetTimer(cPVRTimerInfoTag *Timer)
 {
   for (unsigned int i = 0; i < size(); i++)
