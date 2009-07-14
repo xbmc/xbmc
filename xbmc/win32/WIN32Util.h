@@ -71,6 +71,8 @@ public:
   static BOOL IsCurrentUserLocalAdministrator();
   static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES);
   static void AddRemovableDrives();
+  static bool IsAudioCD(const CStdString& strPath);
+  static CStdString GetDiskLabel(const CStdString& strPath);
   
   class SystemParams
   {
