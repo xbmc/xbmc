@@ -275,17 +275,17 @@ extern "C" PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio)
   return g_client->RequestChannelList(handle, radio);
 }
 /*
-extern "C" PVR_ERROR GetChannelSettings(CTVChannelInfoTag *result)
+extern "C" PVR_ERROR GetChannelSettings(cPVRChannelInfoTag *result)
 {
   return g_client->GetChannelSettings(result);
 }
 
-extern "C" PVR_ERROR UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)
+extern "C" PVR_ERROR UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
 {
   return g_client->UpdateChannelSettings(chaninfo);
 }
 
-extern "C" PVR_ERROR AddChannel(const CTVChannelInfoTag &info)
+extern "C" PVR_ERROR AddChannel(const cPVRChannelInfoTag &info)
 {
   return g_client->AddChannel(info);
 }

@@ -22,9 +22,9 @@ extern "C"
   int GetNumRecordings();
   int GetNumTimers();
   PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio);
-//  PVR_ERROR GetChannelSettings(CTVChannelInfoTag *result);
-//  PVR_ERROR UpdateChannelSettings(const CTVChannelInfoTag &chaninfo);
-//  PVR_ERROR AddChannel(const CTVChannelInfoTag &info);
+//  PVR_ERROR GetChannelSettings(cPVRChannelInfoTag *result);
+//  PVR_ERROR UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo);
+//  PVR_ERROR AddChannel(const cPVRChannelInfoTag &info);
 //  PVR_ERROR DeleteChannel(unsigned int number);
 //  PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
 //  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);

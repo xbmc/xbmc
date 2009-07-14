@@ -181,7 +181,7 @@ bool CGUIDialogTVTeletext::OnMessage(CGUIMessage& message)
   unsigned int iMessage = message.GetMessage();
   if (iMessage == GUI_MSG_WINDOW_INIT)
   {
-    const CTVChannelInfoTag* tag = CPVRManager::GetInstance()->GetCurrentChannelItem()->GetTVChannelInfoTag();
+    const cPVRChannelInfoTag* tag = CPVRManager::GetInstance()->GetCurrentChannelItem()->GetTVChannelInfoTag();
     int channel = tag->m_iClientNum;
     if (channel != m_CurrentChannel)
     {

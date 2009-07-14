@@ -101,7 +101,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
   if (!deflifetime)
     deflifetime = 99;  /* Default 99 days */
 
-  const CTVChannelInfoTag *channel = NULL;
+  const cPVRChannelInfoTag *channel = NULL;
 
   CFileItem *curPlayingChannel = CPVRManager::GetInstance()->GetCurrentChannelItem();
   if (curPlayingChannel)
@@ -164,7 +164,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
     return;
   }
 
-  const CTVChannelInfoTag *channel = cPVRChannels::GetByChannelIDFromAll(tag->m_idChannel);
+  const cPVRChannelInfoTag *channel = cPVRChannels::GetByChannelIDFromAll(tag->m_idChannel);
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "cPVRTimerInfoTag: constructor is called with not present channel");

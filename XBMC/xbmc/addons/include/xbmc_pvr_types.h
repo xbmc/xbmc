@@ -221,8 +221,8 @@ typedef std::vector<TVEPGData> EPG_DATA;
     /** PVR Channel Functions **/
     int (__cdecl* GetNumChannels)();
     PVR_ERROR (__cdecl* RequestChannelList)(PVRHANDLE handle, int radio);
-//    PVR_ERROR (__cdecl* GetChannelSettings)(CTVChannelInfoTag *result);
-//    PVR_ERROR (__cdecl* UpdateChannelSettings)(const CTVChannelInfoTag &chaninfo);
+//    PVR_ERROR (__cdecl* GetChannelSettings)(cPVRChannelInfoTag *result);
+//    PVR_ERROR (__cdecl* UpdateChannelSettings)(const cPVRChannelInfoTag &chaninfo);
 //    PVR_ERROR (__cdecl* AddChannel)(const PVR_CHANNEL &info);
 //    PVR_ERROR (__cdecl* DeleteChannel)(unsigned int number);
 //    PVR_ERROR (__cdecl* RenameChannel)(unsigned int number, CStdString &newname);

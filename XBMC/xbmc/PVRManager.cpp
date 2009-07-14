@@ -1523,14 +1523,14 @@ void CPVRManager::ReceiveAllTimers()
 
 bool CPVRManager::TeletextPagePresent(const CFileItem &item, int Page, int subPage)
 {
-  /* Check if a CTVChannelInfoTag is inside file item */
+  /* Check if a cPVRChannelInfoTag is inside file item */
   if (!item.IsTVChannel())
   {
     CLog::Log(LOGERROR, "CPVRManager: TeletextPagePresent no TVChannelTag given!");
     return false;
   }
 
-  const CTVChannelInfoTag* tag = item.GetTVChannelInfoTag();
+  const cPVRChannelInfoTag* tag = item.GetTVChannelInfoTag();
 
   EnterCriticalSection(&m_critSection);
   bool ret = m_clients[tag->m_clientID]->TeletextPagePresent(tag->m_iClientNum, Page, subPage);
@@ -1547,7 +1547,7 @@ bool CPVRManager::GetTeletextPage(const CFileItem &item, int Page, int subPage, 
     return false;
   }
 
-  const CTVChannelInfoTag* tag = item.GetTVChannelInfoTag();
+  const cPVRChannelInfoTag* tag = item.GetTVChannelInfoTag();
   
   EnterCriticalSection(&m_critSection);
   bool ret = m_clients[tag->m_clientID]->ReadTeletextPage(buf, tag->m_iClientNum, Page, subPage);
@@ -1573,7 +1573,7 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
   else
     m_currentPlayingChannel = new CFileItem(PVRChannelsRadio[channel-1]);
 
-  CTVChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
+  cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
   if (!m_clients[tag->m_clientID]->OpenLiveStream(tag->m_iClientNum))
   {
     delete m_currentPlayingChannel;
@@ -1760,7 +1760,7 @@ int CPVRManager::GetTotalTime()
   if (!m_currentPlayingChannel)
     return 0;
 
-  CTVChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
+  cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
   if (!tag)
     return 0;
 
@@ -1777,7 +1777,7 @@ int CPVRManager::GetStartTime()
 {
   if (m_currentPlayingChannel)
   {
-    CTVChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
+    cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
     if (!tag)
       return 0;
     
@@ -1812,8 +1812,8 @@ bool CPVRManager::UpdateItem(CFileItem& item)
     return false;
   }
 
-  CTVChannelInfoTag* tag = item.GetTVChannelInfoTag();
-  CTVChannelInfoTag* current = m_currentPlayingChannel->GetTVChannelInfoTag();
+  cPVRChannelInfoTag* tag = item.GetTVChannelInfoTag();
+  cPVRChannelInfoTag* current = m_currentPlayingChannel->GetTVChannelInfoTag();
 
   tag->m_strAlbum         = current->m_strChannel;
   tag->m_strTitle         = current->m_strTitle;
@@ -2165,14 +2165,14 @@ void CPVRManager::SyncInfo()
 
 void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
 {
-  /* Check if a CTVChannelInfoTag is inside file item */
+  /* Check if a cPVRChannelInfoTag is inside file item */
   if (!item.IsTVChannel())
   {
     CLog::Log(LOGERROR, "CPVRManager: SetCurrentPlayingProgram no TVChannelTag given!");
     return;
   }
 
-  CTVChannelInfoTag* tag = item.GetTVChannelInfoTag();
+  cPVRChannelInfoTag* tag = item.GetTVChannelInfoTag();
   if (tag != NULL)
   {
     if (tag->m_EPG.size() > 0)

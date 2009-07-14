@@ -340,7 +340,7 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
   }
 
   cPVRChannels *xbmcChannels = (cPVRChannels*) handle;
-  CTVChannelInfoTag tag;
+  cPVRChannelInfoTag tag;
 
   tag.m_iIdChannel          = -1;
   tag.m_iChannelNum         = -1;
@@ -361,7 +361,7 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
   return;
 }
 
-PVR_ERROR CPVRClient::GetChannelSettings(CTVChannelInfoTag *result)
+PVR_ERROR CPVRClient::GetChannelSettings(cPVRChannelInfoTag *result)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -387,7 +387,7 @@ PVR_ERROR CPVRClient::GetChannelSettings(CTVChannelInfoTag *result)
   return ret;
 }
 
-PVR_ERROR CPVRClient::UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)
+PVR_ERROR CPVRClient::UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -413,7 +413,7 @@ PVR_ERROR CPVRClient::UpdateChannelSettings(const CTVChannelInfoTag &chaninfo)
   return ret;
 }
 
-PVR_ERROR CPVRClient::AddChannel(const CTVChannelInfoTag &info)
+PVR_ERROR CPVRClient::AddChannel(const cPVRChannelInfoTag &info)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -678,7 +678,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   }
 
   cPVRTimers *xbmcTimers     = (cPVRTimers*) handle;
-  CTVChannelInfoTag *channel  = cPVRChannels::GetByClientFromAll(timer->channelNum, client->m_clientID);
+  cPVRChannelInfoTag *channel  = cPVRChannels::GetByClientFromAll(timer->channelNum, client->m_clientID);
   
   if (channel == NULL)
   {
