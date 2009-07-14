@@ -48,11 +48,12 @@
   <string id="31044">Par</string>
   <string id="31045">Nouveautés</string>
   <string id="31046">le chemin du script Lyrics</string>
+  <string id="31050">Élément</string>
 
 <!--  Programs  --> 
-  <string id="31041">Jeux</string> 
-  <string id="31042">Emulateurs</string> 
-  <string id="31043">Applis</string>
+  <string id="31051">Jeux</string> 
+  <string id="31052">Emulateurs</string> 
+  <string id="31053">Applis</string>
 
 <!--  System  --> 
   <string id="31060">Paramètres</string>
@@ -68,15 +69,14 @@
   <string id="31071">Éteindre</string>
   <string id="31072">Redémarrer</string>
   <string id="31073">Relancer Plex</string>
-  <string id="31074">DASHBOARD</string>
-  <string id="31075">Rafraîchir</string>
-  <string id="31075">Rafraîchir le Skin</string>
+  <string id="31074">Dashboard</string>
+    <string id="31075">Rafraîchir le Skin</string>
 
 <!--  Video  -->
   <string id="31111">Films</string>
   <string id="31112">Séries TV</string>
   <string id="31113">Vos Vidéos</string>
-  <string id="31114">Épisode:</string>
+  <string id="31114">Épisode :</string>
   <string id="31115">N/A</string>
   <string id="31116">Titre du Film</string>
   <string id="31117">Vignette</string>
@@ -108,14 +108,14 @@
   <string id="31603">Skin</string>
   <string id="31604">Général</string>
   <string id="31605">Accueil</string>
-  <string id="31606">CHANGEZ VOS PARAMÈTRES POUR</string>
+  <string id="31606">Changer vos paramètres pour</string>
   <string id="31607">Actuel</string>
   <string id="31608">Source</string>
   <string id="31609">Dest</string>
   <string id="31620">Menu</string>
   <string id="31621">Désactiver</string>
   <string id="31622">Activer</string>
-  <string id="31623">: Arrière-plan</string>
+  <string id="31623">Arrière-plan</string>
   <string id="31624">Choisir</string>
   <string id="31625">Utiliser défaut</string>
   <string id="31650">Caché la lame de droite</string>
