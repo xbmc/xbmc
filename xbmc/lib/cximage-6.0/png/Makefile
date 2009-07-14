@@ -1,4 +1,4 @@
-CFLAGS+=-O2
+CFLAGS+=-fPIC
 ifeq ($(findstring osx,$(ARCH)), osx)
 	CFLAGS+=-fno-common
 endif
