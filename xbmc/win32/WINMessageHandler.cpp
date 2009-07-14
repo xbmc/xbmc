@@ -26,7 +26,6 @@
 #include "VideoReferenceClock.h"
 #include "Application.h"
 #include "MediaManager.h"
-//#include "DetectDVDMedia.h"
 
 extern HWND g_hWnd;
 WNDPROC g_lpOriginalWndProc=NULL;
@@ -75,9 +74,15 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
             if (lpdbv -> dbcv_flags & DBTF_MEDIA)
             {
               CLog::Log(LOGDEBUG, "%s: Drive %c: Media has arrived.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              CStdString strPath;
-              strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strPath);
+              /*CMediaSource share;
+              CStdString strLabel;
+              share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              if(CWIN32Util::IsAudioCD(share.strPath))
+                share.strStatus = "Audio-CD";
+              share.strName.Format("%s (%s)", g_localizeStrings.Get(446), share.strPath);
+              share.m_ignore = true;
+              share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
+              g_mediaManager.AddAutoSource(share);*/
             }
             else
             {
@@ -101,9 +106,10 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
             if (lpdbv -> dbcv_flags & DBTF_MEDIA)
             {
               CLog::Log(LOGDEBUG,"%s: Drive %c: Media was removed.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              CStdString strPath;
-              strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strPath);
+              /*CMediaSource share;
+              share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              share.strName.Format("%s (%s)", g_localizeStrings.Get(446), share.strPath);
+              g_mediaManager.RemoveAutoSource(share);*/
             }
             else
             {
@@ -149,8 +155,7 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
 
   // disable windows autoplay
   if(g_uQueryCancelAutoPlay != 0 && Message == g_uQueryCancelAutoPlay)
-    return 1;
-
+    return S_FALSE;
 
   return CallWindowProc(g_lpOriginalWndProc, hWnd, Message, wParam, lParam);
 }
