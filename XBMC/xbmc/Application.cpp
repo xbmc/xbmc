@@ -912,6 +912,10 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CUtil::InitRandomSeed();
 
+#ifdef _WIN32PC
+  CWIN32Util::AddRemovableDrives();
+#endif
+
   return CXBApplicationEx::Create(hWnd);
 }
 
