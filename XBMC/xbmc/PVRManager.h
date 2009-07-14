@@ -27,7 +27,7 @@
 #include "pvrclients/IPVRClient.h"
 #include "utils/AddonManager.h"
 #include "utils/PVRChannels.h"
-#include "utils/TVRecordInfoTag.h"
+#include "utils/PVRRecordings.h"
 #include "utils/PVRTimers.h"
 
 #include <vector>
@@ -119,7 +119,6 @@ public:
   bool RenameRecording(const CFileItem &item, CStdString &newname);
 
   /* Timer handling */
-  int GetNumTimers();
   int GetAllTimers(CFileItemList* results);
   bool AddTimer(const CFileItem &item);
   bool DeleteTimer(const CFileItem &item, bool force = false);

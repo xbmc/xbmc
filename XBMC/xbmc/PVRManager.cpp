@@ -1210,14 +1210,14 @@ int CPVRManager::GetAllRecordings(CFileItemList* results)
 
 bool CPVRManager::DeleteRecording(const CFileItem &item)
 {
-  /* Check if a CTVRecordingInfoTag is inside file item */
+  /* Check if a cPVRRecordingInfoTag is inside file item */
   if (!item.IsTVRecording())
   {
     CLog::Log(LOGERROR, "CPVRManager: DeleteRecording no RecordingInfoTag given!");
     return false;
   }
 
-  const CTVRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
+  const cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
 
   try
   {
@@ -1248,14 +1248,14 @@ bool CPVRManager::DeleteRecording(const CFileItem &item)
 
 bool CPVRManager::RenameRecording(const CFileItem &item, CStdString &newname)
 {
-  /* Check if a CTVRecordingInfoTag is inside file item */
+  /* Check if a cPVRRecordingInfoTag is inside file item */
   if (!item.IsTVRecording())
   {
     CLog::Log(LOGERROR, "CPVRManager: RenameRecording no RecordingInfoTag given!");
     return false;
   }
 
-  const CTVRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
+  const cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
 
   try
   {
@@ -1309,11 +1309,6 @@ void CPVRManager::ReceiveAllRecordings()
 
 /************************************************************/
 /** Timer handling **/
-
-int CPVRManager::GetNumTimers()
-{
-  return PVRTimers.size();
-}
 
 int CPVRManager::GetAllTimers(CFileItemList* results)
 {

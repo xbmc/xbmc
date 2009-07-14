@@ -88,6 +88,7 @@ public:
   cPVRTimers(void);
   bool Load();
   bool Update();
+  int GetNumTimers();
   cPVRTimerInfoTag *GetTimer(cPVRTimerInfoTag *Timer);
   cPVRTimerInfoTag *GetMatch(CDateTime t);
   cPVRTimerInfoTag *GetMatch(time_t t);

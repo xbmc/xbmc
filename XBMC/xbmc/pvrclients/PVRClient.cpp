@@ -568,7 +568,7 @@ PVR_ERROR CPVRClient::GetAllRecordings(VECRECORDINGS *results)
   return ret;
 }
 
-PVR_ERROR CPVRClient::DeleteRecording(const CTVRecordingInfoTag &recinfo)
+PVR_ERROR CPVRClient::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -594,7 +594,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CTVRecordingInfoTag &recinfo)
   return ret;
 }
 
-PVR_ERROR CPVRClient::RenameRecording(const CTVRecordingInfoTag &recinfo, CStdString &newname)
+PVR_ERROR CPVRClient::RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -935,7 +935,7 @@ bool CPVRClient::SwitchChannel(unsigned int channel)
   return m_pClient->SwitchChannel(channel);
 }
 
-bool CPVRClient::OpenRecordedStream(const CTVRecordingInfoTag &recinfo)
+bool CPVRClient::OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
 {
   return m_pClient->OpenRecordedStream(recinfo);
 }

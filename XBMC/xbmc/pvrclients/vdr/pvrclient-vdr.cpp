@@ -2377,7 +2377,7 @@ PVR_ERROR PVRClientVDR::GetAllRecordings(VECRECORDINGS *results)
   {
     string& data(*it2);
     CStdString str_result = data;
-    CTVRecordingInfoTag broadcast;
+    cPVRRecordingInfoTag broadcast;
 
     /* Convert to UTF8 string format */
     if (m_bCharsetConv)
@@ -2400,7 +2400,7 @@ PVR_ERROR PVRClientVDR::GetAllRecordings(VECRECORDINGS *results)
     cnt++;
   }
 
-  std::vector<CTVRecordingInfoTag>::iterator it;
+  std::vector<cPVRRecordingInfoTag>::iterator it;
 
   for (unsigned int i = 0; i < cnt; i++)
   {
@@ -2491,7 +2491,7 @@ PVR_ERROR PVRClientVDR::GetAllRecordings(VECRECORDINGS *results)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::DeleteRecording(const CTVRecordingInfoTag &recinfo)
+PVR_ERROR PVRClientVDR::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
 {
   vector<string> lines;
   int            code;
@@ -2533,7 +2533,7 @@ PVR_ERROR PVRClientVDR::DeleteRecording(const CTVRecordingInfoTag &recinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::RenameRecording(const CTVRecordingInfoTag &recinfo, CStdString &newname)
+PVR_ERROR PVRClientVDR::RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname)
 {
   vector<string> lines;
   int            code;
@@ -3056,7 +3056,7 @@ bool PVRClientVDR::SwitchChannel(unsigned int channel)
 /************************************************************/
 /** Record stream handling */
 
-bool PVRClientVDR::OpenRecordedStream(const CTVRecordingInfoTag &recinfo)
+bool PVRClientVDR::OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
 {
   if (!m_transceiver->IsOpen())
   {

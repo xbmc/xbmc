@@ -22,7 +22,7 @@
 /*
  * DESCRIPTION:
  *
- * CTVRecordingInfoTag is part of the PVRManager to support recording entrys.
+ * cPVRRecordingInfoTag is part of the PVRManager to support recording entrys.
  *
  * The recording information tag holds data about name, length, recording time
  * and so on of recorded stream stored on the backend.
@@ -38,19 +38,19 @@
  */
 
 #include "stdafx.h"
-#include "TVRecordInfoTag.h"
+#include "PVRRecordings.h"
 #include "PVRManager.h"
 
 
 /**
  * Create a blank unmodified recording tag
  */
-CTVRecordingInfoTag::CTVRecordingInfoTag()
+cPVRRecordingInfoTag::cPVRRecordingInfoTag()
 {
   Reset();
 }
 
-bool CTVRecordingInfoTag::operator ==(const CTVRecordingInfoTag& right) const
+bool cPVRRecordingInfoTag::operator ==(const cPVRRecordingInfoTag& right) const
 {
 
   if (this == &right) return true;
@@ -73,7 +73,7 @@ bool CTVRecordingInfoTag::operator ==(const CTVRecordingInfoTag& right) const
           m_clientID      == right.m_clientID);
 }
 
-bool CTVRecordingInfoTag::operator !=(const CTVRecordingInfoTag& right) const
+bool cPVRRecordingInfoTag::operator !=(const cPVRRecordingInfoTag& right) const
 {
 
   if (this == &right) return false;
@@ -103,7 +103,7 @@ bool CTVRecordingInfoTag::operator !=(const CTVRecordingInfoTag& right) const
  * \param int position              = Cut mark position
  * \param const CStdString &comment = Comment string
  */
-void CTVRecordingInfoTag::AddMark(int position, const CStdString &comment)
+void cPVRRecordingInfoTag::AddMark(int position, const CStdString &comment)
 {
   CutMark_t mark;
   mark.m_comment = comment;
@@ -117,7 +117,7 @@ void CTVRecordingInfoTag::AddMark(int position, const CStdString &comment)
  * \param int position              = Cut mark to delete
  * \return bool                     = true if deletet, false if not found
  */
-bool CTVRecordingInfoTag::DeleteMark(int position)
+bool cPVRRecordingInfoTag::DeleteMark(int position)
 {
   std::vector<CutMark_t>::iterator it;
 
@@ -136,7 +136,7 @@ bool CTVRecordingInfoTag::DeleteMark(int position)
 /**
  * Delete all cut marks
  */
-void CTVRecordingInfoTag::DeleteAllMarks(void)
+void cPVRRecordingInfoTag::DeleteAllMarks(void)
 {
   m_cutMarks.clear();
   return;
@@ -147,7 +147,7 @@ void CTVRecordingInfoTag::DeleteAllMarks(void)
  * \param int position              = current mark
  * \return int                      = previous mark or -1 if current is first
  */
-int CTVRecordingInfoTag::GetMarkPrev(int position)
+int cPVRRecordingInfoTag::GetMarkPrev(int position)
 {
   std::vector<CutMark_t>::iterator it;
 
@@ -167,7 +167,7 @@ int CTVRecordingInfoTag::GetMarkPrev(int position)
  * \param int position              = current mark
  * \return int                      = next mark or -1 if current is last
  */
-int CTVRecordingInfoTag::GetMarkNext(int position)
+int cPVRRecordingInfoTag::GetMarkNext(int position)
 {
   std::vector<CutMark_t>::iterator it;
 
@@ -185,7 +185,7 @@ int CTVRecordingInfoTag::GetMarkNext(int position)
 /**
  * Sort recording cut marks array (lowest position first)
  */
-void CTVRecordingInfoTag::SortMarks(void)
+void cPVRRecordingInfoTag::SortMarks(void)
 {
   std::vector<CutMark_t>::iterator it1;
   std::vector<CutMark_t>::iterator it2;
@@ -212,9 +212,9 @@ void CTVRecordingInfoTag::SortMarks(void)
 }
 
 /**
- * Initialize blank CTVRecordingInfoTag
+ * Initialize blank cPVRRecordingInfoTag
  */
-void CTVRecordingInfoTag::Reset(void)
+void cPVRRecordingInfoTag::Reset(void)
 {
   m_Index                 = -1;
   m_clientID              = CPVRManager::GetInstance()->GetFirstClientID(); // Temporary until we support multiple backends
@@ -238,4 +238,31 @@ void CTVRecordingInfoTag::Reset(void)
   m_commFree              = false;
 
   CVideoInfoTag::Reset();
+}
+
+// --- cPVRRecordings ---------------------------------------------------------------
+
+cPVRRecordings PVRRecordings;
+
+cPVRRecordings::cPVRRecordings(void)
+{
+
+}
+
+bool cPVRRecordings::Load()
+{
+
+  return true;
+}
+
+bool cPVRRecordings::Update()
+{
+  Load();
+}
+
+void cPVRRecordings::Clear()
+{
+  /* Clear all current present Recordings inside list */
+  erase(begin(), end());
+  return;
 }
