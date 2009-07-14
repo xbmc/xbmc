@@ -131,7 +131,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     CStdString strTitle;
     if (title && title->FirstChild() && title->FirstChild()->Value())
       strTitle = title->FirstChild()->Value();
-    TiXmlElement* message = doc.RootElement()->FirstChildElement("title");
+    TiXmlElement* message = doc.RootElement()->FirstChildElement("message");
     CStdString strMessage;
     if (message && message->FirstChild() && message->FirstChild()->Value())
       strMessage = message->FirstChild()->Value();
