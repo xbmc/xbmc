@@ -180,7 +180,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   }
 
   if (!pItem->m_bIsFolder && !pItem->IsInternetStream() && 
-    pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->HasStreamDetails())   
+       pItem->HasVideoInfoTag() && 
+       g_guiSettings.GetBool("myvideos.extractflags")   &&
+       !pItem->GetVideoInfoTag()->HasStreamDetails())
   {
     if (CDVDFileInfo::GetFileStreamDetails(pItem) && m_pStreamDetailsObs)
     {
