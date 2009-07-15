@@ -141,7 +141,7 @@ unsigned int CXBoxRenderManager::PreInit()
     D3DDevice::SetVerticalBlankCallback((D3DVBLANKCALLBACK)VBlankCallback);
   }
 
-  /* no pedning present */
+  /* no pending present */
   m_eventPresented.Set();
 
   m_bIsStarted = false;
@@ -189,11 +189,7 @@ void CXBoxRenderManager::UnInit()
 
   m_bIsStarted = false;
   if (m_pRenderer)
-  {
     m_pRenderer->UnInit();
-    delete m_pRenderer; 
-    m_pRenderer = NULL; 
-  }
 }
 
 void CXBoxRenderManager::SetupScreenshot()

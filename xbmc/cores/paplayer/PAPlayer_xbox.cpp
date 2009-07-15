@@ -812,7 +812,7 @@ int PAPlayer::GetSampleRate()
   return 0;
 }
 
-CStdString PAPlayer::GetCodecName()
+CStdString PAPlayer::GetAudioCodecName()
 {
   ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
   if (codec)

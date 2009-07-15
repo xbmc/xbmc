@@ -25,6 +25,7 @@
 #include "Key.h"
 
 class TiXmlElement; 
+class CStreamDetails;
 
 class IPlayerCallback
 {
@@ -125,7 +126,10 @@ public:
   virtual int GetChannels(){ return 0;};
   virtual int GetBitsPerSample(){ return 0;};
   virtual int GetSampleRate(){ return 0;};
-  virtual CStdString GetCodecName(){ return "";};
+  virtual CStdString GetAudioCodecName(){ return "";}
+  virtual CStdString GetVideoCodecName(){ return "";}
+  virtual int GetPictureWidth(){ return 0;}
+  virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
   virtual void ToFFRW(int iSpeed = 0){};
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext(){return false;}

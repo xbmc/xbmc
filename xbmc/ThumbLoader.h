@@ -22,10 +22,17 @@
 
 #include "BackgroundInfoLoader.h"
 
+class CStreamDetails;
+class IStreamDetailsObserver;
+
 class CThumbLoader : public CBackgroundInfoLoader
 {
 public:
-  CThumbLoader();
+#ifdef _XBOX
+  CThumbLoader(int nThreads=1);
+#else
+  CThumbLoader(int nThreads=-1);
+#endif
   virtual ~CThumbLoader();
 
   bool LoadRemoteThumb(CFileItem *pItem);
@@ -37,10 +44,14 @@ public:
   CVideoThumbLoader();
   virtual ~CVideoThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
+  bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails);
+  void SetStreamDetailsObserver(IStreamDetailsObserver *pObs) { m_pStreamDetailsObs = pObs; }
 
 protected:
   virtual void OnLoaderStart() ;
   virtual void OnLoaderFinish() ;
+
+  IStreamDetailsObserver *m_pStreamDetailsObs;
 };
 
 class CProgramThumbLoader : public CThumbLoader

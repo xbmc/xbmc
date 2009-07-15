@@ -1947,6 +1947,12 @@
   <string id="21440">Home folder</string>
   <string id="21441">Watched count</string>
   <string id="21442">Episode title</string>
+  <string id="21443">Video resolution</string>
+  <string id="21444">Audio channels</string>
+  <string id="21445">Video codec</string>
+  <string id="21446">Audio codec</string>
+  <string id="21447">Audio language</string>
+  <string id="21448">Subtitle language</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>
