@@ -34,6 +34,8 @@
 
 using namespace std;
 
+pthread_mutex_t m_critSection;
+
 #ifndef _LINUX
 extern "C" long long atoll(const char *ca)
 {

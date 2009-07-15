@@ -35,6 +35,7 @@
 /* Master defines for client control */
 #include "../../addons/include/xbmc_pvr_types.h"
 
+extern pthread_mutex_t m_critSection;
 
 class PVRClientVDR
 {
@@ -106,6 +107,8 @@ public:
   
   bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage);
   bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
+  
+  static CVTPTransceiver *GetTransceiver() { return m_transceiver; }
 
 protected:
   static CVTPTransceiver *m_transceiver;
@@ -116,7 +119,6 @@ private:
   bool GetChannel(unsigned int number, PVR_CHANNEL &channeldata);
   int                     m_iCurrentChannel;
   static bool             m_bConnected;
-  pthread_mutex_t         m_critSection;
   pthread_t               m_thread;
   static bool             m_bStop;
 

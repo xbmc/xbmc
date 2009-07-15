@@ -60,6 +60,7 @@ public:
   static char* GetInfoLabel(const char *infotag);
   static char* GetInfoImage(const char *infotag);
   static bool GetCondVisibility(const char *condition);
+  static bool CreateDirectory(const char *dir);
   static void EnableNavSounds(bool yesNo);
   static void PlaySFX(const char *filename);
   static int GetGlobalIdleTime();

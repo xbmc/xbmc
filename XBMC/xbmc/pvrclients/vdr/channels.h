@@ -279,6 +279,7 @@ public:
   cChannel();
   virtual ~cChannel();
   
+  bool ReadFromVTP(int channel);
   bool Parse(const char *s);
   const char *Name(void) const { return name; }
   const char *ShortName(bool OrName = false) const { return (OrName && isempty(shortName)) ? name : shortName; }

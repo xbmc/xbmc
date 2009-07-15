@@ -88,6 +88,7 @@ typedef char* (*UtilsGetIPAddress)();
 typedef char* (*UtilsGetInfoLabel)(const char *infotag);
 typedef char* (*UtilsGetInfoImage)(const char *infotag);
 typedef bool (*UtilsGetCondVisibility)(const char *condition);
+typedef bool (*UtilsCreateDirectory)(const char *dir);
 typedef void (*UtilsPlaySFX)(const char *filename);
 typedef char* (*UtilsGetCacheThumbName)(const char *path);
 typedef void (*UtilsEnableNavSounds)(bool yesNo);
@@ -118,6 +119,7 @@ typedef struct CB_Utils
   UtilsGetCondVisibility    GetCondVisibility;
   UtilsPlaySFX              PlaySFX;
   UtilsGetCacheThumbName    GetCacheThumbName;
+  UtilsCreateDirectory      CreateDirectory;
   UtilsEnableNavSounds      EnableNavSounds;
   UtilsGetDVDState          GetDVDState;
   UtilsGetFreeMem           GetFreeMem;

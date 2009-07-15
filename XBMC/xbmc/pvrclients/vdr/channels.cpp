@@ -23,8 +23,14 @@
  * This code is taken from channels.c in the Video Disk Recorder ('VDR')
  */
 
+#include <string>
+#include <vector>
+#include "pvrclient-vdr.h"
+#include "pvrclient-vdr_os.h"
 #include "channels.h"
 #include "../../addons/include/xbmc_addon_lib++.h"
+
+using namespace std;
 
 const tChannelParameterMap InversionValues[] = {
   {   0, INVERSION_OFF,  "off" },
@@ -141,6 +147,36 @@ cChannel::~cChannel()
   free(name);
   free(shortName);
   free(provider);
+}
+
+bool cChannel::ReadFromVTP(int channel)
+{
+  vector<string> lines;
+  int            code;
+  char           buffer[1024];
+
+  if (!PVRClientVDR::GetTransceiver()->IsOpen())
+    return false;
+
+  pthread_mutex_lock(&m_critSection);
+  
+  sprintf(buffer, "LSTC %i", channel);
+  while (!PVRClientVDR::GetTransceiver()->SendCommand(buffer, code, lines))
+  {
+    if (code != 451)
+    {
+      pthread_mutex_unlock(&m_critSection);
+      return false;
+    }
+    Sleep(750);
+  }
+
+  vector<string>::iterator it = lines.begin();
+  string& data(*it);
+  Parse(data.c_str());
+
+  pthread_mutex_unlock(&m_critSection);
+  return true;
 }
 
 int UserIndex(int Value, const tChannelParameterMap *Map)
