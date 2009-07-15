@@ -1098,7 +1098,7 @@ void PAPlayer::WaitForStream()
 {
   // should we wait for our other stream as well?
   // currently we don't.
-  if (!m_pAudioDecoder[m_currentStream])
+  if (m_pAudioDecoder[m_currentStream])
   {
     m_pAudioDecoder[m_currentStream]->WaitCompletion();
   }

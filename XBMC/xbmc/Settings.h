@@ -133,7 +133,7 @@ public:
   CStdString GetDefaultSourceFromType(const CStdString &type);
 
   bool UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
-  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath);
+  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource = false);
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
@@ -286,10 +286,8 @@ public:
     int m_curllowspeedtime;
     int m_curlretries;
 
-#ifdef HAS_SDL
     bool m_fullScreen;
     bool m_startFullScreen;
-#endif
     bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;
     int m_playlistTimeout;

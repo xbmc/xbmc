@@ -27,7 +27,15 @@
 #include "LocalizeStrings.h"
 #include "DateTime.h"
 
+#ifdef __APPLE__
+#include "CocoaInterface.h"
+#endif
+
 using namespace std;
+
+#ifdef WIN32
+extern HWND g_hWnd;
+#endif
 
 CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
                                  float width, float height, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus,
@@ -78,7 +86,68 @@ bool CGUIEditControl::OnAction(const CAction &action)
 {
   ValidateCursor();
 
-  if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
+  // TODO: We shouldn't really need to test for ACTION_PARENT_DIR here
+  //       but it may currently be useful as we can't map specific to an
+  //       edit control other than the keyboard (which doesn't use this block)
+  if (action.wID == ACTION_BACKSPACE || action.wID == ACTION_PARENT_DIR)
+  {
+    // backspace
+    if (m_cursorPos)
+    {
+      m_text2.erase(--m_cursorPos, 1);
+      OnTextChanged();
+    }
+    return true;
+  }
+  else if (action.wID == ACTION_MOVE_LEFT)
+  {
+    if (m_cursorPos > 0)
+    {
+      m_cursorPos--;
+      OnTextChanged();
+      return true;
+    }
+  }
+  else if (action.wID == ACTION_MOVE_RIGHT)
+  {
+    if ((unsigned int) m_cursorPos < m_text2.size())
+    { 
+      m_cursorPos++;
+      OnTextChanged();
+      return true;
+    }
+  }
+  else if (action.wID == ACTION_PASTE)
+  {
+#ifdef __APPLE__
+    const char *szStr = Cocoa_Paste();
+    if (szStr)
+    {
+      m_text2 += szStr;
+      m_cursorPos+=strlen(szStr);
+      OnTextChanged();
+    }
+#elif defined _WIN32
+    HGLOBAL   hglb;
+    LPTSTR    lptstr;
+    if (OpenClipboard(g_hWnd))
+    {
+      hglb = GetClipboardData(CF_TEXT);
+      if (hglb != NULL)
+      { 
+        lptstr = (LPTSTR)GlobalLock(hglb);
+        if (lptstr != NULL)
+        { 
+          m_text2 = (char*)lptstr;
+          GlobalUnlock(hglb);
+        } 
+      }
+      CloseClipboard();
+      OnTextChanged();
+    }
+#endif
+  }
+  else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
   {
     // input from the keyboard (vkey, not ascii)
     BYTE b = action.wID & 0xFF;
@@ -94,10 +163,22 @@ bool CGUIEditControl::OnAction(const CAction &action)
       OnTextChanged();
       return true;
     }
-    if (b == 0x2e && m_cursorPos < m_text2.length())
-    { // delete
-      m_text2.erase(m_cursorPos, 1);
-      OnTextChanged();
+    if (b == 0x2e)
+    {
+      if (m_cursorPos < m_text2.length())
+      { // delete
+        m_text2.erase(m_cursorPos, 1);
+        OnTextChanged();
+        return true;
+      }
+    }
+    if (b == 0x8)
+    {
+      if (m_cursorPos > 0)
+      { // backspace
+        m_text2.erase(--m_cursorPos, 1);
+        OnTextChanged();      
+      }    
       return true;
     }
   }
@@ -123,13 +204,17 @@ bool CGUIEditControl::OnAction(const CAction &action)
       {
         // backspace
         if (m_cursorPos)
+        {
           m_text2.erase(--m_cursorPos, 1);
+          OnTextChanged();
+        }
         break;
       }
     default:
       {
         m_text2.insert(m_text2.begin() + m_cursorPos, (WCHAR)action.unicode);
         m_cursorPos++;
+        OnTextChanged();
         break;
       }
     }
@@ -203,6 +288,7 @@ void CGUIEditControl::OnClick()
     g_charsetConverter.utf8ToW(utf8, m_text2);
     m_cursorPos = m_text2.size();
     OnTextChanged();
+    m_cursorPos = m_text2.size();
   }
 }
 
@@ -349,6 +435,15 @@ void CGUIEditControl::ValidateCursor()
 void CGUIEditControl::OnTextChanged()
 {
   SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
+  
+  vector<CGUIActionDescriptor> textChangeActions = m_textChangeActions;
+  for (unsigned int i = 0; i < textChangeActions.size(); i++)
+  {
+    CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+    message.SetAction(textChangeActions[i]);
+    g_graphicsContext.SendMessage(message);
+  }  
+  
   SetInvalid();
 }
 
@@ -375,4 +470,14 @@ CStdString CGUIEditControl::GetLabel2() const
   CStdString text;
   g_charsetConverter.wToUTF8(m_text2, text);
   return text;
+}
+
+unsigned int CGUIEditControl::GetCursorPosition() const
+{
+  return m_cursorPos;
+}
+
+void CGUIEditControl::SetCursorPosition(unsigned int iPosition)
+{
+  m_cursorPos = iPosition;
 }

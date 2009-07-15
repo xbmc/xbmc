@@ -26,6 +26,7 @@ distribution.
 #include <stddef.h>
 
 #include "tinyxml.h"
+#include "CharsetConverter.h"
 
 //#define DEBUG_PARSER
 #if defined( DEBUG_PARSER )
@@ -524,7 +525,7 @@ const char* TiXmlBase::GetEntity( const char* p, char* value, int* length, TiXml
 
 	// So it wasn't an entity, its unrecognized, or something like that.
 	*value = *p;	// Don't put back the last one, since we return it!
-	//*length = 1;	// Leave unrecognized entities - this doesn't really work.
+	*length = 1;	// Leave unrecognized entities - this doesn't really work.
 					// Just writes strange XML.
 	return p+1;
 }
@@ -631,10 +632,37 @@ const char* TiXmlBase::ReadText(	const char* p,
 		}
 	}
 	if ( p ) 
-		p += strlen( endTag );
+		p += strlen( endTag );	
 	return p;
 }
 
+#ifdef HAS_ICONV
+void TiXmlBase::ConvertToUtf8(TiXmlDocument* document, TIXML_STRING* text)
+{
+  if (!document) return;
+  if (!document->convertToUtf8) return;
+  if (document->iconvContext == (iconv_t) -1) return;
+  
+#ifdef TIXML_USE_STL
+  
+  size_t olen = (text->size() * 4) + 1;
+  char* output = new char[olen]; 
+  char* obuf = output;
+  size_t ilen = text->size() + 1;
+  const char* ibuf = (const char*) text->c_str();
+  
+  if (iconv_const(document->iconvContext, &ibuf, &ilen, &obuf, &olen) == (size_t) -1)
+  {
+    delete [] output;
+    return;
+  }
+  
+  *text = output;
+  delete [] output;
+#endif
+}
+#endif
+  
 #ifdef TIXML_USE_STL
 
 void TiXmlDocument::StreamIn( std::istream * in, TIXML_STRING * tag )
@@ -778,7 +806,21 @@ const char* TiXmlDocument::Parse( const char* p, TiXmlParsingData* prevData, TiX
 			else if ( StringEqual( enc, "UTF8", true, TIXML_ENCODING_UNKNOWN ) )
 				encoding = TIXML_ENCODING_UTF8;	// incorrect, but be nice
 			else 
+			{
+#ifdef HAS_ICONV
+			  if (convertToUtf8)
+			  {
+			    if (iconvContext != (iconv_t) -1)
+			    {
+			      iconv_close(iconvContext);
+			      iconvContext = (iconv_t) -1;
+			    }
+			    
+          iconvContext = iconv_open("UTF8", enc);
+			  }
+#endif			    
 				encoding = TIXML_ENCODING_LEGACY;
+			}
 		}
 
 		p = SkipWhiteSpace( p, encoding );
@@ -1176,7 +1218,6 @@ const char* TiXmlElement::Parse( const char* p, TiXmlParsingData* data, TiXmlEnc
 const char* TiXmlElement::ReadValue( const char* p, TiXmlParsingData* data, TiXmlEncoding encoding )
 {
 	TiXmlDocument* document = GetDocument();
-
 	// Read in text and elements in any order.
 	const char* pWithWhiteSpace = p;
 	p = SkipWhiteSpace( p, encoding );
@@ -1206,7 +1247,12 @@ const char* TiXmlElement::ReadValue( const char* p, TiXmlParsingData* data, TiXm
 			}
 
 			if ( !textNode->Blank() )
+			{
 				LinkEndChild( textNode );
+#ifdef HAS_ICONV
+        ConvertToUtf8(document, &textNode->value);
+#endif    				
+			}
 			else
 				delete textNode;
 		} 

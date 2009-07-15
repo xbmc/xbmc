@@ -1124,6 +1124,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\..\Source\System\Win32\NptWin32DynamicLibraries.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\..\Source\System\Win32\NptWin32File.cpp"
 				>
 			</File>

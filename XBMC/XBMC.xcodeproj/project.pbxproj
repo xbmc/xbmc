@@ -46,6 +46,14 @@
 		6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
+		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
+		7CDAE9060FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
+		7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
+		7CDAEA7E1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
+		7CDAEA8C1001EBA70040B25F /* PltConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA891001EBA70040B25F /* PltConstants.cpp */; };
+		7CDAEA8D1001EBA70040B25F /* PltIconsData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA8B1001EBA70040B25F /* PltIconsData.cpp */; };
+		7CDAEA8E1001EBA70040B25F /* PltConstants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA891001EBA70040B25F /* PltConstants.cpp */; };
+		7CDAEA8F1001EBA70040B25F /* PltIconsData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA8B1001EBA70040B25F /* PltIconsData.cpp */; };
 		7CEBD8A80F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */; };
 		810C9F630D67BD2F0095F5DD /* PltMediaConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */; };
 		810C9F640D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9F620D67BD2F0095F5DD /* PltMediaConnectSCPDs.cpp */; };
@@ -235,52 +243,52 @@
 		E38E1F750D25F9FD00618676 /* mmap_anon.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F10D25F9F900618676 /* mmap_anon.c */; };
 		E38E1F760D25F9FD00618676 /* SoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F40D25F9F900618676 /* SoLoader.cpp */; };
 		E38E1F770D25F9FD00618676 /* DummyVideoPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */; };
-		E38E1F790D25F9FD00618676 /* DVDAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FC0D25F9F900618676 /* DVDAudio.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F7A0D25F9FD00618676 /* DVDClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FE0D25F9F900618676 /* DVDClock.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F7B0D25F9FD00618676 /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F7C0D25F9FD00618676 /* DVDAudioCodecLiba52.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15090D25F9F900618676 /* DVDAudioCodecLiba52.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F7D0D25F9FD00618676 /* DVDAudioCodecLibDts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F7E0D25F9FD00618676 /* DVDAudioCodecLibFaad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F7F0D25F9FD00618676 /* DVDAudioCodecLibMad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F800D25F9FD00618676 /* DVDAudioCodecLPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F810D25F9FD00618676 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F820D25F9FD00618676 /* DVDAudioCodecPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15150D25F9F900618676 /* DVDAudioCodecPcm.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F840D25F9FD00618676 /* DVDCodecUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F850D25F9FD00618676 /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F870D25F9FD00618676 /* DVDOverlayCodecCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152B0D25F9F900618676 /* DVDOverlayCodecCC.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F880D25F9FD00618676 /* DVDOverlayCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152D0D25F9F900618676 /* DVDOverlayCodecFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F890D25F9FD00618676 /* DVDOverlayCodecText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F8A0D25F9FD00618676 /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E15350D25F9F900618676 /* cc_decoder.c */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F8D0D25F9FD00618676 /* DVDVideoCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F8E0D25F9FD00618676 /* DVDVideoCodecLibMpeg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F8F0D25F9FD00618676 /* DVDVideoPPFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
+		E38E1F790D25F9FD00618676 /* DVDAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FC0D25F9F900618676 /* DVDAudio.cpp */; };
+		E38E1F7A0D25F9FD00618676 /* DVDClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FE0D25F9F900618676 /* DVDClock.cpp */; };
+		E38E1F7B0D25F9FD00618676 /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
+		E38E1F7C0D25F9FD00618676 /* DVDAudioCodecLiba52.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15090D25F9F900618676 /* DVDAudioCodecLiba52.cpp */; };
+		E38E1F7D0D25F9FD00618676 /* DVDAudioCodecLibDts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */; };
+		E38E1F7E0D25F9FD00618676 /* DVDAudioCodecLibFaad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */; };
+		E38E1F7F0D25F9FD00618676 /* DVDAudioCodecLibMad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */; };
+		E38E1F800D25F9FD00618676 /* DVDAudioCodecLPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */; };
+		E38E1F810D25F9FD00618676 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */; };
+		E38E1F820D25F9FD00618676 /* DVDAudioCodecPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15150D25F9F900618676 /* DVDAudioCodecPcm.cpp */; };
+		E38E1F840D25F9FD00618676 /* DVDCodecUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */; };
+		E38E1F850D25F9FD00618676 /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; };
+		E38E1F870D25F9FD00618676 /* DVDOverlayCodecCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152B0D25F9F900618676 /* DVDOverlayCodecCC.cpp */; };
+		E38E1F880D25F9FD00618676 /* DVDOverlayCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152D0D25F9F900618676 /* DVDOverlayCodecFFmpeg.cpp */; };
+		E38E1F890D25F9FD00618676 /* DVDOverlayCodecText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */; };
+		E38E1F8A0D25F9FD00618676 /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E15350D25F9F900618676 /* cc_decoder.c */; };
+		E38E1F8D0D25F9FD00618676 /* DVDVideoCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */; };
+		E38E1F8E0D25F9FD00618676 /* DVDVideoCodecLibMpeg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */; };
+		E38E1F8F0D25F9FD00618676 /* DVDVideoPPFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */; };
 		E38E1F910D25F9FD00618676 /* DVDDemux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15490D25F9F900618676 /* DVDDemux.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
 		E38E1F930D25F9FD00618676 /* DVDDemuxShoutcast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154D0D25F9F900618676 /* DVDDemuxShoutcast.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
 		E38E1F940D25F9FD00618676 /* DVDDemuxUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154F0D25F9F900618676 /* DVDDemuxUtils.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
-		E38E1F970D25F9FD00618676 /* DVDDemuxSPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15550D25F9FA00618676 /* DVDDemuxSPU.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F980D25F9FD00618676 /* DVDFactoryInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15590D25F9FA00618676 /* DVDFactoryInputStream.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F990D25F9FD00618676 /* DVDInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155B0D25F9FA00618676 /* DVDInputStream.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F9A0D25F9FD00618676 /* DVDInputStreamFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155D0D25F9FA00618676 /* DVDInputStreamFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F9B0D25F9FD00618676 /* DVDInputStreamFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155F0D25F9FA00618676 /* DVDInputStreamFile.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F9C0D25F9FD00618676 /* DVDInputStreamHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15610D25F9FA00618676 /* DVDInputStreamHttp.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F9D0D25F9FD00618676 /* DVDInputStreamMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15630D25F9FA00618676 /* DVDInputStreamMemory.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F9E0D25F9FD00618676 /* DVDInputStreamNavigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1F9F0D25F9FD00618676 /* DVDStateSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15740D25F9FA00618676 /* DVDStateSerializer.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FA10D25F9FD00618676 /* DVDMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15780D25F9FA00618676 /* DVDMessage.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FA20D25F9FD00618676 /* DVDMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157A0D25F9FA00618676 /* DVDMessageQueue.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FA30D25F9FD00618676 /* DVDMessageTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157C0D25F9FA00618676 /* DVDMessageTracker.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FA40D25F9FD00618676 /* DVDOverlayContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157E0D25F9FA00618676 /* DVDOverlayContainer.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FA50D25F9FD00618676 /* DVDOverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15800D25F9FA00618676 /* DVDOverlayRenderer.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FA60D25F9FD00618676 /* DVDPerformanceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15820D25F9FA00618676 /* DVDPerformanceCounter.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FA70D25F9FD00618676 /* DVDPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15840D25F9FA00618676 /* DVDPlayer.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FA80D25F9FD00618676 /* DVDPlayerAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FA90D25F9FD00618676 /* DVDPlayerSubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15880D25F9FA00618676 /* DVDPlayerSubtitle.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FAA0D25F9FD00618676 /* DVDPlayerVideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158A0D25F9FA00618676 /* DVDPlayerVideo.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FAB0D25F9FD00618676 /* DVDStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158C0D25F9FA00618676 /* DVDStreamInfo.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FAC0D25F9FD00618676 /* DVDFactorySubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158F0D25F9FA00618676 /* DVDFactorySubtitle.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FAD0D25F9FD00618676 /* DVDSubtitleLineCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15910D25F9FA00618676 /* DVDSubtitleLineCollection.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
+		E38E1F970D25F9FD00618676 /* DVDDemuxSPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15550D25F9FA00618676 /* DVDDemuxSPU.cpp */; };
+		E38E1F980D25F9FD00618676 /* DVDFactoryInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15590D25F9FA00618676 /* DVDFactoryInputStream.cpp */; };
+		E38E1F990D25F9FD00618676 /* DVDInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155B0D25F9FA00618676 /* DVDInputStream.cpp */; };
+		E38E1F9A0D25F9FD00618676 /* DVDInputStreamFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155D0D25F9FA00618676 /* DVDInputStreamFFmpeg.cpp */; };
+		E38E1F9B0D25F9FD00618676 /* DVDInputStreamFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155F0D25F9FA00618676 /* DVDInputStreamFile.cpp */; };
+		E38E1F9C0D25F9FD00618676 /* DVDInputStreamHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15610D25F9FA00618676 /* DVDInputStreamHttp.cpp */; };
+		E38E1F9D0D25F9FD00618676 /* DVDInputStreamMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15630D25F9FA00618676 /* DVDInputStreamMemory.cpp */; };
+		E38E1F9E0D25F9FD00618676 /* DVDInputStreamNavigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */; };
+		E38E1F9F0D25F9FD00618676 /* DVDStateSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15740D25F9FA00618676 /* DVDStateSerializer.cpp */; };
+		E38E1FA10D25F9FD00618676 /* DVDMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15780D25F9FA00618676 /* DVDMessage.cpp */; };
+		E38E1FA20D25F9FD00618676 /* DVDMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157A0D25F9FA00618676 /* DVDMessageQueue.cpp */; };
+		E38E1FA30D25F9FD00618676 /* DVDMessageTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157C0D25F9FA00618676 /* DVDMessageTracker.cpp */; };
+		E38E1FA40D25F9FD00618676 /* DVDOverlayContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157E0D25F9FA00618676 /* DVDOverlayContainer.cpp */; };
+		E38E1FA50D25F9FD00618676 /* DVDOverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15800D25F9FA00618676 /* DVDOverlayRenderer.cpp */; };
+		E38E1FA60D25F9FD00618676 /* DVDPerformanceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15820D25F9FA00618676 /* DVDPerformanceCounter.cpp */; };
+		E38E1FA70D25F9FD00618676 /* DVDPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15840D25F9FA00618676 /* DVDPlayer.cpp */; };
+		E38E1FA80D25F9FD00618676 /* DVDPlayerAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */; };
+		E38E1FA90D25F9FD00618676 /* DVDPlayerSubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15880D25F9FA00618676 /* DVDPlayerSubtitle.cpp */; };
+		E38E1FAA0D25F9FD00618676 /* DVDPlayerVideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158A0D25F9FA00618676 /* DVDPlayerVideo.cpp */; };
+		E38E1FAB0D25F9FD00618676 /* DVDStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158C0D25F9FA00618676 /* DVDStreamInfo.cpp */; };
+		E38E1FAC0D25F9FD00618676 /* DVDFactorySubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158F0D25F9FA00618676 /* DVDFactorySubtitle.cpp */; };
+		E38E1FAD0D25F9FD00618676 /* DVDSubtitleLineCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15910D25F9FA00618676 /* DVDSubtitleLineCollection.cpp */; };
+		E38E1FAE0D25F9FD00618676 /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; };
+		E38E1FAF0D25F9FD00618676 /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; };
 		E38E1FBE0D25F9FD00618676 /* AACcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D50D25F9FA00618676 /* AACcodec.cpp */; };
 		E38E1FBF0D25F9FD00618676 /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
 		E38E1FC00D25F9FD00618676 /* AC3Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D90D25F9FA00618676 /* AC3Codec.cpp */; };
@@ -713,7 +721,6 @@
 		E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
-		E38E22D40D25F9FE00618676 /* HTTP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E440D25F9FD00618676 /* HTTP.cpp */; };
 		E38E22D50D25F9FE00618676 /* HttpHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E460D25F9FD00618676 /* HttpHeader.cpp */; };
 		E38E22D70D25F9FE00618676 /* IMDB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4A0D25F9FD00618676 /* IMDB.cpp */; };
 		E38E22D80D25F9FE00618676 /* InfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */; };
@@ -835,6 +842,10 @@
 		E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */; };
 		E4907BF80FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
 		E4907BF90FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
+		E4DC97540FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
+		E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
+		E4DC97560FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
+		E4DC97570FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
 		E4E91BB80E7F7338001F0546 /* NptXbmcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */; };
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
@@ -842,7 +853,6 @@
 		F51CF2D00F6055A4004F4602 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
 		F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.0.2.1.dylib */; };
 		F527E8330F293DD70046DBD3 /* libSDL-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */; };
-		F527E8370F293F3C0046DBD3 /* libSDL_image-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8806941E0DCF67A500836761 /* libSDL_image-x86-osx.a */; };
 		F527E8380F293F420046DBD3 /* libSDL_mixer-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0080D683DEF0095F5DD /* libSDL_mixer-x86-osx.a */; };
 		F5290C220EDF142A001167F0 /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5290C210EDF142A001167F0 /* PlayListURL.cpp */; };
 		F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */; };
@@ -1013,52 +1023,52 @@
 		F5A1C8E30F6B06CF00A96ABD /* mmap_anon.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F10D25F9F900618676 /* mmap_anon.c */; };
 		F5A1C8E40F6B06CF00A96ABD /* SoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F40D25F9F900618676 /* SoLoader.cpp */; };
 		F5A1C8E50F6B06CF00A96ABD /* DummyVideoPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14F60D25F9F900618676 /* DummyVideoPlayer.cpp */; };
-		F5A1C8E70F6B06CF00A96ABD /* DVDAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FC0D25F9F900618676 /* DVDAudio.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8E80F6B06CF00A96ABD /* DVDClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FE0D25F9F900618676 /* DVDClock.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8E90F6B06CF00A96ABD /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8EA0F6B06CF00A96ABD /* DVDAudioCodecLiba52.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15090D25F9F900618676 /* DVDAudioCodecLiba52.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8EB0F6B06CF00A96ABD /* DVDAudioCodecLibDts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8EC0F6B06CF00A96ABD /* DVDAudioCodecLibFaad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8ED0F6B06CF00A96ABD /* DVDAudioCodecLibMad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8EE0F6B06CF00A96ABD /* DVDAudioCodecLPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8EF0F6B06CF00A96ABD /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8F00F6B06CF00A96ABD /* DVDAudioCodecPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15150D25F9F900618676 /* DVDAudioCodecPcm.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8F10F6B06CF00A96ABD /* DVDCodecUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8F20F6B06CF00A96ABD /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8F30F6B06CF00A96ABD /* DVDOverlayCodecCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152B0D25F9F900618676 /* DVDOverlayCodecCC.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8F40F6B06CF00A96ABD /* DVDOverlayCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152D0D25F9F900618676 /* DVDOverlayCodecFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8F50F6B06CF00A96ABD /* DVDOverlayCodecText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8F60F6B06CF00A96ABD /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E15350D25F9F900618676 /* cc_decoder.c */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8F70F6B06CF00A96ABD /* DVDVideoCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8F80F6B06CF00A96ABD /* DVDVideoCodecLibMpeg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8F90F6B06CF00A96ABD /* DVDVideoPPFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
+		F5A1C8E70F6B06CF00A96ABD /* DVDAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FC0D25F9F900618676 /* DVDAudio.cpp */; };
+		F5A1C8E80F6B06CF00A96ABD /* DVDClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14FE0D25F9F900618676 /* DVDClock.cpp */; };
+		F5A1C8E90F6B06CF00A96ABD /* DVDAudioCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15070D25F9F900618676 /* DVDAudioCodecFFmpeg.cpp */; };
+		F5A1C8EA0F6B06CF00A96ABD /* DVDAudioCodecLiba52.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15090D25F9F900618676 /* DVDAudioCodecLiba52.cpp */; };
+		F5A1C8EB0F6B06CF00A96ABD /* DVDAudioCodecLibDts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150B0D25F9F900618676 /* DVDAudioCodecLibDts.cpp */; };
+		F5A1C8EC0F6B06CF00A96ABD /* DVDAudioCodecLibFaad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150D0D25F9F900618676 /* DVDAudioCodecLibFaad.cpp */; };
+		F5A1C8ED0F6B06CF00A96ABD /* DVDAudioCodecLibMad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E150F0D25F9F900618676 /* DVDAudioCodecLibMad.cpp */; };
+		F5A1C8EE0F6B06CF00A96ABD /* DVDAudioCodecLPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15110D25F9F900618676 /* DVDAudioCodecLPcm.cpp */; };
+		F5A1C8EF0F6B06CF00A96ABD /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15130D25F9F900618676 /* DVDAudioCodecPassthrough.cpp */; };
+		F5A1C8F00F6B06CF00A96ABD /* DVDAudioCodecPcm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15150D25F9F900618676 /* DVDAudioCodecPcm.cpp */; };
+		F5A1C8F10F6B06CF00A96ABD /* DVDCodecUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15220D25F9F900618676 /* DVDCodecUtils.cpp */; };
+		F5A1C8F20F6B06CF00A96ABD /* DVDFactoryCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15240D25F9F900618676 /* DVDFactoryCodec.cpp */; };
+		F5A1C8F30F6B06CF00A96ABD /* DVDOverlayCodecCC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152B0D25F9F900618676 /* DVDOverlayCodecCC.cpp */; };
+		F5A1C8F40F6B06CF00A96ABD /* DVDOverlayCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152D0D25F9F900618676 /* DVDOverlayCodecFFmpeg.cpp */; };
+		F5A1C8F50F6B06CF00A96ABD /* DVDOverlayCodecText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */; };
+		F5A1C8F60F6B06CF00A96ABD /* cc_decoder.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E15350D25F9F900618676 /* cc_decoder.c */; };
+		F5A1C8F70F6B06CF00A96ABD /* DVDVideoCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */; };
+		F5A1C8F80F6B06CF00A96ABD /* DVDVideoCodecLibMpeg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */; };
+		F5A1C8F90F6B06CF00A96ABD /* DVDVideoPPFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */; };
 		F5A1C8FA0F6B06CF00A96ABD /* DVDDemux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15490D25F9F900618676 /* DVDDemux.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
 		F5A1C8FB0F6B06CF00A96ABD /* DVDDemuxShoutcast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154D0D25F9F900618676 /* DVDDemuxShoutcast.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
 		F5A1C8FC0F6B06CF00A96ABD /* DVDDemuxUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154F0D25F9F900618676 /* DVDDemuxUtils.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
-		F5A1C8FD0F6B06CF00A96ABD /* DVDDemuxSPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15550D25F9FA00618676 /* DVDDemuxSPU.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8FE0F6B06CF00A96ABD /* DVDFactoryInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15590D25F9FA00618676 /* DVDFactoryInputStream.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C8FF0F6B06CF00A96ABD /* DVDInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155B0D25F9FA00618676 /* DVDInputStream.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9000F6B06CF00A96ABD /* DVDInputStreamFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155D0D25F9FA00618676 /* DVDInputStreamFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9010F6B06CF00A96ABD /* DVDInputStreamFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155F0D25F9FA00618676 /* DVDInputStreamFile.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9020F6B06CF00A96ABD /* DVDInputStreamHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15610D25F9FA00618676 /* DVDInputStreamHttp.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9030F6B06CF00A96ABD /* DVDInputStreamMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15630D25F9FA00618676 /* DVDInputStreamMemory.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9040F6B06CF00A96ABD /* DVDInputStreamNavigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9050F6B06CF00A96ABD /* DVDStateSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15740D25F9FA00618676 /* DVDStateSerializer.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9060F6B06CF00A96ABD /* DVDMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15780D25F9FA00618676 /* DVDMessage.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9070F6B06CF00A96ABD /* DVDMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157A0D25F9FA00618676 /* DVDMessageQueue.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9080F6B06CF00A96ABD /* DVDMessageTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157C0D25F9FA00618676 /* DVDMessageTracker.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9090F6B06CF00A96ABD /* DVDOverlayContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157E0D25F9FA00618676 /* DVDOverlayContainer.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C90A0F6B06CF00A96ABD /* DVDOverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15800D25F9FA00618676 /* DVDOverlayRenderer.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C90B0F6B06CF00A96ABD /* DVDPerformanceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15820D25F9FA00618676 /* DVDPerformanceCounter.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C90C0F6B06CF00A96ABD /* DVDPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15840D25F9FA00618676 /* DVDPlayer.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C90D0F6B06CF00A96ABD /* DVDPlayerAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C90E0F6B06CF00A96ABD /* DVDPlayerSubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15880D25F9FA00618676 /* DVDPlayerSubtitle.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C90F0F6B06CF00A96ABD /* DVDPlayerVideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158A0D25F9FA00618676 /* DVDPlayerVideo.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9100F6B06CF00A96ABD /* DVDStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158C0D25F9FA00618676 /* DVDStreamInfo.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9110F6B06CF00A96ABD /* DVDFactorySubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158F0D25F9FA00618676 /* DVDFactorySubtitle.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9120F6B06CF00A96ABD /* DVDSubtitleLineCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15910D25F9FA00618676 /* DVDSubtitleLineCollection.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9130F6B06CF00A96ABD /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
-		F5A1C9140F6B06CF00A96ABD /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; settings = {COMPILER_FLAGS = "-DHAS_VIDEO_PLAYBACK"; }; };
+		F5A1C8FD0F6B06CF00A96ABD /* DVDDemuxSPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15550D25F9FA00618676 /* DVDDemuxSPU.cpp */; };
+		F5A1C8FE0F6B06CF00A96ABD /* DVDFactoryInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15590D25F9FA00618676 /* DVDFactoryInputStream.cpp */; };
+		F5A1C8FF0F6B06CF00A96ABD /* DVDInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155B0D25F9FA00618676 /* DVDInputStream.cpp */; };
+		F5A1C9000F6B06CF00A96ABD /* DVDInputStreamFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155D0D25F9FA00618676 /* DVDInputStreamFFmpeg.cpp */; };
+		F5A1C9010F6B06CF00A96ABD /* DVDInputStreamFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155F0D25F9FA00618676 /* DVDInputStreamFile.cpp */; };
+		F5A1C9020F6B06CF00A96ABD /* DVDInputStreamHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15610D25F9FA00618676 /* DVDInputStreamHttp.cpp */; };
+		F5A1C9030F6B06CF00A96ABD /* DVDInputStreamMemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15630D25F9FA00618676 /* DVDInputStreamMemory.cpp */; };
+		F5A1C9040F6B06CF00A96ABD /* DVDInputStreamNavigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */; };
+		F5A1C9050F6B06CF00A96ABD /* DVDStateSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15740D25F9FA00618676 /* DVDStateSerializer.cpp */; };
+		F5A1C9060F6B06CF00A96ABD /* DVDMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15780D25F9FA00618676 /* DVDMessage.cpp */; };
+		F5A1C9070F6B06CF00A96ABD /* DVDMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157A0D25F9FA00618676 /* DVDMessageQueue.cpp */; };
+		F5A1C9080F6B06CF00A96ABD /* DVDMessageTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157C0D25F9FA00618676 /* DVDMessageTracker.cpp */; };
+		F5A1C9090F6B06CF00A96ABD /* DVDOverlayContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E157E0D25F9FA00618676 /* DVDOverlayContainer.cpp */; };
+		F5A1C90A0F6B06CF00A96ABD /* DVDOverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15800D25F9FA00618676 /* DVDOverlayRenderer.cpp */; };
+		F5A1C90B0F6B06CF00A96ABD /* DVDPerformanceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15820D25F9FA00618676 /* DVDPerformanceCounter.cpp */; };
+		F5A1C90C0F6B06CF00A96ABD /* DVDPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15840D25F9FA00618676 /* DVDPlayer.cpp */; };
+		F5A1C90D0F6B06CF00A96ABD /* DVDPlayerAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15860D25F9FA00618676 /* DVDPlayerAudio.cpp */; };
+		F5A1C90E0F6B06CF00A96ABD /* DVDPlayerSubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15880D25F9FA00618676 /* DVDPlayerSubtitle.cpp */; };
+		F5A1C90F0F6B06CF00A96ABD /* DVDPlayerVideo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158A0D25F9FA00618676 /* DVDPlayerVideo.cpp */; };
+		F5A1C9100F6B06CF00A96ABD /* DVDStreamInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158C0D25F9FA00618676 /* DVDStreamInfo.cpp */; };
+		F5A1C9110F6B06CF00A96ABD /* DVDFactorySubtitle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E158F0D25F9FA00618676 /* DVDFactorySubtitle.cpp */; };
+		F5A1C9120F6B06CF00A96ABD /* DVDSubtitleLineCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15910D25F9FA00618676 /* DVDSubtitleLineCollection.cpp */; };
+		F5A1C9130F6B06CF00A96ABD /* DVDSubtitleParserSubrip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15940D25F9FA00618676 /* DVDSubtitleParserSubrip.cpp */; };
+		F5A1C9140F6B06CF00A96ABD /* DVDSubtitleStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15960D25F9FA00618676 /* DVDSubtitleStream.cpp */; };
 		F5A1C9160F6B06CF00A96ABD /* AACcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D50D25F9FA00618676 /* AACcodec.cpp */; };
 		F5A1C9170F6B06CF00A96ABD /* AC3CDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D70D25F9FA00618676 /* AC3CDDACodec.cpp */; };
 		F5A1C9180F6B06CF00A96ABD /* AC3Codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15D90D25F9FA00618676 /* AC3Codec.cpp */; };
@@ -1491,7 +1501,6 @@
 		F5A1CACC0F6B06CF00A96ABD /* GUIInfoManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */; };
 		F5A1CACD0F6B06CF00A96ABD /* HTMLTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E400D25F9FD00618676 /* HTMLTable.cpp */; };
 		F5A1CACE0F6B06CF00A96ABD /* HTMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */; };
-		F5A1CACF0F6B06CF00A96ABD /* HTTP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E440D25F9FD00618676 /* HTTP.cpp */; };
 		F5A1CAD00F6B06CF00A96ABD /* HttpHeader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E460D25F9FD00618676 /* HttpHeader.cpp */; };
 		F5A1CAD10F6B06CF00A96ABD /* IMDB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4A0D25F9FD00618676 /* IMDB.cpp */; };
 		F5A1CAD20F6B06CF00A96ABD /* InfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */; };
@@ -1730,7 +1739,6 @@
 		F5A1CC0A0F6B20B700A96ABD /* libshout-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC090F6B20B700A96ABD /* libshout-powerpc-osx.a */; };
 		F5A1CC0C0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC0B0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a */; };
 		F5A1CC0E0F6B214800A96ABD /* libSDL-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC0D0F6B214800A96ABD /* libSDL-powerpc-osx.a */; };
-		F5A1CC120F6B215C00A96ABD /* libSDL_image-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC110F6B215C00A96ABD /* libSDL_image-powerpc-osx.a */; };
 		F5A1CC140F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC130F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a */; };
 		F5A2BD0E0F7AD9140006ABA0 /* ZeroconfOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */; };
 		F5A2BD0F0F7AD92C0006ABA0 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
@@ -1803,6 +1811,13 @@
 		7C2D6AE30F35453E00DD2E85 /* SpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocol.h; sourceTree = "<group>"; };
 		7C5608C40F1754930056433A /* ExternalPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExternalPlayer.cpp; sourceTree = "<group>"; };
 		7C5608C50F1754930056433A /* ExternalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalPlayer.h; sourceTree = "<group>"; };
+		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
+		7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDTSCorrection.h; sourceTree = "<group>"; };
+		7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstextustar.cpp; path = karaoke/karaokelyricstextustar.cpp; sourceTree = "<group>"; };
+		7CDAEA7C1001CD6E0040B25F /* karaokelyricstextustar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokelyricstextustar.h; path = karaoke/karaokelyricstextustar.h; sourceTree = "<group>"; };
+		7CDAEA891001EBA70040B25F /* PltConstants.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltConstants.cpp; sourceTree = "<group>"; };
+		7CDAEA8A1001EBA70040B25F /* PltConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltConstants.h; sourceTree = "<group>"; };
+		7CDAEA8B1001EBA70040B25F /* PltIconsData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltIconsData.cpp; sourceTree = "<group>"; };
 		7CEBD8A60F33A0D800CAF6AD /* SpecialProtocolDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecialProtocolDirectory.cpp; sourceTree = "<group>"; };
 		7CEBD8A70F33A0D800CAF6AD /* SpecialProtocolDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocolDirectory.h; sourceTree = "<group>"; };
 		810C9F600D67BD2F0095F5DD /* PltMediaConnect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PltMediaConnect.cpp; path = MediaConnect/PltMediaConnect.cpp; sourceTree = "<group>"; };
@@ -1861,7 +1876,6 @@
 		83A72B960FBC8E3B00171871 /* LockFree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockFree.h; sourceTree = "<group>"; };
 		83E0B2470F7C95FF0091643F /* Atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomics.h; sourceTree = "<group>"; };
 		83E0B2480F7C95FF0091643F /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
-		8806941E0DCF67A500836761 /* libSDL_image-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_image-x86-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_image-x86-osx.a"; sourceTree = "<group>"; };
 		880DBE360DC2077000E26B71 /* README.osx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.osx; sourceTree = "<group>"; };
 		880DBE490DC223FF00E26B71 /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
 		880DBE4A0DC223FF00E26B71 /* Artist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Artist.h; sourceTree = "<group>"; };
@@ -3398,8 +3412,6 @@
 		E38E1E410D25F9FD00618676 /* HTMLTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLTable.h; sourceTree = "<group>"; };
 		E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTMLUtil.cpp; sourceTree = "<group>"; };
 		E38E1E430D25F9FD00618676 /* HTMLUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTMLUtil.h; sourceTree = "<group>"; };
-		E38E1E440D25F9FD00618676 /* HTTP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HTTP.cpp; sourceTree = "<group>"; };
-		E38E1E450D25F9FD00618676 /* HTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTP.h; sourceTree = "<group>"; };
 		E38E1E460D25F9FD00618676 /* HttpHeader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpHeader.cpp; sourceTree = "<group>"; };
 		E38E1E470D25F9FD00618676 /* HttpHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpHeader.h; sourceTree = "<group>"; };
 		E38E1E4A0D25F9FD00618676 /* IMDB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IMDB.cpp; sourceTree = "<group>"; };
@@ -3571,6 +3583,10 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZeroconfOSX.mm; sourceTree = "<group>"; };
 		E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = /opt/local/lib/mysql5/mysql/libmysqlclient.dylib; sourceTree = "<absolute>"; };
+		E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPDirectory.cpp; sourceTree = "<group>"; };
+		E4DC97510FFE5BA8008E0C07 /* SAPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAPDirectory.h; sourceTree = "<group>"; };
+		E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPFile.cpp; sourceTree = "<group>"; };
+		E4DC97530FFE5BA8008E0C07 /* SAPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAPFile.h; sourceTree = "<group>"; };
 		E4DF6CD80EFF85EB00C28243 /* CHANGELOG.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CHANGELOG.txt; sourceTree = "<group>"; };
 		E4DF6CD90EFF85EB00C28243 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		E4DF6CDA0EFF85EB00C28243 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
@@ -3677,7 +3693,6 @@
 		F5A1CC090F6B20B700A96ABD /* libshout-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libshout-powerpc-osx.a"; path = "xbmc/lib/libshout/libshout-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC0B0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libGoAhead-powerpc-osx.a"; path = "xbmc/lib/libGoAhead/libGoAhead-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC0D0F6B214800A96ABD /* libSDL-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL-powerpc-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
-		F5A1CC110F6B215C00A96ABD /* libSDL_image-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_image-powerpc-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_image-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5A1CC130F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-powerpc-osx.a"; path = "xbmc/lib/libSDL-OSX/libSDL_mixer-powerpc-osx.a"; sourceTree = SOURCE_ROOT; };
 		F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /opt/local/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
 		F5AACA660FB3DE2D00DBB77C /* GUIDialogSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogSelect.h; sourceTree = "<group>"; };
@@ -3762,7 +3777,6 @@
 				F51E5BB70E68BE3A00E24093 /* libmad.0.2.1.dylib in Frameworks */,
 				81F064100E9B5FE400C203A6 /* libxbms-x86-osx.a in Frameworks */,
 				F527E8330F293DD70046DBD3 /* libSDL-x86-osx.a in Frameworks */,
-				F527E8370F293F3C0046DBD3 /* libSDL_image-x86-osx.a in Frameworks */,
 				F527E8380F293F420046DBD3 /* libSDL_mixer-x86-osx.a in Frameworks */,
 				F5EA08860F78B1E7005C2EC5 /* libcdio.dylib in Frameworks */,
 				F5A2BD600F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */,
@@ -3809,7 +3823,6 @@
 				F5A1CC0A0F6B20B700A96ABD /* libshout-powerpc-osx.a in Frameworks */,
 				F5A1CC0C0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a in Frameworks */,
 				F5A1CC0E0F6B214800A96ABD /* libSDL-powerpc-osx.a in Frameworks */,
-				F5A1CC120F6B215C00A96ABD /* libSDL_image-powerpc-osx.a in Frameworks */,
 				F5A1CC140F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a in Frameworks */,
 				F5EA08850F78B1E7005C2EC5 /* libcdio.dylib in Frameworks */,
 				F5A2BD610F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */,
@@ -4794,6 +4807,8 @@
 		E38E14F80D25F9F900618676 /* dvdplayer */ = {
 			isa = PBXGroup;
 			children = (
+				7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */,
+				7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */,
 				E38E14FB0D25F9F900618676 /* dvd_config.h */,
 				E38E14FC0D25F9F900618676 /* DVDAudio.cpp */,
 				E38E14FD0D25F9F900618676 /* DVDAudio.h */,
@@ -5374,6 +5389,10 @@
 				E38E174A0D25F9FA00618676 /* RingBuffer.h */,
 				E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */,
 				E38E174C0D25F9FA00618676 /* RTVDirectory.h */,
+				E4DC97510FFE5BA8008E0C07 /* SAPDirectory.h */,
+				E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */,
+				E4DC97530FFE5BA8008E0C07 /* SAPFile.h */,
+				E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */,
 				E38E174D0D25F9FA00618676 /* ShoutcastDirectory.cpp */,
 				E38E174E0D25F9FA00618676 /* ShoutcastDirectory.h */,
 				E38E174F0D25F9FA00618676 /* ShoutcastRipFile.cpp */,
@@ -5826,6 +5845,9 @@
 		E38E1AC40D25F9FB00618676 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				7CDAEA891001EBA70040B25F /* PltConstants.cpp */,
+				7CDAEA8A1001EBA70040B25F /* PltConstants.h */,
+				7CDAEA8B1001EBA70040B25F /* PltIconsData.cpp */,
 				E38E1AC50D25F9FB00618676 /* Platinum.cpp */,
 				E38E1AC60D25F9FB00618676 /* Platinum.h */,
 				E38E1AC70D25F9FB00618676 /* PltAction.cpp */,
@@ -6608,8 +6630,6 @@
 				E38E1E410D25F9FD00618676 /* HTMLTable.h */,
 				E38E1E420D25F9FD00618676 /* HTMLUtil.cpp */,
 				E38E1E430D25F9FD00618676 /* HTMLUtil.h */,
-				E38E1E440D25F9FD00618676 /* HTTP.cpp */,
-				E38E1E450D25F9FD00618676 /* HTTP.h */,
 				E38E1E460D25F9FD00618676 /* HttpHeader.cpp */,
 				E38E1E470D25F9FD00618676 /* HttpHeader.h */,
 				E38E1E4A0D25F9FD00618676 /* IMDB.cpp */,
@@ -6710,6 +6730,8 @@
 		F54C51C70F1E77A700D46E3C /* karaoke */ = {
 			isa = PBXGroup;
 			children = (
+				7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */,
+				7CDAEA7C1001CD6E0040B25F /* karaokelyricstextustar.h */,
 				F5D879D10EF4BE53007C68A9 /* Cdg.cpp */,
 				F5D879D30EF4BE53007C68A9 /* Cdg.h */,
 				F54C51D00F1E783200D46E3C /* GUIDialogKaraokeSongSelector.cpp */,
@@ -6817,7 +6839,6 @@
 				F5A1CC090F6B20B700A96ABD /* libshout-powerpc-osx.a */,
 				F5A1CC0B0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a */,
 				F5A1CC0D0F6B214800A96ABD /* libSDL-powerpc-osx.a */,
-				F5A1CC110F6B215C00A96ABD /* libSDL_image-powerpc-osx.a */,
 				F5A1CC130F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a */,
 			);
 			name = ppc;
@@ -6832,7 +6853,6 @@
 				E30B3E8E0D5D59290030A311 /* libshout-x86-osx.a */,
 				E38F12E90D2A17B30035C331 /* libGoAhead-x86-osx.a */,
 				810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */,
-				8806941E0DCF67A500836761 /* libSDL_image-x86-osx.a */,
 				810CA0080D683DEF0095F5DD /* libSDL_mixer-x86-osx.a */,
 			);
 			name = x86;
@@ -7582,7 +7602,6 @@
 				E38E22D10D25F9FE00618676 /* GUIInfoManager.cpp in Sources */,
 				E38E22D20D25F9FE00618676 /* HTMLTable.cpp in Sources */,
 				E38E22D30D25F9FE00618676 /* HTMLUtil.cpp in Sources */,
-				E38E22D40D25F9FE00618676 /* HTTP.cpp in Sources */,
 				E38E22D50D25F9FE00618676 /* HttpHeader.cpp in Sources */,
 				E38E22D70D25F9FE00618676 /* IMDB.cpp in Sources */,
 				E38E22D80D25F9FE00618676 /* InfoLoader.cpp in Sources */,
@@ -7815,6 +7834,12 @@
 				F54878770FE0614F00E506FD /* ScriptSettings.cpp in Sources */,
 				F548787A0FE0619800E506FD /* PythonSettings.cpp in Sources */,
 				F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */,
+				7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */,
+				E4DC97540FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */,
+				E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */,
+				7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */,
+				7CDAEA8C1001EBA70040B25F /* PltConstants.cpp in Sources */,
+				7CDAEA8D1001EBA70040B25F /* PltIconsData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8414,7 +8439,6 @@
 				F5A1CACC0F6B06CF00A96ABD /* GUIInfoManager.cpp in Sources */,
 				F5A1CACD0F6B06CF00A96ABD /* HTMLTable.cpp in Sources */,
 				F5A1CACE0F6B06CF00A96ABD /* HTMLUtil.cpp in Sources */,
-				F5A1CACF0F6B06CF00A96ABD /* HTTP.cpp in Sources */,
 				F5A1CAD00F6B06CF00A96ABD /* HttpHeader.cpp in Sources */,
 				F5A1CAD10F6B06CF00A96ABD /* IMDB.cpp in Sources */,
 				F5A1CAD20F6B06CF00A96ABD /* InfoLoader.cpp in Sources */,
@@ -8647,6 +8671,12 @@
 				F54878780FE0614F00E506FD /* ScriptSettings.cpp in Sources */,
 				F548787B0FE0619800E506FD /* PythonSettings.cpp in Sources */,
 				F5487B4D0FE6F02700E506FD /* StreamDetails.cpp in Sources */,
+				7CDAE9060FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */,
+				E4DC97560FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */,
+				E4DC97570FFE5BA8008E0C07 /* SAPFile.cpp in Sources */,
+				7CDAEA7E1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */,
+				7CDAEA8E1001EBA70040B25F /* PltConstants.cpp in Sources */,
+				7CDAEA8F1001EBA70040B25F /* PltIconsData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8688,6 +8718,8 @@
 					"_FILE_OFFSET_BITS=64",
 					_LARGEFILE64_SOURCE,
 					HAS_SDL_JOYSTICK,
+					HAVE_CONFIG_H,
+					HAS_SPC_CODEC,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_PROFILING_CODE = NO;
@@ -8765,6 +8797,8 @@
 					"_FILE_OFFSET_BITS=64",
 					_LARGEFILE64_SOURCE,
 					HAS_SDL_JOYSTICK,
+					HAVE_CONFIG_H,
+					HAS_SPC_CODEC,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
@@ -8893,6 +8927,8 @@
 					"_FILE_OFFSET_BITS=64",
 					_LARGEFILE64_SOURCE,
 					HAS_SDL_JOYSTICK,
+					HAVE_CONFIG_H,
+					HAS_SPC_CODEC,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_PROFILING_CODE = NO;
@@ -8988,6 +9024,8 @@
 					"_FILE_OFFSET_BITS=64",
 					_LARGEFILE64_SOURCE,
 					HAS_SDL_JOYSTICK,
+					HAVE_CONFIG_H,
+					HAS_SPC_CODEC,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;

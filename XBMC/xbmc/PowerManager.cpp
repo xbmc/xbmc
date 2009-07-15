@@ -22,6 +22,10 @@
 #include "stdafx.h"
 #include "PowerManager.h"
 #include "Application.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogVideoScan.h"
+#include "GUIDialogMusicScan.h"
+#include "common/Keyboard.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -110,11 +114,11 @@ bool CPowerManager::Suspend()
 {
   if (CanSuspend())
   {
-    g_application.m_restartLirc = true;
-    g_application.m_restartLCD = true;
+    g_application.m_bRunResumeJobs = true;
 #ifdef HAS_LCD
     g_lcd->SetBackLight(0);
 #endif
+    g_Keyboard.ResetState();
     return m_instance->Suspend();
   }
   
@@ -124,8 +128,8 @@ bool CPowerManager::Hibernate()
 {
   if (CanHibernate())
   {
-    g_application.m_restartLirc = true;
-    g_application.m_restartLCD = true;
+    g_application.m_bRunResumeJobs = true;
+    g_Keyboard.ResetState();
     return m_instance->Hibernate();
   }
 
@@ -134,6 +138,53 @@ bool CPowerManager::Hibernate()
 bool CPowerManager::Reboot()
 {
   return CanReboot() ? m_instance->Reboot() : false;
+}
+
+void CPowerManager::Resume()
+{
+  CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
+
+  // restart lirc
+#ifdef HAS_LIRC
+  CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
+  g_RemoteControl.Disconnect();
+  g_RemoteControl.Initialize();
+#endif
+
+  // restart and undim lcd
+#ifdef HAS_LCD
+  CLog::Log(LOGNOTICE, "%s: Restarting lcd", __FUNCTION__);
+#ifdef _LINUX
+  g_lcd->SetBackLight(1);
+#else
+  g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
+#endif
+  g_lcd->Stop();
+  g_lcd->Initialize();
+#endif
+
+  // update video library
+  if (g_guiSettings.GetBool("videolibrary.updateonstartup"))
+  {
+    CLog::Log(LOGNOTICE, "%s: Updating video library on resume", __FUNCTION__);
+    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    SScraperInfo info;
+    VIDEO::SScanSettings settings;
+    if (scanner && !scanner->IsScanning())
+      scanner->StartScanning("",info,settings,false);
+  }
+
+  // update music library
+  if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))
+  {
+    CLog::Log(LOGNOTICE, "%s: Updating music library on resume", __FUNCTION__);
+    CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (scanner && !scanner->IsScanning())
+      scanner->StartScanning("");
+  }
+
+  // reset
+  g_application.m_bRunResumeJobs = false;
 }
 
 bool CPowerManager::CanPowerdown()

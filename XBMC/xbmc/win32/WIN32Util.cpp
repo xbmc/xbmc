@@ -34,6 +34,7 @@
 #if _MSC_VER > 1400
 #include "Setupapi.h"
 #endif
+#include "MediaManager.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -41,8 +42,6 @@ extern HWND g_hWnd;
 
 using namespace std;
 using namespace MEDIA_DETECT;
-
-DWORD CWIN32Util::dwDriveMask = 0;
 
 CWIN32Util::CWIN32Util(void)
 {
@@ -284,30 +283,6 @@ char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
     }
     return (i + 'A');
 }
-
-
-// Workaround to get the added and removed drives
-// Seems to be that the lParam in SDL is empty
-// MS way: http://msdn.microsoft.com/en-us/library/aa363215(VS.85).aspx
-
-void CWIN32Util::UpdateDriveMask()
-{
-  dwDriveMask = GetLogicalDrives();
-}
-
-CStdString CWIN32Util::GetChangedDrive()
-{
-  CStdString strDrive;
-  DWORD dwDriveMask2 = GetLogicalDrives();
-  DWORD dwDriveMaskResult = dwDriveMask ^ dwDriveMask2;
-  if(dwDriveMaskResult == 0)
-    return "";
-  dwDriveMask = dwDriveMask2;
-  strDrive.Format("%c:",FirstDriveFromMask(dwDriveMaskResult));
-  return strDrive;
-}
-
-// End Workaround
 
 bool CWIN32Util::PowerManagement(PowerState State)
 {
@@ -755,6 +730,7 @@ void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
   SetThreadExecutionState( sSysParam.dwEsFlags );
 }
 
+#ifdef HAS_SDL_OPENGL
 void CWIN32Util::CheckGLVersion()
 {
   if(CWIN32Util::HasGLDefaultDrivers())
@@ -793,6 +769,7 @@ bool CWIN32Util::HasReqGLVersion()
   else
     return false;
 }
+#endif
 
 BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
 {
@@ -816,6 +793,118 @@ BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
   }
 
   return(b);
+}
+
+void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType)
+{
+  CMediaSource share;
+  char* pcBuffer= NULL;
+  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
+  if( dwStrLength != 0 )
+  {
+    dwStrLength+= 1;
+    pcBuffer= new char [dwStrLength];
+    GetLogicalDriveStrings( dwStrLength, pcBuffer );
+
+    UINT uDriveType;
+    int iPos= 0, nResult;
+    char cVolumeName[100];
+    do{
+      cVolumeName[0]= '\0';
+      uDriveType= GetDriveType( pcBuffer + iPos  );
+      if(uDriveType != DRIVE_REMOVABLE)
+        nResult= GetVolumeInformation( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
+      share.strPath= share.strName= "";
+
+      bool bUseDCD= false;
+      if( uDriveType > DRIVE_UNKNOWN && 
+        (( eDriveType == ALL_DRIVES && (uDriveType == DRIVE_FIXED || uDriveType == DRIVE_REMOTE || uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOVABLE )) ||
+         ( eDriveType == LOCAL_DRIVES && (uDriveType == DRIVE_FIXED || uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOTE)) ||
+         ( eDriveType == REMOVABLE_DRIVES && (uDriveType == DRIVE_REMOVABLE ))))
+      {
+        share.strPath= pcBuffer + iPos;
+        if( cVolumeName[0] != '\0' ) share.strName= cVolumeName;
+        if( uDriveType == DRIVE_CDROM && nResult)
+        {
+          share.strName.Format( "%s %s (%s)",
+            share.strPath, g_localizeStrings.Get(218),share.strName );
+          share.m_iDriveType= CMediaSource::SOURCE_TYPE_LOCAL;
+          bUseDCD= true;
+        }
+        else
+        {
+          // Lets show it, like Windows explorer do... TODO: sorting should depend on driver letter
+          switch(uDriveType)
+          {
+          case DRIVE_CDROM:
+            share.strName.Format( "%s (%s)", share.strPath, g_localizeStrings.Get(218));
+            break;
+          case DRIVE_REMOVABLE:
+            if(share.strName.IsEmpty())
+              share.strName.Format( "%s (%s)", g_localizeStrings.Get(437), share.strPath);
+            break;
+          case DRIVE_UNKNOWN:
+            share.strName.Format( "%s (%s)", share.strPath, g_localizeStrings.Get(13205));
+            break;
+          default:
+            if(share.strName.empty())
+              share.strName = share.strPath;
+            else
+              share.strName.Format( "%s (%s)", share.strPath, share.strName);
+            break;
+          }
+        }
+        share.strName.Replace(":\\",":");
+        share.strPath.Replace(":\\",":");
+        share.m_ignore= true;
+        if( !bUseDCD )
+        {
+          share.m_iDriveType= (
+           ( uDriveType == DRIVE_FIXED  )    ? CMediaSource::SOURCE_TYPE_LOCAL :
+           ( uDriveType == DRIVE_REMOTE )    ? CMediaSource::SOURCE_TYPE_REMOTE :
+           ( uDriveType == DRIVE_CDROM  )    ? CMediaSource::SOURCE_TYPE_DVD :
+           ( uDriveType == DRIVE_REMOVABLE ) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
+             CMediaSource::SOURCE_TYPE_UNKNOWN );
+        }
+
+        localDrives.push_back(share);
+      }
+      iPos += (strlen( pcBuffer + iPos) + 1 );
+    } while( strlen( pcBuffer + iPos ) > 0 );
+    if( pcBuffer != NULL)
+      delete[] pcBuffer;
+  }
+}
+
+void CWIN32Util::AddRemovableDrives()
+{
+  VECSOURCES vShare;
+  VECSOURCES::const_iterator it;
+  GetDrivesByType(vShare, REMOVABLE_DRIVES);
+  for(it=vShare.begin();it!=vShare.end();++it)
+    g_mediaManager.AddAutoSource(*it);
+}
+
+bool CWIN32Util::IsAudioCD(const CStdString& strPath)
+{
+  CStdString strDrive = strPath;
+  char cVolumenName[256];
+  char cFSName[256];
+  CUtil::AddSlashAtEnd(strDrive);
+  if(GetVolumeInformation(strDrive.c_str(), cVolumenName, 255, NULL, NULL, NULL, cFSName, 255)==0)
+    return false;
+  return (strncmp(cFSName,"CDFS",4)==0 && strncmp(cVolumenName,"Audio CD",4)==0);
+}
+
+CStdString CWIN32Util::GetDiskLabel(const CStdString& strPath)
+{
+  CStdString strDrive = strPath;
+  char cVolumenName[128];
+  char cFSName[128];
+  CUtil::AddSlashAtEnd(strDrive);
+  if(GetVolumeInformation(strDrive.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
+    return "";
+  return CStdString(cVolumenName).TrimRight(" ");
 }
 
 extern "C"

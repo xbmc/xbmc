@@ -315,7 +315,8 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
     {
       snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --newmode \"%s\" %s > /dev/null 2>&1", getenv("XBMC_HOME"),
                name.c_str(), strModeLine.c_str());
-      system(cmd);
+      if (system(cmd) != 0)
+        CLog::Log(LOGERROR, "Unable to create modeline \"%s\"", name.c_str());
     }
 
     for (unsigned int i = 0; i < m_outputs.size(); i++)
@@ -324,7 +325,8 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
       {
         snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --addmode %s \"%s\"  > /dev/null 2>&1", getenv("XBMC_HOME"),
                  m_outputs[i].name.c_str(), name.c_str());
-        system(cmd);
+        if (system(cmd) != 0)
+          CLog::Log(LOGERROR, "Unable to add modeline \"%s\"", name.c_str());
       }
     }
   }

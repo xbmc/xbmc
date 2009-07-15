@@ -16,12 +16,16 @@
 class TestServerMessageHandler
 {
 public:
+    NPT_IMPLEMENT_DYNAMIC_CAST(TestServerMessageHandler)
+    
     // destructor
     virtual ~TestServerMessageHandler() {}
     
     // methods
     virtual void OnTestCommand(NPT_MessageReceiver* /*receiver*/, int /*id*/) {}
 };
+NPT_DEFINE_DYNAMIC_CAST_ANCHOR(TestServerMessageHandler)
+
 /*----------------------------------------------------------------------
 |       TestServerMessage
 +---------------------------------------------------------------------*/
@@ -34,8 +38,7 @@ public:
     }
     virtual NPT_Result Deliver(TestServerMessageHandler* handler) = 0;
     virtual NPT_Result Dispatch(NPT_MessageHandler* handler) {
-        TestServerMessageHandler* specific = 
-            dynamic_cast<TestServerMessageHandler*>(handler);
+        TestServerMessageHandler* specific = NPT_DYNAMIC_CAST(TestServerMessageHandler, handler);
         if (specific) {
             return Deliver(specific);
         } else {
@@ -67,12 +70,16 @@ private:
 class TestClientMessageHandler
 {
 public:
+    NPT_IMPLEMENT_DYNAMIC_CAST(TestClientMessageHandler)
+    
     // destructor
     virtual ~TestClientMessageHandler() {}
     
     // methods
     virtual void OnReply(int /*id*/) {}
 };
+NPT_DEFINE_DYNAMIC_CAST_ANCHOR(TestClientMessageHandler)
+
 /*----------------------------------------------------------------------
 |       TestClientMessage
 +---------------------------------------------------------------------*/
@@ -85,8 +92,7 @@ public:
     }
     virtual NPT_Result Deliver(TestClientMessageHandler* handler) = 0;
     virtual NPT_Result Dispatch(NPT_MessageHandler* handler) {
-        TestClientMessageHandler* specific =
-            dynamic_cast<TestClientMessageHandler*>(handler);
+        TestClientMessageHandler* specific = NPT_DYNAMIC_CAST(TestClientMessageHandler, handler);
         if (specific) {
             return Deliver(specific);
         } else {

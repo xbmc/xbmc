@@ -21,6 +21,7 @@
 
 #pragma once
 #include "DVDDemux.h"
+#include "FileSystem/HTSPSession.h"
 
 class CDVDInputStreamHTSP;
 typedef struct htsmsg htsmsg_t;
@@ -49,7 +50,7 @@ public:
   int           GetNrOfStreams();
 
 protected:
-
+  friend class CDemuxStreamVideoHTSP;
 
   void SubscriptionStart (htsmsg_t *m);
   void SubscriptionStop  (htsmsg_t *m);
@@ -61,4 +62,5 @@ protected:
   TStreams             m_Streams;
   std::string          m_Status;
   int                  m_StatusCount;
+  HTSP::SQueueStatus   m_QueueStatus;
 };

@@ -160,6 +160,8 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_dwNestedBeginCount = 0;
 #ifdef HAS_SDL_OPENGL
   m_glTextureLoaded = false;
+  m_vertex_size   = 4*1024;
+  m_vertex        = (SVertex*)malloc(m_vertex_size * sizeof(SVertex));
 #endif
   m_face = NULL;
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -170,6 +172,7 @@ CGUIFontTTF::CGUIFontTTF(const CStdString& strFileName)
   m_numChars = 0;
   m_posX = m_posY = 0;
   m_textureHeight = m_textureWidth = 0;
+  m_textureScaleX = m_textureScaleY = 0.0;
   m_ellipsesWidth = m_height = 0.0f;
 }
 
@@ -249,6 +252,12 @@ void CGUIFontTTF::Clear()
   if (m_face)
     g_freeTypeLibrary.ReleaseFont(m_face);
   m_face = NULL;
+  
+#ifdef HAS_SDL_OPENGL
+  free(m_vertex);
+  m_vertex = NULL;
+  m_vertex_count = 0;
+#endif
 }
 
 bool CGUIFontTTF::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing)
@@ -607,7 +616,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
       }
 
 #ifndef HAS_SDL
-      LPDIRECT3DTEXTURE8 newTexture;
+      LPDIRECT3DTEXTURE9 newTexture;
       if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8, D3DPOOL_MANAGED, &newTexture))
       {
         CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %f", m_height);
@@ -628,11 +637,12 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
 
       if (m_texture)
       { // copy across from our current one using gpu
-        LPDIRECT3DSURFACE8 pTarget, pSource;
+        LPDIRECT3DSURFACE9 pTarget, pSource;
         newTexture->GetSurfaceLevel(0, &pTarget);
         m_texture->GetSurfaceLevel(0, &pSource);
 
-        m_pD3DDevice->CopyRects(pSource, NULL, 0, pTarget, NULL);
+        // TODO:DIRECTX - this is probably really slow, but UpdateSurface() doesn't like rendering from non-system textures
+        D3DXLoadSurfaceFromSurface(pTarget, NULL, NULL, pSource, NULL, NULL, D3DX_FILTER_NONE, 0);
 
         SAFE_RELEASE(pTarget);
         SAFE_RELEASE(pSource);
@@ -699,7 +709,7 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   {
 #ifndef HAS_SDL
     // render this onto our normal texture using gpu
-    LPDIRECT3DSURFACE8 target;
+    LPDIRECT3DSURFACE9 target;
     m_texture->GetSurfaceLevel(0, &target);
 
     RECT sourcerect = { 0, 0, bitmap.width, bitmap.rows };
@@ -759,6 +769,9 @@ bool CGUIFontTTF::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   }
   m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
   m_numChars++;
+  
+  m_textureScaleX = 1.0f / m_textureWidth;
+  m_textureScaleY = 1.0f / m_textureHeight;
 
   // free the glyph
   FT_Done_Glyph(glyph);
@@ -774,10 +787,10 @@ void CGUIFontTTF::Begin()
     // just have to blit from our texture.
     m_pD3DDevice->SetTexture( 0, m_texture );
 
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
+    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
+    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
     m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 ); // only use diffuse
     m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
     m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
@@ -796,7 +809,7 @@ void CGUIFontTTF::Begin()
     m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
     m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
 
-    m_pD3DDevice->SetVertexShader(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+    m_pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
 #elif defined(HAS_SDL_OPENGL)
     if (!m_glTextureLoaded)
@@ -837,7 +850,7 @@ void CGUIFontTTF::Begin()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     VerifyGLState();
 
-    glBegin(GL_QUADS);
+    m_vertex_count = 0;
 #endif
   }
   // Keep track of the nested begin/end calls.
@@ -856,7 +869,18 @@ void CGUIFontTTF::End()
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 #elif defined(HAS_SDL_OPENGL)
-  glEnd();
+
+  glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
+
+  glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
+  glVertexPointer  (3, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
+  glTexCoordPointer(2, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
+  glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  glDrawArrays(GL_QUADS, 0, m_vertex_count);
+  glPopClientAttrib();
+  
 #endif
 }
 
@@ -907,17 +931,14 @@ void CGUIFontTTF::RenderCharacter(float posX, float posY, const Character *ch, D
   }
 
   float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
-
-#if defined(HAS_SDL_OPENGL)
-  float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
-
   float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
-  float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-
   float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
-  float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-
   float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+
+#ifndef HAS_SDL_2D
+  float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
   float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 #endif
 
@@ -929,10 +950,10 @@ struct CUSTOMVERTEX {
   };
 
   // tex coords converted to 0..1 range
-  float tl = texture.x1 / m_textureWidth;
-  float tr = texture.x2 / m_textureWidth;
-  float tt = texture.y1 / m_textureHeight;
-  float tb = texture.y2 / m_textureHeight;
+  float tl = texture.x1 * m_textureScaleX;
+  float tr = texture.x2 * m_textureScaleX;
+  float tt = texture.y1 * m_textureScaleY;
+  float tb = texture.y2 * m_textureScaleY;
 
   CUSTOMVERTEX verts[4] =  {
     { x[0], y1, z1, dwColor, tl, tt},
@@ -980,33 +1001,53 @@ struct CUSTOMVERTEX {
   SDL_FreeSurface(tempSurface);
 #elif defined(HAS_SDL_OPENGL)
   // tex coords converted to 0..1 range
-  float tl = texture.x1 / m_textureWidth;
-  float tr = texture.x2 / m_textureWidth;
-  float tt = texture.y1 / m_textureHeight;
-  float tb = texture.y2 / m_textureHeight;
+  float tl = texture.x1 * m_textureScaleX;
+  float tr = texture.x2 * m_textureScaleX;
+  float tt = texture.y1 * m_textureScaleY;
+  float tb = texture.y2 * m_textureScaleY;
 
-  GLubyte colors[4] = { (GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24) };
+  // grow the vertex buffer if required
+  if(m_vertex_count >= m_vertex_size)
+  {
+    m_vertex_size *= 2;
+    m_vertex       = (SVertex*)realloc(m_vertex, m_vertex_size * sizeof(SVertex));
+  }
 
-  // Top-left vertex (corner)
-  glColor4ubv(colors);
-  glTexCoord2f(tl, tt);
-  glVertex3f(x[0], y1, z1);
+  SVertex* v = m_vertex + m_vertex_count;
 
-  // Bottom-left vertex (corner)
-  glColor4ubv(colors);
-  glTexCoord2f(tr, tt);
-  glVertex3f(x[1], y2, z2);
+  for(int i = 0; i < 4; i++)
+  {
+    v[i].r = (dwColor >> 16) & 0xff;
+    v[i].g = (dwColor >>  8) & 0xff;
+    v[i].b = (dwColor >>  0) & 0xff;
+    v[i].a = (dwColor >> 24) & 0xff;
+  }
 
-  // Bottom-right vertex (corner)
-  glColor4ubv(colors);
-  glTexCoord2f(tr, tb);
-  glVertex3f(x[2], y3, z3);
+  v[0].u = tl;
+  v[0].v = tt;
+  v[0].x = x[0];
+  v[0].y = y1;
+  v[0].z = z1;
 
-  // Top-right vertex (corner)
-  glColor4ubv(colors);
-  glTexCoord2f(tl, tb);
-  glVertex3f(x[3], y4, z4);
+  v[1].u = tr;
+  v[1].v = tt;
+  v[1].x = x[1];
+  v[1].y = y2;
+  v[1].z = z2;
 
+  v[2].u = tr;
+  v[2].v = tb;
+  v[2].x = x[2];
+  v[2].y = y3;
+  v[2].z = z3;
+
+  v[3].u = tl;
+  v[3].v = tb;
+  v[3].x = x[3];
+  v[3].y = y4;
+  v[3].z = z4;
+
+  m_vertex_count+=4;
 #endif
 }
 

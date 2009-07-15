@@ -136,7 +136,7 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
 // Hack to allow compilation on x86_64
 long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
 {
-  return 0;
+  throw "cas2 is not implemented on x86_64!";
 }
 #endif // !defined (__x86_64)
 #endif
@@ -193,6 +193,62 @@ long AtomicIncrement(volatile long* pAddr)
   return reg;
 }
 
+
+#endif
+
+///////////////////////////////////////////////////////////////////////////
+// 32-bit atomic add
+// Returns new value of *pAddr
+///////////////////////////////////////////////////////////////////////////
+
+#ifdef __ppc__ // PowerPC
+
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+  long val;
+  
+  __asm__ __volatile__ (
+                        "sync             \n"
+                        "1: lwarx  %0, 0, %1 \n"
+                        "add  %0, %2, %0 \n"
+                        "stwcx. %0, 0, %1 \n"
+                        "bne-   1b        \n"
+                        "isync"
+                        : "=&r" (val)
+                        : "r" (pAddr), "r" (amount)
+                        : "cc", "memory");
+  return val;  
+}
+
+#elif defined(WIN32)
+
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+  __asm
+  {
+    mov eax, amount;
+    mov ebx, pAddr;
+    lock xadd dword ptr [ebx], eax;
+    mov ebx, [ebx];
+    mov amount, ebx;
+  }
+  return amount;
+}
+
+#else // Linux / OSX86 (GCC)
+
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+  register long reg __asm__ ("eax") = amount;
+  __asm__ __volatile__ (
+                        "lock/xadd %0, %1 \n"
+                        "dec %%eax"
+                        : "+r" (reg)
+                        : "m" (*pAddr)
+                        : "memory" );
+  return reg;
+}
+
 #endif
 
 ///////////////////////////////////////////////////////////////////////////
@@ -218,6 +274,7 @@ long AtomicDecrement(volatile long* pAddr)
   return val;
 }
 
+
 #elif defined(WIN32)
 
 long AtomicDecrement(volatile long* pAddr)
@@ -233,11 +290,70 @@ long AtomicDecrement(volatile long* pAddr)
   return val;
 }
 
+
+
 #else // Linux / OSX86 (GCC)
 
 long AtomicDecrement(volatile long* pAddr)
 {
   register long reg __asm__ ("eax") = -1;
+  __asm__ __volatile__ (
+                        "lock/xadd %0, %1 \n"
+                        "dec %%eax"
+                        : "+r" (reg)
+                        : "m" (*pAddr)
+                        : "memory" );
+  return reg;
+}
+
+
+#endif
+
+///////////////////////////////////////////////////////////////////////////
+// 32-bit atomic subtract
+// Returns new value of *pAddr
+///////////////////////////////////////////////////////////////////////////
+#ifdef __ppc__ // PowerPC
+
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+  long val;
+  amount *= -1;
+  
+  __asm__ __volatile__ (
+                        "sync             \n"
+                        "1: lwarx  %0, 0, %1 \n"
+                        "add  %0, %2, %0 \n"
+                        "stwcx. %0, 0, %1 \n"
+                        "bne-   1b        \n"
+                        "isync"
+                        : "=&r" (val)
+                        : "r" (pAddr), "r" (amount)
+                        : "cc", "memory");
+  return val;  
+}
+
+#elif defined(WIN32)
+
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+  amount *= -1;
+  __asm
+  {
+    mov eax, amount;
+    mov ebx, pAddr;
+    lock xadd dword ptr [ebx], eax;
+    mov ebx, [ebx];
+    mov amount, ebx;
+  }
+  return amount;
+}
+
+#else // Linux / OSX86 (GCC)
+
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+  register long reg __asm__ ("eax") = -1 * amount;
   __asm__ __volatile__ (
                         "lock/xadd %0, %1 \n"
                         "dec %%eax"

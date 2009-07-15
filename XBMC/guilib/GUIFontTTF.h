@@ -101,11 +101,10 @@ protected:
   void ObliqueGlyph(FT_GlyphSlot slot);
 
 #ifndef HAS_SDL
-  LPDIRECT3DDEVICE8 m_pD3DDevice;
-  LPDIRECT3DTEXTURE8 m_texture;      // texture that holds our rendered characters (8bit alpha only)
-#else
-  SDL_Surface* m_texture;
+  LPDIRECT3DDEVICE9 m_pD3DDevice;
 #endif
+  XBMC::TexturePtr m_texture;        // texture that holds our rendered characters (8bit alpha only)
+
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // heigth of our texture
   int m_posX;                        // current position in the texture
@@ -131,7 +130,21 @@ protected:
 #ifdef HAS_SDL_OPENGL
   bool m_glTextureLoaded;
   GLuint m_glTexture;
+
+  struct SVertex
+  {
+    GLfloat u, v;
+    GLubyte r, g, b, a;    
+    GLfloat x, y, z;
+  };
+
+  SVertex* m_vertex;
+  int      m_vertex_count;
+  int      m_vertex_size;
 #endif
+
+  float    m_textureScaleX;
+  float    m_textureScaleY;
 
   static int justification_word_weight;
   static unsigned int max_texture_size;

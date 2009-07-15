@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 3/6/2009  -->
-<!--Finnish strings based on English strings revision 20801 -->
+<!--Date of translation: 29/6/2009  -->
+<!--Finnish strings based on English strings revision 21246 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -104,7 +104,7 @@
   <string id="163">Luetaan</string>
   <string id="164">Ei levyä</string>
   <string id="165">Levy asetettu</string>
-  <string id="166">Skini</string>
+  <string id="166">Ulkoasu</string>
   <string id="167">FTP-palvelin käytössä</string>
   <string id="168">Kellonajan päivitys internetistä</string>
   <string id="169">Näytön resoluutio</string>
@@ -402,7 +402,7 @@
   <string id="476">Musiikki ja videot</string>
   <string id="477">Soittolistaa ei voitu ladata</string>
   <string id="478">Kuvaruutuvalikko</string>
-  <string id="479">Skini- ja kielivalinnat</string>
+  <string id="479">Ulkoasu- ja kielivalinnat</string>
   <string id="480">Käyttöliittymä</string>
   <string id="481">Ääniasetukset</string>
   <string id="482">Tietoja XBMC:stä</string>
@@ -717,6 +717,7 @@
   <string id="1046">Yhteyspisteet</string>
   <string id="1047">Jokin muu...</string>
   <string id="1048">Web-palvelimen käyttäjätunnus</string> 
+  <string id="1049">Skripti-asetukset</string>
 
   <string id="1200">SMB-asiakas</string>
   <string id="1202">Työryhmä</string>
@@ -788,6 +789,8 @@
   <string id="1415">tihkusadetta</string>
   <string id="1416">sumuista</string>
   <string id="1417">rakeita</string>
+  <string id="1418">ukkosmyrskyjä</string>
+  <string id="1419">ukkoskuuroja</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -984,7 +987,7 @@
   <string id="13106">Ei käytössä</string>
   <string id="13107">Käytössä videoita toistettaessa</string>
   <string id="13108">Aina käytössä</string>
-  <string id="13109">Testaa resoluutio</string>
+  <string id="13109">Testaa ja hyväksy resoluutio</string>
   <string id="13110">Tallenna resoluutio?</string>
   <string id="13111">Haluatko säilyttää nämä asetukset?</string>
 
@@ -1197,7 +1200,7 @@
   <string id="13421">VDPAU</string>
   <string id="13420">Poista turvallisesti</string>
 
-  <string id="13500">A/V tahdistus menetelmä</string>
+  <string id="13500">AV-tahdistus menetelmä</string>
   <string id="13501">Äänen kello</string>
   <string id="13502">Videon kello (Poista/lisää ääntä)</string>
   <string id="13503">Videon kello (Äänen uudelleennäytteistys)</string>
@@ -1601,7 +1604,7 @@
   <string id="20074">MPAA-luokitus</string>
   <string id="20075">Anna pääkäyttäjän lukituskoodi</string>
   <string id="20076">Kysy pääkäyttäjän lukituskoodia käynnistyessä</string>
-  <string id="20077">Skinin asetukset</string>
+  <string id="20077">Ulkoasun asetukset</string>
   <string id="20078">- Linkkiä ei ole -</string>
   <string id="20079">Animoinnit käytössä</string>
   <string id="20080">Älä näytä RSS-tietoja musiikin aikana</string>
@@ -1633,7 +1636,7 @@
   <string id="20106">Vanha median sijainti löytyi.</string>
   <string id="20107">Omat(lukittu)</string>
   <string id="20108">Päähakemisto</string>
-  <string id="20109">Skinin zoomaus</string>
+  <string id="20109">Ulkoasun zoomaus</string>
   <string id="20110">UPnP-asetukset</string>
   <string id="20111">Automaattinen käynnistys</string>
   <string id="20112">Viimeksi kirjautunut: %s</string>
@@ -1706,7 +1709,7 @@
   <string id="20180">Symbolit</string>
   <string id="20181">Poisto</string>
   <string id="20182">Välilyönti</string>
-  <string id="20183">Virkistä skini</string>
+  <string id="20183">Virkistä näyttö</string>
   <string id="20184">Käännä kuvat Exif-tietojen mukaisesti</string>
   <string id="20185">Käytä julistenäkymää TV-ohjelmilla</string>
   <string id="20186">Odota hetki</string>
@@ -1864,6 +1867,7 @@
   <string id="20430">Tallennetaanko pienoiskuvat ja fanitaide?</string>
   <string id="20431">Kirjoitetaanko vanhojen päälle?</string>
   <string id="20432">Ohita polku kirjastoja päivitettäessä</string>
+  <string id="20433">Pura median metadata-tiedot</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -2081,6 +2085,7 @@
   <string id="22043">musta/valkoinen</string>
 
   <string id="23000">Sää lisäosa</string>
+  <string id="23001">- Lisäosan asetukset</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
   <string id="29800">Kirjasto-tila</string> 
@@ -2091,4 +2096,23 @@
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
+  <string id="33001">Esittelyn kuvanlaatu</string>
+  <string id="33002">Stream</string>
+  <string id="33003">Lataa</string>
+  <string id="33004">Lataa ja toista</string>
+  <string id="33005">Lataa ja tallenna</string>
+  <string id="33006">Tänään</string>
+  <string id="33007">Huomenna</string>
+  <string id="33008">Tallennetaan</string>
+  <string id="33009">Kopioidaan</string>
+  <string id="33010">Aseta latauskansio</string>
+  <string id="30011">Haku keston mukaan</string>
+  <string id="33012">Lyhyet</string>
+  <string id="33013">Pitkät</string>
+  <string id="33014">Käytä DVD Player-soitinta</string>
+  <string id="33015">Kysy latauksesta ennen toistoa</string>
+  <string id="33016">Leikkeet</string>
+  <string id="33017">Lisäosa on käynnistettävä uudelleen</string>
+  <string id="33018">Leikkeet</string>
 </strings>

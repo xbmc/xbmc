@@ -142,6 +142,14 @@
 /* Define as const if the declaration of iconv() needs const. */
 /* #define ICONV_CONST  */
 
+/* Various undefs of PACKAGE_* from XBMC's config.h */
+#undef PACKAGE
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+
 /* Name of package */
 #define PACKAGE "streamripper"
 

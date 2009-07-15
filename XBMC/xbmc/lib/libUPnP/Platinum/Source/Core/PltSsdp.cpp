@@ -63,7 +63,9 @@ PLT_SsdpSender::SendSsdp(NPT_HttpRequest&   request,
     NPT_CHECK_SEVERE(FormatPacket(request, usn, target, socket, notify));
 
     // logging
-    NPT_LOG_FINE("Sending SSDP:");
+    NPT_LOG_FINE_2("Sending SSDP %s for %s",
+        (const char*)request.GetMethod(), 
+        usn);
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
 
     // use a memory stream to write all the data
@@ -129,7 +131,7 @@ PLT_SsdpSender::FormatPacket(NPT_HttpMessage& message,
     } else {
         PLT_UPnPMessageHelper::SetST(message, target);
     }
-    PLT_HttpHelper::SetContentLength(message, 0);
+    //PLT_HttpHelper::SetContentLength(message, 0);
 
     return NPT_SUCCESS;
 }
@@ -192,7 +194,7 @@ PLT_SsdpDeviceSearchResponseInterfaceIterator::operator()(NPT_NetworkInterface*&
 
     PLT_UPnPMessageHelper::SetLocation(response, m_Device->GetDescriptionUrl(local_addr.GetIpAddress().ToString()));
     PLT_UPnPMessageHelper::SetLeaseTime(response, (NPT_Timeout)((float)m_Device->GetLeaseTime()));
-    PLT_UPnPMessageHelper::SetServer(response, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING, false);
+    PLT_UPnPMessageHelper::SetServer(response, NPT_HttpServer::m_ServerHeader, false);
     response.GetHeaders().SetHeader("EXT", "");
 
     // process search response twice to be NMPR compliant
@@ -309,21 +311,19 @@ cleanup:
 void
 PLT_SsdpListenTask::DoInit() 
 {
-    if (m_IsMulticast) {
-        NPT_List<NPT_NetworkInterface*> if_list;
-        NPT_CHECK_LABEL_FATAL(PLT_UPnPMessageHelper::GetNetworkInterfaces(if_list), 
-                              done);
+    if (m_Multicast) {
+        if (m_JoinHard) {
+            NPT_List<NPT_IpAddress> ips;
+            PLT_UPnPMessageHelper::GetIPAddresses(ips);
 
-        /* Join multicast group for every interface we found */
-        if_list.ApplyUntil(
-            PLT_SsdpInitMulticastIterator((NPT_UdpMulticastSocket*)m_Socket), 
-            NPT_UntilResultNotEquals(NPT_SUCCESS));
-
-        if_list.Apply(NPT_ObjectDeleter<NPT_NetworkInterface>());
+            /* Join multicast group for every ip we found */
+            ips.Apply(PLT_SsdpInitMulticastIterator((NPT_UdpMulticastSocket*)m_Socket));
+        } else {
+            NPT_IpAddress addr;
+            addr.ResolveName("239.255.255.250");
+            ((NPT_UdpMulticastSocket*)m_Socket)->JoinGroup(addr, NPT_IpAddress::Any);
+        }
     }
-
-done: 
-    return;
 }
 
 /*----------------------------------------------------------------------
@@ -422,7 +422,6 @@ void
 PLT_SsdpSearchTask::DoRun()
 {
     NPT_HttpResponse*      response = NULL;
-    PLT_HttpClient         client;
     NPT_Timeout            timeout = 30;
     NPT_HttpRequestContext context;
 
@@ -441,12 +440,12 @@ PLT_SsdpSearchTask::DoRun()
             new PLT_OutputDatagramStream(m_Socket, 
                                          4096, 
                                          &address));
-        NPT_CHECK_LABEL_SEVERE(client.SendRequest(
-                                   output_stream, 
+        NPT_CHECK_LABEL_SEVERE(NPT_HttpClient::WriteRequest(
+                                   *output_stream.AsPointer(), 
                                    *m_Request), 
                                done);
-        NPT_CHECK_LABEL_SEVERE(client.SendRequest(
-                                   output_stream, 
+        NPT_CHECK_LABEL_SEVERE(NPT_HttpClient::WriteRequest(
+                                   *output_stream.AsPointer(), 
                                    *m_Request), 
                                done);
         output_stream = NULL;
@@ -461,10 +460,10 @@ PLT_SsdpSearchTask::DoRun()
                 new PLT_InputDatagramStream(m_Socket));
 
             NPT_InputStreamReference stream = input_stream;
-            NPT_Result res = client.WaitForResponse(stream, 
-                                                    *m_Request, 
-                                                    context, 
-                                                    response);
+            NPT_Result res = NPT_HttpClient::ReadResponse(
+                stream, 
+                false,
+                response);
             // callback to process response
             if (NPT_SUCCEEDED(res)) {
                 // get source info    

@@ -162,10 +162,6 @@ void CDummyVideoPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 }
 
-void CDummyVideoPlayer::ToggleFrameDrop()
-{
-}
-
 void CDummyVideoPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   strAudioInfo = "DummyVideoPlayer - nothing to see here";
@@ -263,8 +259,8 @@ void CDummyVideoPlayer::Render()
 {
   RECT vw = g_graphicsContext.GetViewWindow();
 #ifndef HAS_SDL
-  D3DVIEWPORT8 newviewport;
-  D3DVIEWPORT8 oldviewport;
+  D3DVIEWPORT9 newviewport;
+  D3DVIEWPORT9 oldviewport;
   g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
   newviewport.MinZ = 0.0f;
   newviewport.MaxZ = 1.0f;

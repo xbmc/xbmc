@@ -162,7 +162,7 @@ typedef struct {
 #pragma pack(pop)
 
 #ifndef HAS_SDL
-HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName);
+HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE9 pSurface, const char *fileName);
 #else
 HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fileName);
 #endif
@@ -171,11 +171,7 @@ void DXT1toARGB(const void *src, void *dest, unsigned int destWidth);
 void DXT4toARGB(const void *src, void *dest, unsigned int destWidth);
 void ConvertDXT1(const void *src, unsigned int width, unsigned int height, void *dest);
 void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void *dest);
-#ifndef HAS_SDL
-void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppTexture);
-#else
-void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture);
-#endif
+void GetTextureFromData(D3DTexture *pTex, void *texData, XBMC::TexturePtr *ppTexture);
 
 #ifndef HAS_SDL
 class CXBPackedResource
@@ -186,7 +182,7 @@ public:
 
   HRESULT Create(const char *fileName, int unused, void *unusedVoid);
 
-  LPDIRECT3DTEXTURE8 GetTexture(UINT offset);
+  LPDIRECT3DTEXTURE9 GetTexture(UINT offset);
 
 private:
   BYTE *m_buffer;

@@ -25,8 +25,8 @@
 #include "utils/CriticalSection.h"
 #ifdef HAS_SDL
 #include "SDL/SDL.h"
-#include "TextureManager.h"
 #endif
+#include "TextureManager.h"
 
 #include <assert.h>
 
@@ -38,7 +38,7 @@ public:
 
   virtual void Process();
 
-  CTexture GetImage(const CStdString &path, int &orientation, bool firstRequest);
+  bool GetImage(const CStdString &path, CTexture &texture, int &orientation, bool firstRequest);
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
   void CleanupUnusedImages();
@@ -87,7 +87,7 @@ protected:
       return false;
     };
 
-    void SetTexture(SDL_Surface * texture, int width, int height, int orientation)
+    void SetTexture(XBMC::TexturePtr texture, int width, int height, int orientation)
     {
       assert(!m_texture.size());
       if (texture)

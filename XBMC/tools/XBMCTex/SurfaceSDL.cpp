@@ -1,7 +1,7 @@
 // class CSurface
 #include "SurfaceSDL.h"
 
-#ifdef USE_SDL
+#ifdef HAS_SDL
 #include <stdio.h>
 #include "xbox.h"
 

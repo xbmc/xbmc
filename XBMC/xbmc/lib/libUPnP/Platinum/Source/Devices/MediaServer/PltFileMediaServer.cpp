@@ -1,6 +1,6 @@
 /*****************************************************************
 |
-|   Platinum - AV Media Server Device
+|   Platinum - File Media Server
 |
 | Copyright (c) 2004-2008, Plutinosoft, LLC.
 | All rights reserved.
@@ -51,13 +51,15 @@ NPT_SET_LOCAL_LOGGER("platinum.media.server.file")
 +---------------------------------------------------------------------*/
 PLT_FileMediaServer::PLT_FileMediaServer(const char*  path, 
                                          const char*  friendly_name, 
-                                         bool         show_ip, 
-                                         const char*  uuid, 
-                                         NPT_UInt16   port) :	
+                                         bool         show_ip     /* = false */, 
+                                         const char*  uuid        /* = NULL */, 
+                                         NPT_UInt16   port        /* = 0 */,
+                                         bool         port_rebind /* = false */) :	
     PLT_MediaServer(friendly_name, 
                     show_ip,
                     uuid, 
-                    port)
+                    port,
+                    port_rebind)
 {
     /* set up the server root path */
     m_Path  = path;
@@ -78,11 +80,11 @@ NPT_Result
 PLT_FileMediaServer::AddMetadataHandler(PLT_MetadataHandler* handler) 
 {
     // make sure we don't have a metadatahandler registered for the same extension
-//    PLT_MetadataHandler* prev_handler;
-//    NPT_Result ret = NPT_ContainerFind(m_MetadataHandlers, PLT_MetadataHandlerFinder(handler->GetExtension()), prev_handler);
-//    if (NPT_SUCCEEDED(ret)) {
-//        return NPT_ERROR_INVALID_PARAMETERS;
-//    }
+/*    PLT_MetadataHandler* prev_handler;
+    NPT_Result ret = NPT_ContainerFind(m_MetadataHandlers, PLT_MetadataHandlerFinder(handler->GetExtension()), prev_handler);
+    if (NPT_SUCCEEDED(ret)) {
+        return NPT_ERROR_INVALID_PARAMETERS;
+    } */
 
     m_MetadataHandlers.Add(handler);
     return NPT_SUCCESS;
@@ -97,13 +99,13 @@ PLT_FileMediaServer::SetupDevice()
     // FIXME: hack for now: find the first valid non local ip address
     // to use in item resources. TODO: we should advertise all ips as
     // multiple resources instead.
-    NPT_List<NPT_String> ips;
+    NPT_List<NPT_IpAddress> ips;
     PLT_UPnPMessageHelper::GetIPAddresses(ips);
     if (ips.GetItemCount() == 0) return NPT_ERROR_INTERNAL;
 
     // set the base paths for content and album arts
-    m_FileBaseUri     = NPT_HttpUrl(*ips.GetFirstItem(), GetPort(), "/content");
-    m_AlbumArtBaseUri = NPT_HttpUrl(*ips.GetFirstItem(), GetPort(), "/albumart");
+    m_FileBaseUri     = NPT_HttpUrl(ips.GetFirstItem()->ToString(), GetPort(), "/content");
+    m_AlbumArtBaseUri = NPT_HttpUrl(ips.GetFirstItem()->ToString(), GetPort(), "/albumart");
 
     return PLT_MediaServer::SetupDevice();
 }
@@ -153,7 +155,7 @@ PLT_FileMediaServer::ProcessGetDescription(NPT_HttpRequest&              request
         NPT_CHECK_FATAL(res);
 
         PLT_HttpHelper::SetBody(response, doc);    
-        PLT_HttpHelper::SetContentType(response, "text/xml");
+        PLT_HttpHelper::SetContentType(response, "text/xml; charset=\"utf-8\"");
 
         return NPT_SUCCESS;
     }
@@ -179,27 +181,21 @@ PLT_FileMediaServer::ProcessFileRequest(NPT_HttpRequest&              request,
         return NPT_SUCCESS;
     }
 
-    // Extract uri path from url
-    NPT_String uri_path = NPT_Uri::PercentDecode(request.GetUrl().GetPath());
-    
-    // extract file path from query
-    NPT_HttpUrlQuery query(request.GetUrl().GetQuery());
-    NPT_String file_path = query.GetField("path");
-
-    // hack for XBMC support for 360, we urlencoded the ? to that the 360 doesn't strip out the query
-    // but then the query ends being parsed as part of the path
-    int index = uri_path.Find("path=");
-    if (index>0) file_path = uri_path.Right(uri_path.GetLength()-index-5);
-    if (file_path.GetLength() == 0) goto failure;
-    
-    NPT_CHECK_LABEL_WARNING(ServeFile(request, 
-                                      context, 
-                                      response, 
-                                      uri_path, 
-                                      file_path),
+    // Extract file path from url
+    NPT_String file_path;
+    NPT_CHECK_LABEL_WARNING(ExtractResourcePath(request.GetUrl(), file_path),  
                             failure);
+                            
+    // Serve file now
+    if (request.GetUrl().GetPath().StartsWith(m_FileBaseUri.GetPath(), true)) {
+        NPT_CHECK_WARNING(ServeFile(request, context, response, NPT_FilePath::Create(m_Path, file_path)));
+        return NPT_SUCCESS;
+    } else if (request.GetUrl().GetPath().StartsWith(m_AlbumArtBaseUri.GetPath(), true)) {
+        NPT_CHECK_WARNING(OnAlbumArtRequest(response, NPT_FilePath::Create(m_Path, file_path)));
+        return NPT_SUCCESS;
+    }
 
-    return NPT_SUCCESS;
+    // fallthrough
 
 failure:
     response.SetStatus(404, "File Not Found");
@@ -213,36 +209,23 @@ NPT_Result
 PLT_FileMediaServer::ServeFile(NPT_HttpRequest&              request, 
                                const NPT_HttpRequestContext& context,
                                NPT_HttpResponse&             response,
-                               const NPT_String&             uri_path,
                                const NPT_String&             file_path)
 {
     NPT_COMPILER_UNUSED(context);
 
-    // prevent hackers from accessing files outside of our root
-    if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0)) {
-        return NPT_FAILURE;
-    }
+    NPT_Position start, end;
+    PLT_HttpHelper::GetRange(request, start, end);
 
-    // File requested
-    NPT_String path = m_FileBaseUri.GetPath();
-    if (path.Compare(uri_path.Left(path.GetLength()), true) == 0) {
-        NPT_Position start, end;
-        PLT_HttpHelper::GetRange(request, start, end);
-        
-        return PLT_FileServer::ServeFile(response,
-                                         NPT_FilePath::Create(m_Path, file_path), 
-                                         start, 
-                                         end, 
-                                         !request.GetMethod().Compare("HEAD"));
-    } 
+    NPT_CHECK_WARNING(PLT_FileServer::ServeFile(response,
+                                                file_path, 
+                                                start, 
+                                                end, 
+                                                !request.GetMethod().Compare("HEAD")));
 
-    // Album Art requested
-    path = m_AlbumArtBaseUri.GetPath();
-    if (path.Compare(uri_path.Left(path.GetLength()), true) == 0) {
-        return OnAlbumArtRequest(response, m_Path + file_path);
-    } 
-    
-    return NPT_FAILURE;
+    NPT_HttpEntity* entity = response.GetEntity();
+    PLT_HttpRequestContext tmp_context(request, context);
+    if (entity) entity->SetContentType(PLT_MediaItem::GetMimeType(file_path, &tmp_context));
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -258,11 +241,11 @@ PLT_FileMediaServer::OnAlbumArtRequest(NPT_HttpResponse& response,
 
     // prevent hackers from accessing files outside of our root
     if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0)) {
-        return NPT_FAILURE;
+        goto filenotfound;
     }
 
     if (NPT_FAILED(file.Open(NPT_FILE_OPEN_MODE_READ)) || 
-        NPT_FAILED(file.GetInputStream(stream))        || 
+        NPT_FAILED(file.GetInputStream(stream))        ||
         NPT_FAILED(stream->GetSize(total_len)) || (total_len == 0)) {
         goto filenotfound;
     } else {
@@ -303,8 +286,16 @@ filenotfound:
 NPT_Result
 PLT_FileMediaServer::OnBrowseMetadata(PLT_ActionReference&          action, 
                                       const char*                   object_id, 
-                                      const NPT_HttpRequestContext& context)
+                                      const char*                   filter,
+                                      NPT_UInt32                    starting_index,
+                                      NPT_UInt32                    requested_count,
+                                      const NPT_List<NPT_String>&   sort_criteria,
+                                      const PLT_HttpRequestContext& context)
 {
+    NPT_COMPILER_UNUSED(sort_criteria);
+    NPT_COMPILER_UNUSED(requested_count);
+    NPT_COMPILER_UNUSED(starting_index);
+    
     NPT_String didl;
     PLT_MediaObjectReference item;
 
@@ -317,15 +308,9 @@ PLT_FileMediaServer::OnBrowseMetadata(PLT_ActionReference&          action,
         return NPT_FAILURE;
     }
 
-    item = BuildFromFilePath(
-        filepath, 
-        true,
-        &context.GetLocalAddress());
+    item = BuildFromFilePath(filepath, context, true);
 
     if (item.IsNull()) return NPT_FAILURE;
-
-    NPT_String filter;
-    NPT_CHECK_SEVERE(action->GetArgumentValue("Filter", filter));
 
     NPT_String tmp;    
     NPT_CHECK_SEVERE(PLT_Didl::ToDidl(*item.AsPointer(), filter, tmp));
@@ -350,14 +335,20 @@ PLT_FileMediaServer::OnBrowseMetadata(PLT_ActionReference&          action,
 NPT_Result
 PLT_FileMediaServer::OnBrowseDirectChildren(PLT_ActionReference&          action, 
                                             const char*                   object_id, 
-                                            const NPT_HttpRequestContext& context)
+                                            const char*                   filter,
+                                            NPT_UInt32                    starting_index,
+                                            NPT_UInt32                    requested_count,
+                                            const NPT_List<NPT_String>&   sort_criteria,
+                                            const PLT_HttpRequestContext& context)
 {
+    NPT_COMPILER_UNUSED(sort_criteria);
+    
     /* locate the file from the object ID */
     NPT_String dir;
     if (NPT_FAILED(GetFilePath(object_id, dir))) {
         /* error */
-        NPT_LOG_WARNING("PLT_FileMediaServer::OnBrowse - ObjectID not found.");
-        action->SetError(701, "No Such Object.");
+        NPT_LOG_WARNING("ObjectID not found.");
+        action->SetError(710, "No Such Container.");
         return NPT_FAILURE;
     }
 
@@ -366,35 +357,20 @@ PLT_FileMediaServer::OnBrowseDirectChildren(PLT_ActionReference&          action
     NPT_Result res = NPT_File::GetInfo(dir, &info);
     if (NPT_FAILED(res)) {
         /* Object does not exist */
-        NPT_LOG_WARNING_1("PLT_FileMediaServer::OnBrowse - BROWSEDIRECTCHILDREN failed for item %s", dir.GetChars());
-        action->SetError(800, "Can't retrieve info " + dir);
+        NPT_LOG_WARNING_1("BROWSEDIRECTCHILDREN failed for item %s", dir.GetChars());
+        action->SetError(701, "No such Object");
         return NPT_FAILURE;
     }
 
     if (info.m_Type != NPT_FileInfo::FILE_TYPE_DIRECTORY) {
         /* error */
-        NPT_LOG_WARNING("PLT_FileMediaServer::OnBrowse - BROWSEDIRECTCHILDREN not allowed on an item.");
-        action->SetError(710, "item is not a container.");
-        return NPT_FAILURE;
-    }
-
-    NPT_String filter;
-    NPT_String startingInd;
-    NPT_String reqCount;
-
-    NPT_CHECK_SEVERE(action->GetArgumentValue("Filter", filter));
-    NPT_CHECK_SEVERE(action->GetArgumentValue("StartingIndex", startingInd));
-    NPT_CHECK_SEVERE(action->GetArgumentValue("RequestedCount", reqCount));   
-
-    NPT_UInt32 start_index, req_count;
-    if (NPT_FAILED(startingInd.ToInteger(start_index)) ||
-        NPT_FAILED(reqCount.ToInteger(req_count))) {        
-        action->SetError(412, "Precondition failed");
+        NPT_LOG_WARNING("BROWSEDIRECTCHILDREN not allowed on an item.");
+        action->SetError(710, "No such container");
         return NPT_FAILURE;
     }
 
     NPT_List<NPT_String> entries;
-    res = NPT_File::ListDirectory(dir, entries, 0, 0);
+    res = NPT_File::ListDir(dir, entries, 0, 0);
     if (NPT_FAILED(res)) {
         NPT_LOG_WARNING_1("PLT_FileMediaServer::OnBrowseDirectChildren - failed to open dir %s", (const char*) dir);
         return res;
@@ -407,16 +383,21 @@ PLT_FileMediaServer::OnBrowseDirectChildren(PLT_ActionReference&          action
 
     PLT_MediaObjectReference item;
     for (NPT_List<NPT_String>::Iterator it = entries.GetFirstItem();
-        it;
-        ++it) {
-        NPT_String& filename = *it;
+         it;
+         ++it) {
+        NPT_String filepath = NPT_FilePath::Create(dir, *it);
+        
+        // verify we want to process this file first
+        if (!ProcessFile(filepath)) continue;
+        
         item = BuildFromFilePath(
-            NPT_FilePath::Create(dir, filename), 
-            true, 
-            &context.GetLocalAddress());
+            filepath, 
+            context,
+            true);
 
         if (!item.IsNull()) {
-            if ((cur_index >= start_index) && ((num_returned < req_count) || (req_count == 0))) {
+            if ((cur_index >= starting_index) && 
+                ((num_returned < requested_count) || (requested_count == 0))) {
                 NPT_String tmp;
                 NPT_CHECK_SEVERE(PLT_Didl::ToDidl(*item.AsPointer(), filter, tmp));
 
@@ -439,6 +420,49 @@ PLT_FileMediaServer::OnBrowseDirectChildren(PLT_ActionReference&          action
 }
 
 /*----------------------------------------------------------------------
+|   PLT_FileMediaServer::OnSearchContainer
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_FileMediaServer::OnSearchContainer(PLT_ActionReference&          action, 
+                                       const char*                   object_id, 
+                                       const char*                   search_criteria,
+                                       NPT_UInt32                    /* starting_index */,
+                                       NPT_UInt32                    /* requested_count */,
+                                       const NPT_List<NPT_String>&   /* sort_criteria */,
+                                       const PLT_HttpRequestContext& /* context */)
+{
+    /* parse search criteria */
+    /* TODO: HACK TO PASS DLNA */
+    if (search_criteria && NPT_StringsEqual(search_criteria, "Unknownfieldname")) {
+        /* error */
+        NPT_LOG_WARNING_1("Unsupported or invalid search criteria %s", search_criteria);
+        action->SetError(708, "Unsupported or invalid search criteria");
+        return NPT_FAILURE;
+    }
+    
+    /* locate the file from the object ID */
+    NPT_String dir;
+    if (NPT_FAILED(GetFilePath(object_id, dir))) {
+        /* error */
+        NPT_LOG_WARNING("ObjectID not found.");
+        action->SetError(710, "No Such Container.");
+        return NPT_FAILURE;
+    }
+        
+    /* retrieve the item type */
+    NPT_FileInfo info;
+    NPT_Result res = NPT_File::GetInfo(dir, &info);
+    if (NPT_FAILED(res) || (info.m_Type != NPT_FileInfo::FILE_TYPE_DIRECTORY)) {
+        /* error */
+        NPT_LOG_WARNING("No such container");
+        action->SetError(710, "No such container");
+        return NPT_FAILURE;
+    }
+    
+    return NPT_ERROR_NOT_IMPLEMENTED;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_FileMediaServer::GetFilePath
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -457,6 +481,47 @@ PLT_FileMediaServer::GetFilePath(const char* object_id,
 }
 
 /*----------------------------------------------------------------------
+|   PLT_FileMediaServer::BuildSafeResourceUri
++---------------------------------------------------------------------*/
+NPT_String
+PLT_FileMediaServer::BuildSafeResourceUri(const NPT_HttpUrl& base_uri, 
+                                          const char*        host, 
+                                          const char*        file_path)
+{
+    NPT_String result;
+    NPT_HttpUrl uri = base_uri;
+
+    if (host) uri.SetHost(host);
+
+    NPT_String uri_path = uri.GetPath();
+    if (!uri_path.EndsWith("/")) uri_path += "/";
+    uri_path += NPT_Uri::PercentEncode(file_path, " !\"<>\\^`{|}?#[]:/", true);
+    uri.SetPath(uri_path);
+
+    // 360 hack: force inclusion of port in case it's 80
+    return uri.ToStringWithDefaultPort(0);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_FileMediaServer::ExtractResourcePath
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_FileMediaServer::ExtractResourcePath(const NPT_HttpUrl& url, NPT_String& file_path)
+{
+    // Extract uri path from url
+    NPT_String uri_path = url.GetPath();
+    if (uri_path.StartsWith(m_FileBaseUri.GetPath(), true)) {
+        file_path = NPT_Uri::PercentDecode(uri_path.SubString(m_FileBaseUri.GetPath().GetLength()+1));
+        return NPT_SUCCESS;
+    } else if (uri_path.StartsWith(m_AlbumArtBaseUri.GetPath(), true)) {
+        file_path = NPT_Uri::PercentDecode(uri_path.SubString(m_AlbumArtBaseUri.GetPath().GetLength()+1));
+        return NPT_SUCCESS;
+    }
+
+    return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_FileMediaServer::BuildResourceUri
 +---------------------------------------------------------------------*/
 NPT_String
@@ -464,36 +529,23 @@ PLT_FileMediaServer::BuildResourceUri(const NPT_HttpUrl& base_uri,
                                       const char*        host, 
                                       const char*        file_path)
 {
-    NPT_HttpUrl uri = base_uri;
-    NPT_HttpUrlQuery query(uri.GetQuery());
-    NPT_String result;
-
-    query.AddField("path", file_path);
-    if (host) uri.SetHost(host);
-    uri.SetQuery(query.ToString());
-    
-    // 360 hack: force inclusion of port
-    result = uri.ToStringWithDefaultPort(0);
-
-    // 360 hack: it removes the query, so we make it look like a path
-    // and we replace + with urlencoded value of space
-    result.Replace('?', "%3F");
-    result.Replace('+', "%20");
-    return result;
+    return BuildSafeResourceUri(base_uri, host, file_path);
 }
 
 /*----------------------------------------------------------------------
 |   PLT_FileMediaServer::BuildFromFilePath
 +---------------------------------------------------------------------*/
 PLT_MediaObject*
-PLT_FileMediaServer::BuildFromFilePath(const NPT_String&        filepath, 
-                                       bool                     with_count /* = true */,
-                                       const NPT_SocketAddress* req_local_address /* = NULL */,
-                                       bool                     keep_extension_in_title /* = false */)
+PLT_FileMediaServer::BuildFromFilePath(const NPT_String&             filepath, 
+                                       const PLT_HttpRequestContext& context,
+                                       bool                          with_count /* = true */,
+                                       bool                          keep_extension_in_title /* = false */)
 {
     NPT_String            root = m_Path;
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
+    
+    NPT_LOG_FINEST_1("Building didl for file '%s'", (const char*)filepath);
 
     /* retrieve the entry type (directory or file) */
     NPT_FileInfo info; 
@@ -506,8 +558,12 @@ PLT_FileMediaServer::BuildFromFilePath(const NPT_String&        filepath,
         object->m_Title = NPT_FilePath::BaseName(filepath, keep_extension_in_title);
         if (object->m_Title.GetLength() == 0) goto failure;
 
+        /* make sure we return something with a valid mimetype */
+        if (NPT_StringsEqual(PLT_MediaItem::GetMimeType(filepath), "application/unknown")) 
+            goto failure;
+        
         /* Set the protocol Info from the extension */
-        resource.m_ProtocolInfo = PLT_MediaItem::GetProtInfoFromExt(NPT_FilePath::FileExtension(filepath));
+        resource.m_ProtocolInfo = PLT_MediaItem::GetProtInfo(filepath, &context);
         if (resource.m_ProtocolInfo.GetLength() == 0)  goto failure;
 
         /* Set the resource file size */
@@ -517,60 +573,60 @@ PLT_FileMediaServer::BuildFromFilePath(const NPT_String&        filepath,
         NPT_String url = filepath.SubString(root.GetLength()+1);
 
         // get list of ip addresses
-        NPT_List<NPT_String> ips;
+        NPT_List<NPT_IpAddress> ips;
         NPT_CHECK_LABEL_SEVERE(PLT_UPnPMessageHelper::GetIPAddresses(ips), failure);
 
         // if we're passed an interface where we received the request from
         // move the ip to the top
-        if (req_local_address && req_local_address->GetIpAddress().ToString() != "0.0.0.0") {
-            ips.Remove(req_local_address->GetIpAddress().ToString());
-            ips.Insert(ips.GetFirstItem(), req_local_address->GetIpAddress().ToString());
+        if (context.GetLocalAddress().GetIpAddress().ToString() != "0.0.0.0") {
+            ips.Remove(context.GetLocalAddress().GetIpAddress());
+            ips.Insert(ips.GetFirstItem(), context.GetLocalAddress().GetIpAddress());
         }
 
         // iterate through list and build list of resources
-        NPT_List<NPT_String>::Iterator ip = ips.GetFirstItem();
+        NPT_List<NPT_IpAddress>::Iterator ip = ips.GetFirstItem();
+        
+        /* Look to see if a metadatahandler exists for this extension */
+        PLT_MetadataHandler* handler = NULL;
+        NPT_Result res = NPT_ContainerFind(
+            m_MetadataHandlers, 
+            PLT_MetadataHandlerFinder(NPT_FilePath::FileExtension(filepath)), 
+            handler);
+        if (NPT_SUCCEEDED(res) && handler) {
+            /* if it failed loading data, reset the metadatahandler so we don't use it */
+            if (NPT_SUCCEEDED(handler->LoadFile(filepath))) {
+                /* replace the title with the one from the Metadata */
+                NPT_String newTitle;
+                if (handler->GetTitle(newTitle) != NULL) {
+                    object->m_Title = newTitle;
+                }
+
+                /* assign description */
+                handler->GetDescription(object->m_Description.long_description);
+
+                /* assign album art uri if we haven't yet */
+                /* prepend the album art base URI and url encode it */ 
+                if (object->m_ExtraInfo.album_art_uri.GetLength() == 0) {
+                    object->m_ExtraInfo.album_art_uri = 
+                        NPT_Uri::PercentEncode(BuildResourceUri(m_AlbumArtBaseUri, ip->ToString(), url), 
+                                               NPT_Uri::UnsafeCharsToEncode);
+                }
+
+                /* duration */
+                handler->GetDuration(resource.m_Duration);
+
+                /* protection */
+                handler->GetProtection(resource.m_Protection);
+            }
+        }
+        
+        object->m_ObjectClass.type = PLT_MediaItem::GetUPnPClass(filepath, &context);
+        
         while (ip) {
             /* prepend the base URI and url encode it */ 
             //resource.m_Uri = NPT_Uri::Encode(uri.ToString(), NPT_Uri::UnsafeCharsToEncode);
-            resource.m_Uri = BuildResourceUri(m_FileBaseUri, *ip, url);
-
-            /* Look to see if a metadatahandler exists for this extension */
-            PLT_MetadataHandler* handler = NULL;
-            NPT_Result res = NPT_ContainerFind(
-                m_MetadataHandlers, 
-                PLT_MetadataHandlerFinder(NPT_FilePath::FileExtension(filepath)), 
-                handler);
-            if (NPT_SUCCEEDED(res) && handler) {
-                /* if it failed loading data, reset the metadatahandler so we don't use it */
-                if (NPT_SUCCEEDED(handler->LoadFile(filepath))) {
-                    /* replace the title with the one from the Metadata */
-                    NPT_String newTitle;
-                    if (handler->GetTitle(newTitle) != NULL) {
-                        object->m_Title = newTitle;
-                    }
-
-                    /* assign description */
-                    handler->GetDescription(object->m_Description.long_description);
-
-                    /* assign album art uri if we haven't yet */
-                    /* prepend the album art base URI and url encode it */ 
-                    if (object->m_ExtraInfo.album_art_uri.GetLength() == 0) {
-                        object->m_ExtraInfo.album_art_uri = 
-                            NPT_Uri::PercentEncode(BuildResourceUri(m_AlbumArtBaseUri, *ip, url), 
-                                                   NPT_Uri::UnsafeCharsToEncode);
-                    }
-
-                    /* duration */
-                    handler->GetDuration(resource.m_Duration);
-
-                    /* protection */
-                    handler->GetProtection(resource.m_Protection);
-                }
-            }
-
-            object->m_ObjectClass.type = PLT_MediaItem::GetUPnPClassFromExt(NPT_FilePath::FileExtension(filepath));
+            resource.m_Uri = BuildResourceUri(m_FileBaseUri, ip->ToString(), url);
             object->m_Resources.Add(resource);
-
             ++ip;
         }
     } else {
@@ -590,7 +646,7 @@ PLT_FileMediaServer::BuildFromFilePath(const NPT_String&        filepath,
             ((PLT_MediaContainer*)object)->m_ChildrenCount = count;
         }
 
-        object->m_ObjectClass.type = "object.container";
+        object->m_ObjectClass.type = "object.container.storageFolder";
     }
 
     /* is it the root? */
@@ -598,7 +654,7 @@ PLT_FileMediaServer::BuildFromFilePath(const NPT_String&        filepath,
         object->m_ParentID = "-1";
         object->m_ObjectID = "0";
     } else {
-        NPT_String directory = NPT_FilePath::DirectoryName(filepath);
+        NPT_String directory = NPT_FilePath::DirName(filepath);
         /* is the parent path the root? */
         if (directory.GetLength() == root.GetLength()) {
             object->m_ParentID = "0";

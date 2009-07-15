@@ -120,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;USE_SDL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;HAS_SDL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -171,7 +171,7 @@
 				Name="VCCLCompilerTool"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;USE_SDL"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;HAS_SDL"
 				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="0"

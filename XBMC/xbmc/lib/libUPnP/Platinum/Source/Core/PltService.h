@@ -79,12 +79,13 @@ public:
     }
 
     // accessor methods
-    const NPT_String&   GetSCPDURL()      const   { return m_SCPDURL;     }
-    const NPT_String&   GetControlURL()   const   { return m_ControlURL;  }
-    const NPT_String&   GetEventSubURL()  const   { return m_EventSubURL; }
+    NPT_String          GetSCPDURL(bool absolute = false);
+    NPT_String          GetControlURL(bool absolute = false);
+    NPT_String          GetEventSubURL(bool absolute = false);
     const NPT_String&   GetServiceID()    const   { return m_ServiceID;   }
     const NPT_String&   GetServiceType()  const   { return m_ServiceType; }    
-    PLT_DeviceData*     GetDevice()               { return m_Device; }
+    PLT_DeviceData*     GetDevice()               { return m_Device;      }
+    NPT_Result          ForceVersion(NPT_Cardinal version);
 
     // XML
     NPT_Result          GetSCPDXML(NPT_String& xml);
@@ -118,7 +119,7 @@ private:
         PLT_ServiceEventTask(PLT_Service* service) : m_Service(service) {}
 
         void DoRun() { 
-            while (!IsAborting(10)) m_Service->NotifyChanged();
+            while (!IsAborting(100)) m_Service->NotifyChanged();
         }
 
     private:

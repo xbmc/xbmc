@@ -50,7 +50,6 @@ const char* DPMSSupport::GetModeName(PowerSavingMode mode)
 
 DPMSSupport::DPMSSupport(Surface::CSurface* surface)
 {
-  assert(surface != NULL);
   m_surface = surface;
   PlatformSpecificInit();
 
@@ -130,6 +129,7 @@ static const CARD16 X_DPMS_MODES[] =
 
 void DPMSSupport::PlatformSpecificInit()
 {
+  if (m_surface == NULL) return;
   Display* dpy = m_surface->GetDisplay();
   if (dpy == NULL) return;
 
@@ -153,6 +153,7 @@ void DPMSSupport::PlatformSpecificInit()
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
+  if (m_surface == NULL) return false;
   Display* dpy = m_surface->GetDisplay();
   if (dpy == NULL) return false;
 
@@ -168,6 +169,7 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
+  if (m_surface == NULL) return false;
   Display* dpy = m_surface->GetDisplay();
   if (dpy == NULL) return false;
 

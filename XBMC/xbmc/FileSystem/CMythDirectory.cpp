@@ -130,6 +130,10 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
       m_dll->ref_release(channel);
     }
   }
+
+  // Sort by name only. Labels are preformated.
+  items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+  
   m_dll->ref_release(list);
   return true;
 }
@@ -166,12 +170,11 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
       CDateTime endtime(prog[i].endtime);
 
       CStdString title;
-      title.Format("%s - \"%s\"", starttime.GetAsLocalizedDateTime(), prog[i].title);
+      title.Format("%s - %s", starttime.GetAsLocalizedTime("HH:mm", false), prog[i].title);
 
       CFileItemPtr item(new CFileItem(title, false));
       item->SetLabel(title);
       item->m_dateTime = starttime;
-      item->SetLabelPreformated(true);
 
       CVideoInfoTag* tag = item->GetVideoInfoTag();
 
@@ -200,6 +203,10 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
       items.Add(item);
     }
   }
+
+  // Sort by date only.
+  items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%L", "%J", "%L", ""));
+
   m_dll->ref_release(prog);
   return true;
 }
@@ -293,11 +300,10 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
     }
 
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
     else
-      items.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
-    items.AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%Z (%J)", "%I", "%L", "%I"));
-    items.AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%Z", "%J %Q", "%L", "%J"));
+      items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%Z", "%J", "%L", "%J"));
 
   }
   m_dll->ref_release(list);
@@ -358,10 +364,11 @@ bool CCMythDirectory::GetRecordingFolders(const CStdString& base, CFileItemList 
       m_dll->ref_release(program);
     }
 
+    // Sort by name only. Labels are preformated.
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
     else
-      items.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%Z (%J)", "%I", "%L", ""));
+      items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
   }
   m_dll->ref_release(list);
   return true;
@@ -443,14 +450,14 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   }
 
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K[ - %B]", "%Z", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%K[ - %Z]", "%B", "%L", ""));
   else
-    items.AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%K[ - %B]", "%Z", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%K[ - %Z]", "%B", "%L", ""));
 
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 20364, LABEL_MASKS("%Z", "%B", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 20364 /* TV show */, LABEL_MASKS("%Z[ - %B]", "%K", "%L", ""));
   else
-    items.AddSortMethod(SORT_METHOD_LABEL, 20364, LABEL_MASKS("%Z", "%B", "%L", ""));
+    items.AddSortMethod(SORT_METHOD_LABEL, 20364 /* TV show */, LABEL_MASKS("%Z[ - %B]", "%K", "%L", ""));
 
 
   return true;
@@ -501,6 +508,9 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
     item->SetLabel(g_localizeStrings.Get(20343)); // TV shows
     item->SetLabelPreformated(true);
     items.Add(item);
+
+    // Sort by name only. Labels are preformated.
+    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
 
     return true;
   }
@@ -558,7 +568,10 @@ bool CCMythDirectory::IsTvShow(const cmyth_proginfo_t program)
    * There isn't enough information exposed by libcmyth to distinguish between an episode in a series and a
    * one off TV show. See comment in IsMovie for more information.
    *
-   * Anything that isn't a movie is considered a TV show.
+   * Return anything that isn't a movie as per the program ID. This may result in a recording being
+   * in both the Movies and TV Shows folders if the advanced setting to choose a movie based on
+   * recording length is used, but means that at least all recorded TV Shows can be found in one
+   * place.
    */
-  return !IsMovie(program);
+  return GetValue(m_dll->proginfo_programid(program)).Left(2) != "MV";
 }

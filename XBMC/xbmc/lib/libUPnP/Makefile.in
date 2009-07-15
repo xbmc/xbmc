@@ -1,6 +1,7 @@
 SRCS= Platinum/Source/Core/Platinum.cpp \
       Platinum/Source/Core/PltAction.cpp \
       Platinum/Source/Core/PltArgument.cpp \
+      Platinum/Source/Core/PltConstants.cpp \
       Platinum/Source/Core/PltCtrlPoint.cpp \
       Platinum/Source/Core/PltCtrlPointTask.cpp \
       Platinum/Source/Core/PltDatagramStream.cpp \
@@ -12,6 +13,7 @@ SRCS= Platinum/Source/Core/Platinum.cpp \
       Platinum/Source/Core/PltHttpClientTask.cpp \
       Platinum/Source/Core/PltHttpServer.cpp \
       Platinum/Source/Core/PltHttpServerTask.cpp \
+      Platinum/Source/Core/PltIconsData.cpp \
       Platinum/Source/Core/PltLeaks.cpp \
       Platinum/Source/Core/PltMetadataHandler.cpp \
       Platinum/Source/Core/PltService.cpp \

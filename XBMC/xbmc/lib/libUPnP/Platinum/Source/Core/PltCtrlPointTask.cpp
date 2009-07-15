@@ -45,7 +45,7 @@
 PLT_CtrlPointGetDescriptionTask::PLT_CtrlPointGetDescriptionTask(const NPT_HttpUrl&       url,
                                                                  PLT_CtrlPoint*           ctrl_point, 
                                                                  PLT_DeviceDataReference& device) :
-    PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET")), 
+    PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET", NPT_HTTP_PROTOCOL_1_1)), 
     m_CtrlPoint(ctrl_point), 
     m_Device(device) 
 {
@@ -74,10 +74,9 @@ PLT_CtrlPointGetDescriptionTask::ProcessResponse(NPT_Result                    r
 /*----------------------------------------------------------------------
 |    PLT_CtrlPointGetSCPDTask::PLT_CtrlPointGetSCPDTask
 +---------------------------------------------------------------------*/
-PLT_CtrlPointGetSCPDTask::PLT_CtrlPointGetSCPDTask(const NPT_HttpUrl&       url,
-                                                   PLT_CtrlPoint*           ctrl_point, 
+PLT_CtrlPointGetSCPDTask::PLT_CtrlPointGetSCPDTask(PLT_CtrlPoint*           ctrl_point, 
                                                    PLT_DeviceDataReference& device) :  
-    PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET")), 
+    PLT_HttpClientSocketTask(), 
     m_CtrlPoint(ctrl_point), 
     m_Device(device) 
 {
@@ -155,12 +154,10 @@ PLT_CtrlPointHouseKeepingTask::PLT_CtrlPointHouseKeepingTask(PLT_CtrlPoint*   ct
 void  
 PLT_CtrlPointHouseKeepingTask::DoRun() 
 {
-    while (1) {
+    while (!IsAborting(m_Timer.m_Seconds*1000)) {
         if (m_CtrlPoint) {
             m_CtrlPoint->DoHouseKeeping();
         }
-
-        if (IsAborting(m_Timer.m_Seconds*1000)) break;
     }
 }
 

@@ -4,6 +4,8 @@ SRCS=emu_dummy.cpp emu_dx8.cpp emu_kernel32.cpp exports_kernel32.cpp emu_msvcrt.
 
 LIB=exports.a
 
+CLEAN_FILES=wrapper.def
+
 include ../../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 

@@ -394,6 +394,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(SYSTEM_GET_CORE_USAGE, atoi(strTest.Mid(17,strTest.size()-18)), 0));
     else if (strTest.Left(17).Equals("system.hascoreid("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_CORE_ID : SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
+    else if (strTest.Left(15).Equals("system.setting("))
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_SETTING : SYSTEM_SETTING, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
     else if (strTest.Equals("system.canpowerdown")) ret = SYSTEM_CAN_POWERDOWN;
     else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
     else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
@@ -523,9 +525,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
     else if (strTest.Equals("videoplayer.videocodec")) return VIDEOPLAYER_VIDEO_CODEC;
     else if (strTest.Equals("videoplayer.videoresolution")) return VIDEOPLAYER_VIDEO_RESOLUTION;
+    else if (strTest.Equals("videoplayer.videoaspect")) return VIDEOPLAYER_VIDEO_ASPECT;
     else if (strTest.Equals("videoplayer.audiocodec")) return VIDEOPLAYER_AUDIO_CODEC;
     else if (strTest.Equals("videoplayer.audiochannels")) return VIDEOPLAYER_AUDIO_CHANNELS;
-
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -728,7 +730,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (strTest.Left(7).Equals("window("))
       {
         CStdString window(strTest.Mid(7, strTest.Find(")", 7) - 7).ToLower());
-        winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+        winID = CButtonTranslator::TranslateWindowString(window.c_str());
       }
       if (winID != WINDOW_INVALID)
       {
@@ -741,7 +743,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
-      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
     }
@@ -751,7 +753,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
-      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
     }
@@ -760,7 +762,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
-      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
     }
@@ -769,7 +771,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
-      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
     }
@@ -778,7 +780,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
-      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
     }
@@ -1057,11 +1059,19 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
-      return VideoWidthToResolutionDescription(g_application.m_pPlayer->GetPictureWidth());
+      return CStreamDetails::VideoWidthToResolutionDescription(g_application.m_pPlayer->GetPictureWidth());
     break;
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
       strLabel = g_application.m_pPlayer->GetAudioCodecName();
+    break;
+  case VIDEOPLAYER_VIDEO_ASPECT:
+    if (g_application.IsPlaying() && g_application.m_pPlayer)
+    {
+      float aspect;
+      g_application.m_pPlayer->GetVideoAspectRatio(aspect);
+      strLabel = CStreamDetails::VideoAspectToAspectDescription(aspect);
+    }
     break;
   case VIDEOPLAYER_AUDIO_CHANNELS:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
@@ -2138,6 +2148,10 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
       case SYSTEM_HAS_CORE_ID:
         bReturn = g_cpuInfo.HasCoreId(info.GetData1());
+        break;
+      case SYSTEM_SETTING:
+        if ( m_stringParameters[info.GetData1()].Equals("hidewatched") ) 
+          bReturn = g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
         break;
       case CONTAINER_ON_NEXT:
       case CONTAINER_ON_PREVIOUS:
@@ -3255,8 +3269,7 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
     return CTemperature::CreateFromCelsius(value);
   if (scale == 'F' || scale == 'f')
     return CTemperature::CreateFromFahrenheit(value);
-  else
-    return CTemperature();
+  return CTemperature();
 }
 
 CStdString CGUIInfoManager::GetVersion()
@@ -3809,11 +3822,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_VIDEO_RESOLUTION:
     if (item->HasVideoInfoTag())
-      return VideoWidthToResolutionDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoWidth());
+      return CStreamDetails::VideoWidthToResolutionDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoWidth());
     break;
   case LISTITEM_VIDEO_ASPECT:
     if (item->HasVideoInfoTag())
-      return VideoAspectToAspectDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoAspect());
+      return CStreamDetails::VideoAspectToAspectDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoAspect());
     break;
   case LISTITEM_AUDIO_CODEC:
     if (item->HasVideoInfoTag())
@@ -4081,60 +4094,6 @@ void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
   //CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
   *m_currentFile->GetMusicInfoTag() = tag;
   m_currentFile->m_lStartOffset = 0;
-}
-
-CStdString CGUIInfoManager::VideoWidthToResolutionDescription(int iWidth) const
-{
-  if (iWidth == 0)
-    return "";
-
-  else if (iWidth < 721)
-    return "480";
-  // 960x540
-  else if (iWidth < 961)
-    return "540";
-  // 1280x720
-  else if (iWidth < 1281)
-    return "720";
-  // 1920x1080
-  else 
-    return "1080";
-}
-
-CStdString CGUIInfoManager::VideoAspectToAspectDescription(float fAspect) const
-{
-  const float VIDEOASPECT_EPSILON = 0.025f;
-  if (fAspect == 0.0f)
-    return "";
-
-  // With the epsilon method some of the ranges slightly overlap
-  // so go in increasing size order to minimize the impact
-  // of a growing tolerance value
-  float fTolerance = (fAspect * VIDEOASPECT_EPSILON);
-
-  // 4:3 video standard
-  if (fabs(fAspect - 1.33f) < fTolerance)
-    return "1.33";
-  // 1.66:1 35mm European flat
-  if (fabs(fAspect - 1.66f) < fTolerance)
-    return "1.66";
-  // 16:9 video widescreen 
-  if (fabs(fAspect - 1.77f) < fTolerance)
-    return "1.78";
-  // 1.85:1 35mm US flat (theatrical widescreen)
-  if (fabs(fAspect - 1.85f) < fTolerance)
-    return "1.85";
-  // 2.20:1 70m standard
-  if (fabs(fAspect - 2.20f) < fTolerance)
-    return "2.20";
-  // 2.35:1 anamorphic wide - included are both true 2.35 (pre 1970s) and new
-  // 2.39 as the industry convetion is to call the new standard 2.35 anyway
-  if (fabs(fAspect - 2.35f) < fTolerance)
-    return "2.35";
-  if (fabs(fAspect - 2.39f) < fTolerance)
-    return "2.35";
-
-  return "";
 }
 
 const CFileItem& CGUIInfoManager::GetCurrentSlide() const

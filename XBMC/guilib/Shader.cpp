@@ -20,11 +20,11 @@
  */
 
 #include "include.h"
+
+#ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 #include "../xbmc/Settings.h"
 #include "Shader.h"
-
-#ifdef HAS_SDL_OPENGL
 
 #define LOG_SIZE 1024
 

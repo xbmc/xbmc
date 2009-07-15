@@ -5,7 +5,7 @@
 #include "stdint_win.h"
 #endif
 
-typedef unsigned int u32;
+typedef unsigned long u32;
 typedef unsigned char u8;
 
 #ifdef _LINUX
@@ -66,7 +66,7 @@ void SHA1(const u8* buf, u32 len, u8 hash[20])
 			bswapcpy(w, tmpbuf, 64);
 			if (n <= 55)
 			{
-				__int64 bitlen = (__int64)len * 8;
+				u32 bitlen = len * 8;
 				w[14] = *(((u32*)&bitlen)+1);
 				w[15] = *((u32*)&bitlen);
 				done = 2;

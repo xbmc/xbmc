@@ -124,7 +124,8 @@ typedef NPT_Reference<NPT_OutputStream> NPT_OutputStreamReference;
 NPT_Result NPT_StreamToStreamCopy(NPT_InputStream&  from, 
                                   NPT_OutputStream& to,
                                   NPT_Position      offset = 0,
-                                  NPT_LargeSize     size   = 0 /* 0 means the entire stream */);
+                                  NPT_LargeSize     size   = 0, /* 0 means the entire stream */
+                                  NPT_LargeSize*    bytes_written = NULL);
 
 /*----------------------------------------------------------------------
 |    NPT_DelegatingInputStream
@@ -219,7 +220,7 @@ public:
     NPT_Size        GetBufferSize() const { return m_Buffer.GetBufferSize();}
 
     // methods
-    NPT_Result SetSize(NPT_Size size);
+    NPT_Result SetDataSize(NPT_Size size);
 
 private:
     // NPT_DelegatingInputStream methods
@@ -271,5 +272,51 @@ protected:
 };
 
 typedef NPT_Reference<NPT_StringOutputStream> NPT_StringOutputStreamReference;
+
+/*----------------------------------------------------------------------
+|   NPT_SubInputStream
++---------------------------------------------------------------------*/
+class NPT_SubInputStream : public NPT_InputStream
+{
+public:
+    // constructor and destructor
+    NPT_SubInputStream(NPT_InputStreamReference& source, 
+                       NPT_Position              start,
+                       NPT_LargeSize             size); 
+
+    // methods
+    virtual NPT_Result Read(void*     buffer, 
+                            NPT_Size  bytes_to_read, 
+                            NPT_Size* bytes_read = NULL) = 0;
+    virtual NPT_Result Seek(NPT_Position offset) = 0;
+    virtual NPT_Result Tell(NPT_Position& offset) = 0;
+    virtual NPT_Result GetSize(NPT_LargeSize& size) = 0;
+    virtual NPT_Result GetAvailable(NPT_LargeSize& available) = 0;
+
+private:
+    NPT_InputStreamReference m_Source;
+    NPT_Position             m_Position;
+    NPT_Position             m_Start;
+    NPT_LargeSize            m_Size;
+};
+
+/*----------------------------------------------------------------------
+|   NPT_NullOutputStream
++---------------------------------------------------------------------*/
+class NPT_NullOutputStream : public NPT_OutputStream
+{
+public:
+    // methods
+    NPT_NullOutputStream() {}
+    virtual ~NPT_NullOutputStream() {}
+
+    // NPT_OutputStream methods
+    NPT_Result Write(const void* buffer, NPT_Size bytes_to_write, NPT_Size* bytes_written = NULL);
+
+    NPT_Result Seek(NPT_Position /*offset*/)  { return NPT_ERROR_NOT_SUPPORTED;   }
+    NPT_Result Tell(NPT_Position& /*offset*/)  { return NPT_ERROR_NOT_SUPPORTED;   }
+};
+
+typedef NPT_Reference<NPT_NullOutputStream> NPT_NullOutputStreamReference;
 
 #endif // _NPT_STREAMS_H_

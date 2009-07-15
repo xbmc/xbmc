@@ -23,13 +23,8 @@
 #include "RenderManager.h"
 #include "utils/CriticalSection.h"
 #include "VideoReferenceClock.h"
+#include "Util.h"
 
-#ifndef HAS_SDL
-#include "PixelShaderRenderer.h"
-#include "ComboRenderer.h"
-#include "RGBRenderer.h"
-#include "RGBRendererV2.h"
-#endif
 #include "Application.h"
 #include "Settings.h"
 
@@ -37,11 +32,17 @@
 #include "PlatformInclude.h"
 #endif
 
-#ifdef HAS_SDL_OPENGL
-#include "Application.h"
+#ifdef HAS_XBOX_D3D
+#include "PixelShaderRenderer.h"
+#include "ComboRenderer.h"
+#include "RGBRenderer.h"
+#include "RGBRendererV2.h"
+#elif defined(HAS_SDL_OPENGL)
 #include "LinuxRendererGL.h"
-#else 
+#elif defined(HAS_SDL)
 #include "LinuxRenderer.h"
+#else
+#include "WinRenderer.h"
 #endif
 
 #ifdef HAVE_LIBVDPAU
@@ -61,7 +62,7 @@ CXBoxRenderManager g_renderManager;
 /* these two functions allow us to step out from that lock */
 /* and reaquire it after having the exclusive lock */
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
 //VBlank information
 HANDLE g_eventVBlank=NULL;
 void VBlankCallback(D3DVBLANKDATA *pData)
@@ -126,7 +127,57 @@ double CXBoxRenderManager::GetPresentTime()
 
 void CXBoxRenderManager::WaitPresentTime(double presenttime)
 {
-  CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+  int fps = g_VideoReferenceClock.GetRefreshRate();
+  if(fps <= 0)
+  {
+    /* smooth video not enabled */
+    CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+    return;
+  }
+
+  double frametime = g_VideoReferenceClock.GetSpeed() / fps;
+
+  presenttime     += m_presentcorr * frametime;
+
+  double clock     = CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
+  double target    = 0.5;
+  double error     = ( clock - presenttime ) / frametime - target;
+
+  // a full frametime off doesn't matter
+  while(error >   1.0) error -= 1.0;
+  while(error < - 1.0) error += 1.0;
+
+  m_presenterr   = error;
+
+  // if error is way of, don't use it
+  if(error > target
+  || error < target - 1.0)
+    return;
+
+  // scale the error used for correction, 
+  // based on how much buffer we have on
+  // that side of the target
+  if(error > 0)
+    error /= 2.0 * (1.0 - target);
+  if(error < 0)
+    error /= 2.0 * (0.0 + target);
+
+  m_presentcorr += error * 0.02;
+
+  // make sure we wrap correction properly
+  while(m_presentcorr > target)       m_presentcorr -= 1.0;
+  while(m_presentcorr < target - 1.0) m_presentcorr += 1.0;
+
+  //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
+}
+
+CStdString CXBoxRenderManager::GetVSyncState()
+{
+  CStdString state;
+  state.Format("sync:%+3d%% error:%2d%%"
+              ,     MathUtils::round_int(m_presentcorr * 100)
+              , abs(MathUtils::round_int(m_presenterr  * 100)));
+  return state;
 }
 
 bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
@@ -195,7 +246,7 @@ unsigned int CXBoxRenderManager::PreInit()
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   if(!g_eventVBlank)
   {
     //Only do this on first run
@@ -204,11 +255,14 @@ unsigned int CXBoxRenderManager::PreInit()
   }
 #endif
 
+  m_presentcorr = 0.0;
+  m_presenterr  = 0.0;
+
   m_bIsStarted = false;
   m_bPauseDrawing = false;
   if (!m_pRenderer)
   { 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D
     // no renderer
     m_rendermethod = g_guiSettings.GetInt("videoplayer.rendermethod");
     if (m_rendermethod == RENDER_OVERLAYS)
@@ -233,8 +287,10 @@ unsigned int CXBoxRenderManager::PreInit()
     }
 #elif defined(HAS_SDL_OPENGL)
     m_pRenderer = new CLinuxRendererGL();
-#else
+#elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
+#else
+    m_pRenderer = new CWinRenderer(g_graphicsContext.Get3DDevice());
 #endif
   }
 
@@ -260,11 +316,7 @@ void CXBoxRenderManager::SetupScreenshot()
     m_pRenderer->SetupScreenshot();
 }
 
-#ifndef HAS_SDL
-void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
-#else
-void CXBoxRenderManager::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
-#endif
+void CXBoxRenderManager::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -330,13 +382,13 @@ float CXBoxRenderManager::GetMaximumFPS()
 
   if (g_videoConfig.GetVSyncMode() != VSYNC_DISABLED)
   {
-    fps = g_VideoReferenceClock.GetRefreshRate();
+    fps = (float)g_VideoReferenceClock.GetRefreshRate();
     if (fps <= 0) fps = g_graphicsContext.GetFPS();
   }
   else
     fps = 1000.0f;
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D
   if( m_rendermethod == RENDER_HQ_RGB_SHADER
    || m_rendermethod == RENDER_HQ_RGB_SHADERV2)
   {
@@ -424,7 +476,7 @@ void CXBoxRenderManager::PresentSingle()
 
   m_pRenderer->RenderUpdate(true, 0, 255);
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
 }
@@ -452,7 +504,7 @@ void CXBoxRenderManager::PresentBob()
       m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
     m_presentstep = 0;
   }
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
 }
@@ -472,7 +524,7 @@ void CXBoxRenderManager::PresentBlend()
     m_pRenderer->RenderUpdate(false, RENDER_FLAG_EVEN, 128);
   }
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
 }
@@ -485,7 +537,7 @@ void CXBoxRenderManager::PresentWeave()
 
   m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOTH, 255);
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   //If we have interlaced video, we have to sync to only render on even fields
   D3DFIELD_STATUS mStatus;
   D3DDevice::GetDisplayFieldStatus(&mStatus);

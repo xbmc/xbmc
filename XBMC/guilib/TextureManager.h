@@ -74,32 +74,23 @@ public:
     m_texHeight = 0;
     m_texCoordsArePixels = false;
   };
-#if !defined(HAS_SDL)
-  CTexture(int width, int height, int loops, LPDIRECT3DPALETTE8 palette = NULL, bool texCoordsArePixels = false);
-  void Add(LPDIRECT3DTEXTURE8 texture, int delay);
-  void Set(LPDIRECT3DTEXTURE8 texture, int width, int height);
-#elif defined(HAS_SDL_2D)
-  CTexture(int width, int height, int loops, SDL_Palette* palette = NULL, bool texCoordsArePixels = false);
-  void Add(SDL_Surface *texture, int delay);
-  void Set(SDL_Surface *texture, int width, int height);
-#else
-  CTexture(int width, int height, int loops, SDL_Palette* palette = NULL, bool texCoordsArePixels = false);
+  CTexture(int width, int height, int loops,  XBMC::PalettePtr palette = NULL, bool texCoordsArePixels = false);
+#ifdef HAS_SDL_OPENGL
   void Add(CGLTexture *texture, int delay);
   void Set(CGLTexture *texture, int width, int height);
+#else
+  void Add(XBMC::TexturePtr texture, int delay);
+  void Set(XBMC::TexturePtr texture, int width, int height);
 #endif
   void Free();
   unsigned int size() const;
 
-#ifndef HAS_SDL
-  std::vector<LPDIRECT3DTEXTURE8> m_textures;
-  LPDIRECT3DPALETTE8 m_palette;
-#elif defined(HAS_SDL_2D)
-  std::vector<SDL_Surface*> m_textures;
-  SDL_Palette* m_palette;
-#elif defined(HAS_SDL_OPENGL)
+#ifdef HAS_SDL_OPENGL
   std::vector<CGLTexture*> m_textures;
-  SDL_Palette* m_palette;
+#else
+  std::vector<XBMC::TexturePtr> m_textures;
 #endif
+   XBMC::PalettePtr m_palette;
   std::vector<int> m_delays;
   int m_width;
   int m_height;
@@ -119,13 +110,8 @@ public:
   CTextureMap();
   virtual ~CTextureMap();
 
-#ifndef HAS_SDL
-  CTextureMap(const CStdString& textureName, int width, int height, int loops, LPDIRECT3DPALETTE8 *palette);
-  void Add(LPDIRECT3DTEXTURE8 pTexture, int delay);
-#else
-  CTextureMap(const CStdString& textureName, int width, int height, int loops, SDL_Palette *palette);
-  void Add(SDL_Surface* pTexture, int delay);
-#endif
+  CTextureMap(const CStdString& textureName, int width, int height, int loops,  XBMC::PalettePtr palette);
+  void Add(XBMC::TexturePtr pTexture, int delay);
   bool Release();
 
   const CStdString& GetName() const;

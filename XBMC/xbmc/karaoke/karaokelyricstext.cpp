@@ -68,6 +68,8 @@ CKaraokeLyricsText::CKaraokeLyricsText()
   m_showPreambleBeforeStart = 35; // 5.5 seconds
   m_paragraphBreakTime = 50; // 5 seconds; for autodetection paragraph breaks
   m_mergeLines = true;
+  m_hasPitch = false;
+  m_videoOffset = 0;
 
   m_lyricsState = STATE_END_SONG;
 }
@@ -82,10 +84,13 @@ void CKaraokeLyricsText::clearLyrics()
   m_lyrics.clear();
   m_songName.clear();
   m_artist.clear();
+  m_hasPitch = false;
+  m_videoFile.clear();
+  m_videoOffset = 0;
 }
 
 
-void CKaraokeLyricsText::addLyrics(const CStdString & text, unsigned int timing, unsigned int flags)
+void CKaraokeLyricsText::addLyrics(const CStdString & text, unsigned int timing, unsigned int flags, unsigned int pitch)
 {
   Lyric line;
 
@@ -102,6 +107,7 @@ void CKaraokeLyricsText::addLyrics(const CStdString & text, unsigned int timing,
 
   line.flags = flags;
   line.timing = timing;
+  line.pitch = pitch;
 
   // If this is the first entry, remove LYRICS_NEW_LINE and LYRICS_NEW_PARAGRAPH flags
   if ( m_lyrics.size() == 0 )
@@ -706,4 +712,15 @@ void CKaraokeLyricsText::saveLyrics()
 bool CKaraokeLyricsText::HasBackground()
 {
   return false;
+}
+
+bool CKaraokeLyricsText::HasVideo()
+{
+  return m_videoFile.IsEmpty() ? false : true;
+}
+
+void CKaraokeLyricsText::GetVideoParameters(CStdString & path, __int64 & offset)
+{
+  path = m_videoFile;
+  offset = m_videoOffset;
 }

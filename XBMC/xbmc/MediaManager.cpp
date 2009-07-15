@@ -26,7 +26,10 @@
 #include "Util.h"
 #ifdef _LINUX
 #include "LinuxFileSystem.h"
+#elif defined(_WIN32PC)
+#include "WIN32Util.h"
 #endif
+#include "GUIWindowManager.h"
 
 using namespace std;
 
@@ -112,75 +115,8 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
     localDrives.push_back(share) ;
   }
 
-  char* pcBuffer= NULL;
-  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
-  if( dwStrLength != 0 )
-  {
-    dwStrLength+= 1;
-    pcBuffer= new char [dwStrLength];
-    GetLogicalDriveStrings( dwStrLength, pcBuffer );
+  CWIN32Util::GetDrivesByType(localDrives, LOCAL_DRIVES);
 
-    UINT uDriveType;
-    int iPos= 0, nResult;
-    char cVolumeName[100];
-    do{
-      cVolumeName[0]= '\0';
-      uDriveType= GetDriveType( pcBuffer + iPos  );
-      if(uDriveType != DRIVE_REMOVABLE)
-        nResult= GetVolumeInformation( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
-      share.strPath= share.strName= "";
-
-      bool bUseDCD= false; // just for testing
-      if( uDriveType > DRIVE_UNKNOWN && uDriveType == DRIVE_FIXED || uDriveType == DRIVE_REMOTE ||
-          uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOVABLE )
-      {
-        share.strPath= pcBuffer + iPos;
-        if( cVolumeName[0] != '\0' ) share.strName= cVolumeName;
-        if( uDriveType == DRIVE_CDROM && nResult)
-        {
-          share.strName.Format( "%s %s (%s)",
-            share.strPath, g_localizeStrings.Get(218),share.strName );
-          share.m_iDriveType= CMediaSource::SOURCE_TYPE_LOCAL;
-          bUseDCD= true;
-        }
-        else
-        {
-          // Lets show it, like Windows explorer do... TODO: sorting should depend on driver letter
-          switch(uDriveType)
-          {
-          case DRIVE_CDROM:
-            share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(218));
-            break;
-          case DRIVE_REMOVABLE:
-            if(share.strName.IsEmpty())
-              share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(437));
-            break;
-          case DRIVE_UNKNOWN:
-            share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(13205));
-            break;
-          default:
-            share.strName.Format( "%s %s", share.strPath, share.strName);
-            break;
-          }
-        }
-        share.strName.Replace(":\\",":");
-        share.m_ignore= true;
-        if( !bUseDCD )
-        {
-          share.m_iDriveType= (
-           ( uDriveType == DRIVE_FIXED  )    ? CMediaSource::SOURCE_TYPE_LOCAL :
-           ( uDriveType == DRIVE_REMOTE )    ? CMediaSource::SOURCE_TYPE_REMOTE :
-           ( uDriveType == DRIVE_CDROM  )    ? CMediaSource::SOURCE_TYPE_DVD :
-           ( uDriveType == DRIVE_REMOVABLE ) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
-             CMediaSource::SOURCE_TYPE_UNKNOWN );
-        }
-
-        localDrives.push_back(share);
-      }
-      iPos += (strlen( pcBuffer + iPos) + 1 );
-    } while( strlen( pcBuffer + iPos ) > 0 );
-  }
-  delete[] pcBuffer;
 #else
 #ifndef _LINUX
   // Local shares
@@ -310,3 +246,24 @@ bool CMediaManager::SetLocationPath(const CStdString& oldPath, const CStdString&
   return false;
 }
 
+void CMediaManager::AddAutoSource(const CMediaSource &share)
+{
+  g_settings.AddShare("files",share);
+  g_settings.AddShare("video",share);
+  g_settings.AddShare("pictures",share);
+  g_settings.AddShare("music",share);
+  g_settings.AddShare("programs",share);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+  m_gWindowManager.SendThreadMessage( msg );
+}
+
+void CMediaManager::RemoveAutoSource(const CMediaSource &share)
+{
+  g_settings.DeleteSource("files", share.strName, share.strPath, true);
+  g_settings.DeleteSource("video", share.strName, share.strPath, true);
+  g_settings.DeleteSource("pictures", share.strName, share.strPath, true);
+  g_settings.DeleteSource("music", share.strName, share.strPath, true);
+  g_settings.DeleteSource("programs", share.strName, share.strPath, true);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+  m_gWindowManager.SendThreadMessage( msg );
+}

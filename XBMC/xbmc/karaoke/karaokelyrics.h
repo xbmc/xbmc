@@ -30,6 +30,12 @@ class CKaraokeLyrics
     //! predefined background.
     virtual bool HasBackground() = 0;
 
+    //! Should return true if the lyrics have video file to play
+    virtual bool HasVideo() = 0;
+
+    //! Should return video parameters if HasVideo() returned true
+    virtual void GetVideoParameters( CStdString& path, __int64& offset  ) = 0;
+
     //! This function is called when the karoke visualisation window created. It may
     //! be called after Start(), but is guaranteed to be called before Render()
     //! Default implementation does nothing and returns true.

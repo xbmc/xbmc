@@ -26,6 +26,15 @@
 #if _MSC_VER > 1400
 #include "Cfgmgr32.h"
 #endif
+#include "MediaSource.h"
+
+enum Drive_Types
+{
+  ALL_DRIVES = 0,
+  LOCAL_DRIVES,
+  REMOVABLE_DRIVES,
+  DVD_DRIVES
+};
 
 
 class CWIN32Util
@@ -42,8 +51,6 @@ public:
   static CStdString GetLocalPath(const CStdString &strPath);
   static char FirstDriveFromMask (ULONG unitmask);
   static int GetDriveStatus(const CStdString &strPath);
-  static void UpdateDriveMask();
-  static CStdString GetChangedDrive();
   static bool PowerManagement(PowerState State);
   static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
   static std::vector<CStdString> GetDiskUsage();
@@ -56,10 +63,16 @@ public:
   static HRESULT EjectTray(const char cDriveLetter='\0');
   static HRESULT CloseTray(const char cDriveLetter='\0');
   static bool EjectDrive(const char cDriveLetter='\0');
+#ifdef HAS_SDL_OPENGL
   static void CheckGLVersion();
   static bool HasGLDefaultDrivers();
   static bool HasReqGLVersion();
+#endif
   static BOOL IsCurrentUserLocalAdministrator();
+  static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES);
+  static void AddRemovableDrives();
+  static bool IsAudioCD(const CStdString& strPath);
+  static CStdString GetDiskLabel(const CStdString& strPath);
   
   class SystemParams
   {
@@ -75,7 +88,6 @@ public:
   };
 
 private:
-  static DWORD dwDriveMask;
 #if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
 #endif

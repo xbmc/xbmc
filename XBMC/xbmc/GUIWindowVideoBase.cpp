@@ -515,7 +515,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
         hasDetails = true;
 
-      if (!hasDetails && scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress))
+      int returncode=0;
+      if (!hasDetails && (returncode=scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress)) > 0)
       {
         pDlgProgress->Close();
         if (movielist.size() > 0)
@@ -541,6 +542,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
             return listNeedsUpdating; // user backed out
           }
         }
+      }
+      if (returncode == -1)
+      {
+        pDlgProgress->Close();
+        return false;
       }
     }
     // 4c. Check if url is still empty - occurs if user has selected to do a manual

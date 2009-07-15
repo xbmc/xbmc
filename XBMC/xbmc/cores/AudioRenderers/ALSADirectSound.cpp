@@ -376,18 +376,6 @@ bool CALSADirectSound::Stop()
 }
 
 //***********************************************************************************************
-long CALSADirectSound::GetMinimumVolume() const
-{
-  return -60;
-}
-
-//***********************************************************************************************
-long CALSADirectSound::GetMaximumVolume() const
-{
-  return 60;
-}
-
-//***********************************************************************************************
 long CALSADirectSound::GetCurrentVolume() const
 {
   return m_nCurrentVolume;
@@ -400,7 +388,7 @@ void CALSADirectSound::Mute(bool bMute)
     return;
 
   if (bMute)
-    SetCurrentVolume(GetMinimumVolume());
+    SetCurrentVolume(VOLUME_MINIMUM);
   else
     SetCurrentVolume(m_nCurrentVolume);
 
@@ -471,6 +459,7 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
             framesToWrite);
     Flush();
+    return 0;
   }
   else if (writeResult != framesToWrite) {
     CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "

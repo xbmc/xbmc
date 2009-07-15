@@ -586,8 +586,7 @@ BOOL SetEndOfFile(HANDLE hFile) {
 #else
   off64_t currOff = lseek64(hFile->fd, 0, SEEK_CUR);
 #endif
-  ftruncate(hFile->fd, currOff);
-  return true;
+  return (ftruncate(hFile->fd, currOff) == 0);
 }
 
 DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable) {
