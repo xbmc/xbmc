@@ -35,6 +35,7 @@ void XBMC_open_dialog_settings();
 std::string XBMC_get_addon_directory();
 std::string XBMC_get_user_directory();
 
+bool XBMC_create_directory(std::string dir);
 void XBMC_enable_nav_sounds(bool yesNo);
 void XBMC_execute_built_in(std::string function);
 std::string XBMC_execute_http_api(std::string httpcommand);

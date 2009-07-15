@@ -96,6 +96,13 @@ string XBMC_get_user_directory()
 }
 
 
+bool XBMC_create_directory(std::string dir)
+{
+  if (m_cb == NULL)
+    return false;
+
+  return m_cb->Utils.CreateDirectory(dir.c_str());
+}
 
 void XBMC_enable_nav_sounds(bool yesNo)
 {

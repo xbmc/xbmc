@@ -95,6 +95,7 @@ void CAddonUtils::CreateAddOnCallbacks(AddonCB *cbTable)
   cbTable->Utils.SkinHasImage       = CAddonUtils::SkinHasImage;
   cbTable->Utils.TranslatePath      = CAddonUtils::TranslatePath;
   cbTable->Utils.UnknownToUTF8      = CAddonUtils::UnknownToUTF8;
+  cbTable->Utils.CreateDirectory    = CAddonUtils::CreateDirectory;
 
   /* GUI Dialog Helper functions */
   cbTable->Dialog.OpenOK            = CAddonUtils::OpenDialogOK;
@@ -543,6 +544,19 @@ bool CAddonUtils::GetCondVisibility(const char *condition)
 
   int ret = g_infoManager.TranslateString(condition);
   return g_infoManager.GetBool(ret,dwId);
+}
+
+bool CAddonUtils::CreateDirectory(const char *dir)
+{
+  if (!CDirectory::Exists(dir))
+  {
+    if (!CUtil::CreateDirectoryEx(dir))
+    {
+      return false;
+    }
+  }
+    
+  return true;
 }
 
 void CAddonUtils::EnableNavSounds(bool yesNo)
