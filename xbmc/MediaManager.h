@@ -52,6 +52,7 @@ public:
   bool IsDiscInDrive(const CStdString& devicePath="");
   bool IsAudio(const CStdString& devicePath="");
   CStdString TranslateDevicePath(const CStdString& devicePath);
+  DWORD GetDriveStatus(const CStdString& devicePath="");
 
 protected:
   std::vector<CNetworkLocation> m_locations;

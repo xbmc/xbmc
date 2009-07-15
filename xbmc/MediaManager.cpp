@@ -335,3 +335,32 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
 
 // End AutoSource status functions
 //////////////////////////////////
+
+DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
+{
+  CStdString strDevice = TranslateDevicePath(devicePath);
+#ifdef _WIN32PC
+  DWORD dwRet = DRIVE_NOT_READY;
+  strDevice.Format("\\\\.\\%c:",strDevice[0]);
+  int status = CWIN32Util::GetDriveStatus(strDevice);
+
+  switch(status)
+  {
+  case -1: // error
+    dwRet = DRIVE_NOT_READY;
+    break;
+  case 0: // no media
+    dwRet = DRIVE_CLOSED_NO_MEDIA;
+    break;
+  case 1: // tray open
+    dwRet = DRIVE_OPEN;      
+    break;
+  case 2: // media accessible
+    dwRet = DRIVE_CLOSED_MEDIA_PRESENT;
+    break;
+  }
+  return dwRet;
+#else
+  return MEDIA_DETECT::CDetectDVDMedia::DriveReady();
+#endif
+}
