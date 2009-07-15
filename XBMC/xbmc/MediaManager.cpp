@@ -275,8 +275,9 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 // - could be also implemented as direct call to the device
 // - TODO: translate cdda://local/ and cdda://<device>/
 
-CStdString CMediaManager::translateDevice(const CStdString& devicePath)
+CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath)
 {
+  CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = devicePath;
   // fallback for cdda://local/ and empty devicePath
   if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
@@ -289,11 +290,12 @@ CStdString CMediaManager::translateDevice(const CStdString& devicePath)
 }
 
 bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
-{  
+{
+  CSingleLock waitLock(m_muAutoSource);
   VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
   if (!pShares) return false;
 
-  CStdString strDevice = translateDevice(devicePath);
+  CStdString strDevice = TranslateDevicePath(devicePath);
   VECSOURCES::const_iterator it;
   for(it=pShares->begin();it!=pShares->end();++it)
     if(it->strPath.Equals(strDevice)) return true;
@@ -303,10 +305,11 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 
 bool CMediaManager::IsAudio(const CStdString& devicePath)
 {
+  CSingleLock waitLock(m_muAutoSource);
   VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
   if (!pShares) return false;
   
-  CStdString strDevice = translateDevice(devicePath);
+  CStdString strDevice = TranslateDevicePath(devicePath);
   VECSOURCES::const_iterator it;
   for(it=pShares->begin();it!=pShares->end();++it)
     if(it->strPath.Equals(strDevice) && it->strStatus.Equals("Audio-CD")) return true;
