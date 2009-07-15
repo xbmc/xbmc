@@ -31,6 +31,10 @@
 #endif
 #include "GUIWindowManager.h"
 #include "FileSystem/cdioSupport.h"
+#ifndef AUTOSOURCE 
+// TODO: switch all ports to use auto sources
+#include "DetectDVDType.h"
+#endif
 
 using namespace std;
 
@@ -273,7 +277,7 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 // AutoSource status functions:
 // - check only in video as auto source is added to all types
 // - could be also implemented as direct call to the device
-// - TODO: translate cdda://local/ and cdda://<device>/
+// - TODO: translate cdda://<device>/
 
 CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath)
 {
@@ -291,6 +295,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath)
 
 bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 {
+#ifdef AUTOSOURCE
   CSingleLock waitLock(m_muAutoSource);
   VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
   if (!pShares) return false;
@@ -299,12 +304,16 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
   VECSOURCES::const_iterator it;
   for(it=pShares->begin();it!=pShares->end();++it)
     if(it->strPath.Equals(strDevice)) return true;
-
   return false;
+#else 
+  // TODO: switch all ports to use auto sources
+  return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();
+#endif
 }
 
 bool CMediaManager::IsAudio(const CStdString& devicePath)
 {
+#ifdef AUTOSOURCE
   CSingleLock waitLock(m_muAutoSource);
   VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
   if (!pShares) return false;
@@ -313,6 +322,13 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
   VECSOURCES::const_iterator it;
   for(it=pShares->begin();it!=pShares->end();++it)
     if(it->strPath.Equals(strDevice) && it->strStatus.Equals("Audio-CD")) return true;
+
+#else 
+  // TODO: switch all ports to use auto sources
+  MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
+  if (pInfo != NULL && pInfo->IsAudio(1))
+    return true;
+#endif
 
   return false;
 }
