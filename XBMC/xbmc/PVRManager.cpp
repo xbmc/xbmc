@@ -107,15 +107,15 @@ void CPVRManager::Start()
   /* Get Timers from Backends */
   if (m_clientProps.SupportTimers)
     PVRTimers.Load();
+
+  /* Get Recordings from Backend */
+  if (m_clientProps.SupportRecordings)
+    PVRRecordings.Load();
     
   m_database.Open();
 
   /* Get Channelgroups */
   m_database.GetGroupList(m_currentClientID, &m_channel_group);
-
-  /* Get Recordings from Backend */
-  if (m_clientProps.SupportRecordings)
-    ReceiveAllRecordings();
 
   SyncInfo();
   m_database.Close();
@@ -1172,40 +1172,35 @@ bool CPVRManager::UpdateBackendChannel(const CFileItem &item)
 /************************************************************/
 /** Record handling **/
 
-int CPVRManager::GetNumRecordings()
-{
-  return m_recordings.size();
-}
-
 int CPVRManager::GetAllRecordings(CFileItemList* results)
 {
   EnterCriticalSection(&m_critSection);
   ReceiveAllRecordings();
 
-  for (unsigned int i = 0; i < m_recordings.size(); ++i)
+  for (unsigned int i = 0; i < PVRRecordings.size(); ++i)
   {
-    if ((m_recordings[i].m_startTime < CDateTime::GetCurrentDateTime()) &&
-        (m_recordings[i].m_endTime > CDateTime::GetCurrentDateTime()))
+    if ((PVRRecordings[i].m_startTime < CDateTime::GetCurrentDateTime()) &&
+        (PVRRecordings[i].m_endTime > CDateTime::GetCurrentDateTime()))
     {
       for (unsigned int j = 0; j < PVRTimers.size(); ++j)
       {
-        if ((PVRTimers[j].m_channelNum == m_recordings[i].m_channelNum)  &&
+        if ((PVRTimers[j].m_channelNum == PVRRecordings[i].m_channelNum)  &&
             (PVRTimers[j].m_StartTime  <= CDateTime::GetCurrentDateTime()) &&
             (PVRTimers[j].m_StopTime   >= CDateTime::GetCurrentDateTime()) &&
             (PVRTimers[j].m_Repeat != true) && (PVRTimers[j].m_Active == true))
         {
-          m_recordings[i].m_Summary.Format("%s", g_localizeStrings.Get(18069));
+          PVRRecordings[i].m_Summary.Format("%s", g_localizeStrings.Get(18069));
         }
       }
     }
 
-    CFileItemPtr record(new CFileItem(m_recordings[i]));
+    CFileItemPtr record(new CFileItem(PVRRecordings[i]));
     results->Add(record);
   }
 
   LeaveCriticalSection(&m_critSection);
 
-  return m_recordings.size();
+  return PVRRecordings.size();
 }
 
 bool CPVRManager::DeleteRecording(const CFileItem &item)
@@ -1288,7 +1283,7 @@ void CPVRManager::ReceiveAllRecordings()
   EnterCriticalSection(&m_critSection);
   
   /* Clear all current present Recordings inside list */
-  m_recordings.erase(m_recordings.begin(), m_recordings.end());
+  PVRRecordings.erase(PVRRecordings.begin(), PVRRecordings.end());
 
   /* Go thru all clients and receive there Recordings */
   CLIENTMAPITR itr = m_clients.begin();
@@ -1297,7 +1292,7 @@ void CPVRManager::ReceiveAllRecordings()
     /* Load only if the client have Recordings */
     if (m_clients[(*itr).first]->GetNumRecordings() > 0)
     {
-      m_clients[(*itr).first]->GetAllRecordings(&m_recordings);
+      m_clients[(*itr).first]->GetAllRecordings(&PVRRecordings);
     }
     itr++;
   }
@@ -1865,7 +1860,7 @@ bool CPVRManager::OpenRecordedStream(unsigned int record)
 
   if (m_client)
   {
-    if (m_client->OpenRecordedStream(m_recordings[record-1]))
+    if (m_client->OpenRecordedStream(PVRRecordings[record-1]))
     {
       LeaveCriticalSection(&m_critSection);
       return true;

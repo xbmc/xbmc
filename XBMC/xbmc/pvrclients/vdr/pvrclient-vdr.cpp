@@ -22,6 +22,7 @@
 #include "client.h"
 #include "timers.h"
 #include "channels.h"
+#include "recordings.h"
 #include "pvrclient-vdr.h"
 #include "pvrclient-vdr_os.h"
 
@@ -2354,143 +2355,73 @@ int PVRClientVDR::GetNumRecordings(void)
   return atol(data.c_str());
 }
 
-PVR_ERROR PVRClientVDR::GetAllRecordings(VECRECORDINGS *results)
+PVR_ERROR PVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
 {
-  vector<string> lines;
+  vector<string> linesShort;
   int            code;
-  char           buffer[1024];
-  unsigned int   cnt = 0;
-  CStdString     strbuffer;
 
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
 
   pthread_mutex_lock(&m_critSection);
 
-  if (!m_transceiver->SendCommand("LSTR", code, lines))
+  if (!m_transceiver->SendCommand("LSTR", code, linesShort))
   {
     pthread_mutex_unlock(&m_critSection);
     return PVR_ERROR_SERVER_ERROR;
   }
 
-  for (vector<string>::iterator it2 = lines.begin(); it2 != lines.end(); it2++)
+  for (vector<string>::iterator it = linesShort.begin(); it != linesShort.end(); it++)
   {
-    string& data(*it2);
+    string& data(*it);
     CStdString str_result = data;
-    cPVRRecordingInfoTag broadcast;
 
     /* Convert to UTF8 string format */
     if (m_bCharsetConv)
       XBMC_unknown_to_utf8(str_result);
 
-    /* Get recording ID */
-    broadcast.m_Index = atol(str_result.c_str());
-
-    /* Get recording name */
-
-    str_result.erase(0, str_result.find(":", 0) + 4); //find : between hour and minutes, go to first char after minutes
-    str_result.erase(0, str_result.find(" ", 0) + 1); //now go to last blank before title starts and skip unicode garbage (if present)
-    broadcast.m_strTitle = str_result.c_str();
-
-    /* Set file string for replay devices */
-    broadcast.m_strFileNameAndPath.Format("record://%i", broadcast.m_Index);
-
-    /* Save it inside list */
-    results->push_back(broadcast);
-    cnt++;
-  }
-
-  std::vector<cPVRRecordingInfoTag>::iterator it;
-
-  for (unsigned int i = 0; i < cnt; i++)
-  {
-    lines.erase(lines.begin(), lines.end());
-    it = results->begin() + i;
-
-    sprintf(buffer, "LSTR %d", (*it).m_Index);
-    if (!m_transceiver->SendCommand(buffer, code, lines))
+    cRecording recording;
+    if (recording.ParseEntryLine(str_result.c_str()))
     {
-      pthread_mutex_unlock(&m_critSection);
-      return PVR_ERROR_SERVER_ERROR;
-    }
+      char           buffer[1024];
+      vector<string> linesDetails;
 
-    for (vector<string>::iterator it2 = lines.begin(); it2 != lines.end(); it2++)
-    {
-      string& data(*it2);
-      CStdString str_result = data;
-
-      /* Convert to UTF8 string format */
-	  if (m_bCharsetConv)
-        XBMC_unknown_to_utf8(str_result);
-
-      /* Get Channelname */
-      if (str_result.find("C", 0) == 0)
-      {
-        str_result.erase(0, 2);
-        str_result.erase(0, str_result.find(" ", 0) + 1);
-        (*it).m_strChannel = str_result.c_str();
+      sprintf(buffer, "LSTR %d", recording.Index());
+      if (!m_transceiver->SendCommand(buffer, code, linesDetails))
         continue;
+
+      for (vector<string>::iterator it2 = linesDetails.begin(); it2 != linesDetails.end(); it2++)
+      {
+        string& data2(*it2);
+        CStdString str_details = data2;
+
+        /* Convert to UTF8 string format */
+        if (m_bCharsetConv)
+          XBMC_unknown_to_utf8(str_details);
+
+        recording.ParseLine(str_details.c_str());
       }
 
-      /* Get Title */
-      if (str_result.find("T", 0) == 0)
-      {
-        str_result.erase(0, 2);
-        //   (*it).m_strTitle = str_result.c_str();
-        continue;
-      }
-
-      /* Get short description */
-      if (str_result.find("S", 0) == 0)
-      {
-        str_result.erase(0, 2);
-        (*it).m_strPlotOutline   = str_result.c_str();
-        continue;
-      }
-
-      /* Get description */
-      if (str_result.find("D", 0) == 0)
-      {
-        str_result.erase(0, 2);
-        int pos = 0;
-
-        while (1)
-        {
-          pos = str_result.find("|", pos);
-          if (pos < 0)
-            break;
-
-          str_result.replace(pos, 1, 1, '\n');
-        }
-
-        (*it).m_strPlot = str_result.c_str();
-        continue;
-      }
-
-      /* Get ID, date and length */
-      if (str_result.find("E ", 0) == 0)
-      {
-        str_result.erase(0, 2);
-        // (*it).m_uniqueID = atol(str_result.c_str());
-        str_result.erase(0, str_result.find(" ", 0) + 1);
-        time_t rec_time = atol(str_result.c_str());
-        str_result.erase(0, str_result.find(" ", 0) + 1);
-        unsigned int duration = atol(str_result.c_str());
-
-        (*it).m_startTime = CDateTime((time_t)rec_time);
-        (*it).m_endTime   = CDateTime((time_t)rec_time + duration);
-        (*it).m_duration  = CDateTimeSpan(0, 0, duration / 60, duration % 60);
-        (*it).m_Summary.Format("%s", (*it).m_startTime.GetAsLocalizedDateTime(false, false));
-        continue;
-      }
+      PVR_RECORDINGINFO tag;
+      tag.index           = recording.Index();
+      tag.channelName     = recording.ChannelName();
+      tag.framesPerSecond = recording.FramesPerSecond();
+      tag.lifetime        = recording.Lifetime();
+      tag.priority        = recording.Priority();
+      tag.starttime       = recording.StartTime();
+      tag.duration        = recording.Duration();
+      tag.title           = recording.FileName();
+      tag.subtitle        = recording.ShortText();
+      tag.description     = recording.Description();
+      
+      PVR_transfer_recording_entry(handle, &tag);
     }
   }
-
   pthread_mutex_unlock(&m_critSection);
 
   return PVR_ERROR_NO_ERROR;
 }
-
+    
 PVR_ERROR PVRClientVDR::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
 {
   vector<string> lines;

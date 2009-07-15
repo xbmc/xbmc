@@ -74,7 +74,7 @@ public:
   virtual PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber)=0;
 
   virtual int GetNumRecordings(void)=0;
-  virtual PVR_ERROR GetAllRecordings(VECRECORDINGS *results)=0;
+  virtual PVR_ERROR GetAllRecordings(cPVRRecordings *results)=0;
   virtual PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo)=0;
   virtual PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname)=0;
 

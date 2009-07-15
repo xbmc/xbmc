@@ -66,7 +66,7 @@ public:
 
   /* Recordings */
   virtual int GetNumRecordings(void);
-  virtual PVR_ERROR GetAllRecordings(VECRECORDINGS *results);
+  virtual PVR_ERROR GetAllRecordings(cPVRRecordings *results);
   virtual PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo);
   virtual PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname);
 
@@ -106,6 +106,7 @@ private:
   void WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
   static void PVRTransferChannelEntry(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *channel);
   static void PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
+  static void PVRTransferRecordingEntry(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
   static void PVREventCallback(void *userData, const PVR_EVENT pvrevent, const char *msg);
 };
 

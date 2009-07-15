@@ -176,12 +176,14 @@ typedef struct CB_GUI
 typedef void (*PVREventCallback)(void *userData, const PVR_EVENT, const char*);
 typedef void (*PVRTransferChannelEntry)(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *chan);
 typedef void (*PVRTransferTimerEntry)(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
+typedef void (*PVRTransferRecordingEntry)(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
 
 typedef struct CB_PVR
 {
   PVREventCallback          EventCallback;
   PVRTransferChannelEntry   TransferChannelEntry;
   PVRTransferTimerEntry     TransferTimerEntry;
+  PVRTransferRecordingEntry TransferRecordingEntry;
 } CB_PVR;
 
 typedef struct AddonCB

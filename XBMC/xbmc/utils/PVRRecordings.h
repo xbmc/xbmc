@@ -103,6 +103,7 @@ public:
   cPVRRecordings(void);
   bool Load();
   bool Update();
+  int GetNumRecordings();
   void Clear();
 };
 

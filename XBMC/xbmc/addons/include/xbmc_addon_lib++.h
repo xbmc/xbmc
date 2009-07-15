@@ -114,5 +114,7 @@ inline char *skipspace(const char *s)
         s++;
   return (char *)s;
 }
+char *stripspace(char *s);
+char *compactspace(char *s);
 
 #endif /* LIBADDON_PLUS_PLUS_H */

@@ -198,6 +198,23 @@ typedef std::vector<TVEPGData> EPG_DATA;
     int           repeatflags;
   } PVR_TIMERINFO;
   
+  /**
+   * TV Recording Definition
+   */
+  typedef struct PVR_RECORDINGINFO {
+    int           index;
+    const char   *title;
+    const char   *subtitle;
+    const char   *description;
+    const char   *channelName;
+    time_t        starttime;
+    int           duration;
+    double        framesPerSecond;
+    int           priority;
+    int           lifetime;
+
+  } PVR_RECORDINGINFO;
+  
   // Structure to transfer the above functions to XBMC
   typedef struct PVRClient
   {
@@ -230,7 +247,7 @@ typedef std::vector<TVEPGData> EPG_DATA;
 
     /** PVR Recording Functions **/
     int (__cdecl* GetNumRecordings)();
-    PVR_ERROR (__cdecl* GetAllRecordings)(VECRECORDINGS *results);
+    PVR_ERROR (__cdecl* RequestRecordingsList)(PVRHANDLE handle);
     PVR_ERROR (__cdecl* DeleteRecording)(const cPVRRecordingInfoTag &recinfo);
     PVR_ERROR (__cdecl* RenameRecording)(const cPVRRecordingInfoTag &recinfo, CStdString &newname);
 

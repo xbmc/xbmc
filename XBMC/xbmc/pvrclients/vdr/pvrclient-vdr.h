@@ -77,7 +77,7 @@ public:
 
   /* Record handling **/
   int GetNumRecordings(void);
-  PVR_ERROR GetAllRecordings(VECRECORDINGS *results);
+  PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
   PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo);
   PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname);
 
