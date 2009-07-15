@@ -113,7 +113,6 @@ public:
   bool UpdateBackendChannel(const CFileItem &item);
 
   /* Record handling **/
-  int GetNumRecordings();
   int GetAllRecordings(CFileItemList* results);
   bool DeleteRecording(const CFileItem &item);
   bool RenameRecording(const CFileItem &item, CStdString &newname);
@@ -196,7 +195,6 @@ private:
   int                 m_CurrentGroupID;
   unsigned int        m_HiddenChannels;
 
-  VECRECORDINGS       m_recordings;
   CHANNELGROUPS_DATA  m_channel_group;
 
   CRITICAL_SECTION    m_critSection;

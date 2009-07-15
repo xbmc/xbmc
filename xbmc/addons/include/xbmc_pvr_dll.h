@@ -28,7 +28,7 @@ extern "C"
 //  PVR_ERROR DeleteChannel(unsigned int number);
 //  PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
 //  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
-  PVR_ERROR GetAllRecordings(VECRECORDINGS *results);
+  PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
   PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo);
   PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname);
   PVR_ERROR RequestTimerList(PVRHANDLE handle);
@@ -72,7 +72,7 @@ extern "C"
 //    pClient->DeleteChannel          = DeleteChannel;
 //    pClient->RenameChannel          = RenameChannel;
 //    pClient->MoveChannel            = MoveChannel;
-    pClient->GetAllRecordings       = GetAllRecordings;
+    pClient->RequestRecordingsList  = RequestRecordingsList;
     pClient->DeleteRecording        = DeleteRecording;
     pClient->RenameRecording        = RenameRecording;
     pClient->RequestTimerList       = RequestTimerList;

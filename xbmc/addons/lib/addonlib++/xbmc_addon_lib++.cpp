@@ -548,3 +548,36 @@ bool isnumber(const char *s)
   } while (*++s);
   return true;
 }
+
+char *stripspace(char *s)
+{
+  if (s && *s) 
+  {
+    for (char *p = s + strlen(s) - 1; p >= s; p--) 
+    {
+      if (!isspace(*p))
+        break;
+      *p = 0;
+    }
+  }
+  return s;
+}
+
+char *compactspace(char *s)
+{
+  if (s && *s) 
+  {
+    char *t = stripspace(skipspace(s));
+    char *p = t;
+    while (p && *p) 
+    {
+      char *q = skipspace(p);
+      if (q - p > 1)
+      memmove(p + 1, q, strlen(q) + 1);
+      p++;
+    }
+    if (t != s)
+      memmove(s, t, strlen(t) + 1);
+  }
+  return s;
+}

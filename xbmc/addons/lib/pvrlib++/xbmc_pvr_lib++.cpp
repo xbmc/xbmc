@@ -72,3 +72,11 @@ void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer
 
   m_pvr_cb->PVR.TransferTimerEntry(m_pvr_cb->userData, handle, timer);
 }
+
+void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
+{
+  if (m_pvr_cb == NULL)
+    return;
+
+  m_pvr_cb->PVR.TransferRecordingEntry(m_pvr_cb->userData, handle, recording);
+}

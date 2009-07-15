@@ -310,9 +310,9 @@ extern "C" int GetNumRecordings(void)
   return g_client->GetNumRecordings();
 }
 
-extern "C" PVR_ERROR GetAllRecordings(VECRECORDINGS *results)
+extern "C" PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
 {
-  return g_client->GetAllRecordings(results);
+  return g_client->RequestRecordingsList(handle);
 }
 
 extern "C" PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo)

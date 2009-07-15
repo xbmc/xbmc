@@ -251,6 +251,23 @@ cPVRRecordings::cPVRRecordings(void)
 
 bool cPVRRecordings::Load()
 {
+  CPVRManager *manager  = CPVRManager::GetInstance();
+  CLIENTMAP   *clients  = manager->Clients();
+  
+  Clear();
+
+  /* Go thru all clients and receive there Recordings */
+  CLIENTMAPITR itr = clients->begin();
+  while (itr != clients->end())
+  {
+    /* Load only if the client have Recordings */
+    IPVRClient* client = (*itr).second;
+    if (client->GetNumRecordings() > 0)
+    {
+      client->GetAllRecordings(this);
+    }
+    itr++;
+  }
 
   return true;
 }
@@ -258,6 +275,11 @@ bool cPVRRecordings::Load()
 bool cPVRRecordings::Update()
 {
   Load();
+}
+
+int cPVRRecordings::GetNumRecordings()
+{
+  return size();
 }
 
 void cPVRRecordings::Clear()

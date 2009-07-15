@@ -84,9 +84,10 @@ bool CPVRClient::Init()
   CAddonUtils::CreateAddOnCallbacks(m_callbacks);
 
   /* Write XBMC PVR specific Add-on function addresses to callback table */
-  m_callbacks->PVR.EventCallback        = PVREventCallback;
-  m_callbacks->PVR.TransferChannelEntry = PVRTransferChannelEntry;
-  m_callbacks->PVR.TransferTimerEntry   = PVRTransferTimerEntry;
+  m_callbacks->PVR.EventCallback          = PVREventCallback;
+  m_callbacks->PVR.TransferChannelEntry   = PVRTransferChannelEntry;
+  m_callbacks->PVR.TransferTimerEntry     = PVRTransferTimerEntry;
+  m_callbacks->PVR.TransferRecordingEntry = PVRTransferRecordingEntry;
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
@@ -538,7 +539,7 @@ int CPVRClient::GetNumRecordings(void)
   return -1;
 }
 
-PVR_ERROR CPVRClient::GetAllRecordings(VECRECORDINGS *results)
+PVR_ERROR CPVRClient::GetAllRecordings(cPVRRecordings *results)
 {
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
@@ -546,7 +547,8 @@ PVR_ERROR CPVRClient::GetAllRecordings(VECRECORDINGS *results)
   {
     try
     {
-      ret = m_pClient->GetAllRecordings(results);
+      const PVRHANDLE handle = (cPVRRecordings*) results;
+      ret = m_pClient->RequestRecordingsList(handle);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -566,6 +568,35 @@ PVR_ERROR CPVRClient::GetAllRecordings(VECRECORDINGS *results)
     }
   }
   return ret;
+}
+
+void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
+{
+  CPVRClient* client = (CPVRClient*) userData;
+  if (client == NULL || handle == NULL || recording == NULL)
+  {
+    CLog::Log(LOGERROR, "PVR: PVRTransferRecordingEntry is called with NULL-Pointer!!!");
+    return;
+  }
+
+  cPVRRecordings *xbmcRecordings = (cPVRRecordings*) handle;
+
+  cPVRRecordingInfoTag tag;
+
+  tag.m_Index                 = recording->index;
+  tag.m_clientID              = client->m_clientID;
+  tag.m_strChannel            = recording->channelName;
+  tag.m_startTime             = CDateTime((time_t)recording->starttime);
+  tag.m_endTime               = CDateTime((time_t)recording->starttime + recording->duration);
+  tag.m_duration              = CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60);
+  tag.m_strFileNameAndPath.Format("record://%i", tag.m_Index);
+  tag.m_Summary.Format("%s", tag.m_startTime.GetAsLocalizedDateTime(false, false));
+  tag.m_strTitle              = recording->title;
+  tag.m_strPlot               = recording->description;
+  tag.m_strPlotOutline        = recording->subtitle;
+
+  xbmcRecordings->push_back(tag);
+  return;
 }
 
 PVR_ERROR CPVRClient::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
