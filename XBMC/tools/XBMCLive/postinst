@@ -29,6 +29,8 @@ case "$1" in
 		audio
 		video
 		plugdev
+		netdev
+		powerdev
 		fuse"
 
 	# TODO: this probably isn't necessary anymore as PolicyKit is now being
