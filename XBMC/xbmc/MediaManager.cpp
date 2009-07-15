@@ -30,6 +30,7 @@
 #include "WIN32Util.h"
 #endif
 #include "GUIWindowManager.h"
+#include "FileSystem/cdioSupport.h"
 
 using namespace std;
 
@@ -277,7 +278,11 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 CStdString CMediaManager::translateDevice(const CStdString& devicePath)
 {
   CStdString strDevice = devicePath;
+  // fallback for cdda://local/ and empty devicePath
+  if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
+    strDevice = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
 #ifdef _WIN32PC
+  strDevice.Replace("\\\\.\\","");
   CUtil::RemoveSlashAtEnd(strDevice);
 #endif
   return strDevice;
@@ -288,9 +293,10 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
   VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
   if (!pShares) return false;
 
+  CStdString strDevice = translateDevice(devicePath);
   VECSOURCES::const_iterator it;
   for(it=pShares->begin();it!=pShares->end();++it)
-    if(it->strPath.Equals(translateDevice(devicePath))) return true;
+    if(it->strPath.Equals(strDevice)) return true;
 
   return false;
 }
@@ -300,9 +306,10 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
   VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
   if (!pShares) return false;
   
+  CStdString strDevice = translateDevice(devicePath);
   VECSOURCES::const_iterator it;
   for(it=pShares->begin();it!=pShares->end();++it)
-    if(it->strPath.Equals(translateDevice(devicePath)) && it->strStatus.Equals("Audio-CD")) return true;
+    if(it->strPath.Equals(strDevice) && it->strStatus.Equals("Audio-CD")) return true;
 
   return false;
 }
