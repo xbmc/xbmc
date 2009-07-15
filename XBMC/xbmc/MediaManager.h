@@ -49,9 +49,12 @@ public:
 
   void AddAutoSource(const CMediaSource &share);
   void RemoveAutoSource(const CMediaSource &share);
+  bool IsDiscInDrive(const CStdString& devicePath="");
+  bool IsAudio(const CStdString& devicePath="");
 
 protected:
   std::vector<CNetworkLocation> m_locations;
+  CStdString translateDevice(const CStdString& devicePath);
 };
 
 extern class CMediaManager g_mediaManager;

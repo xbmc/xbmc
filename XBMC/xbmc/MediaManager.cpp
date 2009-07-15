@@ -267,3 +267,45 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   m_gWindowManager.SendThreadMessage( msg );
 }
+
+/////////////////////////////////////////////////////////////
+// AutoSource status functions:
+// - check only in video as auto source is added to all types
+// - could be also implemented as direct call to the device
+// - TODO: translate cdda://local/ and cdda://<device>/
+
+CStdString CMediaManager::translateDevice(const CStdString& devicePath)
+{
+  CStdString strDevice = devicePath;
+#ifdef _WIN32PC
+  CUtil::RemoveSlashAtEnd(strDevice);
+#endif
+  return strDevice;
+}
+
+bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
+{  
+  VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
+  if (!pShares) return false;
+
+  VECSOURCES::const_iterator it;
+  for(it=pShares->begin();it!=pShares->end();++it)
+    if(it->strPath.Equals(translateDevice(devicePath))) return true;
+
+  return false;
+}
+
+bool CMediaManager::IsAudio(const CStdString& devicePath)
+{
+  VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
+  if (!pShares) return false;
+  
+  VECSOURCES::const_iterator it;
+  for(it=pShares->begin();it!=pShares->end();++it)
+    if(it->strPath.Equals(translateDevice(devicePath)) && it->strStatus.Equals("Audio-CD")) return true;
+
+  return false;
+}
+
+// End AutoSource status functions
+//////////////////////////////////
