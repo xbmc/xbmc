@@ -13,7 +13,7 @@
   <string id="31007">ON/OFF</string>
   <string id="31008">Séries TV</string>
   <string id="31011">Visionner vos</string>
-  <string id="31012">Ecouter votre</string>
+  <string id="31012">Écouter votre</string>
   <string id="31013">Voir vos</string>
   <string id="31014">Utiliser vos</string>
   <string id="31015">Consulter</string>
@@ -42,7 +42,7 @@
   <string id="31038">Choisir votre</string>
   <string id="31039">Favoris</string>
   <string id="31040">Modifier</string>
-  <string id="31041">Editeur</string>
+  <string id="31041">Éditeur</string>
   <string id="31042">Image</string>
   <string id="31043">Consulter la</string>
   <string id="31044">Par</string>
@@ -52,7 +52,7 @@
 
 <!--  Programs  --> 
   <string id="31051">Jeux</string> 
-  <string id="31052">Emulateurs</string> 
+  <string id="31052">Émulateurs</string> 
   <string id="31053">Applis</string>
 
 <!--  System  --> 
@@ -184,6 +184,7 @@
   <string id="31715">Panneau</string>
   <string id="31716">Coverflow</string>
   <string id="31717">Menu Options</string>
+  <string id="31720">Grille</string>
 
 <!--  Credits  -->
   <string id="31800">Credits</string>
@@ -213,4 +214,9 @@
   <string id="31954">Aide</string>
   <string id="31955">Préférences</string>
   <string id="31956">Montrer</string>
+
+  <string id="31960">Mettre en veille</string>
+  <string id="31961">Éteindre</string>
+  <string id="31962">Menu Power</string>
+  <string id="31963">affichages</string> 
  </strings>
