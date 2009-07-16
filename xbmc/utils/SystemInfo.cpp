@@ -194,7 +194,11 @@ CStdString CSysInfo::GetMACAddress()
 
 CStdString CSysInfo::GetVideoEncoder()
 {
+#ifdef HAS_SDL_OPENGL
   return "GPU: " + g_graphicsContext.getScreenSurface()->GetGLRenderer();
+#else // TODO:DIRECTX
+  return "GPU: DIRECTX";
+#endif
 }
 
 CStdString CSysInfo::GetXBVerInfo()
@@ -560,11 +564,12 @@ CStdString CSysInfo::GetLinuxDistro()
   FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; /usr/bin/lsb_release -d | cut -f2", "r");
   if (pipe)
   {
-    char buffer[256];
-    memset(buffer, 0, sizeof(buffer)*sizeof(char));
-    fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe);
+    char buffer[256] = {'\0'};
+    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+      result = buffer;
+    else
+      CLog::Log(LOGWARNING, "Unable to determine Linux distribution");
     pclose(pipe);
-    result = buffer;
   }
   
   return result.Trim();
@@ -579,11 +584,12 @@ CStdString CSysInfo::GetUnameVersion()
   FILE* pipe = popen("uname -rs", "r");
   if (pipe)
   {
-    char buffer[256];
-    memset(buffer, 0, sizeof(buffer)*sizeof(char));
-    fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe);
+    char buffer[256] = {'\0'};
+    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+      result = buffer;
+    else
+      CLog::Log(LOGWARNING, "Unable to determine Uname version");
     pclose(pipe);
-    result = buffer;
   }
   
   return result.Trim();

@@ -26,6 +26,14 @@
 #include "Util.h"
 #ifdef _LINUX
 #include "LinuxFileSystem.h"
+#elif defined(_WIN32PC)
+#include "WIN32Util.h"
+#endif
+#include "GUIWindowManager.h"
+#include "FileSystem/cdioSupport.h"
+#ifndef AUTOSOURCE 
+// TODO: switch all ports to use auto sources
+#include "DetectDVDType.h"
 #endif
 
 using namespace std;
@@ -112,75 +120,8 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
     localDrives.push_back(share) ;
   }
 
-  char* pcBuffer= NULL;
-  DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
-  if( dwStrLength != 0 )
-  {
-    dwStrLength+= 1;
-    pcBuffer= new char [dwStrLength];
-    GetLogicalDriveStrings( dwStrLength, pcBuffer );
+  CWIN32Util::GetDrivesByType(localDrives, LOCAL_DRIVES);
 
-    UINT uDriveType;
-    int iPos= 0, nResult;
-    char cVolumeName[100];
-    do{
-      cVolumeName[0]= '\0';
-      uDriveType= GetDriveType( pcBuffer + iPos  );
-      if(uDriveType != DRIVE_REMOVABLE)
-        nResult= GetVolumeInformation( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
-      share.strPath= share.strName= "";
-
-      bool bUseDCD= false; // just for testing
-      if( uDriveType > DRIVE_UNKNOWN && uDriveType == DRIVE_FIXED || uDriveType == DRIVE_REMOTE ||
-          uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOVABLE )
-      {
-        share.strPath= pcBuffer + iPos;
-        if( cVolumeName[0] != '\0' ) share.strName= cVolumeName;
-        if( uDriveType == DRIVE_CDROM && nResult)
-        {
-          share.strName.Format( "%s %s (%s)",
-            share.strPath, g_localizeStrings.Get(218),share.strName );
-          share.m_iDriveType= CMediaSource::SOURCE_TYPE_LOCAL;
-          bUseDCD= true;
-        }
-        else
-        {
-          // Lets show it, like Windows explorer do... TODO: sorting should depend on driver letter
-          switch(uDriveType)
-          {
-          case DRIVE_CDROM:
-            share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(218));
-            break;
-          case DRIVE_REMOVABLE:
-            if(share.strName.IsEmpty())
-              share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(437));
-            break;
-          case DRIVE_UNKNOWN:
-            share.strName.Format( "%s %s", share.strPath, g_localizeStrings.Get(13205));
-            break;
-          default:
-            share.strName.Format( "%s %s", share.strPath, share.strName);
-            break;
-          }
-        }
-        share.strName.Replace(":\\",":");
-        share.m_ignore= true;
-        if( !bUseDCD )
-        {
-          share.m_iDriveType= (
-           ( uDriveType == DRIVE_FIXED  )    ? CMediaSource::SOURCE_TYPE_LOCAL :
-           ( uDriveType == DRIVE_REMOTE )    ? CMediaSource::SOURCE_TYPE_REMOTE :
-           ( uDriveType == DRIVE_CDROM  )    ? CMediaSource::SOURCE_TYPE_DVD :
-           ( uDriveType == DRIVE_REMOVABLE ) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
-             CMediaSource::SOURCE_TYPE_UNKNOWN );
-        }
-
-        localDrives.push_back(share);
-      }
-      iPos += (strlen( pcBuffer + iPos) + 1 );
-    } while( strlen( pcBuffer + iPos ) > 0 );
-  }
-  delete[] pcBuffer;
 #else
 #ifndef _LINUX
   // Local shares
@@ -310,3 +251,116 @@ bool CMediaManager::SetLocationPath(const CStdString& oldPath, const CStdString&
   return false;
 }
 
+void CMediaManager::AddAutoSource(const CMediaSource &share)
+{
+  g_settings.AddShare("files",share);
+  g_settings.AddShare("video",share);
+  g_settings.AddShare("pictures",share);
+  g_settings.AddShare("music",share);
+  g_settings.AddShare("programs",share);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+  m_gWindowManager.SendThreadMessage( msg );
+}
+
+void CMediaManager::RemoveAutoSource(const CMediaSource &share)
+{
+  g_settings.DeleteSource("files", share.strName, share.strPath, true);
+  g_settings.DeleteSource("video", share.strName, share.strPath, true);
+  g_settings.DeleteSource("pictures", share.strName, share.strPath, true);
+  g_settings.DeleteSource("music", share.strName, share.strPath, true);
+  g_settings.DeleteSource("programs", share.strName, share.strPath, true);
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
+  m_gWindowManager.SendThreadMessage( msg );
+}
+
+/////////////////////////////////////////////////////////////
+// AutoSource status functions:
+// - check only in video as auto source is added to all types
+// - could be also implemented as direct call to the device
+// - TODO: translate cdda://<device>/
+
+CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath)
+{
+  CSingleLock waitLock(m_muAutoSource);
+  CStdString strDevice = devicePath;
+  // fallback for cdda://local/ and empty devicePath
+  if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
+    strDevice = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+#ifdef _WIN32PC
+  strDevice.Replace("\\\\.\\","");
+  CUtil::RemoveSlashAtEnd(strDevice);
+#endif
+  return strDevice;
+}
+
+bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
+{
+#ifdef AUTOSOURCE
+  CSingleLock waitLock(m_muAutoSource);
+  VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
+  if (!pShares) return false;
+
+  CStdString strDevice = TranslateDevicePath(devicePath);
+  VECSOURCES::const_iterator it;
+  for(it=pShares->begin();it!=pShares->end();++it)
+    if(it->strPath.Equals(strDevice)) return true;
+  return false;
+#else 
+  // TODO: switch all ports to use auto sources
+  return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();
+#endif
+}
+
+bool CMediaManager::IsAudio(const CStdString& devicePath)
+{
+#ifdef AUTOSOURCE
+  CSingleLock waitLock(m_muAutoSource);
+  VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
+  if (!pShares) return false;
+  
+  CStdString strDevice = TranslateDevicePath(devicePath);
+  VECSOURCES::const_iterator it;
+  for(it=pShares->begin();it!=pShares->end();++it)
+    if(it->strPath.Equals(strDevice) && it->strStatus.Equals("Audio-CD")) return true;
+
+#else 
+  // TODO: switch all ports to use auto sources
+  MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
+  if (pInfo != NULL && pInfo->IsAudio(1))
+    return true;
+#endif
+
+  return false;
+}
+
+// End AutoSource status functions
+//////////////////////////////////
+
+DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
+{
+  CStdString strDevice = TranslateDevicePath(devicePath);
+#ifdef _WIN32PC
+  DWORD dwRet = DRIVE_NOT_READY;
+  strDevice.Format("\\\\.\\%c:",strDevice[0]);
+  int status = CWIN32Util::GetDriveStatus(strDevice);
+
+  switch(status)
+  {
+  case -1: // error
+    dwRet = DRIVE_NOT_READY;
+    break;
+  case 0: // no media
+    dwRet = DRIVE_CLOSED_NO_MEDIA;
+    break;
+  case 1: // tray open
+    dwRet = DRIVE_OPEN;      
+    break;
+  case 2: // media accessible
+    dwRet = DRIVE_CLOSED_MEDIA_PRESENT;
+    break;
+  }
+  return dwRet;
+#else
+  return MEDIA_DETECT::CDetectDVDMedia::DriveReady();
+#endif
+}

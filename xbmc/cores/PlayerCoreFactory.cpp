@@ -284,10 +284,6 @@ bool CPlayerCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear)
     return false;
   }
   
-  CStdString xml;
-  xml<<*pConfig;
-  CLog::Log(LOGNOTICE, "Loading playercorefactory configuration from %s", xml.c_str());
-
   TiXmlElement *pPlayers = pConfig->FirstChildElement("players");
   if (pPlayers)
   {

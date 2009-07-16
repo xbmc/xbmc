@@ -46,8 +46,18 @@ public:
   bool HasLocation(const CStdString& path) const;
   bool RemoveLocation(const CStdString& path);
   bool SetLocationPath(const CStdString& oldPath, const CStdString& newPath);
+
+  void AddAutoSource(const CMediaSource &share);
+  void RemoveAutoSource(const CMediaSource &share);
+  bool IsDiscInDrive(const CStdString& devicePath="");
+  bool IsAudio(const CStdString& devicePath="");
+  CStdString TranslateDevicePath(const CStdString& devicePath);
+  DWORD GetDriveStatus(const CStdString& devicePath="");
+
 protected:
   std::vector<CNetworkLocation> m_locations;
+  CCriticalSection m_muAutoSource;
+
 };
 
 extern class CMediaManager g_mediaManager;

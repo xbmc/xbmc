@@ -45,6 +45,15 @@
 NPT_SET_LOCAL_LOGGER("platinum.core.devicehost")
 
 /*----------------------------------------------------------------------
+|   externals
+
++---------------------------------------------------------------------*/
+extern NPT_UInt8 Platinum_120x120_jpg[16096];
+extern NPT_UInt8 Platinum_120x120_png[26577];
+extern NPT_UInt8 Platinum_48x48_jpg[3041];
+extern NPT_UInt8 Platinum_48x48_png[4681];
+
+/*----------------------------------------------------------------------
 |   typedef
 +---------------------------------------------------------------------*/
 typedef PLT_HttpRequestHandler<PLT_DeviceHost> PLT_HttpDeviceHostRequestHandler;
@@ -52,26 +61,28 @@ typedef PLT_HttpRequestHandler<PLT_DeviceHost> PLT_HttpDeviceHostRequestHandler;
 /*----------------------------------------------------------------------
 |   PLT_DeviceHost::PLT_DeviceHost
 +---------------------------------------------------------------------*/
-PLT_DeviceHost::PLT_DeviceHost(const char*  description_path, 
-                               const char*  uuid,
-                               const char*  device_type,
-                               const char*  friendly_name,
-                               bool         show_ip,
-                               NPT_UInt16   port) :
+PLT_DeviceHost::PLT_DeviceHost(const char*  description_path /* = "/" */, 
+                               const char*  uuid             /* = "" */,
+                               const char*  device_type      /* = "" */,
+                               const char*  friendly_name    /* = "" */,
+                               bool         show_ip          /* = false */,
+                               NPT_UInt16   port             /* = 0 */,
+                               bool         port_rebind      /* = false */) :
     PLT_DeviceData(NPT_HttpUrl(NULL, 0, description_path), 
                    uuid, 
-                   NPT_TimeInterval(1800, 0), 
+                   PLT_Constants::GetInstance().m_DefaultDeviceLease, 
                    device_type, 
                    friendly_name), 
     m_HttpServer(NULL),
     m_Broadcast(false),
-    m_Port(port)
+    m_Port(port),
+    m_PortRebind(port_rebind)
 {
     if (show_ip) {
-        NPT_List<NPT_String> ips;
+        NPT_List<NPT_IpAddress> ips;
         PLT_UPnPMessageHelper::GetIPAddresses(ips);
         if (ips.GetItemCount()) {
-            m_FriendlyName += " (" + *ips.GetFirstItem() + ")";
+            m_FriendlyName += " (" + ips.GetFirstItem()->ToString() + ")";
         }
     }
 }
@@ -84,11 +95,66 @@ PLT_DeviceHost::~PLT_DeviceHost()
 }
 
 /*----------------------------------------------------------------------
+|   PLT_DeviceHost::AddIcon
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_DeviceHost::AddIcon(const PLT_DeviceIcon& icon, const char* filepath)
+{
+    NPT_HttpFileRequestHandler* icon_handler = 
+        new NPT_HttpFileRequestHandler(icon.m_UrlPath, filepath);
+    m_HttpServer->AddRequestHandler(icon_handler, icon.m_UrlPath, false);
+    m_RequestHandlers.Add(icon_handler);
+    return m_Icons.Add(icon);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_DeviceHost::AddIcon
++---------------------------------------------------------------------*/
+NPT_Result 
+PLT_DeviceHost::AddIcon(const PLT_DeviceIcon& icon, 
+                        const void*           data, 
+                        NPT_Size              size, 
+                        bool                  copy /* = true */)
+{
+    NPT_HttpStaticRequestHandler* icon_handler = 
+        new NPT_HttpStaticRequestHandler(
+        data, 
+        size,
+        icon.m_MimeType,
+        copy);
+    m_HttpServer->AddRequestHandler(icon_handler, icon.m_UrlPath, false);
+    m_RequestHandlers.Add(icon_handler);
+    return m_Icons.Add(icon);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_DeviceHost::SetupIcons
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_DeviceHost::SetupIcons()
+{
+    AddIcon(
+        PLT_DeviceIcon("image/jpeg", 120, 120, 24, "/images/platinum-120x120.jpg"),
+        Platinum_120x120_jpg, sizeof(Platinum_120x120_jpg), false);
+    AddIcon(
+        PLT_DeviceIcon("image/jpeg", 48, 48, 24, "/images/platinum-48x48.jpg"),
+        Platinum_48x48_jpg, sizeof(Platinum_48x48_jpg), false);
+    AddIcon(
+        PLT_DeviceIcon("image/png", 120, 120, 24, "/images/platinum-120x120.png"),
+        Platinum_120x120_png, sizeof(Platinum_120x120_png), false);
+    AddIcon(
+        PLT_DeviceIcon("image/png", 48, 48, 24, "/images/platinum-48x48.png"),
+        Platinum_48x48_png, sizeof(Platinum_48x48_png), false);
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_DeviceHost::SetupDevice
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_DeviceHost::SetupDevice()
 {
+    NPT_CHECK_WARNING(SetupIcons());
     return NPT_SUCCESS;
 }
 
@@ -97,20 +163,12 @@ PLT_DeviceHost::SetupDevice()
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_DeviceHost::SetupServiceSCPDHandler(PLT_Service* service)
-{    
-    NPT_HttpUrl url;    
+{  
     NPT_String  doc;
-    
-    // static scpd document
-    NPT_String scpd_url = service->GetSCPDURL();
-    if (!scpd_url.StartsWith("/")) {
-        scpd_url = GetURLBase().GetPath() + scpd_url;
-    }
-    url.SetPathPlus(scpd_url);
     NPT_CHECK_FATAL(service->GetSCPDXML(doc));
 
-    NPT_HttpStaticRequestHandler* scpd_handler = new NPT_HttpStaticRequestHandler(doc, "text/xml");
-    m_HttpServer->AddRequestHandler(scpd_handler, url.GetPath(), false);
+    NPT_HttpStaticRequestHandler* scpd_handler = new NPT_HttpStaticRequestHandler(doc, "text/xml; charset=\"utf-8\"");
+    m_HttpServer->AddRequestHandler(scpd_handler, service->GetSCPDURL(), false);
     m_RequestHandlers.Add(scpd_handler);
     return NPT_SUCCESS;
 }
@@ -121,17 +179,19 @@ PLT_DeviceHost::SetupServiceSCPDHandler(PLT_Service* service)
 NPT_Result
 PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
 {
+#ifdef _XBOX
+    m_HttpServer = new PLT_HttpServer(m_Port, m_PortRebind, 5);  
+#else
+    m_HttpServer = new PLT_HttpServer(m_Port, m_PortRebind, 20); // limit to 20 threads max  
+#endif
+
     NPT_CHECK_FATAL(SetupServices(*this));
 
     // start the server
-#ifdef _XBOX
-    m_HttpServer = new PLT_HttpServer(m_Port, 5);  
-#else
-    m_HttpServer = new PLT_HttpServer(m_Port);  
-#endif
     NPT_CHECK_SEVERE(m_HttpServer->Start());
 
-    // read back assigned port in case we passed 0
+    // read back assigned port in case 
+    // we passed 0 to randomly select one
     m_Port = m_HttpServer->GetPort();
     m_URLDescription.SetPort(m_Port);
 
@@ -152,18 +212,20 @@ PLT_DeviceHost::Start(PLT_SsdpListenTask* task)
         }
     }
 
-    // all other requests including description doc and service control are dynamically handled
+    // all other requests including description document
+    // and service control are dynamically handled
     PLT_HttpDeviceHostRequestHandler* device_handler = new PLT_HttpDeviceHostRequestHandler(this);
     m_RequestHandlers.Add(device_handler);
     m_HttpServer->AddRequestHandler(device_handler, "/", true);
 
-    // we should not advertise right away, spec says randomly less than 100ms
+    // we should not advertise right away
+    // spec says randomly less than 100ms
     NPT_TimeInterval delay(0, NPT_System::GetRandomInteger() % 100000000);
 
     // calculate when we should send another announcement
     NPT_Size leaseTime = (NPT_Size)(float)GetLeaseTime();
     NPT_TimeInterval repeat;
-    repeat.m_Seconds = leaseTime?(int)((leaseTime >> 1) + ((unsigned short)NPT_System::GetRandomInteger() % (leaseTime >> 2))):30;
+    repeat.m_Seconds = leaseTime?(int)((leaseTime >> 1) - ((unsigned short)NPT_System::GetRandomInteger() % (leaseTime >> 2))):30;
     
     // the XBOX cannot receive multicast, so we blast every 7 secs
 #ifdef _XBOX
@@ -209,6 +271,8 @@ PLT_DeviceHost::Stop(PLT_SsdpListenTask* task)
 
     m_RequestHandlers.Apply(NPT_ObjectDeleter<NPT_HttpRequestHandler>());
     m_RequestHandlers.Clear();
+    
+    PLT_DeviceData::Cleanup();
     return NPT_SUCCESS;
 }
 
@@ -223,11 +287,16 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
 {
     NPT_Result res = NPT_SUCCESS;
 
+    NPT_LOG_INFO_3("Sending SSDP NOTIFY (%s) Request to %s with location:%s", 
+        byebye?"ssdp:byebye":"ssdp:alive",
+        (const char*)req.GetUrl().ToString(),
+        (const char*)(PLT_UPnPMessageHelper::GetLocation(req)?*PLT_UPnPMessageHelper::GetLocation(req):""));
+        
     if (byebye == false) {
         // get location URL based on ip address of interface
         PLT_UPnPMessageHelper::SetNTS(req, "ssdp:alive");
         PLT_UPnPMessageHelper::SetLeaseTime(req, (NPT_Timeout)(float)device->GetLeaseTime());
-        PLT_UPnPMessageHelper::SetServer(req, "UPnP/1.0, Platinum UPnP SDK/" PLT_PLATINUM_VERSION_STRING, false);
+        PLT_UPnPMessageHelper::SetServer(req, NPT_HttpServer::m_ServerHeader, false);
     } else {
         PLT_UPnPMessageHelper::SetNTS(req, "ssdp:byebye");
     }
@@ -248,6 +317,7 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
             true, 
             &addr);
     }
+    NPT_System::Sleep(NPT_TimeInterval(PLT_DLNA_SSDP_DELAY));
 
     // uuid:device-UUID::urn:schemas-upnp-org:device:deviceType:ver
     PLT_SsdpSender::SendSsdp(req,
@@ -256,6 +326,7 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
         socket,
         true,
         &addr);
+    NPT_System::Sleep(NPT_TimeInterval(PLT_DLNA_SSDP_DELAY));
 
     // services
     for (int i=0; i < (int)device->m_Services.GetItemCount(); i++) {
@@ -265,7 +336,8 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
             device->m_Services[i]->GetServiceType(),
             socket,
             true, 
-            &addr);        
+            &addr); 
+        NPT_System::Sleep(NPT_TimeInterval(PLT_DLNA_SSDP_DELAY));       
     }
 
     // uuid:device-UUID
@@ -275,7 +347,7 @@ PLT_DeviceHost::Announce(PLT_DeviceData*  device,
         socket, 
         true, 
         &addr);
-
+    NPT_System::Sleep(NPT_TimeInterval(PLT_DLNA_SSDP_DELAY));
 
     // embedded devices
     for (int j=0; j < (int)device->m_EmbeddedDevices.GetItemCount(); j++) {
@@ -329,7 +401,7 @@ PLT_DeviceHost::ProcessGetDescription(NPT_HttpRequest&              /*request*/,
     NPT_String doc;
     NPT_CHECK_FATAL(GetDescription(doc));
     PLT_HttpHelper::SetBody(response, doc);    
-    PLT_HttpHelper::SetContentType(response, "text/xml");
+    PLT_HttpHelper::SetContentType(response, "text/xml; charset=\"utf-8\"");
     return NPT_SUCCESS;
 }
 
@@ -358,7 +430,7 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
     NPT_String                url         = request.GetUrl().ToRequestString(true);
     NPT_String                protocol    = request.GetProtocol();
 
-    if (NPT_FAILED(FindServiceByControlURI(url, service)))
+    if (NPT_FAILED(FindServiceByControlURL(url, service)))
         goto bad_request;
 
     if (!request.GetHeaders().GetHeaderValue("SOAPAction"))
@@ -434,15 +506,9 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
             name = "ObjectID";
         }
 
-        res = action->SetArgumentValue(
+        action->SetArgumentValue(
             name,
             child->GetText()?*child->GetText():"");
-
-        if (NPT_FAILED(res)) {
-            // FIXME: incorrect upnp error?
-            PLT_Action::FormatSoapError(401, "Invalid Action", *resp);
-            goto error;
-        }
     }
 
     if (NPT_FAILED(action->VerifyArguments(true))) {
@@ -450,9 +516,14 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
         goto error;
     }
     
+    
+    NPT_LOG_FINE_2("Received %s action from %s", 
+                   (const char*)action->GetActionDesc()->GetName(), 
+                   (const char*)context.GetRemoteAddress().GetIpAddress().ToString());
+                   
     // call the virtual function, it's all good
     // set the error in case the it wasn't done
-    if (NPT_FAILED(OnAction(action, context))) {
+    if (NPT_FAILED(OnAction(action, PLT_HttpRequestContext(request, context)))) {
         goto error;
     }
 
@@ -461,10 +532,11 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
     goto done;
 
 error:
-    if (!action.IsNull() && action->GetErrorCode() == 0) {
-        action->SetError(501, "Action Failed");
+    if (!action.IsNull()) {
+        if (action->GetErrorCode() == 0) action->SetError(501, "Action Failed");
         action->FormatSoapResponse(*resp);
     }
+    
     response.SetStatus(500, "Internal Server Error");
 
 done:
@@ -505,9 +577,7 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&              reque
     const NPT_String* sid           = PLT_UPnPMessageHelper::GetSID(request);
     
     PLT_Service* service;
-    if (NPT_FAILED(FindServiceByEventSubURI(url, service))) {
-        goto cleanup;
-    }
+    NPT_CHECK_LABEL_WARNING(FindServiceByEventSubURL(url, service), cleanup);
 
     if (method.Compare("SUBSCRIBE") == 0) {
         // Do we have a sid ?
@@ -518,8 +588,8 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&              reque
             }
           
             NPT_Int32 timeout;
-            if (NPT_FAILED(PLT_UPnPMessageHelper::GetTimeOut(request, timeout))) {
-                timeout = 1800;
+            if (NPT_FAILED(PLT_UPnPMessageHelper::GetTimeOut(request, timeout)) || timeout < 0) {
+                timeout = 300;
             }
             // subscription renewed
             // send the info to the service
@@ -543,7 +613,7 @@ PLT_DeviceHost::ProcessHttpSubscriberRequest(NPT_HttpRequest&              reque
 
             NPT_Int32 timeout;
             if (NPT_FAILED(PLT_UPnPMessageHelper::GetTimeOut(request, timeout))) {
-                timeout = 1800;
+                timeout = 300;
             }
 
             // send the info to the service
@@ -600,7 +670,16 @@ PLT_DeviceHost::ProcessSsdpSearchRequest(NPT_HttpRequest&              request,
     NPT_String  protocol   = request.GetProtocol();
 
     if (method.Compare("M-SEARCH") == 0) {
-        NPT_LOG_FINE_1("PLT_DeviceHost Received Search Request from %s", (const char*) ip_address);
+        // DLNA 7.2.3.5 support
+        NPT_IpPort remote_port = context.GetRemoteAddress().GetPort();
+        if (remote_port <= 1024 || remote_port == 1900) {
+            NPT_LOG_INFO_2("Ignoring M-SEARCH from %s:%d (invalid source port)", 
+                (const char*) ip_address,
+                remote_port);
+            return NPT_FAILURE;
+        }
+
+        NPT_LOG_INFO_2("Received M-SEARCH from %s:%d", (const char*) ip_address, remote_port);
         PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
 
         if (url.Compare("*") || protocol.Compare("HTTP/1.1"))
@@ -637,7 +716,7 @@ PLT_DeviceHost::SendSsdpSearchResponse(PLT_DeviceData*    device,
                                        const char*        st,
                                        const NPT_SocketAddress* addr /* = NULL */)
 {    
-    NPT_LOG_FINE("PLT_DeviceHost responding to a M-SEARCH request.");
+    NPT_LOG_INFO_1("Responding to a M-SEARCH request for %s", st);
 
     // ssdp:all or upnp:rootdevice
     if (NPT_String::Compare(st, "ssdp:all") == 0 || NPT_String::Compare(st, "upnp:rootdevice") == 0) {
@@ -700,7 +779,7 @@ PLT_DeviceHost::SendSsdpSearchResponse(PLT_DeviceData*    device,
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_DeviceHost::OnAction(PLT_ActionReference&          action, 
-                         const NPT_HttpRequestContext& context)
+                         const PLT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
     action->SetError(401, "Invalid Action");

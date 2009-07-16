@@ -1,4 +1,4 @@
-xbmc (1:9.04.1+svn21095-1) experimental; urgency=low
+xbmc (1:9.04.1+svn21475-1) experimental; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
   * Start using an epoch for use better package versioning.
@@ -34,6 +34,8 @@ xbmc (1:9.04.1+svn21095-1) experimental; urgency=low
     + Fix maintainer-script-needs-depends-on-adduser lintian warning.
     + Don't install License information as documentation. It will go in
       debian/copyright.
+    + Rewrite copyright file.
+    + Include the same copyright file for all packages.
     + Make sure the menu file is installed in xbmc-common package.
     + Fix "needs" variable in menu file.
     + Install the subdirectories of tools/EventClients/examples/ in examples for

@@ -299,8 +299,7 @@ CTemperature CCPUInfo::getTemperature()
     return CTemperature::CreateFromCelsius(value);
   if (scale == 'F' || scale == 'f')
     return CTemperature::CreateFromFahrenheit(value);
-  else
-    return CTemperature();
+  return CTemperature();
 }
 
 bool CCPUInfo::HasCoreId(int nCoreId) const

@@ -432,7 +432,7 @@
   <string id="513">Home window</string>
   <string id="514">Manual settings</string>
   <string id="515">Genre</string>
-  <string id="516">Make archives with one file transparent</string>
+  <string id="516">Make stored archives with one file transparent</string>
   <string id="517">Recently played albums</string>
   <string id="518">Launch</string>
   <string id="519">Launch in...</string>
@@ -2167,6 +2167,12 @@
   <string id="21440">Home folder</string>
   <string id="21441">Watched count</string>
   <string id="21442">Episode title</string>
+  <string id="21443">Video resolution</string>
+  <string id="21444">Audio channels</string>
+  <string id="21445">Video codec</string>
+  <string id="21446">Audio codec</string>
+  <string id="21447">Audio language</string>
+  <string id="21448">Subtitle language</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>

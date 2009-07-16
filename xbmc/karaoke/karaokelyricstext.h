@@ -36,12 +36,17 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     //! Most of text lyrics do not have any backgrounds
     virtual bool HasBackground();
 
+    //! UStar lyrics might have video
+    virtual bool HasVideo();
+    virtual void GetVideoParameters( CStdString& path, __int64& offset  );
+
   protected:
     enum
     {
       LYRICS_NEW_LINE = 0x0001,
       LYRICS_NEW_PARAGRAPH = 0x0002,
       LYRICS_CONVERT_UTF8 = 0x0010,
+      LYRICS_INVALID_PITCH = 0xFFFFFFFE,
       LYRICS_END = 0xFFFFFFFF
     };
 
@@ -60,8 +65,9 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     //! The loader should call this function to add each separate lyrics syllable.
     //! timing is in 1/10 seconds; if you have time in milliseconds, multiple by 100.
     //! flags could be 0 (regular), LYRICS_NEW_LINE (this syllable should start on a new line),
-    //! and LYRICS_NEW_PARAGRAPH (this syllable should start on a new paragraph)
-    void  addLyrics( const CStdString& text, unsigned int timing, unsigned int flags = 0 );
+    //! and LYRICS_NEW_PARAGRAPH (this syllable should start on a new paragraph).
+    //! If the lyrics support pitch (i.e. Ultrastar), it also should be specified.
+    void  addLyrics( const CStdString& text, unsigned int timing, unsigned int flags = 0, unsigned int pitch = LYRICS_INVALID_PITCH );
 
     //! This function clears the lyrics array and resets song information
     void  clearLyrics();
@@ -83,6 +89,9 @@ class CKaraokeLyricsText : public CKaraokeLyrics
     //! Should be set to "" if no information available.
     CStdString    m_songName;
     CStdString    m_artist;
+    bool          m_hasPitch;
+    CStdString    m_videoFile;
+    __int64       m_videoOffset;
 
   private:
 
@@ -117,6 +126,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
       CStdString    text;
       unsigned int   timing;
       unsigned int   flags;
+      unsigned int   pitch;
 
     } Lyric;
 

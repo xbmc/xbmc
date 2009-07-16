@@ -1140,8 +1140,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
       --disable-xmms-plugin \
       --disable-cpplibs \
       CC="$CC" \
-      CXX="$CXX" && \
-    sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
+      CXX="$CXX"
   else
     ./configure -C \
       --with-pic \
@@ -1149,8 +1148,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
       --disable-xmms-plugin \
       --disable-cpplibs \
       CC="$CC" \
-      CXX="$CXX" && \
-    sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
+      CXX="$CXX"
   fi
 ], [$USE_EXTERNAL_LIBFLAC])
 

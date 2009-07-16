@@ -345,7 +345,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
 
   // If this is a passthrough (AC3/DTS) stream, attempt to handle it natively
   if (bPassthrough)
-    m_Passthrough = InitializeEncoded(outputDevice);
+    m_Passthrough = InitializeEncoded(outputDevice, uiSamplesPerSec);
 
   // If this is a PCM stream, or we failed to handle a passthrough stream natively, 
   // prepare the standard interleaved PCM interface
@@ -365,7 +365,7 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, int iChannels, un
     if (bPassthrough)
     {
       CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: No suitable AC3 output format found. Attempting DD-Wav.");
-      configured = InitializePCMEncoded();
+      configured = InitializePCMEncoded(uiSamplesPerSec);
     }
     else // Standard PCM data
       configured = InitializePCM(iChannels, uiSamplesPerSec, uiBitsPerSample);
@@ -689,22 +689,22 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
   return true;
 }
 
-bool CCoreAudioRenderer::InitializePCMEncoded()
+bool CCoreAudioRenderer::InitializePCMEncoded(UInt32 sampleRate)
 {
   m_AudioDevice.SetHogStatus(true); // Prevent any other application from using this device.
   m_AudioDevice.SetMixingSupport(false); // Try to disable mixing support. Effectiveness depends on the device.
   
   // Set the Sample Rate as defined by the spec.
-  m_AudioDevice.SetNominalSampleRate(48000.0f);
+  m_AudioDevice.SetNominalSampleRate((float)sampleRate);
 
-  if (!InitializePCM(2, 48000, 16))
+  if (!InitializePCM(2, sampleRate, 16))
     return false;
   
   m_EnableVolumeControl = false; // Prevent attempts to change the output volume. It is not possible with encoded audio
   return true;  
 }
 
-bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
+bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sampleRate)
 {
   //return false; // un-comment to force PCM Spoofing (DD-Wav). For testing use only.
   
@@ -736,7 +736,7 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice)
     {
       AudioStreamRangedDescription& desc = physicalFormats.front();
       CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded:    Considering Physical Format: %s", StreamDescriptionToString(desc.mFormat, formatString));
-      if (desc.mFormat.mFormatID == kAudioFormat60958AC3 && desc.mFormat.mSampleRate == 48000) // TODO: Do we want to support other passthrough sample rates?
+      if (desc.mFormat.mFormatID == kAudioFormat60958AC3 && desc.mFormat.mSampleRate == sampleRate)
       {
         outputFormat = desc.mFormat; // Select this format
         m_OutputBufferIndex = streamIndex; // TODO: Is this technically correct? Will each stream have it's own IOProc buffer?

@@ -38,35 +38,12 @@
 #include "NptTypes.h"
 #include "NptCommon.h"
 #include "NptResults.h"
+#include "NptConfig.h"
 
 /*----------------------------------------------------------------------
 |   constants
 +---------------------------------------------------------------------*/
 const int NPT_ERROR_NO_SUCH_INTERFACE = NPT_ERROR_BASE_INTERFACES - 0;
-
-#if 0 // disabled, use NPT_Reference instead
-/*----------------------------------------------------------------------
-|   macros
-+---------------------------------------------------------------------*/
-#define NPT_RELEASE(o) do { if (o) (o)->Release(); (o) = NULL; } while (0)
-#define NPT_ADD_REFERENCE(o) do { if (o) (o)->AddReference(); } while (0)
-
-/*----------------------------------------------------------------------
-|   NPT_Referenceable
-+---------------------------------------------------------------------*/
-class NPT_Referenceable
-{
- public:
-    // methods
-    virtual void AddReference() = 0;
-    virtual void Release() = 0;
-
-protected:
-    // constructors and destructor
-    NPT_Referenceable() {}
-    virtual ~NPT_Referenceable() {}
-};
-#endif
 
 /*----------------------------------------------------------------------
 |   NPT_InterfaceId

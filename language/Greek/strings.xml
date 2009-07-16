@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 06/29/2009-->
+<!--Date of translation: 07/06/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21246-->
+<!--Based on english strings version 21415-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -432,7 +432,7 @@
   <string id="513">Αρχικό</string>
   <string id="514">Χειροκίνητες ρυθμίσεις</string>
   <string id="515">Είδος</string>
-  <string id="516">Αρχειοθέτηση σε ένα φάκελο</string>
+  <string id="516">Αρχειοθέτηση σε ένα διαφανή φάκελο</string>
   <string id="517">Πρόσφατα εκτελεσθέντα άλμπουμ</string>
   <string id="518">Εκκίνηση</string>
   <string id="519">Εκκίνηση σε...</string>
@@ -1817,6 +1817,12 @@
   <string id="21440">Αρχικός φάκελος</string>
   <string id="21441">Πλήθος θεαμάτων</string>
   <string id="21442">Τίτλος επεισοδίου</string>
+  <string id="21443">Ανάλυση βίντεο</string>
+  <string id="21444">Κανάλια ήχου</string>
+  <string id="21445">Κωδικοποίηση βίντεο</string>
+  <string id="21446">Κωδικοποίηση ήχου</string>
+  <string id="21447">Γλώσσα ήχου</string>
+  <string id="21448">Γλώσσα υποτίτλων</string>
   <string id="21800">Όνομα αρχείου</string>
   <string id="21801">Διαδρομή αρχείου</string>
   <string id="21802">Μέγεθος αρχείου</string>

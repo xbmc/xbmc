@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 CXBApplicationEx* g_pXBApp = NULL;
 #ifndef HAS_SDL
-static LPDIRECT3DDEVICE8 g_pd3dDevice = NULL;
+static LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 #endif
 
 // Deadzone for the gamepad inputs
@@ -77,7 +77,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_d3dpp.EnableAutoDepthStencil = FALSE;
   m_d3dpp.AutoDepthStencilFormat = D3DFMT_LIN_D16;
   m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-  m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+  m_d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 #endif
 }
 
@@ -450,6 +450,7 @@ void CXBApplicationEx::ReadInput()
 void CXBApplicationEx::Process()
 {}
 
+#ifdef HAS_SDL
 bool CXBApplicationEx::ProcessOSShortcuts(SDL_Event& event)
 {
 #ifdef __APPLE__
@@ -552,3 +553,4 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
   }
   return false;
 }
+#endif

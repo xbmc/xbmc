@@ -26,20 +26,6 @@ rm -rf SDL-1.2.13 SDL-1.2.13.tar.gz
 
 
 #-------------------------------------------------------------------------------
-# build libSDL_image
-#depends_libs: libsdl, libpng, libjpeg, libtiff, zlib
-
-wget http://www.libsdl.org/projects/SDL_image/release/SDL_image-1.2.6.tar.gz
-tar -xzf SDL_image-1.2.6.tar.gz
-cd SDL_image-1.2.6
-./configure MACOSX_DEPLOYMENT_TARGET=10.4 CFLAGS="-O2 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" --enable-static --disable-shared --disable-sdltest 
-make
-cp .libs/libSDL_image.a ../libSDL_image-${ARCH}.a
-cd ..
-rm -rf SDL_image-1.2.6 SDL_image-1.2.6.tar.gz
-
-
-#-------------------------------------------------------------------------------
 # build libSDL_mixer
 #depends_libs: libsdl, libvorbis, libogg
 

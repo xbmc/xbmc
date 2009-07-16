@@ -37,23 +37,16 @@
 #include "Neptune.h"
 #include "PltMediaBrowser.h"
 #include "PltDidl.h"
-#include "PltMediaBrowserListener.h"
 
 NPT_SET_LOCAL_LOGGER("platinum.media.server.browser")
 
 /*----------------------------------------------------------------------
-|   forward references
-+---------------------------------------------------------------------*/
-extern NPT_UInt8 MS_ConnectionManagerSCPD[];
-extern NPT_UInt8 MS_ContentDirectorySCPD[];
-
-/*----------------------------------------------------------------------
 |   PLT_MediaBrowser::PLT_MediaBrowser
 +---------------------------------------------------------------------*/
-PLT_MediaBrowser::PLT_MediaBrowser(PLT_CtrlPointReference&   ctrl_point, 
-                                   PLT_MediaBrowserListener* listener) :
+PLT_MediaBrowser::PLT_MediaBrowser(PLT_CtrlPointReference&   ctrl_point,
+                                   PLT_MediaBrowserDelegate* delegate /* = NULL */) :
     m_CtrlPoint(ctrl_point),
-    m_Listener(listener)
+    m_Delegate(delegate)
 {
     m_CtrlPoint->AddListener(this);
 }
@@ -75,29 +68,39 @@ PLT_MediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
     // verify the device implements the function we need
     PLT_Service* serviceCDS;
     PLT_Service* serviceCMR;
-    NPT_String type;
+    NPT_String   type;
+
+    if (!device->GetType().StartsWith("urn:schemas-upnp-org:device:MediaServer"))
+        return NPT_FAILURE;
     
-    type = "urn:schemas-upnp-org:service:ContentDirectory:1";
+    type = "urn:schemas-upnp-org:service:ContentDirectory:*";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCDS))) {
         NPT_LOG_WARNING_2("Service %s not found in device \"%s\"", 
             type.GetChars(),
             device->GetFriendlyName().GetChars());
         return NPT_FAILURE;
+    } else {
+        // in case it's a newer upnp implementation, force to 1
+        serviceCDS->ForceVersion(1);
     }
     
-    type = "urn:schemas-upnp-org:service:ConnectionManager:1";
+    type = "urn:schemas-upnp-org:service:ConnectionManager:*";
     if (NPT_FAILED(device->FindServiceByType(type, serviceCMR))) {
         NPT_LOG_WARNING_2("Service %s not found in device \"%s\"", 
             type.GetChars(), 
             device->GetFriendlyName().GetChars());
         return NPT_FAILURE;
-    }    
+    } else {
+        // in case it's a newer upnp implementation, force to 1
+        serviceCMR->ForceVersion(1);
+    }
     
     {
         NPT_AutoLock lock(m_MediaServers);
 
         PLT_DeviceDataReference data;
         NPT_String uuid = device->GetUUID();
+        
         // is it a new device?
         if (NPT_SUCCEEDED(NPT_ContainerFind(m_MediaServers, PLT_DeviceDataFinder(uuid), data))) {
             NPT_LOG_WARNING_1("Device (%s) is already in our list!", (const char*)uuid);
@@ -110,13 +113,11 @@ PLT_MediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
         m_MediaServers.Add(device);
     }
 
-    if (m_Listener) {
-        m_Listener->OnMSAddedRemoved(device, 1);
+    if (m_Delegate && m_Delegate->OnMSAdded(device)) {
+        m_CtrlPoint->Subscribe(serviceCDS);
+        m_CtrlPoint->Subscribe(serviceCMR);
     }
-
-    m_CtrlPoint->Subscribe(serviceCDS);
-    m_CtrlPoint->Subscribe(serviceCMR);
-
+    
     return NPT_SUCCESS;
 }
 
@@ -126,14 +127,17 @@ PLT_MediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
 NPT_Result 
 PLT_MediaBrowser::OnDeviceRemoved(PLT_DeviceDataReference& device)
 {
-    PLT_DeviceDataReference data;
+    if (!device->GetType().StartsWith("urn:schemas-upnp-org:device:MediaServer"))
+        return NPT_FAILURE;
 
     {
         NPT_AutoLock lock(m_MediaServers);
 
         // only release if we have kept it around
+        PLT_DeviceDataReference data;
         NPT_String uuid = device->GetUUID();
-        // is it a new device?
+
+        // Have we seen that device?
         if (NPT_FAILED(NPT_ContainerFind(m_MediaServers, PLT_DeviceDataFinder(uuid), data))) {
             NPT_LOG_WARNING_1("Device (%s) not found in our list!", (const char*)uuid);
             return NPT_FAILURE;
@@ -144,9 +148,23 @@ PLT_MediaBrowser::OnDeviceRemoved(PLT_DeviceDataReference& device)
 
         m_MediaServers.Remove(device);
     }
+    
+    if (m_Delegate) {
+        m_Delegate->OnMSRemoved(device);
+    }
 
-    if (m_Listener) {
-        m_Listener->OnMSAddedRemoved(device, 0);
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaBrowser::FindServer
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaBrowser::FindServer(const char* uuid, PLT_DeviceDataReference& device)
+{
+    if (NPT_FAILED(NPT_ContainerFind(m_MediaServers, PLT_DeviceDataFinder(uuid), device))) {
+        NPT_LOG_FINE_1("Device (%s) not found in our list of servers", (const char*)uuid);
+        return NPT_FAILURE;
     }
 
     return NPT_SUCCESS;
@@ -169,6 +187,11 @@ PLT_MediaBrowser::Browse(PLT_DeviceDataReference&   device,
     PLT_Service* service;
     NPT_String type;
 
+    // verify device still in our list
+    PLT_DeviceDataReference device_data;
+    NPT_CHECK_WARNING(FindServer(device->GetUUID(), device_data));
+
+    // verify it has the action available
     type = "urn:schemas-upnp-org:service:ContentDirectory:1";
     if (NPT_FAILED(device->FindServiceByType(type, service))) {
         NPT_LOG_WARNING_1("Service %s not found", (const char*)type);
@@ -226,23 +249,21 @@ PLT_MediaBrowser::Browse(PLT_DeviceDataReference&   device,
 |   PLT_MediaBrowser::OnActionResponse
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaBrowser::OnActionResponse(NPT_Result res, PLT_ActionReference& action, void* userdata)
+PLT_MediaBrowser::OnActionResponse(NPT_Result           res, 
+                                   PLT_ActionReference& action, 
+                                   void*                userdata)
 {
-    PLT_DeviceDataReference device;
-
-    {
-        NPT_AutoLock lock(m_MediaServers);
-        NPT_String uuid = action->GetActionDesc()->GetService()->GetDevice()->GetUUID();
-        if (NPT_FAILED(NPT_ContainerFind(m_MediaServers, PLT_DeviceDataFinder(uuid), device))) {
-            NPT_LOG_WARNING_1("Device (%s) not found in our list of servers", (const char*)uuid);
-            return NPT_FAILURE;
-        }
-    }
+    if (m_Delegate == NULL) return NPT_SUCCESS;
 
     NPT_String actionName = action->GetActionDesc()->GetName();
 
     // Browse action response
     if (actionName.Compare("Browse", true) == 0) {
+        // look for device in our list first
+        PLT_DeviceDataReference device;
+        NPT_String uuid = action->GetActionDesc()->GetService()->GetDevice()->GetUUID();
+        if (NPT_FAILED(FindServer(uuid, device))) res = NPT_FAILURE;
+
         return OnBrowseResponse(res, device, action, userdata);
     }
 
@@ -290,11 +311,11 @@ PLT_MediaBrowser::OnBrowseResponse(NPT_Result res, PLT_DeviceDataReference& devi
         goto bad_action;
     }
 
-    if (m_Listener) m_Listener->OnMSBrowseResult(NPT_SUCCESS, device, &info, userdata);
+    m_Delegate->OnBrowseResult(NPT_SUCCESS, device, &info, userdata);
     return NPT_SUCCESS;
 
 bad_action:
-    if (m_Listener) m_Listener->OnMSBrowseResult(NPT_FAILURE, device, NULL, userdata);
+    m_Delegate->OnBrowseResult(NPT_FAILURE, device, NULL, userdata);
     return NPT_FAILURE;
 }
 
@@ -304,18 +325,14 @@ bad_action:
 NPT_Result
 PLT_MediaBrowser::OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars)
 {
+    if (!service->GetDevice()->GetType().StartsWith("urn:schemas-upnp-org:device:MediaServer"))
+        return NPT_FAILURE;
+
+    if (!m_Delegate) return NPT_SUCCESS;
 
     PLT_DeviceDataReference data;
+    NPT_CHECK_WARNING(FindServer(service->GetDevice()->GetUUID(), data));
 
-    {
-        NPT_AutoLock lock(m_MediaServers);
-        NPT_String uuid = service->GetDevice()->GetUUID();
-        if (NPT_FAILED(NPT_ContainerFind(m_MediaServers, PLT_DeviceDataFinder(uuid), data))) {
-            NPT_LOG_WARNING_1("Device (%s) not found in our list!", (const char*)uuid);
-            return NPT_FAILURE;
-        }
-    }
-
-    if (m_Listener) m_Listener->OnMSStateVariablesChanged(service, vars);
+    if (m_Delegate) m_Delegate->OnMSStateVariablesChanged(service, vars);
     return NPT_SUCCESS;
 }

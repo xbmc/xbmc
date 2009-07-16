@@ -216,6 +216,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
       song.strArtist = m_strArtist;
     else
       song.strArtist = m_Track[i].strArtist;
+    song.strAlbumArtist = m_strArtist;
     song.strAlbum = m_strAlbum;
     song.strGenre = m_strGenre;
     song.iYear = m_iYear;

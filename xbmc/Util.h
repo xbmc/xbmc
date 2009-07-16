@@ -302,7 +302,6 @@ public:
 #endif
   
   static void AddDirectorySeperator(CStdString& strPath);
-  static char GetDirectorySeperator(const CStdString& strFile);
 
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);

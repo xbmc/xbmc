@@ -776,11 +776,12 @@ void CDateTime::GetAsSystemTime(SYSTEMTIME& time) const
   FileTimeToSystemTime(&m_time, &time);
 }
 
+#define UNIX_BASE_TIME 116444736000000000LL /* nanoseconds since epoch */
 void CDateTime::GetAsTime(time_t& time) const
 {
   LONGLONG ll;
   ll = ((LONGLONG)m_time.dwHighDateTime << 32) + m_time.dwLowDateTime;
-  time=(time_t)((ll - 116444736000000000LL) / 10000000);
+  time=(time_t)((ll - UNIX_BASE_TIME) / 10000000);
 }
 
 void CDateTime::GetAsTm(tm& time) const

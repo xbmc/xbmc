@@ -170,6 +170,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\Source\Core\PltConstants.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\Source\Core\PltCtrlPoint.cpp"
 					>
 				</File>
@@ -211,6 +215,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltHttpServerTask.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Core\PltIconsData.cpp"
 					>
 				</File>
 				<File
@@ -337,6 +345,10 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltArgument.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Core\PltConstants.h"
 					>
 				</File>
 				<File

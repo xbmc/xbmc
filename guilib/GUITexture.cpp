@@ -292,7 +292,7 @@ void CGUITextureBase::AllocResources()
         m_texture = texture;
       }
       else
-        m_isAllocated = FAILED;
+        m_isAllocated = LARGE_FAILED;
     }
   }
   else if (!IsAllocated())
@@ -301,7 +301,7 @@ void CGUITextureBase::AllocResources()
 
     // set allocated to true even if we couldn't load the image to save
     // us hitting the disk every frame
-    m_isAllocated = images ? NORMAL : FAILED;
+    m_isAllocated = images ? NORMAL : NORMAL_FAILED;
     if (!images)
       return;
 
@@ -417,7 +417,7 @@ void CGUITextureBase::CalculateSize()
 
 void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
-  if (m_isAllocated == LARGE)
+  if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
     g_largeTextureManager.ReleaseImage(m_info.filename, immediately);
   else if (m_isAllocated == NORMAL && m_texture.size())
     g_TextureManager.ReleaseTexture(m_info.filename);

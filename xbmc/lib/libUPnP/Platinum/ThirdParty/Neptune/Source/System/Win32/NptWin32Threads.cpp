@@ -406,7 +406,6 @@ class NPT_Win32Thread : public NPT_ThreadInterface
     NPT_Runnable& m_Target;
     bool          m_Detached;
     HANDLE        m_ThreadHandle;
-    DWORD         m_ThreadId;
 };
 
 /*----------------------------------------------------------------------
@@ -418,8 +417,7 @@ NPT_Win32Thread::NPT_Win32Thread(NPT_Thread*   delegator,
     m_Delegator(delegator),
     m_Target(target),
     m_Detached(detached),
-    m_ThreadHandle(0),
-    m_ThreadId(0)
+    m_ThreadHandle(0)
 {
 }
 
@@ -435,9 +433,9 @@ NPT_Win32Thread::~NPT_Win32Thread()
     }
 
     // close the thread handle
-#if defined(NPT_WIN32_USE_CREATE_THREAD)
-    CloseHandle(m_ThreadHandle);
-#endif
+    if (m_ThreadHandle) {
+        CloseHandle(m_ThreadHandle);
+    }
 }
 
 /*----------------------------------------------------------------------
@@ -453,21 +451,15 @@ NPT_Win32Thread::EntryPoint(void* argument)
     // set random seed per thread
     NPT_TimeStamp now;
     NPT_System::GetCurrentTimeStamp(now);
-    NPT_System::SetRandomSeed(now.m_NanoSeconds + NPT_Thread::GetCurrentThreadId());
+    NPT_System::SetRandomSeed(now.m_NanoSeconds + ::GetCurrentThreadId());
 
     // run the thread 
     thread->Run();
     
-    // Logging here will cause a crash on exit because LogManager may already be destroyed
-    //NPT_LOG_FINE("thread out ======================");
-
     // if the thread is detached, delete it
     if (thread->m_Detached) {
         delete thread->m_Delegator;
     }
-
-    // end the thread
-    _endthreadex(0);
 
     // done
     return 0;
@@ -493,26 +485,27 @@ NPT_Win32Thread::Start()
 #else
     unsigned int thread_id;
 #endif
-    // create a stack local detached, as this object
+    // create a stack local variable 'detached', as this object
     // may already be deleted when _beginthreadex returns and
     // before we get to call detach on the given thread
     bool detached = m_Detached;
 
-    m_ThreadHandle = (HANDLE)
+    HANDLE thread_handle = (HANDLE)
         _beginthreadex(NULL, 
                        NPT_CONFIG_THREAD_STACK_SIZE, 
                        EntryPoint, 
                        reinterpret_cast<void*>(this), 
                        0, 
                        &thread_id);
-    if (m_ThreadHandle == 0) {
+    if (thread_handle == 0) {
         // failed
-        m_ThreadId = 0;
         return NPT_FAILURE;
     }
 
-    if (!detached) {
-        m_ThreadId = (DWORD)thread_id;
+    if (detached) {
+        CloseHandle(thread_handle);
+    } else {
+        m_ThreadHandle = thread_handle;
     }
 
     return NPT_SUCCESS;
@@ -540,7 +533,6 @@ NPT_Win32Thread::Wait(NPT_Timeout timeout /* = NPT_TIMEOUT_INFINITE */)
 
     // wait for the thread to finish
     // Logging here will cause a crash on exit because LogManager may already be destroyed
-    //NPT_LOG_FINE_1("joining thread id %d", m_ThreadId);
     DWORD result = WaitForSingleObject(m_ThreadHandle, 
                                        timeout==NPT_TIMEOUT_INFINITE?INFINITE:timeout);
     if (result != WAIT_OBJECT_0) {

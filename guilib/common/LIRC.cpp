@@ -150,7 +150,7 @@ void CRemoteControl::Update()
       buttonName[ buttonNameLen - 2 ] = '\0';
     }
 
-    m_button = g_buttonTranslator.TranslateLircRemoteString(deviceName, buttonName);
+    m_button = CButtonTranslator::GetInstance().TranslateLircRemoteString(deviceName, buttonName);
 
     if (strcmp(repeatStr, "00") == 0)
     {

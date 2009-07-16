@@ -33,8 +33,6 @@
 #include <string.h>
 #include <time.h>
 #include "utils/TVEPGInfoTag.h"
-//#include "utils/TVChannelInfoTag.h"
-#include "utils/PVRRecordings.h"
 #include "xbmc_addon_types.h"
 
 #ifdef __cplusplus
@@ -248,8 +246,8 @@ typedef std::vector<TVEPGData> EPG_DATA;
     /** PVR Recording Functions **/
     int (__cdecl* GetNumRecordings)();
     PVR_ERROR (__cdecl* RequestRecordingsList)(PVRHANDLE handle);
-    PVR_ERROR (__cdecl* DeleteRecording)(const cPVRRecordingInfoTag &recinfo);
-    PVR_ERROR (__cdecl* RenameRecording)(const cPVRRecordingInfoTag &recinfo, CStdString &newname);
+    PVR_ERROR (__cdecl* DeleteRecording)(const PVR_RECORDINGINFO &recinfo);
+    PVR_ERROR (__cdecl* RenameRecording)(const PVR_RECORDINGINFO &recinfo, CStdString &newname);
 
     /** PVR Timer Functions **/
     int (__cdecl* GetNumTimers)();
@@ -271,7 +269,7 @@ typedef std::vector<TVEPGData> EPG_DATA;
     bool (__cdecl* SwitchChannel)(unsigned int channel);
 
     /** PVR Recording Stream Functions **/
-    bool (__cdecl* OpenRecordedStream)(const cPVRRecordingInfoTag &recinfo);
+    bool (__cdecl* OpenRecordedStream)(const PVR_RECORDINGINFO &recinfo);
     void (__cdecl* CloseRecordedStream)(void);
     int (__cdecl* ReadRecordedStream)(BYTE* buf, int buf_size);
     __int64 (__cdecl* SeekRecordedStream)(__int64 pos, int whence);

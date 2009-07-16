@@ -338,7 +338,7 @@ bool CGUIAudioManager::Load()
       WORD wID = 0;    // action identity
       if (pIdNode && pIdNode->FirstChild())
       {
-        g_buttonTranslator.TranslateActionString(pIdNode->FirstChild()->Value(), wID);
+        CButtonTranslator::TranslateActionString(pIdNode->FirstChild()->Value(), wID);
       }
 
       TiXmlNode* pFileNode = pAction->FirstChild("file");
@@ -367,7 +367,7 @@ bool CGUIAudioManager::Load()
       if (pIdNode)
       {
         if (pIdNode->FirstChild())
-          wID = g_buttonTranslator.TranslateWindowString(pIdNode->FirstChild()->Value());
+          wID = CButtonTranslator::TranslateWindowString(pIdNode->FirstChild()->Value());
       }
 
       CWindowSounds sounds;

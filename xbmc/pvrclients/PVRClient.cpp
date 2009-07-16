@@ -607,7 +607,10 @@ PVR_ERROR CPVRClient::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
   {
     try
     {
-      ret = m_pClient->DeleteRecording(recinfo);
+      PVR_RECORDINGINFO tag;
+      WriteClientRecordingInfo(recinfo, tag);
+
+      ret = m_pClient->DeleteRecording(tag);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -633,7 +636,10 @@ PVR_ERROR CPVRClient::RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdS
   {
     try
     {
-      ret = m_pClient->RenameRecording(recinfo, newname);
+      PVR_RECORDINGINFO tag;
+      WriteClientRecordingInfo(recinfo, tag);
+
+      ret = m_pClient->RenameRecording(tag, newname);
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
@@ -651,6 +657,17 @@ PVR_ERROR CPVRClient::RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdS
   return ret;
 }
 
+void CPVRClient::WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag)
+{
+  tag.index         = recordinginfo.m_Index;
+  tag.title         = recordinginfo.m_strTitle;
+  tag.subtitle      = recordinginfo.m_strPlotOutline;
+  tag.description   = recordinginfo.m_strPlot;
+  tag.channelName   = recordinginfo.m_strChannel;
+
+  recordinginfo.m_startTime.GetAsTime(tag.starttime);
+  return;
+}
 
 /**********************************************************
  * Timers PVR Functions
@@ -968,7 +985,9 @@ bool CPVRClient::SwitchChannel(unsigned int channel)
 
 bool CPVRClient::OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
 {
-  return m_pClient->OpenRecordedStream(recinfo);
+  PVR_RECORDINGINFO tag;
+  WriteClientRecordingInfo(recinfo, tag);
+  return m_pClient->OpenRecordedStream(tag);
 }
 
 void CPVRClient::CloseRecordedStream(void)

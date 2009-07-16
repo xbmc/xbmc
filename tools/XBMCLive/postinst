@@ -13,37 +13,34 @@ case "$1" in
                 xbmc
 	fi
 	# Add 'xbmc' user to the appropriate groups
+	# Below is a listing of groups and their purpose
+	# adm - For reading system logs (still not sure why xbmc needs this though)
+	# cdrom - optical disc drive access
+	# floppy - floppy drive access
+	# audio - audio device access
+	# video - video device access
+	# plugdev - enable automatic notifications of new devices
+	# netdev - managing network connections via NetworkManager
+	# powerdev - to be able to hibernate/suspend
+	# fuse - to be able to mount filesystems as normal user
+	GROUPS="adm
+		cdrom
+		floppy
+		audio
+		video
+		plugdev
+		netdev
+		powerdev
+		fuse"
+
 	# TODO: this probably isn't necessary anymore as PolicyKit is now being
 	# used
-	# For reading system logs (still not sure why xbmc needs this though)
-	if ! getent group adm | grep xbmc > /dev/null; then
-		adduser xbmc adm || true
-	fi
-	# For optical disc drive access
-	if ! getent group cdrom | grep xbmc > /dev/null; then
-		adduser xbmc cdrom || true
-	fi
-	# For floppy drive access
-	if ! getent group floppy | grep xbmc > /dev/null; then
-		adduser xbmc floppy || true
-	fi
-	# For audio device access
-	if ! getent group audio | grep xbmc > /dev/null; then
-		adduser xbmc audio || true
-	fi
-	# For video device access
-	if ! getent group video | grep xbmc > /dev/null; then
-		adduser xbmc video || true
-	fi
-	# To enable automatic notifications of new devices
-	if ! getent group plugdev | grep xbmc > /dev/null; then
-		adduser xbmc plugdev || true
-	fi
-
-	# To be able to mount filesystems as normal user
-	if ! getent group fuse | grep xbmc > /dev/null; then
-		adduser xbmc fuse || true
-	fi
+	for GROUP in $GROUPS; do
+		if getent group $GROUP >/dev/null && \
+			! getent group $GROUP | grep -q xbmc; then
+			adduser xbmc $GROUP
+		fi
+	done
 
 	# Our set of PolicyKit actions
 
@@ -89,9 +86,12 @@ case "$1" in
 		org.freedesktop.hal.power-management.light-sensor
 		org.freedesktop.hal.power-management.keyboard-backlight"
 
-	# Grant the 'xbmc' user each action from the list
+	# Grant the 'xbmc' user each action from the list if not done already
 	for ACTION in $POLKIT_ACTIONS; do
-		polkit-auth --user xbmc --grant $ACTION || true
+		if polkit-auth --user xbmc --show-obtainable | \
+			grep -q $ACTION; then
+			polkit-auth --user xbmc --grant $ACTION
+		fi
 	done
     ;;
 

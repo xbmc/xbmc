@@ -109,7 +109,7 @@ public:
   static void         GetGLVersion(int& maj, int&min);
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
-  SDL_Surface* SDL() {return m_SDLSurface;}
+  XBMC::SurfacePtr SDL() {return m_SDLSurface;}
 
   bool glxIsSupported(const char*);
 
@@ -154,7 +154,7 @@ public:
   static int         s_glMajVer;
   static int         s_glMinVer;
 
-  SDL_Surface* m_SDLSurface;
+  XBMC::SurfacePtr m_SDLSurface;
 };
 
 }

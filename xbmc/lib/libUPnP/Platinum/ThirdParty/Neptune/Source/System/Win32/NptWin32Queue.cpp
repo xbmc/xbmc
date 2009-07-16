@@ -94,7 +94,8 @@ NPT_Win32Queue::Push(NPT_QueueItem* item, NPT_Timeout timeout)
             m_Mutex.Unlock();
 
             // wait for the condition to signal that we can push
-            NPT_CHECK(m_CanPushCondition->Wait(timeout));
+            NPT_Result result = m_CanPushCondition->Wait(timeout);
+            if (NPT_FAILED(result)) return result;
 
             // relock the mutex so that we can check the list again
             NPT_CHECK(m_Mutex.Lock());
@@ -137,7 +138,8 @@ NPT_Win32Queue::Pop(NPT_QueueItem*& item, NPT_Timeout timeout)
             m_Mutex.Unlock();
 
             // wait for the condition to signal that we can pop
-            NPT_CHECK(m_CanPopCondition->Wait(timeout));
+            NPT_Result result = m_CanPopCondition->Wait(timeout);
+            if (NPT_FAILED(result)) return result;
 
             // relock the mutex so that we can check the list again
             NPT_CHECK(m_Mutex.Lock());
@@ -182,7 +184,8 @@ NPT_Win32Queue::Peek(NPT_QueueItem*& item, NPT_Timeout timeout)
             m_Mutex.Unlock();
 
             // wait for the condition to signal that we can pop
-            NPT_CHECK(m_CanPopCondition->Wait(timeout));
+            NPT_Result result = m_CanPopCondition->Wait(timeout);
+            if (NPT_FAILED(result)) return result;
 
             // relock the mutex so that we can check the list again
             NPT_CHECK(m_Mutex.Lock());

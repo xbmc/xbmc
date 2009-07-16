@@ -67,6 +67,7 @@ public:
   virtual bool Suspend();
   virtual bool Hibernate();
   virtual bool Reboot();
+  virtual void Resume();
 
   virtual bool CanPowerdown();
   virtual bool CanSuspend();

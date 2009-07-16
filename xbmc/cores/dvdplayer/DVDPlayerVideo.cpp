@@ -506,10 +506,11 @@ void CDVDPlayerVideo::Process()
             EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
             if( mInt == VS_INTERLACEMETHOD_DEINTERLACE )
             {
-              mDeinterlace.Process(&picture);
-              mDeinterlace.GetPicture(&picture);
+              if(mDeinterlace.Process(&picture))
+                mDeinterlace.GetPicture(&picture);
             }
-            else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
+            else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE 
+                  || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
             {
               /* if we are syncing frames, dvdplayer will be forced to play at a given framerate */
               /* unless we directly sync to the correct pts, we won't get a/v sync as video can never catch up */
@@ -705,7 +706,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   // remove any overlays that are out of time
   m_pOverlayContainer->CleanUp(min(pts, pts - m_iSubtitleDelay));
 
-  if(pSource->iFlags & DVP_FLAG_NONIMAGE)
+  if(pSource->format != DVDVideoPicture::FMT_YUV420P)
     return;
 
   // rendering spu overlay types directly on video memory costs a lot of processing power.
@@ -842,11 +843,15 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // speed to better match with our video renderer's output speed
   // TODO - this should be based on m_fFrameRate, as the timestamps
   //        in the stream matches that better, durations can vary
-  if (m_pClock->UpdateFramerate(1.0 / (pPicture->iDuration / DVD_TIME_BASE)))
+  int refreshrate = m_pClock->UpdateFramerate(1.0 / (pPicture->iDuration / DVD_TIME_BASE));
+  if (refreshrate > 0) //refreshrate of -1 means the videoreferenceclock is not running
   {
     //correct any pattern in the timestamps if the videoreferenceclock is running
     m_pullupCorrection.Add(pts);
     pts += m_pullupCorrection.Correction();
+    
+    //when using the videoreferenceclock, a frame is always presented one vblank interval too late
+    pts -= (1.0 / refreshrate) * DVD_TIME_BASE; 
   }
   else
   {
@@ -1000,10 +1005,17 @@ void CDVDPlayerVideo::UpdateMenuPicture()
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:" << std::setw(3) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
-  s << ", dc: " << m_codecname;
-  s << ", cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
-  s << ", bitrate: " << std::setprecision(4) << (double)GetVideoBitrate() / (1024.0*1024.0) << " MBit/s";
+  s << "vq:"     << setw(2) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
+  s << ", dc:"   << m_codecname;
+  s << ", MB/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
+  s << ", drop:" << m_iDroppedFrames;
+
+  int pc = m_pullupCorrection.GetPatternLength();
+  if (pc > 0)
+    s << ", pc:" << pc;
+  else
+    s << ", pc:none";
+
   return s.str();
 }
 

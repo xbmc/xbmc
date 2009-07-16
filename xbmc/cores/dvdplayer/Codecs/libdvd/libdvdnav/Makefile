@@ -112,7 +112,7 @@ install-static: $(LIB)
 # Clean targets
 
 clean:
-	rm -rf  *~ $(.OBJDIR)/* version.h
+	rm -rf  *~ $(.OBJDIR)/* 
 
 pcedit = sed \
 	-e 's,@prefix@,$(PREFIX),' \

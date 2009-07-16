@@ -88,11 +88,7 @@ void CBackgroundPicLoader::Process()
       {
         CPicture pic;
         DWORD start = timeGetTime();
-#ifndef HAS_SDL
-        IDirect3DTexture8 *pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
-#else
-        SDL_Surface *pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
-#endif
+        XBMC::TexturePtr pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
         totalTime += timeGetTime() - start;
         count++;
         // tell our parent
@@ -696,11 +692,7 @@ void CGUIWindowSlideShow::Move(float fX, float fY)
   }
 }
 
-#ifndef HAS_SDL
-void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize)
-#else
-void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, SDL_Surface* pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize)
-#endif
+void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, XBMC::TexturePtr pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize)
 {
   if (!g_guiSettings.GetBool("pictures.useexifrotation"))
     iRotate = 1;

@@ -1,13 +1,4 @@
-E: xbmc source: magic-arch-in-arch-list
-N: 
-N:    The special architecture values "all" and "any" only make sense if they
-N:    occur alone.
-N:    
-N:    Refer to Debian Policy Manual section 5.6.8 (Architecture) for details.
-N:    
-N:    Severity: serious, Certainty: certain
-N: 
-W: xbmc source: patch-system-but-direct-changes-in-diff Makefile and 50 more
+W: xbmc source: patch-system-but-direct-changes-in-diff config.log and 46 more
 N: 
 N:    The package uses a patch system, but the Debian diff.gz contains changes
 N:    to files or creation of additional files outside of the debian
@@ -36,9 +27,8 @@ N:
 N:    Note that Lintian cannot reliably detect the removal in the clean rule,
 N:    so once you fix this, please ignore or override this warning.
 N:    
-N:    Severity: normal, Certainty: certain
+N:    Severity: normal, Certainty: possible
 N: 
-W: xbmc source: configure-generated-file-in-source config.status
 W: xbmc source: ancient-libtool xbmc/lib/libid3tag/libid3tag/ltmain.sh 1.5.2
 N: 
 N:    The referenced file seems to be from a libtool version older than
@@ -60,32 +50,7 @@ W: xbmc source: configure-generated-file-in-source xbmc/lib/cximage-6.0/zlib/con
 W: xbmc source: ancient-libtool xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b/ltmain.sh 1.5.2
 W: xbmc source: ancient-libtool xbmc/cores/dvdplayer/Codecs/libmad/ltmain.sh 1.5.2
 W: xbmc source: ancient-libtool xbmc/cores/dvdplayer/Codecs/liba52/autotools/ltmain.sh 1.4.2
-W: xbmc-scripts-example: copyright-lists-upstream-authors-with-dh_make-boilerplate
-N: 
-N:    There is "Upstream Author(s)" in your copyright file. This was most
-N:    likely a remnant from the dh_make template.
-N:    
-N:    There's either one upstream author, in which case you should remove the
-N:    "(s)", or there are several upstream authors, in which case you should
-N:    remove the "(" and ")".
-N:    
-N:    o/~ join us now and carefully edit debian/copyright files! o/~
-N:    
-N:    Severity: normal, Certainty: certain
-N: 
-W: xbmc-scripts-example: copyright-contains-dh_make-todo-boilerplate
-N: 
-N:    The string "Please also look if..." appears in the copyright file, which
-N:    indicates that you either didn't check the whole source to find
-N:    additional copyright/license, or that you didn't remove that paragraph
-N:    after having done so.
-N:    
-N:    Refer to Debian Policy Manual section 12.5 (Copyright information) for
-N:    details.
-N:    
-N:    Severity: normal, Certainty: certain
-N: 
-W: xbmc-standalone: binary-without-manpage usr/bin/xbmc-standalone
+W: xbmc-eventclients-wiiremote: binary-without-manpage usr/bin/xbmc-wiiremote
 N: 
 N:    Each binary in /usr/bin, /usr/sbin, /bin, /sbin or /usr/games should
 N:    have a manual page
@@ -110,16 +75,26 @@ N:    Refer to Debian Policy Manual section 12.1 (Manual pages) for details.
 N:    
 N:    Severity: normal, Certainty: possible
 N: 
-W: xbmc-standalone: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-standalone: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-eventclients-wiiremote: binary-without-manpage usr/bin/xbmc-wiiremote
-W: xbmc-eventclients-wiiremote: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-eventclients-wiiremote: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-eventclients-ps3: binary-without-manpage usr/bin/xbmc-ps3remote
 W: xbmc-eventclients-j2me: binary-without-manpage usr/bin/xbmc-j2meremote
-W: xbmc-eventclients-j2me: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-eventclients-j2me: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-web-pm: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-web-pm: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-live: binary-without-manpage usr/bin/diskmounter
+W: xbmc-live: binary-without-manpage usr/bin/installXBMC.py
+W: xbmc-live: binary-without-manpage usr/bin/runXBMC.sh
+W: xbmc-live: binary-without-manpage usr/bin/setAlsaVolumes.py
+W: xbmc-live: script-with-language-extension usr/bin/installXBMC.py
+N: 
+N:    When scripts are installed into a directory in the system PATH, the
+N:    script name should not include an extension such as .sh or .pl that
+N:    denotes the scripting language currently used to implement it. The
+N:    implementation language may change; if it does, leaving the name the
+N:    same would be confusing and changing it would be disruptive.
+N:    
+N:    Refer to Debian Policy Manual section 10.4 (Scripts) for details.
+N:    
+N:    Severity: normal, Certainty: certain
+N: 
+W: xbmc-live: script-with-language-extension usr/bin/runXBMC.sh
+W: xbmc-live: script-with-language-extension usr/bin/setAlsaVolumes.py
 W: xbmc-common: binary-without-manpage usr/bin/xbmc
 W: xbmc-common: postinst-has-useless-call-to-ldconfig
 N: 
@@ -139,17 +114,6 @@ N:    Refer to Debian Policy Manual section 8.1.1 (ldconfig) for details.
 N:    
 N:    Severity: minor, Certainty: certain
 N: 
-W: xbmc-common: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-common: copyright-contains-dh_make-todo-boilerplate
-E: xbmc-common: embedded-zlib ./usr/lib/xbmc/system/ImageLib-i486-linux.so
-N: 
-N:    The given ELF object appears to have been statically linked to zlib.
-N:    Doing this is discouraged due to the extra work needed by the security
-N:    team to fix all the extra embedded copies or trigger the package
-N:    rebuilds, as appropriate.
-N:    
-N:    Severity: important, Certainty: certain
-N: 
 E: xbmc-common: depends-on-obsolete-package depends: xlibmesa-gl
 N: 
 N:    The package depends on a package that has been superseded. If the
@@ -158,65 +122,4 @@ N:    package in the group.
 N:    
 N:    Severity: important, Certainty: possible
 N: 
-W: xbmc-eventclients-dev: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-eventclients-dev: copyright-contains-dh_make-todo-boilerplate
-W: xbmc: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-skin-pm3-hd: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-skin-pm3-hd: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-web-eflexweb: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-web-eflexweb: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-web-pm3: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-web-pm3: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-dbg: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-dbg: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-eventclients-common: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-eventclients-common: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-skin-pm3: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-skin-pm3: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-live: binary-without-manpage usr/bin/diskmounter
-W: xbmc-live: binary-without-manpage usr/bin/installXBMC.py
-W: xbmc-live: binary-without-manpage usr/bin/runXBMC.sh
-W: xbmc-live: binary-without-manpage usr/bin/setAlsaVolumes.py
-W: xbmc-live: script-with-language-extension usr/bin/installXBMC.py
-N: 
-N:    When scripts are installed into a directory in the system PATH, the
-N:    script name should not include an extension such as .sh or .pl that
-N:    denotes the scripting language currently used to implement it. The
-N:    implementation language may change; if it does, leaving the name the
-N:    same would be confusing and changing it would be disruptive.
-N:    
-N:    Refer to Debian Policy Manual section 10.4 (Scripts) for details.
-N:    
-N:    Severity: normal, Certainty: certain
-N: 
-W: xbmc-live: script-with-language-extension usr/bin/runXBMC.sh
-W: xbmc-live: script-with-language-extension usr/bin/setAlsaVolumes.py
-W: xbmc-live: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-live: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-web-iphone-tlrobinson: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-web-iphone-tlrobinson: copyright-contains-dh_make-todo-boilerplate
-W: xbmc-web-iphone-tlrobinson: copyright-without-copyright-notice
-N: 
-N:    The copyright file for this package does not appear to contain a
-N:    copyright notice. You should copy the copyright notice from the upstream
-N:    source (or add one of your own for a native package). A copyright notice
-N:    must consist of Copyright, Copr., or the Unicode symbol of C in a circle
-N:    followed by the years and the copyright holder. A copyright notice is
-N:    not required for a work to be copyrighted, but Debian requires the
-N:    copyright file include the authors and years of copyright, and including
-N:    a valid copyright notice is the best way to do that.
-N:    
-N:    If the package is in the public domain rather than copyrighted, be sure
-N:    to mention "public domain" in the copyright file. Please be aware that
-N:    this is very rare and not the same as a DFSG-free license. True public
-N:    domain software is generally limited to such special cases as a work
-N:    product of a United States government agency.
-N:    
-N:    Refer to http://ftp-master.debian.org/REJECT-FAQ.html for details.
-N:    
-N:    Severity: normal, Certainty: certain
-N: 
-W: xbmc-eventclients-ps3: binary-without-manpage usr/bin/xbmc-ps3remote
-W: xbmc-eventclients-ps3: copyright-lists-upstream-authors-with-dh_make-boilerplate
-W: xbmc-eventclients-ps3: copyright-contains-dh_make-todo-boilerplate
+W: xbmc-standalone: binary-without-manpage usr/bin/xbmc-standalone

@@ -40,13 +40,8 @@ public:
   CSlideShowPic();
   ~CSlideShowPic();
 
-#ifndef HAS_SDL
-  void SetTexture(int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
-  void UpdateTexture(IDirect3DTexture8 *pTexture, int iWidth, int iHeight);
-#else
-  void SetTexture(int iSlideNumber, SDL_Surface* pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
-  void UpdateTexture(SDL_Surface* pTexture, int iWidth, int iHeight);
-#endif
+  void SetTexture(int iSlideNumber, XBMC::TexturePtr pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
+  void UpdateTexture(XBMC::TexturePtr pTexture, int iWidth, int iHeight);
 
   bool IsLoaded() const { return m_bIsLoaded;};
   void UnLoad() {m_bIsLoaded = false;};
@@ -81,22 +76,15 @@ public:
 private:
   void Process();
 
-#ifndef HAS_SDL
-  void Render(float *x, float *y, IDirect3DTexture8 *pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID );
-  struct VERTEX
-  {
-    D3DXVECTOR4 p;
-    D3DCOLOR col;
-    FLOAT tu, tv;
-  };
-  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-  IDirect3DTexture8* m_pImage;
-#elif defined(HAS_SDL_OPENGL)
+#ifdef HAS_SDL_OPENGL
   void Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode = GL_FILL);
   CGLTexture *m_pImage;
+#elif defined(HAS_SDL)
+  void Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor);
+  XBMC::TexturePtr m_pImage;
 #else
-  void Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwColor);
-  SDL_Surface* m_pImage;
+  void Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID);
+  XBMC::TexturePtr m_pImage;
 #endif
 
   int m_iOriginalWidth;
