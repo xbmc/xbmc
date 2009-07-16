@@ -239,6 +239,7 @@
 #endif
 
 #include "lib/libcdio/logging.h"
+#include "MediaManager.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -5155,7 +5156,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // DVD ejected while playing in vis ?
-      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings

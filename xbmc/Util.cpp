@@ -1201,7 +1201,7 @@ void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strPr
 
 void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
-  if ( !CDetectDVDMedia::IsDiscInDrive() )
+  if ( !g_mediaManager.IsDiscInDrive() )
   {
     strIcon = "DefaultDVDEmpty.png";
     return ;
