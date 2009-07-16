@@ -51,7 +51,6 @@ using namespace std;
 //////////////////////////////////////////////////////////////////////
 CIMDB::CIMDB()
 {
-  m_retry = false;
 }
 
 CIMDB::~CIMDB()
@@ -494,21 +493,17 @@ void CIMDB::Process()
   // note here that we're calling our external functions but we're calling them with
   // no progress bar set, so they're effectively calling our internal functions directly.
   m_found = 0;
-  m_retry = false;
   if (m_state == FIND_MOVIE)
   {
     if (!(m_found=FindMovie(m_strMovie, m_movieList)))
     {
       // retry without replacing '.' and '-' if searching for a tvshow
       if (m_info.strContent.Equals("tvshows"))
-      {
-        m_retry = true;
-        if (!(m_found=FindMovie(m_strMovie, m_movieList)))
-          CLog::Log(LOGERROR, "%s: Error looking up tvshow %s", __FUNCTION__, m_strMovie.c_str());
-      }
+        CLog::Log(LOGERROR, "%s: Error looking up tvshow %s", __FUNCTION__, m_strMovie.c_str());
       else
         CLog::Log(LOGERROR, "%s: Error looking up movie %s", __FUNCTION__, m_strMovie.c_str());
     }
+    m_state = DO_NOTHING;
     return;
   }
   else if (m_state == GET_DETAILS)
@@ -527,6 +522,7 @@ void CIMDB::Process()
       CLog::Log(LOGERROR, "%s: Error getting episode details from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
   }
   m_found = 1;
+  m_state = DO_NOTHING;
 }
 
 int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUIDialogProgress *pProgress /* = NULL */)
@@ -546,7 +542,7 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
     if (ThreadHandle())
       StopThread();
     Create();
-    while (!m_found)
+    while (m_state != DO_NOTHING)
     {
       pProgress->Progress();
       if (pProgress->IsCanceled())
