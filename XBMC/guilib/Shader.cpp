@@ -20,11 +20,10 @@
  */
 
 #include "include.h"
-#include <GL/glew.h>
 #include "../xbmc/Settings.h"
 #include "Shader.h"
 
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL) && !defined(HAS_SDL_GLES1)
 
 #define LOG_SIZE 1024
 
@@ -51,7 +50,7 @@ bool CGLSLVertexShader::Compile()
     CLog::Log(LOGERROR, "GL: GLSL shaders not supported");
     return false;
   }
-
+  
   /*
      Workaround for locale bug in nVidia's shader compiler.
      Save the current locale, set to a neutral locale while compiling and switch back afterwards.
@@ -94,7 +93,7 @@ void CGLSLVertexShader::Free()
   m_vertexShader = 0;
 }
 
-
+#ifndef HAS_SDL_GLES2    // GLES2 uses GLSL (or ESSL) and not ARB - so ignore
 //////////////////////////////////////////////////////////////////////
 // CARBVertexShader
 //////////////////////////////////////////////////////////////////////
@@ -145,7 +144,7 @@ void CARBVertexShader::Free()
     glDeleteProgramsARB(1, &m_vertexShader);
   m_vertexShader = 0;
 }
-
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // CGLSLPixelShader
@@ -204,6 +203,7 @@ void CGLSLPixelShader::Free()
   m_pixelShader = 0;
 }
 
+#ifndef HAS_SDL_GLES2    // GLES2 uses GLSL (or ESSL) and not ARB - so ignore
 //////////////////////////////////////////////////////////////////////
 // CARBPixelShader
 //////////////////////////////////////////////////////////////////////
@@ -254,7 +254,7 @@ void CARBPixelShader::Free()
     glDeleteProgramsARB(1, &m_pixelShader);
   m_pixelShader = 0;
 }
-
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // CGLSLShaderProgram
@@ -280,14 +280,14 @@ bool CGLSLShaderProgram::CompileAndLink()
 
   // free resources
   Free();
-
+  
   // check that we support shaders
   if(!GLEW_ARB_shading_language_100)
   {
     CLog::Log(LOGERROR, "GL: GLSL shaders not supported");
     return false;
   }
-
+  
   // compiled vertex shader
   if (!m_pVP->Compile())
   {
@@ -388,6 +388,7 @@ void CGLSLShaderProgram::Disable()
   }
 }
 
+#ifndef HAS_SDL_GLES2    // GLES2 uses GLSL (or ESSL) and not ARB - so ignore
 //////////////////////////////////////////////////////////////////////
 // CARBShaderProgram
 //////////////////////////////////////////////////////////////////////
@@ -469,5 +470,6 @@ void CARBShaderProgram::Disable()
     OnDisabled();
   }
 }
+#endif
 
 #endif

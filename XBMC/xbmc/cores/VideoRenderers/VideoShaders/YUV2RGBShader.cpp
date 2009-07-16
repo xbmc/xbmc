@@ -27,7 +27,7 @@
 #include <string>
 #include <sstream>
 
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL) && !defined(HAS_SDL_GLES1)
 
 using namespace Shaders;
 using namespace std;
@@ -158,7 +158,7 @@ string BaseYUV2RGBGLSLShader::BuildYUVMatrix()
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
-
+#ifndef HAS_SDL_GLES2
 BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
 {
   m_width         = 1;
@@ -179,7 +179,7 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
   m_hStepY = -1;
   m_hField = -1;
 }
-
+#endif
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShader - YUV2RGB with no deinterlacing
 // Use for weave deinterlacing / progressive
@@ -364,6 +364,7 @@ bool YUV2RGBBobShader::OnEnabled()
   return true;
 }
 
+#ifndef HAS_SDL_GLES2
 string BaseYUV2RGBARBShader::BuildYUVMatrix()
 {
   // Pick the matrix.
@@ -464,6 +465,6 @@ bool YUV2RGBProgressiveShaderARB::OnEnabled()
 {
   return true;
 }
-
+#endif
 
 #endif // HAS_SDL_OPENGL

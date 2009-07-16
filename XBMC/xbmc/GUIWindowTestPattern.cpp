@@ -83,7 +83,7 @@ bool CGUIWindowTestPattern::OnMessage(CGUIMessage& message)
 
 void CGUIWindowTestPattern::Render()
 {
-#if defined(HAS_SDL_OPENGL)
+#if defined(HAS_SDL_OPENGL) && !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)       // TODO: ignored as just a testpattern - should implement!
   int top = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan.top;
   int bottom = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan.bottom;
   int left = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].Overscan.left;
@@ -121,7 +121,7 @@ void CGUIWindowTestPattern::Render()
   CGUIWindow::Render();
 }
 
-#if defined(HAS_SDL_OPENGL)
+#if defined(HAS_SDL_OPENGL) && !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)       // TODO: ignored as just a testpattern - should implement!
 void CGUIWindowTestPattern::DrawVerticalLines(int top, int left, int bottom, int right)
 {
   glBegin(GL_LINES);

@@ -24,7 +24,8 @@
 #include <string>
 #include <math.h>
 
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL) && !defined(HAS_SDL_GLES1)
+#include "gl2es.h"
 
 using namespace Shaders;
 using namespace std;

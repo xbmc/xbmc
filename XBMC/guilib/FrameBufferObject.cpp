@@ -20,11 +20,13 @@
  */
 
 #include "include.h"
-#include <GL/glew.h>
 #include "../xbmc/Settings.h"
 #include "FrameBufferObject.h"
 
 #ifdef HAS_SDL_OPENGL
+#ifdef HAS_SDL_GLES1
+// TODO: Add extension support for FBO - only needed for GLES1
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // CFrameBufferObject
@@ -37,14 +39,23 @@ CFrameBufferObject::CFrameBufferObject()
   m_supported = false;
   m_bound = false;
   m_texid = 0;
+  // TODO: Setup FBO extension support for GLES1
 }
 
 bool CFrameBufferObject::IsSupported()
 {
+#ifndef HAS_SDL_GLES2
+#ifdef HAS_SDL_GLES1    // GLES1
+  if (GL_OES_framebuffer_object)
+#else                   // GL
   if (glewIsSupported("GL_EXT_framebuffer_object"))
+#endif
     m_supported = true;
   else
     m_supported = false;
+#else                   // GLES2
+  m_supported = true;
+#endif
   return m_supported;
 }
 

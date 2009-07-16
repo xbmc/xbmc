@@ -35,11 +35,17 @@
 #endif
 
 #ifdef HAS_SDL_OPENGL
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
 #include <GL/glew.h>
+#endif
 #endif
 
 #ifdef HAS_GLX
 #include <GL/glx.h>
+#endif
+
+#ifdef HAS_EGL
+#include <EGL/egl.h>
 #endif
 
 namespace Surface {
@@ -136,6 +142,11 @@ public:
   Window  m_parentWindow;
   GLXPbuffer  m_glPBuffer;
   static Display* s_dpy;
+#endif
+#ifdef HAS_EGL
+
+  // TODO: EGL version
+
 #endif
 #ifdef __APPLE__
   void* m_glContext;

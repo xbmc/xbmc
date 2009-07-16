@@ -697,7 +697,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
 
     // Create a bare root window so that SDL Input handling works
-#ifdef HAS_GLX
+#if defined(HAS_GLX) || defined(HAS_EGL)
     static SDL_Surface* rootWindow = NULL;
     if (!rootWindow)
     {
@@ -799,7 +799,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     {
       GLint width = 256;
       glGetError(); // reset any previous GL errors
-
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
       // max out at 2^(8+8)
       for (int i = 0 ; i<8 ; i++)
       {
@@ -821,6 +821,12 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
         }
       }
       CLog::Log(LOGINFO, "GL: Maximum texture width: %d", m_maxTextureSize);
+#else
+      // GLES can't handle PROXY textures, so just set to default value!
+      // According to SGX site, this is 2048 - so shouldn't be an issue!
+      m_maxTextureSize = 2048;
+      CLog::Log(LOGINFO, "GLES: Maximum texture width set to default: %d", m_maxTextureSize);
+#endif
     }
 
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
@@ -829,6 +835,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_SCISSOR_TEST);
 
+#ifndef HAS_SDL_GLES2
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
@@ -836,6 +843,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+#endif
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glEnable(GL_BLEND);          // Turn Blending On
@@ -1079,18 +1087,22 @@ void CGraphicContext::CaptureStateBlock()
   }
 #endif
 #ifdef HAS_SDL_OPENGL
+#ifndef HAS_SDL_GLES2
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glMatrixMode(GL_TEXTURE);
   glPushMatrix();
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
+#endif
   glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
   if (glActiveTextureARB)
     glActiveTextureARB(GL_TEXTURE0_ARB);
   glDisable(GL_TEXTURE_2D);
+#ifndef HAS_SDL_GLES2
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   glColor3f(1.0, 1.0, 1.0);
+#endif
 #endif
 }
 
@@ -1103,16 +1115,20 @@ void CGraphicContext::ApplyStateBlock()
   }
 #endif
 #ifdef HAS_SDL_OPENGL
+#ifndef HAS_SDL_GLES2
   glMatrixMode(GL_PROJECTION);
   glPopMatrix();
   glMatrixMode(GL_TEXTURE);
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
+#endif
   if (glActiveTextureARB)
     glActiveTextureARB(GL_TEXTURE0_ARB);
   glEnable(GL_TEXTURE_2D);
+#ifndef HAS_SDL_GLES2
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+#endif
   glEnable(GL_BLEND);
   glEnable(GL_SCISSOR_TEST);
 #endif
@@ -1271,6 +1287,7 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
   float w = (float)viewport[2]*0.5f;
   float h = (float)viewport[3]*0.5f;
 
+#ifndef HAS_SDL_GLES2
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslatef(-(viewport[0] + w + offset.x), +(viewport[1] + h + offset.y), 0);
@@ -1279,6 +1296,7 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
   glLoadIdentity();
   glFrustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   glMatrixMode(GL_MODELVIEW);
+#endif
   EndPaint();
 #endif
 }
@@ -1320,7 +1338,7 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
   Uint32 tid = SDL_ThreadID();
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) {
-#if defined(HAS_GLX) || defined(__APPLE__) || defined(_WIN32PC)
+#if defined(HAS_GLX) || defined(__APPLE__) || defined(_WIN32PC) || defined(HAS_EGL)
     if (dest==NULL)
     {
       CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %u", tid);
@@ -1377,6 +1395,7 @@ CSurface* CGraphicContext::InitializeSurface()
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_SCISSOR_TEST);
 
+#ifndef HAS_SDL_GLES2
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
@@ -1384,6 +1403,7 @@ CSurface* CGraphicContext::InitializeSurface()
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+#endif
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   glEnable(GL_BLEND);          // Turn Blending On
@@ -1685,7 +1705,7 @@ void CGraphicContext::Flip()
 
 void CGraphicContext::ApplyHardwareTransform()
 {
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL) && !defined(HAS_SDL_GLES2)
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   GLfloat matrix[4][4];
@@ -1705,7 +1725,7 @@ void CGraphicContext::ApplyHardwareTransform()
 
 void CGraphicContext::RestoreHardwareTransform()
 {
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL) && !defined(HAS_SDL_GLES2)
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 #endif

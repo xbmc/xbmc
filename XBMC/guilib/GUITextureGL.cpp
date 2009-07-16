@@ -22,8 +22,13 @@
 #include "include.h"
 #include "GUITextureGL.h"
 #include "GraphicContext.h"
+#include "Util.h"
 #ifdef HAS_SDL_OPENGL
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
 #include <GL/glew.h>
+#else
+#include "gl2es.h"
+#endif
 
 CGUITexture::CGUITexture(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
@@ -43,6 +48,17 @@ void CGUITexture::Begin()
   
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);          // Turn Blending On
+  
+#if defined(HAS_SDL_GLES1)      // GLES1.x version
+  
+  // TODO: GLES1.x version!!!
+  
+#elif defined(HAS_SDL_GLES2)    // GLES 2.0 version
+  
+  // TODO: GLES2.0 version!!!
+  
+#else
+  
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
      
   // diffuse coloring
@@ -70,10 +86,21 @@ void CGUITexture::Begin()
   //glDisable(GL_TEXTURE_2D); // uncomment these 2 lines to switch to wireframe rendering
   //glBegin(GL_LINE_LOOP);
   glBegin(GL_QUADS);
+#endif
 }
 
 void CGUITexture::End()
 {
+#if defined(HAS_SDL_GLES1)
+  
+  // TODO: GLES1.x version
+  
+#elif defined(HAS_SDL_GLES2)
+  
+  // TODO: GLES2.0 version
+  
+#else
+  
   glEnd();
   if (m_diffuse.size())
   {
@@ -81,14 +108,26 @@ void CGUITexture::End()
     glActiveTextureARB(GL_TEXTURE0_ARB);
   }
   glDisable(GL_TEXTURE_2D);
+  
+#endif
 }
 
 void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
 {
-  GLubyte a = (GLubyte)(color >> 24);
-  GLubyte r = (GLubyte)((color >> 16) & 0xff);
-  GLubyte g = (GLubyte)((color >> 8) & 0xff);
-  GLubyte b = (GLubyte)(color & 0xff);
+#if defined(HAS_SDL_GLES1)
+  
+  // TODO: GLES1.x version
+  
+#elif defined(HAS_SDL_GLES2)
+  
+  // TODO: GLES2.0 version
+  
+#else
+  
+  GLubyte a = (GLubyte)GET_A(color);
+  GLubyte r = (GLubyte)GET_R(color);
+  GLubyte g = (GLubyte)GET_G(color);
+  GLubyte b = (GLubyte)GET_B(color);
 
   // Top-left vertex (corner)
   glColor4ub(r, g, b, a);
@@ -133,6 +172,8 @@ void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const
       glMultiTexCoord2fARB(GL_TEXTURE1_ARB, diffuse.x1, diffuse.y2);
   }
   glVertex3f(x[3], y[3], z[3]);
+  
+#endif
 }
 
 void CGUITexture::DrawQuad(const CRect &rect, DWORD color)
@@ -140,8 +181,10 @@ void CGUITexture::DrawQuad(const CRect &rect, DWORD color)
   glDisable(GL_TEXTURE_2D);
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);          // Turn Blending On
+#ifndef HAS_SDL_GLES2
+#ifndef HAS_SDL_GLES1   // Not part of GLES
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+#endif
   // diffuse coloring
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
   glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
@@ -149,18 +192,25 @@ void CGUITexture::DrawQuad(const CRect &rect, DWORD color)
   glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
   glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
   glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+#endif
   VerifyGLState();
 
 //  glEnable(GL_TEXTURE_2D);
   
+#if defined(HAS_SDL_GLES1)
+
+  // TODO: GLES1.x version
+  
+#elif defined(HAS_SDL_GLES2)
+
+  //TODO: GLES2.0
+  
+#else
+  
   glBegin(GL_QUADS);
 
-  GLubyte a = (GLubyte)(color >> 24);
-  GLubyte r = (GLubyte)((color >> 16) & 0xff);
-  GLubyte g = (GLubyte)((color >> 8) & 0xff);
-  GLubyte b = (GLubyte)(color & 0xff);
+  glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));
 
-  glColor4ub(r, g, b, a);
   glTexCoord2f(0.0f, 0.0f);
   glVertex3f(rect.x1, rect.y1, 0);
   glTexCoord2f(1.0f, 0.0f);
@@ -171,6 +221,8 @@ void CGUITexture::DrawQuad(const CRect &rect, DWORD color)
   glVertex3f(rect.x1, rect.y2, 0);
 
   glEnd();
+  
+#endif
 }
 
 #endif

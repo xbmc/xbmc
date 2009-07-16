@@ -153,12 +153,12 @@ linux:
 visualization-interface: 
 	$(MAKE) -C xbmc/visualizations
 visualizations: exports
+ifneq ($(ARCH), arm)
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
-ifneq ($(ARCH), arm)
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
-endif
 	$(MAKE) -C xbmc/visualizations/Goom
+endif
 screensaver-interface: 
 	$(MAKE) -C xbmc/screensavers
 screensavers: exports
@@ -258,7 +258,9 @@ endif
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 libkaraoke:
+ifneq ($(ARCH), arm)
 	$(MAKE) -C xbmc/karaoke
+endif
 
 codecs: papcodecs dvdpcodecs
 
@@ -300,7 +302,6 @@ OBJSXBMC=	\
 	xbmc/FileSystem/filesystem.a \
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
-	xbmc/karaoke/karaoke.a \
 	xbmc/lib/libcmyth/libcmyth.a \
 	xbmc/lib/libhts/libhts.a \
 	xbmc/lib/libPython/python.a \
@@ -336,6 +337,9 @@ OBJSXBMC += \
 	system/players/dvdplayer/avformat-52-@ARCH@.a \
 	system/players/dvdplayer/postproc-51-@ARCH@.a
 
+else ifneq ($(ARCH), arm)
+OBJSXBMC += \
+	xbmc/karaoke/karaoke.a
 endif
 
 # TODO: XBPythonDLLFuncs.S not implemented on PowerPC

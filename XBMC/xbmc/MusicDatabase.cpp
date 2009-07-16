@@ -45,7 +45,9 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "Application.h"
+#ifdef HAS_KARAOKE
 #include "karaoke/karaokelyricsfactory.h"
+#endif
 
 using namespace std;
 using namespace AUTOPTR;
@@ -239,7 +241,10 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
     bool bInsert = true;
     int lSongId = -1;
-    bool bHasKaraoke = CKaraokeLyricsFactory::HasLyrics( song.strFileName );
+    bool bHasKaraoke = false;
+#ifdef HAS_KARAOKE
+    bHasKaraoke = CKaraokeLyricsFactory::HasLyrics( song.strFileName );
+#endif
 
     // If this is karaoke song, change the genre to 'Karaoke' (and add it if it's not there)
     if ( bHasKaraoke && g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs )

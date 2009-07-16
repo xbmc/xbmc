@@ -327,6 +327,10 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   {
     CLog::Log(LOGERROR, "GLX Error: Could not create context");
   }
+#elif defined(HAS_EGL)
+
+  // TODO: EGL version
+
 #elif defined(HAS_SDL_OPENGL)
 #ifdef __APPLE__
   // We only want to call SDL_SetVideoMode if it's not shared, otherwise we'll create a new window.
@@ -546,6 +550,10 @@ CSurface::~CSurface()
     CLog::Log(LOGINFO, "GLX: Destroying OpenGL Context");
     glXDestroyContext(s_dpy, m_glContext);
   }
+#elif defined(HAS_EGL)
+
+  // TODO: EGL version
+
 #else
   if (IsValid() && m_SDLSurface
 #if defined(__APPLE__ ) || defined(_WIN32)
@@ -819,6 +827,10 @@ void CSurface::Flip()
     }
     else
       glXSwapBuffers(s_dpy, m_glWindow);
+#elif defined(HAS_EGL)
+
+    // TODO: EGL version
+
 #elif defined(__APPLE__)
     Cocoa_GL_SwapBuffers(m_glContext);
 #elif defined(HAS_SDL_OPENGL)
@@ -853,6 +865,11 @@ void CSurface::Flip()
 
 bool CSurface::MakeCurrent()
 {
+#ifdef HAS_EGL
+
+	// TODO: EGL version
+
+#else
   if (m_pShared)
     return m_pShared->MakeCurrent();
 
@@ -894,11 +911,13 @@ bool CSurface::MakeCurrent()
     return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
 #endif
   return false;
+  
+#endif
 }
 
 void CSurface::RefreshCurrentContext()
 {
-#ifdef HAS_GLX
+#if defined(HAS_GLX) || defined(HAS_EGL) 
   ReleaseContext();
   MakeCurrent();
 #endif
@@ -915,6 +934,11 @@ void CSurface::ReleaseContext()
     CLog::Log(LOGINFO, "GL: ReleaseContext");
     glXMakeCurrent(s_dpy, None, NULL);
   }
+#endif
+#ifdef HAS_EGL
+
+  // TODO: EGL version
+
 #endif
 #ifdef __APPLE__
   // Nothing?
@@ -939,6 +963,11 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
     glXWaitX();
     XUnlockDisplay(s_dpy);
   }
+#endif
+#ifdef HAS_EGL
+
+    // TODO: EGL version
+
 #endif
 #ifdef __APPLE__
   m_glContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight);

@@ -25,7 +25,12 @@
 #include "include.h"
 #include <vector>
 #include <string>
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL)
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
+#include <GL/glew.h>
+#else
+#include "gl2es.h"
+#endif
 
 namespace Shaders {
 

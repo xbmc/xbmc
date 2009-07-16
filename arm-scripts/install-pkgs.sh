@@ -82,7 +82,7 @@ libboost-dev_1.34.1-14_armel.deb
 libmad0-dev_0.15.1b-4_armel.deb
 libvorbis-dev_1.2.0.dfsg-3.1_armel.deb
 libfribidi-dev_0.10.9-1_armel.deb
-libmysqlclient15-dev_5.0.51a-24_armel.deb
+libmysqlclient15-dev_5.0.51a-24+lenny1_armel.deb
 libpcre3-dev_7.6-2.1_armel.deb
 liblzo2-dev_2.03-1_armel.deb
 libsdl1.2-dev_1.2.13-2_armel.deb
@@ -109,13 +109,13 @@ libgnutls26_2.4.2-6+lenny1_armel.deb
 cmake_2.6.0-6_armel.deb
 nasm_2.03.01-1_armel.deb
 libidn11_1.8+20080606-1_armel.deb
-libkrb53_1.6.dfsg.4~beta1-5_armel.deb
+libkrb53_1.6.dfsg.4~beta1-5lenny1_armel.deb
 libldap-2.4-2_2.4.11-1_armel.deb
 ca-certificates_20080809_all.deb
 libtasn1-3_1.4-1_armel.deb
 libkeyutils1_1.2-9_armel.deb
 libcomerr2_1.41.3-1_armel.deb
-libsasl2-2_2.1.22.dfsg1-23_armel.deb
+libsasl2-2_2.1.22.dfsg1-23+lenny1_armel.deb
 libartsc0_1.5.9-2_armel.deb
 libesd0_0.2.36-3_armel.deb
 libpulse0_0.9.10-3_armel.deb
@@ -145,7 +145,7 @@ python2.4-dev_2.4.6-1_armel.deb
 
 echo "#### Beginning Downloads ####"
 # Remove wget logfile
-if [-e wget-output.txt]; then
+if [ -e wget-output.txt ]; then
 	rm wget-output.txt
 fi
 
@@ -172,7 +172,7 @@ echo "#### Extracting Packages ####"
 if test `uname -m` = "arm" ; then
 
 # Remove dpkg logfile
-if [-e ../dpkg-output.txt]; then
+if [ -e ../dpkg-output.txt ]; then
 	rm ../dpkg-output.txt
 fi
 

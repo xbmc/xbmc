@@ -170,7 +170,6 @@ typedef D3DPalette* LPDIRECT3DPALETTE8;
 #if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
 #define GL_GLEXT_PROTOTYPES
 #endif
-#include <GL/glew.h>
 #endif
 #endif
 

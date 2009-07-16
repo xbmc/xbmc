@@ -25,6 +25,7 @@
 #include "utils/GUIInfoManager.h"
 #include "Settings.h"
 #include "TextureManager.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -704,6 +705,7 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
 
+#ifndef HAS_SDL_GLES2
     // diffuse coloring
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
@@ -711,9 +713,21 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
     glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+#endif
   }
   else
     glDisable(GL_TEXTURE_2D);
+
+#if defined(HAS_SDL_GLES1)
+  
+  // TODO: GLES1.x version
+  
+#elif defined(HAS_SDL_GLES2)
+  
+  // TODO: GLES2.0 version
+  
+#else
+  
   glPolygonMode(GL_FRONT_AND_BACK, fillmode);
 
   glBegin(GL_QUADS);
@@ -744,6 +758,9 @@ void CSlideShowPic::Render(float *x, float *y, SDL_Surface *pTexture, DWORD dwCo
   glVertex3f(x[3], y[3], 0);
 
   glEnd();
+
+#endif
+
   g_graphicsContext.EndPaint();
 #else
 // SDL render

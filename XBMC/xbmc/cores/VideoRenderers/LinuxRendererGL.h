@@ -280,7 +280,7 @@ protected:
 
 
 inline int NP2( unsigned x ) {
-#if defined(_LINUX) && !defined(__POWERPC__)
+#if defined(_LINUX) && !defined(__POWERPC__) && !defined(_ARMEL)
   // If there are any issues compiling this, just append a ' && 0'
   // to the above to make it '#if defined(_LINUX) && 0'
 

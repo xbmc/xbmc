@@ -162,7 +162,7 @@ There is a simple shell script that downloads a list of packages that are requir
   
 Please check the output files for any possible errors that may have occured.
 
-Although not using OpenGL, still need to header files in place so that certain files can build successfully.
+Although not using OpenGL, still need the header files in place so that certain files can build successfully.
 These are usually standard include files so use any.
 Easiest way is to copy the folder /usr/include/GL from your linux machine, into your scratchbox target:
 /scratchbox/users/<name>/targets/<targetname>/usr/include/
@@ -180,31 +180,28 @@ To create the XBMC executable manually perform these two steps:
 	-----------------------------------------------------------------------------
 
 		> cd xbmc_on_arm/XBMC/
-		> ./configure --prefix=/usr --disable-gl --disable-vdpau --disable-faac --disable-avahi --disable-debug CFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon" CXXFLAGS="-march=armv7-a -mtune=cortex-a8 -mfpu=neon" 
+		> ./configure --prefix=/usr --disable-xrandr --disable-debug --disable-gles1
 
 	This will configure XBMC inside scratchbox ready for compilation on ARM.
 	Here is a breakdown to what this line does:
 		--prefix=/usr		This is a standard practise of setting the prefix to be usr rather than usr/local.
-		--disable-gl		We are not using OpenGL because the hardware doesnt support GL.
-		--disable-vdpau		VDPAU isnt supported on ARM.
-		--disable-faac		There is no armel package available for FAAC.
-		--disable-avahi		Not supported.
 		--disable-debug		Removes debug information from the binary file. This dramatically reduces the size of the executable.
-	CFLAGS and CXXFLAGS:
-		-march=armv7-a		Compile for armv7-a architecture, the architecture used by the beagleboard.
-		-mtune=cortex-a8	Compile for Cortex-A8. Further increases optimisations.
-		-mfpu=neon			Utilise the SIMD engine, NEON.
+		--disable-gles1		Default is to build for GLES1.x which currently does not work. This option builds for software rendering.
+
+	Alternatively, you can build for OpenGL ES1.x by ommitting the --disable-gles1 flag.
+	You can also build for OpenGL ES2.0 by including the following flag: --enable-gles2
+	Both currently do not work - but in theory should allow configure and make to succeed without errors.
+	Search for HAS_SDL_GLES1 and HAS_SDL_GLES2 for key areas that require developing for such cases.
+
 	
 	-----------------------------------------------------------------------------
 	5.2 Make:
 	-----------------------------------------------------------------------------
 
-	PLEASE NOTE: Before compiling, you need to edit a few source files to match your hardware setup:
-	Changing resolution (default is 1280x720)	- Edit XBMC/xbmc/XBVideoConfig.cpp lines 172-3 to reflect your desired resolution.
+	PLEASE NOTE: Before compiling, you need to edit a source file to match your hardware setup.
+	This is because currently, it does not auto detect resolutions.
+	Change resolution to fullscreen (default is 1024x768)	- Edit XBMC/xbmc/XBVideoConfig.cpp lines 173-4 to reflect your desired fullscreen resolution.
 	
-	If you plan to keep xbmc and its packages seperate from the rest of the filesystem on the beagleboard, these lines need changing to reflect such path.
-		- Edit XBMC/xbmc/DllPaths_generated.h line 15	and		XBMC/xbmc/utils/SystemInfo.cpp line 560
-	E.g /home/root/xbmc/ etc.
 	
 	Now, build with the following:
 		> make
@@ -249,30 +246,21 @@ The downside with Angstrom is there is no easy way to get the packages installed
 	6.2 Installing the Files:
 	-----------------------------------------------------------------------------
 
-	Transfer the two files, pkgs.tar.bz2 and xbmc.tar.bz2 to the beagleboard.
-	You must now extract these files to a directory that is the same as you entered in section 5.2
-	For this example, it will be /home/root/xbmc, the standard directory would be root, /
-	
-		# mkdir xbmc
-		# mv armel-pkgs.tar.bz2 xbmc/
-		# cd xbmc
-		# tar xjf armel-pkgs.tar.bz2
-		# cd usr
-		# mv xbmc.tar.bz2 xbmc/usr/
-		# tar xjf xbmc.tar.bz2
+	Transfer the two files, pkgs.tar.bz2 and xbmc.tar.bz2 to the beagleboard. Do the following to extract them:
+
+		# tar xjf armel-pkgs.tar.bz2 -C /
+		# tar xjf xbmc.tar.bz2 -C /usr/
+
+	After this initial setup, during development, you should only need to replace /usr/share/xbmc/xbmc.bin with the newly created binary.
 	
 	-----------------------------------------------------------------------------
 	6.3 Running XBMC:
 	-----------------------------------------------------------------------------
 
-	If the directory is different than root, a variable needs to be set before running xbmc:
-		# export LD_LIBRARY_PATH=/home/root/xmbc/usr/lib:/home/root/xbmc/lib
-	Change to reflect your path for usr/lib and lib.
-	
 	Now, run XBMC by executing the binary:
-		# /home/root/xbmc/usr/share/xbmc/xbmc.bin
+		# /usr/share/xbmc/xbmc.bin
 		
-	Run the binary and not the script as it will fail.
+	Run the binary and not the script as the script will fail.
 	
 	
 -----------------------------------------------------------------------------
@@ -292,5 +280,7 @@ This is because the .deb files cannot be extracted in Angstrom.
 If this is not the case, try various different parameters for xbmc.bin such as:
 xbmc.bin --standalone
 xbmc.bin -p
+xbmc.bin -fs
+Or build with debug for a more in-depth xbmc.log file by ommitting the line --disable-debug on configure.
 
 Feel free to contact me on mcgeagh@xbmc.org

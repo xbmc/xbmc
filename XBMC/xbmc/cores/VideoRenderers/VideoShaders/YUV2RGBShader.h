@@ -41,6 +41,7 @@ namespace Shaders {
     GLint m_hField;
   };
 
+#ifndef HAS_SDL_GLES2
   class BaseYUV2RGBARBShader : public CARBShaderProgram
   {
   public:
@@ -82,6 +83,7 @@ namespace Shaders {
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
+#endif
 
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
   {

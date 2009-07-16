@@ -105,6 +105,7 @@
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "Crc32.h"
+#include "gl2es.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -2039,7 +2040,9 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 
     GLint viewport[4];
     void *pixels = NULL;
-    glReadBuffer(GL_BACK);
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
+    glReadBuffer(GL_BACK);      // GLES doesnt support this function - ignore it???
+#endif
     glGetIntegerv(GL_VIEWPORT, viewport);
     pixels = malloc(viewport[2] * viewport[3] * 4);
     if (pixels)

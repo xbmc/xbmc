@@ -168,9 +168,10 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
   res.fRefreshRate = 0.0f;
 #endif
   
+// ---- TEMPORARY HACK TO GET OUTPUT ON ARM  
 #elif defined(_ARMEL)
-  res.iWidth = 1280;
-  res.iHeight = 720;
+  res.iWidth = 1024;
+  res.iHeight = 768;
 #ifdef HAS_XRANDR
   XOutput output = g_xrandr.GetCurrentOutput();
   XMode   mode   = g_xrandr.GetCurrentMode(output.name);

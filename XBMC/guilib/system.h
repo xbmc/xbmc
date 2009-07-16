@@ -197,11 +197,16 @@
 #endif
 #endif
 
-#ifdef _ARMEL
+#ifdef _ARMEL	// If building on arm... special case here!
+#ifdef HAS_SDL_OPENGL
+// Dont want to use GLX, but EGL instead
+#undef HAS_GLX
+#endif
 //TODO: If building for ARM, Theres a few things you cannot build for (atleast temporarily). This does that.
-#undef HAS_SCREENSAVER
-#undef HAS_AVAHI
-#undef HAS_ZEROCONF
+#undef HAS_SCREENSAVER  // Because requires GL
+#undef HAS_AVAHI		// Because requires ZeroConf
+#undef HAS_ZEROCONF		// Because requires Atomics which uses x86 assembler
+#undef HAS_KARAOKE      // DO NOT WANT! Include at a later date... for now, its extra work
 #endif
 
 #ifdef __APPLE__

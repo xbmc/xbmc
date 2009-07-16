@@ -22,6 +22,7 @@
 
 #ifdef HAS_SDL_OPENGL
 class CGLTexture;
+#include "gl2es.h"
 #endif
 
 class CSlideShowPic

@@ -84,13 +84,24 @@ AC_ARG_ENABLE([optimizations],
                [enable optimization (default is yes)])],
             [use_optimizations=$enableval],
             [use_optimizations=yes])
-
+if test "$host_cpu" != "arm" ; then
 AC_ARG_ENABLE([gl],
             [AS_HELP_STRING([--enable-gl],
-               [enable OpenGL rendering (default is yes)])],
+               [enable OpenGL rendering (default is yes) - Not applicable when using ES])],
             [use_gl=$enableval],
             [use_gl=yes])
-
+else
+AC_ARG_ENABLE([gles1],
+            [AS_HELP_STRING([--enable-gles1],
+               [enable OpenGL ES 1.x rendering (default is yes)])],
+            [use_gles1=$enableval],
+            [use_gles1=yes])
+AC_ARG_ENABLE([gles2],
+            [AS_HELP_STRING([--enable-gles2],
+               [enable OpenGL ES 2.0 rendering (default is no) - If enabled, this will overide ES 1.x])],
+            [use_gles2=$enableval],
+            [use_gles2=no])
+fi
 AC_ARG_ENABLE([vdpau],
             [AS_HELP_STRING([--enable-vdpau],
                [enable VDPAU decoding (default is yes)])],
@@ -204,6 +215,10 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
+elif test "$host_cpu" = "arm" ; then
+# Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
+  CFLAGS="$CFLAGS -march=armv7-a -mtune=cortex-a8 -mfpu=neon"
+  CXXFLAGS="$CXXFLAGS -march=armv7-a -mtune=cortex-a8 -mfpu=neon"
 fi
 
 # Checks for boost headers using g++ instead of gcc
@@ -213,6 +228,8 @@ AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
 CC="$oldCC"
 
 # Checks for platforms libraries.
+if test "$host_cpu" != "arm" ; then
+
 if test "$use_gl" = "yes"; then
   if test "$host_vendor" = "apple" ; then
     # linking to OpenGL.framework instead of libGL, libGLU
@@ -227,6 +244,21 @@ else
   AC_CHECK_LIB([SDL_gfx], [main])
 fi
 
+else
+  # Dont use GL - use ES instead
+  # If gles2 is enabled, this will override gles1
+if test "$use_gles2" = "yes"; then
+  AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([GLESv2],  [main],, AC_MSG_ERROR($missing_library))
+elif test "$use_gles1" = "yes"; then
+  AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([GLES_CM], [main],, AC_MSG_ERROR($missing_library))
+else
+  AC_MSG_RESULT(== WARNING: OpenGL ES support is disabled. XBMC will run VERY slow. ==)
+  AC_CHECK_LIB([SDL_gfx], [main])
+fi
+
+fi
 
 # platform independent libraries
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
@@ -475,12 +507,29 @@ else
   final_message="$final_message\n  Optimization:\tNo"
 fi
 
+if test "$host_cpu" != "arm" ; then
+
 if test "$use_gl" = "yes"; then
   final_message="$final_message\n  OpenGL:\tYes"
   SDL_DEFINES=""
 else
   final_message="$final_message\n  OpenGL:\tNo (Very Slow)"
   SDL_DEFINES="-DHAS_SDL_2D"
+fi
+
+else
+
+if test "$use_gles2" = "yes"; then
+  final_message="$final_message\n  OpenGL ES2.0:\tYes"
+  SDL_DEFINES="-DHAS_EGL -DHAS_SDL_GLES2"
+elif test "$use_gles1" = "yes"; then
+  final_message="$final_message\n  OpenGL ES1.x:\tYes"
+  SDL_DEFINES="-DHAS_EGL -DHAS_SDL_GLES1"
+else
+  final_message="$final_message\n  OpenGL ES:\tNo (Very Slow)"
+  SDL_DEFINES="-DHAS_SDL_2D"
+fi
+
 fi
 
 if test "$use_vdpau" = "yes"; then
@@ -757,6 +806,30 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak &&
     sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
 
+  elif test "$host_cpu" = "arm" ; then
+    ./configure \
+      --arch=arm \
+      --cpu=cortex-a8 \
+      --extra-cflags="-D_XBOX -mfpu=neon -mfloat-abi=softfp" \
+      --disable-static \
+      --disable-altivec \
+      --disable-vhook \
+      --disable-ipv6 \
+      `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
+      --disable-muxers \
+      --disable-encoders \
+      --disable-decoder=mpeg_xvmc \
+      --disable-devices \
+      --disable-ffplay \
+      --disable-ffserver \
+      --disable-ffmpeg \
+      --enable-shared \
+      --enable-postproc \
+      --enable-gpl \
+      --enable-swscale \
+      --enable-protocol=http \
+      --enable-pthreads
+
   else
     ./configure \
       --extra-cflags="-D_XBOX" \
@@ -997,9 +1070,9 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
   fi
 ])
 
+XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
 # TEMPORARY: Cannot have screensavers if building for ARM as it requires OpenGL
 if test "$host_cpu" != "arm" ; then
-XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
       CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -1032,8 +1105,8 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
       --disable-lattice \
       --disable-skyrocket
   fi
-])
 fi
+])
 
 AC_OUTPUT
 

@@ -6,7 +6,7 @@ prefix=../arm-scripts/tmp
 cd ../XBMC
 
 
-echo "Creating target directories in $(prefix)/share/xbmc"
+echo "Creating target directories in $prefix/share/xbmc"
 find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p $prefix/share/xbmc/"{}" \; -printf " -- %f                            \r"
 echo "Copying system files to $prefix/share/xbmc"
 find language media screensavers scripts sounds userdata visualisations system -type f -not -iregex ".*\(svn.*\|\.so\|\.dll\|win32\.vis\|osx\.vis\)" -exec cp "{}" $prefix/share/xbmc/"{}" \; -printf " -- %f                            \r"

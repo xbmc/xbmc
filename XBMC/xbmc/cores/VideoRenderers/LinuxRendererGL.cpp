@@ -36,7 +36,11 @@
 #endif
 
 #ifdef HAS_SDL_OPENGL
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
 #include <GL/glew.h>
+#else
+#include "gl2es.h"
+#endif
 #endif
 #ifdef HAS_GLX
 #include <GL/glx.h>
@@ -66,8 +70,13 @@ CLinuxRendererGL::CLinuxRendererGL()
   }
 
   m_fragmentShader = 0;
+#ifndef HAS_SDL_GLES1
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
+#else
+  m_renderMethod = RENDER_SW | RENDER_POT;
+  m_renderQuality = RQ_SOFTWARE;
+#endif
   m_yTex = 0;
   m_uTex = 0;
   m_vTex = 0;
@@ -445,6 +454,7 @@ void CLinuxRendererGL::RenderOSD()
   // Render the image
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_pOSDYTexture[m_iOSDRenderBuffer]);
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
   glBegin(GL_QUADS);
   glColor3f(1.0, 1.0, 1.0);
   glTexCoord2f(0.0, 0.0);
@@ -456,6 +466,7 @@ void CLinuxRendererGL::RenderOSD()
   glTexCoord2f(0.0, 1.0);
   glVertex2f(osdRect.left, osdRect.bottom);
   glEnd();
+#endif  // GLES1 GLES2 note: No point! not being called!!! (check above)
 
 }
 
@@ -587,12 +598,14 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
   {
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
     if (!glewIsSupported("GL_ARB_texture_non_power_of_two") && glewIsSupported("GL_ARB_texture_rectangle"))
     {
       CLog::Log(LOGNOTICE,"Using GL_TEXTURE_RECTANGLE_ARB");
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
     }
     else
+#endif  // GLES: Textures must be Power-of-2
       CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
 
      // create the yuv textures    
@@ -624,8 +637,9 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   m_upscalingWidth = rd.right-rd.left;
   m_upscalingHeight = rd.bottom-rd.top;
-  m_scalingMethod = GetDefaultUpscalingMethod();
 
+  m_scalingMethod = GetDefaultUpscalingMethod();
+  
   if (m_rgbBuffer != NULL)
   {
      delete [] m_rgbBuffer;
@@ -890,6 +904,7 @@ void CLinuxRendererGL::LoadTextures(int source)
   if (imaging==-1)
   {
     imaging = 0;
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
     if (glewIsSupported("GL_ARB_imaging"))
     {
       CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
@@ -908,8 +923,10 @@ void CLinuxRendererGL::LoadTextures(int source)
         imaging = 1;
       }
     }
+#endif  // No need to do for GLES as only for RGB Scale and Bias - which ES doesnt support
   }
 
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
   if (imaging==1 &&
       ((g_stSettings.m_currentVideoSettings.m_Brightness!=50) ||
        (g_stSettings.m_currentVideoSettings.m_Contrast!=50)))
@@ -923,12 +940,14 @@ void CLinuxRendererGL::LoadTextures(int source)
     VerifyGLState();
     imaging++;
   }
+#endif  // No GLES version. Dont bother doing
 
   glEnable(m_textureTarget);
   VerifyGLState();
 
   if (m_renderMethod & RENDER_SW)
   {
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
     // Load RGB image
     if (deinterlacing)
     {
@@ -952,11 +971,15 @@ void CLinuxRendererGL::LoadTextures(int source)
       glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
       VerifyGLState();
     }
+#else
+  // TODO: GLES1 and GLES2 versions
+#endif
   }
   else
   {
     glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
     if (deinterlacing)
     {
       // Load Y fields
@@ -980,10 +1003,14 @@ void CLinuxRendererGL::LoadTextures(int source)
 
       glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
     }
+#else   
+    // TODO: need to do stride thing for GLES2 - GLES1 should never reach here as only doing software rendering?
+#endif
   }
 
   VerifyGLState();
 
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
   if (imaging==2)
   {
     imaging--;
@@ -995,11 +1022,13 @@ void CLinuxRendererGL::LoadTextures(int source)
     glPixelTransferf(GL_BLUE_BIAS, 0.0);
     VerifyGLState();
   }
+#endif  // No GLES version. Dont bother doing
 
   if (!(m_renderMethod & RENDER_SW))
   {
     glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
     if (deinterlacing)
     {
       // Load Even U & V Fields
@@ -1040,6 +1069,9 @@ void CLinuxRendererGL::LoadTextures(int source)
 
       glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
     }
+#else   
+    // TODO: need to do stride thing for GLES2 - GLES1 should never reach here as only doing software rendering?
+#endif
     SetEvent(m_eventTexturesDone[source]);
   }
 
@@ -1264,6 +1296,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     break;
 
   case VS_SCALINGMETHOD_CUBIC:
+#ifndef HAS_SDL_GLES1
     SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_MULTIPASS;
     m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
@@ -1278,6 +1311,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
         m_pVideoFilterShader = NULL;
       }
     }
+#endif
     break;
 
   case VS_SCALINGMETHOD_LANCZOS2:
@@ -1314,6 +1348,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
    */
+#ifndef HAS_SDL_GLES1   // Dont do as GLES1 doesnt do shaders
   if (glCreateProgram // TODO: proper check
       && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL
             || requestedMethod==RENDER_METHOD_VDPAU))
@@ -1325,6 +1360,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       m_pYUVShader = NULL;
     }
 
+#ifndef HAS_SDL_GLES2
     if (renderMethod & (FIELD_ODD|FIELD_EVEN))
     {
       if (m_renderQuality == RQ_SINGLEPASS)
@@ -1346,6 +1382,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
       CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB Progressive Shader");
     }
+#endif  // HAS_SDL_GLES2
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())
     {
@@ -1362,6 +1399,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     }
   }
 
+#ifndef HAS_SDL_GLES2    // NO NEED TO CONTINUE... GLES2 DOES GLSL
   /*
     Try ARB shaders if the extension is supported AND either:
       1) user requested it
@@ -1405,7 +1443,9 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       1) user requested it
       2) or GLSL and/or ARB shaders failed
    */
+#endif  // HAS_SDL_GLES2
   else
+#endif  // HAS_SDL_GLES1 - dont do GLSL or ARB, just do SW
   {
     m_renderMethod = RENDER_SW ;
     CLog::Log(LOGNOTICE, "GL: Shaders support not present, falling back to SW mode");
@@ -1417,6 +1457,13 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
     m_renderMethod = RENDER_SW;
   }
 
+#if defined(HAS_SDL_GLES2)
+  CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
+#elif defined(HAS_SDL_GLES1)
+  CLog::Log(LOGNOTICE, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
+  CLog::Log(LOGNOTICE, "GL: Reverting to POT textures");
+  m_renderMethod |= RENDER_POT;
+#else
   // determine whether GPU supports NPOT textures
   if (!glewIsSupported("GL_ARB_texture_non_power_of_two"))
   {
@@ -1431,6 +1478,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
   }
   else
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
+#endif
 }
 
 void CLinuxRendererGL::UnInit()
@@ -1740,7 +1788,9 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   glActiveTextureARB(GL_TEXTURE0);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, m_YUVTexture[index][field][0]);
+#ifndef HAS_SDL_GLES2
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+#endif
 
   // U
   glActiveTextureARB(GL_TEXTURE1);
@@ -1772,6 +1822,16 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
 
   m_pYUVShader->Enable();
 
+#if defined(HAS_SDL_GLES1)
+  
+  //TODO: GLES1.x version
+
+#elif defined(HAS_SDL_GLES2)
+  
+  //TODO: GLES2.0 version
+  
+#else
+  
   glBegin(GL_QUADS);
 
   if (m_textureTarget==GL_TEXTURE_2D)
@@ -1827,6 +1887,9 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   }
 
   glEnd();
+  
+#endif
+  
   VerifyGLState();
 
   m_pYUVShader->Disable();
@@ -1841,13 +1904,19 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   glActiveTextureARB(GL_TEXTURE0);
   glDisable(m_textureTarget);
 
+#ifndef HAS_SDL_GLES2
   glMatrixMode(GL_MODELVIEW);
+#endif
 
   VerifyGLState();
 }
 
 void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 {
+#ifdef HAS_SDL_GLES1
+  CLog::Log(LOGERROR, "GLES1: cannot do multipass render");
+  return;
+#else
   YV12Image &im = m_image[index];
 
   // set scissors if we are not in fullscreen video
@@ -1872,7 +1941,9 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, m_YUVTexture[index][FIELD_FULL][0]);
+#ifndef HAS_SDL_GLES2
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+#endif
   VerifyGLState();
 
   // U
@@ -1938,6 +2009,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetHeight(im.height);
   VerifyGLState();
 
+#ifndef HAS_SDL_GLES2
   glPushAttrib(GL_VIEWPORT_BIT);
   glPushAttrib(GL_SCISSOR_BIT);
   glMatrixMode(GL_MODELVIEW);
@@ -1948,6 +2020,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
+#endif
   VerifyGLState();
 
   int imgheight;
@@ -1969,12 +2042,17 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
     break;
   }
 
+#ifndef HAS_SDL_GLES2
   gluOrtho2D(0, im.width, 0, imgheight);
+#endif
   glViewport(0, 0, im.width, imgheight);
   glScissor(0, 0, im.width, imgheight);
+#ifndef HAS_SDL_GLES2
   glMatrixMode(GL_MODELVIEW);
+#endif
   VerifyGLState();
 
+#ifndef HAS_SDL_GLES2
   if (!m_pYUVShader->Enable())
   {
     CLog::Log(LOGERROR, "GL: Error enabling YUV shader");
@@ -2017,6 +2095,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   glPopAttrib(); // pop viewport
   glMatrixMode(GL_MODELVIEW);
   VerifyGLState();
+#endif
 
   m_fbo.EndRender();
 
@@ -2049,6 +2128,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   }
 
   VerifyGLState();
+#ifndef HAS_SDL_GLES2
   glBegin(GL_QUADS);
 
   glMultiTexCoord2fARB(GL_TEXTURE0, 0, 0);
@@ -2066,6 +2146,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   glEnd();
 
   VerifyGLState();
+#endif
 
   if (m_pVideoFilterShader)
   {
@@ -2076,6 +2157,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 
   glDisable(m_textureTarget);
   VerifyGLState();
+#endif
 }
 
 void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
@@ -2170,6 +2252,7 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
 
   glDisable(GL_DEPTH_TEST);
 
+#ifndef HAS_SDL_GLES2
   if (deinterlacing)
   {
     glMatrixMode(GL_TEXTURE);
@@ -2177,11 +2260,23 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
     glScalef(1.0, 0.5, 1.0);
     glMatrixMode(GL_MODELVIEW);
   }
+#endif
 
   // Y
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, m_YUVTexture[index][field][0]);
+  
+#if defined(HAS_SDL_GLES1)
+
+  // TODO: GLES1.x version
+  
+#elif defined(HAS_SDL_GLES2)
+  
+  // TODO: GLES2.0 version
+  
+#else
+  
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
   glBegin(GL_QUADS);
@@ -2230,6 +2325,8 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
   }
+  
+#endif
 
   glDisable(m_textureTarget);
   VerifyGLState();
@@ -2250,18 +2347,22 @@ void CLinuxRendererGL::CreateThumbnail(SDL_Surface* surface, unsigned int width,
 
   // clear framebuffer and invert Y axis to get non-inverted image
   glClear(GL_COLOR_BUFFER_BIT);
+#ifndef HAS_SDL_GLES2
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glTranslatef(0, height, 0);
   glScalef(1.0, -1.0f, 1.0f);
+#endif
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
 
   // read pixels
   glReadPixels(0, rv.bottom-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, surface->pixels);
 
+#ifndef HAS_SDL_GLES2
   // revert model view matrix
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
+#endif
 
   // restore original video rect
   rd = saveSize;
@@ -2509,12 +2610,20 @@ void CLinuxRendererGL::TextureCallback(DWORD dwContext)
 
 bool CLinuxRendererGL::SupportsBrightness()
 {
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
   return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
+#else
+  return false;
+#endif
 }
 
 bool CLinuxRendererGL::SupportsContrast()
 {
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
   return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
+#else
+  return false;
+#endif
 }
 
 bool CLinuxRendererGL::SupportsGamma()
@@ -2524,7 +2633,13 @@ bool CLinuxRendererGL::SupportsGamma()
 
 bool CLinuxRendererGL::SupportsMultiPassRendering()
 {
+#if defined(HAS_SDL_GLES2)      // GLES2 - Shaders & FBO supported
+  return true;
+#elif defined(HAS_SDL_GLES1)    // GLES1 - Shaders unsupported
+  return false;
+#else
   return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
+#endif
 }
 
 #endif

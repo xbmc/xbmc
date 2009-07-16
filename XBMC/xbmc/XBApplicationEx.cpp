@@ -276,7 +276,6 @@ INT CXBApplicationEx::Run()
       }
     }
 #endif
-
   }
   Destroy();
 
