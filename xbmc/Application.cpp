@@ -4692,6 +4692,7 @@ void CApplication::UpdateFileState()
       {
         // Update the bookmark
         m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+        m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
       }
       else
       {
