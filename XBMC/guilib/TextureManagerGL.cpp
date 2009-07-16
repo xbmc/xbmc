@@ -20,7 +20,7 @@
 */
 
 #include "include.h"
-#include "TextureManagerSDL.h"
+#include "TextureManagerGL.h"
 #include "AnimatedGif.h"
 #include "GraphicContext.h"
 #include "Surface.h"

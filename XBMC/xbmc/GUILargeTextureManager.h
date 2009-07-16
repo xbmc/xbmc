@@ -26,7 +26,7 @@
 #ifdef HAS_SDL
 #include "SDL/SDL.h"
 #endif
-#include "TextureManagerSDL.h"
+#include "TextureManagerGL.h"
 
 #include <assert.h>
 

@@ -1319,13 +1319,6 @@
 				<File
 					RelativePath="..\..\guilib\GraphicContext.cpp"
 					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\guilib\GraphicContext.h"
@@ -1369,34 +1362,6 @@
 				<File
 					RelativePath="..\..\guilib\TextureManagerGL.h"
 					>
-				</File>
-			</Filter>
-			<Filter
-				Name="tmp"
-				>
-				<File
-					RelativePath="..\..\guilib\TextureManager - Copy.cpp"
-					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\guilib\TextureManager - Copy.h"
-					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>

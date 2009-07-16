@@ -13,7 +13,7 @@
 #define KARAOKELYRICSCDG_H
 
 #if defined(HAS_SDL_OPENGL)
-  #include "TextureManagerSDL.h"
+  #include "TextureManagerGL.h"
 #endif
 
 

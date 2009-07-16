@@ -27,7 +27,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBVideoConfig.h"
-#include "TextureManager.h"
+#include "TextureManagerGL.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
 #include "cores/VideoRenderers/RenderManager.h"

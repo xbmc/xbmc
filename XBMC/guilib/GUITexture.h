@@ -29,7 +29,7 @@
  *
  */
 
-#include "TextureManagerSDL.h"
+#include "TextureManagerGL.h"
 #include "Geometry.h"
 
 struct FRECT

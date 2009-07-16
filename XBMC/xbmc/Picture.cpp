@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "Picture.h"
-#include "TextureManagerSDL.h"
+#include "TextureManagerGL.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
