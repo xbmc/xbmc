@@ -1,7 +1,7 @@
 ARCH=@ARCH@
 
 INCLUDES = -I../../xbmc/linux -I../../guilib -I../../xbmc/
-DEFINES = -DUSE_SDL
+DEFINES = -DHAS_SDL
 LIBS = @LIBS@
 OBJS = \
 	AnimatedGif.o \

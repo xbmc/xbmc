@@ -41,6 +41,7 @@
 #include "../lib/libcdio/cdio.h"
 #endif
 #include "../utils/CriticalSection.h"
+#include "../guilib/StdString.h"
 
 namespace MEDIA_DETECT
 {

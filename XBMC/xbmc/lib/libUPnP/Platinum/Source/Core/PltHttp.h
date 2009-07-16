@@ -70,6 +70,29 @@ class PLT_HttpHelper {
 
     static NPT_Result   GetBody(NPT_HttpMessage& message, NPT_String& body);
     static NPT_Result   ParseBody(NPT_HttpMessage& message, NPT_XmlElementNode*& xml);
+
+    static NPT_Result   Connect(NPT_Socket&      connection,
+                                NPT_HttpRequest& request,
+                                NPT_Timeout      timeout = NPT_TIMEOUT_INFINITE);
+};
+
+/*----------------------------------------------------------------------
+|   PLT_HttpRequestContext
++---------------------------------------------------------------------*/
+class PLT_HttpRequestContext : public NPT_HttpRequestContext {
+public:
+    // constructors and destructor
+    PLT_HttpRequestContext(NPT_HttpRequest& request) : 
+        m_Request(request) {}
+    PLT_HttpRequestContext(NPT_HttpRequest& request, const NPT_HttpRequestContext& context) :
+        NPT_HttpRequestContext(&context.GetLocalAddress(), &context.GetRemoteAddress()),
+        m_Request(request) {}
+    virtual ~PLT_HttpRequestContext() {}
+    
+    NPT_HttpRequest& GetRequest() const { return m_Request; }
+    
+private:
+    NPT_HttpRequest& m_Request;
 };
 
 /*----------------------------------------------------------------------
@@ -77,41 +100,14 @@ class PLT_HttpHelper {
 +---------------------------------------------------------------------*/
 #if defined(NPT_CONFIG_ENABLE_LOGGING)
 #define PLT_LOG_HTTP_MESSAGE_L(_logger, _level, _msg) \
-    PLT_HttpHelper::ToLog(_logger, _level, _msg)
+    PLT_HttpHelper::ToLog((_logger), (_level), (_msg))
 #define PLT_LOG_HTTP_MESSAGE(_level, _msg) \
-    PLT_LOG_HTTP_MESSAGE_L(_NPT_LocalLogger, _level, _msg)
+	PLT_HttpHelper::ToLog((_NPT_LocalLogger), (_level), (_msg))
 
 #else /* NPT_CONFIG_ENABLE_LOGGING */
 #define PLT_LOG_HTTP_MESSAGE_L(_logger, _level, _msg)
 #define PLT_LOG_HTTP_MESSAGE(_level, _msg)
 #endif /* NPT_CONFIG_ENABLE_LOGGING */
-
-/*----------------------------------------------------------------------
-|   PLT_HttpClient
-+---------------------------------------------------------------------*/
-class PLT_HttpClient {
-public:
-    // constructors and destructor
-    PLT_HttpClient() {}
-    virtual ~PLT_HttpClient() {}
-
-    // methods
-    NPT_Result Connect(NPT_Socket*       connection,
-                       NPT_HttpRequest&  request,
-                       NPT_Timeout       timeout = NPT_TIMEOUT_INFINITE);
-
-    NPT_Result SendRequest(NPT_OutputStreamReference& output_stream, 
-                           NPT_HttpRequest&           request,
-                           NPT_Timeout                timeout = NPT_TIMEOUT_INFINITE);
-
-    NPT_Result WaitForResponse(NPT_InputStreamReference&     input_stream,
-                               NPT_HttpRequest&              request, 
-                               const NPT_HttpRequestContext& context, 
-                               NPT_HttpResponse*&            response);
-
-protected:
-    // members
-};
 
 /*----------------------------------------------------------------------
 |   PLT_HttpRequestHandler

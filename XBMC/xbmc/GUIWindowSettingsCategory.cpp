@@ -805,7 +805,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D
       pControl->AddLabel(g_localizeStrings.Get(13355), RENDER_LQ_RGB_SHADER);
       pControl->AddLabel(g_localizeStrings.Get(13356), RENDER_OVERLAYS);
       pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_HQ_RGB_SHADER);

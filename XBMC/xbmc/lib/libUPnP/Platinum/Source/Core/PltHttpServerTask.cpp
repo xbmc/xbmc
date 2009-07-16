@@ -41,6 +41,11 @@
 NPT_SET_LOCAL_LOGGER("platinum.core.http.servertask")
 
 /*----------------------------------------------------------------------
+|   external references
++---------------------------------------------------------------------*/
+extern NPT_String HttpServerHeader;
+
+/*----------------------------------------------------------------------
 |   PLT_HttpServerSocketTask::PLT_HttpServerSocketTask
 +---------------------------------------------------------------------*/
 PLT_HttpServerSocketTask::PLT_HttpServerSocketTask(NPT_Socket* socket, 
@@ -57,7 +62,7 @@ PLT_HttpServerSocketTask::PLT_HttpServerSocketTask(NPT_Socket* socket,
 +---------------------------------------------------------------------*/
 PLT_HttpServerSocketTask::~PLT_HttpServerSocketTask() 
 {
-    delete m_Socket;
+    if (m_Socket) delete m_Socket;
 }
 
 /*----------------------------------------------------------------------
@@ -72,17 +77,18 @@ PLT_HttpServerSocketTask::DoRun()
     bool                             headers_only;
     bool                             keep_alive = false;
 
-    // create a buffered input stream to parse http request
-    // as it comes
+    // create a buffered input stream 
+    // to parse http request
     NPT_InputStreamReference input_stream;
     NPT_CHECK_LABEL_SEVERE(GetInputStream(input_stream), done);
+    NPT_CHECK_POINTER_LABEL_FATAL(input_stream.AsPointer(), done);
     buffered_input_stream = new NPT_BufferedInputStream(input_stream);
 
     while (!IsAborting(0)) {
         NPT_HttpRequest*  request = NULL;
         NPT_HttpResponse* response = NULL;
 
-        // reset keep-alive in case of failure
+        // reset keep-alive in case of failure to read
         keep_alive = false;
 
         // wait for a request
@@ -98,20 +104,22 @@ PLT_HttpServerSocketTask::DoRun()
         keep_alive = PLT_HttpHelper::IsConnectionKeepAlive(*request);
         res = Write(response, keep_alive, headers_only);
 
+        // on write error, don't keep connection alive
+        if (NPT_SUCCEEDED(res)) keep_alive = false;
+
 cleanup:
         // cleanup
         delete request;
         delete response;
 
         if (!keep_alive && !m_StayAliveForever) {
-            // if we were to support persistent connections 
-            // we would stop only if res would be a failure
-            // (like a timeout or a read/write error)
             goto done;
         }
     }
 
 done:
+    delete m_Socket;
+    m_Socket = NULL;
     return;
 }
 
@@ -150,12 +158,15 @@ PLT_HttpServerSocketTask::Read(NPT_BufferedInputStreamReference& buffered_input_
         context->SetRemoteAddress(info.remote_address);
     }
 
+    // put back in buffered mode
+    buffered_input_stream->SetBufferSize(NPT_BUFFERED_BYTE_STREAM_DEFAULT_SIZE);
+
     // parse request
     NPT_Result res = NPT_HttpRequest::Parse(*buffered_input_stream, &info.local_address, request);
     if (NPT_FAILED(res) || !request) {
         // only log if not timeout
         res = NPT_FAILED(res)?res:NPT_FAILURE;
-        if (res != NPT_ERROR_TIMEOUT) NPT_CHECK_FATAL(res);
+        if (res != NPT_ERROR_TIMEOUT && res != NPT_ERROR_EOS) NPT_CHECK_WARNING(res);
         return res;
     }
 
@@ -175,24 +186,32 @@ PLT_HttpServerSocketTask::Read(NPT_BufferedInputStreamReference& buffered_input_
     NPT_HttpEntity* request_entity = new NPT_HttpEntity(request->GetHeaders());
     request->SetEntity(request_entity);
 
-    // buffer body now if any
-    if (request_entity->GetContentLength() > 0) {
-        // unbuffer the stream
-        buffered_input_stream->SetBufferSize(0);
+    NPT_MemoryStream* body_stream = new NPT_MemoryStream();
+    request_entity->SetInputStream((NPT_InputStreamReference)body_stream);
 
-        NPT_MemoryStream* body_stream = new NPT_MemoryStream();
+    // unbuffer the stream
+    buffered_input_stream->SetBufferSize(0);
+
+    // check for chunked Transfer-Encoding
+    if (request_entity->GetTransferEncoding() == "chunked") {
+        NPT_CHECK_SEVERE(NPT_StreamToStreamCopy(
+            *NPT_InputStreamReference(new NPT_HttpChunkedInputStream(buffered_input_stream)).AsPointer(), 
+            *body_stream));
+
+        request_entity->SetTransferEncoding(NULL);
+    } else if (request_entity->GetContentLength()) {
+        // a request with a body must always have a content length if not chunked
         NPT_CHECK_SEVERE(NPT_StreamToStreamCopy(
             *buffered_input_stream.AsPointer(), 
             *body_stream, 
             0, 
             request_entity->GetContentLength()));
-
-        // set entity body
-        request_entity->SetInputStream((NPT_InputStreamReference)body_stream);
-
-        // rebuffer the stream
-        buffered_input_stream->SetBufferSize(NPT_BUFFERED_BYTE_STREAM_DEFAULT_SIZE);
+    } else {
+        request->SetEntity(NULL);
     }
+
+    // rebuffer the stream
+    buffered_input_stream->SetBufferSize(NPT_BUFFERED_BYTE_STREAM_DEFAULT_SIZE);
 
     return NPT_SUCCESS;
 }
@@ -202,27 +221,40 @@ PLT_HttpServerSocketTask::Read(NPT_BufferedInputStreamReference& buffered_input_
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response, 
-                                bool              keep_alive, 
+                                bool&             keep_alive, 
                                 bool              headers_only /* = false */) 
 {
     // add any headers that may be missing
     NPT_HttpHeaders& headers = response->GetHeaders();
-    if (keep_alive) {
-        headers.SetHeader(NPT_HTTP_HEADER_CONNECTION, "keep-alive");
+    const NPT_String* value  = headers.GetHeaderValue(NPT_HTTP_HEADER_CONNECTION);
+    if (value) {
+        // override keep_alive header if value passed not ok
+        if (!keep_alive) {
+            headers.SetHeader(NPT_HTTP_HEADER_CONNECTION,  "close"); // override
+        } else {
+            keep_alive =  value->Compare("keep-alive") == 0; // keep-alive ok but return what headers say
+        }
     } else {
-        headers.SetHeader(NPT_HTTP_HEADER_CONNECTION, "close");
+        // FIXME: we really should put Connection: keep-alive header if request was 1.0 only ?
+        headers.SetHeader(NPT_HTTP_HEADER_CONNECTION, keep_alive?"keep-alive":"close");
     }
 
     // set user agent
-    headers.SetHeader(NPT_HTTP_HEADER_USER_AGENT, 
-        "Platinum/" PLT_PLATINUM_VERSION_STRING, false);
-
+    headers.SetHeader(NPT_HTTP_HEADER_SERVER, 
+                      NPT_HttpServer::m_ServerHeader, false); // set but don't replace
+                      
     // get the response entity to set additional headers
     NPT_HttpEntity* entity = response->GetEntity();
-    if (entity) {
-        // content length
-        headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, 
-            NPT_String::FromIntegerU(entity->GetContentLength()));
+    
+    NPT_InputStreamReference body_stream;
+    entity->GetInputStream(body_stream);
+
+    if (entity && !body_stream.IsNull()) {
+        if (entity->HasContentLength()) {
+            // content length
+            headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, 
+                NPT_String::FromIntegerU(entity->GetContentLength()));
+        }
 
         // content type
         NPT_String content_type = entity->GetContentType();
@@ -235,20 +267,14 @@ PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response,
         if (!content_encoding.IsEmpty()) {
             headers.SetHeader(NPT_HTTP_HEADER_CONTENT_ENCODING, content_encoding);
         }
-    } else {
-        // force content length to 0 is there is no message body
-        headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, "0");
     }
-
-    //headers.SetHeader("DATE", "Wed, 13 Feb 2008 22:32:57 GMT");
-    //headers.SetHeader("Accept-Ranges", "bytes");
 
     NPT_LOG_FINE("PLT_HttpServerTask Sending response:");
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, response);
 
     // get the socket stream to send the request
     NPT_OutputStreamReference output_stream;
-    NPT_CHECK_SEVERE(m_Socket->GetOutputStream(output_stream));
+    NPT_CHECK_WARNING(m_Socket->GetOutputStream(output_stream));
 
     // create a memory stream to buffer the headers
     NPT_MemoryStream header_stream;
@@ -257,20 +283,15 @@ PLT_HttpServerSocketTask::Write(NPT_HttpResponse* response,
     response->Emit(header_stream);
 
     // send the headers
-    NPT_CHECK_SEVERE(output_stream->WriteFully(header_stream.GetData(), header_stream.GetDataSize()));
+    NPT_CHECK_WARNING(output_stream->WriteFully(header_stream.GetData(), header_stream.GetDataSize()));
 
     // send response body if any
-    if (!headers_only && entity) {
-        NPT_InputStreamReference body_stream;
-        entity->GetInputStream(body_stream);
-
-        if (!body_stream.IsNull()) {
-            NPT_CHECK_SEVERE(NPT_StreamToStreamCopy(
-                *body_stream.AsPointer(), 
-                *output_stream.AsPointer(),
-                0,
-                entity->GetContentLength()));
-        }
+    if (!headers_only && !body_stream.IsNull()) {
+        NPT_CHECK_WARNING(NPT_StreamToStreamCopy(
+            *body_stream.AsPointer(), 
+            *output_stream.AsPointer(),
+            0,
+            entity->GetContentLength()));
     }
 
     // flush the output stream so that everything is sent to the server

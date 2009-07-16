@@ -257,6 +257,7 @@ void CGUISettings::Initialize()
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
   AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
   AddBool(7, "musiclibrary.updateonstartup", 22000, false);
+  AddBool(0, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(8,"musiclibrary.sep2");
   AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(10, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
@@ -445,7 +446,7 @@ void CGUISettings::Initialize()
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
 #else
 #ifdef HAVE_LIBVDPAU

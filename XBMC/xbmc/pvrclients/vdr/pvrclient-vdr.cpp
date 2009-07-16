@@ -2424,7 +2424,7 @@ PVR_ERROR PVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
     
-PVR_ERROR PVRClientVDR::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
+PVR_ERROR PVRClientVDR::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
   vector<string> lines;
   int            code;
@@ -2435,7 +2435,7 @@ PVR_ERROR PVRClientVDR::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
 
   pthread_mutex_lock(&m_critSection);
 
-  sprintf(buffer, "LSTR %d", recinfo.m_Index);
+  sprintf(buffer, "LSTR %d", recinfo.index);
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
     pthread_mutex_unlock(&m_critSection);
@@ -2448,7 +2448,7 @@ PVR_ERROR PVRClientVDR::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
     return PVR_ERROR_NOT_SYNC;
   }
 
-  sprintf(buffer, "DELR %d", recinfo.m_Index);
+  sprintf(buffer, "DELR %d", recinfo.index);
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
     pthread_mutex_unlock(&m_critSection);
@@ -2466,7 +2466,7 @@ PVR_ERROR PVRClientVDR::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname)
+PVR_ERROR PVRClientVDR::RenameRecording(const PVR_RECORDINGINFO &recinfo, CStdString &newname)
 {
   vector<string> lines;
   int            code;
@@ -2477,7 +2477,7 @@ PVR_ERROR PVRClientVDR::RenameRecording(const cPVRRecordingInfoTag &recinfo, CSt
 
   pthread_mutex_lock(&m_critSection);
 
-  sprintf(buffer, "LSTR %d", recinfo.m_Index);
+  sprintf(buffer, "LSTR %d", recinfo.index);
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
     pthread_mutex_unlock(&m_critSection);
@@ -2490,7 +2490,7 @@ PVR_ERROR PVRClientVDR::RenameRecording(const cPVRRecordingInfoTag &recinfo, CSt
     return PVR_ERROR_NOT_SYNC;
   }
 
-  sprintf(buffer, "RENR %d %s", recinfo.m_Index, newname.c_str());
+  sprintf(buffer, "RENR %d %s", recinfo.index, newname.c_str());
 
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
@@ -2989,7 +2989,7 @@ bool PVRClientVDR::SwitchChannel(unsigned int channel)
 /************************************************************/
 /** Record stream handling */
 
-bool PVRClientVDR::OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
+bool PVRClientVDR::OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 {
   if (!m_transceiver->IsOpen())
   {
@@ -3013,7 +3013,7 @@ bool PVRClientVDR::OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
   }
 
   /* Get Stream socked from VDR Backend */
-  m_socket_video = m_transceiver->GetStreamRecording(recinfo.m_Index, &currentPlayingRecordBytes, &currentPlayingRecordFrames);
+  m_socket_video = m_transceiver->GetStreamRecording(recinfo.index, &currentPlayingRecordBytes, &currentPlayingRecordFrames);
 
   pthread_mutex_unlock(&m_critSection);
 

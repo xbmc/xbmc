@@ -473,6 +473,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
 
   tag->m_iSeason  = 0;
   tag->m_iEpisode = 0;
+  tag->m_iTrack       = channel.id;
   tag->m_strAlbum     = channel.name;
   tag->m_strShowTitle = event.title;
   tag->m_strPlot      = event.descs;
@@ -487,5 +488,25 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   item.SetThumbnailImage(channel.icon);
   item.SetContentType("video/X-htsp");
   item.SetCachedVideoThumb();
+  return true;
+}
+
+bool CHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
+{
+  if(htsmsg_get_u32(msg, "packets", &queue.packets)
+  || htsmsg_get_u32(msg, "bytes",   &queue.bytes)
+  || htsmsg_get_u32(msg, "Bdrops",  &queue.bdrops)
+  || htsmsg_get_u32(msg, "Pdrops",  &queue.bdrops)
+  || htsmsg_get_u32(msg, "Pdrops",  &queue.bdrops))
+  {
+    CLog::Log(LOGERROR, "CHTSPSession::ParseQueueStatus - malformed message received");
+    htsmsg_print(msg);
+    return false;
+  }
+
+  /* delay isn't always transmitted */
+  if(htsmsg_get_u32(msg, "delay", &queue.delay))
+    queue.delay = 0;
+
   return true;
 }

@@ -101,12 +101,6 @@
 #if !defined(STRICT)
 #define STRICT
 #endif
-
-/* Visual Studio 2008 defines vsnprintf */
-#if _MSC_VER < 1500
-#define vsnprintf _vsnprintf
-#endif
-#define snprintf  _snprintf
 #endif
 
 /* XBox */
@@ -224,6 +218,11 @@ typedef long NPT_PointerLong;
 #define explicit
 #define NPT_fseek fseek  // no fseeko ?
 #define NPT_ftell ftell  // no ftello ?
+#endif
+
+/* Android */
+#if defined(ANDROID)
+#define NPT_CONFIG_NO_RTTI
 #endif
 
 /*----------------------------------------------------------------------

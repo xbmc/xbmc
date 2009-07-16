@@ -107,13 +107,15 @@ PLT_Service::GetSCPDXML(NPT_String& scpd)
     // add actions
     actionList = new NPT_XmlElementNode("actionList");
     NPT_CHECK_LABEL_SEVERE(res = top->AddChild(actionList), cleanup);
-    NPT_CHECK_LABEL_SEVERE(res = m_ActionDescs.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_ActionDesc>(actionList), 
+    NPT_CHECK_LABEL_SEVERE(res = m_ActionDescs.ApplyUntil(
+        PLT_GetSCPDXMLIterator<PLT_ActionDesc>(actionList), 
         NPT_UntilResultNotEquals(NPT_SUCCESS)), cleanup);
 
     // add service state table
     serviceStateTable = new NPT_XmlElementNode("serviceStateTable");
     NPT_CHECK_LABEL_SEVERE(res = top->AddChild(serviceStateTable), cleanup);
-    NPT_CHECK_LABEL_SEVERE(res = m_StateVars.ApplyUntil(PLT_GetSCPDXMLIterator<PLT_StateVariable>(serviceStateTable), 
+    NPT_CHECK_LABEL_SEVERE(res = m_StateVars.ApplyUntil(
+        PLT_GetSCPDXMLIterator<PLT_StateVariable>(serviceStateTable), 
         NPT_UntilResultNotEquals(NPT_SUCCESS)), cleanup);
 
     // serialize node
@@ -167,7 +169,7 @@ PLT_Service::InitURLs(const char* service_name,
 NPT_Result
 PLT_Service::SetSCPDXML(const char* scpd)
 {
-    if (scpd == NULL) return NPT_FAILURE;
+    if (scpd == NULL) return NPT_ERROR_INVALID_PARAMETERS;
 
     Cleanup();
 
@@ -203,7 +205,6 @@ PLT_Service::SetSCPDXML(const char* scpd)
     }
 
     for (int k = 0 ; k < (int)stateVariables.GetItemCount(); k++) {
-
         NPT_String name, type, send;
         PLT_XmlHelper::GetChildText(stateVariables[k], "name", name);
         PLT_XmlHelper::GetChildText(stateVariables[k], "dataType", type);
@@ -280,7 +281,7 @@ PLT_Service::SetSCPDXML(const char* scpd)
             NPT_Array<NPT_XmlElementNode*> arguments;
             NPT_CHECK_LABEL_SEVERE(PLT_XmlHelper::GetChildren(argumentList, arguments, "argument"), failure);
 
-            bool foundRetValue = false;
+            bool ret_value_found = false;
             for (int j = 0 ; j < (int)arguments.GetItemCount(); j++) {
                 NPT_String name, direction, relatedStateVar;
                 PLT_XmlHelper::GetChildText(arguments[j], "name", name);
@@ -297,18 +298,18 @@ PLT_Service::SetSCPDXML(const char* scpd)
                     NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
                 }
 
-                bool bReturnValue = false;
-                NPT_XmlElementNode* retval_node = PLT_XmlHelper::GetChild(arguments[j], "retVal");
-                if (retval_node) {
+                bool ret_value = false;
+                NPT_XmlElementNode* ret_val_node = PLT_XmlHelper::GetChild(arguments[j], "retVal");
+                if (ret_val_node) {
                     // verify this is the only retVal we've had
-                    if (foundRetValue) {
+                    if (ret_value_found) {
                         NPT_CHECK_LABEL_SEVERE(NPT_ERROR_INVALID_SYNTAX, failure);
                     } else {
-                        bReturnValue = true;
-                        foundRetValue = true;
+                        ret_value = true;
+                        ret_value_found = true;
                     }
                 }
-                action_desc->GetArgumentDescs().Add(new PLT_ArgumentDesc(name, direction, variable, bReturnValue));
+                action_desc->GetArgumentDescs().Add(new PLT_ArgumentDesc(name, direction, variable, ret_value));
             }
         }
     }
@@ -321,6 +322,49 @@ failure:
     NPT_LOG_FATAL_1("Failed to parse scpd: %s", scpd);
     delete tree;
     return NPT_FAILURE;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Service::GetSCPDURL
++---------------------------------------------------------------------*/
+NPT_String
+PLT_Service::GetSCPDURL(bool absolute /* = false */)
+{ 
+    NPT_HttpUrl url = GetDevice()->NormalizeURL(m_SCPDURL);   
+    return absolute?url.ToString():url.GetPath();
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Service::GetControlURL
++---------------------------------------------------------------------*/
+NPT_String  
+PLT_Service::GetControlURL(bool absolute /* = false */)   
+{ 
+    NPT_HttpUrl url = GetDevice()->NormalizeURL(m_ControlURL);    
+    return absolute?url.ToString():url.GetPath(); 
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Service::GetEventSubURL
++---------------------------------------------------------------------*/
+NPT_String  
+PLT_Service::GetEventSubURL(bool absolute /* = false */)   
+{ 
+    NPT_HttpUrl url = GetDevice()->NormalizeURL(m_EventSubURL);    
+    return absolute?url.ToString():url.GetPath();
+}
+
+/*----------------------------------------------------------------------
+|   PLT_Service::ForceVersion
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_Service::ForceVersion(NPT_Cardinal version)
+{
+    if (version < 1) return NPT_FAILURE;
+
+    m_ServiceType = m_ServiceType.SubString(0, m_ServiceType.GetLength()-1);
+    m_ServiceType += NPT_String::FromIntegerU(version);
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -455,7 +499,8 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
 
     // generate a unique subscriber ID
     NPT_String sid;
-    PLT_UPnPMessageHelper::GenerateUUID(19, sid);
+    PLT_UPnPMessageHelper::GenerateGUID(sid);
+    sid = "uuid:" + sid;
 
     PLT_EventSubscriber* subscriber = new PLT_EventSubscriber(task_manager, this, sid, timeout);
     // parse the callback URLs
@@ -488,6 +533,8 @@ PLT_Service::ProcessNewSubscription(PLT_TaskManager*         task_manager,
 
     PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
     PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
+    // DLNA 7.2.18.1
+    PLT_HttpHelper::SetContentLength(response, 0);
 
     {
         NPT_AutoLock lock(m_Lock);
@@ -539,16 +586,29 @@ PLT_Service::ProcessRenewSubscription(const NPT_SocketAddress& addr,
     if (NPT_SUCCEEDED(NPT_ContainerFind(m_Subscribers, 
                                         PLT_EventSubscriberFinderBySID(sid), 
                                         subscriber))) {
-        // update local interface and timeout
-        subscriber->SetLocalIf(addr);
-        subscriber->SetTimeout(timeout);
 
-        PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
-        PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
-        return NPT_SUCCESS;
+        NPT_TimeStamp now, expiration;
+        NPT_System::GetCurrentTimeStamp(now);
+        expiration = subscriber->GetExpirationTime();
+
+        // renew subscriber if it has not expired
+        if (expiration > now ) {
+            // update local interface and timeout
+            subscriber->SetLocalIf(addr);
+            subscriber->SetTimeout(timeout);
+
+            PLT_UPnPMessageHelper::SetSID(response, subscriber->GetSID());
+            PLT_UPnPMessageHelper::SetTimeOut(response, timeout);
+            PLT_HttpHelper::SetContentLength(response, 0);
+            return NPT_SUCCESS;
+        } else {
+            NPT_LOG_FINE_1("Subscriber \"%s\" didn't renew in time", (const char*)subscriber->GetSID());
+            m_Subscribers.Remove(subscriber);
+            delete subscriber;
+        }
     }
 
-    NPT_LOG_WARNING_1("Renewing subscription for unknown %s!", sid.GetChars());
+    NPT_LOG_WARNING_1("Failed to renew subscription for %s!", sid.GetChars());
 
     // didn't find a valid Subscriber in our list
     response.SetStatus(412, "Precondition Failed");
@@ -686,32 +746,37 @@ PLT_Service::NotifyChanged()
 
             // clear last changed list if we're about to send LastChange var
             if (!var->GetName().Compare("LastChange")) m_StateVarsChanged.Clear();
-        } else {
-            iter++;
+            
+            continue;
         }
+            
+        iter++;
     }
     
-    // send vars that are ready to go and remove old subscribers
-    int i = 0;
-    int count = m_Subscribers.GetItemCount();
-    while (i++ < count) {
-        PLT_EventSubscriber* sub;
-        if (NPT_SUCCEEDED(m_Subscribers.PopHead(sub))) {
-            NPT_TimeStamp now, expiration;
-            NPT_System::GetCurrentTimeStamp(now);
-            expiration = sub->GetExpirationTime();
+    // if nothing to publish then bail out now
+    // we'll clean up expired subscribers when we have something to publish
+    if (vars_ready.GetItemCount() == 0) return NPT_SUCCESS;
+    
+    // send vars that are ready to go and remove old subscribers 
+    NPT_List<PLT_EventSubscriber*>::Iterator sub_iter = m_Subscribers.GetFirstItem();
+    while (sub_iter) {
+        PLT_EventSubscriber* sub = *sub_iter;
 
-            // forget sub if it didn't renew in time or if notification failed
-            if (expiration == NPT_TimeStamp() || expiration > now ) {
-                NPT_Result res = vars_ready.GetItemCount()?sub->Notify(vars_ready):NPT_SUCCESS;
-                if (NPT_SUCCEEDED(res)) {
-                    m_Subscribers.Add(sub);
-                    continue;
-                }
+        NPT_TimeStamp now, expiration;
+        NPT_System::GetCurrentTimeStamp(now);
+        expiration = sub->GetExpirationTime();
+
+        // forget sub if it didn't renew in time or if notification failed
+        if (expiration == NPT_TimeStamp() || expiration > now ) {
+            NPT_Result res = vars_ready.GetItemCount()?sub->Notify(vars_ready):NPT_SUCCESS;
+            if (NPT_SUCCEEDED(res)) {
+                sub_iter++;
+                continue;
             }
-            
-            delete sub;
         }
+            
+        m_Subscribers.Erase(sub_iter++);
+        delete sub;
     }
 
     return NPT_SUCCESS;
@@ -723,11 +788,7 @@ PLT_Service::NotifyChanged()
 bool 
 PLT_ServiceSCPDURLFinder::operator()(PLT_Service* const & service) const 
 {
-    NPT_String url = service->GetSCPDURL();
-    if (!url.StartsWith("/")) {
-        url = service->GetDevice()->GetURLBase().GetPath() + url;
-    }
-    return m_URL.Compare(url, true) ? false : true;
+    return m_URL.Compare(service->GetSCPDURL(m_URL.StartsWith("http://")?true:false), true)?false:true;
 }
 
 /*----------------------------------------------------------------------
@@ -736,11 +797,7 @@ PLT_ServiceSCPDURLFinder::operator()(PLT_Service* const & service) const
 bool 
 PLT_ServiceControlURLFinder::operator()(PLT_Service* const & service) const 
 {
-    NPT_String url = service->GetControlURL();
-    if (!url.StartsWith("/")) {
-        url = service->GetDevice()->GetURLBase().GetPath() + url;
-    }
-    return m_URL.Compare(url, true) ? false : true;
+    return m_URL.Compare(service->GetControlURL(m_URL.StartsWith("http://")?true:false), true)?false:true;
 }
 
 /*----------------------------------------------------------------------
@@ -749,11 +806,7 @@ PLT_ServiceControlURLFinder::operator()(PLT_Service* const & service) const
 bool
 PLT_ServiceEventSubURLFinder::operator()(PLT_Service* const & service) const 
 {
-    NPT_String url = service->GetEventSubURL();
-    if (!url.StartsWith("/")) {
-        url = service->GetDevice()->GetURLBase().GetPath() + url;
-    }
-    return m_URL.Compare(url, true) ? false : true;
+    return m_URL.Compare(service->GetEventSubURL(m_URL.StartsWith("http://")?true:false), true)?false:true;
 }
 
 /*----------------------------------------------------------------------
@@ -771,6 +824,11 @@ PLT_ServiceIDFinder::operator()(PLT_Service* const & service) const
 bool 
 PLT_ServiceTypeFinder::operator()(PLT_Service* const & service) const 
 {
+    // DLNA: match any version if last char is '*'
+    if (m_Type.EndsWith("*")) {
+        return m_Type.CompareN(service->GetServiceType(), m_Type.GetLength()-1, true) ? false : true;
+    }
+
     return m_Type.Compare(service->GetServiceType(), true) ? false : true;
 }
 

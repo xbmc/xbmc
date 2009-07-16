@@ -29,8 +29,8 @@ extern "C"
 //  PVR_ERROR RenameChannel(unsigned int number, CStdString &newname);
 //  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
   PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
-  PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo);
-  PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname);
+  PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo);
+  PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, CStdString &newname);
   PVR_ERROR RequestTimerList(PVRHANDLE handle);
   PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo);
   PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force);
@@ -41,7 +41,7 @@ extern "C"
   int ReadLiveStream(BYTE* buf, int buf_size);
   int GetCurrentClientChannel();
   bool SwitchChannel(unsigned int channel);
-  bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo);
+  bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo);
   void CloseRecordedStream(void);
   int ReadRecordedStream(BYTE* buf, int buf_size);
   __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);

@@ -26,7 +26,8 @@
 
 #ifdef HAS_SDL_OPENGL
 #include "LinuxRendererGL.h"
-
+#elif !defined(HAS_XBOX_D3D)
+#include "WinRenderer.h"
 #else
 
 //#define MP_DIRECTRENDERING

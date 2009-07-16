@@ -20,11 +20,11 @@
  */
 
 #include "include.h"
+
+#ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 #include "../xbmc/Settings.h"
 #include "FrameBufferObject.h"
-
-#ifdef HAS_SDL_OPENGL
 
 //////////////////////////////////////////////////////////////////////
 // CFrameBufferObject

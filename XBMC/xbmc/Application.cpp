@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "Util.h"
+#include "Picture.h"
 #include "TextureManager.h"
 #include "cores/PlayerCoreFactory.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
@@ -354,8 +355,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
-  m_restartLirc = false;
-  m_restartLCD = false;
+  m_bRunResumeJobs = false;
   m_lastActionCode = 0;
 #ifdef _WIN32PC
   m_SSysParam = new CWIN32Util::SystemParams::SysParam;
@@ -371,12 +371,13 @@ CApplication::~CApplication(void)
     delete m_pKaraokeMgr;
 #endif
 
+#ifdef HAS_SDL
   if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
 
   if (m_frameCond)
     SDL_DestroyCond(m_frameCond);
-
+#endif
   delete m_dpms;
 
 #ifdef _WIN32PC
@@ -427,11 +428,11 @@ void CApplication::InitBasicD3D()
   m_d3dpp.BackBufferCount = 1;
   m_d3dpp.EnableAutoDepthStencil = FALSE;
   m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
-  m_d3dpp.FullScreen_PresentationInterval = 0;
+  m_d3dpp.PresentationInterval = 0;
   m_d3dpp.Windowed = TRUE;
   m_d3dpp.hDeviceWindow = g_hWnd;
 
-  if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
+  if (!(m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
   {
     CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
     Sleep(INFINITE); // die
@@ -626,7 +627,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifndef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup DirectX");
   // Create the Direct3D object
-  if ( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
+  if ( NULL == ( m_pD3D = Direct3DCreate9(D3D_SDK_VERSION) ) )
   {
     CLog::Log(LOGFATAL, "XBAppEx: Unable to create Direct3D!" );
     return E_FAIL;
@@ -666,10 +667,12 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef __APPLE__
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
+  CPicture pic;
+  SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
 #else
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon32x32.png")), NULL);
+  CPicture pic;
+  SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon32x32.png")), NULL);
 #endif
 #endif
 
@@ -845,15 +848,15 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.SetD3DDevice(m_pd3dDevice);
   g_graphicsContext.CaptureStateBlock();
   // set filters
-  g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
+  g_graphicsContext.Get3DDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+  g_graphicsContext.Get3DDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   CUtil::InitGamma();
 #endif
 
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
-#ifdef _WIN32PC
+#if defined(_WIN32PC) && defined(HAS_SDL_OPENGL)
   CWIN32Util::CheckGLVersion();
 #endif
 
@@ -885,7 +888,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(false, false, true);
 
   CLog::Log(LOGINFO, "load keymapping");
-  if (!g_buttonTranslator.Load())
+  if (!CButtonTranslator::GetInstance().Load())
     FatalErrorHandler(false, false, true);
 
   // check the skin file for testing purposes
@@ -917,6 +920,10 @@ HRESULT CApplication::Create(HWND hWnd)
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
   CUtil::InitRandomSeed();
+
+#ifdef _WIN32PC
+  CWIN32Util::AddRemovableDrives();
+#endif
 
   return CXBApplicationEx::Create(hWnd);
 }
@@ -1012,8 +1019,12 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
-    if (symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() ) != 0)
-      CLog::Log(LOGERROR, "Failed to create common scripts symlink.");
+
+    if (!CFile::Exists("special://home/scripts/Common Scripts"))
+    {
+      if (symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() ) != 0)
+        CLog::Log(LOGERROR, "Failed to create common scripts symlink.");
+    }
 
     CDirectory::Create("special://masterprofile");
 
@@ -2476,7 +2487,7 @@ void CApplication::RenderScreenSaver()
         screenSaverFadeAmount += 2;  // around a second to fade
 
       DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-      CGUITexture::DrawQuad(CRect(0,0,g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight()), color);
+      CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
     }
   }
   else
@@ -2660,7 +2671,7 @@ bool CApplication::OnKey(CKey& key)
 
   // this will be checked for certain keycodes that need
   // special handling if the screensaver is active
-  g_buttonTranslator.GetAction(iWin, key, action);
+  CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
   // a key has been pressed.
   // Reset the screensaver timer
@@ -2688,7 +2699,7 @@ bool CApplication::OnKey(CKey& key)
   }
   if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
   { // fullscreen info dialog - special case
-    g_buttonTranslator.GetAction(iWin, key, action);
+    CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
 #ifdef HAS_SDL
     g_Keyboard.Reset();
@@ -2705,12 +2716,12 @@ bool CApplication::OnKey(CKey& key)
     if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
     {
       // if player is in some sort of menu, (ie DVDMENU) map buttons differently
-      g_buttonTranslator.GetAction(WINDOW_VIDEO_MENU, key, action);
+      CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key, action);
     }
     else
     {
       // no then use the fullscreen window section of keymap.xml to map key->action
-      g_buttonTranslator.GetAction(iWin, key, action);
+      CButtonTranslator::GetInstance().GetAction(iWin, key, action);
     }
   }
   else
@@ -2738,7 +2749,7 @@ bool CApplication::OnKey(CKey& key)
       {
         if (key.GetButtonCode() != KEY_INVALID)
           action.wID = (WORD) key.GetButtonCode();
-        action.unicode = key.GetUnicode();
+        action.unicode = (WCHAR)key.GetUnicode();
       }
       else
       { // see if we've got an ascii key
@@ -2765,11 +2776,11 @@ bool CApplication::OnKey(CKey& key)
       if (key.GetButtonCode() != KEY_INVALID)
       {
         action.wID = (WORD) key.GetButtonCode();
-        g_buttonTranslator.GetAction(iWin, key, action);
+        CButtonTranslator::GetInstance().GetAction(iWin, key, action);
       }
     }
     else
-      g_buttonTranslator.GetAction(iWin, key, action);
+      CButtonTranslator::GetInstance().GetAction(iWin, key, action);
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);
@@ -3458,7 +3469,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     CAction action;
     bool fullrange;
     string jname = g_Joystick.GetJoystick();
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_BUTTON, action.wID, action.strAction, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_BUTTON, action.wID, action.strAction, fullrange))
     {
       action.fAmount1 = 1.0f;
       action.fRepeat = 0.0f;
@@ -3484,7 +3495,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     {
       bid = -bid;
     }
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.wID, action.strAction, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.wID, action.strAction, fullrange))
     {
       ResetScreenSaver();
       if (WakeUpScreenSaverAndDPMS())
@@ -3521,7 +3532,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     string jname = g_Joystick.GetJoystick();
     bid = position<<16|bid;
 
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
     {
       action.fAmount1 = 1.0f;
       action.fRepeat = 0.0f;
@@ -3548,14 +3559,12 @@ bool CApplication::ProcessRemote(float frameTime)
     return OnKey(key);
   }
 #endif
-#ifdef HAS_LIRC
-  if (m_restartLirc) {
-    CLog::Log(LOGDEBUG, "g_application.m_restartLirc is true - restarting lirc");
-    g_RemoteControl.Disconnect();
-    g_RemoteControl.Initialize();
-    m_restartLirc = false;
-  }
 
+  // run resume jobs if we are coming from suspend/hibernate
+  if (m_bRunResumeJobs)
+    g_powerManager.Resume(); 
+
+#ifdef HAS_LIRC
   if (g_RemoteControl.GetButton())
   {
     // time depends on whether the movement is repeated (held down) or not.
@@ -3565,19 +3574,6 @@ bool CApplication::ProcessRemote(float frameTime)
     CKey key(g_RemoteControl.GetButton(), 0, 0, 0, 0, 0, 0, time);
     g_RemoteControl.Reset();
     return OnKey(key);
-  }
-#endif
-#ifdef HAS_LCD
-  if (m_restartLCD) {
-    CLog::Log(LOGDEBUG, "g_application.m_restartLCD is true - restarting LCDd");
-#ifdef _LINUX
-    g_lcd->SetBackLight(1);
-#else
-    g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
-#endif
-    g_lcd->Stop();
-    g_lcd->Initialize();
-    m_restartLCD = false;
   }
 #endif
   return false;
@@ -3807,7 +3803,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    // wKeyID = -wKeyID;
 
    // Translate using regular joystick translator.
-   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, action.wID, action.strAction, fullRange))
+   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, action.wID, action.strAction, fullRange))
    {
      action.fRepeat = 0.0f;
      g_audioManager.PlayActionSound(action);
@@ -4011,7 +4007,7 @@ HRESULT CApplication::Cleanup()
     g_LangCodeExpander.Clear();
     g_charsetConverter.clear();
     g_directoryCache.Clear();
-    g_buttonTranslator.Clear();
+    CButtonTranslator::GetInstance().Clear();
     CLastfmScrobbler::RemoveInstance();
     CLibrefmScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
@@ -4817,6 +4813,7 @@ void CApplication::UpdateFileState()
       {
         // Update the bookmark
         m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+        m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
       }
       else
       {
@@ -5332,7 +5329,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
       {
         // try translating the action from our ButtonTranslator
         WORD actionID;
-        if (g_buttonTranslator.TranslateActionString(actionStr.c_str(), actionID))
+        if (CButtonTranslator::TranslateActionString(actionStr.c_str(), actionID))
         {
           CAction action;
           action.wID = actionID;
@@ -6061,11 +6058,15 @@ CApplicationMessenger& CApplication::getApplicationMessenger()
 
 bool CApplication::IsPresentFrame()
 {
+#ifdef HAS_SDL // TODO:DIRECTX
   SDL_mutexP(m_frameMutex);
   bool ret = m_bPresentFrame;
   SDL_mutexV(m_frameMutex);
 
   return ret;
+#else
+  return false;
+#endif
 }
 
 #if defined(HAS_LINUX_NETWORK)

@@ -110,6 +110,7 @@ public:
 
     // methods
     NPT_Result  Parse(const char* query);
+    NPT_Result  SetField(const char* name, const char* value);
     NPT_Result  AddField(const char* name, const char* value);
     const char* GetField(const char* name);
     NPT_String  ToString();

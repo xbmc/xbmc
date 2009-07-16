@@ -90,6 +90,9 @@ public:
     const unsigned char* AsBytes() const;
     unsigned long    AsLong() const;
     NPT_String       ToString() const;
+
+    // operators
+    bool             operator==(const NPT_IpAddress& other) const;
     
 private:
     // members

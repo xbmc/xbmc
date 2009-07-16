@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include <math.h>
 #include "StreamDetails.h"
 
 void CStreamDetail::Serialize(CArchive &ar)
@@ -414,4 +415,46 @@ void CStreamDetails::DetermineBestStreams(void)
     if ((*champion == NULL) || (*champion)->IsWorseThan(*iter))
       *champion = *iter;
   }  /* for each */
+}
+
+const float VIDEOASPECT_EPSILON = 0.025f;
+
+CStdString CStreamDetails::VideoWidthToResolutionDescription(int iWidth)
+{
+  if (iWidth == 0)
+    return "";
+
+  else if (iWidth < 721)
+    return "480";
+  // 960x540
+  else if (iWidth < 961)
+    return "540";
+  // 1280x720
+  else if (iWidth < 1281)
+    return "720";
+  // 1920x1080
+  else 
+    return "1080";
+}
+
+CStdString CStreamDetails::VideoAspectToAspectDescription(float fAspect)
+{
+  if (fAspect == 0.0f)
+    return "";
+
+  // Given that we're never going to be able to handle every single possibility in
+  // aspect ratios, particularly when cropping prior to video encoding is taken into account
+  // the best we can do is take the "common" aspect ratios, and return the closest one available.
+  // The cutoffs are the geometric mean of the two aspect ratios either side.
+  if (fAspect < 1.4859f) // sqrt(1.33*1.66)
+    return "1.33";
+  else if (fAspect < 1.7190f) // sqrt(1.66*1.78)
+    return "1.66";
+  else if (fAspect < 1.8147f) // sqrt(1.78*1.85)
+    return "1.78";
+  else if (fAspect < 2.0174f) // sqrt(1.85*2.20)
+    return "1.85";
+  else if (fAspect < 2.2738f) // sqrt(2.20*2.35)
+    return "2.20";
+  return "2.35";
 }

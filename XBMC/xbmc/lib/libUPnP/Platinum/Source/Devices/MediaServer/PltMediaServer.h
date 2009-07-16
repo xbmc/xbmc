@@ -67,34 +67,64 @@ public:
     PLT_MediaServer(const char*  friendly_name,
                     bool         show_ip = false,
                     const char*  uuid = NULL,
-                    NPT_UInt16   port = 0);
+                    NPT_UInt16   port = 0,
+                    bool         port_rebind = false);
     virtual ~PLT_MediaServer();
 
     // PLT_DeviceHost methods
     virtual NPT_Result SetupServices(PLT_DeviceData& data);
     virtual NPT_Result OnAction(PLT_ActionReference&          action, 
-                                const NPT_HttpRequestContext& context);
+                                const PLT_HttpRequestContext& context);
 
     // class methods
     static NPT_Result  GetBrowseFlag(const char* str, BrowseFlags& flag);
 
 protected:
     // ConnectionManager
-    virtual NPT_Result OnGetCurrentConnectionIDs(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
-    virtual NPT_Result OnGetProtocolInfo(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
-    virtual NPT_Result OnGetCurrentConnectionInfo(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnGetCurrentConnectionIDs(PLT_ActionReference&          action, 
+                                                 const PLT_HttpRequestContext& context);
+    virtual NPT_Result OnGetProtocolInfo(PLT_ActionReference&          action, 
+                                         const PLT_HttpRequestContext& context);
+    virtual NPT_Result OnGetCurrentConnectionInfo(PLT_ActionReference&          action, 
+                                                  const PLT_HttpRequestContext& context);
 
     // ContentDirectory
-    virtual NPT_Result OnGetSortCapabilities(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
-    virtual NPT_Result OnGetSearchCapabilities(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
-    virtual NPT_Result OnGetSystemUpdateID(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
-    virtual NPT_Result OnBrowse(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
-    virtual NPT_Result OnSearch(PLT_ActionReference& action, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnGetSortCapabilities(PLT_ActionReference&          action, 
+                                             const PLT_HttpRequestContext& context);
+    virtual NPT_Result OnGetSearchCapabilities(PLT_ActionReference&          action, 
+                                               const PLT_HttpRequestContext& context);
+    virtual NPT_Result OnGetSystemUpdateID(PLT_ActionReference&          action, 
+                                           const PLT_HttpRequestContext& context);
+    virtual NPT_Result OnBrowse(PLT_ActionReference&          action, 
+                                const PLT_HttpRequestContext& context);
+    virtual NPT_Result OnSearch(PLT_ActionReference&          action, 
+                                const PLT_HttpRequestContext& context);
 
     // overridable methods
-    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference& action, const char* object_id, const NPT_HttpRequestContext& context);
-    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference& action, const char* object_id, const NPT_HttpRequestContext& context);
-    virtual NPT_Result OnSearch(PLT_ActionReference& action, const NPT_String& object_id, const NPT_String& searchCriteria, const NPT_HttpRequestContext& context);
+    virtual NPT_Result OnBrowseMetadata(PLT_ActionReference&          action, 
+                                        const char*                   object_id, 
+                                        const char*                   filter,
+                                        NPT_UInt32                    starting_index,
+                                        NPT_UInt32                    requested_count,
+                                        const NPT_List<NPT_String>&   sort_criteria,
+                                        const PLT_HttpRequestContext& context);
+    virtual NPT_Result OnBrowseDirectChildren(PLT_ActionReference&          action, 
+                                              const char*                   object_id, 
+                                              const char*                   filter,
+                                              NPT_UInt32                    starting_index,
+                                              NPT_UInt32                    requested_count,
+                                              const NPT_List<NPT_String>&   sort_criteria, 
+                                              const PLT_HttpRequestContext& context);
+    virtual NPT_Result OnSearchContainer(PLT_ActionReference&          action, 
+                                         const char*                   container_id, 
+                                         const char*                   search_criteria,
+                                         NPT_UInt32                    starting_index,
+                                         NPT_UInt32                    requested_count,
+                                         const NPT_List<NPT_String>&   sort_criteria, 
+                                         const PLT_HttpRequestContext& context);
+                                
+    // methods
+    virtual NPT_Result ParseSort(const NPT_String& sort, NPT_List<NPT_String>& list);
 };
 
 #endif /* _PLT_MEDIA_SERVER_H_ */

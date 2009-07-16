@@ -315,12 +315,12 @@ extern "C" PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
   return g_client->RequestRecordingsList(handle);
 }
 
-extern "C" PVR_ERROR DeleteRecording(const cPVRRecordingInfoTag &recinfo)
+extern "C" PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
   return g_client->DeleteRecording(recinfo);
 }
 
-extern "C" PVR_ERROR RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname)
+extern "C" PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, CStdString &newname)
 {
   return g_client->RenameRecording(recinfo, newname);
 }
@@ -380,7 +380,7 @@ extern "C" bool SwitchChannel(unsigned int channel)
   return g_client->SwitchChannel(channel);
 }
 
-extern "C" bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
+extern "C" bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
 {
   return g_client->OpenRecordedStream(recinfo);
 }

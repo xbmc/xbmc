@@ -62,7 +62,7 @@ void CGUILargeTextureManager::Process()
     CStdString path = image->GetPath();
     lock.Leave();
     // load the image using our image lib
-    SDL_Surface * texture = NULL;
+    XBMC::TexturePtr texture = NULL;
     CPicture pic;
     CFileItem file(path, false);
     if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
@@ -91,7 +91,11 @@ void CGUILargeTextureManager::Process()
     }
     else
     { // no need for the texture any more
+#ifdef HAS_SDL
       SDL_FreeSurface(texture);
+#else
+      texture->Release();
+#endif
       texture = NULL;
     }
     if (m_queued.size() == 0)
@@ -134,7 +138,7 @@ bool CGUILargeTextureManager::GetImage(const CStdString &path, CTexture &texture
         image->AddRef();
       orientation = image->GetOrientation();
       texture = image->GetTexture();
-      return texture.size();
+      return texture.size() > 0;
     }
   }
   lock.Leave();

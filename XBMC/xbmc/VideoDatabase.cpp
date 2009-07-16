@@ -44,7 +44,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 28
+#define VIDEO_DATABASE_VERSION 29
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -53,6 +53,7 @@ CBookmark::CBookmark()
   episodeNumber = 0;
   seasonNumber = 0;
   timeInSeconds = 0.0f;
+  totalTimeInSeconds = 0.0f;
   type = STANDARD;
 }
 
@@ -88,7 +89,7 @@ bool CVideoDatabase::CreateTables()
     CDatabase::CreateTables();
 
     CLog::Log(LOGINFO, "create bookmark table");
-    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
+    m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds, thumbNailImage text, player text, playerState text, type integer)\n");
     m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
 
     CLog::Log(LOGINFO, "create settings table");
@@ -2073,6 +2074,7 @@ void CVideoDatabase::GetBookMarksForFile(const CStdString& strFilenameAndPath, V
     {
       CBookmark bookmark;
       bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asDouble();
+      bookmark.totalTimeInSeconds = m_pDS->fv("totalTimeInSeconds").get_asDouble();
       bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
       bookmark.playerState = m_pDS->fv("playerState").get_asString();
       bookmark.player = m_pDS->fv("player").get_asString();
@@ -2190,9 +2192,9 @@ void CVideoDatabase::AddBookMarkToFile(const CStdString& strFilenameAndPath, con
     }
     // update or insert depending if it existed before
     if (idBookmark >= 0 )
-      strSQL=FormatSQL("update bookmark set timeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idBookmark);
+      strSQL=FormatSQL("update bookmark set timeInSeconds = %f, totalTimeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idBookmark);
     else
-      strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,'%s','%s','%s', %i)", lFileId, bookmark.timeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), (int)type);
+      strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, totalTimeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,%f,'%s','%s','%s', %i)", lFileId, bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), (int)type);
     
     m_pDS->exec(strSQL.c_str());
   }
@@ -2272,6 +2274,7 @@ bool CVideoDatabase::GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& 
     if (!m_pDS->eof())
     {
       bookmark.timeInSeconds = m_pDS->fv("timeInSeconds").get_asDouble();
+      bookmark.totalTimeInSeconds = m_pDS->fv("totalTimeInSeconds").get_asDouble();
       bookmark.thumbNailImage = m_pDS->fv("thumbNailImage").get_asString();
       bookmark.playerState = m_pDS->fv("playerState").get_asString();
       bookmark.player = m_pDS->fv("player").get_asString();
@@ -3573,6 +3576,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
         "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, strSubtitleLanguage text)");
       m_pDS->exec("CREATE INDEX ix_streamdetails ON streamdetails (idFile)");
     }
+    if (iVersion < 29)
+    {
+      m_pDS->exec("alter table bookmark add totalTimeInSeconds double");
+    }
   }
   catch (...)
   {
@@ -3636,7 +3643,7 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
 {
   // first grab the video's id
   CStdString path = item.m_strPath;
-  if (item.IsVideoDb())
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   long id = GetFileId(path);
   if (id < 0)
@@ -4928,7 +4935,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
   else if (idYear !=-1)
     where=FormatSQL("where idShow=%u and premiered like '%%%u%%'",idShow,idYear);
   else if (idActor != -1)
-    where = FormatSQL("actorlinktvshow on actorlinktvshow.idshow = episodeview.idshow where episodeview.idShow=%u and actorlinktvshow.idactor=%u",idShow,idActor);
+    where = FormatSQL("join actorlinktvshow on actorlinktvshow.idshow = episodeview.idshow where episodeview.idShow=%u and actorlinktvshow.idactor=%u",idShow,idActor);
 
   if (idSeason != -1)
   {
