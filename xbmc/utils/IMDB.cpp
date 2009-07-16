@@ -51,7 +51,6 @@ using namespace std;
 //////////////////////////////////////////////////////////////////////
 CIMDB::CIMDB()
 {
-  m_retry = false;
 }
 
 CIMDB::~CIMDB()
@@ -494,18 +493,13 @@ void CIMDB::Process()
   // note here that we're calling our external functions but we're calling them with
   // no progress bar set, so they're effectively calling our internal functions directly.
   m_found = 0;
-  m_retry = false;
   if (m_state == FIND_MOVIE)
   {
     if (!(m_found=FindMovie(m_strMovie, m_movieList)))
     {
       // retry without replacing '.' and '-' if searching for a tvshow
       if (m_info.strContent.Equals("tvshows"))
-      {
-        m_retry = true;
-        if (!(m_found=FindMovie(m_strMovie, m_movieList)))
-          CLog::Log(LOGERROR, "%s: Error looking up tvshow %s", __FUNCTION__, m_strMovie.c_str());
-      }
+        CLog::Log(LOGERROR, "%s: Error looking up tvshow %s", __FUNCTION__, m_strMovie.c_str());
       else
         CLog::Log(LOGERROR, "%s: Error looking up movie %s", __FUNCTION__, m_strMovie.c_str());
     }
