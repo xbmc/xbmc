@@ -24,7 +24,7 @@
 #include "cores/ssrc.h"         // for M_PI
 #include "utils/GUIInfoManager.h"
 #include "Settings.h"
-#include "TextureManager.h"
+#include "TextureManagerSDL.h"
 
 using namespace std;
 

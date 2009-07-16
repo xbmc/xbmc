@@ -29,7 +29,7 @@
  *
  */
 
-#include "TextureManager.h"
+#include "TextureManagerSDL.h"
 #include "Geometry.h"
 
 struct FRECT
@@ -192,8 +192,8 @@ protected:
 
   int m_largeOrientation;   // orientation for large textures
 
-  CTexture m_diffuse;
-  CTexture m_texture;
+  CTextureArrayGL m_diffuse;
+  CTextureArrayGL m_texture;
 };
 
 #ifndef HAS_SDL

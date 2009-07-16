@@ -27,7 +27,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Crc32.h"
-#include "TextureManager.h"
+#include "TextureManagerSDL.h"
 
 using namespace std;
 using namespace XFILE;

@@ -27,7 +27,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "VideoInfoTag.h"
-#include "TextureManager.h"
+#include "TextureManagerSDL.h"
 
 using namespace XFILE;
 

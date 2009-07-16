@@ -26,7 +26,7 @@
 #ifdef HAS_SDL
 #include "SDL/SDL.h"
 #endif
-#include "TextureManager.h"
+#include "TextureManagerSDL.h"
 
 #include <assert.h>
 
@@ -38,7 +38,7 @@ public:
 
   virtual void Process();
 
-  bool GetImage(const CStdString &path, CTexture &texture, int &orientation, bool firstRequest);
+  bool GetImage(const CStdString &path, CTextureArrayGL &texture, int &orientation, bool firstRequest);
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
   void CleanupUnusedImages();
@@ -100,7 +100,7 @@ protected:
     };
 
     const CStdString &GetPath() const { return m_path; };
-    const CTexture &GetTexture() const { return m_texture; };
+    const CTextureArrayGL &GetTexture() const { return m_texture; };
     int GetOrientation() const { return m_orientation; };
 
   private:
@@ -108,7 +108,7 @@ protected:
 
     unsigned int m_refCount;
     CStdString m_path;
-    CTexture m_texture;
+    CTextureArrayGL m_texture;
     int m_orientation;
     unsigned int m_timeToDelete;
   };

@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "Picture.h"
-#include "TextureManager.h"
+#include "TextureManagerSDL.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
@@ -211,7 +211,7 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
   {
     int width = 0, height = 0;
     bool linear = false;
-    CTexture baseTexture = g_TextureManager.GetTexture(srcFile);
+    CTextureArrayGL baseTexture = *g_TextureManager.GetTexture(srcFile);
 #ifdef HAS_SDL_OPENGL
 #ifdef __GNUC__
 // TODO: fix this code to support OpenGL

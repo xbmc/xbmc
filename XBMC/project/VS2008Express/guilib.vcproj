@@ -334,10 +334,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GraphicContext.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\GUIAudioManager.cpp"
 				>
 			</File>
@@ -642,10 +638,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\TextureManager.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\tinyXML\tinystr.cpp"
 				>
 				<FileConfiguration
@@ -733,10 +725,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\Geometry.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GraphicContext.h"
 				>
 			</File>
 			<File
@@ -1044,10 +1032,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\TextureManager.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\TransformMatrix.h"
 				>
 			</File>
@@ -1323,6 +1307,96 @@
 				<File
 					RelativePath="..\..\guilib\common\IRServerSuite\IrssMessage.h"
 					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Rendering"
+			>
+			<Filter
+				Name="Base"
+				>
+				<File
+					RelativePath="..\..\guilib\GraphicContext.cpp"
+					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GraphicContext.h"
+					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\guilib\TextureManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\TextureManager.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="DX"
+				>
+			</Filter>
+			<Filter
+				Name="GL"
+				>
+				<File
+					RelativePath="..\..\guilib\GraphicContextGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GraphicContextGL.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\TextureManagerGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\TextureManagerGL.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="tmp"
+				>
+				<File
+					RelativePath="..\..\guilib\TextureManager - Copy.cpp"
+					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\guilib\TextureManager - Copy.h"
+					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>
