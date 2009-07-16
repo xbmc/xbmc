@@ -25,6 +25,7 @@
 #include "MusicDatabase.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "MediaManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -43,7 +44,7 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 {
   // Reads the tracks from an audio cd
 
-  if (!CDetectDVDMedia::IsDiscInDrive())
+  if (!g_mediaManager.IsDiscInDrive())
     return false;
 
   // Get information for the inserted disc
