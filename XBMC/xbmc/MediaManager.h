@@ -47,7 +47,7 @@ public:
   bool RemoveLocation(const CStdString& path);
   bool SetLocationPath(const CStdString& oldPath, const CStdString& newPath);
 
-  void AddAutoSource(const CMediaSource &share);
+  void AddAutoSource(const CMediaSource &share, bool bAutorun=false);
   void RemoveAutoSource(const CMediaSource &share);
   bool IsDiscInDrive(const CStdString& devicePath="");
   bool IsAudio(const CStdString& devicePath="");
