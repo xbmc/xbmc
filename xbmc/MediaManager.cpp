@@ -340,6 +340,7 @@ DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 {
   CStdString strDevice = TranslateDevicePath(devicePath);
 #ifdef _WIN32PC
+  CSingleLock waitLock(m_muAutoSource);
   DWORD dwRet = DRIVE_NOT_READY;
   strDevice.Format("\\\\.\\%c:",strDevice[0]);
   int status = CWIN32Util::GetDriveStatus(strDevice);
