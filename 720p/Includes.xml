@@ -1239,26 +1239,6 @@
   
         <include>CustomWeatherBackground</include>
       </control>
-      
-      <control type="group">
-        <description>TV Guide Background Image</description>
-        <visible>Window.IsVisible(TVGuide)</visible>
-  
-        <control type="group">
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGTVShowsLeft.jpg</texture>
-          </control>
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGTVShowsMid.jpg</texture>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGTVShowsRight.jpg</texture>
-          </control>
-        </control>
-      </control>
   
       <control type="group">
         <description>Programs Background Image</description>
