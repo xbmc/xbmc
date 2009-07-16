@@ -273,7 +273,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
     if (item->IsDVD() || item->IsCDDA())
     {
       // We need to check if there is a detected is inserted!
-      if ( CDetectDVDMedia::IsDiscInDrive() )
+      if ( g_mediaManager.IsDiscInDrive() )
         buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
       buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
     }
