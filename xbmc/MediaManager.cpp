@@ -35,6 +35,7 @@
 // TODO: switch all ports to use auto sources
 #include "DetectDVDType.h"
 #endif
+#include "Autorun.h"
 
 using namespace std;
 
@@ -251,7 +252,7 @@ bool CMediaManager::SetLocationPath(const CStdString& oldPath, const CStdString&
   return false;
 }
 
-void CMediaManager::AddAutoSource(const CMediaSource &share)
+void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
 {
   g_settings.AddShare("files",share);
   g_settings.AddShare("video",share);
@@ -260,6 +261,9 @@ void CMediaManager::AddAutoSource(const CMediaSource &share)
   g_settings.AddShare("programs",share);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   m_gWindowManager.SendThreadMessage( msg );
+
+  if(bAutorun)
+    MEDIA_DETECT::CAutorun::ExecuteAutorun();
 }
 
 void CMediaManager::RemoveAutoSource(const CMediaSource &share)
