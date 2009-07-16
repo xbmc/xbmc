@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "GUIMediaWindow.h"
 #include "Util.h"
-#include "DetectDVDType.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/PluginDirectory.h"
@@ -45,6 +44,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"
+#include "MediaManager.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -850,8 +850,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(CStdString& strPath, int iDriveType)
 {
   if (iDriveType==CMediaSource::SOURCE_TYPE_DVD)
   {
-    MEDIA_DETECT::CDetectDVDMedia::WaitMediaReady();
-    if (!MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive())
+    if (!g_mediaManager.IsDiscInDrive())
     {
       CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       return false;
