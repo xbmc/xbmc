@@ -38,12 +38,12 @@ class CGLTexture : public CBaseTexture
 {
 public:
 
-	CGLTexture(void* surface, bool loadToGPU = true, bool freeSurface = false);  
-	virtual ~CGLTexture();
+  CGLTexture(void* surface, bool loadToGPU = true, bool freeSurface = false);  
+  virtual ~CGLTexture();
 
-	void LoadToGPU();
-	void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU); 
-	void Update(void *surface, bool loadToGPU, bool freeSurface);
+  void LoadToGPU();
+  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU); 
+  void Update(void *surface, bool loadToGPU, bool freeSurface);
 };
 
 
@@ -53,18 +53,18 @@ public:
 class CTextureArrayGL : public CTextureArray
 {
 public:
-	CTextureArrayGL();
-	CTextureArrayGL(int width, int height, int loops, bool texCoordsArePixels = false);
-	virtual ~CTextureArrayGL();
-	CTextureArrayGL &operator =(const CTextureArray &base)
-	{
-		CTextureArray* tmp = dynamic_cast<CTextureArray *>(this);
-		*tmp = base;
-		return *this;
-	}
-	void Add(void *texture, int delay);
-	void Set(void *texture, int width, int height);
-	void Free();
+  CTextureArrayGL();
+  CTextureArrayGL(int width, int height, int loops, bool texCoordsArePixels = false);
+  virtual ~CTextureArrayGL();
+  CTextureArrayGL &operator =(const CTextureArray &base)
+  {
+    CTextureArray* tmp = dynamic_cast<CTextureArray *>(this);
+    *tmp = base;
+    return *this;
+  }
+  void Add(void *texture, int delay);
+  void Set(void *texture, int width, int height);
+  void Free();
 };
 
 /*!
@@ -78,10 +78,10 @@ public:
 class CTextureMapGL : public CTextureMap
 {
 public:
-	CTextureMapGL(const CStdString& textureName, int width, int height, int loops);
-	virtual ~CTextureMapGL();
+  CTextureMapGL(const CStdString& textureName, int width, int height, int loops);
+  virtual ~CTextureMapGL();
 
-	void Add(void* pTexture, int delay);
+  void Add(void* pTexture, int delay);
 };
 
 /*!
@@ -94,11 +94,11 @@ public:
 class CGUITextureManagerGL : public CGUITextureManager
 {
 public:
-	CGUITextureManagerGL(void);
-	virtual ~CGUITextureManagerGL(void);
+  CGUITextureManagerGL(void);
+  virtual ~CGUITextureManagerGL(void);
 
-	int Load(const CStdString& strTextureName, bool checkBundleOnly = false);
-	const CTextureArrayGL* CGUITextureManagerGL::GetTexture(const CStdString& strTextureName);
+  int Load(const CStdString& strTextureName, bool checkBundleOnly = false);
+  const CTextureArrayGL* CGUITextureManagerGL::GetTexture(const CStdString& strTextureName);
 };
 
 /*!
