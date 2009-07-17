@@ -189,11 +189,10 @@ CFileItem::CFileItem(const cPVRRecordingInfoTag& record)
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
-  m_strPath = record.m_strFileNameAndPath;
+  m_strPath = record.Path();
   m_bIsFolder = false;
   *GetTVRecordingInfoTag() = record;
   SetLabel(record.m_strTitle);
-  m_strLabel2 = record.m_Summary;
   //FillInDefaultIcon();
   //SetVideoThumb();
   SetInvalid();

@@ -27,82 +27,50 @@
 #include "VideoInfoTag.h"
 #include "TVEPGInfoTag.h"
 #include "settings/VideoSettings.h"
+#include "utils/Thread.h"
 #include "DateTime.h"
-
-struct CutMark_t
-{
-  CStdString  m_comment;              /// Comment string
-  int         m_position;             /// Offset time from beginning in millisecond
-}; typedef std::vector< CutMark_t > CutMarks;
 
 class cPVRRecordingInfoTag : public CVideoInfoTag
 {
-public:
-  cPVRRecordingInfoTag();
-  //cPVRRecordingInfoTag(long uniqueRecordingID);
-
-  bool operator ==(const cPVRRecordingInfoTag& right) const;
-  bool operator !=(const cPVRRecordingInfoTag& right) const;
-
-  const long GetDbID(void) const { return m_uniqueRecordingID; };
-
-  void Reset(void);
-
-  bool HaveMarks(void) { return m_cutMarks.size() > 0 ? true : false; }
-
-  void AddMark(int position, const CStdString &comment);
-  void DeleteAllMarks(void);
-  bool DeleteMark(int position);
-  int GetMarkPrev(int position);
-  int GetMarkNext(int position);
-
-  int           m_Index;              /// Index number of the tag, given by the backend, -1 for unknown
-  int           m_clientID;            /// ID of the backend
-  int           m_channelNum;         /// Channel number where recording from
+private:
+  int           m_clientID;           /// ID of the backend
+  int           m_clientIndex;        /// Index number of the reecording on the client, given by the backend, -1 for unknown
   CStdString    m_strChannel;         /// Channel name where recording from
+  CDateTime     m_recordingTime;      /// Recording start time
+  CDateTimeSpan m_duration;           /// Duration
   CStdString    m_strFileNameAndPath; /// Filename for PVRManager to open and read stream
 
-  CStdString    m_Summary;            /// Summary string with the time to show inside a GUI list
-  /// see PVRManager.cpp for format.
-
-  CStdString    m_seriesID;           /// Series ID (used?)
-  CStdString    m_episodeID;          /// Episiode ID (used?)
-
-  CDateTime     m_startTime;          /// Recording start time
-  CDateTime     m_endTime;            /// Recording end time
-  CDateTimeSpan m_duration;           /// Duration
-
-  VideoProps    m_videoProps;         /// Types of video inside stream
-  AudioProps    m_audioProps;         /// Types of audio inside stream
-  SubtitleTypes m_subTypes;           /// Types of subtitles inside stream
-
-  CutMarks      m_cutMarks;           /// Data array of cutting marks
-
-  bool          m_commFree;           /// Any commercials inside stream (how detect it?)
-  CStdString    m_strClient;
-  uint64_t      m_resumePoint;
-
-  /**
-   * Following values are for individual video settings
-   **/
-  CVideoSettings m_defaultVideoSettings;
-
-private:
-  void SortMarks(void);
-
-  long          m_uniqueRecordingID;  /// db's unique identifier for this tag
+public:
+  cPVRRecordingInfoTag();
+  bool operator ==(const cPVRRecordingInfoTag& right) const;
+  bool operator !=(const cPVRRecordingInfoTag& right) const;
+  void Reset(void);
+  
+  long ClientID(void) const { return m_clientID; }
+  void SetClientID(int ClientId) { m_clientID = ClientId; }
+  long ClientIndex(void) const { return m_clientIndex; }
+  void SetClientIndex(int ClientIndex) { m_clientIndex = ClientIndex; }
+  CStdString ChannelName(void) const { return m_strChannel; }
+  void SetChannelName(CStdString name) { m_strChannel = name; }
+  CDateTime RecordingTime(void) const { return m_recordingTime; }
+  void SetRecordingTime(CDateTime time) { m_recordingTime = time; }
+  CDateTimeSpan Duration(void) const { return m_duration; }
+  void SetDuration(CDateTimeSpan duration) { m_duration = duration; }
+  int DurationSeconds() const;
+  CStdString Path(void) const { return m_strFileNameAndPath; }
+  void SetPath(CStdString path) { m_strFileNameAndPath = path; }
 };
 
-typedef std::vector<cPVRRecordingInfoTag> VECRECORDINGS;
 
 class cPVRRecordings : public std::vector<cPVRRecordingInfoTag> 
+                     , private CThread 
 {
 private:
 
 public:
   cPVRRecordings(void);
   bool Load();
-  bool Update();
+  bool Update(bool Wait = false);
   int GetNumRecordings();
   void Clear();
 };

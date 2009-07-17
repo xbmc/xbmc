@@ -204,5 +204,4 @@ private:
   void                SyncInfo(); // synchronize InfoManager related stuff
   void                GetChannels();
   void                ReceiveAllTimers();
-  void                ReceiveAllRecordings();
 };

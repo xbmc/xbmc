@@ -113,14 +113,14 @@ void CGUIDialogTVRecordingInfo::Update()
   strTemp = m_recordItem->GetTVRecordingInfoTag()->m_strTitle; strTemp.Trim();
   SetLabel(CONTROL_REC_TITLE, strTemp);
 
-  strTemp = m_recordItem->GetTVRecordingInfoTag()->m_startTime.GetAsLocalizedDate(true); strTemp.Trim();
+  strTemp = m_recordItem->GetTVRecordingInfoTag()->RecordingTime().GetAsLocalizedDate(true); strTemp.Trim();
   SetLabel(CONTROL_REC_DATE, strTemp);
 
-  strTemp = m_recordItem->GetTVRecordingInfoTag()->m_startTime.GetAsLocalizedTime("", false); strTemp.Trim();
+  strTemp = m_recordItem->GetTVRecordingInfoTag()->RecordingTime().GetAsLocalizedTime("", false); strTemp.Trim();
   SetLabel(CONTROL_REC_STARTTIME, strTemp);
 
-  minutes = m_recordItem->GetTVRecordingInfoTag()->m_duration.GetMinutes();
-  minutes += m_recordItem->GetTVRecordingInfoTag()->m_duration.GetHours()*60;
+  minutes = m_recordItem->GetTVRecordingInfoTag()->Duration().GetMinutes();
+  minutes += m_recordItem->GetTVRecordingInfoTag()->Duration().GetHours()*60;
   strTemp.Format("%i", minutes);
   strTemp.Trim();
   SetLabel(CONTROL_REC_DURATION, strTemp);
@@ -128,7 +128,7 @@ void CGUIDialogTVRecordingInfo::Update()
   strTemp = m_recordItem->GetTVRecordingInfoTag()->m_strGenre; strTemp.Trim();
   SetLabel(CONTROL_REC_GENRE, strTemp);
 
-  strTemp = m_recordItem->GetTVRecordingInfoTag()->m_strChannel; strTemp.Trim();
+  strTemp = m_recordItem->GetTVRecordingInfoTag()->ChannelName(); strTemp.Trim();
   SetLabel(CONTROL_REC_CHANNEL, strTemp);
 
   // programme subtitle

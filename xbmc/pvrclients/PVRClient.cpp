@@ -313,10 +313,6 @@ PVR_ERROR CPVRClient::GetChannelList(cPVRChannels &channels, bool radio)
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
-      for (unsigned int i = 0; i < channels.size(); i++)
-      {
-        channels[i].m_clientID = m_clientID;
-      }
       return PVR_ERROR_NO_ERROR;
     }
     catch (std::exception &e)
@@ -552,10 +548,6 @@ PVR_ERROR CPVRClient::GetAllRecordings(cPVRRecordings *results)
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;
 
-      for (unsigned int i = 0; i < results->size(); i++)
-      {
-        results->at(i).m_clientID = m_clientID;
-      }
       return PVR_ERROR_NO_ERROR;
     }
     catch (std::exception &e)
@@ -583,14 +575,11 @@ void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handl
 
   cPVRRecordingInfoTag tag;
 
-  tag.m_Index                 = recording->index;
-  tag.m_clientID              = client->m_clientID;
-  tag.m_strChannel            = recording->channelName;
-  tag.m_startTime             = CDateTime((time_t)recording->starttime);
-  tag.m_endTime               = CDateTime((time_t)recording->starttime + recording->duration);
-  tag.m_duration              = CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60);
-  tag.m_strFileNameAndPath.Format("record://%i", tag.m_Index);
-  tag.m_Summary.Format("%s", tag.m_startTime.GetAsLocalizedDateTime(false, false));
+  tag.SetClientIndex(recording->index);
+  tag.SetClientID(client->m_clientID);
+  tag.SetChannelName(recording->channelName);
+  tag.SetRecordingTime(recording->starttime);
+  tag.SetDuration(CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60));
   tag.m_strTitle              = recording->title;
   tag.m_strPlot               = recording->description;
   tag.m_strPlotOutline        = recording->subtitle;
@@ -659,13 +648,14 @@ PVR_ERROR CPVRClient::RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdS
 
 void CPVRClient::WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag)
 {
-  tag.index         = recordinginfo.m_Index;
+  tag.index         = recordinginfo.ClientIndex();
   tag.title         = recordinginfo.m_strTitle;
   tag.subtitle      = recordinginfo.m_strPlotOutline;
   tag.description   = recordinginfo.m_strPlot;
-  tag.channelName   = recordinginfo.m_strChannel;
+  tag.channelName   = recordinginfo.ChannelName();
+  tag.duration      = recordinginfo.DurationSeconds();
 
-  recordinginfo.m_startTime.GetAsTime(tag.starttime);
+  recordinginfo.RecordingTime().GetAsTime(tag.starttime);
   return;
 }
 
