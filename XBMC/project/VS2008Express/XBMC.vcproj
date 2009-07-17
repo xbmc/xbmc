@@ -4149,14 +4149,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\FileMMS.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\FileMMS.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\FileMusicDatabase.cpp"
 					>
 				</File>
