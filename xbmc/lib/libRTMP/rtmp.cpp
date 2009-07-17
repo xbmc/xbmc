@@ -549,8 +549,10 @@ bool CRTMP::SendPlay()
   CLog::Log(LOGDEBUG,"%s, invoking play '%s'", __FUNCTION__, strPlay.c_str() );
 
   enc += EncodeString(enc, strPlay.c_str());
-  enc += EncodeNumber(enc, (m_dStartPoint/1000));
-  //enc += EncodeNumber(enc, 10000.0);
+  if (m_dStartPoint == 0)
+    enc += EncodeNumber(enc, -1000.0);  //possibly live stream (and doesn't hurt anyway if we're not requesting a seek)
+  else
+    enc += EncodeNumber(enc, (m_dStartPoint/1000));
 
   packet.m_nBodySize = enc - packet.m_body;
 
