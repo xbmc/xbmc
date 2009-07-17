@@ -55,22 +55,15 @@ bool cPVRRecordingInfoTag::operator ==(const cPVRRecordingInfoTag& right) const
 
   if (this == &right) return true;
 
-  return (m_Index         == right.m_Index &&
-          m_channelNum    == right.m_channelNum &&
-          m_strChannel    == right.m_strChannel &&
-          m_startTime     == right.m_startTime &&
-          m_endTime       == right.m_endTime &&
-          m_duration      == right.m_duration &&
-          m_seriesID      == right.m_seriesID &&
-          m_episodeID     == right.m_episodeID &&
-          m_commFree      == right.m_commFree &&
-          m_strPlotOutline== right.m_strPlotOutline &&
-          m_strPlot       == right.m_strPlot &&
-          m_strFileNameAndPath == right.m_strFileNameAndPath &&
-          m_strClient     == right.m_strClient &&
-          m_resumePoint   == right.m_resumePoint &&
-          m_strTitle      == right.m_strTitle &&
-          m_clientID      == right.m_clientID);
+  return (m_clientIndex         == right.m_clientIndex &&
+          m_clientID            == right.m_clientID &&
+          m_strChannel          == right.m_strChannel &&
+          m_recordingTime       == right.m_recordingTime &&
+          m_duration            == right.m_duration &&
+          m_strPlotOutline      == right.m_strPlotOutline &&
+          m_strPlot             == right.m_strPlot &&
+          m_strFileNameAndPath  == right.m_strFileNameAndPath &&
+          m_strTitle            == right.m_strTitle);
 }
 
 bool cPVRRecordingInfoTag::operator !=(const cPVRRecordingInfoTag& right) const
@@ -78,137 +71,17 @@ bool cPVRRecordingInfoTag::operator !=(const cPVRRecordingInfoTag& right) const
 
   if (this == &right) return false;
 
-  if (m_Index         != right.m_Index) return true;
-  if (m_channelNum    != right.m_channelNum) return true;
-  if (m_strChannel    != right.m_strChannel) return true;
-  if (m_startTime     != right.m_startTime) return true;
-  if (m_endTime       != right.m_endTime) return true;
-  if (m_duration      != right.m_duration) return true;
-  if (m_seriesID      != right.m_seriesID) return true;
-  if (m_episodeID     != right.m_episodeID) return true;
-  if (m_commFree      != right.m_commFree) return true;
-  if (m_strPlotOutline!= right.m_strPlotOutline) return true;
-  if (m_strPlot       != right.m_strPlot) return true;
-  if (m_strFileNameAndPath != right.m_strFileNameAndPath) return true;
-  if (m_strTitle      != right.m_strTitle) return true;
-  if (m_strClient     != right.m_strClient) return true;
-  if (m_resumePoint   != right.m_resumePoint) return true;
-  if (m_clientID      != right.m_clientID) return true;
+  if (m_clientIndex             != right.m_clientIndex) return true;
+  if (m_clientID                != right.m_clientID) return true;
+  if (m_strChannel              != right.m_strChannel) return true;
+  if (m_recordingTime           != right.m_recordingTime) return true;
+  if (m_duration                != right.m_duration) return true;
+  if (m_strPlotOutline          != right.m_strPlotOutline) return true;
+  if (m_strPlot                 != right.m_strPlot) return true;
+  if (m_strFileNameAndPath      != right.m_strFileNameAndPath) return true;
+  if (m_strTitle                != right.m_strTitle) return true;
 
   return false;
-}
-
-/**
- * Add a cut mark to info tag
- * \param int position              = Cut mark position
- * \param const CStdString &comment = Comment string
- */
-void cPVRRecordingInfoTag::AddMark(int position, const CStdString &comment)
-{
-  CutMark_t mark;
-  mark.m_comment = comment;
-  mark.m_position = position;
-  m_cutMarks.push_back(mark);
-  SortMarks();
-}
-
-/**
- * Delete cut mark on given position
- * \param int position              = Cut mark to delete
- * \return bool                     = true if deletet, false if not found
- */
-bool cPVRRecordingInfoTag::DeleteMark(int position)
-{
-  std::vector<CutMark_t>::iterator it;
-
-  for (it = m_cutMarks.begin(); it != m_cutMarks.end(); ++it)
-  {
-    if ((*it).m_position == position)
-    {
-      m_cutMarks.erase(it);
-      return true;
-    }
-  }
-
-  return false;
-}
-
-/**
- * Delete all cut marks
- */
-void cPVRRecordingInfoTag::DeleteAllMarks(void)
-{
-  m_cutMarks.clear();
-  return;
-}
-
-/**
- * Get cut mark in front of given position
- * \param int position              = current mark
- * \return int                      = previous mark or -1 if current is first
- */
-int cPVRRecordingInfoTag::GetMarkPrev(int position)
-{
-  std::vector<CutMark_t>::iterator it;
-
-  for (it = m_cutMarks.end(); it != m_cutMarks.begin(); --it)
-  {
-    if ((*it).m_position < position)
-    {
-      return (*it).m_position;
-    }
-  }
-
-  return -1;
-}
-
-/**
- * Get cut mark behind given position
- * \param int position              = current mark
- * \return int                      = next mark or -1 if current is last
- */
-int cPVRRecordingInfoTag::GetMarkNext(int position)
-{
-  std::vector<CutMark_t>::iterator it;
-
-  for (it = m_cutMarks.begin(); it != m_cutMarks.end(); ++it)
-  {
-    if ((*it).m_position > position)
-    {
-      return (*it).m_position;
-    }
-  }
-
-  return -1;
-}
-
-/**
- * Sort recording cut marks array (lowest position first)
- */
-void cPVRRecordingInfoTag::SortMarks(void)
-{
-  std::vector<CutMark_t>::iterator it1;
-  std::vector<CutMark_t>::iterator it2;
-
-  for (it1 = m_cutMarks.begin(); it1 != m_cutMarks.end(); ++it1)
-  {
-    for (it2 = m_cutMarks.end(); it2 != m_cutMarks.begin(); --it2)
-    {
-      if ((*it2).m_position < (*it1).m_position)
-      {
-        /* Swap position */
-        int tmp_i           = (*it1).m_position;
-        (*it1).m_position   = (*it2).m_position ;
-        (*it2).m_position   = tmp_i;
-        /* Swap comment */
-        CStdString tmp_s    = (*it1).m_comment;
-        (*it1).m_comment    = (*it2).m_comment;
-        (*it2).m_comment    = tmp_s;
-      }
-    }
-  }
-
-  return;
 }
 
 /**
@@ -216,29 +89,40 @@ void cPVRRecordingInfoTag::SortMarks(void)
  */
 void cPVRRecordingInfoTag::Reset(void)
 {
-  m_Index                 = -1;
+  m_clientIndex           = -1;
   m_clientID              = CPVRManager::GetInstance()->GetFirstClientID(); // Temporary until we support multiple backends
-  m_channelNum            = -1;
   m_strChannel            = "";
-  m_seriesID              = "";
-  m_episodeID             = "";
-
-  m_Summary               = "";
-
+  m_recordingTime         = NULL;
   m_strFileNameAndPath    = "";
-  m_strClient             = "";
-  m_resumePoint           = 0;
-
-  m_videoProps.clear();
-  m_audioProps.clear();
-  m_subTypes.clear();
-
-  m_cutMarks.clear();
-
-  m_commFree              = false;
 
   CVideoInfoTag::Reset();
 }
+
+int cPVRRecordingInfoTag::DurationSeconds() const
+{
+  int duration;
+  duration =  m_duration.GetDays()*60*60*24;
+  duration += m_duration.GetHours()*60*60;
+  duration += m_duration.GetMinutes()*60;
+  duration += m_duration.GetSeconds();
+  duration /= 60;
+  return duration;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // --- cPVRRecordings ---------------------------------------------------------------
 
@@ -269,10 +153,17 @@ bool cPVRRecordings::Load()
     itr++;
   }
 
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    CStdString Path;
+    Path.Format("record://%i", i+1);
+    at(i).SetPath(Path);
+  }
+
   return true;
 }
 
-bool cPVRRecordings::Update()
+bool cPVRRecordings::Update(bool Wait)
 {
   Load();
 }

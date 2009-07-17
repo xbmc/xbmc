@@ -1016,7 +1016,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<visible>IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.Date]</label>
 						</control>
 						<control type="label">
 							<posx>50</posx>
@@ -1084,7 +1084,7 @@
 							<align>left</align>
 							<aligny>center</aligny>
 							<visible>IsEmpty(Listitem.Icon)</visible>
-							<label>$INFO[ListItem.Label2]</label>
+							<label>$INFO[ListItem.Date]</label>
 						</control>
 						<control type="label">
 							<posx>50</posx>

@@ -512,7 +512,6 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     case PVR_EVENT_RECORDINGS_CHANGE:
 	  {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld recording list changed", __FUNCTION__, clientID);
-	    ReceiveAllRecordings();
         SyncInfo();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)m_gWindowManager.GetWindow(WINDOW_TV);
@@ -1175,24 +1174,9 @@ bool CPVRManager::UpdateBackendChannel(const CFileItem &item)
 int CPVRManager::GetAllRecordings(CFileItemList* results)
 {
   EnterCriticalSection(&m_critSection);
-  ReceiveAllRecordings();
 
   for (unsigned int i = 0; i < PVRRecordings.size(); ++i)
   {
-    if ((PVRRecordings[i].m_startTime < CDateTime::GetCurrentDateTime()) &&
-        (PVRRecordings[i].m_endTime > CDateTime::GetCurrentDateTime()))
-    {
-      for (unsigned int j = 0; j < PVRTimers.size(); ++j)
-      {
-        if ((PVRTimers[j].m_channelNum == PVRRecordings[i].m_channelNum)  &&
-            (PVRTimers[j].m_StartTime  <= CDateTime::GetCurrentDateTime()) &&
-            (PVRTimers[j].m_StopTime   >= CDateTime::GetCurrentDateTime()) &&
-            (PVRTimers[j].m_Repeat != true) && (PVRTimers[j].m_Active == true))
-        {
-          PVRRecordings[i].m_Summary.Format("%s", g_localizeStrings.Get(18069));
-        }
-      }
-    }
 
     CFileItemPtr record(new CFileItem(PVRRecordings[i]));
     results->Add(record);
@@ -1217,13 +1201,11 @@ bool CPVRManager::DeleteRecording(const CFileItem &item)
   try
   {
     /* and write it to the backend */
-    PVR_ERROR err = m_clients[tag->m_clientID]->DeleteRecording(*tag);
+    PVR_ERROR err = m_clients[tag->ClientID()]->DeleteRecording(*tag);
   
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
-    /* Update Recordings List */
-    ReceiveAllRecordings();
     return true;
   }
   catch (PVR_ERROR err)
@@ -1255,13 +1237,11 @@ bool CPVRManager::RenameRecording(const CFileItem &item, CStdString &newname)
   try
   {
     /* and write it to the backend */
-    PVR_ERROR err = m_clients[tag->m_clientID]->RenameRecording(*tag, newname);
+    PVR_ERROR err = m_clients[tag->ClientID()]->RenameRecording(*tag, newname);
   
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
-    /* Update Recordings List */
-    ReceiveAllRecordings();
     return true;
   }
   catch (PVR_ERROR err)
@@ -1276,29 +1256,6 @@ bool CPVRManager::RenameRecording(const CFileItem &item, CStdString &newname)
       CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
   }
   return false;
-}
-
-void CPVRManager::ReceiveAllRecordings()
-{
-  EnterCriticalSection(&m_critSection);
-  
-  /* Clear all current present Recordings inside list */
-  PVRRecordings.erase(PVRRecordings.begin(), PVRRecordings.end());
-
-  /* Go thru all clients and receive there Recordings */
-  CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    /* Load only if the client have Recordings */
-    if (m_clients[(*itr).first]->GetNumRecordings() > 0)
-    {
-      m_clients[(*itr).first]->GetAllRecordings(&PVRRecordings);
-    }
-    itr++;
-  }
-
-  LeaveCriticalSection(&m_critSection);
-  return;
 }
 
 

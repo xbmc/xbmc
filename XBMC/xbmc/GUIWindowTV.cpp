@@ -631,7 +631,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       else if (iAction == ACTION_DELETE_ITEM)
       {
         /* Check if entry is a valid deleteable record */
-        if (pItem->GetTVRecordingInfoTag()->m_Index != -1)
+        if (pItem->GetTVRecordingInfoTag()->ClientIndex() != -1)
         {
           // prompt user for confirmation of record deletion
           CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);

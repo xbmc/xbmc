@@ -3737,6 +3737,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return CUtil::GetFileName(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath));
     return CUtil::GetFileName(item->m_strPath);
   case LISTITEM_DATE:
+    if (item->HasTVRecordingInfoTag())
+    {
+      return item->GetTVRecordingInfoTag()->RecordingTime().GetAsLocalizedDateTime(false, false);
+    }
     if (item->HasTVTimerInfoTag())
       return item->GetTVTimerInfoTag()->m_Summary;
     if (item->m_dateTime.IsValid())
