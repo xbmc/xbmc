@@ -84,3 +84,8 @@ override_dh_link:
 
 override_dh_strip:
 	dh_strip --dbg-package=xbmc-dbg
+
+override_dh_makeshlibs:
+	# We don't install shared libraries in standard locations so don't edit
+	# postinst/postrm scripts to call ldconfig
+	dh_makeshlibs -n
