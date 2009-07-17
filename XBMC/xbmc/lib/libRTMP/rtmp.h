@@ -112,7 +112,7 @@ namespace RTMP_LIB
       std::string m_strPageUrl;
       std::string m_strLink;
       std::string m_strPlayPath;
-      BOOL m_bIsLive;
+      bool m_bIsLive;
 
       std::vector<std::string> m_methodCalls; //remote method calls queue
 
