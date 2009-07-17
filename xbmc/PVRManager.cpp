@@ -500,7 +500,6 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     case PVR_EVENT_TIMERS_CHANGE:
 	  {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld timers changed", __FUNCTION__, clientID);
-	    ReceiveAllTimers();
         SyncInfo();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)m_gWindowManager.GetWindow(WINDOW_TV);
@@ -1168,302 +1167,6 @@ bool CPVRManager::UpdateBackendChannel(const CFileItem &item)
 }
 
 
-/************************************************************/
-/** Record handling **/
-
-int CPVRManager::GetAllRecordings(CFileItemList* results)
-{
-  EnterCriticalSection(&m_critSection);
-
-  for (unsigned int i = 0; i < PVRRecordings.size(); ++i)
-  {
-
-    CFileItemPtr record(new CFileItem(PVRRecordings[i]));
-    results->Add(record);
-  }
-
-  LeaveCriticalSection(&m_critSection);
-
-  return PVRRecordings.size();
-}
-
-bool CPVRManager::DeleteRecording(const CFileItem &item)
-{
-  /* Check if a cPVRRecordingInfoTag is inside file item */
-  if (!item.IsTVRecording())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: DeleteRecording no RecordingInfoTag given!");
-    return false;
-  }
-
-  const cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
-
-  try
-  {
-    /* and write it to the backend */
-    PVR_ERROR err = m_clients[tag->ClientID()]->DeleteRecording(*tag);
-  
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    return true;
-  }
-  catch (PVR_ERROR err)
-  {
-    if (err == PVR_ERROR_SERVER_ERROR)
-      CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0); /* print info dialog "Server error!" */
-    else if (err == PVR_ERROR_NOT_SYNC)
-      CGUIDialogOK::ShowAndGetInput(18100,18810,18803,0); /* print info dialog "Recordings not in sync!" */
-    else if (err == PVR_ERROR_NOT_DELETED)
-      CGUIDialogOK::ShowAndGetInput(18100,18811,18803,0); /* print info dialog "Couldn't delete recording!" */
-    else
-      CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
-  }
-
-  return false;
-}
-
-bool CPVRManager::RenameRecording(const CFileItem &item, CStdString &newname)
-{
-  /* Check if a cPVRRecordingInfoTag is inside file item */
-  if (!item.IsTVRecording())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: RenameRecording no RecordingInfoTag given!");
-    return false;
-  }
-
-  const cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
-
-  try
-  {
-    /* and write it to the backend */
-    PVR_ERROR err = m_clients[tag->ClientID()]->RenameRecording(*tag, newname);
-  
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    return true;
-  }
-  catch (PVR_ERROR err)
-  {
-    if (err == PVR_ERROR_SERVER_ERROR)
-      CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0); /* print info dialog "Server error!" */
-    else if (err == PVR_ERROR_NOT_SYNC)
-      CGUIDialogOK::ShowAndGetInput(18100,18810,18803,0); /* print info dialog "Recordings not in sync!" */
-    else if (err == PVR_ERROR_NOT_SAVED)
-      CGUIDialogOK::ShowAndGetInput(18100,18811,18803,0); /* print info dialog "Couldn't delete recording!" */
-    else
-      CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
-  }
-  return false;
-}
-
-
-/************************************************************/
-/** Timer handling **/
-
-int CPVRManager::GetAllTimers(CFileItemList* results)
-{
-  EnterCriticalSection(&m_critSection);
-
-  ReceiveAllTimers();
-
-  for (unsigned int i = 0; i < PVRTimers.size(); ++i)
-  {
-    CFileItemPtr timer(new CFileItem(PVRTimers[i]));
-    results->Add(timer);
-  }
-  
-  /* Syncronize Timer Info labels */
-  SyncInfo();
-
-  LeaveCriticalSection(&m_critSection);
-
-  return PVRTimers.size();
-}
-
-bool CPVRManager::AddTimer(const CFileItem &item)
-{
-  /* Check if a cPVRTimerInfoTag is inside file item */
-  if (!item.IsPVRTimer())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: AddTimer no TVInfoTag given!");
-    return false;
-  }
-
-  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
-
-  try
-  {
-    /* and write it to the backend */
-    PVR_ERROR err = m_clients[tag->ClientID()]->AddTimer(*tag);
-  
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    /* Update Timers List */
-    ReceiveAllTimers();
-    return true;
-  }
-  catch (PVR_ERROR err)
-  {
-    if (err == PVR_ERROR_SERVER_ERROR)
-      CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0); /* print info dialog "Server error!" */
-    else if (err == PVR_ERROR_NOT_SYNC)
-      CGUIDialogOK::ShowAndGetInput(18100,18800,18803,0); /* print info dialog "Timers not in sync!" */
-    else if (err == PVR_ERROR_NOT_SAVED)
-      CGUIDialogOK::ShowAndGetInput(18100,18806,18803,0); /* print info dialog "Couldn't delete timer!" */
-    else if (err == PVR_ERROR_ALREADY_PRESENT)
-      CGUIDialogOK::ShowAndGetInput(18100,18806,0,18814); /* print info dialog */
-    else
-      CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
-  }
-  return false;
-}
-
-bool CPVRManager::DeleteTimer(const CFileItem &item, bool force)
-{
-  /* Check if a cPVRTimerInfoTag is inside file item */
-  if (!item.IsPVRTimer())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: DeleteTimer no TVInfoTag given!");
-    return false;
-  }
-
-  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
-
-  try
-  {
-    /* and write it to the backend */
-    PVR_ERROR err = m_clients[tag->m_clientID]->DeleteTimer(*tag, force);
-
-    if (err == PVR_ERROR_RECORDING_RUNNING)
-    {
-      if (CGUIDialogYesNo::ShowAndGetInput(122,0,18162,0))
-        err = m_clients[tag->m_clientID]->DeleteTimer(*tag, true);
-    }
-
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    /* Update Timers List */
-    ReceiveAllTimers();
-    return true;
-  }
-  catch (PVR_ERROR err)
-  {
-    if (err == PVR_ERROR_SERVER_ERROR)
-      CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0); // print info dialog "Server error!"
-    else if (err == PVR_ERROR_NOT_SYNC)
-      CGUIDialogOK::ShowAndGetInput(18100,18800,18803,0); // print info dialog "Timers not in sync!"
-    else if (err == PVR_ERROR_NOT_DELETED)
-      CGUIDialogOK::ShowAndGetInput(18100,18802,18803,0); // print info dialog "Couldn't delete timer!"
-    else
-      CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); // print info dialog "Unknown error!"
-  }
-  return false;
-}
-
-bool CPVRManager::RenameTimer(const CFileItem &item, CStdString &newname)
-{
-  /* Check if a cPVRTimerInfoTag is inside file item */
-  if (!item.IsPVRTimer())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: RenameTimer no TVInfoTag given!");
-    return false;
-  }
-
-  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
-
-  try
-  {
-    /* and write it to the backend */
-    PVR_ERROR err = m_clients[tag->m_clientID]->RenameTimer(*tag, newname);
-
-    if (err == PVR_ERROR_NOT_IMPLEMENTED)
-      err = m_clients[tag->m_clientID]->UpdateTimer(*tag);
-
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    /* Update Timers List */
-    ReceiveAllTimers();
-    return true;
-  }
-  catch (PVR_ERROR err)
-  {
-    if (err == PVR_ERROR_SERVER_ERROR)
-      CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0);
-    else if (err == PVR_ERROR_NOT_SYNC)
-      CGUIDialogOK::ShowAndGetInput(18100,18800,18803,0);
-    else if (err == PVR_ERROR_NOT_SAVED)
-      CGUIDialogOK::ShowAndGetInput(18100,18806,18803,0);
-    else
-      CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0);
-  }
-
-  return false;
-}
-
-bool CPVRManager::UpdateTimer(const CFileItem &item)
-{
-  /* Check if a cPVRTimerInfoTag is inside file item */
-  if (!item.IsPVRTimer())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: UpdateTimer no TVInfoTag given!");
-    return false;
-  }
-  
-  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
-
-  try
-  {
-    /* and write it to the backend */
-    PVR_ERROR err = m_clients[tag->m_clientID]->UpdateTimer(*tag);
-    if (err != PVR_ERROR_NO_ERROR)
-      throw err;
-
-    /* Update Timers List */
-    ReceiveAllTimers();
-    return true;
-  }
-  catch (PVR_ERROR err)
-  {
-    if (err == PVR_ERROR_SERVER_ERROR)
-      CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0);
-    else if (err == PVR_ERROR_NOT_SYNC)
-      CGUIDialogOK::ShowAndGetInput(18100,18800,18803,0);
-    else if (err == PVR_ERROR_NOT_SAVED)
-      CGUIDialogOK::ShowAndGetInput(18100,18806,18803,0);
-    else
-      CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0);
-  }
-  return false;
-}
-
-void CPVRManager::ReceiveAllTimers()
-{
-  EnterCriticalSection(&m_critSection);
-  
-  /* Clear all current present Timers inside list */
-  PVRTimers.Clear();
-
-  /* Go thru all clients and receive there timers */
-  CLIENTMAPITR itr = m_clients.begin();
-  while (itr != m_clients.end())
-  {
-    /* Load only if the client have timers */
-    if (m_clients[(*itr).first]->GetNumTimers() > 0)
-    {
-      m_clients[(*itr).first]->GetAllTimers(&PVRTimers);
-    }
-    itr++;
-  }
-  LeaveCriticalSection(&m_critSection);
-
-  return;
-}
-
 
 /************************************************************/
 /** Teletext handling **/
@@ -1900,7 +1603,7 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
         cPVRTimerInfoTag newtimer(true);
         CFileItem *item = new CFileItem(newtimer);
 
-        if (!AddTimer(*item))
+        if (!cPVRTimers::AddTimer(*item))
         {
           CGUIDialogOK::ShowAndGetInput(18100,0,18053,0);
           return true;
@@ -1917,7 +1620,7 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
               (PVRTimers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
               (PVRTimers[i].m_Repeat != true) && (PVRTimers[i].m_Active == true))
           {
-            DeleteTimer(PVRTimers[i], true);
+            cPVRTimers::DeleteTimer(PVRTimers[i], true);
           }
         }
 
@@ -1931,7 +1634,7 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
         cPVRTimerInfoTag newtimer(true);
         CFileItem *item = new CFileItem(newtimer);
 
-        if (!AddTimer(*item))
+        if (!cPVRTimers::AddTimer(*item))
         {
           CGUIDialogOK::ShowAndGetInput(18100,0,18053,0);
           return true;
@@ -1948,7 +1651,7 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
               (PVRTimers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
               (PVRTimers[i].m_Repeat != true) && (PVRTimers[i].m_Active == true))
           {
-            DeleteTimer(PVRTimers[i], true);
+            cPVRTimers::DeleteTimer(PVRTimers[i], true);
           }
         }
 

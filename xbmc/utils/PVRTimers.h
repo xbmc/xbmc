@@ -25,12 +25,16 @@
  */
 
 #include "DateTime.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
 class CFileItem;
 class CTVEPGInfoTag;
 
 class cPVRTimerInfoTag
 {
+private:
+  void DisplayError(PVR_ERROR err) const;
+
 public:
   cPVRTimerInfoTag();
   cPVRTimerInfoTag(const CFileItem& item);
@@ -78,22 +82,33 @@ public:
   void SetClientNumber(int Number) { m_clientNum = Number; }
   long ClientID(void) const { return m_clientID; }
   void SetClientID(int ClientId) { m_clientID = ClientId; }
+
+  bool Add() const;
+  bool Delete(bool force = false) const;
+  bool Rename(CStdString &newname) const;
+  bool Update() const;
 };
 
 class cPVRTimers : public std::vector<cPVRTimerInfoTag> 
 {
 private:
+  CCriticalSection  m_critSection;
 
 public:
   cPVRTimers(void);
-  bool Load();
+  bool Load() { return Update(); }
   bool Update();
   int GetNumTimers();
+  int GetTimers(CFileItemList* results);
   cPVRTimerInfoTag *GetTimer(cPVRTimerInfoTag *Timer);
   cPVRTimerInfoTag *GetMatch(CDateTime t);
   cPVRTimerInfoTag *GetMatch(time_t t);
   cPVRTimerInfoTag *GetMatch(const CTVEPGInfoTag *Epg, int *Match = NULL);
   cPVRTimerInfoTag *GetNextActiveTimer(void);
+  static bool AddTimer(const CFileItem &item);
+  static bool DeleteTimer(const CFileItem &item, bool force = false);
+  static bool RenameTimer(CFileItem &item, CStdString &newname);
+  static bool UpdateTimer(const CFileItem &item);
   void Clear();
 };
 

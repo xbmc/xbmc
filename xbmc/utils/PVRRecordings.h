@@ -29,6 +29,7 @@
 #include "settings/VideoSettings.h"
 #include "utils/Thread.h"
 #include "DateTime.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
 class cPVRRecordingInfoTag : public CVideoInfoTag
 {
@@ -41,6 +42,8 @@ private:
   int           m_Priority;
   int           m_Lifetime;
   CStdString    m_strFileNameAndPath; /// Filename for PVRManager to open and read stream
+  
+  void DisplayError(PVR_ERROR err) const;
 
 public:
   cPVRRecordingInfoTag();
@@ -71,6 +74,10 @@ public:
   void SetPlotOutline(CStdString PlotOutline) { m_strPlotOutline = PlotOutline; }
   CStdString Plot(void) const { return m_strPlot; }
   void SetPlot(CStdString Plot) { m_strPlot = Plot; }
+
+  bool Delete(void) const;
+  bool Rename(CStdString &newName) const;
+
 };
 
 
@@ -78,12 +85,18 @@ class cPVRRecordings : public std::vector<cPVRRecordingInfoTag>
                      , private CThread 
 {
 private:
+  CCriticalSection  m_critSection;
+  virtual void Process();
 
 public:
   cPVRRecordings(void);
-  bool Load();
+  bool Load() { return Update(true); }
   bool Update(bool Wait = false);
   int GetNumRecordings();
+  int GetRecordings(CFileItemList* results);
+  static bool DeleteRecording(const CFileItem &item);
+  static bool RenameRecording(CFileItem &item, CStdString &newname);
+  bool RemoveRecording(const CFileItem &item);
   void Clear();
 };
 
