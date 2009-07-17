@@ -213,6 +213,9 @@
 /* Define to 1 if you have the `mad' library (-lmad). */
 #undef HAVE_LIBMAD
 
+/* Define to 1 if you have the `mms' library (-lmms). */
+#undef HAVE_LIBMMS
+
 /* Define to 1 if you have the `mp4ff' library (-lmp4ff). */
 #undef HAVE_LIBMP4FF
 
