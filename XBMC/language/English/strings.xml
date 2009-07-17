@@ -1565,8 +1565,7 @@
   <string id="18025">Scan Timeout before channel playback</string>
   <string id="18026">Start playback Minimized</string>
   <string id="18027">Force Deinterlace for SD-Channels</string>
-
-  <string id="18028">Manage PVR clients</string>
+  <string id="18028">Zap timeout</string>
   <string id="18029">Unknown Channel %u</string>
   <string id="18030">PVR information</string>
   <string id="18031">PVR service</string>

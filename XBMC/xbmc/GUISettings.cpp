@@ -713,6 +713,7 @@ void CGUISettings::Initialize()
   AddInt(2, "pvrplayback.scantime", 18025, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(3, "pvrplayback.sddeinterlace", 18027, false);
   AddInt(4, "pvrplayback.deinterlacemethod", 16023, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_INVERSE_TELECINE, SPIN_CONTROL_TEXT);
+//  AddInt(5, "pvrplayback.zaptimeout", 18028, 3, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
   AddCategory(8,"pvrrecord", 18017);
   AddInt(1, "pvrrecord.instantrecordtime", 18018, 180, 1, 1, 720, SPIN_CONTROL_INT_PLUS, MASK_MINS);
