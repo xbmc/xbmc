@@ -56,6 +56,7 @@ CRTMP::CRTMP() : m_socket(INVALID_SOCKET)
   m_pBuffer = new char[RTMP_BUFFER_CACHE_SIZE];
   m_nBufferMS = 300;
   m_dStartPoint = 0;
+  m_bIsLive = false;
 }
 
 CRTMP::~CRTMP()
@@ -77,6 +78,11 @@ void CRTMP::SetPageUrl(const std::string &strPageUrl)
 void CRTMP::SetPlayPath(const std::string &strPlayPath)
 {
   m_strPlayPath = strPlayPath;
+}
+
+void CRTMP::SetLive()
+{
+    m_bIsLive = true;
 }
 
 void CRTMP::SetBufferMS(int size)
@@ -549,8 +555,8 @@ bool CRTMP::SendPlay()
   CLog::Log(LOGDEBUG,"%s, invoking play '%s'", __FUNCTION__, strPlay.c_str() );
 
   enc += EncodeString(enc, strPlay.c_str());
-  if (m_dStartPoint == 0)
-    enc += EncodeNumber(enc, -1000.0);  //possibly live stream (and doesn't hurt anyway if we're not requesting a seek)
+  if (m_bIsLive)
+    enc += EncodeNumber(enc, -1000.0);
   else
     enc += EncodeNumber(enc, (m_dStartPoint/1000));
 
