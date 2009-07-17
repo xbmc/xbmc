@@ -63,6 +63,8 @@ bool cPVRRecordingInfoTag::operator ==(const cPVRRecordingInfoTag& right) const
           m_strPlotOutline      == right.m_strPlotOutline &&
           m_strPlot             == right.m_strPlot &&
           m_strFileNameAndPath  == right.m_strFileNameAndPath &&
+          m_Priority            == right.m_Priority &&
+          m_Lifetime            == right.m_Lifetime &&
           m_strTitle            == right.m_strTitle);
 }
 
@@ -79,6 +81,8 @@ bool cPVRRecordingInfoTag::operator !=(const cPVRRecordingInfoTag& right) const
   if (m_strPlotOutline          != right.m_strPlotOutline) return true;
   if (m_strPlot                 != right.m_strPlot) return true;
   if (m_strFileNameAndPath      != right.m_strFileNameAndPath) return true;
+  if (m_Priority                != right.m_Priority) return true;
+  if (m_Lifetime                != right.m_Lifetime) return true;
   if (m_strTitle                != right.m_strTitle) return true;
 
   return false;
@@ -94,6 +98,8 @@ void cPVRRecordingInfoTag::Reset(void)
   m_strChannel            = "";
   m_recordingTime         = NULL;
   m_strFileNameAndPath    = "";
+  m_Priority              = -1;
+  m_Lifetime              = -1;
 
   CVideoInfoTag::Reset();
 }

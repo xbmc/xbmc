@@ -101,6 +101,7 @@ protected:
   IPVRClientCallback   *m_manager;
   AddonCB              *m_callbacks;
   CStdString            m_hostName;
+  CCriticalSection      m_critSection;
 
 private:
   void WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);

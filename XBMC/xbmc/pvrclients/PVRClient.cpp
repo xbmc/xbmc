@@ -145,6 +145,8 @@ void CPVRClient::ReInit()
 
 ADDON_STATUS CPVRClient::GetStatus()
 {
+  CSingleLock lock(m_critSection);
+
   try
   {
     return m_pDll->GetStatus();
@@ -163,6 +165,8 @@ long CPVRClient::GetID()
 
 PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
 {
+  CSingleLock lock(m_critSection);
+
   try
   {
     return m_pClient->GetProperties(props);
@@ -192,6 +196,8 @@ PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
 
 const std::string CPVRClient::GetBackendName()
 {
+  CSingleLock lock(m_critSection);
+
   if (m_ReadyToUse)
   {
     try
@@ -209,6 +215,8 @@ const std::string CPVRClient::GetBackendName()
 
 const std::string CPVRClient::GetBackendVersion()
 {
+  CSingleLock lock(m_critSection);
+
   if (m_ReadyToUse)
   {
     try
@@ -226,6 +234,8 @@ const std::string CPVRClient::GetBackendVersion()
 
 const std::string CPVRClient::GetConnectionString()
 {
+  CSingleLock lock(m_critSection);
+
   if (m_ReadyToUse)
   {
     try
@@ -243,6 +253,8 @@ const std::string CPVRClient::GetConnectionString()
 
 PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
 {
+  CSingleLock lock(m_critSection);
+
   if (m_ReadyToUse)
   {
     try
@@ -266,16 +278,22 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
 
 PVR_ERROR CPVRClient::GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start, time_t end)
 {
+  CSingleLock lock(m_critSection);
+
   return m_pClient->GetEPGForChannel(number, epg, start, end);
 }
 
 PVR_ERROR CPVRClient::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result)
 {
+  CSingleLock lock(m_critSection);
+
   return m_pClient->GetEPGNowInfo(number, *result);
 }
 
 PVR_ERROR CPVRClient::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result)
 {
+  CSingleLock lock(m_critSection);
+
   return m_pClient->GetEPGNextInfo(number, *result);
 }
 
@@ -286,6 +304,8 @@ PVR_ERROR CPVRClient::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result)
  
 int CPVRClient::GetNumChannels()
 {
+  CSingleLock lock(m_critSection);
+
   if (m_ReadyToUse)
   {
     try
@@ -302,6 +322,8 @@ int CPVRClient::GetNumChannels()
 
 PVR_ERROR CPVRClient::GetChannelList(cPVRChannels &channels, bool radio)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -360,6 +382,8 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
 
 PVR_ERROR CPVRClient::GetChannelSettings(cPVRChannelInfoTag *result)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -386,6 +410,8 @@ PVR_ERROR CPVRClient::GetChannelSettings(cPVRChannelInfoTag *result)
 
 PVR_ERROR CPVRClient::UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -412,6 +438,8 @@ PVR_ERROR CPVRClient::UpdateChannelSettings(const cPVRChannelInfoTag &chaninfo)
 
 PVR_ERROR CPVRClient::AddChannel(const cPVRChannelInfoTag &info)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -438,6 +466,8 @@ PVR_ERROR CPVRClient::AddChannel(const cPVRChannelInfoTag &info)
 
 PVR_ERROR CPVRClient::DeleteChannel(unsigned int number)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -464,6 +494,8 @@ PVR_ERROR CPVRClient::DeleteChannel(unsigned int number)
 
 PVR_ERROR CPVRClient::RenameChannel(unsigned int number, CStdString &newname)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -490,6 +522,8 @@ PVR_ERROR CPVRClient::RenameChannel(unsigned int number, CStdString &newname)
 
 PVR_ERROR CPVRClient::MoveChannel(unsigned int number, unsigned int newnumber)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -521,6 +555,8 @@ PVR_ERROR CPVRClient::MoveChannel(unsigned int number, unsigned int newnumber)
 
 int CPVRClient::GetNumRecordings(void)
 {
+  CSingleLock lock(m_critSection);
+
   if (m_ReadyToUse)
   {
     try
@@ -537,6 +573,8 @@ int CPVRClient::GetNumRecordings(void)
 
 PVR_ERROR CPVRClient::GetAllRecordings(cPVRRecordings *results)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -580,9 +618,11 @@ void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handl
   tag.SetChannelName(recording->channelName);
   tag.SetRecordingTime(recording->starttime);
   tag.SetDuration(CDateTimeSpan(0, 0, recording->duration / 60, recording->duration % 60));
-  tag.m_strTitle              = recording->title;
-  tag.m_strPlot               = recording->description;
-  tag.m_strPlotOutline        = recording->subtitle;
+  tag.SetPriority(recording->priority);
+  tag.SetLifetime(recording->lifetime);
+  tag.SetTitle(recording->title);
+  tag.SetPlot(recording->description);
+  tag.SetPlotOutline(recording->subtitle);
 
   xbmcRecordings->push_back(tag);
   return;
@@ -590,6 +630,8 @@ void CPVRClient::PVRTransferRecordingEntry(void *userData, const PVRHANDLE handl
 
 PVR_ERROR CPVRClient::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -619,6 +661,8 @@ PVR_ERROR CPVRClient::DeleteRecording(const cPVRRecordingInfoTag &recinfo)
 
 PVR_ERROR CPVRClient::RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdString &newname)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -649,11 +693,13 @@ PVR_ERROR CPVRClient::RenameRecording(const cPVRRecordingInfoTag &recinfo, CStdS
 void CPVRClient::WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag)
 {
   tag.index         = recordinginfo.ClientIndex();
-  tag.title         = recordinginfo.m_strTitle;
-  tag.subtitle      = recordinginfo.m_strPlotOutline;
-  tag.description   = recordinginfo.m_strPlot;
+  tag.title         = recordinginfo.Title();
+  tag.subtitle      = recordinginfo.PlotOutline();
+  tag.description   = recordinginfo.Plot();
   tag.channelName   = recordinginfo.ChannelName();
   tag.duration      = recordinginfo.DurationSeconds();
+  tag.priority      = recordinginfo.Priority();
+  tag.lifetime      = recordinginfo.Lifetime();
 
   recordinginfo.RecordingTime().GetAsTime(tag.starttime);
   return;
@@ -665,6 +711,8 @@ void CPVRClient::WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordingi
 
 int CPVRClient::GetNumTimers(void)
 {
+  CSingleLock lock(m_critSection);
+
   if (m_ReadyToUse)
   {
     try
@@ -681,6 +729,8 @@ int CPVRClient::GetNumTimers(void)
 
 PVR_ERROR CPVRClient::GetAllTimers(cPVRTimers *results)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -789,6 +839,8 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
 
 PVR_ERROR CPVRClient::AddTimer(const cPVRTimerInfoTag &timerinfo)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -818,6 +870,8 @@ PVR_ERROR CPVRClient::AddTimer(const cPVRTimerInfoTag &timerinfo)
 
 PVR_ERROR CPVRClient::DeleteTimer(const cPVRTimerInfoTag &timerinfo, bool force)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -847,6 +901,8 @@ PVR_ERROR CPVRClient::DeleteTimer(const cPVRTimerInfoTag &timerinfo, bool force)
 
 PVR_ERROR CPVRClient::RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString &newname)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -876,6 +932,8 @@ PVR_ERROR CPVRClient::RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString 
 
 PVR_ERROR CPVRClient::UpdateTimer(const cPVRTimerInfoTag &timerinfo)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_ERROR ret = PVR_ERROR_UNKOWN;
 
   if (m_ReadyToUse)
@@ -927,6 +985,8 @@ void CPVRClient::WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIM
 
 bool CPVRClient::OpenLiveStream(unsigned int channel)
 {
+  CSingleLock lock(m_critSection);
+
   if (m_ReadyToUse)
   {
     try
@@ -943,6 +1003,8 @@ bool CPVRClient::OpenLiveStream(unsigned int channel)
 
 void CPVRClient::CloseLiveStream()
 {
+  CSingleLock lock(m_critSection);
+
   if (m_ReadyToUse)
   {
     try
@@ -965,16 +1027,22 @@ int CPVRClient::ReadLiveStream(BYTE* buf, int buf_size)
 
 int CPVRClient::GetCurrentClientChannel()
 {
+  CSingleLock lock(m_critSection);
+
   return m_pClient->GetCurrentClientChannel();
 }
 
 bool CPVRClient::SwitchChannel(unsigned int channel)
 {
+  CSingleLock lock(m_critSection);
+
   return m_pClient->SwitchChannel(channel);
 }
 
 bool CPVRClient::OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
 {
+  CSingleLock lock(m_critSection);
+
   PVR_RECORDINGINFO tag;
   WriteClientRecordingInfo(recinfo, tag);
   return m_pClient->OpenRecordedStream(tag);
@@ -982,6 +1050,8 @@ bool CPVRClient::OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
 
 void CPVRClient::CloseRecordedStream(void)
 {
+  CSingleLock lock(m_critSection);
+
   return m_pClient->CloseRecordedStream();
 }
 
@@ -1002,11 +1072,15 @@ __int64 CPVRClient::LengthRecordedStream(void)
 
 bool CPVRClient::TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage)
 {
+  CSingleLock lock(m_critSection);
+
   return m_pClient->TeletextPagePresent(channel, Page, subPage);
 }
 
 bool CPVRClient::ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage)
 {
+  CSingleLock lock(m_critSection);
+
   return m_pClient->ReadTeletextPage(buf, channel, Page, subPage);
 }
 
@@ -1017,6 +1091,8 @@ bool CPVRClient::ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int 
 
 ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *settingValue)
 {
+  CSingleLock lock(m_critSection);
+
   try
   {
     return m_pDll->SetSetting(settingName, settingValue);
