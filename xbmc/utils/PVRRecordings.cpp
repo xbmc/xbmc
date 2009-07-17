@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,7 +22,8 @@
 /*
  * DESCRIPTION:
  *
- * cPVRRecordingInfoTag is part of the PVRManager to support recording entrys.
+ * cPVRRecordingInfoTag is part of the XBMC PVR system to support recording entrys,
+ * stored on a other Backend like VDR or MythTV.
  *
  * The recording information tag holds data about name, length, recording time
  * and so on of recorded stream stored on the backend.
@@ -31,9 +32,6 @@
  * to stream data from the backend to XBMC.
  *
  * It is a also CVideoInfoTag and some of his variables must be set!
- *
- * TODO:
- * Nothing in the moment. Any ideas?
  *
  */
 
@@ -175,18 +173,6 @@ void cPVRRecordingInfoTag::DisplayError(PVR_ERROR err) const
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 // --- cPVRRecordings ---------------------------------------------------------------
 
 cPVRRecordings PVRRecordings;
@@ -258,7 +244,6 @@ int cPVRRecordings::GetRecordings(CFileItemList* results)
   }
   return size();
 }
-
 
 bool cPVRRecordings::DeleteRecording(const CFileItem &item)
 {

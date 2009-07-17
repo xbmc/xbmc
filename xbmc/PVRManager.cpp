@@ -64,6 +64,12 @@ CPVRManager::CPVRManager()
   m_client                = NULL;
   m_currentPlayingChannel = NULL;
 
+  m_PreviousChannel[0]    = 1;
+  m_PreviousChannel[0]    = 1;
+  m_PreviousChannelIndex  = 0;
+  m_LastChannelChanged    = timeGetTime();
+  m_LastChannel           = 0;
+
   InitializeCriticalSection(&m_critSection);
   CLog::Log(LOGDEBUG,"PVR: created");
 }
@@ -1825,6 +1831,15 @@ void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
   cPVRChannelInfoTag* tag = item.GetTVChannelInfoTag();
   if (tag != NULL)
   {
+    if (tag->m_iChannelNum != m_LastChannel) 
+    {
+      m_LastChannel = tag->m_iChannelNum;
+      m_LastChannelChanged = timeGetTime();
+    }
+
+    if (tag->m_iChannelNum != m_PreviousChannel[m_PreviousChannelIndex])
+      m_PreviousChannel[m_PreviousChannelIndex ^= 1] = tag->m_iChannelNum;
+  
     if (tag->m_EPG.size() > 0)
     {
       CTVEPGInfoTag epgnow(NULL);
@@ -1893,4 +1908,25 @@ void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
     item.m_dateTime = tag->m_startTime;
     item.m_strPath  = tag->m_strFileNameAndPath;
   }
+}
+
+void CPVRManager::SetPreviousChannel(int Number)
+{
+  if (Number != m_PreviousChannel[m_PreviousChannelIndex])
+  {
+    m_PreviousChannel[m_PreviousChannelIndex ^= 1] = Number;
+  }
+}
+
+int CPVRManager::GetPreviousChannel()
+{
+  if (m_currentPlayingChannel == NULL)
+    return -1;
+  
+  int LastChannel = m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum;
+
+  if (m_PreviousChannel[m_PreviousChannelIndex ^ 1] == LastChannel || LastChannel != m_PreviousChannel[0] && LastChannel != m_PreviousChannel[1])
+    m_PreviousChannelIndex ^= 1;
+
+  return m_PreviousChannel[m_PreviousChannelIndex ^= 1];
 }

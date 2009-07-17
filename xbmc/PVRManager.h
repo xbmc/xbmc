@@ -123,6 +123,8 @@ public:
   bool ChannelSwitch(unsigned int channel);
   bool ChannelUp(unsigned int *newchannel);
   bool ChannelDown(unsigned int *newchannel);
+  void SetPreviousChannel(int Number);
+  int GetPreviousChannel();
   int GetTotalTime();
   int GetStartTime();
   bool UpdateItem(CFileItem& item);
@@ -178,8 +180,6 @@ private:
   CStdString          m_totalDiskspace;
   CStdString          m_nextTimer;
 
-  static CFileItem   *m_currentPlayingChannel;
-
   int                 m_CurrentChannelID;
   int                 m_CurrentGroupID;
   unsigned int        m_HiddenChannels;
@@ -191,4 +191,10 @@ private:
   DWORD               m_scanStart;
 
   void                GetChannels();
+  
+  static CFileItem   *m_currentPlayingChannel;
+  int                 m_PreviousChannel[2];
+  int                 m_PreviousChannelIndex;
+  DWORD               m_LastChannelChanged;
+  int                 m_LastChannel;
 };

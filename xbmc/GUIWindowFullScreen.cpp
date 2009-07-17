@@ -415,24 +415,34 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CFileItem item(g_application.CurrentFileItem());
       if (item.HasTVChannelInfoTag())
       {
-        CStdString strChannel;
-        strChannel.Format("%i", action.wID - REMOTE_0);
-        if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(18109)))
+        int channelNr = -1;
+  
+        if (action.wID == REMOTE_0)
         {
-          int channelNr = atoi(strChannel.c_str());
-          if (channelNr > 0)
+          channelNr = CPVRManager::GetInstance()->GetPreviousChannel();
+        }
+        else
+        {
+          CStdString strChannel;
+          strChannel.Format("%i", action.wID - REMOTE_0);
+          if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(18109)))
           {
-            CAction action;
-            action.wID = ACTION_CHANNEL_SWITCH;
-            action.fAmount1 = channelNr;
-            OnAction(action);
+            channelNr = atoi(strChannel.c_str());
           }
+        }
+
+        if (channelNr > 0)
+        {
+          CAction action;
+          action.wID = ACTION_CHANNEL_SWITCH;
+          action.fAmount1 = channelNr;
+          OnAction(action);
         }
       }
       else {
-    ChangetheTimeCode(action.wID);
+        ChangetheTimeCode(action.wID);
       }
-    return true;
+      return true;
     }
     break;
 
