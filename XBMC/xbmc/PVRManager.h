@@ -112,18 +112,6 @@ public:
   bool MoveBackendChannel(unsigned int index, unsigned int newindex);
   bool UpdateBackendChannel(const CFileItem &item);
 
-  /* Record handling **/
-  int GetAllRecordings(CFileItemList* results);
-  bool DeleteRecording(const CFileItem &item);
-  bool RenameRecording(const CFileItem &item, CStdString &newname);
-
-  /* Timer handling */
-  int GetAllTimers(CFileItemList* results);
-  bool AddTimer(const CFileItem &item);
-  bool DeleteTimer(const CFileItem &item, bool force = false);
-  bool RenameTimer(const CFileItem &item, CStdString &newname);
-  bool UpdateTimer(const CFileItem &item);
-
   /* Live stream handling */
   bool OpenLiveStream(unsigned int channel, bool radio = false);
   void CloseLiveStream();
@@ -153,6 +141,7 @@ public:
   bool GetTeletextPage(const CFileItem &item, int Page, int subPage, BYTE* buf);
   
   void                SetCurrentPlayingProgram(CFileItem& item);
+  void                SyncInfo(); // synchronize InfoManager related stuff
 
 protected:
 
@@ -201,7 +190,5 @@ private:
 
   DWORD               m_scanStart;
 
-  void                SyncInfo(); // synchronize InfoManager related stuff
   void                GetChannels();
-  void                ReceiveAllTimers();
 };

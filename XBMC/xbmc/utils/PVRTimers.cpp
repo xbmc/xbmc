@@ -55,6 +55,8 @@
 #include "PVRManager.h"
 #include "FileItem.h"
 #include "Util.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogYesNo.h"
 
 
 /**
@@ -347,6 +349,118 @@ const CStdString cPVRTimerInfoTag::GetStatus() const
     return g_localizeStrings.Get(305);
 }
 
+bool cPVRTimerInfoTag::Add() const
+{
+  try
+  {
+    CPVRManager *manager = CPVRManager::GetInstance();
+    CLIENTMAP   *clients = manager->Clients();
+
+    /* and write it to the backend */
+    PVR_ERROR err = clients->find(m_clientID)->second->AddTimer(*this);
+  
+    if (err != PVR_ERROR_NO_ERROR)
+      throw err;
+
+    return true;
+  }
+  catch (PVR_ERROR err)
+  {
+    DisplayError(err);
+  }
+  return false;
+}
+
+bool cPVRTimerInfoTag::Delete(bool force) const
+{
+  try
+  {
+    CPVRManager *manager = CPVRManager::GetInstance();
+    CLIENTMAP   *clients = manager->Clients();
+
+    /* and write it to the backend */
+    PVR_ERROR err = clients->find(m_clientID)->second->DeleteTimer(*this, force);
+
+    if (err == PVR_ERROR_RECORDING_RUNNING)
+    {
+      if (CGUIDialogYesNo::ShowAndGetInput(122,0,18162,0))
+        err = clients->find(m_clientID)->second->DeleteTimer(*this, true);
+    }
+
+    if (err != PVR_ERROR_NO_ERROR)
+      throw err;
+
+    return true;
+  }
+  catch (PVR_ERROR err)
+  {
+    DisplayError(err);
+  }
+  return false;
+}
+
+bool cPVRTimerInfoTag::Rename(CStdString &newname) const
+{
+  try
+  {
+    CPVRManager *manager = CPVRManager::GetInstance();
+    CLIENTMAP   *clients = manager->Clients();
+
+    /* and write it to the backend */
+    PVR_ERROR err = clients->find(m_clientID)->second->RenameTimer(*this, newname);
+
+    if (err == PVR_ERROR_NOT_IMPLEMENTED)
+      err = clients->find(m_clientID)->second->UpdateTimer(*this);
+
+    if (err != PVR_ERROR_NO_ERROR)
+      throw err;
+
+    return true;
+  }
+  catch (PVR_ERROR err)
+  {
+    DisplayError(err);
+  }
+
+  return false;
+}
+
+bool cPVRTimerInfoTag::Update() const
+{
+  try
+  {
+    CPVRManager *manager = CPVRManager::GetInstance();
+    CLIENTMAP   *clients = manager->Clients();
+
+    /* and write it to the backend */
+    PVR_ERROR err = clients->find(m_clientID)->second->UpdateTimer(*this);
+    if (err != PVR_ERROR_NO_ERROR)
+      throw err;
+
+    return true;
+  }
+  catch (PVR_ERROR err)
+  {
+    DisplayError(err);
+  }
+  return false;
+}
+
+void cPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
+{
+  if (err == PVR_ERROR_SERVER_ERROR)
+    CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0); /* print info dialog "Server error!" */
+  else if (err == PVR_ERROR_NOT_SYNC)
+    CGUIDialogOK::ShowAndGetInput(18100,18800,18803,0); /* print info dialog "Timers not in sync!" */
+  else if (err == PVR_ERROR_NOT_SAVED)
+    CGUIDialogOK::ShowAndGetInput(18100,18806,18803,0); /* print info dialog "Couldn't delete timer!" */
+  else if (err == PVR_ERROR_ALREADY_PRESENT)
+    CGUIDialogOK::ShowAndGetInput(18100,18806,0,18814); /* print info dialog */
+  else
+    CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
+  
+  return;
+}
 
 // --- cPVRTimers ---------------------------------------------------------------
 
@@ -357,8 +471,10 @@ cPVRTimers::cPVRTimers(void)
 
 }
 
-bool cPVRTimers::Load()
+bool cPVRTimers::Update()
 {
+  CSingleLock lock(m_critSection);
+
   CPVRManager *manager  = CPVRManager::GetInstance();
   CLIENTMAP   *clients  = manager->Clients();
   
@@ -378,13 +494,23 @@ bool cPVRTimers::Load()
   return true;
 }
 
-bool cPVRTimers::Update()
-{
-  Load();
-}
-
 int cPVRTimers::GetNumTimers()
 {
+  return size();
+}
+
+int cPVRTimers::GetTimers(CFileItemList* results)
+{
+  Update();
+
+  for (unsigned int i = 0; i < size(); ++i)
+  {
+    CFileItemPtr timer(new CFileItem(at(i)));
+    results->Add(timer);
+  }
+  
+  CPVRManager::GetInstance()->SyncInfo();
+
   return size();
 }
 
@@ -430,6 +556,63 @@ cPVRTimerInfoTag *cPVRTimers::GetNextActiveTimer(void)
     }
   }
   return t0;
+}
+
+bool cPVRTimers::AddTimer(const CFileItem &item)
+{
+  /* Check if a cPVRTimerInfoTag is inside file item */
+  if (!item.IsPVRTimer())
+  {
+    CLog::Log(LOGERROR, "cPVRTimers: AddTimer no TVInfoTag given!");
+    return false;
+  }
+
+  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  return tag->Add();
+}
+
+bool cPVRTimers::DeleteTimer(const CFileItem &item, bool force)
+{
+  /* Check if a cPVRTimerInfoTag is inside file item */
+  if (!item.IsPVRTimer())
+  {
+    CLog::Log(LOGERROR, "cPVRTimers: DeleteTimer no TVInfoTag given!");
+    return false;
+  }
+
+  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  return tag->Delete();
+}
+
+bool cPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
+{
+  /* Check if a cPVRTimerInfoTag is inside file item */
+  if (!item.IsPVRTimer())
+  {
+    CLog::Log(LOGERROR, "cPVRTimers: RenameTimer no TVInfoTag given!");
+    return false;
+  }
+
+  cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  if (tag->Rename(newname))
+  {
+    tag->SetName(newname);
+    return true;
+  }
+  return false;
+}
+
+bool cPVRTimers::UpdateTimer(const CFileItem &item)
+{
+  /* Check if a cPVRTimerInfoTag is inside file item */
+  if (!item.IsPVRTimer())
+  {
+    CLog::Log(LOGERROR, "cPVRTimers: UpdateTimer no TVInfoTag given!");
+    return false;
+  }
+  
+  const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
+  return tag->Update();
 }
 
 void cPVRTimers::Clear()

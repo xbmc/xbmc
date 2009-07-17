@@ -40,6 +40,7 @@
 #include "stdafx.h"
 #include "PVRRecordings.h"
 #include "PVRManager.h"
+#include "GUIDialogOK.h"
 
 
 /**
@@ -115,7 +116,63 @@ int cPVRRecordingInfoTag::DurationSeconds() const
   return duration;
 }
 
+bool cPVRRecordingInfoTag::Delete(void) const
+{
+  try
+  {
+    CPVRManager *manager = CPVRManager::GetInstance();
+    CLIENTMAP   *clients = manager->Clients();
+  
+    /* and write it to the backend */
+    PVR_ERROR err = clients->find(m_clientID)->second->DeleteRecording(*this);
+  
+    if (err != PVR_ERROR_NO_ERROR)
+      throw err;
 
+    return true;
+  }
+  catch (PVR_ERROR err)
+  {
+    DisplayError(err);
+  }
+  return false;
+}
+
+bool cPVRRecordingInfoTag::Rename(CStdString &newName) const
+{
+  try
+  {
+    CPVRManager *manager = CPVRManager::GetInstance();
+    CLIENTMAP   *clients = manager->Clients();
+  
+    /* and write it to the backend */
+    PVR_ERROR err = clients->find(m_clientID)->second->RenameRecording(*this, newName);
+  
+    if (err != PVR_ERROR_NO_ERROR)
+      throw err;
+
+    return true;
+  }
+  catch (PVR_ERROR err)
+  {
+    DisplayError(err);
+  }
+  return false;
+}
+
+void cPVRRecordingInfoTag::DisplayError(PVR_ERROR err) const
+{
+  if (err == PVR_ERROR_SERVER_ERROR)
+    CGUIDialogOK::ShowAndGetInput(18100,18801,18803,0); /* print info dialog "Server error!" */
+  else if (err == PVR_ERROR_NOT_SYNC)
+    CGUIDialogOK::ShowAndGetInput(18100,18810,18803,0); /* print info dialog "Recordings not in sync!" */
+  else if (err == PVR_ERROR_NOT_DELETED)
+    CGUIDialogOK::ShowAndGetInput(18100,18811,18803,0); /* print info dialog "Couldn't delete recording!" */
+  else
+    CGUIDialogOK::ShowAndGetInput(18100,18106,18803,0); /* print info dialog "Unknown error!" */
+  
+  return;
+}
 
 
 
@@ -139,8 +196,10 @@ cPVRRecordings::cPVRRecordings(void)
 
 }
 
-bool cPVRRecordings::Load()
+void cPVRRecordings::Process()
 {
+  CSingleLock lock(m_critSection);
+
   CPVRManager *manager  = CPVRManager::GetInstance();
   CLIENTMAP   *clients  = manager->Clients();
   
@@ -166,17 +225,91 @@ bool cPVRRecordings::Load()
     at(i).SetPath(Path);
   }
 
-  return true;
+  return;
 }
 
 bool cPVRRecordings::Update(bool Wait)
 {
-  Load();
+  if (Wait) 
+  {
+    Process();
+    return true;
+  }
+  else
+  {
+    Create();
+    SetName("PVR Recordings Update");
+    SetPriority(-5);
+  }
+  return false;
 }
 
 int cPVRRecordings::GetNumRecordings()
 {
   return size();
+}
+
+int cPVRRecordings::GetRecordings(CFileItemList* results)
+{
+  for (unsigned int i = 0; i < size(); ++i)
+  {
+    CFileItemPtr record(new CFileItem(at(i)));
+    results->Add(record);
+  }
+  return size();
+}
+
+
+bool cPVRRecordings::DeleteRecording(const CFileItem &item)
+{
+  /* Check if a cPVRRecordingInfoTag is inside file item */
+  if (!item.IsTVRecording())
+  {
+    CLog::Log(LOGERROR, "cPVRRecordings: DeleteRecording no RecordingInfoTag given!");
+    return false;
+  }
+  
+  const cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
+  return tag->Delete();
+}
+
+bool cPVRRecordings::RenameRecording(CFileItem &item, CStdString &newname)
+{
+  /* Check if a cPVRRecordingInfoTag is inside file item */
+  if (!item.IsTVRecording())
+  {
+    CLog::Log(LOGERROR, "cPVRRecordings: RenameRecording no RecordingInfoTag given!");
+    return false;
+  }
+  
+  cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
+  if (tag->Rename(newname))
+  {
+    tag->SetTitle(newname);
+    return true;
+  }
+  return false;
+}
+
+bool cPVRRecordings::RemoveRecording(const CFileItem &item)
+{
+  if (!item.IsTVRecording())
+  {
+    CLog::Log(LOGERROR, "cPVRRecordings: RemoveRecording no RecordingInfoTag given!");
+    return false;
+  }
+
+  const cPVRRecordingInfoTag* tag = item.GetTVRecordingInfoTag();
+
+  for (unsigned int i = 0; i < size(); ++i)
+  {
+    if (tag == &at(i))
+    {
+      erase(begin()+i);
+      return true;
+    }
+  }
+  return false;
 }
 
 void cPVRRecordings::Clear()

@@ -128,7 +128,7 @@ bool CGUIDialogTVEPGProgInfo::OnMessage(CGUIMessage& message)
                 cPVRTimerInfoTag newtimer(*m_progItem.get());
                 CFileItem *item = new CFileItem(newtimer);
 
-                if (CPVRManager::GetInstance()->AddTimer(*item))
+                if (cPVRTimers::AddTimer(*item))
                 {
                   m_progItem->GetTVEPGInfoTag()->m_isRecording = true;
                 }
