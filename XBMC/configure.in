@@ -383,6 +383,7 @@ else
   AC_CHECK_LIB([resolv],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([enca],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],    [main],, AC_MSG_ERROR($missing_library)) # check for cximage
+  AC_CHECK_LIB([mms],       [main],, AC_MSG_ERROR($missing_library))
 
   AC_CHECK_LIB([Xt],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([Xmu],       [main],, AC_MSG_ERROR($missing_library))
