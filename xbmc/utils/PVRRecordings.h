@@ -38,6 +38,8 @@ private:
   CStdString    m_strChannel;         /// Channel name where recording from
   CDateTime     m_recordingTime;      /// Recording start time
   CDateTimeSpan m_duration;           /// Duration
+  int           m_Priority;
+  int           m_Lifetime;
   CStdString    m_strFileNameAndPath; /// Filename for PVRManager to open and read stream
 
 public:
@@ -57,8 +59,18 @@ public:
   CDateTimeSpan Duration(void) const { return m_duration; }
   void SetDuration(CDateTimeSpan duration) { m_duration = duration; }
   int DurationSeconds() const;
+  int Lifetime(void) const { return m_Lifetime; }
+  void SetLifetime(int Lifetime) { m_Lifetime = Lifetime; }
+  int Priority(void) const { return m_Priority; }
+  void SetPriority(int Priority) { m_Priority = Priority; }
   CStdString Path(void) const { return m_strFileNameAndPath; }
   void SetPath(CStdString path) { m_strFileNameAndPath = path; }
+  CStdString Title(void) const { return m_strTitle; }
+  void SetTitle(CStdString Title) { m_strTitle = Title; }
+  CStdString PlotOutline(void) const { return m_strPlotOutline; }
+  void SetPlotOutline(CStdString PlotOutline) { m_strPlotOutline = PlotOutline; }
+  CStdString Plot(void) const { return m_strPlot; }
+  void SetPlot(CStdString Plot) { m_strPlot = Plot; }
 };
 
 
