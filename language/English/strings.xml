@@ -2093,6 +2093,7 @@
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY keyboard</string>
+  <string id="29802">Passthrough Audio in use</string>
   
   <string id="29999">Apply flicker filter setting to games</string>
 
