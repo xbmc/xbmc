@@ -2980,39 +2980,41 @@ bool CApplication::OnAction(CAction &action)
   // Check for global volume control
   if (action.fAmount1 && (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN))
   {
-    // increase or decrease the volume
-    int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
-
-    // calculate speed so that a full press will equal 1 second from min to max
-    float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
-    if( action.fRepeat )
-      speed *= action.fRepeat;
-    else
-      speed /= 50; //50 fps
-    if (g_stSettings.m_bMute)
+    if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-      // only unmute if volume is to be increased, otherwise leave muted
-      if (action.wID == ACTION_VOLUME_DOWN)
+      // increase or decrease the volume
+      int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
+
+      // calculate speed so that a full press will equal 1 second from min to max
+      float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
+      if( action.fRepeat )
+        speed *= action.fRepeat;
+      else
+        speed /= 50; //50 fps
+      if (g_stSettings.m_bMute)
+      {
+        // only unmute if volume is to be increased, otherwise leave muted
+        if (action.wID == ACTION_VOLUME_DOWN)
+          return true;
+        Mute();
         return true;
-      Mute();
-      return true;
-    }
-    if (action.wID == ACTION_VOLUME_UP)
-    {
-      volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
-    }
-    else
-    {
-      volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
-    }
+      }
+      if (action.wID == ACTION_VOLUME_UP)
+      {
+        volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+      }
+      else
+      {
+        volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+      }
 
-    SetHardwareVolume(volume);
-#ifndef HAS_SDL_AUDIO
-    g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
-#else
-    g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
-#endif
-
+      SetHardwareVolume(volume);
+  #ifndef HAS_SDL_AUDIO
+      g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
+  #else
+      g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+  #endif
+    }
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show();
     m_guiDialogVolumeBar.OnAction(action);

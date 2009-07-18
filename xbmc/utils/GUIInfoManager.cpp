@@ -220,6 +220,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.chaptercount")) ret = PLAYER_CHAPTERCOUNT;
     else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
     else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
+    else if (strTest.Equals("player.passthrough")) ret = PLAYER_PASSTHROUGH;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -1871,6 +1872,8 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     case PLAYER_SHOWTIME:
       bReturn = m_playerShowTime;
     break;
+    case PLAYER_PASSTHROUGH:
+      bReturn = g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough();
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();
     break;

@@ -99,6 +99,7 @@ class CDateTime;
 #define PLAYER_CHAPTERNAME           41
 #define PLAYER_SUBTITLE_DELAY        42
 #define PLAYER_AUDIO_DELAY           43
+#define PLAYER_PASSTHROUGH           44
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
