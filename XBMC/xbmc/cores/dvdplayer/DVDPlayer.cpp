@@ -1828,6 +1828,11 @@ bool CDVDPlayer::HasAudio() const
   return (m_CurrentAudio.id >= 0);
 }
 
+bool CDVDPlayer::IsPassthrough() const
+{
+  return m_dvdPlayerAudio.IsPassthrough();
+}
+
 bool CDVDPlayer::CanSeek()
 {
   return GetTotalTime() > 0;

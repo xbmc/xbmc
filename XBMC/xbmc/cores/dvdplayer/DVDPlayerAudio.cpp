@@ -764,3 +764,8 @@ int CDVDPlayerAudio::GetAudioBitrate()
 {
   return (int)m_audioStats.GetBitrate();
 }
+  
+bool CDVDPlayerAudio::IsPassthrough() const
+{
+  return m_pAudioCodec && m_pAudioCodec->NeedPasstrough();
+}
