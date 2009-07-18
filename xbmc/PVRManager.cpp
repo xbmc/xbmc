@@ -486,9 +486,9 @@ const char* CPVRManager::TranslateInfo(DWORD dwInfo)
     if (next != NULL)
     {
       m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(18190)
-                         , next->m_StartTime.GetAsLocalizedDate(true)
+                         , next->Start().GetAsLocalizedDate(true)
                          , g_localizeStrings.Get(18191)
-                         , next->m_StartTime.GetAsLocalizedTime("HH:mm", false));
+                         , next->Start().GetAsLocalizedTime("HH:mm", false));
       return m_nextTimer;
     }
   }
@@ -1621,10 +1621,10 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
       {
         for (unsigned int i = 0; i < PVRTimers.size(); ++i)
         {
-          if ((PVRTimers[i].m_channelNum == PVRChannelsTV[channel-1].m_iChannelNum) &&
-              (PVRTimers[i].m_StartTime <= CDateTime::GetCurrentDateTime()) &&
-              (PVRTimers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
-              (PVRTimers[i].m_Repeat != true) && (PVRTimers[i].m_Active == true))
+          if ((PVRTimers[i].Number() == PVRChannelsTV[channel-1].m_iChannelNum) &&
+              (PVRTimers[i].Start() <= CDateTime::GetCurrentDateTime()) &&
+              (PVRTimers[i].Stop() >= CDateTime::GetCurrentDateTime()) &&
+              (PVRTimers[i].IsRepeating() != true) && (PVRTimers[i].Active() == true))
           {
             cPVRTimers::DeleteTimer(PVRTimers[i], true);
           }
@@ -1652,10 +1652,10 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
       {
         for (unsigned int i = 0; i < PVRTimers.size(); ++i)
         {
-          if ((PVRTimers[i].m_channelNum == PVRChannelsRadio[channel-1].m_iChannelNum) &&
-              (PVRTimers[i].m_StartTime <= CDateTime::GetCurrentDateTime()) &&
-              (PVRTimers[i].m_StopTime >= CDateTime::GetCurrentDateTime()) &&
-              (PVRTimers[i].m_Repeat != true) && (PVRTimers[i].m_Active == true))
+          if ((PVRTimers[i].Number() == PVRChannelsRadio[channel-1].m_iChannelNum) &&
+              (PVRTimers[i].Start() <= CDateTime::GetCurrentDateTime()) &&
+              (PVRTimers[i].Stop() >= CDateTime::GetCurrentDateTime()) &&
+              (PVRTimers[i].IsRepeating() != true) && (PVRTimers[i].Active() == true))
           {
             cPVRTimers::DeleteTimer(PVRTimers[i], true);
           }
@@ -1786,11 +1786,11 @@ void CPVRManager::SyncInfo()
   {
     cPVRTimerInfoTag *nextRec = PVRTimers.GetNextActiveTimer();
 
-    m_nextRecordingTitle    = nextRec->m_strTitle;
-    m_nextRecordingChannel  = PVRChannelsTV.GetNameForChannel(nextRec->m_channelNum);
-    m_nextRecordingDateTime = nextRec->m_StartTime.GetAsLocalizedDateTime(false, false);
+    m_nextRecordingTitle    = nextRec->Title();
+    m_nextRecordingChannel  = PVRChannelsTV.GetNameForChannel(nextRec->Number());
+    m_nextRecordingDateTime = nextRec->Start().GetAsLocalizedDateTime(false, false);
 
-    if (nextRec->m_recStatus == true)
+    if (nextRec->IsRecording() == true)
     {
       m_isRecording = true;
       CLog::Log(LOGDEBUG, "%s - PVR: next timer is currently recording", __FUNCTION__);
@@ -1907,14 +1907,6 @@ void CPVRManager::SetCurrentPlayingProgram(CFileItem& item)
     item.m_strTitle = tag->m_strChannel;
     item.m_dateTime = tag->m_startTime;
     item.m_strPath  = tag->m_strFileNameAndPath;
-  }
-}
-
-void CPVRManager::SetPreviousChannel(int Number)
-{
-  if (Number != m_PreviousChannel[m_PreviousChannelIndex])
-  {
-    m_PreviousChannel[m_PreviousChannelIndex ^= 1] = Number;
   }
 }
 

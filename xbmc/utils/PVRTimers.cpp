@@ -294,6 +294,13 @@ time_t cPVRTimerInfoTag::StopTime(void) const
   m_StopTime.GetAsTime(stop);
   return stop; 
 }
+
+time_t cPVRTimerInfoTag::FirstDayTime(void) const
+{ 
+  time_t firstday;
+  m_FirstDay.GetAsTime(firstday);
+  return firstday; 
+}
   
 int cPVRTimerInfoTag::Compare(const cPVRTimerInfoTag &timer) const
 {
@@ -518,10 +525,10 @@ cPVRTimerInfoTag *cPVRTimers::GetTimer(cPVRTimerInfoTag *Timer)
 {
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (at(i).m_channelNum == Timer->m_channelNum &&
-        (at(i).m_Weekdays && at(i).m_Weekdays == Timer->m_Weekdays || !at(i).m_Weekdays && at(i).m_FirstDay == Timer->m_FirstDay) &&
-        at(i).m_StartTime == Timer->m_StartTime &&
-        at(i).m_StopTime == Timer->m_StopTime)
+    if (at(i).Number() == Timer->Number() &&
+        (at(i).Weekdays() && at(i).Weekdays() == Timer->Weekdays() || !at(i).Weekdays() && at(i).FirstDay() == Timer->FirstDay()) &&
+        at(i).Start() == Timer->Start() &&
+        at(i).Stop() == Timer->Stop())
       return &at(i);
   }
   return NULL;
@@ -550,7 +557,7 @@ cPVRTimerInfoTag *cPVRTimers::GetNextActiveTimer(void)
   cPVRTimerInfoTag *t0 = NULL;
   for (unsigned int i = 0; i < size(); i++)
   {
-    if ((at(i).m_Active) && (!t0 || at(i).m_StopTime > CDateTime::GetCurrentDateTime() && at(i).Compare(*t0) < 0))
+    if ((at(i).Active()) && (!t0 || at(i).Stop() > CDateTime::GetCurrentDateTime() && at(i).Compare(*t0) < 0))
     {
       t0 = &at(i);
     }
@@ -596,7 +603,7 @@ bool cPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
   cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
   if (tag->Rename(newname))
   {
-    tag->SetName(newname);
+    tag->SetTitle(newname);
     return true;
   }
   return false;

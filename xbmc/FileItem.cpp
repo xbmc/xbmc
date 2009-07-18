@@ -208,11 +208,11 @@ CFileItem::CFileItem(const cPVRTimerInfoTag& timer)
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
-  m_strPath = timer.m_strFileNameAndPath;
+  m_strPath = timer.Path();
   m_bIsFolder = false;
   *GetTVTimerInfoTag() = timer;
-  SetLabel(timer.m_strTitle);
-  m_strLabel2 = timer.m_Summary;
+  SetLabel(timer.Title());
+  m_strLabel2 = timer.Summary();
   //FillInDefaultIcon();
   //SetVideoThumb();
   SetInvalid();
