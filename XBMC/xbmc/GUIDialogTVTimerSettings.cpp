@@ -386,6 +386,6 @@ void CGUIDialogTVTimerSettings::OnOkay()
 {
   m_cancelled = false;
   cPVRTimerInfoTag* tag = m_timerItem->GetTVTimerInfoTag();
-  if (tag->Name() == g_localizeStrings.Get(18072))
-    tag->SetName(cPVRChannels::GetByClientFromAll(tag->ClientNumber(), tag->ClientID())->Name());
+  if (tag->Title() == g_localizeStrings.Get(18072))
+    tag->SetTitle(cPVRChannels::GetByClientFromAll(tag->ClientNumber(), tag->ClientID())->Name());
 }

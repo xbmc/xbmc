@@ -3742,7 +3742,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return item->GetTVRecordingInfoTag()->RecordingTime().GetAsLocalizedDateTime(false, false);
     }
     if (item->HasTVTimerInfoTag())
-      return item->GetTVTimerInfoTag()->m_Summary;
+      return item->GetTVTimerInfoTag()->Summary();
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate();
     break;

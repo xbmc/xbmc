@@ -123,7 +123,6 @@ public:
   bool ChannelSwitch(unsigned int channel);
   bool ChannelUp(unsigned int *newchannel);
   bool ChannelDown(unsigned int *newchannel);
-  void SetPreviousChannel(int Number);
   int GetPreviousChannel();
   int GetTotalTime();
   int GetStartTime();

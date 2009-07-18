@@ -775,63 +775,67 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   }
 
   cPVRTimerInfoTag tag;
-  tag.m_clientID            = client->m_clientID;
-  tag.m_clientIndex         = timer->index;
-  tag.m_Active              = timer->active;
-  tag.m_strTitle            = timer->title;
-  tag.m_clientNum           = timer->channelNum;
-  tag.m_StartTime           = (time_t) timer->starttime;
-  tag.m_StopTime            = (time_t) timer->endtime;
-  tag.m_FirstDay            = (time_t) timer->firstday;
-  tag.m_Priority            = timer->priority;
-  tag.m_Lifetime            = timer->lifetime;
-  tag.m_recStatus           = timer->recording;
-  tag.m_Repeat              = timer->repeat;
-  tag.m_Weekdays            = timer->repeatflags;
-  tag.m_channelNum          = channel->m_iChannelNum;
-  tag.m_Radio               = channel->m_radio;
-  tag.m_strFileNameAndPath.Format("pvr://client%i/timers/%i", tag.m_clientID, tag.m_clientIndex);
+  tag.SetClientID(client->m_clientID);
+  tag.SetClientIndex(timer->index);
+  tag.SetActive(timer->active);
+  tag.SetTitle(timer->title);
+  tag.SetClientNumber(timer->channelNum);
+  tag.SetStart((time_t) timer->starttime);
+  tag.SetStop((time_t) timer->endtime);
+  tag.SetFirstDay((time_t) timer->firstday);
+  tag.SetPriority(timer->priority);
+  tag.SetLifetime(timer->lifetime);
+  tag.SetRecording(timer->recording);
+  tag.SetRepeating(timer->repeat);
+  tag.SetWeekdays(timer->repeatflags);
+  tag.SetNumber(channel->m_iChannelNum);
+  tag.SetRadio(channel->m_radio);
+  CStdString path;
+  path.Format("pvr://client%i/timers/%i", tag.ClientID(), tag.ClientIndex());
+  tag.SetPath(path);
 
-  if (!tag.m_Repeat)
+  CStdString summary;
+  if (!tag.IsRepeating())
   {
-    tag.m_Summary.Format("%s %s %s %s %s", tag.m_StartTime.GetAsLocalizedDate()
-                         , g_localizeStrings.Get(18078)
-                         , tag.m_StartTime.GetAsLocalizedTime("", false)
-                         , g_localizeStrings.Get(18079)
-                         , tag.m_StopTime.GetAsLocalizedTime("", false));
+    summary.Format("%s %s %s %s %s", tag.Start().GetAsLocalizedDate()
+                   , g_localizeStrings.Get(18078)
+                   , tag.Start().GetAsLocalizedTime("", false)
+                   , g_localizeStrings.Get(18079)
+                   , tag.Stop().GetAsLocalizedTime("", false));
   }
-  else if (tag.m_FirstDay != NULL)
+  else if (tag.FirstDay() != NULL)
   {
-    tag.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
-                         , tag.m_Weekdays & 0x01 ? g_localizeStrings.Get(18080) : "__"
-                         , tag.m_Weekdays & 0x02 ? g_localizeStrings.Get(18081) : "__"
-                         , tag.m_Weekdays & 0x04 ? g_localizeStrings.Get(18082) : "__"
-                         , tag.m_Weekdays & 0x08 ? g_localizeStrings.Get(18083) : "__"
-                         , tag.m_Weekdays & 0x10 ? g_localizeStrings.Get(18084) : "__"
-                         , tag.m_Weekdays & 0x20 ? g_localizeStrings.Get(18085) : "__"
-                         , tag.m_Weekdays & 0x40 ? g_localizeStrings.Get(18086) : "__"
-                         , g_localizeStrings.Get(18087)
-                         , tag.m_FirstDay.GetAsLocalizedDate(false)
-                         , g_localizeStrings.Get(18078)
-                         , tag.m_StartTime.GetAsLocalizedTime("", false)
-                         , g_localizeStrings.Get(18079)
-                         , tag.m_StopTime.GetAsLocalizedTime("", false));
+    summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s %s %s"
+                   , timer->repeatflags & 0x01 ? g_localizeStrings.Get(18080) : "__"
+                   , timer->repeatflags & 0x02 ? g_localizeStrings.Get(18081) : "__"
+                   , timer->repeatflags & 0x04 ? g_localizeStrings.Get(18082) : "__"
+                   , timer->repeatflags & 0x08 ? g_localizeStrings.Get(18083) : "__"
+                   , timer->repeatflags & 0x10 ? g_localizeStrings.Get(18084) : "__"
+                   , timer->repeatflags & 0x20 ? g_localizeStrings.Get(18085) : "__"
+                   , timer->repeatflags & 0x40 ? g_localizeStrings.Get(18086) : "__"
+                   , g_localizeStrings.Get(18087)
+                   , tag.FirstDay().GetAsLocalizedDate(false)
+                   , g_localizeStrings.Get(18078)
+                   , tag.Start().GetAsLocalizedTime("", false)
+                   , g_localizeStrings.Get(18079)
+                   , tag.Stop().GetAsLocalizedTime("", false));
   }
   else
   {
-    tag.m_Summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
-                         , tag.m_Weekdays & 0x01 ? g_localizeStrings.Get(18080) : "__"
-                         , tag.m_Weekdays & 0x02 ? g_localizeStrings.Get(18081) : "__"
-                         , tag.m_Weekdays & 0x04 ? g_localizeStrings.Get(18082) : "__"
-                         , tag.m_Weekdays & 0x08 ? g_localizeStrings.Get(18083) : "__"
-                         , tag.m_Weekdays & 0x10 ? g_localizeStrings.Get(18084) : "__"
-                         , tag.m_Weekdays & 0x20 ? g_localizeStrings.Get(18085) : "__"
-                         , tag.m_Weekdays & 0x40 ? g_localizeStrings.Get(18086) : "__"
-                         , g_localizeStrings.Get(18078)
-                         , tag.m_StartTime.GetAsLocalizedTime("", false)
-                         , g_localizeStrings.Get(18079)
-                         , tag.m_StopTime.GetAsLocalizedTime("", false));
+    summary.Format("%s-%s-%s-%s-%s-%s-%s %s %s %s %s"
+                   , timer->repeatflags & 0x01 ? g_localizeStrings.Get(18080) : "__"
+                   , timer->repeatflags & 0x02 ? g_localizeStrings.Get(18081) : "__"
+                   , timer->repeatflags & 0x04 ? g_localizeStrings.Get(18082) : "__"
+                   , timer->repeatflags & 0x08 ? g_localizeStrings.Get(18083) : "__"
+                   , timer->repeatflags & 0x10 ? g_localizeStrings.Get(18084) : "__"
+                   , timer->repeatflags & 0x20 ? g_localizeStrings.Get(18085) : "__"
+                   , timer->repeatflags & 0x40 ? g_localizeStrings.Get(18086) : "__"
+                   , g_localizeStrings.Get(18078)
+                   , tag.Start().GetAsLocalizedTime("", false)
+                   , g_localizeStrings.Get(18079)
+                   , tag.Stop().GetAsLocalizedTime("", false));
   }
+  tag.SetSummary(summary);
 
   xbmcTimers->push_back(tag);
   return;
@@ -963,19 +967,18 @@ PVR_ERROR CPVRClient::UpdateTimer(const cPVRTimerInfoTag &timerinfo)
 
 void CPVRClient::WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag)
 {
-  tag.index         = timerinfo.m_clientIndex;
-  tag.active        = timerinfo.m_Active;
-  tag.channelNum    = timerinfo.m_clientNum;
-  tag.recording     = timerinfo.m_recStatus;
-  tag.title         = timerinfo.m_strTitle;
-  tag.priority      = timerinfo.m_Priority;
-  tag.lifetime      = timerinfo.m_Lifetime;
-  tag.repeat        = timerinfo.m_Repeat;
-  tag.repeatflags   = timerinfo.m_Weekdays;
-
-  timerinfo.m_StartTime.GetAsTime(tag.starttime);
-  timerinfo.m_StopTime.GetAsTime(tag.endtime);
-  timerinfo.m_FirstDay.GetAsTime(tag.firstday);
+  tag.index         = timerinfo.ClientIndex();
+  tag.active        = timerinfo.Active();
+  tag.channelNum    = timerinfo.ClientNumber();
+  tag.recording     = timerinfo.IsRecording();
+  tag.title         = timerinfo.Title();
+  tag.priority      = timerinfo.Priority();
+  tag.lifetime      = timerinfo.Lifetime();
+  tag.repeat        = timerinfo.IsRepeating();
+  tag.repeatflags   = timerinfo.Weekdays();
+  tag.starttime     = timerinfo.StartTime();
+  tag.endtime       = timerinfo.StopTime();
+  tag.firstday      = timerinfo.FirstDayTime();
   return;
 }
 

@@ -715,7 +715,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       else if (iAction == ACTION_DELETE_ITEM)
       {
         /* Check if entry is a valid deleteable timer */
-        if (pItem->GetTVTimerInfoTag()->m_clientIndex != -1)
+        if (pItem->GetTVTimerInfoTag()->ClientIndex() != -1)
         {
           // prompt user for confirmation of timer deletion
           CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -725,7 +725,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
             pDialog->SetHeading(122);
             pDialog->SetLine(0, 18076);
             pDialog->SetLine(1, "");
-            pDialog->SetLine(2, pItem->GetTVTimerInfoTag()->m_strTitle);
+            pDialog->SetLine(2, pItem->GetTVTimerInfoTag()->Title());
             pDialog->DoModal();
 
             if (pDialog->IsConfirmed())
@@ -1170,14 +1170,14 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     int return_str_id;
 
-    if (pItem->GetTVTimerInfoTag()->m_Active == true)
+    if (pItem->GetTVTimerInfoTag()->Active() == true)
     {
-      pItem->GetTVTimerInfoTag()->m_Active = false;
+      pItem->GetTVTimerInfoTag()->SetActive(false);
       return_str_id = 13106;
     }
     else
     {
-      pItem->GetTVTimerInfoTag()->m_Active = true;
+      pItem->GetTVTimerInfoTag()->SetActive(true);
       return_str_id = 305;
     }
 
@@ -1191,7 +1191,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)
     {
-      CStdString strNewName = pItem->GetTVTimerInfoTag()->m_strTitle;
+      CStdString strNewName = pItem->GetTVTimerInfoTag()->Title();
       if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, g_localizeStrings.Get(18400), false))
       {
         cPVRTimers::RenameTimer(*pItem, strNewName);
@@ -1202,7 +1202,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
     else if (m_iCurrSubTVWindow == TV_WINDOW_RECORDINGS)
     {
-      CStdString strNewName = pItem->GetTVRecordingInfoTag()->m_strTitle;
+      CStdString strNewName = pItem->GetTVRecordingInfoTag()->Title();
       if (CGUIDialogKeyboard::ShowAndGetInput(strNewName, g_localizeStrings.Get(18399), false))
       {
         if (cPVRRecordings::DeleteRecording(*pItem))
@@ -1224,7 +1224,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         pDialog->SetHeading(122);
         pDialog->SetLine(0, 18076);
         pDialog->SetLine(1, "");
-        pDialog->SetLine(2, pItem->GetTVTimerInfoTag()->m_strTitle);
+        pDialog->SetLine(2, pItem->GetTVTimerInfoTag()->Title());
         pDialog->DoModal();
 
         if (!pDialog->IsConfirmed()) return false;
@@ -1339,10 +1339,10 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           {
             for (int i = 0; i < timerlist.Size(); ++i)
             {
-              if ((timerlist[i]->GetTVTimerInfoTag()->m_channelNum == pItem->GetTVEPGInfoTag()->m_channelNum) &&
-                  (timerlist[i]->GetTVTimerInfoTag()->m_StartTime <= pItem->GetTVEPGInfoTag()->m_startTime) &&
-                  (timerlist[i]->GetTVTimerInfoTag()->m_StopTime >= pItem->GetTVEPGInfoTag()->m_endTime) &&
-                  (timerlist[i]->GetTVTimerInfoTag()->m_Repeat != true))
+              if ((timerlist[i]->GetTVTimerInfoTag()->Number() == pItem->GetTVEPGInfoTag()->m_channelNum) &&
+                  (timerlist[i]->GetTVTimerInfoTag()->Start() <= pItem->GetTVEPGInfoTag()->m_startTime) &&
+                  (timerlist[i]->GetTVTimerInfoTag()->Stop() >= pItem->GetTVEPGInfoTag()->m_endTime) &&
+                  (timerlist[i]->GetTVTimerInfoTag()->IsRepeating() != true))
               {
                 cPVRTimers::DeleteTimer(*timerlist[i]);
               }
@@ -1777,7 +1777,7 @@ void CGUIWindowTV::UpdateTimers()
   m_vecItems->Clear();
 
   cPVRTimerInfoTag newtimer;
-  newtimer.m_strFileNameAndPath = "pvr://timers/add.timer";
+  newtimer.SetPath("pvr://timers/add.timer");
   CFileItemPtr addtimer(new CFileItem(newtimer));
   m_vecItems->Add(addtimer);
 
