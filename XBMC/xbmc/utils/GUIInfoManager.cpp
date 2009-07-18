@@ -1874,6 +1874,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     break;
     case PLAYER_PASSTHROUGH:
       bReturn = g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough();
+      break;
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();
     break;
