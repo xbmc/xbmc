@@ -42,7 +42,7 @@
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
 #include "VideoInfoTag.h"
-#include "utils/TVEPGInfoTag.h"
+#include "utils/PVREpg.h"
 #include "utils/PVRChannels.h"
 #include "utils/PVRRecordings.h"
 #include "utils/PVRTimers.h"

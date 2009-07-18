@@ -32,7 +32,7 @@
 //#define __declspec(x)
 #include <string.h>
 #include <time.h>
-#include "utils/TVEPGInfoTag.h"
+#include "utils/PVREpg.h"
 #include "xbmc_addon_types.h"
 
 #ifdef __cplusplus
