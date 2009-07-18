@@ -49,7 +49,7 @@
 #include "LastFmManager.h"
 #include "PictureInfoTag.h"
 #include "MusicInfoTag.h"
-#include "TVEPGInfoTag.h"
+#include "PVREpg.h"
 #include "PVRChannels.h"
 #include "VideoDatabase.h"
 #include "GUIDialogMusicScan.h"

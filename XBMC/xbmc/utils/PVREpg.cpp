@@ -20,7 +20,7 @@
 */
 
 #include "stdafx.h"
-#include "TVEPGInfoTag.h"
+#include "PVREpg.h"
 
 CTVEPGInfoTag::CTVEPGInfoTag(long uniqueBroadcastID)
 {

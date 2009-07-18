@@ -21,7 +21,7 @@
  */
 
 /*
- * for DESCRIPTION see 'TVTimerInfoTag.cpp'
+ * for DESCRIPTION see 'PVRTimers.cpp'
  */
 
 #include "DateTime.h"

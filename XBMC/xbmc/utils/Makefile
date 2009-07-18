@@ -55,7 +55,7 @@ SRCS=Addon.cpp \
      AsyncFileCopy.cpp \
      DbusServer.cpp \
      Atomics.cpp \
-     TVEPGInfoTag.cpp \
+     PVREpg.cpp \
      PVRTimers.cpp \
      PVRChannels.cpp \
      PVRRecordings.cpp \

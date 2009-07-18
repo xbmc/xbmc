@@ -25,7 +25,7 @@
  */
 
 #include "VideoInfoTag.h"
-#include "TVEPGInfoTag.h"
+#include "PVREpg.h"
 #include "settings/VideoSettings.h"
 #include "utils/Thread.h"
 #include "DateTime.h"

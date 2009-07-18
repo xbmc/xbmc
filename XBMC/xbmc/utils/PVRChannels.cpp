@@ -25,7 +25,7 @@
  */
 
 #include "stdafx.h"
-#include "TVEPGInfoTag.h"
+#include "PVREpg.h"
 #include "PVRChannels.h"
 #include "GUISettings.h"
 #include "TVDatabase.h"

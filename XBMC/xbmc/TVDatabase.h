@@ -24,7 +24,7 @@
 #include "DateTime.h"
 #include "FileItem.h"
 #include "settings/VideoSettings.h"
-#include "utils/TVEPGInfoTag.h"
+#include "utils/PVREpg.h"
 #include "utils/PVRChannels.h"
 
 class CTVDatabase : public CDatabase

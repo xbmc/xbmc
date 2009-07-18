@@ -50,7 +50,7 @@
 
 #include "stdafx.h"
 #include "PVRTimers.h"
-#include "TVEPGInfoTag.h"
+#include "PVREpg.h"
 #include "GUISettings.h"
 #include "PVRManager.h"
 #include "FileItem.h"

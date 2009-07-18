@@ -21,7 +21,7 @@
  */
 
 #include "../utils/Addon.h"
-#include "../utils/TVEPGInfoTag.h"
+#include "../utils/PVREpg.h"
 #include "../utils/PVRChannels.h"
 #include "../utils/PVRTimers.h"
 #include "../utils/PVRRecordings.h"

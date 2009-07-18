@@ -35,7 +35,7 @@
 #include "PVRManager.h"
 
 /* TV information tags */
-#include "utils/TVEPGInfoTag.h"
+#include "utils/PVREpg.h"
 #include "utils/PVRChannels.h"
 #include "utils/PVRRecordings.h"
 #include "utils/PVRTimers.h"
