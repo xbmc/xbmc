@@ -37,8 +37,6 @@ typedef struct YV12Image
 
   unsigned cshift_x; /* this is the chroma shift used */
   unsigned cshift_y;
-
-  unsigned flipindex; /* used to decide if this has been uploaded */
 } YV12Image;
 
 #define AUTOSOURCE -1
@@ -230,6 +228,7 @@ protected:
   {
     YUVFIELDS fields;
     YV12Image image;
+    unsigned  flipindex; /* used to decide if this has been uploaded */
   };
 
   typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
