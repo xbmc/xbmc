@@ -21,7 +21,6 @@
 
 #include "stdafx.h"
 #include "CDDADirectory.h"
-#include "DetectDVDType.h"
 #include "MusicDatabase.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
@@ -48,7 +47,7 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     return false;
 
   // Get information for the inserted disc
-  CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
+  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
 

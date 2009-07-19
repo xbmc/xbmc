@@ -48,6 +48,7 @@
 #ifdef HAS_KARAOKE
 #include "karaoke/karaokelyricsfactory.h"
 #endif
+#include "MediaManager.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -2261,7 +2262,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     return false;
 
   // Get information for the inserted disc
-  CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
+  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
 

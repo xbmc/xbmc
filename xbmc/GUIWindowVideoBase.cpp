@@ -54,6 +54,7 @@
 #include "PlayList.h"
 
 #include "SkinInfo.h"
+#include "MediaManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -715,7 +716,7 @@ void CGUIWindowVideoBase::OnManualIMDB()
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
 {
   CDetectDVDMedia::WaitMediaReady();
-  CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
+  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
   if (!CFile::Exists(strFileName))
