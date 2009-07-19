@@ -40,7 +40,6 @@
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
-#include "DetectDVDType.h"
 #include "Autorun.h"
 #include "FileSystem/HDDirectory.h"
 #include "FileSystem/StackDirectory.h"
@@ -1209,7 +1208,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 
   if ( IsDVD(strPath) )
   {
-    CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     //  xbox DVD
     if ( pInfo != NULL && pInfo->IsUDFX( 1 ) )
     {
@@ -1222,7 +1221,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 
   if ( IsISO9660(strPath) )
   {
-    CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
       strIcon = "DefaultVCD.png";
