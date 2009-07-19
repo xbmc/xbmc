@@ -28,6 +28,7 @@
 #ifdef _MSC_VER
 #include <winsock2.h>
 #define SHUT_RDWR SD_BOTH
+#define ETIMEDOUT WSAETIMEDOUT
 #else
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -163,6 +164,7 @@ htsmsg_t* CHTSPSession::ReadMessage()
 {
   void*    buf;
   uint32_t l;
+  int      x;
 
   if(m_queue.size())
   {
@@ -171,18 +173,23 @@ htsmsg_t* CHTSPSession::ReadMessage()
     return m;
   }
 
-  if(htsp_tcp_read_timeout(m_fd, &l, 4, 10000))
+  x = htsp_tcp_read_timeout(m_fd, &l, 4, 10000);
+  if(x == ETIMEDOUT)
+    return htsmsg_create_map();
+
+  if(x)
   {
-    printf("Failed to read packet size\n");
+    CLog::Log(LOGERROR, "CHTSPSession::ReadMessage - Failed to read packet size (%d)\n", x);
     return NULL;
   }
 
   l   = ntohl(l);
   buf = malloc(l);
 
-  if(htsp_tcp_read_timeout(m_fd, buf, l, 10000))
+  x = htsp_tcp_read(m_fd, buf, l);
+  if(x)
   {
-    printf("Failed to read packet\n");
+    CLog::Log(LOGERROR, "CHTSPSession::ReadMessage - Failed to read packet (%d)\n", x);
     free(buf);
     return NULL;
   }
