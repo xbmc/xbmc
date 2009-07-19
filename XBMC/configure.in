@@ -1029,6 +1029,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/paplayer/AACCodec/Makefile]
                 [xbmc/cores/paplayer/AC3Codec/Makefile]
                 [xbmc/cores/paplayer/ADPCMCodec/Makefile]
+                [xbmc/cores/paplayer/FLACCodec/Makefile]
                 [xbmc/cores/paplayer/ModuleCodec/Makefile]
                 [xbmc/cores/paplayer/GYMCodec/Makefile]
                 [xbmc/cores/paplayer/MP3Codec/Makefile]
@@ -1133,7 +1134,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/MPCCodec], [
   fi
 ], [$USE_EXTERNAL_LIBMPCDEC])
 
-XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
+XB_CONFIG_MODULE([xbmc/cores/paplayer/FLACCodec/flac-1.2.1], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \    
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 -C \

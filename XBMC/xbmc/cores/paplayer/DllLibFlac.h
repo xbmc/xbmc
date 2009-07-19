@@ -27,7 +27,7 @@
 #if (defined USE_EXTERNAL_LIBFLAC)
   #include <FLAC/stream_decoder.h>
 #else
-  #include "flac-1.2.1/include/FLAC/stream_decoder.h"
+  #include "FLACCodec/flac-1.2.1/include/FLAC/stream_decoder.h"
 #endif
 #include "DynamicDll.h"
 
