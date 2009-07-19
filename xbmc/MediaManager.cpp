@@ -323,18 +323,17 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 #endif
 }
 
+// End AutoSource status functions
+//////////////////////////////////
+
 bool CMediaManager::IsAudio(const CStdString& devicePath)
 {
 #ifdef AUTOSOURCE
-  CSingleLock waitLock(m_muAutoSource);
-  VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
-  if (!pShares) return false;
-  
-  CStdString strDevice = TranslateDevicePath(devicePath);
-  VECSOURCES::const_iterator it;
-  for(it=pShares->begin();it!=pShares->end();++it)
-    if(it->strPath.Equals(strDevice) && it->strStatus.Equals("Audio-CD")) return true;
+  CCdInfo* pCdInfo = GetCdInfo(devicePath);
+  if(pCdInfo != NULL && pCdInfo->IsAudio(1))
+    return true;
 
+  return false;
 #else 
   // TODO: switch all ports to use auto sources
   MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
@@ -344,9 +343,6 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
 
   return false;
 }
-
-// End AutoSource status functions
-//////////////////////////////////
 
 DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 {
