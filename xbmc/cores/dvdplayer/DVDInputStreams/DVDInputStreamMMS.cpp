@@ -67,14 +67,17 @@ int CDVDInputStreamMMS::Read(BYTE* buf, int buf_size)
 __int64 CDVDInputStreamMMS::Seek(__int64 offset, int whence)
 {
   if(whence == SEEK_POSSIBLE)
-    return mmsx_get_seekable(m_mms);
+    return 0;
   else
     return -1; // TODO: implement offset based seeks
 }
 
 bool CDVDInputStreamMMS::SeekTime(int iTimeInMsec)
 {
-  return mmsx_time_seek(NULL,m_mms,double(iTimeInMsec)/1000);
+  if (mmsx_get_seekable(m_mms))
+    return mmsx_time_seek(NULL,m_mms,double(iTimeInMsec)/1000);
+  
+  return false;
 }
 
 __int64 CDVDInputStreamMMS::GetLength()
