@@ -1734,7 +1734,7 @@
   <string id="20301">Web server directory (HTTPS)</string>
   <string id="20302">Unable to write to folder:</string>
   <string id="20303">Do you want to skip and proceed?</string>
-  <string id="20304"></string>
+  <string id="20304">RSS Feed</string>
   <string id="20305"></string>
 
   <string id="20306">Unknown. Please add MD5 from xbmc.log to BiosIDs.ini.</string>
