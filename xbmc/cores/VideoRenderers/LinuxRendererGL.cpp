@@ -905,10 +905,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     }
   }
   else
-  {
     m_iLastRenderBuffer = index;
-    LoadTextures(index);
-  }
 
   if (clear)
   {
@@ -1311,6 +1308,8 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     m_currentField = FIELD_FULL;
   }
 
+  LoadTextures(renderBuffer);
+
   if (m_renderMethod & RENDER_GLSL)
   {
     UpdateVideoFilter();
@@ -1479,6 +1478,12 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
 
+  if (m_reloadShaders)
+  {
+    m_reloadShaders = 0;
+    LoadShaders(field);
+  }
+
   glDisable(GL_DEPTH_TEST);
 
   // Y
@@ -1498,17 +1503,6 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
-
-  if (m_reloadShaders)
-  {
-    m_reloadShaders = 0;
-    LoadShaders(field);
-
-    if (m_currentField==FIELD_FULL)
-      SetTextureFilter(GL_LINEAR);
-    else
-      SetTextureFilter(GL_LINEAR);
-  }
 
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetYTexture(0);
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetUTexture(1);
@@ -1571,6 +1565,14 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
 
+  if (m_reloadShaders)
+  {
+    m_reloadShaders = 0;
+    m_fbo.Cleanup();
+    LoadShaders(m_currentField);
+    VerifyGLState();
+  }
+
   glDisable(GL_DEPTH_TEST);
   VerifyGLState();
 
@@ -1594,16 +1596,6 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
-
-  if (m_reloadShaders)
-  {
-    m_reloadShaders = 0;
-    m_fbo.Cleanup();
-    LoadShaders(m_currentField);
-    VerifyGLState();
-    SetTextureFilter(GL_LINEAR);
-    VerifyGLState();
-  }
 
   // make sure the yuv shader is loaded and ready to go
   if (!m_pYUVShader || (!m_pYUVShader->OK()))
