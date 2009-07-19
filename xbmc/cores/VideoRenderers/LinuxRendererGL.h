@@ -171,11 +171,10 @@ protected:
   void UpdateVideoFilter();
 
   // renderers
-  //void RenderLowMem(DWORD flags);     // low mem renderer
-  void RenderMultiPass(DWORD flags, int renderBuffer);  // multi pass glsl renderer
-  void RenderSinglePass(DWORD flags, int renderBuffer); // single pass glsl renderer
-  void RenderSoftware(DWORD flags, int renderBuffer);   // single pass s/w yuv2rgb renderer
-  void RenderVDPAU(DWORD flags, int renderBuffer);      // render using vdpau hardware
+  void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
+  void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
+  void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
+  void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
 
   CFrameBufferObject m_fbo;
 

@@ -1319,34 +1319,34 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     {
     case RQ_LOW:
     case RQ_SINGLEPASS:
-      RenderSinglePass(flags, renderBuffer);
+      RenderSinglePass(renderBuffer, m_currentField);
       VerifyGLState();
       break;
 
     case RQ_MULTIPASS:
-      RenderMultiPass(flags, renderBuffer);
+      RenderMultiPass(renderBuffer, m_currentField);
       VerifyGLState();
       break;
 
     case RQ_SOFTWARE:
-      RenderSoftware(flags, renderBuffer);
+      RenderSoftware(renderBuffer, m_currentField);
       VerifyGLState();
       break;
     }
   }
   else if (m_renderMethod & RENDER_ARB)
   {
-    RenderSinglePass(flags, renderBuffer);
+    RenderSinglePass(renderBuffer, m_currentField);
   }
 #ifdef HAVE_LIBVDPAU
   else if (m_renderMethod & RENDER_VDPAU)
   {
-    RenderVDPAU(flags, renderBuffer);
+    RenderVDPAU(renderBuffer, m_currentField);
   }
 #endif
   else
   {
-    RenderSoftware(flags, renderBuffer);
+    RenderSoftware(renderBuffer, m_currentField);
     VerifyGLState();
   }
 }
@@ -1472,21 +1472,8 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 }
 
-void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
+void CLinuxRendererGL::RenderSinglePass(int index, int field)
 {
-  int field = FIELD_FULL;
-  DWORD fieldmask = (flags&RENDER_FLAG_FIELDMASK);
-
-  if (fieldmask)
-  {
-    if (fieldmask == RENDER_FLAG_BOTH)
-      field = FIELD_FULL;
-    else if (fieldmask == RENDER_FLAG_EVEN)
-      field = FIELD_EVEN;
-    else
-      field = FIELD_ODD;
-  }
-
   YUVFIELDS &fields = m_YUVTexture[index];
   YUVPLANES &planes = fields[field];
 
@@ -1520,7 +1507,7 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   if (m_reloadShaders)
   {
     m_reloadShaders = 0;
-    LoadShaders(m_currentField);
+    LoadShaders(field);
 
     if (m_currentField==FIELD_FULL)
       SetTextureFilter(GL_LINEAR);
@@ -1531,7 +1518,7 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetYTexture(0);
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetUTexture(1);
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetVTexture(2);
-  if(field == FIELD_ODD)
+  if     (field == FIELD_ODD)
     ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(1);
   else if(field == FIELD_EVEN)
     ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(0);
@@ -1580,10 +1567,10 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
+void CLinuxRendererGL::RenderMultiPass(int index, int field)
 {
   YV12Image &im = m_image[index];
-  YUVPLANES &planes = m_YUVTexture[index][m_currentField];
+  YUVPLANES &planes = m_YUVTexture[index][field];
 
   // set scissors if we are not in fullscreen video
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
@@ -1635,7 +1622,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
 
   int imgheight;
 
-  if(m_currentField == FIELD_FULL)
+  if(field == FIELD_FULL)
     imgheight = im.height;
   else
     imgheight = im.height/2;
@@ -1656,9 +1643,9 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetVTexture(2);
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetWidth(im.width);
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetHeight(im.height);
-  if     (m_currentField == FIELD_ODD)
+  if     (field == FIELD_ODD)
     ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(1);
-  else if(m_currentField == FIELD_EVEN)
+  else if(field == FIELD_EVEN)
     ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(0);
 
   VerifyGLState();
@@ -1784,7 +1771,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
+void CLinuxRendererGL::RenderVDPAU(int index, int field)
 {
 #ifdef HAVE_LIBVDPAU
   if (!g_VDPAU)
@@ -1841,21 +1828,8 @@ void CLinuxRendererGL::RenderVDPAU(DWORD flags, int index)
 }
 
 
-void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
+void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
-  int field = FIELD_FULL;
-  DWORD fieldmask = (flags&RENDER_FLAG_FIELDMASK);
-
-  if (fieldmask)
-  {
-    if (fieldmask == RENDER_FLAG_BOTH)
-      field = FIELD_FULL;
-    else if (fieldmask == RENDER_FLAG_EVEN)
-      field = FIELD_EVEN;
-    else
-      field = FIELD_ODD;
-  }
-
   YUVPLANES &planes = m_YUVTexture[index][field];
 
   // set scissors if we are not in fullscreen video
