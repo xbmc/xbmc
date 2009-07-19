@@ -206,11 +206,10 @@ protected:
   bool m_isSoftwareUpscaling;
 
   // Raw data used by renderer
-  YV12Image m_image[NUM_BUFFERS];
   int m_currentField;
   int m_reloadShaders;
 
-  typedef struct
+  struct YUVPLANE
   {
     GLuint id;
     CRect  rect;
@@ -222,15 +221,22 @@ protected:
     unsigned texheight;
 
     unsigned flipindex;
-  } YUVPLANE;
+  };
 
   typedef YUVPLANE           YUVPLANES[MAX_PLANES];
   typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
-  typedef YUVFIELDS          YUVBUFFERS[NUM_BUFFERS];
+
+  struct YUVBUFFER
+  {
+    YUVFIELDS fields;
+    YV12Image image;
+  };
+
+  typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
 
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFERS m_YUVTexture;
+  YUVBUFFERS m_buffers;
 
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , unsigned width,  unsigned height
