@@ -502,32 +502,29 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
      return -1;
   }
 
-  if( source >= 0 && im.plane[0] )
+  if( readonly )
+    im.flags |= IMAGE_FLAG_READING;
+  else
   {
-    if( readonly )
-      im.flags |= IMAGE_FLAG_READING;
-    else
-    {
-      if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
-        CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, source);
+    if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
+      CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, source);
 
-      im.flags |= IMAGE_FLAG_WRITING;
-    }
-
-    // copy the image - should be operator of YV12Image
-    for (int p=0;p<MAX_PLANES;p++)
-    {
-      image->plane[p]  = im.plane[p];
-      image->stride[p] = im.stride[p];
-    }
-    image->width    = im.width;
-    image->height   = im.height;
-    image->flags    = im.flags;
-    image->cshift_x = im.cshift_x;
-    image->cshift_y = im.cshift_y;
-
-    return source;
+    im.flags |= IMAGE_FLAG_WRITING;
   }
+
+  // copy the image - should be operator of YV12Image
+  for (int p=0;p<MAX_PLANES;p++)
+  {
+    image->plane[p]  = im.plane[p];
+    image->stride[p] = im.stride[p];
+  }
+  image->width    = im.width;
+  image->height   = im.height;
+  image->flags    = im.flags;
+  image->cshift_x = im.cshift_x;
+  image->cshift_y = im.cshift_y;
+
+  return source;
 
   return -1;
 }
