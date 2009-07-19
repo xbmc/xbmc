@@ -160,7 +160,7 @@ bool CHTSPSession::Auth(const std::string& username, const std::string& password
   return ReadSuccess(m, false, "get reply from authentication with server");
 }
 
-htsmsg_t* CHTSPSession::ReadMessage()
+htsmsg_t* CHTSPSession::ReadMessage(int timeout)
 {
   void*    buf;
   uint32_t l;
@@ -173,7 +173,7 @@ htsmsg_t* CHTSPSession::ReadMessage()
     return m;
   }
 
-  x = htsp_tcp_read_timeout(m_fd, &l, 4, 10000);
+  x = htsp_tcp_read_timeout(m_fd, &l, 4, timeout);
   if(x == ETIMEDOUT)
     return htsmsg_create_map();
 

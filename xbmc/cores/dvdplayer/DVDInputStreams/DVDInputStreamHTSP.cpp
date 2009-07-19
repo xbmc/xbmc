@@ -46,11 +46,11 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
    * we can guarantee a new stream       */
   m_startup = false;
 
-  while((msg = m_session.ReadMessage()))
+  while((msg = m_session.ReadMessage(1000)))
   {
     const char* method;
     if((method = htsmsg_get_str(msg, "method")) == NULL)
-      continue;
+      return msg;
 
     if     (strstr(method, "channelAdd"))
       CHTSPSession::ParseChannelUpdate(msg, m_channels);
