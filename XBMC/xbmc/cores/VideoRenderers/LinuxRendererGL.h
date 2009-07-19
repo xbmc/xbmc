@@ -165,7 +165,7 @@ protected:
   void CopyYV12Texture(int dest);
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
-  virtual void LoadShaders(int renderMethod=FIELD_FULL);
+  virtual void LoadShaders(int field=FIELD_FULL);
   void LoadTextures(int source);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();

@@ -1114,7 +1114,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   }
 }
 
-void CLinuxRendererGL::LoadShaders(int renderMethod)
+void CLinuxRendererGL::LoadShaders(int field)
 {
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
   CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
@@ -1143,7 +1143,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
       m_pYUVShader = NULL;
     }
 
-    if (renderMethod & (FIELD_ODD|FIELD_EVEN))
+    if (field & (FIELD_ODD|FIELD_EVEN))
     {
       if (m_renderQuality == RQ_SINGLEPASS)
       {
