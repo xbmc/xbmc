@@ -1483,9 +1483,6 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   glDisable(GL_DEPTH_TEST);
 
-  //See RGB renderer for comment on this
-#define CHROMAOFFSET_HORIZ 0.25f
-
   // Y
   glActiveTextureARB(GL_TEXTURE0);
   glEnable(m_textureTarget);
@@ -1578,9 +1575,6 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 
   glDisable(GL_DEPTH_TEST);
   VerifyGLState();
-
-  //See RGB renderer for comment on this
-#define CHROMAOFFSET_HORIZ 0.25f
 
   // Y
   glEnable(m_textureTarget);
