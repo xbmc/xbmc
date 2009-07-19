@@ -40,6 +40,7 @@ public:
 
   virtual bool    NextStream()                     { return m_startup; }
 
+  virtual void    Abort();
 
   bool            NextChannel();
   bool            PrevChannel();

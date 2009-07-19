@@ -205,3 +205,8 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
   return current.m_strPath  != item.m_strPath
       || current.m_strTitle != item.m_strTitle;
 }
+
+void CDVDInputStreamHTSP::Abort()
+{
+  m_session.Abort();
+}
