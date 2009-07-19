@@ -21,6 +21,10 @@
  */
 
 #include "Settings.h" // for VECSOURCES
+#include <map>
+#include "FileSystem/cdioSupport.h"
+
+using namespace MEDIA_DETECT;
 
 class CNetworkLocation
 {
@@ -51,12 +55,17 @@ public:
   void RemoveAutoSource(const CMediaSource &share);
   bool IsDiscInDrive(const CStdString& devicePath="");
   bool IsAudio(const CStdString& devicePath="");
-  CStdString TranslateDevicePath(const CStdString& devicePath);
+  CStdString TranslateDevicePath(const CStdString& devicePath, bool bReturnAsDevice=false);
   DWORD GetDriveStatus(const CStdString& devicePath="");
+  CCdInfo* GetCdInfo(const CStdString& devicePath="");
+  bool RemoveCdInfo(const CStdString& devicePath="");
+  CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath);
 
 protected:
   std::vector<CNetworkLocation> m_locations;
+
   CCriticalSection m_muAutoSource;
+  std::map<CStdString,CCdInfo*> m_mapCdInfo;
 
 };
 
