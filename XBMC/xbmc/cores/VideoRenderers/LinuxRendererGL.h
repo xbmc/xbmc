@@ -63,7 +63,6 @@ enum EFIELDSYNC
   FS_NONE,
   FS_ODD,
   FS_EVEN,
-  FS_BOTH
 };
 
 struct YUVRANGE
@@ -237,17 +236,9 @@ protected:
                 , unsigned width,  unsigned height
                 , int stride, void* data );
 
-  //BaseYUV2RGBGLSLShader     *m_pYUVShaderGLSL;
-  //BaseYUV2RGBARBShader      *m_pYUVShaderARB;
   CShaderProgram        *m_pYUVShader;
   BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
-
-//  /*
-  GLint m_brightness;
-  GLint m_contrast;
-  GLint m_shaderField;
-//  */
 
   // clear colour for "black" bars
   float m_clearColour;
