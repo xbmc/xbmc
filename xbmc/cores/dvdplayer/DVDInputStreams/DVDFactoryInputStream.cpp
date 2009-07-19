@@ -74,7 +74,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
     return new CDVDInputStreamHTSP();
 #endif
 #ifdef HAS_FILESYSTEM_MMS
-  else if(file.substr(0,6) == "mms://")
+  else if(file.substr(0,6) == "mms://" || file.substr(0,7) == "mmsh://")
     return new CDVDInputStreamMMS();
 #endif
 

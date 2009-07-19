@@ -11,7 +11,7 @@
 
   <rules>
     <rule protocols="rtv" player="DVDPlayer" />
-    <rule protocols="hdhomerun|myth|cmyth|rtmp|mms" player="DVDPlayer" />
+    <rule protocols="hdhomerun|myth|cmyth|rtmp|mms|mmsh" player="DVDPlayer" />
     <rule protocols="lastfm|shout" player="PAPlayer" />
 
     <!-- dvdplayer can play standard rtsp streams -->
