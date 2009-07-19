@@ -376,14 +376,6 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   m_upscalingHeight = rd.bottom-rd.top;
   m_scalingMethod = GetDefaultUpscalingMethod();
 
-  if (m_rgbBuffer != NULL)
-  {
-     delete [] m_rgbBuffer;
-     m_rgbBuffer = NULL;
-  }
-
-  m_rgbBufferSize = width*height*4;
-  m_rgbBuffer = new BYTE[m_rgbBufferSize];
   m_bConfigured = true;
   m_bImageReady = false;
 
@@ -608,6 +600,13 @@ void CLinuxRendererGL::LoadTextures(int source)
   // if we don't have a shader, fallback to SW YUV2RGB for now
   if (m_renderMethod & RENDER_SW)
   {
+    if(m_rgbBufferSize < m_iSourceWidth * m_iSourceHeight * 4)
+    {
+      delete [] m_rgbBuffer;
+      m_rgbBufferSize = m_iSourceWidth*m_iSourceHeight*4;
+      m_rgbBuffer = new BYTE[m_rgbBufferSize];
+    }
+
     struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
                                                              im->width, im->height, PIX_FMT_BGRA,
                                                              SWS_FAST_BILINEAR, NULL, NULL, NULL);
