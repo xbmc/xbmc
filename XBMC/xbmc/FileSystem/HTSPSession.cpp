@@ -326,8 +326,7 @@ bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   const char *title, *desc;
   if(         htsmsg_get_u32(msg, "start", &start)
   ||          htsmsg_get_u32(msg, "stop" , &stop)
-  || (title = htsmsg_get_str(msg, "title")) == NULL
-  || (desc  = htsmsg_get_str(msg, "description"))  == NULL)
+  || (title = htsmsg_get_str(msg, "title")) == NULL)
   {
     CLog::Log(LOGDEBUG, "CHTSPSession::ParseEvent - malformed event");
     htsmsg_print(msg);
@@ -339,7 +338,8 @@ bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   event.start = start;
   event.stop  = stop;
   event.title = title;
-  event.descs = desc;
+  if((desc = htsmsg_get_str(msg, "description")))
+    event.descs = desc;
   if(htsmsg_get_u32(msg, "nextEventId", &next))
     event.next = 0;
   else
