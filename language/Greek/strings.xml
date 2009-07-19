@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 07/16/2009-->
+<!--Date of translation: 07/19/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21415-->
+<!--Based on english strings version 21758-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -423,7 +423,7 @@
   <string id="501">Αναζήτηση για ονόματα άλμπουμ...</string>
   <string id="502">Άνοιγμα</string>
   <string id="503">Απασχολημένο</string>
-  <string id="504">Άδειο</string>
+  <string id="504">Κενός </string>
   <string id="505">Φόρτωση πληροφοριών πολυμέσων...</string>
   <string id="507">Ταξιν: Χρήση</string>
   <string id="510">Ενεργοποίηση απεικονίσεων</string>
@@ -1936,6 +1936,7 @@
   <string id="23001">- Ρυθμίσεις επέκτασης</string>
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
+  <string id="29802">Σε λειτουργία η διέλευση ήχου</string>
   <string id="29999">Εφαρμογή ρυθμίσεων φίλτρου Flicker</string>
   <string id="30011">Αναζήτηση διάρκειας</string>
   <string id="33001">Ποιότητα διαφημιστικού</string>
