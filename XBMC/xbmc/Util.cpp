@@ -206,6 +206,8 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
   if (url.GetProtocol() == "rss")
   {
+    url.SetProtocol("http");
+    url.GetURL(path);
     CRssFeed feed;
     feed.Init(path);
     feed.ReadFeed();
