@@ -275,6 +275,9 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
   g_settings.DeleteSource("programs", share.strName, share.strPath, true);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   m_gWindowManager.SendThreadMessage( msg );
+
+  // delete cached CdInfo
+  RemoveCdInfo(TranslateDevicePath(share.strPath, true));
 }
 
 /////////////////////////////////////////////////////////////
@@ -283,15 +286,20 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 // - could be also implemented as direct call to the device
 // - TODO: translate cdda://<device>/
 
-CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath)
+CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool bReturnAsDevice)
 {
   CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = devicePath;
   // fallback for cdda://local/ and empty devicePath
   if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
     strDevice = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+
 #ifdef _WIN32PC
-  strDevice.Replace("\\\\.\\","");
+  if(bReturnAsDevice == false)
+    strDevice.Replace("\\\\.\\","");
+  else if(strDevice[1]==':')
+    strDevice.Format("\\\\.\\%c:", strDevice[0]);
+
   CUtil::RemoveSlashAtEnd(strDevice);
 #endif
   return strDevice;
@@ -342,9 +350,9 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
 
 DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 {
-  CStdString strDevice = TranslateDevicePath(devicePath);
 #ifdef _WIN32PC
   CSingleLock waitLock(m_muAutoSource);
+  CStdString strDevice = TranslateDevicePath(devicePath);
   DWORD dwRet = DRIVE_NOT_READY;
   strDevice.Format("\\\\.\\%c:",strDevice[0]);
   int status = CWIN32Util::GetDriveStatus(strDevice);
@@ -367,5 +375,60 @@ DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
   return dwRet;
 #else
   return MEDIA_DETECT::CDetectDVDMedia::DriveReady();
+#endif
+}
+
+CCdInfo* CMediaManager::GetCdInfo(const CStdString& devicePath)
+{
+#ifdef AUTOSOURCE
+  CSingleLock waitLock(m_muAutoSource);
+  CCdInfo* pCdInfo=NULL;
+  CStdString strDevice = TranslateDevicePath(devicePath, true);
+  std::map<CStdString,CCdInfo*>::iterator it;
+  it = m_mapCdInfo.find(strDevice);
+  if(it != m_mapCdInfo.end())
+    return it->second;
+
+  CCdIoSupport cdio;
+  pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
+  if(pCdInfo!=NULL)
+    m_mapCdInfo.insert(std::pair<CStdString,CCdInfo*>(strDevice,pCdInfo));
+
+  return pCdInfo;
+#else
+  return MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
+#endif
+}
+
+bool CMediaManager::RemoveCdInfo(const CStdString& devicePath)
+{
+  CSingleLock waitLock(m_muAutoSource);
+  CStdString strDevice = TranslateDevicePath(devicePath, true);
+
+  std::map<CStdString,CCdInfo*>::iterator it;
+  it = m_mapCdInfo.find(strDevice);
+  if(it != m_mapCdInfo.end())
+  {
+    if(it->second != NULL)
+      delete it->second;
+
+    m_mapCdInfo.erase(it);
+    return true;
+  }
+  return false;
+}
+
+CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
+{
+#ifdef _WIN32PC
+  CStdString strDevice = TranslateDevicePath(devicePath);
+  char cVolumenName[128];
+  char cFSName[128];
+  CUtil::AddSlashAtEnd(strDevice);
+  if(GetVolumeInformation(strDevice.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
+    return "";
+  return CStdString(cVolumenName).TrimRight(" ");
+#else
+  return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif
 }
