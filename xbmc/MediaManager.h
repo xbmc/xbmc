@@ -59,7 +59,7 @@ public:
   DWORD GetDriveStatus(const CStdString& devicePath="");
   CCdInfo* GetCdInfo(const CStdString& devicePath="");
   bool RemoveCdInfo(const CStdString& devicePath="");
-  CStdString GetDiskLabel(const CStdString& devicePath);
+  CStdString GetDiskLabel(const CStdString& devicePath="");
 
 protected:
   std::vector<CNetworkLocation> m_locations;
