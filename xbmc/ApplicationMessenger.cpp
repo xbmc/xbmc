@@ -536,11 +536,11 @@ case TMSG_POWERDOWN:
     case TMSG_OPTICAL_MOUNT:
       {
         CMediaSource share;
-        CStdString strLabel;
+        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
         share.strPath = pMsg->strParam;
         if(g_mediaManager.IsAudio(share.strPath))
           share.strStatus = "Audio-CD";
-        else
+        else if(share.strStatus == "")
           share.strStatus = g_localizeStrings.Get(446);
         share.strName = share.strPath;
         share.m_ignore = true;
