@@ -507,6 +507,7 @@ void CWIN32Util::ExtendDllPath()
 HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
 {
   BOOL bRet= FALSE;
+  DWORD dwReq;
   char cDL = cDriveLetter;
   if( !cDL )
   {
@@ -524,9 +525,16 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
       ( GetDriveType( strRootFormat ) == DRIVE_CDROM ) )
   {
     DWORD dwDummy;
-    bRet= DeviceIoControl( hDrive, ( (GetDriveStatus(strVolFormat) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA), 
-                                    NULL, 0, NULL, 0, &dwDummy, NULL);
+    dwReq = (GetDriveStatus(strVolFormat) == 1) ? IOCTL_STORAGE_LOAD_MEDIA : IOCTL_STORAGE_EJECT_MEDIA;
+    bRet = DeviceIoControl( hDrive, dwReq, NULL, 0, NULL, 0, &dwDummy, NULL);
     CloseHandle( hDrive );
+  }
+  // Windows doesn't seem to send always DBT_DEVICEREMOVECOMPLETE
+  // unmount it here too as it won't hurt
+  if(dwReq == IOCTL_STORAGE_EJECT_MEDIA && bRet == 1)
+  {
+    strRootFormat.Format( _T("%c:"), cDL);
+    g_application.getApplicationMessenger().OpticalUnMount(strRootFormat);
   }
   return bRet? S_OK : S_FALSE;
 }
@@ -819,15 +827,17 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
       bool bUseDCD= false;
       if( uDriveType > DRIVE_UNKNOWN && 
         (( eDriveType == ALL_DRIVES && (uDriveType == DRIVE_FIXED || uDriveType == DRIVE_REMOTE || uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOVABLE )) ||
-         ( eDriveType == LOCAL_DRIVES && (uDriveType == DRIVE_FIXED || uDriveType == DRIVE_CDROM || uDriveType == DRIVE_REMOTE)) ||
-         ( eDriveType == REMOVABLE_DRIVES && (uDriveType == DRIVE_REMOVABLE ))))
+         ( eDriveType == LOCAL_DRIVES && (uDriveType == DRIVE_FIXED || uDriveType == DRIVE_REMOTE)) ||
+         ( eDriveType == REMOVABLE_DRIVES && ( uDriveType == DRIVE_REMOVABLE )) ||
+         ( eDriveType == DVD_DRIVES && ( uDriveType == DRIVE_CDROM ))))
       {
         share.strPath= pcBuffer + iPos;
         if( cVolumeName[0] != '\0' ) share.strName= cVolumeName;
         if( uDriveType == DRIVE_CDROM && nResult)
         {
-          share.strName.Format( "%s %s (%s)",
-            share.strPath, g_localizeStrings.Get(218),share.strName );
+          // Has to be the same as auto mounted devices
+          share.strStatus = share.strName;
+          share.strName = share.strPath;
           share.m_iDriveType= CMediaSource::SOURCE_TYPE_LOCAL;
           bUseDCD= true;
         }
@@ -883,6 +893,11 @@ void CWIN32Util::AddRemovableDrives()
   GetDrivesByType(vShare, REMOVABLE_DRIVES);
   for(it=vShare.begin();it!=vShare.end();++it)
     g_mediaManager.AddAutoSource(*it);
+  vShare.clear();
+  GetDrivesByType(vShare, DVD_DRIVES);
+  for(it=vShare.begin();it!=vShare.end();++it)
+    if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
+      g_mediaManager.AddAutoSource(*it);
 }
 
 bool CWIN32Util::IsAudioCD(const CStdString& strPath)
