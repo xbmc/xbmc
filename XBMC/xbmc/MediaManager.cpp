@@ -31,7 +31,7 @@
 #endif
 #include "GUIWindowManager.h"
 #include "FileSystem/cdioSupport.h"
-#ifndef AUTOSOURCE 
+#ifndef _WIN32PC 
 // TODO: switch all ports to use auto sources
 #include "DetectDVDType.h"
 #endif
@@ -276,7 +276,7 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   m_gWindowManager.SendThreadMessage( msg );
 
-  // delete cached CdInfo
+  // delete cached CdInfo if any
   RemoveCdInfo(TranslateDevicePath(share.strPath, true));
 }
 
@@ -307,7 +307,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
 
 bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 {
-#ifdef AUTOSOURCE
+#ifdef _WIN32PC
   CSingleLock waitLock(m_muAutoSource);
   VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
   if (!pShares) return false;
@@ -328,7 +328,7 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 
 bool CMediaManager::IsAudio(const CStdString& devicePath)
 {
-#ifdef AUTOSOURCE
+#ifdef _WIN32PC
   CCdInfo* pCdInfo = GetCdInfo(devicePath);
   if(pCdInfo != NULL && pCdInfo->IsAudio(1))
     return true;
@@ -348,9 +348,8 @@ DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 {
 #ifdef _WIN32PC
   CSingleLock waitLock(m_muAutoSource);
-  CStdString strDevice = TranslateDevicePath(devicePath);
+  CStdString strDevice = TranslateDevicePath(devicePath, true);
   DWORD dwRet = DRIVE_NOT_READY;
-  strDevice.Format("\\\\.\\%c:",strDevice[0]);
   int status = CWIN32Util::GetDriveStatus(strDevice);
 
   switch(status)
@@ -376,7 +375,7 @@ DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 
 CCdInfo* CMediaManager::GetCdInfo(const CStdString& devicePath)
 {
-#ifdef AUTOSOURCE
+#ifdef _WIN32PC
   CSingleLock waitLock(m_muAutoSource);
   CCdInfo* pCdInfo=NULL;
   CStdString strDevice = TranslateDevicePath(devicePath, true);
@@ -417,6 +416,7 @@ bool CMediaManager::RemoveCdInfo(const CStdString& devicePath)
 CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
 {
 #ifdef _WIN32PC
+  CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath);
   char cVolumenName[128];
   char cFSName[128];

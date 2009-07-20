@@ -74,9 +74,9 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
             if (lpdbv -> dbcv_flags & DBTF_MEDIA)
             {
               CLog::Log(LOGDEBUG, "%s: Drive %c: Media has arrived.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              /*CStdString strDevice;
+              CStdString strDevice;
               strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              g_application.getApplicationMessenger().OpticalMount(strDevice);*/
+              g_application.getApplicationMessenger().OpticalMount(strDevice);
             }
             else
             {
@@ -100,9 +100,9 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
             if (lpdbv -> dbcv_flags & DBTF_MEDIA)
             {
               CLog::Log(LOGDEBUG,"%s: Drive %c: Media was removed.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              /*CStdString strDevice;
+              CStdString strDevice;
               strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              g_application.getApplicationMessenger().OpticalUnMount(strDevice);*/
+              g_application.getApplicationMessenger().OpticalUnMount(strDevice);
             }
             else
             {
