@@ -1,0 +1,591 @@
+2009-01-13  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/README
+	* win32/vs9/README: New files. Mention this VS solution and
+	projects are experimental and that https://code.launchpad.net/oah
+	might be a better choice.
+
+	* win32/vs8/Makefile.am
+	* win32/vs9/Makefile.am (EXTRA_DIST): Add the READMEs and two
+	missing vcproj files.
+
+2008-11-02  Tor Lillqvist  <tml@novell.com>
+
+	* win32/Makefile.am (SUBDIRS): Add vs9.
+
+2008-11-02  Tor Lillqvist  <tml@novell.com>
+
+	Bug 558153 - Patch for .def files generation
+
+	* win32/{vs8,vs9}/*.vcproj: Add &quot; around paths, making it
+	possible to compile in a directory containing spaces. .def files
+	generation is done for every configuration not only the "Debug"
+	ones.
+
+	Patch by Guillaume Duhamel.
+
+2008-09-16  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs9: New folder. Project files for use with MSVS9. Based
+	on the MSVS8 project files is win32/vs8. Four configurations:
+	Debug|Win32, Release|Win32, Debug|x64 and Release|x64. DLL names
+	simplified to of the style glib-2-vs9.dll.
+
+2008-09-15  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/*.vcproj: Update to match the Makefile.am files. Drop
+	G*_EXPORTS from PreprocessorDefinitions, nothing looks for such
+	macros. Add G_DISABLE_DEPRECATED.
+
+	Don't use Detect64BitPortabilityProblems as those warnings are
+	misleading. They don't take into consideration ifdefs in
+	glibconfig.h and elsewhere for _WIN64.
+
+	Add PCRE_STATIC for glib to avoid exporting the pcre
+	functions. Add DLL_EXPORT to glib to export also the GLIB_VAR
+	variables that aren't mentioned in glib.symbols. Add G_LOG_DOMAIN
+	for gobject.
+
+	Drop the "win32" part from under "dependencies" so that the same
+	project files can be used also for 64-bit compilation by just
+	having a different "dependencies" folder containing 64-bit
+	packages instead. At least, I hope it will work out some way like
+	that. MSVS project files really are a pain to maintain.  Much
+	information is typically copied for four different configurations
+	"Debug|Win32", "Release|Win32", "Debug|x64" and "Release|x64"
+	instead of having common stuff listed just once and only different
+	parametrisations. Or am I missing something?
+	
+	Make the "Release" configuration work, too. Use correct character
+	set for the gspawn-win32-helper programs. Use correct subsystem
+	for the non-console one.
+
+2008-08-27  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/*.vcproj: Add "win32" directory level to the
+	references to the dependencies folder (which each actual user of
+	the project file probably needs to edit anyway depending on their
+	directory structure). Add missing files, remove nonexistent files.
+
+	* win32/vs8/glib.vcproj: Don't needlessly copy localcharset.c, but
+	compile it where it is in libcharset. Drop dirent as gdir.c
+	includes dirent.h and wdirent.c directly. Handle also
+	G_GNUC_FORMAT in the custom build step for glib.symbols.
+
+2008-08-02  Tor Lillqvist  <tml@novell.com>
+
+	Bug 545954 - 64-bit issue in dirent
+
+	* win32/dirent/dirent.h: Use __int64 for the dd_handle on 64-bit
+	Windows. (Would use intptr_t, but that is not available before
+	MSVS8, and we want to keep this compilable also with MSVS6 and 7,
+	I think.) Thanks to Richard Hult.
+
+2008-05-19  Tor Lillqvist  <tml@novell.com>
+
+	* win32/dirent/dirent.c: Include dirent.h with doublequotes so
+	that it is searched from this same folder first.
+
+2008-05-19  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/gspawn-win32-helper.vcproj
+	* win32/vs8/gspawn-win32-helper-console.vcproj: New files. Build
+	these two executables.
+
+	* win32/vs8/*.vcproj: Compile as C and not C++.
+
+	* win32/vs8/glib-genmarshal.vcproj: Use MBS and not Unicode. (What
+	this setting really means is just that we don't define the UNICODE
+	and _UNICODE macros when compiling; it has no effect on what APIs
+	the code might use.) Use the same IntermediateDirectory as the
+	other projects.
+
+	* win32/vs8/glib.sln: Add the gspawn-win32-helper and gspawn-win32-helper projects.
+
+2008-05-17  Tor Lillqvist  <tml@novell.com>
+
+	* "build" is no longer include into GLib through
+	svn:externals. The relevant directories and files have been svn
+	add'ed to GLib (trunk) instead.
+
+2008-05-16  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/glib.vcproj: Add gi18n.c.
+
+	* win32/vs8/gio.vcproj: Add gwin32directorymonitor.c.
+
+	* win32/vs8/glib-genmarshal.vcproj: Put also glib-genmarshal.exe
+	in the "bin" folder.
+
+2008-04-23  Tor Lillqvist  <tml@novell.com>
+
+	Bug 529391 - Update of vs8 build files for Glib 2.16
+
+	* win32/vs8/*: Update from Danel Atallah.
+
+2008-03-12  Tor Lillqvist  <tml@novell.com>
+
+	* MAINTAINERS: Add.
+
+	* win32/make.mingw: Remove this since long unused and obsolete
+	file from SVN.
+
+	* win32/make.msc: Don't mention it here either then.
+
+2007-04-15  Tor Lillqvist  <tml@novell.com>
+
+	* .cvsignore
+	* win32/.cvsignore
+	* win32/dirent/.cvsignore
+	* win32/vs8/.cvsignore: Remove.
+
+2006-10-14  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/gmodule.vcproj
+	* win32/vs8/gobject.vcproj
+	* win32/vs8/gthread.vcproj: Updates by Mike Edenfield. (#354124)
+
+2006-09-02  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/glib.vcproj: Update from Mike Edenfield.
+
+2006-02-08  Tor Lillqvist  <tml@novell.com>
+
+	* win32/vs8/glib-genmarshal.vcproj: New file: Visual Studio
+	project file for glib-genmarshal.exe, by Sergey Scobich.
+
+	* win32/vs8/Makefile.am
+	* win32/vs8/glib.sln: Add it.
+
+2006-01-31  Tor Lillqvist  <tml@novell.com>
+
+	* win32/Makefile.am (EXTRA_DIST): Drop the obsolete shell scripts
+	and make.mingw.
+
+	* win32/vs8/*: Visual Studio 2005 project files for GLib
+	contributed by Sergey Scobich. (#328691)
+
+	* win32/Makefile.am (SUBDIRS): Add vs8.
+
+	* win32/make.msc (LINKDEBUG): Use /nodefaultlib:msvcrt.lib when
+	debugging. (#329325, Timo Linna)
+
+2005-09-01  Tor Lillqvist  <tml@novell.com>
+
+	* win32/cl-wrapper.c: Again spent some hours hacking on this. Now
+	the compilation phase of building libglib autoconfiscated using
+	CC=cl-wrapper seems to work. But problems in the linking phase,
+	for instance -Wl,--whole-archive isn't implemented, and I don't
+	think link.exe even has a such feature to include all of a
+	library. Argh. To implement -Wl,--whole-archive, would need to
+	extract the library contents into a temp directory and link with
+	all the resulting object files. Sigh.
+
+2005-07-09  Tor Lillqvist  <tml@novell.com>
+
+	* README: When using auto*/libtool/gcc to build GLib, Pango and
+	GTK+, the scripts to compile resource files in build/win32 are no
+	longer used. Still here in case somebody wants to have a look,
+	though.
+	
+2005-02-06  Hans Breuer  <hans@breuer.org>
+
+	* win32/make.msc win32/module.defs : updated to include Cairo,
+	gnome-canvas, gnome-print(ui), libart, pangoft2, libxml2, libxslt
+
+2004-12-29  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/cl-wrapper.c: More hacking. Implement -idirafter
+	correctly, amending the INCLUDE environment variable. Ignore
+	-lm. Error if multiple -o options. Copy input libs called foo.a to
+	foo.temp.lib so that link knows what they are. Remove dead
+	code. Link with same default libraries as mingw's gcc. Use
+	indirect command line file if command line is too long.
+
+2004-12-12  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/cl-wrapper.c: Hack more on this. Using MSVC is necessary
+	if one wants to use tools like Purify or BoundsChecker.
+
+2004-08-11  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/dirent/dirent.[ch]: Update from mingw-runtime-3.3.
+	Implements both normal and wide-char versions.
+
+	* win32/dirent/wdirent.c: New file.
+
+	* win32/dirent/Makefile.am (EXTRA_DIST): Add wdirent.c.
+
+2004-05-01  Hans Breuer  <hans@breuer.org>
+
+	* win32/make.msc : -DG_ENABLE_DEBUG=1 for debug builds
+	(#141335, John Ehresman)
+
+2004-03-05  Federico Mena Quintero  <federico@ximian.com>
+
+	Fix #136082, patch by Morten Welinder.
+
+	* win32/cl-wrapper.c: #include <config.h>
+	* win32/dirent/dirent.c: Likewise.
+
+2004-01-24  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/compile-resource
+	* win32/lt-compile-resource: Use /bin/sh instead of /bin/bash, as
+	MSYS doesn't come with any /bin/bash. When compiling with
+	--enable-static and --disable-shared flag, libtool creates *.lo
+	files as scripts, but the *.o files are in "." and not in
+	".libs". Thanks to Fridrich Strba.
+
+2003-11-15  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/dirent/makefile.msc: Improve. (#126913, John Ehresman)
+
+2003-08-08  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/cl-wrapper.c: Fix bug in environment variable
+	handling. Support --version flag. Prefix double quotes in -I and
+	-D parameters with backslash.
+
+2003-06-06  Tor Lillqvist  <tml@iki.fi>
+
+	* win32(compile-resource (resfile): Support a WINDRES environment
+	variable. (#112387, J. Ali Harlow)
+
+2002-09-28  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw: Add libxml2 CFLAGS and LIBS
+	(suggestion by Steffen Macke).
+
+2002-09-17  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/compile-resource: Return failure (implicitly, as the
+	return status of the last command executed) if m4 or windres
+	fails. Thanks to charlet@act-europe.fr (#93373).
+
+2002-09-13  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/lt-compile-resource: Argh. With some libtool versions, or
+	when the moon is in a certain phase, libtool creates the actual
+	object files as .lo files. Otherwise .lo files are small scripts
+	(which is what lt-compile-resource has always thought until now).
+	Add an ugly hack that tries to determine which kind of .lo files are
+	used, and act correspondingly.
+
+2002-09-10  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs: Remove GTK_VER which was misleading and
+	unused. Ditto for GTKGLAREA_VER. Add comment about taking this
+	stuff with a very big grain of salt.
+
+2002-03-27  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs
+	* win32/make.msc
+	* win32/make.mingw: Try to make up-to-date with GLib 2.0, ATK 1.0,
+	Pango 1.0 and GTK+ 2.0. This stuff is starting to feel more and
+	more quaint, though. Remove the FriBiDi references, Pango uses its
+	own mini-fribidi version. Use the names GTK2_CFLAGS and _LIBS also in
+	make.mingw, not GTKCURRENT_*.
+
+2001-12-05  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw (LIBICONV_LIBS): Fix typo: pkg-config --libs,
+	not --cflags. Thanks to Victor Secarin.
+
+	* win32/build-dll: Don't call dirname blindly on $0 which might be
+	a Windows-style (drive letter, backslashes) pathname. Thanks to
+	Victor Secarin. Remove mention of Platform SDK, it doesn't
+	include the linker any longer.
+
+2001-10-31  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw (TIFF_LIBS): We can use same import library for
+	non-LZW and LZW-enabled versions. Just let the user decide which
+	DLL to use.
+
+2001-10-30  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw: Use pkg-config for more stuff. The
+	corresponding .pc files are included in the new packages on
+	www.gimp.org/win32/new-downloads.html. 
+
+	* win32/dirent/dirent-zip: New file, script to package a developer
+	package of dirent.h and dirent.lib.
+
+	* win32/dirent/Makefile.am (EXTRA_DIST): Add it.
+
+2001-10-24  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw: Also try to include module.defs from the build
+	subdirectory of GLib.
+
+	* win32/make.msc: When DEBUG, use -Zi, otherwise -Zi. Always use
+	/machine:ix86.
+
+2001-10-23  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/cl-wrapper.c: Various changes. I don't actually use this
+	to build with libtool and MSVC, only to run configure for MSVC. At
+	least for now.
+
+	* win32/make.mingw: Use pkg-config to get CFLAGS and LIBS for GLib
+	and GTK.
+
+	* win32/make.msc: Use GDK and GTK import library names now
+	produced in gtk-1-3-win32-production.
+
+2001-10-10  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs (PNG): Use libpng 1.2.0.
+
+	* win32/lt-compile-resource: Mkdir .libs if not there already.
+
+2001-09-30  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/build-dll: Comment clarification.
+
+	* win32/Makefile.am: Add dirent subdirectory.
+
+	* win32/dirent/*: New files. The (public domain) dirent
+	implementation from the mingw runtime, for MSVC users.
+
+	* win32/make.msc (DIRENT_CFLAGS,DIRENT_LIBS): Point to
+	build/win32/dirent in the GLib sources. Hmm.
+	(CC): Remove duplicate $(OPTIMIZE), already in CFLAGS.
+	
+2001-09-28  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw
+	* win32/make.msc: Separate the compiler program names into
+	an Make macro of its own (CCOMPILER and CXXCOMPILER).
+
+	* win32/cl-wrapper.c: New file. A program that accepts Unix-like C
+	compiler command line arguments, and runs the Microsoft C compiler
+	(cl) after transforming the arguments to cl's syntax. This program
+	can be used when using the auto*/configure mechanism to build
+	software with MSVC.
+
+2001-09-25  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs: Do define GLIB_VER after all. (Do use it in
+	(import) library names, like it is on Unix.)
+
+	* win32/make.mingw
+	* win32/make.msc: Some comments added. Use GLIB_VER in GLib
+	(import) library names.
+
+2001-09-17  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/build-dll: Invocation changed. We now expect a version
+	info like libtool's -version-info parameter. The intention is to
+	produce the same name DLL as libtool would, i.e. use "current -
+	age" as the DLL name suffix.
+
+	* win32/compile-resource: New file, containing the part of
+	build-dll that compiles the resource file, if available.
+
+	* win32/lt-compile-resource: New file, invokes compile-resource,
+	placing the resulting .o file in the .libs subdirectory, and
+	handcrafts a "libtool object" for it.
+
+	* win32/Makefile.am: Distribute new files.
+
+	* win32/make.mingw: Add COMPILE_RESOURCE.
+
+Tue Sep  4 01:46:15 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* win32/Makefile.am (EXTRA_DIST): Add build-dll, on
+	the assumption it isn't going to get distributed otherwise.
+
+2001-09-01  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/build-dll: Move here from GLib. Use gcc -shared instead of
+	the multiple pass gcc+dlltool method. Don't include the version
+	number in the import library names.
+
+	* win32/make.mingw
+	* win32/make.msc: Correspondingly, remove the version number parts
+	from (some) import library names. (Just a start, more to follow.)
+
+	* win32/module.defs: In fact, no need to know the versions at all
+	for stuff that doesn't include it as part of the directory name.
+	
+2001-01-06  Hans Breuer  <hans@breuer.org>
+
+	* win32/module.defs : renamed GTKCURRENT to GTK2 and some
+	version number updates
+
+	* win32/make.msc : added GTK2_CFLAGS and GTK2_LIBS, now used
+	by CVS HEAD Gimp. Minor updates,
+
+2001-05-22  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
+
+	* win32/make.mingw: Redid CFLAGS.
+
+	* win32/make.mingw (CXX): Removed PTHREAD defs. Added -O2 -Wall to
+	compile flags.
+
+2001-01-06  Hans Breuer  <hans@breuer.org>
+
+	* win32/make.msc win32/module.defs : added ATK,
+	adapted Pango version
+
+2001-03-19  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs (GLIB_GENMARSHAL): Add macro for glib-genmarshal.
+
+2001-02-17  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.{mingw,msc} (INTL_LIBS): Call the import library just
+	libintl, not gnu-intl, for consistency with Unix conventions. (The
+	DLL is still called gnu-intl.dll, using such a generic name as
+	just "intl.dll" would be asking for trouble.)
+
+2001-01-28  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs
+	* win32/make.mingw
+	* win32/make.msc : Use libiconv 1.5.1. Use libiconv's import
+	library as built by its Makefile.msvc, without any version
+	number. Use the same convention for the GNU-style import library.
+
+2000-12-27  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.{mingw,msc} (TIFF_LIBS): Provide separate TIFF_LZW
+	and TIFF_NOLZW.
+
+2000-12-21  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/*: Add version number for FreeType2. We need the FT2
+	library built as a DLL, and append the vesion number to its name,
+	too.
+
+2000-12-20  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs (FRIBIDI_VER): Use FriBidi 0.1.15.
+
+2000-12-14  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.msc: Split C runtime flag (-MD or -MDd) to a separate
+	macro.
+
+2000-11-15  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs (PANGO_VER): Update Pango version to 0.13.
+
+2000-10-22  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.msc (PANGO_LIBS): Include version in Pango lib names.
+
+2000-10-07  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.msc: Improve to be more useable.
+
+2000-09-12  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.{mingw,msc}: Add PTHREAD_LIBS and PTHREAD_CFLAGS.
+
+2000-08-24  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs: Add separate version number for gdk-pixbuf.
+
+	* win32/make.mingw: Add C++ defs.
+
+2000-08-20  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/*: Remove FREETYPE2_20000624, not needed any
+	longer by gimp-freetype.
+
+	* win32/make.mingw: Add rule to produce assembler source.
+
+	* win32/make.msc: Fix syntax error. Add CFLAGS.
+
+2000-08-05  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs
+	* win32/make.{mingw,msc}: Rename the FreeType2 snapshot from 2000-06-24
+	(used by gimp-freetype). Use the name "FreeType2" for the current
+	FreeType2.
+	
+2000-07-30  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs
+	* win32/make.mingw
+	* win32/make.msc: Rename XML to LIBXML. Use version 0.14 of
+	it. Add LIBXML_CFLAGS and _LIBS. Add GTKCURRENT referring the
+	current CVS GTK+ (nonworking on Win32).
+	
+2000-07-25  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw (PANGO_LIBS): Typo.
+
+2000-07-21  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/*: Reorder stuff to be in alphabetical order of package
+	names. Add GtkGLArea. Add path to OpenGL headers.
+
+2000-07-18  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs (FRIBIDI_VER)
+	* win32/make.{mingw,msc} (FRIBIDI_LIBS): Use correct version
+	of FriBidi.
+
+2000-07-15  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw
+	* win32/make.msc
+	* win32/module.defs: Add Pango.
+
+2000-07-10  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/module.defs: 
+	* win32/make.msc: New files. Factor out common stuff to module.defs.
+	make.msc is for nmake and MSVC. Thanks to Hans Breuer.
+
+	* win32/Makefile.am: Add them to EXTRA_DIST.
+
+	* win32/make.mingw: Move part to module.defs. Ugly hack to find
+	module.defs.
+
+2000-07-02  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw: Addd FriBidi and libiconv. Add USRDIR for
+	headers and libs that are "installed".
+
+2000-06-07  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw: Clarify where this stuff should be located.
+
+	* Makefile.am
+	* win32/Makefile.am: New files. Only set SUBDIRS and EXTRA_DIST.
+
+2000-05-29  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw: Add gmodule directory to GLib includes. Use
+	freetype2 directory called just that.
+
+2000-05-13  Tor Lillqvist  <tml@iki.fi>
+
+	* README: Remove the original README text.
+
+	* win32/make.mingw: Define macros for CFLAGS and LIBS of GLib,
+	GTk+, intl, freetype2, zlib, libjpeg, libtiff and GIMP. Remove the
+	WIN32APIHEADERS, that is now taken care of in glib/build-dll.
+
+2000-05-05  Tor Lillqvist  <tml@iki.fi>
+
+	* win32/make.mingw: Add GIMP_VER. Add path to GIMP and freetype2
+	sources.
+
+2000-05-04  Tor Lillqvist  <tml@iki.fi>
+
+	* ChangeLog: Start ChangeLog.
+
+	* README: Change purpose of this directory.
+
+	* win32/make.mingw: New file.
+
+	* build.inf
+	* cvs.py
+	* write.py: Remove.
