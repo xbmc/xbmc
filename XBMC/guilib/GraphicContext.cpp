@@ -38,7 +38,7 @@
 #ifdef HAS_SDL_OPENGL
 #define GLVALIDATE  { CSingleLock locker(*this); ValidateSurface(); }
 #endif
-#include "Surface.h"
+#include "SurfaceGL.h"
 #include "SkinInfo.h"
 using namespace Surface;
 #ifdef HAS_GLX
@@ -85,6 +85,12 @@ CGraphicContext::CGraphicContext(void)
   m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = INVALID;
   m_bFullScreenRoot = false;
+
+  s_RenderVendor = "";
+  s_RenderRenderer = "";
+  s_RenderxExt = "";
+  s_RenderMajVer = 0;
+  s_RenderMinVer = 0;
 }
 
 CGraphicContext::~CGraphicContext(void)
@@ -127,6 +133,55 @@ void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
   m_pd3dParams = p3dParams;
 }
 #endif
+
+std::string& CGraphicContext::GetRenderVendor()
+{
+  if(s_RenderVendor.length() == 0)
+  {
+    int a,b;
+    GetRenderVersion(a, b);
+  }
+
+  return s_RenderVendor;
+}
+std::string& CGraphicContext::GetRenderRenderer()
+{
+  if(s_RenderRenderer.length() == 0)
+  {
+    int a,b;
+    GetRenderVersion(a, b);
+  }
+
+  return s_RenderRenderer;
+}
+void CGraphicContext::GetRenderVersion(int& maj, int& min)
+{ 
+  #ifdef HAS_SDL_OPENGL
+  if (s_RenderMajVer==0)
+  {
+    const char* ver = (const char*)glGetString(GL_VERSION);
+    if (ver != 0)
+    sscanf(ver, "%d.%d", &s_RenderMajVer, &s_RenderMinVer);
+  }
+
+  if (s_RenderVendor.length()==0)
+  {
+    s_RenderVendor   = (const char*)glGetString(GL_VENDOR);
+    s_RenderRenderer = (const char*)glGetString(GL_RENDERER);
+  }
+  #ifdef HAS_GLX
+  if (s_RenderExt.length()==0)
+  {
+    s_RenderExt  = " ";
+    s_RenderExt += (const char*)glXQueryExtensionsString(s_dpy, DefaultScreen(s_dpy));
+    s_RenderExt += " ";
+  }
+  #endif
+
+  #endif
+    maj = s_RenderMajVer;
+    min = s_RenderMinVer;
+}
 
 bool CGraphicContext::SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1, DWORD param2)
 {
@@ -755,7 +810,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     needsResize = true;
 #endif
     if (!m_screenSurface)
-      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
+      m_screenSurface = new CSurfaceGL(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
 
     if (g_advancedSettings.m_fullScreen)
     {
@@ -1363,7 +1418,7 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
     if (dest==NULL)
     {
       CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %u", tid);
-      CSurface* surface = new CSurface(m_screenSurface);
+      CSurfaceGL* surface = new CSurfaceGL(m_screenSurface);
       if (!surface->MakeCurrent())
       {
         CLog::Log(LOGERROR, "GL: Error making context current");
@@ -1401,7 +1456,7 @@ CSurface* CGraphicContext::InitializeSurface()
   CSurface* screenSurface = NULL;
   Lock();
 
-  screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, m_screenSurface, m_screenSurface);
+  screenSurface = new CSurfaceGL(m_iScreenWidth, m_iScreenHeight, true, m_screenSurface, m_screenSurface);
   if (!screenSurface || !screenSurface->IsValid())
   {
     CLog::Log(LOGERROR, "Surface creation error");

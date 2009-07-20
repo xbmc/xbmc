@@ -38,12 +38,12 @@ class CGLTexture : public CBaseTexture
 {
 public:
 
-  CGLTexture(void* surface, bool loadToGPU = true, bool freeSurface = false);  
+  CGLTexture(XBMC::SurfacePtr surface, bool loadToGPU = true, bool freeSurface = false);  
   virtual ~CGLTexture();
 
   void LoadToGPU();
   void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU); 
-  void Update(void *surface, bool loadToGPU, bool freeSurface);
+  void Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface);
 };
 
 
@@ -56,12 +56,7 @@ public:
   CTextureArrayGL();
   CTextureArrayGL(int width, int height, int loops, bool texCoordsArePixels = false);
   virtual ~CTextureArrayGL();
-  CTextureArrayGL &operator =(const CTextureArray &base)
-  {
-    CTextureArray* tmp = dynamic_cast<CTextureArray *>(this);
-    *tmp = base;
-    return *this;
-  }
+  CTextureArrayGL &operator =(const CTextureArray &base);
   void Add(void *texture, int delay);
   void Set(void *texture, int width, int height);
   void Free();
@@ -81,7 +76,7 @@ public:
   CTextureMapGL(const CStdString& textureName, int width, int height, int loops);
   virtual ~CTextureMapGL();
 
-  void Add(void* pTexture, int delay);
+  void Add(XBMC::SurfacePtr pSurface, int delay);
 };
 
 /*!

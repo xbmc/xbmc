@@ -630,10 +630,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\Surface.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\TextureBundle.cpp"
 				>
 			</File>
@@ -1020,10 +1016,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\Surface.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\system.h"
 				>
 			</File>
@@ -1332,6 +1324,14 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\guilib\Surface.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\Surface.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\guilib\TextureManager.cpp"
 					>
 				</File>
@@ -1350,10 +1350,41 @@
 				<File
 					RelativePath="..\..\guilib\GraphicContextGL.cpp"
 					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\guilib\GraphicContextGL.h"
 					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\guilib\SurfaceGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\SurfaceGL.h"
+					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\guilib\TextureManagerGL.cpp"

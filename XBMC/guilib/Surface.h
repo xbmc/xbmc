@@ -64,15 +64,10 @@ enum ONTOP {
 class CSurface
 {
 public:
-  CSurface(CSurface* src) {
-    *this = *src;
-    m_pShared = src;
-  }
-#ifdef HAS_SDL
+  CSurface(CSurface* src);
   CSurface(int width, int height, bool doublebuffer, CSurface* shared,
-           CSurface* associatedWindow, SDL_Surface* parent=0, bool fullscreen=false,
+    CSurface* associatedWindow, XBMC::SurfacePtr parent=0, bool fullscreen=false,
            bool offscreen=false, bool pbuffer=false, int antialias=0);
-#endif
 
   virtual ~CSurface(void);
 
@@ -82,12 +77,6 @@ public:
   bool IsFullscreen() const { return m_bFullscreen; }
   bool IsDoublebuffered() const { return m_bDoublebuffer; }
   bool IsValid() { return m_bOK; }
-  void Flip();
-  bool MakeCurrent();
-  void ReleaseContext();
-  void EnableVSync(bool enable=true);
-  bool ResizeSurface(int newWidth, int newHeight);
-  void RefreshCurrentContext();
   DWORD GetNextSwap();
   void NotifyAppFocusChange(bool bGaining);
 #ifdef _WIN32
@@ -95,23 +84,14 @@ public:
   bool IsOnTop();
 #endif
 
-#ifdef HAS_GLX
-  GLXContext GetContext() {return m_glContext;}
-  GLXWindow GetWindow() {return m_glWindow;}
-  GLXPbuffer GetPBuffer() {return m_glPBuffer;}
-  bool MakePBuffer();
-  bool MakePixmap(int width, int height);
-  Display* GetDisplay() {return s_dpy;}
-#endif
-
-  static std::string& GetGLVendor() { return s_glVendor; }
-  static std::string& GetGLRenderer() { return s_glRenderer; }
-  static void         GetGLVersion(int& maj, int&min);
-
-  // SDL_Surface always there - just sometimes not in use (HAS_GLX)
-  XBMC::SurfacePtr SDL() {return m_SDLSurface;}
-
-  bool glxIsSupported(const char*);
+  virtual void Flip() = 0;
+  virtual bool MakeCurrent() = 0;
+  virtual void ReleaseContext() = 0;
+  virtual void EnableVSync(bool enable=true) = 0;
+  virtual bool ResizeSurface(int newWidth, int newHeight) = 0;
+  virtual void RefreshCurrentContext() = 0;
+  virtual  void* GetRenderWindow() = 0;
+  //virtual  bool ExtensionIsSupported(const char*) = 0;
 
  protected:
   CSurface* m_pShared;
@@ -131,30 +111,19 @@ public:
   short int m_iGreenSize;
   short int m_iBlueSize;
   short int m_iAlphaSize;
-#ifdef HAS_GLX
-  GLXContext m_glContext;
-  GLXWindow  m_glWindow;
-  Window  m_parentWindow;
-  GLXPbuffer  m_glPBuffer;
-  static Display* s_dpy;
-#endif
-#ifdef __APPLE__
-  void* m_glContext;
-#endif
+  /*
+  std::string s_RenderVendor;
+  std::string s_RenderRenderer;
+  std::string s_RenderExt;
+  int         s_RenderMajVer;
+  int         s_RenderMinVer;
+  */
 #ifdef _WIN32
-  HDC m_glDC;
-  HGLRC m_glContext;
   bool m_bCoversScreen;
   ONTOP m_iOnTop;
 #endif
-  static bool b_glewInit;
-  static std::string s_glVendor;
-  static std::string s_glRenderer;
-  static std::string s_glxExt;
-  static int         s_glMajVer;
-  static int         s_glMinVer;
 
-  XBMC::SurfacePtr m_SDLSurface;
+  XBMC::SurfacePtr m_Surface;
 };
 
 }

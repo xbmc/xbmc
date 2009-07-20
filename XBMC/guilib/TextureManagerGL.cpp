@@ -58,7 +58,7 @@ CGUITextureManagerGL g_TextureManager;
 /************************************************************************/
 /*    CSDLTexture                                                       */
 /************************************************************************/
-CGLTexture::CGLTexture(void* surface, bool load, bool freeSurface) 
+CGLTexture::CGLTexture(XBMC::SurfacePtr surface, bool load, bool freeSurface) 
 : CBaseTexture(surface, load, freeSurface)
 {
   Update(surface, load, freeSurface);
@@ -142,11 +142,8 @@ void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bo
   imageWidth = w;
   imageHeight = h;
 
-
-  if ((vmaj==0) && g_graphicsContext.getScreenSurface())
-  {
-    g_graphicsContext.getScreenSurface()->GetGLVersion(vmaj, vmin);    
-  }
+   g_graphicsContext.GetRenderVersion(vmaj, vmin);    
+ 
   if (vmaj>=2 && GLEW_ARB_texture_non_power_of_two)
   {
     textureWidth = imageWidth;
@@ -191,16 +188,14 @@ void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bo
     LoadToGPU();
 }
 
-void CGLTexture::Update(void *surface, bool loadToGPU, bool freeSurface) 
+void CGLTexture::Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface) 
 {
-  SDL_Surface* sdl_surface = (SDL_Surface *)surface;
-
-  SDL_LockSurface(sdl_surface);
-  Update(sdl_surface->w, sdl_surface->h, sdl_surface->pitch, (unsigned char *)sdl_surface->pixels, loadToGPU);
-  SDL_UnlockSurface(sdl_surface);
+  SDL_LockSurface(surface);
+  Update(surface->w, surface->h, surface->pitch, (unsigned char *)surface->pixels, loadToGPU);
+  SDL_UnlockSurface(surface);
 
   if (freeSurface)
-    SDL_FreeSurface(sdl_surface);
+    SDL_FreeSurface(surface);
 }
 
 /************************************************************************/
@@ -219,6 +214,13 @@ CTextureArrayGL::CTextureArrayGL(int width, int height, int loops, bool texCoord
 CTextureArrayGL::~CTextureArrayGL()
 {
 
+}
+
+CTextureArrayGL& CTextureArrayGL::operator =(const CTextureArray &base)
+{
+  CTextureArray* tmp = dynamic_cast<CTextureArray *>(this);
+  *tmp = base;
+  return *this;
 }
 
 void CTextureArrayGL::Add(void *texture, int delay)
@@ -272,9 +274,9 @@ CTextureMapGL::~CTextureMapGL()
 }
 
 
-void CTextureMapGL::Add(void* pTexture, int delay)
+void CTextureMapGL::Add(XBMC::SurfacePtr pSurface, int delay)
 {
-  CGLTexture *glTexture = new CGLTexture(pTexture, false);
+  CGLTexture *glTexture = new CGLTexture(pSurface, false);
   m_texture->Add(glTexture, delay);
 
   if (glTexture)

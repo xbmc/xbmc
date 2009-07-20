@@ -143,6 +143,11 @@ class CGraphicContext : public CCriticalSection
 public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
+
+  std::string&  GetRenderVendor();
+  std::string&  GetRenderRenderer();
+  void          GetRenderVersion(int& maj, int& min);
+
 #ifndef HAS_SDL
   LPDIRECT3DDEVICE9 Get3DDevice() { return m_pd3dDevice; }
   void SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice);
@@ -304,6 +309,12 @@ private:
   std::stack<CPoint> m_cameras;
   std::stack<CPoint> m_origins;
   std::stack<CRect>  m_clipRegions;
+
+  std::string s_RenderVendor;
+  std::string s_RenderRenderer;
+  std::string s_RenderxExt;
+  int s_RenderMajVer;
+  int s_RenderMinVer;
 
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;

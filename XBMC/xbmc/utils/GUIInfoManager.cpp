@@ -1513,15 +1513,15 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     }
     break;
   case SYSTEM_OPENGL_VENDOR:
-    strLabel = Surface::CSurface::GetGLVendor();
+    strLabel = g_graphicsContext.GetRenderVendor();
     break;
   case SYSTEM_OPENGL_RENDERER:
-    strLabel = Surface::CSurface::GetGLRenderer();
+    strLabel = g_graphicsContext.GetRenderRenderer();
     break;
   case SYSTEM_OPENGL_VERSION:
   {
     int major, minor;
-    Surface::CSurface::GetGLVersion(major, minor);
+    g_graphicsContext.GetRenderVersion(major, minor);
     strLabel.Format("%d.%d", major, minor);
     break;
   }

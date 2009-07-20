@@ -46,7 +46,7 @@ extern "C" void dllprintf( const char *format, ... );
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-CBaseTexture::CBaseTexture(void* surface, bool load, bool freeSurface)
+CBaseTexture::CBaseTexture(XBMC::SurfacePtr surface, bool load, bool freeSurface)
 {
   m_loadedToGPU = false;
   id = 0;

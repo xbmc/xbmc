@@ -24,7 +24,7 @@
 \brief
 */
 #include "include.h"
-#include "Surface.h"
+#include "SurfaceGL.h"
 #ifdef __APPLE__
 #include "CocoaInterface.h"
 #endif
@@ -37,10 +37,10 @@
 
 using namespace Surface;
 
-#ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_syswm.h>
 #include "XBVideoConfig.h"
-#endif
+
+bool CSurfaceGL::b_glewInit = 0;
 
 #ifdef HAS_GLX
 Display* CSurface::s_dpy = 0;
@@ -54,22 +54,14 @@ static int64_t (*_glXSwapBuffersMscOML)(Display* dpy, GLXDrawable drawable, int6
 
 #endif
 
+#include "GraphicContext.h"
+
 static __int64 abs(__int64 a)
 {
   if(a < 0) return -a;
   else      return  a;
 }
 
-bool CSurface::b_glewInit = 0;
-std::string CSurface::s_glVendor = "";
-std::string CSurface::s_glRenderer = "";
-std::string CSurface::s_glxExt = "";
-int         CSurface::s_glMajVer = 0;
-int         CSurface::s_glMinVer = 0;
-
-#include "GraphicContext.h"
-
-#ifdef HAS_SDL_OPENGL
 #ifdef _WIN32
 static BOOL (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
 static int (APIENTRY *_wglGetSwapIntervalEXT)() = 0;
@@ -79,30 +71,20 @@ static int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
 static int (*_glXSwapIntervalSGI)(int) = 0;
 static int (*_glXSwapIntervalMESA)(int) = 0;
 #endif
-#endif
 
-#ifdef HAS_SDL
-CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
-                   CSurface* window, SDL_Surface* parent, bool fullscreen,
-                   bool pixmap, bool pbuffer, int antialias)
+CSurfaceGL::CSurfaceGL(CSurface* src) : CSurface(src)
 {
-  CLog::Log(LOGDEBUG, "Constructing surface %dx%d, shared=%p, fullscreen=%d\n", width, height, (void *)shared, fullscreen);
-  m_bOK = false;
-  m_iWidth = width;
-  m_iHeight = height;
-  m_bDoublebuffer = doublebuffer;
-  m_iRedSize = 8;
-  m_iGreenSize = 8;
-  m_iBlueSize = 8;
-  m_iAlphaSize = 8;
-  m_bFullscreen = fullscreen;
-  m_pShared = shared;
-  m_bVSync = false;
-  m_iVSyncMode = 0;
-  m_iSwapStamp = 0;
-  m_iSwapTime = 0;
-  m_iSwapRate = 0;
-  m_bVsyncInit = false;
+  *this = *src;
+  m_pShared = src;
+}
+
+
+CSurfaceGL::CSurfaceGL(int width, int height, bool doublebuffer, CSurface* shared,
+                       CSurface* window, XBMC::SurfacePtr parent, bool fullscreen,
+                   bool pixmap, bool pbuffer, int antialias)
+                   : CSurface(width, height, doublebuffer, shared, window, 
+                   parent, fullscreen, pixmap, pbuffer, antialias)
+{
 #ifdef __APPLE__
   m_glContext = 0;
 #endif
@@ -110,15 +92,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 #ifdef _WIN32
   m_glDC = NULL;
   m_glContext = NULL;
-  m_bCoversScreen = false;
-  if ( !g_advancedSettings.m_alwaysOnTop )
-    m_iOnTop = ONTOP_AUTO;
-  else
-    m_iOnTop = ONTOP_ALWAYS;
-
-  timeBeginPeriod(1);
 #endif
-
+  s_glxExt ="";
 #ifdef HAS_GLX
   m_glWindow = 0;
   m_parentWindow = 0;
@@ -131,43 +106,43 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
   int num = 0;
 
   int singleVisAttributes[] =
-    {
-      GLX_RENDER_TYPE, GLX_RGBA_BIT,
-      GLX_RED_SIZE, m_iRedSize,
-      GLX_GREEN_SIZE, m_iGreenSize,
-      GLX_BLUE_SIZE, m_iBlueSize,
-      GLX_ALPHA_SIZE, m_iAlphaSize,
-      GLX_DEPTH_SIZE, 8,
-      GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-      None
-    };
+  {
+    GLX_RENDER_TYPE, GLX_RGBA_BIT,
+    GLX_RED_SIZE, m_iRedSize,
+    GLX_GREEN_SIZE, m_iGreenSize,
+    GLX_BLUE_SIZE, m_iBlueSize,
+    GLX_ALPHA_SIZE, m_iAlphaSize,
+    GLX_DEPTH_SIZE, 8,
+    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+    None
+  };
 
   int doubleVisAttributes[] =
-    {
-      GLX_RENDER_TYPE, GLX_RGBA_BIT,
-      GLX_RED_SIZE, m_iRedSize,
-      GLX_GREEN_SIZE, m_iGreenSize,
-      GLX_BLUE_SIZE, m_iBlueSize,
-      GLX_ALPHA_SIZE, m_iAlphaSize,
-      GLX_DEPTH_SIZE, 8,
-      GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-      GLX_DOUBLEBUFFER, True,
-      None
-    };
+  {
+    GLX_RENDER_TYPE, GLX_RGBA_BIT,
+    GLX_RED_SIZE, m_iRedSize,
+    GLX_GREEN_SIZE, m_iGreenSize,
+    GLX_BLUE_SIZE, m_iBlueSize,
+    GLX_ALPHA_SIZE, m_iAlphaSize,
+    GLX_DEPTH_SIZE, 8,
+    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+    GLX_DOUBLEBUFFER, True,
+    None
+  };
 
   int doubleVisAttributesAA[] =
-    {
-      GLX_RENDER_TYPE, GLX_RGBA_BIT,
-      GLX_RED_SIZE, m_iRedSize,
-      GLX_GREEN_SIZE, m_iGreenSize,
-      GLX_BLUE_SIZE, m_iBlueSize,
-      GLX_ALPHA_SIZE, m_iAlphaSize,
-      GLX_DEPTH_SIZE, 8,
-      GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-      GLX_DOUBLEBUFFER, True,
-      GLX_SAMPLE_BUFFERS, 1,
-      None
-    };
+  {
+    GLX_RENDER_TYPE, GLX_RGBA_BIT,
+    GLX_RED_SIZE, m_iRedSize,
+    GLX_GREEN_SIZE, m_iGreenSize,
+    GLX_BLUE_SIZE, m_iBlueSize,
+    GLX_ALPHA_SIZE, m_iAlphaSize,
+    GLX_DEPTH_SIZE, 8,
+    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+    GLX_DOUBLEBUFFER, True,
+    GLX_SAMPLE_BUFFERS, 1,
+    None
+  };
 
   // are we using an existing window to create the context?
   if (window)
@@ -250,7 +225,7 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     int swaMask;
     Window p;
 
-    m_SDLSurface = parent;
+    m_Surface = parent;
 
     // check if a parent was passed
     if (parent)
@@ -274,8 +249,8 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     swa.colormap = XCreateColormap(s_dpy, p, vInfo->visual, AllocNone);
     swaMask |= (CWColormap | CWEventMask);
     m_glWindow = XCreateWindow(s_dpy, p, 0, 0, m_iWidth, m_iHeight,
-                               0, vInfo->depth, InputOutput, vInfo->visual,
-                               swaMask, &swa );
+      0, vInfo->depth, InputOutput, vInfo->visual,
+      swaMask, &swa );
     XSync(s_dpy, False);
     mapWindow = true;
 
@@ -355,14 +330,14 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
 
     // If we're coming from or going to fullscreen do NOT share.
     if (g_graphicsContext.getScreenSurface() != 0 &&
-        (fullscreen == false && g_graphicsContext.getScreenSurface()->m_bFullscreen == true ||
-         fullscreen == true  && g_graphicsContext.getScreenSurface()->m_bFullscreen == false))
+      (fullscreen == false && g_graphicsContext.getScreenSurface()->m_bFullscreen == true ||
+      fullscreen == true  && g_graphicsContext.getScreenSurface()->m_bFullscreen == false))
     {
       shared =0;
     }
 
     // Make sure we DON'T call with SDL_FULLSCREEN, because we need a view!
-    m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, SDL_OPENGL);
+    m_Surface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, SDL_OPENGL);
 
     // the context SDL creates isn't full screen compatible, so we create new one
     m_glContext = Cocoa_GL_ReplaceSDLWindowContext();
@@ -370,11 +345,11 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     // We use the RESIZABLE flag or else the SDL wndproc won't let us ResizeSurface(), the
     // first sizing will replace the borderstyle to prevent allowing abritrary resizes
     int options = SDL_OPENGL | SDL_RESIZABLE | (fullscreen?SDL_NOFRAME:0);
-    m_SDLSurface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
+    m_Surface = SDL_SetVideoMode(m_iWidth, m_iHeight, 0, options);
     m_glDC = wglGetCurrentDC();
     m_glContext = wglGetCurrentContext();
 #endif
-    if (m_SDLSurface)
+    if (m_Surface)
     {
       m_bOK = true;
     }
@@ -417,179 +392,21 @@ CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
     m_bOK = true;
   }
 #endif
-#if defined(HAS_SDL_OPENGL)
-  int temp;
-  GetGLVersion(temp, temp);
-#endif
-  LogGraphicsInfo();
 }
-#endif
 
-#ifdef HAS_GLX
-bool CSurface::MakePBuffer()
+CSurfaceGL::~CSurfaceGL()
 {
-  int num=0;
-  GLXFBConfig *fbConfigs=NULL;
-  XVisualInfo *visInfo=NULL;
 
-  bool status = false;
-  int singleVisAttributes[] =
-    {
-      GLX_RENDER_TYPE, GLX_RGBA_BIT,
-      GLX_RED_SIZE, m_iRedSize,
-      GLX_GREEN_SIZE, m_iGreenSize,
-      GLX_BLUE_SIZE, m_iBlueSize,
-      GLX_ALPHA_SIZE, m_iAlphaSize,
-      GLX_DEPTH_SIZE, 8,
-      GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT | GLX_WINDOW_BIT,
-      None
-    };
-
-  int doubleVisAttributes[] =
-    {
-      GLX_RENDER_TYPE, GLX_RGBA_BIT,
-      GLX_RED_SIZE, m_iRedSize,
-      GLX_GREEN_SIZE, m_iGreenSize,
-      GLX_BLUE_SIZE, m_iBlueSize,
-      GLX_ALPHA_SIZE, m_iAlphaSize,
-      GLX_DEPTH_SIZE, 8,
-      GLX_DRAWABLE_TYPE, GLX_PBUFFER_BIT | GLX_WINDOW_BIT,
-      GLX_DOUBLEBUFFER, True,
-      None
-    };
-
-  int pbufferAttributes[] =
-    {
-      GLX_PBUFFER_WIDTH, m_iWidth,
-      GLX_PBUFFER_HEIGHT, m_iHeight,
-      GLX_LARGEST_PBUFFER, True,
-      None
-    };
-
-  if (m_bDoublebuffer)
-  {
-    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), doubleVisAttributes, &num);
-  } else {
-    fbConfigs = glXChooseFBConfig(s_dpy, DefaultScreen(s_dpy), singleVisAttributes, &num);
-  }
-  if (fbConfigs==NULL)
-  {
-    CLog::Log(LOGERROR, "GLX Error: MakePBuffer: No compatible framebuffers found");
-    XFree(fbConfigs);
-    return status;
-  }
-  m_glPBuffer = glXCreatePbuffer(s_dpy, fbConfigs[0], pbufferAttributes);
-
-  if (m_glPBuffer)
-  {
-    CLog::Log(LOGINFO, "GLX: Created PBuffer context");
-    visInfo = glXGetVisualFromFBConfig(s_dpy, fbConfigs[0]);
-    if (!visInfo)
-    {
-      CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info");
-      return false;
-    }
-    if (m_pShared)
-    {
-      CLog::Log(LOGINFO, "GLX: Creating shared PBuffer context");
-      m_glContext = glXCreateContext(s_dpy, visInfo, m_pShared->GetContext(), True);
-    } else {
-      CLog::Log(LOGINFO, "GLX: Creating unshared PBuffer context");
-      m_glContext = glXCreateContext(s_dpy, visInfo, NULL, True);
-    }
-    XFree(visInfo);
-    if (glXMakeCurrent(s_dpy, m_glPBuffer, m_glContext))
-    {
-      CLog::Log(LOGINFO, "GL: Initialised PBuffer");
-      if (!b_glewInit)
-      {
-        if (glewInit()!=GLEW_OK)
-        {
-          CLog::Log(LOGERROR, "GL: Critical Error. Could not initialise GL Extension Wrangler Library");
-        } else {
-          b_glewInit = true;
-          if (s_glVendor.length()==0)
-          {
-            s_glVendor = (const char*)glGetString(GL_VENDOR);
-            CLog::Log(LOGINFO, "GL: OpenGL Vendor String: %s", s_glVendor.c_str());
-          }
-        }
-      }
-      m_bOK = status = true;
-    } else {
-      CLog::Log(LOGINFO, "GLX Error: Could not make PBuffer current");
-      status = false;
-    }
-  }
-  else
-  {
-    CLog::Log(LOGINFO, "GLX Error: Could not create PBuffer");
-    status = false;
-  }
-  XFree(fbConfigs);
-  return status;
 }
 
-
-#endif
-
-CSurface::~CSurface()
+CSurfaceGL& CSurfaceGL::operator =(const CSurface &base)
 {
-#ifdef HAS_GLX
-  if (m_glPBuffer)
-  {
-    CLog::Log(LOGINFO, "GLX: Destroying PBuffer");
-    glXDestroyPbuffer(s_dpy, m_glPBuffer);
-  }
-  if (m_glWindow && !IsShared())
-  {
-    CLog::Log(LOGINFO, "GLX: Destroying Window");
-    glXDestroyWindow(s_dpy, m_glWindow);
-  }
-  if (m_glContext && !IsShared())
-  {
-    CLog::Log(LOGINFO, "GLX: Destroying OpenGL Context");
-    glXDestroyContext(s_dpy, m_glContext);
-  }
-#else
-  if (IsValid() && m_SDLSurface
-#if defined(__APPLE__ ) || defined(_WIN32)
-      && !IsShared()
-#endif
-     )
-  {
-#ifdef HAS_SDL // TODO:DIRECTX
-    CLog::Log(LOGINFO, "Freeing surface");
-    SDL_FreeSurface(m_SDLSurface);
-#endif
-  }
-
-#ifdef __APPLE__
-  if (m_glContext && !IsShared())
-  {
-    CLog::Log(LOGINFO, "Surface: Whacking context 0x%08lx", m_glContext);
-    Cocoa_GL_ReleaseContext(m_glContext);
-  }
-#endif
-
-#ifdef _WIN32
-  timeEndPeriod(1);
-#endif
-#endif
+  CSurface* tmp = dynamic_cast<CSurface *>(this);
+  *tmp = base;
+  return *this;
 }
 
-bool CSurface::glxIsSupported(const char* extension)
-{
-  CStdString name;
-
-  name  = " ";
-  name += extension;
-  name += " ";
-
-  return s_glxExt.find(name) != std::string::npos;
-}
-
-void CSurface::EnableVSync(bool enable)
+void CSurfaceGL::EnableVSync(bool enable)
 {
 #ifdef HAS_SDL_OPENGL
   if (m_bVSync==enable && m_bVsyncInit == true)
@@ -604,7 +421,9 @@ void CSurface::EnableVSync(bool enable)
     CLog::Log(LOGINFO, "GL: Disabling VSYNC");
 
   // Nvidia cards: See Appendix E. of NVidia Linux Driver Set README
-  CStdString strVendor(s_glVendor), strRenderer(s_glRenderer);
+  CStdString strVendor = g_graphicsContext.GetRenderVendor();
+  CStdString strRenderer = g_graphicsContext.GetRenderRenderer();
+  //CStdString strVendor(s_RenderVendor), strRenderer(s_RenderRenderer);
   strVendor.ToLower();
   strRenderer.ToLower();
 
@@ -616,17 +435,17 @@ void CSurface::EnableVSync(bool enable)
 
 #ifdef HAS_GLX
   // Obtain function pointers
-  if (!_glXGetSyncValuesOML  && glxIsSupported("GLX_OML_sync_control"))
+  if (!_glXGetSyncValuesOML  && ExtensionIsSupported("GLX_OML_sync_control"))
     _glXGetSyncValuesOML = (Bool (*)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*))glXGetProcAddress((const GLubyte*)"glXGetSyncValuesOML");
-  if (!_glXSwapBuffersMscOML && glxIsSupported("GLX_OML_sync_control"))
+  if (!_glXSwapBuffersMscOML && ExtensionIsSupported("GLX_OML_sync_control"))
     _glXSwapBuffersMscOML = (int64_t (*)(Display*, GLXDrawable, int64_t, int64_t, int64_t))glXGetProcAddress((const GLubyte*)"glXSwapBuffersMscOML");
-  if (!_glXWaitVideoSyncSGI  && glxIsSupported("GLX_SGI_video_sync"))
+  if (!_glXWaitVideoSyncSGI  && ExtensionIsSupported("GLX_SGI_video_sync"))
     _glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
-  if (!_glXGetVideoSyncSGI   && glxIsSupported("GLX_SGI_video_sync"))
+  if (!_glXGetVideoSyncSGI   && ExtensionIsSupported("GLX_SGI_video_sync"))
     _glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
-  if (!_glXSwapIntervalSGI   && glxIsSupported("GLX_SGI_swap_control") )
+  if (!_glXSwapIntervalSGI   && ExtensionIsSupported("GLX_SGI_swap_control") )
     _glXSwapIntervalSGI = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalSGI");
-  if (!_glXSwapIntervalMESA  && glxIsSupported("GLX_MESA_swap_control"))
+  if (!_glXSwapIntervalMESA  && ExtensionIsSupported("GLX_MESA_swap_control"))
     _glXSwapIntervalMESA = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
 #elif defined (_WIN32)
   if (!_wglSwapIntervalEXT)
@@ -663,7 +482,7 @@ void CSurface::EnableVSync(bool enable)
     {
       unsigned int count;
       if(_glXGetVideoSyncSGI(&count) == 0)
-          m_iVSyncMode = 3;
+        m_iVSyncMode = 3;
       else
         CLog::Log(LOGWARNING, "%s - glXGetVideoSyncSGI failed, glcontext probably not direct", __FUNCTION__);
     }
@@ -732,7 +551,7 @@ void CSurface::EnableVSync(bool enable)
 #endif
 }
 
-void CSurface::Flip()
+void CSurfaceGL::Flip()
 {
   if (m_bOK && m_bDoublebuffer)
   {
@@ -764,8 +583,8 @@ void CSurface::Flip()
       m_iSwapStamp = curr + diff;
 
       /* sleep as close as we can before, assume 1ms precision of sleep *
-       * this should always awake so that we are guaranteed the given   *
-       * m_iSwapTime to do our swap                                     */
+      * this should always awake so that we are guaranteed the given   *
+      * m_iSwapTime to do our swap                                     */
       diff = (diff - m_iSwapTime) * 1000 / freq;
       if(diff > 0)
         Sleep((DWORD)diff);
@@ -842,7 +661,7 @@ void CSurface::Flip()
     Cocoa_GL_SwapBuffers(m_glContext);
 #elif defined(HAS_SDL_OPENGL)
     SDL_GL_SwapBuffers();
-#elif defined(HAS_SDL) // TODO:DIRECTX
+#elif defined(HAS_SDL)
     SDL_Flip(m_SDLSurface);
 #endif
 
@@ -870,7 +689,7 @@ void CSurface::Flip()
 #endif
 }
 
-bool CSurface::MakeCurrent()
+bool CSurfaceGL::MakeCurrent()
 {
   if (m_pShared)
     return m_pShared->MakeCurrent();
@@ -917,7 +736,7 @@ bool CSurface::MakeCurrent()
   return false;
 }
 
-void CSurface::RefreshCurrentContext()
+void CSurfaceGL::RefreshCurrentContext()
 {
 #ifdef HAS_GLX
   ReleaseContext();
@@ -929,7 +748,7 @@ void CSurface::RefreshCurrentContext()
 #endif
 }
 
-void CSurface::ReleaseContext()
+void CSurfaceGL::ReleaseContext()
 {
 #ifdef HAS_GLX
   {
@@ -950,7 +769,7 @@ void CSurface::ReleaseContext()
 #endif
 }
 
-bool CSurface::ResizeSurface(int newWidth, int newHeight)
+bool CSurfaceGL::ResizeSurface(int newWidth, int newHeight)
 {
   CLog::Log(LOGDEBUG, "Asking to resize surface to %d x %d", newWidth, newHeight);
 #ifdef HAS_GLX
@@ -1052,22 +871,14 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
   return false;
 }
 
-
-void CSurface::GetGLVersion(int& maj, int& min)
+bool CSurfaceGL::glxIsSupported(const char* extension)
 {
-#ifdef HAS_SDL_OPENGL
-  if (s_glMajVer==0)
-  {
-    const char* ver = (const char*)glGetString(GL_VERSION);
-    if (ver != 0)
-      sscanf(ver, "%d.%d", &s_glMajVer, &s_glMinVer);
-  }
+  CStdString name;
 
-  if (s_glVendor.length()==0)
-  {
-    s_glVendor   = (const char*)glGetString(GL_VENDOR);
-    s_glRenderer = (const char*)glGetString(GL_RENDERER);
-  }
+  name  = " ";
+  name += extension;
+  name += " ";
+
 #ifdef HAS_GLX
   if (s_glxExt.length()==0)
   {
@@ -1077,109 +888,52 @@ void CSurface::GetGLVersion(int& maj, int& min)
   }
 #endif
 
-#endif
-  maj = s_glMajVer;
-  min = s_glMinVer;
+  return s_glxExt.find(name) != std::string::npos;
 }
 
-// function should return the timestamp
-// of the frame where a call to flip,
-// earliest can land upon.
-DWORD CSurface::GetNextSwap()
+/*
+void CSurfaceGL::GetRenderVersion(int& maj, int& min)
 {
-  if (m_iVSyncMode && m_iSwapRate != 0)
+#ifdef HAS_SDL_OPENGL
+  if (s_RenderMajVer==0)
   {
-    __int64 curr, freq;
-    QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
-    QueryPerformanceCounter((LARGE_INTEGER*)&curr);
-    DWORD timestamp = timeGetTime();
-
-    curr  -= m_iSwapStamp;
-    curr  %= m_iSwapRate;
-    curr  -= m_iSwapRate;
-    return timestamp - (int)(1000 * curr / freq);
+    const char* ver = (const char*)glGetString(GL_VERSION);
+    if (ver != 0)
+      sscanf(ver, "%d.%d", &s_RenderMajVer, &s_RenderMinVer);
   }
-  return timeGetTime();
-}
 
-#ifdef _WIN32
-void CSurface::SetOnTop(ONTOP onTop)
-{
-  m_iOnTop = onTop;
-}
-
-bool CSurface::IsOnTop() {
-  return m_iOnTop == ONTOP_ALWAYS || (m_iOnTop == ONTOP_FULLSCREEN && m_bCoversScreen) ||
-        (m_iOnTop == ONTOP_AUTO && m_bCoversScreen && (s_glVendor.find("Intel") != s_glVendor.npos));
-}
-#endif
-
-void CSurface::NotifyAppFocusChange(bool bGaining)
-{
-  /* Notification from the Application that we are either becoming the foreground window or are losing focus */
-#ifdef _WIN32
-  /* Remove our TOPMOST status when we lose focus.  TOPMOST seems to be required for Intel vsync, it isn't
-     like I actually want to be on top. Seems like a lot of work. */
-
-  if (m_iOnTop != ONTOP_ALWAYS && IsOnTop())
+  if (s_RenderVendor.length()==0)
   {
-    CLog::Log(LOGDEBUG, "NotifyAppFocusChange: bGaining=%d, m_bCoverScreen=%d", bGaining, m_bCoversScreen);
-
-#ifdef HAS_SDL // TODO:DIRECTX
-    SDL_SysWMinfo sysInfo;
-    SDL_VERSION(&sysInfo.version);
-
-    if (SDL_GetWMInfo(&sysInfo))
-    {
-      HWND hwnd = sysInfo.window;
-
-      if (bGaining)
-      {
-        // For intel IGPs Vsync won't start working after we've lost focus and then regained it,
-        // to kick-start it we hide then re-show the window; it's gonna look a bit ugly but it
-        // seems to be the only option
-        if (s_glVendor.find("Intel") != s_glVendor.npos)
-        {
-          CLog::Log(LOGDEBUG, "NotifyAppFocusChange: hiding XBMC window (to workaround Intel Vsync bug)");
-          SetWindowPos(hwnd, 0, 0, 0, 0, 0, SWP_HIDEWINDOW | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOSENDCHANGING);
-        }
-        CLog::Log(LOGDEBUG, "NotifyAppFocusChange: showing XBMC window TOPMOST");
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOSENDCHANGING);
-        SetForegroundWindow(hwnd);
-        LockSetForegroundWindow(LSFW_LOCK);
-      }
-      else
-      {
-        /*
-         * We can't just SetWindowPos(hwnd, hNewFore, ....) because (at least) on Vista focus may be lost to the
-         * Alt-Tab window-list which is also TOPMOST, so going just below that in the z-order will leave us still
-         * TOPMOST and so probably still above the window you eventually select from the window-list.
-         * Checking whether hNewFore is TOPMOST and, if so, making ourselves just NOTOPMOST is almost good enough;
-         * we should be NOTOPMOST when you select a window from the window-list and that will be raised above us.
-         * However, if the timing is just right (i.e. wrong) then we lose focus to the window-list, see that it's
-         * another TOPMOST window, at which time focus leaves the window-list and goes to the selected window
-         * and then make ourselves NOTOPMOST and so raise ourselves above it.
-         * We could just go straight to the bottom of the z-order but that'll mean we disappear as soon as the
-         * window-list appears.
-         * So, the best I can come up with is to go NOTOPMOST asap and then if hNewFore is NOTOPMOST go below that,
-         * this should minimize the timespan in which the above timing issue can happen.
-         */
-        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-        CLog::Log(LOGDEBUG, "NotifyAppFocusChange: making XBMC window NOTOPMOST");
-
-        HWND hNewFore = GetForegroundWindow();
-        LONG newStyle = GetWindowLong(hNewFore, GWL_EXSTYLE);
-        if (!(newStyle & WS_EX_TOPMOST))
-        {
-          CLog::Log(LOGDEBUG, "NotifyAppFocusChange: lowering XBMC window beneath new foreground window");
-          SetWindowPos(hwnd, hNewFore, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-        }
-
-        LockSetForegroundWindow(LSFW_UNLOCK);
-      }
-    }
-#endif
+    s_RenderVendor   = (const char*)glGetString(GL_VENDOR);
+    s_RenderRenderer = (const char*)glGetString(GL_RENDERER);
+  }
+#ifdef HAS_GLX
+  if (s_RenderExt.length()==0)
+  {
+    s_RenderExt  = " ";
+    s_RenderExt += (const char*)glXQueryExtensionsString(s_dpy, DefaultScreen(s_dpy));
+    s_RenderExt += " ";
   }
 #endif
-}
 
+#endif
+  maj = s_RenderMajVer;
+  min = s_RenderMinVer;
+}
+*/
+
+
+void* CSurfaceGL::GetRenderWindow()
+{
+  SDL_SysWMinfo sysInfo;
+  SDL_VERSION(&sysInfo.version);
+
+  if (SDL_GetWMInfo(&sysInfo))
+  {
+    HWND hwnd = sysInfo.window;
+    if(hwnd != NULL)
+      return hwnd;
+  }
+
+  return NULL;
+}

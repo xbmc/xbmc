@@ -41,12 +41,12 @@ class CBaseTexture
 
 public:
   
-  CBaseTexture(void* surface, bool loadToGPU = true, bool freeSurface = false);
+  CBaseTexture(XBMC::SurfacePtr surface, bool loadToGPU = true, bool freeSurface = false);
   virtual ~CBaseTexture();
 
   virtual void LoadToGPU() = 0;
   virtual void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) = 0; 
-  virtual void Update(void *surface, bool loadToGPU, bool freeSurface) = 0;
+  virtual void Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface) = 0;
 
   int imageWidth;
   int imageHeight;
@@ -100,7 +100,7 @@ public:
   CTextureMap(const CStdString& textureName, int width, int height, int loops);
   virtual ~CTextureMap();
 
-  virtual void Add(void* pTexture, int delay) = 0;
+  virtual void Add(XBMC::SurfacePtr pSurface, int delay) = 0;
 
   bool Release();
   const CStdString& GetName() const;

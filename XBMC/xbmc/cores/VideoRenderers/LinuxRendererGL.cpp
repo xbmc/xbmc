@@ -665,7 +665,7 @@ void CLinuxRendererGL::LoadTextures(int source)
     else
     {
       int maj=0, min=0;
-      g_graphicsContext.getScreenSurface()->GetGLVersion(maj, min);
+      g_graphicsContext.GetRenderVersion(maj, min);
       if (maj>=2)
       {
         imaging = 1;

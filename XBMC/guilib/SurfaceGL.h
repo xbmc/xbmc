@@ -3,8 +3,8 @@
 \brief
 */
 
-#ifndef GUILIB_SURFACE_H
-#define GUILIB_SURFACE_H
+#ifndef GUILIB_SURFACE_GL_H
+#define GUILIB_SURFACE_GL_H
 
 #pragma once
 
@@ -30,6 +30,7 @@
  */
 
 #include <string>
+#include "Surface.h"
 #ifdef HAS_SDL
 #include <SDL/SDL.h>
 #endif
@@ -42,58 +43,25 @@
 #include <GL/glx.h>
 #endif
 
+#include "GraphicContext.h"
+
 namespace Surface {
-#if defined(_WIN32PC)
-/*!
- \ingroup graphics
- \brief
- */
-enum ONTOP {
-  ONTOP_NEVER = 0,
-  ONTOP_ALWAYS = 1,
-  ONTOP_FULLSCREEN = 2,
-  ONTOP_AUTO = 3 // When fullscreen on Intel GPU
-};
-#endif
 
 #if defined(_LINUX) && !defined(__APPLE__)
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #endif
 
-class CSurface
+class CSurfaceGL : public CSurface
 {
 public:
-  CSurface(CSurface* src) {
-    *this = *src;
-    m_pShared = src;
-  }
-#ifdef HAS_SDL
-  CSurface(int width, int height, bool doublebuffer, CSurface* shared,
-           CSurface* associatedWindow, SDL_Surface* parent=0, bool fullscreen=false,
+  CSurfaceGL(CSurface* src);
+  virtual ~CSurfaceGL();
+  CSurfaceGL& operator =(const CSurface &base);
+
+  CSurfaceGL(int width, int height, bool doublebuffer, CSurface* shared,
+    CSurface* associatedWindow, XBMC::SurfacePtr parent=0, bool fullscreen=false,
            bool offscreen=false, bool pbuffer=false, int antialias=0);
-#endif
-
-  virtual ~CSurface(void);
-
-  int GetWidth() const { return m_iWidth; }
-  int GetHeight() const { return m_iHeight; }
-  bool IsShared() const { return m_pShared?true:false; }
-  bool IsFullscreen() const { return m_bFullscreen; }
-  bool IsDoublebuffered() const { return m_bDoublebuffer; }
-  bool IsValid() { return m_bOK; }
-  void Flip();
-  bool MakeCurrent();
-  void ReleaseContext();
-  void EnableVSync(bool enable=true);
-  bool ResizeSurface(int newWidth, int newHeight);
-  void RefreshCurrentContext();
-  DWORD GetNextSwap();
-  void NotifyAppFocusChange(bool bGaining);
-#ifdef _WIN32
-  void SetOnTop(ONTOP iOnTop);
-  bool IsOnTop();
-#endif
 
 #ifdef HAS_GLX
   GLXContext GetContext() {return m_glContext;}
@@ -104,33 +72,22 @@ public:
   Display* GetDisplay() {return s_dpy;}
 #endif
 
-  static std::string& GetGLVendor() { return s_glVendor; }
-  static std::string& GetGLRenderer() { return s_glRenderer; }
-  static void         GetGLVersion(int& maj, int&min);
+  void Flip();
+  bool MakeCurrent();
+  void ReleaseContext();
+  void EnableVSync(bool enable=true);
+  bool ResizeSurface(int newWidth, int newHeight);
+  void RefreshCurrentContext();
+
+  bool glxIsSupported(const char* extension);
+  void*         GetRenderWindow();
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
-  XBMC::SurfacePtr SDL() {return m_SDLSurface;}
-
-  bool glxIsSupported(const char*);
+  XBMC::SurfacePtr SDL() {return m_Surface;}
 
  protected:
-  CSurface* m_pShared;
-  int m_iWidth;
-  int m_iHeight;
-  bool m_bFullscreen;
-  bool m_bDoublebuffer;
-  bool m_bOK;
-  bool m_bVSync;
-  int m_iVSyncMode;
-  int m_iVSyncErrors;
-  __int64 m_iSwapStamp;
-  __int64 m_iSwapRate;
-  __int64 m_iSwapTime;
-  bool m_bVsyncInit;
-  short int m_iRedSize;
-  short int m_iGreenSize;
-  short int m_iBlueSize;
-  short int m_iAlphaSize;
+  static bool b_glewInit;
+  std::string s_glxExt;
 #ifdef HAS_GLX
   GLXContext m_glContext;
   GLXWindow  m_glWindow;
@@ -144,17 +101,7 @@ public:
 #ifdef _WIN32
   HDC m_glDC;
   HGLRC m_glContext;
-  bool m_bCoversScreen;
-  ONTOP m_iOnTop;
 #endif
-  static bool b_glewInit;
-  static std::string s_glVendor;
-  static std::string s_glRenderer;
-  static std::string s_glxExt;
-  static int         s_glMajVer;
-  static int         s_glMinVer;
-
-  XBMC::SurfacePtr m_SDLSurface;
 };
 
 }

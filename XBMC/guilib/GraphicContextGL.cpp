@@ -38,7 +38,7 @@
 #ifdef HAS_SDL_OPENGL
 #define GLVALIDATE  { CSingleLock locker(*this); ValidateSurface(); }
 #endif
-#include "Surface.h"
+#include "SurfaceGL.h"
 #include "SkinInfo.h"
 using namespace Surface;
 #ifdef HAS_GLX
@@ -755,7 +755,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
     needsResize = true;
 #endif
     if (!m_screenSurface)
-      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
+      m_screenSurface = new CSurfaceGL(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
 
     if (g_advancedSettings.m_fullScreen)
     {
@@ -1363,7 +1363,7 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
     if (dest==NULL)
     {
       CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %u", tid);
-      CSurface* surface = new CSurface(m_screenSurface);
+      CSurfaceGL* surface = new CSurfaceGL(m_screenSurface);
       if (!surface->MakeCurrent())
       {
         CLog::Log(LOGERROR, "GL: Error making context current");
@@ -1398,10 +1398,10 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
 
 CSurface* CGraphicContext::InitializeSurface()
 {
-  CSurface* screenSurface = NULL;
+  CSurfaceGL* screenSurface = NULL;
   Lock();
 
-  screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, m_screenSurface, m_screenSurface);
+  screenSurface = new CSurfaceGL(m_iScreenWidth, m_iScreenHeight, true, m_screenSurface, m_screenSurface);
   if (!screenSurface || !screenSurface->IsValid())
   {
     CLog::Log(LOGERROR, "Surface creation error");
