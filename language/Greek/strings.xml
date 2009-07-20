@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 07/19/2009-->
+<!--Date of translation: 07/20/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21758-->
+<!--Based on english strings version 21769-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1596,7 +1596,7 @@
   <string id="20301">Κατάλογος διακομιστή ιστού (HTTPS)</string>
   <string id="20302">Αδυναμία εγγραφής στο φάκελλο:</string>
   <string id="20303">Θέλετε να παραβλεφθεί και να συνεχίσετε;</string>
-  <string id="20304">Εντοπισμός ημ/νίας κατασκευής</string>
+  <string id="20304">Ροή τίτλων ειδήσεων (RSS)</string>
   <string id="20305">Εντοπισμός συνδεδεμένων συσκευών</string>
   <string id="20306">Άγνωστο. Προσθέστε το MD5 από το xbmc.log στο BiosIDs.ini.</string>
   <string id="20307">Δευτερεύον DNS</string>
