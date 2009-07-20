@@ -739,7 +739,7 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
   return;
 }
 
-int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, const CPoint &pos)
+int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, const CPoint *pos)
 {
   // no choices??
   if (choices.size() == 0)
@@ -756,12 +756,33 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, c
       pMenu->AddButton(choices[i]);
 
     // position it correctly
-    pMenu->OffsetPosition(pos.x, pos.y);
+    if (pos)
+      pMenu->OffsetPosition(pos->x, pos->y);
+    else
+      pMenu->PositionAtCurrentFocus();
+
     pMenu->DoModal();
 
     if (pMenu->GetButton() > 0)
       return pMenu->GetButton();
   }
   return 0;
+}
+
+void CGUIDialogContextMenu::PositionAtCurrentFocus()
+{
+  CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  if (window)
+  {
+    const CGUIControl *focusedControl = window->GetFocusedControl();
+    if (focusedControl)
+    {
+      CPoint pos = focusedControl->GetRenderPosition() + CPoint(focusedControl->GetWidth() * 0.5f, focusedControl->GetHeight() * 0.5f);
+      OffsetPosition(pos.x,pos.y);
+      return;
+    }
+  }
+  // no control to center at, so just center the window
+  CenterWindow();
 }
 

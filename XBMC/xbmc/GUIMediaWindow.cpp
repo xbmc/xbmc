@@ -1181,8 +1181,8 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
       pMenu->AddButton((*it).second);
 
     // position it correctly
-    CPoint pos = GetContextPosition();
-    pMenu->OffsetPosition(pos.x, pos.y);
+    pMenu->PositionAtCurrentFocus();
+
     pMenu->DoModal();
 
     // translate our button press
@@ -1317,15 +1317,6 @@ bool CGUIMediaWindow::WaitForNetwork() const
   }
   progress->Close();
   return true;
-}
-
-CPoint CGUIMediaWindow::GetContextPosition() const
-{
-  CPoint pos(200, 100);
-  const CGUIControl *pList = GetControl(m_viewControl.GetCurrentControl());
-  if (pList)
-    pos = pList->GetRenderPosition() + CPoint(pList->GetWidth() * 0.5f, pList->GetHeight() * 0.5f);
-  return pos;
 }
 
 

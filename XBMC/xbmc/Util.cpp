@@ -2712,9 +2712,27 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // set fullscreen or windowed
     if (params2.size() >= 2 && params2[1] == "1")
       g_stSettings.m_bStartVideoWindowed = true;
-    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
-      item.m_lStartOffset = STARTOFFSET_RESUME;
 
+    // ask if we need to check guisettings to resume
+    bool askToResume = true;
+    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
+    {
+      // force the item to resume (if applicable) (see CApplication::PlayMedia)
+      item.m_lStartOffset = STARTOFFSET_RESUME;
+      askToResume = false;
+    }
+
+    if ((params2.size() == 2 && params2[1].Equals("noresume")) || (params2.size() == 3 && params2[2].Equals("noresume")))
+    {
+      // force the item to start at the beginning (m_lStartOffset is initialized to 0)
+      askToResume = false;
+    }
+
+    if ( askToResume == true )
+    {
+      if ( CGUIWindowVideoBase::OnResumeShowMenu(item) == false )
+        return false;
+    }
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {

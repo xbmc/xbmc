@@ -930,22 +930,22 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
   CGUIMediaWindow::OnClick(iItem);
 }
 
-void CGUIWindowVideoBase::OnResumeItem(int iItem)
+
+bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
 {
-  if (iItem < 0 || iItem >= m_vecItems->Size()) return;
-  CFileItemPtr item = m_vecItems->Get(iItem);
   // we always resume the movie if the user doesn't want us to ask
   bool resumeItem = g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_ASK;
-  if (!item->m_bIsFolder && !resumeItem)
+
+  if (!item.m_bIsFolder && !resumeItem)
   {
     // check to see whether we have a resume offset available
     CVideoDatabase db;
     if (db.Open())
     {
       CBookmark bookmark;
-      CStdString itemPath(item->m_strPath);
-      if (item->IsVideoDb())
-        itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+      CStdString itemPath(item.m_strPath);
+      if (item.IsVideoDb())
+        itemPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
       if (db.GetResumeBookMark(itemPath, bookmark) )
       { // prompt user whether they wish to resume
         vector<CStdString> choices;
@@ -954,17 +954,28 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
         resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
         choices.push_back(resumeString);
         choices.push_back(g_localizeStrings.Get(12021)); // start from the beginning
-        int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, GetContextPosition());
+        int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
         if (!retVal)
-          return; // don't do anything
+          return false; // don't do anything
         resumeItem = (retVal == 1);
       }
       db.Close();
     }
   }
   if (resumeItem)
-    item->m_lStartOffset = STARTOFFSET_RESUME;
-  CGUIMediaWindow::OnClick(iItem);
+    item.m_lStartOffset = STARTOFFSET_RESUME;
+  
+  return true;
+}
+
+void CGUIWindowVideoBase::OnResumeItem(int iItem)
+{
+  if (iItem < 0 || iItem >= m_vecItems->Size()) return;
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  
+  // Show menu asking the user
+  if ( OnResumeShowMenu(*item) )
+    CGUIMediaWindow::OnClick(iItem);
 }
 
 void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId)
