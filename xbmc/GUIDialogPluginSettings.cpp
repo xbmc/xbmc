@@ -205,7 +205,6 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
 
           if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
           {
-            m_buttonValues[id] = value;
             // if hidden hide input
             if (bHidden)
             {
@@ -310,6 +309,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             g_applicationMessenger.ExecBuiltIn(action);
           }
         }
+        m_buttonValues[id] = value;
         break;
       }
     }
