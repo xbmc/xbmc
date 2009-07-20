@@ -1148,7 +1148,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(false, false, true);
 
   CLog::Log(LOGINFO, "load keymapping");
-  if (!g_buttonTranslator.Load())
+  if (!CButtonTranslator::GetInstance().Load())
     FatalErrorHandler(false, false, true);
 
   // check the skin file for testing purposes
@@ -2373,9 +2373,9 @@ bool CApplication::OnKey(CKey& key)
   // get the current active window
   int iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
 
-  // this will be checked for certain keycodes that need 
-  // special handling if the screensaver is active   
-  g_buttonTranslator.GetAction(iWin, key, action);  
+  // this will be checked for certain keycodes that need
+  // special handling if the screensaver is active
+  CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
   // a key has been pressed.
   // Reset the screensaver timer
@@ -2405,7 +2405,7 @@ bool CApplication::OnKey(CKey& key)
   }
   if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
   { // fullscreen info dialog - special case
-    g_buttonTranslator.GetAction(iWin, key, action);
+    CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
 #ifdef HAS_SDL
     g_Keyboard.Reset();
@@ -2422,12 +2422,12 @@ bool CApplication::OnKey(CKey& key)
     if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
     {
       // if player is in some sort of menu, (ie DVDMENU) map buttons differently
-      g_buttonTranslator.GetAction(WINDOW_VIDEO_MENU, key, action);
+      CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key, action);
     }
     else
     {
       // no then use the fullscreen window section of keymap.xml to map key->action
-      g_buttonTranslator.GetAction(iWin, key, action);
+      CButtonTranslator::GetInstance().GetAction(iWin, key, action);
     }
   }
   else
@@ -2482,11 +2482,11 @@ bool CApplication::OnKey(CKey& key)
       if (key.GetButtonCode() != KEY_INVALID)
       {
         action.wID = (WORD) key.GetButtonCode();
-        g_buttonTranslator.GetAction(iWin, key, action);
+        CButtonTranslator::GetInstance().GetAction(iWin, key, action);
       }
     }
     else
-      g_buttonTranslator.GetAction(iWin, key, action);
+      CButtonTranslator::GetInstance().GetAction(iWin, key, action);
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);
@@ -3370,7 +3370,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    // wKeyID = -wKeyID;
 
    // Translate using regular joystick translator.
-   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis, action.wID, action.strAction, fullRange))
+   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis, action.wID, action.strAction, fullRange))
    {
      action.fRepeat = 0.0f;
      g_audioManager.PlayActionSound(action);
@@ -3549,7 +3549,7 @@ HRESULT CApplication::Cleanup()
     g_LangCodeExpander.Clear();
     g_charsetConverter.clear();
     g_directoryCache.Clear();
-    g_buttonTranslator.Clear();
+    CButtonTranslator::GetInstance().Clear();
     CLastfmScrobbler::RemoveInstance();
     CLibrefmScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
@@ -4270,6 +4270,7 @@ void CApplication::UpdateFileState()
       {
         // Update the bookmark
         m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+        m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
       }
       else
       {
@@ -4930,7 +4931,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         // try translating the action from our ButtonTranslator
         WORD actionID;
-        if (g_buttonTranslator.TranslateActionString(message.GetStringParam().c_str(), actionID))
+        if (CButtonTranslator::TranslateActionString(message.GetStringParam().c_str(), actionID))
         {
           CAction action;
           action.wID = actionID;

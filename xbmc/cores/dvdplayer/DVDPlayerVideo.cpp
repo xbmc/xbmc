@@ -443,8 +443,8 @@ void CDVDPlayerVideo::Process()
             EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
             if( mInt == VS_INTERLACEMETHOD_DEINTERLACE )
             {
-              mDeinterlace.Process(&picture);
-              mDeinterlace.GetPicture(&picture);
+              if(mDeinterlace.Process(&picture))
+                mDeinterlace.GetPicture(&picture);
             }
             else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
             {
@@ -631,7 +631,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   // remove any overlays that are out of time
   m_pOverlayContainer->CleanUp(min(pts, pts - m_iSubtitleDelay));
 
-  if(pSource->iFlags & DVP_FLAG_NONIMAGE)
+  if(pSource->format != DVDVideoPicture::FMT_YUV420P)
     return;
 
   // rendering spu overlay types directly on video memory costs a lot of processing power.
@@ -920,10 +920,11 @@ void CDVDPlayerVideo::UpdateMenuPicture()
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:" << std::setw(3) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
-  s << ",";
-  s << "cpu:" << (int)(100 * CThread::GetRelativeUsage()) << "%,";
-  s << "br:" << std::setprecision(4) << (double)GetVideoBitrate() / (1024.0*1024.0) << "mb/s";
+  s << "vq:"     << setw(2) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
+  s << ", dc:"   << m_codecname;
+  s << ", MB/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
+  s << ", drop:" << m_iDroppedFrames;
+
   return s.str();
 }
 

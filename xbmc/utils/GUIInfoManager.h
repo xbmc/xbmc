@@ -241,6 +241,7 @@ class CDateTime;
 #define VIDEOPLAYER_TOP250            283
 #define VIDEOPLAYER_RATING_AND_VOTES  284
 #define VIDEOPLAYER_TRAILER			  285
+#define VIDEOPLAYER_VIDEO_ASPECT      290
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -379,6 +380,7 @@ class CDateTime;
 #define SYSTEM_OPENGL_VENDOR        707
 #define SYSTEM_OPENGL_RENDERER      708
 #define SYSTEM_OPENGL_VERSION       709
+#define SYSTEM_SETTING              710
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721

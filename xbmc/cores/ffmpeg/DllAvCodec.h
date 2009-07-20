@@ -163,7 +163,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 
   LOAD_SYMBOLS();
 
-  DEFINE_METHOD0(void, avcodec_register_all)
+  DEFINE_METHOD0(void, avcodec_register_all_dont_call)
   DEFINE_METHOD1(AVCodec*, avcodec_find_decoder, (enum CodecID p1))
   DEFINE_METHOD1(int, avcodec_close_dont_call, (AVCodecContext *p1))
   DEFINE_METHOD0(AVFrame*, avcodec_alloc_frame)
@@ -193,7 +193,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD_RENAME(avcodec_close,avcodec_close_dont_call)
     RESOLVE_METHOD(avcodec_find_decoder)
     RESOLVE_METHOD(avcodec_alloc_frame)
-    RESOLVE_METHOD(avcodec_register_all)
+    RESOLVE_METHOD_RENAME(avcodec_register_all, avcodec_register_all_dont_call)
     RESOLVE_METHOD(avpicture_fill)
     RESOLVE_METHOD(avcodec_decode_video)
     RESOLVE_METHOD(avcodec_decode_audio2)
@@ -229,6 +229,11 @@ public:
       CSingleLock lock(DllAvCodec::m_critSection);
       return avcodec_close_dont_call(avctx);
     }
+    void avcodec_register_all()
+    {
+      CSingleLock lock(DllAvCodec::m_critSection);
+      avcodec_register_all_dont_call();
+    }    
 };
 
 #endif

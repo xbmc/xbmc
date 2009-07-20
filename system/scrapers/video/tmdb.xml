@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.0" date="2009-05-22" name="TMDb" content="movies" thumb="tmdb.png" language="en">
+<scraper framework="1.0" date="2009-05-22" name="themoviedb.org" content="movies" thumb="tmdb.png" language="en">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Trailers from Dtrailer.com&quot; type=&quot;bool&quot; id=&quot;trailer&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -84,7 +87,29 @@
 				</RegExp>
 				<expression noclean="1">(.+)</expression>
 			</RegExp>
+			<RegExp conditional="trailer" input="$$6" output="&lt;url function=&quot;FindTrailer&quot;&gt;http://en.dtrailer.com/movies/search/\1&lt;/url&gt;" dest="5+">
+				<RegExp input="$$4" output="\1-" dest="6">	
+					<RegExp input="$$1" output="\1" dest="4">
+					  <expression>&lt;title&gt;([^&lt;]*)&lt;/title&gt;</expression>
+					</RegExp>
+					<expression repeat="yes">([a-zA-Z0-9]+)</expression>
+				</RegExp>
+				<expression></expression>
+			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
-	</GetDetails>	
+	</GetDetails>
+	<FindTrailer dest="3">
+		<RegExp input="$$5" dest="3" output="&lt;details&gt;\1&lt;/details&gt;">
+			<RegExp input="$$1" dest="5" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://en.dtrailer.com/movies/watch/\1&lt;/url&gt;">
+				<expression>&lt;a href=&quot;http://en.dtrailer.com/movies/watch/(/?[^\&gt;]+)&quot; class=&quot;thumb&quot; title=&quot;(/?[^\&gt;]+)&quot;&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</FindTrailer>
+	<GetTrailer dest="5">
+        <RegExp input="$$1" output="&lt;details&gt;&lt;trailer&gt;http://www.dtrailer.com/dupload/trailerz/\1.flv&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+            <expression noclean="1">s1\.addVariable\(&quot;file&quot;,&quot;(/?[^\&gt;]+).flv&quot;\);</expression>
+        </RegExp>
+    </GetTrailer>	
 </scraper>

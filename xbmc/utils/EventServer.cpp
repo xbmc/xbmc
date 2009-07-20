@@ -32,6 +32,7 @@
 #include "Util.h"
 #include "ButtonTranslator.h"
 #include "SingleLock.h"
+#include "GUIAudioManager.h"
 #include <map>
 #include <queue>
 
@@ -335,11 +336,12 @@ bool CEventServer::ExecuteNextAction()
         break;
 
       case AT_BUTTON:
-        g_buttonTranslator.TranslateActionString(actionEvent.actionName.c_str(), action.wID);
+        CButtonTranslator::TranslateActionString(actionEvent.actionName.c_str(), action.wID);
         action.strAction = actionEvent.actionName;
         action.fRepeat  = 0.0f;
         action.fAmount1 = 1.0f;
         action.fAmount2 = 1.0f;
+        g_audioManager.PlayActionSound(action);
         g_application.OnAction(action);
         break;
       }

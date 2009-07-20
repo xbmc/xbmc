@@ -28,6 +28,7 @@
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/FactoryFileDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIListContainer.h"
@@ -454,6 +455,15 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->m_strPath = "add";
     pItem->SetThumbnailImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
+    pItem->SetLabelPreformated(true);
+    m_vecItems[iList]->Add(pItem);
+  }
+  
+  if (strDirectory.IsEmpty())
+  {
+    CFileItemPtr pItem(new CFileItem("special://profile/", true));
+    pItem->SetLabel(g_localizeStrings.Get(20070));
+    pItem->SetThumbnailImage("DefaultFolder.png");
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }

@@ -55,6 +55,14 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load()) return false;
 
+  m_dllAvCodec.avcodec_register_all();
+
+  #if (! defined USE_EXTERNAL_FFMPEG)
+    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
+    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #endif
+
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   // avcodec_get_context_defaults(m_pCodecContext);
 
@@ -361,6 +369,8 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     pDvdVideoPicture->pts = pts_itod(frame->reordered_opaque);
   else
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+
+  pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
 
   return true;
 }

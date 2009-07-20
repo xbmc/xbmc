@@ -35,6 +35,50 @@ extern "C" {
 #include "lib/libhts/htsmsg_binary.h"
 }
 
+using namespace std;
+using namespace HTSP;
+
+class CDemuxStreamVideoHTSP
+  : public CDemuxStreamVideo
+{
+  CDVDDemuxHTSP *m_parent;
+  string         m_codec;
+public:
+  CDemuxStreamVideoHTSP(CDVDDemuxHTSP *parent, const string& codec)
+    : m_parent(parent)
+    , m_codec(codec)
+  {}
+  void GetStreamInfo(std::string& strInfo)
+  {
+    CStdString info;
+    info.Format("%s, delay: %u, drops: %ub %up %ui"
+               , m_codec.c_str()
+               , m_parent->m_QueueStatus.delay
+               , m_parent->m_QueueStatus.bdrops
+               , m_parent->m_QueueStatus.pdrops
+               , m_parent->m_QueueStatus.idrops);
+    strInfo = info;
+  }
+};
+
+class CDemuxStreamAudioHTSP
+  : public CDemuxStreamAudio
+{
+  CDVDDemuxHTSP *m_parent;
+  string         m_codec;
+public:
+  CDemuxStreamAudioHTSP(CDVDDemuxHTSP *parent, const string& codec)
+    : m_parent(parent)
+    , m_codec(codec)
+    
+  {}
+  void GetStreamInfo(string& strInfo)
+  {
+    CStdString info;
+    info.Format("%s", m_codec.c_str());
+    strInfo = info;
+  }
+};
 
 CDVDDemuxHTSP::CDVDDemuxHTSP()
   : CDVDDemux()
@@ -98,6 +142,8 @@ DemuxPacket* CDVDDemuxHTSP::Read()
       SubscriptionStop (msg);
     else if(strcmp("subscriptionStatus", method) == 0)
       SubscriptionStatus(msg);
+    else if(strcmp("queueStatus"       , method) == 0)
+      CHTSPSession::ParseQueueStatus(msg, m_QueueStatus);
     else if(strcmp("muxpkt"            , method) == 0)
     {
       uint32_t    index, duration;
@@ -192,16 +238,19 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStart - id: %d, type: %s", index, type);
 
     if(!strcmp(type, "AC3")) {
-      st.a = new CDemuxStreamAudio();
+      st.a = new CDemuxStreamAudioHTSP(this, type);
       st.a->codec = CODEC_ID_AC3;
     } else if(!strcmp(type, "MPEG2AUDIO")) {
-      st.a = new CDemuxStreamAudio();
+      st.a = new CDemuxStreamAudioHTSP(this, type);
       st.a->codec = CODEC_ID_MP2;
+    } else if(!strcmp(type, "AAC")) {
+      st.a = new CDemuxStreamAudioHTSP(this, type);
+      st.a->codec = CODEC_ID_AAC;
     } else if(!strcmp(type, "MPEG2VIDEO")) {
-      st.v = new CDemuxStreamVideo();
+      st.v = new CDemuxStreamVideoHTSP(this, type);
       st.v->codec = CODEC_ID_MPEG2VIDEO;
     } else if(!strcmp(type, "H264")) {
-      st.v = new CDemuxStreamVideo();
+      st.v = new CDemuxStreamVideoHTSP(this, type);
       st.v->codec = CODEC_ID_H264;
     } else {
       continue;
@@ -236,7 +285,6 @@ void CDVDDemuxHTSP::SubscriptionStatus(htsmsg_t *m)
   }
 }
 
-
 CDemuxStream* CDVDDemuxHTSP::GetStream(int iStreamId)
 {
   if(iStreamId >= 0 && iStreamId < (int)m_Streams.size())
@@ -258,3 +306,8 @@ std::string CDVDDemuxHTSP::GetFileName()
     return "";
 }
 
+void CDVDDemuxHTSP::Abort()
+{
+  if(m_Input)
+    return m_Input->Abort();
+}

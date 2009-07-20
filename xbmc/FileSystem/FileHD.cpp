@@ -92,6 +92,7 @@ bool CFileHD::Exists(const CURL& url)
   return (_stat64(strFile.c_str(), &buffer)==0);
 }
 
+
 int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 {
   CStdString strFile = GetLocal(url);

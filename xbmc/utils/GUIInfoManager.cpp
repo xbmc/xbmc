@@ -425,6 +425,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.platform.osx")) ret = SYSTEM_PLATFORM_OSX;
     else if (strTest.Left(15).Equals("system.getbool("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_GET_BOOL : SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
+    else if (strTest.Left(15).Equals("system.setting(")) 
+ 	  return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_SETTING : SYSTEM_SETTING, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
@@ -750,7 +752,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (strTest.Left(7).Equals("window("))
       {
         CStdString window(strTest.Mid(7, strTest.Find(")", 7) - 7).ToLower());
-        winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+        winID = CButtonTranslator::TranslateWindowString(window.c_str());
       }
       if (winID != WINDOW_INVALID)
       {
@@ -763,7 +765,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
-      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
     }
@@ -773,7 +775,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
-      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
     }
@@ -782,7 +784,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
-      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
     }
@@ -791,7 +793,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
-      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
     }
@@ -800,7 +802,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
-      int winID = g_buttonTranslator.TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
     }
@@ -1900,6 +1902,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     case PLAYER_SHOWTIME:
       bReturn = m_playerShowTime;
     break;
+      break;
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();
     break;
@@ -2165,6 +2168,10 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
       case SYSTEM_GET_BOOL:
         bReturn = g_guiSettings.GetBool(m_stringParameters[info.GetData1()]);
+        break;
+      case SYSTEM_SETTING:
+        if ( m_stringParameters[info.GetData1()].Equals("hidewatched") ) 
+          bReturn = g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
         break;
       case CONTAINER_ON_NEXT:
       case CONTAINER_ON_PREVIOUS:

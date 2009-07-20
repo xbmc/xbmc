@@ -177,6 +177,8 @@ public:
     int m_videoBlackBarColour;
     int m_videoIgnoreAtStart;
     int m_videoIgnoreAtEnd;
+    bool m_videoApplyAC3Drc;
+    bool m_videoApplyDTSDrc;
 
     CStdString m_videoDefaultPlayer;
 

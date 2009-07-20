@@ -753,21 +753,22 @@ void CDVDPlayer::Process()
 
   if( m_PlayerOptions.starttime > 0 )
   {
+    int starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms
     double startpts = DVD_NOPTS_VALUE;
     if(m_pDemuxer)
     {
-      if (m_pDemuxer->SeekTime(lrint(m_PlayerOptions.starttime * 1000), false, &startpts))
-        CLog::Log(LOGDEBUG, "%s - starting demuxer from: %f", __FUNCTION__, m_PlayerOptions.starttime);
+      if (m_pDemuxer->SeekTime(starttime, false, &startpts))
+        CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, starttime);
       else
-        CLog::Log(LOGDEBUG, "%s - failed to start demuxing from %f", __FUNCTION__,  m_PlayerOptions.starttime);
+        CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %d", __FUNCTION__, starttime);
     }
 
     if(m_pSubtitleDemuxer)
     {
-      if(m_pSubtitleDemuxer->SeekTime(lrint(m_PlayerOptions.starttime * 1000), false, &startpts))
-        CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %f", __FUNCTION__, m_PlayerOptions.starttime);
+      if(m_pSubtitleDemuxer->SeekTime(starttime, false, &startpts))
+        CLog::Log(LOGDEBUG, "%s - starting subtitle demuxer from: %d", __FUNCTION__, starttime);
       else
-        CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %f", __FUNCTION__, m_PlayerOptions.starttime);
+        CLog::Log(LOGDEBUG, "%s - failed to start subtitle demuxing from: %d", __FUNCTION__, starttime);
     }
   }
 
@@ -1862,7 +1863,7 @@ bool CDVDPlayer::SeekScene(bool bPlus)
   __int64 iScenemarker;
   if( m_Edl.HaveScenes() && m_Edl.SeekScene(bPlus,&iScenemarker) )
   {
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, false, false, true)); 
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, false, true));
     SyncronizeDemuxer(100);
     return true;
   }
@@ -1877,15 +1878,15 @@ void CDVDPlayer::ToggleFrameDrop()
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
-  strAudioInfo.Format("%s,%s", m_State.demux_audio.c_str()
-                                        , m_dvdPlayerAudio.GetPlayerInfo().c_str());
+  strAudioInfo.Format("%s %s", m_State.demux_audio.c_str()
+                                       , m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
   CSingleLock lock(m_StateSection);
-  strVideoInfo.Format("%s,%s", m_State.demux_video.c_str()
-                                        , m_dvdPlayerVideo.GetPlayerInfo().c_str());
+  strVideoInfo.Format("%s %s", m_State.demux_video.c_str()
+                                       , m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)

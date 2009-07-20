@@ -267,6 +267,7 @@ class CBookmark
 public:
   CBookmark();
   double timeInSeconds;
+  double totalTimeInSeconds;
   CStdString thumbNailImage;
   CStdString playerState;
   CStdString player;

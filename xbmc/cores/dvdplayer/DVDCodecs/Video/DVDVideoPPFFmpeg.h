@@ -33,7 +33,7 @@ public:
 
 
   void SetTarget(DVDVideoPicture *pPicture){ m_pTarget = pPicture; };
-  void Process(DVDVideoPicture *pPicture);
+  bool Process   (DVDVideoPicture *pPicture);
   bool GetPicture(DVDVideoPicture *pPicture);
 
 protected:

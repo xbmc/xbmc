@@ -207,6 +207,10 @@ void CGUITextLayout::SetText(const CStdStringW &text, float maxWidth, bool force
   else
     LineBreakText(parsedText, m_lines);
 
+  // remove any trailing blank lines
+  while (!m_lines.empty() && m_lines.back().m_text.empty())
+    m_lines.pop_back();
+  
   BidiTransform(m_lines, forceLTRReadingOrder);
 }
 

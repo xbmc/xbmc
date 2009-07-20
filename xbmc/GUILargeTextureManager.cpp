@@ -114,7 +114,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientation, bool firstRequest)
+bool CGUILargeTextureManager::GetImage(const CStdString &path, CTexture &texture, int &orientation, bool firstRequest)
 {
   // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
@@ -126,7 +126,8 @@ CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientat
       if (firstRequest)
         image->AddRef();
       orientation = image->GetOrientation();
-      return image->GetTexture();
+      texture = image->GetTexture();
+      return texture.size() > 0;
     }
   }
   lock.Leave();
@@ -134,7 +135,7 @@ CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientat
   if (firstRequest)
     QueueImage(path);
 
-  return CTexture();
+  return true;
 }
 
 void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediately)
