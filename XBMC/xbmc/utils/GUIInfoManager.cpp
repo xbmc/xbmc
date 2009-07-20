@@ -1305,7 +1305,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     }
     break;
   case SYSTEM_DVD_LABEL:
-    strLabel = CDetectDVDMedia::GetDVDLabel();
+    strLabel = g_mediaManager.GetDiskLabel();
     break;
   case SYSTEM_ALARM_POS:
     if (g_alarmClock.GetRemaining("shutdowntimer") == 0.f)

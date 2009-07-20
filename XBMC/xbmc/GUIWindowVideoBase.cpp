@@ -718,7 +718,6 @@ void CGUIWindowVideoBase::OnManualIMDB()
 
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
 {
-  CDetectDVDMedia::WaitMediaReady();
   CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
