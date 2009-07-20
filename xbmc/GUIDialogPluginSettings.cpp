@@ -139,44 +139,6 @@ void CGUIDialogPluginSettings::ShowAndGetInput(SScraperInfo& info)
   return;
 }
 
-// \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-void CGUIDialogPluginSettings::ShowAndGetInput(CStdString& path)
-{
-  CUtil::RemoveSlashAtEnd(path);
-
-  // Path where the language strings reside
-  CStdString pathToLanguageFile = path;
-  CStdString pathToFallbackLanguageFile = path;
-  CUtil::AddFileToFolder(pathToLanguageFile, "resources", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "resources", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, "language", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "language", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, g_guiSettings.GetString("locale.language"), pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "english", pathToFallbackLanguageFile);
-  CUtil::AddFileToFolder(pathToLanguageFile, "strings.xml", pathToLanguageFile);
-  CUtil::AddFileToFolder(pathToFallbackLanguageFile, "strings.xml", pathToFallbackLanguageFile);
-
-  // Load language strings temporarily
-  g_localizeStringsTemp.Load(pathToLanguageFile, pathToFallbackLanguageFile);
-
-  // Create the dialog
-  CGUIDialogPluginSettings* pDialog = (CGUIDialogPluginSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_PLUGIN_SETTINGS);
-
-  pDialog->m_strHeading = CUtil::GetFileName(path);
-  pDialog->m_strHeading.Format("$LOCALIZE[1049] - %s", pDialog->m_strHeading.c_str());
-
-  CScriptSettings settings;
-  settings.Load(path);
-  pDialog->m_settings = settings;
-
-  pDialog->DoModal();
-
-  settings = pDialog->m_settings;
-  settings.Save();
-
-  return;
-}
-
 bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
 {
   int controlId = CONTROL_START_CONTROL;
@@ -205,6 +167,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
 
           if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
           {
+            m_buttonValues[id] = value;
             // if hidden hide input
             if (bHidden)
             {
@@ -225,7 +188,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmpi(type, "video") == 0 || strcmpi(type, "music") == 0 ||
-          strcmpi(type, "pictures") == 0 || strcmpi(type, "programs") == 0 || 
+          strcmpi(type, "pictures") == 0 || strcmpi(type, "programs") == 0 ||
           strcmpi(type, "folder") == 0 || strcmpi(type, "files") == 0)
         {
           // setup the shares
@@ -244,7 +207,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             localShares.insert(localShares.end(), networkShares.begin(), networkShares.end());
             shares = &localShares;
           }
-          
+
           if (strcmpi(type, "folder") == 0)
           {
             // get any options
@@ -294,7 +257,6 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
             if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, ((CGUIButtonControl*) control)->GetLabel(), value))
               ((CGUIButtonControl*) control)->SetLabel2(value);
           }
-          m_buttonValues[id] = value;
         }
         else if (strcmpi(type, "action") == 0)
         {
@@ -630,26 +592,35 @@ bool CGUIDialogPluginSettings::GetCondition(const CStdString &condition, const i
       default:
         break;
     }
+
     if (condVec[0].Equals("eq"))
+    {
       if (bCompare)
         bCondition &= value.Equals(condVec[2]);
       else
         bCondition |= value.Equals(condVec[2]);
+    }
     else if (condVec[0].Equals("!eq"))
+    {
       if (bCompare)
         bCondition &= !value.Equals(condVec[2]);
       else
         bCondition |= !value.Equals(condVec[2]);
+    }
     else if (condVec[0].Equals("gt"))
+    {
       if (bCompare)
         bCondition &= (atoi(value) > atoi(condVec[2]));
       else
         bCondition |= (atoi(value) > atoi(condVec[2]));
+    }
     else if (condVec[0].Equals("lt"))
+    {
       if (bCompare)
         bCondition &= (atoi(value) < atoi(condVec[2]));
       else
         bCondition |= (atoi(value) < atoi(condVec[2]));
+    }
   }
   return bCondition;
 }
