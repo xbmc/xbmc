@@ -1871,7 +1871,9 @@ bool CSettings::LoadProfile(int index)
     }
 
     // to set labels - shares are reloaded
+#ifndef _WIN32PC
     CDetectDVDMedia::UpdateState();
+#endif
     // init windows
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
     m_gWindowManager.SendMessage(msg);

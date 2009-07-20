@@ -1839,7 +1839,7 @@ void CUtil::PlayDVD()
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
   CFileItem item("dvd://1", false);
-  item.SetLabel(CDetectDVDMedia::GetDVDLabel());
+  item.SetLabel(g_mediaManager.GetDiskLabel());
   g_application.PlayFile(item);
 }
 
