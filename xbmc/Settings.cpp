@@ -147,6 +147,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_ac3Gain = 12.0f;
+  g_advancedSettings.m_audioApplyDrc = true;      
 
   g_advancedSettings.m_karaokeSyncDelayCDG = 0.0f;
   g_advancedSettings.m_karaokeSyncDelayLRC = 0.0f;
@@ -181,8 +182,6 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoIgnoreAtStart = 15;
   g_advancedSettings.m_videoIgnoreAtEnd = 5; 
   g_advancedSettings.m_videoPlayCountMinimumPercent = 90.0f;
-  g_advancedSettings.m_videoApplyAC3Drc = true;
-  g_advancedSettings.m_videoApplyDTSDrc = true;
 
   g_advancedSettings.m_musicUseTimeSeeking = true;
   g_advancedSettings.m_musicTimeSeekForward = 10;
@@ -1147,6 +1146,7 @@ void CSettings::LoadAdvancedSettings()
       GetCustomRegexps(pAudioExcludes, g_advancedSettings.m_audioExcludeFromScanRegExps);
 
     XMLUtils::GetString(pElement, "audiohost", g_advancedSettings.m_audioHost);
+    XMLUtils::GetBoolean(pElement, "applydrc", g_advancedSettings.m_audioApplyDrc);        
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
@@ -1185,8 +1185,6 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
     XMLUtils::GetInt(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
     XMLUtils::GetInt(pElement, "ignoreatend", g_advancedSettings.m_videoIgnoreAtEnd, 0, 900);
-    XMLUtils::GetBoolean(pElement, "applyac3drc", g_advancedSettings.m_videoApplyAC3Drc);
-    XMLUtils::GetBoolean(pElement, "applydtsdrc", g_advancedSettings.m_videoApplyDTSDrc);
 
     XMLUtils::GetInt(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 1, INT_MAX);
     XMLUtils::GetInt(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 1, 10);
