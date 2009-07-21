@@ -182,7 +182,7 @@ xbmc/karaoke/karaoke.a: force
 xbmc/lib/libcmyth/libcmyth.a: force
 	$(MAKE) -C xbmc/lib/libcmyth
 xbmc/lib/libhts/libhts.a: force
-	(MAKE) -C xbmc/lib/libhts
+	$(MAKE) -C xbmc/lib/libhts
 xbmc/lib/libPython/python.a: force
 	$(MAKE) -C xbmc/lib/libPython
 xbmc/lib/libPython/xbmcmodule/xbmcmodule.a: force
