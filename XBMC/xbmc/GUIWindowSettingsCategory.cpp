@@ -1674,10 +1674,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     choices.push_back(g_localizeStrings.Get(22034));
     choices.push_back(g_localizeStrings.Get(22035));
 
-    CPoint pos( g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth() / 2,
-                g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight() / 2 );
-
-    int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, pos);
+    int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if ( retVal > 0 )
     {
       CStdString path(g_settings.GetDatabaseFolder());

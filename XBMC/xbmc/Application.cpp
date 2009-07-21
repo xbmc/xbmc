@@ -239,6 +239,7 @@
 #endif
 
 #include "lib/libcdio/logging.h"
+#include "MediaManager.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -1883,9 +1884,11 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
+#ifndef _WIN32PC
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
+#endif
 
   CLog::Log(LOGNOTICE, "initializing playlistplayer");
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
@@ -1908,8 +1911,10 @@ void CApplication::StopServices()
 {
   m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
+#ifndef _WIN32PC
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
+#endif
 }
 
 void CApplication::DelayLoadSkin()
@@ -2979,6 +2984,8 @@ bool CApplication::OnAction(CAction &action)
   // Check for global volume control
   if (action.fAmount1 && (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN))
   {
+    if (!m_pPlayer || !m_pPlayer->IsPassthrough())
+    {
     // increase or decrease the volume
     int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
 
@@ -3011,7 +3018,7 @@ bool CApplication::OnAction(CAction &action)
 #else
     g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
 #endif
-
+    }
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show();
     m_guiDialogVolumeBar.OnAction(action);
@@ -5155,7 +5162,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // DVD ejected while playing in vis ?
-      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings

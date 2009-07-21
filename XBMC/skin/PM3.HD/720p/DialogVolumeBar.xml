@@ -19,6 +19,8 @@
 				<bordertexture border="3">NoCover_1.png</bordertexture>
 				<bordersize>4</bordersize>
 			</control>
+			<control type="group">
+				<visible>!player.passthrough</visible>
 			<control type="image">
 				<posx>10</posx>
 				<posy>5</posy>
@@ -43,6 +45,26 @@
 				<height>12</height>
 				<info>Player.Volume</info>
 				<visible>true</visible>
+			</control>
+		</control>
+			<control type="group">
+				<visible>player.passthrough</visible>
+				<control type="image">
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>35</width>
+					<height>35</height>
+					<texture>VolumeIcon-Mute.png</texture>
+				</control>
+				<control type="label">
+					<description>Passthrough Label</description>
+					<posx>50</posx>
+					<posy>22</posy>
+					<label>$LOCALIZE[29802]</label>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+				</control>
 			</control>
 		</control>
 	</controls>

@@ -72,15 +72,15 @@ public:
   Display* GetDisplay() {return s_dpy;}
 #endif
 
-  void Flip();
-  bool MakeCurrent();
-  void ReleaseContext();
-  void EnableVSync(bool enable=true);
-  bool ResizeSurface(int newWidth, int newHeight);
-  void RefreshCurrentContext();
+  virtual void Flip();
+  virtual bool MakeCurrent();
+  virtual void ReleaseContext();
+  virtual void EnableVSync(bool enable=true);
+  virtual bool ResizeSurface(int newWidth, int newHeight);
+  virtual void RefreshCurrentContext();
+  virtual void* GetRenderWindow();
 
   bool glxIsSupported(const char* extension);
-  void*         GetRenderWindow();
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
   XBMC::SurfacePtr SDL() {return m_Surface;}

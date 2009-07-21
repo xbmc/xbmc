@@ -181,6 +181,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoIgnoreAtStart = 15;
   g_advancedSettings.m_videoIgnoreAtEnd = 5; 
   g_advancedSettings.m_videoPlayCountMinimumPercent = 90.0f;
+  g_advancedSettings.m_videoApplyAC3Drc = true;
+  g_advancedSettings.m_videoApplyDTSDrc = true;
 
   g_advancedSettings.m_musicUseTimeSeeking = true;
   g_advancedSettings.m_musicTimeSeekForward = 10;
@@ -1183,6 +1185,8 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
     XMLUtils::GetInt(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
     XMLUtils::GetInt(pElement, "ignoreatend", g_advancedSettings.m_videoIgnoreAtEnd, 0, 900);
+    XMLUtils::GetBoolean(pElement, "applyac3drc", g_advancedSettings.m_videoApplyAC3Drc);
+    XMLUtils::GetBoolean(pElement, "applydtsdrc", g_advancedSettings.m_videoApplyDTSDrc);
 
     XMLUtils::GetInt(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 1, INT_MAX);
     XMLUtils::GetInt(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 1, 10);
@@ -1867,7 +1871,9 @@ bool CSettings::LoadProfile(int index)
     }
 
     // to set labels - shares are reloaded
+#ifndef _WIN32PC
     CDetectDVDMedia::UpdateState();
+#endif
     // init windows
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
     m_gWindowManager.SendMessage(msg);

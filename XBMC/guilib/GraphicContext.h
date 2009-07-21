@@ -42,9 +42,6 @@
 #include <map>
 #include "utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"        // for the members m_guiTransform etc.
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
-#endif
 #include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
 #include "StdString.h"
@@ -54,13 +51,6 @@ namespace Surface { class CSurface; }
 // forward definitions
 class IMsgSenderCallback;
 class CGUIMessage;
-
-#if defined(HAS_SDL)
-#include "common/Mouse.h"
-//#include "common/SDLMouse.h"
-#else
-#include "common/DirectInputMouse.h"
-#endif
 
 /*!
  \ingroup graphics
@@ -144,34 +134,25 @@ public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
 
-  std::string&  GetRenderVendor();
-  std::string&  GetRenderRenderer();
-  void          GetRenderVersion(int& maj, int& min);
+  std::string  GetRenderVendor();
+  std::string  GetRenderRenderer();
+  void         GetRenderVersion(int& maj, int& min);
 
-#ifndef HAS_SDL
-  LPDIRECT3DDEVICE9 Get3DDevice() { return m_pd3dDevice; }
-  void SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice);
-  //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
-  void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
-  int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
-#endif
   inline void setScreenSurface(Surface::CSurface* surface) XBMC_FORCE_INLINE { m_screenSurface = surface; }
   inline Surface::CSurface* getScreenSurface() XBMC_FORCE_INLINE { return m_screenSurface; }
-#ifdef HAS_SDL_2D
-  int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect);
-#endif
-#ifdef HAS_SDL_OPENGL
-  bool ValidateSurface(Surface::CSurface* dest=NULL);
-  Surface::CSurface* InitializeSurface();
-  void ReleaseThreadSurface();
-#endif
+
+
+  virtual bool ValidateSurface(Surface::CSurface* dest=NULL) = 0;
+  virtual Surface::CSurface* InitializeSurface() = 0;
+  virtual void ReleaseThreadSurface() = 0;
+
   // the following two functions should wrap any
   // GL calls to maintain thread safety
-  void BeginPaint(Surface::CSurface* dest=NULL, bool lock=true);
-  void EndPaint(Surface::CSurface* dest=NULL, bool lock=true);
-  void ReleaseCurrentContext(Surface::CSurface* dest=NULL);
-  void AcquireCurrentContext(Surface::CSurface* dest=NULL);
-  void DeleteThreadContext();
+  virtual void BeginPaint(Surface::CSurface* dest=NULL, bool lock=true) = 0;
+  virtual void EndPaint(Surface::CSurface* dest=NULL, bool lock=true) = 0;
+  virtual void ReleaseCurrentContext(Surface::CSurface* dest=NULL) = 0;
+  virtual void AcquireCurrentContext(Surface::CSurface* dest=NULL) = 0;
+  virtual void DeleteThreadContext();
 
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
@@ -270,21 +251,11 @@ public:
   int GetMaxTextureSize() const { return m_maxTextureSize; };
 protected:
   IMsgSenderCallback* m_pCallback;
-#ifndef HAS_SDL
-  LPDIRECT3DDEVICE9 m_pd3dDevice;
-  D3DPRESENT_PARAMETERS* m_pd3dParams;
-  std::stack<D3DVIEWPORT9*> m_viewStack;
-  DWORD m_stateBlock;
-#endif
   Surface::CSurface* m_screenSurface;
-#ifdef HAS_SDL_2D
-  std::stack<SDL_Rect*> m_viewStack;
-#endif
-#ifdef HAS_SDL_OPENGL
+
   std::stack<GLint*> m_viewStack;
   std::map<Uint32, Surface::CSurface*> m_surfaces;
   CCriticalSection m_surfaceLock;
-#endif
 
   int m_iScreenHeight;
   int m_iScreenWidth;
@@ -319,16 +290,13 @@ private:
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
-#ifdef HAS_SDL_OPENGL
-  GLint m_maxTextureSize;
-#else
+
   int   m_maxTextureSize;
-#endif
 };
 
 /*!
  \ingroup graphics
  \brief
  */
-extern CGraphicContext g_graphicsContext;
+
 #endif

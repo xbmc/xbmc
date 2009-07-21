@@ -40,7 +40,6 @@
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
-#include "DetectDVDType.h"
 #include "Autorun.h"
 #include "FileSystem/HDDirectory.h"
 #include "FileSystem/StackDirectory.h"
@@ -207,6 +206,8 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
   if (url.GetProtocol() == "rss")
   {
+    url.SetProtocol("http");
+    url.GetURL(path);
     CRssFeed feed;
     feed.Init(path);
     feed.ReadFeed();
@@ -1201,7 +1202,7 @@ void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strPr
 
 void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
-  if ( !CDetectDVDMedia::IsDiscInDrive() )
+  if ( !g_mediaManager.IsDiscInDrive() )
   {
     strIcon = "DefaultDVDEmpty.png";
     return ;
@@ -1209,7 +1210,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 
   if ( IsDVD(strPath) )
   {
-    CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     //  xbox DVD
     if ( pInfo != NULL && pInfo->IsUDFX( 1 ) )
     {
@@ -1222,7 +1223,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 
   if ( IsISO9660(strPath) )
   {
-    CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
       strIcon = "DefaultVCD.png";
@@ -1838,7 +1839,7 @@ void CUtil::PlayDVD()
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
   CFileItem item("dvd://1", false);
-  item.SetLabel(CDetectDVDMedia::GetDVDLabel());
+  item.SetLabel(g_mediaManager.GetDiskLabel());
   g_application.PlayFile(item);
 }
 
@@ -2711,9 +2712,27 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // set fullscreen or windowed
     if (params2.size() >= 2 && params2[1] == "1")
       g_stSettings.m_bStartVideoWindowed = true;
-    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
-      item.m_lStartOffset = STARTOFFSET_RESUME;
 
+    // ask if we need to check guisettings to resume
+    bool askToResume = true;
+    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
+    {
+      // force the item to resume (if applicable) (see CApplication::PlayMedia)
+      item.m_lStartOffset = STARTOFFSET_RESUME;
+      askToResume = false;
+    }
+
+    if ((params2.size() == 2 && params2[1].Equals("noresume")) || (params2.size() == 3 && params2[2].Equals("noresume")))
+    {
+      // force the item to start at the beginning (m_lStartOffset is initialized to 0)
+      askToResume = false;
+    }
+
+    if ( askToResume == true )
+    {
+      if ( CGUIWindowVideoBase::OnResumeShowMenu(item) == false )
+        return false;
+    }
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {

@@ -75,7 +75,7 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
 	xbmc/cores/paplayer/MP3Codec \
-	xbmc/cores/paplayer/flac-1.2.1 \
+	xbmc/cores/paplayer/FLACCodec \
 	xbmc/cores/paplayer/MACDll \
 	xbmc/cores/paplayer/vorbisfile
 
@@ -221,10 +221,8 @@ xbmc/xbox/xbox.a: force
 	$(MAKE) -C xbmc/xbox
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
-#xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a: force
-#xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a: force
-#xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a: force
-#	$(MAKE) -C xbmc/lib/libSDL-OSX
+xbmc/cores/paplayer/MPCCodec/xbmc/libmpcdec-@ARCH@.a: force
+	$(MAKE) -C xbmc/cores/paplayer/MPCCodec/xbmc
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -266,9 +264,7 @@ papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
-ifneq (@USE_EXTERNAL_LIBFLAC@,1)
-	$(MAKE) -C xbmc/cores/paplayer/flac-1.2.1
-endif
+	$(MAKE) -C xbmc/cores/paplayer/FLACCodec
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
 	$(MAKE) -C xbmc/cores/paplayer/timidity

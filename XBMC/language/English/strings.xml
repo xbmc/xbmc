@@ -1734,7 +1734,7 @@
   <string id="20301">Web server directory (HTTPS)</string>
   <string id="20302">Unable to write to folder:</string>
   <string id="20303">Do you want to skip and proceed?</string>
-  <string id="20304"></string>
+  <string id="20304">RSS Feed</string>
   <string id="20305"></string>
 
   <string id="20306">Unknown. Please add MD5 from xbmc.log to BiosIDs.ini.</string>
@@ -2093,6 +2093,7 @@
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY keyboard</string>
+  <string id="29802">Passthrough Audio in use</string>
   
   <string id="29999">Apply flicker filter setting to games</string>
 

@@ -1,0 +1,10 @@
+.cvsignore
+.deps
+.libs
+Makefile
+Makefile.in
+libmms.la
+mms.lo
+testconnect
+testdownload
+testswap

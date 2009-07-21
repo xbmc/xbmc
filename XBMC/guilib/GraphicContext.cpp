@@ -57,7 +57,6 @@ using namespace Surface;
 
 using namespace std;
 
-CGraphicContext g_graphicsContext;
 extern bool g_fullScreen;
 
 /* quick access to a skin setting, fine unless we starts clearing video settings */
@@ -134,7 +133,7 @@ void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
 }
 #endif
 
-std::string& CGraphicContext::GetRenderVendor()
+std::string CGraphicContext::GetRenderVendor()
 {
   if(s_RenderVendor.length() == 0)
   {
@@ -144,7 +143,7 @@ std::string& CGraphicContext::GetRenderVendor()
 
   return s_RenderVendor;
 }
-std::string& CGraphicContext::GetRenderRenderer()
+std::string CGraphicContext::GetRenderRenderer()
 {
   if(s_RenderRenderer.length() == 0)
   {

@@ -56,6 +56,7 @@ CRTMP::CRTMP() : m_socket(INVALID_SOCKET)
   m_pBuffer = new char[RTMP_BUFFER_CACHE_SIZE];
   m_nBufferMS = 300;
   m_dStartPoint = 0;
+  m_bIsLive = false;
 }
 
 CRTMP::~CRTMP()
@@ -77,6 +78,11 @@ void CRTMP::SetPageUrl(const std::string &strPageUrl)
 void CRTMP::SetPlayPath(const std::string &strPlayPath)
 {
   m_strPlayPath = strPlayPath;
+}
+
+void CRTMP::SetLive()
+{
+    m_bIsLive = true;
 }
 
 void CRTMP::SetBufferMS(int size)
@@ -549,8 +555,10 @@ bool CRTMP::SendPlay()
   CLog::Log(LOGDEBUG,"%s, invoking play '%s'", __FUNCTION__, strPlay.c_str() );
 
   enc += EncodeString(enc, strPlay.c_str());
+  if (m_bIsLive)
+    enc += EncodeNumber(enc, -1000.0);
+  else
   enc += EncodeNumber(enc, (m_dStartPoint/1000));
-  //enc += EncodeNumber(enc, 10000.0);
 
   packet.m_nBodySize = enc - packet.m_body;
 
@@ -652,7 +660,8 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
     CLog::Log(LOGDEBUG,"%s, onStatus: %s", __FUNCTION__, code.c_str() );
     if (code == "NetStream.Failed"
     ||  code == "NetStream.Play.Failed"
-    ||  code == "NetStream.Play.Stop")
+    ||  code == "NetStream.Play.Stop"
+    ||  code == "NetStream.Play.StreamNotFound")
       Close();
   }
   else

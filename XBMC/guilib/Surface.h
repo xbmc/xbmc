@@ -30,17 +30,6 @@
  */
 
 #include <string>
-#ifdef HAS_SDL
-#include <SDL/SDL.h>
-#endif
-
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
-#endif
-
-#ifdef HAS_GLX
-#include <GL/glx.h>
-#endif
 
 namespace Surface {
 #if defined(_WIN32PC)
@@ -91,7 +80,6 @@ public:
   virtual bool ResizeSurface(int newWidth, int newHeight) = 0;
   virtual void RefreshCurrentContext() = 0;
   virtual  void* GetRenderWindow() = 0;
-  //virtual  bool ExtensionIsSupported(const char*) = 0;
 
  protected:
   CSurface* m_pShared;

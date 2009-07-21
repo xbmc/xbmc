@@ -1139,7 +1139,7 @@
   <string id="13347">加入播放列表</string>
   <string id="13348">查询互联网电影数据库…</string>
   <string id="13349">扫描新的内容</string>
-  <string id="13350">开始播放...</string>
+  <string id="13350">正在播放...</string>
   <string id="13351">专辑信息</string>
   <string id="13352">扫瞄项目到数据库</string>
   <string id="13353">停止扫瞄</string>
@@ -1757,7 +1757,7 @@
   <string id="20321">没有当前游戏所对应的存档文件</string>
   <string id="20322">切换到游戏存档</string>
   <string id="20323">游戏存档</string>
-  <string id="20324">玩部分的…</string>
+  <string id="20324">分段播放…</string>
   <string id="20325">重新校准</string>
   <string id="20326">这个操作会重新校准%s的配置</string>
   <string id="20327">还原为初时配置</string>

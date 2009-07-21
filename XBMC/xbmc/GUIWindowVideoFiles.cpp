@@ -435,7 +435,8 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   if (!item.HasThumbnail() && pItem->GetProperty("HasAutoThumb") != "1") // inherit from the original item if it exists
     item.SetThumbnailImage(pItem->GetThumbnailImage());
 
-  if (!info.strContent.Equals("plugin"))
+  if(!info.strContent.Equals("plugin")
+  && !info.strContent.Equals("livetv"))
     AddFileToDatabase(&item);
   else
   {
@@ -445,7 +446,8 @@ void CGUIWindowVideoFiles::OnInfo(CFileItem* pItem, const SScraperInfo& info)
   // we need to also request any thumbs also be applied to the folder item
   if (pItem->m_bIsFolder)
     item.SetProperty("set_folder_thumb", pItem->m_strPath);
-  if (ShowIMDB(&item,info) && !info.strContent.Equals("plugin"))
+  if (ShowIMDB(&item,info) && !info.strContent.Equals("plugin")
+                           && !info.strContent.Equals("livetv"))
     Update(m_vecItems->m_strPath);
 }
 
@@ -621,7 +623,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           if (item->m_bIsFolder)
           {
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
-              if (!item->IsPlayList())
+              if (!item->IsPlayList() && !item->IsTV())
                 buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
             if (iFound==0)
             { // scraper not set - allow movie information or set content
@@ -646,6 +648,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
             if ((info.strContent.Equals("movies") && (iFound > 0 ||
                  m_database.HasMovieInfo(item->m_strPath)))      ||
                  m_database.HasEpisodeInfo(item->m_strPath)      ||
+                 info.strContent.Equals("livetv")                ||
                  info.strContent.Equals("musicvideos"))
             {
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);

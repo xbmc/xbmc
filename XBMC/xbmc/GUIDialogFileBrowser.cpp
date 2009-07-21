@@ -527,8 +527,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( CStdString& strPath, int iDriv
 {
   if ( iDriveType == CMediaSource::SOURCE_TYPE_DVD )
   {
-    MEDIA_DETECT::CDetectDVDMedia::WaitMediaReady();
-    if ( !MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive() )
+    if ( !g_mediaManager.IsDiscInDrive() )
     {
       CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       return false;

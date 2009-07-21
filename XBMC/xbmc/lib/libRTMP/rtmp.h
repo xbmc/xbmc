@@ -37,6 +37,7 @@ namespace RTMP_LIB
       void SetPlayer(const std::string &strPlayer);
       void SetPageUrl(const std::string &strPageUrl);
       void SetPlayPath(const std::string &strPlayPath);
+      void SetLive();
       void SetBufferMS(int size);
 
       bool Connect(const std::string &strRTMPLink, double dTime = 0);
@@ -111,6 +112,7 @@ namespace RTMP_LIB
       std::string m_strPageUrl;
       std::string m_strLink;
       std::string m_strPlayPath;
+      bool m_bIsLive;
 
       std::vector<std::string> m_methodCalls; //remote method calls queue
 
