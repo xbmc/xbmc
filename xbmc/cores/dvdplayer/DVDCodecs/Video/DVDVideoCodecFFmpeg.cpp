@@ -57,12 +57,6 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_dllAvCodec.avcodec_register_all();
 
-  #if (! defined USE_EXTERNAL_FFMPEG)
-    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-  #endif
-
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
   // avcodec_get_context_defaults(m_pCodecContext);
 
@@ -160,7 +154,7 @@ void CDVDVideoCodecFFmpeg::Dispose()
     m_dllAvUtil.av_free(m_pCodecContext);
     m_pCodecContext = NULL;
   }
-  
+
   m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
 }
@@ -218,7 +212,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
 {
   int iGotPicture = 0, len = 0, result = 0;
 
-  if (!m_pCodecContext) 
+  if (!m_pCodecContext)
     return VC_ERROR;
 
   m_pCodecContext->reordered_opaque = pts_dtoi(pts);
@@ -245,7 +239,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
     return VC_BUFFER;
 
   if(m_pCodecContext->pix_fmt != PIX_FMT_YUV420P
-   && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P)
+  && m_pCodecContext->pix_fmt != PIX_FMT_YUVJ420P)
   {
     if (!m_dllSwScale.IsLoaded())
     {
