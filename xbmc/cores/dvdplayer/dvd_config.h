@@ -31,5 +31,3 @@
 // enable message tracking
 //#define DVDDEBUG_MESSAGE_TRACKER
 
-// enable overlay tracking
-//#define DVDDEBUG_OVERLAY_TRACKER

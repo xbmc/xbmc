@@ -1,9 +1,5 @@
 #pragma once
 
-
-
-#include "cores/dvdplayer/dvd_config.h"
-
 #include <assert.h>
 #include <vector>
 
@@ -29,20 +25,12 @@ public:
     replace = false;
 
     m_references = 1;
-#ifdef DVDDEBUG_OVERLAY_TRACKER
-    m_bTrackerReference = 0;
-#endif
     iGroupId = 0;
   }
 
   virtual ~CDVDOverlay()
   {
-    // CLog::DebugLog("CDVDOverlay::CleanUp, remove, start : %d, stop : %d", (int)(iPTSStartTime / 1000), (int)(iPTSStopTime / 1000));
     assert(m_references == 0);
-#ifdef DVDDEBUG_OVERLAY_TRACKER
-    if (m_bTrackerReference != 0) CLog::DebugLog("CDVDOverlay::~, overlay has an invalid olverlaycontainer reference, value : %d", m_bTrackerReference);
-    assert(m_bTrackerReference == 0);
-#endif
   }
 
   /**
@@ -76,9 +64,6 @@ public:
   bool bForced; // display, no matter what
   bool replace; // replace by next nomatter what stoptime it has
   int iGroupId;
-#ifdef DVDDEBUG_OVERLAY_TRACKER
-  int m_bTrackerReference;
-#endif
 
 protected:
   DVDOverlayType m_type;
