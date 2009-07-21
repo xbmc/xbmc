@@ -1878,15 +1878,15 @@ void CDVDPlayer::ToggleFrameDrop()
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
-  strAudioInfo.Format("%s %s", m_State.demux_audio.c_str()
-                                       , m_dvdPlayerAudio.GetPlayerInfo().c_str());
+  strAudioInfo.Format("D( %s ) P( %s )", m_State.demux_audio.c_str()
+                             , m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
   CSingleLock lock(m_StateSection);
   strVideoInfo.Format("%s %s", m_State.demux_video.c_str()
-                                       , m_dvdPlayerVideo.GetPlayerInfo().c_str());
+                             , m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
@@ -1898,15 +1898,22 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     double apts = m_dvdPlayerAudio.GetCurrentPts();
     double vpts = m_dvdPlayerVideo.GetCurrentPts();
     double dDiff = 0;
-    char cEdlStatus;
 
     if( apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE )
       dDiff = (apts - vpts) / DVD_TIME_BASE;
 
-    int iFramesDropped = m_dvdPlayerVideo.GetNrOfDroppedFrames();
-    cEdlStatus = m_Edl.GetEdlStatus();
+    CStdString strEDL;
 
-    strGeneralInfo.Format("ad:%6.3f a/v:%6.3f dropped:%d cpu:%i%% edl:%c src br:%4.2fmb/s", dDelay, dDiff, iFramesDropped, (int)(CThread::GetRelativeUsage()*100), cEdlStatus, (double)GetSourceBitrate() / (1024.0*1024.0));
+    if(m_Edl.HaveCutpoints())
+      strEDL.Format(", edl:%c",  m_Edl.GetEdlStatus());
+
+    strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"
+                         , dDelay
+                         , dDiff
+                         , strEDL.c_str()                         
+                         , (int)(CThread::GetRelativeUsage()*100)
+                         , (int)(m_dvdPlayerAudio.GetRelativeUsage()*100)
+                         , (int)(m_dvdPlayerVideo.GetRelativeUsage()*100));
   }
 }
 
