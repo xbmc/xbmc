@@ -182,7 +182,7 @@ xbmc/karaoke/karaoke.a: force
 xbmc/lib/libcmyth/libcmyth.a: force
 	$(MAKE) -C xbmc/lib/libcmyth
 xbmc/lib/libhts/libhts.a: force
-	$(MAKE) -C xbmc/lib/libhts
+	(MAKE) -C xbmc/lib/libhts
 xbmc/lib/libPython/python.a: force
 	$(MAKE) -C xbmc/lib/libPython
 xbmc/lib/libPython/xbmcmodule/xbmcmodule.a: force
@@ -221,10 +221,8 @@ xbmc/xbox/xbox.a: force
 	$(MAKE) -C xbmc/xbox
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
-#xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a: force
-#xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a: force
-#xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a: force
-#	$(MAKE) -C xbmc/lib/libSDL-OSX
+xbmc/cores/paplayer/MPCCodec/xbmc/libmpcdec-@ARCH@.a: force
+	$(MAKE) -C xbmc/cores/paplayer/MPCCodec/xbmc
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
