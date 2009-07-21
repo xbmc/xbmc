@@ -77,19 +77,23 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const PLAYERCOREID eCore, IPlayerCallb
 
 PLAYERCOREID CPlayerCoreFactory::GetPlayerCore(const CStdString& strCoreName)
 {
-  // Dereference "*default*player" aliases
-  CStdString strRealCoreName;
-  if (strCoreName.Equals("audiodefaultplayer", false)) strRealCoreName = g_advancedSettings.m_audioDefaultPlayer;
-  else if (strCoreName.Equals("videodefaultplayer", false)) strRealCoreName = g_advancedSettings.m_videoDefaultPlayer;
-  else if (strCoreName.Equals("videodefaultdvdplayer", false)) strRealCoreName = g_advancedSettings.m_videoDefaultDVDPlayer;
-  else strRealCoreName = strCoreName;
-
-  for(PLAYERCOREID i = 0; i < s_vecCoreConfigs.size(); i++)
+  if (!strCoreName.empty())
   {
-    if (s_vecCoreConfigs[i]->GetName().Equals(strRealCoreName, false))
-      return i+1;
+    // Dereference "*default*player" aliases
+    CStdString strRealCoreName;
+    if (strCoreName.Equals("audiodefaultplayer", false)) strRealCoreName = g_advancedSettings.m_audioDefaultPlayer;
+    else if (strCoreName.Equals("videodefaultplayer", false)) strRealCoreName = g_advancedSettings.m_videoDefaultPlayer;
+    else if (strCoreName.Equals("videodefaultdvdplayer", false)) strRealCoreName = g_advancedSettings.m_videoDefaultDVDPlayer;
+    else strRealCoreName = strCoreName;
+
+    for(PLAYERCOREID i = 0; i < s_vecCoreConfigs.size(); i++)
+    {
+      if (s_vecCoreConfigs[i]->GetName().Equals(strRealCoreName, false))
+        return i+1;
+    }
+    CLog::Log(LOGWARNING, "CPlayerCoreFactory::GetPlayerCore(%s): no such core: %s", strCoreName.c_str(), strRealCoreName.c_str());
   }
-  return 0;
+  return EPC_NONE;
 }
 
 CStdString CPlayerCoreFactory::GetPlayerName(const PLAYERCOREID eCore)
@@ -169,7 +173,9 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   // Also push these players in case it is NOT audio either
   if (item.IsVideo() || !item.IsAudio())
   {
-    vecCores.push_back(GetPlayerCore("videodefaultplayer"));
+    PLAYERCOREID eVideoDefault = GetPlayerCore("videodefaultplayer");
+    if (eVideoDefault != EPC_NONE)
+      vecCores.push_back(eVideoDefault);
     GetPlayers(vecCores, false, true);  // Video-only players
     GetPlayers(vecCores, true, true);   // Audio & video players
   }
@@ -178,9 +184,11 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   // Pushback all audio players in case we don't know the type
   if (item.IsAudio())
   {
-      vecCores.push_back(GetPlayerCore("audiodefaultplayer"));
-      GetPlayers(vecCores, true, false); // Audio-only players
-      GetPlayers(vecCores, true, true);  // Audio & video players
+    PLAYERCOREID eAudioDefault = GetPlayerCore("audiodefaultplayer");
+    if (eAudioDefault != EPC_NONE)
+      vecCores.push_back(eAudioDefault);
+    GetPlayers(vecCores, true, false); // Audio-only players
+    GetPlayers(vecCores, true, true);  // Audio & video players
   }
 
   /* make our list unique, preserving first added players */
