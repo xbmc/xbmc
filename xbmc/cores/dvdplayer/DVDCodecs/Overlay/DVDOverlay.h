@@ -36,10 +36,10 @@ public:
   /**
    * decrease the reference counter by one.
    */
-  long Acquire()
+  CDVDOverlay* Acquire()
   {
-    long count = InterlockedIncrement(&m_references);
-    return count;
+    InterlockedIncrement(&m_references);
+    return this;
   }
 
   /**
@@ -50,11 +50,6 @@ public:
     long count = InterlockedDecrement(&m_references);
     if (count == 0) delete this;
     return count;
-  }
-
-  long GetNrOfReferences()
-  {
-    return m_references;
   }
 
   bool IsOverlayType(DVDOverlayType type) { return (m_type == type); }
