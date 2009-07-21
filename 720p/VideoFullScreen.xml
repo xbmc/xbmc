@@ -361,11 +361,23 @@
           <control type="label" id="1">
             <description>Elapsed Time Label</description>
             <font>MediumSmallAltDefaultFont</font>
-            <info>Player.Time</info>
+            <info>Player.time</info>
             <textcolor>Unfocused</textcolor>
             <width>300</width>
             <visible>!Player.Seeking</visible>
           </control>
+
+					<!-- New Finish Time Label -->
+					<control type="label" id="1">
+						<description>Time finish label</description>
+						<font>MediumSmallAltDefaultFont</font>
+					  <label>$LOCALIZE[31999] $INFO[player.FinishTime]</label>
+						<textcolor>Unfocused</textcolor>
+						<posx>184</posx>
+					  <width>800</width>
+						<align>center</align>
+					  <visible>!Player.Seeking + !Player.Paused</visible>
+					</control>
     
           <control type="label" id="1">
             <description>Seek Time Label</description>
@@ -396,6 +408,7 @@
             <align>right</align>
             <width>300</width>
           </control>
+
         </control>
       </control>
     </control>
