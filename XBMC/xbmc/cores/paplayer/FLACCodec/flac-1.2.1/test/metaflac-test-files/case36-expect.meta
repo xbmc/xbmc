@@ -1,0 +1,15 @@
+METADATA block #0
+  type: 0 (STREAMINFO)
+  is last: false
+  length: 34
+  sample_rate: 8000 Hz
+  channels: 1
+  bits-per-sample: 8
+  total samples: 80000
+  MD5 signature: a042237c5493fdb9656b94a83608d11a
+METADATA block #1
+  type: 4 (VORBIS_COMMENT)
+  is last: true
+  length: 65
+  comments: 1
+    comment[0]: f=0123456789abcdefghi

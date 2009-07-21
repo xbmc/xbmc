@@ -1,0 +1,3 @@
+FILE "z.wav" WAVE
+  TRACK 01 AUDIO
+    INDEX 00 00:00:00
