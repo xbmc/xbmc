@@ -113,6 +113,11 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   }
   else
   {
+    if(deviceuse == "hdmi"
+    || deviceuse == "iec958"
+    || deviceuse == "spdif")
+      deviceuse = "plug:" + deviceuse;
+
     if(g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
     {
       if(iChannels == 6)
