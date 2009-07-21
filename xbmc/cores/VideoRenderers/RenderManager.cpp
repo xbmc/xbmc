@@ -143,16 +143,11 @@ void CXBoxRenderManager::WaitPresentTime(double presenttime)
   double target    = 0.5;
   double error     = ( clock - presenttime ) / frametime - target;
 
-  // a full frametime off doesn't matter
-  while(error >   1.0) error -= 1.0;
-  while(error < - 1.0) error += 1.0;
-
   m_presenterr   = error;
 
-  // if error is way of, don't use it
-  if(error > target
-  || error < target - 1.0)
-    return;
+  // correct error so it targets the closest vblank
+  while(error >   target) error -= 1.0;
+  while(error < - target) error += 1.0;
 
   // scale the error used for correction, 
   // based on how much buffer we have on
