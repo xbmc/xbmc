@@ -9,26 +9,26 @@
     -->
   </players>
 
-  <rules>
-    <rule protocols="rtv" player="DVDPlayer" />
-    <rule protocols="hdhomerun|myth|cmyth|rtmp|mms|mmsh" player="DVDPlayer" />
-    <rule protocols="lastfm|shout" player="PAPlayer" />
+  <rules name="system rules">
+    <rule name="rtv" protocols="rtv" player="DVDPlayer" />
+    <rule name="hdhomerun/myth/rtmp/mms" protocols="hdhomerun|myth|cmyth|rtmp|mms|mmsh" player="DVDPlayer" />
+    <rule name="lastfm/shout" protocols="lastfm|shout" player="PAPlayer" />
 
     <!-- dvdplayer can play standard rtsp streams -->
-    <rule protocols="rtsp" filetypes="!(rm|ra)"  player="PAPlayer" />
+    <rule name="rtsp" protocols="rtsp" filetypes="!(rm|ra)"  player="PAPlayer" />
 
     <!-- Internet streams -->
-    <rule internetstream="true">
-      <rule mimetypes="video/x-flv|video-flv|audio/aacp|application/sdp" player="DVDPlayer" />
-      <rule mimetypes="application/octet-stream" filetypes="mp2" player="PAPlayer" />
+    <rule name="streams" internetstream="true">
+      <rule name="flv/aacp/sdp" mimetypes="video/x-flv|video-flv|audio/aacp|application/sdp" player="DVDPlayer" />
+      <rule name="mp2" mimetypes="application/octet-stream" filetypes="mp2" player="PAPlayer" />
     </rule>
 
     <!-- DVDs -->
-    <rule dvd="true" player="videodefaultdvdplayer" />
-    <rule dvdfile="true" player="videodefaultdvdplayer" />
-    <rule dvdimage="true" player="videodefaultdvdplayer" />
+    <rule name="dvd" dvd="true" player="videodefaultdvdplayer" />
+    <rule name="dvdfile" dvdfile="true" player="videodefaultdvdplayer" />
+    <rule name="dvdimage" dvdimage="true" player="videodefaultdvdplayer" />
 
     <!-- Only dvdplayer can handle these normally -->
-    <rule filetypes="sdp|asf" player="DVDPlayer" />
+    <rule name="sdp/asf" filetypes="sdp|asf" player="DVDPlayer" />
   </rules>
 </playercorefactory>

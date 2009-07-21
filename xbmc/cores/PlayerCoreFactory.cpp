@@ -117,9 +117,16 @@ void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores )
 
 void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores, const bool audio, const bool video )
 {
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: for video=%d, audio=%d", video, audio);
+
   for(unsigned int i = 0; i < s_vecCoreConfigs.size(); i++)
+  {
     if (audio == s_vecCoreConfigs[i]->m_bPlaysAudio && video == s_vecCoreConfigs[i]->m_bPlaysVideo)
+    {
+      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding player: %s (%d)", s_vecCoreConfigs[i]->m_name.c_str(), i+1);
       vecCores.push_back(i+1);
+    }
+  }
 }
 
 void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecCores)
@@ -131,6 +138,8 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   // Process rules
   for(unsigned int i = 0; i < s_vecCoreSelectionRules.size(); i++)
     s_vecCoreSelectionRules[i]->GetPlayers(item, vecCores);
+
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: matched %d rules with players", vecCores.size());
 
   if( PAPlayer::HandlesType(url.GetFileType()) )
   {
@@ -153,15 +162,18 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     {
       if( g_guiSettings.GetInt("audiooutput.mode") == AUDIO_ANALOG )
       {
+        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding PAPlayer (%d)", EPC_PAPLAYER);
         vecCores.push_back(EPC_PAPLAYER);
       }
       else if ((url.GetFileType().Equals("ac3") && g_audioConfig.GetAC3Enabled())
            ||  (url.GetFileType().Equals("dts") && g_audioConfig.GetDTSEnabled())) 
       {
+        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding DVDPlayer (%d)", EPC_DVDPLAYER);
         vecCores.push_back(EPC_DVDPLAYER);
       }
       else
       {
+        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding PAPlayer (%d)", EPC_PAPLAYER);
         vecCores.push_back(EPC_PAPLAYER);
       }
     }
@@ -175,7 +187,10 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   {
     PLAYERCOREID eVideoDefault = GetPlayerCore("videodefaultplayer");
     if (eVideoDefault != EPC_NONE)
+    {
+      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding videodefaultplayer (%d)", eVideoDefault);
       vecCores.push_back(eVideoDefault);
+    }
     GetPlayers(vecCores, false, true);  // Video-only players
     GetPlayers(vecCores, true, true);   // Audio & video players
   }
@@ -186,13 +201,18 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
   {
     PLAYERCOREID eAudioDefault = GetPlayerCore("audiodefaultplayer");
     if (eAudioDefault != EPC_NONE)
+    {
+      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding audiodefaultplayer (%d)", eAudioDefault);
       vecCores.push_back(eAudioDefault);
+    }
     GetPlayers(vecCores, true, false); // Audio-only players
     GetPlayers(vecCores, true, true);  // Audio & video players
   }
 
   /* make our list unique, preserving first added players */
   unique(vecCores);
+
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: added %d players", vecCores.size());
 }
 
 PLAYERCOREID CPlayerCoreFactory::GetDefaultPlayer( const CFileItem& item )
