@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "GUIDialogFileBrowser.h"
 #include "Util.h"
-#include "DetectDVDType.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogContextMenu.h"

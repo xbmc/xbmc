@@ -28,7 +28,6 @@
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "GUIDialogMusicScan.h"
-#include "DetectDVDType.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
 #include "ScraperSettings.h"
