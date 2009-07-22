@@ -45,6 +45,8 @@
 #include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
 #include "StdString.h"
+#include "common/Mouse.h"
+#include "GraphicContextFactory.h"
 
 namespace Surface { class CSurface; }
 
@@ -134,17 +136,18 @@ public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
 
+  // get rendering API specific strings info
   std::string  GetRenderVendor();
   std::string  GetRenderRenderer();
-  void         GetRenderVersion(int& maj, int& min);
 
   inline void setScreenSurface(Surface::CSurface* surface) XBMC_FORCE_INLINE { m_screenSurface = surface; }
   inline Surface::CSurface* getScreenSurface() XBMC_FORCE_INLINE { return m_screenSurface; }
 
+  virtual void GetRenderVersion(int& maj, int& min) = 0;
 
   virtual bool ValidateSurface(Surface::CSurface* dest=NULL) = 0;
   virtual Surface::CSurface* InitializeSurface() = 0;
-  virtual void ReleaseThreadSurface() = 0;
+  //virtual void ReleaseThreadSurface() = 0;
 
   // the following two functions should wrap any
   // GL calls to maintain thread safety
@@ -152,7 +155,7 @@ public:
   virtual void EndPaint(Surface::CSurface* dest=NULL, bool lock=true) = 0;
   virtual void ReleaseCurrentContext(Surface::CSurface* dest=NULL) = 0;
   virtual void AcquireCurrentContext(Surface::CSurface* dest=NULL) = 0;
-  virtual void DeleteThreadContext();
+  virtual void DeleteThreadContext() = 0;
 
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
@@ -166,12 +169,12 @@ public:
   bool IsWidescreen() const { return m_bWidescreen; }
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
-  const RECT& GetViewWindow() const;
+  const RECT GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
   void SetFullScreenViewWindow(RESOLUTION &res);
   bool IsFullScreenRoot() const;
   bool ToggleFullScreenRoot();
-  void SetFullScreenRoot(bool fs = true);
+  virtual void SetFullScreenRoot(bool fs = true) = 0;
   void ClipToViewWindow();
   void SetFullScreenVideo(bool bOnOff);
   bool IsFullScreenVideo() const;
@@ -187,15 +190,15 @@ public:
   void Lock() { EnterCriticalSection(*this);  }
   void Unlock() { LeaveCriticalSection(*this); }
   float GetPixelRatio(RESOLUTION iRes) const;
-  void CaptureStateBlock();
-  void ApplyStateBlock();
-  void Clear();
+  virtual void CaptureStateBlock() = 0;
+  virtual void ApplyStateBlock() = 0;
+  virtual void Clear() = 0;
 
   // output scaling
   void SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
   void SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);    ///< Sets scaling up for skin loading etc.
   float GetScalingPixelRatio() const;
-  void Flip();
+  virtual void Flip() = 0;
   void InvertFinalCoords(float &x, float &y) const;
   inline float ScaleFinalXCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformXCoord(x, y, 0); }
   inline float ScaleFinalYCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformYCoord(x, y, 0); }
@@ -218,8 +221,8 @@ public:
   void RestoreCameraPosition();
   bool SetClipRegion(float x, float y, float w, float h);
   void RestoreClipRegion();
-  void ApplyHardwareTransform();
-  void RestoreHardwareTransform();
+  virtual void ApplyHardwareTransform() = 0;
+  virtual void RestoreHardwareTransform() = 0;
   void NotifyAppFocusChange(bool bGaining);
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
   inline void ResetWindowTransform()
@@ -250,10 +253,19 @@ public:
 
   int GetMaxTextureSize() const { return m_maxTextureSize; };
 protected:
+  // set / get rendering api specific viewport
+  virtual CRect GetRenderViewPort() = 0;
+  virtual void SetRendrViewPort(CRect& viewPort) = 0;
+  virtual void UpdateCameraPosition(const CPoint &camera) = 0;
+
+  // Update specific resolution based on m_iScreenWidth, m_iScreenHeight
+  // this is rendering specific implementation
+  virtual void UpdateRenderingScreenResolution(RESOLUTION& newRes, RESOLUTION& lastRes) = 0;
+
   IMsgSenderCallback* m_pCallback;
   Surface::CSurface* m_screenSurface;
 
-  std::stack<GLint*> m_viewStack;
+  std::stack<CRect> m_viewStack;
   std::map<Uint32, Surface::CSurface*> m_surfaces;
   CCriticalSection m_surfaceLock;
 
@@ -270,9 +282,17 @@ protected:
   bool m_bFullScreenVideo;
   bool m_bCalibrating;
   RESOLUTION m_Resolution;
+  int   m_maxTextureSize;
+  TransformMatrix m_guiTransform;
+  TransformMatrix m_finalTransform;
+
+  std::string s_RenderVendor;
+  std::string s_RenderRenderer;
+  std::string s_RenderxExt;
+  int s_RenderMajVer;
+  int s_RenderMinVer;
 
 private:
-  void UpdateCameraPosition(const CPoint &camera);
   void UpdateFinalTransform(const TransformMatrix &matrix);
   RESOLUTION m_windowResolution;
   float m_guiScaleX;
@@ -281,18 +301,10 @@ private:
   std::stack<CPoint> m_origins;
   std::stack<CRect>  m_clipRegions;
 
-  std::string s_RenderVendor;
-  std::string s_RenderRenderer;
-  std::string s_RenderxExt;
-  int s_RenderMajVer;
-  int s_RenderMinVer;
-
-  TransformMatrix m_guiTransform;
-  TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
-
-  int   m_maxTextureSize;
 };
+
+#define g_graphicsContext CGraphicContextFactory::GetGraphicContext()
 
 /*!
  \ingroup graphics

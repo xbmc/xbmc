@@ -100,5 +100,4 @@ public:
 \ingroup textures
 \brief 
 */
-extern CGUITextureManagerGL g_TextureManager;
 #endif

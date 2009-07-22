@@ -1324,6 +1324,22 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\guilib\GraphicContextFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GraphicContextFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUITextureManagerFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUITextureManagerFactory.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\guilib\Surface.cpp"
 					>
 				</File>
@@ -1350,21 +1366,12 @@
 				<File
 					RelativePath="..\..\guilib\GraphicContextGL.cpp"
 					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\guilib\GraphicContextGL.h"
 					>
 					<FileConfiguration
 						Name="Debug (SDL)|Win32"
-						ExcludedFromBuild="true"
 						>
 						<Tool
 							Name="VCCustomBuildTool"

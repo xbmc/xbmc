@@ -42,6 +42,7 @@ using namespace std;
 
 extern "C" void dllprintf( const char *format, ... );
 
+
 DWORD PadPow2(DWORD x) 
 {
   --x;
@@ -52,8 +53,6 @@ DWORD PadPow2(DWORD x)
   x |= x >> 16;
   return ++x;
 }
-
-CGUITextureManagerGL g_TextureManager;
 
 /************************************************************************/
 /*    CSDLTexture                                                       */

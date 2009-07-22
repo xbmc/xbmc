@@ -30,7 +30,7 @@
 
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 
-#ifndef _LINUX
+#ifdef _WIN32PC
 #include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
 #include "D3DX9.h"  // or the reference video clock.
 #endif

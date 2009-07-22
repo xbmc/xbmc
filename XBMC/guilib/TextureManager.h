@@ -29,6 +29,7 @@
 
 #include "TextureBundle.h"
 #include <vector>
+#include "GUITextureManagerFactory.h"
 
 #pragma once
 
@@ -146,15 +147,17 @@ public:
   void AddTexturePath(const CStdString &texturePath);    ///< Add a new path to the paths to check when loading media
   void SetTexturePath(const CStdString &texturePath);    ///< Set a single path as the path to check when loading media (clear then add)
   void RemoveTexturePath(const CStdString &texturePath); ///< Remove a path from the paths to check when loading media
+  virtual const CTextureArray* GetTexture(const CStdString& strTextureName);
 
 protected:
-  virtual const CTextureArray* GetTexture(const CStdString& strTextureName);
   std::vector<CTextureMap*> m_vecTextures;
   typedef std::vector<CTextureMap*>::iterator ivecTextures;
   // we have 2 texture bundles (one for the base textures, one for the theme)
   CTextureBundle m_TexBundle[2];
   std::vector<CStdString> m_texturePaths;
 };
+
+#define g_TextureManager CGUITextureManagerFactory::GetGUITextureManager()
 
 /*!
 \ingroup textures
