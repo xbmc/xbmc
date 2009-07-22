@@ -3069,10 +3069,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\DetectDVDType.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\DNSNameCache.cpp"
 					>
 				</File>
@@ -5383,10 +5379,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\utils\DelayController.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\DetectDVDType.h"
 				>
 			</File>
 			<File
