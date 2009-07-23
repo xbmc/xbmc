@@ -563,17 +563,25 @@ BOOL GetDiskFreeSpaceEx(
 
 DWORD GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation ) {
   if (lpTimeZoneInformation == NULL)
-    return TIME_ZONE_ID_UNKNOWN;
+    return TIME_ZONE_ID_INVALID;
+  
+  memset(lpTimeZoneInformation, 0, sizeof(LPTIME_ZONE_INFORMATION));
 
 #ifdef __APPLE__
   struct timezone tz;
   gettimeofday(NULL, &tz);
   lpTimeZoneInformation->Bias = tz.tz_minuteswest;
+#else
+  struct tm t;
+  time_t tt = time(NULL);
+  if(localtime_r(&tt, &t))
+    lpTimeZoneInformation->Bias = -t.tm_gmtoff / 60;
 #endif
+
   swprintf(lpTimeZoneInformation->StandardName, 31, L"%s", tzname[0]);
   swprintf(lpTimeZoneInformation->DaylightName, 31, L"%s", tzname[1]);
 
-  return 1;
+  return TIME_ZONE_ID_UNKNOWN;
 }
 
 BOOL SetEndOfFile(HANDLE hFile) {
