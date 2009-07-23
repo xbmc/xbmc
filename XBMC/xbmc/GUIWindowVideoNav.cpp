@@ -939,7 +939,7 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
   if (iType == VIDEODB_CONTENT_MOVIES)
     database.DeleteMovie(path);
   if (iType == VIDEODB_CONTENT_EPISODES)
-    database.DeleteEpisode(path);
+    database.DeleteEpisode(path, pItem->GetVideoInfoTag()->m_iDbId);
   if (iType == VIDEODB_CONTENT_TVSHOWS)
     database.DeleteTvShow(path);
   if (iType == VIDEODB_CONTENT_MUSICVIDEOS)
