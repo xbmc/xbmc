@@ -211,7 +211,7 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
   {
     int width = 0, height = 0;
     bool linear = false;
-    CTextureArrayGL baseTexture = *(CTextureArrayGL *)(g_TextureManager.GetTexture(srcFile));
+    CTextureArray baseTexture = g_TextureManager.GetTexture(srcFile);
 #ifdef HAS_SDL_OPENGL
 #ifdef __GNUC__
 // TODO: fix this code to support OpenGL

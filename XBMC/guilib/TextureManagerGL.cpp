@@ -197,74 +197,11 @@ void CGLTexture::Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurfa
     SDL_FreeSurface(surface);
 }
 
-/************************************************************************/
-/*    CTextureArraySDL                                                  */
-/************************************************************************/
-CTextureArrayGL::CTextureArrayGL()
-{
-  Reset();
-};
-
-CTextureArrayGL::CTextureArrayGL(int width, int height, int loops, bool texCoordsArePixels)
-: CTextureArray(width, height, loops, texCoordsArePixels)
-{
-};
-
-CTextureArrayGL::~CTextureArrayGL()
-{
-
-}
-
-CTextureArrayGL& CTextureArrayGL::operator =(const CTextureArray &base)
-{
-  CTextureArray* tmp = dynamic_cast<CTextureArray *>(this);
-  *tmp = base;
-  return *this;
-}
-
-void CTextureArrayGL::Add(void *texture, int delay)
-{
-  if (!texture)
-    return;
-
-  m_textures.push_back(texture);
-  m_delays.push_back(delay ? delay * 2 : 100);
-
-  CGLTexture* SDLTexture = (CGLTexture *)texture;
-
-  m_texWidth = SDLTexture->textureWidth;
-  m_texHeight = SDLTexture->textureHeight;
-  m_texCoordsArePixels = false;
-}
-
-void CTextureArrayGL::Set(void *texture, int width, int height)
-{
-  assert(!m_textures.size()); // don't try and set a texture if we already have one!
-  m_width = width;
-  m_height = height;
-  Add(texture, 100);
-}
-
-void CTextureArrayGL::Free()
-{
-  CSingleLock lock(g_graphicsContext);
-  for (unsigned int i = 0; i < m_textures.size(); i++)
-  {
-    delete m_textures[i];
-  }
-
-  m_textures.clear();
-  m_delays.clear();
-
-  Reset();
-}
-
-
-
+/*
 CTextureMapGL::CTextureMapGL(const CStdString& textureName, int width, int height, int loops)
 : CTextureMap(textureName, width, height, loops)
 {
-  m_texture = new CTextureArrayGL(width, height, loops);
+  m_texture = new CTextureArray(width, height, loops);
 }
 
 CTextureMapGL::~CTextureMapGL()
@@ -281,6 +218,7 @@ void CTextureMapGL::Add(XBMC::SurfacePtr pSurface, int delay)
   if (glTexture)
     m_memUsage += sizeof(CGLTexture) + (glTexture->textureWidth * glTexture->textureHeight * 4); 
 }
+*/
 
 /************************************************************************/
 /*    CGUITextureManagerSDL                                             */
@@ -329,7 +267,7 @@ int CGUITextureManagerGL::Load(const CStdString& strTextureName, bool checkBundl
 
   if (strPath.Right(4).ToLower() == ".gif")
   {
-    CTextureMapGL* pMap;
+    CTextureMap* pMap;
 
     if (bundle >= 0)
     {
@@ -344,10 +282,11 @@ int CGUITextureManagerGL::Load(const CStdString& strTextureName, bool checkBundl
         return 0;
       }
 
-      pMap = new CTextureMapGL(strTextureName, info.Width, info.Height, nLoops);
+      pMap = new CTextureMap(strTextureName, info.Width, info.Height, nLoops);
       for (int iImage = 0; iImage < nImages; ++iImage)
       {
-        pMap->Add(pTextures[iImage], Delay[iImage]);
+        CGLTexture *glTexture = new CGLTexture(pTextures[iImage], false);
+        pMap->Add(glTexture, Delay[iImage]);
         SDL_FreeSurface(pTextures[iImage]);
       }
 
@@ -368,7 +307,7 @@ int CGUITextureManagerGL::Load(const CStdString& strTextureName, bool checkBundl
       int iHeight = AnimatedGifSet.FrameHeight;
 
       int iPaletteSize = (1 << AnimatedGifSet.m_vecimg[0]->BPP);
-      pMap = new CTextureMapGL(strTextureName, iWidth, iHeight, AnimatedGifSet.nLoops);
+      pMap = new CTextureMap(strTextureName, iWidth, iHeight, AnimatedGifSet.nLoops);
 
       for (int iImage = 0; iImage < iImages; iImage++)
       {
@@ -407,7 +346,8 @@ int CGUITextureManagerGL::Load(const CStdString& strTextureName, bool checkBundl
             }
 
             SDL_UnlockSurface(pTexture);
-            pMap->Add(pTexture, pImage->Delay);
+            CGLTexture *glTexture = new CGLTexture(pTexture, false);
+            pMap->Add(glTexture, pImage->Delay);
             SDL_FreeSurface(pTexture);
           }
         }
@@ -469,8 +409,9 @@ int CGUITextureManagerGL::Load(const CStdString& strTextureName, bool checkBundl
     info.Height = pTexture->h;
   }
 
-  CTextureMapGL* pMap = new CTextureMapGL(strTextureName, info.Width, info.Height, 0);
-  pMap->Add(pTexture, 100);
+  CTextureMap* pMap = new CTextureMap(strTextureName, info.Width, info.Height, 0);
+  CGLTexture *glTexture = new CGLTexture(pTexture, false);
+  pMap->Add(glTexture, 100);
   m_vecTextures.push_back(pMap);
 
   SDL_FreeSurface(pTexture);
@@ -486,17 +427,4 @@ int CGUITextureManagerGL::Load(const CStdString& strTextureName, bool checkBundl
 #endif
 
   return 1;
-}
-
-static CTextureArrayGL emptyTexture;
-
-const CTextureArrayGL* CGUITextureManagerGL::GetTexture(const CStdString& strTextureName)
-{
-  const CTextureArray* tmp;
-  tmp = CGUITextureManager::GetTexture(strTextureName);
-
-  if(tmp == NULL)
-    return (CTextureArrayGL *)&emptyTexture;
-  else
-    return (const CTextureArrayGL*)tmp;
 }

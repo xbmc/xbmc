@@ -38,7 +38,7 @@ public:
 
   virtual void Process();
 
-  bool GetImage(const CStdString &path, CTextureArrayGL &texture, int &orientation, bool firstRequest);
+  bool GetImage(const CStdString &path, CTextureArray &texture, int &orientation, bool firstRequest);
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
   void CleanupUnusedImages();
@@ -100,7 +100,7 @@ protected:
     };
 
     const CStdString &GetPath() const { return m_path; };
-    const CTextureArrayGL &GetTexture() const { return m_texture; };
+    const CTextureArray &GetTexture() const { return m_texture; };
     int GetOrientation() const { return m_orientation; };
 
   private:
@@ -108,7 +108,7 @@ protected:
 
     unsigned int m_refCount;
     CStdString m_path;
-    CTextureArrayGL m_texture;
+    CTextureArray m_texture;
     int m_orientation;
     unsigned int m_timeToDelete;
   };

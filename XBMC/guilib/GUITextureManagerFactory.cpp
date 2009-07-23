@@ -20,22 +20,33 @@
 */
 
 #include "include.h"
-#include "GraphicContextFactory.h"
-#include "GraphicContextGL.h"
+#include "GUITextureManagerFactory.h"
 
-CGraphicContextFactory::CGraphicContextFactory(void)
+#ifdef HAS_SDL_OPENGL
+#include "TextureManagerGL.h"
+#elif defined(HAS_DX)
+#include "TextureManagerDX.h"
+#endif
+
+
+
+CGUITextureManagerFactory::CGUITextureManagerFactory(void)
 {
 
 }
 
-CGraphicContextFactory::~CGraphicContextFactory(void)
+CGUITextureManagerFactory::~CGUITextureManagerFactory(void)
 {
 
 }
 
-CGraphicContext& CGraphicContextFactory::GetGraphicContext()
+CGUITextureManager& CGUITextureManagerFactory::GetGUITextureManager()
 {
-  static CGraphicContextGL context;
+#ifdef HAS_SDL_OPENGL
+  static CGUITextureManagerGL textureManager;
+#elif defined(HAS_DX)
+  static CGUITextureManagerDX textureManager;
+#endif
 
-  return context;
+  return textureManager;
 }

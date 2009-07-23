@@ -21,16 +21,17 @@
 
 #include "include.h"
 #include "GUITextureGL.h"
+#include "TextureManagerGL.h"
 #include "GraphicContext.h"
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 
-CGUITexture::CGUITexture(float posX, float posY, float width, float height, const CTextureInfo &texture)
+CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
 {
 }
 
-void CGUITexture::Begin()
+void CGUITextureGL::Begin()
 {
   CGLTexture* texture = (CGLTexture *)m_texture.m_textures[m_currentFrame];
   glActiveTextureARB(GL_TEXTURE0_ARB);
@@ -72,7 +73,7 @@ void CGUITexture::Begin()
   glBegin(GL_QUADS);
 }
 
-void CGUITexture::End()
+void CGUITextureGL::End()
 {
   glEnd();
   if (m_diffuse.size())
@@ -83,7 +84,7 @@ void CGUITexture::End()
   glDisable(GL_TEXTURE_2D);
 }
 
-void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
+void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
 {
   GLubyte a = (GLubyte)(color >> 24);
   GLubyte r = (GLubyte)((color >> 16) & 0xff);
@@ -135,7 +136,7 @@ void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const
   glVertex3f(x[3], y[3], z[3]);
 }
 
-void CGUITexture::DrawQuad(const CRect &rect, DWORD color)
+void CGUITextureGL::DrawQuad(const CRect &rect, DWORD color)
 {
   glDisable(GL_TEXTURE_2D);
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);

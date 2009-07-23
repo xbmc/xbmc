@@ -99,19 +99,55 @@ void CTextureArray::Reset()
   m_texCoordsArePixels = false;
 };
 
+void CTextureArray::Add(CBaseTexture *texture, int delay)
+{
+  if (!texture)
+    return;
+
+  m_textures.push_back(texture);
+  m_delays.push_back(delay ? delay * 2 : 100);
+
+  m_texWidth = texture->textureWidth;
+  m_texHeight = texture->textureHeight;
+  m_texCoordsArePixels = false;
+}
+
+void CTextureArray::Set(CBaseTexture *texture, int width, int height)
+{
+  assert(!m_textures.size()); // don't try and set a texture if we already have one!
+  m_width = width;
+  m_height = height;
+  Add(texture, 100);
+}
+
+void CTextureArray::Free()
+{
+  CSingleLock lock(g_graphicsContext);
+  for (unsigned int i = 0; i < m_textures.size(); i++)
+  {
+    delete m_textures[i];
+  }
+
+  m_textures.clear();
+  m_delays.clear();
+
+  Reset();
+}
+
 
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
+
 CTextureMap::CTextureMap()
 {
-  m_texture = NULL;
   m_textureName = "";
   m_referenceCount = 0;
   m_memUsage = 0;
 }
 
 CTextureMap::CTextureMap(const CStdString& textureName, int width, int height, int loops)
+: m_texture(width, height, loops)
 {
   m_textureName = textureName;
   m_referenceCount = 0;
@@ -121,13 +157,11 @@ CTextureMap::CTextureMap(const CStdString& textureName, int width, int height, i
 CTextureMap::~CTextureMap()
 {
   FreeTexture();
-  if(m_texture)
-    delete m_texture;
 }
 
 bool CTextureMap::Release()
 {
-  if (!m_texture->m_textures.size()) 
+  if (!m_texture.m_textures.size()) 
     return true;
   if (!m_referenceCount) 
     return true;
@@ -146,7 +180,7 @@ const CStdString& CTextureMap::GetName() const
   return m_textureName;
 }
 
-const CTextureArray* CTextureMap::GetTexture()
+const CTextureArray& CTextureMap::GetTexture()
 {
   m_referenceCount++;
   return m_texture;
@@ -158,7 +192,7 @@ void CTextureMap::Dump() const
     return;   // nothing to see here
 
   CStdString strLog;
-  strLog.Format("  texture:%s has %i frames %i refcount\n", m_textureName.c_str(), m_texture->m_textures.size(), m_referenceCount);
+  strLog.Format("  texture:%s has %i frames %i refcount\n", m_textureName.c_str(), m_texture.m_textures.size(), m_referenceCount);
   OutputDebugString(strLog.c_str());
 }
 
@@ -176,12 +210,21 @@ void CTextureMap::Flush()
 
 void CTextureMap::FreeTexture()
 {
-  m_texture->Free();
+  m_texture.Free();
 }
 
 bool CTextureMap::IsEmpty() const
 {
-  return m_texture->m_textures.size() == 0;
+  return m_texture.m_textures.size() == 0;
+}
+
+void CTextureMap::Add(CBaseTexture* texture, int delay)
+{
+  //CGLTexture *glTexture = new CGLTexture(pSurface, false);
+  m_texture.Add(texture, delay);
+
+  if (texture)
+    m_memUsage += sizeof(CBaseTexture) + (texture->textureWidth * texture->textureHeight * 4); 
 }
 
 /************************************************************************/
@@ -198,8 +241,9 @@ CGUITextureManager::~CGUITextureManager(void)
   Cleanup();
 }
 
-const CTextureArray* CGUITextureManager::GetTexture(const CStdString& strTextureName)
+const CTextureArray& CGUITextureManager::GetTexture(const CStdString& strTextureName)
 {
+  static CTextureArray emptyTexture;
   //  CLog::Log(LOGINFO, " refcount++ for  GetTexture(%s)\n", strTextureName.c_str());
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
@@ -210,9 +254,15 @@ const CTextureArray* CGUITextureManager::GetTexture(const CStdString& strTexture
       return pMap->GetTexture();
     }
   }
-  return NULL;
+  return emptyTexture;
 }
 
+
+
+
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
 bool CGUITextureManager::CanLoad(const CStdString &texturePath) const
 {
   if (texturePath == "-")

@@ -29,7 +29,7 @@
  *
  */
 
-#include "TextureManagerGL.h"
+#include "TextureManager.h"
 #include "Geometry.h"
 
 struct FRECT
@@ -192,9 +192,10 @@ protected:
 
   int m_largeOrientation;   // orientation for large textures
 
-  CTextureArrayGL m_diffuse;
-  CTextureArrayGL m_texture;
+  CTextureArray m_diffuse;
+  CTextureArray m_texture;
 };
+
 
 #ifndef HAS_SDL
 #include "GUITextureD3D.h"
@@ -202,6 +203,7 @@ protected:
 #include "GUITextureSDL.h"
 #elif defined(HAS_SDL_OPENGL)
 #include "GUITextureGL.h"
+#define CGUITexture CGUITextureGL
 #endif
 
 #endif

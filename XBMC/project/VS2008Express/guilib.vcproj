@@ -518,22 +518,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUITexture.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUITextureD3D.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUITextureGL.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUITextureSDL.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\GUIToggleButtonControl.cpp"
 				>
 			</File>
@@ -913,22 +897,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUITextLayout.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUITexture.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUITextureD3D.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUITextureGL.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUITextureSDL.h"
 				>
 			</File>
 			<File
@@ -1332,6 +1300,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\guilib\GUITexture.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUITexture.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\guilib\GUITextureManagerFactory.cpp"
 					>
 				</File>
@@ -1359,6 +1335,14 @@
 			<Filter
 				Name="DX"
 				>
+				<File
+					RelativePath="..\..\guilib\GUITextureD3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUITextureD3D.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="GL"
@@ -1377,6 +1361,14 @@
 							Name="VCCustomBuildTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUITextureGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUITextureGL.h"
+					>
 				</File>
 				<File
 					RelativePath="..\..\guilib\SurfaceGL.cpp"
@@ -1399,6 +1391,18 @@
 				</File>
 				<File
 					RelativePath="..\..\guilib\TextureManagerGL.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="SDL"
+				>
+				<File
+					RelativePath="..\..\guilib\GUITextureSDL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUITextureSDL.h"
 					>
 				</File>
 			</Filter>

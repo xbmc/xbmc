@@ -19,23 +19,18 @@
 *
 */
 
-#include "include.h"
-#include "GraphicContextFactory.h"
-#include "GraphicContextGL.h"
+#ifndef _GUI_TEXTURE_MANAGER_FACTORY_H_
+#define _GUI_TEXTURE_MANAGER_FACTORY_H_
 
-CGraphicContextFactory::CGraphicContextFactory(void)
+class CGUITextureManager;
+
+class CGUITextureManagerFactory
 {
+public:
+  CGUITextureManagerFactory(void);
+  ~CGUITextureManagerFactory(void);
+  static CGUITextureManager& GetGUITextureManager();
+};
 
-}
 
-CGraphicContextFactory::~CGraphicContextFactory(void)
-{
-
-}
-
-CGraphicContext& CGraphicContextFactory::GetGraphicContext()
-{
-  static CGraphicContextGL context;
-
-  return context;
-}
+#endif

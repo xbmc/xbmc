@@ -276,12 +276,12 @@ void CGUITextureBase::AllocResources()
       if (images)
       {
         m_isAllocated = NORMAL;
-        m_texture = *g_TextureManager.GetTexture(m_info.filename);
+        m_texture = g_TextureManager.GetTexture(m_info.filename);
       }
     }
     if (m_isAllocated != NORMAL)
     { // use our large image background loader
-      CTextureArrayGL texture;
+      CTextureArray texture;
       if (g_largeTextureManager.GetImage(m_info.filename, texture, m_largeOrientation, !IsAllocated()))
       {
         m_isAllocated = LARGE;
@@ -305,7 +305,7 @@ void CGUITextureBase::AllocResources()
     if (!images)
       return;
 
-    m_texture = *g_TextureManager.GetTexture(m_info.filename);
+    m_texture = g_TextureManager.GetTexture(m_info.filename);
   }
   m_frameWidth = (float)m_texture.m_width;
   m_frameHeight = (float)m_texture.m_height;
@@ -314,7 +314,7 @@ void CGUITextureBase::AllocResources()
   if (!m_info.diffuse.IsEmpty())
   {
     g_TextureManager.Load(m_info.diffuse);
-    m_diffuse = *g_TextureManager.GetTexture(m_info.diffuse);
+    m_diffuse = g_TextureManager.GetTexture(m_info.diffuse);
   }
 
   CalculateSize();

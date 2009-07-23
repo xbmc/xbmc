@@ -71,13 +71,13 @@ public:
 
   void Reset();
 
-  virtual void Add(void *texture, int delay) = 0;
-  virtual void Set(void *texture, int width, int height) = 0;
-  virtual void Free() = 0;
+  void Add(CBaseTexture *texture, int delay);
+  void Set(CBaseTexture *texture, int width, int height);
+  void Free();
   
   unsigned int size() const;
 
-  std::vector<void* > m_textures;
+  std::vector<CBaseTexture* > m_textures;
   std::vector<int> m_delays;
   int m_width;
   int m_height;
@@ -101,11 +101,11 @@ public:
   CTextureMap(const CStdString& textureName, int width, int height, int loops);
   virtual ~CTextureMap();
 
-  virtual void Add(XBMC::SurfacePtr pSurface, int delay) = 0;
+  void Add(CBaseTexture* texture, int delay);
 
   bool Release();
   const CStdString& GetName() const;
-  const CTextureArray* GetTexture();
+  const CTextureArray& GetTexture();
   void Dump() const;
   DWORD GetMemoryUsage() const;
   void Flush();
@@ -114,7 +114,7 @@ public:
 protected:
   void FreeTexture();
 
-  CTextureArray* m_texture;
+  CTextureArray m_texture;
   CStdString m_textureName;
   unsigned int m_referenceCount;
   DWORD m_memUsage;
@@ -147,7 +147,7 @@ public:
   void AddTexturePath(const CStdString &texturePath);    ///< Add a new path to the paths to check when loading media
   void SetTexturePath(const CStdString &texturePath);    ///< Set a single path as the path to check when loading media (clear then add)
   void RemoveTexturePath(const CStdString &texturePath); ///< Remove a path from the paths to check when loading media
-  virtual const CTextureArray* GetTexture(const CStdString& strTextureName);
+  virtual const CTextureArray& GetTexture(const CStdString& strTextureName);
 
 protected:
   std::vector<CTextureMap*> m_vecTextures;

@@ -46,39 +46,6 @@ public:
   void Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface);
 };
 
-
-/************************************************************************/
-/*    CTextureArraySDL                                                  */
-/************************************************************************/
-class CTextureArrayGL : public CTextureArray
-{
-public:
-  CTextureArrayGL();
-  CTextureArrayGL(int width, int height, int loops, bool texCoordsArePixels = false);
-  virtual ~CTextureArrayGL();
-  CTextureArrayGL &operator =(const CTextureArray &base);
-  void Add(void *texture, int delay);
-  void Set(void *texture, int width, int height);
-  void Free();
-};
-
-/*!
-\ingroup textures
-\brief 
-*/
-
-/************************************************************************/
-/*    CTextureMapSDL                                                    */
-/************************************************************************/
-class CTextureMapGL : public CTextureMap
-{
-public:
-  CTextureMapGL(const CStdString& textureName, int width, int height, int loops);
-  virtual ~CTextureMapGL();
-
-  void Add(XBMC::SurfacePtr pSurface, int delay);
-};
-
 /*!
 \ingroup textures
 \brief 
@@ -93,7 +60,6 @@ public:
   virtual ~CGUITextureManagerGL(void);
 
   int Load(const CStdString& strTextureName, bool checkBundleOnly = false);
-  const CTextureArrayGL* CGUITextureManagerGL::GetTexture(const CStdString& strTextureName);
 };
 
 /*!
