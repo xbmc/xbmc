@@ -93,7 +93,7 @@ public:
   virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
 protected:
   virtual bool Parse(unsigned char* pHeader, unsigned int headerLen, unsigned char* pData, unsigned int dataLen);
-  void SetTimeStamps(CParserPayload* pPayload, uint64_t pts, unsigned __int64 dts);
+  void SetTimeStamps(CParserPayload* pPayload, uint64_t pts, uint64_t dts);
 
   CElementaryStream* m_pStream;
   CPayloadAccumulator m_Accum;
