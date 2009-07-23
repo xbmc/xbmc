@@ -206,6 +206,25 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
       || current.m_strTitle != item.m_strTitle;
 }
 
+int CDVDInputStreamHTSP::GetTotalTime()
+{
+  if(m_event.id == 0)
+    return 0;
+  return (m_event.stop - m_event.start) * 1000;
+}
+
+int CDVDInputStreamHTSP::GetTime()
+{
+  CDateTimeSpan time;
+  time  = CDateTime::GetUTCDateTime() 
+        - CDateTime((time_t)m_event.start);
+
+  return time.GetDays()    * 1000 * 60 * 60 * 24
+       + time.GetHours()   * 1000 * 60 * 60
+       + time.GetMinutes() * 1000 * 60
+       + time.GetSeconds() * 1000;
+}
+
 void CDVDInputStreamHTSP::Abort()
 {
   m_session.Abort();
