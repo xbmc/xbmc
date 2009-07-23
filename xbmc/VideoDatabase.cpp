@@ -2506,7 +2506,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     m_pDS->exec(strSQL.c_str());
 
     if (!bKeepThumb)
-      DeleteThumbForItem(strFilenameAndPath,false);
+      DeleteThumbForItem(strFilenameAndPath, false, lEpisodeId);
 
     DeleteStreamDetails(lFileId);
 
@@ -2516,18 +2516,9 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     {
       ClearBookMarksOfFile(strFilenameAndPath);
 
-      strSQL=FormatSQL("delete from episode where idfile=%i", lFileId);
+      strSQL=FormatSQL("delete from episode where idEpisode=%i", lEpisodeId);
       m_pDS->exec(strSQL.c_str());
     }
-    /*
-    // work in progress
-    else
-    {
-      // clear the title
-      strSQL=FormatSQL("update episode set c%02d=NULL where idepisode=%i", VIDEODB_ID_EPISODE_TITLE, lEpisodeId);
-      m_pDS->exec(strSQL.c_str());
-    }
-    */
 
   }
   catch (...)
@@ -7286,13 +7277,22 @@ bool CVideoDatabase::CommitTransaction()
   return false;
 }
 
-void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
+void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder, long lEpisodeId)
 {
   CFileItem item(strPath,bFolder);
-  XFILE::CFile::Delete(item.GetCachedVideoThumb());
-  if (item.HasVideoInfoTag())
-    XFILE::CFile::Delete(item.GetCachedEpisodeThumb());
-  XFILE::CFile::Delete(item.GetCachedFanart());
+  if (lEpisodeId > 0)
+  {
+    item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
+    if (CFile::Exists(item.GetCachedEpisodeThumb()))
+      XFILE::CFile::Delete(item.GetCachedEpisodeThumb());
+    else
+      XFILE::CFile::Delete(item.GetCachedVideoThumb());
+  }
+  else
+  {
+    XFILE::CFile::Delete(item.GetCachedVideoThumb());
+    XFILE::CFile::Delete(item.GetCachedFanart());
+  }
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
