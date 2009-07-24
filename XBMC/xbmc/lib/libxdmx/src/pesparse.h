@@ -61,16 +61,6 @@ enum
   PES_ID_EXT_AC3                 = 0x71
 };
 
-// LPCM Block Header
-// 8 : Frame Size
-// 8 : Flags
-//   4 : Channel Mode
-//   4 : Sample Rate
-//   2 : Bit Depth
-//   6 : Unknown/Reserved
-
-// Blocks are not guaranteed to be frame-aligned
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class IPacketFilter
@@ -105,6 +95,23 @@ protected:
   uint64_t m_BytesOut;
   unsigned int m_MaxPayloadLen;
   PayloadList* m_pPayloadList;
+
+  bool m_FormatDetected;
+};
+
+
+class CPESParserLPCM : public CPESParser
+{
+public:
+  CPESParserLPCM(CElementaryStream* pStream, PayloadList* pPayloadList);
+  virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+protected:
+  virtual bool Parse(unsigned char* pHeader, unsigned int headerLen, unsigned char* pData, unsigned int dataLen);
+  bool DetectFormat(unsigned char* pData, unsigned int len);
+  int32_t m_Channels;
+  int32_t m_BitDepth;
+  int32_t m_SampleRate;
+  int32_t m_BlockSize;
 };
 
 #endif // PESPARSE_H_

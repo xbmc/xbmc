@@ -91,7 +91,7 @@ CDVDDemuxTS::CDVDDemuxTS() :
   m_pInput(NULL),
   m_pProgram(NULL)
 {
-  XdmxSetLogLevel(XDMX_LOG_LEVEL_ERROR);
+  XdmxSetLogLevel(XDMX_LOG_LEVEL_INFO);
   XdmxSetLogFunc(XdmxLogFunc);  
 }
 
@@ -171,7 +171,23 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
     break;
   case ES_PRIVATE_TYPE_LPCM:
     dmxStream.a = new CDemuxStreamAudio();
-    dmxStream.a->codec = CODEC_ID_PCM_S24BE;
+    dmxStream.a->iBitRate = pStream->GetProperty(XDMX_PROP_TAG_BITRATE).int32Val;//576000;
+    dmxStream.a->iBlockAlign = pStream->GetProperty(XDMX_PROP_TAG_FRAME_SIZE).int32Val;//12;
+    dmxStream.a->iChannels = pStream->GetProperty(XDMX_PROP_TAG_CHANNELS).int32Val;//6;
+    dmxStream.a->iSampleRate = pStream->GetProperty(XDMX_PROP_TAG_SAMPLE_RATE).int32Val;//48000;
+    dmxStream.a->iBitsPerSample = pStream->GetProperty(XDMX_PROP_TAG_BIT_DEPTH).int32Val;//16;
+    switch(dmxStream.a->iBitsPerSample)
+    {
+    case 16:
+      dmxStream.a->codec = CODEC_ID_PCM_S16BE;
+      break;
+    case 24:
+      dmxStream.a->codec = CODEC_ID_PCM_S16BE;
+      break;
+    default:
+      dmxStream.a->codec = CODEC_ID_NONE;
+      break;
+    }
     pTypeName = "LPCM (Private)";
     break;
   default:
@@ -182,7 +198,8 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
     dmxStream.g->iId = m_StreamList.size();
     dmxStream.g->iPhysicalId = pStream->GetId();
     m_StreamList.push_back(dmxStream.g); // Add to stream list
-    m_StreamMap[dmxStream.g->iPhysicalId] = dmxStream.g->iId; // Map physical stream id (coming from demux) to index (coming from dvdplayer)
+    pStream->SetProperty('xbid', dmxStream.g->iId);
+
     CLog::Log(LOGDEBUG, "%s: Added stream. Index: %d, Id: %d, Type: %s", __FUNCTION__, dmxStream.g->iId, dmxStream.g->iPhysicalId, pTypeName);
   }
 }
@@ -216,7 +233,7 @@ DemuxPacket* CDVDDemuxTS::Read()
     if (!pPayload)
       return NULL;
 
-    if (m_StreamMap.find(pPayload->GetStream()->GetId()) != m_StreamMap.end())
+    if (!pPayload->GetStream()->IsValueEmpty(pPayload->GetStream()->GetProperty('xbid')))
       break;
   }
 
@@ -227,7 +244,7 @@ DemuxPacket* CDVDDemuxTS::Read()
   pDmx->dts = pPayload->GetDts() * DVD_TIME_BASE;
   pDmx->iGroupId = 0;
   pDmx->duration = 0; // Unknown
-  pDmx->iStreamId = m_StreamMap[pPayload->GetStream()->GetId()];
+  pDmx->iStreamId = pPayload->GetStream()->GetProperty('xbid').int32Val;
 
   m_StreamCounterList[pPayload->GetStream()->GetId()] += pDmx->iSize;
   return pDmx;
@@ -267,3 +284,10 @@ std::string CDVDDemuxTS::GetFileName()
   return "";
 }
 
+void CDVDDemuxTS::GetStreamCodecName(int iStreamId, CStdString &strName)
+{
+  if (!m_pInnerDemux || iStreamId >= (int)m_StreamList.size())
+    return;
+  CElementaryStream* pEStream = m_pInnerDemux->GetStreamById(m_StreamList[iStreamId]->iPhysicalId);
+  strName.Format("%4.4s", pEStream->GetProperty(XDMX_PROP_TAG_FOURCC));
+}

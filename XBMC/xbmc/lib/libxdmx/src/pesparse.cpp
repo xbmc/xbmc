@@ -11,7 +11,8 @@ CPESParser::CPESParser(CElementaryStream* pStream, PayloadList* pPayloadList) :
   m_BytesIn(0),
   m_BytesOut(0),
   m_MaxPayloadLen(0),
-  m_pPayloadList(pPayloadList)
+  m_pPayloadList(pPayloadList),
+  m_FormatDetected(false)
 {
 
 }
@@ -51,8 +52,8 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
       m_Accum.StartPayload(packetLen - m_HeaderLen + 6); // Exclude Header
     }
   }
-  else if (!m_BytesIn) // This is the first packet added
-    return true; // Wait for a new payload
+  //else if (!m_BytesIn) // This is the first packet added
+  //  return true; // Wait for a new payload
 
   if (m_HeaderOffset < m_HeaderLen) // Still need some header data
   {
@@ -262,5 +263,140 @@ bool CPESParser::Parse(unsigned char* pHeader, unsigned int headerLen, unsigned 
 
   m_pPayloadList->push_back(pPayload);
   
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+CPESParserLPCM::CPESParserLPCM(CElementaryStream* pStream, PayloadList* pPayloadList) :
+  CPESParser(pStream, pPayloadList),
+  m_Channels(0),
+  m_BitDepth(0),
+  m_SampleRate(0)
+{
+
+}
+
+bool CPESParserLPCM::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
+{
+  if (newPayloadUnit)
+  {
+    unsigned short packetLen = (((unsigned short)(pData[4])) << 8) | pData[5];
+    m_HeaderLen = (unsigned short)pData[8] + 9;
+    memcpy(m_Header, pData, m_HeaderLen);
+    m_HeaderOffset = m_HeaderLen;
+    pData += m_HeaderLen;
+    len -= m_HeaderLen;
+
+    if (!m_Channels) // Pull stream format from packet header
+      DetectFormat(pData, len);
+    // Skip LPCM header
+    pData += 4;
+    len -= 4;
+    m_Accum.StartPayload(packetLen - m_HeaderLen + 6 - 4); // Exclude Headers
+  }
+  return CPESParser::Add(pData, len, false);
+}
+
+bool CPESParserLPCM::Parse(unsigned char* pHeader, unsigned int headerLen, unsigned char* pData, unsigned int dataLen)
+{
+  return CPESParser::Parse(pHeader, headerLen, pData, dataLen);
+}
+
+
+bool CPESParserLPCM::DetectFormat(unsigned char* pData, unsigned int len)
+{
+  // LPCM Block Header
+  // 8 : Frame Size
+  // 8 : Flags
+  //   4 : Channel Mode
+  //   4 : Sample Rate
+  //   2 : Bit Depth
+  //   6 : Unknown/Reserved
+  //
+  // ab cd ef gh
+
+  // abcd - Frame Size
+  m_BlockSize = ((int32_t)pData[0] << 8) | pData[1];
+
+  // e - Audio Mode
+  switch(pData[2] >> 4)
+  {
+	case 1: // 1/0
+		m_Channels = 1;
+		break;
+	case 3: // 2/0
+		m_Channels = 2;
+		break;
+	case 4: // 3/0
+		m_Channels = 3;
+		break;
+	case 5: // 2/1
+		m_Channels = 3;
+		break;
+	case 6: // 3/1
+		m_Channels = 4;
+		break;
+	case 7: // 2/2 (Dual Stereo)
+		m_Channels = 4;
+		break;
+	case 8: // 3/2
+		m_Channels = 5;
+		break;
+	case 9: // 3/2+LFE
+		m_Channels = 6;
+		break;
+	case 10: // 3/4
+		m_Channels = 7;
+		break;
+	case 11: // 3/4+LFE
+		m_Channels = 8;
+		break;
+	default: // Reserved
+		m_Channels = 0;
+		return false;
+	}
+
+  // f - Sample Rate
+  switch(pData[2] & 0x0f)
+  {
+	case 1:
+    m_SampleRate = 48000;
+		break;
+	case 4:
+    m_SampleRate = 96000;
+		break;
+	case 5:
+    m_SampleRate = 192000;
+		break;
+	default:
+    m_SampleRate = 0;
+		return false;
+  }
+  // g - Bit Depth and Reserved 
+  switch(pData[3] & 0xc0)
+  {
+  case 0x40:
+    m_BitDepth = 16;
+		break;
+  case 0x80:
+    m_BitDepth = 24;
+		break;
+  case 0xc0:
+    m_BitDepth = 32;
+		break;
+  default:
+    m_BitDepth = 0;
+		return false;
+  }
+  // h - Unknown
+
+  // Set the stream properties to reflect the detected format
+  m_pStream->SetProperty(XDMX_PROP_TAG_CHANNELS, m_Channels);
+  m_pStream->SetProperty(XDMX_PROP_TAG_BIT_DEPTH, m_BitDepth);
+  m_pStream->SetProperty(XDMX_PROP_TAG_SAMPLE_RATE, m_SampleRate);
+  m_pStream->SetProperty(XDMX_PROP_TAG_FRAME_SIZE, (m_BitDepth >> 3) * m_Channels);
+  m_pStream->SetProperty(XDMX_PROP_TAG_BITRATE, (m_BitDepth >> 3) * m_Channels * m_SampleRate);
+
   return true;
 }

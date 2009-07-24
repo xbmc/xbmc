@@ -30,6 +30,7 @@ enum TSElementType
 };
 
 // Program Element Types (ISO/IEC 13818-1, Table 2-29)
+// TODO: Move to mpeg2 header when other systems are added
 enum
 {
   // Standard Values
@@ -87,6 +88,10 @@ enum
   TS_DESC_HIERARCHY                   = 0x04,
   TS_DESC_REGISTRATION                = 0x05,
   TS_DESC_LANGUAGE                    = 0x0A,
+  TS_DESC_DVB_AC3                     = 0x6A,
+  TS_DESC_DVB_EAC3                    = 0x7A,
+  TS_DESC_DVB_DTS                     = 0x7B,
+  TS_DESC_DVB_AAC                     = 0x7C,
   TS_DESC_AC3                         = 0x81
 };
 
@@ -170,10 +175,11 @@ public:
   virtual CParserPayload* GetPayload() = 0;
   // Program Stream Information
   virtual CTransportStream* GetTransportStream() = 0;
+  virtual CElementaryStream* GetStreamById(unsigned short id) = 0;
 protected:
   ITransportStreamDemux() {}
 };
 
-ITransportStreamDemux* CreateTSDemux(TSTransportType type = TS_TYPE_UNKNOWN);
+extern ITransportStreamDemux* CreateTSDemux(TSTransportType type = TS_TYPE_UNKNOWN);
 
 #endif /*TSDEMUX_H_*/

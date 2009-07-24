@@ -1,5 +1,6 @@
 #include "common.h"
 #include <stdio.h>
+#include <sstream>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 XdmxLogFuncPtr g_xdmxlog = printf;
@@ -42,14 +43,52 @@ void xdmx_aligned_free(void *p)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+const XdmxPropertyValue CXdmxPropertyBag::m_EmptyValue = {XDMX_PROP_TYPE_ANY, 0};
+
+CXdmxPropertyBag::CXdmxPropertyBag()
+{
+}
+
+void CXdmxPropertyBag::SetValue(XdmxPropertyTag tag, XdmxPropertyValue& val)
+{
+  m_Values[tag] = val;
+}
+
+const XdmxPropertyValue& CXdmxPropertyBag::GetValue(XdmxPropertyTag tag)
+{
+  std::map<XdmxPropertyTag, XdmxPropertyValue>::iterator iter = m_Values.find(tag);
+  if (iter == m_Values.end())
+    return m_EmptyValue;
+
+  return iter->second;
+}
+
+bool CXdmxPropertyBag::IsEmpty(const XdmxPropertyValue& val)
+{
+  return &val == &m_EmptyValue;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 CElementaryStream::CElementaryStream(unsigned int id, unsigned char elementType) :
   m_Id(id),
   m_ElementType(elementType)
 {
+  
 }
 
 CElementaryStream::~CElementaryStream()
 {
+}
+
+void CElementaryStream::SetId(unsigned int id)
+{
+  m_Id = id;
+}
+
+unsigned int CElementaryStream::GetId()
+{
+  return m_Id;
 }
 
 unsigned char CElementaryStream::GetElementType()
@@ -57,9 +96,56 @@ unsigned char CElementaryStream::GetElementType()
   return m_ElementType;
 }
 
-unsigned int CElementaryStream::GetId()
+void CElementaryStream::SetElementType(unsigned char elementType)
 {
-  return m_Id;
+  m_ElementType = elementType;
+}
+
+void CElementaryStream::SetProperty(XdmxPropertyTag tag, XdmxPropertyValue& val)
+{
+  m_Props.SetValue(tag, val);
+}
+
+void CElementaryStream::SetProperty(XdmxPropertyTag tag, bool val)
+{
+  XdmxPropertyValue propVal;
+  propVal.type = XDMX_PROP_TYPE_BOOL;
+  propVal.boolVal = val;
+  m_Props.SetValue(tag, propVal);
+}
+
+void CElementaryStream::SetProperty(XdmxPropertyTag tag, char val)
+{
+  XdmxPropertyValue propVal;
+  propVal.type = XDMX_PROP_TYPE_CHAR;
+  propVal.charVal = val;
+  m_Props.SetValue(tag, propVal);
+}
+
+void CElementaryStream::SetProperty(XdmxPropertyTag tag, int32_t val)
+{
+  XdmxPropertyValue propVal;
+  propVal.type = XDMX_PROP_TYPE_INT32;
+  propVal.int32Val = val;
+  m_Props.SetValue(tag, propVal);
+}
+
+void CElementaryStream::SetProperty(XdmxPropertyTag tag, float val)
+{
+  XdmxPropertyValue propVal;
+  propVal.type = XDMX_PROP_TYPE_FLOAT;
+  propVal.floatVal = val;
+  m_Props.SetValue(tag, propVal);
+}
+
+const XdmxPropertyValue& CElementaryStream::GetProperty(XdmxPropertyTag tag)
+{
+  return m_Props.GetValue(tag);
+}
+
+bool CElementaryStream::IsValueEmpty(const XdmxPropertyValue& val)
+{
+  return m_Props.IsEmpty(val);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

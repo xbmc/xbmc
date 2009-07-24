@@ -59,6 +59,7 @@ public:
   int GetNrOfStreams();
 
   virtual std::string GetFileName();
+  void GetStreamCodecName(int iStreamId, CStdString &strName);
 protected:
   void AddStream(CElementaryStream* pStream);
 
@@ -66,7 +67,6 @@ protected:
   ITransportStreamDemux* m_pInnerDemux;
   CTSProgram* m_pProgram;
   std::vector<CDemuxStream*> m_StreamList;
-  std::map<unsigned short, unsigned int> m_StreamMap;
 
   // Debug
   std::map<unsigned short, unsigned __int64> m_StreamCounterList;

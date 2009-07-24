@@ -1,6 +1,8 @@
 #ifndef LIBXDMX_H_
 #define LIBXDMX_H_
 
+#include <string>
+
 #if defined(WIN32)
   typedef __int64 int64_t;
   typedef __int32 int32_t;
@@ -22,6 +24,81 @@ void XdmxSetLogLevel(int level);
 typedef int (*XdmxLogFuncPtr)(const char* format, ...);
 void XdmxSetLogFunc(XdmxLogFuncPtr func);
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+enum XdmxPropertyType
+{
+  XDMX_PROP_TYPE_ANY,
+  XDMX_PROP_TYPE_BOOL,
+  XDMX_PROP_TYPE_CHAR,
+  XDMX_PROP_TYPE_INT32,
+//  XDMX_PROP_TYPE_INT64,
+  XDMX_PROP_TYPE_FLOAT,
+//  XDMX_PROP_TYPE_DOUBLE,
+  XDMX_PROP_TYPE_STRING
+};
+
+struct XdmxPropertyValue
+{
+  XdmxPropertyType type;
+  union
+  {
+    bool boolVal;
+    char charVal;
+    int32_t int32Val;
+//    int64_t int64Val;
+    float floatVal;
+//    double doubleVal;
+    char* stringVal;
+  };
+};
+
+typedef uint32_t XdmxPropertyTag;
+
+// TODO: Implement more-efficient custom hash map
+#include <map>
+
+class CXdmxPropertyBag
+{
+public:
+  CXdmxPropertyBag();
+  void SetValue(XdmxPropertyTag tag, XdmxPropertyValue& val);
+  const XdmxPropertyValue& GetValue(XdmxPropertyTag tag);
+  bool IsEmpty(const XdmxPropertyValue& val);
+protected:
+  static const XdmxPropertyValue m_EmptyValue;
+  std::map<XdmxPropertyTag, XdmxPropertyValue> m_Values;
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// Standard Property Tags
+
+enum
+{
+  // Common
+  XDMX_PROP_TAG_FOURCC      = 'frcc',   // int32
+  XDMX_PROP_TAG_STREAM_TYPE = 'styp',   // int32
+  XDMX_PROP_TAG_DURATION    = 'dur ',   // float
+  XDMX_PROP_TAG_LANGUAGE    = 'lang',   // int32
+  XDMX_PROP_TAG_BITRATE     = 'brat',   // float
+  XDMX_PROP_TAG_VAR_BITRATE = 'vbr ',   // bool
+
+  // Audio
+  XDMX_PROP_TAG_CHANNELS    = 'chan',   // int32
+  XDMX_PROP_TAG_SAMPLE_RATE = 'srat',   // int32
+  XDMX_PROP_TAG_FRAME_SIZE  = 'fmsz',   // int32
+  XDMX_PROP_TAG_BIT_DEPTH   = 'dpth',   // int32
+
+  // Video
+  XDMX_PROP_TAG_FRAMES_PER_SEC  = 'fps ', // float
+  XDMX_PROP_TAG_HEIGHT          = 'hght', // int32
+  XDMX_PROP_TAG_WIDTH           = 'wdth', // int32
+  XDMX_PROP_TAG_ASPECT_RATIO    = 'aspt', // float
+  XDMX_PROP_TAG_VAR_FPS         = 'vfps'  // bool
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 class IXdmxInputStream
 {
 public:
@@ -41,11 +118,21 @@ class CElementaryStream
 public:
   CElementaryStream(unsigned int id, unsigned char elementType);
   virtual ~CElementaryStream();
+  void SetId(unsigned int id);
   unsigned int GetId();
+  void SetElementType(unsigned char elementType);
   unsigned char GetElementType();
+  void SetProperty(XdmxPropertyTag tag, XdmxPropertyValue& val);
+  void SetProperty(XdmxPropertyTag tag, bool val);
+  void SetProperty(XdmxPropertyTag tag, char val);
+  void SetProperty(XdmxPropertyTag tag, int32_t val);
+  void SetProperty(XdmxPropertyTag tag, float val);
+  const XdmxPropertyValue& GetProperty(XdmxPropertyTag tag);
+  bool IsValueEmpty(const XdmxPropertyValue& val);
 protected:
   unsigned int m_Id;
   unsigned char m_ElementType;
+  CXdmxPropertyBag m_Props;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
