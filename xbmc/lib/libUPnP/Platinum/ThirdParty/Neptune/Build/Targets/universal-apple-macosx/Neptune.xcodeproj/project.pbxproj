@@ -20,6 +20,7 @@
 				CAE417770E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE417790E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE4177B0E0DC10600A530D1 /* PBXTargetDependency */,
+				CA30B77A0F0DCEFE0085B46E /* PBXTargetDependency */,
 				CAE4177D0E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE4177F0E0DC10600A530D1 /* PBXTargetDependency */,
 				CAE417810E0DC10600A530D1 /* PBXTargetDependency */,
@@ -54,6 +55,7 @@
 			buildPhases = (
 			);
 			dependencies = (
+				CA7848420F3B6E71009E84AD /* PBXTargetDependency */,
 				CAE417E40E0DC1FD00A530D1 /* PBXTargetDependency */,
 				CAE417E60E0DC1FD00A530D1 /* PBXTargetDependency */,
 				CAE417E80E0DC1FD00A530D1 /* PBXTargetDependency */,
@@ -65,7 +67,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		CA096EF20ED0DBCE00A5103D /* NptResults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA096EF10ED0DBCE00A5103D /* NptResults.cpp */; };
 		CA197D250E1AE4400018E87C /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CA197D280E1AE4790018E87C /* QueueTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA197D1A0E1AE4200018E87C /* QueueTest1.cpp */; };
 		CA1A5EAF0EC0154D00A9040C /* x509.c in Sources */ = {isa = PBXBuildFile; fileRef = CA1A5E850EC0145900A9040C /* x509.c */; };
@@ -114,12 +115,16 @@
 		CA1D05700E68E29C00E3DEE8 /* NptDynamicLibraries.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1D056D0E68E29C00E3DEE8 /* NptDynamicLibraries.h */; };
 		CA1D05710E68E29C00E3DEE8 /* NptSerialPort.h in Headers */ = {isa = PBXBuildFile; fileRef = CA1D056E0E68E29C00E3DEE8 /* NptSerialPort.h */; };
 		CA1D05730E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA1D05720E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp */; };
+		CA2B1E210FC22DBA00B9E79F /* NptResults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA096EF10ED0DBCE00A5103D /* NptResults.cpp */; };
 		CA2F54340EC1165700AEBC12 /* TlsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA2F54330EC1165700AEBC12 /* TlsTest1.cpp */; };
 		CA2F54390EC1203A00AEBC12 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CA2F543A0EC1203A00AEBC12 /* libaxTLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA1A5EA90EC0152A00A9040C /* libaxTLS.a */; };
+		CA30B7720F0DCEA70085B46E /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CA5041AF0C5AE2180060E6FE /* NptNullSerialPort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA5041AA0C5AE2180060E6FE /* NptNullSerialPort.cpp */; };
 		CA550D500D20A37E00B22D72 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CA550D580D20A3AC00B22D72 /* HttpServerTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAA979DD0CF1648300C01909 /* HttpServerTest1.cpp */; };
+		CA7848450F3B6E9B009E84AD /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
+		CA7848480F3B6EB8009E84AD /* MiniHttpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA7848470F3B6EB8009E84AD /* MiniHttpServer.cpp */; };
 		CA84EC5E0C7E540900CC9622 /* adler32.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4A0C7E540900CC9622 /* adler32.c */; };
 		CA84EC5F0C7E540900CC9622 /* crc32.c in Sources */ = {isa = PBXBuildFile; fileRef = CA84EC4B0C7E540900CC9622 /* crc32.c */; };
 		CA84EC600C7E540900CC9622 /* crc32.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC4C0C7E540900CC9622 /* crc32.h */; };
@@ -142,6 +147,7 @@
 		CA84EC7B0C7E5A7000CC9622 /* NptZip.h in Headers */ = {isa = PBXBuildFile; fileRef = CA84EC7A0C7E5A7000CC9622 /* NptZip.h */; };
 		CA8961850E7689AF00FD1BE1 /* NptCocoaMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CA8961830E7689AF00FD1BE1 /* NptCocoaMessageQueue.h */; };
 		CA8961860E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA8961840E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm */; };
+		CA926A500F8BEB50003CB74E /* NptDynamicCast.h in Headers */ = {isa = PBXBuildFile; fileRef = CA926A4F0F8BEB50003CB74E /* NptDynamicCast.h */; };
 		CA97E0250E2FDFDD0090CC9B /* StreamsTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA97E01C0E2FDFA10090CC9B /* StreamsTest1.cpp */; };
 		CA97E0320E2FEA540090CC9B /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F912B69F0B8EB1C700C1E90D /* libNeptune.a */; };
 		CAA97A070CF164E000C01909 /* XmlTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CAA979F80CF1648300C01909 /* XmlTest1.cpp */; };
@@ -304,7 +310,35 @@
 			remoteGlobalIDString = CA1A5EA80EC0152A00A9040C;
 			remoteInfo = axTLS;
 		};
+		CA30B7700F0DCE9F0085B46E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		CA30B7790F0DCEFE0085B46E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA30B76A0F0DCE990085B46E;
+			remoteInfo = LoggingTest2;
+		};
 		CA550D4C0D20A37E00B22D72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F912B69E0B8EB1C700C1E90D;
+			remoteInfo = Neptune;
+		};
+		CA7848410F3B6E71009E84AD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA78483C0F3B6E69009E84AD;
+			remoteInfo = MiniHttpServer;
+		};
+		CA7848430F3B6E95009E84AD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F912B6870B8EB12700C1E90D /* Project object */;
 			proxyType = 1;
@@ -689,8 +723,11 @@
 		CA1D05720E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixDynamicLibraries.cpp; sourceTree = "<group>"; };
 		CA2F54240EC115E600AEBC12 /* TlsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TlsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA2F54330EC1165700AEBC12 /* TlsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TlsTest1.cpp; sourceTree = "<group>"; };
+		CA30B76B0F0DCE990085B46E /* LoggingTest2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LoggingTest2; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA5041AA0C5AE2180060E6FE /* NptNullSerialPort.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = NptNullSerialPort.cpp; sourceTree = "<group>"; };
 		CA550D550D20A37E00B22D72 /* HttpServerTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HttpServerTest1; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA78483D0F3B6E69009E84AD /* minihttpserver */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = minihttpserver; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA7848470F3B6EB8009E84AD /* MiniHttpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MiniHttpServer.cpp; sourceTree = "<group>"; };
 		CA84EC4A0C7E540900CC9622 /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = adler32.c; path = "../../../ThirdParty/zlib-1.2.3/adler32.c"; sourceTree = SOURCE_ROOT; };
 		CA84EC4B0C7E540900CC9622 /* crc32.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = crc32.c; path = "../../../ThirdParty/zlib-1.2.3/crc32.c"; sourceTree = SOURCE_ROOT; };
 		CA84EC4C0C7E540900CC9622 /* crc32.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = crc32.h; path = "../../../ThirdParty/zlib-1.2.3/crc32.h"; sourceTree = SOURCE_ROOT; };
@@ -713,6 +750,7 @@
 		CA84EC7A0C7E5A7000CC9622 /* NptZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptZip.h; sourceTree = "<group>"; };
 		CA8961830E7689AF00FD1BE1 /* NptCocoaMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NptCocoaMessageQueue.h; path = Cocoa/NptCocoaMessageQueue.h; sourceTree = "<group>"; };
 		CA8961840E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = NptCocoaMessageQueue.mm; path = Cocoa/NptCocoaMessageQueue.mm; sourceTree = "<group>"; };
+		CA926A4F0F8BEB50003CB74E /* NptDynamicCast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptDynamicCast.h; sourceTree = "<group>"; };
 		CA97E01C0E2FDFA10090CC9B /* StreamsTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamsTest1.cpp; sourceTree = "<group>"; };
 		CA97E0200E2FDFB30090CC9B /* StreamsTest1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = StreamsTest1; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAA979D70CF1648300C01909 /* ArraysTest1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArraysTest1.cpp; sourceTree = "<group>"; };
@@ -870,11 +908,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CA30B7690F0DCE990085B46E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA30B7720F0DCEA70085B46E /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA550D4F0D20A37E00B22D72 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CA550D500D20A37E00B22D72 /* libNeptune.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA78483B0F3B6E69009E84AD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA7848450F3B6E9B009E84AD /* libNeptune.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1171,6 +1225,14 @@
 			path = Null;
 			sourceTree = "<group>";
 		};
+		CA7848460F3B6EB8009E84AD /* MiniHttpServer */ = {
+			isa = PBXGroup;
+			children = (
+				CA7848470F3B6EB8009E84AD /* MiniHttpServer.cpp */,
+			);
+			path = MiniHttpServer;
+			sourceTree = "<group>";
+		};
 		CA84EC460C7E517E00CC9622 /* Zlib */ = {
 			isa = PBXGroup;
 			children = (
@@ -1389,6 +1451,7 @@
 		CAE417A50E0DC16300A530D1 /* Apps */ = {
 			isa = PBXGroup;
 			children = (
+				CA7848460F3B6EB8009E84AD /* MiniHttpServer */,
 				CAE417A60E0DC16300A530D1 /* NetConfig */,
 				CAE417A80E0DC16300A530D1 /* NetEcho */,
 				CAE417AA0E0DC16300A530D1 /* NetPing */,
@@ -1478,6 +1541,8 @@
 				CAF2EFD70E64A27200948C04 /* FileTest1 */,
 				CA1A5EA90EC0152A00A9040C /* libaxTLS.a */,
 				CA2F54240EC115E600AEBC12 /* TlsTest1 */,
+				CA30B76B0F0DCE990085B46E /* LoggingTest2 */,
+				CA78483D0F3B6E69009E84AD /* minihttpserver */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1496,6 +1561,7 @@
 		F912B6AF0B8EB27400C1E90D /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				CA926A4F0F8BEB50003CB74E /* NptDynamicCast.h */,
 				CA096EF10ED0DBCE00A5103D /* NptResults.cpp */,
 				CAFB236E0EC760FE009C3459 /* NptTls.cpp */,
 				CAFB236F0EC760FE009C3459 /* NptTls.h */,
@@ -1700,6 +1766,7 @@
 				CA1D05710E68E29C00E3DEE8 /* NptSerialPort.h in Headers */,
 				CA8961850E7689AF00FD1BE1 /* NptCocoaMessageQueue.h in Headers */,
 				CAFB23710EC760FE009C3459 /* NptTls.h in Headers */,
+				CA926A500F8BEB50003CB74E /* NptDynamicCast.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1759,6 +1826,23 @@
 			productReference = CA2F54240EC115E600AEBC12 /* TlsTest1 */;
 			productType = "com.apple.product-type.tool";
 		};
+		CA30B76A0F0DCE990085B46E /* LoggingTest2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA30B7760F0DCEC60085B46E /* Build configuration list for PBXNativeTarget "LoggingTest2" */;
+			buildPhases = (
+				CA30B7680F0DCE990085B46E /* Sources */,
+				CA30B7690F0DCE990085B46E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA30B7710F0DCE9F0085B46E /* PBXTargetDependency */,
+			);
+			name = LoggingTest2;
+			productName = LoggingTest2;
+			productReference = CA30B76B0F0DCE990085B46E /* LoggingTest2 */;
+			productType = "com.apple.product-type.tool";
+		};
 		CA550D4A0D20A37E00B22D72 /* HttpServerTest1 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CA550D510D20A37E00B22D72 /* Build configuration list for PBXNativeTarget "HttpServerTest1" */;
@@ -1774,6 +1858,23 @@
 			name = HttpServerTest1;
 			productName = XmlTest1;
 			productReference = CA550D550D20A37E00B22D72 /* HttpServerTest1 */;
+			productType = "com.apple.product-type.tool";
+		};
+		CA78483C0F3B6E69009E84AD /* MiniHttpServer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA7848490F3B6EB8009E84AD /* Build configuration list for PBXNativeTarget "MiniHttpServer" */;
+			buildPhases = (
+				CA78483A0F3B6E69009E84AD /* Sources */,
+				CA78483B0F3B6E69009E84AD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA7848440F3B6E95009E84AD /* PBXTargetDependency */,
+			);
+			name = MiniHttpServer;
+			productName = MiniHttpServer;
+			productReference = CA78483D0F3B6E69009E84AD /* minihttpserver */;
 			productType = "com.apple.product-type.tool";
 		};
 		CA97E01F0E2FDFB30090CC9B /* StreamsTest1 */ = {
@@ -2191,6 +2292,7 @@
 				CAE416D20E0DBE5A00A530D1 /* HttpClientTest1 */,
 				CAE416DF0E0DBE7F00A530D1 /* ListsTest1 */,
 				CAE416EC0E0DBEAF00A530D1 /* LoggingTest1 */,
+				CA30B76A0F0DCE990085B46E /* LoggingTest2 */,
 				CAE416F90E0DBEDD00A530D1 /* MapsTest1 */,
 				CAE417060E0DBF0900A530D1 /* MessagesTest1 */,
 				CAE417130E0DBF2800A530D1 /* MessagesTest2 */,
@@ -2210,6 +2312,7 @@
 				CA97E01F0E2FDFB30090CC9B /* StreamsTest1 */,
 				CAF2EFD60E64A27200948C04 /* FileTest1 */,
 				CA2F54230EC115E600AEBC12 /* TlsTest1 */,
+				CA78483C0F3B6E69009E84AD /* MiniHttpServer */,
 			);
 		};
 /* End PBXProject section */
@@ -2263,11 +2366,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CA30B7680F0DCE990085B46E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA550D4D0D20A37E00B22D72 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CA550D580D20A3AC00B22D72 /* HttpServerTest1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA78483A0F3B6E69009E84AD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA7848480F3B6EB8009E84AD /* MiniHttpServer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2506,7 +2624,7 @@
 				CA1D05730E68E2AC00E3DEE8 /* NptPosixDynamicLibraries.cpp in Sources */,
 				CA8961860E7689AF00FD1BE1 /* NptCocoaMessageQueue.mm in Sources */,
 				CAFB23700EC760FE009C3459 /* NptTls.cpp in Sources */,
-				CA096EF20ED0DBCE00A5103D /* NptResults.cpp in Sources */,
+				CA2B1E210FC22DBA00B9E79F /* NptResults.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2538,10 +2656,30 @@
 			target = CA1A5EA80EC0152A00A9040C /* axTLS */;
 			targetProxy = CA2F542B0EC115F200AEBC12 /* PBXContainerItemProxy */;
 		};
+		CA30B7710F0DCE9F0085B46E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
+			targetProxy = CA30B7700F0DCE9F0085B46E /* PBXContainerItemProxy */;
+		};
+		CA30B77A0F0DCEFE0085B46E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA30B76A0F0DCE990085B46E /* LoggingTest2 */;
+			targetProxy = CA30B7790F0DCEFE0085B46E /* PBXContainerItemProxy */;
+		};
 		CA550D4B0D20A37E00B22D72 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
 			targetProxy = CA550D4C0D20A37E00B22D72 /* PBXContainerItemProxy */;
+		};
+		CA7848420F3B6E71009E84AD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA78483C0F3B6E69009E84AD /* MiniHttpServer */;
+			targetProxy = CA7848410F3B6E71009E84AD /* PBXContainerItemProxy */;
+		};
+		CA7848440F3B6E95009E84AD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F912B69E0B8EB1C700C1E90D /* Neptune */;
+			targetProxy = CA7848430F3B6E95009E84AD /* PBXContainerItemProxy */;
 		};
 		CA97E0490E2FEB6F0090CC9B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2791,18 +2929,6 @@
 			};
 			name = Debug;
 		};
-		CA197D210E1AE4360018E87C /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = QueueTest1;
-			};
-			name = Coverage;
-		};
 		CA197D220E1AE4360018E87C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2845,31 +2971,6 @@
 				WARNING_CFLAGS = "";
 			};
 			name = Debug;
-		};
-		CA1A5EAB0EC0152C00A9040C /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
-				GCC_WARN_PEDANTIC = NO;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_PARAMETER = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
-				PRODUCT_NAME = axTLS;
-				WARNING_CFLAGS = "";
-			};
-			name = Coverage;
 		};
 		CA1A5EAC0EC0152C00A9040C /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -2914,18 +3015,6 @@
 			};
 			name = Debug;
 		};
-		CA2F54270EC115E600AEBC12 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = TlsTest1;
-			};
-			name = Coverage;
-		};
 		CA2F54280EC115E600AEBC12 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2937,6 +3026,36 @@
 				INSTALL_PATH = /usr/local/bin;
 				PREBINDING = NO;
 				PRODUCT_NAME = TlsTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA30B76D0F0DCE9A0085B46E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = LoggingTest2;
+			};
+			name = Debug;
+		};
+		CA30B76F0F0DCE9A0085B46E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = LoggingTest2;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -2956,23 +3075,6 @@
 			};
 			name = Debug;
 		};
-		CA550D530D20A37E00B22D72 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				INSTALL_PATH = /usr/local/bin;
-				OTHER_LDFLAGS = "-lgcov";
-				PREBINDING = NO;
-				PRODUCT_NAME = HttpServerTest1;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
-				ZERO_LINK = YES;
-			};
-			name = Coverage;
-		};
 		CA550D540D20A37E00B22D72 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2983,6 +3085,36 @@
 				INSTALL_PATH = /usr/local/bin;
 				PREBINDING = NO;
 				PRODUCT_NAME = HttpServerTest1;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		CA78483F0F3B6E6A009E84AD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = minihttpserver;
+			};
+			name = Debug;
+		};
+		CA7848400F3B6E6A009E84AD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = minihttpserver;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -3001,18 +3133,6 @@
 				PRODUCT_NAME = StreamsTest1;
 			};
 			name = Debug;
-		};
-		CA97E0230E2FDFB30090CC9B /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = StreamsTest1;
-			};
-			name = Coverage;
 		};
 		CA97E0240E2FDFB30090CC9B /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3087,103 +3207,6 @@
 			};
 			name = Release;
 		};
-		CAA97A1F0CF165A900C01909 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				COPY_PHASE_STRIP = NO;
-				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					NPT_DEBUG,
-					NPT_CONFIG_ENABLE_ZIP,
-				);
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
-				GCC_WARN_EFFECTIVE_CPLUSPLUS_VIOLATIONS = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
-				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
-				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
-				GCC_WARN_MISSING_PARENTHESES = YES;
-				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				GCC_WARN_PEDANTIC = YES;
-				GCC_WARN_SHADOW = YES;
-				GCC_WARN_SIGN_COMPARE = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
-				GCC_WARN_UNUSED_PARAMETER = YES;
-				GCC_WARN_UNUSED_VALUE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				USER_HEADER_SEARCH_PATHS = "";
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Wno-long-long",
-				);
-			};
-			name = Coverage;
-		};
-		CAA97A200CF165A900C01909 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
-				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
-				PRODUCT_NAME = Neptune;
-				ZERO_LINK = YES;
-			};
-			name = Coverage;
-		};
-		CAA97A210CF165A900C01909 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = XmlTest1;
-				ZERO_LINK = YES;
-			};
-			name = Coverage;
-		};
-		CAA97A220CF165A900C01909 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				INSTALL_PATH = /usr/local/bin;
-				OTHER_LDFLAGS = "-lgcov";
-				PREBINDING = NO;
-				PRODUCT_NAME = StringsTest1;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
-				ZERO_LINK = YES;
-			};
-			name = Coverage;
-		};
 		CAE4169D0E0DBD6700A530D1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3198,18 +3221,6 @@
 				PRODUCT_NAME = MiscTest1;
 			};
 			name = Debug;
-		};
-		CAE4169E0E0DBD6700A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = MiscTest1;
-			};
-			name = Coverage;
 		};
 		CAE4169F0E0DBD6700A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3241,18 +3252,6 @@
 			};
 			name = Debug;
 		};
-		CAE416BC0E0DBDF800A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = ArraysTest1;
-			};
-			name = Coverage;
-		};
 		CAE416BD0E0DBDF800A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3282,18 +3281,6 @@
 				PRODUCT_NAME = BufferedStreamsTest1;
 			};
 			name = Debug;
-		};
-		CAE416C90E0DBE3000A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = BufferedStreamsTest1;
-			};
-			name = Coverage;
 		};
 		CAE416CA0E0DBE3000A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3325,18 +3312,6 @@
 			};
 			name = Debug;
 		};
-		CAE416D60E0DBE5A00A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = HttpClientTest1;
-			};
-			name = Coverage;
-		};
 		CAE416D70E0DBE5A00A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3366,18 +3341,6 @@
 				PRODUCT_NAME = ListsTest1;
 			};
 			name = Debug;
-		};
-		CAE416E30E0DBE8000A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = ListsTest1;
-			};
-			name = Coverage;
 		};
 		CAE416E40E0DBE8000A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3409,18 +3372,6 @@
 			};
 			name = Debug;
 		};
-		CAE416F00E0DBEAF00A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = LoggingTest1;
-			};
-			name = Coverage;
-		};
 		CAE416F10E0DBEAF00A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3450,18 +3401,6 @@
 				PRODUCT_NAME = MapsTest1;
 			};
 			name = Debug;
-		};
-		CAE416FD0E0DBEDD00A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = MapsTest1;
-			};
-			name = Coverage;
 		};
 		CAE416FE0E0DBEDD00A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3493,18 +3432,6 @@
 			};
 			name = Debug;
 		};
-		CAE4170A0E0DBF0900A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = MessagesTest1;
-			};
-			name = Coverage;
-		};
 		CAE4170B0E0DBF0900A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3534,18 +3461,6 @@
 				PRODUCT_NAME = MessagesTest2;
 			};
 			name = Debug;
-		};
-		CAE417170E0DBF2800A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = MessagesTest2;
-			};
-			name = Coverage;
 		};
 		CAE417180E0DBF2800A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3577,18 +3492,6 @@
 			};
 			name = Debug;
 		};
-		CAE417300E0DC03600A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = RingBufferTest1;
-			};
-			name = Coverage;
-		};
 		CAE417310E0DC03600A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3618,18 +3521,6 @@
 				PRODUCT_NAME = ThreadsTest1;
 			};
 			name = Debug;
-		};
-		CAE4173D0E0DC06700A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = ThreadsTest1;
-			};
-			name = Coverage;
 		};
 		CAE4173E0E0DC06700A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3661,18 +3552,6 @@
 			};
 			name = Debug;
 		};
-		CAE4174A0E0DC08D00A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = UdpTest1;
-			};
-			name = Coverage;
-		};
 		CAE4174B0E0DC08D00A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3702,18 +3581,6 @@
 				PRODUCT_NAME = UrlTest1;
 			};
 			name = Debug;
-		};
-		CAE417570E0DC0A800A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = UrlTest1;
-			};
-			name = Coverage;
 		};
 		CAE417580E0DC0A800A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3745,18 +3612,6 @@
 			};
 			name = Debug;
 		};
-		CAE417640E0DC0D200A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = ZipTest1;
-			};
-			name = Coverage;
-		};
 		CAE417650E0DC0D200A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3782,13 +3637,6 @@
 			};
 			name = Debug;
 		};
-		CAE4176E0E0DC0FE00A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = Tests;
-			};
-			name = Coverage;
-		};
 		CAE4176F0E0DC0FE00A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3809,13 +3657,6 @@
 				PRODUCT_NAME = All;
 			};
 			name = Debug;
-		};
-		CAE417940E0DC11800A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = All;
-			};
-			name = Coverage;
 		};
 		CAE417950E0DC11800A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3842,18 +3683,6 @@
 				PRODUCT_NAME = NetPump;
 			};
 			name = Debug;
-		};
-		CAE417A00E0DC13A00A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = NetPump;
-			};
-			name = Coverage;
 		};
 		CAE417A10E0DC13A00A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3885,18 +3714,6 @@
 			};
 			name = Debug;
 		};
-		CAE417BE0E0DC19400A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = NetEcho;
-			};
-			name = Coverage;
-		};
 		CAE417BF0E0DC19400A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3926,18 +3743,6 @@
 				PRODUCT_NAME = NetConfig;
 			};
 			name = Debug;
-		};
-		CAE417CB0E0DC1B500A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = NetConfig;
-			};
-			name = Coverage;
 		};
 		CAE417CC0E0DC1B500A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -3969,18 +3774,6 @@
 			};
 			name = Debug;
 		};
-		CAE417D80E0DC1D600A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = NetPing;
-			};
-			name = Coverage;
-		};
 		CAE417D90E0DC1D600A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4005,13 +3798,6 @@
 				PRODUCT_NAME = Apps;
 			};
 			name = Debug;
-		};
-		CAE417E10E0DC1F600A530D1 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = Apps;
-			};
-			name = Coverage;
 		};
 		CAE417E20E0DC1F600A530D1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -4038,18 +3824,6 @@
 				PRODUCT_NAME = FileTest1;
 			};
 			name = Debug;
-		};
-		CAF2EFDA0E64A27300948C04 /* Coverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/bin;
-				PREBINDING = NO;
-				PRODUCT_NAME = FileTest1;
-			};
-			name = Coverage;
 		};
 		CAF2EFDB0E64A27300948C04 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -4102,6 +3876,7 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				USER_HEADER_SEARCH_PATHS = "";
 				WARNING_CFLAGS = (
@@ -4147,6 +3922,7 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				USER_HEADER_SEARCH_PATHS = "";
 				WARNING_CFLAGS = (
@@ -4209,7 +3985,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA197D200E1AE4360018E87C /* Debug */,
-				CA197D210E1AE4360018E87C /* Coverage */,
 				CA197D220E1AE4360018E87C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4219,7 +3994,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA1A5EAA0EC0152C00A9040C /* Debug */,
-				CA1A5EAB0EC0152C00A9040C /* Coverage */,
 				CA1A5EAC0EC0152C00A9040C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4229,8 +4003,16 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA2F54260EC115E600AEBC12 /* Debug */,
-				CA2F54270EC115E600AEBC12 /* Coverage */,
 				CA2F54280EC115E600AEBC12 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA30B7760F0DCEC60085B46E /* Build configuration list for PBXNativeTarget "LoggingTest2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA30B76D0F0DCE9A0085B46E /* Debug */,
+				CA30B76F0F0DCE9A0085B46E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4239,8 +4021,16 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA550D520D20A37E00B22D72 /* Debug */,
-				CA550D530D20A37E00B22D72 /* Coverage */,
 				CA550D540D20A37E00B22D72 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA7848490F3B6EB8009E84AD /* Build configuration list for PBXNativeTarget "MiniHttpServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA78483F0F3B6E6A009E84AD /* Debug */,
+				CA7848400F3B6E6A009E84AD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4249,7 +4039,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA97E0220E2FDFB30090CC9B /* Debug */,
-				CA97E0230E2FDFB30090CC9B /* Coverage */,
 				CA97E0240E2FDFB30090CC9B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4259,7 +4048,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAA97A030CF164A800C01909 /* Debug */,
-				CAA97A210CF165A900C01909 /* Coverage */,
 				CAA97A040CF164A800C01909 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4269,7 +4057,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAA97A190CF1654A00C01909 /* Debug */,
-				CAA97A220CF165A900C01909 /* Coverage */,
 				CAA97A1A0CF1654A00C01909 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4279,7 +4066,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE4169D0E0DBD6700A530D1 /* Debug */,
-				CAE4169E0E0DBD6700A530D1 /* Coverage */,
 				CAE4169F0E0DBD6700A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4289,7 +4075,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE416BB0E0DBDF800A530D1 /* Debug */,
-				CAE416BC0E0DBDF800A530D1 /* Coverage */,
 				CAE416BD0E0DBDF800A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4299,7 +4084,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE416C80E0DBE3000A530D1 /* Debug */,
-				CAE416C90E0DBE3000A530D1 /* Coverage */,
 				CAE416CA0E0DBE3000A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4309,7 +4093,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE416D50E0DBE5A00A530D1 /* Debug */,
-				CAE416D60E0DBE5A00A530D1 /* Coverage */,
 				CAE416D70E0DBE5A00A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4319,7 +4102,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE416E20E0DBE8000A530D1 /* Debug */,
-				CAE416E30E0DBE8000A530D1 /* Coverage */,
 				CAE416E40E0DBE8000A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4329,7 +4111,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE416EF0E0DBEAF00A530D1 /* Debug */,
-				CAE416F00E0DBEAF00A530D1 /* Coverage */,
 				CAE416F10E0DBEAF00A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4339,7 +4120,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE416FC0E0DBEDD00A530D1 /* Debug */,
-				CAE416FD0E0DBEDD00A530D1 /* Coverage */,
 				CAE416FE0E0DBEDD00A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4349,7 +4129,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE417090E0DBF0900A530D1 /* Debug */,
-				CAE4170A0E0DBF0900A530D1 /* Coverage */,
 				CAE4170B0E0DBF0900A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4359,7 +4138,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE417160E0DBF2800A530D1 /* Debug */,
-				CAE417170E0DBF2800A530D1 /* Coverage */,
 				CAE417180E0DBF2800A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4369,7 +4147,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE4172F0E0DC03600A530D1 /* Debug */,
-				CAE417300E0DC03600A530D1 /* Coverage */,
 				CAE417310E0DC03600A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4379,7 +4156,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE4173C0E0DC06700A530D1 /* Debug */,
-				CAE4173D0E0DC06700A530D1 /* Coverage */,
 				CAE4173E0E0DC06700A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4389,7 +4165,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE417490E0DC08D00A530D1 /* Debug */,
-				CAE4174A0E0DC08D00A530D1 /* Coverage */,
 				CAE4174B0E0DC08D00A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4399,7 +4174,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE417560E0DC0A800A530D1 /* Debug */,
-				CAE417570E0DC0A800A530D1 /* Coverage */,
 				CAE417580E0DC0A800A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4409,7 +4183,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE417630E0DC0D200A530D1 /* Debug */,
-				CAE417640E0DC0D200A530D1 /* Coverage */,
 				CAE417650E0DC0D200A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4419,7 +4192,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE4176D0E0DC0FE00A530D1 /* Debug */,
-				CAE4176E0E0DC0FE00A530D1 /* Coverage */,
 				CAE4176F0E0DC0FE00A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4429,7 +4201,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE417930E0DC11800A530D1 /* Debug */,
-				CAE417940E0DC11800A530D1 /* Coverage */,
 				CAE417950E0DC11800A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4439,7 +4210,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE4179F0E0DC13A00A530D1 /* Debug */,
-				CAE417A00E0DC13A00A530D1 /* Coverage */,
 				CAE417A10E0DC13A00A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4449,7 +4219,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE417BD0E0DC19400A530D1 /* Debug */,
-				CAE417BE0E0DC19400A530D1 /* Coverage */,
 				CAE417BF0E0DC19400A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4459,7 +4228,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE417CA0E0DC1B500A530D1 /* Debug */,
-				CAE417CB0E0DC1B500A530D1 /* Coverage */,
 				CAE417CC0E0DC1B500A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4469,7 +4237,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE417D70E0DC1D600A530D1 /* Debug */,
-				CAE417D80E0DC1D600A530D1 /* Coverage */,
 				CAE417D90E0DC1D600A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4479,7 +4246,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAE417E00E0DC1F600A530D1 /* Debug */,
-				CAE417E10E0DC1F600A530D1 /* Coverage */,
 				CAE417E20E0DC1F600A530D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4489,7 +4255,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CAF2EFD90E64A27300948C04 /* Debug */,
-				CAF2EFDA0E64A27300948C04 /* Coverage */,
 				CAF2EFDB0E64A27300948C04 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4499,7 +4264,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F912B6890B8EB12700C1E90D /* Debug */,
-				CAA97A1F0CF165A900C01909 /* Coverage */,
 				F912B68A0B8EB12700C1E90D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4509,7 +4273,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F912B6A20B8EB1C800C1E90D /* Debug */,
-				CAA97A200CF165A900C01909 /* Coverage */,
 				F912B6A30B8EB1C800C1E90D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

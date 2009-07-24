@@ -61,7 +61,6 @@ public:
     virtual NPT_Result OnSetPlayMode(PLT_ActionReference& action) = 0;
 
     // RenderingControl
-    //virtual NPT_Result OnGetVolume(PLT_ActionReference& action);
     virtual NPT_Result OnSetVolume(PLT_ActionReference& action) = 0;
     virtual NPT_Result OnSetMute(PLT_ActionReference& action) = 0;
 };
@@ -73,15 +72,16 @@ class PLT_MediaRenderer : public PLT_DeviceHost,
                           public PLT_MediaRendererInterface
 {
 public:
-    PLT_MediaRenderer(const char*          friendly_name,
-                      bool                 show_ip = false,
-                      const char*          uuid = NULL,
-                      unsigned int         port = 0);
+    PLT_MediaRenderer(const char*  friendly_name,
+                      bool         show_ip = false,
+                      const char*  uuid = NULL,
+                      unsigned int port = 0,
+                      bool         port_rebind = false);
 
     // PLT_DeviceHost methods
     virtual NPT_Result SetupServices(PLT_DeviceData& data);
     virtual NPT_Result OnAction(PLT_ActionReference&          action, 
-                                const NPT_HttpRequestContext& context);
+                                const PLT_HttpRequestContext& context);
 
 protected:
     virtual ~PLT_MediaRenderer();
@@ -101,7 +101,6 @@ protected:
     virtual NPT_Result OnSetPlayMode(PLT_ActionReference& action);
 
     // RenderingControl
-    //virtual NPT_Result OnGetVolume(PLT_ActionReference& action);
     virtual NPT_Result OnSetVolume(PLT_ActionReference& action);
     virtual NPT_Result OnSetMute(PLT_ActionReference& action);
 };

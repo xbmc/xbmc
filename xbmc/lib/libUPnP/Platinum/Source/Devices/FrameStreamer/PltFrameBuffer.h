@@ -1,6 +1,6 @@
 /*****************************************************************
 |
-|   Platinum - AV Media Browser Listener
+|   Platinum - Frame Buffer
 |
 | Copyright (c) 2004-2008, Plutinosoft, LLC.
 | All rights reserved.
@@ -31,50 +31,40 @@
 |
 ****************************************************************/
 
-#ifndef _PLT_MEDIA_BROWSER_LISTENER_H_
-#define _PLT_MEDIA_BROWSER_LISTENER_H_
+#ifndef _PLT_FRAME_BUFFER_H_
+#define _PLT_FRAME_BUFFER_H_
 
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include "PltMediaItem.h"
-#include "PltDeviceData.h"
+#include "Neptune.h"
 
 /*----------------------------------------------------------------------
-|   PLT_BrowseInfo
+|   PLT_FrameBuffer
 +---------------------------------------------------------------------*/
-class PLT_BrowseInfo {
-public:
-    PLT_BrowseInfo() : nr(0), tm(0), uid(0) {}
-
-    NPT_String                   object_id;
-    PLT_MediaObjectListReference items;
-    NPT_UInt32                   nr;
-    NPT_UInt32                   tm;
-    NPT_UInt32                   uid;
-};
-
-/*----------------------------------------------------------------------
-|   PLT_MediaBrowserListener class
-+---------------------------------------------------------------------*/
-class PLT_MediaBrowserListener
+class PLT_FrameBuffer 
 {
-public:
-    virtual ~PLT_MediaBrowserListener() {}
+ public:
+    // constructor & destructor
+    PLT_FrameBuffer();
+    virtual ~PLT_FrameBuffer();
+    
+    void AddReader()    { m_Readers.Increment(); }
+    void RemoveReader() { m_Readers.Decrement(); }
+    int  GetNbReaders() { return m_Readers.GetValue(); }
 
-    virtual void OnMSAddedRemoved(
-        PLT_DeviceDataReference& /*device*/, 
-        int                      /*added*/) {}
+    // data buffer handling methods
+    virtual NPT_Result SetNextFrame(const NPT_Byte* buffer, NPT_Size bufferSize);
+    virtual NPT_Result GetNextFrame(NPT_UInt32&     last_fame_index, 
+                                    NPT_DataBuffer& buffer, 
+                                    NPT_Timeout     timeout = NPT_TIMEOUT_INFINITE);
 
-    virtual void OnMSStateVariablesChanged(
-        PLT_Service*                  /*service*/, 
-        NPT_List<PLT_StateVariable*>* /*vars*/) {}
-
-    virtual void OnMSBrowseResult(
-        NPT_Result               /*res*/, 
-        PLT_DeviceDataReference& /*device*/, 
-        PLT_BrowseInfo*          /*info*/, 
-        void*                    /*userdata*/) {}
+ protected:
+    // members
+    NPT_SharedVariable m_FrameIndex;
+    NPT_DataBuffer     m_Frame;
+    NPT_Mutex          m_FrameLock;
+    NPT_AtomicVariable m_Readers;
 };
 
-#endif /* _PLT_MEDIA_BROWSER_LISTENER_H_ */
+#endif // _PLT_FRAME_BUFFER_H_

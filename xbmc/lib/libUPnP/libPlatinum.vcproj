@@ -258,6 +258,12 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 					RelativePath=".\Platinum\Source\Core\PltArgument.h">
 				</File>
 				<File
+					RelativePath=".\Platinum\Source\Core\PltConstants.cpp">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Core\PltConstants.h">
+				</File>
+				<File
 					RelativePath=".\Platinum\Source\Core\PltCtrlPoint.cpp">
 				</File>
 				<File
@@ -325,6 +331,9 @@ copy Release\libPlatinum.lib ..\..\xbmc\lib\libUPnP
 				</File>
 				<File
 					RelativePath=".\Platinum\Source\Core\PltHttpServerTask.h">
+				</File>
+				<File
+					RelativePath=".\Platinum\Source\Core\PltIconsData.cpp">
 				</File>
 				<File
 					RelativePath=".\Platinum\Source\Core\PltMetadataHandler.cpp">

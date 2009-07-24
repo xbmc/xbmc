@@ -38,6 +38,7 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "Neptune.h"
+#include "PltConstants.h"
 
 /*----------------------------------------------------------------------
 |   forward declarations
@@ -51,13 +52,27 @@ typedef NPT_List<PLT_DeviceDataReference> PLT_DeviceDataReferenceList;
 /*----------------------------------------------------------------------
 |   PLT_DeviceIcon class
 +---------------------------------------------------------------------*/
-typedef struct {
-    NPT_String  mimetype;
-    NPT_Int32   width;
-    NPT_Int32   height;
-    NPT_Int32   depth;
-    NPT_String  url;
-} PLT_DeviceIcon;
+class PLT_DeviceIcon
+{
+public:
+    PLT_DeviceIcon(const char* mimetype = "", 
+                   NPT_Int32   width = 0, 
+                   NPT_Int32   height = 0,
+                   NPT_Int32   depth = 0,
+                   const char* urlpath = "") :
+        m_MimeType(mimetype),
+        m_Width(width),
+        m_Height(height),
+        m_Depth(depth),
+        m_UrlPath(urlpath) {}
+    virtual ~PLT_DeviceIcon() {}
+   
+    NPT_String  m_MimeType;
+    NPT_Int32   m_Width;
+    NPT_Int32   m_Height;
+    NPT_Int32   m_Depth;
+    NPT_String  m_UrlPath;
+};
 
 /*----------------------------------------------------------------------
 |   PLT_DeviceData class
@@ -68,7 +83,7 @@ public:
     PLT_DeviceData(
         NPT_HttpUrl      description_url = NPT_HttpUrl(NULL, 0, "/"), 
         const char*      uuid = "",
-        NPT_TimeInterval lease_time = NPT_TimeInterval(1800, 0),
+        NPT_TimeInterval lease_time = PLT_Constants::GetInstance().m_DefaultDeviceLease,
         const char*      device_type = "",
         const char*      friendly_name = "");
 
@@ -76,6 +91,7 @@ public:
     virtual NPT_Result  GetDescription(NPT_String& desc);
     virtual NPT_String  GetDescriptionUrl(const char* bind_addr = NULL);
     virtual NPT_HttpUrl GetURLBase();
+    virtual NPT_HttpUrl NormalizeURL(const NPT_String& url);
     virtual NPT_Result  GetDescription(NPT_XmlElementNode* parent, NPT_XmlElementNode** device = NULL);
     virtual NPT_String  GetIconUrl(const char* mimetype = NULL, NPT_Int32 maxsize = 0, NPT_Int32 maxdepth = 0);
 
@@ -89,20 +105,24 @@ public:
     const NPT_Array<PLT_Service*>&            GetServices()        const { return m_Services; }
     const NPT_Array<PLT_DeviceDataReference>& GetEmbeddedDevices() const { return m_EmbeddedDevices; }
 
+    NPT_Result FindEmbeddedDevice(const char* uuid, PLT_DeviceDataReference& device);
     NPT_Result FindEmbeddedDeviceByType(const char* type, PLT_DeviceDataReference& device);
     NPT_Result FindServiceById(const char* id, PLT_Service*& service);
     NPT_Result FindServiceByType(const char* type, PLT_Service*& service);
-    NPT_Result FindServiceByDescriptionURI(const char* uri, PLT_Service*& service);
-    NPT_Result FindServiceByControlURI(const char* uri, PLT_Service*& service);
-    NPT_Result FindServiceByEventSubURI(const char* uri, PLT_Service*& service);
+    NPT_Result FindServiceByDescriptionURL(const char* url, PLT_Service*& service);
+    NPT_Result FindServiceByControlURL(const char* url, PLT_Service*& service);
+    NPT_Result FindServiceByEventSubURL(const char* url, PLT_Service*& service);
 
     /* called by PLT_Device subclasses */
     NPT_Result AddDevice(PLT_DeviceDataReference& device);
+    NPT_Result RemoveDevice(PLT_DeviceDataReference& device);
     NPT_Result AddService(PLT_Service* service);
 
     NPT_Result ToLog(int level = NPT_LOG_LEVEL_FINE);
 
 protected:
+    virtual ~PLT_DeviceData();
+    virtual void       Cleanup();
     virtual NPT_Result OnAddExtraInfo(NPT_XmlElementNode* /*device_node*/) { return NPT_SUCCESS; }
 
 private:
@@ -125,13 +145,11 @@ public:
     NPT_String m_UPC;
     NPT_String m_PresentationURL;
     NPT_String m_DlnaDoc;
+    NPT_String m_DlnaCap;
+    NPT_String m_AggregationFlags;
 
 protected:
-    virtual ~PLT_DeviceData();
-
     friend class NPT_Reference<PLT_DeviceData>;
-    friend class PLT_DeviceDataFinder;
-    friend class PLT_DeviceDataFinderByType;
     friend class PLT_CtrlPoint;
     friend class PLT_DeviceReadyIterator;
     friend class PLT_DeviceHost;
@@ -140,7 +158,7 @@ protected:
     NPT_String                         m_ParentUUID;
     NPT_String                         m_UUID;
     NPT_HttpUrl                        m_URLDescription;
-    NPT_String                         m_URLBasePath;
+    NPT_HttpUrl                        m_URLBase;
     NPT_String                         m_DeviceType;
     NPT_String                         m_FriendlyName;
     NPT_TimeInterval                   m_LeaseTime;
@@ -165,12 +183,31 @@ public:
     virtual ~PLT_DeviceDataFinder() {}
 
     bool operator()(const PLT_DeviceDataReference& data) const {
-        return data->m_UUID.Compare(m_UUID, true) ? false : true;
+        return data->GetUUID().Compare(m_UUID, true) ? false : true;
     }
 
 private:
     // members
     NPT_String m_UUID;
+};
+
+/*----------------------------------------------------------------------
+|   PLT_DeviceDataFinderByLocation
++---------------------------------------------------------------------*/
+class PLT_DeviceDataFinderByLocation
+{
+public:
+    // methods
+    PLT_DeviceDataFinderByLocation(const char* location) : m_Location(location) {}
+    virtual ~PLT_DeviceDataFinderByLocation() {}
+
+    bool operator()(const PLT_DeviceDataReference& data) const {
+        return data->GetDescriptionUrl().Compare(m_Location, true)?false:true;
+    }
+
+private:
+    // members
+    NPT_String m_Location;
 };
 
 /*----------------------------------------------------------------------
@@ -184,7 +221,7 @@ public:
     virtual ~PLT_DeviceDataFinderByType() {}
 
     bool operator()(const PLT_DeviceDataReference& data) const {
-        return data->m_DeviceType.Compare(m_Type, true) ? false : true;
+        return data->GetType().Compare(m_Type, true) ? false : true;
     }
 
 private:

@@ -15,6 +15,9 @@
 #include <string.h>
 #include "Neptune.h"
 #include "NptDebug.h"
+#include "NptUtils.h"
+#include "NptTypes.h"
+#include "NptDynamicCast.h"
 
 /*----------------------------------------------------------------------
 |       macros
@@ -60,6 +63,41 @@
     } while(0)                                  
 
 
+class BarA 
+{
+public:
+    NPT_IMPLEMENT_DYNAMIC_CAST(BarA)
+    virtual ~BarA() {}
+    virtual int bar() { return 1; }
+};
+NPT_DEFINE_DYNAMIC_CAST_ANCHOR(BarA)
+
+class FooA 
+{
+public:
+    NPT_IMPLEMENT_DYNAMIC_CAST(FooA)
+    virtual ~FooA() {}
+    virtual int foo() { return 2; }
+};
+NPT_DEFINE_DYNAMIC_CAST_ANCHOR(FooA)
+
+class FooB : public FooA 
+{
+public:
+    NPT_IMPLEMENT_DYNAMIC_CAST_D(FooB, FooA)
+    virtual int foo() { return 3; }
+};
+NPT_DEFINE_DYNAMIC_CAST_ANCHOR(FooB)
+
+class FooC : public FooB, public BarA
+{
+public:
+    NPT_IMPLEMENT_DYNAMIC_CAST_D2(FooC, FooB, BarA)
+    virtual int foo() { return 4; }
+    virtual int bar() { return 5; }
+};
+NPT_DEFINE_DYNAMIC_CAST_ANCHOR(FooC)
+
 /*----------------------------------------------------------------------
 |       main
 +---------------------------------------------------------------------*/
@@ -68,7 +106,77 @@ main(int /*argc*/, char** /*argv*/)
 {
     NPT_Result result;
 
+    // dynamic cast
+    BarA* bar_a = new BarA();
+    NPT_ASSERT(bar_a != NULL);
+    NPT_ASSERT(NPT_DYNAMIC_CAST(BarA, bar_a) == bar_a);
+    NPT_ASSERT(NPT_DYNAMIC_CAST(FooA, bar_a) == NULL);
+    NPT_ASSERT(bar_a->bar() == 1);
+    delete bar_a;
 
+    FooA* foo_a = new FooA();
+    NPT_ASSERT(foo_a != NULL);
+    NPT_ASSERT(NPT_DYNAMIC_CAST(FooA, foo_a) == foo_a);
+    NPT_ASSERT(NPT_DYNAMIC_CAST(FooB, foo_a) == NULL);
+    NPT_ASSERT(foo_a->foo() == 2);
+    delete foo_a;
+
+    FooB* foo_b = new FooB();
+    NPT_ASSERT(foo_b != NULL);
+    foo_a = NPT_DYNAMIC_CAST(FooA, foo_b);
+    NPT_ASSERT(NPT_DYNAMIC_CAST(FooB, foo_b) == foo_b);
+    NPT_ASSERT(NPT_DYNAMIC_CAST(FooA, foo_b) != NULL);
+    NPT_ASSERT(NPT_DYNAMIC_CAST(FooC, foo_b) == NULL);
+    NPT_ASSERT(foo_a->foo() == 3);
+    delete foo_b;
+
+    FooC* foo_c = new FooC();
+    NPT_ASSERT(foo_c != NULL);
+    foo_a = NPT_DYNAMIC_CAST(FooA, foo_c);
+    foo_b = NPT_DYNAMIC_CAST(FooB, foo_c);
+    bar_a = NPT_DYNAMIC_CAST(BarA, foo_c);
+    NPT_ASSERT(NPT_DYNAMIC_CAST(FooC, foo_c) == foo_c);
+    NPT_ASSERT(foo_a != NULL);
+    NPT_ASSERT(foo_b != NULL);
+    NPT_ASSERT(bar_a != NULL);
+    NPT_ASSERT(foo_a->foo() == 4);
+    NPT_ASSERT(foo_b->foo() == 4);
+    NPT_ASSERT(foo_c->foo() == 4);
+    NPT_ASSERT(bar_a->bar() == 5);
+    delete foo_c;
+
+    // misc type tests
+    signed long   sl;
+    unsigned long ul;
+    signed int    si;
+    unsigned int  ui;
+    NPT_Int64     si64;
+    NPT_UInt64    ui64;
+    
+    NPT_ASSERT(sizeof(NPT_UInt32) == sizeof(NPT_Int32));
+    NPT_ASSERT(sizeof(NPT_Int32) >= 4);
+    NPT_ASSERT(sizeof(NPT_UInt64) == sizeof(NPT_Int64));
+    NPT_ASSERT(sizeof(NPT_Int64) >= 8);
+    sl = NPT_LONG_MAX;
+    sl += 1;
+    NPT_ASSERT(sl == NPT_LONG_MIN);
+    si = NPT_INT_MAX;
+    si += 1;
+    NPT_ASSERT(si == NPT_INT_MIN);
+    si64 = NPT_INT64_MAX;
+    si64 += 1;
+    NPT_ASSERT(si64 == NPT_INT64_MIN);
+    ul = NPT_ULONG_MAX;
+    ul += 1;
+    NPT_ASSERT(ul == 0);
+    ui = NPT_UINT_MAX;
+    ui += 1;
+    NPT_ASSERT(ui == 0);
+    ui64 = NPT_UINT64_MAX;
+    ui64 += 1;
+    NPT_ASSERT(ui64 == 0);
+    
+    // base64
     NPT_String t = "hello";
     NPT_String base64;
     NPT_DataBuffer data;
@@ -296,10 +404,9 @@ main(int /*argc*/, char** /*argv*/)
     // number parsing
     float      f;
     int        i;
-    NPT_Int32  i32;
+    int        l;
+    NPT_Int32  si32;
     NPT_UInt32 ui32;
-    NPT_Int64  i64;
-    NPT_UInt64 ui64;
 
     SHOULD_FAIL(NPT_ParseInteger("ssdfsdf", i, false));
     SHOULD_FAIL(NPT_ParseInteger("", i, false));
@@ -327,37 +434,54 @@ main(int /*argc*/, char** /*argv*/)
     SHOULD_SUCCEED(NPT_ParseInteger("7768", i, true));
     SHOULD_EQUAL_I(i, 7768);
 
-    SHOULD_SUCCEED(NPT_ParseInteger32("2147483647", i32, false));
-    SHOULD_EQUAL_I(i32, 2147483647);
-    SHOULD_SUCCEED(NPT_ParseInteger32("-2147483647", i32, false));
-    SHOULD_EQUAL_I(i32, -2147483647);
-    SHOULD_SUCCEED(NPT_ParseInteger32("-2147483648", i32, false));
-    SHOULD_EQUAL_I(i32, (-2147483647 - 1));
-    SHOULD_FAIL(NPT_ParseInteger32("2147483648", i32, false));
-    SHOULD_FAIL(NPT_ParseInteger32("-2147483649", i32, false));
-    SHOULD_FAIL(NPT_ParseInteger32("-21474836480", i32, false));
-    SHOULD_FAIL(NPT_ParseInteger32("21474836470", i32, false));
+    SHOULD_SUCCEED(NPT_ParseInteger("+1", l, false));
+    SHOULD_EQUAL_I(l, 1);
+    SHOULD_SUCCEED(NPT_ParseInteger("+123", l, false));
+    SHOULD_EQUAL_I(l, 123);
+    SHOULD_SUCCEED(NPT_ParseInteger("-1", l, false));
+    SHOULD_EQUAL_I(l, -1);
+    SHOULD_SUCCEED(NPT_ParseInteger("-123", l, false));
+    SHOULD_EQUAL_I(l, -123);
+    SHOULD_SUCCEED(NPT_ParseInteger("-123fgs", l, true));
+    SHOULD_EQUAL_I(l, -123);
+    SHOULD_SUCCEED(NPT_ParseInteger("  -123fgs", l, true));
+    SHOULD_EQUAL_I(l, -123);
+    SHOULD_SUCCEED(NPT_ParseInteger("0", l, true));
+    SHOULD_EQUAL_I(l, 0);
+    SHOULD_SUCCEED(NPT_ParseInteger("7768", l, true));
+    SHOULD_EQUAL_I(l, 7768);
 
-    SHOULD_SUCCEED(NPT_ParseInteger32U("4294967295", ui32, false));
+    SHOULD_SUCCEED(NPT_ParseInteger32("2147483647", si32, false));
+    SHOULD_EQUAL_I(si32, 2147483647);
+    SHOULD_SUCCEED(NPT_ParseInteger32("-2147483647", si32, false));
+    SHOULD_EQUAL_I(si32, -2147483647);
+    SHOULD_SUCCEED(NPT_ParseInteger32("-2147483648", si32, false));
+    SHOULD_EQUAL_I(si32, (-2147483647 - 1));
+    SHOULD_FAIL(NPT_ParseInteger32("2147483648", si32, false));
+    SHOULD_FAIL(NPT_ParseInteger32("-2147483649", si32, false));
+    SHOULD_FAIL(NPT_ParseInteger32("-21474836480", si32, false));
+    SHOULD_FAIL(NPT_ParseInteger32("21474836470", si32, false));
+
+    SHOULD_SUCCEED(NPT_ParseInteger32("4294967295", ui32, false));
     SHOULD_EQUAL_I(ui32, 4294967295U);
-    SHOULD_FAIL(NPT_ParseInteger32U("4294967296", ui32, false));
-    SHOULD_FAIL(NPT_ParseInteger32U("-1", ui32, false));
+    SHOULD_FAIL(NPT_ParseInteger32("4294967296", ui32, false));
+    SHOULD_FAIL(NPT_ParseInteger32("-1", ui32, false));
 
-    SHOULD_SUCCEED(NPT_ParseInteger64("9223372036854775807", i64, false));
-    SHOULD_EQUAL_I(i64, NPT_INT64_C(9223372036854775807));
-    SHOULD_SUCCEED(NPT_ParseInteger64("-9223372036854775807", i64, false));
-    SHOULD_EQUAL_I(i64, NPT_INT64_C(-9223372036854775807));
-    SHOULD_SUCCEED(NPT_ParseInteger64("-9223372036854775808", i64, false));
-    SHOULD_EQUAL_I(i64, (NPT_INT64_C(-9223372036854775807) - NPT_INT64_C(1)));
-    SHOULD_FAIL(NPT_ParseInteger64("9223372036854775808", i64, false));
-    SHOULD_FAIL(NPT_ParseInteger64("-9223372036854775809", i64, false));
-    SHOULD_FAIL(NPT_ParseInteger64("-9223372036854775897", i64, false));
-    SHOULD_FAIL(NPT_ParseInteger64("9223372036854775897", i64, false));
+    SHOULD_SUCCEED(NPT_ParseInteger64("9223372036854775807", si64, false));
+    SHOULD_EQUAL_I(si64, NPT_INT64_C(9223372036854775807));
+    SHOULD_SUCCEED(NPT_ParseInteger64("-9223372036854775807", si64, false));
+    SHOULD_EQUAL_I(si64, NPT_INT64_C(-9223372036854775807));
+    SHOULD_SUCCEED(NPT_ParseInteger64("-9223372036854775808", si64, false));
+    SHOULD_EQUAL_I(si64, (NPT_INT64_C(-9223372036854775807) - NPT_INT64_C(1)));
+    SHOULD_FAIL(NPT_ParseInteger64("9223372036854775808", si64, false));
+    SHOULD_FAIL(NPT_ParseInteger64("-9223372036854775809", si64, false));
+    SHOULD_FAIL(NPT_ParseInteger64("-9223372036854775897", si64, false));
+    SHOULD_FAIL(NPT_ParseInteger64("9223372036854775897", si64, false));
 
-    SHOULD_SUCCEED(NPT_ParseInteger64U("18446744073709551615", ui64, false));
+    SHOULD_SUCCEED(NPT_ParseInteger64("18446744073709551615", ui64, false));
     SHOULD_EQUAL_I(ui64, NPT_UINT64_C(18446744073709551615));
-    SHOULD_FAIL(NPT_ParseInteger64U("18446744073709551616", ui64, false));
-    SHOULD_FAIL(NPT_ParseInteger64U("-1", ui64, false));
+    SHOULD_FAIL(NPT_ParseInteger64("18446744073709551616", ui64, false));
+    SHOULD_FAIL(NPT_ParseInteger64("-1", ui64, false));
 
     SHOULD_FAIL(NPT_ParseFloat("ssdfsdf", f, false));
     SHOULD_FAIL(NPT_ParseFloat("", f, false));

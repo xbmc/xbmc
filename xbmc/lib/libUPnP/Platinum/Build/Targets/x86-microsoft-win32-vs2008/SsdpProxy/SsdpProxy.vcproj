@@ -92,7 +92,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Debug\$(TargetFileName)&quot;"
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2008\Debug&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2008\Debug\$(TargetFileName)&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -170,7 +170,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2005\Release\$(TargetFileName)&quot;&#x0D;&#x0A;"
+				CommandLine="mkdir &quot;$(ProjectDir)..\..\..\..\Targets\x86-microsoft-win32-vs2008\Release&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(ProjectDir)\..\..\..\..\Targets\x86-microsoft-win32-vs2008\Release\$(TargetFileName)&quot;"
 			/>
 		</Configuration>
 	</Configurations>

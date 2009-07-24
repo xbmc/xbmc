@@ -85,9 +85,9 @@ class LibraryModule(Module):
                         Split(linked_modules)+Split(included_modules))
         self.build_include_dirs = build_include_dirs
         if environment is None:
-            self.env            = env.Clone()
+            self.env = env.Clone()
         else:
-            self.env            = environment.Clone()
+            self.env = environment.Clone()
         self.env.AppendUnique(CPPDEFINES = extra_cpp_defines)
         
         # store this new object in the module dictionary
@@ -203,11 +203,18 @@ LibraryModule(name               = 'PltMediaConnect',
               linked_modules     = ['Neptune', 'Platinum'],
               excluded_files	    = ['MACFromIP.cpp'],
               source_root        = 'Source/Devices')
+
+# FrameStreamer         
+LibraryModule(name               = 'PltFrameStreamer',
+              build_source_dirs  = ['FrameStreamer'],
+              included_modules   = ['Neptune', 'Platinum', 'PltMediaServer'],
+              linked_modules     = ['Neptune', 'Platinum'],
+              source_root        = 'Source/Devices')
                                            
-for app in ['MicroMediaController', 'MediaCrawler', 'MediaConnect']:
+for app in ['MicroMediaController', 'MediaCrawler', 'MediaConnect', 'FrameStreamer']:
     Application(name = app, 
                 dir = 'Source/Apps/' + app, 
-                deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect'])
+                deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect', 'PltFrameStreamer'])
     
 for test in ['FileMediaServer', 'MediaRenderer', 'LightSample', 'Http']:
     Application(name = test+'Test', 

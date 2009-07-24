@@ -127,7 +127,6 @@ public:
         return NPT_SUCCESS;
     }
 
-
     static NPT_Result GetAttribute(NPT_XmlElementNode* node, 
                                    const char*         name,
                                    NPT_String&         value,
@@ -139,6 +138,18 @@ public:
         if (!attribute) return NPT_FAILURE;
 
         value = attribute->GetValue();
+        return NPT_SUCCESS;
+    }
+
+    static NPT_Result SetAttribute(NPT_XmlElementNode* node, 
+                                   const char*         name,
+                                   NPT_String&         value,
+                                   const char*         namespc = "") {
+        NPT_XmlAttribute* attribute = NULL;
+        NPT_CHECK(GetAttribute(node, name, attribute, namespc));
+        if (!attribute) return NPT_FAILURE;
+
+        attribute->SetValue(value);
         return NPT_SUCCESS;
     }
 
@@ -237,10 +248,10 @@ public:
         return NPT_FAILURE;
     }
 
-    static NPT_Result Serialize(NPT_XmlNode& node, NPT_String& xml) {
-        NPT_XmlWriter writer(2);
+    static NPT_Result Serialize(NPT_XmlNode& node, NPT_String& xml, bool add_header = true) {
+        NPT_XmlWriter writer(0);
         NPT_MemoryStreamReference stream(new NPT_MemoryStream());
-        NPT_CHECK(writer.Serialize(node, *stream));
+        NPT_CHECK(writer.Serialize(node, *stream, add_header));
 
         NPT_LargeSize size;
         stream->GetAvailable(size);

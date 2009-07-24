@@ -44,10 +44,11 @@ NPT_SET_LOCAL_LOGGER("platinum.media.server.syncbrowser")
 PLT_SyncMediaBrowser::PLT_SyncMediaBrowser(PLT_CtrlPointReference&            ctrlPoint,
                                            bool                               use_cache /* = false */, 
                                            PLT_MediaContainerChangesListener* listener /* = NULL */) :
+    PLT_MediaBrowser(ctrlPoint),
     m_ContainerListener(listener),
     m_UseCache(use_cache)
 {
-    m_MediaBrowser = new PLT_MediaBrowser(ctrlPoint, this);
+    SetDelegate(this);
 }
 
 /*----------------------------------------------------------------------
@@ -55,7 +56,6 @@ PLT_SyncMediaBrowser::PLT_SyncMediaBrowser(PLT_CtrlPointReference&            ct
 +---------------------------------------------------------------------*/
 PLT_SyncMediaBrowser::~PLT_SyncMediaBrowser()
 {
-    delete m_MediaBrowser;
 }
 
 /*  Blocks forever waiting for a response from a request
@@ -71,30 +71,41 @@ PLT_SyncMediaBrowser::WaitForResponse(NPT_SharedVariable& shared_var)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_SyncMediaBrowser::OnMSAddedRemoved
+|   PLT_SyncMediaBrowser::OnDeviceAdded
 +---------------------------------------------------------------------*/
-void
-PLT_SyncMediaBrowser::OnMSAddedRemoved(PLT_DeviceDataReference& device, int added)
+NPT_Result
+PLT_SyncMediaBrowser::OnDeviceAdded(PLT_DeviceDataReference& device)
 {
     NPT_String uuid = device->GetUUID();
 
-    if (added) {
-        // test if it's a media server
-        m_MediaServers.Lock();
-        PLT_Service* service;
-        if (NPT_SUCCEEDED(device->FindServiceByType("urn:schemas-upnp-org:service:ContentDirectory:1", service))) {
-            m_MediaServers.Put(uuid, device);
-        }
-        m_MediaServers.Unlock();
-    } else { /* removed */
-        // Remove from our list of servers first if found
-        m_MediaServers.Lock();
-        m_MediaServers.Erase(uuid);
-        m_MediaServers.Unlock();
-
-        // clear cache for that device
-        if (m_UseCache) m_Cache.Clear(device.AsPointer()->GetUUID());
+    // test if it's a media server
+    PLT_Service* service;
+    if (NPT_SUCCEEDED(device->FindServiceByType("urn:schemas-upnp-org:service:ContentDirectory:*", service))) {
+        NPT_AutoLock lock(m_MediaServers);
+        m_MediaServers.Put(uuid, device);
     }
+    
+    return PLT_MediaBrowser::OnDeviceAdded(device);
+}
+    
+/*----------------------------------------------------------------------
+|   PLT_SyncMediaBrowser::OnDeviceRemoved
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_SyncMediaBrowser::OnDeviceRemoved(PLT_DeviceDataReference& device)
+{
+    NPT_String uuid = device->GetUUID();
+
+    // Remove from our list of servers first if found
+    {
+        NPT_AutoLock lock(m_MediaServers);
+        m_MediaServers.Erase(uuid);
+    }
+
+    // clear cache for that device
+    if (m_UseCache) m_Cache.Clear(device.AsPointer()->GetUUID());
+    
+    return PLT_MediaBrowser::OnDeviceRemoved(device);
 }
 
 /*----------------------------------------------------------------------
@@ -104,7 +115,8 @@ NPT_Result
 PLT_SyncMediaBrowser::Find(const char* ip, PLT_DeviceDataReference& device)
 {
     NPT_AutoLock lock(m_MediaServers);
-    const NPT_List<PLT_DeviceMapEntry*>::Iterator it = m_MediaServers.GetEntries().Find(PLT_DeviceMapFinderByIp(ip));
+    const NPT_List<PLT_DeviceMapEntry*>::Iterator it = 
+        m_MediaServers.GetEntries().Find(PLT_DeviceMapFinderByIp(ip));
     if (it) {
         device = (*it)->GetValue();
         return NPT_SUCCESS;
@@ -113,10 +125,13 @@ PLT_SyncMediaBrowser::Find(const char* ip, PLT_DeviceDataReference& device)
 }
 
 /*----------------------------------------------------------------------
-|   PLT_SyncMediaBrowser::OnMSBrowseResult
+|   PLT_SyncMediaBrowser::OnBrowseResult
 +---------------------------------------------------------------------*/
 void
-PLT_SyncMediaBrowser::OnMSBrowseResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_BrowseInfo* info, void* userdata)
+PLT_SyncMediaBrowser::OnBrowseResult(NPT_Result               res, 
+                                     PLT_DeviceDataReference& device, 
+                                     PLT_BrowseInfo*          info, 
+                                     void*                    userdata)
 {
     NPT_COMPILER_UNUSED(device);
 
@@ -135,7 +150,8 @@ PLT_SyncMediaBrowser::OnMSBrowseResult(NPT_Result res, PLT_DeviceDataReference& 
 |   PLT_SyncMediaBrowser::OnMSStateVariablesChanged
 +---------------------------------------------------------------------*/
 void 
-PLT_SyncMediaBrowser::OnMSStateVariablesChanged(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars)
+PLT_SyncMediaBrowser::OnMSStateVariablesChanged(PLT_Service*                  service, 
+                                                NPT_List<PLT_StateVariable*>* vars)
 {
     NPT_AutoLock lock(m_MediaServers);
     
@@ -176,17 +192,17 @@ PLT_SyncMediaBrowser::OnMSStateVariablesChanged(PLT_Service* service, NPT_List<P
 }
 
 /*----------------------------------------------------------------------
-|   PLT_SyncMediaBrowser::Browse
+|   PLT_SyncMediaBrowser::BrowseSync
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_SyncMediaBrowser::Browse(PLT_BrowseDataReference& browse_data,
-                             PLT_DeviceDataReference& device, 
-                             const char*              object_id, 
-                             NPT_Int32                index, 
-                             NPT_Int32                count,
-                             bool                     browse_metadata,
-                             const char*              filter, 
-                             const char*              sort)
+PLT_SyncMediaBrowser::BrowseSync(PLT_BrowseDataReference& browse_data,
+                                 PLT_DeviceDataReference& device, 
+                                 const char*              object_id, 
+                                 NPT_Int32                index, 
+                                 NPT_Int32                count,
+                                 bool                     browse_metadata,
+                                 const char*              filter, 
+                                 const char*              sort)
 {
     NPT_Result res;
 
@@ -195,7 +211,7 @@ PLT_SyncMediaBrowser::Browse(PLT_BrowseDataReference& browse_data,
     // send off the browse packet.  Note that this will
     // not block.  There is a call to WaitForResponse in order
     // to block until the response comes back.
-    res = m_MediaBrowser->Browse(device,
+    res = PLT_MediaBrowser::Browse(device,
         (const char*)object_id,
         index,
         count,
@@ -209,12 +225,12 @@ PLT_SyncMediaBrowser::Browse(PLT_BrowseDataReference& browse_data,
 }
 
 /*----------------------------------------------------------------------
-|   PLT_SyncMediaBrowser::Browse
+|   PLT_SyncMediaBrowser::BrowseSync
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device, 
-                             const char*                   object_id, 
-                             PLT_MediaObjectListReference& list)
+PLT_SyncMediaBrowser::BrowseSync(PLT_DeviceDataReference&      device, 
+                                 const char*                   object_id, 
+                                 PLT_MediaObjectListReference& list)
 {
     NPT_Result res = NPT_FAILURE;
     NPT_Int32  index = 0;
@@ -231,7 +247,8 @@ PLT_SyncMediaBrowser::Browse(PLT_DeviceDataReference&      device,
         // send off the browse packet.  Note that this will
         // not block.  There is a call to WaitForResponse in order
         // to block until the response comes back.
-        res = Browse(browse_data,
+        res = BrowseSync(
+            browse_data,
             device,
             (const char*)object_id,
             index,

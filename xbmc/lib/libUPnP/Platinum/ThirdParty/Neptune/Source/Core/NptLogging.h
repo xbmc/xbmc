@@ -45,6 +45,13 @@
 #include "NptStrings.h"
 #include "NptList.h"
 #include "NptStreams.h"
+#include "NptThreads.h"
+#include "NptHttp.h"
+
+/*----------------------------------------------------------------------
+|   class references
++---------------------------------------------------------------------*/
+class NPT_LogManager;
 
 /*----------------------------------------------------------------------
 |   types
@@ -68,14 +75,15 @@ public:
                              NPT_LogHandler*& handler);
 
     // methods
-    virtual void Log(const NPT_LogRecord& record) = 0;
     virtual ~NPT_LogHandler() {}
+    virtual void       Log(const NPT_LogRecord& record) = 0;
+    virtual NPT_String ToString() { return ""; }
 };
 
 class NPT_Logger {
 public:
     // methods
-    NPT_Logger(const char* name);
+    NPT_Logger(const char* name, NPT_LogManager& manager);
     ~NPT_Logger();
     void Log(int          level, 
              const char*  source_file,
@@ -85,11 +93,16 @@ public:
                           ...);
 
     NPT_Result AddHandler(NPT_LogHandler* handler);
+    NPT_Result DeleteHandlers();
     NPT_Result SetParent(NPT_Logger* parent);
-    int        GetLevel() const { return m_Level; }
+    const NPT_String& GetName()  const { return m_Name;  }
+    int               GetLevel() const { return m_Level; }
+    bool              GetForwardToParent() const { return m_ForwardToParent; }
+    NPT_List<NPT_LogHandler*>& GetHandlers() { return m_Handlers; }
 
 private:
     // members
+    NPT_LogManager&           m_Manager;
     NPT_String                m_Name;
     int                       m_Level;
     bool                      m_LevelIsInherited;
@@ -129,8 +142,7 @@ public:
 class NPT_LogManager {
 public:
     // class methods
-    static void EnableLogging(bool value);
-    static void SetConfig(const char* config);
+    static NPT_LogManager& GetDefault();
     static bool ConfigValueIsBooleanTrue(NPT_String& value);
     static bool ConfigValueIsBooleanFalse(NPT_String& value);
     static NPT_Logger* GetLogger(const char* name);
@@ -138,8 +150,13 @@ public:
     // methods
     NPT_LogManager();
     ~NPT_LogManager();
-    NPT_String* GetConfigValue(const char* prefix, const char* suffix);
-    NPT_Result  Configure();
+    NPT_Result                    Configure(const char* config_sources = NULL);
+    NPT_String*                   GetConfigValue(const char* prefix, const char* suffix);
+    NPT_List<NPT_Logger*>&        GetLoggers() { return m_Loggers; }
+	NPT_List<NPT_LogConfigEntry>& GetConfig()  { return m_Config;  }
+	void Enable(bool value) { m_Enabled = value; }
+    void Lock()   { m_Lock.Lock();   }
+    void Unlock() { m_Lock.Unlock(); }
 
 private:
     // methods
@@ -152,11 +169,34 @@ private:
     NPT_Result  ConfigureLogger(NPT_Logger* logger);
 
     // members
-    bool                         m_Configured;
-    bool                         m_Configuring;
+    NPT_Mutex                    m_Lock;
+    volatile bool                m_Enabled;
+    volatile bool                m_Configured;
+    volatile bool                m_Configuring;
     NPT_List<NPT_LogConfigEntry> m_Config;
     NPT_List<NPT_Logger*>        m_Loggers;
     NPT_Logger*                  m_Root;
+};
+
+const unsigned short NPT_HTTP_LOGGER_CONFIGURATOR_DEFAULT_PORT = 6378;
+class NPT_HttpLoggerConfigurator : NPT_HttpRequestHandler, public NPT_Thread {
+public:
+    // constructor and destructor
+    NPT_HttpLoggerConfigurator(NPT_UInt16 port = NPT_HTTP_LOGGER_CONFIGURATOR_DEFAULT_PORT,
+                               bool       detached = true);
+    virtual ~NPT_HttpLoggerConfigurator();
+
+    // NPT_Runnable (NPT_Thread) methods
+    virtual void Run();
+
+private:
+    // NPT_HttpRequestHandler methods
+    virtual NPT_Result SetupResponse(NPT_HttpRequest&              request,
+                                     const NPT_HttpRequestContext& context,
+                                     NPT_HttpResponse&             response);
+
+    // members
+    NPT_HttpServer* m_Server;
 };
 
 /*----------------------------------------------------------------------
@@ -196,7 +236,7 @@ do {                                                                    \
 #define NPT_CHECK_LL(_logger, _level, _result) do {                                    \
     NPT_Result _x = (_result);                                                         \
     if (_x != NPT_SUCCESS) {                                                           \
-        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d [%s]", _x, NPT_ResultText(_x))); \
+        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d (%s) [%s]", _x, NPT_ResultText(_x), #_result)); \
         return _x;                                                                     \
     }                                                                                  \
 } while(0)
@@ -204,7 +244,7 @@ do {                                                                    \
 #define NPT_CHECK_LABEL_LL(_logger, _level, _result, _label) do {                      \
     NPT_Result _x = (_result);                                                         \
     if (_x != NPT_SUCCESS) {                                                           \
-        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d [%s]", _x, NPT_ResultText(_x))); \
+        NPT_LOG_X((_logger),(_level),((_level),__FILE__,__LINE__,(NPT_LocalFunctionName),"NPT_CHECK failed, result=%d (%s) [%s]", _x, NPT_ResultText(_x), #_result)); \
         goto _label;                                                                   \
     }                                                                                  \
 } while(0)
@@ -454,19 +494,19 @@ do {                                                                    \
 #define NPT_CHECK_POINTER_FINEST(_p) NPT_CHECK_POINTER_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_FINEST,(_p))
 #define NPT_CHECK_POINTER_FINEST_L(_logger,_p) NPT_CHECK_POINTER_LL(_logger,NPT_LOG_LEVEL_FINEST,(_p))
 
-#define NPT_CHECK_POINTER_LABEL_FATAL(_p,_label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_FATAL,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_FATAL_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_FATAL,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_SEVERE(_p,_label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_SEVERE,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_SEVERE_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_SEVERE,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_WARNING(_p,_label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_WARNING,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_WARNING_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_WARNING,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_INFO(_p,_label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_INFO,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_INFO_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_INFO,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_FINE(_p, _label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_FINE,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_FINE_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_FINE,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_FINER(_p,_label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_FINER,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_FINER_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_FINER,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_FINEST(_p,_label) NNPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_FINEST,(_p),(_label))
-#define NPT_CHECK_POINTER_LABEL_FINEST_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_FINEST,(_p),(_label))
+#define NPT_CHECK_POINTER_LABEL_FATAL(_p,_label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_FATAL,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_FATAL_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_FATAL,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_SEVERE(_p,_label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_SEVERE,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_SEVERE_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_SEVERE,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_WARNING(_p,_label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_WARNING,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_WARNING_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_WARNING,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_INFO(_p,_label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_INFO,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_INFO_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_INFO,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_FINE(_p, _label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_FINE,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_FINE_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_FINE,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_FINER(_p,_label) NPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_FINER,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_FINER_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_FINER,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_FINEST(_p,_label) NNPT_CHECK_POINTER_LABEL_LL((_NPT_LocalLogger),NPT_LOG_LEVEL_FINEST,(_p),_label)
+#define NPT_CHECK_POINTER_LABEL_FINEST_L(_logger,_p,_label) NPT_CHECK_POINTER_LABEL_LL(_logger,NPT_LOG_LEVEL_FINEST,(_p),_label)
 
 #endif /* _NPT_LOGGING_H_ */

@@ -321,7 +321,8 @@ public:
     // methods
                        NPT_XmlSerializer(NPT_OutputStream* output,
                                          NPT_Cardinal      indentation = 0,
-                                         bool              shrink_empty_elements = true);
+                                         bool              shrink_empty_elements = true,
+										 bool			   add_header = true);
     virtual           ~NPT_XmlSerializer();
     virtual NPT_Result StartDocument();
     virtual NPT_Result EndDocument();
@@ -347,6 +348,7 @@ protected:
     NPT_String        m_IndentationPrefix;
     bool              m_ElementHasText;
     bool              m_ShrinkEmptyElements;
+	bool			  m_AddHeader;
 };
 
 /*----------------------------------------------------------------------
@@ -359,7 +361,9 @@ public:
     explicit NPT_XmlWriter(NPT_Cardinal indentation = 0) : m_Indentation(indentation) {}
 
     // methods
-    NPT_Result Serialize(NPT_XmlNode& node, NPT_OutputStream& stream);
+	NPT_Result Serialize(NPT_XmlNode&	   node, 
+						 NPT_OutputStream& stream, 
+						 bool			   add_header = true);
 
 private:
     // members
@@ -373,7 +377,9 @@ class NPT_XmlCanonicalizer
 {
 public:
     // methods
-    NPT_Result Serialize(NPT_XmlNode& node, NPT_OutputStream& stream);
+	NPT_Result Serialize(NPT_XmlNode&      node, 
+						 NPT_OutputStream& stream, 
+						 bool			   add_header = true);
 };
 
 #endif // _NPT_XML_H_
