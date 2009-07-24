@@ -167,7 +167,8 @@ public:
 
     static const char* GetMimeType(const NPT_String& filename, const PLT_HttpRequestContext* context = NULL);
     static const char* GetMimeTypeFromExtension(const NPT_String& extension, const PLT_HttpRequestContext* context = NULL);
-    static NPT_String  GetProtInfo(const char* filename, const PLT_HttpRequestContext* context = NULL);
+    static NPT_String  GetProtocolInfo(const char* filename, const PLT_HttpRequestContext* context = NULL);
+	static NPT_String  GetMimeTypeFromProtocolInfo(const char* protocol_info);
     static const char* GetUPnPClass(const char* filename, const PLT_HttpRequestContext* context = NULL);
     static const char* GetDlnaExtension(const char* mime_type, const PLT_HttpRequestContext* context = NULL);
 

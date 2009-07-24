@@ -59,7 +59,8 @@ PLT_FileMediaServer::PLT_FileMediaServer(const char*  path,
                     show_ip,
                     uuid, 
                     port,
-                    port_rebind)
+                    port_rebind),
+    m_FilterUnknownOut(false)
 {
     /* set up the server root path */
     m_Path  = path;
@@ -559,11 +560,11 @@ PLT_FileMediaServer::BuildFromFilePath(const NPT_String&             filepath,
         if (object->m_Title.GetLength() == 0) goto failure;
 
         /* make sure we return something with a valid mimetype */
-        if (NPT_StringsEqual(PLT_MediaItem::GetMimeType(filepath), "application/unknown")) 
+        if (m_FilterUnknownOut && NPT_StringsEqual(PLT_MediaItem::GetMimeType(filepath), "application/unknown")) 
             goto failure;
         
         /* Set the protocol Info from the extension */
-        resource.m_ProtocolInfo = PLT_MediaItem::GetProtInfo(filepath, &context);
+        resource.m_ProtocolInfo = PLT_MediaItem::GetProtocolInfo(filepath, &context);
         if (resource.m_ProtocolInfo.GetLength() == 0)  goto failure;
 
         /* Set the resource file size */
