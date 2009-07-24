@@ -131,7 +131,9 @@ bool CEventClient::AddPacket(CEventPacket *packet)
     // TODO: limit payload size
     if (m_seqPackets[ packet->Sequence() ])
     {
-      CLog::Log(LOGWARNING, "CEventClient::AddPacket - received packet with same sequence number (%d) as previous packet", packet->Sequence());
+      if(!m_bSequenceError)
+        CLog::Log(LOGWARNING, "CEventClient::AddPacket - received packet with same sequence number (%d) as previous packet from eventclient %s", packet->Sequence(), m_deviceName.c_str());
+      m_bSequenceError = true;
       delete m_seqPackets[ packet->Sequence() ];
     }
  
