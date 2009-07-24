@@ -4,7 +4,7 @@
 <!--Email: blittan@xbmc.org-->
 <!--Date of translation: 07/06/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21415-->
+<!--Based on english strings version 21769-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -1550,6 +1550,7 @@
   <string id="20301">Webbserver-mapp (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
   <string id="20303">Vill du hoppa över och fortsätta?</string>
+  <string id="20304">RSS flöde</string>
   <string id="20306">Okänd. Lägg till MD5 från xbmc.log till BiosIDs.ini.</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
