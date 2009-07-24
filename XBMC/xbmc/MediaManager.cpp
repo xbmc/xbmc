@@ -305,6 +305,14 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
   return strDevice;
 }
 
+CStdString CMediaManager::TranslateDevicePath(const CURL& url, bool bReturnAsDevice)
+{
+  CSingleLock waitLock(m_muAutoSource);
+  CStdString strURL;
+  strURL.Format("%s://%s/",url.GetProtocol(), url.GetHostName());
+  return TranslateDevicePath(strURL, bReturnAsDevice);
+}
+
 bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 {
 #ifdef _WIN32PC
