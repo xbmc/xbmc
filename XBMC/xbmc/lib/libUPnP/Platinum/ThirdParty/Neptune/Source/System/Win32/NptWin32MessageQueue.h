@@ -20,7 +20,7 @@
 #include "NptSimpleMessageQueue.h"
 
 /*----------------------------------------------------------------------
-|       NPT_Win32MessageQueue
+|       NPT_Win32WindowMessageQueue
 +---------------------------------------------------------------------*/
 class NPT_Win32WindowMessageQueue : public NPT_MessageQueue
 {
