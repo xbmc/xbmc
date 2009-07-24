@@ -2420,9 +2420,16 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
-      CStdString strPath;
-      CUtil::AddFileToFolder(m_pDS2->fv("path.strPath").get_asString(),m_pDS2->fv("files.strFilename").get_asString(),strPath);
-      DeleteEpisode(strPath,m_pDS2->fv(0).get_asLong(), bKeepId);
+      CStdString strFilenameAndPath;
+      CStdString strPath = m_pDS2->fv("path.strPath").get_asString();
+      CStdString strFileName = m_pDS2->fv("files.strFilename").get_asString();
+
+      if(!CUtil::IsInArchive(strFileName))
+        CUtil::AddFileToFolder(strPath,strFileName,strFilenameAndPath);
+      else
+        strFilenameAndPath = strFileName;
+
+      DeleteEpisode(strFilenameAndPath, m_pDS2->fv(0).get_asLong(), bKeepId);
       m_pDS2->next();
     }
 
@@ -2453,15 +2460,6 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
       strSQL=FormatSQL("delete from movielinktvshow where idshow=%i", lTvShowId);
       m_pDS->exec(strSQL.c_str());
     }
-    /*
-    // work in progress
-    else
-    {
-      // clear the title
-      strSQL=FormatSQL("update tvshow set c%02d=NULL where idshow=%i", VIDEODB_ID_TV_TITLE, lTvShowId);
-      m_pDS->exec(strSQL.c_str());
-    }
-    */
 
     InvalidatePathHash(strPath);
 
@@ -2469,7 +2467,7 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
   }
 }
 
@@ -2523,7 +2521,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
 }
 
