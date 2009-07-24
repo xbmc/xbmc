@@ -208,6 +208,14 @@
           <include>GeneralSkinOption</include>
         </control>
 
+        <control type="radiobutton" id="325">
+          <description>Hide Now playing in viz description</description>
+  				<label>$LOCALIZE[31998]</label>
+          <onclick>Skin.ToggleSetting(HideNowPlayingInViz)</onclick>
+          <selected>Skin.HasSetting(HideNowPlayingInViz)</selected>
+          <include>GeneralSkinOption</include>
+        </control>
+
 				<control type="togglebutton" id="281">
 					<description>Path to Lyrics Script</description>
 					<label>$LOCALIZE[20141] $LOCALIZE[31046]</label>
