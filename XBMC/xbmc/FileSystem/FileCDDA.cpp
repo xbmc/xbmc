@@ -45,14 +45,14 @@ CFileCDDA::~CFileCDDA(void)
 
 bool CFileCDDA::Open(const CURL& url)
 {
-  if (!g_mediaManager.IsDiscInDrive() || !IsValidFile(url))
+  if (!g_mediaManager.IsDiscInDrive(g_mediaManager.TranslateDevicePath(url)) || !IsValidFile(url))
     return false;
 
   // Open the dvd drive
 #ifdef _LINUX
-  m_pCdIo = m_cdio->cdio_open(m_cdio->GetDeviceFileName(), DRIVER_UNKNOWN);
+  m_pCdIo = m_cdio->cdio_open(g_mediaManager.TranslateDevicePath(url), DRIVER_UNKNOWN);
 #elif defined(_WIN32PC)
-  m_pCdIo = m_cdio->cdio_open_win32(m_cdio->GetDeviceFileName());
+  m_pCdIo = m_cdio->cdio_open_win32(g_mediaManager.TranslateDevicePath(url, true));
 #else
   m_pCdIo = m_cdio->cdio_open_win32("D:");
 #endif
