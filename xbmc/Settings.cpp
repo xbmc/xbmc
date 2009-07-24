@@ -2026,8 +2026,8 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     XMLUtils::GetBoolean(pProfile, "lockprograms", bHas);
     profile.setProgramsLocked(bHas);
 
-    LockType iLockMode=LOCK_MODE_EVERYONE;
-    int lockMode;
+    LockType iLockMode;
+    int lockMode = (int)LOCK_MODE_EVERYONE;
     XMLUtils::GetInt(pProfile,"lockmode",lockMode);
     iLockMode = (LockType)lockMode;
 
