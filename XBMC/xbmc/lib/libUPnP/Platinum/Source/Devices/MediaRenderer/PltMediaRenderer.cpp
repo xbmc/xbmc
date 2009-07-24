@@ -83,7 +83,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service = new PLT_Service(
             &data,
             "urn:schemas-upnp-org:service:AVTransport:1", 
-            "urn:upnp-org:serviceId:AVT_1-0",
+            "urn:upnp-org:serviceId:AVTransport",
             "urn:schemas-upnp-org:metadata-1-0/AVT/");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_AVTransportSCPD));
         NPT_CHECK_FATAL(service->InitURLs("AVTransport", data.GetUUID()));
@@ -147,7 +147,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service = new PLT_Service(
             &data,
             "urn:schemas-upnp-org:service:ConnectionManager:1", 
-            "urn:upnp-org:serviceId:CMGR_1-0");
+            "urn:upnp-org:serviceId:ConnectionManager");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_ConnectionManagerSCPD));
         NPT_CHECK_FATAL(service->InitURLs("ConnectionManager", data.GetUUID()));
         NPT_CHECK_FATAL(data.AddService(service));
@@ -164,7 +164,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service = new PLT_Service(
             &data,
             "urn:schemas-upnp-org:service:RenderingControl:1", 
-            "urn:upnp-org:serviceId:RCS_1-0",
+            "urn:upnp-org:serviceId:RenderingControl",
             "urn:schemas-upnp-org:metadata-1-0/RCS/");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_RenderingControlSCPD));
         NPT_CHECK_FATAL(service->InitURLs("RenderingControl", data.GetUUID()));
