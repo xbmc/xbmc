@@ -897,7 +897,7 @@ void CWIN32Util::AddRemovableDrives()
   GetDrivesByType(vShare, DVD_DRIVES);
   for(it=vShare.begin();it!=vShare.end();++it)
     if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      g_mediaManager.AddAutoSource(*it);
+      g_application.getApplicationMessenger().OpticalMount(it->strPath);
 }
 
 bool CWIN32Util::IsAudioCD(const CStdString& strPath)
