@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 07/06/2009-->
+<!--Date of translation: 07/25/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21415 -->
+<!--Based on english strings version 21769 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1188,7 +1188,7 @@
   <string id="13409">排行榜前 250：</string>
   <string id="13410">收听 last.fm 电台</string>
   <string id="13411">风扇最低转速</string>
-  <string id="13412">- RSS种子内容为从右到左</string>
+  <string id="13412">- RSS信源内容为从右到左</string>
   <string id="13413">正在下载</string>
   <string id="13414">隐藏只在编辑中出现的艺术家</string>
   <string id="13415">渲染模式</string>
@@ -1736,7 +1736,7 @@
   <string id="20301">WEB服务器目录(HTTPS)</string>
   <string id="20302">无法写入文件夹：</string>
   <string id="20303">你要跳过并继续吗？</string>
-  <string id="20304"></string>
+  <string id="20304">RSS 信源</string>
   <string id="20305"></string>
 
   <string id="20306">未知 BIOS，请把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
@@ -2095,6 +2095,7 @@
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>
   <string id="29801">QWERTY 键盘</string>
+  <string id="29802">音频直通输出启用中</string>
 
   <string id="29999">自动开启游戏抗闪烁过滤</string>
 
