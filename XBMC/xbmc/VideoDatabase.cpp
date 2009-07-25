@@ -2423,12 +2423,7 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
       CStdString strFilenameAndPath;
       CStdString strPath = m_pDS2->fv("path.strPath").get_asString();
       CStdString strFileName = m_pDS2->fv("files.strFilename").get_asString();
-
-      if(!CUtil::IsInArchive(strFileName))
-        CUtil::AddFileToFolder(strPath,strFileName,strFilenameAndPath);
-      else
-        strFilenameAndPath = strFileName;
-
+      ConstructPath(strFilenameAndPath, strPath, strFileName);
       DeleteEpisode(strFilenameAndPath, m_pDS2->fv(0).get_asLong(), bKeepId);
       m_pDS2->next();
     }
@@ -7228,7 +7223,7 @@ bool CVideoDatabase::ArbitraryExec(const CStdString& strExec)
 
 void CVideoDatabase::ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName)
 {
-  if (CUtil::IsStack(strFileName) || strFileName.Mid(0,6).Equals("rar://") || strFileName.Mid(0,6).Equals("zip://"))
+  if (CUtil::IsStack(strFileName) || CUtil::IsInArchive(strFileName))
     strDest = strFileName;
   else
     CUtil::AddFileToFolder(strPath, strFileName, strDest);
