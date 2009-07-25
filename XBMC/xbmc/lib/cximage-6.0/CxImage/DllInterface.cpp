@@ -392,8 +392,11 @@ extern "C"
     if (!buffer || !size || !ext || !thumb) return false;
     // load the image
     DWORD dwImageType = CXIMAGE_FORMAT_UNKNOWN;
-    if (strlen(ext))
+    if (strlen(ext)) {
       dwImageType = GetImageType(ext);
+      if (dwImageType == CXIMAGE_FORMAT_UNKNOWN)
+        dwImageType = DetectFileType(buffer, size);
+    }
     else
       dwImageType = DetectFileType(buffer, size);
     if (dwImageType == CXIMAGE_FORMAT_UNKNOWN)
