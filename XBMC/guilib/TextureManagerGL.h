@@ -46,24 +46,4 @@ public:
   void Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface);
 };
 
-/*!
-\ingroup textures
-\brief 
-*/
-/************************************************************************/
-/*    CGUITextureManagerSDL                                             */
-/************************************************************************/
-class CGUITextureManagerGL : public CGUITextureManager
-{
-public:
-  CGUITextureManagerGL(void);
-  virtual ~CGUITextureManagerGL(void);
-
-  int Load(const CStdString& strTextureName, bool checkBundleOnly = false);
-};
-
-/*!
-\ingroup textures
-\brief 
-*/
 #endif

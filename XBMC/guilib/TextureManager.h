@@ -29,7 +29,7 @@
 
 #include "TextureBundle.h"
 #include <vector>
-#include "GUITextureManagerFactory.h"
+#include "TextureManager.h"
 
 #pragma once
 
@@ -133,7 +133,7 @@ public:
   CGUITextureManager(void);
   virtual ~CGUITextureManager(void);
 
-  virtual int Load(const CStdString& strTextureName, bool checkBundleOnly = false)= 0;
+  int Load(const CStdString& strTextureName, bool checkBundleOnly = false);
 
   bool HasTexture(const CStdString &textureName, CStdString *path = NULL, int *bundle = NULL, int *size = NULL);
   bool CanLoad(const CStdString &texturePath) const; ///< Returns true if the texture manager can load this texture
@@ -147,7 +147,7 @@ public:
   void AddTexturePath(const CStdString &texturePath);    ///< Add a new path to the paths to check when loading media
   void SetTexturePath(const CStdString &texturePath);    ///< Set a single path as the path to check when loading media (clear then add)
   void RemoveTexturePath(const CStdString &texturePath); ///< Remove a path from the paths to check when loading media
-  virtual const CTextureArray& GetTexture(const CStdString& strTextureName);
+  const CTextureArray& GetTexture(const CStdString& strTextureName);
 
 protected:
   std::vector<CTextureMap*> m_vecTextures;
@@ -157,7 +157,12 @@ protected:
   std::vector<CStdString> m_texturePaths;
 };
 
-#define g_TextureManager CGUITextureManagerFactory::GetGUITextureManager()
+extern CGUITextureManager g_TextureManager;
+
+#ifdef HAS_SDL_OPENGL
+#include "TextureManagerGL.h"
+#define CTexture CGLTexture
+#endif
 
 /*!
 \ingroup textures
