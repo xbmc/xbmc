@@ -57,7 +57,6 @@ public:
   bool IsDiscInDrive(const CStdString& devicePath="");
   bool IsAudio(const CStdString& devicePath="");
   CStdString TranslateDevicePath(const CStdString& devicePath, bool bReturnAsDevice=false);
-  CStdString TranslateDevicePath(const CURL& url, bool bReturnAsDevice=false);
   DWORD GetDriveStatus(const CStdString& devicePath="");
   CCdInfo* GetCdInfo(const CStdString& devicePath="");
   bool RemoveCdInfo(const CStdString& devicePath="");
