@@ -761,6 +761,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("rename")) wAction = ACTION_RENAME_ITEM;
   else if (strAction.Equals("togglewatched")) wAction = ACTION_TOGGLE_WATCHED;
   else if (strAction.Equals("scanitem")) wAction = ACTION_SCAN_ITEM;
+  else if (strAction.Equals("reloadkeymaps")) wAction = ACTION_RELOAD_KEYMAPS;
 
   else if (strAction.Equals("volumeup")) wAction = ACTION_VOLUME_UP;
   else if (strAction.Equals("volumedown")) wAction = ACTION_VOLUME_DOWN;

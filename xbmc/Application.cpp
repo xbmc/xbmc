@@ -2778,6 +2778,13 @@ bool CApplication::OnAction(CAction &action)
     else
       PowerButtonDown = false;
   }
+  // reload keymaps
+  if (action.wID == ACTION_RELOAD_KEYMAPS)
+  {
+    CButtonTranslator::GetInstance().Clear();
+    CButtonTranslator::GetInstance().Load();
+  }
+
   // show info : Shows the current video or song information
   if (action.wID == ACTION_SHOW_INFO)
   {
