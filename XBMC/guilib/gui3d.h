@@ -70,18 +70,34 @@ struct D3DPalette
 typedef D3DPalette* LPDIRECT3DPALETTE8;
 
 #ifdef HAS_SDL
+
 #include <SDL/SDL.h>
 namespace XBMC
 {
   typedef SDL_Surface* SurfacePtr;
   typedef SDL_Surface* TexturePtr;
   typedef SDL_Palette* PalettePtr;
+
+  typedef SDL_PixelFormat PixelFormat;
 };
+
+#define CREATE_TEXTURE(flags, width, height, depth, Rmask, Gmask, Bmask, Amask) \
+  SDL_CreateRGBSurface(flags, width, height, depth, Rmask, Gmask, Bmask, Amask)
+
+#define DELETE_TEXTURE(texture) SDL_FreeSurface(texture)
+#define DELETE_SURFACE(surface) SDL_FreeSurface(surface)
+
+#define LOCK_TEXTURE(texture) SDL_LockSurface(texture)
+#define UNLOCK_TEXTURE(texture) SDL_UnlockSurface(texture)
+
 #ifdef HAS_SDL_OPENGL
+
 #if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
 #define GL_GLEXT_PROTOTYPES
 #endif
+
 #include <GL/glew.h>
+
 #endif
 #else
 namespace XBMC
