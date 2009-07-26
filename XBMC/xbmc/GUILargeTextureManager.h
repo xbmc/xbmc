@@ -23,9 +23,6 @@
 
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
-#ifdef HAS_SDL
-#include "SDL/SDL.h"
-#endif
 #include "TextureManagerGL.h"
 
 #include <assert.h>
@@ -91,11 +88,7 @@ protected:
     {
       assert(!m_texture.size());
       if (texture)
-#ifdef HAS_SDL_OPENGL
-        m_texture.Set(new CGLTexture(texture, false, true), width, height);
-#else
-        m_texture.Set(texture, width, height);
-#endif
+        m_texture.Set(new CTexture(texture, false, true), width, height);
       m_orientation = orientation;
     };
 

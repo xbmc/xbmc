@@ -91,11 +91,7 @@ void CGUILargeTextureManager::Process()
     }
     else
     { // no need for the texture any more
-#ifdef HAS_SDL
-      SDL_FreeSurface(texture);
-#else
-      texture->Release();
-#endif
+      DELETE_TEXTURE(texture);
       texture = NULL;
     }
     if (m_queued.size() == 0)
