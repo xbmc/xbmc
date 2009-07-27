@@ -115,26 +115,11 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
   XMLUtils::GetInt(album,"year",iYear);
   XMLUtils::GetInt(album,"rating",iRating);
 
-  thumbURL.ParseElement(album->FirstChildElement("thumbs"));
-  if (thumbURL.m_url.size() == 0)
+  const TiXmlElement* thumb = album->FirstChildElement("thumb");
+  while (thumb)
   {
-    if (album->FirstChildElement("thumb") && !album->FirstChildElement("thumb")->FirstChildElement())
-    {
-      if (album->FirstChildElement("thumb")->FirstChild() && strncmp(album->FirstChildElement("thumb")->FirstChild()->Value(),"<thumb>",7) == 0)
-      {
-        CStdString strValue = album->FirstChildElement("thumb")->FirstChild()->Value();
-        TiXmlDocument doc;
-        doc.Parse(strValue.c_str());
-        if (doc.FirstChildElement("thumbs"))
-          thumbURL.ParseElement(doc.FirstChildElement("thumbs"));
-        else
-          thumbURL.ParseElement(doc.FirstChildElement("thumb"));
-      }
-      else
-        thumbURL.ParseElement(album->FirstChildElement("thumb"));
-    }
-    else
-      thumbURL.ParseElement(album->FirstChildElement("thumb"));
+    thumbURL.ParseElement(thumb);
+    thumb = thumb->NextSiblingElement("thumb");
   }
 
   node = album->FirstChildElement("track");
@@ -206,7 +191,17 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
   XMLUtils::SetString(album, "releasedate", m_strDateOfRelease);
   XMLUtils::SetString(album,       "label", strLabel);
   XMLUtils::SetString(album,        "type", strType);
-  XMLUtils::SetString(album,      "thumbs", thumbURL.m_xml);
+  if (!thumbURL.m_xml.empty())
+  {
+    TiXmlDocument doc;
+    doc.Parse(thumbURL.m_xml); 
+    const TiXmlNode* thumb = doc.FirstChild("thumb");
+    while (thumb)
+    {
+      album->InsertEndChild(*thumb);
+      thumb = thumb->NextSibling("thumb");
+    }
+  }
   XMLUtils::SetString(album,        "path", strPath);
 
   XMLUtils::SetInt(album,         "rating", iRating);

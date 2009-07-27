@@ -75,11 +75,8 @@
 			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
 				<expression repeat="yes">&lt;person job=&quot;actor&quot;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;role&gt;([^&lt;]*)&lt;/role&gt;</expression>
 			</RegExp>
-			<RegExp input="$$4" output="&lt;thumbs&gt;\1&lt;/thumbs&gt;" dest="5+">
-				<RegExp input="$$1" output="&lt;thumb preview=&quot;\1_mid.\2&quot;&gt;\1.\2&lt;/thumb&gt;" dest="4">
-					<expression repeat="yes">&lt;poster size=&quot;original&quot;&gt;([^\.]*)\.([^&lt;]*)&lt;/poster&gt;</expression>
-				</RegExp>
-				<expression noclean="1"/>
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1_mid.\2&quot;&gt;\1.\2&lt;/thumb&gt;" dest="5+">
+				<expression repeat="yes">&lt;poster size=&quot;original&quot;&gt;([^\.]*)\.([^&lt;]*)&lt;/poster&gt;</expression>
 			</RegExp>
 			<RegExp conditional="fanart" input="$$4" output="&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;" dest="5+">
 				<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.\3&quot;&gt;/\1/\2.\3&lt;/thumb&gt;" dest="4">
@@ -88,7 +85,7 @@
 				<expression noclean="1">(.+)</expression>
 			</RegExp>
 			<RegExp conditional="trailer" input="$$6" output="&lt;url function=&quot;FindTrailer&quot;&gt;http://en.dtrailer.com/movies/search/\1&lt;/url&gt;" dest="5+">
-				<RegExp input="$$4" output="\1-" dest="6">	
+				<RegExp input="$$4" output="\1-" dest="6">
 					<RegExp input="$$1" output="\1" dest="4">
 					  <expression>&lt;title&gt;([^&lt;]*)&lt;/title&gt;</expression>
 					</RegExp>
