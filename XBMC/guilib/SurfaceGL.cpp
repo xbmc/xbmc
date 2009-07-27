@@ -891,38 +891,6 @@ bool CSurfaceGL::glxIsSupported(const char* extension)
   return s_glxExt.find(name) != std::string::npos;
 }
 
-/*
-void CSurfaceGL::GetRenderVersion(int& maj, int& min)
-{
-#ifdef HAS_SDL_OPENGL
-  if (s_RenderMajVer==0)
-  {
-    const char* ver = (const char*)glGetString(GL_VERSION);
-    if (ver != 0)
-      sscanf(ver, "%d.%d", &s_RenderMajVer, &s_RenderMinVer);
-  }
-
-  if (s_RenderVendor.length()==0)
-  {
-    s_RenderVendor   = (const char*)glGetString(GL_VENDOR);
-    s_RenderRenderer = (const char*)glGetString(GL_RENDERER);
-  }
-#ifdef HAS_GLX
-  if (s_RenderExt.length()==0)
-  {
-    s_RenderExt  = " ";
-    s_RenderExt += (const char*)glXQueryExtensionsString(s_dpy, DefaultScreen(s_dpy));
-    s_RenderExt += " ";
-  }
-#endif
-
-#endif
-  maj = s_RenderMajVer;
-  min = s_RenderMinVer;
-}
-*/
-
-
 void* CSurfaceGL::GetRenderWindow()
 {
   SDL_SysWMinfo sysInfo;
