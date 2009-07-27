@@ -98,24 +98,11 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained)
   XMLUtils::GetString(artist,"died",strDied);
   XMLUtils::GetString(artist,"disbanded",strDisbanded);
 
-  const TiXmlElement* thumbElement = artist->FirstChildElement("thumbs");
-  if (!thumbElement || !thumbURL.ParseElement(thumbElement) || thumbURL.m_url.size() == 0)
+  const TiXmlElement* thumb = artist->FirstChildElement("thumb");
+  while (thumb)
   {
-    if (artist->FirstChildElement("thumb") && !artist->FirstChildElement("thumb")->FirstChildElement())
-    {
-      if (artist->FirstChildElement("thumb")->FirstChild() && strncmp(artist->FirstChildElement("thumb")->FirstChild()->Value(),"<thumb>",7) == 0)
-      {
-        CStdString strValue = artist->FirstChildElement("thumb")->FirstChild()->Value();
-        TiXmlDocument doc;
-        doc.Parse(strValue.c_str());
-        if (doc.FirstChildElement("thumbs"))
-          thumbURL.ParseElement(doc.FirstChildElement("thumbs"));
-        else
-          thumbURL.ParseElement(doc.FirstChildElement("thumb"));
-      }
-      else
-        thumbURL.ParseElement(artist->FirstChildElement("thumb"));
-    }
+    thumbURL.ParseElement(thumb);
+    thumb = thumb->NextSiblingElement("thumb");
   }
   node = artist->FirstChildElement("album");
   while (node)
@@ -177,7 +164,17 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& str
   XMLUtils::SetString(artist,   "biography", strBiography);
   XMLUtils::SetString(artist,        "died", strDied);
   XMLUtils::SetString(artist,   "disbanded", strDisbanded);
-  XMLUtils::SetString(artist,      "thumbs", thumbURL.m_xml);
+  if (!thumbURL.m_xml.empty())
+  {
+    TiXmlDocument doc;
+    doc.Parse(thumbURL.m_xml); 
+    const TiXmlNode* thumb = doc.FirstChild("thumb");
+    while (thumb)
+    {
+      artist->InsertEndChild(*thumb);
+      thumb = thumb->NextSibling("thumb");
+    }
+  }
   XMLUtils::SetString(artist,        "path", strPath);
   if (fanart.m_xml.size())
   {
