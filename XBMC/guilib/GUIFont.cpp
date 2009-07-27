@@ -46,7 +46,7 @@ float CScrollInfo::GetPixelsPerFrame()
   return pixelSpeed * m_averageFrameTime;
 }
 
-CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
+CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTFBase *font)
 {
   m_strFontName = strFontName;
   m_style = style & 3;

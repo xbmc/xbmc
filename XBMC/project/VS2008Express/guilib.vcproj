@@ -402,10 +402,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIFontTTF.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\guiImage.cpp"
 				>
 			</File>
@@ -781,10 +777,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUIFontManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\GUIFontTTF.h"
 				>
 			</File>
 			<File
@@ -1300,19 +1292,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\guilib\GUIFontTTF.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUIFontTTF.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\guilib\GUITexture.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\guilib\GUITexture.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\guilib\GUITextureManagerFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\guilib\GUITextureManagerFactory.h"
 					>
 				</File>
 				<File
@@ -1361,6 +1353,14 @@
 							Name="VCCustomBuildTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUIFontTTFGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUIFontTTFGL.h"
+					>
 				</File>
 				<File
 					RelativePath="..\..\guilib\GUITextureGL.cpp"

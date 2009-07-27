@@ -37,14 +37,61 @@ typedef struct FT_FaceRec_ *FT_Face;
 typedef struct FT_LibraryRec_ *FT_Library;
 typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 
+DWORD PadPow2(DWORD x);
+
+#ifdef _LINUX
+#define max(a,b) ((a)>(b)?(a):(b))
+#define min(a,b) ((a)<(b)?(a):(b))
+// NOTE: rintf is inaccurate - it appears to round to the nearest EVEN integer, rather than to the nearest integer
+//       this is a useful reference for wintel platforms that may be useful:
+//         http://ldesoras.free.fr/doc/articles/rounding_en.pdf
+//       For now, we've dumped down to the simple (and slow?) floor(x + 0.5f)
+//       Ideally we'd have a common round_int routine that does float -> float, as this is the case
+//       we actually use (both here and in CGUIImage)
+//#define ROUND rintf
+//#define ROUND_TO_PIXEL rintf
+#define ROUND(x) MathUtils::round_int(x)
+#define ROUND_TO_PIXEL(x) MathUtils::round_int(x)
+#define TRUNC_TO_PIXEL(x) MathUtils::truncate_int(x)
+#else
+
+#define ROUND(x) (float)(MathUtils::round_int(x))
+
+#if defined(HAS_SDL_OPENGL)
+#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
+#define TRUNC_TO_PIXEL(x) (float)(MathUtils::truncate_int(x))
+#else
+#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
+#define TRUNC_TO_PIXEL(x) (float)(MathUtils::truncate_int(x)) - 0.5f
+#endif
+
+#endif // _LINUX
+
 
 /*!
  \ingroup textures
  \brief
  */
-class CGUIFontTTF
+class CGUIFontTTFBase
 {
   friend class CGUIFont;
+  
+public:
+
+  CGUIFontTTFBase(const CStdString& strFileName);
+  virtual ~CGUIFontTTFBase(void);
+
+  void Clear();
+
+  bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f);
+
+  virtual void Begin() = 0;
+  virtual void End() = 0;
+
+  const CStdString& GetFileName() const { return m_strFileName; };
+  void CopyReferenceCountFrom(CGUIFontTTFBase& ttf) { m_referenceCount = ttf.m_referenceCount; }
+
+protected:
   struct Character
   {
     short offsetX, offsetY;
@@ -52,22 +99,6 @@ class CGUIFontTTF
     float advance;
     DWORD letterAndStyle;
   };
-public:
-
-  CGUIFontTTF(const CStdString& strFileName);
-  virtual ~CGUIFontTTF(void);
-
-  void Clear();
-
-  bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f);
-
-  void Begin();
-  void End();
-
-  const CStdString& GetFileName() const { return m_strFileName; };
-  void CopyReferenceCountFrom(CGUIFontTTF& ttf) { m_referenceCount = ttf.m_referenceCount; }
-
-protected:
   void AddReference();
   void RemoveReference();
 
@@ -96,13 +127,12 @@ protected:
   inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX);
   void ClearCharacterCache();
 
+  virtual void ReleaseCharactersTexture() = 0;
+
   // modifying glyphs
   void EmboldenGlyph(FT_GlyphSlot slot);
   void ObliqueGlyph(FT_GlyphSlot slot);
 
-#ifndef HAS_SDL
-  LPDIRECT3DDEVICE9 m_pD3DDevice;
-#endif
   XBMC::TexturePtr m_texture;        // texture that holds our rendered characters (8bit alpha only)
 
   unsigned int m_textureWidth;       // width of our texture
@@ -127,21 +157,20 @@ protected:
 
   float m_originX;
   float m_originY;
-#ifdef HAS_SDL_OPENGL
-  bool m_glTextureLoaded;
-  GLuint m_glTexture;
 
   struct SVertex
   {
-    GLfloat u, v;
-    GLubyte r, g, b, a;    
-    GLfloat x, y, z;
+    float u, v;
+    unsigned char r, g, b, a;    
+    float x, y, z;
   };
+
+  bool m_bTextureLoaded;
+  unsigned int m_nTexture;
 
   SVertex* m_vertex;
   int      m_vertex_count;
   int      m_vertex_size;
-#endif
 
   float    m_textureScaleX;
   float    m_textureScaleY;
@@ -154,5 +183,10 @@ protected:
 private:
   int m_referenceCount;
 };
+
+#ifdef HAS_SDL_OPENGL
+#include "GUIFontTTFGL.h"
+#define CGUIFontTTF CGUIFontTTFGL
+#endif
 
 #endif
