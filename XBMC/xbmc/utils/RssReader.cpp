@@ -50,6 +50,7 @@ CRssReader::CRssReader() : CThread()
   m_pObserver = NULL;
   m_spacesBetweenFeeds = 0;
   m_bIsRunning = false;
+  m_SavedScrollPos = 0;
 
   m_userAgent = g_sysinfo.GetUserAgent();
 }
