@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.0" date="2009-06-09" name="Freebase" content="albums" thumb="freebase.png">
+<scraper framework="1.1" date="2009-07-28" name="Freebase" content="albums" thumb="freebase.png">
         <NfoUrl dest="3">
                 <RegExp input="$$1" output="&lt;url&gt;http://api.freebase.com/api/service/mqlread?query={%22query%22:{%22type%22:%22/music/artist%22,%22name%22:null,%22genre%22:[],%22album%22:[{%22id%22:%22/\2%22,%22/common/topic/article%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22/common/topic/image%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22label%22:[],%22engineer%22:[],%22producer%22:[],%22release_type%22:null,%22artist%22:null,%22name%22:null,%22release_date%22:null,%22track%22:[{%22name%22:null,%22length%22:null,%22index%22:null,%22sort%22:%22index%22,%22optional%22:true}],%22sort%22:%22release_date%22}]}}&lt;/url&gt;" dest="3+">
                         <expression>(http://www.freebase.com/view/)(.*)</expression>
