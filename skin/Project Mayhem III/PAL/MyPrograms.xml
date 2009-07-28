@@ -85,7 +85,7 @@
 				<onleft>50</onleft>
 				<onright>4</onright>
 				<onup>2</onup>
-				<ondown>98</ondown>
+				<ondown>99</ondown>
 			</control>
 			<control type="togglebutton" id="4">
 				<description>Sort asc</description>
@@ -95,24 +95,40 @@
 				<onleft>3</onleft>
 				<onright>50</onright>
 				<onup>2</onup>
+				<ondown>99</ondown>
+			</control>
+			<control type="radiobutton" id="99">
+				<description>Library button</description>
+				<posx>0</posx>
+				<posy>74</posy>
+				<label>$LOCALIZE[29800]</label>
+				<font>font13</font>
+				<onclick>ReplaceWindow(Programlibrary)</onclick>
+				<onclick>SetFocus(99)</onclick>
+				<selected>Window.IsVisible(Programlibrary)</selected>
+				<onleft>50</onleft>
+				<onright>50</onright>
+				<onup>3</onup>
 				<ondown>98</ondown>
+<!--				<visible>System.GetBool(programslibrary.enabled)</visible>
+				<enable>Library.HasContent(Programs)</enable>  -->
 			</control>
 			<control type="button" id="98">
 				<description>Gamesaves Button</description>
 				<posx>0</posx>
-				<posy>74</posy>
+				<posy>111</posy>
 				<label>20323</label>
 				<onclick>ActivateWindow(35)</onclick>
 				<onleft>50</onleft>
 				<onright>50</onright>
-				<onup>3</onup>
+				<onup>99</onup>
 				<ondown>20</ondown>
 				<visible>System.Platform.Xbox</visible>
 			</control>
 			<control type="group">
 				<description>LastFM Love Hate Stuff</description>
 				<posx>0</posx>
-				<posy>111</posy>
+				<posy>148</posy>
 				<visible>LastFM.RadioPlaying</visible>
 				<animation effect="slide" start="0,0" end="0,-37" time="0" condition="!System.Platform.Xbox">conditional</animation>
 				<control type="image">
