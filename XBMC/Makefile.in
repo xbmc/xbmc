@@ -278,10 +278,10 @@ ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
-ifneq ($(ARCH), powerpc-osx)
+ifeq ($(findstring powerpc,$(ARCH)),)
 	$(MAKE) -C xbmc/cores/paplayer/MACDll
 endif
-ifneq ($(ARCH), x86_64-linux)
+ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
 imagelib: dllloader
