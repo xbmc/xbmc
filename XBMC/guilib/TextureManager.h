@@ -46,8 +46,8 @@ public:
   virtual ~CBaseTexture();
 
   virtual void LoadToGPU() = 0;
-  virtual void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) = 0; 
-  virtual void Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface) = 0;
+  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU); 
+  void Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface);
 
   int imageWidth;
   int imageHeight;
@@ -56,6 +56,7 @@ public:
   unsigned int id;
   unsigned char* m_pixels;
   bool m_loadedToGPU;
+  bool m_bRequiresPower2Textures;
 };
 
 /************************************************************************/

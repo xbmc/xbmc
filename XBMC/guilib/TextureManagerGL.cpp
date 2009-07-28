@@ -42,7 +42,6 @@ using namespace std;
 
 extern "C" void dllprintf( const char *format, ... );
 
-
 DWORD PadPow2(DWORD x) 
 {
   --x;
@@ -54,12 +53,22 @@ DWORD PadPow2(DWORD x)
   return ++x;
 }
 
+
 /************************************************************************/
 /*    CSDLTexture                                                       */
 /************************************************************************/
 CGLTexture::CGLTexture(XBMC::SurfacePtr surface, bool load, bool freeSurface) 
 : CBaseTexture(surface, load, freeSurface)
 {
+  int vmaj, vmin;
+
+  g_graphicsContext.GetRenderVersion(vmaj, vmin);    
+
+  if (vmaj>=2 && GLEW_ARB_texture_non_power_of_two)
+    m_bRequiresPower2Textures = false;
+  else
+    m_bRequiresPower2Textures = true;
+
   Update(surface, load, freeSurface);
 }
 
@@ -128,71 +137,4 @@ void CGLTexture::LoadToGPU()
   m_pixels = NULL;
 
   m_loadedToGPU = true;           
-}
-
-void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) 
-{
-  static int vmaj=0;
-  int vmin,tpitch;
-
-  if (m_pixels)
-    delete [] m_pixels;
-
-  imageWidth = w;
-  imageHeight = h;
-
-   g_graphicsContext.GetRenderVersion(vmaj, vmin);    
- 
-  if (vmaj>=2 && GLEW_ARB_texture_non_power_of_two)
-  {
-    textureWidth = imageWidth;
-    textureHeight = imageHeight;
-  }
-  else
-  {
-    textureWidth = PadPow2(imageWidth);
-    textureHeight = PadPow2(imageHeight);
-  }
-
-  // Resize texture to POT
-  const unsigned char *src = pixels;
-  tpitch = min(pitch,textureWidth*4);
-  m_pixels = new unsigned char[textureWidth * textureHeight * 4];
-  unsigned char* resized = m_pixels;
-
-  for (int y = 0; y < h; y++)
-  {
-    memcpy(resized, src, tpitch); // make sure pitch is not bigger than our width
-    src += pitch;
-
-    // repeat last column to simulate clamp_to_edge
-    for(int i = tpitch; i < textureWidth*4; i+=4)
-      memcpy(resized+i, src-4, 4);
-
-    resized += (textureWidth * 4);
-  }
-
-  // repeat last row to simulate clamp_to_edge
-  for(int y = h; y < textureHeight; y++) 
-  {
-    memcpy(resized, src - tpitch, tpitch);
-
-    // repeat last column to simulate clamp_to_edge
-    for(int i = tpitch; i < textureWidth*4; i+=4) 
-      memcpy(resized+i, src-4, 4);
-
-    resized += (textureWidth * 4);
-  }
-  if (loadToGPU)
-    LoadToGPU();
-}
-
-void CGLTexture::Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface) 
-{
-  SDL_LockSurface(surface);
-  Update(surface->w, surface->h, surface->pitch, (unsigned char *)surface->pixels, loadToGPU);
-  SDL_UnlockSurface(surface);
-
-  if (freeSurface)
-    SDL_FreeSurface(surface);
 }

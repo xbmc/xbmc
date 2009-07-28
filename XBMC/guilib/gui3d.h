@@ -74,10 +74,10 @@ typedef D3DPalette* LPDIRECT3DPALETTE8;
 #include <SDL/SDL.h>
 namespace XBMC
 {
+  typedef void*        DevicePtr;
   typedef SDL_Surface* SurfacePtr;
   typedef SDL_Surface* TexturePtr;
   typedef SDL_Palette* PalettePtr;
-
   typedef SDL_PixelFormat PixelFormat;
 };
 
@@ -86,6 +86,9 @@ namespace XBMC
 
 #define DELETE_TEXTURE(texture) SDL_FreeSurface(texture)
 #define DELETE_SURFACE(surface) SDL_FreeSurface(surface)
+
+#define LOCK_SURFACE(texture) SDL_LockSurface(texture)
+#define UNLOCK_SURFACE(texture) SDL_UnlockSurface(texture)
 
 #define LOCK_TEXTURE(texture) SDL_LockSurface(texture)
 #define UNLOCK_TEXTURE(texture) SDL_UnlockSurface(texture)
@@ -99,13 +102,20 @@ namespace XBMC
 #include <GL/glew.h>
 
 #endif
-#else
+#elif defined (HAS_DX)
 namespace XBMC
 {
+  typedef LPDIRECT3DDEVICE9  DevicePtr;
   typedef LPDIRECT3DSURFACE9 SurfacePtr;
   typedef LPDIRECT3DTEXTURE9 TexturePtr;
   typedef LPDIRECT3DPALETTE8 PalettePtr;
 };
-#endif
 
-#endif
+#define LOCK_TEXTURE(texture)
+#define UNLOCK_TEXTURE(texture)
+
+typedef uint32_t	Uint32;
+
+#endif // HAS_DX
+
+#endif // GUILIB_GUI3D_H

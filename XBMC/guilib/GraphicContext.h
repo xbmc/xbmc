@@ -143,11 +143,12 @@ public:
   inline void setScreenSurface(Surface::CSurface* surface) XBMC_FORCE_INLINE { m_screenSurface = surface; }
   inline Surface::CSurface* getScreenSurface() XBMC_FORCE_INLINE { return m_screenSurface; }
 
+  virtual XBMC::DevicePtr Get3DDevice() = 0;
   virtual void GetRenderVersion(int& maj, int& min) = 0;
 
   virtual bool ValidateSurface(Surface::CSurface* dest=NULL) = 0;
   virtual Surface::CSurface* InitializeSurface() = 0;
-  //virtual void ReleaseThreadSurface() = 0;
+  virtual void ReleaseThreadSurface() {}
 
   // the following two functions should wrap any
   // GL calls to maintain thread safety
@@ -182,7 +183,7 @@ public:
   void SetCalibrating(bool bOnOff);
   void GetAllowedResolutions(std::vector<RESOLUTION> &res, bool bAllowPAL60 = false);
   bool IsValidResolution(RESOLUTION res);
-  void SetVideoResolution(RESOLUTION &res, BOOL NeedZ = FALSE, bool forceClear = false);
+  virtual void SetVideoResolution(RESOLUTION &res, BOOL NeedZ = FALSE, bool forceClear = false) = 0;
   RESOLUTION GetVideoResolution() const;
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
@@ -257,10 +258,6 @@ protected:
   virtual CRect GetRenderViewPort() = 0;
   virtual void SetRendrViewPort(CRect& viewPort) = 0;
   virtual void UpdateCameraPosition(const CPoint &camera) = 0;
-
-  // Update specific resolution based on m_iScreenWidth, m_iScreenHeight
-  // this is rendering specific implementation
-  virtual void UpdateRenderingScreenResolution(RESOLUTION& newRes, RESOLUTION& lastRes) = 0;
 
   IMsgSenderCallback* m_pCallback;
   Surface::CSurface* m_screenSurface;

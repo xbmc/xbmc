@@ -42,6 +42,8 @@ using namespace std;
 
 extern "C" void dllprintf( const char *format, ... );
 
+DWORD PadPow2(DWORD x);
+
 CGUITextureManager g_TextureManager;
 
 /************************************************************************/
@@ -57,6 +59,70 @@ CBaseTexture::CBaseTexture(XBMC::SurfacePtr surface, bool load, bool freeSurface
 CBaseTexture::~CBaseTexture()
 {
 
+}
+
+void CBaseTexture::Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface) 
+{
+  LOCK_SURFACE(surface);
+  Update(surface->w, surface->h, surface->pitch, (unsigned char *)surface->pixels, loadToGPU);
+  UNLOCK_SURFACE(surface);
+
+  if (freeSurface)
+    SDL_FreeSurface(surface);
+}
+
+void CBaseTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) 
+{
+  int tpitch;
+
+  if (m_pixels)
+    delete [] m_pixels;
+
+  imageWidth = w;
+  imageHeight = h;
+
+  if (!m_bRequiresPower2Textures)
+  {
+    textureWidth = imageWidth;
+    textureHeight = imageHeight;
+  }
+  else
+  {
+    textureWidth = PadPow2(imageWidth);
+    textureHeight = PadPow2(imageHeight);
+  }
+
+  // Resize texture to POT
+  const unsigned char *src = pixels;
+  tpitch = min(pitch,textureWidth*4);
+  m_pixels = new unsigned char[textureWidth * textureHeight * 4];
+  unsigned char* resized = m_pixels;
+
+  for (int y = 0; y < h; y++)
+  {
+    memcpy(resized, src, tpitch); // make sure pitch is not bigger than our width
+    src += pitch;
+
+    // repeat last column to simulate clamp_to_edge
+    for(int i = tpitch; i < textureWidth*4; i+=4)
+      memcpy(resized+i, src-4, 4);
+
+    resized += (textureWidth * 4);
+  }
+
+  // repeat last row to simulate clamp_to_edge
+  for(int y = h; y < textureHeight; y++) 
+  {
+    memcpy(resized, src - tpitch, tpitch);
+
+    // repeat last column to simulate clamp_to_edge
+    for(int i = tpitch; i < textureWidth*4; i+=4) 
+      memcpy(resized+i, src-4, 4);
+
+    resized += (textureWidth * 4);
+  }
+  if (loadToGPU)
+    LoadToGPU();
 }
 
 /************************************************************************/

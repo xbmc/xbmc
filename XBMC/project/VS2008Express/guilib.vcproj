@@ -189,7 +189,7 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				StringPooling="false"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -1328,11 +1328,51 @@
 				Name="DX"
 				>
 				<File
-					RelativePath="..\..\guilib\GUITextureD3D.cpp"
+					RelativePath="..\..\guilib\GraphicContextDX.cpp"
+					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GraphicContextDX.h"
 					>
 				</File>
 				<File
+					RelativePath="..\..\guilib\GUITextureD3D.cpp"
+					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath="..\..\guilib\GUITextureD3D.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\TextureManagerDX.cpp"
+					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\guilib\TextureManagerDX.h"
 					>
 				</File>
 			</Filter>

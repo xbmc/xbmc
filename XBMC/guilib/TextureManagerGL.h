@@ -31,8 +31,10 @@
 
 #pragma once
 
+#ifdef HAS_SDL_OPENGL
+
 /************************************************************************/
-/*    CSDLTexture                                                       */
+/*    CGLTexture                                                       */
 /************************************************************************/
 class CGLTexture : public CBaseTexture
 {
@@ -41,9 +43,9 @@ public:
   CGLTexture(XBMC::SurfacePtr surface, bool loadToGPU = true, bool freeSurface = false);  
   virtual ~CGLTexture();
 
-  void LoadToGPU();
-  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU); 
-  void Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface);
+  virtual void LoadToGPU();
 };
+
+#endif
 
 #endif

@@ -37,7 +37,7 @@ typedef struct FT_FaceRec_ *FT_Face;
 typedef struct FT_LibraryRec_ *FT_Library;
 typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 
-DWORD PadPow2(DWORD x);
+
 
 #ifdef _LINUX
 #define max(a,b) ((a)>(b)?(a):(b))
@@ -187,6 +187,9 @@ private:
 #ifdef HAS_SDL_OPENGL
 #include "GUIFontTTFGL.h"
 #define CGUIFontTTF CGUIFontTTFGL
+#elif defined(HAS_DX)
+#include "GUIFontTTFDX.h"
+#define CGUIFontTTF CGUIFontTTFDX
 #endif
 
 #endif

@@ -156,7 +156,7 @@
 #ifdef HAS_SDL
 #define HAS_SDL_AUDIO
 #define HAS_DVD_SWSCALE
-#ifndef HAS_SDL_2D
+#if !defined(HAS_SDL_2D) && !defined(HAS_DX)
 #define HAS_SDL_OPENGL
 #endif
 #if defined(_LINUX) && !defined(__APPLE__) && defined(HAS_SDL_OPENGL)

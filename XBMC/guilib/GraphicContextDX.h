@@ -20,30 +20,30 @@
  */
 
 /*!
-\file GraphicContext.h
+\file GraphicContextDX.h
 \brief
 */
 
-#ifndef GUILIB_GRAPHICCONTEXT_GL_H
-#define GUILIB_GRAPHICCONTEXT_GL_H
+#ifndef GUILIB_GRAPHICCONTEXT_DX_H
+#define GUILIB_GRAPHICCONTEXT_DX_H
 
 #pragma once
 
 #include "GraphicContext.h"
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_DX
 
 /*!
  \ingroup graphics
  \brief
  */
-class CGraphicContextGL : public CGraphicContext
+class CGraphicContextDX : public CGraphicContext
 {
 public:
-  CGraphicContextGL(void);
-  virtual ~CGraphicContextGL(void);
+  CGraphicContextDX(void);
+  virtual ~CGraphicContextDX(void);
 
-  virtual XBMC::DevicePtr Get3DDevice() { return NULL; }
+  virtual XBMC::DevicePtr Get3DDevice() { return m_pd3dDevice; }
   virtual void GetRenderVersion(int& maj, int& min);
 
   virtual bool ValidateSurface(Surface::CSurface* dest=NULL);
@@ -67,17 +67,32 @@ public:
   virtual void ApplyHardwareTransform();
   virtual void RestoreHardwareTransform();
 
+  void SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice);
+  //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
+  void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
+  int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
+
 protected:
   // set / get rendering api specific viewport
   virtual CRect GetRenderViewPort();
   virtual void SetRendrViewPort(CRect& viewPort);
   virtual void UpdateCameraPosition(const CPoint &camera);
-};
 
-#endif
+  // Update specific resolution.
+  // this is rendering specific implementation
+  virtual void UpdateRenderingScreenResolution(RESOLUTION& newRes, RESOLUTION& lastRes, bool forceClear = false);
+private:
+  LPDIRECT3DDEVICE9 m_pd3dDevice;
+  D3DPRESENT_PARAMETERS* m_pd3dParams;
+  std::stack<D3DVIEWPORT9*> m_viewStack;
+  DWORD m_stateBlock;
+};
 
 /*!
  \ingroup graphics
  \brief
  */
+
+#endif
+
 #endif

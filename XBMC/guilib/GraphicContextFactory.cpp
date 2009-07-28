@@ -22,6 +22,7 @@
 #include "include.h"
 #include "GraphicContextFactory.h"
 #include "GraphicContextGL.h"
+#include "GraphicContextDX.h"
 
 CGraphicContextFactory::CGraphicContextFactory(void)
 {
@@ -35,7 +36,11 @@ CGraphicContextFactory::~CGraphicContextFactory(void)
 
 CGraphicContext& CGraphicContextFactory::GetGraphicContext()
 {
+#ifdef HAS_SDL_OPENGL
   static CGraphicContextGL context;
+#elif defined (HAS_DX)
+  static CGraphicContextDX context;
+#endif
 
   return context;
 }
