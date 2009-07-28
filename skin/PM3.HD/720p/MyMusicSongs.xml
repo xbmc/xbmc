@@ -8,7 +8,8 @@
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<control type="group">
-				<animation effect="slide" start="0,0" end="970,-100" time="300" tween="quadratic" easing="out" condition="Control.IsVisible(500)">Conditional</animation>
+				<animation effect="slide" start="0,0" end="970,-100" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin) + Control.IsVisible(500)">Conditional</animation>
+				<animation effect="slide" start="0,0" end="970,-100" time="0" condition="Skin.HasSetting(Animate_Skin) + Control.IsVisible(500)">Conditional</animation>
 				<include>ContentPanel</include>
 				<include>CommonRootView</include> <!-- view id = 50 -->
 				<include>CommonListView</include> <!-- view id = 51 -->
@@ -25,7 +26,8 @@
 			<control type="group" id="9000">
 				<posx>0</posx>
 				<posy>130</posy>
-				<animation effect="slide" start="0,0" end="-275,0" time="300" tween="quadratic" easing="out" condition="[Control.IsVisible(500)] + !ControlGroup(9000).HasFocus">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-275,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin) + [[Control.IsVisible(500)] + !ControlGroup(9000).HasFocus]">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-275,0" time="0" condition="Skin.HasSetting(Animate_Skin) + [[Control.IsVisible(500)] + !ControlGroup(9000).HasFocus]">Conditional</animation>
 				<control type="image">
 					<posx>0</posx>
 					<posy>-30</posy>
