@@ -336,8 +336,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       {
         if (IsActive())
         {
-          if( message.GetStringParam() == m_vecItems->m_strPath ||
-             m_vecItems->IsMultiPath() && DIRECTORY::CMultiPathDirectory::HasPath(m_vecItems->m_strPath, message.GetStringParam()))
+          if((message.GetStringParam() == m_vecItems->m_strPath) ||
+             (m_vecItems->IsMultiPath() && DIRECTORY::CMultiPathDirectory::HasPath(m_vecItems->m_strPath, message.GetStringParam())))
           {
             Update(m_vecItems->m_strPath);
           }

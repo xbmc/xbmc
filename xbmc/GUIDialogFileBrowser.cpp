@@ -272,9 +272,8 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       {
         if (IsActive())
         {
-          if(message.GetStringParam() == m_Directory->m_strPath ||
-               m_Directory->IsMultiPath() &&
-               DIRECTORY::CMultiPathDirectory::HasPath(m_Directory->m_strPath, message.GetStringParam()))
+          if((message.GetStringParam() == m_Directory->m_strPath) ||
+             (m_Directory->IsMultiPath() && DIRECTORY::CMultiPathDirectory::HasPath(m_Directory->m_strPath, message.GetStringParam())))
           {
             int iItem = m_viewControl.GetSelectedItem();
             Update(m_Directory->m_strPath);
