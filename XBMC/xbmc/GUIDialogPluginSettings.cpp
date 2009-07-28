@@ -404,9 +404,8 @@ void CGUIDialogPluginSettings::CreateControls()
   CStdString basepath;
   if (m_url.GetProtocol().Equals("plugin"))
   { // plugins need to create path
-    basepath = "special://home/plugins/";
-    CUtil::AddFileToFolder(basepath, m_url.GetHostName(), basepath);
-    CUtil::AddFileToFolder(basepath, m_url.GetFileName(), basepath);
+    basepath = CUtil::AddFileToFolder("special://home/plugins/", m_url.GetHostName());
+    basepath = CUtil::AddFileToFolder(basepath, m_url.GetFileName());
   }
   else
     m_url.GetURL(basepath);
