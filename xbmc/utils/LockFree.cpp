@@ -40,7 +40,7 @@ void lf_stack_push(lf_stack* pStack, lf_node* pNode)
     top = pStack->top;
     pNode->next.ptr = top.ptr; // Link in the new node
     newTop.ptr = pNode;
-#ifdef __ppc__    
+#if defined(__ppc__) || defined(__powerpc__)
   } while(cas((long*)&pStack->top, atomic_ptr_to_long(top), atomic_ptr_to_long(newTop)) != atomic_ptr_to_long(top));
 #else
     newTop.version = top.version + 1;
@@ -58,7 +58,7 @@ lf_node* lf_stack_pop(lf_stack* pStack)
     if (top.ptr == NULL)
       return NULL;
     newTop.ptr = ((lf_node*)top.ptr)->next.ptr; // Unlink the current top node
-#ifdef __ppc__    
+#if defined(__ppc__) || defined(__powerpc__)
   } while(cas((long*)&pStack->top, atomic_ptr_to_long(top), atomic_ptr_to_long(newTop)) != atomic_ptr_to_long(top));
 #else
     newTop.version = top.version + 1;
@@ -183,7 +183,7 @@ void lf_queue_enqueue(lf_queue* pQueue, void* value)
   {
     tail = pQueue->tail;
     next = ((lf_queue_node*)tail.ptr)->next;
-#ifdef __ppc__    
+#if defined(__ppc__) || defined(__powerpc__)
     if (atomic_ptr_to_long(tail) == atomic_ptr_to_long(pQueue->tail)) // Check consistency
 #else    
     if (atomic_ptr_to_long_long(tail) == atomic_ptr_to_long_long(pQueue->tail)) // Check consistency
@@ -192,7 +192,7 @@ void lf_queue_enqueue(lf_queue* pQueue, void* value)
       if (next.ptr == NULL) // Was tail pointing to the last node?
       {
         node.ptr = pNode;
-#ifdef __ppc__    
+#if defined(__ppc__) || defined(__powerpc__)
         if (cas((long*)&((lf_queue_node*)tail.ptr)->next, atomic_ptr_to_long(next), atomic_ptr_to_long(node)) == atomic_ptr_to_long(next)) // Try to link node at end
 #else        
         node.version = next.version + 1;
@@ -203,7 +203,7 @@ void lf_queue_enqueue(lf_queue* pQueue, void* value)
       else // tail was lagging, try to help...
       {
         node.ptr = next.ptr;
-#ifdef __ppc__    
+#if defined(__ppc__) || defined(__powerpc__)
         cas((long*)&pQueue->tail, atomic_ptr_to_long(tail), atomic_ptr_to_long(node)); // We don't care if we  are successful or not
 #else        
         node.version = tail.version + 1;      
@@ -213,7 +213,7 @@ void lf_queue_enqueue(lf_queue* pQueue, void* value)
     }
   } while (true); // Keep trying until the enqueue is done
   node.ptr = pNode;
-#ifdef __ppc__    
+#if defined(__ppc__) || defined(__powerpc__)
   cas((long*)&pQueue->tail, atomic_ptr_to_long(tail), atomic_ptr_to_long(node)); // Try to swing the tail to the new node
 #else  
   node.version = tail.version + 1;
@@ -232,7 +232,7 @@ void* lf_queue_dequeue(lf_queue* pQueue)
     head = pQueue->head;
     tail = pQueue->tail;
     next = ((lf_queue_node*)head.ptr)->next;
-#ifdef __ppc__    
+#if defined(__ppc__) || defined(__powerpc__)
     if (atomic_ptr_to_long(head) == atomic_ptr_to_long(pQueue->head)) // Check consistency
 #else    
     if (atomic_ptr_to_long_long(head) == atomic_ptr_to_long_long(pQueue->head)) // Check consistency
@@ -243,7 +243,7 @@ void* lf_queue_dequeue(lf_queue* pQueue)
         if (next.ptr == NULL) // Queue is empty
           return NULL;
         node.ptr = next.ptr;
-#ifdef __ppc__    
+#if defined(__ppc__) || defined(__powerpc__)
         cas((long*)&pQueue->tail, atomic_ptr_to_long(tail), atomic_ptr_to_long(node)); // Tail is lagging. Try to advance it.        
 #else        
         node.version = tail.version + 1;
@@ -254,7 +254,7 @@ void* lf_queue_dequeue(lf_queue* pQueue)
       {
         pVal = ((lf_queue_node*)next.ptr)->value;
         node.ptr = next.ptr;
-#ifdef __ppc__    
+#if defined(__ppc__) || defined(__powerpc__)
         if (cas((long*)&pQueue->head, atomic_ptr_to_long(head), atomic_ptr_to_long(node)) == atomic_ptr_to_long(head))
 #else        
         node.version = head.version + 1;
