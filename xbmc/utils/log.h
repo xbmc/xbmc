@@ -22,6 +22,7 @@
  */
 
 #include <stdio.h>
+#include "FileSystem/File.h"
 
 #define LOG_LEVEL_NONE         -1 // nothing at all is logged
 #define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
@@ -48,7 +49,7 @@
 
 class CLog
 {
-  static FILE* fd;
+  static XFILE::CFile *m_file;
 public:
   CLog();
   virtual ~CLog(void);
