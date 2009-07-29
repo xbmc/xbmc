@@ -120,7 +120,7 @@ extern "C" void* _swab();
 extern "C" void* dll_findclose();
 extern "C" void* dll_findfirst();
 extern "C" void* dll_findnext();
-extern "C" void* _fullpath();
+extern "C" void* dll_fullpath();
 extern "C" void* _pctype();
 extern "C" void* dllcalloc();
 extern "C" void* ceil();
@@ -405,7 +405,7 @@ Export export_msvcrt[] =
 #else
   { "_swab",                      -1, (void*)swab,                          NULL },
 #endif
-  { "_fullpath",                  -1, (void*)_fullpath,                     NULL },
+  { "_fullpath",                  -1, (void*)dll_fullpath,                     NULL },
   { "calloc",                     -1, (void*)dllcalloc,                     (void*)track_calloc},
   { "ceil",                       -1, (void*)ceil,                          NULL },
   { "ctime",                      -1, (void*)ctime,                         NULL },
@@ -618,7 +618,7 @@ Export export_msvcr71[] =
   { "_strdup",                    -1, (void*)strdup,                        (void*)track_strdup },
   { "_swab",                      -1, (void*)swab,                          NULL },
 #endif
-  { "_fullpath",                  -1, (void*)_fullpath,                     NULL },
+  { "_fullpath",                  -1, (void*)dll_fullpath,                     NULL },
   { "calloc",                     -1, (void*)dllcalloc,                     (void*)track_calloc },
   { "ceil",                       -1, (void*)ceil,                          NULL },
   { "ctime",                      -1, (void*)ctime,                         NULL },
