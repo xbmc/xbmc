@@ -44,7 +44,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 30
+#define VIDEO_DATABASE_VERSION 31
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -3576,6 +3576,41 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
                                        "join tvshow on tvshow.idshow=tvshowlinkepisode.idshow "
                                        "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA);
       m_pDS->exec(episodeview.c_str());
+    }
+    if (iVersion < 31)
+    {
+      const char* tag1[] = {"idmovie","idshow","idepisode","idmvideo","idactor"};
+      const char* tag2[] = {"c08","c06","c06","c02","strThumb"};
+      const char* tag3[] = {"movie","tvshow","episode","musicvideo","actors"};
+      for (int i=0;i<5;++i)
+      {
+        CStdString strSQL=FormatSQL("select %s,%s from %s",
+                                    tag1[i],tag2[i],tag3[i]);
+        m_pDS->query(strSQL.c_str());
+        while (!m_pDS->eof())
+        {
+          TiXmlDocument doc;
+          doc.Parse(m_pDS->fv(1).get_asString().c_str());
+          if (!doc.RootElement() || !doc.RootElement()->FirstChildElement("thumb"))
+          {
+            m_pDS->next();
+            continue;
+          }
+          const TiXmlElement* thumb = doc.RootElement()->FirstChildElement("thumb");
+          stringstream str;
+          while (thumb)
+          {
+            str << *thumb;
+            thumb = thumb->NextSiblingElement("thumb");
+          }
+          CStdString strSQL = FormatSQL("update %s set %s='%s' where %s=%u",
+                                        tag3[i],tag2[i],
+                                        str.str().c_str(),tag1[i],
+                                        m_pDS->fv(0).get_asLong());
+          m_pDS2->exec(strSQL.c_str());
+          m_pDS->next();
+        }
+      }
     }
   }
   catch (...)
