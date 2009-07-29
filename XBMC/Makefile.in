@@ -234,7 +234,9 @@ visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
+ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/visualizations/Goom
+endif
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 libpython: dllloader
