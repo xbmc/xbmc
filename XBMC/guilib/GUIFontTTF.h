@@ -49,22 +49,12 @@ typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 //       Ideally we'd have a common round_int routine that does float -> float, as this is the case
 //       we actually use (both here and in CGUIImage)
 //#define ROUND rintf
-//#define ROUND_TO_PIXEL rintf
+//#define RoundToPixel rintf
 #define ROUND(x) MathUtils::round_int(x)
-#define ROUND_TO_PIXEL(x) MathUtils::round_int(x)
+#define RoundToPixel(x) MathUtils::round_int(x)
 #define TRUNC_TO_PIXEL(x) MathUtils::truncate_int(x)
 #else
-
 #define ROUND(x) (float)(MathUtils::round_int(x))
-
-#if defined(HAS_SDL_OPENGL)
-#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
-#define TRUNC_TO_PIXEL(x) (float)(MathUtils::truncate_int(x))
-#else
-#define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x)) - 0.5f
-#define TRUNC_TO_PIXEL(x) (float)(MathUtils::truncate_int(x)) - 0.5f
-#endif
-
 #endif // _LINUX
 
 
@@ -85,6 +75,8 @@ public:
 
   bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f);
 
+  virtual float RoundToPixel(float x) = 0;
+  virtual float TruncToPixel(float x) = 0;
   virtual void Begin() = 0;
   virtual void End() = 0;
 
@@ -124,7 +116,7 @@ protected:
   // Stuff for pre-rendering for speed
   inline Character *GetCharacter(DWORD letter);
   bool CacheCharacter(WCHAR letter, DWORD style, Character *ch);
-  inline void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX);
+  void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX);
   void ClearCharacterCache();
 
   virtual void ReleaseCharactersTexture() = 0;

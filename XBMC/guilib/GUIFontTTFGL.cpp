@@ -41,6 +41,9 @@
 
 using namespace std;
 
+#ifdef HAS_SDL_OPENGL
+
+
 CGUIFontTTFGL::CGUIFontTTFGL(const CStdString& strFileName)
 : CGUIFontTTFBase(strFileName)
 {
@@ -50,6 +53,16 @@ CGUIFontTTFGL::CGUIFontTTFGL(const CStdString& strFileName)
 CGUIFontTTFGL::~CGUIFontTTFGL(void)
 {
   
+}
+
+float CGUIFontTTFGL::RoundToPixel(float x) 
+{ 
+  return MathUtils::round_int(x); 
+}
+
+float CGUIFontTTFGL::TruncToPixel(float x) 
+{ 
+  return MathUtils::truncate_int(x); 
 }
 
 void CGUIFontTTFGL::Begin()
@@ -129,3 +142,5 @@ void CGUIFontTTFGL::ReleaseCharactersTexture()
     m_bTextureLoaded = false;
   }
 }
+
+#endif

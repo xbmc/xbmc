@@ -691,10 +691,10 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     // altering the width of thin characters substantially.  This only really works for positive
     // coordinates (due to the direction of truncation for negatives) but this is the only case that
     // really interests us anyway.
-    float rx0 = ROUND_TO_PIXEL(x[0]);
-    float rx3 = ROUND_TO_PIXEL(x[3]);
-    x[1] = TRUNC_TO_PIXEL(x[1]);
-    x[2] = TRUNC_TO_PIXEL(x[2]);
+    float rx0 = RoundToPixel(x[0]);
+    float rx3 = RoundToPixel(x[3]);
+    x[1] = TruncToPixel(x[1]);
+    x[2] = TruncToPixel(x[2]);
     if (rx0 > x[0])
       x[1] += 1;
     if (rx3 > x[3])
@@ -703,18 +703,23 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     x[3] = rx3;
   }
 
-  float y1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
-  float y2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
-  float y3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
-  float y4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+  float y1 = RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  float y2 = RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  float y3 = RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  float y4 = RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
 
-#ifndef HAS_SDL_2D
-  float z1 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
-  float z2 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-  float z3 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-  float z4 = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
-#endif
+  float z1 = RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  float z2 = RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  float z3 = RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
+  float z4 = RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
+  // tex coords converted to 0..1 range
+  float tl = texture.x1 * m_textureScaleX;
+  float tr = texture.x2 * m_textureScaleX;
+  float tt = texture.y1 * m_textureScaleY;
+  float tb = texture.y2 * m_textureScaleY;
+
+  /*
 #if !defined(HAS_SDL)
 struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -722,11 +727,12 @@ struct CUSTOMVERTEX {
       FLOAT tu, tv;   // Texture coordinates
   };
 
-  // tex coords converted to 0..1 range
-  float tl = texture.x1 * m_textureScaleX;
-  float tr = texture.x2 * m_textureScaleX;
-  float tt = texture.y1 * m_textureScaleY;
-  float tb = texture.y2 * m_textureScaleY;
+  struct SVertex
+  {
+  float u, v;
+  unsigned char r, g, b, a;    
+  float x, y, z;
+  };
 
   CUSTOMVERTEX verts[4] =  {
     { x[0], y1, z1, dwColor, tl, tt},
@@ -736,48 +742,7 @@ struct CUSTOMVERTEX {
   };
 
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
-#elif defined(HAS_SDL_2D)
-
-  // Copy the character to a temporary surface so we can adjust its colors
-  SDL_Surface* tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE|SDL_SRCALPHA, (int) width, (int) height, 32,
-        RMASK, GMASK, BMASK, AMASK);
-
-  SDL_LockSurface(tempSurface);
-  SDL_LockSurface(m_texture);
-
-  unsigned int* src = (unsigned int*) m_texture->pixels + ((int) ch->top * m_texture->w) + ((int) ch->left);
-  unsigned int* dst = (unsigned int*) tempSurface->pixels;
-
-  // Calculate the alpha per pixel based on the alpha channel of the pixel and the alpha channel of
-  // the requested color
-  int alpha;
-  float alphaFactor = (float) ((dwColor & 0xff000000) >> 24) / 255;
-  for (int y = 0; y < tempSurface->h; y++)
-  {
-    for (int x = 0; x < tempSurface->w; x++)
-    {
-      alpha = (int) (alphaFactor * (((unsigned int) src[x] & 0xff000000) >> 24));
-      dst[x] = (alpha << 24) | (dwColor & 0x00ffffff);
-    }
-
-    src += (m_texture->pitch / 4);
-    dst += tempSurface->w;
-  }
-
-  SDL_UnlockSurface(tempSurface);
-  SDL_UnlockSurface(m_texture);
-
-  // Copy the surface to the screen (without angle).
-  SDL_Rect dstRect2 = { (Sint16) x[0], (Sint16) y1, 0 , 0 };
-  g_graphicsContext.BlitToScreen(tempSurface, NULL, &dstRect2);
-
-  SDL_FreeSurface(tempSurface);
-#elif defined(HAS_SDL_OPENGL)
-  // tex coords converted to 0..1 range
-  float tl = texture.x1 * m_textureScaleX;
-  float tr = texture.x2 * m_textureScaleX;
-  float tt = texture.y1 * m_textureScaleY;
-  float tb = texture.y2 * m_textureScaleY;
+  */
 
   // grow the vertex buffer if required
   if(m_vertex_count >= m_vertex_size)
@@ -821,7 +786,6 @@ struct CUSTOMVERTEX {
   v[3].z = z4;
 
   m_vertex_count+=4;
-#endif
 }
 
 // Oblique code - original taken from freetype2 (ftsynth.c)

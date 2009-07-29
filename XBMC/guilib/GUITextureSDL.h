@@ -44,7 +44,6 @@ class CCachedTexture
     DWORD        diffuseColor;
 };
 
-#define CGUITexture CGUITextureSDL
 
 class CGUITextureSDL : public CGUITextureBase
 {

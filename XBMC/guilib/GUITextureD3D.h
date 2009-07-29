@@ -33,8 +33,6 @@
 
 #ifndef HAS_SDL
 
-#define CGUITexture CGUITextureD3D
-
 class CGUITextureD3D : public CGUITextureBase
 {
 public:

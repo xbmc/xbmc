@@ -69,7 +69,7 @@ struct D3DPalette
 
 typedef D3DPalette* LPDIRECT3DPALETTE8;
 
-#ifdef HAS_SDL
+#ifdef HAS_SDL_OPENGL
 
 #include <SDL/SDL.h>
 namespace XBMC
@@ -93,15 +93,12 @@ namespace XBMC
 #define LOCK_TEXTURE(texture) SDL_LockSurface(texture)
 #define UNLOCK_TEXTURE(texture) SDL_UnlockSurface(texture)
 
-#ifdef HAS_SDL_OPENGL
-
 #if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
 #define GL_GLEXT_PROTOTYPES
 #endif
 
 #include <GL/glew.h>
 
-#endif
 #elif defined (HAS_DX)
 namespace XBMC
 {

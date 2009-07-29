@@ -1344,6 +1344,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\guilib\GUIFontTTFDX.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\GUIFontTTFDX.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\guilib\GUITextureD3D.cpp"
 					>
 					<FileConfiguration

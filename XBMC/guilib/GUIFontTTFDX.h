@@ -24,8 +24,8 @@
 \brief
 */
 
-#ifndef CGUILIB_GUIFONTTTF_GL_H
-#define CGUILIB_GUIFONTTTF_GL_H
+#ifndef CGUILIB_GUIFONTTTF_DX_H
+#define CGUILIB_GUIFONTTTF_DX_H
 #pragma once
 
 
@@ -36,20 +36,21 @@
  \ingroup textures
  \brief
  */
-class CGUIFontTTFGL : public CGUIFontTTFBase
+class CGUIFontTTFDX : public CGUIFontTTFBase
 {
 public:
-  CGUIFontTTFGL(const CStdString& strFileName);
-  virtual ~CGUIFontTTFGL(void);
+  CGUIFontTTFDX(const CStdString& strFileName);
+  virtual ~CGUIFontTTFDX(void);
 
   virtual float RoundToPixel(float x);
   virtual float TruncToPixel(float x);
 
   virtual void Begin();
   virtual void End();
-
+  
 protected:
   virtual void ReleaseCharactersTexture();
+  LPDIRECT3DDEVICE9 m_pD3DDevice;
 };
 
 #endif

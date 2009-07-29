@@ -197,13 +197,14 @@ protected:
 };
 
 
-#ifndef HAS_SDL
-#include "GUITextureD3D.h"
-#elif defined(HAS_SDL_2D)
+#if defined(HAS_SDL_2D)
 #include "GUITextureSDL.h"
 #elif defined(HAS_SDL_OPENGL)
 #include "GUITextureGL.h"
 #define CGUITexture CGUITextureGL
+#elif defined(HAS_DX)
+#include "GUITextureD3D.h"
+#define CGUITexture CGUITextureD3D
 #endif
 
 #endif
