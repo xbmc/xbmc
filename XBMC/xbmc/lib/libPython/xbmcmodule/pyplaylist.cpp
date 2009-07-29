@@ -100,7 +100,7 @@ namespace PYXBMC
       return Py_BuildValue((char*)"l", self->item->GetMusicInfoTag()->GetDuration());
 
     if (self->item->HasVideoInfoTag())
-      return Py_BuildValue((char*)"l", self->item->GetVideoInfoTag()->m_strRuntime);
+      return Py_BuildValue((char*)"s", self->item->GetVideoInfoTag()->m_strRuntime.c_str());
 
     return Py_BuildValue((char*)"l", 0);
   }
