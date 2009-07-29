@@ -614,6 +614,24 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
     }
     genre = genre->NextSiblingElement("Genre");
   }
+  // MyMovies categories to genres
+  if (g_advancedSettings.m_bVideoLibraryMyMoviesCategoriesToGenres)
+  {
+    node = movie->FirstChild("Categories");
+    const TiXmlNode *category = node->FirstChildElement("Category");
+    while (category)
+    {
+      if (category && category->FirstChild())
+      {
+        strTemp = category->FirstChild()->Value();
+        if (m_strGenre.IsEmpty())
+          m_strGenre = strTemp;
+        else
+          m_strGenre += g_advancedSettings.m_videoItemSeparator+strTemp;
+      }
+      category = category->NextSiblingElement("Category");
+    }
+  }
   // studios
   node = movie->FirstChild("Studios");
   while (node)
