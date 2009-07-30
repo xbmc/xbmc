@@ -124,7 +124,11 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     /* fixup newline alignment, number of spaces should equal prefix length */
     strData.Replace("\n", "\n                                            ");
+#ifndef _LINUX
+    strData += "\r\n";
+#else
     strData += "\n";
+#endif
 
     m_file->Write(strPrefix.c_str(), strPrefix.size());
     m_file->Write(strData.c_str(), strData.size());
