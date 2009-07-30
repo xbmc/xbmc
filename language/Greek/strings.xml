@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 07/27/2009-->
+<!--Date of translation: 07/30/2009-->
 <!--$Revision$-->
 <!--Based on english strings version 21874-->
 <strings>
@@ -539,7 +539,7 @@
   <string id="633">Επέκταση 14:9</string>
   <string id="634">Επέκταση 16:9</string>
   <string id="635">Κανονικό μέγεθος</string>
-  <string id="636">Προσωπικό</string>
+  <string id="636">Προσαρμογή</string>
   <string id="637">Ενίσχυση ήχου</string>
   <string id="638">Μέθοδος ενίσχυσης ήχου</string>
   <string id="639">Σε επίπεδο κομματιού</string>
@@ -1547,7 +1547,7 @@
   <string id="20147">Τερματισμός σε 30 λεπτά</string>
   <string id="20148">Τερματισμός σε 60 λεπτά</string>
   <string id="20149">Τερματισμός σε 120 λεπτά</string>
-  <string id="20150">Προσωπικός χρονοδιακόπτης τερματισμού</string>
+  <string id="20150">Προσαρμογή χρονοδιακόπτη τερματισμού</string>
   <string id="20151">Ακύρωση χρονοδιακόπτη τερματισμού</string>
   <string id="20152">Κλείδωμα ρυθμίσεων για %s</string>
   <string id="20153">Αναζήτηση...</string>
@@ -1587,7 +1587,7 @@
   <string id="20187">Επανάκτηση EEPROM</string>
   <string id="20188">Επανάκτηση BIOS</string>
   <string id="20189">Ενεργοποίηση αυτόματης κύλισης στην επισκόπηση πλοκής &amp; κριτικής</string>
-  <string id="20190">Προσωπικό</string>
+  <string id="20190">Προσαρμογή</string>
   <string id="20191">Ενεργοποίηση καταγραφής αποσφαλμάτωσης</string>
   <string id="20192">Ανάκτηση πληροφοριών άλμπουμ κατά προσθήκη</string>
   <string id="20193">Ανάκτηση πληροφοριών καλλιτέχνη κατά προσθήκη</string>
@@ -1752,7 +1752,7 @@
   <string id="21363">Διαχείριση κοινόχρηστων εικόνων (UPnP)</string>
   <string id="21364">Επεξεργασία κοινόχρηστων πολυμέσων</string>
   <string id="21365">Απομάκρυνση κοινόχρηστων πολυμέσων</string>
-  <string id="21366">Προσαρμοσμένος φάκελος υποτίτλων</string>
+  <string id="21366">Προσαρμογή φακέλου υποτίτλων</string>
   <string id="21367">Ταινία &amp; εναλλακτικός φάκελος υποτίτλων</string>
   <string id="21369">Ενεργοποίηση ποντικιού</string>
   <string id="21370">Ενεργοποίηση ήχων πλοήγησης κατά την εκτέλεση πολυμέσων</string>
@@ -1844,7 +1844,7 @@
   <string id="21821">Περιγραφή</string>
   <string id="21822">Κατασκευαστής κάμερας</string>
   <string id="21823">Μοντέλο κάμερας</string>
-  <string id="21824">ΣχόλιαEXIF</string>
+  <string id="21824">Σχόλια EXIF</string>
   <string id="21825">Έκδοση υλικού</string>
   <string id="21826">Διάφραγμα</string>
   <string id="21827">Εστιακή απόσταση</string>
@@ -1987,10 +1987,10 @@
   <string id="33049">Προειδοποίηση</string>
   <string id="33050">Προειδοποιήσεις</string>
   <string id="33051">Επιλογή</string>
-  <string id="33052">Διερεύνηση</string>
+  <string id="33052">Πρόγνωση</string>
   <string id="33053">Ρύθμιση</string>
-  <string id="33054">Εποχές</string>
-  <string id="33055">Χρήση</string>
+  <string id="33054">Κύκλοι</string>
+  <string id="33055">Εκτέλεση</string>
   <string id="33056">Παρακολούθηση</string>
   <string id="33057">Ακρόαση</string>
   <string id="33058">Προβολή</string>
@@ -2000,7 +2000,7 @@
   <string id="33062">Αναπαραγωγή</string>
   <string id="33063">Επιλογές</string>
   <string id="33065">Επεξεργαστής</string>
-  <string id="33066">Σχετικά</string>
+  <string id="33066">Περιήγηση</string>
   <string id="33067">Αξιολόγηση</string>
   <string id="33068">Υπόβαθρο</string>
   <string id="33069">Υπόβαθρα</string>
