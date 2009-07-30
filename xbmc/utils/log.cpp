@@ -37,6 +37,12 @@ static CCriticalSection critSec;
 static char levelNames[][8] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
 
+#ifdef _WIN32PC
+#define LINE_ENDING "\r\n"
+#else
+#define LINE_ENDING "\n"
+#endif
+
 
 CLog::CLog()
 {}
@@ -123,12 +129,8 @@ void CLog::Log(int loglevel, const char *format, ... )
 #endif
 
     /* fixup newline alignment, number of spaces should equal prefix length */
-    strData.Replace("\n", "\n                                            ");
-#ifndef _LINUX
-    strData += "\r\n";
-#else
-    strData += "\n";
-#endif
+    strData.Replace("\n", LINE_ENDING"                                            ");
+    strData += LINE_ENDING;
 
     m_file->Write(strPrefix.c_str(), strPrefix.size());
     m_file->Write(strData.c_str(), strData.size());
