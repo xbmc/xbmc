@@ -282,8 +282,6 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 
 /////////////////////////////////////////////////////////////
 // AutoSource status functions:
-// - check only in video as auto source is added to all types
-// - could be also implemented as direct call to the device
 // - TODO: translate cdda://<device>/
 
 CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool bReturnAsDevice)
@@ -309,22 +307,15 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 {
 #ifdef _WIN32PC
   CSingleLock waitLock(m_muAutoSource);
-  VECSOURCES *pShares = g_settings.GetSourcesFromType("video");
-  if (!pShares) return false;
-
-  CStdString strDevice = TranslateDevicePath(devicePath);
-  VECSOURCES::const_iterator it;
-  for(it=pShares->begin();it!=pShares->end();++it)
-    if(it->strPath.Equals(strDevice)) return true;
-  return false;
+  if(GetDriveStatus(devicePath) == DRIVE_CLOSED_MEDIA_PRESENT)
+    return true;
+  else
+    return false;
 #else 
   // TODO: switch all ports to use auto sources
   return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();
 #endif
 }
-
-// End AutoSource status functions
-//////////////////////////////////
 
 bool CMediaManager::IsAudio(const CStdString& devicePath)
 {
