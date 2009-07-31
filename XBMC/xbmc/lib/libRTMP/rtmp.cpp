@@ -421,11 +421,6 @@ bool CRTMP::SendPause(bool DoPause, double dTime)
   return SendRTMP(packet);
 }
 
-bool CRTMP::Seek(double dTime)
-{
-  return SendSeek(dTime);
-}
-
 bool CRTMP::SendSeek(double dTime)
 {
   RTMPPacket packet;
@@ -717,37 +712,13 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
   {
     CLog::Log(LOGERROR, "%s, failed to read RTMP packet header", __FUNCTION__);
     return false;
-  }
+  } 
 
   packet.m_headerType = (type & 0xc0) >> 6;
   packet.m_nChannel = (type & 0x3f);
 
-  if (packet.m_nChannel == 0)
-  {
-    if (ReadN(&type,1) != 1)
-    {
-      CLog::Log(LOGERROR, "%s, failed to read RTMP packet header 2nd byte", __FUNCTION__);
-      return false;
-    }
-    packet.m_nChannel = (unsigned)type;
-    packet.m_nChannel += 64;
-  }
-  else if (packet.m_nChannel == 1)
-  {
-    char t[2];
-    int tmp;
-    if (ReadN(t,2) != 2)
-    {
-      CLog::Log(LOGERROR, "%s, failed to read RTMP packet header 3rd byte", __FUNCTION__);
-      return false;
-    }
-    tmp = (((unsigned)t[0])<<8) + (unsigned)t[1];
-    packet.m_nChannel = tmp + 64;
-    CLog::Log(LOGDEBUG, "%s, m_nChannel: %0x", __FUNCTION__, packet.m_nChannel);
-  }
-
   int nSize = packetSize[packet.m_headerType];
-
+ 
   if (nSize == RTMP_LARGE_HEADER_SIZE)
     packet.m_hasAbsTimestamp = true;
 
@@ -756,7 +727,7 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
     packet.FreePacketHeader();
     packet = m_vecChannelsIn[packet.m_nChannel];
   }
-
+  
   nSize--;
 
   char header[RTMP_LARGE_HEADER_SIZE] = {0};
@@ -778,7 +749,7 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
     packet.m_nBytesRead = 0;
     packet.FreePacketHeader(); // new packet body
   }
-
+  
   if (nSize > 6)
     packet.m_packetType = header[6];
 
@@ -794,13 +765,13 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
   int nToRead = packet.m_nBodySize - packet.m_nBytesRead;
   int nChunk = m_chunkSize;
   if (nToRead < nChunk)
-    nChunk = nToRead;
+     nChunk = nToRead;
 
   if (ReadN(packet.m_body + packet.m_nBytesRead, nChunk) != nChunk)
   {
     CLog::Log(LOGERROR, "%s, failed to read RTMP packet body. len: %lu", __FUNCTION__, packet.m_nBodySize);
     packet.m_body = NULL; // we dont want it deleted since its pointed to from the stored packets (m_vecChannelsIn)
-    return false;
+    return false;  
   }
 
   packet.m_nBytesRead += nChunk;
@@ -813,9 +784,9 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
     // make packet's timestamp absolute
     if (!packet.m_hasAbsTimestamp)
       packet.m_nInfoField1 += m_channelTimestamp[packet.m_nChannel];
-
+    
     m_channelTimestamp[packet.m_nChannel] = packet.m_nInfoField1;
-
+    
     // reset the data from the stored packet. we keep the header since we may use it later if a new packet for this channel
     // arrives and requests to re-use some info (small packet header)
     m_vecChannelsIn[packet.m_nChannel].m_body = NULL;

@@ -41,13 +41,13 @@ namespace RTMP_LIB
       bool AllocPacket(int nSize);
       void FreePacket();
       void FreePacketHeader();
-
+      
       inline bool IsReady() { return m_nBytesRead == m_nBodySize; }
       void Dump();
 
       BYTE           m_headerType;
       BYTE           m_packetType;
-      int            m_nChannel;
+      BYTE           m_nChannel;
       int            m_nInfoField1; // 3 first bytes
       int            m_nInfoField2; // last 4 bytes in a long header
       bool           m_hasAbsTimestamp; // timestamp absolute or relative?
