@@ -4247,7 +4247,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           if (CFile::Exists(item.GetCachedArtistThumb()) && (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strPath,"folder.jpg"))))
             CFile::Cache(item.GetCachedArtistThumb(),CUtil::AddFileToFolder(strPath,"folder.jpg"));
           if (CFile::Exists(item.GetCachedFanart()) && (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strPath,"fanart.jpg"))))
-            CFile::Cache(item.GetCachedArtistThumb(),CUtil::AddFileToFolder(strPath,"fanart.jpg"));
+            CFile::Cache(item.GetCachedFanart(),CUtil::AddFileToFolder(strPath,"fanart.jpg"));
         }
         xmlDoc.Clear();
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
