@@ -221,7 +221,8 @@ public:
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
-    CStdStringArray m_videoCleanRegExps;
+    CStdString m_videoCleanDateTimeRegExp;
+    CStdStringArray m_videoCleanStringRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
     CStdStringArray m_moviesExcludeFromScanRegExps;
     CStdStringArray m_tvshowExcludeFromScanRegExps;
