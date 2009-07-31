@@ -2333,6 +2333,7 @@ const BUILT_IN commands[] = {
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
   { "PlayerControl",              true,   "Control the music or video player" },
   { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
+  { "Playlist.Clear",             false,  "Clear the current playlist" },
   { "EjectTray",                  false,  "Close or open the DVD tray" },
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
@@ -3021,6 +3022,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // get current playlist
     int pos = atol(parameter.c_str());
     g_playlistPlayer.PlayNext(pos);
+  }
+  else if (execute.Equals("playlist.clear"))
+  {
+    g_playlistPlayer.Clear();
   }
   else if (execute.Equals("ejecttray"))
   {
