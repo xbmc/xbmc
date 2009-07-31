@@ -717,7 +717,9 @@ void CGUIWindowFullScreen::RenderFullScreen()
       m_timeCodeShow = false;
       m_timeCodePosition = 0;
     }
-    CStdString strDispTime = "??:??";
+    CStdString strDispTime = "hh:mm";
+    char timeTemp[16];
+    snprintf(timeTemp,16,"%02i:%02i (hh:mm)",g_application.m_pPlayer->GetTotalTime()/3600,g_application.m_pPlayer->GetTotalTime()/60);
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
     for (int count = 0; count < m_timeCodePosition; count++)
@@ -727,7 +729,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       else
         strDispTime[count] = (char)m_timeCodeStamp[count] + 48;
     }
-    strDispTime += "/" + g_infoManager.GetVideoLabel(257) + " [" + g_infoManager.GetVideoLabel(254) + "]"; // duration [ time ]
+    strDispTime += "/" + g_infoManager.GetVideoLabel(257) + " [" + timeTemp + "]"; // duration [ time ]
     msg.SetLabel(strDispTime);
     OnMessage(msg);
   }

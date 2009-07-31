@@ -247,9 +247,17 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
 __int64 CDVDInputStreamRTMP::Seek(__int64 offset, int whence)
 {
   if(whence == SEEK_POSSIBLE)
-    return 0;
+    return 1;
   else
-    return -1;
+  {
+    if (m_rtmp->Seek((double)offset))
+    {
+      return offset;
+      m_bSentHeader = false;
+    }
+    else
+      return -1;
+  }
 }
 
 __int64 CDVDInputStreamRTMP::GetLength()

@@ -38,6 +38,7 @@ namespace RTMP_LIB
       void SetPageUrl(const std::string &strPageUrl);
       void SetPlayPath(const std::string &strPlayPath);
       void SetLive();
+      bool Seek(double dTime);
       void SetBufferMS(int size);
 
       bool Connect(const std::string &strRTMPLink, double dTime = 0);
@@ -119,9 +120,9 @@ namespace RTMP_LIB
       char *m_pBuffer;      // data read from socket
       char *m_pBufferStart; // pointer into m_pBuffer of next byte to process
       int  m_nBufferSize;   // number of unprocessed bytes in buffer
-      RTMPPacket m_vecChannelsIn[64];
-      RTMPPacket m_vecChannelsOut[64];
-      int  m_channelTimestamp[64]; // abs timestamp of last packet
+      RTMPPacket m_vecChannelsIn[65600];
+      RTMPPacket m_vecChannelsOut[65600];
+      int  m_channelTimestamp[65600]; // abs timestamp of last packet
 
       double m_dStartPoint;
 
