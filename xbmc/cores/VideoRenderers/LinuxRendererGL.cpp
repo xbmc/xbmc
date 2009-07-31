@@ -1257,6 +1257,7 @@ void CLinuxRendererGL::UnInit()
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
+  m_rgbBufferSize = 0;
 
 #ifdef HAVE_LIBVDPAU
   if (g_VDPAU)
