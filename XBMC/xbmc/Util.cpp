@@ -403,7 +403,7 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   if (strFileName.Equals(".."))
    return;
 
-  const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
+  const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
   CRegExp reTags, reYear;
   CStdString strYear, strExtension;
@@ -415,7 +415,7 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
     RemoveExtension(strFileNameTemp);
   }
 
-  reYear.RegComp("(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp);
   if (reYear.RegFind(strFileNameTemp.c_str()) >= 0)
   {
     strFileNameTemp = reYear.GetReplaceString("\\1");
