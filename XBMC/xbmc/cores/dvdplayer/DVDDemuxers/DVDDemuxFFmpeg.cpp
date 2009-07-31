@@ -321,6 +321,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       //if(context->is_streamed)
       //  streaminfo = false;
     }
+    else if (m_pInput->IsStreamType(DVDSTREAM_TYPE_RTMP))
+    {
+      context->is_streamed = 1;
+    }
     else
     {
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
@@ -811,6 +815,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 {
   g_demuxer = this;
+  int ret = -1;
 
   if(time < 0)
     time = 0;
@@ -849,7 +854,17 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     seek_pts += m_pFormatContext->start_time;
 
   Lock();
-  int ret = m_dllAvFormat.av_seek_frame(m_pFormatContext, -1, seek_pts, backwords ? AVSEEK_FLAG_BACKWARD : 0);
+
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_RTMP))
+  {
+    if (!m_pInput->Seek(time, 0))
+      return false;
+    UpdateCurrentPTS();
+    Unlock();
+    return true;
+  }
+
+  ret = m_dllAvFormat.av_seek_frame(m_pFormatContext, -1, seek_pts, backwords ? AVSEEK_FLAG_BACKWARD : 0);
 
   if(ret >= 0)
     UpdateCurrentPTS();
