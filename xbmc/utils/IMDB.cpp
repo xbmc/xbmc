@@ -458,29 +458,32 @@ void CIMDB::GetURL(const CStdString &movieFile, const CStdString &movieName, con
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
 }
 
-// TODO: Make this user-configurable?
 void CIMDB::GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear)
 {
-#define SEP " _\\.\\(\\)\\[\\]\\-"
-  CRegExp reYear;
-  reYear.RegComp("(.+[^"SEP"])["SEP"]+(19[0-9][0-9]|20[0-1][0-9])(["SEP"]|$)");
-
   strMovieName.ToLower();
 
-  if (reYear.RegFind(strMovieName.c_str()) >= 0)
+  CRegExp reYear;
+  if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
-    char *pMovie = reYear.GetReplaceString("\\1");
-    char *pYear = reYear.GetReplaceString("\\2");
-
-    if(pMovie)
+    CLog::Log(LOGERROR, "%s: Invalid datetime clean RegExp:'%s'", __FUNCTION__, g_advancedSettings.m_videoCleanDateTimeRegExp.c_str());
+  }
+  else
+  {
+    if (reYear.RegFind(strMovieName.c_str()) >= 0)
     {
-      strMovieName = pMovie;
-      free(pMovie);
-    }
-    if(pYear)
-    {
-      strYear = pYear;
-      free(pYear);
+      char *pMovie = reYear.GetReplaceString("\\1");
+      char *pYear = reYear.GetReplaceString("\\2");
+ 
+      if(pMovie)
+      {
+        strMovieName = pMovie;
+        free(pMovie);
+      }
+      if(pYear)
+      {
+        strYear = pYear;
+        free(pYear);
+      }
     }
   }
   // get clean string
