@@ -415,18 +415,24 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
     RemoveExtension(strFileNameTemp);
   }
 
-  reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp);
-  if (reYear.RegFind(strFileNameTemp.c_str()) >= 0)
+  if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
-    strFileNameTemp = reYear.GetReplaceString("\\1");
-    strYear = reYear.GetReplaceString("\\2");
+    CLog::Log(LOGERROR, "%s: Invalid datetime clean RegExp:'%s'", __FUNCTION__, g_advancedSettings.m_videoCleanDateTimeRegExp.c_str());
+  }
+  else
+  {
+    if (reYear.RegFind(strFileNameTemp.c_str()) >= 0)
+    {
+      strFileNameTemp = reYear.GetReplaceString("\\1");
+      strYear = reYear.GetReplaceString("\\2");
+    }
   }
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
     if (!reTags.RegComp(regexps[i].c_str()))
     { // invalid regexp - complain in logs
-      CLog::Log(LOGERROR, "%s: Invalid clean RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
+      CLog::Log(LOGERROR, "%s: Invalid string clean RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
       continue;
     }
     int j=0;
