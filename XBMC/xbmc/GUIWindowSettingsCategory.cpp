@@ -1402,6 +1402,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
     }
+    else if (strSetting.Equals("lookandfeel.rssedit"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      pControl->SetEnabled(XFILE::CFile::Exists("special://home/scripts/RssTicker/default.py"));
+    }
     else if (!strSetting.Equals("musiclibrary.enabled")
       && strSetting.Left(13).Equals("musiclibrary."))
     {
@@ -1492,6 +1497,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
     g_weatherManager.ResetTimer();
   }
+  else if (strSetting.Equals("lookandfeel.rssedit"))
+    CUtil::ExecBuiltIn("RunScript(special://home/scripts/RssTicker/default.py)");
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
   // require immediate update

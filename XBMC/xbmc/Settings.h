@@ -457,6 +457,7 @@ public:
 
   bool SaveSources();
 
+  void LoadRSSFeeds();
 protected:
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
   void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
@@ -492,8 +493,6 @@ protected:
   void LoadAdvancedSettings();
 
   void LoadUserFolderLayout();
-
-  void LoadRSSFeeds();
 };
 
 extern class CSettings g_settings;
