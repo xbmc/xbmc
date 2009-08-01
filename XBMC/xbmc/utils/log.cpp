@@ -134,7 +134,6 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     m_file->Write(strPrefix.c_str(), strPrefix.size());
     m_file->Write(strData.c_str(), strData.size());
-    m_file->Flush();
 
   }
 #ifndef _LINUX
