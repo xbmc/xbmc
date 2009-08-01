@@ -1013,8 +1013,9 @@ void CFileItem::CleanString()
     bIsFolder = true;
 
   CStdString strLabel = GetLabel();
-  CUtil::CleanString(strLabel, bIsFolder);
-  SetLabel(strLabel);
+  CStdString strTitle, strTitleAndYear, strYear;
+  CUtil::CleanString(strLabel, strTitle, strTitleAndYear, strYear, bIsFolder);
+  SetLabel(strTitleAndYear);
 }
 
 void CFileItem::SetLabel(const CStdString &strLabel)
