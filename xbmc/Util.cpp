@@ -278,7 +278,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 {
   const CStdStringArray &regexps = g_advancedSettings.m_videoStackRegExps;
 
-  CStdString strFileNameTemp = strFileName;
+  CStdString strTitleAndYear = strFileName;
   CStdString strFileNameLower = strFileName;
   strFileNameLower.MakeLower();
 
@@ -324,9 +324,9 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         // The extension will then be added back on at the end - there is no reason
         // to clean it off here. It will be cleaned off during the display routine, if
         // the settings to hide extensions are turned on.
-        CStdString strFileNoExt = strFileNameTemp;
+        CStdString strFileNoExt = strTitleAndYear;
         RemoveExtension(strFileNoExt);
-        CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
+        CStdString strFileExt = strTitleAndYear.Right(strTitleAndYear.length() - strFileNoExt.length());
         CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
         strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
 
@@ -350,7 +350,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         strFileTitle += reg.GetMatch(3);
 
         // everything after the regexp match
-        strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
+        strFileTitle += strTitleAndYear.Mid(iFoundToken + iRegLength);
 
         return true;
       }
@@ -397,8 +397,10 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   }
 }
 
-void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
+void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bIsFolder /* = false */)
 {
+
+  strTitleAndYear = strFileName;
 
   if (strFileName.Equals(".."))
    return;
@@ -406,13 +408,12 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
   CRegExp reTags, reYear;
-  CStdString strYear, strExtension;
-  CStdString strFileNameTemp = strFileName;
+  CStdString strExtension;
 
   if (!bIsFolder)
   {
-    GetExtension(strFileNameTemp, strExtension);
-    RemoveExtension(strFileNameTemp);
+    GetExtension(strTitleAndYear, strExtension);
+    RemoveExtension(strTitleAndYear);
   }
 
   if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
@@ -421,9 +422,9 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   }
   else
   {
-    if (reYear.RegFind(strFileNameTemp.c_str()) >= 0)
+    if (reYear.RegFind(strTitleAndYear.c_str()) >= 0)
     {
-      strFileNameTemp = reYear.GetReplaceString("\\1");
+      strTitleAndYear = reYear.GetReplaceString("\\1");
       strYear = reYear.GetReplaceString("\\2");
     }
   }
@@ -437,7 +438,7 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
     }
     int j=0;
     if ((j=reTags.RegFind(strFileName.ToLower().c_str())) >= 0)
-      strFileNameTemp = strFileNameTemp.Mid(0, j);
+      strTitleAndYear = strTitleAndYear.Mid(0, j);
   }
 
   // final cleanup - special characters used instead of spaces:
@@ -447,31 +448,31 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
   {
     bool initialDots = true;
-    bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0);
+    bool alreadyContainsSpace = (strTitleAndYear.Find(' ') >= 0);
 
-    for (int i = 0; i < (int)strFileNameTemp.size(); i++)
+    for (int i = 0; i < (int)strTitleAndYear.size(); i++)
     {
-      char c = strFileNameTemp.GetAt(i);
+      char c = strTitleAndYear.GetAt(i);
 
       if (c != '.')
         initialDots = false;
 
       if ((c == '_') || ((!alreadyContainsSpace) && !initialDots && (c == '.')))
       {
-        strFileNameTemp.SetAt(i, ' ');
+        strTitleAndYear.SetAt(i, ' ');
       }
     }
   }
 
-  strFileName = strFileNameTemp.Trim();
+  strTitle = strTitleAndYear.Trim();
 
   // append year
   if (!strYear.IsEmpty())
-    strFileName = strFileName + " (" + strYear + ")";
+    strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
   if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
-    strFileName += strExtension;
+    strTitleAndYear += strExtension;
 
 }
 
