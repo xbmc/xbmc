@@ -1009,6 +1009,14 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
         strLabel.Format("%i", iLevel);
     }
     break;
+  case PLAYER_TIME:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = GetCurrentPlayTime(TIME_FORMAT_HH_MM);
+    break;
+  case PLAYER_DURATION:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = GetDuration(TIME_FORMAT_HH_MM);
+    break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:

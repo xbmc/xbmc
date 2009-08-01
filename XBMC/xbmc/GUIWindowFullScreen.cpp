@@ -717,7 +717,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       m_timeCodeShow = false;
       m_timeCodePosition = 0;
     }
-    CStdString strDispTime = "??:??";
+    CStdString strDispTime = "hh:mm";
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
     for (int count = 0; count < m_timeCodePosition; count++)
@@ -727,7 +727,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       else
         strDispTime[count] = (char)m_timeCodeStamp[count] + 48;
     }
-    strDispTime += "/" + g_infoManager.GetVideoLabel(257) + " [" + g_infoManager.GetVideoLabel(254) + "]"; // duration [ time ]
+    strDispTime += "/" + g_infoManager.GetLabel(PLAYER_DURATION) + " [" + g_infoManager.GetLabel(PLAYER_TIME) + "]"; // duration [ time ]
     msg.SetLabel(strDispTime);
     OnMessage(msg);
   }
