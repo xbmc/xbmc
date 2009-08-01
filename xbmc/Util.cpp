@@ -104,6 +104,7 @@
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "Crc32.h"
+#include "utils/RssReader.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -2338,6 +2339,7 @@ const BUILT_IN commands[] = {
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
+  { "RefreshRSS",                 false,  "Reload RSS feeds from RSSFeeds.xml"},
   { "PlayerControl",              true,   "Control the music or video player" },
   { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
   { "Playlist.Clear",             false,  "Clear the current playlist" },
@@ -2819,6 +2821,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     //  Reload the skin
     g_application.ReloadSkin();
+  }
+  else if (execute.Equals("refreshrss"))
+  {
+    g_rssManager.Stop();
+    g_settings.LoadRSSFeeds();
+    g_rssManager.Start();
   }
   else if (execute.Equals("playercontrol"))
   {
